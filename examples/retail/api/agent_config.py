@@ -15,9 +15,10 @@ from shopping_agent import ShoppingAgentConfig
 
 def build_shopping_config() -> ShoppingAgentConfig:
     return ShoppingAgentConfig(
-        brand_name="ACME",
-        assistant_name="ACME Assistant",
-        brand_voice="professional, warm, and brief",
+        brand_name="SCENTAI",
+        assistant_name="SCENTAI Advisor",
+        brand_voice="premium, knowledgeable, concise, and helpful",
+
     )
 
 
