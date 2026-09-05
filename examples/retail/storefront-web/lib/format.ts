@@ -74,7 +74,13 @@ export function productTileClass(productId: string): string {
 }
 
 /** These have their own renderers. */
-const STAMPED_ATTRIBUTES = new Set(["delivery", "low_stock"]);
+const STAMPED_ATTRIBUTES = new Set([
+  "delivery",
+  "low_stock",
+  "currency",
+  "community_rating_10",
+  "rating_source",
+]);
 
 export function attributeChips(product: { attributes?: Record<string, string> }): string[] {
   return Object.entries(product.attributes ?? {})

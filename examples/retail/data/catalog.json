@@ -6,6 +6,7 @@
       "title": "Prada L'Homme Intense Eau de Parfum 100 ml",
       "brand": "Prada",
       "price": 80.3,
+      "currency": "EUR",
       "rating": 4.2,
       "review_count": 2570,
       "category": "fragrance",
@@ -17,7 +18,6 @@
         "cold-weather"
       ],
       "attributes": {
-        "currency": "EUR",
         "community_rating_10": "8.4",
 "rating_source": "Parfumo",
         "volume_ml": "100",
@@ -48,6 +48,7 @@
       "title": "Sospiro Vibrato Eau de Parfum 100 ml",
       "brand": "Sospiro",
       "price": 217.0,
+      "currency": "EUR",
       "rating": 4.4,
       "review_count": 2448,
       "category": "fragrance",
@@ -59,7 +60,6 @@
         "versatile"
       ],
       "attributes": {
-        "currency": "EUR",
         "community_rating_10": "8.7",
 "rating_source": "Parfumo",
         "volume_ml": "100",
@@ -89,6 +89,7 @@
       "title": "Afnan Turathi Blue Eau de Parfum 90 ml",
       "brand": "Afnan",
       "price": 44.5,
+      "currency": "EUR",
       "rating": 4.1,
       "review_count": 3864,
       "category": "fragrance",
@@ -100,7 +101,6 @@
         "versatile"
       ],
       "attributes": {
-        "currency": "EUR",
         "community_rating_10": "8.1",
 "rating_source": "Parfumo",
         "volume_ml": "90",

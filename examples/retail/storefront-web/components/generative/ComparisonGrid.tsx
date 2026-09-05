@@ -4,7 +4,7 @@
 import type { CSSProperties } from "react";
 import { formatMoney } from "web-shared";
 import type { ComparisonPayload } from "@/lib/types";
-import { ProductImage, ProductTitle, Rating } from "../ProductTile";
+import { ProductImage, ProductTitle, Rating, ProductRating } from "../ProductTile";
 
 const RECOMMENDED_LABEL = "Recommended";
 
@@ -64,7 +64,7 @@ export default function ComparisonGrid({
                   />
                   <div className="flex items-center gap-2 text-sm">
                     <span className="font-semibold">{formatMoney(entry.product.price)}</span>
-                    <Rating rating={entry.product.rating} count={entry.product.review_count} />
+                    <ProductRating product={entry.product} />
                   </div>
                 </div>
               </div>

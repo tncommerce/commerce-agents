@@ -24,10 +24,10 @@ import type { Product } from "@/lib/types";
 import ProductTile from "../ProductTile";
 
 const STARTERS: Starter[] = [
-  { icon: "search", prompt: "A tent for a first family camping trip, under $250" },
-  { icon: "home", prompt: "Set up a home office in a small spare room for about $800" },
-  { icon: "tag", prompt: "Drip or espresso for busy weekday mornings?" },
-  { icon: "edit", prompt: "Remember: small apartment, no outdoor storage, and a golden retriever" },
+  { icon: "search", prompt: "Find me a fresh summer fragrance under €60" },
+  { icon: "home", prompt: "I want a dark, elegant date-night fragrance under €100" },
+  { icon: "tag", prompt: "Compare Sospiro Vibrato and Afnan Turathi Blue" },
+  { icon: "edit", prompt: "I like fresh citrus scents with strong longevity — what fits me?" },
 ];
 
 /** What the store is featuring: labelled bestseller or new, photographed ones first. */
@@ -41,7 +41,7 @@ function featured(catalog: Record<string, Product>): Product[] {
 function Brief({ orders }: { orders: Order[] | null }) {
   if (!orders) return <>Ask about a product, a project, an order, or a return.</>;
   const open = upcoming(orders);
-  if (!open.length) return <>Nothing on the way right now. Ask about a product, a project, or a return.</>;
+  if (!open.length) return <>Nothing on the way right now. Ask about a fragrance, compare scents, or find your next signature scent.</>;
   const late = open.filter((order) => order.status === "delayed");
   const next = estimateOf(open.find((order) => order.status !== "delayed") ?? open[0])?.date;
   return (

@@ -12,8 +12,8 @@ const instrumentSans = Instrument_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "ACME",
-  description: "Shop the ACME catalog with the ACME Assistant.",
+  title: "SCENTAI",
+  description: "Discover and compare fragrances with the SCENTAI Advisor.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

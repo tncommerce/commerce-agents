@@ -74,7 +74,7 @@ export default function CartPanel({ cart, checkoutStaged = false }: { cart: Cart
         <>
           Nothing in the cart yet.
           <br />
-          Ask ACME Assistant for anything in the store.
+          Ask SCENTAI Advisor for anything in the store.
         </>
       }
       footer={

@@ -15,11 +15,12 @@ from shopping_agent import ShoppingAgentConfig
 
 def build_shopping_config() -> ShoppingAgentConfig:
     return ShoppingAgentConfig(
-        brand_name="SCENTAI",
-        assistant_name="SCENTAI Advisor",
-        brand_voice="premium, knowledgeable, concise, and helpful",
+    brand_name="SCENTAI",
+    assistant_name="SCENTAI Advisor",
+    brand_voice="premium, knowledgeable, concise, and helpful",
+    domain_search_notes="For fragrance recommendations, use only catalog fields and tool results. Do not invent percentages, similarity scores, performance ratios, or unsupported quantitative claims. If a comparison is qualitative, describe it qualitatively. For fragrance customer ratings, prefer community_rating_10 and rating_source when available. Do not present the internal 5-star compatibility rating as the primary fragrance rating.",
+)
 
-    )
 
 
 def build_merchant_config(store_name: str) -> MerchantAgentConfig:

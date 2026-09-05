@@ -89,7 +89,45 @@ export function Rating({ rating, count }: { rating?: number | null; count?: numb
     </span>
   );
 }
+    export function ProductRating({
+      product,
+      compact = false,
+    }: {
+      product: Product;
+      compact?: boolean;
+    }) {
+      const communityRating = product.attributes?.community_rating_10;
+      const ratingSource = product.attributes?.rating_source;
+      const value = communityRating ? Number(communityRating) : null;
 
+      if (value !== null && Number.isFinite(value)) {
+        return (
+          <span className="whitespace-nowrap text-[13px] text-(--ink-soft)">
+            <span className="font-semibold text-(--ink)">
+              {value.toLocaleString("de-DE", {
+                minimumFractionDigits: 1,
+                maximumFractionDigits: 1,
+              })}/10
+            </span>
+            {ratingSource ? (
+              <span className="text-[11px]"> · {ratingSource}</span>
+            ) : null}
+            {!compact && product.review_count ? (
+              <span className="text-[11px] text-(--ink-soft)/80">
+                {" "}({product.review_count.toLocaleString("de-DE")})
+              </span>
+            ) : null}
+          </span>
+        );
+      }
+
+      return (
+        <Rating
+          rating={product.rating}
+          count={compact ? undefined : product.review_count}
+        />
+      );
+    }
 /** What a variant chose, or what a product with options still needs chosen; empty otherwise. */
 function optionText(product: Product): string {
   return optionValuesLabel(product) || optionSummary(product);
@@ -221,7 +259,7 @@ export default function ProductTile({
           )}
           <div className="mt-auto flex items-center justify-between gap-1 pt-0.5">
             <span className="text-sm font-semibold">{priceLabel(product)}</span>
-            <Rating rating={product.rating} count={compact ? undefined : product.review_count} />
+            <ProductRating product={product} compact={compact} />
           </div>
           <DeliveryPromise product={product} />
           {!compact && product.in_stock !== false ? <ReturnsPromise /> : null}
@@ -264,7 +302,7 @@ export function ProductRow({
         <OptionLine product={product} />
         <div className="flex items-center gap-2">
           <span className="text-sm font-semibold">{priceLabel(product)}</span>
-          <Rating rating={product.rating} />
+          <ProductRating product={product} compact />
           {product.in_stock === false ? (
             <span className="rounded-full bg-(--ink)/85 px-2 py-0.5 text-[11px] font-medium text-(--surface)">
               Out of stock
