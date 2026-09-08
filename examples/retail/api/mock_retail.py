@@ -208,8 +208,102 @@ class MockRetail(StorefrontBackend):
         limit: int = 8,
     ) -> list[Product]:
         del session
+
+        products = list(self.products.values())
+
+        # SCENTAI cluster-aware alternative search.
+        #
+        # If the shopper explicitly asks for alternatives to a named
+        # benchmark, prioritize products from that benchmark's cluster.
+        query_lower = query.casefold()
+
+        alternative_markers = (
+            "alternative",
+            "alternativen",
+            "dupe",
+            "dupes",
+            "clone",
+            "clones",
+            "similar",
+            "similar to",
+            "ähnlich",
+            "ersatz",
+            "instead",
+        )
+
+        asks_for_alternative = any(
+            marker in query_lower
+            for marker in alternative_markers
+        )
+
+        if asks_for_alternative:
+            benchmark_matches = []
+
+            for candidate in products:
+                attributes = candidate.attributes or {}
+
+                if attributes.get("relationship_role") != "benchmark":
+                    continue
+
+                canonical_name = str(
+                    attributes.get("canonical_name") or ""
+                ).strip()
+
+                cluster_id = attributes.get("cluster_id")
+
+                if (
+                    canonical_name
+                    and cluster_id
+                    and canonical_name.casefold() in query_lower
+                ):
+                    benchmark_matches.append(
+                        (
+                            len(canonical_name),
+                            cluster_id,
+                        )
+                    )
+
+            if benchmark_matches:
+                # Prefer the longest matching benchmark name.
+                # This ensures "Absolu Aventus" wins over "Aventus".
+                benchmark_matches.sort(
+                    key=lambda item: item[0],
+                    reverse=True,
+                )
+
+                target_cluster = benchmark_matches[0][1]
+
+                same_cluster_products = [
+                    product
+                    for product in products
+                    if (
+                        (product.attributes or {}).get("cluster_id")
+                        == target_cluster
+                        and
+                        (product.attributes or {}).get("relationship_role")
+                        != "benchmark"
+                    )
+                ]
+
+                ranked_cluster = rank_products(
+                    same_cluster_products,
+                    query,
+                    filters,
+                    limit,
+                    score=self._score,
+                    hard_filter=within_price_and_rating,
+                    soft_filter=self._soft_filter,
+                )
+
+                if ranked_cluster:
+                    return [
+                        summary_of(product)
+                        for product in ranked_cluster
+                    ]
+
+        # Normal storefront search fallback.
         ranked = rank_products(
-            self.products.values(),
+            products,
             query,
             filters,
             limit,
@@ -217,7 +311,11 @@ class MockRetail(StorefrontBackend):
             hard_filter=within_price_and_rating,
             soft_filter=self._soft_filter,
         )
-        return [summary_of(product) for product in ranked]
+
+        return [
+            summary_of(product)
+            for product in ranked
+        ]
 
     def product(self, product_id: str) -> ProductDetails | None:
         return find_product(self.products, self.variants, product_id)

@@ -80,6 +80,7 @@ const STAMPED_ATTRIBUTES = new Set([
   "currency",
   "community_rating_10",
   "rating_source",
+  "canonical_name",
 ]);
 
 export function attributeChips(product: { attributes?: Record<string, string> }): string[] {
@@ -88,6 +89,9 @@ export function attributeChips(product: { attributes?: Record<string, string> })
     .map(([key, value]) => {
       if (/^(yes|true)$/i.test(value)) return key.replaceAll("_", " ");
       if (/^(no|false)$/i.test(value)) return null;
+
+      if (key === "volume_ml") return `${value} ml`;
+
       return value;
     })
     .filter((chip): chip is string => Boolean(chip))

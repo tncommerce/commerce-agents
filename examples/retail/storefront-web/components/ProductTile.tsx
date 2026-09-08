@@ -58,7 +58,7 @@ export function DeliveryPromise({
   className?: string;
 }) {
   const promise = product.attributes?.delivery;
-  if (!promise || product.in_stock === false) return null;
+  if (product.category === "fragrance" || !promise || product.in_stock === false) return null;
   return (
     <div className={`text-[11px] font-medium text-(--ok) ${className}`}>{promise}</div>
   );
