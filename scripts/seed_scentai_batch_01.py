@@ -1,0 +1,670 @@
+import json
+from pathlib import Path
+
+DATABASE = Path("examples/retail/data/scentai_products.json")
+
+new_products = [
+    {
+        "product_id": "SC-ARABIYAT-MARWA-EXTRAIT-60",
+        "brand": "Arabiyat Prestige",
+        "name": "Marwa Extrait",
+        "concentration": "Extrait de Parfum",
+        "volume_ml": 60,
+        "release_year": 2026,
+        "classification": {
+            "official_orientation": None,
+            "community_category": "men",
+            "scentai_target_groups": ["men", "unisex"],
+            "role": "inspired",
+            "cluster_id": "lv-imagination",
+            "trend_bet": True
+        },
+        "notes": {
+            "top": ["Calabrian Bergamot", "Sicilian Orange", "Lemon"],
+            "heart": ["Ceylon Cinnamon", "Nigerian Ginger", "Tunisian Neroli"],
+            "base": ["Ambroxan", "Chinese Black Tea", "Guaiac Wood", "Incense"]
+        },
+        "community": {
+            "source": "Parfumo",
+            "rating_10": 8.6,
+            "rating_count": 41,
+            "rank": None,
+            "rank_category": "men",
+            "longevity_10": 7.4,
+            "projection_10": 7.4
+        },
+        "fragrance_profile": {
+            "community_accords": ["fresh", "spicy", "citrus", "oriental", "fruity"],
+            "scores": {
+                "freshness": 9,
+                "sweetness": 3,
+                "woodiness": 4,
+                "spiciness": 7
+            },
+            "score_confidence": "medium"
+        },
+        "market": {
+            "market_price_eur": 59.38,
+            "price_per_ml_eur": 0.9897,
+            "german_availability": "high",
+            "price_source_count": 3,
+            "price_checked_at": "2026-09-08"
+        },
+        "commercial": {
+            "retail_demand_proxy": 12,
+            "community_demand": 1,
+            "german_availability_score": 5,
+            "monetization_potential": 3,
+            "market_demand_score": 21,
+            "alternative_demand": 8,
+            "price_gap_score": 11,
+            "cluster_opportunity_bonus": 19,
+            "commercial_opportunity_score": 40
+        },
+        "relationships": [
+            {
+                "related_product_id": "SC-LV-IMAGINATION-100",
+                "relationship_type": "inspired",
+                "confidence": "medium"
+            }
+        ],
+        "evidence": {
+            "official_product_data": "medium",
+            "community_metrics": "medium",
+            "market_price": "medium_high",
+            "relationship_data": "medium",
+            "overall": "medium"
+        },
+        "validation": {"catalog_ready": True}
+    },
+
+    {
+        "product_id": "SC-BUJAIRAMI-HECTIC-100",
+        "brand": "Bujairami",
+        "name": "Hectic",
+        "concentration": "Extrait de Parfum",
+        "volume_ml": 100,
+        "release_year": 2024,
+        "classification": {
+            "official_orientation": None,
+            "community_category": "men",
+            "scentai_target_groups": ["men", "unisex"],
+            "role": "inspired",
+            "cluster_id": "lv-imagination",
+            "trend_bet": False
+        },
+        "notes": {
+            "top": ["Calabrian Bergamot", "Sicilian Orange", "Citron"],
+            "heart": ["Nigerian Ginger", "Ceylon Cinnamon", "Tunisian Neroli"],
+            "base": ["Chinese Black Tea", "Guaiac Wood", "Ambroxan", "Incense"]
+        },
+        "community": {
+            "source": "Parfumo",
+            "rating_10": 8.4,
+            "rating_count": 240,
+            "rank": None,
+            "rank_category": "men",
+            "longevity_10": 7.6,
+            "projection_10": 7.5
+        },
+        "fragrance_profile": {
+            "community_accords": ["citrus", "fresh", "spicy", "aquatic", "fruity"],
+            "scores": {
+                "freshness": 10,
+                "sweetness": 2,
+                "woodiness": 3,
+                "spiciness": 8
+            },
+            "score_confidence": "medium_high"
+        },
+        "market": {
+            "market_price_eur": 57.99,
+            "price_per_ml_eur": 0.5799,
+            "german_availability": "high",
+            "price_source_count": 3,
+            "price_checked_at": "2026-09-08"
+        },
+        "commercial": {
+            "retail_demand_proxy": 12,
+            "community_demand": 4,
+            "german_availability_score": 5,
+            "monetization_potential": 3,
+            "market_demand_score": 24,
+            "alternative_demand": 16,
+            "price_gap_score": 15,
+            "cluster_opportunity_bonus": 31,
+            "commercial_opportunity_score": 55
+        },
+        "relationships": [
+            {
+                "related_product_id": "SC-LV-IMAGINATION-100",
+                "relationship_type": "inspired",
+                "confidence": "high"
+            }
+        ],
+        "evidence": {
+            "official_product_data": "medium",
+            "community_metrics": "high",
+            "market_price": "high",
+            "relationship_data": "high",
+            "overall": "medium_high"
+        },
+        "validation": {"catalog_ready": True}
+    },
+
+    {
+        "product_id": "SC-CREED-AVENTUS-100",
+        "brand": "Creed",
+        "name": "Aventus",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100,
+        "release_year": 2010,
+        "classification": {
+            "official_orientation": "men",
+            "community_category": "men",
+            "scentai_target_groups": ["men"],
+            "role": "benchmark",
+            "cluster_id": "creed-aventus",
+            "trend_bet": False
+        },
+        "notes": {
+            "key": [
+                "Calabrian Bergamot",
+                "Pineapple Accord",
+                "Birch",
+                "Dry Woods"
+            ]
+        },
+        "community": {
+            "source": "Parfumo",
+            "rating_10": 8.4,
+            "rating_count": 8572,
+            "rank": 4,
+            "rank_category": "men",
+            "longevity_10": 7.3,
+            "projection_10": 7.3
+        },
+        "fragrance_profile": {
+            "community_accords": ["fresh", "fruity", "citrus", "woody", "smoky"],
+            "scores": {
+                "freshness": 10,
+                "sweetness": 3,
+                "woodiness": 7,
+                "spiciness": 2
+            },
+            "score_confidence": "high"
+        },
+        "market": {
+            "official_price_eur": 330.0,
+            "market_price_eur": 330.0,
+            "price_per_ml_eur": 3.3,
+            "german_availability": "high",
+            "price_source_count": 3,
+            "price_checked_at": "2026-09-08"
+        },
+        "commercial": {
+            "retail_demand_proxy": 18,
+            "community_demand": 20,
+            "german_availability_score": 5,
+            "monetization_potential": 3,
+            "market_demand_score": 46,
+            "alternative_demand": 20,
+            "price_gap_score": 15,
+            "cluster_opportunity_bonus": 35,
+            "commercial_opportunity_score": 81
+        },
+        "relationships": [
+            {
+                "related_product_id": "SC-ARMAF-CDNIM-EDP-200",
+                "relationship_type": "clone",
+                "confidence": "high"
+            },
+            {
+                "related_product_id": "SC-MONTBLANC-EXPLORER-100",
+                "relationship_type": "alternative",
+                "confidence": "high"
+            }
+        ],
+        "evidence": {
+            "official_product_data": "high",
+            "community_metrics": "high",
+            "market_price": "high",
+            "relationship_data": "high",
+            "overall": "high"
+        },
+        "validation": {"catalog_ready": True}
+    },
+
+    {
+        "product_id": "SC-CREED-ABSOLU-AVENTUS-100",
+        "brand": "Creed",
+        "name": "Absolu Aventus",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100,
+        "release_year": 2023,
+        "classification": {
+            "official_orientation": "men",
+            "community_category": "unisex",
+            "scentai_target_groups": ["men", "unisex"],
+            "role": "benchmark",
+            "cluster_id": "creed-aventus-absolu",
+            "trend_bet": False
+        },
+        "notes": {
+            "key": [
+                "Calabrian Bergamot",
+                "Pineapple Accord",
+                "Cardamom",
+                "Labdanum"
+            ],
+            "supporting": [
+                "Grapefruit",
+                "Haitian Vetiver",
+                "Ginger",
+                "Cinnamon"
+            ]
+        },
+        "community": {
+            "source": "Parfumo",
+            "rating_10": 8.5,
+            "rating_count": 1348,
+            "rank": 100,
+            "rank_category": "unisex",
+            "longevity_10": 7.7,
+            "projection_10": 7.4
+        },
+        "fragrance_profile": {
+            "community_accords": ["fruity", "fresh", "citrus", "spicy", "woody"],
+            "scores": {
+                "freshness": 8,
+                "sweetness": 4,
+                "woodiness": 7,
+                "spiciness": 8
+            },
+            "score_confidence": "high"
+        },
+        "market": {
+            "official_price_eur": 380.0,
+            "market_price_eur": 380.0,
+            "price_per_ml_eur": 3.8,
+            "german_availability": "high",
+            "price_source_count": 3,
+            "price_checked_at": "2026-09-08"
+        },
+        "commercial": {
+            "retail_demand_proxy": 18,
+            "community_demand": 15,
+            "german_availability_score": 5,
+            "monetization_potential": 5,
+            "market_demand_score": 43,
+            "alternative_demand": 20,
+            "price_gap_score": 15,
+            "cluster_opportunity_bonus": 35,
+            "commercial_opportunity_score": 78
+        },
+        "relationships": [
+            {
+                "related_product_id": "SC-AFNAN-SUPREMACY-COLLECTORS-100",
+                "relationship_type": "inspired",
+                "confidence": "high"
+            },
+            {
+                "related_product_id": "SC-MAISON-ASRAR-VANGUARD-100",
+                "relationship_type": "inspired",
+                "confidence": "high"
+            }
+        ],
+        "evidence": {
+            "official_product_data": "high",
+            "community_metrics": "high",
+            "market_price": "high",
+            "relationship_data": "high",
+            "overall": "high"
+        },
+        "validation": {"catalog_ready": True}
+    },
+
+    {
+        "product_id": "SC-AFNAN-SUPREMACY-COLLECTORS-100",
+        "brand": "Afnan Perfumes",
+        "name": "Supremacy Collector's Edition",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100,
+        "release_year": 2024,
+        "classification": {
+            "official_orientation": "men",
+            "community_category": "men",
+            "scentai_target_groups": ["men"],
+            "role": "inspired",
+            "cluster_id": "creed-aventus-absolu",
+            "trend_bet": False
+        },
+        "notes": {
+            "top": ["Pineapple", "Bergamot", "Apple", "White Floral"],
+            "heart": ["Orange Blossom", "Birch", "Amber"],
+            "base": ["Oak Moss", "Musk", "Ambergris"]
+        },
+        "community": {
+            "source": "Parfumo",
+            "rating_10": 8.2,
+            "rating_count": 1205,
+            "rank": 115,
+            "rank_category": "men",
+            "longevity_10": 8.4,
+            "projection_10": 8.2
+        },
+        "fragrance_profile": {
+            "community_accords": ["fruity", "fresh", "citrus", "woody", "sweet"],
+            "scores": {
+                "freshness": 9,
+                "sweetness": 5,
+                "woodiness": 7,
+                "spiciness": 2
+            },
+            "score_confidence": "high"
+        },
+        "market": {
+            "official_price_eur": 54.5,
+            "market_price_eur": 54.5,
+            "price_per_ml_eur": 0.545,
+            "german_availability": "high",
+            "price_source_count": 3,
+            "price_checked_at": "2026-09-08"
+        },
+        "commercial": {
+            "retail_demand_proxy": 18,
+            "community_demand": 13,
+            "german_availability_score": 5,
+            "monetization_potential": 3,
+            "market_demand_score": 39,
+            "alternative_demand": 16,
+            "price_gap_score": 15,
+            "cluster_opportunity_bonus": 31,
+            "commercial_opportunity_score": 70
+        },
+        "relationships": [
+            {
+                "related_product_id": "SC-CREED-ABSOLU-AVENTUS-100",
+                "relationship_type": "inspired",
+                "confidence": "high"
+            }
+        ],
+        "evidence": {
+            "official_product_data": "high",
+            "community_metrics": "high",
+            "market_price": "medium_high",
+            "relationship_data": "high",
+            "overall": "high"
+        },
+        "validation": {"catalog_ready": True}
+    },
+
+    {
+        "product_id": "SC-MAISON-ASRAR-VANGUARD-100",
+        "brand": "Maison Asrar",
+        "name": "Vanguard",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100,
+        "release_year": 2025,
+        "classification": {
+            "official_orientation": "men",
+            "community_category": "unisex",
+            "scentai_target_groups": ["men", "unisex"],
+            "role": "inspired",
+            "cluster_id": "creed-aventus-absolu",
+            "trend_bet": False
+        },
+        "notes": {
+            "top": [
+                "Apple",
+                "Bergamot",
+                "Blackcurrant",
+                "Grapefruit",
+                "Pink Pepper",
+                "Pineapple"
+            ],
+            "heart": [
+                "Carnation",
+                "Jasmine",
+                "Lily of the Valley"
+            ],
+            "base": [
+                "Ambergris",
+                "Cashmere",
+                "Cedarwood",
+                "Leather",
+                "Moss",
+                "Musk"
+            ]
+        },
+        "community": {
+            "source": "Parfumo",
+            "rating_10": 8.8,
+            "rating_count": 169,
+            "rank": None,
+            "rank_category": "unisex",
+            "longevity_10": 7.5,
+            "projection_10": 7.4
+        },
+        "fragrance_profile": {
+            "community_accords": ["fruity", "fresh", "woody", "citrus", "smoky"],
+            "scores": {
+                "freshness": 8,
+                "sweetness": 4,
+                "woodiness": 7,
+                "spiciness": 6
+            },
+            "score_confidence": "medium_high"
+        },
+        "market": {
+            "market_price_eur": 47.79,
+            "price_per_ml_eur": 0.4779,
+            "german_availability": "high",
+            "price_source_count": 3,
+            "price_checked_at": "2026-09-08"
+        },
+        "commercial": {
+            "retail_demand_proxy": 12,
+            "community_demand": 2,
+            "german_availability_score": 5,
+            "monetization_potential": 3,
+            "market_demand_score": 22,
+            "alternative_demand": 16,
+            "price_gap_score": 15,
+            "cluster_opportunity_bonus": 31,
+            "commercial_opportunity_score": 53
+        },
+        "relationships": [
+            {
+                "related_product_id": "SC-CREED-ABSOLU-AVENTUS-100",
+                "relationship_type": "inspired",
+                "confidence": "high"
+            }
+        ],
+        "evidence": {
+            "official_product_data": "medium_high",
+            "community_metrics": "high",
+            "market_price": "medium_high",
+            "relationship_data": "high",
+            "overall": "medium_high"
+        },
+        "validation": {"catalog_ready": True}
+    },
+
+    {
+        "product_id": "SC-ARMAF-CDNIM-EDP-200",
+        "brand": "Armaf",
+        "name": "Club de Nuit Intense Man",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 200,
+        "release_year": None,
+        "classification": {
+            "official_orientation": "men",
+            "community_category": "men",
+            "scentai_target_groups": ["men"],
+            "role": "clone",
+            "cluster_id": "creed-aventus",
+            "trend_bet": False
+        },
+        "notes": {
+            "top": ["Lemon", "Pineapple", "Bergamot", "Blackcurrant", "Apple"],
+            "heart": ["Birch", "Jasmine", "Rose"],
+            "base": ["Amber", "Musk", "Patchouli", "Vanilla"]
+        },
+        "community": {
+            "source": "Parfumo",
+            "rating_10": 7.6,
+            "rating_count": 1230,
+            "rank": 202,
+            "rank_category": "men",
+            "longevity_10": 8.2,
+            "projection_10": 8.0
+        },
+        "fragrance_profile": {
+            "community_accords": ["citrus", "smoky", "fresh", "fruity", "woody"],
+            "scores": {
+                "freshness": 9,
+                "sweetness": 4,
+                "woodiness": 6,
+                "spiciness": 2
+            },
+            "score_confidence": "high"
+        },
+        "market": {
+            "market_price_eur": 42.79,
+            "price_per_ml_eur": 0.21395,
+            "german_availability": "high",
+            "price_source_count": 3,
+            "price_checked_at": "2026-09-08"
+        },
+        "commercial": {
+            "retail_demand_proxy": 18,
+            "community_demand": 13,
+            "german_availability_score": 5,
+            "monetization_potential": 4,
+            "market_demand_score": 40,
+            "alternative_demand": 20,
+            "price_gap_score": 15,
+            "cluster_opportunity_bonus": 35,
+            "commercial_opportunity_score": 75
+        },
+        "relationships": [
+            {
+                "related_product_id": "SC-CREED-AVENTUS-100",
+                "relationship_type": "clone",
+                "confidence": "high"
+            }
+        ],
+        "evidence": {
+            "official_product_data": "medium_high",
+            "community_metrics": "high",
+            "market_price": "high",
+            "relationship_data": "high",
+            "overall": "high"
+        },
+        "validation": {"catalog_ready": True}
+    },
+
+    {
+        "product_id": "SC-MONTBLANC-EXPLORER-100",
+        "brand": "Montblanc",
+        "name": "Explorer",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100,
+        "release_year": 2019,
+        "classification": {
+            "official_orientation": "men",
+            "community_category": "men",
+            "scentai_target_groups": ["men"],
+            "role": "alternative",
+            "cluster_id": "creed-aventus",
+            "trend_bet": False
+        },
+        "notes": {
+            "top": ["Bergamot", "Pink Pepper", "Clary Sage"],
+            "heart": ["Patchouli", "Mahonia", "Ambrofix"],
+            "base": ["Vetiver", "Leather", "Cedarwood"]
+        },
+        "community": {
+            "source": "Parfumo",
+            "rating_10": 7.8,
+            "rating_count": 3840,
+            "rank": 40,
+            "rank_category": "men",
+            "longevity_10": 7.0,
+            "projection_10": 6.8
+        },
+        "fragrance_profile": {
+            "community_accords": ["fresh", "citrus", "woody", "fruity", "synthetic"],
+            "scores": {
+                "freshness": 9,
+                "sweetness": 3,
+                "woodiness": 7,
+                "spiciness": 4
+            },
+            "score_confidence": "high"
+        },
+        "market": {
+            "official_price_eur": 105.0,
+            "market_price_eur": 51.94,
+            "price_per_ml_eur": 0.5194,
+            "german_availability": "very_high",
+            "price_source_count": 3,
+            "price_checked_at": "2026-09-08"
+        },
+        "commercial": {
+            "retail_demand_proxy": 24,
+            "community_demand": 17,
+            "german_availability_score": 5,
+            "monetization_potential": 5,
+            "market_demand_score": 51,
+            "alternative_demand": 16,
+            "price_gap_score": 15,
+            "cluster_opportunity_bonus": 31,
+            "commercial_opportunity_score": 82
+        },
+        "relationships": [
+            {
+                "related_product_id": "SC-CREED-AVENTUS-100",
+                "relationship_type": "alternative",
+                "confidence": "high"
+            }
+        ],
+        "evidence": {
+            "official_product_data": "high",
+            "community_metrics": "high",
+            "market_price": "high",
+            "relationship_data": "high",
+            "overall": "high"
+        },
+        "validation": {"catalog_ready": True}
+    }
+]
+
+data = json.loads(DATABASE.read_text(encoding="utf-8"))
+
+existing_ids = {product["product_id"] for product in data["products"]}
+
+added = 0
+skipped = 0
+
+for product in new_products:
+    if product["product_id"] in existing_ids:
+        print(f"SKIP: {product['product_id']}")
+        skipped += 1
+        continue
+
+    data["products"].append(product)
+    existing_ids.add(product["product_id"])
+    print(f"ADD:  {product['product_id']}")
+    added += 1
+
+DATABASE.write_text(
+    json.dumps(data, indent=2, ensure_ascii=False) + "\n",
+    encoding="utf-8"
+)
+
+print()
+print(f"Added: {added}")
+print(f"Skipped: {skipped}")
+print(f"Total products: {len(data['products'])}")
