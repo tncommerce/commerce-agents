@@ -279,19 +279,15 @@ for product in products:
     # Commercial score boundaries
     # ----------------------------------------------
 
-    score_limits = {
+    universal_score_limits = {
         "retail_demand_proxy": 35,
         "community_demand": 20,
         "german_availability_score": 5,
         "monetization_potential": 5,
         "market_demand_score": 65,
-        "alternative_demand": 20,
-        "price_gap_score": 15,
-        "cluster_opportunity_bonus": 35,
-        "commercial_opportunity_score": 100,
     }
 
-    for field, maximum in score_limits.items():
+    for field, maximum in universal_score_limits.items():
 
         value = commercial.get(field)
 
@@ -306,6 +302,47 @@ for product in products:
                 f"{pid}: commercial.{field}={value} "
                 f"outside 0-{maximum}"
             )
+
+    cluster_score_limits = {
+        "alternative_demand": 20,
+        "price_gap_score": 15,
+        "cluster_opportunity_bonus": 35,
+        "commercial_opportunity_score": 100,
+    }
+
+    cluster_values = [
+        commercial.get(field)
+        for field in cluster_score_limits
+    ]
+
+    if all(value is None for value in cluster_values):
+        # Valid standalone product:
+        # only the universal Market Demand Score applies.
+        pass
+
+    elif any(value is None for value in cluster_values):
+        error(
+            f"{pid}: cluster commercial scoring must be either "
+            f"fully populated or fully N/A"
+        )
+
+    else:
+        for field, maximum in cluster_score_limits.items():
+
+            value = commercial.get(field)
+
+            if not isinstance(value, int):
+                error(
+                    f"{pid}: commercial.{field} must be an integer "
+                    f"or null for standalone products"
+                )
+                continue
+
+            if not 0 <= value <= maximum:
+                error(
+                    f"{pid}: commercial.{field}={value} "
+                    f"outside 0-{maximum}"
+                )
 
     # ----------------------------------------------
     # Commercial score mathematics
@@ -456,12 +493,6 @@ for cluster_id, cluster_products in clusters.items():
     if len(benchmarks) == 0:
         warning(
             f"Cluster '{cluster_id}' has no benchmark"
-        )
-
-    elif len(benchmarks) > 1:
-        warning(
-            f"Cluster '{cluster_id}' has "
-            f"{len(benchmarks)} benchmarks"
         )
 
 

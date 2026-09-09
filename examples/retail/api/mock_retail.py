@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import unicodedata
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
@@ -181,6 +182,84 @@ class MockRetail(StorefrontBackend):
             "description": f"{product.short_description or ''} {product.long_description or ''}",
         }
 
+    @staticmethod
+    def _customer_facing_product(
+        product,
+        reference_name: str | None = None,
+    ):
+        """Return SCENTAI data without internal implementation fields."""
+
+        if not product.product_id.startswith("SC-"):
+            return product
+
+        source_attributes = product.attributes or {}
+
+        relationship = source_attributes.get(
+            "relationship_role"
+        )
+
+        internal_attributes = {
+            "canonical_name",
+            "cluster_id",
+            "relationship_role",
+            "evidence_confidence",
+            "trend_bet",
+            "similar_to",
+        }
+
+        attributes = {
+            key: value
+            for key, value in source_attributes.items()
+            if key not in internal_attributes
+        }
+
+        short_description = product.short_description or ""
+
+        if reference_name:
+            if relationship == "clone":
+                relation_text = (
+                    f"Very close in scent direction to "
+                    f"{reference_name}."
+                )
+
+            elif relationship == "inspired":
+                relation_text = (
+                    f"Clearly follows a similar scent direction "
+                    f"to {reference_name}, while keeping its "
+                    f"own character."
+                )
+
+            elif relationship == "alternative":
+                relation_text = (
+                    f"Offers a related scent style to "
+                    f"{reference_name}, with noticeable "
+                    f"differences."
+                )
+
+            elif relationship == "benchmark":
+                relation_text = (
+                    f"A reference fragrance in a closely "
+                    f"related scent direction to "
+                    f"{reference_name}."
+                )
+
+            else:
+                relation_text = (
+                    f"Recommended as a fragrance alternative "
+                    f"to {reference_name}."
+                )
+
+            short_description = (
+                f"{relation_text} {short_description}"
+            ).strip()
+
+        return product.model_copy(
+            update={
+                "attributes": attributes,
+                "short_description": short_description,
+            }
+        )
+
     def _score(self, product: ProductDetails, query_tokens: list[str]) -> float:
         return keyword_score(
             self._searchable_text(product), _SEARCH_WEIGHTS, query_tokens, _SYNONYMS
@@ -217,6 +296,28 @@ class MockRetail(StorefrontBackend):
         # benchmark, prioritize products from that benchmark's cluster.
         query_lower = query.casefold()
 
+        def normalize_search_text(value: str) -> str:
+            normalized = unicodedata.normalize(
+                "NFKD",
+                value.casefold(),
+            )
+            normalized = "".join(
+                char
+                for char in normalized
+                if not unicodedata.combining(char)
+            )
+
+            for separator in ("-", "/", "'", "’"):
+                normalized = normalized.replace(
+                    separator,
+                    " ",
+                )
+
+            return " ".join(normalized.split())
+
+        normalized_query = normalize_search_text(query)
+        query_tokens = set(normalized_query.split())
+
         alternative_markers = (
             "alternative",
             "alternativen",
@@ -251,14 +352,73 @@ class MockRetail(StorefrontBackend):
 
                 cluster_id = attributes.get("cluster_id")
 
+                normalized_name = normalize_search_text(
+                    canonical_name
+                )
+
+                normalized_brand = normalize_search_text(
+                    candidate.brand or ""
+                )
+
+                ignored_name_tokens = {
+                    "eau",
+                    "de",
+                    "parfum",
+                    "le",
+                    "gemme",
+                    "parfums",
+                    "perfumes",
+                }
+
+                name_tokens = [
+                    token
+                    for token in normalized_name.split()
+                    if token not in ignored_name_tokens
+                ]
+
+                brand_tokens = [
+                    token
+                    for token in normalized_brand.split()
+                    if token not in {
+                        "parfums",
+                        "perfumes",
+                        "de",
+                    }
+                ]
+
+                matched_name_tokens = [
+                    token
+                    for token in name_tokens
+                    if token in query_tokens
+                ]
+
+                exact_name_match = (
+                    normalized_name
+                    and normalized_name in normalized_query
+                )
+
+                brand_match = any(
+                    token in query_tokens
+                    for token in brand_tokens
+                )
+
                 if (
                     canonical_name
                     and cluster_id
-                    and canonical_name.casefold() in query_lower
+                    and matched_name_tokens
+                    and (
+                        exact_name_match
+                        or brand_match
+                        or len(name_tokens) == 1
+                    )
                 ):
                     benchmark_matches.append(
                         (
-                            len(canonical_name),
+                            len(matched_name_tokens),
+                            exact_name_match,
+                            brand_match,
+                            len(name_tokens),
+                            candidate.product_id,
                             cluster_id,
                         )
                     )
@@ -267,11 +427,49 @@ class MockRetail(StorefrontBackend):
                 # Prefer the longest matching benchmark name.
                 # This ensures "Absolu Aventus" wins over "Aventus".
                 benchmark_matches.sort(
-                    key=lambda item: item[0],
+                    key=lambda item: (
+                        item[0],
+                        item[1],
+                        item[2],
+                        item[3],
+                    ),
                     reverse=True,
                 )
 
-                target_cluster = benchmark_matches[0][1]
+                target_anchor_id = benchmark_matches[0][4]
+                target_cluster = benchmark_matches[0][5]
+
+                target_anchor = next(
+                    (
+                        product
+                        for product in products
+                        if product.product_id == target_anchor_id
+                    ),
+                    None,
+                )
+
+                reference_name = ""
+
+                if target_anchor is not None:
+                    anchor_attributes = (
+                        target_anchor.attributes or {}
+                    )
+
+                    anchor_name = str(
+                        anchor_attributes.get(
+                            "canonical_name"
+                        )
+                        or target_anchor.title
+                    ).strip()
+
+                    reference_name = " ".join(
+                        part
+                        for part in (
+                            target_anchor.brand,
+                            anchor_name,
+                        )
+                        if part
+                    )
 
                 same_cluster_products = [
                     product
@@ -280,8 +478,7 @@ class MockRetail(StorefrontBackend):
                         (product.attributes or {}).get("cluster_id")
                         == target_cluster
                         and
-                        (product.attributes or {}).get("relationship_role")
-                        != "benchmark"
+                        product.product_id != target_anchor_id
                     )
                 ]
 
@@ -297,7 +494,10 @@ class MockRetail(StorefrontBackend):
 
                 if ranked_cluster:
                     return [
-                        summary_of(product)
+                        self._customer_facing_product(
+                            summary_of(product),
+                            reference_name=reference_name,
+                        )
                         for product in ranked_cluster
                     ]
 
@@ -313,7 +513,9 @@ class MockRetail(StorefrontBackend):
         )
 
         return [
-            summary_of(product)
+            self._customer_facing_product(
+                summary_of(product)
+            )
             for product in ranked
         ]
 
@@ -324,7 +526,12 @@ class MockRetail(StorefrontBackend):
         self, session: ShoppingSessionContext, product_id: str
     ) -> ProductDetails | None:
         del session
-        return self.product(product_id)
+        product = self.product(product_id)
+
+        if product is None:
+            return None
+
+        return self._customer_facing_product(product)
 
     def price_intelligence(self, product_id: str) -> dict[str, Any] | None:
         """A 90-day price series derived from the product id, ending at today's price,
