@@ -300,10 +300,139 @@ class MockRetail(StorefrontBackend):
             }
         )
 
-    def _score(self, product: ProductDetails, query_tokens: list[str]) -> float:
-        return keyword_score(
-            self._searchable_text(product), _SEARCH_WEIGHTS, query_tokens, _SYNONYMS
+    def _score(self, product: ProductDetails, query_tokens: list[str], query_text: str | None = None) -> float:
+        base_score = keyword_score(
+            self._searchable_text(product),
+            _SEARCH_WEIGHTS,
+            query_tokens,
+            _SYNONYMS,
         )
+
+        # Keep non-SCENTAI demo products unchanged.
+        if not str(product.product_id).startswith("SC-"):
+            return base_score
+
+        attributes = product.attributes or {}
+
+        def numeric_attribute(name: str) -> float | None:
+            try:
+                value = attributes.get(name)
+                if value in (None, ""):
+                    return None
+                return float(value)
+            except (TypeError, ValueError):
+                return None
+
+        query_text = (
+            query_text
+            if query_text is not None
+            else " ".join(str(token) for token in query_tokens)
+        ).casefold()
+
+        freshness = numeric_attribute("freshness")
+        sweetness = numeric_attribute("sweetness")
+        woodiness = numeric_attribute("woodiness")
+        spiciness = numeric_attribute("spiciness")
+        projection = numeric_attribute("projection")
+
+        accords = str(
+            attributes.get("main_accords") or ""
+        ).casefold()
+
+        preference_score = 0.0
+
+        wants_fresh = any(
+            term in query_text
+            for term in ("frisch", "fresh", "sauber", "clean")
+        )
+
+        if wants_fresh and freshness is not None:
+            preference_score += (freshness / 10.0) * 3.0
+
+        avoids_sweet = any(
+            phrase in query_text
+            for phrase in (
+                "nicht zu süß",
+                "nicht süß",
+                "wenig süß",
+                "nicht zu suess",
+                "nicht suess",
+                "not too sweet",
+                "low sweetness",
+            )
+        )
+
+        if avoids_sweet and sweetness is not None:
+            preference_score += ((10.0 - sweetness) / 10.0) * 5.0
+
+            if sweetness >= 7:
+                preference_score -= 2.0
+
+        wants_sweet = (
+            not avoids_sweet
+            and any(
+                term in query_text
+                for term in ("süß", "suess", "sweet")
+            )
+        )
+
+        if wants_sweet and sweetness is not None:
+            preference_score += (sweetness / 10.0) * 3.0
+
+        if any(
+            term in query_text
+            for term in ("holzig", "holz", "woody")
+        ) and woodiness is not None:
+            preference_score += (woodiness / 10.0) * 2.5
+
+        if any(
+            term in query_text
+            for term in ("würzig", "wuerzig", "spicy")
+        ) and spiciness is not None:
+            preference_score += (spiciness / 10.0) * 2.5
+
+        wants_discreet = any(
+            phrase in query_text
+            for phrase in (
+                "nicht zu aufdringlich",
+                "nicht aufdringlich",
+                "dezent",
+                "zurückhaltend",
+                "zurueckhaltend",
+                "büro",
+                "buero",
+                "office",
+            )
+        )
+
+        if wants_discreet and projection is not None:
+            if projection <= 7.3:
+                preference_score += 3.0
+            elif projection <= 7.8:
+                preference_score += 1.0
+            else:
+                preference_score -= 2.0
+
+        wants_office = any(
+            term in query_text
+            for term in ("büro", "buero", "office", "business")
+        )
+
+        if wants_office:
+            if freshness is not None and freshness >= 6:
+                preference_score += 1.5
+
+            if sweetness is not None and sweetness <= 4:
+                preference_score += 1.5
+
+            if "powdery" in accords:
+                preference_score += 1.5
+
+            if "fresh" in accords:
+                preference_score += 1.0
+
+
+            return base_score + preference_score
 
     @staticmethod
     def _soft_filter(product: ProductDetails, filters: SearchFilters) -> bool:
@@ -530,7 +659,7 @@ class MockRetail(StorefrontBackend):
                     query,
                     filters,
                     limit,
-                    score=self._score,
+                    score=lambda product, tokens: self._score(product, tokens, query),
                     hard_filter=within_price_and_rating,
                     soft_filter=self._soft_filter,
                 )
@@ -551,7 +680,7 @@ class MockRetail(StorefrontBackend):
             query,
             filters,
             limit,
-            score=self._score,
+            score=lambda product, tokens: self._score(product, tokens, query),
             hard_filter=within_price_and_rating,
             soft_filter=self._soft_filter,
         )
