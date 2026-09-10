@@ -6,7 +6,7 @@ import { formatMoney } from "web-shared";
 import type { ComparisonPayload } from "@/lib/types";
 import { ProductImage, ProductTitle, Rating, ProductRating } from "../ProductTile";
 
-const RECOMMENDED_LABEL = "Recommended";
+const RECOMMENDED_LABEL = "Empfehlung";
 
 /** The sign has its own column so text shares a left edge across rows. */
 function TermRow({ sign, text }: { sign: "+" | "−"; text: string }) {
@@ -28,12 +28,25 @@ export default function ComparisonGrid({
   partial?: boolean;
 }) {
   const entries = payload.entries ?? [];
-  const delta = payload.price_delta;
-  // Each pro/con line is a subgrid row, padded to the longest list, so the k-th line of
-  // every card shares a baseline.
-  const maxPros = Math.max(0, ...entries.map((entry) => (entry.pros ?? []).length));
-  const maxCons = Math.max(0, ...entries.map((entry) => (entry.cons ?? []).length));
-  const cardRows = { "--cmp-rows": `span ${2 + maxPros + maxCons}` } as CSSProperties;
+const delta = payload.price_delta;
+
+const isScentaiComparison =
+  entries.length > 0 &&
+  entries.every((entry) => entry.product_id.startsWith("SC-"));
+
+const maxPros = isScentaiComparison
+  ? 0
+  : Math.max(0, ...entries.map((entry) => (entry.pros ?? []).length));
+
+const maxCons = isScentaiComparison
+  ? 0
+  : Math.max(0, ...entries.map((entry) => (entry.cons ?? []).length));
+
+const cardRows = {
+  "--cmp-rows": isScentaiComparison
+    ? "1fr auto"
+    : `1fr auto repeat(${maxPros + maxCons}, auto)`,
+} as CSSProperties;
   return (
     <section className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm)">
       {payload.title ? <h3 className="mb-3 text-[15px] font-semibold text-(--ink)">{payload.title}</h3> : null}
@@ -69,23 +82,23 @@ export default function ComparisonGrid({
                 </div>
               </div>
               <div>
-                {entry.best_for ? (
+                {!isScentaiComparison && entry.best_for ? (
                   <div className="rounded-md bg-(--well) px-2 py-1 text-[13px] text-(--ink)">
-                    Best for: {entry.best_for}
+                    Ideal für: {entry.best_for}
                   </div>
                 ) : null}
               </div>
-              {pros.map((pro) => (
+              {!isScentaiComparison && pros.map((pro) => (
                 <TermRow key={pro} sign="+" text={pro} />
               ))}
               {/* Pads keep a shorter pros list from pulling its cons up. */}
-              {Array.from({ length: maxPros - pros.length }, (_, index) => (
+              {!isScentaiComparison && Array.from({ length: maxPros - pros.length }, (_, index) => (
                 <div key={`pro-pad-${index}`} className="hidden sm:block" aria-hidden />
               ))}
-              {cons.map((con) => (
+              {!isScentaiComparison && cons.map((con) => (
                 <TermRow key={con} sign="−" text={con} />
               ))}
-              {Array.from({ length: maxCons - cons.length }, (_, index) => (
+              {!isScentaiComparison && Array.from({ length: maxCons - cons.length }, (_, index) => (
                 <div key={`con-pad-${index}`} className="hidden sm:block" aria-hidden />
               ))}
             </div>
@@ -97,7 +110,7 @@ export default function ComparisonGrid({
       </div>
       {delta ? (
         <p className="mt-3 text-[13px] text-(--ink)">
-          Price difference:{" "}
+          Preisunterschied:
           <span className="font-semibold">{formatMoney(delta.amount)}</span>{" "}
           <span className="text-(--ink-soft)">
             ({formatMoney(delta.low_price)} vs {formatMoney(delta.high_price)})
@@ -105,7 +118,7 @@ export default function ComparisonGrid({
         </p>
       ) : null}
       {payload.dimensions?.length ? (
-        <p className="mt-3 text-xs text-(--ink-soft)/80">Compared on: {payload.dimensions.join(" · ")}</p>
+        <p className="mt-3 text-xs text-(--ink-soft)/80">Verglichen nach: {payload.dimensions.join(" · ")}</p>
       ) : null}
     </section>
   );

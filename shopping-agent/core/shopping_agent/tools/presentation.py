@@ -29,10 +29,38 @@ class PresentProductsPayload(PresentationPayload):
 
 class ComparisonEntry(BaseModel):
     product_id: str
-    pros: list[str] = Field(default_factory=list, max_length=4)
-    cons: list[str] = Field(default_factory=list, max_length=3)
-    best_for: str | None = Field(default=None, max_length=80)
 
+    pros: list[str] = Field(
+        default_factory=list,
+        max_length=4,
+        description=(
+            "Short customer-facing advantages grounded only in the available product data. "
+            "For price claims, compare the actual numeric prices of the compared products. "
+            "Never call a product cheaper, less expensive, or the cheapest unless its actual price supports that claim. "
+            "Do not infer stronger performance from fragrance concentration. "
+            "Do not describe a scent note or facet as additional, unique, missing, stronger, or more pronounced "
+            "unless the available comparison data explicitly supports that difference."
+        ),
+    )
+
+    cons: list[str] = Field(
+        default_factory=list,
+        max_length=3,
+        description=(
+            "Short customer-facing trade-offs grounded only in the available product data. "
+            "Use actual numeric values for price, longevity, projection, ratings, and rating counts when comparing products. "
+            "Do not invent missing notes, weaker scent facets, or disadvantages that are not supported by the data."
+        ),
+    )
+
+    best_for: str | None = Field(
+        default=None,
+        max_length=80,
+        description=(
+            "Describe who this product best suits based only on the customer's request and supported product differences. "
+            "Do not infer suitability from fragrance concentration alone."
+        ),
+    )
 
 class PresentComparisonPayload(PresentationPayload):
     title: str | None = Field(default=None, max_length=80)

@@ -184,8 +184,9 @@ class MockRetail(StorefrontBackend):
 
     @staticmethod
     def _customer_facing_product(
-        product,
-        reference_name: str | None = None,
+    product,
+    reference_name: str | None = None,
+    reference_accords: str | None = None,
     ):
         """Return SCENTAI data without internal implementation fields."""
 
@@ -199,12 +200,16 @@ class MockRetail(StorefrontBackend):
         )
 
         internal_attributes = {
-            "canonical_name",
-            "cluster_id",
-            "relationship_role",
-            "evidence_confidence",
-            "trend_bet",
-            "similar_to",
+        "canonical_name",
+        "cluster_id",
+        "relationship_role",
+        "evidence_confidence",
+        "trend_bet",
+        "similar_to",
+        "freshness",
+        "sweetness",
+        "woodiness",
+        "spiciness",
         }
 
         attributes = {
@@ -212,6 +217,36 @@ class MockRetail(StorefrontBackend):
             for key, value in source_attributes.items()
             if key not in internal_attributes
         }
+
+        accord_labels_de = {
+            "sweet": "süß",
+            "spicy": "würzig",
+            "gourmand": "gourmandig",
+            "creamy": "cremig",
+            "oriental": "orientalisch",
+            "citrus": "zitrisch",
+            "fresh": "frisch",
+            "woody": "holzig",
+            "floral": "blumig",
+            "fruity": "fruchtig",
+            "aquatic": "aquatisch",
+            "powdery": "pudrig",
+            "smoky": "rauchig",
+            "green": "grün",
+            "aromatic": "aromatisch",
+        }
+
+        if attributes.get("main_accords"):
+            attributes["main_accords"] = ", ".join(
+                accord_labels_de.get(
+                    accord.strip().casefold(),
+                    accord.strip(),
+                )
+                for accord in str(
+                    attributes["main_accords"]
+                ).split(",")
+                if accord.strip()
+            )
 
         short_description = product.short_description or ""
 
@@ -252,7 +287,12 @@ class MockRetail(StorefrontBackend):
             short_description = (
                 f"{relation_text} {short_description}"
             ).strip()
-
+        if reference_accords:
+            short_description = (
+                f"{short_description} "
+                f"The reference fragrance itself has these catalog accords: "
+                f"{reference_accords}."
+            ).strip()
         return product.model_copy(
             update={
                 "attributes": attributes,
@@ -449,12 +489,15 @@ class MockRetail(StorefrontBackend):
                 )
 
                 reference_name = ""
+                reference_accords = ""
 
                 if target_anchor is not None:
                     anchor_attributes = (
                         target_anchor.attributes or {}
                     )
-
+                    reference_accords = str(
+                        anchor_attributes.get("main_accords") or ""
+                    ).strip()
                     anchor_name = str(
                         anchor_attributes.get(
                             "canonical_name"
@@ -497,6 +540,7 @@ class MockRetail(StorefrontBackend):
                         self._customer_facing_product(
                             summary_of(product),
                             reference_name=reference_name,
+                            reference_accords=reference_accords,
                         )
                         for product in ranked_cluster
                     ]
