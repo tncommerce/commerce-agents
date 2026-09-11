@@ -248,6 +248,40 @@ class MockRetail(StorefrontBackend):
                 if accord.strip()
             )
 
+        def scent_profile_level(name: str) -> str | None:
+            try:
+                value = source_attributes.get(name)
+                if value in (None, ""):
+                    return None
+
+                score = float(value)
+            except (TypeError, ValueError):
+                return None
+
+            if score <= 4:
+                return "niedrig"
+            if score <= 6:
+                return "mittel"
+            return "hoch"
+
+        profile_labels = (
+            ("freshness", "Frische"),
+            ("sweetness", "Süße"),
+            ("woodiness", "Holzigkeit"),
+            ("spiciness", "Würze"),
+        )
+
+        profile_parts = []
+
+        for key, label in profile_labels:
+            level = scent_profile_level(key)
+
+            if level is not None:
+                profile_parts.append(f"{label}: {level}")
+
+        if profile_parts:
+            attributes["duftprofil_intensitaet"] = ", ".join(profile_parts)
+
         short_description = product.short_description or ""
 
         if reference_name:
@@ -432,7 +466,42 @@ class MockRetail(StorefrontBackend):
                 preference_score += 1.0
 
 
-            return base_score + preference_score
+        # Performance preference: longevity and projection.
+        longevity = numeric_attribute("longevity")
+        projection = numeric_attribute("projection")
+
+        wants_longevity = any(
+            term in query_text
+            for term in (
+                "haltbarkeit",
+                "lange haltbarkeit",
+                "long lasting",
+                "long-lasting",
+                "longevity",
+                "lasting",
+            )
+        )
+
+        if wants_longevity and longevity is not None:
+            preference_score += (longevity / 10.0) * 4.0
+
+        wants_projection = any(
+            term in query_text
+            for term in (
+                "ausstrahlung",
+                "projection",
+                "sillage",
+                "auffällig",
+                "auffaellig",
+                "noticeable",
+                "strong projection",
+            )
+        )
+
+        if wants_projection and projection is not None:
+            preference_score += (projection / 10.0) * 4.0
+
+        return base_score + preference_score
 
     @staticmethod
     def _soft_filter(product: ProductDetails, filters: SearchFilters) -> bool:
