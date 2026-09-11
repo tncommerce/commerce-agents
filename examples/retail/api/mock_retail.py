@@ -327,9 +327,23 @@ class MockRetail(StorefrontBackend):
                 f"The reference fragrance itself has these catalog accords: "
                 f"{reference_accords}."
             ).strip()
+        internal_labels = {
+            "benchmark",
+            "clone",
+            "inspired",
+            "alternative",
+        }
+
+        customer_labels = [
+            label
+            for label in (product.labels or [])
+            if str(label).casefold() not in internal_labels
+        ]
+
         return product.model_copy(
             update={
                 "attributes": attributes,
+                "labels": customer_labels,
                 "short_description": short_description,
             }
         )
