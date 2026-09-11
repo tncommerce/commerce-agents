@@ -39,6 +39,30 @@ export function ProductImage({ product, className = "" }: { product: Product; cl
     // eslint-disable-next-line @next/next/no-img-element
     return <img src={product.image_url} alt={product.title} className={`object-cover ${className}`} />;
   }
+  const isScentai = String(product.product_id).startsWith("SC-");
+
+  if (isScentai) {
+    return (
+      <div
+        className={`relative flex items-center justify-center overflow-hidden ${productTileClass(product.product_id)} ${className}`}
+        aria-hidden
+      >
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8),transparent_70%)]" />
+
+        <div className="relative flex flex-col items-center">
+          <div className="h-3 w-9 rounded-t-sm bg-(--ink)/80" />
+          <div className="h-3 w-6 bg-(--ink)/65" />
+
+          <div className="flex h-20 w-16 items-center justify-center rounded-[18px] border border-white/80 bg-white/70 shadow-md backdrop-blur-sm">
+            <span className="text-[9px] font-semibold tracking-[0.18em] text-(--ink)/75">
+              SCENTAI
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       className={`flex items-center justify-center text-5xl ${productTileClass(product.product_id)} ${className}`}
@@ -209,11 +233,22 @@ export default function ProductTile({
   onOpen?: (product: Product) => void;
 }) {
   const clickable = Boolean(onOpen);
+  const isScentai = String(product.product_id).startsWith("SC-");
   const chips = compact ? [] : attributeChips(product);
-  const imageHeight = compact ? "h-16" : fluid ? "h-28" : "h-24";
+  const imageHeight = compact
+    ? "h-16"
+    : isScentai
+      ? "h-36"
+      : fluid
+        ? "h-28"
+        : "h-24";
   return (
     <div
-      className={`relative flex shrink-0 flex-col overflow-hidden rounded-xl border bg-(--card) shadow-(--shadow-sm) transition-[box-shadow,border-color] duration-200 hover:shadow-md ${
+      className={`relative flex shrink-0 flex-col overflow-hidden border bg-(--card) transition-[box-shadow,border-color,transform] duration-200 ${
+        isScentai
+          ? "rounded-2xl shadow-sm hover:-translate-y-0.5 hover:shadow-md"
+          : "rounded-xl shadow-(--shadow-sm) hover:shadow-md"
+      } ${
         fluid ? "w-full" : compact ? "w-36" : "w-48"
       } ${selected ? "border-(--ink)" : "border-(--line)"}`}
     >
@@ -236,11 +271,11 @@ export default function ProductTile({
             <LowStockChip product={product} className="absolute right-1.5 top-1.5" />
           )}
         </div>
-        <div className="flex flex-1 flex-col gap-0.5 p-2.5">
-          <div className="text-[11px] uppercase tracking-wide text-(--ink-soft)/80">{product.brand}</div>
+        <div className={isScentai ? "flex flex-1 flex-col gap-1 p-3.5" : "flex flex-1 flex-col gap-0.5 p-2.5"}>
+          <div className={isScentai ? "text-[10.5px] font-medium uppercase tracking-[0.08em] text-(--ink-soft)/75" : "text-[11px] uppercase tracking-wide text-(--ink-soft)/80"}>{product.brand}</div>
           <ProductTitle
             title={product.title}
-            className={`line-clamp-2 text-[13px] font-medium leading-snug ${compact ? "" : "h-9"}`}
+            className={`line-clamp-2 font-medium leading-snug ${isScentai ? "text-[14.5px]" : "text-[13px]"} ${compact ? "" : isScentai ? "h-10" : "h-9"}`}
           />
           {compact ? null : optionText(product) ? (
             <OptionLine product={product} className="h-[18px] pt-0.5 leading-4" />
@@ -257,7 +292,7 @@ export default function ProductTile({
               ))}
             </div>
           )}
-          <div className="mt-auto flex items-center justify-between gap-1 pt-0.5">
+          <div className={isScentai ? "mt-auto flex items-end justify-between gap-2 border-t border-(--line)/70 pt-2.5" : "mt-auto flex items-center justify-between gap-1 pt-0.5"}>
             <span className="text-sm font-semibold">{priceLabel(product)}</span>
             <ProductRating product={product} compact={compact} />
           </div>

@@ -66,6 +66,7 @@ export default function StorefrontPage() {
 
   return (
     <StoreShell
+      minimal
       brand={<Wordmark />}
       views={views}
       view={view}
@@ -78,7 +79,7 @@ export default function StorefrontPage() {
       panel={<CartPanel cart={cart} checkoutStaged={checkoutStaged} />}
       panelOpen={panelOpen}
       onPanelOpenChange={setPanelOpen}
-      placeholder={view === "orders" ? "Ask about an order, a return, a delivery…" : "Ask about a product, a project, an order…"}
+      placeholder="Beschreibe deinen Wunsch, einen Duft oder dein Budget…"
     >
       {/* The conversation stays mounted under the other view so its cards keep their state. */}
       <div className={view === "assistant" ? "h-full" : "hidden"}>

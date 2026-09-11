@@ -58,6 +58,7 @@ export function StoreShell<V extends string>({
   placeholder,
   banner,
   children,
+  minimal = false,
 }: {
   brand: ReactNode;
   views: StoreView<V>[];
@@ -80,6 +81,7 @@ export function StoreShell<V extends string>({
   /** A strip between the app bar and the page. */
   banner?: ReactNode;
   children: ReactNode;
+  minimal?: boolean;
 }) {
   const [activityOpen, setActivityOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
@@ -123,7 +125,7 @@ export function StoreShell<V extends string>({
       <div className="flex h-dvh flex-col text-(--ink)">
         <header className="flex h-[58px] shrink-0 items-center gap-2 border-b border-(--line) bg-(--chrome) px-3 sm:gap-5 sm:px-5">
           <div className="flex shrink-0 items-center">{brand}</div>
-          <nav className="flex min-w-0 items-center gap-1" aria-label="Views">
+          <nav className={minimal ? "hidden" : "flex min-w-0 items-center gap-1"} aria-label="Views">
             {views.map((item) => {
               const active = item.id === view;
               return (
@@ -148,7 +150,7 @@ export function StoreShell<V extends string>({
               );
             })}
           </nav>
-          <div className="ml-auto flex items-center gap-2">
+          <div className={minimal ? "hidden" : "ml-auto flex items-center gap-2"}>
             <ActivityButton
               streaming={chat.streaming}
               newMemoryCount={chat.newMemoryKeys.size}
@@ -218,6 +220,7 @@ export function StoreShell<V extends string>({
             }`}
           />
           {/* Closed below xl the drawer is `invisible`: out of the focus order and the accessibility tree. */}
+          {!minimal ? (
           <aside
             ref={panelRef}
             aria-label={bag.label}
@@ -228,7 +231,8 @@ export function StoreShell<V extends string>({
             }`}
           >
             {panel}
-          </aside>
+            </aside>
+        ) : null}
         </div>
         {accountOpen ? (
           <AccountSheet

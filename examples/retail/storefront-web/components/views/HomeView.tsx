@@ -24,31 +24,46 @@ import type { Product } from "@/lib/types";
 import ProductTile from "../ProductTile";
 
 const STARTERS: Starter[] = [
-  { icon: "search", prompt: "Find me a fresh summer fragrance under €60" },
-  { icon: "home", prompt: "I want a dark, elegant date-night fragrance under €100" },
-  { icon: "tag", prompt: "Compare Sospiro Vibrato and Afnan Turathi Blue" },
-  { icon: "edit", prompt: "I like fresh citrus scents with strong longevity — what fits me?" },
+  {
+    icon: "search",
+    prompt: "Ich suche einen frischen Sommerduft unter 60 €.",
+  },
+  {
+    icon: "home",
+    prompt: "Ich suche einen eleganten Duft für ein Date unter 100 €.",
+  },
+  {
+    icon: "tag",
+    prompt: "Finde mir eine gute Alternative zu Louis Vuitton Imagination.",
+  },
+  {
+    icon: "edit",
+    prompt: "Ich suche einen Duft mit starker Haltbarkeit und Ausstrahlung.",
+  },
 ];
 
 /** What the store is featuring: labelled bestseller or new, photographed ones first. */
 function featured(catalog: Record<string, Product>): Product[] {
   return Object.values(catalog)
-    .filter((product) => product.labels?.some((label) => label === "bestseller" || label === "new") && product.in_stock !== false)
-    .sort((a, b) => Number(Boolean(b.image_url)) - Number(Boolean(a.image_url)))
-    .slice(0, 4);
+    .filter(
+      (product) =>
+        String(product.product_id).startsWith("SC-") &&
+        product.in_stock !== false,
+    )
+    .sort(
+      (a, b) =>
+        Number(b.review_count ?? 0) - Number(a.review_count ?? 0),
+    )
+    .slice(0, 3);
 }
 
-function Brief({ orders }: { orders: Order[] | null }) {
-  if (!orders) return <>Ask about a product, a project, an order, or a return.</>;
-  const open = upcoming(orders);
-  if (!open.length) return <>Nothing on the way right now. Ask about a fragrance, compare scents, or find your next signature scent.</>;
-  const late = open.filter((order) => order.status === "delayed");
-  const next = estimateOf(open.find((order) => order.status !== "delayed") ?? open[0])?.date;
+function Brief({ orders: _orders }: { orders: Order[] | null }) {
   return (
-    <>
-      {plural(open.length, "order")} on the way{next ? `; the next arrives ${next}` : ""}.{" "}
-      {late.length ? <span className="font-semibold text-(--warn)">{late.length === 1 ? "One is" : `${late.length} are`} running late.</span> : null}
-    </>
+    <span className="max-w-2xl text-[15px] leading-6 text-(--ink-soft)">
+      Beschreibe, was du suchst – Duftprofil, Anlass, Budget oder einen Duft,
+      den du bereits magst. SCENTAI vergleicht das Sortiment und empfiehlt dir
+      passende Optionen.
+    </span>
   );
 }
 
@@ -75,20 +90,23 @@ export default function HomeView({
   const picks = featured(catalog);
   const now = useNow();
   return (
-    <div className="flex flex-col gap-4">
+    <div className="mx-auto flex w-full max-w-[1080px] flex-col gap-6 px-4 sm:px-6">
       <Greeting
-        eyebrow={now ? now.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" }) : "\u00a0"}
-        title={<h1 className="text-[28px] font-semibold leading-tight tracking-[-0.02em] text-(--ink)">{`${now ? greeting(now) : "Hello"}, ${shopperName}`}</h1>}
+        eyebrow="SCENTAI · Persönliche Duftberatung"
+        title={
+          <h1 className="max-w-3xl text-[32px] font-semibold leading-tight tracking-[-0.03em] text-(--ink)">
+            Finde den Duft, der wirklich zu dir passt.
+          </h1>
+        }
       >
         <Brief orders={orders} />
       </Greeting>
       <Starters items={STARTERS} />
-      <ArrivingPanel orders={orders} failed={ordersFailed} nouns={NOUNS} thumb={(order) => <OrderThumb order={order} />} onSeeAll={onSeeOrders} />
       {picks.length ? (
-        <HomeSection title="Popular right now" subtitle="Bestsellers and new arrivals; open one to ask about it">
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <HomeSection title="Beliebte Düfte entdecken" subtitle="Entdecke ausgewählte Düfte oder lass dich direkt von SCENTAI beraten">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             {picks.map((product) => (
-              <ProductTile key={product.product_id} product={product} fluid onOpen={(item) => ask(`Tell me about the ${item.title}.`)} />
+              <ProductTile key={product.product_id} product={product} fluid onOpen={(item) => ask(`Erzähl mir mehr über ${item.title} und für wen dieser Duft besonders interessant ist.`)} />
             ))}
           </div>
         </HomeSection>

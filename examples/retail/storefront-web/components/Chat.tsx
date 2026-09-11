@@ -33,6 +33,7 @@ export default function Chat({ chat, home, onCartUpdate }: { chat: AgentTurn; ho
       chat={chat}
       home={home}
       wide={WIDE}
+      maxWidthClass="max-w-[1080px]"
       renderPending={(item) => <Pending item={item} />}
       renderBlock={(segment) => (
         <GenerativeBlock
