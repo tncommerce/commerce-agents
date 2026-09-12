@@ -48,7 +48,7 @@
     {
       "product_id": "SC-ARABIYAT-MARWA-EDP-100",
       "title": "Arabiyat Prestige Marwa Eau de Parfum 100 ml",
-      "image_url": null,
+      "image_url": "/products/pilot/arabiyat-marwa-edp-editorial.png",
       "brand": "Arabiyat Prestige",
       "price": 31.49,
       "currency": "EUR",
@@ -225,7 +225,7 @@
     {
       "product_id": "SC-CREED-ABSOLU-AVENTUS-100",
       "title": "Creed Absolu Aventus Eau de Parfum 100 ml",
-      "image_url": null,
+      "image_url": "/products/pilot/creed-absolu-aventus-editorial.png",
       "brand": "Creed",
       "price": 380.0,
       "currency": "EUR",
@@ -753,7 +753,7 @@
     {
       "product_id": "SC-AFNAN-TURATHI-BLUE-90",
       "title": "Afnan Perfumes Turathi Blue Eau de Parfum 90 ml",
-      "image_url": null,
+      "image_url": "/products/pilot/afnan-turathi-blue-editorial.png",
       "brand": "Afnan Perfumes",
       "price": 30.31,
       "currency": "EUR",
@@ -1150,7 +1150,7 @@
     {
       "product_id": "SC-CLIVE-CHRISTIAN-HEDONISTIC-50",
       "title": "Clive Christian Jump Up and Kiss Me Hedonistic Parfum 50 ml",
-      "image_url": null,
+      "image_url": "/products/pilot/clive-christian-hedonistic-editorial.png",
       "brand": "Clive Christian",
       "price": 365.0,
       "currency": "EUR",

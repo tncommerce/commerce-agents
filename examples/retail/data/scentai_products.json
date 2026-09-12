@@ -187,7 +187,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/arabiyat-marwa-edp-editorial.png"
     },
     {
       "product_id": "SC-ARABIYAT-MARWA-EXTRAIT-60",
@@ -573,7 +574,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/creed-absolu-aventus-editorial.png"
     },
     {
       "product_id": "SC-AFNAN-SUPREMACY-COLLECTORS-100",
@@ -1774,7 +1776,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/afnan-turathi-blue-editorial.png"
     },
     {
       "product_id": "SC-MAISON-ASRAR-REGENT-100",
@@ -2636,7 +2639,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/clive-christian-hedonistic-editorial.png"
     },
     {
       "product_id": "SC-CHANEL-BLEU-DE-CHANEL-EDP-100",

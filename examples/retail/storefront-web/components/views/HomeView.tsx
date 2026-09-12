@@ -55,7 +55,7 @@ function featured(catalog: Record<string, Product>): Product[] {
       (a, b) =>
         Number(b.review_count ?? 0) - Number(a.review_count ?? 0),
     )
-    .slice(0, 19);
+    .slice(0, 23);
 }
 
 function Brief({ orders: _orders }: { orders: Order[] | null }) {
