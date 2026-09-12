@@ -621,7 +621,7 @@
     {
       "product_id": "SC-FRENCH-AVENUE-LIQUID-BRUN-100",
       "title": "French Avenue Liquid Brun Eau de Parfum 100 ml",
-      "image_url": null,
+      "image_url": "/products/pilot/liquid-brun-editorial.png",
       "brand": "French Avenue",
       "price": 24.7,
       "currency": "EUR",
@@ -930,7 +930,7 @@
     {
       "product_id": "SC-NUSUK-ATEEQ-100",
       "title": "Nusuk Ateeq Extrait de Parfum 100 ml",
-      "image_url": null,
+      "image_url": "/products/pilot/nusuk-ateeq-editorial.png",
       "brand": "Nusuk",
       "price": 28.85,
       "currency": "EUR",
@@ -974,7 +974,7 @@
     {
       "product_id": "SC-RAYHAAN-ITALIA-100",
       "title": "Rayhaan Italia Eau de Parfum 100 ml",
-      "image_url": null,
+      "image_url": "/products/pilot/rayhaan-italia-editorial.png",
       "brand": "Rayhaan",
       "price": 29.89,
       "currency": "EUR",
@@ -1062,7 +1062,7 @@
     {
       "product_id": "SC-AL-WATANIAH-KAYAAN-CLASSIC-100",
       "title": "Al Wataniah Kayaan Classic Eau de Parfum 100 ml",
-      "image_url": null,
+      "image_url": "/products/pilot/kayaan-classic-editorial.png",
       "brand": "Al Wataniah",
       "price": 19.5,
       "currency": "EUR",

@@ -1465,7 +1465,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/liquid-brun-editorial.png"
     },
     {
       "product_id": "SC-BVLGARI-TYGAR-125",
@@ -2167,7 +2168,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/nusuk-ateeq-editorial.png"
     },
     {
       "product_id": "SC-RAYHAAN-ITALIA-100",
@@ -2263,7 +2265,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/rayhaan-italia-editorial.png"
     },
     {
       "product_id": "SC-DIOR-HOMME-INTENSE-100",
@@ -2445,7 +2448,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/kayaan-classic-editorial.png"
     },
     {
       "product_id": "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
