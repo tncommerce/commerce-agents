@@ -285,7 +285,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/arabiyat-prestige-marwa-extrait-editorial.png"
     },
     {
       "product_id": "SC-BUJAIRAMI-HECTIC-100",
@@ -776,7 +777,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/maison-asrar-vanguard-editorial.png"
     },
     {
       "product_id": "SC-ARMAF-CDNIM-EDP-200",
@@ -874,7 +876,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/armaf-club-de-nuit-intense-man-editorial.png"
     },
     {
       "product_id": "SC-MONTBLANC-EXPLORER-100",
@@ -970,7 +973,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/montblanc-explorer-editorial.png"
     },
     {
       "product_id": "SC-PDM-LAYTON-125",
@@ -1886,7 +1890,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/maison-asrar-regent-editorial.png"
     },
     {
       "product_id": "SC-ARMANI-SWY-INTENSELY-100",
