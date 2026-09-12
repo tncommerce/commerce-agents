@@ -842,7 +842,7 @@
     {
       "product_id": "SC-ARMANI-SWY-INTENSELY-100",
       "title": "Giorgio Armani Stronger With You Intensely Eau de Parfum 100 ml",
-      "image_url": null,
+      "image_url": "/products/pilot/armani-swy-intensely-editorial.png",
       "brand": "Giorgio Armani",
       "price": 66.04,
       "currency": "EUR",
@@ -1018,7 +1018,7 @@
     {
       "product_id": "SC-DIOR-HOMME-INTENSE-100",
       "title": "Dior Dior Homme Intense Eau de Parfum 100 ml",
-      "image_url": null,
+      "image_url": "/products/pilot/dior-homme-intense-editorial.png",
       "brand": "Dior",
       "price": 95.0,
       "currency": "EUR",
@@ -1282,7 +1282,7 @@
     {
       "product_id": "SC-PRADA-LHOMME-100",
       "title": "Prada L'Homme Eau de Toilette 100 ml",
-      "image_url": null,
+      "image_url": "/products/pilot/prada-lhomme-editorial.png",
       "brand": "Prada",
       "price": 74.62,
       "currency": "EUR",
@@ -1326,7 +1326,7 @@
     {
       "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
       "title": "Essential Parfums Bois Impérial Eau de Parfum 100 ml",
-      "image_url": null,
+      "image_url": "/products/pilot/bois-imperial-editorial.png",
       "brand": "Essential Parfums",
       "price": 90.9,
       "currency": "EUR",

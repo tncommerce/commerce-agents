@@ -48,13 +48,14 @@ function featured(catalog: Record<string, Product>): Product[] {
     .filter(
       (product) =>
         String(product.product_id).startsWith("SC-") &&
-        product.in_stock !== false,
+        product.in_stock !== false &&
+        String(product.image_url ?? "").includes("/products/pilot/"),
     )
     .sort(
       (a, b) =>
         Number(b.review_count ?? 0) - Number(a.review_count ?? 0),
     )
-    .slice(0, 3);
+    .slice(0, 7);
 }
 
 function Brief({ orders: _orders }: { orders: Order[] | null }) {

@@ -1960,7 +1960,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/armani-swy-intensely-editorial.png"
     },
     {
       "product_id": "SC-XERJOFF-NAXOS-100",
@@ -2347,7 +2348,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/dior-homme-intense-editorial.png"
     },
     {
       "product_id": "SC-AL-WATANIAH-KAYAAN-CLASSIC-100",
@@ -2900,7 +2902,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/prada-lhomme-editorial.png"
     },
     {
       "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
@@ -2987,7 +2990,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/bois-imperial-editorial.png"
     },
     {
       "product_id": "SC-AL-AMBRA-DUBAI-MUSK-50",
