@@ -1270,7 +1270,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/orientica-royal-bleu-editorial.png"
     },
     {
       "product_id": "SC-PDM-ALTHAIR-125",
@@ -2724,7 +2725,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/bleu-de-chanel-edp-editorial.png"
     },
     {
       "product_id": "SC-DIOR-SAUVAGE-EDP-100",
@@ -2814,7 +2816,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/dior-sauvage-edp-editorial.png"
     },
     {
       "product_id": "SC-PRADA-LHOMME-100",
@@ -3081,7 +3084,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/al-ambra-dubai-musk-editorial.png"
     }
   ]
 }

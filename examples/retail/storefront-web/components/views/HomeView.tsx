@@ -26,7 +26,7 @@ import ProductTile from "../ProductTile";
 const STARTERS: Starter[] = [
   {
     icon: "search",
-    prompt: "Ich suche einen frischen Sommerduft unter 60 €.",
+    prompt: "Ich suche einen frischen Sommerduft unter 60 â‚¬.",
   },
   {
     icon: "home",
@@ -55,7 +55,7 @@ function featured(catalog: Record<string, Product>): Product[] {
       (a, b) =>
         Number(b.review_count ?? 0) - Number(a.review_count ?? 0),
     )
-    .slice(0, 7);
+    .slice(0, 11);
 }
 
 function Brief({ orders: _orders }: { orders: Order[] | null }) {
@@ -115,3 +115,4 @@ export default function HomeView({
     </div>
   );
 }
+

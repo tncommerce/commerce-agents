@@ -533,7 +533,7 @@
     {
       "product_id": "SC-ORIENTICA-ROYAL-BLEU-80",
       "title": "Orientica Royal Bleu Eau de Parfum 80 ml",
-      "image_url": null,
+      "image_url": "/products/pilot/orientica-royal-bleu-editorial.png",
       "brand": "Orientica",
       "price": 69.95,
       "currency": "EUR",
@@ -1194,7 +1194,7 @@
     {
       "product_id": "SC-CHANEL-BLEU-DE-CHANEL-EDP-100",
       "title": "Chanel Bleu de Chanel Eau de Parfum 100 ml",
-      "image_url": null,
+      "image_url": "/products/pilot/bleu-de-chanel-edp-editorial.png",
       "brand": "Chanel",
       "price": 80.99,
       "currency": "EUR",
@@ -1238,7 +1238,7 @@
     {
       "product_id": "SC-DIOR-SAUVAGE-EDP-100",
       "title": "Dior Sauvage Eau de Parfum 100 ml",
-      "image_url": null,
+      "image_url": "/products/pilot/dior-sauvage-edp-editorial.png",
       "brand": "Dior",
       "price": 82.8,
       "currency": "EUR",
@@ -1370,7 +1370,7 @@
     {
       "product_id": "SC-AL-AMBRA-DUBAI-MUSK-50",
       "title": "Al Ambra Dubai Musk Extrait de Parfum 50 ml",
-      "image_url": null,
+      "image_url": "/products/pilot/al-ambra-dubai-musk-editorial.png",
       "brand": "Al Ambra",
       "price": 77.0,
       "currency": "EUR",
