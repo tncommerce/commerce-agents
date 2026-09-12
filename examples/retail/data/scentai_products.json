@@ -473,7 +473,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/creed-aventus-editorial.png"
     },
     {
       "product_id": "SC-CREED-ABSOLU-AVENTUS-100",
@@ -1368,7 +1369,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/pdm-althair-editorial.png"
     },
     {
       "product_id": "SC-FRENCH-AVENUE-LIQUID-BRUN-100",
@@ -1673,7 +1675,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/sospiro-vibrato-editorial.png"
     },
     {
       "product_id": "SC-AFNAN-TURATHI-BLUE-90",
@@ -2534,7 +2537,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/valentino-born-in-roma-intense-editorial.png"
     },
     {
       "product_id": "SC-CLIVE-CHRISTIAN-HEDONISTIC-50",

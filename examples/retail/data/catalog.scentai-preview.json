@@ -181,7 +181,7 @@
     {
       "product_id": "SC-CREED-AVENTUS-100",
       "title": "Creed Aventus Eau de Parfum 100 ml",
-      "image_url": null,
+      "image_url": "/products/pilot/creed-aventus-editorial.png",
       "brand": "Creed",
       "price": 330.0,
       "currency": "EUR",
@@ -577,7 +577,7 @@
     {
       "product_id": "SC-PDM-ALTHAIR-125",
       "title": "Parfums de Marly Althaïr Eau de Parfum 125 ml",
-      "image_url": null,
+      "image_url": "/products/pilot/pdm-althair-editorial.png",
       "brand": "Parfums de Marly",
       "price": 239.99,
       "currency": "EUR",
@@ -709,7 +709,7 @@
     {
       "product_id": "SC-SOSPIRO-VIBRATO-100",
       "title": "Sospiro Vibrato Eau de Parfum 100 ml",
-      "image_url": null,
+      "image_url": "/products/pilot/sospiro-vibrato-editorial.png",
       "brand": "Sospiro",
       "price": 229.99,
       "currency": "EUR",
@@ -1106,7 +1106,7 @@
     {
       "product_id": "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
       "title": "Valentino Uomo Born In Roma Intense Eau de Parfum 100 ml",
-      "image_url": null,
+      "image_url": "/products/pilot/valentino-born-in-roma-intense-editorial.png",
       "brand": "Valentino",
       "price": 66.0,
       "currency": "EUR",
