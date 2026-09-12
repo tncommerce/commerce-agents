@@ -232,6 +232,9 @@ def convert_product(product, product_name_map):
         "title":
             title,
 
+        "image_url":
+            product.get("image_url"),
+
         "brand":
             product["brand"],
 

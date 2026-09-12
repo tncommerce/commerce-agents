@@ -36,8 +36,26 @@ function ReturnsPromise({ className = "" }: { className?: string }) {
 
 export function ProductImage({ product, className = "" }: { product: Product; className?: string }) {
   if (product.image_url) {
+    const isScentai = String(product.product_id).startsWith("SC-");
+
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={product.image_url} alt={product.title} className={`object-cover ${className}`} />;
+    return (
+      <div
+        className={`flex items-center justify-center overflow-hidden ${
+          isScentai ? "bg-white" : ""
+        } ${className}`}
+      >
+        <img
+          src={product.image_url}
+          alt={product.title}
+          className={
+            isScentai
+              ? "h-full w-full scale-[1.55] object-contain"
+              : "h-full w-full object-cover"
+          }
+        />
+      </div>
+    );
   }
   const isScentai = String(product.product_id).startsWith("SC-");
 
