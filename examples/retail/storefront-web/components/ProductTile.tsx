@@ -50,7 +50,7 @@ export function ProductImage({ product, className = "" }: { product: Product; cl
           alt={product.title}
           className={
             isScentai
-              ? "h-full w-full scale-[1.55] object-contain"
+              ? "h-full w-full scale-[1.25] object-contain"
               : "h-full w-full object-cover"
           }
         />
@@ -258,8 +258,8 @@ export default function ProductTile({
     : isScentai
       ? "h-36"
       : fluid
-        ? "h-28"
-        : "h-24";
+        ? "h-40"
+        : "h-36";
   return (
     <div
       className={`relative flex shrink-0 flex-col overflow-hidden border bg-(--card) transition-[box-shadow,border-color,transform] duration-200 ${
@@ -280,7 +280,9 @@ export default function ProductTile({
         }`}
       >
         <div className="relative">
-          <ProductImage product={product} className={`w-full ${imageHeight}`} />
+          <div className={`flex items-center justify-center w-full ${imageHeight} bg-white`}>
+            <ProductImage product={product} className="h-full w-full" />
+          </div>
           {product.in_stock === false ? (
             <span className="absolute right-1.5 top-1.5 rounded-full bg-(--ink)/85 px-2 py-0.5 text-[11px] font-medium text-(--surface)">
               Out of stock
