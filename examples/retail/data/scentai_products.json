@@ -46,9 +46,9 @@
         "score_confidence": "high"
       },
       "market": {
-        "official_price_eur": 300.0,
-        "market_price_eur": 300.0,
-        "price_per_ml_eur": 3.0,
+        "official_price_eur": 300,
+        "market_price_eur": 300,
+        "price_per_ml_eur": 3,
         "german_availability": "limited_direct",
         "price_source_count": 1,
         "price_checked_at": "2026-09-07"
@@ -382,7 +382,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/bujairami-hectic-editorial.png"
     },
     {
       "product_id": "SC-CREED-AVENTUS-100",
@@ -435,8 +436,8 @@
         "score_confidence": "high"
       },
       "market": {
-        "official_price_eur": 330.0,
-        "market_price_eur": 330.0,
+        "official_price_eur": 330,
+        "market_price_eur": 330,
         "price_per_ml_eur": 3.3,
         "german_availability": "high",
         "price_source_count": 3,
@@ -535,8 +536,8 @@
         "score_confidence": "high"
       },
       "market": {
-        "official_price_eur": 380.0,
-        "market_price_eur": 380.0,
+        "official_price_eur": 380,
+        "market_price_eur": 380,
         "price_per_ml_eur": 3.8,
         "german_availability": "high",
         "price_source_count": 3,
@@ -672,7 +673,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/afnan-supremacy-collectors-edition-editorial.png"
     },
     {
       "product_id": "SC-MAISON-ASRAR-VANGUARD-100",
@@ -820,7 +822,7 @@
         "rank": 202,
         "rank_category": "men",
         "longevity_10": 8.2,
-        "projection_10": 8.0
+        "projection_10": 8
       },
       "fragrance_profile": {
         "community_accords": [
@@ -914,7 +916,7 @@
         "rating_count": 3840,
         "rank": 40,
         "rank_category": "men",
-        "longevity_10": 7.0,
+        "longevity_10": 7,
         "projection_10": 6.8
       },
       "fragrance_profile": {
@@ -934,7 +936,7 @@
         "score_confidence": "high"
       },
       "market": {
-        "official_price_eur": 105.0,
+        "official_price_eur": 105,
         "market_price_eur": 51.94,
         "price_per_ml_eur": 0.5194,
         "german_availability": "very_high",
@@ -1012,7 +1014,7 @@
         "rank": 2,
         "rank_category": "men",
         "longevity_10": 8.2,
-        "projection_10": 8.0
+        "projection_10": 8
       },
       "fragrance_profile": {
         "community_accords": [
@@ -1031,7 +1033,7 @@
         "score_confidence": "high"
       },
       "market": {
-        "official_price_eur": 290.0,
+        "official_price_eur": 290,
         "market_price_eur": 219.26,
         "price_per_ml_eur": 1.75408,
         "german_availability": "high",
@@ -1172,7 +1174,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/al-haramain-detour-noir-editorial.png"
     },
     {
       "product_id": "SC-ORIENTICA-ROYAL-BLEU-80",
@@ -1336,7 +1339,7 @@
         "score_confidence": "high"
       },
       "market": {
-        "official_price_eur": 290.0,
+        "official_price_eur": 290,
         "market_price_eur": 239.99,
         "price_per_ml_eur": 1.91992,
         "german_availability": "high",
@@ -1522,7 +1525,7 @@
         "score_confidence": "high"
       },
       "market": {
-        "official_price_eur": 389.0,
+        "official_price_eur": 389,
         "market_price_eur": 311.2,
         "price_per_ml_eur": 2.4896,
         "german_availability": "high",
@@ -1566,7 +1569,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/bvlgari-tygar-editorial.png"
     },
     {
       "product_id": "SC-SOSPIRO-VIBRATO-100",
@@ -1615,7 +1619,7 @@
         "rank": 25,
         "rank_category": "unisex",
         "longevity_10": 8.2,
-        "projection_10": 8.0
+        "projection_10": 8
       },
       "fragrance_profile": {
         "community_accords": [
@@ -1825,7 +1829,7 @@
         "rank": null,
         "rank_category": "unisex",
         "longevity_10": 7.2,
-        "projection_10": 7.0
+        "projection_10": 7
       },
       "fragrance_profile": {
         "community_accords": [
@@ -2034,7 +2038,7 @@
         "score_confidence": "high"
       },
       "market": {
-        "official_price_eur": 245.0,
+        "official_price_eur": 245,
         "market_price_eur": 141.03,
         "price_per_ml_eur": 1.4103,
         "german_availability": "high",
@@ -2219,7 +2223,7 @@
         "rank": null,
         "rank_category": "men",
         "longevity_10": 8.1,
-        "projection_10": 8.0
+        "projection_10": 8
       },
       "fragrance_profile": {
         "community_accords": [
@@ -2324,8 +2328,8 @@
         "score_confidence": "high"
       },
       "market": {
-        "official_price_eur": 148.0,
-        "market_price_eur": 95.0,
+        "official_price_eur": 148,
+        "market_price_eur": 95,
         "price_per_ml_eur": 0.95,
         "german_availability": "very_high",
         "price_source_count": 3,
@@ -2513,7 +2517,7 @@
         "score_confidence": "high"
       },
       "market": {
-        "market_price_eur": 66.0,
+        "market_price_eur": 66,
         "price_per_ml_eur": 0.66,
         "german_availability": "high",
         "price_source_count": 3,
@@ -2612,7 +2616,7 @@
         "score_confidence": "high"
       },
       "market": {
-        "market_price_eur": 365.0,
+        "market_price_eur": 365,
         "price_per_ml_eur": 7.3,
         "german_availability": "medium",
         "price_source_count": 3,
@@ -2781,7 +2785,7 @@
         "rating_count": 3286,
         "rank": 54,
         "rank_category": "men",
-        "longevity_10": 8.0,
+        "longevity_10": 8,
         "projection_10": 7.8
       },
       "fragrance_profile": {
@@ -3049,7 +3053,7 @@
         "rating_count": 529,
         "rank": 318,
         "rank_category": "unisex",
-        "longevity_10": 8.0,
+        "longevity_10": 8,
         "projection_10": 7.5
       },
       "fragrance_profile": {
@@ -3069,7 +3073,7 @@
         "score_confidence": "high"
       },
       "market": {
-        "market_price_eur": 77.0,
+        "market_price_eur": 77,
         "price_per_ml_eur": 1.54,
         "german_availability": "medium",
         "price_source_count": 3,

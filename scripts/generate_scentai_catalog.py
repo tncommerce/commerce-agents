@@ -35,17 +35,28 @@ def join_values(values):
     return ", ".join(str(value) for value in values)
 
 
+def full_product_name(product):
+    brand = product["brand"]
+    name = product["name"]
+
+    if name.casefold().startswith(
+        brand.casefold() + " "
+    ):
+        return name
+
+    return f"{brand} {name}"
+
+
 def build_product_name_map(products):
     return {
         product["product_id"]:
-        f"{product['brand']} {product['name']}"
+        full_product_name(product)
         for product in products
     }
 
 
 def build_short_description(product):
-    brand = product["brand"]
-    name = product["name"]
+    display_name = full_product_name(product)
     concentration = product["concentration"]
 
     accords = product.get(
@@ -58,13 +69,13 @@ def build_short_description(product):
         main_accords = ", ".join(accords[:3])
 
         return (
-            f"{brand} {name} is a "
+            f"{display_name} is a "
             f"{main_accords} "
             f"{concentration} fragrance."
         )
 
     return (
-        f"{brand} {name} "
+        f"{display_name} "
         f"{concentration} fragrance."
     )
 
@@ -123,8 +134,7 @@ def convert_product(product, product_name_map):
         labels.append("trend-bet")
 
     title = (
-        f"{product['brand']} "
-        f"{product['name']} "
+        f"{full_product_name(product)} "
         f"{product['concentration']} "
         f"{product['volume_ml']} ml"
     )
