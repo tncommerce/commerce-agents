@@ -55,6 +55,30 @@ def build_product_name_map(products):
     }
 
 
+def build_product_title(product):
+    display_name = full_product_name(product)
+    concentration = product["concentration"]
+    name = product["name"].casefold()
+    concentration_lead = concentration.casefold().split()[0]
+
+    # Avoid titles such as
+    # "Marwa Extrait Extrait de Parfum".
+    if (
+        name == concentration_lead
+        or name.endswith(" " + concentration_lead)
+    ):
+        return (
+            f"{display_name} "
+            f"{product['volume_ml']} ml"
+        )
+
+    return (
+        f"{display_name} "
+        f"{concentration} "
+        f"{product['volume_ml']} ml"
+    )
+
+
 def build_short_description(product):
     display_name = full_product_name(product)
     concentration = product["concentration"]
@@ -133,11 +157,7 @@ def convert_product(product, product_name_map):
     if classification.get("trend_bet"):
         labels.append("trend-bet")
 
-    title = (
-        f"{full_product_name(product)} "
-        f"{product['concentration']} "
-        f"{product['volume_ml']} ml"
-    )
+    title = build_product_title(product)
 
     attributes = {
         "canonical_name":
