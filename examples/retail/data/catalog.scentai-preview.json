@@ -4,7 +4,7 @@
     {
       "product_id": "SC-LV-IMAGINATION-100",
       "title": "Louis Vuitton Imagination Eau de Parfum 100 ml",
-      "image_url": null,
+      "image_url": "/products/pilot/louis-vuitton-imagination-editorial.png",
       "brand": "Louis Vuitton",
       "price": 300.0,
       "currency": "EUR",
@@ -445,7 +445,7 @@
     {
       "product_id": "SC-PDM-LAYTON-125",
       "title": "Parfums de Marly Layton Eau de Parfum 125 ml",
-      "image_url": null,
+      "image_url": "/products/pilot/pdm-layton-editorial.png",
       "brand": "Parfums de Marly",
       "price": 219.26,
       "currency": "EUR",
@@ -886,7 +886,7 @@
     {
       "product_id": "SC-XERJOFF-NAXOS-100",
       "title": "Xerjoff Naxos Eau de Parfum 100 ml",
-      "image_url": "/products/xerjoff-naxos.webp",
+      "image_url": "/products/pilot/xerjoff-naxos-editorial.png",
       "brand": "Xerjoff",
       "price": 141.03,
       "currency": "EUR",

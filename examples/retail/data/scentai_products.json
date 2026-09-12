@@ -90,7 +90,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/louis-vuitton-imagination-editorial.png"
     },
     {
       "product_id": "SC-ARABIYAT-MARWA-EDP-100",
@@ -1067,7 +1068,8 @@
       },
       "validation": {
         "catalog_ready": true
-      }
+      },
+      "image_url": "/products/pilot/pdm-layton-editorial.png"
     },
     {
       "product_id": "SC-AL-HARAMAIN-DETOUR-NOIR-100",
@@ -2063,7 +2065,7 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/xerjoff-naxos.webp"
+      "image_url": "/products/pilot/xerjoff-naxos-editorial.png"
     },
     {
       "product_id": "SC-NUSUK-ATEEQ-100",
