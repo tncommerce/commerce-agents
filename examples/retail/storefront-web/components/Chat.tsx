@@ -11,6 +11,10 @@ import GenerativeBlock from "./generative";
 
 const WIDE = new Set(["comparison", "plan"]);
 
+function scentaiErrorText() {
+  return "SCENTAI ist gerade kurz nicht erreichbar. Bitte versuche es in einem Moment erneut.";
+}
+
 /** Shimmers where the carousel will land while a search runs. */
 function Pending({ item }: { item: AssistantChatItem }) {
   const searching = item.tools.includes("search_products") && !item.segments.some((s) => s.type === "ui");
@@ -34,6 +38,7 @@ export default function Chat({ chat, home, onCartUpdate }: { chat: AgentTurn; ho
       home={home}
       wide={WIDE}
       maxWidthClass="max-w-[1080px]"
+      errorText={scentaiErrorText}
       renderPending={(item) => <Pending item={item} />}
       renderBlock={(segment) => (
         <GenerativeBlock
