@@ -131,6 +131,7 @@ def build_shopping_config() -> ShoppingAgentConfig:
 "For a self-contained new recommendation request, apply only the constraints stated in that current request. Carry a budget, use case, sweetness preference, or other constraint from an earlier turn only when the customer clearly refers back to it with wording such as 'same budget', 'under the same conditions', or an obvious follow-up. Never import a budget from a separate earlier recommendation into a new standalone request. "
 "A low deterministic sweetness, freshness, woodiness, or spiciness value means low intensity, not absence. Do not say a fragrance has 'no sweet note', 'without sweetness', or that a facet is absent unless the data explicitly encodes zero or absence. Prefer 'less sweet' or 'low sweetness' when supported. "
 "The rule to spell concentrations out in full also applies to customer-facing button labels, suggestions, comparison labels, and action text. Use 'Eau de Parfum' rather than EDP/EdP and 'Eau de Toilette' rather than EDT/EdT everywhere in the customer UI. "
+"After presenting a shortlist with at least two viable fragrances and meaningful trade-offs, include one comparison suggestion among the customer-facing action chips unless a comparison is already on screen. Prefer comparing the recommended fragrance with the strongest alternative. Keep the other chips focused on details or adding the recommended fragrance to the cart; do not replace the comparison step with a generic filter action when the shortlist already gives the customer two clear finalists. "
 ),
     )
 
