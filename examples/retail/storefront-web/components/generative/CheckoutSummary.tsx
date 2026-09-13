@@ -23,14 +23,18 @@ export default function CheckoutSummary({ payload }: { payload: CheckoutPayload 
   return (
     <section data-checkout-card className="rounded-2xl border-2 border-(--accent) bg-(--card) p-4 shadow-(--shadow-sm)">
       <div className="flex items-center justify-between gap-2">
-        <h3 className="text-[15px] font-semibold text-(--ink)">Ready to check out</h3>
+        <h3 className="text-[15px] font-semibold text-(--ink)">Bereit zur Kasse</h3>
         <div className="flex items-center gap-1.5">
           <span className="whitespace-nowrap rounded-full border border-(--line) bg-(--well)/60 px-2.5 py-0.5 text-[11px] font-semibold text-(--ink-soft)">
-            Not charged
+            Noch nicht berechnet
           </span>
           {payload.fulfillment_method ? (
             <span className="rounded-full bg-(--accent-soft) px-2.5 py-0.5 text-[13px] font-semibold capitalize text-(--ink)">
-              {payload.fulfillment_method}
+              {payload.fulfillment_method === "delivery"
+                ? "Lieferung"
+                : payload.fulfillment_method === "pickup"
+                  ? "Abholung"
+                  : "Versand"}
             </span>
           ) : null}
         </div>
@@ -63,39 +67,39 @@ export default function CheckoutSummary({ payload }: { payload: CheckoutPayload 
           );
         })}
         <div className="flex justify-between border-t border-(--line) pt-1.5 text-(--ink)">
-          <span>Subtotal</span>
+          <span>Zwischensumme</span>
           <span>{formatMoney(cart.subtotal, cart.currency)}</span>
         </div>
         <div className="flex justify-between gap-2 text-(--ink)">
           <span>
-            Shipping{" "}
+            Versand{" "}
             <span className="text-[13px] text-(--ink-soft)">
-              standard · {STORE_POLICY.standardShippingEta}
+              Standard · {STORE_POLICY.standardShippingEta}
             </span>
           </span>
           <span className={freeShipping ? "font-medium text-(--ok)" : "text-(--ink)"}>
-            {freeShipping ? "Free" : "Calculated at checkout"}
+            {freeShipping ? "Kostenlos" : "Wird an der Kasse berechnet"}
           </span>
         </div>
         {!freeShipping && STORE_POLICY.freeShippingThreshold - cart.subtotal > 0 ? (
           <div className="flex justify-between text-[13px] text-(--ink-soft)">
             <span>
-              Add {formatMoney(STORE_POLICY.freeShippingThreshold - cart.subtotal)} more to
-              unlock free shipping
+              Noch {formatMoney(STORE_POLICY.freeShippingThreshold - cart.subtotal)} bis zum kostenlosen Versand
             </span>
           </div>
         ) : null}
         <div className="flex justify-between text-(--ink)">
-          <span>Tax</span>
-          <span>Calculated at checkout</span>
+          <span>Steuern</span>
+          <span>Wird an der Kasse berechnet</span>
         </div>
         <div className="flex justify-between border-t border-(--line) pt-1.5 text-base font-bold text-(--ink)">
-          <span>Estimated total</span>
+          <span>Voraussichtliche Gesamtsumme</span>
           <span>{formatMoney(cart.subtotal, cart.currency)}</span>
         </div>
         <p className="text-[11px] leading-snug text-(--ink-soft)">
-          {freeShipping ? "Before tax" : "Before shipping and tax"}; the final total appears at
-          checkout.
+          {freeShipping
+            ? "Vor Steuern; der endgültige Gesamtbetrag wird an der Kasse angezeigt."
+            : "Vor Versand und Steuern; der endgültige Gesamtbetrag wird an der Kasse angezeigt."}
         </p>
       </div>
       <p className="mt-2 text-[11px] text-(--ink-soft)">{STORE_POLICY.returnsLine}</p>
@@ -111,7 +115,7 @@ export default function CheckoutSummary({ payload }: { payload: CheckoutPayload 
               aria-describedby={handoffNoteId}
               className="w-full rounded-xl bg-(--accent) py-2.5 text-center text-sm font-bold text-(--ink)"
             >
-              {h.label ?? (h.seller ? `Continue to checkout with ${h.seller}` : "Continue to checkout")}
+              {h.label ?? (h.seller ? `Weiter zur Kasse bei ${h.seller}` : "Weiter zur Kasse")}
             </a>
           ))}
         </div>
@@ -122,13 +126,13 @@ export default function CheckoutSummary({ payload }: { payload: CheckoutPayload 
           aria-disabled
           aria-describedby={handoffNoteId}
           className="mt-3 w-full cursor-not-allowed rounded-xl bg-(--accent) py-2.5 text-sm font-bold text-(--ink) opacity-90"
-          title="Nothing is charged here. Payment happens when you check out."
+          title="Hier wird noch nichts berechnet. Die Zahlung erfolgt erst an der Kasse."
         >
-          Continue to checkout
+          Weiter zur Kasse
         </button>
       )}
       <p id={handoffNoteId} className="mt-2 text-center text-[11px] text-(--ink-soft)/80">
-        Nothing is charged here. Payment happens when you check out.
+        Hier wird noch nichts berechnet. Die Zahlung erfolgt erst an der Kasse.
       </p>
     </section>
   );
