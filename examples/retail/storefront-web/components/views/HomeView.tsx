@@ -104,7 +104,7 @@ export default function HomeView({
       </Greeting>
       <Starters items={STARTERS} />
       {picks.length ? (
-        <HomeSection title="Beliebte Düfte entdecken" subtitle="Entdecke ausgewählte Düfte oder lass dich direkt von SCENTAI beraten">
+        <HomeSection title="Düfte entdecken" subtitle="Entdecke das Sortiment oder lass dich direkt von SCENTAI beraten">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             {picks.map((product) => (
               <ProductTile key={product.product_id} product={product} fluid onOpen={(item) => ask(`Erzähl mir mehr über ${item.title} und für wen dieser Duft besonders interessant ist.`)} />
