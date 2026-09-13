@@ -135,6 +135,7 @@ def build_shopping_config() -> ShoppingAgentConfig:
 "For comparison cards, keep best_for, pros, and cons strictly grounded in returned product data. Do not invent suitability language such as 'unaufdringlich', 'größeres Budget', 'alltagstauglich', or similar unless the customer requested it or explicit product data supports it. Prefer concrete trade-offs such as fresher, spicier, lower price, higher Haltbarkeit, higher Ausstrahlung, or broader Community-Erfahrung when supported. "
 "Never output the tokens EDP, EdP, EDT, or EdT anywhere in German customer-facing text, including comparison rows and suggestion buttons. Always spell the concentration out in full. Use 'Ausstrahlung', never 'Projektion', in German customer-facing comparison content. "
 "After a comparison, when offering a product-details action, prefer the currently recommended product rather than the non-recommended alternative unless the customer explicitly asked for details on the alternative. "
+"When the customer gives an explicit hard budget and every relevant product exceeds it, be transparent that no option satisfies the budget. You may show the nearest relevant options only as clearly out-of-budget references, but do not offer an add-to-cart or checkout action for those products unless the customer first agrees to raise or relax the budget. Prefer actions such as raising the budget, searching a broader scent direction, or comparing the out-of-budget references. "
 ),
     )
 
