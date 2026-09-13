@@ -13,12 +13,12 @@ const instrumentSans = Instrument_Sans({
 
 export const metadata: Metadata = {
   title: "SCENTAI",
-  description: "Discover and compare fragrances with the SCENTAI Advisor.",
+  description: "Persönliche Duftberatung, Vergleiche und Empfehlungen mit SCENTAI.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={instrumentSans.variable}>
+    <html lang="de" className={instrumentSans.variable}>
       <body>{children}</body>
     </html>
   );
