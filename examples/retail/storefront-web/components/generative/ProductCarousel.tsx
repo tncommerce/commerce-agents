@@ -45,11 +45,11 @@ function PriceIntelligenceRow({ intel }: { intel: PriceIntelligence }) {
         <div className="text-[13px] font-semibold text-(--ink)">{intel.verdict}</div>
         <div className="text-[11px] text-(--ink-soft)">
           {intel.position === "low"
-            ? "Sitting near the low end of its own range"
+            ? "Aktuell nahe am unteren Ende der eigenen Preisspanne"
             : intel.position === "high"
-              ? "Sitting near the high end of its own range"
-              : "Sitting in the typical band of its own range"}
-          {" "}· last {intel.days} days
+              ? "Aktuell nahe am oberen Ende der eigenen Preisspanne"
+              : "Aktuell im üblichen Bereich der eigenen Preisspanne"}
+          {" "}· letzte {intel.days} Tage
         </div>
       </div>
     </div>
@@ -60,7 +60,7 @@ function ReviewAspectsRow({ synthesis }: { synthesis: ReviewAspects }) {
   return (
     <div data-review-aspects className="mt-2">
       <div className="text-[11px] font-semibold uppercase tracking-wide text-(--ink-soft)">
-        From {synthesis.review_count.toLocaleString()} customer reviews
+        From {synthesis.review_count.toLocaleString()} Kundenbewertungen
       </div>
       <div className="mt-1.5 flex flex-wrap gap-1.5">
         {synthesis.aspects.map((aspect) => (
@@ -168,7 +168,7 @@ function ProductDetail({
                 <Rating rating={full.rating} count={full.review_count} />
                 {full.in_stock === false ? (
                   <span className="rounded-full bg-(--ink)/85 px-2 py-0.5 text-[11px] font-medium text-(--surface)">
-                    Out of stock
+                    Nicht auf Lager
                   </span>
                 ) : null}
               </div>
@@ -176,7 +176,7 @@ function ProductDetail({
             </div>
             <button
               onClick={onClose}
-              aria-label="Collapse details"
+              aria-label="Details schließen"
               className="shrink-0 rounded-md px-1.5 text-base leading-none text-(--ink-soft) hover:text-(--ink)"
             >
               ×
@@ -189,7 +189,7 @@ function ProductDetail({
         <p className="mt-2 text-[13px] leading-snug text-(--ink)">{reason}</p>
       ) : null}
       {details === null ? (
-        <p className="mt-2 animate-pulse text-[13px] text-(--ink-soft)">Loading details…</p>
+        <p className="mt-2 animate-pulse text-[13px] text-(--ink-soft)">Details werden geladen…</p>
       ) : (
         <div className="ac-reveal">
           {details.price_intelligence ? (
@@ -325,7 +325,7 @@ export default function ProductCarousel({
             />
             <button
               onClick={() => nudge(-1)}
-              aria-label="Scroll to previous products"
+              aria-label="Zu vorherigen Produkten scrollen"
               className="absolute left-0 top-1/2 -translate-y-1/2 rounded-full border border-(--line) bg-(--card) px-2 py-1 text-sm text-(--ink) shadow-md transition hover:border-(--accent)"
             >
               ‹
@@ -340,7 +340,7 @@ export default function ProductCarousel({
             />
             <button
               onClick={() => nudge(1)}
-              aria-label="Scroll to more products"
+              aria-label="Zu weiteren Produkten scrollen"
               className="absolute right-0 top-1/2 -translate-y-1/2 rounded-full border border-(--line) bg-(--card) px-2 py-1 text-sm text-(--ink) shadow-md transition hover:border-(--accent)"
             >
               ›
