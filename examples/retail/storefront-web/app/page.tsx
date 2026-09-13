@@ -58,8 +58,8 @@ export default function StorefrontPage() {
 
   const late = orders?.filter((order) => order.status === "delayed").length ?? 0;
   const views: StoreView<View>[] = [
-    { id: "assistant", label: "Assistant", icon: "spark" },
-    { id: "orders", label: "Orders", icon: "box", attention: late ? { count: late, label: `${late} delayed` } : null },
+    { id: "assistant", label: "Beratung", icon: "spark" },
+    { id: "orders", label: "Bestellungen", icon: "box", attention: late ? { count: late, label: `${late} verspätet` } : null },
   ];
   const shopper = session.shopper ?? { name: "Guest" };
   const count = cart?.item_count ?? 0;
@@ -75,7 +75,7 @@ export default function StorefrontPage() {
       api={api}
       assistantName={ASSISTANT}
       shopper={shopper}
-      bag={{ label: "Cart", count, noun: "item", figure: count ? formatMoney(cart?.subtotal ?? 0, cart?.currency) : null }}
+      bag={{ label: "Warenkorb", count, noun: "Artikel", figure: count ? formatMoney(cart?.subtotal ?? 0, cart?.currency) : null }}
       panel={<CartPanel cart={cart} checkoutStaged={checkoutStaged} />}
       panelOpen={panelOpen}
       onPanelOpenChange={setPanelOpen}
