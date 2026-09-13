@@ -29,7 +29,7 @@ const STARTERS: Starter[] = [
     prompt: "Ich suche einen frischen Sommerduft unter 60 €.",
   },
   {
-    icon: "home",
+    icon: "calendar",
     prompt: "Ich suche einen eleganten Duft für ein Date unter 100 €.",
   },
   {
@@ -37,7 +37,7 @@ const STARTERS: Starter[] = [
     prompt: "Finde mir eine gute Alternative zu Louis Vuitton Imagination.",
   },
   {
-    icon: "edit",
+    icon: "signal",
     prompt: "Ich suche einen Duft mit starker Haltbarkeit und Ausstrahlung.",
   },
 ];
