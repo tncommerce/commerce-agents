@@ -59,6 +59,7 @@ export function StoreShell<V extends string>({
   banner,
   children,
   minimal = false,
+  showBagInMinimal = false,
 }: {
   brand: ReactNode;
   views: StoreView<V>[];
@@ -82,6 +83,8 @@ export function StoreShell<V extends string>({
   banner?: ReactNode;
   children: ReactNode;
   minimal?: boolean;
+  /** Keep the bag button/panel available while the rest of the minimal chrome stays hidden. */
+  showBagInMinimal?: boolean;
 }) {
   const [activityOpen, setActivityOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
@@ -150,18 +153,18 @@ export function StoreShell<V extends string>({
               );
             })}
           </nav>
-          <div className={minimal ? "hidden" : "ml-auto flex items-center gap-2"}>
-            <ActivityButton
+          <div className={minimal && !showBagInMinimal ? "hidden" : "ml-auto flex items-center gap-2"}>
+            {!minimal ? <ActivityButton
               streaming={chat.streaming}
               newMemoryCount={chat.newMemoryKeys.size}
               onClick={() => setActivityOpen(true)}
-            />
+            /> : null}
             <button
               ref={bagButtonRef}
               type="button"
               onClick={() => onPanelOpenChange(true)}
               aria-label={`Open ${bag.label.toLowerCase()}, ${bag.count} ${bag.noun}${bag.count === 1 ? "" : "s"}`}
-              className="flex h-[34px] items-center gap-2 rounded-full bg-(--ink) pl-3 pr-1.5 text-[13px] font-semibold text-(--surface) transition hover:brightness-110 xl:hidden"
+              className={`flex h-[34px] items-center gap-2 rounded-full bg-(--ink) pl-3 pr-1.5 text-[13px] font-semibold text-(--surface) transition hover:brightness-110 ${minimal && showBagInMinimal ? "" : "xl:hidden"}`}
             >
               <Icon name="bag" size={16} />
               <span className="hidden sm:inline">{bag.label}</span>
@@ -175,7 +178,7 @@ export function StoreShell<V extends string>({
                 {bag.count}
               </span>
             </button>
-            <button
+            {!minimal ? <button
               type="button"
               onClick={() => setAccountOpen(true)}
               aria-label={`${shopper.name}: profile and memory`}
@@ -188,7 +191,7 @@ export function StoreShell<V extends string>({
                   <span className="block truncate text-[11.5px] leading-tight text-(--ink-soft)">{shopper.tier}</span>
                 ) : null}
               </span>
-            </button>
+            </button> : null}
           </div>
         </header>
         {banner}
@@ -215,16 +218,16 @@ export function StoreShell<V extends string>({
           <div
             onClick={closePanel}
             aria-hidden
-            className={`fixed inset-0 z-40 bg-black/35 transition-opacity duration-300 xl:hidden ${
+            className={`fixed inset-0 z-40 bg-black/35 transition-opacity duration-300 ${minimal && showBagInMinimal ? "" : "xl:hidden"} ${
               panelOpen ? "opacity-100" : "pointer-events-none opacity-0"
             }`}
           />
           {/* Closed below xl the drawer is `invisible`: out of the focus order and the accessibility tree. */}
-          {!minimal ? (
+          {!minimal || showBagInMinimal ? (
           <aside
             ref={panelRef}
             aria-label={bag.label}
-            className={`fixed inset-y-0 right-0 z-50 flex w-[min(92vw,380px)] flex-col border-l border-(--line) bg-(--card) xl:visible xl:static xl:z-auto xl:w-[348px] xl:shrink-0 xl:translate-x-0 xl:shadow-none xl:transition-none ${
+            className={`fixed inset-y-0 right-0 z-50 flex w-[min(92vw,380px)] flex-col border-l border-(--line) bg-(--card) ${minimal && showBagInMinimal ? "" : "xl:visible xl:static xl:z-auto xl:w-[348px] xl:shrink-0 xl:translate-x-0 xl:shadow-none xl:transition-none"} ${
               panelOpen
                 ? "visible translate-x-0 shadow-2xl [transition:transform_300ms]"
                 : "invisible translate-x-full [transition:transform_300ms,visibility_0s_linear_300ms]"
