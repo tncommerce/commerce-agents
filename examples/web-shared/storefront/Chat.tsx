@@ -14,6 +14,7 @@ export function Chat({
   home,
   renderBlock,
   renderPending,
+  errorText,
   wide,
   maxWidthClass = "max-w-[760px]",
 }: {
@@ -21,6 +22,8 @@ export function Chat({
   home: ReactNode;
   renderBlock: TranscriptProps["renderBlock"];
   renderPending?: TranscriptProps["renderPending"];
+  /** Optional storefront-specific customer-safe mapping for streamed error text. */
+  errorText?: TranscriptProps["errorText"];
   /** Components that may extend past the text measure when the page has room. */
   wide?: ReadonlySet<string>;
   maxWidthClass?: string;
@@ -33,7 +36,15 @@ export function Chat({
           {chat.items.length === 0 ? (
             home
           ) : (
-            <Transcript items={chat.items} busy={chat.busy} send={chat.send} renderBlock={renderBlock} renderPending={renderPending} wide={wide} />
+            <Transcript
+              items={chat.items}
+              busy={chat.busy}
+              send={chat.send}
+              renderBlock={renderBlock}
+              renderPending={renderPending}
+              errorText={errorText}
+              wide={wide}
+            />
           )}
         </div>
       </div>
