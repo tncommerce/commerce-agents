@@ -849,6 +849,54 @@ class MockRetail(StorefrontBackend):
                     ]
 
         # Normal storefront search fallback.
+        #
+        # The demo catalog still contains legacy ACME fixtures alongside SCENTAI.
+        # When the query clearly describes fragrance characteristics, keep discovery
+        # inside the SCENTAI fragrance catalog instead of allowing unrelated demo
+        # products to enter the shortlist.
+        fragrance_query_markers = (
+            "duft",
+            "parfum",
+            "fragrance",
+            "sommerduft",
+            "winterduft",
+            "date duft",
+            "büro duft",
+            "buero duft",
+            "frisch",
+            "fresh",
+            "zitrisch",
+            "citrus",
+            "süß",
+            "suess",
+            "sweet",
+            "holzig",
+            "woody",
+            "würzig",
+            "wuerzig",
+            "spicy",
+            "gourmand",
+            "pudrig",
+            "powdery",
+            "aquatisch",
+            "aquatic",
+            "haltbarkeit",
+            "longevity",
+            "ausstrahlung",
+            "projection",
+            "sillage",
+        )
+
+        if any(
+            marker in normalized_query
+            for marker in fragrance_query_markers
+        ):
+            products = [
+                product
+                for product in products
+                if product.product_id.startswith("SC-")
+            ]
+
         ranked = rank_products(
             products,
             query,
