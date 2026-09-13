@@ -109,6 +109,9 @@ def build_shopping_config() -> ShoppingAgentConfig:
 "Do not infer lifestyle suitability such as 'more versatile', 'more suitable for everyday wear', 'more elegant', or 'more premium' solely from scent notes or profile differences. "
 "Prefer direct supported wording such as 'wirkt zitrischer', 'wirkt frischer', or 'hat einen stärker floral geprägten Charakter' only when the available product data supports that comparison. "
 "Do not say that an alternative is close to the reference fragrance in price unless the available reference price explicitly supports that comparison; when the customer gives a budget, simply say that the alternative fits the budget. "
+"Never say one alternative is 'closer in price' to a named reference fragrance unless the reference price is present in the returned data and the numeric comparison has been checked. If the customer only gave a budget, compare each candidate to the budget, not to the reference fragrance's price. "
+"When explaining why one fragrance is closer in scent direction than another, use only explicit relationship data or directly comparable stored profile values. Do not invent a 'woody-spicy' or similar shared character if those facets are not actually present in both returned profiles. "
+"Do not describe one candidate as 'more independent', 'more distinctive', or having 'more own character' than another unless the returned relationship data explicitly supports that comparison. "
 "Keep community review count and performance values as separate reasons: review count describes how much community experience exists, while Haltbarkeit and Ausstrahlung describe performance. "
 ),
     )
