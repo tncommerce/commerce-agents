@@ -7,6 +7,24 @@ import { ProductImage, ProductTitle, ProductRating } from "../ProductTile";
 
 const RECOMMENDED_LABEL = "Empfehlung";
 
+function cleanCustomerCopy(text: string) {
+  return text
+    .replace(/\b(?:EDP|EdP)\b/g, "Eau de Parfum")
+    .replace(/\b(?:EDT|EdT)\b/g, "Eau de Toilette")
+    .replace(/\bProjektion\b/g, "Ausstrahlung")
+    .replace(/\bCommunity-Rückhalt\b/g, "Community-Erfahrung");
+}
+
+function decisionTitle(brand: string | null | undefined, title: string) {
+  const cleanTitle = cleanCustomerCopy(title);
+  const cleanBrand = brand?.trim();
+  if (!cleanBrand) return cleanTitle;
+  if (cleanTitle.toLocaleLowerCase("de").startsWith(cleanBrand.toLocaleLowerCase("de"))) {
+    return cleanTitle;
+  }
+  return `${cleanBrand} · ${cleanTitle}`;
+}
+
 function TermRow({ sign, text }: { sign: "+" | "−"; text: string }) {
   return (
     <div className="grid grid-cols-[1.1rem_1fr] gap-1 text-[13px] leading-relaxed text-(--ink)">
@@ -16,7 +34,7 @@ function TermRow({ sign, text }: { sign: "+" | "−"; text: string }) {
       >
         {sign}
       </span>
-      <span>{text}</span>
+      <span>{cleanCustomerCopy(text)}</span>
     </div>
   );
 }
@@ -89,8 +107,9 @@ export default function ComparisonGrid({
                 >
                   <div className="mb-2 flex items-start justify-between gap-2">
                     <div className="min-w-0 text-[13px] font-semibold text-(--ink)">
-                      {entry.product.brand ? `${entry.product.brand} · ` : ""}
-                      <span className="font-medium">{entry.product.title}</span>
+                      <span className="font-medium">
+                        {decisionTitle(entry.product.brand, entry.product.title)}
+                      </span>
                     </div>
                     {recommended ? (
                       <span className="shrink-0 rounded-full border border-(--accent) bg-(--accent-soft) px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-(--ink)">
@@ -101,7 +120,8 @@ export default function ComparisonGrid({
 
                   {entry.best_for ? (
                     <div className="mb-3 rounded-lg border border-(--line) bg-(--card) px-2.5 py-2 text-[13px] leading-relaxed text-(--ink)">
-                      <span className="font-semibold">Ideal für:</span> {entry.best_for}
+                      <span className="font-semibold">Ideal für:</span>{" "}
+                      {cleanCustomerCopy(entry.best_for)}
                     </div>
                   ) : null}
 
