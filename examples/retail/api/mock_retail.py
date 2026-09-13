@@ -206,6 +206,7 @@ class MockRetail(StorefrontBackend):
         "evidence_confidence",
         "trend_bet",
         "similar_to",
+        "relationship_links",
         "freshness",
         "sweetness",
         "woodiness",
@@ -347,6 +348,78 @@ class MockRetail(StorefrontBackend):
                 "short_description": short_description,
             }
         )
+
+    @staticmethod
+    def _relationship_to_anchor(
+        product: ProductDetails,
+        anchor_id: str,
+    ) -> tuple[str, str] | None:
+        """Return (relationship_type, confidence) for an explicit anchor link."""
+
+        raw_links = str(
+            (product.attributes or {}).get("relationship_links") or ""
+        )
+
+        for raw_link in raw_links.split(";"):
+            parts = raw_link.split("|")
+
+            if len(parts) != 3:
+                continue
+
+            related_id, relationship_type, confidence = parts
+
+            if related_id == anchor_id:
+                return relationship_type, confidence
+
+        return None
+
+    def _alternative_score(
+        self,
+        product: ProductDetails,
+        query_tokens: list[str],
+        query_text: str,
+        anchor_id: str,
+    ) -> float:
+        """Rank named-fragrance alternatives by relevance plus evidence quality.
+
+        The explicit relationship to the named reference is the strongest signal.
+        Community volume is a smaller confidence signal so a tiny rating edge does
+        not outrank a much better-established alternative.
+        """
+
+        score = self._score(
+            product,
+            query_tokens,
+            query_text,
+        )
+
+        relationship = self._relationship_to_anchor(
+            product,
+            anchor_id,
+        )
+
+        if relationship is not None:
+            relationship_type, confidence = relationship
+
+            confidence_bonus = {
+                "high": 4.0,
+                "medium_high": 3.2,
+                "medium": 2.4,
+                "low": 1.0,
+            }.get(confidence, 0.0)
+
+            relationship_bonus = {
+                "clone": 2.0,
+                "inspired": 1.5,
+                "alternative": 1.2,
+            }.get(relationship_type, 0.8)
+
+            score += confidence_bonus + relationship_bonus
+
+        review_count = max(int(product.review_count or 0), 0)
+        score += math.log10(review_count + 1) * 0.45
+
+        return score
 
     def _score(self, product: ProductDetails, query_tokens: list[str], query_text: str | None = None) -> float:
         base_score = keyword_score(
@@ -737,12 +810,30 @@ class MockRetail(StorefrontBackend):
                     )
                 ]
 
+                explicitly_linked_products = [
+                    product
+                    for product in same_cluster_products
+                    if self._relationship_to_anchor(
+                        product,
+                        target_anchor_id,
+                    )
+                    is not None
+                ]
+
+                if explicitly_linked_products:
+                    same_cluster_products = explicitly_linked_products
+
                 ranked_cluster = rank_products(
                     same_cluster_products,
                     query,
                     filters,
                     limit,
-                    score=lambda product, tokens: self._score(product, tokens, query),
+                    score=lambda product, tokens: self._alternative_score(
+                        product,
+                        tokens,
+                        query,
+                        target_anchor_id,
+                    ),
                     hard_filter=within_price_and_rating,
                     soft_filter=self._soft_filter,
                 )

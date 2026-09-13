@@ -40,7 +40,8 @@
         "evidence_confidence": "high",
         "market_price_eur": "300.0",
         "price_per_ml_eur": "3.0",
-        "price_checked_at": "2026-09-07"
+        "price_checked_at": "2026-09-07",
+        "relationship_links": "SC-ARABIYAT-MARWA-EDP-100|inspired|high;SC-ARABIYAT-MARWA-EXTRAIT-60|inspired|medium;SC-BUJAIRAMI-HECTIC-100|inspired|high"
       },
       "in_stock": true,
       "short_description": "Louis Vuitton Imagination is a fresh, citrus, aquatic Eau de Parfum fragrance."
@@ -84,7 +85,8 @@
         "evidence_confidence": "high",
         "market_price_eur": "31.49",
         "price_per_ml_eur": "0.3149",
-        "price_checked_at": "2026-09-08"
+        "price_checked_at": "2026-09-08",
+        "relationship_links": "SC-LV-IMAGINATION-100|inspired|high"
       },
       "in_stock": true,
       "short_description": "Arabiyat Prestige Marwa is a fresh, citrus, aquatic Eau de Parfum fragrance."
@@ -129,7 +131,8 @@
         "evidence_confidence": "medium",
         "market_price_eur": "59.38",
         "price_per_ml_eur": "0.9897",
-        "price_checked_at": "2026-09-08"
+        "price_checked_at": "2026-09-08",
+        "relationship_links": "SC-LV-IMAGINATION-100|inspired|medium"
       },
       "in_stock": true,
       "short_description": "Arabiyat Prestige Marwa Extrait is a fresh, spicy, citrus Extrait de Parfum fragrance."
@@ -173,7 +176,8 @@
         "evidence_confidence": "medium_high",
         "market_price_eur": "57.99",
         "price_per_ml_eur": "0.5799",
-        "price_checked_at": "2026-09-08"
+        "price_checked_at": "2026-09-08",
+        "relationship_links": "SC-LV-IMAGINATION-100|inspired|high"
       },
       "in_stock": true,
       "short_description": "Bujairami Hectic is a citrus, fresh, spicy Extrait de Parfum fragrance."
@@ -217,7 +221,8 @@
         "evidence_confidence": "high",
         "market_price_eur": "330.0",
         "price_per_ml_eur": "3.3",
-        "price_checked_at": "2026-09-08"
+        "price_checked_at": "2026-09-08",
+        "relationship_links": "SC-ARMAF-CDNIM-EDP-200|clone|high;SC-MONTBLANC-EXPLORER-100|alternative|high"
       },
       "in_stock": true,
       "short_description": "Creed Aventus is a fresh, fruity, citrus Eau de Parfum fragrance."
@@ -261,7 +266,8 @@
         "evidence_confidence": "high",
         "market_price_eur": "380.0",
         "price_per_ml_eur": "3.8",
-        "price_checked_at": "2026-09-08"
+        "price_checked_at": "2026-09-08",
+        "relationship_links": "SC-AFNAN-SUPREMACY-COLLECTORS-100|inspired|high;SC-MAISON-ASRAR-VANGUARD-100|inspired|high"
       },
       "in_stock": true,
       "short_description": "Creed Absolu Aventus is a fruity, fresh, citrus Eau de Parfum fragrance."
@@ -305,7 +311,8 @@
         "evidence_confidence": "high",
         "market_price_eur": "54.5",
         "price_per_ml_eur": "0.545",
-        "price_checked_at": "2026-09-08"
+        "price_checked_at": "2026-09-08",
+        "relationship_links": "SC-CREED-ABSOLU-AVENTUS-100|inspired|high"
       },
       "in_stock": true,
       "short_description": "Afnan Perfumes Supremacy Collector's Edition is a fruity, fresh, citrus Eau de Parfum fragrance."
@@ -349,7 +356,8 @@
         "evidence_confidence": "medium_high",
         "market_price_eur": "47.79",
         "price_per_ml_eur": "0.4779",
-        "price_checked_at": "2026-09-08"
+        "price_checked_at": "2026-09-08",
+        "relationship_links": "SC-CREED-ABSOLU-AVENTUS-100|inspired|high"
       },
       "in_stock": true,
       "short_description": "Maison Asrar Vanguard is a fruity, fresh, woody Eau de Parfum fragrance."
@@ -393,7 +401,8 @@
         "evidence_confidence": "high",
         "market_price_eur": "42.79",
         "price_per_ml_eur": "0.21395",
-        "price_checked_at": "2026-09-08"
+        "price_checked_at": "2026-09-08",
+        "relationship_links": "SC-CREED-AVENTUS-100|clone|high"
       },
       "in_stock": true,
       "short_description": "Armaf Club de Nuit Intense Man is a citrus, smoky, fresh Eau de Parfum fragrance."
@@ -437,7 +446,8 @@
         "evidence_confidence": "high",
         "market_price_eur": "51.94",
         "price_per_ml_eur": "0.5194",
-        "price_checked_at": "2026-09-08"
+        "price_checked_at": "2026-09-08",
+        "relationship_links": "SC-CREED-AVENTUS-100|alternative|high"
       },
       "in_stock": true,
       "short_description": "Montblanc Explorer is a fresh, citrus, woody Eau de Parfum fragrance."
@@ -481,7 +491,8 @@
         "evidence_confidence": "high",
         "market_price_eur": "219.26",
         "price_per_ml_eur": "1.75408",
-        "price_checked_at": "2026-09-09"
+        "price_checked_at": "2026-09-09",
+        "relationship_links": "SC-AL-HARAMAIN-DETOUR-NOIR-100|clone|high;SC-ORIENTICA-ROYAL-BLEU-80|inspired|high"
       },
       "in_stock": true,
       "short_description": "Parfums de Marly Layton is a sweet, spicy, fruity Eau de Parfum fragrance."
@@ -525,7 +536,8 @@
         "evidence_confidence": "high",
         "market_price_eur": "19.95",
         "price_per_ml_eur": "0.1995",
-        "price_checked_at": "2026-09-09"
+        "price_checked_at": "2026-09-09",
+        "relationship_links": "SC-PDM-LAYTON-125|clone|high"
       },
       "in_stock": true,
       "short_description": "Al Haramain Détour Noir is a sweet, spicy, fruity Eau de Parfum fragrance."
@@ -569,7 +581,8 @@
         "evidence_confidence": "medium_high",
         "market_price_eur": "69.95",
         "price_per_ml_eur": "0.874375",
-        "price_checked_at": "2026-09-09"
+        "price_checked_at": "2026-09-09",
+        "relationship_links": "SC-PDM-LAYTON-125|inspired|high"
       },
       "in_stock": true,
       "short_description": "Orientica Royal Bleu is a sweet, spicy, oriental Eau de Parfum fragrance."
@@ -613,7 +626,8 @@
         "evidence_confidence": "high",
         "market_price_eur": "239.99",
         "price_per_ml_eur": "1.91992",
-        "price_checked_at": "2026-09-09"
+        "price_checked_at": "2026-09-09",
+        "relationship_links": "SC-FRENCH-AVENUE-LIQUID-BRUN-100|clone|high"
       },
       "in_stock": true,
       "short_description": "Parfums de Marly Althaïr is a sweet, gourmand, creamy Eau de Parfum fragrance."
@@ -657,7 +671,8 @@
         "evidence_confidence": "high",
         "market_price_eur": "24.7",
         "price_per_ml_eur": "0.247",
-        "price_checked_at": "2026-09-09"
+        "price_checked_at": "2026-09-09",
+        "relationship_links": "SC-PDM-ALTHAIR-125|clone|high"
       },
       "in_stock": true,
       "short_description": "French Avenue Liquid Brun is a sweet, gourmand, creamy Eau de Parfum fragrance."
@@ -701,7 +716,8 @@
         "evidence_confidence": "high",
         "market_price_eur": "311.2",
         "price_per_ml_eur": "2.4896",
-        "price_checked_at": "2026-09-09"
+        "price_checked_at": "2026-09-09",
+        "relationship_links": "SC-SOSPIRO-VIBRATO-100|alternative|high;SC-AFNAN-TURATHI-BLUE-90|inspired|high;SC-MAISON-ASRAR-REGENT-100|inspired|medium_high"
       },
       "in_stock": true,
       "short_description": "Bvlgari Le Gemme Tygar is a citrus, fresh, woody Eau de Parfum fragrance."
@@ -745,7 +761,8 @@
         "evidence_confidence": "high",
         "market_price_eur": "229.99",
         "price_per_ml_eur": "2.2999",
-        "price_checked_at": "2026-09-09"
+        "price_checked_at": "2026-09-09",
+        "relationship_links": "SC-BVLGARI-TYGAR-125|alternative|high;SC-AFNAN-TURATHI-BLUE-90|inspired|high;SC-MAISON-ASRAR-REGENT-100|inspired|high"
       },
       "in_stock": true,
       "short_description": "Sospiro Vibrato is a citrus, fresh, fruity Eau de Parfum fragrance."
@@ -789,7 +806,8 @@
         "evidence_confidence": "high",
         "market_price_eur": "30.31",
         "price_per_ml_eur": "0.33678",
-        "price_checked_at": "2026-09-09"
+        "price_checked_at": "2026-09-09",
+        "relationship_links": "SC-BVLGARI-TYGAR-125|inspired|high;SC-SOSPIRO-VIBRATO-100|inspired|high"
       },
       "in_stock": true,
       "short_description": "Afnan Perfumes Turathi Blue is a citrus, fresh, fruity Eau de Parfum fragrance."
@@ -834,7 +852,8 @@
         "evidence_confidence": "medium_high",
         "market_price_eur": "43.99",
         "price_per_ml_eur": "0.4399",
-        "price_checked_at": "2026-09-09"
+        "price_checked_at": "2026-09-09",
+        "relationship_links": "SC-BVLGARI-TYGAR-125|inspired|medium_high;SC-SOSPIRO-VIBRATO-100|inspired|high"
       },
       "in_stock": true,
       "short_description": "Maison Asrar Regent is a citrus, fresh, floral Eau de Parfum fragrance."
@@ -878,7 +897,8 @@
         "evidence_confidence": "high",
         "market_price_eur": "66.04",
         "price_per_ml_eur": "0.6604",
-        "price_checked_at": "2026-09-09"
+        "price_checked_at": "2026-09-09",
+        "relationship_links": ""
       },
       "in_stock": true,
       "short_description": "Giorgio Armani Stronger With You Intensely is a sweet, gourmand, spicy Eau de Parfum fragrance."
@@ -922,7 +942,8 @@
         "evidence_confidence": "high",
         "market_price_eur": "141.03",
         "price_per_ml_eur": "1.4103",
-        "price_checked_at": "2026-09-10"
+        "price_checked_at": "2026-09-10",
+        "relationship_links": "SC-NUSUK-ATEEQ-100|inspired|high;SC-RAYHAAN-ITALIA-100|inspired|high"
       },
       "in_stock": true,
       "short_description": "Xerjoff Naxos is a sweet, spicy, gourmand Eau de Parfum fragrance."
@@ -966,7 +987,8 @@
         "evidence_confidence": "high",
         "market_price_eur": "28.85",
         "price_per_ml_eur": "0.2885",
-        "price_checked_at": "2026-09-10"
+        "price_checked_at": "2026-09-10",
+        "relationship_links": "SC-XERJOFF-NAXOS-100|inspired|high"
       },
       "in_stock": true,
       "short_description": "Nusuk Ateeq is a sweet, spicy, gourmand Extrait de Parfum fragrance."
@@ -1010,7 +1032,8 @@
         "evidence_confidence": "medium_high",
         "market_price_eur": "29.89",
         "price_per_ml_eur": "0.2989",
-        "price_checked_at": "2026-09-10"
+        "price_checked_at": "2026-09-10",
+        "relationship_links": "SC-XERJOFF-NAXOS-100|inspired|high"
       },
       "in_stock": true,
       "short_description": "Rayhaan Italia is a sweet, spicy, creamy Eau de Parfum fragrance."
@@ -1054,7 +1077,8 @@
         "evidence_confidence": "high",
         "market_price_eur": "95.0",
         "price_per_ml_eur": "0.95",
-        "price_checked_at": "2026-09-10"
+        "price_checked_at": "2026-09-10",
+        "relationship_links": "SC-AL-WATANIAH-KAYAAN-CLASSIC-100|clone|high"
       },
       "in_stock": true,
       "short_description": "Dior Homme Intense is a floral, powdery, sweet Eau de Parfum fragrance."
@@ -1098,7 +1122,8 @@
         "evidence_confidence": "high",
         "market_price_eur": "19.5",
         "price_per_ml_eur": "0.195",
-        "price_checked_at": "2026-09-10"
+        "price_checked_at": "2026-09-10",
+        "relationship_links": "SC-DIOR-HOMME-INTENSE-100|clone|high"
       },
       "in_stock": true,
       "short_description": "Al Wataniah Kayaan Classic is a powdery, sweet, woody Eau de Parfum fragrance."
@@ -1142,7 +1167,8 @@
         "evidence_confidence": "high",
         "market_price_eur": "66.0",
         "price_per_ml_eur": "0.66",
-        "price_checked_at": "2026-09-10"
+        "price_checked_at": "2026-09-10",
+        "relationship_links": ""
       },
       "in_stock": true,
       "short_description": "Valentino Uomo Born In Roma Intense is a sweet, synthetic, fresh Eau de Parfum fragrance."
@@ -1186,7 +1212,8 @@
         "evidence_confidence": "high",
         "market_price_eur": "365.0",
         "price_per_ml_eur": "7.3",
-        "price_checked_at": "2026-09-10"
+        "price_checked_at": "2026-09-10",
+        "relationship_links": ""
       },
       "in_stock": true,
       "short_description": "Clive Christian Jump Up and Kiss Me Hedonistic is a sweet, fruity, spicy Parfum fragrance."
@@ -1230,7 +1257,8 @@
         "evidence_confidence": "high",
         "market_price_eur": "80.99",
         "price_per_ml_eur": "0.8099",
-        "price_checked_at": "2026-09-10"
+        "price_checked_at": "2026-09-10",
+        "relationship_links": ""
       },
       "in_stock": true,
       "short_description": "Chanel Bleu de Chanel is a fresh, citrus, woody Eau de Parfum fragrance."
@@ -1274,7 +1302,8 @@
         "evidence_confidence": "high",
         "market_price_eur": "82.8",
         "price_per_ml_eur": "0.828",
-        "price_checked_at": "2026-09-10"
+        "price_checked_at": "2026-09-10",
+        "relationship_links": ""
       },
       "in_stock": true,
       "short_description": "Dior Sauvage is a fresh, spicy, synthetic Eau de Parfum fragrance."
@@ -1318,7 +1347,8 @@
         "evidence_confidence": "high",
         "market_price_eur": "74.62",
         "price_per_ml_eur": "0.7462",
-        "price_checked_at": "2026-09-10"
+        "price_checked_at": "2026-09-10",
+        "relationship_links": ""
       },
       "in_stock": true,
       "short_description": "Prada L'Homme is a powdery, fresh, floral Eau de Toilette fragrance."
@@ -1362,7 +1392,8 @@
         "evidence_confidence": "high",
         "market_price_eur": "90.9",
         "price_per_ml_eur": "0.909",
-        "price_checked_at": "2026-09-10"
+        "price_checked_at": "2026-09-10",
+        "relationship_links": ""
       },
       "in_stock": true,
       "short_description": "Essential Parfums Bois Impérial is a fresh, woody, synthetic Eau de Parfum fragrance."
@@ -1406,7 +1437,8 @@
         "evidence_confidence": "high",
         "market_price_eur": "77.0",
         "price_per_ml_eur": "1.54",
-        "price_checked_at": "2026-09-10"
+        "price_checked_at": "2026-09-10",
+        "relationship_links": ""
       },
       "in_stock": true,
       "short_description": "Al Ambra Dubai Musk is a creamy, fresh, sweet Extrait de Parfum fragrance."

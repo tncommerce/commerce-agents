@@ -141,6 +141,18 @@ def convert_product(product, product_name_map):
         "scentai_target_groups", []
     )
 
+    relationship_links = ";".join(
+        "|".join(
+            (
+                as_string(relationship.get("related_product_id")),
+                as_string(relationship.get("relationship_type")),
+                as_string(relationship.get("confidence")),
+            )
+        )
+        for relationship in product.get("relationships", [])
+        if relationship.get("related_product_id")
+    )
+
     labels = []
 
     for accord in profile.get(
@@ -227,6 +239,9 @@ def convert_product(product, product_name_map):
 
         "similar_to":
             join_values(related_names),
+
+        "relationship_links":
+            relationship_links,
 
         "evidence_confidence":
             as_string(
