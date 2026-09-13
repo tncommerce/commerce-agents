@@ -60,14 +60,14 @@ function ReviewAspectsRow({ synthesis }: { synthesis: ReviewAspects }) {
   return (
     <div data-review-aspects className="mt-2">
       <div className="text-[11px] font-semibold uppercase tracking-wide text-(--ink-soft)">
-        From {synthesis.review_count.toLocaleString()} Kundenbewertungen
+        Aus {synthesis.review_count.toLocaleString("de-DE")} Kundenbewertungen
       </div>
       <div className="mt-1.5 flex flex-wrap gap-1.5">
         {synthesis.aspects.map((aspect) => (
           <div
             key={aspect.name}
             className="rounded-lg border border-(--line) bg-(--card) px-2 py-1"
-            title={`${aspect.name}: ${aspect.positive_pct}% positive across ${aspect.mentions.toLocaleString()} mentions`}
+            title={`${aspect.name}: ${aspect.positive_pct}% positiv bei ${aspect.mentions.toLocaleString("de-DE")} Nennungen`}
           >
             <div className="flex items-baseline gap-1.5 text-[13px]">
               <span className="font-medium text-(--ink)">{aspect.name}</span>
@@ -79,7 +79,7 @@ function ReviewAspectsRow({ synthesis }: { synthesis: ReviewAspects }) {
                 {aspect.positive_pct}%
               </span>
               <span className="text-[11px] text-(--ink-soft)">
-                {aspect.mentions.toLocaleString()} mentions
+                {aspect.mentions.toLocaleString("de-DE")} Nennungen
               </span>
             </div>
             <div className="mt-1 h-1 w-full overflow-hidden rounded-full bg-(--well)">
@@ -102,7 +102,7 @@ function VariantList({ family, variants }: { family: Product; variants: Product[
   const { ask } = useStoreFrame();
   const pricesDiffer = variants.some((variant) => variant.price !== variants[0]?.price);
   return (
-    <ul className="mt-2 flex flex-wrap gap-1.5" aria-label="Options">
+    <ul className="mt-2 flex flex-wrap gap-1.5" aria-label="Optionen">
       {variants.map((variant) => {
         const label = optionValuesLabel(variant);
         const available = variant.in_stock !== false;
