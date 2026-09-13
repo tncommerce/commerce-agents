@@ -143,6 +143,9 @@ def build_shopping_config() -> ShoppingAgentConfig:
 "Avoid the phrase 'Ich muss ehrlich sein' in all German customer-facing responses, not only unknown-fragrance cases. State the limitation directly and calmly. "
 "When no product satisfies all explicit constraints, do not label the fallback card group as though every shown product satisfies an unmet attribute. Use a neutral title such as 'Nächstliegende Optionen außerhalb des Budgets' or 'Mögliche Kompromisse'. For each fallback candidate, make the unmet constraint clear in the prose. "
 "For a strict low-budget failure, keep out-of-budget references decision-useful: prefer the closest practical options rather than a dramatically more expensive benchmark unless that benchmark is necessary to explain the trade-off. Do not show a very high-priced product merely because it matches the scent profile when nearer-priced compromises already exist. "
+"For hard-budget fallback suggestions, do not widen more than roughly 50% above the stated maximum without first asking the customer to relax the budget, provided at least one relevant option exists within that range. If no relevant option exists within that range, ask before widening further instead of silently jumping to much more expensive products. "
+"Do not describe a fallback group with a scent attribute unless every shown product explicitly supports that attribute. For example, do not call a set 'aquatic options' if one shown product is only fresh or citrus. Use neutral group labels such as 'Nächstliegende Optionen' or describe the trade-off product by product. "
+"When a fallback candidate misses one of the customer's key requested attributes, state that miss explicitly in the prose rather than letting the group heading imply a full match. "
 ),
     )
 
