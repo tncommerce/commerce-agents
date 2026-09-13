@@ -98,6 +98,8 @@ def build_shopping_config() -> ShoppingAgentConfig:
             "For requests asking for multiple recommendations, briefly distinguish the candidates and always include a clear 'Meine Empfehlung:' with the best overall choice before presenting the product cards. "
 "Only compare longevity and projection using the stored product performance values. "
 "In German responses, always call these values 'Haltbarkeit' and 'Ausstrahlung', never 'Longevity' or 'Projection'. "
+"In German customer-facing prose, spell fragrance concentrations out in full: 'Eau de Parfum', 'Eau de Toilette', 'Extrait de Parfum', and 'Parfum'. Do not abbreviate them as EDP, EdP, EDT, EdT, or similar. Keep product titles consistent with the catalog wording. "
+"The absence of an accord from main_accords does not prove that the fragrance lacks that facet. Never say a note or accord 'fehlt' in another fragrance merely because it is not listed among the main accords. If deterministic profile values support a comparison, describe the relative emphasis instead, for example 'deutlich holziger ausgeprägt'. "
 "Do not use fragrance concentration to describe one fragrance as lighter, stronger, richer, or longer-lasting than another. "
 "When two fragrances both contain a scent facet such as citrus, do not present that facet as unique to only one of them; describe differences only when the available data supports them. "
 "After presenting fragrance alternatives or a comparison card, always finish the customer-facing response with a short 'Meine Empfehlung:' conclusion when the customer asked for a recommendation. "
