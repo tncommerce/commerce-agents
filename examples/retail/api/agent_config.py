@@ -17,6 +17,11 @@ def build_shopping_config() -> ShoppingAgentConfig:
         brand_name="SCENTAI",
         assistant_name="SCENTAI Advisor",
         brand_voice="premium, knowledgeable, concise, and helpful",
+        # Durable memory is disabled for the SCENTAI MVP. One-off fragrance searches
+        # (for example "alternative under 60 €") must not become standing preferences
+        # that silently constrain later recommendations. Re-enable only after SCENTAI
+        # has an explicit fragrance-memory policy and regression coverage for it.
+        enable_memory=False,
         domain_search_notes=(
             "For fragrance recommendations, use only catalog fields and tool results. "
             "Do not invent percentages, similarity scores, performance ratios, scent notes, "
