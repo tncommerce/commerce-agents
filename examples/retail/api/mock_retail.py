@@ -991,8 +991,12 @@ class MockRetail(StorefrontBackend):
     # Cart
     # ------------------------------------------------------------------
 
+    @staticmethod
+    def _with_store_currency(cart: Cart) -> Cart:
+        return cart.model_copy(update={"currency": "EUR"})
+
     async def get_cart(self, session: ShoppingSessionContext) -> Cart:
-        return self._carts.cart(session.session_id)
+        return self._with_store_currency(self._carts.cart(session.session_id))
 
     async def add_to_cart(
         self, session: ShoppingSessionContext, product_id: str, quantity: int
@@ -1006,15 +1010,17 @@ class MockRetail(StorefrontBackend):
             raise Unavailable(unavailable_detail(product, self.listing_of(product_id)))
         existing = self._carts.lines(session.session_id).get(product_id)
         quantity += existing.quantity if existing else 0
-        return self._carts.put(session.session_id, product, quantity)
+        return self._with_store_currency(self._carts.put(session.session_id, product, quantity))
 
     async def update_cart_item(
         self, session: ShoppingSessionContext, product_id: str, quantity: int
     ) -> Cart:
-        return self._carts.set_quantity(session.session_id, product_id, quantity)
+        return self._with_store_currency(
+            self._carts.set_quantity(session.session_id, product_id, quantity)
+        )
 
     async def remove_from_cart(self, session: ShoppingSessionContext, product_id: str) -> Cart:
-        return self._carts.remove(session.session_id, product_id)
+        return self._with_store_currency(self._carts.remove(session.session_id, product_id))
 
     def reset_session(self, session_id: str) -> None:
         self._carts.reset(session_id)
