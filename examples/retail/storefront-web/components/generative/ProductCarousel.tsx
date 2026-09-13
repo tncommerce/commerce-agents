@@ -7,7 +7,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { formatMoney, optionValuesLabel, priceLabel, useStoreFrame } from "web-shared";
 import { fetchProduct } from "@/lib/api";
 import type { PriceIntelligence, Product, ProductDetails, ProductsPayload, ReviewAspects } from "@/lib/types";
-import ProductTile, { AddButton, DeliveryPromise, OptionLine, ProductImage, Rating } from "../ProductTile";
+import ProductTile, { AddButton, DeliveryPromise, OptionLine, ProductImage, ProductRating, Rating } from "../ProductTile";
 
 function PriceIntelligenceRow({ intel }: { intel: PriceIntelligence }) {
   const { series, low, high } = intel;
@@ -165,7 +165,11 @@ function ProductDetail({
               <OptionLine product={full} />
               <div className="mt-0.5 flex items-center gap-2">
                 <span className="text-sm font-bold">{priceLabel(full)}</span>
-                <Rating rating={full.rating} count={full.review_count} />
+                {String(full.product_id).startsWith("SC-") ? (
+                  <ProductRating product={full} />
+                ) : (
+                  <Rating rating={full.rating} count={full.review_count} />
+                )}
                 {full.in_stock === false ? (
                   <span className="rounded-full bg-(--ink)/85 px-2 py-0.5 text-[11px] font-medium text-(--surface)">
                     Nicht auf Lager
