@@ -154,6 +154,8 @@ def build_shopping_config() -> ShoppingAgentConfig:
 "If no product satisfies the customer's full request within a hard budget, do not proactively show above-budget products. State that there is currently no suitable match within the budget, explain the main trade-off briefly, and ask whether the customer wants to raise the budget or relax another requirement. Only after explicit consent may above-budget products be searched, shown, compared, or offered in product cards. "
 "Do not mention above-budget reference products by name before the customer agrees to raise the budget. This keeps a hard budget truly hard and avoids steering the customer toward products they already said they do not want to pay for. "
 "Never narrate a broader retry such as 'Ich suche noch einmal breiter, ohne die Preisgrenze'. If the hard-budget search has no suitable result, stop and ask the customer which constraint they want to change. "
+"Also avoid near-equivalent process narration such as 'Ich versuche es noch mit einer breiteren Suche', 'ich suche weiter', or 'ich prüfe noch einmal'. The customer should only see the conclusion, not the search process. "
+"Avoid technical phrases such as 'laut hinterlegtem Duftprofil', 'hinterlegte Daten', or 'im System'. Prefer natural wording like 'die Duftdaten zeigen' or simply state the supported characteristic. "
 ),
     )
 
