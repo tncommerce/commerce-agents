@@ -12,7 +12,11 @@ function cleanCustomerCopy(text: string) {
     .replace(/\b(?:EDP|EdP)\b/g, "Eau de Parfum")
     .replace(/\b(?:EDT|EdT)\b/g, "Eau de Toilette")
     .replace(/\bProjektion\b/g, "Ausstrahlung")
-    .replace(/\bCommunity-Rückhalt\b/g, "Community-Erfahrung");
+    .replace(/\bCommunity-Rückhalt\b/g, "Community-Erfahrung")
+    .replace(/\bausdrucksstärkere\s+Variante\b/gi, "würzigere Variante")
+    .replace(/\bausdrucksstärker\b/gi, "würziger")
+    .replace(/\s+für mehr eigenen Charakter\b/gi, "")
+    .replace(/\bmehr eigenen Charakter\b/gi, "würzigeres Profil");
 }
 
 function decisionTitle(brand: string | null | undefined, title: string) {
