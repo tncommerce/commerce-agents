@@ -104,6 +104,13 @@ export default function HomeView({
       </Greeting>
       <Starters items={STARTERS} />
       {picks.length ? (
+        <div className="flex flex-wrap gap-2 text-[12.5px] text-(--ink-soft)">
+          <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">{picks.length} Düfte im Sortiment</span>
+          <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">Preise & Community-Bewertungen</span>
+          <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">Empfehlungen nach Budget & Duftprofil</span>
+        </div>
+      ) : null}
+      {picks.length ? (
         <HomeSection title="Düfte entdecken" subtitle="Entdecke das Sortiment oder lass dich direkt von SCENTAI beraten">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             {picks.map((product) => (
