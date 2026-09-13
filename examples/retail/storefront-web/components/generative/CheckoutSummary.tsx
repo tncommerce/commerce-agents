@@ -19,7 +19,7 @@ export default function CheckoutSummary({ payload }: { payload: CheckoutPayload 
   // dates and thumbnails.
   const catalog = useCatalogIndex(fetchProducts);
   // The policy says "over" the threshold, so a cart at exactly the threshold is not free.
-  const freeShipping = cart.subtotal > STORE_POLICY.freeShippingThreshold;
+  const freeShipping = cart.subtotal >= STORE_POLICY.freeShippingThreshold;
   return (
     <section data-checkout-card className="rounded-2xl border-2 border-(--accent) bg-(--card) p-4 shadow-(--shadow-sm)">
       <div className="flex items-center justify-between gap-2">
