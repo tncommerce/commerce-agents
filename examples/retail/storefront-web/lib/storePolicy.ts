@@ -6,5 +6,5 @@ export const STORE_POLICY = {
   returnsShort: "",
   returnsLine: "",
   freeShippingThreshold: 49,
-  standardShippingEta: "3–5 business days",
+  standardShippingEta: "3–5 Werktage",
 } as const;
