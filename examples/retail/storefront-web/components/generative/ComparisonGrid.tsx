@@ -30,22 +30,11 @@ export default function ComparisonGrid({
   const entries = payload.entries ?? [];
 const delta = payload.price_delta;
 
-const isScentaiComparison =
-  entries.length > 0 &&
-  entries.every((entry) => entry.product_id.startsWith("SC-"));
-
-const maxPros = isScentaiComparison
-  ? 0
-  : Math.max(0, ...entries.map((entry) => (entry.pros ?? []).length));
-
-const maxCons = isScentaiComparison
-  ? 0
-  : Math.max(0, ...entries.map((entry) => (entry.cons ?? []).length));
+const maxPros = Math.max(0, ...entries.map((entry) => (entry.pros ?? []).length));
+const maxCons = Math.max(0, ...entries.map((entry) => (entry.cons ?? []).length));
 
 const cardRows = {
-  "--cmp-rows": isScentaiComparison
-    ? "1fr auto"
-    : `1fr auto repeat(${maxPros + maxCons}, auto)`,
+  "--cmp-rows": `1fr auto repeat(${maxPros + maxCons}, auto)`,
 } as CSSProperties;
   return (
     <section className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm)">
@@ -82,23 +71,23 @@ const cardRows = {
                 </div>
               </div>
               <div>
-                {!isScentaiComparison && entry.best_for ? (
+                {entry.best_for ? (
                   <div className="rounded-md bg-(--well) px-2 py-1 text-[13px] text-(--ink)">
                     Ideal für: {entry.best_for}
                   </div>
                 ) : null}
               </div>
-              {!isScentaiComparison && pros.map((pro) => (
+              {pros.map((pro) => (
                 <TermRow key={pro} sign="+" text={pro} />
               ))}
               {/* Pads keep a shorter pros list from pulling its cons up. */}
-              {!isScentaiComparison && Array.from({ length: maxPros - pros.length }, (_, index) => (
+              {Array.from({ length: maxPros - pros.length }, (_, index) => (
                 <div key={`pro-pad-${index}`} className="hidden sm:block" aria-hidden />
               ))}
-              {!isScentaiComparison && cons.map((con) => (
+              {cons.map((con) => (
                 <TermRow key={con} sign="−" text={con} />
               ))}
-              {!isScentaiComparison && Array.from({ length: maxCons - cons.length }, (_, index) => (
+              {Array.from({ length: maxCons - cons.length }, (_, index) => (
                 <div key={`con-pad-${index}`} className="hidden sm:block" aria-hidden />
               ))}
             </div>
@@ -110,7 +99,7 @@ const cardRows = {
       </div>
       {delta ? (
         <p className="mt-3 text-[13px] text-(--ink)">
-          Preisunterschied:
+          Preisunterschied:{" "}
           <span className="font-semibold">{formatMoney(delta.amount)}</span>{" "}
           <span className="text-(--ink-soft)">
             ({formatMoney(delta.low_price)} vs {formatMoney(delta.high_price)})
