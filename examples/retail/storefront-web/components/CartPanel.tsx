@@ -9,10 +9,9 @@ import { STORE_POLICY } from "@/lib/storePolicy";
 import type { CartItem, CartPayload, Product } from "@/lib/types";
 import { DeliveryPromise, ProductImage, ProductTitle } from "./ProductTile";
 
-/** The policy says "over" the threshold, so a cart at exactly the threshold is not free. */
 function FreeShippingMeter({ subtotal }: { subtotal: number }) {
   const threshold = STORE_POLICY.freeShippingThreshold;
-  const free = subtotal > threshold;
+  const free = subtotal >= threshold;
   const remaining = threshold - subtotal;
   const pct = Math.min((subtotal / threshold) * 100, 100);
   return (
@@ -31,7 +30,7 @@ function FreeShippingMeter({ subtotal }: { subtotal: number }) {
       <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-(--well)">
         <div className={`h-full rounded-full transition-[width] duration-500 ease-out ${free ? "bg-(--ok)" : "bg-(--accent)"}`} style={{ width: `${pct}%` }} />
       </div>
-      {!free ? <div className="mt-1 text-[11.5px] text-(--ink-soft)">Standardversand ist bei Bestellungen über {formatMoney(threshold)} kostenlos.</div> : null}
+      {!free ? <div className="mt-1 text-[11.5px] text-(--ink-soft)">Standardversand ist ab {formatMoney(threshold)} kostenlos.</div> : null}
     </div>
   );
 }
@@ -82,7 +81,7 @@ export default function CartPanel({ cart, checkoutStaged = false }: { cart: Cart
         <>
           {items.length ? <FreeShippingMeter subtotal={cart?.subtotal ?? 0} /> : null}
           <TotalRow
-            label={count ? `Zwischensumme · ${count} ${count === 1 ? "Artikel" : "Artikel"}` : "Zwischensumme"}
+            label={count ? `Zwischensumme (${count} ${count === 1 ? "Artikel" : "Artikel"})` : "Zwischensumme"}
             value={formatMoney(cart?.subtotal ?? 0, cart?.currency)}
           />
           <CheckoutButton
