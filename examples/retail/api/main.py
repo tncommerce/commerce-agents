@@ -42,7 +42,14 @@ agent = ShoppingAgent(
 
 
 def product_detail(product: ProductDetails) -> dict:
-    # Detail-panel enrichment only; the agent's tool results never carry it.
+    # The original retail demo synthesizes price-history and review-aspect widgets.
+    # Those are not real SCENTAI evidence, so never expose them for fragrance catalog items.
+    if product.product_id.startswith("SC-"):
+        return product.model_dump() | {
+            "price_intelligence": None,
+            "review_aspects": None,
+        }
+
     return product.model_dump() | {
         "price_intelligence": backend.price_intelligence(product.product_id),
         "review_aspects": backend.review_aspects(product.product_id),
