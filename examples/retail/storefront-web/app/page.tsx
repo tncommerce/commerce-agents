@@ -67,7 +67,6 @@ export default function StorefrontPage() {
   return (
     <StoreShell
       minimal
-      showBagInMinimal
       brand={<Wordmark />}
       views={views}
       view={view}
