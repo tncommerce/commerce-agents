@@ -4,15 +4,14 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { type AgentEvent, formatMoney, OrdersView, plural, StoreShell, type StoreView, upcoming, useAgentTurn, useResource, useSession } from "web-shared";
+import { type AgentEvent, StoreShell, type StoreView, useAgentTurn, useSession } from "web-shared";
 import CartPanel from "@/components/CartPanel";
 import Chat from "@/components/Chat";
 import HomeView from "@/components/views/HomeView";
 import { api, UNREACHABLE } from "@/lib/api";
-import { NOUNS, OrderThumb } from "@/lib/orders";
 import type { CartPayload } from "@/lib/types";
 
-type View = "assistant" | "orders";
+type View = "assistant";
 
 const ASSISTANT = "SCENTAI Advisor";
 
@@ -49,17 +48,12 @@ export default function StorefrontPage() {
   );
 
   const chat = useAgentTurn(api, { ...session, unreachable: UNREACHABLE, onEvent });
-  // A reply may have started a return, so orders re-read after each one.
-  const { data: orders, failed: ordersFailed } = useResource(session.sessionId ? () => api.fetchOrders() : null, [session.sessionId, chat.completed]);
-
   useEffect(() => {
     if (session.sessionId) void api.fetchCart<CartPayload>().then((next) => next && setCart(next));
   }, [session.sessionId]);
 
-  const late = orders?.filter((order) => order.status === "delayed").length ?? 0;
   const views: StoreView<View>[] = [
     { id: "assistant", label: "Beratung", icon: "spark" },
-    { id: "orders", label: "Bestellungen", icon: "box", attention: late ? { count: late, label: `${late} verspätet` } : null },
   ];
   const shopper = session.shopper ?? { name: "Guest" };
   const count = cart?.item_count ?? 0;
@@ -83,23 +77,8 @@ export default function StorefrontPage() {
     >
       {/* The conversation stays mounted under the other view so its cards keep their state. */}
       <div className={view === "assistant" ? "h-full" : "hidden"}>
-        <Chat chat={chat} onCartUpdate={handleCartUpdate} home={<HomeView shopperName={shopper.name} orders={orders} ordersFailed={ordersFailed} onSeeOrders={() => setView("orders")} />} />
+        <Chat chat={chat} onCartUpdate={handleCartUpdate} home={<HomeView shopperName={shopper.name} />} />
       </div>
-      {view === "orders" ? (
-        <OrdersView
-          orders={orders}
-          failed={ordersFailed}
-          nouns={NOUNS}
-          subtitle={
-            orders
-              ? late
-                ? `${plural(late, "order")} running late. Ask why, or ask about a return on anything delivered.`
-                : `${plural(upcoming(orders).length, "order")} on the way. Ask about any of them, or about a return on anything delivered.`
-              : undefined
-          }
-          thumb={(order) => <OrderThumb order={order} />}
-        />
-      ) : null}
     </StoreShell>
   );
 }
