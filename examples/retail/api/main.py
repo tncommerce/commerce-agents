@@ -12,6 +12,8 @@ user, so what a shopper asks the store to remember, or to forget, survives a res
 
 from __future__ import annotations
 
+from fastapi import HTTPException
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from commerce_common.memory import InMemoryMemoryStore, JsonFileMemoryStore
@@ -27,13 +29,14 @@ from shopping_agent_runtime import ShoppingAgent
 
 from .agent_config import build_shopping_config
 from .merchant import create_merchant_router
-from .merchant_offers import MerchantOfferStore, customer_offer_payload
+from .merchant_offers import MerchantClickoutTracker, MerchantOfferStore, customer_offer_payload
 from .mock_retail import DATA_DIR, MockRetail
 
 load_demo_env(DATA_DIR.parent)
 PRODUCT_IMAGES = DATA_DIR.parent / "storefront-web" / "public" / "products"
 
 offer_store = MerchantOfferStore(DATA_DIR / "merchant_offers.json")
+clickout_tracker = MerchantClickoutTracker(DATA_DIR / ".merchant-clickouts.jsonl")
 backend = MockRetail(offer_store=offer_store)
 agent = ShoppingAgent(
     backend=backend,
@@ -88,6 +91,17 @@ async def product_offers(product_id: str) -> dict:
             "Für dich ändert sich der Preis dadurch nicht."
         ),
     }
+
+
+@app.get("/api/clickout/{offer_id}")
+async def merchant_clickout(offer_id: str) -> RedirectResponse:
+    offer = offer_store.eligible_offer(offer_id)
+    if offer is None:
+        raise HTTPException(status_code=404, detail="Offer not available")
+
+    clickout_tracker.record(offer)
+    target = offer.affiliate_url or offer.product_url
+    return RedirectResponse(url=target, status_code=302)
 
 
 @app.post("/api/cart/add")
