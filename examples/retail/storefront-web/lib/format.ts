@@ -97,6 +97,18 @@ export function attributeChips(product: { attributes?: Record<string, string> })
       if (/^(no|false)$/i.test(value)) return null;
 
       if (key === "volume_ml") return `${value} ml`;
+      if (key === "target_group") {
+        const labels: Record<string, string> = {
+          men: "Herren",
+          women: "Damen",
+          unisex: "Unisex",
+        };
+        return String(value)
+          .split(",")
+          .map((part) => labels[part.trim().toLowerCase()] ?? part.trim())
+          .filter(Boolean)
+          .join(", ");
+      }
 
       return value;
     })
