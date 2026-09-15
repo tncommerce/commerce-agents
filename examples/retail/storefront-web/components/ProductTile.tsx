@@ -332,7 +332,9 @@ export default function ProductTile({
           {!compact && product.in_stock !== false ? <ReturnsPromise /> : null}
           {!compact && isScentai && clickable ? (
             <div className="mt-1 text-[11px] font-medium text-(--ink-soft)">
-              Details & Händlerangebote ansehen →
+              {product.attributes?.price_source === "current_merchant_offer"
+                ? "Details & Händlerangebote ansehen →"
+                : "Details ansehen →"}
             </div>
           ) : null}
         </div>
