@@ -62,7 +62,7 @@ export interface MerchantOffer {
   total_price?: number | null;
   in_stock: boolean;
   variant_label?: string | null;
-  buy_url: string;
+  clickout_path: string;
   affiliate_link: boolean;
   last_updated_at: string;
 }
