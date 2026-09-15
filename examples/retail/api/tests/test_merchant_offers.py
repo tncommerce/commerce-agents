@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
 import json
 
-from retail.api.merchant_offers import MerchantOffer, MerchantOfferStore, rank_offers
+from retail.api.merchant_offers import MerchantClickoutTracker, MerchantOffer, MerchantOfferStore, rank_offers
 from retail.api.mock_retail import MockRetail
 
 
@@ -190,3 +190,66 @@ def test_materially_fresher_offer_beats_higher_commission() -> None:
     )
 
     assert ranked[0].offer_id == "fresh"
+
+
+def test_eligible_offer_rejects_stale_or_unavailable_offer(tmp_path) -> None:
+    path = tmp_path / "merchant_offers.json"
+    path.write_text(
+        json.dumps(
+            {
+                "offers": [
+                    {
+                        "offer_id": "stale-offer",
+                        "product_id": "SC-TEST-100",
+                        "merchant_id": "merchant-a",
+                        "merchant_name": "Merchant A",
+                        "price": 90.0,
+                        "currency": "EUR",
+                        "shipping_cost": 0.0,
+                        "in_stock": True,
+                        "product_url": "https://example.com/stale",
+                        "last_updated_at": (NOW - timedelta(hours=80)).isoformat(),
+                    },
+                    {
+                        "offer_id": "sold-out-offer",
+                        "product_id": "SC-TEST-100",
+                        "merchant_id": "merchant-b",
+                        "merchant_name": "Merchant B",
+                        "price": 90.0,
+                        "currency": "EUR",
+                        "shipping_cost": 0.0,
+                        "in_stock": False,
+                        "product_url": "https://example.com/sold-out",
+                        "last_updated_at": NOW.isoformat(),
+                    },
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    store = MerchantOfferStore(path)
+
+    assert store.eligible_offer("stale-offer", now=NOW) is None
+    assert store.eligible_offer("sold-out-offer", now=NOW) is None
+
+
+def test_clickout_tracker_writes_anonymous_event(tmp_path) -> None:
+    log_path = tmp_path / "clickouts.jsonl"
+    tracker = MerchantClickoutTracker(log_path)
+    tracked_offer = offer(
+        "tracked",
+        merchant="Merchant A",
+        price=90,
+        shipping=0,
+        commission=0.08,
+    )
+
+    click_id = tracker.record(tracked_offer, now=NOW)
+
+    row = json.loads(log_path.read_text(encoding="utf-8").strip())
+    assert row["click_id"] == click_id
+    assert row["offer_id"] == "tracked"
+    assert row["product_id"] == "SC-TEST-100"
+    assert row["merchant_name"] == "Merchant A"
+    assert "commission_rate" not in row
+    assert "user_id" not in row
