@@ -4,7 +4,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { type AgentEvent, StoreShell, type StoreView, useAgentTurn, useSession } from "web-shared";
+import { type AgentEvent, formatMoney, StoreShell, type StoreView, useAgentTurn, useSession } from "web-shared";
 import CartPanel from "@/components/CartPanel";
 import Chat from "@/components/Chat";
 import HomeView from "@/components/views/HomeView";
