@@ -244,7 +244,7 @@ function ProductDetail({
       <div className="flex items-start gap-3">
         <div className="relative shrink-0">
           <ProductImage product={full} className="h-24 w-28 rounded-lg" />
-          {onAdd && full.in_stock !== false ? <AddButton product={full} onAdd={onAdd} /> : null}
+          {onAdd && !String(full.product_id).startsWith("SC-") && full.in_stock !== false ? <AddButton product={full} onAdd={onAdd} /> : null}
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
