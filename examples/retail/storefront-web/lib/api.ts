@@ -25,6 +25,10 @@ export function fetchMerchantOffers(productId: string): Promise<MerchantOffersPa
   return api.get<MerchantOffersPayload>(`/merchant-offers/${encodeURIComponent(productId)}`);
 }
 
+export function merchantClickoutUrl(path: string): string {
+  return `${API_URL}${path}`;
+}
+
 export async function addToCart(productId: string, quantity = 1): Promise<CartPayload | null> {
   const data = await api.post<{ cart: CartPayload }>("/cart/add", { product_id: productId, quantity });
   return data?.cart ?? null;
