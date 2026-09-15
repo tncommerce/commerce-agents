@@ -344,6 +344,7 @@ export default function ProductCarousel({
   const [expandedId, setExpandedId] = useState<string | null>(null);
   // Keep the last product mounted while the panel folds shut, so collapse animates.
   const [renderedId, setRenderedId] = useState<string | null>(null);
+  const autoOpenedProductRef = useRef<string | null>(null);
   const collapseRef = useRef<HTMLDivElement>(null);
 
   const scrollerRef = useRef<HTMLDivElement>(null);
@@ -364,6 +365,20 @@ export default function ProductCarousel({
     observer.observe(node);
     return () => observer.disconnect();
   }, [syncOverflow, items.length, partial]);
+
+  // A single SCENTAI product is typically a detail-intent result. Open its detail
+  // panel once automatically so merchant offers are immediately discoverable.
+  useEffect(() => {
+    if (partial || items.length !== 1) return;
+
+    const productId = items[0]?.product.product_id;
+    if (!productId || !String(productId).startsWith("SC-")) return;
+    if (autoOpenedProductRef.current === productId) return;
+
+    autoOpenedProductRef.current = productId;
+    setRenderedId(productId);
+    setExpandedId(productId);
+  }, [items, partial]);
   const nudge = (direction: 1 | -1) => {
     const node = scrollerRef.current;
     node?.scrollBy({ left: direction * (node.clientWidth - 80), behavior: "smooth" });
