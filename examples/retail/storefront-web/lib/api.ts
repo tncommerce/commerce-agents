@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { AgentApi } from "web-shared";
-import type { CartPayload, Product, ProductDetails } from "./types";
+import type { CartPayload, MerchantOffersPayload, Product, ProductDetails } from "./types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
@@ -19,6 +19,10 @@ export async function fetchProducts(): Promise<Product[] | null> {
 
 export function fetchProduct(productId: string): Promise<ProductDetails | null> {
   return api.get<ProductDetails>(`/products/${encodeURIComponent(productId)}`);
+}
+
+export function fetchMerchantOffers(productId: string): Promise<MerchantOffersPayload | null> {
+  return api.get<MerchantOffersPayload>(`/merchant-offers/${encodeURIComponent(productId)}`);
 }
 
 export async function addToCart(productId: string, quantity = 1): Promise<CartPayload | null> {
