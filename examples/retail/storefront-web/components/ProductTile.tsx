@@ -337,7 +337,7 @@ export default function ProductTile({
           ) : null}
         </div>
       </div>
-      {onAdd && product.in_stock !== false ? (
+      {onAdd && !isScentai && product.in_stock !== false ? (
         // Over the image but a sibling of the clickable area, so one control is not nested in another.
         <div className={`pointer-events-none absolute inset-x-0 top-0 ${imageHeight}`}>
           <AddButton product={product} onAdd={onAdd} />
