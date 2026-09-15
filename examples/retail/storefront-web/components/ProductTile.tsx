@@ -170,6 +170,18 @@ export function Rating({ rating, count }: { rating?: number | null; count?: numb
         />
       );
     }
+export function customerPriceLabel(product: Product): string {
+  const base = customerPriceLabel(product);
+  const source = product.attributes?.price_source;
+
+  if (String(product.product_id).startsWith("SC-")) {
+    if (source === "current_merchant_offer") return `ab ${base}`;
+    if (source === "market_reference") return `ca. ${base}`;
+  }
+
+  return base;
+}
+
 /** What a variant chose, or what a product with options still needs chosen; empty otherwise. */
 function optionText(product: Product): string {
   return optionValuesLabel(product) || optionSummary(product);
@@ -313,7 +325,7 @@ export default function ProductTile({
             </div>
           )}
           <div className={isScentai ? "mt-auto flex items-end justify-between gap-2 border-t border-(--line)/70 pt-2.5" : "mt-auto flex items-center justify-between gap-1 pt-0.5"}>
-            <span className="text-sm font-semibold">{priceLabel(product)}</span>
+            <span className="text-sm font-semibold">{customerPriceLabel(product)}</span>
             <ProductRating product={product} compact={compact} />
           </div>
           <DeliveryPromise product={product} />
@@ -361,7 +373,7 @@ export function ProductRow({
         />
         <OptionLine product={product} />
         <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold">{priceLabel(product)}</span>
+          <span className="text-sm font-semibold">{customerPriceLabel(product)}</span>
           <ProductRating product={product} compact />
           {product.in_stock === false ? (
             <span className="rounded-full bg-(--ink)/85 px-2 py-0.5 text-[11px] font-medium text-(--surface)">
