@@ -5,7 +5,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { formatMoney, optionValuesLabel, useStoreFrame } from "web-shared";
-import { fetchMerchantOffers, fetchProduct } from "@/lib/api";
+import { fetchMerchantOffers, fetchProduct, merchantClickoutUrl } from "@/lib/api";
 import type { MerchantOffersPayload, PriceIntelligence, Product, ProductDetails, ProductsPayload, ReviewAspects } from "@/lib/types";
 import ProductTile, { AddButton, customerPriceLabel, DeliveryPromise, OptionLine, ProductImage, ProductRating, Rating } from "../ProductTile";
 
@@ -146,7 +146,7 @@ function MerchantOffersPanel({ payload }: { payload: MerchantOffersPayload }) {
               </div>
 
               <a
-                href={offer.buy_url}
+                href={merchantClickoutUrl(offer.clickout_path)}
                 target="_blank"
                 rel={offer.affiliate_link ? "sponsored noopener noreferrer" : "noopener noreferrer"}
                 className="rounded-lg bg-(--accent) px-3 py-2 text-[12px] font-semibold text-white transition-opacity hover:opacity-90"
