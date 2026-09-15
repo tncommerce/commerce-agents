@@ -138,3 +138,55 @@ def test_scentai_customer_product_marks_catalog_only_price_as_reference(tmp_path
 
     assert product is not None
     assert product.attributes["price_source"] == "market_reference"
+
+
+def test_higher_commission_wins_only_on_customer_equivalent_tie() -> None:
+    ranked = rank_offers(
+        [
+            offer(
+                "lower-commission",
+                merchant="A",
+                price=94,
+                shipping=0,
+                age_hours=2,
+                commission=0.05,
+            ),
+            offer(
+                "higher-commission",
+                merchant="B",
+                price=94,
+                shipping=0,
+                age_hours=5,
+                commission=0.10,
+            ),
+        ],
+        now=NOW,
+    )
+
+    assert ranked[0].offer_id == "higher-commission"
+
+
+def test_materially_fresher_offer_beats_higher_commission() -> None:
+    ranked = rank_offers(
+        [
+            offer(
+                "fresh",
+                merchant="A",
+                price=94,
+                shipping=0,
+                age_hours=2,
+                commission=0.03,
+            ),
+            offer(
+                "older-higher-commission",
+                merchant="B",
+                price=94,
+                shipping=0,
+                age_hours=30,
+                commission=0.15,
+            ),
+        ],
+        now=NOW,
+    )
+
+    assert ranked[0].offer_id == "fresh"
