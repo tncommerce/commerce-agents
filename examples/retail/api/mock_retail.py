@@ -231,13 +231,13 @@ class MockRetail(StorefrontBackend):
         return self._customer_facing_product(product)
 
     def _customer_facing_product(
-    self,
-    product,
-    reference_name: str | None = None,
-    reference_accords: str | None = None,
+        self,
+        product,
+        reference_name: str | None = None,
+        reference_accords: str | None = None,
     ):
-        product = self._with_commerce_price(product)
         """Return SCENTAI data without internal implementation fields."""
+        product = self._with_commerce_price(product)
 
         if not product.product_id.startswith("SC-"):
             return product
