@@ -171,7 +171,7 @@ export function Rating({ rating, count }: { rating?: number | null; count?: numb
       );
     }
 export function customerPriceLabel(product: Product): string {
-  const base = customerPriceLabel(product);
+  const base = priceLabel(product);
   const source = product.attributes?.price_source;
 
   if (String(product.product_id).startsWith("SC-")) {
