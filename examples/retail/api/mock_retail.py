@@ -49,6 +49,8 @@ from shopping_agent import (
     UserPreferences,
 )
 
+from .merchant_offers import MerchantOfferStore, offer_total_price
+
 DATA_DIR = example_data_dir(__file__)
 
 # Attributes stamped onto products at boot rather than authored in the catalog. The
@@ -114,8 +116,13 @@ _STORE_OPENS, _STORE_CLOSES = 9, 21
 
 
 class MockRetail(StorefrontBackend):
-    def __init__(self, data_dir: Path = DATA_DIR) -> None:
+    def __init__(
+        self,
+        data_dir: Path = DATA_DIR,
+        offer_store: MerchantOfferStore | None = None,
+    ) -> None:
         catalog, self.products, self.variants = load_catalog(data_dir)
+        self.offer_store = offer_store
         self.store_name: str = catalog.get("store_name", "the store")
         self._users = load_users(data_dir)
         self._orders = load_orders(data_dir)
@@ -182,12 +189,54 @@ class MockRetail(StorefrontBackend):
             "description": f"{product.short_description or ''} {product.long_description or ''}",
         }
 
-    @staticmethod
+    def _with_commerce_price(self, product: ProductDetails) -> ProductDetails:
+        """Stamp the best current merchant price onto SCENTAI products.
+
+        Products with an eligible live merchant offer use that customer total as the
+        effective price. Products without one retain the catalog market reference and
+        are explicitly marked so the agent/UI do not present it as a live buy price.
+        """
+
+        if not product.product_id.startswith("SC-"):
+            return product
+
+        attributes = dict(product.attributes or {})
+        offers = self.offer_store.offers_for(product.product_id) if self.offer_store else []
+
+        if offers:
+            best_offer = offers[0]
+            customer_total = offer_total_price(best_offer)
+            effective_price = customer_total if customer_total is not None else best_offer.price
+            attributes.update(
+                {
+                    "price_source": "current_merchant_offer",
+                    "price_merchant": best_offer.merchant_name,
+                    "merchant_price_checked_at": best_offer.last_updated_at.isoformat(),
+                }
+            )
+            return product.model_copy(
+                update={
+                    "price": effective_price,
+                    "attributes": attributes,
+                }
+            )
+
+        attributes["price_source"] = "market_reference"
+        return product.model_copy(update={"attributes": attributes})
+
+    def customer_product(self, product_id: str) -> ProductDetails | None:
+        product = self.product(product_id)
+        if product is None:
+            return None
+        return self._customer_facing_product(product)
+
     def _customer_facing_product(
+    self,
     product,
     reference_name: str | None = None,
     reference_accords: str | None = None,
     ):
+        product = self._with_commerce_price(product)
         """Return SCENTAI data without internal implementation fields."""
 
         if not product.product_id.startswith("SC-"):
@@ -613,7 +662,10 @@ class MockRetail(StorefrontBackend):
     ) -> list[Product]:
         del session
 
-        products = list(self.products.values())
+        products = [
+            self._with_commerce_price(product)
+            for product in self.products.values()
+        ]
 
         # SCENTAI cluster-aware alternative search.
         #
@@ -1010,7 +1062,10 @@ class MockRetail(StorefrontBackend):
             raise Unavailable(unavailable_detail(product, self.listing_of(product_id)))
         existing = self._carts.lines(session.session_id).get(product_id)
         quantity += existing.quantity if existing else 0
-        return self._with_store_currency(self._carts.put(session.session_id, product, quantity))
+        cart_product = self._with_commerce_price(product)
+        return self._with_store_currency(
+            self._carts.put(session.session_id, cart_product, quantity)
+        )
 
     async def update_cart_item(
         self, session: ShoppingSessionContext, product_id: str, quantity: int
