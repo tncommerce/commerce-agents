@@ -83,9 +83,9 @@ export default function HomeView({
       <Starters items={STARTERS} />
       <section className="grid gap-3 sm:grid-cols-3" aria-label="So funktioniert SCENTAI">
         <div className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm)">
-          <div className="text-[13px] font-semibold text-(--ink)">Beratung vor Provision</div>
+          <div className="text-[13px] font-semibold text-(--ink)">Empfehlungen nach deinen Kriterien</div>
           <p className="mt-1 text-[12.5px] leading-5 text-(--ink-soft)">
-            SCENTAI empfiehlt nach deinen Kriterien. Eine höhere Partnerprovision macht keinen schlechteren Deal zur Empfehlung.
+            SCENTAI priorisiert Passung, Preis, Verfügbarkeit und Aktualität. Partnervergütungen können nur bei praktisch gleichwertigen Händlerangeboten den Ausschlag geben.
           </p>
         </div>
         <div className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm)">
