@@ -318,6 +318,11 @@ export default function ProductTile({
           </div>
           <DeliveryPromise product={product} />
           {!compact && product.in_stock !== false ? <ReturnsPromise /> : null}
+          {!compact && isScentai && clickable ? (
+            <div className="mt-1 text-[11px] font-medium text-(--ink-soft)">
+              Details & Händlerangebote ansehen →
+            </div>
+          ) : null}
         </div>
       </div>
       {onAdd && product.in_stock !== false ? (
