@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta, timezone
+import json
 
-from retail.api.merchant_offers import MerchantOffer, rank_offers
+from retail.api.merchant_offers import MerchantOffer, MerchantOfferStore, rank_offers
+from retail.api.mock_retail import MockRetail
 
 
 NOW = datetime(2026, 9, 15, 12, 0, tzinfo=timezone.utc)
@@ -91,3 +93,48 @@ def test_fresher_offer_wins_exact_price_tie() -> None:
     )
 
     assert ranked[0].offer_id == "newer"
+
+
+def test_scentai_customer_product_uses_live_merchant_price(tmp_path) -> None:
+    path = tmp_path / "merchant_offers.json"
+    path.write_text(
+        json.dumps(
+            {
+                "offers": [
+                    {
+                        "offer_id": "live-bois",
+                        "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+                        "merchant_id": "merchant-a",
+                        "merchant_name": "Merchant A",
+                        "merchant_product_id": "sku-1",
+                        "price": 94.0,
+                        "currency": "EUR",
+                        "shipping_cost": 0.0,
+                        "in_stock": True,
+                        "product_url": "https://example.com/bois",
+                        "last_updated_at": NOW.isoformat(),
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    backend = MockRetail(offer_store=MerchantOfferStore(path))
+
+    product = backend.customer_product("SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100")
+
+    assert product is not None
+    assert product.price == 94.0
+    assert product.attributes["price_source"] == "current_merchant_offer"
+    assert product.attributes["price_merchant"] == "Merchant A"
+
+
+def test_scentai_customer_product_marks_catalog_only_price_as_reference(tmp_path) -> None:
+    path = tmp_path / "merchant_offers.json"
+    path.write_text('{"offers": []}', encoding="utf-8")
+    backend = MockRetail(offer_store=MerchantOfferStore(path))
+
+    product = backend.customer_product("SC-XERJOFF-NAXOS-100")
+
+    assert product is not None
+    assert product.attributes["price_source"] == "market_reference"
