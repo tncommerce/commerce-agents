@@ -101,6 +101,11 @@ export default function HomeView({
           </p>
         </div>
       </section>
+      <div className="-mt-2 text-[12px] text-(--ink-soft)">
+        <a href="/transparenz" className="font-medium text-(--accent-ink) hover:underline">
+          So bewertet SCENTAI Empfehlungen und Händlerangebote
+        </a>
+      </div>
       {picks.length ? (
         <div className="flex flex-wrap gap-2 text-[12.5px] text-(--ink-soft)">
           <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">{picks.length} Düfte im Sortiment</span>
