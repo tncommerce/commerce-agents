@@ -3,23 +3,15 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
 import {
-  ArrivingPanel,
-  estimateOf,
   Greeting,
-  greeting,
   HomeSection,
-  type Order,
-  plural,
   type Starter,
   Starters,
-  upcoming,
   useCatalogIndex,
   useStoreFrame,
 } from "web-shared";
 import { fetchProducts } from "@/lib/api";
-import { NOUNS, OrderThumb } from "@/lib/orders";
 import type { Product } from "@/lib/types";
 import ProductTile from "../ProductTile";
 
@@ -58,7 +50,7 @@ function featured(catalog: Record<string, Product>): Product[] {
 ;
 }
 
-function Brief({ orders: _orders }: { orders: Order[] | null }) {
+function Brief() {
   return (
     <span className="max-w-2xl text-[15px] leading-6 text-(--ink-soft)">
       Beschreibe, was du suchst – Duftprofil, Anlass, Budget oder einen Duft,
@@ -68,28 +60,14 @@ function Brief({ orders: _orders }: { orders: Order[] | null }) {
   );
 }
 
-/** The clock is read after mount, so the prerendered page never disagrees with the browser's day. */
-function useNow(): Date | null {
-  const [now, setNow] = useState<Date | null>(null);
-  useEffect(() => setNow(new Date()), []);
-  return now;
-}
-
 export default function HomeView({
-  shopperName,
-  orders,
-  ordersFailed,
-  onSeeOrders,
+  shopperName: _shopperName,
 }: {
   shopperName: string;
-  orders: Order[] | null;
-  ordersFailed: boolean;
-  onSeeOrders: () => void;
 }) {
   const { ask } = useStoreFrame();
   const catalog = useCatalogIndex(fetchProducts);
   const picks = featured(catalog);
-  const now = useNow();
   return (
     <div className="mx-auto flex w-full max-w-[1080px] flex-col gap-6 px-4 sm:px-6">
       <Greeting
@@ -100,9 +78,29 @@ export default function HomeView({
           </h1>
         }
       >
-        <Brief orders={orders} />
+        <Brief />
       </Greeting>
       <Starters items={STARTERS} />
+      <section className="grid gap-3 sm:grid-cols-3" aria-label="So funktioniert SCENTAI">
+        <div className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm)">
+          <div className="text-[13px] font-semibold text-(--ink)">Beratung vor Provision</div>
+          <p className="mt-1 text-[12.5px] leading-5 text-(--ink-soft)">
+            SCENTAI empfiehlt nach deinen Kriterien. Eine höhere Partnerprovision macht keinen schlechteren Deal zur Empfehlung.
+          </p>
+        </div>
+        <div className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm)">
+          <div className="text-[13px] font-semibold text-(--ink)">Aktuelle Händlerangebote</div>
+          <p className="mt-1 text-[12.5px] leading-5 text-(--ink-soft)">
+            Kaufbare Angebote werden getrennt von den Duftdaten gepflegt und nach Preis, Verfügbarkeit und Aktualität bewertet.
+          </p>
+        </div>
+        <div className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm)">
+          <div className="text-[13px] font-semibold text-(--ink)">Kauf direkt beim Händler</div>
+          <p className="mt-1 text-[12.5px] leading-5 text-(--ink-soft)">
+            SCENTAI verkauft nicht selbst. Zahlung, Versand, Retouren und Kaufvertrag laufen direkt über den ausgewählten Händler.
+          </p>
+        </div>
+      </section>
       {picks.length ? (
         <div className="flex flex-wrap gap-2 text-[12.5px] text-(--ink-soft)">
           <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">{picks.length} Düfte im Sortiment</span>
