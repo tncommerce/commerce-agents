@@ -116,6 +116,9 @@ def build_app(title: str, on_startup: Sequence[Callable[[], Awaitable[None]]] = 
         host.strip().rsplit(":", 1)[0] if ":" in host.strip() else host.strip()
         for host in os.environ.get("DEMO_ALLOWED_HOSTS", "").split(",")
     ]
+    render_hostname = os.environ.get("RENDER_EXTERNAL_HOSTNAME", "").strip()
+    if render_hostname:
+        extra_hosts.append(render_hostname)
     extra_origins = [
         origin.strip().rstrip("/")
         for origin in os.environ.get("DEMO_ALLOWED_ORIGINS", "").split(",")
