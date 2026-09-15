@@ -81,6 +81,12 @@ const STAMPED_ATTRIBUTES = new Set([
   "community_rating_10",
   "rating_source",
   "canonical_name",
+  "price_source",
+  "price_merchant",
+  "merchant_price_checked_at",
+  "market_price_eur",
+  "price_per_ml_eur",
+  "price_checked_at",
 ]);
 
 export function attributeChips(product: { attributes?: Record<string, string> }): string[] {
