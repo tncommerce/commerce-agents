@@ -5,8 +5,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { formatMoney, optionValuesLabel, priceLabel, useStoreFrame } from "web-shared";
-import { fetchProduct } from "@/lib/api";
-import type { PriceIntelligence, Product, ProductDetails, ProductsPayload, ReviewAspects } from "@/lib/types";
+import { fetchMerchantOffers, fetchProduct } from "@/lib/api";
+import type { MerchantOffersPayload, PriceIntelligence, Product, ProductDetails, ProductsPayload, ReviewAspects } from "@/lib/types";
 import ProductTile, { AddButton, DeliveryPromise, OptionLine, ProductImage, ProductRating, Rating } from "../ProductTile";
 
 function PriceIntelligenceRow({ intel }: { intel: PriceIntelligence }) {
@@ -97,6 +97,76 @@ function ReviewAspectsRow({ synthesis }: { synthesis: ReviewAspects }) {
   );
 }
 
+function MerchantOffersPanel({ payload }: { payload: MerchantOffersPayload }) {
+  if (!payload.offers.length) return null;
+
+  const hasAffiliateLink = payload.offers.some((offer) => offer.affiliate_link);
+
+  return (
+    <div className="mt-3 rounded-xl border border-(--line) bg-(--card) p-3" data-merchant-offers>
+      <div className="flex items-baseline justify-between gap-3">
+        <div>
+          <div className="text-[13px] font-semibold text-(--ink)">Aktuelle Händlerangebote</div>
+          <div className="mt-0.5 text-[11px] text-(--ink-soft)">
+            Kauf und Zahlung erfolgen direkt beim jeweiligen Händler.
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-2 space-y-2">
+        {payload.offers.map((offer) => {
+          const recommended = offer.offer_id === payload.best_offer_id;
+          const displayedPrice = offer.total_price ?? offer.price;
+
+          return (
+            <div
+              key={offer.offer_id}
+              className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-(--line) bg-(--well)/45 px-3 py-2.5"
+            >
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-[13px] font-semibold text-(--ink)">{offer.merchant_name}</span>
+                  {recommended ? (
+                    <span className="rounded-full border border-(--accent) px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-(--ink)">
+                      Bestes Angebot
+                    </span>
+                  ) : null}
+                </div>
+                <div className="mt-0.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                  <span className="text-sm font-bold text-(--ink)">
+                    {formatMoney(displayedPrice, offer.currency)}
+                  </span>
+                  {offer.shipping_label ? (
+                    <span className="text-[11px] text-(--ok)">{offer.shipping_label}</span>
+                  ) : null}
+                  {offer.variant_label ? (
+                    <span className="text-[11px] text-(--ink-soft)">{offer.variant_label}</span>
+                  ) : null}
+                </div>
+              </div>
+
+              <a
+                href={offer.buy_url}
+                target="_blank"
+                rel={offer.affiliate_link ? "sponsored noopener noreferrer" : "noopener noreferrer"}
+                className="rounded-lg bg-(--accent) px-3 py-2 text-[12px] font-semibold text-white transition-opacity hover:opacity-90"
+              >
+                Bei {offer.merchant_name} kaufen
+              </a>
+            </div>
+          );
+        })}
+      </div>
+
+      <p className="mt-2 text-[10px] leading-relaxed text-(--ink-soft)">
+        {hasAffiliateLink
+          ? payload.affiliate_disclosure
+          : "Aktuell sind dies direkte Händlerlinks ohne Affiliate-Tracking."}
+      </p>
+    </div>
+  );
+}
+
 /** The variants of a product with options; picking one hands the add to the assistant. */
 function VariantList({ family, variants }: { family: Product; variants: Product[] }) {
   const { ask } = useStoreFrame();
@@ -136,11 +206,32 @@ function ProductDetail({
   onClose: () => void;
 }) {
   const [details, setDetails] = useState<ProductDetails | null>(null);
+  const [merchantOffers, setMerchantOffers] = useState<MerchantOffersPayload | null | undefined>(undefined);
   useEffect(() => {
     let mounted = true;
     void fetchProduct(product.product_id).then((value) => {
       if (mounted) setDetails(value);
     });
+    return () => {
+      mounted = false;
+    };
+  }, [product.product_id]);
+
+  useEffect(() => {
+    let mounted = true;
+    setMerchantOffers(undefined);
+
+    if (!String(product.product_id).startsWith("SC-")) {
+      setMerchantOffers(null);
+      return () => {
+        mounted = false;
+      };
+    }
+
+    void fetchMerchantOffers(product.product_id).then((value) => {
+      if (mounted) setMerchantOffers(value);
+    });
+
     return () => {
       mounted = false;
     };
@@ -206,6 +297,10 @@ function ProductDetail({
             <p className="mt-2 text-[13px] leading-relaxed text-(--ink)">
               {details.long_description}
             </p>
+          ) : null}
+          {merchantOffers?.offers?.length ? <MerchantOffersPanel payload={merchantOffers} /> : null}
+          {merchantOffers === undefined && String(full.product_id).startsWith("SC-") ? (
+            <p className="mt-2 animate-pulse text-[12px] text-(--ink-soft)">Händlerangebote werden geladen…</p>
           ) : null}
           {details.variants?.length ? <VariantList family={details} variants={details.variants} /> : null}
           {Object.keys(specs).length ? (
