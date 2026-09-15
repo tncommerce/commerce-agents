@@ -33,8 +33,8 @@ from .mock_retail import DATA_DIR, MockRetail
 load_demo_env(DATA_DIR.parent)
 PRODUCT_IMAGES = DATA_DIR.parent / "storefront-web" / "public" / "products"
 
-backend = MockRetail()
 offer_store = MerchantOfferStore(DATA_DIR / "merchant_offers.json")
+backend = MockRetail(offer_store=offer_store)
 agent = ShoppingAgent(
     backend=backend,
     skills_dir=REPO_ROOT / "shopping-agent" / "skills",
@@ -66,6 +66,7 @@ host = build_storefront_host(
     memory_seeder=MemorySeeder(
         DATA_DIR / "memory-seed.json", marker=DATA_DIR / ".memory-seeded.json"
     ),
+    product_of=backend.customer_product,
     product_detail=product_detail,
 )
 app = host.app
