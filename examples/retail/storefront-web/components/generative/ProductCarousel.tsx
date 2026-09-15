@@ -4,7 +4,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { formatMoney, optionValuesLabel, priceLabel, useStoreFrame } from "web-shared";
+import { formatMoney, optionValuesLabel, useStoreFrame } from "web-shared";
 import { fetchMerchantOffers, fetchProduct } from "@/lib/api";
 import type { MerchantOffersPayload, PriceIntelligence, Product, ProductDetails, ProductsPayload, ReviewAspects } from "@/lib/types";
 import ProductTile, { AddButton, customerPriceLabel, DeliveryPromise, OptionLine, ProductImage, ProductRating, Rating } from "../ProductTile";
