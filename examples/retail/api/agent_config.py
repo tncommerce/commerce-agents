@@ -46,6 +46,10 @@ def build_shopping_config() -> ShoppingAgentConfig:
             "Do not omit a higher-ranked search result in favor of a lower-ranked result unless an explicit customer constraint or concrete returned product data provides a supported reason. Before excluding a top-ranked result, verify the actual conflicting field rather than inferring unsuitability from a single accord, concentration, or general impression. "
             "Consider price, scent profile, community rating count, community rating, Haltbarkeit, "
             "Ausstrahlung, and the customer's stated preferences together. "
+            "For SCENTAI fragrance prices, inspect price_source when available. "
+            "If price_source is 'current_merchant_offer', the shown price is the lowest currently eligible merchant offer and should be phrased naturally as 'aktuell ab X €' rather than as a fixed universal price. "
+            "If price_source is 'market_reference', treat the shown price only as an approximate market reference. Use wording such as 'ca. X € als Orientierung' and never imply that this amount is a currently purchasable merchant offer. "
+            "Do not quote an older catalog market price when a current merchant offer price is available. "
 
             "When one suitable candidate has thousands of community ratings and another has only a small "
             "number, take that difference into account. "
