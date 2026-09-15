@@ -27,12 +27,14 @@ from shopping_agent_runtime import ShoppingAgent
 
 from .agent_config import build_shopping_config
 from .merchant import create_merchant_router
+from .merchant_offers import MerchantOfferStore, customer_offer_payload
 from .mock_retail import DATA_DIR, MockRetail
 
 load_demo_env(DATA_DIR.parent)
 PRODUCT_IMAGES = DATA_DIR.parent / "storefront-web" / "public" / "products"
 
 backend = MockRetail()
+offer_store = MerchantOfferStore(DATA_DIR / "merchant_offers.json")
 agent = ShoppingAgent(
     backend=backend,
     skills_dir=REPO_ROOT / "shopping-agent" / "skills",
@@ -70,6 +72,21 @@ app = host.app
 app.include_router(create_merchant_router(backend, InMemoryMemoryStore()), prefix="/api/merchant")
 # The merchant portal shows the storefront's listing photos, so the API serves them to both apps.
 app.mount("/products", StaticFiles(directory=PRODUCT_IMAGES, check_dir=False), name="products")
+
+
+@app.get("/api/products/{product_id}/offers")
+async def product_offers(product_id: str) -> dict:
+    offers = offer_store.offers_for(product_id)
+
+    return {
+        "product_id": product_id,
+        "best_offer_id": offers[0].offer_id if offers else None,
+        "offers": [customer_offer_payload(offer) for offer in offers],
+        "affiliate_disclosure": (
+            "Bei Käufen über Partnerlinks kann SCENTAI eine Provision erhalten. "
+            "Für dich ändert sich der Preis dadurch nicht."
+        ),
+    }
 
 
 @app.post("/api/cart/add")
