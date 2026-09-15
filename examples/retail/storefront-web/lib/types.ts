@@ -49,6 +49,31 @@ export interface ProductDetails extends Product {
   review_aspects?: ReviewAspects | null;
 }
 
+export interface MerchantOffer {
+  offer_id: string;
+  product_id: string;
+  merchant_id: string;
+  merchant_name: string;
+  merchant_product_id?: string | null;
+  price: number;
+  currency: string;
+  shipping_cost?: number | null;
+  shipping_label?: string | null;
+  total_price?: number | null;
+  in_stock: boolean;
+  variant_label?: string | null;
+  buy_url: string;
+  affiliate_link: boolean;
+  last_updated_at: string;
+}
+
+export interface MerchantOffersPayload {
+  product_id: string;
+  best_offer_id?: string | null;
+  offers: MerchantOffer[];
+  affiliate_disclosure: string;
+}
+
 export interface CartItem {
   product_id: string;
   title: string;
