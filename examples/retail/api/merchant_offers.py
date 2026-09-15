@@ -4,6 +4,7 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from uuid import uuid4
 
 from pydantic import BaseModel, Field
 
@@ -132,7 +133,7 @@ def customer_offer_payload(offer: MerchantOffer) -> dict[str, Any]:
         "total_price": total,
         "in_stock": offer.in_stock,
         "variant_label": offer.variant_label,
-        "buy_url": offer.affiliate_url or offer.product_url,
+        "clickout_path": f"/api/clickout/{offer.offer_id}",
         "affiliate_link": bool(offer.affiliate_url),
         "last_updated_at": offer.last_updated_at.isoformat(),
     }
@@ -165,3 +166,55 @@ class MerchantOfferStore:
             now=now,
             max_age_hours=max_age_hours,
         )
+
+    def eligible_offer(
+        self,
+        offer_id: str,
+        *,
+        now: datetime | None = None,
+        max_age_hours: float = 72.0,
+    ) -> MerchantOffer | None:
+        candidate = next(
+            (offer for offer in self._load() if offer.offer_id == offer_id),
+            None,
+        )
+        if candidate is None:
+            return None
+
+        eligible = rank_offers(
+            [candidate],
+            now=now,
+            max_age_hours=max_age_hours,
+        )
+        return eligible[0] if eligible else None
+
+
+class MerchantClickoutTracker:
+    """Append-only local clickout event log for the MVP.
+
+    No customer identity is stored here. A later analytics phase can attach an
+    anonymous session or recommendation context once the public product is ready.
+    """
+
+    def __init__(self, path: Path) -> None:
+        self.path = path
+
+    def record(self, offer: MerchantOffer, *, now: datetime | None = None) -> str:
+        click_id = str(uuid4())
+        occurred_at = _as_utc(now or datetime.now(timezone.utc))
+        event = {
+            "click_id": click_id,
+            "occurred_at": occurred_at.isoformat(),
+            "offer_id": offer.offer_id,
+            "product_id": offer.product_id,
+            "merchant_id": offer.merchant_id,
+            "merchant_name": offer.merchant_name,
+            "network": offer.network,
+            "affiliate_link": bool(offer.affiliate_url),
+        }
+
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        with self.path.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(event, ensure_ascii=False) + "\n")
+
+        return click_id
