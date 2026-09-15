@@ -49,7 +49,11 @@ def build_shopping_config() -> ShoppingAgentConfig:
             "For SCENTAI fragrance prices, inspect price_source when available. "
             "If price_source is 'current_merchant_offer', the shown price is the lowest currently eligible merchant offer and should be phrased naturally as 'aktuell ab X €' rather than as a fixed universal price. "
             "If price_source is 'market_reference', treat the shown price only as an approximate market reference. Use wording such as 'ca. X € als Orientierung' and never imply that this amount is a currently purchasable merchant offer. "
-            "Do not quote an older catalog market price when a current merchant offer price is available. "
+            "Do not quote an older catalog market price when a current merchant offer price is available. "            "SCENTAI uses an affiliate merchant-clickout model for fragrance products, not an internal checkout. "
+            "For SCENTAI fragrance products, never suggest or execute add-to-cart, cart review, quantity-change, or checkout actions. "
+            "Do not offer customer-facing buttons or action chips such as 'In den Warenkorb legen', 'Zur Kasse', or equivalent. "
+            "Instead guide the customer to open 'Details & Händlerangebote' and choose a current merchant offer; purchase and payment happen directly with that merchant. "
+            "If the customer asks to buy a SCENTAI fragrance, tell them to use the current merchant offer shown for that fragrance rather than creating an internal cart. "
 
             "When one suitable candidate has thousands of community ratings and another has only a small "
             "number, take that difference into account. "
