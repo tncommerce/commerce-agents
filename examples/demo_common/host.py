@@ -116,6 +116,11 @@ def build_app(title: str, on_startup: Sequence[Callable[[], Awaitable[None]]] = 
         host.strip().rsplit(":", 1)[0] if ":" in host.strip() else host.strip()
         for host in os.environ.get("DEMO_ALLOWED_HOSTS", "").split(",")
     ]
+    extra_origins = [
+        origin.strip().rstrip("/")
+        for origin in os.environ.get("DEMO_ALLOWED_ORIGINS", "").split(",")
+        if origin.strip()
+    ]
     app = FastAPI(title=title, version="0.1.0", lifespan=_lifespan(on_startup))
     app.add_middleware(
         TrustedHostMiddleware,
@@ -123,6 +128,7 @@ def build_app(title: str, on_startup: Sequence[Callable[[], Awaitable[None]]] = 
     )
     app.add_middleware(
         CORSMiddleware,
+        allow_origins=extra_origins,
         allow_origin_regex=r"http://(localhost|127\.0\.0\.1):\d+",
         allow_methods=["*"],
         allow_headers=["*"],
