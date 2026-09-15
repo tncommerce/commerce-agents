@@ -7,7 +7,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { formatMoney, optionValuesLabel, priceLabel, useStoreFrame } from "web-shared";
 import { fetchMerchantOffers, fetchProduct } from "@/lib/api";
 import type { MerchantOffersPayload, PriceIntelligence, Product, ProductDetails, ProductsPayload, ReviewAspects } from "@/lib/types";
-import ProductTile, { AddButton, DeliveryPromise, OptionLine, ProductImage, ProductRating, Rating } from "../ProductTile";
+import ProductTile, { AddButton, customerPriceLabel, DeliveryPromise, OptionLine, ProductImage, ProductRating, Rating } from "../ProductTile";
 
 function PriceIntelligenceRow({ intel }: { intel: PriceIntelligence }) {
   const { series, low, high } = intel;
@@ -255,7 +255,7 @@ function ProductDetail({
               <div className="text-sm font-semibold leading-snug">{full.title}</div>
               <OptionLine product={full} />
               <div className="mt-0.5 flex items-center gap-2">
-                <span className="text-sm font-bold">{priceLabel(full)}</span>
+                <span className="text-sm font-bold">{customerPriceLabel(full)}</span>
                 {String(full.product_id).startsWith("SC-") ? (
                   <ProductRating product={full} />
                 ) : (
