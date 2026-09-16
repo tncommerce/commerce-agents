@@ -14,6 +14,7 @@ import {
 import { fetchProducts } from "@/lib/api";
 import type { Product } from "@/lib/types";
 import ProductTile from "../ProductTile";
+import LegalFooter from "../LegalFooter";
 
 const STARTERS: Starter[] = [
   {
@@ -101,10 +102,14 @@ export default function HomeView({
           </p>
         </div>
       </section>
-      <div className="-mt-2 text-[12px] text-(--ink-soft)">
+      <div className="-mt-2 space-y-1 text-[12px] text-(--ink-soft)">
         <a href="/transparenz" className="font-medium text-(--accent-ink) hover:underline">
           So bewertet SCENTAI Empfehlungen und Händlerangebote
         </a>
+        <p>
+          Werbung: Händlerlinks können Partnerlinks sein. Bei einem Kauf kann SCENTAI eine Provision erhalten.
+          Für dich soll sich der Händlerpreis dadurch nicht erhöhen.
+        </p>
       </div>
       {picks.length ? (
         <div className="flex flex-wrap gap-2 text-[12.5px] text-(--ink-soft)">
@@ -122,6 +127,7 @@ export default function HomeView({
           </div>
         </HomeSection>
       ) : null}
+      <LegalFooter />
     </div>
   );
 }
