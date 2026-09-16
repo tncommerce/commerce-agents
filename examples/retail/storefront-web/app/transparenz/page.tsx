@@ -26,8 +26,7 @@ export default function TransparencyPage() {
             <h2 className="font-semibold text-(--ink)">Empfehlungen zuerst nach deinen Kriterien</h2>
             <p className="mt-1">
               SCENTAI bewertet Düfte anhand der verfügbaren Produktdaten und deiner Anfrage.
-              Eine mögliche Partnerprovision soll nicht dazu führen, dass ein für dich schlechteres
-              Produkt empfohlen wird.
+              Eine mögliche Partnerprovision hat keinen Einfluss auf die Produktempfehlung.
             </p>
           </section>
 
@@ -35,9 +34,8 @@ export default function TransparencyPage() {
             <h2 className="font-semibold text-(--ink)">Wie Händlerangebote sortiert werden</h2>
             <p className="mt-1">
               Kaufbare Angebote werden unter anderem nach Verfügbarkeit, bekanntem Gesamtpreis
-              inklusive Versand und Aktualität der Angebotsdaten bewertet. Nur wenn Angebote für
-              den Kunden praktisch gleichwertig sind, kann eine höhere Partnerprovision als
-              nachrangiger Tie-Breaker berücksichtigt werden.
+              inklusive Versand und Aktualität der Angebotsdaten bewertet. Eine mögliche
+              Partnerprovision hat keinen Einfluss auf die Reihenfolge der Händlerangebote.
             </p>
           </section>
 

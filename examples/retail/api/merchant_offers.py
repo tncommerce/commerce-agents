@@ -33,9 +33,9 @@ class MerchantOffer(BaseModel):
     data_source: str | None = None
     last_updated_at: datetime
 
-    # Internal economics only. Never use this as a primary customer ranking signal.
-    # It may be used only as a late tie-breaker between customer-equivalent offers
-    # and is never exposed in the storefront response.
+    # Internal economics only. Never use this as a customer ranking signal.
+    # It may be retained for reporting and analytics but does not affect
+    # product recommendations or merchant-offer ordering.
     commission_rate: float | None = Field(default=None, ge=0)
 
 
@@ -78,12 +78,10 @@ def rank_offers(
     4. offers with a known customer total outrank unknown shipping
     5. lower customer total wins
     6. materially fresher data wins before monetization
-    7. among offers in the same freshness band, higher commission may break a
-       customer-equivalent tie
-    8. exact freshness then merchant name provide deterministic final tie-breakers
+    7. within the same freshness band, the more recently updated offer wins
+    8. merchant name provides a deterministic final tie-breaker
 
-    Commission can therefore never make a more expensive, unknown-shipping, stale,
-    or out-of-stock offer outrank a better customer offer.
+    Commission is never used as a ranking signal.
     """
 
     reference = _as_utc(now or datetime.now(timezone.utc))
@@ -100,17 +98,15 @@ def rank_offers(
         total_known = total is not None
         age = offer_age_hours(offer, now=reference)
 
-        # Offers inside the same 24-hour freshness band are considered comparable
-        # enough for economics to break a true customer-value tie. A materially
-        # fresher feed still wins before commission is considered.
+        # Offers inside the same 24-hour freshness band are considered comparable.
+        # Within that band, the more recently updated offer wins.
+        # Commission is not considered for ranking.
         freshness_band = int(age // 24)
-        commission = offer.commission_rate or 0.0
 
         return (
             0 if total_known else 1,
             total if total_known else offer.price,
             freshness_band,
-            -commission,
             age,
             offer.merchant_name.casefold(),
         )

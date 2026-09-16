@@ -41,3 +41,5 @@ merchant-agent/managed-agents/merchant-mcp-server/.merchant_memory.json
 .vscode/
 .claude/
 pyrightconfig.json
+
+examples/retail/data/.merchant_clickouts.jsonl

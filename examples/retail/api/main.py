@@ -36,7 +36,7 @@ load_demo_env(DATA_DIR.parent)
 PRODUCT_IMAGES = DATA_DIR.parent / "storefront-web" / "public" / "products"
 
 offer_store = MerchantOfferStore(DATA_DIR / "merchant_offers.json")
-clickout_tracker = MerchantClickoutTracker(DATA_DIR / ".merchant-clickouts.jsonl")
+clickout_tracker = MerchantClickoutTracker(DATA_DIR / ".merchant_clickouts.jsonl")
 backend = MockRetail(offer_store=offer_store)
 agent = ShoppingAgent(
     backend=backend,
