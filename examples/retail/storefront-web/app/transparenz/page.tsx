@@ -1,6 +1,8 @@
 // Copyright 2026 Anthropic PBC
 // SPDX-License-Identifier: Apache-2.0
 
+import LegalFooter from "@/components/LegalFooter";
+
 export const metadata = {
   title: "Transparenz | SCENTAI",
   description: "Wie SCENTAI Empfehlungen, Händlerangebote und Partnerlinks behandelt.",
@@ -9,7 +11,8 @@ export const metadata = {
 export default function TransparencyPage() {
   return (
     <main className="min-h-screen bg-(--ground) px-4 py-10 text-(--ink) sm:px-6">
-      <article className="mx-auto max-w-3xl rounded-2xl border border-(--line) bg-(--card) p-6 shadow-(--shadow-sm) sm:p-8">
+      <div className="mx-auto max-w-3xl">
+      <article className="rounded-2xl border border-(--line) bg-(--card) p-6 shadow-(--shadow-sm) sm:p-8">
         <a href="/" className="text-[13px] font-semibold text-(--accent-ink) hover:underline">
           ← Zurück zu SCENTAI
         </a>
@@ -66,6 +69,8 @@ export default function TransparencyPage() {
           </section>
         </div>
       </article>
+      <LegalFooter />
+      </div>
     </main>
   );
 }
