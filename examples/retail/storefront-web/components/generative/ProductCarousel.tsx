@@ -131,6 +131,11 @@ function MerchantOffersPanel({ payload }: { payload: MerchantOffersPayload }) {
                       Bestes Angebot
                     </span>
                   ) : null}
+                  {offer.affiliate_link ? (
+                    <span className="rounded-full border border-(--line) bg-(--card) px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-(--ink-soft)">
+                      Partnerlink
+                    </span>
+                  ) : null}
                 </div>
                 <div className="mt-0.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
                   <span className="text-sm font-bold text-(--ink)">
