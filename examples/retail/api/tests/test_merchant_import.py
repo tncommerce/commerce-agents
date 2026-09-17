@@ -330,3 +330,70 @@ def test_upsert_offers_file_updates_existing_and_adds_new(tmp_path) -> None:
 
     assert by_id["notino-bois-imperial-100"]["merchant_name"] == "Notino"
     assert by_id["notino-bois-imperial-100"]["network"] == "CJ"
+
+
+def test_import_feed_rows_continues_after_invalid_row() -> None:
+    mappings = [
+        MerchantProductMapping(
+            product_id=PRODUCT_ID,
+            merchant="notino",
+            merchant_product_id="NOTINO-123",
+        )
+    ]
+
+    result = import_feed_rows(
+        [
+            {
+                "offer_id": "notino-bois-imperial-100",
+                "merchant": "notino",
+                "merchant_id": "notino-de",
+                "merchant_name": "Notino",
+                "merchant_product_id": "NOTINO-123",
+                "price": 89.95,
+                "currency": "EUR",
+                "shipping_cost": 0.0,
+                "in_stock": True,
+                "product_url": "https://example.com/bois-imperial",
+                "network": "CJ",
+                "data_source": "cj-feed",
+                "last_updated_at": "2026-09-17T12:00:00Z",
+            },
+            {
+                "offer_id": "notino-unknown",
+                "merchant": "notino",
+                "merchant_id": "notino-de",
+                "merchant_name": "Notino",
+                "merchant_product_id": "UNKNOWN-999",
+                "price": 49.95,
+                "currency": "EUR",
+                "shipping_cost": 0.0,
+                "in_stock": True,
+                "product_url": "https://example.com/unknown",
+                "network": "CJ",
+                "data_source": "cj-feed",
+                "last_updated_at": "2026-09-17T12:00:00Z",
+            },
+            {
+                "offer_id": "broken-row",
+                "merchant": "notino",
+                "merchant_id": "notino-de",
+                "merchant_name": "Notino",
+                "merchant_product_id": "BROKEN-1",
+                "currency": "EUR",
+                "product_url": "https://example.com/broken",
+                "last_updated_at": "2026-09-17T12:00:00Z",
+            },
+        ],
+        mappings,
+    )
+
+    assert len(result.offers) == 1
+    assert result.offers[0].offer_id == "notino-bois-imperial-100"
+
+    assert len(result.unmatched) == 1
+    assert result.unmatched[0].offer_id == "notino-unknown"
+
+    assert len(result.invalid) == 1
+    assert result.invalid[0].row_index == 2
+    assert result.invalid[0].offer_id == "broken-row"
+    assert result.invalid[0].reason == "invalid_feed_row"

@@ -31,6 +31,11 @@ def main() -> None:
         type=Path,
         default=Path("examples/retail/data/merchant_unmatched.json"),
     )
+    parser.add_argument(
+        "--invalid",
+        type=Path,
+        default=Path("examples/retail/data/merchant_invalid.json"),
+    )
 
     args = parser.parse_args()
 
@@ -55,9 +60,24 @@ def main() -> None:
         encoding="utf-8",
     )
 
+    invalid_payload = {
+        "invalid": [
+            row.model_dump(mode="json")
+            for row in result.invalid
+        ]
+    }
+
+    args.invalid.parent.mkdir(parents=True, exist_ok=True)
+    args.invalid.write_text(
+        json.dumps(invalid_payload, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
     print(
+        f"Read: {len(rows)} | "
         f"Imported: {len(result.offers)} | "
-        f"Unmatched: {len(result.unmatched)}"
+        f"Unmatched: {len(result.unmatched)} | "
+        f"Invalid: {len(result.invalid)}"
     )
 
 

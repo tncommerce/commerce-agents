@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 
 from .merchant_offers import MerchantOffer
 
@@ -123,9 +123,18 @@ class UnmatchedFeedRow(BaseModel):
     reason: str = "product_mapping_not_found"
 
 
+class InvalidFeedRow(BaseModel):
+    row_index: int
+    offer_id: str | None = None
+    merchant: str | None = None
+    reason: str = "invalid_feed_row"
+    error: str
+
+
 class FeedImportResult(BaseModel):
     offers: list[MerchantOffer]
     unmatched: list[UnmatchedFeedRow]
+    invalid: list[InvalidFeedRow]
 
 
 def import_feed_rows(
@@ -134,9 +143,22 @@ def import_feed_rows(
 ) -> FeedImportResult:
     offers: list[MerchantOffer] = []
     unmatched: list[UnmatchedFeedRow] = []
+    invalid: list[InvalidFeedRow] = []
 
-    for payload in payloads:
-        row = MerchantFeedRow.model_validate(payload)
+    for row_index, payload in enumerate(payloads):
+        try:
+            row = MerchantFeedRow.model_validate(payload)
+        except ValidationError as exc:
+            invalid.append(
+                InvalidFeedRow(
+                    row_index=row_index,
+                    offer_id=payload.get("offer_id"),
+                    merchant=payload.get("merchant"),
+                    error=str(exc),
+                )
+            )
+            continue
+
         offer = normalize_feed_row(payload, mappings)
 
         if offer is None:
@@ -156,7 +178,9 @@ def import_feed_rows(
     return FeedImportResult(
         offers=offers,
         unmatched=unmatched,
+        invalid=invalid,
     )
+
 
 def upsert_offers_file(
     path: Path,

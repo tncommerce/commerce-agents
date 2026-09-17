@@ -12,6 +12,7 @@ def test_import_merchant_feed_command_end_to_end(tmp_path, monkeypatch, capsys) 
     feed_path = tmp_path / "feed.json"
     offers_path = tmp_path / "offers.json"
     unmatched_path = tmp_path / "unmatched.json"
+    invalid_path = tmp_path / "invalid.json"
 
     mappings_path.write_text(
         json.dumps(
@@ -66,6 +67,16 @@ def test_import_merchant_feed_command_end_to_end(tmp_path, monkeypatch, capsys) 
                         "data_source": "test-feed",
                         "last_updated_at": "2026-09-17T12:00:00Z",
                     },
+                    {
+                        "offer_id": "broken-row",
+                        "merchant": "notino",
+                        "merchant_id": "notino-de",
+                        "merchant_name": "Notino",
+                        "merchant_product_id": "BROKEN-1",
+                        "currency": "EUR",
+                        "product_url": "https://example.com/broken",
+                        "last_updated_at": "2026-09-17T12:00:00Z",
+                    },
                 ]
             }
         ),
@@ -85,13 +96,15 @@ def test_import_merchant_feed_command_end_to_end(tmp_path, monkeypatch, capsys) 
             str(offers_path),
             "--unmatched",
             str(unmatched_path),
+            "--invalid",
+            str(invalid_path),
         ],
     )
 
     main()
 
     output = capsys.readouterr().out
-    assert "Imported: 1 | Unmatched: 1" in output
+    assert "Read: 3 | Imported: 1 | Unmatched: 1 | Invalid: 1" in output
 
     saved_offers = json.loads(offers_path.read_text(encoding="utf-8"))
     assert len(saved_offers["offers"]) == 1
@@ -101,3 +114,9 @@ def test_import_merchant_feed_command_end_to_end(tmp_path, monkeypatch, capsys) 
     saved_unmatched = json.loads(unmatched_path.read_text(encoding="utf-8"))
     assert len(saved_unmatched["unmatched"]) == 1
     assert saved_unmatched["unmatched"][0]["offer_id"] == "notino-unknown"
+
+    saved_invalid = json.loads(invalid_path.read_text(encoding="utf-8"))
+    assert len(saved_invalid["invalid"]) == 1
+    assert saved_invalid["invalid"][0]["row_index"] == 2
+    assert saved_invalid["invalid"][0]["offer_id"] == "broken-row"
+    assert saved_invalid["invalid"][0]["reason"] == "invalid_feed_row"
