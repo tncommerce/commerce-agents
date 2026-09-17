@@ -121,7 +121,10 @@ def test_import_merchant_feed_command_end_to_end(tmp_path, monkeypatch, capsys) 
     assert len(saved_invalid["invalid"]) == 1
     assert saved_invalid["invalid"][0]["row_index"] == 2
     assert saved_invalid["invalid"][0]["offer_id"] == "broken-row"
-    assert saved_invalid["invalid"][0]["reason"] == "invalid_feed_row"
+    assert (
+        saved_invalid["invalid"][0]["reason"]
+        == "provider_contract_invalid"
+    )
 
 
 def test_import_merchant_feed_dry_run_does_not_write_files(
@@ -913,3 +916,125 @@ def test_cli_returns_review_exit_code_and_machine_json(
     assert "unmatched_rows" in payload["reasons"]
     assert payload["run"]["unmatched"] == 1
     assert payload["run"]["run_id"]
+
+
+def test_provider_contract_blocks_row_before_product_mapping(
+    tmp_path,
+    monkeypatch,
+    capsys,
+) -> None:
+    from retail.api import import_merchant_feed as import_command
+    from retail.api.merchant_providers import (
+        MappedMerchantFeedAdapter,
+        register_provider_adapter,
+    )
+
+    mappings_path = tmp_path / "mappings.json"
+    feed_path = tmp_path / "feed.json"
+    offers_path = tmp_path / "offers.json"
+
+    mappings_path.write_text(
+        json.dumps(
+            {
+                "mappings": [
+                    {
+                        "product_id": PRODUCT_ID,
+                        "merchant": "fixture-shop",
+                        "merchant_product_id": "SKU-123",
+                        "ean": None,
+                        "gtin": None,
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    feed_path.write_text(
+        json.dumps(
+            {
+                "offers": [
+                    {
+                        "external_offer": "offer-123",
+                        "external_sku": "SKU-123",
+                        "external_price": 89.95,
+                        "external_url":
+                            "https://example.com/product",
+                        "external_updated":
+                            "2026-09-17T18:00:00Z",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    offers_path.write_text(
+        json.dumps({"offers": []}),
+        encoding="utf-8",
+    )
+
+    adapter = MappedMerchantFeedAdapter(
+        provider_name="fixture-contract-gate",
+        field_map={
+            "offer_id": "external_offer",
+            "merchant_product_id": "external_sku",
+            "price": "external_price",
+            "product_url": "external_url",
+            "last_updated_at": "external_updated",
+        },
+        constants={
+            "merchant": "fixture-shop",
+            "merchant_id": "fixture-de",
+            "merchant_name": "Fixture Shop",
+            "currency": "EUR",
+            "data_source": "fixture-feed",
+        },
+    )
+
+    register_provider_adapter(
+        adapter,
+        replace=True,
+    )
+
+    received_rows = []
+    original_import = import_command.import_feed_rows
+
+    def tracked_import(payloads, mappings):
+        received_rows.append(list(payloads))
+        return original_import(
+            payloads,
+            mappings,
+        )
+
+    monkeypatch.setattr(
+        import_command,
+        "import_feed_rows",
+        tracked_import,
+    )
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "import_merchant_feed",
+            "--feed",
+            str(feed_path),
+            "--mappings",
+            str(mappings_path),
+            "--offers",
+            str(offers_path),
+            "--provider",
+            "fixture-contract-gate",
+            "--dry-run",
+        ],
+    )
+
+    import_command.main()
+
+    output = capsys.readouterr().out
+
+    assert received_rows == [[]]
+    assert "Read: 1" in output
+    assert "Unmatched: 0" in output
+    assert "Invalid: 1" in output

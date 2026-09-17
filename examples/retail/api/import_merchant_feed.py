@@ -4,6 +4,9 @@ import argparse
 import json
 from pathlib import Path
 
+from .merchant_provider_contract import (
+    validate_provider_contract_rows,
+)
 from .merchant_providers import adapt_provider_rows
 
 from .merchant_run_reports import (
@@ -108,10 +111,40 @@ def main() -> int:
 
     raw = json.loads(args.feed.read_text(encoding="utf-8-sig"))
     raw_rows = raw.get("offers", raw if isinstance(raw, list) else [])
-    rows = adapt_provider_rows(args.provider, raw_rows)
+
+    adapted_rows = adapt_provider_rows(
+        args.provider,
+        raw_rows,
+    )
+
+    contract = validate_provider_contract_rows(
+        adapted_rows
+    )
+
+    rows = contract.rows
 
     mappings = load_product_mappings(args.mappings)
     result = import_feed_rows(rows, mappings)
+
+    combined_invalid = [
+        {
+            "row_index": issue.row_index,
+            "offer_id": issue.offer_id,
+            "merchant": (
+                adapted_rows[issue.row_index].get("merchant")
+                if issue.row_index < len(adapted_rows)
+                else None
+            ),
+            "reason": issue.reason,
+            "error": issue.error,
+        }
+        for issue in contract.invalid
+    ]
+
+    combined_invalid.extend(
+        row.model_dump(mode="json")
+        for row in result.invalid
+    )
 
     authoritative = (
         args.authoritative_merchant_id is not None
@@ -162,10 +195,7 @@ def main() -> int:
         )
 
         invalid_payload = {
-            "invalid": [
-                row.model_dump(mode="json")
-                for row in result.invalid
-            ]
+            "invalid": combined_invalid
         }
 
         args.invalid.parent.mkdir(parents=True, exist_ok=True)
@@ -183,12 +213,12 @@ def main() -> int:
         authoritative_merchant_id=args.authoritative_merchant_id,
         authoritative_data_source=args.authoritative_data_source,
         allow_empty_authoritative=args.allow_empty_authoritative,
-        read=len(rows),
+        read=len(adapted_rows),
         new=report.new,
         updated=report.updated,
         unchanged=report.unchanged,
         unmatched=len(result.unmatched),
-        invalid=len(result.invalid),
+        invalid=len(combined_invalid),
         deactivated=report.deactivated,
     )
 
@@ -215,12 +245,12 @@ def main() -> int:
     else:
         print(
             f"Mode: {mode} | "
-            f"Read: {len(rows)} | "
+            f"Read: {len(adapted_rows)} | "
             f"New: {report.new} | "
             f"Updated: {report.updated} | "
             f"Unchanged: {report.unchanged} | "
             f"Unmatched: {len(result.unmatched)} | "
-            f"Invalid: {len(result.invalid)} | "
+            f"Invalid: {len(combined_invalid)} | "
             f"Deactivated: {report.deactivated} | "
             f"Status: {operational.status.upper()} | "
             f"Run ID: {run_report.run_id}"
