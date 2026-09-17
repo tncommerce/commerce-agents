@@ -139,3 +139,40 @@ def upsert_job_approval(
         + "\n",
         encoding="utf-8",
     )
+
+
+def revoke_job_approval(
+    path: Path,
+    job_id: str,
+) -> bool:
+    approvals = load_job_approvals(path)
+    key = job_id.strip().casefold()
+
+    remaining = [
+        approval
+        for approval in approvals
+        if approval.job_id.strip().casefold() != key
+    ]
+
+    if len(remaining) == len(approvals):
+        return False
+
+    payload = {
+        "approvals": [
+            approval.model_dump(mode="json")
+            for approval in remaining
+        ]
+    }
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(
+            payload,
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    return True
