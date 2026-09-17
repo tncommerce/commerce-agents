@@ -1,6 +1,8 @@
 import json
 import sys
 
+import pytest
+
 from retail.api.import_merchant_feed import main
 
 
@@ -432,3 +434,184 @@ def test_cli_uses_selected_provider_adapter(
     assert selected_providers == ["canonical"]
     assert "Mode: DRY-RUN" in output
     assert "New: 1" in output
+
+
+def test_authoritative_write_with_zero_matches_is_blocked(
+    tmp_path,
+    monkeypatch,
+) -> None:
+    mappings_path = tmp_path / "mappings.json"
+    feed_path = tmp_path / "feed.json"
+    offers_path = tmp_path / "offers.json"
+
+    mappings_path.write_text(
+        json.dumps(
+            {
+                "mappings": [
+                    {
+                        "product_id": PRODUCT_ID,
+                        "merchant": "notino",
+                        "merchant_product_id": "NOTINO-123",
+                        "ean": None,
+                        "gtin": None,
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    offers_path.write_text(
+        json.dumps(
+            {
+                "offers": [
+                    {
+                        "offer_id": "notino-existing",
+                        "product_id": PRODUCT_ID,
+                        "merchant_id": "notino-de",
+                        "merchant_name": "Notino",
+                        "merchant_product_id": "NOTINO-123",
+                        "price": 89.95,
+                        "currency": "EUR",
+                        "shipping_cost": 0.0,
+                        "in_stock": True,
+                        "product_url": "https://example.com/existing",
+                        "affiliate_url": None,
+                        "network": "CJ",
+                        "data_source": "cj-feed",
+                        "last_updated_at": "2026-09-16T12:00:00Z",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    original_offers = offers_path.read_text(encoding="utf-8")
+
+    feed_path.write_text(
+        json.dumps(
+            {
+                "offers": [
+                    {
+                        "offer_id": "notino-unmapped",
+                        "merchant": "notino",
+                        "merchant_id": "notino-de",
+                        "merchant_name": "Notino",
+                        "merchant_product_id": "UNKNOWN-999",
+                        "price": 49.95,
+                        "currency": "EUR",
+                        "shipping_cost": 0.0,
+                        "in_stock": True,
+                        "product_url": "https://example.com/unmapped",
+                        "network": "CJ",
+                        "data_source": "cj-feed",
+                        "last_updated_at": "2026-09-17T12:00:00Z",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "import_merchant_feed",
+            "--feed",
+            str(feed_path),
+            "--mappings",
+            str(mappings_path),
+            "--offers",
+            str(offers_path),
+            "--authoritative-merchant-id",
+            "notino-de",
+            "--authoritative-data-source",
+            "cj-feed",
+        ],
+    )
+
+    with pytest.raises(SystemExit):
+        main()
+
+    assert offers_path.read_text(encoding="utf-8") == original_offers
+
+
+def test_allow_empty_authoritative_can_intentionally_deactivate_all(
+    tmp_path,
+    monkeypatch,
+    capsys,
+) -> None:
+    mappings_path = tmp_path / "mappings.json"
+    feed_path = tmp_path / "feed.json"
+    offers_path = tmp_path / "offers.json"
+    unmatched_path = tmp_path / "unmatched.json"
+    invalid_path = tmp_path / "invalid.json"
+
+    mappings_path.write_text(
+        json.dumps({"mappings": []}),
+        encoding="utf-8",
+    )
+
+    feed_path.write_text(
+        json.dumps({"offers": []}),
+        encoding="utf-8",
+    )
+
+    offers_path.write_text(
+        json.dumps(
+            {
+                "offers": [
+                    {
+                        "offer_id": "notino-existing",
+                        "product_id": PRODUCT_ID,
+                        "merchant_id": "notino-de",
+                        "merchant_name": "Notino",
+                        "merchant_product_id": "NOTINO-123",
+                        "price": 89.95,
+                        "currency": "EUR",
+                        "shipping_cost": 0.0,
+                        "in_stock": True,
+                        "product_url": "https://example.com/existing",
+                        "affiliate_url": None,
+                        "network": "CJ",
+                        "data_source": "cj-feed",
+                        "last_updated_at": "2026-09-16T12:00:00Z",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "import_merchant_feed",
+            "--feed",
+            str(feed_path),
+            "--mappings",
+            str(mappings_path),
+            "--offers",
+            str(offers_path),
+            "--unmatched",
+            str(unmatched_path),
+            "--invalid",
+            str(invalid_path),
+            "--authoritative-merchant-id",
+            "notino-de",
+            "--authoritative-data-source",
+            "cj-feed",
+            "--allow-empty-authoritative",
+        ],
+    )
+
+    main()
+
+    output = capsys.readouterr().out
+    assert "Deactivated: 1" in output
+
+    saved = json.loads(offers_path.read_text(encoding="utf-8"))
+    assert saved["offers"][0]["in_stock"] is False

@@ -62,6 +62,14 @@ def main() -> None:
         default=None,
         help="Data source for a complete feed snapshot.",
     )
+    parser.add_argument(
+        "--allow-empty-authoritative",
+        action="store_true",
+        help=(
+            "Allow an authoritative write with zero matched offers. "
+            "Use only for an intentional full delisting."
+        ),
+    )
 
     args = parser.parse_args()
 
@@ -80,6 +88,23 @@ def main() -> None:
 
     mappings = load_product_mappings(args.mappings)
     result = import_feed_rows(rows, mappings)
+
+    authoritative = (
+        args.authoritative_merchant_id is not None
+        and args.authoritative_data_source is not None
+    )
+
+    if (
+        authoritative
+        and not args.dry_run
+        and not result.offers
+        and not args.allow_empty_authoritative
+    ):
+        parser.error(
+            "Refusing authoritative write with zero matched offers. "
+            "Run --dry-run first or pass --allow-empty-authoritative "
+            "only for an intentional full delisting."
+        )
 
     lifecycle_kwargs = {
         "authoritative_merchant_id": args.authoritative_merchant_id,
