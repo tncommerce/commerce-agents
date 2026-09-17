@@ -1,4 +1,4 @@
-﻿import json
+import json
 
 import pytest
 
@@ -148,5 +148,103 @@ def test_invalid_json_shape_is_rejected(
     with pytest.raises(
         ValueError,
         match="must be a list",
+    ):
+        read_merchant_feed_rows(path)
+
+
+def test_read_semicolon_delimited_csv(
+    tmp_path,
+) -> None:
+    path = tmp_path / "feed.csv"
+
+    path.write_text(
+        (
+            "offer_id;merchant_product_id;price\n"
+            "offer-1;SKU-123;89.95\n"
+        ),
+        encoding="utf-8",
+    )
+
+    rows = read_merchant_feed_rows(path)
+
+    assert rows[0]["offer_id"] == "offer-1"
+    assert rows[0]["merchant_product_id"] == "SKU-123"
+    assert rows[0]["price"] == "89.95"
+
+
+def test_read_tab_delimited_csv(
+    tmp_path,
+) -> None:
+    path = tmp_path / "feed.csv"
+
+    path.write_text(
+        (
+            "offer_id\tmerchant_product_id\tprice\n"
+            "offer-1\tSKU-123\t89.95\n"
+        ),
+        encoding="utf-8",
+    )
+
+    rows = read_merchant_feed_rows(path)
+
+    assert rows[0]["offer_id"] == "offer-1"
+    assert rows[0]["merchant_product_id"] == "SKU-123"
+
+
+def test_read_utf8_bom_csv(
+    tmp_path,
+) -> None:
+    path = tmp_path / "feed.csv"
+
+    path.write_bytes(
+        (
+            "\ufeffoffer_id,merchant_name\n"
+            "offer-1,Parf?merie Test\n"
+        ).encode("utf-8")
+    )
+
+    rows = read_merchant_feed_rows(path)
+
+    assert rows == [
+        {
+            "offer_id": "offer-1",
+            "merchant_name": "Parf?merie Test",
+        }
+    ]
+
+
+def test_read_windows_1252_csv(
+    tmp_path,
+) -> None:
+    path = tmp_path / "feed.csv"
+
+    path.write_bytes(
+        (
+            "offer_id;merchant_name\n"
+            "offer-1;Parf?merie K?ln\n"
+        ).encode("cp1252")
+    )
+
+    rows = read_merchant_feed_rows(path)
+
+    assert rows[0]["merchant_name"] == "Parf?merie K?ln"
+
+
+def test_csv_without_supported_delimiter_is_rejected(
+    tmp_path,
+) -> None:
+    path = tmp_path / "feed.csv"
+
+    path.write_text(
+        (
+            "offer_id price\n"
+            "offer-1 89.95\n"
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="Could not detect CSV",
     ):
         read_merchant_feed_rows(path)

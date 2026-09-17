@@ -1,6 +1,7 @@
 ﻿from __future__ import annotations
 
 import csv
+import io
 import json
 from pathlib import Path
 from typing import Literal
@@ -23,9 +24,31 @@ def detect_feed_format(path: Path) -> str:
     )
 
 
+def _read_feed_text(path: Path) -> str:
+    payload = path.read_bytes()
+
+    if not payload:
+        raise ValueError(
+            "Merchant feed file is empty"
+        )
+
+    for encoding in (
+        "utf-8-sig",
+        "cp1252",
+    ):
+        try:
+            return payload.decode(encoding)
+        except UnicodeDecodeError:
+            continue
+
+    raise ValueError(
+        "Merchant feed encoding is unsupported"
+    )
+
+
 def _read_json_rows(path: Path) -> list[dict]:
     raw = json.loads(
-        path.read_text(encoding="utf-8-sig")
+        _read_feed_text(path)
     )
 
     if isinstance(raw, list):
@@ -49,27 +72,50 @@ def _read_json_rows(path: Path) -> list[dict]:
     return rows
 
 
+def _detect_csv_dialect(text: str) -> csv.Dialect:
+    sample = text[:65536]
+
+    try:
+        return csv.Sniffer().sniff(
+            sample,
+            delimiters=",;\t",
+        )
+    except csv.Error as exc:
+        raise ValueError(
+            "Could not detect CSV merchant feed delimiter"
+        ) from exc
+
+
 def _read_csv_rows(path: Path) -> list[dict]:
-    with path.open(
-        "r",
-        encoding="utf-8-sig",
-        newline="",
-    ) as handle:
-        reader = csv.DictReader(handle)
+    text = _read_feed_text(path)
+    dialect = _detect_csv_dialect(text)
 
-        if not reader.fieldnames:
-            raise ValueError(
-                "CSV merchant feed must contain a header row"
-            )
+    reader = csv.DictReader(
+        io.StringIO(text),
+        dialect=dialect,
+    )
 
-        return [
-            dict(row)
-            for row in reader
-            if any(
-                value is not None and value.strip()
-                for value in row.values()
-            )
-        ]
+    if not reader.fieldnames:
+        raise ValueError(
+            "CSV merchant feed must contain a header row"
+        )
+
+    if any(
+        name is None or not name.strip()
+        for name in reader.fieldnames
+    ):
+        raise ValueError(
+            "CSV merchant feed contains an empty header"
+        )
+
+    return [
+        dict(row)
+        for row in reader
+        if any(
+            value is not None and value.strip()
+            for value in row.values()
+        )
+    ]
 
 
 def read_merchant_feed_rows(
