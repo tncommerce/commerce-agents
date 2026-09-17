@@ -43,3 +43,5 @@ merchant-agent/managed-agents/merchant-mcp-server/.merchant_memory.json
 pyrightconfig.json
 
 examples/retail/data/.merchant_clickouts.jsonl
+examples/retail/data/merchant_invalid.json
+examples/retail/data/merchant_unmatched.json
