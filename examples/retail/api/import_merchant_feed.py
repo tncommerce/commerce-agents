@@ -4,6 +4,8 @@ import argparse
 import json
 from pathlib import Path
 
+from .merchant_providers import adapt_provider_rows
+
 from .merchant_import import (
     analyze_offer_changes,
     import_feed_rows,
@@ -43,6 +45,12 @@ def main() -> None:
         help="Validate and analyze the feed without writing output files.",
     )
     parser.add_argument(
+        "--provider",
+        type=str,
+        default="canonical",
+        help="Merchant feed provider adapter.",
+    )
+    parser.add_argument(
         "--authoritative-merchant-id",
         type=str,
         default=None,
@@ -67,7 +75,8 @@ def main() -> None:
         )
 
     raw = json.loads(args.feed.read_text(encoding="utf-8-sig"))
-    rows = raw.get("offers", raw if isinstance(raw, list) else [])
+    raw_rows = raw.get("offers", raw if isinstance(raw, list) else [])
+    rows = adapt_provider_rows(args.provider, raw_rows)
 
     mappings = load_product_mappings(args.mappings)
     result = import_feed_rows(rows, mappings)

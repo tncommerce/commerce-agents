@@ -340,3 +340,95 @@ def test_authoritative_dry_run_reports_deactivation_without_writing(
     assert offers_path.read_text(encoding="utf-8") == original_offers
     assert not unmatched_path.exists()
     assert not invalid_path.exists()
+
+
+def test_cli_uses_selected_provider_adapter(
+    tmp_path,
+    monkeypatch,
+    capsys,
+) -> None:
+    from retail.api import import_merchant_feed as import_command
+
+    mappings_path = tmp_path / "mappings.json"
+    feed_path = tmp_path / "feed.json"
+    offers_path = tmp_path / "offers.json"
+
+    mappings_path.write_text(
+        json.dumps(
+            {
+                "mappings": [
+                    {
+                        "product_id": PRODUCT_ID,
+                        "merchant": "notino",
+                        "merchant_product_id": "NOTINO-123",
+                        "ean": None,
+                        "gtin": None,
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    feed_path.write_text(
+        json.dumps(
+            {
+                "offers": [
+                    {
+                        "offer_id": "notino-test",
+                        "merchant": "notino",
+                        "merchant_id": "notino-de",
+                        "merchant_name": "Notino",
+                        "merchant_product_id": "NOTINO-123",
+                        "price": 89.95,
+                        "currency": "EUR",
+                        "shipping_cost": 0.0,
+                        "in_stock": True,
+                        "product_url": "https://example.com/notino",
+                        "network": "CJ",
+                        "data_source": "test-feed",
+                        "last_updated_at": "2026-09-17T12:00:00Z",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    selected_providers = []
+    original_adapter = import_command.adapt_provider_rows
+
+    def tracked_adapter(provider, payloads):
+        selected_providers.append(provider)
+        return original_adapter(provider, payloads)
+
+    monkeypatch.setattr(
+        import_command,
+        "adapt_provider_rows",
+        tracked_adapter,
+    )
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "import_merchant_feed",
+            "--feed",
+            str(feed_path),
+            "--mappings",
+            str(mappings_path),
+            "--offers",
+            str(offers_path),
+            "--provider",
+            "canonical",
+            "--dry-run",
+        ],
+    )
+
+    import_command.main()
+
+    output = capsys.readouterr().out
+
+    assert selected_providers == ["canonical"]
+    assert "Mode: DRY-RUN" in output
+    assert "New: 1" in output
