@@ -13,10 +13,32 @@ from demo_common import REPO_ROOT, MerchantIdentity, build_merchant_router
 from merchant_agent_runtime import MerchantAgent
 
 from .agent_config import build_merchant_config
+from .merchant_fleet_status import (
+    build_fleet_status_summary,
+)
+from .merchant_jobs import load_merchant_jobs
 from .mock_merchant import MockRetailMerchant
-from .mock_retail import MockRetail
+from .mock_retail import DATA_DIR, MockRetail
 
 IDENTITY = MerchantIdentity(merchant_id="acme-retail", operator="Avery")
+
+
+def merchant_fleet_status_payload() -> dict:
+    jobs = load_merchant_jobs(
+        DATA_DIR / "merchant_jobs.json"
+    )
+
+    summary = build_fleet_status_summary(
+        jobs,
+        approvals_path=(
+            DATA_DIR
+            / "merchant_job_approvals.json"
+        ),
+    )
+
+    return summary.model_dump(
+        mode="json"
+    )
 
 
 def create_merchant_router(storefront: MockRetail, memory_store: MemoryStore) -> APIRouter:
@@ -38,5 +60,9 @@ def create_merchant_router(storefront: MockRetail, memory_store: MemoryStore) ->
             "trends": merchant.kpi_trends(),
             "trends_prior": merchant.kpi_trends(periods_back=1),
             "insights": merchant.home_insights(),
+        },
+        portal_reads={
+            "/operations/fleet-status":
+                merchant_fleet_status_payload,
         },
     )
