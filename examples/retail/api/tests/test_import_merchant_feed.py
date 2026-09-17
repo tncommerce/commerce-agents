@@ -748,3 +748,168 @@ def test_write_import_creates_audit_report_but_dry_run_does_not(
     ).splitlines()
 
     assert len(lines_after_dry_run) == 1
+
+
+def test_cli_returns_zero_for_clean_import(
+    tmp_path,
+    monkeypatch,
+    capsys,
+) -> None:
+    mappings_path = tmp_path / "mappings.json"
+    feed_path = tmp_path / "feed.json"
+    offers_path = tmp_path / "offers.json"
+
+    mappings_path.write_text(
+        json.dumps(
+            {
+                "mappings": [
+                    {
+                        "product_id": PRODUCT_ID,
+                        "merchant": "notino",
+                        "merchant_product_id": "NOTINO-123",
+                        "ean": None,
+                        "gtin": None,
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    feed_path.write_text(
+        json.dumps(
+            {
+                "offers": [
+                    {
+                        "offer_id": "notino-clean",
+                        "merchant": "notino",
+                        "merchant_id": "notino-de",
+                        "merchant_name": "Notino",
+                        "merchant_product_id": "NOTINO-123",
+                        "price": 89.95,
+                        "currency": "EUR",
+                        "shipping_cost": 0.0,
+                        "in_stock": True,
+                        "product_url": "https://example.com/clean",
+                        "network": "CJ",
+                        "data_source": "cj-feed",
+                        "last_updated_at": "2026-09-17T12:00:00Z",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "import_merchant_feed",
+            "--feed",
+            str(feed_path),
+            "--mappings",
+            str(mappings_path),
+            "--offers",
+            str(offers_path),
+        ],
+    )
+
+    exit_code = main()
+    output = capsys.readouterr().out
+
+    assert exit_code == 0
+    assert "Status: OK" in output
+
+
+def test_cli_returns_review_exit_code_and_machine_json(
+    tmp_path,
+    monkeypatch,
+    capsys,
+) -> None:
+    mappings_path = tmp_path / "mappings.json"
+    feed_path = tmp_path / "feed.json"
+    offers_path = tmp_path / "offers.json"
+
+    mappings_path.write_text(
+        json.dumps(
+            {
+                "mappings": [
+                    {
+                        "product_id": PRODUCT_ID,
+                        "merchant": "notino",
+                        "merchant_product_id": "NOTINO-123",
+                        "ean": None,
+                        "gtin": None,
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    feed_path.write_text(
+        json.dumps(
+            {
+                "offers": [
+                    {
+                        "offer_id": "notino-clean",
+                        "merchant": "notino",
+                        "merchant_id": "notino-de",
+                        "merchant_name": "Notino",
+                        "merchant_product_id": "NOTINO-123",
+                        "price": 89.95,
+                        "currency": "EUR",
+                        "shipping_cost": 0.0,
+                        "in_stock": True,
+                        "product_url": "https://example.com/clean",
+                        "network": "CJ",
+                        "data_source": "cj-feed",
+                        "last_updated_at": "2026-09-17T12:00:00Z",
+                    },
+                    {
+                        "offer_id": "notino-unmatched",
+                        "merchant": "notino",
+                        "merchant_id": "notino-de",
+                        "merchant_name": "Notino",
+                        "merchant_product_id": "UNKNOWN-999",
+                        "price": 49.95,
+                        "currency": "EUR",
+                        "shipping_cost": 0.0,
+                        "in_stock": True,
+                        "product_url": "https://example.com/unmatched",
+                        "network": "CJ",
+                        "data_source": "cj-feed",
+                        "last_updated_at": "2026-09-17T12:00:00Z",
+                    },
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "import_merchant_feed",
+            "--feed",
+            str(feed_path),
+            "--mappings",
+            str(mappings_path),
+            "--offers",
+            str(offers_path),
+            "--machine-readable",
+        ],
+    )
+
+    exit_code = main()
+    output = capsys.readouterr().out.strip()
+    payload = json.loads(output)
+
+    assert exit_code == 10
+    assert payload["status"] == "review"
+    assert payload["exit_code"] == 10
+    assert "unmatched_rows" in payload["reasons"]
+    assert payload["run"]["unmatched"] == 1
+    assert payload["run"]["run_id"]

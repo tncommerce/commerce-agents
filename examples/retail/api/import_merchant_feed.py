@@ -11,6 +11,11 @@ from .merchant_run_reports import (
     build_import_run_report,
 )
 
+from .merchant_run_status import (
+    evaluate_import_run,
+    machine_readable_result,
+)
+
 from .merchant_import import (
     analyze_offer_changes,
     import_feed_rows,
@@ -19,7 +24,7 @@ from .merchant_import import (
 )
 
 
-def main() -> None:
+def main() -> int:
     parser = argparse.ArgumentParser(
         description="Import merchant feed rows into SCENTAI."
     )
@@ -83,6 +88,11 @@ def main() -> None:
             "Optional JSONL audit log path. "
             "Defaults next to the merchant offers file."
         ),
+    )
+    parser.add_argument(
+        "--machine-readable",
+        action="store_true",
+        help="Print one JSON result for schedulers and automation.",
     )
 
     args = parser.parse_args()
@@ -193,18 +203,31 @@ def main() -> None:
             run_report,
         )
 
-    print(
-        f"Mode: {mode} | "
-        f"Read: {len(rows)} | "
-        f"New: {report.new} | "
-        f"Updated: {report.updated} | "
-        f"Unchanged: {report.unchanged} | "
-        f"Unmatched: {len(result.unmatched)} | "
-        f"Invalid: {len(result.invalid)} | "
-        f"Deactivated: {report.deactivated} | "
-        f"Run ID: {run_report.run_id}"
-    )
+    operational = evaluate_import_run(run_report)
+
+    if args.machine_readable:
+        print(
+            json.dumps(
+                machine_readable_result(run_report),
+                ensure_ascii=False,
+            )
+        )
+    else:
+        print(
+            f"Mode: {mode} | "
+            f"Read: {len(rows)} | "
+            f"New: {report.new} | "
+            f"Updated: {report.updated} | "
+            f"Unchanged: {report.unchanged} | "
+            f"Unmatched: {len(result.unmatched)} | "
+            f"Invalid: {len(result.invalid)} | "
+            f"Deactivated: {report.deactivated} | "
+            f"Status: {operational.status.upper()} | "
+            f"Run ID: {run_report.run_id}"
+        )
+
+    return operational.exit_code
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
