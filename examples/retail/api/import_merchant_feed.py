@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from .merchant_import import (
+    analyze_offer_changes,
     import_feed_rows,
     load_product_mappings,
     upsert_offers_file,
@@ -39,7 +40,7 @@ def main() -> None:
     parser.add_argument(
         "--dry-run",
         action="store_true",
-        help="Validate the feed without writing any output files.",
+        help="Validate and analyze the feed without writing output files.",
     )
 
     args = parser.parse_args()
@@ -50,8 +51,16 @@ def main() -> None:
     mappings = load_product_mappings(args.mappings)
     result = import_feed_rows(rows, mappings)
 
-    if not args.dry_run:
-        upsert_offers_file(args.offers, result.offers)
+    if args.dry_run:
+        report = analyze_offer_changes(
+            args.offers,
+            result.offers,
+        )
+    else:
+        report = upsert_offers_file(
+            args.offers,
+            result.offers,
+        )
 
         unmatched_payload = {
             "unmatched": [
@@ -84,7 +93,9 @@ def main() -> None:
     print(
         f"Mode: {mode} | "
         f"Read: {len(rows)} | "
-        f"Imported: {len(result.offers)} | "
+        f"New: {report.new} | "
+        f"Updated: {report.updated} | "
+        f"Unchanged: {report.unchanged} | "
         f"Unmatched: {len(result.unmatched)} | "
         f"Invalid: {len(result.invalid)}"
     )

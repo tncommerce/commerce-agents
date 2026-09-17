@@ -182,21 +182,92 @@ def import_feed_rows(
     )
 
 
+class OfferUpsertReport(BaseModel):
+    new: int = 0
+    updated: int = 0
+    unchanged: int = 0
+
+
+def _load_existing_offers(path: Path) -> list[MerchantOffer]:
+    if not path.exists():
+        return []
+
+    raw = json.loads(path.read_text(encoding="utf-8-sig"))
+    existing_rows = raw.get(
+        "offers",
+        raw if isinstance(raw, list) else [],
+    )
+    return [
+        MerchantOffer.model_validate(row)
+        for row in existing_rows
+    ]
+
+
+def _offer_comparison_payload(offer: MerchantOffer) -> dict:
+    return offer.model_dump(
+        mode="json",
+        exclude={"last_updated_at"},
+    )
+
+
+def _build_upsert_report(
+    existing: list[MerchantOffer],
+    offers: list[MerchantOffer],
+) -> OfferUpsertReport:
+    existing_by_id = {
+        offer.offer_id: offer
+        for offer in existing
+    }
+    incoming_by_id = {
+        offer.offer_id: offer
+        for offer in offers
+    }
+
+    new = 0
+    updated = 0
+    unchanged = 0
+
+    for offer_id, incoming in incoming_by_id.items():
+        current = existing_by_id.get(offer_id)
+
+        if current is None:
+            new += 1
+            continue
+
+        if (
+            _offer_comparison_payload(current)
+            == _offer_comparison_payload(incoming)
+        ):
+            unchanged += 1
+        else:
+            updated += 1
+
+    return OfferUpsertReport(
+        new=new,
+        updated=updated,
+        unchanged=unchanged,
+    )
+
+
+def analyze_offer_changes(
+    path: Path,
+    offers: list[MerchantOffer],
+) -> OfferUpsertReport:
+    existing = _load_existing_offers(path)
+    return _build_upsert_report(existing, offers)
+
+
 def upsert_offers_file(
     path: Path,
     offers: list[MerchantOffer],
-) -> None:
-    if path.exists():
-        raw = json.loads(path.read_text(encoding="utf-8-sig"))
-        existing_rows = raw.get("offers", raw if isinstance(raw, list) else [])
-        existing = [
-            MerchantOffer.model_validate(row)
-            for row in existing_rows
-        ]
-    else:
-        existing = []
+) -> OfferUpsertReport:
+    existing = _load_existing_offers(path)
+    report = _build_upsert_report(existing, offers)
 
-    by_id = {offer.offer_id: offer for offer in existing}
+    by_id = {
+        offer.offer_id: offer
+        for offer in existing
+    }
 
     for offer in offers:
         by_id[offer.offer_id] = offer
@@ -213,3 +284,5 @@ def upsert_offers_file(
         json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
+
+    return report

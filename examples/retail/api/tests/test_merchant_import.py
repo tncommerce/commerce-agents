@@ -397,3 +397,118 @@ def test_import_feed_rows_continues_after_invalid_row() -> None:
     assert result.invalid[0].row_index == 2
     assert result.invalid[0].offer_id == "broken-row"
     assert result.invalid[0].reason == "invalid_feed_row"
+
+
+def test_upsert_report_counts_new_updated_and_unchanged(tmp_path) -> None:
+    path = tmp_path / "merchant_offers.json"
+
+    path.write_text(
+        json.dumps(
+            {
+                "offers": [
+                    {
+                        "offer_id": "offer-unchanged",
+                        "product_id": PRODUCT_ID,
+                        "merchant_id": "merchant-a",
+                        "merchant_name": "Merchant A",
+                        "merchant_product_id": "A-1",
+                        "price": 90.0,
+                        "currency": "EUR",
+                        "shipping_cost": 0.0,
+                        "in_stock": True,
+                        "product_url": "https://example.com/a",
+                        "affiliate_url": None,
+                        "network": "Test",
+                        "data_source": "feed",
+                        "last_updated_at": "2026-09-16T12:00:00Z",
+                    },
+                    {
+                        "offer_id": "offer-updated",
+                        "product_id": PRODUCT_ID,
+                        "merchant_id": "merchant-b",
+                        "merchant_name": "Merchant B",
+                        "merchant_product_id": "B-1",
+                        "price": 100.0,
+                        "currency": "EUR",
+                        "shipping_cost": 0.0,
+                        "in_stock": True,
+                        "product_url": "https://example.com/b",
+                        "affiliate_url": None,
+                        "network": "Test",
+                        "data_source": "feed",
+                        "last_updated_at": "2026-09-16T12:00:00Z",
+                    },
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    unchanged = validate_offer_payload(
+        {
+            "offer_id": "offer-unchanged",
+            "product_id": PRODUCT_ID,
+            "merchant_id": "merchant-a",
+            "merchant_name": "Merchant A",
+            "merchant_product_id": "A-1",
+            "price": 90.0,
+            "currency": "EUR",
+            "shipping_cost": 0.0,
+            "in_stock": True,
+            "product_url": "https://example.com/a",
+            "affiliate_url": None,
+            "network": "Test",
+            "data_source": "feed",
+            "last_updated_at": "2026-09-17T12:00:00Z",
+        }
+    )
+
+    updated = validate_offer_payload(
+        {
+            "offer_id": "offer-updated",
+            "product_id": PRODUCT_ID,
+            "merchant_id": "merchant-b",
+            "merchant_name": "Merchant B",
+            "merchant_product_id": "B-1",
+            "price": 95.0,
+            "currency": "EUR",
+            "shipping_cost": 0.0,
+            "in_stock": True,
+            "product_url": "https://example.com/b",
+            "affiliate_url": None,
+            "network": "Test",
+            "data_source": "feed",
+            "last_updated_at": "2026-09-17T12:00:00Z",
+        }
+    )
+
+    new_offer = validate_offer_payload(
+        {
+            "offer_id": "offer-new",
+            "product_id": PRODUCT_ID,
+            "merchant_id": "merchant-c",
+            "merchant_name": "Merchant C",
+            "merchant_product_id": "C-1",
+            "price": 85.0,
+            "currency": "EUR",
+            "shipping_cost": 0.0,
+            "in_stock": True,
+            "product_url": "https://example.com/c",
+            "affiliate_url": None,
+            "network": "Test",
+            "data_source": "feed",
+            "last_updated_at": "2026-09-17T12:00:00Z",
+        }
+    )
+
+    report = upsert_offers_file(
+        path,
+        [unchanged, updated, new_offer],
+    )
+
+    assert report.new == 1
+    assert report.updated == 1
+    assert report.unchanged == 1
+
+    saved = json.loads(path.read_text(encoding="utf-8"))
+    assert len(saved["offers"]) == 3

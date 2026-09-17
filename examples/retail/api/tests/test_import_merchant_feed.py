@@ -104,7 +104,7 @@ def test_import_merchant_feed_command_end_to_end(tmp_path, monkeypatch, capsys) 
     main()
 
     output = capsys.readouterr().out
-    assert "Read: 3 | Imported: 1 | Unmatched: 1 | Invalid: 1" in output
+    assert "Read: 3 | New: 1 | Updated: 0 | Unchanged: 0 | Unmatched: 1 | Invalid: 1" in output
 
     saved_offers = json.loads(offers_path.read_text(encoding="utf-8"))
     assert len(saved_offers["offers"]) == 1
@@ -175,7 +175,8 @@ def test_import_merchant_feed_dry_run_does_not_write_files(
         encoding="utf-8",
     )
 
-    offers_path.write_text("KEEP-OFFERS", encoding="utf-8")
+    offers_path.write_text(json.dumps({"offers": []}), encoding="utf-8")
+    original_offers = offers_path.read_text(encoding="utf-8")
     unmatched_path.write_text("KEEP-UNMATCHED", encoding="utf-8")
     invalid_path.write_text("KEEP-INVALID", encoding="utf-8")
 
@@ -202,8 +203,8 @@ def test_import_merchant_feed_dry_run_does_not_write_files(
 
     output = capsys.readouterr().out
     assert "Mode: DRY-RUN" in output
-    assert "Read: 1 | Imported: 1 | Unmatched: 0 | Invalid: 0" in output
+    assert "Read: 1 | New: 1 | Updated: 0 | Unchanged: 0 | Unmatched: 0 | Invalid: 0" in output
 
-    assert offers_path.read_text(encoding="utf-8") == "KEEP-OFFERS"
+    assert offers_path.read_text(encoding="utf-8") == original_offers
     assert unmatched_path.read_text(encoding="utf-8") == "KEEP-UNMATCHED"
     assert invalid_path.read_text(encoding="utf-8") == "KEEP-INVALID"
