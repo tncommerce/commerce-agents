@@ -1,4 +1,4 @@
-﻿import json
+import json
 
 import pytest
 
@@ -135,6 +135,15 @@ def test_enabled_job_runs_scheduled_import(
 ) -> None:
     path = tmp_path / "jobs.json"
 
+    (tmp_path / "feed.json").write_text(
+        '{"offers": []}',
+        encoding="utf-8",
+    )
+    (tmp_path / "mappings.json").write_text(
+        '{"mappings": []}',
+        encoding="utf-8",
+    )
+
     path.write_text(
         json.dumps(
             {
@@ -180,3 +189,55 @@ def test_enabled_job_runs_scheduled_import(
     assert result.action == "continue"
     assert result.exit_code == 0
     assert result.run_id == "job-run-ok"
+
+
+def test_enabled_but_unready_job_is_held(
+    tmp_path,
+    monkeypatch,
+) -> None:
+    path = tmp_path / "jobs.json"
+
+    path.write_text(
+        json.dumps(
+            {
+                "jobs": [
+                    _job_payload(
+                        tmp_path,
+                        enabled=True,
+                    )
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    jobs = merchant_jobs.load_merchant_jobs(path)
+
+    called = False
+
+    def fake_runner(config):
+        nonlocal called
+        called = True
+        raise AssertionError(
+            "Unready job must not execute"
+        )
+
+    monkeypatch.setattr(
+        merchant_jobs,
+        "run_scheduled_import",
+        fake_runner,
+    )
+
+    result = merchant_jobs.run_merchant_job(
+        jobs,
+        "notino-de",
+    )
+
+    assert called is False
+    assert result.action == "hold"
+    assert result.exit_code == 20
+    assert result.reasons == [
+        "job_not_ready",
+        "feed_missing",
+        "mappings_missing",
+    ]

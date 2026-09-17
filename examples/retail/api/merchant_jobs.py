@@ -1,10 +1,11 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import json
 from pathlib import Path
 
 from pydantic import BaseModel
 
+from .merchant_job_readiness import evaluate_job_readiness
 from .merchant_operational_runner import MerchantOperationalRun
 from .merchant_scheduled_execution import (
     ScheduledMerchantImportConfig,
@@ -72,6 +73,19 @@ def run_merchant_job(
             exit_code=20,
             import_exit_code=20,
             reasons=["job_disabled"],
+        )
+
+    readiness = evaluate_job_readiness(job.config)
+
+    if not readiness.ready:
+        return MerchantOperationalRun(
+            action="hold",
+            exit_code=20,
+            import_exit_code=20,
+            reasons=[
+                "job_not_ready",
+                *readiness.reasons,
+            ],
         )
 
     return run_scheduled_import(job.config)
