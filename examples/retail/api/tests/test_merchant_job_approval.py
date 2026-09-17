@@ -113,7 +113,7 @@ def test_job_approval_can_be_persisted_and_replaced(
     assert saved[0].approved_run_id == "run-2"
 
 
-def test_feed_change_invalidates_existing_approval(
+def test_feed_change_keeps_activation_approval_valid(
     tmp_path,
 ) -> None:
     config = _config(tmp_path)
@@ -124,6 +124,8 @@ def test_feed_change_invalidates_existing_approval(
         config=config,
     )
 
+    approved_snapshot = approval.approved_feed_sha256
+
     config.feed.write_text(
         '{"offers": [{"offer_id": "changed"}]}',
         encoding="utf-8",
@@ -133,7 +135,9 @@ def test_feed_change_invalidates_existing_approval(
         approval,
         job_id="notino-de",
         config=config,
-    ) is False
+    ) is True
+
+    assert approval.approved_feed_sha256 == approved_snapshot
 
 
 def test_mapping_change_invalidates_existing_approval(

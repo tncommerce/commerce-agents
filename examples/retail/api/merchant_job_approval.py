@@ -15,6 +15,8 @@ class MerchantJobApproval(BaseModel):
     approved_run_id: str
     approved_at: datetime
     config_fingerprint: str
+    approved_feed_sha256: str
+    approved_mappings_sha256: str
 
 
 def _file_sha256(path: Path) -> str:
@@ -35,7 +37,6 @@ def job_config_fingerprint(
 ) -> str:
     payload = {
         "feed": str(config.feed),
-        "feed_sha256": _file_sha256(config.feed),
         "mappings": str(config.mappings),
         "mappings_sha256": _file_sha256(config.mappings),
         "offers": str(config.offers),
@@ -73,6 +74,8 @@ def build_job_approval(
         approved_run_id=approved_run_id,
         approved_at=approved_at or datetime.now(timezone.utc),
         config_fingerprint=job_config_fingerprint(config),
+        approved_feed_sha256=_file_sha256(config.feed),
+        approved_mappings_sha256=_file_sha256(config.mappings),
     )
 
 
