@@ -31,6 +31,9 @@ def job_config_fingerprint(
         "unmatched": str(config.unmatched),
         "invalid": str(config.invalid),
         "provider": config.provider.strip().casefold(),
+        "feed_format": config.feed_format,
+        "max_feed_bytes": config.max_feed_bytes,
+        "max_feed_rows": config.max_feed_rows,
         "authoritative_merchant_id": config.authoritative_merchant_id,
         "authoritative_data_source": config.authoritative_data_source,
         "run_report": (

@@ -1,4 +1,4 @@
-﻿import sys
+import sys
 
 import pytest
 
@@ -125,3 +125,56 @@ def test_scheduled_import_holds_review_run(
     assert result.exit_code == 10
     assert result.reasons == ["unmatched_rows"]
     assert result.run_id == "scheduled-review"
+
+
+def test_scheduled_command_carries_feed_safety_settings(
+    tmp_path,
+) -> None:
+    config = scheduled.ScheduledMerchantImportConfig(
+        feed=tmp_path / "provider-export.txt",
+        mappings=tmp_path / "mappings.json",
+        offers=tmp_path / "offers.json",
+        unmatched=tmp_path / "unmatched.json",
+        invalid=tmp_path / "invalid.json",
+        provider="canonical",
+        feed_format="csv",
+        max_feed_bytes=123456,
+        max_feed_rows=789,
+    )
+
+    command = scheduled.build_scheduled_import_command(
+        config
+    )
+
+    assert command[
+        command.index("--feed-format") + 1
+    ] == "csv"
+
+    assert command[
+        command.index("--max-feed-bytes") + 1
+    ] == "123456"
+
+    assert command[
+        command.index("--max-feed-rows") + 1
+    ] == "789"
+
+
+def test_scheduled_config_rejects_invalid_feed_limits(
+    tmp_path,
+) -> None:
+    config = scheduled.ScheduledMerchantImportConfig(
+        feed=tmp_path / "feed.json",
+        mappings=tmp_path / "mappings.json",
+        offers=tmp_path / "offers.json",
+        unmatched=tmp_path / "unmatched.json",
+        invalid=tmp_path / "invalid.json",
+        max_feed_rows=0,
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="max_feed_rows",
+    ):
+        scheduled.build_scheduled_import_command(
+            config
+        )

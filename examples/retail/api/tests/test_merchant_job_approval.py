@@ -161,3 +161,28 @@ def test_mapping_change_invalidates_existing_approval(
         job_id="notino-de",
         config=config,
     ) is False
+
+
+def test_ingestion_safety_change_invalidates_approval(
+    tmp_path,
+) -> None:
+    config = _config(tmp_path)
+
+    approval = build_job_approval(
+        job_id="notino-de",
+        approved_run_id="dry-run-safety",
+        config=config,
+    )
+
+    changed = config.model_copy(
+        update={
+            "max_feed_rows":
+                config.max_feed_rows + 1
+        }
+    )
+
+    assert approval_matches_job(
+        approval,
+        job_id="notino-de",
+        config=changed,
+    ) is False

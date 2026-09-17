@@ -1,10 +1,15 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import sys
 from pathlib import Path
+from typing import Literal
 
 from pydantic import BaseModel
 
+from .merchant_feed_reader import (
+    DEFAULT_MAX_FEED_BYTES,
+    DEFAULT_MAX_FEED_ROWS,
+)
 from .merchant_operational_runner import (
     MerchantOperationalRun,
     run_import_with_gate,
@@ -18,6 +23,9 @@ class ScheduledMerchantImportConfig(BaseModel):
     unmatched: Path
     invalid: Path
     provider: str = "canonical"
+    feed_format: Literal["auto", "json", "csv"] = "auto"
+    max_feed_bytes: int = DEFAULT_MAX_FEED_BYTES
+    max_feed_rows: int = DEFAULT_MAX_FEED_ROWS
     authoritative_merchant_id: str | None = None
     authoritative_data_source: str | None = None
     run_report: Path | None = None
@@ -27,6 +35,16 @@ class ScheduledMerchantImportConfig(BaseModel):
 def validate_schedule_config(
     config: ScheduledMerchantImportConfig,
 ) -> None:
+    if config.max_feed_bytes < 1:
+        raise ValueError(
+            "max_feed_bytes must be at least 1"
+        )
+
+    if config.max_feed_rows < 1:
+        raise ValueError(
+            "max_feed_rows must be at least 1"
+        )
+
     if (
         (config.authoritative_merchant_id is None)
         != (config.authoritative_data_source is None)
@@ -58,6 +76,12 @@ def build_scheduled_import_command(
         str(config.invalid),
         "--provider",
         config.provider,
+        "--feed-format",
+        config.feed_format,
+        "--max-feed-bytes",
+        str(config.max_feed_bytes),
+        "--max-feed-rows",
+        str(config.max_feed_rows),
     ]
 
     if config.authoritative_merchant_id is not None:
