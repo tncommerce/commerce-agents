@@ -38,7 +38,10 @@ def make_merchant_router():
 
 @pytest.fixture(scope="session")
 def extra_public_routes() -> set[str]:
-    return set()
+    return {
+        "/api/merchant-offers/{product_id}",
+        "/api/clickout/{offer_id}",
+    }
 
 
 @pytest.fixture(scope="session")
