@@ -4,7 +4,12 @@ import argparse
 import json
 from pathlib import Path
 
+from .merchant_feed_guard import (
+    find_duplicate_offer_ids,
+)
 from .merchant_feed_reader import (
+    DEFAULT_MAX_FEED_BYTES,
+    DEFAULT_MAX_FEED_ROWS,
     read_merchant_feed_rows,
 )
 from .merchant_provider_contract import (
@@ -76,6 +81,18 @@ def main() -> int:
         ),
     )
     parser.add_argument(
+        "--max-feed-bytes",
+        type=int,
+        default=DEFAULT_MAX_FEED_BYTES,
+        help="Maximum accepted merchant feed file size.",
+    )
+    parser.add_argument(
+        "--max-feed-rows",
+        type=int,
+        default=DEFAULT_MAX_FEED_ROWS,
+        help="Maximum accepted merchant feed row count.",
+    )
+    parser.add_argument(
         "--authoritative-merchant-id",
         type=str,
         default=None,
@@ -121,10 +138,15 @@ def main() -> int:
             "--authoritative-data-source must be provided together"
         )
 
-    raw_rows = read_merchant_feed_rows(
-        args.feed,
-        feed_format=args.feed_format,
-    )
+    try:
+        raw_rows = read_merchant_feed_rows(
+            args.feed,
+            feed_format=args.feed_format,
+            max_bytes=args.max_feed_bytes,
+            max_rows=args.max_feed_rows,
+        )
+    except ValueError as exc:
+        parser.error(str(exc))
 
     adapted_rows = adapt_provider_rows(
         args.provider,
@@ -136,6 +158,23 @@ def main() -> int:
     )
 
     rows = contract.rows
+
+    duplicate_offer_ids = find_duplicate_offer_ids(
+        rows
+    )
+
+    if duplicate_offer_ids:
+        preview = ", ".join(
+            duplicate_offer_ids[:10]
+        )
+
+        if len(duplicate_offer_ids) > 10:
+            preview += ", ..."
+
+        parser.error(
+            "Duplicate offer_id values in merchant feed: "
+            + preview
+        )
 
     mappings = load_product_mappings(args.mappings)
     result = import_feed_rows(rows, mappings)

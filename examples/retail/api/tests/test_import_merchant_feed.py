@@ -1209,3 +1209,150 @@ def test_import_command_accepts_realistic_csv_delimiters(
     assert "New: 1" in output
     assert "Unmatched: 0" in output
     assert "Invalid: 0" in output
+
+
+def test_duplicate_offer_ids_block_import_before_write(
+    tmp_path,
+    monkeypatch,
+) -> None:
+    mappings_path = tmp_path / "mappings.json"
+    feed_path = tmp_path / "feed.json"
+    offers_path = tmp_path / "offers.json"
+
+    mappings_path.write_text(
+        json.dumps(
+            {
+                "mappings": [
+                    {
+                        "product_id": PRODUCT_ID,
+                        "merchant": "notino",
+                        "merchant_product_id": "NOTINO-DUP-123",
+                        "ean": None,
+                        "gtin": None,
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    base_offer = {
+        "offer_id": "duplicate-offer",
+        "merchant": "notino",
+        "merchant_id": "notino-de",
+        "merchant_name": "Notino",
+        "merchant_product_id": "NOTINO-DUP-123",
+        "price": 89.95,
+        "currency": "EUR",
+        "in_stock": True,
+        "product_url": "https://example.com/product",
+        "last_updated_at": "2026-09-17T18:00:00Z",
+        "data_source": "duplicate-test-feed",
+    }
+
+    second_offer = dict(base_offer)
+    second_offer["price"] = 79.95
+
+    feed_path.write_text(
+        json.dumps(
+            {
+                "offers": [
+                    base_offer,
+                    second_offer,
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    offers_path.write_text(
+        json.dumps({"offers": []}),
+        encoding="utf-8",
+    )
+
+    original = offers_path.read_text(
+        encoding="utf-8"
+    )
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "import_merchant_feed",
+            "--feed",
+            str(feed_path),
+            "--mappings",
+            str(mappings_path),
+            "--offers",
+            str(offers_path),
+        ],
+    )
+
+    with pytest.raises(SystemExit) as exc:
+        main()
+
+    assert exc.value.code == 2
+    assert (
+        offers_path.read_text(encoding="utf-8")
+        == original
+    )
+
+
+def test_import_command_blocks_feed_over_row_limit(
+    tmp_path,
+    monkeypatch,
+) -> None:
+    mappings_path = tmp_path / "mappings.json"
+    feed_path = tmp_path / "feed.json"
+    offers_path = tmp_path / "offers.json"
+
+    mappings_path.write_text(
+        json.dumps({"mappings": []}),
+        encoding="utf-8",
+    )
+
+    feed_path.write_text(
+        json.dumps(
+            {
+                "offers": [
+                    {"offer_id": "offer-1"},
+                    {"offer_id": "offer-2"},
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    offers_path.write_text(
+        json.dumps({"offers": []}),
+        encoding="utf-8",
+    )
+
+    original = offers_path.read_text(
+        encoding="utf-8"
+    )
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "import_merchant_feed",
+            "--feed",
+            str(feed_path),
+            "--mappings",
+            str(mappings_path),
+            "--offers",
+            str(offers_path),
+            "--max-feed-rows",
+            "1",
+        ],
+    )
+
+    with pytest.raises(SystemExit) as exc:
+        main()
+
+    assert exc.value.code == 2
+    assert (
+        offers_path.read_text(encoding="utf-8")
+        == original
+    )

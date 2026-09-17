@@ -248,3 +248,72 @@ def test_csv_without_supported_delimiter_is_rejected(
         match="Could not detect CSV",
     ):
         read_merchant_feed_rows(path)
+
+
+def test_feed_file_size_limit_is_enforced(
+    tmp_path,
+) -> None:
+    path = tmp_path / "feed.json"
+
+    path.write_text(
+        '[{"offer_id":"offer-1"}]',
+        encoding="utf-8",
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="maximum file size",
+    ):
+        read_merchant_feed_rows(
+            path,
+            max_bytes=5,
+        )
+
+
+def test_json_row_limit_is_enforced(
+    tmp_path,
+) -> None:
+    path = tmp_path / "feed.json"
+
+    path.write_text(
+        json.dumps(
+            [
+                {"offer_id": "offer-1"},
+                {"offer_id": "offer-2"},
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="maximum row count",
+    ):
+        read_merchant_feed_rows(
+            path,
+            max_rows=1,
+        )
+
+
+def test_csv_row_limit_is_enforced(
+    tmp_path,
+) -> None:
+    path = tmp_path / "feed.csv"
+
+    path.write_text(
+        (
+            "offer_id,price\n"
+            "offer-1,89.95\n"
+            "offer-2,79.95\n"
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="maximum row count",
+    ):
+        read_merchant_feed_rows(
+            path,
+            max_rows=1,
+        )

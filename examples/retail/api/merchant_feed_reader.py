@@ -9,6 +9,9 @@ from typing import Literal
 
 FeedFormat = Literal["auto", "json", "csv"]
 
+DEFAULT_MAX_FEED_BYTES = 100 * 1024 * 1024
+DEFAULT_MAX_FEED_ROWS = 500_000
+
 
 def detect_feed_format(path: Path) -> str:
     suffix = path.suffix.strip().casefold()
@@ -24,7 +27,30 @@ def detect_feed_format(path: Path) -> str:
     )
 
 
-def _read_feed_text(path: Path) -> str:
+def _enforce_file_size(
+    path: Path,
+    *,
+    max_bytes: int,
+) -> None:
+    size = path.stat().st_size
+
+    if size > max_bytes:
+        raise ValueError(
+            "Merchant feed exceeds maximum file size: "
+            f"{size} bytes > {max_bytes} bytes"
+        )
+
+
+def _read_feed_text(
+    path: Path,
+    *,
+    max_bytes: int,
+) -> str:
+    _enforce_file_size(
+        path,
+        max_bytes=max_bytes,
+    )
+
     payload = path.read_bytes()
 
     if not payload:
@@ -46,9 +72,17 @@ def _read_feed_text(path: Path) -> str:
     )
 
 
-def _read_json_rows(path: Path) -> list[dict]:
+def _read_json_rows(
+    path: Path,
+    *,
+    max_bytes: int,
+    max_rows: int,
+) -> list[dict]:
     raw = json.loads(
-        _read_feed_text(path)
+        _read_feed_text(
+            path,
+            max_bytes=max_bytes,
+        )
     )
 
     if isinstance(raw, list):
@@ -62,6 +96,12 @@ def _read_json_rows(path: Path) -> list[dict]:
         raise ValueError(
             "JSON merchant feed must be a list or "
             "an object containing an 'offers' list"
+        )
+
+    if len(rows) > max_rows:
+        raise ValueError(
+            "Merchant feed exceeds maximum row count: "
+            f"{len(rows)} > {max_rows}"
         )
 
     if not all(isinstance(row, dict) for row in rows):
@@ -86,8 +126,16 @@ def _detect_csv_dialect(text: str) -> csv.Dialect:
         ) from exc
 
 
-def _read_csv_rows(path: Path) -> list[dict]:
-    text = _read_feed_text(path)
+def _read_csv_rows(
+    path: Path,
+    *,
+    max_bytes: int,
+    max_rows: int,
+) -> list[dict]:
+    text = _read_feed_text(
+        path,
+        max_bytes=max_bytes,
+    )
     dialect = _detect_csv_dialect(text)
 
     reader = csv.DictReader(
@@ -108,21 +156,43 @@ def _read_csv_rows(path: Path) -> list[dict]:
             "CSV merchant feed contains an empty header"
         )
 
-    return [
-        dict(row)
-        for row in reader
-        if any(
+    rows: list[dict] = []
+
+    for row in reader:
+        if not any(
             value is not None and value.strip()
             for value in row.values()
-        )
-    ]
+        ):
+            continue
+
+        rows.append(dict(row))
+
+        if len(rows) > max_rows:
+            raise ValueError(
+                "Merchant feed exceeds maximum row count: "
+                f">{max_rows}"
+            )
+
+    return rows
 
 
 def read_merchant_feed_rows(
     path: Path,
     *,
     feed_format: FeedFormat = "auto",
+    max_bytes: int = DEFAULT_MAX_FEED_BYTES,
+    max_rows: int = DEFAULT_MAX_FEED_ROWS,
 ) -> list[dict]:
+    if max_bytes < 1:
+        raise ValueError(
+            "max_bytes must be at least 1"
+        )
+
+    if max_rows < 1:
+        raise ValueError(
+            "max_rows must be at least 1"
+        )
+
     resolved_format = (
         detect_feed_format(path)
         if feed_format == "auto"
@@ -130,10 +200,18 @@ def read_merchant_feed_rows(
     )
 
     if resolved_format == "json":
-        return _read_json_rows(path)
+        return _read_json_rows(
+            path,
+            max_bytes=max_bytes,
+            max_rows=max_rows,
+        )
 
     if resolved_format == "csv":
-        return _read_csv_rows(path)
+        return _read_csv_rows(
+            path,
+            max_bytes=max_bytes,
+            max_rows=max_rows,
+        )
 
     raise ValueError(
         f"Unsupported merchant feed format: {resolved_format}"
