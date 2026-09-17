@@ -157,3 +157,35 @@ def import_feed_rows(
         offers=offers,
         unmatched=unmatched,
     )
+
+def upsert_offers_file(
+    path: Path,
+    offers: list[MerchantOffer],
+) -> None:
+    if path.exists():
+        raw = json.loads(path.read_text(encoding="utf-8-sig"))
+        existing_rows = raw.get("offers", raw if isinstance(raw, list) else [])
+        existing = [
+            MerchantOffer.model_validate(row)
+            for row in existing_rows
+        ]
+    else:
+        existing = []
+
+    by_id = {offer.offer_id: offer for offer in existing}
+
+    for offer in offers:
+        by_id[offer.offer_id] = offer
+
+    payload = {
+        "offers": [
+            offer.model_dump(mode="json")
+            for offer in by_id.values()
+        ]
+    }
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )

@@ -6,6 +6,7 @@ from retail.api.merchant_import import (
     load_product_mappings,
     normalize_feed_row,
     resolve_product_id,
+    upsert_offers_file,
     validate_offer_payload,
 )
 
@@ -245,3 +246,87 @@ def test_import_feed_rows_separates_matched_and_unmatched() -> None:
     assert len(result.unmatched) == 1
     assert result.unmatched[0].offer_id == "notino-unknown"
     assert result.unmatched[0].reason == "product_mapping_not_found"
+
+
+def test_upsert_offers_file_updates_existing_and_adds_new(tmp_path) -> None:
+    path = tmp_path / "merchant_offers.json"
+
+    path.write_text(
+        json.dumps(
+            {
+                "offers": [
+                    {
+                        "offer_id": "douglas-bois-imperial-100",
+                        "product_id": PRODUCT_ID,
+                        "merchant_id": "douglas-de",
+                        "merchant_name": "Douglas",
+                        "merchant_product_id": "1068008",
+                        "price": 94.0,
+                        "currency": "EUR",
+                        "shipping_cost": 0.0,
+                        "in_stock": True,
+                        "product_url": "https://example.com/douglas",
+                        "affiliate_url": None,
+                        "network": "Awin",
+                        "data_source": "old-feed",
+                        "last_updated_at": "2026-09-15T12:00:00Z",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    updated_douglas = validate_offer_payload(
+        {
+            "offer_id": "douglas-bois-imperial-100",
+            "product_id": PRODUCT_ID,
+            "merchant_id": "douglas-de",
+            "merchant_name": "Douglas",
+            "merchant_product_id": "1068008",
+            "price": 89.0,
+            "currency": "EUR",
+            "shipping_cost": 0.0,
+            "in_stock": True,
+            "product_url": "https://example.com/douglas",
+            "affiliate_url": "https://example.com/douglas-affiliate",
+            "network": "Awin",
+            "data_source": "awin-feed",
+            "last_updated_at": "2026-09-17T12:00:00Z",
+        }
+    )
+
+    notino = validate_offer_payload(
+        {
+            "offer_id": "notino-bois-imperial-100",
+            "product_id": PRODUCT_ID,
+            "merchant_id": "notino-de",
+            "merchant_name": "Notino",
+            "merchant_product_id": "NOTINO-123",
+            "price": 91.0,
+            "currency": "EUR",
+            "shipping_cost": 0.0,
+            "in_stock": True,
+            "product_url": "https://example.com/notino",
+            "affiliate_url": "https://example.com/notino-affiliate",
+            "network": "CJ",
+            "data_source": "cj-feed",
+            "last_updated_at": "2026-09-17T12:00:00Z",
+        }
+    )
+
+    upsert_offers_file(path, [updated_douglas, notino])
+
+    saved = json.loads(path.read_text(encoding="utf-8"))
+    offers = saved["offers"]
+
+    assert len(offers) == 2
+
+    by_id = {offer["offer_id"]: offer for offer in offers}
+
+    assert by_id["douglas-bois-imperial-100"]["price"] == 89.0
+    assert by_id["douglas-bois-imperial-100"]["data_source"] == "awin-feed"
+    assert by_id["douglas-bois-imperial-100"]["affiliate_url"] == "https://example.com/douglas-affiliate"
+
+    assert by_id["notino-bois-imperial-100"]["merchant_name"] == "Notino"
+    assert by_id["notino-bois-imperial-100"]["network"] == "CJ"
