@@ -4,6 +4,11 @@ from pathlib import Path
 
 from pydantic import BaseModel
 
+from .merchant_health import (
+    HealthSeverity,
+    MerchantJobHealth,
+    evaluate_job_health,
+)
 from .merchant_job_status_summary import (
     DEFAULT_APPROVALS_PATH,
     MerchantJobStatusSummary,
@@ -25,6 +30,13 @@ class MerchantFleetStatusSummary(BaseModel):
     approval_required: int
 
     latest_run_review: int
+
+    health_severity: HealthSeverity
+    health_ok: int
+    health_info: int
+    health_warning: int
+    health_blocked: int
+    health_items: list[MerchantJobHealth]
 
     attention_required: int
     attention_job_ids: list[str]
@@ -49,6 +61,37 @@ def build_fleet_status_summary(
     summaries.sort(
         key=lambda summary: summary.job_id.casefold()
     )
+
+    health_items = [
+        evaluate_job_health(summary)
+        for summary in summaries
+    ]
+
+    health_ok = sum(
+        item.severity == "ok"
+        for item in health_items
+    )
+    health_info = sum(
+        item.severity == "info"
+        for item in health_items
+    )
+    health_warning = sum(
+        item.severity == "warning"
+        for item in health_items
+    )
+    health_blocked = sum(
+        item.severity == "blocked"
+        for item in health_items
+    )
+
+    if health_blocked:
+        health_severity: HealthSeverity = "blocked"
+    elif health_warning:
+        health_severity = "warning"
+    elif health_ok:
+        health_severity = "ok"
+    else:
+        health_severity = "info"
 
     attention_items = []
 
@@ -87,6 +130,12 @@ def build_fleet_status_summary(
             summary.latest_run_status == "review"
             for summary in summaries
         ),
+        health_severity=health_severity,
+        health_ok=health_ok,
+        health_info=health_info,
+        health_warning=health_warning,
+        health_blocked=health_blocked,
+        health_items=health_items,
         attention_required=len(attention_items),
         attention_job_ids=attention_job_ids,
         attention_items=attention_items,

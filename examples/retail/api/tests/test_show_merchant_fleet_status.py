@@ -193,3 +193,35 @@ def test_fleet_status_cli_serializes_operator_guidance(
     assert item["operator_actions"] == [
         "review_dry_run_and_approve"
     ]
+
+
+def test_fleet_status_cli_serializes_health(
+    tmp_path,
+    monkeypatch,
+    capsys,
+) -> None:
+    jobs_path = _write_jobs(tmp_path)
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "show_merchant_fleet_status",
+            "--jobs",
+            str(jobs_path),
+            "--approvals",
+            str(tmp_path / "approvals.json"),
+        ],
+    )
+
+    assert main() == 0
+
+    payload = json.loads(
+        capsys.readouterr().out
+    )
+
+    assert payload["health_severity"] == "blocked"
+    assert payload["health_blocked"] == 1
+    assert payload["health_ok"] == 1
+    assert payload["health_info"] == 1
+    assert len(payload["health_items"]) == 3

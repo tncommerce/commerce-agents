@@ -234,3 +234,85 @@ def test_fleet_attention_includes_review_guidance(
     assert item.operator_actions == [
         "review_unmatched_product_mappings"
     ]
+
+
+def test_fleet_health_is_blocked_when_job_is_blocked(
+    tmp_path,
+) -> None:
+    job = _job(
+        tmp_path,
+        "blocked-job",
+        dry_run=False,
+    )
+
+    fleet = build_fleet_status_summary(
+        [job],
+        approvals_path=tmp_path / "approvals.json",
+    )
+
+    assert fleet.health_severity == "blocked"
+    assert fleet.health_blocked == 1
+    assert fleet.health_warning == 0
+    assert fleet.health_items[0].severity == "blocked"
+
+
+def test_fleet_health_is_warning_for_review_run(
+    tmp_path,
+) -> None:
+    job = _job(
+        tmp_path,
+        "warning-job",
+    )
+
+    report = build_import_run_report(
+        provider="canonical",
+        mode="DRY-RUN",
+        feed_file=job.config.feed.name,
+        read=5,
+        new=0,
+        updated=0,
+        unchanged=4,
+        unmatched=1,
+        invalid=0,
+        deactivated=0,
+        run_id="warning-run",
+    )
+
+    append_import_run_report(
+        job.config.run_report,
+        report,
+    )
+
+    fleet = build_fleet_status_summary(
+        [job],
+        approvals_path=tmp_path / "approvals.json",
+    )
+
+    assert fleet.health_severity == "warning"
+    assert fleet.health_warning == 1
+    assert fleet.health_blocked == 0
+
+
+def test_disabled_job_does_not_degrade_ready_fleet(
+    tmp_path,
+) -> None:
+    jobs = [
+        _job(
+            tmp_path,
+            "ready-health-job",
+        ),
+        _job(
+            tmp_path,
+            "disabled-health-job",
+            enabled=False,
+        ),
+    ]
+
+    fleet = build_fleet_status_summary(
+        jobs,
+        approvals_path=tmp_path / "approvals.json",
+    )
+
+    assert fleet.health_severity == "ok"
+    assert fleet.health_ok == 1
+    assert fleet.health_info == 1
