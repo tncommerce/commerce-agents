@@ -1,4 +1,4 @@
-﻿from retail.api.merchant_job_approval import (
+from retail.api.merchant_job_approval import (
     approval_matches_job,
     build_job_approval,
     load_job_approvals,
@@ -10,6 +10,21 @@ from retail.api.merchant_scheduled_execution import (
 
 
 def _config(tmp_path, *, dry_run=True, provider="canonical"):
+    feed = tmp_path / "feed.json"
+    mappings = tmp_path / "mappings.json"
+
+    if not feed.exists():
+        feed.write_text(
+            '{"offers": []}',
+            encoding="utf-8",
+        )
+
+    if not mappings.exists():
+        mappings.write_text(
+            '{"mappings": []}',
+            encoding="utf-8",
+        )
+
     return ScheduledMerchantImportConfig(
         feed=tmp_path / "feed.json",
         mappings=tmp_path / "mappings.json",
@@ -96,3 +111,49 @@ def test_job_approval_can_be_persisted_and_replaced(
 
     assert len(saved) == 1
     assert saved[0].approved_run_id == "run-2"
+
+
+def test_feed_change_invalidates_existing_approval(
+    tmp_path,
+) -> None:
+    config = _config(tmp_path)
+
+    approval = build_job_approval(
+        job_id="notino-de",
+        approved_run_id="dry-run-feed",
+        config=config,
+    )
+
+    config.feed.write_text(
+        '{"offers": [{"offer_id": "changed"}]}',
+        encoding="utf-8",
+    )
+
+    assert approval_matches_job(
+        approval,
+        job_id="notino-de",
+        config=config,
+    ) is False
+
+
+def test_mapping_change_invalidates_existing_approval(
+    tmp_path,
+) -> None:
+    config = _config(tmp_path)
+
+    approval = build_job_approval(
+        job_id="notino-de",
+        approved_run_id="dry-run-mapping",
+        config=config,
+    )
+
+    config.mappings.write_text(
+        '{"mappings": [{"product_id": "changed"}]}',
+        encoding="utf-8",
+    )
+
+    assert approval_matches_job(
+        approval,
+        job_id="notino-de",
+        config=config,
+    ) is False

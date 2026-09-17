@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import hashlib
 import json
@@ -17,12 +17,27 @@ class MerchantJobApproval(BaseModel):
     config_fingerprint: str
 
 
+def _file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+
+    with path.open("rb") as handle:
+        for chunk in iter(
+            lambda: handle.read(1024 * 1024),
+            b"",
+        ):
+            digest.update(chunk)
+
+    return digest.hexdigest()
+
+
 def job_config_fingerprint(
     config: ScheduledMerchantImportConfig,
 ) -> str:
     payload = {
         "feed": str(config.feed),
+        "feed_sha256": _file_sha256(config.feed),
         "mappings": str(config.mappings),
+        "mappings_sha256": _file_sha256(config.mappings),
         "offers": str(config.offers),
         "unmatched": str(config.unmatched),
         "invalid": str(config.invalid),
