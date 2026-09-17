@@ -70,3 +70,51 @@ def test_append_import_run_report_writes_jsonl(tmp_path) -> None:
     assert saved["mode"] == "WRITE"
     assert saved["new"] == 1
     assert saved["updated"] == 2
+
+
+def test_file_snapshot_hash_changes_with_content(
+    tmp_path,
+) -> None:
+    from retail.api.merchant_feed_snapshot import (
+        file_sha256,
+    )
+
+    path = tmp_path / "feed.json"
+
+    path.write_text(
+        '{"offers":[]}',
+        encoding="utf-8",
+    )
+
+    first = file_sha256(path)
+
+    path.write_text(
+        '{"offers":[{"offer_id":"changed"}]}',
+        encoding="utf-8",
+    )
+
+    second = file_sha256(path)
+
+    assert len(first) == 64
+    assert len(second) == 64
+    assert first != second
+
+
+def test_run_report_records_snapshot_fingerprints() -> None:
+    report = build_import_run_report(
+        provider="canonical",
+        mode="DRY-RUN",
+        feed_file="feed.json",
+        feed_sha256="a" * 64,
+        mappings_sha256="b" * 64,
+        read=1,
+        new=1,
+        updated=0,
+        unchanged=0,
+        unmatched=0,
+        invalid=0,
+        deactivated=0,
+    )
+
+    assert report.feed_sha256 == "a" * 64
+    assert report.mappings_sha256 == "b" * 64

@@ -14,6 +14,8 @@ class MerchantImportRunReport(BaseModel):
     provider: str
     mode: str
     feed_file: str
+    feed_sha256: str | None = None
+    mappings_sha256: str | None = None
     authoritative_merchant_id: str | None = None
     authoritative_data_source: str | None = None
     allow_empty_authoritative: bool = False
@@ -32,6 +34,8 @@ def build_import_run_report(
     mode: str,
     feed_file: str,
     read: int,
+    feed_sha256: str | None = None,
+    mappings_sha256: str | None = None,
     new: int,
     updated: int,
     unchanged: int,
@@ -50,6 +54,8 @@ def build_import_run_report(
         provider=provider,
         mode=mode,
         feed_file=feed_file,
+        feed_sha256=feed_sha256,
+        mappings_sha256=mappings_sha256,
         authoritative_merchant_id=authoritative_merchant_id,
         authoritative_data_source=authoritative_data_source,
         allow_empty_authoritative=allow_empty_authoritative,

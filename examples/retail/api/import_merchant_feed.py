@@ -7,6 +7,10 @@ from pathlib import Path
 from .merchant_feed_guard import (
     find_duplicate_offer_ids,
 )
+from .merchant_feed_snapshot import (
+    changed_snapshot_files,
+    file_sha256,
+)
 from .merchant_feed_reader import (
     DEFAULT_MAX_FEED_BYTES,
     DEFAULT_MAX_FEED_ROWS,
@@ -176,6 +180,9 @@ def main() -> int:
             + preview
         )
 
+    feed_sha256 = file_sha256(args.feed)
+    mappings_sha256 = file_sha256(args.mappings)
+
     mappings = load_product_mappings(args.mappings)
     result = import_feed_rows(rows, mappings)
 
@@ -221,6 +228,19 @@ def main() -> int:
         "authoritative_data_source": args.authoritative_data_source,
     }
 
+    changed_snapshots = changed_snapshot_files(
+        feed_path=args.feed,
+        expected_feed_sha256=feed_sha256,
+        mappings_path=args.mappings,
+        expected_mappings_sha256=mappings_sha256,
+    )
+
+    if changed_snapshots:
+        parser.error(
+            "Merchant import snapshot changed during processing: "
+            + ", ".join(changed_snapshots)
+        )
+
     if args.dry_run:
         report = analyze_offer_changes(
             args.offers,
@@ -263,6 +283,8 @@ def main() -> int:
         provider=args.provider,
         mode=mode,
         feed_file=args.feed.name,
+        feed_sha256=feed_sha256,
+        mappings_sha256=mappings_sha256,
         authoritative_merchant_id=args.authoritative_merchant_id,
         authoritative_data_source=args.authoritative_data_source,
         allow_empty_authoritative=args.allow_empty_authoritative,

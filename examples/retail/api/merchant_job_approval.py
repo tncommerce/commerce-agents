@@ -7,6 +7,7 @@ from pathlib import Path
 
 from pydantic import BaseModel
 
+from .merchant_feed_snapshot import file_sha256
 from .merchant_scheduled_execution import ScheduledMerchantImportConfig
 
 
@@ -19,26 +20,13 @@ class MerchantJobApproval(BaseModel):
     approved_mappings_sha256: str
 
 
-def _file_sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-
-    with path.open("rb") as handle:
-        for chunk in iter(
-            lambda: handle.read(1024 * 1024),
-            b"",
-        ):
-            digest.update(chunk)
-
-    return digest.hexdigest()
-
-
 def job_config_fingerprint(
     config: ScheduledMerchantImportConfig,
 ) -> str:
     payload = {
         "feed": str(config.feed),
         "mappings": str(config.mappings),
-        "mappings_sha256": _file_sha256(config.mappings),
+        "mappings_sha256": file_sha256(config.mappings),
         "offers": str(config.offers),
         "unmatched": str(config.unmatched),
         "invalid": str(config.invalid),
@@ -74,8 +62,8 @@ def build_job_approval(
         approved_run_id=approved_run_id,
         approved_at=approved_at or datetime.now(timezone.utc),
         config_fingerprint=job_config_fingerprint(config),
-        approved_feed_sha256=_file_sha256(config.feed),
-        approved_mappings_sha256=_file_sha256(config.mappings),
+        approved_feed_sha256=file_sha256(config.feed),
+        approved_mappings_sha256=file_sha256(config.mappings),
     )
 
 

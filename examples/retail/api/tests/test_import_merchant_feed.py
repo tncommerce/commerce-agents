@@ -1356,3 +1356,206 @@ def test_import_command_blocks_feed_over_row_limit(
         offers_path.read_text(encoding="utf-8")
         == original
     )
+
+
+def test_machine_readable_run_contains_snapshot_hashes(
+    tmp_path,
+    monkeypatch,
+    capsys,
+) -> None:
+    from retail.api.merchant_feed_snapshot import (
+        file_sha256,
+    )
+
+    mappings_path = tmp_path / "mappings.json"
+    feed_path = tmp_path / "feed.json"
+    offers_path = tmp_path / "offers.json"
+
+    mappings_path.write_text(
+        json.dumps(
+            {
+                "mappings": [
+                    {
+                        "product_id": PRODUCT_ID,
+                        "merchant": "notino",
+                        "merchant_product_id": "NOTINO-SNAPSHOT-123",
+                        "ean": None,
+                        "gtin": None,
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    feed_path.write_text(
+        json.dumps(
+            {
+                "offers": [
+                    {
+                        "offer_id": "snapshot-offer",
+                        "merchant": "notino",
+                        "merchant_id": "notino-de",
+                        "merchant_name": "Notino",
+                        "merchant_product_id": "NOTINO-SNAPSHOT-123",
+                        "price": 89.95,
+                        "currency": "EUR",
+                        "in_stock": True,
+                        "product_url": "https://example.com/snapshot",
+                        "last_updated_at": "2026-09-17T18:00:00Z",
+                        "data_source": "snapshot-test-feed",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    offers_path.write_text(
+        json.dumps({"offers": []}),
+        encoding="utf-8",
+    )
+
+    expected_feed_hash = file_sha256(feed_path)
+    expected_mappings_hash = file_sha256(mappings_path)
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "import_merchant_feed",
+            "--feed",
+            str(feed_path),
+            "--mappings",
+            str(mappings_path),
+            "--offers",
+            str(offers_path),
+            "--dry-run",
+            "--machine-readable",
+        ],
+    )
+
+    exit_code = main()
+
+    payload = json.loads(
+        capsys.readouterr().out
+    )
+
+    assert exit_code == 0
+    assert payload["run"]["feed_sha256"] == expected_feed_hash
+    assert (
+        payload["run"]["mappings_sha256"]
+        == expected_mappings_hash
+    )
+
+
+def test_import_aborts_if_feed_changes_during_processing(
+    tmp_path,
+    monkeypatch,
+) -> None:
+    from retail.api import import_merchant_feed as import_command
+
+    mappings_path = tmp_path / "mappings.json"
+    feed_path = tmp_path / "feed.json"
+    offers_path = tmp_path / "offers.json"
+
+    mappings_path.write_text(
+        json.dumps(
+            {
+                "mappings": [
+                    {
+                        "product_id": PRODUCT_ID,
+                        "merchant": "notino",
+                        "merchant_product_id": "NOTINO-STABLE-123",
+                        "ean": None,
+                        "gtin": None,
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    feed_path.write_text(
+        json.dumps(
+            {
+                "offers": [
+                    {
+                        "offer_id": "stable-offer",
+                        "merchant": "notino",
+                        "merchant_id": "notino-de",
+                        "merchant_name": "Notino",
+                        "merchant_product_id": "NOTINO-STABLE-123",
+                        "price": 89.95,
+                        "currency": "EUR",
+                        "in_stock": True,
+                        "product_url": "https://example.com/stable",
+                        "last_updated_at": "2026-09-17T18:00:00Z",
+                        "data_source": "stability-test-feed",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    offers_path.write_text(
+        json.dumps({"offers": []}),
+        encoding="utf-8",
+    )
+
+    original_offers = offers_path.read_text(
+        encoding="utf-8"
+    )
+
+    original_import = import_command.import_feed_rows
+
+    def changing_import(payloads, mappings):
+        result = original_import(
+            payloads,
+            mappings,
+        )
+
+        feed_path.write_text(
+            json.dumps(
+                {
+                    "offers": [
+                        {
+                            "offer_id": "changed-mid-run"
+                        }
+                    ]
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        return result
+
+    monkeypatch.setattr(
+        import_command,
+        "import_feed_rows",
+        changing_import,
+    )
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "import_merchant_feed",
+            "--feed",
+            str(feed_path),
+            "--mappings",
+            str(mappings_path),
+            "--offers",
+            str(offers_path),
+        ],
+    )
+
+    with pytest.raises(SystemExit) as exc:
+        import_command.main()
+
+    assert exc.value.code == 2
+    assert (
+        offers_path.read_text(encoding="utf-8")
+        == original_offers
+    )
