@@ -5,6 +5,10 @@ from pathlib import Path
 
 from pydantic import BaseModel
 
+from .merchant_job_approval import (
+    approval_matches_job,
+    load_job_approvals,
+)
 from .merchant_job_readiness import evaluate_job_readiness
 from .merchant_operational_runner import MerchantOperationalRun
 from .merchant_scheduled_execution import (
@@ -61,6 +65,8 @@ def get_merchant_job(
 def run_merchant_job(
     jobs: list[MerchantJobProfile],
     job_id: str,
+    *,
+    approvals_path: Path | None = None,
 ) -> MerchantOperationalRun:
     job = get_merchant_job(
         jobs,
@@ -87,5 +93,38 @@ def run_merchant_job(
                 *readiness.reasons,
             ],
         )
+
+    if not job.config.dry_run:
+        approval_file = (
+            approvals_path
+            if approvals_path is not None
+            else Path(
+                "examples/retail/data/"
+                "merchant_job_approvals.json"
+            )
+        )
+
+        approvals = load_job_approvals(
+            approval_file
+        )
+
+        approved = any(
+            approval_matches_job(
+                approval,
+                job_id=job.job_id,
+                config=job.config,
+            )
+            for approval in approvals
+        )
+
+        if not approved:
+            return MerchantOperationalRun(
+                action="hold",
+                exit_code=20,
+                import_exit_code=20,
+                reasons=[
+                    "dry_run_approval_required"
+                ],
+            )
 
     return run_scheduled_import(job.config)
