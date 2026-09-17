@@ -114,4 +114,46 @@ def normalize_feed_row(
             "commission_rate": row.commission_rate,
         }
     )
-  
+class UnmatchedFeedRow(BaseModel):
+    offer_id: str
+    merchant: str
+    merchant_product_id: str | None = None
+    ean: str | None = None
+    gtin: str | None = None
+    reason: str = "product_mapping_not_found"
+
+
+class FeedImportResult(BaseModel):
+    offers: list[MerchantOffer]
+    unmatched: list[UnmatchedFeedRow]
+
+
+def import_feed_rows(
+    payloads: list[dict],
+    mappings: list[MerchantProductMapping],
+) -> FeedImportResult:
+    offers: list[MerchantOffer] = []
+    unmatched: list[UnmatchedFeedRow] = []
+
+    for payload in payloads:
+        row = MerchantFeedRow.model_validate(payload)
+        offer = normalize_feed_row(payload, mappings)
+
+        if offer is None:
+            unmatched.append(
+                UnmatchedFeedRow(
+                    offer_id=row.offer_id,
+                    merchant=row.merchant,
+                    merchant_product_id=row.merchant_product_id,
+                    ean=row.ean,
+                    gtin=row.gtin,
+                )
+            )
+            continue
+
+        offers.append(offer)
+
+    return FeedImportResult(
+        offers=offers,
+        unmatched=unmatched,
+    )

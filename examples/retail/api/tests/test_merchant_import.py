@@ -2,6 +2,7 @@ import json
 
 from retail.api.merchant_import import (
     MerchantProductMapping,
+    import_feed_rows,
     load_product_mappings,
     normalize_feed_row,
     resolve_product_id,
@@ -192,3 +193,55 @@ def test_normalize_feed_row_skips_unknown_product() -> None:
     )
 
     assert offer is None
+
+def test_import_feed_rows_separates_matched_and_unmatched() -> None:
+    mappings = [
+        MerchantProductMapping(
+            product_id=PRODUCT_ID,
+            merchant="notino",
+            merchant_product_id="NOTINO-123",
+        )
+    ]
+
+    result = import_feed_rows(
+        [
+            {
+                "offer_id": "notino-bois-imperial-100",
+                "merchant": "notino",
+                "merchant_id": "notino-de",
+                "merchant_name": "Notino",
+                "merchant_product_id": "NOTINO-123",
+                "price": 89.95,
+                "currency": "EUR",
+                "shipping_cost": 0.0,
+                "in_stock": True,
+                "product_url": "https://example.com/bois-imperial",
+                "affiliate_url": "https://example.com/affiliate/bois-imperial",
+                "network": "CJ",
+                "data_source": "cj-feed",
+                "last_updated_at": "2026-09-17T12:00:00Z",
+            },
+            {
+                "offer_id": "notino-unknown",
+                "merchant": "notino",
+                "merchant_id": "notino-de",
+                "merchant_name": "Notino",
+                "merchant_product_id": "UNKNOWN-999",
+                "price": 49.95,
+                "currency": "EUR",
+                "shipping_cost": 0.0,
+                "in_stock": True,
+                "product_url": "https://example.com/unknown",
+                "network": "CJ",
+                "data_source": "cj-feed",
+                "last_updated_at": "2026-09-17T12:00:00Z",
+            },
+        ],
+        mappings,
+    )
+
+    assert len(result.offers) == 1
+    assert result.offers[0].product_id == PRODUCT_ID
+    assert len(result.unmatched) == 1
+    assert result.unmatched[0].offer_id == "notino-unknown"
+    assert result.unmatched[0].reason == "product_mapping_not_found"
