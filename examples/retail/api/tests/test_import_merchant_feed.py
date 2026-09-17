@@ -120,3 +120,90 @@ def test_import_merchant_feed_command_end_to_end(tmp_path, monkeypatch, capsys) 
     assert saved_invalid["invalid"][0]["row_index"] == 2
     assert saved_invalid["invalid"][0]["offer_id"] == "broken-row"
     assert saved_invalid["invalid"][0]["reason"] == "invalid_feed_row"
+
+
+def test_import_merchant_feed_dry_run_does_not_write_files(
+    tmp_path,
+    monkeypatch,
+    capsys,
+) -> None:
+    mappings_path = tmp_path / "mappings.json"
+    feed_path = tmp_path / "feed.json"
+    offers_path = tmp_path / "offers.json"
+    unmatched_path = tmp_path / "unmatched.json"
+    invalid_path = tmp_path / "invalid.json"
+
+    mappings_path.write_text(
+        json.dumps(
+            {
+                "mappings": [
+                    {
+                        "product_id": PRODUCT_ID,
+                        "merchant": "notino",
+                        "merchant_product_id": "NOTINO-123",
+                        "ean": None,
+                        "gtin": None,
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    feed_path.write_text(
+        json.dumps(
+            {
+                "offers": [
+                    {
+                        "offer_id": "notino-bois-imperial-100",
+                        "merchant": "notino",
+                        "merchant_id": "notino-de",
+                        "merchant_name": "Notino",
+                        "merchant_product_id": "NOTINO-123",
+                        "price": 89.95,
+                        "currency": "EUR",
+                        "shipping_cost": 0.0,
+                        "in_stock": True,
+                        "product_url": "https://example.com/bois-imperial",
+                        "network": "CJ",
+                        "data_source": "test-feed",
+                        "last_updated_at": "2026-09-17T12:00:00Z",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    offers_path.write_text("KEEP-OFFERS", encoding="utf-8")
+    unmatched_path.write_text("KEEP-UNMATCHED", encoding="utf-8")
+    invalid_path.write_text("KEEP-INVALID", encoding="utf-8")
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "import_merchant_feed",
+            "--feed",
+            str(feed_path),
+            "--mappings",
+            str(mappings_path),
+            "--offers",
+            str(offers_path),
+            "--unmatched",
+            str(unmatched_path),
+            "--invalid",
+            str(invalid_path),
+            "--dry-run",
+        ],
+    )
+
+    main()
+
+    output = capsys.readouterr().out
+    assert "Mode: DRY-RUN" in output
+    assert "Read: 1 | Imported: 1 | Unmatched: 0 | Invalid: 0" in output
+
+    assert offers_path.read_text(encoding="utf-8") == "KEEP-OFFERS"
+    assert unmatched_path.read_text(encoding="utf-8") == "KEEP-UNMATCHED"
+    assert invalid_path.read_text(encoding="utf-8") == "KEEP-INVALID"

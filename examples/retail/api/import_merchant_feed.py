@@ -36,6 +36,11 @@ def main() -> None:
         type=Path,
         default=Path("examples/retail/data/merchant_invalid.json"),
     )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Validate the feed without writing any output files.",
+    )
 
     args = parser.parse_args()
 
@@ -45,35 +50,39 @@ def main() -> None:
     mappings = load_product_mappings(args.mappings)
     result = import_feed_rows(rows, mappings)
 
-    upsert_offers_file(args.offers, result.offers)
+    if not args.dry_run:
+        upsert_offers_file(args.offers, result.offers)
 
-    unmatched_payload = {
-        "unmatched": [
-            row.model_dump(mode="json")
-            for row in result.unmatched
-        ]
-    }
+        unmatched_payload = {
+            "unmatched": [
+                row.model_dump(mode="json")
+                for row in result.unmatched
+            ]
+        }
 
-    args.unmatched.parent.mkdir(parents=True, exist_ok=True)
-    args.unmatched.write_text(
-        json.dumps(unmatched_payload, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
+        args.unmatched.parent.mkdir(parents=True, exist_ok=True)
+        args.unmatched.write_text(
+            json.dumps(unmatched_payload, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
 
-    invalid_payload = {
-        "invalid": [
-            row.model_dump(mode="json")
-            for row in result.invalid
-        ]
-    }
+        invalid_payload = {
+            "invalid": [
+                row.model_dump(mode="json")
+                for row in result.invalid
+            ]
+        }
 
-    args.invalid.parent.mkdir(parents=True, exist_ok=True)
-    args.invalid.write_text(
-        json.dumps(invalid_payload, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
+        args.invalid.parent.mkdir(parents=True, exist_ok=True)
+        args.invalid.write_text(
+            json.dumps(invalid_payload, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+
+    mode = "DRY-RUN" if args.dry_run else "WRITE"
 
     print(
+        f"Mode: {mode} | "
         f"Read: {len(rows)} | "
         f"Imported: {len(result.offers)} | "
         f"Unmatched: {len(result.unmatched)} | "
