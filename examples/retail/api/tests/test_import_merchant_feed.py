@@ -208,3 +208,135 @@ def test_import_merchant_feed_dry_run_does_not_write_files(
     assert offers_path.read_text(encoding="utf-8") == original_offers
     assert unmatched_path.read_text(encoding="utf-8") == "KEEP-UNMATCHED"
     assert invalid_path.read_text(encoding="utf-8") == "KEEP-INVALID"
+
+
+def test_authoritative_dry_run_reports_deactivation_without_writing(
+    tmp_path,
+    monkeypatch,
+    capsys,
+) -> None:
+    mappings_path = tmp_path / "mappings.json"
+    feed_path = tmp_path / "feed.json"
+    offers_path = tmp_path / "offers.json"
+    unmatched_path = tmp_path / "unmatched.json"
+    invalid_path = tmp_path / "invalid.json"
+
+    mappings_path.write_text(
+        json.dumps(
+            {
+                "mappings": [
+                    {
+                        "product_id": PRODUCT_ID,
+                        "merchant": "notino",
+                        "merchant_product_id": "NOTINO-123",
+                        "ean": None,
+                        "gtin": None,
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    offers_path.write_text(
+        json.dumps(
+            {
+                "offers": [
+                    {
+                        "offer_id": "notino-active",
+                        "product_id": PRODUCT_ID,
+                        "merchant_id": "notino-de",
+                        "merchant_name": "Notino",
+                        "merchant_product_id": "NOTINO-123",
+                        "price": 89.95,
+                        "currency": "EUR",
+                        "shipping_cost": 0.0,
+                        "in_stock": True,
+                        "product_url": "https://example.com/active",
+                        "affiliate_url": None,
+                        "network": "CJ",
+                        "data_source": "cj-feed",
+                        "last_updated_at": "2026-09-16T12:00:00Z",
+                    },
+                    {
+                        "offer_id": "notino-missing",
+                        "product_id": PRODUCT_ID,
+                        "merchant_id": "notino-de",
+                        "merchant_name": "Notino",
+                        "merchant_product_id": "NOTINO-456",
+                        "price": 95.0,
+                        "currency": "EUR",
+                        "shipping_cost": 0.0,
+                        "in_stock": True,
+                        "product_url": "https://example.com/missing",
+                        "affiliate_url": None,
+                        "network": "CJ",
+                        "data_source": "cj-feed",
+                        "last_updated_at": "2026-09-16T12:00:00Z",
+                    },
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    original_offers = offers_path.read_text(encoding="utf-8")
+
+    feed_path.write_text(
+        json.dumps(
+            {
+                "offers": [
+                    {
+                        "offer_id": "notino-active",
+                        "merchant": "notino",
+                        "merchant_id": "notino-de",
+                        "merchant_name": "Notino",
+                        "merchant_product_id": "NOTINO-123",
+                        "price": 89.95,
+                        "currency": "EUR",
+                        "shipping_cost": 0.0,
+                        "in_stock": True,
+                        "product_url": "https://example.com/active",
+                        "network": "CJ",
+                        "data_source": "cj-feed",
+                        "last_updated_at": "2026-09-17T12:00:00Z",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "import_merchant_feed",
+            "--feed",
+            str(feed_path),
+            "--mappings",
+            str(mappings_path),
+            "--offers",
+            str(offers_path),
+            "--unmatched",
+            str(unmatched_path),
+            "--invalid",
+            str(invalid_path),
+            "--dry-run",
+            "--authoritative-merchant-id",
+            "notino-de",
+            "--authoritative-data-source",
+            "cj-feed",
+        ],
+    )
+
+    main()
+
+    output = capsys.readouterr().out
+
+    assert "Mode: DRY-RUN" in output
+    assert "Deactivated: 1" in output
+
+    assert offers_path.read_text(encoding="utf-8") == original_offers
+    assert not unmatched_path.exists()
+    assert not invalid_path.exists()

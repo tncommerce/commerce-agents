@@ -42,8 +42,29 @@ def main() -> None:
         action="store_true",
         help="Validate and analyze the feed without writing output files.",
     )
+    parser.add_argument(
+        "--authoritative-merchant-id",
+        type=str,
+        default=None,
+        help="Merchant ID for a complete feed snapshot.",
+    )
+    parser.add_argument(
+        "--authoritative-data-source",
+        type=str,
+        default=None,
+        help="Data source for a complete feed snapshot.",
+    )
 
     args = parser.parse_args()
+
+    if (
+        (args.authoritative_merchant_id is None)
+        != (args.authoritative_data_source is None)
+    ):
+        parser.error(
+            "--authoritative-merchant-id and "
+            "--authoritative-data-source must be provided together"
+        )
 
     raw = json.loads(args.feed.read_text(encoding="utf-8-sig"))
     rows = raw.get("offers", raw if isinstance(raw, list) else [])
@@ -51,15 +72,22 @@ def main() -> None:
     mappings = load_product_mappings(args.mappings)
     result = import_feed_rows(rows, mappings)
 
+    lifecycle_kwargs = {
+        "authoritative_merchant_id": args.authoritative_merchant_id,
+        "authoritative_data_source": args.authoritative_data_source,
+    }
+
     if args.dry_run:
         report = analyze_offer_changes(
             args.offers,
             result.offers,
+            **lifecycle_kwargs,
         )
     else:
         report = upsert_offers_file(
             args.offers,
             result.offers,
+            **lifecycle_kwargs,
         )
 
         unmatched_payload = {
@@ -97,7 +125,8 @@ def main() -> None:
         f"Updated: {report.updated} | "
         f"Unchanged: {report.unchanged} | "
         f"Unmatched: {len(result.unmatched)} | "
-        f"Invalid: {len(result.invalid)}"
+        f"Invalid: {len(result.invalid)} | "
+        f"Deactivated: {report.deactivated}"
     )
 
 

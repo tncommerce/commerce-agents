@@ -512,3 +512,89 @@ def test_upsert_report_counts_new_updated_and_unchanged(tmp_path) -> None:
 
     saved = json.loads(path.read_text(encoding="utf-8"))
     assert len(saved["offers"]) == 3
+
+
+def test_authoritative_feed_deactivates_missing_offer(tmp_path) -> None:
+    path = tmp_path / "merchant_offers.json"
+
+    path.write_text(
+        json.dumps(
+            {
+                "offers": [
+                    {
+                        "offer_id": "notino-offer-a",
+                        "product_id": PRODUCT_ID,
+                        "merchant_id": "notino-de",
+                        "merchant_name": "Notino",
+                        "merchant_product_id": "A-1",
+                        "price": 90.0,
+                        "currency": "EUR",
+                        "shipping_cost": 0.0,
+                        "in_stock": True,
+                        "product_url": "https://example.com/a",
+                        "affiliate_url": None,
+                        "network": "CJ",
+                        "data_source": "cj-feed",
+                        "last_updated_at": "2026-09-16T12:00:00Z",
+                    },
+                    {
+                        "offer_id": "notino-offer-b",
+                        "product_id": PRODUCT_ID,
+                        "merchant_id": "notino-de",
+                        "merchant_name": "Notino",
+                        "merchant_product_id": "B-1",
+                        "price": 95.0,
+                        "currency": "EUR",
+                        "shipping_cost": 0.0,
+                        "in_stock": True,
+                        "product_url": "https://example.com/b",
+                        "affiliate_url": None,
+                        "network": "CJ",
+                        "data_source": "cj-feed",
+                        "last_updated_at": "2026-09-16T12:00:00Z",
+                    },
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    remaining_offer = validate_offer_payload(
+        {
+            "offer_id": "notino-offer-a",
+            "product_id": PRODUCT_ID,
+            "merchant_id": "notino-de",
+            "merchant_name": "Notino",
+            "merchant_product_id": "A-1",
+            "price": 90.0,
+            "currency": "EUR",
+            "shipping_cost": 0.0,
+            "in_stock": True,
+            "product_url": "https://example.com/a",
+            "affiliate_url": None,
+            "network": "CJ",
+            "data_source": "cj-feed",
+            "last_updated_at": "2026-09-17T12:00:00Z",
+        }
+    )
+
+    report = upsert_offers_file(
+        path,
+        [remaining_offer],
+        authoritative_merchant_id="notino-de",
+        authoritative_data_source="cj-feed",
+    )
+
+    assert report.new == 0
+    assert report.updated == 0
+    assert report.unchanged == 1
+    assert report.deactivated == 1
+
+    saved = json.loads(path.read_text(encoding="utf-8"))
+    by_id = {
+        offer["offer_id"]: offer
+        for offer in saved["offers"]
+    }
+
+    assert by_id["notino-offer-a"]["in_stock"] is True
+    assert by_id["notino-offer-b"]["in_stock"] is False

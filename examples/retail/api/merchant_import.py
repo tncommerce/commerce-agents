@@ -186,6 +186,7 @@ class OfferUpsertReport(BaseModel):
     new: int = 0
     updated: int = 0
     unchanged: int = 0
+    deactivated: int = 0
 
 
 def _load_existing_offers(path: Path) -> list[MerchantOffer]:
@@ -210,9 +211,44 @@ def _offer_comparison_payload(offer: MerchantOffer) -> dict:
     )
 
 
+def _authoritative_missing_ids(
+    existing: list[MerchantOffer],
+    offers: list[MerchantOffer],
+    *,
+    merchant_id: str | None = None,
+    data_source: str | None = None,
+) -> set[str]:
+    if (merchant_id is None) != (data_source is None):
+        raise ValueError(
+            "merchant_id and data_source must be provided together"
+        )
+
+    if merchant_id is None or data_source is None:
+        return set()
+
+    incoming_ids = {
+        offer.offer_id
+        for offer in offers
+        if offer.merchant_id == merchant_id
+        and offer.data_source == data_source
+    }
+
+    return {
+        offer.offer_id
+        for offer in existing
+        if offer.merchant_id == merchant_id
+        and offer.data_source == data_source
+        and offer.in_stock
+        and offer.offer_id not in incoming_ids
+    }
+
+
 def _build_upsert_report(
     existing: list[MerchantOffer],
     offers: list[MerchantOffer],
+    *,
+    authoritative_merchant_id: str | None = None,
+    authoritative_data_source: str | None = None,
 ) -> OfferUpsertReport:
     existing_by_id = {
         offer.offer_id: offer
@@ -242,27 +278,59 @@ def _build_upsert_report(
         else:
             updated += 1
 
+    missing_ids = _authoritative_missing_ids(
+        existing,
+        offers,
+        merchant_id=authoritative_merchant_id,
+        data_source=authoritative_data_source,
+    )
+
     return OfferUpsertReport(
         new=new,
         updated=updated,
         unchanged=unchanged,
+        deactivated=len(missing_ids),
     )
 
 
 def analyze_offer_changes(
     path: Path,
     offers: list[MerchantOffer],
+    *,
+    authoritative_merchant_id: str | None = None,
+    authoritative_data_source: str | None = None,
 ) -> OfferUpsertReport:
     existing = _load_existing_offers(path)
-    return _build_upsert_report(existing, offers)
+    return _build_upsert_report(
+        existing,
+        offers,
+        authoritative_merchant_id=authoritative_merchant_id,
+        authoritative_data_source=authoritative_data_source,
+    )
 
 
 def upsert_offers_file(
     path: Path,
     offers: list[MerchantOffer],
+    *,
+    authoritative_merchant_id: str | None = None,
+    authoritative_data_source: str | None = None,
 ) -> OfferUpsertReport:
     existing = _load_existing_offers(path)
-    report = _build_upsert_report(existing, offers)
+
+    report = _build_upsert_report(
+        existing,
+        offers,
+        authoritative_merchant_id=authoritative_merchant_id,
+        authoritative_data_source=authoritative_data_source,
+    )
+
+    missing_ids = _authoritative_missing_ids(
+        existing,
+        offers,
+        merchant_id=authoritative_merchant_id,
+        data_source=authoritative_data_source,
+    )
 
     by_id = {
         offer.offer_id: offer
@@ -271,6 +339,11 @@ def upsert_offers_file(
 
     for offer in offers:
         by_id[offer.offer_id] = offer
+
+    for offer_id in missing_ids:
+        by_id[offer_id] = by_id[offer_id].model_copy(
+            update={"in_stock": False}
+        )
 
     payload = {
         "offers": [
