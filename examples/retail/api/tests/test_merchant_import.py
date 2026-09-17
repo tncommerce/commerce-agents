@@ -1,0 +1,194 @@
+import json
+
+from retail.api.merchant_import import (
+    MerchantProductMapping,
+    load_product_mappings,
+    normalize_feed_row,
+    resolve_product_id,
+    validate_offer_payload,
+)
+
+PRODUCT_ID = "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100"
+
+
+def test_load_product_mappings_accepts_utf8_bom(tmp_path) -> None:
+    path = tmp_path / "merchant_product_mappings.json"
+    path.write_text(
+        json.dumps(
+            {
+                "mappings": [
+                    {
+                        "product_id": PRODUCT_ID,
+                        "merchant": "notino",
+                        "merchant_product_id": "NOTINO-123",
+                        "ean": "1234567890123",
+                        "gtin": None,
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8-sig",
+    )
+
+    mappings = load_product_mappings(path)
+
+    assert len(mappings) == 1
+    assert mappings[0].product_id == PRODUCT_ID
+    assert mappings[0].merchant == "notino"
+
+
+def test_resolve_product_id_uses_known_identifiers() -> None:
+    mappings = [
+        MerchantProductMapping(
+            product_id=PRODUCT_ID,
+            merchant="notino",
+            merchant_product_id="NOTINO-123",
+            ean="1234567890123",
+            gtin="00012345678905",
+        )
+    ]
+
+    assert (
+        resolve_product_id(
+            mappings,
+            merchant="NOTINO",
+            merchant_product_id=" NOTINO-123 ",
+        )
+        == PRODUCT_ID
+    )
+
+    assert (
+        resolve_product_id(
+            mappings,
+            merchant="notino",
+            ean="1234567890123",
+        )
+        == PRODUCT_ID
+    )
+
+    assert (
+        resolve_product_id(
+            mappings,
+            merchant="notino",
+            gtin="00012345678905",
+        )
+        == PRODUCT_ID
+    )
+
+
+def test_resolve_product_id_does_not_cross_merchants() -> None:
+    mappings = [
+        MerchantProductMapping(
+            product_id=PRODUCT_ID,
+            merchant="notino",
+            ean="1234567890123",
+        )
+    ]
+
+    assert (
+        resolve_product_id(
+            mappings,
+            merchant="douglas",
+            ean="1234567890123",
+        )
+        is None
+    )
+
+
+def test_validate_offer_payload_returns_merchant_offer() -> None:
+    offer = validate_offer_payload(
+        {
+            "offer_id": "notino-bois-imperial-100",
+            "product_id": PRODUCT_ID,
+            "merchant_id": "notino-de",
+            "merchant_name": "Notino",
+            "merchant_product_id": "NOTINO-123",
+            "price": 94.0,
+            "currency": "EUR",
+            "shipping_cost": 0.0,
+            "shipping_label": "Kostenloser Versand",
+            "in_stock": True,
+            "variant_label": "100 ml",
+            "product_url": "https://example.com/bois-imperial",
+            "affiliate_url": None,
+            "network": "CJ",
+            "data_source": "test-feed",
+            "last_updated_at": "2026-09-17T12:00:00Z",
+            "commission_rate": None,
+        }
+    )
+
+    assert offer.product_id == PRODUCT_ID
+    assert offer.merchant_name == "Notino"
+    assert offer.price == 94.0
+
+def test_normalize_feed_row_creates_offer_for_known_product() -> None:
+    mappings = [
+        MerchantProductMapping(
+            product_id=PRODUCT_ID,
+            merchant="notino",
+            merchant_product_id="NOTINO-123",
+            ean="1234567890123",
+        )
+    ]
+
+    offer = normalize_feed_row(
+        {
+            "offer_id": "notino-bois-imperial-100",
+            "merchant": "notino",
+            "merchant_id": "notino-de",
+            "merchant_name": "Notino",
+            "merchant_product_id": "NOTINO-123",
+            "ean": "1234567890123",
+            "price": 89.95,
+            "currency": "EUR",
+            "shipping_cost": 0.0,
+            "shipping_label": "Kostenloser Versand",
+            "in_stock": True,
+            "variant_label": "100 ml",
+            "product_url": "https://example.com/bois-imperial",
+            "affiliate_url": "https://example.com/affiliate/bois-imperial",
+            "network": "CJ",
+            "data_source": "cj-feed",
+            "last_updated_at": "2026-09-17T12:00:00Z",
+            "commission_rate": 0.05,
+        },
+        mappings,
+    )
+
+    assert offer is not None
+    assert offer.product_id == PRODUCT_ID
+    assert offer.merchant_name == "Notino"
+    assert offer.price == 89.95
+    assert offer.affiliate_url == "https://example.com/affiliate/bois-imperial"
+
+
+def test_normalize_feed_row_skips_unknown_product() -> None:
+    mappings = [
+        MerchantProductMapping(
+            product_id=PRODUCT_ID,
+            merchant="notino",
+            merchant_product_id="NOTINO-123",
+        )
+    ]
+
+    offer = normalize_feed_row(
+        {
+            "offer_id": "notino-unknown-product",
+            "merchant": "notino",
+            "merchant_id": "notino-de",
+            "merchant_name": "Notino",
+            "merchant_product_id": "UNKNOWN-999",
+            "price": 50.0,
+            "currency": "EUR",
+            "shipping_cost": 0.0,
+            "in_stock": True,
+            "product_url": "https://example.com/unknown",
+            "network": "CJ",
+            "data_source": "cj-feed",
+            "last_updated_at": "2026-09-17T12:00:00Z",
+        },
+        mappings,
+    )
+
+    assert offer is None
