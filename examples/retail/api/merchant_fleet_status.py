@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from pathlib import Path
 
@@ -10,6 +10,10 @@ from .merchant_job_status_summary import (
     build_job_status_summary,
 )
 from .merchant_jobs import MerchantJobProfile
+from .merchant_operator_guidance import (
+    MerchantJobAttentionItem,
+    build_job_attention_item,
+)
 
 
 class MerchantFleetStatusSummary(BaseModel):
@@ -24,23 +28,9 @@ class MerchantFleetStatusSummary(BaseModel):
 
     attention_required: int
     attention_job_ids: list[str]
+    attention_items: list[MerchantJobAttentionItem]
 
     jobs: list[MerchantJobStatusSummary]
-
-
-def _needs_attention(
-    summary: MerchantJobStatusSummary,
-) -> bool:
-    if not summary.enabled:
-        return False
-
-    if summary.job_state in (
-        "not_ready",
-        "approval_required",
-    ):
-        return True
-
-    return summary.latest_run_status == "review"
 
 
 def build_fleet_status_summary(
@@ -60,10 +50,19 @@ def build_fleet_status_summary(
         key=lambda summary: summary.job_id.casefold()
     )
 
+    attention_items = []
+
+    for summary in summaries:
+        item = build_job_attention_item(
+            summary
+        )
+
+        if item is not None:
+            attention_items.append(item)
+
     attention_job_ids = [
-        summary.job_id
-        for summary in summaries
-        if _needs_attention(summary)
+        item.job_id
+        for item in attention_items
     ]
 
     return MerchantFleetStatusSummary(
@@ -88,7 +87,8 @@ def build_fleet_status_summary(
             summary.latest_run_status == "review"
             for summary in summaries
         ),
-        attention_required=len(attention_job_ids),
+        attention_required=len(attention_items),
         attention_job_ids=attention_job_ids,
+        attention_items=attention_items,
         jobs=summaries,
     )

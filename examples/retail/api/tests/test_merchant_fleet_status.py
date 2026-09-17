@@ -1,4 +1,4 @@
-﻿from retail.api.merchant_fleet_status import (
+from retail.api.merchant_fleet_status import (
     build_fleet_status_summary,
 )
 from retail.api.merchant_jobs import (
@@ -163,3 +163,74 @@ def test_disabled_job_does_not_require_attention(
     assert fleet.latest_run_review == 1
     assert fleet.attention_required == 0
     assert fleet.attention_job_ids == []
+
+
+def test_fleet_attention_includes_approval_guidance(
+    tmp_path,
+) -> None:
+    job = _job(
+        tmp_path,
+        "approval-job",
+        dry_run=False,
+    )
+
+    fleet = build_fleet_status_summary(
+        [job],
+        approvals_path=tmp_path / "approvals.json",
+    )
+
+    assert len(fleet.attention_items) == 1
+
+    item = fleet.attention_items[0]
+
+    assert item.job_id == "approval-job"
+    assert item.blocking is True
+    assert item.reasons == [
+        "approval_required"
+    ]
+    assert item.operator_actions == [
+        "review_dry_run_and_approve"
+    ]
+
+
+def test_fleet_attention_includes_review_guidance(
+    tmp_path,
+) -> None:
+    job = _job(
+        tmp_path,
+        "review-guidance-job",
+    )
+
+    report = build_import_run_report(
+        provider="canonical",
+        mode="DRY-RUN",
+        feed_file=job.config.feed.name,
+        read=10,
+        new=0,
+        updated=0,
+        unchanged=9,
+        unmatched=1,
+        invalid=0,
+        deactivated=0,
+        run_id="review-guidance-run",
+    )
+
+    append_import_run_report(
+        job.config.run_report,
+        report,
+    )
+
+    fleet = build_fleet_status_summary(
+        [job],
+        approvals_path=tmp_path / "approvals.json",
+    )
+
+    item = fleet.attention_items[0]
+
+    assert item.blocking is False
+    assert item.reasons == [
+        "unmatched_rows"
+    ]
+    assert item.operator_actions == [
+        "review_unmatched_product_mappings"
+    ]

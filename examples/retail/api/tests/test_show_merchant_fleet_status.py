@@ -1,4 +1,4 @@
-﻿import json
+import json
 import sys
 
 from retail.api.show_merchant_fleet_status import main
@@ -154,3 +154,42 @@ def test_fleet_status_cli_handles_empty_job_list(
     assert payload["total_jobs"] == 0
     assert payload["attention_required"] == 0
     assert payload["jobs"] == []
+
+
+def test_fleet_status_cli_serializes_operator_guidance(
+    tmp_path,
+    monkeypatch,
+    capsys,
+) -> None:
+    jobs_path = _write_jobs(tmp_path)
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "show_merchant_fleet_status",
+            "--jobs",
+            str(jobs_path),
+            "--approvals",
+            str(tmp_path / "approvals.json"),
+        ],
+    )
+
+    assert main() == 0
+
+    payload = json.loads(
+        capsys.readouterr().out
+    )
+
+    assert len(payload["attention_items"]) == 1
+
+    item = payload["attention_items"][0]
+
+    assert item["job_id"] == "write-job"
+    assert item["blocking"] is True
+    assert item["reasons"] == [
+        "approval_required"
+    ]
+    assert item["operator_actions"] == [
+        "review_dry_run_and_approve"
+    ]
