@@ -1038,3 +1038,73 @@ def test_provider_contract_blocks_row_before_product_mapping(
     assert "Read: 1" in output
     assert "Unmatched: 0" in output
     assert "Invalid: 1" in output
+
+
+def test_import_command_reads_csv_feed(
+    tmp_path,
+    monkeypatch,
+    capsys,
+) -> None:
+    mappings_path = tmp_path / "mappings.json"
+    feed_path = tmp_path / "feed.csv"
+    offers_path = tmp_path / "offers.json"
+
+    mappings_path.write_text(
+        json.dumps(
+            {
+                "mappings": [
+                    {
+                        "product_id": PRODUCT_ID,
+                        "merchant": "notino",
+                        "merchant_product_id": "NOTINO-CSV-123",
+                        "ean": None,
+                        "gtin": None,
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    feed_path.write_text(
+        (
+            "offer_id,merchant,merchant_id,merchant_name,"
+            "merchant_product_id,price,currency,in_stock,"
+            "product_url,last_updated_at,data_source,network\n"
+            "notino-csv-offer,notino,notino-de,Notino,"
+            "NOTINO-CSV-123,89.95,EUR,true,"
+            "https://example.com/csv-product,"
+            "2026-09-17T18:00:00Z,csv-test-feed,CJ\n"
+        ),
+        encoding="utf-8",
+    )
+
+    offers_path.write_text(
+        json.dumps({"offers": []}),
+        encoding="utf-8",
+    )
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "import_merchant_feed",
+            "--feed",
+            str(feed_path),
+            "--mappings",
+            str(mappings_path),
+            "--offers",
+            str(offers_path),
+            "--dry-run",
+        ],
+    )
+
+    main()
+
+    output = capsys.readouterr().out
+
+    assert "Mode: DRY-RUN" in output
+    assert "Read: 1" in output
+    assert "New: 1" in output
+    assert "Unmatched: 0" in output
+    assert "Invalid: 0" in output

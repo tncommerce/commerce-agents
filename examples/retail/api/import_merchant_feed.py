@@ -4,6 +4,9 @@ import argparse
 import json
 from pathlib import Path
 
+from .merchant_feed_reader import (
+    read_merchant_feed_rows,
+)
 from .merchant_provider_contract import (
     validate_provider_contract_rows,
 )
@@ -64,6 +67,15 @@ def main() -> int:
         help="Merchant feed provider adapter.",
     )
     parser.add_argument(
+        "--feed-format",
+        choices=("auto", "json", "csv"),
+        default="auto",
+        help=(
+            "Input feed format. Defaults to automatic "
+            "detection from the file extension."
+        ),
+    )
+    parser.add_argument(
         "--authoritative-merchant-id",
         type=str,
         default=None,
@@ -109,8 +121,10 @@ def main() -> int:
             "--authoritative-data-source must be provided together"
         )
 
-    raw = json.loads(args.feed.read_text(encoding="utf-8-sig"))
-    raw_rows = raw.get("offers", raw if isinstance(raw, list) else [])
+    raw_rows = read_merchant_feed_rows(
+        args.feed,
+        feed_format=args.feed_format,
+    )
 
     adapted_rows = adapt_provider_rows(
         args.provider,
