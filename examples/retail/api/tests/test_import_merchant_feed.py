@@ -615,3 +615,136 @@ def test_allow_empty_authoritative_can_intentionally_deactivate_all(
 
     saved = json.loads(offers_path.read_text(encoding="utf-8"))
     assert saved["offers"][0]["in_stock"] is False
+
+
+def test_write_import_creates_audit_report_but_dry_run_does_not(
+    tmp_path,
+    monkeypatch,
+    capsys,
+) -> None:
+    mappings_path = tmp_path / "mappings.json"
+    feed_path = tmp_path / "feed.json"
+    offers_path = tmp_path / "offers.json"
+    unmatched_path = tmp_path / "unmatched.json"
+    invalid_path = tmp_path / "invalid.json"
+    run_report_path = tmp_path / "runs.jsonl"
+
+    mappings_path.write_text(
+        json.dumps(
+            {
+                "mappings": [
+                    {
+                        "product_id": PRODUCT_ID,
+                        "merchant": "notino",
+                        "merchant_product_id": "NOTINO-123",
+                        "ean": None,
+                        "gtin": None,
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    feed_path.write_text(
+        json.dumps(
+            {
+                "offers": [
+                    {
+                        "offer_id": "notino-audit-test",
+                        "merchant": "notino",
+                        "merchant_id": "notino-de",
+                        "merchant_name": "Notino",
+                        "merchant_product_id": "NOTINO-123",
+                        "price": 89.95,
+                        "currency": "EUR",
+                        "shipping_cost": 0.0,
+                        "in_stock": True,
+                        "product_url": "https://example.com/notino",
+                        "affiliate_url": "https://example.com/affiliate/notino",
+                        "network": "CJ",
+                        "data_source": "cj-feed",
+                        "last_updated_at": "2026-09-17T12:00:00Z",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "import_merchant_feed",
+            "--feed",
+            str(feed_path),
+            "--mappings",
+            str(mappings_path),
+            "--offers",
+            str(offers_path),
+            "--unmatched",
+            str(unmatched_path),
+            "--invalid",
+            str(invalid_path),
+            "--run-report",
+            str(run_report_path),
+            "--provider",
+            "canonical",
+        ],
+    )
+
+    main()
+
+    write_output = capsys.readouterr().out
+    assert "Mode: WRITE" in write_output
+    assert "Run ID:" in write_output
+
+    lines = run_report_path.read_text(
+        encoding="utf-8"
+    ).splitlines()
+
+    assert len(lines) == 1
+
+    saved = json.loads(lines[0])
+
+    assert saved["run_id"]
+    assert saved["provider"] == "canonical"
+    assert saved["mode"] == "WRITE"
+    assert saved["read"] == 1
+    assert saved["new"] == 1
+    assert saved["updated"] == 0
+    assert saved["unchanged"] == 0
+    assert saved["unmatched"] == 0
+    assert saved["invalid"] == 0
+    assert saved["deactivated"] == 0
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "import_merchant_feed",
+            "--feed",
+            str(feed_path),
+            "--mappings",
+            str(mappings_path),
+            "--offers",
+            str(offers_path),
+            "--run-report",
+            str(run_report_path),
+            "--provider",
+            "canonical",
+            "--dry-run",
+        ],
+    )
+
+    main()
+
+    dry_run_output = capsys.readouterr().out
+    assert "Mode: DRY-RUN" in dry_run_output
+
+    lines_after_dry_run = run_report_path.read_text(
+        encoding="utf-8"
+    ).splitlines()
+
+    assert len(lines_after_dry_run) == 1

@@ -6,6 +6,11 @@ from pathlib import Path
 
 from .merchant_providers import adapt_provider_rows
 
+from .merchant_run_reports import (
+    append_import_run_report,
+    build_import_run_report,
+)
+
 from .merchant_import import (
     analyze_offer_changes,
     import_feed_rows,
@@ -68,6 +73,15 @@ def main() -> None:
         help=(
             "Allow an authoritative write with zero matched offers. "
             "Use only for an intentional full delisting."
+        ),
+    )
+    parser.add_argument(
+        "--run-report",
+        type=Path,
+        default=None,
+        help=(
+            "Optional JSONL audit log path. "
+            "Defaults next to the merchant offers file."
         ),
     )
 
@@ -152,6 +166,33 @@ def main() -> None:
 
     mode = "DRY-RUN" if args.dry_run else "WRITE"
 
+    run_report = build_import_run_report(
+        provider=args.provider,
+        mode=mode,
+        feed_file=args.feed.name,
+        authoritative_merchant_id=args.authoritative_merchant_id,
+        authoritative_data_source=args.authoritative_data_source,
+        allow_empty_authoritative=args.allow_empty_authoritative,
+        read=len(rows),
+        new=report.new,
+        updated=report.updated,
+        unchanged=report.unchanged,
+        unmatched=len(result.unmatched),
+        invalid=len(result.invalid),
+        deactivated=report.deactivated,
+    )
+
+    if not args.dry_run:
+        run_report_path = (
+            args.run_report
+            if args.run_report is not None
+            else args.offers.with_name(".merchant_import_runs.jsonl")
+        )
+        append_import_run_report(
+            run_report_path,
+            run_report,
+        )
+
     print(
         f"Mode: {mode} | "
         f"Read: {len(rows)} | "
@@ -160,7 +201,8 @@ def main() -> None:
         f"Unchanged: {report.unchanged} | "
         f"Unmatched: {len(result.unmatched)} | "
         f"Invalid: {len(result.invalid)} | "
-        f"Deactivated: {report.deactivated}"
+        f"Deactivated: {report.deactivated} | "
+        f"Run ID: {run_report.run_id}"
     )
 
 
