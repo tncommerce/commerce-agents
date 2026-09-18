@@ -95,3 +95,16 @@ ranking or merchant-offer ordering.
 Search-demand tracking starts with the 4G analytics release. Historical
 analytics recorded before that release do not contain catalog search terms.
 This is expected and must not be backfilled with guessed data.
+
+## Standalone-page analytics transport
+
+Catalog search runs on the static `/duft` surface, outside the advisor shell.
+The Phase 4J analytics client therefore creates a short-lived API session when
+needed and uses a separate tab-scoped anonymous analytics-session ID for
+continuity. This ensures catalog searches, detail views and comparisons are
+actually written even when the shopper did not enter through the advisor
+homepage first.
+
+The raw anonymous analytics-session ID is not stored in the event table; only
+its shortened SHA-256-derived session key is persisted.
+
