@@ -3,7 +3,11 @@ from __future__ import annotations
 import json
 from datetime import UTC, datetime, timedelta
 
-from retail.api.merchant_partners import MerchantPartnerStore
+from retail.api.merchant_partners import (
+    MerchantPartner,
+    MerchantPartnerStore,
+    customer_partner_payload,
+)
 
 NOW = datetime(2026, 9, 18, 20, 0, tzinfo=UTC)
 
@@ -90,3 +94,24 @@ def test_eligible_partner_uses_exact_configured_id(tmp_path) -> None:
 
     assert store.eligible("douglas", now=NOW) is not None
     assert store.eligible("Douglas", now=NOW) is None
+
+
+
+def test_customer_payload_does_not_expose_tracking_url() -> None:
+    partner = MerchantPartner(
+        merchant_id="douglas",
+        merchant_name="Douglas",
+        status="active",
+        affiliate_url="https://example.com/private-tracking-link",
+        last_verified_at=NOW,
+        description="Parfum und Beauty",
+    )
+
+    payload = customer_partner_payload(partner)
+
+    assert payload == {
+        "merchant_id": "douglas",
+        "merchant_name": "Douglas",
+        "description": "Parfum und Beauty",
+    }
+    assert "affiliate_url" not in payload
