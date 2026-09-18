@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 
-import {
-  LIVE_FRAGRANCES,
-  type StaticFragrance,
-} from "@/lib/fragranceCatalog";
+import FragranceCatalogBrowser from "@/components/FragranceCatalogBrowser";
+import { LIVE_FRAGRANCES } from "@/lib/fragranceCatalog";
 
 export const metadata: Metadata = {
   title: "Parfums entdecken",
@@ -13,20 +11,6 @@ export const metadata: Metadata = {
     canonical: "/duft",
   },
 };
-
-function ratingLabel(
-  fragrance: StaticFragrance,
-): string | null {
-  if (fragrance.community.rating_10 == null) return null;
-
-  return `${fragrance.community.rating_10.toLocaleString(
-    "de-DE",
-    {
-      minimumFractionDigits: 1,
-      maximumFractionDigits: 1,
-    },
-  )}/10`;
-}
 
 export default function FragranceIndexPage() {
   const fragrances = [...LIVE_FRAGRANCES].sort(
@@ -96,72 +80,9 @@ export default function FragranceIndexPage() {
           </span>
         </div>
 
-        <section className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {fragrances.map((fragrance) => (
-            <a
-              key={fragrance.product_id}
-              href={`/duft/${fragrance.slug}`}
-              className="group overflow-hidden rounded-2xl border border-(--line) bg-(--card) shadow-(--shadow-sm) transition hover:-translate-y-0.5 hover:shadow-md"
-            >
-              <div className="flex h-52 items-center justify-center bg-white p-4">
-                {fragrance.image_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={fragrance.image_url}
-                    alt={`${fragrance.brand} ${fragrance.name}`}
-                    className="h-full w-full object-contain transition duration-200 group-hover:scale-[1.02]"
-                  />
-                ) : (
-                  <div className="text-[12px] font-semibold tracking-[0.16em] text-(--ink-soft)">
-                    SCENTAI
-                  </div>
-                )}
-              </div>
-
-              <div className="p-4">
-                <div className="text-[10.5px] font-medium uppercase tracking-[0.08em] text-(--ink-soft)">
-                  {fragrance.brand}
-                </div>
-                <h2 className="mt-1 text-[16px] font-semibold leading-5">
-                  {fragrance.name}
-                </h2>
-
-                <div className="mt-2 flex flex-wrap gap-1.5 text-[10.5px] text-(--ink-soft)">
-                  <span>
-                    {fragrance.concentration}
-                  </span>
-                  <span>·</span>
-                  <span>{fragrance.volume_ml} ml</span>
-                  {ratingLabel(fragrance) ? (
-                    <>
-                      <span>·</span>
-                      <span className="font-semibold text-(--ink)">
-                        {ratingLabel(fragrance)}
-                      </span>
-                    </>
-                  ) : null}
-                </div>
-
-                <div className="mt-3 flex flex-wrap gap-1.5">
-                  {fragrance.accords
-                    .slice(0, 3)
-                    .map((accord) => (
-                      <span
-                        key={accord}
-                        className="rounded-full bg-(--well) px-2 py-1 text-[10.5px] text-(--ink-soft)"
-                      >
-                        {accord}
-                      </span>
-                    ))}
-                </div>
-
-                <div className="mt-4 border-t border-(--line) pt-3 text-[11px] font-semibold text-(--accent-ink)">
-                  Duftprofil & Angebote ansehen →
-                </div>
-              </div>
-            </a>
-          ))}
-        </section>
+        <FragranceCatalogBrowser
+          fragrances={fragrances}
+        />
 
         <footer className="mt-8 flex flex-wrap gap-x-4 gap-y-2 border-t border-(--line) py-6 text-[11px] text-(--ink-soft)">
           <a href="/transparenz" className="hover:underline">
