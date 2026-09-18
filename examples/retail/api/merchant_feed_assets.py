@@ -94,7 +94,7 @@ def extract_feed_image_candidates(
                 **base,
                 "product_id": product_id,
                 "review_status": "pending_review",
-                "approved_image_status": ("approved_feed_image"),
+                "proposed_image_status": "approved_feed_image",
             }
         )
 
