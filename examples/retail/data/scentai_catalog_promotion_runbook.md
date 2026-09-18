@@ -91,3 +91,35 @@ Resume Batch 4 after at least one of these is true:
 - affiliate/feed delays persist long enough that a separate content-only catalog strategy is explicitly approved.
 
 At that point, new candidate selection should use real SCENTAI no-result searches, product opens and clickouts in addition to retailer/community demand.
+
+
+## Promotion command
+
+Dry-run one product before any live change:
+
+```powershell
+python scripts/promote_scentai_catalog.py --product-id SC-EXAMPLE-100
+```
+
+Dry-run up to 10 products from a verified batch:
+
+```powershell
+python scripts/promote_scentai_catalog.py --batch 1 --limit 10
+```
+
+A live write is only allowed after every selected product passes every gate:
+
+```powershell
+python scripts/promote_scentai_catalog.py --product-id SC-EXAMPLE-100 --write
+```
+
+The command refuses partial writes. If even one selected product is blocked, nothing is promoted.
+
+Default hard gates enforced by the tool:
+- approved product image
+- complete deterministic recommendation profile
+- current in-stock affiliate offer with tracking URL
+- non-provisional community data
+- product not already live
+
+The recommendation profile is an internal deterministic retrieval feature derived from verified community accords. It is not a customer-facing fragrance rating and must not be described as objective measurement.
