@@ -1,0 +1,374 @@
+{
+  "version": 1,
+  "target_live_catalog_size": 150,
+  "current_live_scentai_count_at_creation": 32,
+  "wave": 1,
+  "status": "candidate_backlog",
+  "notes": [
+    "Candidate records are not live storefront products.",
+    "Do not invent prices, ratings, GTIN/EAN, merchant IDs, affiliate URLs, or relationship claims.",
+    "Verify identity, concentration, canonical size, metadata, image source, and commerce data before promotion to catalog.json."
+  ],
+  "products": [
+    {
+      "candidate_id": "YSL-MYSLF-EDP",
+      "brand": "Yves Saint Laurent",
+      "canonical_name": "MYSLF",
+      "concentration": "Eau de Parfum",
+      "target_group": "men",
+      "segment": "mens-designer",
+      "priority": 1
+    },
+    {
+      "candidate_id": "JPG-LE-MALE-LE-PARFUM",
+      "brand": "Jean Paul Gaultier",
+      "canonical_name": "Le Male Le Parfum",
+      "concentration": "Eau de Parfum",
+      "target_group": "men",
+      "segment": "mens-designer",
+      "priority": 1
+    },
+    {
+      "candidate_id": "JPG-LE-MALE-ELIXIR",
+      "brand": "Jean Paul Gaultier",
+      "canonical_name": "Le Male Elixir",
+      "concentration": "Parfum",
+      "target_group": "men",
+      "segment": "mens-designer",
+      "priority": 1
+    },
+    {
+      "candidate_id": "JPG-LE-BEAU-LE-PARFUM",
+      "brand": "Jean Paul Gaultier",
+      "canonical_name": "Le Beau Le Parfum",
+      "concentration": "Eau de Parfum",
+      "target_group": "men",
+      "segment": "mens-designer",
+      "priority": 1
+    },
+    {
+      "candidate_id": "JPG-LE-BEAU-PARADISE-GARDEN",
+      "brand": "Jean Paul Gaultier",
+      "canonical_name": "Le Beau Paradise Garden",
+      "concentration": "Eau de Parfum",
+      "target_group": "men",
+      "segment": "mens-designer",
+      "priority": 1
+    },
+    {
+      "candidate_id": "VERSACE-EROS-EDP",
+      "brand": "Versace",
+      "canonical_name": "Eros",
+      "concentration": "Eau de Parfum",
+      "target_group": "men",
+      "segment": "mens-designer",
+      "priority": 1
+    },
+    {
+      "candidate_id": "HUGO-BOSS-BOTTLED-EDT",
+      "brand": "Hugo Boss",
+      "canonical_name": "BOSS Bottled",
+      "concentration": "Eau de Toilette",
+      "target_group": "men",
+      "segment": "mens-designer",
+      "priority": 1
+    },
+    {
+      "candidate_id": "YSL-Y-EDP",
+      "brand": "Yves Saint Laurent",
+      "canonical_name": "Y",
+      "concentration": "Eau de Parfum",
+      "target_group": "men",
+      "segment": "mens-designer",
+      "priority": 1
+    },
+    {
+      "candidate_id": "PRADA-PARADIGME-EDP",
+      "brand": "Prada",
+      "canonical_name": "Paradigme",
+      "concentration": "Eau de Parfum",
+      "target_group": "men",
+      "segment": "mens-designer",
+      "priority": 1
+    },
+    {
+      "candidate_id": "PRADA-LHOMME-INTENSE-EDP",
+      "brand": "Prada",
+      "canonical_name": "L'Homme Intense",
+      "concentration": "Eau de Parfum",
+      "target_group": "men",
+      "segment": "mens-designer",
+      "priority": 1
+    },
+    {
+      "candidate_id": "ARMANI-ACQUA-DI-GIO-EDT",
+      "brand": "Giorgio Armani",
+      "canonical_name": "Acqua di Giò",
+      "concentration": "Eau de Toilette",
+      "target_group": "men",
+      "segment": "mens-designer",
+      "priority": 1
+    },
+    {
+      "candidate_id": "VIKTOR-ROLF-SPICEBOMB-EXTREME",
+      "brand": "Viktor & Rolf",
+      "canonical_name": "Spicebomb Extreme",
+      "concentration": "Eau de Parfum",
+      "target_group": "men",
+      "segment": "mens-designer",
+      "priority": 1
+    },
+    {
+      "candidate_id": "GISADA-AMBASSADOR-MEN",
+      "brand": "Gisada",
+      "canonical_name": "Ambassador Men",
+      "concentration": "Eau de Parfum",
+      "target_group": "men",
+      "segment": "mens-designer",
+      "priority": 1
+    },
+    {
+      "candidate_id": "HERMES-TERRE-DHERMES-EAU-GIVREE",
+      "brand": "Hermès",
+      "canonical_name": "Terre d'Hermès Eau Givrée",
+      "concentration": "Eau de Parfum",
+      "target_group": "men",
+      "segment": "mens-designer",
+      "priority": 1
+    },
+    {
+      "candidate_id": "YSL-LIBRE-EDP",
+      "brand": "Yves Saint Laurent",
+      "canonical_name": "Libre",
+      "concentration": "Eau de Parfum",
+      "target_group": "women",
+      "segment": "womens-designer",
+      "priority": 1
+    },
+    {
+      "candidate_id": "PRADA-PARADOXE-EDP",
+      "brand": "Prada",
+      "canonical_name": "Paradoxe",
+      "concentration": "Eau de Parfum",
+      "target_group": "women",
+      "segment": "womens-designer",
+      "priority": 1
+    },
+    {
+      "candidate_id": "BURBERRY-GODDESS-EDP",
+      "brand": "Burberry",
+      "canonical_name": "Goddess",
+      "concentration": "Eau de Parfum",
+      "target_group": "women",
+      "segment": "womens-designer",
+      "priority": 1
+    },
+    {
+      "candidate_id": "CAROLINA-HERRERA-GOOD-GIRL-EDP",
+      "brand": "Carolina Herrera",
+      "canonical_name": "Good Girl",
+      "concentration": "Eau de Parfum",
+      "target_group": "women",
+      "segment": "womens-designer",
+      "priority": 1
+    },
+    {
+      "candidate_id": "LANCOME-LA-VIE-EST-BELLE-EDP",
+      "brand": "Lancôme",
+      "canonical_name": "La Vie Est Belle",
+      "concentration": "Eau de Parfum",
+      "target_group": "women",
+      "segment": "womens-designer",
+      "priority": 1
+    },
+    {
+      "candidate_id": "ARMANI-SI-EDP",
+      "brand": "Giorgio Armani",
+      "canonical_name": "Sì",
+      "concentration": "Eau de Parfum",
+      "target_group": "women",
+      "segment": "womens-designer",
+      "priority": 1
+    },
+    {
+      "candidate_id": "NARCISO-RODRIGUEZ-FOR-HER-PURE-MUSC",
+      "brand": "Narciso Rodriguez",
+      "canonical_name": "For Her Pure Musc",
+      "concentration": "Eau de Parfum",
+      "target_group": "women",
+      "segment": "womens-designer",
+      "priority": 1
+    },
+    {
+      "candidate_id": "ZADIG-VOLTAIRE-THIS-IS-HER",
+      "brand": "Zadig & Voltaire",
+      "canonical_name": "This Is Her!",
+      "concentration": "Eau de Parfum",
+      "target_group": "women",
+      "segment": "womens-designer",
+      "priority": 1
+    },
+    {
+      "candidate_id": "GUCCI-FLORA-GORGEOUS-GARDENIA-EDP",
+      "brand": "Gucci",
+      "canonical_name": "Flora Gorgeous Gardenia",
+      "concentration": "Eau de Parfum",
+      "target_group": "women",
+      "segment": "womens-designer",
+      "priority": 1
+    },
+    {
+      "candidate_id": "JPG-LA-BELLE-EDP",
+      "brand": "Jean Paul Gaultier",
+      "canonical_name": "La Belle",
+      "concentration": "Eau de Parfum",
+      "target_group": "women",
+      "segment": "womens-designer",
+      "priority": 1
+    },
+    {
+      "candidate_id": "CHLOE-CHLOE-EDP",
+      "brand": "Chloé",
+      "canonical_name": "Chloé",
+      "concentration": "Eau de Parfum",
+      "target_group": "women",
+      "segment": "womens-designer",
+      "priority": 1
+    },
+    {
+      "candidate_id": "YSL-BLACK-OPIUM-EDP",
+      "brand": "Yves Saint Laurent",
+      "canonical_name": "Black Opium",
+      "concentration": "Eau de Parfum",
+      "target_group": "women",
+      "segment": "womens-designer",
+      "priority": 1
+    },
+    {
+      "candidate_id": "PDM-DELINA-EDP",
+      "brand": "Parfums de Marly",
+      "canonical_name": "Delina",
+      "concentration": "Eau de Parfum",
+      "target_group": "women",
+      "segment": "niche-premium",
+      "priority": 1
+    },
+    {
+      "candidate_id": "PDM-VALAYA-EDP",
+      "brand": "Parfums de Marly",
+      "canonical_name": "Valaya",
+      "concentration": "Eau de Parfum",
+      "target_group": "women",
+      "segment": "niche-premium",
+      "priority": 1
+    },
+    {
+      "candidate_id": "PDM-HEROD-EDP",
+      "brand": "Parfums de Marly",
+      "canonical_name": "Herod",
+      "concentration": "Eau de Parfum",
+      "target_group": "men",
+      "segment": "niche-premium",
+      "priority": 1
+    },
+    {
+      "candidate_id": "BDK-GRIS-CHARNEL-EDP",
+      "brand": "BDK Parfums",
+      "canonical_name": "Gris Charnel",
+      "concentration": "Eau de Parfum",
+      "target_group": "unisex",
+      "segment": "niche-premium",
+      "priority": 1
+    },
+    {
+      "candidate_id": "INITIO-SIDE-EFFECT-EDP",
+      "brand": "Initio Parfums Privés",
+      "canonical_name": "Side Effect",
+      "concentration": "Eau de Parfum",
+      "target_group": "unisex",
+      "segment": "niche-premium",
+      "priority": 1
+    },
+    {
+      "candidate_id": "NISHANE-ANI-EXTRAIT",
+      "brand": "Nishane",
+      "canonical_name": "Ani",
+      "concentration": "Extrait de Parfum",
+      "target_group": "unisex",
+      "segment": "niche-premium",
+      "priority": 1
+    },
+    {
+      "candidate_id": "MONTALE-ARABIANS-TONKA-EDP",
+      "brand": "Montale",
+      "canonical_name": "Arabians Tonka",
+      "concentration": "Eau de Parfum",
+      "target_group": "unisex",
+      "segment": "niche-premium",
+      "priority": 1
+    },
+    {
+      "candidate_id": "TOM-FORD-OMBRE-LEATHER-EDP",
+      "brand": "Tom Ford",
+      "canonical_name": "Ombré Leather",
+      "concentration": "Eau de Parfum",
+      "target_group": "unisex",
+      "segment": "niche-premium",
+      "priority": 1
+    },
+    {
+      "candidate_id": "LATTAFA-KHAMRAH-EDP",
+      "brand": "Lattafa",
+      "canonical_name": "Khamrah",
+      "concentration": "Eau de Parfum",
+      "target_group": "unisex",
+      "segment": "arabic-value",
+      "priority": 1
+    },
+    {
+      "candidate_id": "LATTAFA-YARA-EDP",
+      "brand": "Lattafa",
+      "canonical_name": "Yara",
+      "concentration": "Eau de Parfum",
+      "target_group": "women",
+      "segment": "arabic-value",
+      "priority": 1
+    },
+    {
+      "candidate_id": "LATTAFA-ECLAIRE-EDP",
+      "brand": "Lattafa",
+      "canonical_name": "Eclaire",
+      "concentration": "Eau de Parfum",
+      "target_group": "unisex",
+      "segment": "arabic-value",
+      "priority": 1
+    },
+    {
+      "candidate_id": "LATTAFA-PRIDE-ART-OF-ARABIA-I-EDP",
+      "brand": "Lattafa",
+      "canonical_name": "Pride Art of Arabia I",
+      "concentration": "Eau de Parfum",
+      "target_group": "unisex",
+      "segment": "arabic-value",
+      "priority": 1
+    },
+    {
+      "candidate_id": "AFNAN-9PM-EDP",
+      "brand": "Afnan Perfumes",
+      "canonical_name": "9PM",
+      "concentration": "Eau de Parfum",
+      "target_group": "men",
+      "segment": "arabic-value",
+      "priority": 1
+    },
+    {
+      "candidate_id": "RASASI-HAWAS-FOR-HIM-EDP",
+      "brand": "Rasasi",
+      "canonical_name": "Hawas for Him",
+      "concentration": "Eau de Parfum",
+      "target_group": "men",
+      "segment": "arabic-value",
+      "priority": 1
+    }
+  ]
+}
