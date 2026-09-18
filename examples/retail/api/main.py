@@ -107,6 +107,9 @@ async def analytics_event(
         source=request.source,
         search_term=request.search_term,
         result_count=request.result_count,
+        surface=request.surface,
+        related_product_id=request.related_product_id,
+        item_position=request.item_position,
     )
     return {"ok": True, "event_id": event_id, "storage": storage}
 
