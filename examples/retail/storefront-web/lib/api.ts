@@ -33,8 +33,9 @@ const API_URL = resolveApiUrl();
 export const api = new AgentApi(API_URL, "/api");
 
 export const UNREACHABLE =
-  "Couldn't reach the retail API on port 8000. Start it with " +
-  "`uvicorn retail.api.main:app --app-dir examples --port 8000` and try again.";
+  process.env.NODE_ENV === "development"
+    ? "SCENTAI API auf Port 8000 nicht erreichbar. Starte lokal: uvicorn retail.api.main:app --app-dir examples --port 8000."
+    : "SCENTAI ist gerade kurz nicht erreichbar. Bitte versuche es in einem Moment erneut.";
 
 export async function fetchProducts(): Promise<Product[] | null> {
   const data = await api.get<{ products: Product[] }>("/products", { limit: "100" });
