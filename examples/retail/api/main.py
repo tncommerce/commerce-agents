@@ -100,13 +100,13 @@ async def analytics_event(
     request: AnalyticsEventRequest,
     record: host.CurrentSession,
 ) -> dict:
-    event_id = analytics_tracker.record(
+    event_id, storage = await analytics_tracker.record(
         session_id=record.session_id,
         event=request.event,
         product_id=request.product_id,
         source=request.source,
     )
-    return {"ok": True, "event_id": event_id}
+    return {"ok": True, "event_id": event_id, "storage": storage}
 
 
 @app.get("/api/clickout/{offer_id}")
