@@ -325,6 +325,28 @@ export default async function FragrancePage({
               ) : null}
             </div>
 
+            <div className="mt-5 flex flex-wrap gap-2.5">
+              <a
+                href="#angebote"
+                className="rounded-xl bg-(--accent) px-4 py-2.5 text-[13px] font-semibold text-white transition-opacity hover:opacity-90"
+              >
+                Aktuelle Angebote prüfen
+              </a>
+              {related.length ? (
+                <a
+                  href="#alternativen"
+                  className="rounded-xl border border-(--line) bg-(--card) px-4 py-2.5 text-[13px] font-semibold text-(--ink) transition hover:border-(--ink)"
+                >
+                  Alternativen ansehen
+                </a>
+              ) : null}
+            </div>
+
+            <div className="mt-2 text-[10.5px] leading-4 text-(--ink-soft)">
+              SCENTAI verkauft nicht selbst. Kauf und Versand erfolgen beim
+              jeweiligen Händler.
+            </div>
+
             <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
               <div className="rounded-2xl border border-(--line) bg-(--card) p-4">
                 <div className="text-[11px] text-(--ink-soft)">
@@ -471,14 +493,20 @@ export default async function FragrancePage({
           </section>
         </div>
 
-        <div className="mt-5">
+        <div
+          id="angebote"
+          className="mt-5 scroll-mt-6"
+        >
           <FragranceOffers
             productId={fragrance.product_id}
           />
         </div>
 
         {related.length ? (
-          <section className="mt-5 rounded-2xl border border-(--line) bg-(--card) p-5 shadow-(--shadow-sm)">
+          <section
+            id="alternativen"
+            className="mt-5 scroll-mt-6 rounded-2xl border border-(--line) bg-(--card) p-5 shadow-(--shadow-sm)"
+          >
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
                 <h2 className="text-[17px] font-semibold">
