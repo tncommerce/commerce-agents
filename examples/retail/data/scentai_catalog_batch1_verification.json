@@ -1,0 +1,280 @@
+{
+  "version": 1,
+  "batch": 1,
+  "verified_at": "2026-09-18",
+  "status": "identity_and_core_metadata_verified",
+  "live_promotion_status": "blocked_pending_image_and_commerce_qa",
+  "rules": [
+    "No product in this file is automatically live.",
+    "Prices are intentionally omitted because they are volatile and will be sourced from merchant offers.",
+    "Affiliate URLs are intentionally omitted until partner approval/tracking is available.",
+    "Community performance fields will be added separately from sourced community snapshots."
+  ],
+  "products": [
+    {
+      "candidate_id": "YSL-LIBRE-EDP",
+      "proposed_product_id": "SC-YSL-LIBRE-EDP-90",
+      "brand": "Yves Saint Laurent",
+      "canonical_name": "Libre",
+      "concentration": "Eau de Parfum",
+      "canonical_volume_ml": 90,
+      "target_group": "women",
+      "scent_family": "floral lavender",
+      "key_notes": [
+        "French lavender",
+        "Moroccan orange blossom",
+        "vanilla"
+      ],
+      "identity_verified": true,
+      "merchant_snapshot": {
+        "douglas_de": "available"
+      },
+      "sources": [
+        "https://www.yslbeauty.de/dufte/dufte-fur-sie/libre/libre-eau-de-parfum/WW-50424YSL.html",
+        "https://www.douglas.de/de/p/5000005003"
+      ]
+    },
+    {
+      "candidate_id": "PRADA-PARADOXE-EDP",
+      "proposed_product_id": "SC-PRADA-PARADOXE-EDP-90",
+      "brand": "Prada",
+      "canonical_name": "Paradoxe",
+      "concentration": "Eau de Parfum",
+      "canonical_volume_ml": 90,
+      "target_group": "women",
+      "scent_family": "floral amber musk",
+      "key_notes": [
+        "neroli bud",
+        "Ambrofix amber",
+        "white musk"
+      ],
+      "identity_verified": true,
+      "merchant_snapshot": {
+        "douglas_de": "available",
+        "flaconi_de": "available"
+      },
+      "sources": [
+        "https://www.prada.com/de/de/perfumes-and-beauty/fragrances/womens-fragrances/c/10573EU",
+        "https://www.flaconi.de/parfum/prada/paradoxe/prada-paradoxe-refillable-eau-de-parfum.html",
+        "https://www.douglas.de/de/p/5010687030"
+      ]
+    },
+    {
+      "candidate_id": "BURBERRY-GODDESS-EDP",
+      "proposed_product_id": "SC-BURBERRY-GODDESS-EDP-100",
+      "brand": "Burberry",
+      "canonical_name": "Goddess",
+      "concentration": "Eau de Parfum",
+      "canonical_volume_ml": 100,
+      "target_group": "women",
+      "scent_family": "gourmand vanilla aromatic",
+      "key_notes": [
+        "vanilla trio",
+        "lavender"
+      ],
+      "identity_verified": true,
+      "merchant_snapshot": {
+        "douglas_de": "available"
+      },
+      "sources": [
+        "https://de.burberry.com/burberry-goddess-eau-de-parfum-for-women-100-ml-p40835981",
+        "https://www.douglas.de/de/b/burberry/goddess/b053737"
+      ]
+    },
+    {
+      "candidate_id": "NARCISO-RODRIGUEZ-FOR-HER-PURE-MUSC",
+      "proposed_product_id": "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100",
+      "brand": "Narciso Rodriguez",
+      "canonical_name": "for her PURE MUSC",
+      "concentration": "Eau de Parfum",
+      "canonical_volume_ml": 100,
+      "target_group": "women",
+      "scent_family": "musky floral amber",
+      "key_notes": [
+        "orange blossom",
+        "jasmine",
+        "musk",
+        "patchouli",
+        "cashmere",
+        "amber"
+      ],
+      "identity_verified": true,
+      "merchant_snapshot": {
+        "douglas_de": "available",
+        "flaconi_de": "available"
+      },
+      "sources": [
+        "https://www.narcisorodriguezparfums.com/de/d%C3%BCfte/for-her/",
+        "https://www.flaconi.de/parfum/narciso-rodriguez/for-her/narciso-rodriguez-for-her-pure-musc-eau-de-parfum.html",
+        "https://www.douglas.de/de/b/narciso-rodriguez/for-her/b225001"
+      ]
+    },
+    {
+      "candidate_id": "PDM-DELINA-EDP",
+      "proposed_product_id": "SC-PDM-DELINA-EDP-75",
+      "brand": "Parfums de Marly",
+      "canonical_name": "Delina",
+      "concentration": "Eau de Parfum",
+      "canonical_volume_ml": 75,
+      "target_group": "women",
+      "scent_family": "floral fruity rose",
+      "key_notes": [
+        "lychee",
+        "rhubarb",
+        "bergamot",
+        "Turkish rose",
+        "peony",
+        "musk",
+        "vanilla",
+        "cashmeran"
+      ],
+      "identity_verified": true,
+      "merchant_snapshot": {
+        "douglas_de": "available",
+        "flaconi_de": "available"
+      },
+      "sources": [
+        "https://parfums-de-marly.com/de/products/delina",
+        "https://www.douglas.de/de/p/5010758028",
+        "https://www.flaconi.de/parfum/parfums-de-marly/women/parfums-de-marly-women-delina-eau-de-parfum.html"
+      ]
+    },
+    {
+      "candidate_id": "LANCOME-LA-VIE-EST-BELLE-EDP",
+      "proposed_product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "brand": "Lancôme",
+      "canonical_name": "La Vie est Belle",
+      "concentration": "Eau de Parfum",
+      "canonical_volume_ml": 100,
+      "target_group": "women",
+      "scent_family": "floral gourmand",
+      "key_notes": [
+        "iris",
+        "pear",
+        "orange blossom",
+        "jasmine",
+        "vanilla accord",
+        "patchouli"
+      ],
+      "identity_verified": true,
+      "merchant_snapshot": {
+        "douglas_de": "available"
+      },
+      "sources": [
+        "https://www.lancome.de/duefte/frauen_parfum/la_vie_est_belle/la_vie_est_belle_eau_de_parfum/3614273088657.html",
+        "https://www.douglas.de/de/p/3000056790"
+      ]
+    },
+    {
+      "candidate_id": "JPG-LE-MALE-LE-PARFUM",
+      "proposed_product_id": "SC-JPG-LE-MALE-LE-PARFUM-125",
+      "brand": "Jean Paul Gaultier",
+      "canonical_name": "Le Male Le Parfum",
+      "concentration": "Eau de Parfum Intense",
+      "canonical_volume_ml": 125,
+      "target_group": "men",
+      "scent_family": "amber woody",
+      "key_notes": [
+        "cardamom",
+        "lavender",
+        "iris",
+        "vanilla"
+      ],
+      "identity_verified": true,
+      "naming_note": "Some German retailers label the same product family as Le Male Intense; canonical storefront name should remain the official brand name Le Male Le Parfum.",
+      "merchant_snapshot": {
+        "douglas_de": "available"
+      },
+      "sources": [
+        "https://www.jeanpaulgaultier.com/de/de/p/linie-le-male/le-male-le-parfum-eau-de-parfum-intense-000000000065156529",
+        "https://www.douglas.de/de/p/5002490497"
+      ]
+    },
+    {
+      "candidate_id": "VIKTOR-ROLF-SPICEBOMB-EXTREME",
+      "proposed_product_id": "SC-VIKTOR-ROLF-SPICEBOMB-EXTREME-EDP-90",
+      "brand": "Viktor & Rolf",
+      "canonical_name": "Spicebomb Extreme",
+      "concentration": "Eau de Parfum",
+      "canonical_volume_ml": 90,
+      "target_group": "men",
+      "scent_family": "amber spicy gourmand",
+      "key_notes": [
+        "black pepper",
+        "saffron",
+        "lavender",
+        "tobacco",
+        "bourbon",
+        "vanilla"
+      ],
+      "identity_verified": true,
+      "merchant_snapshot": {
+        "douglas_de": "available"
+      },
+      "sources": [
+        "https://www.viktor-rolf.com/products/spicebomb-extreme-eau-de-parfum-90ml",
+        "https://www.douglas.de/de/p/3001012427"
+      ]
+    },
+    {
+      "candidate_id": "PRADA-LHOMME-INTENSE-EDP",
+      "proposed_product_id": "SC-PRADA-LHOMME-INTENSE-EDP-100",
+      "brand": "Prada",
+      "canonical_name": "L'Homme Intense",
+      "concentration": "Eau de Parfum",
+      "canonical_volume_ml": 100,
+      "target_group": "men",
+      "scent_family": "amber woody iris",
+      "key_notes": [
+        "amber",
+        "patchouli",
+        "iris",
+        "sandalwood",
+        "roasted tonka bean"
+      ],
+      "identity_verified": true,
+      "merchant_snapshot": {
+        "douglas_de": "available",
+        "prada_de": "temporarily_unavailable_online"
+      },
+      "sources": [
+        "https://www.prada.com/de/de/p/lhomme-prada-intense-edp-100-ml/2A1252_2HC1_F0Z99_P_ML100",
+        "https://www.douglas.de/de/p/3001037535"
+      ]
+    },
+    {
+      "candidate_id": "HUGO-BOSS-BOTTLED-EDT",
+      "proposed_product_id": "SC-HUGO-BOSS-BOTTLED-EDT-100",
+      "brand": "Hugo Boss",
+      "canonical_name": "BOSS Bottled",
+      "concentration": "Eau de Toilette",
+      "canonical_volume_ml": 100,
+      "target_group": "men",
+      "scent_family": "fruity spicy woody",
+      "key_notes": [
+        "fruity fresh top",
+        "geranium",
+        "clove",
+        "sandalwood",
+        "cedar",
+        "vetiver"
+      ],
+      "identity_verified": true,
+      "merchant_snapshot": {
+        "douglas_de": "available",
+        "hugo_boss_de": "currently_out_of_stock_online"
+      },
+      "sources": [
+        "https://www.hugoboss.com/de/boss-bottled-eau-de-toilette-100-ml/hbeu58000026_999.html",
+        "https://www.douglas.de/de/p/1010209304"
+      ]
+    }
+  ],
+  "next_blockers_before_live": [
+    "Add verified real product images or approved merchant-feed image URLs.",
+    "Create/verify current merchant offers without hard-coding stale reference prices as live prices.",
+    "Map main_accords and SCENTAI recommendation intensity fields without inventing unsupported precision.",
+    "Add community rating snapshots with source and vote count.",
+    "Run search/recommendation QA, including women-specific queries and typo handling."
+  ]
+}
