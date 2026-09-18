@@ -257,6 +257,7 @@ function ProductDetail({
             <FragranceOffers
               productId={full.product_id}
               trackProductOpen={false}
+              analyticsSurface="advisor_inline_detail"
               compact
             />
           </div>
@@ -334,6 +335,7 @@ export default function ProductCarousel({
   // Keep the last product mounted while the panel folds shut, so collapse animates.
   const [renderedId, setRenderedId] = useState<string | null>(null);
   const autoOpenedProductRef = useRef<string | null>(null);
+  const viewedRecommendationsRef = useRef<Set<string>>(new Set());
   const collapseRef = useRef<HTMLDivElement>(null);
 
   const scrollerRef = useRef<HTMLDivElement>(null);
@@ -355,6 +357,24 @@ export default function ProductCarousel({
     return () => observer.disconnect();
   }, [syncOverflow, items.length, partial]);
 
+  useEffect(() => {
+    items.forEach(({ product }, index) => {
+      if (!String(product.product_id).startsWith("SC-")) return;
+
+      const itemPosition = index + 1;
+      const key = `${product.product_id}:${itemPosition}`;
+      if (viewedRecommendationsRef.current.has(key)) return;
+
+      viewedRecommendationsRef.current.add(key);
+      void trackAnalyticsEvent("advisor_recommendation_view", {
+        product_id: product.product_id,
+        source: "advisor",
+        surface: "advisor_recommendation",
+        item_position: itemPosition,
+      });
+    });
+  }, [items]);
+
   // A single SCENTAI product is typically a detail-intent result. Open its detail
   // panel once automatically so merchant offers are immediately discoverable.
   useEffect(() => {
@@ -365,6 +385,12 @@ export default function ProductCarousel({
     if (autoOpenedProductRef.current === productId) return;
 
     autoOpenedProductRef.current = productId;
+    void trackAnalyticsEvent("advisor_product_open", {
+      product_id: productId,
+      source: "auto_open",
+      surface: "advisor_recommendation",
+      item_position: 1,
+    });
     setRenderedId(productId);
     setExpandedId(productId);
   }, [items, partial]);
@@ -397,7 +423,7 @@ export default function ProductCarousel({
         <h3 className="mb-3 text-[15px] font-semibold text-(--ink)">{payload.title}</h3>
       ) : null}
       <div className="space-y-2 sm:hidden">
-        {items.map(({ product, reason }) => (
+        {items.map(({ product, reason }, index) => (
           <MobileProductResult
             key={product.product_id}
             product={product}
@@ -405,9 +431,11 @@ export default function ProductCarousel({
             expanded={expandedId === product.product_id}
             onToggle={() => {
               if (expandedId !== product.product_id) {
-                void trackAnalyticsEvent("product_open", {
+                void trackAnalyticsEvent("advisor_product_open", {
                   product_id: product.product_id,
                   source: "recommendation_card",
+                  surface: "advisor_recommendation",
+                  item_position: index + 1,
                 });
               }
               toggle(product);
@@ -443,12 +471,22 @@ export default function ProductCarousel({
                 : "panel-scroll flex gap-3 overflow-x-auto pb-1"
           }
         >
-          {items.map(({ product }) => (
+          {items.map(({ product }, index) => (
             <div key={product.product_id} className="ac-reveal shrink-0">
               <ProductTile
                 product={product}
                 onAdd={onAdd}
-                onOpen={toggle}
+                onOpen={() => {
+                  if (expandedId !== product.product_id) {
+                    void trackAnalyticsEvent("advisor_product_open", {
+                      product_id: product.product_id,
+                      source: "recommendation_card",
+                      surface: "advisor_recommendation",
+                      item_position: index + 1,
+                    });
+                  }
+                  toggle(product);
+                }}
                 selected={product.product_id === expandedId}
               />
             </div>
