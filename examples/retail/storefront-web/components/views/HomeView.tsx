@@ -16,6 +16,7 @@ import { fragrancePathForProduct } from "@/lib/fragranceSlug";
 import type { Product } from "@/lib/types";
 import ProductTile, { ProductRow } from "../ProductTile";
 import LegalFooter from "../LegalFooter";
+import MerchantDiscovery from "../MerchantDiscovery";
 
 const STARTERS: Starter[] = [
   {
@@ -196,6 +197,8 @@ export default function HomeView({
           Parfumvergleiche
         </a>
       </div>
+      <MerchantDiscovery />
+
       {picks.length ? (
         <HomeSection title="Düfte entdecken" subtitle="Entdecke das Sortiment oder lass dich direkt von SCENTAI beraten">
           <div className="flex flex-col gap-2 sm:hidden">
