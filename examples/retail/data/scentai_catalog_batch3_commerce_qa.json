@@ -1,8 +1,8 @@
 {
-  "version": 1,
+  "version": 2,
   "batch": 3,
   "checked_at": "2026-09-18",
-  "status": "commerce_coverage_verified_with_one_identity_blocker",
+  "status": "commerce_coverage_verified",
   "note": "Non-affiliate QA snapshot. Do not hard-code observed prices into live offers; use current approved feeds/tracking links later.",
   "products": [
     {
@@ -79,7 +79,8 @@
         }
       ],
       "coverage_count": 2,
-      "identity_blocker": "Current retailer/brand copy describes a renewed or reimagined The One for Men Eau de Parfum, while the high-volume Parfumo community snapshot is explicitly for the 2015 version. Do not merge the 2015 community ratings into the current retail offer until exact version/formula identity is resolved."
+      "version_identity": "2025_reimagined_edp",
+      "community_maturity_note": "Current 2025 Parfumo sample is still small; keep the product separate from the older 2015 EDP."
     },
     {
       "candidate_id": "DIOR-SAUVAGE-ELIXIR",
@@ -149,12 +150,11 @@
     "community_scent_snapshot_verified": 10,
     "at_least_one_german_merchant_verified": 10,
     "at_least_two_merchants_verified": 7,
-    "identity_blockers": 1,
+    "identity_blockers": 0,
     "affiliate_links_ready": 0,
     "approved_feed_images_ready": 0
   },
   "next_actions": [
-    "Resolve The One for Men Eau de Parfum version identity before live publication.",
     "Replace QA merchant evidence with approved affiliate feeds/current tracking links.",
     "Use approved feed/manufacturer imagery before live promotion."
   ]
