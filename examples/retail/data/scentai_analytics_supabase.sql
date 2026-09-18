@@ -485,3 +485,104 @@ select
 from public.scentai_analytics_events
 where event = 'merchant_clickout'
 group by coalesce(surface, 'unknown');
+
+
+create or replace view public.scentai_acquisition_funnel
+with (security_invoker = true)
+as
+with landing as (
+  select distinct on (session_key)
+    session_key,
+    coalesce(source, 'unknown') as acquisition_source,
+    occurred_at as landing_at
+  from public.scentai_analytics_events
+  where event = 'page_view'
+    and surface = 'acquisition_landing'
+  order by session_key, occurred_at
+),
+stages as (
+  select
+    landing.session_key,
+    landing.acquisition_source,
+    landing.landing_at,
+    min(events.occurred_at) filter (
+      where events.event = 'consultation_start'
+        and events.occurred_at >= landing.landing_at
+    ) as consultation_at,
+    min(events.occurred_at) filter (
+      where events.event = 'advisor_recommendation_view'
+        and events.occurred_at >= landing.landing_at
+    ) as recommendation_at,
+    min(events.occurred_at) filter (
+      where events.event = 'fragrance_detail_view'
+        and events.occurred_at >= landing.landing_at
+    ) as detail_at,
+    min(events.occurred_at) filter (
+      where events.event = 'comparison_start'
+        and events.occurred_at >= landing.landing_at
+    ) as comparison_at,
+    min(events.occurred_at) filter (
+      where events.event = 'merchant_clickout'
+        and events.occurred_at >= landing.landing_at
+    ) as clickout_at
+  from landing
+  left join public.scentai_analytics_events events
+    on events.session_key = landing.session_key
+  group by
+    landing.session_key,
+    landing.acquisition_source,
+    landing.landing_at
+)
+select
+  acquisition_source,
+  count(*) as landing_sessions,
+  count(*) filter (
+    where consultation_at is not null
+  ) as consultation_sessions,
+  count(*) filter (
+    where recommendation_at is not null
+      and consultation_at is not null
+      and recommendation_at >= consultation_at
+  ) as recommendation_sessions,
+  count(*) filter (
+    where detail_at is not null
+  ) as detail_sessions,
+  count(*) filter (
+    where comparison_at is not null
+  ) as comparison_sessions,
+  count(*) filter (
+    where clickout_at is not null
+  ) as clickout_sessions,
+  round(
+    100.0
+    * count(*) filter (
+      where consultation_at is not null
+    )
+    / nullif(count(*), 0),
+    2
+  ) as landing_to_consultation_pct,
+  round(
+    100.0
+    * count(*) filter (
+      where recommendation_at is not null
+        and consultation_at is not null
+        and recommendation_at >= consultation_at
+    )
+    / nullif(
+      count(*) filter (
+        where consultation_at is not null
+      ),
+      0
+    ),
+    2
+  ) as consultation_to_recommendation_pct,
+  round(
+    100.0
+    * count(*) filter (
+      where clickout_at is not null
+    )
+    / nullif(count(*), 0),
+    2
+  ) as landing_to_clickout_pct
+from stages
+group by acquisition_source;
