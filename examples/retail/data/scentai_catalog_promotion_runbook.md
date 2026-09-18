@@ -123,3 +123,23 @@ Default hard gates enforced by the tool:
 - product not already live
 
 The recommendation profile is an internal deterministic retrieval feature derived from verified community accords. It is not a customer-facing fragrance rating and must not be described as objective measurement.
+
+
+## Staging recommendation QA
+
+Run the isolated pre-live QA at any time while affiliate approvals are pending:
+
+```powershell
+python scripts/qa_scentai_staging.py
+```
+
+The QA currently checks:
+- structural completeness for all staged products
+- exact-name lookup for every staged fragrance
+- typo handling across a representative set of names/brands
+- men/women/unisex audience scoring
+- non-provisional community performance completeness
+
+Budget and merchant-offer QA remains intentionally deferred until real current affiliate offers exist.
+
+Live promotion now automatically reruns this staging QA before writing to `catalog.json`. A failing recommendation QA blocks the live write.
