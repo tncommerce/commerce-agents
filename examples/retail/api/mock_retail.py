@@ -1389,6 +1389,24 @@ class MockRetail(StorefrontBackend):
         normalized_query = normalize_search_text(query)
         query_tokens = set(normalized_query.split())
 
+        alternative_markers = (
+            "alternative",
+            "alternativen",
+            "dupe",
+            "dupes",
+            "clone",
+            "clones",
+            "similar",
+            "similar to",
+            "ähnlich",
+            "ersatz",
+            "instead",
+        )
+        asks_for_alternative = any(
+            marker in query_lower
+            for marker in alternative_markers
+        )
+
         # Conservative direct-name lookup for short, name-like requests.
         # This runs before generic recommendation logic so a typo such as
         # "Para L homme" resolves to Prada L'Homme instead of being interpreted
@@ -1421,7 +1439,10 @@ class MockRetail(StorefrontBackend):
             word for word in normalized_query.split() if word not in generic_query_words
         ]
 
-        if 1 <= len(direct_query_words) <= 5:
+        if (
+            not asks_for_alternative
+            and 1 <= len(direct_query_words) <= 5
+        ):
             direct_matches = []
 
             for candidate in products:
@@ -1494,22 +1515,6 @@ class MockRetail(StorefrontBackend):
                             query_text=query,
                         )
                     ]
-
-        alternative_markers = (
-            "alternative",
-            "alternativen",
-            "dupe",
-            "dupes",
-            "clone",
-            "clones",
-            "similar",
-            "similar to",
-            "ähnlich",
-            "ersatz",
-            "instead",
-        )
-
-        asks_for_alternative = any(marker in query_lower for marker in alternative_markers)
 
         if asks_for_alternative:
             benchmark_matches = []
