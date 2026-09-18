@@ -479,7 +479,15 @@ export default function ProductCarousel({
             product={product}
             reason={reason}
             expanded={expandedId === product.product_id}
-            onToggle={() => toggle(product)}
+            onToggle={() => {
+              if (expandedId !== product.product_id) {
+                void trackAnalyticsEvent("product_open", {
+                  product_id: product.product_id,
+                  source: "recommendation_card",
+                });
+              }
+              toggle(product);
+            }}
             onAdd={onAdd}
           />
         ))}
