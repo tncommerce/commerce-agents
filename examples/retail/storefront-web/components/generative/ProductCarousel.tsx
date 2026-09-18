@@ -6,6 +6,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { formatMoney, optionValuesLabel, useStoreFrame } from "web-shared";
 import { fetchMerchantOffers, fetchProduct, merchantClickoutUrl } from "@/lib/api";
+import { trackAnalyticsEvent } from "@/lib/analytics";
 import type { MerchantOffersPayload, PriceIntelligence, Product, ProductDetails, ProductsPayload, ReviewAspects } from "@/lib/types";
 import ProductTile, { AddButton, customerPriceLabel, DeliveryPromise, OptionLine, ProductImage, ProductRating, Rating } from "../ProductTile";
 
@@ -154,6 +155,12 @@ function MerchantOffersPanel({ payload }: { payload: MerchantOffersPayload }) {
                 href={merchantClickoutUrl(offer.clickout_path)}
                 target="_blank"
                 rel={offer.affiliate_link ? "sponsored noopener noreferrer" : "noopener noreferrer"}
+                onClick={() =>
+                  void trackAnalyticsEvent("merchant_clickout", {
+                    product_id: offer.product_id,
+                    source: offer.merchant_id,
+                  })
+                }
                 className="rounded-lg bg-(--accent) px-3 py-2 text-[12px] font-semibold text-white transition-opacity hover:opacity-90"
               >
                 Bei {offer.merchant_name} kaufen
