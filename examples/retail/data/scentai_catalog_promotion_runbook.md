@@ -144,6 +144,54 @@ Budget and merchant-offer QA remains intentionally deferred until real current a
 
 Live promotion now automatically reruns this staging QA before writing to `catalog.json`. A failing recommendation QA blocks the live write.
 
+## Merchant integration coverage report
+
+Use this report to distinguish researched merchant availability from merchant
+data that is actually integrated into SCENTAI:
+
+```powershell
+python scripts/report_scentai_merchant_coverage.py
+```
+
+It reports:
+- researched merchant coverage from staging
+- actual imported offers
+- actual affiliate offers
+- resolved merchant-product mappings
+- approved image readiness
+- current live-vs-staged audience distribution
+
+This distinction matters because "verified merchant coverage" in staging means
+the product was found at real merchants during research. It does **not** mean
+SCENTAI already has a usable feed mapping, current tracked offer or approved
+image for that product.
+
+## Next promotion work batch
+
+Generate the next 1-10 product worklist:
+
+```powershell
+python scripts/plan_scentai_promotion_batch.py --limit 10
+```
+
+The planner does not promote anything. It orders the existing staged pool by:
+1. products already passing all hard promotion gates
+2. non-provisional community data
+3. fewer unresolved hard blockers
+4. underrepresented audiences in the current live catalog
+5. researched merchant coverage
+6. community sample size
+
+The generated rows include exact canonical concentration and volume so the
+result can be used as a merchant-mapping worklist without guessing SKUs,
+EANs or GTINs.
+
+Save a point-in-time worklist:
+
+```powershell
+python scripts/plan_scentai_promotion_batch.py --limit 10 --output examples/retail/data/scentai_next_promotion_batch.json
+```
+
 ## Promotion readiness report
 
 Before doing new catalog research, inspect the current staging bottlenecks:
@@ -203,6 +251,8 @@ Important:
 - unmatched products remain visible for mapping review
 - invalid/non-HTTP image URLs are rejected
 - duplicate product/image pairs are collapsed
+- extracted rows carry only a `proposed_image_status`; they are not approved
+  merely because they came from a feed
 - only a reviewed candidate may later receive the
   `approved_feed_image` status used by the live-promotion gate
 
@@ -243,6 +293,11 @@ For automation:
 python -m retail.api.preflight_merchant_feed --feed PATH_TO_FEED.csv --provider-config PATH_TO_PROVIDER_CONFIG.json --machine-readable
 ```
 
+The preflight also reports **SCENTAI mapping coverage** against
+`merchant_product_mappings.json`. This mapping percentage is informational,
+not a whole-feed pass/fail gate: approved merchant feeds can contain thousands
+of products that SCENTAI does not intend to catalog.
+
 Only after a satisfactory preflight should the normal merchant import dry-run
 and the separate feed-image extraction be executed.
 
@@ -265,6 +320,9 @@ python scripts/approve_scentai_feed_image.py --product-id SC-EXAMPLE-100 --image
 
 Safety rules:
 - the exact product/image pair must exist in the extracted review queue
+- the candidate file must remain explicitly marked `review_only_not_live`
+- image URLs are revalidated as HTTP/HTTPS at approval time
+- the candidate must explicitly propose `approved_feed_image`
 - unknown or rejected candidates cannot be approved
 - an already approved different image is never overwritten silently
 - replacing an approved image requires the explicit
