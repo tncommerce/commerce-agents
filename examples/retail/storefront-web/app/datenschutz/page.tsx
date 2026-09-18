@@ -7,6 +7,13 @@ import { legal, legalLocation } from "@/lib/legal";
 export const metadata = {
   title: "Datenschutz | SCENTAI",
   description: "Datenschutzhinweise für die Nutzung von SCENTAI.",
+  alternates: {
+    canonical: "/datenschutz",
+  },
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 export default function DatenschutzPage() {
