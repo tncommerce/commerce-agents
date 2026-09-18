@@ -143,3 +143,40 @@ The QA currently checks:
 Budget and merchant-offer QA remains intentionally deferred until real current affiliate offers exist.
 
 Live promotion now automatically reruns this staging QA before writing to `catalog.json`. A failing recommendation QA blocks the live write.
+
+## Promotion readiness report
+
+Before doing new catalog research, inspect the current staging bottlenecks:
+
+```powershell
+python scripts/report_scentai_promotion_readiness.py
+```
+
+The report calculates readiness live from:
+- staged SCENTAI products
+- current live catalog
+- current merchant offers
+- approved image status
+- recommendation-profile and audience gates
+- provisional community-data status
+
+It also groups candidates into:
+- Tier A: stable candidate with at least two verified merchants
+- Tier B: stable candidate with one verified merchant
+- Tier C: provisional or weak merchant coverage
+
+For machine-readable automation:
+
+```powershell
+python scripts/report_scentai_promotion_readiness.py --machine-readable
+```
+
+To save a point-in-time JSON snapshot:
+
+```powershell
+python scripts/report_scentai_promotion_readiness.py --output examples/retail/data/scentai_promotion_readiness.json
+```
+
+This report is advisory. The actual live write still goes through
+`promote_scentai_catalog.py` and all of its hard gates.
+
