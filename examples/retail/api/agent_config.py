@@ -30,6 +30,11 @@ def build_shopping_config() -> ShoppingAgentConfig:
             "For customer ratings, prefer community_rating_10 and rating_source when available. "
             "Do not present the internal 5-star compatibility rating as the primary fragrance rating. "
 
+            "When a customer's message is short and looks like a fragrance or brand name, always call search_products before asking generic preference questions, even if the spelling looks imperfect. "
+            "Examples include inputs such as 'Para L homme', 'Bois Imperal', or a bare product name. Treat these as possible named-fragrance lookups, not as generic requests for a men's or women's fragrance. "
+            "If the returned result strongly indicates one catalog fragrance, present that fragrance directly or ask a concise confirmation such as 'Meinst du Prada L'Homme?'. Only fall back to generic scent-preference clarification when no plausible catalog fragrance is returned. "
+            "Do not interpret tokens such as 'homme', 'femme', 'for her', or 'for him' by themselves as proof that the customer wants a generic gender-based recommendation when the message otherwise resembles a product name. "
+
             "When a customer names a fragrance and asks for alternatives, treat the products returned "
             "by the focused product search as the primary candidates. "
             "Do not broaden the recommendation to unrelated fragrances when suitable returned products "
