@@ -1,0 +1,233 @@
+{
+  "version": 1,
+  "batch": 3,
+  "verified_at": "2026-09-18",
+  "status": "identity_and_core_metadata_verified",
+  "live_promotion_status": "blocked_pending_community_and_commerce_qa",
+  "products": [
+    {
+      "candidate_id": "DIOR-HYPNOTIC-POISON-EDT",
+      "proposed_product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+      "brand": "Dior",
+      "canonical_name": "Hypnotic Poison",
+      "concentration": "Eau de Toilette",
+      "canonical_volume_ml": 100,
+      "target_group": "women",
+      "scent_family": "amber vanilla",
+      "key_notes": [
+        "jasmine",
+        "bitter almond",
+        "vanilla"
+      ],
+      "sources": [
+        "https://www.dior.com/de_de/beauty/products/hypnotic-poison-eau-de-toilette-Y0063401.html"
+      ]
+    },
+    {
+      "candidate_id": "GUERLAIN-MON-GUERLAIN-EDP",
+      "proposed_product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+      "brand": "Guerlain",
+      "canonical_name": "Mon Guerlain",
+      "concentration": "Eau de Parfum",
+      "canonical_volume_ml": 100,
+      "target_group": "women",
+      "scent_family": "amber aromatic vanilla",
+      "key_notes": [
+        "French lavender",
+        "Sambac jasmine",
+        "sandalwood",
+        "Tahitian vanilla"
+      ],
+      "sources": [
+        "https://www.guerlain.com/de/de-de/p/mon-guerlain-eau-de-parfum-G013140.html"
+      ]
+    },
+    {
+      "candidate_id": "AMOUAGE-REFLECTION-MAN-EDP",
+      "proposed_product_id": "SC-AMOUAGE-REFLECTION-MAN-EDP-100",
+      "brand": "Amouage",
+      "canonical_name": "Reflection Man",
+      "concentration": "Eau de Parfum",
+      "canonical_volume_ml": 100,
+      "target_group": "men",
+      "scent_family": "fougère amber floral woody",
+      "key_notes": [
+        "rosemary",
+        "red pepper berries",
+        "bitter orange leaves",
+        "neroli",
+        "orris",
+        "jasmine",
+        "ylang-ylang",
+        "vetiver",
+        "patchouli",
+        "sandalwood",
+        "cedarwood"
+      ],
+      "sources": [
+        "https://amouage.com/en-eu/products/reflection-man-100ml"
+      ]
+    },
+    {
+      "candidate_id": "YSL-LA-NUIT-DE-LHOMME-EDT",
+      "proposed_product_id": "SC-YSL-LA-NUIT-DE-LHOMME-EDT-100",
+      "brand": "Yves Saint Laurent",
+      "canonical_name": "La Nuit de L'Homme",
+      "concentration": "Eau de Toilette",
+      "canonical_volume_ml": 100,
+      "target_group": "men",
+      "scent_family": "fresh amber aromatic",
+      "key_notes": [
+        "cardamom",
+        "lavender",
+        "cedar",
+        "coumarin"
+      ],
+      "sources": [
+        "https://www.yslbeauty.de/dufte/dufte-fur-ihn/la-nuit-de-l-homme/la-nuit-de-l-homme-eau-de-toilette-spray/3365440375079.html"
+      ]
+    },
+    {
+      "candidate_id": "DOLCE-GABBANA-THE-ONE-MEN-EDP",
+      "proposed_product_id": "SC-DOLCE-GABBANA-THE-ONE-MEN-EDP-100",
+      "brand": "Dolce & Gabbana",
+      "canonical_name": "The One for Men",
+      "concentration": "Eau de Parfum",
+      "canonical_volume_ml": 100,
+      "target_group": "men",
+      "scent_family": "woody amber spicy",
+      "key_notes": [
+        "citrus",
+        "sage",
+        "musk",
+        "amber",
+        "tobacco",
+        "wood"
+      ],
+      "sources": [
+        "https://www.dolcegabbana.com/de-de/beauty/herrendufte/the-one-for-men/",
+        "https://www.douglas.de/de/b/dolcegabbana/the-one-for-men/b020411"
+      ]
+    },
+    {
+      "candidate_id": "DIOR-SAUVAGE-ELIXIR",
+      "proposed_product_id": "SC-DIOR-SAUVAGE-ELIXIR-100",
+      "brand": "Dior",
+      "canonical_name": "Sauvage Elixir",
+      "concentration": "Elixir",
+      "canonical_volume_ml": 100,
+      "target_group": "men",
+      "scent_family": "spicy fresh woody",
+      "key_notes": [
+        "grapefruit",
+        "cinnamon",
+        "nutmeg",
+        "cardamom",
+        "lavender",
+        "liquorice",
+        "vetiver",
+        "patchouli"
+      ],
+      "sources": [
+        "https://www.dior.com/de_de/beauty/products/sauvage-elixir-Y0996460.html"
+      ]
+    },
+    {
+      "candidate_id": "PDM-HEROD-EDP",
+      "proposed_product_id": "SC-PDM-HEROD-EDP-125",
+      "brand": "Parfums de Marly",
+      "canonical_name": "Herod",
+      "concentration": "Eau de Parfum",
+      "canonical_volume_ml": 125,
+      "target_group": "men, unisex",
+      "audience_lean": "masculine",
+      "scent_family": "woody spicy tobacco vanilla",
+      "key_notes": [
+        "cinnamon",
+        "pepper",
+        "tobacco leaf",
+        "incense",
+        "labdanum",
+        "osmanthus",
+        "vanilla",
+        "musk",
+        "cedarwood"
+      ],
+      "sources": [
+        "https://parfums-de-marly.com/de/products/herod",
+        "https://parfums-de-marly.com/de/collections/to-share"
+      ]
+    },
+    {
+      "candidate_id": "INITIO-SIDE-EFFECT-EDP",
+      "proposed_product_id": "SC-INITIO-SIDE-EFFECT-EDP-90",
+      "brand": "Initio Parfums Privés",
+      "canonical_name": "Side Effect",
+      "concentration": "Eau de Parfum",
+      "canonical_volume_ml": 90,
+      "target_group": "unisex",
+      "scent_family": "amber spicy",
+      "key_notes": [
+        "cinnamon",
+        "rum",
+        "tobacco",
+        "saffron",
+        "sandalwood",
+        "hedione"
+      ],
+      "sources": [
+        "https://initioparfums.com/de/products/side-effect"
+      ]
+    },
+    {
+      "candidate_id": "TOM-FORD-OMBRE-LEATHER-EDP",
+      "proposed_product_id": "SC-TOM-FORD-OMBRE-LEATHER-EDP-100",
+      "brand": "Tom Ford",
+      "canonical_name": "Ombré Leather",
+      "concentration": "Eau de Parfum",
+      "canonical_volume_ml": 100,
+      "target_group": "unisex",
+      "scent_family": "floral leather",
+      "key_notes": [
+        "black leather",
+        "jasmine sambac",
+        "patchouli",
+        "vetiver",
+        "amber",
+        "moss"
+      ],
+      "sources": [
+        "https://www.tomfordbeauty.co.uk/product/ombre-leather-eau-de-parfum?size=100_ml"
+      ]
+    },
+    {
+      "candidate_id": "NISHANE-ANI-EXTRAIT",
+      "proposed_product_id": "SC-NISHANE-ANI-EXTRAIT-100",
+      "brand": "Nishane",
+      "canonical_name": "Ani",
+      "concentration": "Extrait de Parfum",
+      "canonical_volume_ml": 100,
+      "target_group": "unisex",
+      "scent_family": "spicy woody vanilla",
+      "key_notes": [
+        "bergamot",
+        "green notes",
+        "blue ginger",
+        "pink pepper",
+        "blackcurrant",
+        "Turkish rose",
+        "cardamom",
+        "patchouli",
+        "cedarwood",
+        "vanilla",
+        "benzoin",
+        "ambergris",
+        "musk",
+        "sandalwood"
+      ],
+      "sources": [
+        "https://nishane.com/product/ani-15ml/"
+      ]
+    }
+  ]
+}
