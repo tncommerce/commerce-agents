@@ -80,6 +80,14 @@ app.include_router(create_merchant_router(backend, InMemoryMemoryStore()), prefi
 app.mount("/products", StaticFiles(directory=PRODUCT_IMAGES, check_dir=False), name="products")
 
 
+@app.get("/api/health")
+async def health() -> dict:
+    return {
+        "ok": True,
+        "service": "scentai-api",
+    }
+
+
 @app.get("/api/merchant-offers/{product_id}")
 async def product_offers(product_id: str) -> dict:
     offers = offer_store.offers_for(product_id)
