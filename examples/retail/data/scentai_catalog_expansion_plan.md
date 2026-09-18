@@ -34,6 +34,20 @@ The final 150 should cover four commercial/recommendation needs:
 
 Audience balance is a priority because the current 32-product catalog contains no women-only fragrance entries.
 
+
+## Data-driven selection model
+
+New catalog additions are not chosen by taste alone. SCENTAI uses a 0-100 internal selection score defined in `scentai_catalog_selection_policy.json`.
+
+Weights:
+- 35% retailer demand: bestseller/ranking evidence from German retailers such as Douglas, flaconi, Notino and parfumdreams. Never invent sales counts when only ranking/labels are public.
+- 30% community strength: Parfumo + Fragrantica, with rating confidence adjusted for vote/review count rather than raw rating alone.
+- 15% cross-merchant coverage: verified availability across multiple approved merchants, useful for genuine price comparison.
+- 10% trend momentum: recent awards, trend pages and later SCENTAI search demand.
+- 10% portfolio fit: fill audience, season, occasion, price-tier and scent-family gaps.
+
+For the next 40 additions, at least 16 slots should be women or feminine-leaning unisex fragrances. Feminine/masculine leaning is only an editorial scent-style descriptor; it is not a restriction on who can wear a fragrance.
+
 ## Wave 1 — 40 high-priority additions
 
 ### Men's designer / mainstream — 14
