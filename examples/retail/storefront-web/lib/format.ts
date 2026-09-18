@@ -90,8 +90,15 @@ const STAMPED_ATTRIBUTES = new Set([
 ]);
 
 export function attributeChips(product: { attributes?: Record<string, string> }): string[] {
-  return Object.entries(product.attributes ?? {})
-    .filter(([key]) => !STAMPED_ATTRIBUTES.has(key))
+  const attributes = product.attributes ?? {};
+  const queryFit = attributes.anfrage_passung?.trim();
+
+  const chips = Object.entries(attributes)
+    .filter(
+      ([key]) =>
+        key !== "anfrage_passung" &&
+        !STAMPED_ATTRIBUTES.has(key),
+    )
     .map(([key, value]) => {
       if (/^(yes|true)$/i.test(value)) return key.replaceAll("_", " ");
       if (/^(no|false)$/i.test(value)) return null;
@@ -112,6 +119,10 @@ export function attributeChips(product: { attributes?: Record<string, string> })
 
       return value;
     })
-    .filter((chip): chip is string => Boolean(chip))
-    .slice(0, 3);
+    .filter((chip): chip is string => Boolean(chip));
+
+  return [
+    ...(queryFit ? [queryFit] : []),
+    ...chips,
+  ].slice(0, 3);
 }
