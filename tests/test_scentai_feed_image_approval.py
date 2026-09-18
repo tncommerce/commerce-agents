@@ -33,14 +33,15 @@ def candidates_payload(
     review_status="pending_review",
 ) -> dict:
     return {
+        "status": "review_only_not_live",
         "candidates": [
             {
                 "product_id": PRODUCT_ID,
                 "image_url": IMAGE_URL,
                 "review_status": review_status,
-                "approved_image_status": "approved_feed_image",
+                "proposed_image_status": "approved_feed_image",
             }
-        ]
+        ],
     }
 
 
@@ -137,3 +138,49 @@ def test_same_approved_image_is_idempotent() -> None:
 
     assert plan["already_approved"] is True
     assert plan["will_change"] is False
+
+
+
+def test_non_http_image_url_is_rejected() -> None:
+    with pytest.raises(
+        ValueError,
+        match="image_url_must_be_http_or_https",
+    ):
+        approval_plan(
+            staging_payload(),
+            candidates_payload(),
+            product_id=PRODUCT_ID,
+            image_url="javascript:alert(1)",
+        )
+
+
+def test_candidate_payload_must_remain_review_only() -> None:
+    payload = candidates_payload()
+    payload["status"] = "live"
+
+    with pytest.raises(
+        ValueError,
+        match="candidate_payload_not_review_only",
+    ):
+        approval_plan(
+            staging_payload(),
+            payload,
+            product_id=PRODUCT_ID,
+            image_url=IMAGE_URL,
+        )
+
+
+def test_candidate_requires_explicit_feed_image_proposal() -> None:
+    payload = candidates_payload()
+    payload["candidates"][0].pop("proposed_image_status")
+
+    with pytest.raises(
+        ValueError,
+        match="candidate_missing_approved_feed_image_proposal",
+    ):
+        approval_plan(
+            staging_payload(),
+            payload,
+            product_id=PRODUCT_ID,
+            image_url=IMAGE_URL,
+        )
