@@ -246,3 +246,34 @@ python -m retail.api.preflight_merchant_feed --feed PATH_TO_FEED.csv --provider-
 Only after a satisfactory preflight should the normal merchant import dry-run
 and the separate feed-image extraction be executed.
 
+## Feed image approval gate
+
+After extracting affiliate-feed image candidates, review the product identity
+and bottle image manually before changing staging data.
+
+Dry-run one exact candidate:
+
+```powershell
+python scripts/approve_scentai_feed_image.py --product-id SC-EXAMPLE-100 --image-url "https://cdn.example.com/product.jpg"
+```
+
+Apply only after the candidate has been visually verified:
+
+```powershell
+python scripts/approve_scentai_feed_image.py --product-id SC-EXAMPLE-100 --image-url "https://cdn.example.com/product.jpg" --write
+```
+
+Safety rules:
+- the exact product/image pair must exist in the extracted review queue
+- unknown or rejected candidates cannot be approved
+- an already approved different image is never overwritten silently
+- replacing an approved image requires the explicit
+  `--replace-approved-image` flag
+- approvals are idempotent when the same image is already approved
+- a successful write updates staging to `approved_feed_image` and records
+  the review timestamp
+
+Image approval alone does not promote a fragrance. The normal promotion command
+still requires every other hard gate, including a current tracked affiliate
+offer.
+
