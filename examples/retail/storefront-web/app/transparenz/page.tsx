@@ -6,6 +6,9 @@ import LegalFooter from "@/components/LegalFooter";
 export const metadata = {
   title: "Transparenz | SCENTAI",
   description: "Wie SCENTAI Empfehlungen, Händlerangebote und Partnerlinks behandelt.",
+  alternates: {
+    canonical: "/transparenz",
+  },
 };
 
 export default function TransparencyPage() {
