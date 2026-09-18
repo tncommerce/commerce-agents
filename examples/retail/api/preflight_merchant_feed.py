@@ -4,7 +4,11 @@ import argparse
 import json
 from pathlib import Path
 
-from .merchant_feed_preflight import build_feed_preflight
+from .merchant_feed_preflight import (
+    build_feed_preflight,
+    build_mapping_coverage,
+)
+from .merchant_import import load_product_mappings
 from .merchant_feed_reader import (
     DEFAULT_MAX_FEED_BYTES,
     DEFAULT_MAX_FEED_ROWS,
@@ -67,6 +71,17 @@ def main() -> int:
         default=DEFAULT_MAX_FEED_ROWS,
     )
     parser.add_argument(
+        "--mappings",
+        type=Path,
+        default=Path(
+            "examples/retail/data/merchant_product_mappings.json"
+        ),
+        help=(
+            "Optional SCENTAI product mapping file. Mapping coverage is "
+            "reported but does not block a broad merchant feed."
+        ),
+    )
+    parser.add_argument(
         "--machine-readable",
         action="store_true",
     )
@@ -104,6 +119,24 @@ def main() -> int:
         raw_rows,
     )
     report = build_feed_preflight(rows)
+
+    try:
+        mappings = (
+            load_product_mappings(args.mappings)
+            if args.mappings.exists()
+            else []
+        )
+    except (
+        OSError,
+        ValueError,
+        json.JSONDecodeError,
+    ) as exc:
+        parser.error(f"Invalid mapping file: {exc}")
+
+    mapping_coverage = build_mapping_coverage(
+        rows,
+        mappings,
+    )
     status = preflight_status(report)
 
     payload = {
@@ -111,6 +144,7 @@ def main() -> int:
         "exit_code": STATUS_EXIT_CODES[status],
         "provider": provider_name,
         **report,
+        "mapping_coverage": mapping_coverage,
     }
 
     if args.machine_readable:
@@ -123,6 +157,15 @@ def main() -> int:
             f"rows={report['row_count']} | "
             f"import_ready={report['import_ready_rows']} | "
             f"promotion_ready={report['promotion_ready_rows']}"
+        )
+
+        print(
+            "SCENTAI mapping | "
+            f"mapped_rows={mapping_coverage['mapped_rows']} | "
+            f"mapped_products="
+            f"{mapping_coverage['mapped_product_count']} | "
+            f"coverage="
+            f"{mapping_coverage['mapping_coverage_pct']:.1f}%"
         )
 
         print("Coverage:")
