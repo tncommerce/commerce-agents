@@ -103,11 +103,11 @@ async def merchant_partners() -> dict:
     }
 
 
-@app.get("/api/merchant-partners/{merchant_id}/clickout")
+@app.get("/api/merchant-partners/{partner_key}/clickout")
 async def merchant_partner_clickout(
-    merchant_id: str,
+    partner_key: str,
 ) -> RedirectResponse:
-    partner = partner_store.eligible(merchant_id)
+    partner = partner_store.eligible(partner_key)
     if partner is None or partner.affiliate_url is None:
         raise HTTPException(
             status_code=404,
