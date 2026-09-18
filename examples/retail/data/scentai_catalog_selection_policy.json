@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "name": "SCENTAI Catalog Selection Policy",
+  "target_live_catalog_size": 150,
+  "purpose": "Select high-demand, high-quality, commercially useful fragrances without relying on a single retailer or community.",
+  "principles": [
+    "Do not rank products by affiliate commission.",
+    "Do not treat a high community rating with a tiny vote count as equivalent to a proven bestseller.",
+    "Use multiple independent demand signals when available.",
+    "Keep women's and feminine-leaning unisex coverage as an explicit portfolio objective.",
+    "Prefer products that improve recommendation coverage, price comparison, or original-vs-alternative clusters.",
+    "Never invent sales counts when retailers only expose bestseller ordering or labels."
+  ],
+  "score": {
+    "scale": "0-100",
+    "weights": {
+      "retailer_demand": 35,
+      "community_strength": 30,
+      "cross_merchant_coverage": 15,
+      "trend_momentum": 10,
+      "portfolio_fit": 10
+    },
+    "retailer_demand": {
+      "description": "Bestseller/ranking evidence from German fragrance retailers. Exact unit sales are used only when a source publishes them.",
+      "sources": [
+        "Douglas",
+        "flaconi",
+        "Notino",
+        "parfumdreams",
+        "approved affiliate feeds"
+      ],
+      "method": "Normalize rank/placement per retailer; combine multiple retailers; do not fabricate sales volumes."
+    },
+    "community_strength": {
+      "description": "Combine rating quality and confidence from the number of community ratings/reviews.",
+      "sources": [
+        "Parfumo",
+        "Fragrantica"
+      ],
+      "method": "Use a Bayesian/confidence-adjusted rating so 9.0 from 50 votes cannot outrank 8.4 from thousands solely on raw score."
+    },
+    "cross_merchant_coverage": {
+      "description": "Reward products available from multiple approved merchants because they enable genuine price comparison.",
+      "method": "Count verified merchant offers/feeds; cap the contribution so availability never dominates recommendation quality."
+    },
+    "trend_momentum": {
+      "description": "Current awards, recent bestseller movement, new-release attention, and repeated SCENTAI search demand.",
+      "sources": [
+        "Fragrantica current awards",
+        "retailer trend pages",
+        "SCENTAI analytics"
+      ]
+    },
+    "portfolio_fit": {
+      "description": "Fill gaps in audience, season, occasion, price tier, scent family, and original/alternative clusters.",
+      "guardrails": [
+        "Women's and feminine-leaning unisex coverage must increase materially from the current baseline.",
+        "Do not let the catalog become only designer bestsellers or only dupes.",
+        "Maintain fresh, gourmand, floral, woody, amber/oriental, musky and aquatic coverage."
+      ]
+    }
+  },
+  "minimum_evidence_before_live": {
+    "identity": "Exact brand, fragrance name and concentration verified.",
+    "demand": "At least two independent demand/community signals, or one very strong retailer signal plus verified catalog-gap rationale.",
+    "community": "If community rating is used, record rating and vote/review count together.",
+    "commerce": "Merchant availability may be absent at candidate stage but must never be invented.",
+    "relationships": "Clone/inspired/alternative labels require separate evidence review."
+  },
+  "audience_policy": {
+    "buckets": [
+      "men",
+      "women",
+      "unisex",
+      "unisex_feminine_leaning",
+      "unisex_masculine_leaning"
+    ],
+    "note": "Feminine/masculine leaning is an editorial scent-style descriptor, not an absolute statement about who can wear a fragrance.",
+    "target_for_next_40": {
+      "women_or_feminine_leaning_unisex_minimum": 16,
+      "men_or_masculine_leaning_unisex_minimum": 12,
+      "neutral_unisex_minimum": 6,
+      "flexible_slots": 6
+    }
+  },
+  "promotion_rules": {
+    "score_80_100": "Fast-track candidate after data QA.",
+    "score_65_79": "Good candidate; promote when it fills a catalog gap or has strong merchant coverage.",
+    "score_50_64": "Keep in backlog; needs stronger evidence or clearer portfolio role.",
+    "score_below_50": "Do not prioritize."
+  }
+}
