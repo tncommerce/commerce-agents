@@ -1,0 +1,144 @@
+{
+  "version": 1,
+  "batch": 2,
+  "selected_at": "2026-09-18",
+  "status": "selected_for_verification",
+  "strategy": "Demand/community/trend blend with stronger women's and feminine-unisex coverage.",
+  "audience_mix": {
+    "women_or_feminine_leaning_unisex": 7,
+    "men": 3
+  },
+  "products": [
+    {
+      "candidate_id": "YSL-BLACK-OPIUM-EDP",
+      "rank": 1,
+      "reasons": [
+        "Current Notino top-women/bestseller signal.",
+        "Large Parfumo sample: 7.2/10 from 2,222 ratings at snapshot.",
+        "Important mainstream gourmand/coffee-vanilla women's anchor."
+      ],
+      "sources": [
+        "https://www.notino.de/top-10-damenparfuems/",
+        "https://www.parfumo.de/Parfums/Yves_Saint_Laurent/Black_Opium"
+      ]
+    },
+    {
+      "candidate_id": "CHLOE-CHLOE-EDP",
+      "rank": 2,
+      "reasons": [
+        "Current Notino top-women signal.",
+        "Strong long-running community base: Parfumo 7.5/10 from 1,758 ratings.",
+        "Adds floral-fresh/powdery coverage distinct from gourmand-heavy women's picks."
+      ],
+      "sources": [
+        "https://www.notino.de/top-10-damenparfuems/",
+        "https://www.parfumo.de/Parfums/Chloe/Chloe"
+      ]
+    },
+    {
+      "candidate_id": "LATTAFA-ECLAIRE-EDP",
+      "rank": 3,
+      "reasons": [
+        "High-demand Arabic gourmand/value segment.",
+        "Parfumo 7.7/10 from 1,177 ratings; strong value score.",
+        "Fragrantica 2025 sweetest-fragrance category included Eclaire-related Lattafa momentum."
+      ],
+      "sources": [
+        "https://www.parfumo.de/Parfums/Lattafa/eclaire",
+        "https://www.fragrantica.com/awards2025/"
+      ]
+    },
+    {
+      "candidate_id": "LATTAFA-ANGHAM-EDP",
+      "rank": 4,
+      "reasons": [
+        "Strong early-to-mid maturity Arabic women's signal.",
+        "Parfumo 8.4/10 from 512 ratings and #93 women at snapshot.",
+        "Fragrantica 2025 awards included Angham among best women's fragrances."
+      ],
+      "sources": [
+        "https://www.parfumo.de/Parfums/Lattafa/angham-eau-de-parfum-1",
+        "https://www.fragrantica.com/awards2025/"
+      ]
+    },
+    {
+      "candidate_id": "AMOUAGE-GUIDANCE-46",
+      "rank": 5,
+      "reasons": [
+        "Fragrantica 2025 Best Women's Fragrance winner despite official unisex positioning.",
+        "Parfumo 8.3/10 from 638 ratings with very strong longevity/sillage.",
+        "Adds high-end feminine-leaning unisex niche coverage."
+      ],
+      "sources": [
+        "https://www.fragrantica.com/awards2025/",
+        "https://www.parfumo.de/Parfums/Amouage/guidance-46"
+      ]
+    },
+    {
+      "candidate_id": "PDM-VALAYA-EXCLUSIF",
+      "rank": 6,
+      "reasons": [
+        "Fragrantica 2025 Best Women's Fragrance top-three signal.",
+        "Parfumo 7.9/10 from 524 ratings with 8.4 longevity.",
+        "Adds premium clean/floral/creamy women's profile."
+      ],
+      "sources": [
+        "https://www.fragrantica.com/awards2025/",
+        "https://www.parfumo.de/Parfums/Parfums_de_Marly/valaya-exclusif"
+      ]
+    },
+    {
+      "candidate_id": "KAYALI-YUM-BOUJEE-MARSHMALLOW-81",
+      "rank": 7,
+      "reasons": [
+        "Fragrantica 2025 women's and sweetest-fragrance award visibility.",
+        "Parfumo 8.0/10 from 583 ratings.",
+        "Adds current strawberry-marshmallow gourmand trend coverage."
+      ],
+      "sources": [
+        "https://www.fragrantica.com/awards2025/",
+        "https://www.parfumo.de/Parfums/Kayali/yum-boujee-marshmallow-81"
+      ]
+    },
+    {
+      "candidate_id": "HUGO-BOSS-BOTTLED-ABSOLU",
+      "rank": 8,
+      "reasons": [
+        "Fragrantica 2025 Best Men's Fragrance winner.",
+        "Parfumo 8.4/10 from 1,857 ratings with 8.6 longevity and 8.4 sillage.",
+        "High-confidence modern men's designer addition."
+      ],
+      "sources": [
+        "https://www.fragrantica.com/awards2025/",
+        "https://www.parfumo.de/Parfums/Hugo_Boss/boss-bottled-absolu"
+      ]
+    },
+    {
+      "candidate_id": "YSL-MYSLF-LE-PARFUM",
+      "rank": 9,
+      "reasons": [
+        "Fragrantica 2025 Best Men's Fragrance top-ten signal.",
+        "Parfumo 7.7/10 from 789 ratings.",
+        "Expands MYSLF family beyond the Eau de Parfum candidate."
+      ],
+      "sources": [
+        "https://www.fragrantica.com/awards2025/",
+        "https://www.parfumo.de/Parfums/Yves_Saint_Laurent/myslf-le-parfum"
+      ]
+    },
+    {
+      "candidate_id": "JPG-FLEUR-DU-MALE-2026",
+      "rank": 10,
+      "reasons": [
+        "Fast-track new release: Parfumo lists it as new/notable and among top perfumes of the week.",
+        "Strong early rating signal for a very recent launch.",
+        "Official Jean Paul Gaultier page already verified concentration as Eau de Toilette."
+      ],
+      "sources": [
+        "https://www.parfumo.de/Parfums",
+        "Official Jean Paul Gaultier German product page screenshot supplied by user"
+      ]
+    }
+  ],
+  "promotion_rule": "Selection does not make products live. Identity, size, images, commerce coverage and final metadata must pass QA first."
+}
