@@ -60,6 +60,22 @@ Signals:
   creamy
 - longevity
 
+### Spring
+
+Signals:
+- freshness
+- moderate sweetness
+- floral, fruity, green, citrus and fresh catalog accords
+
+### Autumn
+
+Signals:
+- sweetness
+- woodiness
+- spiciness
+- woody, spicy, sweet, fruity, smoky and oriental catalog accords
+- longevity
+
 ### Office / business
 
 Signals:
@@ -104,6 +120,8 @@ Examples:
 - geringe Süße
 - ausgewogenes Büroprofil
 - warmes Winterprofil
+- frisches Frühlingsprofil
+- warmes Herbstprofil
 - starkes Abendprofil
 - starke Präsenz für Party oder Club
 - ausgewogenes Alltagsprofil
@@ -148,6 +166,8 @@ The recommendation acceptance suite covers:
 - fresh / low-sweetness requests
 - summer intent
 - winter intent
+- spring intent
+- autumn intent
 - office intent
 - party intent
 - everyday intent
