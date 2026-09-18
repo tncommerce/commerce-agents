@@ -1,0 +1,25 @@
+{
+  "provider_name": "replace-with-network-and-merchant",
+  "field_map": {
+    "offer_id": "REPLACE_WITH_EXTERNAL_OFFER_ID_COLUMN",
+    "merchant_product_id": "REPLACE_WITH_EXTERNAL_SKU_COLUMN",
+    "ean": "REPLACE_WITH_EAN_COLUMN_IF_PRESENT",
+    "gtin": "REPLACE_WITH_GTIN_COLUMN_IF_PRESENT",
+    "price": "REPLACE_WITH_PRICE_COLUMN",
+    "shipping_cost": "REPLACE_WITH_SHIPPING_COLUMN_IF_PRESENT",
+    "in_stock": "REPLACE_WITH_STOCK_COLUMN",
+    "variant_label": "REPLACE_WITH_VARIANT_COLUMN_IF_PRESENT",
+    "product_url": "REPLACE_WITH_PRODUCT_URL_COLUMN",
+    "affiliate_url": "REPLACE_WITH_TRACKED_URL_COLUMN",
+    "last_updated_at": "REPLACE_WITH_UPDATED_AT_COLUMN"
+  },
+  "constants": {
+    "merchant": "replace-with-normalized-merchant-key",
+    "merchant_id": "replace-with-merchant-id",
+    "merchant_name": "Replace With Merchant Name",
+    "currency": "EUR",
+    "network": "Awin-or-CJ",
+    "data_source": "replace-with-feed-name"
+  },
+  "note": "Template only. Replace external column names from the actual approved feed sample; SCENTAI does not assume Awin or CJ column names in advance."
+}
