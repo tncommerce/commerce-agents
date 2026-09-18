@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import FragranceOffers from "@/components/FragranceOffers";
+import { trackAnalyticsEvent } from "@/lib/analytics";
 import type { StaticFragrance } from "@/lib/fragranceCatalog";
 
 function formatRating(value: number | null): string {
@@ -119,6 +120,7 @@ export default function FragranceComparisonPicker({
 
   const [leftId, setLeftId] = useState("");
   const [rightId, setRightId] = useState("");
+  const trackedPairRef = useRef<string | null>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -160,6 +162,21 @@ export default function FragranceComparisonPicker({
     left != null &&
     right != null &&
     left.product_id !== right.product_id;
+
+  useEffect(() => {
+    if (!validPair || !left || !right) return;
+
+    const pairKey = `${left.product_id}|${right.product_id}`;
+    if (trackedPairRef.current === pairKey) return;
+
+    trackedPairRef.current = pairKey;
+    void trackAnalyticsEvent("comparison_start", {
+      product_id: left.product_id,
+      related_product_id: right.product_id,
+      source: "comparison_hub",
+      surface: "free_comparison",
+    });
+  }, [left, right, validPair]);
 
   return (
     <section className="mt-8 rounded-3xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) sm:p-5">
@@ -318,12 +335,14 @@ export default function FragranceComparisonPicker({
               productId={left.product_id}
               heading={`Angebote für ${left.name}`}
               trackProductOpen={false}
+              analyticsSurface="free_comparison"
               compact
             />
             <FragranceOffers
               productId={right.product_id}
               heading={`Angebote für ${right.name}`}
               trackProductOpen={false}
+              analyticsSurface="free_comparison"
               compact
             />
           </div>
