@@ -352,12 +352,21 @@ export default function ProductTile({
 export function ProductRow({
   product,
   onAdd,
+  onOpen,
 }: {
   product: Product;
   onAdd?: (product: Product) => boolean | void | Promise<boolean | void>;
+  onOpen?: (product: Product) => void;
 }) {
+  const clickable = Boolean(onOpen);
   return (
-    <div className="flex w-full items-center gap-3 rounded-xl border border-(--line) bg-(--card) p-2 shadow-(--shadow-sm) transition-shadow hover:shadow-md">
+    <div
+      onClick={clickable ? () => onOpen?.(product) : undefined}
+      onKeyDown={clickable ? (event) => event.key === "Enter" && onOpen?.(product) : undefined}
+      role={clickable ? "button" : undefined}
+      tabIndex={clickable ? 0 : undefined}
+      className={`flex w-full items-center gap-3 rounded-xl border border-(--line) bg-(--card) p-2 shadow-(--shadow-sm) transition-shadow hover:shadow-md ${clickable ? "cursor-pointer" : ""}`}
+    >
       <div className="relative shrink-0">
         <ProductImage
           product={product}
@@ -386,6 +395,11 @@ export function ProductRow({
           )}
         </div>
         <DeliveryPromise product={product} />
+        {clickable ? (
+          <div className="mt-0.5 text-[11px] font-medium text-(--accent-ink)">
+            Details ansehen →
+          </div>
+        ) : null}
       </div>
     </div>
   );
