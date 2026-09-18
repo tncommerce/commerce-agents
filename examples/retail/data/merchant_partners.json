@@ -1,0 +1,20 @@
+{
+  "partners": [
+    {
+      "merchant_id": "douglas",
+      "merchant_name": "Douglas",
+      "status": "pending_affiliate_link",
+      "affiliate_url": null,
+      "last_verified_at": null,
+      "description": "Parfum, Beauty und Pflege"
+    },
+    {
+      "merchant_id": "notino",
+      "merchant_name": "Notino",
+      "status": "pending_affiliate_link",
+      "affiliate_url": null,
+      "last_verified_at": null,
+      "description": "Parfum und Beauty"
+    }
+  ]
+}
