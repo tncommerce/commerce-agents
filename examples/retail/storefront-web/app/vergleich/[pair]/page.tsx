@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import FragranceOffers from "@/components/FragranceOffers";
 import {
   EXPLICIT_COMPARISON_PAIRS,
   getComparisonPair,
@@ -333,6 +334,33 @@ export default async function ComparisonPage({
               </a>
             </div>
           ))}
+        </section>
+
+        <section className="mt-5">
+          <div className="mb-3">
+            <h2 className="text-[17px] font-semibold">
+              Aktuelle Händlerangebote
+            </h2>
+            <p className="mt-1 text-[12px] leading-5 text-(--ink-soft)">
+              Preisreferenzen oben dienen dem Duftvergleich. Kaufbare Angebote
+              werden separat auf Aktualität und Verfügbarkeit geprüft.
+            </p>
+          </div>
+
+          <div className="grid gap-4 lg:grid-cols-2">
+            <FragranceOffers
+              productId={left.product_id}
+              heading={`Angebote für ${left.name}`}
+              trackProductOpen={false}
+              compact
+            />
+            <FragranceOffers
+              productId={right.product_id}
+              heading={`Angebote für ${right.name}`}
+              trackProductOpen={false}
+              compact
+            />
+          </div>
         </section>
 
         <section className="mt-5 rounded-2xl border border-(--line) bg-(--well)/45 p-4 text-[10.5px] leading-5 text-(--ink-soft)">
