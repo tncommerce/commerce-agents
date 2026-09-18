@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "updated_at": "2026-09-18",
   "network": "Awin",
   "publisher": "SCENTAI",
@@ -45,5 +45,20 @@
       "applied_at": "2026-09-18"
     }
   ],
-  "programming_note": "Only integrate a merchant into live affiliate routing after the program is approved and a valid tracked-link/feed strategy is available. Affiliate commission must never influence product or merchant ranking."
+  "programming_note": "Only integrate a merchant into live affiliate routing after the program is approved and a valid tracked-link/feed strategy is available. Affiliate commission must never influence product or merchant ranking.",
+  "other_networks": [
+    {
+      "network": "CJ Affiliate",
+      "program": "Notino",
+      "status": "applied_pending",
+      "programming_note": "Integrate only after approval and valid tracking/feed credentials are available."
+    }
+  ],
+  "direct_outreach_candidates": [
+    {
+      "merchant": "Parfum365",
+      "status": "not_applied",
+      "reason": "No verified Awin program found; consider direct partnership outreach later."
+    }
+  ]
 }
