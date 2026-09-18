@@ -101,12 +101,13 @@ export default function DatenschutzPage() {
               <h2 className="font-semibold text-(--ink)">4. Sitzungen und Gesprächsverlauf</h2>
               <p className="mt-1">
                 Für die technische Durchführung einer Beratung erzeugt SCENTAI eine zufällige Sitzungs-ID.
-                Sie ist kein Kundenkonto und keine dauerhafte werbliche Nutzerkennung. Damit eine laufende
-                Nutzung beim Wechsel zwischen Beratung, Duftdetail und Vergleich technisch zusammenhängend
-                bleibt, kann die Sitzungs-ID für die Dauer der Browser-Sitzung im sessionStorage des
-                jeweiligen Tabs gespeichert und an das Backend übermittelt werden. Der Gesprächsverlauf
-                kann für die Dauer der technischen Sitzung im Serverprozess vorgehalten werden. Eine
-                dauerhafte persönliche Duft-Memory-Funktion ist im aktuellen MVP deaktiviert.
+                Sie ist kein Kundenkonto und keine dauerhafte werbliche Nutzerkennung. Der Gesprächsverlauf
+                kann für die Dauer dieser technischen Sitzung im Serverprozess vorgehalten werden. Für die
+                zusammenhängende, pseudonymisierte Nutzungsstatistik beim Wechsel zwischen Beratung,
+                Duftdetail und Vergleich erzeugt SCENTAI zusätzlich eine separate zufällige Analyse-Sitzungskennung.
+                Diese kann für die Dauer der Browser-Sitzung im sessionStorage des jeweiligen Tabs gespeichert
+                werden; die eigentliche technische Beratungs-Sitzungs-ID wird dafür nicht dauerhaft im Browser
+                abgelegt. Eine dauerhafte persönliche Duft-Memory-Funktion ist im aktuellen MVP deaktiviert.
               </p>
             </section>
 
