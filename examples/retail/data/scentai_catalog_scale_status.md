@@ -56,8 +56,11 @@ The existing merchant-offer layer currently contains offers for the already
 live Essential Parfums Bois Impérial product. Those offers do not make any of
 the 30 staging products promotion-ready.
 
-The single existing Notino mapping record for Bois Impérial still has no
-verified SKU/EAN/GTIN and is unrelated to the 30 staging candidates.
+The merchant-mapping file now also contains verified Douglas and flaconi
+product identifiers for the already-live Bois Impérial record. The older
+Notino placeholder for Bois Impérial still has no verified SKU/EAN/GTIN.
+None of these live-product mappings resolves any of the 30 staging candidates,
+so staged resolved mapping coverage remains 0/30.
 
 ## Current blockers
 
