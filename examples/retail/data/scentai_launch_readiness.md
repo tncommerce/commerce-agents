@@ -60,6 +60,9 @@ The sitemap contains:
 - fragrance catalog
 - comparison hub
 - transparency page
+- Duftfinder acquisition page
+- Parfum-Alternativen acquisition page
+- Parfum-Geschenkberater acquisition page
 - all live fragrance detail pages
 - all documented explicit comparison pages
 
@@ -206,7 +209,7 @@ list. Custom deployment hosts outside Render must also be trusted explicitly.
 Repository audit on 2026-09-18:
 - 32 live fragrance pages
 - 18 documented explicit comparison pages
-- 54 generated sitemap routes including core pages
+- 57 generated sitemap routes including acquisition pages
 - 32/32 live fragrances have source-data rows
 - 32/32 live fragrances have local product images
 - no duplicate live fragrance slugs
@@ -221,6 +224,8 @@ The following do not change recommendation ranking and are not technical
 launch blockers:
 - pending affiliate-program approvals
 - incomplete affiliate monetization coverage
+- no active merchant-level affiliate hub yet; the homepage keeps that module
+  hidden until a verified general partner link is configured
 - a custom domain, provided the final canonical Render URL is intentionally
   used
 
