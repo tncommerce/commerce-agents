@@ -31,12 +31,14 @@ from .agent_config import build_shopping_config
 from .analytics import AnalyticsEventRequest, FirstPartyAnalyticsTracker
 from .merchant import create_merchant_router
 from .merchant_offers import MerchantClickoutTracker, MerchantOfferStore, customer_offer_payload
+from .merchant_partners import MerchantPartnerStore, customer_partner_payload
 from .mock_retail import DATA_DIR, MockRetail
 
 load_demo_env(DATA_DIR.parent)
 PRODUCT_IMAGES = DATA_DIR.parent / "storefront-web" / "public" / "products"
 
 offer_store = MerchantOfferStore(DATA_DIR / "merchant_offers.json")
+partner_store = MerchantPartnerStore(DATA_DIR / "merchant_partners.json")
 clickout_tracker = MerchantClickoutTracker(DATA_DIR / ".merchant_clickouts.jsonl")
 analytics_tracker = FirstPartyAnalyticsTracker(DATA_DIR / ".analytics_events.jsonl")
 backend = MockRetail(offer_store=offer_store)
@@ -86,6 +88,39 @@ async def health() -> dict:
         "ok": True,
         "service": "scentai-api",
     }
+
+
+@app.get("/api/merchant-partners")
+async def merchant_partners() -> dict:
+    partners = partner_store.active()
+
+    return {
+        "partners": [
+            customer_partner_payload(partner)
+            for partner in partners
+        ],
+        "affiliate_disclosure": (
+            "Bei Käufen über Partnerlinks kann SCENTAI eine Provision erhalten. "
+            "Die Händlerauswahl beeinflusst nicht die Duftempfehlung."
+        ),
+    }
+
+
+@app.get("/api/merchant-partners/{merchant_id}/clickout")
+async def merchant_partner_clickout(
+    merchant_id: str,
+) -> RedirectResponse:
+    partner = partner_store.eligible(merchant_id)
+    if partner is None or partner.affiliate_url is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Merchant partner not available",
+        )
+
+    return RedirectResponse(
+        url=partner.affiliate_url,
+        status_code=302,
+    )
 
 
 @app.get("/api/merchant-offers/{product_id}")
