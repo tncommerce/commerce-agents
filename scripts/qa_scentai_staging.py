@@ -214,7 +214,7 @@ async def exact_name_search_issues(
     issues = []
     session = ShoppingSessionContext(
         session_id="staging-exact-name-qa",
-        user_id=None,
+        user_id="scentai-qa",
     )
 
     for row in staging.get("products", []):
@@ -236,7 +236,7 @@ async def typo_search_issues(
     issues = []
     session = ShoppingSessionContext(
         session_id="staging-typo-qa",
-        user_id=None,
+        user_id="scentai-qa",
     )
 
     for product_id, query in TYPO_CASES.items():
