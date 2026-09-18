@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "name": "SCENTAI Catalog Selection Policy",
   "target_live_catalog_size": 150,
   "purpose": "Select high-demand, high-quality, commercially useful fragrances without relying on a single retailer or community.",
@@ -9,7 +9,8 @@
     "Use multiple independent demand signals when available.",
     "Keep women's and feminine-leaning unisex coverage as an explicit portfolio objective.",
     "Prefer products that improve recommendation coverage, price comparison, or original-vs-alternative clusters.",
-    "Never invent sales counts when retailers only expose bestseller ordering or labels."
+    "Never invent sales counts when retailers only expose bestseller ordering or labels.",
+    "First-party SCENTAI demand may reprioritize research but never bypass evidence, QA, or live-promotion gates."
   ],
   "score": {
     "scale": "0-100",
@@ -49,7 +50,47 @@
         "Fragrantica current awards",
         "retailer trend pages",
         "SCENTAI analytics"
-      ]
+      ],
+      "first_party_demand": {
+        "purpose": "Use privacy-minimized SCENTAI catalog search demand as one verified input to the existing trend_momentum component.",
+        "maximum_component_points": 10,
+        "scoring": {
+          "search_frequency": {
+            "maximum_points": 4,
+            "thresholds": {
+              "2_searches": 1,
+              "5_searches": 2,
+              "10_searches": 3,
+              "20_searches": 4
+            }
+          },
+          "unique_session_proxy": {
+            "maximum_points": 3,
+            "thresholds": {
+              "2_sessions": 1,
+              "5_sessions": 2,
+              "10_sessions": 3
+            },
+            "note": "Aggregated search rows cannot safely deduplicate the same anonymous session across multiple terms, so candidate aggregation uses the strongest matched term's unique-session count as a conservative proxy."
+          },
+          "no_result_pressure": {
+            "maximum_points": 3,
+            "thresholds": {
+              "1_no_result": 1,
+              "3_no_results": 2,
+              "7_no_results": 3
+            }
+          }
+        },
+        "integration_rule": "Demand can raise trend_momentum only up to the existing 10-point cap. It never adds points outside the 0-100 policy weights.",
+        "privacy_rule": "Only privacy-minimized catalog search analytics may be used. Do not use prompts, IP addresses, emails, customer names, or raw personal data.",
+        "guardrails": [
+          "One user's repeated search activity must not be treated as broad market demand.",
+          "First-party demand does not replace retailer or community evidence.",
+          "A no-result search can raise research priority but cannot create or verify a product identity.",
+          "Demand ranking never includes affiliate commission."
+        ]
+      }
     },
     "portfolio_fit": {
       "description": "Fill gaps in audience, season, occasion, price tier, scent family, and original/alternative clusters.",
@@ -110,6 +151,17 @@
       "Exact product identity, concentration and size still require verification.",
       "Early hype must be rechecked after the initial launch window.",
       "Do not compare raw scores across communities without accounting for scale and vote count."
+    ]
+  },
+  "research_priority": {
+    "purpose": "Order the not-yet-staged candidate research queue without changing live-promotion eligibility.",
+    "rules": [
+      "Exclude candidates already present in the verified staging catalog.",
+      "If verified selection_score_components exist, use the demand-adjusted 0-100 selection score, with demand constrained to trend_momentum.",
+      "If no numeric selection score exists, keep the demand score separate rather than fabricating missing external evidence.",
+      "Use demand only as a deterministic queue/tie-break signal when external selection evidence is otherwise equal.",
+      "Surface high-demand search terms that match no existing candidate as new research opportunities.",
+      "Research priority is not publication approval."
     ]
   }
 }
