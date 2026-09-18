@@ -9,6 +9,7 @@ import CartPanel from "@/components/CartPanel";
 import Chat from "@/components/Chat";
 import HomeView from "@/components/views/HomeView";
 import { api, UNREACHABLE } from "@/lib/api";
+import { advisorStartPrompt } from "@/lib/advisorStarts";
 import { trackAnalyticsEvent } from "@/lib/analytics";
 import type { CartPayload } from "@/lib/types";
 
@@ -36,6 +37,7 @@ export default function StorefrontPage() {
   const [panelOpen, setPanelOpen] = useState(false);
   const analyticsSessionRef = useRef<string | null>(null);
   const consultationTrackedRef = useRef(false);
+  const guidedStartRef = useRef<string | null>(null);
 
   const handleCartUpdate = useCallback((next: CartPayload) => {
     setCart(next);
@@ -58,11 +60,45 @@ export default function StorefrontPage() {
     consultationTrackedRef.current = false;
     void trackAnalyticsEvent("page_view", { source: "storefront" });
   }, [session.sessionId]);
+  useEffect(() => {
+    if (
+      !session.sessionId ||
+      chat.busy ||
+      chat.turnCount > 0 ||
+      guidedStartRef.current
+    ) {
+      return;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const startKey = params.get("start");
+    const prompt = advisorStartPrompt(startKey);
+
+    if (!startKey || !prompt) return;
+
+    guidedStartRef.current = startKey;
+    window.history.replaceState(
+      {},
+      "",
+      window.location.pathname,
+    );
+    void chat.send(prompt);
+  }, [
+    chat.busy,
+    chat.send,
+    chat.turnCount,
+    session.sessionId,
+  ]);
+
 
   useEffect(() => {
     if (!session.sessionId || chat.turnCount < 1 || consultationTrackedRef.current) return;
     consultationTrackedRef.current = true;
-    void trackAnalyticsEvent("consultation_start", { source: "advisor" });
+    void trackAnalyticsEvent("consultation_start", {
+      source: guidedStartRef.current
+        ? `advisor_start_${guidedStartRef.current}`
+        : "advisor",
+    });
   }, [chat.turnCount, session.sessionId]);
 
   useEffect(() => {
