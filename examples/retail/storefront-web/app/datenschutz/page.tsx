@@ -109,26 +109,32 @@ export default function DatenschutzPage() {
             </section>
 
             <section>
-              <h2 className="font-semibold text-(--ink)">5. Händlerlinks und Clickout-Messung</h2>
+              <h2 className="font-semibold text-(--ink)">5. Nutzungsstatistik und Händlerlinks</h2>
               <p className="mt-1">
-                Wenn du einen Händlerlink öffnest, protokolliert SCENTAI für die technische und
-                wirtschaftliche Auswertung des MVP einen anonymen Clickout-Datensatz. Dieser enthält
-                insbesondere Zeitpunkt, Angebot, Produkt, Händler, Netzwerk und die Information, ob ein
-                Partnerlink verwendet wurde. In diesem Clickout-Datensatz wird keine Nutzer-ID gespeichert.
+                Für die interne Produktverbesserung erfasst SCENTAI im MVP wenige eigene Nutzungsereignisse,
+                zum Beispiel Seitenaufruf, Start einer Beratung, Öffnen einer Produktansicht und Händler-Clickout.
+                Dabei werden keine Beratungstexte, Namen, E-Mail-Adressen oder Browser-Fingerprints in den
+                Analyse-Datensatz geschrieben. Die technische Sitzungs-ID wird vor der Speicherung in einen
+                verkürzten Einweg-Hash umgewandelt, damit Ereignisse innerhalb einer Sitzung zusammengefasst
+                werden können, ohne die ursprüngliche Sitzungs-ID im Analyseprotokoll zu speichern.
               </p>
               <p className="mt-2">
-                Auf der Website des jeweiligen Händlers gelten anschließend dessen eigene Datenschutz- und
-                Trackingregeln. Partnerlinks werden bei SCENTAI entsprechend gekennzeichnet.
+                Zusätzlich protokolliert SCENTAI beim Öffnen eines Händlerlinks einen Clickout-Datensatz mit
+                Zeitpunkt, Angebot, Produkt, Händler, Netzwerk und der Information, ob ein Partnerlink verwendet
+                wurde. Der eigentliche Kauf findet beim Händler statt. Auf dessen Website gelten anschließend
+                die dortigen Datenschutz- und Trackingregeln. Partnerlinks werden bei SCENTAI entsprechend
+                gekennzeichnet.
               </p>
             </section>
 
             <section>
               <h2 className="font-semibold text-(--ink)">6. Cookies und Tracking</h2>
               <p className="mt-1">
-                SCENTAI setzt derzeit keine eigenen nicht notwendigen Analyse- oder Marketing-Cookies und
-                keine Werbetracker wie Google Analytics oder Meta Pixel ein. Sollten später zusätzliche
-                Tracking- oder Marketingtechnologien eingesetzt werden, wird diese Datenschutzerklärung
-                angepasst und – soweit erforderlich – vorab eine Einwilligung eingeholt.
+                SCENTAI setzt derzeit keine Google-Analytics-, Meta-Pixel- oder vergleichbaren externen
+                Werbetracker ein und verwendet für die oben beschriebene interne Nutzungsstatistik keine
+                dauerhafte werbliche Nutzerkennung. Sollten später zusätzliche Tracking-, Marketing- oder
+                Drittanbieter-Analyseverfahren eingesetzt werden, wird diese Datenschutzerklärung angepasst
+                und – soweit erforderlich – vorab eine Einwilligung eingeholt.
               </p>
             </section>
 
@@ -137,8 +143,9 @@ export default function DatenschutzPage() {
               <p className="mt-1">
                 Soweit die Verarbeitung erforderlich ist, um die von dir angeforderte SCENTAI-Beratung
                 bereitzustellen, erfolgt sie auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO. Technische
-                Sicherheits-, Betriebs- und Missbrauchsschutzmaßnahmen sowie die interne Auswertung
-                anonymisierter Händler-Clickouts stützen wir, soweit personenbezogene Daten betroffen sind,
+                Sicherheits-, Betriebs- und Missbrauchsschutzmaßnahmen sowie die datensparsame interne
+                Auswertung pseudonymisierter Nutzungsereignisse und Händler-Clickouts stützen wir, soweit
+                personenbezogene Daten betroffen sind und kein vorrangiges Einwilligungserfordernis besteht,
                 auf unser berechtigtes Interesse an einem sicheren, funktionsfähigen und wirtschaftlich
                 betreibbaren Dienst gemäß Art. 6 Abs. 1 lit. f DSGVO.
               </p>
