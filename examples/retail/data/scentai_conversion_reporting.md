@@ -87,6 +87,8 @@ Current surface labels include:
 - `advisor_comparison_card`
 - `free_comparison`
 - `documented_comparison`
+- `merchant_discovery`
+- `acquisition_landing`
 
 These labels let SCENTAI distinguish where a clickout or comparison happened
 without recording the user's prompt.
@@ -151,6 +153,33 @@ Shows which storefront surfaces produce merchant clickouts:
 - distinct products clicked
 - distinct merchants clicked
 
+### scentai_acquisition_funnel
+
+Measures first-party acquisition landing performance:
+- landing sessions
+- consultations started after the landing
+- recommendation sessions
+- detail views
+- comparisons
+- merchant clickouts
+- landing-to-consultation rate
+- consultation-to-recommendation rate
+- landing-to-clickout rate
+
+Current landing sources are privacy-safe identifiers such as
+`duftfinder`, `parfum_alternativen` and
+`parfum_geschenkberater`.
+
+Optional channel attribution is allowlisted. Supported `src` values:
+- `tiktok`
+- `instagram`
+- `youtube`
+- `organic`
+- `newsletter`
+- `partner`
+
+Arbitrary `src` values are ignored rather than copied into analytics.
+
 The pseudonymized event table and reporting views are hosted in SCENTAI's
 Supabase project. Public RLS policies are not enabled for the analytics table;
 writes use the server-side secret/service-role credential.
@@ -196,6 +225,9 @@ python scripts/report_scentai_conversion.py --minimum-sample-sessions 20
   fragrance data.
 - Small samples are directional only.
 - A clickout is not the same as a completed purchase.
+- Merchant-level clickouts may lead to purchases beyond the originally viewed
+  fragrance, but attribution and commission eligibility remain defined by the
+  partner network and merchant program.
 - SCENTAI must not describe clickout rate as sales conversion unless a future
   merchant/network source provides verified order attribution.
 
