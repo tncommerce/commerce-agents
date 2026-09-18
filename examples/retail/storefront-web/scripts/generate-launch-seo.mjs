@@ -141,6 +141,9 @@ const routes = [
   "/",
   "/duft",
   "/vergleich",
+  "/duftfinder",
+  "/parfum-alternativen",
+  "/parfum-geschenkberater",
   "/transparenz",
   ...[...liveById.values()].map(
     (product) => `/duft/${product.slug}`,
