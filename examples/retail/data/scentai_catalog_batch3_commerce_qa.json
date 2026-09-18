@@ -1,0 +1,161 @@
+{
+  "version": 1,
+  "batch": 3,
+  "checked_at": "2026-09-18",
+  "status": "commerce_coverage_verified_with_one_identity_blocker",
+  "note": "Non-affiliate QA snapshot. Do not hard-code observed prices into live offers; use current approved feeds/tracking links later.",
+  "products": [
+    {
+      "candidate_id": "DIOR-HYPNOTIC-POISON-EDT",
+      "canonical_size_ml": 100,
+      "merchants": [
+        {
+          "merchant": "Douglas",
+          "status": "in_stock"
+        },
+        {
+          "merchant": "flaconi",
+          "status": "in_stock"
+        }
+      ],
+      "coverage_count": 2
+    },
+    {
+      "candidate_id": "GUERLAIN-MON-GUERLAIN-EDP",
+      "canonical_size_ml": 100,
+      "merchants": [
+        {
+          "merchant": "Douglas",
+          "status": "in_stock"
+        },
+        {
+          "merchant": "flaconi",
+          "status": "listed"
+        }
+      ],
+      "coverage_count": 2
+    },
+    {
+      "candidate_id": "AMOUAGE-REFLECTION-MAN-EDP",
+      "canonical_size_ml": 100,
+      "merchants": [
+        {
+          "merchant": "Douglas",
+          "status": "in_stock"
+        },
+        {
+          "merchant": "flaconi",
+          "status": "in_stock"
+        }
+      ],
+      "coverage_count": 2
+    },
+    {
+      "candidate_id": "YSL-LA-NUIT-DE-LHOMME-EDT",
+      "canonical_size_ml": 100,
+      "merchants": [
+        {
+          "merchant": "Douglas",
+          "status": "in_stock"
+        },
+        {
+          "merchant": "flaconi",
+          "status": "in_stock"
+        }
+      ],
+      "coverage_count": 2
+    },
+    {
+      "candidate_id": "DOLCE-GABBANA-THE-ONE-MEN-EDP",
+      "canonical_size_ml": 100,
+      "merchants": [
+        {
+          "merchant": "Dolce & Gabbana",
+          "status": "current_product_available"
+        },
+        {
+          "merchant": "Douglas",
+          "status": "current_reimagined_product_listed"
+        }
+      ],
+      "coverage_count": 2,
+      "identity_blocker": "Current retailer/brand copy describes a renewed or reimagined The One for Men Eau de Parfum, while the high-volume Parfumo community snapshot is explicitly for the 2015 version. Do not merge the 2015 community ratings into the current retail offer until exact version/formula identity is resolved."
+    },
+    {
+      "candidate_id": "DIOR-SAUVAGE-ELIXIR",
+      "canonical_size_ml": 100,
+      "merchants": [
+        {
+          "merchant": "Douglas",
+          "status": "in_stock"
+        },
+        {
+          "merchant": "flaconi",
+          "status": "in_stock"
+        }
+      ],
+      "coverage_count": 2
+    },
+    {
+      "candidate_id": "PDM-HEROD-EDP",
+      "canonical_size_ml": 125,
+      "merchants": [
+        {
+          "merchant": "Douglas",
+          "status": "in_stock"
+        }
+      ],
+      "coverage_count": 1
+    },
+    {
+      "candidate_id": "INITIO-SIDE-EFFECT-EDP",
+      "canonical_size_ml": 90,
+      "merchants": [
+        {
+          "merchant": "Douglas",
+          "status": "in_stock"
+        },
+        {
+          "merchant": "flaconi",
+          "status": "in_stock"
+        }
+      ],
+      "coverage_count": 2
+    },
+    {
+      "candidate_id": "TOM-FORD-OMBRE-LEATHER-EDP",
+      "canonical_size_ml": 100,
+      "merchants": [
+        {
+          "merchant": "Douglas",
+          "status": "listed"
+        }
+      ],
+      "coverage_count": 1
+    },
+    {
+      "candidate_id": "NISHANE-ANI-EXTRAIT",
+      "canonical_size_ml": 100,
+      "merchants": [
+        {
+          "merchant": "Douglas",
+          "status": "in_stock"
+        }
+      ],
+      "coverage_count": 1
+    }
+  ],
+  "gate_summary": {
+    "community_scent_snapshot_verified": 10,
+    "at_least_one_german_merchant_verified": 10,
+    "at_least_two_merchants_verified": 7,
+    "identity_blockers": 1,
+    "affiliate_links_ready": 0,
+    "approved_feed_images_ready": 0
+  },
+  "next_actions": [
+    "Resolve The One for Men Eau de Parfum version identity before live publication.",
+    "Replace QA merchant evidence with approved affiliate feeds/current tracking links.",
+    "Use approved feed/manufacturer imagery before live promotion."
+  ]
+}
