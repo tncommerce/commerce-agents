@@ -369,10 +369,20 @@ export function ProductRow({
   onOpen?: (product: Product) => void;
 }) {
   const clickable = Boolean(onOpen);
+  const openProduct = () => {
+    if (String(product.product_id).startsWith("SC-")) {
+      void trackAnalyticsEvent("product_open", {
+        product_id: product.product_id,
+        source: "product_row",
+      });
+    }
+    onOpen?.(product);
+  };
+
   return (
     <div
-      onClick={clickable ? () => onOpen?.(product) : undefined}
-      onKeyDown={clickable ? (event) => event.key === "Enter" && onOpen?.(product) : undefined}
+      onClick={clickable ? openProduct : undefined}
+      onKeyDown={clickable ? (event) => event.key === "Enter" && openProduct() : undefined}
       role={clickable ? "button" : undefined}
       tabIndex={clickable ? 0 : undefined}
       className={`flex w-full items-center gap-3 rounded-xl border border-(--line) bg-(--card) p-2 shadow-(--shadow-sm) transition-shadow hover:shadow-md ${clickable ? "cursor-pointer" : ""}`}
