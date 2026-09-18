@@ -115,6 +115,25 @@ type AnalyticsContext = {
   item_position?: number;
 };
 
+async function postAnalyticsPayload(
+  payload: Record<string, unknown>,
+): Promise<boolean> {
+  try {
+    const response = await fetch(
+      `${api.base}/analytics/events`,
+      {
+        method: "POST",
+        headers: api.headers(true),
+        body: JSON.stringify(payload),
+        keepalive: true,
+      },
+    );
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
 async function sendAnalyticsEvent(
   event: AnalyticsEventName,
   context: AnalyticsContext,
@@ -134,16 +153,13 @@ async function sendAnalyticsEvent(
     analytics_session_id: analyticsContextId(),
   };
 
-  const recorded = await api.post<{ ok?: boolean }>(
-    "/analytics/events",
-    payload,
-  );
+  const recorded = await postAnalyticsPayload(payload);
 
   // A Render restart can invalidate an API session created only for a
   // standalone analytics page. Retry once with a new API session, but never
   // replace an active advisor session owned by the storefront.
   if (
-    recorded === null &&
+    !recorded &&
     analyticsOwnedApiSession === apiSessionId
   ) {
     api.session = null;
@@ -152,7 +168,7 @@ async function sendAnalyticsEvent(
     const freshSession = await ensureApiSession();
     if (!freshSession) return;
 
-    await api.post("/analytics/events", payload);
+    await postAnalyticsPayload(payload);
   }
 }
 
