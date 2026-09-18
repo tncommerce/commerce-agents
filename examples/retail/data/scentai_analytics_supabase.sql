@@ -214,21 +214,27 @@ qualified as (
     *,
     consultation_at is not null as consultation,
     recommendation_at is not null
-      and (
-        consultation_at is null
-        or recommendation_at >= consultation_at
-      ) as recommendation,
+      and consultation_at is not null
+      and recommendation_at >= consultation_at as recommendation,
     advisor_open_at is not null
       and recommendation_at is not null
+      and consultation_at is not null
+      and recommendation_at >= consultation_at
       and advisor_open_at >= recommendation_at as advisor_open,
     detail_view_at is not null
       and recommendation_at is not null
+      and consultation_at is not null
+      and recommendation_at >= consultation_at
       and detail_view_at >= recommendation_at as detail_view,
     comparison_at is not null
       and recommendation_at is not null
+      and consultation_at is not null
+      and recommendation_at >= consultation_at
       and comparison_at >= recommendation_at as comparison,
     clickout_at is not null
       and recommendation_at is not null
+      and consultation_at is not null
+      and recommendation_at >= consultation_at
       and clickout_at >= recommendation_at as clickout
   from session_stage
 )
