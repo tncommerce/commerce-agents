@@ -134,6 +134,12 @@ export default function HomeView({
           </a>
           <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">Preise & Community-Bewertungen</span>
           <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">Empfehlungen nach Budget & Duftprofil</span>
+          <a
+            href="/vergleich"
+            className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5 font-medium text-(--accent-ink) hover:border-(--accent)"
+          >
+            Parfumvergleiche
+          </a>
         </div>
       ) : null}
       {picks.length ? (
