@@ -123,24 +123,134 @@ function normalize(value: string): string {
     .trim();
 }
 
+const TARGET_SEARCH_TERMS: Record<string, string[]> = {
+  men: ["men", "male", "mann", "maenner", "herren"],
+  women: ["women", "female", "frau", "frauen", "damen"],
+  unisex: ["unisex"],
+};
+
+const PROFILE_SEARCH_TERMS: Record<
+  Exclude<ProfileFilter, "all">,
+  string[]
+> = {
+  freshness: ["freshness", "fresh", "frisch"],
+  sweetness: ["sweetness", "sweet", "suess", "suss"],
+  woodiness: ["woodiness", "woody", "wood", "holzig"],
+  spiciness: ["spiciness", "spicy", "spice", "wuerzig", "wurzig"],
+};
+
+function searchTokens(search: string): string[] {
+  return normalize(search)
+    .split(/\s+/)
+    .filter(Boolean);
+}
+
+function searchDocument(
+  fragrance: StaticFragrance,
+): string {
+  const targetTerms = fragrance.target_groups.flatMap(
+    (target) =>
+      TARGET_SEARCH_TERMS[target.toLowerCase()] || [target],
+  );
+
+  const profileTerms = (
+    Object.keys(PROFILE_SEARCH_TERMS) as Exclude<
+      ProfileFilter,
+      "all"
+    >[]
+  ).flatMap((profile) =>
+    (fragrance.scores[profile] ?? 0) >= 7
+      ? PROFILE_SEARCH_TERMS[profile]
+      : [],
+  );
+
+  const accordTerms = fragrance.accords.flatMap(
+    (accord) => [
+      accord,
+      accordLabel(accord),
+    ],
+  );
+
+  return normalize(
+    [
+      fragrance.brand,
+      fragrance.name,
+      fragrance.title,
+      fragrance.concentration,
+      ...targetTerms,
+      ...profileTerms,
+      ...accordTerms,
+      ...fragrance.notes.top,
+      ...fragrance.notes.heart,
+      ...fragrance.notes.base,
+    ].join(" "),
+  );
+}
+
+function searchScore(
+  fragrance: StaticFragrance,
+  search: string,
+): number {
+  const tokens = searchTokens(search);
+
+  if (!tokens.length) return 0;
+
+  const document = searchDocument(fragrance);
+
+  if (!tokens.every((token) => document.includes(token))) {
+    return -1;
+  }
+
+  const brand = normalize(fragrance.brand);
+  const name = normalize(fragrance.name);
+  const title = normalize(fragrance.title);
+  const phrase = normalize(search);
+
+  let score = 0;
+
+  if (brand === phrase || name === phrase) score += 30;
+  if (name.startsWith(phrase)) score += 16;
+  if (brand.startsWith(phrase)) score += 14;
+  if (title.includes(phrase)) score += 10;
+
+  for (const token of tokens) {
+    if (name.split(/\s+/).some((word) => word.startsWith(token))) {
+      score += 7;
+    }
+    if (brand.split(/\s+/).some((word) => word.startsWith(token))) {
+      score += 6;
+    }
+    if (
+      fragrance.accords.some((accord) =>
+        normalize(
+          `${accord} ${accordLabel(accord)}`,
+        ).includes(token),
+      )
+    ) {
+      score += 3;
+    }
+    if (
+      fragrance.target_groups.some((target) =>
+        normalize(
+          (
+            TARGET_SEARCH_TERMS[target.toLowerCase()] ||
+            [target]
+          ).join(" "),
+        ).includes(token),
+      )
+    ) {
+      score += 3;
+    }
+  }
+
+  return score;
+}
+
 function matchesSearch(
   fragrance: StaticFragrance,
   search: string,
 ): boolean {
-  const needle = normalize(search);
-
-  if (!needle) return true;
-
-  const haystack = normalize(
-    [
-      fragrance.brand,
-      fragrance.name,
-      fragrance.concentration,
-      ...fragrance.accords,
-    ].join(" "),
-  );
-
-  return haystack.includes(needle);
+  return searchScore(fragrance, search) >= 0;
 }
 
 function matchesProfile(
@@ -213,6 +323,14 @@ export default function FragranceCatalogBrowser({
             minimum,
       )
       .sort((a, b) => {
+        if (search.trim()) {
+          const relevance =
+            searchScore(b, search) -
+            searchScore(a, search);
+
+          if (relevance) return relevance;
+        }
+
         if (sort === "rating") {
           return (
             (b.community.rating_10 ?? 0) -
@@ -302,7 +420,7 @@ export default function FragranceCatalogBrowser({
         <div className="grid gap-3 md:grid-cols-[1fr_auto] md:items-end">
           <label className="block">
             <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.07em] text-(--ink-soft)">
-              Duft oder Marke
+              Duft, Marke oder Profil
             </span>
             <input
               type="search"
@@ -310,7 +428,7 @@ export default function FragranceCatalogBrowser({
               onChange={(event) =>
                 setSearch(event.target.value)
               }
-              placeholder="z. B. Prada, Naxos, Imagination …"
+              placeholder="z. B. Prada Herren frisch, Naxos würzig …"
               className="h-11 w-full rounded-xl border border-(--line) bg-(--surface) px-3 text-[13px] text-(--ink) outline-none transition placeholder:text-(--ink-soft)/70 focus:border-(--accent)"
             />
           </label>
