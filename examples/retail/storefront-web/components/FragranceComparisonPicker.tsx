@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import FragranceOffers from "@/components/FragranceOffers";
 import type { StaticFragrance } from "@/lib/fragranceCatalog";
@@ -119,6 +119,33 @@ export default function FragranceComparisonPicker({
 
   const [leftId, setLeftId] = useState("");
   const [rightId, setRightId] = useState("");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const requestedLeft = params.get("left") || "";
+    const requestedRight = params.get("right") || "";
+
+    if (
+      requestedLeft &&
+      sorted.some(
+        (fragrance) =>
+          fragrance.product_id === requestedLeft,
+      )
+    ) {
+      setLeftId(requestedLeft);
+    }
+
+    if (
+      requestedRight &&
+      requestedRight !== requestedLeft &&
+      sorted.some(
+        (fragrance) =>
+          fragrance.product_id === requestedRight,
+      )
+    ) {
+      setRightId(requestedRight);
+    }
+  }, [sorted]);
 
   const left =
     sorted.find(
