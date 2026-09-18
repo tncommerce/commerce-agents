@@ -95,14 +95,14 @@ class FirstPartyAnalyticsTracker:
         *,
         session_id: str,
         event: AnalyticsEventName,
-        product_id: str | None,
-        source: str | None,
-        search_term: str | None,
-        result_count: int | None,
-        surface: str | None,
-        related_product_id: str | None,
-        item_position: int | None,
-        now: datetime | None,
+        product_id: str | None = None,
+        source: str | None = None,
+        search_term: str | None = None,
+        result_count: int | None = None,
+        surface: str | None = None,
+        related_product_id: str | None = None,
+        item_position: int | None = None,
+        now: datetime | None = None,
     ) -> dict:
         occurred_at = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
         return {
