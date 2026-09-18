@@ -20,6 +20,74 @@ def target_groups(value: str | None) -> list[str]:
     ]
 
 
+PROFILE_WEIGHTS = {
+    "freshness": {
+        "fresh": 3.0,
+        "citrus": 3.0,
+        "aquatic": 3.0,
+        "green": 2.5,
+        "fruity": 1.5,
+        "floral": 1.0,
+        "aromatic": 1.5,
+        "white floral": 1.0,
+    },
+    "sweetness": {
+        "sweet": 3.0,
+        "gourmand": 3.0,
+        "creamy": 2.0,
+        "powdery": 1.5,
+        "fruity": 1.5,
+        "oriental": 1.0,
+        "resinous": 0.5,
+    },
+    "woodiness": {
+        "woody": 3.0,
+        "leathery": 2.5,
+        "smoky": 2.5,
+        "resinous": 2.0,
+        "oriental": 1.0,
+        "spicy": 0.5,
+    },
+    "spiciness": {
+        "spicy": 3.0,
+        "oriental": 1.5,
+        "woody": 0.5,
+        "resinous": 0.5,
+    },
+}
+
+
+def recommendation_profile(accords: list[str]) -> dict:
+    """Deterministic internal retrieval profile from verified accords.
+
+    These values are editorial search features, not community ratings or
+    laboratory measurements. Keeping the mapping deterministic avoids
+    inventing product-specific precision by hand.
+    """
+
+    normalized = {
+        str(accord).strip().casefold()
+        for accord in accords
+        if str(accord).strip()
+    }
+
+    scores = {}
+    for axis, weights in PROFILE_WEIGHTS.items():
+        value = 2.0 + sum(
+            weight
+            for term, weight in weights.items()
+            if term in normalized
+        )
+        scores[axis] = int(round(min(10.0, max(1.0, value))))
+
+    return {
+        "scores": scores,
+        "source": "deterministic_editorial_mapping_v1",
+        "confidence": "medium",
+        "customer_facing": False,
+    }
+
+
 def main() -> int:
     queue = load_json(
         DATA_DIR / "scentai_catalog_promotion_queue.json"
@@ -92,6 +160,12 @@ def main() -> int:
                         "community_accords": community.get(
                             "main_accords",
                             [],
+                        ),
+                        "recommendation_profile": recommendation_profile(
+                            community.get(
+                                "main_accords",
+                                [],
+                            )
                         ),
                     },
                     "community": {
