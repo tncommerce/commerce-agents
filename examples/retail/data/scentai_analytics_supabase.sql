@@ -45,3 +45,46 @@ alter table public.scentai_analytics_events enable row level security;
 create index if not exists scentai_analytics_events_search_idx
   on public.scentai_analytics_events (event, search_term)
   where event in ('catalog_search', 'catalog_no_results');
+
+create or replace view public.scentai_catalog_search_demand
+with (security_invoker = true)
+as
+select
+  search_term,
+  count(*) filter (
+    where event = 'catalog_search'
+  ) as search_events,
+  count(*) filter (
+    where event = 'catalog_no_results'
+  ) as no_result_events,
+  count(distinct session_key) as unique_sessions,
+  round(avg(result_count)::numeric, 2) as avg_result_count,
+  max(occurred_at) as last_searched_at
+from public.scentai_analytics_events
+where event in ('catalog_search', 'catalog_no_results')
+  and search_term is not null
+group by search_term;
+
+create or replace view public.scentai_product_engagement
+with (security_invoker = true)
+as
+select
+  product_id,
+  count(*) filter (
+    where event = 'product_open'
+  ) as product_opens,
+  count(*) filter (
+    where event = 'merchant_clickout'
+  ) as merchant_clickouts,
+  count(distinct session_key) filter (
+    where event = 'product_open'
+  ) as opening_sessions,
+  count(distinct session_key) filter (
+    where event = 'merchant_clickout'
+  ) as clickout_sessions,
+  max(occurred_at) as last_event_at
+from public.scentai_analytics_events
+where product_id is not null
+  and event in ('product_open', 'merchant_clickout')
+group by product_id;
+
