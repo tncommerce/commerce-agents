@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "updated_at": "2026-09-18",
   "status": "promotion_queue_active",
   "live_catalog_count": 32,
@@ -24,13 +24,13 @@
     "multi_merchant_coverage": 20,
     "affiliate_links_ready": 0,
     "approved_images_ready": 0,
-    "unresolved_identity_version_blockers": 1
+    "unresolved_identity_version_blockers": 0
   },
   "blocker_counts": {
     "affiliate_link_pending": 30,
     "approved_product_image_pending": 30,
-    "community_performance_still_provisional": 1,
-    "identity_version": 1
+    "community_performance_still_provisional": 2,
+    "identity_version": 0
   },
   "candidates": [
     {
@@ -518,9 +518,9 @@
       "candidate_id": "DOLCE-GABBANA-THE-ONE-MEN-EDP",
       "batch": 3,
       "batch_rank": 5,
-      "proposed_product_id": "SC-DOLCE-GABBANA-THE-ONE-MEN-EDP-100",
+      "proposed_product_id": "SC-DOLCE-GABBANA-THE-ONE-MEN-EDP-2025-100",
       "brand": "Dolce & Gabbana",
-      "canonical_name": "The One for Men",
+      "canonical_name": "The One for Men (2025)",
       "concentration": "Eau de Parfum",
       "volume_ml": 100,
       "target_group": "men",
@@ -529,9 +529,9 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 2,
       "blockers": [
-        "identity_version",
         "affiliate_link_pending",
-        "approved_product_image_pending"
+        "approved_product_image_pending",
+        "community_performance_still_provisional"
       ],
       "ready_for_live": false
     },
@@ -637,10 +637,10 @@
     }
   ],
   "next_actions": [
-    "Pause new catalog batches until this promotion pipeline is operational.",
-    "Resolve the The One for Men Eau de Parfum version blocker.",
+    "Pause new catalog batches until the promotion pipeline is operational.",
     "Record affiliate approvals as they arrive and map each approved merchant to feed/link ingestion.",
     "Ingest approved product imagery and merchant offers.",
-    "Promote products in small live batches with search/recommendation QA after each promotion."
+    "Promote products in small live batches with search/recommendation QA after each promotion.",
+    "Recheck provisional community-performance data for very new/reformulated releases before publishing performance claims."
   ]
 }
