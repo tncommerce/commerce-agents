@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 
+import FragranceComparisonPicker from "@/components/FragranceComparisonPicker";
 import {
   EXPLICIT_COMPARISON_PAIRS,
+  LIVE_FRAGRANCES,
 } from "@/lib/fragranceCatalog";
 
 export const metadata: Metadata = {
@@ -65,7 +67,22 @@ export default function ComparisonIndexPage() {
           {EXPLICIT_COMPARISON_PAIRS.length} dokumentierte Vergleiche
         </div>
 
-        <section className="mt-7 grid gap-3 sm:grid-cols-2">
+        <FragranceComparisonPicker
+          fragrances={LIVE_FRAGRANCES}
+        />
+
+        <div className="mt-9">
+          <h2 className="text-[20px] font-semibold">
+            Dokumentierte Duftbeziehungen
+          </h2>
+          <p className="mt-1 max-w-2xl text-[12px] leading-5 text-(--ink-soft)">
+            Diese Paare haben zusätzlich eine im SCENTAI-Katalog
+            dokumentierte Beziehung wie inspiriert, Alternative oder sehr
+            naher Duftstil.
+          </p>
+        </div>
+
+        <section className="mt-5 grid gap-3 sm:grid-cols-2">
           {EXPLICIT_COMPARISON_PAIRS.map((pair) => (
             <a
               key={pair.pair_slug}
