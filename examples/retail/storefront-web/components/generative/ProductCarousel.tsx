@@ -396,6 +396,7 @@ export default function ProductCarousel({
   onAdd?: (product: Product) => boolean | void | Promise<boolean | void>;
   partial?: boolean;
 }) {
+  const { ask } = useStoreFrame();
   const layout = payload.layout ?? "carousel";
   const items = payload.items ?? [];
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -476,6 +477,19 @@ export default function ProductCarousel({
           />
         ))}
         {partial ? <div className="ac-skeleton h-20 rounded-xl" /> : null}
+        {!partial && items.length >= 4 ? (
+          <button
+            type="button"
+            onClick={() =>
+              ask(
+                "Zeige mir weitere passende Düfte unter denselben Bedingungen. Wiederhole keine bereits gezeigten Düfte.",
+              )
+            }
+            className="w-full rounded-xl border border-(--line) bg-(--card) px-3 py-2.5 text-[13px] font-semibold text-(--ink) transition hover:border-(--accent)"
+          >
+            Weitere passende Düfte anzeigen
+          </button>
+        ) : null}
       </div>
 
       <div className="relative hidden sm:block">
