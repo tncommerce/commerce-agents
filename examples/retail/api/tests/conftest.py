@@ -41,6 +41,8 @@ def extra_public_routes() -> set[str]:
     return {
         "/api/merchant-offers/{product_id}",
         "/api/clickout/{offer_id}",
+        "/api/merchant-partners",
+        "/api/merchant-partners/{partner_key}/clickout",
     }
 
 
