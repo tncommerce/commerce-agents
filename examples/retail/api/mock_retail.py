@@ -1402,10 +1402,7 @@ class MockRetail(StorefrontBackend):
             "ersatz",
             "instead",
         )
-        asks_for_alternative = any(
-            marker in query_lower
-            for marker in alternative_markers
-        )
+        asks_for_alternative = any(marker in query_lower for marker in alternative_markers)
 
         # Conservative direct-name lookup for short, name-like requests.
         # This runs before generic recommendation logic so a typo such as
@@ -1439,10 +1436,7 @@ class MockRetail(StorefrontBackend):
             word for word in normalized_query.split() if word not in generic_query_words
         ]
 
-        if (
-            not asks_for_alternative
-            and 1 <= len(direct_query_words) <= 5
-        ):
+        if not asks_for_alternative and 1 <= len(direct_query_words) <= 5:
             direct_matches = []
 
             for candidate in products:
