@@ -195,7 +195,8 @@ list. Custom deployment hosts outside Render must also be trusted explicitly.
 
 1. Deploy the candidate release and require a green Render build.
 2. Check `/api/health`.
-3. Smoke-test advisor, catalog, detail page, comparison and merchant clickout.
+3. Smoke-test homepage, acquisition pages, advisor, catalog, detail page,
+   comparison and merchant clickout.
 4. Run `npm run launch:check:strict` with the production environment.
 5. Resolve every remaining strict gate.
 6. Set the final canonical `NEXT_PUBLIC_SITE_URL`.
