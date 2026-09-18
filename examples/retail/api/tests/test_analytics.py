@@ -6,6 +6,7 @@ from pathlib import Path
 from retail.api.analytics import (
     AnalyticsEventRequest,
     FirstPartyAnalyticsTracker,
+    sanitize_catalog_search_term,
 )
 
 
@@ -53,3 +54,24 @@ def test_tracker_row_contains_search_fields(tmp_path: Path) -> None:
     assert row["result_count"] == 2
     assert row["source"] == "catalog_filter"
     assert row["session_key"] != "session-123"
+
+
+def test_search_term_sanitizer_normalizes_safe_queries() -> None:
+    assert (
+        sanitize_catalog_search_term("  Prada   Herren FRISCH ")
+        == "prada herren frisch"
+    )
+
+
+def test_search_term_sanitizer_rejects_email_like_input() -> None:
+    assert (
+        sanitize_catalog_search_term("name@example.com")
+        is None
+    )
+
+
+def test_search_term_sanitizer_rejects_long_number_input() -> None:
+    assert (
+        sanitize_catalog_search_term("+49 171 1234567")
+        is None
+    )
