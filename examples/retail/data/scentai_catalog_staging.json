@@ -31,7 +31,18 @@
           "creamy",
           "floral",
           "spicy"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 3,
+            "sweetness": 10,
+            "woodiness": 3,
+            "spiciness": 5
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
@@ -87,7 +98,18 @@
           "sweet",
           "woody",
           "spicy"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 7,
+            "sweetness": 7,
+            "woodiness": 6,
+            "spiciness": 6
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
@@ -141,7 +163,18 @@
           "powdery",
           "oriental",
           "woody"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 2,
+            "sweetness": 8,
+            "woodiness": 7,
+            "spiciness": 7
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
@@ -197,7 +230,18 @@
           "fruity",
           "gourmand",
           "powdery"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 5,
+            "sweetness": 10,
+            "woodiness": 2,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
@@ -253,7 +297,18 @@
           "fresh",
           "powdery",
           "synthetic"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 6,
+            "sweetness": 6,
+            "woodiness": 2,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
@@ -311,7 +366,18 @@
           "sweet",
           "fresh",
           "creamy"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 8,
+            "sweetness": 9,
+            "woodiness": 2,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
@@ -366,7 +432,18 @@
           "creamy",
           "spicy",
           "woody"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 2,
+            "sweetness": 9,
+            "woodiness": 6,
+            "spiciness": 6
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
@@ -419,7 +496,18 @@
           "fruity",
           "synthetic",
           "fresh"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 8,
+            "sweetness": 7,
+            "woodiness": 2,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
@@ -475,7 +563,18 @@
           "oriental",
           "gourmand",
           "woody"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 2,
+            "sweetness": 9,
+            "woodiness": 7,
+            "spiciness": 7
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
@@ -528,7 +627,18 @@
           "fresh",
           "creamy",
           "citrus"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 9,
+            "sweetness": 7,
+            "woodiness": 2,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
@@ -591,7 +701,18 @@
           "creamy",
           "fruity",
           "spicy"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 5,
+            "sweetness": 9,
+            "woodiness": 3,
+            "spiciness": 5
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
@@ -649,7 +770,18 @@
           "powdery",
           "sweet",
           "fruity"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 8,
+            "sweetness": 8,
+            "woodiness": 2,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
@@ -705,7 +837,18 @@
           "woody",
           "leathery",
           "resinous"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 2,
+            "sweetness": 6,
+            "woodiness": 10,
+            "spiciness": 6
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
@@ -769,7 +912,18 @@
           "citrus",
           "woody",
           "sweet"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 10,
+            "sweetness": 5,
+            "woodiness": 5,
+            "spiciness": 3
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
@@ -832,7 +986,18 @@
           "fruity",
           "creamy",
           "powdery"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 4,
+            "sweetness": 10,
+            "woodiness": 2,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
@@ -893,7 +1058,18 @@
           "creamy",
           "gourmand",
           "spicy"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 3,
+            "sweetness": 10,
+            "woodiness": 3,
+            "spiciness": 5
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
@@ -952,7 +1128,18 @@
           "creamy",
           "synthetic",
           "powdery"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 2,
+            "sweetness": 10,
+            "woodiness": 2,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
@@ -1011,7 +1198,18 @@
           "powdery",
           "fresh",
           "sweet"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 6,
+            "sweetness": 9,
+            "woodiness": 2,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
@@ -1068,7 +1266,18 @@
           "floral",
           "oriental",
           "spicy"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 3,
+            "sweetness": 9,
+            "woodiness": 4,
+            "spiciness": 7
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
@@ -1122,7 +1331,18 @@
           "fresh",
           "woody",
           "synthetic"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 6,
+            "sweetness": 5,
+            "woodiness": 5,
+            "spiciness": 3
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
@@ -1183,7 +1403,18 @@
           "sweet",
           "powdery",
           "woody"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 6,
+            "sweetness": 7,
+            "woodiness": 5,
+            "spiciness": 3
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
@@ -1236,7 +1467,18 @@
           "gourmand",
           "powdery",
           "spicy"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 2,
+            "sweetness": 10,
+            "woodiness": 4,
+            "spiciness": 7
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
@@ -1294,7 +1536,18 @@
           "sweet",
           "fresh",
           "synthetic"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 5,
+            "sweetness": 5,
+            "woodiness": 6,
+            "spiciness": 6
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
@@ -1353,7 +1606,18 @@
           "sweet",
           "citrus",
           "resinous"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 5,
+            "sweetness": 6,
+            "woodiness": 8,
+            "spiciness": 6
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
@@ -1408,7 +1672,18 @@
           "powdery",
           "creamy",
           "gourmand"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 3,
+            "sweetness": 10,
+            "woodiness": 2,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
@@ -1464,7 +1739,18 @@
           "oriental",
           "gourmand",
           "woody"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 2,
+            "sweetness": 9,
+            "woodiness": 7,
+            "spiciness": 7
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
@@ -1528,7 +1814,18 @@
           "gourmand",
           "creamy",
           "citrus"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 5,
+            "sweetness": 10,
+            "woodiness": 3,
+            "spiciness": 5
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
@@ -1588,7 +1885,18 @@
           "oriental",
           "gourmand",
           "woody"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 2,
+            "sweetness": 9,
+            "woodiness": 7,
+            "spiciness": 7
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
@@ -1644,7 +1952,18 @@
           "sweet",
           "woody",
           "smoky"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 2,
+            "sweetness": 5,
+            "woodiness": 10,
+            "spiciness": 6
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
@@ -1698,7 +2017,18 @@
           "woody",
           "oriental",
           "fresh"
-        ]
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 5,
+            "sweetness": 6,
+            "woodiness": 7,
+            "spiciness": 7
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
       },
       "community": {
         "source": "Parfumo",
