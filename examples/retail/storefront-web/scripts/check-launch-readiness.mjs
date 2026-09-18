@@ -229,14 +229,23 @@ add(
 
 const activeMerchantPartners = (
   merchantPartners.partners || []
-).filter(
-  (partner) =>
+).filter((partner) => {
+  const verifiedAt = Date.parse(
+    partner.last_verified_at || "",
+  );
+  const ageHours = Number.isFinite(verifiedAt)
+    ? (now - verifiedAt) / 3_600_000
+    : Number.POSITIVE_INFINITY;
+
+  return (
     partner.status === "active" &&
     validHttpUrl(
       String(partner.affiliate_url || ""),
     ) &&
-    partner.last_verified_at,
-);
+    ageHours >= 0 &&
+    ageHours <= 720
+  );
+});
 add(
   activeMerchantPartners.length ? "pass" : "warn",
   "merchant_level_affiliate_links",
