@@ -14,6 +14,9 @@ const instrumentSans = Instrument_Sans({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  applicationName: "SCENTAI",
+  creator: "TNCommerce",
+  publisher: "TNCommerce",
   title: {
     default: "SCENTAI – Duftberatung & Parfumvergleich",
     template: "%s | SCENTAI",
@@ -50,10 +53,28 @@ export const metadata: Metadata = {
   },
 };
 
+const websiteStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "SCENTAI",
+  url: SITE_URL,
+  inLanguage: "de-DE",
+  description:
+    "Duftberatung, Parfumvergleich und transparente Händlerangebote.",
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="de" className={instrumentSans.variable}>
-      <body>{children}</body>
+      <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(websiteStructuredData),
+          }}
+        />
+        {children}
+      </body>
     </html>
   );
 }
