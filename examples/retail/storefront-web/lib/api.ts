@@ -2,7 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { AgentApi } from "web-shared";
-import type { CartPayload, MerchantOffersPayload, Product, ProductDetails } from "./types";
+import type {
+  CartPayload,
+  MerchantOffersPayload,
+  MerchantPartnersPayload,
+  Product,
+  ProductDetails,
+} from "./types";
 
 const configuredApiUrl =
   process.env.NEXT_PUBLIC_API_URL?.trim();
@@ -52,6 +58,18 @@ export function fetchMerchantOffers(productId: string): Promise<MerchantOffersPa
 
 export function merchantClickoutUrl(path: string): string {
   return `${API_URL}${path}`;
+}
+
+export function fetchMerchantPartners(): Promise<MerchantPartnersPayload | null> {
+  return api.get<MerchantPartnersPayload>("/merchant-partners");
+}
+
+export function merchantPartnerClickoutUrl(
+  merchantId: string,
+): string {
+  return `${API_URL}/api/merchant-partners/${encodeURIComponent(
+    merchantId,
+  )}/clickout`;
 }
 
 export async function addToCart(productId: string, quantity = 1): Promise<CartPayload | null> {
