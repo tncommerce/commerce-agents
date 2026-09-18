@@ -1,7 +1,12 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+
 // Copyright 2026 Anthropic PBC
 // SPDX-License-Identifier: Apache-2.0
 
 import { formatMoney } from "web-shared";
+import { trackAnalyticsEvent } from "@/lib/analytics";
 import { fragrancePathForProduct } from "@/lib/fragranceSlug";
 import type { ComparisonPayload } from "@/lib/types";
 import { ProductImage, ProductTitle, ProductRating } from "../ProductTile";
@@ -68,6 +73,25 @@ export default function ComparisonGrid({
           comparableScentaiEntries[1].product_id,
         )}`
       : null;
+  const trackedPairRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (partial || comparableScentaiEntries.length !== 2) return;
+
+    const left = comparableScentaiEntries[0].product_id;
+    const right = comparableScentaiEntries[1].product_id;
+    const pairKey = `${left}|${right}`;
+
+    if (trackedPairRef.current === pairKey) return;
+    trackedPairRef.current = pairKey;
+
+    void trackAnalyticsEvent("comparison_start", {
+      product_id: left,
+      related_product_id: right,
+      source: "advisor",
+      surface: "advisor_comparison_card",
+    });
+  }, [comparableScentaiEntries, partial]);
 
   return (
     <section className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm)">
