@@ -589,9 +589,14 @@ class MockRetail(StorefrontBackend):
             )
         )
 
-        if wants_summer and freshness is not None and sweetness is not None:
-            if freshness >= 8 and sweetness <= 6:
-                signals.append("frisches Sommerprofil")
+        if (
+            wants_summer
+            and freshness is not None
+            and sweetness is not None
+            and freshness >= 8
+            and sweetness <= 6
+        ):
+            signals.append("frisches Sommerprofil")
 
         if wants_winter:
             warm_values = [
@@ -645,20 +650,21 @@ class MockRetail(StorefrontBackend):
             ):
                 signals.append("warmes Herbstprofil")
 
-        if wants_office and all(
-            value is not None
-            for value in (
-                freshness,
-                sweetness,
-                projection,
+        if (
+            wants_office
+            and all(
+                value is not None
+                for value in (
+                    freshness,
+                    sweetness,
+                    projection,
+                )
             )
+            and freshness >= 6
+            and sweetness <= 5
+            and projection <= 7.5
         ):
-            if (
-                freshness >= 6
-                and sweetness <= 5
-                and projection <= 7.5
-            ):
-                signals.append("ausgewogenes Büroprofil")
+            signals.append("ausgewogenes Büroprofil")
 
         if wants_date and longevity is not None:
             warm_values = [
@@ -695,22 +701,23 @@ class MockRetail(StorefrontBackend):
                 "everyday",
             )
         )
-        if wants_everyday and all(
-            value is not None
-            for value in (
-                freshness,
-                sweetness,
-                projection,
-                longevity,
+        if (
+            wants_everyday
+            and all(
+                value is not None
+                for value in (
+                    freshness,
+                    sweetness,
+                    projection,
+                    longevity,
+                )
             )
+            and freshness >= 5
+            and sweetness <= 7
+            and 6.0 <= projection <= 7.8
+            and longevity >= 7.0
         ):
-            if (
-                freshness >= 5
-                and sweetness <= 7
-                and 6.0 <= projection <= 7.8
-                and longevity >= 7.0
-            ):
-                signals.append("ausgewogenes Alltagsprofil")
+            signals.append("ausgewogenes Alltagsprofil")
 
         if avoids_sweet and sweetness is not None and sweetness <= 4:
             signals.append("geringe Süße")
@@ -1359,12 +1366,15 @@ class MockRetail(StorefrontBackend):
             )
             preference_score += (party_energy / 10.0) * 1.0
 
-        if wants_everyday and longevity is not None:
-            if longevity >= 7.0:
-                preference_score += min(
-                    1.5,
-                    (longevity - 6.5) * 0.75,
-                )
+        if (
+            wants_everyday
+            and longevity is not None
+            and longevity >= 7.0
+        ):
+            preference_score += min(
+                1.5,
+                (longevity - 6.5) * 0.75,
+            )
 
         wants_longevity = any(
             term in query_text
