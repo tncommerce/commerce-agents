@@ -201,6 +201,20 @@ list. Custom deployment hosts outside Render must also be trusted explicitly.
 9. Verify `/robots.txt` and `/sitemap.xml`.
 10. Begin public distribution only after the post-deploy smoke test passes.
 
+## Audited baseline for this hardening pass
+
+Repository audit on 2026-09-18:
+- 32 live fragrance pages
+- 18 documented explicit comparison pages
+- 54 generated sitemap routes including core pages
+- 32/32 live fragrances have source-data rows
+- 32/32 live fragrances have local product images
+- no duplicate live fragrance slugs
+- at least one customer-eligible merchant offer is fresh after the launch
+  verification pass
+- affiliate-link coverage remains commercially incomplete and is intentionally
+  reported as a warning rather than allowed to affect recommendations
+
 ## Current intentional non-blockers
 
 The following do not change recommendation ranking and are not technical
