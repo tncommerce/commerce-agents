@@ -209,3 +209,40 @@ Important:
 Offer import remains a separate dry-run/write workflow through
 `import_merchant_feed.py`.
 
+## Affiliate feed preflight
+
+Before importing any newly approved CJ/Awin feed, run a read-only
+technical preflight first:
+
+```powershell
+python -m retail.api.preflight_merchant_feed --feed PATH_TO_FEED.csv --provider-config PATH_TO_PROVIDER_CONFIG.json
+```
+
+The preflight does not modify SCENTAI data. It checks every adapted feed row
+for:
+- merchant product identifier: SKU, EAN or GTIN
+- valid positive price and three-letter currency
+- parseable stock value
+- valid product URL
+- parseable update timestamp
+- affiliate/tracking URL
+- product image URL
+- canonical merchant/source metadata required by the importer
+
+Statuses:
+- `READY` / exit 0: every row is offer-import ready and also has a usable
+  affiliate link plus image URL
+- `REVIEW` / exit 10: offer data is importable, but one or more rows still
+  lack usable promotion assets such as tracking links or product images
+- `BLOCKED` / exit 20: one or more rows fail core import requirements such
+  as identifier, price, stock, product URL or timestamp
+
+For automation:
+
+```powershell
+python -m retail.api.preflight_merchant_feed --feed PATH_TO_FEED.csv --provider-config PATH_TO_PROVIDER_CONFIG.json --machine-readable
+```
+
+Only after a satisfactory preflight should the normal merchant import dry-run
+and the separate feed-image extraction be executed.
+
