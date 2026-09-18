@@ -1,9 +1,7 @@
 import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
+import GuidedAdvisorLink from "@/components/GuidedAdvisorLink";
 import LegalFooter from "@/components/LegalFooter";
-import {
-  advisorStartHref,
-  type AdvisorStartKey,
-} from "@/lib/advisorStarts";
+import type { AdvisorStartKey } from "@/lib/advisorStarts";
 
 type SecondaryStart = {
   key: AdvisorStartKey;
@@ -63,12 +61,12 @@ export default function AcquisitionLanding({
           </p>
 
           <div className="mt-6 flex flex-wrap gap-2.5">
-            <a
-              href={advisorStartHref(primaryStart)}
+            <GuidedAdvisorLink
+              start={primaryStart}
               className="rounded-xl bg-(--accent-strong) px-4 py-2.5 text-[13px] font-semibold text-white transition hover:brightness-95"
             >
               {primaryLabel}
-            </a>
+            </GuidedAdvisorLink>
             <a
               href="/duft"
               className="rounded-xl border border-(--line-strong) bg-(--surface) px-4 py-2.5 text-[13px] font-semibold text-(--ink) transition hover:border-(--accent)"
@@ -80,13 +78,13 @@ export default function AcquisitionLanding({
           {secondaryStarts.length ? (
             <div className="mt-4 flex flex-wrap gap-2">
               {secondaryStarts.map((item) => (
-                <a
+                <GuidedAdvisorLink
                   key={item.key}
-                  href={advisorStartHref(item.key)}
+                  start={item.key}
                   className="rounded-full border border-(--line) bg-(--well)/45 px-3 py-1.5 text-[11.5px] font-medium text-(--accent-ink) hover:border-(--accent)"
                 >
                   {item.label}
-                </a>
+                </GuidedAdvisorLink>
               ))}
             </div>
           ) : null}
