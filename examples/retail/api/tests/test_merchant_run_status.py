@@ -1,4 +1,4 @@
-﻿from retail.api.merchant_run_reports import build_import_run_report
+from retail.api.merchant_run_reports import build_import_run_report
 from retail.api.merchant_run_status import (
     evaluate_import_run,
     machine_readable_result,

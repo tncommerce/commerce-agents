@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 from uuid import uuid4
@@ -41,12 +41,12 @@ class MerchantOffer(BaseModel):
 
 def _as_utc(value: datetime) -> datetime:
     if value.tzinfo is None:
-        return value.replace(tzinfo=timezone.utc)
-    return value.astimezone(timezone.utc)
+        return value.replace(tzinfo=UTC)
+    return value.astimezone(UTC)
 
 
 def offer_age_hours(offer: MerchantOffer, *, now: datetime | None = None) -> float:
-    reference = _as_utc(now or datetime.now(timezone.utc))
+    reference = _as_utc(now or datetime.now(UTC))
     checked = _as_utc(offer.last_updated_at)
     return max((reference - checked).total_seconds() / 3600.0, 0.0)
 
@@ -84,7 +84,7 @@ def rank_offers(
     Commission is never used as a ranking signal.
     """
 
-    reference = _as_utc(now or datetime.now(timezone.utc))
+    reference = _as_utc(now or datetime.now(UTC))
     eligible = [
         offer
         for offer in offers
@@ -154,9 +154,7 @@ class MerchantOfferStore:
         now: datetime | None = None,
         max_age_hours: float = 72.0,
     ) -> list[MerchantOffer]:
-        matches = [
-            offer for offer in self._load() if offer.product_id == product_id
-        ]
+        matches = [offer for offer in self._load() if offer.product_id == product_id]
         return rank_offers(
             matches,
             now=now,
@@ -197,7 +195,7 @@ class MerchantClickoutTracker:
 
     def record(self, offer: MerchantOffer, *, now: datetime | None = None) -> str:
         click_id = str(uuid4())
-        occurred_at = _as_utc(now or datetime.now(timezone.utc))
+        occurred_at = _as_utc(now or datetime.now(UTC))
         event = {
             "click_id": click_id,
             "occurred_at": occurred_at.isoformat(),

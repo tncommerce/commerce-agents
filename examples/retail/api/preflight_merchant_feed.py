@@ -16,7 +16,6 @@ from .merchant_providers import (
     register_provider_adapter,
 )
 
-
 STATUS_EXIT_CODES = {
     "ready": 0,
     "review": 10,
@@ -87,9 +86,7 @@ def main() -> int:
 
     if args.provider_config is not None:
         try:
-            adapter = load_mapped_provider_adapter(
-                args.provider_config
-            )
+            adapter = load_mapped_provider_adapter(args.provider_config)
             register_provider_adapter(
                 adapter,
                 replace=True,
@@ -100,9 +97,7 @@ def main() -> int:
             ValueError,
             json.JSONDecodeError,
         ) as exc:
-            parser.error(
-                f"Invalid provider config: {exc}"
-            )
+            parser.error(f"Invalid provider config: {exc}")
 
     rows = adapt_provider_rows(
         provider_name,
@@ -141,14 +136,8 @@ def main() -> int:
         if report["issues"]:
             print("Issue preview:")
             for issue in report["issues"][:10]:
-                import_failures = (
-                    ", ".join(issue["import_failures"])
-                    or "-"
-                )
-                promotion_failures = (
-                    ", ".join(issue["promotion_failures"])
-                    or "-"
-                )
+                import_failures = ", ".join(issue["import_failures"]) or "-"
+                promotion_failures = ", ".join(issue["promotion_failures"]) or "-"
                 print(
                     f"  row={issue['row_index']} | "
                     f"offer={issue['offer_id'] or '-'} | "

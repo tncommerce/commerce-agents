@@ -5,13 +5,8 @@ import json
 from datetime import UTC, datetime
 from pathlib import Path
 
-
-DEFAULT_STAGING = Path(
-    "examples/retail/data/scentai_catalog_staging.json"
-)
-DEFAULT_CANDIDATES = Path(
-    "examples/retail/data/merchant_feed_image_candidates.json"
-)
+DEFAULT_STAGING = Path("examples/retail/data/scentai_catalog_staging.json")
+DEFAULT_CANDIDATES = Path("examples/retail/data/merchant_feed_image_candidates.json")
 
 APPROVED_IMAGE_STATUSES = {
     "approved_feed_image",
@@ -53,25 +48,16 @@ def approval_plan(
     if candidate is None:
         raise ValueError("review_candidate_not_found")
 
-    status = str(
-        candidate.get("review_status") or ""
-    ).strip()
+    status = str(candidate.get("review_status") or "").strip()
     if status not in {
         "pending_review",
         "approved",
     }:
-        raise ValueError(
-            f"candidate_not_approvable:{status or 'missing_status'}"
-        )
+        raise ValueError(f"candidate_not_approvable:{status or 'missing_status'}")
 
     products = staging.get("products", [])
     product = next(
-        (
-            row
-            for row in products
-            if str(row.get("product_id") or "").strip()
-            == product_id
-        ),
+        (row for row in products if str(row.get("product_id") or "").strip() == product_id),
         None,
     )
 
@@ -79,17 +65,10 @@ def approval_plan(
         raise ValueError("staging_product_not_found")
 
     media = product.get("media", {})
-    current_url = str(
-        media.get("image_url") or ""
-    ).strip()
-    current_status = str(
-        media.get("image_status") or ""
-    ).strip()
+    current_url = str(media.get("image_url") or "").strip()
+    current_status = str(media.get("image_status") or "").strip()
 
-    already_same = (
-        current_url == image_url
-        and current_status == "approved_feed_image"
-    )
+    already_same = current_url == image_url and current_status == "approved_feed_image"
 
     if (
         current_url
@@ -97,9 +76,7 @@ def approval_plan(
         and current_status in APPROVED_IMAGE_STATUSES
         and not replace_approved_image
     ):
-        raise ValueError(
-            "approved_image_already_exists_use_replace_flag"
-        )
+        raise ValueError("approved_image_already_exists_use_replace_flag")
 
     return {
         "product_id": product_id,
@@ -123,8 +100,7 @@ def apply_approval(
     product = next(
         row
         for row in staging.get("products", [])
-        if str(row.get("product_id") or "").strip()
-        == product_id
+        if str(row.get("product_id") or "").strip() == product_id
     )
     media = dict(product.get("media", {}))
     media.update(
@@ -139,10 +115,8 @@ def apply_approval(
     candidate = next(
         row
         for row in candidates_payload.get("candidates", [])
-        if str(row.get("product_id") or "").strip()
-        == product_id
-        and str(row.get("image_url") or "").strip()
-        == image_url
+        if str(row.get("product_id") or "").strip() == product_id
+        and str(row.get("image_url") or "").strip() == image_url
     )
     candidate["review_status"] = "approved"
     candidate["reviewed_at"] = reviewed_at
@@ -163,8 +137,7 @@ def write_json(path: Path, payload: dict) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Approve one reviewed affiliate-feed product image "
-            "for a staged SCENTAI fragrance."
+            "Approve one reviewed affiliate-feed product image for a staged SCENTAI fragrance."
         )
     )
     parser.add_argument(
@@ -188,18 +161,12 @@ def main() -> int:
     parser.add_argument(
         "--replace-approved-image",
         action="store_true",
-        help=(
-            "Allow replacement of an already approved image. "
-            "Never enabled by default."
-        ),
+        help=("Allow replacement of an already approved image. Never enabled by default."),
     )
     parser.add_argument(
         "--write",
         action="store_true",
-        help=(
-            "Apply the approval. Without this flag the command "
-            "is a dry-run."
-        ),
+        help=("Apply the approval. Without this flag the command is a dry-run."),
     )
     parser.add_argument(
         "--machine-readable",
@@ -215,9 +182,7 @@ def main() -> int:
             candidates,
             product_id=args.product_id,
             image_url=args.image_url,
-            replace_approved_image=(
-                args.replace_approved_image
-            ),
+            replace_approved_image=(args.replace_approved_image),
         )
     except (
         OSError,

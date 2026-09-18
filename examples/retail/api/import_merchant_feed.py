@@ -7,14 +7,20 @@ from pathlib import Path
 from .merchant_feed_guard import (
     find_duplicate_offer_ids,
 )
-from .merchant_feed_snapshot import (
-    changed_snapshot_files,
-    file_sha256,
-)
 from .merchant_feed_reader import (
     DEFAULT_MAX_FEED_BYTES,
     DEFAULT_MAX_FEED_ROWS,
     read_merchant_feed_rows,
+)
+from .merchant_feed_snapshot import (
+    changed_snapshot_files,
+    file_sha256,
+)
+from .merchant_import import (
+    analyze_offer_changes,
+    import_feed_rows,
+    load_product_mappings,
+    upsert_offers_file,
 )
 from .merchant_provider_contract import (
     validate_provider_contract_rows,
@@ -24,29 +30,18 @@ from .merchant_providers import (
     load_mapped_provider_adapter,
     register_provider_adapter,
 )
-
 from .merchant_run_reports import (
     append_import_run_report,
     build_import_run_report,
 )
-
 from .merchant_run_status import (
     evaluate_import_run,
     machine_readable_result,
 )
 
-from .merchant_import import (
-    analyze_offer_changes,
-    import_feed_rows,
-    load_product_mappings,
-    upsert_offers_file,
-)
-
 
 def main() -> int:
-    parser = argparse.ArgumentParser(
-        description="Import merchant feed rows into SCENTAI."
-    )
+    parser = argparse.ArgumentParser(description="Import merchant feed rows into SCENTAI.")
     parser.add_argument("--feed", type=Path, required=True)
     parser.add_argument(
         "--mappings",
@@ -93,10 +88,7 @@ def main() -> int:
         "--feed-format",
         choices=("auto", "json", "csv"),
         default="auto",
-        help=(
-            "Input feed format. Defaults to automatic "
-            "detection from the file extension."
-        ),
+        help=("Input feed format. Defaults to automatic detection from the file extension."),
     )
     parser.add_argument(
         "--max-feed-bytes",
@@ -134,10 +126,7 @@ def main() -> int:
         "--run-report",
         type=Path,
         default=None,
-        help=(
-            "Optional JSONL audit log path. "
-            "Defaults next to the merchant offers file."
-        ),
+        help=("Optional JSONL audit log path. Defaults next to the merchant offers file."),
     )
     parser.add_argument(
         "--machine-readable",
@@ -147,13 +136,9 @@ def main() -> int:
 
     args = parser.parse_args()
 
-    if (
-        (args.authoritative_merchant_id is None)
-        != (args.authoritative_data_source is None)
-    ):
+    if (args.authoritative_merchant_id is None) != (args.authoritative_data_source is None):
         parser.error(
-            "--authoritative-merchant-id and "
-            "--authoritative-data-source must be provided together"
+            "--authoritative-merchant-id and --authoritative-data-source must be provided together"
         )
 
     try:
@@ -170,46 +155,33 @@ def main() -> int:
 
     if args.provider_config is not None:
         try:
-            adapter = load_mapped_provider_adapter(
-                args.provider_config
-            )
+            adapter = load_mapped_provider_adapter(args.provider_config)
             register_provider_adapter(
                 adapter,
                 replace=True,
             )
             provider_name = adapter.provider_name
         except (OSError, ValueError, json.JSONDecodeError) as exc:
-            parser.error(
-                f"Invalid provider config: {exc}"
-            )
+            parser.error(f"Invalid provider config: {exc}")
 
     adapted_rows = adapt_provider_rows(
         provider_name,
         raw_rows,
     )
 
-    contract = validate_provider_contract_rows(
-        adapted_rows
-    )
+    contract = validate_provider_contract_rows(adapted_rows)
 
     rows = contract.rows
 
-    duplicate_offer_ids = find_duplicate_offer_ids(
-        rows
-    )
+    duplicate_offer_ids = find_duplicate_offer_ids(rows)
 
     if duplicate_offer_ids:
-        preview = ", ".join(
-            duplicate_offer_ids[:10]
-        )
+        preview = ", ".join(duplicate_offer_ids[:10])
 
         if len(duplicate_offer_ids) > 10:
             preview += ", ..."
 
-        parser.error(
-            "Duplicate offer_id values in merchant feed: "
-            + preview
-        )
+        parser.error("Duplicate offer_id values in merchant feed: " + preview)
 
     feed_sha256 = file_sha256(args.feed)
     mappings_sha256 = file_sha256(args.mappings)
@@ -232,14 +204,10 @@ def main() -> int:
         for issue in contract.invalid
     ]
 
-    combined_invalid.extend(
-        row.model_dump(mode="json")
-        for row in result.invalid
-    )
+    combined_invalid.extend(row.model_dump(mode="json") for row in result.invalid)
 
     authoritative = (
-        args.authoritative_merchant_id is not None
-        and args.authoritative_data_source is not None
+        args.authoritative_merchant_id is not None and args.authoritative_data_source is not None
     )
 
     if (
@@ -268,8 +236,7 @@ def main() -> int:
 
     if changed_snapshots:
         parser.error(
-            "Merchant import snapshot changed during processing: "
-            + ", ".join(changed_snapshots)
+            "Merchant import snapshot changed during processing: " + ", ".join(changed_snapshots)
         )
 
     if args.dry_run:
@@ -285,12 +252,7 @@ def main() -> int:
             **lifecycle_kwargs,
         )
 
-        unmatched_payload = {
-            "unmatched": [
-                row.model_dump(mode="json")
-                for row in result.unmatched
-            ]
-        }
+        unmatched_payload = {"unmatched": [row.model_dump(mode="json") for row in result.unmatched]}
 
         args.unmatched.parent.mkdir(parents=True, exist_ok=True)
         args.unmatched.write_text(
@@ -298,9 +260,7 @@ def main() -> int:
             encoding="utf-8",
         )
 
-        invalid_payload = {
-            "invalid": combined_invalid
-        }
+        invalid_payload = {"invalid": combined_invalid}
 
         args.invalid.parent.mkdir(parents=True, exist_ok=True)
         args.invalid.write_text(

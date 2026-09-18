@@ -35,9 +35,7 @@ def test_catalog_no_results_event_is_supported() -> None:
 
 
 def test_tracker_row_contains_search_fields(tmp_path: Path) -> None:
-    tracker = FirstPartyAnalyticsTracker(
-        tmp_path / "analytics.jsonl"
-    )
+    tracker = FirstPartyAnalyticsTracker(tmp_path / "analytics.jsonl")
 
     row = tracker._row(
         session_id="session-123",
@@ -57,25 +55,15 @@ def test_tracker_row_contains_search_fields(tmp_path: Path) -> None:
 
 
 def test_search_term_sanitizer_normalizes_safe_queries() -> None:
-    assert (
-        sanitize_catalog_search_term("  Prada   Herren FRISCH ")
-        == "prada herren frisch"
-    )
+    assert sanitize_catalog_search_term("  Prada   Herren FRISCH ") == "prada herren frisch"
 
 
 def test_search_term_sanitizer_rejects_email_like_input() -> None:
-    assert (
-        sanitize_catalog_search_term("name@example.com")
-        is None
-    )
+    assert sanitize_catalog_search_term("name@example.com") is None
 
 
 def test_search_term_sanitizer_rejects_long_number_input() -> None:
-    assert (
-        sanitize_catalog_search_term("+49 171 1234567")
-        is None
-    )
-
+    assert sanitize_catalog_search_term("+49 171 1234567") is None
 
 
 def test_conversion_event_request_accepts_funnel_context() -> None:
@@ -96,9 +84,7 @@ def test_conversion_event_request_accepts_funnel_context() -> None:
 
 
 def test_tracker_row_contains_conversion_fields(tmp_path: Path) -> None:
-    tracker = FirstPartyAnalyticsTracker(
-        tmp_path / "analytics.jsonl"
-    )
+    tracker = FirstPartyAnalyticsTracker(tmp_path / "analytics.jsonl")
 
     row = tracker._row(
         session_id="session-456",
@@ -131,7 +117,6 @@ def test_funnel_item_position_is_bounded() -> None:
         raise AssertionError("item_position above 100 must be rejected")
 
 
-
 def test_anonymous_analytics_session_id_is_accepted() -> None:
     request = AnalyticsEventRequest(
         event="advisor_recommendation_view",
@@ -139,10 +124,7 @@ def test_anonymous_analytics_session_id_is_accepted() -> None:
         analytics_session_id="7c2587c3-6c03-4bdf-ae87-154b93f3ad31",
     )
 
-    assert (
-        request.analytics_session_id
-        == "7c2587c3-6c03-4bdf-ae87-154b93f3ad31"
-    )
+    assert request.analytics_session_id == "7c2587c3-6c03-4bdf-ae87-154b93f3ad31"
 
 
 def test_anonymous_analytics_session_id_rejects_short_values() -> None:
@@ -156,10 +138,7 @@ def test_anonymous_analytics_session_id_rejects_short_values() -> None:
     except ValidationError:
         pass
     else:
-        raise AssertionError(
-            "short analytics session IDs must be rejected"
-        )
-
+        raise AssertionError("short analytics session IDs must be rejected")
 
 
 def test_analytics_metadata_rejects_free_form_personal_text() -> None:
@@ -174,6 +153,4 @@ def test_analytics_metadata_rejects_free_form_personal_text() -> None:
     except ValidationError:
         pass
     else:
-        raise AssertionError(
-            "analytics metadata must stay identifier-only"
-        )
+        raise AssertionError("analytics metadata must stay identifier-only")

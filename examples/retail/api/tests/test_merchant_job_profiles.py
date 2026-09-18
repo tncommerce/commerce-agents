@@ -7,9 +7,7 @@ from retail.api.merchant_jobs import (
 
 
 def test_repository_notino_job_is_disabled_and_safe() -> None:
-    path = Path(
-        "examples/retail/data/merchant_jobs.json"
-    )
+    path = Path("examples/retail/data/merchant_jobs.json")
 
     jobs = load_merchant_jobs(path)
     job = get_merchant_job(
@@ -20,14 +18,8 @@ def test_repository_notino_job_is_disabled_and_safe() -> None:
     assert job.enabled is False
     assert job.config.dry_run is True
     assert job.config.provider == "canonical"
-    assert (
-        job.config.authoritative_merchant_id
-        == "notino-de"
-    )
-    assert (
-        job.config.authoritative_data_source
-        == "cj-feed"
-    )
+    assert job.config.authoritative_merchant_id == "notino-de"
+    assert job.config.authoritative_data_source == "cj-feed"
 
 
 def test_repository_notino_job_cannot_run_when_enabled_but_unready(
@@ -35,27 +27,21 @@ def test_repository_notino_job_cannot_run_when_enabled_but_unready(
 ) -> None:
     from retail.api import merchant_jobs
 
-    jobs = merchant_jobs.load_merchant_jobs(
-        Path("examples/retail/data/merchant_jobs.json")
-    )
+    jobs = merchant_jobs.load_merchant_jobs(Path("examples/retail/data/merchant_jobs.json"))
 
     job = merchant_jobs.get_merchant_job(
         jobs,
         "notino-de",
     )
 
-    enabled_job = job.model_copy(
-        update={"enabled": True}
-    )
+    enabled_job = job.model_copy(update={"enabled": True})
 
     called = False
 
     def fake_runner(config):
         nonlocal called
         called = True
-        raise AssertionError(
-            "Unready Notino job must not execute"
-        )
+        raise AssertionError("Unready Notino job must not execute")
 
     monkeypatch.setattr(
         merchant_jobs,

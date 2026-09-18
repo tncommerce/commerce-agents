@@ -1,18 +1,11 @@
 import json
 from pathlib import Path
 
+SOURCE_DATABASE = Path("examples/retail/data/scentai_products.json")
 
-SOURCE_DATABASE = Path(
-    "examples/retail/data/scentai_products.json"
-)
+CURRENT_CATALOG = Path("examples/retail/data/catalog.json")
 
-CURRENT_CATALOG = Path(
-    "examples/retail/data/catalog.json"
-)
-
-OUTPUT_CATALOG = Path(
-    "examples/retail/data/catalog.scentai-preview.json"
-)
+OUTPUT_CATALOG = Path("examples/retail/data/catalog.scentai-preview.json")
 
 LEGACY_SCENTAI_IDS = {
     "SC-0001",
@@ -39,20 +32,14 @@ def full_product_name(product):
     brand = product["brand"]
     name = product["name"]
 
-    if name.casefold().startswith(
-        brand.casefold() + " "
-    ):
+    if name.casefold().startswith(brand.casefold() + " "):
         return name
 
     return f"{brand} {name}"
 
 
 def build_product_name_map(products):
-    return {
-        product["product_id"]:
-        full_product_name(product)
-        for product in products
-    }
+    return {product["product_id"]: full_product_name(product) for product in products}
 
 
 def build_product_title(product):
@@ -63,45 +50,24 @@ def build_product_title(product):
 
     # Avoid titles such as
     # "Marwa Extrait Extrait de Parfum".
-    if (
-        name == concentration_lead
-        or name.endswith(" " + concentration_lead)
-    ):
-        return (
-            f"{display_name} "
-            f"{product['volume_ml']} ml"
-        )
+    if name == concentration_lead or name.endswith(" " + concentration_lead):
+        return f"{display_name} {product['volume_ml']} ml"
 
-    return (
-        f"{display_name} "
-        f"{concentration} "
-        f"{product['volume_ml']} ml"
-    )
+    return f"{display_name} {concentration} {product['volume_ml']} ml"
 
 
 def build_short_description(product):
     display_name = full_product_name(product)
     concentration = product["concentration"]
 
-    accords = product.get(
-        "fragrance_profile", {}
-    ).get(
-        "community_accords", []
-    )
+    accords = product.get("fragrance_profile", {}).get("community_accords", [])
 
     if accords:
         main_accords = ", ".join(accords[:3])
 
-        return (
-            f"{display_name} is a "
-            f"{main_accords} "
-            f"{concentration} fragrance."
-        )
+        return f"{display_name} is a {main_accords} {concentration} fragrance."
 
-    return (
-        f"{display_name} "
-        f"{concentration} fragrance."
-    )
+    return f"{display_name} {concentration} fragrance."
 
 
 def convert_product(product, product_name_map):
@@ -123,23 +89,15 @@ def convert_product(product, product_name_map):
 
     related_names = []
 
-    for relationship in product.get(
-        "relationships", []
-    ):
-        related_id = relationship.get(
-            "related_product_id"
-        )
+    for relationship in product.get("relationships", []):
+        related_id = relationship.get("related_product_id")
 
-        related_name = product_name_map.get(
-            related_id
-        )
+        related_name = product_name_map.get(related_id)
 
         if related_name:
             related_names.append(related_name)
 
-    target_groups = classification.get(
-        "scentai_target_groups", []
-    )
+    target_groups = classification.get("scentai_target_groups", [])
 
     relationship_links = ";".join(
         "|".join(
@@ -155,9 +113,7 @@ def convert_product(product, product_name_map):
 
     labels = []
 
-    for accord in profile.get(
-        "community_accords", []
-    )[:5]:
+    for accord in profile.get("community_accords", [])[:5]:
         if accord not in labels:
             labels.append(accord)
 
@@ -172,191 +128,69 @@ def convert_product(product, product_name_map):
     title = build_product_title(product)
 
     attributes = {
-        "canonical_name":
-    as_string(product["name"]),
-        "community_rating_10":
-            as_string(community["rating_10"]),
-
-        "rating_source":
-            as_string(community.get("source")),
-
-        "volume_ml":
-            as_string(product["volume_ml"]),
-
-        "concentration":
-            as_string(product["concentration"]),
-
-        "target_group":
-            join_values(target_groups),
-
-        "main_accords":
-            join_values(
-                profile.get(
-                    "community_accords", []
-                )
-            ),
-
-        "freshness":
-            as_string(scores["freshness"]),
-
-        "sweetness":
-            as_string(scores["sweetness"]),
-
-        "woodiness":
-            as_string(scores["woodiness"]),
-
-        "spiciness":
-            as_string(scores["spiciness"]),
-
-        "longevity":
-            as_string(
-                community.get("longevity_10")
-            ),
-
-        "projection":
-            as_string(
-                community.get("projection_10")
-            ),
-
-        "cluster_id":
-            as_string(
-                classification.get(
-                    "cluster_id"
-                )
-            ),
-
-        "relationship_role":
-            as_string(
-                classification.get("role")
-            ),
-
-        "trend_bet":
-            as_string(
-                classification.get(
-                    "trend_bet", False
-                )
-            ),
-
-        "similar_to":
-            join_values(related_names),
-
-        "relationship_links":
-            relationship_links,
-
-        "evidence_confidence":
-            as_string(
-                evidence.get("overall")
-            ),
-
-        "market_price_eur":
-            as_string(
-                market.get(
-                    "market_price_eur"
-                )
-            ),
-
-        "price_per_ml_eur":
-            as_string(
-                market.get(
-                    "price_per_ml_eur"
-                )
-            ),
-
-        "price_checked_at":
-            as_string(
-                market.get(
-                    "price_checked_at"
-                )
-            ),
+        "canonical_name": as_string(product["name"]),
+        "community_rating_10": as_string(community["rating_10"]),
+        "rating_source": as_string(community.get("source")),
+        "volume_ml": as_string(product["volume_ml"]),
+        "concentration": as_string(product["concentration"]),
+        "target_group": join_values(target_groups),
+        "main_accords": join_values(profile.get("community_accords", [])),
+        "freshness": as_string(scores["freshness"]),
+        "sweetness": as_string(scores["sweetness"]),
+        "woodiness": as_string(scores["woodiness"]),
+        "spiciness": as_string(scores["spiciness"]),
+        "longevity": as_string(community.get("longevity_10")),
+        "projection": as_string(community.get("projection_10")),
+        "cluster_id": as_string(classification.get("cluster_id")),
+        "relationship_role": as_string(classification.get("role")),
+        "trend_bet": as_string(classification.get("trend_bet", False)),
+        "similar_to": join_values(related_names),
+        "relationship_links": relationship_links,
+        "evidence_confidence": as_string(evidence.get("overall")),
+        "market_price_eur": as_string(market.get("market_price_eur")),
+        "price_per_ml_eur": as_string(market.get("price_per_ml_eur")),
+        "price_checked_at": as_string(market.get("price_checked_at")),
     }
 
     return {
-        "product_id":
-            product["product_id"],
-
-        "title":
-            title,
-
-        "image_url":
-            product.get("image_url"),
-
-        "brand":
-            product["brand"],
-
-        "price":
-            market["market_price_eur"],
-
-        "currency":
-            "EUR",
-
-        "rating":
-            internal_rating_5,
-
-        "review_count":
-            community["rating_count"],
-
-        "category":
-            "fragrance",
-
-        "labels":
-            labels,
-
-        "attributes":
-            attributes,
-
+        "product_id": product["product_id"],
+        "title": title,
+        "image_url": product.get("image_url"),
+        "brand": product["brand"],
+        "price": market["market_price_eur"],
+        "currency": "EUR",
+        "rating": internal_rating_5,
+        "review_count": community["rating_count"],
+        "category": "fragrance",
+        "labels": labels,
+        "attributes": attributes,
         # Local MVP/demo catalog availability.
         # This is not live retailer inventory.
-        "in_stock":
-            True,
-
-        "short_description":
-            build_short_description(product),
+        "in_stock": True,
+        "short_description": build_short_description(product),
     }
 
 
 def main():
-    source = json.loads(
-        SOURCE_DATABASE.read_text(
-            encoding="utf-8"
-        )
-    )
+    source = json.loads(SOURCE_DATABASE.read_text(encoding="utf-8"))
 
-    current_catalog = json.loads(
-        CURRENT_CATALOG.read_text(
-            encoding="utf-8"
-        )
-    )
+    current_catalog = json.loads(CURRENT_CATALOG.read_text(encoding="utf-8"))
 
     scentai_products = source["products"]
 
-    name_map = build_product_name_map(
-        scentai_products
-    )
+    name_map = build_product_name_map(scentai_products)
 
-    generated_products = [
-        convert_product(
-            product,
-            name_map
-        )
-        for product in scentai_products
-    ]
+    generated_products = [convert_product(product, name_map) for product in scentai_products]
 
-    new_ids = {
-        product["product_id"]
-        for product in generated_products
-    }
+    new_ids = {product["product_id"] for product in generated_products}
 
     preserved_products = []
 
     removed_legacy = 0
     removed_existing_generated = 0
 
-    for product in current_catalog.get(
-        "products", []
-    ):
-        product_id = product.get(
-            "product_id"
-        )
+    for product in current_catalog.get("products", []):
+        product_id = product.get("product_id")
 
         if product_id in LEGACY_SCENTAI_IDS:
             removed_legacy += 1
@@ -370,52 +204,29 @@ def main():
 
     output = {
         "store_name": "SCENTAI",
-        "products":
-            generated_products
-            + preserved_products,
+        "products": generated_products + preserved_products,
     }
 
     OUTPUT_CATALOG.write_text(
-        json.dumps(
-            output,
-            indent=2,
-            ensure_ascii=False
-        ) + "\n",
+        json.dumps(output, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )
 
     print("SCENTAI CATALOG GENERATOR")
     print("=" * 50)
 
-    print(
-        f"Source SCENTAI products: "
-        f"{len(scentai_products)}"
-    )
+    print(f"Source SCENTAI products: {len(scentai_products)}")
 
-    print(
-        f"Legacy SCENTAI products removed: "
-        f"{removed_legacy}"
-    )
+    print(f"Legacy SCENTAI products removed: {removed_legacy}")
 
-    print(
-        f"Existing generated products replaced: "
-        f"{removed_existing_generated}"
-    )
+    print(f"Existing generated products replaced: {removed_existing_generated}")
 
-    print(
-        f"Demo products preserved: "
-        f"{len(preserved_products)}"
-    )
+    print(f"Demo products preserved: {len(preserved_products)}")
 
-    print(
-        f"Final preview products: "
-        f"{len(output['products'])}"
-    )
+    print(f"Final preview products: {len(output['products'])}")
 
     print()
-    print(
-        f"Preview written to:"
-    )
+    print("Preview written to:")
     print(OUTPUT_CATALOG)
 
 

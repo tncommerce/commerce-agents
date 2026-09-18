@@ -34,21 +34,14 @@ IDENTITY = MerchantIdentity(merchant_id="acme-retail", operator="Avery")
 
 
 def merchant_fleet_status_payload() -> dict:
-    jobs = load_merchant_jobs(
-        DATA_DIR / "merchant_jobs.json"
-    )
+    jobs = load_merchant_jobs(DATA_DIR / "merchant_jobs.json")
 
     summary = build_fleet_status_summary(
         jobs,
-        approvals_path=(
-            DATA_DIR
-            / "merchant_job_approvals.json"
-        ),
+        approvals_path=(DATA_DIR / "merchant_job_approvals.json"),
     )
 
-    return summary.model_dump(
-        mode="json"
-    )
+    return summary.model_dump(mode="json")
 
 
 def merchant_job_status_payload(
@@ -56,32 +49,17 @@ def merchant_job_status_payload(
 ) -> dict:
     summary = build_job_status_summary(
         job,
-        approvals_path=(
-            DATA_DIR
-            / "merchant_job_approvals.json"
-        ),
+        approvals_path=(DATA_DIR / "merchant_job_approvals.json"),
     )
 
-    health = evaluate_job_health(
-        summary
-    )
+    health = evaluate_job_health(summary)
 
-    attention = build_job_attention_item(
-        summary
-    )
+    attention = build_job_attention_item(summary)
 
     return {
-        "status": summary.model_dump(
-            mode="json"
-        ),
-        "health": health.model_dump(
-            mode="json"
-        ),
-        "attention": (
-            attention.model_dump(mode="json")
-            if attention is not None
-            else None
-        ),
+        "status": summary.model_dump(mode="json"),
+        "health": health.model_dump(mode="json"),
+        "attention": (attention.model_dump(mode="json") if attention is not None else None),
     }
 
 
@@ -89,21 +67,15 @@ def create_merchant_router(storefront: MockRetail, memory_store: MemoryStore) ->
     config = build_merchant_config(storefront.store_name)
     merchant = MockRetailMerchant(storefront, config, merchant_id=IDENTITY.merchant_id)
 
-    jobs = load_merchant_jobs(
-        DATA_DIR / "merchant_jobs.json"
-    )
+    jobs = load_merchant_jobs(DATA_DIR / "merchant_jobs.json")
 
     portal_reads = {
-        "/operations/fleet-status":
-            merchant_fleet_status_payload,
+        "/operations/fleet-status": merchant_fleet_status_payload,
     }
 
     for job in jobs:
-        portal_reads[
-            f"/operations/jobs/{job.job_id}"
-        ] = (
-            lambda job=job:
-                merchant_job_status_payload(job)
+        portal_reads[f"/operations/jobs/{job.job_id}"] = lambda job=job: (
+            merchant_job_status_payload(job)
         )
     agent = MerchantAgent(
         backend=merchant,

@@ -4,7 +4,6 @@ from datetime import datetime
 from typing import Any
 from urllib.parse import urlparse
 
-
 REQUIRED_IMPORT_FIELDS = (
     "offer_id",
     "merchant",
@@ -38,10 +37,7 @@ def _http_url(value: object) -> bool:
         return False
 
     parsed = urlparse(str(value).strip())
-    return (
-        parsed.scheme in {"http", "https"}
-        and bool(parsed.netloc)
-    )
+    return parsed.scheme in {"http", "https"} and bool(parsed.netloc)
 
 
 def _positive_price(value: object) -> bool:
@@ -86,10 +82,7 @@ def _parseable_bool(value: object) -> bool:
 
 
 def _row_checks(row: dict) -> dict[str, bool]:
-    identifier_ok = any(
-        _non_empty(row.get(field))
-        for field in IDENTIFIER_FIELDS
-    )
+    identifier_ok = any(_non_empty(row.get(field)) for field in IDENTIFIER_FIELDS)
 
     checks = {
         "offer_id": _non_empty(row.get("offer_id")),
@@ -101,18 +94,13 @@ def _row_checks(row: dict) -> dict[str, bool]:
         "in_stock": _parseable_bool(row.get("in_stock")),
         "product_url": _http_url(row.get("product_url")),
         "affiliate_url": _http_url(row.get("affiliate_url")),
-        "last_updated_at": _parseable_timestamp(
-            row.get("last_updated_at")
-        ),
+        "last_updated_at": _parseable_timestamp(row.get("last_updated_at")),
         "data_source": _non_empty(row.get("data_source")),
         "image_url": _http_url(row.get("image_url")),
     }
 
     currency = row.get("currency")
-    checks["currency"] = (
-        _non_empty(currency)
-        and len(str(currency).strip()) == 3
-    )
+    checks["currency"] = _non_empty(currency) and len(str(currency).strip()) == 3
 
     return checks
 
@@ -136,10 +124,7 @@ def build_feed_preflight(rows: list[dict]) -> dict[str, Any]:
         "image_url",
     ]
 
-    valid_counts = {
-        field: 0
-        for field in field_names
-    }
+    valid_counts = {field: 0 for field in field_names}
 
     import_ready_rows = 0
     promotion_ready_rows = 0
@@ -166,16 +151,10 @@ def build_feed_preflight(rows: list[dict]) -> dict[str, Any]:
             if passed:
                 valid_counts[field] += 1
 
-        import_failures = sorted(
-            field
-            for field in required_for_import
-            if not checks[field]
-        )
+        import_failures = sorted(field for field in required_for_import if not checks[field])
 
         promotion_failures = sorted(
-            field
-            for field in ("affiliate_url", "image_url")
-            if not checks[field]
+            field for field in ("affiliate_url", "image_url") if not checks[field]
         )
 
         if not import_failures:
@@ -189,9 +168,7 @@ def build_feed_preflight(rows: list[dict]) -> dict[str, Any]:
                 {
                     "row_index": index,
                     "offer_id": row.get("offer_id"),
-                    "merchant_product_id": row.get(
-                        "merchant_product_id"
-                    ),
+                    "merchant_product_id": row.get("merchant_product_id"),
                     "import_failures": import_failures,
                     "promotion_failures": promotion_failures,
                 }
@@ -203,21 +180,11 @@ def build_feed_preflight(rows: list[dict]) -> dict[str, Any]:
         coverage[field] = {
             "valid": valid,
             "missing_or_invalid": total - valid,
-            "coverage_pct": (
-                round((valid / total) * 100, 1)
-                if total
-                else 0.0
-            ),
+            "coverage_pct": (round((valid / total) * 100, 1) if total else 0.0),
         }
 
-    ready_for_offer_import = (
-        total > 0
-        and import_ready_rows == total
-    )
-    ready_for_promotion_assets = (
-        total > 0
-        and promotion_ready_rows == total
-    )
+    ready_for_offer_import = total > 0 and import_ready_rows == total
+    ready_for_promotion_assets = total > 0 and promotion_ready_rows == total
 
     return {
         "row_count": total,

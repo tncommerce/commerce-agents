@@ -36,22 +36,14 @@ def validate_schedule_config(
     config: ScheduledMerchantImportConfig,
 ) -> None:
     if config.max_feed_bytes < 1:
-        raise ValueError(
-            "max_feed_bytes must be at least 1"
-        )
+        raise ValueError("max_feed_bytes must be at least 1")
 
     if config.max_feed_rows < 1:
-        raise ValueError(
-            "max_feed_rows must be at least 1"
-        )
+        raise ValueError("max_feed_rows must be at least 1")
 
-    if (
-        (config.authoritative_merchant_id is None)
-        != (config.authoritative_data_source is None)
-    ):
+    if (config.authoritative_merchant_id is None) != (config.authoritative_data_source is None):
         raise ValueError(
-            "authoritative_merchant_id and "
-            "authoritative_data_source must be provided together"
+            "authoritative_merchant_id and authoritative_data_source must be provided together"
         )
 
 

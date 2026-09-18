@@ -29,10 +29,7 @@ def changed_snapshot_files(
     if file_sha256(feed_path) != expected_feed_sha256:
         changed.append("feed")
 
-    if (
-        file_sha256(mappings_path)
-        != expected_mappings_sha256
-    ):
+    if file_sha256(mappings_path) != expected_mappings_sha256:
         changed.append("mappings")
 
     return changed

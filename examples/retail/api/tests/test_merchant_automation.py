@@ -1,4 +1,4 @@
-﻿from retail.api.merchant_automation import decide_automation
+from retail.api.merchant_automation import decide_automation
 from retail.api.merchant_run_reports import build_import_run_report
 from retail.api.merchant_run_status import machine_readable_result
 
@@ -61,6 +61,4 @@ def test_review_or_invalid_result_holds_automation() -> None:
 
     assert invalid_decision.action == "hold"
     assert invalid_decision.exit_code == 20
-    assert invalid_decision.reasons == [
-        "inconsistent_machine_result"
-    ]
+    assert invalid_decision.reasons == ["inconsistent_machine_result"]

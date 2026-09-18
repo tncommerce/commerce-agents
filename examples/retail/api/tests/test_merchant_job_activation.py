@@ -1,4 +1,4 @@
-﻿import json
+import json
 
 from retail.api.merchant_job_activation import (
     activate_merchant_job,
@@ -38,23 +38,13 @@ def _write_job(tmp_path):
                         "config": {
                             "feed": str(feed),
                             "mappings": str(mappings),
-                            "offers": str(
-                                tmp_path / "offers.json"
-                            ),
-                            "unmatched": str(
-                                tmp_path / "unmatched.json"
-                            ),
-                            "invalid": str(
-                                tmp_path / "invalid.json"
-                            ),
+                            "offers": str(tmp_path / "offers.json"),
+                            "unmatched": str(tmp_path / "unmatched.json"),
+                            "invalid": str(tmp_path / "invalid.json"),
                             "provider": "canonical",
-                            "authoritative_merchant_id":
-                                "notino-de",
-                            "authoritative_data_source":
-                                "cj-feed",
-                            "run_report": str(
-                                tmp_path / "runs.jsonl"
-                            ),
+                            "authoritative_merchant_id": "notino-de",
+                            "authoritative_data_source": "cj-feed",
+                            "run_report": str(tmp_path / "runs.jsonl"),
                             "dry_run": True,
                         },
                     }
@@ -80,9 +70,7 @@ def test_activation_requires_valid_approval(
 
     assert result.action == "hold"
     assert result.exit_code == 20
-    assert result.reasons == [
-        "valid_approval_required"
-    ]
+    assert result.reasons == ["valid_approval_required"]
 
     job = get_merchant_job(
         load_merchant_jobs(jobs_path),

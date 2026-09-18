@@ -1,4 +1,4 @@
-﻿import json
+import json
 import sys
 
 from retail.api import activate_merchant_job
@@ -19,15 +19,11 @@ def test_activation_cli_requires_explicit_confirmation(
 
     exit_code = activate_merchant_job.main()
 
-    payload = json.loads(
-        capsys.readouterr().out
-    )
+    payload = json.loads(capsys.readouterr().out)
 
     assert exit_code == 20
     assert payload["action"] == "hold"
-    assert payload["reasons"] == [
-        "explicit_human_activation_required"
-    ]
+    assert payload["reasons"] == ["explicit_human_activation_required"]
 
 
 def test_confirmed_activation_calls_activation_service(
@@ -79,9 +75,7 @@ def test_confirmed_activation_calls_activation_service(
 
     exit_code = activate_merchant_job.main()
 
-    payload = json.loads(
-        capsys.readouterr().out
-    )
+    payload = json.loads(capsys.readouterr().out)
 
     assert exit_code == 0
     assert payload["action"] == "activated"

@@ -1,4 +1,4 @@
-﻿from retail.api.merchant_job_status_summary import (
+from retail.api.merchant_job_status_summary import (
     MerchantJobStatusSummary,
 )
 from retail.api.merchant_operator_guidance import (
@@ -22,35 +22,25 @@ def _summary(**updates):
 
     payload.update(updates)
 
-    return MerchantJobStatusSummary(
-        **payload
-    )
+    return MerchantJobStatusSummary(**payload)
 
 
 def test_ready_job_has_no_operator_guidance() -> None:
-    assert build_job_attention_item(
-        _summary()
-    ) is None
+    assert build_job_attention_item(_summary()) is None
 
 
 def test_missing_feed_returns_safe_action() -> None:
     item = build_job_attention_item(
         _summary(
             job_state="not_ready",
-            readiness_reasons=[
-                "feed_missing"
-            ],
+            readiness_reasons=["feed_missing"],
         )
     )
 
     assert item is not None
     assert item.blocking is True
-    assert item.reasons == [
-        "feed_missing"
-    ]
-    assert item.operator_actions == [
-        "provide_feed"
-    ]
+    assert item.reasons == ["feed_missing"]
+    assert item.operator_actions == ["provide_feed"]
 
 
 def test_missing_approval_returns_human_approval_action() -> None:
@@ -64,12 +54,8 @@ def test_missing_approval_returns_human_approval_action() -> None:
 
     assert item is not None
     assert item.blocking is True
-    assert item.reasons == [
-        "approval_required"
-    ]
-    assert item.operator_actions == [
-        "review_dry_run_and_approve"
-    ]
+    assert item.reasons == ["approval_required"]
+    assert item.operator_actions == ["review_dry_run_and_approve"]
 
 
 def test_review_run_returns_nonblocking_review_actions() -> None:

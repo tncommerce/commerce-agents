@@ -7,7 +7,6 @@ from scripts.report_scentai_promotion_readiness import (
     promotion_tier,
 )
 
-
 NOW = datetime(2026, 9, 18, 12, 0, tzinfo=UTC)
 
 
@@ -45,11 +44,7 @@ def staged_product(
             "provisional": provisional,
         },
         "media": {
-            "image_url": (
-                "/products/test.png"
-                if image_ready
-                else None
-            ),
+            "image_url": ("/products/test.png" if image_ready else None),
             "image_status": (
                 "approved_feed_image"
                 if image_ready

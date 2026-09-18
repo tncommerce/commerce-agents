@@ -124,6 +124,7 @@ def test_validate_offer_payload_returns_merchant_offer() -> None:
     assert offer.merchant_name == "Notino"
     assert offer.price == 94.0
 
+
 def test_normalize_feed_row_creates_offer_for_known_product() -> None:
     mappings = [
         MerchantProductMapping(
@@ -194,6 +195,7 @@ def test_normalize_feed_row_skips_unknown_product() -> None:
     )
 
     assert offer is None
+
 
 def test_import_feed_rows_separates_matched_and_unmatched() -> None:
     mappings = [
@@ -326,7 +328,10 @@ def test_upsert_offers_file_updates_existing_and_adds_new(tmp_path) -> None:
 
     assert by_id["douglas-bois-imperial-100"]["price"] == 89.0
     assert by_id["douglas-bois-imperial-100"]["data_source"] == "awin-feed"
-    assert by_id["douglas-bois-imperial-100"]["affiliate_url"] == "https://example.com/douglas-affiliate"
+    assert (
+        by_id["douglas-bois-imperial-100"]["affiliate_url"]
+        == "https://example.com/douglas-affiliate"
+    )
 
     assert by_id["notino-bois-imperial-100"]["merchant_name"] == "Notino"
     assert by_id["notino-bois-imperial-100"]["network"] == "CJ"
@@ -591,10 +596,7 @@ def test_authoritative_feed_deactivates_missing_offer(tmp_path) -> None:
     assert report.deactivated == 1
 
     saved = json.loads(path.read_text(encoding="utf-8"))
-    by_id = {
-        offer["offer_id"]: offer
-        for offer in saved["offers"]
-    }
+    by_id = {offer["offer_id"]: offer for offer in saved["offers"]}
 
     assert by_id["notino-offer-a"]["in_stock"] is True
     assert by_id["notino-offer-b"]["in_stock"] is False

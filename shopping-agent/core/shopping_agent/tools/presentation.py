@@ -62,6 +62,7 @@ class ComparisonEntry(BaseModel):
         ),
     )
 
+
 class PresentComparisonPayload(PresentationPayload):
     title: str | None = Field(default=None, max_length=80)
     entries: list[ComparisonEntry] = Field(min_length=2, max_length=4)

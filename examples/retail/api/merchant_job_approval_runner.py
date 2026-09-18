@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from typing import Literal
 
@@ -63,9 +63,7 @@ def approve_job_from_fresh_dry_run(
         )
 
     try:
-        machine = MerchantMachineResult.model_validate(
-            operational.payload
-        )
+        machine = MerchantMachineResult.model_validate(operational.payload)
     except ValidationError:
         return MerchantJobApprovalResult(
             action="hold",
@@ -80,13 +78,10 @@ def approve_job_from_fresh_dry_run(
         and machine.exit_code == 0
         and run.run_id == operational.run_id
         and run.mode == "DRY-RUN"
-        and run.provider.strip().casefold()
-        == job.config.provider.strip().casefold()
+        and run.provider.strip().casefold() == job.config.provider.strip().casefold()
         and run.feed_file == job.config.feed.name
-        and run.authoritative_merchant_id
-        == job.config.authoritative_merchant_id
-        and run.authoritative_data_source
-        == job.config.authoritative_data_source
+        and run.authoritative_merchant_id == job.config.authoritative_merchant_id
+        and run.authoritative_data_source == job.config.authoritative_data_source
     )
 
     if not evidence_matches:

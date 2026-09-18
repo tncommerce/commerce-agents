@@ -3,7 +3,6 @@ import sys
 from collections import Counter, defaultdict
 from pathlib import Path
 
-
 DATABASE = Path("examples/retail/data/scentai_products.json")
 
 ALLOWED_ROLES = {
@@ -72,31 +71,16 @@ print()
 # 2. Product IDs
 # --------------------------------------------------
 
-product_ids = [
-    product.get("product_id")
-    for product in products
-]
+product_ids = [product.get("product_id") for product in products]
 
-missing_ids = [
-    index
-    for index, product_id in enumerate(product_ids)
-    if not product_id
-]
+missing_ids = [index for index, product_id in enumerate(product_ids) if not product_id]
 
 for index in missing_ids:
     error(f"Product at index {index} has no product_id.")
 
-valid_ids = [
-    product_id
-    for product_id in product_ids
-    if product_id
-]
+valid_ids = [product_id for product_id in product_ids if product_id]
 
-duplicates = [
-    product_id
-    for product_id, count in Counter(valid_ids).items()
-    if count > 1
-]
+duplicates = [product_id for product_id, count in Counter(valid_ids).items() if count > 1]
 
 for product_id in duplicates:
     error(f"Duplicate product_id: {product_id}")
@@ -139,7 +123,6 @@ for product in products:
 clusters = defaultdict(list)
 
 for product in products:
-
     pid = product.get("product_id", "<UNKNOWN>")
 
     classification = product.get("classification", {})
@@ -184,9 +167,7 @@ for product in products:
     else:
         for target in target_groups:
             if target not in ALLOWED_TARGET_GROUPS:
-                error(
-                    f"{pid}: invalid target group '{target}'"
-                )
+                error(f"{pid}: invalid target group '{target}'")
 
     # ----------------------------------------------
     # Community metrics
@@ -206,9 +187,7 @@ for product in products:
             continue
 
         if not isinstance(value, (int, float)) or not 0 <= value <= 10:
-            error(
-                f"{pid}: community.{field} must be between 0 and 10"
-            )
+            error(f"{pid}: community.{field} must be between 0 and 10")
 
     rating_count = community.get("rating_count")
 
@@ -227,22 +206,15 @@ for product in products:
     ]
 
     for field in profile_fields:
-
         value = scores.get(field)
 
         if not isinstance(value, int) or not 1 <= value <= 10:
-            error(
-                f"{pid}: fragrance_profile.scores.{field} "
-                f"must be integer 1-10"
-            )
+            error(f"{pid}: fragrance_profile.scores.{field} must be integer 1-10")
 
     score_confidence = profile.get("score_confidence")
 
     if score_confidence not in ALLOWED_CONFIDENCE:
-        error(
-            f"{pid}: invalid score_confidence "
-            f"'{score_confidence}'"
-        )
+        error(f"{pid}: invalid score_confidence '{score_confidence}'")
 
     # ----------------------------------------------
     # Market price calculation
@@ -257,12 +229,7 @@ for product in products:
     elif not isinstance(market_price, (int, float)) or market_price <= 0:
         error(f"{pid}: invalid market_price_eur")
 
-    if (
-        isinstance(market_price, (int, float))
-        and isinstance(volume, (int, float))
-        and volume > 0
-    ):
-
+    if isinstance(market_price, (int, float)) and isinstance(volume, (int, float)) and volume > 0:
         calculated_ppm = market_price / volume
 
         if not isinstance(stored_ppm, (int, float)):
@@ -288,20 +255,14 @@ for product in products:
     }
 
     for field, maximum in universal_score_limits.items():
-
         value = commercial.get(field)
 
         if not isinstance(value, int):
-            error(
-                f"{pid}: commercial.{field} must be an integer"
-            )
+            error(f"{pid}: commercial.{field} must be an integer")
             continue
 
         if not 0 <= value <= maximum:
-            error(
-                f"{pid}: commercial.{field}={value} "
-                f"outside 0-{maximum}"
-            )
+            error(f"{pid}: commercial.{field}={value} outside 0-{maximum}")
 
     cluster_score_limits = {
         "alternative_demand": 20,
@@ -310,10 +271,7 @@ for product in products:
         "commercial_opportunity_score": 100,
     }
 
-    cluster_values = [
-        commercial.get(field)
-        for field in cluster_score_limits
-    ]
+    cluster_values = [commercial.get(field) for field in cluster_score_limits]
 
     if all(value is None for value in cluster_values):
         # Valid standalone product:
@@ -321,28 +279,20 @@ for product in products:
         pass
 
     elif any(value is None for value in cluster_values):
-        error(
-            f"{pid}: cluster commercial scoring must be either "
-            f"fully populated or fully N/A"
-        )
+        error(f"{pid}: cluster commercial scoring must be either fully populated or fully N/A")
 
     else:
         for field, maximum in cluster_score_limits.items():
-
             value = commercial.get(field)
 
             if not isinstance(value, int):
                 error(
-                    f"{pid}: commercial.{field} must be an integer "
-                    f"or null for standalone products"
+                    f"{pid}: commercial.{field} must be an integer or null for standalone products"
                 )
                 continue
 
             if not 0 <= value <= maximum:
-                error(
-                    f"{pid}: commercial.{field}={value} "
-                    f"outside 0-{maximum}"
-                )
+                error(f"{pid}: commercial.{field}={value} outside 0-{maximum}")
 
     # ----------------------------------------------
     # Commercial score mathematics
@@ -356,7 +306,6 @@ for product in products:
     ]
 
     if all(isinstance(value, int) for value in market_components):
-
         calculated_market = sum(market_components)
         stored_market = commercial.get("market_demand_score")
 
@@ -373,11 +322,8 @@ for product in products:
     ]
 
     if all(isinstance(value, int) for value in cluster_components):
-
         calculated_cluster = sum(cluster_components)
-        stored_cluster = commercial.get(
-            "cluster_opportunity_bonus"
-        )
+        stored_cluster = commercial.get("cluster_opportunity_bonus")
 
         if stored_cluster != calculated_cluster:
             error(
@@ -395,7 +341,6 @@ for product in products:
         and isinstance(cluster_score, int)
         and isinstance(total_score, int)
     ):
-
         calculated_total = market_score + cluster_score
 
         if total_score != calculated_total:
@@ -413,49 +358,32 @@ for product in products:
         error(f"{pid}: relationships must be a list")
 
     else:
-
         for relationship in relationships:
-
             related_id = relationship.get("related_product_id")
 
             if not related_id:
-                error(
-                    f"{pid}: relationship without related_product_id"
-                )
+                error(f"{pid}: relationship without related_product_id")
                 continue
 
             if related_id == pid:
-                error(
-                    f"{pid}: product cannot relate to itself"
-                )
+                error(f"{pid}: product cannot relate to itself")
 
             if related_id not in known_ids:
-                error(
-                    f"{pid}: relationship references unknown product "
-                    f"'{related_id}'"
-                )
+                error(f"{pid}: relationship references unknown product '{related_id}'")
 
-            relationship_type = relationship.get(
-                "relationship_type"
-            )
+            relationship_type = relationship.get("relationship_type")
 
             if relationship_type not in {
                 "clone",
                 "inspired",
                 "alternative",
             }:
-                error(
-                    f"{pid}: invalid relationship_type "
-                    f"'{relationship_type}'"
-                )
+                error(f"{pid}: invalid relationship_type '{relationship_type}'")
 
             confidence = relationship.get("confidence")
 
             if confidence not in ALLOWED_CONFIDENCE:
-                error(
-                    f"{pid}: invalid relationship confidence "
-                    f"'{confidence}'"
-                )
+                error(f"{pid}: invalid relationship confidence '{confidence}'")
 
     # ----------------------------------------------
     # Evidence
@@ -464,10 +392,7 @@ for product in products:
     overall_confidence = evidence.get("overall")
 
     if overall_confidence not in ALLOWED_CONFIDENCE:
-        error(
-            f"{pid}: invalid evidence overall confidence "
-            f"'{overall_confidence}'"
-        )
+        error(f"{pid}: invalid evidence overall confidence '{overall_confidence}'")
 
     # ----------------------------------------------
     # Catalog readiness
@@ -482,18 +407,14 @@ for product in products:
 # --------------------------------------------------
 
 for cluster_id, cluster_products in clusters.items():
-
     benchmarks = [
         product
         for product in cluster_products
-        if product.get("classification", {}).get("role")
-        == "benchmark"
+        if product.get("classification", {}).get("role") == "benchmark"
     ]
 
     if len(benchmarks) == 0:
-        warning(
-            f"Cluster '{cluster_id}' has no benchmark"
-        )
+        warning(f"Cluster '{cluster_id}' has no benchmark")
 
 
 # --------------------------------------------------
@@ -503,11 +424,9 @@ for cluster_id, cluster_products in clusters.items():
 relationship_pairs = set()
 
 for product in products:
-
     pid = product.get("product_id")
 
     for relationship in product.get("relationships", []):
-
         related_id = relationship.get("related_product_id")
 
         if pid and related_id:
@@ -515,12 +434,8 @@ for product in products:
 
 
 for source, target in sorted(relationship_pairs):
-
     if (target, source) not in relationship_pairs:
-        warning(
-            f"Relationship is one-way: "
-            f"{source} -> {target}"
-        )
+        warning(f"Relationship is one-way: {source} -> {target}")
 
 
 # --------------------------------------------------
@@ -529,10 +444,7 @@ for source, target in sorted(relationship_pairs):
 
 print("Clusters:")
 for cluster_id in sorted(clusters):
-    print(
-        f"  {cluster_id}: "
-        f"{len(clusters[cluster_id])} products"
-    )
+    print(f"  {cluster_id}: {len(clusters[cluster_id])} products")
 
 print()
 
@@ -546,7 +458,6 @@ if warnings:
 
 
 if errors:
-
     print(f"ERRORS: {len(errors)}")
 
     for item in errors:

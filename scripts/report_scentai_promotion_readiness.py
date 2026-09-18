@@ -51,10 +51,7 @@ def build_readiness_report(
         "offers",
         offers_payload if isinstance(offers_payload, list) else [],
     )
-    live_ids = {
-        str(product.get("product_id") or "")
-        for product in catalog.get("products", [])
-    }
+    live_ids = {str(product.get("product_id") or "") for product in catalog.get("products", [])}
 
     rows: list[dict[str, Any]] = []
     blocker_counts: Counter[str] = Counter()
@@ -133,10 +130,7 @@ def build_readiness_report(
         "staged_count": len(rows),
         "ready_count": ready_count,
         "blocked_count": len(rows) - ready_count,
-        "tier_counts": {
-            tier: tier_counts.get(tier, 0)
-            for tier in ("A", "B", "C")
-        },
+        "tier_counts": {tier: tier_counts.get(tier, 0) for tier in ("A", "B", "C")},
         "blocker_counts": dict(
             sorted(
                 blocker_counts.items(),
@@ -149,10 +143,7 @@ def build_readiness_report(
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description=(
-            "Report live-promotion readiness for every staged "
-            "SCENTAI fragrance."
-        )
+        description=("Report live-promotion readiness for every staged SCENTAI fragrance.")
     )
     parser.add_argument(
         "--staging",
@@ -222,11 +213,7 @@ def main() -> int:
         f"blocked={report['blocked_count']}"
     )
     print(
-        "Tiers | "
-        + " | ".join(
-            f"{tier}={count}"
-            for tier, count in report["tier_counts"].items()
-        )
+        "Tiers | " + " | ".join(f"{tier}={count}" for tier, count in report["tier_counts"].items())
     )
 
     if report["blocker_counts"]:

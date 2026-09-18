@@ -19,26 +19,20 @@ from .merchant_providers import (
     register_provider_adapter,
 )
 
-
-DEFAULT_OUTPUT = Path(
-    "examples/retail/data/merchant_feed_image_candidates.json"
-)
+DEFAULT_OUTPUT = Path("examples/retail/data/merchant_feed_image_candidates.json")
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Extract reviewable product-image candidates from "
-            "an approved affiliate merchant feed."
+            "Extract reviewable product-image candidates from an approved affiliate merchant feed."
         )
     )
     parser.add_argument("--feed", type=Path, required=True)
     parser.add_argument(
         "--mappings",
         type=Path,
-        default=Path(
-            "examples/retail/data/merchant_product_mappings.json"
-        ),
+        default=Path("examples/retail/data/merchant_product_mappings.json"),
     )
     parser.add_argument(
         "--provider",
@@ -90,9 +84,7 @@ def main() -> int:
 
     if args.provider_config is not None:
         try:
-            adapter = load_mapped_provider_adapter(
-                args.provider_config
-            )
+            adapter = load_mapped_provider_adapter(args.provider_config)
             register_provider_adapter(
                 adapter,
                 replace=True,
@@ -103,9 +95,7 @@ def main() -> int:
             ValueError,
             json.JSONDecodeError,
         ) as exc:
-            parser.error(
-                f"Invalid provider config: {exc}"
-            )
+            parser.error(f"Invalid provider config: {exc}")
 
     adapted_rows = adapt_provider_rows(
         provider_name,

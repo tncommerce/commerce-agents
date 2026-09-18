@@ -9,7 +9,6 @@ from typing import Any
 
 from scripts.qa_scentai_staging import run_qa
 
-
 DATA_DIR = Path("examples/retail/data")
 DEFAULT_STAGING = DATA_DIR / "scentai_catalog_staging.json"
 DEFAULT_CATALOG = DATA_DIR / "catalog.json"
@@ -81,11 +80,7 @@ def eligible_affiliate_offers(
         except (KeyError, TypeError, ValueError):
             price = float("inf")
 
-        total = (
-            price + float(shipping)
-            if known_total
-            else price
-        )
+        total = price + float(shipping) if known_total else price
 
         return (
             0 if known_total else 1,
@@ -98,10 +93,7 @@ def eligible_affiliate_offers(
 
 
 def recommendation_scores(product: dict) -> dict[str, int]:
-    profile = (
-        product.get("fragrance_profile", {})
-        .get("recommendation_profile", {})
-    )
+    profile = product.get("fragrance_profile", {}).get("recommendation_profile", {})
     raw_scores = profile.get("scores", {})
 
     scores: dict[str, int] = {}
@@ -153,16 +145,10 @@ def promotion_blockers(
     if set(scores) != set(PROFILE_AXES):
         blockers.append("missing_recommendation_profile")
 
-    target_groups = (
-        product.get("classification", {})
-        .get("target_groups", [])
-    )
+    target_groups = product.get("classification", {}).get("target_groups", [])
     if not isinstance(target_groups, list) or not target_groups:
         blockers.append("missing_target_group")
-    elif not all(
-        isinstance(group, str) and group.strip()
-        for group in target_groups
-    ):
+    elif not all(isinstance(group, str) and group.strip() for group in target_groups):
         blockers.append("invalid_target_group")
 
     if product_id:
@@ -192,9 +178,7 @@ def build_title(product: dict) -> str:
     concentration = str(product["concentration"]).strip()
     volume = int(product["volume_ml"])
 
-    if product["name"].casefold().endswith(
-        " " + concentration.casefold().split()[0]
-    ):
+    if product["name"].casefold().endswith(" " + concentration.casefold().split()[0]):
         return f"{display} {volume} ml"
 
     return f"{display} {concentration} {volume} ml"
@@ -224,12 +208,7 @@ def build_catalog_product(
         "volume_ml": str(staged["volume_ml"]),
         "concentration": str(staged["concentration"]),
         "target_group": ", ".join(target_groups),
-        "audience_lean": str(
-            staged.get("classification", {}).get(
-                "audience_lean"
-            )
-            or ""
-        ),
+        "audience_lean": str(staged.get("classification", {}).get("audience_lean") or ""),
         "main_accords": ", ".join(accords),
         "key_notes": ", ".join(key_notes),
         "freshness": str(scores["freshness"]),
@@ -244,14 +223,10 @@ def build_catalog_product(
             or ""
         ),
         "longevity": (
-            ""
-            if community.get("longevity_10") is None
-            else str(community["longevity_10"])
+            "" if community.get("longevity_10") is None else str(community["longevity_10"])
         ),
         "projection": (
-            ""
-            if community.get("projection_10") is None
-            else str(community["projection_10"])
+            "" if community.get("projection_10") is None else str(community["projection_10"])
         ),
         "price_source": "current_merchant_offer",
         "market_price_eur": str(best_offer["price"]),
@@ -267,14 +242,10 @@ def build_catalog_product(
     description_accords = ", ".join(accords[:3])
     if description_accords:
         short_description = (
-            f"{full_product_name(staged)} ist ein "
-            f"{description_accords} geprägter Duft."
+            f"{full_product_name(staged)} ist ein {description_accords} geprägter Duft."
         )
     else:
-        short_description = (
-            f"{full_product_name(staged)} ist ein "
-            f"{staged['concentration']} Duft."
-        )
+        short_description = f"{full_product_name(staged)} ist ein {staged['concentration']} Duft."
 
     return {
         "product_id": staged["product_id"],
@@ -300,39 +271,24 @@ def choose_products(
     batch: int | None,
     limit: int,
 ) -> list[dict]:
-    selected_ids = {
-        product_id.strip()
-        for product_id in product_ids
-        if product_id.strip()
-    }
+    selected_ids = {product_id.strip() for product_id in product_ids if product_id.strip()}
 
     if not selected_ids and batch is None:
-        raise ValueError(
-            "Select at least one --product-id or provide --batch"
-        )
+        raise ValueError("Select at least one --product-id or provide --batch")
 
     selected = []
     for product in staging_products:
         if selected_ids and product.get("product_id") in selected_ids:
             selected.append(product)
             continue
-        if (
-            batch is not None
-            and int(product.get("batch") or 0) == batch
-        ):
+        if batch is not None and int(product.get("batch") or 0) == batch:
             selected.append(product)
 
     if selected_ids:
-        found = {
-            product["product_id"]
-            for product in selected
-        }
+        found = {product["product_id"] for product in selected}
         missing = sorted(selected_ids - found)
         if missing:
-            raise ValueError(
-                "Unknown staged product_id values: "
-                + ", ".join(missing)
-            )
+            raise ValueError("Unknown staged product_id values: " + ", ".join(missing))
 
     return selected[:limit]
 
@@ -354,10 +310,7 @@ def promotion_plan(
         "offers",
         offers_payload if isinstance(offers_payload, list) else [],
     )
-    live_ids = {
-        product.get("product_id")
-        for product in catalog.get("products", [])
-    }
+    live_ids = {product.get("product_id") for product in catalog.get("products", [])}
 
     selected = choose_products(
         staged_products,
@@ -447,8 +400,7 @@ def write_promotions(
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Validate and promote verified SCENTAI staging "
-            "products into the live catalog."
+            "Validate and promote verified SCENTAI staging products into the live catalog."
         )
     )
     parser.add_argument(
@@ -493,17 +445,13 @@ def main() -> int:
         "--allow-provisional",
         action="store_true",
         help=(
-            "Allow products whose community-performance data "
-            "is still provisional. Off by default."
+            "Allow products whose community-performance data is still provisional. Off by default."
         ),
     )
     parser.add_argument(
         "--write",
         action="store_true",
-        help=(
-            "Write ready products to catalog.json. Without "
-            "this flag the command is a dry-run."
-        ),
+        help=("Write ready products to catalog.json. Without this flag the command is a dry-run."),
     )
     parser.add_argument(
         "--machine-readable",
@@ -542,17 +490,12 @@ def main() -> int:
                 "and resolve every blocker first."
             )
 
-        staging_qa = asyncio.run(
-            run_qa(args.staging)
-        )
+        staging_qa = asyncio.run(run_qa(args.staging))
         if not staging_qa["passed"]:
-            preview = ", ".join(
-                staging_qa["issues"][:5]
-            )
+            preview = ", ".join(staging_qa["issues"][:5])
             parser.error(
                 "Refusing live promotion because staging "
-                "recommendation QA failed"
-                + (f": {preview}" if preview else "")
+                "recommendation QA failed" + (f": {preview}" if preview else "")
             )
 
         write_promotions(
@@ -561,11 +504,7 @@ def main() -> int:
             plan["ready_products"],
         )
 
-    output = {
-        key: value
-        for key, value in plan.items()
-        if key != "ready_products"
-    }
+    output = {key: value for key, value in plan.items() if key != "ready_products"}
     output["mode"] = "WRITE" if args.write else "DRY-RUN"
 
     if args.machine_readable:

@@ -43,10 +43,7 @@ def test_extracts_mapped_feed_image_candidate() -> None:
     candidate = result["candidates"][0]
     assert candidate["product_id"] == "SC-TEST-100"
     assert candidate["review_status"] == "pending_review"
-    assert (
-        candidate["approved_image_status"]
-        == "approved_feed_image"
-    )
+    assert candidate["approved_image_status"] == "approved_feed_image"
 
 
 def test_unmatched_feed_image_is_kept_for_mapping_review() -> None:
@@ -64,10 +61,7 @@ def test_unmatched_feed_image_is_kept_for_mapping_review() -> None:
 
     assert result["candidate_count"] == 0
     assert result["unmatched_count"] == 1
-    assert (
-        result["unmatched"][0]["reason"]
-        == "product_mapping_not_found"
-    )
+    assert result["unmatched"][0]["reason"] == "product_mapping_not_found"
 
 
 def test_invalid_image_url_is_rejected() -> None:
@@ -85,10 +79,7 @@ def test_invalid_image_url_is_rejected() -> None:
 
     assert result["candidate_count"] == 0
     assert result["invalid_count"] == 1
-    assert (
-        result["invalid"][0]["reason"]
-        == "invalid_image_url"
-    )
+    assert result["invalid"][0]["reason"] == "invalid_image_url"
 
 
 def test_duplicate_product_image_is_deduplicated() -> None:

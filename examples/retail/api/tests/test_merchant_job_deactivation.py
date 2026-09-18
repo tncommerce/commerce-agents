@@ -1,4 +1,4 @@
-﻿import json
+import json
 
 from retail.api.merchant_job_approval import (
     build_job_approval,
@@ -40,8 +40,8 @@ def _active_job(tmp_path):
                             "authoritative_merchant_id": "notino-de",
                             "authoritative_data_source": "cj-feed",
                             "run_report": str(tmp_path / "runs.jsonl"),
-                            "dry_run": False
-                        }
+                            "dry_run": False,
+                        },
                     }
                 ]
             }

@@ -13,13 +13,8 @@ from scripts.report_scentai_demand import (
     fetch_view_rows,
 )
 
-
-DEFAULT_CANDIDATES = Path(
-    "examples/retail/data/scentai_catalog_candidates.json"
-)
-DEFAULT_STAGING = Path(
-    "examples/retail/data/scentai_catalog_staging.json"
-)
+DEFAULT_CANDIDATES = Path("examples/retail/data/scentai_catalog_candidates.json")
+DEFAULT_STAGING = Path("examples/retail/data/scentai_catalog_staging.json")
 
 BRAND_ALIASES: dict[str, tuple[str, ...]] = {
     "yves saint laurent": ("ysl",),
@@ -52,26 +47,14 @@ def normalize(value: object) -> str:
         "NFKD",
         str(value or ""),
     )
-    text = "".join(
-        char
-        for char in text
-        if not unicodedata.combining(char)
-    )
-    text = (
-        text.lower()
-        .replace("ß", "ss")
-        .replace("&", " ")
-    )
+    text = "".join(char for char in text if not unicodedata.combining(char))
+    text = text.lower().replace("ß", "ss").replace("&", " ")
     text = re.sub(r"[^a-z0-9]+", " ", text)
     return " ".join(text.split())
 
 
 def token_set(value: object) -> set[str]:
-    return {
-        token
-        for token in normalize(value).split()
-        if token
-    }
+    return {token for token in normalize(value).split() if token}
 
 
 def candidate_aliases(candidate: dict) -> list[str]:
@@ -87,15 +70,9 @@ def candidate_aliases(candidate: dict) -> list[str]:
         brand,
         (),
     ):
-        aliases.add(
-            f"{normalize(brand_alias)} {name}".strip()
-        )
+        aliases.add(f"{normalize(brand_alias)} {name}".strip())
 
-    return sorted(
-        alias
-        for alias in aliases
-        if alias
-    )
+    return sorted(alias for alias in aliases if alias)
 
 
 def query_matches_candidate(
@@ -115,26 +92,16 @@ def query_matches_candidate(
             return True
 
         alias_tokens = token_set(alias)
-        if (
-            len(alias_tokens) >= 2
-            and alias_tokens.issubset(query_tokens)
-        ):
+        if len(alias_tokens) >= 2 and alias_tokens.issubset(query_tokens):
             return True
 
-    meaningful_name_tokens = {
-        token
-        for token in name_tokens
-        if token not in GENERIC_NAME_TOKENS
-    }
+    meaningful_name_tokens = {token for token in name_tokens if token not in GENERIC_NAME_TOKENS}
 
     # One-word names such as "Y" are intentionally not matched by loose
     # token containment because they would create false positives.
     return (
         len(meaningful_name_tokens) >= 1
-        and all(
-            len(token) >= 3
-            for token in meaningful_name_tokens
-        )
+        and all(len(token) >= 3 for token in meaningful_name_tokens)
         and meaningful_name_tokens.issubset(query_tokens)
     )
 
@@ -146,30 +113,38 @@ def demand_points(
     no_result_events: int,
 ) -> int:
     search_points = (
-        4 if total_searches >= 20
-        else 3 if total_searches >= 10
-        else 2 if total_searches >= 5
-        else 1 if total_searches >= 2
+        4
+        if total_searches >= 20
+        else 3
+        if total_searches >= 10
+        else 2
+        if total_searches >= 5
+        else 1
+        if total_searches >= 2
         else 0
     )
     session_points = (
-        3 if unique_sessions >= 10
-        else 2 if unique_sessions >= 5
-        else 1 if unique_sessions >= 2
+        3
+        if unique_sessions >= 10
+        else 2
+        if unique_sessions >= 5
+        else 1
+        if unique_sessions >= 2
         else 0
     )
     no_result_points = (
-        3 if no_result_events >= 7
-        else 2 if no_result_events >= 3
-        else 1 if no_result_events >= 1
+        3
+        if no_result_events >= 7
+        else 2
+        if no_result_events >= 3
+        else 1
+        if no_result_events >= 1
         else 0
     )
 
     return min(
         10,
-        search_points
-        + session_points
-        + no_result_points,
+        search_points + session_points + no_result_points,
     )
 
 
@@ -187,23 +162,16 @@ def aggregate_candidate_demand(
     ]
 
     total_searches = sum(
-        int(row.get("search_events") or 0)
-        + int(row.get("no_result_events") or 0)
+        int(row.get("search_events") or 0) + int(row.get("no_result_events") or 0)
         for row in matched_rows
     )
-    no_result_events = sum(
-        int(row.get("no_result_events") or 0)
-        for row in matched_rows
-    )
+    no_result_events = sum(int(row.get("no_result_events") or 0) for row in matched_rows)
 
     # Unique sessions from aggregate rows cannot be safely summed because
     # the same anonymous session may appear in multiple search terms.
     # Use the strongest term's session count as a conservative proxy.
     unique_sessions_proxy = max(
-        (
-            int(row.get("unique_sessions") or 0)
-            for row in matched_rows
-        ),
+        (int(row.get("unique_sessions") or 0) for row in matched_rows),
         default=0,
     )
 
@@ -219,11 +187,7 @@ def aggregate_candidate_demand(
         "no_result_events": no_result_events,
         "unique_sessions_proxy": unique_sessions_proxy,
         "matched_search_terms": sorted(
-            {
-                str(row.get("search_term") or "")
-                for row in matched_rows
-                if row.get("search_term")
-            }
+            {str(row.get("search_term") or "") for row in matched_rows if row.get("search_term")}
         ),
     }
 
@@ -240,9 +204,7 @@ SCORE_COMPONENT_CAPS = {
 def selection_score_components(
     candidate: dict,
 ) -> dict[str, float] | None:
-    components = candidate.get(
-        "selection_score_components"
-    )
+    components = candidate.get("selection_score_components")
     if not isinstance(components, dict):
         return None
 
@@ -250,10 +212,7 @@ def selection_score_components(
         return None
 
     try:
-        values = {
-            key: float(components[key])
-            for key in SCORE_COMPONENT_CAPS
-        }
+        values = {key: float(components[key]) for key in SCORE_COMPONENT_CAPS}
     except (TypeError, ValueError):
         return None
 
@@ -313,8 +272,7 @@ def research_priority_value(
         # The fractional demand value is only a deterministic tie-breaker
         # between equal 0-100 scores; it is not part of the selection score.
         return (
-            adjusted_selection_score
-            + demand_score / 100.0,
+            adjusted_selection_score + demand_score / 100.0,
             (
                 "demand_adjusted_selection_score_then_demand"
                 if adjusted_selection_score != base_selection_score
@@ -325,8 +283,7 @@ def research_priority_value(
     # Current backlog has no stored numeric selection score. Keep demand
     # clearly separate rather than fabricating missing evidence.
     return (
-        demand_score
-        + max(0, 2 - manual_priority) / 100.0,
+        demand_score + max(0, 2 - manual_priority) / 100.0,
         "demand_first_no_numeric_selection_score",
     )
 
@@ -349,8 +306,7 @@ def build_candidate_priority(
     research_candidates = [
         candidate
         for candidate in all_candidates
-        if str(candidate.get("candidate_id") or "").strip()
-        not in staged_ids
+        if str(candidate.get("candidate_id") or "").strip() not in staged_ids
     ]
 
     rows: list[dict[str, Any]] = []
@@ -367,9 +323,7 @@ def build_candidate_priority(
         )
 
         try:
-            manual_priority = int(
-                candidate.get("priority") or 99
-            )
+            manual_priority = int(candidate.get("priority") or 99)
         except (TypeError, ValueError):
             manual_priority = 99
 
@@ -382,20 +336,12 @@ def build_candidate_priority(
 
         rows.append(
             {
-                "candidate_id": candidate.get(
-                    "candidate_id"
-                ),
+                "candidate_id": candidate.get("candidate_id"),
                 "brand": candidate.get("brand"),
-                "canonical_name": candidate.get(
-                    "canonical_name"
-                ),
+                "canonical_name": candidate.get("canonical_name"),
                 "segment": candidate.get("segment"),
-                "target_group": candidate.get(
-                    "target_group"
-                ),
-                "verification_status": candidate.get(
-                    "verification_status"
-                ),
+                "target_group": candidate.get("target_group"),
+                "verification_status": candidate.get("verification_status"),
                 "manual_priority": manual_priority,
                 "selection_score_100": base_score,
                 "demand_adjusted_selection_score_100": adjusted_score,
@@ -418,41 +364,19 @@ def build_candidate_priority(
         )
     )
 
-    matched_terms = {
-        term
-        for row in rows
-        for term in row["matched_search_terms"]
-    }
+    matched_terms = {term for row in rows for term in row["matched_search_terms"]}
 
     unmatched_terms = []
     for search_row in search_rows:
-        term = str(
-            search_row.get("search_term") or ""
-        ).strip()
+        term = str(search_row.get("search_term") or "").strip()
         if not term or term in matched_terms:
             continue
 
-        total = (
-            int(search_row.get("search_events") or 0)
-            + int(
-                search_row.get(
-                    "no_result_events"
-                )
-                or 0
-            )
+        total = int(search_row.get("search_events") or 0) + int(
+            search_row.get("no_result_events") or 0
         )
-        no_results = int(
-            search_row.get(
-                "no_result_events"
-            )
-            or 0
-        )
-        sessions = int(
-            search_row.get(
-                "unique_sessions"
-            )
-            or 0
-        )
+        no_results = int(search_row.get("no_result_events") or 0)
+        sessions = int(search_row.get("unique_sessions") or 0)
 
         unmatched_terms.append(
             {
@@ -484,21 +408,11 @@ def build_candidate_priority(
             [
                 candidate
                 for candidate in all_candidates
-                if str(
-                    candidate.get(
-                        "candidate_id"
-                    )
-                    or ""
-                ).strip()
-                in staged_ids
+                if str(candidate.get("candidate_id") or "").strip() in staged_ids
             ]
         ),
         "research_candidate_count": len(rows),
-        "candidates_with_demand": sum(
-            1
-            for row in rows
-            if row["demand_score_10"] > 0
-        ),
+        "candidates_with_demand": sum(1 for row in rows if row["demand_score_10"] > 0),
         "rows": rows,
         "unmatched_demand_terms": unmatched_terms,
     }
@@ -525,8 +439,7 @@ def fetch_search_rows(
 
     if not supabase_url or not service_key:
         raise ValueError(
-            "SUPABASE_URL and SUPABASE_SECRET_KEY or "
-            "SUPABASE_SERVICE_ROLE_KEY are required"
+            "SUPABASE_URL and SUPABASE_SECRET_KEY or SUPABASE_SERVICE_ROLE_KEY are required"
         )
 
     return fetch_view_rows(
@@ -593,9 +506,7 @@ def main() -> int:
             raw = load_json(args.demand_json)
             search_rows = raw.get("search_rows")
             if not isinstance(search_rows, list):
-                raise ValueError(
-                    "demand JSON requires a search_rows array"
-                )
+                raise ValueError("demand JSON requires a search_rows array")
         else:
             search_rows = fetch_search_rows(
                 max_rows=args.max_rows,
@@ -646,14 +557,9 @@ def main() -> int:
         start=1,
     ):
         selection = (
-            "-"
-            if row["selection_score_100"] is None
-            else f"{row['selection_score_100']:.1f}"
+            "-" if row["selection_score_100"] is None else f"{row['selection_score_100']:.1f}"
         )
-        terms = (
-            ", ".join(row["matched_search_terms"])
-            or "-"
-        )
+        terms = ", ".join(row["matched_search_terms"]) or "-"
         print(
             f"  {index:>2}. "
             f"{row['brand']} {row['canonical_name']} | "

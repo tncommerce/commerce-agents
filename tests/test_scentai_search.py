@@ -4,8 +4,8 @@
 from __future__ import annotations
 
 import pytest
-
 from examples.retail.api.mock_retail import MockRetail
+
 from shopping_agent import ProductDetails, ShoppingSessionContext
 
 

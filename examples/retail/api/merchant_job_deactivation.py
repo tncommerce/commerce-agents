@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import json
 from pathlib import Path
@@ -36,13 +36,8 @@ def deactivate_merchant_job(
     updated_jobs: list[MerchantJobProfile] = []
 
     for item in jobs:
-        if (
-            item.job_id.strip().casefold()
-            == job.job_id.strip().casefold()
-        ):
-            safe_config = item.config.model_copy(
-                update={"dry_run": True}
-            )
+        if item.job_id.strip().casefold() == job.job_id.strip().casefold():
+            safe_config = item.config.model_copy(update={"dry_run": True})
 
             updated_jobs.append(
                 item.model_copy(
@@ -55,12 +50,7 @@ def deactivate_merchant_job(
         else:
             updated_jobs.append(item)
 
-    payload = {
-        "jobs": [
-            item.model_dump(mode="json")
-            for item in updated_jobs
-        ]
-    }
+    payload = {"jobs": [item.model_dump(mode="json") for item in updated_jobs]}
 
     jobs_path.write_text(
         json.dumps(

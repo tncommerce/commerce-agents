@@ -11,13 +11,9 @@ from retail.api.merchant_feed_reader import (
 def test_detect_feed_format_from_extension(
     tmp_path,
 ) -> None:
-    assert detect_feed_format(
-        tmp_path / "feed.json"
-    ) == "json"
+    assert detect_feed_format(tmp_path / "feed.json") == "json"
 
-    assert detect_feed_format(
-        tmp_path / "feed.csv"
-    ) == "csv"
+    assert detect_feed_format(tmp_path / "feed.csv") == "csv"
 
 
 def test_read_json_object_feed(
@@ -78,10 +74,7 @@ def test_read_csv_feed(
     path = tmp_path / "feed.csv"
 
     path.write_text(
-        (
-            "external_offer,external_sku,external_price\n"
-            "offer-1,SKU-123,89.95\n"
-        ),
+        ("external_offer,external_sku,external_price\noffer-1,SKU-123,89.95\n"),
         encoding="utf-8",
     )
 
@@ -137,11 +130,7 @@ def test_invalid_json_shape_is_rejected(
     path = tmp_path / "feed.json"
 
     path.write_text(
-        json.dumps(
-            {
-                "unexpected": []
-            }
-        ),
+        json.dumps({"unexpected": []}),
         encoding="utf-8",
     )
 
@@ -158,10 +147,7 @@ def test_read_semicolon_delimited_csv(
     path = tmp_path / "feed.csv"
 
     path.write_text(
-        (
-            "offer_id;merchant_product_id;price\n"
-            "offer-1;SKU-123;89.95\n"
-        ),
+        ("offer_id;merchant_product_id;price\noffer-1;SKU-123;89.95\n"),
         encoding="utf-8",
     )
 
@@ -178,10 +164,7 @@ def test_read_tab_delimited_csv(
     path = tmp_path / "feed.csv"
 
     path.write_text(
-        (
-            "offer_id\tmerchant_product_id\tprice\n"
-            "offer-1\tSKU-123\t89.95\n"
-        ),
+        ("offer_id\tmerchant_product_id\tprice\noffer-1\tSKU-123\t89.95\n"),
         encoding="utf-8",
     )
 
@@ -196,12 +179,7 @@ def test_read_utf8_bom_csv(
 ) -> None:
     path = tmp_path / "feed.csv"
 
-    path.write_bytes(
-        (
-            "\ufeffoffer_id,merchant_name\n"
-            "offer-1,Parf?merie Test\n"
-        ).encode("utf-8")
-    )
+    path.write_bytes(("\ufeffoffer_id,merchant_name\noffer-1,Parf?merie Test\n").encode("utf-8"))
 
     rows = read_merchant_feed_rows(path)
 
@@ -218,12 +196,7 @@ def test_read_windows_1252_csv(
 ) -> None:
     path = tmp_path / "feed.csv"
 
-    path.write_bytes(
-        (
-            "offer_id;merchant_name\n"
-            "offer-1;Parf?merie K?ln\n"
-        ).encode("cp1252")
-    )
+    path.write_bytes(("offer_id;merchant_name\noffer-1;Parf?merie K?ln\n").encode("cp1252"))
 
     rows = read_merchant_feed_rows(path)
 
@@ -236,10 +209,7 @@ def test_csv_without_supported_delimiter_is_rejected(
     path = tmp_path / "feed.csv"
 
     path.write_text(
-        (
-            "offer_id price\n"
-            "offer-1 89.95\n"
-        ),
+        ("offer_id price\noffer-1 89.95\n"),
         encoding="utf-8",
     )
 
@@ -301,11 +271,7 @@ def test_csv_row_limit_is_enforced(
     path = tmp_path / "feed.csv"
 
     path.write_text(
-        (
-            "offer_id,price\n"
-            "offer-1,89.95\n"
-            "offer-2,79.95\n"
-        ),
+        ("offer_id,price\noffer-1,89.95\noffer-2,79.95\n"),
         encoding="utf-8",
     )
 

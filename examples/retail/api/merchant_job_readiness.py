@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from pydantic import BaseModel
 
@@ -16,10 +16,7 @@ def evaluate_job_readiness(
 ) -> MerchantJobReadiness:
     reasons: list[str] = []
 
-    supported = {
-        provider.casefold()
-        for provider in available_providers()
-    }
+    supported = {provider.casefold() for provider in available_providers()}
 
     if config.provider.strip().casefold() not in supported:
         reasons.append("unsupported_provider")
@@ -30,10 +27,7 @@ def evaluate_job_readiness(
     if not config.mappings.is_file():
         reasons.append("mappings_missing")
 
-    if (
-        (config.authoritative_merchant_id is None)
-        != (config.authoritative_data_source is None)
-    ):
+    if (config.authoritative_merchant_id is None) != (config.authoritative_data_source is None):
         reasons.append("incomplete_authoritative_scope")
 
     return MerchantJobReadiness(

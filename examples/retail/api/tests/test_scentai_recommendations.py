@@ -106,7 +106,6 @@ async def test_performance_search_prioritizes_longevity_and_projection(backend, 
         assert (longevity + projection) / 2 >= 7.8
 
 
-
 async def test_named_fragrance_lookup_respects_budget_hard_constraint(backend, session):
     hits = await backend.search_products(
         session,
@@ -152,8 +151,7 @@ async def test_summer_intent_prioritizes_fresh_low_sweetness_profiles(backend, s
         assert sweetness <= 6
 
     assert any(
-        "Sommerprofil" in str(product.attributes.get("anfrage_passung", ""))
-        for product in hits[:3]
+        "Sommerprofil" in str(product.attributes.get("anfrage_passung", "")) for product in hits[:3]
     )
 
 
@@ -234,7 +232,6 @@ async def test_alternative_search_customer_copy_is_german(backend, session):
     assert "Very close in scent direction" not in hits[0].short_description
 
 
-
 async def test_everyday_intent_prefers_balanced_profiles(backend, session):
     hits = await backend.search_products(
         session,
@@ -270,10 +267,8 @@ async def test_query_fit_normalizes_german_sharp_s(backend, session):
 
     assert hits
     assert any(
-        "geringe Süße" in str(product.attributes.get("anfrage_passung", ""))
-        for product in hits[:3]
+        "geringe Süße" in str(product.attributes.get("anfrage_passung", "")) for product in hits[:3]
     )
-
 
 
 async def test_spring_intent_prefers_fresh_bright_profiles(backend, session):
@@ -293,10 +288,7 @@ async def test_spring_intent_prefers_fresh_bright_profiles(backend, session):
         freshness = float(product.attributes["freshness"])
         accords = str(product.attributes["main_accords"]).lower()
         assert freshness >= 8
-        assert any(
-            accord in accords
-            for accord in ("floral", "fruity", "green", "citrus", "fresh")
-        )
+        assert any(accord in accords for accord in ("floral", "fruity", "green", "citrus", "fresh"))
 
 
 async def test_autumn_intent_prefers_warm_long_lasting_profiles(backend, session):
@@ -320,7 +312,6 @@ async def test_autumn_intent_prefers_warm_long_lasting_profiles(backend, session
 
         assert (sweetness + woodiness + spiciness) / 3 >= 6
         assert longevity >= 7.5
-
 
 
 async def test_customer_facing_fragrance_summary_is_german(backend, session):

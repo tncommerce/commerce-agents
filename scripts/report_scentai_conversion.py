@@ -12,7 +12,6 @@ from scripts.report_scentai_demand import (
     product_labels,
 )
 
-
 DEFAULT_CATALOG = Path("examples/retail/data/catalog.json")
 FUNNEL_VIEW = "scentai_conversion_funnel"
 PRODUCT_VIEW = "scentai_product_funnel"
@@ -52,30 +51,14 @@ def build_conversion_report(
 ) -> dict[str, Any]:
     labels = product_labels(catalog)
 
-    consultation_sessions = sum(
-        _integer(row.get("consultation_sessions"))
-        for row in funnel_rows
-    )
+    consultation_sessions = sum(_integer(row.get("consultation_sessions")) for row in funnel_rows)
     recommendation_sessions = sum(
-        _integer(row.get("recommendation_sessions"))
-        for row in funnel_rows
+        _integer(row.get("recommendation_sessions")) for row in funnel_rows
     )
-    advisor_open_sessions = sum(
-        _integer(row.get("advisor_open_sessions"))
-        for row in funnel_rows
-    )
-    detail_view_sessions = sum(
-        _integer(row.get("detail_view_sessions"))
-        for row in funnel_rows
-    )
-    comparison_sessions = sum(
-        _integer(row.get("comparison_sessions"))
-        for row in funnel_rows
-    )
-    clickout_sessions = sum(
-        _integer(row.get("clickout_sessions"))
-        for row in funnel_rows
-    )
+    advisor_open_sessions = sum(_integer(row.get("advisor_open_sessions")) for row in funnel_rows)
+    detail_view_sessions = sum(_integer(row.get("detail_view_sessions")) for row in funnel_rows)
+    comparison_sessions = sum(_integer(row.get("comparison_sessions")) for row in funnel_rows)
+    clickout_sessions = sum(_integer(row.get("clickout_sessions")) for row in funnel_rows)
 
     summary = {
         "consultation_sessions": consultation_sessions,
@@ -112,30 +95,18 @@ def build_conversion_report(
         if not product_id:
             continue
 
-        recommendation_count = _integer(
-            row.get("recommendation_sessions")
-        )
+        recommendation_count = _integer(row.get("recommendation_sessions"))
 
         products.append(
             {
                 "product_id": product_id,
                 "product": labels.get(product_id, product_id),
-                "recommendation_views": _integer(
-                    row.get("recommendation_views")
-                ),
+                "recommendation_views": _integer(row.get("recommendation_views")),
                 "recommendation_sessions": recommendation_count,
-                "advisor_open_sessions": _integer(
-                    row.get("advisor_open_sessions")
-                ),
-                "detail_view_sessions": _integer(
-                    row.get("detail_view_sessions")
-                ),
-                "comparison_sessions": _integer(
-                    row.get("comparison_sessions")
-                ),
-                "clickout_sessions": _integer(
-                    row.get("clickout_sessions")
-                ),
+                "advisor_open_sessions": _integer(row.get("advisor_open_sessions")),
+                "detail_view_sessions": _integer(row.get("detail_view_sessions")),
+                "comparison_sessions": _integer(row.get("comparison_sessions")),
+                "clickout_sessions": _integer(row.get("clickout_sessions")),
                 "advisor_open_rate_pct": (
                     None
                     if row.get("advisor_open_rate_pct") is None
@@ -146,21 +117,15 @@ def build_conversion_report(
                 ),
                 "recommendation_to_clickout_pct": (
                     None
-                    if row.get("recommendation_to_clickout_pct")
-                    is None
+                    if row.get("recommendation_to_clickout_pct") is None
                     else round(
-                        _float(
-                            row.get(
-                                "recommendation_to_clickout_pct"
-                            )
-                        ),
+                        _float(row.get("recommendation_to_clickout_pct")),
                         2,
                     )
                 ),
                 "sample_status": (
                     "sufficient_signal"
-                    if recommendation_count
-                    >= minimum_sample_sessions
+                    if recommendation_count >= minimum_sample_sessions
                     else "early_signal"
                 ),
                 "last_event_at": row.get("last_event_at"),
@@ -185,19 +150,14 @@ def build_conversion_report(
         ),
     )[:limit]
 
-    mature_products = [
-        row
-        for row in products
-        if row["sample_status"] == "sufficient_signal"
-    ]
+    mature_products = [row for row in products if row["sample_status"] == "sufficient_signal"]
 
     best_clickout_rates = sorted(
         mature_products,
         key=lambda row: (
             -(
                 row["recommendation_to_clickout_pct"]
-                if row["recommendation_to_clickout_pct"]
-                is not None
+                if row["recommendation_to_clickout_pct"] is not None
                 else -1.0
             ),
             -row["recommendation_sessions"],
@@ -211,20 +171,14 @@ def build_conversion_report(
         if position <= 0:
             continue
 
-        sessions = _integer(
-            row.get("recommendation_sessions")
-        )
+        sessions = _integer(row.get("recommendation_sessions"))
 
         positions.append(
             {
                 "item_position": position,
-                "recommendation_views": _integer(
-                    row.get("recommendation_views")
-                ),
+                "recommendation_views": _integer(row.get("recommendation_views")),
                 "recommendation_sessions": sessions,
-                "advisor_open_sessions": _integer(
-                    row.get("advisor_open_sessions")
-                ),
+                "advisor_open_sessions": _integer(row.get("advisor_open_sessions")),
                 "open_rate_pct": (
                     None
                     if row.get("open_rate_pct") is None
@@ -234,30 +188,20 @@ def build_conversion_report(
                     )
                 ),
                 "sample_status": (
-                    "sufficient_signal"
-                    if sessions >= minimum_sample_sessions
-                    else "early_signal"
+                    "sufficient_signal" if sessions >= minimum_sample_sessions else "early_signal"
                 ),
             }
         )
 
-    positions.sort(
-        key=lambda row: row["item_position"]
-    )
+    positions.sort(key=lambda row: row["item_position"])
 
     surfaces = [
         {
             "surface": str(row.get("surface") or "unknown"),
             "clickouts": _integer(row.get("clickouts")),
-            "clickout_sessions": _integer(
-                row.get("clickout_sessions")
-            ),
-            "products_clicked": _integer(
-                row.get("products_clicked")
-            ),
-            "merchants_clicked": _integer(
-                row.get("merchants_clicked")
-            ),
+            "clickout_sessions": _integer(row.get("clickout_sessions")),
+            "products_clicked": _integer(row.get("products_clicked")),
+            "merchants_clicked": _integer(row.get("merchants_clicked")),
             "last_clickout_at": row.get("last_clickout_at"),
         }
         for row in surface_rows
@@ -274,34 +218,17 @@ def build_conversion_report(
         (
             {
                 "cohort_date": row.get("cohort_date"),
-                "consultation_sessions": _integer(
-                    row.get("consultation_sessions")
-                ),
-                "recommendation_sessions": _integer(
-                    row.get("recommendation_sessions")
-                ),
-                "advisor_open_sessions": _integer(
-                    row.get("advisor_open_sessions")
-                ),
-                "detail_view_sessions": _integer(
-                    row.get("detail_view_sessions")
-                ),
-                "comparison_sessions": _integer(
-                    row.get("comparison_sessions")
-                ),
-                "clickout_sessions": _integer(
-                    row.get("clickout_sessions")
-                ),
+                "consultation_sessions": _integer(row.get("consultation_sessions")),
+                "recommendation_sessions": _integer(row.get("recommendation_sessions")),
+                "advisor_open_sessions": _integer(row.get("advisor_open_sessions")),
+                "detail_view_sessions": _integer(row.get("detail_view_sessions")),
+                "comparison_sessions": _integer(row.get("comparison_sessions")),
+                "clickout_sessions": _integer(row.get("clickout_sessions")),
                 "recommendation_to_clickout_pct": (
                     None
-                    if row.get("recommendation_to_clickout_pct")
-                    is None
+                    if row.get("recommendation_to_clickout_pct") is None
                     else round(
-                        _float(
-                            row.get(
-                                "recommendation_to_clickout_pct"
-                            )
-                        ),
+                        _float(row.get("recommendation_to_clickout_pct")),
                         2,
                     )
                 ),
@@ -335,22 +262,13 @@ def _print_rows(
         return
 
     for index, row in enumerate(rows, start=1):
-        values = [
-            f"{label}={row.get(key)}"
-            for key, label in columns
-        ]
-        print(
-            f"  {index:>2}. "
-            + " | ".join(values)
-        )
+        values = [f"{label}={row.get(key)}" for key, label in columns]
+        print(f"  {index:>2}. " + " | ".join(values))
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description=(
-            "Report the privacy-minimized SCENTAI advisor-to-clickout "
-            "conversion funnel."
-        )
+        description=("Report the privacy-minimized SCENTAI advisor-to-clickout conversion funnel.")
     )
     parser.add_argument(
         "--catalog",
@@ -385,13 +303,8 @@ def main() -> int:
 
     if args.limit < 1 or args.limit > 100:
         parser.error("--limit must be between 1 and 100")
-    if (
-        args.minimum_sample_sessions < 1
-        or args.minimum_sample_sessions > 10000
-    ):
-        parser.error(
-            "--minimum-sample-sessions must be between 1 and 10000"
-        )
+    if args.minimum_sample_sessions < 1 or args.minimum_sample_sessions > 10000:
+        parser.error("--minimum-sample-sessions must be between 1 and 10000")
 
     supabase_url = os.getenv("SUPABASE_URL", "").strip()
     service_key = (
@@ -404,8 +317,7 @@ def main() -> int:
 
     if not supabase_url or not service_key:
         parser.error(
-            "SUPABASE_URL and SUPABASE_SECRET_KEY or "
-            "SUPABASE_SERVICE_ROLE_KEY are required"
+            "SUPABASE_URL and SUPABASE_SECRET_KEY or SUPABASE_SERVICE_ROLE_KEY are required"
         )
 
     try:

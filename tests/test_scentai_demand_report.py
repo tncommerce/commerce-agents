@@ -72,22 +72,10 @@ def test_demand_report_ranks_search_and_gap_signals() -> None:
     assert report["summary"]["total_searches"] == 18
     assert report["summary"]["no_result_events"] == 6
 
-    assert (
-        report["top_searches"][0]["search_term"]
-        == "prada herren"
-    )
-    assert (
-        report["top_no_results"][0]["search_term"]
-        == "gucci elixir absolu"
-    )
-    assert (
-        report["weak_coverage"][0]["search_term"]
-        == "gucci elixir absolu"
-    )
-    assert (
-        report["weak_coverage"][0]["no_result_rate"]
-        == 1.0
-    )
+    assert report["top_searches"][0]["search_term"] == "prada herren"
+    assert report["top_no_results"][0]["search_term"] == "gucci elixir absolu"
+    assert report["weak_coverage"][0]["search_term"] == "gucci elixir absolu"
+    assert report["weak_coverage"][0]["no_result_rate"] == 1.0
 
 
 def test_demand_report_enriches_product_engagement() -> None:
@@ -117,14 +105,8 @@ def test_demand_report_enriches_product_engagement() -> None:
     assert report["summary"]["product_opens"] == 19
     assert report["summary"]["merchant_clickouts"] == 8
 
-    assert (
-        report["top_product_opens"][0]["product"]
-        == "Prada L'Homme Intense"
-    )
-    assert (
-        report["top_clickouts"][0]["product"]
-        == "Xerjoff Naxos"
-    )
+    assert report["top_product_opens"][0]["product"] == "Prada L'Homme Intense"
+    assert report["top_clickouts"][0]["product"] == "Xerjoff Naxos"
 
 
 def test_limit_is_applied_to_every_ranked_section() -> None:

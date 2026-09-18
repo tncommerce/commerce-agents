@@ -87,23 +87,32 @@ def test_short_single_letter_name_does_not_match_loose_query() -> None:
 
 
 def test_demand_points_are_bounded_to_ten() -> None:
-    assert demand_points(
-        total_searches=0,
-        unique_sessions=0,
-        no_result_events=0,
-    ) == 0
+    assert (
+        demand_points(
+            total_searches=0,
+            unique_sessions=0,
+            no_result_events=0,
+        )
+        == 0
+    )
 
-    assert demand_points(
-        total_searches=20,
-        unique_sessions=10,
-        no_result_events=7,
-    ) == 10
+    assert (
+        demand_points(
+            total_searches=20,
+            unique_sessions=10,
+            no_result_events=7,
+        )
+        == 10
+    )
 
-    assert demand_points(
-        total_searches=999,
-        unique_sessions=999,
-        no_result_events=999,
-    ) == 10
+    assert (
+        demand_points(
+            total_searches=999,
+            unique_sessions=999,
+            no_result_events=999,
+        )
+        == 10
+    )
 
 
 def test_candidate_demand_aggregates_matching_terms() -> None:
@@ -161,11 +170,7 @@ def test_staged_candidates_are_excluded_from_research_queue() -> None:
             ),
         ]
     }
-    staging = {
-        "products": [
-            {"candidate_id": "STAGED"}
-        ]
-    }
+    staging = {"products": [{"candidate_id": "STAGED"}]}
 
     report = build_candidate_priority(
         candidates,
@@ -213,10 +218,7 @@ def test_unmatched_search_terms_surface_new_research_opportunity() -> None:
 
     assert report["candidates_with_demand"] == 0
     assert len(report["unmatched_demand_terms"]) == 1
-    assert (
-        report["unmatched_demand_terms"][0]["search_term"]
-        == "gucci elixir absolu"
-    )
+    assert report["unmatched_demand_terms"][0]["search_term"] == "gucci elixir absolu"
 
 
 def test_demand_only_uses_existing_trend_momentum_weight() -> None:
@@ -233,15 +235,21 @@ def test_demand_only_uses_existing_trend_momentum_weight() -> None:
         },
     )
 
-    assert demand_adjusted_selection_score(
-        row,
-        demand_score=7,
-    ) == 77
+    assert (
+        demand_adjusted_selection_score(
+            row,
+            demand_score=7,
+        )
+        == 77
+    )
 
-    assert demand_adjusted_selection_score(
-        row,
-        demand_score=10,
-    ) == 80
+    assert (
+        demand_adjusted_selection_score(
+            row,
+            demand_score=10,
+        )
+        == 80
+    )
 
 
 def test_demand_does_not_overwrite_stronger_existing_trend_score() -> None:
@@ -258,7 +266,10 @@ def test_demand_does_not_overwrite_stronger_existing_trend_score() -> None:
         },
     )
 
-    assert demand_adjusted_selection_score(
-        row,
-        demand_score=4,
-    ) == 84
+    assert (
+        demand_adjusted_selection_score(
+            row,
+            demand_score=4,
+        )
+        == 84
+    )

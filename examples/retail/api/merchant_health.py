@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from typing import Literal
 
@@ -10,7 +10,6 @@ from .merchant_job_status_summary import (
 from .merchant_operator_guidance import (
     build_job_attention_item,
 )
-
 
 HealthSeverity = Literal[
     "ok",
@@ -36,9 +35,7 @@ def evaluate_job_health(
             reasons=["job_disabled"],
         )
 
-    attention = build_job_attention_item(
-        summary
-    )
+    attention = build_job_attention_item(summary)
 
     if attention is None:
         return MerchantJobHealth(

@@ -112,7 +112,6 @@ async def test_fulfillment_options_follow_the_shipping_policy(backend, session):
     assert freight[-1] == FREIGHT_SHIPPING
 
 
-
 def test_pickup_eta_stays_inside_store_hours():
     eta = MockRetail._pickup_eta
     # Two hours of prep, rounded up to the hour.

@@ -1,4 +1,4 @@
-﻿from retail.api import merchant_job_approval_runner as approval_runner
+from retail.api import merchant_job_approval_runner as approval_runner
 from retail.api.merchant_jobs import MerchantJobProfile
 from retail.api.merchant_operational_runner import MerchantOperationalRun
 from retail.api.merchant_scheduled_execution import (
@@ -54,10 +54,8 @@ def _clean_operational_result(job):
                 "provider": job.config.provider,
                 "mode": "DRY-RUN",
                 "feed_file": job.config.feed.name,
-                "authoritative_merchant_id":
-                    job.config.authoritative_merchant_id,
-                "authoritative_data_source":
-                    job.config.authoritative_data_source,
+                "authoritative_merchant_id": job.config.authoritative_merchant_id,
+                "authoritative_data_source": job.config.authoritative_data_source,
                 "allow_empty_authoritative": False,
                 "read": 1,
                 "new": 1,
@@ -110,9 +108,7 @@ def test_write_mode_cannot_be_approved(
     def fake_runner(config):
         nonlocal called
         called = True
-        raise AssertionError(
-            "Write-mode job must not run approval dry-run"
-        )
+        raise AssertionError("Write-mode job must not run approval dry-run")
 
     monkeypatch.setattr(
         approval_runner,
@@ -127,9 +123,7 @@ def test_write_mode_cannot_be_approved(
 
     assert called is False
     assert result.action == "hold"
-    assert result.reasons == [
-        "job_not_in_dry_run_mode"
-    ]
+    assert result.reasons == ["job_not_in_dry_run_mode"]
 
 
 def test_mismatched_dry_run_evidence_is_rejected(
@@ -155,7 +149,5 @@ def test_mismatched_dry_run_evidence_is_rejected(
 
     assert result.action == "hold"
     assert result.exit_code == 20
-    assert result.reasons == [
-        "dry_run_evidence_mismatch"
-    ]
+    assert result.reasons == ["dry_run_evidence_mismatch"]
     assert not approvals_path.exists()

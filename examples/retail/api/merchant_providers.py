@@ -2,15 +2,13 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-
 from typing import Protocol
 
 
 class MerchantFeedAdapter(Protocol):
     provider_name: str
 
-    def adapt_row(self, payload: dict) -> dict:
-        ...
+    def adapt_row(self, payload: dict) -> dict: ...
 
 
 class CanonicalMerchantFeedAdapter:
@@ -37,8 +35,7 @@ def get_provider_adapter(provider: str) -> MerchantFeedAdapter:
     except KeyError as exc:
         supported = ", ".join(available_providers())
         raise ValueError(
-            f"Unsupported merchant feed provider: {provider}. "
-            f"Supported providers: {supported}"
+            f"Unsupported merchant feed provider: {provider}. Supported providers: {supported}"
         ) from exc
 
 
@@ -47,10 +44,7 @@ def adapt_provider_rows(
     payloads: list[dict],
 ) -> list[dict]:
     adapter = get_provider_adapter(provider)
-    return [
-        adapter.adapt_row(payload)
-        for payload in payloads
-    ]
+    return [adapter.adapt_row(payload) for payload in payloads]
 
 
 class MappedMerchantFeedAdapter:
@@ -68,8 +62,7 @@ class MappedMerchantFeedAdapter:
     def adapt_row(self, payload: dict) -> dict:
         adapted = {
             canonical_field: payload[source_field]
-            for canonical_field, source_field
-            in self.field_map.items()
+            for canonical_field, source_field in self.field_map.items()
             if source_field in payload
         }
 
@@ -86,14 +79,10 @@ def register_provider_adapter(
     key = adapter.provider_name.strip().casefold()
 
     if not key:
-        raise ValueError(
-            "Merchant feed provider name cannot be empty"
-        )
+        raise ValueError("Merchant feed provider name cannot be empty")
 
     if key in _ADAPTERS and not replace:
-        raise ValueError(
-            f"Merchant feed provider already registered: {key}"
-        )
+        raise ValueError(f"Merchant feed provider already registered: {key}")
 
     _ADAPTERS[key] = adapter
 
@@ -130,9 +119,7 @@ def load_mapped_provider_adapter(path: Path) -> MappedMerchantFeedAdapter:
         or not value.strip()
     ]
     if invalid_fields:
-        raise ValueError(
-            "Provider config field_map must contain non-empty string keys and values"
-        )
+        raise ValueError("Provider config field_map must contain non-empty string keys and values")
 
     return MappedMerchantFeedAdapter(
         provider_name=provider_name,

@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from retail.api.merchant_run_reports import (
     append_import_run_report,
@@ -27,7 +27,7 @@ def test_build_import_run_report_contains_operational_data() -> None:
             17,
             18,
             0,
-            tzinfo=timezone.utc,
+            tzinfo=UTC,
         ),
         run_id="test-run-id",
     )

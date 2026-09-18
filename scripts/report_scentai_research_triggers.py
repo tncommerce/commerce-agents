@@ -15,16 +15,9 @@ from scripts.report_scentai_demand import (
     fetch_view_rows,
 )
 
-
-DEFAULT_CANDIDATES = Path(
-    "examples/retail/data/scentai_catalog_candidates.json"
-)
-DEFAULT_STAGING = Path(
-    "examples/retail/data/scentai_catalog_staging.json"
-)
-DEFAULT_CATALOG = Path(
-    "examples/retail/data/catalog.json"
-)
+DEFAULT_CANDIDATES = Path("examples/retail/data/scentai_catalog_candidates.json")
+DEFAULT_STAGING = Path("examples/retail/data/scentai_catalog_staging.json")
+DEFAULT_CATALOG = Path("examples/retail/data/catalog.json")
 
 
 def load_json(path: Path) -> dict:
@@ -57,10 +50,7 @@ def live_identity_rows(catalog: dict) -> list[dict]:
             {
                 "product_id": product_id,
                 "brand": product.get("brand"),
-                "canonical_name": (
-                    attributes.get("canonical_name")
-                    or product.get("title")
-                ),
+                "canonical_name": (attributes.get("canonical_name") or product.get("title")),
             }
         )
     return rows
@@ -114,10 +104,7 @@ def classify_term(
     if staged is not None:
         return {
             "kind": "verified_staging",
-            "matched_id": (
-                staged.get("candidate_id")
-                or staged.get("product_id")
-            ),
+            "matched_id": (staged.get("candidate_id") or staged.get("product_id")),
             "matched_name": " ".join(
                 str(value or "").strip()
                 for value in (
@@ -201,9 +188,7 @@ def build_trigger_report(
             continue
 
         no_results = int(row.get("no_result_events") or 0)
-        no_result_sessions = int(
-            row.get("no_result_sessions") or 0
-        )
+        no_result_sessions = int(row.get("no_result_sessions") or 0)
 
         level = trigger_level(
             no_result_events=no_results,
@@ -225,16 +210,9 @@ def build_trigger_report(
                 "level": level,
                 "no_result_events": no_results,
                 "no_result_sessions": no_result_sessions,
-                "total_searches": (
-                    int(row.get("search_events") or 0)
-                    + no_results
-                ),
-                "unique_sessions": int(
-                    row.get("unique_sessions") or 0
-                ),
-                "last_searched_at": row.get(
-                    "last_searched_at"
-                ),
+                "total_searches": (int(row.get("search_events") or 0) + no_results),
+                "unique_sessions": int(row.get("unique_sessions") or 0),
+                "last_searched_at": row.get("last_searched_at"),
                 **classification,
                 "recommended_action": recommended_action(
                     kind=classification["kind"],
@@ -267,17 +245,11 @@ def build_trigger_report(
     )
 
     counts_by_level = {
-        level: sum(
-            1 for row in triggers
-            if row["level"] == level
-        )
+        level: sum(1 for row in triggers if row["level"] == level)
         for level in ("high", "research", "watch")
     }
     counts_by_kind = {
-        kind: sum(
-            1 for row in triggers
-            if row["kind"] == kind
-        )
+        kind: sum(1 for row in triggers if row["kind"] == kind)
         for kind in (
             "new_research_opportunity",
             "research_backlog",
@@ -286,11 +258,7 @@ def build_trigger_report(
         )
     }
 
-    actionable = [
-        row
-        for row in triggers
-        if row["level"] in {"research", "high"}
-    ]
+    actionable = [row for row in triggers if row["level"] in {"research", "high"}]
 
     return {
         "trigger_count": len(triggers),
@@ -313,8 +281,7 @@ def fetch_search_rows(*, max_rows: int) -> list[dict]:
 
     if not supabase_url or not service_key:
         raise ValueError(
-            "SUPABASE_URL and SUPABASE_SECRET_KEY or "
-            "SUPABASE_SERVICE_ROLE_KEY are required"
+            "SUPABASE_URL and SUPABASE_SECRET_KEY or SUPABASE_SERVICE_ROLE_KEY are required"
         )
 
     return fetch_view_rows(
@@ -328,8 +295,7 @@ def fetch_search_rows(*, max_rows: int) -> list[dict]:
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Surface SCENTAI research triggers from repeated "
-            "zero-result catalog searches."
+            "Surface SCENTAI research triggers from repeated zero-result catalog searches."
         )
     )
     parser.add_argument(
@@ -381,13 +347,9 @@ def main() -> int:
             payload = load_json(args.demand_json)
             search_rows = payload.get("search_rows")
             if not isinstance(search_rows, list):
-                raise ValueError(
-                    "demand JSON requires a search_rows array"
-                )
+                raise ValueError("demand JSON requires a search_rows array")
         else:
-            search_rows = fetch_search_rows(
-                max_rows=args.max_rows
-            )
+            search_rows = fetch_search_rows(max_rows=args.max_rows)
 
         report = build_trigger_report(
             search_rows,

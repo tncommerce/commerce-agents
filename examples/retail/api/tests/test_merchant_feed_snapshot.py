@@ -1,4 +1,4 @@
-﻿from retail.api.merchant_feed_snapshot import (
+from retail.api.merchant_feed_snapshot import (
     changed_snapshot_files,
     file_sha256,
 )

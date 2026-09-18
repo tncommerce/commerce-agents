@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import argparse
 import json
@@ -16,34 +16,23 @@ from .merchant_jobs import (
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description=(
-            "Explicitly approve one SCENTAI merchant job "
-            "after a fresh clean dry-run."
-        )
+        description=("Explicitly approve one SCENTAI merchant job after a fresh clean dry-run.")
     )
     parser.add_argument("job_id")
     parser.add_argument(
         "--jobs",
         type=Path,
-        default=Path(
-            "examples/retail/data/merchant_jobs.json"
-        ),
+        default=Path("examples/retail/data/merchant_jobs.json"),
     )
     parser.add_argument(
         "--approvals",
         type=Path,
-        default=Path(
-            "examples/retail/data/"
-            "merchant_job_approvals.json"
-        ),
+        default=Path("examples/retail/data/merchant_job_approvals.json"),
     )
     parser.add_argument(
         "--confirm-human-approval",
         action="store_true",
-        help=(
-            "Explicit confirmation that a human approved "
-            "the transition toward write mode."
-        ),
+        help=("Explicit confirmation that a human approved the transition toward write mode."),
     )
 
     args = parser.parse_args()
@@ -52,9 +41,7 @@ def main() -> int:
         result = MerchantJobApprovalResult(
             action="hold",
             exit_code=20,
-            reasons=[
-                "explicit_human_confirmation_required"
-            ],
+            reasons=["explicit_human_confirmation_required"],
         )
 
         print(

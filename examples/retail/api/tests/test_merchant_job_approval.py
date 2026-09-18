@@ -58,11 +58,14 @@ def test_approval_survives_dry_run_to_write_switch(
         dry_run=False,
     )
 
-    assert approval_matches_job(
-        approval,
-        job_id="notino-de",
-        config=write_config,
-    ) is True
+    assert (
+        approval_matches_job(
+            approval,
+            job_id="notino-de",
+            config=write_config,
+        )
+        is True
+    )
 
 
 def test_relevant_config_change_invalidates_approval(
@@ -79,11 +82,14 @@ def test_relevant_config_change_invalidates_approval(
         provider="different-provider",
     )
 
-    assert approval_matches_job(
-        approval,
-        job_id="notino-de",
-        config=changed_config,
-    ) is False
+    assert (
+        approval_matches_job(
+            approval,
+            job_id="notino-de",
+            config=changed_config,
+        )
+        is False
+    )
 
 
 def test_job_approval_can_be_persisted_and_replaced(
@@ -131,11 +137,14 @@ def test_feed_change_keeps_activation_approval_valid(
         encoding="utf-8",
     )
 
-    assert approval_matches_job(
-        approval,
-        job_id="notino-de",
-        config=config,
-    ) is True
+    assert (
+        approval_matches_job(
+            approval,
+            job_id="notino-de",
+            config=config,
+        )
+        is True
+    )
 
     assert approval.approved_feed_sha256 == approved_snapshot
 
@@ -156,11 +165,14 @@ def test_mapping_change_invalidates_existing_approval(
         encoding="utf-8",
     )
 
-    assert approval_matches_job(
-        approval,
-        job_id="notino-de",
-        config=config,
-    ) is False
+    assert (
+        approval_matches_job(
+            approval,
+            job_id="notino-de",
+            config=config,
+        )
+        is False
+    )
 
 
 def test_ingestion_safety_change_invalidates_approval(
@@ -174,15 +186,13 @@ def test_ingestion_safety_change_invalidates_approval(
         config=config,
     )
 
-    changed = config.model_copy(
-        update={
-            "max_feed_rows":
-                config.max_feed_rows + 1
-        }
-    )
+    changed = config.model_copy(update={"max_feed_rows": config.max_feed_rows + 1})
 
-    assert approval_matches_job(
-        approval,
-        job_id="notino-de",
-        config=changed,
-    ) is False
+    assert (
+        approval_matches_job(
+            approval,
+            job_id="notino-de",
+            config=changed,
+        )
+        is False
+    )

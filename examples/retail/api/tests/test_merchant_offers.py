@@ -1,11 +1,15 @@
-from datetime import datetime, timedelta, timezone
 import json
+from datetime import UTC, datetime, timedelta
 
-from retail.api.merchant_offers import MerchantClickoutTracker, MerchantOffer, MerchantOfferStore, rank_offers
+from retail.api.merchant_offers import (
+    MerchantClickoutTracker,
+    MerchantOffer,
+    MerchantOfferStore,
+    rank_offers,
+)
 from retail.api.mock_retail import MockRetail
 
-
-NOW = datetime(2026, 9, 15, 12, 0, tzinfo=timezone.utc)
+NOW = datetime(2026, 9, 15, 12, 0, tzinfo=UTC)
 
 
 def offer(

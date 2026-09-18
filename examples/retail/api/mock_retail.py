@@ -246,28 +246,24 @@ class MockRetail(StorefrontBackend):
 
         source_attributes = product.attributes or {}
 
-        relationship = source_attributes.get(
-            "relationship_role"
-        )
+        relationship = source_attributes.get("relationship_role")
 
         internal_attributes = {
-        "canonical_name",
-        "cluster_id",
-        "relationship_role",
-        "evidence_confidence",
-        "trend_bet",
-        "similar_to",
-        "relationship_links",
-        "freshness",
-        "sweetness",
-        "woodiness",
-        "spiciness",
+            "canonical_name",
+            "cluster_id",
+            "relationship_role",
+            "evidence_confidence",
+            "trend_bet",
+            "similar_to",
+            "relationship_links",
+            "freshness",
+            "sweetness",
+            "woodiness",
+            "spiciness",
         }
 
         attributes = {
-            key: value
-            for key, value in source_attributes.items()
-            if key not in internal_attributes
+            key: value for key, value in source_attributes.items() if key not in internal_attributes
         }
 
         accord_labels_de = {
@@ -294,9 +290,7 @@ class MockRetail(StorefrontBackend):
                     accord.strip().casefold(),
                     accord.strip(),
                 )
-                for accord in str(
-                    attributes["main_accords"]
-                ).split(",")
+                for accord in str(attributes["main_accords"]).split(",")
                 if accord.strip()
             )
 
@@ -334,18 +328,11 @@ class MockRetail(StorefrontBackend):
         if profile_parts:
             attributes["duftprofil_intensitaet"] = ", ".join(profile_parts)
 
-        canonical_name = str(
-            source_attributes.get("canonical_name")
-            or product.title
-        ).strip()
-        concentration = str(
-            source_attributes.get("concentration") or ""
-        ).strip()
+        canonical_name = str(source_attributes.get("canonical_name") or product.title).strip()
+        concentration = str(source_attributes.get("concentration") or "").strip()
         translated_accords = [
             accord.strip()
-            for accord in str(
-                attributes.get("main_accords") or ""
-            ).split(",")
+            for accord in str(attributes.get("main_accords") or "").split(",")
             if accord.strip()
         ]
 
@@ -361,25 +348,15 @@ class MockRetail(StorefrontBackend):
             concentration,
         ]
         if translated_accords:
-            description_parts.append(
-                "Duftprofil: "
-                + ", ".join(translated_accords[:3])
-            )
+            description_parts.append("Duftprofil: " + ", ".join(translated_accords[:3]))
 
-        short_description = " · ".join(
-            part
-            for part in description_parts
-            if part
-        )
+        short_description = " · ".join(part for part in description_parts if part)
         if short_description:
             short_description += "."
 
         if reference_name:
             if relationship == "clone":
-                relation_text = (
-                    f"Sehr nah an der Duftrichtung von "
-                    f"{reference_name}."
-                )
+                relation_text = f"Sehr nah an der Duftrichtung von {reference_name}."
 
             elif relationship == "inspired":
                 relation_text = (
@@ -397,20 +374,13 @@ class MockRetail(StorefrontBackend):
 
             elif relationship == "benchmark":
                 relation_text = (
-                    f"Referenzduft innerhalb einer eng "
-                    f"verwandten Duftrichtung zu "
-                    f"{reference_name}."
+                    f"Referenzduft innerhalb einer eng verwandten Duftrichtung zu {reference_name}."
                 )
 
             else:
-                relation_text = (
-                    f"Als Duftalternative zu "
-                    f"{reference_name} eingeordnet."
-                )
+                relation_text = f"Als Duftalternative zu {reference_name} eingeordnet."
 
-            short_description = (
-                f"{relation_text} {short_description}"
-            ).strip()
+            short_description = (f"{relation_text} {short_description}").strip()
 
         if reference_accords:
             translated_reference_accords = ", ".join(
@@ -469,9 +439,7 @@ class MockRetail(StorefrontBackend):
             query_text.casefold(),
         )
         normalized = "".join(
-            char
-            for char in normalized
-            if not unicodedata.combining(char)
+            char for char in normalized if not unicodedata.combining(char)
         ).replace("ß", "ss")
         normalized = " ".join(normalized.split())
 
@@ -611,9 +579,7 @@ class MockRetail(StorefrontBackend):
             if warm_values and sum(warm_values) / len(warm_values) >= 6:
                 signals.append("warmes Winterprofil")
 
-        accords = str(
-            attributes.get("main_accords") or ""
-        ).casefold()
+        accords = str(attributes.get("main_accords") or "").casefold()
 
         if (
             wants_spring
@@ -676,11 +642,7 @@ class MockRetail(StorefrontBackend):
                 )
                 if value is not None
             ]
-            if (
-                warm_values
-                and longevity >= 7.5
-                and max(warm_values) >= 7
-            ):
+            if warm_values and longevity >= 7.5 and max(warm_values) >= 7:
                 signals.append("starkes Abendprofil")
 
         if (
@@ -737,9 +699,7 @@ class MockRetail(StorefrontBackend):
     ) -> tuple[str, str] | None:
         """Return (relationship_type, confidence) for an explicit anchor link."""
 
-        raw_links = str(
-            (product.attributes or {}).get("relationship_links") or ""
-        )
+        raw_links = str((product.attributes or {}).get("relationship_links") or "")
 
         for raw_link in raw_links.split(";"):
             parts = raw_link.split("|")
@@ -802,7 +762,9 @@ class MockRetail(StorefrontBackend):
 
         return score
 
-    def _score(self, product: ProductDetails, query_tokens: list[str], query_text: str | None = None) -> float:
+    def _score(
+        self, product: ProductDetails, query_tokens: list[str], query_text: str | None = None
+    ) -> float:
         base_score = keyword_score(
             self._searchable_text(product),
             _SEARCH_WEIGHTS,
@@ -826,9 +788,7 @@ class MockRetail(StorefrontBackend):
                 return None
 
         query_text = (
-            query_text
-            if query_text is not None
-            else " ".join(str(token) for token in query_tokens)
+            query_text if query_text is not None else " ".join(str(token) for token in query_tokens)
         ).casefold()
 
         def normalize_name_text(value: str) -> str:
@@ -900,8 +860,7 @@ class MockRetail(StorefrontBackend):
                 candidate_words = [
                     word
                     for word in variant.split()
-                    if len(word) >= 2
-                    and word not in {"eau", "de", "parfum", "toilette", "extrait"}
+                    if len(word) >= 2 and word not in {"eau", "de", "parfum", "toilette", "extrait"}
                 ]
                 if not candidate_words:
                     continue
@@ -941,9 +900,7 @@ class MockRetail(StorefrontBackend):
         spiciness = numeric_attribute("spiciness")
         projection = numeric_attribute("projection")
 
-        accords = str(
-            attributes.get("main_accords") or ""
-        ).casefold()
+        accords = str(attributes.get("main_accords") or "").casefold()
 
         preference_score = fuzzy_name_bonus()
 
@@ -986,8 +943,7 @@ class MockRetail(StorefrontBackend):
         )
         wants_unisex = "unisex" in query_text
         wants_feminine = any(
-            term in query_text
-            for term in ("feminin", "feminine", "weiblich", "female leaning")
+            term in query_text for term in ("feminin", "feminine", "weiblich", "female leaning")
         )
 
         if wants_women:
@@ -1022,10 +978,7 @@ class MockRetail(StorefrontBackend):
             elif audience_lean == "masculine":
                 preference_score -= 2.0
 
-        wants_fresh = any(
-            term in query_text
-            for term in ("frisch", "fresh", "sauber", "clean")
-        )
+        wants_fresh = any(term in query_text for term in ("frisch", "fresh", "sauber", "clean"))
 
         if wants_fresh and freshness is not None:
             preference_score += (freshness / 10.0) * 3.0
@@ -1049,27 +1002,23 @@ class MockRetail(StorefrontBackend):
             if sweetness >= 7:
                 preference_score -= 2.0
 
-        wants_sweet = (
-            not avoids_sweet
-            and any(
-                term in query_text
-                for term in ("süß", "suess", "sweet")
-            )
+        wants_sweet = not avoids_sweet and any(
+            term in query_text for term in ("süß", "suess", "sweet")
         )
 
         if wants_sweet and sweetness is not None:
             preference_score += (sweetness / 10.0) * 3.0
 
-        if any(
-            term in query_text
-            for term in ("holzig", "holz", "woody")
-        ) and woodiness is not None:
+        if (
+            any(term in query_text for term in ("holzig", "holz", "woody"))
+            and woodiness is not None
+        ):
             preference_score += (woodiness / 10.0) * 2.5
 
-        if any(
-            term in query_text
-            for term in ("würzig", "wuerzig", "spicy")
-        ) and spiciness is not None:
+        if (
+            any(term in query_text for term in ("würzig", "wuerzig", "spicy"))
+            and spiciness is not None
+        ):
             preference_score += (spiciness / 10.0) * 2.5
 
         wants_discreet = any(
@@ -1094,10 +1043,7 @@ class MockRetail(StorefrontBackend):
             else:
                 preference_score -= 2.0
 
-        wants_office = any(
-            term in query_text
-            for term in ("büro", "buero", "office", "business")
-        )
+        wants_office = any(term in query_text for term in ("büro", "buero", "office", "business"))
 
         if wants_office:
             if freshness is not None and freshness >= 6:
@@ -1112,10 +1058,7 @@ class MockRetail(StorefrontBackend):
             if "fresh" in accords:
                 preference_score += 1.0
 
-
-        normalized_preference_query = normalize_name_text(
-            query_text
-        )
+        normalized_preference_query = normalize_name_text(query_text)
 
         wants_summer = any(
             term in normalized_preference_query
@@ -1288,9 +1231,7 @@ class MockRetail(StorefrontBackend):
                 if value is not None
             ]
             if warmth_values:
-                preference_score += (
-                    max(warmth_values) / 10.0
-                ) * 2.0
+                preference_score += (max(warmth_values) / 10.0) * 2.0
 
             if projection is not None:
                 if 6.8 <= projection <= 8.3:
@@ -1320,17 +1261,9 @@ class MockRetail(StorefrontBackend):
 
         if wants_everyday:
             if freshness is not None:
-                preference_score += (
-                    2.0
-                    if 5 <= freshness <= 9
-                    else 0.5
-                )
+                preference_score += 2.0 if 5 <= freshness <= 9 else 0.5
             if sweetness is not None:
-                preference_score += (
-                    1.5
-                    if sweetness <= 7
-                    else -1.0
-                )
+                preference_score += 1.5 if sweetness <= 7 else -1.0
             if projection is not None:
                 if 6.0 <= projection <= 7.8:
                     preference_score += 1.5
@@ -1366,11 +1299,7 @@ class MockRetail(StorefrontBackend):
             )
             preference_score += (party_energy / 10.0) * 1.0
 
-        if (
-            wants_everyday
-            and longevity is not None
-            and longevity >= 7.0
-        ):
+        if wants_everyday and longevity is not None and longevity >= 7.0:
             preference_score += min(
                 1.5,
                 (longevity - 6.5) * 0.75,
@@ -1432,10 +1361,7 @@ class MockRetail(StorefrontBackend):
     ) -> list[Product]:
         del session
 
-        products = [
-            self._with_commerce_price(product)
-            for product in self.products.values()
-        ]
+        products = [self._with_commerce_price(product) for product in self.products.values()]
 
         # SCENTAI cluster-aware alternative search.
         #
@@ -1449,9 +1375,7 @@ class MockRetail(StorefrontBackend):
                 value.casefold(),
             )
             normalized = "".join(
-                char
-                for char in normalized
-                if not unicodedata.combining(char)
+                char for char in normalized if not unicodedata.combining(char)
             ).replace("ß", "ss")
 
             for separator in ("-", "/", "'", "’"):
@@ -1494,9 +1418,7 @@ class MockRetail(StorefrontBackend):
             "women",
         }
         direct_query_words = [
-            word
-            for word in normalized_query.split()
-            if word not in generic_query_words
+            word for word in normalized_query.split() if word not in generic_query_words
         ]
 
         if 1 <= len(direct_query_words) <= 5:
@@ -1587,10 +1509,7 @@ class MockRetail(StorefrontBackend):
             "instead",
         )
 
-        asks_for_alternative = any(
-            marker in query_lower
-            for marker in alternative_markers
-        )
+        asks_for_alternative = any(marker in query_lower for marker in alternative_markers)
 
         if asks_for_alternative:
             benchmark_matches = []
@@ -1601,19 +1520,13 @@ class MockRetail(StorefrontBackend):
                 if attributes.get("relationship_role") != "benchmark":
                     continue
 
-                canonical_name = str(
-                    attributes.get("canonical_name") or ""
-                ).strip()
+                canonical_name = str(attributes.get("canonical_name") or "").strip()
 
                 cluster_id = attributes.get("cluster_id")
 
-                normalized_name = normalize_search_text(
-                    canonical_name
-                )
+                normalized_name = normalize_search_text(canonical_name)
 
-                normalized_brand = normalize_search_text(
-                    candidate.brand or ""
-                )
+                normalized_brand = normalize_search_text(candidate.brand or "")
 
                 ignored_name_tokens = {
                     "eau",
@@ -1626,46 +1539,31 @@ class MockRetail(StorefrontBackend):
                 }
 
                 name_tokens = [
-                    token
-                    for token in normalized_name.split()
-                    if token not in ignored_name_tokens
+                    token for token in normalized_name.split() if token not in ignored_name_tokens
                 ]
 
                 brand_tokens = [
                     token
                     for token in normalized_brand.split()
-                    if token not in {
+                    if token
+                    not in {
                         "parfums",
                         "perfumes",
                         "de",
                     }
                 ]
 
-                matched_name_tokens = [
-                    token
-                    for token in name_tokens
-                    if token in query_tokens
-                ]
+                matched_name_tokens = [token for token in name_tokens if token in query_tokens]
 
-                exact_name_match = (
-                    normalized_name
-                    and normalized_name in normalized_query
-                )
+                exact_name_match = normalized_name and normalized_name in normalized_query
 
-                brand_match = any(
-                    token in query_tokens
-                    for token in brand_tokens
-                )
+                brand_match = any(token in query_tokens for token in brand_tokens)
 
                 if (
                     canonical_name
                     and cluster_id
                     and matched_name_tokens
-                    and (
-                        exact_name_match
-                        or brand_match
-                        or len(name_tokens) == 1
-                    )
+                    and (exact_name_match or brand_match or len(name_tokens) == 1)
                 ):
                     benchmark_matches.append(
                         (
@@ -1695,11 +1593,7 @@ class MockRetail(StorefrontBackend):
                 target_cluster = benchmark_matches[0][5]
 
                 target_anchor = next(
-                    (
-                        product
-                        for product in products
-                        if product.product_id == target_anchor_id
-                    ),
+                    (product for product in products if product.product_id == target_anchor_id),
                     None,
                 )
 
@@ -1707,17 +1601,10 @@ class MockRetail(StorefrontBackend):
                 reference_accords = ""
 
                 if target_anchor is not None:
-                    anchor_attributes = (
-                        target_anchor.attributes or {}
-                    )
-                    reference_accords = str(
-                        anchor_attributes.get("main_accords") or ""
-                    ).strip()
+                    anchor_attributes = target_anchor.attributes or {}
+                    reference_accords = str(anchor_attributes.get("main_accords") or "").strip()
                     anchor_name = str(
-                        anchor_attributes.get(
-                            "canonical_name"
-                        )
-                        or target_anchor.title
+                        anchor_attributes.get("canonical_name") or target_anchor.title
                     ).strip()
 
                     reference_name = " ".join(
@@ -1733,10 +1620,8 @@ class MockRetail(StorefrontBackend):
                     product
                     for product in products
                     if (
-                        (product.attributes or {}).get("cluster_id")
-                        == target_cluster
-                        and
-                        product.product_id != target_anchor_id
+                        (product.attributes or {}).get("cluster_id") == target_cluster
+                        and product.product_id != target_anchor_id
                     )
                 ]
 
@@ -1840,15 +1725,8 @@ class MockRetail(StorefrontBackend):
             "buero",
         )
 
-        if any(
-            marker in normalized_query
-            for marker in fragrance_query_markers
-        ):
-            products = [
-                product
-                for product in products
-                if product.product_id.startswith("SC-")
-            ]
+        if any(marker in normalized_query for marker in fragrance_query_markers):
+            products = [product for product in products if product.product_id.startswith("SC-")]
 
         ranked = rank_products(
             products,

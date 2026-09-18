@@ -151,14 +151,8 @@ def test_position_and_surface_reporting_preserves_counts() -> None:
         catalog(),
     )
 
-    assert [
-        row["item_position"]
-        for row in report["advisor_positions"]
-    ] == [1, 2]
-    assert (
-        report["clickout_surfaces"][0]["surface"]
-        == "fragrance_detail"
-    )
+    assert [row["item_position"] for row in report["advisor_positions"]] == [1, 2]
+    assert report["clickout_surfaces"][0]["surface"] == "fragrance_detail"
 
 
 def test_zero_denominators_do_not_create_fake_conversion_rates() -> None:
@@ -180,11 +174,5 @@ def test_zero_denominators_do_not_create_fake_conversion_rates() -> None:
         catalog(),
     )
 
-    assert (
-        report["summary"]["consultation_to_recommendation_pct"]
-        is None
-    )
-    assert (
-        report["summary"]["recommendation_to_clickout_pct"]
-        is None
-    )
+    assert report["summary"]["consultation_to_recommendation_pct"] is None
+    assert report["summary"]["recommendation_to_clickout_pct"] is None

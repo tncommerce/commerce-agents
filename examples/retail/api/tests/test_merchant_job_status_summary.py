@@ -1,4 +1,4 @@
-﻿from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from retail.api.merchant_job_approval import (
     build_job_approval,
@@ -95,7 +95,7 @@ def test_ready_dry_run_summary_reports_latest_run(
             17,
             20,
             0,
-            tzinfo=timezone.utc,
+            tzinfo=UTC,
         ),
         run_id="dry-run-1",
     )
@@ -173,7 +173,7 @@ def test_write_job_summary_reports_last_successful_write(
             17,
             21,
             0,
-            tzinfo=timezone.utc,
+            tzinfo=UTC,
         ),
         run_id="write-1",
     )
@@ -192,8 +192,5 @@ def test_write_job_summary_reports_last_successful_write(
     assert summary.approval_present is True
     assert summary.latest_run_id == "write-1"
     assert summary.latest_run_status == "ok"
-    assert (
-        summary.last_successful_write_run_id
-        == "write-1"
-    )
+    assert summary.last_successful_write_run_id == "write-1"
     assert summary.last_successful_write_at is not None

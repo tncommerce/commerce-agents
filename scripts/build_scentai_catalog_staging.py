@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-
 DATA_DIR = Path("examples/retail/data")
 OUTPUT = DATA_DIR / "scentai_catalog_staging.json"
 
@@ -13,11 +12,7 @@ def load_json(path: Path) -> dict:
 
 
 def target_groups(value: str | None) -> list[str]:
-    return [
-        part.strip()
-        for part in str(value or "").split(",")
-        if part.strip()
-    ]
+    return [part.strip() for part in str(value or "").split(",") if part.strip()]
 
 
 PROFILE_WEIGHTS = {
@@ -65,19 +60,11 @@ def recommendation_profile(accords: list[str]) -> dict:
     inventing product-specific precision by hand.
     """
 
-    normalized = {
-        str(accord).strip().casefold()
-        for accord in accords
-        if str(accord).strip()
-    }
+    normalized = {str(accord).strip().casefold() for accord in accords if str(accord).strip()}
 
     scores = {}
     for axis, weights in PROFILE_WEIGHTS.items():
-        value = 2.0 + sum(
-            weight
-            for term, weight in weights.items()
-            if term in normalized
-        )
+        value = 2.0 + sum(weight for term, weight in weights.items() if term in normalized)
         scores[axis] = int(round(min(10.0, max(1.0, value))))
 
     return {
@@ -89,30 +76,16 @@ def recommendation_profile(accords: list[str]) -> dict:
 
 
 def main() -> int:
-    queue = load_json(
-        DATA_DIR / "scentai_catalog_promotion_queue.json"
-    )
-    queue_by_id = {
-        row["candidate_id"]: row
-        for row in queue["candidates"]
-    }
+    queue = load_json(DATA_DIR / "scentai_catalog_promotion_queue.json")
+    queue_by_id = {row["candidate_id"]: row for row in queue["candidates"]}
 
     products: list[dict] = []
     seen_product_ids: set[str] = set()
 
     for batch in (1, 2, 3):
-        verification = load_json(
-            DATA_DIR
-            / f"scentai_catalog_batch{batch}_verification.json"
-        )
-        scent = load_json(
-            DATA_DIR
-            / f"scentai_catalog_batch{batch}_scent_qa.json"
-        )
-        scent_by_id = {
-            row["candidate_id"]: row
-            for row in scent["products"]
-        }
+        verification = load_json(DATA_DIR / f"scentai_catalog_batch{batch}_verification.json")
+        scent = load_json(DATA_DIR / f"scentai_catalog_batch{batch}_scent_qa.json")
+        scent_by_id = {row["candidate_id"]: row for row in scent["products"]}
 
         for verified in verification["products"]:
             candidate_id = verified["candidate_id"]
@@ -125,9 +98,7 @@ def main() -> int:
             product_id = verified["proposed_product_id"]
 
             if product_id in seen_product_ids:
-                raise ValueError(
-                    f"Duplicate staged product_id: {product_id}"
-                )
+                raise ValueError(f"Duplicate staged product_id: {product_id}")
             seen_product_ids.add(product_id)
 
             trend = community.get("trend_snapshot") or {}
@@ -142,17 +113,11 @@ def main() -> int:
                     "concentration": verified["concentration"],
                     "volume_ml": verified["canonical_volume_ml"],
                     "classification": {
-                        "target_groups": target_groups(
-                            verified.get("target_group")
-                        ),
-                        "audience_lean": verified.get(
-                            "audience_lean"
-                        ),
+                        "target_groups": target_groups(verified.get("target_group")),
+                        "audience_lean": verified.get("audience_lean"),
                     },
                     "fragrance_profile": {
-                        "scent_family": verified.get(
-                            "scent_family"
-                        ),
+                        "scent_family": verified.get("scent_family"),
                         "key_notes": verified.get(
                             "key_notes",
                             [],
@@ -178,28 +143,19 @@ def main() -> int:
                             "scent_ratings_count",
                             trend.get("weekly_ratings_count"),
                         ),
-                        "longevity_10": community.get(
-                            "longevity_10"
-                        ),
-                        "projection_10": community.get(
-                            "sillage_10"
-                        ),
+                        "longevity_10": community.get("longevity_10"),
+                        "projection_10": community.get("sillage_10"),
                         "provisional": bool(
                             community.get("fast_track")
                             or (
-                                community.get("longevity_10")
-                                is None
-                                and community.get("sillage_10")
-                                is None
+                                community.get("longevity_10") is None
+                                and community.get("sillage_10") is None
                             )
                         ),
                     },
                     "media": {
                         "image_url": None,
-                        "image_status": (
-                            "pending_approved_feed_or_"
-                            "manufacturer_image"
-                        ),
+                        "image_status": ("pending_approved_feed_or_manufacturer_image"),
                     },
                     "commerce": {
                         "merchant_coverage_count": (
@@ -208,9 +164,7 @@ def main() -> int:
                                 0,
                             )
                         ),
-                        "live_offer_status": (
-                            "pending_affiliate_approval_or_feed"
-                        ),
+                        "live_offer_status": ("pending_affiliate_approval_or_feed"),
                     },
                     "validation": {
                         "catalog_ready": False,
@@ -251,10 +205,7 @@ def main() -> int:
         encoding="utf-8",
     )
 
-    print(
-        f"Staged {len(products)} verified SCENTAI products -> "
-        f"{OUTPUT}"
-    )
+    print(f"Staged {len(products)} verified SCENTAI products -> {OUTPUT}")
     return 0
 
 

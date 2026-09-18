@@ -1,4 +1,4 @@
-﻿import json
+import json
 import sys
 
 import pytest
@@ -36,19 +36,11 @@ def _write_jobs(
                         "config": {
                             "feed": str(feed),
                             "mappings": str(mappings),
-                            "offers": str(
-                                tmp_path / "offers.json"
-                            ),
-                            "unmatched": str(
-                                tmp_path / "unmatched.json"
-                            ),
-                            "invalid": str(
-                                tmp_path / "invalid.json"
-                            ),
+                            "offers": str(tmp_path / "offers.json"),
+                            "unmatched": str(tmp_path / "unmatched.json"),
+                            "invalid": str(tmp_path / "invalid.json"),
                             "provider": "canonical",
-                            "run_report": str(
-                                tmp_path / "runs.jsonl"
-                            ),
+                            "run_report": str(tmp_path / "runs.jsonl"),
                             "dry_run": dry_run,
                         },
                     }
@@ -87,9 +79,7 @@ def test_status_cli_outputs_machine_readable_json(
 
     exit_code = main()
 
-    payload = json.loads(
-        capsys.readouterr().out
-    )
+    payload = json.loads(capsys.readouterr().out)
 
     assert exit_code == 0
     assert payload["job_id"] == "notino-de"
@@ -122,9 +112,7 @@ def test_status_cli_reports_disabled_job(
 
     assert main() == 0
 
-    payload = json.loads(
-        capsys.readouterr().out
-    )
+    payload = json.loads(capsys.readouterr().out)
 
     assert payload["job_state"] == "disabled"
     assert payload["enabled"] is False

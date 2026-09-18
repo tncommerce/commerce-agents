@@ -1,7 +1,6 @@
 import json
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 DB_PATH = ROOT / "examples" / "retail" / "data" / "scentai_products.json"
 
@@ -17,27 +16,15 @@ NEW_PRODUCTS = [
         "classification": {
             "official_orientation": "unisex",
             "community_category": "unisex",
-            "scentai_target_groups": [
-                "men",
-                "women",
-                "unisex"
-            ],
+            "scentai_target_groups": ["men", "women", "unisex"],
             "role": "benchmark",
             "cluster_id": "bois-imperial",
-            "trend_bet": False
+            "trend_bet": False,
         },
         "notes": {
-            "top": [
-                "Thai Basil",
-                "Timut Pepper"
-            ],
-            "heart": [
-                "Haitian Vetiver"
-            ],
-            "base": [
-                "Georgywood",
-                "Akigalawood"
-            ]
+            "top": ["Thai Basil", "Timut Pepper"],
+            "heart": ["Haitian Vetiver"],
+            "base": ["Georgywood", "Akigalawood"],
         },
         "community": {
             "source": "Parfumo",
@@ -46,30 +33,19 @@ NEW_PRODUCTS = [
             "rank": 26,
             "rank_category": "unisex",
             "longevity_10": 8.5,
-            "projection_10": 8.1
+            "projection_10": 8.1,
         },
         "fragrance_profile": {
-            "community_accords": [
-                "fresh",
-                "woody",
-                "synthetic",
-                "spicy",
-                "green"
-            ],
-            "scores": {
-                "freshness": 8,
-                "sweetness": 1,
-                "woodiness": 9,
-                "spiciness": 7
-            },
-            "score_confidence": "high"
+            "community_accords": ["fresh", "woody", "synthetic", "spicy", "green"],
+            "scores": {"freshness": 8, "sweetness": 1, "woodiness": 9, "spiciness": 7},
+            "score_confidence": "high",
         },
         "market": {
             "market_price_eur": 90.90,
             "price_per_ml_eur": 0.909,
             "german_availability": "high",
             "price_source_count": 3,
-            "price_checked_at": "2026-09-10"
+            "price_checked_at": "2026-09-10",
         },
         "commercial": {
             "retail_demand_proxy": 27,
@@ -80,7 +56,7 @@ NEW_PRODUCTS = [
             "alternative_demand": 12,
             "price_gap_score": 7,
             "cluster_opportunity_bonus": 19,
-            "commercial_opportunity_score": 74
+            "commercial_opportunity_score": 74,
         },
         "relationships": [],
         "evidence": {
@@ -88,11 +64,9 @@ NEW_PRODUCTS = [
             "community_metrics": "high",
             "market_price": "high",
             "relationship_data": "medium",
-            "overall": "high"
+            "overall": "high",
         },
-        "validation": {
-            "catalog_ready": True
-        }
+        "validation": {"catalog_ready": True},
     },
     {
         "product_id": "SC-AL-AMBRA-DUBAI-MUSK-50",
@@ -104,14 +78,10 @@ NEW_PRODUCTS = [
         "classification": {
             "official_orientation": "unisex",
             "community_category": "unisex",
-            "scentai_target_groups": [
-                "men",
-                "women",
-                "unisex"
-            ],
+            "scentai_target_groups": ["men", "women", "unisex"],
             "role": "benchmark",
             "cluster_id": "al-ambra-dubai-musk",
-            "trend_bet": False
+            "trend_bet": False,
         },
         "notes": {
             "top": [
@@ -119,15 +89,10 @@ NEW_PRODUCTS = [
                 "Bergamot",
                 "Indian Sandalwood",
                 "Mandarin Orange",
-                "Blackcurrant"
+                "Blackcurrant",
             ],
-            "heart": [
-                "White Musk"
-            ],
-            "base": [
-                "Pink Musk",
-                "Indian Sandalwood"
-            ]
+            "heart": ["White Musk"],
+            "base": ["Pink Musk", "Indian Sandalwood"],
         },
         "community": {
             "source": "Parfumo",
@@ -136,30 +101,19 @@ NEW_PRODUCTS = [
             "rank": 318,
             "rank_category": "unisex",
             "longevity_10": 8.0,
-            "projection_10": 7.5
+            "projection_10": 7.5,
         },
         "fragrance_profile": {
-            "community_accords": [
-                "creamy",
-                "fresh",
-                "sweet",
-                "citrus",
-                "floral"
-            ],
-            "scores": {
-                "freshness": 7,
-                "sweetness": 5,
-                "woodiness": 4,
-                "spiciness": 1
-            },
-            "score_confidence": "high"
+            "community_accords": ["creamy", "fresh", "sweet", "citrus", "floral"],
+            "scores": {"freshness": 7, "sweetness": 5, "woodiness": 4, "spiciness": 1},
+            "score_confidence": "high",
         },
         "market": {
             "market_price_eur": 77.00,
             "price_per_ml_eur": 1.54,
             "german_availability": "medium",
             "price_source_count": 3,
-            "price_checked_at": "2026-09-10"
+            "price_checked_at": "2026-09-10",
         },
         "commercial": {
             "retail_demand_proxy": 20,
@@ -170,7 +124,7 @@ NEW_PRODUCTS = [
             "alternative_demand": 14,
             "price_gap_score": 10,
             "cluster_opportunity_bonus": 24,
-            "commercial_opportunity_score": 64
+            "commercial_opportunity_score": 64,
         },
         "relationships": [],
         "evidence": {
@@ -178,12 +132,10 @@ NEW_PRODUCTS = [
             "community_metrics": "high",
             "market_price": "medium_high",
             "relationship_data": "medium",
-            "overall": "high"
+            "overall": "high",
         },
-        "validation": {
-            "catalog_ready": True
-        }
-    }
+        "validation": {"catalog_ready": True},
+    },
 ]
 
 
@@ -192,10 +144,7 @@ def main():
         data = json.load(file)
 
     products = data["products"]
-    existing_ids = {
-        product["product_id"]
-        for product in products
-    }
+    existing_ids = {product["product_id"] for product in products}
 
     added = []
 
@@ -209,12 +158,7 @@ def main():
         added.append(product["product_id"])
 
     with DB_PATH.open("w", encoding="utf-8") as file:
-        json.dump(
-            data,
-            file,
-            ensure_ascii=False,
-            indent=2
-        )
+        json.dump(data, file, ensure_ascii=False, indent=2)
         file.write("\n")
 
     print()

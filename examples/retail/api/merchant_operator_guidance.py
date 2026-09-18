@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from pydantic import BaseModel
 
@@ -39,19 +39,13 @@ def build_job_attention_item(
     reasons: list[str] = []
 
     if summary.job_state == "not_ready":
-        reasons.extend(
-            summary.readiness_reasons
-        )
+        reasons.extend(summary.readiness_reasons)
 
     if summary.job_state == "approval_required":
-        reasons.append(
-            "approval_required"
-        )
+        reasons.append("approval_required")
 
     if summary.latest_run_status == "review":
-        reasons.extend(
-            summary.latest_run_reasons
-        )
+        reasons.extend(summary.latest_run_reasons)
 
     reasons = _unique(reasons)
 
@@ -70,7 +64,8 @@ def build_job_attention_item(
 
     return MerchantJobAttentionItem(
         job_id=summary.job_id,
-        blocking=summary.job_state in (
+        blocking=summary.job_state
+        in (
             "not_ready",
             "approval_required",
         ),

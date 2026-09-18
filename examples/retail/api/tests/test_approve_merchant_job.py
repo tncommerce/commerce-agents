@@ -1,4 +1,4 @@
-﻿import json
+import json
 import sys
 
 from retail.api import approve_merchant_job
@@ -19,15 +19,11 @@ def test_approval_cli_requires_explicit_confirmation(
 
     exit_code = approve_merchant_job.main()
 
-    payload = json.loads(
-        capsys.readouterr().out
-    )
+    payload = json.loads(capsys.readouterr().out)
 
     assert exit_code == 20
     assert payload["action"] == "hold"
-    assert payload["reasons"] == [
-        "explicit_human_confirmation_required"
-    ]
+    assert payload["reasons"] == ["explicit_human_confirmation_required"]
 
 
 def test_approval_cli_runs_confirmed_approval(
@@ -46,21 +42,11 @@ def test_approval_cli_runs_confirmed_approval(
                         "job_id": "notino-de",
                         "enabled": False,
                         "config": {
-                            "feed": str(
-                                tmp_path / "feed.json"
-                            ),
-                            "mappings": str(
-                                tmp_path / "mappings.json"
-                            ),
-                            "offers": str(
-                                tmp_path / "offers.json"
-                            ),
-                            "unmatched": str(
-                                tmp_path / "unmatched.json"
-                            ),
-                            "invalid": str(
-                                tmp_path / "invalid.json"
-                            ),
+                            "feed": str(tmp_path / "feed.json"),
+                            "mappings": str(tmp_path / "mappings.json"),
+                            "offers": str(tmp_path / "offers.json"),
+                            "unmatched": str(tmp_path / "unmatched.json"),
+                            "invalid": str(tmp_path / "invalid.json"),
                             "provider": "canonical",
                             "dry_run": True,
                         },
@@ -101,9 +87,7 @@ def test_approval_cli_runs_confirmed_approval(
 
     exit_code = approve_merchant_job.main()
 
-    payload = json.loads(
-        capsys.readouterr().out
-    )
+    payload = json.loads(capsys.readouterr().out)
 
     assert exit_code == 0
     assert payload["action"] == "approved"

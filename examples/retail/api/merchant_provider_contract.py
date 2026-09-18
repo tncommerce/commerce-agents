@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from datetime import datetime
 
@@ -31,20 +31,15 @@ class MerchantProviderCanonicalRow(BaseModel):
     @model_validator(mode="after")
     def require_product_identifier(
         self,
-    ) -> "MerchantProviderCanonicalRow":
+    ) -> MerchantProviderCanonicalRow:
         identifiers = (
             self.merchant_product_id,
             self.ean,
             self.gtin,
         )
 
-        if not any(
-            value is not None and value.strip()
-            for value in identifiers
-        ):
-            raise ValueError(
-                "product_identifier_required"
-            )
+        if not any(value is not None and value.strip() for value in identifiers):
+            raise ValueError("product_identifier_required")
 
         return self
 
@@ -69,9 +64,7 @@ def validate_provider_contract_rows(
 
     for row_index, payload in enumerate(payloads):
         try:
-            MerchantProviderCanonicalRow.model_validate(
-                payload
-            )
+            MerchantProviderCanonicalRow.model_validate(payload)
         except ValidationError as exc:
             invalid.append(
                 ProviderContractIssue(
@@ -82,9 +75,7 @@ def validate_provider_contract_rows(
             )
             continue
 
-        valid_rows.append(
-            dict(payload)
-        )
+        valid_rows.append(dict(payload))
 
     return ProviderContractResult(
         rows=valid_rows,

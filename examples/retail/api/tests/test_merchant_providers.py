@@ -65,8 +65,7 @@ def test_mapped_provider_converts_external_fields() -> None:
                 "external_offer": "offer-123",
                 "external_sku": "sku-456",
                 "external_price": 89.95,
-                "external_url":
-                    "https://example.com/product",
+                "external_url": "https://example.com/product",
             }
         ],
     )
@@ -76,8 +75,7 @@ def test_mapped_provider_converts_external_fields() -> None:
             "offer_id": "offer-123",
             "merchant_product_id": "sku-456",
             "price": 89.95,
-            "product_url":
-                "https://example.com/product",
+            "product_url": "https://example.com/product",
             "merchant": "fixture-shop",
             "merchant_id": "fixture-de",
             "merchant_name": "Fixture Shop",
@@ -97,10 +95,7 @@ def test_registered_provider_becomes_available() -> None:
     register_provider_adapter(adapter)
 
     assert "fixture-available" in available_providers()
-    assert (
-        get_provider_adapter("FIXTURE-AVAILABLE")
-        is adapter
-    )
+    assert get_provider_adapter("FIXTURE-AVAILABLE") is adapter
 
 
 def test_duplicate_provider_registration_is_blocked() -> None:

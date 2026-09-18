@@ -1,4 +1,4 @@
-﻿from pathlib import Path
+from pathlib import Path
 
 from retail.api.merchant_job_readiness import (
     evaluate_job_readiness,
@@ -67,9 +67,7 @@ def test_missing_feed_and_unknown_provider_are_not_ready(
 
 
 def test_repository_notino_job_is_not_ready_without_real_feed() -> None:
-    jobs = load_merchant_jobs(
-        Path("examples/retail/data/merchant_jobs.json")
-    )
+    jobs = load_merchant_jobs(Path("examples/retail/data/merchant_jobs.json"))
 
     job = get_merchant_job(
         jobs,

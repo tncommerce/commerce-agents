@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import argparse
 import json
@@ -16,10 +16,7 @@ from .merchant_jobs import (
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description=(
-            "Show operational status for one "
-            "SCENTAI merchant job."
-        )
+        description=("Show operational status for one SCENTAI merchant job.")
     )
 
     parser.add_argument("job_id")
@@ -27,9 +24,7 @@ def main() -> int:
     parser.add_argument(
         "--jobs",
         type=Path,
-        default=Path(
-            "examples/retail/data/merchant_jobs.json"
-        ),
+        default=Path("examples/retail/data/merchant_jobs.json"),
     )
 
     parser.add_argument(
@@ -48,9 +43,7 @@ def main() -> int:
             args.job_id,
         )
     except KeyError:
-        parser.error(
-            f"Unknown merchant job: {args.job_id}"
-        )
+        parser.error(f"Unknown merchant job: {args.job_id}")
 
     summary = build_job_status_summary(
         job,

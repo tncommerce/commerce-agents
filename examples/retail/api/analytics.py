@@ -4,14 +4,13 @@ import hashlib
 import json
 import os
 import re
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Literal
 from uuid import uuid4
 
 import httpx
 from pydantic import BaseModel, Field
-
 
 AnalyticsEventName = Literal[
     "page_view",
@@ -31,9 +30,7 @@ def sanitize_catalog_search_term(value: str | None) -> str | None:
     if value is None:
         return None
 
-    normalized = " ".join(
-        value.strip().lower().split()
-    )[:80]
+    normalized = " ".join(value.strip().lower().split())[:80]
 
     if len(normalized) < 2:
         return None
@@ -126,7 +123,7 @@ class FirstPartyAnalyticsTracker:
         item_position: int | None = None,
         now: datetime | None = None,
     ) -> dict:
-        occurred_at = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
+        occurred_at = (now or datetime.now(UTC)).astimezone(UTC)
         return {
             "event_id": str(uuid4()),
             "occurred_at": occurred_at.isoformat(),

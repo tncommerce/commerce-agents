@@ -82,9 +82,7 @@ def test_fleet_summary_counts_job_states(
     assert fleet.not_ready == 0
     assert fleet.approval_required == 1
     assert fleet.attention_required == 1
-    assert fleet.attention_job_ids == [
-        "write-job"
-    ]
+    assert fleet.attention_job_ids == ["write-job"]
 
 
 def test_review_run_marks_enabled_job_for_attention(
@@ -121,9 +119,7 @@ def test_review_run_marks_enabled_job_for_attention(
 
     assert fleet.latest_run_review == 1
     assert fleet.attention_required == 1
-    assert fleet.attention_job_ids == [
-        "review-job"
-    ]
+    assert fleet.attention_job_ids == ["review-job"]
 
 
 def test_disabled_job_does_not_require_attention(
@@ -185,12 +181,8 @@ def test_fleet_attention_includes_approval_guidance(
 
     assert item.job_id == "approval-job"
     assert item.blocking is True
-    assert item.reasons == [
-        "approval_required"
-    ]
-    assert item.operator_actions == [
-        "review_dry_run_and_approve"
-    ]
+    assert item.reasons == ["approval_required"]
+    assert item.operator_actions == ["review_dry_run_and_approve"]
 
 
 def test_fleet_attention_includes_review_guidance(
@@ -228,12 +220,8 @@ def test_fleet_attention_includes_review_guidance(
     item = fleet.attention_items[0]
 
     assert item.blocking is False
-    assert item.reasons == [
-        "unmatched_rows"
-    ]
-    assert item.operator_actions == [
-        "review_unmatched_product_mappings"
-    ]
+    assert item.reasons == ["unmatched_rows"]
+    assert item.operator_actions == ["review_unmatched_product_mappings"]
 
 
 def test_fleet_health_is_blocked_when_job_is_blocked(

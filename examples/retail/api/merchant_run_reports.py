@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from uuid import uuid4
 
@@ -50,7 +50,7 @@ def build_import_run_report(
 ) -> MerchantImportRunReport:
     return MerchantImportRunReport(
         run_id=run_id or str(uuid4()),
-        occurred_at=occurred_at or datetime.now(timezone.utc),
+        occurred_at=occurred_at or datetime.now(UTC),
         provider=provider,
         mode=mode,
         feed_file=feed_file,

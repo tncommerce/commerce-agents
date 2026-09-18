@@ -7,6 +7,7 @@ from pydantic import BaseModel, ValidationError
 
 from .merchant_offers import MerchantOffer
 
+
 class MerchantProductMapping(BaseModel):
     product_id: str
     merchant: str
@@ -52,8 +53,11 @@ def resolve_product_id(
 
     return None
 
+
 def validate_offer_payload(payload: dict) -> MerchantOffer:
     return MerchantOffer.model_validate(payload)
+
+
 class MerchantFeedRow(BaseModel):
     offer_id: str
     merchant: str
@@ -114,6 +118,8 @@ def normalize_feed_row(
             "commission_rate": row.commission_rate,
         }
     )
+
+
 class UnmatchedFeedRow(BaseModel):
     offer_id: str
     merchant: str
@@ -198,10 +204,7 @@ def _load_existing_offers(path: Path) -> list[MerchantOffer]:
         "offers",
         raw if isinstance(raw, list) else [],
     )
-    return [
-        MerchantOffer.model_validate(row)
-        for row in existing_rows
-    ]
+    return [MerchantOffer.model_validate(row) for row in existing_rows]
 
 
 def _offer_comparison_payload(offer: MerchantOffer) -> dict:
@@ -219,9 +222,7 @@ def _authoritative_missing_ids(
     data_source: str | None = None,
 ) -> set[str]:
     if (merchant_id is None) != (data_source is None):
-        raise ValueError(
-            "merchant_id and data_source must be provided together"
-        )
+        raise ValueError("merchant_id and data_source must be provided together")
 
     if merchant_id is None or data_source is None:
         return set()
@@ -229,8 +230,7 @@ def _authoritative_missing_ids(
     incoming_ids = {
         offer.offer_id
         for offer in offers
-        if offer.merchant_id == merchant_id
-        and offer.data_source == data_source
+        if offer.merchant_id == merchant_id and offer.data_source == data_source
     }
 
     return {
@@ -250,14 +250,8 @@ def _build_upsert_report(
     authoritative_merchant_id: str | None = None,
     authoritative_data_source: str | None = None,
 ) -> OfferUpsertReport:
-    existing_by_id = {
-        offer.offer_id: offer
-        for offer in existing
-    }
-    incoming_by_id = {
-        offer.offer_id: offer
-        for offer in offers
-    }
+    existing_by_id = {offer.offer_id: offer for offer in existing}
+    incoming_by_id = {offer.offer_id: offer for offer in offers}
 
     new = 0
     updated = 0
@@ -270,10 +264,7 @@ def _build_upsert_report(
             new += 1
             continue
 
-        if (
-            _offer_comparison_payload(current)
-            == _offer_comparison_payload(incoming)
-        ):
+        if _offer_comparison_payload(current) == _offer_comparison_payload(incoming):
             unchanged += 1
         else:
             updated += 1
@@ -332,25 +323,15 @@ def upsert_offers_file(
         data_source=authoritative_data_source,
     )
 
-    by_id = {
-        offer.offer_id: offer
-        for offer in existing
-    }
+    by_id = {offer.offer_id: offer for offer in existing}
 
     for offer in offers:
         by_id[offer.offer_id] = offer
 
     for offer_id in missing_ids:
-        by_id[offer_id] = by_id[offer_id].model_copy(
-            update={"in_stock": False}
-        )
+        by_id[offer_id] = by_id[offer_id].model_copy(update={"in_stock": False})
 
-    payload = {
-        "offers": [
-            offer.model_dump(mode="json")
-            for offer in by_id.values()
-        ]
-    }
+    payload = {"offers": [offer.model_dump(mode="json") for offer in by_id.values()]}
 
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(

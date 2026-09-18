@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import pytest
-
 from scripts.qa_scentai_staging import (
     TYPO_CASES,
     data_quality_issues,

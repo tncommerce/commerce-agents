@@ -6,12 +6,10 @@ import json
 from pathlib import Path
 
 from examples.retail.api.mock_retail import MockRetail
+
 from shopping_agent import ProductDetails, ShoppingSessionContext
 
-
-DEFAULT_STAGING = Path(
-    "examples/retail/data/scentai_catalog_staging.json"
-)
+DEFAULT_STAGING = Path("examples/retail/data/scentai_catalog_staging.json")
 
 TYPO_CASES = {
     "SC-YSL-LIBRE-EDP-90": "Libra",
@@ -42,45 +40,28 @@ def staged_product_details(row: dict) -> ProductDetails:
 
     attributes = {
         "canonical_name": str(row["name"]),
-        "target_group": ", ".join(
-            classification.get("target_groups", [])
-        ),
-        "audience_lean": str(
-            classification.get("audience_lean") or ""
-        ),
-        "main_accords": ", ".join(
-            profile.get("community_accords", [])
-        ),
+        "target_group": ", ".join(classification.get("target_groups", [])),
+        "audience_lean": str(classification.get("audience_lean") or ""),
+        "main_accords": ", ".join(profile.get("community_accords", [])),
         "freshness": str(scores["freshness"]),
         "sweetness": str(scores["sweetness"]),
         "woodiness": str(scores["woodiness"]),
         "spiciness": str(scores["spiciness"]),
         "longevity": (
-            ""
-            if community.get("longevity_10") is None
-            else str(community["longevity_10"])
+            "" if community.get("longevity_10") is None else str(community["longevity_10"])
         ),
         "projection": (
-            ""
-            if community.get("projection_10") is None
-            else str(community["projection_10"])
+            "" if community.get("projection_10") is None else str(community["projection_10"])
         ),
-        "community_rating_10": str(
-            community.get("rating_10") or ""
-        ),
-        "rating_source": str(
-            community.get("source") or ""
-        ),
+        "community_rating_10": str(community.get("rating_10") or ""),
+        "rating_source": str(community.get("source") or ""),
         "volume_ml": str(row["volume_ml"]),
         "concentration": str(row["concentration"]),
     }
 
     return ProductDetails(
         product_id=row["product_id"],
-        title=(
-            f"{row['brand']} {row['name']} "
-            f"{row['concentration']} {row['volume_ml']} ml"
-        ),
+        title=(f"{row['brand']} {row['name']} {row['concentration']} {row['volume_ml']} ml"),
         brand=row["brand"],
         price=100.0,
         category="fragrance",
@@ -89,16 +70,11 @@ def staged_product_details(row: dict) -> ProductDetails:
             if community.get("rating_10") is not None
             else None
         ),
-        review_count=int(
-            community.get("rating_count") or 0
-        ),
+        review_count=int(community.get("rating_count") or 0),
         attributes=attributes,
         in_stock=True,
         short_description=(
-            f"{row['brand']} {row['name']} "
-            + ", ".join(
-                profile.get("community_accords", [])[:3]
-            )
+            f"{row['brand']} {row['name']} " + ", ".join(profile.get("community_accords", [])[:3])
         ),
     )
 
@@ -106,8 +82,7 @@ def staged_product_details(row: dict) -> ProductDetails:
 def staging_backend(staging: dict) -> MockRetail:
     backend = MockRetail()
     products = {
-        row["product_id"]: staged_product_details(row)
-        for row in staging.get("products", [])
+        row["product_id"]: staged_product_details(row) for row in staging.get("products", [])
     }
 
     # QA intentionally isolates the not-yet-live staging catalog so
@@ -121,14 +96,8 @@ def data_quality_issues(staging: dict) -> list[str]:
     issues = []
     products = staging.get("products", [])
 
-    product_ids = [
-        str(row.get("product_id") or "")
-        for row in products
-    ]
-    candidate_ids = [
-        str(row.get("candidate_id") or "")
-        for row in products
-    ]
+    product_ids = [str(row.get("product_id") or "") for row in products]
+    candidate_ids = [str(row.get("candidate_id") or "") for row in products]
 
     if len(product_ids) != len(set(product_ids)):
         issues.append("duplicate_product_id")
@@ -151,14 +120,10 @@ def data_quality_issues(staging: dict) -> list[str]:
         )
         for field in required:
             if row.get(field) in (None, "", [], {}):
-                issues.append(
-                    f"{product_id}:missing_{field}"
-                )
+                issues.append(f"{product_id}:missing_{field}")
 
         scores = (
-            row.get("fragrance_profile", {})
-            .get("recommendation_profile", {})
-            .get("scores", {})
+            row.get("fragrance_profile", {}).get("recommendation_profile", {}).get("scores", {})
         )
         for axis in (
             "freshness",
@@ -168,24 +133,16 @@ def data_quality_issues(staging: dict) -> list[str]:
         ):
             value = scores.get(axis)
             if not isinstance(value, (int, float)):
-                issues.append(
-                    f"{product_id}:missing_{axis}_score"
-                )
+                issues.append(f"{product_id}:missing_{axis}_score")
             elif not 1 <= float(value) <= 10:
-                issues.append(
-                    f"{product_id}:invalid_{axis}_score"
-                )
+                issues.append(f"{product_id}:invalid_{axis}_score")
 
         community = row.get("community", {})
         if not community.get("provisional"):
             if community.get("longevity_10") is None:
-                issues.append(
-                    f"{product_id}:missing_longevity"
-                )
+                issues.append(f"{product_id}:missing_longevity")
             if community.get("projection_10") is None:
-                issues.append(
-                    f"{product_id}:missing_projection"
-                )
+                issues.append(f"{product_id}:missing_projection")
 
     return issues
 
@@ -217,9 +174,7 @@ def audience_score_issues(
                 "Ich suche einen Herrenduft",
             )
             if correct <= opposite:
-                issues.append(
-                    f"{row['product_id']}:women_audience_score"
-                )
+                issues.append(f"{row['product_id']}:women_audience_score")
 
         if groups == {"men"}:
             correct = backend._score(
@@ -233,9 +188,7 @@ def audience_score_issues(
                 "Ich suche einen Damenduft",
             )
             if correct <= opposite:
-                issues.append(
-                    f"{row['product_id']}:men_audience_score"
-                )
+                issues.append(f"{row['product_id']}:men_audience_score")
 
         if "unisex" in groups:
             unisex = backend._score(
@@ -249,9 +202,7 @@ def audience_score_issues(
                 "Ich suche einen Duft",
             )
             if unisex <= neutral:
-                issues.append(
-                    f"{row['product_id']}:unisex_audience_score"
-                )
+                issues.append(f"{row['product_id']}:unisex_audience_score")
 
     return issues
 
@@ -272,18 +223,9 @@ async def exact_name_search_issues(
             row["name"],
             limit=4,
         )
-        if (
-            not results
-            or results[0].product_id != row["product_id"]
-        ):
-            found = (
-                results[0].product_id
-                if results
-                else "none"
-            )
-            issues.append(
-                f"{row['product_id']}:exact_name_found_{found}"
-            )
+        if not results or results[0].product_id != row["product_id"]:
+            found = results[0].product_id if results else "none"
+            issues.append(f"{row['product_id']}:exact_name_found_{found}")
 
     return issues
 
@@ -299,9 +241,7 @@ async def typo_search_issues(
 
     for product_id, query in TYPO_CASES.items():
         if product_id not in backend.products:
-            issues.append(
-                f"{product_id}:missing_typo_fixture"
-            )
+            issues.append(f"{product_id}:missing_typo_fixture")
             continue
 
         results = await backend.search_products(
@@ -309,18 +249,9 @@ async def typo_search_issues(
             query,
             limit=4,
         )
-        if (
-            not results
-            or results[0].product_id != product_id
-        ):
-            found = (
-                results[0].product_id
-                if results
-                else "none"
-            )
-            issues.append(
-                f"{product_id}:typo_{query!r}_found_{found}"
-            )
+        if not results or results[0].product_id != product_id:
+            found = results[0].product_id if results else "none"
+            issues.append(f"{product_id}:typo_{query!r}_found_{found}")
 
     return issues
 
@@ -342,12 +273,7 @@ async def run_qa(
     )
     typo_issues = await typo_search_issues(backend)
 
-    issues = (
-        data_issues
-        + audience_issues
-        + exact_issues
-        + typo_issues
-    )
+    issues = data_issues + audience_issues + exact_issues + typo_issues
 
     products = staging.get("products", [])
 
@@ -374,10 +300,7 @@ async def run_qa(
             },
             "budget_and_offer_qa": {
                 "passed": None,
-                "status": (
-                    "deferred_until_current_affiliate_"
-                    "offers_are_available"
-                ),
+                "status": ("deferred_until_current_affiliate_offers_are_available"),
             },
         },
         "passed": not issues,
@@ -403,9 +326,7 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    result = asyncio.run(
-        run_qa(args.staging)
-    )
+    result = asyncio.run(run_qa(args.staging))
 
     if args.machine_readable:
         print(
@@ -422,10 +343,7 @@ def main() -> int:
             f"{'PASS' if result['passed'] else 'FAIL'}"
         )
         for name, check in result["checks"].items():
-            print(
-                f"- {name}: "
-                f"{check.get('status') or ('PASS' if check.get('passed') else 'FAIL')}"
-            )
+            print(f"- {name}: {check.get('status') or ('PASS' if check.get('passed') else 'FAIL')}")
 
         if result["issues"]:
             print("Issues:")

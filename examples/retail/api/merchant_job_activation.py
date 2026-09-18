@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import json
 from pathlib import Path
@@ -57,9 +57,7 @@ def activate_merchant_job(
             job_id=job.job_id,
         )
 
-    approvals = load_job_approvals(
-        approvals_path
-    )
+    approvals = load_job_approvals(approvals_path)
 
     matching = [
         approval
@@ -82,13 +80,8 @@ def activate_merchant_job(
     updated_jobs: list[MerchantJobProfile] = []
 
     for item in jobs:
-        if (
-            item.job_id.strip().casefold()
-            == job.job_id.strip().casefold()
-        ):
-            updated_config = item.config.model_copy(
-                update={"dry_run": False}
-            )
+        if item.job_id.strip().casefold() == job.job_id.strip().casefold():
+            updated_config = item.config.model_copy(update={"dry_run": False})
 
             updated_jobs.append(
                 item.model_copy(
@@ -101,12 +94,7 @@ def activate_merchant_job(
         else:
             updated_jobs.append(item)
 
-    payload = {
-        "jobs": [
-            item.model_dump(mode="json")
-            for item in updated_jobs
-        ]
-    }
+    payload = {"jobs": [item.model_dump(mode="json") for item in updated_jobs]}
 
     jobs_path.write_text(
         json.dumps(

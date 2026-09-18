@@ -5,7 +5,6 @@ import pytest
 
 from retail.api.import_merchant_feed import main
 
-
 PRODUCT_ID = "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100"
 
 
@@ -121,10 +120,7 @@ def test_import_merchant_feed_command_end_to_end(tmp_path, monkeypatch, capsys) 
     assert len(saved_invalid["invalid"]) == 1
     assert saved_invalid["invalid"][0]["row_index"] == 2
     assert saved_invalid["invalid"][0]["offer_id"] == "broken-row"
-    assert (
-        saved_invalid["invalid"][0]["reason"]
-        == "provider_contract_invalid"
-    )
+    assert saved_invalid["invalid"][0]["reason"] == "provider_contract_invalid"
 
 
 def test_import_merchant_feed_dry_run_does_not_write_files(
@@ -703,9 +699,7 @@ def test_write_import_creates_audit_report_but_dry_run_does_not(
     assert "Mode: WRITE" in write_output
     assert "Run ID:" in write_output
 
-    lines = run_report_path.read_text(
-        encoding="utf-8"
-    ).splitlines()
+    lines = run_report_path.read_text(encoding="utf-8").splitlines()
 
     assert len(lines) == 1
 
@@ -746,9 +740,7 @@ def test_write_import_creates_audit_report_but_dry_run_does_not(
     dry_run_output = capsys.readouterr().out
     assert "Mode: DRY-RUN" in dry_run_output
 
-    lines_after_dry_run = run_report_path.read_text(
-        encoding="utf-8"
-    ).splitlines()
+    lines_after_dry_run = run_report_path.read_text(encoding="utf-8").splitlines()
 
     assert len(lines_after_dry_run) == 1
 
@@ -958,10 +950,8 @@ def test_provider_contract_blocks_row_before_product_mapping(
                         "external_offer": "offer-123",
                         "external_sku": "SKU-123",
                         "external_price": 89.95,
-                        "external_url":
-                            "https://example.com/product",
-                        "external_updated":
-                            "2026-09-17T18:00:00Z",
+                        "external_url": "https://example.com/product",
+                        "external_updated": "2026-09-17T18:00:00Z",
                     }
                 ]
             }
@@ -1270,9 +1260,7 @@ def test_duplicate_offer_ids_block_import_before_write(
         encoding="utf-8",
     )
 
-    original = offers_path.read_text(
-        encoding="utf-8"
-    )
+    original = offers_path.read_text(encoding="utf-8")
 
     monkeypatch.setattr(
         sys,
@@ -1292,10 +1280,7 @@ def test_duplicate_offer_ids_block_import_before_write(
         main()
 
     assert exc.value.code == 2
-    assert (
-        offers_path.read_text(encoding="utf-8")
-        == original
-    )
+    assert offers_path.read_text(encoding="utf-8") == original
 
 
 def test_import_command_blocks_feed_over_row_limit(
@@ -1328,9 +1313,7 @@ def test_import_command_blocks_feed_over_row_limit(
         encoding="utf-8",
     )
 
-    original = offers_path.read_text(
-        encoding="utf-8"
-    )
+    original = offers_path.read_text(encoding="utf-8")
 
     monkeypatch.setattr(
         sys,
@@ -1352,10 +1335,7 @@ def test_import_command_blocks_feed_over_row_limit(
         main()
 
     assert exc.value.code == 2
-    assert (
-        offers_path.read_text(encoding="utf-8")
-        == original
-    )
+    assert offers_path.read_text(encoding="utf-8") == original
 
 
 def test_machine_readable_run_contains_snapshot_hashes(
@@ -1437,16 +1417,11 @@ def test_machine_readable_run_contains_snapshot_hashes(
 
     exit_code = main()
 
-    payload = json.loads(
-        capsys.readouterr().out
-    )
+    payload = json.loads(capsys.readouterr().out)
 
     assert exit_code == 0
     assert payload["run"]["feed_sha256"] == expected_feed_hash
-    assert (
-        payload["run"]["mappings_sha256"]
-        == expected_mappings_hash
-    )
+    assert payload["run"]["mappings_sha256"] == expected_mappings_hash
 
 
 def test_import_aborts_if_feed_changes_during_processing(
@@ -1504,9 +1479,7 @@ def test_import_aborts_if_feed_changes_during_processing(
         encoding="utf-8",
     )
 
-    original_offers = offers_path.read_text(
-        encoding="utf-8"
-    )
+    original_offers = offers_path.read_text(encoding="utf-8")
 
     original_import = import_command.import_feed_rows
 
@@ -1517,15 +1490,7 @@ def test_import_aborts_if_feed_changes_during_processing(
         )
 
         feed_path.write_text(
-            json.dumps(
-                {
-                    "offers": [
-                        {
-                            "offer_id": "changed-mid-run"
-                        }
-                    ]
-                }
-            ),
+            json.dumps({"offers": [{"offer_id": "changed-mid-run"}]}),
             encoding="utf-8",
         )
 
@@ -1555,7 +1520,4 @@ def test_import_aborts_if_feed_changes_during_processing(
         import_command.main()
 
     assert exc.value.code == 2
-    assert (
-        offers_path.read_text(encoding="utf-8")
-        == original_offers
-    )
+    assert offers_path.read_text(encoding="utf-8") == original_offers

@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import argparse
 import json
@@ -17,18 +17,13 @@ from .merchant_jobs import (
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description=(
-            "Show operational status for all "
-            "SCENTAI merchant jobs."
-        )
+        description=("Show operational status for all SCENTAI merchant jobs.")
     )
 
     parser.add_argument(
         "--jobs",
         type=Path,
-        default=Path(
-            "examples/retail/data/merchant_jobs.json"
-        ),
+        default=Path("examples/retail/data/merchant_jobs.json"),
     )
 
     parser.add_argument(

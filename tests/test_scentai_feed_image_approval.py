@@ -1,12 +1,10 @@
 from __future__ import annotations
 
 import pytest
-
 from scripts.approve_scentai_feed_image import (
     apply_approval,
     approval_plan,
 )
-
 
 PRODUCT_ID = "SC-TEST-100"
 IMAGE_URL = "https://cdn.example.com/test.jpg"
@@ -117,15 +115,11 @@ def test_apply_approval_updates_staging_and_candidate() -> None:
     media = staging["products"][0]["media"]
     assert media["image_url"] == IMAGE_URL
     assert media["image_status"] == "approved_feed_image"
-    assert media["image_reviewed_at"] == (
-        "2026-09-18T20:00:00+00:00"
-    )
+    assert media["image_reviewed_at"] == ("2026-09-18T20:00:00+00:00")
 
     candidate = candidates["candidates"][0]
     assert candidate["review_status"] == "approved"
-    assert candidate["reviewed_at"] == (
-        "2026-09-18T20:00:00+00:00"
-    )
+    assert candidate["reviewed_at"] == ("2026-09-18T20:00:00+00:00")
 
 
 def test_same_approved_image_is_idempotent() -> None:

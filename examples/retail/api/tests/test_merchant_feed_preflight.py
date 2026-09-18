@@ -27,9 +27,7 @@ def complete_row() -> dict:
 
 
 def test_complete_feed_is_ready() -> None:
-    report = build_feed_preflight(
-        [complete_row()]
-    )
+    report = build_feed_preflight([complete_row()])
 
     assert report["ready_for_offer_import"] is True
     assert report["ready_for_promotion_assets"] is True
@@ -84,10 +82,7 @@ def test_ean_can_satisfy_product_identifier_requirement() -> None:
 
     report = build_feed_preflight([row])
 
-    assert (
-        report["coverage"]["product_identifier"]["valid"]
-        == 1
-    )
+    assert report["coverage"]["product_identifier"]["valid"] == 1
     assert report["ready_for_offer_import"] is True
 
 

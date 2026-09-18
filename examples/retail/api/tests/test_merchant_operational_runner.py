@@ -1,4 +1,4 @@
-﻿import json
+import json
 from types import SimpleNamespace
 
 from retail.api import merchant_operational_runner as runner
@@ -46,9 +46,7 @@ def test_operational_runner_continues_clean_import(
         fake_run,
     )
 
-    result = runner.run_import_with_gate(
-        ["python", "-m", "retail.api.import_merchant_feed"]
-    )
+    result = runner.run_import_with_gate(["python", "-m", "retail.api.import_merchant_feed"])
 
     assert result.action == "continue"
     assert result.exit_code == 0
@@ -92,9 +90,7 @@ def test_operational_runner_holds_review_and_bad_output(
         ),
     )
 
-    review = runner.run_import_with_gate(
-        ["python", "-m", "retail.api.import_merchant_feed"]
-    )
+    review = runner.run_import_with_gate(["python", "-m", "retail.api.import_merchant_feed"])
 
     assert review.action == "hold"
     assert review.exit_code == 10
@@ -110,9 +106,7 @@ def test_operational_runner_holds_review_and_bad_output(
         ),
     )
 
-    invalid = runner.run_import_with_gate(
-        ["python", "-m", "retail.api.import_merchant_feed"]
-    )
+    invalid = runner.run_import_with_gate(["python", "-m", "retail.api.import_merchant_feed"])
 
     assert invalid.action == "hold"
     assert invalid.exit_code == 20
@@ -155,9 +149,7 @@ def test_operational_runner_holds_on_process_exit_mismatch(
         ),
     )
 
-    result = runner.run_import_with_gate(
-        ["python", "-m", "retail.api.import_merchant_feed"]
-    )
+    result = runner.run_import_with_gate(["python", "-m", "retail.api.import_merchant_feed"])
 
     assert result.action == "hold"
     assert result.exit_code == 20

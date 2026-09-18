@@ -8,7 +8,6 @@ from typing import Any
 
 import httpx
 
-
 DEFAULT_CATALOG = Path("examples/retail/data/catalog.json")
 SEARCH_VIEW = "scentai_catalog_search_demand"
 ENGAGEMENT_VIEW = "scentai_product_engagement"
@@ -29,14 +28,10 @@ def product_labels(catalog: dict) -> dict[str, str]:
         brand = str(product.get("brand") or "").strip()
         attributes = product.get("attributes") or {}
         canonical_name = str(
-            attributes.get("canonical_name")
-            or product.get("title")
-            or product_id
+            attributes.get("canonical_name") or product.get("title") or product_id
         ).strip()
 
-        label = " ".join(
-            part for part in (brand, canonical_name) if part
-        ).strip()
+        label = " ".join(part for part in (brand, canonical_name) if part).strip()
 
         labels[product_id] = label or product_id
 
@@ -84,14 +79,10 @@ def build_demand_report(
                 "search_events": successful,
                 "no_result_events": no_result,
                 "total_searches": total,
-                "unique_sessions": _integer(
-                    row.get("unique_sessions")
-                ),
+                "unique_sessions": _integer(row.get("unique_sessions")),
                 "avg_result_count": round(avg_results, 2),
                 "no_result_rate": round(no_result_rate, 4),
-                "last_searched_at": row.get(
-                    "last_searched_at"
-                ),
+                "last_searched_at": row.get("last_searched_at"),
             }
         )
 
@@ -105,11 +96,7 @@ def build_demand_report(
     )[:limit]
 
     top_no_results = sorted(
-        (
-            row
-            for row in searches
-            if row["no_result_events"] > 0
-        ),
+        (row for row in searches if row["no_result_events"] > 0),
         key=lambda row: (
             -row["no_result_events"],
             -row["unique_sessions"],
@@ -119,12 +106,7 @@ def build_demand_report(
     )[:limit]
 
     weak_coverage = sorted(
-        (
-            row
-            for row in searches
-            if row["no_result_events"] > 0
-            or row["avg_result_count"] <= 2
-        ),
+        (row for row in searches if row["no_result_events"] > 0 or row["avg_result_count"] <= 2),
         key=lambda row: (
             -row["no_result_rate"],
             -row["total_searches"],
@@ -135,9 +117,7 @@ def build_demand_report(
 
     engagement = []
     for row in engagement_rows:
-        product_id = str(
-            row.get("product_id") or ""
-        ).strip()
+        product_id = str(row.get("product_id") or "").strip()
         if not product_id:
             continue
 
@@ -148,21 +128,11 @@ def build_demand_report(
                     product_id,
                     product_id,
                 ),
-                "product_opens": _integer(
-                    row.get("product_opens")
-                ),
-                "merchant_clickouts": _integer(
-                    row.get("merchant_clickouts")
-                ),
-                "opening_sessions": _integer(
-                    row.get("opening_sessions")
-                ),
-                "clickout_sessions": _integer(
-                    row.get("clickout_sessions")
-                ),
-                "last_event_at": row.get(
-                    "last_event_at"
-                ),
+                "product_opens": _integer(row.get("product_opens")),
+                "merchant_clickouts": _integer(row.get("merchant_clickouts")),
+                "opening_sessions": _integer(row.get("opening_sessions")),
+                "clickout_sessions": _integer(row.get("clickout_sessions")),
+                "last_event_at": row.get("last_event_at"),
             }
         )
 
@@ -188,23 +158,11 @@ def build_demand_report(
     return {
         "summary": {
             "tracked_search_terms": len(searches),
-            "total_searches": sum(
-                row["total_searches"]
-                for row in searches
-            ),
-            "no_result_events": sum(
-                row["no_result_events"]
-                for row in searches
-            ),
+            "total_searches": sum(row["total_searches"] for row in searches),
+            "no_result_events": sum(row["no_result_events"] for row in searches),
             "engaged_products": len(engagement),
-            "product_opens": sum(
-                row["product_opens"]
-                for row in engagement
-            ),
-            "merchant_clickouts": sum(
-                row["merchant_clickouts"]
-                for row in engagement
-            ),
+            "product_opens": sum(row["product_opens"] for row in engagement),
+            "merchant_clickouts": sum(row["merchant_clickouts"] for row in engagement),
         },
         "top_searches": top_searches,
         "top_no_results": top_no_results,
@@ -245,9 +203,7 @@ def fetch_view_rows(
 
     payload = response.json()
     if not isinstance(payload, list):
-        raise ValueError(
-            f"Unexpected Supabase response for {view}"
-        )
+        raise ValueError(f"Unexpected Supabase response for {view}")
 
     return payload
 
@@ -271,10 +227,7 @@ def print_table(
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description=(
-            "Show internal SCENTAI demand signals from "
-            "first-party Supabase analytics."
-        )
+        description=("Show internal SCENTAI demand signals from first-party Supabase analytics.")
     )
     parser.add_argument(
         "--catalog",
@@ -318,8 +271,7 @@ def main() -> int:
 
     if not supabase_url or not service_key:
         parser.error(
-            "SUPABASE_URL and SUPABASE_SECRET_KEY or "
-            "SUPABASE_SERVICE_ROLE_KEY are required"
+            "SUPABASE_URL and SUPABASE_SECRET_KEY or SUPABASE_SERVICE_ROLE_KEY are required"
         )
 
     try:

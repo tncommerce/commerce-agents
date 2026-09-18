@@ -33,19 +33,11 @@ def _write_jobs(tmp_path):
                 "config": {
                     "feed": str(feed),
                     "mappings": str(mappings),
-                    "offers": str(
-                        tmp_path / f"{job_id}-offers.json"
-                    ),
-                    "unmatched": str(
-                        tmp_path / f"{job_id}-unmatched.json"
-                    ),
-                    "invalid": str(
-                        tmp_path / f"{job_id}-invalid.json"
-                    ),
+                    "offers": str(tmp_path / f"{job_id}-offers.json"),
+                    "unmatched": str(tmp_path / f"{job_id}-unmatched.json"),
+                    "invalid": str(tmp_path / f"{job_id}-invalid.json"),
                     "provider": "canonical",
-                    "run_report": str(
-                        tmp_path / f"{job_id}-runs.jsonl"
-                    ),
+                    "run_report": str(tmp_path / f"{job_id}-runs.jsonl"),
                     "dry_run": dry_run,
                 },
             }
@@ -80,9 +72,7 @@ def test_fleet_status_cli_outputs_machine_readable_json(
 
     assert main() == 0
 
-    payload = json.loads(
-        capsys.readouterr().out
-    )
+    payload = json.loads(capsys.readouterr().out)
 
     assert payload["total_jobs"] == 3
     assert payload["ready"] == 1
@@ -111,14 +101,10 @@ def test_fleet_status_cli_reports_attention_jobs(
 
     main()
 
-    payload = json.loads(
-        capsys.readouterr().out
-    )
+    payload = json.loads(capsys.readouterr().out)
 
     assert payload["attention_required"] == 1
-    assert payload["attention_job_ids"] == [
-        "write-job"
-    ]
+    assert payload["attention_job_ids"] == ["write-job"]
 
 
 def test_fleet_status_cli_handles_empty_job_list(
@@ -147,9 +133,7 @@ def test_fleet_status_cli_handles_empty_job_list(
 
     assert main() == 0
 
-    payload = json.loads(
-        capsys.readouterr().out
-    )
+    payload = json.loads(capsys.readouterr().out)
 
     assert payload["total_jobs"] == 0
     assert payload["attention_required"] == 0
@@ -177,9 +161,7 @@ def test_fleet_status_cli_serializes_operator_guidance(
 
     assert main() == 0
 
-    payload = json.loads(
-        capsys.readouterr().out
-    )
+    payload = json.loads(capsys.readouterr().out)
 
     assert len(payload["attention_items"]) == 1
 
@@ -187,12 +169,8 @@ def test_fleet_status_cli_serializes_operator_guidance(
 
     assert item["job_id"] == "write-job"
     assert item["blocking"] is True
-    assert item["reasons"] == [
-        "approval_required"
-    ]
-    assert item["operator_actions"] == [
-        "review_dry_run_and_approve"
-    ]
+    assert item["reasons"] == ["approval_required"]
+    assert item["operator_actions"] == ["review_dry_run_and_approve"]
 
 
 def test_fleet_status_cli_serializes_health(
@@ -216,9 +194,7 @@ def test_fleet_status_cli_serializes_health(
 
     assert main() == 0
 
-    payload = json.loads(
-        capsys.readouterr().out
-    )
+    payload = json.loads(capsys.readouterr().out)
 
     assert payload["health_severity"] == "blocked"
     assert payload["health_blocked"] == 1

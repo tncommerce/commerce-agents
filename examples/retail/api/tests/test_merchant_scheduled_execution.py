@@ -142,21 +142,13 @@ def test_scheduled_command_carries_feed_safety_settings(
         max_feed_rows=789,
     )
 
-    command = scheduled.build_scheduled_import_command(
-        config
-    )
+    command = scheduled.build_scheduled_import_command(config)
 
-    assert command[
-        command.index("--feed-format") + 1
-    ] == "csv"
+    assert command[command.index("--feed-format") + 1] == "csv"
 
-    assert command[
-        command.index("--max-feed-bytes") + 1
-    ] == "123456"
+    assert command[command.index("--max-feed-bytes") + 1] == "123456"
 
-    assert command[
-        command.index("--max-feed-rows") + 1
-    ] == "789"
+    assert command[command.index("--max-feed-rows") + 1] == "789"
 
 
 def test_scheduled_config_rejects_invalid_feed_limits(
@@ -175,6 +167,4 @@ def test_scheduled_config_rejects_invalid_feed_limits(
         ValueError,
         match="max_feed_rows",
     ):
-        scheduled.build_scheduled_import_command(
-            config
-        )
+        scheduled.build_scheduled_import_command(config)

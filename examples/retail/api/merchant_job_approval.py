@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from pydantic import BaseModel
@@ -36,11 +36,7 @@ def job_config_fingerprint(
         "max_feed_rows": config.max_feed_rows,
         "authoritative_merchant_id": config.authoritative_merchant_id,
         "authoritative_data_source": config.authoritative_data_source,
-        "run_report": (
-            str(config.run_report)
-            if config.run_report is not None
-            else None
-        ),
+        "run_report": (str(config.run_report) if config.run_report is not None else None),
     }
 
     encoded = json.dumps(
@@ -63,7 +59,7 @@ def build_job_approval(
     return MerchantJobApproval(
         job_id=job_id.strip(),
         approved_run_id=approved_run_id,
-        approved_at=approved_at or datetime.now(timezone.utc),
+        approved_at=approved_at or datetime.now(UTC),
         config_fingerprint=job_config_fingerprint(config),
         approved_feed_sha256=file_sha256(config.feed),
         approved_mappings_sha256=file_sha256(config.mappings),
@@ -77,10 +73,8 @@ def approval_matches_job(
     config: ScheduledMerchantImportConfig,
 ) -> bool:
     return (
-        approval.job_id.strip().casefold()
-        == job_id.strip().casefold()
-        and approval.config_fingerprint
-        == job_config_fingerprint(config)
+        approval.job_id.strip().casefold() == job_id.strip().casefold()
+        and approval.config_fingerprint == job_config_fingerprint(config)
     )
 
 
@@ -90,14 +84,9 @@ def load_job_approvals(
     if not path.exists():
         return []
 
-    raw = json.loads(
-        path.read_text(encoding="utf-8-sig")
-    )
+    raw = json.loads(path.read_text(encoding="utf-8-sig"))
 
-    return [
-        MerchantJobApproval.model_validate(row)
-        for row in raw.get("approvals", [])
-    ]
+    return [MerchantJobApproval.model_validate(row) for row in raw.get("approvals", [])]
 
 
 def upsert_job_approval(
@@ -106,19 +95,11 @@ def upsert_job_approval(
 ) -> None:
     approvals = load_job_approvals(path)
 
-    by_id = {
-        item.job_id.strip().casefold(): item
-        for item in approvals
-    }
+    by_id = {item.job_id.strip().casefold(): item for item in approvals}
 
     by_id[approval.job_id.strip().casefold()] = approval
 
-    payload = {
-        "approvals": [
-            item.model_dump(mode="json")
-            for item in by_id.values()
-        ]
-    }
+    payload = {"approvals": [item.model_dump(mode="json") for item in by_id.values()]}
 
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
@@ -139,21 +120,12 @@ def revoke_job_approval(
     approvals = load_job_approvals(path)
     key = job_id.strip().casefold()
 
-    remaining = [
-        approval
-        for approval in approvals
-        if approval.job_id.strip().casefold() != key
-    ]
+    remaining = [approval for approval in approvals if approval.job_id.strip().casefold() != key]
 
     if len(remaining) == len(approvals):
         return False
 
-    payload = {
-        "approvals": [
-            approval.model_dump(mode="json")
-            for approval in remaining
-        ]
-    }
+    payload = {"approvals": [approval.model_dump(mode="json") for approval in remaining]}
 
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(

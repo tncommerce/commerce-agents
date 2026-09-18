@@ -1,7 +1,6 @@
 import json
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 DB_PATH = ROOT / "examples" / "retail" / "data" / "scentai_products.json"
 
@@ -17,25 +16,15 @@ NEW_PRODUCTS = [
         "classification": {
             "official_orientation": None,
             "community_category": "men",
-            "scentai_target_groups": [
-                "men"
-            ],
+            "scentai_target_groups": ["men"],
             "role": "benchmark",
             "cluster_id": "valentino-born-in-roma-intense",
-            "trend_bet": False
+            "trend_bet": False,
         },
         "notes": {
-            "top": [
-                "Vanilla",
-                "Ginger"
-            ],
-            "heart": [
-                "Provençal Lavender",
-                "Nutmeg"
-            ],
-            "base": [
-                "Haitian Vetiver"
-            ]
+            "top": ["Vanilla", "Ginger"],
+            "heart": ["Provençal Lavender", "Nutmeg"],
+            "base": ["Haitian Vetiver"],
         },
         "community": {
             "source": "Parfumo",
@@ -44,30 +33,19 @@ NEW_PRODUCTS = [
             "rank": 171,
             "rank_category": "men",
             "longevity_10": 7.5,
-            "projection_10": 7.3
+            "projection_10": 7.3,
         },
         "fragrance_profile": {
-            "community_accords": [
-                "sweet",
-                "synthetic",
-                "fresh",
-                "woody",
-                "fruity"
-            ],
-            "scores": {
-                "freshness": 5,
-                "sweetness": 8,
-                "woodiness": 5,
-                "spiciness": 5
-            },
-            "score_confidence": "high"
+            "community_accords": ["sweet", "synthetic", "fresh", "woody", "fruity"],
+            "scores": {"freshness": 5, "sweetness": 8, "woodiness": 5, "spiciness": 5},
+            "score_confidence": "high",
         },
         "market": {
             "market_price_eur": 66.0,
             "price_per_ml_eur": 0.66,
             "german_availability": "high",
             "price_source_count": 3,
-            "price_checked_at": "2026-09-10"
+            "price_checked_at": "2026-09-10",
         },
         "commercial": {
             "retail_demand_proxy": 28,
@@ -78,7 +56,7 @@ NEW_PRODUCTS = [
             "alternative_demand": 8,
             "price_gap_score": 4,
             "cluster_opportunity_bonus": 12,
-            "commercial_opportunity_score": 64
+            "commercial_opportunity_score": 64,
         },
         "relationships": [],
         "evidence": {
@@ -86,11 +64,9 @@ NEW_PRODUCTS = [
             "community_metrics": "high",
             "market_price": "high",
             "relationship_data": "medium_high",
-            "overall": "high"
+            "overall": "high",
         },
-        "validation": {
-            "catalog_ready": True
-        }
+        "validation": {"catalog_ready": True},
     },
     {
         "product_id": "SC-CLIVE-CHRISTIAN-HEDONISTIC-50",
@@ -102,22 +78,13 @@ NEW_PRODUCTS = [
         "classification": {
             "official_orientation": None,
             "community_category": "men",
-            "scentai_target_groups": [
-                "men"
-            ],
+            "scentai_target_groups": ["men"],
             "role": "benchmark",
             "cluster_id": "clive-christian-hedonistic",
-            "trend_bet": False
+            "trend_bet": False,
         },
         "notes": {
-            "top": [
-                "Black Cherry",
-                "Clary Sage",
-                "Bergamot",
-                "Grapefruit",
-                "Maté",
-                "Neroli"
-            ],
+            "top": ["Black Cherry", "Clary Sage", "Bergamot", "Grapefruit", "Maté", "Neroli"],
             "heart": [
                 "Absinthe Wormwood",
                 "Iris",
@@ -125,15 +92,9 @@ NEW_PRODUCTS = [
                 "Cocoa Leaf",
                 "Jasmine",
                 "Papyrus",
-                "Tobacco"
+                "Tobacco",
             ],
-            "base": [
-                "Amber",
-                "Leather",
-                "Labdanum",
-                "Tonka Bean",
-                "Vanilla"
-            ]
+            "base": ["Amber", "Leather", "Labdanum", "Tonka Bean", "Vanilla"],
         },
         "community": {
             "source": "Parfumo",
@@ -142,30 +103,19 @@ NEW_PRODUCTS = [
             "rank": 28,
             "rank_category": "men",
             "longevity_10": 8.4,
-            "projection_10": 8.1
+            "projection_10": 8.1,
         },
         "fragrance_profile": {
-            "community_accords": [
-                "sweet",
-                "fruity",
-                "spicy",
-                "woody",
-                "floral"
-            ],
-            "scores": {
-                "freshness": 2,
-                "sweetness": 8,
-                "woodiness": 6,
-                "spiciness": 7
-            },
-            "score_confidence": "high"
+            "community_accords": ["sweet", "fruity", "spicy", "woody", "floral"],
+            "scores": {"freshness": 2, "sweetness": 8, "woodiness": 6, "spiciness": 7},
+            "score_confidence": "high",
         },
         "market": {
             "market_price_eur": 365.0,
             "price_per_ml_eur": 7.3,
             "german_availability": "medium",
             "price_source_count": 3,
-            "price_checked_at": "2026-09-10"
+            "price_checked_at": "2026-09-10",
         },
         "commercial": {
             "retail_demand_proxy": 10,
@@ -176,7 +126,7 @@ NEW_PRODUCTS = [
             "alternative_demand": 6,
             "price_gap_score": 15,
             "cluster_opportunity_bonus": 21,
-            "commercial_opportunity_score": 54
+            "commercial_opportunity_score": 54,
         },
         "relationships": [],
         "evidence": {
@@ -184,11 +134,9 @@ NEW_PRODUCTS = [
             "community_metrics": "high",
             "market_price": "medium_high",
             "relationship_data": "medium_high",
-            "overall": "high"
+            "overall": "high",
         },
-        "validation": {
-            "catalog_ready": True
-        }
+        "validation": {"catalog_ready": True},
     },
     {
         "product_id": "SC-CHANEL-BLEU-DE-CHANEL-EDP-100",
@@ -200,28 +148,14 @@ NEW_PRODUCTS = [
         "classification": {
             "official_orientation": None,
             "community_category": "men",
-            "scentai_target_groups": [
-                "men"
-            ],
+            "scentai_target_groups": ["men"],
             "role": "benchmark",
             "cluster_id": "bleu-de-chanel-edp",
-            "trend_bet": False
+            "trend_bet": False,
         },
         "notes": {
-            "top": [
-                "Mint",
-                "Grapefruit",
-                "Pink Pepper",
-                "Lemon",
-                "Coriander",
-                "Aldehydes"
-            ],
-            "heart": [
-                "Nutmeg",
-                "Ginger",
-                "Jasmine",
-                "Melon"
-            ],
+            "top": ["Mint", "Grapefruit", "Pink Pepper", "Lemon", "Coriander", "Aldehydes"],
+            "heart": ["Nutmeg", "Ginger", "Jasmine", "Melon"],
             "base": [
                 "Sandalwood",
                 "Vetiver",
@@ -229,8 +163,8 @@ NEW_PRODUCTS = [
                 "Patchouli",
                 "Cedar",
                 "Labdanum",
-                "Ambergris"
-            ]
+                "Ambergris",
+            ],
         },
         "community": {
             "source": "Parfumo",
@@ -239,30 +173,19 @@ NEW_PRODUCTS = [
             "rank": 11,
             "rank_category": "men",
             "longevity_10": 7.3,
-            "projection_10": 7.1
+            "projection_10": 7.1,
         },
         "fragrance_profile": {
-            "community_accords": [
-                "fresh",
-                "citrus",
-                "woody",
-                "spicy",
-                "aquatic"
-            ],
-            "scores": {
-                "freshness": 8,
-                "sweetness": 3,
-                "woodiness": 7,
-                "spiciness": 5
-            },
-            "score_confidence": "high"
+            "community_accords": ["fresh", "citrus", "woody", "spicy", "aquatic"],
+            "scores": {"freshness": 8, "sweetness": 3, "woodiness": 7, "spiciness": 5},
+            "score_confidence": "high",
         },
         "market": {
             "market_price_eur": 80.99,
             "price_per_ml_eur": 0.8099,
             "german_availability": "high",
             "price_source_count": 3,
-            "price_checked_at": "2026-09-10"
+            "price_checked_at": "2026-09-10",
         },
         "commercial": {
             "retail_demand_proxy": 34,
@@ -273,7 +196,7 @@ NEW_PRODUCTS = [
             "alternative_demand": 15,
             "price_gap_score": 8,
             "cluster_opportunity_bonus": 23,
-            "commercial_opportunity_score": 86
+            "commercial_opportunity_score": 86,
         },
         "relationships": [],
         "evidence": {
@@ -281,11 +204,9 @@ NEW_PRODUCTS = [
             "community_metrics": "high",
             "market_price": "high",
             "relationship_data": "medium_high",
-            "overall": "high"
+            "overall": "high",
         },
-        "validation": {
-            "catalog_ready": True
-        }
+        "validation": {"catalog_ready": True},
     },
     {
         "product_id": "SC-DIOR-SAUVAGE-EDP-100",
@@ -297,30 +218,15 @@ NEW_PRODUCTS = [
         "classification": {
             "official_orientation": None,
             "community_category": "men",
-            "scentai_target_groups": [
-                "men"
-            ],
+            "scentai_target_groups": ["men"],
             "role": "benchmark",
             "cluster_id": "dior-sauvage-edp",
-            "trend_bet": False
+            "trend_bet": False,
         },
         "notes": {
-            "top": [
-                "Bergamot",
-                "Mandarin",
-                "Citrus"
-            ],
-            "heart": [
-                "Sandalwood",
-                "Cedar",
-                "Vanilla"
-            ],
-            "base": [
-                "Tonka Bean",
-                "Bergamot",
-                "Ambroxan",
-                "Vanilla"
-            ]
+            "top": ["Bergamot", "Mandarin", "Citrus"],
+            "heart": ["Sandalwood", "Cedar", "Vanilla"],
+            "base": ["Tonka Bean", "Bergamot", "Ambroxan", "Vanilla"],
         },
         "community": {
             "source": "Parfumo",
@@ -329,30 +235,19 @@ NEW_PRODUCTS = [
             "rank": 54,
             "rank_category": "men",
             "longevity_10": 8.0,
-            "projection_10": 7.8
+            "projection_10": 7.8,
         },
         "fragrance_profile": {
-            "community_accords": [
-                "fresh",
-                "spicy",
-                "synthetic",
-                "citrus",
-                "woody"
-            ],
-            "scores": {
-                "freshness": 8,
-                "sweetness": 4,
-                "woodiness": 6,
-                "spiciness": 7
-            },
-            "score_confidence": "high"
+            "community_accords": ["fresh", "spicy", "synthetic", "citrus", "woody"],
+            "scores": {"freshness": 8, "sweetness": 4, "woodiness": 6, "spiciness": 7},
+            "score_confidence": "high",
         },
         "market": {
             "market_price_eur": 82.8,
             "price_per_ml_eur": 0.828,
             "german_availability": "high",
             "price_source_count": 3,
-            "price_checked_at": "2026-09-10"
+            "price_checked_at": "2026-09-10",
         },
         "commercial": {
             "retail_demand_proxy": 35,
@@ -363,7 +258,7 @@ NEW_PRODUCTS = [
             "alternative_demand": 17,
             "price_gap_score": 8,
             "cluster_opportunity_bonus": 25,
-            "commercial_opportunity_score": 88
+            "commercial_opportunity_score": 88,
         },
         "relationships": [],
         "evidence": {
@@ -371,11 +266,9 @@ NEW_PRODUCTS = [
             "community_metrics": "high",
             "market_price": "high",
             "relationship_data": "medium_high",
-            "overall": "high"
+            "overall": "high",
         },
-        "validation": {
-            "catalog_ready": True
-        }
+        "validation": {"catalog_ready": True},
     },
     {
         "product_id": "SC-PRADA-LHOMME-100",
@@ -387,28 +280,15 @@ NEW_PRODUCTS = [
         "classification": {
             "official_orientation": None,
             "community_category": "men",
-            "scentai_target_groups": [
-                "men"
-            ],
+            "scentai_target_groups": ["men"],
             "role": "benchmark",
             "cluster_id": "prada-lhomme",
-            "trend_bet": False
+            "trend_bet": False,
         },
         "notes": {
-            "top": [
-                "Pepper",
-                "Neroli"
-            ],
-            "heart": [
-                "Iris",
-                "Violet",
-                "Geranium",
-                "Amber"
-            ],
-            "base": [
-                "Patchouli",
-                "Cedar"
-            ]
+            "top": ["Pepper", "Neroli"],
+            "heart": ["Iris", "Violet", "Geranium", "Amber"],
+            "base": ["Patchouli", "Cedar"],
         },
         "community": {
             "source": "Parfumo",
@@ -417,30 +297,19 @@ NEW_PRODUCTS = [
             "rank": 5,
             "rank_category": "men",
             "longevity_10": 7.4,
-            "projection_10": 7.1
+            "projection_10": 7.1,
         },
         "fragrance_profile": {
-            "community_accords": [
-                "powdery",
-                "fresh",
-                "floral",
-                "sweet",
-                "creamy"
-            ],
-            "scores": {
-                "freshness": 7,
-                "sweetness": 4,
-                "woodiness": 5,
-                "spiciness": 3
-            },
-            "score_confidence": "high"
+            "community_accords": ["powdery", "fresh", "floral", "sweet", "creamy"],
+            "scores": {"freshness": 7, "sweetness": 4, "woodiness": 5, "spiciness": 3},
+            "score_confidence": "high",
         },
         "market": {
             "market_price_eur": 74.62,
             "price_per_ml_eur": 0.7462,
             "german_availability": "high",
             "price_source_count": 3,
-            "price_checked_at": "2026-09-10"
+            "price_checked_at": "2026-09-10",
         },
         "commercial": {
             "retail_demand_proxy": 29,
@@ -451,7 +320,7 @@ NEW_PRODUCTS = [
             "alternative_demand": 10,
             "price_gap_score": 7,
             "cluster_opportunity_bonus": 17,
-            "commercial_opportunity_score": 76
+            "commercial_opportunity_score": 76,
         },
         "relationships": [],
         "evidence": {
@@ -459,12 +328,10 @@ NEW_PRODUCTS = [
             "community_metrics": "high",
             "market_price": "high",
             "relationship_data": "medium_high",
-            "overall": "high"
+            "overall": "high",
         },
-        "validation": {
-            "catalog_ready": True
-        }
-    }
+        "validation": {"catalog_ready": True},
+    },
 ]
 
 
@@ -473,10 +340,7 @@ def main():
         data = json.load(file)
 
     products = data["products"]
-    existing_ids = {
-        product["product_id"]
-        for product in products
-    }
+    existing_ids = {product["product_id"] for product in products}
 
     added = []
 
@@ -490,12 +354,7 @@ def main():
         added.append(product["product_id"])
 
     with DB_PATH.open("w", encoding="utf-8") as file:
-        json.dump(
-            data,
-            file,
-            ensure_ascii=False,
-            indent=2
-        )
+        json.dump(data, file, ensure_ascii=False, indent=2)
         file.write("\n")
 
     print()

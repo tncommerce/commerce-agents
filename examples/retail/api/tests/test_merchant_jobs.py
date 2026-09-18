@@ -3,7 +3,6 @@ import json
 import pytest
 
 from retail.api import merchant_jobs
-
 from retail.api.merchant_job_approval import (
     build_job_approval,
     upsert_job_approval,
@@ -39,13 +38,7 @@ def test_load_and_resolve_merchant_job(tmp_path) -> None:
     path = tmp_path / "jobs.json"
 
     path.write_text(
-        json.dumps(
-            {
-                "jobs": [
-                    _job_payload(tmp_path)
-                ]
-            }
-        ),
+        json.dumps({"jobs": [_job_payload(tmp_path)]}),
         encoding="utf-8",
     )
 
@@ -68,13 +61,7 @@ def test_disabled_job_is_held_without_running(
     path = tmp_path / "jobs.json"
 
     path.write_text(
-        json.dumps(
-            {
-                "jobs": [
-                    _job_payload(tmp_path)
-                ]
-            }
-        ),
+        json.dumps({"jobs": [_job_payload(tmp_path)]}),
         encoding="utf-8",
     )
 
@@ -85,9 +72,7 @@ def test_disabled_job_is_held_without_running(
     def fake_runner(config):
         nonlocal called
         called = True
-        raise AssertionError(
-            "Disabled job must not execute"
-        )
+        raise AssertionError("Disabled job must not execute")
 
     monkeypatch.setattr(
         merchant_jobs,
@@ -225,9 +210,7 @@ def test_enabled_but_unready_job_is_held(
     def fake_runner(config):
         nonlocal called
         called = True
-        raise AssertionError(
-            "Unready job must not execute"
-        )
+        raise AssertionError("Unready job must not execute")
 
     monkeypatch.setattr(
         merchant_jobs,
@@ -286,9 +269,7 @@ def test_enabled_write_job_requires_dry_run_approval(
     def fake_runner(config):
         nonlocal called
         called = True
-        raise AssertionError(
-            "Unapproved write job must not execute"
-        )
+        raise AssertionError("Unapproved write job must not execute")
 
     monkeypatch.setattr(
         merchant_jobs,
@@ -305,9 +286,7 @@ def test_enabled_write_job_requires_dry_run_approval(
     assert called is False
     assert result.action == "hold"
     assert result.exit_code == 20
-    assert result.reasons == [
-        "dry_run_approval_required"
-    ]
+    assert result.reasons == ["dry_run_approval_required"]
 
 
 def test_enabled_write_job_runs_with_matching_approval(

@@ -8,22 +8,34 @@ from scripts.report_scentai_research_triggers import (
 
 
 def test_trigger_thresholds() -> None:
-    assert trigger_level(
-        no_result_events=0,
-        no_result_sessions=0,
-    ) is None
-    assert trigger_level(
-        no_result_events=1,
-        no_result_sessions=1,
-    ) == "watch"
-    assert trigger_level(
-        no_result_events=3,
-        no_result_sessions=2,
-    ) == "research"
-    assert trigger_level(
-        no_result_events=7,
-        no_result_sessions=4,
-    ) == "high"
+    assert (
+        trigger_level(
+            no_result_events=0,
+            no_result_sessions=0,
+        )
+        is None
+    )
+    assert (
+        trigger_level(
+            no_result_events=1,
+            no_result_sessions=1,
+        )
+        == "watch"
+    )
+    assert (
+        trigger_level(
+            no_result_events=3,
+            no_result_sessions=2,
+        )
+        == "research"
+    )
+    assert (
+        trigger_level(
+            no_result_events=7,
+            no_result_sessions=4,
+        )
+        == "high"
+    )
 
 
 def test_classifies_live_before_backlog() -> None:
@@ -147,15 +159,9 @@ def test_report_only_marks_research_and_high_as_actionable() -> None:
     }
 
     assert report["triggers"][0]["level"] == "high"
-    assert (
-        report["triggers"][0]["kind"]
-        == "new_research_opportunity"
-    )
+    assert report["triggers"][0]["kind"] == "new_research_opportunity"
     assert report["triggers"][1]["level"] == "research"
-    assert (
-        report["triggers"][1]["kind"]
-        == "research_backlog"
-    )
+    assert report["triggers"][1]["kind"] == "research_backlog"
 
 
 def test_live_zero_result_trigger_points_to_search_relevance() -> None:
@@ -187,7 +193,4 @@ def test_live_zero_result_trigger_points_to_search_relevance() -> None:
 
     row = report["triggers"][0]
     assert row["kind"] == "live_catalog"
-    assert (
-        row["recommended_action"]
-        == "investigate_search_relevance_or_filtering"
-    )
+    assert row["recommended_action"] == "investigate_search_relevance_or_filtering"

@@ -8,7 +8,6 @@ from scripts.promote_scentai_catalog import (
     promotion_plan,
 )
 
-
 NOW = datetime(2026, 9, 18, 12, 0, tzinfo=UTC)
 
 
@@ -172,14 +171,8 @@ def test_catalog_conversion_marks_current_merchant_price() -> None:
 
     assert converted["product_id"] == "SC-TEST-FRAGRANCE-100"
     assert converted["price"] == 79.95
-    assert (
-        converted["attributes"]["price_source"]
-        == "current_merchant_offer"
-    )
-    assert (
-        converted["attributes"]["profile_source"]
-        == "deterministic_editorial_mapping_v1"
-    )
+    assert converted["attributes"]["price_source"] == "current_merchant_offer"
+    assert converted["attributes"]["profile_source"] == "deterministic_editorial_mapping_v1"
 
 
 def test_promotion_plan_is_all_gate_aware() -> None:

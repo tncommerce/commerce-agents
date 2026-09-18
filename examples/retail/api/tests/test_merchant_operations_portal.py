@@ -2,18 +2,13 @@ from demo_common.tests.fixtures import (
     start_operator,
 )
 
-
-FLEET_STATUS_PATH = (
-    "/api/merchant/operations/fleet-status"
-)
+FLEET_STATUS_PATH = "/api/merchant/operations/fleet-status"
 
 
 def test_fleet_status_route_requires_merchant_session(
     client,
 ) -> None:
-    response = client.get(
-        FLEET_STATUS_PATH
-    )
+    response = client.get(FLEET_STATUS_PATH)
 
     assert response.status_code == 401
 
@@ -32,13 +27,9 @@ def test_fleet_status_route_returns_consistent_summary(
 
     payload = response.json()
 
-    assert payload["total_jobs"] == len(
-        payload["jobs"]
-    )
+    assert payload["total_jobs"] == len(payload["jobs"])
 
-    assert payload["attention_required"] == len(
-        payload["attention_items"]
-    )
+    assert payload["attention_required"] == len(payload["attention_items"])
 
     health_total = (
         payload["health_ok"]
@@ -50,17 +41,13 @@ def test_fleet_status_route_returns_consistent_summary(
     assert health_total == payload["total_jobs"]
 
 
-JOB_STATUS_PATH = (
-    "/api/merchant/operations/jobs/notino-de"
-)
+JOB_STATUS_PATH = "/api/merchant/operations/jobs/notino-de"
 
 
 def test_job_status_route_requires_merchant_session(
     client,
 ) -> None:
-    response = client.get(
-        JOB_STATUS_PATH
-    )
+    response = client.get(JOB_STATUS_PATH)
 
     assert response.status_code == 401
 

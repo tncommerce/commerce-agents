@@ -1,4 +1,4 @@
-﻿import json
+import json
 import sys
 
 from retail.api import deactivate_merchant_job
@@ -19,15 +19,11 @@ def test_deactivation_cli_requires_explicit_confirmation(
 
     exit_code = deactivate_merchant_job.main()
 
-    payload = json.loads(
-        capsys.readouterr().out
-    )
+    payload = json.loads(capsys.readouterr().out)
 
     assert exit_code == 20
     assert payload["action"] == "hold"
-    assert payload["reasons"] == [
-        "explicit_human_deactivation_required"
-    ]
+    assert payload["reasons"] == ["explicit_human_deactivation_required"]
     assert payload["approval_revoked"] is False
 
 
@@ -81,9 +77,7 @@ def test_confirmed_deactivation_calls_service(
 
     exit_code = deactivate_merchant_job.main()
 
-    payload = json.loads(
-        capsys.readouterr().out
-    )
+    payload = json.loads(capsys.readouterr().out)
 
     assert exit_code == 0
     assert payload["action"] == "deactivated"

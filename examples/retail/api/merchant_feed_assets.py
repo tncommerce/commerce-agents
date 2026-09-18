@@ -18,10 +18,7 @@ def _valid_http_url(value: object) -> bool:
         return False
 
     parsed = urlparse(candidate)
-    return (
-        parsed.scheme in {"http", "https"}
-        and bool(parsed.netloc)
-    )
+    return parsed.scheme in {"http", "https"} and bool(parsed.netloc)
 
 
 def extract_feed_image_candidates(
@@ -56,9 +53,7 @@ def extract_feed_image_candidates(
         product_id = resolve_product_id(
             mappings,
             merchant=merchant,
-            merchant_product_id=row.get(
-                "merchant_product_id"
-            ),
+            merchant_product_id=row.get("merchant_product_id"),
             ean=row.get("ean"),
             gtin=row.get("gtin"),
         )
@@ -68,9 +63,7 @@ def extract_feed_image_candidates(
             "merchant": merchant,
             "merchant_id": row.get("merchant_id"),
             "merchant_name": row.get("merchant_name"),
-            "merchant_product_id": row.get(
-                "merchant_product_id"
-            ),
+            "merchant_product_id": row.get("merchant_product_id"),
             "ean": row.get("ean"),
             "gtin": row.get("gtin"),
             "image_url": str(image_url).strip(),
@@ -101,9 +94,7 @@ def extract_feed_image_candidates(
                 **base,
                 "product_id": product_id,
                 "review_status": "pending_review",
-                "approved_image_status": (
-                    "approved_feed_image"
-                ),
+                "approved_image_status": ("approved_feed_image"),
             }
         )
 
