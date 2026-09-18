@@ -52,6 +52,22 @@ export default function TransparencyPage() {
           </section>
 
           <section>
+            <h2 className="font-semibold text-(--ink)">
+              Direkte Einstiege zu Partnerhändlern
+            </h2>
+            <p className="mt-1">
+              SCENTAI kann zusätzlich allgemeine Partnerlinks zu einem Händler
+              anbieten, wenn du dort ohnehin weiterstöbern möchtest. Dabei ist
+              der Einstieg nicht an den zuvor empfohlenen Duft gebunden. Ob
+              und welche spätere Bestellung SCENTAI zugerechnet und vergütet
+              wird, richtet sich nach den jeweiligen Bedingungen und
+              Attributionsregeln des Partnerprogramms. Auch diese
+              Händler-Einstiege verändern niemals die Reihenfolge der
+              Duftempfehlungen.
+            </p>
+          </section>
+
+          <section>
             <h2 className="font-semibold text-(--ink)">Produkte ohne Partnerprogramm</h2>
             <p className="mt-1">
               Ein Duft kann weiterhin empfohlen und direkt zum Hersteller oder Händler verlinkt
