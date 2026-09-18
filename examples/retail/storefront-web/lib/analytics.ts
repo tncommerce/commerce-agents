@@ -2,6 +2,8 @@ import { api } from "./api";
 
 const ANALYTICS_SESSION_KEY = "scentai_analytics_session_v1";
 let analyticsSessionPromise: Promise<string | null> | null = null;
+let restoredAnalyticsSession: string | null = null;
+let analyticsEventQueue: Promise<void> = Promise.resolve();
 
 function storedAnalyticsSession(): string | null {
   if (typeof window === "undefined") return null;
@@ -28,8 +30,26 @@ function rememberAnalyticsSession(sessionId: string): void {
   }
 }
 
+function clearStoredAnalyticsSession(): void {
+  if (typeof window === "undefined") return;
+
+  try {
+    window.sessionStorage.removeItem(
+      ANALYTICS_SESSION_KEY,
+    );
+  } catch {
+    // Analytics storage must never break the shopping experience.
+  }
+}
+
 async function ensureAnalyticsSession(): Promise<string | null> {
   if (api.session) {
+    if (
+      restoredAnalyticsSession &&
+      restoredAnalyticsSession !== api.session
+    ) {
+      restoredAnalyticsSession = null;
+    }
     rememberAnalyticsSession(api.session);
     return api.session;
   }
@@ -37,6 +57,7 @@ async function ensureAnalyticsSession(): Promise<string | null> {
   const stored = storedAnalyticsSession();
   if (stored) {
     api.session = stored;
+    restoredAnalyticsSession = stored;
     return stored;
   }
 
@@ -47,6 +68,7 @@ async function ensureAnalyticsSession(): Promise<string | null> {
         const sessionId = started?.sessionId ?? null;
         if (sessionId) {
           api.session = sessionId;
+          restoredAnalyticsSession = null;
           rememberAnalyticsSession(sessionId);
         }
         return sessionId;
@@ -71,22 +93,24 @@ export type AnalyticsEventName =
   | "fragrance_detail_view"
   | "comparison_start";
 
-export async function trackAnalyticsEvent(
+type AnalyticsContext = {
+  product_id?: string;
+  source?: string;
+  search_term?: string;
+  result_count?: number;
+  surface?: string;
+  related_product_id?: string;
+  item_position?: number;
+};
+
+async function sendAnalyticsEvent(
   event: AnalyticsEventName,
-  context: {
-    product_id?: string;
-    source?: string;
-    search_term?: string;
-    result_count?: number;
-    surface?: string;
-    related_product_id?: string;
-    item_position?: number;
-  } = {},
+  context: AnalyticsContext,
 ): Promise<void> {
   const sessionId = await ensureAnalyticsSession();
   if (!sessionId) return;
 
-  await api.post("/analytics/events", {
+  const payload = {
     event,
     product_id: context.product_id,
     source: context.source,
@@ -95,7 +119,44 @@ export async function trackAnalyticsEvent(
     surface: context.surface,
     related_product_id: context.related_product_id,
     item_position: context.item_position,
+  };
+
+  const recorded = await api.post<{ ok?: boolean }>(
+    "/analytics/events",
+    payload,
+  );
+
+  // Render restarts can invalidate the in-memory API session while the
+  // browser still holds its anonymous analytics session. Recover once
+  // without disturbing an active advisor session.
+  if (
+    recorded === null &&
+    restoredAnalyticsSession === sessionId
+  ) {
+    clearStoredAnalyticsSession();
+    restoredAnalyticsSession = null;
+    api.session = null;
+
+    const freshSession = await ensureAnalyticsSession();
+    if (!freshSession) return;
+
+    await api.post("/analytics/events", payload);
+  }
+}
+
+export function trackAnalyticsEvent(
+  event: AnalyticsEventName,
+  context: AnalyticsContext = {},
+): Promise<void> {
+  const queued = analyticsEventQueue.then(() =>
+    sendAnalyticsEvent(event, context),
+  );
+
+  analyticsEventQueue = queued.catch(() => {
+    // First-party analytics must never interrupt the storefront.
   });
+
+  return analyticsEventQueue;
 }
 
 
