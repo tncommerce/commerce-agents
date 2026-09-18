@@ -1,12 +1,12 @@
 import type { MetadataRoute } from "next";
 
 import {
-export const dynamic = "force-static";
-
   EXPLICIT_COMPARISON_PAIRS,
   LIVE_FRAGRANCES,
 } from "@/lib/fragranceCatalog";
 import { SITE_URL } from "@/lib/site";
+
+export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: MetadataRoute.Sitemap = [
