@@ -7,10 +7,23 @@ create table if not exists public.scentai_analytics_events (
   occurred_at timestamptz not null,
   session_key text not null,
   event text not null check (
-    event in ('page_view', 'consultation_start', 'product_open', 'merchant_clickout')
+    event in (
+      'page_view',
+      'consultation_start',
+      'product_open',
+      'merchant_clickout',
+      'catalog_search',
+      'catalog_no_results'
+    )
   ),
   product_id text null,
   source text null,
+  search_term text null check (
+    search_term is null or char_length(search_term) <= 80
+  ),
+  result_count integer null check (
+    result_count is null or result_count >= 0
+  ),
   created_at timestamptz not null default now()
 );
 
@@ -27,3 +40,8 @@ alter table public.scentai_analytics_events enable row level security;
 
 -- No public RLS policies are created.
 -- Production writes use the server-side service-role key from Render.
+
+
+create index if not exists scentai_analytics_events_search_idx
+  on public.scentai_analytics_events (event, search_term)
+  where event in ('catalog_search', 'catalog_no_results');
