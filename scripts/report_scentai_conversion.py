@@ -17,6 +17,7 @@ FUNNEL_VIEW = "scentai_conversion_funnel"
 PRODUCT_VIEW = "scentai_product_funnel"
 POSITION_VIEW = "scentai_advisor_position_engagement"
 SURFACE_VIEW = "scentai_clickout_surface_summary"
+ACQUISITION_VIEW = "scentai_acquisition_funnel"
 
 
 def _integer(value: object) -> int:
@@ -46,6 +47,7 @@ def build_conversion_report(
     surface_rows: list[dict],
     catalog: dict,
     *,
+    acquisition_rows: list[dict] | None = None,
     limit: int = 20,
     minimum_sample_sessions: int = 10,
 ) -> dict[str, Any]:
@@ -239,6 +241,94 @@ def build_conversion_report(
         reverse=True,
     )
 
+    acquisition_sources = []
+    for row in acquisition_rows or []:
+        landing_sessions = _integer(
+            row.get("landing_sessions")
+        )
+        acquisition_sources.append(
+            {
+                "acquisition_source": str(
+                    row.get("acquisition_source")
+                    or "unknown"
+                ),
+                "landing_sessions": landing_sessions,
+                "consultation_sessions": _integer(
+                    row.get("consultation_sessions")
+                ),
+                "recommendation_sessions": _integer(
+                    row.get("recommendation_sessions")
+                ),
+                "detail_sessions": _integer(
+                    row.get("detail_sessions")
+                ),
+                "comparison_sessions": _integer(
+                    row.get("comparison_sessions")
+                ),
+                "clickout_sessions": _integer(
+                    row.get("clickout_sessions")
+                ),
+                "landing_to_consultation_pct": (
+                    None
+                    if row.get(
+                        "landing_to_consultation_pct"
+                    )
+                    is None
+                    else round(
+                        _float(
+                            row.get(
+                                "landing_to_consultation_pct"
+                            )
+                        ),
+                        2,
+                    )
+                ),
+                "consultation_to_recommendation_pct": (
+                    None
+                    if row.get(
+                        "consultation_to_recommendation_pct"
+                    )
+                    is None
+                    else round(
+                        _float(
+                            row.get(
+                                "consultation_to_recommendation_pct"
+                            )
+                        ),
+                        2,
+                    )
+                ),
+                "landing_to_clickout_pct": (
+                    None
+                    if row.get(
+                        "landing_to_clickout_pct"
+                    )
+                    is None
+                    else round(
+                        _float(
+                            row.get(
+                                "landing_to_clickout_pct"
+                            )
+                        ),
+                        2,
+                    )
+                ),
+                "sample_status": (
+                    "sufficient_signal"
+                    if landing_sessions
+                    >= minimum_sample_sessions
+                    else "early_signal"
+                ),
+            }
+        )
+
+    acquisition_sources.sort(
+        key=lambda row: (
+            -row["landing_sessions"],
+            row["acquisition_source"],
+        )
+    )
+
     return {
         "minimum_sample_sessions": minimum_sample_sessions,
         "summary": summary,
@@ -248,6 +338,7 @@ def build_conversion_report(
         "best_clickout_rates": best_clickout_rates,
         "advisor_positions": positions,
         "clickout_surfaces": surfaces,
+        "acquisition_sources": acquisition_sources,
     }
 
 
@@ -345,6 +436,12 @@ def main() -> int:
             view=SURFACE_VIEW,
             max_rows=args.max_rows,
         )
+        acquisition_rows = fetch_view_rows(
+            supabase_url=supabase_url,
+            service_key=service_key,
+            view=ACQUISITION_VIEW,
+            max_rows=args.max_rows,
+        )
     except Exception as exc:
         parser.error(f"Supabase conversion report failed: {exc}")
 
@@ -354,6 +451,7 @@ def main() -> int:
         position_rows,
         surface_rows,
         load_json(args.catalog),
+        acquisition_rows=acquisition_rows,
         limit=args.limit,
         minimum_sample_sessions=args.minimum_sample_sessions,
     )
@@ -434,6 +532,21 @@ def main() -> int:
             ("clickout_sessions", "sessions"),
             ("clickouts", "clickouts"),
             ("products_clicked", "products"),
+        ],
+    )
+    _print_rows(
+        "Acquisition landing pages:",
+        report["acquisition_sources"],
+        [
+            ("acquisition_source", "source"),
+            ("landing_sessions", "landings"),
+            ("consultation_sessions", "consultations"),
+            ("clickout_sessions", "clickouts"),
+            (
+                "landing_to_consultation_pct",
+                "consultation_pct",
+            ),
+            ("sample_status", "sample"),
         ],
     )
 
