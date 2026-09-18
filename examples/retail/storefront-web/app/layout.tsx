@@ -4,6 +4,7 @@
 import type { Metadata } from "next";
 import { Instrument_Sans } from "next/font/google";
 import "./globals.css";
+import { SITE_INDEXABLE, SITE_URL } from "@/lib/site";
 
 const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
@@ -12,8 +13,41 @@ const instrumentSans = Instrument_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "SCENTAI",
-  description: "Persönliche Duftberatung, Vergleiche und Empfehlungen mit SCENTAI.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "SCENTAI – Duftberatung & Parfumvergleich",
+    template: "%s | SCENTAI",
+  },
+  description:
+    "Finde passende Parfums nach Duftprofil, Anlass und Budget. Vergleiche Düfte, Community-Erfahrungen und Händlerangebote mit SCENTAI.",
+  alternates: {
+    canonical: "/",
+  },
+  robots: SITE_INDEXABLE
+    ? {
+        index: true,
+        follow: true,
+      }
+    : {
+        index: false,
+        follow: false,
+        nocache: true,
+      },
+  openGraph: {
+    type: "website",
+    locale: "de_DE",
+    url: SITE_URL,
+    siteName: "SCENTAI",
+    title: "SCENTAI – Duftberatung & Parfumvergleich",
+    description:
+      "Persönliche Duftempfehlungen, Duftvergleiche und transparente Händlerangebote.",
+  },
+  twitter: {
+    card: "summary",
+    title: "SCENTAI – Duftberatung & Parfumvergleich",
+    description:
+      "Persönliche Duftempfehlungen, Duftvergleiche und transparente Händlerangebote.",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
