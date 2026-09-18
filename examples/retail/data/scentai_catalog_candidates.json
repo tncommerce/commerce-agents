@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "target_live_catalog_size": 150,
   "current_live_scentai_count_at_creation": 32,
   "wave": 1,
@@ -369,6 +369,34 @@
       "target_group": "men",
       "segment": "arabic-value",
       "priority": 1
+    },
+    {
+      "candidate_id": "JPG-FLEUR-DU-MALE-2026",
+      "brand": "Jean Paul Gaultier",
+      "canonical_name": "Fleur du Mâle (2026)",
+      "concentration": null,
+      "target_group": "men",
+      "segment": "mens-designer",
+      "priority": 1,
+      "selection_track": "emerging-release-fast-track",
+      "release_year": 2026,
+      "verification_status": "concentration_pending",
+      "early_signals": {
+        "parfumo": {
+          "rating_10": 8.7,
+          "ratings_count": 100,
+          "status": "new_and_notable"
+        },
+        "fragrantica": {
+          "rating_5": 4.3,
+          "votes_count": 82
+        }
+      },
+      "notes": [
+        "Strong early cross-community reception despite being a very recent release.",
+        "Do not promote live until concentration and final retail identity are verified because early sources conflict between Eau de Parfum and Eau de Toilette.",
+        "Keep separate from the 2007 Fleur du Mâle."
+      ]
     }
   ]
 }
