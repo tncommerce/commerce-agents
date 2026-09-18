@@ -4,7 +4,10 @@ import { notFound } from "next/navigation";
 import FragranceOffers from "@/components/FragranceOffers";
 import {
   LIVE_FRAGRANCES,
+  comparisonPath,
   getLiveFragranceBySlug,
+  getRelatedFragrances,
+  type RelatedFragranceKind,
   type StaticFragrance,
 } from "@/lib/fragranceCatalog";
 import { SITE_URL } from "@/lib/site";
@@ -50,6 +53,16 @@ function accordLabel(value: string): string {
 
 function targetLabel(value: string): string {
   return TARGET_LABELS[value.toLowerCase()] || value;
+}
+
+function relatedLabel(kind: RelatedFragranceKind): string {
+  return {
+    clone: "Sehr naher Duftstil",
+    inspired: "Inspiriert",
+    alternative: "Alternative",
+    same_cluster: "Gleiche Duftfamilie",
+    similar_profile: "Ähnliches Duftprofil",
+  }[kind];
 }
 
 function scoreLevel(value: number | null): string {
@@ -209,6 +222,10 @@ export default async function FragrancePage({
 
   const checkedAt = formatCheckedAt(
     fragrance.market.checked_at,
+  );
+  const related = getRelatedFragrances(
+    fragrance,
+    4,
   );
 
   return (
@@ -459,6 +476,103 @@ export default async function FragrancePage({
             productId={fragrance.product_id}
           />
         </div>
+
+        {related.length ? (
+          <section className="mt-5 rounded-2xl border border-(--line) bg-(--card) p-5 shadow-(--shadow-sm)">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <h2 className="text-[17px] font-semibold">
+                  Ähnliche Düfte & Alternativen
+                </h2>
+                <p className="mt-1 max-w-2xl text-[12px] leading-5 text-(--ink-soft)">
+                  Zuerst zeigt SCENTAI dokumentierte Beziehungen aus dem
+                  Duftkatalog. Danach folgen profilähnliche Düfte anhand
+                  von Akkorden und redaktionellen Duftprofil-Merkmalen.
+                </p>
+              </div>
+              <a
+                href="/vergleich"
+                className="text-[12px] font-semibold text-(--accent-ink) hover:underline"
+              >
+                Vergleiche entdecken
+              </a>
+            </div>
+
+            <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {related.map((item) => {
+                const comparisonHref = comparisonPath(
+                  fragrance,
+                  item.fragrance,
+                );
+                const hasComparison = comparisonHref.startsWith(
+                  "/vergleich/",
+                );
+
+                return (
+                  <article
+                    key={item.fragrance.product_id}
+                    className="overflow-hidden rounded-xl border border-(--line) bg-(--well)/35"
+                  >
+                    <a
+                      href={`/duft/${item.fragrance.slug}`}
+                      className="block"
+                    >
+                      <div className="flex h-36 items-center justify-center bg-white p-3">
+                        {item.fragrance.image_url ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={item.fragrance.image_url}
+                            alt={`${item.fragrance.brand} ${item.fragrance.name}`}
+                            className="h-full w-full object-contain"
+                          />
+                        ) : (
+                          <span className="text-[11px] font-semibold tracking-[0.14em] text-(--ink-soft)">
+                            SCENTAI
+                          </span>
+                        )}
+                      </div>
+                      <div className="p-3">
+                        <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-(--ink-soft)">
+                          {relatedLabel(item.kind)}
+                        </div>
+                        <div className="mt-1 text-[11px] text-(--ink-soft)">
+                          {item.fragrance.brand}
+                        </div>
+                        <h3 className="mt-0.5 text-[14px] font-semibold leading-5 text-(--ink)">
+                          {item.fragrance.name}
+                        </h3>
+                        {item.fragrance.community.rating_10 != null ? (
+                          <div className="mt-2 text-[11px] text-(--ink-soft)">
+                            <span className="font-semibold text-(--ink)">
+                              {item.fragrance.community.rating_10.toLocaleString(
+                                "de-DE",
+                                {
+                                  minimumFractionDigits: 1,
+                                  maximumFractionDigits: 1,
+                                },
+                              )}/10
+                            </span>
+                            {" · "}
+                            {item.fragrance.community.source}
+                          </div>
+                        ) : null}
+                      </div>
+                    </a>
+
+                    {hasComparison ? (
+                      <a
+                        href={comparisonHref}
+                        className="block border-t border-(--line) px-3 py-2.5 text-[11px] font-semibold text-(--accent-ink) hover:bg-(--card)"
+                      >
+                        Direkt vergleichen →
+                      </a>
+                    ) : null}
+                  </article>
+                );
+              })}
+            </div>
+          </section>
+        ) : null}
 
         <section className="mt-5 rounded-2xl border border-(--line) bg-(--card) p-5 shadow-(--shadow-sm)">
           <div className="flex flex-wrap items-center justify-between gap-4">
