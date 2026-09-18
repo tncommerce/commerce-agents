@@ -434,7 +434,7 @@ class MockRetail(StorefrontBackend):
             char
             for char in normalized
             if not unicodedata.combining(char)
-        )
+        ).replace("ß", "ss")
         normalized = " ".join(normalized.split())
 
         attributes = product.attributes or {}
@@ -706,7 +706,7 @@ class MockRetail(StorefrontBackend):
             normalized = unicodedata.normalize("NFKD", value.casefold())
             normalized = "".join(
                 char for char in normalized if not unicodedata.combining(char)
-            )
+            ).replace("ß", "ss")
             for separator in ("-", "/", "'", "’"):
                 normalized = normalized.replace(separator, " ")
             return " ".join(normalized.split())
@@ -1208,7 +1208,7 @@ class MockRetail(StorefrontBackend):
                 char
                 for char in normalized
                 if not unicodedata.combining(char)
-            )
+            ).replace("ß", "ss")
 
             for separator in ("-", "/", "'", "’"):
                 normalized = normalized.replace(
