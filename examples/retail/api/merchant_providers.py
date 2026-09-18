@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 from typing import Protocol
 
 
@@ -93,3 +96,46 @@ def register_provider_adapter(
         )
 
     _ADAPTERS[key] = adapter
+
+
+def load_mapped_provider_adapter(path: Path) -> MappedMerchantFeedAdapter:
+    """Load a provider field mapping from JSON without hard-coding network columns.
+
+    This keeps SCENTAI independent from Awin/CJ export schemas until an approved,
+    real feed sample is available. The config maps external feed column names to
+    SCENTAI's canonical merchant contract.
+    """
+
+    raw = json.loads(path.read_text(encoding="utf-8-sig"))
+
+    provider_name = str(raw.get("provider_name") or "").strip()
+    field_map = raw.get("field_map")
+    constants = raw.get("constants", {})
+
+    if not provider_name:
+        raise ValueError("Provider config requires provider_name")
+
+    if not isinstance(field_map, dict) or not field_map:
+        raise ValueError("Provider config requires a non-empty field_map")
+
+    if not isinstance(constants, dict):
+        raise ValueError("Provider config constants must be an object")
+
+    invalid_fields = [
+        key
+        for key, value in field_map.items()
+        if not isinstance(key, str)
+        or not isinstance(value, str)
+        or not key.strip()
+        or not value.strip()
+    ]
+    if invalid_fields:
+        raise ValueError(
+            "Provider config field_map must contain non-empty string keys and values"
+        )
+
+    return MappedMerchantFeedAdapter(
+        provider_name=provider_name,
+        field_map=field_map,
+        constants=constants,
+    )
