@@ -1,6 +1,7 @@
 import { api } from "./api";
 
 const ANALYTICS_CONTEXT_KEY = "scentai_analytics_context_v1";
+const ANALYTICS_CONTEXT_PATTERN = /^[A-Za-z0-9-]{16,80}$/;
 let apiSessionPromise: Promise<string | null> | null = null;
 let analyticsOwnedApiSession: string | null = null;
 let analyticsEventQueue: Promise<void> = Promise.resolve();
@@ -9,9 +10,12 @@ function storedAnalyticsContext(): string | null {
   if (typeof window === "undefined") return null;
 
   try {
-    return window.sessionStorage.getItem(
+    const value = window.sessionStorage.getItem(
       ANALYTICS_CONTEXT_KEY,
     );
+    return value && ANALYTICS_CONTEXT_PATTERN.test(value)
+      ? value
+      : null;
   } catch {
     return null;
   }
