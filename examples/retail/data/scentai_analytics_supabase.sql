@@ -27,6 +27,41 @@ create table if not exists public.scentai_analytics_events (
   created_at timestamptz not null default now()
 );
 
+
+alter table public.scentai_analytics_events
+  add column if not exists search_term text null,
+  add column if not exists result_count integer null;
+
+alter table public.scentai_analytics_events
+  drop constraint if exists scentai_analytics_events_event_check;
+
+alter table public.scentai_analytics_events
+  add constraint scentai_analytics_events_event_check
+  check (
+    event in (
+      'page_view',
+      'consultation_start',
+      'product_open',
+      'merchant_clickout',
+      'catalog_search',
+      'catalog_no_results'
+    )
+  );
+
+alter table public.scentai_analytics_events
+  drop constraint if exists scentai_analytics_events_result_count_check;
+
+alter table public.scentai_analytics_events
+  add constraint scentai_analytics_events_result_count_check
+  check (result_count is null or result_count >= 0);
+
+alter table public.scentai_analytics_events
+  drop constraint if exists scentai_analytics_events_search_term_length_check;
+
+alter table public.scentai_analytics_events
+  add constraint scentai_analytics_events_search_term_length_check
+  check (search_term is null or char_length(search_term) <= 80);
+
 create index if not exists scentai_analytics_events_occurred_at_idx
   on public.scentai_analytics_events (occurred_at desc);
 
