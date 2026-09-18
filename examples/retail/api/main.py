@@ -101,7 +101,7 @@ async def analytics_event(
     record: host.CurrentSession,
 ) -> dict:
     event_id, storage = await analytics_tracker.record(
-        session_id=record.session_id,
+        session_id=request.analytics_session_id or record.session_id,
         event=request.event,
         product_id=request.product_id,
         source=request.source,
