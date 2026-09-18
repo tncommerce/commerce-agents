@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import argparse
+import asyncio
 import json
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
+
+from scripts.qa_scentai_staging import run_qa
 
 
 DATA_DIR = Path("examples/retail/data")
@@ -525,6 +528,19 @@ def main() -> int:
                 "Refusing partial promotion: one or more "
                 "selected products are blocked. Run dry-run "
                 "and resolve every blocker first."
+            )
+
+        staging_qa = asyncio.run(
+            run_qa(args.staging)
+        )
+        if not staging_qa["passed"]:
+            preview = ", ".join(
+                staging_qa["issues"][:5]
+            )
+            parser.error(
+                "Refusing live promotion because staging "
+                "recommendation QA failed"
+                + (f": {preview}" if preview else "")
             )
 
         write_promotions(
