@@ -246,7 +246,7 @@ function ProductDetail({
               Vollständige Duftseite öffnen
             </a>
             <a
-              href="/vergleich"
+              href={`/vergleich?left=${encodeURIComponent(full.product_id)}`}
               className="rounded-lg border border-(--line) bg-(--card) px-3 py-2 text-[12px] font-semibold text-(--ink)"
             >
               Mit anderem Duft vergleichen
