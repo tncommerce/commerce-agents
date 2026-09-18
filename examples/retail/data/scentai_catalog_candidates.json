@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "target_live_catalog_size": 150,
   "current_live_scentai_count_at_creation": 32,
   "wave": 1,
@@ -233,7 +233,9 @@
       "concentration": "Eau de Parfum",
       "target_group": "women",
       "segment": "womens-designer",
-      "priority": 1
+      "priority": 1,
+      "canonical_volume_ml": 100,
+      "verification_status": "core_identity_verified"
     },
     {
       "candidate_id": "YSL-BLACK-OPIUM-EDP",
@@ -242,7 +244,9 @@
       "concentration": "Eau de Parfum",
       "target_group": "women",
       "segment": "womens-designer",
-      "priority": 1
+      "priority": 1,
+      "canonical_volume_ml": 90,
+      "verification_status": "core_identity_verified"
     },
     {
       "candidate_id": "PDM-DELINA-EDP",
@@ -339,9 +343,12 @@
       "brand": "Lattafa",
       "canonical_name": "Eclaire",
       "concentration": "Eau de Parfum",
-      "target_group": "unisex",
+      "target_group": "women, unisex",
       "segment": "arabic-value",
-      "priority": 1
+      "priority": 1,
+      "canonical_volume_ml": 100,
+      "audience_lean": "feminine",
+      "verification_status": "core_identity_verified"
     },
     {
       "candidate_id": "LATTAFA-PRIDE-ART-OF-ARABIA-I-EDP",
@@ -411,17 +418,21 @@
         "evidence": "Official German product page screenshot supplied by user",
         "concentration": "Eau de Toilette",
         "profile_summary": "Fresh floral-aromatic fougère opening with petitgrain and orange blossom; coumarin in the base gives tobacco/hay facets and warmth."
-      }
+      },
+      "canonical_volume_ml": 125
     },
     {
       "candidate_id": "LATTAFA-ANGHAM-EDP",
       "brand": "Lattafa",
       "canonical_name": "Angham",
       "concentration": "Eau de Parfum",
-      "target_group": "women",
+      "target_group": "women, unisex",
       "segment": "arabic-value",
       "priority": 1,
-      "selection_track": "batch2-demand-community"
+      "selection_track": "batch2-demand-community",
+      "canonical_volume_ml": 100,
+      "audience_lean": "feminine",
+      "verification_status": "core_identity_verified"
     },
     {
       "candidate_id": "AMOUAGE-GUIDANCE-46",
@@ -432,28 +443,33 @@
       "audience_lean": "feminine",
       "segment": "niche-premium",
       "priority": 1,
-      "selection_track": "batch2-award-community"
+      "selection_track": "batch2-award-community",
+      "canonical_volume_ml": 100,
+      "verification_status": "core_identity_verified"
     },
     {
       "candidate_id": "PDM-VALAYA-EXCLUSIF",
       "brand": "Parfums de Marly",
       "canonical_name": "Valaya Exclusif",
-      "concentration": "Extrait de Parfum",
+      "concentration": "Eau de Parfum",
       "target_group": "women",
       "segment": "niche-premium",
       "priority": 1,
-      "selection_track": "batch2-award-community"
+      "selection_track": "batch2-award-community",
+      "canonical_volume_ml": 75,
+      "verification_status": "core_identity_verified"
     },
     {
       "candidate_id": "KAYALI-YUM-BOUJEE-MARSHMALLOW-81",
       "brand": "Kayali",
       "canonical_name": "Yum Boujee Marshmallow | 81",
-      "concentration": null,
+      "concentration": "Eau de Parfum Intense",
       "target_group": "women",
       "segment": "womens-trend",
       "priority": 1,
       "selection_track": "batch2-award-community",
-      "verification_status": "concentration_pending"
+      "verification_status": "core_identity_verified",
+      "canonical_volume_ml": 100
     },
     {
       "candidate_id": "HUGO-BOSS-BOTTLED-ABSOLU",
@@ -463,17 +479,21 @@
       "target_group": "men",
       "segment": "mens-designer",
       "priority": 1,
-      "selection_track": "batch2-award-community"
+      "selection_track": "batch2-award-community",
+      "canonical_volume_ml": 100,
+      "verification_status": "core_identity_verified"
     },
     {
       "candidate_id": "YSL-MYSLF-LE-PARFUM",
       "brand": "Yves Saint Laurent",
       "canonical_name": "MYSLF Le Parfum",
-      "concentration": "Le Parfum",
+      "concentration": "Parfum",
       "target_group": "men",
       "segment": "mens-designer",
       "priority": 1,
-      "selection_track": "batch2-award-community"
+      "selection_track": "batch2-award-community",
+      "canonical_volume_ml": 100,
+      "verification_status": "core_identity_verified"
     }
   ]
 }
