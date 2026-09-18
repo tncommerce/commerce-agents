@@ -53,7 +53,7 @@ function featured(catalog: Record<string, Product>): Product[] {
 
 function Brief() {
   return (
-    <span className="max-w-2xl text-[15px] leading-6 text-(--ink-soft)">
+    <span className="max-w-2xl text-[14px] leading-5 text-(--ink-soft) sm:text-[15px] sm:leading-6">
       Beschreibe, was du suchst – Duftprofil, Anlass, Budget oder einen Duft,
       den du bereits magst. SCENTAI vergleicht das Sortiment und empfiehlt dir
       passende Optionen.
@@ -69,20 +69,34 @@ export default function HomeView({
   const { ask } = useStoreFrame();
   const catalog = useCatalogIndex(fetchProducts);
   const picks = featured(catalog);
+  const scentCount = Object.values(catalog).filter(
+    (product) =>
+      String(product.product_id).startsWith("SC-") &&
+      product.in_stock !== false,
+  ).length;
   return (
-    <div className="mx-auto flex w-full max-w-[1080px] flex-col gap-6 px-4 sm:px-6">
+    <div className="mx-auto flex w-full max-w-[1080px] flex-col gap-4 px-4 sm:gap-6 sm:px-6">
       <Greeting
         eyebrow="SCENTAI · Persönliche Duftberatung"
         title={
-          <h1 className="max-w-3xl text-[32px] font-semibold leading-tight tracking-[-0.03em] text-(--ink)">
+          <h1 className="max-w-3xl text-[27px] font-semibold leading-[1.12] tracking-[-0.03em] text-(--ink) sm:text-[32px] sm:leading-tight">
             Finde den Duft, der wirklich zu dir passt.
           </h1>
         }
       >
         <Brief />
       </Greeting>
-      <Starters items={STARTERS} />
-      <section className="grid gap-3 sm:grid-cols-3" aria-label="So funktioniert SCENTAI">
+      <div className="[&_button]:py-2.5 sm:[&_button]:py-3">
+        <Starters items={STARTERS} />
+      </div>
+      <div className="flex flex-wrap gap-x-2 gap-y-1 text-[11.5px] text-(--ink-soft) sm:hidden">
+        <span>Unabhängige Empfehlungen</span>
+        <span>·</span>
+        <span>Transparente Händlerangebote</span>
+        <span>·</span>
+        <a href="/transparenz" className="font-medium text-(--accent-ink)">Mehr erfahren</a>
+      </div>
+      <section className="hidden gap-3 sm:grid sm:grid-cols-3" aria-label="So funktioniert SCENTAI">
         <div className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm)">
           <div className="text-[13px] font-semibold text-(--ink)">Empfehlungen nach deinen Kriterien</div>
           <p className="mt-1 text-[12.5px] leading-5 text-(--ink-soft)">
@@ -102,7 +116,7 @@ export default function HomeView({
           </p>
         </div>
       </section>
-      <div className="-mt-2 space-y-1 text-[12px] text-(--ink-soft)">
+      <div className="-mt-2 hidden space-y-1 text-[12px] text-(--ink-soft) sm:block">
         <a href="/transparenz" className="font-medium text-(--accent-ink) hover:underline">
           So bewertet SCENTAI Empfehlungen und Händlerangebote
         </a>
@@ -113,7 +127,7 @@ export default function HomeView({
       </div>
       {picks.length ? (
         <div className="flex flex-wrap gap-2 text-[12.5px] text-(--ink-soft)">
-          <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">{picks.length} Düfte im Sortiment</span>
+          <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">{scentCount} Düfte im Sortiment</span>
           <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">Preise & Community-Bewertungen</span>
           <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">Empfehlungen nach Budget & Duftprofil</span>
         </div>
