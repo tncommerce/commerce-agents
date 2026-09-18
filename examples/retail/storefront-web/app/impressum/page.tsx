@@ -7,6 +7,13 @@ import { legal, legalLocation, legalReady } from "@/lib/legal";
 export const metadata = {
   title: "Impressum | SCENTAI",
   description: "Anbieterkennzeichnung und Kontaktinformationen für SCENTAI.",
+  alternates: {
+    canonical: "/impressum",
+  },
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 export default function ImpressumPage() {
