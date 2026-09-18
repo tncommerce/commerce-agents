@@ -50,12 +50,28 @@ def sanitize_catalog_search_term(value: str | None) -> str | None:
 
 class AnalyticsEventRequest(BaseModel):
     event: AnalyticsEventName
-    product_id: str | None = Field(default=None, max_length=80)
-    source: str | None = Field(default=None, max_length=80)
+    product_id: str | None = Field(
+        default=None,
+        max_length=80,
+        pattern=r"^[A-Za-z0-9._:-]+$",
+    )
+    source: str | None = Field(
+        default=None,
+        max_length=80,
+        pattern=r"^[A-Za-z0-9._:-]+$",
+    )
     search_term: str | None = Field(default=None, max_length=80)
     result_count: int | None = Field(default=None, ge=0)
-    surface: str | None = Field(default=None, max_length=80)
-    related_product_id: str | None = Field(default=None, max_length=80)
+    surface: str | None = Field(
+        default=None,
+        max_length=80,
+        pattern=r"^[A-Za-z0-9._:-]+$",
+    )
+    related_product_id: str | None = Field(
+        default=None,
+        max_length=80,
+        pattern=r"^[A-Za-z0-9._:-]+$",
+    )
     item_position: int | None = Field(default=None, ge=1, le=100)
     analytics_session_id: str | None = Field(
         default=None,
