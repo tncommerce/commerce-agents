@@ -4,6 +4,11 @@ from datetime import datetime
 from typing import Any
 from urllib.parse import urlparse
 
+from .merchant_import import (
+    MerchantProductMapping,
+    resolve_product_id,
+)
+
 REQUIRED_IMPORT_FIELDS = (
     "offer_id",
     "merchant",
@@ -103,6 +108,63 @@ def _row_checks(row: dict) -> dict[str, bool]:
     checks["currency"] = _non_empty(currency) and len(str(currency).strip()) == 3
 
     return checks
+
+
+def build_mapping_coverage(
+    rows: list[dict],
+    mappings: list[MerchantProductMapping],
+) -> dict[str, Any]:
+    mapped_rows = 0
+    mapped_product_ids: set[str] = set()
+    unmatched_preview: list[dict[str, Any]] = []
+
+    for index, row in enumerate(rows):
+        product_id = resolve_product_id(
+            mappings,
+            merchant=str(row.get("merchant") or ""),
+            merchant_product_id=row.get("merchant_product_id"),
+            ean=row.get("ean"),
+            gtin=row.get("gtin"),
+        )
+
+        if product_id is not None:
+            mapped_rows += 1
+            mapped_product_ids.add(product_id)
+            continue
+
+        if len(unmatched_preview) < 20:
+            unmatched_preview.append(
+                {
+                    "row_index": index,
+                    "offer_id": row.get("offer_id"),
+                    "merchant": row.get("merchant"),
+                    "merchant_product_id": row.get(
+                        "merchant_product_id"
+                    ),
+                    "ean": row.get("ean"),
+                    "gtin": row.get("gtin"),
+                }
+            )
+
+    total = len(rows)
+
+    return {
+        "row_count": total,
+        "mapped_rows": mapped_rows,
+        "unmapped_rows": total - mapped_rows,
+        "mapping_coverage_pct": (
+            round((mapped_rows / total) * 100, 1)
+            if total
+            else 0.0
+        ),
+        "mapped_product_count": len(mapped_product_ids),
+        "mapped_product_ids": sorted(mapped_product_ids),
+        "unmatched_preview": unmatched_preview,
+        "note": (
+            "Mapping coverage is informational for broad merchant feeds; "
+            "unrelated merchant products are expected to remain unmapped."
+        ),
+    }
 
 
 def build_feed_preflight(rows: list[dict]) -> dict[str, Any]:
