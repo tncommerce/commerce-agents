@@ -273,3 +273,50 @@ async def test_query_fit_normalizes_german_sharp_s(backend, session):
         "geringe Süße" in str(product.attributes.get("anfrage_passung", ""))
         for product in hits[:3]
     )
+
+
+
+async def test_spring_intent_prefers_fresh_bright_profiles(backend, session):
+    hits = await backend.search_products(
+        session,
+        "Frühlingsduft frisch und lebendig",
+        SearchFilters(max_price=100),
+        limit=5,
+    )
+
+    assert hits
+
+    top = [backend.product(product.product_id) for product in hits[:3]]
+    assert all(product is not None for product in top)
+
+    for product in top:
+        freshness = float(product.attributes["freshness"])
+        accords = str(product.attributes["main_accords"]).lower()
+        assert freshness >= 8
+        assert any(
+            accord in accords
+            for accord in ("floral", "fruity", "green", "citrus", "fresh")
+        )
+
+
+async def test_autumn_intent_prefers_warm_long_lasting_profiles(backend, session):
+    hits = await backend.search_products(
+        session,
+        "Herbstduft warm würzig holzig",
+        SearchFilters(max_price=100),
+        limit=5,
+    )
+
+    assert hits
+
+    top = [backend.product(product.product_id) for product in hits[:3]]
+    assert all(product is not None for product in top)
+
+    for product in top:
+        sweetness = float(product.attributes["sweetness"])
+        woodiness = float(product.attributes["woodiness"])
+        spiciness = float(product.attributes["spiciness"])
+        longevity = float(product.attributes["longevity"])
+
+        assert (sweetness + woodiness + spiciness) / 3 >= 6
+        assert longevity >= 7.5
