@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   python:
@@ -27,18 +27,6 @@ jobs:
           cache: pip
       - name: Install
         run: pip install -r requirements-dev.txt
-      - name: Apply Ruff autofixes to SCENTAI branch
-        if: github.ref == 'refs/heads/scentai-mvp' && github.event_name == 'push'
-        run: |
-          ruff check . --fix
-          ruff format .
-          if ! git diff --quiet; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add -A
-            git commit -m "Apply Ruff formatting to SCENTAI acquisition block"
-            git push origin HEAD:scentai-mvp
-          fi
       - name: Lint
         run: ruff check .
       - name: Format
