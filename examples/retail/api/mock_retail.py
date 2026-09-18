@@ -11,6 +11,7 @@ import hashlib
 import json
 import math
 import unicodedata
+from difflib import SequenceMatcher
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
@@ -499,6 +500,110 @@ class MockRetail(StorefrontBackend):
             else " ".join(str(token) for token in query_tokens)
         ).casefold()
 
+        def normalize_name_text(value: str) -> str:
+            normalized = unicodedata.normalize("NFKD", value.casefold())
+            normalized = "".join(
+                char for char in normalized if not unicodedata.combining(char)
+            )
+            for separator in ("-", "/", "'", "’"):
+                normalized = normalized.replace(separator, " ")
+            return " ".join(normalized.split())
+
+        def fuzzy_name_bonus() -> float:
+            """Reward likely named-fragrance matches even with small typos.
+
+            This is deliberately conservative: it only looks at the canonical fragrance
+            name and brand, ignores generic shopping words, and requires strong token
+            similarity. It helps queries such as "Para L homme" resolve to
+            "Prada L'Homme" without turning general scent requests into fuzzy matches.
+            """
+
+            stopwords = {
+                "zeig",
+                "zeige",
+                "mir",
+                "bitte",
+                "suche",
+                "such",
+                "ich",
+                "den",
+                "die",
+                "das",
+                "einen",
+                "eine",
+                "ein",
+                "duft",
+                "parfum",
+                "fragrance",
+                "von",
+                "für",
+                "fuer",
+                "the",
+                "a",
+                "an",
+                "show",
+                "me",
+                "find",
+            }
+
+            normalized_query = normalize_name_text(query_text)
+            query_words = [
+                word
+                for word in normalized_query.split()
+                if word not in stopwords and len(word) >= 2
+            ]
+            if not query_words:
+                return 0.0
+
+            canonical_name = str(attributes.get("canonical_name") or "").strip()
+            brand = str(product.brand or "").strip()
+
+            variants = [
+                normalize_name_text(canonical_name),
+                normalize_name_text(f"{brand} {canonical_name}".strip()),
+            ]
+
+            best_score = 0.0
+
+            for variant in variants:
+                candidate_words = [
+                    word
+                    for word in variant.split()
+                    if len(word) >= 2
+                    and word not in {"eau", "de", "parfum", "toilette", "extrait"}
+                ]
+                if not candidate_words:
+                    continue
+
+                token_scores = []
+                for candidate_word in candidate_words:
+                    token_scores.append(
+                        max(
+                            SequenceMatcher(None, candidate_word, query_word).ratio()
+                            for query_word in query_words
+                        )
+                    )
+
+                strong_matches = [score for score in token_scores if score >= 0.80]
+                coverage = len(strong_matches) / len(candidate_words)
+
+                if len(candidate_words) == 1:
+                    local_score = strong_matches[0] if strong_matches else 0.0
+                elif coverage >= 0.67:
+                    local_score = sum(strong_matches) / len(strong_matches)
+                else:
+                    local_score = 0.0
+
+                best_score = max(best_score, local_score)
+
+            if best_score >= 0.92:
+                return 7.0
+            if best_score >= 0.86:
+                return 5.0
+            if best_score >= 0.80:
+                return 3.0
+            return 0.0
+
         freshness = numeric_attribute("freshness")
         sweetness = numeric_attribute("sweetness")
         woodiness = numeric_attribute("woodiness")
@@ -509,7 +614,82 @@ class MockRetail(StorefrontBackend):
             attributes.get("main_accords") or ""
         ).casefold()
 
-        preference_score = 0.0
+        preference_score = fuzzy_name_bonus()
+
+        target_groups = {
+            part.strip()
+            for part in str(attributes.get("target_group") or "").casefold().split(",")
+            if part.strip()
+        }
+        audience_lean = str(attributes.get("audience_lean") or "").casefold()
+
+        wants_women = any(
+            phrase in query_text
+            for phrase in (
+                "damenduft",
+                "damen parfum",
+                "damenparfum",
+                "für frauen",
+                "fuer frauen",
+                "für eine frau",
+                "fuer eine frau",
+                "women",
+                "woman",
+                "female",
+            )
+        )
+        wants_men = any(
+            phrase in query_text
+            for phrase in (
+                "herrenduft",
+                "herren parfum",
+                "herrenparfum",
+                "für männer",
+                "fuer maenner",
+                "für einen mann",
+                "fuer einen mann",
+                "men's",
+                "mens",
+                "male",
+            )
+        )
+        wants_unisex = "unisex" in query_text
+        wants_feminine = any(
+            term in query_text
+            for term in ("feminin", "feminine", "weiblich", "female leaning")
+        )
+
+        if wants_women:
+            if "women" in target_groups:
+                preference_score += 4.0
+            elif "unisex" in target_groups:
+                preference_score += 1.5
+            elif "men" in target_groups:
+                preference_score -= 3.0
+
+        if wants_men:
+            if "men" in target_groups:
+                preference_score += 4.0
+            elif "unisex" in target_groups:
+                preference_score += 1.5
+            elif "women" in target_groups:
+                preference_score -= 3.0
+
+        if wants_unisex:
+            if "unisex" in target_groups:
+                preference_score += 3.0
+            else:
+                preference_score -= 1.0
+
+        if wants_feminine:
+            if audience_lean == "feminine":
+                preference_score += 3.0
+            elif "women" in target_groups:
+                preference_score += 2.5
+            elif "unisex" in target_groups:
+                preference_score += 1.0
+            elif audience_lean == "masculine":
+                preference_score -= 2.0
 
         wants_fresh = any(
             term in query_text
