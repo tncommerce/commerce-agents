@@ -9,9 +9,9 @@ import {
   type Starter,
   Starters,
   useCatalogIndex,
-  useStoreFrame,
 } from "web-shared";
 import { fetchProducts } from "@/lib/api";
+import { fragrancePathForProduct } from "@/lib/fragranceSlug";
 import type { Product } from "@/lib/types";
 import ProductTile, { ProductRow } from "../ProductTile";
 import LegalFooter from "../LegalFooter";
@@ -66,7 +66,6 @@ export default function HomeView({
 }: {
   shopperName: string;
 }) {
-  const { ask } = useStoreFrame();
   const catalog = useCatalogIndex(fetchProducts);
   const picks = featured(catalog);
   const scentCount = Object.values(catalog).filter(
@@ -140,14 +139,25 @@ export default function HomeView({
                 key={product.product_id}
                 product={product}
                 onOpen={(item) =>
-                  ask(`Erzähl mir mehr über ${item.title} und für wen dieser Duft besonders interessant ist.`)
+                  window.location.assign(
+                    fragrancePathForProduct(item),
+                  )
                 }
               />
             ))}
           </div>
           <div className="hidden grid-cols-3 gap-4 sm:grid">
             {picks.map((product) => (
-              <ProductTile key={product.product_id} product={product} fluid onOpen={(item) => ask(`Erzähl mir mehr über ${item.title} und für wen dieser Duft besonders interessant ist.`)} />
+              <ProductTile
+                key={product.product_id}
+                product={product}
+                fluid
+                onOpen={(item) =>
+                  window.location.assign(
+                    fragrancePathForProduct(item),
+                  )
+                }
+              />
             ))}
           </div>
         </HomeSection>
