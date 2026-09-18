@@ -3,12 +3,13 @@
 
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { type AgentEvent, formatMoney, StoreShell, type StoreView, useAgentTurn, useSession } from "web-shared";
 import CartPanel from "@/components/CartPanel";
 import Chat from "@/components/Chat";
 import HomeView from "@/components/views/HomeView";
 import { api, UNREACHABLE } from "@/lib/api";
+import { trackAnalyticsEvent } from "@/lib/analytics";
 import type { CartPayload } from "@/lib/types";
 
 type View = "assistant";
@@ -33,6 +34,8 @@ export default function StorefrontPage() {
   // A staged checkout owns the panel's primary action until the cart changes again.
   const [checkoutStaged, setCheckoutStaged] = useState(false);
   const [panelOpen, setPanelOpen] = useState(false);
+  const analyticsSessionRef = useRef<string | null>(null);
+  const consultationTrackedRef = useRef(false);
 
   const handleCartUpdate = useCallback((next: CartPayload) => {
     setCart(next);
@@ -48,6 +51,20 @@ export default function StorefrontPage() {
   );
 
   const chat = useAgentTurn(api, { ...session, unreachable: UNREACHABLE, onEvent });
+
+  useEffect(() => {
+    if (!session.sessionId || analyticsSessionRef.current === session.sessionId) return;
+    analyticsSessionRef.current = session.sessionId;
+    consultationTrackedRef.current = false;
+    void trackAnalyticsEvent("page_view", { source: "storefront" });
+  }, [session.sessionId]);
+
+  useEffect(() => {
+    if (!session.sessionId || chat.turnCount < 1 || consultationTrackedRef.current) return;
+    consultationTrackedRef.current = true;
+    void trackAnalyticsEvent("consultation_start", { source: "advisor" });
+  }, [chat.turnCount, session.sessionId]);
+
   useEffect(() => {
     if (session.sessionId) void api.fetchCart<CartPayload>().then((next) => next && setCart(next));
   }, [session.sessionId]);
