@@ -476,6 +476,21 @@ class MockRetail(StorefrontBackend):
                 "cold weather",
             )
         )
+        wants_spring = any(
+            term in normalized
+            for term in (
+                "fruhling",
+                "spring",
+            )
+        )
+        wants_autumn = any(
+            term in normalized
+            for term in (
+                "herbst",
+                "autumn",
+                "fall",
+            )
+        )
         wants_office = any(
             term in normalized
             for term in (
@@ -552,6 +567,45 @@ class MockRetail(StorefrontBackend):
             ]
             if warm_values and sum(warm_values) / len(warm_values) >= 6:
                 signals.append("warmes Winterprofil")
+
+        accords = str(
+            attributes.get("main_accords") or ""
+        ).casefold()
+
+        if (
+            wants_spring
+            and freshness is not None
+            and freshness >= 7
+            and any(
+                accord in accords
+                for accord in (
+                    "floral",
+                    "fruity",
+                    "green",
+                    "citrus",
+                    "fresh",
+                )
+            )
+        ):
+            signals.append("frisches Frühlingsprofil")
+
+        if wants_autumn:
+            warm_values = [
+                value
+                for value in (
+                    sweetness,
+                    woodiness,
+                    spiciness,
+                )
+                if value is not None
+            ]
+            if (
+                warm_values
+                and sum(warm_values) / len(warm_values) >= 5.5
+                and longevity is not None
+                and longevity >= 7.2
+            ):
+                signals.append("warmes Herbstprofil")
 
         if wants_office and all(
             value is not None
@@ -1094,6 +1148,79 @@ class MockRetail(StorefrontBackend):
                 winter_accords * 0.6,
             )
 
+        wants_spring = any(
+            term in normalized_preference_query
+            for term in (
+                "fruhling",
+                "spring",
+            )
+        )
+
+        if wants_spring:
+            if freshness is not None:
+                preference_score += (freshness / 10.0) * 3.0
+
+            if sweetness is not None:
+                sweetness_distance = abs(sweetness - 4.5)
+                preference_score += max(
+                    0.0,
+                    1.5 - sweetness_distance * 0.25,
+                )
+
+            spring_accords = sum(
+                accord in accords
+                for accord in (
+                    "floral",
+                    "fruity",
+                    "green",
+                    "citrus",
+                    "fresh",
+                )
+            )
+            preference_score += min(
+                2.5,
+                spring_accords * 0.65,
+            )
+
+        wants_autumn = any(
+            term in normalized_preference_query
+            for term in (
+                "herbst",
+                "autumn",
+                "fall",
+            )
+        )
+
+        if wants_autumn:
+            warm_values = [
+                value
+                for value in (
+                    sweetness,
+                    woodiness,
+                    spiciness,
+                )
+                if value is not None
+            ]
+            if warm_values:
+                warmth = sum(warm_values) / len(warm_values)
+                preference_score += (warmth / 10.0) * 3.5
+
+            autumn_accords = sum(
+                accord in accords
+                for accord in (
+                    "woody",
+                    "spicy",
+                    "sweet",
+                    "fruity",
+                    "smoky",
+                    "oriental",
+                )
+            )
+            preference_score += min(
+                2.4,
+                autumn_accords * 0.6,
+            )
+
         wants_date = any(
             term in normalized_preference_query
             for term in (
@@ -1171,6 +1298,9 @@ class MockRetail(StorefrontBackend):
 
         if wants_winter and longevity is not None:
             preference_score += (longevity / 10.0) * 2.0
+
+        if wants_autumn and longevity is not None:
+            preference_score += (longevity / 10.0) * 1.5
 
         if wants_date and longevity is not None:
             preference_score += (longevity / 10.0) * 2.0
@@ -1641,6 +1771,12 @@ class MockRetail(StorefrontBackend):
             "sommer",
             "summer",
             "winter",
+            "frühling",
+            "fruhling",
+            "spring",
+            "herbst",
+            "autumn",
+            "fall",
             "abend",
             "evening",
             "date",
