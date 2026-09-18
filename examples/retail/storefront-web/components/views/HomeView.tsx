@@ -126,7 +126,12 @@ export default function HomeView({
       </div>
       {picks.length ? (
         <div className="flex flex-wrap gap-2 text-[12.5px] text-(--ink-soft)">
-          <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">{scentCount} Düfte im Sortiment</span>
+          <a
+            href="/duft"
+            className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5 font-medium text-(--accent-ink) hover:border-(--accent)"
+          >
+            {scentCount} Düfte im Sortiment ansehen
+          </a>
           <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">Preise & Community-Bewertungen</span>
           <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">Empfehlungen nach Budget & Duftprofil</span>
         </div>
