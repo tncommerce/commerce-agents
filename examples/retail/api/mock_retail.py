@@ -334,7 +334,45 @@ class MockRetail(StorefrontBackend):
         if profile_parts:
             attributes["duftprofil_intensitaet"] = ", ".join(profile_parts)
 
-        short_description = product.short_description or ""
+        canonical_name = str(
+            source_attributes.get("canonical_name")
+            or product.title
+        ).strip()
+        concentration = str(
+            source_attributes.get("concentration") or ""
+        ).strip()
+        translated_accords = [
+            accord.strip()
+            for accord in str(
+                attributes.get("main_accords") or ""
+            ).split(",")
+            if accord.strip()
+        ]
+
+        description_parts = [
+            " ".join(
+                part
+                for part in (
+                    product.brand,
+                    canonical_name,
+                )
+                if part
+            ).strip(),
+            concentration,
+        ]
+        if translated_accords:
+            description_parts.append(
+                "Duftprofil: "
+                + ", ".join(translated_accords[:3])
+            )
+
+        short_description = " · ".join(
+            part
+            for part in description_parts
+            if part
+        )
+        if short_description:
+            short_description += "."
 
         if reference_name:
             if relationship == "clone":
