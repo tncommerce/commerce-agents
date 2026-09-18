@@ -6,6 +6,7 @@
 import { useState } from "react";
 import { hasOptions, optionSummary, optionValuesLabel, priceLabel, useStoreFrame } from "web-shared";
 import type { Product } from "@/lib/types";
+import { trackAnalyticsEvent } from "@/lib/analytics";
 import { flyToCart } from "@/lib/flight";
 import { attributeChips, productGlyph, productTileClass } from "@/lib/format";
 import { STORE_POLICY } from "@/lib/storePolicy";
@@ -264,6 +265,15 @@ export default function ProductTile({
 }) {
   const clickable = Boolean(onOpen);
   const isScentai = String(product.product_id).startsWith("SC-");
+  const openProduct = () => {
+    if (isScentai) {
+      void trackAnalyticsEvent("product_open", {
+        product_id: product.product_id,
+        source: "product_card",
+      });
+    }
+    onOpen?.(product);
+  };
   const chips = compact ? [] : attributeChips(product);
   const imageHeight = compact
     ? "h-16"
@@ -283,8 +293,8 @@ export default function ProductTile({
       } ${selected ? "border-(--ink)" : "border-(--line)"}`}
     >
       <div
-        onClick={clickable ? () => onOpen?.(product) : undefined}
-        onKeyDown={clickable ? (event) => event.key === "Enter" && onOpen?.(product) : undefined}
+        onClick={clickable ? openProduct : undefined}
+        onKeyDown={clickable ? (event) => event.key === "Enter" && openProduct() : undefined}
         role={clickable ? "button" : undefined}
         tabIndex={clickable ? 0 : undefined}
         className={`flex flex-1 flex-col rounded-xl focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-(--accent) ${
