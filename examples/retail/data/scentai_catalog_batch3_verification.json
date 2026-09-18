@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "batch": 3,
   "verified_at": "2026-09-18",
   "status": "identity_and_core_metadata_verified",
@@ -89,25 +89,31 @@
     },
     {
       "candidate_id": "DOLCE-GABBANA-THE-ONE-MEN-EDP",
-      "proposed_product_id": "SC-DOLCE-GABBANA-THE-ONE-MEN-EDP-100",
+      "proposed_product_id": "SC-DOLCE-GABBANA-THE-ONE-MEN-EDP-2025-100",
       "brand": "Dolce & Gabbana",
-      "canonical_name": "The One for Men",
+      "canonical_name": "The One for Men (2025)",
       "concentration": "Eau de Parfum",
       "canonical_volume_ml": 100,
       "target_group": "men",
       "scent_family": "woody amber spicy",
       "key_notes": [
-        "citrus",
-        "sage",
-        "musk",
+        "orange",
+        "cardamom",
+        "grapefruit",
+        "clary sage",
+        "patchouli",
+        "geranium",
         "amber",
         "tobacco",
-        "wood"
+        "cedarwood"
       ],
       "sources": [
-        "https://www.dolcegabbana.com/de-de/beauty/herrendufte/the-one-for-men/",
-        "https://www.douglas.de/de/b/dolcegabbana/the-one-for-men/b020411"
-      ]
+        "https://www.dolcegabbana.com/en-ae/beauty/the-one-adv-campaign/",
+        "https://www.parfumo.com/Perfumes/Dolce_Gabbana/the-one-for-men-eau-de-parfum-2025",
+        "https://www.fragrantica.com/perfume/Dolce-Gabbana/The-One-Pour-Homme-Eau-de-Parfum-121024.html"
+      ],
+      "version_year": 2025,
+      "identity_note": "Treat the 2025 reimagined Eau de Parfum as a separate canonical product from the older 2015 Eau de Parfum. Do not reuse 2015 community scores."
     },
     {
       "candidate_id": "DIOR-SAUVAGE-ELIXIR",
