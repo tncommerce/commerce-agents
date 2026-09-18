@@ -1,0 +1,161 @@
+{
+  "version": 1,
+  "batch": 2,
+  "checked_at": "2026-09-18",
+  "status": "community_scent_profile_verified_with_one_fast_track_partial",
+  "methodology": {
+    "source": "Parfumo",
+    "note": "Community scores are snapshots and must retain rating counts. Fleur du Mâle 2026 is still a fast-track release, so its performance snapshot remains provisional."
+  },
+  "products": [
+    {
+      "candidate_id": "YSL-BLACK-OPIUM-EDP",
+      "scent_rating_10": 7.2,
+      "scent_ratings_count": 2222,
+      "longevity_10": 7.5,
+      "sillage_10": 7.3,
+      "main_accords": [
+        "sweet",
+        "gourmand",
+        "floral",
+        "oriental",
+        "spicy"
+      ]
+    },
+    {
+      "candidate_id": "CHLOE-CHLOE-EDP",
+      "scent_rating_10": 7.5,
+      "scent_ratings_count": 1758,
+      "longevity_10": 7.8,
+      "sillage_10": 7.2,
+      "main_accords": [
+        "floral",
+        "fresh",
+        "powdery",
+        "sweet",
+        "fruity"
+      ]
+    },
+    {
+      "candidate_id": "LATTAFA-ECLAIRE-EDP",
+      "scent_rating_10": 7.7,
+      "scent_ratings_count": 1177,
+      "longevity_10": 8.1,
+      "sillage_10": 7.8,
+      "main_accords": [
+        "sweet",
+        "gourmand",
+        "creamy",
+        "synthetic",
+        "powdery"
+      ]
+    },
+    {
+      "candidate_id": "LATTAFA-ANGHAM-EDP",
+      "scent_rating_10": 8.4,
+      "scent_ratings_count": 512,
+      "longevity_10": 7.6,
+      "sillage_10": 7.3,
+      "main_accords": [
+        "sweet",
+        "floral",
+        "creamy",
+        "gourmand",
+        "spicy"
+      ]
+    },
+    {
+      "candidate_id": "AMOUAGE-GUIDANCE-46",
+      "scent_rating_10": 8.3,
+      "scent_ratings_count": 638,
+      "longevity_10": 9.1,
+      "sillage_10": 8.7,
+      "main_accords": [
+        "floral",
+        "sweet",
+        "creamy",
+        "fruity",
+        "spicy"
+      ]
+    },
+    {
+      "candidate_id": "PDM-VALAYA-EXCLUSIF",
+      "scent_rating_10": 7.9,
+      "scent_ratings_count": 524,
+      "longevity_10": 8.4,
+      "sillage_10": 7.9,
+      "main_accords": [
+        "floral",
+        "creamy",
+        "powdery",
+        "fresh",
+        "sweet"
+      ]
+    },
+    {
+      "candidate_id": "KAYALI-YUM-BOUJEE-MARSHMALLOW-81",
+      "scent_rating_10": 8,
+      "scent_ratings_count": 583,
+      "longevity_10": 7.2,
+      "sillage_10": 7,
+      "main_accords": [
+        "sweet",
+        "gourmand",
+        "fruity",
+        "creamy",
+        "powdery"
+      ]
+    },
+    {
+      "candidate_id": "HUGO-BOSS-BOTTLED-ABSOLU",
+      "scent_rating_10": 8.4,
+      "scent_ratings_count": 1857,
+      "longevity_10": 8.6,
+      "sillage_10": 8.4,
+      "main_accords": [
+        "spicy",
+        "sweet",
+        "woody",
+        "leathery",
+        "resinous"
+      ]
+    },
+    {
+      "candidate_id": "YSL-MYSLF-LE-PARFUM",
+      "scent_rating_10": 7.7,
+      "scent_ratings_count": 789,
+      "longevity_10": 7.4,
+      "sillage_10": 7.2,
+      "main_accords": [
+        "sweet",
+        "floral",
+        "fresh",
+        "woody",
+        "synthetic"
+      ]
+    },
+    {
+      "candidate_id": "JPG-FLEUR-DU-MALE-2026",
+      "fast_track": true,
+      "trend_snapshot": {
+        "parfumo_weekly_rating_10": 8.9,
+        "weekly_ratings_count": 85
+      },
+      "earlier_user_supplied_snapshot": {
+        "scent_rating_10": 8.7,
+        "scent_ratings_count": 100
+      },
+      "longevity_10": null,
+      "sillage_10": null,
+      "main_accords": [
+        "green",
+        "aromatic",
+        "white floral",
+        "citrus",
+        "woody",
+        "sweet"
+      ],
+      "note": "Keep performance fields provisional until the new release has a stable Parfumo product snapshot."
+    }
+  ]
+}
