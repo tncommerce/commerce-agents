@@ -13,7 +13,7 @@ import {
 } from "web-shared";
 import { fetchProducts } from "@/lib/api";
 import type { Product } from "@/lib/types";
-import ProductTile from "../ProductTile";
+import ProductTile, { ProductRow } from "../ProductTile";
 import LegalFooter from "../LegalFooter";
 
 const STARTERS: Starter[] = [
@@ -134,7 +134,18 @@ export default function HomeView({
       ) : null}
       {picks.length ? (
         <HomeSection title="Düfte entdecken" subtitle="Entdecke das Sortiment oder lass dich direkt von SCENTAI beraten">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="flex flex-col gap-2 sm:hidden">
+            {picks.map((product) => (
+              <ProductRow
+                key={product.product_id}
+                product={product}
+                onOpen={(item) =>
+                  ask(`Erzähl mir mehr über ${item.title} und für wen dieser Duft besonders interessant ist.`)
+                }
+              />
+            ))}
+          </div>
+          <div className="hidden grid-cols-3 gap-4 sm:grid">
             {picks.map((product) => (
               <ProductTile key={product.product_id} product={product} fluid onOpen={(item) => ask(`Erzähl mir mehr über ${item.title} und für wen dieser Duft besonders interessant ist.`)} />
             ))}
