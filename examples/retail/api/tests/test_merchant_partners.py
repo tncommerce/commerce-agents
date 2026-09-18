@@ -96,7 +96,6 @@ def test_eligible_partner_uses_exact_configured_id(tmp_path) -> None:
     assert store.eligible("Douglas", now=NOW) is None
 
 
-
 def test_customer_payload_does_not_expose_tracking_url() -> None:
     partner = MerchantPartner(
         merchant_id="douglas",
