@@ -6,7 +6,11 @@ export type AnalyticsEventName =
   | "product_open"
   | "merchant_clickout"
   | "catalog_search"
-  | "catalog_no_results";
+  | "catalog_no_results"
+  | "advisor_recommendation_view"
+  | "advisor_product_open"
+  | "fragrance_detail_view"
+  | "comparison_start";
 
 export async function trackAnalyticsEvent(
   event: AnalyticsEventName,
@@ -15,6 +19,9 @@ export async function trackAnalyticsEvent(
     source?: string;
     search_term?: string;
     result_count?: number;
+    surface?: string;
+    related_product_id?: string;
+    item_position?: number;
   } = {},
 ): Promise<void> {
   if (!api.session) return;
@@ -24,6 +31,9 @@ export async function trackAnalyticsEvent(
     source: context.source,
     search_term: context.search_term,
     result_count: context.result_count,
+    surface: context.surface,
+    related_product_id: context.related_product_id,
+    item_position: context.item_position,
   });
 }
 
