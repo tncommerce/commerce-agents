@@ -28,6 +28,7 @@ from shopping_agent import ProductDetails
 from shopping_agent_runtime import ShoppingAgent
 
 from .agent_config import build_shopping_config
+from .analytics import AnalyticsEventRequest, FirstPartyAnalyticsTracker
 from .merchant import create_merchant_router
 from .merchant_offers import MerchantClickoutTracker, MerchantOfferStore, customer_offer_payload
 from .mock_retail import DATA_DIR, MockRetail
@@ -37,6 +38,7 @@ PRODUCT_IMAGES = DATA_DIR.parent / "storefront-web" / "public" / "products"
 
 offer_store = MerchantOfferStore(DATA_DIR / "merchant_offers.json")
 clickout_tracker = MerchantClickoutTracker(DATA_DIR / ".merchant_clickouts.jsonl")
+analytics_tracker = FirstPartyAnalyticsTracker(DATA_DIR / ".analytics_events.jsonl")
 backend = MockRetail(offer_store=offer_store)
 agent = ShoppingAgent(
     backend=backend,
@@ -91,6 +93,20 @@ async def product_offers(product_id: str) -> dict:
             "Für dich ändert sich der Preis dadurch nicht."
         ),
     }
+
+
+@app.post("/api/analytics/events")
+async def analytics_event(
+    request: AnalyticsEventRequest,
+    record: host.CurrentSession,
+) -> dict:
+    event_id = analytics_tracker.record(
+        session_id=record.session_id,
+        event=request.event,
+        product_id=request.product_id,
+        source=request.source,
+    )
+    return {"ok": True, "event_id": event_id}
 
 
 @app.get("/api/clickout/{offer_id}")
