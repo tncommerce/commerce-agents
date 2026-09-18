@@ -135,11 +135,22 @@ export default function DatenschutzPage() {
               </p>
               <p className="mt-2">
                 Die pseudonymisierten Analyseereignisse werden für die interne Auswertung in der von SCENTAI
-                eingesetzten Supabase-Datenbankinfrastruktur gespeichert. Zusätzlich protokolliert SCENTAI beim
-                Öffnen eines Händlerlinks einen Clickout-Datensatz mit Zeitpunkt, Angebot, Produkt, Händler,
-                Netzwerk und der Information, ob ein Partnerlink verwendet wurde. Der eigentliche Kauf findet
-                beim Händler statt. Auf dessen Website gelten anschließend die dortigen Datenschutz- und
-                Trackingregeln. Partnerlinks werden bei SCENTAI entsprechend gekennzeichnet.
+                eingesetzten Supabase-Datenbankinfrastruktur gespeichert. Anbieter ist Supabase, Inc. Nach den
+                veröffentlichten Datenschutzinformationen verarbeitet Supabase Kundendaten im Rahmen des
+                Dienstes grundsätzlich als Auftragsverarbeiter. Weitere Informationen findest du in der{" "}
+                <a
+                  href="https://supabase.com/privacy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-(--accent-ink) hover:underline"
+                >
+                  Datenschutzerklärung von Supabase
+                </a>
+                . Zusätzlich protokolliert SCENTAI beim Öffnen eines Händlerlinks einen Clickout-Datensatz mit
+                Zeitpunkt, Angebot, Produkt, Händler, Netzwerk und der Information, ob ein Partnerlink verwendet
+                wurde. Der eigentliche Kauf findet beim Händler statt. Auf dessen Website gelten anschließend
+                die dortigen Datenschutz- und Trackingregeln. Partnerlinks werden bei SCENTAI entsprechend
+                gekennzeichnet.
               </p>
             </section>
 
@@ -170,9 +181,11 @@ export default function DatenschutzPage() {
             <section>
               <h2 className="font-semibold text-(--ink)">8. Datenübermittlungen in Drittländer</h2>
               <p className="mt-1">
-                Bei der Nutzung von Render und Anthropic kann eine Verarbeitung in den USA stattfinden.
-                Soweit erforderlich, erfolgt eine solche Übermittlung auf Grundlage der jeweils anwendbaren
-                datenschutzrechtlichen Garantien und Vereinbarungen der eingesetzten Dienstleister.
+                Bei der Nutzung von Render, Anthropic und Supabase kann – abhängig vom jeweiligen Dienst,
+                Projektstandort und Verarbeitungsvorgang – eine Verarbeitung außerhalb Deutschlands oder des
+                Europäischen Wirtschaftsraums stattfinden. Soweit erforderlich, erfolgt eine solche Übermittlung
+                auf Grundlage der jeweils anwendbaren datenschutzrechtlichen Garantien und Vereinbarungen der
+                eingesetzten Dienstleister.
               </p>
             </section>
 
