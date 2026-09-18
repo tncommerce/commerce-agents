@@ -159,3 +159,21 @@ def test_anonymous_analytics_session_id_rejects_short_values() -> None:
         raise AssertionError(
             "short analytics session IDs must be rejected"
         )
+
+
+
+def test_analytics_metadata_rejects_free_form_personal_text() -> None:
+    from pydantic import ValidationError
+
+    try:
+        AnalyticsEventRequest(
+            event="merchant_clickout",
+            product_id="SC-TEST-100",
+            source="name@example.com",
+        )
+    except ValidationError:
+        pass
+    else:
+        raise AssertionError(
+            "analytics metadata must stay identifier-only"
+        )
