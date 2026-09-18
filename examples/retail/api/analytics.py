@@ -49,6 +49,7 @@ class FirstPartyAnalyticsTracker:
         self.supabase_url = (supabase_url or os.getenv("SUPABASE_URL", "")).rstrip("/")
         self.supabase_service_role_key = (
             supabase_service_role_key
+            or os.getenv("SUPABASE_SECRET_KEY", "")
             or os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")
         )
 
@@ -104,7 +105,13 @@ class FirstPartyAnalyticsTracker:
                         f"{self.supabase_url}/rest/v1/{self.TABLE}",
                         headers={
                             "apikey": self.supabase_service_role_key,
-                            "Authorization": f"Bearer {self.supabase_service_role_key}",
+                            **(
+                                {
+                                    "Authorization": f"Bearer {self.supabase_service_role_key}",
+                                }
+                                if self.supabase_service_role_key.startswith("eyJ")
+                                else {}
+                            ),
                             "Content-Type": "application/json",
                             "Prefer": "return=minimal",
                         },
