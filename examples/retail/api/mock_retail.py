@@ -569,7 +569,7 @@ class MockRetail(StorefrontBackend):
                 signals.append("ausgewogenes Büroprofil")
 
         if wants_date and longevity is not None:
-            warmth = max(
+            warm_values = [
                 value
                 for value in (
                     sweetness,
@@ -577,8 +577,12 @@ class MockRetail(StorefrontBackend):
                     spiciness,
                 )
                 if value is not None
-            )
-            if longevity >= 7.5 and warmth >= 7:
+            ]
+            if (
+                warm_values
+                and longevity >= 7.5
+                and max(warm_values) >= 7
+            ):
                 signals.append("starkes Abendprofil")
 
         if (
