@@ -74,6 +74,17 @@ export interface MerchantOffersPayload {
   affiliate_disclosure: string;
 }
 
+export interface MerchantPartner {
+  merchant_id: string;
+  merchant_name: string;
+  description?: string | null;
+}
+
+export interface MerchantPartnersPayload {
+  partners: MerchantPartner[];
+  affiliate_disclosure: string;
+}
+
 export interface CartItem {
   product_id: string;
   title: string;
