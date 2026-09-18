@@ -64,7 +64,7 @@ def product_detail(product: ProductDetails) -> dict:
 
 
 host = build_storefront_host(
-    title="ACME Retail demo API",
+    title="SCENTAI API",
     example_root=DATA_DIR.parent,
     backend=backend,
     agent=agent,
