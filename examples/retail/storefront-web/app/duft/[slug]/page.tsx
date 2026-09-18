@@ -1,0 +1,507 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+
+import FragranceOffers from "@/components/FragranceOffers";
+import {
+  LIVE_FRAGRANCES,
+  getLiveFragranceBySlug,
+  type StaticFragrance,
+} from "@/lib/fragranceCatalog";
+import { SITE_URL } from "@/lib/site";
+
+export const dynamicParams = false;
+
+type PageProps = {
+  params: Promise<{
+    slug: string;
+  }>;
+};
+
+const ACCORD_LABELS: Record<string, string> = {
+  fresh: "Frisch",
+  citrus: "Zitrisch",
+  aquatic: "Aquatisch",
+  green: "Grün",
+  spicy: "Würzig",
+  sweet: "Süß",
+  synthetic: "Synthetisch",
+  fruity: "Fruchtig",
+  woody: "Holzig",
+  smoky: "Rauchig",
+  powdery: "Pudrig",
+  floral: "Blumig",
+  creamy: "Cremig",
+  gourmand: "Gourmand",
+  oriental: "Orientalisch",
+  aromatic: "Aromatisch",
+  leathery: "Ledrig",
+  resinous: "Harzig",
+};
+
+const TARGET_LABELS: Record<string, string> = {
+  men: "Herren",
+  women: "Damen",
+  unisex: "Unisex",
+};
+
+function accordLabel(value: string): string {
+  return ACCORD_LABELS[value.toLowerCase()] || value;
+}
+
+function targetLabel(value: string): string {
+  return TARGET_LABELS[value.toLowerCase()] || value;
+}
+
+function scoreLevel(value: number | null): string {
+  if (value == null) return "–";
+  if (value <= 4) return "Niedrig";
+  if (value <= 6) return "Mittel";
+  return "Hoch";
+}
+
+function formatCheckedAt(value: string | null): string | null {
+  if (!value) return null;
+
+  const parsed = new Date(`${value}T00:00:00Z`);
+  if (Number.isNaN(parsed.getTime())) return value;
+
+  return parsed.toLocaleDateString("de-DE", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+function formatPrice(value: number | null): string {
+  if (value == null) return "–";
+  return new Intl.NumberFormat("de-DE", {
+    style: "currency",
+    currency: "EUR",
+  }).format(value);
+}
+
+function noteSection(
+  title: string,
+  notes: string[],
+) {
+  if (!notes.length) return null;
+
+  return (
+    <div>
+      <div className="text-[11px] font-semibold uppercase tracking-[0.08em] text-(--ink-soft)">
+        {title}
+      </div>
+      <div className="mt-2 flex flex-wrap gap-2">
+        {notes.map((note) => (
+          <span
+            key={note}
+            className="rounded-full border border-(--line) bg-(--well)/60 px-3 py-1.5 text-[12px] text-(--ink)"
+          >
+            {note}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ProfileRow({
+  label,
+  value,
+}: {
+  label: string;
+  value: number | null;
+}) {
+  const safe = value == null ? 0 : Math.min(10, Math.max(0, value));
+
+  return (
+    <div>
+      <div className="flex items-center justify-between gap-3 text-[12px]">
+        <span className="font-medium text-(--ink)">
+          {label}
+        </span>
+        <span className="text-(--ink-soft)">
+          {scoreLevel(value)}
+        </span>
+      </div>
+      <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-(--well)">
+        <div
+          className="h-full rounded-full bg-(--ink)"
+          style={{ width: `${safe * 10}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function descriptionFor(
+  fragrance: StaticFragrance,
+): string {
+  const accords = fragrance.accords
+    .slice(0, 3)
+    .map(accordLabel)
+    .join(", ");
+
+  return [
+    `${fragrance.brand} ${fragrance.name}`,
+    fragrance.concentration,
+    accords ? `Duftprofil: ${accords}` : null,
+    fragrance.community.rating_10 != null
+      ? `${fragrance.community.rating_10.toLocaleString("de-DE", {
+          minimumFractionDigits: 1,
+          maximumFractionDigits: 1,
+        })}/10 Community-Bewertung`
+      : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+}
+
+export function generateStaticParams() {
+  return LIVE_FRAGRANCES.map((fragrance) => ({
+    slug: fragrance.slug,
+  }));
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const fragrance = getLiveFragranceBySlug(slug);
+
+  if (!fragrance) {
+    return {
+      title: "Duft nicht gefunden",
+    };
+  }
+
+  const title =
+    `${fragrance.brand} ${fragrance.name} – Duftprofil & Angebote`;
+  const description = descriptionFor(fragrance);
+  const canonical = `/duft/${fragrance.slug}`;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical,
+    },
+    openGraph: {
+      type: "website",
+      url: `${SITE_URL}${canonical}`,
+      title,
+      description,
+      images: fragrance.image_url
+        ? [fragrance.image_url]
+        : undefined,
+    },
+  };
+}
+
+export default async function FragrancePage({
+  params,
+}: PageProps) {
+  const { slug } = await params;
+  const fragrance = getLiveFragranceBySlug(slug);
+
+  if (!fragrance) notFound();
+
+  const checkedAt = formatCheckedAt(
+    fragrance.market.checked_at,
+  );
+
+  return (
+    <main className="min-h-screen bg-(--surface) text-(--ink)">
+      <header className="border-b border-(--line) bg-(--card)">
+        <div className="mx-auto flex max-w-[1080px] items-center justify-between gap-4 px-4 py-4 sm:px-6">
+          <a
+            href="/"
+            className="flex items-center gap-2.5"
+            aria-label="Zur SCENTAI Startseite"
+          >
+            <span className="grid h-8 w-8 place-items-center rounded-lg bg-(--ink) text-[15px] font-bold text-(--surface)">
+              S
+            </span>
+            <span className="text-[17px] font-bold tracking-[-0.02em]">
+              SCENTAI
+            </span>
+          </a>
+          <a
+            href="/"
+            className="rounded-xl border border-(--line) px-3 py-2 text-[12px] font-semibold text-(--ink) transition hover:border-(--ink)"
+          >
+            Duftberatung öffnen
+          </a>
+        </div>
+      </header>
+
+      <div className="mx-auto max-w-[1080px] px-4 py-5 sm:px-6 sm:py-8">
+        <nav
+          aria-label="Breadcrumb"
+          className="mb-5 text-[12px] text-(--ink-soft)"
+        >
+          <a href="/" className="hover:underline">
+            SCENTAI
+          </a>
+          <span className="px-2">/</span>
+          <span>Düfte</span>
+          <span className="px-2">/</span>
+          <span className="text-(--ink)">
+            {fragrance.brand} {fragrance.name}
+          </span>
+        </nav>
+
+        <section className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="overflow-hidden rounded-3xl border border-(--line) bg-white shadow-(--shadow-sm)">
+            {fragrance.image_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={fragrance.image_url}
+                alt={`${fragrance.brand} ${fragrance.name}`}
+                className="aspect-square h-full w-full object-contain p-6 sm:p-10"
+              />
+            ) : (
+              <div className="grid aspect-square place-items-center bg-(--well)">
+                <div className="text-center">
+                  <div className="mx-auto h-4 w-12 rounded-t bg-(--ink)/80" />
+                  <div className="mx-auto h-4 w-8 bg-(--ink)/60" />
+                  <div className="mx-auto grid h-28 w-24 place-items-center rounded-[24px] border border-white bg-white/80 shadow-md">
+                    <span className="text-[11px] font-semibold tracking-[0.18em]">
+                      SCENTAI
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="flex flex-col justify-center">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-(--ink-soft)">
+              {fragrance.brand}
+            </div>
+            <h1 className="mt-2 text-[32px] font-semibold leading-[1.08] tracking-[-0.035em] sm:text-[42px]">
+              {fragrance.name}
+            </h1>
+
+            <div className="mt-3 flex flex-wrap gap-2 text-[12px] text-(--ink-soft)">
+              <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">
+                {fragrance.concentration}
+              </span>
+              <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">
+                {fragrance.volume_ml} ml
+              </span>
+              {fragrance.target_groups.map((group) => (
+                <span
+                  key={group}
+                  className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5"
+                >
+                  {targetLabel(group)}
+                </span>
+              ))}
+              {fragrance.release_year ? (
+                <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">
+                  Seit {fragrance.release_year}
+                </span>
+              ) : null}
+            </div>
+
+            <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
+              <div className="rounded-2xl border border-(--line) bg-(--card) p-4">
+                <div className="text-[11px] text-(--ink-soft)">
+                  Community
+                </div>
+                <div className="mt-1 text-[22px] font-semibold">
+                  {fragrance.community.rating_10 != null
+                    ? `${fragrance.community.rating_10.toLocaleString(
+                        "de-DE",
+                        {
+                          minimumFractionDigits: 1,
+                          maximumFractionDigits: 1,
+                        },
+                      )}/10`
+                    : "–"}
+                </div>
+                <div className="mt-0.5 text-[10.5px] text-(--ink-soft)">
+                  {fragrance.community.source}
+                  {fragrance.community.rating_count
+                    ? ` · ${fragrance.community.rating_count.toLocaleString(
+                        "de-DE",
+                      )} Bewertungen`
+                    : ""}
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-(--line) bg-(--card) p-4">
+                <div className="text-[11px] text-(--ink-soft)">
+                  Haltbarkeit
+                </div>
+                <div className="mt-1 text-[22px] font-semibold">
+                  {fragrance.community.longevity_10 != null
+                    ? fragrance.community.longevity_10.toLocaleString(
+                        "de-DE",
+                        {
+                          minimumFractionDigits: 1,
+                          maximumFractionDigits: 1,
+                        },
+                      )
+                    : "–"}
+                </div>
+                <div className="mt-0.5 text-[10.5px] text-(--ink-soft)">
+                  Community-Skala 0–10
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-(--line) bg-(--card) p-4">
+                <div className="text-[11px] text-(--ink-soft)">
+                  Ausstrahlung
+                </div>
+                <div className="mt-1 text-[22px] font-semibold">
+                  {fragrance.community.projection_10 != null
+                    ? fragrance.community.projection_10.toLocaleString(
+                        "de-DE",
+                        {
+                          minimumFractionDigits: 1,
+                          maximumFractionDigits: 1,
+                        },
+                      )
+                    : "–"}
+                </div>
+                <div className="mt-0.5 text-[10.5px] text-(--ink-soft)">
+                  Community-Skala 0–10
+                </div>
+              </div>
+            </div>
+
+            <p className="mt-5 max-w-2xl text-[13px] leading-5 text-(--ink-soft)">
+              Community-Werte beschreiben Nutzerbewertungen und sind keine
+              objektiv gemessenen Stunden- oder Meterangaben.
+            </p>
+          </div>
+        </section>
+
+        <div className="mt-7 grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
+          <section className="rounded-2xl border border-(--line) bg-(--card) p-5 shadow-(--shadow-sm)">
+            <h2 className="text-[17px] font-semibold">
+              Duftprofil
+            </h2>
+
+            <div className="mt-3 flex flex-wrap gap-2">
+              {fragrance.accords.map((accord) => (
+                <span
+                  key={accord}
+                  className="rounded-full bg-(--well) px-3 py-1.5 text-[12px] text-(--ink)"
+                >
+                  {accordLabel(accord)}
+                </span>
+              ))}
+            </div>
+
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              <ProfileRow
+                label="Frische"
+                value={fragrance.scores.freshness}
+              />
+              <ProfileRow
+                label="Süße"
+                value={fragrance.scores.sweetness}
+              />
+              <ProfileRow
+                label="Holzigkeit"
+                value={fragrance.scores.woodiness}
+              />
+              <ProfileRow
+                label="Würze"
+                value={fragrance.scores.spiciness}
+              />
+            </div>
+
+            <p className="mt-4 text-[10.5px] leading-4 text-(--ink-soft)">
+              Die vier Profilachsen sind redaktionelle SCENTAI-Merkmale,
+              die zur Suche und Empfehlung genutzt werden. Sie sind keine
+              Laborwerte.
+            </p>
+          </section>
+
+          <section className="rounded-2xl border border-(--line) bg-(--card) p-5 shadow-(--shadow-sm)">
+            <h2 className="text-[17px] font-semibold">
+              Duftnoten
+            </h2>
+            <div className="mt-4 space-y-4">
+              {noteSection(
+                "Kopfnote",
+                fragrance.notes.top,
+              )}
+              {noteSection(
+                "Herznote",
+                fragrance.notes.heart,
+              )}
+              {noteSection(
+                "Basisnote",
+                fragrance.notes.base,
+              )}
+              {!fragrance.notes.top.length &&
+              !fragrance.notes.heart.length &&
+              !fragrance.notes.base.length ? (
+                <p className="text-[13px] leading-5 text-(--ink-soft)">
+                  Für diesen Duft sind aktuell keine verifizierten
+                  Notenpyramiden im SCENTAI-Katalog hinterlegt.
+                </p>
+              ) : null}
+            </div>
+          </section>
+        </div>
+
+        <div className="mt-5">
+          <FragranceOffers
+            productId={fragrance.product_id}
+          />
+        </div>
+
+        <section className="mt-5 rounded-2xl border border-(--line) bg-(--card) p-5 shadow-(--shadow-sm)">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h2 className="text-[17px] font-semibold">
+                Passt dieser Duft zu dir?
+              </h2>
+              <p className="mt-1 max-w-2xl text-[13px] leading-5 text-(--ink-soft)">
+                Starte die SCENTAI-Beratung und vergleiche diesen Duft
+                mit Alternativen nach Budget, Anlass und Duftprofil.
+              </p>
+            </div>
+            <a
+              href="/"
+              className="rounded-xl bg-(--ink) px-4 py-2.5 text-[13px] font-semibold text-(--surface)"
+            >
+              SCENTAI Advisor öffnen
+            </a>
+          </div>
+        </section>
+
+        <section className="mt-5 rounded-2xl border border-(--line) bg-(--well)/45 p-4 text-[11px] leading-5 text-(--ink-soft)">
+          <strong className="text-(--ink)">
+            Preisreferenz:
+          </strong>{" "}
+          {formatPrice(
+            fragrance.market.reference_price_eur,
+          )}
+          {checkedAt ? ` · Stand ${checkedAt}` : ""}. Aktuelle
+          kaufbare Angebote werden darüber separat geprüft und können
+          von dieser Marktpreis-Referenz abweichen.
+        </section>
+
+        <footer className="mt-8 flex flex-wrap gap-x-4 gap-y-2 border-t border-(--line) py-6 text-[11px] text-(--ink-soft)">
+          <a href="/transparenz" className="hover:underline">
+            Transparenz
+          </a>
+          <a href="/impressum" className="hover:underline">
+            Impressum
+          </a>
+          <a href="/datenschutz" className="hover:underline">
+            Datenschutz
+          </a>
+        </footer>
+      </div>
+    </main>
+  );
+}
