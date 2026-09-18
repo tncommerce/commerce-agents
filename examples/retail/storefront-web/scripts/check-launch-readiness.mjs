@@ -48,6 +48,7 @@ function add(status, id, message) {
 const catalog = readJson("catalog.json");
 const source = readJson("scentai_products.json");
 const merchantOffers = readJson("merchant_offers.json");
+const merchantPartners = readJson("merchant_partners.json");
 
 const sourceById = new Map(
   (source.products || []).map((product) => [
@@ -224,6 +225,24 @@ add(
   affiliateOffers.length
     ? `${affiliateOffers.length} fresh affiliate offers are available.`
     : "No fresh affiliate offers are active yet; monetization is not a launch blocker for recommendation quality.",
+);
+
+const activeMerchantPartners = (
+  merchantPartners.partners || []
+).filter(
+  (partner) =>
+    partner.status === "active" &&
+    validHttpUrl(
+      String(partner.affiliate_url || ""),
+    ) &&
+    partner.last_verified_at,
+);
+add(
+  activeMerchantPartners.length ? "pass" : "warn",
+  "merchant_level_affiliate_links",
+  activeMerchantPartners.length
+    ? `${activeMerchantPartners.length} merchant-level affiliate entry points are configured.`
+    : "No merchant-level affiliate entry point is active yet; the UI stays hidden until a verified partner link is configured.",
 );
 
 if (
