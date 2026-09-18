@@ -178,7 +178,6 @@ def test_zero_denominators_do_not_create_fake_conversion_rates() -> None:
     assert report["summary"]["recommendation_to_clickout_pct"] is None
 
 
-
 def test_acquisition_sources_are_reported_with_sample_status() -> None:
     report = build_conversion_report(
         [],
@@ -228,7 +227,4 @@ def test_acquisition_sources_are_reported_with_sample_status() -> None:
         "landing_to_clickout_pct": 16.67,
         "sample_status": "sufficient_signal",
     }
-    assert (
-        report["acquisition_sources"][1]["sample_status"]
-        == "early_signal"
-    )
+    assert report["acquisition_sources"][1]["sample_status"] == "early_signal"

@@ -95,10 +95,7 @@ async def merchant_partners() -> dict:
     partners = partner_store.active()
 
     return {
-        "partners": [
-            customer_partner_payload(partner)
-            for partner in partners
-        ],
+        "partners": [customer_partner_payload(partner) for partner in partners],
         "affiliate_disclosure": (
             "Bei Käufen über Partnerlinks kann SCENTAI eine Provision erhalten. "
             "Die Händlerauswahl beeinflusst nicht die Duftempfehlung."

@@ -5,7 +5,6 @@ from datetime import UTC, datetime, timedelta
 
 from retail.api.merchant_partners import MerchantPartnerStore
 
-
 NOW = datetime(2026, 9, 18, 20, 0, tzinfo=UTC)
 
 
@@ -27,9 +26,7 @@ def test_active_partner_requires_https_and_recent_verification(tmp_path) -> None
                 "merchant_name": "Douglas",
                 "status": "active",
                 "affiliate_url": "https://example.com/track",
-                "last_verified_at": (
-                    NOW - timedelta(hours=2)
-                ).isoformat(),
+                "last_verified_at": (NOW - timedelta(hours=2)).isoformat(),
                 "description": "Parfum und Beauty",
             },
             {
@@ -52,9 +49,7 @@ def test_active_partner_requires_https_and_recent_verification(tmp_path) -> None
     store = MerchantPartnerStore(path)
     active = store.active(now=NOW)
 
-    assert [partner.merchant_id for partner in active] == [
-        "douglas"
-    ]
+    assert [partner.merchant_id for partner in active] == ["douglas"]
 
 
 def test_stale_partner_is_hidden(tmp_path) -> None:
@@ -66,9 +61,7 @@ def test_stale_partner_is_hidden(tmp_path) -> None:
                 "merchant_name": "Douglas",
                 "status": "active",
                 "affiliate_url": "https://example.com/track",
-                "last_verified_at": (
-                    NOW - timedelta(hours=721)
-                ).isoformat(),
+                "last_verified_at": (NOW - timedelta(hours=721)).isoformat(),
             }
         ],
     )

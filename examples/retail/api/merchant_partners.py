@@ -8,7 +8,6 @@ from urllib.parse import urlparse
 
 from pydantic import BaseModel, Field
 
-
 PartnerStatus = Literal[
     "active",
     "pending_affiliate_link",
@@ -57,13 +56,8 @@ class MerchantPartnerStore:
         if not self.path.exists():
             return []
 
-        payload = json.loads(
-            self.path.read_text(encoding="utf-8-sig")
-        )
-        return [
-            MerchantPartner.model_validate(row)
-            for row in payload.get("partners", [])
-        ]
+        payload = json.loads(self.path.read_text(encoding="utf-8-sig"))
+        return [MerchantPartner.model_validate(row) for row in payload.get("partners", [])]
 
     def active(
         self,
@@ -84,9 +78,7 @@ class MerchantPartnerStore:
             verified = partner.last_verified_at
             if verified.tzinfo is None:
                 verified = verified.replace(tzinfo=UTC)
-            age_hours = (
-                current - verified.astimezone(UTC)
-            ).total_seconds() / 3600
+            age_hours = (current - verified.astimezone(UTC)).total_seconds() / 3600
 
             if age_hours < 0 or age_hours > self.max_age_hours:
                 continue
@@ -108,11 +100,7 @@ class MerchantPartnerStore:
         now: datetime | None = None,
     ) -> MerchantPartner | None:
         return next(
-            (
-                partner
-                for partner in self.active(now=now)
-                if partner.merchant_id == merchant_id
-            ),
+            (partner for partner in self.active(now=now) if partner.merchant_id == merchant_id),
             None,
         )
 

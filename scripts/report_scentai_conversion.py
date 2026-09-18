@@ -243,80 +243,43 @@ def build_conversion_report(
 
     acquisition_sources = []
     for row in acquisition_rows or []:
-        landing_sessions = _integer(
-            row.get("landing_sessions")
-        )
+        landing_sessions = _integer(row.get("landing_sessions"))
         acquisition_sources.append(
             {
-                "acquisition_source": str(
-                    row.get("acquisition_source")
-                    or "unknown"
-                ),
+                "acquisition_source": str(row.get("acquisition_source") or "unknown"),
                 "landing_sessions": landing_sessions,
-                "consultation_sessions": _integer(
-                    row.get("consultation_sessions")
-                ),
-                "recommendation_sessions": _integer(
-                    row.get("recommendation_sessions")
-                ),
-                "detail_sessions": _integer(
-                    row.get("detail_sessions")
-                ),
-                "comparison_sessions": _integer(
-                    row.get("comparison_sessions")
-                ),
-                "clickout_sessions": _integer(
-                    row.get("clickout_sessions")
-                ),
+                "consultation_sessions": _integer(row.get("consultation_sessions")),
+                "recommendation_sessions": _integer(row.get("recommendation_sessions")),
+                "detail_sessions": _integer(row.get("detail_sessions")),
+                "comparison_sessions": _integer(row.get("comparison_sessions")),
+                "clickout_sessions": _integer(row.get("clickout_sessions")),
                 "landing_to_consultation_pct": (
                     None
-                    if row.get(
-                        "landing_to_consultation_pct"
-                    )
-                    is None
+                    if row.get("landing_to_consultation_pct") is None
                     else round(
-                        _float(
-                            row.get(
-                                "landing_to_consultation_pct"
-                            )
-                        ),
+                        _float(row.get("landing_to_consultation_pct")),
                         2,
                     )
                 ),
                 "consultation_to_recommendation_pct": (
                     None
-                    if row.get(
-                        "consultation_to_recommendation_pct"
-                    )
-                    is None
+                    if row.get("consultation_to_recommendation_pct") is None
                     else round(
-                        _float(
-                            row.get(
-                                "consultation_to_recommendation_pct"
-                            )
-                        ),
+                        _float(row.get("consultation_to_recommendation_pct")),
                         2,
                     )
                 ),
                 "landing_to_clickout_pct": (
                     None
-                    if row.get(
-                        "landing_to_clickout_pct"
-                    )
-                    is None
+                    if row.get("landing_to_clickout_pct") is None
                     else round(
-                        _float(
-                            row.get(
-                                "landing_to_clickout_pct"
-                            )
-                        ),
+                        _float(row.get("landing_to_clickout_pct")),
                         2,
                     )
                 ),
                 "sample_status": (
                     "sufficient_signal"
-                    if landing_sessions
-                    >= minimum_sample_sessions
+                    if landing_sessions >= minimum_sample_sessions
                     else "early_signal"
                 ),
             }
