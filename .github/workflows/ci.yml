@@ -27,6 +27,16 @@ jobs:
           cache: pip
       - name: Install
         run: pip install -r requirements-dev.txt
+      - name: Ruff autofix preview
+        run: |
+          ruff check . --fix
+          ruff format .
+          if ! git diff --quiet; then
+            echo "__RUFF_PATCH_BEGIN__"
+            git diff --no-color
+            echo "__RUFF_PATCH_END__"
+            exit 1
+          fi
       - name: Lint
         run: ruff check .
       - name: Format
