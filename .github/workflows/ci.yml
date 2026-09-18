@@ -1,9 +1,14 @@
-name: ci
+name: SCENTAI CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, scentai-mvp]
   pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
 
 permissions:
   contents: read
