@@ -43,13 +43,9 @@ def approval_plan(
     if not valid_http_url(image_url):
         raise ValueError("image_url_must_be_http_or_https")
 
-    payload_status = str(
-        candidates_payload.get("status") or ""
-    ).strip()
+    payload_status = str(candidates_payload.get("status") or "").strip()
     if payload_status and payload_status != "review_only_not_live":
-        raise ValueError(
-            "candidate_payload_not_review_only"
-        )
+        raise ValueError("candidate_payload_not_review_only")
 
     candidate = next(
         (
@@ -71,13 +67,9 @@ def approval_plan(
     }:
         raise ValueError(f"candidate_not_approvable:{status or 'missing_status'}")
 
-    proposed_status = str(
-        candidate.get("proposed_image_status") or ""
-    ).strip()
+    proposed_status = str(candidate.get("proposed_image_status") or "").strip()
     if proposed_status != "approved_feed_image":
-        raise ValueError(
-            "candidate_missing_approved_feed_image_proposal"
-        )
+        raise ValueError("candidate_missing_approved_feed_image_proposal")
 
     products = staging.get("products", [])
     product = next(

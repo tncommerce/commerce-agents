@@ -8,12 +8,12 @@ from .merchant_feed_preflight import (
     build_feed_preflight,
     build_mapping_coverage,
 )
-from .merchant_import import load_product_mappings
 from .merchant_feed_reader import (
     DEFAULT_MAX_FEED_BYTES,
     DEFAULT_MAX_FEED_ROWS,
     read_merchant_feed_rows,
 )
+from .merchant_import import load_product_mappings
 from .merchant_providers import (
     adapt_provider_rows,
     load_mapped_provider_adapter,
@@ -73,9 +73,7 @@ def main() -> int:
     parser.add_argument(
         "--mappings",
         type=Path,
-        default=Path(
-            "examples/retail/data/merchant_product_mappings.json"
-        ),
+        default=Path("examples/retail/data/merchant_product_mappings.json"),
         help=(
             "Optional SCENTAI product mapping file. Mapping coverage is "
             "reported but does not block a broad merchant feed."
@@ -121,11 +119,7 @@ def main() -> int:
     report = build_feed_preflight(rows)
 
     try:
-        mappings = (
-            load_product_mappings(args.mappings)
-            if args.mappings.exists()
-            else []
-        )
+        mappings = load_product_mappings(args.mappings) if args.mappings.exists() else []
     except (
         OSError,
         ValueError,

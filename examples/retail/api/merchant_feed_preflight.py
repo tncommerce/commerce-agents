@@ -138,9 +138,7 @@ def build_mapping_coverage(
                     "row_index": index,
                     "offer_id": row.get("offer_id"),
                     "merchant": row.get("merchant"),
-                    "merchant_product_id": row.get(
-                        "merchant_product_id"
-                    ),
+                    "merchant_product_id": row.get("merchant_product_id"),
                     "ean": row.get("ean"),
                     "gtin": row.get("gtin"),
                 }
@@ -152,11 +150,7 @@ def build_mapping_coverage(
         "row_count": total,
         "mapped_rows": mapped_rows,
         "unmapped_rows": total - mapped_rows,
-        "mapping_coverage_pct": (
-            round((mapped_rows / total) * 100, 1)
-            if total
-            else 0.0
-        ),
+        "mapping_coverage_pct": (round((mapped_rows / total) * 100, 1) if total else 0.0),
         "mapped_product_count": len(mapped_product_ids),
         "mapped_product_ids": sorted(mapped_product_ids),
         "unmatched_preview": unmatched_preview,

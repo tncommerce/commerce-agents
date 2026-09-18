@@ -6,7 +6,6 @@ from scripts.report_scentai_merchant_coverage import (
     build_merchant_coverage_report,
 )
 
-
 NOW = datetime(2026, 9, 18, 20, 0, tzinfo=UTC)
 
 
@@ -31,11 +30,7 @@ def staged_product(
             "provisional": provisional,
         },
         "media": {
-            "image_url": (
-                "/products/test.png"
-                if image_ready
-                else None
-            ),
+            "image_url": ("/products/test.png" if image_ready else None),
             "image_status": (
                 "approved_feed_image"
                 if image_ready
@@ -160,7 +155,4 @@ def test_provisional_community_data_remains_visible_as_gap() -> None:
         now=NOW,
     )
 
-    assert (
-        "community_data_provisional"
-        in report["rows"][0]["blockers"]
-    )
+    assert "community_data_provisional" in report["rows"][0]["blockers"]

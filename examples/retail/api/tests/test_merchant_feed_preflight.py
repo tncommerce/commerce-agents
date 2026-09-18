@@ -105,7 +105,6 @@ def test_invalid_urls_are_reported_separately() -> None:
     ]
 
 
-
 def test_mapping_coverage_is_informational_for_broad_feed() -> None:
     rows = [
         complete_row(),

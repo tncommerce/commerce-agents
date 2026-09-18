@@ -8,7 +8,6 @@ from scripts.plan_scentai_promotion_batch import (
     live_target_counts,
 )
 
-
 NOW = datetime(2026, 9, 18, 20, 0, tzinfo=UTC)
 
 

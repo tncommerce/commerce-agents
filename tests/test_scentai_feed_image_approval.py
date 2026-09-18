@@ -140,7 +140,6 @@ def test_same_approved_image_is_idempotent() -> None:
     assert plan["will_change"] is False
 
 
-
 def test_non_http_image_url_is_rejected() -> None:
     with pytest.raises(
         ValueError,

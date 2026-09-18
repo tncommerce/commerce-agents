@@ -9,7 +9,6 @@ from typing import Any
 
 from scripts.promote_scentai_catalog import promotion_blockers
 
-
 DATA_DIR = Path("examples/retail/data")
 DEFAULT_STAGING = DATA_DIR / "scentai_catalog_staging.json"
 DEFAULT_CATALOG = DATA_DIR / "catalog.json"
@@ -24,26 +23,15 @@ def live_target_counts(catalog: dict) -> Counter:
     counts: Counter = Counter()
 
     for product in catalog.get("products", []):
-        if not str(
-            product.get("product_id") or ""
-        ).startswith("SC-"):
+        if not str(product.get("product_id") or "").startswith("SC-"):
             continue
         if product.get("category") != "fragrance":
             continue
         if product.get("in_stock") is False:
             continue
 
-        raw = str(
-            product.get("attributes", {}).get(
-                "target_group"
-            )
-            or ""
-        )
-        counts.update(
-            group.strip()
-            for group in raw.split(",")
-            if group.strip()
-        )
+        raw = str(product.get("attributes", {}).get("target_group") or "")
+        counts.update(group.strip() for group in raw.split(",") if group.strip())
 
     return counts
 
@@ -55,17 +43,11 @@ def audience_gap_score(
     if not target_groups:
         return 0.0
 
-    known_counts = [
-        int(live_counts.get(group, 0))
-        for group in target_groups
-    ]
+    known_counts = [int(live_counts.get(group, 0)) for group in target_groups]
     if not known_counts:
         return 0.0
 
-    max_live = max(
-        [int(value) for value in live_counts.values()]
-        or [0]
-    )
+    max_live = max([int(value) for value in live_counts.values()] or [0])
     if max_live <= 0:
         return 10.0
 
@@ -96,18 +78,13 @@ def build_batch_plan(
         offers_payload if isinstance(offers_payload, list) else [],
     )
 
-    live_ids = {
-        product.get("product_id")
-        for product in catalog.get("products", [])
-    }
+    live_ids = {product.get("product_id") for product in catalog.get("products", [])}
     live_counts = live_target_counts(catalog)
 
     rows: list[dict[str, Any]] = []
 
     for product in staged_products:
-        product_id = str(
-            product.get("product_id") or ""
-        ).strip()
+        product_id = str(product.get("product_id") or "").strip()
         if not product_id or product_id in live_ids:
             continue
 
@@ -144,18 +121,12 @@ def build_batch_plan(
             )
             or 0
         )
-        provisional = bool(
-            product.get("community", {}).get(
-                "provisional"
-            )
-        )
+        provisional = bool(product.get("community", {}).get("provisional"))
 
         rows.append(
             {
                 "product_id": product_id,
-                "candidate_id": product.get(
-                    "candidate_id"
-                ),
+                "candidate_id": product.get("candidate_id"),
                 "batch": product.get("batch"),
                 "brand": product.get("brand"),
                 "name": product.get("name"),
@@ -190,18 +161,10 @@ def build_batch_plan(
     return {
         "generated_at": now.astimezone(UTC).isoformat(),
         "limit": limit,
-        "live_audience_counts": dict(
-            sorted(live_counts.items())
-        ),
+        "live_audience_counts": dict(sorted(live_counts.items())),
         "selected_count": len(selected),
-        "ready_count": sum(
-            1 for row in selected
-            if row["promotion_ready"]
-        ),
-        "blocked_count": sum(
-            1 for row in selected
-            if not row["promotion_ready"]
-        ),
+        "ready_count": sum(1 for row in selected if row["promotion_ready"]),
+        "blocked_count": sum(1 for row in selected if not row["promotion_ready"]),
         "selection_rule": (
             "ready first; non-provisional before provisional; "
             "fewer blockers; underrepresented live audiences; "
@@ -215,8 +178,7 @@ def build_batch_plan(
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Plan the next small SCENTAI promotion work batch "
-            "without bypassing promotion blockers."
+            "Plan the next small SCENTAI promotion work batch without bypassing promotion blockers."
         )
     )
     parser.add_argument(
@@ -294,12 +256,7 @@ def main() -> int:
     )
     print(
         "Live audience | "
-        + " | ".join(
-            f"{key}={value}"
-            for key, value in report[
-                "live_audience_counts"
-            ].items()
-        )
+        + " | ".join(f"{key}={value}" for key, value in report["live_audience_counts"].items())
     )
 
     for index, row in enumerate(

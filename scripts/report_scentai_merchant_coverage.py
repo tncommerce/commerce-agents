@@ -12,7 +12,6 @@ from scripts.promote_scentai_catalog import (
     eligible_affiliate_offers,
 )
 
-
 DATA_DIR = Path("examples/retail/data")
 DEFAULT_STAGING = DATA_DIR / "scentai_catalog_staging.json"
 DEFAULT_CATALOG = DATA_DIR / "catalog.json"
@@ -25,14 +24,8 @@ def load_json(path: Path) -> dict:
 
 
 def target_groups_from_live_product(product: dict) -> list[str]:
-    raw = str(
-        product.get("attributes", {}).get("target_group") or ""
-    )
-    return [
-        group.strip()
-        for group in raw.split(",")
-        if group.strip()
-    ]
+    raw = str(product.get("attributes", {}).get("target_group") or "")
+    return [group.strip() for group in raw.split(",") if group.strip()]
 
 
 def build_merchant_coverage_report(
@@ -61,9 +54,7 @@ def build_merchant_coverage_report(
 
     live_audience = Counter()
     for product in live_products:
-        live_audience.update(
-            target_groups_from_live_product(product)
-        )
+        live_audience.update(target_groups_from_live_product(product))
 
     staged_audience = Counter()
     rows: list[dict[str, Any]] = []
@@ -79,15 +70,9 @@ def build_merchant_coverage_report(
         )
         staged_audience.update(target_groups)
 
-        product_offers = [
-            offer
-            for offer in offers
-            if offer.get("product_id") == product_id
-        ]
+        product_offers = [offer for offer in offers if offer.get("product_id") == product_id]
         affiliate_offers = [
-            offer
-            for offer in product_offers
-            if str(offer.get("affiliate_url") or "").strip()
+            offer for offer in product_offers if str(offer.get("affiliate_url") or "").strip()
         ]
         fresh_affiliate_offers = eligible_affiliate_offers(
             offers,
@@ -97,9 +82,7 @@ def build_merchant_coverage_report(
         )
 
         product_mappings = [
-            mapping
-            for mapping in mappings
-            if mapping.get("product_id") == product_id
+            mapping for mapping in mappings if mapping.get("product_id") == product_id
         ]
         resolved_mappings = [
             mapping
@@ -116,12 +99,8 @@ def build_merchant_coverage_report(
 
         media = product.get("media", {})
         image_url = str(media.get("image_url") or "").strip()
-        image_status = str(
-            media.get("image_status") or ""
-        ).strip()
-        image_ready = bool(image_url) and (
-            image_status in APPROVED_IMAGE_STATUSES
-        )
+        image_status = str(media.get("image_status") or "").strip()
+        image_ready = bool(image_url) and (image_status in APPROVED_IMAGE_STATUSES)
 
         blockers = []
         if not image_ready:
@@ -152,28 +131,16 @@ def build_merchant_coverage_report(
                 ),
                 "integrated_offer_count": len(product_offers),
                 "affiliate_offer_count": len(affiliate_offers),
-                "fresh_affiliate_offer_count": len(
-                    fresh_affiliate_offers
-                ),
+                "fresh_affiliate_offer_count": len(fresh_affiliate_offers),
                 "mapping_count": len(product_mappings),
-                "resolved_mapping_count": len(
-                    resolved_mappings
-                ),
+                "resolved_mapping_count": len(resolved_mappings),
                 "approved_image_ready": image_ready,
-                "provisional_community_data": bool(
-                    product.get("community", {}).get(
-                        "provisional"
-                    )
-                ),
+                "provisional_community_data": bool(product.get("community", {}).get("provisional")),
                 "blockers": blockers,
             }
         )
 
-    blocker_counts = Counter(
-        blocker
-        for row in rows
-        for blocker in row["blockers"]
-    )
+    blocker_counts = Counter(blocker for row in rows for blocker in row["blockers"])
 
     rows.sort(
         key=lambda row: (
@@ -191,17 +158,11 @@ def build_merchant_coverage_report(
         "generated_at": now.astimezone(UTC).isoformat(),
         "live_fragrance_count": len(live_products),
         "staged_fragrance_count": len(staged_products),
-        "live_audience_counts": dict(
-            sorted(live_audience.items())
-        ),
-        "staged_audience_counts": dict(
-            sorted(staged_audience.items())
-        ),
+        "live_audience_counts": dict(sorted(live_audience.items())),
+        "staged_audience_counts": dict(sorted(staged_audience.items())),
         "integrated_offer_count": len(offers),
         "integrated_affiliate_offer_count": sum(
-            1
-            for offer in offers
-            if str(offer.get("affiliate_url") or "").strip()
+            1 for offer in offers if str(offer.get("affiliate_url") or "").strip()
         ),
         "resolved_mapping_count": sum(
             1
@@ -215,17 +176,11 @@ def build_merchant_coverage_report(
                 )
             )
         ),
-        "staged_with_integrated_offer": sum(
-            1 for row in rows if row["integrated_offer_count"]
-        ),
+        "staged_with_integrated_offer": sum(1 for row in rows if row["integrated_offer_count"]),
         "staged_with_fresh_affiliate_offer": sum(
-            1
-            for row in rows
-            if row["fresh_affiliate_offer_count"]
+            1 for row in rows if row["fresh_affiliate_offer_count"]
         ),
-        "staged_with_approved_image": sum(
-            1 for row in rows if row["approved_image_ready"]
-        ),
+        "staged_with_approved_image": sum(1 for row in rows if row["approved_image_ready"]),
         "blocker_counts": dict(
             sorted(
                 blocker_counts.items(),
@@ -327,21 +282,11 @@ def main() -> int:
     )
     print(
         "Live audience | "
-        + " | ".join(
-            f"{key}={value}"
-            for key, value in report[
-                "live_audience_counts"
-            ].items()
-        )
+        + " | ".join(f"{key}={value}" for key, value in report["live_audience_counts"].items())
     )
     print(
         "Staged audience | "
-        + " | ".join(
-            f"{key}={value}"
-            for key, value in report[
-                "staged_audience_counts"
-            ].items()
-        )
+        + " | ".join(f"{key}={value}" for key, value in report["staged_audience_counts"].items())
     )
 
     print("Top integration gaps:")
