@@ -57,6 +57,12 @@ class AnalyticsEventRequest(BaseModel):
     surface: str | None = Field(default=None, max_length=80)
     related_product_id: str | None = Field(default=None, max_length=80)
     item_position: int | None = Field(default=None, ge=1, le=100)
+    analytics_session_id: str | None = Field(
+        default=None,
+        min_length=16,
+        max_length=80,
+        pattern=r"^[A-Za-z0-9-]+$",
+    )
 
 
 class FirstPartyAnalyticsTracker:
