@@ -52,12 +52,20 @@ export default function FragranceIndexPage() {
               SCENTAI
             </span>
           </a>
-          <a
-            href="/"
-            className="rounded-xl border border-(--line) px-3 py-2 text-[12px] font-semibold text-(--ink) transition hover:border-(--ink)"
-          >
-            Duftberatung öffnen
-          </a>
+          <div className="flex items-center gap-2">
+            <a
+              href="/vergleich"
+              className="hidden rounded-xl border border-(--line) px-3 py-2 text-[12px] font-semibold text-(--ink) transition hover:border-(--ink) sm:inline-flex"
+            >
+              Vergleiche
+            </a>
+            <a
+              href="/"
+              className="rounded-xl border border-(--line) px-3 py-2 text-[12px] font-semibold text-(--ink) transition hover:border-(--ink)"
+            >
+              Duftberatung öffnen
+            </a>
+          </div>
         </div>
       </header>
 
