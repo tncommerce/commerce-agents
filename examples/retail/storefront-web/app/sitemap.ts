@@ -1,6 +1,9 @@
 import type { MetadataRoute } from "next";
 
-import { LIVE_FRAGRANCES } from "@/lib/fragranceCatalog";
+import {
+  EXPLICIT_COMPARISON_PAIRS,
+  LIVE_FRAGRANCES,
+} from "@/lib/fragranceCatalog";
 import { SITE_URL } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -14,6 +17,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${SITE_URL}/duft`,
       changeFrequency: "weekly",
       priority: 0.8,
+    },
+    {
+      url: `${SITE_URL}/vergleich`,
+      changeFrequency: "weekly",
+      priority: 0.7,
     },
     {
       url: `${SITE_URL}/transparenz`,
@@ -39,5 +47,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     }));
 
-  return [...staticRoutes, ...fragranceRoutes];
+  const comparisonRoutes: MetadataRoute.Sitemap =
+    EXPLICIT_COMPARISON_PAIRS.map((pair) => ({
+      url: `${SITE_URL}/vergleich/${pair.pair_slug}`,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    }));
+
+  return [
+    ...staticRoutes,
+    ...fragranceRoutes,
+    ...comparisonRoutes,
+  ];
 }
