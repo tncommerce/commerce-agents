@@ -231,7 +231,47 @@ def aggregate_candidate_demand(
     }
 
 
+SCORE_COMPONENT_CAPS = {
+    "retailer_demand": 35.0,
+    "community_strength": 30.0,
+    "cross_merchant_coverage": 15.0,
+    "trend_momentum": 10.0,
+    "portfolio_fit": 10.0,
+}
+
+
+def selection_score_components(
+    candidate: dict,
+) -> dict[str, float] | None:
+    components = candidate.get(
+        "selection_score_components"
+    )
+    if not isinstance(components, dict):
+        return None
+
+    if not set(SCORE_COMPONENT_CAPS).issubset(components):
+        return None
+
+    try:
+        values = {
+            key: float(components[key])
+            for key in SCORE_COMPONENT_CAPS
+        }
+    except (TypeError, ValueError):
+        return None
+
+    for key, value in values.items():
+        if value < 0 or value > SCORE_COMPONENT_CAPS[key]:
+            return None
+
+    return values
+
+
 def selection_score(candidate: dict) -> float | None:
+    components = selection_score_components(candidate)
+    if components is not None:
+        return sum(components.values())
+
     raw = candidate.get("selection_score")
 
     if isinstance(raw, bool):
@@ -242,52 +282,47 @@ def selection_score(candidate: dict) -> float | None:
         if 0 <= numeric <= 100:
             return numeric
 
-    components = candidate.get(
-        "selection_score_components"
+    return None
+
+
+def demand_adjusted_selection_score(
+    candidate: dict,
+    *,
+    demand_score: int,
+) -> float | None:
+    components = selection_score_components(candidate)
+    if components is None:
+        return selection_score(candidate)
+
+    # First-party demand is one input to the existing 10-point
+    # trend_momentum component. It can strengthen that component but can
+    # never create points outside the policy's original 0-100 weights.
+    adjusted = dict(components)
+    adjusted["trend_momentum"] = max(
+        adjusted["trend_momentum"],
+        float(demand_score),
     )
-    if not isinstance(components, dict):
-        return None
-
-    expected = {
-        "retailer_demand",
-        "community_strength",
-        "cross_merchant_coverage",
-        "trend_momentum",
-        "portfolio_fit",
-    }
-
-    if not expected.issubset(components):
-        return None
-
-    try:
-        values = {
-            key: float(components[key])
-            for key in expected
-        }
-    except (TypeError, ValueError):
-        return None
-
-    if any(value < 0 for value in values.values()):
-        return None
-
-    total = sum(values.values())
-    return total if total <= 100 else None
+    return sum(adjusted.values())
 
 
 def research_priority_value(
     *,
     base_selection_score: float | None,
+    adjusted_selection_score: float | None,
     demand_score: int,
     manual_priority: int,
 ) -> tuple[float, str]:
-    if base_selection_score is not None:
-        # Demand does not inflate the 0-100 selection score. It acts as a
-        # deterministic tie-break/queue signal until trend_momentum is
-        # explicitly recalculated from verified evidence.
+    if adjusted_selection_score is not None:
+        # The fractional demand value is only a deterministic tie-breaker
+        # between equal 0-100 scores; it is not part of the selection score.
         return (
-            base_selection_score
+            adjusted_selection_score
             + demand_score / 100.0,
-            "selection_score_then_demand",
+            (
+                "demand_adjusted_selection_score_then_demand"
+                if adjusted_selection_score != base_selection_score
+                else "selection_score_then_demand"
+            ),
         )
 
     # Current backlog has no stored numeric selection score. Keep demand
@@ -329,6 +364,10 @@ def build_candidate_priority(
             search_rows,
         )
         base_score = selection_score(candidate)
+        adjusted_score = demand_adjusted_selection_score(
+            candidate,
+            demand_score=demand["demand_score_10"],
+        )
 
         try:
             manual_priority = int(
@@ -339,6 +378,7 @@ def build_candidate_priority(
 
         priority_value, method = research_priority_value(
             base_selection_score=base_score,
+            adjusted_selection_score=adjusted_score,
             demand_score=demand["demand_score_10"],
             manual_priority=manual_priority,
         )
@@ -361,6 +401,7 @@ def build_candidate_priority(
                 ),
                 "manual_priority": manual_priority,
                 "selection_score_100": base_score,
+                "demand_adjusted_selection_score_100": adjusted_score,
                 **demand,
                 "research_priority_value": round(
                     priority_value,
