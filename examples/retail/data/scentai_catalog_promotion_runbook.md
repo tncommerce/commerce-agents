@@ -180,3 +180,32 @@ python scripts/report_scentai_promotion_readiness.py --output examples/retail/da
 This report is advisory. The actual live write still goes through
 `promote_scentai_catalog.py` and all of its hard gates.
 
+## Affiliate feed image intake
+
+When an approved CJ/Awin merchant feed becomes available, keep offer import
+and product-image review separate.
+
+First configure the real feed columns in
+`scentai_affiliate_provider_config.example.json` or a copy of it, including
+`image_url` when the approved feed exposes a usable product image.
+
+Extract review-only image candidates:
+
+```powershell
+python -m retail.api.extract_merchant_feed_assets --feed PATH_TO_FEED.csv --provider-config PATH_TO_PROVIDER_CONFIG.json
+```
+
+The command writes
+`examples/retail/data/merchant_feed_image_candidates.json`.
+
+Important:
+- extracted images are not promoted automatically
+- unmatched products remain visible for mapping review
+- invalid/non-HTTP image URLs are rejected
+- duplicate product/image pairs are collapsed
+- only a reviewed candidate may later receive the
+  `approved_feed_image` status used by the live-promotion gate
+
+Offer import remains a separate dry-run/write workflow through
+`import_merchant_feed.py`.
+
