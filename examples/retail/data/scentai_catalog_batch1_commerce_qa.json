@@ -1,0 +1,200 @@
+{
+  "version": 1,
+  "batch": 1,
+  "checked_at": "2026-09-18",
+  "status": "commerce_coverage_verified_partial",
+  "note": "These are QA snapshots, not affiliate offers. Prices and availability are volatile. Do not copy them into live offers without a fresh check and an approved affiliate-link strategy.",
+  "products": [
+    {
+      "candidate_id": "YSL-LIBRE-EDP",
+      "canonical_size_ml": 90,
+      "merchants": [
+        {
+          "merchant": "Douglas",
+          "status": "in_stock",
+          "observed_price_eur": 94.95,
+          "source": "https://www.douglas.de/de/p/5000005003?variant=289703"
+        },
+        {
+          "merchant": "flaconi",
+          "status": "in_stock",
+          "observed_price_eur": 95.14,
+          "source": "https://www.flaconi.de/parfum/yves-saint-laurent/libre/yves-saint-laurent-libre-eau-de-parfum.html?variant=80041833-90"
+        }
+      ],
+      "coverage_count": 2
+    },
+    {
+      "candidate_id": "PRADA-PARADOXE-EDP",
+      "canonical_size_ml": 90,
+      "merchants": [
+        {
+          "merchant": "Douglas",
+          "status": "listed",
+          "observed_price_eur": 99.95,
+          "source": "https://www.douglas.de/de/b/prada/paradoxe/b069232"
+        },
+        {
+          "merchant": "flaconi",
+          "status": "in_stock",
+          "observed_price_eur": 101.35,
+          "source": "https://www.flaconi.de/parfum/prada/paradoxe/prada-paradoxe-refillable-eau-de-parfum.html?variant=80070411-90"
+        }
+      ],
+      "coverage_count": 2
+    },
+    {
+      "candidate_id": "BURBERRY-GODDESS-EDP",
+      "canonical_size_ml": 100,
+      "merchants": [
+        {
+          "merchant": "Douglas",
+          "status": "listed",
+          "observed_price_eur": 84,
+          "source": "https://www.douglas.de/de/c/parfum/01"
+        },
+        {
+          "merchant": "flaconi",
+          "status": "in_stock",
+          "observed_price_eur": 84,
+          "source": "https://www.flaconi.de/parfum/burberry/goddess/burberry-goddess-eau-de-parfum.html?variant=90001263-0001775"
+        }
+      ],
+      "coverage_count": 2
+    },
+    {
+      "candidate_id": "NARCISO-RODRIGUEZ-FOR-HER-PURE-MUSC",
+      "canonical_size_ml": 100,
+      "merchants": [
+        {
+          "merchant": "Douglas",
+          "status": "in_stock",
+          "observed_price_eur": 97,
+          "source": "https://www.douglas.de/de/p/3001052443"
+        }
+      ],
+      "coverage_count": 1,
+      "note": "flaconi was previously verified in the identity pass; refresh exact current 100 ml price before creating a live offer."
+    },
+    {
+      "candidate_id": "PDM-DELINA-EDP",
+      "canonical_size_ml": 75,
+      "merchants": [
+        {
+          "merchant": "Douglas",
+          "status": "in_stock",
+          "observed_price_eur": 285,
+          "source": "https://www.douglas.de/de/p/5010758028"
+        },
+        {
+          "merchant": "ParfumGroup",
+          "status": "in_stock",
+          "observed_price_eur": 312.59,
+          "source": "https://parfumgroup.de/products/parfums-de-marly-delina-eau-de-parfum"
+        }
+      ],
+      "coverage_count": 2
+    },
+    {
+      "candidate_id": "LANCOME-LA-VIE-EST-BELLE-EDP",
+      "canonical_size_ml": 100,
+      "merchants": [
+        {
+          "merchant": "Douglas",
+          "status": "listed",
+          "observed_price_eur": 76.95,
+          "source": "https://www.douglas.de/de/c/parfum/01"
+        }
+      ],
+      "coverage_count": 1
+    },
+    {
+      "candidate_id": "JPG-LE-MALE-LE-PARFUM",
+      "canonical_size_ml": 125,
+      "merchants": [
+        {
+          "merchant": "Douglas",
+          "status": "in_stock",
+          "observed_price_eur": 86,
+          "source": "https://www.douglas.de/de/p/5002490497"
+        },
+        {
+          "merchant": "flaconi",
+          "status": "in_stock",
+          "observed_price_eur": 71.95,
+          "source": "https://www.flaconi.de/parfum/jean-paul-gaultier/le-male/jean-paul-gaultier-le-male-le-parfum-eau-de-parfum.html"
+        },
+        {
+          "merchant": "ParfumGroup",
+          "status": "in_stock",
+          "observed_price_eur": 84.79,
+          "source": "https://parfumgroup.de/products/jean-paul-gaultier-le-male-le-parfum-eau-de-parfum-intense"
+        }
+      ],
+      "coverage_count": 3
+    },
+    {
+      "candidate_id": "VIKTOR-ROLF-SPICEBOMB-EXTREME",
+      "canonical_size_ml": 90,
+      "merchants": [
+        {
+          "merchant": "Douglas",
+          "status": "in_stock",
+          "observed_price_eur": 67.99,
+          "source": "https://www.douglas.de/de/p/3001012427"
+        }
+      ],
+      "coverage_count": 1
+    },
+    {
+      "candidate_id": "PRADA-LHOMME-INTENSE-EDP",
+      "canonical_size_ml": 100,
+      "merchants": [
+        {
+          "merchant": "Douglas",
+          "status": "listed",
+          "observed_price_eur": 89,
+          "source": "https://www.douglas.de/de/b/prada/lhomme/b069225"
+        },
+        {
+          "merchant": "flaconi",
+          "status": "in_stock",
+          "observed_price_eur": 89.49,
+          "source": "https://www.flaconi.de/parfum/prada/l-homme/prada-l-homme-intense-eau-de-parfum.html"
+        }
+      ],
+      "coverage_count": 2
+    },
+    {
+      "candidate_id": "HUGO-BOSS-BOTTLED-EDT",
+      "canonical_size_ml": 100,
+      "merchants": [
+        {
+          "merchant": "Douglas",
+          "status": "listed",
+          "observed_price_eur": 58.99,
+          "source": "https://www.douglas.de/de/c/menbeauty/duefte/3404"
+        },
+        {
+          "merchant": "flaconi",
+          "status": "in_stock",
+          "observed_price_eur": 50.53,
+          "source": "https://www.flaconi.de/parfum/hugo-boss/boss-bottled/hugo-boss-boss-bottled-eau-de-toilette.html"
+        }
+      ],
+      "coverage_count": 2
+    }
+  ],
+  "gate_summary": {
+    "identity_verified": 10,
+    "at_least_one_german_merchant_verified": 10,
+    "at_least_two_merchants_verified": 7,
+    "affiliate_links_ready": 0,
+    "image_rights_or_feed_images_ready": 0
+  },
+  "next_actions": [
+    "Wait for affiliate approvals/feeds and replace QA URLs with trackable affiliate URLs.",
+    "Use approved feed/manufacturer imagery instead of generated lookalikes where possible.",
+    "Create final live product records only after image and offer strategy is safe."
+  ]
+}
