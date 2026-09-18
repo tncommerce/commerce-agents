@@ -5,7 +5,7 @@ import LegalFooter from "@/components/LegalFooter";
 import { legal, legalLocation, legalReady } from "@/lib/legal";
 
 export const metadata = {
-  title: "Impressum | SCENTAI",
+  title: "Impressum",
   description: "Anbieterkennzeichnung und Kontaktinformationen für SCENTAI.",
   alternates: {
     canonical: "/impressum",
