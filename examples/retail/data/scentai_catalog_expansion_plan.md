@@ -7,7 +7,7 @@ Required additions: 118
 
 ## Why expansion is the next priority
 
-The current SCENTAI catalog is heavily skewed toward men's and male-leaning unisex fragrances. The next expansion must improve mainstream demand coverage, women's fragrance coverage, niche discovery, and Arabic/value alternatives while keeping the catalog curated.
+The current SCENTAI catalog is still heavily skewed toward men's and male-leaning unisex fragrances. The audited live distribution is 32 men's target assignments, 16 unisex assignments and only 2 women's assignments across 32 live fragrances; target assignments can overlap. The next expansion must improve mainstream demand coverage, women's fragrance coverage, niche discovery, and Arabic/value alternatives while keeping the catalog curated.
 
 The live catalog should not be bulk-filled with low-quality or invented data. New products are promoted to live only after core facts are verified.
 
@@ -32,7 +32,7 @@ The final 150 should cover four commercial/recommendation needs:
 3. Niche and premium discovery
 4. Arabic/value/dupe ecosystem
 
-Audience balance is a priority because the current 32-product catalog contains no women-only fragrance entries.
+Audience balance remains a priority because women's coverage is still very small relative to men's coverage in the current 32-product live catalog.
 
 
 ## Data-driven selection model
