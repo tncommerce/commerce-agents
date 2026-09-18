@@ -32,7 +32,7 @@ const STARTERS: Starter[] = [
     prompt: ADVISOR_STARTS.alternative,
   },
   {
-    icon: "gift",
+    icon: "ticket",
     prompt: ADVISOR_STARTS.gift,
   },
   {
