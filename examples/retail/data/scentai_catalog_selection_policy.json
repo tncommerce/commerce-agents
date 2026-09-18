@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "name": "SCENTAI Catalog Selection Policy",
   "target_live_catalog_size": 150,
   "purpose": "Select high-demand, high-quality, commercially useful fragrances without relying on a single retailer or community.",
@@ -75,13 +75,16 @@
       "unisex_feminine_leaning",
       "unisex_masculine_leaning"
     ],
-    "note": "Feminine/masculine leaning is an editorial scent-style descriptor, not an absolute statement about who can wear a fragrance.",
-    "target_for_next_40": {
-      "women_or_feminine_leaning_unisex_minimum": 16,
-      "men_or_masculine_leaning_unisex_minimum": 12,
-      "neutral_unisex_minimum": 6,
-      "flexible_slots": 6
-    }
+    "note": "Feminine/masculine leaning is an editorial scent-style descriptor, not a restriction on who can wear a fragrance.",
+    "working_catalog_mix": {
+      "women_only_target_pct": 25,
+      "men_only_target_pct": 40,
+      "unisex_target_pct": 35,
+      "tolerance_pct_points": 5,
+      "review_rule": "Revisit this mix once SCENTAI has enough real search, clickout and conversion data. Do not assume one gender buys more fragrance without current Germany-specific evidence."
+    },
+    "counting_rule": "Feminine-leaning unisex remains in the unisex bucket, not the women-only bucket.",
+    "batch_rule": "Individual batches may deviate when needed to correct catalog gaps, but the rolling live-catalog mix should stay near the working target."
   },
   "promotion_rules": {
     "score_80_100": "Fast-track candidate after data QA.",
