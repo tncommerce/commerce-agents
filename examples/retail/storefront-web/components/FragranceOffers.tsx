@@ -10,10 +10,29 @@ import {
 import { trackAnalyticsEvent } from "@/lib/analytics";
 import type { MerchantOffersPayload } from "@/lib/types";
 
+function formatUpdatedAt(value: string): string | null {
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return null;
+
+  return parsed.toLocaleString("de-DE", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 export default function FragranceOffers({
   productId,
+  heading = "Aktuelle Händlerangebote",
+  trackProductOpen = true,
+  compact = false,
 }: {
   productId: string;
+  heading?: string;
+  trackProductOpen?: boolean;
+  compact?: boolean;
 }) {
   const [payload, setPayload] = useState<
     MerchantOffersPayload | null | undefined
@@ -22,10 +41,12 @@ export default function FragranceOffers({
   useEffect(() => {
     let active = true;
 
-    void trackAnalyticsEvent("product_open", {
-      product_id: productId,
-      source: "fragrance_detail_page",
-    });
+    if (trackProductOpen) {
+      void trackAnalyticsEvent("product_open", {
+        product_id: productId,
+        source: "fragrance_detail_page",
+      });
+    }
 
     void fetchMerchantOffers(productId)
       .then((value) => {
@@ -38,12 +59,12 @@ export default function FragranceOffers({
     return () => {
       active = false;
     };
-  }, [productId]);
+  }, [productId, trackProductOpen]);
 
   if (payload === undefined) {
     return (
       <section
-        className="rounded-2xl border border-(--line) bg-(--card) p-5 shadow-(--shadow-sm)"
+        className={`rounded-2xl border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5"} shadow-(--shadow-sm)`}
         aria-busy="true"
       >
         <div className="text-[13px] font-semibold text-(--ink)">
@@ -55,9 +76,9 @@ export default function FragranceOffers({
 
   if (!payload || payload.offers.length === 0) {
     return (
-      <section className="rounded-2xl border border-(--line) bg-(--card) p-5 shadow-(--shadow-sm)">
+      <section className={`rounded-2xl border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5"} shadow-(--shadow-sm)`}>
         <h2 className="text-[17px] font-semibold text-(--ink)">
-          Händlerangebote
+          {heading}
         </h2>
         <p className="mt-2 text-[13px] leading-5 text-(--ink-soft)">
           Für diesen Duft ist aktuell kein ausreichend aktuelles,
@@ -75,13 +96,13 @@ export default function FragranceOffers({
 
   return (
     <section
-      className="rounded-2xl border border-(--line) bg-(--card) p-5 shadow-(--shadow-sm)"
+      className={`rounded-2xl border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5"} shadow-(--shadow-sm)`}
       data-merchant-offers
     >
       <div className="flex flex-wrap items-end justify-between gap-2">
         <div>
           <h2 className="text-[17px] font-semibold text-(--ink)">
-            Aktuelle Händlerangebote
+            {heading}
           </h2>
           <p className="mt-1 text-[12px] text-(--ink-soft)">
             Kauf, Zahlung, Versand und Retouren erfolgen direkt beim Händler.
@@ -107,7 +128,7 @@ export default function FragranceOffers({
                   </span>
                   {best ? (
                     <span className="rounded-full border border-(--accent) px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-(--ink)">
-                      Bestes Angebot
+                      Günstigstes geprüftes Angebot
                     </span>
                   ) : null}
                   {offer.affiliate_link ? (
@@ -128,6 +149,10 @@ export default function FragranceOffers({
                     <span className="text-[11px] text-(--ok)">
                       {offer.shipping_label}
                     </span>
+                  ) : offer.total_price == null ? (
+                    <span className="text-[11px] text-(--ink-soft)">
+                      zzgl. ggf. Versand
+                    </span>
                   ) : null}
                   {offer.variant_label ? (
                     <span className="text-[11px] text-(--ink-soft)">
@@ -135,6 +160,13 @@ export default function FragranceOffers({
                     </span>
                   ) : null}
                 </div>
+
+                {formatUpdatedAt(offer.last_updated_at) ? (
+                  <div className="mt-1 text-[10.5px] text-(--ink-soft)">
+                    Preis & Bestand geprüft:{" "}
+                    {formatUpdatedAt(offer.last_updated_at)}
+                  </div>
+                ) : null}
               </div>
 
               <a
