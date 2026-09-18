@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import ComparisonAnalytics from "@/components/ComparisonAnalytics";
 import FragranceOffers from "@/components/FragranceOffers";
 import {
   EXPLICIT_COMPARISON_PAIRS,
@@ -175,6 +176,10 @@ export default async function ComparisonPage({
 
   return (
     <main className="min-h-screen bg-(--surface) text-(--ink)">
+      <ComparisonAnalytics
+        productId={left.product_id}
+        relatedProductId={right.product_id}
+      />
       <header className="border-b border-(--line) bg-(--card)">
         <div className="mx-auto flex max-w-[1080px] items-center justify-between gap-4 px-4 py-4 sm:px-6">
           <a
@@ -352,12 +357,14 @@ export default async function ComparisonPage({
               productId={left.product_id}
               heading={`Angebote für ${left.name}`}
               trackProductOpen={false}
+              analyticsSurface="documented_comparison"
               compact
             />
             <FragranceOffers
               productId={right.product_id}
               heading={`Angebote für ${right.name}`}
               trackProductOpen={false}
+              analyticsSurface="documented_comparison"
               compact
             />
           </div>
