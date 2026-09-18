@@ -5,8 +5,6 @@
 
 import type { ReactNode } from "react";
 import { ActivityLine, type AgentTurn, type AssistantChatItem, Chat as ChatShell } from "web-shared";
-import { addToCart } from "@/lib/api";
-import type { CartPayload } from "@/lib/types";
 import GenerativeBlock from "./generative";
 
 const WIDE = new Set(["comparison", "plan"]);
@@ -31,7 +29,13 @@ function Pending({ item }: { item: AssistantChatItem }) {
   );
 }
 
-export default function Chat({ chat, home, onCartUpdate }: { chat: AgentTurn; home: ReactNode; onCartUpdate: (cart: CartPayload) => void }) {
+export default function Chat({
+  chat,
+  home,
+}: {
+  chat: AgentTurn;
+  home: ReactNode;
+}) {
   return (
     <ChatShell
       chat={chat}
@@ -44,11 +48,6 @@ export default function Chat({ chat, home, onCartUpdate }: { chat: AgentTurn; ho
         <GenerativeBlock
           block={segment.block}
           status={segment.status}
-          onAdd={async (product) => {
-            const cart = await addToCart(product.product_id);
-            if (cart) onCartUpdate(cart);
-            return cart !== null;
-          }}
         />
       )}
     />
