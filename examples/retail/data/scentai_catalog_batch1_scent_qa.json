@@ -1,0 +1,280 @@
+{
+  "version": 1,
+  "batch": 1,
+  "checked_at": "2026-09-18",
+  "status": "community_scent_profile_verified",
+  "methodology": {
+    "community_source": "Parfumo",
+    "rating_rule": "Store scent rating together with rating count; never use a score without its sample size.",
+    "performance_rule": "Longevity and sillage are community ratings on a 0-10 scale, not measured hours/meters.",
+    "scentai_profile_rule": "SCENTAI qualitative axes are editorial normalization from verified accord/note evidence. They are not community scores.",
+    "qualitative_levels": [
+      "low",
+      "medium",
+      "high"
+    ]
+  },
+  "products": [
+    {
+      "candidate_id": "YSL-LIBRE-EDP",
+      "parfumo": {
+        "scent_rating_10": 7.5,
+        "scent_ratings_count": 2203,
+        "longevity_10": 7.8,
+        "longevity_ratings_count": 1928,
+        "sillage_10": 7.6,
+        "sillage_ratings_count": 1903,
+        "main_accords": [
+          "floral",
+          "sweet",
+          "fresh",
+          "creamy",
+          "citrus"
+        ],
+        "source": "https://www.parfumo.com/Perfumes/Yves_Saint_Laurent/libre-eau-de-parfum"
+      },
+      "scentai_profile": {
+        "freshness": "high",
+        "sweetness": "high",
+        "woodiness": "low",
+        "spiciness": "low"
+      }
+    },
+    {
+      "candidate_id": "PRADA-PARADOXE-EDP",
+      "parfumo": {
+        "scent_rating_10": 7,
+        "scent_ratings_count": 1405,
+        "longevity_10": 7.5,
+        "longevity_ratings_count": 1168,
+        "sillage_10": 7.4,
+        "sillage_ratings_count": 1161,
+        "main_accords": [
+          "sweet",
+          "floral",
+          "fruity",
+          "synthetic",
+          "fresh"
+        ],
+        "source": "https://www.parfumo.com/Perfumes/Prada/paradoxe-eau-de-parfum"
+      },
+      "scentai_profile": {
+        "freshness": "medium",
+        "sweetness": "high",
+        "woodiness": "low",
+        "spiciness": "low"
+      }
+    },
+    {
+      "candidate_id": "BURBERRY-GODDESS-EDP",
+      "parfumo": {
+        "scent_rating_10": 7.8,
+        "scent_ratings_count": 1729,
+        "longevity_10": 7.4,
+        "longevity_ratings_count": 1491,
+        "sillage_10": 7,
+        "sillage_ratings_count": 1468,
+        "main_accords": [
+          "sweet",
+          "gourmand",
+          "creamy",
+          "floral",
+          "spicy"
+        ],
+        "source": "https://www.parfumo.com/Perfumes/Burberry/goddess-eau-de-parfum"
+      },
+      "scentai_profile": {
+        "freshness": "low",
+        "sweetness": "high",
+        "woodiness": "low",
+        "spiciness": "medium"
+      }
+    },
+    {
+      "candidate_id": "NARCISO-RODRIGUEZ-FOR-HER-PURE-MUSC",
+      "parfumo": {
+        "scent_rating_10": 7.9,
+        "scent_ratings_count": 1966,
+        "longevity_10": 7.6,
+        "longevity_ratings_count": 1743,
+        "sillage_10": 7.1,
+        "sillage_ratings_count": 1718,
+        "main_accords": [
+          "creamy",
+          "floral",
+          "fresh",
+          "powdery",
+          "synthetic"
+        ],
+        "source": "https://www.parfumo.com/Perfumes/Narciso_Rodriguez/for-her-pure-musc-eau-de-parfum"
+      },
+      "scentai_profile": {
+        "freshness": "medium",
+        "sweetness": "low",
+        "woodiness": "low",
+        "spiciness": "low"
+      }
+    },
+    {
+      "candidate_id": "PDM-DELINA-EDP",
+      "parfumo": {
+        "scent_rating_10": 8,
+        "scent_ratings_count": 2555,
+        "longevity_10": 8.4,
+        "longevity_ratings_count": 2324,
+        "sillage_10": 8.1,
+        "sillage_ratings_count": 2303,
+        "main_accords": [
+          "floral",
+          "fruity",
+          "sweet",
+          "fresh",
+          "creamy"
+        ],
+        "source": "https://www.parfumo.com/Perfumes/Parfums_de_Marly/Delina"
+      },
+      "scentai_profile": {
+        "freshness": "medium",
+        "sweetness": "high",
+        "woodiness": "low",
+        "spiciness": "low"
+      }
+    },
+    {
+      "candidate_id": "LANCOME-LA-VIE-EST-BELLE-EDP",
+      "parfumo": {
+        "scent_rating_10": 6.6,
+        "scent_ratings_count": 2137,
+        "longevity_10": 8.2,
+        "longevity_ratings_count": 1762,
+        "sillage_10": 8.1,
+        "sillage_ratings_count": 1747,
+        "main_accords": [
+          "sweet",
+          "floral",
+          "fruity",
+          "gourmand",
+          "powdery"
+        ],
+        "source": "https://www.parfumo.com/Perfumes/Lancome/la-vie-est-belle-l-eau-de-parfum"
+      },
+      "scentai_profile": {
+        "freshness": "low",
+        "sweetness": "high",
+        "woodiness": "low",
+        "spiciness": "low"
+      }
+    },
+    {
+      "candidate_id": "JPG-LE-MALE-LE-PARFUM",
+      "parfumo": {
+        "scent_rating_10": 8.4,
+        "scent_ratings_count": 5602,
+        "longevity_10": 8,
+        "longevity_ratings_count": 5314,
+        "sillage_10": 7.7,
+        "sillage_ratings_count": 5277,
+        "main_accords": [
+          "sweet",
+          "spicy",
+          "powdery",
+          "oriental",
+          "woody"
+        ],
+        "source": "https://www.parfumo.com/Perfumes/Jean_Paul_Gaultier/le-male-le-parfum"
+      },
+      "scentai_profile": {
+        "freshness": "low",
+        "sweetness": "high",
+        "woodiness": "medium",
+        "spiciness": "high"
+      }
+    },
+    {
+      "candidate_id": "VIKTOR-ROLF-SPICEBOMB-EXTREME",
+      "parfumo": {
+        "scent_rating_10": 8.4,
+        "scent_ratings_count": 6605,
+        "longevity_10": 8.4,
+        "longevity_ratings_count": 6303,
+        "sillage_10": 8.2,
+        "sillage_ratings_count": 6290,
+        "main_accords": [
+          "spicy",
+          "sweet",
+          "oriental",
+          "gourmand",
+          "woody"
+        ],
+        "source": "https://www.parfumo.com/Perfumes/Viktor_Rolf/Spicebomb_Extreme"
+      },
+      "scentai_profile": {
+        "freshness": "low",
+        "sweetness": "high",
+        "woodiness": "medium",
+        "spiciness": "high"
+      }
+    },
+    {
+      "candidate_id": "PRADA-LHOMME-INTENSE-EDP",
+      "parfumo": {
+        "scent_rating_10": 8.4,
+        "scent_ratings_count": 2602,
+        "longevity_10": 8.1,
+        "longevity_ratings_count": 2440,
+        "sillage_10": 7.7,
+        "sillage_ratings_count": 2428,
+        "main_accords": [
+          "powdery",
+          "sweet",
+          "creamy",
+          "spicy",
+          "woody"
+        ],
+        "source": "https://www.parfumo.com/Perfumes/Prada/L_Homme_Intense"
+      },
+      "scentai_profile": {
+        "freshness": "low",
+        "sweetness": "medium",
+        "woodiness": "medium",
+        "spiciness": "medium"
+      }
+    },
+    {
+      "candidate_id": "HUGO-BOSS-BOTTLED-EDT",
+      "parfumo": {
+        "scent_rating_10": 7.4,
+        "scent_ratings_count": 3995,
+        "longevity_10": 6.4,
+        "longevity_ratings_count": 3522,
+        "sillage_10": 6.3,
+        "sillage_ratings_count": 3428,
+        "main_accords": [
+          "fresh",
+          "fruity",
+          "sweet",
+          "woody",
+          "spicy"
+        ],
+        "source": "https://www.parfumo.com/Perfumes/Hugo_Boss/Boss_Bottled_Eau_de_Toilette"
+      },
+      "scentai_profile": {
+        "freshness": "high",
+        "sweetness": "medium",
+        "woodiness": "medium",
+        "spiciness": "medium"
+      }
+    }
+  ],
+  "gate_summary": {
+    "community_scent_snapshot_verified": 10,
+    "longevity_sillage_snapshot_verified": 10,
+    "scentai_qualitative_profile_ready": 10
+  },
+  "next_actions": [
+    "Map qualitative SCENTAI profile levels to the current catalog's numeric compatibility fields only at live-promotion time.",
+    "Keep Parfumo rating counts with every snapshot so community confidence remains visible internally.",
+    "Recheck volatile community metrics periodically instead of treating them as permanent facts.",
+    "Do not publish community scores as merchant or laboratory claims."
+  ]
+}
