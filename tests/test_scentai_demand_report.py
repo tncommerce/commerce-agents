@@ -69,7 +69,7 @@ def test_demand_report_ranks_search_and_gap_signals() -> None:
         limit=20,
     )
 
-    assert report["summary"]["search_events"] == 18
+    assert report["summary"]["total_searches"] == 18
     assert report["summary"]["no_result_events"] == 6
 
     assert (
