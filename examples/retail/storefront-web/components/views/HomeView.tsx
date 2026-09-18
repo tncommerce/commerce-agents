@@ -11,6 +11,7 @@ import {
   useCatalogIndex,
 } from "web-shared";
 import { fetchProducts } from "@/lib/api";
+import { ADVISOR_STARTS } from "@/lib/advisorStarts";
 import { fragrancePathForProduct } from "@/lib/fragranceSlug";
 import type { Product } from "@/lib/types";
 import ProductTile, { ProductRow } from "../ProductTile";
@@ -19,19 +20,27 @@ import LegalFooter from "../LegalFooter";
 const STARTERS: Starter[] = [
   {
     icon: "search",
-    prompt: "Ich suche einen frischen Sommerduft unter 60 €.",
+    prompt: ADVISOR_STARTS.summer,
   },
   {
     icon: "calendar",
-    prompt: "Ich suche einen eleganten Duft für ein Date unter 100 €.",
+    prompt: ADVISOR_STARTS.date,
   },
   {
     icon: "tag",
-    prompt: "Finde mir eine gute Alternative zu Louis Vuitton Imagination.",
+    prompt: ADVISOR_STARTS.alternative,
+  },
+  {
+    icon: "gift",
+    prompt: ADVISOR_STARTS.gift,
   },
   {
     icon: "signal",
-    prompt: "Ich suche einen Duft mit starker Haltbarkeit und Ausstrahlung.",
+    prompt: ADVISOR_STARTS.performance,
+  },
+  {
+    icon: "spark",
+    prompt: ADVISOR_STARTS.signature,
   },
 ];
 
@@ -124,6 +133,47 @@ export default function HomeView({
           Für dich soll sich der Händlerpreis dadurch nicht erhöhen.
         </p>
       </div>
+      <HomeSection
+        title="Starte so, wie es zu dir passt"
+        subtitle="Beratung, Alternativen oder Geschenkideen"
+      >
+        <div className="grid gap-2.5 sm:grid-cols-3">
+          <a
+            href="/duftfinder"
+            className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) transition hover:border-(--accent)"
+          >
+            <div className="text-[13px] font-semibold text-(--ink)">
+              Meinen Duft finden
+            </div>
+            <p className="mt-1 text-[12px] leading-5 text-(--ink-soft)">
+              Nach Anlass, Budget, Duftprofil und Performance.
+            </p>
+          </a>
+          <a
+            href="/parfum-alternativen"
+            className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) transition hover:border-(--accent)"
+          >
+            <div className="text-[13px] font-semibold text-(--ink)">
+              Alternative finden
+            </div>
+            <p className="mt-1 text-[12px] leading-5 text-(--ink-soft)">
+              Ähnliche Duftrichtungen transparent vergleichen.
+            </p>
+          </a>
+          <a
+            href="/parfum-geschenkberater"
+            className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) transition hover:border-(--accent)"
+          >
+            <div className="text-[13px] font-semibold text-(--ink)">
+              Parfum verschenken
+            </div>
+            <p className="mt-1 text-[12px] leading-5 text-(--ink-soft)">
+              Mit wenigen Fragen zu einer passenden Geschenkidee.
+            </p>
+          </a>
+        </div>
+      </HomeSection>
+
       <div className="flex flex-wrap gap-2 text-[12.5px] text-(--ink-soft)">
         <a
           href="/duft"
