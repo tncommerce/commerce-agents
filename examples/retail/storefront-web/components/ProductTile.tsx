@@ -339,7 +339,9 @@ export default function ProductTile({
             <ProductRating product={product} compact={compact} />
           </div>
           <DeliveryPromise product={product} />
-          {!compact && product.in_stock !== false ? <ReturnsPromise /> : null}
+          {!compact && !isScentai && product.in_stock !== false ? (
+            <ReturnsPromise />
+          ) : null}
           {!compact && isScentai && clickable ? (
             <div className="mt-1 text-[11px] font-medium text-(--ink-soft)">
               {product.attributes?.price_source === "current_merchant_offer"
@@ -369,6 +371,7 @@ export function ProductRow({
   onOpen?: (product: Product) => void;
 }) {
   const clickable = Boolean(onOpen);
+  const isScentai = String(product.product_id).startsWith("SC-");
   const openProduct = () => {
     if (String(product.product_id).startsWith("SC-")) {
       void trackAnalyticsEvent("product_open", {
@@ -392,7 +395,7 @@ export function ProductRow({
           product={product}
           className={`h-14 w-16 rounded-lg ${product.in_stock === false ? "opacity-50" : ""}`}
         />
-        {onAdd && product.in_stock !== false ? (
+        {onAdd && !isScentai && product.in_stock !== false ? (
           <AddButton product={product} onAdd={onAdd} />
         ) : null}
       </div>
