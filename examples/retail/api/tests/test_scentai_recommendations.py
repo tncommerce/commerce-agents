@@ -104,3 +104,131 @@ async def test_performance_search_prioritizes_longevity_and_projection(backend, 
         longevity = float(product.attributes["longevity"])
         projection = float(product.attributes["projection"])
         assert (longevity + projection) / 2 >= 7.8
+
+
+
+async def test_named_fragrance_lookup_respects_budget_hard_constraint(backend, session):
+    hits = await backend.search_products(
+        session,
+        "Prada L'Homme",
+        SearchFilters(max_price=60),
+        limit=5,
+    )
+
+    assert hits == []
+
+
+async def test_named_fragrance_lookup_still_returns_exact_match_without_conflicting_filter(
+    backend,
+    session,
+):
+    hits = await backend.search_products(
+        session,
+        "Prada L'Homme",
+        limit=5,
+    )
+
+    assert hits
+    assert hits[0].product_id == "SC-PRADA-LHOMME-100"
+
+
+async def test_summer_intent_prioritizes_fresh_low_sweetness_profiles(backend, session):
+    hits = await backend.search_products(
+        session,
+        "Sommerduft frisch und nicht zu süß",
+        SearchFilters(max_price=100),
+        limit=5,
+    )
+
+    assert hits
+
+    top = [backend.product(product.product_id) for product in hits[:3]]
+    assert all(product is not None for product in top)
+
+    for product in top:
+        freshness = float(product.attributes["freshness"])
+        sweetness = float(product.attributes["sweetness"])
+        assert freshness >= 8
+        assert sweetness <= 6
+
+    assert any(
+        "Sommerprofil" in str(product.attributes.get("anfrage_passung", ""))
+        for product in hits[:3]
+    )
+
+
+async def test_winter_intent_prioritizes_warm_long_lasting_profiles(backend, session):
+    hits = await backend.search_products(
+        session,
+        "warmer Winterduft mit guter Haltbarkeit",
+        limit=5,
+    )
+
+    assert hits
+
+    top = [backend.product(product.product_id) for product in hits[:3]]
+    assert all(product is not None for product in top)
+
+    for product in top:
+        sweetness = float(product.attributes["sweetness"])
+        woodiness = float(product.attributes["woodiness"])
+        spiciness = float(product.attributes["spiciness"])
+        longevity = float(product.attributes["longevity"])
+
+        assert (sweetness + woodiness + spiciness) / 3 >= 6
+        assert longevity >= 7.5
+
+
+async def test_party_intent_prioritizes_projection_and_longevity(backend, session):
+    hits = await backend.search_products(
+        session,
+        "Party Club starke Ausstrahlung und Haltbarkeit",
+        limit=5,
+    )
+
+    assert hits
+
+    top = [backend.product(product.product_id) for product in hits[:3]]
+    assert all(product is not None for product in top)
+
+    for product in top:
+        longevity = float(product.attributes["longevity"])
+        projection = float(product.attributes["projection"])
+        assert (longevity + projection) / 2 >= 8.0
+
+
+async def test_office_intent_prioritizes_controlled_projection(backend, session):
+    hits = await backend.search_products(
+        session,
+        "Büroduft frisch dezent nicht zu süß",
+        SearchFilters(max_price=100),
+        limit=5,
+    )
+
+    assert hits
+
+    top = [backend.product(product.product_id) for product in hits[:3]]
+    assert all(product is not None for product in top)
+
+    for product in top:
+        freshness = float(product.attributes["freshness"])
+        sweetness = float(product.attributes["sweetness"])
+        projection = float(product.attributes["projection"])
+        assert freshness >= 7
+        assert sweetness <= 5
+        assert projection <= 7.6
+
+
+async def test_alternative_search_customer_copy_is_german(backend, session):
+    hits = await backend.search_products(
+        session,
+        "Alternative zu Louis Vuitton Imagination",
+        SearchFilters(max_price=60),
+        limit=3,
+    )
+
+    assert hits
+    assert hits[0].short_description
+    assert "Duftrichtung" in hits[0].short_description
+    assert "The reference fragrance" not in hits[0].short_description
+    assert "Very close in scent direction" not in hits[0].short_description
