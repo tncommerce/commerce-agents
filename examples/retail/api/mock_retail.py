@@ -875,6 +875,101 @@ class MockRetail(StorefrontBackend):
         normalized_query = normalize_search_text(query)
         query_tokens = set(normalized_query.split())
 
+        # Conservative direct-name lookup for short, name-like requests.
+        # This runs before generic recommendation logic so a typo such as
+        # "Para L homme" resolves to Prada L'Homme instead of being interpreted
+        # merely as a request for a men's fragrance.
+        generic_query_words = {
+            "ich",
+            "suche",
+            "such",
+            "zeige",
+            "zeig",
+            "mir",
+            "bitte",
+            "einen",
+            "eine",
+            "ein",
+            "duft",
+            "parfum",
+            "fragrance",
+            "für",
+            "fuer",
+            "damen",
+            "herren",
+            "frauen",
+            "männer",
+            "maenner",
+            "men",
+            "women",
+        }
+        direct_query_words = [
+            word
+            for word in normalized_query.split()
+            if word not in generic_query_words
+        ]
+
+        if 1 <= len(direct_query_words) <= 5:
+            direct_matches = []
+
+            for candidate in products:
+                if not candidate.product_id.startswith("SC-"):
+                    continue
+
+                attrs = candidate.attributes or {}
+                canonical_name = str(attrs.get("canonical_name") or "").strip()
+                brand = str(candidate.brand or "").strip()
+
+                name_variants = (
+                    normalize_search_text(canonical_name),
+                    normalize_search_text(f"{brand} {canonical_name}".strip()),
+                )
+
+                best_ratio = 0.0
+                for variant in name_variants:
+                    variant_words = [
+                        word
+                        for word in variant.split()
+                        if word not in {"eau", "de", "parfum", "toilette", "extrait"}
+                    ]
+                    if not variant_words:
+                        continue
+
+                    token_scores = [
+                        max(
+                            SequenceMatcher(None, candidate_word, query_word).ratio()
+                            for query_word in direct_query_words
+                        )
+                        for candidate_word in variant_words
+                    ]
+                    strong = [score for score in token_scores if score >= 0.80]
+                    coverage = len(strong) / len(variant_words)
+
+                    if len(variant_words) == 1:
+                        ratio = strong[0] if strong else 0.0
+                    elif coverage >= 0.67:
+                        ratio = sum(strong) / len(strong)
+                    else:
+                        ratio = 0.0
+
+                    best_ratio = max(best_ratio, ratio)
+
+                if best_ratio >= 0.86:
+                    direct_matches.append((best_ratio, candidate))
+
+            direct_matches.sort(key=lambda item: item[0], reverse=True)
+
+            if direct_matches:
+                best_ratio, best_product = direct_matches[0]
+                second_ratio = direct_matches[1][0] if len(direct_matches) > 1 else 0.0
+
+                if best_ratio >= 0.90 and best_ratio - second_ratio >= 0.04:
+                    return [
+                        self._customer_facing_product(
+                            summary_of(best_product)
+                        )
+                    ]
+
         alternative_markers = (
             "alternative",
             "alternativen",
