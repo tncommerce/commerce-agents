@@ -116,7 +116,7 @@ def test_scentai_customer_product_uses_live_merchant_price(tmp_path) -> None:
                         "shipping_cost": 0.0,
                         "in_stock": True,
                         "product_url": "https://example.com/bois",
-                        "last_updated_at": NOW.isoformat(),
+                        "last_updated_at": datetime.now(UTC).isoformat(),
                     }
                 ]
             }
