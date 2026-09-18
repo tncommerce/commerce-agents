@@ -129,3 +129,33 @@ def test_funnel_item_position_is_bounded() -> None:
         pass
     else:
         raise AssertionError("item_position above 100 must be rejected")
+
+
+
+def test_anonymous_analytics_session_id_is_accepted() -> None:
+    request = AnalyticsEventRequest(
+        event="advisor_recommendation_view",
+        product_id="SC-TEST-100",
+        analytics_session_id="7c2587c3-6c03-4bdf-ae87-154b93f3ad31",
+    )
+
+    assert (
+        request.analytics_session_id
+        == "7c2587c3-6c03-4bdf-ae87-154b93f3ad31"
+    )
+
+
+def test_anonymous_analytics_session_id_rejects_short_values() -> None:
+    from pydantic import ValidationError
+
+    try:
+        AnalyticsEventRequest(
+            event="page_view",
+            analytics_session_id="short",
+        )
+    except ValidationError:
+        pass
+    else:
+        raise AssertionError(
+            "short analytics session IDs must be rejected"
+        )
