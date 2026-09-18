@@ -1,0 +1,273 @@
+{
+  "version": 1,
+  "batch": 2,
+  "verified_at": "2026-09-18",
+  "status": "identity_and_core_metadata_verified",
+  "live_promotion_status": "blocked_pending_image_and_affiliate_offer_qa",
+  "products": [
+    {
+      "candidate_id": "YSL-BLACK-OPIUM-EDP",
+      "proposed_product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "brand": "Yves Saint Laurent",
+      "canonical_name": "Black Opium",
+      "concentration": "Eau de Parfum",
+      "canonical_volume_ml": 90,
+      "target_group": "women",
+      "scent_family": "sweet gourmand floral",
+      "key_notes": [
+        "orange blossom",
+        "pink pepper",
+        "coffee",
+        "jasmine",
+        "vanilla",
+        "patchouli",
+        "cedar"
+      ],
+      "sources": [
+        "https://www.douglas.de/de/p/3001005867",
+        "https://www.flaconi.de/parfum/yves-saint-laurent/black-opium/yves-saint-laurent-black-opium-eau-de-parfum.html?variant=80005078-90",
+        "https://www.parfumo.de/Parfums/Yves_Saint_Laurent/Black_Opium"
+      ]
+    },
+    {
+      "candidate_id": "CHLOE-CHLOE-EDP",
+      "proposed_product_id": "SC-CHLOE-CHLOE-EDP-100",
+      "brand": "Chloé",
+      "canonical_name": "Chloé",
+      "concentration": "Eau de Parfum",
+      "canonical_volume_ml": 100,
+      "target_group": "women",
+      "scent_family": "floral fresh powdery",
+      "key_notes": [
+        "peony",
+        "freesia",
+        "lychee",
+        "rose",
+        "magnolia",
+        "lily of the valley",
+        "cedar",
+        "amber"
+      ],
+      "sources": [
+        "https://www.flaconi.de/parfum/chloe/chloe/chloe-chloe-eau-de-parfum.html?variant=80070876-100",
+        "https://www.parfumo.de/Parfums/Chloe/Chloe"
+      ]
+    },
+    {
+      "candidate_id": "LATTAFA-ECLAIRE-EDP",
+      "proposed_product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
+      "brand": "Lattafa",
+      "canonical_name": "Eclaire",
+      "concentration": "Eau de Parfum",
+      "canonical_volume_ml": 100,
+      "target_group": "women, unisex",
+      "audience_lean": "feminine",
+      "scent_family": "sweet gourmand creamy",
+      "key_notes": [
+        "caramel",
+        "milk",
+        "sugar",
+        "honey",
+        "white florals",
+        "vanilla",
+        "musk",
+        "praline"
+      ],
+      "sources": [
+        "https://www.dm.de/p/d/3061570/lattafa-eclaire-eau-de-parfum",
+        "https://www.notino.de/lattafa/eclaire-eau-de-parfum-unisex/",
+        "https://www.parfumo.de/Parfums/Lattafa/eclaire"
+      ]
+    },
+    {
+      "candidate_id": "LATTAFA-ANGHAM-EDP",
+      "proposed_product_id": "SC-LATTAFA-ANGHAM-EDP-100",
+      "brand": "Lattafa",
+      "canonical_name": "Angham",
+      "concentration": "Eau de Parfum",
+      "canonical_volume_ml": 100,
+      "target_group": "women, unisex",
+      "audience_lean": "feminine",
+      "scent_family": "sweet floral creamy gourmand",
+      "key_notes": [
+        "ginger",
+        "mandarin",
+        "pink pepper",
+        "lavender",
+        "jasmine",
+        "cocoa",
+        "praline",
+        "vanilla",
+        "musk",
+        "amber"
+      ],
+      "target_group_note": "Parfumo categorizes Angham for women; Notino currently lists it as unisex. SCENTAI keeps both signals and marks it feminine-leaning.",
+      "sources": [
+        "https://www.notino.de/lattafa/angham/",
+        "https://www.parfumo.de/Parfums/Lattafa/angham-eau-de-parfum-1"
+      ]
+    },
+    {
+      "candidate_id": "AMOUAGE-GUIDANCE-46",
+      "proposed_product_id": "SC-AMOUAGE-GUIDANCE-46-EXTRAIT-100",
+      "brand": "Amouage",
+      "canonical_name": "Guidance 46",
+      "concentration": "Extrait de Parfum",
+      "canonical_volume_ml": 100,
+      "target_group": "unisex",
+      "audience_lean": "feminine",
+      "scent_family": "floral sweet creamy fruity spicy",
+      "key_notes": [
+        "pear",
+        "hazelnut",
+        "rose water",
+        "bitter almond",
+        "frankincense",
+        "pink pepper",
+        "osmanthus",
+        "rose",
+        "jasmine sambac",
+        "saffron",
+        "vanilla",
+        "amber",
+        "sandalwood"
+      ],
+      "sources": [
+        "https://amouage.com/en-eu/pages/the-guidance-collection",
+        "https://www.douglas.de/de/p/5011534080",
+        "https://www.parfumo.de/Parfums/Amouage/guidance-46"
+      ]
+    },
+    {
+      "candidate_id": "PDM-VALAYA-EXCLUSIF",
+      "proposed_product_id": "SC-PDM-VALAYA-EXCLUSIF-EDP-75",
+      "brand": "Parfums de Marly",
+      "canonical_name": "Valaya Exclusif",
+      "concentration": "Eau de Parfum",
+      "canonical_volume_ml": 75,
+      "target_group": "women",
+      "scent_family": "floral creamy powdery woody",
+      "key_notes": [
+        "almond",
+        "bergamot",
+        "mandarin",
+        "orange blossom",
+        "white florals",
+        "white musk",
+        "akigalawood",
+        "sandalwood",
+        "vanilla"
+      ],
+      "sources": [
+        "https://parfums-de-marly.com/de/products/valaya-exclusif",
+        "https://www.douglas.de/de/p/5011718153",
+        "https://www.flaconi.de/parfum/parfums-de-marly/valaya/parfums-de-marly-valaya-exclusif-eau-de-parfum.html?variant=90012283-0019379",
+        "https://www.parfumo.de/Parfums/Parfums_de_Marly/valaya-exclusif"
+      ]
+    },
+    {
+      "candidate_id": "KAYALI-YUM-BOUJEE-MARSHMALLOW-81",
+      "proposed_product_id": "SC-KAYALI-YUM-BOUJEE-MARSHMALLOW-81-EDPI-100",
+      "brand": "Kayali",
+      "canonical_name": "Yum Boujee Marshmallow | 81",
+      "concentration": "Eau de Parfum Intense",
+      "canonical_volume_ml": 100,
+      "target_group": "women",
+      "scent_family": "sweet gourmand fruity creamy powdery",
+      "key_notes": [
+        "freesia",
+        "pink apple",
+        "lemon",
+        "nectarine blossom",
+        "strawberry",
+        "marshmallow",
+        "coconut",
+        "orange blossom",
+        "sugar",
+        "musk",
+        "praline",
+        "vanilla"
+      ],
+      "sources": [
+        "https://www.sephora.de/p/yum-boujee-marshmallow--81---eau-de-parfum-intense-733612.html",
+        "https://www.parfumo.de/Parfums/Kayali/yum-boujee-marshmallow-81"
+      ]
+    },
+    {
+      "candidate_id": "HUGO-BOSS-BOTTLED-ABSOLU",
+      "proposed_product_id": "SC-HUGO-BOSS-BOTTLED-ABSOLU-100",
+      "brand": "Hugo Boss",
+      "canonical_name": "BOSS Bottled Absolu",
+      "concentration": "Parfum Intense",
+      "canonical_volume_ml": 100,
+      "target_group": "men",
+      "scent_family": "spicy sweet woody leathery resinous",
+      "key_notes": [
+        "leather accord",
+        "frankincense",
+        "patchouli",
+        "myrrh",
+        "davana",
+        "cedar"
+      ],
+      "sources": [
+        "https://www.hugoboss.com/de/boss-bottled-absolu-parfum-intense-100-ml/hbeu58139181_999.html",
+        "https://www.douglas.de/de/p/5011497004",
+        "https://www.flaconi.de/parfum/hugo-boss/boss-bottled/hugo-boss-boss-bottled-absolu-intense-parfum.html?variant=90007350-0011241",
+        "https://www.parfumo.de/Parfums/Hugo_Boss/boss-bottled-absolu"
+      ]
+    },
+    {
+      "candidate_id": "YSL-MYSLF-LE-PARFUM",
+      "proposed_product_id": "SC-YSL-MYSLF-LE-PARFUM-100",
+      "brand": "Yves Saint Laurent",
+      "canonical_name": "MYSLF Le Parfum",
+      "concentration": "Parfum",
+      "canonical_volume_ml": 100,
+      "target_group": "men",
+      "scent_family": "sweet floral woody amber",
+      "key_notes": [
+        "black pepper",
+        "orange blossom absolute",
+        "bourbon vanilla",
+        "structured woods"
+      ],
+      "sources": [
+        "https://www.yslbeauty.de/dufte/dufte-fur-ihn/myslf/myslf-le-parfum/WW-51213YSL.html",
+        "https://www.douglas.de/de/p/5011499070",
+        "https://www.flaconi.de/parfum/yves-saint-laurent/myslf/yves-saint-laurent-myslf-le-parfum-parfum.html",
+        "https://www.parfumo.de/Parfums/Yves_Saint_Laurent/myslf-le-parfum"
+      ]
+    },
+    {
+      "candidate_id": "JPG-FLEUR-DU-MALE-2026",
+      "proposed_product_id": "SC-JPG-FLEUR-DU-MALE-2026-EDT-125",
+      "brand": "Jean Paul Gaultier",
+      "canonical_name": "Fleur du Mâle (2026)",
+      "concentration": "Eau de Toilette",
+      "canonical_volume_ml": 125,
+      "target_group": "men",
+      "scent_family": "green floral aromatic fougère",
+      "key_notes": [
+        "petitgrain",
+        "green accord",
+        "bergamot",
+        "orange blossom",
+        "fougère accord",
+        "geranium",
+        "juniper",
+        "cinnamon",
+        "pine",
+        "tobacco",
+        "coumarin",
+        "hay",
+        "vanillin"
+      ],
+      "sources": [
+        "Official Jean Paul Gaultier German product page screenshot supplied by user",
+        "https://www.notino.de/jean-p-gaultier/fleur-du-male-eau-de-toilette-fur-herren/",
+        "https://www.fragrantica.com/perfume/Jean-Paul-Gaultier/Fleur-du-Male-142131.html"
+      ]
+    }
+  ]
+}

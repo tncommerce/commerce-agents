@@ -74,7 +74,20 @@ export function productTileClass(productId: string): string {
 }
 
 /** These have their own renderers. */
-const STAMPED_ATTRIBUTES = new Set(["delivery", "low_stock"]);
+const STAMPED_ATTRIBUTES = new Set([
+  "delivery",
+  "low_stock",
+  "currency",
+  "community_rating_10",
+  "rating_source",
+  "canonical_name",
+  "price_source",
+  "price_merchant",
+  "merchant_price_checked_at",
+  "market_price_eur",
+  "price_per_ml_eur",
+  "price_checked_at",
+]);
 
 export function attributeChips(product: { attributes?: Record<string, string> }): string[] {
   return Object.entries(product.attributes ?? {})
@@ -82,6 +95,21 @@ export function attributeChips(product: { attributes?: Record<string, string> })
     .map(([key, value]) => {
       if (/^(yes|true)$/i.test(value)) return key.replaceAll("_", " ");
       if (/^(no|false)$/i.test(value)) return null;
+
+      if (key === "volume_ml") return `${value} ml`;
+      if (key === "target_group") {
+        const labels: Record<string, string> = {
+          men: "Herren",
+          women: "Damen",
+          unisex: "Unisex",
+        };
+        return String(value)
+          .split(",")
+          .map((part) => labels[part.trim().toLowerCase()] ?? part.trim())
+          .filter(Boolean)
+          .join(", ");
+      }
+
       return value;
     })
     .filter((chip): chip is string => Boolean(chip))

@@ -5,13 +5,13 @@ const moneyFormatters = new Map<string, Intl.NumberFormat>();
 
 export function formatMoney(
   value: number,
-  currency = "USD",
+  currency = "EUR",
   options: { whole?: boolean } = {},
 ): string {
   const key = `${currency}:${options.whole ? 0 : 2}`;
   let formatter = moneyFormatters.get(key);
   if (!formatter) {
-    formatter = new Intl.NumberFormat("en-US", {
+    formatter = new Intl.NumberFormat("de-De", {
       style: "currency",
       currency,
       maximumFractionDigits: options.whole ? 0 : 2,

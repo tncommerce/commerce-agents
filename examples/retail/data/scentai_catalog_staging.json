@@ -1,0 +1,2058 @@
+{
+  "schema_version": "1.0",
+  "updated_at": "2026-09-18",
+  "status": "staging_only_not_loaded_by_live_storefront",
+  "product_count": 30,
+  "note": "Canonical pre-live records for verified expansion candidates. This file is intentionally not the live catalog. No guessed prices, identifiers, affiliate URLs or product images.",
+  "products": [
+    {
+      "candidate_id": "BURBERRY-GODDESS-EDP",
+      "product_id": "SC-BURBERRY-GODDESS-EDP-100",
+      "batch": 1,
+      "brand": "Burberry",
+      "name": "Goddess",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "women"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "gourmand vanilla aromatic",
+        "key_notes": [
+          "vanilla trio",
+          "lavender"
+        ],
+        "community_accords": [
+          "sweet",
+          "gourmand",
+          "creamy",
+          "floral",
+          "spicy"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 3,
+            "sweetness": 10,
+            "woodiness": 3,
+            "spiciness": 5
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7.8,
+        "rating_count": 1729,
+        "longevity_10": 7.4,
+        "projection_10": 7,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 2,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_link_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "HUGO-BOSS-BOTTLED-EDT",
+      "product_id": "SC-HUGO-BOSS-BOTTLED-EDT-100",
+      "batch": 1,
+      "brand": "Hugo Boss",
+      "name": "BOSS Bottled",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "men"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "fruity spicy woody",
+        "key_notes": [
+          "fruity fresh top",
+          "geranium",
+          "clove",
+          "sandalwood",
+          "cedar",
+          "vetiver"
+        ],
+        "community_accords": [
+          "fresh",
+          "fruity",
+          "sweet",
+          "woody",
+          "spicy"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 7,
+            "sweetness": 7,
+            "woodiness": 6,
+            "spiciness": 6
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7.4,
+        "rating_count": 3995,
+        "longevity_10": 6.4,
+        "projection_10": 6.3,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 2,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_link_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "JPG-LE-MALE-LE-PARFUM",
+      "product_id": "SC-JPG-LE-MALE-LE-PARFUM-125",
+      "batch": 1,
+      "brand": "Jean Paul Gaultier",
+      "name": "Le Male Le Parfum",
+      "concentration": "Eau de Parfum Intense",
+      "volume_ml": 125,
+      "classification": {
+        "target_groups": [
+          "men"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "amber woody",
+        "key_notes": [
+          "cardamom",
+          "lavender",
+          "iris",
+          "vanilla"
+        ],
+        "community_accords": [
+          "sweet",
+          "spicy",
+          "powdery",
+          "oriental",
+          "woody"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 2,
+            "sweetness": 8,
+            "woodiness": 7,
+            "spiciness": 7
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 8.4,
+        "rating_count": 5602,
+        "longevity_10": 8,
+        "projection_10": 7.7,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 3,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_link_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "LANCOME-LA-VIE-EST-BELLE-EDP",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "batch": 1,
+      "brand": "Lancôme",
+      "name": "La Vie est Belle",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "women"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "floral gourmand",
+        "key_notes": [
+          "iris",
+          "pear",
+          "orange blossom",
+          "jasmine",
+          "vanilla accord",
+          "patchouli"
+        ],
+        "community_accords": [
+          "sweet",
+          "floral",
+          "fruity",
+          "gourmand",
+          "powdery"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 5,
+            "sweetness": 10,
+            "woodiness": 2,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 6.6,
+        "rating_count": 2137,
+        "longevity_10": 8.2,
+        "projection_10": 8.1,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 1,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_link_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "NARCISO-RODRIGUEZ-FOR-HER-PURE-MUSC",
+      "product_id": "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100",
+      "batch": 1,
+      "brand": "Narciso Rodriguez",
+      "name": "for her PURE MUSC",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "women"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "musky floral amber",
+        "key_notes": [
+          "orange blossom",
+          "jasmine",
+          "musk",
+          "patchouli",
+          "cashmere",
+          "amber"
+        ],
+        "community_accords": [
+          "creamy",
+          "floral",
+          "fresh",
+          "powdery",
+          "synthetic"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 6,
+            "sweetness": 6,
+            "woodiness": 2,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7.9,
+        "rating_count": 1966,
+        "longevity_10": 7.6,
+        "projection_10": 7.1,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 1,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_link_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "PDM-DELINA-EDP",
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "batch": 1,
+      "brand": "Parfums de Marly",
+      "name": "Delina",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 75,
+      "classification": {
+        "target_groups": [
+          "women"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "floral fruity rose",
+        "key_notes": [
+          "lychee",
+          "rhubarb",
+          "bergamot",
+          "Turkish rose",
+          "peony",
+          "musk",
+          "vanilla",
+          "cashmeran"
+        ],
+        "community_accords": [
+          "floral",
+          "fruity",
+          "sweet",
+          "fresh",
+          "creamy"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 8,
+            "sweetness": 9,
+            "woodiness": 2,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 8,
+        "rating_count": 2555,
+        "longevity_10": 8.4,
+        "projection_10": 8.1,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 2,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_link_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "PRADA-LHOMME-INTENSE-EDP",
+      "product_id": "SC-PRADA-LHOMME-INTENSE-EDP-100",
+      "batch": 1,
+      "brand": "Prada",
+      "name": "L'Homme Intense",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "men"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "amber woody iris",
+        "key_notes": [
+          "amber",
+          "patchouli",
+          "iris",
+          "sandalwood",
+          "roasted tonka bean"
+        ],
+        "community_accords": [
+          "powdery",
+          "sweet",
+          "creamy",
+          "spicy",
+          "woody"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 2,
+            "sweetness": 9,
+            "woodiness": 6,
+            "spiciness": 6
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 8.4,
+        "rating_count": 2602,
+        "longevity_10": 8.1,
+        "projection_10": 7.7,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 2,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_link_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "PRADA-PARADOXE-EDP",
+      "product_id": "SC-PRADA-PARADOXE-EDP-90",
+      "batch": 1,
+      "brand": "Prada",
+      "name": "Paradoxe",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "classification": {
+        "target_groups": [
+          "women"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "floral amber musk",
+        "key_notes": [
+          "neroli bud",
+          "Ambrofix amber",
+          "white musk"
+        ],
+        "community_accords": [
+          "sweet",
+          "floral",
+          "fruity",
+          "synthetic",
+          "fresh"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 8,
+            "sweetness": 7,
+            "woodiness": 2,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7,
+        "rating_count": 1405,
+        "longevity_10": 7.5,
+        "projection_10": 7.4,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 2,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_link_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "VIKTOR-ROLF-SPICEBOMB-EXTREME",
+      "product_id": "SC-VIKTOR-ROLF-SPICEBOMB-EXTREME-EDP-90",
+      "batch": 1,
+      "brand": "Viktor & Rolf",
+      "name": "Spicebomb Extreme",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "classification": {
+        "target_groups": [
+          "men"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "amber spicy gourmand",
+        "key_notes": [
+          "black pepper",
+          "saffron",
+          "lavender",
+          "tobacco",
+          "bourbon",
+          "vanilla"
+        ],
+        "community_accords": [
+          "spicy",
+          "sweet",
+          "oriental",
+          "gourmand",
+          "woody"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 2,
+            "sweetness": 9,
+            "woodiness": 7,
+            "spiciness": 7
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 8.4,
+        "rating_count": 6605,
+        "longevity_10": 8.4,
+        "projection_10": 8.2,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 1,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_link_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "YSL-LIBRE-EDP",
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "batch": 1,
+      "brand": "Yves Saint Laurent",
+      "name": "Libre",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "classification": {
+        "target_groups": [
+          "women"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "floral lavender",
+        "key_notes": [
+          "French lavender",
+          "Moroccan orange blossom",
+          "vanilla"
+        ],
+        "community_accords": [
+          "floral",
+          "sweet",
+          "fresh",
+          "creamy",
+          "citrus"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 9,
+            "sweetness": 7,
+            "woodiness": 2,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7.5,
+        "rating_count": 2203,
+        "longevity_10": 7.8,
+        "projection_10": 7.6,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 2,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_link_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "AMOUAGE-GUIDANCE-46",
+      "product_id": "SC-AMOUAGE-GUIDANCE-46-EXTRAIT-100",
+      "batch": 2,
+      "brand": "Amouage",
+      "name": "Guidance 46",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "unisex"
+        ],
+        "audience_lean": "feminine"
+      },
+      "fragrance_profile": {
+        "scent_family": "floral sweet creamy fruity spicy",
+        "key_notes": [
+          "pear",
+          "hazelnut",
+          "rose water",
+          "bitter almond",
+          "frankincense",
+          "pink pepper",
+          "osmanthus",
+          "rose",
+          "jasmine sambac",
+          "saffron",
+          "vanilla",
+          "amber",
+          "sandalwood"
+        ],
+        "community_accords": [
+          "floral",
+          "sweet",
+          "creamy",
+          "fruity",
+          "spicy"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 5,
+            "sweetness": 9,
+            "woodiness": 3,
+            "spiciness": 5
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 8.3,
+        "rating_count": 638,
+        "longevity_10": 9.1,
+        "projection_10": 8.7,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 1,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_link_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "CHLOE-CHLOE-EDP",
+      "product_id": "SC-CHLOE-CHLOE-EDP-100",
+      "batch": 2,
+      "brand": "Chloé",
+      "name": "Chloé",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "women"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "floral fresh powdery",
+        "key_notes": [
+          "peony",
+          "freesia",
+          "lychee",
+          "rose",
+          "magnolia",
+          "lily of the valley",
+          "cedar",
+          "amber"
+        ],
+        "community_accords": [
+          "floral",
+          "fresh",
+          "powdery",
+          "sweet",
+          "fruity"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 8,
+            "sweetness": 8,
+            "woodiness": 2,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7.5,
+        "rating_count": 1758,
+        "longevity_10": 7.8,
+        "projection_10": 7.2,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 2,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_link_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "HUGO-BOSS-BOTTLED-ABSOLU",
+      "product_id": "SC-HUGO-BOSS-BOTTLED-ABSOLU-100",
+      "batch": 2,
+      "brand": "Hugo Boss",
+      "name": "BOSS Bottled Absolu",
+      "concentration": "Parfum Intense",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "men"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "spicy sweet woody leathery resinous",
+        "key_notes": [
+          "leather accord",
+          "frankincense",
+          "patchouli",
+          "myrrh",
+          "davana",
+          "cedar"
+        ],
+        "community_accords": [
+          "spicy",
+          "sweet",
+          "woody",
+          "leathery",
+          "resinous"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 2,
+            "sweetness": 6,
+            "woodiness": 10,
+            "spiciness": 6
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 8.4,
+        "rating_count": 1857,
+        "longevity_10": 8.6,
+        "projection_10": 8.4,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 3,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_link_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "JPG-FLEUR-DU-MALE-2026",
+      "product_id": "SC-JPG-FLEUR-DU-MALE-2026-EDT-125",
+      "batch": 2,
+      "brand": "Jean Paul Gaultier",
+      "name": "Fleur du Mâle (2026)",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 125,
+      "classification": {
+        "target_groups": [
+          "men"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "green floral aromatic fougère",
+        "key_notes": [
+          "petitgrain",
+          "green accord",
+          "bergamot",
+          "orange blossom",
+          "fougère accord",
+          "geranium",
+          "juniper",
+          "cinnamon",
+          "pine",
+          "tobacco",
+          "coumarin",
+          "hay",
+          "vanillin"
+        ],
+        "community_accords": [
+          "green",
+          "aromatic",
+          "white floral",
+          "citrus",
+          "woody",
+          "sweet"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 10,
+            "sweetness": 5,
+            "woodiness": 5,
+            "spiciness": 3
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 8.9,
+        "rating_count": 85,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": true
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 1,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "community_performance_still_provisional",
+          "affiliate_link_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "KAYALI-YUM-BOUJEE-MARSHMALLOW-81",
+      "product_id": "SC-KAYALI-YUM-BOUJEE-MARSHMALLOW-81-EDPI-100",
+      "batch": 2,
+      "brand": "Kayali",
+      "name": "Yum Boujee Marshmallow | 81",
+      "concentration": "Eau de Parfum Intense",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "women"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "sweet gourmand fruity creamy powdery",
+        "key_notes": [
+          "freesia",
+          "pink apple",
+          "lemon",
+          "nectarine blossom",
+          "strawberry",
+          "marshmallow",
+          "coconut",
+          "orange blossom",
+          "sugar",
+          "musk",
+          "praline",
+          "vanilla"
+        ],
+        "community_accords": [
+          "sweet",
+          "gourmand",
+          "fruity",
+          "creamy",
+          "powdery"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 4,
+            "sweetness": 10,
+            "woodiness": 2,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 8,
+        "rating_count": 583,
+        "longevity_10": 7.2,
+        "projection_10": 7,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 1,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_link_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "LATTAFA-ANGHAM-EDP",
+      "product_id": "SC-LATTAFA-ANGHAM-EDP-100",
+      "batch": 2,
+      "brand": "Lattafa",
+      "name": "Angham",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "women",
+          "unisex"
+        ],
+        "audience_lean": "feminine"
+      },
+      "fragrance_profile": {
+        "scent_family": "sweet floral creamy gourmand",
+        "key_notes": [
+          "ginger",
+          "mandarin",
+          "pink pepper",
+          "lavender",
+          "jasmine",
+          "cocoa",
+          "praline",
+          "vanilla",
+          "musk",
+          "amber"
+        ],
+        "community_accords": [
+          "sweet",
+          "floral",
+          "creamy",
+          "gourmand",
+          "spicy"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 3,
+            "sweetness": 10,
+            "woodiness": 3,
+            "spiciness": 5
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 8.4,
+        "rating_count": 512,
+        "longevity_10": 7.6,
+        "projection_10": 7.3,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 1,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_link_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "LATTAFA-ECLAIRE-EDP",
+      "product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
+      "batch": 2,
+      "brand": "Lattafa",
+      "name": "Eclaire",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "women",
+          "unisex"
+        ],
+        "audience_lean": "feminine"
+      },
+      "fragrance_profile": {
+        "scent_family": "sweet gourmand creamy",
+        "key_notes": [
+          "caramel",
+          "milk",
+          "sugar",
+          "honey",
+          "white florals",
+          "vanilla",
+          "musk",
+          "praline"
+        ],
+        "community_accords": [
+          "sweet",
+          "gourmand",
+          "creamy",
+          "synthetic",
+          "powdery"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 2,
+            "sweetness": 10,
+            "woodiness": 2,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7.7,
+        "rating_count": 1177,
+        "longevity_10": 8.1,
+        "projection_10": 7.8,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 2,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_link_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "PDM-VALAYA-EXCLUSIF",
+      "product_id": "SC-PDM-VALAYA-EXCLUSIF-EDP-75",
+      "batch": 2,
+      "brand": "Parfums de Marly",
+      "name": "Valaya Exclusif",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 75,
+      "classification": {
+        "target_groups": [
+          "women"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "floral creamy powdery woody",
+        "key_notes": [
+          "almond",
+          "bergamot",
+          "mandarin",
+          "orange blossom",
+          "white florals",
+          "white musk",
+          "akigalawood",
+          "sandalwood",
+          "vanilla"
+        ],
+        "community_accords": [
+          "floral",
+          "creamy",
+          "powdery",
+          "fresh",
+          "sweet"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 6,
+            "sweetness": 9,
+            "woodiness": 2,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7.9,
+        "rating_count": 524,
+        "longevity_10": 8.4,
+        "projection_10": 7.9,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 2,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_link_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "YSL-BLACK-OPIUM-EDP",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "batch": 2,
+      "brand": "Yves Saint Laurent",
+      "name": "Black Opium",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "classification": {
+        "target_groups": [
+          "women"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "sweet gourmand floral",
+        "key_notes": [
+          "orange blossom",
+          "pink pepper",
+          "coffee",
+          "jasmine",
+          "vanilla",
+          "patchouli",
+          "cedar"
+        ],
+        "community_accords": [
+          "sweet",
+          "gourmand",
+          "floral",
+          "oriental",
+          "spicy"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 3,
+            "sweetness": 9,
+            "woodiness": 4,
+            "spiciness": 7
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7.2,
+        "rating_count": 2222,
+        "longevity_10": 7.5,
+        "projection_10": 7.3,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 2,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_link_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "YSL-MYSLF-LE-PARFUM",
+      "product_id": "SC-YSL-MYSLF-LE-PARFUM-100",
+      "batch": 2,
+      "brand": "Yves Saint Laurent",
+      "name": "MYSLF Le Parfum",
+      "concentration": "Parfum",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "men"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "sweet floral woody amber",
+        "key_notes": [
+          "black pepper",
+          "orange blossom absolute",
+          "bourbon vanilla",
+          "structured woods"
+        ],
+        "community_accords": [
+          "sweet",
+          "floral",
+          "fresh",
+          "woody",
+          "synthetic"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 6,
+            "sweetness": 5,
+            "woodiness": 5,
+            "spiciness": 3
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7.7,
+        "rating_count": 789,
+        "longevity_10": 7.4,
+        "projection_10": 7.2,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 2,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_link_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "AMOUAGE-REFLECTION-MAN-EDP",
+      "product_id": "SC-AMOUAGE-REFLECTION-MAN-EDP-100",
+      "batch": 3,
+      "brand": "Amouage",
+      "name": "Reflection Man",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "men"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "fougère amber floral woody",
+        "key_notes": [
+          "rosemary",
+          "red pepper berries",
+          "bitter orange leaves",
+          "neroli",
+          "orris",
+          "jasmine",
+          "ylang-ylang",
+          "vetiver",
+          "patchouli",
+          "sandalwood",
+          "cedarwood"
+        ],
+        "community_accords": [
+          "floral",
+          "fresh",
+          "sweet",
+          "powdery",
+          "woody"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 6,
+            "sweetness": 7,
+            "woodiness": 5,
+            "spiciness": 3
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 8.6,
+        "rating_count": 6431,
+        "longevity_10": 8,
+        "projection_10": 7.7,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 2,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_link_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "DIOR-HYPNOTIC-POISON-EDT",
+      "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+      "batch": 3,
+      "brand": "Dior",
+      "name": "Hypnotic Poison",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "women"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "amber vanilla",
+        "key_notes": [
+          "jasmine",
+          "bitter almond",
+          "vanilla"
+        ],
+        "community_accords": [
+          "sweet",
+          "oriental",
+          "gourmand",
+          "powdery",
+          "spicy"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 2,
+            "sweetness": 10,
+            "woodiness": 4,
+            "spiciness": 7
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 8,
+        "rating_count": 2538,
+        "longevity_10": 8.5,
+        "projection_10": 8.2,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 2,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_link_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "DIOR-SAUVAGE-ELIXIR",
+      "product_id": "SC-DIOR-SAUVAGE-ELIXIR-100",
+      "batch": 3,
+      "brand": "Dior",
+      "name": "Sauvage Elixir",
+      "concentration": "Elixir",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "men"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "spicy fresh woody",
+        "key_notes": [
+          "grapefruit",
+          "cinnamon",
+          "nutmeg",
+          "cardamom",
+          "lavender",
+          "liquorice",
+          "vetiver",
+          "patchouli"
+        ],
+        "community_accords": [
+          "spicy",
+          "woody",
+          "sweet",
+          "fresh",
+          "synthetic"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 5,
+            "sweetness": 5,
+            "woodiness": 6,
+            "spiciness": 6
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 8.1,
+        "rating_count": 4101,
+        "longevity_10": 9.1,
+        "projection_10": 8.8,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 2,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_link_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "DOLCE-GABBANA-THE-ONE-MEN-EDP",
+      "product_id": "SC-DOLCE-GABBANA-THE-ONE-MEN-EDP-2025-100",
+      "batch": 3,
+      "brand": "Dolce & Gabbana",
+      "name": "The One for Men (2025)",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "men"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "woody amber spicy",
+        "key_notes": [
+          "orange",
+          "cardamom",
+          "grapefruit",
+          "clary sage",
+          "patchouli",
+          "geranium",
+          "amber",
+          "tobacco",
+          "cedarwood"
+        ],
+        "community_accords": [
+          "spicy",
+          "woody",
+          "sweet",
+          "citrus",
+          "resinous"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 5,
+            "sweetness": 6,
+            "woodiness": 8,
+            "spiciness": 6
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7.8,
+        "rating_count": 52,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": true
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 2,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_link_pending",
+          "approved_product_image_pending",
+          "community_performance_still_provisional"
+        ]
+      }
+    },
+    {
+      "candidate_id": "GUERLAIN-MON-GUERLAIN-EDP",
+      "product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+      "batch": 3,
+      "brand": "Guerlain",
+      "name": "Mon Guerlain",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "women"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "amber aromatic vanilla",
+        "key_notes": [
+          "French lavender",
+          "Sambac jasmine",
+          "sandalwood",
+          "Tahitian vanilla"
+        ],
+        "community_accords": [
+          "sweet",
+          "floral",
+          "powdery",
+          "creamy",
+          "gourmand"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 3,
+            "sweetness": 10,
+            "woodiness": 2,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 8.2,
+        "rating_count": 2177,
+        "longevity_10": 7.8,
+        "projection_10": 7.5,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 2,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_link_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "INITIO-SIDE-EFFECT-EDP",
+      "product_id": "SC-INITIO-SIDE-EFFECT-EDP-90",
+      "batch": 3,
+      "brand": "Initio Parfums Privés",
+      "name": "Side Effect",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "classification": {
+        "target_groups": [
+          "unisex"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "amber spicy",
+        "key_notes": [
+          "cinnamon",
+          "rum",
+          "tobacco",
+          "saffron",
+          "sandalwood",
+          "hedione"
+        ],
+        "community_accords": [
+          "sweet",
+          "spicy",
+          "oriental",
+          "gourmand",
+          "woody"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 2,
+            "sweetness": 9,
+            "woodiness": 7,
+            "spiciness": 7
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 8.5,
+        "rating_count": 4702,
+        "longevity_10": 8.3,
+        "projection_10": 8.1,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 2,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_link_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "NISHANE-ANI-EXTRAIT",
+      "product_id": "SC-NISHANE-ANI-EXTRAIT-100",
+      "batch": 3,
+      "brand": "Nishane",
+      "name": "Ani",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "unisex"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "spicy woody vanilla",
+        "key_notes": [
+          "bergamot",
+          "green notes",
+          "blue ginger",
+          "pink pepper",
+          "blackcurrant",
+          "Turkish rose",
+          "cardamom",
+          "patchouli",
+          "cedarwood",
+          "vanilla",
+          "benzoin",
+          "ambergris",
+          "musk",
+          "sandalwood"
+        ],
+        "community_accords": [
+          "sweet",
+          "spicy",
+          "gourmand",
+          "creamy",
+          "citrus"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 5,
+            "sweetness": 10,
+            "woodiness": 3,
+            "spiciness": 5
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 8.3,
+        "rating_count": 3851,
+        "longevity_10": 8.6,
+        "projection_10": 8.2,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 1,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_link_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "PDM-HEROD-EDP",
+      "product_id": "SC-PDM-HEROD-EDP-125",
+      "batch": 3,
+      "brand": "Parfums de Marly",
+      "name": "Herod",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 125,
+      "classification": {
+        "target_groups": [
+          "men",
+          "unisex"
+        ],
+        "audience_lean": "masculine"
+      },
+      "fragrance_profile": {
+        "scent_family": "woody spicy tobacco vanilla",
+        "key_notes": [
+          "cinnamon",
+          "pepper",
+          "tobacco leaf",
+          "incense",
+          "labdanum",
+          "osmanthus",
+          "vanilla",
+          "musk",
+          "cedarwood"
+        ],
+        "community_accords": [
+          "sweet",
+          "spicy",
+          "oriental",
+          "gourmand",
+          "woody"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 2,
+            "sweetness": 9,
+            "woodiness": 7,
+            "spiciness": 7
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 8.5,
+        "rating_count": 5514,
+        "longevity_10": 7.9,
+        "projection_10": 7.6,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 1,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_link_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "TOM-FORD-OMBRE-LEATHER-EDP",
+      "product_id": "SC-TOM-FORD-OMBRE-LEATHER-EDP-100",
+      "batch": 3,
+      "brand": "Tom Ford",
+      "name": "Ombré Leather",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "unisex"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "floral leather",
+        "key_notes": [
+          "black leather",
+          "jasmine sambac",
+          "patchouli",
+          "vetiver",
+          "amber",
+          "moss"
+        ],
+        "community_accords": [
+          "leathery",
+          "spicy",
+          "sweet",
+          "woody",
+          "smoky"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 2,
+            "sweetness": 5,
+            "woodiness": 10,
+            "spiciness": 6
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 8.3,
+        "rating_count": 3946,
+        "longevity_10": 8.3,
+        "projection_10": 8,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 1,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_link_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "YSL-LA-NUIT-DE-LHOMME-EDT",
+      "product_id": "SC-YSL-LA-NUIT-DE-LHOMME-EDT-100",
+      "batch": 3,
+      "brand": "Yves Saint Laurent",
+      "name": "La Nuit de L'Homme",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "men"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "fresh amber aromatic",
+        "key_notes": [
+          "cardamom",
+          "lavender",
+          "cedar",
+          "coumarin"
+        ],
+        "community_accords": [
+          "spicy",
+          "sweet",
+          "woody",
+          "oriental",
+          "fresh"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 5,
+            "sweetness": 6,
+            "woodiness": 7,
+            "spiciness": 7
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 8.4,
+        "rating_count": 5233,
+        "longevity_10": 6.5,
+        "projection_10": 6.5,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 2,
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_link_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    }
+  ]
+}

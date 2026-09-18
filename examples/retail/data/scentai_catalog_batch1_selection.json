@@ -1,0 +1,136 @@
+{
+  "version": 1,
+  "batch": 1,
+  "selected_at": "2026-09-18",
+  "status": "selected_for_verification",
+  "selection_note": "Selected from Wave 1 using current German retailer bestseller signals plus Parfumo and Fragrantica community evidence. Cross-merchant affiliate-feed coverage is still pending, so these are not live products yet.",
+  "products": [
+    {
+      "candidate_id": "YSL-LIBRE-EDP",
+      "rank": 1,
+      "rationale": "Exceptional retailer demand across multiple German signals; large community sample; fills women's mainstream gap.",
+      "retailer_evidence": [
+        "Douglas current women's bestseller page: #1",
+        "flaconi Beauty Report 2025 (2024 sales): #1 women's bestseller",
+        "flaconi current weekly women's top-10"
+      ],
+      "community_evidence": [
+        "Parfumo: 7.5/10, 2,203 ratings, #21 women at snapshot",
+        "Fragrantica: 3.92/5, 22,453 votes at snapshot"
+      ]
+    },
+    {
+      "candidate_id": "PRADA-PARADOXE-EDP",
+      "rank": 2,
+      "rationale": "Strong multi-retailer bestseller evidence and very large community sample; broad mainstream women's demand.",
+      "retailer_evidence": [
+        "Douglas current women's bestseller page: #2",
+        "flaconi Beauty Report 2025 (2024 sales): #3 women's bestseller",
+        "flaconi current weekly women's top-10"
+      ],
+      "community_evidence": [
+        "Parfumo: 7.0/10, 1,395 ratings at snapshot",
+        "Fragrantica: 3.93/5, 10,915+ votes at snapshot"
+      ]
+    },
+    {
+      "candidate_id": "BURBERRY-GODDESS-EDP",
+      "rank": 3,
+      "rationale": "Strong current retailer placement plus healthy community reception; valuable gourmand/vanilla women's coverage.",
+      "retailer_evidence": [
+        "Douglas current women's bestseller page: #3",
+        "flaconi current weekly women's top-10"
+      ],
+      "community_evidence": [
+        "Parfumo: 7.8/10, 1,729 ratings, #18 women at snapshot",
+        "Fragrantica: 4.16/5, 14,534 votes at snapshot"
+      ]
+    },
+    {
+      "candidate_id": "NARCISO-RODRIGUEZ-FOR-HER-PURE-MUSC",
+      "rank": 4,
+      "rationale": "Combines current retailer demand with unusually strong community positioning; adds clean/musky women's profile.",
+      "retailer_evidence": [
+        "flaconi current weekly women's top-10"
+      ],
+      "community_evidence": [
+        "Parfumo: 7.9/10, 1,966 ratings, #7 women on current tops page",
+        "Fragrantica: 4.06/5, 10,027+ votes at snapshot"
+      ]
+    },
+    {
+      "candidate_id": "PDM-DELINA-EDP",
+      "rank": 5,
+      "rationale": "One of the strongest women-focused niche community signals; strategically expands premium niche and rose/floral coverage.",
+      "retailer_evidence": [
+        "Merchant/feed verification pending"
+      ],
+      "community_evidence": [
+        "Parfumo: 8.0/10, 2,555 ratings, #3 women on current tops page",
+        "Fragrantica: 3.95/5, 14,188+ votes at snapshot"
+      ]
+    },
+    {
+      "candidate_id": "LANCOME-LA-VIE-EST-BELLE-EDP",
+      "rank": 6,
+      "rationale": "Mass-market sales strength is exceptional even though enthusiast-community ratings are more mixed; important to avoid selecting only enthusiast favorites.",
+      "retailer_evidence": [
+        "flaconi Beauty Report 2025 (2024 sales): #2 women's bestseller"
+      ],
+      "community_evidence": [
+        "Parfumo: 6.6/10, 2,124 ratings at snapshot",
+        "Fragrantica: 3.65/5, 35,648 votes at snapshot"
+      ]
+    },
+    {
+      "candidate_id": "JPG-LE-MALE-LE-PARFUM",
+      "rank": 7,
+      "rationale": "Very strong enthusiast consensus and large vote base; relevant evening/sweet men's coverage.",
+      "retailer_evidence": [
+        "Douglas product is sold as Le Male Intense / Le Male Le Parfum family; exact naming/identity to be normalized in verification"
+      ],
+      "community_evidence": [
+        "Parfumo: 8.4/10, 5,606 ratings, #8 men on current tops page",
+        "Fragrantica: 4.59/5, 28,000+ votes at snapshot"
+      ]
+    },
+    {
+      "candidate_id": "VIKTOR-ROLF-SPICEBOMB-EXTREME",
+      "rank": 8,
+      "rationale": "Extremely strong community consensus with large sample; fills cold-weather spicy/tobacco/vanilla recommendation gap.",
+      "retailer_evidence": [
+        "German merchant/feed coverage to verify before live"
+      ],
+      "community_evidence": [
+        "Parfumo: 8.4/10, 6,605 ratings, #7 men on current tops page",
+        "Fragrantica: 4.49/5, 17,000+ votes at snapshot"
+      ]
+    },
+    {
+      "candidate_id": "PRADA-LHOMME-INTENSE-EDP",
+      "rank": 9,
+      "rationale": "High enthusiast rating on two large communities; adds darker iris profile distinct from existing Prada L'Homme.",
+      "retailer_evidence": [
+        "German merchant/feed coverage to verify before live"
+      ],
+      "community_evidence": [
+        "Parfumo: 8.4/10, 2,602 ratings, #31 men at snapshot",
+        "Fragrantica: 4.54/5, 7,242 votes at snapshot"
+      ]
+    },
+    {
+      "candidate_id": "HUGO-BOSS-BOTTLED-EDT",
+      "rank": 10,
+      "rationale": "Extremely strong mainstream retailer demand and large community sample; provides a useful counterweight to enthusiast-heavy selections.",
+      "retailer_evidence": [
+        "flaconi Beauty Report 2025 (2024 sales): #1 men's bestseller",
+        "Douglas current men's bestseller page: #8"
+      ],
+      "community_evidence": [
+        "Fragrantica: 4.08/5, 14,300 votes at snapshot",
+        "Parfumo verification still required before live"
+      ]
+    }
+  ],
+  "next_step": "Verify exact canonical product identity, concentration, size, scent metadata and German merchant availability for these 10 before promoting any of them to catalog.json."
+}

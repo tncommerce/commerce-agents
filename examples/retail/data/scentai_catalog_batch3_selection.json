@@ -1,0 +1,146 @@
+{
+  "version": 2,
+  "batch": 3,
+  "selected_at": "2026-09-18",
+  "status": "selected_for_verification",
+  "strategy": "Community leaders plus mainstream relevance, rebalanced to the working catalog mix: 20% women, 40% men, 40% unisex for this batch.",
+  "audience_mix": {
+    "women": 2,
+    "men": 4,
+    "unisex": 4
+  },
+  "products": [
+    {
+      "candidate_id": "DIOR-HYPNOTIC-POISON-EDT",
+      "rank": 1,
+      "audience_bucket": "women",
+      "reasons": [
+        "Parfumo current women's ranking #1.",
+        "Large community base: about 8.0/10 from more than 2,500 ratings.",
+        "Adds a major almond/vanilla designer classic."
+      ],
+      "sources": [
+        "https://www.parfumo.de/Parfums/Tops/Damen"
+      ]
+    },
+    {
+      "candidate_id": "GUERLAIN-MON-GUERLAIN-EDP",
+      "rank": 2,
+      "audience_bucket": "women",
+      "reasons": [
+        "Parfumo current women's ranking #2.",
+        "Strong mature community signal: about 8.2/10 from more than 2,000 ratings.",
+        "Adds elegant lavender-vanilla women's coverage."
+      ],
+      "sources": [
+        "https://www.parfumo.de/Parfums/Tops/Damen"
+      ]
+    },
+    {
+      "candidate_id": "AMOUAGE-REFLECTION-MAN-EDP",
+      "rank": 3,
+      "audience_bucket": "men",
+      "reasons": [
+        "Parfumo current men's ranking #6.",
+        "Very large high-confidence niche community sample.",
+        "Adds a clean floral-woody premium men's anchor."
+      ],
+      "sources": [
+        "https://www.parfumo.de/Parfums/Tops/Herren"
+      ]
+    },
+    {
+      "candidate_id": "YSL-LA-NUIT-DE-LHOMME-EDT",
+      "rank": 4,
+      "audience_bucket": "men",
+      "reasons": [
+        "Parfumo current men's ranking #10.",
+        "Very large established community sample.",
+        "Adds a classic date/evening designer profile."
+      ],
+      "sources": [
+        "https://www.parfumo.de/Parfums/Tops/Herren"
+      ]
+    },
+    {
+      "candidate_id": "DOLCE-GABBANA-THE-ONE-MEN-EDP",
+      "rank": 5,
+      "audience_bucket": "men",
+      "reasons": [
+        "Parfumo current men's ranking #13.",
+        "Very large established community sample.",
+        "Strong mainstream evening/date-night anchor."
+      ],
+      "sources": [
+        "https://www.parfumo.de/Parfums/Tops/Herren"
+      ]
+    },
+    {
+      "candidate_id": "DIOR-SAUVAGE-ELIXIR",
+      "rank": 6,
+      "audience_bucket": "men",
+      "reasons": [
+        "Parfumo current men's ranking #24.",
+        "Large community base and strategically important Sauvage-family coverage.",
+        "Adds a stronger premium men's profile than the existing Sauvage Eau de Parfum entry."
+      ],
+      "sources": [
+        "https://www.parfumo.de/Parfums/Tops/Herren",
+        "https://www.notino.de/dior/sauvage-elixir-parfuem-extrakt-fuer-herren/"
+      ]
+    },
+    {
+      "candidate_id": "PDM-HEROD-EDP",
+      "rank": 7,
+      "audience_bucket": "unisex",
+      "reasons": [
+        "Parfumo current unisex ranking #9.",
+        "High community rating with more than 5,000 ratings.",
+        "Adds tobacco-vanilla niche coverage."
+      ],
+      "sources": [
+        "https://www.parfumo.de/Parfums/Tops/Unisex"
+      ]
+    },
+    {
+      "candidate_id": "INITIO-SIDE-EFFECT-EDP",
+      "rank": 8,
+      "audience_bucket": "unisex",
+      "reasons": [
+        "Parfumo current unisex ranking #10.",
+        "High community rating with roughly 4,800 ratings.",
+        "Adds sweet spicy rum/tobacco-style niche coverage."
+      ],
+      "sources": [
+        "https://www.parfumo.de/Parfums/Tops/Unisex"
+      ]
+    },
+    {
+      "candidate_id": "TOM-FORD-OMBRE-LEATHER-EDP",
+      "rank": 9,
+      "audience_bucket": "unisex",
+      "reasons": [
+        "Parfumo current unisex ranking #19.",
+        "Large community sample of roughly 4,000 ratings.",
+        "Adds an important leather profile and broad retailer recognition."
+      ],
+      "sources": [
+        "https://www.parfumo.de/Parfums/Tops/Unisex"
+      ]
+    },
+    {
+      "candidate_id": "NISHANE-ANI-EXTRAIT",
+      "rank": 10,
+      "audience_bucket": "unisex",
+      "reasons": [
+        "Parfumo current unisex ranking #21.",
+        "Strong community score with nearly 4,000 ratings.",
+        "Adds premium spicy vanilla unisex coverage."
+      ],
+      "sources": [
+        "https://www.parfumo.de/Parfums/Tops/Unisex"
+      ]
+    }
+  ],
+  "promotion_rule": "Selection is not publication. Each product must pass identity, scent, image and commerce QA before entering the live catalog."
+}

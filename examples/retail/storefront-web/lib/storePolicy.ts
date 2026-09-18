@@ -3,8 +3,8 @@
 
 /** Copied from ../data/policies.json; keep in sync with it. */
 export const STORE_POLICY = {
-  returnsShort: "30-day returns",
-  returnsLine: "Most items can be returned within 30 days of delivery for a refund to your original payment method.",
+  returnsShort: "",
+  returnsLine: "",
   freeShippingThreshold: 49,
-  standardShippingEta: "3–5 business days",
+  standardShippingEta: "3–5 Werktage",
 } as const;

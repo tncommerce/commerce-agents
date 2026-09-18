@@ -10,7 +10,9 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import unicodedata
 from datetime import datetime, timedelta
+from difflib import SequenceMatcher
 from pathlib import Path
 from typing import Any
 
@@ -47,6 +49,8 @@ from shopping_agent import (
     Unavailable,
     UserPreferences,
 )
+
+from .merchant_offers import MerchantOfferStore, offer_total_price
 
 DATA_DIR = example_data_dir(__file__)
 
@@ -113,8 +117,13 @@ _STORE_OPENS, _STORE_CLOSES = 9, 21
 
 
 class MockRetail(StorefrontBackend):
-    def __init__(self, data_dir: Path = DATA_DIR) -> None:
+    def __init__(
+        self,
+        data_dir: Path = DATA_DIR,
+        offer_store: MerchantOfferStore | None = None,
+    ) -> None:
         catalog, self.products, self.variants = load_catalog(data_dir)
+        self.offer_store = offer_store
         self.store_name: str = catalog.get("store_name", "the store")
         self._users = load_users(data_dir)
         self._orders = load_orders(data_dir)
@@ -181,10 +190,634 @@ class MockRetail(StorefrontBackend):
             "description": f"{product.short_description or ''} {product.long_description or ''}",
         }
 
-    def _score(self, product: ProductDetails, query_tokens: list[str]) -> float:
-        return keyword_score(
-            self._searchable_text(product), _SEARCH_WEIGHTS, query_tokens, _SYNONYMS
+    def _with_commerce_price(self, product: ProductDetails) -> ProductDetails:
+        """Stamp the best current merchant price onto SCENTAI products.
+
+        Products with an eligible live merchant offer use that customer total as the
+        effective price. Products without one retain the catalog market reference and
+        are explicitly marked so the agent/UI do not present it as a live buy price.
+        """
+
+        if not product.product_id.startswith("SC-"):
+            return product
+
+        attributes = dict(product.attributes or {})
+        offers = self.offer_store.offers_for(product.product_id) if self.offer_store else []
+
+        if offers:
+            best_offer = offers[0]
+            customer_total = offer_total_price(best_offer)
+            effective_price = customer_total if customer_total is not None else best_offer.price
+            attributes.update(
+                {
+                    "price_source": "current_merchant_offer",
+                    "price_merchant": best_offer.merchant_name,
+                    "merchant_price_checked_at": best_offer.last_updated_at.isoformat(),
+                }
+            )
+            return product.model_copy(
+                update={
+                    "price": effective_price,
+                    "attributes": attributes,
+                }
+            )
+
+        attributes["price_source"] = "market_reference"
+        return product.model_copy(update={"attributes": attributes})
+
+    def customer_product(self, product_id: str) -> ProductDetails | None:
+        product = self.product(product_id)
+        if product is None:
+            return None
+        return self._customer_facing_product(product)
+
+    def _customer_facing_product(
+        self,
+        product,
+        reference_name: str | None = None,
+        reference_accords: str | None = None,
+    ):
+        """Return SCENTAI data without internal implementation fields."""
+        product = self._with_commerce_price(product)
+
+        if not product.product_id.startswith("SC-"):
+            return product
+
+        source_attributes = product.attributes or {}
+
+        relationship = source_attributes.get(
+            "relationship_role"
         )
+
+        internal_attributes = {
+        "canonical_name",
+        "cluster_id",
+        "relationship_role",
+        "evidence_confidence",
+        "trend_bet",
+        "similar_to",
+        "relationship_links",
+        "freshness",
+        "sweetness",
+        "woodiness",
+        "spiciness",
+        }
+
+        attributes = {
+            key: value
+            for key, value in source_attributes.items()
+            if key not in internal_attributes
+        }
+
+        accord_labels_de = {
+            "sweet": "süß",
+            "spicy": "würzig",
+            "gourmand": "gourmandig",
+            "creamy": "cremig",
+            "oriental": "orientalisch",
+            "citrus": "zitrisch",
+            "fresh": "frisch",
+            "woody": "holzig",
+            "floral": "blumig",
+            "fruity": "fruchtig",
+            "aquatic": "aquatisch",
+            "powdery": "pudrig",
+            "smoky": "rauchig",
+            "green": "grün",
+            "aromatic": "aromatisch",
+        }
+
+        if attributes.get("main_accords"):
+            attributes["main_accords"] = ", ".join(
+                accord_labels_de.get(
+                    accord.strip().casefold(),
+                    accord.strip(),
+                )
+                for accord in str(
+                    attributes["main_accords"]
+                ).split(",")
+                if accord.strip()
+            )
+
+        def scent_profile_level(name: str) -> str | None:
+            try:
+                value = source_attributes.get(name)
+                if value in (None, ""):
+                    return None
+
+                score = float(value)
+            except (TypeError, ValueError):
+                return None
+
+            if score <= 4:
+                return "niedrig"
+            if score <= 6:
+                return "mittel"
+            return "hoch"
+
+        profile_labels = (
+            ("freshness", "Frische"),
+            ("sweetness", "Süße"),
+            ("woodiness", "Holzigkeit"),
+            ("spiciness", "Würze"),
+        )
+
+        profile_parts = []
+
+        for key, label in profile_labels:
+            level = scent_profile_level(key)
+
+            if level is not None:
+                profile_parts.append(f"{label}: {level}")
+
+        if profile_parts:
+            attributes["duftprofil_intensitaet"] = ", ".join(profile_parts)
+
+        short_description = product.short_description or ""
+
+        if reference_name:
+            if relationship == "clone":
+                relation_text = (
+                    f"Very close in scent direction to "
+                    f"{reference_name}."
+                )
+
+            elif relationship == "inspired":
+                relation_text = (
+                    f"Clearly follows a similar scent direction "
+                    f"to {reference_name}, while keeping its "
+                    f"own character."
+                )
+
+            elif relationship == "alternative":
+                relation_text = (
+                    f"Offers a related scent style to "
+                    f"{reference_name}, with noticeable "
+                    f"differences."
+                )
+
+            elif relationship == "benchmark":
+                relation_text = (
+                    f"A reference fragrance in a closely "
+                    f"related scent direction to "
+                    f"{reference_name}."
+                )
+
+            else:
+                relation_text = (
+                    f"Recommended as a fragrance alternative "
+                    f"to {reference_name}."
+                )
+
+            short_description = (
+                f"{relation_text} {short_description}"
+            ).strip()
+        if reference_accords:
+            short_description = (
+                f"{short_description} "
+                f"The reference fragrance itself has these catalog accords: "
+                f"{reference_accords}."
+            ).strip()
+        internal_labels = {
+            "benchmark",
+            "clone",
+            "inspired",
+            "alternative",
+        }
+
+        customer_labels = [
+            label
+            for label in (product.labels or [])
+            if str(label).casefold() not in internal_labels
+        ]
+
+        return product.model_copy(
+            update={
+                "attributes": attributes,
+                "labels": customer_labels,
+                "short_description": short_description,
+            }
+        )
+
+    @staticmethod
+    def _relationship_to_anchor(
+        product: ProductDetails,
+        anchor_id: str,
+    ) -> tuple[str, str] | None:
+        """Return (relationship_type, confidence) for an explicit anchor link."""
+
+        raw_links = str(
+            (product.attributes or {}).get("relationship_links") or ""
+        )
+
+        for raw_link in raw_links.split(";"):
+            parts = raw_link.split("|")
+
+            if len(parts) != 3:
+                continue
+
+            related_id, relationship_type, confidence = parts
+
+            if related_id == anchor_id:
+                return relationship_type, confidence
+
+        return None
+
+    def _alternative_score(
+        self,
+        product: ProductDetails,
+        query_tokens: list[str],
+        query_text: str,
+        anchor_id: str,
+    ) -> float:
+        """Rank named-fragrance alternatives by relevance plus evidence quality.
+
+        The explicit relationship to the named reference is the strongest signal.
+        Community volume is a smaller confidence signal so a tiny rating edge does
+        not outrank a much better-established alternative.
+        """
+
+        score = self._score(
+            product,
+            query_tokens,
+            query_text,
+        )
+
+        relationship = self._relationship_to_anchor(
+            product,
+            anchor_id,
+        )
+
+        if relationship is not None:
+            relationship_type, confidence = relationship
+
+            confidence_bonus = {
+                "high": 4.0,
+                "medium_high": 3.2,
+                "medium": 2.4,
+                "low": 1.0,
+            }.get(confidence, 0.0)
+
+            relationship_bonus = {
+                "clone": 2.0,
+                "inspired": 1.5,
+                "alternative": 1.2,
+            }.get(relationship_type, 0.8)
+
+            score += confidence_bonus + relationship_bonus
+
+        review_count = max(int(product.review_count or 0), 0)
+        score += math.log10(review_count + 1) * 0.45
+
+        return score
+
+    def _score(self, product: ProductDetails, query_tokens: list[str], query_text: str | None = None) -> float:
+        base_score = keyword_score(
+            self._searchable_text(product),
+            _SEARCH_WEIGHTS,
+            query_tokens,
+            _SYNONYMS,
+        )
+
+        # Keep non-SCENTAI demo products unchanged.
+        if not str(product.product_id).startswith("SC-"):
+            return base_score
+
+        attributes = product.attributes or {}
+
+        def numeric_attribute(name: str) -> float | None:
+            try:
+                value = attributes.get(name)
+                if value in (None, ""):
+                    return None
+                return float(value)
+            except (TypeError, ValueError):
+                return None
+
+        query_text = (
+            query_text
+            if query_text is not None
+            else " ".join(str(token) for token in query_tokens)
+        ).casefold()
+
+        def normalize_name_text(value: str) -> str:
+            normalized = unicodedata.normalize("NFKD", value.casefold())
+            normalized = "".join(
+                char for char in normalized if not unicodedata.combining(char)
+            )
+            for separator in ("-", "/", "'", "’"):
+                normalized = normalized.replace(separator, " ")
+            return " ".join(normalized.split())
+
+        def fuzzy_name_bonus() -> float:
+            """Reward likely named-fragrance matches even with small typos.
+
+            This is deliberately conservative: it only looks at the canonical fragrance
+            name and brand, ignores generic shopping words, and requires strong token
+            similarity. It helps queries such as "Para L homme" resolve to
+            "Prada L'Homme" without turning general scent requests into fuzzy matches.
+            """
+
+            stopwords = {
+                "zeig",
+                "zeige",
+                "mir",
+                "bitte",
+                "suche",
+                "such",
+                "ich",
+                "den",
+                "die",
+                "das",
+                "einen",
+                "eine",
+                "ein",
+                "duft",
+                "parfum",
+                "fragrance",
+                "von",
+                "für",
+                "fuer",
+                "the",
+                "a",
+                "an",
+                "show",
+                "me",
+                "find",
+            }
+
+            normalized_query = normalize_name_text(query_text)
+            query_words = [
+                word
+                for word in normalized_query.split()
+                if word not in stopwords and len(word) >= 2
+            ]
+            if not query_words:
+                return 0.0
+
+            canonical_name = str(attributes.get("canonical_name") or "").strip()
+            brand = str(product.brand or "").strip()
+
+            variants = [
+                normalize_name_text(canonical_name),
+                normalize_name_text(f"{brand} {canonical_name}".strip()),
+            ]
+
+            best_score = 0.0
+
+            for variant in variants:
+                candidate_words = [
+                    word
+                    for word in variant.split()
+                    if len(word) >= 2
+                    and word not in {"eau", "de", "parfum", "toilette", "extrait"}
+                ]
+                if not candidate_words:
+                    continue
+
+                token_scores = []
+                for candidate_word in candidate_words:
+                    token_scores.append(
+                        max(
+                            SequenceMatcher(None, candidate_word, query_word).ratio()
+                            for query_word in query_words
+                        )
+                    )
+
+                strong_matches = [score for score in token_scores if score >= 0.80]
+                coverage = len(strong_matches) / len(candidate_words)
+
+                if len(candidate_words) == 1:
+                    local_score = strong_matches[0] if strong_matches else 0.0
+                elif coverage >= 0.67:
+                    local_score = sum(strong_matches) / len(strong_matches)
+                else:
+                    local_score = 0.0
+
+                best_score = max(best_score, local_score)
+
+            if best_score >= 0.92:
+                return 7.0
+            if best_score >= 0.86:
+                return 5.0
+            if best_score >= 0.80:
+                return 3.0
+            return 0.0
+
+        freshness = numeric_attribute("freshness")
+        sweetness = numeric_attribute("sweetness")
+        woodiness = numeric_attribute("woodiness")
+        spiciness = numeric_attribute("spiciness")
+        projection = numeric_attribute("projection")
+
+        accords = str(
+            attributes.get("main_accords") or ""
+        ).casefold()
+
+        preference_score = fuzzy_name_bonus()
+
+        target_groups = {
+            part.strip()
+            for part in str(attributes.get("target_group") or "").casefold().split(",")
+            if part.strip()
+        }
+        audience_lean = str(attributes.get("audience_lean") or "").casefold()
+
+        wants_women = any(
+            phrase in query_text
+            for phrase in (
+                "damenduft",
+                "damen parfum",
+                "damenparfum",
+                "für frauen",
+                "fuer frauen",
+                "für eine frau",
+                "fuer eine frau",
+                "women",
+                "woman",
+                "female",
+            )
+        )
+        wants_men = any(
+            phrase in query_text
+            for phrase in (
+                "herrenduft",
+                "herren parfum",
+                "herrenparfum",
+                "für männer",
+                "fuer maenner",
+                "für einen mann",
+                "fuer einen mann",
+                "men's",
+                "mens",
+                "male",
+            )
+        )
+        wants_unisex = "unisex" in query_text
+        wants_feminine = any(
+            term in query_text
+            for term in ("feminin", "feminine", "weiblich", "female leaning")
+        )
+
+        if wants_women:
+            if "women" in target_groups:
+                preference_score += 4.0
+            elif "unisex" in target_groups:
+                preference_score += 1.5
+            elif "men" in target_groups:
+                preference_score -= 3.0
+
+        if wants_men:
+            if "men" in target_groups:
+                preference_score += 4.0
+            elif "unisex" in target_groups:
+                preference_score += 1.5
+            elif "women" in target_groups:
+                preference_score -= 3.0
+
+        if wants_unisex:
+            if "unisex" in target_groups:
+                preference_score += 3.0
+            else:
+                preference_score -= 1.0
+
+        if wants_feminine:
+            if audience_lean == "feminine":
+                preference_score += 3.0
+            elif "women" in target_groups:
+                preference_score += 2.5
+            elif "unisex" in target_groups:
+                preference_score += 1.0
+            elif audience_lean == "masculine":
+                preference_score -= 2.0
+
+        wants_fresh = any(
+            term in query_text
+            for term in ("frisch", "fresh", "sauber", "clean")
+        )
+
+        if wants_fresh and freshness is not None:
+            preference_score += (freshness / 10.0) * 3.0
+
+        avoids_sweet = any(
+            phrase in query_text
+            for phrase in (
+                "nicht zu süß",
+                "nicht süß",
+                "wenig süß",
+                "nicht zu suess",
+                "nicht suess",
+                "not too sweet",
+                "low sweetness",
+            )
+        )
+
+        if avoids_sweet and sweetness is not None:
+            preference_score += ((10.0 - sweetness) / 10.0) * 5.0
+
+            if sweetness >= 7:
+                preference_score -= 2.0
+
+        wants_sweet = (
+            not avoids_sweet
+            and any(
+                term in query_text
+                for term in ("süß", "suess", "sweet")
+            )
+        )
+
+        if wants_sweet and sweetness is not None:
+            preference_score += (sweetness / 10.0) * 3.0
+
+        if any(
+            term in query_text
+            for term in ("holzig", "holz", "woody")
+        ) and woodiness is not None:
+            preference_score += (woodiness / 10.0) * 2.5
+
+        if any(
+            term in query_text
+            for term in ("würzig", "wuerzig", "spicy")
+        ) and spiciness is not None:
+            preference_score += (spiciness / 10.0) * 2.5
+
+        wants_discreet = any(
+            phrase in query_text
+            for phrase in (
+                "nicht zu aufdringlich",
+                "nicht aufdringlich",
+                "dezent",
+                "zurückhaltend",
+                "zurueckhaltend",
+                "büro",
+                "buero",
+                "office",
+            )
+        )
+
+        if wants_discreet and projection is not None:
+            if projection <= 7.3:
+                preference_score += 3.0
+            elif projection <= 7.8:
+                preference_score += 1.0
+            else:
+                preference_score -= 2.0
+
+        wants_office = any(
+            term in query_text
+            for term in ("büro", "buero", "office", "business")
+        )
+
+        if wants_office:
+            if freshness is not None and freshness >= 6:
+                preference_score += 1.5
+
+            if sweetness is not None and sweetness <= 4:
+                preference_score += 1.5
+
+            if "powdery" in accords:
+                preference_score += 1.5
+
+            if "fresh" in accords:
+                preference_score += 1.0
+
+
+        # Performance preference: longevity and projection.
+        longevity = numeric_attribute("longevity")
+        projection = numeric_attribute("projection")
+
+        wants_longevity = any(
+            term in query_text
+            for term in (
+                "haltbarkeit",
+                "lange haltbarkeit",
+                "long lasting",
+                "long-lasting",
+                "longevity",
+                "lasting",
+            )
+        )
+
+        if wants_longevity and longevity is not None:
+            preference_score += (longevity / 10.0) * 4.0
+
+        wants_projection = any(
+            term in query_text
+            for term in (
+                "ausstrahlung",
+                "projection",
+                "sillage",
+                "auffällig",
+                "auffaellig",
+                "noticeable",
+                "strong projection",
+            )
+        )
+
+        if wants_projection and projection is not None:
+            preference_score += (projection / 10.0) * 4.0
+
+        return base_score + preference_score
 
     @staticmethod
     def _soft_filter(product: ProductDetails, filters: SearchFilters) -> bool:
@@ -208,16 +841,405 @@ class MockRetail(StorefrontBackend):
         limit: int = 8,
     ) -> list[Product]:
         del session
+
+        products = [
+            self._with_commerce_price(product)
+            for product in self.products.values()
+        ]
+
+        # SCENTAI cluster-aware alternative search.
+        #
+        # If the shopper explicitly asks for alternatives to a named
+        # benchmark, prioritize products from that benchmark's cluster.
+        query_lower = query.casefold()
+
+        def normalize_search_text(value: str) -> str:
+            normalized = unicodedata.normalize(
+                "NFKD",
+                value.casefold(),
+            )
+            normalized = "".join(
+                char
+                for char in normalized
+                if not unicodedata.combining(char)
+            )
+
+            for separator in ("-", "/", "'", "’"):
+                normalized = normalized.replace(
+                    separator,
+                    " ",
+                )
+
+            return " ".join(normalized.split())
+
+        normalized_query = normalize_search_text(query)
+        query_tokens = set(normalized_query.split())
+
+        # Conservative direct-name lookup for short, name-like requests.
+        # This runs before generic recommendation logic so a typo such as
+        # "Para L homme" resolves to Prada L'Homme instead of being interpreted
+        # merely as a request for a men's fragrance.
+        generic_query_words = {
+            "ich",
+            "suche",
+            "such",
+            "zeige",
+            "zeig",
+            "mir",
+            "bitte",
+            "einen",
+            "eine",
+            "ein",
+            "duft",
+            "parfum",
+            "fragrance",
+            "für",
+            "fuer",
+            "damen",
+            "herren",
+            "frauen",
+            "männer",
+            "maenner",
+            "men",
+            "women",
+        }
+        direct_query_words = [
+            word
+            for word in normalized_query.split()
+            if word not in generic_query_words
+        ]
+
+        if 1 <= len(direct_query_words) <= 5:
+            direct_matches = []
+
+            for candidate in products:
+                if not candidate.product_id.startswith("SC-"):
+                    continue
+
+                attrs = candidate.attributes or {}
+                canonical_name = str(attrs.get("canonical_name") or "").strip()
+                brand = str(candidate.brand or "").strip()
+
+                name_variants = (
+                    normalize_search_text(canonical_name),
+                    normalize_search_text(f"{brand} {canonical_name}".strip()),
+                )
+
+                best_ratio = 0.0
+                for variant in name_variants:
+                    variant_words = [
+                        word
+                        for word in variant.split()
+                        if word not in {"eau", "de", "parfum", "toilette", "extrait"}
+                    ]
+                    if not variant_words:
+                        continue
+
+                    token_scores = [
+                        max(
+                            SequenceMatcher(None, candidate_word, query_word).ratio()
+                            for query_word in direct_query_words
+                        )
+                        for candidate_word in variant_words
+                    ]
+                    strong = [score for score in token_scores if score >= 0.80]
+                    coverage = len(strong) / len(variant_words)
+
+                    if len(variant_words) == 1:
+                        ratio = strong[0] if strong else 0.0
+                    elif coverage >= 0.67:
+                        ratio = sum(strong) / len(strong)
+                    else:
+                        ratio = 0.0
+
+                    best_ratio = max(best_ratio, ratio)
+
+                if best_ratio >= 0.86:
+                    direct_matches.append((best_ratio, candidate))
+
+            direct_matches.sort(key=lambda item: item[0], reverse=True)
+
+            if direct_matches:
+                best_ratio, best_product = direct_matches[0]
+                second_ratio = direct_matches[1][0] if len(direct_matches) > 1 else 0.0
+
+                if best_ratio >= 0.90 and best_ratio - second_ratio >= 0.04:
+                    return [
+                        self._customer_facing_product(
+                            summary_of(best_product)
+                        )
+                    ]
+
+        alternative_markers = (
+            "alternative",
+            "alternativen",
+            "dupe",
+            "dupes",
+            "clone",
+            "clones",
+            "similar",
+            "similar to",
+            "ähnlich",
+            "ersatz",
+            "instead",
+        )
+
+        asks_for_alternative = any(
+            marker in query_lower
+            for marker in alternative_markers
+        )
+
+        if asks_for_alternative:
+            benchmark_matches = []
+
+            for candidate in products:
+                attributes = candidate.attributes or {}
+
+                if attributes.get("relationship_role") != "benchmark":
+                    continue
+
+                canonical_name = str(
+                    attributes.get("canonical_name") or ""
+                ).strip()
+
+                cluster_id = attributes.get("cluster_id")
+
+                normalized_name = normalize_search_text(
+                    canonical_name
+                )
+
+                normalized_brand = normalize_search_text(
+                    candidate.brand or ""
+                )
+
+                ignored_name_tokens = {
+                    "eau",
+                    "de",
+                    "parfum",
+                    "le",
+                    "gemme",
+                    "parfums",
+                    "perfumes",
+                }
+
+                name_tokens = [
+                    token
+                    for token in normalized_name.split()
+                    if token not in ignored_name_tokens
+                ]
+
+                brand_tokens = [
+                    token
+                    for token in normalized_brand.split()
+                    if token not in {
+                        "parfums",
+                        "perfumes",
+                        "de",
+                    }
+                ]
+
+                matched_name_tokens = [
+                    token
+                    for token in name_tokens
+                    if token in query_tokens
+                ]
+
+                exact_name_match = (
+                    normalized_name
+                    and normalized_name in normalized_query
+                )
+
+                brand_match = any(
+                    token in query_tokens
+                    for token in brand_tokens
+                )
+
+                if (
+                    canonical_name
+                    and cluster_id
+                    and matched_name_tokens
+                    and (
+                        exact_name_match
+                        or brand_match
+                        or len(name_tokens) == 1
+                    )
+                ):
+                    benchmark_matches.append(
+                        (
+                            len(matched_name_tokens),
+                            exact_name_match,
+                            brand_match,
+                            len(name_tokens),
+                            candidate.product_id,
+                            cluster_id,
+                        )
+                    )
+
+            if benchmark_matches:
+                # Prefer the longest matching benchmark name.
+                # This ensures "Absolu Aventus" wins over "Aventus".
+                benchmark_matches.sort(
+                    key=lambda item: (
+                        item[0],
+                        item[1],
+                        item[2],
+                        item[3],
+                    ),
+                    reverse=True,
+                )
+
+                target_anchor_id = benchmark_matches[0][4]
+                target_cluster = benchmark_matches[0][5]
+
+                target_anchor = next(
+                    (
+                        product
+                        for product in products
+                        if product.product_id == target_anchor_id
+                    ),
+                    None,
+                )
+
+                reference_name = ""
+                reference_accords = ""
+
+                if target_anchor is not None:
+                    anchor_attributes = (
+                        target_anchor.attributes or {}
+                    )
+                    reference_accords = str(
+                        anchor_attributes.get("main_accords") or ""
+                    ).strip()
+                    anchor_name = str(
+                        anchor_attributes.get(
+                            "canonical_name"
+                        )
+                        or target_anchor.title
+                    ).strip()
+
+                    reference_name = " ".join(
+                        part
+                        for part in (
+                            target_anchor.brand,
+                            anchor_name,
+                        )
+                        if part
+                    )
+
+                same_cluster_products = [
+                    product
+                    for product in products
+                    if (
+                        (product.attributes or {}).get("cluster_id")
+                        == target_cluster
+                        and
+                        product.product_id != target_anchor_id
+                    )
+                ]
+
+                explicitly_linked_products = [
+                    product
+                    for product in same_cluster_products
+                    if self._relationship_to_anchor(
+                        product,
+                        target_anchor_id,
+                    )
+                    is not None
+                ]
+
+                if explicitly_linked_products:
+                    same_cluster_products = explicitly_linked_products
+
+                ranked_cluster = rank_products(
+                    same_cluster_products,
+                    query,
+                    filters,
+                    limit,
+                    score=lambda product, tokens: self._alternative_score(
+                        product,
+                        tokens,
+                        query,
+                        target_anchor_id,
+                    ),
+                    hard_filter=within_price_and_rating,
+                    soft_filter=self._soft_filter,
+                )
+
+                if ranked_cluster:
+                    return [
+                        self._customer_facing_product(
+                            summary_of(product),
+                            reference_name=reference_name,
+                            reference_accords=reference_accords,
+                        )
+                        for product in ranked_cluster
+                    ]
+
+        # Normal storefront search fallback.
+        #
+        # The demo catalog still contains legacy ACME fixtures alongside SCENTAI.
+        # When the query clearly describes fragrance characteristics, keep discovery
+        # inside the SCENTAI fragrance catalog instead of allowing unrelated demo
+        # products to enter the shortlist.
+        fragrance_query_markers = (
+            "duft",
+            "parfum",
+            "fragrance",
+            "sommerduft",
+            "winterduft",
+            "date duft",
+            "büro duft",
+            "buero duft",
+            "frisch",
+            "fresh",
+            "zitrisch",
+            "citrus",
+            "süß",
+            "suess",
+            "sweet",
+            "holzig",
+            "woody",
+            "würzig",
+            "wuerzig",
+            "spicy",
+            "gourmand",
+            "pudrig",
+            "powdery",
+            "aquatisch",
+            "aquatic",
+            "haltbarkeit",
+            "longevity",
+            "ausstrahlung",
+            "projection",
+            "sillage",
+        )
+
+        if any(
+            marker in normalized_query
+            for marker in fragrance_query_markers
+        ):
+            products = [
+                product
+                for product in products
+                if product.product_id.startswith("SC-")
+            ]
+
         ranked = rank_products(
-            self.products.values(),
+            products,
             query,
             filters,
             limit,
-            score=self._score,
+            score=lambda product, tokens: self._score(product, tokens, query),
             hard_filter=within_price_and_rating,
             soft_filter=self._soft_filter,
         )
-        return [summary_of(product) for product in ranked]
+
+        return [
+            self._customer_facing_product(
+                summary_of(product)
+            )
+            for product in ranked
+        ]
 
     def product(self, product_id: str) -> ProductDetails | None:
         return find_product(self.products, self.variants, product_id)
@@ -226,7 +1248,12 @@ class MockRetail(StorefrontBackend):
         self, session: ShoppingSessionContext, product_id: str
     ) -> ProductDetails | None:
         del session
-        return self.product(product_id)
+        product = self.product(product_id)
+
+        if product is None:
+            return None
+
+        return self._customer_facing_product(product)
 
     def price_intelligence(self, product_id: str) -> dict[str, Any] | None:
         """A 90-day price series derived from the product id, ending at today's price,
@@ -291,8 +1318,12 @@ class MockRetail(StorefrontBackend):
     # Cart
     # ------------------------------------------------------------------
 
+    @staticmethod
+    def _with_store_currency(cart: Cart) -> Cart:
+        return cart.model_copy(update={"currency": "EUR"})
+
     async def get_cart(self, session: ShoppingSessionContext) -> Cart:
-        return self._carts.cart(session.session_id)
+        return self._with_store_currency(self._carts.cart(session.session_id))
 
     async def add_to_cart(
         self, session: ShoppingSessionContext, product_id: str, quantity: int
@@ -306,15 +1337,20 @@ class MockRetail(StorefrontBackend):
             raise Unavailable(unavailable_detail(product, self.listing_of(product_id)))
         existing = self._carts.lines(session.session_id).get(product_id)
         quantity += existing.quantity if existing else 0
-        return self._carts.put(session.session_id, product, quantity)
+        cart_product = self._with_commerce_price(product)
+        return self._with_store_currency(
+            self._carts.put(session.session_id, cart_product, quantity)
+        )
 
     async def update_cart_item(
         self, session: ShoppingSessionContext, product_id: str, quantity: int
     ) -> Cart:
-        return self._carts.set_quantity(session.session_id, product_id, quantity)
+        return self._with_store_currency(
+            self._carts.set_quantity(session.session_id, product_id, quantity)
+        )
 
     async def remove_from_cart(self, session: ShoppingSessionContext, product_id: str) -> Cart:
-        return self._carts.remove(session.session_id, product_id)
+        return self._with_store_currency(self._carts.remove(session.session_id, product_id))
 
     def reset_session(self, session_id: str) -> None:
         self._carts.reset(session_id)

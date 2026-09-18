@@ -1,0 +1,42 @@
+{
+  "offers": [
+    {
+      "offer_id": "douglas-bois-imperial-100",
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "merchant_id": "douglas-de",
+      "merchant_name": "Douglas",
+      "merchant_product_id": "1068008",
+      "price": 94.0,
+      "currency": "EUR",
+      "shipping_cost": 0.0,
+      "shipping_label": "Kostenloser Versand",
+      "in_stock": true,
+      "variant_label": "100 ml",
+      "product_url": "https://www.douglas.de/de/p/5011160013",
+      "affiliate_url": null,
+      "network": "Awin",
+      "data_source": "manual_verified_web",
+      "last_updated_at": "2026-09-15T17:30:00Z",
+      "commission_rate": null
+    },
+    {
+      "offer_id": "flaconi-bois-imperial-100",
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "merchant_id": "flaconi-de",
+      "merchant_name": "flaconi",
+      "merchant_product_id": "90009660-0014734",
+      "price": 94.0,
+      "currency": "EUR",
+      "shipping_cost": 0.0,
+      "shipping_label": "Versandkostenfrei",
+      "in_stock": true,
+      "variant_label": "100 ml",
+      "product_url": "https://www.flaconi.de/parfum/essential-parfums/bois-imperial/essential-parfums-bois-imperial-by-quentin-bisch-eau-de-parfum.html?variant=90009660-0014734",
+      "affiliate_url": null,
+      "network": "Awin",
+      "data_source": "manual_verified_web",
+      "last_updated_at": "2026-09-15T17:30:00Z",
+      "commission_rate": null
+    }
+  ]
+}

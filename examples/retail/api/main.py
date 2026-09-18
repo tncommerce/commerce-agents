@@ -12,6 +12,8 @@ user, so what a shopper asks the store to remember, or to forget, survives a res
 
 from __future__ import annotations
 
+from fastapi import HTTPException
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from commerce_common.memory import InMemoryMemoryStore, JsonFileMemoryStore
@@ -26,13 +28,18 @@ from shopping_agent import ProductDetails
 from shopping_agent_runtime import ShoppingAgent
 
 from .agent_config import build_shopping_config
+from .analytics import AnalyticsEventRequest, FirstPartyAnalyticsTracker
 from .merchant import create_merchant_router
+from .merchant_offers import MerchantClickoutTracker, MerchantOfferStore, customer_offer_payload
 from .mock_retail import DATA_DIR, MockRetail
 
 load_demo_env(DATA_DIR.parent)
 PRODUCT_IMAGES = DATA_DIR.parent / "storefront-web" / "public" / "products"
 
-backend = MockRetail()
+offer_store = MerchantOfferStore(DATA_DIR / "merchant_offers.json")
+clickout_tracker = MerchantClickoutTracker(DATA_DIR / ".merchant_clickouts.jsonl")
+analytics_tracker = FirstPartyAnalyticsTracker(DATA_DIR / ".analytics_events.jsonl")
+backend = MockRetail(offer_store=offer_store)
 agent = ShoppingAgent(
     backend=backend,
     skills_dir=REPO_ROOT / "shopping-agent" / "skills",
@@ -42,7 +49,14 @@ agent = ShoppingAgent(
 
 
 def product_detail(product: ProductDetails) -> dict:
-    # Detail-panel enrichment only; the agent's tool results never carry it.
+    # The original retail demo synthesizes price-history and review-aspect widgets.
+    # Those are not real SCENTAI evidence, so never expose them for fragrance catalog items.
+    if product.product_id.startswith("SC-"):
+        return product.model_dump() | {
+            "price_intelligence": None,
+            "review_aspects": None,
+        }
+
     return product.model_dump() | {
         "price_intelligence": backend.price_intelligence(product.product_id),
         "review_aspects": backend.review_aspects(product.product_id),
@@ -57,12 +71,53 @@ host = build_storefront_host(
     memory_seeder=MemorySeeder(
         DATA_DIR / "memory-seed.json", marker=DATA_DIR / ".memory-seeded.json"
     ),
+    product_of=backend.customer_product,
     product_detail=product_detail,
 )
 app = host.app
 app.include_router(create_merchant_router(backend, InMemoryMemoryStore()), prefix="/api/merchant")
 # The merchant portal shows the storefront's listing photos, so the API serves them to both apps.
 app.mount("/products", StaticFiles(directory=PRODUCT_IMAGES, check_dir=False), name="products")
+
+
+@app.get("/api/merchant-offers/{product_id}")
+async def product_offers(product_id: str) -> dict:
+    offers = offer_store.offers_for(product_id)
+
+    return {
+        "product_id": product_id,
+        "best_offer_id": offers[0].offer_id if offers else None,
+        "offers": [customer_offer_payload(offer) for offer in offers],
+        "affiliate_disclosure": (
+            "Bei Käufen über Partnerlinks kann SCENTAI eine Provision erhalten. "
+            "Für dich ändert sich der Preis dadurch nicht."
+        ),
+    }
+
+
+@app.post("/api/analytics/events")
+async def analytics_event(
+    request: AnalyticsEventRequest,
+    record: host.CurrentSession,
+) -> dict:
+    event_id, storage = await analytics_tracker.record(
+        session_id=record.session_id,
+        event=request.event,
+        product_id=request.product_id,
+        source=request.source,
+    )
+    return {"ok": True, "event_id": event_id, "storage": storage}
+
+
+@app.get("/api/clickout/{offer_id}")
+async def merchant_clickout(offer_id: str) -> RedirectResponse:
+    offer = offer_store.eligible_offer(offer_id)
+    if offer is None:
+        raise HTTPException(status_code=404, detail="Offer not available")
+
+    clickout_tracker.record(offer)
+    target = offer.affiliate_url or offer.product_url
+    return RedirectResponse(url=target, status_code=302)
 
 
 @app.post("/api/cart/add")

@@ -1,0 +1,361 @@
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+from pydantic import BaseModel, ValidationError
+
+from .merchant_offers import MerchantOffer
+
+class MerchantProductMapping(BaseModel):
+    product_id: str
+    merchant: str
+    merchant_product_id: str | None = None
+    ean: str | None = None
+    gtin: str | None = None
+
+
+def load_product_mappings(path: Path) -> list[MerchantProductMapping]:
+    raw = json.loads(path.read_text(encoding="utf-8-sig"))
+    rows = raw.get("mappings", [])
+    return [MerchantProductMapping.model_validate(row) for row in rows]
+
+
+def _same_identifier(left: str | None, right: str | None) -> bool:
+    if not left or not right:
+        return False
+    return left.strip().casefold() == right.strip().casefold()
+
+
+def resolve_product_id(
+    mappings: list[MerchantProductMapping],
+    *,
+    merchant: str,
+    merchant_product_id: str | None = None,
+    ean: str | None = None,
+    gtin: str | None = None,
+) -> str | None:
+    merchant_key = merchant.strip().casefold()
+
+    for mapping in mappings:
+        if mapping.merchant.strip().casefold() != merchant_key:
+            continue
+
+        if _same_identifier(mapping.merchant_product_id, merchant_product_id):
+            return mapping.product_id
+
+        if _same_identifier(mapping.ean, ean):
+            return mapping.product_id
+
+        if _same_identifier(mapping.gtin, gtin):
+            return mapping.product_id
+
+    return None
+
+def validate_offer_payload(payload: dict) -> MerchantOffer:
+    return MerchantOffer.model_validate(payload)
+class MerchantFeedRow(BaseModel):
+    offer_id: str
+    merchant: str
+    merchant_id: str
+    merchant_name: str
+    merchant_product_id: str | None = None
+    ean: str | None = None
+    gtin: str | None = None
+    price: float
+    currency: str = "EUR"
+    shipping_cost: float | None = None
+    shipping_label: str | None = None
+    in_stock: bool = False
+    variant_label: str | None = None
+    product_url: str
+    affiliate_url: str | None = None
+    network: str | None = None
+    data_source: str | None = None
+    last_updated_at: str
+    commission_rate: float | None = None
+
+
+def normalize_feed_row(
+    payload: dict,
+    mappings: list[MerchantProductMapping],
+) -> MerchantOffer | None:
+    row = MerchantFeedRow.model_validate(payload)
+
+    product_id = resolve_product_id(
+        mappings,
+        merchant=row.merchant,
+        merchant_product_id=row.merchant_product_id,
+        ean=row.ean,
+        gtin=row.gtin,
+    )
+
+    if product_id is None:
+        return None
+
+    return MerchantOffer.model_validate(
+        {
+            "offer_id": row.offer_id,
+            "product_id": product_id,
+            "merchant_id": row.merchant_id,
+            "merchant_name": row.merchant_name,
+            "merchant_product_id": row.merchant_product_id,
+            "price": row.price,
+            "currency": row.currency,
+            "shipping_cost": row.shipping_cost,
+            "shipping_label": row.shipping_label,
+            "in_stock": row.in_stock,
+            "variant_label": row.variant_label,
+            "product_url": row.product_url,
+            "affiliate_url": row.affiliate_url,
+            "network": row.network,
+            "data_source": row.data_source,
+            "last_updated_at": row.last_updated_at,
+            "commission_rate": row.commission_rate,
+        }
+    )
+class UnmatchedFeedRow(BaseModel):
+    offer_id: str
+    merchant: str
+    merchant_product_id: str | None = None
+    ean: str | None = None
+    gtin: str | None = None
+    reason: str = "product_mapping_not_found"
+
+
+class InvalidFeedRow(BaseModel):
+    row_index: int
+    offer_id: str | None = None
+    merchant: str | None = None
+    reason: str = "invalid_feed_row"
+    error: str
+
+
+class FeedImportResult(BaseModel):
+    offers: list[MerchantOffer]
+    unmatched: list[UnmatchedFeedRow]
+    invalid: list[InvalidFeedRow]
+
+
+def import_feed_rows(
+    payloads: list[dict],
+    mappings: list[MerchantProductMapping],
+) -> FeedImportResult:
+    offers: list[MerchantOffer] = []
+    unmatched: list[UnmatchedFeedRow] = []
+    invalid: list[InvalidFeedRow] = []
+
+    for row_index, payload in enumerate(payloads):
+        try:
+            row = MerchantFeedRow.model_validate(payload)
+        except ValidationError as exc:
+            invalid.append(
+                InvalidFeedRow(
+                    row_index=row_index,
+                    offer_id=payload.get("offer_id"),
+                    merchant=payload.get("merchant"),
+                    error=str(exc),
+                )
+            )
+            continue
+
+        offer = normalize_feed_row(payload, mappings)
+
+        if offer is None:
+            unmatched.append(
+                UnmatchedFeedRow(
+                    offer_id=row.offer_id,
+                    merchant=row.merchant,
+                    merchant_product_id=row.merchant_product_id,
+                    ean=row.ean,
+                    gtin=row.gtin,
+                )
+            )
+            continue
+
+        offers.append(offer)
+
+    return FeedImportResult(
+        offers=offers,
+        unmatched=unmatched,
+        invalid=invalid,
+    )
+
+
+class OfferUpsertReport(BaseModel):
+    new: int = 0
+    updated: int = 0
+    unchanged: int = 0
+    deactivated: int = 0
+
+
+def _load_existing_offers(path: Path) -> list[MerchantOffer]:
+    if not path.exists():
+        return []
+
+    raw = json.loads(path.read_text(encoding="utf-8-sig"))
+    existing_rows = raw.get(
+        "offers",
+        raw if isinstance(raw, list) else [],
+    )
+    return [
+        MerchantOffer.model_validate(row)
+        for row in existing_rows
+    ]
+
+
+def _offer_comparison_payload(offer: MerchantOffer) -> dict:
+    return offer.model_dump(
+        mode="json",
+        exclude={"last_updated_at"},
+    )
+
+
+def _authoritative_missing_ids(
+    existing: list[MerchantOffer],
+    offers: list[MerchantOffer],
+    *,
+    merchant_id: str | None = None,
+    data_source: str | None = None,
+) -> set[str]:
+    if (merchant_id is None) != (data_source is None):
+        raise ValueError(
+            "merchant_id and data_source must be provided together"
+        )
+
+    if merchant_id is None or data_source is None:
+        return set()
+
+    incoming_ids = {
+        offer.offer_id
+        for offer in offers
+        if offer.merchant_id == merchant_id
+        and offer.data_source == data_source
+    }
+
+    return {
+        offer.offer_id
+        for offer in existing
+        if offer.merchant_id == merchant_id
+        and offer.data_source == data_source
+        and offer.in_stock
+        and offer.offer_id not in incoming_ids
+    }
+
+
+def _build_upsert_report(
+    existing: list[MerchantOffer],
+    offers: list[MerchantOffer],
+    *,
+    authoritative_merchant_id: str | None = None,
+    authoritative_data_source: str | None = None,
+) -> OfferUpsertReport:
+    existing_by_id = {
+        offer.offer_id: offer
+        for offer in existing
+    }
+    incoming_by_id = {
+        offer.offer_id: offer
+        for offer in offers
+    }
+
+    new = 0
+    updated = 0
+    unchanged = 0
+
+    for offer_id, incoming in incoming_by_id.items():
+        current = existing_by_id.get(offer_id)
+
+        if current is None:
+            new += 1
+            continue
+
+        if (
+            _offer_comparison_payload(current)
+            == _offer_comparison_payload(incoming)
+        ):
+            unchanged += 1
+        else:
+            updated += 1
+
+    missing_ids = _authoritative_missing_ids(
+        existing,
+        offers,
+        merchant_id=authoritative_merchant_id,
+        data_source=authoritative_data_source,
+    )
+
+    return OfferUpsertReport(
+        new=new,
+        updated=updated,
+        unchanged=unchanged,
+        deactivated=len(missing_ids),
+    )
+
+
+def analyze_offer_changes(
+    path: Path,
+    offers: list[MerchantOffer],
+    *,
+    authoritative_merchant_id: str | None = None,
+    authoritative_data_source: str | None = None,
+) -> OfferUpsertReport:
+    existing = _load_existing_offers(path)
+    return _build_upsert_report(
+        existing,
+        offers,
+        authoritative_merchant_id=authoritative_merchant_id,
+        authoritative_data_source=authoritative_data_source,
+    )
+
+
+def upsert_offers_file(
+    path: Path,
+    offers: list[MerchantOffer],
+    *,
+    authoritative_merchant_id: str | None = None,
+    authoritative_data_source: str | None = None,
+) -> OfferUpsertReport:
+    existing = _load_existing_offers(path)
+
+    report = _build_upsert_report(
+        existing,
+        offers,
+        authoritative_merchant_id=authoritative_merchant_id,
+        authoritative_data_source=authoritative_data_source,
+    )
+
+    missing_ids = _authoritative_missing_ids(
+        existing,
+        offers,
+        merchant_id=authoritative_merchant_id,
+        data_source=authoritative_data_source,
+    )
+
+    by_id = {
+        offer.offer_id: offer
+        for offer in existing
+    }
+
+    for offer in offers:
+        by_id[offer.offer_id] = offer
+
+    for offer_id in missing_ids:
+        by_id[offer_id] = by_id[offer_id].model_copy(
+            update={"in_stock": False}
+        )
+
+    payload = {
+        "offers": [
+            offer.model_dump(mode="json")
+            for offer in by_id.values()
+        ]
+    }
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+    return report

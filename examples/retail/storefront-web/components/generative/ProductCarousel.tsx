@@ -4,10 +4,11 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { formatMoney, optionValuesLabel, priceLabel, useStoreFrame } from "web-shared";
-import { fetchProduct } from "@/lib/api";
-import type { PriceIntelligence, Product, ProductDetails, ProductsPayload, ReviewAspects } from "@/lib/types";
-import ProductTile, { AddButton, DeliveryPromise, OptionLine, ProductImage, Rating } from "../ProductTile";
+import { formatMoney, optionValuesLabel, useStoreFrame } from "web-shared";
+import { fetchMerchantOffers, fetchProduct, merchantClickoutUrl } from "@/lib/api";
+import { trackAnalyticsEvent } from "@/lib/analytics";
+import type { MerchantOffersPayload, PriceIntelligence, Product, ProductDetails, ProductsPayload, ReviewAspects } from "@/lib/types";
+import ProductTile, { AddButton, customerPriceLabel, DeliveryPromise, OptionLine, ProductImage, ProductRating, Rating } from "../ProductTile";
 
 function PriceIntelligenceRow({ intel }: { intel: PriceIntelligence }) {
   const { series, low, high } = intel;
@@ -45,11 +46,11 @@ function PriceIntelligenceRow({ intel }: { intel: PriceIntelligence }) {
         <div className="text-[13px] font-semibold text-(--ink)">{intel.verdict}</div>
         <div className="text-[11px] text-(--ink-soft)">
           {intel.position === "low"
-            ? "Sitting near the low end of its own range"
+            ? "Aktuell nahe am unteren Ende der eigenen Preisspanne"
             : intel.position === "high"
-              ? "Sitting near the high end of its own range"
-              : "Sitting in the typical band of its own range"}
-          {" "}· last {intel.days} days
+              ? "Aktuell nahe am oberen Ende der eigenen Preisspanne"
+              : "Aktuell im üblichen Bereich der eigenen Preisspanne"}
+          {" "}· letzte {intel.days} Tage
         </div>
       </div>
     </div>
@@ -60,14 +61,14 @@ function ReviewAspectsRow({ synthesis }: { synthesis: ReviewAspects }) {
   return (
     <div data-review-aspects className="mt-2">
       <div className="text-[11px] font-semibold uppercase tracking-wide text-(--ink-soft)">
-        From {synthesis.review_count.toLocaleString()} customer reviews
+        Aus {synthesis.review_count.toLocaleString("de-DE")} Kundenbewertungen
       </div>
       <div className="mt-1.5 flex flex-wrap gap-1.5">
         {synthesis.aspects.map((aspect) => (
           <div
             key={aspect.name}
             className="rounded-lg border border-(--line) bg-(--card) px-2 py-1"
-            title={`${aspect.name}: ${aspect.positive_pct}% positive across ${aspect.mentions.toLocaleString()} mentions`}
+            title={`${aspect.name}: ${aspect.positive_pct}% positiv bei ${aspect.mentions.toLocaleString("de-DE")} Nennungen`}
           >
             <div className="flex items-baseline gap-1.5 text-[13px]">
               <span className="font-medium text-(--ink)">{aspect.name}</span>
@@ -79,7 +80,7 @@ function ReviewAspectsRow({ synthesis }: { synthesis: ReviewAspects }) {
                 {aspect.positive_pct}%
               </span>
               <span className="text-[11px] text-(--ink-soft)">
-                {aspect.mentions.toLocaleString()} mentions
+                {aspect.mentions.toLocaleString("de-DE")} Nennungen
               </span>
             </div>
             <div className="mt-1 h-1 w-full overflow-hidden rounded-full bg-(--well)">
@@ -97,12 +98,93 @@ function ReviewAspectsRow({ synthesis }: { synthesis: ReviewAspects }) {
   );
 }
 
+function MerchantOffersPanel({ payload }: { payload: MerchantOffersPayload }) {
+  if (!payload.offers.length) return null;
+
+  const hasAffiliateLink = payload.offers.some((offer) => offer.affiliate_link);
+
+  return (
+    <div className="mt-3 rounded-xl border border-(--line) bg-(--card) p-3" data-merchant-offers>
+      <div className="flex items-baseline justify-between gap-3">
+        <div>
+          <div className="text-[13px] font-semibold text-(--ink)">Aktuelle Händlerangebote</div>
+          <div className="mt-0.5 text-[11px] text-(--ink-soft)">
+            Kauf und Zahlung erfolgen direkt beim jeweiligen Händler.
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-2 space-y-2">
+        {payload.offers.map((offer) => {
+          const recommended = offer.offer_id === payload.best_offer_id;
+          const displayedPrice = offer.total_price ?? offer.price;
+
+          return (
+            <div
+              key={offer.offer_id}
+              className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-(--line) bg-(--well)/45 px-3 py-2.5"
+            >
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-[13px] font-semibold text-(--ink)">{offer.merchant_name}</span>
+                  {recommended ? (
+                    <span className="rounded-full border border-(--accent) px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-(--ink)">
+                      Bestes Angebot
+                    </span>
+                  ) : null}
+                  {offer.affiliate_link ? (
+                    <span className="rounded-full border border-(--line) bg-(--card) px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-(--ink-soft)">
+                      Partnerlink
+                    </span>
+                  ) : null}
+                </div>
+                <div className="mt-0.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                  <span className="text-sm font-bold text-(--ink)">
+                    {formatMoney(displayedPrice, offer.currency)}
+                  </span>
+                  {offer.shipping_label ? (
+                    <span className="text-[11px] text-(--ok)">{offer.shipping_label}</span>
+                  ) : null}
+                  {offer.variant_label ? (
+                    <span className="text-[11px] text-(--ink-soft)">{offer.variant_label}</span>
+                  ) : null}
+                </div>
+              </div>
+
+              <a
+                href={merchantClickoutUrl(offer.clickout_path)}
+                target="_blank"
+                rel={offer.affiliate_link ? "sponsored noopener noreferrer" : "noopener noreferrer"}
+                onClick={() =>
+                  void trackAnalyticsEvent("merchant_clickout", {
+                    product_id: offer.product_id,
+                    source: offer.merchant_id,
+                  })
+                }
+                className="rounded-lg bg-(--accent) px-3 py-2 text-[12px] font-semibold text-white transition-opacity hover:opacity-90"
+              >
+                Bei {offer.merchant_name} kaufen
+              </a>
+            </div>
+          );
+        })}
+      </div>
+
+      <p className="mt-2 text-[10px] leading-relaxed text-(--ink-soft)">
+        {hasAffiliateLink
+          ? payload.affiliate_disclosure
+          : "Aktuell sind dies direkte Händlerlinks ohne Affiliate-Tracking."}
+      </p>
+    </div>
+  );
+}
+
 /** The variants of a product with options; picking one hands the add to the assistant. */
 function VariantList({ family, variants }: { family: Product; variants: Product[] }) {
   const { ask } = useStoreFrame();
   const pricesDiffer = variants.some((variant) => variant.price !== variants[0]?.price);
   return (
-    <ul className="mt-2 flex flex-wrap gap-1.5" aria-label="Options">
+    <ul className="mt-2 flex flex-wrap gap-1.5" aria-label="Optionen">
       {variants.map((variant) => {
         const label = optionValuesLabel(variant);
         const available = variant.in_stock !== false;
@@ -136,11 +218,32 @@ function ProductDetail({
   onClose: () => void;
 }) {
   const [details, setDetails] = useState<ProductDetails | null>(null);
+  const [merchantOffers, setMerchantOffers] = useState<MerchantOffersPayload | null | undefined>(undefined);
   useEffect(() => {
     let mounted = true;
     void fetchProduct(product.product_id).then((value) => {
       if (mounted) setDetails(value);
     });
+    return () => {
+      mounted = false;
+    };
+  }, [product.product_id]);
+
+  useEffect(() => {
+    let mounted = true;
+    setMerchantOffers(undefined);
+
+    if (!String(product.product_id).startsWith("SC-")) {
+      setMerchantOffers(null);
+      return () => {
+        mounted = false;
+      };
+    }
+
+    void fetchMerchantOffers(product.product_id).then((value) => {
+      if (mounted) setMerchantOffers(value);
+    });
+
     return () => {
       mounted = false;
     };
@@ -153,7 +256,7 @@ function ProductDetail({
       <div className="flex items-start gap-3">
         <div className="relative shrink-0">
           <ProductImage product={full} className="h-24 w-28 rounded-lg" />
-          {onAdd && full.in_stock !== false ? <AddButton product={full} onAdd={onAdd} /> : null}
+          {onAdd && !String(full.product_id).startsWith("SC-") && full.in_stock !== false ? <AddButton product={full} onAdd={onAdd} /> : null}
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
@@ -164,11 +267,15 @@ function ProductDetail({
               <div className="text-sm font-semibold leading-snug">{full.title}</div>
               <OptionLine product={full} />
               <div className="mt-0.5 flex items-center gap-2">
-                <span className="text-sm font-bold">{priceLabel(full)}</span>
-                <Rating rating={full.rating} count={full.review_count} />
+                <span className="text-sm font-bold">{customerPriceLabel(full)}</span>
+                {String(full.product_id).startsWith("SC-") ? (
+                  <ProductRating product={full} />
+                ) : (
+                  <Rating rating={full.rating} count={full.review_count} />
+                )}
                 {full.in_stock === false ? (
                   <span className="rounded-full bg-(--ink)/85 px-2 py-0.5 text-[11px] font-medium text-(--surface)">
-                    Out of stock
+                    Nicht auf Lager
                   </span>
                 ) : null}
               </div>
@@ -176,7 +283,7 @@ function ProductDetail({
             </div>
             <button
               onClick={onClose}
-              aria-label="Collapse details"
+              aria-label="Details schließen"
               className="shrink-0 rounded-md px-1.5 text-base leading-none text-(--ink-soft) hover:text-(--ink)"
             >
               ×
@@ -189,7 +296,7 @@ function ProductDetail({
         <p className="mt-2 text-[13px] leading-snug text-(--ink)">{reason}</p>
       ) : null}
       {details === null ? (
-        <p className="mt-2 animate-pulse text-[13px] text-(--ink-soft)">Loading details…</p>
+        <p className="mt-2 animate-pulse text-[13px] text-(--ink-soft)">Details werden geladen…</p>
       ) : (
         <div className="ac-reveal">
           {details.price_intelligence ? (
@@ -202,6 +309,10 @@ function ProductDetail({
             <p className="mt-2 text-[13px] leading-relaxed text-(--ink)">
               {details.long_description}
             </p>
+          ) : null}
+          {merchantOffers?.offers?.length ? <MerchantOffersPanel payload={merchantOffers} /> : null}
+          {merchantOffers === undefined && String(full.product_id).startsWith("SC-") ? (
+            <p className="mt-2 animate-pulse text-[12px] text-(--ink-soft)">Händlerangebote werden geladen…</p>
           ) : null}
           {details.variants?.length ? <VariantList family={details} variants={details.variants} /> : null}
           {Object.keys(specs).length ? (
@@ -231,6 +342,58 @@ function ProductDetail({
   );
 }
 
+function MobileProductResult({
+  product,
+  reason,
+  expanded,
+  onToggle,
+  onAdd,
+}: {
+  product: Product;
+  reason?: string | null;
+  expanded: boolean;
+  onToggle: () => void;
+  onAdd?: (product: Product) => boolean | void | Promise<boolean | void>;
+}) {
+  return (
+    <div className="overflow-hidden rounded-xl border border-(--line) bg-(--card)">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={expanded}
+        className="flex w-full items-center gap-3 p-2.5 text-left"
+      >
+        <ProductImage product={product} className="h-20 w-20 shrink-0 rounded-lg" />
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-[10.5px] font-medium uppercase tracking-[0.08em] text-(--ink-soft)/75">
+            {product.brand}
+          </div>
+          <div className="mt-0.5 line-clamp-2 text-[14px] font-semibold leading-snug text-(--ink)">
+            {product.title}
+          </div>
+          <div className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+            <span className="text-[14px] font-bold text-(--ink)">{customerPriceLabel(product)}</span>
+            <ProductRating product={product} compact />
+          </div>
+          <div className="mt-1 text-[11.5px] font-medium text-(--accent-ink)">
+            {expanded ? "Details schließen" : "Details ansehen"} {expanded ? "↑" : "→"}
+          </div>
+        </div>
+      </button>
+      {expanded ? (
+        <div className="border-t border-(--line) px-2 pb-2">
+          <ProductDetail
+            product={product}
+            reason={reason}
+            onAdd={onAdd}
+            onClose={onToggle}
+          />
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 export default function ProductCarousel({
   payload,
   onAdd,
@@ -240,11 +403,13 @@ export default function ProductCarousel({
   onAdd?: (product: Product) => boolean | void | Promise<boolean | void>;
   partial?: boolean;
 }) {
+  const { ask } = useStoreFrame();
   const layout = payload.layout ?? "carousel";
   const items = payload.items ?? [];
   const [expandedId, setExpandedId] = useState<string | null>(null);
   // Keep the last product mounted while the panel folds shut, so collapse animates.
   const [renderedId, setRenderedId] = useState<string | null>(null);
+  const autoOpenedProductRef = useRef<string | null>(null);
   const collapseRef = useRef<HTMLDivElement>(null);
 
   const scrollerRef = useRef<HTMLDivElement>(null);
@@ -265,6 +430,20 @@ export default function ProductCarousel({
     observer.observe(node);
     return () => observer.disconnect();
   }, [syncOverflow, items.length, partial]);
+
+  // A single SCENTAI product is typically a detail-intent result. Open its detail
+  // panel once automatically so merchant offers are immediately discoverable.
+  useEffect(() => {
+    if (partial || items.length !== 1) return;
+
+    const productId = items[0]?.product.product_id;
+    if (!productId || !String(productId).startsWith("SC-")) return;
+    if (autoOpenedProductRef.current === productId) return;
+
+    autoOpenedProductRef.current = productId;
+    setRenderedId(productId);
+    setExpandedId(productId);
+  }, [items, partial]);
   const nudge = (direction: 1 | -1) => {
     const node = scrollerRef.current;
     node?.scrollBy({ left: direction * (node.clientWidth - 80), behavior: "smooth" });
@@ -293,7 +472,42 @@ export default function ProductCarousel({
       {payload.title ? (
         <h3 className="mb-3 text-[15px] font-semibold text-(--ink)">{payload.title}</h3>
       ) : null}
-      <div className="relative">
+      <div className="space-y-2 sm:hidden">
+        {items.map(({ product, reason }) => (
+          <MobileProductResult
+            key={product.product_id}
+            product={product}
+            reason={reason}
+            expanded={expandedId === product.product_id}
+            onToggle={() => {
+              if (expandedId !== product.product_id) {
+                void trackAnalyticsEvent("product_open", {
+                  product_id: product.product_id,
+                  source: "recommendation_card",
+                });
+              }
+              toggle(product);
+            }}
+            onAdd={onAdd}
+          />
+        ))}
+        {partial ? <div className="ac-skeleton h-20 rounded-xl" /> : null}
+        {!partial && items.length >= 4 ? (
+          <button
+            type="button"
+            onClick={() =>
+              ask(
+                "Zeige mir weitere passende Düfte unter denselben Bedingungen. Wiederhole keine bereits gezeigten Düfte.",
+              )
+            }
+            className="w-full rounded-xl border border-(--line) bg-(--card) px-3 py-2.5 text-[13px] font-semibold text-(--ink) transition hover:border-(--accent)"
+          >
+            Weitere passende Düfte anzeigen
+          </button>
+        ) : null}
+      </div>
+
+      <div className="relative hidden sm:block">
         <div
           ref={scrollerRef}
           onScroll={layout === "carousel" ? syncOverflow : undefined}
@@ -325,7 +539,7 @@ export default function ProductCarousel({
             />
             <button
               onClick={() => nudge(-1)}
-              aria-label="Scroll to previous products"
+              aria-label="Zu vorherigen Produkten scrollen"
               className="absolute left-0 top-1/2 -translate-y-1/2 rounded-full border border-(--line) bg-(--card) px-2 py-1 text-sm text-(--ink) shadow-md transition hover:border-(--accent)"
             >
               ‹
@@ -340,7 +554,7 @@ export default function ProductCarousel({
             />
             <button
               onClick={() => nudge(1)}
-              aria-label="Scroll to more products"
+              aria-label="Zu weiteren Produkten scrollen"
               className="absolute right-0 top-1/2 -translate-y-1/2 rounded-full border border-(--line) bg-(--card) px-2 py-1 text-sm text-(--ink) shadow-md transition hover:border-(--accent)"
             >
               ›
@@ -348,6 +562,7 @@ export default function ProductCarousel({
           </>
         ) : null}
       </div>
+      <div className="hidden sm:block">
       <div
         ref={collapseRef}
         className={`ac-collapse ${open ? "ac-collapse-open" : ""}`}
@@ -367,6 +582,7 @@ export default function ProductCarousel({
             />
           ) : null}
         </div>
+      </div>
       </div>
     </section>
   );

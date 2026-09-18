@@ -16,6 +16,8 @@ export interface TranscriptProps {
   /** Defaults to `ActivityLine`. */
   renderPending?: (item: AssistantChatItem) => ReactNode;
   suggestionFilter?: (text: string) => boolean;
+  /** Optional storefront-specific customer-safe mapping for streamed error text. */
+  errorText?: (text: string) => string;
   /** Components that may extend past the text measure when the page has room. */
   wide?: ReadonlySet<string>;
   gap?: string;
@@ -47,6 +49,7 @@ export function Transcript({
   renderBlock,
   renderPending = (item) => <ActivityLine item={item} />,
   suggestionFilter,
+  errorText,
   wide,
   gap = "gap-3",
 }: TranscriptProps) {
@@ -60,7 +63,9 @@ export function Transcript({
             const last = item.pending && i === item.segments.length - 1;
             return <AssistantText key={i} text={segment.text} streaming={last} />;
           }
-          if (segment.type === "error") return <ErrorBubble key={i} text={segment.text} />;
+          if (segment.type === "error") {
+            return <ErrorBubble key={i} text={errorText ? errorText(segment.text) : segment.text} />;
+          }
           return (
             <div
               key={segment.slotKey}

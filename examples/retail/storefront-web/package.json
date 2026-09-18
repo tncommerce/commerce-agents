@@ -8,10 +8,11 @@
     "start": "next start -p 3000"
   },
   "dependencies": {
-    "next": "^16.3.0",
+    "next": "16.3.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "web-shared": "file:../../web-shared"
+    "web-shared": "file:../../web-shared",
+    "sharp": "0.35.4"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.0",

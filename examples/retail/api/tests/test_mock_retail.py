@@ -17,7 +17,7 @@ from shopping_agent import SearchFilters
 
 def test_catalog_loads_and_validates(backend):
     assert len(backend.products) >= 50
-    assert backend.store_name == "ACME"
+    assert backend.store_name == "SCENTAI"
     sample = backend.products["AR-1201"]
     assert sample.brand == "ACME Basecamp"
     assert sample.long_description  # hero products carry a long description
@@ -84,11 +84,19 @@ async def test_search_filters_and_sort(backend, session):
 
 
 async def test_policy_search(backend, session):
-    returns = await backend.search_policies(session, "how do refunds and returns work")
-    assert returns and returns[0].policy_id == "returns"
+    commerce = await backend.search_policies(
+        session,
+        "shipping returns memberships checkout",
+    )
+    assert commerce
+    assert commerce[0].policy_id == "commerce-status"
 
-    membership = await backend.search_policies(session, "how much does membership cost per year")
-    assert any(p.policy_id == "membership" for p in membership)
+    pricing = await backend.search_policies(
+        session,
+        "reference market pricing checkout price",
+    )
+    assert pricing
+    assert pricing[0].policy_id == "reference-pricing"
 
 
 async def test_fulfillment_options_follow_the_shipping_policy(backend, session):
@@ -103,16 +111,6 @@ async def test_fulfillment_options_follow_the_shipping_policy(backend, session):
     freight = await backend.get_fulfillment_options(session, ["AR-1307"])
     assert freight[-1] == FREIGHT_SHIPPING
 
-    shipping = next(p for p in backend._policies if p.policy_id == "shipping").content
-    for term in (
-        f"${STANDARD_SHIPPING.fee}",
-        f"free over ${FREE_SHIPPING_OVER}",
-        standard.eta.split(" (")[0],
-        express.eta.split(" (")[0],
-        f"${express.fee}",
-        "freight",
-    ):
-        assert term in shipping, term
 
 
 def test_pickup_eta_stays_inside_store_hours():

@@ -14,24 +14,37 @@ export function Chat({
   home,
   renderBlock,
   renderPending,
+  errorText,
   wide,
+  maxWidthClass = "max-w-[760px]",
 }: {
   chat: AgentTurn;
   home: ReactNode;
   renderBlock: TranscriptProps["renderBlock"];
   renderPending?: TranscriptProps["renderPending"];
+  /** Optional storefront-specific customer-safe mapping for streamed error text. */
+  errorText?: TranscriptProps["errorText"];
   /** Components that may extend past the text measure when the page has room. */
   wide?: ReadonlySet<string>;
+  maxWidthClass?: string;
 }) {
   const { scrollRef, onScroll, showLatest, jumpToLatest } = useStickToBottom(chat.items, chat.busy);
   return (
     <div className="relative h-full">
       <div ref={scrollRef} onScroll={onScroll} className="panel-scroll h-full overflow-y-auto px-4 pb-8 pt-6 sm:px-6">
-        <div className="mx-auto flex max-w-[760px] flex-col gap-5 text-[15.5px]">
+        <div className={`mx-auto flex w-full ${maxWidthClass} flex-col gap-5 text-[15.5px]`}>
           {chat.items.length === 0 ? (
             home
           ) : (
-            <Transcript items={chat.items} busy={chat.busy} send={chat.send} renderBlock={renderBlock} renderPending={renderPending} wide={wide} />
+            <Transcript
+              items={chat.items}
+              busy={chat.busy}
+              send={chat.send}
+              renderBlock={renderBlock}
+              renderPending={renderPending}
+              errorText={errorText}
+              wide={wide}
+            />
           )}
         </div>
       </div>

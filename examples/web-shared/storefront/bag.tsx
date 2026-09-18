@@ -21,6 +21,7 @@ export function BagPanel({
   isEmpty,
   footer,
   children,
+  closeLabel,
 }: {
   title: string;
   /** "1 item", "2 bookings"; pops when it changes. */
@@ -30,6 +31,7 @@ export function BagPanel({
   isEmpty: boolean;
   footer: ReactNode;
   children: ReactNode;
+  closeLabel?: string;
 }) {
   const { closePanel } = useStoreFrame();
   return (
@@ -43,7 +45,12 @@ export function BagPanel({
         >
           {count}
         </span>
-        <IconButton icon="x" label={`Close ${title.toLowerCase()}`} onClick={closePanel} className="ml-auto xl:hidden" />
+        <IconButton
+          icon="x"
+          label={closeLabel ?? `Close ${title.toLowerCase()}`}
+          onClick={closePanel}
+          className="ml-auto xl:hidden"
+        />
       </div>
       <div className="panel-scroll min-h-0 flex-1 overflow-y-auto px-[18px] py-3.5">
         {isEmpty ? (
@@ -131,23 +138,47 @@ export function Stepper({
   );
 }
 
-export function RemoveLink({ itemTitle, onClick }: { itemTitle: string; onClick: () => void }) {
+export function RemoveLink({
+  itemTitle,
+  onClick,
+  label = "Remove",
+  ariaLabel,
+}: {
+  itemTitle: string;
+  onClick: () => void;
+  label?: string;
+  ariaLabel?: string;
+}) {
   const busy = useStoreFrame().chat?.busy ?? false;
   return (
     <button
       type="button"
       disabled={busy}
       onClick={onClick}
-      aria-label={`Remove ${itemTitle}`}
+      aria-label={ariaLabel ?? `Remove ${itemTitle}`}
       className="text-[12px] text-(--ink-soft) underline-offset-2 hover:text-(--danger) hover:underline disabled:opacity-40"
     >
-      Remove
+      {label}
     </button>
   );
 }
 
 /** Once the assistant has staged a checkout, the primary action scrolls to that summary instead. */
-export function CheckoutButton({ staged, disabled, prompt }: { staged: boolean; disabled: boolean; prompt: string }) {
+export function CheckoutButton({
+  staged,
+  disabled,
+  prompt,
+  checkoutLabel = "Check out",
+  summaryLabel = "View summary",
+  summaryPrompt = "Show me the checkout summary again.",
+}: {
+  staged: boolean;
+  disabled: boolean;
+  prompt: string;
+  checkoutLabel?: string;
+  summaryLabel?: string;
+  summaryPrompt?: string;
+}) {
   const { ask } = useStoreFrame();
   if (staged && !disabled) {
     return (
@@ -157,17 +188,17 @@ export function CheckoutButton({ staged, disabled, prompt }: { staged: boolean; 
           const cards = document.querySelectorAll("[data-checkout-card]");
           const card = cards[cards.length - 1];
           if (card) card.scrollIntoView({ behavior: "smooth", block: "center" });
-          else ask("Show me the checkout summary again.");
+          else ask(summaryPrompt);
         }}
         className="mt-3 w-full rounded-(--radius) border border-(--line-strong) bg-(--card) py-2.5 text-[14px] font-semibold text-(--ink) transition hover:border-(--accent)"
       >
-        View summary
+        {summaryLabel}
       </button>
     );
   }
   return (
     <button type="button" onClick={() => ask(prompt)} disabled={disabled} className="btn-primary mt-3 w-full">
-      Check out
+      {checkoutLabel}
     </button>
   );
 }

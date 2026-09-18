@@ -1,21 +1,44 @@
 // Copyright 2026 Anthropic PBC
 // SPDX-License-Identifier: Apache-2.0
 
-import type { CSSProperties } from "react";
 import { formatMoney } from "web-shared";
 import type { ComparisonPayload } from "@/lib/types";
-import { ProductImage, ProductTitle, Rating } from "../ProductTile";
+import { ProductImage, ProductTitle, ProductRating } from "../ProductTile";
 
-const RECOMMENDED_LABEL = "Recommended";
+const RECOMMENDED_LABEL = "Empfehlung";
 
-/** The sign has its own column so text shares a left edge across rows. */
+function cleanCustomerCopy(text: string) {
+  return text
+    .replace(/\b(?:EDP|EdP)\b/g, "Eau de Parfum")
+    .replace(/\b(?:EDT|EdT)\b/g, "Eau de Toilette")
+    .replace(/\bProjektion\b/g, "Ausstrahlung")
+    .replace(/\bCommunity-Rückhalt\b/g, "Community-Erfahrung")
+    .replace(/\bausdrucksstärkere\s+Variante\b/gi, "würzigere Variante")
+    .replace(/\bausdrucksstärker\b/gi, "würziger")
+    .replace(/\s+für mehr eigenen Charakter\b/gi, "")
+    .replace(/\bmehr eigenen Charakter\b/gi, "würzigeres Profil");
+}
+
+function decisionTitle(brand: string | null | undefined, title: string) {
+  const cleanTitle = cleanCustomerCopy(title);
+  const cleanBrand = brand?.trim();
+  if (!cleanBrand) return cleanTitle;
+  if (cleanTitle.toLocaleLowerCase("de").startsWith(cleanBrand.toLocaleLowerCase("de"))) {
+    return cleanTitle;
+  }
+  return `${cleanBrand} · ${cleanTitle}`;
+}
+
 function TermRow({ sign, text }: { sign: "+" | "−"; text: string }) {
   return (
-    <div className="grid grid-cols-[1.1rem_1fr] text-sm leading-normal text-(--ink)">
-      <span aria-hidden className={sign === "+" ? "text-(--ok)" : "text-(--ink-soft)"}>
+    <div className="grid grid-cols-[1.1rem_1fr] gap-1 text-[13px] leading-relaxed text-(--ink)">
+      <span
+        aria-hidden
+        className={sign === "+" ? "font-semibold text-(--ok)" : "font-semibold text-(--ink-soft)"}
+      >
         {sign}
       </span>
-      <span>{text}</span>
+      <span>{cleanCustomerCopy(text)}</span>
     </div>
   );
 }
@@ -29,32 +52,31 @@ export default function ComparisonGrid({
 }) {
   const entries = payload.entries ?? [];
   const delta = payload.price_delta;
-  // Each pro/con line is a subgrid row, padded to the longest list, so the k-th line of
-  // every card shares a baseline.
-  const maxPros = Math.max(0, ...entries.map((entry) => (entry.pros ?? []).length));
-  const maxCons = Math.max(0, ...entries.map((entry) => (entry.cons ?? []).length));
-  const cardRows = { "--cmp-rows": `span ${2 + maxPros + maxCons}` } as CSSProperties;
+  const hasDecisionDetails = entries.some(
+    (entry) => entry.best_for || (entry.pros?.length ?? 0) > 0 || (entry.cons?.length ?? 0) > 0,
+  );
+
   return (
     <section className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm)">
-      {payload.title ? <h3 className="mb-3 text-[15px] font-semibold text-(--ink)">{payload.title}</h3> : null}
+      {payload.title ? (
+        <h3 className="mb-3 text-[15px] font-semibold text-(--ink)">{payload.title}</h3>
+      ) : null}
+
       <div className="grid gap-3 sm:grid-cols-2">
         {entries.map((entry) => {
           const recommended = payload.recommended_product_id === entry.product_id;
-          const pros = entry.pros ?? [];
-          const cons = entry.cons ?? [];
           return (
             <div
               key={entry.product_id}
-              style={cardRows}
-              className={`grid content-start gap-2 rounded-xl border p-4 sm:grid-rows-subgrid sm:[grid-row:var(--cmp-rows)] ${
+              className={`rounded-xl border p-4 ${
                 recommended ? "border-(--accent) bg-(--accent-soft)/60" : "border-(--line)"
               }`}
             >
               <div className="flex items-center gap-3">
-                <ProductImage product={entry.product} className="h-14 w-14 rounded-lg" />
+                <ProductImage product={entry.product} className="h-16 w-16 shrink-0 rounded-lg" />
                 <div className="min-w-0">
                   {recommended ? (
-                    <div className="text-[11px] font-bold uppercase tracking-wide text-(--ink)">
+                    <div className="mb-0.5 text-[11px] font-bold uppercase tracking-wide text-(--ink)">
                       {RECOMMENDED_LABEL}
                     </div>
                   ) : null}
@@ -62,50 +84,93 @@ export default function ComparisonGrid({
                     title={entry.product.title}
                     className="line-clamp-2 text-sm font-medium leading-snug"
                   />
-                  <div className="flex items-center gap-2 text-sm">
+                  <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm">
                     <span className="font-semibold">{formatMoney(entry.product.price)}</span>
-                    <Rating rating={entry.product.rating} count={entry.product.review_count} />
+                    <ProductRating product={entry.product} />
                   </div>
                 </div>
               </div>
-              <div>
-                {entry.best_for ? (
-                  <div className="rounded-md bg-(--well) px-2 py-1 text-[13px] text-(--ink)">
-                    Best for: {entry.best_for}
-                  </div>
-                ) : null}
-              </div>
-              {pros.map((pro) => (
-                <TermRow key={pro} sign="+" text={pro} />
-              ))}
-              {/* Pads keep a shorter pros list from pulling its cons up. */}
-              {Array.from({ length: maxPros - pros.length }, (_, index) => (
-                <div key={`pro-pad-${index}`} className="hidden sm:block" aria-hidden />
-              ))}
-              {cons.map((con) => (
-                <TermRow key={con} sign="−" text={con} />
-              ))}
-              {Array.from({ length: maxCons - cons.length }, (_, index) => (
-                <div key={`con-pad-${index}`} className="hidden sm:block" aria-hidden />
-              ))}
             </div>
           );
         })}
-        {partial ? (
-          <div style={cardRows} className="ac-skeleton h-36 rounded-xl sm:[grid-row:var(--cmp-rows)]" />
-        ) : null}
+        {partial ? <div className="ac-skeleton h-28 rounded-xl" /> : null}
       </div>
+
+      {hasDecisionDetails ? (
+        <div className="mt-4 border-t border-(--line) pt-4">
+          <div className="mb-3 text-[13px] font-semibold text-(--ink)">Entscheidungshilfe</div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {entries.map((entry) => {
+              const recommended = payload.recommended_product_id === entry.product_id;
+              const pros = entry.pros ?? [];
+              const cons = entry.cons ?? [];
+              return (
+                <div
+                  key={`${entry.product_id}-details`}
+                  className="rounded-xl bg-(--well) p-3"
+                >
+                  <div className="mb-2 flex items-start justify-between gap-2">
+                    <div className="min-w-0 text-[13px] font-semibold text-(--ink)">
+                      <span className="font-medium">
+                        {decisionTitle(entry.product.brand, entry.product.title)}
+                      </span>
+                    </div>
+                    {recommended ? (
+                      <span className="shrink-0 rounded-full border border-(--accent) bg-(--accent-soft) px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-(--ink)">
+                        Empfehlung
+                      </span>
+                    ) : null}
+                  </div>
+
+                  {entry.best_for ? (
+                    <div className="mb-3 rounded-lg border border-(--line) bg-(--card) px-2.5 py-2 text-[13px] leading-relaxed text-(--ink)">
+                      <span className="font-semibold">Ideal für:</span>{" "}
+                      {cleanCustomerCopy(entry.best_for)}
+                    </div>
+                  ) : null}
+
+                  {pros.length ? (
+                    <div className="space-y-1.5">
+                      <div className="text-[11px] font-bold uppercase tracking-wide text-(--ink-soft)">
+                        Stärken
+                      </div>
+                      {pros.map((pro) => (
+                        <TermRow key={pro} sign="+" text={pro} />
+                      ))}
+                    </div>
+                  ) : null}
+
+                  {cons.length ? (
+                    <div className={`${pros.length ? "mt-3" : ""} space-y-1.5`}>
+                      <div className="text-[11px] font-bold uppercase tracking-wide text-(--ink-soft)">
+                        Abwägungen
+                      </div>
+                      {cons.map((con) => (
+                        <TermRow key={con} sign="−" text={con} />
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ) : null}
+
       {delta ? (
-        <p className="mt-3 text-[13px] text-(--ink)">
-          Price difference:{" "}
+        <p className="mt-4 text-[13px] text-(--ink)">
+          Preisunterschied:{" "}
           <span className="font-semibold">{formatMoney(delta.amount)}</span>{" "}
           <span className="text-(--ink-soft)">
-            ({formatMoney(delta.low_price)} vs {formatMoney(delta.high_price)})
+            ({formatMoney(delta.low_price)} vs. {formatMoney(delta.high_price)})
           </span>
         </p>
       ) : null}
+
       {payload.dimensions?.length ? (
-        <p className="mt-3 text-xs text-(--ink-soft)/80">Compared on: {payload.dimensions.join(" · ")}</p>
+        <p className="mt-2 text-xs text-(--ink-soft)/80">
+          Verglichen nach: {payload.dimensions.join(" · ")}
+        </p>
       ) : null}
     </section>
   );
