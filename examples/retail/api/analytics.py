@@ -20,6 +20,10 @@ AnalyticsEventName = Literal[
     "merchant_clickout",
     "catalog_search",
     "catalog_no_results",
+    "advisor_recommendation_view",
+    "advisor_product_open",
+    "fragrance_detail_view",
+    "comparison_start",
 ]
 
 
@@ -50,6 +54,9 @@ class AnalyticsEventRequest(BaseModel):
     source: str | None = Field(default=None, max_length=80)
     search_term: str | None = Field(default=None, max_length=80)
     result_count: int | None = Field(default=None, ge=0)
+    surface: str | None = Field(default=None, max_length=80)
+    related_product_id: str | None = Field(default=None, max_length=80)
+    item_position: int | None = Field(default=None, ge=1, le=100)
 
 
 class FirstPartyAnalyticsTracker:
@@ -92,6 +99,9 @@ class FirstPartyAnalyticsTracker:
         source: str | None,
         search_term: str | None,
         result_count: int | None,
+        surface: str | None,
+        related_product_id: str | None,
+        item_position: int | None,
         now: datetime | None,
     ) -> dict:
         occurred_at = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
@@ -104,6 +114,9 @@ class FirstPartyAnalyticsTracker:
             "source": source,
             "search_term": sanitize_catalog_search_term(search_term),
             "result_count": result_count,
+            "surface": surface,
+            "related_product_id": related_product_id,
+            "item_position": item_position,
         }
 
     def _record_local(self, row: dict) -> None:
@@ -120,6 +133,9 @@ class FirstPartyAnalyticsTracker:
         source: str | None = None,
         search_term: str | None = None,
         result_count: int | None = None,
+        surface: str | None = None,
+        related_product_id: str | None = None,
+        item_position: int | None = None,
         now: datetime | None = None,
     ) -> tuple[str, str]:
         row = self._row(
@@ -129,6 +145,9 @@ class FirstPartyAnalyticsTracker:
             source=source,
             search_term=search_term,
             result_count=result_count,
+            surface=surface,
+            related_product_id=related_product_id,
+            item_position=item_position,
             now=now,
         )
 
