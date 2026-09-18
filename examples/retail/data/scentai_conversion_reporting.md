@@ -56,10 +56,16 @@ storage. Funnel analytics use those pseudonymous keys only for aggregate
 session counts and event ordering.
 
 To keep one anonymous funnel coherent when a customer moves from the advisor
-to a static fragrance or comparison page, the browser keeps the temporary
-session ID in tab-scoped `sessionStorage`. It is not written to the analytics
-table. If the backend has restarted and that temporary session is no longer
-valid, the analytics client creates a fresh anonymous session and retries once.
+to a static fragrance or comparison page, the browser creates a separate
+random analytics-session ID and keeps it in tab-scoped `sessionStorage`.
+The storefront/API session token is not persisted for this purpose. The raw
+analytics-session ID is sent only as transient request context; the analytics
+table stores only its shortened SHA-256-derived session key.
+
+Standalone pages may create a short-lived API session solely to submit the
+first-party event. If that API session becomes invalid after a Render restart,
+the client retries once with a fresh API session while keeping the separate
+anonymous analytics-session continuity.
 
 Analytics events are serialized client-side in invocation order so an
 automatically opened recommendation cannot overtake its recommendation-view
