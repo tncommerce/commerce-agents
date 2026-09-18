@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Literal
@@ -20,6 +21,27 @@ AnalyticsEventName = Literal[
     "catalog_search",
     "catalog_no_results",
 ]
+
+
+def sanitize_catalog_search_term(value: str | None) -> str | None:
+    if value is None:
+        return None
+
+    normalized = " ".join(
+        value.strip().lower().split()
+    )[:80]
+
+    if len(normalized) < 2:
+        return None
+
+    if re.search(r"\S+@\S+\.\S+", normalized):
+        return None
+
+    digits_only = re.sub(r"[\s()+-]", "", normalized)
+    if re.search(r"\b\d{7,}\b", digits_only):
+        return None
+
+    return normalized
 
 
 class AnalyticsEventRequest(BaseModel):
@@ -80,7 +102,7 @@ class FirstPartyAnalyticsTracker:
             "event": event,
             "product_id": product_id,
             "source": source,
-            "search_term": search_term,
+            "search_term": sanitize_catalog_search_term(search_term),
             "result_count": result_count,
         }
 
