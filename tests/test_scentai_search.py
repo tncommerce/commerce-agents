@@ -12,7 +12,7 @@ from shopping_agent import ProductDetails, ShoppingSessionContext
 @pytest.mark.asyncio
 async def test_scentai_named_fragrance_search_tolerates_small_typos() -> None:
     backend = MockRetail()
-    session = ShoppingSessionContext(session_id="typo-test", user_id=None)
+    session = ShoppingSessionContext(session_id="typo-test", user_id="scentai-qa")
 
     results = await backend.search_products(
         session,
@@ -27,7 +27,7 @@ async def test_scentai_named_fragrance_search_tolerates_small_typos() -> None:
 @pytest.mark.asyncio
 async def test_scentai_named_fragrance_search_tolerates_missing_letter() -> None:
     backend = MockRetail()
-    session = ShoppingSessionContext(session_id="typo-test-2", user_id=None)
+    session = ShoppingSessionContext(session_id="typo-test-2", user_id="scentai-qa")
 
     results = await backend.search_products(
         session,
