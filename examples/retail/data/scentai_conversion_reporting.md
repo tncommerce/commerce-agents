@@ -55,6 +55,16 @@ Session IDs are transformed into short SHA-256-derived session keys before
 storage. Funnel analytics use those pseudonymous keys only for aggregate
 session counts and event ordering.
 
+To keep one anonymous funnel coherent when a customer moves from the advisor
+to a static fragrance or comparison page, the browser keeps the temporary
+session ID in tab-scoped `sessionStorage`. It is not written to the analytics
+table. If the backend has restarted and that temporary session is no longer
+valid, the analytics client creates a fresh anonymous session and retries once.
+
+Analytics events are serialized client-side in invocation order so an
+automatically opened recommendation cannot overtake its recommendation-view
+event in the funnel solely because two HTTP requests raced.
+
 The new funnel context contains only:
 - product ID
 - related product ID for comparisons
@@ -134,6 +144,10 @@ Shows which storefront surfaces produce merchant clickouts:
 - unique clickout sessions
 - distinct products clicked
 - distinct merchants clicked
+
+The pseudonymized event table and reporting views are hosted in SCENTAI's
+Supabase project. Public RLS policies are not enabled for the analytics table;
+writes use the server-side secret/service-role credential.
 
 ## Internal conversion report
 
