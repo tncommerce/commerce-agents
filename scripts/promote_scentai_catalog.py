@@ -153,6 +153,18 @@ def promotion_blockers(
     if set(scores) != set(PROFILE_AXES):
         blockers.append("missing_recommendation_profile")
 
+    target_groups = (
+        product.get("classification", {})
+        .get("target_groups", [])
+    )
+    if not isinstance(target_groups, list) or not target_groups:
+        blockers.append("missing_target_group")
+    elif not all(
+        isinstance(group, str) and group.strip()
+        for group in target_groups
+    ):
+        blockers.append("invalid_target_group")
+
     if product_id:
         affiliate_offers = eligible_affiliate_offers(
             offers,
