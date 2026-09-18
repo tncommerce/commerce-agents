@@ -5,7 +5,7 @@ import LegalFooter from "@/components/LegalFooter";
 import { legal, legalLocation } from "@/lib/legal";
 
 export const metadata = {
-  title: "Datenschutz | SCENTAI",
+  title: "Datenschutz",
   description: "Datenschutzhinweise für die Nutzung von SCENTAI.",
   alternates: {
     canonical: "/datenschutz",
