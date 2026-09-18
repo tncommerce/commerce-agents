@@ -81,7 +81,9 @@ create index if not exists scentai_analytics_events_search_idx
   on public.scentai_analytics_events (event, search_term)
   where event in ('catalog_search', 'catalog_no_results');
 
-create or replace view public.scentai_catalog_search_demand
+drop view if exists public.scentai_catalog_search_demand;
+
+create view public.scentai_catalog_search_demand
 with (security_invoker = true)
 as
 select
@@ -94,7 +96,13 @@ select
   ) as no_result_events,
   count(distinct session_key) as unique_sessions,
   round(avg(result_count)::numeric, 2) as avg_result_count,
-  max(occurred_at) as last_searched_at
+  max(occurred_at) as last_searched_at,
+  count(distinct session_key) filter (
+    where event = 'catalog_search'
+  ) as successful_search_sessions,
+  count(distinct session_key) filter (
+    where event = 'catalog_no_results'
+  ) as no_result_sessions
 from public.scentai_analytics_events
 where event in ('catalog_search', 'catalog_no_results')
   and search_term is not null
