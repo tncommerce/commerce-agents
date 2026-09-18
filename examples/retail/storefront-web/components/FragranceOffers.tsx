@@ -40,6 +40,8 @@ export default function FragranceOffers({
   const [payload, setPayload] = useState<
     MerchantOffersPayload | null | undefined
   >(undefined);
+  const [loadError, setLoadError] = useState(false);
+  const [reloadToken, setReloadToken] = useState(0);
   const trackedDetailViewRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -58,18 +60,36 @@ export default function FragranceOffers({
       });
     }
 
+    setLoadError(false);
+    setPayload(undefined);
+
     void fetchMerchantOffers(productId)
       .then((value) => {
-        if (active) setPayload(value);
+        if (!active) return;
+
+        if (value === null) {
+          setLoadError(true);
+          setPayload(null);
+          return;
+        }
+
+        setPayload(value);
       })
       .catch(() => {
-        if (active) setPayload(null);
+        if (!active) return;
+        setLoadError(true);
+        setPayload(null);
       });
 
     return () => {
       active = false;
     };
-  }, [analyticsSurface, productId, trackProductOpen]);
+  }, [
+    analyticsSurface,
+    productId,
+    reloadToken,
+    trackProductOpen,
+  ]);
 
   if (payload === undefined) {
     return (
@@ -80,6 +100,29 @@ export default function FragranceOffers({
         <div className="text-[13px] font-semibold text-(--ink)">
           Händlerangebote werden geprüft …
         </div>
+      </section>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <section className={`rounded-2xl border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5"} shadow-(--shadow-sm)`}>
+        <h2 className="text-[17px] font-semibold text-(--ink)">
+          {heading}
+        </h2>
+        <p className="mt-2 text-[13px] leading-5 text-(--ink-soft)">
+          Die Händlerangebote konnten gerade nicht geladen werden.
+          Duftdaten und Empfehlungen bleiben verfügbar.
+        </p>
+        <button
+          type="button"
+          onClick={() =>
+            setReloadToken((value) => value + 1)
+          }
+          className="mt-3 rounded-xl border border-(--line) bg-(--surface) px-3 py-2 text-[12px] font-semibold text-(--ink) transition hover:border-(--ink)"
+        >
+          Angebote erneut prüfen
+        </button>
       </section>
     );
   }
