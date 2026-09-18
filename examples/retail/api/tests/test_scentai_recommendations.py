@@ -320,3 +320,17 @@ async def test_autumn_intent_prefers_warm_long_lasting_profiles(backend, session
 
         assert (sweetness + woodiness + spiciness) / 3 >= 6
         assert longevity >= 7.5
+
+
+
+async def test_customer_facing_fragrance_summary_is_german(backend, session):
+    hits = await backend.search_products(
+        session,
+        "Prada L'Homme",
+        limit=1,
+    )
+
+    assert hits
+    description = hits[0].short_description or ""
+    assert "Duftprofil:" in description
+    assert " is a " not in description
