@@ -56,6 +56,18 @@ export default function ComparisonGrid({
   const hasDecisionDetails = entries.some(
     (entry) => entry.best_for || (entry.pros?.length ?? 0) > 0 || (entry.cons?.length ?? 0) > 0,
   );
+  const comparableScentaiEntries = entries.filter(
+    (entry) =>
+      String(entry.product_id).startsWith("SC-"),
+  );
+  const freeComparisonHref =
+    comparableScentaiEntries.length === 2
+      ? `/vergleich?left=${encodeURIComponent(
+          comparableScentaiEntries[0].product_id,
+        )}&right=${encodeURIComponent(
+          comparableScentaiEntries[1].product_id,
+        )}`
+      : null;
 
   return (
     <section className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm)">
@@ -180,6 +192,15 @@ export default function ComparisonGrid({
         <p className="mt-2 text-xs text-(--ink-soft)/80">
           Verglichen nach: {payload.dimensions.join(" · ")}
         </p>
+      ) : null}
+
+      {freeComparisonHref ? (
+        <a
+          href={freeComparisonHref}
+          className="mt-4 inline-flex rounded-lg border border-(--line) bg-(--card) px-3 py-2 text-[12px] font-semibold text-(--accent-ink) hover:border-(--accent)"
+        >
+          Im vollständigen Duftvergleich öffnen →
+        </a>
       ) : null}
     </section>
   );
