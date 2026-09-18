@@ -43,7 +43,7 @@ def test_extracts_mapped_feed_image_candidate() -> None:
     candidate = result["candidates"][0]
     assert candidate["product_id"] == "SC-TEST-100"
     assert candidate["review_status"] == "pending_review"
-    assert candidate["approved_image_status"] == "approved_feed_image"
+    assert candidate["proposed_image_status"] == "approved_feed_image"
 
 
 def test_unmatched_feed_image_is_kept_for_mapping_review() -> None:
