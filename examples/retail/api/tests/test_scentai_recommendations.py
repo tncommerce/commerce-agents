@@ -232,3 +232,44 @@ async def test_alternative_search_customer_copy_is_german(backend, session):
     assert "Duftrichtung" in hits[0].short_description
     assert "The reference fragrance" not in hits[0].short_description
     assert "Very close in scent direction" not in hits[0].short_description
+
+
+
+async def test_everyday_intent_prefers_balanced_profiles(backend, session):
+    hits = await backend.search_products(
+        session,
+        "Alltagsduft für jeden Tag, nicht zu süß",
+        SearchFilters(max_price=100),
+        limit=5,
+    )
+
+    assert hits
+
+    top = [backend.product(product.product_id) for product in hits[:3]]
+    assert all(product is not None for product in top)
+
+    for product in top:
+        freshness = float(product.attributes["freshness"])
+        sweetness = float(product.attributes["sweetness"])
+        projection = float(product.attributes["projection"])
+        longevity = float(product.attributes["longevity"])
+
+        assert freshness >= 5
+        assert sweetness <= 7
+        assert projection <= 8.2
+        assert longevity >= 7.0
+
+
+async def test_query_fit_normalizes_german_sharp_s(backend, session):
+    hits = await backend.search_products(
+        session,
+        "heißer Sommerduft, nicht zu süß",
+        SearchFilters(max_price=100),
+        limit=5,
+    )
+
+    assert hits
+    assert any(
+        "geringe Süße" in str(product.attributes.get("anfrage_passung", ""))
+        for product in hits[:3]
+    )
