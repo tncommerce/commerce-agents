@@ -1,3 +1,5 @@
+import json
+
 import pytest
 
 from retail.api.merchant_providers import (
@@ -5,6 +7,7 @@ from retail.api.merchant_providers import (
     adapt_provider_rows,
     available_providers,
     get_provider_adapter,
+    load_mapped_provider_adapter,
     register_provider_adapter,
 )
 
@@ -113,3 +116,69 @@ def test_duplicate_provider_registration_is_blocked() -> None:
         match="already registered",
     ):
         register_provider_adapter(adapter)
+
+
+def test_provider_config_builds_mapped_adapter(tmp_path) -> None:
+    config_path = tmp_path / "provider.json"
+    config_path.write_text(
+        json.dumps(
+            {
+                "provider_name": "awin-douglas",
+                "field_map": {
+                    "offer_id": "id",
+                    "merchant_product_id": "sku",
+                    "price": "sale_price",
+                    "product_url": "url",
+                    "affiliate_url": "tracked_url",
+                    "last_updated_at": "updated_at",
+                },
+                "constants": {
+                    "merchant": "douglas",
+                    "merchant_id": "douglas-de",
+                    "merchant_name": "Douglas",
+                    "currency": "EUR",
+                    "network": "Awin",
+                    "data_source": "awin-feed",
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    adapter = load_mapped_provider_adapter(config_path)
+
+    assert adapter.provider_name == "awin-douglas"
+    assert adapter.adapt_row(
+        {
+            "id": "offer-1",
+            "sku": "sku-1",
+            "sale_price": 79.95,
+            "url": "https://merchant.example/product",
+            "tracked_url": "https://network.example/click",
+            "updated_at": "2026-09-18T12:00:00Z",
+        }
+    ) == {
+        "offer_id": "offer-1",
+        "merchant_product_id": "sku-1",
+        "price": 79.95,
+        "product_url": "https://merchant.example/product",
+        "affiliate_url": "https://network.example/click",
+        "last_updated_at": "2026-09-18T12:00:00Z",
+        "merchant": "douglas",
+        "merchant_id": "douglas-de",
+        "merchant_name": "Douglas",
+        "currency": "EUR",
+        "network": "Awin",
+        "data_source": "awin-feed",
+    }
+
+
+def test_provider_config_requires_field_map(tmp_path) -> None:
+    config_path = tmp_path / "provider.json"
+    config_path.write_text(
+        json.dumps({"provider_name": "broken", "field_map": {}}),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="non-empty field_map"):
+        load_mapped_provider_adapter(config_path)
