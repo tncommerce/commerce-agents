@@ -188,7 +188,7 @@ def build_demand_report(
     return {
         "summary": {
             "tracked_search_terms": len(searches),
-            "search_events": sum(
+            "total_searches": sum(
                 row["total_searches"]
                 for row in searches
             ),
@@ -370,7 +370,7 @@ def main() -> int:
     summary = report["summary"]
     print(
         "SCENTAI demand report | "
-        f"searches={summary['search_events']} | "
+        f"searches={summary['total_searches']} | "
         f"no_results={summary['no_result_events']} | "
         f"product_opens={summary['product_opens']} | "
         f"clickouts={summary['merchant_clickouts']}"
