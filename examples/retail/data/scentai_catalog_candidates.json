@@ -1,5 +1,5 @@
 {
-  "version": 5,
+  "version": 6,
   "target_live_catalog_size": 150,
   "current_live_scentai_count_at_creation": 32,
   "wave": 1,
@@ -271,9 +271,12 @@
       "brand": "Parfums de Marly",
       "canonical_name": "Herod",
       "concentration": "Eau de Parfum",
-      "target_group": "men",
+      "target_group": "men, unisex",
       "segment": "niche-premium",
-      "priority": 1
+      "priority": 1,
+      "canonical_volume_ml": 125,
+      "audience_lean": "masculine",
+      "verification_status": "core_identity_verified"
     },
     {
       "candidate_id": "BDK-GRIS-CHARNEL-EDP",
@@ -291,7 +294,9 @@
       "concentration": "Eau de Parfum",
       "target_group": "unisex",
       "segment": "niche-premium",
-      "priority": 1
+      "priority": 1,
+      "canonical_volume_ml": 90,
+      "verification_status": "core_identity_verified"
     },
     {
       "candidate_id": "NISHANE-ANI-EXTRAIT",
@@ -300,7 +305,9 @@
       "concentration": "Extrait de Parfum",
       "target_group": "unisex",
       "segment": "niche-premium",
-      "priority": 1
+      "priority": 1,
+      "canonical_volume_ml": 100,
+      "verification_status": "core_identity_verified"
     },
     {
       "candidate_id": "MONTALE-ARABIANS-TONKA-EDP",
@@ -318,7 +325,9 @@
       "concentration": "Eau de Parfum",
       "target_group": "unisex",
       "segment": "niche-premium",
-      "priority": 1
+      "priority": 1,
+      "canonical_volume_ml": 100,
+      "verification_status": "core_identity_verified"
     },
     {
       "candidate_id": "LATTAFA-KHAMRAH-EDP",
@@ -503,7 +512,9 @@
       "target_group": "women",
       "segment": "womens-designer",
       "priority": 1,
-      "selection_track": "batch3-community-mainstream"
+      "selection_track": "batch3-community-mainstream",
+      "canonical_volume_ml": 100,
+      "verification_status": "core_identity_verified"
     },
     {
       "candidate_id": "GUERLAIN-MON-GUERLAIN-EDP",
@@ -513,7 +524,9 @@
       "target_group": "women",
       "segment": "womens-designer",
       "priority": 1,
-      "selection_track": "batch3-community-mainstream"
+      "selection_track": "batch3-community-mainstream",
+      "canonical_volume_ml": 100,
+      "verification_status": "core_identity_verified"
     },
     {
       "candidate_id": "PDM-DELINA-EXCLUSIF",
@@ -533,7 +546,9 @@
       "target_group": "men",
       "segment": "niche-premium",
       "priority": 1,
-      "selection_track": "batch3-community-niche"
+      "selection_track": "batch3-community-niche",
+      "canonical_volume_ml": 100,
+      "verification_status": "core_identity_verified"
     },
     {
       "candidate_id": "YSL-LA-NUIT-DE-LHOMME-EDT",
@@ -543,7 +558,9 @@
       "target_group": "men",
       "segment": "mens-designer",
       "priority": 1,
-      "selection_track": "batch3-community-mainstream"
+      "selection_track": "batch3-community-mainstream",
+      "canonical_volume_ml": 100,
+      "verification_status": "core_identity_verified"
     },
     {
       "candidate_id": "DOLCE-GABBANA-THE-ONE-MEN-EDP",
@@ -553,18 +570,21 @@
       "target_group": "men",
       "segment": "mens-designer",
       "priority": 1,
-      "selection_track": "batch3-community-mainstream"
+      "selection_track": "batch3-community-mainstream",
+      "canonical_volume_ml": 100,
+      "verification_status": "core_identity_verified"
     },
     {
       "candidate_id": "DIOR-SAUVAGE-ELIXIR",
       "brand": "Dior",
       "canonical_name": "Sauvage Elixir",
-      "concentration": null,
+      "concentration": "Elixir",
       "target_group": "men",
       "segment": "mens-designer",
       "priority": 1,
       "selection_track": "batch3-community-mainstream",
-      "verification_status": "concentration_pending"
+      "verification_status": "core_identity_verified",
+      "canonical_volume_ml": 100
     }
   ]
 }
