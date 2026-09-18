@@ -236,6 +236,7 @@ class MockRetail(StorefrontBackend):
         product,
         reference_name: str | None = None,
         reference_accords: str | None = None,
+        query_text: str | None = None,
     ):
         """Return SCENTAI data without internal implementation fields."""
         product = self._with_commerce_price(product)
@@ -338,46 +339,62 @@ class MockRetail(StorefrontBackend):
         if reference_name:
             if relationship == "clone":
                 relation_text = (
-                    f"Very close in scent direction to "
+                    f"Sehr nah an der Duftrichtung von "
                     f"{reference_name}."
                 )
 
             elif relationship == "inspired":
                 relation_text = (
-                    f"Clearly follows a similar scent direction "
-                    f"to {reference_name}, while keeping its "
-                    f"own character."
+                    f"Orientiert sich klar an einer ähnlichen "
+                    f"Duftrichtung wie {reference_name}, behält "
+                    f"aber einen eigenen Charakter."
                 )
 
             elif relationship == "alternative":
                 relation_text = (
-                    f"Offers a related scent style to "
-                    f"{reference_name}, with noticeable "
-                    f"differences."
+                    f"Bietet eine verwandte Duftrichtung zu "
+                    f"{reference_name}, mit erkennbaren "
+                    f"Unterschieden."
                 )
 
             elif relationship == "benchmark":
                 relation_text = (
-                    f"A reference fragrance in a closely "
-                    f"related scent direction to "
+                    f"Referenzduft innerhalb einer eng "
+                    f"verwandten Duftrichtung zu "
                     f"{reference_name}."
                 )
 
             else:
                 relation_text = (
-                    f"Recommended as a fragrance alternative "
-                    f"to {reference_name}."
+                    f"Als Duftalternative zu "
+                    f"{reference_name} eingeordnet."
                 )
 
             short_description = (
                 f"{relation_text} {short_description}"
             ).strip()
+
         if reference_accords:
+            translated_reference_accords = ", ".join(
+                accord_labels_de.get(
+                    accord.strip().casefold(),
+                    accord.strip(),
+                )
+                for accord in reference_accords.split(",")
+                if accord.strip()
+            )
             short_description = (
                 f"{short_description} "
-                f"The reference fragrance itself has these catalog accords: "
-                f"{reference_accords}."
+                f"Der Referenzduft ist im Katalog mit diesen Akkorden "
+                f"hinterlegt: {translated_reference_accords}."
             ).strip()
+
+        query_fit = self._query_fit_signals(
+            product,
+            query_text or "",
+        )
+        if query_fit:
+            attributes["anfrage_passung"] = ", ".join(query_fit)
         internal_labels = {
             "benchmark",
             "clone",
@@ -398,6 +415,191 @@ class MockRetail(StorefrontBackend):
                 "short_description": short_description,
             }
         )
+
+    @staticmethod
+    def _query_fit_signals(
+        product: ProductDetails,
+        query_text: str,
+    ) -> list[str]:
+        """Return conservative, evidence-backed fit labels for the current query."""
+
+        if not query_text:
+            return []
+
+        normalized = unicodedata.normalize(
+            "NFKD",
+            query_text.casefold(),
+        )
+        normalized = "".join(
+            char
+            for char in normalized
+            if not unicodedata.combining(char)
+        )
+        normalized = " ".join(normalized.split())
+
+        attributes = product.attributes or {}
+
+        def number(name: str) -> float | None:
+            try:
+                value = attributes.get(name)
+                if value in (None, ""):
+                    return None
+                return float(value)
+            except (TypeError, ValueError):
+                return None
+
+        freshness = number("freshness")
+        sweetness = number("sweetness")
+        woodiness = number("woodiness")
+        spiciness = number("spiciness")
+        longevity = number("longevity")
+        projection = number("projection")
+
+        signals: list[str] = []
+
+        wants_summer = any(
+            term in normalized
+            for term in (
+                "sommer",
+                "summer",
+                "heiss",
+                "hitze",
+                "warmes wetter",
+            )
+        )
+        wants_winter = any(
+            term in normalized
+            for term in (
+                "winter",
+                "kalte tage",
+                "kaltes wetter",
+                "cold weather",
+            )
+        )
+        wants_office = any(
+            term in normalized
+            for term in (
+                "buro",
+                "office",
+                "business",
+            )
+        )
+        wants_date = any(
+            term in normalized
+            for term in (
+                "date",
+                "date night",
+                "abend",
+                "evening",
+                "romantisch",
+            )
+        )
+        wants_party = any(
+            term in normalized
+            for term in (
+                "party",
+                "club",
+                "feiern",
+                "nightlife",
+            )
+        )
+        avoids_sweet = any(
+            phrase in normalized
+            for phrase in (
+                "nicht zu suss",
+                "nicht suss",
+                "wenig suss",
+                "not too sweet",
+                "low sweetness",
+            )
+        )
+        wants_longevity = any(
+            term in normalized
+            for term in (
+                "haltbarkeit",
+                "lange haltbarkeit",
+                "long lasting",
+                "long-lasting",
+                "longevity",
+                "lasting",
+            )
+        )
+        wants_projection = any(
+            term in normalized
+            for term in (
+                "ausstrahlung",
+                "projection",
+                "sillage",
+                "auffallig",
+                "noticeable",
+                "strong projection",
+            )
+        )
+
+        if wants_summer and freshness is not None and sweetness is not None:
+            if freshness >= 8 and sweetness <= 6:
+                signals.append("frisches Sommerprofil")
+
+        if wants_winter:
+            warm_values = [
+                value
+                for value in (
+                    sweetness,
+                    woodiness,
+                    spiciness,
+                )
+                if value is not None
+            ]
+            if warm_values and sum(warm_values) / len(warm_values) >= 6:
+                signals.append("warmes Winterprofil")
+
+        if wants_office and all(
+            value is not None
+            for value in (
+                freshness,
+                sweetness,
+                projection,
+            )
+        ):
+            if (
+                freshness >= 6
+                and sweetness <= 5
+                and projection <= 7.5
+            ):
+                signals.append("ausgewogenes Büroprofil")
+
+        if wants_date and longevity is not None:
+            warmth = max(
+                value
+                for value in (
+                    sweetness,
+                    woodiness,
+                    spiciness,
+                )
+                if value is not None
+            )
+            if longevity >= 7.5 and warmth >= 7:
+                signals.append("starkes Abendprofil")
+
+        if (
+            wants_party
+            and projection is not None
+            and longevity is not None
+            and projection >= 7.8
+            and longevity >= 7.8
+        ):
+            signals.append("starke Präsenz für Party oder Club")
+
+        if avoids_sweet and sweetness is not None and sweetness <= 4:
+            signals.append("geringe Süße")
+
+        if wants_longevity and longevity is not None and longevity >= 7.8:
+            signals.append("starke Haltbarkeit")
+
+        if wants_projection and projection is not None and projection >= 7.8:
+            signals.append("starke Ausstrahlung")
+
+        return signals[:4]
 
     @staticmethod
     def _relationship_to_anchor(
@@ -782,9 +984,153 @@ class MockRetail(StorefrontBackend):
                 preference_score += 1.0
 
 
+        normalized_preference_query = normalize_name_text(
+            query_text
+        )
+
+        wants_summer = any(
+            term in normalized_preference_query
+            for term in (
+                "sommer",
+                "summer",
+                "heiss",
+                "hitze",
+                "warmes wetter",
+            )
+        )
+
+        if wants_summer:
+            if freshness is not None:
+                preference_score += (freshness / 10.0) * 4.0
+            if sweetness is not None:
+                preference_score += ((10.0 - sweetness) / 10.0) * 2.0
+                if sweetness >= 8:
+                    preference_score -= 1.5
+
+            summer_accords = sum(
+                accord in accords
+                for accord in (
+                    "fresh",
+                    "citrus",
+                    "aquatic",
+                    "green",
+                )
+            )
+            preference_score += min(
+                2.4,
+                summer_accords * 0.8,
+            )
+
+            if "gourmand" in accords:
+                preference_score -= 1.0
+
+        wants_winter = any(
+            term in normalized_preference_query
+            for term in (
+                "winter",
+                "kalte tage",
+                "kaltes wetter",
+                "cold weather",
+            )
+        )
+
+        if wants_winter:
+            warm_values = [
+                value
+                for value in (
+                    sweetness,
+                    woodiness,
+                    spiciness,
+                )
+                if value is not None
+            ]
+            if warm_values:
+                warmth = sum(warm_values) / len(warm_values)
+                preference_score += (warmth / 10.0) * 4.0
+
+            winter_accords = sum(
+                accord in accords
+                for accord in (
+                    "sweet",
+                    "spicy",
+                    "gourmand",
+                    "oriental",
+                    "woody",
+                    "creamy",
+                )
+            )
+            preference_score += min(
+                2.4,
+                winter_accords * 0.6,
+            )
+
+        wants_date = any(
+            term in normalized_preference_query
+            for term in (
+                "date",
+                "date night",
+                "abend",
+                "evening",
+                "romantisch",
+            )
+        )
+
+        if wants_date:
+            warmth_values = [
+                value
+                for value in (
+                    sweetness,
+                    woodiness,
+                    spiciness,
+                )
+                if value is not None
+            ]
+            if warmth_values:
+                preference_score += (
+                    max(warmth_values) / 10.0
+                ) * 2.0
+
+            if projection is not None:
+                if 6.8 <= projection <= 8.3:
+                    preference_score += 1.5
+                elif projection > 8.8:
+                    preference_score -= 0.5
+
+        wants_party = any(
+            term in normalized_preference_query
+            for term in (
+                "party",
+                "club",
+                "feiern",
+                "nightlife",
+            )
+        )
+
         # Performance preference: longevity and projection.
         longevity = numeric_attribute("longevity")
         projection = numeric_attribute("projection")
+
+        if wants_winter and longevity is not None:
+            preference_score += (longevity / 10.0) * 2.0
+
+        if wants_date and longevity is not None:
+            preference_score += (longevity / 10.0) * 2.0
+
+        if wants_party:
+            if projection is not None:
+                preference_score += (projection / 10.0) * 3.0
+            if longevity is not None:
+                preference_score += (longevity / 10.0) * 2.5
+            party_energy = max(
+                value
+                for value in (
+                    sweetness,
+                    spiciness,
+                    0.0,
+                )
+                if value is not None
+            )
+            preference_score += (party_energy / 10.0) * 1.0
 
         wants_longevity = any(
             term in query_text
@@ -964,9 +1310,22 @@ class MockRetail(StorefrontBackend):
                 second_ratio = direct_matches[1][0] if len(direct_matches) > 1 else 0.0
 
                 if best_ratio >= 0.90 and best_ratio - second_ratio >= 0.04:
+                    if filters is not None and (
+                        not within_price_and_rating(
+                            best_product,
+                            filters,
+                        )
+                        or not self._soft_filter(
+                            best_product,
+                            filters,
+                        )
+                    ):
+                        return []
+
                     return [
                         self._customer_facing_product(
-                            summary_of(best_product)
+                            summary_of(best_product),
+                            query_text=query,
                         )
                     ]
 
@@ -1171,6 +1530,7 @@ class MockRetail(StorefrontBackend):
                             summary_of(product),
                             reference_name=reference_name,
                             reference_accords=reference_accords,
+                            query_text=query,
                         )
                         for product in ranked_cluster
                     ]
@@ -1212,6 +1572,22 @@ class MockRetail(StorefrontBackend):
             "ausstrahlung",
             "projection",
             "sillage",
+            "sommer",
+            "summer",
+            "winter",
+            "abend",
+            "evening",
+            "date",
+            "party",
+            "club",
+            "feiern",
+            "alltag",
+            "daily",
+            "everyday",
+            "business",
+            "office",
+            "büro",
+            "buero",
         )
 
         if any(
@@ -1236,7 +1612,8 @@ class MockRetail(StorefrontBackend):
 
         return [
             self._customer_facing_product(
-                summary_of(product)
+                summary_of(product),
+                query_text=query,
             )
             for product in ranked
         ]
