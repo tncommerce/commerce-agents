@@ -1,5 +1,64 @@
 import { api } from "./api";
 
+const ANALYTICS_SESSION_KEY = "scentai_analytics_session_v1";
+let analyticsSessionPromise: Promise<string | null> | null = null;
+
+function storedAnalyticsSession(): string | null {
+  if (typeof window === "undefined") return null;
+
+  try {
+    return window.sessionStorage.getItem(
+      ANALYTICS_SESSION_KEY,
+    );
+  } catch {
+    return null;
+  }
+}
+
+function rememberAnalyticsSession(sessionId: string): void {
+  if (typeof window === "undefined") return;
+
+  try {
+    window.sessionStorage.setItem(
+      ANALYTICS_SESSION_KEY,
+      sessionId,
+    );
+  } catch {
+    // Analytics storage must never break the shopping experience.
+  }
+}
+
+async function ensureAnalyticsSession(): Promise<string | null> {
+  if (api.session) {
+    rememberAnalyticsSession(api.session);
+    return api.session;
+  }
+
+  const stored = storedAnalyticsSession();
+  if (stored) {
+    api.session = stored;
+    return stored;
+  }
+
+  if (!analyticsSessionPromise) {
+    analyticsSessionPromise = api
+      .startSession()
+      .then((started) => {
+        const sessionId = started?.sessionId ?? null;
+        if (sessionId) {
+          api.session = sessionId;
+          rememberAnalyticsSession(sessionId);
+        }
+        return sessionId;
+      })
+      .finally(() => {
+        analyticsSessionPromise = null;
+      });
+  }
+
+  return analyticsSessionPromise;
+}
+
 export type AnalyticsEventName =
   | "page_view"
   | "consultation_start"
@@ -24,7 +83,9 @@ export async function trackAnalyticsEvent(
     item_position?: number;
   } = {},
 ): Promise<void> {
-  if (!api.session) return;
+  const sessionId = await ensureAnalyticsSession();
+  if (!sessionId) return;
+
   await api.post("/analytics/events", {
     event,
     product_id: context.product_id,
