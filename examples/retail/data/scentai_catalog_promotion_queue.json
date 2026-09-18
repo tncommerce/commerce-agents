@@ -1,0 +1,646 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-18",
+  "status": "promotion_queue_active",
+  "live_catalog_count": 32,
+  "verified_queue_count": 30,
+  "purpose": "Single source of truth for promoting verified SCENTAI fragrance candidates into the live catalog.",
+  "hard_gates": [
+    "identity_verified",
+    "community_qa_verified",
+    "at_least_one_verified_merchant_or_explicit_candidate_only_exception",
+    "approved_product_image_or_approved_feed_image",
+    "current_offer_strategy_if_product_is_shown_as_purchasable",
+    "no_unresolved_identity_or_version_blocker",
+    "search_and_recommendation_qa_passed"
+  ],
+  "affiliate_policy": "Affiliate approval is required before publishing trackable affiliate URLs, but commission must never influence product or merchant ranking.",
+  "image_policy": "Do not use generated bottle lookalikes for live commerce products. Prefer approved merchant-feed or manufacturer imagery with appropriate use rights.",
+  "summary": {
+    "total": 30,
+    "identity_verified": 30,
+    "community_qa_verified": 30,
+    "with_merchant_coverage": 30,
+    "multi_merchant_coverage": 20,
+    "affiliate_links_ready": 0,
+    "approved_images_ready": 0,
+    "unresolved_identity_version_blockers": 1
+  },
+  "blocker_counts": {
+    "affiliate_link_pending": 30,
+    "approved_product_image_pending": 30,
+    "community_performance_still_provisional": 1,
+    "identity_version": 1
+  },
+  "candidates": [
+    {
+      "candidate_id": "YSL-LIBRE-EDP",
+      "batch": 1,
+      "batch_rank": 1,
+      "proposed_product_id": "SC-YSL-LIBRE-EDP-90",
+      "brand": "Yves Saint Laurent",
+      "canonical_name": "Libre",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "target_group": "women",
+      "audience_lean": null,
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 2,
+      "blockers": [
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    },
+    {
+      "candidate_id": "PRADA-PARADOXE-EDP",
+      "batch": 1,
+      "batch_rank": 2,
+      "proposed_product_id": "SC-PRADA-PARADOXE-EDP-90",
+      "brand": "Prada",
+      "canonical_name": "Paradoxe",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "target_group": "women",
+      "audience_lean": null,
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 2,
+      "blockers": [
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    },
+    {
+      "candidate_id": "BURBERRY-GODDESS-EDP",
+      "batch": 1,
+      "batch_rank": 3,
+      "proposed_product_id": "SC-BURBERRY-GODDESS-EDP-100",
+      "brand": "Burberry",
+      "canonical_name": "Goddess",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "target_group": "women",
+      "audience_lean": null,
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 2,
+      "blockers": [
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    },
+    {
+      "candidate_id": "NARCISO-RODRIGUEZ-FOR-HER-PURE-MUSC",
+      "batch": 1,
+      "batch_rank": 4,
+      "proposed_product_id": "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100",
+      "brand": "Narciso Rodriguez",
+      "canonical_name": "for her PURE MUSC",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "target_group": "women",
+      "audience_lean": null,
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 1,
+      "blockers": [
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    },
+    {
+      "candidate_id": "PDM-DELINA-EDP",
+      "batch": 1,
+      "batch_rank": 5,
+      "proposed_product_id": "SC-PDM-DELINA-EDP-75",
+      "brand": "Parfums de Marly",
+      "canonical_name": "Delina",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 75,
+      "target_group": "women",
+      "audience_lean": null,
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 2,
+      "blockers": [
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    },
+    {
+      "candidate_id": "LANCOME-LA-VIE-EST-BELLE-EDP",
+      "batch": 1,
+      "batch_rank": 6,
+      "proposed_product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "brand": "Lancôme",
+      "canonical_name": "La Vie est Belle",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "target_group": "women",
+      "audience_lean": null,
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 1,
+      "blockers": [
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    },
+    {
+      "candidate_id": "JPG-LE-MALE-LE-PARFUM",
+      "batch": 1,
+      "batch_rank": 7,
+      "proposed_product_id": "SC-JPG-LE-MALE-LE-PARFUM-125",
+      "brand": "Jean Paul Gaultier",
+      "canonical_name": "Le Male Le Parfum",
+      "concentration": "Eau de Parfum Intense",
+      "volume_ml": 125,
+      "target_group": "men",
+      "audience_lean": null,
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 3,
+      "blockers": [
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    },
+    {
+      "candidate_id": "VIKTOR-ROLF-SPICEBOMB-EXTREME",
+      "batch": 1,
+      "batch_rank": 8,
+      "proposed_product_id": "SC-VIKTOR-ROLF-SPICEBOMB-EXTREME-EDP-90",
+      "brand": "Viktor & Rolf",
+      "canonical_name": "Spicebomb Extreme",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "target_group": "men",
+      "audience_lean": null,
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 1,
+      "blockers": [
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    },
+    {
+      "candidate_id": "PRADA-LHOMME-INTENSE-EDP",
+      "batch": 1,
+      "batch_rank": 9,
+      "proposed_product_id": "SC-PRADA-LHOMME-INTENSE-EDP-100",
+      "brand": "Prada",
+      "canonical_name": "L'Homme Intense",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "target_group": "men",
+      "audience_lean": null,
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 2,
+      "blockers": [
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    },
+    {
+      "candidate_id": "HUGO-BOSS-BOTTLED-EDT",
+      "batch": 1,
+      "batch_rank": 10,
+      "proposed_product_id": "SC-HUGO-BOSS-BOTTLED-EDT-100",
+      "brand": "Hugo Boss",
+      "canonical_name": "BOSS Bottled",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "target_group": "men",
+      "audience_lean": null,
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 2,
+      "blockers": [
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    },
+    {
+      "candidate_id": "YSL-BLACK-OPIUM-EDP",
+      "batch": 2,
+      "batch_rank": 1,
+      "proposed_product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "brand": "Yves Saint Laurent",
+      "canonical_name": "Black Opium",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "target_group": "women",
+      "audience_lean": null,
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 2,
+      "blockers": [
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    },
+    {
+      "candidate_id": "CHLOE-CHLOE-EDP",
+      "batch": 2,
+      "batch_rank": 2,
+      "proposed_product_id": "SC-CHLOE-CHLOE-EDP-100",
+      "brand": "Chloé",
+      "canonical_name": "Chloé",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "target_group": "women",
+      "audience_lean": null,
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 2,
+      "blockers": [
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    },
+    {
+      "candidate_id": "LATTAFA-ECLAIRE-EDP",
+      "batch": 2,
+      "batch_rank": 3,
+      "proposed_product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
+      "brand": "Lattafa",
+      "canonical_name": "Eclaire",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "target_group": "women, unisex",
+      "audience_lean": "feminine",
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 2,
+      "blockers": [
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    },
+    {
+      "candidate_id": "LATTAFA-ANGHAM-EDP",
+      "batch": 2,
+      "batch_rank": 4,
+      "proposed_product_id": "SC-LATTAFA-ANGHAM-EDP-100",
+      "brand": "Lattafa",
+      "canonical_name": "Angham",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "target_group": "women, unisex",
+      "audience_lean": "feminine",
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 1,
+      "blockers": [
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    },
+    {
+      "candidate_id": "AMOUAGE-GUIDANCE-46",
+      "batch": 2,
+      "batch_rank": 5,
+      "proposed_product_id": "SC-AMOUAGE-GUIDANCE-46-EXTRAIT-100",
+      "brand": "Amouage",
+      "canonical_name": "Guidance 46",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 100,
+      "target_group": "unisex",
+      "audience_lean": "feminine",
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 1,
+      "blockers": [
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    },
+    {
+      "candidate_id": "PDM-VALAYA-EXCLUSIF",
+      "batch": 2,
+      "batch_rank": 6,
+      "proposed_product_id": "SC-PDM-VALAYA-EXCLUSIF-EDP-75",
+      "brand": "Parfums de Marly",
+      "canonical_name": "Valaya Exclusif",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 75,
+      "target_group": "women",
+      "audience_lean": null,
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 2,
+      "blockers": [
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    },
+    {
+      "candidate_id": "KAYALI-YUM-BOUJEE-MARSHMALLOW-81",
+      "batch": 2,
+      "batch_rank": 7,
+      "proposed_product_id": "SC-KAYALI-YUM-BOUJEE-MARSHMALLOW-81-EDPI-100",
+      "brand": "Kayali",
+      "canonical_name": "Yum Boujee Marshmallow | 81",
+      "concentration": "Eau de Parfum Intense",
+      "volume_ml": 100,
+      "target_group": "women",
+      "audience_lean": null,
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 1,
+      "blockers": [
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    },
+    {
+      "candidate_id": "HUGO-BOSS-BOTTLED-ABSOLU",
+      "batch": 2,
+      "batch_rank": 8,
+      "proposed_product_id": "SC-HUGO-BOSS-BOTTLED-ABSOLU-100",
+      "brand": "Hugo Boss",
+      "canonical_name": "BOSS Bottled Absolu",
+      "concentration": "Parfum Intense",
+      "volume_ml": 100,
+      "target_group": "men",
+      "audience_lean": null,
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 3,
+      "blockers": [
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    },
+    {
+      "candidate_id": "YSL-MYSLF-LE-PARFUM",
+      "batch": 2,
+      "batch_rank": 9,
+      "proposed_product_id": "SC-YSL-MYSLF-LE-PARFUM-100",
+      "brand": "Yves Saint Laurent",
+      "canonical_name": "MYSLF Le Parfum",
+      "concentration": "Parfum",
+      "volume_ml": 100,
+      "target_group": "men",
+      "audience_lean": null,
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 2,
+      "blockers": [
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    },
+    {
+      "candidate_id": "JPG-FLEUR-DU-MALE-2026",
+      "batch": 2,
+      "batch_rank": 10,
+      "proposed_product_id": "SC-JPG-FLEUR-DU-MALE-2026-EDT-125",
+      "brand": "Jean Paul Gaultier",
+      "canonical_name": "Fleur du Mâle (2026)",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 125,
+      "target_group": "men",
+      "audience_lean": null,
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 1,
+      "blockers": [
+        "community_performance_still_provisional",
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    },
+    {
+      "candidate_id": "DIOR-HYPNOTIC-POISON-EDT",
+      "batch": 3,
+      "batch_rank": 1,
+      "proposed_product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+      "brand": "Dior",
+      "canonical_name": "Hypnotic Poison",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "target_group": "women",
+      "audience_lean": null,
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 2,
+      "blockers": [
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    },
+    {
+      "candidate_id": "GUERLAIN-MON-GUERLAIN-EDP",
+      "batch": 3,
+      "batch_rank": 2,
+      "proposed_product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+      "brand": "Guerlain",
+      "canonical_name": "Mon Guerlain",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "target_group": "women",
+      "audience_lean": null,
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 2,
+      "blockers": [
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    },
+    {
+      "candidate_id": "AMOUAGE-REFLECTION-MAN-EDP",
+      "batch": 3,
+      "batch_rank": 3,
+      "proposed_product_id": "SC-AMOUAGE-REFLECTION-MAN-EDP-100",
+      "brand": "Amouage",
+      "canonical_name": "Reflection Man",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "target_group": "men",
+      "audience_lean": null,
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 2,
+      "blockers": [
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    },
+    {
+      "candidate_id": "YSL-LA-NUIT-DE-LHOMME-EDT",
+      "batch": 3,
+      "batch_rank": 4,
+      "proposed_product_id": "SC-YSL-LA-NUIT-DE-LHOMME-EDT-100",
+      "brand": "Yves Saint Laurent",
+      "canonical_name": "La Nuit de L'Homme",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "target_group": "men",
+      "audience_lean": null,
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 2,
+      "blockers": [
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    },
+    {
+      "candidate_id": "DOLCE-GABBANA-THE-ONE-MEN-EDP",
+      "batch": 3,
+      "batch_rank": 5,
+      "proposed_product_id": "SC-DOLCE-GABBANA-THE-ONE-MEN-EDP-100",
+      "brand": "Dolce & Gabbana",
+      "canonical_name": "The One for Men",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "target_group": "men",
+      "audience_lean": null,
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 2,
+      "blockers": [
+        "identity_version",
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    },
+    {
+      "candidate_id": "DIOR-SAUVAGE-ELIXIR",
+      "batch": 3,
+      "batch_rank": 6,
+      "proposed_product_id": "SC-DIOR-SAUVAGE-ELIXIR-100",
+      "brand": "Dior",
+      "canonical_name": "Sauvage Elixir",
+      "concentration": "Elixir",
+      "volume_ml": 100,
+      "target_group": "men",
+      "audience_lean": null,
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 2,
+      "blockers": [
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    },
+    {
+      "candidate_id": "PDM-HEROD-EDP",
+      "batch": 3,
+      "batch_rank": 7,
+      "proposed_product_id": "SC-PDM-HEROD-EDP-125",
+      "brand": "Parfums de Marly",
+      "canonical_name": "Herod",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 125,
+      "target_group": "men, unisex",
+      "audience_lean": "masculine",
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 1,
+      "blockers": [
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    },
+    {
+      "candidate_id": "INITIO-SIDE-EFFECT-EDP",
+      "batch": 3,
+      "batch_rank": 8,
+      "proposed_product_id": "SC-INITIO-SIDE-EFFECT-EDP-90",
+      "brand": "Initio Parfums Privés",
+      "canonical_name": "Side Effect",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "target_group": "unisex",
+      "audience_lean": null,
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 2,
+      "blockers": [
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    },
+    {
+      "candidate_id": "TOM-FORD-OMBRE-LEATHER-EDP",
+      "batch": 3,
+      "batch_rank": 9,
+      "proposed_product_id": "SC-TOM-FORD-OMBRE-LEATHER-EDP-100",
+      "brand": "Tom Ford",
+      "canonical_name": "Ombré Leather",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "target_group": "unisex",
+      "audience_lean": null,
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 1,
+      "blockers": [
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    },
+    {
+      "candidate_id": "NISHANE-ANI-EXTRAIT",
+      "batch": 3,
+      "batch_rank": 10,
+      "proposed_product_id": "SC-NISHANE-ANI-EXTRAIT-100",
+      "brand": "Nishane",
+      "canonical_name": "Ani",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 100,
+      "target_group": "unisex",
+      "audience_lean": null,
+      "identity_verified": true,
+      "community_qa_verified": true,
+      "merchant_coverage_count": 1,
+      "blockers": [
+        "affiliate_link_pending",
+        "approved_product_image_pending"
+      ],
+      "ready_for_live": false
+    }
+  ],
+  "next_actions": [
+    "Pause new catalog batches until this promotion pipeline is operational.",
+    "Resolve the The One for Men Eau de Parfum version blocker.",
+    "Record affiliate approvals as they arrive and map each approved merchant to feed/link ingestion.",
+    "Ingest approved product imagery and merchant offers.",
+    "Promote products in small live batches with search/recommendation QA after each promotion."
+  ]
+}
