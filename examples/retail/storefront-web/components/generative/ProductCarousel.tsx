@@ -335,6 +335,58 @@ function ProductDetail({
   );
 }
 
+function MobileProductResult({
+  product,
+  reason,
+  expanded,
+  onToggle,
+  onAdd,
+}: {
+  product: Product;
+  reason?: string | null;
+  expanded: boolean;
+  onToggle: () => void;
+  onAdd?: (product: Product) => boolean | void | Promise<boolean | void>;
+}) {
+  return (
+    <div className="overflow-hidden rounded-xl border border-(--line) bg-(--card)">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={expanded}
+        className="flex w-full items-center gap-3 p-2.5 text-left"
+      >
+        <ProductImage product={product} className="h-20 w-20 shrink-0 rounded-lg" />
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-[10.5px] font-medium uppercase tracking-[0.08em] text-(--ink-soft)/75">
+            {product.brand}
+          </div>
+          <div className="mt-0.5 line-clamp-2 text-[14px] font-semibold leading-snug text-(--ink)">
+            {product.title}
+          </div>
+          <div className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+            <span className="text-[14px] font-bold text-(--ink)">{customerPriceLabel(product)}</span>
+            <ProductRating product={product} compact />
+          </div>
+          <div className="mt-1 text-[11.5px] font-medium text-(--accent-ink)">
+            {expanded ? "Details schließen" : "Details ansehen"} {expanded ? "↑" : "→"}
+          </div>
+        </div>
+      </button>
+      {expanded ? (
+        <div className="border-t border-(--line) px-2 pb-2">
+          <ProductDetail
+            product={product}
+            reason={reason}
+            onAdd={onAdd}
+            onClose={onToggle}
+          />
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 export default function ProductCarousel({
   payload,
   onAdd,
@@ -412,7 +464,21 @@ export default function ProductCarousel({
       {payload.title ? (
         <h3 className="mb-3 text-[15px] font-semibold text-(--ink)">{payload.title}</h3>
       ) : null}
-      <div className="relative">
+      <div className="space-y-2 sm:hidden">
+        {items.map(({ product, reason }) => (
+          <MobileProductResult
+            key={product.product_id}
+            product={product}
+            reason={reason}
+            expanded={expandedId === product.product_id}
+            onToggle={() => toggle(product)}
+            onAdd={onAdd}
+          />
+        ))}
+        {partial ? <div className="ac-skeleton h-20 rounded-xl" /> : null}
+      </div>
+
+      <div className="relative hidden sm:block">
         <div
           ref={scrollerRef}
           onScroll={layout === "carousel" ? syncOverflow : undefined}
@@ -467,6 +533,7 @@ export default function ProductCarousel({
           </>
         ) : null}
       </div>
+      <div className="hidden sm:block">
       <div
         ref={collapseRef}
         className={`ac-collapse ${open ? "ac-collapse-open" : ""}`}
@@ -486,6 +553,7 @@ export default function ProductCarousel({
             />
           ) : null}
         </div>
+      </div>
       </div>
     </section>
   );
