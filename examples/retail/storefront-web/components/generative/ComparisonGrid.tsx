@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { formatMoney } from "web-shared";
+import { fragrancePathForProduct } from "@/lib/fragranceSlug";
 import type { ComparisonPayload } from "@/lib/types";
 import { ProductImage, ProductTitle, ProductRating } from "../ProductTile";
 
@@ -88,6 +89,14 @@ export default function ComparisonGrid({
                     <span className="font-semibold">{formatMoney(entry.product.price)}</span>
                     <ProductRating product={entry.product} />
                   </div>
+                  {String(entry.product.product_id).startsWith("SC-") ? (
+                    <a
+                      href={fragrancePathForProduct(entry.product)}
+                      className="mt-2 inline-block text-[11px] font-semibold text-(--accent-ink) hover:underline"
+                    >
+                      Duftseite öffnen →
+                    </a>
+                  ) : null}
                 </div>
               </div>
             </div>
