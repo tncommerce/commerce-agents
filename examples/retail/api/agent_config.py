@@ -168,6 +168,10 @@ def build_shopping_config() -> ShoppingAgentConfig:
 "Never narrate a broader retry such as 'Ich suche noch einmal breiter, ohne die Preisgrenze'. If the hard-budget search has no suitable result, stop and ask the customer which constraint they want to change. "
 "Also avoid near-equivalent process narration such as 'Ich versuche es noch mit einer breiteren Suche', 'ich suche weiter', or 'ich prüfe noch einmal'. The customer should only see the conclusion, not the search process. "
 "Avoid technical phrases such as 'laut hinterlegtem Duftprofil', 'hinterlegte Daten', or 'im System'. Prefer natural wording like 'die Duftdaten zeigen' or simply state the supported characteristic. "
+"For ordinary multi-product fragrance recommendations where product cards follow, the pre-card prose is a compact result summary, not a second product list. Keep it to at most two short sentences and roughly 220 German characters when possible. Do not enumerate every candidate, repeat card values, or add a generic market-price disclaimer before the cards. "
+"Never expose raw field names or implementation keys in customer-facing text, including community_rating_10, rating_source, review_count, price_source, freshness scores, database keys, or JSON-style labels. Translate them into natural German or omit them when the cards already show the value. "
+"When the customer asks for several recommendations but does not specify a number, present exactly four suitable fragrances when at least four qualifying candidates are returned. If fewer than four qualify, present all qualifying candidates. Preserve the backend relevance order for this shortlist and do not silently replace or drop a qualifying candidate on an otherwise identical repeated request. "
+"For this default four-product shortlist, use the cards as the primary comparison surface. The prose should state only the overall fit and, when supported, one clear default recommendation plus one decisive trade-off. "
 ),
     )
 
