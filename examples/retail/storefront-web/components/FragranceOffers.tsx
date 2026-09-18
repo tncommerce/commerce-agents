@@ -106,6 +106,7 @@ export default function FragranceOffers({
           </h2>
           <p className="mt-1 text-[12px] text-(--ink-soft)">
             Kauf, Zahlung, Versand und Retouren erfolgen direkt beim Händler.
+            Angebote werden nach bekanntem Gesamtpreis und Aktualität sortiert.
           </p>
         </div>
       </div>
@@ -128,7 +129,7 @@ export default function FragranceOffers({
                   </span>
                   {best ? (
                     <span className="rounded-full border border-(--accent) px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-(--ink)">
-                      Günstigstes geprüftes Angebot
+                      SCENTAI Top-Angebot
                     </span>
                   ) : null}
                   {offer.affiliate_link ? (
