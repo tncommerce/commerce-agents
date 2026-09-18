@@ -253,6 +253,14 @@ function matchesSearch(
   return searchScore(fragrance, search) >= 0;
 }
 
+function relaxedSearchQuery(search: string): string | null {
+  const tokens = search.trim().split(/\s+/).filter(Boolean);
+
+  if (tokens.length <= 1) return null;
+
+  return tokens.slice(0, -1).join(" ");
+}
+
 function matchesProfile(
   fragrance: StaticFragrance,
   profile: ProfileFilter,
@@ -401,6 +409,12 @@ export default function FragranceCatalogBrowser({
   );
   const remainingCount =
     filtered.length - visibleFragrances.length;
+  const relaxedSearch = relaxedSearchQuery(search);
+  const nonSearchFilterCount =
+    Number(audience !== "all") +
+    Number(profile !== "all") +
+    Number(brand !== "all") +
+    Number(minimumRating !== "0");
 
   const resetFilters = () => {
     setSearch("");
@@ -801,24 +815,56 @@ export default function FragranceCatalogBrowser({
           <h2 className="text-[16px] font-semibold text-(--ink)">
             Keine passenden Düfte gefunden
           </h2>
-          <p className="mx-auto mt-2 max-w-md text-[13px] leading-5 text-(--ink-soft)">
-            Ändere einen Filter oder setze die Auswahl
-            zurück. Der SCENTAI Advisor kann auch nach
-            mehreren Kriterien gleichzeitig suchen.
+          <p className="mx-auto mt-2 max-w-lg text-[13px] leading-5 text-(--ink-soft)">
+            {search.trim() && nonSearchFilterCount
+              ? "Die Kombination aus Suchtext und aktiven Filtern ist aktuell zu eng."
+              : search.trim()
+                ? "Der Suchtext ist aktuell zu spezifisch."
+                : "Die gewählten Filter liefern aktuell keine Treffer."}
+            {" "}Du kannst die Suche lockern oder einzelne Filter oben entfernen.
           </p>
-          <div className="mt-4 flex flex-wrap justify-center gap-2">
-            <button
-              type="button"
-              onClick={resetFilters}
-              className="rounded-xl border border-(--line) bg-(--surface) px-4 py-2 text-[12px] font-semibold text-(--ink)"
-            >
-              Filter zurücksetzen
-            </button>
+
+          <div className="mx-auto mt-5 flex max-w-xl flex-wrap justify-center gap-2">
+            {relaxedSearch ? (
+              <button
+                type="button"
+                onClick={() => setSearch(relaxedSearch)}
+                className="rounded-xl bg-(--ink) px-4 py-2 text-[12px] font-semibold text-(--surface)"
+              >
+                Suche lockern: „{relaxedSearch}“
+              </button>
+            ) : null}
+
+            {search.trim() ? (
+              <button
+                type="button"
+                onClick={() => setSearch("")}
+                className="rounded-xl border border-(--line) bg-(--surface) px-4 py-2 text-[12px] font-semibold text-(--ink)"
+              >
+                Nur Suche löschen
+              </button>
+            ) : null}
+
+            {hasChanges ? (
+              <button
+                type="button"
+                onClick={resetFilters}
+                className="rounded-xl border border-(--line) bg-(--surface) px-4 py-2 text-[12px] font-semibold text-(--ink)"
+              >
+                Alle Filter zurücksetzen
+              </button>
+            ) : null}
+          </div>
+
+          <div className="mt-5 border-t border-(--line) pt-5">
+            <p className="text-[12px] text-(--ink-soft)">
+              Du suchst nach mehreren Eigenschaften gleichzeitig?
+            </p>
             <a
               href="/"
-              className="rounded-xl bg-(--ink) px-4 py-2 text-[12px] font-semibold text-(--surface)"
+              className="mt-2 inline-flex rounded-xl bg-(--ink) px-4 py-2 text-[12px] font-semibold text-(--surface)"
             >
-              Advisor öffnen
+              SCENTAI Advisor öffnen
             </a>
           </div>
         </section>
