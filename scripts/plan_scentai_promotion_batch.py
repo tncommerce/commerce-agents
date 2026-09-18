@@ -159,6 +159,8 @@ def build_batch_plan(
                 "batch": product.get("batch"),
                 "brand": product.get("brand"),
                 "name": product.get("name"),
+                "concentration": product.get("concentration"),
+                "volume_ml": product.get("volume_ml"),
                 "target_groups": target_groups,
                 "audience_gap_score_10": gap_score,
                 "merchant_coverage_count": merchant_coverage,
