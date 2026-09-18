@@ -124,24 +124,28 @@ export default function HomeView({
           Für dich soll sich der Händlerpreis dadurch nicht erhöhen.
         </p>
       </div>
-      {picks.length ? (
-        <div className="flex flex-wrap gap-2 text-[12.5px] text-(--ink-soft)">
-          <a
-            href="/duft"
-            className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5 font-medium text-(--accent-ink) hover:border-(--accent)"
-          >
-            {scentCount} Düfte im Sortiment ansehen
-          </a>
-          <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">Preise & Community-Bewertungen</span>
-          <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">Empfehlungen nach Budget & Duftprofil</span>
-          <a
-            href="/vergleich"
-            className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5 font-medium text-(--accent-ink) hover:border-(--accent)"
-          >
-            Parfumvergleiche
-          </a>
-        </div>
-      ) : null}
+      <div className="flex flex-wrap gap-2 text-[12.5px] text-(--ink-soft)">
+        <a
+          href="/duft"
+          className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5 font-medium text-(--accent-ink) hover:border-(--accent)"
+        >
+          {scentCount
+            ? `${scentCount} Düfte im Sortiment ansehen`
+            : "Duftkatalog ansehen"}
+        </a>
+        <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">
+          Preise & Community-Bewertungen
+        </span>
+        <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">
+          Empfehlungen nach Budget & Duftprofil
+        </span>
+        <a
+          href="/vergleich"
+          className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5 font-medium text-(--accent-ink) hover:border-(--accent)"
+        >
+          Parfumvergleiche
+        </a>
+      </div>
       {picks.length ? (
         <HomeSection title="Düfte entdecken" subtitle="Entdecke das Sortiment oder lass dich direkt von SCENTAI beraten">
           <div className="flex flex-col gap-2 sm:hidden">
