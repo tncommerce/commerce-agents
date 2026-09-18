@@ -27,6 +27,8 @@ type SourceRow = {
   release_year?: number | null;
   classification?: {
     scentai_target_groups?: string[];
+    role?: string | null;
+    cluster_id?: string | null;
   };
   notes?: {
     top?: string[];
@@ -53,6 +55,11 @@ type SourceRow = {
     market_price_eur?: number | null;
     price_checked_at?: string | null;
   };
+  relationships?: {
+    related_product_id: string;
+    relationship_type: string;
+    confidence?: string | null;
+  }[];
 };
 
 export interface StaticFragrance {
@@ -67,6 +74,13 @@ export interface StaticFragrance {
   image_url?: string | null;
   short_description?: string | null;
   target_groups: string[];
+  role: string | null;
+  cluster_id: string | null;
+  relationships: {
+    related_product_id: string;
+    relationship_type: string;
+    confidence: string | null;
+  }[];
   notes: {
     top: string[];
     heart: string[];
@@ -165,6 +179,15 @@ function catalogToFragrance(
     image_url: row.image_url,
     short_description: row.short_description,
     target_groups: targetGroups,
+    role: source?.classification?.role || null,
+    cluster_id: source?.classification?.cluster_id || null,
+    relationships: (source?.relationships || []).map(
+      (relationship) => ({
+        related_product_id: relationship.related_product_id,
+        relationship_type: relationship.relationship_type,
+        confidence: relationship.confidence || null,
+      }),
+    ),
     notes: {
       top: source?.notes?.top || [],
       heart: source?.notes?.heart || [],
@@ -248,6 +271,252 @@ const bySlug = new Map(
     (fragrance) => [fragrance.slug, fragrance],
   ),
 );
+
+export type RelatedFragranceKind =
+  | "clone"
+  | "inspired"
+  | "alternative"
+  | "same_cluster"
+  | "similar_profile";
+
+export interface RelatedFragrance {
+  fragrance: StaticFragrance;
+  kind: RelatedFragranceKind;
+  confidence: string | null;
+  similarity_score: number;
+}
+
+const byProductId = new Map(
+  LIVE_FRAGRANCES.map(
+    (fragrance) => [fragrance.product_id, fragrance],
+  ),
+);
+
+const confidenceRank: Record<string, number> = {
+  high: 4,
+  medium_high: 3,
+  medium: 2,
+  low: 1,
+};
+
+function explicitRelationship(
+  left: StaticFragrance,
+  right: StaticFragrance,
+): {
+  kind: RelatedFragranceKind;
+  confidence: string | null;
+} | null {
+  const candidates = [
+    ...left.relationships
+      .filter(
+        (relationship) =>
+          relationship.related_product_id === right.product_id,
+      ),
+    ...right.relationships
+      .filter(
+        (relationship) =>
+          relationship.related_product_id === left.product_id,
+      ),
+  ];
+
+  if (!candidates.length) return null;
+
+  candidates.sort(
+    (a, b) =>
+      (confidenceRank[b.confidence || ""] || 0) -
+      (confidenceRank[a.confidence || ""] || 0),
+  );
+
+  const selected = candidates[0];
+  const kind = selected.relationship_type as RelatedFragranceKind;
+
+  if (!["clone", "inspired", "alternative"].includes(kind)) {
+    return null;
+  }
+
+  return {
+    kind,
+    confidence: selected.confidence || null,
+  };
+}
+
+function profileSimilarity(
+  left: StaticFragrance,
+  right: StaticFragrance,
+): number {
+  const leftAccords = new Set(
+    left.accords.map((accord) => accord.toLowerCase()),
+  );
+  const rightAccords = new Set(
+    right.accords.map((accord) => accord.toLowerCase()),
+  );
+
+  const sharedAccords = [...leftAccords].filter(
+    (accord) => rightAccords.has(accord),
+  ).length;
+
+  const leftTargets = new Set(left.target_groups);
+  const sharedTargets = right.target_groups.filter(
+    (target) => leftTargets.has(target),
+  ).length;
+
+  const axes = [
+    "freshness",
+    "sweetness",
+    "woodiness",
+    "spiciness",
+  ] as const;
+
+  let profileCloseness = 0;
+
+  for (const axis of axes) {
+    const leftValue = left.scores[axis];
+    const rightValue = right.scores[axis];
+
+    if (leftValue == null || rightValue == null) continue;
+
+    profileCloseness +=
+      Math.max(0, 10 - Math.abs(leftValue - rightValue)) / 10;
+  }
+
+  return (
+    sharedAccords * 3 +
+    sharedTargets * 1.5 +
+    profileCloseness
+  );
+}
+
+export function getRelatedFragrances(
+  fragrance: StaticFragrance,
+  limit = 4,
+): RelatedFragrance[] {
+  const candidates = LIVE_FRAGRANCES
+    .filter(
+      (candidate) =>
+        candidate.product_id !== fragrance.product_id,
+    )
+    .map((candidate) => {
+      const explicit = explicitRelationship(
+        fragrance,
+        candidate,
+      );
+      const sameCluster =
+        Boolean(fragrance.cluster_id) &&
+        fragrance.cluster_id === candidate.cluster_id;
+      const similarity = profileSimilarity(
+        fragrance,
+        candidate,
+      );
+
+      return {
+        fragrance: candidate,
+        kind: explicit?.kind ||
+          (sameCluster ? "same_cluster" : "similar_profile"),
+        confidence: explicit?.confidence || null,
+        similarity_score:
+          (explicit ? 100 : 0) +
+          (sameCluster ? 25 : 0) +
+          similarity,
+      } satisfies RelatedFragrance;
+    })
+    .sort(
+      (a, b) =>
+        b.similarity_score - a.similarity_score ||
+        b.fragrance.community.rating_count -
+          a.fragrance.community.rating_count,
+    );
+
+  return candidates.slice(0, limit);
+}
+
+export interface ExplicitComparisonPair {
+  left: StaticFragrance;
+  right: StaticFragrance;
+  kind: "clone" | "inspired" | "alternative";
+  confidence: string | null;
+  pair_slug: string;
+}
+
+export function comparisonPairSlug(
+  left: StaticFragrance,
+  right: StaticFragrance,
+): string {
+  return [left.slug, right.slug]
+    .sort((a, b) => a.localeCompare(b))
+    .join("-vs-");
+}
+
+const comparisonPairMap = new Map<
+  string,
+  ExplicitComparisonPair
+>();
+
+for (const fragrance of LIVE_FRAGRANCES) {
+  for (const relationship of fragrance.relationships) {
+    const related = byProductId.get(
+      relationship.related_product_id,
+    );
+
+    if (!related) continue;
+    if (
+      !["clone", "inspired", "alternative"].includes(
+        relationship.relationship_type,
+      )
+    ) {
+      continue;
+    }
+
+    const pairSlug = comparisonPairSlug(
+      fragrance,
+      related,
+    );
+
+    const candidate: ExplicitComparisonPair = {
+      left: fragrance.slug.localeCompare(related.slug) <= 0
+        ? fragrance
+        : related,
+      right: fragrance.slug.localeCompare(related.slug) <= 0
+        ? related
+        : fragrance,
+      kind: relationship.relationship_type as
+        ExplicitComparisonPair["kind"],
+      confidence: relationship.confidence || null,
+      pair_slug: pairSlug,
+    };
+
+    const existing = comparisonPairMap.get(pairSlug);
+    const existingRank =
+      confidenceRank[existing?.confidence || ""] || 0;
+    const candidateRank =
+      confidenceRank[candidate.confidence || ""] || 0;
+
+    if (!existing || candidateRank > existingRank) {
+      comparisonPairMap.set(pairSlug, candidate);
+    }
+  }
+}
+
+export const EXPLICIT_COMPARISON_PAIRS =
+  [...comparisonPairMap.values()].sort(
+    (a, b) => a.pair_slug.localeCompare(b.pair_slug),
+  );
+
+export function getComparisonPair(
+  pairSlug: string,
+): ExplicitComparisonPair | null {
+  return comparisonPairMap.get(pairSlug) || null;
+}
+
+export function comparisonPath(
+  left: StaticFragrance,
+  right: StaticFragrance,
+): string {
+  const pairSlug = comparisonPairSlug(left, right);
+
+  return comparisonPairMap.has(pairSlug)
+    ? `/vergleich/${pairSlug}`
+    : `/duft/${right.slug}`;
+}
 
 export function getLiveFragranceBySlug(
   slug: string,
