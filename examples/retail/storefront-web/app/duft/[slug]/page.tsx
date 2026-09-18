@@ -245,7 +245,9 @@ export default async function FragrancePage({
             SCENTAI
           </a>
           <span className="px-2">/</span>
-          <span>Düfte</span>
+          <a href="/duft" className="hover:underline">
+            Düfte
+          </a>
           <span className="px-2">/</span>
           <span className="text-(--ink)">
             {fragrance.brand} {fragrance.name}
