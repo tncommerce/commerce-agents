@@ -223,7 +223,13 @@ def fetch_view_rows(
 ) -> list[dict]:
     headers = {
         "apikey": service_key,
-        "Authorization": f"Bearer {service_key}",
+        **(
+            {
+                "Authorization": f"Bearer {service_key}",
+            }
+            if service_key.startswith("eyJ")
+            else {}
+        ),
     }
 
     response = httpx.get(
