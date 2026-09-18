@@ -120,6 +120,9 @@ function normalize(value: string): string {
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
+    .replace(/ß/g, "ss")
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
     .trim();
 }
 
@@ -331,7 +334,7 @@ export default function FragranceCatalogBrowser({
             minimum,
       )
       .sort((a, b) => {
-        if (search.trim()) {
+        if (search.trim() && sort === "popular") {
           const relevance =
             searchScore(b, search) -
             searchScore(a, search);
