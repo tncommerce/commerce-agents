@@ -1,8 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-import { trackAnalyticsEvent } from "@/lib/analytics";
+import {
+  safeCatalogSearchTerm,
+  trackAnalyticsEvent,
+  trackCatalogSearch,
+} from "@/lib/analytics";
 import type { StaticFragrance } from "@/lib/fragranceCatalog";
 
 type AudienceFilter = "all" | "men" | "unisex" | "women";
@@ -294,6 +298,7 @@ export default function FragranceCatalogBrowser({
     useState(false);
   const [visibleCount, setVisibleCount] =
     useState(PAGE_SIZE);
+  const lastTrackedSearchRef = useRef("");
 
   const brands = useMemo(
     () =>
@@ -393,6 +398,42 @@ export default function FragranceCatalogBrowser({
     profile,
     search,
     sort,
+  ]);
+
+  useEffect(() => {
+    const safeSearch = safeCatalogSearchTerm(search);
+
+    if (!safeSearch) {
+      lastTrackedSearchRef.current = "";
+      return;
+    }
+
+    const fingerprint = [
+      safeSearch,
+      audience,
+      profile,
+      brand,
+      minimumRating,
+      String(filtered.length),
+    ].join("|");
+
+    const timeout = window.setTimeout(() => {
+      if (lastTrackedSearchRef.current === fingerprint) {
+        return;
+      }
+
+      lastTrackedSearchRef.current = fingerprint;
+      void trackCatalogSearch(search, filtered.length);
+    }, 700);
+
+    return () => window.clearTimeout(timeout);
+  }, [
+    audience,
+    brand,
+    filtered.length,
+    minimumRating,
+    profile,
+    search,
   ]);
 
   const activeFilterCount =
