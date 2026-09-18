@@ -1,9 +1,23 @@
-﻿{
+{
   "mappings": [
     {
       "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
       "merchant": "notino",
       "merchant_product_id": null,
+      "ean": null,
+      "gtin": null
+    },
+    {
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "merchant": "douglas",
+      "merchant_product_id": "1068008",
+      "ean": null,
+      "gtin": null
+    },
+    {
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "merchant": "flaconi",
+      "merchant_product_id": "90009660-0014734",
       "ean": null,
       "gtin": null
     }
