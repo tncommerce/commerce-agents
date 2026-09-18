@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 
+import LegalFooter from "@/components/LegalFooter";
+
 export default function ErrorPage({
   error,
   reset,
@@ -43,6 +45,7 @@ export default function ErrorPage({
             </a>
           </div>
         </section>
+        <LegalFooter />
       </div>
     </main>
   );
