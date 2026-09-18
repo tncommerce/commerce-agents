@@ -1,6 +1,8 @@
 import type { MetadataRoute } from "next";
 
 import {
+export const dynamic = "force-static";
+
   EXPLICIT_COMPARISON_PAIRS,
   LIVE_FRAGRANCES,
 } from "@/lib/fragranceCatalog";
