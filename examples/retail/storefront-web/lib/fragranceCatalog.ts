@@ -13,7 +13,7 @@ type CatalogRow = {
   review_count?: number | null;
   category?: string | null;
   labels?: string[];
-  attributes?: Record<string, string>;
+  attributes?: Record<string, string | undefined>;
   in_stock?: boolean;
   short_description?: string | null;
 };
