@@ -590,6 +590,32 @@ class MockRetail(StorefrontBackend):
         ):
             signals.append("starke Präsenz für Party oder Club")
 
+        wants_everyday = any(
+            term in normalized
+            for term in (
+                "alltag",
+                "taglich",
+                "daily",
+                "everyday",
+            )
+        )
+        if wants_everyday and all(
+            value is not None
+            for value in (
+                freshness,
+                sweetness,
+                projection,
+                longevity,
+            )
+        ):
+            if (
+                freshness >= 5
+                and sweetness <= 7
+                and 6.0 <= projection <= 7.8
+                and longevity >= 7.0
+            ):
+                signals.append("ausgewogenes Alltagsprofil")
+
         if avoids_sweet and sweetness is not None and sweetness <= 4:
             signals.append("geringe Süße")
 
@@ -1106,6 +1132,35 @@ class MockRetail(StorefrontBackend):
             )
         )
 
+        wants_everyday = any(
+            term in normalized_preference_query
+            for term in (
+                "alltag",
+                "taglich",
+                "daily",
+                "everyday",
+            )
+        )
+
+        if wants_everyday:
+            if freshness is not None:
+                preference_score += (
+                    2.0
+                    if 5 <= freshness <= 9
+                    else 0.5
+                )
+            if sweetness is not None:
+                preference_score += (
+                    1.5
+                    if sweetness <= 7
+                    else -1.0
+                )
+            if projection is not None:
+                if 6.0 <= projection <= 7.8:
+                    preference_score += 1.5
+                elif projection > 8.5:
+                    preference_score -= 0.75
+
         # Performance preference: longevity and projection.
         longevity = numeric_attribute("longevity")
         projection = numeric_attribute("projection")
@@ -1131,6 +1186,13 @@ class MockRetail(StorefrontBackend):
                 if value is not None
             )
             preference_score += (party_energy / 10.0) * 1.0
+
+        if wants_everyday and longevity is not None:
+            if longevity >= 7.0:
+                preference_score += min(
+                    1.5,
+                    (longevity - 6.5) * 0.75,
+                )
 
         wants_longevity = any(
             term in query_text
