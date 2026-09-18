@@ -101,29 +101,37 @@ export default function DatenschutzPage() {
               <h2 className="font-semibold text-(--ink)">4. Sitzungen und Gesprächsverlauf</h2>
               <p className="mt-1">
                 Für die technische Durchführung einer Beratung erzeugt SCENTAI eine zufällige Sitzungs-ID.
-                Sie wird im Browser nicht dauerhaft als eigener Login gespeichert, sondern während der
-                laufenden Nutzung an das Backend übermittelt. Der Gesprächsverlauf kann für die Dauer der
-                technischen Sitzung im Serverprozess vorgehalten werden. Eine dauerhafte persönliche
-                Duft-Memory-Funktion ist im aktuellen MVP deaktiviert.
+                Sie ist kein Kundenkonto und keine dauerhafte werbliche Nutzerkennung. Damit eine laufende
+                Nutzung beim Wechsel zwischen Beratung, Duftdetail und Vergleich technisch zusammenhängend
+                bleibt, kann die Sitzungs-ID für die Dauer der Browser-Sitzung im sessionStorage des
+                jeweiligen Tabs gespeichert und an das Backend übermittelt werden. Der Gesprächsverlauf
+                kann für die Dauer der technischen Sitzung im Serverprozess vorgehalten werden. Eine
+                dauerhafte persönliche Duft-Memory-Funktion ist im aktuellen MVP deaktiviert.
               </p>
             </section>
 
             <section>
               <h2 className="font-semibold text-(--ink)">5. Nutzungsstatistik und Händlerlinks</h2>
               <p className="mt-1">
-                Für die interne Produktverbesserung erfasst SCENTAI im MVP wenige eigene Nutzungsereignisse,
-                zum Beispiel Seitenaufruf, Start einer Beratung, Öffnen einer Produktansicht und Händler-Clickout.
-                Dabei werden keine Beratungstexte, Namen, E-Mail-Adressen oder Browser-Fingerprints in den
-                Analyse-Datensatz geschrieben. Die technische Sitzungs-ID wird vor der Speicherung in einen
-                verkürzten Einweg-Hash umgewandelt, damit Ereignisse innerhalb einer Sitzung zusammengefasst
-                werden können, ohne die ursprüngliche Sitzungs-ID im Analyseprotokoll zu speichern.
+                Für die interne Produktverbesserung erfasst SCENTAI im MVP eigene Nutzungsereignisse,
+                zum Beispiel Seitenaufruf, Start einer Beratung, angezeigte Empfehlungen, Öffnen einer
+                Produktansicht, Duftvergleiche, Katalogsuchen und Händler-Clickouts. Bei Katalogsuchen kann
+                ein auf höchstens 80 Zeichen begrenzter normalisierter Suchbegriff zusammen mit der Trefferzahl
+                gespeichert werden; E-Mail-artige Eingaben und lange nummernartige Eingaben werden hierfür
+                verworfen. Zusätzlich können Produkt-ID, Vergleichsprodukt, Empfehlungsposition und die
+                jeweilige SCENTAI-Oberfläche gespeichert werden. Beratungstexte, Namen, E-Mail-Adressen,
+                IP-Adressen oder Browser-Fingerprints werden nicht in den Analyse-Datensatz geschrieben.
+                Die technische Sitzungs-ID wird vor der Speicherung in einen verkürzten Einweg-Hash
+                umgewandelt, damit Ereignisse innerhalb einer Sitzung zusammengefasst werden können, ohne
+                die ursprüngliche Sitzungs-ID im Analyseprotokoll zu speichern.
               </p>
               <p className="mt-2">
-                Zusätzlich protokolliert SCENTAI beim Öffnen eines Händlerlinks einen Clickout-Datensatz mit
-                Zeitpunkt, Angebot, Produkt, Händler, Netzwerk und der Information, ob ein Partnerlink verwendet
-                wurde. Der eigentliche Kauf findet beim Händler statt. Auf dessen Website gelten anschließend
-                die dortigen Datenschutz- und Trackingregeln. Partnerlinks werden bei SCENTAI entsprechend
-                gekennzeichnet.
+                Die pseudonymisierten Analyseereignisse werden für die interne Auswertung in der von SCENTAI
+                eingesetzten Supabase-Datenbankinfrastruktur gespeichert. Zusätzlich protokolliert SCENTAI beim
+                Öffnen eines Händlerlinks einen Clickout-Datensatz mit Zeitpunkt, Angebot, Produkt, Händler,
+                Netzwerk und der Information, ob ein Partnerlink verwendet wurde. Der eigentliche Kauf findet
+                beim Händler statt. Auf dessen Website gelten anschließend die dortigen Datenschutz- und
+                Trackingregeln. Partnerlinks werden bei SCENTAI entsprechend gekennzeichnet.
               </p>
             </section>
 
