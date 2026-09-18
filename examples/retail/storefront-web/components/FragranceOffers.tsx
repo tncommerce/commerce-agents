@@ -29,11 +29,13 @@ export default function FragranceOffers({
   heading = "Aktuelle Händlerangebote",
   trackProductOpen = true,
   compact = false,
+  analyticsSurface = "fragrance_detail",
 }: {
   productId: string;
   heading?: string;
   trackProductOpen?: boolean;
   compact?: boolean;
+  analyticsSurface?: string;
 }) {
   const [payload, setPayload] = useState<
     MerchantOffersPayload | null | undefined
@@ -43,9 +45,10 @@ export default function FragranceOffers({
     let active = true;
 
     if (trackProductOpen) {
-      void trackAnalyticsEvent("product_open", {
+      void trackAnalyticsEvent("fragrance_detail_view", {
         product_id: productId,
         source: "fragrance_detail_page",
+        surface: analyticsSurface,
       });
     }
 
@@ -60,7 +63,7 @@ export default function FragranceOffers({
     return () => {
       active = false;
     };
-  }, [productId, trackProductOpen]);
+  }, [analyticsSurface, productId, trackProductOpen]);
 
   if (payload === undefined) {
     return (
@@ -187,6 +190,7 @@ export default function FragranceOffers({
                     {
                       product_id: offer.product_id,
                       source: offer.merchant_id,
+                      surface: analyticsSurface,
                     },
                   )
                 }
