@@ -11,7 +11,8 @@
     "variant_label": "REPLACE_WITH_VARIANT_COLUMN_IF_PRESENT",
     "product_url": "REPLACE_WITH_PRODUCT_URL_COLUMN",
     "affiliate_url": "REPLACE_WITH_TRACKED_URL_COLUMN",
-    "last_updated_at": "REPLACE_WITH_UPDATED_AT_COLUMN"
+    "last_updated_at": "REPLACE_WITH_UPDATED_AT_COLUMN",
+    "image_url": "REPLACE_WITH_IMAGE_URL_COLUMN_IF_PRESENT"
   },
   "constants": {
     "merchant": "replace-with-normalized-merchant-key",
@@ -21,5 +22,5 @@
     "network": "Awin-or-CJ",
     "data_source": "replace-with-feed-name"
   },
-  "note": "Template only. Replace external column names from the actual approved feed sample; SCENTAI does not assume Awin or CJ column names in advance."
+  "note": "Template only. Replace external column names from the actual approved feed sample; SCENTAI does not assume Awin or CJ column names in advance. image_url is optional and is extracted into a separate review-only image-candidate pipeline before any product image can go live."
 }
