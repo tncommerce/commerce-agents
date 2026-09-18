@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from retail.api.merchant_feed_preflight import (
     build_feed_preflight,
+    build_mapping_coverage,
 )
+from retail.api.merchant_import import MerchantProductMapping
 from retail.api.preflight_merchant_feed import (
     preflight_status,
 )
@@ -101,3 +103,31 @@ def test_invalid_urls_are_reported_separately() -> None:
         "affiliate_url",
         "image_url",
     ]
+
+
+
+def test_mapping_coverage_is_informational_for_broad_feed() -> None:
+    rows = [
+        complete_row(),
+        {
+            **complete_row(),
+            "offer_id": "offer-2",
+            "merchant_product_id": "UNRELATED",
+        },
+    ]
+    mappings = [
+        MerchantProductMapping(
+            product_id="SC-TEST-100",
+            merchant="notino",
+            merchant_product_id="SKU-123",
+        )
+    ]
+
+    report = build_mapping_coverage(rows, mappings)
+
+    assert report["row_count"] == 2
+    assert report["mapped_rows"] == 1
+    assert report["unmapped_rows"] == 1
+    assert report["mapping_coverage_pct"] == 50.0
+    assert report["mapped_product_ids"] == ["SC-TEST-100"]
+    assert report["unmatched_preview"][0]["offer_id"] == "offer-2"
