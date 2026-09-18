@@ -75,3 +75,57 @@ def test_search_term_sanitizer_rejects_long_number_input() -> None:
         sanitize_catalog_search_term("+49 171 1234567")
         is None
     )
+
+
+
+def test_conversion_event_request_accepts_funnel_context() -> None:
+    request = AnalyticsEventRequest(
+        event="comparison_start",
+        product_id="SC-LEFT",
+        related_product_id="SC-RIGHT",
+        source="comparison_hub",
+        surface="free_comparison",
+        item_position=2,
+    )
+
+    assert request.event == "comparison_start"
+    assert request.product_id == "SC-LEFT"
+    assert request.related_product_id == "SC-RIGHT"
+    assert request.surface == "free_comparison"
+    assert request.item_position == 2
+
+
+def test_tracker_row_contains_conversion_fields(tmp_path: Path) -> None:
+    tracker = FirstPartyAnalyticsTracker(
+        tmp_path / "analytics.jsonl"
+    )
+
+    row = tracker._row(
+        session_id="session-456",
+        event="advisor_recommendation_view",
+        product_id="SC-TEST-100",
+        source="advisor",
+        surface="advisor_recommendation",
+        item_position=1,
+        now=datetime(2026, 9, 18, 21, 0, tzinfo=UTC),
+    )
+
+    assert row["event"] == "advisor_recommendation_view"
+    assert row["product_id"] == "SC-TEST-100"
+    assert row["surface"] == "advisor_recommendation"
+    assert row["item_position"] == 1
+    assert row["related_product_id"] is None
+
+
+def test_funnel_item_position_is_bounded() -> None:
+    from pydantic import ValidationError
+
+    try:
+        AnalyticsEventRequest(
+            event="advisor_recommendation_view",
+            item_position=101,
+        )
+    except ValidationError:
+        pass
+    else:
+        raise AssertionError("item_position above 100 must be rejected")
