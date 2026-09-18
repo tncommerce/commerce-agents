@@ -9,7 +9,10 @@ import CartPanel from "@/components/CartPanel";
 import Chat from "@/components/Chat";
 import HomeView from "@/components/views/HomeView";
 import { api, UNREACHABLE } from "@/lib/api";
-import { advisorStartPrompt } from "@/lib/advisorStarts";
+import {
+  advisorStartPrompt,
+  GUIDED_START_STORAGE_KEY,
+} from "@/lib/advisorStarts";
 import { trackAnalyticsEvent } from "@/lib/analytics";
 import type { CartPayload } from "@/lib/types";
 
@@ -76,12 +79,27 @@ export default function StorefrontPage() {
 
     if (!startKey || !prompt) return;
 
-    guidedStartRef.current = startKey;
+    let confirmedStart: string | null = null;
+    try {
+      confirmedStart = window.sessionStorage.getItem(
+        GUIDED_START_STORAGE_KEY,
+      );
+      window.sessionStorage.removeItem(
+        GUIDED_START_STORAGE_KEY,
+      );
+    } catch {
+      confirmedStart = null;
+    }
+
     window.history.replaceState(
       {},
       "",
       window.location.pathname,
     );
+
+    if (confirmedStart !== startKey) return;
+
+    guidedStartRef.current = startKey;
     void chat.send(prompt);
   }, [
     chat.busy,
