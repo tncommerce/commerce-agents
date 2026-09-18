@@ -19,7 +19,11 @@ from .merchant_feed_reader import (
 from .merchant_provider_contract import (
     validate_provider_contract_rows,
 )
-from .merchant_providers import adapt_provider_rows
+from .merchant_providers import (
+    adapt_provider_rows,
+    load_mapped_provider_adapter,
+    register_provider_adapter,
+)
 
 from .merchant_run_reports import (
     append_import_run_report,
@@ -74,6 +78,16 @@ def main() -> int:
         type=str,
         default="canonical",
         help="Merchant feed provider adapter.",
+    )
+    parser.add_argument(
+        "--provider-config",
+        type=Path,
+        default=None,
+        help=(
+            "Optional JSON field-mapping config for a real affiliate feed. "
+            "When set, its provider_name is registered dynamically and used "
+            "instead of a hard-coded network adapter."
+        ),
     )
     parser.add_argument(
         "--feed-format",
@@ -152,8 +166,25 @@ def main() -> int:
     except ValueError as exc:
         parser.error(str(exc))
 
+    provider_name = args.provider
+
+    if args.provider_config is not None:
+        try:
+            adapter = load_mapped_provider_adapter(
+                args.provider_config
+            )
+            register_provider_adapter(
+                adapter,
+                replace=True,
+            )
+            provider_name = adapter.provider_name
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            parser.error(
+                f"Invalid provider config: {exc}"
+            )
+
     adapted_rows = adapt_provider_rows(
-        args.provider,
+        provider_name,
         raw_rows,
     )
 
@@ -280,7 +311,7 @@ def main() -> int:
     mode = "DRY-RUN" if args.dry_run else "WRITE"
 
     run_report = build_import_run_report(
-        provider=args.provider,
+        provider=provider_name,
         mode=mode,
         feed_file=args.feed.name,
         feed_sha256=feed_sha256,
