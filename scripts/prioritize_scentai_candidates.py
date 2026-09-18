@@ -129,17 +129,14 @@ def query_matches_candidate(
 
     # One-word names such as "Y" are intentionally not matched by loose
     # token containment because they would create false positives.
-    if (
+    return (
         len(meaningful_name_tokens) >= 1
         and all(
             len(token) >= 3
             for token in meaningful_name_tokens
         )
         and meaningful_name_tokens.issubset(query_tokens)
-    ):
-        return True
-
-    return False
+    )
 
 
 def demand_points(
