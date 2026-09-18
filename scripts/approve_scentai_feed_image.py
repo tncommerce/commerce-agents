@@ -4,6 +4,7 @@ import argparse
 import json
 from datetime import UTC, datetime
 from pathlib import Path
+from urllib.parse import urlparse
 
 DEFAULT_STAGING = Path("examples/retail/data/scentai_catalog_staging.json")
 DEFAULT_CANDIDATES = Path("examples/retail/data/merchant_feed_image_candidates.json")
@@ -17,6 +18,11 @@ APPROVED_IMAGE_STATUSES = {
 
 def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8-sig"))
+
+
+def valid_http_url(value: str) -> bool:
+    parsed = urlparse(value)
+    return parsed.scheme in {"http", "https"} and bool(parsed.netloc)
 
 
 def approval_plan(
@@ -34,6 +40,16 @@ def approval_plan(
         raise ValueError("product_id_required")
     if not image_url:
         raise ValueError("image_url_required")
+    if not valid_http_url(image_url):
+        raise ValueError("image_url_must_be_http_or_https")
+
+    payload_status = str(
+        candidates_payload.get("status") or ""
+    ).strip()
+    if payload_status and payload_status != "review_only_not_live":
+        raise ValueError(
+            "candidate_payload_not_review_only"
+        )
 
     candidate = next(
         (
@@ -54,6 +70,14 @@ def approval_plan(
         "approved",
     }:
         raise ValueError(f"candidate_not_approvable:{status or 'missing_status'}")
+
+    proposed_status = str(
+        candidate.get("proposed_image_status") or ""
+    ).strip()
+    if proposed_status != "approved_feed_image":
+        raise ValueError(
+            "candidate_missing_approved_feed_image_proposal"
+        )
 
     products = staging.get("products", [])
     product = next(
