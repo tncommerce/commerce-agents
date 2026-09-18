@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "batch": 3,
   "checked_at": "2026-09-18",
   "status": "community_scent_profile_verified",
@@ -78,21 +78,21 @@
     },
     {
       "candidate_id": "DOLCE-GABBANA-THE-ONE-MEN-EDP",
-      "scent_rating_10": 8.4,
-      "scent_ratings_count": 4524,
-      "longevity_10": 6.4,
-      "longevity_ratings_count": 4262,
-      "sillage_10": 6.3,
-      "sillage_ratings_count": 4239,
+      "scent_rating_10": 7.8,
+      "scent_ratings_count": 52,
+      "longevity_10": null,
+      "longevity_ratings_count": null,
+      "sillage_10": null,
+      "sillage_ratings_count": null,
       "main_accords": [
-        "sweet",
         "spicy",
         "woody",
-        "oriental",
-        "fruity"
+        "sweet",
+        "citrus",
+        "resinous"
       ],
-      "source": "https://www.parfumo.de/Parfums/Dolce_Gabbana/the-one-for-men-eau-de-parfum-2015",
-      "version_note": "These community scores are for the 2015 version. Do not apply them to the separately tracked 2025 version without explicit identity confirmation."
+      "source": "https://www.parfumo.com/Perfumes/Dolce_Gabbana/the-one-for-men-eau-de-parfum-2025",
+      "version_note": "Current 2025 reimagined Eau de Parfum. Performance/community sample is still small, so do not use the older 2015 ratings."
     },
     {
       "candidate_id": "DIOR-SAUVAGE-ELIXIR",
