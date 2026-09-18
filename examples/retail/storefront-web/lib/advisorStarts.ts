@@ -1,3 +1,6 @@
+export const GUIDED_START_STORAGE_KEY =
+  "scentai_guided_start_v1";
+
 export const ADVISOR_STARTS = {
   summer:
     "Ich suche einen frischen Sommerduft unter 60 €.",
