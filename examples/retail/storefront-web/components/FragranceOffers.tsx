@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { formatMoney } from "web-shared";
 
 import {
@@ -40,11 +40,17 @@ export default function FragranceOffers({
   const [payload, setPayload] = useState<
     MerchantOffersPayload | null | undefined
   >(undefined);
+  const trackedDetailViewRef = useRef<string | null>(null);
 
   useEffect(() => {
     let active = true;
 
-    if (trackProductOpen) {
+    const detailViewKey = `${productId}:${analyticsSurface}`;
+    if (
+      trackProductOpen &&
+      trackedDetailViewRef.current !== detailViewKey
+    ) {
+      trackedDetailViewRef.current = detailViewKey;
       void trackAnalyticsEvent("fragrance_detail_view", {
         product_id: productId,
         source: "fragrance_detail_page",
