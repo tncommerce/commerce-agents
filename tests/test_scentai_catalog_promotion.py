@@ -151,6 +151,19 @@ def test_provisional_community_data_is_blocked_by_default() -> None:
     assert "provisional_community_data" in blockers
 
 
+def test_missing_target_group_blocks_live_promotion() -> None:
+    product = staged_product()
+    product["classification"]["target_groups"] = []
+
+    blockers = promotion_blockers(
+        product,
+        [affiliate_offer()],
+        now=NOW,
+    )
+
+    assert "missing_target_group" in blockers
+
+
 def test_catalog_conversion_marks_current_merchant_price() -> None:
     converted = build_catalog_product(
         staged_product(),
