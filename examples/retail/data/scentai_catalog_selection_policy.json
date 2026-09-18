@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "name": "SCENTAI Catalog Selection Policy",
   "target_live_catalog_size": 150,
   "purpose": "Select high-demand, high-quality, commercially useful fragrances without relying on a single retailer or community.",
@@ -88,5 +88,25 @@
     "score_65_79": "Good candidate; promote when it fills a catalog gap or has strong merchant coverage.",
     "score_50_64": "Keep in backlog; needs stronger evidence or clearer portfolio role.",
     "score_below_50": "Do not prioritize."
+  },
+  "emerging_release_fast_track": {
+    "purpose": "Catch genuinely hot new releases before stable retailer sales histories exist.",
+    "eligibility": [
+      "Release is new enough that normal annual sales history is not yet available.",
+      "At least two independent demand/community signals are positive.",
+      "Early community sample is large enough to be meaningful for the age of the release.",
+      "The product fills a real catalog or trend-discovery role."
+    ],
+    "current_thresholds": {
+      "minimum_cross_source_signals": 2,
+      "preferred_minimum_community_votes_per_source": 75,
+      "preferred_community_quality": "Clearly above the source's ordinary average for a new release"
+    },
+    "guardrails": [
+      "Fast-track means candidate priority, not automatic live publication.",
+      "Exact product identity, concentration and size still require verification.",
+      "Early hype must be rechecked after the initial launch window.",
+      "Do not compare raw scores across communities without accounting for scale and vote count."
+    ]
   }
 }
