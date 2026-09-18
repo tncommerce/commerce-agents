@@ -176,3 +176,59 @@ def test_zero_denominators_do_not_create_fake_conversion_rates() -> None:
 
     assert report["summary"]["consultation_to_recommendation_pct"] is None
     assert report["summary"]["recommendation_to_clickout_pct"] is None
+
+
+
+def test_acquisition_sources_are_reported_with_sample_status() -> None:
+    report = build_conversion_report(
+        [],
+        [],
+        [],
+        [],
+        catalog(),
+        acquisition_rows=[
+            {
+                "acquisition_source": "duftfinder",
+                "landing_sessions": 12,
+                "consultation_sessions": 8,
+                "recommendation_sessions": 7,
+                "detail_sessions": 5,
+                "comparison_sessions": 3,
+                "clickout_sessions": 2,
+                "landing_to_consultation_pct": 66.67,
+                "consultation_to_recommendation_pct": 87.5,
+                "landing_to_clickout_pct": 16.67,
+            },
+            {
+                "acquisition_source": "parfum_geschenkberater",
+                "landing_sessions": 3,
+                "consultation_sessions": 2,
+                "recommendation_sessions": 2,
+                "detail_sessions": 1,
+                "comparison_sessions": 0,
+                "clickout_sessions": 0,
+                "landing_to_consultation_pct": 66.67,
+                "consultation_to_recommendation_pct": 100,
+                "landing_to_clickout_pct": 0,
+            },
+        ],
+        minimum_sample_sessions=10,
+    )
+
+    assert report["acquisition_sources"][0] == {
+        "acquisition_source": "duftfinder",
+        "landing_sessions": 12,
+        "consultation_sessions": 8,
+        "recommendation_sessions": 7,
+        "detail_sessions": 5,
+        "comparison_sessions": 3,
+        "clickout_sessions": 2,
+        "landing_to_consultation_pct": 66.67,
+        "consultation_to_recommendation_pct": 87.5,
+        "landing_to_clickout_pct": 16.67,
+        "sample_status": "sufficient_signal",
+    }
+    assert (
+        report["acquisition_sources"][1]["sample_status"]
+        == "early_signal"
+    )
