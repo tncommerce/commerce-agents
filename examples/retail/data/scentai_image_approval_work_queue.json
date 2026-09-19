@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated_at": "2026-09-19",
-  "source_fingerprint_sha256": "a0c52b89362175c6b2256e1e043fe71285d723b9a90bd22e3bc99ed22f8f3aa2",
+  "source_fingerprint_sha256": "1003f3e0fda75b45d13c4fbc5c34170f3907c53d98ff195b7f138257caa6b4bb",
   "machine_id": "scentai_image_approval_v1",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
@@ -19,8 +19,8 @@
     "approved_images": 0,
     "pending_images": 30,
     "review_ready": 0,
-    "rights_or_source_check_pending": 14,
-    "identity_check_pending": 1
+    "rights_or_source_check_pending": 15,
+    "identity_check_pending": 0
   },
   "items": [
     {
@@ -373,20 +373,20 @@
       },
       "current_image_url": null,
       "current_image_status": "pending_approved_feed_or_manufacturer_image",
-      "image_state": "identity_check_pending",
+      "image_state": "rights_or_source_check_pending",
       "blockers": [
         "approved_product_image_missing",
-        "exact_variant_identity_not_verified"
+        "asset_usage_or_feed_rights_not_verified"
       ],
-      "next_action": "verify_exact_100ml_variant_or_use_approved_feed_image",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
       "action_class": "auto_allowed",
       "approval_action_class": "approval_required",
       "candidate_source": {
         "source_class": "manufacturer_official",
         "source_page_url": "https://www.narcisorodriguezparfums.com/de/d%C3%BCfte/for-her/",
-        "exact_variant_verified": false,
+        "exact_variant_verified": true,
         "verified_at": "2026-09-19",
-        "evidence_note": "Official Narciso Rodriguez collection confirms for her PURE MUSC Eau de Parfum, but the current page does not explicitly verify the 100 ml variant."
+        "evidence_note": "Official Narciso Rodriguez collection confirms for her PURE MUSC Eau de Parfum; exact 100 ml variant cross-verified against current Douglas and flaconi product pages."
       },
       "audit_trail": [
         {
@@ -400,6 +400,18 @@
           "from": "candidate_discovered",
           "to": "identity_check_pending",
           "trigger": "candidate_normalized"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "identity_check_pending",
+          "to": "identity_verified",
+          "trigger": "exact_variant_verified"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "identity_verified",
+          "to": "rights_or_source_check_pending",
+          "trigger": "identity_gate_passed"
         }
       ]
     },
