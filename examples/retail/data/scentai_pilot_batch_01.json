@@ -1,0 +1,273 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-19",
+  "status": "production_ready",
+  "campaign_id": "launch01",
+  "purpose": "First five SCENTAI short-form pilot creatives with production-ready scripts, shot structure, tracking and claim guardrails.",
+  "channels": [
+    "tiktok",
+    "instagram",
+    "youtube"
+  ],
+  "global_rules": {
+    "aspect_ratio": "9:16",
+    "resolution": "1080x1920",
+    "fps": 30,
+    "target_duration_seconds": [
+      24,
+      32
+    ],
+    "subtitles": "burned_in",
+    "first_hook_deadline_seconds": 1,
+    "endcard_seconds": [
+      2,
+      3
+    ],
+    "ranking_policy": "Affiliate commission must never influence fragrance recommendations or merchant ordering.",
+    "claims_policy": [
+      "No invented similarity percentages.",
+      "Use clone/inspired/alternative only when backed by the SCENTAI relationship graph.",
+      "Price claims must be reverified on publish day.",
+      "Community performance data must be described as community data, not laboratory fact."
+    ]
+  },
+  "pilots": [
+    {
+      "pilot": 1,
+      "content_id": "original_vs_alt_imagination_01",
+      "canonical_launch_content_id": "original_vs_alt_imagination_01",
+      "format": "original_vs_alternative",
+      "landing_path": "/parfum-alternativen",
+      "product_ids": [
+        "SC-LV-IMAGINATION-100",
+        "SC-ARABIYAT-MARWA-EDP-100",
+        "SC-BUJAIRAMI-HECTIC-100"
+      ],
+      "target_duration_seconds": 29,
+      "hook": "Imagination – welche Alternative passt besser zu dir?",
+      "voiceover": "Du magst Louis Vuitton Imagination, willst aber nicht automatisch beim Originalpreis landen? Imagination ist bei SCENTAI extrem frisch, zitrisch und aquatisch eingeordnet. Marwa bleibt ebenfalls sehr frisch, wirkt in unseren Daten aber deutlich süßer. Hectic bleibt trockener und wesentlich würziger. Wichtig: Beide sind bei SCENTAI als inspiriert hinterlegt, nicht als pauschaler Eins-zu-eins-Klon. Vergleiche die Profile direkt bei SCENTAI.",
+      "scenes": [
+        {
+          "seconds": "0-3",
+          "visual": "Imagination center, Marwa and Hectic enter left/right",
+          "overlay": "IMAGINATION – WELCHE ALTERNATIVE?"
+        },
+        {
+          "seconds": "3-9",
+          "visual": "Imagination profile bars",
+          "overlay": "frisch 10/10 · süß 2/10"
+        },
+        {
+          "seconds": "9-18",
+          "visual": "Marwa vs Hectic split",
+          "overlay": "Marwa: süßer · Hectic: würziger"
+        },
+        {
+          "seconds": "18-24",
+          "visual": "relationship badges",
+          "overlay": "INSPIRED ≠ AUTOMATISCH 1:1"
+        },
+        {
+          "seconds": "24-29",
+          "visual": "SCENTAI comparison endcard",
+          "overlay": "PROFILE VERGLEICHEN →"
+        }
+      ],
+      "primary_cta": "Alternative in SCENTAI vergleichen",
+      "thumbnail": "MARWA ODER HECTIC?"
+    },
+    {
+      "pilot": 2,
+      "content_id": "not_every_dupe_clone_01",
+      "canonical_launch_content_id": "not_every_dupe_clone_01",
+      "format": "education_trust",
+      "landing_path": "/parfum-alternativen",
+      "product_ids": [
+        "SC-PDM-ALTHAIR-125",
+        "SC-FRENCH-AVENUE-LIQUID-BRUN-100",
+        "SC-LV-IMAGINATION-100",
+        "SC-ARABIYAT-MARWA-EDP-100",
+        "SC-CREED-AVENTUS-100",
+        "SC-MONTBLANC-EXPLORER-100"
+      ],
+      "target_duration_seconds": 28,
+      "hook": "Dupe ist nicht gleich Dupe.",
+      "voiceover": "Nicht jeder ähnliche Duft ist automatisch ein Eins-zu-eins-Dupe. Ein Clone versucht, dem Original möglichst nahe zu kommen. Ein Inspired-Duft übernimmt eine erkennbare Grundidee und setzt eigene Akzente. Eine Alternative kann einfach einen ähnlichen Stil oder Einsatzzweck erfüllen. Deshalb unterscheidet SCENTAI diese Beziehungen transparent, statt alles pauschal als Dupe zu bezeichnen.",
+      "scenes": [
+        {
+          "seconds": "0-3",
+          "visual": "three relationship cards snap in",
+          "overlay": "DUPE ≠ DUPE"
+        },
+        {
+          "seconds": "3-9",
+          "visual": "Althaïr / Liquid Brun",
+          "overlay": "CLONE · möglichst nah"
+        },
+        {
+          "seconds": "9-15",
+          "visual": "Imagination / Marwa",
+          "overlay": "INSPIRED · gleiche Idee, eigener Twist"
+        },
+        {
+          "seconds": "15-21",
+          "visual": "Aventus / Explorer",
+          "overlay": "ALTERNATIVE · ähnliche Richtung oder Nutzen"
+        },
+        {
+          "seconds": "21-28",
+          "visual": "SCENTAI relationship UI",
+          "overlay": "TRANSPARENT STATT 1:1-BEHauptungen"
+        }
+      ],
+      "primary_cta": "Beziehungen transparent vergleichen",
+      "thumbnail": "DUPE ≠ DUPE"
+    },
+    {
+      "pilot": 3,
+      "content_id": "budget_three_under_50_01",
+      "canonical_launch_content_id": null,
+      "format": "budget_top3_experiment",
+      "landing_path": "/duftfinder",
+      "product_ids": [
+        "SC-AL-WATANIAH-KAYAAN-CLASSIC-100",
+        "SC-FRENCH-AVENUE-LIQUID-BRUN-100",
+        "SC-AFNAN-TURATHI-BLUE-90"
+      ],
+      "target_duration_seconds": 30,
+      "hook": "Drei Düfte unter 50 Euro – aber für komplett unterschiedliche Geschmäcker.",
+      "voiceover": "Drei interessante Düfte unter 50 Euro, die nicht einfach dasselbe machen. Kayaan Classic ist süß, pudrig und holzig und liegt bei SCENTAI im Dior-Homme-Intense-Cluster. Liquid Brun geht deutlich gourmandiger, süßer und wärmer. Turathi Blue ist die Gegenrichtung: sehr frisch, zitrisch und deutlich weniger süß. Gleicher Budgetrahmen, drei komplett unterschiedliche Profile. SCENTAI hilft dir zu entscheiden, welches davon zu dir passt.",
+      "scenes": [
+        {
+          "seconds": "0-3",
+          "visual": "three bottles + price ceiling",
+          "overlay": "3 DÜFTE UNTER 50 €"
+        },
+        {
+          "seconds": "3-10",
+          "visual": "Kayaan Classic",
+          "overlay": "pudrig · süß · holzig"
+        },
+        {
+          "seconds": "10-17",
+          "visual": "Liquid Brun",
+          "overlay": "gourmand · warm · süß"
+        },
+        {
+          "seconds": "17-24",
+          "visual": "Turathi Blue",
+          "overlay": "frisch · zitrisch · weniger süß"
+        },
+        {
+          "seconds": "24-30",
+          "visual": "SCENTAI advisor endcard",
+          "overlay": "GLEICHES BUDGET. ANDERER STIL."
+        }
+      ],
+      "price_snapshot": {
+        "checked_at": "2026-09-19",
+        "reverify_before_publish": true,
+        "rows": [
+          {
+            "product_id": "SC-AL-WATANIAH-KAYAAN-CLASSIC-100",
+            "observed_price_eur": 19.5,
+            "merchant": "Notino.de"
+          },
+          {
+            "product_id": "SC-FRENCH-AVENUE-LIQUID-BRUN-100",
+            "observed_price_eur": 24.7,
+            "merchant": "Parfum-Zentrum"
+          },
+          {
+            "product_id": "SC-AFNAN-TURATHI-BLUE-90",
+            "observed_price_eur": 25.9,
+            "merchant": "Notino.de"
+          }
+        ]
+      },
+      "primary_cta": "Passenden Duft nach Budget finden",
+      "thumbnail": "3 DÜFTE UNTER 50 €"
+    },
+    {
+      "pilot": 4,
+      "content_id": "bois_imperial_explained_01",
+      "canonical_launch_content_id": "bois_imperial_explained_01",
+      "format": "deep_dive",
+      "landing_path": "/duftfinder",
+      "product_ids": [
+        "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100"
+      ],
+      "target_duration_seconds": 27,
+      "hook": "Bois Impérial ist fast gar nicht süß – und genau das macht ihn interessant.",
+      "voiceover": "Bois Impérial ist bei SCENTAI vor allem frisch, sehr holzig, würzig und grün eingeordnet. Die Süße liegt dagegen ganz unten. In den Community-Daten stehen außerdem starke Haltbarkeit und deutliche Ausstrahlung. Das ergibt keinen typischen süßen Mainstream-Duft, sondern einen trockenen, modernen und sehr präsenten Holzstil. Wenn du genau so etwas suchst, prüf deine Passung bei SCENTAI.",
+      "scenes": [
+        {
+          "seconds": "0-4",
+          "visual": "Bois Impérial bottle hero",
+          "overlay": "KAUM SÜSS. SEHR PRÄSENT."
+        },
+        {
+          "seconds": "4-13",
+          "visual": "profile bars",
+          "overlay": "Frische 8 · Holz 9 · Süße 1 · Würze 7"
+        },
+        {
+          "seconds": "13-20",
+          "visual": "performance bars labelled community",
+          "overlay": "Community: Haltbarkeit 8,5 · Ausstrahlung 8,1"
+        },
+        {
+          "seconds": "20-27",
+          "visual": "advisor fit prompt",
+          "overlay": "PASST DIESER STIL ZU DIR?"
+        }
+      ],
+      "primary_cta": "Passung mit SCENTAI prüfen",
+      "thumbnail": "BOIS IMPÉRIAL IN 27 SEK."
+    },
+    {
+      "pilot": 5,
+      "content_id": "top3_office_01",
+      "canonical_launch_content_id": "top3_office_01",
+      "format": "occasion_advisor",
+      "landing_path": "/duftfinder",
+      "product_ids": [
+        "SC-PRADA-LHOMME-100",
+        "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+        "SC-CHANEL-BLEU-DE-CHANEL-EDP-100"
+      ],
+      "target_duration_seconds": 30,
+      "hook": "Den einen besten Büroduft gibt es nicht.",
+      "voiceover": "Der eine beste Büroduft existiert nicht, weil dein Stil entscheidet. Prada L'Homme ist sauber, pudrig und relativ ausgewogen. Bois Impérial ist trockener, holziger und deutlich charakterstärker. Bleu de Chanel Eau de Parfum verbindet viel Frische mit einer klassischen holzigen Richtung. Deshalb fragt SCENTAI nicht nur nach 'Büro', sondern auch nach Frische, Süße und gewünschter Präsenz.",
+      "scenes": [
+        {
+          "seconds": "0-3",
+          "visual": "office prompt + three bottles",
+          "overlay": "DER BESTE BÜRODUFT? KOMMT DRAUF AN."
+        },
+        {
+          "seconds": "3-10",
+          "visual": "Prada L'Homme",
+          "overlay": "clean · pudrig · ausgewogen"
+        },
+        {
+          "seconds": "10-17",
+          "visual": "Bois Impérial",
+          "overlay": "trocken · holzig · charakterstark"
+        },
+        {
+          "seconds": "17-24",
+          "visual": "Bleu de Chanel EDP",
+          "overlay": "frisch · holzig · vielseitig"
+        },
+        {
+          "seconds": "24-30",
+          "visual": "SCENTAI advisor question chips",
+          "overlay": "SCENTAI ENTSCHEIDET NACH DEINEM PROFIL"
+        }
+      ],
+      "primary_cta": "Passenden Büro-Duft finden",
+      "thumbnail": "3 BÜRODÜFTE. 3 TYPEN."
+    }
+  ]
+}
