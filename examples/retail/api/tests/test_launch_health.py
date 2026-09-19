@@ -8,5 +8,5 @@ async def test_scentai_health_endpoint_payload() -> None:
 
     assert payload == {
         "ok": True,
-        "service": "scentai-api",
+        "service": "dufynd-api",
     }
