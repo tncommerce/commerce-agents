@@ -1,0 +1,240 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-19",
+  "batch_id": "launch_production_pack_02",
+  "source_script_file": "scentai_launch_scripts_batch_02.json",
+  "canvas_ref": "scentai_launch_production_pack_01.json#canvas",
+  "reusable_components_ref": "scentai_launch_production_pack_01.json#reusable_components",
+  "creatives": [
+    {
+      "content_id": "tygar_vibrato_value_01",
+      "required_product_assets": [
+        {
+          "product_id": "SC-BVLGARI-TYGAR-125",
+          "image_url": "/products/pilot/bvlgari-tygar-editorial.png"
+        },
+        {
+          "product_id": "SC-SOSPIRO-VIBRATO-100",
+          "image_url": "/products/pilot/sospiro-vibrato-editorial.png"
+        },
+        {
+          "product_id": "SC-AFNAN-TURATHI-BLUE-90",
+          "image_url": "/products/pilot/afnan-turathi-blue-editorial.png"
+        },
+        {
+          "product_id": "SC-MAISON-ASRAR-REGENT-100",
+          "image_url": "/products/pilot/maison-asrar-regent-editorial.png"
+        }
+      ],
+      "scene_assets": [
+        {
+          "scene": 1,
+          "component": "four_product_intro",
+          "instruction": "All four bottles enter sequentially; headline emphasizes same conversation, different relationship types."
+        },
+        {
+          "scene": 2,
+          "component": "relationship_badge",
+          "instruction": "Tygar ↔ Vibrato: alternative/high."
+        },
+        {
+          "scene": 3,
+          "component": "relationship_badge",
+          "instruction": "Turathi Blue → inspired to Tygar and Vibrato."
+        },
+        {
+          "scene": 4,
+          "component": "sample_note_card",
+          "instruction": "Regent with inspired label plus smaller-community-sample note; no negative quality implication."
+        },
+        {
+          "scene": 5,
+          "component": "cta_endcard",
+          "instruction": "CTA: 'Frische Alternativen vergleichen'."
+        }
+      ],
+      "missing_assets": [],
+      "production_status": "asset_ready"
+    },
+    {
+      "content_id": "naxos_value_01",
+      "required_product_assets": [
+        {
+          "product_id": "SC-XERJOFF-NAXOS-100",
+          "image_url": "/products/pilot/xerjoff-naxos-editorial.png"
+        },
+        {
+          "product_id": "SC-NUSUK-ATEEQ-100",
+          "image_url": "/products/pilot/nusuk-ateeq-editorial.png"
+        },
+        {
+          "product_id": "SC-RAYHAAN-ITALIA-100",
+          "image_url": "/products/pilot/rayhaan-italia-editorial.png"
+        }
+      ],
+      "scene_assets": [
+        {
+          "scene": 1,
+          "component": "three_product_intro",
+          "instruction": "Naxos centered; Ateeq and Italia slide in as inspired directions."
+        },
+        {
+          "scene": 2,
+          "component": "profile_strip",
+          "instruction": "Shared labels: sweet / spicy / gourmand / creamy."
+        },
+        {
+          "scene": 3,
+          "component": "score_bar",
+          "instruction": "Ateeq freshness 4; emphasize less fresh and more oriental wording only."
+        },
+        {
+          "scene": 4,
+          "component": "split_compare",
+          "instruction": "Italia vs Naxos with freshness 6 on both and citrus label on Italia."
+        },
+        {
+          "scene": 5,
+          "component": "cta_endcard",
+          "instruction": "CTA: 'Naxos-Alternativen ansehen'."
+        }
+      ],
+      "missing_assets": [],
+      "production_status": "asset_ready"
+    },
+    {
+      "content_id": "dior_homme_intense_alt_01",
+      "required_product_assets": [
+        {
+          "product_id": "SC-DIOR-HOMME-INTENSE-100",
+          "image_url": "/products/pilot/dior-homme-intense-editorial.png"
+        },
+        {
+          "product_id": "SC-AL-WATANIAH-KAYAAN-CLASSIC-100",
+          "image_url": "/products/pilot/kayaan-classic-editorial.png"
+        }
+      ],
+      "scene_assets": [
+        {
+          "scene": 1,
+          "component": "split_compare",
+          "instruction": "Equal visual weight for Dior Homme Intense and Kayaan Classic."
+        },
+        {
+          "scene": 2,
+          "component": "dual_score_bar",
+          "instruction": "Both: sweetness 8 / woodiness 7."
+        },
+        {
+          "scene": 3,
+          "component": "dual_score_bar",
+          "instruction": "Compare spiciness and community longevity/projection without overall winner badge."
+        },
+        {
+          "scene": 4,
+          "component": "relationship_badge",
+          "instruction": "Clone/high with disclaimer that perception is not identical."
+        },
+        {
+          "scene": 5,
+          "component": "cta_endcard",
+          "instruction": "CTA: 'Unterschiede in SCENTAI prüfen'."
+        }
+      ],
+      "missing_assets": [],
+      "production_status": "asset_ready"
+    },
+    {
+      "content_id": "top3_office_01",
+      "required_product_assets": [
+        {
+          "product_id": "SC-PRADA-LHOMME-100",
+          "image_url": "/products/pilot/prada-lhomme-editorial.png"
+        },
+        {
+          "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+          "image_url": "/products/pilot/bois-imperial-editorial.png"
+        },
+        {
+          "product_id": "SC-CHANEL-BLEU-DE-CHANEL-EDP-100",
+          "image_url": "/products/pilot/bleu-de-chanel-edp-editorial.png"
+        }
+      ],
+      "scene_assets": [
+        {
+          "scene": 1,
+          "component": "three_product_intro",
+          "instruction": "All three shown equally; headline says '3 Büro-Profile', never ranking numbers."
+        },
+        {
+          "scene": 2,
+          "component": "product_card",
+          "instruction": "Prada L'Homme with powdery/fresh/floral."
+        },
+        {
+          "scene": 3,
+          "component": "product_card",
+          "instruction": "Bleu de Chanel with fresh/citrus/woody."
+        },
+        {
+          "scene": 4,
+          "component": "product_card",
+          "instruction": "Bois Impérial with woodiness 9, sweetness 1 and community performance note."
+        },
+        {
+          "scene": 5,
+          "component": "cta_endcard",
+          "instruction": "CTA: 'Passenden Büro-Duft finden'."
+        }
+      ],
+      "missing_assets": [],
+      "production_status": "asset_ready"
+    },
+    {
+      "content_id": "top3_date_01",
+      "required_product_assets": [
+        {
+          "product_id": "SC-ARMANI-SWY-INTENSELY-100",
+          "image_url": "/products/pilot/armani-swy-intensely-editorial.png"
+        },
+        {
+          "product_id": "SC-DIOR-HOMME-INTENSE-100",
+          "image_url": "/products/pilot/dior-homme-intense-editorial.png"
+        },
+        {
+          "product_id": "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
+          "image_url": "/products/pilot/valentino-born-in-roma-intense-editorial.png"
+        }
+      ],
+      "scene_assets": [
+        {
+          "scene": 1,
+          "component": "three_product_intro",
+          "instruction": "Three profiles enter with equal visual priority; no best/winner badge."
+        },
+        {
+          "scene": 2,
+          "component": "product_card",
+          "instruction": "SWY Intensely: sweet/gourmand/spicy."
+        },
+        {
+          "scene": 3,
+          "component": "product_card",
+          "instruction": "Dior Homme Intense: powdery/woody/creamy."
+        },
+        {
+          "scene": 4,
+          "component": "product_card",
+          "instruction": "Valentino: sweet plus more fresh/fruity direction."
+        },
+        {
+          "scene": 5,
+          "component": "cta_endcard",
+          "instruction": "CTA: 'Date-Duft mit SCENTAI finden'."
+        }
+      ],
+      "missing_assets": [],
+      "production_status": "asset_ready"
+    }
+  ]
+}
