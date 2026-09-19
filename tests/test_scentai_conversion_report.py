@@ -271,7 +271,6 @@ def test_personal_library_engagement_is_labeled_and_sampled() -> None:
     assert second["sample_status"] == "early_signal"
 
 
-
 def test_retention_summary_preserves_page_and_advisor_sessions() -> None:
     report = build_conversion_report(
         [],
