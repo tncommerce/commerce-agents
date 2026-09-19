@@ -48,284 +48,190 @@ def build_operations_status(
     mapping_summary = mapping.get("summary", {})
     affiliate_summary = affiliate.get("summary", {})
     image_summary = images.get("summary", {})
-    release_summary = release.get("summary", {})
-    feed_summary = feed.get("summary", {})
+    release_summary = release.ge
+…[84824 chars truncated — re-run with head/grep/tail for full output]…
+get("description", "")
+    return mcp_tools, custom
 
-    approved_programs = int(
-        affiliate_summary.get("approved", 0) or 0
-    )
-    active_programs = int(
-        affiliate_summary.get("active", 0) or 0
-    )
 
-    full_feed_paths = int(
-        feed_summary.get("programs_with_full_release_mapping", 0)
-        or 0
-    )
-    approved_full_paths = int(
-        feed_summary.get(
-            "approved_programs_with_full_release_mapping",
-            0,
-        )
-        or 0
-    )
+def backticked_after_preamble(line: str) -> set[str]:
+    return set(re.findall(r"`([a-z_]+)`", line.split("):", 1)[-1]))
 
-    release_size = int(release_summary.get("release_size", 0) or 0)
-    mapping_ready = int(release_summary.get("mapping_ready", 0) or 0)
-    approved_images = int(
-        release_summary.get("approved_images", 0) or 0
-    )
-    tracked_offers = int(
-        release_summary.get(
-            "current_tracked_affiliate_offers",
-            0,
-        )
-        or 0
-    )
-    promotion_ready = int(
-        release_summary.get("promotion_ready", 0) or 0
-    )
 
-    blockers: list[str] = []
-    if approved_full_paths < 1:
-        blockers.append("release_affiliate_program_approval_pending")
-    if release_size and approved_images < release_size:
-        blockers.append("release_approved_images_incomplete")
-    if release_size and tracked_offers < release_size:
-        blockers.append("release_tracked_affiliate_offers_incomplete")
-    if promotion_ready < release_size:
-        blockers.append("release_promotion_gates_incomplete")
+def readme_line(path: Path, marker: str) -> str:
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if marker in line:
+            return line
+    problem(f"{path.relative_to(REPO_ROOT)}: no '{marker}' line found")
+    return ""
 
-    if not blockers and release_size > 0:
-        overall_state = "ready_for_user_approval"
-        user_approval_required_now = True
-        next_action = "request_explicit_user_approval_for_release"
-        next_action_class = "approval_required"
-    elif approved_full_paths >= 1:
-        overall_state = "integration_path_open"
-        user_approval_required_now = False
-        next_action = "run_feed_preflight_and_dry_run"
-        next_action_class = "auto_allowed"
-    else:
-        overall_state = "waiting_external_affiliate_decision"
-        user_approval_required_now = False
-        next_action = "await_affiliate_program_decision"
-        next_action_class = "auto_allowed"
 
-    full_mapping_merchants = [
-        {
-            "merchant_id": row.get("merchant_id"),
-            "network": row.get("network"),
-            "program": row.get("program"),
-            "application_status": row.get(
-                "application_status"
-            ),
-            "program_approved": bool(
-                row.get("program_approved")
-            ),
-            "next_action": row.get("next_action"),
-        }
-        for row in feed.get("programs", [])
-        if row.get("full_release_mapping_coverage")
-    ]
+def check_managed_readme_tool_lists() -> None:
+    """Each managed-agents README lists the deployed tools by hand; its count row and
+    two tool bullets, and the server README's table, must match agent.yaml."""
+    print("managed-agents READMEs vs agent.yaml")
+    for role in ROLES:
+        mcp_tools, custom = manifest_tools(role.agent_dir / "agent.yaml")
+        before = len(PROBLEMS)
+        agent_readme = role.managed / "README.md"
+        parent = agent_readme.read_text(encoding="utf-8")
+        counts = re.search(rf"(\d+) {role.server_label}, (\d+) presentation tools", parent)
+        if counts is None:
+            problem(
+                f"{role.tree} managed README: no '<N> {role.server_label}, <N> presentation tools' row"
+            )
+        elif (int(counts.group(1)), int(counts.group(2))) != (len(mcp_tools), len(custom)):
+            problem(
+                f"{role.tree} managed README counts disagree with agent.yaml ({len(mcp_tools)} / {len(custom)})"
+            )
+        marker = f"**{role.server_label.split()[0].capitalize()} tools**"
+        if (listed := backticked_after_preamble(readme_line(agent_readme, marker))) != mcp_tools:
+            problem(
+                f"{agent_readme.relative_to(REPO_ROOT)}: {role.server_label} list != agent.yaml "
+                f"(missing {sorted(mcp_tools - listed)}, extra {sorted(listed - mcp_tools)})"
+            )
+        listed = backticked_after_preamble(readme_line(agent_readme, "**Presentation tools**"))
+        if listed != set(custom):
+            problem(
+                f"{agent_readme.relative_to(REPO_ROOT)}: presentation list != agent.yaml "
+                f"(missing {sorted(set(custom) - listed)}, extra {sorted(listed - set(custom))})"
+            )
+        server_readme = (role.managed / role.server_dir / "README.md").read_text(encoding="utf-8")
+        rows = set(re.findall(r"^\| `([a-z_]+)` \|", server_readme, re.MULTILINE))
+        if rows != mcp_tools:
+            problem(
+                f"{role.tree} {role.server_dir}/README.md tool table != agent.yaml "
+                f"(missing {sorted(mcp_tools - rows)}, extra {sorted(rows - mcp_tools)})"
+            )
+        if len(PROBLEMS) == before:
+            ok(f"{role.tree}: README counts, tool lists, and server table match agent.yaml")
 
-    pending_manual_approvals = []
-    if int(image_summary.get("review_ready", 0) or 0) > 0:
-        pending_manual_approvals.append(
-            "review_ready_product_images"
-        )
-    if overall_state == "ready_for_user_approval":
-        pending_manual_approvals.append(
-            "release_01_live_activation"
+
+def check_managed_custom_tool_descriptions() -> None:
+    """The manifests' custom tool descriptions are the registries', whitespace aside."""
+    print("managed-agents custom tool descriptions vs the registries")
+    for role in ROLES:
+        registry = role.registry_descriptions()
+        _, custom = manifest_tools(role.agent_dir / "agent.yaml")
+        before = len(PROBLEMS)
+        for name, description in custom.items():
+            if name not in registry:
+                problem(f"{role.tree} agent.yaml: custom tool {name} has no registry contract")
+            elif normalize_ws(description) != normalize_ws(registry[name]):
+                problem(f"{role.tree} agent.yaml: {name} description drifted from the registry")
+        if len(PROBLEMS) == before:
+            ok(f"{role.tree}: {len(custom)} custom tool descriptions match the registry")
+
+
+def check_scentai_jarvis_operations_status() -> None:
+    """Keep the committed Jarvis control-plane snapshot aligned with source state."""
+    print("SCENTAI Jarvis operations status")
+    try:
+        from scripts.validate_scentai_jarvis_operations_status import (
+            validate_operations_status,
         )
 
-    return {
-        "version": 1,
-        "generated_at": generated_at,
-        "source_fingerprint_sha256": source_fingerprint(
-            mapping,
-            affiliate,
-            images,
-            release,
-            feed,
-        ),
-        "system": "SCENTAI",
-        "control_plane": "commerce_jarvis",
-        "policy_ref": "scentai_jarvis_operating_policy.json",
-        "overall_state": overall_state,
-        "user_approval_required_now": (
-            user_approval_required_now
-        ),
-        "next_action": next_action,
-        "next_action_class": next_action_class,
-        "blockers": blockers,
-        "safety": {
-            "live_routing_allowed": (
-                overall_state == "ready_for_user_approval"
-                and user_approval_required_now is False
-            ),
-            "no_automatic_spend": True,
-            "no_automatic_live_release": True,
-            "commission_may_affect_recommendations": False,
-            "secrets_allowed_in_repo_state": False,
-        },
-        "catalog": {
-            "staged_products": int(
-                mapping_summary.get("staged_products", 0) or 0
-            ),
-            "products_with_resolved_mapping": int(
-                mapping_summary.get(
-                    "products_with_resolved_mapping",
-                    0,
-                )
-                or 0
-            ),
-            "products_without_resolved_mapping": int(
-                mapping_summary.get(
-                    "products_without_resolved_mapping",
-                    0,
-                )
-                or 0
-            ),
-        },
-        "affiliate": {
-            "registered_programs": int(
-                affiliate_summary.get("programs", 0) or 0
-            ),
-            "active_programs": active_programs,
-            "approved_programs": approved_programs,
-            "full_release_mapping_paths": full_feed_paths,
-            "approved_full_release_paths": approved_full_paths,
-            "full_mapping_merchants": full_mapping_merchants,
-        },
-        "images": {
-            "staged_products": int(
-                image_summary.get("staged_products", 0) or 0
-            ),
-            "approved_images": int(
-                image_summary.get("approved_images", 0) or 0
-            ),
-            "pending_images": int(
-                image_summary.get("pending_images", 0) or 0
-            ),
-            "review_ready": int(
-                image_summary.get("review_ready", 0) or 0
-            ),
-            "rights_or_source_check_pending": int(
-                image_summary.get(
-                    "rights_or_source_check_pending",
-                    0,
-                )
-                or 0
-            ),
-        },
-        "release_01": {
-            "release_size": release_size,
-            "mapping_ready": mapping_ready,
-            "image_identity_source_verified": int(
-                release_summary.get(
-                    "image_identity_source_verified",
-                    0,
-                )
-                or 0
-            ),
-            "approved_images": approved_images,
-            "current_tracked_affiliate_offers": tracked_offers,
-            "promotion_ready": promotion_ready,
-        },
-        "pending_manual_approvals": pending_manual_approvals,
-        "operating_note": (
-            "This control-plane status summarizes operational readiness. "
-            "It does not authorize live writes, spending, outbound messages "
-            "or affiliate activation."
-        ),
-    }
+        data = REPO_ROOT / "examples" / "retail" / "data"
+        report = validate_operations_status(
+            load_json(data / "scentai_jarvis_operations_status.json"),
+            load_json(data / "scentai_merchant_mapping_work_queue.json"),
+            load_json(data / "scentai_affiliate_activation_status.json"),
+            load_json(data / "scentai_image_approval_work_queue.json"),
+            load_json(data / "scentai_release_01_gate_status.json"),
+            load_json(data / "scentai_release_01_feed_activation_queue.json"),
+        )
+    except Exception as error:
+        problem(f"SCENTAI Jarvis operations parity check failed: {error}")
+        return
+
+    if not report["valid"]:
+        for issue in report["issues"]:
+            problem(f"SCENTAI Jarvis operations status: {issue}")
+        return
+
+    ok("SCENTAI Jarvis operations snapshot matches source state")
+
+
+def check_scentai_jarvis_state_graph() -> None:
+    """Ensure every committed Jarvis derived view matches source-of-truth data."""
+    print("SCENTAI Jarvis state graph")
+    try:
+        from scripts.validate_scentai_jarvis_state_graph import (
+            validate_repo_state_graph,
+        )
+
+        report = validate_repo_state_graph()
+    except Exception as error:
+        problem(f"SCENTAI Jarvis state graph check failed: {error}")
+        return
+
+    if not report["valid"]:
+        for issue in report["issues"]:
+            problem(f"SCENTAI Jarvis state graph: {issue}")
+        return
+
+    ok("SCENTAI Jarvis derived state graph matches source-of-truth")
+
+
+def check_scentai_pilot_batch_contract() -> None:
+    """Keep Pilot Batch 01 IDs, timings, links and production jobs aligned."""
+    print("SCENTAI pilot production contract")
+    try:
+        from scripts.validate_scentai_pilot_batch_contract import (
+            validate_contract,
+        )
+
+        data = REPO_ROOT / "examples" / "retail" / "data"
+        report = validate_contract(
+            load_json(data / "scentai_pilot_batch_01.json"),
+            load_json(data / "scentai_pilot_batch_01_production_jobs.json"),
+            load_json(data / "scentai_pilot_batch_01_subtitles.json"),
+            load_json(data / "scentai_pilot_batch_01_links.json"),
+            load_json(data / "scentai_pilot_batch_01_social_copy.json"),
+        )
+    except Exception as error:
+        problem(f"SCENTAI pilot production contract failed: {error}")
+        return
+
+    if not report["valid"]:
+        for issue in report["issues"]:
+            problem(f"SCENTAI pilot contract: {issue}")
+        return
+
+    ok(
+        "SCENTAI Pilot Batch 01 contract is internally consistent "
+        f"({report['summary']['pilots']} pilots, "
+        f"{report['summary']['tracked_links']} tracked links)"
+    )
+
+
+CHECKS = (
+    check_skills,
+    check_storefront_fixtures,
+    check_ticketing_fixtures,
+    check_merchant_fixtures,
+    check_verification_wiring,
+    check_package_versions,
+    check_manifests,
+    check_managed_system_prompts,
+    check_managed_readme_tool_lists,
+    check_managed_custom_tool_descriptions,
+    check_scentai_jarvis_operations_status,
+    check_scentai_jarvis_state_graph,
+    check_scentai_pilot_batch_contract,
+)
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(
-        description=(
-            "Build one Jarvis-readable SCENTAI operations status from "
-            "mapping, affiliate, image and release source states."
-        )
-    )
-    parser.add_argument(
-        "--mapping",
-        type=Path,
-        default=DEFAULT_MAPPING,
-    )
-    parser.add_argument(
-        "--affiliate",
-        type=Path,
-        default=DEFAULT_AFFILIATE,
-    )
-    parser.add_argument(
-        "--images",
-        type=Path,
-        default=DEFAULT_IMAGES,
-    )
-    parser.add_argument(
-        "--release",
-        type=Path,
-        default=DEFAULT_RELEASE,
-    )
-    parser.add_argument(
-        "--feed",
-        type=Path,
-        default=DEFAULT_FEED,
-    )
-    parser.add_argument(
-        "--output",
-        type=Path,
-        default=DEFAULT_OUTPUT,
-    )
-    parser.add_argument("--generated-at", default=None)
-    parser.add_argument("--machine-readable", action="store_true")
-    args = parser.parse_args()
-
-    generated_at = (
-        args.generated_at
-        or datetime.now(UTC).replace(microsecond=0).isoformat()
-    )
-
-    status = build_operations_status(
-        load_json(args.mapping),
-        load_json(args.affiliate),
-        load_json(args.images),
-        load_json(args.release),
-        load_json(args.feed),
-        generated_at=generated_at,
-    )
-
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(
-        json.dumps(status, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
-
-    if args.machine_readable:
-        print(json.dumps(status, ensure_ascii=False))
-    else:
-        print(
-            "SCENTAI Jarvis operations | "
-            f"state={status['overall_state']} | "
-            f"next={status['next_action']} | "
-            f"approval_now={status['user_approval_required_now']}"
-        )
-        print(
-            "Release 01 | "
-            f"mapping={status['release_01']['mapping_ready']}/"
-            f"{status['release_01']['release_size']} | "
-            f"images={status['release_01']['approved_images']}/"
-            f"{status['release_01']['release_size']} | "
-            f"affiliate={status['release_01']['current_tracked_affiliate_offers']}/"
-            f"{status['release_01']['release_size']} | "
-            f"ready={status['release_01']['promotion_ready']}/"
-            f"{status['release_01']['release_size']}"
-        )
-
+    for check in CHECKS:
+        check()
+        print()
+    if PROBLEMS:
+        print(f"check.py: {len(PROBLEMS)} problem(s)")
+        return 1
+    print("check.py: clean")
     return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    sys.exit(main())
