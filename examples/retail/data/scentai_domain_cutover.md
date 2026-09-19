@@ -205,8 +205,9 @@ Compliance hardening applied:
 - added current Anthropic commercial-API no-training-by-default disclosure
 - clarified third-country transfer safeguards / DPAs
 
-Open operational item before broad public acquisition:
-- replace the Gmail contact address with a DUFYND-domain mailbox when available
+Operational contact status:
+- kontakt@dufynd.de mailbox created and send/receive tested successfully on 2026-09-19
+- update Render NEXT_PUBLIC_LEGAL_EMAIL to kontakt@dufynd.de and redeploy the storefront
 - add VAT ID or Wirtschafts-ID to the Impressum only if/when one is actually issued and legally required
 
 
@@ -225,3 +226,17 @@ Verified manually on 2026-09-19 on the public https://dufynd.de domain:
 Remaining mobile polish:
 - fragrance-note section uses collapsible mobile presentation with note-category icons
 - continue visual QA when more products and live merchant offers are added
+
+
+## DUFYND business mailbox
+
+Completed on 2026-09-19:
+- INWX Mail Starter activated for dufynd.de
+- mailspace linked to dufynd.de without changing the Render webspace routing
+- kontakt@dufynd.de created as a real mailbox
+- catch-all remains disabled
+- outbound and inbound delivery tested successfully
+
+Production website action:
+- set NEXT_PUBLIC_LEGAL_EMAIL=kontakt@dufynd.de in the Render storefront environment
+- redeploy and verify Impressum / Datenschutz show the new address
