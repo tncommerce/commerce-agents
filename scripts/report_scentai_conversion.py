@@ -18,6 +18,7 @@ PRODUCT_VIEW = "scentai_product_funnel"
 POSITION_VIEW = "scentai_advisor_position_engagement"
 SURFACE_VIEW = "scentai_clickout_surface_summary"
 ACQUISITION_VIEW = "scentai_acquisition_funnel"
+LIBRARY_VIEW = "scentai_personal_library_engagement"
 
 
 def _integer(value: object) -> int:
@@ -48,6 +49,7 @@ def build_conversion_report(
     catalog: dict,
     *,
     acquisition_rows: list[dict] | None = None,
+    library_rows: list[dict] | None = None,
     limit: int = 20,
     minimum_sample_sessions: int = 10,
 ) -> dict[str, Any]:
@@ -292,6 +294,59 @@ def build_conversion_report(
         )
     )
 
+    library_engagement: list[dict[str, Any]] = []
+    for row in library_rows or []:
+        product_id = str(row.get("product_id") or "").strip()
+        if not product_id:
+            continue
+
+        wishlist_sessions = _integer(
+            row.get("wishlist_add_sessions")
+        )
+        collection_sessions = _integer(
+            row.get("collection_add_sessions")
+        )
+        signal_sessions = max(
+            wishlist_sessions,
+            collection_sessions,
+        )
+
+        library_engagement.append(
+            {
+                "product_id": product_id,
+                "product": labels.get(product_id, product_id),
+                "wishlist_adds": _integer(
+                    row.get("wishlist_adds")
+                ),
+                "wishlist_removes": _integer(
+                    row.get("wishlist_removes")
+                ),
+                "collection_adds": _integer(
+                    row.get("collection_adds")
+                ),
+                "collection_removes": _integer(
+                    row.get("collection_removes")
+                ),
+                "wishlist_add_sessions": wishlist_sessions,
+                "collection_add_sessions": collection_sessions,
+                "sample_status": (
+                    "sufficient_signal"
+                    if signal_sessions
+                    >= minimum_sample_sessions
+                    else "early_signal"
+                ),
+                "last_event_at": row.get("last_event_at"),
+            }
+        )
+
+    library_engagement.sort(
+        key=lambda row: (
+            -row["wishlist_add_sessions"],
+            -row["collection_add_sessions"],
+            row["product"],
+        )
+    )
+
     return {
         "minimum_sample_sessions": minimum_sample_sessions,
         "summary": summary,
@@ -302,6 +357,9 @@ def build_conversion_report(
         "advisor_positions": positions,
         "clickout_surfaces": surfaces,
         "acquisition_sources": acquisition_sources,
+        "personal_library_engagement": (
+            library_engagement[:limit]
+        ),
     }
 
 
@@ -405,6 +463,12 @@ def main() -> int:
             view=ACQUISITION_VIEW,
             max_rows=args.max_rows,
         )
+        library_rows = fetch_view_rows(
+            supabase_url=supabase_url,
+            service_key=service_key,
+            view=LIBRARY_VIEW,
+            max_rows=args.max_rows,
+        )
     except Exception as exc:
         parser.error(f"Supabase conversion report failed: {exc}")
 
@@ -415,6 +479,7 @@ def main() -> int:
         surface_rows,
         load_json(args.catalog),
         acquisition_rows=acquisition_rows,
+        library_rows=library_rows,
         limit=args.limit,
         minimum_sample_sessions=args.minimum_sample_sessions,
     )
@@ -508,6 +573,19 @@ def main() -> int:
             (
                 "landing_to_consultation_pct",
                 "consultation_pct",
+            ),
+            ("sample_status", "sample"),
+        ],
+    )
+    _print_rows(
+        "Personal library engagement:",
+        report["personal_library_engagement"],
+        [
+            ("product", "product"),
+            ("wishlist_add_sessions", "wishlist_sessions"),
+            (
+                "collection_add_sessions",
+                "collection_sessions",
             ),
             ("sample_status", "sample"),
         ],
