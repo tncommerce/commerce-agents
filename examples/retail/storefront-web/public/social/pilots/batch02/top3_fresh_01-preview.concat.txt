@@ -1,0 +1,11 @@
+file '/home/runner/work/commerce-agents/commerce-agents/examples/retail/storefront-web/public/social/pilots/batch02/top3_fresh_01/scene-01.jpg'
+duration 3.000
+file '/home/runner/work/commerce-agents/commerce-agents/examples/retail/storefront-web/public/social/pilots/batch02/top3_fresh_01/scene-02.jpg'
+duration 6.000
+file '/home/runner/work/commerce-agents/commerce-agents/examples/retail/storefront-web/public/social/pilots/batch02/top3_fresh_01/scene-03.jpg'
+duration 6.000
+file '/home/runner/work/commerce-agents/commerce-agents/examples/retail/storefront-web/public/social/pilots/batch02/top3_fresh_01/scene-04.jpg'
+duration 6.000
+file '/home/runner/work/commerce-agents/commerce-agents/examples/retail/storefront-web/public/social/pilots/batch02/top3_fresh_01/scene-05.jpg'
+duration 7.000
+file '/home/runner/work/commerce-agents/commerce-agents/examples/retail/storefront-web/public/social/pilots/batch02/top3_fresh_01/scene-05.jpg'

@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "batch": "batch02",
+  "generated_from": "scentai_pilot_batch_02.json",
+  "previews": [
+    {
+      "content_id": "dupe_battle_imagination_01",
+      "cover": "/social/pilots/batch02/dupe_battle_imagination_01-cover.jpg",
+      "preview": "/social/pilots/batch02/dupe_battle_imagination_01-preview.mp4",
+      "duration_seconds": 29.0,
+      "audio": false,
+      "status": "visual_preview"
+    },
+    {
+      "content_id": "layton_alternatives_01",
+      "cover": "/social/pilots/batch02/layton_alternatives_01-cover.jpg",
+      "preview": "/social/pilots/batch02/layton_alternatives_01-preview.mp4",
+      "duration_seconds": 28.0,
+      "audio": false,
+      "status": "visual_preview"
+    },
+    {
+      "content_id": "althair_liquid_brun_01",
+      "cover": "/social/pilots/batch02/althair_liquid_brun_01-cover.jpg",
+      "preview": "/social/pilots/batch02/althair_liquid_brun_01-preview.mp4",
+      "duration_seconds": 27.0,
+      "audio": false,
+      "status": "visual_preview"
+    },
+    {
+      "content_id": "top3_date_01",
+      "cover": "/social/pilots/batch02/top3_date_01-cover.jpg",
+      "preview": "/social/pilots/batch02/top3_date_01-preview.mp4",
+      "duration_seconds": 30.0,
+      "audio": false,
+      "status": "visual_preview"
+    },
+    {
+      "content_id": "top3_fresh_01",
+      "cover": "/social/pilots/batch02/top3_fresh_01-cover.jpg",
+      "preview": "/social/pilots/batch02/top3_fresh_01-preview.mp4",
+      "duration_seconds": 28.0,
+      "audio": false,
+      "status": "visual_preview"
+    }
+  ]
+}
