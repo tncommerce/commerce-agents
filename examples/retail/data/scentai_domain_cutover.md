@@ -1,9 +1,9 @@
-# SCENTAI Custom Domain / SEO Cutover
+# DUFYND Custom Domain / SEO Cutover
 
-Status: prepared_brand_clearance_required
+Status: domains_purchased_pending_dns_cutover
 Updated: 2026-09-19
 
-The temporary Render URL remains functional, but SCENTAI should stay non-indexable until the final public domain is connected.
+The temporary Render URL remains functional, but the storefront must stay non-indexable until DUFYND is connected and the final public-domain smoke test passes.
 
 ## Current build-time defaults
 
@@ -11,32 +11,27 @@ The temporary Render URL remains functional, but SCENTAI should stay non-indexab
 - `NEXT_PUBLIC_SITE_INDEXABLE` defaults to false unless explicitly set to `true`
 - While indexability is false, pages emit noindex/nofollow metadata and `robots.txt` blocks crawling
 
-## Brand-clearance gate
+## Brand / domain decision
 
-Before purchasing or connecting the final public domain, complete a brand-clearance decision for the SCENTAI name.
+DUFYND was selected as the replacement public brand after preliminary clearance. The owner purchased:
+- dufynd.de via INWX on 2026-09-19
+- dufynd.com via INWX on 2026-09-19
 
-Reason:
-- active third-party fragrance services currently use the ScentAI/ScentAi name in a closely related fragrance-discovery category
-- a separate company named ScentAI Inc. also exists in the smell/AI technology space
-- the current domain cutover therefore remains technically prepared but commercially paused pending the owner's naming decision
+Canonical public target:
+- https://dufynd.de
 
-Do not:
-- purchase a long-term domain commitment
-- enable public search indexing
-- migrate partner-network public URLs
-- start paid acquisition
+Protective / secondary domain:
+- https://dufynd.com
 
-until this brand-clearance gate is explicitly resolved.
+Search indexing remains disabled until DNS, TLS, public branding and the production smoke test are complete.
 
-The temporary Render hostname stays non-indexable during this decision.
-
-## When the final domain is purchased
+## Cutover sequence
 
 1. Add the custom domain in Render.
 2. Configure the DNS records requested by Render.
-3. Choose one canonical hostname, for example `https://scentai.de` or `https://www.scentai.de`.
+3. Use `https://dufynd.de` as the canonical hostname. Root-domain mode is intentional; `www.dufynd.de` should redirect to it.
 4. Set frontend environment variable:
-   - `NEXT_PUBLIC_SITE_URL=https://<final-domain>`
+   - `NEXT_PUBLIC_SITE_URL=https://dufynd.de`
 5. Keep `NEXT_PUBLIC_SITE_INDEXABLE=false` during the DNS/SSL verification period.
 6. Add the final frontend origin to backend `DEMO_ALLOWED_ORIGINS`.
 7. Verify:
@@ -50,8 +45,8 @@ The temporary Render hostname stays non-indexable during this decision.
    - transparenz
    - `/robots.txt`
    - `/sitemap.xml`
-8. Update the public website/advertising-space URL in Awin, CJ and other partner-network profiles.
-9. Update social profiles and future campaign links to the canonical domain.
+8. After the DUFYND public smoke test passes, update the public website/advertising-space URL in Awin, CJ and other partner-network profiles.
+9. Update social profiles and future campaign links to `https://dufynd.de`.
 10. Only after the final-domain smoke test passes, set:
     - `NEXT_PUBLIC_SITE_INDEXABLE=true`
 11. Redeploy the frontend.
@@ -60,3 +55,16 @@ The temporary Render hostname stays non-indexable during this decision.
 ## Important
 
 Do not enable indexing on the temporary Render hostname before the canonical domain is ready. This reduces the chance of search engines indexing the temporary infrastructure URL and avoids a later SEO migration.
+
+
+## DNS target plan
+
+For dufynd.de on INWX:
+- root / @: Render root-domain target (A record to Render load balancer if INWX does not offer ANAME/ALIAS flattening)
+- www: CNAME to the current Render storefront hostname
+- remove conflicting AAAA records during Render verification
+
+For dufynd.com:
+- keep registered as a defensive domain
+- configure a permanent redirect to https://dufynd.de after the primary domain is verified
+- do not create a second independently indexed site
