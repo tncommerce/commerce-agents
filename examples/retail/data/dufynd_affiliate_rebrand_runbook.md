@@ -100,3 +100,15 @@ Verified on 2026-09-19:
 Next CJ checks:
 - verify account/profile contact email uses kontakt@dufynd.de where editable
 - verify no remaining public SCENTAI display name needs a separate profile/support update
+
+
+## CJ profile email
+
+Observed on 2026-09-19:
+- CJ user-profile email is locked/read-only in the Account -> Profile interface
+- do not create a new CJ account just to change the login/profile email
+- DUFYND promotional platform is already updated and the Notino application remains open
+
+Optional cleanup:
+- request CJ Support to change the user/login email to kontakt@dufynd.de if CJ permits it
+- keep the existing publisher account and application history intact
