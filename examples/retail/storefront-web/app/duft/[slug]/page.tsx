@@ -236,13 +236,13 @@ export default async function FragrancePage({
           <a
             href="/"
             className="flex items-center gap-2.5"
-            aria-label="Zur SCENTAI Startseite"
+            aria-label="Zur DUFYND Startseite"
           >
             <span className="grid h-8 w-8 place-items-center rounded-lg bg-(--ink) text-[15px] font-bold text-(--surface)">
               S
             </span>
             <span className="text-[17px] font-bold tracking-[-0.02em]">
-              SCENTAI
+              DUFYND
             </span>
           </a>
           <div className="flex items-center gap-2">
@@ -268,7 +268,7 @@ export default async function FragrancePage({
           className="mb-5 text-[12px] text-(--ink-soft)"
         >
           <a href="/" className="hover:underline">
-            SCENTAI
+            DUFYND
           </a>
           <span className="px-2">/</span>
           <a href="/duft" className="hover:underline">
@@ -296,7 +296,7 @@ export default async function FragrancePage({
                   <div className="mx-auto h-4 w-8 bg-(--ink)/60" />
                   <div className="mx-auto grid h-28 w-24 place-items-center rounded-[24px] border border-white bg-white/80 shadow-md">
                     <span className="text-[11px] font-semibold tracking-[0.18em]">
-                      SCENTAI
+                      DUFYND
                     </span>
                   </div>
                 </div>
@@ -361,7 +361,7 @@ export default async function FragrancePage({
             </div>
 
             <div className="mt-2 text-[10.5px] leading-4 text-(--ink-soft)">
-              SCENTAI verkauft nicht selbst. Kauf und Versand erfolgen beim
+              DUFYND verkauft nicht selbst. Kauf und Versand erfolgen beim
               jeweiligen Händler.
             </div>
 
@@ -476,7 +476,7 @@ export default async function FragrancePage({
             </div>
 
             <p className="mt-4 text-[10.5px] leading-4 text-(--ink-soft)">
-              Die vier Profilachsen sind redaktionelle SCENTAI-Merkmale,
+              Die vier Profilachsen sind redaktionelle DUFYND-Merkmale,
               die zur Suche und Empfehlung genutzt werden. Sie sind keine
               Laborwerte.
             </p>
@@ -504,7 +504,7 @@ export default async function FragrancePage({
               !fragrance.notes.base.length ? (
                 <p className="text-[13px] leading-5 text-(--ink-soft)">
                   Für diesen Duft sind aktuell keine verifizierten
-                  Notenpyramiden im SCENTAI-Katalog hinterlegt.
+                  Notenpyramiden im DUFYND-Katalog hinterlegt.
                 </p>
               ) : null}
             </div>
@@ -531,7 +531,7 @@ export default async function FragrancePage({
                   Ähnliche Düfte & Alternativen
                 </h2>
                 <p className="mt-1 max-w-2xl text-[12px] leading-5 text-(--ink-soft)">
-                  Zuerst zeigt SCENTAI dokumentierte Beziehungen aus dem
+                  Zuerst zeigt DUFYND dokumentierte Beziehungen aus dem
                   Duftkatalog. Danach folgen profilähnliche Düfte anhand
                   von Akkorden und redaktionellen Duftprofil-Merkmalen.
                 </p>
@@ -573,7 +573,7 @@ export default async function FragrancePage({
                           />
                         ) : (
                           <span className="text-[11px] font-semibold tracking-[0.14em] text-(--ink-soft)">
-                            SCENTAI
+                            DUFYND
                           </span>
                         )}
                       </div>
@@ -627,7 +627,7 @@ export default async function FragrancePage({
                 Passt dieser Duft zu dir?
               </h2>
               <p className="mt-1 max-w-2xl text-[13px] leading-5 text-(--ink-soft)">
-                Starte die SCENTAI-Beratung und vergleiche diesen Duft
+                Starte die DUFYND-Beratung und vergleiche diesen Duft
                 mit Alternativen nach Budget, Anlass und Duftprofil.
               </p>
             </div>
@@ -635,7 +635,7 @@ export default async function FragrancePage({
               href="/"
               className="rounded-xl bg-(--ink) px-4 py-2.5 text-[13px] font-semibold text-(--surface)"
             >
-              SCENTAI Advisor öffnen
+              DUFYND Advisor öffnen
             </a>
           </div>
         </section>
