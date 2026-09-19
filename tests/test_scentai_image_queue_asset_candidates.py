@@ -1,57 +1,56 @@
-from __future__ import annotations
+ture__ import annotations
 
-from scripts.build_scentai_image_approval_work_queue import (
-    build_queue,
+from scripts.profile_scentai_merchant_feed_schema import (
+    profile_feed_rows,
+)
+from scripts.validate_scentai_provider_config import (
+    validate_provider_config,
 )
 
 
-def test_image_queue_preserves_verified_asset_candidate_state() -> None:
-    staging = {
-        "products": [
-            {
-                "product_id": "SC-TEST-100",
-                "candidate_id": "TEST",
-                "brand": "Brand",
-                "name": "Test",
-                "batch": 1,
-                "media": {
-                    "image_url": None,
-                    "image_status": (
-                        "pending_approved_feed_or_manufacturer_image"
-                    ),
-                },
-            }
-        ]
-    }
-    releases = [
+def test_feed_schema_profile_excludes_raw_values() -> None:
+    rows = [
         {
-            "release_id": "SCENTAI-RELEASE-01",
-            "write_enabled": True,
-            "product_ids": ["SC-TEST-100"],
-        }
+            "sku": "secret-sku-123",
+            "price_col": "19.99",
+            "url_col": "https://private.example/product?token=secret",
+            "stock_col": "yes",
+        },
+        {
+            "sku": "secret-sku-456",
+            "price_col": "24.99",
+            "url_col": "https://private.example/product/2",
+            "stock_col": "no",
+        },
     ]
-    candidates = {
-        "products": [
-            {
-                "product_id": "SC-TEST-100",
-                "image_state": "rights_or_source_check_pending",
-                "next_action": (
-                    "prefer_approved_affiliate_feed_image_else_"
-                    "verify_manufacturer_asset_usage"
-                ),
-                "candidate_source": {
-                    "source_class": "manufacturer_official",
-                    "source_page_url": "https://example.com/product",
-                    "exact_variant_verified": True,
-                    "verified_at": "2026-09-19",
-                },
-            }
-        ]
-    }
 
-    queue = build_queue(
-        staging,
-        releases,
+    report = profile_feed_rows(rows)
+    serialized = str(report)
+
+    assert report["row_count"] == 2
+    assert report["column_count"] == 4
+    assert "secret-sku-123" not in serialized
+    assert "token=secret" not in serialized
+    assert "https://private.example" not in serialized
+
+    url_profile = next(row for row in report["profiles"] if row["column"] == "url_col")
+    assert url_profile["http_url_like_count"] == 2
+
+
+def valid_provider_config() -> dict:
+    return {
+        "provider_name": "awin-douglas",
+        "field_map": {
+            "offer_id": "id",
+            "merchant_product_id": "sku",
+            "price": "price",
+            "in_stock": "stock",
+            "product_url": "url",
+            "affiliate_url": "tracked_url",
+            "last_updated_at": "updated",
+            "image
+…[4663 chars truncated — re-run with head/grep/tail for full output]…
+   releases,
         generated_at="2026-09-19T10:00:00+00:00",
         asset_candidates=candidates,
     )
