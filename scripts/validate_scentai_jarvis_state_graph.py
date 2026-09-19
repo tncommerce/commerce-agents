@@ -7,9 +7,11 @@ from typing import Any
 
 from scripts.refresh_scentai_jarvis_state import (
     OUT_AFFILIATE,
+    OUT_CONTENT,
     OUT_FEED,
     OUT_IMAGES,
     OUT_MAPPING,
+    OUT_MASTER,
     OUT_OPERATIONS,
     OUT_PIPELINE,
     OUT_RELEASE,
@@ -25,6 +27,8 @@ OUTPUT_PATHS = {
     "release_status": OUT_RELEASE,
     "release_pipeline": OUT_PIPELINE,
     "operations": OUT_OPERATIONS,
+    "content_status": OUT_CONTENT,
+    "master_status": OUT_MASTER,
 }
 
 
