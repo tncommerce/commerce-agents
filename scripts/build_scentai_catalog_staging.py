@@ -15,6 +15,25 @@ def target_groups(value: str | None) -> list[str]:
     return [part.strip() for part in str(value or "").split(",") if part.strip()]
 
 
+def merchant_coverage_count(verified: dict, queue_row: dict) -> int:
+    """Resolve researched merchant coverage without mixing product editions.
+
+    Most verification snapshots are incremental evidence rather than a complete
+    merchant inventory, so the promotion queue remains the default source.
+    Edition-sensitive candidates can explicitly opt into snapshot-authoritative
+    coverage. In that mode, only merchants marked exactly as `available`
+    count toward current-edition coverage.
+    """
+
+    if verified.get("merchant_coverage_source") == "verification_snapshot":
+        snapshot = verified.get("merchant_snapshot", {})
+        if not isinstance(snapshot, dict):
+            return 0
+        return sum(1 for status in snapshot.values() if status == "available")
+
+    return int(queue_row.get("merchant_coverage_count", 0) or 0)
+
+
 PROFILE_WEIGHTS = {
     "freshness": {
         "fresh": 3.0,
@@ -158,12 +177,15 @@ def main() -> int:
                         "image_status": ("pending_approved_feed_or_manufacturer_image"),
                     },
                     "commerce": {
-                        "merchant_coverage_count": (
-                            queue_row.get(
-                                "merchant_coverage_count",
-                                0,
-                            )
+                        "merchant_coverage_count": merchant_coverage_count(
+                            verified,
+                            queue_row,
                         ),
+                        "merchant_coverage_source": verified.get(
+                            "merchant_coverage_source",
+                            "promotion_queue",
+                        ),
+                        "market_status": verified.get("market_status"),
                         "live_offer_status": ("pending_affiliate_approval_or_feed"),
                     },
                     "validation": {
