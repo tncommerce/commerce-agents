@@ -30,5 +30,6 @@
     "note": "Every Release Batch 01 product has at least two merchant mapping rows and a GTIN/EAN fallback. Live promotion remains blocked until current tracked affiliate offers and approved product images exist."
   },
   "write_enabled": true,
-  "write_guard_reason": "Release 01 is the first operational batch. A write is still refused unless every product-level image, affiliate-offer and staging QA gate passes."
+  "write_guard_reason": "Release 01 is the first operational batch. A write is still refused unless every product-level image, affiliate-offer and staging QA gate passes.",
+  "depends_on_release_ids": []
 }
