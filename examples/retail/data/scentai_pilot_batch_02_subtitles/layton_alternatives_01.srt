@@ -1,0 +1,23 @@
+1
+00:00:00,000 --> 00:00:04,000
+Layton, Détour Noir oder Royal Bleu?
+
+2
+00:00:04,000 --> 00:00:10,000
+Die Profile sind erstaunlich ähnlich:
+süß, würzig, holzig und mäßig frisch.
+
+3
+00:00:10,000 --> 00:00:16,000
+Détour Noir ist bei SCENTAI
+als Clone hinterlegt.
+
+4
+00:00:16,000 --> 00:00:22,000
+Royal Bleu dagegen
+als Inspired.
+
+5
+00:00:22,000 --> 00:00:28,000
+In den Community-Daten liegt Royal Bleu bei
+Haltbarkeit und Ausstrahlung etwas höher.
