@@ -10,6 +10,9 @@ from typing import Any
 DATA_DIR = Path("examples/retail/data")
 DEFAULT_STAGING = DATA_DIR / "scentai_catalog_staging.json"
 DEFAULT_OUTPUT = DATA_DIR / "scentai_image_approval_work_queue.json"
+DEFAULT_ASSET_CANDIDATES = (
+    DATA_DIR / "scentai_release_01_asset_candidates.json"
+)
 DEFAULT_RELEASES = [
     DATA_DIR / "scentai_release_batch_01.json",
     DATA_DIR / "scentai_release_batch_02.json",
@@ -38,11 +41,14 @@ def canonical_bytes(payload: object) -> bytes:
 def source_fingerprint(
     staging: dict,
     releases: list[dict],
+    asset_candidates: dict | None = None,
 ) -> str:
     digest = hashlib.sha256()
     digest.update(canonical_bytes(staging))
     for release in releases:
         digest.update(canonical_bytes(release))
+    if asset_candidates is not None:
+        digest.update(canonical_bytes(asset_candidates))
     return digest.hexdigest()
 
 
@@ -72,8 +78,14 @@ def build_queue(
     releases: list[dict],
     *,
     generated_at: str,
+    asset_candidates: dict | None = None,
 ) -> dict[str, Any]:
     release_index = build_release_index(releases)
+    candidate_by_product = {
+        str(row.get("product_id") or ""): row
+        for row in (asset_candidates or {}).get("products", [])
+        if str(row.get("product_id") or "").strip()
+    }
     items: list[dict[str, Any]] = []
 
     for product in staging.get("products", []):
@@ -86,29 +98,93 @@ def build_queue(
             and image_url is not None
         )
 
-        items.append(
-            {
-                "product_id": product_id,
-                "candidate_id": product.get("candidate_id"),
-                "brand": product.get("brand"),
-                "name": product.get("name"),
-                "batch": product.get("batch"),
-                "release": release_index.get(product_id),
-                "current_image_url": image_url,
-                "current_image_status": image_status or "missing",
-                "image_state": image_status if approved else "missing",
-                "blockers": (
-                    [] if approved else ["approved_product_image_missing"]
-                ),
-                "next_action": (
-                    "none"
-                    if approved
-                    else "await_real_feed_or_official_asset_candidate"
-                ),
-                "action_class": "auto_allowed",
-                "approval_action_class": "approval_required",
-            }
-        )
+        candidate = candidate_by_product.get(product_id)
+
+        if approved:
+            image_state = image_status
+            blockers: list[str] = []
+            next_action = "none"
+        elif candidate is not None:
+            image_state = str(
+                candidate.get("image_state")
+                or "rights_or_source_check_pending"
+            )
+            blockers = [
+                "approved_product_image_missing",
+                "asset_usage_or_feed_rights_not_verified",
+            ]
+            next_action = str(
+                candidate.get("next_action")
+                or (
+                    "prefer_approved_affiliate_feed_image_else_"
+                    "verify_manufacturer_asset_usage"
+                )
+            )
+        else:
+            image_state = "missing"
+            blockers = ["approved_product_image_missing"]
+            next_action = "await_real_feed_or_official_asset_candidate"
+
+        row: dict[str, Any] = {
+            "product_id": product_id,
+            "candidate_id": product.get("candidate_id"),
+            "brand": product.get("brand"),
+            "name": product.get("name"),
+            "batch": product.get("batch"),
+            "release": release_index.get(product_id),
+            "current_image_url": image_url,
+            "current_image_status": image_status or "missing",
+            "image_state": image_state,
+            "blockers": blockers,
+            "next_action": next_action,
+            "action_class": "auto_allowed",
+            "approval_action_class": "approval_required",
+        }
+
+        if candidate is not None and not approved:
+            row["candidate_source"] = candidate.get(
+                "candidate_source"
+            )
+            row["audit_trail"] = [
+                {
+                    "at": candidate.get(
+                        "candidate_source",
+                        {},
+                    ).get("verified_at"),
+                    "from": "missing",
+                    "to": "candidate_discovered",
+                    "trigger": "manufacturer_source_found",
+                },
+                {
+                    "at": candidate.get(
+                        "candidate_source",
+                        {},
+                    ).get("verified_at"),
+                    "from": "candidate_discovered",
+                    "to": "identity_check_pending",
+                    "trigger": "candidate_normalized",
+                },
+                {
+                    "at": candidate.get(
+                        "candidate_source",
+                        {},
+                    ).get("verified_at"),
+                    "from": "identity_check_pending",
+                    "to": "identity_verified",
+                    "trigger": "exact_variant_verified",
+                },
+                {
+                    "at": candidate.get(
+                        "candidate_source",
+                        {},
+                    ).get("verified_at"),
+                    "from": "identity_verified",
+                    "to": "rights_or_source_check_pending",
+                    "trigger": "identity_gate_passed",
+                },
+            ]
+
+        items.append(row)
 
     items.sort(
         key=lambda item: (
@@ -133,12 +209,18 @@ def build_queue(
         "source_fingerprint_sha256": source_fingerprint(
             staging,
             releases,
+            asset_candidates,
         ),
         "machine_id": "scentai_image_approval_v1",
         "policy_ref": "scentai_jarvis_operating_policy.json",
         "source_files": [
             DEFAULT_STAGING.name,
             *[path.name for path in DEFAULT_RELEASES],
+            *(
+                [DEFAULT_ASSET_CANDIDATES.name]
+                if asset_candidates is not None
+                else []
+            ),
         ],
         "summary": {
             "staged_products": len(items),
@@ -178,6 +260,12 @@ def build_queue(
                 for item in items
                 if item["image_state"] == "review_ready"
             ),
+            "rights_or_source_check_pending": sum(
+                1
+                for item in items
+                if item["image_state"]
+                == "rights_or_source_check_pending"
+            ),
         },
         "items": items,
     }
@@ -203,6 +291,11 @@ def main() -> int:
         help="Optional release manifest. Repeatable.",
     )
     parser.add_argument(
+        "--asset-candidates",
+        type=Path,
+        default=DEFAULT_ASSET_CANDIDATES,
+    )
+    parser.add_argument(
         "--output",
         type=Path,
         default=DEFAULT_OUTPUT,
@@ -220,6 +313,11 @@ def main() -> int:
     release_paths = args.release or DEFAULT_RELEASES
     staging = load_json(args.staging)
     releases = [load_json(path) for path in release_paths]
+    asset_candidates = (
+        load_json(args.asset_candidates)
+        if args.asset_candidates.exists()
+        else None
+    )
     generated_at = (
         args.generated_at
         or datetime.now(UTC).replace(microsecond=0).isoformat()
@@ -229,6 +327,7 @@ def main() -> int:
         staging,
         releases,
         generated_at=generated_at,
+        asset_candidates=asset_candidates,
     )
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
