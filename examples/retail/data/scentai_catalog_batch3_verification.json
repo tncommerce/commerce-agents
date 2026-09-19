@@ -20,8 +20,21 @@
         "vanilla"
       ],
       "sources": [
-        "https://www.dior.com/de_de/beauty/products/hypnotic-poison-eau-de-toilette-Y0063401.html"
-      ]
+        "https://www.dior.com/de_de/beauty/products/hypnotic-poison-eau-de-toilette-Y0063401.html",
+        "https://www.douglas.de/de/p/1069032304",
+        "https://www.flaconi.de/parfum/dior/hypnotic-poison/dior-hypnotic-poison-eau-de-toilette.html?variant=20101775",
+        "https://www.perfumetrader.de/de/dior-hypnotic-poison-eau-de-toilette-100-ml"
+      ],
+      "identifiers": {
+        "ean": "3348900425309",
+        "gtin": "3348900425309"
+      },
+      "merchant_snapshot": {
+        "douglas_de": "available",
+        "flaconi_de": "available",
+        "perfumetrader_de": "listed_out_of_stock"
+      },
+      "merchant_snapshot_checked_at": "2026-09-19"
     },
     {
       "candidate_id": "GUERLAIN-MON-GUERLAIN-EDP",
