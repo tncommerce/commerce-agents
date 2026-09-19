@@ -1,6 +1,6 @@
 # SCENTAI Organic Launch Measurement Status
 
-Status: prepared_not_deployed
+Status: deployed_verified
 Updated: 2026-09-19
 
 ## Prepared
@@ -24,22 +24,17 @@ Updated: 2026-09-19
 
 ## Production state
 
-The code is prepared on the `scentai-mvp` branch but the new Supabase
-analytics columns/view have not been applied to the production database in this
-work block.
-
-Do not deploy the frontend attribution payload before the production analytics
-schema accepts:
+The production Supabase analytics schema has been migrated and verified.
+The live analytics table now accepts:
 - `acquisition_source`
 - `campaign_id`
 - `content_id`
 
-The SQL remains additive/idempotent and keeps RLS enabled. Reporting views use
-`security_invoker = true`.
+The `scentai_acquisition_funnel` reporting view is deployed alongside the existing conversion, product, clickout and retention views. The migration remained additive/idempotent, RLS stays enabled, and reporting views use `security_invoker = true`.
 
 ## Pre-launch smoke test
 
-After database migration and deployment:
+Database migration is complete. After the matching frontend attribution deployment:
 
 1. Open one tracked TikTok link.
 2. Start a consultation.
