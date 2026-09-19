@@ -79,6 +79,9 @@ def build_job_status(job: dict) -> dict[str, Any]:
     elif inputs["ready_for_render"]:
         state = "render_ready"
         blockers = ["final_render_missing"]
+    elif not visual.exists():
+        state = "visual_preview_pending"
+        blockers = list(inputs["blockers"])
     elif not voiceover.exists():
         state = "voiceover_pending"
         blockers = list(inputs["blockers"])
