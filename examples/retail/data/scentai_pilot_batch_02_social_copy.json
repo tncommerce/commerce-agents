@@ -1,0 +1,148 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-19",
+  "campaign_id": "launch01",
+  "guidance": [
+    "Keep captions useful rather than salesy.",
+    "Do not add unsupported similarity percentages or 1:1 claims.",
+    "Use the matching tracked link for each platform.",
+    "Affiliate commission must not influence fragrance ordering."
+  ],
+  "posts": [
+    {
+      "content_id": "dupe_battle_imagination_01",
+      "tiktok": {
+        "caption": "Marwa, Hectic oder Marwa Extrait? Alle drei gehen bei SCENTAI in Richtung Imagination – aber mit deutlich unterschiedlichen Profilen.",
+        "hashtags": [
+          "#SCENTAI",
+          "#Parfum",
+          "#Imagination",
+          "#ParfumAlternative",
+          "#FragranceTok"
+        ]
+      },
+      "instagram": {
+        "caption": "Drei Imagination-inspirierte Richtungen, drei verschiedene Profile. Marwa süßer, Hectic würziger, Marwa Extrait dazwischen – SCENTAI zeigt dir die Unterschiede transparent.",
+        "hashtags": [
+          "#SCENTAI",
+          "#Parfum",
+          "#Fragrance",
+          "#Imagination",
+          "#ParfumAlternative"
+        ]
+      },
+      "youtube": {
+        "title": "Marwa vs Hectic vs Marwa Extrait | SCENTAI",
+        "description": "Drei Imagination-inspirierte Richtungen im direkten Profilvergleich – ohne sie pauschal gleichzusetzen."
+      }
+    },
+    {
+      "content_id": "layton_alternatives_01",
+      "tiktok": {
+        "caption": "Détour Noir und Royal Bleu gehen beide in Richtung Layton – aber bei SCENTAI nicht mit demselben Relationship-Label.",
+        "hashtags": [
+          "#SCENTAI",
+          "#Layton",
+          "#Parfum",
+          "#Dupe",
+          "#FragranceTok"
+        ]
+      },
+      "instagram": {
+        "caption": "Clone oder Inspired? Détour Noir und Royal Bleu liegen beide nah an Laytons Stil, aber SCENTAI trennt die Beziehung bewusst voneinander.",
+        "hashtags": [
+          "#SCENTAI",
+          "#Layton",
+          "#Parfumwissen",
+          "#Fragrance",
+          "#ParfumAlternative"
+        ]
+      },
+      "youtube": {
+        "title": "Layton: Détour Noir oder Royal Bleu? | SCENTAI",
+        "description": "Warum SCENTAI Détour Noir als Clone und Royal Bleu als Inspired einordnet – plus Community-Performance im Vergleich."
+      }
+    },
+    {
+      "content_id": "althair_liquid_brun_01",
+      "tiktok": {
+        "caption": "Althaïr und Liquid Brun liegen bei SCENTAI extrem nah beieinander. Wo unterscheiden sich die Profile trotzdem?",
+        "hashtags": [
+          "#SCENTAI",
+          "#Althair",
+          "#LiquidBrun",
+          "#Parfum",
+          "#FragranceTok"
+        ]
+      },
+      "instagram": {
+        "caption": "Althaïr vs Liquid Brun: gleiche gourmandig-süße Richtung, sehr ähnliche Profile – aber nicht völlig identisch. SCENTAI zeigt die Details.",
+        "hashtags": [
+          "#SCENTAI",
+          "#Althair",
+          "#LiquidBrun",
+          "#Fragrance",
+          "#Parfumvergleich"
+        ]
+      },
+      "youtube": {
+        "title": "Althaïr vs Liquid Brun – wie nah sind sie? | SCENTAI",
+        "description": "SCENTAI führt beide als Clone-Beziehung mit hoher Confidence. Im Short zeigen wir, wo die Profile trotzdem auseinandergehen."
+      }
+    },
+    {
+      "content_id": "top3_date_01",
+      "tiktok": {
+        "caption": "Date Night muss nicht immer gleich riechen: gourmandig-süß, pudrig-holzig oder etwas frischer – welcher Stil passt zu dir?",
+        "hashtags": [
+          "#SCENTAI",
+          "#DateNight",
+          "#Parfum",
+          "#FragranceTok",
+          "#Duftfinder"
+        ]
+      },
+      "instagram": {
+        "caption": "Drei Date-Night-Richtungen statt einer pauschalen Nummer 1: Stronger With You Intensely, Dior Homme Intense und Valentino Born In Roma Intense.",
+        "hashtags": [
+          "#SCENTAI",
+          "#DateNight",
+          "#Parfum",
+          "#Fragrance",
+          "#Duftfinder"
+        ]
+      },
+      "youtube": {
+        "title": "3 Date-Night-Düfte für 3 verschiedene Stile | SCENTAI",
+        "description": "Drei süße Duftprofile mit deutlich unterschiedlichen Schwerpunkten – SCENTAI hilft dir, die passende Richtung zu finden."
+      }
+    },
+    {
+      "content_id": "top3_fresh_01",
+      "tiktok": {
+        "caption": "Imagination, Tygar und Turathi Blue: alle extrem frisch – aber mit komplett unterschiedlicher holziger und würziger Basis.",
+        "hashtags": [
+          "#SCENTAI",
+          "#Parfum",
+          "#FreshFragrance",
+          "#Imagination",
+          "#FragranceTok"
+        ]
+      },
+      "instagram": {
+        "caption": "Frische 10/10 heißt nicht gleicher Duft. Imagination, Tygar und Turathi Blue unterscheiden sich deutlich bei Holz, Würze und Süße.",
+        "hashtags": [
+          "#SCENTAI",
+          "#Parfum",
+          "#Fragrance",
+          "#FreshFragrance",
+          "#Duftfinder"
+        ]
+      },
+      "youtube": {
+        "title": "3 extrem frische Düfte – aber komplett verschieden | SCENTAI",
+        "description": "Imagination, Tygar und Turathi Blue im Profilvergleich: gleiche maximale Frische, anderer Charakter."
+      }
+    }
+  ]
+}
