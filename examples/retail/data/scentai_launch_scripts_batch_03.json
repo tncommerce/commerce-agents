@@ -1,0 +1,278 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-19",
+  "campaign_id": "launch01",
+  "status": "batch_03_scripted",
+  "production_rules": {
+    "target_duration_seconds": "20-35",
+    "aspect_ratio": "9:16",
+    "channels": [
+      "tiktok",
+      "instagram",
+      "youtube"
+    ],
+    "wording_guardrails": [
+      "Do not present a subjective profile as universally safe, bold or best.",
+      "Do not call an alternative or inspired relationship a clone.",
+      "Do not quote a live price unless it is refreshed immediately before publishing.",
+      "Do not imply affiliate commission affects recommendations."
+    ],
+    "visual_rule": "Use only approved/licensed SCENTAI product visuals or clearly labeled neutral editorial graphics."
+  },
+  "creatives": [
+    {
+      "content_id": "top3_fresh_01",
+      "title": "Drei frische Profile – aber komplett unterschiedlich",
+      "format": "top3",
+      "landing_path": "/duftfinder",
+      "duration_target_seconds": 30,
+      "hook": "Frisch ist nicht gleich frisch: Imagination, Tygar und Turathi Blue zeigen drei verschiedene Wege.",
+      "scenes": [
+        {
+          "seconds": "0-4",
+          "visual": "Imagination, Tygar und Turathi Blue nacheinander.",
+          "voiceover": "Frisch ist nicht gleich frisch: Imagination, Tygar und Turathi Blue zeigen drei verschiedene Wege.",
+          "on_screen": "3× frisch • 3× anderes Profil"
+        },
+        {
+          "seconds": "4-11",
+          "visual": "Imagination mit fresh/citrus/aquatic/green.",
+          "voiceover": "Imagination ist extrem frisch, zitrisch und aquatisch und bleibt in unseren Scores sehr wenig süß.",
+          "on_screen": "Imagination → zitrisch • aquatisch • grün"
+        },
+        {
+          "seconds": "11-19",
+          "visual": "Tygar mit citrus/fresh/woody/spicy.",
+          "voiceover": "Tygar ist ebenfalls maximal frisch, aber deutlich holziger und würziger.",
+          "on_screen": "Tygar → zitrisch • holziger • würziger"
+        },
+        {
+          "seconds": "19-25",
+          "visual": "Turathi Blue mit citrus/fresh/fruity/woody/aquatic.",
+          "voiceover": "Turathi Blue bleibt frisch und zitrisch, wirkt im Profil aber fruchtiger und weniger würzig als Tygar.",
+          "on_screen": "Turathi Blue → fruchtiger • weniger würzig"
+        },
+        {
+          "seconds": "25-30",
+          "visual": "SCENTAI Duftfinder.",
+          "voiceover": "Welches frische Profil zu dir passt, findest du statt über ein Ranking direkt mit SCENTAI heraus.",
+          "on_screen": "frischen Duft finden → SCENTAI"
+        }
+      ],
+      "caption_skeleton": "Frisch kann aquatisch, holzig-würzig oder fruchtig sein. Genau deshalb reicht 'ich will etwas Frisches' noch nicht als Empfehlung. #freshfragrance #parfum #scentai",
+      "product_ids": [
+        "SC-LV-IMAGINATION-100",
+        "SC-BVLGARI-TYGAR-125",
+        "SC-AFNAN-TURATHI-BLUE-90"
+      ],
+      "claim_basis": [
+        "Imagination freshness 10, sweetness 2; leading accords fresh/citrus/aquatic/green.",
+        "Tygar freshness 10, woodiness 7, spiciness 6.",
+        "Turathi Blue freshness 10, leading accords citrus/fresh/fruity/woody/aquatic and spiciness 4."
+      ]
+    },
+    {
+      "content_id": "signature_vs_safe_01",
+      "title": "Drei Wege zu einem Alltagsprofil",
+      "format": "scentai_decides",
+      "landing_path": "/duftfinder",
+      "duration_target_seconds": 31,
+      "hook": "Du willst einen Duft für viele Alltagssituationen? Dann ist zuerst wichtig, welche Art von Präsenz du überhaupt suchst.",
+      "scenes": [
+        {
+          "seconds": "0-4",
+          "visual": "Sauvage, Prada L'Homme und Bois Impérial.",
+          "voiceover": "Du willst einen Duft für viele Alltagssituationen? Dann ist zuerst wichtig, welche Art von Präsenz du überhaupt suchst.",
+          "on_screen": "Alltag ≠ ein einziges Duftprofil"
+        },
+        {
+          "seconds": "4-11",
+          "visual": "Sauvage mit fresh/spicy/citrus/woody.",
+          "voiceover": "Sauvage geht frisch, würzig, zitrisch und holzig – mit deutlich mehr Würze.",
+          "on_screen": "Sauvage → frisch • würzig • zitrisch"
+        },
+        {
+          "seconds": "11-19",
+          "visual": "Prada L'Homme mit powdery/fresh/floral/creamy.",
+          "voiceover": "Prada L'Homme ist pudriger, floraler und cremiger und in unseren Scores deutlich weniger würzig.",
+          "on_screen": "Prada L'Homme → pudrig • floral • clean"
+        },
+        {
+          "seconds": "19-26",
+          "visual": "Bois Impérial mit woody 9, sweetness 1.",
+          "voiceover": "Bois Impérial ist sehr trocken, extrem holzig und gleichzeitig frisch – mit viel weniger Süße.",
+          "on_screen": "Bois Impérial → trocken • holzig • frisch"
+        },
+        {
+          "seconds": "26-31",
+          "visual": "SCENTAI Duftfinder.",
+          "voiceover": "Das ist keine Frage von bester oder sicherster Wahl. SCENTAI sucht nach dem Profil, das zu dir passt.",
+          "on_screen": "dein Profil → SCENTAI"
+        }
+      ],
+      "caption_skeleton": "Sauvage, Prada L'Homme oder Bois Impérial? Nicht 'welcher ist der beste?', sondern: Welche Art Duft willst du überhaupt tragen? #signaturefragrance #scentai",
+      "product_ids": [
+        "SC-DIOR-SAUVAGE-EDP-100",
+        "SC-PRADA-LHOMME-100",
+        "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100"
+      ],
+      "claim_basis": [
+        "Sauvage leading accords fresh/spicy/synthetic/citrus/woody and spiciness 7.",
+        "Prada L'Homme leading accords powdery/fresh/floral/creamy and spiciness 3.",
+        "Bois Imperial woodiness 9, sweetness 1, freshness 8."
+      ]
+    },
+    {
+      "content_id": "bois_imperial_explained_01",
+      "title": "Warum Bois Impérial polarisiert",
+      "format": "scentai_decides",
+      "landing_path": "/duftfinder",
+      "duration_target_seconds": 27,
+      "hook": "Bois Impérial kann für dich perfekt sein – oder komplett danebenliegen. Das Profil erklärt warum.",
+      "scenes": [
+        {
+          "seconds": "0-4",
+          "visual": "Bois Impérial groß im Bild.",
+          "voiceover": "Bois Impérial kann für dich perfekt sein – oder komplett danebenliegen. Das Profil erklärt warum.",
+          "on_screen": "Bois Impérial → passt das zu dir?"
+        },
+        {
+          "seconds": "4-11",
+          "visual": "Scores freshness 8, woodiness 9, sweetness 1.",
+          "voiceover": "Bei SCENTAI ist er sehr holzig, klar frisch und fast gar nicht süß eingeordnet.",
+          "on_screen": "holzig 9/10 • frisch 8/10 • süß 1/10"
+        },
+        {
+          "seconds": "11-18",
+          "visual": "Accords fresh/woody/synthetic/spicy/green.",
+          "voiceover": "Dazu kommen grüne, würzige und synthetische Facetten. Wenn du cremig-süße Gourmands suchst, ist das ein komplett anderes Spielfeld.",
+          "on_screen": "grün • würzig • synthetisch"
+        },
+        {
+          "seconds": "18-23",
+          "visual": "Performance Bars 8.5/8.1.",
+          "voiceover": "Und die Community-Performance ist in unseren Daten mit Haltbarkeit 8,5 und Projektion 8,1 ziemlich kräftig.",
+          "on_screen": "Haltbarkeit 8,5 • Projektion 8,1"
+        },
+        {
+          "seconds": "23-27",
+          "visual": "SCENTAI Duftfinder.",
+          "voiceover": "Bevor du nach Hype kaufst: Lass SCENTAI prüfen, ob genau dieses Profil überhaupt zu dir passt.",
+          "on_screen": "Passung prüfen → SCENTAI"
+        }
+      ],
+      "caption_skeleton": "Bois Impérial ist kein universeller Crowdpleaser-Versuch, sondern ein sehr klares Profil: holzig, frisch, trocken und kräftig. #boisimperial #parfum #scentai",
+      "product_ids": [
+        "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100"
+      ],
+      "claim_basis": [
+        "Bois Imperial freshness 8, woodiness 9, sweetness 1.",
+        "Leading accords fresh/woody/synthetic/spicy/green.",
+        "Community longevity/projection 8.5/8.1."
+      ]
+    },
+    {
+      "content_id": "not_every_dupe_clone_01",
+      "title": "Warum SCENTAI nicht alles Dupe nennt",
+      "format": "education_trust",
+      "landing_path": "/parfum-alternativen",
+      "duration_target_seconds": 33,
+      "hook": "Warum nennt SCENTAI nicht einfach jede ähnliche Alternative einen Dupe? Weil die Beziehung tatsächlich unterschiedlich sein kann.",
+      "scenes": [
+        {
+          "seconds": "0-4",
+          "visual": "Text: Clone vs Alternative vs Inspired.",
+          "voiceover": "Warum nennt SCENTAI nicht einfach jede ähnliche Alternative einen Dupe? Weil die Beziehung tatsächlich unterschiedlich sein kann.",
+          "on_screen": "Clone ≠ Alternative ≠ Inspired"
+        },
+        {
+          "seconds": "4-12",
+          "visual": "Althaïr und Liquid Brun mit Clone-Badge.",
+          "voiceover": "Beispiel Althaïr und Liquid Brun: Hier ist in unserer Datenbank eine Clone-Beziehung mit hoher Sicherheit dokumentiert.",
+          "on_screen": "Althaïr ↔ Liquid Brun → Clone"
+        },
+        {
+          "seconds": "12-20",
+          "visual": "Aventus und Montblanc Explorer mit Alternative-Badge.",
+          "voiceover": "Aventus und Montblanc Explorer führen wir dagegen als Alternative – also verwandt im Stil, aber nicht als direkte Kopie.",
+          "on_screen": "Aventus ↔ Explorer → Alternative"
+        },
+        {
+          "seconds": "20-27",
+          "visual": "Imagination und Marwa als Inspired-Beispiel klein ergänzen.",
+          "voiceover": "Und bei anderen Paaren sprechen wir bewusst nur von inspiriert, wenn genau das die Datenlage hergibt.",
+          "on_screen": "Inspired → gleiche Richtung, keine Clone-Behauptung"
+        },
+        {
+          "seconds": "27-33",
+          "visual": "SCENTAI Transparenz-/Alternativenansicht.",
+          "voiceover": "Genau diese Trennung soll verhindern, dass du eine Kaufentscheidung auf eine übertriebene Eins-zu-eins-Behauptung stützt.",
+          "on_screen": "transparent vergleichen → SCENTAI"
+        }
+      ],
+      "caption_skeleton": "Nicht jeder ähnliche Duft ist ein Clone. SCENTAI trennt Clone, Alternative und Inspired, statt alles in einen 'Dupe'-Topf zu werfen. #dupe #parfumalternativen #scentai",
+      "product_ids": [
+        "SC-PDM-ALTHAIR-125",
+        "SC-FRENCH-AVENUE-LIQUID-BRUN-100",
+        "SC-CREED-AVENTUS-100",
+        "SC-MONTBLANC-EXPLORER-100"
+      ],
+      "claim_basis": [
+        "Althair <-> Liquid Brun clone/high.",
+        "Aventus <-> Montblanc Explorer alternative/high.",
+        "The product relationship model separately supports clone, alternative and inspired relationship types."
+      ]
+    },
+    {
+      "content_id": "gift_for_him_safe_to_bold_01",
+      "title": "Drei Geschenk-Richtungen statt blindem Bestseller-Kauf",
+      "format": "gift_guide",
+      "landing_path": "/parfum-geschenkberater",
+      "duration_target_seconds": 31,
+      "hook": "Parfum für ihn verschenken? Statt einfach einen Bestseller zu nehmen: drei sehr unterschiedliche Richtungen.",
+      "scenes": [
+        {
+          "seconds": "0-4",
+          "visual": "Bleu de Chanel, Prada L'Homme, Xerjoff Naxos.",
+          "voiceover": "Parfum für ihn verschenken? Statt einfach einen Bestseller zu nehmen: drei sehr unterschiedliche Richtungen.",
+          "on_screen": "Geschenk → erst Profil wählen"
+        },
+        {
+          "seconds": "4-11",
+          "visual": "Bleu de Chanel mit fresh/citrus/woody/aquatic.",
+          "voiceover": "Bleu de Chanel geht frisch, zitrisch, holzig und aquatisch.",
+          "on_screen": "Bleu de Chanel → frisch • zitrisch • holzig"
+        },
+        {
+          "seconds": "11-19",
+          "visual": "Prada L'Homme mit powdery/fresh/floral/creamy.",
+          "voiceover": "Prada L'Homme ist pudriger, floraler und cremiger – ein komplett anderer Charakter.",
+          "on_screen": "Prada L'Homme → pudrig • floral • cremig"
+        },
+        {
+          "seconds": "19-26",
+          "visual": "Naxos mit sweet/spicy/gourmand/creamy.",
+          "voiceover": "Naxos ist dagegen sehr süß, würzig, gourmandig und deutlich kräftiger in den Community-Performance-Daten.",
+          "on_screen": "Naxos → süß • würzig • gourmand • kräftiger"
+        },
+        {
+          "seconds": "26-31",
+          "visual": "SCENTAI Geschenkberater.",
+          "voiceover": "Wenn du die Person kennst, aber nicht den Duft: Lass SCENTAI zuerst nach Stil, Anlass und Budget fragen.",
+          "on_screen": "Geschenkberatung → SCENTAI"
+        }
+      ],
+      "caption_skeleton": "Parfum verschenken ohne blind Bestseller zu kaufen: erst herausfinden, welches Duftprofil zur Person passt. #parfumgeschenk #giftguide #scentai",
+      "product_ids": [
+        "SC-CHANEL-BLEU-DE-CHANEL-EDP-100",
+        "SC-PRADA-LHOMME-100",
+        "SC-XERJOFF-NAXOS-100"
+      ],
+      "claim_basis": [
+        "Bleu de Chanel leading accords fresh/citrus/woody/spicy/aquatic.",
+        "Prada L'Homme leading accords powdery/fresh/floral/sweet/creamy.",
+        "Naxos leading accords sweet/spicy/gourmand/creamy/citrus and longevity/projection 8.8/8.5."
+      ]
+    }
+  ]
+}
