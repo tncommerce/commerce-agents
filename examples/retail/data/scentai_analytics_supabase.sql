@@ -9,6 +9,9 @@ create table if not exists public.scentai_analytics_events (
   event text not null,
   product_id text null,
   source text null,
+  acquisition_source text null,
+  campaign_id text null,
+  content_id text null,
   search_term text null,
   result_count integer null,
   surface text null,
@@ -18,6 +21,9 @@ create table if not exists public.scentai_analytics_events (
 );
 
 alter table public.scentai_analytics_events
+  add column if not exists acquisition_source text null,
+  add column if not exists campaign_id text null,
+  add column if not exists content_id text null,
   add column if not exists search_term text null,
   add column if not exists result_count integer null,
   add column if not exists surface text null,
@@ -47,6 +53,1958 @@ alter table public.scentai_analytics_events
       'collection_remove'
     )
   );
+
+alter table public.scentai_analytics_events
+  drop constraint if exists scentai_analytics_events_acquisition_source_check;
+
+alter table public.scentai_analytics_events
+  add constraint scentai_analytics_events_acquisition_source_check
+  check (
+    acquisition_source is null
+    or (
+      char_length(acquisition_source) <= 80
+      and acquisition_source ~ '^[A-Za-z0-9._:-]+
+alter table public.scentai_analytics_events
+  add constraint scentai_analytics_events_result_count_check
+  check (result_count is null or result_count >= 0);
+
+alter table public.scentai_analytics_events
+  drop constraint if exists scentai_analytics_events_search_term_length_check;
+
+alter table public.scentai_analytics_events
+  add constraint scentai_analytics_events_search_term_length_check
+  check (search_term is null or char_length(search_term) <= 80);
+
+alter table public.scentai_analytics_events
+  drop constraint if exists scentai_analytics_events_surface_length_check;
+
+alter table public.scentai_analytics_events
+  add constraint scentai_analytics_events_surface_length_check
+  check (surface is null or char_length(surface) <= 80);
+
+alter table public.scentai_analytics_events
+  drop constraint if exists scentai_analytics_events_related_product_id_length_check;
+
+alter table public.scentai_analytics_events
+  add constraint scentai_analytics_events_related_product_id_length_check
+  check (
+    related_product_id is null
+    or char_length(related_product_id) <= 80
+  );
+
+alter table public.scentai_analytics_events
+  drop constraint if exists scentai_analytics_events_item_position_check;
+
+alter table public.scentai_analytics_events
+  add constraint scentai_analytics_events_item_position_check
+  check (
+    item_position is null
+    or (item_position >= 1 and item_position <= 100)
+  );
+
+create index if not exists scentai_analytics_events_occurred_at_idx
+  on public.scentai_analytics_events (occurred_at desc);
+
+create index if not exists scentai_analytics_events_session_key_idx
+  on public.scentai_analytics_events (session_key);
+
+create index if not exists scentai_analytics_events_event_idx
+  on public.scentai_analytics_events (event);
+
+create index if not exists scentai_analytics_events_search_idx
+  on public.scentai_analytics_events (event, search_term)
+  where event in ('catalog_search', 'catalog_no_results');
+
+create index if not exists scentai_analytics_events_funnel_idx
+  on public.scentai_analytics_events (
+    event,
+    surface,
+    occurred_at desc
+  );
+
+create index if not exists scentai_analytics_events_related_product_idx
+  on public.scentai_analytics_events (related_product_id)
+  where related_product_id is not null;
+
+create index if not exists scentai_analytics_events_acquisition_idx
+  on public.scentai_analytics_events (
+    acquisition_source,
+    campaign_id,
+    content_id,
+    occurred_at desc
+  )
+  where acquisition_source is not null;
+
+alter table public.scentai_analytics_events enable row level security;
+
+-- No public RLS policies are created.
+-- Production writes use the server-side Supabase secret/service-role key.
+
+drop view if exists public.scentai_catalog_search_demand;
+
+create view public.scentai_catalog_search_demand
+with (security_invoker = true)
+as
+select
+  search_term,
+  count(*) filter (
+    where event = 'catalog_search'
+  ) as search_events,
+  count(*) filter (
+    where event = 'catalog_no_results'
+  ) as no_result_events,
+  count(distinct session_key) as unique_sessions,
+  round(avg(result_count)::numeric, 2) as avg_result_count,
+  max(occurred_at) as last_searched_at,
+  count(distinct session_key) filter (
+    where event = 'catalog_search'
+  ) as successful_search_sessions,
+  count(distinct session_key) filter (
+    where event = 'catalog_no_results'
+  ) as no_result_sessions
+from public.scentai_analytics_events
+where event in ('catalog_search', 'catalog_no_results')
+  and search_term is not null
+group by search_term;
+
+drop view if exists public.scentai_product_engagement;
+
+create view public.scentai_product_engagement
+with (security_invoker = true)
+as
+select
+  product_id,
+  count(*) filter (
+    where event in (
+      'product_open',
+      'advisor_product_open',
+      'fragrance_detail_view'
+    )
+  ) as product_opens,
+  count(*) filter (
+    where event = 'merchant_clickout'
+  ) as merchant_clickouts,
+  count(distinct session_key) filter (
+    where event in (
+      'product_open',
+      'advisor_product_open',
+      'fragrance_detail_view'
+    )
+  ) as opening_sessions,
+  count(distinct session_key) filter (
+    where event = 'merchant_clickout'
+  ) as clickout_sessions,
+  max(occurred_at) as last_event_at
+from public.scentai_analytics_events
+where product_id is not null
+  and event in (
+    'product_open',
+    'advisor_product_open',
+    'fragrance_detail_view',
+    'merchant_clickout'
+  )
+group by product_id;
+
+drop view if exists public.scentai_conversion_funnel;
+
+create view public.scentai_conversion_funnel
+with (security_invoker = true)
+as
+with session_stage as (
+  select
+    session_key,
+    min(occurred_at)::date as cohort_date,
+    min(occurred_at) filter (
+      where event = 'consultation_start'
+    ) as consultation_at,
+    min(occurred_at) filter (
+      where event = 'advisor_recommendation_view'
+    ) as recommendation_at,
+    min(occurred_at) filter (
+      where event = 'advisor_product_open'
+    ) as advisor_open_at,
+    min(occurred_at) filter (
+      where event = 'fragrance_detail_view'
+    ) as detail_view_at,
+    min(occurred_at) filter (
+      where event = 'comparison_start'
+    ) as comparison_at,
+    min(occurred_at) filter (
+      where event = 'merchant_clickout'
+    ) as clickout_at
+  from public.scentai_analytics_events
+  group by session_key
+),
+qualified as (
+  select
+    *,
+    consultation_at is not null as consultation,
+    recommendation_at is not null
+      and consultation_at is not null
+      and recommendation_at >= consultation_at as recommendation,
+    advisor_open_at is not null
+      and recommendation_at is not null
+      and consultation_at is not null
+      and recommendation_at >= consultation_at
+      and advisor_open_at >= recommendation_at as advisor_open,
+    detail_view_at is not null
+      and recommendation_at is not null
+      and consultation_at is not null
+      and recommendation_at >= consultation_at
+      and detail_view_at >= recommendation_at as detail_view,
+    comparison_at is not null
+      and recommendation_at is not null
+      and consultation_at is not null
+      and recommendation_at >= consultation_at
+      and comparison_at >= recommendation_at as comparison,
+    clickout_at is not null
+      and recommendation_at is not null
+      and consultation_at is not null
+      and recommendation_at >= consultation_at
+      and clickout_at >= recommendation_at as clickout
+  from session_stage
+)
+select
+  cohort_date,
+  count(*) as sessions,
+  count(*) filter (where consultation) as consultation_sessions,
+  count(*) filter (where recommendation) as recommendation_sessions,
+  count(*) filter (where advisor_open) as advisor_open_sessions,
+  count(*) filter (where detail_view) as detail_view_sessions,
+  count(*) filter (where comparison) as comparison_sessions,
+  count(*) filter (where clickout) as clickout_sessions,
+  round(
+    100.0 * count(*) filter (where recommendation)
+    / nullif(count(*) filter (where consultation), 0),
+    2
+  ) as consultation_to_recommendation_pct,
+  round(
+    100.0 * count(*) filter (where advisor_open)
+    / nullif(count(*) filter (where recommendation), 0),
+    2
+  ) as recommendation_to_open_pct,
+  round(
+    100.0 * count(*) filter (where detail_view)
+    / nullif(count(*) filter (where recommendation), 0),
+    2
+  ) as recommendation_to_detail_pct,
+  round(
+    100.0 * count(*) filter (where comparison)
+    / nullif(count(*) filter (where recommendation), 0),
+    2
+  ) as recommendation_to_comparison_pct,
+  round(
+    100.0 * count(*) filter (where clickout)
+    / nullif(count(*) filter (where recommendation), 0),
+    2
+  ) as recommendation_to_clickout_pct
+from qualified
+group by cohort_date;
+
+drop view if exists public.scentai_product_funnel;
+
+create view public.scentai_product_funnel
+with (security_invoker = true)
+as
+with product_events as (
+  select
+    session_key,
+    event,
+    product_id,
+    item_position,
+    occurred_at
+  from public.scentai_analytics_events
+  where product_id is not null
+
+  union all
+
+  select
+    session_key,
+    event,
+    related_product_id as product_id,
+    item_position,
+    occurred_at
+  from public.scentai_analytics_events
+  where event = 'comparison_start'
+    and related_product_id is not null
+),
+session_product_stage as (
+  select
+    session_key,
+    product_id,
+    min(occurred_at) filter (
+      where event = 'advisor_recommendation_view'
+    ) as recommendation_at,
+    min(occurred_at) filter (
+      where event = 'advisor_product_open'
+    ) as advisor_open_at,
+    min(occurred_at) filter (
+      where event = 'fragrance_detail_view'
+    ) as detail_view_at,
+    min(occurred_at) filter (
+      where event = 'comparison_start'
+    ) as comparison_at,
+    min(occurred_at) filter (
+      where event = 'merchant_clickout'
+    ) as clickout_at,
+    max(occurred_at) as last_event_at
+  from product_events
+  group by session_key, product_id
+),
+raw_views as (
+  select
+    product_id,
+    count(*) as recommendation_views
+  from product_events
+  where event = 'advisor_recommendation_view'
+  group by product_id
+)
+select
+  stage.product_id,
+  coalesce(raw.recommendation_views, 0) as recommendation_views,
+  count(*) filter (
+    where stage.recommendation_at is not null
+  ) as recommendation_sessions,
+  count(*) filter (
+    where stage.advisor_open_at is not null
+      and stage.recommendation_at is not null
+      and stage.advisor_open_at >= stage.recommendation_at
+  ) as advisor_open_sessions,
+  count(*) filter (
+    where stage.detail_view_at is not null
+      and stage.recommendation_at is not null
+      and stage.detail_view_at >= stage.recommendation_at
+  ) as detail_view_sessions,
+  count(*) filter (
+    where stage.comparison_at is not null
+      and stage.recommendation_at is not null
+      and stage.comparison_at >= stage.recommendation_at
+  ) as comparison_sessions,
+  count(*) filter (
+    where stage.clickout_at is not null
+      and stage.recommendation_at is not null
+      and stage.clickout_at >= stage.recommendation_at
+  ) as clickout_sessions,
+  round(
+    100.0
+    * count(*) filter (
+      where stage.advisor_open_at is not null
+        and stage.recommendation_at is not null
+        and stage.advisor_open_at >= stage.recommendation_at
+    )
+    / nullif(
+      count(*) filter (
+        where stage.recommendation_at is not null
+      ),
+      0
+    ),
+    2
+  ) as advisor_open_rate_pct,
+  round(
+    100.0
+    * count(*) filter (
+      where stage.clickout_at is not null
+        and stage.recommendation_at is not null
+        and stage.clickout_at >= stage.recommendation_at
+    )
+    / nullif(
+      count(*) filter (
+        where stage.recommendation_at is not null
+      ),
+      0
+    ),
+    2
+  ) as recommendation_to_clickout_pct,
+  max(stage.last_event_at) as last_event_at
+from session_product_stage stage
+left join raw_views raw
+  on raw.product_id = stage.product_id
+group by stage.product_id, raw.recommendation_views;
+
+drop view if exists public.scentai_advisor_position_engagement;
+
+create view public.scentai_advisor_position_engagement
+with (security_invoker = true)
+as
+with position_stage as (
+  select
+    session_key,
+    item_position,
+    min(occurred_at) filter (
+      where event = 'advisor_recommendation_view'
+    ) as recommendation_at,
+    min(occurred_at) filter (
+      where event = 'advisor_product_open'
+    ) as advisor_open_at
+  from public.scentai_analytics_events
+  where item_position is not null
+    and event in (
+      'advisor_recommendation_view',
+      'advisor_product_open'
+    )
+  group by session_key, item_position
+),
+raw_views as (
+  select
+    item_position,
+    count(*) as recommendation_views
+  from public.scentai_analytics_events
+  where event = 'advisor_recommendation_view'
+    and item_position is not null
+  group by item_position
+)
+select
+  stage.item_position,
+  coalesce(raw.recommendation_views, 0) as recommendation_views,
+  count(*) filter (
+    where stage.recommendation_at is not null
+  ) as recommendation_sessions,
+  count(*) filter (
+    where stage.advisor_open_at is not null
+      and stage.recommendation_at is not null
+      and stage.advisor_open_at >= stage.recommendation_at
+  ) as advisor_open_sessions,
+  round(
+    100.0
+    * count(*) filter (
+      where stage.advisor_open_at is not null
+        and stage.recommendation_at is not null
+        and stage.advisor_open_at >= stage.recommendation_at
+    )
+    / nullif(
+      count(*) filter (
+        where stage.recommendation_at is not null
+      ),
+      0
+    ),
+    2
+  ) as open_rate_pct
+from position_stage stage
+left join raw_views raw
+  on raw.item_position = stage.item_position
+group by stage.item_position, raw.recommendation_views;
+
+create or replace view public.scentai_clickout_surfaces
+with (security_invoker = true)
+as
+select
+  coalesce(surface, 'unknown') as surface,
+  source as merchant_id,
+  product_id,
+  count(*) as clickouts,
+  count(distinct session_key) as clickout_sessions,
+  max(occurred_at) as last_clickout_at
+from public.scentai_analytics_events
+where event = 'merchant_clickout'
+group by coalesce(surface, 'unknown'), source, product_id;
+
+create or replace view public.scentai_clickout_surface_summary
+with (security_invoker = true)
+as
+select
+  coalesce(surface, 'unknown') as surface,
+  count(*) as clickouts,
+  count(distinct session_key) as clickout_sessions,
+  count(distinct product_id) as products_clicked,
+  count(distinct source) as merchants_clicked,
+  max(occurred_at) as last_clickout_at
+from public.scentai_analytics_events
+where event = 'merchant_clickout'
+group by coalesce(surface, 'unknown');
+
+
+create or replace view public.scentai_acquisition_funnel
+with (security_invoker = true)
+as
+with landing as (
+  select distinct on (session_key)
+    session_key,
+    coalesce(source, 'unknown') as landing_source,
+    coalesce(
+      acquisition_source,
+      source,
+      'unknown'
+    ) as acquisition_source,
+    coalesce(campaign_id, 'unknown') as campaign_id,
+    coalesce(content_id, 'unknown') as content_id,
+    occurred_at as landing_at
+  from public.scentai_analytics_events
+  where event = 'page_view'
+    and surface = 'acquisition_landing'
+  order by session_key, occurred_at
+),
+stages as (
+  select
+    landing.session_key,
+    landing.landing_source,
+    landing.acquisition_source,
+    landing.campaign_id,
+    landing.content_id,
+    landing.landing_at,
+    min(events.occurred_at) filter (
+      where events.event = 'consultation_start'
+        and events.occurred_at >= landing.landing_at
+    ) as consultation_at,
+    min(events.occurred_at) filter (
+      where events.event = 'advisor_recommendation_view'
+        and events.occurred_at >= landing.landing_at
+    ) as recommendation_at,
+    min(events.occurred_at) filter (
+      where events.event = 'fragrance_detail_view'
+        and events.occurred_at >= landing.landing_at
+    ) as detail_at,
+    min(events.occurred_at) filter (
+      where events.event = 'comparison_start'
+        and events.occurred_at >= landing.landing_at
+    ) as comparison_at,
+    min(events.occurred_at) filter (
+      where events.event = 'merchant_clickout'
+        and events.occurred_at >= landing.landing_at
+    ) as clickout_at
+  from landing
+  left join public.scentai_analytics_events events
+    on events.session_key = landing.session_key
+  group by
+    landing.session_key,
+    landing.landing_source,
+    landing.acquisition_source,
+    landing.campaign_id,
+    landing.content_id,
+    landing.landing_at
+)
+select
+  landing_source,
+  acquisition_source,
+  campaign_id,
+  content_id,
+  count(*) as landing_sessions,
+  count(*) filter (
+    where consultation_at is not null
+  ) as consultation_sessions,
+  count(*) filter (
+    where recommendation_at is not null
+      and consultation_at is not null
+      and recommendation_at >= consultation_at
+  ) as recommendation_sessions,
+  count(*) filter (
+    where detail_at is not null
+  ) as detail_sessions,
+  count(*) filter (
+    where comparison_at is not null
+  ) as comparison_sessions,
+  count(*) filter (
+    where clickout_at is not null
+  ) as clickout_sessions,
+  round(
+    100.0
+    * count(*) filter (
+      where consultation_at is not null
+    )
+    / nullif(count(*), 0),
+    2
+  ) as landing_to_consultation_pct,
+  round(
+    100.0
+    * count(*) filter (
+      where recommendation_at is not null
+        and consultation_at is not null
+        and recommendation_at >= consultation_at
+    )
+    / nullif(
+      count(*) filter (
+        where consultation_at is not null
+      ),
+      0
+    ),
+    2
+  ) as consultation_to_recommendation_pct,
+  round(
+    100.0
+    * count(*) filter (
+      where clickout_at is not null
+    )
+    / nullif(count(*), 0),
+    2
+  ) as landing_to_clickout_pct
+from stages
+group by
+  landing_source,
+  acquisition_source,
+  campaign_id,
+  content_id;
+
+create or replace view public.scentai_personal_library_engagement
+with (security_invoker = true)
+as
+select
+  product_id,
+  count(*) filter (
+    where event = 'wishlist_add'
+  ) as wishlist_adds,
+  count(*) filter (
+    where event = 'wishlist_remove'
+  ) as wishlist_removes,
+  count(*) filter (
+    where event = 'collection_add'
+  ) as collection_adds,
+  count(*) filter (
+    where event = 'collection_remove'
+  ) as collection_removes,
+  count(distinct session_key) filter (
+    where event = 'wishlist_add'
+  ) as wishlist_add_sessions,
+  count(distinct session_key) filter (
+    where event = 'collection_add'
+  ) as collection_add_sessions,
+  max(occurred_at) as last_event_at
+from public.scentai_analytics_events
+where product_id is not null
+  and event in (
+    'wishlist_add',
+    'wishlist_remove',
+    'collection_add',
+    'collection_remove'
+  )
+group by product_id;
+
+
+create or replace view public.scentai_retention_summary
+with (security_invoker = true)
+as
+select
+  count(*) filter (
+    where event = 'page_view'
+      and surface = 'personal_library_page'
+      and source = 'wishlist_page'
+  ) as wishlist_page_views,
+  count(distinct session_key) filter (
+    where event = 'page_view'
+      and surface = 'personal_library_page'
+      and source = 'wishlist_page'
+  ) as wishlist_page_sessions,
+  count(*) filter (
+    where event = 'page_view'
+      and surface = 'personal_library_page'
+      and source = 'collection_page'
+  ) as collection_page_views,
+  count(distinct session_key) filter (
+    where event = 'page_view'
+      and surface = 'personal_library_page'
+      and source = 'collection_page'
+  ) as collection_page_sessions,
+  count(distinct session_key) filter (
+    where event = 'wishlist_add'
+  ) as wishlist_add_sessions,
+  count(distinct session_key) filter (
+    where event = 'collection_add'
+  ) as collection_add_sessions,
+  count(distinct session_key) filter (
+    where event = 'consultation_start'
+      and source = 'advisor_start_collection'
+  ) as collection_advisor_sessions,
+  max(occurred_at) filter (
+    where (
+      event = 'page_view'
+      and surface = 'personal_library_page'
+    )
+    or event in (
+      'wishlist_add',
+      'wishlist_remove',
+      'collection_add',
+      'collection_remove'
+    )
+    or (
+      event = 'consultation_start'
+      and source = 'advisor_start_collection'
+    )
+  ) as last_retention_event_at
+from public.scentai_analytics_events;
+
+    )
+  );
+
+alter table public.scentai_analytics_events
+  drop constraint if exists scentai_analytics_events_campaign_id_check;
+
+alter table public.scentai_analytics_events
+  add constraint scentai_analytics_events_campaign_id_check
+  check (
+    campaign_id is null
+    or (
+      char_length(campaign_id) <= 80
+      and campaign_id ~ '^[A-Za-z0-9._:-]+
+alter table public.scentai_analytics_events
+  add constraint scentai_analytics_events_result_count_check
+  check (result_count is null or result_count >= 0);
+
+alter table public.scentai_analytics_events
+  drop constraint if exists scentai_analytics_events_search_term_length_check;
+
+alter table public.scentai_analytics_events
+  add constraint scentai_analytics_events_search_term_length_check
+  check (search_term is null or char_length(search_term) <= 80);
+
+alter table public.scentai_analytics_events
+  drop constraint if exists scentai_analytics_events_surface_length_check;
+
+alter table public.scentai_analytics_events
+  add constraint scentai_analytics_events_surface_length_check
+  check (surface is null or char_length(surface) <= 80);
+
+alter table public.scentai_analytics_events
+  drop constraint if exists scentai_analytics_events_related_product_id_length_check;
+
+alter table public.scentai_analytics_events
+  add constraint scentai_analytics_events_related_product_id_length_check
+  check (
+    related_product_id is null
+    or char_length(related_product_id) <= 80
+  );
+
+alter table public.scentai_analytics_events
+  drop constraint if exists scentai_analytics_events_item_position_check;
+
+alter table public.scentai_analytics_events
+  add constraint scentai_analytics_events_item_position_check
+  check (
+    item_position is null
+    or (item_position >= 1 and item_position <= 100)
+  );
+
+create index if not exists scentai_analytics_events_occurred_at_idx
+  on public.scentai_analytics_events (occurred_at desc);
+
+create index if not exists scentai_analytics_events_session_key_idx
+  on public.scentai_analytics_events (session_key);
+
+create index if not exists scentai_analytics_events_event_idx
+  on public.scentai_analytics_events (event);
+
+create index if not exists scentai_analytics_events_search_idx
+  on public.scentai_analytics_events (event, search_term)
+  where event in ('catalog_search', 'catalog_no_results');
+
+create index if not exists scentai_analytics_events_funnel_idx
+  on public.scentai_analytics_events (
+    event,
+    surface,
+    occurred_at desc
+  );
+
+create index if not exists scentai_analytics_events_related_product_idx
+  on public.scentai_analytics_events (related_product_id)
+  where related_product_id is not null;
+
+alter table public.scentai_analytics_events enable row level security;
+
+-- No public RLS policies are created.
+-- Production writes use the server-side Supabase secret/service-role key.
+
+drop view if exists public.scentai_catalog_search_demand;
+
+create view public.scentai_catalog_search_demand
+with (security_invoker = true)
+as
+select
+  search_term,
+  count(*) filter (
+    where event = 'catalog_search'
+  ) as search_events,
+  count(*) filter (
+    where event = 'catalog_no_results'
+  ) as no_result_events,
+  count(distinct session_key) as unique_sessions,
+  round(avg(result_count)::numeric, 2) as avg_result_count,
+  max(occurred_at) as last_searched_at,
+  count(distinct session_key) filter (
+    where event = 'catalog_search'
+  ) as successful_search_sessions,
+  count(distinct session_key) filter (
+    where event = 'catalog_no_results'
+  ) as no_result_sessions
+from public.scentai_analytics_events
+where event in ('catalog_search', 'catalog_no_results')
+  and search_term is not null
+group by search_term;
+
+drop view if exists public.scentai_product_engagement;
+
+create view public.scentai_product_engagement
+with (security_invoker = true)
+as
+select
+  product_id,
+  count(*) filter (
+    where event in (
+      'product_open',
+      'advisor_product_open',
+      'fragrance_detail_view'
+    )
+  ) as product_opens,
+  count(*) filter (
+    where event = 'merchant_clickout'
+  ) as merchant_clickouts,
+  count(distinct session_key) filter (
+    where event in (
+      'product_open',
+      'advisor_product_open',
+      'fragrance_detail_view'
+    )
+  ) as opening_sessions,
+  count(distinct session_key) filter (
+    where event = 'merchant_clickout'
+  ) as clickout_sessions,
+  max(occurred_at) as last_event_at
+from public.scentai_analytics_events
+where product_id is not null
+  and event in (
+    'product_open',
+    'advisor_product_open',
+    'fragrance_detail_view',
+    'merchant_clickout'
+  )
+group by product_id;
+
+drop view if exists public.scentai_conversion_funnel;
+
+create view public.scentai_conversion_funnel
+with (security_invoker = true)
+as
+with session_stage as (
+  select
+    session_key,
+    min(occurred_at)::date as cohort_date,
+    min(occurred_at) filter (
+      where event = 'consultation_start'
+    ) as consultation_at,
+    min(occurred_at) filter (
+      where event = 'advisor_recommendation_view'
+    ) as recommendation_at,
+    min(occurred_at) filter (
+      where event = 'advisor_product_open'
+    ) as advisor_open_at,
+    min(occurred_at) filter (
+      where event = 'fragrance_detail_view'
+    ) as detail_view_at,
+    min(occurred_at) filter (
+      where event = 'comparison_start'
+    ) as comparison_at,
+    min(occurred_at) filter (
+      where event = 'merchant_clickout'
+    ) as clickout_at
+  from public.scentai_analytics_events
+  group by session_key
+),
+qualified as (
+  select
+    *,
+    consultation_at is not null as consultation,
+    recommendation_at is not null
+      and consultation_at is not null
+      and recommendation_at >= consultation_at as recommendation,
+    advisor_open_at is not null
+      and recommendation_at is not null
+      and consultation_at is not null
+      and recommendation_at >= consultation_at
+      and advisor_open_at >= recommendation_at as advisor_open,
+    detail_view_at is not null
+      and recommendation_at is not null
+      and consultation_at is not null
+      and recommendation_at >= consultation_at
+      and detail_view_at >= recommendation_at as detail_view,
+    comparison_at is not null
+      and recommendation_at is not null
+      and consultation_at is not null
+      and recommendation_at >= consultation_at
+      and comparison_at >= recommendation_at as comparison,
+    clickout_at is not null
+      and recommendation_at is not null
+      and consultation_at is not null
+      and recommendation_at >= consultation_at
+      and clickout_at >= recommendation_at as clickout
+  from session_stage
+)
+select
+  cohort_date,
+  count(*) as sessions,
+  count(*) filter (where consultation) as consultation_sessions,
+  count(*) filter (where recommendation) as recommendation_sessions,
+  count(*) filter (where advisor_open) as advisor_open_sessions,
+  count(*) filter (where detail_view) as detail_view_sessions,
+  count(*) filter (where comparison) as comparison_sessions,
+  count(*) filter (where clickout) as clickout_sessions,
+  round(
+    100.0 * count(*) filter (where recommendation)
+    / nullif(count(*) filter (where consultation), 0),
+    2
+  ) as consultation_to_recommendation_pct,
+  round(
+    100.0 * count(*) filter (where advisor_open)
+    / nullif(count(*) filter (where recommendation), 0),
+    2
+  ) as recommendation_to_open_pct,
+  round(
+    100.0 * count(*) filter (where detail_view)
+    / nullif(count(*) filter (where recommendation), 0),
+    2
+  ) as recommendation_to_detail_pct,
+  round(
+    100.0 * count(*) filter (where comparison)
+    / nullif(count(*) filter (where recommendation), 0),
+    2
+  ) as recommendation_to_comparison_pct,
+  round(
+    100.0 * count(*) filter (where clickout)
+    / nullif(count(*) filter (where recommendation), 0),
+    2
+  ) as recommendation_to_clickout_pct
+from qualified
+group by cohort_date;
+
+drop view if exists public.scentai_product_funnel;
+
+create view public.scentai_product_funnel
+with (security_invoker = true)
+as
+with product_events as (
+  select
+    session_key,
+    event,
+    product_id,
+    item_position,
+    occurred_at
+  from public.scentai_analytics_events
+  where product_id is not null
+
+  union all
+
+  select
+    session_key,
+    event,
+    related_product_id as product_id,
+    item_position,
+    occurred_at
+  from public.scentai_analytics_events
+  where event = 'comparison_start'
+    and related_product_id is not null
+),
+session_product_stage as (
+  select
+    session_key,
+    product_id,
+    min(occurred_at) filter (
+      where event = 'advisor_recommendation_view'
+    ) as recommendation_at,
+    min(occurred_at) filter (
+      where event = 'advisor_product_open'
+    ) as advisor_open_at,
+    min(occurred_at) filter (
+      where event = 'fragrance_detail_view'
+    ) as detail_view_at,
+    min(occurred_at) filter (
+      where event = 'comparison_start'
+    ) as comparison_at,
+    min(occurred_at) filter (
+      where event = 'merchant_clickout'
+    ) as clickout_at,
+    max(occurred_at) as last_event_at
+  from product_events
+  group by session_key, product_id
+),
+raw_views as (
+  select
+    product_id,
+    count(*) as recommendation_views
+  from product_events
+  where event = 'advisor_recommendation_view'
+  group by product_id
+)
+select
+  stage.product_id,
+  coalesce(raw.recommendation_views, 0) as recommendation_views,
+  count(*) filter (
+    where stage.recommendation_at is not null
+  ) as recommendation_sessions,
+  count(*) filter (
+    where stage.advisor_open_at is not null
+      and stage.recommendation_at is not null
+      and stage.advisor_open_at >= stage.recommendation_at
+  ) as advisor_open_sessions,
+  count(*) filter (
+    where stage.detail_view_at is not null
+      and stage.recommendation_at is not null
+      and stage.detail_view_at >= stage.recommendation_at
+  ) as detail_view_sessions,
+  count(*) filter (
+    where stage.comparison_at is not null
+      and stage.recommendation_at is not null
+      and stage.comparison_at >= stage.recommendation_at
+  ) as comparison_sessions,
+  count(*) filter (
+    where stage.clickout_at is not null
+      and stage.recommendation_at is not null
+      and stage.clickout_at >= stage.recommendation_at
+  ) as clickout_sessions,
+  round(
+    100.0
+    * count(*) filter (
+      where stage.advisor_open_at is not null
+        and stage.recommendation_at is not null
+        and stage.advisor_open_at >= stage.recommendation_at
+    )
+    / nullif(
+      count(*) filter (
+        where stage.recommendation_at is not null
+      ),
+      0
+    ),
+    2
+  ) as advisor_open_rate_pct,
+  round(
+    100.0
+    * count(*) filter (
+      where stage.clickout_at is not null
+        and stage.recommendation_at is not null
+        and stage.clickout_at >= stage.recommendation_at
+    )
+    / nullif(
+      count(*) filter (
+        where stage.recommendation_at is not null
+      ),
+      0
+    ),
+    2
+  ) as recommendation_to_clickout_pct,
+  max(stage.last_event_at) as last_event_at
+from session_product_stage stage
+left join raw_views raw
+  on raw.product_id = stage.product_id
+group by stage.product_id, raw.recommendation_views;
+
+drop view if exists public.scentai_advisor_position_engagement;
+
+create view public.scentai_advisor_position_engagement
+with (security_invoker = true)
+as
+with position_stage as (
+  select
+    session_key,
+    item_position,
+    min(occurred_at) filter (
+      where event = 'advisor_recommendation_view'
+    ) as recommendation_at,
+    min(occurred_at) filter (
+      where event = 'advisor_product_open'
+    ) as advisor_open_at
+  from public.scentai_analytics_events
+  where item_position is not null
+    and event in (
+      'advisor_recommendation_view',
+      'advisor_product_open'
+    )
+  group by session_key, item_position
+),
+raw_views as (
+  select
+    item_position,
+    count(*) as recommendation_views
+  from public.scentai_analytics_events
+  where event = 'advisor_recommendation_view'
+    and item_position is not null
+  group by item_position
+)
+select
+  stage.item_position,
+  coalesce(raw.recommendation_views, 0) as recommendation_views,
+  count(*) filter (
+    where stage.recommendation_at is not null
+  ) as recommendation_sessions,
+  count(*) filter (
+    where stage.advisor_open_at is not null
+      and stage.recommendation_at is not null
+      and stage.advisor_open_at >= stage.recommendation_at
+  ) as advisor_open_sessions,
+  round(
+    100.0
+    * count(*) filter (
+      where stage.advisor_open_at is not null
+        and stage.recommendation_at is not null
+        and stage.advisor_open_at >= stage.recommendation_at
+    )
+    / nullif(
+      count(*) filter (
+        where stage.recommendation_at is not null
+      ),
+      0
+    ),
+    2
+  ) as open_rate_pct
+from position_stage stage
+left join raw_views raw
+  on raw.item_position = stage.item_position
+group by stage.item_position, raw.recommendation_views;
+
+create or replace view public.scentai_clickout_surfaces
+with (security_invoker = true)
+as
+select
+  coalesce(surface, 'unknown') as surface,
+  source as merchant_id,
+  product_id,
+  count(*) as clickouts,
+  count(distinct session_key) as clickout_sessions,
+  max(occurred_at) as last_clickout_at
+from public.scentai_analytics_events
+where event = 'merchant_clickout'
+group by coalesce(surface, 'unknown'), source, product_id;
+
+create or replace view public.scentai_clickout_surface_summary
+with (security_invoker = true)
+as
+select
+  coalesce(surface, 'unknown') as surface,
+  count(*) as clickouts,
+  count(distinct session_key) as clickout_sessions,
+  count(distinct product_id) as products_clicked,
+  count(distinct source) as merchants_clicked,
+  max(occurred_at) as last_clickout_at
+from public.scentai_analytics_events
+where event = 'merchant_clickout'
+group by coalesce(surface, 'unknown');
+
+
+create or replace view public.scentai_acquisition_funnel
+with (security_invoker = true)
+as
+with landing as (
+  select distinct on (session_key)
+    session_key,
+    coalesce(source, 'unknown') as acquisition_source,
+    occurred_at as landing_at
+  from public.scentai_analytics_events
+  where event = 'page_view'
+    and surface = 'acquisition_landing'
+  order by session_key, occurred_at
+),
+stages as (
+  select
+    landing.session_key,
+    landing.acquisition_source,
+    landing.landing_at,
+    min(events.occurred_at) filter (
+      where events.event = 'consultation_start'
+        and events.occurred_at >= landing.landing_at
+    ) as consultation_at,
+    min(events.occurred_at) filter (
+      where events.event = 'advisor_recommendation_view'
+        and events.occurred_at >= landing.landing_at
+    ) as recommendation_at,
+    min(events.occurred_at) filter (
+      where events.event = 'fragrance_detail_view'
+        and events.occurred_at >= landing.landing_at
+    ) as detail_at,
+    min(events.occurred_at) filter (
+      where events.event = 'comparison_start'
+        and events.occurred_at >= landing.landing_at
+    ) as comparison_at,
+    min(events.occurred_at) filter (
+      where events.event = 'merchant_clickout'
+        and events.occurred_at >= landing.landing_at
+    ) as clickout_at
+  from landing
+  left join public.scentai_analytics_events events
+    on events.session_key = landing.session_key
+  group by
+    landing.session_key,
+    landing.acquisition_source,
+    landing.landing_at
+)
+select
+  acquisition_source,
+  count(*) as landing_sessions,
+  count(*) filter (
+    where consultation_at is not null
+  ) as consultation_sessions,
+  count(*) filter (
+    where recommendation_at is not null
+      and consultation_at is not null
+      and recommendation_at >= consultation_at
+  ) as recommendation_sessions,
+  count(*) filter (
+    where detail_at is not null
+  ) as detail_sessions,
+  count(*) filter (
+    where comparison_at is not null
+  ) as comparison_sessions,
+  count(*) filter (
+    where clickout_at is not null
+  ) as clickout_sessions,
+  round(
+    100.0
+    * count(*) filter (
+      where consultation_at is not null
+    )
+    / nullif(count(*), 0),
+    2
+  ) as landing_to_consultation_pct,
+  round(
+    100.0
+    * count(*) filter (
+      where recommendation_at is not null
+        and consultation_at is not null
+        and recommendation_at >= consultation_at
+    )
+    / nullif(
+      count(*) filter (
+        where consultation_at is not null
+      ),
+      0
+    ),
+    2
+  ) as consultation_to_recommendation_pct,
+  round(
+    100.0
+    * count(*) filter (
+      where clickout_at is not null
+    )
+    / nullif(count(*), 0),
+    2
+  ) as landing_to_clickout_pct
+from stages
+group by acquisition_source;
+
+
+create or replace view public.scentai_personal_library_engagement
+with (security_invoker = true)
+as
+select
+  product_id,
+  count(*) filter (
+    where event = 'wishlist_add'
+  ) as wishlist_adds,
+  count(*) filter (
+    where event = 'wishlist_remove'
+  ) as wishlist_removes,
+  count(*) filter (
+    where event = 'collection_add'
+  ) as collection_adds,
+  count(*) filter (
+    where event = 'collection_remove'
+  ) as collection_removes,
+  count(distinct session_key) filter (
+    where event = 'wishlist_add'
+  ) as wishlist_add_sessions,
+  count(distinct session_key) filter (
+    where event = 'collection_add'
+  ) as collection_add_sessions,
+  max(occurred_at) as last_event_at
+from public.scentai_analytics_events
+where product_id is not null
+  and event in (
+    'wishlist_add',
+    'wishlist_remove',
+    'collection_add',
+    'collection_remove'
+  )
+group by product_id;
+
+
+create or replace view public.scentai_retention_summary
+with (security_invoker = true)
+as
+select
+  count(*) filter (
+    where event = 'page_view'
+      and surface = 'personal_library_page'
+      and source = 'wishlist_page'
+  ) as wishlist_page_views,
+  count(distinct session_key) filter (
+    where event = 'page_view'
+      and surface = 'personal_library_page'
+      and source = 'wishlist_page'
+  ) as wishlist_page_sessions,
+  count(*) filter (
+    where event = 'page_view'
+      and surface = 'personal_library_page'
+      and source = 'collection_page'
+  ) as collection_page_views,
+  count(distinct session_key) filter (
+    where event = 'page_view'
+      and surface = 'personal_library_page'
+      and source = 'collection_page'
+  ) as collection_page_sessions,
+  count(distinct session_key) filter (
+    where event = 'wishlist_add'
+  ) as wishlist_add_sessions,
+  count(distinct session_key) filter (
+    where event = 'collection_add'
+  ) as collection_add_sessions,
+  count(distinct session_key) filter (
+    where event = 'consultation_start'
+      and source = 'advisor_start_collection'
+  ) as collection_advisor_sessions,
+  max(occurred_at) filter (
+    where (
+      event = 'page_view'
+      and surface = 'personal_library_page'
+    )
+    or event in (
+      'wishlist_add',
+      'wishlist_remove',
+      'collection_add',
+      'collection_remove'
+    )
+    or (
+      event = 'consultation_start'
+      and source = 'advisor_start_collection'
+    )
+  ) as last_retention_event_at
+from public.scentai_analytics_events;
+
+    )
+  );
+
+alter table public.scentai_analytics_events
+  drop constraint if exists scentai_analytics_events_content_id_check;
+
+alter table public.scentai_analytics_events
+  add constraint scentai_analytics_events_content_id_check
+  check (
+    content_id is null
+    or (
+      char_length(content_id) <= 80
+      and content_id ~ '^[A-Za-z0-9._:-]+
+alter table public.scentai_analytics_events
+  add constraint scentai_analytics_events_result_count_check
+  check (result_count is null or result_count >= 0);
+
+alter table public.scentai_analytics_events
+  drop constraint if exists scentai_analytics_events_search_term_length_check;
+
+alter table public.scentai_analytics_events
+  add constraint scentai_analytics_events_search_term_length_check
+  check (search_term is null or char_length(search_term) <= 80);
+
+alter table public.scentai_analytics_events
+  drop constraint if exists scentai_analytics_events_surface_length_check;
+
+alter table public.scentai_analytics_events
+  add constraint scentai_analytics_events_surface_length_check
+  check (surface is null or char_length(surface) <= 80);
+
+alter table public.scentai_analytics_events
+  drop constraint if exists scentai_analytics_events_related_product_id_length_check;
+
+alter table public.scentai_analytics_events
+  add constraint scentai_analytics_events_related_product_id_length_check
+  check (
+    related_product_id is null
+    or char_length(related_product_id) <= 80
+  );
+
+alter table public.scentai_analytics_events
+  drop constraint if exists scentai_analytics_events_item_position_check;
+
+alter table public.scentai_analytics_events
+  add constraint scentai_analytics_events_item_position_check
+  check (
+    item_position is null
+    or (item_position >= 1 and item_position <= 100)
+  );
+
+create index if not exists scentai_analytics_events_occurred_at_idx
+  on public.scentai_analytics_events (occurred_at desc);
+
+create index if not exists scentai_analytics_events_session_key_idx
+  on public.scentai_analytics_events (session_key);
+
+create index if not exists scentai_analytics_events_event_idx
+  on public.scentai_analytics_events (event);
+
+create index if not exists scentai_analytics_events_search_idx
+  on public.scentai_analytics_events (event, search_term)
+  where event in ('catalog_search', 'catalog_no_results');
+
+create index if not exists scentai_analytics_events_funnel_idx
+  on public.scentai_analytics_events (
+    event,
+    surface,
+    occurred_at desc
+  );
+
+create index if not exists scentai_analytics_events_related_product_idx
+  on public.scentai_analytics_events (related_product_id)
+  where related_product_id is not null;
+
+alter table public.scentai_analytics_events enable row level security;
+
+-- No public RLS policies are created.
+-- Production writes use the server-side Supabase secret/service-role key.
+
+drop view if exists public.scentai_catalog_search_demand;
+
+create view public.scentai_catalog_search_demand
+with (security_invoker = true)
+as
+select
+  search_term,
+  count(*) filter (
+    where event = 'catalog_search'
+  ) as search_events,
+  count(*) filter (
+    where event = 'catalog_no_results'
+  ) as no_result_events,
+  count(distinct session_key) as unique_sessions,
+  round(avg(result_count)::numeric, 2) as avg_result_count,
+  max(occurred_at) as last_searched_at,
+  count(distinct session_key) filter (
+    where event = 'catalog_search'
+  ) as successful_search_sessions,
+  count(distinct session_key) filter (
+    where event = 'catalog_no_results'
+  ) as no_result_sessions
+from public.scentai_analytics_events
+where event in ('catalog_search', 'catalog_no_results')
+  and search_term is not null
+group by search_term;
+
+drop view if exists public.scentai_product_engagement;
+
+create view public.scentai_product_engagement
+with (security_invoker = true)
+as
+select
+  product_id,
+  count(*) filter (
+    where event in (
+      'product_open',
+      'advisor_product_open',
+      'fragrance_detail_view'
+    )
+  ) as product_opens,
+  count(*) filter (
+    where event = 'merchant_clickout'
+  ) as merchant_clickouts,
+  count(distinct session_key) filter (
+    where event in (
+      'product_open',
+      'advisor_product_open',
+      'fragrance_detail_view'
+    )
+  ) as opening_sessions,
+  count(distinct session_key) filter (
+    where event = 'merchant_clickout'
+  ) as clickout_sessions,
+  max(occurred_at) as last_event_at
+from public.scentai_analytics_events
+where product_id is not null
+  and event in (
+    'product_open',
+    'advisor_product_open',
+    'fragrance_detail_view',
+    'merchant_clickout'
+  )
+group by product_id;
+
+drop view if exists public.scentai_conversion_funnel;
+
+create view public.scentai_conversion_funnel
+with (security_invoker = true)
+as
+with session_stage as (
+  select
+    session_key,
+    min(occurred_at)::date as cohort_date,
+    min(occurred_at) filter (
+      where event = 'consultation_start'
+    ) as consultation_at,
+    min(occurred_at) filter (
+      where event = 'advisor_recommendation_view'
+    ) as recommendation_at,
+    min(occurred_at) filter (
+      where event = 'advisor_product_open'
+    ) as advisor_open_at,
+    min(occurred_at) filter (
+      where event = 'fragrance_detail_view'
+    ) as detail_view_at,
+    min(occurred_at) filter (
+      where event = 'comparison_start'
+    ) as comparison_at,
+    min(occurred_at) filter (
+      where event = 'merchant_clickout'
+    ) as clickout_at
+  from public.scentai_analytics_events
+  group by session_key
+),
+qualified as (
+  select
+    *,
+    consultation_at is not null as consultation,
+    recommendation_at is not null
+      and consultation_at is not null
+      and recommendation_at >= consultation_at as recommendation,
+    advisor_open_at is not null
+      and recommendation_at is not null
+      and consultation_at is not null
+      and recommendation_at >= consultation_at
+      and advisor_open_at >= recommendation_at as advisor_open,
+    detail_view_at is not null
+      and recommendation_at is not null
+      and consultation_at is not null
+      and recommendation_at >= consultation_at
+      and detail_view_at >= recommendation_at as detail_view,
+    comparison_at is not null
+      and recommendation_at is not null
+      and consultation_at is not null
+      and recommendation_at >= consultation_at
+      and comparison_at >= recommendation_at as comparison,
+    clickout_at is not null
+      and recommendation_at is not null
+      and consultation_at is not null
+      and recommendation_at >= consultation_at
+      and clickout_at >= recommendation_at as clickout
+  from session_stage
+)
+select
+  cohort_date,
+  count(*) as sessions,
+  count(*) filter (where consultation) as consultation_sessions,
+  count(*) filter (where recommendation) as recommendation_sessions,
+  count(*) filter (where advisor_open) as advisor_open_sessions,
+  count(*) filter (where detail_view) as detail_view_sessions,
+  count(*) filter (where comparison) as comparison_sessions,
+  count(*) filter (where clickout) as clickout_sessions,
+  round(
+    100.0 * count(*) filter (where recommendation)
+    / nullif(count(*) filter (where consultation), 0),
+    2
+  ) as consultation_to_recommendation_pct,
+  round(
+    100.0 * count(*) filter (where advisor_open)
+    / nullif(count(*) filter (where recommendation), 0),
+    2
+  ) as recommendation_to_open_pct,
+  round(
+    100.0 * count(*) filter (where detail_view)
+    / nullif(count(*) filter (where recommendation), 0),
+    2
+  ) as recommendation_to_detail_pct,
+  round(
+    100.0 * count(*) filter (where comparison)
+    / nullif(count(*) filter (where recommendation), 0),
+    2
+  ) as recommendation_to_comparison_pct,
+  round(
+    100.0 * count(*) filter (where clickout)
+    / nullif(count(*) filter (where recommendation), 0),
+    2
+  ) as recommendation_to_clickout_pct
+from qualified
+group by cohort_date;
+
+drop view if exists public.scentai_product_funnel;
+
+create view public.scentai_product_funnel
+with (security_invoker = true)
+as
+with product_events as (
+  select
+    session_key,
+    event,
+    product_id,
+    item_position,
+    occurred_at
+  from public.scentai_analytics_events
+  where product_id is not null
+
+  union all
+
+  select
+    session_key,
+    event,
+    related_product_id as product_id,
+    item_position,
+    occurred_at
+  from public.scentai_analytics_events
+  where event = 'comparison_start'
+    and related_product_id is not null
+),
+session_product_stage as (
+  select
+    session_key,
+    product_id,
+    min(occurred_at) filter (
+      where event = 'advisor_recommendation_view'
+    ) as recommendation_at,
+    min(occurred_at) filter (
+      where event = 'advisor_product_open'
+    ) as advisor_open_at,
+    min(occurred_at) filter (
+      where event = 'fragrance_detail_view'
+    ) as detail_view_at,
+    min(occurred_at) filter (
+      where event = 'comparison_start'
+    ) as comparison_at,
+    min(occurred_at) filter (
+      where event = 'merchant_clickout'
+    ) as clickout_at,
+    max(occurred_at) as last_event_at
+  from product_events
+  group by session_key, product_id
+),
+raw_views as (
+  select
+    product_id,
+    count(*) as recommendation_views
+  from product_events
+  where event = 'advisor_recommendation_view'
+  group by product_id
+)
+select
+  stage.product_id,
+  coalesce(raw.recommendation_views, 0) as recommendation_views,
+  count(*) filter (
+    where stage.recommendation_at is not null
+  ) as recommendation_sessions,
+  count(*) filter (
+    where stage.advisor_open_at is not null
+      and stage.recommendation_at is not null
+      and stage.advisor_open_at >= stage.recommendation_at
+  ) as advisor_open_sessions,
+  count(*) filter (
+    where stage.detail_view_at is not null
+      and stage.recommendation_at is not null
+      and stage.detail_view_at >= stage.recommendation_at
+  ) as detail_view_sessions,
+  count(*) filter (
+    where stage.comparison_at is not null
+      and stage.recommendation_at is not null
+      and stage.comparison_at >= stage.recommendation_at
+  ) as comparison_sessions,
+  count(*) filter (
+    where stage.clickout_at is not null
+      and stage.recommendation_at is not null
+      and stage.clickout_at >= stage.recommendation_at
+  ) as clickout_sessions,
+  round(
+    100.0
+    * count(*) filter (
+      where stage.advisor_open_at is not null
+        and stage.recommendation_at is not null
+        and stage.advisor_open_at >= stage.recommendation_at
+    )
+    / nullif(
+      count(*) filter (
+        where stage.recommendation_at is not null
+      ),
+      0
+    ),
+    2
+  ) as advisor_open_rate_pct,
+  round(
+    100.0
+    * count(*) filter (
+      where stage.clickout_at is not null
+        and stage.recommendation_at is not null
+        and stage.clickout_at >= stage.recommendation_at
+    )
+    / nullif(
+      count(*) filter (
+        where stage.recommendation_at is not null
+      ),
+      0
+    ),
+    2
+  ) as recommendation_to_clickout_pct,
+  max(stage.last_event_at) as last_event_at
+from session_product_stage stage
+left join raw_views raw
+  on raw.product_id = stage.product_id
+group by stage.product_id, raw.recommendation_views;
+
+drop view if exists public.scentai_advisor_position_engagement;
+
+create view public.scentai_advisor_position_engagement
+with (security_invoker = true)
+as
+with position_stage as (
+  select
+    session_key,
+    item_position,
+    min(occurred_at) filter (
+      where event = 'advisor_recommendation_view'
+    ) as recommendation_at,
+    min(occurred_at) filter (
+      where event = 'advisor_product_open'
+    ) as advisor_open_at
+  from public.scentai_analytics_events
+  where item_position is not null
+    and event in (
+      'advisor_recommendation_view',
+      'advisor_product_open'
+    )
+  group by session_key, item_position
+),
+raw_views as (
+  select
+    item_position,
+    count(*) as recommendation_views
+  from public.scentai_analytics_events
+  where event = 'advisor_recommendation_view'
+    and item_position is not null
+  group by item_position
+)
+select
+  stage.item_position,
+  coalesce(raw.recommendation_views, 0) as recommendation_views,
+  count(*) filter (
+    where stage.recommendation_at is not null
+  ) as recommendation_sessions,
+  count(*) filter (
+    where stage.advisor_open_at is not null
+      and stage.recommendation_at is not null
+      and stage.advisor_open_at >= stage.recommendation_at
+  ) as advisor_open_sessions,
+  round(
+    100.0
+    * count(*) filter (
+      where stage.advisor_open_at is not null
+        and stage.recommendation_at is not null
+        and stage.advisor_open_at >= stage.recommendation_at
+    )
+    / nullif(
+      count(*) filter (
+        where stage.recommendation_at is not null
+      ),
+      0
+    ),
+    2
+  ) as open_rate_pct
+from position_stage stage
+left join raw_views raw
+  on raw.item_position = stage.item_position
+group by stage.item_position, raw.recommendation_views;
+
+create or replace view public.scentai_clickout_surfaces
+with (security_invoker = true)
+as
+select
+  coalesce(surface, 'unknown') as surface,
+  source as merchant_id,
+  product_id,
+  count(*) as clickouts,
+  count(distinct session_key) as clickout_sessions,
+  max(occurred_at) as last_clickout_at
+from public.scentai_analytics_events
+where event = 'merchant_clickout'
+group by coalesce(surface, 'unknown'), source, product_id;
+
+create or replace view public.scentai_clickout_surface_summary
+with (security_invoker = true)
+as
+select
+  coalesce(surface, 'unknown') as surface,
+  count(*) as clickouts,
+  count(distinct session_key) as clickout_sessions,
+  count(distinct product_id) as products_clicked,
+  count(distinct source) as merchants_clicked,
+  max(occurred_at) as last_clickout_at
+from public.scentai_analytics_events
+where event = 'merchant_clickout'
+group by coalesce(surface, 'unknown');
+
+
+create or replace view public.scentai_acquisition_funnel
+with (security_invoker = true)
+as
+with landing as (
+  select distinct on (session_key)
+    session_key,
+    coalesce(source, 'unknown') as acquisition_source,
+    occurred_at as landing_at
+  from public.scentai_analytics_events
+  where event = 'page_view'
+    and surface = 'acquisition_landing'
+  order by session_key, occurred_at
+),
+stages as (
+  select
+    landing.session_key,
+    landing.acquisition_source,
+    landing.landing_at,
+    min(events.occurred_at) filter (
+      where events.event = 'consultation_start'
+        and events.occurred_at >= landing.landing_at
+    ) as consultation_at,
+    min(events.occurred_at) filter (
+      where events.event = 'advisor_recommendation_view'
+        and events.occurred_at >= landing.landing_at
+    ) as recommendation_at,
+    min(events.occurred_at) filter (
+      where events.event = 'fragrance_detail_view'
+        and events.occurred_at >= landing.landing_at
+    ) as detail_at,
+    min(events.occurred_at) filter (
+      where events.event = 'comparison_start'
+        and events.occurred_at >= landing.landing_at
+    ) as comparison_at,
+    min(events.occurred_at) filter (
+      where events.event = 'merchant_clickout'
+        and events.occurred_at >= landing.landing_at
+    ) as clickout_at
+  from landing
+  left join public.scentai_analytics_events events
+    on events.session_key = landing.session_key
+  group by
+    landing.session_key,
+    landing.acquisition_source,
+    landing.landing_at
+)
+select
+  acquisition_source,
+  count(*) as landing_sessions,
+  count(*) filter (
+    where consultation_at is not null
+  ) as consultation_sessions,
+  count(*) filter (
+    where recommendation_at is not null
+      and consultation_at is not null
+      and recommendation_at >= consultation_at
+  ) as recommendation_sessions,
+  count(*) filter (
+    where detail_at is not null
+  ) as detail_sessions,
+  count(*) filter (
+    where comparison_at is not null
+  ) as comparison_sessions,
+  count(*) filter (
+    where clickout_at is not null
+  ) as clickout_sessions,
+  round(
+    100.0
+    * count(*) filter (
+      where consultation_at is not null
+    )
+    / nullif(count(*), 0),
+    2
+  ) as landing_to_consultation_pct,
+  round(
+    100.0
+    * count(*) filter (
+      where recommendation_at is not null
+        and consultation_at is not null
+        and recommendation_at >= consultation_at
+    )
+    / nullif(
+      count(*) filter (
+        where consultation_at is not null
+      ),
+      0
+    ),
+    2
+  ) as consultation_to_recommendation_pct,
+  round(
+    100.0
+    * count(*) filter (
+      where clickout_at is not null
+    )
+    / nullif(count(*), 0),
+    2
+  ) as landing_to_clickout_pct
+from stages
+group by acquisition_source;
+
+
+create or replace view public.scentai_personal_library_engagement
+with (security_invoker = true)
+as
+select
+  product_id,
+  count(*) filter (
+    where event = 'wishlist_add'
+  ) as wishlist_adds,
+  count(*) filter (
+    where event = 'wishlist_remove'
+  ) as wishlist_removes,
+  count(*) filter (
+    where event = 'collection_add'
+  ) as collection_adds,
+  count(*) filter (
+    where event = 'collection_remove'
+  ) as collection_removes,
+  count(distinct session_key) filter (
+    where event = 'wishlist_add'
+  ) as wishlist_add_sessions,
+  count(distinct session_key) filter (
+    where event = 'collection_add'
+  ) as collection_add_sessions,
+  max(occurred_at) as last_event_at
+from public.scentai_analytics_events
+where product_id is not null
+  and event in (
+    'wishlist_add',
+    'wishlist_remove',
+    'collection_add',
+    'collection_remove'
+  )
+group by product_id;
+
+
+create or replace view public.scentai_retention_summary
+with (security_invoker = true)
+as
+select
+  count(*) filter (
+    where event = 'page_view'
+      and surface = 'personal_library_page'
+      and source = 'wishlist_page'
+  ) as wishlist_page_views,
+  count(distinct session_key) filter (
+    where event = 'page_view'
+      and surface = 'personal_library_page'
+      and source = 'wishlist_page'
+  ) as wishlist_page_sessions,
+  count(*) filter (
+    where event = 'page_view'
+      and surface = 'personal_library_page'
+      and source = 'collection_page'
+  ) as collection_page_views,
+  count(distinct session_key) filter (
+    where event = 'page_view'
+      and surface = 'personal_library_page'
+      and source = 'collection_page'
+  ) as collection_page_sessions,
+  count(distinct session_key) filter (
+    where event = 'wishlist_add'
+  ) as wishlist_add_sessions,
+  count(distinct session_key) filter (
+    where event = 'collection_add'
+  ) as collection_add_sessions,
+  count(distinct session_key) filter (
+    where event = 'consultation_start'
+      and source = 'advisor_start_collection'
+  ) as collection_advisor_sessions,
+  max(occurred_at) filter (
+    where (
+      event = 'page_view'
+      and surface = 'personal_library_page'
+    )
+    or event in (
+      'wishlist_add',
+      'wishlist_remove',
+      'collection_add',
+      'collection_remove'
+    )
+    or (
+      event = 'consultation_start'
+      and source = 'advisor_start_collection'
+    )
+  ) as last_retention_event_at
+from public.scentai_analytics_events;
+
+    )
+  );
+
 
 alter table public.scentai_analytics_events
   drop constraint if exists scentai_analytics_events_result_count_check;
