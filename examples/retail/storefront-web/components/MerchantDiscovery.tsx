@@ -47,7 +47,7 @@ export default function MerchantDiscovery() {
       </div>
       <p className="mt-1 max-w-2xl text-[12px] leading-5 text-(--ink-soft)">
         Wenn du ohnehin bei einem Partnerhändler stöbern möchtest,
-        kannst du SCENTAI über diesen Einstieg unterstützen. Deine
+        kannst du DUFYND über diesen Einstieg unterstützen. Deine
         Duftempfehlungen werden dadurch nicht beeinflusst.
       </p>
 
