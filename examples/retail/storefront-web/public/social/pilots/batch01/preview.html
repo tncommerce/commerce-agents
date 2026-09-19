@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <title>SCENTAI Pilot Batch 01 Preview</title>
+  <style>
+    :root {
+      --ground:#f4f6fa;
+      --surface:#ffffff;
+      --ink:#1e2c4f;
+      --ink2:#3b4763;
+      --soft:#5a6679;
+      --line:rgba(30,44,79,.14);
+      --accent:#d97f5f;
+      --accentStrong:#c4643f;
+      --accentSoft:#f9e8e0;
+      --shadow:0 18px 50px -28px rgba(30,44,79,.38);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:var(--ground);
+      color:var(--ink);
+    }
+    header{
+      position:sticky;top:0;z-index:10;
+      background:rgba(244,246,250,.92);
+      backdrop-filter:blur(14px);
+      border-bottom:1px solid var(--line);
+      padding:14px 18px;
+    }
+    .header-inner{max-width:1180px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .brand{font-weight:900;letter-spacing:.08em}
+    .badge{font-size:12px;font-weight:800;background:var(--accentSoft);color:#8a3f22;border-radius:999px;padding:7px 10px}
+    main{max-width:1180px;margin:auto;padding:26px 16px 56px}
+    .intro{max-width:780px;margin-bottom:24px}
+    .intro h1{font-size:clamp(28px,5vw,48px);line-height:1.02;margin:0 0 12px;letter-spacing:-.04em}
+    .intro p{color:var(--ink2);line-height:1.65;margin:0}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;align-items:start}
+    .pilot{background:var(--surface);border:1px solid var(--line);border-radius:26px;padding:14px;box-shadow:var(--shadow)}
+    .meta{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:4px 4px 12px}
+    .meta strong{font-size:14px}
+    .meta span{font-size:11px;color:var(--soft);font-weight:700}
+    .phone{
+      position:relative;
+      aspect-ratio:9/16;
+      overflow:hidden;
+      border-radius:22px;
+      background:linear-gradient(160deg,#fff 0%,#eef1f5 64%,#f9e8e0 100%);
+      border:1px solid rgba(30,44,79,.12);
+    }
+    .scene{position:absolute;inset:0;opacity:0;transition:opacity .32s ease;display:flex;flex-direction:column;padding:28px 24px 24px}
+    .scene.active{opacity:1}
+    .scene-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+    .mark{background:var(--ink);color:#fff;border-radius:14px;padding:8px 12px;font-weight:900;letter-spacing:.07em;font-size:12px}
+    .scene-num{font-size:10px;font-weight:800;color:var(--soft)}
+    .hook{font-size:clamp(25px,5vw,42px);line-height:.98;letter-spacing:-.04em;margin:18px 0 10px;font-weight:900;text-transform:uppercase}
+    .accent{width:86px;height:7px;border-radius:20px;background:var(--accent);margin-bottom:18px}
+    .products{display:flex;gap:10px;flex:1;align-items:stretch;min-height:0}
+    .product{flex:1;background:#fff;border:1px solid var(--line);border-radius:18px;padding:10px;display:flex;flex-direction:column;justify-content:space-between;min-width:0}
+    .product img{width:100%;height:76%;object-fit:contain;border-radius:14px}
+    .product b{font-size:11px;line-height:1.1;text-align:center;display:block;padding-top:7px}
+    .footer{display:flex;justify-content:space-between;align-items:center;gap:8px;padding-top:14px;border-top:1px solid var(--line);margin-top:12px;color:var(--soft);font-size:9px;font-weight:800;letter-spacing:.06em}
+    .controls{display:flex;gap:8px;padding-top:12px}
+    button{
+      border:0;border-radius:12px;padding:10px 12px;font-weight:800;cursor:pointer;
+      background:var(--ink);color:#fff;flex:1;
+    }
+    button.secondary{background:var(--accentSoft);color:#8a3f22}
+    .legend{margin-top:28px;border-top:1px solid var(--line);padding-top:18px;color:var(--soft);font-size:12px;line-height:1.6}
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="brand">SCENTAI</div>
+    <div class="badge">Pilot Batch 01 · Mobile Review</div>
+  </div>
+</header>
+<main>
+  <section class="intro">
+    <h1>5 Short-Form Piloten.<br>Ein gemeinsames System.</h1>
+    <p>Visuelle Review-Simulation für TikTok, Reels und Shorts. Die Szenen verwenden die vorhandenen SCENTAI-Produktassets und Markenfarben. Voiceover, Musik und finale Motion folgen erst nach Freigabe des visuellen Grundsystems.</p>
+  </section>
+  <section class="grid" id="grid"></section>
+  <div class="legend">Diese Seite ist absichtlich nicht verlinkt und trägt <code>noindex</code>. „Play“ simuliert nur Szenenwechsel und ist noch kein finaler Videoschnitt.</div>
+</main>
+<script>
+const pilots = [
+  {
+    id:"original_vs_alt_imagination_01", label:"Pilot 01 · Original vs Alternative", duration:"29 s",
+    scenes:[
+      {t:"IMAGINATION – WELCHE ALTERNATIVE?",p:[["/products/pilot/louis-vuitton-imagination-editorial.png","Imagination"],["/products/pilot/arabiyat-marwa-edp-editorial.png","Marwa"],["/products/pilot/bujairami-hectic-editorial.png","Hectic"]]},
+      {t:"FRISCH 10/10 · SÜSS 2/10",p:[["/products/pilot/louis-vuitton-imagination-editorial.png","Imagination"]]},
+      {t:"MARWA: SÜSSER · HECTIC: WÜRZIGER",p:[["/products/pilot/arabiyat-marwa-edp-editorial.png","Marwa"],["/products/pilot/bujairami-hectic-editorial.png","Hectic"]]},
+      {t:"INSPIRED ≠ AUTOMATISCH 1:1",p:[["/products/pilot/arabiyat-marwa-edp-editorial.png","Marwa"],["/products/pilot/bujairami-hectic-editorial.png","Hectic"]]},
+      {t:"PROFILE VERGLEICHEN →",p:[["/products/pilot/louis-vuitton-imagination-editorial.png","Imagination"],["/products/pilot/arabiyat-marwa-edp-editorial.png","Marwa"],["/products/pilot/bujairami-hectic-editorial.png","Hectic"]]}
+    ]
+  },
+  {
+    id:"not_every_dupe_clone_01", label:"Pilot 02 · Education / Trust", duration:"28 s",
+    scenes:[
+      {t:"DUPE ≠ DUPE",p:[["/products/pilot/pdm-althair-editorial.png","Althaïr"],["/products/pilot/liquid-brun-editorial.png","Liquid Brun"]]},
+      {t:"CLONE · MÖGLICHST NAH",p:[["/products/pilot/pdm-althair-editorial.png","Althaïr"],["/products/pilot/liquid-brun-editorial.png","Liquid Brun"]]},
+      {t:"INSPIRED · IDEE + EIGENER TWIST",p:[["/products/pilot/louis-vuitton-imagination-editorial.png","Imagination"],["/products/pilot/arabiyat-marwa-edp-editorial.png","Marwa"]]},
+      {t:"ALTERNATIVE · ÄHNLICHE RICHTUNG",p:[["/products/pilot/creed-aventus-editorial.png","Aventus"],["/products/pilot/montblanc-explorer-editorial.png","Explorer"]]},
+      {t:"TRANSPARENT STATT 1:1-BEHAUPTUNGEN",p:[["/products/pilot/liquid-brun-editorial.png","Clone"],["/products/pilot/arabiyat-marwa-edp-editorial.png","Inspired"],["/products/pilot/montblanc-explorer-editorial.png","Alternative"]]}
+    ]
+  },
+  {
+    id:"budget_three_under_50_01", label:"Pilot 03 · Budget Top 3", duration:"30 s",
+    scenes:[
+      {t:"3 DÜFTE UNTER 50 €",p:[["/products/pilot/kayaan-classic-editorial.png","Kayaan Classic"],["/products/pilot/liquid-brun-editorial.png","Liquid Brun"],["/products/pilot/afnan-turathi-blue-editorial.png","Turathi Blue"]]},
+      {t:"PUDRIG · SÜSS · HOLZIG",p:[["/products/pilot/kayaan-classic-editorial.png","Kayaan Classic"]]},
+      {t:"GOURMAND · WARM · SÜSS",p:[["/products/pilot/liquid-brun-editorial.png","Liquid Brun"]]},
+      {t:"FRISCH · ZITRISCH · WENIGER SÜSS",p:[["/products/pilot/afnan-turathi-blue-editorial.png","Turathi Blue"]]},
+      {t:"GLEICHES BUDGET. ANDERER STIL.",p:[["/products/pilot/kayaan-classic-editorial.png","Kayaan Classic"],["/products/pilot/liquid-brun-editorial.png","Liquid Brun"],["/products/pilot/afnan-turathi-blue-editorial.png","Turathi Blue"]]}
+    ]
+  },
+  {
+    id:"bois_imperial_explained_01", label:"Pilot 04 · Deep Dive", duration:"27 s",
+    scenes:[
+      {t:"KAUM SÜSS. SEHR PRÄSENT.",p:[["/products/pilot/bois-imperial-editorial.png","Bois Impérial"]]},
+      {t:"FRISCHE 8 · HOLZ 9 · SÜSSE 1 · WÜRZE 7",p:[["/products/pilot/bois-imperial-editorial.png","Bois Impérial"]]},
+      {t:"COMMUNITY: HALTBARKEIT 8,5 · AUSSTRAHLUNG 8,1",p:[["/products/pilot/bois-imperial-editorial.png","Bois Impérial"]]},
+      {t:"PASST DIESER STIL ZU DIR?",p:[["/products/pilot/bois-imperial-editorial.png","Bois Impérial"]]}
+    ]
+  },
+  {
+    id:"top3_office_01", label:"Pilot 05 · Occasion Advisor", duration:"30 s",
+    scenes:[
+      {t:"DER BESTE BÜRODUFT? KOMMT DRAUF AN.",p:[["/products/pilot/prada-lhomme-editorial.png","Prada L'Homme"],["/products/pilot/bois-imperial-editorial.png","Bois Impérial"],["/products/pilot/bleu-de-chanel-edp-editorial.png","Bleu de Chanel EDP"]]},
+      {t:"CLEAN · PUDRIG · AUSGEWOGEN",p:[["/products/pilot/prada-lhomme-editorial.png","Prada L'Homme"]]},
+      {t:"TROCKEN · HOLZIG · CHARAKTERSTARK",p:[["/products/pilot/bois-imperial-editorial.png","Bois Impérial"]]},
+      {t:"FRISCH · HOLZIG · VIELSEITIG",p:[["/products/pilot/bleu-de-chanel-edp-editorial.png","Bleu de Chanel EDP"]]},
+      {t:"SCENTAI ENTSCHEIDET NACH DEINEM PROFIL",p:[["/products/pilot/prada-lhomme-editorial.png","Prada L'Homme"],["/products/pilot/bois-imperial-editorial.png","Bois Impérial"],["/products/pilot/bleu-de-chanel-edp-editorial.png","Bleu de Chanel EDP"]]}
+    ]
+  }
+];
+
+function sceneHtml(scene,i){
+  const cards=scene.p.map(([src,name])=>`<div class="product"><img src="${src}" alt=""><b>${name}</b></div>`).join("");
+  return `<div class="scene ${i===0?"active":""}" data-scene="${i}">
+    <div class="scene-head"><span class="mark">SCENTAI</span><span class="scene-num">SCENE ${String(i+1).padStart(2,"0")}</span></div>
+    <div class="hook">${scene.t}</div><div class="accent"></div>
+    <div class="products">${cards}</div>
+    <div class="footer"><span>9:16 SOCIAL PREVIEW</span><span>VOICEOVER + MUSIK FOLGEN</span></div>
+  </div>`;
+}
+const grid=document.getElementById("grid");
+pilots.forEach((pilot,idx)=>{
+  const article=document.createElement("article");
+  article.className="pilot";
+  article.innerHTML=`<div class="meta"><strong>${pilot.label}</strong><span>${pilot.duration}</span></div>
+    <div class="phone">${pilot.scenes.map(sceneHtml).join("")}</div>
+    <div class="controls"><button class="play">▶ Play</button><button class="secondary next">Nächste Szene</button></div>`;
+  grid.appendChild(article);
+  const scenes=[...article.querySelectorAll(".scene")];
+  let current=0,timer=null;
+  const show=n=>{scenes[current].classList.remove("active");current=(n+scenes.length)%scenes.length;scenes[current].classList.add("active")};
+  article.querySelector(".next").onclick=()=>show(current+1);
+  article.querySelector(".play").onclick=e=>{
+    if(timer){clearInterval(timer);timer=null;e.currentTarget.textContent="▶ Play";return}
+    e.currentTarget.textContent="■ Stop";
+    timer=setInterval(()=>show(current+1),2200);
+  };
+});
+</script>
+</body>
+</html>
