@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "requested_at": "2026-09-19",
+  "purpose": "Trigger SCENTAI Pilot Batch 01 and Batch 02 preview render workflows via pull_request event.",
+  "batches": [
+    "batch01",
+    "batch02"
+  ],
+  "expected_outputs": [
+    "examples/retail/storefront-web/public/social/pilots/batch01/index.json",
+    "examples/retail/storefront-web/public/social/pilots/batch02/index.json"
+  ]
+}
