@@ -1,0 +1,148 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-19",
+  "campaign_id": "launch01",
+  "guidance": [
+    "Keep captions useful rather than salesy.",
+    "Do not add unsupported similarity percentages or 1:1 claims.",
+    "Use the matching tracked link for each platform.",
+    "Affiliate commission must not influence fragrance ordering."
+  ],
+  "posts": [
+    {
+      "content_id": "tygar_vibrato_value_01",
+      "tiktok": {
+        "caption": "Tygar, Vibrato, Turathi Blue oder Regent? Alle extrem frisch – aber Beziehung und Profil sind nicht dasselbe.",
+        "hashtags": [
+          "#SCENTAI",
+          "#Tygar",
+          "#Vibrato",
+          "#TurathiBlue",
+          "#Parfum"
+        ]
+      },
+      "instagram": {
+        "caption": "Vier extrem frische Düfte, vier unterschiedliche Beziehungen. SCENTAI trennt Alternative und Inspired bewusst voneinander.",
+        "hashtags": [
+          "#SCENTAI",
+          "#Tygar",
+          "#Vibrato",
+          "#TurathiBlue",
+          "#Parfum"
+        ]
+      },
+      "youtube": {
+        "title": "Tygar, Vibrato, Turathi Blue & Regent | SCENTAI",
+        "description": "Der Tygar/Vibrato-Cluster im Relationship- und Profilvergleich – transparent statt pauschaler Dupe-Behauptungen."
+      }
+    },
+    {
+      "content_id": "naxos_value_01",
+      "tiktok": {
+        "caption": "Naxos, Ateeq oder Rayhaan Italia? Gleiche inspirierte Richtung, aber nicht dasselbe Profil.",
+        "hashtags": [
+          "#SCENTAI",
+          "#Naxos",
+          "#Ateeq",
+          "#RayhaanItalia",
+          "#Parfum"
+        ]
+      },
+      "instagram": {
+        "caption": "Ateeq und Italia sind bei SCENTAI als Inspired zu Naxos hinterlegt. Im Profil liegen die Unterschiede vor allem bei Frische und Holz.",
+        "hashtags": [
+          "#SCENTAI",
+          "#Naxos",
+          "#Ateeq",
+          "#RayhaanItalia",
+          "#Parfum"
+        ]
+      },
+      "youtube": {
+        "title": "Naxos vs Ateeq vs Italia | SCENTAI",
+        "description": "Drei süß-würzige Profile im direkten Vergleich – mit transparentem Inspired-Label statt 1:1-Versprechen."
+      }
+    },
+    {
+      "content_id": "dior_homme_intense_alt_01",
+      "tiktok": {
+        "caption": "Dior Homme Intense vs Kayaan Classic: fast gleiche Profilwerte – aber bei der Würze klafft eine klare Lücke.",
+        "hashtags": [
+          "#SCENTAI",
+          "#DiorHommeIntense",
+          "#KayaanClassic",
+          "#Parfum",
+          "#Dupe"
+        ]
+      },
+      "instagram": {
+        "caption": "SCENTAI führt DHI und Kayaan Classic als Clone-Beziehung mit hoher Confidence. Trotzdem zeigt das Profil einen klaren Unterschied bei der Würze.",
+        "hashtags": [
+          "#SCENTAI",
+          "#DiorHommeIntense",
+          "#KayaanClassic",
+          "#Parfum",
+          "#Dupe"
+        ]
+      },
+      "youtube": {
+        "title": "Dior Homme Intense vs Kayaan Classic | SCENTAI",
+        "description": "Clone-Beziehung ja – identisches Profil nein. Wir zeigen den auffälligsten Unterschied direkt."
+      }
+    },
+    {
+      "content_id": "signature_vs_safe_01",
+      "tiktok": {
+        "caption": "Sauvage, Prada L’Homme oder Bois Impérial? Alle frisch – aber komplett andere Stilrichtung.",
+        "hashtags": [
+          "#SCENTAI",
+          "#Sauvage",
+          "#PradaLHomme",
+          "#BoisImperial",
+          "#Duftfinder"
+        ]
+      },
+      "instagram": {
+        "caption": "Frische allein reicht nicht als Auswahlkriterium. Sauvage, Prada L’Homme und Bois Impérial zeigen, wie unterschiedlich ein frisches Profil sein kann.",
+        "hashtags": [
+          "#SCENTAI",
+          "#Sauvage",
+          "#PradaLHomme",
+          "#BoisImperial",
+          "#Duftfinder"
+        ]
+      },
+      "youtube": {
+        "title": "3 frische Düfte, 3 völlig verschiedene Stile | SCENTAI",
+        "description": "Sauvage EDP, Prada L’Homme und Bois Impérial im Profilvergleich – der Duftfinder denkt über mehr als nur Frische nach."
+      }
+    },
+    {
+      "content_id": "gift_for_him_safe_to_bold_01",
+      "tiktok": {
+        "caption": "Parfum verschenken? Bleu de Chanel, Prada L’Homme und Naxos stehen für drei komplett andere Geschmäcker.",
+        "hashtags": [
+          "#SCENTAI",
+          "#ParfumGeschenk",
+          "#BleuDeChanel",
+          "#Naxos",
+          "#Parfum"
+        ]
+      },
+      "instagram": {
+        "caption": "Beim Parfumgeschenk ist der Stil wichtiger als eine pauschale Nummer 1. Drei Richtungen – frisch-holzig, pudrig-weich und süß-würzig.",
+        "hashtags": [
+          "#SCENTAI",
+          "#ParfumGeschenk",
+          "#BleuDeChanel",
+          "#Naxos",
+          "#Parfum"
+        ]
+      },
+      "youtube": {
+        "title": "Welcher Parfum-Geschenkstil passt? | SCENTAI",
+        "description": "Drei sehr unterschiedliche Duftprofile als Einstieg in die SCENTAI Geschenkberatung."
+      }
+    }
+  ]
+}
