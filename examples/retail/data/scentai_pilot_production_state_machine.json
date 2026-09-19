@@ -1,0 +1,140 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-19",
+  "status": "active",
+  "machine_id": "scentai_pilot_production_v1",
+  "purpose": "Jarvis-safe production lifecycle for SCENTAI short-form pilots from scripted creative to technically validated final render.",
+  "local_only_directories": {
+    "voiceover": "examples/retail/data/.scentai_pilot_audio",
+    "final_renders": "examples/retail/data/.scentai_pilot_final_renders"
+  },
+  "states": {
+    "scripted": {
+      "publishable": false
+    },
+    "visual_preview_ready": {
+      "publishable": false
+    },
+    "voiceover_pending": {
+      "publishable": false
+    },
+    "voiceover_received": {
+      "publishable": false
+    },
+    "subtitle_conform_pending": {
+      "publishable": false
+    },
+    "render_ready": {
+      "publishable": false
+    },
+    "final_render_created": {
+      "publishable": false
+    },
+    "technical_qa_passed": {
+      "publishable": false
+    },
+    "content_qa_pending": {
+      "publishable": false
+    },
+    "ready_for_publish_approval": {
+      "publishable": false
+    },
+    "approved_for_publish": {
+      "publishable": true
+    },
+    "published": {
+      "publishable": true
+    },
+    "blocked": {
+      "publishable": false
+    }
+  },
+  "transitions": [
+    {
+      "from": "scripted",
+      "to": "visual_preview_ready",
+      "trigger": "visual_preview_verified",
+      "action_class": "auto_allowed"
+    },
+    {
+      "from": "visual_preview_ready",
+      "to": "voiceover_pending",
+      "trigger": "production_assets_verified",
+      "action_class": "auto_allowed"
+    },
+    {
+      "from": "voiceover_pending",
+      "to": "voiceover_received",
+      "trigger": "local_voiceover_file_present",
+      "action_class": "auto_allowed"
+    },
+    {
+      "from": "voiceover_received",
+      "to": "subtitle_conform_pending",
+      "trigger": "audio_probe_passed",
+      "action_class": "auto_allowed"
+    },
+    {
+      "from": "subtitle_conform_pending",
+      "to": "render_ready",
+      "trigger": "subtitle_timing_confirmed",
+      "action_class": "approval_required"
+    },
+    {
+      "from": "render_ready",
+      "to": "final_render_created",
+      "trigger": "final_render_succeeded",
+      "action_class": "auto_allowed"
+    },
+    {
+      "from": "final_render_created",
+      "to": "technical_qa_passed",
+      "trigger": "ffprobe_qa_passed",
+      "action_class": "auto_allowed"
+    },
+    {
+      "from": "technical_qa_passed",
+      "to": "content_qa_pending",
+      "trigger": "technical_gates_complete",
+      "action_class": "auto_allowed"
+    },
+    {
+      "from": "content_qa_pending",
+      "to": "ready_for_publish_approval",
+      "trigger": "mobile_content_review_passed",
+      "action_class": "approval_required"
+    },
+    {
+      "from": "ready_for_publish_approval",
+      "to": "approved_for_publish",
+      "trigger": "explicit_user_publish_approval",
+      "action_class": "approval_required"
+    },
+    {
+      "from": "approved_for_publish",
+      "to": "published",
+      "trigger": "platform_upload_confirmed",
+      "action_class": "approval_required"
+    }
+  ],
+  "hard_gates": [
+    "1080x1920",
+    "30fps",
+    "h264_video",
+    "aac_audio",
+    "voiceover_present",
+    "burned_in_subtitles",
+    "duration_within_manifest_tolerance",
+    "tracked_link_present",
+    "price_claim_reverified_when_required",
+    "mobile_content_review_passed",
+    "explicit_user_publish_approval"
+  ],
+  "safety": [
+    "No upload or publish action occurs from the render script.",
+    "No social account credentials or tokens may be stored in repo artifacts.",
+    "Numeric price claims must be reverified on publish day.",
+    "Relationship and performance claims remain governed by the pilot manifest.",
+    "Final publish approval remains a human/user gate."
+  ]
+}
