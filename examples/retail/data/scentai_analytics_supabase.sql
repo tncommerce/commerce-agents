@@ -40,7 +40,11 @@ alter table public.scentai_analytics_events
       'advisor_recommendation_view',
       'advisor_product_open',
       'fragrance_detail_view',
-      'comparison_start'
+      'comparison_start',
+      'wishlist_add',
+      'wishlist_remove',
+      'collection_add',
+      'collection_remove'
     )
   );
 
@@ -586,3 +590,38 @@ select
   ) as landing_to_clickout_pct
 from stages
 group by acquisition_source;
+
+
+create or replace view public.scentai_personal_library_engagement
+with (security_invoker = true)
+as
+select
+  product_id,
+  count(*) filter (
+    where event = 'wishlist_add'
+  ) as wishlist_adds,
+  count(*) filter (
+    where event = 'wishlist_remove'
+  ) as wishlist_removes,
+  count(*) filter (
+    where event = 'collection_add'
+  ) as collection_adds,
+  count(*) filter (
+    where event = 'collection_remove'
+  ) as collection_removes,
+  count(distinct session_key) filter (
+    where event = 'wishlist_add'
+  ) as wishlist_add_sessions,
+  count(distinct session_key) filter (
+    where event = 'collection_add'
+  ) as collection_add_sessions,
+  max(occurred_at) as last_event_at
+from public.scentai_analytics_events
+where product_id is not null
+  and event in (
+    'wishlist_add',
+    'wishlist_remove',
+    'collection_add',
+    'collection_remove'
+  )
+group by product_id;
