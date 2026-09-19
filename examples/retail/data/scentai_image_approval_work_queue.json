@@ -1,0 +1,608 @@
+{
+  "version": 1,
+  "generated_at": "2026-09-19",
+  "machine_id": "scentai_image_approval_v1",
+  "policy_ref": "scentai_jarvis_operating_policy.json",
+  "source_files": [
+    "scentai_catalog_staging.json",
+    "scentai_release_batch_01.json",
+    "scentai_release_batch_02.json",
+    "scentai_release_batch_03.json"
+  ],
+  "summary": {
+    "staged_products": 30,
+    "release_01_products": 5,
+    "release_02_products": 5,
+    "release_03_products": 5,
+    "approved_images": 0,
+    "pending_images": 30,
+    "review_ready": 0
+  },
+  "items": [
+    {
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "candidate_id": "LANCOME-LA-VIE-EST-BELLE-EDP",
+      "brand": "Lancôme",
+      "name": "La Vie est Belle",
+      "batch": 1,
+      "release": {
+        "release_id": "SCENTAI-RELEASE-01",
+        "release_order": 1,
+        "position": 1,
+        "write_enabled": true
+      },
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "candidate_id": "PDM-DELINA-EDP",
+      "brand": "Parfums de Marly",
+      "name": "Delina",
+      "batch": 1,
+      "release": {
+        "release_id": "SCENTAI-RELEASE-01",
+        "release_order": 1,
+        "position": 2,
+        "write_enabled": true
+      },
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+      "candidate_id": "DIOR-HYPNOTIC-POISON-EDT",
+      "brand": "Dior",
+      "name": "Hypnotic Poison",
+      "batch": 3,
+      "release": {
+        "release_id": "SCENTAI-RELEASE-01",
+        "release_order": 1,
+        "position": 3,
+        "write_enabled": true
+      },
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "candidate_id": "YSL-BLACK-OPIUM-EDP",
+      "brand": "Yves Saint Laurent",
+      "name": "Black Opium",
+      "batch": 2,
+      "release": {
+        "release_id": "SCENTAI-RELEASE-01",
+        "release_order": 1,
+        "position": 4,
+        "write_enabled": true
+      },
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "candidate_id": "YSL-LIBRE-EDP",
+      "brand": "Yves Saint Laurent",
+      "name": "Libre",
+      "batch": 1,
+      "release": {
+        "release_id": "SCENTAI-RELEASE-01",
+        "release_order": 1,
+        "position": 5,
+        "write_enabled": true
+      },
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+      "candidate_id": "GUERLAIN-MON-GUERLAIN-EDP",
+      "brand": "Guerlain",
+      "name": "Mon Guerlain",
+      "batch": 3,
+      "release": {
+        "release_id": "SCENTAI-RELEASE-02",
+        "release_order": 2,
+        "position": 1,
+        "write_enabled": false
+      },
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100",
+      "candidate_id": "NARCISO-RODRIGUEZ-FOR-HER-PURE-MUSC",
+      "brand": "Narciso Rodriguez",
+      "name": "for her PURE MUSC",
+      "batch": 1,
+      "release": {
+        "release_id": "SCENTAI-RELEASE-02",
+        "release_order": 2,
+        "position": 2,
+        "write_enabled": false
+      },
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-CHLOE-CHLOE-EDP-100",
+      "candidate_id": "CHLOE-CHLOE-EDP",
+      "brand": "Chloé",
+      "name": "Chloé",
+      "batch": 2,
+      "release": {
+        "release_id": "SCENTAI-RELEASE-02",
+        "release_order": 2,
+        "position": 3,
+        "write_enabled": false
+      },
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-BURBERRY-GODDESS-EDP-100",
+      "candidate_id": "BURBERRY-GODDESS-EDP",
+      "brand": "Burberry",
+      "name": "Goddess",
+      "batch": 1,
+      "release": {
+        "release_id": "SCENTAI-RELEASE-02",
+        "release_order": 2,
+        "position": 4,
+        "write_enabled": false
+      },
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-PRADA-PARADOXE-EDP-90",
+      "candidate_id": "PRADA-PARADOXE-EDP",
+      "brand": "Prada",
+      "name": "Paradoxe",
+      "batch": 1,
+      "release": {
+        "release_id": "SCENTAI-RELEASE-02",
+        "release_order": 2,
+        "position": 5,
+        "write_enabled": false
+      },
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-PDM-VALAYA-EXCLUSIF-EDP-75",
+      "candidate_id": "PDM-VALAYA-EXCLUSIF",
+      "brand": "Parfums de Marly",
+      "name": "Valaya Exclusif",
+      "batch": 2,
+      "release": {
+        "release_id": "SCENTAI-RELEASE-03",
+        "release_order": 3,
+        "position": 1,
+        "write_enabled": false
+      },
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-AMOUAGE-GUIDANCE-46-EXTRAIT-100",
+      "candidate_id": "AMOUAGE-GUIDANCE-46",
+      "brand": "Amouage",
+      "name": "Guidance 46",
+      "batch": 2,
+      "release": {
+        "release_id": "SCENTAI-RELEASE-03",
+        "release_order": 3,
+        "position": 2,
+        "write_enabled": false
+      },
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-TOM-FORD-OMBRE-LEATHER-EDP-100",
+      "candidate_id": "TOM-FORD-OMBRE-LEATHER-EDP",
+      "brand": "Tom Ford",
+      "name": "Ombré Leather",
+      "batch": 3,
+      "release": {
+        "release_id": "SCENTAI-RELEASE-03",
+        "release_order": 3,
+        "position": 3,
+        "write_enabled": false
+      },
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-PDM-HEROD-EDP-125",
+      "candidate_id": "PDM-HEROD-EDP",
+      "brand": "Parfums de Marly",
+      "name": "Herod",
+      "batch": 3,
+      "release": {
+        "release_id": "SCENTAI-RELEASE-03",
+        "release_order": 3,
+        "position": 4,
+        "write_enabled": false
+      },
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-NISHANE-ANI-EXTRAIT-100",
+      "candidate_id": "NISHANE-ANI-EXTRAIT",
+      "brand": "Nishane",
+      "name": "Ani",
+      "batch": 3,
+      "release": {
+        "release_id": "SCENTAI-RELEASE-03",
+        "release_order": 3,
+        "position": 5,
+        "write_enabled": false
+      },
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-AMOUAGE-REFLECTION-MAN-EDP-100",
+      "candidate_id": "AMOUAGE-REFLECTION-MAN-EDP",
+      "brand": "Amouage",
+      "name": "Reflection Man",
+      "batch": 3,
+      "release": null,
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-DIOR-SAUVAGE-ELIXIR-100",
+      "candidate_id": "DIOR-SAUVAGE-ELIXIR",
+      "brand": "Dior",
+      "name": "Sauvage Elixir",
+      "batch": 3,
+      "release": null,
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-DOLCE-GABBANA-THE-ONE-MEN-EDP-2025-100",
+      "candidate_id": "DOLCE-GABBANA-THE-ONE-MEN-EDP",
+      "brand": "Dolce & Gabbana",
+      "name": "The One for Men (2025)",
+      "batch": 3,
+      "release": null,
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-HUGO-BOSS-BOTTLED-EDT-100",
+      "candidate_id": "HUGO-BOSS-BOTTLED-EDT",
+      "brand": "Hugo Boss",
+      "name": "BOSS Bottled",
+      "batch": 1,
+      "release": null,
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-HUGO-BOSS-BOTTLED-ABSOLU-100",
+      "candidate_id": "HUGO-BOSS-BOTTLED-ABSOLU",
+      "brand": "Hugo Boss",
+      "name": "BOSS Bottled Absolu",
+      "batch": 2,
+      "release": null,
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-INITIO-SIDE-EFFECT-EDP-90",
+      "candidate_id": "INITIO-SIDE-EFFECT-EDP",
+      "brand": "Initio Parfums Privés",
+      "name": "Side Effect",
+      "batch": 3,
+      "release": null,
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-JPG-LE-MALE-LE-PARFUM-125",
+      "candidate_id": "JPG-LE-MALE-LE-PARFUM",
+      "brand": "Jean Paul Gaultier",
+      "name": "Le Male Le Parfum",
+      "batch": 1,
+      "release": null,
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-JPG-FLEUR-DU-MALE-2026-EDT-125",
+      "candidate_id": "JPG-FLEUR-DU-MALE-2026",
+      "brand": "Jean Paul Gaultier",
+      "name": "Fleur du Mâle (2026)",
+      "batch": 2,
+      "release": null,
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-KAYALI-YUM-BOUJEE-MARSHMALLOW-81-EDPI-100",
+      "candidate_id": "KAYALI-YUM-BOUJEE-MARSHMALLOW-81",
+      "brand": "Kayali",
+      "name": "Yum Boujee Marshmallow | 81",
+      "batch": 2,
+      "release": null,
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-LATTAFA-ANGHAM-EDP-100",
+      "candidate_id": "LATTAFA-ANGHAM-EDP",
+      "brand": "Lattafa",
+      "name": "Angham",
+      "batch": 2,
+      "release": null,
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
+      "candidate_id": "LATTAFA-ECLAIRE-EDP",
+      "brand": "Lattafa",
+      "name": "Eclaire",
+      "batch": 2,
+      "release": null,
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-PRADA-LHOMME-INTENSE-EDP-100",
+      "candidate_id": "PRADA-LHOMME-INTENSE-EDP",
+      "brand": "Prada",
+      "name": "L'Homme Intense",
+      "batch": 1,
+      "release": null,
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-VIKTOR-ROLF-SPICEBOMB-EXTREME-EDP-90",
+      "candidate_id": "VIKTOR-ROLF-SPICEBOMB-EXTREME",
+      "brand": "Viktor & Rolf",
+      "name": "Spicebomb Extreme",
+      "batch": 1,
+      "release": null,
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-YSL-MYSLF-LE-PARFUM-100",
+      "candidate_id": "YSL-MYSLF-LE-PARFUM",
+      "brand": "Yves Saint Laurent",
+      "name": "MYSLF Le Parfum",
+      "batch": 2,
+      "release": null,
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-YSL-LA-NUIT-DE-LHOMME-EDT-100",
+      "candidate_id": "YSL-LA-NUIT-DE-LHOMME-EDT",
+      "brand": "Yves Saint Laurent",
+      "name": "La Nuit de L'Homme",
+      "batch": 3,
+      "release": null,
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    }
+  ]
+}
