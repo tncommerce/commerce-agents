@@ -103,7 +103,11 @@ export type AnalyticsEventName =
   | "advisor_recommendation_view"
   | "advisor_product_open"
   | "fragrance_detail_view"
-  | "comparison_start";
+  | "comparison_start"
+  | "wishlist_add"
+  | "wishlist_remove"
+  | "collection_add"
+  | "collection_remove";
 
 type AnalyticsContext = {
   product_id?: string;
