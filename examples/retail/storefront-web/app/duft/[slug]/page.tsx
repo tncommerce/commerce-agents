@@ -98,12 +98,19 @@ function formatPrice(value: number | null): string {
 function noteSection(
   title: string,
   notes: string[],
+  icon: string,
 ) {
   if (!notes.length) return null;
 
   return (
     <div>
-      <div className="text-[11px] font-semibold uppercase tracking-[0.08em] text-(--ink-soft)">
+      <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-(--ink-soft)">
+        <span
+          aria-hidden
+          className="grid h-6 w-6 place-items-center rounded-lg bg-(--accent-soft) text-[12px] text-(--accent-ink)"
+        >
+          {icon}
+        </span>
         {title}
       </div>
       <div className="mt-2 flex flex-wrap gap-2">
@@ -285,14 +292,14 @@ export default async function FragrancePage({
           </span>
         </nav>
 
-        <section className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="overflow-hidden rounded-3xl border border-(--line) bg-white shadow-(--shadow-sm)">
+        <section className="grid gap-4 sm:gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="mx-auto w-full max-w-[300px] overflow-hidden rounded-3xl border border-(--line) bg-white shadow-(--shadow-sm) sm:max-w-none lg:mx-0">
             {fragrance.image_url ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={fragrance.image_url}
                 alt={`${fragrance.brand} ${fragrance.name}`}
-                className="aspect-square h-full w-full object-contain p-6 sm:p-10"
+                className="aspect-square h-full w-full object-contain p-4 sm:p-10"
               />
             ) : (
               <div className="grid aspect-square place-items-center bg-(--well)">
@@ -317,39 +324,39 @@ export default async function FragrancePage({
               {fragrance.name}
             </h1>
 
-            <div className="mt-3 flex flex-wrap gap-2 text-[12px] text-(--ink-soft)">
-              <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">
+            <div className="mt-3 flex flex-wrap gap-1.5 text-[11px] text-(--ink-soft) sm:gap-2 sm:text-[12px]">
+              <span className="rounded-full border border-(--line) bg-(--card) px-2.5 py-1.5 sm:px-3">
                 {fragrance.concentration}
               </span>
-              <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">
+              <span className="rounded-full border border-(--line) bg-(--card) px-2.5 py-1.5 sm:px-3">
                 {fragrance.volume_ml} ml
               </span>
               {fragrance.target_groups.map((group) => (
                 <span
                   key={group}
-                  className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5"
+                  className="rounded-full border border-(--line) bg-(--card) px-2.5 py-1.5 sm:px-3"
                 >
                   {targetLabel(group)}
                 </span>
               ))}
               {fragrance.release_year ? (
-                <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">
+                <span className="rounded-full border border-(--line) bg-(--card) px-2.5 py-1.5 sm:px-3">
                   Seit {fragrance.release_year}
                 </span>
               ) : null}
             </div>
 
-            <div className="mt-5 flex flex-wrap gap-2.5">
+            <div className="mt-4 grid grid-cols-2 gap-2 sm:mt-5 sm:flex sm:flex-wrap sm:gap-2.5">
               <a
                 href="#angebote"
-                className="rounded-xl bg-(--accent) px-4 py-2.5 text-[13px] font-semibold text-white transition-opacity hover:opacity-90"
+                className="rounded-xl bg-(--accent) px-3 py-2.5 text-center text-[12px] font-semibold text-white transition-opacity hover:opacity-90 sm:px-4 sm:text-[13px]"
               >
                 Aktuelle Angebote prüfen
               </a>
               {related.length ? (
                 <a
                   href="#alternativen"
-                  className="rounded-xl border border-(--line) bg-(--card) px-4 py-2.5 text-[13px] font-semibold text-(--ink) transition hover:border-(--ink)"
+                  className="rounded-xl border border-(--line) bg-(--card) px-3 py-2.5 text-center text-[12px] font-semibold text-(--ink) transition hover:border-(--ink) sm:px-4 sm:text-[13px]"
                 >
                   Alternativen ansehen
                 </a>
@@ -359,6 +366,7 @@ export default async function FragrancePage({
             <div className="mt-3">
               <FragranceSaveControls
                 productId={fragrance.product_id}
+                compact
               />
               <p className="mt-1.5 text-[10.5px] leading-4 text-(--ink-soft)">
                 Merkliste und Sammlung werden nur lokal auf diesem Gerät gespeichert.
@@ -370,12 +378,12 @@ export default async function FragrancePage({
               jeweiligen Händler.
             </div>
 
-            <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
-              <div className="rounded-2xl border border-(--line) bg-(--card) p-4">
+            <div className="mt-4 grid grid-cols-3 gap-2 sm:mt-6 sm:gap-3">
+              <div className="rounded-2xl border border-(--line) bg-(--card) p-3 sm:p-4">
                 <div className="text-[11px] text-(--ink-soft)">
                   Community
                 </div>
-                <div className="mt-1 text-[22px] font-semibold">
+                <div className="mt-1 text-[20px] font-semibold sm:text-[22px]">
                   {fragrance.community.rating_10 != null
                     ? `${fragrance.community.rating_10.toLocaleString(
                         "de-DE",
@@ -386,7 +394,7 @@ export default async function FragrancePage({
                       )}/10`
                     : "–"}
                 </div>
-                <div className="mt-0.5 text-[10.5px] text-(--ink-soft)">
+                <div className="mt-0.5 hidden text-[10.5px] text-(--ink-soft) sm:block">
                   {fragrance.community.source}
                   {fragrance.community.rating_count
                     ? ` · ${fragrance.community.rating_count.toLocaleString(
@@ -396,11 +404,11 @@ export default async function FragrancePage({
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-(--line) bg-(--card) p-4">
+              <div className="rounded-2xl border border-(--line) bg-(--card) p-3 sm:p-4">
                 <div className="text-[11px] text-(--ink-soft)">
                   Haltbarkeit
                 </div>
-                <div className="mt-1 text-[22px] font-semibold">
+                <div className="mt-1 text-[20px] font-semibold sm:text-[22px]">
                   {fragrance.community.longevity_10 != null
                     ? fragrance.community.longevity_10.toLocaleString(
                         "de-DE",
@@ -411,16 +419,16 @@ export default async function FragrancePage({
                       )
                     : "–"}
                 </div>
-                <div className="mt-0.5 text-[10.5px] text-(--ink-soft)">
+                <div className="mt-0.5 hidden text-[10.5px] text-(--ink-soft) sm:block">
                   Community-Skala 0–10
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-(--line) bg-(--card) p-4">
+              <div className="rounded-2xl border border-(--line) bg-(--card) p-3 sm:p-4">
                 <div className="text-[11px] text-(--ink-soft)">
                   Ausstrahlung
                 </div>
-                <div className="mt-1 text-[22px] font-semibold">
+                <div className="mt-1 text-[20px] font-semibold sm:text-[22px]">
                   {fragrance.community.projection_10 != null
                     ? fragrance.community.projection_10.toLocaleString(
                         "de-DE",
@@ -431,21 +439,30 @@ export default async function FragrancePage({
                       )
                     : "–"}
                 </div>
-                <div className="mt-0.5 text-[10.5px] text-(--ink-soft)">
+                <div className="mt-0.5 hidden text-[10.5px] text-(--ink-soft) sm:block">
                   Community-Skala 0–10
                 </div>
               </div>
             </div>
 
-            <p className="mt-5 max-w-2xl text-[13px] leading-5 text-(--ink-soft)">
+            <p className="mt-5 hidden max-w-2xl text-[13px] leading-5 text-(--ink-soft) sm:block">
               Community-Werte beschreiben Nutzerbewertungen und sind keine
               objektiv gemessenen Stunden- oder Meterangaben.
             </p>
           </div>
         </section>
 
-        <div className="mt-7 grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
-          <section className="rounded-2xl border border-(--line) bg-(--card) p-5 shadow-(--shadow-sm)">
+        <div
+          id="angebote"
+          className="mt-5 scroll-mt-6"
+        >
+          <FragranceOffers
+            productId={fragrance.product_id}
+          />
+        </div>
+
+        <div className="mt-5 grid gap-4 lg:mt-7 lg:grid-cols-[1.05fr_0.95fr]">
+          <section className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) sm:p-5">
             <h2 className="text-[17px] font-semibold">
               Duftprofil
             </h2>
@@ -461,7 +478,7 @@ export default async function FragrancePage({
               ))}
             </div>
 
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            <div className="mt-4 grid gap-2.5 sm:mt-5 sm:grid-cols-2 sm:gap-3">
               <ProfileRow
                 label="Frische"
                 value={fragrance.scores.freshness}
@@ -487,23 +504,39 @@ export default async function FragrancePage({
             </p>
           </section>
 
-          <section className="rounded-2xl border border-(--line) bg-(--card) p-5 shadow-(--shadow-sm)">
+          <details className="group rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) lg:hidden">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-[17px] font-semibold">
+              <span>Duftnoten</span>
+              <span
+                aria-hidden
+                className="text-[18px] text-(--accent-ink) transition group-open:rotate-45"
+              >
+                +
+              </span>
+            </summary>
+            <div className="mt-4 space-y-4">
+              {noteSection("Kopfnote", fragrance.notes.top, "✦")}
+              {noteSection("Herznote", fragrance.notes.heart, "♥")}
+              {noteSection("Basisnote", fragrance.notes.base, "◆")}
+              {!fragrance.notes.top.length &&
+              !fragrance.notes.heart.length &&
+              !fragrance.notes.base.length ? (
+                <p className="text-[13px] leading-5 text-(--ink-soft)">
+                  Für diesen Duft sind aktuell keine verifizierten
+                  Notenpyramiden im DUFYND-Katalog hinterlegt.
+                </p>
+              ) : null}
+            </div>
+          </details>
+
+          <section className="hidden rounded-2xl border border-(--line) bg-(--card) p-5 shadow-(--shadow-sm) lg:block">
             <h2 className="text-[17px] font-semibold">
               Duftnoten
             </h2>
             <div className="mt-4 space-y-4">
-              {noteSection(
-                "Kopfnote",
-                fragrance.notes.top,
-              )}
-              {noteSection(
-                "Herznote",
-                fragrance.notes.heart,
-              )}
-              {noteSection(
-                "Basisnote",
-                fragrance.notes.base,
-              )}
+              {noteSection("Kopfnote", fragrance.notes.top, "✦")}
+              {noteSection("Herznote", fragrance.notes.heart, "♥")}
+              {noteSection("Basisnote", fragrance.notes.base, "◆")}
               {!fragrance.notes.top.length &&
               !fragrance.notes.heart.length &&
               !fragrance.notes.base.length ? (
@@ -516,15 +549,6 @@ export default async function FragrancePage({
           </section>
         </div>
 
-        <div
-          id="angebote"
-          className="mt-5 scroll-mt-6"
-        >
-          <FragranceOffers
-            productId={fragrance.product_id}
-          />
-        </div>
-
         {related.length ? (
           <section
             id="alternativen"
@@ -535,7 +559,7 @@ export default async function FragrancePage({
                 <h2 className="text-[17px] font-semibold">
                   Ähnliche Düfte & Alternativen
                 </h2>
-                <p className="mt-1 max-w-2xl text-[12px] leading-5 text-(--ink-soft)">
+                <p className="mt-1 max-w-2xl text-[11px] leading-4 text-(--ink-soft) sm:text-[12px] sm:leading-5">
                   Zuerst zeigt DUFYND dokumentierte Beziehungen aus dem
                   Duftkatalog. Weitere Vorschläge bleiben innerhalb
                   derselben Duftfamilie und werden dort nach Profilnähe
@@ -550,7 +574,7 @@ export default async function FragrancePage({
               </a>
             </div>
 
-            <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="-mx-1 mt-4 flex snap-x gap-3 overflow-x-auto px-1 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4">
               {related.map((item) => {
                 const comparisonHref = comparisonPath(
                   fragrance,
@@ -563,7 +587,7 @@ export default async function FragrancePage({
                 return (
                   <article
                     key={item.fragrance.product_id}
-                    className="overflow-hidden rounded-xl border border-(--line) bg-(--well)/35"
+                    className="min-w-[220px] snap-start overflow-hidden rounded-xl border border-(--line) bg-(--well)/35 sm:min-w-0"
                   >
                     <a
                       href={`/duft/${item.fragrance.slug}`}
