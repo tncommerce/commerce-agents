@@ -31,6 +31,11 @@ def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8-sig"))
 
 
+def release_manifest_write_enabled(path: Path) -> bool:
+    payload = load_json(path)
+    return payload.get("write_enabled") is True
+
+
 def load_release_manifest(path: Path) -> list[str]:
     payload = load_json(path)
     product_ids = payload.get("product_ids")
@@ -524,6 +529,15 @@ def main() -> int:
         parser.error(str(exc))
 
     if args.write:
+        if (
+            args.manifest is not None
+            and not release_manifest_write_enabled(args.manifest)
+        ):
+            parser.error(
+                "Refusing release write because manifest write_enabled "
+                "is not explicitly true. Dry-run remains allowed."
+            )
+
         if plan["blocked_count"]:
             parser.error(
                 "Refusing partial promotion: one or more "
