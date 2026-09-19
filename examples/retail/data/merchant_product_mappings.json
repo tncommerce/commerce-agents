@@ -419,6 +419,28 @@
       "merchant_product_id": null,
       "ean": "3614274114645",
       "gtin": "3614274114645"
+    },
+    {
+      "product_id": "SC-DOLCE-GABBANA-THE-ONE-MEN-EDP-2025-100",
+      "merchant": "douglas",
+      "merchant_product_id": "5011977029",
+      "ean": "8056669925859",
+      "gtin": "8056669925859",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-09-19",
+      "evidence_url": "https://www.douglas.de/de/p/5011977029",
+      "evidence_note": "Current 2025 Neue Auslegung product family includes 100 ml; exact 100 ml GTIN cross-verified separately."
+    },
+    {
+      "product_id": "SC-DOLCE-GABBANA-THE-ONE-MEN-EDP-2025-100",
+      "merchant": "flaconi",
+      "merchant_product_id": null,
+      "ean": "8056669925859",
+      "gtin": "8056669925859",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-09-19",
+      "evidence_url": "https://www.flaconi.de/parfum/dolce-gabbana/the-one-for-men/dolce-gabbana-the-one-for-men-new-eau-de-parfum.html",
+      "evidence_note": "Current reimagined EDP listing; exact 100 ml GTIN cross-verified from current product data."
     }
   ]
 }
