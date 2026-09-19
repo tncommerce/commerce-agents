@@ -45,5 +45,9 @@
   },
   "write_enabled": false,
   "write_guard_reason": "Release 03 stays write-locked until Release 01 and Release 02 have completed their required real affiliate-feed, image-approval, promotion and smoke-test sequence.",
-  "write_policy": "All-or-nothing. Dry-run is allowed; live write is explicitly disabled at manifest level."
+  "write_policy": "All-or-nothing. Dry-run is allowed; live write is explicitly disabled at manifest level.",
+  "depends_on_release_ids": [
+    "SCENTAI-RELEASE-01",
+    "SCENTAI-RELEASE-02"
+  ]
 }
