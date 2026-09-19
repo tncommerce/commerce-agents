@@ -29,7 +29,14 @@ def test_launch_link_exporter_builds_one_link_per_channel_and_content() -> None:
     )
 
     assert len(rows) == 6
-    assert len({(row["channel"], row["content_id"]) for row in rows}) == 6
-    assert rows[0]["url"].startswith("https://scentai.example/duftfinder?")
+    assert len(
+        {
+            (row["channel"], row["content_id"])
+            for row in rows
+        }
+    ) == 6
+    assert rows[0]["url"].startswith(
+        "https://scentai.example/duftfinder?"
+    )
     assert "cmp=launch01" in rows[0]["url"]
     assert "content=creative_01" in rows[0]["url"]

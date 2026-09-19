@@ -59,7 +59,9 @@ def test_douglas_approval_flow_unlocks_feed_validation_not_live() -> None:
     assert applied["valid"] is True
     assert applied["registry"]["applications"][0]["status"] == "approved"
     assert applied["live_routing_allowed"] is False
-    assert applied["validation"]["activation_state_after_event"] == ("approved_credentials_pending")
+    assert applied["validation"]["activation_state_after_event"] == (
+        "approved_credentials_pending"
+    )
 
     parity = build_parity_report(
         applied["events"],
@@ -103,8 +105,12 @@ def test_douglas_approval_flow_unlocks_feed_validation_not_live() -> None:
     assert douglas["merchant_id"] == "douglas"
     assert douglas["program_approved"] is True
     assert douglas["full_release_mapping_coverage"] is True
-    assert douglas["state"] == ("approved_mapping_ready_feed_sample_pending")
-    assert douglas["next_action"] == ("obtain_real_feed_sample_and_create_provider_config")
+    assert douglas["state"] == (
+        "approved_mapping_ready_feed_sample_pending"
+    )
+    assert douglas["next_action"] == (
+        "obtain_real_feed_sample_and_create_provider_config"
+    )
     assert douglas["live_routing_allowed"] is False
 
     assert queue["summary"]["feed_validation_path_available"] is True

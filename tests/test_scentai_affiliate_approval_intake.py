@@ -54,7 +54,9 @@ def test_valid_approval_intake_never_enables_live_routing() -> None:
     assert report["valid"] is True
     assert report["current_registry_status"] == "applied"
     assert report["observed_status"] == "approved"
-    assert report["activation_state_after_event"] == ("approved_credentials_pending")
+    assert report["activation_state_after_event"] == (
+        "approved_credentials_pending"
+    )
     assert report["live_routing_allowed_after_event"] is False
     assert report["live_activation_action_class"] == "approval_required"
 
@@ -66,7 +68,10 @@ def test_intake_rejects_secret_bearing_fields() -> None:
     report = validate_intake(payload, registry())
 
     assert report["valid"] is False
-    assert any("secret-bearing field is forbidden" in issue for issue in report["issues"])
+    assert any(
+        "secret-bearing field is forbidden" in issue
+        for issue in report["issues"]
+    )
 
 
 def test_intake_requires_exact_registered_program_name() -> None:
@@ -76,7 +81,10 @@ def test_intake_requires_exact_registered_program_name() -> None:
     report = validate_intake(payload, registry())
 
     assert report["valid"] is False
-    assert any("program name does not exactly match" in issue for issue in report["issues"])
+    assert any(
+        "program name does not exactly match" in issue
+        for issue in report["issues"]
+    )
 
 
 def test_rejected_program_cannot_be_reapproved_by_intake() -> None:
@@ -84,4 +92,7 @@ def test_rejected_program_cannot_be_reapproved_by_intake() -> None:
 
     assert report["valid"] is False
     assert report["live_routing_allowed_after_event"] is False
-    assert any("observed status is not valid" in issue for issue in report["issues"])
+    assert any(
+        "observed status is not valid" in issue
+        for issue in report["issues"]
+    )

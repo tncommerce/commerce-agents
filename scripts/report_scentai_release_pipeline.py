@@ -1,55 +1,224 @@
-om __future__ import annotations
+from __future__ import annotations
 
 import argparse
 import json
-import os
+from collections import Counter
+from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
-from scripts.build_scentai_campaign_link import build_campaign_url
+from scripts.promote_scentai_catalog import (
+    eligible_affiliate_offers,
+    load_json,
+    promotion_blockers,
+    release_manifest_write_enabled,
+)
 
-DEFAULT_PLAN = Path("examples/retail/data/scentai_launch_content_plan.json")
+DATA_DIR = Path("examples/retail/data")
+DEFAULT_STAGING = DATA_DIR / "scentai_catalog_staging.json"
+DEFAULT_OFFERS = DATA_DIR / "merchant_offers.json"
+DEFAULT_MAPPINGS = DATA_DIR / "merchant_product_mappings.json"
+DEFAULT_RELEASE_GLOB = "scentai_release_batch_*.json"
 
 
-def load_json(path: Path) -> dict:
-    return json.loads(path.read_text(encoding="utf-8-sig"))
+def load_release_manifests(
+    directory: Path = DATA_DIR,
+    pattern: str = DEFAULT_RELEASE_GLOB,
+) -> list[tuple[Path, dict]]:
+    rows: list[tuple[Path, dict]] = []
+
+    for path in sorted(directory.glob(pattern)):
+        payload = load_json(path)
+        if not str(payload.get("release_id") or "").strip():
+            continue
+        if not isinstance(payload.get("product_ids"), list):
+            continue
+        rows.append((path, payload))
+
+    return rows
 
 
-def build_launch_links(plan: dict, *, base_url: str) -> list[dict]:
-    campaign_id = str(plan.get("campaign_id") or "").strip()
-    channels = plan.get("channels")
-    content_rows = plan.get("content")
+def mapping_index(mappings_payload: dict) -> dict[str, list[dict]]:
+    rows = mappings_payload.get("mappings", [])
+    index: dict[str, list[dict]] = {}
 
-    if not campaign_id:
-        raise ValueError("Launch plan requires campaign_id")
-    if not isinstance(channels, list) or not channels:
-        raise ValueError("Launch plan requires channels")
-    if not isinstance(content_rows, list) or not content_rows:
-        raise ValueError("Launch plan requires content rows")
+    for row in rows:
+        product_id = str(row.get("product_id") or "").strip()
+        if not product_id:
+            continue
+        index.setdefault(product_id, []).append(row)
 
-    rows: list[dict] = []
-    for content in content_rows:
-        content_id = str(content.get("content_id") or "").strip()
-        landing_path = str(content.get("landing_path") or "").strip()
+    return index
 
-        if not content_id or not landing_path:
-            raise ValueError("Every content row requires content_id and landing_path")
 
-        for channel in channels:
-            link = build_campaign_url(
-                base_url=base_url,
-                landing_path=landing_path,
-                channel=str(channel),
-                campaign_id=campaign_id,
-                content_id=content_id,
+def build_release_pipeline_report(
+    releases: list[tuple[Path, dict]],
+    staging: dict,
+    offers_payload: dict,
+    mappings_payload: dict,
+    *,
+    now: datetime,
+    max_offer_age_hours: float = 72.0,
+) -> dict[str, Any]:
+    staged_by_id = {
+        str(product.get("product_id") or ""): product
+        for product in staging.get("products", [])
+        if str(product.get("product_id") or "").strip()
+    }
+    mappings_by_id = mapping_index(mappings_payload)
+    offers = offers_payload.get(
+        "offers",
+        offers_payload if isinstance(offers_payload, list) else [],
+    )
+
+    release_rows: list[dict[str, Any]] = []
+    all_release_product_ids: set[str] = set()
+
+    for manifest_path, manifest in releases:
+        product_ids = [
+            str(product_id).strip()
+            for product_id in manifest.get("product_ids", [])
+            if str(product_id).strip()
+        ]
+        all_release_product_ids.update(product_ids)
+
+        product_rows: list[dict[str, Any]] = []
+        blocker_counts: Counter = Counter()
+
+        for product_id in product_ids:
+            product = staged_by_id.get(product_id)
+            mapping_rows = mappings_by_id.get(product_id, [])
+
+            has_mapping = bool(mapping_rows)
+            has_redundant_mapping = len(mapping_rows) >= 2
+            has_gtin_fallback = any(
+                str(row.get("ean") or "").strip()
+                and str(row.get("gtin") or "").strip()
+                for row in mapping_rows
             )
-       
-…[78197 chars truncated — re-run with head/grep/tail for full output]…
+
+            product_blockers: list[str] = []
+            affiliate_offer_count = 0
+
+            if product is None:
+                product_blockers.append("missing_staging_product")
+            else:
+                product_blockers.extend(
+                    promotion_blockers(
+                        product,
+                        offers,
+                        now=now,
+                        max_offer_age_hours=max_offer_age_hours,
+                    )
+                )
+                affiliate_offer_count = len(
+                    eligible_affiliate_offers(
+                        offers,
+                        product_id=product_id,
+                        now=now,
+                        max_age_hours=max_offer_age_hours,
+                    )
+                )
+
+            if not has_mapping:
+                product_blockers.append("missing_merchant_mapping")
+            elif not has_redundant_mapping:
+                product_blockers.append("single_merchant_mapping_only")
+
+            if not has_gtin_fallback:
+                product_blockers.append("missing_gtin_fallback")
+
+            blocker_counts.update(product_blockers)
+
+            product_rows.append(
+                {
+                    "product_id": product_id,
+                    "mapping_count": len(mapping_rows),
+                    "mapped_merchants": sorted(
+                        {
+                            str(row.get("merchant") or "").strip()
+                            for row in mapping_rows
+                            if str(row.get("merchant") or "").strip()
+                        }
+                    ),
+                    "has_gtin_fallback": has_gtin_fallback,
+                    "eligible_affiliate_offers": affiliate_offer_count,
+                    "ready": not product_blockers,
+                    "blockers": product_blockers,
+                }
+            )
+
+        write_enabled = (
+            manifest.get("write_enabled") is True
+            and release_manifest_write_enabled(manifest_path)
+        )
+        ready_products = sum(
+            1 for row in product_rows if row["ready"]
+        )
+        all_products_ready = (
+            bool(product_rows)
+            and ready_products == len(product_rows)
+        )
+
+        release_blockers = list(
+            blocker
+            for blocker, _count in blocker_counts.most_common()
+        )
+        if not write_enabled:
+            release_blockers.append("manifest_write_locked")
+
+        release_rows.append(
+            {
+                "release_id": manifest["release_id"],
+                "manifest": str(manifest_path),
+                "manifest_status": manifest.get("status"),
+                "write_enabled": write_enabled,
+                "product_count": len(product_rows),
+                "mapped_product_count": sum(
+                    1
+                    for row in product_rows
+                    if row["mapping_count"] > 0
+                ),
+                "redundantly_mapped_product_count": sum(
+                    1
+                    for row in product_rows
+                    if row["mapping_count"] >= 2
+                ),
+                "gtin_fallback_product_count": sum(
+                    1 for row in product_rows if row["has_gtin_fallback"]
+                ),
+                "affiliate_offer_product_count": sum(
+                    1
+                    for row in product_rows
+                    if row["eligible_affiliate_offers"] > 0
+                ),
+                "ready_product_count": ready_products,
+                "all_products_ready": all_products_ready,
+                "write_ready": all_products_ready and write_enabled,
+                "blocker_counts": dict(blocker_counts),
+                "release_blockers": release_blockers,
+                "products": product_rows,
+            }
+        )
+
+    mapped_staged_product_ids = {
+        product_id
+        for product_id in mappings_by_id
+        if product_id in staged_by_id
+    }
+
+    return {
+        "generated_at": now.astimezone(UTC).isoformat(),
         "release_count": len(release_rows),
         "staged_product_count": len(staged_by_id),
         "release_product_count": len(all_release_product_ids),
         "mapped_staged_product_count": len(mapped_staged_product_ids),
-        "unmapped_staged_product_count": (len(staged_by_id) - len(mapped_staged_product_ids)),
-        "write_ready_release_count": sum(1 for release in release_rows if release["write_ready"]),
+        "unmapped_staged_product_count": (
+            len(staged_by_id) - len(mapped_staged_product_ids)
+        ),
+        "write_ready_release_count": sum(
+            1 for release in release_rows if release["write_ready"]
+        ),
         "releases": release_rows,
     }
 

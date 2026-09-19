@@ -1,62 +1,66 @@
-re__ import annotations
+from __future__ import annotations
 
 import json
 from pathlib import Path
 
+from scripts.build_scentai_catalog_staging import merchant_coverage_count
+
 DATA_DIR = Path("examples/retail/data")
-SCRIPT_FILES = (
-    "scentai_launch_scripts_batch_01.json",
-    "scentai_launch_scripts_batch_02.json",
-    "scentai_launch_scripts_batch_03.json",
-)
 
 
 def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8-sig"))
 
 
-def scripted_rows() -> list[dict]:
-    rows: list[dict] = []
-    for file_name in SCRIPT_FILES:
-        payload = load_json(DATA_DIR / file_name)
-        rows.extend(payload["creatives"])
-    return rows
-
-
-def test_launch_script_batches_match_content_plan() -> None:
-    plan = load_json(DATA_DIR / "scentai_launch_content_plan.json")
-    catalog = load_json(DATA_DIR / "catalog.json")
-
-    plan_by_id = {row["content_id"]: row for row in plan["content"]}
-    live_ids = {
-        product["product_id"]
-        for product in catalog.get("products", [])
-        if str(product.get("product_id") or "").startswith("SC-")
-        and product.get("category") == "fragrance"
-        and product.get("in_stock") is not False
+def test_default_merchant_coverage_uses_promotion_queue() -> None:
+    verified = {
+        "merchant_snapshot": {
+            "merchant_a": "available",
+        }
+    }
+    queue_row = {
+        "merchant_coverage_count": 3,
     }
 
-    rows = scripted_rows()
-    content_ids = [row["content_id"] for row in rows]
+    assert merchant_coverage_count(verified, queue_row) == 3
 
-    assert len(rows) == 15
-    assert len(content_ids) == len(set(content_ids))
 
-    scripted_plan_ids = {
-        row["content_id"] for row in plan["content"] if row["status"] == "scripted"
+def test_snapshot_authority_counts_only_explicit_available_status() -> None:
+    verified = {
+        "merchant_coverage_source": "verification_snapshot",
+        "merchant_snapshot": {
+            "current_store": "available",
+            "legacy_store": "sale_ended_not_valid_for_2026_coverage",
+            "brand_page": "manufacturer_teaser_not_retail_available",
+        },
     }
-    assert set(content_ids) == scripted_plan_ids
+    queue_row = {
+        "merchant_coverage_count": 3,
+    }
 
-    for row in rows:
-        content_id = row["content_
-…[6718 chars truncated — re-run with head/grep/tail for full output]…
-             1 for status in merchant_snapshot.values() if status in AVAILABLE_STATUSES
-            )
+    assert merchant_coverage_count(verified, queue_row) == 1
 
-            declared = int(queue_by_id[candidate_id].get("merchant_coverage_count", 0) or 0)
 
-            assert declared >= explicitly_available, (
-                f"{candidate_id}: promotion queue declares {declared} researched "
-                f"merchant(s), but verification explicitly marks "
-                f"{explicitly_available} as available"
-            )
+def test_fleur_du_male_2026_has_no_ambiguous_legacy_coverage() -> None:
+    verification = load_json(
+        DATA_DIR / "scentai_catalog_batch2_verification.json"
+    )
+    queue = load_json(
+        DATA_DIR / "scentai_catalog_promotion_queue.json"
+    )
+
+    verified = next(
+        product
+        for product in verification["products"]
+        if product["candidate_id"] == "JPG-FLEUR-DU-MALE-2026"
+    )
+    queue_row = next(
+        product
+        for product in queue["candidates"]
+        if product["candidate_id"] == "JPG-FLEUR-DU-MALE-2026"
+    )
+
+    assert verified["merchant_coverage_source"] == "verification_snapshot"
+    assert merchant_coverage_count(verified, queue_row) == 0
+    assert queue_row["merchant_coverage_count"] == 0
+    assert "verified_current_merchant_pending" in queue_row["blockers"]

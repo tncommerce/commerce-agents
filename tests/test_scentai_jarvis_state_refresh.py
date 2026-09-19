@@ -42,7 +42,9 @@ def test_refresh_summary_exposes_control_plane_state() -> None:
 
     report = summary(state)
 
-    assert report["overall_state"] == ("waiting_external_affiliate_decision")
+    assert report["overall_state"] == (
+        "waiting_external_affiliate_decision"
+    )
     assert report["next_action"] == "await_affiliate_program_decision"
     assert report["user_approval_required_now"] is False
     assert report["mapping"]["staged_products"] == 30

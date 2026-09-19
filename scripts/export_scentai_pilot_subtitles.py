@@ -1,151 +1,154 @@
-rom __future__ import annotations
+from __future__ import annotations
 
 import argparse
 import json
-import os
 from pathlib import Path
 
-from scripts.build_scentai_campaign_link import build_campaign_url
-
-DEFAULT_PLAN = Path("examples/retail/data/scentai_launch_content_plan.json")
+DEFAULT_INPUT = Path(
+    "examples/retail/data/scentai_pilot_batch_01_subtitles.json"
+)
+DEFAULT_OUTPUT_DIR = Path(
+    "examples/retail/data/scentai_pilot_batch_01_subtitles"
+)
 
 
 def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8-sig"))
 
 
-def build_launch_links(plan: dict, *, base_url: str) -> list[dict]:
-    campaign_id = str(plan.get("campaign_id") or "").strip()
-    channels = plan.get("channels")
-    content_rows = plan.get("content")
+def srt_timestamp(seconds: float) -> str:
+    if seconds < 0:
+        raise ValueError("subtitle timestamp cannot be negative")
 
-    if not campaign_id:
-        raise ValueError("Launch plan requires campaign_id")
-    if not isinstance(channels, list) or not channels:
-        raise ValueError("Launch plan requires channels")
-    if not isinstance(content_rows, list) or not content_rows:
-        raise ValueError("Launch plan requires content rows")
+    total_ms = int(round(seconds * 1000))
+    hours, remainder = divmod(total_ms, 3_600_000)
+    minutes, remainder = divmod(remainder, 60_000)
+    secs, milliseconds = divmod(remainder, 1000)
 
-    rows: list[dict] = []
-    for content in content_rows:
-        content_id = str(content.get("content_id") or "").strip()
-        landing_path = str(content.get("landing_path") or "").strip()
+    return (
+        f"{hours:02d}:{minutes:02d}:{secs:02d},"
+        f"{milliseconds:03d}"
+    )
 
-        if not content_id or not landing_path:
-            raise ValueError("Every content row requires content_id and landing_path")
 
-        for channel in channels:
-            link = build_campaign_url(
-                base_url=base_url,
-                landing_path=landing_path,
-                channel=str(channel),
-                campaign_id=campaign_id,
-                content_id=content_id,
+def validate_item(item: dict) -> None:
+    content_id = str(item.get("content_id") or "").strip()
+    if not content_id:
+        raise ValueError("subtitle item requires content_id")
+
+    segments = item.get("segments")
+    if not isinstance(segments, list) or not segments:
+        raise ValueError(f"{content_id}: requires subtitle segments")
+
+    previous_end = 0.0
+    for index, segment in enumerate(segments, start=1):
+        try:
+            start = float(segment["start"])
+            end = float(segment["end"])
+        except (KeyError, TypeError, ValueError) as exc:
+            raise ValueError(
+                f"{content_id}: segment {index} has invalid timing"
+            ) from exc
+
+        text = str(segment.get("text") or "").strip()
+        if not text:
+            raise ValueError(
+                f"{content_id}: segment {index} has empty text"
             )
-       
-…[78197 chars truncated — re-run with head/grep/tail for full output]…
-        "release_count": len(release_rows),
-        "staged_product_count": len(staged_by_id),
-        "release_product_count": len(all_release_product_ids),
-        "mapped_staged_product_count": len(mapped_staged_product_ids),
-        "unmapped_staged_product_count": (len(staged_by_id) - len(mapped_staged_product_ids)),
-        "write_ready_release_count": sum(1 for release in release_rows if release["write_ready"]),
-        "releases": release_rows,
-    }
+        if start < previous_end:
+            raise ValueError(
+                f"{content_id}: segment {index} overlaps the previous segment"
+            )
+        if end <= start:
+            raise ValueError(
+                f"{content_id}: segment {index} must end after it starts"
+            )
+
+        previous_end = end
+
+
+def build_srt(item: dict) -> str:
+    validate_item(item)
+
+    blocks: list[str] = []
+    for index, segment in enumerate(item["segments"], start=1):
+        start = srt_timestamp(float(segment["start"]))
+        end = srt_timestamp(float(segment["end"]))
+        text = str(segment["text"]).strip()
+
+        blocks.append(
+            f"{index}\n{start} --> {end}\n{text}"
+        )
+
+    return "\n\n".join(blocks) + "\n"
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Report guarded SCENTAI release-pipeline readiness across all "
-            "prepared release manifests."
+            "Export SCENTAI pilot subtitle timing drafts as .srt files."
         )
     )
     parser.add_argument(
-        "--staging",
+        "--input",
         type=Path,
-        default=DEFAULT_STAGING,
+        default=DEFAULT_INPUT,
     )
     parser.add_argument(
-        "--offers",
+        "--output-dir",
         type=Path,
-        default=DEFAULT_OFFERS,
+        default=DEFAULT_OUTPUT_DIR,
     )
     parser.add_argument(
-        "--mappings",
-        type=Path,
-        default=DEFAULT_MAPPINGS,
-    )
-    parser.add_argument(
-        "--release-dir",
-        type=Path,
-        default=DATA_DIR,
-    )
-    parser.add_argument(
-        "--release-pattern",
-        default=DEFAULT_RELEASE_GLOB,
-    )
-    parser.add_argument(
-        "--max-offer-age-hours",
-        type=float,
-        default=72.0,
-    )
-    parser.add_argument(
-        "--machine-readable",
-        action="store_true",
-    )
-    parser.add_argument(
-        "--output",
-        type=Path,
-        default=None,
+        "--content-id",
+        action="append",
+        default=[],
+        help="Optional content_id filter. Repeatable.",
     )
     args = parser.parse_args()
 
-    releases = load_release_manifests(
-        args.release_dir,
-        args.release_pattern,
-    )
-    report = build_release_pipeline_report(
-        releases,
-        load_json(args.staging),
-        load_json(args.offers),
-        load_json(args.mappings),
-        now=datetime.now(UTC),
-        max_offer_age_hours=args.max_offer_age_hours,
-    )
+    payload = load_json(args.input)
+    items = payload.get("items", [])
+    if not isinstance(items, list) or not items:
+        parser.error("subtitle payload does not contain items")
 
-    if args.output is not None:
-        args.output.parent.mkdir(parents=True, exist_ok=True)
-        args.output.write_text(
-            json.dumps(report, ensure_ascii=False, indent=2) + "\n",
-            encoding="utf-8",
+    selected_ids = {
+        value.strip()
+        for value in args.content_id
+        if value.strip()
+    }
+    selected = [
+        item
+        for item in items
+        if (
+            not selected_ids
+            or str(item.get("content_id") or "") in selected_ids
         )
+    ]
 
-    if args.machine_readable:
-        print(json.dumps(report, ensure_ascii=False))
-        return 0
+    if selected_ids:
+        found = {
+            str(item.get("content_id") or "")
+            for item in selected
+        }
+        missing = sorted(selected_ids - found)
+        if missing:
+            parser.error(
+                "Unknown content_id values: " + ", ".join(missing)
+            )
 
-    print(
-        "SCENTAI release pipeline | "
-        f"releases={report['release_count']} | "
-        f"staged={report['staged_product_count']} | "
-        f"mapped={report['mapped_staged_product_count']} | "
-        f"write_ready_releases={report['write_ready_release_count']}"
-    )
+    args.output_dir.mkdir(parents=True, exist_ok=True)
 
-    for release in report["releases"]:
-        blockers = ", ".join(release["release_blockers"]) or "-"
-        print(
-            f"{release['release_id']} | "
-            f"mapped={release['mapped_product_count']}/"
-            f"{release['product_count']} | "
-            f"affiliate={release['affiliate_offer_product_count']}/"
-            f"{release['product_count']} | "
-            f"ready={release['ready_product_count']}/"
-            f"{release['product_count']} | "
-            f"write_enabled={release['write_enabled']} | "
-            f"blockers={blockers}"
-        )
+    for item in selected:
+        content_id = str(item["content_id"])
+        output_path = args.output_dir / f"{content_id}.srt"
+        try:
+            content = build_srt(item)
+        except ValueError as exc:
+            parser.error(str(exc))
+
+        output_path.write_text(content, encoding="utf-8")
+        print(f"{content_id} -> {output_path}")
 
     return 0
 

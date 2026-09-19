@@ -1,102 +1,110 @@
-s.py>>>
 from __future__ import annotations
 
 import argparse
 import json
-from pathlib import Path
 from typing import Any
 
-from scripts.build_scentai_jarvis_operations_status import (
-    build_operations_status,
+from scripts.refresh_scentai_jarvis_state import (
+    OUT_AFFILIATE,
+    OUT_CONTENT,
+    OUT_CONTENT_BATCH02,
+    OUT_CONTENT_BATCH03,
+    OUT_CONTENT_PIPELINE,
+    OUT_FEED,
+    OUT_IMAGES,
+    OUT_MAPPING,
+    OUT_MASTER,
+    OUT_MEDIA_QUEUE,
+    OUT_OPERATIONS,
+    OUT_PIPELINE,
+    OUT_RELEASE,
+    load_json,
+    refresh_state,
 )
 
-DATA_DIR = Path("examples/retail/data")
-DEFAULT_MAPPING = DATA_DIR / "scentai_merchant_mapping_work_queue.json"
-DEFAULT_AFFILIATE = DATA_DIR / "scentai_affiliate_activation_status.json"
-DEFAULT_IMAGES = DATA_DIR / "scentai_image_approval_work_queue.json"
-DEFAULT_RELEASE = DATA_DIR / "scentai_release_01_gate_status.json"
-DEFAULT_FEED = DATA_DIR / "scentai_release_01_feed_activation_queue.json"
-DEFAULT_STATUS = DATA_DIR / "scentai_jarvis_operations_status.json"
+OUTPUT_PATHS = {
+    "mapping_queue": OUT_MAPPING,
+    "affiliate_status": OUT_AFFILIATE,
+    "image_queue": OUT_IMAGES,
+    "feed_queue": OUT_FEED,
+    "release_status": OUT_RELEASE,
+    "release_pipeline": OUT_PIPELINE,
+    "operations": OUT_OPERATIONS,
+    "content_status": OUT_CONTENT,
+    "content_status_batch02": OUT_CONTENT_BATCH02,
+    "content_status_batch03": OUT_CONTENT_BATCH03,
+    "content_pipeline": OUT_CONTENT_PIPELINE,
+    "media_queue": OUT_MEDIA_QUEUE,
+    "master_status": OUT_MASTER,
+}
 
 
-def load_json(path: Path) -> dict:
-    return json.loads(path.read_text(encoding="utf-8-sig"))
-
-
-def validate_operations_status(
-    current: dict,
-    mapping: dict,
-    affiliate: dict,
-    images: dict,
-    release: dict,
-    feed: dict,
+def compare_state_graph(
+    current: dict[str, dict],
+    expected: dict[str, dict],
 ) -> dict[str, Any]:
-    generated_at = str(current.get("generated_at") or "").strip()
+    missing = sorted(set(expected) - set(current))
+    extra = sorted(set(current) - set(expected))
+    drifted = sorted(
+        key
+        for key in set(current) & set(expected)
+        if current[key] != expected[key]
+    )
+
+    issues = []
+    if missing:
+        issues.append("missing_state_nodes:" + ",".join(missing))
+    if extra:
+        issues.append("unexpected_state_nodes:" + ",".join(extra))
+    if drifted:
+        issues.append("drifted_state_nodes:" + ",".join(drifted))
+
+    return {
+        "valid": not issues,
+        "issues": issues,
+        "missing_nodes": missing,
+        "extra_nodes": extra,
+        "drifted_nodes": drifted,
+    }
+
+
+def load_current_state() -> dict[str, dict]:
+    return {
+        key: load_json(path)
+        for key, path in OUTPUT_PATHS.items()
+    }
+
+
+def validate_repo_state_graph() -> dict[str, Any]:
+    current = load_current_state()
+    generated_at = str(
+        current.get("operations", {}).get("generated_at") or ""
+    ).strip()
     if not generated_at:
         return {
             "valid": False,
-            "issues": ["operations_status_generated_at_missing"],
+            "issues": ["operations_generated_at_missing"],
+            "missing_nodes": [],
+            "extra_nodes": [],
+            "drifted_nodes": [],
         }
 
-    expected = build_operations_status(
-        mapping,
-        affiliate,
-        images,
-        release,
-        feed,
-        generated_at=generated_at,
-    )
-
-    issues: list[str] = []
-
-    current_fingerprint = str(current.get("source_fingerprint_sha256") or "").strip()
-  
-…[16383 chars truncated — re-run with head/grep/tail for full output]…
-nonical_field_map_keys",
-                "blank_external_source_columns",
-                "missing_required_field_mappings",
-                "missing_product_identifier_mapping",
-                "missing_required_constants",
-                "currency_constant_must_be_three_characters",
-            )
-        )
-        for issue in issues
-    )
-
-    promotion_ready = import_ready and not promotion_missing
-
-    return {
-        "valid": import_ready,
-        "provider_name": provider_name or None,
-        "import_contract_ready": import_ready,
-        "promotion_asset_contract_ready": promotion_ready,
-        "promotion_field_gaps": promotion_missing,
-        "issues": issues,
-        "next_action": (
-            "run_real_feed_preflight"
-            if promotion_ready
-            else "complete_provider_mapping_from_real_feed_sample"
-        ),
-        "note": (
-            "This validates configuration structure only. It does not prove "
-            "the external columns contain correct values; the real feed "
-            "preflight and release checker remain mandatory."
-        ),
-    }
+    expected = refresh_state(generated_at=generated_at)
+    return compare_state_graph(current, expected)
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Validate a SCENTAI mapped merchant provider config before running a real feed dry-run."
+            "Validate the complete derived SCENTAI Jarvis state graph "
+            "against source-of-truth inputs."
         )
     )
-    parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--machine-readable", action="store_true")
     args = parser.parse_args()
 
     try:
-        report = validate_provider_config(load_json(args.config))
+        report = validate_repo_state_graph()
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         parser.error(str(exc))
 
@@ -104,16 +112,12 @@ def main() -> int:
         print(json.dumps(report, ensure_ascii=False))
     else:
         print(
-            "SCENTAI provider config | "
+            "SCENTAI Jarvis state graph | "
             f"valid={report['valid']} | "
-            f"import_ready={report['import_contract_ready']} | "
-            f"promotion_ready={report['promotion_asset_contract_ready']} | "
-            f"next={report['next_action']}"
+            f"drift={report.get('drifted_nodes', [])}"
         )
         for issue in report["issues"]:
             print(f"  - {issue}")
-        if report["promotion_field_gaps"]:
-            print("  - promotion_field_gaps: " + ", ".join(report["promotion_field_gaps"]))
 
     return 0 if report["valid"] else 20
 

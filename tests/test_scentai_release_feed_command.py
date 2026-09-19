@@ -11,7 +11,10 @@ def test_release_feed_command_reports_complete_fixture_ready(
     monkeypatch,
     capsys,
 ) -> None:
-    product_ids = [f"SC-COMMAND-{index}" for index in range(1, 6)]
+    product_ids = [
+        f"SC-COMMAND-{index}"
+        for index in range(1, 6)
+    ]
 
     manifest_path = tmp_path / "release.json"
     mappings_path = tmp_path / "mappings.json"
@@ -56,12 +59,20 @@ def test_release_feed_command_reports_complete_fixture_ready(
                         "price": 70.0 + index,
                         "currency": "EUR",
                         "in_stock": True,
-                        "product_url": (f"https://shop.example/product/{index}"),
-                        "affiliate_url": (f"https://network.example/click/{index}"),
-                        "last_updated_at": ("2026-09-19T08:00:00Z"),
+                        "product_url": (
+                            f"https://shop.example/product/{index}"
+                        ),
+                        "affiliate_url": (
+                            f"https://network.example/click/{index}"
+                        ),
+                        "last_updated_at": (
+                            "2026-09-19T08:00:00Z"
+                        ),
                         "data_source": "fixture-feed",
                         "network": "Awin",
-                        "image_url": (f"https://cdn.example/product-{index}.jpg"),
+                        "image_url": (
+                            f"https://cdn.example/product-{index}.jpg"
+                        ),
                     }
                     for index in range(1, 6)
                 ]

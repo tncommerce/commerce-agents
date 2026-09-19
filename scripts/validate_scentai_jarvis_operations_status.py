@@ -48,54 +48,79 @@ def validate_operations_status(
 
     issues: list[str] = []
 
-    current_fingerprint = str(current.get("source_fingerprint_sha256") or "").strip()
-  
-…[16383 chars truncated — re-run with head/grep/tail for full output]…
-nonical_field_map_keys",
-                "blank_external_source_columns",
-                "missing_required_field_mappings",
-                "missing_product_identifier_mapping",
-                "missing_required_constants",
-                "currency_constant_must_be_three_characters",
-            )
-        )
-        for issue in issues
-    )
+    current_fingerprint = str(
+        current.get("source_fingerprint_sha256") or ""
+    ).strip()
+    expected_fingerprint = expected["source_fingerprint_sha256"]
 
-    promotion_ready = import_ready and not promotion_missing
+    if current_fingerprint != expected_fingerprint:
+        issues.append("operations_status_source_fingerprint_stale")
+
+    fields = [
+        "system",
+        "control_plane",
+        "policy_ref",
+        "overall_state",
+        "user_approval_required_now",
+        "next_action",
+        "next_action_class",
+        "blockers",
+        "safety",
+        "catalog",
+        "affiliate",
+        "images",
+        "release_01",
+        "pending_manual_approvals",
+        "operating_note",
+    ]
+
+    drift_fields = [
+        field
+        for field in fields
+        if current.get(field) != expected.get(field)
+    ]
+    if drift_fields:
+        issues.append(
+            "operations_status_field_drift:"
+            + ",".join(drift_fields)
+        )
 
     return {
-        "valid": import_ready,
-        "provider_name": provider_name or None,
-        "import_contract_ready": import_ready,
-        "promotion_asset_contract_ready": promotion_ready,
-        "promotion_field_gaps": promotion_missing,
+        "valid": not issues,
         "issues": issues,
-        "next_action": (
-            "run_real_feed_preflight"
-            if promotion_ready
-            else "complete_provider_mapping_from_real_feed_sample"
+        "expected_source_fingerprint_sha256": expected_fingerprint,
+        "current_source_fingerprint_sha256": (
+            current_fingerprint or None
         ),
-        "note": (
-            "This validates configuration structure only. It does not prove "
-            "the external columns contain correct values; the real feed "
-            "preflight and release checker remain mandatory."
-        ),
+        "drift_fields": drift_fields,
     }
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Validate a SCENTAI mapped merchant provider config before running a real feed dry-run."
+            "Validate that the committed SCENTAI Jarvis operations status "
+            "matches its current source-of-truth states."
         )
     )
-    parser.add_argument("--config", type=Path, required=True)
+    parser.add_argument("--status", type=Path, default=DEFAULT_STATUS)
+    parser.add_argument("--mapping", type=Path, default=DEFAULT_MAPPING)
+    parser.add_argument("--affiliate", type=Path, default=DEFAULT_AFFILIATE)
+    parser.add_argument("--images", type=Path, default=DEFAULT_IMAGES)
+    parser.add_argument("--release", type=Path, default=DEFAULT_RELEASE)
+    parser.add_argument("--feed", type=Path, default=DEFAULT_FEED)
     parser.add_argument("--machine-readable", action="store_true")
     args = parser.parse_args()
 
     try:
-        report = validate_provider_config(load_json(args.config))
+        report = validate_operations_status(
+            load_json(args.status),
+            load_json(args.mapping),
+            load_json(args.affiliate),
+            load_json(args.images),
+            load_json(args.release),
+            load_json(args.feed),
+        )
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         parser.error(str(exc))
 
@@ -103,16 +128,12 @@ def main() -> int:
         print(json.dumps(report, ensure_ascii=False))
     else:
         print(
-            "SCENTAI provider config | "
+            "SCENTAI Jarvis operations parity | "
             f"valid={report['valid']} | "
-            f"import_ready={report['import_contract_ready']} | "
-            f"promotion_ready={report['promotion_asset_contract_ready']} | "
-            f"next={report['next_action']}"
+            f"drift_fields={report.get('drift_fields', [])}"
         )
         for issue in report["issues"]:
             print(f"  - {issue}")
-        if report["promotion_field_gaps"]:
-            print("  - promotion_field_gaps: " + ", ".join(report["promotion_field_gaps"]))
 
     return 0 if report["valid"] else 20
 

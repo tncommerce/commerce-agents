@@ -59,7 +59,9 @@ def _walk_forbidden_keys(
             normalized = str(key).strip().casefold()
             child_path = f"{path}.{key}"
             if normalized in FORBIDDEN_SECRET_KEYS:
-                issues.append(f"{child_path}: secret-bearing field is forbidden")
+                issues.append(
+                    f"{child_path}: secret-bearing field is forbidden"
+                )
             issues.extend(
                 _walk_forbidden_keys(
                     child,
@@ -135,13 +137,19 @@ def validate_intake(
     merchant_id = str(intake.get("merchant_id") or "").strip()
     network = str(intake.get("network") or "").strip()
     program = str(intake.get("program") or "").strip()
-    observed_status = str(intake.get("observed_status") or "").strip().casefold()
+    observed_status = (
+        str(intake.get("observed_status") or "")
+        .strip()
+        .casefold()
+    )
     observed_at = str(intake.get("observed_at") or "").strip()
 
     if int(intake.get("version") or 0) != 1:
         issues.append("$.version: only version 1 is supported")
     if intake.get("intake_type") != "affiliate_program_decision":
-        issues.append("$.intake_type: expected affiliate_program_decision")
+        issues.append(
+            "$.intake_type: expected affiliate_program_decision"
+        )
     if not merchant_id:
         issues.append("$.merchant_id: required")
     if not network:
@@ -149,7 +157,9 @@ def validate_intake(
     if not program:
         issues.append("$.program: required")
     if observed_status not in ALLOWED_OBSERVED_STATUSES:
-        issues.append("$.observed_status: must be approved, rejected or revoked")
+        issues.append(
+            "$.observed_status: must be approved, rejected or revoked"
+        )
     if not observed_at:
         issues.append("$.observed_at: required")
 
@@ -160,16 +170,22 @@ def validate_intake(
 
     source_type = str(evidence.get("source_type") or "").strip()
     if source_type not in ALLOWED_SOURCE_TYPES:
-        issues.append("$.evidence.source_type: unsupported evidence source")
+        issues.append(
+            "$.evidence.source_type: unsupported evidence source"
+        )
 
     integration = intake.get("integration_metadata")
     if not isinstance(integration, dict):
         issues.append("$.integration_metadata: object required")
         integration = {}
 
-    if integration.get("credential_storage") != "external_secret_store_only":
+    if (
+        integration.get("credential_storage")
+        != "external_secret_store_only"
+    ):
         issues.append(
-            "$.integration_metadata.credential_storage: must be external_secret_store_only"
+            "$.integration_metadata.credential_storage: "
+            "must be external_secret_store_only"
         )
 
     programs = registry_programs(registry)
@@ -181,45 +197,56 @@ def validate_intake(
     )
 
     if registry_row is None:
-        issues.append("registry: merchant/network pair is not registered")
+        issues.append(
+            "registry: merchant/network pair is not registered"
+        )
         current_status = None
     else:
-        current_status = str(registry_row.get("status") or "").strip().casefold()
+        current_status = (
+            str(registry_row.get("status") or "")
+            .strip()
+            .casefold()
+        )
         if current_status not in ALLOWED_CURRENT_STATUSES:
-            issues.append(f"registry: unsupported current status {current_status!r}")
-        if str(registry_row.get("program") or "").strip() != program:
-            issues.append("registry: program name does not exactly match the registered program")
+            issues.append(
+                f"registry: unsupported current status {current_status!r}"
+            )
+        if (
+            str(registry_row.get("program") or "").strip()
+            != program
+        ):
+            issues.append(
+                "registry: program name does not exactly match "
+                "the registered program"
+            )
 
     transition_allowed = False
     if registry_row is not None and not issues:
         transition_allowed = (
-            (
-                current_status
-                in {
-                    "applied",
-                    "applied_pending",
-                    "pending_review",
-                }
-                and observed_status
-                in {
-                    "approved",
-                    "rejected",
-                }
-            )
+            (current_status in {
+                "applied",
+                "applied_pending",
+                "pending_review",
+            } and observed_status in {
+                "approved",
+                "rejected",
+            })
             or (
                 current_status == "approved"
-                and observed_status
-                in {
+                and observed_status in {
                     "approved",
                     "revoked",
                 }
             )
-            or (current_status == observed_status)
+            or (
+                current_status == observed_status
+            )
         )
 
         if not transition_allowed:
             issues.append(
-                f"transition: observed status is not valid from current status {current_status!r}"
+                "transition: observed status is not valid from "
+                f"current status {current_status!r}"
             )
 
     valid = not issues
@@ -227,13 +254,19 @@ def validate_intake(
     next_action = None
     activation_state = None
     if valid:
-        activation_state = activation_state_for_status(observed_status)
+        activation_state = activation_state_for_status(
+            observed_status
+        )
         if observed_status == "approved":
-            next_action = "verify_credentials_in_external_secret_store"
+            next_action = (
+                "verify_credentials_in_external_secret_store"
+            )
         elif observed_status == "rejected":
             next_action = "record_rejection_and_stop_integration"
         else:
-            next_action = "disable_routing_and_record_program_revocation"
+            next_action = (
+                "disable_routing_and_record_program_revocation"
+            )
 
     return {
         "valid": valid,

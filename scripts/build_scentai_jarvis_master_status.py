@@ -40,8 +40,12 @@ def classify_domain(
     status: dict,
 ) -> dict[str, Any]:
     next_action = str(status.get("next_action") or "").strip()
-    action_class = str(status.get("next_action_class") or "").strip()
-    approval_now = bool(status.get("user_approval_required_now"))
+    action_class = str(
+        status.get("next_action_class") or ""
+    ).strip()
+    approval_now = bool(
+        status.get("user_approval_required_now")
+    )
 
     external_wait_actions = {
         "await_affiliate_program_decision",
@@ -84,10 +88,20 @@ def build_master_status(
     ]
 
     approval_domains = [
-        row for row in domains if row["execution_state"] == "user_approval_required"
+        row
+        for row in domains
+        if row["execution_state"] == "user_approval_required"
     ]
-    work_domains = [row for row in domains if row["execution_state"] == "work_available"]
-    manual_domains = [row for row in domains if row["execution_state"] == "manual_step_pending"]
+    work_domains = [
+        row
+        for row in domains
+        if row["execution_state"] == "work_available"
+    ]
+    manual_domains = [
+        row
+        for row in domains
+        if row["execution_state"] == "manual_step_pending"
+    ]
 
     if approval_domains:
         selected = approval_domains[0]
@@ -109,28 +123,56 @@ def build_master_status(
             commerce,
             content,
             release_pipeline,
-            *([content_pipeline] if content_pipeline is not None else []),
+            *(
+                [content_pipeline]
+                if content_pipeline is not None
+                else []
+            ),
         ),
         "system": "SCENTAI",
         "control_plane": "commerce_jarvis_master",
         "overall_state": overall_state,
-        "active_domain": (selected.get("domain") if selected else None),
-        "next_action": (selected.get("next_action") if selected else None),
-        "next_action_class": (selected.get("next_action_class") if selected else None),
-        "user_approval_required_now": bool(selected and selected.get("user_approval_required_now")),
-        "domains": {row["domain"]: row for row in domains},
+        "active_domain": (
+            selected.get("domain") if selected else None
+        ),
+        "next_action": (
+            selected.get("next_action") if selected else None
+        ),
+        "next_action_class": (
+            selected.get("next_action_class")
+            if selected
+            else None
+        ),
+        "user_approval_required_now": bool(
+            selected
+            and selected.get("user_approval_required_now")
+        ),
+        "domains": {
+            row["domain"]: row
+            for row in domains
+        },
         "release_pipeline": {
             "release_count": release_pipeline.get("release_count"),
-            "current_release_id": release_pipeline.get("current_release_id"),
-            "pipeline_state": release_pipeline.get("pipeline_state"),
+            "current_release_id": release_pipeline.get(
+                "current_release_id"
+            ),
+            "pipeline_state": release_pipeline.get(
+                "pipeline_state"
+            ),
         },
         "content_pipeline": (
             {
                 "batch_count": content_pipeline.get("batch_count"),
                 "total_pilots": content_pipeline.get("total_pilots"),
-                "current_batch_id": content_pipeline.get("current_batch_id"),
-                "pipeline_state": content_pipeline.get("pipeline_state"),
-                "production_parallel_allowed": content_pipeline.get("production_parallel_allowed"),
+                "current_batch_id": content_pipeline.get(
+                    "current_batch_id"
+                ),
+                "pipeline_state": content_pipeline.get(
+                    "pipeline_state"
+                ),
+                "production_parallel_allowed": content_pipeline.get(
+                    "production_parallel_allowed"
+                ),
             }
             if content_pipeline is not None
             else None
@@ -152,7 +194,9 @@ def build_master_status(
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description=("Build the cross-domain SCENTAI Jarvis master operations status.")
+        description=(
+            "Build the cross-domain SCENTAI Jarvis master operations status."
+        )
     )
     parser.add_argument(
         "--commerce",
@@ -178,7 +222,10 @@ def main() -> int:
     parser.add_argument("--machine-readable", action="store_true")
     args = parser.parse_args()
 
-    generated_at = args.generated_at or datetime.now(UTC).replace(microsecond=0).isoformat()
+    generated_at = (
+        args.generated_at
+        or datetime.now(UTC).replace(microsecond=0).isoformat()
+    )
 
     report = build_master_status(
         load_json(args.commerce),

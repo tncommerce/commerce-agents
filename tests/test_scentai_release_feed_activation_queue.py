@@ -64,7 +64,11 @@ def test_full_mapping_does_not_bypass_program_approval() -> None:
         generated_at="2026-09-19T10:00:00+00:00",
     )
 
-    merchant = next(row for row in queue["programs"] if row["merchant_id"] == "merchant-one")
+    merchant = next(
+        row
+        for row in queue["programs"]
+        if row["merchant_id"] == "merchant-one"
+    )
 
     assert merchant["full_release_mapping_coverage"] is True
     assert merchant["program_approved"] is False
@@ -82,10 +86,18 @@ def test_approval_opens_feed_validation_not_live_routing() -> None:
         generated_at="2026-09-19T10:00:00+00:00",
     )
 
-    merchant = next(row for row in queue["programs"] if row["merchant_id"] == "merchant-one")
+    merchant = next(
+        row
+        for row in queue["programs"]
+        if row["merchant_id"] == "merchant-one"
+    )
 
-    assert merchant["state"] == ("approved_mapping_ready_feed_sample_pending")
-    assert merchant["feed_state"] == ("await_real_feed_or_tracked_link_sample")
+    assert merchant["state"] == (
+        "approved_mapping_ready_feed_sample_pending"
+    )
+    assert merchant["feed_state"] == (
+        "await_real_feed_or_tracked_link_sample"
+    )
     assert merchant["live_routing_allowed"] is False
     assert queue["summary"]["feed_validation_path_available"] is True
     assert queue["summary"]["live_activation_ready"] is False
@@ -99,7 +111,11 @@ def test_partial_mapping_cannot_be_full_release_path() -> None:
         generated_at="2026-09-19T10:00:00+00:00",
     )
 
-    merchant = next(row for row in queue["programs"] if row["merchant_id"] == "merchant-two")
+    merchant = next(
+        row
+        for row in queue["programs"]
+        if row["merchant_id"] == "merchant-two"
+    )
 
     assert merchant["mapped_release_product_count"] == 1
     assert merchant["full_release_mapping_coverage"] is False

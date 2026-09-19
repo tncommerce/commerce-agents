@@ -33,7 +33,11 @@ def test_feed_schema_profile_excludes_raw_values() -> None:
     assert "token=secret" not in serialized
     assert "https://private.example" not in serialized
 
-    url_profile = next(row for row in report["profiles"] if row["column"] == "url_col")
+    url_profile = next(
+        row
+        for row in report["profiles"]
+        if row["column"] == "url_col"
+    )
     assert url_profile["http_url_like_count"] == 2
 
 
@@ -48,58 +52,49 @@ def valid_provider_config() -> dict:
             "product_url": "url",
             "affiliate_url": "tracked_url",
             "last_updated_at": "updated",
-            "image
-…[4663 chars truncated — re-run with head/grep/tail for full output]…
-   releases,
-        generated_at="2026-09-19T10:00:00+00:00",
-        asset_candidates=candidates,
-    )
-
-    row = queue["items"][0]
-
-    assert row["image_state"] == "rights_or_source_check_pending"
-    assert row["candidate_source"]["exact_variant_verified"] is True
-    assert "asset_usage_or_feed_rights_not_verified" in row["blockers"]
-    assert queue["summary"]["rights_or_source_check_pending"] == 1
-    assert queue["summary"]["approved_images"] == 0
-
-
-def test_approved_image_overrides_candidate_pending_state() -> None:
-    staging = {
-        "products": [
-            {
-                "product_id": "SC-TEST-100",
-                "candidate_id": "TEST",
-                "brand": "Brand",
-                "name": "Test",
-                "batch": 1,
-                "media": {
-                    "image_url": "/products/test.png",
-                    "image_status": "approved_feed_image",
-                },
-            }
-        ]
-    }
-    releases = []
-    candidates = {
-        "products": [
-            {
-                "product_id": "SC-TEST-100",
-                "image_state": "rights_or_source_check_pending",
-            }
-        ]
+            "image_url": "image",
+        },
+        "constants": {
+            "merchant": "douglas",
+            "merchant_id": "douglas-de",
+            "merchant_name": "Douglas",
+            "currency": "EUR",
+            "network": "Awin",
+            "data_source": "awin_douglas_feed",
+        },
     }
 
-    queue = build_queue(
-        staging,
-        releases,
-        generated_at="2026-09-19T10:00:00+00:00",
-        asset_candidates=candidates,
-    )
 
-    row = queue["items"][0]
+def test_provider_config_can_be_promotion_contract_ready() -> None:
+    report = validate_provider_config(valid_provider_config())
 
-    assert row["image_state"] == "approved_feed_image"
-    assert row["blockers"] == []
-    assert row["next_action"] == "none"
-    assert queue["summary"]["approved_images"] == 1
+    assert report["valid"] is True
+    assert report["import_contract_ready"] is True
+    assert report["promotion_asset_contract_ready"] is True
+    assert report["promotion_field_gaps"] == []
+
+
+def test_provider_config_requires_product_identifier() -> None:
+    config = valid_provider_config()
+    del config["field_map"]["merchant_product_id"]
+
+    report = validate_provider_config(config)
+
+    assert report["valid"] is False
+    assert "missing_product_identifier_mapping" in report["issues"]
+
+
+def test_provider_config_reports_missing_promotion_fields() -> None:
+    config = valid_provider_config()
+    del config["field_map"]["affiliate_url"]
+    del config["field_map"]["image_url"]
+
+    report = validate_provider_config(config)
+
+    assert report["valid"] is True
+    assert report["import_contract_ready"] is True
+    assert report["promotion_asset_contract_ready"] is False
+    assert report["promotion_field_gaps"] == [
+        "affiliate_url",
+        "image_url",
+    ]
