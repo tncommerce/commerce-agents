@@ -9,7 +9,6 @@ from typing import Any
 from scripts.render_scentai_pilot_final import (
     evaluate_final_render,
     evaluate_inputs,
-    load_job,
     media_summary,
     probe_media,
 )
