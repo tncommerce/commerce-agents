@@ -48,7 +48,8 @@
         "program_approved": false,
         "next_action": "await_program_decision"
       }
-    ]
+    ],
+    "approved_programs": 0
   },
   "images": {
     "staged_products": 30,
@@ -66,5 +67,6 @@
     "promotion_ready": 0
   },
   "pending_manual_approvals": [],
-  "operating_note": "Operational readiness summary only. This file does not authorize live writes, spending, outbound messages or affiliate activation."
+  "operating_note": "Operational readiness summary only. This file does not authorize live writes, spending, outbound messages or affiliate activation.",
+  "source_fingerprint_sha256": "b5bdf8a7755f554511eee0bd6fec669e2c15534fc9400db36aae9b34f2891f0d"
 }
