@@ -180,6 +180,92 @@ SCENE_PRODUCTS_BATCH02: dict[str, list[list[str]]] = {
 }
 
 
+
+SCENE_PRODUCTS_BATCH03: dict[str, list[list[str]]] = {
+    "tygar_vibrato_value_01": [
+        [
+            "SC-BVLGARI-TYGAR-125",
+            "SC-SOSPIRO-VIBRATO-100",
+            "SC-AFNAN-TURATHI-BLUE-90",
+        ],
+        ["SC-BVLGARI-TYGAR-125", "SC-SOSPIRO-VIBRATO-100"],
+        ["SC-AFNAN-TURATHI-BLUE-90"],
+        ["SC-MAISON-ASRAR-REGENT-100"],
+        [
+            "SC-BVLGARI-TYGAR-125",
+            "SC-SOSPIRO-VIBRATO-100",
+            "SC-AFNAN-TURATHI-BLUE-90",
+        ],
+    ],
+    "naxos_value_01": [
+        [
+            "SC-XERJOFF-NAXOS-100",
+            "SC-NUSUK-ATEEQ-100",
+            "SC-RAYHAAN-ITALIA-100",
+        ],
+        ["SC-XERJOFF-NAXOS-100"],
+        ["SC-NUSUK-ATEEQ-100"],
+        ["SC-RAYHAAN-ITALIA-100"],
+        [
+            "SC-XERJOFF-NAXOS-100",
+            "SC-NUSUK-ATEEQ-100",
+            "SC-RAYHAAN-ITALIA-100",
+        ],
+    ],
+    "dior_homme_intense_alt_01": [
+        [
+            "SC-DIOR-HOMME-INTENSE-100",
+            "SC-AL-WATANIAH-KAYAAN-CLASSIC-100",
+        ],
+        [
+            "SC-DIOR-HOMME-INTENSE-100",
+            "SC-AL-WATANIAH-KAYAAN-CLASSIC-100",
+        ],
+        [
+            "SC-DIOR-HOMME-INTENSE-100",
+            "SC-AL-WATANIAH-KAYAAN-CLASSIC-100",
+        ],
+        [
+            "SC-DIOR-HOMME-INTENSE-100",
+            "SC-AL-WATANIAH-KAYAAN-CLASSIC-100",
+        ],
+        [
+            "SC-DIOR-HOMME-INTENSE-100",
+            "SC-AL-WATANIAH-KAYAAN-CLASSIC-100",
+        ],
+    ],
+    "signature_vs_safe_01": [
+        [
+            "SC-DIOR-SAUVAGE-EDP-100",
+            "SC-PRADA-LHOMME-100",
+            "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+        ],
+        ["SC-DIOR-SAUVAGE-EDP-100"],
+        ["SC-PRADA-LHOMME-100"],
+        ["SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100"],
+        [
+            "SC-DIOR-SAUVAGE-EDP-100",
+            "SC-PRADA-LHOMME-100",
+            "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+        ],
+    ],
+    "gift_for_him_safe_to_bold_01": [
+        [
+            "SC-CHANEL-BLEU-DE-CHANEL-EDP-100",
+            "SC-PRADA-LHOMME-100",
+            "SC-XERJOFF-NAXOS-100",
+        ],
+        ["SC-CHANEL-BLEU-DE-CHANEL-EDP-100"],
+        ["SC-PRADA-LHOMME-100"],
+        ["SC-XERJOFF-NAXOS-100"],
+        [
+            "SC-CHANEL-BLEU-DE-CHANEL-EDP-100",
+            "SC-PRADA-LHOMME-100",
+            "SC-XERJOFF-NAXOS-100",
+        ],
+    ],
+}
+
 def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8-sig"))
 
@@ -512,12 +598,16 @@ def main() -> int:
     )
     parser.add_argument(
         "--batch",
-        choices=("batch01", "batch02"),
+        choices=("batch01", "batch02", "batch03"),
         default="batch01",
     )
     args = parser.parse_args()
 
-    if args.batch == "batch02":
+    if args.batch == "batch03":
+        pilot_manifest = DATA_DIR / "scentai_pilot_batch_03.json"
+        output_dir = PUBLIC_DIR / "social/pilots/batch03"
+        scene_products = SCENE_PRODUCTS_BATCH03
+    elif args.batch == "batch02":
         pilot_manifest = DATA_DIR / "scentai_pilot_batch_02.json"
         output_dir = PUBLIC_DIR / "social/pilots/batch02"
         scene_products = SCENE_PRODUCTS_BATCH02
