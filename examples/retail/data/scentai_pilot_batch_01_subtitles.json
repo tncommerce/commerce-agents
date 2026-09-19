@@ -1,0 +1,168 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-19",
+  "status": "timing_draft_for_editor",
+  "note": "Scene-aligned subtitle timings. Final timings must be conformed to the recorded voiceover waveform before publishing.",
+  "items": [
+    {
+      "content_id": "original_vs_alt_imagination_01",
+      "segments": [
+        {
+          "start": 0,
+          "end": 4.4,
+          "text": "Du magst Louis Vuitton Imagination,\nwillst aber nicht automatisch beim Originalpreis landen?"
+        },
+        {
+          "start": 4.4,
+          "end": 9.2,
+          "text": "Imagination ist bei SCENTAI extrem frisch,\nzitrisch und aquatisch eingeordnet."
+        },
+        {
+          "start": 9.2,
+          "end": 14.8,
+          "text": "Marwa bleibt ebenfalls sehr frisch,\nwirkt in unseren Daten aber deutlich süßer."
+        },
+        {
+          "start": 14.8,
+          "end": 20.3,
+          "text": "Hectic bleibt trockener\nund wesentlich würziger."
+        },
+        {
+          "start": 20.3,
+          "end": 25.5,
+          "text": "Beide sind bei SCENTAI als inspiriert hinterlegt –\nnicht als pauschaler Eins-zu-eins-Klon."
+        },
+        {
+          "start": 25.5,
+          "end": 29,
+          "text": "Vergleiche die Profile direkt bei SCENTAI."
+        }
+      ]
+    },
+    {
+      "content_id": "not_every_dupe_clone_01",
+      "segments": [
+        {
+          "start": 0,
+          "end": 4.3,
+          "text": "Nicht jeder ähnliche Duft ist automatisch\nein Eins-zu-eins-Dupe."
+        },
+        {
+          "start": 4.3,
+          "end": 9.1,
+          "text": "Ein Clone versucht, dem Original\nmöglichst nahe zu kommen."
+        },
+        {
+          "start": 9.1,
+          "end": 15.2,
+          "text": "Ein Inspired-Duft übernimmt eine erkennbare Grundidee\nund setzt eigene Akzente."
+        },
+        {
+          "start": 15.2,
+          "end": 21,
+          "text": "Eine Alternative kann einfach einen ähnlichen Stil\noder Einsatzzweck erfüllen."
+        },
+        {
+          "start": 21,
+          "end": 28,
+          "text": "Deshalb unterscheidet SCENTAI diese Beziehungen transparent,\nstatt alles pauschal als Dupe zu bezeichnen."
+        }
+      ]
+    },
+    {
+      "content_id": "budget_three_under_50_01",
+      "segments": [
+        {
+          "start": 0,
+          "end": 4.2,
+          "text": "Drei interessante Düfte unter 50 Euro,\ndie nicht einfach dasselbe machen."
+        },
+        {
+          "start": 4.2,
+          "end": 10.4,
+          "text": "Kayaan Classic ist süß, pudrig und holzig\nund liegt bei SCENTAI im Dior-Homme-Intense-Cluster."
+        },
+        {
+          "start": 10.4,
+          "end": 16.3,
+          "text": "Liquid Brun geht deutlich gourmandiger,\nsüßer und wärmer."
+        },
+        {
+          "start": 16.3,
+          "end": 22.2,
+          "text": "Turathi Blue ist die Gegenrichtung:\nsehr frisch, zitrisch und deutlich weniger süß."
+        },
+        {
+          "start": 22.2,
+          "end": 26.1,
+          "text": "Gleicher Budgetrahmen,\ndrei komplett unterschiedliche Profile."
+        },
+        {
+          "start": 26.1,
+          "end": 30,
+          "text": "SCENTAI hilft dir zu entscheiden,\nwelches davon zu dir passt."
+        }
+      ]
+    },
+    {
+      "content_id": "bois_imperial_explained_01",
+      "segments": [
+        {
+          "start": 0,
+          "end": 5.2,
+          "text": "Bois Impérial ist bei SCENTAI vor allem frisch,\nsehr holzig, würzig und grün eingeordnet."
+        },
+        {
+          "start": 5.2,
+          "end": 8.1,
+          "text": "Die Süße liegt dagegen ganz unten."
+        },
+        {
+          "start": 8.1,
+          "end": 14.1,
+          "text": "In den Community-Daten stehen außerdem\nstarke Haltbarkeit und deutliche Ausstrahlung."
+        },
+        {
+          "start": 14.1,
+          "end": 21.5,
+          "text": "Das ergibt keinen typischen süßen Mainstream-Duft,\nsondern einen trockenen, modernen und sehr präsenten Holzstil."
+        },
+        {
+          "start": 21.5,
+          "end": 27,
+          "text": "Wenn du genau so etwas suchst,\nprüf deine Passung bei SCENTAI."
+        }
+      ]
+    },
+    {
+      "content_id": "top3_office_01",
+      "segments": [
+        {
+          "start": 0,
+          "end": 4,
+          "text": "Der eine beste Büroduft existiert nicht,\nweil dein Stil entscheidet."
+        },
+        {
+          "start": 4,
+          "end": 9.8,
+          "text": "Prada L’Homme ist sauber, pudrig\nund relativ ausgewogen."
+        },
+        {
+          "start": 9.8,
+          "end": 15.8,
+          "text": "Bois Impérial ist trockener, holziger\nund deutlich charakterstärker."
+        },
+        {
+          "start": 15.8,
+          "end": 21.8,
+          "text": "Bleu de Chanel Eau de Parfum verbindet viel Frische\nmit einer klassischen holzigen Richtung."
+        },
+        {
+          "start": 21.8,
+          "end": 30,
+          "text": "Deshalb fragt SCENTAI nicht nur nach Büro,\nsondern auch nach Frische, Süße und gewünschter Präsenz."
+        }
+      ]
+    }
+  ]
+}
