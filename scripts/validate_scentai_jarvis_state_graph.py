@@ -15,6 +15,7 @@ from scripts.refresh_scentai_jarvis_state import (
     OUT_IMAGES,
     OUT_MAPPING,
     OUT_MASTER,
+    OUT_MEDIA_QUEUE,
     OUT_OPERATIONS,
     OUT_PIPELINE,
     OUT_RELEASE,
@@ -34,6 +35,7 @@ OUTPUT_PATHS = {
     "content_status_batch02": OUT_CONTENT_BATCH02,
     "content_status_batch03": OUT_CONTENT_BATCH03,
     "content_pipeline": OUT_CONTENT_PIPELINE,
+    "media_queue": OUT_MEDIA_QUEUE,
     "master_status": OUT_MASTER,
 }
 
