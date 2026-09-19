@@ -21,6 +21,9 @@ from scripts.build_scentai_jarvis_master_status import (
 from scripts.build_scentai_jarvis_operations_status import (
     build_operations_status,
 )
+from scripts.build_scentai_media_generation_queue import (
+    build_queue as build_media_generation_queue,
+)
 from scripts.build_scentai_merchant_mapping_work_queue import (
     build_queue as build_mapping_queue,
 )
@@ -65,6 +68,7 @@ PILOT3_JOBS = DATA_DIR / "scentai_pilot_batch_03_production_jobs.json"
 PILOT3_SUBTITLES = DATA_DIR / "scentai_pilot_batch_03_subtitles.json"
 PILOT3_LINKS = DATA_DIR / "scentai_pilot_batch_03_links.json"
 PILOT3_SOCIAL_COPY = DATA_DIR / "scentai_pilot_batch_03_social_copy.json"
+MEDIA_PROVIDERS = DATA_DIR / "scentai_media_generation_providers.json"
 
 OUT_MAPPING = DATA_DIR / "scentai_merchant_mapping_work_queue.json"
 OUT_AFFILIATE = DATA_DIR / "scentai_affiliate_activation_status.json"
@@ -82,6 +86,7 @@ OUT_CONTENT_BATCH03 = (
 )
 OUT_CONTENT_PIPELINE = DATA_DIR / "scentai_content_pipeline_status.json"
 OUT_MASTER = DATA_DIR / "scentai_jarvis_master_status.json"
+OUT_MEDIA_QUEUE = DATA_DIR / "scentai_media_generation_queue.json"
 
 
 def load_json(path: Path) -> dict:
@@ -202,6 +207,40 @@ def refresh_state(*, generated_at: str) -> dict[str, Any]:
         generated_at=generated_at,
     )
 
+    media_queue = build_media_generation_queue(
+        load_json(MEDIA_PROVIDERS),
+        [
+            {
+                "batch_id": "pilot_batch_01",
+                "manifest": load_json(PILOT_MANIFEST),
+                "jobs": load_json(PILOT_JOBS),
+                "voiceover": load_json(
+                    DATA_DIR
+                    / "scentai_pilot_batch_01_voiceover_spec.json"
+                ),
+            },
+            {
+                "batch_id": "pilot_batch_02",
+                "manifest": load_json(PILOT2_MANIFEST),
+                "jobs": load_json(PILOT2_JOBS),
+                "voiceover": load_json(
+                    DATA_DIR
+                    / "scentai_pilot_batch_02_voiceover_spec.json"
+                ),
+            },
+            {
+                "batch_id": "pilot_batch_03",
+                "manifest": load_json(PILOT3_MANIFEST),
+                "jobs": load_json(PILOT3_JOBS),
+                "voiceover": load_json(
+                    DATA_DIR
+                    / "scentai_pilot_batch_03_voiceover_spec.json"
+                ),
+            },
+        ],
+        generated_at=generated_at,
+    )
+
     master_status = build_master_status(
         operations,
         content_status,
@@ -222,6 +261,7 @@ def refresh_state(*, generated_at: str) -> dict[str, Any]:
         "content_status_batch02": content_status_batch02,
         "content_status_batch03": content_status_batch03,
         "content_pipeline": content_pipeline,
+        "media_queue": media_queue,
         "master_status": master_status,
     }
 
@@ -247,6 +287,7 @@ def write_state(state: dict[str, Any]) -> None:
         OUT_CONTENT_PIPELINE,
         state["content_pipeline"],
     )
+    write_json(OUT_MEDIA_QUEUE, state["media_queue"])
     write_json(OUT_MASTER, state["master_status"])
 
 
@@ -282,6 +323,7 @@ def summary(state: dict[str, Any]) -> dict[str, Any]:
                 "pipeline_state"
             ],
         },
+        "media_generation": state["media_queue"]["summary"],
     }
 
 
