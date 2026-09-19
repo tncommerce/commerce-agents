@@ -74,3 +74,32 @@ def test_live_fragrance_slugs_are_unique() -> None:
         slugs.append(slugify(f"{brand} {name}"))
 
     assert len(slugs) == len(set(slugs))
+
+
+def test_analytics_sql_core_sections_are_not_duplicated() -> None:
+    sql = (
+        DATA_ROOT / "scentai_analytics_supabase.sql"
+    ).read_text(encoding="utf-8")
+
+    assert sql.count(
+        "create table if not exists public.scentai_analytics_events"
+    ) == 1
+    assert sql.count(
+        "create or replace view public.scentai_acquisition_funnel"
+    ) == 1
+    assert sql.count(
+        "create or replace view public.scentai_personal_library_engagement"
+    ) == 1
+    assert sql.count(
+        "create view public.scentai_catalog_search_demand"
+    ) == 1
+    assert sql.count(
+        "alter table public.scentai_analytics_events enable row level security"
+    ) == 1
+
+    for column in (
+        "acquisition_source",
+        "campaign_id",
+        "content_id",
+    ):
+        assert column in sql
