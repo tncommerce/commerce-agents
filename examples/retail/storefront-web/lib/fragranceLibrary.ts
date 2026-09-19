@@ -87,11 +87,10 @@ function writeFragranceLibrary(
     window.dispatchEvent(
       new CustomEvent(FRAGRANCE_LIBRARY_EVENT),
     );
+    return normalized;
   } catch {
-    // The feature remains optional if local storage is unavailable.
+    return readFragranceLibrary();
   }
-
-  return normalized;
 }
 
 export function setWishlistState(
