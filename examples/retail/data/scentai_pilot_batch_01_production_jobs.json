@@ -1,0 +1,132 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-19",
+  "campaign_id": "launch01",
+  "machine_id": "scentai_pilot_production_v1",
+  "status": "voiceover_pending",
+  "audio_storage_policy": "local_only_gitignored",
+  "subtitle_policy": "draft SRT must be conformed to final voiceover before final render",
+  "jobs": [
+    {
+      "production_order": 1,
+      "content_id": "original_vs_alt_imagination_01",
+      "expected_duration_seconds": 29,
+      "duration_tolerance_seconds": 2,
+      "visual_preview_path": "examples/retail/storefront-web/public/social/pilots/batch01/original_vs_alt_imagination_01-preview.mp4",
+      "voiceover_path": "examples/retail/data/.scentai_pilot_audio/original_vs_alt_imagination_01.wav",
+      "subtitle_path": "examples/retail/data/scentai_pilot_batch_01_subtitles/original_vs_alt_imagination_01.srt",
+      "final_render_path": "examples/retail/data/.scentai_pilot_final_renders/original_vs_alt_imagination_01.mp4",
+      "tracked_link_channels": [
+        "tiktok",
+        "instagram",
+        "youtube"
+      ],
+      "price_recheck_required": false,
+      "state": "voiceover_pending",
+      "blockers": [
+        "voiceover_file_missing",
+        "subtitle_timing_not_conformed",
+        "final_render_missing",
+        "mobile_content_review_pending"
+      ],
+      "publish_action_class": "approval_required"
+    },
+    {
+      "production_order": 2,
+      "content_id": "budget_three_under_50_01",
+      "expected_duration_seconds": 30,
+      "duration_tolerance_seconds": 2,
+      "visual_preview_path": "examples/retail/storefront-web/public/social/pilots/batch01/budget_three_under_50_01-preview.mp4",
+      "voiceover_path": "examples/retail/data/.scentai_pilot_audio/budget_three_under_50_01.wav",
+      "subtitle_path": "examples/retail/data/scentai_pilot_batch_01_subtitles/budget_three_under_50_01.srt",
+      "final_render_path": "examples/retail/data/.scentai_pilot_final_renders/budget_three_under_50_01.mp4",
+      "tracked_link_channels": [
+        "tiktok",
+        "instagram",
+        "youtube"
+      ],
+      "price_recheck_required": true,
+      "state": "voiceover_pending",
+      "blockers": [
+        "voiceover_file_missing",
+        "subtitle_timing_not_conformed",
+        "final_render_missing",
+        "mobile_content_review_pending",
+        "publish_day_price_recheck_required"
+      ],
+      "publish_action_class": "approval_required"
+    },
+    {
+      "production_order": 3,
+      "content_id": "not_every_dupe_clone_01",
+      "expected_duration_seconds": 28,
+      "duration_tolerance_seconds": 2,
+      "visual_preview_path": "examples/retail/storefront-web/public/social/pilots/batch01/not_every_dupe_clone_01-preview.mp4",
+      "voiceover_path": "examples/retail/data/.scentai_pilot_audio/not_every_dupe_clone_01.wav",
+      "subtitle_path": "examples/retail/data/scentai_pilot_batch_01_subtitles/not_every_dupe_clone_01.srt",
+      "final_render_path": "examples/retail/data/.scentai_pilot_final_renders/not_every_dupe_clone_01.mp4",
+      "tracked_link_channels": [
+        "tiktok",
+        "instagram",
+        "youtube"
+      ],
+      "price_recheck_required": false,
+      "state": "voiceover_pending",
+      "blockers": [
+        "voiceover_file_missing",
+        "subtitle_timing_not_conformed",
+        "final_render_missing",
+        "mobile_content_review_pending"
+      ],
+      "publish_action_class": "approval_required"
+    },
+    {
+      "production_order": 4,
+      "content_id": "top3_office_01",
+      "expected_duration_seconds": 30,
+      "duration_tolerance_seconds": 2,
+      "visual_preview_path": "examples/retail/storefront-web/public/social/pilots/batch01/top3_office_01-preview.mp4",
+      "voiceover_path": "examples/retail/data/.scentai_pilot_audio/top3_office_01.wav",
+      "subtitle_path": "examples/retail/data/scentai_pilot_batch_01_subtitles/top3_office_01.srt",
+      "final_render_path": "examples/retail/data/.scentai_pilot_final_renders/top3_office_01.mp4",
+      "tracked_link_channels": [
+        "tiktok",
+        "instagram",
+        "youtube"
+      ],
+      "price_recheck_required": false,
+      "state": "voiceover_pending",
+      "blockers": [
+        "voiceover_file_missing",
+        "subtitle_timing_not_conformed",
+        "final_render_missing",
+        "mobile_content_review_pending"
+      ],
+      "publish_action_class": "approval_required"
+    },
+    {
+      "production_order": 5,
+      "content_id": "bois_imperial_explained_01",
+      "expected_duration_seconds": 27,
+      "duration_tolerance_seconds": 2,
+      "visual_preview_path": "examples/retail/storefront-web/public/social/pilots/batch01/bois_imperial_explained_01-preview.mp4",
+      "voiceover_path": "examples/retail/data/.scentai_pilot_audio/bois_imperial_explained_01.wav",
+      "subtitle_path": "examples/retail/data/scentai_pilot_batch_01_subtitles/bois_imperial_explained_01.srt",
+      "final_render_path": "examples/retail/data/.scentai_pilot_final_renders/bois_imperial_explained_01.mp4",
+      "tracked_link_channels": [
+        "tiktok",
+        "instagram",
+        "youtube"
+      ],
+      "price_recheck_required": false,
+      "state": "voiceover_pending",
+      "blockers": [
+        "voiceover_file_missing",
+        "subtitle_timing_not_conformed",
+        "final_render_missing",
+        "mobile_content_review_pending"
+      ],
+      "publish_action_class": "approval_required"
+    }
+  ]
+}
