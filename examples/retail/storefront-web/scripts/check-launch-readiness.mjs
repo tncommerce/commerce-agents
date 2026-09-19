@@ -281,7 +281,7 @@ const counts = {
 };
 
 console.log(
-  `SCENTAI launch readiness | pass=${counts.pass} | warn=${counts.warn} | gate=${counts.gate}`,
+  `DUFYND launch readiness | pass=${counts.pass} | warn=${counts.warn} | gate=${counts.gate}`,
 );
 for (const check of checks) {
   console.log(
