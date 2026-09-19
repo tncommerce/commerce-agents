@@ -89,6 +89,9 @@ export default function DatenschutzPage() {
                 die Bearbeitung erforderlichen Inhalte an Anthropic übermittelt. Anthropic gibt für die
                 kommerzielle API standardmäßig an, Ein- und Ausgaben innerhalb von 30 Tagen zu löschen,
                 soweit keine abweichende Vereinbarung, gesetzliche Pflicht oder Sicherheitsausnahme greift.
+                Nach den Angaben von Anthropic werden Ein- und Ausgaben kommerzieller Produkte außerdem
+                standardmäßig nicht zum Training generativer Modelle verwendet, sofern nicht ausdrücklich
+                eine entsprechende Nutzung aktiviert oder Feedback übermittelt wird.
               </p>
               <p className="mt-2">
                 Anbieter: Anthropic PBC. Weitere Informationen findest du im{" "}
@@ -110,12 +113,11 @@ export default function DatenschutzPage() {
                 Für die technische Durchführung einer Beratung erzeugt DUFYND eine zufällige Sitzungs-ID.
                 Sie ist kein Kundenkonto und keine dauerhafte werbliche Nutzerkennung. Der Gesprächsverlauf
                 kann für die Dauer dieser technischen Sitzung im Serverprozess vorgehalten werden. Für die
-                zusammenhängende, pseudonymisierte Nutzungsstatistik beim Wechsel zwischen Beratung,
-                Duftdetail und Vergleich erzeugt DUFYND zusätzlich eine separate zufällige Analyse-Sitzungskennung.
-                Diese kann für die Dauer der Browser-Sitzung im sessionStorage des jeweiligen Tabs gespeichert
-                werden; die eigentliche technische Beratungs-Sitzungs-ID wird dafür nicht dauerhaft im Browser
-                abgelegt. Eine serverseitige dauerhafte persönliche Duft-Memory-Funktion ist im aktuellen
-                MVP deaktiviert.
+                zusammenhängende, pseudonymisierte Nutzungsstatistik verwendet DUFYND keine separate
+                Analyse-Kennung im localStorage oder sessionStorage. Analyseereignisse werden serverseitig
+                über einen verkürzten Einweg-Hash der jeweils laufenden technischen Sitzung zusammengeführt.
+                Die technische Beratungs-Sitzungs-ID wird nicht dauerhaft im Browser abgelegt. Eine
+                serverseitige dauerhafte persönliche Duft-Memory-Funktion ist im aktuellen MVP deaktiviert.
               </p>
               <p className="mt-2">
                 Die optionale Merkliste und Duftsammlung speichern ausschließlich die Produkt-IDs der von dir
@@ -178,8 +180,10 @@ export default function DatenschutzPage() {
               <p className="mt-1">
                 DUFYND setzt derzeit keine Google-Analytics-, Meta-Pixel- oder vergleichbaren externen
                 Werbetracker ein und verwendet für die oben beschriebene interne Nutzungsstatistik keine
-                dauerhafte werbliche Nutzerkennung. Für die optionale Merkliste und Duftsammlung wird
-                funktionaler localStorage genutzt, damit deine Auswahl auf demselben Gerät erhalten bleibt.
+                dauerhafte werbliche Nutzerkennung. Für die interne Nutzungsstatistik wird auch keine
+                separate Analyse-Kennung im localStorage oder sessionStorage gespeichert. Für die optionale
+                Merkliste und Duftsammlung wird funktionaler localStorage genutzt, damit deine ausdrücklich
+                gespeicherte Auswahl auf demselben Gerät erhalten bleibt.
                 Dieser lokale Speicher dient nicht der werblichen Nachverfolgung. Sollten später zusätzliche
                 Tracking-, Marketing- oder Drittanbieter-Analyseverfahren eingesetzt werden, wird diese
                 Datenschutzerklärung angepasst und – soweit erforderlich – vorab eine Einwilligung eingeholt.
@@ -204,9 +208,11 @@ export default function DatenschutzPage() {
               <p className="mt-1">
                 Bei der Nutzung von Render, Anthropic und Supabase kann – abhängig vom jeweiligen Dienst,
                 Projektstandort und Verarbeitungsvorgang – eine Verarbeitung außerhalb Deutschlands oder des
-                Europäischen Wirtschaftsraums stattfinden. Soweit erforderlich, erfolgt eine solche Übermittlung
-                auf Grundlage der jeweils anwendbaren datenschutzrechtlichen Garantien und Vereinbarungen der
-                eingesetzten Dienstleister.
+                Europäischen Wirtschaftsraums stattfinden. Für die eingesetzten kommerziellen Dienste bestehen
+                Datenverarbeitungsvereinbarungen; soweit für Drittlandübermittlungen erforderlich, sehen diese
+                insbesondere die EU-Standardvertragsklauseln oder andere nach der DSGVO zulässige
+                Übermittlungsmechanismen vor. Informationen zu den jeweiligen Garantien stellen die Anbieter
+                in ihren Datenschutz- und DPA-Unterlagen bereit.
               </p>
             </section>
 
