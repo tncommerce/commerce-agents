@@ -11,7 +11,7 @@ DATA_DIR = Path("examples/retail/data")
 DEFAULT_STAGING = DATA_DIR / "scentai_catalog_staging.json"
 DEFAULT_OUTPUT = DATA_DIR / "scentai_image_approval_work_queue.json"
 DEFAULT_ASSET_CANDIDATES = (
-    DATA_DIR / "scentai_release_01_asset_candidates.json"
+    DATA_DIR / "scentai_image_asset_candidates.json"
 )
 DEFAULT_RELEASES = [
     DATA_DIR / "scentai_release_batch_01.json",
