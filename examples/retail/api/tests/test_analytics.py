@@ -173,3 +173,55 @@ def test_personal_library_events_accept_product_context() -> None:
         assert request.event == event
         assert request.product_id == "SC-TEST-100"
         assert request.surface == "personal_library"
+
+
+def test_acquisition_attribution_fields_are_identifier_only() -> None:
+    request = AnalyticsEventRequest(
+        event="page_view",
+        source="parfum_alternativen_tiktok",
+        acquisition_source="tiktok",
+        campaign_id="launch01",
+        content_id="imagination_dupe_03",
+        surface="acquisition_landing",
+    )
+
+    assert request.acquisition_source == "tiktok"
+    assert request.campaign_id == "launch01"
+    assert request.content_id == "imagination_dupe_03"
+
+
+def test_tracker_row_contains_acquisition_attribution(tmp_path: Path) -> None:
+    tracker = FirstPartyAnalyticsTracker(tmp_path / "analytics.jsonl")
+
+    row = tracker._row(
+        session_id="session-attribution",
+        event="merchant_clickout",
+        product_id="SC-TEST-100",
+        source="fragrance_detail",
+        acquisition_source="tiktok",
+        campaign_id="launch01",
+        content_id="imagination_dupe_03",
+        now=datetime(2026, 9, 19, 10, 0, tzinfo=UTC),
+    )
+
+    assert row["source"] == "fragrance_detail"
+    assert row["acquisition_source"] == "tiktok"
+    assert row["campaign_id"] == "launch01"
+    assert row["content_id"] == "imagination_dupe_03"
+
+
+def test_acquisition_attribution_rejects_free_form_text() -> None:
+    from pydantic import ValidationError
+
+    try:
+        AnalyticsEventRequest(
+            event="page_view",
+            acquisition_source="tiktok",
+            campaign_id="launch campaign with spaces",
+        )
+    except ValidationError:
+        pass
+    else:
+        raise AssertionError(
+            "campaign attribution must remain identifier-only"
+        )
