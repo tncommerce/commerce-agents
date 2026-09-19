@@ -1,0 +1,186 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-19",
+  "status": "active",
+  "machine_id": "scentai_affiliate_activation_v1",
+  "purpose": "Deterministic activation lifecycle for merchant affiliate routing. No live activation may skip a state or user approval gate.",
+  "states": {
+    "not_registered": {
+      "terminal": false,
+      "live": false
+    },
+    "applied": {
+      "terminal": false,
+      "live": false
+    },
+    "pending_review": {
+      "terminal": false,
+      "live": false
+    },
+    "rejected": {
+      "terminal": true,
+      "live": false
+    },
+    "approved_credentials_pending": {
+      "terminal": false,
+      "live": false
+    },
+    "approved_integration_pending": {
+      "terminal": false,
+      "live": false
+    },
+    "ready_for_dry_run": {
+      "terminal": false,
+      "live": false
+    },
+    "dry_run_passed": {
+      "terminal": false,
+      "live": false
+    },
+    "ready_for_user_approval": {
+      "terminal": false,
+      "live": false
+    },
+    "active": {
+      "terminal": false,
+      "live": true
+    },
+    "paused": {
+      "terminal": false,
+      "live": false
+    },
+    "revoked": {
+      "terminal": true,
+      "live": false
+    },
+    "error": {
+      "terminal": false,
+      "live": false
+    }
+  },
+  "transitions": [
+    {
+      "from": "not_registered",
+      "to": "applied",
+      "trigger": "application_submitted",
+      "action_class": "approval_required"
+    },
+    {
+      "from": "applied",
+      "to": "pending_review",
+      "trigger": "network_acknowledges_application",
+      "action_class": "auto_allowed"
+    },
+    {
+      "from": [
+        "applied",
+        "pending_review"
+      ],
+      "to": "rejected",
+      "trigger": "program_rejected",
+      "action_class": "auto_allowed"
+    },
+    {
+      "from": [
+        "applied",
+        "pending_review"
+      ],
+      "to": "approved_credentials_pending",
+      "trigger": "program_approved",
+      "action_class": "auto_allowed"
+    },
+    {
+      "from": "approved_credentials_pending",
+      "to": "approved_integration_pending",
+      "trigger": "credentials_verified",
+      "action_class": "auto_allowed"
+    },
+    {
+      "from": "approved_integration_pending",
+      "to": "ready_for_dry_run",
+      "trigger": "tracked_link_or_feed_strategy_verified",
+      "action_class": "auto_allowed"
+    },
+    {
+      "from": "ready_for_dry_run",
+      "to": "dry_run_passed",
+      "trigger": "integration_dry_run_passed",
+      "action_class": "auto_allowed"
+    },
+    {
+      "from": "dry_run_passed",
+      "to": "ready_for_user_approval",
+      "trigger": "quality_gates_passed",
+      "action_class": "auto_allowed"
+    },
+    {
+      "from": "ready_for_user_approval",
+      "to": "active",
+      "trigger": "explicit_user_approval",
+      "action_class": "approval_required"
+    },
+    {
+      "from": "active",
+      "to": "paused",
+      "trigger": "manual_pause_or_health_guard",
+      "action_class": "auto_allowed_if_health_guard_else_approval_required"
+    },
+    {
+      "from": "paused",
+      "to": "ready_for_user_approval",
+      "trigger": "issue_resolved",
+      "action_class": "auto_allowed"
+    },
+    {
+      "from": [
+        "approved_credentials_pending",
+        "approved_integration_pending",
+        "ready_for_dry_run",
+        "dry_run_passed",
+        "ready_for_user_approval",
+        "active",
+        "paused"
+      ],
+      "to": "revoked",
+      "trigger": "program_revoked_or_terms_invalid",
+      "action_class": "auto_allowed"
+    },
+    {
+      "from": [
+        "approved_credentials_pending",
+        "approved_integration_pending",
+        "ready_for_dry_run",
+        "dry_run_passed",
+        "ready_for_user_approval",
+        "active",
+        "paused"
+      ],
+      "to": "error",
+      "trigger": "integration_error",
+      "action_class": "auto_allowed"
+    },
+    {
+      "from": "error",
+      "to": "ready_for_dry_run",
+      "trigger": "error_resolved_and_preflight_passed",
+      "action_class": "auto_allowed"
+    }
+  ],
+  "active_requirements": [
+    "affiliate_program_status_approved",
+    "credentials_verified_without_storing_secrets_in_repo",
+    "tracked_link_or_feed_strategy_verified",
+    "merchant_product_mapping_resolved",
+    "dry_run_passed",
+    "quality_gates_passed",
+    "explicit_user_approval"
+  ],
+  "health_guards": [
+    "pause_if_program_revoked_or_rejected",
+    "pause_if_tracking_strategy_invalid",
+    "pause_if_required_credentials_unavailable",
+    "pause_if_offer_feed_fails_validation",
+    "never_fallback_to_untracked_link_as_affiliate_link"
+  ],
+  "secret_policy": "Credentials and secrets are environment/secret-store state only and must never be serialized into this state machine or work queue."
+}
