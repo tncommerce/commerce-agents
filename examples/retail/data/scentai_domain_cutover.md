@@ -292,3 +292,15 @@ Next:
 Completed on 2026-09-19:
 - submitted https://dufynd.de/sitemap.xml in Google Search Console for the dufynd.de Domain property
 - next step is targeted URL inspection/indexing requests for a small set of priority pages; the sitemap handles the broader catalogue
+
+
+## Priority indexing requests
+
+Completed on 2026-09-19:
+- requested indexing for https://dufynd.de
+- requested indexing for https://dufynd.de/duftfinder
+- requested indexing for https://dufynd.de/parfum-alternativen
+- requested indexing for https://dufynd.de/duft/arabiyat-prestige-marwa
+- requested indexing for https://dufynd.de/vergleich/arabiyat-prestige-marwa-vs-louis-vuitton-imagination
+
+Google live URL inspection confirmed the homepage is available to Google and indexable.
