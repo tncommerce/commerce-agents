@@ -275,30 +275,33 @@ def write_state(state: dict[str, Any]) -> None:
 
 
 def summary(state: dict[str, Any]) -> dict[str, Any]:
-    master = state["master_status"]
+    master = state.get("master_status") or state.get("operations") or {}
+    release_pipeline = state.get("release_pipeline") or {}
+    content_pipeline = state.get("content_pipeline") or {}
+
     return {
-        "overall_state": master["overall_state"],
-        "active_domain": master["active_domain"],
-        "next_action": master["next_action"],
-        "user_approval_required_now": master["user_approval_required_now"],
-        "mapping": state["mapping_queue"]["summary"],
-        "affiliate": state["affiliate_status"]["summary"],
-        "images": state["image_queue"]["summary"],
-        "feed": state["feed_queue"]["summary"],
-        "release_01": state["release_status"]["summary"],
+        "overall_state": master.get("overall_state"),
+        "active_domain": master.get("active_domain"),
+        "next_action": master.get("next_action"),
+        "user_approval_required_now": bool(master.get("user_approval_required_now")),
+        "mapping": (state.get("mapping_queue") or {}).get("summary", {}),
+        "affiliate": (state.get("affiliate_status") or {}).get("summary", {}),
+        "images": (state.get("image_queue") or {}).get("summary", {}),
+        "feed": (state.get("feed_queue") or {}).get("summary", {}),
+        "release_01": (state.get("release_status") or {}).get("summary", {}),
         "release_pipeline": {
-            "release_count": state["release_pipeline"]["release_count"],
-            "current_release_id": state["release_pipeline"]["current_release_id"],
-            "pipeline_state": state["release_pipeline"]["pipeline_state"],
+            "release_count": release_pipeline.get("release_count"),
+            "current_release_id": release_pipeline.get("current_release_id"),
+            "pipeline_state": release_pipeline.get("pipeline_state"),
         },
-        "content": state["content_status"]["summary"],
+        "content": (state.get("content_status") or {}).get("summary", {}),
         "content_pipeline": {
-            "batch_count": state["content_pipeline"]["batch_count"],
-            "total_pilots": state["content_pipeline"]["total_pilots"],
-            "current_batch_id": state["content_pipeline"]["current_batch_id"],
-            "pipeline_state": state["content_pipeline"]["pipeline_state"],
+            "batch_count": content_pipeline.get("batch_count"),
+            "total_pilots": content_pipeline.get("total_pilots"),
+            "current_batch_id": content_pipeline.get("current_batch_id"),
+            "pipeline_state": content_pipeline.get("pipeline_state"),
         },
-        "media_generation": state["media_queue"]["summary"],
+        "media_generation": (state.get("media_queue") or {}).get("summary", {}),
     }
 
 
