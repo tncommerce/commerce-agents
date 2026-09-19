@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated_at": "2026-09-19",
-  "source_fingerprint_sha256": "88d83d45db59474190243661fe0f54d253417d5ba261950986e688148227a0dc",
+  "source_fingerprint_sha256": "d4d75bed500c7b767d579d48a573694abc41f596ad649cdfbfe5fe48a1ea53e7",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "release_count": 3,
   "current_release_id": "SCENTAI-RELEASE-01",
@@ -38,7 +38,7 @@
       "summary": {
         "release_size": 5,
         "mapping_ready": 5,
-        "image_identity_source_verified": 4,
+        "image_identity_source_verified": 5,
         "approved_images": 0,
         "current_tracked_affiliate_offers": 0,
         "promotion_ready": 0
