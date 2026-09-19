@@ -80,6 +80,7 @@ def build_master_status(
     release_pipeline: dict,
     *,
     generated_at: str,
+    content_pipeline: dict | None = None,
 ) -> dict[str, Any]:
     domains = [
         classify_domain(name="commerce", status=commerce),
@@ -122,6 +123,11 @@ def build_master_status(
             commerce,
             content,
             release_pipeline,
+            *(
+                [content_pipeline]
+                if content_pipeline is not None
+                else []
+            ),
         ),
         "system": "SCENTAI",
         "control_plane": "commerce_jarvis_master",
@@ -154,6 +160,23 @@ def build_master_status(
                 "pipeline_state"
             ),
         },
+        "content_pipeline": (
+            {
+                "batch_count": content_pipeline.get("batch_count"),
+                "total_pilots": content_pipeline.get("total_pilots"),
+                "current_batch_id": content_pipeline.get(
+                    "current_batch_id"
+                ),
+                "pipeline_state": content_pipeline.get(
+                    "pipeline_state"
+                ),
+                "production_parallel_allowed": content_pipeline.get(
+                    "production_parallel_allowed"
+                ),
+            }
+            if content_pipeline is not None
+            else None
+        ),
         "safety": {
             "automatic_spend_allowed": False,
             "automatic_live_catalog_release_allowed": False,
