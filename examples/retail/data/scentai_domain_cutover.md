@@ -188,3 +188,23 @@ Polish applied:
 - comparison accord chips translated to German
 - relationship confidence labels translated to German
 - remaining legacy S header marks on comparison pages replaced by the DUFYND icon
+
+
+## Live smoke test — legal and trust pages
+
+Reviewed manually on 2026-09-19:
+- Impressum is reachable from the global footer and identifies TNCommerce as operator of DUFYND
+- § 5 DDG reference, proprietor, postal address and contact email are rendered
+- privacy notice covers Render hosting, Anthropic API, technical sessions, first-party analytics, Supabase, local wishlist/collection storage, legal bases, transfers, retention and data-subject rights
+- transparency page explains recommendation independence, merchant-offer ranking, affiliate links, direct merchant entries, non-monetized products and price freshness
+
+Compliance hardening applied:
+- removed separate analytics/acquisition identifiers from browser sessionStorage
+- internal analytics now relies on the running technical API session and server-side hashing
+- privacy notice aligned with the implementation
+- added current Anthropic commercial-API no-training-by-default disclosure
+- clarified third-country transfer safeguards / DPAs
+
+Open operational item before broad public acquisition:
+- replace the Gmail contact address with a DUFYND-domain mailbox when available
+- add VAT ID or Wirtschafts-ID to the Impressum only if/when one is actually issued and legally required
