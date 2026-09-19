@@ -168,7 +168,11 @@
         "douglas_de": "available",
         "parfumdreams_de": "available"
       },
-      "merchant_snapshot_checked_at": "2026-09-19"
+      "merchant_snapshot_checked_at": "2026-09-19",
+      "identifiers": {
+        "ean": "0701666410980",
+        "gtin": "0701666410980"
+      }
     },
     {
       "candidate_id": "PDM-VALAYA-EXCLUSIF",
@@ -195,7 +199,16 @@
         "https://www.douglas.de/de/p/5011718153",
         "https://www.flaconi.de/parfum/parfums-de-marly/valaya/parfums-de-marly-valaya-exclusif-eau-de-parfum.html?variant=90012283-0019379",
         "https://www.parfumo.de/Parfums/Parfums_de_Marly/valaya-exclusif"
-      ]
+      ],
+      "identifiers": {
+        "ean": "3700578505767",
+        "gtin": "3700578505767"
+      },
+      "merchant_snapshot": {
+        "douglas_de": "available",
+        "flaconi_de": "available"
+      },
+      "merchant_snapshot_checked_at": "2026-09-19"
     },
     {
       "candidate_id": "KAYALI-YUM-BOUJEE-MARSHMALLOW-81",
