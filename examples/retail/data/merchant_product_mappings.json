@@ -15,6 +15,20 @@
       "gtin": "0701666410980"
     },
     {
+      "product_id": "SC-AMOUAGE-REFLECTION-MAN-EDP-100",
+      "merchant": "douglas",
+      "merchant_product_id": "5010864026",
+      "ean": "0701666410058",
+      "gtin": "0701666410058"
+    },
+    {
+      "product_id": "SC-AMOUAGE-REFLECTION-MAN-EDP-100",
+      "merchant": "perfumetrader",
+      "merchant_product_id": "48029617",
+      "ean": "701666312055",
+      "gtin": "701666312055"
+    },
+    {
       "product_id": "SC-BURBERRY-GODDESS-EDP-100",
       "merchant": "douglas",
       "merchant_product_id": "5011035040",
@@ -64,6 +78,20 @@
       "gtin": "3348900425309"
     },
     {
+      "product_id": "SC-DIOR-SAUVAGE-ELIXIR-100",
+      "merchant": "douglas",
+      "merchant_product_id": "5010236005",
+      "ean": "3348901640916",
+      "gtin": "3348901640916"
+    },
+    {
+      "product_id": "SC-DIOR-SAUVAGE-ELIXIR-100",
+      "merchant": "parfumgroup",
+      "merchant_product_id": null,
+      "ean": "3348901640916",
+      "gtin": "3348901640916"
+    },
+    {
       "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
       "merchant": "douglas",
       "merchant_product_id": "1068008",
@@ -97,6 +125,62 @@
       "merchant_product_id": "60481349",
       "ean": "3346470131408",
       "gtin": "3346470131408"
+    },
+    {
+      "product_id": "SC-HUGO-BOSS-BOTTLED-ABSOLU-100",
+      "merchant": "douglas",
+      "merchant_product_id": "5011497004",
+      "ean": "3616305480620",
+      "gtin": "3616305480620"
+    },
+    {
+      "product_id": "SC-HUGO-BOSS-BOTTLED-ABSOLU-100",
+      "merchant": "flaconi",
+      "merchant_product_id": "90007350-0011241",
+      "ean": "3616305480620",
+      "gtin": "3616305480620"
+    },
+    {
+      "product_id": "SC-HUGO-BOSS-BOTTLED-EDT-100",
+      "merchant": "douglas",
+      "merchant_product_id": "1010209304",
+      "ean": "0737052351100",
+      "gtin": "0737052351100"
+    },
+    {
+      "product_id": "SC-HUGO-BOSS-BOTTLED-EDT-100",
+      "merchant": "flaconi",
+      "merchant_product_id": null,
+      "ean": "0737052351100",
+      "gtin": "0737052351100"
+    },
+    {
+      "product_id": "SC-INITIO-SIDE-EFFECT-EDP-90",
+      "merchant": "douglas",
+      "merchant_product_id": "5010758011",
+      "ean": "3701415901391",
+      "gtin": "3701415901391"
+    },
+    {
+      "product_id": "SC-INITIO-SIDE-EFFECT-EDP-90",
+      "merchant": "flaconi",
+      "merchant_product_id": "80066337-90",
+      "ean": "3701415901391",
+      "gtin": "3701415901391"
+    },
+    {
+      "product_id": "SC-JPG-LE-MALE-LE-PARFUM-125",
+      "merchant": "douglas",
+      "merchant_product_id": "5002490497",
+      "ean": "8435415032315",
+      "gtin": "8435415032315"
+    },
+    {
+      "product_id": "SC-JPG-LE-MALE-LE-PARFUM-125",
+      "merchant": "parfumgroup",
+      "merchant_product_id": null,
+      "ean": "8435415032315",
+      "gtin": "8435415032315"
     },
     {
       "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
@@ -183,6 +267,20 @@
       "gtin": "3700578505767"
     },
     {
+      "product_id": "SC-PRADA-LHOMME-INTENSE-EDP-100",
+      "merchant": "douglas",
+      "merchant_product_id": "3001037535",
+      "ean": "8435137764730",
+      "gtin": "8435137764730"
+    },
+    {
+      "product_id": "SC-PRADA-LHOMME-INTENSE-EDP-100",
+      "merchant": "flaconi",
+      "merchant_product_id": null,
+      "ean": "8435137764730",
+      "gtin": "8435137764730"
+    },
+    {
       "product_id": "SC-PRADA-PARADOXE-EDP-90",
       "merchant": "douglas",
       "merchant_product_id": "5010687030",
@@ -211,6 +309,20 @@
       "gtin": "0888066075145"
     },
     {
+      "product_id": "SC-VIKTOR-ROLF-SPICEBOMB-EXTREME-EDP-90",
+      "merchant": "douglas",
+      "merchant_product_id": "3001012427",
+      "ean": "3614270659706",
+      "gtin": "3614270659706"
+    },
+    {
+      "product_id": "SC-VIKTOR-ROLF-SPICEBOMB-EXTREME-EDP-90",
+      "merchant": "parfumdreams",
+      "merchant_product_id": null,
+      "ean": "3614270659706",
+      "gtin": "3614270659706"
+    },
+    {
       "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
       "merchant": "douglas",
       "merchant_product_id": "3001005867",
@@ -225,6 +337,20 @@
       "gtin": "3365440787971"
     },
     {
+      "product_id": "SC-YSL-LA-NUIT-DE-LHOMME-EDT-100",
+      "merchant": "douglas",
+      "merchant_product_id": "3000028814",
+      "ean": "3365440375079",
+      "gtin": "3365440375079"
+    },
+    {
+      "product_id": "SC-YSL-LA-NUIT-DE-LHOMME-EDT-100",
+      "merchant": "flaconi",
+      "merchant_product_id": "20102642",
+      "ean": "3365440375079",
+      "gtin": "3365440375079"
+    },
+    {
       "product_id": "SC-YSL-LIBRE-EDP-90",
       "merchant": "douglas",
       "merchant_product_id": "5000005003",
@@ -237,6 +363,20 @@
       "merchant_product_id": "80041833-90",
       "ean": "3614272648425",
       "gtin": "3614272648425"
+    },
+    {
+      "product_id": "SC-YSL-MYSLF-LE-PARFUM-100",
+      "merchant": "douglas",
+      "merchant_product_id": "5011499070",
+      "ean": "3614274114645",
+      "gtin": "3614274114645"
+    },
+    {
+      "product_id": "SC-YSL-MYSLF-LE-PARFUM-100",
+      "merchant": "flaconi",
+      "merchant_product_id": null,
+      "ean": "3614274114645",
+      "gtin": "3614274114645"
     }
   ]
 }
