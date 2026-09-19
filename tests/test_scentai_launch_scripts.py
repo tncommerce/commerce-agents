@@ -4,17 +4,26 @@ import json
 from pathlib import Path
 
 DATA_DIR = Path("examples/retail/data")
+SCRIPT_FILES = (
+    "scentai_launch_scripts_batch_01.json",
+    "scentai_launch_scripts_batch_02.json",
+)
 
 
 def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8-sig"))
 
 
-def test_first_launch_script_batch_matches_content_plan() -> None:
+def scripted_rows() -> list[dict]:
+    rows: list[dict] = []
+    for file_name in SCRIPT_FILES:
+        payload = load_json(DATA_DIR / file_name)
+        rows.extend(payload["creatives"])
+    return rows
+
+
+def test_launch_script_batches_match_content_plan() -> None:
     plan = load_json(DATA_DIR / "scentai_launch_content_plan.json")
-    scripts = load_json(
-        DATA_DIR / "scentai_launch_scripts_batch_01.json"
-    )
     catalog = load_json(DATA_DIR / "catalog.json")
 
     plan_by_id = {
@@ -29,8 +38,18 @@ def test_first_launch_script_batch_matches_content_plan() -> None:
         and product.get("in_stock") is not False
     }
 
-    rows = scripts["creatives"]
-    assert len(rows) == 5
+    rows = scripted_rows()
+    content_ids = [row["content_id"] for row in rows]
+
+    assert len(rows) == 10
+    assert len(content_ids) == len(set(content_ids))
+
+    scripted_plan_ids = {
+        row["content_id"]
+        for row in plan["content"]
+        if row["status"] == "scripted"
+    }
+    assert set(content_ids) == scripted_plan_ids
 
     for row in rows:
         content_id = row["content_id"]
@@ -60,11 +79,7 @@ def test_first_launch_script_batch_matches_content_plan() -> None:
 
 
 def test_clone_wording_only_appears_when_claim_basis_documents_clone() -> None:
-    scripts = load_json(
-        DATA_DIR / "scentai_launch_scripts_batch_01.json"
-    )
-
-    for row in scripts["creatives"]:
+    for row in scripted_rows():
         customer_text = " ".join(
             [
                 row["hook"],
