@@ -816,6 +816,41 @@ def check_scentai_jarvis_state_graph() -> None:
     ok("SCENTAI Jarvis derived state graph matches source-of-truth")
 
 
+
+def check_scentai_pilot_batch_contract() -> None:
+    """Keep Pilot Batch 01 IDs, timings, links and production jobs aligned."""
+    print("SCENTAI pilot production contract")
+    try:
+        from scripts.validate_scentai_pilot_batch_contract import (
+            validate_contract,
+        )
+
+        data = REPO_ROOT / "examples" / "retail" / "data"
+        report = validate_contract(
+            load_json(data / "scentai_pilot_batch_01.json"),
+            load_json(
+                data / "scentai_pilot_batch_01_production_jobs.json"
+            ),
+            load_json(data / "scentai_pilot_batch_01_subtitles.json"),
+            load_json(data / "scentai_pilot_batch_01_links.json"),
+            load_json(data / "scentai_pilot_batch_01_social_copy.json"),
+        )
+    except Exception as error:
+        problem(f"SCENTAI pilot production contract failed: {error}")
+        return
+
+    if not report["valid"]:
+        for issue in report["issues"]:
+            problem(f"SCENTAI pilot contract: {issue}")
+        return
+
+    ok(
+        "SCENTAI Pilot Batch 01 contract is internally consistent "
+        f"({report['summary']['pilots']} pilots, "
+        f"{report['summary']['tracked_links']} tracked links)"
+    )
+
+
 CHECKS = (
     check_skills,
     check_storefront_fixtures,
@@ -829,6 +864,7 @@ CHECKS = (
     check_managed_custom_tool_descriptions,
     check_scentai_jarvis_operations_status,
     check_scentai_jarvis_state_graph,
+    check_scentai_pilot_batch_contract,
 )
 
 
