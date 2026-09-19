@@ -9,9 +9,9 @@
   ],
   "summary": {
     "staged_products": 30,
-    "products_with_resolved_mapping": 28,
-    "products_with_two_or_more_resolved_mappings": 28,
-    "products_without_resolved_mapping": 2,
+    "products_with_resolved_mapping": 29,
+    "products_with_two_or_more_resolved_mappings": 29,
+    "products_without_resolved_mapping": 1,
     "affiliate_programs_registered": 9,
     "affiliate_programs_approved": 0,
     "affiliate_programs_pending": 9,
@@ -102,18 +102,44 @@
       "name": "The One for Men (2025)",
       "batch": 3,
       "researched_merchant_count": 2,
-      "mapping_count": 0,
-      "resolved_mapping_count": 0,
-      "full_mapping_count": 0,
-      "state": "mapping_required",
+      "mapping_count": 2,
+      "resolved_mapping_count": 2,
+      "full_mapping_count": 1,
+      "state": "mapping_data_ready_affiliate_blocked",
       "blockers": [
-        "no_resolved_merchant_mapping",
-        "community_performance_still_provisional"
+        "affiliate_program_not_approved"
       ],
-      "next_action": "verify_exact_merchant_product_identity",
+      "next_action": "await_affiliate_program_approval",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
-      "merchants": []
+      "merchants": [
+        {
+          "merchant_id": "douglas",
+          "mapping_state": "full",
+          "merchant_product_id": "5011977029",
+          "ean": "8056669925859",
+          "gtin": "8056669925859",
+          "affiliate_program": {
+            "network": "Awin",
+            "program": "Douglas_DE",
+            "status": "applied"
+          },
+          "affiliate_activation_state": "pending_program_approval"
+        },
+        {
+          "merchant_id": "flaconi",
+          "mapping_state": "partial",
+          "merchant_product_id": null,
+          "ean": "8056669925859",
+          "gtin": "8056669925859",
+          "affiliate_program": {
+            "network": "Awin",
+            "program": "Flaconi DE",
+            "status": "applied"
+          },
+          "affiliate_activation_state": "pending_program_approval"
+        }
+      ]
     },
     {
       "product_id": "SC-AMOUAGE-GUIDANCE-46-EXTRAIT-100",
