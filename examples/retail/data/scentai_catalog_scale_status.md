@@ -362,3 +362,29 @@ The machine-readable source of truth is
 
 This is intentional. SCENTAI should preserve data quality and operational
 readiness rather than chase a cosmetic 30/30 mapping number.
+
+
+## Release pipeline operator report
+
+The five prepared release manifests can now be checked in one command:
+
+```powershell
+python scripts/report_scentai_release_pipeline.py
+```
+
+Machine-readable output:
+
+```powershell
+python scripts/report_scentai_release_pipeline.py --machine-readable
+```
+
+The report keeps separate:
+- merchant mapping readiness
+- GTIN fallback readiness
+- current tracked affiliate offers
+- approved product images
+- product-level promotion blockers
+- manifest-level write locks
+
+A release can therefore be product-ready without being write-ready. This is
+intentional and prevents later batches from bypassing the operational sequence.
