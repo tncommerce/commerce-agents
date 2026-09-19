@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-19",
+  "status": "production_data_ready_renderer_extension_pending",
+  "campaign_id": "launch01",
+  "batch_id": "pilot_batch_02",
+  "summary": {
+    "pilots": 5,
+    "product_assets_required": 14,
+    "product_assets_verified": 14,
+    "tracked_links_ready": 15,
+    "social_copy_ready": 5,
+    "subtitle_timing_drafts_ready": 5,
+    "voiceover_scripts_ready": 5,
+    "visual_preview_mp4s_ready": 0,
+    "final_video_renders_ready": 0,
+    "batch_renderer_ready": false
+  },
+  "remaining_before_publish": [
+    "Extend the visual preview renderer to Pilot Batch 02 and generate five preview MP4 files",
+    "Record or generate final German voiceover audio",
+    "Conform subtitle timing to final voiceover waveform and confirm timing",
+    "Render each final 9:16 video and run technical QA",
+    "Perform final mobile content QA",
+    "Obtain explicit user publish approval",
+    "Upload using the correct channel-specific tracked link"
+  ]
+}
