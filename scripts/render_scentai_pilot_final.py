@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import shlex
 import subprocess
 from pathlib import Path
 from typing import Any
@@ -123,6 +122,12 @@ def evaluate_inputs(
         blockers.append("voiceover_file_missing")
     if not subtitle_exists:
         blockers.append("subtitle_file_missing")
+
+    subtitle_timing_status = str(
+        job.get("subtitle_timing_status") or ""
+    ).strip()
+    if subtitle_timing_status != "conformed_to_voiceover":
+        blockers.append("subtitle_timing_not_conformed")
 
     if visual_summary is not None:
         if visual_summary.get("width") != 1080:
