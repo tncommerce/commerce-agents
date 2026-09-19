@@ -135,7 +135,7 @@ export default function FragranceOffers({
         </h2>
         <p className="mt-2 text-[13px] leading-5 text-(--ink-soft)">
           Für diesen Duft ist aktuell kein ausreichend aktuelles,
-          verifiziertes Händlerangebot verfügbar. SCENTAI zeigt hier
+          verifiziertes Händlerangebot verfügbar. DUFYND zeigt hier
           erst ein Angebot an, wenn Preis und Verfügbarkeit die
           Aktualitätsprüfung bestehen.
         </p>
@@ -182,7 +182,7 @@ export default function FragranceOffers({
                   </span>
                   {best ? (
                     <span className="rounded-full border border-(--accent) px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-(--ink)">
-                      SCENTAI Top-Angebot
+                      DUFYND Top-Angebot
                     </span>
                   ) : null}
                   {offer.affiliate_link ? (
