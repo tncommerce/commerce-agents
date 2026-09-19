@@ -1,6 +1,6 @@
 # SCENTAI Brand / Domain Clearance
 
-Status: dufynd_provisional_go_owner_decision_required
+Status: dufynd_selected_domains_purchased
 Updated: 2026-09-19
 
 ## Executive conclusion
@@ -85,24 +85,22 @@ Trade-offs:
 
 ## Current mentor recommendation
 
-DUFYND receives a PROVISIONAL GO for the public replacement brand.
+DUFYND is selected as the public replacement brand.
 
 Do not yet:
 - enable search indexing
-- change legal/affiliate partner records
+- change legal/affiliate partner records until the public cutover is verified
 - buy paid ads
-- file a trademark
-- purchase a domain without owner approval
+- file a trademark without a final professional similarity review
 
 Next sequence:
-1. owner accepts DUFYND as final public brand
-2. direct in-app confirmation / reservation of Instagram @dufynd
-3. immediately recheck and purchase dufynd.de and preferably dufynd.com
-4. secure / rename TikTok and YouTube handles
-5. execute one coordinated repository + website + logo + social rename
-6. update Awin/CJ public advertising-space/profile details
-7. final domain cutover and smoke test
-8. only then enable indexing and scale public acquisition
+1. connect dufynd.de to the Render storefront and keep it non-indexable
+2. configure dufynd.com as the secondary protective domain / redirect target
+3. secure / rename TikTok and YouTube handles and complete Instagram @dufynd when the platform cooldown ends
+4. execute one coordinated repository + website + logo + public-brand rename
+5. update Awin/CJ public advertising-space/profile details after the verified public cutover
+6. complete final domain smoke tests
+7. only then enable indexing and scale public acquisition
 
 ## Legal caveat
 
@@ -113,4 +111,4 @@ TMview/WIPO/DPMA public searching is a strong screening layer, not a legal clear
 - internal project codename may remain SCENTAI during migration
 - temporary host remains https://scentai-xxya.onrender.com
 - NEXT_PUBLIC_SITE_INDEXABLE remains false
-- no custom domain has been purchased
+- dufynd.de and dufynd.com were purchased via INWX on 2026-09-19
