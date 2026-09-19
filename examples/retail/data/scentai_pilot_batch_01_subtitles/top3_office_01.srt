@@ -1,0 +1,24 @@
+1
+00:00:00,000 --> 00:00:04,000
+Der eine beste Büroduft existiert nicht,
+weil dein Stil entscheidet.
+
+2
+00:00:04,000 --> 00:00:09,800
+Prada L’Homme ist sauber, pudrig
+und relativ ausgewogen.
+
+3
+00:00:09,800 --> 00:00:15,800
+Bois Impérial ist trockener, holziger
+und deutlich charakterstärker.
+
+4
+00:00:15,800 --> 00:00:21,800
+Bleu de Chanel Eau de Parfum verbindet viel Frische
+mit einer klassischen holzigen Richtung.
+
+5
+00:00:21,800 --> 00:00:30,000
+Deshalb fragt SCENTAI nicht nur nach Büro,
+sondern auch nach Frische, Süße und gewünschter Präsenz.
