@@ -1,4 +1,4 @@
-const DEFAULT_SITE_URL = "https://scentai-xxya.onrender.com";
+const DEFAULT_SITE_URL = "https://dufynd.de";
 
 function normalizeSiteUrl(value: string | undefined): string {
   const candidate = (value || DEFAULT_SITE_URL).trim().replace(/\/$/, "");
