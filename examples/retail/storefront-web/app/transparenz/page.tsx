@@ -87,6 +87,14 @@ export default function TransparencyPage() {
               mögliche Profil-Ergänzungen bedeuten nicht, dass deine Sammlung
               unvollständig ist oder dass du weitere Düfte kaufen solltest.
             </p>
+            <p className="mt-2">
+              Deine Sammlung beeinflusst den Advisor nicht automatisch. Erst
+              wenn du ausdrücklich die sammlungsbasierte Beratung startest,
+              wird eine kompakte Zusammenfassung für diese Beratung übergeben.
+              Besitz wird dabei nicht automatisch als Vorliebe interpretiert,
+              und bereits vorhandene Düfte sollen nicht als neuer Kauf
+              empfohlen werden.
+            </p>
           </section>
 
           <section>
