@@ -104,8 +104,15 @@
       "target_group_note": "Parfumo categorizes Angham for women; Notino currently lists it as unisex. SCENTAI keeps both signals and marks it feminine-leaning.",
       "sources": [
         "https://www.notino.de/lattafa/angham/",
-        "https://www.parfumo.de/Parfums/Lattafa/angham-eau-de-parfum-1"
-      ]
+        "https://www.parfumo.de/Parfums/Lattafa/angham-eau-de-parfum-1",
+        "https://www.notino.de/lattafa/angham-eau-de-parfum-unisex/p-16299814/",
+        "https://www.oriental-style.de/products/angham-lattafa-100ml"
+      ],
+      "merchant_snapshot": {
+        "notino_de": "available",
+        "oriental_style_de": "available"
+      },
+      "merchant_snapshot_checked_at": "2026-09-19"
     },
     {
       "candidate_id": "AMOUAGE-GUIDANCE-46",
@@ -196,8 +203,16 @@
       ],
       "sources": [
         "https://www.sephora.de/p/yum-boujee-marshmallow--81---eau-de-parfum-intense-733612.html",
-        "https://www.parfumo.de/Parfums/Kayali/yum-boujee-marshmallow-81"
-      ]
+        "https://www.parfumo.de/Parfums/Kayali/yum-boujee-marshmallow-81",
+        "https://kayali.com/en-de/products/boujee-marshmallow-81-silk-souffle?variant=48318305730697",
+        "https://www.notino.de/kayali/yum-boujee-marshmallow-81-eau-de-parfum-intense-fuer-damen/"
+      ],
+      "merchant_snapshot": {
+        "sephora_de": "available",
+        "kayali_de": "available",
+        "notino_de": "listed_out_of_stock"
+      },
+      "merchant_snapshot_checked_at": "2026-09-19"
     },
     {
       "candidate_id": "HUGO-BOSS-BOTTLED-ABSOLU",
@@ -272,8 +287,15 @@
       "sources": [
         "Official Jean Paul Gaultier German product page screenshot supplied by user",
         "https://www.notino.de/jean-p-gaultier/fleur-du-male-eau-de-toilette-fur-herren/",
-        "https://www.fragrantica.com/perfume/Jean-Paul-Gaultier/Fleur-du-Male-142131.html"
-      ]
+        "https://www.fragrantica.com/perfume/Jean-Paul-Gaultier/Fleur-du-Male-142131.html",
+        "https://www.jeanpaulgaultier.com/de/de/c/classique-le-male-pride--classique-le-male-pride"
+      ],
+      "merchant_snapshot": {
+        "jean_paul_gaultier_de": "available",
+        "notino_de_legacy_listing": "sale_ended_not_valid_for_2026_coverage"
+      },
+      "merchant_snapshot_checked_at": "2026-09-19",
+      "identity_note": "2026 re-edition is tracked separately from the discontinued legacy Fleur du Mâle listing; legacy retailer pages must not increase 2026 merchant coverage unless the current edition is explicitly verified."
     }
   ],
   "merchant_research_updated_at": "2026-09-19"
