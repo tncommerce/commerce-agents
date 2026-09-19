@@ -1,6 +1,7 @@
 {
   "version": 1,
   "generated_at": "2026-09-19",
+  "source_fingerprint_sha256": "fe91c6a66e585cc0a83fc6f3545cd718aa7891fa5f6cef56786fc18a6aff595b",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
     "scentai_catalog_staging.json",
@@ -94,52 +95,6 @@
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": []
-    },
-    {
-      "product_id": "SC-DOLCE-GABBANA-THE-ONE-MEN-EDP-2025-100",
-      "candidate_id": "DOLCE-GABBANA-THE-ONE-MEN-EDP",
-      "brand": "Dolce & Gabbana",
-      "name": "The One for Men (2025)",
-      "batch": 3,
-      "researched_merchant_count": 2,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
-      "full_mapping_count": 1,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
-      "action_class": "auto_allowed",
-      "live_activation_action_class": "approval_required",
-      "merchants": [
-        {
-          "merchant_id": "douglas",
-          "mapping_state": "full",
-          "merchant_product_id": "5011977029",
-          "ean": "8056669925859",
-          "gtin": "8056669925859",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Douglas_DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        },
-        {
-          "merchant_id": "flaconi",
-          "mapping_state": "partial",
-          "merchant_product_id": null,
-          "ean": "8056669925859",
-          "gtin": "8056669925859",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Flaconi DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        }
-      ]
     },
     {
       "product_id": "SC-AMOUAGE-GUIDANCE-46-EXTRAIT-100",
@@ -424,6 +379,53 @@
           "affiliate_program": {
             "network": "Awin",
             "program": "Parfumgroup DE",
+            "status": "applied"
+          },
+          "affiliate_activation_state": "pending_program_approval"
+        }
+      ]
+    },
+    {
+      "product_id": "SC-DOLCE-GABBANA-THE-ONE-MEN-EDP-2025-100",
+      "candidate_id": "DOLCE-GABBANA-THE-ONE-MEN-EDP",
+      "brand": "Dolce & Gabbana",
+      "name": "The One for Men (2025)",
+      "batch": 3,
+      "researched_merchant_count": 2,
+      "mapping_count": 2,
+      "resolved_mapping_count": 2,
+      "full_mapping_count": 1,
+      "state": "mapping_data_ready_affiliate_blocked",
+      "blockers": [
+        "community_performance_still_provisional",
+        "affiliate_program_not_approved"
+      ],
+      "next_action": "await_affiliate_program_approval",
+      "action_class": "auto_allowed",
+      "live_activation_action_class": "approval_required",
+      "merchants": [
+        {
+          "merchant_id": "douglas",
+          "mapping_state": "full",
+          "merchant_product_id": "5011977029",
+          "ean": "8056669925859",
+          "gtin": "8056669925859",
+          "affiliate_program": {
+            "network": "Awin",
+            "program": "Douglas_DE",
+            "status": "applied"
+          },
+          "affiliate_activation_state": "pending_program_approval"
+        },
+        {
+          "merchant_id": "flaconi",
+          "mapping_state": "partial",
+          "merchant_product_id": null,
+          "ean": "8056669925859",
+          "gtin": "8056669925859",
+          "affiliate_program": {
+            "network": "Awin",
+            "program": "Flaconi DE",
             "status": "applied"
           },
           "affiliate_activation_state": "pending_program_approval"
@@ -971,52 +973,6 @@
       ]
     },
     {
-      "product_id": "SC-PDM-VALAYA-EXCLUSIF-EDP-75",
-      "candidate_id": "PDM-VALAYA-EXCLUSIF",
-      "brand": "Parfums de Marly",
-      "name": "Valaya Exclusif",
-      "batch": 2,
-      "researched_merchant_count": 2,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
-      "full_mapping_count": 2,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
-      "action_class": "auto_allowed",
-      "live_activation_action_class": "approval_required",
-      "merchants": [
-        {
-          "merchant_id": "douglas",
-          "mapping_state": "full",
-          "merchant_product_id": "5011718153",
-          "ean": "3700578505767",
-          "gtin": "3700578505767",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Douglas_DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        },
-        {
-          "merchant_id": "flaconi",
-          "mapping_state": "full",
-          "merchant_product_id": "90012283-0019379",
-          "ean": "3700578505767",
-          "gtin": "3700578505767",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Flaconi DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        }
-      ]
-    },
-    {
       "product_id": "SC-PDM-HEROD-EDP-125",
       "candidate_id": "PDM-HEROD-EDP",
       "brand": "Parfums de Marly",
@@ -1053,6 +1009,52 @@
           "merchant_product_id": "80044754-125",
           "ean": "3700578502353",
           "gtin": "3700578502353",
+          "affiliate_program": {
+            "network": "Awin",
+            "program": "Flaconi DE",
+            "status": "applied"
+          },
+          "affiliate_activation_state": "pending_program_approval"
+        }
+      ]
+    },
+    {
+      "product_id": "SC-PDM-VALAYA-EXCLUSIF-EDP-75",
+      "candidate_id": "PDM-VALAYA-EXCLUSIF",
+      "brand": "Parfums de Marly",
+      "name": "Valaya Exclusif",
+      "batch": 2,
+      "researched_merchant_count": 2,
+      "mapping_count": 2,
+      "resolved_mapping_count": 2,
+      "full_mapping_count": 2,
+      "state": "mapping_data_ready_affiliate_blocked",
+      "blockers": [
+        "affiliate_program_not_approved"
+      ],
+      "next_action": "await_affiliate_program_approval",
+      "action_class": "auto_allowed",
+      "live_activation_action_class": "approval_required",
+      "merchants": [
+        {
+          "merchant_id": "douglas",
+          "mapping_state": "full",
+          "merchant_product_id": "5011718153",
+          "ean": "3700578505767",
+          "gtin": "3700578505767",
+          "affiliate_program": {
+            "network": "Awin",
+            "program": "Douglas_DE",
+            "status": "applied"
+          },
+          "affiliate_activation_state": "pending_program_approval"
+        },
+        {
+          "merchant_id": "flaconi",
+          "mapping_state": "full",
+          "merchant_product_id": "90012283-0019379",
+          "ean": "3700578505767",
+          "gtin": "3700578505767",
           "affiliate_program": {
             "network": "Awin",
             "program": "Flaconi DE",
@@ -1247,52 +1249,6 @@
       ]
     },
     {
-      "product_id": "SC-YSL-LIBRE-EDP-90",
-      "candidate_id": "YSL-LIBRE-EDP",
-      "brand": "Yves Saint Laurent",
-      "name": "Libre",
-      "batch": 1,
-      "researched_merchant_count": 2,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
-      "full_mapping_count": 2,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
-      "action_class": "auto_allowed",
-      "live_activation_action_class": "approval_required",
-      "merchants": [
-        {
-          "merchant_id": "douglas",
-          "mapping_state": "full",
-          "merchant_product_id": "5000005003",
-          "ean": "3614272648425",
-          "gtin": "3614272648425",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Douglas_DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        },
-        {
-          "merchant_id": "flaconi",
-          "mapping_state": "full",
-          "merchant_product_id": "80041833-90",
-          "ean": "3614272648425",
-          "gtin": "3614272648425",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Flaconi DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        }
-      ]
-    },
-    {
       "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
       "candidate_id": "YSL-BLACK-OPIUM-EDP",
       "brand": "Yves Saint Laurent",
@@ -1329,52 +1285,6 @@
           "merchant_product_id": "80005078-90",
           "ean": "3365440787971",
           "gtin": "3365440787971",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Flaconi DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        }
-      ]
-    },
-    {
-      "product_id": "SC-YSL-MYSLF-LE-PARFUM-100",
-      "candidate_id": "YSL-MYSLF-LE-PARFUM",
-      "brand": "Yves Saint Laurent",
-      "name": "MYSLF Le Parfum",
-      "batch": 2,
-      "researched_merchant_count": 2,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
-      "full_mapping_count": 1,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
-      "action_class": "auto_allowed",
-      "live_activation_action_class": "approval_required",
-      "merchants": [
-        {
-          "merchant_id": "douglas",
-          "mapping_state": "full",
-          "merchant_product_id": "5011499070",
-          "ean": "3614274114645",
-          "gtin": "3614274114645",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Douglas_DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        },
-        {
-          "merchant_id": "flaconi",
-          "mapping_state": "partial",
-          "merchant_product_id": null,
-          "ean": "3614274114645",
-          "gtin": "3614274114645",
           "affiliate_program": {
             "network": "Awin",
             "program": "Flaconi DE",
@@ -1429,7 +1339,98 @@
           "affiliate_activation_state": "pending_program_approval"
         }
       ]
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "candidate_id": "YSL-LIBRE-EDP",
+      "brand": "Yves Saint Laurent",
+      "name": "Libre",
+      "batch": 1,
+      "researched_merchant_count": 2,
+      "mapping_count": 2,
+      "resolved_mapping_count": 2,
+      "full_mapping_count": 2,
+      "state": "mapping_data_ready_affiliate_blocked",
+      "blockers": [
+        "affiliate_program_not_approved"
+      ],
+      "next_action": "await_affiliate_program_approval",
+      "action_class": "auto_allowed",
+      "live_activation_action_class": "approval_required",
+      "merchants": [
+        {
+          "merchant_id": "douglas",
+          "mapping_state": "full",
+          "merchant_product_id": "5000005003",
+          "ean": "3614272648425",
+          "gtin": "3614272648425",
+          "affiliate_program": {
+            "network": "Awin",
+            "program": "Douglas_DE",
+            "status": "applied"
+          },
+          "affiliate_activation_state": "pending_program_approval"
+        },
+        {
+          "merchant_id": "flaconi",
+          "mapping_state": "full",
+          "merchant_product_id": "80041833-90",
+          "ean": "3614272648425",
+          "gtin": "3614272648425",
+          "affiliate_program": {
+            "network": "Awin",
+            "program": "Flaconi DE",
+            "status": "applied"
+          },
+          "affiliate_activation_state": "pending_program_approval"
+        }
+      ]
+    },
+    {
+      "product_id": "SC-YSL-MYSLF-LE-PARFUM-100",
+      "candidate_id": "YSL-MYSLF-LE-PARFUM",
+      "brand": "Yves Saint Laurent",
+      "name": "MYSLF Le Parfum",
+      "batch": 2,
+      "researched_merchant_count": 2,
+      "mapping_count": 2,
+      "resolved_mapping_count": 2,
+      "full_mapping_count": 1,
+      "state": "mapping_data_ready_affiliate_blocked",
+      "blockers": [
+        "affiliate_program_not_approved"
+      ],
+      "next_action": "await_affiliate_program_approval",
+      "action_class": "auto_allowed",
+      "live_activation_action_class": "approval_required",
+      "merchants": [
+        {
+          "merchant_id": "douglas",
+          "mapping_state": "full",
+          "merchant_product_id": "5011499070",
+          "ean": "3614274114645",
+          "gtin": "3614274114645",
+          "affiliate_program": {
+            "network": "Awin",
+            "program": "Douglas_DE",
+            "status": "applied"
+          },
+          "affiliate_activation_state": "pending_program_approval"
+        },
+        {
+          "merchant_id": "flaconi",
+          "mapping_state": "partial",
+          "merchant_product_id": null,
+          "ean": "3614274114645",
+          "gtin": "3614274114645",
+          "affiliate_program": {
+            "network": "Awin",
+            "program": "Flaconi DE",
+            "status": "applied"
+          },
+          "affiliate_activation_state": "pending_program_approval"
+        }
+      ]
     }
-  ],
-  "source_fingerprint_sha256": "fe91c6a66e585cc0a83fc6f3545cd718aa7891fa5f6cef56786fc18a6aff595b"
+  ]
 }
