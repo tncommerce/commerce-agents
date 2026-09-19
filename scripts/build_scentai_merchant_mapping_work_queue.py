@@ -1,4 +1,4 @@
-from __future__ import annotations
+rom __future__ import annotations
 
 import argparse
 import hashlib
@@ -8,17 +8,19 @@ from pathlib import Path
 from typing import Any
 
 DATA_DIR = Path("examples/retail/data")
-DEFAULT_STAGING = DATA_DIR / "scentai_catalog_staging.json"
-DEFAULT_MAPPINGS = DATA_DIR / "merchant_product_mappings.json"
-DEFAULT_AFFILIATES = DATA_DIR / "scentai_affiliate_programs.json"
-DEFAULT_OUTPUT = DATA_DIR / "scentai_merchant_mapping_work_queue.json"
+DEFAULT_MAPPING = DATA_DIR / "scentai_merchant_mapping_work_queue.json"
+DEFAULT_AFFILIATE = DATA_DIR / "scentai_affiliate_activation_status.json"
+DEFAULT_IMAGES = DATA_DIR / "scentai_image_approval_work_queue.json"
+DEFAULT_RELEASE = DATA_DIR / "scentai_release_01_gate_status.json"
+DEFAULT_FEED = DATA_DIR / "scentai_release_01_feed_activation_queue.json"
+DEFAULT_OUTPUT = DATA_DIR / "scentai_jarvis_operations_status.json"
 
 
 def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8-sig"))
 
 
-def canonical_bytes(payload: dict) -> bytes:
+def canonical_bytes(payload: object) -> bytes:
     return json.dumps(
         payload,
         ensure_ascii=False,
@@ -27,307 +29,209 @@ def canonical_bytes(payload: dict) -> bytes:
     ).encode("utf-8")
 
 
-def source_fingerprint(*payloads: dict) -> str:
+def source_fingerprint(*payloads: object) -> str:
     digest = hashlib.sha256()
     for payload in payloads:
         digest.update(canonical_bytes(payload))
     return digest.hexdigest()
 
 
-def affiliate_program_index(payload: dict) -> tuple[dict[str, dict], list[dict]]:
-    programs: dict[str, dict] = {}
-    rows: list[dict] = []
-
-    default_network = str(payload.get("network") or "").strip()
-    for item in payload.get("applications", []):
-        row = {
-            "network": default_network,
-            "merchant_id": item.get("merchant_id"),
-            "program": item.get("program"),
-            "status": item.get("status"),
-        }
-        rows.append(row)
-        merchant_id = str(item.get("merchant_id") or "").strip()
-        if merchant_id:
-            programs[merchant_id] = {
-                "network": default_network,
-                "program": item.get("program"),
-                "status": item.get("status"),
-            }
-
-    for item in payload.get("other_networks", []):
-        row = {
-            "network": item.get("network"),
-            "merchant_id": item.get("merchant_id"),
-            "program": item.get("program"),
-            "status": item.get("status"),
-        }
-        rows.append(row)
-        merchant_id = str(item.get("merchant_id") or "").strip()
-        if merchant_id:
-            programs[merchant_id] = {
-                "network": item.get("network"),
-                "program": item.get("program"),
-                "status": item.get("status"),
-            }
-
-    return programs, rows
-
-
-def build_queue(
-    staging: dict,
-    mappings_payload: dict,
-    affiliate_payload: dict,
+def build_operations_status(
+    mapping: dict,
+    affiliate: dict,
+    images: dict,
+    release: dict,
+    feed: dict,
     *,
     generated_at: str,
 ) -> dict[str, Any]:
-    mappings = mappings_payload.get("mappings", [])
-    programs, affiliate_rows = affiliate_program_index(affiliate_payload)
+    mapping_summary = mapping.get("summary", {})
+    affiliate_summary = affiliate.get("summary", {})
+    image_summary = images.get("summary", {})
+    release_summary = release.ge
+…[84824 chars truncated — re-run with head/grep/tail for full output]…
+get("description", "")
+    return mcp_tools, custom
 
-    items: list[dict[str, Any]] = []
-    for product in staging.get("products", []):
-        product_id = str(product.get("product_id") or "").strip()
-        product_mappings = [
-            mapping
-            for mapping in mappings
-            if mapping.get("product_id") == product_id
-        ]
-        resolved = [
-            mapping
-            for mapping in product_mappings
-            if any(
-                str(mapping.get(key) or "").strip()
-                for key in ("merchant_product_id", "ean", "gtin")
+
+def backticked_after_preamble(line: str) -> set[str]:
+    return set(re.findall(r"`([a-z_]+)`", line.split("):", 1)[-1]))
+
+
+def readme_line(path: Path, marker: str) -> str:
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if marker in line:
+            return line
+    problem(f"{path.relative_to(REPO_ROOT)}: no '{marker}' line found")
+    return ""
+
+
+def check_managed_readme_tool_lists() -> None:
+    """Each managed-agents README lists the deployed tools by hand; its count row and
+    two tool bullets, and the server README's table, must match agent.yaml."""
+    print("managed-agents READMEs vs agent.yaml")
+    for role in ROLES:
+        mcp_tools, custom = manifest_tools(role.agent_dir / "agent.yaml")
+        before = len(PROBLEMS)
+        agent_readme = role.managed / "README.md"
+        parent = agent_readme.read_text(encoding="utf-8")
+        counts = re.search(rf"(\d+) {role.server_label}, (\d+) presentation tools", parent)
+        if counts is None:
+            problem(
+                f"{role.tree} managed README: no '<N> {role.server_label}, <N> presentation tools' row"
             )
-        ]
-        full = [
-            mapping
-            for mapping in product_mappings
-            if str(mapping.get("merchant_product_id") or "").strip()
-            and any(
-                str(mapping.get(key) or "").strip()
-                for key in ("ean", "gtin")
+        elif (int(counts.group(1)), int(counts.group(2))) != (len(mcp_tools), len(custom)):
+            problem(
+                f"{role.tree} managed README counts disagree with agent.yaml ({len(mcp_tools)} / {len(custom)})"
             )
-        ]
-
-        merchant_rows: list[dict[str, Any]] = []
-        for mapping in product_mappings:
-            merchant_id = str(mapping.get("merchant") or "").strip()
-            program = programs.get(merchant_id)
-            if not program:
-                activation_state = "no_registered_program"
-            elif program.get("status") == "approved":
-                activation_state = "approved"
-            else:
-                activation_state = "pending_program_approval"
-
-            merchant_rows.append(
-                {
-                    "merchant_id": merchant_id,
-                    "mapping_state": (
-                        "full"
-                        if str(
-                            mapping.get("merchant_product_id") or ""
-                        ).strip()
-                        and any(
-                            str(mapping.get(key) or "").strip()
-                            for key in ("ean", "gtin")
-                        )
-                        else "partial"
-                    ),
-                    "merchant_product_id": mapping.get(
-                        "merchant_product_id"
-                    ),
-                    "ean": mapping.get("ean"),
-                    "gtin": mapping.get("gtin"),
-                    "affiliate_program": program,
-                    "affiliate_activation_state": activation_state,
-                }
+        marker = f"**{role.server_label.split()[0].capitalize()} tools**"
+        if (listed := backticked_after_preamble(readme_line(agent_readme, marker))) != mcp_tools:
+            problem(
+                f"{agent_readme.relative_to(REPO_ROOT)}: {role.server_label} list != agent.yaml "
+                f"(missing {sorted(mcp_tools - listed)}, extra {sorted(listed - mcp_tools)})"
             )
-
-        state = "mapping_data_ready_affiliate_blocked"
-        next_action = "await_affiliate_program_approval"
-        blockers: list[str] = []
-
-        if not resolved:
-            state = "mapping_required"
-            next_action = "verify_exact_merchant_product_identity"
-            blockers.append("no_resolved_merchant_mapping")
-
-        if product_id == "SC-JPG-FLEUR-DU-MALE-2026-EDT-125":
-            state = "research_blocked"
-            next_action = "verify_current_retail_channel_before_mapping"
-            blockers.extend(
-                [
-                    "verified_current_merchant_pending",
-                    "community_performance_still_provisional",
-                ]
+        listed = backticked_after_preamble(readme_line(agent_readme, "**Presentation tools**"))
+        if listed != set(custom):
+            problem(
+                f"{agent_readme.relative_to(REPO_ROOT)}: presentation list != agent.yaml "
+                f"(missing {sorted(set(custom) - listed)}, extra {sorted(listed - set(custom))})"
             )
+        server_readme = (role.managed / role.server_dir / "README.md").read_text(encoding="utf-8")
+        rows = set(re.findall(r"^\| `([a-z_]+)` \|", server_readme, re.MULTILINE))
+        if rows != mcp_tools:
+            problem(
+                f"{role.tree} {role.server_dir}/README.md tool table != agent.yaml "
+                f"(missing {sorted(mcp_tools - rows)}, extra {sorted(rows - mcp_tools)})"
+            )
+        if len(PROBLEMS) == before:
+            ok(f"{role.tree}: README counts, tool lists, and server table match agent.yaml")
 
-        community = product.get("community", {})
-        if (
-            community.get("provisional")
-            and "community_performance_still_provisional"
-            not in blockers
-        ):
-            blockers.append("community_performance_still_provisional")
 
-        if resolved and not any(
-            row["affiliate_activation_state"] == "approved"
-            for row in merchant_rows
-        ):
-            blockers.append("affiliate_program_not_approved")
+def check_managed_custom_tool_descriptions() -> None:
+    """The manifests' custom tool descriptions are the registries', whitespace aside."""
+    print("managed-agents custom tool descriptions vs the registries")
+    for role in ROLES:
+        registry = role.registry_descriptions()
+        _, custom = manifest_tools(role.agent_dir / "agent.yaml")
+        before = len(PROBLEMS)
+        for name, description in custom.items():
+            if name not in registry:
+                problem(f"{role.tree} agent.yaml: custom tool {name} has no registry contract")
+            elif normalize_ws(description) != normalize_ws(registry[name]):
+                problem(f"{role.tree} agent.yaml: {name} description drifted from the registry")
+        if len(PROBLEMS) == before:
+            ok(f"{role.tree}: {len(custom)} custom tool descriptions match the registry")
 
-        items.append(
-            {
-                "product_id": product_id,
-                "candidate_id": product.get("candidate_id"),
-                "brand": product.get("brand"),
-                "name": product.get("name"),
-                "batch": product.get("batch"),
-                "researched_merchant_count": int(
-                    product.get("commerce", {}).get(
-                        "merchant_coverage_count",
-                        0,
-                    )
-                    or 0
-                ),
-                "mapping_count": len(product_mappings),
-                "resolved_mapping_count": len(resolved),
-                "full_mapping_count": len(full),
-                "state": state,
-                "blockers": blockers,
-                "next_action": next_action,
-                "action_class": "auto_allowed",
-                "live_activation_action_class": "approval_required",
-                "merchants": merchant_rows,
-            }
+
+def check_scentai_jarvis_operations_status() -> None:
+    """Keep the committed Jarvis control-plane snapshot aligned with source state."""
+    print("SCENTAI Jarvis operations status")
+    try:
+        from scripts.validate_scentai_jarvis_operations_status import (
+            validate_operations_status,
         )
 
-    state_weight = {
-        "research_blocked": 0,
-        "mapping_required": 1,
-        "mapping_data_ready_affiliate_blocked": 2,
-    }
-    items.sort(
-        key=lambda item: (
-            state_weight.get(str(item["state"]), 99),
-            str(item.get("brand") or "").casefold(),
-            str(item.get("name") or "").casefold(),
+        data = REPO_ROOT / "examples" / "retail" / "data"
+        report = validate_operations_status(
+            load_json(data / "scentai_jarvis_operations_status.json"),
+            load_json(data / "scentai_merchant_mapping_work_queue.json"),
+            load_json(data / "scentai_affiliate_activation_status.json"),
+            load_json(data / "scentai_image_approval_work_queue.json"),
+            load_json(data / "scentai_release_01_gate_status.json"),
+            load_json(data / "scentai_release_01_feed_activation_queue.json"),
         )
+    except Exception as error:
+        problem(f"SCENTAI Jarvis operations parity check failed: {error}")
+        return
+
+    if not report["valid"]:
+        for issue in report["issues"]:
+            problem(f"SCENTAI Jarvis operations status: {issue}")
+        return
+
+    ok("SCENTAI Jarvis operations snapshot matches source state")
+
+
+def check_scentai_jarvis_state_graph() -> None:
+    """Ensure every committed Jarvis derived view matches source-of-truth data."""
+    print("SCENTAI Jarvis state graph")
+    try:
+        from scripts.validate_scentai_jarvis_state_graph import (
+            validate_repo_state_graph,
+        )
+
+        report = validate_repo_state_graph()
+    except Exception as error:
+        problem(f"SCENTAI Jarvis state graph check failed: {error}")
+        return
+
+    if not report["valid"]:
+        for issue in report["issues"]:
+            problem(f"SCENTAI Jarvis state graph: {issue}")
+        return
+
+    ok("SCENTAI Jarvis derived state graph matches source-of-truth")
+
+
+def check_scentai_pilot_batch_contract() -> None:
+    """Keep Pilot Batch 01 IDs, timings, links and production jobs aligned."""
+    print("SCENTAI pilot production contract")
+    try:
+        from scripts.validate_scentai_pilot_batch_contract import (
+            validate_contract,
+        )
+
+        data = REPO_ROOT / "examples" / "retail" / "data"
+        report = validate_contract(
+            load_json(data / "scentai_pilot_batch_01.json"),
+            load_json(data / "scentai_pilot_batch_01_production_jobs.json"),
+            load_json(data / "scentai_pilot_batch_01_subtitles.json"),
+            load_json(data / "scentai_pilot_batch_01_links.json"),
+            load_json(data / "scentai_pilot_batch_01_social_copy.json"),
+        )
+    except Exception as error:
+        problem(f"SCENTAI pilot production contract failed: {error}")
+        return
+
+    if not report["valid"]:
+        for issue in report["issues"]:
+            problem(f"SCENTAI pilot contract: {issue}")
+        return
+
+    ok(
+        "SCENTAI Pilot Batch 01 contract is internally consistent "
+        f"({report['summary']['pilots']} pilots, "
+        f"{report['summary']['tracked_links']} tracked links)"
     )
 
-    approved_programs = [
-        row for row in affiliate_rows if row.get("status") == "approved"
-    ]
 
-    return {
-        "version": 1,
-        "generated_at": generated_at,
-        "source_fingerprint_sha256": source_fingerprint(
-            staging,
-            mappings_payload,
-            affiliate_payload,
-        ),
-        "policy_ref": "scentai_jarvis_operating_policy.json",
-        "source_files": [
-            DEFAULT_STAGING.name,
-            DEFAULT_MAPPINGS.name,
-            DEFAULT_AFFILIATES.name,
-        ],
-        "summary": {
-            "staged_products": len(items),
-            "products_with_resolved_mapping": sum(
-                1 for item in items if item["resolved_mapping_count"] > 0
-            ),
-            "products_with_two_or_more_resolved_mappings": sum(
-                1 for item in items if item["resolved_mapping_count"] >= 2
-            ),
-            "products_without_resolved_mapping": sum(
-                1 for item in items if item["resolved_mapping_count"] == 0
-            ),
-            "affiliate_programs_registered": len(affiliate_rows),
-            "affiliate_programs_approved": len(approved_programs),
-            "affiliate_programs_pending": (
-                len(affiliate_rows) - len(approved_programs)
-            ),
-            "live_activation_ready_products": sum(
-                1
-                for item in items
-                if any(
-                    merchant["affiliate_activation_state"] == "approved"
-                    for merchant in item["merchants"]
-                )
-            ),
-        },
-        "affiliate_programs": affiliate_rows,
-        "items": items,
-    }
+CHECKS = (
+    check_skills,
+    check_storefront_fixtures,
+    check_ticketing_fixtures,
+    check_merchant_fixtures,
+    check_verification_wiring,
+    check_package_versions,
+    check_manifests,
+    check_managed_system_prompts,
+    check_managed_readme_tool_lists,
+    check_managed_custom_tool_descriptions,
+    check_scentai_jarvis_operations_status,
+    check_scentai_jarvis_state_graph,
+    check_scentai_pilot_batch_contract,
+)
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(
-        description=(
-            "Build the Jarvis-ready SCENTAI merchant mapping work queue "
-            "from source-of-truth staging, mapping and affiliate files."
-        )
-    )
-    parser.add_argument("--staging", type=Path, default=DEFAULT_STAGING)
-    parser.add_argument("--mappings", type=Path, default=DEFAULT_MAPPINGS)
-    parser.add_argument(
-        "--affiliates",
-        type=Path,
-        default=DEFAULT_AFFILIATES,
-    )
-    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
-    parser.add_argument(
-        "--generated-at",
-        default=None,
-        help=(
-            "Optional ISO-8601 timestamp for reproducible committed output. "
-            "Defaults to current UTC time."
-        ),
-    )
-    parser.add_argument("--machine-readable", action="store_true")
-    args = parser.parse_args()
-
-    generated_at = (
-        args.generated_at
-        or datetime.now(UTC).replace(microsecond=0).isoformat()
-    )
-
-    queue = build_queue(
-        load_json(args.staging),
-        load_json(args.mappings),
-        load_json(args.affiliates),
-        generated_at=generated_at,
-    )
-
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(
-        json.dumps(queue, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
-
-    if args.machine_readable:
-        print(json.dumps(queue, ensure_ascii=False))
-    else:
-        summary = queue["summary"]
-        print(
-            "SCENTAI mapping work queue | "
-            f"staged={summary['staged_products']} | "
-            f"mapped={summary['products_with_resolved_mapping']} | "
-            f"unmapped={summary['products_without_resolved_mapping']} | "
-            f"affiliate_approved={summary['affiliate_programs_approved']} | "
-            f"activation_ready={summary['live_activation_ready_products']}"
-        )
-        print(
-            "source_fingerprint_sha256="
-            f"{queue['source_fingerprint_sha256']}"
-        )
-
+    for check in CHECKS:
+        check()
+        print()
+    if PROBLEMS:
+        print(f"check.py: {len(PROBLEMS)} problem(s)")
+        return 1
+    print("check.py: clean")
     return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    sys.exit(main())
