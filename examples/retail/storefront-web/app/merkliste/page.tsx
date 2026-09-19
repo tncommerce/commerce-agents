@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import FragranceLibraryHub from "@/components/FragranceLibraryHub";
 import LegalFooter from "@/components/LegalFooter";
+import PersonalLibraryPageAnalytics from "@/components/PersonalLibraryPageAnalytics";
 import { LIVE_FRAGRANCES } from "@/lib/fragranceCatalog";
 
 export const metadata: Metadata = {
@@ -18,6 +19,9 @@ export default function WishlistPage() {
   return (
     <main className="min-h-screen bg-(--surface) px-4 py-7 text-(--ink) sm:px-6 sm:py-10">
       <div className="mx-auto max-w-[1080px]">
+        <PersonalLibraryPageAnalytics
+          source="wishlist_page"
+        />
         <a
           href="/"
           className="inline-flex items-center gap-2 text-[13px] font-semibold text-(--accent-ink) hover:underline"
