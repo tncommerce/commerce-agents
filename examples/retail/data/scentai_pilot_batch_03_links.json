@@ -1,0 +1,115 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-19",
+  "base_url": "https://scentai-xxya.onrender.com",
+  "campaign_id": "launch01",
+  "link_count": 15,
+  "note": "Channel-specific first-party attribution links for SCENTAI Pilot Batch 03.",
+  "links": [
+    {
+      "campaign_id": "launch01",
+      "content_id": "tygar_vibrato_value_01",
+      "channel": "tiktok",
+      "landing_path": "/parfum-alternativen",
+      "url": "https://scentai-xxya.onrender.com/parfum-alternativen?src=tiktok&cmp=launch01&content=tygar_vibrato_value_01"
+    },
+    {
+      "campaign_id": "launch01",
+      "content_id": "tygar_vibrato_value_01",
+      "channel": "instagram",
+      "landing_path": "/parfum-alternativen",
+      "url": "https://scentai-xxya.onrender.com/parfum-alternativen?src=instagram&cmp=launch01&content=tygar_vibrato_value_01"
+    },
+    {
+      "campaign_id": "launch01",
+      "content_id": "tygar_vibrato_value_01",
+      "channel": "youtube",
+      "landing_path": "/parfum-alternativen",
+      "url": "https://scentai-xxya.onrender.com/parfum-alternativen?src=youtube&cmp=launch01&content=tygar_vibrato_value_01"
+    },
+    {
+      "campaign_id": "launch01",
+      "content_id": "naxos_value_01",
+      "channel": "tiktok",
+      "landing_path": "/parfum-alternativen",
+      "url": "https://scentai-xxya.onrender.com/parfum-alternativen?src=tiktok&cmp=launch01&content=naxos_value_01"
+    },
+    {
+      "campaign_id": "launch01",
+      "content_id": "naxos_value_01",
+      "channel": "instagram",
+      "landing_path": "/parfum-alternativen",
+      "url": "https://scentai-xxya.onrender.com/parfum-alternativen?src=instagram&cmp=launch01&content=naxos_value_01"
+    },
+    {
+      "campaign_id": "launch01",
+      "content_id": "naxos_value_01",
+      "channel": "youtube",
+      "landing_path": "/parfum-alternativen",
+      "url": "https://scentai-xxya.onrender.com/parfum-alternativen?src=youtube&cmp=launch01&content=naxos_value_01"
+    },
+    {
+      "campaign_id": "launch01",
+      "content_id": "dior_homme_intense_alt_01",
+      "channel": "tiktok",
+      "landing_path": "/parfum-alternativen",
+      "url": "https://scentai-xxya.onrender.com/parfum-alternativen?src=tiktok&cmp=launch01&content=dior_homme_intense_alt_01"
+    },
+    {
+      "campaign_id": "launch01",
+      "content_id": "dior_homme_intense_alt_01",
+      "channel": "instagram",
+      "landing_path": "/parfum-alternativen",
+      "url": "https://scentai-xxya.onrender.com/parfum-alternativen?src=instagram&cmp=launch01&content=dior_homme_intense_alt_01"
+    },
+    {
+      "campaign_id": "launch01",
+      "content_id": "dior_homme_intense_alt_01",
+      "channel": "youtube",
+      "landing_path": "/parfum-alternativen",
+      "url": "https://scentai-xxya.onrender.com/parfum-alternativen?src=youtube&cmp=launch01&content=dior_homme_intense_alt_01"
+    },
+    {
+      "campaign_id": "launch01",
+      "content_id": "signature_vs_safe_01",
+      "channel": "tiktok",
+      "landing_path": "/duftfinder",
+      "url": "https://scentai-xxya.onrender.com/duftfinder?src=tiktok&cmp=launch01&content=signature_vs_safe_01"
+    },
+    {
+      "campaign_id": "launch01",
+      "content_id": "signature_vs_safe_01",
+      "channel": "instagram",
+      "landing_path": "/duftfinder",
+      "url": "https://scentai-xxya.onrender.com/duftfinder?src=instagram&cmp=launch01&content=signature_vs_safe_01"
+    },
+    {
+      "campaign_id": "launch01",
+      "content_id": "signature_vs_safe_01",
+      "channel": "youtube",
+      "landing_path": "/duftfinder",
+      "url": "https://scentai-xxya.onrender.com/duftfinder?src=youtube&cmp=launch01&content=signature_vs_safe_01"
+    },
+    {
+      "campaign_id": "launch01",
+      "content_id": "gift_for_him_safe_to_bold_01",
+      "channel": "tiktok",
+      "landing_path": "/parfum-geschenkberater",
+      "url": "https://scentai-xxya.onrender.com/parfum-geschenkberater?src=tiktok&cmp=launch01&content=gift_for_him_safe_to_bold_01"
+    },
+    {
+      "campaign_id": "launch01",
+      "content_id": "gift_for_him_safe_to_bold_01",
+      "channel": "instagram",
+      "landing_path": "/parfum-geschenkberater",
+      "url": "https://scentai-xxya.onrender.com/parfum-geschenkberater?src=instagram&cmp=launch01&content=gift_for_him_safe_to_bold_01"
+    },
+    {
+      "campaign_id": "launch01",
+      "content_id": "gift_for_him_safe_to_bold_01",
+      "channel": "youtube",
+      "landing_path": "/parfum-geschenkberater",
+      "url": "https://scentai-xxya.onrender.com/parfum-geschenkberater?src=youtube&cmp=launch01&content=gift_for_him_safe_to_bold_01"
+    }
+  ]
+}
