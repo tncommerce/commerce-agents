@@ -1,7 +1,7 @@
 {
   "version": 1,
   "updated_at": "2026-09-19",
-  "status": "pre_render_ready",
+  "status": "production_pipeline_ready_assets_pending",
   "campaign_id": "launch01",
   "summary": {
     "pilots": 5,
@@ -11,7 +11,9 @@
     "social_copy_ready": 5,
     "subtitle_timing_drafts_ready": 5,
     "voiceover_scripts_ready": 5,
-    "final_video_renders_ready": 0
+    "final_video_renders_ready": 0,
+    "visual_preview_mp4s_ready": 0,
+    "final_render_pipeline_ready": true
   },
   "shared_ready": [
     "SCENTAI brand palette confirmed from storefront design system",
@@ -21,14 +23,20 @@
     "15 channel-specific tracked links stored in scentai_pilot_batch_01_links.json",
     "Subtitle timing drafts stored in scentai_pilot_batch_01_subtitles.json",
     "SRT exporter available at scripts/export_scentai_pilot_subtitles.py",
-    "First-party attribution already carries src/cmp/content through the SCENTAI funnel"
+    "First-party attribution already carries src/cmp/content through the SCENTAI funnel",
+    "Guarded final renderer available at scripts/render_scentai_pilot_final.py",
+    "Local production readiness builder available at scripts/build_scentai_pilot_production_status.py",
+    "Pilot production lifecycle stored in scentai_pilot_production_state_machine.json"
   ],
   "remaining_before_publish": [
+    "Generate and verify the five visual preview MP4 files from the existing scene renderer",
     "Record or generate final German voiceover audio",
-    "Render each 9:16 video using the verified product assets and SCENTAI visual system",
-    "Conform subtitle timing to final voiceover waveform",
+    "Conform subtitle timing to the final voiceover waveform and confirm timing",
+    "Render each 9:16 final video using the verified product assets and SCENTAI visual system",
+    "Run automated technical QA on each final render",
     "Reverify Pilot 3 numeric price claims on publish day",
-    "Perform final mobile visual QA",
+    "Perform final mobile content QA",
+    "Obtain explicit user publish approval",
     "Upload using the correct channel-specific tracked link"
   ],
   "pilots": [
@@ -85,9 +93,9 @@
     "uses_verified_product_assets": true
   },
   "automated_preview_render": {
-    "status": "workflow_created_output_not_yet_verified",
+    "status": "renderer_ready_output_missing",
     "renderer": "scripts/render_scentai_pilot_previews.py",
     "workflow": ".github/workflows/scentai-pilot-preview.yml",
-    "note": "Do not treat generated MP4 previews as available until batch01/index.json exists."
+    "note": "Renderer and workflow exist, but batch01/index.json and preview MP4 outputs are not present in the repository. Do not treat visual preview MP4s as ready."
   }
 }
