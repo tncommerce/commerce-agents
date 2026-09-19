@@ -5,7 +5,7 @@ import AcquisitionLanding from "@/components/AcquisitionLanding";
 export const metadata: Metadata = {
   title: "Parfum-Geschenkberater – Duft als Geschenk finden",
   description:
-    "Finde mit SCENTAI ein Parfumgeschenk anhand von Person, Anlass, Budget und bekannten Duftvorlieben.",
+    "Finde mit DUFYND ein Parfumgeschenk anhand von Person, Anlass, Budget und bekannten Duftvorlieben.",
   alternates: {
     canonical: "/parfum-geschenkberater",
   },
@@ -17,7 +17,7 @@ export default function ParfumGeschenkberaterPage() {
       analyticsSource="parfum_geschenkberater"
       eyebrow="Parfum verschenken"
       title="Ein Duftgeschenk wird leichter, wenn man zuerst die richtigen Fragen stellt."
-      intro="Statt blind nach Bestsellern zu gehen, fragt SCENTAI nach Person, Budget, Anlass und bekannten Vorlieben. Daraus entsteht eine kleinere Auswahl, die du anschließend in Ruhe vergleichen kannst."
+      intro="Statt blind nach Bestsellern zu gehen, fragt DUFYND nach Person, Budget, Anlass und bekannten Vorlieben. Daraus entsteht eine kleinere Auswahl, die du anschließend in Ruhe vergleichen kannst."
       primaryStart="gift"
       primaryLabel="Geschenkberatung starten"
       secondaryStarts={[
@@ -37,7 +37,7 @@ export default function ParfumGeschenkberaterPage() {
         },
         {
           title: "Budget von Anfang an",
-          text: "SCENTAI kann die Auswahl früh auf dein Budget begrenzen, statt dir erst danach unerreichbare Optionen zu zeigen.",
+          text: "DUFYND kann die Auswahl früh auf dein Budget begrenzen, statt dir erst danach unerreichbare Optionen zu zeigen.",
         },
         {
           title: "Auswahl nachvollziehen",
