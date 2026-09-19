@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated_at": "2026-09-19",
-  "source_fingerprint_sha256": "e7a11d43624d75cefee214608ea6fad49fa42380f4025fb62d10a9b225a0c4d4",
+  "source_fingerprint_sha256": "47cbb6bff62f9164bbe944bcaaab28d9d872f950fbc6e1b9138c9af50f6d5f1d",
   "machine_id": "scentai_image_approval_v1",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
@@ -19,7 +19,7 @@
     "approved_images": 0,
     "pending_images": 30,
     "review_ready": 0,
-    "rights_or_source_check_pending": 9,
+    "rights_or_source_check_pending": 14,
     "identity_check_pending": 1
   },
   "items": [
@@ -585,13 +585,47 @@
       },
       "current_image_url": null,
       "current_image_status": "pending_approved_feed_or_manufacturer_image",
-      "image_state": "missing",
+      "image_state": "rights_or_source_check_pending",
       "blockers": [
-        "approved_product_image_missing"
+        "approved_product_image_missing",
+        "asset_usage_or_feed_rights_not_verified"
       ],
-      "next_action": "await_real_feed_or_official_asset_candidate",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
       "action_class": "auto_allowed",
-      "approval_action_class": "approval_required"
+      "approval_action_class": "approval_required",
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://parfums-de-marly.com/de/products/valaya-exclusif",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Parfums de Marly page lists Valaya Exclusif in 75 ml."
+      },
+      "audit_trail": [
+        {
+          "at": "2026-09-19",
+          "from": "missing",
+          "to": "candidate_discovered",
+          "trigger": "manufacturer_source_found"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "candidate_discovered",
+          "to": "identity_check_pending",
+          "trigger": "candidate_normalized"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "identity_check_pending",
+          "to": "identity_verified",
+          "trigger": "exact_variant_verified"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "identity_verified",
+          "to": "rights_or_source_check_pending",
+          "trigger": "identity_gate_passed"
+        }
+      ]
     },
     {
       "product_id": "SC-AMOUAGE-GUIDANCE-46-EXTRAIT-100",
@@ -607,13 +641,47 @@
       },
       "current_image_url": null,
       "current_image_status": "pending_approved_feed_or_manufacturer_image",
-      "image_state": "missing",
+      "image_state": "rights_or_source_check_pending",
       "blockers": [
-        "approved_product_image_missing"
+        "approved_product_image_missing",
+        "asset_usage_or_feed_rights_not_verified"
       ],
-      "next_action": "await_real_feed_or_official_asset_candidate",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
       "action_class": "auto_allowed",
-      "approval_action_class": "approval_required"
+      "approval_action_class": "approval_required",
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://amouage.com/en-uk/products/new-guidance-46",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Amouage product page lists Guidance 46 Exceptional Extrait in 100 ml."
+      },
+      "audit_trail": [
+        {
+          "at": "2026-09-19",
+          "from": "missing",
+          "to": "candidate_discovered",
+          "trigger": "manufacturer_source_found"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "candidate_discovered",
+          "to": "identity_check_pending",
+          "trigger": "candidate_normalized"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "identity_check_pending",
+          "to": "identity_verified",
+          "trigger": "exact_variant_verified"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "identity_verified",
+          "to": "rights_or_source_check_pending",
+          "trigger": "identity_gate_passed"
+        }
+      ]
     },
     {
       "product_id": "SC-TOM-FORD-OMBRE-LEATHER-EDP-100",
@@ -629,13 +697,47 @@
       },
       "current_image_url": null,
       "current_image_status": "pending_approved_feed_or_manufacturer_image",
-      "image_state": "missing",
+      "image_state": "rights_or_source_check_pending",
       "blockers": [
-        "approved_product_image_missing"
+        "approved_product_image_missing",
+        "asset_usage_or_feed_rights_not_verified"
       ],
-      "next_action": "await_real_feed_or_official_asset_candidate",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
       "action_class": "auto_allowed",
-      "approval_action_class": "approval_required"
+      "approval_action_class": "approval_required",
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://www.tomfordbeauty.com/products/ombre-leather-eau-de-parfum",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Tom Ford product page confirms Ombré Leather Eau de Parfum; official fragrance catalog lists the 100 ml variant."
+      },
+      "audit_trail": [
+        {
+          "at": "2026-09-19",
+          "from": "missing",
+          "to": "candidate_discovered",
+          "trigger": "manufacturer_source_found"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "candidate_discovered",
+          "to": "identity_check_pending",
+          "trigger": "candidate_normalized"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "identity_check_pending",
+          "to": "identity_verified",
+          "trigger": "exact_variant_verified"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "identity_verified",
+          "to": "rights_or_source_check_pending",
+          "trigger": "identity_gate_passed"
+        }
+      ]
     },
     {
       "product_id": "SC-PDM-HEROD-EDP-125",
@@ -651,13 +753,47 @@
       },
       "current_image_url": null,
       "current_image_status": "pending_approved_feed_or_manufacturer_image",
-      "image_state": "missing",
+      "image_state": "rights_or_source_check_pending",
       "blockers": [
-        "approved_product_image_missing"
+        "approved_product_image_missing",
+        "asset_usage_or_feed_rights_not_verified"
       ],
-      "next_action": "await_real_feed_or_official_asset_candidate",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
       "action_class": "auto_allowed",
-      "approval_action_class": "approval_required"
+      "approval_action_class": "approval_required",
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://parfums-de-marly.com/de/products/herod",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Parfums de Marly page lists Herod in 125 ml."
+      },
+      "audit_trail": [
+        {
+          "at": "2026-09-19",
+          "from": "missing",
+          "to": "candidate_discovered",
+          "trigger": "manufacturer_source_found"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "candidate_discovered",
+          "to": "identity_check_pending",
+          "trigger": "candidate_normalized"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "identity_check_pending",
+          "to": "identity_verified",
+          "trigger": "exact_variant_verified"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "identity_verified",
+          "to": "rights_or_source_check_pending",
+          "trigger": "identity_gate_passed"
+        }
+      ]
     },
     {
       "product_id": "SC-NISHANE-ANI-EXTRAIT-100",
@@ -673,13 +809,47 @@
       },
       "current_image_url": null,
       "current_image_status": "pending_approved_feed_or_manufacturer_image",
-      "image_state": "missing",
+      "image_state": "rights_or_source_check_pending",
       "blockers": [
-        "approved_product_image_missing"
+        "approved_product_image_missing",
+        "asset_usage_or_feed_rights_not_verified"
       ],
-      "next_action": "await_real_feed_or_official_asset_candidate",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
       "action_class": "auto_allowed",
-      "approval_action_class": "approval_required"
+      "approval_action_class": "approval_required",
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://nishane.com/product/ani/",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Nishane product page lists Ani Extrait de Parfum in 100 ml."
+      },
+      "audit_trail": [
+        {
+          "at": "2026-09-19",
+          "from": "missing",
+          "to": "candidate_discovered",
+          "trigger": "manufacturer_source_found"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "candidate_discovered",
+          "to": "identity_check_pending",
+          "trigger": "candidate_normalized"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "identity_check_pending",
+          "to": "identity_verified",
+          "trigger": "exact_variant_verified"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "identity_verified",
+          "to": "rights_or_source_check_pending",
+          "trigger": "identity_gate_passed"
+        }
+      ]
     },
     {
       "product_id": "SC-AMOUAGE-REFLECTION-MAN-EDP-100",
