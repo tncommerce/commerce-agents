@@ -193,7 +193,11 @@
         "douglas_de": "available",
         "flaconi_de": "available"
       },
-      "merchant_snapshot_checked_at": "2026-09-19"
+      "merchant_snapshot_checked_at": "2026-09-19",
+      "identifiers": {
+        "ean": "3700578502353",
+        "gtin": "3700578502353"
+      }
     },
     {
       "candidate_id": "INITIO-SIDE-EFFECT-EDP",
@@ -237,14 +241,19 @@
         "https://www.tomfordbeauty.co.uk/product/ombre-leather-eau-de-parfum?size=100_ml",
         "https://www.douglas.de/de/b/tom-ford/ueber-tom-ford/ombre-leather/b1161-011",
         "https://www.flaconi.de/parfum/tom-ford/signature/tom-ford-signature-ombre-leather-eau-de-parfum.html",
-        "https://www.parfumdreams.de/Tom-Ford/Fragrance/Signature/Eau-de-Parfum-Spray/index_79558.aspx"
+        "https://www.parfumdreams.de/Tom-Ford/Fragrance/Signature/Eau-de-Parfum-Spray/index_79558.aspx",
+        "https://www.douglas.de/de/p/3001047540"
       ],
       "merchant_snapshot": {
         "douglas_de": "available",
         "flaconi_de": "available",
         "parfumdreams_de": "available"
       },
-      "merchant_snapshot_checked_at": "2026-09-19"
+      "merchant_snapshot_checked_at": "2026-09-19",
+      "identifiers": {
+        "ean": "0888066075145",
+        "gtin": "0888066075145"
+      }
     },
     {
       "candidate_id": "NISHANE-ANI-EXTRAIT",
@@ -280,7 +289,11 @@
         "douglas_de": "available",
         "flaconi_de": "available"
       },
-      "merchant_snapshot_checked_at": "2026-09-19"
+      "merchant_snapshot_checked_at": "2026-09-19",
+      "identifiers": {
+        "ean": "8681008055074",
+        "gtin": "8681008055074"
+      }
     }
   ],
   "merchant_research_updated_at": "2026-09-19"
