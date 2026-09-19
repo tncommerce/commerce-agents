@@ -112,3 +112,11 @@ Observed on 2026-09-19:
 Optional cleanup:
 - request CJ Support to change the user/login email to kontakt@dufynd.de if CJ permits it
 - keep the existing publisher account and application history intact
+
+
+## CJ support request submitted
+
+Submitted on 2026-09-19:
+- requested change of the existing CJ user/login email to kontakt@dufynd.de
+- explicitly requested that the existing publisher account, advertiser relationships and open Notino DE-AT-CH application remain unchanged
+- no new CJ account was created
