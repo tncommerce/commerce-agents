@@ -1,6 +1,6 @@
 # DUFYND Custom Domain / SEO Cutover
 
-Status: primary_domain_verified_certificate_issued_propagation_pending
+Status: primary_domain_verified_rebrand_deploy_pending
 Updated: 2026-09-19
 
 The temporary Render URL remains functional, but the storefront must stay non-indexable until DUFYND is connected and the final public-domain smoke test passes.
@@ -94,3 +94,16 @@ Next:
 3. execute the public SCENTAI -> DUFYND website rebrand
 4. set NEXT_PUBLIC_SITE_URL=https://dufynd.de while keeping NEXT_PUBLIC_SITE_INDEXABLE=false
 5. complete smoke tests before enabling indexing
+
+
+## Website rebrand state
+
+The storefront source has been migrated to the public DUFYND brand and the default site URL is now https://dufynd.de. Production deployment/verification remains pending.
+
+Keep NEXT_PUBLIC_SITE_INDEXABLE=false until:
+- DUFYND branding is visibly live on dufynd.de
+- HTTPS and www redirect are confirmed
+- advisor/API calls work
+- legal pages render correctly
+- acquisition analytics still records events
+- dufynd.com redirects permanently to dufynd.de
