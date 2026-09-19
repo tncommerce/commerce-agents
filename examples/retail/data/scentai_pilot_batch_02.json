@@ -1,0 +1,310 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-19",
+  "status": "production_ready_scripts_assets",
+  "campaign_id": "launch01",
+  "batch_id": "pilot_batch_02",
+  "purpose": "Second five SCENTAI short-form launch pilots with evergreen relationship/profile claims and verified editorial assets.",
+  "channels": [
+    "tiktok",
+    "instagram",
+    "youtube"
+  ],
+  "production_order": [
+    "dupe_battle_imagination_01",
+    "layton_alternatives_01",
+    "althair_liquid_brun_01",
+    "top3_date_01",
+    "top3_fresh_01"
+  ],
+  "asset_summary": {
+    "required_editorial_assets": 14,
+    "verified_editorial_assets": 14
+  },
+  "global_rules": {
+    "aspect_ratio": "9:16",
+    "resolution": "1080x1920",
+    "fps": 30,
+    "target_duration_seconds": [
+      27,
+      30
+    ],
+    "subtitles": "burned_in",
+    "first_hook_deadline_seconds": 1,
+    "endcard_seconds": [
+      2,
+      3
+    ],
+    "ranking_policy": "Affiliate commission must never influence fragrance recommendations or merchant ordering.",
+    "claims_policy": [
+      "No invented similarity percentages.",
+      "Use clone/inspired/alternative only when backed by the current SCENTAI product relationship data.",
+      "Community performance metrics must be framed explicitly as community data.",
+      "Avoid numeric price claims in Batch 02 so the creative remains evergreen.",
+      "Do not describe different relationship types as equivalent."
+    ]
+  },
+  "pilots": [
+    {
+      "pilot": 6,
+      "content_id": "dupe_battle_imagination_01",
+      "canonical_launch_content_id": "dupe_battle_imagination_01",
+      "format": "dupe_battle",
+      "landing_path": "/parfum-alternativen",
+      "product_ids": [
+        "SC-ARABIYAT-MARWA-EDP-100",
+        "SC-BUJAIRAMI-HECTIC-100",
+        "SC-ARABIYAT-MARWA-EXTRAIT-60"
+      ],
+      "target_duration_seconds": 29,
+      "hook": "Marwa, Hectic oder Marwa Extrait – drei Imagination-Richtungen, aber nicht derselbe Duft.",
+      "voiceover": "Marwa, Hectic oder Marwa Extrait – drei Imagination-inspirierte Richtungen, aber nicht derselbe Duft. Marwa bleibt sehr frisch und ist deutlich süßer. Hectic ist genauso frisch, aber trockener und viel würziger. Marwa Extrait liegt dazwischen: weniger süß als Marwa, würziger und etwas dichter. SCENTAI zeigt dir die Unterschiede, statt alle drei einfach gleichzusetzen.",
+      "relationship_evidence": [
+        {
+          "product_id": "SC-ARABIYAT-MARWA-EDP-100",
+          "to": "SC-LV-IMAGINATION-100",
+          "type": "inspired",
+          "confidence": "high"
+        },
+        {
+          "product_id": "SC-BUJAIRAMI-HECTIC-100",
+          "to": "SC-LV-IMAGINATION-100",
+          "type": "inspired",
+          "confidence": "high"
+        },
+        {
+          "product_id": "SC-ARABIYAT-MARWA-EXTRAIT-60",
+          "to": "SC-LV-IMAGINATION-100",
+          "type": "inspired",
+          "confidence": "medium"
+        }
+      ],
+      "scenes": [
+        {
+          "seconds": "0-3",
+          "visual": "Marwa, Hectic and Marwa Extrait enter as three cards",
+          "overlay": "3 IMAGINATION-RICHTUNGEN"
+        },
+        {
+          "seconds": "3-10",
+          "visual": "Marwa profile card",
+          "overlay": "MARWA · FRISCH 10 · SÜSS 6"
+        },
+        {
+          "seconds": "10-17",
+          "visual": "Hectic profile card",
+          "overlay": "HECTIC · FRISCH 10 · WÜRZE 8"
+        },
+        {
+          "seconds": "17-24",
+          "visual": "Marwa Extrait profile card",
+          "overlay": "EXTRAIT · FRISCH 9 · SÜSS 3 · WÜRZE 7"
+        },
+        {
+          "seconds": "24-29",
+          "visual": "three inspired badges + SCENTAI comparison endcard",
+          "overlay": "INSPIRED – ABER NICHT GLEICH"
+        }
+      ],
+      "primary_cta": "Düfte in SCENTAI vergleichen",
+      "thumbnail": "MARWA VS HECTIC VS EXTRAIT"
+    },
+    {
+      "pilot": 7,
+      "content_id": "layton_alternatives_01",
+      "canonical_launch_content_id": "layton_alternatives_01",
+      "format": "dupe_battle",
+      "landing_path": "/parfum-alternativen",
+      "product_ids": [
+        "SC-PDM-LAYTON-125",
+        "SC-AL-HARAMAIN-DETOUR-NOIR-100",
+        "SC-ORIENTICA-ROYAL-BLEU-80"
+      ],
+      "target_duration_seconds": 28,
+      "hook": "Détour Noir und Royal Bleu gehen beide in Richtung Layton – aber bei SCENTAI nicht mit demselben Label.",
+      "voiceover": "Layton, Détour Noir oder Royal Bleu? Bei SCENTAI sehen die Duftprofile erstaunlich ähnlich aus: süß, würzig, holzig und nur mäßig frisch. Der entscheidende Unterschied ist die Beziehung: Détour Noir ist als Clone hinterlegt, Royal Bleu als Inspired. In den Community-Daten liegt Royal Bleu bei Haltbarkeit und Ausstrahlung etwas höher. Vergleiche die Beziehung und Performance direkt bei SCENTAI.",
+      "relationship_evidence": [
+        {
+          "product_id": "SC-AL-HARAMAIN-DETOUR-NOIR-100",
+          "to": "SC-PDM-LAYTON-125",
+          "type": "clone",
+          "confidence": "high"
+        },
+        {
+          "product_id": "SC-ORIENTICA-ROYAL-BLEU-80",
+          "to": "SC-PDM-LAYTON-125",
+          "type": "inspired",
+          "confidence": "high"
+        }
+      ],
+      "scenes": [
+        {
+          "seconds": "0-3",
+          "visual": "Layton center, Detour Noir and Royal Bleu left/right",
+          "overlay": "LAYTON: CLONE ODER INSPIRED?"
+        },
+        {
+          "seconds": "3-10",
+          "visual": "shared profile bars",
+          "overlay": "SÜSS 9 · WÜRZE 8 · HOLZ 6"
+        },
+        {
+          "seconds": "10-16",
+          "visual": "Layton + Detour Noir relationship card",
+          "overlay": "DÉTOUR NOIR · CLONE"
+        },
+        {
+          "seconds": "16-22",
+          "visual": "Layton + Royal Bleu relationship card",
+          "overlay": "ROYAL BLEU · INSPIRED"
+        },
+        {
+          "seconds": "22-28",
+          "visual": "community performance bars + comparison endcard",
+          "overlay": "COMMUNITY-DATEN + BEZIEHUNG VERGLEICHEN"
+        }
+      ],
+      "primary_cta": "Layton-Cluster vergleichen",
+      "thumbnail": "CLONE ODER INSPIRED?"
+    },
+    {
+      "pilot": 8,
+      "content_id": "althair_liquid_brun_01",
+      "canonical_launch_content_id": "althair_liquid_brun_01",
+      "format": "original_vs_alternative",
+      "landing_path": "/parfum-alternativen",
+      "product_ids": [
+        "SC-PDM-ALTHAIR-125",
+        "SC-FRENCH-AVENUE-LIQUID-BRUN-100"
+      ],
+      "target_duration_seconds": 27,
+      "hook": "Althaïr und Liquid Brun liegen bei SCENTAI ungewöhnlich nah beieinander.",
+      "voiceover": "Althaïr und Liquid Brun sind bei SCENTAI als Clone-Beziehung mit hoher Confidence hinterlegt. Die Profile liegen wirklich nah: beide sehr süß, gourmandig und würzig, mit wenig Frische. Der Unterschied steckt eher in Details: Althaïr ist holziger eingeordnet, Liquid Brun etwas weniger. Wenn du genau diese Richtung magst, vergleich die Profile statt nur auf den Namen zu schauen.",
+      "relationship_evidence": [
+        {
+          "product_id": "SC-PDM-ALTHAIR-125",
+          "to": "SC-FRENCH-AVENUE-LIQUID-BRUN-100",
+          "type": "clone",
+          "confidence": "high"
+        }
+      ],
+      "scenes": [
+        {
+          "seconds": "0-3",
+          "visual": "Althair and Liquid Brun split hero",
+          "overlay": "ALTHAÏR VS LIQUID BRUN"
+        },
+        {
+          "seconds": "3-10",
+          "visual": "shared profile bars",
+          "overlay": "FRISCHE 3 · SÜSSE 10 · WÜRZE 6"
+        },
+        {
+          "seconds": "10-16",
+          "visual": "relationship badge between both bottles",
+          "overlay": "SCENTAI: CLONE · HIGH CONFIDENCE"
+        },
+        {
+          "seconds": "16-22",
+          "visual": "woodiness comparison",
+          "overlay": "ALTHAÏR HOLZ 5 · LIQUID BRUN HOLZ 3"
+        },
+        {
+          "seconds": "22-27",
+          "visual": "SCENTAI comparison endcard",
+          "overlay": "PROFILE DIREKT VERGLEICHEN"
+        }
+      ],
+      "primary_cta": "Beide Profile vergleichen",
+      "thumbnail": "WIE NAH SIND SIE?"
+    },
+    {
+      "pilot": 9,
+      "content_id": "top3_date_01",
+      "canonical_launch_content_id": "top3_date_01",
+      "format": "occasion_advisor",
+      "landing_path": "/duftfinder",
+      "product_ids": [
+        "SC-ARMANI-SWY-INTENSELY-100",
+        "SC-DIOR-HOMME-INTENSE-100",
+        "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100"
+      ],
+      "target_duration_seconds": 30,
+      "hook": "Date Night – drei süße Richtungen, aber drei komplett andere Profile.",
+      "voiceover": "Date Night heißt nicht automatisch derselbe Duftstil. Stronger With You Intensely ist extrem süß, gourmandig und würzig. Dior Homme Intense ist ebenfalls wenig frisch, aber holziger und deutlich pudriger. Valentino Born In Roma Intense bleibt süß, ist im SCENTAI-Profil aber klar frischer. Drei verschiedene Stimmungen – der Duftfinder hilft dir, die passende Richtung zu wählen.",
+      "scenes": [
+        {
+          "seconds": "0-3",
+          "visual": "three bottles with date-night prompt",
+          "overlay": "DATE NIGHT · 3 RICHTUNGEN"
+        },
+        {
+          "seconds": "3-10",
+          "visual": "Stronger With You Intensely",
+          "overlay": "SÜSSE 10 · WÜRZE 7 · FRISCHE 2"
+        },
+        {
+          "seconds": "10-17",
+          "visual": "Dior Homme Intense",
+          "overlay": "PUDRIG · HOLZ 7 · FRISCHE 2"
+        },
+        {
+          "seconds": "17-24",
+          "visual": "Valentino Born In Roma Intense",
+          "overlay": "SÜSSE 8 · FRISCHE 5"
+        },
+        {
+          "seconds": "24-30",
+          "visual": "SCENTAI advisor chips",
+          "overlay": "WELCHER DATE-STIL PASST ZU DIR?"
+        }
+      ],
+      "primary_cta": "Date-Duft mit SCENTAI finden",
+      "thumbnail": "3 DATE-NIGHT-STILE"
+    },
+    {
+      "pilot": 10,
+      "content_id": "top3_fresh_01",
+      "canonical_launch_content_id": "top3_fresh_01",
+      "format": "top3_profile",
+      "landing_path": "/duftfinder",
+      "product_ids": [
+        "SC-LV-IMAGINATION-100",
+        "SC-BVLGARI-TYGAR-125",
+        "SC-AFNAN-TURATHI-BLUE-90"
+      ],
+      "target_duration_seconds": 28,
+      "hook": "Alle drei sind extrem frisch – und trotzdem komplett unterschiedlich aufgebaut.",
+      "voiceover": "Alle drei stehen bei SCENTAI auf maximaler Frische – aber sie riechen nicht gleich. Imagination ist zitrisch, aquatisch und kaum holzig. Tygar kombiniert die Frische mit deutlich mehr Holz und Würze. Turathi Blue bleibt ebenfalls sehr frisch, liegt aber etwas süßer und weniger würzig als Tygar. Gleiche Frische, anderer Charakter. Genau dafür gibt es den Duftfinder.",
+      "scenes": [
+        {
+          "seconds": "0-3",
+          "visual": "Imagination, Tygar and Turathi Blue hero",
+          "overlay": "FRISCHE 10/10 · ABER NICHT GLEICH"
+        },
+        {
+          "seconds": "3-9",
+          "visual": "Imagination profile",
+          "overlay": "IMAGINATION · HOLZ 2 · SÜSSE 2"
+        },
+        {
+          "seconds": "9-15",
+          "visual": "Tygar profile",
+          "overlay": "TYGAR · HOLZ 7 · WÜRZE 6"
+        },
+        {
+          "seconds": "15-21",
+          "visual": "Turathi Blue profile",
+          "overlay": "TURATHI · HOLZ 6 · SÜSSE 3 · WÜRZE 4"
+        },
+        {
+          "seconds": "21-28",
+          "visual": "SCENTAI fresh-style comparison endcard",
+          "overlay": "GLEICHE FRISCHE. ANDERER CHARAKTER."
+        }
+      ],
+      "primary_cta": "Frischen Duft finden",
+      "thumbnail": "3 FRISCHE DÜFTE. 3 TYPEN."
+    }
+  ]
+}
