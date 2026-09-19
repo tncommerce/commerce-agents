@@ -249,3 +249,23 @@ Verified on 2026-09-19:
 - https://dufynd.de/datenschutz renders kontakt@dufynd.de
 - previous Gmail contact address is no longer present on those public legal pages
 - DUFYND remains the public brand and TNCommerce remains the legal operator
+
+
+## Google Search Console verification
+
+Verified on 2026-09-19:
+- dufynd.de added as a Domain property in Google Search Console
+- ownership confirmed via DNS TXT record at INWX
+- keep the Google verification TXT record in DNS
+
+Live SEO state immediately after verification:
+- canonical host is https://dufynd.de
+- sitemap.xml is available and contains DUFYND catalogue/comparison URLs
+- robots.txt still intentionally blocks crawling
+- homepage still emits noindex/nofollow metadata
+
+Next:
+- set NEXT_PUBLIC_SITE_INDEXABLE=true on the Render storefront
+- redeploy
+- verify robots.txt, robots meta and sitemap.xml on the public domain
+- submit sitemap.xml in Search Console
