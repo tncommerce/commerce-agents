@@ -160,7 +160,7 @@ function collectionProfile(
     seen.add(candidate.product_id);
     suggestions.push({
       fragrance: candidate,
-      reason: `Deutlich ${axis.label.toLowerCase()} im SCENTAI-Profil`,
+      reason: `Deutlich ${axis.label.toLowerCase()} im DUFYND-Profil`,
     });
   }
 
@@ -202,9 +202,9 @@ function collectionAdvisorPrompt(
       : "";
 
   return [
-    "Ich möchte ausdrücklich, dass du meine aktuelle SCENTAI-Duftsammlung nur für diese Beratung berücksichtigst.",
+    "Ich möchte ausdrücklich, dass du meine aktuelle DUFYND-Duftsammlung nur für diese Beratung berücksichtigst.",
     `Ich besitze aktuell: ${fragranceList}.${omitted}`,
-    `Das grobe SCENTAI-Sammlungsprofil lautet: ${axisSummary}.`,
+    `Das grobe DUFYND-Sammlungsprofil lautet: ${axisSummary}.`,
     accordSummary
       ? `Häufige Akkorde in der Sammlung: ${accordSummary}.`
       : "",
@@ -242,7 +242,7 @@ function FragranceCard({
             />
           ) : (
             <span className="text-[11px] font-semibold tracking-[0.14em] text-(--ink-soft)">
-              SCENTAI
+              DUFYND
             </span>
           )}
         </div>
@@ -362,7 +362,7 @@ export default function FragranceLibraryHub({
   const intro =
     mode === "wishlist"
       ? "Speichere interessante Düfte für später und verschiebe sie mit einem Klick in deine Sammlung."
-      : "Behalte deine SCENTAI-Düfte im Blick und erkenne grobe Profil-Schwerpunkte deiner Sammlung.";
+      : "Behalte deine DUFYND-Düfte im Blick und erkenne grobe Profil-Schwerpunkte deiner Sammlung.";
   const emptyTitle =
     mode === "wishlist"
       ? "Noch nichts gemerkt"
@@ -451,7 +451,7 @@ export default function FragranceLibraryHub({
               </h2>
               <p className="mt-1 max-w-2xl text-[12px] leading-5 text-(--ink-soft)">
                 Eine grobe Übersicht aus den vier redaktionellen
-                SCENTAI-Profilachsen. Sie beschreibt deine gespeicherten
+                DUFYND-Profilachsen. Sie beschreibt deine gespeicherten
                 Düfte, nicht deinen persönlichen Geschmack.
               </p>
               <p className="mt-1 text-[11px] leading-5 text-(--ink-soft)">
@@ -542,7 +542,7 @@ export default function FragranceLibraryHub({
           ) : (
             <p className="mt-5 border-t border-(--line) pt-4 text-[11.5px] leading-5 text-(--ink-soft)">
               In allen vier groben Profilachsen ist mindestens ein Duft
-              mit einem SCENTAI-Wert ab 7/10 vorhanden. Das bedeutet
+              mit einem DUFYND-Wert ab 7/10 vorhanden. Das bedeutet
               nicht automatisch, dass die Sammlung vollständig oder
               ausgewogen ist.
             </p>
@@ -552,7 +552,7 @@ export default function FragranceLibraryHub({
 
       {mode === "owned" && owned.length === 1 ? (
         <section className="mt-5 rounded-2xl border border-(--line) bg-(--card) p-4 text-[12px] leading-5 text-(--ink-soft)">
-          Füge mindestens einen weiteren Duft hinzu, damit SCENTAI erste
+          Füge mindestens einen weiteren Duft hinzu, damit DUFYND erste
           grobe Profil-Schwerpunkte deiner Sammlung gegenüberstellen kann.
         </section>
       ) : null}
