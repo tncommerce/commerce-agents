@@ -228,3 +228,28 @@ python scripts/promote_scentai_catalog.py --manifest examples/retail/data/scenta
 Partial promotion is refused. The manifest itself is also tested for size,
 duplicate product IDs, staging existence, non-provisional community data and
 minimum researched merchant coverage.
+
+
+## Affiliate feed activation readiness
+
+A release-specific, read-only feed checker is now available:
+
+```powershell
+python scripts/check_scentai_release_feed.py --feed <LOCAL_FEED_FILE> --provider-config <PROVIDER_CONFIG>
+```
+
+It evaluates the real approved feed against Release Batch 01 and reports:
+- structural feed import readiness
+- Batch 01 product mapping coverage
+- in-stock tracked affiliate-offer coverage
+- reviewable feed-image coverage
+- per-product gaps
+
+The checker performs no writes and never approves images automatically.
+
+The full post-approval operating procedure is documented in
+`scentai_affiliate_feed_activation_runbook.md`.
+
+Current state remains intentionally blocked because no approved production feed
+has yet supplied real Batch 01 product identifiers, tracked offers or approved
+images.
