@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-19",
+  "status": "active",
+  "staged_total": 30,
+  "mapping_ready_products": 25,
+  "deferred_products": 5,
+  "principle": "Do not force a candidate into a release merely to improve coverage metrics. Deferred products remain staged until their specific blocker is resolved with verified data.",
+  "products": [
+    {
+      "product_id": "SC-JPG-FLEUR-DU-MALE-2026-EDT-125",
+      "candidate_id": "JPG-FLEUR-DU-MALE-2026",
+      "blocker_class": "identity_market_readiness",
+      "blockers": [
+        "community_performance_provisional",
+        "no_verified_current_edition_retail_channel"
+      ],
+      "next_trigger": "Recheck only when a German retailer explicitly lists the 2026 re-edition with unambiguous identity."
+    },
+    {
+      "product_id": "SC-DOLCE-GABBANA-THE-ONE-MEN-EDP-2025-100",
+      "candidate_id": "DOLCE-GABBANA-THE-ONE-MEN-EDP",
+      "blocker_class": "community_evidence",
+      "blockers": [
+        "community_performance_provisional"
+      ],
+      "next_trigger": "Recheck after sufficient non-provisional community/performance evidence is available."
+    },
+    {
+      "product_id": "SC-KAYALI-YUM-BOUJEE-MARSHMALLOW-81-EDPI-100",
+      "candidate_id": "KAYALI-YUM-BOUJEE-MARSHMALLOW-81",
+      "blocker_class": "affiliate_feed_alignment",
+      "blockers": [
+        "verified_merchants_not_yet_production_feed_ready"
+      ],
+      "next_trigger": "Recheck after Notino CJ approval/in-stock coverage or another approved partner feed carries the exact product."
+    },
+    {
+      "product_id": "SC-LATTAFA-ANGHAM-EDP-100",
+      "candidate_id": "LATTAFA-ANGHAM-EDP",
+      "blocker_class": "affiliate_feed_alignment",
+      "blockers": [
+        "verified_merchants_not_yet_production_feed_ready"
+      ],
+      "next_trigger": "Recheck after an approved production partner feed carries the exact product."
+    },
+    {
+      "product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
+      "candidate_id": "LATTAFA-ECLAIRE-EDP",
+      "blocker_class": "affiliate_feed_alignment",
+      "blockers": [
+        "verified_merchants_not_yet_production_feed_ready"
+      ],
+      "next_trigger": "Recheck after Notino CJ approval or another approved production partner feed carries the exact product."
+    }
+  ]
+}
