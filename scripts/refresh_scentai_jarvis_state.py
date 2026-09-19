@@ -21,6 +21,9 @@ from scripts.build_scentai_release_feed_activation_queue import (
 from scripts.build_scentai_release_gate_status import (
     build_release_gate_status,
 )
+from scripts.build_scentai_release_pipeline_status import (
+    build_release_pipeline_status,
+)
 from scripts.evaluate_scentai_affiliate_activation import (
     build_state_report,
 )
@@ -41,6 +44,7 @@ OUT_AFFILIATE = DATA_DIR / "scentai_affiliate_activation_status.json"
 OUT_IMAGES = DATA_DIR / "scentai_image_approval_work_queue.json"
 OUT_FEED = DATA_DIR / "scentai_release_01_feed_activation_queue.json"
 OUT_RELEASE = DATA_DIR / "scentai_release_01_gate_status.json"
+OUT_PIPELINE = DATA_DIR / "scentai_release_pipeline_status.json"
 OUT_OPERATIONS = DATA_DIR / "scentai_jarvis_operations_status.json"
 
 
@@ -105,6 +109,15 @@ def refresh_state(*, generated_at: str) -> dict[str, Any]:
         affiliate_status,
         generated_at=generated_at,
     )
+    release_pipeline = build_release_pipeline_status(
+        releases,
+        staging,
+        mappings,
+        offers,
+        image_queue,
+        affiliate_status,
+        generated_at=generated_at,
+    )
     operations = build_operations_status(
         mapping_queue,
         affiliate_status,
@@ -120,6 +133,7 @@ def refresh_state(*, generated_at: str) -> dict[str, Any]:
         "image_queue": image_queue,
         "feed_queue": feed_queue,
         "release_status": release_status,
+        "release_pipeline": release_pipeline,
         "operations": operations,
     }
 
@@ -130,6 +144,7 @@ def write_state(state: dict[str, Any]) -> None:
     write_json(OUT_IMAGES, state["image_queue"])
     write_json(OUT_FEED, state["feed_queue"])
     write_json(OUT_RELEASE, state["release_status"])
+    write_json(OUT_PIPELINE, state["release_pipeline"])
     write_json(OUT_OPERATIONS, state["operations"])
 
 
@@ -146,6 +161,13 @@ def summary(state: dict[str, Any]) -> dict[str, Any]:
         "images": state["image_queue"]["summary"],
         "feed": state["feed_queue"]["summary"],
         "release_01": state["release_status"]["summary"],
+        "release_pipeline": {
+            "release_count": state["release_pipeline"]["release_count"],
+            "current_release_id": state["release_pipeline"][
+                "current_release_id"
+            ],
+            "pipeline_state": state["release_pipeline"]["pipeline_state"],
+        },
     }
 
 
