@@ -12,6 +12,7 @@ Updated: 2026-09-19
 - content-level acquisition reporting prepared
 - standardized campaign-link builder
 - 15-creatives pre-launch content plan
+- all 15 pre-launch creatives scripted in three guarded production batches
 - three organic channels: TikTok, Instagram and YouTube
 - 45 standardized creative/channel link combinations available through the
   launch-link exporter
@@ -49,11 +50,11 @@ After database migration and deployment:
 
 ## Next operating block
 
-Turn the 15 planned creatives into production-ready short-form scripts with:
-- opening hook
-- 20-35 second structure
-- on-screen text
-- product sequence
-- trust-safe wording
-- CTA and assigned landing page
-- reusable cross-platform caption skeleton
+Move the 15 scripted creatives into production preparation:
+- shot list / visual asset checklist
+- reusable 9:16 editing template
+- approved product-image selection
+- subtitle and on-screen text layout
+- voiceover recording workflow
+- final tracked link assignment per channel
+- pre-publish claim and link QA
