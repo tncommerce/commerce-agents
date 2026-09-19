@@ -231,12 +231,12 @@
       "format": "original_vs_alternative",
       "landing_path": "/parfum-alternativen",
       "duration_target_seconds": 27,
-      "hook": "Althaïr oder Liquid Brun? Hier ist der interessante Teil: Die Performance-Daten liegen viel näher zusammen als der Preis.",
+      "hook": "Althaïr oder Liquid Brun? Hier ist der interessante Teil: Die Community-Performance-Daten liegen überraschend nah zusammen.",
       "scenes": [
         {
           "seconds": "0-4",
           "visual": "Althaïr und Liquid Brun nebeneinander.",
-          "voiceover": "Althaïr oder Liquid Brun? Hier ist der interessante Teil: Die Performance-Daten liegen viel näher zusammen als der Preis.",
+          "voiceover": "Althaïr oder Liquid Brun? Hier ist der interessante Teil: Die Community-Performance-Daten liegen überraschend nah zusammen.",
           "on_screen": "Althaïr vs Liquid Brun"
         },
         {
