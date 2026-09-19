@@ -7,11 +7,18 @@ on:
     paths:
       - "scripts/render_scentai_pilot_previews.py"
       - "examples/retail/data/scentai_pilot_batch_01.json"
+      - "examples/retail/data/scentai_pilot_batch_01_production_jobs.json"
+      - "examples/retail/data/scentai_pilot_batch_01_readiness.json"
       - "examples/retail/data/scentai_products.json"
+      - "examples/retail/storefront-web/public/products/pilot/**"
       - ".github/workflows/scentai-pilot-preview.yml"
 
 permissions:
   contents: write
+
+concurrency:
+  group: scentai-pilot-preview-scentai-mvp
+  cancel-in-progress: true
 
 jobs:
   render:
@@ -22,6 +29,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: scentai-mvp
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -38,14 +46,55 @@ jobs:
       - name: Render SCENTAI pilot previews
         run: python scripts/render_scentai_pilot_previews.py
 
-      - name: Commit generated previews
+      - name: Verify expected preview outputs
+        shell: bash
         run: |
+          set -euo pipefail
+          base="examples/retail/storefront-web/public/social/pilots/batch01"
+          test -s "$base/index.json"
+
+          expected=(
+            "original_vs_alt_imagination_01"
+            "not_every_dupe_clone_01"
+            "budget_three_under_50_01"
+            "bois_imperial_explained_01"
+            "top3_office_01"
+          )
+
+          for content_id in "${expected[@]}"; do
+            test -s "$base/${content_id}-preview.mp4"
+            test -s "$base/${content_id}-cover.jpg"
+          done
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path(
+              "examples/retail/storefront-web/public/social/"
+              "pilots/batch01/index.json"
+          )
+          payload = json.loads(path.read_text(encoding="utf-8"))
+          previews = payload.get("previews", [])
+          assert len(previews) == 5, previews
+          assert all(row.get("status") == "visual_preview" for row in previews)
+          assert all(row.get("audio") is False for row in previews)
+          print("Verified 5 SCENTAI visual preview outputs.")
+          PY
+
+      - name: Commit generated previews
+        shell: bash
+        run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add examples/retail/storefront-web/public/social/pilots/batch01
+
           if git diff --cached --quiet; then
             echo "No preview changes to commit."
             exit 0
           fi
+
           git commit -m "Generate SCENTAI pilot preview renders [skip ci]"
+          git pull --rebase origin scentai-mvp
           git push origin HEAD:scentai-mvp
