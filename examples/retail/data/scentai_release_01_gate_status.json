@@ -135,5 +135,6 @@
       "promotion_ready": false,
       "next_unblocking_event": "approved_affiliate_feed_or_verified_asset_usage_then_manual_visual_approval"
     }
-  ]
+  ],
+  "source_fingerprint_sha256": "d7c71051858296803f6b2f83d428063a32c1eb4cb325cf8eea72f3917907997a"
 }
