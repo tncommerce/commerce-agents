@@ -52,18 +52,18 @@ Current staged integration:
 - staged products with actual imported merchant offers: **0/30**
 - staged products with current affiliate offers: **0/30**
 - staged products with approved images: **0/30**
-- staged products with resolved merchant-product mappings: **15/30**
+- staged products with resolved merchant-product mappings: **25/30**
 
 The existing merchant-offer layer currently contains offers for the already
 live Essential Parfums Bois Impérial product. Those offers do not make any of
 the 30 staging products promotion-ready.
 
 The merchant-mapping file retains verified Douglas and flaconi identifiers for
-the already-live Bois Impérial record. In addition, all fifteen products across
-Release Batches 01, 02 and 03 now have resolved merchant-product mappings with
+the already-live Bois Impérial record. In addition, all twenty-five products across
+Release Batches 01 through 05 now have resolved merchant-product mappings with
 GTIN/EAN fallback identifiers.
 
-This means mapping readiness is **15/30** for the staged expansion pool even
+This means mapping readiness is **25/30** for the staged expansion pool even
 though live-offer readiness remains **0/30**. Mapping readiness must not be
 described as affiliate approval, current pricing or image approval.
 
@@ -311,3 +311,54 @@ flaconi or parfumdreams and have GTIN/EAN fallback identifiers.
 
 Release 03 is write-locked. It may be dry-run checked, but cannot be written
 live until the earlier release sequence has been validated operationally.
+
+
+## Release batch 04
+
+Release 04 is prepared in `scentai_release_batch_04.json` with:
+
+1. Jean Paul Gaultier Le Male Le Parfum 125 ml
+2. Viktor & Rolf Spicebomb Extreme 90 ml
+3. Hugo Boss BOSS Bottled Absolu 100 ml
+4. Yves Saint Laurent MYSLF Le Parfum 100 ml
+5. Dior Sauvage Elixir 100 ml
+
+All five have redundant mapping paths across merchants already represented in
+SCENTAI's affiliate application registry. Release 04 is write-locked until the
+earlier release sequence is operationally validated.
+
+## Release batch 05
+
+Release 05 is prepared in `scentai_release_batch_05.json` with:
+
+1. Hugo Boss BOSS Bottled Eau de Toilette 100 ml
+2. Prada L'Homme Intense Eau de Parfum 100 ml
+3. Amouage Reflection Man Eau de Parfum 100 ml
+4. Initio Side Effect Eau de Parfum 90 ml
+5. Yves Saint Laurent La Nuit de L'Homme Eau de Toilette 100 ml
+
+Reflection Man and Side Effect retain alternate packaging/barcode evidence
+explicitly in verification data rather than pretending that one barcode must
+describe every market package. Release 05 is write-locked until Releases 01-04
+have completed the real feed, image approval, promotion and smoke-test flow.
+
+## Deferred five-product backlog
+
+After Releases 01-05, exactly five staged products remain outside a mapping-ready
+release:
+
+- Jean Paul Gaultier Fleur du Mâle (2026)
+- Dolce & Gabbana The One for Men Eau de Parfum (2025)
+- Kayali Yum Boujee Marshmallow | 81
+- Lattafa Angham
+- Lattafa Eclaire
+
+The first two remain blocked by provisional/version-sensitive evidence. The
+other three remain staged because their currently verified merchant coverage is
+not yet aligned strongly enough with a production-ready SCENTAI affiliate feed.
+
+The machine-readable source of truth is
+`scentai_release_deferred_backlog.json`.
+
+This is intentional. SCENTAI should preserve data quality and operational
+readiness rather than chase a cosmetic 30/30 mapping number.
