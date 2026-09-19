@@ -1,0 +1,171 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-19",
+  "campaign_id": "launch01",
+  "batch_id": "pilot_batch_02",
+  "status": "recording_or_tts_ready",
+  "language": "de-DE",
+  "global_delivery": {
+    "tone": "conversational, trustworthy, confident, compact",
+    "target_pace_wpm": [
+      105,
+      130
+    ],
+    "editing_policy": "Do not aggressively time-stretch speech. Re-record or adjust pauses if outside duration tolerance.",
+    "music_policy": "Optional; use only licensed/platform-cleared music and keep voiceover clearly dominant."
+  },
+  "pilots": [
+    {
+      "production_order": 1,
+      "content_id": "dupe_battle_imagination_01",
+      "target_duration_seconds": 29,
+      "word_count": 52,
+      "required_wpm": 108,
+      "script": "Marwa, Hectic oder Marwa Extrait – drei Imagination-inspirierte Richtungen, aber nicht derselbe Duft. Marwa bleibt sehr frisch und ist deutlich süßer. Hectic ist genauso frisch, aber trockener und viel würziger. Marwa Extrait liegt dazwischen: weniger süß als Marwa, würziger und etwas dichter. SCENTAI zeigt dir die Unterschiede, statt alle drei einfach gleichzusetzen.",
+      "pronunciation_hints": [
+        {
+          "term": "SCENTAI",
+          "hint": "Scent-AI, zwei klare Silbenblöcke"
+        },
+        {
+          "term": "Marwa",
+          "hint": "MAR-wa"
+        },
+        {
+          "term": "Hectic",
+          "hint": "englisch „hek-tik“"
+        },
+        {
+          "term": "Imagination",
+          "hint": "markentypisch, nicht eingedeutscht"
+        }
+      ],
+      "output": {
+        "preferred_format": "wav",
+        "preferred_sample_rate_hz": 48000,
+        "filename": "dupe_battle_imagination_01.wav",
+        "local_path": "examples/retail/data/.scentai_pilot_audio/dupe_battle_imagination_01.wav"
+      }
+    },
+    {
+      "production_order": 2,
+      "content_id": "layton_alternatives_01",
+      "target_duration_seconds": 28,
+      "word_count": 57,
+      "required_wpm": 122,
+      "script": "Layton, Détour Noir oder Royal Bleu? Bei SCENTAI sehen die Duftprofile erstaunlich ähnlich aus: süß, würzig, holzig und nur mäßig frisch. Der entscheidende Unterschied ist die Beziehung: Détour Noir ist als Clone hinterlegt, Royal Bleu als Inspired. In den Community-Daten liegt Royal Bleu bei Haltbarkeit und Ausstrahlung etwas höher. Vergleiche die Beziehung und Performance direkt bei SCENTAI.",
+      "pronunciation_hints": [
+        {
+          "term": "SCENTAI",
+          "hint": "Scent-AI, zwei klare Silbenblöcke"
+        },
+        {
+          "term": "Détour Noir",
+          "hint": "französisch angehaucht, nicht überbetont"
+        },
+        {
+          "term": "Royal Bleu",
+          "hint": "Royal englisch, Bleu französisch"
+        }
+      ],
+      "output": {
+        "preferred_format": "wav",
+        "preferred_sample_rate_hz": 48000,
+        "filename": "layton_alternatives_01.wav",
+        "local_path": "examples/retail/data/.scentai_pilot_audio/layton_alternatives_01.wav"
+      }
+    },
+    {
+      "production_order": 3,
+      "content_id": "althair_liquid_brun_01",
+      "target_duration_seconds": 27,
+      "word_count": 57,
+      "required_wpm": 127,
+      "script": "Althaïr und Liquid Brun sind bei SCENTAI als Clone-Beziehung mit hoher Confidence hinterlegt. Die Profile liegen wirklich nah: beide sehr süß, gourmandig und würzig, mit wenig Frische. Der Unterschied steckt eher in Details: Althaïr ist holziger eingeordnet, Liquid Brun etwas weniger. Wenn du genau diese Richtung magst, vergleich die Profile statt nur auf den Namen zu schauen.",
+      "pronunciation_hints": [
+        {
+          "term": "SCENTAI",
+          "hint": "Scent-AI, zwei klare Silbenblöcke"
+        },
+        {
+          "term": "Althaïr",
+          "hint": "Al-tha-ir, ruhig und klar"
+        },
+        {
+          "term": "Liquid Brun",
+          "hint": "Liquid englisch, Brun französisch angehaucht"
+        }
+      ],
+      "output": {
+        "preferred_format": "wav",
+        "preferred_sample_rate_hz": 48000,
+        "filename": "althair_liquid_brun_01.wav",
+        "local_path": "examples/retail/data/.scentai_pilot_audio/althair_liquid_brun_01.wav"
+      }
+    },
+    {
+      "production_order": 4,
+      "content_id": "top3_date_01",
+      "target_duration_seconds": 30,
+      "word_count": 55,
+      "required_wpm": 110,
+      "script": "Date Night heißt nicht automatisch derselbe Duftstil. Stronger With You Intensely ist extrem süß, gourmandig und würzig. Dior Homme Intense ist ebenfalls wenig frisch, aber holziger und deutlich pudriger. Valentino Born In Roma Intense bleibt süß, ist im SCENTAI-Profil aber klar frischer. Drei verschiedene Stimmungen – der Duftfinder hilft dir, die passende Richtung zu wählen.",
+      "pronunciation_hints": [
+        {
+          "term": "SCENTAI",
+          "hint": "Scent-AI, zwei klare Silbenblöcke"
+        },
+        {
+          "term": "Stronger With You Intensely",
+          "hint": "englisch, natürlich"
+        },
+        {
+          "term": "Dior Homme Intense",
+          "hint": "Dior französisch angehaucht, Homme etwa „Om“"
+        },
+        {
+          "term": "Valentino Born In Roma Intense",
+          "hint": "Valentino italienisch angehaucht, Rest natürlich"
+        }
+      ],
+      "output": {
+        "preferred_format": "wav",
+        "preferred_sample_rate_hz": 48000,
+        "filename": "top3_date_01.wav",
+        "local_path": "examples/retail/data/.scentai_pilot_audio/top3_date_01.wav"
+      }
+    },
+    {
+      "production_order": 5,
+      "content_id": "top3_fresh_01",
+      "target_duration_seconds": 28,
+      "word_count": 56,
+      "required_wpm": 120,
+      "script": "Alle drei stehen bei SCENTAI auf maximaler Frische – aber sie riechen nicht gleich. Imagination ist zitrisch, aquatisch und kaum holzig. Tygar kombiniert die Frische mit deutlich mehr Holz und Würze. Turathi Blue bleibt ebenfalls sehr frisch, liegt aber etwas süßer und weniger würzig als Tygar. Gleiche Frische, anderer Charakter. Genau dafür gibt es den Duftfinder.",
+      "pronunciation_hints": [
+        {
+          "term": "SCENTAI",
+          "hint": "Scent-AI, zwei klare Silbenblöcke"
+        },
+        {
+          "term": "Imagination",
+          "hint": "markentypisch, nicht eingedeutscht"
+        },
+        {
+          "term": "Tygar",
+          "hint": "Tai-gar"
+        },
+        {
+          "term": "Turathi Blue",
+          "hint": "Tu-ra-thi Blue"
+        }
+      ],
+      "output": {
+        "preferred_format": "wav",
+        "preferred_sample_rate_hz": 48000,
+        "filename": "top3_fresh_01.wav",
+        "local_path": "examples/retail/data/.scentai_pilot_audio/top3_fresh_01.wav"
+      }
+    }
+  ]
+}
