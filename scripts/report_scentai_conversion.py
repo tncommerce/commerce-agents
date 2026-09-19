@@ -19,6 +19,7 @@ POSITION_VIEW = "scentai_advisor_position_engagement"
 SURFACE_VIEW = "scentai_clickout_surface_summary"
 ACQUISITION_VIEW = "scentai_acquisition_funnel"
 LIBRARY_VIEW = "scentai_personal_library_engagement"
+RETENTION_VIEW = "scentai_retention_summary"
 
 
 def _integer(value: object) -> int:
@@ -50,6 +51,7 @@ def build_conversion_report(
     *,
     acquisition_rows: list[dict] | None = None,
     library_rows: list[dict] | None = None,
+    retention_rows: list[dict] | None = None,
     limit: int = 20,
     minimum_sample_sessions: int = 10,
 ) -> dict[str, Any]:
@@ -334,6 +336,34 @@ def build_conversion_report(
         )
     )
 
+    retention_row = (retention_rows or [{}])[0]
+    retention_summary = {
+        "wishlist_page_views": _integer(
+            retention_row.get("wishlist_page_views")
+        ),
+        "wishlist_page_sessions": _integer(
+            retention_row.get("wishlist_page_sessions")
+        ),
+        "collection_page_views": _integer(
+            retention_row.get("collection_page_views")
+        ),
+        "collection_page_sessions": _integer(
+            retention_row.get("collection_page_sessions")
+        ),
+        "wishlist_add_sessions": _integer(
+            retention_row.get("wishlist_add_sessions")
+        ),
+        "collection_add_sessions": _integer(
+            retention_row.get("collection_add_sessions")
+        ),
+        "collection_advisor_sessions": _integer(
+            retention_row.get("collection_advisor_sessions")
+        ),
+        "last_retention_event_at": retention_row.get(
+            "last_retention_event_at"
+        ),
+    }
+
     return {
         "minimum_sample_sessions": minimum_sample_sessions,
         "summary": summary,
@@ -454,6 +484,12 @@ def main() -> int:
             view=LIBRARY_VIEW,
             max_rows=args.max_rows,
         )
+        retention_rows = fetch_view_rows(
+            supabase_url=supabase_url,
+            service_key=service_key,
+            view=RETENTION_VIEW,
+            max_rows=1,
+        )
     except Exception as exc:
         parser.error(f"Supabase conversion report failed: {exc}")
 
@@ -465,6 +501,7 @@ def main() -> int:
         load_json(args.catalog),
         acquisition_rows=acquisition_rows,
         library_rows=library_rows,
+        retention_rows=retention_rows,
         limit=args.limit,
         minimum_sample_sessions=args.minimum_sample_sessions,
     )
@@ -574,6 +611,21 @@ def main() -> int:
             ),
             ("sample_status", "sample"),
         ],
+    )
+
+    retention = report["retention_summary"]
+    print(
+        "Retention | "
+        f"wishlist_page_sessions="
+        f"{retention['wishlist_page_sessions']} | "
+        f"collection_page_sessions="
+        f"{retention['collection_page_sessions']} | "
+        f"wishlist_add_sessions="
+        f"{retention['wishlist_add_sessions']} | "
+        f"collection_add_sessions="
+        f"{retention['collection_add_sessions']} | "
+        f"collection_advisor_sessions="
+        f"{retention['collection_advisor_sessions']}"
     )
 
     return 0
