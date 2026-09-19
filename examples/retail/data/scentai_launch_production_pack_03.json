@@ -1,0 +1,236 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-19",
+  "batch_id": "launch_production_pack_03",
+  "source_script_file": "scentai_launch_scripts_batch_03.json",
+  "canvas_ref": "scentai_launch_production_pack_01.json#canvas",
+  "reusable_components_ref": "scentai_launch_production_pack_01.json#reusable_components",
+  "creatives": [
+    {
+      "content_id": "top3_fresh_01",
+      "required_product_assets": [
+        {
+          "product_id": "SC-LV-IMAGINATION-100",
+          "image_url": "/products/pilot/louis-vuitton-imagination-editorial.png"
+        },
+        {
+          "product_id": "SC-BVLGARI-TYGAR-125",
+          "image_url": "/products/pilot/bvlgari-tygar-editorial.png"
+        },
+        {
+          "product_id": "SC-AFNAN-TURATHI-BLUE-90",
+          "image_url": "/products/pilot/afnan-turathi-blue-editorial.png"
+        }
+      ],
+      "scene_assets": [
+        {
+          "scene": 1,
+          "component": "three_product_intro",
+          "instruction": "Equal three-product intro with headline '3× frisch • 3× anderes Profil'."
+        },
+        {
+          "scene": 2,
+          "component": "product_card",
+          "instruction": "Imagination: fresh/citrus/aquatic/green, low sweetness."
+        },
+        {
+          "scene": 3,
+          "component": "product_card",
+          "instruction": "Tygar: fresh/citrus/woody/spicy."
+        },
+        {
+          "scene": 4,
+          "component": "product_card",
+          "instruction": "Turathi Blue: fresh/citrus/fruity/woody/aquatic."
+        },
+        {
+          "scene": 5,
+          "component": "cta_endcard",
+          "instruction": "CTA: 'Frischen Duft finden'."
+        }
+      ],
+      "missing_assets": [],
+      "production_status": "asset_ready"
+    },
+    {
+      "content_id": "signature_vs_safe_01",
+      "required_product_assets": [
+        {
+          "product_id": "SC-DIOR-SAUVAGE-EDP-100",
+          "image_url": "/products/pilot/dior-sauvage-edp-editorial.png"
+        },
+        {
+          "product_id": "SC-PRADA-LHOMME-100",
+          "image_url": "/products/pilot/prada-lhomme-editorial.png"
+        },
+        {
+          "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+          "image_url": "/products/pilot/bois-imperial-editorial.png"
+        }
+      ],
+      "scene_assets": [
+        {
+          "scene": 1,
+          "component": "three_product_intro",
+          "instruction": "Present as three everyday-profile directions, not safe/bold rankings."
+        },
+        {
+          "scene": 2,
+          "component": "product_card",
+          "instruction": "Sauvage: fresh/spicy/citrus/woody."
+        },
+        {
+          "scene": 3,
+          "component": "product_card",
+          "instruction": "Prada L'Homme: powdery/fresh/floral/creamy."
+        },
+        {
+          "scene": 4,
+          "component": "product_card",
+          "instruction": "Bois Impérial: woodiness 9, sweetness 1, freshness 8."
+        },
+        {
+          "scene": 5,
+          "component": "cta_endcard",
+          "instruction": "CTA: 'SCENTAI nach deinem Stil fragen'."
+        }
+      ],
+      "missing_assets": [],
+      "production_status": "asset_ready"
+    },
+    {
+      "content_id": "bois_imperial_explained_01",
+      "required_product_assets": [
+        {
+          "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+          "image_url": "/products/pilot/bois-imperial-editorial.png"
+        }
+      ],
+      "scene_assets": [
+        {
+          "scene": 1,
+          "component": "hero_product_intro",
+          "instruction": "Single centered bottle with question 'passt das zu dir?'."
+        },
+        {
+          "scene": 2,
+          "component": "score_bar",
+          "instruction": "Woodiness 9 / freshness 8 / sweetness 1."
+        },
+        {
+          "scene": 3,
+          "component": "profile_strip",
+          "instruction": "green / spicy / synthetic facets."
+        },
+        {
+          "scene": 4,
+          "component": "dual_score_bar",
+          "instruction": "Community longevity 8.5 / projection 8.1."
+        },
+        {
+          "scene": 5,
+          "component": "cta_endcard",
+          "instruction": "CTA: 'Passung mit SCENTAI prüfen'."
+        }
+      ],
+      "missing_assets": [],
+      "production_status": "asset_ready"
+    },
+    {
+      "content_id": "not_every_dupe_clone_01",
+      "required_product_assets": [
+        {
+          "product_id": "SC-PDM-ALTHAIR-125",
+          "image_url": "/products/pilot/pdm-althair-editorial.png"
+        },
+        {
+          "product_id": "SC-FRENCH-AVENUE-LIQUID-BRUN-100",
+          "image_url": "/products/pilot/liquid-brun-editorial.png"
+        },
+        {
+          "product_id": "SC-CREED-AVENTUS-100",
+          "image_url": "/products/pilot/creed-aventus-editorial.png"
+        },
+        {
+          "product_id": "SC-MONTBLANC-EXPLORER-100",
+          "image_url": "/products/pilot/montblanc-explorer-editorial.png"
+        }
+      ],
+      "scene_assets": [
+        {
+          "scene": 1,
+          "component": "relationship_legend",
+          "instruction": "Text-only legend: Clone ≠ Alternative ≠ Inspired."
+        },
+        {
+          "scene": 2,
+          "component": "relationship_badge",
+          "instruction": "Althaïr ↔ Liquid Brun: clone/high."
+        },
+        {
+          "scene": 3,
+          "component": "relationship_badge",
+          "instruction": "Aventus ↔ Explorer: alternative/high."
+        },
+        {
+          "scene": 4,
+          "component": "relationship_legend",
+          "instruction": "Text-only Inspired example; no additional product visual."
+        },
+        {
+          "scene": 5,
+          "component": "cta_endcard",
+          "instruction": "CTA: 'Beziehungen transparent vergleichen'."
+        }
+      ],
+      "missing_assets": [],
+      "production_status": "asset_ready"
+    },
+    {
+      "content_id": "gift_for_him_safe_to_bold_01",
+      "required_product_assets": [
+        {
+          "product_id": "SC-CHANEL-BLEU-DE-CHANEL-EDP-100",
+          "image_url": "/products/pilot/bleu-de-chanel-edp-editorial.png"
+        },
+        {
+          "product_id": "SC-PRADA-LHOMME-100",
+          "image_url": "/products/pilot/prada-lhomme-editorial.png"
+        },
+        {
+          "product_id": "SC-XERJOFF-NAXOS-100",
+          "image_url": "/products/pilot/xerjoff-naxos-editorial.png"
+        }
+      ],
+      "scene_assets": [
+        {
+          "scene": 1,
+          "component": "three_product_intro",
+          "instruction": "Present as three gift-profile directions, not safe-to-bold hierarchy."
+        },
+        {
+          "scene": 2,
+          "component": "product_card",
+          "instruction": "Bleu de Chanel: fresh/citrus/woody/aquatic."
+        },
+        {
+          "scene": 3,
+          "component": "product_card",
+          "instruction": "Prada L'Homme: powdery/floral/creamy."
+        },
+        {
+          "scene": 4,
+          "component": "product_card",
+          "instruction": "Naxos: sweet/spicy/gourmand plus stronger community performance note."
+        },
+        {
+          "scene": 5,
+          "component": "cta_endcard",
+          "instruction": "CTA: 'Geschenkberatung starten'."
+        }
+      ],
+      "missing_assets": [],
+      "production_status": "asset_ready"
+    }
+  ]
+}
