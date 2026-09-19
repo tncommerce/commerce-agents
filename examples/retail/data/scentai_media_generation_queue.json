@@ -1,0 +1,560 @@
+{
+  "version": 1,
+  "generated_at": "2026-09-19",
+  "source_fingerprint_sha256": "b4858adcd55f6e74e195c32022fd215134012e7b1226e14ccf879c197b1fb3f3",
+  "machine_id": "scentai_media_generation_queue_v1",
+  "active_provider": null,
+  "summary": {
+    "jobs": 15,
+    "batches": 3,
+    "local_visual_render_available": true,
+    "voice_synthesis_provider_connected": false
+  },
+  "safety": {
+    "automatic_publish_allowed": false,
+    "provider_credentials_allowed_in_repo_state": false,
+    "provider_may_change_claims": false
+  },
+  "jobs": [
+    {
+      "batch_id": "pilot_batch_01",
+      "production_order": 1,
+      "content_id": "original_vs_alt_imagination_01",
+      "campaign_id": "launch01",
+      "state": "visual_preview_pending",
+      "target_duration_seconds": 29,
+      "script": "Du magst Louis Vuitton Imagination, willst aber nicht automatisch beim Originalpreis landen? Imagination ist bei SCENTAI extrem frisch, zitrisch und aquatisch eingeordnet. Marwa bleibt ebenfalls sehr frisch, wirkt in unseren Daten aber deutlich süßer. Hectic bleibt trockener und wesentlich würziger. Wichtig: Beide sind bei SCENTAI als inspiriert hinterlegt, nicht als pauschaler Eins-zu-eins-Klon. Vergleiche die Profile direkt bei SCENTAI.",
+      "product_ids": [
+        "SC-LV-IMAGINATION-100",
+        "SC-ARABIYAT-MARWA-EDP-100",
+        "SC-BUJAIRAMI-HECTIC-100"
+      ],
+      "landing_path": "/parfum-alternativen",
+      "paths": {
+        "visual_preview": "examples/retail/storefront-web/public/social/pilots/batch01/original_vs_alt_imagination_01-preview.mp4",
+        "voiceover": "examples/retail/data/.scentai_pilot_audio/original_vs_alt_imagination_01.wav",
+        "subtitle": "examples/retail/data/scentai_pilot_batch_01_subtitles/original_vs_alt_imagination_01.srt",
+        "final_render": "examples/retail/data/.scentai_pilot_final_renders/original_vs_alt_imagination_01.mp4"
+      },
+      "required_capabilities": [
+        "visual_preview_render",
+        "voice_synthesis_or_recorded_voiceover",
+        "subtitle_timing_conformance",
+        "subtitle_burn_in",
+        "voiceover_mux",
+        "technical_media_qa"
+      ],
+      "approval_gates": [
+        "subtitle_timing_confirmation",
+        "mobile_content_review",
+        "explicit_user_publish_approval"
+      ],
+      "provider_may_publish": false,
+      "publish_action_class": "approval_required"
+    },
+    {
+      "batch_id": "pilot_batch_01",
+      "production_order": 2,
+      "content_id": "budget_three_under_50_01",
+      "campaign_id": "launch01",
+      "state": "visual_preview_pending",
+      "target_duration_seconds": 30,
+      "script": "Drei interessante Düfte unter 50 Euro, die nicht einfach dasselbe machen. Kayaan Classic ist süß, pudrig und holzig und liegt bei SCENTAI im Dior-Homme-Intense-Cluster. Liquid Brun geht deutlich gourmandiger, süßer und wärmer. Turathi Blue ist die Gegenrichtung: sehr frisch, zitrisch und deutlich weniger süß. Gleicher Budgetrahmen, drei komplett unterschiedliche Profile. SCENTAI hilft dir zu entscheiden, welches davon zu dir passt.",
+      "product_ids": [
+        "SC-AL-WATANIAH-KAYAAN-CLASSIC-100",
+        "SC-FRENCH-AVENUE-LIQUID-BRUN-100",
+        "SC-AFNAN-TURATHI-BLUE-90"
+      ],
+      "landing_path": "/duftfinder",
+      "paths": {
+        "visual_preview": "examples/retail/storefront-web/public/social/pilots/batch01/budget_three_under_50_01-preview.mp4",
+        "voiceover": "examples/retail/data/.scentai_pilot_audio/budget_three_under_50_01.wav",
+        "subtitle": "examples/retail/data/scentai_pilot_batch_01_subtitles/budget_three_under_50_01.srt",
+        "final_render": "examples/retail/data/.scentai_pilot_final_renders/budget_three_under_50_01.mp4"
+      },
+      "required_capabilities": [
+        "visual_preview_render",
+        "voice_synthesis_or_recorded_voiceover",
+        "subtitle_timing_conformance",
+        "subtitle_burn_in",
+        "voiceover_mux",
+        "technical_media_qa"
+      ],
+      "approval_gates": [
+        "subtitle_timing_confirmation",
+        "mobile_content_review",
+        "explicit_user_publish_approval"
+      ],
+      "provider_may_publish": false,
+      "publish_action_class": "approval_required"
+    },
+    {
+      "batch_id": "pilot_batch_01",
+      "production_order": 3,
+      "content_id": "not_every_dupe_clone_01",
+      "campaign_id": "launch01",
+      "state": "visual_preview_pending",
+      "target_duration_seconds": 28,
+      "script": "Nicht jeder ähnliche Duft ist automatisch ein Eins-zu-eins-Dupe. Ein Clone versucht, dem Original möglichst nahe zu kommen. Ein Inspired-Duft übernimmt eine erkennbare Grundidee und setzt eigene Akzente. Eine Alternative kann einfach einen ähnlichen Stil oder Einsatzzweck erfüllen. Deshalb unterscheidet SCENTAI diese Beziehungen transparent, statt alles pauschal als Dupe zu bezeichnen.",
+      "product_ids": [
+        "SC-PDM-ALTHAIR-125",
+        "SC-FRENCH-AVENUE-LIQUID-BRUN-100",
+        "SC-LV-IMAGINATION-100",
+        "SC-ARABIYAT-MARWA-EDP-100",
+        "SC-CREED-AVENTUS-100",
+        "SC-MONTBLANC-EXPLORER-100"
+      ],
+      "landing_path": "/parfum-alternativen",
+      "paths": {
+        "visual_preview": "examples/retail/storefront-web/public/social/pilots/batch01/not_every_dupe_clone_01-preview.mp4",
+        "voiceover": "examples/retail/data/.scentai_pilot_audio/not_every_dupe_clone_01.wav",
+        "subtitle": "examples/retail/data/scentai_pilot_batch_01_subtitles/not_every_dupe_clone_01.srt",
+        "final_render": "examples/retail/data/.scentai_pilot_final_renders/not_every_dupe_clone_01.mp4"
+      },
+      "required_capabilities": [
+        "visual_preview_render",
+        "voice_synthesis_or_recorded_voiceover",
+        "subtitle_timing_conformance",
+        "subtitle_burn_in",
+        "voiceover_mux",
+        "technical_media_qa"
+      ],
+      "approval_gates": [
+        "subtitle_timing_confirmation",
+        "mobile_content_review",
+        "explicit_user_publish_approval"
+      ],
+      "provider_may_publish": false,
+      "publish_action_class": "approval_required"
+    },
+    {
+      "batch_id": "pilot_batch_01",
+      "production_order": 4,
+      "content_id": "top3_office_01",
+      "campaign_id": "launch01",
+      "state": "visual_preview_pending",
+      "target_duration_seconds": 30,
+      "script": "Der eine beste Büroduft existiert nicht, weil dein Stil entscheidet. Prada L'Homme ist sauber, pudrig und relativ ausgewogen. Bois Impérial ist trockener, holziger und deutlich charakterstärker. Bleu de Chanel Eau de Parfum verbindet viel Frische mit einer klassischen holzigen Richtung. Deshalb fragt SCENTAI nicht nur nach 'Büro', sondern auch nach Frische, Süße und gewünschter Präsenz.",
+      "product_ids": [
+        "SC-PRADA-LHOMME-100",
+        "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+        "SC-CHANEL-BLEU-DE-CHANEL-EDP-100"
+      ],
+      "landing_path": "/duftfinder",
+      "paths": {
+        "visual_preview": "examples/retail/storefront-web/public/social/pilots/batch01/top3_office_01-preview.mp4",
+        "voiceover": "examples/retail/data/.scentai_pilot_audio/top3_office_01.wav",
+        "subtitle": "examples/retail/data/scentai_pilot_batch_01_subtitles/top3_office_01.srt",
+        "final_render": "examples/retail/data/.scentai_pilot_final_renders/top3_office_01.mp4"
+      },
+      "required_capabilities": [
+        "visual_preview_render",
+        "voice_synthesis_or_recorded_voiceover",
+        "subtitle_timing_conformance",
+        "subtitle_burn_in",
+        "voiceover_mux",
+        "technical_media_qa"
+      ],
+      "approval_gates": [
+        "subtitle_timing_confirmation",
+        "mobile_content_review",
+        "explicit_user_publish_approval"
+      ],
+      "provider_may_publish": false,
+      "publish_action_class": "approval_required"
+    },
+    {
+      "batch_id": "pilot_batch_01",
+      "production_order": 5,
+      "content_id": "bois_imperial_explained_01",
+      "campaign_id": "launch01",
+      "state": "visual_preview_pending",
+      "target_duration_seconds": 27,
+      "script": "Bois Impérial ist bei SCENTAI vor allem frisch, sehr holzig, würzig und grün eingeordnet. Die Süße liegt dagegen ganz unten. In den Community-Daten stehen außerdem starke Haltbarkeit und deutliche Ausstrahlung. Das ergibt keinen typischen süßen Mainstream-Duft, sondern einen trockenen, modernen und sehr präsenten Holzstil. Wenn du genau so etwas suchst, prüf deine Passung bei SCENTAI.",
+      "product_ids": [
+        "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100"
+      ],
+      "landing_path": "/duftfinder",
+      "paths": {
+        "visual_preview": "examples/retail/storefront-web/public/social/pilots/batch01/bois_imperial_explained_01-preview.mp4",
+        "voiceover": "examples/retail/data/.scentai_pilot_audio/bois_imperial_explained_01.wav",
+        "subtitle": "examples/retail/data/scentai_pilot_batch_01_subtitles/bois_imperial_explained_01.srt",
+        "final_render": "examples/retail/data/.scentai_pilot_final_renders/bois_imperial_explained_01.mp4"
+      },
+      "required_capabilities": [
+        "visual_preview_render",
+        "voice_synthesis_or_recorded_voiceover",
+        "subtitle_timing_conformance",
+        "subtitle_burn_in",
+        "voiceover_mux",
+        "technical_media_qa"
+      ],
+      "approval_gates": [
+        "subtitle_timing_confirmation",
+        "mobile_content_review",
+        "explicit_user_publish_approval"
+      ],
+      "provider_may_publish": false,
+      "publish_action_class": "approval_required"
+    },
+    {
+      "batch_id": "pilot_batch_02",
+      "production_order": 1,
+      "content_id": "dupe_battle_imagination_01",
+      "campaign_id": "launch01",
+      "state": "visual_preview_pending",
+      "target_duration_seconds": 29,
+      "script": "Marwa, Hectic oder Marwa Extrait – drei Imagination-inspirierte Richtungen, aber nicht derselbe Duft. Marwa bleibt sehr frisch und ist deutlich süßer. Hectic ist genauso frisch, aber trockener und viel würziger. Marwa Extrait liegt dazwischen: weniger süß als Marwa, würziger und etwas dichter. SCENTAI zeigt dir die Unterschiede, statt alle drei einfach gleichzusetzen.",
+      "product_ids": [
+        "SC-ARABIYAT-MARWA-EDP-100",
+        "SC-BUJAIRAMI-HECTIC-100",
+        "SC-ARABIYAT-MARWA-EXTRAIT-60"
+      ],
+      "landing_path": "/parfum-alternativen",
+      "paths": {
+        "visual_preview": "examples/retail/storefront-web/public/social/pilots/batch02/dupe_battle_imagination_01-preview.mp4",
+        "voiceover": "examples/retail/data/.scentai_pilot_audio/dupe_battle_imagination_01.wav",
+        "subtitle": "examples/retail/data/scentai_pilot_batch_02_subtitles/dupe_battle_imagination_01.srt",
+        "final_render": "examples/retail/data/.scentai_pilot_final_renders/dupe_battle_imagination_01.mp4"
+      },
+      "required_capabilities": [
+        "visual_preview_render",
+        "voice_synthesis_or_recorded_voiceover",
+        "subtitle_timing_conformance",
+        "subtitle_burn_in",
+        "voiceover_mux",
+        "technical_media_qa"
+      ],
+      "approval_gates": [
+        "subtitle_timing_confirmation",
+        "mobile_content_review",
+        "explicit_user_publish_approval"
+      ],
+      "provider_may_publish": false,
+      "publish_action_class": "approval_required"
+    },
+    {
+      "batch_id": "pilot_batch_02",
+      "production_order": 2,
+      "content_id": "layton_alternatives_01",
+      "campaign_id": "launch01",
+      "state": "visual_preview_pending",
+      "target_duration_seconds": 28,
+      "script": "Layton, Détour Noir oder Royal Bleu? Bei SCENTAI sehen die Duftprofile erstaunlich ähnlich aus: süß, würzig, holzig und nur mäßig frisch. Der entscheidende Unterschied ist die Beziehung: Détour Noir ist als Clone hinterlegt, Royal Bleu als Inspired. In den Community-Daten liegt Royal Bleu bei Haltbarkeit und Ausstrahlung etwas höher. Vergleiche die Beziehung und Performance direkt bei SCENTAI.",
+      "product_ids": [
+        "SC-PDM-LAYTON-125",
+        "SC-AL-HARAMAIN-DETOUR-NOIR-100",
+        "SC-ORIENTICA-ROYAL-BLEU-80"
+      ],
+      "landing_path": "/parfum-alternativen",
+      "paths": {
+        "visual_preview": "examples/retail/storefront-web/public/social/pilots/batch02/layton_alternatives_01-preview.mp4",
+        "voiceover": "examples/retail/data/.scentai_pilot_audio/layton_alternatives_01.wav",
+        "subtitle": "examples/retail/data/scentai_pilot_batch_02_subtitles/layton_alternatives_01.srt",
+        "final_render": "examples/retail/data/.scentai_pilot_final_renders/layton_alternatives_01.mp4"
+      },
+      "required_capabilities": [
+        "visual_preview_render",
+        "voice_synthesis_or_recorded_voiceover",
+        "subtitle_timing_conformance",
+        "subtitle_burn_in",
+        "voiceover_mux",
+        "technical_media_qa"
+      ],
+      "approval_gates": [
+        "subtitle_timing_confirmation",
+        "mobile_content_review",
+        "explicit_user_publish_approval"
+      ],
+      "provider_may_publish": false,
+      "publish_action_class": "approval_required"
+    },
+    {
+      "batch_id": "pilot_batch_02",
+      "production_order": 3,
+      "content_id": "althair_liquid_brun_01",
+      "campaign_id": "launch01",
+      "state": "visual_preview_pending",
+      "target_duration_seconds": 27,
+      "script": "Althaïr und Liquid Brun sind bei SCENTAI als Clone-Beziehung mit hoher Confidence hinterlegt. Die Profile liegen wirklich nah: beide sehr süß, gourmandig und würzig, mit wenig Frische. Der Unterschied steckt eher in Details: Althaïr ist holziger eingeordnet, Liquid Brun etwas weniger. Wenn du genau diese Richtung magst, vergleich die Profile statt nur auf den Namen zu schauen.",
+      "product_ids": [
+        "SC-PDM-ALTHAIR-125",
+        "SC-FRENCH-AVENUE-LIQUID-BRUN-100"
+      ],
+      "landing_path": "/parfum-alternativen",
+      "paths": {
+        "visual_preview": "examples/retail/storefront-web/public/social/pilots/batch02/althair_liquid_brun_01-preview.mp4",
+        "voiceover": "examples/retail/data/.scentai_pilot_audio/althair_liquid_brun_01.wav",
+        "subtitle": "examples/retail/data/scentai_pilot_batch_02_subtitles/althair_liquid_brun_01.srt",
+        "final_render": "examples/retail/data/.scentai_pilot_final_renders/althair_liquid_brun_01.mp4"
+      },
+      "required_capabilities": [
+        "visual_preview_render",
+        "voice_synthesis_or_recorded_voiceover",
+        "subtitle_timing_conformance",
+        "subtitle_burn_in",
+        "voiceover_mux",
+        "technical_media_qa"
+      ],
+      "approval_gates": [
+        "subtitle_timing_confirmation",
+        "mobile_content_review",
+        "explicit_user_publish_approval"
+      ],
+      "provider_may_publish": false,
+      "publish_action_class": "approval_required"
+    },
+    {
+      "batch_id": "pilot_batch_02",
+      "production_order": 4,
+      "content_id": "top3_date_01",
+      "campaign_id": "launch01",
+      "state": "visual_preview_pending",
+      "target_duration_seconds": 30,
+      "script": "Date Night heißt nicht automatisch derselbe Duftstil. Stronger With You Intensely ist extrem süß, gourmandig und würzig. Dior Homme Intense ist ebenfalls wenig frisch, aber holziger und deutlich pudriger. Valentino Born In Roma Intense bleibt süß, ist im SCENTAI-Profil aber klar frischer. Drei verschiedene Stimmungen – der Duftfinder hilft dir, die passende Richtung zu wählen.",
+      "product_ids": [
+        "SC-ARMANI-SWY-INTENSELY-100",
+        "SC-DIOR-HOMME-INTENSE-100",
+        "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100"
+      ],
+      "landing_path": "/duftfinder",
+      "paths": {
+        "visual_preview": "examples/retail/storefront-web/public/social/pilots/batch02/top3_date_01-preview.mp4",
+        "voiceover": "examples/retail/data/.scentai_pilot_audio/top3_date_01.wav",
+        "subtitle": "examples/retail/data/scentai_pilot_batch_02_subtitles/top3_date_01.srt",
+        "final_render": "examples/retail/data/.scentai_pilot_final_renders/top3_date_01.mp4"
+      },
+      "required_capabilities": [
+        "visual_preview_render",
+        "voice_synthesis_or_recorded_voiceover",
+        "subtitle_timing_conformance",
+        "subtitle_burn_in",
+        "voiceover_mux",
+        "technical_media_qa"
+      ],
+      "approval_gates": [
+        "subtitle_timing_confirmation",
+        "mobile_content_review",
+        "explicit_user_publish_approval"
+      ],
+      "provider_may_publish": false,
+      "publish_action_class": "approval_required"
+    },
+    {
+      "batch_id": "pilot_batch_02",
+      "production_order": 5,
+      "content_id": "top3_fresh_01",
+      "campaign_id": "launch01",
+      "state": "visual_preview_pending",
+      "target_duration_seconds": 28,
+      "script": "Alle drei stehen bei SCENTAI auf maximaler Frische – aber sie riechen nicht gleich. Imagination ist zitrisch, aquatisch und kaum holzig. Tygar kombiniert die Frische mit deutlich mehr Holz und Würze. Turathi Blue bleibt ebenfalls sehr frisch, liegt aber etwas süßer und weniger würzig als Tygar. Gleiche Frische, anderer Charakter. Genau dafür gibt es den Duftfinder.",
+      "product_ids": [
+        "SC-LV-IMAGINATION-100",
+        "SC-BVLGARI-TYGAR-125",
+        "SC-AFNAN-TURATHI-BLUE-90"
+      ],
+      "landing_path": "/duftfinder",
+      "paths": {
+        "visual_preview": "examples/retail/storefront-web/public/social/pilots/batch02/top3_fresh_01-preview.mp4",
+        "voiceover": "examples/retail/data/.scentai_pilot_audio/top3_fresh_01.wav",
+        "subtitle": "examples/retail/data/scentai_pilot_batch_02_subtitles/top3_fresh_01.srt",
+        "final_render": "examples/retail/data/.scentai_pilot_final_renders/top3_fresh_01.mp4"
+      },
+      "required_capabilities": [
+        "visual_preview_render",
+        "voice_synthesis_or_recorded_voiceover",
+        "subtitle_timing_conformance",
+        "subtitle_burn_in",
+        "voiceover_mux",
+        "technical_media_qa"
+      ],
+      "approval_gates": [
+        "subtitle_timing_confirmation",
+        "mobile_content_review",
+        "explicit_user_publish_approval"
+      ],
+      "provider_may_publish": false,
+      "publish_action_class": "approval_required"
+    },
+    {
+      "batch_id": "pilot_batch_03",
+      "production_order": 1,
+      "content_id": "tygar_vibrato_value_01",
+      "campaign_id": "launch01",
+      "state": "visual_preview_pending",
+      "target_duration_seconds": 30,
+      "script": "Tygar, Vibrato, Turathi Blue und Regent stehen bei SCENTAI alle auf maximaler Frische. Vibrato ist als Alternative zu Tygar hinterlegt. Turathi Blue ist zu Tygar und Vibrato als Inspired gespeichert. Regent ist ebenfalls Inspired, mit stärkerer Confidence zu Vibrato. Beim Profil ist Tygar würziger und holziger, Vibrato etwas weicher, Turathi und Regent liegen dazwischen. Vergleiche Beziehung und Profil direkt bei SCENTAI.",
+      "product_ids": [
+        "SC-BVLGARI-TYGAR-125",
+        "SC-SOSPIRO-VIBRATO-100",
+        "SC-AFNAN-TURATHI-BLUE-90",
+        "SC-MAISON-ASRAR-REGENT-100"
+      ],
+      "landing_path": "/parfum-alternativen",
+      "paths": {
+        "visual_preview": "examples/retail/storefront-web/public/social/pilots/batch03/tygar_vibrato_value_01-preview.mp4",
+        "voiceover": "examples/retail/data/.scentai_pilot_audio/tygar_vibrato_value_01.wav",
+        "subtitle": "examples/retail/data/scentai_pilot_batch_03_subtitles/tygar_vibrato_value_01.srt",
+        "final_render": "examples/retail/data/.scentai_pilot_final_renders/tygar_vibrato_value_01.mp4"
+      },
+      "required_capabilities": [
+        "visual_preview_render",
+        "voice_synthesis_or_recorded_voiceover",
+        "subtitle_timing_conformance",
+        "subtitle_burn_in",
+        "voiceover_mux",
+        "technical_media_qa"
+      ],
+      "approval_gates": [
+        "subtitle_timing_confirmation",
+        "mobile_content_review",
+        "explicit_user_publish_approval"
+      ],
+      "provider_may_publish": false,
+      "publish_action_class": "approval_required"
+    },
+    {
+      "batch_id": "pilot_batch_03",
+      "production_order": 2,
+      "content_id": "naxos_value_01",
+      "campaign_id": "launch01",
+      "state": "visual_preview_pending",
+      "target_duration_seconds": 28,
+      "script": "Naxos ist bei SCENTAI sehr süß, würzig und gourmandig eingeordnet. Ateeq und Rayhaan Italia sind beide als Inspired hinterlegt. Ateeq bleibt genauso süß und würzig, wirkt im Profil aber etwas weniger frisch. Italia liegt bei Frische, Süße und Würze fast auf Naxos-Niveau, ist aber etwas holziger. Drei ähnliche Richtungen, drei eigene Profile.",
+      "product_ids": [
+        "SC-XERJOFF-NAXOS-100",
+        "SC-NUSUK-ATEEQ-100",
+        "SC-RAYHAAN-ITALIA-100"
+      ],
+      "landing_path": "/parfum-alternativen",
+      "paths": {
+        "visual_preview": "examples/retail/storefront-web/public/social/pilots/batch03/naxos_value_01-preview.mp4",
+        "voiceover": "examples/retail/data/.scentai_pilot_audio/naxos_value_01.wav",
+        "subtitle": "examples/retail/data/scentai_pilot_batch_03_subtitles/naxos_value_01.srt",
+        "final_render": "examples/retail/data/.scentai_pilot_final_renders/naxos_value_01.mp4"
+      },
+      "required_capabilities": [
+        "visual_preview_render",
+        "voice_synthesis_or_recorded_voiceover",
+        "subtitle_timing_conformance",
+        "subtitle_burn_in",
+        "voiceover_mux",
+        "technical_media_qa"
+      ],
+      "approval_gates": [
+        "subtitle_timing_confirmation",
+        "mobile_content_review",
+        "explicit_user_publish_approval"
+      ],
+      "provider_may_publish": false,
+      "publish_action_class": "approval_required"
+    },
+    {
+      "batch_id": "pilot_batch_03",
+      "production_order": 3,
+      "content_id": "dior_homme_intense_alt_01",
+      "campaign_id": "launch01",
+      "state": "visual_preview_pending",
+      "target_duration_seconds": 27,
+      "script": "Dior Homme Intense und Kayaan Classic sind bei SCENTAI als Clone-Beziehung mit hoher Confidence hinterlegt. Frische, Süße und Holz liegen in unseren Profilen exakt gleich. Der auffälligste Unterschied ist die Würze: Dior Homme Intense liegt bei sechs von zehn, Kayaan Classic nur bei zwei. Ähnliche Grundrichtung, aber nicht komplett identisch. Genau diese Details zeigt dir SCENTAI.",
+      "product_ids": [
+        "SC-DIOR-HOMME-INTENSE-100",
+        "SC-AL-WATANIAH-KAYAAN-CLASSIC-100"
+      ],
+      "landing_path": "/parfum-alternativen",
+      "paths": {
+        "visual_preview": "examples/retail/storefront-web/public/social/pilots/batch03/dior_homme_intense_alt_01-preview.mp4",
+        "voiceover": "examples/retail/data/.scentai_pilot_audio/dior_homme_intense_alt_01.wav",
+        "subtitle": "examples/retail/data/scentai_pilot_batch_03_subtitles/dior_homme_intense_alt_01.srt",
+        "final_render": "examples/retail/data/.scentai_pilot_final_renders/dior_homme_intense_alt_01.mp4"
+      },
+      "required_capabilities": [
+        "visual_preview_render",
+        "voice_synthesis_or_recorded_voiceover",
+        "subtitle_timing_conformance",
+        "subtitle_burn_in",
+        "voiceover_mux",
+        "technical_media_qa"
+      ],
+      "approval_gates": [
+        "subtitle_timing_confirmation",
+        "mobile_content_review",
+        "explicit_user_publish_approval"
+      ],
+      "provider_may_publish": false,
+      "publish_action_class": "approval_required"
+    },
+    {
+      "batch_id": "pilot_batch_03",
+      "production_order": 4,
+      "content_id": "signature_vs_safe_01",
+      "campaign_id": "launch01",
+      "state": "visual_preview_pending",
+      "target_duration_seconds": 30,
+      "script": "Sauvage Eau de Parfum, Prada L'Homme und Bois Impérial sind alle frisch eingeordnet, wirken aber komplett unterschiedlich. Sauvage ist deutlich würziger. Prada L'Homme ist pudriger, weicher und weniger würzig. Bois Impérial ist dagegen kaum süß, sehr holzig und ebenfalls kräftig gewürzt. Der Duftfinder fragt deshalb nicht nur nach Frische, sondern nach dem gesamten Profil, das zu dir passt.",
+      "product_ids": [
+        "SC-DIOR-SAUVAGE-EDP-100",
+        "SC-PRADA-LHOMME-100",
+        "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100"
+      ],
+      "landing_path": "/duftfinder",
+      "paths": {
+        "visual_preview": "examples/retail/storefront-web/public/social/pilots/batch03/signature_vs_safe_01-preview.mp4",
+        "voiceover": "examples/retail/data/.scentai_pilot_audio/signature_vs_safe_01.wav",
+        "subtitle": "examples/retail/data/scentai_pilot_batch_03_subtitles/signature_vs_safe_01.srt",
+        "final_render": "examples/retail/data/.scentai_pilot_final_renders/signature_vs_safe_01.mp4"
+      },
+      "required_capabilities": [
+        "visual_preview_render",
+        "voice_synthesis_or_recorded_voiceover",
+        "subtitle_timing_conformance",
+        "subtitle_burn_in",
+        "voiceover_mux",
+        "technical_media_qa"
+      ],
+      "approval_gates": [
+        "subtitle_timing_confirmation",
+        "mobile_content_review",
+        "explicit_user_publish_approval"
+      ],
+      "provider_may_publish": false,
+      "publish_action_class": "approval_required"
+    },
+    {
+      "batch_id": "pilot_batch_03",
+      "production_order": 5,
+      "content_id": "gift_for_him_safe_to_bold_01",
+      "campaign_id": "launch01",
+      "state": "visual_preview_pending",
+      "target_duration_seconds": 30,
+      "script": "Beim Parfumgeschenk hilft es mehr, den Stil zu kennen als irgendeine pauschale Nummer eins. Bleu de Chanel Eau de Parfum ist frisch, holzig und moderat süß. Prada L'Homme ist pudriger, weicher und etwas weniger frisch. Naxos geht in die Gegenrichtung: sehr süß, würzig und gourmandig. Der SCENTAI Geschenkberater fragt deshalb nach Geschmack und gewünschter Wirkung, bevor er Vorschläge macht.",
+      "product_ids": [
+        "SC-CHANEL-BLEU-DE-CHANEL-EDP-100",
+        "SC-PRADA-LHOMME-100",
+        "SC-XERJOFF-NAXOS-100"
+      ],
+      "landing_path": "/parfum-geschenkberater",
+      "paths": {
+        "visual_preview": "examples/retail/storefront-web/public/social/pilots/batch03/gift_for_him_safe_to_bold_01-preview.mp4",
+        "voiceover": "examples/retail/data/.scentai_pilot_audio/gift_for_him_safe_to_bold_01.wav",
+        "subtitle": "examples/retail/data/scentai_pilot_batch_03_subtitles/gift_for_him_safe_to_bold_01.srt",
+        "final_render": "examples/retail/data/.scentai_pilot_final_renders/gift_for_him_safe_to_bold_01.mp4"
+      },
+      "required_capabilities": [
+        "visual_preview_render",
+        "voice_synthesis_or_recorded_voiceover",
+        "subtitle_timing_conformance",
+        "subtitle_burn_in",
+        "voiceover_mux",
+        "technical_media_qa"
+      ],
+      "approval_gates": [
+        "subtitle_timing_confirmation",
+        "mobile_content_review",
+        "explicit_user_publish_approval"
+      ],
+      "provider_may_publish": false,
+      "publish_action_class": "approval_required"
+    }
+  ]
+}
