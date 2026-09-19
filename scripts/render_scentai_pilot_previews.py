@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import json
 import math
 import subprocess
@@ -38,7 +39,7 @@ FONT_BOLD_CANDIDATES = [
     Path("/usr/share/fonts/truetype/liberation2/LiberationSans-Bold.ttf"),
 ]
 
-SCENE_PRODUCTS: dict[str, list[list[str]]] = {
+SCENE_PRODUCTS_BATCH01: dict[str, list[list[str]]] = {
     "original_vs_alt_imagination_01": [
         [
             "SC-LV-IMAGINATION-100",
@@ -99,6 +100,81 @@ SCENE_PRODUCTS: dict[str, list[list[str]]] = {
             "SC-PRADA-LHOMME-100",
             "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
             "SC-CHANEL-BLEU-DE-CHANEL-EDP-100",
+        ],
+    ],
+
+}
+
+SCENE_PRODUCTS_BATCH02: dict[str, list[list[str]]] = {
+    "dupe_battle_imagination_01": [
+        [
+            "SC-ARABIYAT-MARWA-EDP-100",
+            "SC-BUJAIRAMI-HECTIC-100",
+            "SC-ARABIYAT-MARWA-EXTRAIT-60",
+        ],
+        ["SC-ARABIYAT-MARWA-EDP-100"],
+        ["SC-BUJAIRAMI-HECTIC-100"],
+        ["SC-ARABIYAT-MARWA-EXTRAIT-60"],
+        [
+            "SC-ARABIYAT-MARWA-EDP-100",
+            "SC-BUJAIRAMI-HECTIC-100",
+            "SC-ARABIYAT-MARWA-EXTRAIT-60",
+        ],
+    ],
+    "layton_alternatives_01": [
+        [
+            "SC-PDM-LAYTON-125",
+            "SC-AL-HARAMAIN-DETOUR-NOIR-100",
+            "SC-ORIENTICA-ROYAL-BLEU-80",
+        ],
+        [
+            "SC-PDM-LAYTON-125",
+            "SC-AL-HARAMAIN-DETOUR-NOIR-100",
+            "SC-ORIENTICA-ROYAL-BLEU-80",
+        ],
+        ["SC-PDM-LAYTON-125", "SC-AL-HARAMAIN-DETOUR-NOIR-100"],
+        ["SC-PDM-LAYTON-125", "SC-ORIENTICA-ROYAL-BLEU-80"],
+        [
+            "SC-PDM-LAYTON-125",
+            "SC-AL-HARAMAIN-DETOUR-NOIR-100",
+            "SC-ORIENTICA-ROYAL-BLEU-80",
+        ],
+    ],
+    "althair_liquid_brun_01": [
+        ["SC-PDM-ALTHAIR-125", "SC-FRENCH-AVENUE-LIQUID-BRUN-100"],
+        ["SC-PDM-ALTHAIR-125", "SC-FRENCH-AVENUE-LIQUID-BRUN-100"],
+        ["SC-PDM-ALTHAIR-125", "SC-FRENCH-AVENUE-LIQUID-BRUN-100"],
+        ["SC-PDM-ALTHAIR-125", "SC-FRENCH-AVENUE-LIQUID-BRUN-100"],
+        ["SC-PDM-ALTHAIR-125", "SC-FRENCH-AVENUE-LIQUID-BRUN-100"],
+    ],
+    "top3_date_01": [
+        [
+            "SC-ARMANI-SWY-INTENSELY-100",
+            "SC-DIOR-HOMME-INTENSE-100",
+            "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
+        ],
+        ["SC-ARMANI-SWY-INTENSELY-100"],
+        ["SC-DIOR-HOMME-INTENSE-100"],
+        ["SC-VALENTINO-BORN-IN-ROMA-INTENSE-100"],
+        [
+            "SC-ARMANI-SWY-INTENSELY-100",
+            "SC-DIOR-HOMME-INTENSE-100",
+            "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
+        ],
+    ],
+    "top3_fresh_01": [
+        [
+            "SC-LV-IMAGINATION-100",
+            "SC-BVLGARI-TYGAR-125",
+            "SC-AFNAN-TURATHI-BLUE-90",
+        ],
+        ["SC-LV-IMAGINATION-100"],
+        ["SC-BVLGARI-TYGAR-125"],
+        ["SC-AFNAN-TURATHI-BLUE-90"],
+        [
+            "SC-LV-IMAGINATION-100",
+            "SC-BVLGARI-TYGAR-125",
+            "SC-AFNAN-TURATHI-BLUE-90",
         ],
     ],
 }
@@ -351,6 +427,7 @@ def render_scene(
     scene_index: int,
     scene: dict,
     products_by_id: dict[str, dict],
+    scene_products: dict[str, list[list[str]]],
     output_path: Path,
 ) -> None:
     canvas = Image.new(
@@ -362,7 +439,7 @@ def render_scene(
     draw_brand_header(canvas, int(pilot["pilot"]))
     draw_overlay(canvas, str(scene.get("overlay") or ""))
 
-    product_ids = SCENE_PRODUCTS[pilot["content_id"]][scene_index]
+    product_ids = scene_products[pilot["content_id"]][scene_index]
     products = [products_by_id[product_id] for product_id in product_ids]
     boxes = card_layout(len(products))
 
@@ -430,26 +507,45 @@ def render_video(
 
 
 def main() -> int:
-    manifest = load_json(PILOT_MANIFEST)
+    parser = argparse.ArgumentParser(
+        description="Render SCENTAI pilot visual preview MP4 files."
+    )
+    parser.add_argument(
+        "--batch",
+        choices=("batch01", "batch02"),
+        default="batch01",
+    )
+    args = parser.parse_args()
+
+    if args.batch == "batch02":
+        pilot_manifest = DATA_DIR / "scentai_pilot_batch_02.json"
+        output_dir = PUBLIC_DIR / "social/pilots/batch02"
+        scene_products = SCENE_PRODUCTS_BATCH02
+    else:
+        pilot_manifest = DATA_DIR / "scentai_pilot_batch_01.json"
+        output_dir = PUBLIC_DIR / "social/pilots/batch01"
+        scene_products = SCENE_PRODUCTS_BATCH01
+
+    manifest = load_json(pilot_manifest)
     products_payload = load_json(PRODUCTS_FILE)
     products_by_id = {
         product["product_id"]: product
         for product in products_payload.get("products", [])
     }
 
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     index_rows: list[dict] = []
     for pilot in manifest.get("pilots", []):
         content_id = str(pilot["content_id"])
         scenes = pilot.get("scenes", [])
-        expected = SCENE_PRODUCTS.get(content_id)
+        expected = scene_products.get(content_id)
         if expected is None or len(expected) != len(scenes):
             raise ValueError(
                 f"{content_id}: scene-product mapping is missing or incomplete"
             )
 
-        pilot_dir = OUTPUT_DIR / content_id
+        pilot_dir = output_dir / content_id
         pilot_dir.mkdir(parents=True, exist_ok=True)
 
         frame_paths: list[Path] = []
@@ -461,15 +557,16 @@ def main() -> int:
                 scene_index=index,
                 scene=scene,
                 products_by_id=products_by_id,
+                scene_products=scene_products,
                 output_path=frame_path,
             )
             frame_paths.append(frame_path)
             durations.append(parse_duration(str(scene["seconds"])))
 
-        cover_path = OUTPUT_DIR / f"{content_id}-cover.jpg"
+        cover_path = output_dir / f"{content_id}-cover.jpg"
         Image.open(frame_paths[0]).save(cover_path, quality=95)
 
-        video_path = OUTPUT_DIR / f"{content_id}-preview.mp4"
+        video_path = output_dir / f"{content_id}-preview.mp4"
         render_video(
             frame_paths=frame_paths,
             durations=durations,
@@ -491,12 +588,13 @@ def main() -> int:
             }
         )
 
-    index_path = OUTPUT_DIR / "index.json"
+    index_path = output_dir / "index.json"
     index_path.write_text(
         json.dumps(
             {
                 "version": 1,
-                "generated_from": PILOT_MANIFEST.name,
+                "batch": args.batch,
+                "generated_from": pilot_manifest.name,
                 "previews": index_rows,
             },
             ensure_ascii=False,
@@ -508,8 +606,8 @@ def main() -> int:
 
     print(
         "Rendered "
-        f"{len(index_rows)} SCENTAI pilot visual previews -> "
-        f"{OUTPUT_DIR}"
+        f"{len(index_rows)} SCENTAI {args.batch} visual previews -> "
+        f"{output_dir}"
     )
     return 0
 
