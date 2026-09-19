@@ -255,3 +255,17 @@ wishlist or collection.
 `scripts/report_scentai_conversion.py` includes this view in the
 `personal_library_engagement` section. As with other product metrics, small
 samples must remain `early_signal`.
+
+
+### scentai_retention_summary
+
+High-level retention signals for the local fragrance library:
+- wishlist page views and sessions
+- collection page views and sessions
+- sessions adding a wishlist item
+- sessions adding an owned fragrance
+- sessions that explicitly start the collection-aware advisor
+
+These are anonymous session counts. They do not identify the same person across
+browser sessions and therefore must not be described as a repeat-user or
+retention-rate metric.
