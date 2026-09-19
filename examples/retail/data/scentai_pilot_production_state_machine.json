@@ -12,6 +12,9 @@
     "scripted": {
       "publishable": false
     },
+    "visual_preview_pending": {
+      "publishable": false
+    },
     "visual_preview_ready": {
       "publishable": false
     },
@@ -52,8 +55,14 @@
   "transitions": [
     {
       "from": "scripted",
+      "to": "visual_preview_pending",
+      "trigger": "production_job_created",
+      "action_class": "auto_allowed"
+    },
+    {
+      "from": "visual_preview_pending",
       "to": "visual_preview_ready",
-      "trigger": "visual_preview_verified",
+      "trigger": "visual_preview_mp4_verified",
       "action_class": "auto_allowed"
     },
     {
