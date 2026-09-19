@@ -74,6 +74,13 @@ Re-run the release checker after every mapping change.
 Use the existing merchant import pipeline with the same feed and provider
 config. Do not write offers until the dry-run is clean.
 
+From the repository root in PowerShell:
+
+```powershell
+$env:PYTHONPATH = "examples"
+python -m retail.api.import_merchant_feed --feed <LOCAL_FEED_FILE> --provider-config <PROVIDER_CONFIG> --dry-run
+```
+
 The import pipeline already protects against:
 - duplicate offer IDs
 - invalid provider rows
@@ -83,8 +90,15 @@ The import pipeline already protects against:
 
 ## 6. Extract and manually review feed images
 
-Use the existing feed-image extraction path. Feed images remain review-only
-until the exact bottle/product pair is visually approved.
+Use the existing feed-image extraction path:
+
+```powershell
+$env:PYTHONPATH = "examples"
+python -m retail.api.extract_merchant_feed_assets --feed <LOCAL_FEED_FILE> --provider-config <PROVIDER_CONFIG>
+```
+
+Feed images remain review-only until the exact bottle/product pair is visually
+approved.
 
 Never approve a generic brand image, wrong concentration, wrong bottle size,
 gift set, tester, refill or legacy edition as the canonical product image.
