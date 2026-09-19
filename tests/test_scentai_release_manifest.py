@@ -5,7 +5,6 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
-
 from scripts.promote_scentai_catalog import (
     load_release_manifest,
     promotion_plan,
