@@ -6,6 +6,7 @@ from pathlib import Path
 from scripts.render_scentai_pilot_previews import (
     SCENE_PRODUCTS_BATCH01,
     SCENE_PRODUCTS_BATCH02,
+    SCENE_PRODUCTS_BATCH03,
 )
 
 DATA_DIR = Path("examples/retail/data")
@@ -48,4 +49,11 @@ def test_batch02_scene_map_matches_manifest() -> None:
     assert_scene_map_matches_manifest(
         "scentai_pilot_batch_02.json",
         SCENE_PRODUCTS_BATCH02,
+    )
+
+
+def test_batch03_scene_map_matches_manifest() -> None:
+    assert_scene_map_matches_manifest(
+        "scentai_pilot_batch_03.json",
+        SCENE_PRODUCTS_BATCH03,
     )
