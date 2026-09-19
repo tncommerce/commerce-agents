@@ -13,6 +13,7 @@ for import_root in (REPO_ROOT, EXAMPLES_DIR):
     if import_path not in sys.path:
         sys.path.insert(0, import_path)
 
+from scripts.promote_scentai_catalog import load_release_manifest  # noqa: E402
 from retail.api.merchant_feed_reader import (  # noqa: E402
     DEFAULT_MAX_FEED_BYTES,
     DEFAULT_MAX_FEED_ROWS,
@@ -27,7 +28,6 @@ from retail.api.merchant_providers import (  # noqa: E402
 from retail.api.scentai_release_feed_readiness import (  # noqa: E402
     build_release_feed_readiness,
 )
-from scripts.promote_scentai_catalog import load_release_manifest  # noqa: E402
 
 DEFAULT_MANIFEST = Path(
     "examples/retail/data/scentai_release_batch_01.json"
