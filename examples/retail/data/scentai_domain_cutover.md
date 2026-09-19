@@ -269,3 +269,19 @@ Next:
 - redeploy
 - verify robots.txt, robots meta and sitemap.xml on the public domain
 - submit sitemap.xml in Search Console
+
+
+## Live SEO cutover verified
+
+Verified on 2026-09-19 after enabling NEXT_PUBLIC_SITE_INDEXABLE:
+- https://dufynd.de/robots.txt returns 200 and allows all crawlers
+- robots.txt advertises https://dufynd.de/sitemap.xml
+- https://dufynd.de/sitemap.xml returns 200
+- homepage robots meta is "index, follow"
+- homepage canonical is https://dufynd.de
+- homepage title is "DUFYND – Duftberatung & Parfumvergleich"
+
+Next:
+- submit sitemap.xml in Google Search Console
+- request indexing for the homepage and a small set of priority landing/detail pages
+- monitor indexing coverage and crawl errors before scaling content acquisition
