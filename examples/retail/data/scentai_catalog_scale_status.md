@@ -52,18 +52,18 @@ Current staged integration:
 - staged products with actual imported merchant offers: **0/30**
 - staged products with current affiliate offers: **0/30**
 - staged products with approved images: **0/30**
-- staged products with resolved merchant-product mappings: **10/30**
+- staged products with resolved merchant-product mappings: **15/30**
 
 The existing merchant-offer layer currently contains offers for the already
 live Essential Parfums Bois Impérial product. Those offers do not make any of
 the 30 staging products promotion-ready.
 
 The merchant-mapping file retains verified Douglas and flaconi identifiers for
-the already-live Bois Impérial record. In addition, all ten products across
-Release Batches 01 and 02 now have resolved merchant-product mappings with
+the already-live Bois Impérial record. In addition, all fifteen products across
+Release Batches 01, 02 and 03 now have resolved merchant-product mappings with
 GTIN/EAN fallback identifiers.
 
-This means mapping readiness is **10/30** for the staged expansion pool even
+This means mapping readiness is **15/30** for the staged expansion pool even
 though live-offer readiness remains **0/30**. Mapping readiness must not be
 described as affiliate approval, current pricing or image approval.
 
@@ -287,3 +287,27 @@ Release 01 remains write-capable only in the narrow sense that the CLI may
 attempt a write after every existing product-level gate passes. At the current
 state, Release 01 is still blocked because no current tracked affiliate offers
 or approved production images exist for its five products.
+
+
+## Release batch 03
+
+Release 03 is prepared in `scentai_release_batch_03.json` with:
+
+1. Parfums de Marly Valaya Exclusif Eau de Parfum 75 ml
+2. Amouage Guidance 46 Extrait de Parfum 100 ml
+3. Tom Ford Ombré Leather Eau de Parfum 100 ml
+4. Parfums de Marly Herod Eau de Parfum 125 ml
+5. Nishane Ani Extrait de Parfum 100 ml
+
+The selection adds a feed-readiness constraint on top of the catalog priority
+signals. Lattafa Eclaire, Kayali Yum Boujee Marshmallow | 81 and Lattafa
+Angham remain higher portfolio-gap candidates, but their currently verified
+merchant coverage is not yet aligned strongly enough with SCENTAI's applied
+production affiliate feeds. They remain in staging rather than being forced
+into Release 03.
+
+All five Release 03 products have redundant merchant mappings at Douglas,
+flaconi or parfumdreams and have GTIN/EAN fallback identifiers.
+
+Release 03 is write-locked. It may be dry-run checked, but cannot be written
+live until the earlier release sequence has been validated operationally.
