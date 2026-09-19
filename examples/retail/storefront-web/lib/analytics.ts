@@ -2,9 +2,90 @@ import { api } from "./api";
 
 const ANALYTICS_CONTEXT_KEY = "scentai_analytics_context_v1";
 const ANALYTICS_CONTEXT_PATTERN = /^[A-Za-z0-9-]{16,80}$/;
+const ACQUISITION_CONTEXT_KEY = "scentai_acquisition_context_v1";
+const ACQUISITION_IDENTIFIER_PATTERN = /^[A-Za-z0-9._:-]{1,80}$/;
 let apiSessionPromise: Promise<string | null> | null = null;
 let analyticsOwnedApiSession: string | null = null;
 let analyticsEventQueue: Promise<void> = Promise.resolve();
+
+type AcquisitionAttribution = {
+  source: string;
+  campaign_id?: string;
+  content_id?: string;
+};
+
+function safeAcquisitionIdentifier(
+  value: string | null | undefined,
+): string | null {
+  const normalized = String(value || "").trim();
+  return ACQUISITION_IDENTIFIER_PATTERN.test(normalized)
+    ? normalized
+    : null;
+}
+
+function storedAcquisitionAttribution(): AcquisitionAttribution | null {
+  if (typeof window === "undefined") return null;
+
+  try {
+    const raw = window.sessionStorage.getItem(
+      ACQUISITION_CONTEXT_KEY,
+    );
+    if (!raw) return null;
+
+    const parsed = JSON.parse(raw) as Partial<AcquisitionAttribution>;
+    const source = safeAcquisitionIdentifier(parsed.source);
+    if (!source) return null;
+
+    const campaign = safeAcquisitionIdentifier(
+      parsed.campaign_id,
+    );
+    const content = safeAcquisitionIdentifier(
+      parsed.content_id,
+    );
+
+    return {
+      source,
+      ...(campaign ? { campaign_id: campaign } : {}),
+      ...(content ? { content_id: content } : {}),
+    };
+  } catch {
+    return null;
+  }
+}
+
+export function rememberAcquisitionAttribution({
+  source,
+  campaignId,
+  contentId,
+}: {
+  source: string;
+  campaignId?: string | null;
+  contentId?: string | null;
+}): void {
+  if (typeof window === "undefined") return;
+
+  const safeSource = safeAcquisitionIdentifier(source);
+  if (!safeSource) return;
+
+  const safeCampaign = safeAcquisitionIdentifier(campaignId);
+  const safeContent = safeAcquisitionIdentifier(contentId);
+
+  const attribution: AcquisitionAttribution = {
+    source: safeSource,
+    ...(safeCampaign ? { campaign_id: safeCampaign } : {}),
+    ...(safeContent ? { content_id: safeContent } : {}),
+  };
+
+  try {
+    window.sessionStorage.setItem(
+      ACQUISITION_CONTEXT_KEY,
+      JSON.stringify(attribution),
+    );
+  } catch {
+    // Acquisition attribution must never break the storefront.
+  }
+}
+
 
 function storedAnalyticsContext(): string | null {
   if (typeof window === "undefined") return null;
@@ -145,10 +226,15 @@ async function sendAnalyticsEvent(
   const apiSessionId = await ensureApiSession();
   if (!apiSessionId) return;
 
+  const attribution = storedAcquisitionAttribution();
+
   const payload = {
     event,
     product_id: context.product_id,
     source: context.source,
+    acquisition_source: attribution?.source,
+    campaign_id: attribution?.campaign_id,
+    content_id: attribution?.content_id,
     search_term: context.search_term,
     result_count: context.result_count,
     surface: context.surface,
