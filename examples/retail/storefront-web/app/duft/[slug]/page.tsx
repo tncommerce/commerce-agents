@@ -537,8 +537,9 @@ export default async function FragrancePage({
                 </h2>
                 <p className="mt-1 max-w-2xl text-[12px] leading-5 text-(--ink-soft)">
                   Zuerst zeigt DUFYND dokumentierte Beziehungen aus dem
-                  Duftkatalog. Danach folgen profilähnliche Düfte anhand
-                  von Akkorden und redaktionellen Duftprofil-Merkmalen.
+                  Duftkatalog. Weitere Vorschläge bleiben innerhalb
+                  derselben Duftfamilie und werden dort nach Profilnähe
+                  eingeordnet.
                 </p>
               </div>
               <a
