@@ -1,7 +1,7 @@
 {
   "version": 1,
   "updated_at": "2026-09-19",
-  "status": "prelaunch_planned",
+  "status": "prelaunch_scripted",
   "campaign_id": "launch01",
   "target_creatives": 15,
   "channels": [
@@ -153,7 +153,7 @@
         "SC-AFNAN-TURATHI-BLUE-90"
       ],
       "primary_cta": "Frischen Duft finden",
-      "status": "planned"
+      "status": "scripted"
     },
     {
       "content_id": "signature_vs_safe_01",
@@ -166,7 +166,7 @@
         "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100"
       ],
       "primary_cta": "SCENTAI nach deinem Stil fragen",
-      "status": "planned"
+      "status": "scripted"
     },
     {
       "content_id": "bois_imperial_explained_01",
@@ -177,7 +177,7 @@
         "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100"
       ],
       "primary_cta": "Passung mit SCENTAI prüfen",
-      "status": "planned"
+      "status": "scripted"
     },
     {
       "content_id": "not_every_dupe_clone_01",
@@ -191,7 +191,7 @@
         "SC-MONTBLANC-EXPLORER-100"
       ],
       "primary_cta": "Beziehungen transparent vergleichen",
-      "status": "planned"
+      "status": "scripted"
     },
     {
       "content_id": "gift_for_him_safe_to_bold_01",
@@ -204,7 +204,7 @@
         "SC-XERJOFF-NAXOS-100"
       ],
       "primary_cta": "Geschenkberatung starten",
-      "status": "planned"
+      "status": "scripted"
     }
   ]
 }
