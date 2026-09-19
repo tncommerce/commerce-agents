@@ -1,7 +1,7 @@
 # SCENTAI Catalog Scale & Merchant Coverage Status
 
 Status: active
-Updated: 2026-09-18
+Updated: 2026-09-19
 
 ## Current catalog
 
@@ -33,8 +33,8 @@ Staged target assignments:
 
 Researched merchant coverage:
 - 30/30 have at least one verified merchant
-- 20/30 have at least two verified merchants
-- 2/30 have three researched merchants
+- 27/30 have at least two verified merchants
+- 4/30 have three researched merchants
 
 Community status:
 - 28/30 have non-provisional community/performance data
@@ -83,20 +83,33 @@ sample size.
 
 Current worklist:
 
-1. Parfums de Marly Delina Eau de Parfum 75 ml
-2. Dior Hypnotic Poison Eau de Toilette 100 ml
-3. Yves Saint Laurent Black Opium Eau de Parfum 90 ml
-4. Yves Saint Laurent Libre Eau de Parfum 90 ml
-5. Guerlain Mon Guerlain Eau de Parfum 100 ml
-6. Chloé Chloé Eau de Parfum 100 ml
-7. Burberry Goddess Eau de Parfum 100 ml
-8. Prada Paradoxe Eau de Parfum 90 ml
-9. Lattafa Eclaire Eau de Parfum 100 ml
-10. Parfums de Marly Valaya Exclusif Eau de Parfum 75 ml
+1. Lancôme La Vie est Belle Eau de Parfum 100 ml
+2. Parfums de Marly Delina Eau de Parfum 75 ml
+3. Dior Hypnotic Poison Eau de Toilette 100 ml
+4. Yves Saint Laurent Black Opium Eau de Parfum 90 ml
+5. Yves Saint Laurent Libre Eau de Parfum 90 ml
+6. Guerlain Mon Guerlain Eau de Parfum 100 ml
+7. Narciso Rodriguez for her PURE MUSC Eau de Parfum 100 ml
+8. Chloé Chloé Eau de Parfum 100 ml
+9. Burberry Goddess Eau de Parfum 100 ml
+10. Prada Paradoxe Eau de Parfum 90 ml
 
 All ten are currently blocked by the same two production requirements:
 - approved image
 - current tracked affiliate offer
+
+## Phase 4L merchant-coverage progress
+
+On 2026-09-19, verified merchant research was expanded for:
+- Lancôme La Vie est Belle
+- Viktor & Rolf Spicebomb Extreme
+- Narciso Rodriguez for her PURE MUSC
+- Amouage Guidance 46
+- Parfums de Marly Herod
+- Tom Ford Ombré Leather Eau de Parfum
+- Nishane Ani
+
+A regression test now checks that the promotion queue never declares fewer researched merchants than verification data explicitly marks as available.
 
 This is a **work priority**, not a quality ranking of fragrances.
 
