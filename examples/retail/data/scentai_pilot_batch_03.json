@@ -1,0 +1,323 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-19",
+  "status": "production_ready_scripts_assets",
+  "campaign_id": "launch01",
+  "batch_id": "pilot_batch_03",
+  "purpose": "Third five SCENTAI pre-launch short-form pilots, completing the planned 15-creative launch set.",
+  "channels": [
+    "tiktok",
+    "instagram",
+    "youtube"
+  ],
+  "production_order": [
+    "tygar_vibrato_value_01",
+    "naxos_value_01",
+    "dior_homme_intense_alt_01",
+    "signature_vs_safe_01",
+    "gift_for_him_safe_to_bold_01"
+  ],
+  "asset_summary": {
+    "required_editorial_assets": 13,
+    "verified_editorial_assets": 13
+  },
+  "global_rules": {
+    "aspect_ratio": "9:16",
+    "resolution": "1080x1920",
+    "fps": 30,
+    "target_duration_seconds": [
+      27,
+      30
+    ],
+    "subtitles": "burned_in",
+    "first_hook_deadline_seconds": 1,
+    "endcard_seconds": [
+      2,
+      3
+    ],
+    "ranking_policy": "Affiliate commission must never influence fragrance recommendations or merchant ordering.",
+    "claims_policy": [
+      "No invented similarity percentages.",
+      "Use clone/inspired/alternative only when backed by current SCENTAI relationship data.",
+      "Community performance metrics must be framed as community data.",
+      "Avoid numeric price claims in Batch 03 so the creative remains evergreen.",
+      "Do not turn profile differences into universal best/worst claims."
+    ]
+  },
+  "pilots": [
+    {
+      "pilot": 11,
+      "content_id": "tygar_vibrato_value_01",
+      "canonical_launch_content_id": "tygar_vibrato_value_01",
+      "format": "cluster_comparison",
+      "landing_path": "/parfum-alternativen",
+      "product_ids": [
+        "SC-BVLGARI-TYGAR-125",
+        "SC-SOSPIRO-VIBRATO-100",
+        "SC-AFNAN-TURATHI-BLUE-90",
+        "SC-MAISON-ASRAR-REGENT-100"
+      ],
+      "target_duration_seconds": 30,
+      "hook": "Tygar, Vibrato, Turathi Blue und Regent – alle extrem frisch, aber nicht dieselbe Beziehung.",
+      "voiceover": "Tygar, Vibrato, Turathi Blue und Regent stehen bei SCENTAI alle auf maximaler Frische. Vibrato ist als Alternative zu Tygar hinterlegt. Turathi Blue ist zu Tygar und Vibrato als Inspired gespeichert. Regent ist ebenfalls Inspired, mit stärkerer Confidence zu Vibrato. Beim Profil ist Tygar würziger und holziger, Vibrato etwas weicher, Turathi und Regent liegen dazwischen. Vergleiche Beziehung und Profil direkt bei SCENTAI.",
+      "relationship_evidence": [
+        {
+          "product_id": "SC-SOSPIRO-VIBRATO-100",
+          "to": "SC-BVLGARI-TYGAR-125",
+          "type": "alternative",
+          "confidence": "high"
+        },
+        {
+          "product_id": "SC-AFNAN-TURATHI-BLUE-90",
+          "to": "SC-BVLGARI-TYGAR-125",
+          "type": "inspired",
+          "confidence": "high"
+        },
+        {
+          "product_id": "SC-AFNAN-TURATHI-BLUE-90",
+          "to": "SC-SOSPIRO-VIBRATO-100",
+          "type": "inspired",
+          "confidence": "high"
+        },
+        {
+          "product_id": "SC-MAISON-ASRAR-REGENT-100",
+          "to": "SC-BVLGARI-TYGAR-125",
+          "type": "inspired",
+          "confidence": "medium_high"
+        },
+        {
+          "product_id": "SC-MAISON-ASRAR-REGENT-100",
+          "to": "SC-SOSPIRO-VIBRATO-100",
+          "type": "inspired",
+          "confidence": "high"
+        }
+      ],
+      "scenes": [
+        {
+          "seconds": "0-4",
+          "visual": "four-bottle cluster hero",
+          "overlay": "4 FRISCHE RICHTUNGEN"
+        },
+        {
+          "seconds": "4-10",
+          "visual": "Tygar and Vibrato relationship cards",
+          "overlay": "VIBRATO · ALTERNATIVE ZU TYGAR"
+        },
+        {
+          "seconds": "10-17",
+          "visual": "Turathi Blue relationship card",
+          "overlay": "TURATHI · INSPIRED VON TYGAR + VIBRATO"
+        },
+        {
+          "seconds": "17-23",
+          "visual": "Regent relationship card",
+          "overlay": "REGENT · INSPIRED"
+        },
+        {
+          "seconds": "23-30",
+          "visual": "profile bars + SCENTAI comparison endcard",
+          "overlay": "FRISCHE 10 · ANDERER CHARAKTER"
+        }
+      ],
+      "primary_cta": "Frische Alternativen vergleichen",
+      "thumbnail": "TYGAR-CLUSTER ERKLÄRT"
+    },
+    {
+      "pilot": 12,
+      "content_id": "naxos_value_01",
+      "canonical_launch_content_id": "naxos_value_01",
+      "format": "luxury_without_budget",
+      "landing_path": "/parfum-alternativen",
+      "product_ids": [
+        "SC-XERJOFF-NAXOS-100",
+        "SC-NUSUK-ATEEQ-100",
+        "SC-RAYHAAN-ITALIA-100"
+      ],
+      "target_duration_seconds": 28,
+      "hook": "Du magst Naxos? Ateeq und Italia gehen bei SCENTAI in dieselbe inspirierte Richtung – aber nicht identisch.",
+      "voiceover": "Naxos ist bei SCENTAI sehr süß, würzig und gourmandig eingeordnet. Ateeq und Rayhaan Italia sind beide als Inspired hinterlegt. Ateeq bleibt genauso süß und würzig, wirkt im Profil aber etwas weniger frisch. Italia liegt bei Frische, Süße und Würze fast auf Naxos-Niveau, ist aber etwas holziger. Drei ähnliche Richtungen, drei eigene Profile.",
+      "relationship_evidence": [
+        {
+          "product_id": "SC-NUSUK-ATEEQ-100",
+          "to": "SC-XERJOFF-NAXOS-100",
+          "type": "inspired",
+          "confidence": "high"
+        },
+        {
+          "product_id": "SC-RAYHAAN-ITALIA-100",
+          "to": "SC-XERJOFF-NAXOS-100",
+          "type": "inspired",
+          "confidence": "high"
+        }
+      ],
+      "scenes": [
+        {
+          "seconds": "0-3",
+          "visual": "Naxos center with Ateeq and Italia",
+          "overlay": "NAXOS-RICHTUNG · 3 PROFILE"
+        },
+        {
+          "seconds": "3-10",
+          "visual": "Naxos profile bars",
+          "overlay": "NAXOS · SÜSSE 10 · WÜRZE 8"
+        },
+        {
+          "seconds": "10-17",
+          "visual": "Ateeq profile bars",
+          "overlay": "ATEEQ · FRISCHE 4 · SÜSSE 10"
+        },
+        {
+          "seconds": "17-23",
+          "visual": "Italia profile bars",
+          "overlay": "ITALIA · FRISCHE 6 · HOLZ 3"
+        },
+        {
+          "seconds": "23-28",
+          "visual": "Inspired badges + endcard",
+          "overlay": "INSPIRED ≠ IDENTISCH"
+        }
+      ],
+      "primary_cta": "Naxos-Alternativen ansehen",
+      "thumbnail": "NAXOS · ATEEQ · ITALIA"
+    },
+    {
+      "pilot": 13,
+      "content_id": "dior_homme_intense_alt_01",
+      "canonical_launch_content_id": "dior_homme_intense_alt_01",
+      "format": "original_vs_alternative",
+      "landing_path": "/parfum-alternativen",
+      "product_ids": [
+        "SC-DIOR-HOMME-INTENSE-100",
+        "SC-AL-WATANIAH-KAYAAN-CLASSIC-100"
+      ],
+      "target_duration_seconds": 27,
+      "hook": "Dior Homme Intense und Kayaan Classic liegen im SCENTAI-Profil fast übereinander – bis auf einen Punkt.",
+      "voiceover": "Dior Homme Intense und Kayaan Classic sind bei SCENTAI als Clone-Beziehung mit hoher Confidence hinterlegt. Frische, Süße und Holz liegen in unseren Profilen exakt gleich. Der auffälligste Unterschied ist die Würze: Dior Homme Intense liegt bei sechs von zehn, Kayaan Classic nur bei zwei. Ähnliche Grundrichtung, aber nicht komplett identisch. Genau diese Details zeigt dir SCENTAI.",
+      "relationship_evidence": [
+        {
+          "product_id": "SC-DIOR-HOMME-INTENSE-100",
+          "to": "SC-AL-WATANIAH-KAYAAN-CLASSIC-100",
+          "type": "clone",
+          "confidence": "high"
+        }
+      ],
+      "scenes": [
+        {
+          "seconds": "0-3",
+          "visual": "Dior Homme Intense and Kayaan Classic split",
+          "overlay": "FAST GLEICHES PROFIL?"
+        },
+        {
+          "seconds": "3-10",
+          "visual": "shared profile bars",
+          "overlay": "FRISCHE 2 · SÜSSE 8 · HOLZ 7"
+        },
+        {
+          "seconds": "10-17",
+          "visual": "spiciness comparison",
+          "overlay": "WÜRZE: DHI 6 · KAYAAN 2"
+        },
+        {
+          "seconds": "17-22",
+          "visual": "clone relationship badge",
+          "overlay": "SCENTAI: CLONE · HIGH CONFIDENCE"
+        },
+        {
+          "seconds": "22-27",
+          "visual": "comparison endcard",
+          "overlay": "DETAILS STATT 1:1-VERSPRECHEN"
+        }
+      ],
+      "primary_cta": "Unterschiede in SCENTAI prüfen",
+      "thumbnail": "DHI VS KAYAAN"
+    },
+    {
+      "pilot": 14,
+      "content_id": "signature_vs_safe_01",
+      "canonical_launch_content_id": "signature_vs_safe_01",
+      "format": "scentai_decides",
+      "landing_path": "/duftfinder",
+      "product_ids": [
+        "SC-DIOR-SAUVAGE-EDP-100",
+        "SC-PRADA-LHOMME-100",
+        "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100"
+      ],
+      "target_duration_seconds": 30,
+      "hook": "Frisch heißt nicht automatisch derselbe Stil – diese drei zeigen es perfekt.",
+      "voiceover": "Sauvage Eau de Parfum, Prada L'Homme und Bois Impérial sind alle frisch eingeordnet, wirken aber komplett unterschiedlich. Sauvage ist deutlich würziger. Prada L'Homme ist pudriger, weicher und weniger würzig. Bois Impérial ist dagegen kaum süß, sehr holzig und ebenfalls kräftig gewürzt. Der Duftfinder fragt deshalb nicht nur nach Frische, sondern nach dem gesamten Profil, das zu dir passt.",
+      "scenes": [
+        {
+          "seconds": "0-3",
+          "visual": "three-bottle style choice hero",
+          "overlay": "FRISCH · ABER 3 VERSCHIEDENE STILE"
+        },
+        {
+          "seconds": "3-10",
+          "visual": "Sauvage profile",
+          "overlay": "SAUVAGE · FRISCHE 8 · WÜRZE 7"
+        },
+        {
+          "seconds": "10-17",
+          "visual": "Prada L'Homme profile",
+          "overlay": "PRADA · PUDRIG · WÜRZE 3"
+        },
+        {
+          "seconds": "17-24",
+          "visual": "Bois Imperial profile",
+          "overlay": "BOIS IMPÉRIAL · HOLZ 9 · SÜSSE 1"
+        },
+        {
+          "seconds": "24-30",
+          "visual": "SCENTAI advisor chips",
+          "overlay": "DEIN PROFIL ENTSCHEIDET"
+        }
+      ],
+      "primary_cta": "SCENTAI nach deinem Stil fragen",
+      "thumbnail": "3 FRISCHE STILE"
+    },
+    {
+      "pilot": 15,
+      "content_id": "gift_for_him_safe_to_bold_01",
+      "canonical_launch_content_id": "gift_for_him_safe_to_bold_01",
+      "format": "gift_guide",
+      "landing_path": "/parfum-geschenkberater",
+      "product_ids": [
+        "SC-CHANEL-BLEU-DE-CHANEL-EDP-100",
+        "SC-PRADA-LHOMME-100",
+        "SC-XERJOFF-NAXOS-100"
+      ],
+      "target_duration_seconds": 30,
+      "hook": "Parfum verschenken? Drei komplett unterschiedliche Richtungen statt einer pauschalen Empfehlung.",
+      "voiceover": "Beim Parfumgeschenk hilft es mehr, den Stil zu kennen als irgendeine pauschale Nummer eins. Bleu de Chanel Eau de Parfum ist frisch, holzig und moderat süß. Prada L'Homme ist pudriger, weicher und etwas weniger frisch. Naxos geht in die Gegenrichtung: sehr süß, würzig und gourmandig. Der SCENTAI Geschenkberater fragt deshalb nach Geschmack und gewünschter Wirkung, bevor er Vorschläge macht.",
+      "scenes": [
+        {
+          "seconds": "0-3",
+          "visual": "gift prompt + three bottles",
+          "overlay": "PARFUM VERSCHENKEN?"
+        },
+        {
+          "seconds": "3-10",
+          "visual": "Bleu de Chanel profile",
+          "overlay": "BLEU DE CHANEL · FRISCH + HOLZIG"
+        },
+        {
+          "seconds": "10-17",
+          "visual": "Prada L'Homme profile",
+          "overlay": "PRADA L'HOMME · PUDRIG + WEICH"
+        },
+        {
+          "seconds": "17-24",
+          "visual": "Naxos profile",
+          "overlay": "NAXOS · SÜSS + WÜRZIG + GOURMAND"
+        },
+        {
+          "seconds": "24-30",
+          "visual": "gift advisor endcard",
+          "overlay": "GESCHMACK STATT PAUSCHALER NUMMER 1"
+        }
+      ],
+      "primary_cta": "Geschenkberatung starten",
+      "thumbnail": "WELCHER GESCHENK-STIL?"
+    }
+  ]
+}
