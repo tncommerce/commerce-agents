@@ -6,7 +6,7 @@ import { legal, legalLocation, legalReady } from "@/lib/legal";
 
 export const metadata = {
   title: "Impressum",
-  description: "Anbieterkennzeichnung und Kontaktinformationen für SCENTAI.",
+  description: "Anbieterkennzeichnung und Kontaktinformationen für DUFYND.",
   alternates: {
     canonical: "/impressum",
   },
@@ -22,7 +22,7 @@ export default function ImpressumPage() {
       <div className="mx-auto max-w-3xl">
         <article className="rounded-2xl border border-(--line) bg-(--card) p-6 shadow-(--shadow-sm) sm:p-8">
           <a href="/" className="text-[13px] font-semibold text-(--accent-ink) hover:underline">
-            ← Zurück zu SCENTAI
+            ← Zurück zu DUFYND
           </a>
 
           <h1 className="mt-5 text-3xl font-semibold tracking-[-0.03em]">Impressum</h1>
@@ -67,8 +67,8 @@ export default function ImpressumPage() {
             <section>
               <h2 className="font-semibold text-(--ink)">Hinweis zum Angebot</h2>
               <p className="mt-1">
-                SCENTAI ist ein digitaler Duftberatungs- und Empfehlungsdienst von {legal.businessName}.
-                SCENTAI verkauft die dargestellten Produkte nicht selbst. Kaufverträge kommen ausschließlich
+                DUFYND ist ein digitaler Duftberatungs- und Empfehlungsdienst von {legal.businessName}.
+                DUFYND verkauft die dargestellten Produkte nicht selbst. Kaufverträge kommen ausschließlich
                 zwischen dir und dem jeweils verlinkten Händler zustande.
               </p>
             </section>
