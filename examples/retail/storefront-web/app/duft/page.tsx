@@ -38,6 +38,18 @@ export default function FragranceIndexPage() {
           </a>
           <div className="flex items-center gap-2">
             <a
+              href="/sammlung"
+              className="hidden rounded-xl border border-(--line) px-3 py-2 text-[12px] font-semibold text-(--ink) transition hover:border-(--ink) md:inline-flex"
+            >
+              Sammlung
+            </a>
+            <a
+              href="/merkliste"
+              className="hidden rounded-xl border border-(--line) px-3 py-2 text-[12px] font-semibold text-(--ink) transition hover:border-(--ink) md:inline-flex"
+            >
+              Merkliste
+            </a>
+            <a
               href="/vergleich"
               className="hidden rounded-xl border border-(--line) px-3 py-2 text-[12px] font-semibold text-(--ink) transition hover:border-(--ink) sm:inline-flex"
             >
