@@ -52,7 +52,7 @@ Current staged integration:
 - staged products with actual imported merchant offers: **0/30**
 - staged products with current affiliate offers: **0/30**
 - staged products with approved images: **0/30**
-- staged products with resolved merchant-product mappings: **25/30**
+- staged products with resolved merchant-product mappings: **28/30**
 
 The existing merchant-offer layer currently contains offers for the already
 live Essential Parfums Bois Impérial product. Those offers do not make any of
@@ -60,11 +60,14 @@ the 30 staging products promotion-ready.
 
 The merchant-mapping file retains verified Douglas and flaconi identifiers for
 the already-live Bois Impérial record. In addition, all twenty-five products across
-Release Batches 01 through 05 now have resolved merchant-product mappings with
-GTIN/EAN fallback identifiers.
+Release Batches 01 through 05 have resolved merchant-product mappings with
+GTIN/EAN fallback identifiers. In addition, Kayali Yum Boujee Marshmallow | 81,
+Lattafa Angham and Lattafa Eclaire are pre-mapped for future affiliate-feed
+activation without being assigned to a release.
 
-This means mapping readiness is **25/30** for the staged expansion pool even
-though live-offer readiness remains **0/30**. Mapping readiness must not be
+This means identity/mapping readiness is **28/30** for the staged expansion
+pool, while release-planned coverage remains **25/30** and live-offer readiness
+remains **0/30**. Mapping readiness must not be
 described as affiliate approval, current pricing or image approval.
 
 ## Current blockers
@@ -344,7 +347,7 @@ have completed the real feed, image approval, promotion and smoke-test flow.
 
 ## Deferred five-product backlog
 
-After Releases 01-05, exactly five staged products remain outside a mapping-ready
+After Releases 01-05, exactly five staged products remain outside a prepared
 release:
 
 - Jean Paul Gaultier Fleur du Mâle (2026)
@@ -353,9 +356,11 @@ release:
 - Lattafa Angham
 - Lattafa Eclaire
 
-The first two remain blocked by provisional/version-sensitive evidence. The
-other three remain staged because their currently verified merchant coverage is
-not yet aligned strongly enough with a production-ready SCENTAI affiliate feed.
+The first two remain blocked by provisional/version-sensitive evidence and are
+the only two staging products that intentionally remain unmapped. The other
+three now have identity mappings prepared, but remain outside a release because
+their currently verified merchant coverage is not yet aligned strongly enough
+with a production-ready SCENTAI affiliate feed.
 
 The machine-readable source of truth is
 `scentai_release_deferred_backlog.json`.
