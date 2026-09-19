@@ -237,3 +237,21 @@ The conversion funnel begins collecting the new advisor-specific events with
 the Phase 4J release. Older analytics contain page views, consultations and
 some legacy product-open events, but they must not be backfilled with guessed
 advisor impressions or comparisons.
+
+
+### scentai_personal_library_engagement
+
+Measures privacy-minimized product interest from the optional local fragrance
+library:
+- wishlist adds/removes
+- collection adds/removes
+- unique sessions adding a product to the wishlist
+- unique sessions adding a product to the collection
+
+The server analytics event contains the affected SCENTAI product ID and action
+type only. It does **not** receive or reconstruct the customer's complete local
+wishlist or collection.
+
+`scripts/report_scentai_conversion.py` includes this view in the
+`personal_library_engagement` section. As with other product metrics, small
+samples must remain `early_signal`.
