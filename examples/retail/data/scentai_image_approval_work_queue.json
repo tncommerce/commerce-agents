@@ -1,6 +1,7 @@
 {
   "version": 1,
   "generated_at": "2026-09-19",
+  "source_fingerprint_sha256": "e7a11d43624d75cefee214608ea6fad49fa42380f4025fb62d10a9b225a0c4d4",
   "machine_id": "scentai_image_approval_v1",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
@@ -8,7 +9,7 @@
     "scentai_release_batch_01.json",
     "scentai_release_batch_02.json",
     "scentai_release_batch_03.json",
-    "scentai_release_01_asset_candidates.json"
+    "scentai_image_asset_candidates.json"
   ],
   "summary": {
     "staged_products": 30,
@@ -18,7 +19,8 @@
     "approved_images": 0,
     "pending_images": 30,
     "review_ready": 0,
-    "rights_or_source_check_pending": 5
+    "rights_or_source_check_pending": 9,
+    "identity_check_pending": 1
   },
   "items": [
     {
@@ -315,13 +317,47 @@
       },
       "current_image_url": null,
       "current_image_status": "pending_approved_feed_or_manufacturer_image",
-      "image_state": "missing",
+      "image_state": "rights_or_source_check_pending",
       "blockers": [
-        "approved_product_image_missing"
+        "approved_product_image_missing",
+        "asset_usage_or_feed_rights_not_verified"
       ],
-      "next_action": "await_real_feed_or_official_asset_candidate",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
       "action_class": "auto_allowed",
-      "approval_action_class": "approval_required"
+      "approval_action_class": "approval_required",
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://www.guerlain.com/de/de-de/p/mon-guerlain-eau-de-parfum-G013140.html",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Guerlain page lists Mon Guerlain Eau de Parfum in 100 ml."
+      },
+      "audit_trail": [
+        {
+          "at": "2026-09-19",
+          "from": "missing",
+          "to": "candidate_discovered",
+          "trigger": "manufacturer_source_found"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "candidate_discovered",
+          "to": "identity_check_pending",
+          "trigger": "candidate_normalized"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "identity_check_pending",
+          "to": "identity_verified",
+          "trigger": "exact_variant_verified"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "identity_verified",
+          "to": "rights_or_source_check_pending",
+          "trigger": "identity_gate_passed"
+        }
+      ]
     },
     {
       "product_id": "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100",
@@ -337,13 +373,35 @@
       },
       "current_image_url": null,
       "current_image_status": "pending_approved_feed_or_manufacturer_image",
-      "image_state": "missing",
+      "image_state": "identity_check_pending",
       "blockers": [
-        "approved_product_image_missing"
+        "approved_product_image_missing",
+        "exact_variant_identity_not_verified"
       ],
-      "next_action": "await_real_feed_or_official_asset_candidate",
+      "next_action": "verify_exact_100ml_variant_or_use_approved_feed_image",
       "action_class": "auto_allowed",
-      "approval_action_class": "approval_required"
+      "approval_action_class": "approval_required",
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://www.narcisorodriguezparfums.com/de/d%C3%BCfte/for-her/",
+        "exact_variant_verified": false,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Narciso Rodriguez collection confirms for her PURE MUSC Eau de Parfum, but the current page does not explicitly verify the 100 ml variant."
+      },
+      "audit_trail": [
+        {
+          "at": "2026-09-19",
+          "from": "missing",
+          "to": "candidate_discovered",
+          "trigger": "manufacturer_source_found"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "candidate_discovered",
+          "to": "identity_check_pending",
+          "trigger": "candidate_normalized"
+        }
+      ]
     },
     {
       "product_id": "SC-CHLOE-CHLOE-EDP-100",
@@ -359,13 +417,47 @@
       },
       "current_image_url": null,
       "current_image_status": "pending_approved_feed_or_manufacturer_image",
-      "image_state": "missing",
+      "image_state": "rights_or_source_check_pending",
       "blockers": [
-        "approved_product_image_missing"
+        "approved_product_image_missing",
+        "asset_usage_or_feed_rights_not_verified"
       ],
-      "next_action": "await_real_feed_or_official_asset_candidate",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
       "action_class": "auto_allowed",
-      "approval_action_class": "approval_required"
+      "approval_action_class": "approval_required",
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://www.chloe.com/de-de/p/fragrances/eau-de-parfum/CHCA50133819.html",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Chloé page lists Chloé Eau de Parfum in 100 ml."
+      },
+      "audit_trail": [
+        {
+          "at": "2026-09-19",
+          "from": "missing",
+          "to": "candidate_discovered",
+          "trigger": "manufacturer_source_found"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "candidate_discovered",
+          "to": "identity_check_pending",
+          "trigger": "candidate_normalized"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "identity_check_pending",
+          "to": "identity_verified",
+          "trigger": "exact_variant_verified"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "identity_verified",
+          "to": "rights_or_source_check_pending",
+          "trigger": "identity_gate_passed"
+        }
+      ]
     },
     {
       "product_id": "SC-BURBERRY-GODDESS-EDP-100",
@@ -381,13 +473,47 @@
       },
       "current_image_url": null,
       "current_image_status": "pending_approved_feed_or_manufacturer_image",
-      "image_state": "missing",
+      "image_state": "rights_or_source_check_pending",
       "blockers": [
-        "approved_product_image_missing"
+        "approved_product_image_missing",
+        "asset_usage_or_feed_rights_not_verified"
       ],
-      "next_action": "await_real_feed_or_official_asset_candidate",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
       "action_class": "auto_allowed",
-      "approval_action_class": "approval_required"
+      "approval_action_class": "approval_required",
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://de.burberry.com/burberry-goddess-eau-de-parfum-for-women-100-ml-p40835981",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Burberry page lists Goddess Eau de Parfum 100 ml."
+      },
+      "audit_trail": [
+        {
+          "at": "2026-09-19",
+          "from": "missing",
+          "to": "candidate_discovered",
+          "trigger": "manufacturer_source_found"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "candidate_discovered",
+          "to": "identity_check_pending",
+          "trigger": "candidate_normalized"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "identity_check_pending",
+          "to": "identity_verified",
+          "trigger": "exact_variant_verified"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "identity_verified",
+          "to": "rights_or_source_check_pending",
+          "trigger": "identity_gate_passed"
+        }
+      ]
     },
     {
       "product_id": "SC-PRADA-PARADOXE-EDP-90",
@@ -403,13 +529,47 @@
       },
       "current_image_url": null,
       "current_image_status": "pending_approved_feed_or_manufacturer_image",
-      "image_state": "missing",
+      "image_state": "rights_or_source_check_pending",
       "blockers": [
-        "approved_product_image_missing"
+        "approved_product_image_missing",
+        "asset_usage_or_feed_rights_not_verified"
       ],
-      "next_action": "await_real_feed_or_official_asset_candidate",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
       "action_class": "auto_allowed",
-      "approval_action_class": "approval_required"
+      "approval_action_class": "approval_required",
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://www.prada.com/de/de/p/paradoxe-edp-90ml/1A1351_2HDZ_F0Z99_P_ML090",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Prada page lists Paradoxe Eau de Parfum in 90 ml."
+      },
+      "audit_trail": [
+        {
+          "at": "2026-09-19",
+          "from": "missing",
+          "to": "candidate_discovered",
+          "trigger": "manufacturer_source_found"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "candidate_discovered",
+          "to": "identity_check_pending",
+          "trigger": "candidate_normalized"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "identity_check_pending",
+          "to": "identity_verified",
+          "trigger": "exact_variant_verified"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "identity_verified",
+          "to": "rights_or_source_check_pending",
+          "trigger": "identity_gate_passed"
+        }
+      ]
     },
     {
       "product_id": "SC-PDM-VALAYA-EXCLUSIF-EDP-75",
@@ -624,11 +784,11 @@
       "approval_action_class": "approval_required"
     },
     {
-      "product_id": "SC-JPG-LE-MALE-LE-PARFUM-125",
-      "candidate_id": "JPG-LE-MALE-LE-PARFUM",
+      "product_id": "SC-JPG-FLEUR-DU-MALE-2026-EDT-125",
+      "candidate_id": "JPG-FLEUR-DU-MALE-2026",
       "brand": "Jean Paul Gaultier",
-      "name": "Le Male Le Parfum",
-      "batch": 1,
+      "name": "Fleur du Mâle (2026)",
+      "batch": 2,
       "release": null,
       "current_image_url": null,
       "current_image_status": "pending_approved_feed_or_manufacturer_image",
@@ -641,11 +801,11 @@
       "approval_action_class": "approval_required"
     },
     {
-      "product_id": "SC-JPG-FLEUR-DU-MALE-2026-EDT-125",
-      "candidate_id": "JPG-FLEUR-DU-MALE-2026",
+      "product_id": "SC-JPG-LE-MALE-LE-PARFUM-125",
+      "candidate_id": "JPG-LE-MALE-LE-PARFUM",
       "brand": "Jean Paul Gaultier",
-      "name": "Fleur du Mâle (2026)",
-      "batch": 2,
+      "name": "Le Male Le Parfum",
+      "batch": 1,
       "release": null,
       "current_image_url": null,
       "current_image_status": "pending_approved_feed_or_manufacturer_image",
@@ -743,23 +903,6 @@
       "approval_action_class": "approval_required"
     },
     {
-      "product_id": "SC-YSL-MYSLF-LE-PARFUM-100",
-      "candidate_id": "YSL-MYSLF-LE-PARFUM",
-      "brand": "Yves Saint Laurent",
-      "name": "MYSLF Le Parfum",
-      "batch": 2,
-      "release": null,
-      "current_image_url": null,
-      "current_image_status": "pending_approved_feed_or_manufacturer_image",
-      "image_state": "missing",
-      "blockers": [
-        "approved_product_image_missing"
-      ],
-      "next_action": "await_real_feed_or_official_asset_candidate",
-      "action_class": "auto_allowed",
-      "approval_action_class": "approval_required"
-    },
-    {
       "product_id": "SC-YSL-LA-NUIT-DE-LHOMME-EDT-100",
       "candidate_id": "YSL-LA-NUIT-DE-LHOMME-EDT",
       "brand": "Yves Saint Laurent",
@@ -775,7 +918,23 @@
       "next_action": "await_real_feed_or_official_asset_candidate",
       "action_class": "auto_allowed",
       "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-YSL-MYSLF-LE-PARFUM-100",
+      "candidate_id": "YSL-MYSLF-LE-PARFUM",
+      "brand": "Yves Saint Laurent",
+      "name": "MYSLF Le Parfum",
+      "batch": 2,
+      "release": null,
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
     }
-  ],
-  "source_fingerprint_sha256": "f93de8bbf1c81939f37d1fd50f1be019f5224df203d17c8c652c51b54e8842e3"
+  ]
 }
