@@ -788,7 +788,7 @@ export default function FragranceCatalogBrowser({
                       />
                     ) : (
                       <div className="text-[12px] font-semibold tracking-[0.16em] text-(--ink-soft)">
-                        SCENTAI
+                        DUFYND
                       </div>
                     )}
                   </div>
@@ -921,7 +921,7 @@ export default function FragranceCatalogBrowser({
               href="/"
               className="mt-2 inline-flex rounded-xl bg-(--ink) px-4 py-2 text-[12px] font-semibold text-(--surface)"
             >
-              SCENTAI Advisor öffnen
+              DUFYND Advisor öffnen
             </a>
           </div>
         </section>
