@@ -338,30 +338,14 @@ def build_conversion_report(
 
     retention_row = (retention_rows or [{}])[0]
     retention_summary = {
-        "wishlist_page_views": _integer(
-            retention_row.get("wishlist_page_views")
-        ),
-        "wishlist_page_sessions": _integer(
-            retention_row.get("wishlist_page_sessions")
-        ),
-        "collection_page_views": _integer(
-            retention_row.get("collection_page_views")
-        ),
-        "collection_page_sessions": _integer(
-            retention_row.get("collection_page_sessions")
-        ),
-        "wishlist_add_sessions": _integer(
-            retention_row.get("wishlist_add_sessions")
-        ),
-        "collection_add_sessions": _integer(
-            retention_row.get("collection_add_sessions")
-        ),
-        "collection_advisor_sessions": _integer(
-            retention_row.get("collection_advisor_sessions")
-        ),
-        "last_retention_event_at": retention_row.get(
-            "last_retention_event_at"
-        ),
+        "wishlist_page_views": _integer(retention_row.get("wishlist_page_views")),
+        "wishlist_page_sessions": _integer(retention_row.get("wishlist_page_sessions")),
+        "collection_page_views": _integer(retention_row.get("collection_page_views")),
+        "collection_page_sessions": _integer(retention_row.get("collection_page_sessions")),
+        "wishlist_add_sessions": _integer(retention_row.get("wishlist_add_sessions")),
+        "collection_add_sessions": _integer(retention_row.get("collection_add_sessions")),
+        "collection_advisor_sessions": _integer(retention_row.get("collection_advisor_sessions")),
+        "last_retention_event_at": retention_row.get("last_retention_event_at"),
     }
 
     return {
