@@ -52,11 +52,11 @@ def build_operations_status(
     feed_summary = feed.get("summary", {})
 
     approved_programs = int(
-        affiliate_summary.get("active", 0)
-        or affiliate_summary.get("approved", 0)
-        or 0
+        affiliate_summary.get("approved", 0) or 0
     )
-    active_programs = int(affiliate_summary.get("active", 0) or 0)
+    active_programs = int(
+        affiliate_summary.get("active", 0) or 0
+    )
 
     full_feed_paths = int(
         feed_summary.get("programs_with_full_release_mapping", 0)
