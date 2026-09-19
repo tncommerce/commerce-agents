@@ -156,7 +156,6 @@ def test_analytics_metadata_rejects_free_form_personal_text() -> None:
         raise AssertionError("analytics metadata must stay identifier-only")
 
 
-
 def test_personal_library_events_accept_product_context() -> None:
     for event in (
         "wishlist_add",
