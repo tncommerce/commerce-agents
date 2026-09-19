@@ -240,3 +240,12 @@ Completed on 2026-09-19:
 Production website action:
 - set NEXT_PUBLIC_LEGAL_EMAIL=kontakt@dufynd.de in the Render storefront environment
 - redeploy and verify Impressum / Datenschutz show the new address
+
+
+## Live verification — DUFYND business email
+
+Verified on 2026-09-19:
+- https://dufynd.de/impressum renders kontakt@dufynd.de
+- https://dufynd.de/datenschutz renders kontakt@dufynd.de
+- previous Gmail contact address is no longer present on those public legal pages
+- DUFYND remains the public brand and TNCommerce remains the legal operator
