@@ -59,6 +59,12 @@ PILOT2_JOBS = DATA_DIR / "scentai_pilot_batch_02_production_jobs.json"
 PILOT2_SUBTITLES = DATA_DIR / "scentai_pilot_batch_02_subtitles.json"
 PILOT2_LINKS = DATA_DIR / "scentai_pilot_batch_02_links.json"
 PILOT2_SOCIAL_COPY = DATA_DIR / "scentai_pilot_batch_02_social_copy.json"
+PILOT3_MANIFEST = DATA_DIR / "scentai_pilot_batch_03.json"
+PILOT3_READINESS = DATA_DIR / "scentai_pilot_batch_03_readiness.json"
+PILOT3_JOBS = DATA_DIR / "scentai_pilot_batch_03_production_jobs.json"
+PILOT3_SUBTITLES = DATA_DIR / "scentai_pilot_batch_03_subtitles.json"
+PILOT3_LINKS = DATA_DIR / "scentai_pilot_batch_03_links.json"
+PILOT3_SOCIAL_COPY = DATA_DIR / "scentai_pilot_batch_03_social_copy.json"
 
 OUT_MAPPING = DATA_DIR / "scentai_merchant_mapping_work_queue.json"
 OUT_AFFILIATE = DATA_DIR / "scentai_affiliate_activation_status.json"
@@ -70,6 +76,9 @@ OUT_OPERATIONS = DATA_DIR / "scentai_jarvis_operations_status.json"
 OUT_CONTENT = DATA_DIR / "scentai_content_operations_status.json"
 OUT_CONTENT_BATCH02 = (
     DATA_DIR / "scentai_content_operations_status_batch02.json"
+)
+OUT_CONTENT_BATCH03 = (
+    DATA_DIR / "scentai_content_operations_status_batch03.json"
 )
 OUT_CONTENT_PIPELINE = DATA_DIR / "scentai_content_pipeline_status.json"
 OUT_MASTER = DATA_DIR / "scentai_jarvis_master_status.json"
@@ -173,8 +182,23 @@ def refresh_state(*, generated_at: str) -> dict[str, Any]:
     )
     content_status_batch02["batch_id"] = "pilot_batch_02"
 
+    content_status_batch03 = build_content_operations_status(
+        load_json(PILOT3_MANIFEST),
+        load_json(PILOT3_READINESS),
+        load_json(PILOT3_JOBS),
+        load_json(PILOT3_SUBTITLES),
+        load_json(PILOT3_LINKS),
+        load_json(PILOT3_SOCIAL_COPY),
+        generated_at=generated_at,
+    )
+    content_status_batch03["batch_id"] = "pilot_batch_03"
+
     content_pipeline = build_content_pipeline_status(
-        [content_status, content_status_batch02],
+        [
+            content_status,
+            content_status_batch02,
+            content_status_batch03,
+        ],
         generated_at=generated_at,
     )
 
@@ -196,6 +220,7 @@ def refresh_state(*, generated_at: str) -> dict[str, Any]:
         "operations": operations,
         "content_status": content_status,
         "content_status_batch02": content_status_batch02,
+        "content_status_batch03": content_status_batch03,
         "content_pipeline": content_pipeline,
         "master_status": master_status,
     }
@@ -213,6 +238,10 @@ def write_state(state: dict[str, Any]) -> None:
     write_json(
         OUT_CONTENT_BATCH02,
         state["content_status_batch02"],
+    )
+    write_json(
+        OUT_CONTENT_BATCH03,
+        state["content_status_batch03"],
     )
     write_json(
         OUT_CONTENT_PIPELINE,
