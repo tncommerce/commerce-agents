@@ -1,18 +1,49 @@
+y>>>
 from __future__ import annotations
 
-import argparse
-import hashlib
-import json
-from datetime import UTC, datetime
-from pathlib import Path
+from collections import defaultdict
 from typing import Any
+from urllib.parse import urlparse
 
-DATA_DIR = Path("examples/retail/data")
-DEFAULT_STAGING = DATA_DIR / "scentai_catalog_staging.json"
-DEFAULT_OUTPUT = DATA_DIR / "scentai_image_approval_work_queue.json"
-DEFAULT_ASSET_CANDIDATES = (
-    DATA_DIR / "scentai_image_asset_candidates.json"
+from .merchant_feed_assets import extract_feed_image_candidates
+from .merchant_feed_preflight import build_feed_preflight
+from .merchant_import import (
+    MerchantProductMapping,
+    import_feed_rows,
 )
+from .merchant_provider_contract import validate_provider_contract_rows
+
+
+def _valid_http_url(value: object) -> bool:
+    if not isinstance(value, str) or not value.strip():
+        return False
+
+    parsed = urlparse(value.strip())
+    return parsed.scheme in {"http", "https"} and bool(parsed.netloc)
+
+
+def build_release_feed_readiness(
+    release_product_ids: list[str],
+    rows: list[dict],
+    mappings: list[MerchantProductMapping],
+) -> dict[str, Any]:
+    release_ids = list(dict.fromkeys(release_product_ids))
+    release_set = set(release_ids)
+
+    preflight = build_feed_preflight(rows)
+    contract = validate_provider_contract_rows(rows)
+    imported = import_feed_rows(contract.rows, mappings)
+    images = extract_feed_image_candidates(rows, mappings)
+
+    offers_by_product: dict[str, list] = defaultdict(list)
+    for offer in imported.offers:
+        if offer.product_id in release_set:
+            offers_by_product[offer.product_id].append(offer)
+
+    images_by_product: dict[str, list[dict]] = defaultdict(list)
+    for candidate in images["cand
+…[43132 chars truncated — re-run with head/grep/tail for full output]…
+EFAULT_ASSET_CANDIDATES = DATA_DIR / "scentai_image_asset_candidates.json"
 DEFAULT_RELEASES = [
     DATA_DIR / "scentai_release_batch_01.json",
     DATA_DIR / "scentai_release_batch_02.json",
@@ -93,10 +124,7 @@ def build_queue(
         media = product.get("media", {})
         image_status = str(media.get("image_status") or "").strip()
         image_url = str(media.get("image_url") or "").strip() or None
-        approved = (
-            image_status in APPROVED_IMAGE_STATES
-            and image_url is not None
-        )
+        approved = image_status in APPROVED_IMAGE_STATES and image_url is not None
 
         candidate = candidate_by_product.get(product_id)
 
@@ -105,10 +133,7 @@ def build_queue(
             blockers: list[str] = []
             next_action = "none"
         elif candidate is not None:
-            image_state = str(
-                candidate.get("image_state")
-                or "rights_or_source_check_pending"
-            )
+            image_state = str(candidate.get("image_state") or "rights_or_source_check_pending")
             if image_state == "identity_check_pending":
                 blockers = [
                     "approved_product_image_missing",
@@ -126,10 +151,7 @@ def build_queue(
                 ]
             next_action = str(
                 candidate.get("next_action")
-                or (
-                    "prefer_approved_affiliate_feed_image_else_"
-                    "verify_manufacturer_asset_usage"
-                )
+                or ("prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage")
             )
         else:
             image_state = "missing"
@@ -153,9 +175,7 @@ def build_queue(
         }
 
         if candidate is not None and not approved:
-            row["candidate_source"] = candidate.get(
-                "candidate_source"
-            )
+            row["candidate_source"] = candidate.get("candidate_source")
             verified_at = candidate.get(
                 "candidate_source",
                 {},
@@ -209,16 +229,8 @@ def build_queue(
 
     items.sort(
         key=lambda item: (
-            (
-                item["release"]["release_order"]
-                if item["release"]
-                else 99
-            ),
-            (
-                item["release"]["position"]
-                if item["release"]
-                else 999
-            ),
+            (item["release"]["release_order"] if item["release"] else 99),
+            (item["release"]["position"] if item["release"] else 999),
             str(item.get("brand") or "").casefold(),
             str(item.get("name") or "").casefold(),
         )
@@ -237,60 +249,40 @@ def build_queue(
         "source_files": [
             DEFAULT_STAGING.name,
             *[path.name for path in DEFAULT_RELEASES],
-            *(
-                [DEFAULT_ASSET_CANDIDATES.name]
-                if asset_candidates is not None
-                else []
-            ),
+            *([DEFAULT_ASSET_CANDIDATES.name] if asset_candidates is not None else []),
         ],
         "summary": {
             "staged_products": len(items),
             "release_01_products": sum(
                 1
                 for item in items
-                if item.get("release", {}).get("release_id")
-                == "SCENTAI-RELEASE-01"
+                if item.get("release", {}).get("release_id") == "SCENTAI-RELEASE-01"
                 if item.get("release")
             ),
             "release_02_products": sum(
                 1
                 for item in items
-                if item.get("release", {}).get("release_id")
-                == "SCENTAI-RELEASE-02"
+                if item.get("release", {}).get("release_id") == "SCENTAI-RELEASE-02"
                 if item.get("release")
             ),
             "release_03_products": sum(
                 1
                 for item in items
-                if item.get("release", {}).get("release_id")
-                == "SCENTAI-RELEASE-03"
+                if item.get("release", {}).get("release_id") == "SCENTAI-RELEASE-03"
                 if item.get("release")
             ),
             "approved_images": sum(
-                1
-                for item in items
-                if str(item["image_state"]).startswith("approved_")
+                1 for item in items if str(item["image_state"]).startswith("approved_")
             ),
             "pending_images": sum(
-                1
-                for item in items
-                if not str(item["image_state"]).startswith("approved_")
+                1 for item in items if not str(item["image_state"]).startswith("approved_")
             ),
-            "review_ready": sum(
-                1
-                for item in items
-                if item["image_state"] == "review_ready"
-            ),
+            "review_ready": sum(1 for item in items if item["image_state"] == "review_ready"),
             "rights_or_source_check_pending": sum(
-                1
-                for item in items
-                if item["image_state"]
-                == "rights_or_source_check_pending"
+                1 for item in items if item["image_state"] == "rights_or_source_check_pending"
             ),
             "identity_check_pending": sum(
-                1
-                for item in items
-                if item["image_state"] == "identity_check_pending"
+                1 for item in items if item["image_state"] == "identity_check_pending"
             ),
         },
         "items": items,
@@ -339,15 +331,8 @@ def main() -> int:
     release_paths = args.release or DEFAULT_RELEASES
     staging = load_json(args.staging)
     releases = [load_json(path) for path in release_paths]
-    asset_candidates = (
-        load_json(args.asset_candidates)
-        if args.asset_candidates.exists()
-        else None
-    )
-    generated_at = (
-        args.generated_at
-        or datetime.now(UTC).replace(microsecond=0).isoformat()
-    )
+    asset_candidates = load_json(args.asset_candidates) if args.asset_candidates.exists() else None
+    generated_at = args.generated_at or datetime.now(UTC).replace(microsecond=0).isoformat()
 
     queue = build_queue(
         staging,
@@ -373,10 +358,7 @@ def main() -> int:
             f"pending={summary['pending_images']} | "
             f"review_ready={summary['review_ready']}"
         )
-        print(
-            "source_fingerprint_sha256="
-            f"{queue['source_fingerprint_sha256']}"
-        )
+        print(f"source_fingerprint_sha256={queue['source_fingerprint_sha256']}")
 
     return 0
 
