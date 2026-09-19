@@ -9,6 +9,7 @@ DATA_DIR = Path("examples/retail/data")
 RELEASE_MANIFESTS = (
     DATA_DIR / "scentai_release_batch_01.json",
     DATA_DIR / "scentai_release_batch_02.json",
+    DATA_DIR / "scentai_release_batch_03.json",
 )
 
 
@@ -78,12 +79,17 @@ def test_release_batch_product_ids_do_not_overlap() -> None:
         seen.update(current)
 
 
-def test_release_02_is_write_locked_until_release_01_is_validated() -> None:
+def test_release_write_guards_follow_operational_sequence() -> None:
     release_01 = RELEASE_MANIFESTS[0]
     release_02 = RELEASE_MANIFESTS[1]
+    release_03 = RELEASE_MANIFESTS[2]
 
     assert release_manifest_write_enabled(release_01) is True
     assert release_manifest_write_enabled(release_02) is False
+    assert release_manifest_write_enabled(release_03) is False
 
-    payload = load_json(release_02)
-    assert "Release 01" in payload["write_guard_reason"]
+    payload_02 = load_json(release_02)
+    payload_03 = load_json(release_03)
+    assert "Release 01" in payload_02["write_guard_reason"]
+    assert "Release 01" in payload_03["write_guard_reason"]
+    assert "Release 02" in payload_03["write_guard_reason"]
