@@ -1,121 +1,91 @@
 # SCENTAI Brand / Domain Clearance
 
-Status: rename_recommended_owner_decision_required
+Status: replacement_name_screening_active
 Updated: 2026-09-19
 
 ## Executive conclusion
 
-Preliminary brand clearance recommends renaming SCENTAI before a custom domain, paid acquisition, trademark spend or broad public launch.
+SCENTAI should not receive further long-term public-brand investment by default. Preliminary clearance found direct consumer-fragrance name collisions and weak word-mark distinctiveness signals.
 
-This is a commercial risk recommendation, not a legal opinion.
+This is a commercial risk recommendation, not legal advice or a formal freedom-to-operate opinion.
 
-## Why the current name is weak
+## SCENTAI finding
 
-### 1. Direct category collision
+Active third-party fragrance discovery products already use ScentAI/ScentAi in the same broad consumer category, while ScentAI Inc. also exists in smell/AI technology. An EUIPO ScentAI word-mark application by Ainos was refused on absolute grounds including descriptiveness / lack of distinctiveness.
 
-Active third-party fragrance-discovery products already operate under the ScentAI/ScentAi name.
+Renaming before custom-domain purchase, paid acquisition, indexing and larger audience growth remains the preferred path.
 
-- getscentai.com presents itself as "ScentAI" and offers evidence-grounded perfume search, similar-fragrance discovery and dupe-style comparisons. It even uses "Like Imagination under $60" as a user-query example.
-- scentai.ca presents itself as "ScentAi" and offers AI fragrance wardrobe, recommendation and purchase guidance.
-- ScentAI Studio also exists in consumer fragrance/home-fragrance commerce.
+## Candidate re-screen — 2026-09-19
 
-The first two are materially close to SCENTAI's consumer fragrance discovery proposition, creating confusion, SEO competition and future international-brand risk even if no legal infringement were ultimately found.
+### PARFYND
+Status: downgraded_not_preferred
 
-### 2. Existing corporate use
+A deeper similarity screen found active PARFYN use in health/beauty and fragrance commerce:
+- parfyn.com sells health/beauty products including inspired perfume
+- a separate PARFYN perfume retailer appears on Mahally
+- Hangzhou Parfyn International Trading Co., Ltd. sells perfume/fragrance products
 
-Ainos, Inc. operates a wholly owned software subsidiary called ScentAI Inc. focused on smell/AI systems.
+PARFYND differs from PARFYN only by the final D and would operate in the same fragrance/beauty commercial area. Even without proving a trademark conflict, this creates avoidable phonetic, visual, search and brand-confusion risk.
 
-Its business is industrial rather than consumer-perfume discovery, so the product-market overlap is lower than getscentai.com or scentai.ca, but it adds another established AI/scent use of the exact name.
+Result: do not approve PARFYND as the final public brand without specialist clearance; commercially, prefer a more differentiated name.
 
-### 3. Weak word-mark distinctiveness
+### OLFYND
+Status: downgraded_not_preferred
 
-EUIPO application 019258557 for the word mark ScentAI, filed by Ainos, was refused on absolute grounds including descriptiveness / lack of distinctive character.
+A deeper similarity screen found OLFYN Perfumes, an active Canadian perfume brand preparing to launch designer-calibre eau de parfum.
 
-That refusal does not by itself decide SCENTAI's ability to trade in Germany, but it is a negative signal for building a defensible standalone word brand around the exact term.
+OLFYND differs only by the final D. That is too close for a new fragrance-discovery brand when a more differentiated name can still be chosen cheaply.
 
-### 4. Early-stage switching cost is still low
+Result: do not approve OLFYND as the final public brand.
 
-SCENTAI currently has:
-- technical infrastructure and data model
-- newly created TikTok / Instagram presence
-- only the first organic social posts
-- no custom public domain
-- no active affiliate program
-- no paid acquisition
-- no established SEO footprint
+### DUFYND
+Status: strongest_current_working_candidate
 
-Renaming now is materially cheaper than renaming after domain authority, affiliate integrations, search indexing, paid media, backlinks and a larger audience exist.
-
-## Official-search limitation
-
-The DPMA itself warns that identical-word searches are not a complete similarity clearance and recommends searching DPMAregister, EUIPO/TMview, WIPO and broader commercial use. A professional similarity search or IP counsel remains the appropriate final step before a trademark filing or major brand investment.
-
-## Naming screen
-
-The working screen tested multiple fragrance/AI-style names for obvious public conflicts.
-
-Rejected during preliminary web clearance:
-- Scentivo — active fragrance retailers / AI fragrance finder in Germany and other markets
-- Olfyn — active perfume brand
-- Olfyra — fragrance brand launching
-- Olfara — active perfume retailers and perfume trademark activity
-- Aromiq — multiple active fragrance/aroma brands
-- Fragnova — active fragrance businesses
-- Noteora / Notaura — active software brands
-- Nosevia — active consumer brand
-- Parfexa — active German fragrance company and online perfume retailer
-- Olfexa — existing pharmaceutical brand use; not preferred despite different category
-
-### Current working candidates
-
-#### PARFYND
-Status: preliminary_clear_working_candidate
+Preliminary exact-match web, fragrance, social-index and trademark-index searches did not surface an obvious active commercial fragrance/AI brand using DUFYND. One irrelevant OCR/text occurrence surfaced in a historical-document mirror, not as a current business.
 
 Pros:
-- strong connection to perfume discovery / finding
-- short and memorable
-- materially more distinctive than ScentAI
-- no obvious exact-match fragrance or AI business surfaced in the preliminary web search
-- no indexed exact-match .de/.com site surfaced in the preliminary search
+- coined and materially more differentiated than ScentAI, PARFYND or OLFYND
+- still carries a German-language association with "Duft finden"
+- short enough for social handles and a domain
+- no "AI" dependency in the brand, allowing the business to expand beyond an AI-only positioning
 
-Risks:
-- "fynd" spelling requires users to learn the brand once
-- still semantically hints at "perfume find", so final distinctiveness should be checked formally
-- exact domain and social-handle availability must be confirmed at registrar/platform level
+Risks / open gates:
+- German-first pronunciation and meaning may be less natural internationally
+- exact registrar availability for dufynd.de / dufynd.com still requires a live registry/registrar check at purchase time
+- social-handle availability must be checked directly inside TikTok, Instagram and YouTube because search indexing is not authoritative
+- final DPMA/EUIPO/WIPO similarity clearance should be repeated in the official databases before filing a trademark or making significant brand spend
 
-#### OLFYND
-Status: preliminary_clear_working_candidate
+### DUVYND
+Status: reserve_candidate_preliminary_clear
+
+No obvious exact-match commercial or fragrance use surfaced in the preliminary web screen.
 
 Pros:
-- more premium / technical feel
-- linked to olfaction + discovery without directly saying "AI"
-- no obvious exact-match commercial use surfaced in the preliminary web search
-- potentially stronger international brand character than a German-specific name
+- more abstract and potentially internationally brandable
+- visually distinctive
 
-Risks:
-- less immediately understandable to mainstream shoppers
-- pronunciation / spelling must be taught by branding
-- exact domain and social-handle availability must be confirmed at registrar/platform level
+Cons:
+- weaker immediate connection to fragrance discovery
+- users would need to learn spelling and meaning from scratch
 
-## Mentor recommendation
+## Current mentor recommendation
 
-Do not keep investing into the SCENTAI public brand by default.
+1. Do not purchase scentai.de, parfynd.*, or olfynd.*.
+2. Keep SCENTAI only as the internal project codename until the replacement is chosen.
+3. Treat DUFYND as the current lead candidate and DUVYND as the reserve.
+4. Before spend:
+   - verify exact .de/.com availability through registrar/registry
+   - verify TikTok, Instagram and YouTube handles directly in-platform
+   - run official DPMA / EUIPO / WIPO exact-and-similar mark searches
+5. If DUFYND passes those checks, make one coordinated rename before broad public promotion.
+6. Then update logo, social handles, canonical domain, legal pages, partner-network profiles, tracking links and campaign naming in one migration.
 
-Preferred path:
-1. Treat SCENTAI as the internal project codename until a replacement is approved.
-2. Run exact registrar + platform-handle checks for PARFYND and OLFYND.
-3. Run a formal DPMA/EUIPO/WIPO exact-and-similar mark search on the final 1-2 names.
-4. Choose the final public brand once.
-5. Then update social handles, logo, canonical domain, legal pages, partner-network profiles and launch attribution before broad promotion.
-6. Only then purchase the final domain and enable indexing.
+## Domain / indexing status
 
-## Domain status
-
-- scentai.de is no longer recommended for purchase at this stage.
 - temporary host remains https://scentai-xxya.onrender.com
-- keep NEXT_PUBLIC_SITE_INDEXABLE=false
-- no domain purchase is authorized until the naming decision is resolved
+- NEXT_PUBLIC_SITE_INDEXABLE must remain false
+- no custom-domain purchase is authorized while the final naming gate is open
 
 ## Spend rule
 
-Do not spend on a SCENTAI custom domain, trademark filing, paid ads or long-term brand assets while this decision gate is open.
+Do not spend on a SCENTAI/PARFYND/OLFYND domain, trademark filing, paid ads or durable brand assets while this gate is open.
