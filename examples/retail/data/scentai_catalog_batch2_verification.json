@@ -27,7 +27,16 @@
         "https://www.douglas.de/de/p/3001005867",
         "https://www.flaconi.de/parfum/yves-saint-laurent/black-opium/yves-saint-laurent-black-opium-eau-de-parfum.html?variant=80005078-90",
         "https://www.parfumo.de/Parfums/Yves_Saint_Laurent/Black_Opium"
-      ]
+      ],
+      "identifiers": {
+        "ean": "3365440787971",
+        "gtin": "3365440787971"
+      },
+      "merchant_snapshot": {
+        "douglas_de": "available",
+        "flaconi_de": "available"
+      },
+      "merchant_snapshot_checked_at": "2026-09-19"
     },
     {
       "candidate_id": "CHLOE-CHLOE-EDP",
