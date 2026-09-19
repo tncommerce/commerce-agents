@@ -1,0 +1,142 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-19",
+  "campaign_id": "launch01",
+  "batch_id": "pilot_batch_02",
+  "machine_id": "scentai_pilot_production_v1",
+  "status": "visual_preview_and_voiceover_pending",
+  "audio_storage_policy": "local_only_gitignored",
+  "subtitle_policy": "draft SRT must be conformed to final voiceover before final render",
+  "jobs": [
+    {
+      "production_order": 1,
+      "content_id": "dupe_battle_imagination_01",
+      "expected_duration_seconds": 29,
+      "duration_tolerance_seconds": 2,
+      "visual_preview_path": "examples/retail/storefront-web/public/social/pilots/batch02/dupe_battle_imagination_01-preview.mp4",
+      "voiceover_path": "examples/retail/data/.scentai_pilot_audio/dupe_battle_imagination_01.wav",
+      "subtitle_path": "examples/retail/data/scentai_pilot_batch_02_subtitles/dupe_battle_imagination_01.srt",
+      "subtitle_timing_status": "draft_not_conformed",
+      "final_render_path": "examples/retail/data/.scentai_pilot_final_renders/dupe_battle_imagination_01.mp4",
+      "tracked_link_channels": [
+        "tiktok",
+        "instagram",
+        "youtube"
+      ],
+      "price_recheck_required": false,
+      "state": "visual_preview_pending",
+      "blockers": [
+        "visual_preview_mp4_missing",
+        "voiceover_file_missing",
+        "subtitle_timing_not_conformed",
+        "final_render_missing",
+        "mobile_content_review_pending"
+      ],
+      "publish_action_class": "approval_required"
+    },
+    {
+      "production_order": 2,
+      "content_id": "layton_alternatives_01",
+      "expected_duration_seconds": 28,
+      "duration_tolerance_seconds": 2,
+      "visual_preview_path": "examples/retail/storefront-web/public/social/pilots/batch02/layton_alternatives_01-preview.mp4",
+      "voiceover_path": "examples/retail/data/.scentai_pilot_audio/layton_alternatives_01.wav",
+      "subtitle_path": "examples/retail/data/scentai_pilot_batch_02_subtitles/layton_alternatives_01.srt",
+      "subtitle_timing_status": "draft_not_conformed",
+      "final_render_path": "examples/retail/data/.scentai_pilot_final_renders/layton_alternatives_01.mp4",
+      "tracked_link_channels": [
+        "tiktok",
+        "instagram",
+        "youtube"
+      ],
+      "price_recheck_required": false,
+      "state": "visual_preview_pending",
+      "blockers": [
+        "visual_preview_mp4_missing",
+        "voiceover_file_missing",
+        "subtitle_timing_not_conformed",
+        "final_render_missing",
+        "mobile_content_review_pending"
+      ],
+      "publish_action_class": "approval_required"
+    },
+    {
+      "production_order": 3,
+      "content_id": "althair_liquid_brun_01",
+      "expected_duration_seconds": 27,
+      "duration_tolerance_seconds": 2,
+      "visual_preview_path": "examples/retail/storefront-web/public/social/pilots/batch02/althair_liquid_brun_01-preview.mp4",
+      "voiceover_path": "examples/retail/data/.scentai_pilot_audio/althair_liquid_brun_01.wav",
+      "subtitle_path": "examples/retail/data/scentai_pilot_batch_02_subtitles/althair_liquid_brun_01.srt",
+      "subtitle_timing_status": "draft_not_conformed",
+      "final_render_path": "examples/retail/data/.scentai_pilot_final_renders/althair_liquid_brun_01.mp4",
+      "tracked_link_channels": [
+        "tiktok",
+        "instagram",
+        "youtube"
+      ],
+      "price_recheck_required": false,
+      "state": "visual_preview_pending",
+      "blockers": [
+        "visual_preview_mp4_missing",
+        "voiceover_file_missing",
+        "subtitle_timing_not_conformed",
+        "final_render_missing",
+        "mobile_content_review_pending"
+      ],
+      "publish_action_class": "approval_required"
+    },
+    {
+      "production_order": 4,
+      "content_id": "top3_date_01",
+      "expected_duration_seconds": 30,
+      "duration_tolerance_seconds": 2,
+      "visual_preview_path": "examples/retail/storefront-web/public/social/pilots/batch02/top3_date_01-preview.mp4",
+      "voiceover_path": "examples/retail/data/.scentai_pilot_audio/top3_date_01.wav",
+      "subtitle_path": "examples/retail/data/scentai_pilot_batch_02_subtitles/top3_date_01.srt",
+      "subtitle_timing_status": "draft_not_conformed",
+      "final_render_path": "examples/retail/data/.scentai_pilot_final_renders/top3_date_01.mp4",
+      "tracked_link_channels": [
+        "tiktok",
+        "instagram",
+        "youtube"
+      ],
+      "price_recheck_required": false,
+      "state": "visual_preview_pending",
+      "blockers": [
+        "visual_preview_mp4_missing",
+        "voiceover_file_missing",
+        "subtitle_timing_not_conformed",
+        "final_render_missing",
+        "mobile_content_review_pending"
+      ],
+      "publish_action_class": "approval_required"
+    },
+    {
+      "production_order": 5,
+      "content_id": "top3_fresh_01",
+      "expected_duration_seconds": 28,
+      "duration_tolerance_seconds": 2,
+      "visual_preview_path": "examples/retail/storefront-web/public/social/pilots/batch02/top3_fresh_01-preview.mp4",
+      "voiceover_path": "examples/retail/data/.scentai_pilot_audio/top3_fresh_01.wav",
+      "subtitle_path": "examples/retail/data/scentai_pilot_batch_02_subtitles/top3_fresh_01.srt",
+      "subtitle_timing_status": "draft_not_conformed",
+      "final_render_path": "examples/retail/data/.scentai_pilot_final_renders/top3_fresh_01.mp4",
+      "tracked_link_channels": [
+        "tiktok",
+        "instagram",
+        "youtube"
+      ],
+      "price_recheck_required": false,
+      "state": "visual_preview_pending",
+      "blockers": [
+        "visual_preview_mp4_missing",
+        "voiceover_file_missing",
+        "subtitle_timing_not_conformed",
+        "final_render_missing",
+        "mobile_content_review_pending"
+      ],
+      "publish_action_class": "approval_required"
+    }
+  ]
+}
