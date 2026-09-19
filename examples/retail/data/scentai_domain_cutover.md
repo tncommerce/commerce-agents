@@ -285,3 +285,10 @@ Next:
 - submit sitemap.xml in Google Search Console
 - request indexing for the homepage and a small set of priority landing/detail pages
 - monitor indexing coverage and crawl errors before scaling content acquisition
+
+
+## Sitemap submitted to Google
+
+Completed on 2026-09-19:
+- submitted https://dufynd.de/sitemap.xml in Google Search Console for the dufynd.de Domain property
+- next step is targeted URL inspection/indexing requests for a small set of priority pages; the sitemap handles the broader catalogue
