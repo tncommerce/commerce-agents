@@ -107,7 +107,8 @@
         "https://www.narcisorodriguezparfums.com/de/d%C3%BCfte/for-her/",
         "https://www.flaconi.de/parfum/narciso-rodriguez/for-her/narciso-rodriguez-for-her-pure-musc-eau-de-parfum.html",
         "https://www.douglas.de/de/b/narciso-rodriguez/for-her/b225001"
-      ]
+      ],
+      "merchant_snapshot_checked_at": "2026-09-19"
     },
     {
       "candidate_id": "PDM-DELINA-EDP",
@@ -158,12 +159,17 @@
       ],
       "identity_verified": true,
       "merchant_snapshot": {
-        "douglas_de": "available"
+        "douglas_de": "available",
+        "flaconi_de": "available",
+        "parfumdreams_de": "available"
       },
       "sources": [
         "https://www.lancome.de/duefte/frauen_parfum/la_vie_est_belle/la_vie_est_belle_eau_de_parfum/3614273088657.html",
-        "https://www.douglas.de/de/p/3000056790"
-      ]
+        "https://www.douglas.de/de/p/3000056790",
+        "https://www.flaconi.de/parfum/lancome/la-vie-est-belle/lancome-la-vie-est-belle-refillable-eau-de-parfum.html?variant=80063214-15",
+        "https://www-origin.parfumdreams.de/Lancome/Damen-Parfum/La-vie-est-belle/Eau-de-Parfum-Spray-nachfuellbar/index_38746.aspx"
+      ],
+      "merchant_snapshot_checked_at": "2026-09-19"
     },
     {
       "candidate_id": "JPG-LE-MALE-LE-PARFUM",
@@ -209,12 +215,17 @@
       ],
       "identity_verified": true,
       "merchant_snapshot": {
-        "douglas_de": "available"
+        "douglas_de": "available",
+        "flaconi_de": "available",
+        "parfumdreams_de": "available"
       },
       "sources": [
         "https://www.viktor-rolf.com/products/spicebomb-extreme-eau-de-parfum-90ml",
-        "https://www.douglas.de/de/p/3001012427"
-      ]
+        "https://www.douglas.de/de/p/3001012427",
+        "https://www.flaconi.de/parfum/viktor-and-rolf/spicebomb/viktor-and-rolf-spicebomb-extreme-eau-de-parfum.html?variant=80007387-50",
+        "https://www.parfumdreams.de/Viktor-Rolf/Herrenduefte/Spicebomb/Eau-de-Parfum-Spray/index_51397.aspx"
+      ],
+      "merchant_snapshot_checked_at": "2026-09-19"
     },
     {
       "candidate_id": "PRADA-LHOMME-INTENSE-EDP",
@@ -276,5 +287,6 @@
     "Map main_accords and SCENTAI recommendation intensity fields without inventing unsupported precision.",
     "Add community rating snapshots with source and vote count.",
     "Run search/recommendation QA, including women-specific queries and typo handling."
-  ]
+  ],
+  "merchant_research_updated_at": "2026-09-19"
 }
