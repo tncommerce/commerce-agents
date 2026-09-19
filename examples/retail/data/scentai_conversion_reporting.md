@@ -1,7 +1,7 @@
 # SCENTAI Conversion Analytics & Funnel
 
 Status: active
-Updated: 2026-09-18
+Updated: 2026-09-19
 
 ## Purpose
 
@@ -77,6 +77,9 @@ The new funnel context contains only:
 - fixed internal surface label
 - merchant/source label
 - recommendation position
+- allowlisted acquisition channel
+- identifier-only campaign ID
+- identifier-only content ID
 
 ## Surfaces
 
@@ -155,7 +158,13 @@ Shows which storefront surfaces produce merchant clickouts:
 
 ### scentai_acquisition_funnel
 
-Measures first-party acquisition landing performance:
+Measures first-party acquisition landing performance grouped by:
+- landing page
+- acquisition channel
+- campaign ID
+- content ID
+
+For each group it reports:
 - landing sessions
 - consultations started after the landing
 - recommendation sessions
@@ -166,9 +175,10 @@ Measures first-party acquisition landing performance:
 - consultation-to-recommendation rate
 - landing-to-clickout rate
 
-Current landing sources are privacy-safe identifiers such as
-`duftfinder`, `parfum_alternativen` and
-`parfum_geschenkberater`.
+Landing sources remain privacy-safe identifiers such as
+`duftfinder_tiktok`, `parfum_alternativen_instagram` and
+`parfum_geschenkberater_youtube`. The dedicated attribution fields keep
+channel, campaign and content separate for reporting.
 
 Optional channel attribution is allowlisted. Supported `src` values:
 - `tiktok`
@@ -179,6 +189,18 @@ Optional channel attribution is allowlisted. Supported `src` values:
 - `partner`
 
 Arbitrary `src` values are ignored rather than copied into analytics.
+
+Optional launch parameters:
+- `cmp` = campaign identifier
+- `content` = individual creative/content identifier
+
+Both are restricted to short identifier-only values. The browser stores the
+attribution in tab-scoped `sessionStorage` so later first-party events in the
+same session can be attributed to the originating launch content.
+
+Use `scripts/build_scentai_campaign_link.py` to create standardized links.
+The naming and privacy conventions are documented in
+`scentai_launch_attribution.md`.
 
 The pseudonymized event table and reporting views are hosted in SCENTAI's
 Supabase project. Public RLS policies are not enabled for the analytics table;
