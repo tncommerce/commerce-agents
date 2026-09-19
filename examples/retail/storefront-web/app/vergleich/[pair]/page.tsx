@@ -28,6 +28,38 @@ const RELATION_LABELS: Record<
   alternative: "Alternative",
 };
 
+const ACCORD_LABELS: Record<string, string> = {
+  fresh: "Frisch",
+  citrus: "Zitrisch",
+  aquatic: "Aquatisch",
+  green: "Grün",
+  spicy: "Würzig",
+  sweet: "Süß",
+  synthetic: "Synthetisch",
+  fruity: "Fruchtig",
+  woody: "Holzig",
+  smoky: "Rauchig",
+  powdery: "Pudrig",
+  floral: "Blumig",
+  creamy: "Cremig",
+  gourmand: "Gourmand",
+  oriental: "Orientalisch",
+  aromatic: "Aromatisch",
+  leathery: "Ledrig",
+  resinous: "Harzig",
+};
+
+const CONFIDENCE_LABELS: Record<string, string> = {
+  high: "hoch",
+  medium_high: "mittel-hoch",
+  medium: "mittel",
+  low: "niedrig",
+};
+
+function accordLabel(value: string): string {
+  return ACCORD_LABELS[value.toLowerCase()] || value;
+}
+
 function formatRating(value: number | null): string {
   if (value == null) return "–";
   return `${value.toLocaleString("de-DE", {
@@ -187,9 +219,14 @@ export default async function ComparisonPage({
             className="flex items-center gap-2.5"
             aria-label="Zur DUFYND Startseite"
           >
-            <span className="grid h-8 w-8 place-items-center rounded-lg bg-(--ink) text-[15px] font-bold text-(--surface)">
-              S
-            </span>
+            <img
+              src="/icon.svg"
+              alt=""
+              aria-hidden
+              width={32}
+              height={32}
+              className="h-8 w-8 rounded-lg"
+            />
             <span className="text-[17px] font-bold tracking-[-0.02em]">
               DUFYND
             </span>
@@ -231,7 +268,7 @@ export default async function ComparisonPage({
           <div className="mt-3 inline-flex rounded-full border border-(--line) bg-(--card) px-3 py-1.5 text-[11px] font-semibold text-(--ink-soft)">
             {RELATION_LABELS[pair.kind]}
             {pair.confidence
-              ? ` · Datenvertrauen: ${pair.confidence.replace("_", " ")}`
+              ? ` · Datenvertrauen: ${CONFIDENCE_LABELS[pair.confidence] || pair.confidence}`
               : ""}
           </div>
           <p className="mt-4 text-[13px] leading-5 text-(--ink-soft)">
@@ -327,7 +364,7 @@ export default async function ComparisonPage({
                     key={accord}
                     className="rounded-full bg-(--well) px-2.5 py-1.5 text-[11px] text-(--ink-soft)"
                   >
-                    {accord}
+                    {accordLabel(accord)}
                   </span>
                 ))}
               </div>
