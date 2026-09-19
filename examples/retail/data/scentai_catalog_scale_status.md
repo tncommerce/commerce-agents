@@ -52,17 +52,20 @@ Current staged integration:
 - staged products with actual imported merchant offers: **0/30**
 - staged products with current affiliate offers: **0/30**
 - staged products with approved images: **0/30**
-- staged products with resolved merchant-product mappings: **0/30**
+- staged products with resolved merchant-product mappings: **10/30**
 
 The existing merchant-offer layer currently contains offers for the already
 live Essential Parfums Bois Impérial product. Those offers do not make any of
 the 30 staging products promotion-ready.
 
-The merchant-mapping file now also contains verified Douglas and flaconi
-product identifiers for the already-live Bois Impérial record. The older
-Notino placeholder for Bois Impérial still has no verified SKU/EAN/GTIN.
-None of these live-product mappings resolves any of the 30 staging candidates,
-so staged resolved mapping coverage remains 0/30.
+The merchant-mapping file retains verified Douglas and flaconi identifiers for
+the already-live Bois Impérial record. In addition, all ten products across
+Release Batches 01 and 02 now have resolved merchant-product mappings with
+GTIN/EAN fallback identifiers.
+
+This means mapping readiness is **10/30** for the staged expansion pool even
+though live-offer readiness remains **0/30**. Mapping readiness must not be
+described as affiliate approval, current pricing or image approval.
 
 ## Current blockers
 
@@ -260,3 +263,27 @@ The full post-approval operating procedure is documented in
 Current state remains intentionally blocked because no approved production feed
 has yet supplied real Batch 01 product identifiers, tracked offers or approved
 images.
+
+
+## Release batch 02
+
+The second guarded mini-release is prepared in
+`scentai_release_batch_02.json` with five additional stable candidates:
+
+1. Guerlain Mon Guerlain Eau de Parfum 100 ml
+2. Narciso Rodriguez for her PURE MUSC Eau de Parfum 100 ml
+3. Chloé Chloé Eau de Parfum 100 ml
+4. Burberry Goddess Eau de Parfum 100 ml
+5. Prada Paradoxe Eau de Parfum 90 ml
+
+All five now have at least two merchant mapping rows plus GTIN/EAN fallback
+identifiers.
+
+Release 02 is intentionally **write-locked** at manifest level. Dry-runs remain
+allowed, but `--write` is rejected until Release 01 has completed the real
+affiliate-feed, manual image-approval, promotion and smoke-test workflow.
+
+Release 01 remains write-capable only in the narrow sense that the CLI may
+attempt a write after every existing product-level gate passes. At the current
+state, Release 01 is still blocked because no current tracked affiliate offers
+or approved production images exist for its five products.
