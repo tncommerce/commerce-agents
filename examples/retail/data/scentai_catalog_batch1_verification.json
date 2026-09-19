@@ -223,12 +223,18 @@
       "identity_verified": true,
       "naming_note": "Some German retailers label the same product family as Le Male Intense; canonical storefront name should remain the official brand name Le Male Le Parfum.",
       "merchant_snapshot": {
-        "douglas_de": "available"
+        "douglas_de": "available",
+        "parfumgroup_de": "available_via_current_price_index"
       },
       "sources": [
         "https://www.jeanpaulgaultier.com/de/de/p/linie-le-male/le-male-le-parfum-eau-de-parfum-intense-000000000065156529",
         "https://www.douglas.de/de/p/5002490497"
-      ]
+      ],
+      "identifiers": {
+        "ean": "8435415032315",
+        "gtin": "8435415032315"
+      },
+      "merchant_snapshot_checked_at": "2026-09-19"
     },
     {
       "candidate_id": "VIKTOR-ROLF-SPICEBOMB-EXTREME",
@@ -259,7 +265,11 @@
         "https://www.flaconi.de/parfum/viktor-and-rolf/spicebomb/viktor-and-rolf-spicebomb-extreme-eau-de-parfum.html?variant=80007387-50",
         "https://www.parfumdreams.de/Viktor-Rolf/Herrenduefte/Spicebomb/Eau-de-Parfum-Spray/index_51397.aspx"
       ],
-      "merchant_snapshot_checked_at": "2026-09-19"
+      "merchant_snapshot_checked_at": "2026-09-19",
+      "identifiers": {
+        "ean": "3614270659706",
+        "gtin": "3614270659706"
+      }
     },
     {
       "candidate_id": "PRADA-LHOMME-INTENSE-EDP",
@@ -280,12 +290,19 @@
       "identity_verified": true,
       "merchant_snapshot": {
         "douglas_de": "available",
-        "prada_de": "temporarily_unavailable_online"
+        "prada_de": "temporarily_unavailable_online",
+        "flaconi_de": "available"
       },
       "sources": [
         "https://www.prada.com/de/de/p/lhomme-prada-intense-edp-100-ml/2A1252_2HC1_F0Z99_P_ML100",
-        "https://www.douglas.de/de/p/3001037535"
-      ]
+        "https://www.douglas.de/de/p/3001037535",
+        "https://www.flaconi.de/parfum/prada/l-homme/prada-l-homme-intense-eau-de-parfum.html"
+      ],
+      "identifiers": {
+        "ean": "8435137764730",
+        "gtin": "8435137764730"
+      },
+      "merchant_snapshot_checked_at": "2026-09-19"
     },
     {
       "candidate_id": "HUGO-BOSS-BOTTLED-EDT",
@@ -307,12 +324,19 @@
       "identity_verified": true,
       "merchant_snapshot": {
         "douglas_de": "available",
-        "hugo_boss_de": "currently_out_of_stock_online"
+        "hugo_boss_de": "currently_out_of_stock_online",
+        "flaconi_de": "available"
       },
       "sources": [
         "https://www.hugoboss.com/de/boss-bottled-eau-de-toilette-100-ml/hbeu58000026_999.html",
-        "https://www.douglas.de/de/p/1010209304"
-      ]
+        "https://www.douglas.de/de/p/1010209304",
+        "https://www.flaconi.de/parfum/hugo-boss/boss-bottled/hugo-boss-boss-bottled-eau-de-toilette.html"
+      ],
+      "identifiers": {
+        "ean": "0737052351100",
+        "gtin": "0737052351100"
+      },
+      "merchant_snapshot_checked_at": "2026-09-19"
     }
   ],
   "next_blockers_before_live": [
