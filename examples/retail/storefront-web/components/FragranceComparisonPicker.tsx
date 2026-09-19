@@ -84,7 +84,7 @@ function ProductMiniHeader({
           />
         ) : (
           <span className="text-[11px] font-semibold tracking-[0.14em] text-(--ink-soft)">
-            SCENTAI
+            DUFYND
           </span>
         )}
       </div>
@@ -188,7 +188,7 @@ export default function FragranceComparisonPicker({
           Zwei Düfte selbst auswählen
         </h2>
         <p className="mt-2 text-[12px] leading-5 text-(--ink-soft)">
-          Vergleiche beliebige Live-Düfte nach denselben SCENTAI-Daten.
+          Vergleiche beliebige Live-Düfte nach denselben DUFYND-Daten.
           Eine freie Gegenüberstellung bedeutet nicht automatisch, dass
           zwischen den Düften eine dokumentierte Duftbeziehung besteht.
         </p>
