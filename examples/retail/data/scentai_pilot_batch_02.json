@@ -4,7 +4,7 @@
   "status": "production_ready_scripts_assets",
   "campaign_id": "launch01",
   "batch_id": "pilot_batch_02",
-  "purpose": "Second five SCENTAI short-form launch pilots with evergreen relationship/profile claims and verified editorial assets.",
+  "purpose": "Second five DUFYND short-form launch pilots with evergreen relationship/profile claims and verified editorial assets.",
   "channels": [
     "tiktok",
     "instagram",
@@ -38,7 +38,7 @@
     "ranking_policy": "Affiliate commission must never influence fragrance recommendations or merchant ordering.",
     "claims_policy": [
       "No invented similarity percentages.",
-      "Use clone/inspired/alternative only when backed by the current SCENTAI product relationship data.",
+      "Use clone/inspired/alternative only when backed by the current DUFYND product relationship data.",
       "Community performance metrics must be framed explicitly as community data.",
       "Avoid numeric price claims in Batch 02 so the creative remains evergreen.",
       "Do not describe different relationship types as equivalent."
@@ -58,7 +58,7 @@
       ],
       "target_duration_seconds": 29,
       "hook": "Marwa, Hectic oder Marwa Extrait – drei Imagination-Richtungen, aber nicht derselbe Duft.",
-      "voiceover": "Marwa, Hectic oder Marwa Extrait – drei Imagination-inspirierte Richtungen, aber nicht derselbe Duft. Marwa bleibt sehr frisch und ist deutlich süßer. Hectic ist genauso frisch, aber trockener und viel würziger. Marwa Extrait liegt dazwischen: weniger süß als Marwa, würziger und etwas dichter. SCENTAI zeigt dir die Unterschiede, statt alle drei einfach gleichzusetzen.",
+      "voiceover": "Marwa, Hectic oder Marwa Extrait – drei Imagination-inspirierte Richtungen, aber nicht derselbe Duft. Marwa bleibt sehr frisch und ist deutlich süßer. Hectic ist genauso frisch, aber trockener und viel würziger. Marwa Extrait liegt dazwischen: weniger süß als Marwa, würziger und etwas dichter. DUFYND zeigt dir die Unterschiede, statt alle drei einfach gleichzusetzen.",
       "relationship_evidence": [
         {
           "product_id": "SC-ARABIYAT-MARWA-EDP-100",
@@ -102,11 +102,11 @@
         },
         {
           "seconds": "24-29",
-          "visual": "three inspired badges + SCENTAI comparison endcard",
+          "visual": "three inspired badges + DUFYND comparison endcard",
           "overlay": "INSPIRED – ABER NICHT GLEICH"
         }
       ],
-      "primary_cta": "Düfte in SCENTAI vergleichen",
+      "primary_cta": "Düfte in DUFYND vergleichen",
       "thumbnail": "MARWA VS HECTIC VS EXTRAIT"
     },
     {
@@ -121,8 +121,8 @@
         "SC-ORIENTICA-ROYAL-BLEU-80"
       ],
       "target_duration_seconds": 28,
-      "hook": "Détour Noir und Royal Bleu gehen beide in Richtung Layton – aber bei SCENTAI nicht mit demselben Label.",
-      "voiceover": "Layton, Détour Noir oder Royal Bleu? Bei SCENTAI sehen die Duftprofile erstaunlich ähnlich aus: süß, würzig, holzig und nur mäßig frisch. Der entscheidende Unterschied ist die Beziehung: Détour Noir ist als Clone hinterlegt, Royal Bleu als Inspired. In den Community-Daten liegt Royal Bleu bei Haltbarkeit und Ausstrahlung etwas höher. Vergleiche die Beziehung und Performance direkt bei SCENTAI.",
+      "hook": "Détour Noir und Royal Bleu gehen beide in Richtung Layton – aber bei DUFYND nicht mit demselben Label.",
+      "voiceover": "Layton, Détour Noir oder Royal Bleu? Bei DUFYND sehen die Duftprofile erstaunlich ähnlich aus: süß, würzig, holzig und nur mäßig frisch. Der entscheidende Unterschied ist die Beziehung: Détour Noir ist als Clone hinterlegt, Royal Bleu als Inspired. In den Community-Daten liegt Royal Bleu bei Haltbarkeit und Ausstrahlung etwas höher. Vergleiche die Beziehung und Performance direkt bei DUFYND.",
       "relationship_evidence": [
         {
           "product_id": "SC-AL-HARAMAIN-DETOUR-NOIR-100",
@@ -178,8 +178,8 @@
         "SC-FRENCH-AVENUE-LIQUID-BRUN-100"
       ],
       "target_duration_seconds": 27,
-      "hook": "Althaïr und Liquid Brun liegen bei SCENTAI ungewöhnlich nah beieinander.",
-      "voiceover": "Althaïr und Liquid Brun sind bei SCENTAI als Clone-Beziehung mit hoher Confidence hinterlegt. Die Profile liegen wirklich nah: beide sehr süß, gourmandig und würzig, mit wenig Frische. Der Unterschied steckt eher in Details: Althaïr ist holziger eingeordnet, Liquid Brun etwas weniger. Wenn du genau diese Richtung magst, vergleich die Profile statt nur auf den Namen zu schauen.",
+      "hook": "Althaïr und Liquid Brun liegen bei DUFYND ungewöhnlich nah beieinander.",
+      "voiceover": "Althaïr und Liquid Brun sind bei DUFYND als Clone-Beziehung mit hoher Confidence hinterlegt. Die Profile liegen wirklich nah: beide sehr süß, gourmandig und würzig, mit wenig Frische. Der Unterschied steckt eher in Details: Althaïr ist holziger eingeordnet, Liquid Brun etwas weniger. Wenn du genau diese Richtung magst, vergleich die Profile statt nur auf den Namen zu schauen.",
       "relationship_evidence": [
         {
           "product_id": "SC-PDM-ALTHAIR-125",
@@ -202,7 +202,7 @@
         {
           "seconds": "10-16",
           "visual": "relationship badge between both bottles",
-          "overlay": "SCENTAI: CLONE · HIGH CONFIDENCE"
+          "overlay": "DUFYND: CLONE · HIGH CONFIDENCE"
         },
         {
           "seconds": "16-22",
@@ -211,7 +211,7 @@
         },
         {
           "seconds": "22-27",
-          "visual": "SCENTAI comparison endcard",
+          "visual": "DUFYND comparison endcard",
           "overlay": "PROFILE DIREKT VERGLEICHEN"
         }
       ],
@@ -231,7 +231,7 @@
       ],
       "target_duration_seconds": 30,
       "hook": "Date Night – drei süße Richtungen, aber drei komplett andere Profile.",
-      "voiceover": "Date Night heißt nicht automatisch derselbe Duftstil. Stronger With You Intensely ist extrem süß, gourmandig und würzig. Dior Homme Intense ist ebenfalls wenig frisch, aber holziger und deutlich pudriger. Valentino Born In Roma Intense bleibt süß, ist im SCENTAI-Profil aber klar frischer. Drei verschiedene Stimmungen – der Duftfinder hilft dir, die passende Richtung zu wählen.",
+      "voiceover": "Date Night heißt nicht automatisch derselbe Duftstil. Stronger With You Intensely ist extrem süß, gourmandig und würzig. Dior Homme Intense ist ebenfalls wenig frisch, aber holziger und deutlich pudriger. Valentino Born In Roma Intense bleibt süß, ist im DUFYND-Profil aber klar frischer. Drei verschiedene Stimmungen – der Duftfinder hilft dir, die passende Richtung zu wählen.",
       "scenes": [
         {
           "seconds": "0-3",
@@ -255,11 +255,11 @@
         },
         {
           "seconds": "24-30",
-          "visual": "SCENTAI advisor chips",
+          "visual": "DUFYND advisor chips",
           "overlay": "WELCHER DATE-STIL PASST ZU DIR?"
         }
       ],
-      "primary_cta": "Date-Duft mit SCENTAI finden",
+      "primary_cta": "Date-Duft mit DUFYND finden",
       "thumbnail": "3 DATE-NIGHT-STILE"
     },
     {
@@ -275,7 +275,7 @@
       ],
       "target_duration_seconds": 28,
       "hook": "Alle drei sind extrem frisch – und trotzdem komplett unterschiedlich aufgebaut.",
-      "voiceover": "Alle drei stehen bei SCENTAI auf maximaler Frische – aber sie riechen nicht gleich. Imagination ist zitrisch, aquatisch und kaum holzig. Tygar kombiniert die Frische mit deutlich mehr Holz und Würze. Turathi Blue bleibt ebenfalls sehr frisch, liegt aber etwas süßer und weniger würzig als Tygar. Gleiche Frische, anderer Charakter. Genau dafür gibt es den Duftfinder.",
+      "voiceover": "Alle drei stehen bei DUFYND auf maximaler Frische – aber sie riechen nicht gleich. Imagination ist zitrisch, aquatisch und kaum holzig. Tygar kombiniert die Frische mit deutlich mehr Holz und Würze. Turathi Blue bleibt ebenfalls sehr frisch, liegt aber etwas süßer und weniger würzig als Tygar. Gleiche Frische, anderer Charakter. Genau dafür gibt es den Duftfinder.",
       "scenes": [
         {
           "seconds": "0-3",
@@ -299,7 +299,7 @@
         },
         {
           "seconds": "21-28",
-          "visual": "SCENTAI fresh-style comparison endcard",
+          "visual": "DUFYND fresh-style comparison endcard",
           "overlay": "GLEICHE FRISCHE. ANDERER CHARAKTER."
         }
       ],
