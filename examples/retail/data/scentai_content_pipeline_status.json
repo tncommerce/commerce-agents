@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated_at": "2026-09-19",
-  "source_fingerprint_sha256": "f767bfb8ff517263640088f2cac23605026d74abc80f0a4344a4960cd6319455",
+  "source_fingerprint_sha256": "c45d1954847a49669c12f850e47daa775f2ff6fbef70c772c80a5c27c91d3f78",
   "system": "SCENTAI",
   "domain": "content",
   "pipeline_id": "launch_content_pipeline_v1",
@@ -18,8 +18,6 @@
   "totals": {
     "tracked_links_ready": 45,
     "social_copy_ready": 15,
-    "voiceover_scripts_ready": 15,
-    "subtitle_drafts_ready": 15,
     "visual_preview_mp4s_ready": 0,
     "final_video_renders_ready": 0
   },
@@ -91,8 +89,7 @@
         "pilot_visual_preview_generation_pending",
         "voiceover_audio_pending",
         "subtitle_timing_conformance_pending",
-        "final_video_renders_incomplete",
-        "connector_originated_github_actions_trigger_unavailable"
+        "final_video_renders_incomplete"
       ],
       "summary": {
         "pilots": 5,
