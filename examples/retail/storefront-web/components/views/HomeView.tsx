@@ -17,6 +17,7 @@ import type { Product } from "@/lib/types";
 import ProductTile, { ProductRow } from "../ProductTile";
 import LegalFooter from "../LegalFooter";
 import MerchantDiscovery from "../MerchantDiscovery";
+import PersonalLibrarySummary from "../PersonalLibrarySummary";
 
 const STARTERS: Starter[] = [
   {
@@ -209,6 +210,7 @@ export default function HomeView({
           Meine Merkliste
         </a>
       </div>
+      <PersonalLibrarySummary />
       <MerchantDiscovery />
 
       {picks.length ? (
