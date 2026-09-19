@@ -223,19 +223,19 @@ def build_queue(
             "release_01_products": sum(
                 1
                 for item in items
-                if item.get("release", {}).get("release_id") == "SCENTAI-RELEASE-01"
+                if (item.get("release") or {}).get("release_id") == "SCENTAI-RELEASE-01"
                 if item.get("release")
             ),
             "release_02_products": sum(
                 1
                 for item in items
-                if item.get("release", {}).get("release_id") == "SCENTAI-RELEASE-02"
+                if (item.get("release") or {}).get("release_id") == "SCENTAI-RELEASE-02"
                 if item.get("release")
             ),
             "release_03_products": sum(
                 1
                 for item in items
-                if item.get("release", {}).get("release_id") == "SCENTAI-RELEASE-03"
+                if (item.get("release") or {}).get("release_id") == "SCENTAI-RELEASE-03"
                 if item.get("release")
             ),
             "approved_images": sum(
