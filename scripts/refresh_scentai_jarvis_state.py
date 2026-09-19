@@ -6,8 +6,14 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from scripts.build_scentai_content_operations_status import (
+    build_content_operations_status,
+)
 from scripts.build_scentai_image_approval_work_queue import (
     build_queue as build_image_queue,
+)
+from scripts.build_scentai_jarvis_master_status import (
+    build_master_status,
 )
 from scripts.build_scentai_jarvis_operations_status import (
     build_operations_status,
@@ -38,6 +44,12 @@ RELEASE_01 = DATA_DIR / "scentai_release_batch_01.json"
 RELEASE_02 = DATA_DIR / "scentai_release_batch_02.json"
 RELEASE_03 = DATA_DIR / "scentai_release_batch_03.json"
 ASSET_CANDIDATES = DATA_DIR / "scentai_image_asset_candidates.json"
+PILOT_MANIFEST = DATA_DIR / "scentai_pilot_batch_01.json"
+PILOT_READINESS = DATA_DIR / "scentai_pilot_batch_01_readiness.json"
+PILOT_JOBS = DATA_DIR / "scentai_pilot_batch_01_production_jobs.json"
+PILOT_SUBTITLES = DATA_DIR / "scentai_pilot_batch_01_subtitles.json"
+PILOT_LINKS = DATA_DIR / "scentai_pilot_batch_01_links.json"
+PILOT_SOCIAL_COPY = DATA_DIR / "scentai_pilot_batch_01_social_copy.json"
 
 OUT_MAPPING = DATA_DIR / "scentai_merchant_mapping_work_queue.json"
 OUT_AFFILIATE = DATA_DIR / "scentai_affiliate_activation_status.json"
@@ -46,6 +58,8 @@ OUT_FEED = DATA_DIR / "scentai_release_01_feed_activation_queue.json"
 OUT_RELEASE = DATA_DIR / "scentai_release_01_gate_status.json"
 OUT_PIPELINE = DATA_DIR / "scentai_release_pipeline_status.json"
 OUT_OPERATIONS = DATA_DIR / "scentai_jarvis_operations_status.json"
+OUT_CONTENT = DATA_DIR / "scentai_content_operations_status.json"
+OUT_MASTER = DATA_DIR / "scentai_jarvis_master_status.json"
 
 
 def load_json(path: Path) -> dict:
@@ -126,6 +140,21 @@ def refresh_state(*, generated_at: str) -> dict[str, Any]:
         feed_queue,
         generated_at=generated_at,
     )
+    content_status = build_content_operations_status(
+        load_json(PILOT_MANIFEST),
+        load_json(PILOT_READINESS),
+        load_json(PILOT_JOBS),
+        load_json(PILOT_SUBTITLES),
+        load_json(PILOT_LINKS),
+        load_json(PILOT_SOCIAL_COPY),
+        generated_at=generated_at,
+    )
+    master_status = build_master_status(
+        operations,
+        content_status,
+        release_pipeline,
+        generated_at=generated_at,
+    )
 
     return {
         "mapping_queue": mapping_queue,
@@ -135,6 +164,8 @@ def refresh_state(*, generated_at: str) -> dict[str, Any]:
         "release_status": release_status,
         "release_pipeline": release_pipeline,
         "operations": operations,
+        "content_status": content_status,
+        "master_status": master_status,
     }
 
 
@@ -146,14 +177,17 @@ def write_state(state: dict[str, Any]) -> None:
     write_json(OUT_RELEASE, state["release_status"])
     write_json(OUT_PIPELINE, state["release_pipeline"])
     write_json(OUT_OPERATIONS, state["operations"])
+    write_json(OUT_CONTENT, state["content_status"])
+    write_json(OUT_MASTER, state["master_status"])
 
 
 def summary(state: dict[str, Any]) -> dict[str, Any]:
-    operations = state["operations"]
+    master = state["master_status"]
     return {
-        "overall_state": operations["overall_state"],
-        "next_action": operations["next_action"],
-        "user_approval_required_now": operations[
+        "overall_state": master["overall_state"],
+        "active_domain": master["active_domain"],
+        "next_action": master["next_action"],
+        "user_approval_required_now": master[
             "user_approval_required_now"
         ],
         "mapping": state["mapping_queue"]["summary"],
@@ -168,6 +202,7 @@ def summary(state: dict[str, Any]) -> dict[str, Any]:
             ],
             "pipeline_state": state["release_pipeline"]["pipeline_state"],
         },
+        "content": state["content_status"]["summary"],
     }
 
 
@@ -211,6 +246,7 @@ def main() -> int:
             "SCENTAI Jarvis state refresh | "
             f"dry_run={report['dry_run']} | "
             f"state={ops['overall_state']} | "
+            f"domain={ops['active_domain']} | "
             f"next={ops['next_action']} | "
             f"approval_now={ops['user_approval_required_now']}"
         )
