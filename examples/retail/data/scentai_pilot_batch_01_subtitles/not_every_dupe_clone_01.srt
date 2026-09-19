@@ -20,5 +20,5 @@ oder Einsatzzweck erfüllen.
 
 5
 00:00:21,000 --> 00:00:28,000
-Deshalb unterscheidet SCENTAI diese Beziehungen transparent,
+Deshalb unterscheidet DUFYND diese Beziehungen transparent,
 statt alles pauschal als Dupe zu bezeichnen.
