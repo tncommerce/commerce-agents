@@ -75,3 +75,16 @@ Submitted on 2026-09-19:
 
 Next Awin action:
 - wait for Partner Success response and verify the display-name change when processed
+
+
+## CJ cutover progress
+
+Completed on 2026-09-19:
+- existing CJ promotional platform/property updated from SCENTAI to DUFYND
+- website URL updated to https://dufynd.de
+- existing publisher/account relationship retained
+
+Still to verify:
+- business/public contact email is kontakt@dufynd.de where editable
+- Notino application remains pending/active and was not withdrawn
+- any remaining SCENTAI display name in CJ account/profile is updated if separately editable
