@@ -1,48 +1,56 @@
 {
   "version": 2,
-  "updated_at": "2026-09-18",
+  "updated_at": "2026-09-19",
   "network": "Awin",
   "publisher": "SCENTAI",
   "applications": [
     {
       "program": "Douglas_DE",
       "status": "applied",
-      "applied_at": "2026-09-18"
+      "applied_at": "2026-09-18",
+      "merchant_id": "douglas"
     },
     {
       "program": "Flaconi DE",
       "status": "applied",
-      "applied_at": "2026-09-18"
+      "applied_at": "2026-09-18",
+      "merchant_id": "flaconi"
     },
     {
       "program": "Parfumdreams DE",
       "status": "applied",
-      "applied_at": "2026-09-18"
+      "applied_at": "2026-09-18",
+      "merchant_id": "parfumdreams"
     },
     {
       "program": "Parfumgroup DE",
       "status": "applied",
-      "applied_at": "2026-09-18"
+      "applied_at": "2026-09-18",
+      "merchant_id": "parfumgroup"
     },
     {
       "program": "Breuninger DE",
       "status": "applied",
-      "applied_at": "2026-09-18"
+      "applied_at": "2026-09-18",
+      "merchant_id": "breuninger"
     },
     {
       "program": "Perfumetrader DE",
       "status": "applied",
-      "applied_at": "2026-09-18"
+      "applied_at": "2026-09-18",
+      "merchant_id": "perfumetrader"
     },
     {
       "program": "Birkholz Perfume Manufacture DE",
       "status": "applied",
-      "applied_at": "2026-09-18"
+      "applied_at": "2026-09-18",
+      "merchant_id": "birkholz"
     },
     {
       "program": "top Parfümerie DE",
       "status": "applied",
-      "applied_at": "2026-09-18"
+      "applied_at": "2026-09-18",
+      "merchant_id": "top-parfuemerie"
     }
   ],
   "programming_note": "Only integrate a merchant into live affiliate routing after the program is approved and a valid tracked-link/feed strategy is available. Affiliate commission must never influence product or merchant ranking.",
@@ -51,7 +59,8 @@
       "network": "CJ Affiliate",
       "program": "Notino",
       "status": "applied_pending",
-      "programming_note": "Integrate only after approval and valid tracking/feed credentials are available."
+      "programming_note": "Integrate only after approval and valid tracking/feed credentials are available.",
+      "merchant_id": "notino"
     }
   ],
   "direct_outreach_candidates": [
