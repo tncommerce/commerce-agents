@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import FragranceSaveControls from "@/components/FragranceSaveControls";
 import {
   safeCatalogSearchTerm,
   trackAnalyticsEvent,
@@ -757,82 +758,94 @@ export default function FragranceCatalogBrowser({
         <>
           <section className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {visibleFragrances.map((fragrance) => (
-              <a
+              <article
                 key={fragrance.product_id}
-                href={`/duft/${fragrance.slug}`}
-                onClick={() =>
-                  void trackAnalyticsEvent(
-                    "product_open",
-                    {
-                      product_id:
-                        fragrance.product_id,
-                      source: "catalog_grid",
-                    },
-                  )
-                }
-                className="group overflow-hidden rounded-2xl border border-(--line) bg-(--card) shadow-(--shadow-sm) transition hover:-translate-y-0.5 hover:shadow-md"
+                className="overflow-hidden rounded-2xl border border-(--line) bg-(--card) shadow-(--shadow-sm) transition hover:-translate-y-0.5 hover:shadow-md"
               >
-                <div className="flex h-52 items-center justify-center bg-white p-4">
-                  {fragrance.image_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={fragrance.image_url}
-                      alt={`${fragrance.brand} ${fragrance.name}`}
-                      loading="lazy"
-                      decoding="async"
-                      className="h-full w-full object-contain transition duration-200 group-hover:scale-[1.02]"
-                    />
-                  ) : (
-                    <div className="text-[12px] font-semibold tracking-[0.16em] text-(--ink-soft)">
-                      SCENTAI
+                <a
+                  href={`/duft/${fragrance.slug}`}
+                  onClick={() =>
+                    void trackAnalyticsEvent(
+                      "product_open",
+                      {
+                        product_id:
+                          fragrance.product_id,
+                        source: "catalog_grid",
+                      },
+                    )
+                  }
+                  className="group block"
+                >
+                  <div className="flex h-52 items-center justify-center bg-white p-4">
+                    {fragrance.image_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={fragrance.image_url}
+                        alt={`${fragrance.brand} ${fragrance.name}`}
+                        loading="lazy"
+                        decoding="async"
+                        className="h-full w-full object-contain transition duration-200 group-hover:scale-[1.02]"
+                      />
+                    ) : (
+                      <div className="text-[12px] font-semibold tracking-[0.16em] text-(--ink-soft)">
+                        SCENTAI
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="p-4 pb-3">
+                    <div className="text-[10.5px] font-medium uppercase tracking-[0.08em] text-(--ink-soft)">
+                      {fragrance.brand}
                     </div>
-                  )}
+                    <h2 className="mt-1 text-[16px] font-semibold leading-5">
+                      {fragrance.name}
+                    </h2>
+
+                    <div className="mt-2 flex flex-wrap gap-1.5 text-[10.5px] text-(--ink-soft)">
+                      <span>
+                        {fragrance.concentration}
+                      </span>
+                      <span>·</span>
+                      <span>
+                        {fragrance.volume_ml} ml
+                      </span>
+                      {ratingLabel(fragrance) ? (
+                        <>
+                          <span>·</span>
+                          <span className="font-semibold text-(--ink)">
+                            {ratingLabel(fragrance)}
+                          </span>
+                        </>
+                      ) : null}
+                    </div>
+
+                    <div className="mt-3 flex flex-wrap gap-1.5">
+                      {fragrance.accords
+                        .slice(0, 3)
+                        .map((accord) => (
+                          <span
+                            key={accord}
+                            className="rounded-full bg-(--well) px-2 py-1 text-[10.5px] text-(--ink-soft)"
+                          >
+                            {accordLabel(accord)}
+                          </span>
+                        ))}
+                    </div>
+
+                    <div className="mt-4 border-t border-(--line) pt-3 text-[11px] font-semibold text-(--accent-ink)">
+                      Duftprofil & Angebote ansehen →
+                    </div>
+                  </div>
+                </a>
+
+                <div className="border-t border-(--line) p-3">
+                  <FragranceSaveControls
+                    productId={fragrance.product_id}
+                    source="catalog_grid"
+                    compact
+                  />
                 </div>
-
-                <div className="p-4">
-                  <div className="text-[10.5px] font-medium uppercase tracking-[0.08em] text-(--ink-soft)">
-                    {fragrance.brand}
-                  </div>
-                  <h2 className="mt-1 text-[16px] font-semibold leading-5">
-                    {fragrance.name}
-                  </h2>
-
-                  <div className="mt-2 flex flex-wrap gap-1.5 text-[10.5px] text-(--ink-soft)">
-                    <span>
-                      {fragrance.concentration}
-                    </span>
-                    <span>·</span>
-                    <span>
-                      {fragrance.volume_ml} ml
-                    </span>
-                    {ratingLabel(fragrance) ? (
-                      <>
-                        <span>·</span>
-                        <span className="font-semibold text-(--ink)">
-                          {ratingLabel(fragrance)}
-                        </span>
-                      </>
-                    ) : null}
-                  </div>
-
-                  <div className="mt-3 flex flex-wrap gap-1.5">
-                    {fragrance.accords
-                      .slice(0, 3)
-                      .map((accord) => (
-                        <span
-                          key={accord}
-                          className="rounded-full bg-(--well) px-2 py-1 text-[10.5px] text-(--ink-soft)"
-                        >
-                          {accordLabel(accord)}
-                        </span>
-                      ))}
-                  </div>
-
-                  <div className="mt-4 border-t border-(--line) pt-3 text-[11px] font-semibold text-(--accent-ink)">
-                    Duftprofil & Angebote ansehen →
-                  </div>
-                </div>
-              </a>
+              </article>
             ))}
           </section>
 
