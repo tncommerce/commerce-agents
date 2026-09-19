@@ -9,6 +9,62 @@
       "description": "Parfum, Beauty und Pflege"
     },
     {
+      "merchant_id": "flaconi",
+      "merchant_name": "flaconi",
+      "status": "pending_affiliate_link",
+      "affiliate_url": null,
+      "last_verified_at": null,
+      "description": "Parfum und Beauty"
+    },
+    {
+      "merchant_id": "parfumdreams",
+      "merchant_name": "parfumdreams",
+      "status": "pending_affiliate_link",
+      "affiliate_url": null,
+      "last_verified_at": null,
+      "description": "Parfum und Beauty"
+    },
+    {
+      "merchant_id": "parfumgroup",
+      "merchant_name": "ParfumGroup",
+      "status": "pending_affiliate_link",
+      "affiliate_url": null,
+      "last_verified_at": null,
+      "description": "Parfum und Beauty"
+    },
+    {
+      "merchant_id": "breuninger",
+      "merchant_name": "Breuninger",
+      "status": "pending_affiliate_link",
+      "affiliate_url": null,
+      "last_verified_at": null,
+      "description": "Beauty und Premium-Parfum"
+    },
+    {
+      "merchant_id": "perfumetrader",
+      "merchant_name": "Perfumetrader",
+      "status": "pending_affiliate_link",
+      "affiliate_url": null,
+      "last_verified_at": null,
+      "description": "Parfum und Beauty"
+    },
+    {
+      "merchant_id": "birkholz",
+      "merchant_name": "Birkholz Perfume Manufacture",
+      "status": "pending_affiliate_link",
+      "affiliate_url": null,
+      "last_verified_at": null,
+      "description": "Parfum-Manufaktur"
+    },
+    {
+      "merchant_id": "top-parfuemerie",
+      "merchant_name": "top Parfümerie",
+      "status": "pending_affiliate_link",
+      "affiliate_url": null,
+      "last_verified_at": null,
+      "description": "Parfum und Beauty"
+    },
+    {
       "merchant_id": "notino",
       "merchant_name": "Notino",
       "status": "pending_affiliate_link",
