@@ -34,6 +34,7 @@ OFFERS = DATA_DIR / "merchant_offers.json"
 RELEASE_01 = DATA_DIR / "scentai_release_batch_01.json"
 RELEASE_02 = DATA_DIR / "scentai_release_batch_02.json"
 RELEASE_03 = DATA_DIR / "scentai_release_batch_03.json"
+ASSET_CANDIDATES = DATA_DIR / "scentai_release_01_asset_candidates.json"
 
 OUT_MAPPING = DATA_DIR / "scentai_merchant_mapping_work_queue.json"
 OUT_AFFILIATE = DATA_DIR / "scentai_affiliate_activation_status.json"
@@ -83,6 +84,11 @@ def refresh_state(*, generated_at: str) -> dict[str, Any]:
         staging,
         releases,
         generated_at=generated_at,
+        asset_candidates=(
+            load_json(ASSET_CANDIDATES)
+            if ASSET_CANDIDATES.exists()
+            else None
+        ),
     )
     feed_queue = build_feed_activation_queue(
         release_01,
