@@ -68,5 +68,5 @@
   },
   "pending_manual_approvals": [],
   "operating_note": "Operational readiness summary only. This file does not authorize live writes, spending, outbound messages or affiliate activation.",
-  "source_fingerprint_sha256": "3fb85bbd1c3d84bc70a10585d7d02b95879ee4a024026477f420c46d7ef9f032"
+  "source_fingerprint_sha256": "d2d8bc02cf58c08400de7a6025377b92dc55d1c1470dc83032269c02cfd42062"
 }
