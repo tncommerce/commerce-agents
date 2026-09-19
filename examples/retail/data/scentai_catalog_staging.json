@@ -256,7 +256,7 @@
         "image_status": "pending_approved_feed_or_manufacturer_image"
       },
       "commerce": {
-        "merchant_coverage_count": 1,
+        "merchant_coverage_count": 3,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -323,7 +323,7 @@
         "image_status": "pending_approved_feed_or_manufacturer_image"
       },
       "commerce": {
-        "merchant_coverage_count": 1,
+        "merchant_coverage_count": 2,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -589,7 +589,7 @@
         "image_status": "pending_approved_feed_or_manufacturer_image"
       },
       "commerce": {
-        "merchant_coverage_count": 1,
+        "merchant_coverage_count": 3,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -727,7 +727,7 @@
         "image_status": "pending_approved_feed_or_manufacturer_image"
       },
       "commerce": {
-        "merchant_coverage_count": 1,
+        "merchant_coverage_count": 2,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -1840,7 +1840,7 @@
         "image_status": "pending_approved_feed_or_manufacturer_image"
       },
       "commerce": {
-        "merchant_coverage_count": 1,
+        "merchant_coverage_count": 2,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -1911,7 +1911,7 @@
         "image_status": "pending_approved_feed_or_manufacturer_image"
       },
       "commerce": {
-        "merchant_coverage_count": 1,
+        "merchant_coverage_count": 2,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -1978,7 +1978,7 @@
         "image_status": "pending_approved_feed_or_manufacturer_image"
       },
       "commerce": {
-        "merchant_coverage_count": 1,
+        "merchant_coverage_count": 3,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
