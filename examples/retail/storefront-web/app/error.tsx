@@ -13,7 +13,7 @@ export default function ErrorPage({
 }) {
   useEffect(() => {
     // Keep the failure visible to hosting logs without exposing details to users.
-    console.error("SCENTAI route error", error);
+    console.error("DUFYND route error", error);
   }, [error]);
 
   return (
@@ -21,7 +21,7 @@ export default function ErrorPage({
       <div className="mx-auto max-w-xl">
         <section className="rounded-3xl border border-(--line) bg-(--card) p-6 shadow-(--shadow-sm) sm:p-8">
           <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-(--ink-soft)">
-            SCENTAI
+            DUFYND
           </div>
           <h1 className="mt-2 text-3xl font-semibold tracking-[-0.03em]">
             Diese Ansicht konnte gerade nicht geladen werden.
