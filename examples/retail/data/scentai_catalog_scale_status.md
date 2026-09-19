@@ -32,9 +32,11 @@ Staged target assignments:
 - unisex: 7
 
 Researched merchant coverage:
-- 30/30 have at least one verified merchant
+- 29/30 have at least one verified current-edition merchant
 - 29/30 have at least two verified merchants
 - 5/30 have three researched merchants
+- 1/30 currently has no verified current-edition retail channel:
+  - Jean Paul Gaultier Fleur du Mâle (2026)
 
 Community status:
 - 28/30 have non-provisional community/performance data
@@ -111,10 +113,15 @@ On 2026-09-19, verified merchant research was expanded for:
 - Lattafa Angham
 - Kayali Yum Boujee Marshmallow | 81
 
-Only Jean Paul Gaultier Fleur du Mâle (2026) remains at one verified current
-merchant channel. Legacy retailer pages for the discontinued earlier edition
-must not be counted toward the 2026 re-edition unless the current edition is
-explicitly verified.
+Jean Paul Gaultier Fleur du Mâle (2026) is now intentionally recorded with
+zero verified current-edition retail channels. The official German Gaultier
+page still exposes the return as a teaser, while the indexed Notino page cannot
+be distinguished safely from the discontinued 2007 edition. Legacy or
+edition-ambiguous retailer pages must not be counted toward the 2026 re-edition
+until the current edition is explicit.
+
+This correction reduces headline merchant coverage from 30/30 to 29/30. That is
+a deliberate data-quality improvement, not a regression.
 
 A regression test now checks that the promotion queue never declares fewer researched merchants than verification data explicitly marks as available.
 
