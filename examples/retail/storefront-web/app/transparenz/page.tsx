@@ -5,7 +5,7 @@ import LegalFooter from "@/components/LegalFooter";
 
 export const metadata = {
   title: "Transparenz",
-  description: "Wie SCENTAI Empfehlungen, Händlerangebote und Partnerlinks behandelt.",
+  description: "Wie DUFYND Empfehlungen, Händlerangebote und Partnerlinks behandelt.",
   alternates: {
     canonical: "/transparenz",
   },
@@ -17,7 +17,7 @@ export default function TransparencyPage() {
       <div className="mx-auto max-w-3xl">
       <article className="rounded-2xl border border-(--line) bg-(--card) p-6 shadow-(--shadow-sm) sm:p-8">
         <a href="/" className="text-[13px] font-semibold text-(--accent-ink) hover:underline">
-          ← Zurück zu SCENTAI
+          ← Zurück zu DUFYND
         </a>
 
         <h1 className="mt-5 text-3xl font-semibold tracking-[-0.03em]">
@@ -28,7 +28,7 @@ export default function TransparencyPage() {
           <section>
             <h2 className="font-semibold text-(--ink)">Empfehlungen zuerst nach deinen Kriterien</h2>
             <p className="mt-1">
-              SCENTAI bewertet Düfte anhand der verfügbaren Produktdaten und deiner Anfrage.
+              DUFYND bewertet Düfte anhand der verfügbaren Produktdaten und deiner Anfrage.
               Eine mögliche Partnerprovision hat keinen Einfluss auf die Produktempfehlung.
             </p>
           </section>
@@ -45,7 +45,7 @@ export default function TransparencyPage() {
           <section>
             <h2 className="font-semibold text-(--ink)">Partnerlinks</h2>
             <p className="mt-1">
-              Bei entsprechend gekennzeichneten Partnerlinks kann SCENTAI eine Provision erhalten,
+              Bei entsprechend gekennzeichneten Partnerlinks kann DUFYND eine Provision erhalten,
               wenn du beim Händler kaufst. Für dich soll sich der Händlerpreis dadurch nicht erhöhen.
               Kaufvertrag, Zahlung, Versand und Retouren erfolgen direkt über den jeweiligen Händler.
             </p>
@@ -56,10 +56,10 @@ export default function TransparencyPage() {
               Direkte Einstiege zu Partnerhändlern
             </h2>
             <p className="mt-1">
-              SCENTAI kann zusätzlich allgemeine Partnerlinks zu einem Händler
+              DUFYND kann zusätzlich allgemeine Partnerlinks zu einem Händler
               anbieten, wenn du dort ohnehin weiterstöbern möchtest. Dabei ist
               der Einstieg nicht an den zuvor empfohlenen Duft gebunden. Ob
-              und welche spätere Bestellung SCENTAI zugerechnet und vergütet
+              und welche spätere Bestellung DUFYND zugerechnet und vergütet
               wird, richtet sich nach den jeweiligen Bedingungen und
               Attributionsregeln des Partnerprogramms. Auch diese
               Händler-Einstiege verändern niemals die Reihenfolge der
@@ -71,7 +71,7 @@ export default function TransparencyPage() {
             <h2 className="font-semibold text-(--ink)">Produkte ohne Partnerprogramm</h2>
             <p className="mt-1">
               Ein Duft kann weiterhin empfohlen und direkt zum Hersteller oder Händler verlinkt
-              werden, auch wenn SCENTAI daran keine Provision verdient. Die beste passende Empfehlung
+              werden, auch wenn DUFYND daran keine Provision verdient. Die beste passende Empfehlung
               soll nicht davon abhängen, ob ein Produkt monetarisierbar ist.
             </p>
           </section>
@@ -82,7 +82,7 @@ export default function TransparencyPage() {
             </h2>
             <p className="mt-1">
               Merkliste und Duftsammlung werden lokal im Browser gespeichert.
-              Das Sammlungsprofil fasst ausschließlich vorhandene SCENTAI-
+              Das Sammlungsprofil fasst ausschließlich vorhandene DUFYND-
               Profilwerte der von dir markierten Düfte zusammen. Hinweise auf
               mögliche Profil-Ergänzungen bedeuten nicht, dass deine Sammlung
               unvollständig ist oder dass du weitere Düfte kaufen solltest.
@@ -100,7 +100,7 @@ export default function TransparencyPage() {
           <section>
             <h2 className="font-semibold text-(--ink)">Preise und Verfügbarkeit</h2>
             <p className="mt-1">
-              Händlerpreise und Verfügbarkeit können sich ändern. SCENTAI kennzeichnet aktuelle
+              Händlerpreise und Verfügbarkeit können sich ändern. DUFYND kennzeichnet aktuelle
               Händlerangebote getrennt von ungefähren Marktpreis-Orientierungen und verwirft
               veraltete Angebotsdaten aus der aktiven Händlerauswahl.
             </p>
