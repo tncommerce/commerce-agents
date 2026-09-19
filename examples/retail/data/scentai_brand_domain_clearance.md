@@ -1,6 +1,6 @@
 # SCENTAI Brand / Domain Clearance
 
-Status: dufynd_selected_domains_purchased
+Status: dufynd_public_rebrand_in_progress
 Updated: 2026-09-19
 
 ## Executive conclusion
@@ -112,3 +112,21 @@ TMview/WIPO/DPMA public searching is a strong screening layer, not a legal clear
 - temporary host remains https://scentai-xxya.onrender.com
 - NEXT_PUBLIC_SITE_INDEXABLE remains false
 - dufynd.de and dufynd.com were purchased via INWX on 2026-09-19
+
+
+## Public rebrand progress
+
+Completed in code on 2026-09-19:
+- public storefront naming changed from SCENTAI to DUFYND across metadata, navigation, advisor copy, catalogue, comparisons, personal library, legal pages and transparency copy
+- default canonical site URL changed to https://dufynd.de
+- favicon/brand icon changed from the legacy SCENTAI S to a DUFYND D treatment
+- public colour system moved from navy/terracotta to warm ivory / near-black / restrained gold
+- affiliate publisher metadata records DUFYND while legal operator remains TNCommerce
+- pending Awin/CJ applications are preserved; no application reset is planned
+
+Still pending:
+- Render production deployment/CI completion
+- production environment-variable confirmation for NEXT_PUBLIC_SITE_URL=https://dufynd.de
+- dufynd.com redirect setup
+- social profile image / handle cutover
+- Awin/CJ profile-property update after public DUFYND smoke test
