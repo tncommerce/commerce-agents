@@ -76,10 +76,11 @@ def build_release_pipeline_status(
             manifest.get("depends_on_release_ids", [])
         )
 
-        if dependencies:
-            dependency_state = "pending_prior_release_validation"
-        else:
-            dependency_state = "not_required"
+        dependency_state = (
+            "pending_prior_release_validation"
+            if dependencies
+            else "not_required"
+        )
 
         if promotion_ready == release_size and release_size > 0:
             gate_state = "product_gates_ready"
