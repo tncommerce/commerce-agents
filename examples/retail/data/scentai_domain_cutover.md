@@ -138,3 +138,21 @@ Verified manually on 2026-09-19:
 
 Trust improvement applied:
 - catalogue-only market-reference prices now display as "Richtpreis" instead of a generic "ca." price so users do not confuse reference data with a live merchant offer.
+
+
+## Smoke-test finding — public API origin
+
+Observed on the public fragrance detail page on 2026-09-19:
+- static fragrance detail page renders correctly
+- merchant-offer request falls into the client load-error state
+- direct API endpoint is healthy and returns HTTP 200 with an empty offer list
+- response to Origin: https://dufynd.de does not include Access-Control-Allow-Origin
+
+Required Render API environment update:
+- add https://dufynd.de to DEMO_ALLOWED_ORIGINS
+- retain the temporary Render storefront origin during the transition if it is still used for testing
+- optionally add https://www.dufynd.de even though www redirects to the apex
+- redeploy the API service after changing the environment variable
+
+Polish backlog:
+- add small visual note icons for top / heart / base fragrance-note sections; functionality is not blocked by this.
