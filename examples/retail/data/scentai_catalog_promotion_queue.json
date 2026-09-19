@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated_at": "2026-09-18",
+  "updated_at": "2026-09-19",
   "status": "promotion_queue_active",
   "live_catalog_count": 32,
   "verified_queue_count": 30,
@@ -21,7 +21,7 @@
     "identity_verified": 30,
     "community_qa_verified": 30,
     "with_merchant_coverage": 30,
-    "multi_merchant_coverage": 20,
+    "multi_merchant_coverage": 27,
     "affiliate_links_ready": 0,
     "approved_images_ready": 0,
     "unresolved_identity_version_blockers": 0
@@ -106,7 +106,7 @@
       "audience_lean": null,
       "identity_verified": true,
       "community_qa_verified": true,
-      "merchant_coverage_count": 1,
+      "merchant_coverage_count": 2,
       "blockers": [
         "affiliate_link_pending",
         "approved_product_image_pending"
@@ -146,7 +146,7 @@
       "audience_lean": null,
       "identity_verified": true,
       "community_qa_verified": true,
-      "merchant_coverage_count": 1,
+      "merchant_coverage_count": 3,
       "blockers": [
         "affiliate_link_pending",
         "approved_product_image_pending"
@@ -186,7 +186,7 @@
       "audience_lean": null,
       "identity_verified": true,
       "community_qa_verified": true,
-      "merchant_coverage_count": 1,
+      "merchant_coverage_count": 3,
       "blockers": [
         "affiliate_link_pending",
         "approved_product_image_pending"
@@ -326,7 +326,7 @@
       "audience_lean": "feminine",
       "identity_verified": true,
       "community_qa_verified": true,
-      "merchant_coverage_count": 1,
+      "merchant_coverage_count": 2,
       "blockers": [
         "affiliate_link_pending",
         "approved_product_image_pending"
@@ -568,7 +568,7 @@
       "audience_lean": "masculine",
       "identity_verified": true,
       "community_qa_verified": true,
-      "merchant_coverage_count": 1,
+      "merchant_coverage_count": 2,
       "blockers": [
         "affiliate_link_pending",
         "approved_product_image_pending"
@@ -608,7 +608,7 @@
       "audience_lean": null,
       "identity_verified": true,
       "community_qa_verified": true,
-      "merchant_coverage_count": 1,
+      "merchant_coverage_count": 3,
       "blockers": [
         "affiliate_link_pending",
         "approved_product_image_pending"
@@ -628,7 +628,7 @@
       "audience_lean": null,
       "identity_verified": true,
       "community_qa_verified": true,
-      "merchant_coverage_count": 1,
+      "merchant_coverage_count": 2,
       "blockers": [
         "affiliate_link_pending",
         "approved_product_image_pending"
