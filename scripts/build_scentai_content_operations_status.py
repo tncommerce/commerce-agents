@@ -57,9 +57,12 @@ def build_content_operations_status(
         str(row.get("content_id") or "")
         for row in subtitles.get("items", [])
     }
+    social_rows = social_copy.get("posts")
+    if not isinstance(social_rows, list):
+        social_rows = social_copy.get("items", [])
     social_ids = {
         str(row.get("content_id") or "")
-        for row in social_copy.get("items", [])
+        for row in social_rows
     }
     link_rows = links.get("links", [])
 
