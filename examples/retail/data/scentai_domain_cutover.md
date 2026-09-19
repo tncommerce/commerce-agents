@@ -156,3 +156,12 @@ Required Render API environment update:
 
 Polish backlog:
 - add small visual note icons for top / heart / base fragrance-note sections; functionality is not blocked by this.
+
+
+## Live smoke test — merchant offers CORS
+
+Verified manually on 2026-09-19:
+- public DUFYND detail page can call the Render API from https://dufynd.de
+- CORS now allows dufynd.de, www.dufynd.de and the temporary Render storefront origin
+- empty merchant-offer state renders correctly instead of a load error
+- DUFYND correctly withholds stale/unverified offers until price and availability pass freshness checks
