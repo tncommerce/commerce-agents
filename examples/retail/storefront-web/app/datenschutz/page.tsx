@@ -124,6 +124,14 @@ export default function DatenschutzPage() {
                 synchronisiert. Du kannst die lokal gespeicherten Duftdaten jederzeit über die Merkliste oder
                 Sammlung löschen.
               </p>
+              <p className="mt-2">
+                Wenn du in deiner Sammlung ausdrücklich „Mit meiner Sammlung beraten lassen“ auswählst,
+                erstellt SCENTAI im Browser eine kompakte Zusammenfassung der gespeicherten Düfte und
+                ihrer bereits im Katalog vorhandenen Profilwerte. Diese Zusammenfassung wird für die von
+                dir gestartete Beratung an den SCENTAI-Advisor und damit im Rahmen der Antwortgenerierung
+                an die Anthropic API übermittelt. Die Übergabe erfolgt nur nach dieser ausdrücklichen
+                Aktion und wird nicht als dauerhaftes Nutzerprofil gespeichert.
+              </p>
             </section>
 
             <section>
