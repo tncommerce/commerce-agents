@@ -56,7 +56,9 @@ Completed on 2026-09-19:
 - public/business contact email updated to kontakt@dufynd.de
 - existing publisher account and advertiser applications preserved
 
+Completed:
+- DUFYND logo uploaded to the Awin publisher profile
+
 Still pending:
-- replace the default profile/avatar with the DUFYND logo
 - request publisher/account display-name change from SCENTAI to DUFYND while keeping publisher ID 309922 and all existing applications intact
 - recheck pending advertiser applications after the profile cutover
