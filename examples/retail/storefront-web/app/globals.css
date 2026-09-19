@@ -13,21 +13,21 @@
  */
 
 :root {
-  --ground: #f4f6fa; /* page */
-  --surface: #ffffff; /* text on ink */
-  --card: #ffffff; /* cards, panel, app bar */
-  --chrome: #ffffff; /* app bar */
-  --well: #eef1f5; /* chips, thumbs, hover ground */
-  --ink: #1e2c4f; /* navy: text and structure */
-  --ink-2: #3b4763; /* secondary text that still reads as content */
-  --ink-soft: #5a6679; /* labels and metadata */
-  --ink-faint: #9aa2b5; /* hints and placeholders */
-  --line: rgba(30, 44, 79, 0.12);
-  --line-strong: rgba(30, 44, 79, 0.18); /* control borders */
-  --accent: #d97f5f; /* terracotta: the assistant's mark, primary actions, focus */
-  --accent-strong: #c4643f; /* filled buttons */
-  --accent-soft: #f9e8e0;
-  --accent-ink: #8a3f22; /* text on accent-soft */
+  --ground: #f7f4ed; /* page */
+  --surface: #fffdf8; /* text on ink */
+  --card: #fffdf8; /* cards, panel, app bar */
+  --chrome: #fffdf8; /* app bar */
+  --well: #f0ece3; /* chips, thumbs, hover ground */
+  --ink: #171513; /* near-black: text and structure */
+  --ink-2: #3f3a33; /* secondary text that still reads as content */
+  --ink-soft: #665f55; /* labels and metadata */
+  --ink-faint: #9a9183; /* hints and placeholders */
+  --line: rgba(23, 21, 19, 0.12);
+  --line-strong: rgba(23, 21, 19, 0.20); /* control borders */
+  --accent: #b88934; /* restrained gold: brand accent, focus */
+  --accent-strong: #785719; /* accessible deep gold for filled buttons */
+  --accent-soft: #f5ead2;
+  --accent-ink: #67480d; /* text on accent-soft */
   --on-accent: #ffffff;
   --ok: #1f8f5f; /* delivery promises, delivered */
   --ok-soft: #e3f4ec;
@@ -39,10 +39,10 @@
   --info-soft: #e5f0fa;
   --violet: #6b4fd6; /* returns in progress */
   --violet-soft: #eeeafd;
-  --star: #f0a500; /* rating stars */
-  --shadow-sm: 0 1px 2px rgba(30, 44, 79, 0.06), 0 1px 1px rgba(30, 44, 79, 0.04);
-  --shadow: 0 1px 2px rgba(30, 44, 79, 0.06), 0 4px 14px -6px rgba(30, 44, 79, 0.14);
-  --shadow-lg: 0 12px 40px -12px rgba(30, 44, 79, 0.28), 0 2px 6px rgba(30, 44, 79, 0.08);
+  --star: #c9952f; /* rating stars */
+  --shadow-sm: 0 1px 2px rgba(23, 21, 19, 0.06), 0 1px 1px rgba(23, 21, 19, 0.04);
+  --shadow: 0 1px 2px rgba(23, 21, 19, 0.06), 0 4px 14px -6px rgba(23, 21, 19, 0.14);
+  --shadow-lg: 0 12px 40px -12px rgba(23, 21, 19, 0.28), 0 2px 6px rgba(23, 21, 19, 0.08);
   --radius: 12px;
 }
 
