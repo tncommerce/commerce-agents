@@ -794,6 +794,28 @@ def check_scentai_jarvis_operations_status() -> None:
     ok("SCENTAI Jarvis operations snapshot matches source state")
 
 
+
+def check_scentai_jarvis_state_graph() -> None:
+    """Ensure every committed Jarvis derived view matches source-of-truth data."""
+    print("SCENTAI Jarvis state graph")
+    try:
+        from scripts.validate_scentai_jarvis_state_graph import (
+            validate_repo_state_graph,
+        )
+
+        report = validate_repo_state_graph()
+    except Exception as error:
+        problem(f"SCENTAI Jarvis state graph check failed: {error}")
+        return
+
+    if not report["valid"]:
+        for issue in report["issues"]:
+            problem(f"SCENTAI Jarvis state graph: {issue}")
+        return
+
+    ok("SCENTAI Jarvis derived state graph matches source-of-truth")
+
+
 CHECKS = (
     check_skills,
     check_storefront_fixtures,
@@ -806,6 +828,7 @@ CHECKS = (
     check_managed_readme_tool_lists,
     check_managed_custom_tool_descriptions,
     check_scentai_jarvis_operations_status,
+    check_scentai_jarvis_state_graph,
 )
 
 
