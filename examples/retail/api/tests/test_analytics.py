@@ -154,3 +154,23 @@ def test_analytics_metadata_rejects_free_form_personal_text() -> None:
         pass
     else:
         raise AssertionError("analytics metadata must stay identifier-only")
+
+
+
+def test_personal_library_events_accept_product_context() -> None:
+    for event in (
+        "wishlist_add",
+        "wishlist_remove",
+        "collection_add",
+        "collection_remove",
+    ):
+        request = AnalyticsEventRequest(
+            event=event,
+            product_id="SC-TEST-100",
+            source="fragrance_detail",
+            surface="personal_library",
+        )
+
+        assert request.event == event
+        assert request.product_id == "SC-TEST-100"
+        assert request.surface == "personal_library"
