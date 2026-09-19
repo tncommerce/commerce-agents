@@ -1,6 +1,20 @@
 {
   "mappings": [
     {
+      "product_id": "SC-AMOUAGE-GUIDANCE-46-EXTRAIT-100",
+      "merchant": "douglas",
+      "merchant_product_id": "5011534080",
+      "ean": "0701666410980",
+      "gtin": "0701666410980"
+    },
+    {
+      "product_id": "SC-AMOUAGE-GUIDANCE-46-EXTRAIT-100",
+      "merchant": "parfumdreams",
+      "merchant_product_id": "131905",
+      "ean": "0701666410980",
+      "gtin": "0701666410980"
+    },
+    {
       "product_id": "SC-BURBERRY-GODDESS-EDP-100",
       "merchant": "douglas",
       "merchant_product_id": "5011035040",
@@ -113,6 +127,20 @@
       "gtin": "3423478515956"
     },
     {
+      "product_id": "SC-NISHANE-ANI-EXTRAIT-100",
+      "merchant": "douglas",
+      "merchant_product_id": "5010552304",
+      "ean": "8681008055074",
+      "gtin": "8681008055074"
+    },
+    {
+      "product_id": "SC-NISHANE-ANI-EXTRAIT-100",
+      "merchant": "flaconi",
+      "merchant_product_id": "80072828-100",
+      "ean": "8681008055074",
+      "gtin": "8681008055074"
+    },
+    {
       "product_id": "SC-PDM-DELINA-EDP-75",
       "merchant": "douglas",
       "merchant_product_id": "5010758028",
@@ -127,6 +155,34 @@
       "gtin": "3700578501998"
     },
     {
+      "product_id": "SC-PDM-HEROD-EDP-125",
+      "merchant": "douglas",
+      "merchant_product_id": "5010758042",
+      "ean": "3700578502353",
+      "gtin": "3700578502353"
+    },
+    {
+      "product_id": "SC-PDM-HEROD-EDP-125",
+      "merchant": "flaconi",
+      "merchant_product_id": "80044754-125",
+      "ean": "3700578502353",
+      "gtin": "3700578502353"
+    },
+    {
+      "product_id": "SC-PDM-VALAYA-EXCLUSIF-EDP-75",
+      "merchant": "douglas",
+      "merchant_product_id": "5011718153",
+      "ean": "3700578505767",
+      "gtin": "3700578505767"
+    },
+    {
+      "product_id": "SC-PDM-VALAYA-EXCLUSIF-EDP-75",
+      "merchant": "flaconi",
+      "merchant_product_id": "90012283-0019379",
+      "ean": "3700578505767",
+      "gtin": "3700578505767"
+    },
+    {
       "product_id": "SC-PRADA-PARADOXE-EDP-90",
       "merchant": "douglas",
       "merchant_product_id": "5010687030",
@@ -139,6 +195,20 @@
       "merchant_product_id": "80070411-90",
       "ean": "3614273760164",
       "gtin": "3614273760164"
+    },
+    {
+      "product_id": "SC-TOM-FORD-OMBRE-LEATHER-EDP-100",
+      "merchant": "douglas",
+      "merchant_product_id": "3001047540",
+      "ean": "0888066075145",
+      "gtin": "0888066075145"
+    },
+    {
+      "product_id": "SC-TOM-FORD-OMBRE-LEATHER-EDP-100",
+      "merchant": "flaconi",
+      "merchant_product_id": null,
+      "ean": "0888066075145",
+      "gtin": "0888066075145"
     },
     {
       "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
