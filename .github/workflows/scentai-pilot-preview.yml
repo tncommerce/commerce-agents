@@ -2,6 +2,10 @@ name: SCENTAI Pilot Preview Render
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches: [scentai-mvp]
+    paths:
+      - "examples/retail/data/scentai_preview_render_trigger.json"
   push:
     branches: [scentai-mvp]
     paths:
