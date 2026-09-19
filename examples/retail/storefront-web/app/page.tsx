@@ -15,7 +15,9 @@ import HomeView from "@/components/views/HomeView";
 import { api, UNREACHABLE } from "@/lib/api";
 import {
   advisorStartPrompt,
+  GUIDED_PROMPT_STORAGE_KEY,
   GUIDED_START_STORAGE_KEY,
+  normalizeGuidedPrompt,
 } from "@/lib/advisorStarts";
 import { trackAnalyticsEvent } from "@/lib/analytics";
 
@@ -65,20 +67,30 @@ export default function StorefrontPage() {
 
     const params = new URLSearchParams(window.location.search);
     const startKey = params.get("start");
-    const prompt = advisorStartPrompt(startKey);
+    const fallbackPrompt = advisorStartPrompt(startKey);
 
-    if (!startKey || !prompt) return;
+    if (!startKey || !fallbackPrompt) return;
 
     let confirmedStart: string | null = null;
+    let customPrompt: string | null = null;
     try {
       confirmedStart = window.sessionStorage.getItem(
         GUIDED_START_STORAGE_KEY,
       );
+      customPrompt = normalizeGuidedPrompt(
+        window.sessionStorage.getItem(
+          GUIDED_PROMPT_STORAGE_KEY,
+        ),
+      );
       window.sessionStorage.removeItem(
         GUIDED_START_STORAGE_KEY,
       );
+      window.sessionStorage.removeItem(
+        GUIDED_PROMPT_STORAGE_KEY,
+      );
     } catch {
       confirmedStart = null;
+      customPrompt = null;
     }
 
     window.history.replaceState(
@@ -90,7 +102,7 @@ export default function StorefrontPage() {
     if (confirmedStart !== startKey) return;
 
     guidedStartRef.current = startKey;
-    void chat.send(prompt);
+    void chat.send(customPrompt || fallbackPrompt);
   }, [
     chat.busy,
     chat.send,
