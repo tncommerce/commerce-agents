@@ -96,7 +96,16 @@
         "https://www.dm.de/p/d/3061570/lattafa-eclaire-eau-de-parfum",
         "https://www.notino.de/lattafa/eclaire-eau-de-parfum-unisex/",
         "https://www.parfumo.de/Parfums/Lattafa/eclaire"
-      ]
+      ],
+      "identifiers": {
+        "ean": "6290362340638",
+        "gtin": "6290362340638"
+      },
+      "merchant_snapshot": {
+        "notino_de": "available",
+        "dm_de": "available"
+      },
+      "merchant_snapshot_checked_at": "2026-09-19"
     },
     {
       "candidate_id": "LATTAFA-ANGHAM-EDP",
@@ -131,7 +140,19 @@
         "notino_de": "available",
         "oriental_style_de": "available"
       },
-      "merchant_snapshot_checked_at": "2026-09-19"
+      "merchant_snapshot_checked_at": "2026-09-19",
+      "identifiers": {
+        "ean": "6290360598338",
+        "gtin": "6290360598338"
+      },
+      "alternate_identifiers": [
+        {
+          "ean": "6291108738924",
+          "gtin": "6291108738924",
+          "merchant": "oriental-style",
+          "note": "Merchant-specific market barcode retained separately. Notino is mapped by its own product code because its exact GTIN was not exposed on the product page."
+        }
+      ]
     },
     {
       "candidate_id": "AMOUAGE-GUIDANCE-46",
@@ -244,7 +265,11 @@
         "kayali_de": "available",
         "notino_de": "listed_out_of_stock"
       },
-      "merchant_snapshot_checked_at": "2026-09-19"
+      "merchant_snapshot_checked_at": "2026-09-19",
+      "identifiers": {
+        "ean": "6294018405283",
+        "gtin": "6294018405283"
+      }
     },
     {
       "candidate_id": "HUGO-BOSS-BOTTLED-ABSOLU",
