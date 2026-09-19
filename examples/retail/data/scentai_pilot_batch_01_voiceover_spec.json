@@ -4,7 +4,7 @@
   "campaign_id": "launch01",
   "status": "recording_or_tts_ready",
   "language": "de-DE",
-  "purpose": "Reproducible voiceover production contract for SCENTAI Pilot Batch 01.",
+  "purpose": "Reproducible voiceover production contract for DUFYND Pilot Batch 01.",
   "global_delivery": {
     "tone": "conversational, trustworthy, confident, compact",
     "target_pace_wpm": [
@@ -35,10 +35,10 @@
         115,
         125
       ],
-      "script": "Du magst Louis Vuitton Imagination, willst aber nicht automatisch beim Originalpreis landen? Imagination ist bei SCENTAI extrem frisch, zitrisch und aquatisch eingeordnet. Marwa bleibt ebenfalls sehr frisch, wirkt in unseren Daten aber deutlich süßer. Hectic bleibt trockener und wesentlich würziger. Wichtig: Beide sind bei SCENTAI als inspiriert hinterlegt, nicht als pauschaler Eins-zu-eins-Klon. Vergleiche die Profile direkt bei SCENTAI.",
+      "script": "Du magst Louis Vuitton Imagination, willst aber nicht automatisch beim Originalpreis landen? Imagination ist bei DUFYND extrem frisch, zitrisch und aquatisch eingeordnet. Marwa bleibt ebenfalls sehr frisch, wirkt in unseren Daten aber deutlich süßer. Hectic bleibt trockener und wesentlich würziger. Wichtig: Beide sind bei DUFYND als inspiriert hinterlegt, nicht als pauschaler Eins-zu-eins-Klon. Vergleiche die Profile direkt bei DUFYND.",
       "pronunciation_hints": [
         {
-          "term": "SCENTAI",
+          "term": "DUFYND",
           "hint": "deutsch flüssig als „Scent-AI“, zwei klare Silbenblöcke"
         },
         {
@@ -84,10 +84,10 @@
         115,
         125
       ],
-      "script": "Drei interessante Düfte unter 50 Euro, die nicht einfach dasselbe machen. Kayaan Classic ist süß, pudrig und holzig und liegt bei SCENTAI im Dior-Homme-Intense-Cluster. Liquid Brun geht deutlich gourmandiger, süßer und wärmer. Turathi Blue ist die Gegenrichtung: sehr frisch, zitrisch und deutlich weniger süß. Gleicher Budgetrahmen, drei komplett unterschiedliche Profile. SCENTAI hilft dir zu entscheiden, welches davon zu dir passt.",
+      "script": "Drei interessante Düfte unter 50 Euro, die nicht einfach dasselbe machen. Kayaan Classic ist süß, pudrig und holzig und liegt bei DUFYND im Dior-Homme-Intense-Cluster. Liquid Brun geht deutlich gourmandiger, süßer und wärmer. Turathi Blue ist die Gegenrichtung: sehr frisch, zitrisch und deutlich weniger süß. Gleicher Budgetrahmen, drei komplett unterschiedliche Profile. DUFYND hilft dir zu entscheiden, welches davon zu dir passt.",
       "pronunciation_hints": [
         {
-          "term": "SCENTAI",
+          "term": "DUFYND",
           "hint": "deutsch flüssig als „Scent-AI“, zwei klare Silbenblöcke"
         },
         {
@@ -129,10 +129,10 @@
         102,
         112
       ],
-      "script": "Nicht jeder ähnliche Duft ist automatisch ein Eins-zu-eins-Dupe. Ein Clone versucht, dem Original möglichst nahe zu kommen. Ein Inspired-Duft übernimmt eine erkennbare Grundidee und setzt eigene Akzente. Eine Alternative kann einfach einen ähnlichen Stil oder Einsatzzweck erfüllen. Deshalb unterscheidet SCENTAI diese Beziehungen transparent, statt alles pauschal als Dupe zu bezeichnen.",
+      "script": "Nicht jeder ähnliche Duft ist automatisch ein Eins-zu-eins-Dupe. Ein Clone versucht, dem Original möglichst nahe zu kommen. Ein Inspired-Duft übernimmt eine erkennbare Grundidee und setzt eigene Akzente. Eine Alternative kann einfach einen ähnlichen Stil oder Einsatzzweck erfüllen. Deshalb unterscheidet DUFYND diese Beziehungen transparent, statt alles pauschal als Dupe zu bezeichnen.",
       "pronunciation_hints": [
         {
-          "term": "SCENTAI",
+          "term": "DUFYND",
           "hint": "deutsch flüssig als „Scent-AI“, zwei klare Silbenblöcke"
         }
       ],
@@ -162,10 +162,10 @@
         105,
         115
       ],
-      "script": "Der eine beste Büroduft existiert nicht, weil dein Stil entscheidet. Prada L'Homme ist sauber, pudrig und relativ ausgewogen. Bois Impérial ist trockener, holziger und deutlich charakterstärker. Bleu de Chanel Eau de Parfum verbindet viel Frische mit einer klassischen holzigen Richtung. Deshalb fragt SCENTAI nicht nur nach 'Büro', sondern auch nach Frische, Süße und gewünschter Präsenz.",
+      "script": "Der eine beste Büroduft existiert nicht, weil dein Stil entscheidet. Prada L'Homme ist sauber, pudrig und relativ ausgewogen. Bois Impérial ist trockener, holziger und deutlich charakterstärker. Bleu de Chanel Eau de Parfum verbindet viel Frische mit einer klassischen holzigen Richtung. Deshalb fragt DUFYND nicht nur nach 'Büro', sondern auch nach Frische, Süße und gewünschter Präsenz.",
       "pronunciation_hints": [
         {
-          "term": "SCENTAI",
+          "term": "DUFYND",
           "hint": "deutsch flüssig als „Scent-AI“, zwei klare Silbenblöcke"
         },
         {
@@ -203,10 +203,10 @@
         117,
         127
       ],
-      "script": "Bois Impérial ist bei SCENTAI vor allem frisch, sehr holzig, würzig und grün eingeordnet. Die Süße liegt dagegen ganz unten. In den Community-Daten stehen außerdem starke Haltbarkeit und deutliche Ausstrahlung. Das ergibt keinen typischen süßen Mainstream-Duft, sondern einen trockenen, modernen und sehr präsenten Holzstil. Wenn du genau so etwas suchst, prüf deine Passung bei SCENTAI.",
+      "script": "Bois Impérial ist bei DUFYND vor allem frisch, sehr holzig, würzig und grün eingeordnet. Die Süße liegt dagegen ganz unten. In den Community-Daten stehen außerdem starke Haltbarkeit und deutliche Ausstrahlung. Das ergibt keinen typischen süßen Mainstream-Duft, sondern einen trockenen, modernen und sehr präsenten Holzstil. Wenn du genau so etwas suchst, prüf deine Passung bei DUFYND.",
       "pronunciation_hints": [
         {
-          "term": "SCENTAI",
+          "term": "DUFYND",
           "hint": "deutsch flüssig als „Scent-AI“, zwei klare Silbenblöcke"
         },
         {
