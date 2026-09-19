@@ -1,0 +1,24 @@
+1
+00:00:00,000 --> 00:00:04,500
+Tygar, Vibrato, Turathi Blue und Regent –
+alle stehen bei SCENTAI auf maximaler Frische.
+
+2
+00:00:04,500 --> 00:00:10,500
+Vibrato ist als Alternative
+zu Tygar hinterlegt.
+
+3
+00:00:10,500 --> 00:00:17,000
+Turathi Blue ist zu Tygar und Vibrato
+als Inspired gespeichert.
+
+4
+00:00:17,000 --> 00:00:23,500
+Regent ist ebenfalls Inspired,
+mit stärkerer Confidence zu Vibrato.
+
+5
+00:00:23,500 --> 00:00:30,000
+Tygar ist würziger und holziger,
+Vibrato weicher – die anderen liegen dazwischen.
