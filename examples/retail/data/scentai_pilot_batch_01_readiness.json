@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-19",
+  "status": "pre_render_ready",
+  "campaign_id": "launch01",
+  "summary": {
+    "pilots": 5,
+    "product_assets_required": 12,
+    "product_assets_verified": 12,
+    "tracked_links_ready": 15,
+    "social_copy_ready": 5,
+    "subtitle_timing_drafts_ready": 5,
+    "voiceover_scripts_ready": 5,
+    "final_video_renders_ready": 0
+  },
+  "shared_ready": [
+    "SCENTAI brand palette confirmed from storefront design system",
+    "All required product editorial image files exist in the repository",
+    "Pilot scripts and scene structures stored in scentai_pilot_batch_01.json",
+    "TikTok/Instagram/YouTube copy stored in scentai_pilot_batch_01_social_copy.json",
+    "15 channel-specific tracked links stored in scentai_pilot_batch_01_links.json",
+    "Subtitle timing drafts stored in scentai_pilot_batch_01_subtitles.json",
+    "SRT exporter available at scripts/export_scentai_pilot_subtitles.py",
+    "First-party attribution already carries src/cmp/content through the SCENTAI funnel"
+  ],
+  "remaining_before_publish": [
+    "Record or generate final German voiceover audio",
+    "Render each 9:16 video using the verified product assets and SCENTAI visual system",
+    "Conform subtitle timing to final voiceover waveform",
+    "Reverify Pilot 3 numeric price claims on publish day",
+    "Perform final mobile visual QA",
+    "Upload using the correct channel-specific tracked link"
+  ],
+  "pilots": [
+    {
+      "content_id": "original_vs_alt_imagination_01",
+      "assets": "ready",
+      "copy": "ready",
+      "tracking": "ready",
+      "subtitles": "draft_ready",
+      "price_recheck": false,
+      "render": "pending"
+    },
+    {
+      "content_id": "not_every_dupe_clone_01",
+      "assets": "ready",
+      "copy": "ready",
+      "tracking": "ready",
+      "subtitles": "draft_ready",
+      "price_recheck": false,
+      "render": "pending"
+    },
+    {
+      "content_id": "budget_three_under_50_01",
+      "assets": "ready",
+      "copy": "ready",
+      "tracking": "ready",
+      "subtitles": "draft_ready",
+      "price_recheck": true,
+      "render": "pending"
+    },
+    {
+      "content_id": "bois_imperial_explained_01",
+      "assets": "ready",
+      "copy": "ready",
+      "tracking": "ready",
+      "subtitles": "draft_ready",
+      "price_recheck": false,
+      "render": "pending"
+    },
+    {
+      "content_id": "top3_office_01",
+      "assets": "ready",
+      "copy": "ready",
+      "tracking": "ready",
+      "subtitles": "draft_ready",
+      "price_recheck": false,
+      "render": "pending"
+    }
+  ]
+}
