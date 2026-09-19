@@ -383,7 +383,7 @@ def draw_brand_header(
     )
     draw.text(
         (92, 79),
-        "SCENTAI",
+        "DUFYND",
         font=font(38, bold=True),
         fill="white",
     )
@@ -593,7 +593,7 @@ def render_video(
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Render SCENTAI pilot visual preview MP4 files."
+        description="Render DUFYND pilot visual preview MP4 files."
     )
     parser.add_argument(
         "--batch",
@@ -695,7 +695,7 @@ def main() -> int:
 
     print(
         "Rendered "
-        f"{len(index_rows)} SCENTAI {args.batch} visual previews -> "
+        f"{len(index_rows)} DUFYND {args.batch} visual previews -> "
         f"{output_dir}"
     )
     return 0
