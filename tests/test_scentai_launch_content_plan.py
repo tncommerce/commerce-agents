@@ -45,9 +45,17 @@ def test_prelaunch_content_plan_is_trackable_and_live_safe() -> None:
     assert len(content_ids) == len(set(content_ids))
     assert set(plan["channels"]) <= ALLOWED_CHANNELS
 
+    allowed_statuses = {"planned", "scripted"}
+    scripted = []
+
     for row in rows:
         assert IDENTIFIER_PATTERN.fullmatch(row["content_id"])
         assert row["landing_path"] in ALLOWED_LANDINGS
-        assert row["status"] == "planned"
+        assert row["status"] in allowed_statuses
         assert row["product_ids"]
         assert set(row["product_ids"]) <= live_ids
+
+        if row["status"] == "scripted":
+            scripted.append(row["content_id"])
+
+    assert len(scripted) == 5
