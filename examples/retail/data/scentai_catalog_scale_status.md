@@ -33,7 +33,7 @@ Staged target assignments:
 
 Researched merchant coverage:
 - 30/30 have at least one verified merchant
-- 27/30 have at least two verified merchants
+- 29/30 have at least two verified merchants
 - 5/30 have three researched merchants
 
 Community status:
@@ -108,6 +108,13 @@ On 2026-09-19, verified merchant research was expanded for:
 - Parfums de Marly Herod
 - Tom Ford Ombré Leather Eau de Parfum
 - Nishane Ani
+- Lattafa Angham
+- Kayali Yum Boujee Marshmallow | 81
+
+Only Jean Paul Gaultier Fleur du Mâle (2026) remains at one verified current
+merchant channel. Legacy retailer pages for the discontinued earlier edition
+must not be counted toward the 2026 re-edition unless the current edition is
+explicitly verified.
 
 A regression test now checks that the promotion queue never declares fewer researched merchants than verification data explicitly marks as available.
 
@@ -175,3 +182,18 @@ python scripts/promote_scentai_catalog.py --product-id SC-EXAMPLE-100
 
 No write should be attempted until the dry-run reports every selected product
 as ready.
+
+
+## Affiliate activation preparation
+
+All currently applied Awin programs and the pending CJ Notino application now
+have normalized merchant IDs and matching entries in `merchant_partners.json`.
+
+Every not-yet-approved partner remains:
+- `pending_affiliate_link`
+- without an affiliate URL
+- without an activation timestamp
+
+A regression test now prevents an applied/pending affiliate program from being
+missing from the partner registry or being activated before real tracking is
+configured.
