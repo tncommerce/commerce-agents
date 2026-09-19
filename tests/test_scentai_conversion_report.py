@@ -228,3 +228,45 @@ def test_acquisition_sources_are_reported_with_sample_status() -> None:
         "sample_status": "sufficient_signal",
     }
     assert report["acquisition_sources"][1]["sample_status"] == "early_signal"
+
+
+
+def test_personal_library_engagement_is_labeled_and_sampled() -> None:
+    report = build_conversion_report(
+        [],
+        [],
+        [],
+        [],
+        catalog(),
+        library_rows=[
+            {
+                "product_id": "SC-ONE",
+                "wishlist_adds": 14,
+                "wishlist_removes": 2,
+                "collection_adds": 8,
+                "collection_removes": 1,
+                "wishlist_add_sessions": 12,
+                "collection_add_sessions": 7,
+            },
+            {
+                "product_id": "SC-TWO",
+                "wishlist_adds": 2,
+                "wishlist_removes": 0,
+                "collection_adds": 1,
+                "collection_removes": 0,
+                "wishlist_add_sessions": 2,
+                "collection_add_sessions": 1,
+            },
+        ],
+        minimum_sample_sessions=10,
+    )
+
+    first = report["personal_library_engagement"][0]
+    assert first["product"] == "Brand One"
+    assert first["wishlist_add_sessions"] == 12
+    assert first["collection_add_sessions"] == 7
+    assert first["sample_status"] == "sufficient_signal"
+
+    second = report["personal_library_engagement"][1]
+    assert second["product"] == "Brand Two"
+    assert second["sample_status"] == "early_signal"
