@@ -75,7 +75,10 @@ def refresh_state(*, generated_at: str) -> dict[str, Any]:
         affiliates,
         generated_at=generated_at,
     )
-    affiliate_status = build_state_report(affiliates)
+    affiliate_status = build_state_report(
+        affiliates,
+        generated_at=generated_at,
+    )
     image_queue = build_image_queue(
         staging,
         releases,
