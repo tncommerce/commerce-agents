@@ -938,15 +938,18 @@
         "image_status": "pending_approved_feed_or_manufacturer_image"
       },
       "commerce": {
-        "merchant_coverage_count": 1,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "merchant_coverage_count": 0,
+        "live_offer_status": "pending_affiliate_approval_or_feed",
+        "merchant_coverage_source": "verification_snapshot",
+        "market_status": "current_edition_exists_but_no_verified_current_retail_channel"
       },
       "validation": {
         "catalog_ready": false,
         "blockers": [
           "community_performance_still_provisional",
           "affiliate_link_pending",
-          "approved_product_image_pending"
+          "approved_product_image_pending",
+          "verified_current_merchant_pending"
         ]
       }
     },
