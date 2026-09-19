@@ -107,3 +107,21 @@ Keep NEXT_PUBLIC_SITE_INDEXABLE=false until:
 - legal pages render correctly
 - acquisition analytics still records events
 - dufynd.com redirects permanently to dufynd.de
+
+
+## Live smoke test — advisor
+
+Verified manually on 2026-09-19 against the public DUFYND storefront:
+- DUFYND wordmark and D icon visible
+- guided prompt for a Louis Vuitton Imagination alternative opened successfully
+- frontend created a working advisor interaction
+- backend/API returned a complete recommendation response
+- three alternative product cards rendered with images, prices, ratings and detail/compare actions
+- no legacy SCENTAI branding was visible in the tested advisor flow
+
+Next smoke-test targets:
+1. product detail page
+2. comparison page
+3. legal/transparency pages
+4. mobile layout
+5. merchant-offer / outbound-link behavior
