@@ -20,7 +20,7 @@
     "total": 30,
     "identity_verified": 30,
     "community_qa_verified": 30,
-    "with_merchant_coverage": 30,
+    "with_merchant_coverage": 29,
     "multi_merchant_coverage": 29,
     "affiliate_links_ready": 0,
     "approved_images_ready": 0,
@@ -30,7 +30,8 @@
     "affiliate_link_pending": 30,
     "approved_product_image_pending": 30,
     "community_performance_still_provisional": 2,
-    "identity_version": 0
+    "identity_version": 0,
+    "verified_current_merchant_pending": 1
   },
   "candidates": [
     {
@@ -426,11 +427,12 @@
       "audience_lean": null,
       "identity_verified": true,
       "community_qa_verified": true,
-      "merchant_coverage_count": 1,
+      "merchant_coverage_count": 0,
       "blockers": [
         "community_performance_still_provisional",
         "affiliate_link_pending",
-        "approved_product_image_pending"
+        "approved_product_image_pending",
+        "verified_current_merchant_pending"
       ],
       "ready_for_live": false
     },
