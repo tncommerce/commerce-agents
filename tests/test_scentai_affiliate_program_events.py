@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import pytest
-
 from scripts.validate_scentai_affiliate_program_events import (
     build_parity_report,
     derive_current_statuses,
