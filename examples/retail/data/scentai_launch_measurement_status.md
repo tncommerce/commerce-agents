@@ -13,6 +13,9 @@ Updated: 2026-09-19
 - standardized campaign-link builder
 - 15-creatives pre-launch content plan
 - all 15 pre-launch creatives scripted in three guarded production batches
+- all 15 scripted creatives have scene-level production packs with approved
+  SCENTAI product-image references, overlay/component instructions and CTA
+  endcards
 - three organic channels: TikTok, Instagram and YouTube
 - 45 standardized creative/channel link combinations available through the
   launch-link exporter
@@ -50,11 +53,10 @@ After database migration and deployment:
 
 ## Next operating block
 
-Move the 15 scripted creatives into production preparation:
-- shot list / visual asset checklist
+Turn the production packs into an executable editing workflow:
 - reusable 9:16 editing template
-- approved product-image selection
-- subtitle and on-screen text layout
+- subtitle and on-screen text layout rules
 - voiceover recording workflow
 - final tracked link assignment per channel
 - pre-publish claim and link QA
+- first rendered pilot creative before scaling the remaining 14
