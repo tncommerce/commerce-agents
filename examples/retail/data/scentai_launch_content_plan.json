@@ -89,7 +89,7 @@
         "SC-MAISON-ASRAR-REGENT-100"
       ],
       "primary_cta": "Frische Alternativen vergleichen",
-      "status": "planned"
+      "status": "scripted"
     },
     {
       "content_id": "naxos_value_01",
@@ -102,7 +102,7 @@
         "SC-RAYHAAN-ITALIA-100"
       ],
       "primary_cta": "Naxos-Alternativen ansehen",
-      "status": "planned"
+      "status": "scripted"
     },
     {
       "content_id": "dior_homme_intense_alt_01",
@@ -114,7 +114,7 @@
         "SC-AL-WATANIAH-KAYAAN-CLASSIC-100"
       ],
       "primary_cta": "Unterschiede in SCENTAI prüfen",
-      "status": "planned"
+      "status": "scripted"
     },
     {
       "content_id": "top3_office_01",
@@ -127,7 +127,7 @@
         "SC-CHANEL-BLEU-DE-CHANEL-EDP-100"
       ],
       "primary_cta": "Passenden Büro-Duft finden",
-      "status": "planned"
+      "status": "scripted"
     },
     {
       "content_id": "top3_date_01",
@@ -140,7 +140,7 @@
         "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100"
       ],
       "primary_cta": "Date-Duft mit SCENTAI finden",
-      "status": "planned"
+      "status": "scripted"
     },
     {
       "content_id": "top3_fresh_01",
