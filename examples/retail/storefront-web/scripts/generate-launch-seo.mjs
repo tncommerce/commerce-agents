@@ -7,7 +7,7 @@ const storefrontRoot = path.resolve(here, "..");
 const dataRoot = path.resolve(storefrontRoot, "..", "data");
 const publicRoot = path.join(storefrontRoot, "public");
 
-const DEFAULT_SITE_URL = "https://scentai-xxya.onrender.com";
+const DEFAULT_SITE_URL = "https://dufynd.de";
 
 function normalizedSiteUrl(value) {
   const candidate = String(value || DEFAULT_SITE_URL)
@@ -180,7 +180,7 @@ const robots = indexable
       "User-agent: *",
       "Disallow: /",
       "",
-      "# SCENTAI remains intentionally non-indexable until launch.",
+      "# DUFYND remains intentionally non-indexable until launch.",
       "",
     ].join("\n");
 
@@ -197,5 +197,5 @@ fs.writeFileSync(
 );
 
 console.log(
-  `SCENTAI SEO generated: ${uniqueRoutes.length} sitemap routes; indexable=${indexable}; site=${siteUrl}`,
+  `DUFYND SEO generated: ${uniqueRoutes.length} sitemap routes; indexable=${indexable}; site=${siteUrl}`,
 );
