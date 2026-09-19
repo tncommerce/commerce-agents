@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "generated_at": "2026-09-19",
+  "source_fingerprint_sha256": "7960c2d6d7f473f598b752e4ef043d56fa5a87f4aadcf84ac95072759f157e5b",
+  "system": "SCENTAI",
+  "domain": "content",
+  "pipeline_id": "launch_content_pipeline_v1",
+  "batch_count": 2,
+  "total_pilots": 10,
+  "current_batch_id": "pilot_batch_01",
+  "pipeline_state": "production_work_available",
+  "production_parallel_allowed": true,
+  "publish_order": [
+    "pilot_batch_01",
+    "pilot_batch_02"
+  ],
+  "totals": {
+    "tracked_links_ready": 30,
+    "social_copy_ready": 10,
+    "visual_preview_mp4s_ready": 0,
+    "final_video_renders_ready": 0
+  },
+  "batches": [
+    {
+      "batch_id": "pilot_batch_01",
+      "production_order": 1,
+      "campaign_id": "launch01",
+      "overall_state": "visual_preview_generation_pending",
+      "next_action": "render_and_verify_visual_preview_mp4s",
+      "next_action_class": "auto_allowed",
+      "user_approval_required_now": false,
+      "blockers": [
+        "visual_preview_mp4s_incomplete",
+        "pilot_visual_preview_generation_pending",
+        "voiceover_audio_pending",
+        "subtitle_timing_conformance_pending",
+        "final_video_renders_incomplete"
+      ],
+      "summary": {
+        "pilots": 5,
+        "product_assets_verified": 12,
+        "product_assets_required": 12,
+        "voiceover_scripts_ready": 5,
+        "visual_preview_mp4s_ready": 0,
+        "subtitle_drafts_ready": 5,
+        "tracked_links_ready": 15,
+        "social_copy_ready": 5,
+        "final_video_renders_ready": 0
+      }
+    },
+    {
+      "batch_id": "pilot_batch_02",
+      "production_order": 2,
+      "campaign_id": "launch01",
+      "overall_state": "visual_preview_generation_pending",
+      "next_action": "render_and_verify_visual_preview_mp4s",
+      "next_action_class": "auto_allowed",
+      "user_approval_required_now": false,
+      "blockers": [
+        "visual_preview_mp4s_incomplete",
+        "pilot_visual_preview_generation_pending",
+        "voiceover_audio_pending",
+        "subtitle_timing_conformance_pending",
+        "final_video_renders_incomplete"
+      ],
+      "summary": {
+        "pilots": 5,
+        "product_assets_verified": 14,
+        "product_assets_required": 14,
+        "voiceover_scripts_ready": 5,
+        "visual_preview_mp4s_ready": 0,
+        "subtitle_drafts_ready": 5,
+        "tracked_links_ready": 15,
+        "social_copy_ready": 5,
+        "final_video_renders_ready": 0
+      }
+    }
+  ],
+  "operating_rule": "Jarvis may prepare batches in parallel, but publish decisions remain explicit user approval gates and the declared publish order is preserved unless the user changes it."
+}
