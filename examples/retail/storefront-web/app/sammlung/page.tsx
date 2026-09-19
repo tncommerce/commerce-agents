@@ -8,7 +8,7 @@ import { LIVE_FRAGRANCES } from "@/lib/fragranceCatalog";
 export const metadata: Metadata = {
   title: "Meine Duftsammlung",
   description:
-    "Deine lokal gespeicherte SCENTAI Duftsammlung mit grobem Sammlungsprofil.",
+    "Deine lokal gespeicherte DUFYND Duftsammlung mit grobem Sammlungsprofil.",
   robots: {
     index: false,
     follow: true,
@@ -26,7 +26,7 @@ export default function CollectionPage() {
           href="/"
           className="inline-flex items-center gap-2 text-[13px] font-semibold text-(--accent-ink) hover:underline"
         >
-          ← Zurück zu SCENTAI
+          ← Zurück zu DUFYND
         </a>
         <FragranceLibraryHub
           mode="owned"
