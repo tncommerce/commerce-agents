@@ -70,7 +70,11 @@ def infer_state(application_status: object) -> tuple[str, list[str]]:
     return "not_registered", ["affiliate_program_not_registered"]
 
 
-def build_state_report(programs: dict) -> dict[str, Any]:
+def build_state_report(
+    programs: dict,
+    *,
+    generated_at: str | None = None,
+) -> dict[str, Any]:
     rows = []
     for row in base_program_rows(programs):
         state, blockers = infer_state(row.get("application_status"))
@@ -91,13 +95,36 @@ def build_state_report(programs: dict) -> dict[str, Any]:
             }
         )
 
+    live_program_count = sum(
+        1 for row in rows if row["live_routing_allowed"]
+    )
+    approved_program_count = sum(
+        1
+        for row in rows
+        if normalize_application_status(
+            row.get("application_status")
+        )
+        == "approved"
+    )
+    ready_for_user_approval = sum(
+        1
+        for row in rows
+        if row["activation_state"] == "ready_for_user_approval"
+    )
+
     return {
         "version": 1,
+        "generated_at": generated_at,
         "machine_id": "scentai_affiliate_activation_v1",
+        "summary": {
+            "programs": len(rows),
+            "approved": approved_program_count,
+            "active": live_program_count,
+            "pending": len(rows) - live_program_count,
+            "ready_for_user_approval": ready_for_user_approval,
+        },
         "program_count": len(rows),
-        "live_program_count": sum(
-            1 for row in rows if row["live_routing_allowed"]
-        ),
+        "live_program_count": live_program_count,
         "programs": rows,
     }
 
