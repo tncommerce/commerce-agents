@@ -114,7 +114,15 @@ export default function DatenschutzPage() {
                 Duftdetail und Vergleich erzeugt SCENTAI zusätzlich eine separate zufällige Analyse-Sitzungskennung.
                 Diese kann für die Dauer der Browser-Sitzung im sessionStorage des jeweiligen Tabs gespeichert
                 werden; die eigentliche technische Beratungs-Sitzungs-ID wird dafür nicht dauerhaft im Browser
-                abgelegt. Eine dauerhafte persönliche Duft-Memory-Funktion ist im aktuellen MVP deaktiviert.
+                abgelegt. Eine serverseitige dauerhafte persönliche Duft-Memory-Funktion ist im aktuellen
+                MVP deaktiviert.
+              </p>
+              <p className="mt-2">
+                Die optionale Merkliste und Duftsammlung speichern ausschließlich die Produkt-IDs der von dir
+                ausgewählten SCENTAI-Düfte im localStorage deines Browsers. Diese Listen werden nicht als
+                Kundenkonto auf dem SCENTAI-Server gespeichert und nicht automatisch zwischen Geräten
+                synchronisiert. Du kannst die lokal gespeicherten Duftdaten jederzeit über die Merkliste oder
+                Sammlung löschen.
               </p>
             </section>
 
@@ -123,8 +131,11 @@ export default function DatenschutzPage() {
               <p className="mt-1">
                 Für die interne Produktverbesserung erfasst SCENTAI im MVP eigene Nutzungsereignisse,
                 zum Beispiel Seitenaufruf, Start einer Beratung, angezeigte Empfehlungen, Öffnen einer
-                Produktansicht, Duftvergleiche, Katalogsuchen und Händler-Clickouts. Bei Katalogsuchen kann
-                ein auf höchstens 80 Zeichen begrenzter normalisierter Suchbegriff zusammen mit der Trefferzahl
+                Produktansicht, Duftvergleiche, Katalogsuchen, Änderungen an Merkliste oder Sammlung und
+                Händler-Clickouts. Bei Merkliste- und Sammlungsereignissen wird nur die betroffene Produkt-ID
+                zusammen mit dem Ereignistyp gespeichert, nicht der vollständige lokale Listeninhalt. Bei
+                Katalogsuchen kann ein auf höchstens 80 Zeichen begrenzter normalisierter Suchbegriff zusammen
+                mit der Trefferzahl
                 gespeichert werden; E-Mail-artige Eingaben und lange nummernartige Eingaben werden hierfür
                 verworfen. Zusätzlich können Produkt-ID, Vergleichsprodukt, Empfehlungsposition und die
                 jeweilige SCENTAI-Oberfläche gespeichert werden. Beratungstexte, Namen, E-Mail-Adressen,
@@ -159,9 +170,11 @@ export default function DatenschutzPage() {
               <p className="mt-1">
                 SCENTAI setzt derzeit keine Google-Analytics-, Meta-Pixel- oder vergleichbaren externen
                 Werbetracker ein und verwendet für die oben beschriebene interne Nutzungsstatistik keine
-                dauerhafte werbliche Nutzerkennung. Sollten später zusätzliche Tracking-, Marketing- oder
-                Drittanbieter-Analyseverfahren eingesetzt werden, wird diese Datenschutzerklärung angepasst
-                und – soweit erforderlich – vorab eine Einwilligung eingeholt.
+                dauerhafte werbliche Nutzerkennung. Für die optionale Merkliste und Duftsammlung wird
+                funktionaler localStorage genutzt, damit deine Auswahl auf demselben Gerät erhalten bleibt.
+                Dieser lokale Speicher dient nicht der werblichen Nachverfolgung. Sollten später zusätzliche
+                Tracking-, Marketing- oder Drittanbieter-Analyseverfahren eingesetzt werden, wird diese
+                Datenschutzerklärung angepasst und – soweit erforderlich – vorab eine Einwilligung eingeholt.
               </p>
             </section>
 
@@ -194,8 +207,10 @@ export default function DatenschutzPage() {
               <p className="mt-1">
                 Personenbezogene Daten werden nur so lange gespeichert, wie dies für den jeweiligen Zweck
                 erforderlich ist oder gesetzliche Aufbewahrungspflichten bestehen. Technische Sitzungsdaten
-                des MVP sind nicht als dauerhaftes Kundenkonto ausgelegt. Für Daten, die von externen
-                Dienstleistern verarbeitet werden, gelten zusätzlich deren dokumentierte Aufbewahrungsfristen.
+                des MVP sind nicht als dauerhaftes Kundenkonto ausgelegt. Lokal gespeicherte Merkliste- und
+                Sammlungsdaten bleiben grundsätzlich im Browser erhalten, bis du sie in SCENTAI löschst oder
+                die Browser-/Websitedaten entfernst. Für Daten, die von externen Dienstleistern verarbeitet
+                werden, gelten zusätzlich deren dokumentierte Aufbewahrungsfristen.
               </p>
             </section>
 
