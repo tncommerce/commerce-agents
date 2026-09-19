@@ -95,21 +95,14 @@ def build_state_report(
             }
         )
 
-    live_program_count = sum(
-        1 for row in rows if row["live_routing_allowed"]
-    )
+    live_program_count = sum(1 for row in rows if row["live_routing_allowed"])
     approved_program_count = sum(
         1
         for row in rows
-        if normalize_application_status(
-            row.get("application_status")
-        )
-        == "approved"
+        if normalize_application_status(row.get("application_status")) == "approved"
     )
     ready_for_user_approval = sum(
-        1
-        for row in rows
-        if row["activation_state"] == "ready_for_user_approval"
+        1 for row in rows if row["activation_state"] == "ready_for_user_approval"
     )
 
     return {
