@@ -3,7 +3,7 @@
   "updated_at": "2026-09-19",
   "campaign_id": "launch01",
   "machine_id": "scentai_pilot_production_v1",
-  "status": "voiceover_pending",
+  "status": "visual_preview_and_voiceover_pending",
   "audio_storage_policy": "local_only_gitignored",
   "subtitle_policy": "draft SRT must be conformed to final voiceover before final render",
   "jobs": [
@@ -22,12 +22,13 @@
         "youtube"
       ],
       "price_recheck_required": false,
-      "state": "voiceover_pending",
+      "state": "visual_preview_pending",
       "blockers": [
         "voiceover_file_missing",
         "subtitle_timing_not_conformed",
         "final_render_missing",
-        "mobile_content_review_pending"
+        "mobile_content_review_pending",
+        "visual_preview_mp4_missing"
       ],
       "publish_action_class": "approval_required"
     },
@@ -46,13 +47,14 @@
         "youtube"
       ],
       "price_recheck_required": true,
-      "state": "voiceover_pending",
+      "state": "visual_preview_pending",
       "blockers": [
         "voiceover_file_missing",
         "subtitle_timing_not_conformed",
         "final_render_missing",
         "mobile_content_review_pending",
-        "publish_day_price_recheck_required"
+        "publish_day_price_recheck_required",
+        "visual_preview_mp4_missing"
       ],
       "publish_action_class": "approval_required"
     },
@@ -71,12 +73,13 @@
         "youtube"
       ],
       "price_recheck_required": false,
-      "state": "voiceover_pending",
+      "state": "visual_preview_pending",
       "blockers": [
         "voiceover_file_missing",
         "subtitle_timing_not_conformed",
         "final_render_missing",
-        "mobile_content_review_pending"
+        "mobile_content_review_pending",
+        "visual_preview_mp4_missing"
       ],
       "publish_action_class": "approval_required"
     },
@@ -95,12 +98,13 @@
         "youtube"
       ],
       "price_recheck_required": false,
-      "state": "voiceover_pending",
+      "state": "visual_preview_pending",
       "blockers": [
         "voiceover_file_missing",
         "subtitle_timing_not_conformed",
         "final_render_missing",
-        "mobile_content_review_pending"
+        "mobile_content_review_pending",
+        "visual_preview_mp4_missing"
       ],
       "publish_action_class": "approval_required"
     },
@@ -119,12 +123,13 @@
         "youtube"
       ],
       "price_recheck_required": false,
-      "state": "voiceover_pending",
+      "state": "visual_preview_pending",
       "blockers": [
         "voiceover_file_missing",
         "subtitle_timing_not_conformed",
         "final_render_missing",
-        "mobile_content_review_pending"
+        "mobile_content_review_pending",
+        "visual_preview_mp4_missing"
       ],
       "publish_action_class": "approval_required"
     }
