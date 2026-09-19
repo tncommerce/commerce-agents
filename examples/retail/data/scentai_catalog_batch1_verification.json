@@ -63,8 +63,14 @@
       "sources": [
         "https://www.prada.com/de/de/perfumes-and-beauty/fragrances/womens-fragrances/c/10573EU",
         "https://www.flaconi.de/parfum/prada/paradoxe/prada-paradoxe-refillable-eau-de-parfum.html",
-        "https://www.douglas.de/de/p/5010687030"
-      ]
+        "https://www.douglas.de/de/p/5010687030",
+        "https://www.flaconi.de/parfum/prada/paradoxe/prada-paradoxe-refillable-eau-de-parfum.html?variant=80070411-90"
+      ],
+      "identifiers": {
+        "ean": "3614273760164",
+        "gtin": "3614273760164"
+      },
+      "merchant_snapshot_checked_at": "2026-09-19"
     },
     {
       "candidate_id": "BURBERRY-GODDESS-EDP",
@@ -81,12 +87,20 @@
       ],
       "identity_verified": true,
       "merchant_snapshot": {
-        "douglas_de": "available"
+        "douglas_de": "available",
+        "flaconi_de": "available"
       },
       "sources": [
         "https://de.burberry.com/burberry-goddess-eau-de-parfum-for-women-100-ml-p40835981",
-        "https://www.douglas.de/de/b/burberry/goddess/b053737"
-      ]
+        "https://www.douglas.de/de/b/burberry/goddess/b053737",
+        "https://www.douglas.de/de/p/5011035040",
+        "https://www.flaconi.de/parfum/burberry/goddess/burberry-goddess-eau-de-parfum.html?variant=90001263-0001775"
+      ],
+      "identifiers": {
+        "ean": "3616302020652",
+        "gtin": "3616302020652"
+      },
+      "merchant_snapshot_checked_at": "2026-09-19"
     },
     {
       "candidate_id": "NARCISO-RODRIGUEZ-FOR-HER-PURE-MUSC",
@@ -113,9 +127,14 @@
       "sources": [
         "https://www.narcisorodriguezparfums.com/de/d%C3%BCfte/for-her/",
         "https://www.flaconi.de/parfum/narciso-rodriguez/for-her/narciso-rodriguez-for-her-pure-musc-eau-de-parfum.html",
-        "https://www.douglas.de/de/b/narciso-rodriguez/for-her/b225001"
+        "https://www.douglas.de/de/b/narciso-rodriguez/for-her/b225001",
+        "https://www.douglas.de/de/p/3001052443"
       ],
-      "merchant_snapshot_checked_at": "2026-09-19"
+      "merchant_snapshot_checked_at": "2026-09-19",
+      "identifiers": {
+        "ean": "3423478515956",
+        "gtin": "3423478515956"
+      }
     },
     {
       "candidate_id": "PDM-DELINA-EDP",
