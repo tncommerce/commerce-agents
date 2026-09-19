@@ -1,11 +1,25 @@
 {
   "mappings": [
     {
-      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
-      "merchant": "notino",
-      "merchant_product_id": null,
-      "ean": null,
-      "gtin": null
+      "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+      "merchant": "douglas",
+      "merchant_product_id": "1069032304",
+      "ean": "3348900425309",
+      "gtin": "3348900425309"
+    },
+    {
+      "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+      "merchant": "flaconi",
+      "merchant_product_id": "20101775",
+      "ean": "3348900425309",
+      "gtin": "3348900425309"
+    },
+    {
+      "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+      "merchant": "perfumetrader",
+      "merchant_product_id": "33204791",
+      "ean": "3348900425309",
+      "gtin": "3348900425309"
     },
     {
       "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
@@ -20,6 +34,69 @@
       "merchant_product_id": "90009660-0014734",
       "ean": null,
       "gtin": null
+    },
+    {
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "merchant": "notino",
+      "merchant_product_id": null,
+      "ean": null,
+      "gtin": null
+    },
+    {
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "merchant": "douglas",
+      "merchant_product_id": "3000056790",
+      "ean": "3605533286555",
+      "gtin": "3605533286555"
+    },
+    {
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "merchant": "flaconi",
+      "merchant_product_id": null,
+      "ean": "3605533286555",
+      "gtin": "3605533286555"
+    },
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "merchant": "douglas",
+      "merchant_product_id": "5010758028",
+      "ean": "3700578501998",
+      "gtin": "3700578501998"
+    },
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "merchant": "flaconi",
+      "merchant_product_id": null,
+      "ean": "3700578501998",
+      "gtin": "3700578501998"
+    },
+    {
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "merchant": "douglas",
+      "merchant_product_id": "3001005867",
+      "ean": "3365440787971",
+      "gtin": "3365440787971"
+    },
+    {
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "merchant": "flaconi",
+      "merchant_product_id": "80005078-90",
+      "ean": "3365440787971",
+      "gtin": "3365440787971"
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "merchant": "douglas",
+      "merchant_product_id": "5000005003",
+      "ean": "3614272648425",
+      "gtin": "3614272648425"
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "merchant": "flaconi",
+      "merchant_product_id": "80041833-90",
+      "ean": "3614272648425",
+      "gtin": "3614272648425"
     }
   ]
 }
