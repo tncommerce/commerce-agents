@@ -1,7 +1,7 @@
 # SCENTAI Custom Domain / SEO Cutover
 
-Status: prepared
-Updated: 2026-09-18
+Status: prepared_brand_clearance_required
+Updated: 2026-09-19
 
 The temporary Render URL remains functional, but SCENTAI should stay non-indexable until the final public domain is connected.
 
@@ -10,6 +10,25 @@ The temporary Render URL remains functional, but SCENTAI should stay non-indexab
 - `NEXT_PUBLIC_SITE_URL` falls back to `https://scentai-xxya.onrender.com`
 - `NEXT_PUBLIC_SITE_INDEXABLE` defaults to false unless explicitly set to `true`
 - While indexability is false, pages emit noindex/nofollow metadata and `robots.txt` blocks crawling
+
+## Brand-clearance gate
+
+Before purchasing or connecting the final public domain, complete a brand-clearance decision for the SCENTAI name.
+
+Reason:
+- active third-party fragrance services currently use the ScentAI/ScentAi name in a closely related fragrance-discovery category
+- a separate company named ScentAI Inc. also exists in the smell/AI technology space
+- the current domain cutover therefore remains technically prepared but commercially paused pending the owner's naming decision
+
+Do not:
+- purchase a long-term domain commitment
+- enable public search indexing
+- migrate partner-network public URLs
+- start paid acquisition
+
+until this brand-clearance gate is explicitly resolved.
+
+The temporary Render hostname stays non-indexable during this decision.
 
 ## When the final domain is purchased
 
