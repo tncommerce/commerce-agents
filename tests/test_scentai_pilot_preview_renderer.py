@@ -23,10 +23,7 @@ def assert_scene_map_matches_manifest(
     manifest = load_json(DATA_DIR / manifest_name)
     pilots = manifest.get("pilots", [])
 
-    manifest_ids = {
-        str(pilot["content_id"])
-        for pilot in pilots
-    }
+    manifest_ids = {str(pilot["content_id"]) for pilot in pilots}
     assert set(scene_map) == manifest_ids
 
     for pilot in pilots:
