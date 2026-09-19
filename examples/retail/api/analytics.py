@@ -61,6 +61,21 @@ class AnalyticsEventRequest(BaseModel):
         max_length=80,
         pattern=r"^[A-Za-z0-9._:-]+$",
     )
+    acquisition_source: str | None = Field(
+        default=None,
+        max_length=80,
+        pattern=r"^[A-Za-z0-9._:-]+$",
+    )
+    campaign_id: str | None = Field(
+        default=None,
+        max_length=80,
+        pattern=r"^[A-Za-z0-9._:-]+$",
+    )
+    content_id: str | None = Field(
+        default=None,
+        max_length=80,
+        pattern=r"^[A-Za-z0-9._:-]+$",
+    )
     search_term: str | None = Field(default=None, max_length=80)
     result_count: int | None = Field(default=None, ge=0)
     surface: str | None = Field(
@@ -120,6 +135,9 @@ class FirstPartyAnalyticsTracker:
         event: AnalyticsEventName,
         product_id: str | None = None,
         source: str | None = None,
+        acquisition_source: str | None = None,
+        campaign_id: str | None = None,
+        content_id: str | None = None,
         search_term: str | None = None,
         result_count: int | None = None,
         surface: str | None = None,
@@ -135,6 +153,9 @@ class FirstPartyAnalyticsTracker:
             "event": event,
             "product_id": product_id,
             "source": source,
+            "acquisition_source": acquisition_source,
+            "campaign_id": campaign_id,
+            "content_id": content_id,
             "search_term": sanitize_catalog_search_term(search_term),
             "result_count": result_count,
             "surface": surface,
@@ -154,6 +175,9 @@ class FirstPartyAnalyticsTracker:
         event: AnalyticsEventName,
         product_id: str | None = None,
         source: str | None = None,
+        acquisition_source: str | None = None,
+        campaign_id: str | None = None,
+        content_id: str | None = None,
         search_term: str | None = None,
         result_count: int | None = None,
         surface: str | None = None,
@@ -166,6 +190,9 @@ class FirstPartyAnalyticsTracker:
             event=event,
             product_id=product_id,
             source=source,
+            acquisition_source=acquisition_source,
+            campaign_id=campaign_id,
+            content_id=content_id,
             search_term=search_term,
             result_count=result_count,
             surface=surface,
