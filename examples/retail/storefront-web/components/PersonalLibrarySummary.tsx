@@ -53,7 +53,7 @@ export default function PersonalLibrarySummary() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <div className="text-[11px] font-semibold uppercase tracking-[0.08em] text-(--ink-soft)">
-            Deine SCENTAI Duftwelt
+            Deine DUFYND Duftwelt
           </div>
           <div className="mt-1 text-[14px] font-semibold text-(--ink)">
             {ownedCount
