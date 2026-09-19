@@ -96,20 +96,23 @@ export default function FragranceSaveControls({
             productId,
             nextSaved,
           );
+          const actualSaved = next.wishlist.includes(productId);
           setState({
-            wishlist: next.wishlist.includes(productId),
+            wishlist: actualSaved,
             owned: next.owned.includes(productId),
           });
-          void trackAnalyticsEvent(
-            nextSaved
-              ? "wishlist_add"
-              : "wishlist_remove",
-            {
-              product_id: productId,
-              source,
-              surface: "personal_library",
-            },
-          );
+          if (actualSaved === nextSaved) {
+            void trackAnalyticsEvent(
+              nextSaved
+                ? "wishlist_add"
+                : "wishlist_remove",
+              {
+                product_id: productId,
+                source,
+                surface: "personal_library",
+              },
+            );
+          }
         }}
         disabled={state.owned}
         className={`${buttonClass} ${
@@ -134,20 +137,23 @@ export default function FragranceSaveControls({
             productId,
             nextOwned,
           );
+          const actualOwned = next.owned.includes(productId);
           setState({
             wishlist: next.wishlist.includes(productId),
-            owned: next.owned.includes(productId),
+            owned: actualOwned,
           });
-          void trackAnalyticsEvent(
-            nextOwned
-              ? "collection_add"
-              : "collection_remove",
-            {
-              product_id: productId,
-              source,
-              surface: "personal_library",
-            },
-          );
+          if (actualOwned === nextOwned) {
+            void trackAnalyticsEvent(
+              nextOwned
+                ? "collection_add"
+                : "collection_remove",
+              {
+                product_id: productId,
+                source,
+                surface: "personal_library",
+              },
+            );
+          }
         }}
         className={`${buttonClass} ${
           state.owned
