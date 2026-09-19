@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "release_id": "SCENTAI-RELEASE-03",
+  "status": "mapping_ready_blocked_pending_prior_release_validation_and_live_assets",
+  "prepared_at": "2026-09-19",
+  "release_size": 5,
+  "strategy": "Third guarded mini-release prioritizing feed-ready candidates with verified coverage at merchants already applied for through SCENTAI affiliate networks. Higher portfolio-gap candidates without compatible partner-feed coverage remain in staging rather than being forced into this batch.",
+  "product_ids": [
+    "SC-PDM-VALAYA-EXCLUSIF-EDP-75",
+    "SC-AMOUAGE-GUIDANCE-46-EXTRAIT-100",
+    "SC-TOM-FORD-OMBRE-LEATHER-EDP-100",
+    "SC-PDM-HEROD-EDP-125",
+    "SC-NISHANE-ANI-EXTRAIT-100"
+  ],
+  "deferred_higher_gap_candidates": [
+    {
+      "product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
+      "reason": "current verified merchants are not yet aligned with an approved/applied production affiliate feed"
+    },
+    {
+      "product_id": "SC-KAYALI-YUM-BOUJEE-MARSHMALLOW-81-EDPI-100",
+      "reason": "current verified availability is primarily Sephora/Kayali direct; Notino is not currently in-stock and its CJ program remains pending"
+    },
+    {
+      "product_id": "SC-LATTAFA-ANGHAM-EDP-100",
+      "reason": "current verified merchants are Notino and Oriental Style; production affiliate-feed coverage is not yet ready"
+    }
+  ],
+  "required_gates": [
+    "release_01_and_02_operational_validation",
+    "non_provisional_community_data",
+    "resolved_merchant_product_mapping",
+    "approved_product_image",
+    "current_tracked_affiliate_offer",
+    "staging_recommendation_qa",
+    "not_already_live",
+    "all_selected_products_ready_no_partial_release"
+  ],
+  "mapping_readiness": {
+    "verified_at": "2026-09-19",
+    "products_with_mapping": 5,
+    "release_size": 5,
+    "status": "complete",
+    "note": "All Release 03 products have redundant mapping paths at merchants already represented in the SCENTAI affiliate application registry."
+  },
+  "write_enabled": false,
+  "write_guard_reason": "Release 03 stays write-locked until Release 01 and Release 02 have completed their required real affiliate-feed, image-approval, promotion and smoke-test sequence.",
+  "write_policy": "All-or-nothing. Dry-run is allowed; live write is explicitly disabled at manifest level."
+}
