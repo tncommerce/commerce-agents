@@ -164,14 +164,28 @@
       "candidate_source": {
         "source_class": "manufacturer_official",
         "source_page_url": "https://www.narcisorodriguezparfums.com/de/d%C3%BCfte/for-her/",
-        "exact_variant_verified": false,
+        "exact_variant_verified": true,
         "verified_at": "2026-09-19",
-        "evidence_note": "Official Narciso Rodriguez collection confirms for her PURE MUSC Eau de Parfum, but the current page does not explicitly verify the 100 ml variant."
+        "evidence_note": "Official Narciso Rodriguez collection confirms for her PURE MUSC Eau de Parfum; exact 100 ml variant cross-verified against current Douglas and flaconi product pages."
       },
-      "image_state": "identity_check_pending",
-      "next_action": "verify_exact_100ml_variant_or_use_approved_feed_image",
+      "image_state": "rights_or_source_check_pending",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
       "action_class": "auto_allowed",
-      "approval_action_class": "approval_required"
+      "approval_action_class": "approval_required",
+      "identity_evidence": [
+        {
+          "source_class": "verified_retailer_identity_only",
+          "source_page_url": "https://www.douglas.de/de/p/3001052443",
+          "verified_at": "2026-09-19",
+          "evidence_note": "Douglas lists PURE MUSC Eau de Parfum in 100 ml."
+        },
+        {
+          "source_class": "verified_retailer_identity_only",
+          "source_page_url": "https://www.flaconi.de/parfum/narciso-rodriguez/for-her/narciso-rodriguez-for-her-pure-musc-eau-de-parfum.html",
+          "verified_at": "2026-09-19",
+          "evidence_note": "flaconi lists for her Pure Musc Eau de Parfum in 100 ml."
+        }
+      ]
     },
     {
       "product_id": "SC-CHLOE-CHLOE-EDP-100",
