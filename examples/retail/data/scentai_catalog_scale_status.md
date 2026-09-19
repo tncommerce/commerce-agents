@@ -34,7 +34,7 @@ Staged target assignments:
 Researched merchant coverage:
 - 30/30 have at least one verified merchant
 - 27/30 have at least two verified merchants
-- 4/30 have three researched merchants
+- 5/30 have three researched merchants
 
 Community status:
 - 28/30 have non-provisional community/performance data
