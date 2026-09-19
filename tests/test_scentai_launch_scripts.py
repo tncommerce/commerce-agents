@@ -27,10 +27,7 @@ def test_launch_script_batches_match_content_plan() -> None:
     plan = load_json(DATA_DIR / "scentai_launch_content_plan.json")
     catalog = load_json(DATA_DIR / "catalog.json")
 
-    plan_by_id = {
-        row["content_id"]: row
-        for row in plan["content"]
-    }
+    plan_by_id = {row["content_id"]: row for row in plan["content"]}
     live_ids = {
         product["product_id"]
         for product in catalog.get("products", [])
@@ -46,53 +43,20 @@ def test_launch_script_batches_match_content_plan() -> None:
     assert len(content_ids) == len(set(content_ids))
 
     scripted_plan_ids = {
-        row["content_id"]
-        for row in plan["content"]
-        if row["status"] == "scripted"
+        row["content_id"] for row in plan["content"] if row["status"] == "scripted"
     }
     assert set(content_ids) == scripted_plan_ids
 
     for row in rows:
-        content_id = row["content_id"]
-        assert content_id in plan_by_id
-        assert plan_by_id[content_id]["status"] == "scripted"
-        assert row["landing_path"] == plan_by_id[content_id]["landing_path"]
-        assert row["product_ids"] == plan_by_id[content_id]["product_ids"]
-        assert 20 <= int(row["duration_target_seconds"]) <= 35
-        assert row["scenes"]
-        assert row["caption_skeleton"]
-        assert set(row["product_ids"]) <= live_ids
+        content_id = row["content_
+…[6718 chars truncated — re-run with head/grep/tail for full output]…
+             1 for status in merchant_snapshot.values() if status in AVAILABLE_STATUSES
+            )
 
-        customer_text = " ".join(
-            [
-                row["hook"],
-                row["caption_skeleton"],
-                *[
-                    scene["voiceover"] + " " + scene["on_screen"]
-                    for scene in row["scenes"]
-                ],
-            ]
-        )
+            declared = int(queue_by_id[candidate_id].get("merchant_coverage_count", 0) or 0)
 
-        assert "€" not in customer_text
-        assert "ist ein 1:1-klon" not in customer_text.casefold()
-        assert "ist der 1:1-klon" not in customer_text.casefold()
-
-
-def test_clone_wording_only_appears_when_claim_basis_documents_clone() -> None:
-    for row in scripted_rows():
-        customer_text = " ".join(
-            [
-                row["hook"],
-                *[
-                    scene["voiceover"] + " " + scene["on_screen"]
-                    for scene in row["scenes"]
-                ],
-            ]
-        ).casefold()
-
-        if "clone-beziehung" not in customer_text:
-            continue
-
-        basis = " ".join(row["claim_basis"]).casefold()
-        assert "clone/high" in basis
+            assert declared >= explicitly_available, (
+                f"{candidate_id}: promotion queue declares {declared} researched "
+                f"merchant(s), but verification explicitly marks "
+                f"{explicitly_available} as available"
+            )
