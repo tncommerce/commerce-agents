@@ -196,6 +196,18 @@ export default function HomeView({
         >
           Parfumvergleiche
         </a>
+        <a
+          href="/sammlung"
+          className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5 font-medium text-(--accent-ink) hover:border-(--accent)"
+        >
+          Meine Duftsammlung
+        </a>
+        <a
+          href="/merkliste"
+          className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5 font-medium text-(--accent-ink) hover:border-(--accent)"
+        >
+          Meine Merkliste
+        </a>
       </div>
       <MerchantDiscovery />
 
