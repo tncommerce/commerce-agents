@@ -241,6 +241,121 @@
       "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
       "action_class": "auto_allowed",
       "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-PDM-VALAYA-EXCLUSIF-EDP-75",
+      "release_id": "SCENTAI-RELEASE-03",
+      "brand": "Parfums de Marly",
+      "name": "Valaya Exclusif",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 75,
+      "identifiers": {
+        "ean": "3700578505767",
+        "gtin": "3700578505767"
+      },
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://parfums-de-marly.com/de/products/valaya-exclusif",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Parfums de Marly page lists Valaya Exclusif in 75 ml."
+      },
+      "image_state": "rights_or_source_check_pending",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-AMOUAGE-GUIDANCE-46-EXTRAIT-100",
+      "release_id": "SCENTAI-RELEASE-03",
+      "brand": "Amouage",
+      "name": "Guidance 46",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 100,
+      "identifiers": {
+        "ean": "0701666410980",
+        "gtin": "0701666410980"
+      },
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://amouage.com/en-uk/products/new-guidance-46",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Amouage product page lists Guidance 46 Exceptional Extrait in 100 ml."
+      },
+      "image_state": "rights_or_source_check_pending",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-TOM-FORD-OMBRE-LEATHER-EDP-100",
+      "release_id": "SCENTAI-RELEASE-03",
+      "brand": "Tom Ford",
+      "name": "Ombré Leather",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "identifiers": {
+        "ean": "0888066075145",
+        "gtin": "0888066075145"
+      },
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://www.tomfordbeauty.com/products/ombre-leather-eau-de-parfum",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Tom Ford product page confirms Ombré Leather Eau de Parfum; official fragrance catalog lists the 100 ml variant."
+      },
+      "image_state": "rights_or_source_check_pending",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-PDM-HEROD-EDP-125",
+      "release_id": "SCENTAI-RELEASE-03",
+      "brand": "Parfums de Marly",
+      "name": "Herod",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 125,
+      "identifiers": {
+        "ean": "3700578502353",
+        "gtin": "3700578502353"
+      },
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://parfums-de-marly.com/de/products/herod",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Parfums de Marly page lists Herod in 125 ml."
+      },
+      "image_state": "rights_or_source_check_pending",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-NISHANE-ANI-EXTRAIT-100",
+      "release_id": "SCENTAI-RELEASE-03",
+      "brand": "Nishane",
+      "name": "Ani",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 100,
+      "identifiers": {
+        "ean": "8681008055074",
+        "gtin": "8681008055074"
+      },
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://nishane.com/product/ani/",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Nishane product page lists Ani Extrait de Parfum in 100 ml."
+      },
+      "image_state": "rights_or_source_check_pending",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
     }
   ]
 }
