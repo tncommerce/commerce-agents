@@ -30,7 +30,7 @@ function resolveApiUrl(): string {
   }
 
   throw new Error(
-    "NEXT_PUBLIC_API_URL is required for public SCENTAI deployments.",
+    "NEXT_PUBLIC_API_URL is required for public DUFYND deployments.",
   );
 }
 
@@ -40,8 +40,8 @@ export const api = new AgentApi(API_URL, "/api");
 
 export const UNREACHABLE =
   process.env.NODE_ENV === "development"
-    ? "SCENTAI API auf Port 8000 nicht erreichbar. Starte lokal: uvicorn retail.api.main:app --app-dir examples --port 8000."
-    : "SCENTAI ist gerade kurz nicht erreichbar. Bitte versuche es in einem Moment erneut.";
+    ? "DUFYND API auf Port 8000 nicht erreichbar. Starte lokal: uvicorn retail.api.main:app --app-dir examples --port 8000."
+    : "DUFYND ist gerade kurz nicht erreichbar. Bitte versuche es in einem Moment erneut.";
 
 export async function fetchProducts(): Promise<Product[] | null> {
   const data = await api.get<{ products: Product[] }>("/products", { limit: "100" });
