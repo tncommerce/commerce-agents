@@ -77,6 +77,19 @@ export default function TransparencyPage() {
           </section>
 
           <section>
+            <h2 className="font-semibold text-(--ink)">
+              Merkliste und Sammlungsprofil
+            </h2>
+            <p className="mt-1">
+              Merkliste und Duftsammlung werden lokal im Browser gespeichert.
+              Das Sammlungsprofil fasst ausschließlich vorhandene SCENTAI-
+              Profilwerte der von dir markierten Düfte zusammen. Hinweise auf
+              mögliche Profil-Ergänzungen bedeuten nicht, dass deine Sammlung
+              unvollständig ist oder dass du weitere Düfte kaufen solltest.
+            </p>
+          </section>
+
+          <section>
             <h2 className="font-semibold text-(--ink)">Preise und Verfügbarkeit</h2>
             <p className="mt-1">
               Händlerpreise und Verfügbarkeit können sich ändern. SCENTAI kennzeichnet aktuelle
