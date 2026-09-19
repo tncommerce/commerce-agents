@@ -131,6 +131,39 @@ scentai_personal_library_engagement
 The conversion report now includes privacy-minimized wishlist and collection
 engagement. Small samples remain `early_signal`.
 
+## Collection-aware advisor — implemented as explicit opt-in
+
+From `/sammlung`, a customer with at least one owned fragrance can choose:
+
+```text
+Mit meiner Sammlung beraten lassen
+```
+
+The browser creates a bounded consultation handoff containing:
+- owned fragrance names from the current SCENTAI catalog
+- average values for the four SCENTAI profile axes
+- the most frequent catalog accords
+- explicit instructions not to treat ownership as proof of preference
+- explicit instructions not to recommend an already-owned fragrance as a new purchase
+- a request to clarify occasion, budget and desired type of addition before concrete recommendations
+
+The handoff is customer-initiated, session-scoped, length-capped and removed from
+`sessionStorage` after the advisor consumes it. Durable advisor memory remains
+disabled.
+
+The homepage also surfaces a device-local return card once wishlist or
+collection items exist.
+
+Retention reporting now includes:
+- wishlist page sessions
+- collection page sessions
+- wishlist-add sessions
+- collection-add sessions
+- collection-aware advisor sessions
+
+These are session-level product metrics, not cross-session user identity or a
+true repeat-user rate.
+
 ## Not implemented yet
 
 Deliberately deferred until usage supports the need:
@@ -144,7 +177,7 @@ Deliberately deferred until usage supports the need:
 - availability alerts
 - collection import
 - public collection sharing
-- automatic advisor personalization from collection state
+- automatic or hidden advisor personalization from collection state
 
 In particular, the advisor must not silently constrain a recommendation from
 the local collection. If collection-aware recommendations are added later,
@@ -166,11 +199,11 @@ Do not build account infrastructure solely because it is technically possible.
 
 Potential next steps, ordered by dependency rather than commitment:
 
-1. collection-aware advisor action that the customer explicitly starts
-2. optional personal notes stored locally
-3. price alerts once merchant feeds are reliable enough
-4. account/sync layer only if repeated usage proves cross-device demand
-5. wear diary or seasonal rotation if collection engagement becomes meaningful
+1. optional personal notes stored locally, if users ask for them
+2. price alerts once merchant feeds are reliable enough
+3. account/sync layer only if repeated usage proves cross-device demand
+4. wear diary or seasonal rotation if collection engagement becomes meaningful
+5. stronger collection-overlap explanations if real usage shows they help
 
 The retention principle remains: help customers understand and enjoy fragrance
 more, not create artificial pressure to buy more bottles.
