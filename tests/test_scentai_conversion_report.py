@@ -230,7 +230,6 @@ def test_acquisition_sources_are_reported_with_sample_status() -> None:
     assert report["acquisition_sources"][1]["sample_status"] == "early_signal"
 
 
-
 def test_personal_library_engagement_is_labeled_and_sampled() -> None:
     report = build_conversion_report(
         [],
