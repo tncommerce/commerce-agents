@@ -5,7 +5,7 @@ export default function LegalFooter() {
   return (
     <footer className="mt-8 border-t border-(--line) pt-5 text-[12px] text-(--ink-soft)">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <span>© 2026 SCENTAI · TNCommerce</span>
+        <span>© 2026 DUFYND · TNCommerce</span>
         <a href="/impressum" className="font-medium text-(--accent-ink) hover:underline">
           Impressum
         </a>
