@@ -70,54 +70,34 @@ def validate_provider_config(config: dict) -> dict[str, Any]:
 
     unknown = sorted(set(field_map) - ALLOWED_FIELD_MAP_KEYS)
     if unknown:
-        issues.append(
-            "unknown_canonical_field_map_keys:" + ",".join(unknown)
-        )
+        issues.append("unknown_canonical_field_map_keys:" + ",".join(unknown))
 
     blank_sources = sorted(
-        key
-        for key, value in field_map.items()
-        if not isinstance(value, str) or not value.strip()
+        key for key, value in field_map.items() if not isinstance(value, str) or not value.strip()
     )
     if blank_sources:
-        issues.append(
-            "blank_external_source_columns:" + ",".join(blank_sources)
-        )
+        issues.append("blank_external_source_columns:" + ",".join(blank_sources))
 
     missing_required = sorted(
-        field
-        for field in REQUIRED_CANONICAL_FIELDS
-        if field not in field_map
+        field for field in REQUIRED_CANONICAL_FIELDS if field not in field_map
     )
     if missing_required:
-        issues.append(
-            "missing_required_field_mappings:"
-            + ",".join(missing_required)
-        )
+        issues.append("missing_required_field_mappings:" + ",".join(missing_required))
 
     if not any(field in field_map for field in IDENTIFIER_FIELDS):
         issues.append("missing_product_identifier_mapping")
 
     missing_constants = sorted(
-        key
-        for key in REQUIRED_CONSTANTS
-        if not str(constants.get(key) or "").strip()
+        key for key in REQUIRED_CONSTANTS if not str(constants.get(key) or "").strip()
     )
     if missing_constants:
-        issues.append(
-            "missing_required_constants:"
-            + ",".join(missing_constants)
-        )
+        issues.append("missing_required_constants:" + ",".join(missing_constants))
 
     currency = str(constants.get("currency") or "").strip()
     if currency and len(currency) != 3:
         issues.append("currency_constant_must_be_three_characters")
 
-    promotion_missing = sorted(
-        field
-        for field in PROMOTION_FIELDS
-        if field not in field_map
-    )
+    promotion_missing = sorted(field for field in PROMOTION_FIELDS if field not in field_map)
 
     import_ready = not any(
         issue.startswith(
@@ -136,10 +116,7 @@ def validate_provider_config(config: dict) -> dict[str, Any]:
         for issue in issues
     )
 
-    promotion_ready = (
-        import_ready
-        and not promotion_missing
-    )
+    promotion_ready = import_ready and not promotion_missing
 
     return {
         "valid": import_ready,
@@ -164,8 +141,7 @@ def validate_provider_config(config: dict) -> dict[str, Any]:
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Validate a SCENTAI mapped merchant provider config before "
-            "running a real feed dry-run."
+            "Validate a SCENTAI mapped merchant provider config before running a real feed dry-run."
         )
     )
     parser.add_argument("--config", type=Path, required=True)
@@ -190,10 +166,7 @@ def main() -> int:
         for issue in report["issues"]:
             print(f"  - {issue}")
         if report["promotion_field_gaps"]:
-            print(
-                "  - promotion_field_gaps: "
-                + ", ".join(report["promotion_field_gaps"])
-            )
+            print("  - promotion_field_gaps: " + ", ".join(report["promotion_field_gaps"]))
 
     return 0 if report["valid"] else 20
 

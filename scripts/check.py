@@ -764,7 +764,6 @@ def check_managed_custom_tool_descriptions() -> None:
             ok(f"{role.tree}: {len(custom)} custom tool descriptions match the registry")
 
 
-
 def check_scentai_jarvis_operations_status() -> None:
     """Keep the committed Jarvis control-plane snapshot aligned with source state."""
     print("SCENTAI Jarvis operations status")
@@ -794,7 +793,6 @@ def check_scentai_jarvis_operations_status() -> None:
     ok("SCENTAI Jarvis operations snapshot matches source state")
 
 
-
 def check_scentai_jarvis_state_graph() -> None:
     """Ensure every committed Jarvis derived view matches source-of-truth data."""
     print("SCENTAI Jarvis state graph")
@@ -816,7 +814,6 @@ def check_scentai_jarvis_state_graph() -> None:
     ok("SCENTAI Jarvis derived state graph matches source-of-truth")
 
 
-
 def check_scentai_pilot_batch_contract() -> None:
     """Keep Pilot Batch 01 IDs, timings, links and production jobs aligned."""
     print("SCENTAI pilot production contract")
@@ -828,9 +825,7 @@ def check_scentai_pilot_batch_contract() -> None:
         data = REPO_ROOT / "examples" / "retail" / "data"
         report = validate_contract(
             load_json(data / "scentai_pilot_batch_01.json"),
-            load_json(
-                data / "scentai_pilot_batch_01_production_jobs.json"
-            ),
+            load_json(data / "scentai_pilot_batch_01_production_jobs.json"),
             load_json(data / "scentai_pilot_batch_01_subtitles.json"),
             load_json(data / "scentai_pilot_batch_01_links.json"),
             load_json(data / "scentai_pilot_batch_01_social_copy.json"),

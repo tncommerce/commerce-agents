@@ -43,11 +43,7 @@ def load_release_manifest(path: Path) -> list[str]:
     if not isinstance(product_ids, list):
         raise ValueError("Release manifest requires a product_ids list")
 
-    normalized = [
-        str(product_id).strip()
-        for product_id in product_ids
-        if str(product_id).strip()
-    ]
+    normalized = [str(product_id).strip() for product_id in product_ids if str(product_id).strip()]
 
     if len(normalized) < 5 or len(normalized) > 10:
         raise ValueError("Release manifest must contain between 5 and 10 product_ids")
@@ -529,10 +525,7 @@ def main() -> int:
         parser.error(str(exc))
 
     if args.write:
-        if (
-            args.manifest is not None
-            and not release_manifest_write_enabled(args.manifest)
-        ):
+        if args.manifest is not None and not release_manifest_write_enabled(args.manifest):
             parser.error(
                 "Refusing release write because manifest write_enabled "
                 "is not explicitly true. Dry-run remains allowed."

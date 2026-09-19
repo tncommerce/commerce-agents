@@ -48,28 +48,16 @@ def build_content_operations_status(
     generated_at: str,
 ) -> dict[str, Any]:
     pilots = manifest.get("pilots", [])
-    pilot_ids = {
-        str(row.get("content_id") or "")
-        for row in pilots
-    }
+    pilot_ids = {str(row.get("content_id") or "") for row in pilots}
     job_rows = jobs.get("jobs", [])
-    subtitle_ids = {
-        str(row.get("content_id") or "")
-        for row in subtitles.get("items", [])
-    }
+    subtitle_ids = {str(row.get("content_id") or "") for row in subtitles.get("items", [])}
     social_rows = social_copy.get("posts")
     if not isinstance(social_rows, list):
         social_rows = social_copy.get("items", [])
-    social_ids = {
-        str(row.get("content_id") or "")
-        for row in social_rows
-    }
+    social_ids = {str(row.get("content_id") or "") for row in social_rows}
     link_rows = links.get("links", [])
 
-    channels = {
-        str(channel)
-        for channel in manifest.get("channels", [])
-    }
+    channels = {str(channel) for channel in manifest.get("channels", [])}
     expected_links = len(pilot_ids) * len(channels)
     actual_links = [
         row
@@ -79,43 +67,23 @@ def build_content_operations_status(
     ]
 
     summary = readiness.get("summary", {})
-    visual_previews = int(
-        summary.get("visual_preview_mp4s_ready", 0) or 0
-    )
-    final_renders = int(
-        summary.get("final_video_renders_ready", 0) or 0
-    )
+    visual_previews = int(summary.get("visual_preview_mp4s_ready", 0) or 0)
+    final_renders = int(summary.get("final_video_renders_ready", 0) or 0)
 
-    voiceover_scripts = int(
-        summary.get("voiceover_scripts_ready", 0) or 0
-    )
-    tracked_links = int(
-        summary.get("tracked_links_ready", 0) or 0
-    )
-    social_ready = int(
-        summary.get("social_copy_ready", 0) or 0
-    )
-    subtitle_drafts = int(
-        summary.get("subtitle_timing_drafts_ready", 0) or 0
-    )
+    voiceover_scripts = int(summary.get("voiceover_scripts_ready", 0) or 0)
+    tracked_links = int(summary.get("tracked_links_ready", 0) or 0)
+    social_ready = int(summary.get("social_copy_ready", 0) or 0)
+    subtitle_drafts = int(summary.get("subtitle_timing_drafts_ready", 0) or 0)
 
     blockers: list[str] = []
     if visual_previews < len(pilot_ids):
         blockers.append("visual_preview_mp4s_incomplete")
-    if any(
-        str(row.get("state") or "") == "visual_preview_pending"
-        for row in job_rows
-    ):
+    if any(str(row.get("state") or "") == "visual_preview_pending" for row in job_rows):
         blockers.append("pilot_visual_preview_generation_pending")
-    if any(
-        "voiceover_file_missing" in row.get("blockers", [])
-        for row in job_rows
-    ):
+    if any("voiceover_file_missing" in row.get("blockers", []) for row in job_rows):
         blockers.append("voiceover_audio_pending")
     if any(
-        str(row.get("subtitle_timing_status") or "")
-        != "conformed_to_voiceover"
-        for row in job_rows
+        str(row.get("subtitle_timing_status") or "") != "conformed_to_voiceover" for row in job_rows
     ):
         blockers.append("subtitle_timing_conformance_pending")
     if final_renders < len(pilot_ids):
@@ -130,18 +98,13 @@ def build_content_operations_status(
         next_action = "render_and_verify_visual_preview_mp4s"
         action_class = "auto_allowed"
         user_approval_required_now = False
-    elif any(
-        "voiceover_file_missing" in row.get("blockers", [])
-        for row in job_rows
-    ):
+    elif any("voiceover_file_missing" in row.get("blockers", []) for row in job_rows):
         overall_state = "voiceover_pending"
         next_action = "record_or_generate_voiceover_audio"
         action_class = "approval_required"
         user_approval_required_now = True
     elif any(
-        str(row.get("subtitle_timing_status") or "")
-        != "conformed_to_voiceover"
-        for row in job_rows
+        str(row.get("subtitle_timing_status") or "") != "conformed_to_voiceover" for row in job_rows
     ):
         overall_state = "subtitle_conformance_pending"
         next_action = "conform_subtitles_to_voiceover"
@@ -160,11 +123,7 @@ def build_content_operations_status(
 
     consistency = {
         "manifest_job_ids_match": (
-            pilot_ids
-            == {
-                str(row.get("content_id") or "")
-                for row in job_rows
-            }
+            pilot_ids == {str(row.get("content_id") or "") for row in job_rows}
         ),
         "manifest_subtitle_ids_match": pilot_ids == subtitle_ids,
         "manifest_social_copy_ids_match": pilot_ids == social_ids,
@@ -193,12 +152,8 @@ def build_content_operations_status(
         "blockers": blockers,
         "summary": {
             "pilots": len(pilot_ids),
-            "product_assets_verified": int(
-                summary.get("product_assets_verified", 0) or 0
-            ),
-            "product_assets_required": int(
-                summary.get("product_assets_required", 0) or 0
-            ),
+            "product_assets_verified": int(summary.get("product_assets_verified", 0) or 0),
+            "product_assets_required": int(summary.get("product_assets_required", 0) or 0),
             "voiceover_scripts_ready": voiceover_scripts,
             "visual_preview_mp4s_ready": visual_previews,
             "subtitle_drafts_ready": subtitle_drafts,
@@ -218,15 +173,9 @@ def build_content_operations_status(
                 "content_id": row.get("content_id"),
                 "production_order": row.get("production_order"),
                 "state": row.get("state"),
-                "subtitle_timing_status": row.get(
-                    "subtitle_timing_status"
-                ),
-                "price_recheck_required": bool(
-                    row.get("price_recheck_required")
-                ),
-                "publish_action_class": row.get(
-                    "publish_action_class"
-                ),
+                "subtitle_timing_status": row.get("subtitle_timing_status"),
+                "price_recheck_required": bool(row.get("price_recheck_required")),
+                "publish_action_class": row.get("publish_action_class"),
             }
             for row in job_rows
         ],
@@ -255,10 +204,7 @@ def main() -> int:
     parser.add_argument("--machine-readable", action="store_true")
     args = parser.parse_args()
 
-    generated_at = (
-        args.generated_at
-        or datetime.now(UTC).replace(microsecond=0).isoformat()
-    )
+    generated_at = args.generated_at or datetime.now(UTC).replace(microsecond=0).isoformat()
 
     report = build_content_operations_status(
         load_json(args.manifest),

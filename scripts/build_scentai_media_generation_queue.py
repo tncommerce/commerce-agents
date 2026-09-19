@@ -69,14 +69,8 @@ def build_queue(
         voiceover = batch["voiceover"]
         source_payloads.extend([manifest, jobs, voiceover])
 
-        pilot_by_id = {
-            str(row.get("content_id") or ""): row
-            for row in manifest.get("pilots", [])
-        }
-        voice_by_id = {
-            str(row.get("content_id") or ""): row
-            for row in voiceover.get("pilots", [])
-        }
+        pilot_by_id = {str(row.get("content_id") or ""): row for row in manifest.get("pilots", [])}
+        voice_by_id = {str(row.get("content_id") or ""): row for row in voiceover.get("pilots", [])}
 
         for job in jobs.get("jobs", []):
             content_id = str(job.get("content_id") or "")
@@ -86,32 +80,22 @@ def build_queue(
             rows.append(
                 {
                     "batch_id": batch_id,
-                    "production_order": int(
-                        job.get("production_order", 0) or 0
-                    ),
+                    "production_order": int(job.get("production_order", 0) or 0),
                     "content_id": content_id,
                     "campaign_id": manifest.get("campaign_id"),
                     "state": job.get("state"),
-                    "target_duration_seconds": job.get(
-                        "expected_duration_seconds"
-                    ),
+                    "target_duration_seconds": job.get("expected_duration_seconds"),
                     "script": voice.get(
                         "script",
                         pilot.get("voiceover"),
                     ),
-                    "product_ids": list(
-                        pilot.get("product_ids", [])
-                    ),
+                    "product_ids": list(pilot.get("product_ids", [])),
                     "landing_path": pilot.get("landing_path"),
                     "paths": {
-                        "visual_preview": job.get(
-                            "visual_preview_path"
-                        ),
+                        "visual_preview": job.get("visual_preview_path"),
                         "voiceover": job.get("voiceover_path"),
                         "subtitle": job.get("subtitle_path"),
-                        "final_render": job.get(
-                            "final_render_path"
-                        ),
+                        "final_render": job.get("final_render_path"),
                     },
                     "required_capabilities": [
                         "visual_preview_render",
@@ -147,25 +131,15 @@ def build_queue(
     return {
         "version": 1,
         "generated_at": generated_at,
-        "source_fingerprint_sha256": source_fingerprint(
-            *source_payloads
-        ),
+        "source_fingerprint_sha256": source_fingerprint(*source_payloads),
         "machine_id": "scentai_media_generation_queue_v1",
         "active_provider": providers.get("active_provider"),
         "summary": {
             "jobs": len(rows),
-            "batches": len(
-                {
-                    row["batch_id"]
-                    for row in rows
-                }
-            ),
-            "local_visual_render_available": (
-                "local_ffmpeg" in implemented
-            ),
+            "batches": len({row["batch_id"] for row in rows}),
+            "local_visual_render_available": ("local_ffmpeg" in implemented),
             "voice_synthesis_provider_connected": any(
-                row.get("type") == "external_connector"
-                and row.get("status") == "connected"
+                row.get("type") == "external_connector" and row.get("status") == "connected"
                 for row in providers.get("providers", [])
             ),
         },
@@ -181,8 +155,7 @@ def build_queue(
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Build provider-neutral SCENTAI media generation jobs "
-            "for all pre-launch pilot batches."
+            "Build provider-neutral SCENTAI media generation jobs for all pre-launch pilot batches."
         )
     )
     parser.add_argument(
@@ -199,10 +172,7 @@ def main() -> int:
     parser.add_argument("--machine-readable", action="store_true")
     args = parser.parse_args()
 
-    generated_at = (
-        args.generated_at
-        or datetime.now(UTC).replace(microsecond=0).isoformat()
-    )
+    generated_at = args.generated_at or datetime.now(UTC).replace(microsecond=0).isoformat()
 
     batches = []
     for spec in DEFAULT_BATCHES:

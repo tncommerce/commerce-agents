@@ -28,9 +28,7 @@ def _scene_end_seconds(scene: dict) -> float:
 def _subtitle_end_seconds(item: dict) -> float:
     segments = item.get("segments", [])
     if not segments:
-        raise ValueError(
-            f"{item.get('content_id')}: subtitle segments missing"
-        )
+        raise ValueError(f"{item.get('content_id')}: subtitle segments missing")
     return float(segments[-1]["end"])
 
 
@@ -44,30 +42,18 @@ def validate_contract(
     issues: list[str] = []
 
     pilots = manifest.get("pilots", [])
-    pilot_by_id = {
-        str(row.get("content_id") or ""): row
-        for row in pilots
-    }
+    pilot_by_id = {str(row.get("content_id") or ""): row for row in pilots}
     pilot_ids = set(pilot_by_id)
 
     job_rows = jobs.get("jobs", [])
-    jobs_by_id = {
-        str(row.get("content_id") or ""): row
-        for row in job_rows
-    }
+    jobs_by_id = {str(row.get("content_id") or ""): row for row in job_rows}
     subtitle_rows = subtitles.get("items", [])
-    subtitles_by_id = {
-        str(row.get("content_id") or ""): row
-        for row in subtitle_rows
-    }
+    subtitles_by_id = {str(row.get("content_id") or ""): row for row in subtitle_rows}
 
     social_rows = social_copy.get("posts")
     if not isinstance(social_rows, list):
         social_rows = social_copy.get("items", [])
-    social_by_id = {
-        str(row.get("content_id") or ""): row
-        for row in social_rows
-    }
+    social_by_id = {str(row.get("content_id") or ""): row for row in social_rows}
 
     if pilot_ids != set(jobs_by_id):
         issues.append("content_id_mismatch:manifest_vs_jobs")
@@ -76,10 +62,7 @@ def validate_contract(
     if pilot_ids != set(social_by_id):
         issues.append("content_id_mismatch:manifest_vs_social_copy")
 
-    channels = {
-        str(value)
-        for value in manifest.get("channels", [])
-    }
+    channels = {str(value) for value in manifest.get("channels", [])}
     if channels != {"tiktok", "instagram", "youtube"}:
         issues.append("unexpected_channel_set")
 
@@ -100,49 +83,29 @@ def validate_contract(
             try:
                 scene_end = _scene_end_seconds(scenes[-1])
             except (TypeError, ValueError) as exc:
-                issues.append(
-                    f"{content_id}:scene_timing_invalid:{exc}"
-                )
+                issues.append(f"{content_id}:scene_timing_invalid:{exc}")
             else:
                 if abs(scene_end - target) > 0.05:
-                    issues.append(
-                        f"{content_id}:scene_duration_mismatch"
-                    )
+                    issues.append(f"{content_id}:scene_duration_mismatch")
 
         if subtitle is not None:
             try:
                 subtitle_end = _subtitle_end_seconds(subtitle)
             except (KeyError, TypeError, ValueError) as exc:
-                issues.append(
-                    f"{content_id}:subtitle_timing_invalid:{exc}"
-                )
+                issues.append(f"{content_id}:subtitle_timing_invalid:{exc}")
             else:
                 if abs(subtitle_end - target) > 0.05:
-                    issues.append(
-                        f"{content_id}:subtitle_duration_mismatch"
-                    )
+                    issues.append(f"{content_id}:subtitle_duration_mismatch")
 
         if job is not None:
-            if (
-                abs(
-                    float(job.get("expected_duration_seconds") or 0)
-                    - target
-                )
-                > 0.05
-            ):
-                issues.append(
-                    f"{content_id}:job_duration_mismatch"
-                )
+            if abs(float(job.get("expected_duration_seconds") or 0) - target) > 0.05:
+                issues.append(f"{content_id}:job_duration_mismatch")
 
             expected_subtitle = (
-                "examples/retail/data/"
-                "scentai_pilot_batch_01_subtitles/"
-                f"{content_id}.srt"
+                f"examples/retail/data/scentai_pilot_batch_01_subtitles/{content_id}.srt"
             )
             if job.get("subtitle_path") != expected_subtitle:
-                issues.append(
-                    f"{content_id}:job_subtitle_path_mismatch"
-                )
+                issues.append(f"{content_id}:job_subtitle_path_mismatch")
 
             expected_price_recheck = bool(
                 pilot.get("price_snapshot", {}).get(
@@ -150,57 +113,29 @@ def validate_contract(
                     False,
                 )
             )
-            if (
-                bool(job.get("price_recheck_required"))
-                != expected_price_recheck
-            ):
-                issues.append(
-                    f"{content_id}:price_recheck_flag_mismatch"
-                )
+            if bool(job.get("price_recheck_required")) != expected_price_recheck:
+                issues.append(f"{content_id}:price_recheck_flag_mismatch")
 
-        rows = [
-            row
-            for row in link_rows
-            if row.get("content_id") == content_id
-        ]
+        rows = [row for row in link_rows if row.get("content_id") == content_id]
         if len(rows) != len(channels):
-            issues.append(
-                f"{content_id}:tracked_link_count_mismatch"
-            )
-        if {
-            str(row.get("channel") or "")
-            for row in rows
-        } != channels:
-            issues.append(
-                f"{content_id}:tracked_link_channels_mismatch"
-            )
+            issues.append(f"{content_id}:tracked_link_count_mismatch")
+        if {str(row.get("channel") or "") for row in rows} != channels:
+            issues.append(f"{content_id}:tracked_link_channels_mismatch")
 
         for row in rows:
             if row.get("campaign_id") != campaign_id:
-                issues.append(
-                    f"{content_id}:tracked_link_campaign_mismatch"
-                )
+                issues.append(f"{content_id}:tracked_link_campaign_mismatch")
             if row.get("landing_path") != pilot.get("landing_path"):
-                issues.append(
-                    f"{content_id}:tracked_link_landing_mismatch"
-                )
+                issues.append(f"{content_id}:tracked_link_landing_mismatch")
             url = str(row.get("url") or "")
-            expected_query = (
-                f"src={row.get('channel')}"
-                f"&cmp={campaign_id}"
-                f"&content={content_id}"
-            )
+            expected_query = f"src={row.get('channel')}&cmp={campaign_id}&content={content_id}"
             if expected_query not in url:
-                issues.append(
-                    f"{content_id}:tracked_link_query_mismatch"
-                )
+                issues.append(f"{content_id}:tracked_link_query_mismatch")
 
         if social is not None:
             for channel in channels:
                 if channel not in social:
-                    issues.append(
-                        f"{content_id}:social_copy_missing_{channel}"
-                    )
+                    issues.append(f"{content_id}:social_copy_missing_{channel}")
 
     return {
         "valid": not issues,
@@ -219,9 +154,7 @@ def validate_contract(
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description=(
-            "Validate cross-file SCENTAI Pilot Batch 01 production contract."
-        )
+        description=("Validate cross-file SCENTAI Pilot Batch 01 production contract.")
     )
     parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
     parser.add_argument("--jobs", type=Path, default=DEFAULT_JOBS)

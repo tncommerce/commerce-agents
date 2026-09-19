@@ -69,18 +69,10 @@ def build_release_pipeline_status(
         )
         summary = gate["summary"]
         release_size = int(summary.get("release_size", 0) or 0)
-        promotion_ready = int(
-            summary.get("promotion_ready", 0) or 0
-        )
-        dependencies = list(
-            manifest.get("depends_on_release_ids", [])
-        )
+        promotion_ready = int(summary.get("promotion_ready", 0) or 0)
+        dependencies = list(manifest.get("depends_on_release_ids", []))
 
-        dependency_state = (
-            "pending_prior_release_validation"
-            if dependencies
-            else "not_required"
-        )
+        dependency_state = "pending_prior_release_validation" if dependencies else "not_required"
 
         if promotion_ready == release_size and release_size > 0:
             gate_state = "product_gates_ready"
@@ -94,25 +86,17 @@ def build_release_pipeline_status(
                 "release_id": manifest.get("release_id"),
                 "release_order": release_order,
                 "manifest_status": manifest.get("status"),
-                "write_enabled": bool(
-                    manifest.get("write_enabled")
-                ),
+                "write_enabled": bool(manifest.get("write_enabled")),
                 "depends_on_release_ids": dependencies,
                 "dependency_state": dependency_state,
                 "gate_state": gate_state,
                 "summary": summary,
-                "write_guard_reason": manifest.get(
-                    "write_guard_reason"
-                ),
+                "write_guard_reason": manifest.get("write_guard_reason"),
             }
         )
 
     current = next(
-        (
-            row
-            for row in release_rows
-            if row["gate_state"] != "product_gates_ready"
-        ),
+        (row for row in release_rows if row["gate_state"] != "product_gates_ready"),
         release_rows[-1] if release_rows else None,
     )
 
@@ -129,13 +113,10 @@ def build_release_pipeline_status(
         ),
         "policy_ref": "scentai_jarvis_operating_policy.json",
         "release_count": len(release_rows),
-        "current_release_id": (
-            current.get("release_id") if current else None
-        ),
+        "current_release_id": (current.get("release_id") if current else None),
         "pipeline_state": (
             "blocked_on_current_release"
-            if current
-            and current["gate_state"] != "product_gates_ready"
+            if current and current["gate_state"] != "product_gates_ready"
             else "all_prepared_release_product_gates_ready"
         ),
         "releases": release_rows,
@@ -170,10 +151,7 @@ def main() -> int:
     args = parser.parse_args()
 
     release_paths = args.release or DEFAULT_RELEASES
-    generated_at = (
-        args.generated_at
-        or datetime.now(UTC).replace(microsecond=0).isoformat()
-    )
+    generated_at = args.generated_at or datetime.now(UTC).replace(microsecond=0).isoformat()
 
     status = build_release_pipeline_status(
         [load_json(path) for path in release_paths],

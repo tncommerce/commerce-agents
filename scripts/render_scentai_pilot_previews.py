@@ -101,7 +101,6 @@ SCENE_PRODUCTS_BATCH01: dict[str, list[list[str]]] = {
             "SC-CHANEL-BLEU-DE-CHANEL-EDP-100",
         ],
     ],
-
 }
 
 SCENE_PRODUCTS_BATCH02: dict[str, list[list[str]]] = {
@@ -177,7 +176,6 @@ SCENE_PRODUCTS_BATCH02: dict[str, list[list[str]]] = {
         ],
     ],
 }
-
 
 
 SCENE_PRODUCTS_BATCH03: dict[str, list[list[str]]] = {
@@ -264,6 +262,7 @@ SCENE_PRODUCTS_BATCH03: dict[str, list[list[str]]] = {
         ],
     ],
 }
+
 
 def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8-sig"))
@@ -360,14 +359,10 @@ def product_label(product: dict) -> str:
 def image_for_product(product: dict) -> Image.Image:
     image_url = str(product.get("image_url") or "")
     if not image_url.startswith("/"):
-        raise ValueError(
-            f"{product.get('product_id')}: expected local image_url"
-        )
+        raise ValueError(f"{product.get('product_id')}: expected local image_url")
     path = PUBLIC_DIR / image_url.lstrip("/")
     if not path.exists():
-        raise FileNotFoundError(
-            f"{product.get('product_id')}: missing image {path}"
-        )
+        raise FileNotFoundError(f"{product.get('product_id')}: missing image {path}")
     return Image.open(path).convert("RGBA")
 
 
@@ -592,9 +587,7 @@ def render_video(
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(
-        description="Render DUFYND pilot visual preview MP4 files."
-    )
+    parser = argparse.ArgumentParser(description="Render DUFYND pilot visual preview MP4 files.")
     parser.add_argument(
         "--batch",
         choices=("batch01", "batch02", "batch03"),
@@ -618,8 +611,7 @@ def main() -> int:
     manifest = load_json(pilot_manifest)
     products_payload = load_json(PRODUCTS_FILE)
     products_by_id = {
-        product["product_id"]: product
-        for product in products_payload.get("products", [])
+        product["product_id"]: product for product in products_payload.get("products", [])
     }
 
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -630,9 +622,7 @@ def main() -> int:
         scenes = pilot.get("scenes", [])
         expected = scene_products.get(content_id)
         if expected is None or len(expected) != len(scenes):
-            raise ValueError(
-                f"{content_id}: scene-product mapping is missing or incomplete"
-            )
+            raise ValueError(f"{content_id}: scene-product mapping is missing or incomplete")
 
         pilot_dir = output_dir / content_id
         pilot_dir.mkdir(parents=True, exist_ok=True)
@@ -665,12 +655,8 @@ def main() -> int:
         index_rows.append(
             {
                 "content_id": content_id,
-                "cover": "/" + str(
-                    cover_path.relative_to(PUBLIC_DIR)
-                ).replace("\\", "/"),
-                "preview": "/" + str(
-                    video_path.relative_to(PUBLIC_DIR)
-                ).replace("\\", "/"),
+                "cover": "/" + str(cover_path.relative_to(PUBLIC_DIR)).replace("\\", "/"),
+                "preview": "/" + str(video_path.relative_to(PUBLIC_DIR)).replace("\\", "/"),
                 "duration_seconds": sum(durations),
                 "audio": False,
                 "status": "visual_preview",
@@ -693,11 +679,7 @@ def main() -> int:
         encoding="utf-8",
     )
 
-    print(
-        "Rendered "
-        f"{len(index_rows)} DUFYND {args.batch} visual previews -> "
-        f"{output_dir}"
-    )
+    print(f"Rendered {len(index_rows)} DUFYND {args.batch} visual previews -> {output_dir}")
     return 0
 
 

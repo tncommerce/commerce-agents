@@ -4,12 +4,8 @@ import argparse
 import json
 from pathlib import Path
 
-DEFAULT_INPUT = Path(
-    "examples/retail/data/scentai_pilot_batch_01_subtitles.json"
-)
-DEFAULT_OUTPUT_DIR = Path(
-    "examples/retail/data/scentai_pilot_batch_01_subtitles"
-)
+DEFAULT_INPUT = Path("examples/retail/data/scentai_pilot_batch_01_subtitles.json")
+DEFAULT_OUTPUT_DIR = Path("examples/retail/data/scentai_pilot_batch_01_subtitles")
 
 
 def load_json(path: Path) -> dict:
@@ -25,10 +21,7 @@ def srt_timestamp(seconds: float) -> str:
     minutes, remainder = divmod(remainder, 60_000)
     secs, milliseconds = divmod(remainder, 1000)
 
-    return (
-        f"{hours:02d}:{minutes:02d}:{secs:02d},"
-        f"{milliseconds:03d}"
-    )
+    return f"{hours:02d}:{minutes:02d}:{secs:02d},{milliseconds:03d}"
 
 
 def validate_item(item: dict) -> None:
@@ -46,23 +39,15 @@ def validate_item(item: dict) -> None:
             start = float(segment["start"])
             end = float(segment["end"])
         except (KeyError, TypeError, ValueError) as exc:
-            raise ValueError(
-                f"{content_id}: segment {index} has invalid timing"
-            ) from exc
+            raise ValueError(f"{content_id}: segment {index} has invalid timing") from exc
 
         text = str(segment.get("text") or "").strip()
         if not text:
-            raise ValueError(
-                f"{content_id}: segment {index} has empty text"
-            )
+            raise ValueError(f"{content_id}: segment {index} has empty text")
         if start < previous_end:
-            raise ValueError(
-                f"{content_id}: segment {index} overlaps the previous segment"
-            )
+            raise ValueError(f"{content_id}: segment {index} overlaps the previous segment")
         if end <= start:
-            raise ValueError(
-                f"{content_id}: segment {index} must end after it starts"
-            )
+            raise ValueError(f"{content_id}: segment {index} must end after it starts")
 
         previous_end = end
 
@@ -76,18 +61,14 @@ def build_srt(item: dict) -> str:
         end = srt_timestamp(float(segment["end"]))
         text = str(segment["text"]).strip()
 
-        blocks.append(
-            f"{index}\n{start} --> {end}\n{text}"
-        )
+        blocks.append(f"{index}\n{start} --> {end}\n{text}")
 
     return "\n\n".join(blocks) + "\n"
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description=(
-            "Export SCENTAI pilot subtitle timing drafts as .srt files."
-        )
+        description=("Export SCENTAI pilot subtitle timing drafts as .srt files.")
     )
     parser.add_argument(
         "--input",
@@ -112,30 +93,18 @@ def main() -> int:
     if not isinstance(items, list) or not items:
         parser.error("subtitle payload does not contain items")
 
-    selected_ids = {
-        value.strip()
-        for value in args.content_id
-        if value.strip()
-    }
+    selected_ids = {value.strip() for value in args.content_id if value.strip()}
     selected = [
         item
         for item in items
-        if (
-            not selected_ids
-            or str(item.get("content_id") or "") in selected_ids
-        )
+        if (not selected_ids or str(item.get("content_id") or "") in selected_ids)
     ]
 
     if selected_ids:
-        found = {
-            str(item.get("content_id") or "")
-            for item in selected
-        }
+        found = {str(item.get("content_id") or "") for item in selected}
         missing = sorted(selected_ids - found)
         if missing:
-            parser.error(
-                "Unknown content_id values: " + ", ".join(missing)
-            )
+            parser.error("Unknown content_id values: " + ", ".join(missing))
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
 

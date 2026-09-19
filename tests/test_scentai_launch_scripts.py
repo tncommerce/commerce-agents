@@ -27,10 +27,7 @@ def test_launch_script_batches_match_content_plan() -> None:
     plan = load_json(DATA_DIR / "scentai_launch_content_plan.json")
     catalog = load_json(DATA_DIR / "catalog.json")
 
-    plan_by_id = {
-        row["content_id"]: row
-        for row in plan["content"]
-    }
+    plan_by_id = {row["content_id"]: row for row in plan["content"]}
     live_ids = {
         product["product_id"]
         for product in catalog.get("products", [])
@@ -46,9 +43,7 @@ def test_launch_script_batches_match_content_plan() -> None:
     assert len(content_ids) == len(set(content_ids))
 
     scripted_plan_ids = {
-        row["content_id"]
-        for row in plan["content"]
-        if row["status"] == "scripted"
+        row["content_id"] for row in plan["content"] if row["status"] == "scripted"
     }
     assert set(content_ids) == scripted_plan_ids
 
@@ -67,10 +62,7 @@ def test_launch_script_batches_match_content_plan() -> None:
             [
                 row["hook"],
                 row["caption_skeleton"],
-                *[
-                    scene["voiceover"] + " " + scene["on_screen"]
-                    for scene in row["scenes"]
-                ],
+                *[scene["voiceover"] + " " + scene["on_screen"] for scene in row["scenes"]],
             ]
         )
 
@@ -84,10 +76,7 @@ def test_clone_wording_only_appears_when_claim_basis_documents_clone() -> None:
         customer_text = " ".join(
             [
                 row["hook"],
-                *[
-                    scene["voiceover"] + " " + scene["on_screen"]
-                    for scene in row["scenes"]
-                ],
+                *[scene["voiceover"] + " " + scene["on_screen"] for scene in row["scenes"]],
             ]
         ).casefold()
 

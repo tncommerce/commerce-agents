@@ -222,6 +222,4 @@ def test_acquisition_attribution_rejects_free_form_text() -> None:
     except ValidationError:
         pass
     else:
-        raise AssertionError(
-            "campaign attribution must remain identifier-only"
-        )
+        raise AssertionError("campaign attribution must remain identifier-only")

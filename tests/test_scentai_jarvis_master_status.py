@@ -35,9 +35,7 @@ def test_master_selects_content_when_commerce_waits_external() -> None:
 
     assert report["overall_state"] == "work_available"
     assert report["active_domain"] == "content"
-    assert report["next_action"] == (
-        "render_and_verify_visual_preview_mp4s"
-    )
+    assert report["next_action"] == ("render_and_verify_visual_preview_mp4s")
     assert report["user_approval_required_now"] is False
 
 

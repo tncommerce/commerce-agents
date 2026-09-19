@@ -16,9 +16,7 @@ def test_image_queue_preserves_verified_asset_candidate_state() -> None:
                 "batch": 1,
                 "media": {
                     "image_url": None,
-                    "image_status": (
-                        "pending_approved_feed_or_manufacturer_image"
-                    ),
+                    "image_status": ("pending_approved_feed_or_manufacturer_image"),
                 },
             }
         ]
@@ -36,8 +34,7 @@ def test_image_queue_preserves_verified_asset_candidate_state() -> None:
                 "product_id": "SC-TEST-100",
                 "image_state": "rights_or_source_check_pending",
                 "next_action": (
-                    "prefer_approved_affiliate_feed_image_else_"
-                    "verify_manufacturer_asset_usage"
+                    "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage"
                 ),
                 "candidate_source": {
                     "source_class": "manufacturer_official",

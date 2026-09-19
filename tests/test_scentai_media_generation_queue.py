@@ -67,10 +67,7 @@ def test_media_queue_is_provider_neutral_and_publish_safe() -> None:
     assert report["summary"]["jobs"] == 1
     assert report["summary"]["batches"] == 1
     assert report["summary"]["local_visual_render_available"] is True
-    assert (
-        report["summary"]["voice_synthesis_provider_connected"]
-        is False
-    )
+    assert report["summary"]["voice_synthesis_provider_connected"] is False
     assert report["safety"]["automatic_publish_allowed"] is False
 
     job = report["jobs"][0]

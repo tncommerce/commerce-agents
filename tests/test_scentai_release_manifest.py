@@ -22,10 +22,7 @@ def load_json(path: Path) -> dict:
 def test_release_batch_01_is_a_guarded_five_product_manifest() -> None:
     product_ids = load_release_manifest(MANIFEST)
     staging = load_json(DATA_DIR / "scentai_catalog_staging.json")
-    staged_by_id = {
-        product["product_id"]: product
-        for product in staging["products"]
-    }
+    staged_by_id = {product["product_id"]: product for product in staging["products"]}
 
     assert len(product_ids) == 5
     assert len(set(product_ids)) == 5

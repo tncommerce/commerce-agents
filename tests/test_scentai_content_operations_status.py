@@ -83,9 +83,7 @@ def test_content_control_plane_prioritizes_visual_previews() -> None:
     )
 
     assert report["overall_state"] == "visual_preview_generation_pending"
-    assert report["next_action"] == (
-        "render_and_verify_visual_preview_mp4s"
-    )
+    assert report["next_action"] == ("render_and_verify_visual_preview_mp4s")
     assert report["user_approval_required_now"] is False
     assert report["summary"]["tracked_links_ready"] == 6
     assert report["consistency"]["manifest_job_ids_match"] is True

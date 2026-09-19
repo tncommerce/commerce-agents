@@ -42,23 +42,18 @@ def build_campaign_url(
         or parsed_base.username
         or parsed_base.password
     ):
-        raise ValueError(
-            "base_url must be a public HTTPS origin without credentials"
-        )
+        raise ValueError("base_url must be a public HTTPS origin without credentials")
 
     landing = landing_path.strip()
     if not LANDING_PATTERN.fullmatch(landing):
         raise ValueError(
-            "landing_path must be an absolute site path without query "
-            "parameters or fragments"
+            "landing_path must be an absolute site path without query parameters or fragments"
         )
 
     normalized_channel = channel.strip().casefold()
     if normalized_channel not in ALLOWED_CHANNELS:
         supported = ", ".join(sorted(ALLOWED_CHANNELS))
-        raise ValueError(
-            f"Unsupported channel {channel!r}. Supported: {supported}"
-        )
+        raise ValueError(f"Unsupported channel {channel!r}. Supported: {supported}")
 
     campaign = validate_identifier(
         campaign_id,
@@ -105,9 +100,7 @@ def main() -> int:
     args = parser.parse_args()
 
     if not args.base_url:
-        parser.error(
-            "--base-url or NEXT_PUBLIC_SITE_URL is required"
-        )
+        parser.error("--base-url or NEXT_PUBLIC_SITE_URL is required")
 
     try:
         link = build_campaign_url(

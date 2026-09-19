@@ -39,13 +39,7 @@ def test_affiliate_state_report_uses_control_plane_summary_schema() -> None:
     assert report["program_count"] == 2
     assert report["live_program_count"] == 0
 
-    flaconi = next(
-        row
-        for row in report["programs"]
-        if row["merchant_id"] == "flaconi"
-    )
-    assert flaconi["activation_state"] == (
-        "approved_credentials_pending"
-    )
+    flaconi = next(row for row in report["programs"] if row["merchant_id"] == "flaconi")
+    assert flaconi["activation_state"] == ("approved_credentials_pending")
     assert flaconi["live_routing_allowed"] is False
     assert flaconi["next_action"] == "verify_credentials"

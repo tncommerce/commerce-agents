@@ -55,12 +55,8 @@ def build_content_pipeline_status(
                 "campaign_id": status.get("campaign_id"),
                 "overall_state": status.get("overall_state"),
                 "next_action": status.get("next_action"),
-                "next_action_class": status.get(
-                    "next_action_class"
-                ),
-                "user_approval_required_now": bool(
-                    status.get("user_approval_required_now")
-                ),
+                "next_action_class": status.get("next_action_class"),
+                "user_approval_required_now": bool(status.get("user_approval_required_now")),
                 "blockers": list(status.get("blockers", [])),
                 "summary": summary,
             }
@@ -82,10 +78,7 @@ def build_content_pipeline_status(
         rows[-1] if rows else None,
     )
 
-    total_pilots = sum(
-        int(row.get("summary", {}).get("pilots", 0) or 0)
-        for row in rows
-    )
+    total_pilots = sum(int(row.get("summary", {}).get("pilots", 0) or 0) for row in rows)
 
     return {
         "version": 1,
@@ -96,19 +89,12 @@ def build_content_pipeline_status(
         "pipeline_id": "launch_content_pipeline_v1",
         "batch_count": len(rows),
         "total_pilots": total_pilots,
-        "current_batch_id": (
-            current.get("batch_id") if current else None
-        ),
+        "current_batch_id": (current.get("batch_id") if current else None),
         "pipeline_state": (
-            "production_work_available"
-            if current is not None
-            else "no_content_batches"
+            "production_work_available" if current is not None else "no_content_batches"
         ),
         "production_parallel_allowed": True,
-        "publish_order": [
-            row["batch_id"]
-            for row in rows
-        ],
+        "publish_order": [row["batch_id"] for row in rows],
         "totals": {
             "tracked_links_ready": sum(
                 int(
@@ -179,10 +165,7 @@ def main() -> int:
         DEFAULT_BATCH01,
         DEFAULT_BATCH02,
     ]
-    generated_at = (
-        args.generated_at
-        or datetime.now(UTC).replace(microsecond=0).isoformat()
-    )
+    generated_at = args.generated_at or datetime.now(UTC).replace(microsecond=0).isoformat()
 
     report = build_content_pipeline_status(
         [load_json(path) for path in paths],

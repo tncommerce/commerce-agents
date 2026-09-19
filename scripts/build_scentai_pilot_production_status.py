@@ -13,12 +13,8 @@ from scripts.render_scentai_pilot_final import (
     probe_media,
 )
 
-DEFAULT_JOBS = Path(
-    "examples/retail/data/scentai_pilot_batch_01_production_jobs.json"
-)
-DEFAULT_OUTPUT = Path(
-    "examples/retail/data/scentai_pilot_batch_01_production_status.json"
-)
+DEFAULT_JOBS = Path("examples/retail/data/scentai_pilot_batch_01_production_jobs.json")
+DEFAULT_OUTPUT = Path("examples/retail/data/scentai_pilot_batch_01_production_status.json")
 
 
 def load_json(path: Path) -> dict:
@@ -31,16 +27,8 @@ def build_job_status(job: dict) -> dict[str, Any]:
     subtitles = Path(job["subtitle_path"])
     final_render = Path(job["final_render_path"])
 
-    visual_summary = (
-        media_summary(probe_media(visual))
-        if visual.exists()
-        else None
-    )
-    voiceover_summary = (
-        media_summary(probe_media(voiceover))
-        if voiceover.exists()
-        else None
-    )
+    visual_summary = media_summary(probe_media(visual)) if visual.exists() else None
+    voiceover_summary = media_summary(probe_media(voiceover)) if voiceover.exists() else None
 
     inputs = evaluate_inputs(
         job,
@@ -55,12 +43,8 @@ def build_job_status(job: dict) -> dict[str, Any]:
     if final_render.exists():
         final_qa = evaluate_final_render(
             media_summary(probe_media(final_render)),
-            expected_duration_seconds=float(
-                job["expected_duration_seconds"]
-            ),
-            tolerance_seconds=float(
-                job.get("duration_tolerance_seconds", 2.0)
-            ),
+            expected_duration_seconds=float(job["expected_duration_seconds"]),
+            tolerance_seconds=float(job.get("duration_tolerance_seconds", 2.0)),
         )
 
     if final_qa and final_qa["technical_qa_passed"]:
@@ -69,9 +53,7 @@ def build_job_status(job: dict) -> dict[str, Any]:
             "mobile_content_review_pending",
         ]
         if job.get("price_recheck_required"):
-            blockers.append(
-                "publish_day_price_recheck_required"
-            )
+            blockers.append("publish_day_price_recheck_required")
     elif final_render.exists():
         state = "blocked"
         blockers = list(final_qa["blockers"])
@@ -88,9 +70,7 @@ def build_job_status(job: dict) -> dict[str, Any]:
         state = "subtitle_conform_pending"
         blockers = list(inputs["blockers"])
         if subtitles.exists():
-            blockers.append(
-                "subtitle_timing_manual_confirmation_required"
-            )
+            blockers.append("subtitle_timing_manual_confirmation_required")
 
     return {
         "content_id": job["content_id"],
@@ -99,18 +79,13 @@ def build_job_status(job: dict) -> dict[str, Any]:
         "ready_for_render": inputs["ready_for_render"],
         "final_render_exists": final_render.exists(),
         "technical_qa": final_qa,
-        "price_recheck_required": bool(
-            job.get("price_recheck_required")
-        ),
+        "price_recheck_required": bool(job.get("price_recheck_required")),
         "publish_action_class": "approval_required",
     }
 
 
 def build_status(payload: dict) -> dict[str, Any]:
-    rows = [
-        build_job_status(job)
-        for job in payload.get("jobs", [])
-    ]
+    rows = [build_job_status(job) for job in payload.get("jobs", [])]
 
     return {
         "version": 1,
@@ -118,31 +93,16 @@ def build_status(payload: dict) -> dict[str, Any]:
         "machine_id": payload.get("machine_id"),
         "summary": {
             "pilots": len(rows),
-            "voiceover_pending": sum(
-                1
-                for row in rows
-                if row["state"] == "voiceover_pending"
-            ),
-            "render_ready": sum(
-                1
-                for row in rows
-                if row["state"] == "render_ready"
-            ),
-            "final_render_exists": sum(
-                1 for row in rows if row["final_render_exists"]
-            ),
+            "voiceover_pending": sum(1 for row in rows if row["state"] == "voiceover_pending"),
+            "render_ready": sum(1 for row in rows if row["state"] == "render_ready"),
+            "final_render_exists": sum(1 for row in rows if row["final_render_exists"]),
             "technical_qa_passed": sum(
                 1
                 for row in rows
-                if row["technical_qa"]
-                and row["technical_qa"][
-                    "technical_qa_passed"
-                ]
+                if row["technical_qa"] and row["technical_qa"]["technical_qa_passed"]
             ),
             "ready_for_publish_approval": sum(
-                1
-                for row in rows
-                if row["state"] == "ready_for_publish_approval"
+                1 for row in rows if row["state"] == "ready_for_publish_approval"
             ),
         },
         "jobs": rows,

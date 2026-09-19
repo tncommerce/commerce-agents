@@ -51,17 +51,10 @@ def build_operations_status(
     release_summary = release.get("summary", {})
     feed_summary = feed.get("summary", {})
 
-    approved_programs = int(
-        affiliate_summary.get("approved", 0) or 0
-    )
-    active_programs = int(
-        affiliate_summary.get("active", 0) or 0
-    )
+    approved_programs = int(affiliate_summary.get("approved", 0) or 0)
+    active_programs = int(affiliate_summary.get("active", 0) or 0)
 
-    full_feed_paths = int(
-        feed_summary.get("programs_with_full_release_mapping", 0)
-        or 0
-    )
+    full_feed_paths = int(feed_summary.get("programs_with_full_release_mapping", 0) or 0)
     approved_full_paths = int(
         feed_summary.get(
             "approved_programs_with_full_release_mapping",
@@ -72,9 +65,7 @@ def build_operations_status(
 
     release_size = int(release_summary.get("release_size", 0) or 0)
     mapping_ready = int(release_summary.get("mapping_ready", 0) or 0)
-    approved_images = int(
-        release_summary.get("approved_images", 0) or 0
-    )
+    approved_images = int(release_summary.get("approved_images", 0) or 0)
     tracked_offers = int(
         release_summary.get(
             "current_tracked_affiliate_offers",
@@ -82,9 +73,7 @@ def build_operations_status(
         )
         or 0
     )
-    promotion_ready = int(
-        release_summary.get("promotion_ready", 0) or 0
-    )
+    promotion_ready = int(release_summary.get("promotion_ready", 0) or 0)
 
     blockers: list[str] = []
     if approved_full_paths < 1:
@@ -117,12 +106,8 @@ def build_operations_status(
             "merchant_id": row.get("merchant_id"),
             "network": row.get("network"),
             "program": row.get("program"),
-            "application_status": row.get(
-                "application_status"
-            ),
-            "program_approved": bool(
-                row.get("program_approved")
-            ),
+            "application_status": row.get("application_status"),
+            "program_approved": bool(row.get("program_approved")),
             "next_action": row.get("next_action"),
         }
         for row in feed.get("programs", [])
@@ -131,13 +116,9 @@ def build_operations_status(
 
     pending_manual_approvals = []
     if int(image_summary.get("review_ready", 0) or 0) > 0:
-        pending_manual_approvals.append(
-            "review_ready_product_images"
-        )
+        pending_manual_approvals.append("review_ready_product_images")
     if overall_state == "ready_for_user_approval":
-        pending_manual_approvals.append(
-            "release_01_live_activation"
-        )
+        pending_manual_approvals.append("release_01_live_activation")
 
     return {
         "version": 1,
@@ -153,16 +134,13 @@ def build_operations_status(
         "control_plane": "commerce_jarvis",
         "policy_ref": "scentai_jarvis_operating_policy.json",
         "overall_state": overall_state,
-        "user_approval_required_now": (
-            user_approval_required_now
-        ),
+        "user_approval_required_now": (user_approval_required_now),
         "next_action": next_action,
         "next_action_class": next_action_class,
         "blockers": blockers,
         "safety": {
             "live_routing_allowed": (
-                overall_state == "ready_for_user_approval"
-                and user_approval_required_now is False
+                overall_state == "ready_for_user_approval" and user_approval_required_now is False
             ),
             "no_automatic_spend": True,
             "no_automatic_live_release": True,
@@ -170,9 +148,7 @@ def build_operations_status(
             "secrets_allowed_in_repo_state": False,
         },
         "catalog": {
-            "staged_products": int(
-                mapping_summary.get("staged_products", 0) or 0
-            ),
+            "staged_products": int(mapping_summary.get("staged_products", 0) or 0),
             "products_with_resolved_mapping": int(
                 mapping_summary.get(
                     "products_with_resolved_mapping",
@@ -189,9 +165,7 @@ def build_operations_status(
             ),
         },
         "affiliate": {
-            "registered_programs": int(
-                affiliate_summary.get("programs", 0) or 0
-            ),
+            "registered_programs": int(affiliate_summary.get("programs", 0) or 0),
             "active_programs": active_programs,
             "approved_programs": approved_programs,
             "full_release_mapping_paths": full_feed_paths,
@@ -199,18 +173,10 @@ def build_operations_status(
             "full_mapping_merchants": full_mapping_merchants,
         },
         "images": {
-            "staged_products": int(
-                image_summary.get("staged_products", 0) or 0
-            ),
-            "approved_images": int(
-                image_summary.get("approved_images", 0) or 0
-            ),
-            "pending_images": int(
-                image_summary.get("pending_images", 0) or 0
-            ),
-            "review_ready": int(
-                image_summary.get("review_ready", 0) or 0
-            ),
+            "staged_products": int(image_summary.get("staged_products", 0) or 0),
+            "approved_images": int(image_summary.get("approved_images", 0) or 0),
+            "pending_images": int(image_summary.get("pending_images", 0) or 0),
+            "review_ready": int(image_summary.get("review_ready", 0) or 0),
             "rights_or_source_check_pending": int(
                 image_summary.get(
                     "rights_or_source_check_pending",
@@ -283,10 +249,7 @@ def main() -> int:
     parser.add_argument("--machine-readable", action="store_true")
     args = parser.parse_args()
 
-    generated_at = (
-        args.generated_at
-        or datetime.now(UTC).replace(microsecond=0).isoformat()
-    )
+    generated_at = args.generated_at or datetime.now(UTC).replace(microsecond=0).isoformat()
 
     status = build_operations_status(
         load_json(args.mapping),

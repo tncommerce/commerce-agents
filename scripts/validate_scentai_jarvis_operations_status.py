@@ -48,9 +48,7 @@ def validate_operations_status(
 
     issues: list[str] = []
 
-    current_fingerprint = str(
-        current.get("source_fingerprint_sha256") or ""
-    ).strip()
+    current_fingerprint = str(current.get("source_fingerprint_sha256") or "").strip()
     expected_fingerprint = expected["source_fingerprint_sha256"]
 
     if current_fingerprint != expected_fingerprint:
@@ -74,24 +72,15 @@ def validate_operations_status(
         "operating_note",
     ]
 
-    drift_fields = [
-        field
-        for field in fields
-        if current.get(field) != expected.get(field)
-    ]
+    drift_fields = [field for field in fields if current.get(field) != expected.get(field)]
     if drift_fields:
-        issues.append(
-            "operations_status_field_drift:"
-            + ",".join(drift_fields)
-        )
+        issues.append("operations_status_field_drift:" + ",".join(drift_fields))
 
     return {
         "valid": not issues,
         "issues": issues,
         "expected_source_fingerprint_sha256": expected_fingerprint,
-        "current_source_fingerprint_sha256": (
-            current_fingerprint or None
-        ),
+        "current_source_fingerprint_sha256": (current_fingerprint or None),
         "drift_fields": drift_fields,
     }
 

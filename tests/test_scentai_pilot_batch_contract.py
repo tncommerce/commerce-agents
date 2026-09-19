@@ -31,8 +31,7 @@ def valid_sources() -> tuple[dict, dict, dict, dict, dict]:
                 "content_id": "pilot",
                 "expected_duration_seconds": 30,
                 "subtitle_path": (
-                    "examples/retail/data/"
-                    "scentai_pilot_batch_01_subtitles/pilot.srt"
+                    "examples/retail/data/scentai_pilot_batch_01_subtitles/pilot.srt"
                 ),
                 "price_recheck_required": True,
             }
@@ -59,10 +58,7 @@ def valid_sources() -> tuple[dict, dict, dict, dict, dict]:
                 "content_id": "pilot",
                 "channel": channel,
                 "landing_path": "/duftfinder",
-                "url": (
-                    "https://example.com/duftfinder?"
-                    f"src={channel}&cmp=launch01&content=pilot"
-                ),
+                "url": (f"https://example.com/duftfinder?src={channel}&cmp=launch01&content=pilot"),
             }
             for channel in ("tiktok", "instagram", "youtube")
         ]
@@ -122,11 +118,7 @@ def test_price_recheck_drift_is_detected() -> None:
 
 def test_tracking_channel_gap_is_detected() -> None:
     manifest, jobs, subtitles, links, social = valid_sources()
-    links["links"] = [
-        row
-        for row in links["links"]
-        if row["channel"] != "youtube"
-    ]
+    links["links"] = [row for row in links["links"] if row["channel"] != "youtube"]
 
     report = validate_contract(
         manifest,

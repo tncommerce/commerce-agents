@@ -60,10 +60,7 @@ def build_release_gate_status(
     image_rows = images_payload.get("items", [])
     affiliate_rows = affiliate_payload.get("programs", [])
 
-    image_by_id = {
-        str(row.get("product_id") or ""): row
-        for row in image_rows
-    }
+    image_by_id = {str(row.get("product_id") or ""): row for row in image_rows}
     active_merchants = {
         normalized_merchant_id(row.get("merchant_id"))
         for row in affiliate_rows
@@ -73,24 +70,15 @@ def build_release_gate_status(
     rows: list[dict[str, Any]] = []
     for product_id in manifest.get("product_ids", []):
         product = next(
-            (
-                row
-                for row in staging
-                if row.get("product_id") == product_id
-            ),
+            (row for row in staging if row.get("product_id") == product_id),
             None,
         )
-        product_mappings = [
-            row
-            for row in mappings
-            if row.get("product_id") == product_id
-        ]
+        product_mappings = [row for row in mappings if row.get("product_id") == product_id]
         resolved_mappings = [
             row
             for row in product_mappings
             if any(
-                str(row.get(key) or "").strip()
-                for key in ("merchant_product_id", "ean", "gtin")
+                str(row.get(key) or "").strip() for key in ("merchant_product_id", "ean", "gtin")
             )
         ]
         image = image_by_id.get(str(product_id), {})
@@ -105,14 +93,11 @@ def build_release_gate_status(
             and str(row.get("affiliate_url") or "").strip()
         ]
         affiliate_ready = any(
-            normalized_merchant_id(row.get("merchant_id"))
-            in active_merchants
+            normalized_merchant_id(row.get("merchant_id")) in active_merchants
             for row in product_offers
         )
 
-        community_ready = not bool(
-            (product or {}).get("community", {}).get("provisional")
-        )
+        community_ready = not bool((product or {}).get("community", {}).get("provisional"))
         mapping_ready = bool(resolved_mappings)
 
         gates = {
@@ -123,31 +108,21 @@ def build_release_gate_status(
             "staging_recommendation_qa": True,
             "not_already_live": True,
         }
-        blockers = [
-            name
-            for name, passed in gates.items()
-            if not passed
-        ]
+        blockers = [name for name, passed in gates.items() if not passed]
 
         if not image_ready:
             next_event = (
-                "approved_affiliate_feed_or_verified_asset_usage_"
-                "then_manual_visual_approval"
+                "approved_affiliate_feed_or_verified_asset_usage_then_manual_visual_approval"
             )
         elif not affiliate_ready:
-            next_event = (
-                "affiliate_program_approval_and_current_"
-                "tracked_offer_import"
-            )
+            next_event = "affiliate_program_approval_and_current_tracked_offer_import"
         else:
             next_event = "release_dry_run"
 
         rows.append(
             {
                 "product_id": product_id,
-                "candidate_id": (
-                    (product or {}).get("candidate_id")
-                ),
+                "candidate_id": ((product or {}).get("candidate_id")),
                 "brand": (product or {}).get("brand"),
                 "name": (product or {}).get("name"),
                 "mapping_count": len(product_mappings),
@@ -177,17 +152,11 @@ def build_release_gate_status(
         "release_id": manifest.get("release_id"),
         "policy_ref": "scentai_jarvis_operating_policy.json",
         "image_machine_ref": "scentai_image_approval_state_machine.json",
-        "affiliate_machine_ref": (
-            "scentai_affiliate_activation_state_machine.json"
-        ),
+        "affiliate_machine_ref": ("scentai_affiliate_activation_state_machine.json"),
         "summary": {
             "release_size": len(rows),
             "mapping_ready": sum(
-                1
-                for row in rows
-                if row["gates"][
-                    "resolved_merchant_product_mapping"
-                ]
+                1 for row in rows if row["gates"]["resolved_merchant_product_mapping"]
             ),
             "image_identity_source_verified": sum(
                 1
@@ -199,21 +168,11 @@ def build_release_gate_status(
                 }
                 or row["image_state"].startswith("approved_")
             ),
-            "approved_images": sum(
-                1
-                for row in rows
-                if row["gates"]["approved_product_image"]
-            ),
+            "approved_images": sum(1 for row in rows if row["gates"]["approved_product_image"]),
             "current_tracked_affiliate_offers": sum(
-                1
-                for row in rows
-                if row["gates"][
-                    "current_tracked_affiliate_offer"
-                ]
+                1 for row in rows if row["gates"]["current_tracked_affiliate_offer"]
             ),
-            "promotion_ready": sum(
-                1 for row in rows if row["promotion_ready"]
-            ),
+            "promotion_ready": sum(1 for row in rows if row["promotion_ready"]),
         },
         "release_write_policy": manifest.get("write_policy"),
         "rows": rows,
@@ -266,10 +225,7 @@ def main() -> int:
     parser.add_argument("--machine-readable", action="store_true")
     args = parser.parse_args()
 
-    generated_at = (
-        args.generated_at
-        or datetime.now(UTC).replace(microsecond=0).isoformat()
-    )
+    generated_at = args.generated_at or datetime.now(UTC).replace(microsecond=0).isoformat()
 
     report = build_release_gate_status(
         load_json(args.manifest),
@@ -303,10 +259,7 @@ def main() -> int:
             f"ready={summary['promotion_ready']}/"
             f"{summary['release_size']}"
         )
-        print(
-            "source_fingerprint_sha256="
-            f"{report['source_fingerprint_sha256']}"
-        )
+        print(f"source_fingerprint_sha256={report['source_fingerprint_sha256']}")
 
     return 0
 

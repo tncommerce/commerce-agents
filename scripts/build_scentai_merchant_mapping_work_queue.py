@@ -88,9 +88,7 @@ def build_queue(
     for product in staging.get("products", []):
         product_id = str(product.get("product_id") or "").strip()
         product_mappings = [
-            mapping
-            for mapping in mappings
-            if mapping.get("product_id") == product_id
+            mapping for mapping in mappings if mapping.get("product_id") == product_id
         ]
         resolved = [
             mapping
@@ -104,10 +102,7 @@ def build_queue(
             mapping
             for mapping in product_mappings
             if str(mapping.get("merchant_product_id") or "").strip()
-            and any(
-                str(mapping.get(key) or "").strip()
-                for key in ("ean", "gtin")
-            )
+            and any(str(mapping.get(key) or "").strip() for key in ("ean", "gtin"))
         ]
 
         merchant_rows: list[dict[str, Any]] = []
@@ -126,18 +121,11 @@ def build_queue(
                     "merchant_id": merchant_id,
                     "mapping_state": (
                         "full"
-                        if str(
-                            mapping.get("merchant_product_id") or ""
-                        ).strip()
-                        and any(
-                            str(mapping.get(key) or "").strip()
-                            for key in ("ean", "gtin")
-                        )
+                        if str(mapping.get("merchant_product_id") or "").strip()
+                        and any(str(mapping.get(key) or "").strip() for key in ("ean", "gtin"))
                         else "partial"
                     ),
-                    "merchant_product_id": mapping.get(
-                        "merchant_product_id"
-                    ),
+                    "merchant_product_id": mapping.get("merchant_product_id"),
                     "ean": mapping.get("ean"),
                     "gtin": mapping.get("gtin"),
                     "affiliate_program": program,
@@ -167,14 +155,12 @@ def build_queue(
         community = product.get("community", {})
         if (
             community.get("provisional")
-            and "community_performance_still_provisional"
-            not in blockers
+            and "community_performance_still_provisional" not in blockers
         ):
             blockers.append("community_performance_still_provisional")
 
         if resolved and not any(
-            row["affiliate_activation_state"] == "approved"
-            for row in merchant_rows
+            row["affiliate_activation_state"] == "approved" for row in merchant_rows
         ):
             blockers.append("affiliate_program_not_approved")
 
@@ -217,9 +203,7 @@ def build_queue(
         )
     )
 
-    approved_programs = [
-        row for row in affiliate_rows if row.get("status") == "approved"
-    ]
+    approved_programs = [row for row in affiliate_rows if row.get("status") == "approved"]
 
     return {
         "version": 1,
@@ -248,9 +232,7 @@ def build_queue(
             ),
             "affiliate_programs_registered": len(affiliate_rows),
             "affiliate_programs_approved": len(approved_programs),
-            "affiliate_programs_pending": (
-                len(affiliate_rows) - len(approved_programs)
-            ),
+            "affiliate_programs_pending": (len(affiliate_rows) - len(approved_programs)),
             "live_activation_ready_products": sum(
                 1
                 for item in items
@@ -291,10 +273,7 @@ def main() -> int:
     parser.add_argument("--machine-readable", action="store_true")
     args = parser.parse_args()
 
-    generated_at = (
-        args.generated_at
-        or datetime.now(UTC).replace(microsecond=0).isoformat()
-    )
+    generated_at = args.generated_at or datetime.now(UTC).replace(microsecond=0).isoformat()
 
     queue = build_queue(
         load_json(args.staging),
@@ -321,10 +300,7 @@ def main() -> int:
             f"affiliate_approved={summary['affiliate_programs_approved']} | "
             f"activation_ready={summary['live_activation_ready_products']}"
         )
-        print(
-            "source_fingerprint_sha256="
-            f"{queue['source_fingerprint_sha256']}"
-        )
+        print(f"source_fingerprint_sha256={queue['source_fingerprint_sha256']}")
 
     return 0
 

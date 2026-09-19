@@ -16,9 +16,7 @@ def test_identity_pending_candidate_does_not_advance_audit_too_far() -> None:
                 "batch": 1,
                 "media": {
                     "image_url": None,
-                    "image_status": (
-                        "pending_approved_feed_or_manufacturer_image"
-                    ),
+                    "image_status": ("pending_approved_feed_or_manufacturer_image"),
                 },
             }
         ]

@@ -73,13 +73,7 @@ def _value_type(value: object) -> str:
 
 
 def profile_feed_rows(rows: list[dict]) -> dict[str, Any]:
-    columns = sorted(
-        {
-            str(key)
-            for row in rows
-            for key in row
-        }
-    )
+    columns = sorted({str(key) for row in rows for key in row})
 
     profiles = []
     total = len(rows)
@@ -98,11 +92,7 @@ def profile_feed_rows(rows: list[dict]) -> dict[str, Any]:
                 "column": column,
                 "non_empty_count": len(non_empty),
                 "empty_count": total - len(non_empty),
-                "coverage_pct": (
-                    round((len(non_empty) / total) * 100, 1)
-                    if total
-                    else 0.0
-                ),
+                "coverage_pct": (round((len(non_empty) / total) * 100, 1) if total else 0.0),
                 "value_types": dict(sorted(type_counts.items())),
                 "numeric_like_count": numeric,
                 "boolean_like_count": boolean,

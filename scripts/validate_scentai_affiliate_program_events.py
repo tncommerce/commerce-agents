@@ -54,9 +54,7 @@ def derive_current_statuses(events_payload: dict) -> dict[tuple[str, str], dict[
         if not network or not merchant_id:
             raise ValueError(f"{event_id}: network and merchant_id are required")
         if status_after not in ALLOWED_STATUSES:
-            raise ValueError(
-                f"{event_id}: unsupported status_after {status_after!r}"
-            )
+            raise ValueError(f"{event_id}: unsupported status_after {status_after!r}")
 
         key = (network.casefold(), merchant_id.casefold())
         current = latest.get(key)
@@ -95,11 +93,7 @@ def build_parity_report(events_payload: dict, registry: dict) -> dict[str, Any]:
     rows = []
     for key in keys:
         event = latest.get(key)
-        event_status = (
-            str(event.get("status_after") or "").strip()
-            if event
-            else None
-        )
+        event_status = str(event.get("status_after") or "").strip() if event else None
         registry_status = current.get(key)
         rows.append(
             {
@@ -108,21 +102,15 @@ def build_parity_report(events_payload: dict, registry: dict) -> dict[str, Any]:
                 "event_status": event_status,
                 "registry_status": registry_status,
                 "in_sync": event_status == registry_status,
-                "latest_event_id": (
-                    event.get("event_id") if event else None
-                ),
-                "latest_sequence": (
-                    event.get("sequence") if event else None
-                ),
+                "latest_event_id": (event.get("event_id") if event else None),
+                "latest_sequence": (event.get("sequence") if event else None),
             }
         )
 
     return {
         "program_count": len(rows),
         "in_sync_count": sum(1 for row in rows if row["in_sync"]),
-        "out_of_sync_count": sum(
-            1 for row in rows if not row["in_sync"]
-        ),
+        "out_of_sync_count": sum(1 for row in rows if not row["in_sync"]),
         "in_sync": all(row["in_sync"] for row in rows),
         "rows": rows,
     }

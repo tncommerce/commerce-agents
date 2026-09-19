@@ -82,10 +82,7 @@ def build_feed_activation_queue(
             for product_id in release_ids
             if any(
                 mapping.get("product_id") == product_id
-                and str(mapping.get("merchant") or "")
-                .strip()
-                .casefold()
-                == merchant_key
+                and str(mapping.get("merchant") or "").strip().casefold() == merchant_key
                 and any(
                     str(mapping.get(key) or "").strip()
                     for key in (
@@ -99,27 +96,15 @@ def build_feed_activation_queue(
         ]
 
         mapped_count = len(mapped_product_ids)
-        full_coverage = (
-            bool(release_set)
-            and mapped_count == len(release_set)
-        )
-        approved = (
-            str(program.get("application_status") or "")
-            .strip()
-            .casefold()
-            == "approved"
-        )
+        full_coverage = bool(release_set) and mapped_count == len(release_set)
+        approved = str(program.get("application_status") or "").strip().casefold() == "approved"
 
         if approved and full_coverage:
             state = "approved_mapping_ready_feed_sample_pending"
-            next_action = (
-                "obtain_real_feed_sample_and_create_provider_config"
-            )
+            next_action = "obtain_real_feed_sample_and_create_provider_config"
         elif approved:
             state = "approved_mapping_partial"
-            next_action = (
-                "resolve_remaining_release_mappings_before_feed_validation"
-            )
+            next_action = "resolve_remaining_release_mappings_before_feed_validation"
         elif full_coverage:
             state = "program_pending_full_mapping_ready"
             next_action = "await_program_decision"
@@ -141,9 +126,7 @@ def build_feed_activation_queue(
                     if approved
                     else "await_program_approval"
                 ),
-                "provider_config_state": (
-                    "not_configured_until_real_feed_sample"
-                ),
+                "provider_config_state": ("not_configured_until_real_feed_sample"),
                 "dry_run_state": "not_run",
                 "image_candidate_state": "not_extracted",
                 "live_routing_allowed": False,
@@ -162,10 +145,7 @@ def build_feed_activation_queue(
     )
 
     approved_full = [
-        row
-        for row in programs
-        if row["program_approved"]
-        and row["full_release_mapping_coverage"]
+        row for row in programs if row["program_approved"] and row["full_release_mapping_coverage"]
     ]
 
     return {
@@ -183,28 +163,18 @@ def build_feed_activation_queue(
             "to rank fragrances or customer-facing merchant offers."
         ),
         "policy_ref": "scentai_jarvis_operating_policy.json",
-        "activation_machine_ref": (
-            "scentai_affiliate_activation_state_machine.json"
-        ),
+        "activation_machine_ref": ("scentai_affiliate_activation_state_machine.json"),
         "feed_checker_ref": "scripts/check_scentai_release_feed.py",
         "summary": {
             "registered_programs": len(programs),
             "programs_with_any_release_mapping": sum(
-                1
-                for row in programs
-                if row["mapped_release_product_count"] > 0
+                1 for row in programs if row["mapped_release_product_count"] > 0
             ),
             "programs_with_full_release_mapping": sum(
-                1
-                for row in programs
-                if row["full_release_mapping_coverage"]
+                1 for row in programs if row["full_release_mapping_coverage"]
             ),
-            "approved_programs": sum(
-                1 for row in programs if row["program_approved"]
-            ),
-            "approved_programs_with_full_release_mapping": len(
-                approved_full
-            ),
+            "approved_programs": sum(1 for row in programs if row["program_approved"]),
+            "approved_programs_with_full_release_mapping": len(approved_full),
             "feed_validation_path_available": bool(approved_full),
             "live_activation_ready": False,
         },
@@ -250,10 +220,7 @@ def main() -> int:
     parser.add_argument("--machine-readable", action="store_true")
     args = parser.parse_args()
 
-    generated_at = (
-        args.generated_at
-        or datetime.now(UTC).replace(microsecond=0).isoformat()
-    )
+    generated_at = args.generated_at or datetime.now(UTC).replace(microsecond=0).isoformat()
 
     queue = build_feed_activation_queue(
         load_json(args.release),
@@ -283,10 +250,7 @@ def main() -> int:
             f"{summary['feed_validation_path_available']} | "
             f"live_ready={summary['live_activation_ready']}"
         )
-        print(
-            "source_fingerprint_sha256="
-            f"{queue['source_fingerprint_sha256']}"
-        )
+        print(f"source_fingerprint_sha256={queue['source_fingerprint_sha256']}")
 
     return 0
 

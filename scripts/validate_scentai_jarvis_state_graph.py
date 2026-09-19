@@ -45,11 +45,7 @@ def compare_state_graph(
 ) -> dict[str, Any]:
     missing = sorted(set(expected) - set(current))
     extra = sorted(set(current) - set(expected))
-    drifted = sorted(
-        key
-        for key in set(current) & set(expected)
-        if current[key] != expected[key]
-    )
+    drifted = sorted(key for key in set(current) & set(expected) if current[key] != expected[key])
 
     issues = []
     if missing:
@@ -69,17 +65,12 @@ def compare_state_graph(
 
 
 def load_current_state() -> dict[str, dict]:
-    return {
-        key: load_json(path)
-        for key, path in OUTPUT_PATHS.items()
-    }
+    return {key: load_json(path) for key, path in OUTPUT_PATHS.items()}
 
 
 def validate_repo_state_graph() -> dict[str, Any]:
     current = load_current_state()
-    generated_at = str(
-        current.get("operations", {}).get("generated_at") or ""
-    ).strip()
+    generated_at = str(current.get("operations", {}).get("generated_at") or "").strip()
     if not generated_at:
         return {
             "valid": False,

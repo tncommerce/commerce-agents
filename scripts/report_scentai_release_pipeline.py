@@ -92,8 +92,7 @@ def build_release_pipeline_report(
             has_mapping = bool(mapping_rows)
             has_redundant_mapping = len(mapping_rows) >= 2
             has_gtin_fallback = any(
-                str(row.get("ean") or "").strip()
-                and str(row.get("gtin") or "").strip()
+                str(row.get("ean") or "").strip() and str(row.get("gtin") or "").strip()
                 for row in mapping_rows
             )
 
@@ -148,22 +147,13 @@ def build_release_pipeline_report(
                 }
             )
 
-        write_enabled = (
-            manifest.get("write_enabled") is True
-            and release_manifest_write_enabled(manifest_path)
+        write_enabled = manifest.get("write_enabled") is True and release_manifest_write_enabled(
+            manifest_path
         )
-        ready_products = sum(
-            1 for row in product_rows if row["ready"]
-        )
-        all_products_ready = (
-            bool(product_rows)
-            and ready_products == len(product_rows)
-        )
+        ready_products = sum(1 for row in product_rows if row["ready"])
+        all_products_ready = bool(product_rows) and ready_products == len(product_rows)
 
-        release_blockers = list(
-            blocker
-            for blocker, _count in blocker_counts.most_common()
-        )
+        release_blockers = list(blocker for blocker, _count in blocker_counts.most_common())
         if not write_enabled:
             release_blockers.append("manifest_write_locked")
 
@@ -174,23 +164,15 @@ def build_release_pipeline_report(
                 "manifest_status": manifest.get("status"),
                 "write_enabled": write_enabled,
                 "product_count": len(product_rows),
-                "mapped_product_count": sum(
-                    1
-                    for row in product_rows
-                    if row["mapping_count"] > 0
-                ),
+                "mapped_product_count": sum(1 for row in product_rows if row["mapping_count"] > 0),
                 "redundantly_mapped_product_count": sum(
-                    1
-                    for row in product_rows
-                    if row["mapping_count"] >= 2
+                    1 for row in product_rows if row["mapping_count"] >= 2
                 ),
                 "gtin_fallback_product_count": sum(
                     1 for row in product_rows if row["has_gtin_fallback"]
                 ),
                 "affiliate_offer_product_count": sum(
-                    1
-                    for row in product_rows
-                    if row["eligible_affiliate_offers"] > 0
+                    1 for row in product_rows if row["eligible_affiliate_offers"] > 0
                 ),
                 "ready_product_count": ready_products,
                 "all_products_ready": all_products_ready,
@@ -202,9 +184,7 @@ def build_release_pipeline_report(
         )
 
     mapped_staged_product_ids = {
-        product_id
-        for product_id in mappings_by_id
-        if product_id in staged_by_id
+        product_id for product_id in mappings_by_id if product_id in staged_by_id
     }
 
     return {
@@ -213,12 +193,8 @@ def build_release_pipeline_report(
         "staged_product_count": len(staged_by_id),
         "release_product_count": len(all_release_product_ids),
         "mapped_staged_product_count": len(mapped_staged_product_ids),
-        "unmapped_staged_product_count": (
-            len(staged_by_id) - len(mapped_staged_product_ids)
-        ),
-        "write_ready_release_count": sum(
-            1 for release in release_rows if release["write_ready"]
-        ),
+        "unmapped_staged_product_count": (len(staged_by_id) - len(mapped_staged_product_ids)),
+        "write_ready_release_count": sum(1 for release in release_rows if release["write_ready"]),
         "releases": release_rows,
     }
 

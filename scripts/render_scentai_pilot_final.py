@@ -6,9 +6,7 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
-DEFAULT_JOBS = Path(
-    "examples/retail/data/scentai_pilot_batch_01_production_jobs.json"
-)
+DEFAULT_JOBS = Path("examples/retail/data/scentai_pilot_batch_01_production_jobs.json")
 
 
 def load_json(path: Path) -> dict:
@@ -29,10 +27,7 @@ def probe_media(path: Path) -> dict[str, Any]:
             "-v",
             "error",
             "-show_entries",
-            (
-                "format=duration:"
-                "stream=index,codec_type,codec_name,width,height,r_frame_rate"
-            ),
+            ("format=duration:stream=index,codec_type,codec_name,width,height,r_frame_rate"),
             "-of",
             "json",
             str(path),
@@ -65,19 +60,11 @@ def parse_fraction(value: str | None) -> float | None:
 def media_summary(probe: dict[str, Any]) -> dict[str, Any]:
     streams = probe.get("streams", [])
     video = next(
-        (
-            row
-            for row in streams
-            if row.get("codec_type") == "video"
-        ),
+        (row for row in streams if row.get("codec_type") == "video"),
         None,
     )
     audio = next(
-        (
-            row
-            for row in streams
-            if row.get("codec_type") == "audio"
-        ),
+        (row for row in streams if row.get("codec_type") == "audio"),
         None,
     )
 
@@ -92,11 +79,7 @@ def media_summary(probe: dict[str, Any]) -> dict[str, Any]:
         "video_codec": video.get("codec_name") if video else None,
         "width": video.get("width") if video else None,
         "height": video.get("height") if video else None,
-        "fps": (
-            parse_fraction(str(video.get("r_frame_rate")))
-            if video
-            else None
-        ),
+        "fps": (parse_fraction(str(video.get("r_frame_rate"))) if video else None),
         "audio_codec": audio.get("codec_name") if audio else None,
         "has_video": video is not None,
         "has_audio": audio is not None,
@@ -123,9 +106,7 @@ def evaluate_inputs(
     if not subtitle_exists:
         blockers.append("subtitle_file_missing")
 
-    subtitle_timing_status = str(
-        job.get("subtitle_timing_status") or ""
-    ).strip()
+    subtitle_timing_status = str(job.get("subtitle_timing_status") or "").strip()
     if subtitle_timing_status != "conformed_to_voiceover":
         blockers.append("subtitle_timing_not_conformed")
 
@@ -138,10 +119,7 @@ def evaluate_inputs(
         if fps is None or abs(float(fps) - 30.0) > 0.05:
             blockers.append("visual_fps_not_30")
         duration = visual_summary.get("duration_seconds")
-        if (
-            duration is None
-            or abs(float(duration) - expected) > tolerance
-        ):
+        if duration is None or abs(float(duration) - expected) > tolerance:
             blockers.append("visual_duration_outside_tolerance")
 
     if voiceover_summary is not None:
@@ -261,12 +239,8 @@ def evaluate_final_render(
         blockers.append("final_fps_not_30")
 
     duration = summary.get("duration_seconds")
-    if (
-        duration is None
-        or abs(
-            float(duration) - float(expected_duration_seconds)
-        )
-        > float(tolerance_seconds)
+    if duration is None or abs(float(duration) - float(expected_duration_seconds)) > float(
+        tolerance_seconds
     ):
         blockers.append("final_duration_outside_tolerance")
 
@@ -303,16 +277,8 @@ def main() -> int:
     subtitles = Path(job["subtitle_path"])
     output = Path(job["final_render_path"])
 
-    visual_summary = (
-        media_summary(probe_media(visual))
-        if visual.exists()
-        else None
-    )
-    voiceover_summary = (
-        media_summary(probe_media(voiceover))
-        if voiceover.exists()
-        else None
-    )
+    visual_summary = media_summary(probe_media(visual)) if visual.exists() else None
+    voiceover_summary = media_summary(probe_media(voiceover)) if voiceover.exists() else None
 
     report = evaluate_inputs(
         job,
@@ -333,10 +299,7 @@ def main() -> int:
             if args.machine_readable:
                 print(json.dumps(report, ensure_ascii=False))
             else:
-                print(
-                    "SCENTAI final render blocked | "
-                    + ", ".join(report["blockers"])
-                )
+                print("SCENTAI final render blocked | " + ", ".join(report["blockers"]))
             return 20
 
         render_final(
@@ -344,21 +307,15 @@ def main() -> int:
             voiceover=voiceover,
             subtitles=subtitles,
             output=output,
-            duration_seconds=float(
-                job["expected_duration_seconds"]
-            ),
+            duration_seconds=float(job["expected_duration_seconds"]),
         )
         report["rendered"] = True
 
         final_summary = media_summary(probe_media(output))
         report["technical_qa"] = evaluate_final_render(
             final_summary,
-            expected_duration_seconds=float(
-                job["expected_duration_seconds"]
-            ),
-            tolerance_seconds=float(
-                job.get("duration_tolerance_seconds", 2.0)
-            ),
+            expected_duration_seconds=float(job["expected_duration_seconds"]),
+            tolerance_seconds=float(job.get("duration_tolerance_seconds", 2.0)),
         )
 
         if not report["technical_qa"]["technical_qa_passed"]:
@@ -367,9 +324,7 @@ def main() -> int:
             else:
                 print(
                     "SCENTAI final render QA failed | "
-                    + ", ".join(
-                        report["technical_qa"]["blockers"]
-                    )
+                    + ", ".join(report["technical_qa"]["blockers"])
                 )
             return 30
 

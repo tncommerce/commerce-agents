@@ -33,11 +33,7 @@ def test_feed_schema_profile_excludes_raw_values() -> None:
     assert "token=secret" not in serialized
     assert "https://private.example" not in serialized
 
-    url_profile = next(
-        row
-        for row in report["profiles"]
-        if row["column"] == "url_col"
-    )
+    url_profile = next(row for row in report["profiles"] if row["column"] == "url_col")
     assert url_profile["http_url_like_count"] == 2
 
 

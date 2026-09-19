@@ -62,9 +62,7 @@ def test_apply_intake_updates_registry_and_appends_event() -> None:
     assert result["registry"]["applications"][0]["status"] == "approved"
     assert len(result["events"]["events"]) == 1
     assert result["events"]["events"][0]["status_after"] == "approved"
-    assert result["validation"]["activation_state_after_event"] == (
-        "approved_credentials_pending"
-    )
+    assert result["validation"]["activation_state_after_event"] == ("approved_credentials_pending")
 
 
 def test_apply_intake_is_idempotent_on_same_event() -> None:

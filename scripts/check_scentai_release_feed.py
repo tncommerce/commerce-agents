@@ -30,12 +30,8 @@ from retail.api.scentai_release_feed_readiness import (  # noqa: E402
     build_release_feed_readiness,
 )
 
-DEFAULT_MANIFEST = Path(
-    "examples/retail/data/scentai_release_batch_01.json"
-)
-DEFAULT_MAPPINGS = Path(
-    "examples/retail/data/merchant_product_mappings.json"
-)
+DEFAULT_MANIFEST = Path("examples/retail/data/scentai_release_batch_01.json")
+DEFAULT_MAPPINGS = Path("examples/retail/data/merchant_product_mappings.json")
 
 STATUS_EXIT_CODES = {
     "ready_for_manual_asset_review": 0,
@@ -108,9 +104,7 @@ def main() -> int:
     provider_name = args.provider
     if args.provider_config is not None:
         try:
-            adapter = load_mapped_provider_adapter(
-                args.provider_config
-            )
+            adapter = load_mapped_provider_adapter(args.provider_config)
             register_provider_adapter(
                 adapter,
                 replace=True,

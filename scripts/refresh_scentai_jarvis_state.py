@@ -78,12 +78,8 @@ OUT_RELEASE = DATA_DIR / "scentai_release_01_gate_status.json"
 OUT_PIPELINE = DATA_DIR / "scentai_release_pipeline_status.json"
 OUT_OPERATIONS = DATA_DIR / "scentai_jarvis_operations_status.json"
 OUT_CONTENT = DATA_DIR / "scentai_content_operations_status.json"
-OUT_CONTENT_BATCH02 = (
-    DATA_DIR / "scentai_content_operations_status_batch02.json"
-)
-OUT_CONTENT_BATCH03 = (
-    DATA_DIR / "scentai_content_operations_status_batch03.json"
-)
+OUT_CONTENT_BATCH02 = DATA_DIR / "scentai_content_operations_status_batch02.json"
+OUT_CONTENT_BATCH03 = DATA_DIR / "scentai_content_operations_status_batch03.json"
 OUT_CONTENT_PIPELINE = DATA_DIR / "scentai_content_pipeline_status.json"
 OUT_MASTER = DATA_DIR / "scentai_jarvis_master_status.json"
 OUT_MEDIA_QUEUE = DATA_DIR / "scentai_media_generation_queue.json"
@@ -129,11 +125,7 @@ def refresh_state(*, generated_at: str) -> dict[str, Any]:
         staging,
         releases,
         generated_at=generated_at,
-        asset_candidates=(
-            load_json(ASSET_CANDIDATES)
-            if ASSET_CANDIDATES.exists()
-            else None
-        ),
+        asset_candidates=(load_json(ASSET_CANDIDATES) if ASSET_CANDIDATES.exists() else None),
     )
     feed_queue = build_feed_activation_queue(
         release_01,
@@ -214,28 +206,19 @@ def refresh_state(*, generated_at: str) -> dict[str, Any]:
                 "batch_id": "pilot_batch_01",
                 "manifest": load_json(PILOT_MANIFEST),
                 "jobs": load_json(PILOT_JOBS),
-                "voiceover": load_json(
-                    DATA_DIR
-                    / "scentai_pilot_batch_01_voiceover_spec.json"
-                ),
+                "voiceover": load_json(DATA_DIR / "scentai_pilot_batch_01_voiceover_spec.json"),
             },
             {
                 "batch_id": "pilot_batch_02",
                 "manifest": load_json(PILOT2_MANIFEST),
                 "jobs": load_json(PILOT2_JOBS),
-                "voiceover": load_json(
-                    DATA_DIR
-                    / "scentai_pilot_batch_02_voiceover_spec.json"
-                ),
+                "voiceover": load_json(DATA_DIR / "scentai_pilot_batch_02_voiceover_spec.json"),
             },
             {
                 "batch_id": "pilot_batch_03",
                 "manifest": load_json(PILOT3_MANIFEST),
                 "jobs": load_json(PILOT3_JOBS),
-                "voiceover": load_json(
-                    DATA_DIR
-                    / "scentai_pilot_batch_03_voiceover_spec.json"
-                ),
+                "voiceover": load_json(DATA_DIR / "scentai_pilot_batch_03_voiceover_spec.json"),
             },
         ],
         generated_at=generated_at,
@@ -297,9 +280,7 @@ def summary(state: dict[str, Any]) -> dict[str, Any]:
         "overall_state": master["overall_state"],
         "active_domain": master["active_domain"],
         "next_action": master["next_action"],
-        "user_approval_required_now": master[
-            "user_approval_required_now"
-        ],
+        "user_approval_required_now": master["user_approval_required_now"],
         "mapping": state["mapping_queue"]["summary"],
         "affiliate": state["affiliate_status"]["summary"],
         "images": state["image_queue"]["summary"],
@@ -307,21 +288,15 @@ def summary(state: dict[str, Any]) -> dict[str, Any]:
         "release_01": state["release_status"]["summary"],
         "release_pipeline": {
             "release_count": state["release_pipeline"]["release_count"],
-            "current_release_id": state["release_pipeline"][
-                "current_release_id"
-            ],
+            "current_release_id": state["release_pipeline"]["current_release_id"],
             "pipeline_state": state["release_pipeline"]["pipeline_state"],
         },
         "content": state["content_status"]["summary"],
         "content_pipeline": {
             "batch_count": state["content_pipeline"]["batch_count"],
             "total_pilots": state["content_pipeline"]["total_pilots"],
-            "current_batch_id": state["content_pipeline"][
-                "current_batch_id"
-            ],
-            "pipeline_state": state["content_pipeline"][
-                "pipeline_state"
-            ],
+            "current_batch_id": state["content_pipeline"]["current_batch_id"],
+            "pipeline_state": state["content_pipeline"]["pipeline_state"],
         },
         "media_generation": state["media_queue"]["summary"],
     }
@@ -339,10 +314,7 @@ def main() -> int:
     parser.add_argument("--machine-readable", action="store_true")
     args = parser.parse_args()
 
-    generated_at = (
-        args.generated_at
-        or datetime.now(UTC).replace(microsecond=0).isoformat()
-    )
+    generated_at = args.generated_at or datetime.now(UTC).replace(microsecond=0).isoformat()
 
     state = refresh_state(generated_at=generated_at)
     if args.write:

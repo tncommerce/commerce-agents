@@ -7,9 +7,7 @@ from pathlib import Path
 
 from scripts.build_scentai_campaign_link import build_campaign_url
 
-DEFAULT_PLAN = Path(
-    "examples/retail/data/scentai_launch_content_plan.json"
-)
+DEFAULT_PLAN = Path("examples/retail/data/scentai_launch_content_plan.json")
 
 
 def load_json(path: Path) -> dict:
@@ -31,14 +29,10 @@ def build_launch_links(plan: dict, *, base_url: str) -> list[dict]:
     rows: list[dict] = []
     for content in content_rows:
         content_id = str(content.get("content_id") or "").strip()
-        landing_path = str(
-            content.get("landing_path") or ""
-        ).strip()
+        landing_path = str(content.get("landing_path") or "").strip()
 
         if not content_id or not landing_path:
-            raise ValueError(
-                "Every content row requires content_id and landing_path"
-            )
+            raise ValueError("Every content row requires content_id and landing_path")
 
         for channel in channels:
             link = build_campaign_url(
@@ -90,9 +84,7 @@ def main() -> int:
     args = parser.parse_args()
 
     if not args.base_url:
-        parser.error(
-            "--base-url or NEXT_PUBLIC_SITE_URL is required"
-        )
+        parser.error("--base-url or NEXT_PUBLIC_SITE_URL is required")
 
     try:
         rows = build_launch_links(
@@ -126,11 +118,7 @@ def main() -> int:
     if args.machine_readable or args.output is None:
         print(json.dumps(payload, ensure_ascii=False))
     else:
-        print(
-            "SCENTAI launch links | "
-            f"count={len(rows)} | "
-            f"output={args.output}"
-        )
+        print(f"SCENTAI launch links | count={len(rows)} | output={args.output}")
 
     return 0
 

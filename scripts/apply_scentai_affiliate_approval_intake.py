@@ -54,41 +54,25 @@ def _update_registry_status(
 
     if default_network.casefold() == network.casefold():
         for item in registry.get("applications", []):
-            if (
-                str(item.get("merchant_id") or "")
-                .strip()
-                .casefold()
-                == merchant_id.casefold()
-            ):
+            if str(item.get("merchant_id") or "").strip().casefold() == merchant_id.casefold():
                 changed = item.get("status") != status
                 item["status"] = status
                 return changed
 
     for item in registry.get("other_networks", []):
         if (
-            str(item.get("network") or "")
-            .strip()
-            .casefold()
-            == network.casefold()
-            and str(item.get("merchant_id") or "")
-            .strip()
-            .casefold()
-            == merchant_id.casefold()
+            str(item.get("network") or "").strip().casefold() == network.casefold()
+            and str(item.get("merchant_id") or "").strip().casefold() == merchant_id.casefold()
         ):
             changed = item.get("status") != status
             item["status"] = status
             return changed
 
-    raise ValueError(
-        "Validated merchant/network pair disappeared from registry"
-    )
+    raise ValueError("Validated merchant/network pair disappeared from registry")
 
 
 def _latest_sequence(events_payload: dict) -> int:
-    sequences = [
-        int(event.get("sequence") or 0)
-        for event in events_payload.get("events", [])
-    ]
+    sequences = [int(event.get("sequence") or 0) for event in events_payload.get("events", [])]
     return max(sequences, default=0)
 
 
@@ -97,11 +81,7 @@ def _existing_event(
     event_id: str,
 ) -> dict | None:
     return next(
-        (
-            event
-            for event in events_payload.get("events", [])
-            if event.get("event_id") == event_id
-        ),
+        (event for event in events_payload.get("events", []) if event.get("event_id") == event_id),
         None,
     )
 
@@ -142,10 +122,7 @@ def apply_intake(
     existing = _existing_event(next_events, event_id)
     current_status = validation["current_registry_status"]
 
-    if (
-        existing is not None
-        and current_status == status
-    ):
+    if existing is not None and current_status == status:
         return {
             "valid": True,
             "applied": True,
@@ -185,13 +162,8 @@ def apply_intake(
                 "event_at": observed_at,
                 "recorded_at": observed_at,
                 "status_after": status,
-                "source": str(
-                    evidence.get("source_type")
-                    or "affiliate_approval_intake"
-                ),
-                "external_program_id": evidence.get(
-                    "external_program_id"
-                ),
+                "source": str(evidence.get("source_type") or "affiliate_approval_intake"),
+                "external_program_id": evidence.get("external_program_id"),
                 "reference_note": evidence.get("reference_note"),
             }
         )
@@ -278,9 +250,7 @@ def main() -> int:
         "idempotent_noop": result.get("idempotent_noop", False),
         "event_id": result["event_id"],
         "observed_status": result["validation"]["observed_status"],
-        "activation_state_after_event": result["validation"][
-            "activation_state_after_event"
-        ],
+        "activation_state_after_event": result["validation"]["activation_state_after_event"],
         "live_routing_allowed": False,
         "next_action": result["next_action"],
     }

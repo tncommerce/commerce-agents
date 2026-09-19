@@ -49,10 +49,7 @@ def build_release_feed_readiness(
     for product_id in release_ids:
         offers = offers_by_product.get(product_id, [])
         trackable = [
-            offer
-            for offer in offers
-            if offer.in_stock
-            and _valid_http_url(offer.affiliate_url)
+            offer for offer in offers if offer.in_stock and _valid_http_url(offer.affiliate_url)
         ]
         image_candidates = images_by_product.get(product_id, [])
 
@@ -69,14 +66,8 @@ def build_release_feed_readiness(
         )
 
     mapped_count = sum(1 for row in product_rows if row["mapped"])
-    trackable_count = sum(
-        1 for row in product_rows
-        if row["trackable_offer_ready"]
-    )
-    image_count = sum(
-        1 for row in product_rows
-        if row["feed_image_candidate_ready"]
-    )
+    trackable_count = sum(1 for row in product_rows if row["trackable_offer_ready"])
+    image_count = sum(1 for row in product_rows if row["feed_image_candidate_ready"])
 
     blockers = []
     if not preflight["ready_for_offer_import"]:
@@ -91,11 +82,7 @@ def build_release_feed_readiness(
     status = (
         "ready_for_manual_asset_review"
         if not blockers
-        else (
-            "blocked"
-            if "feed_not_import_ready" in blockers
-            else "review"
-        )
+        else ("blocked" if "feed_not_import_ready" in blockers else "review")
     )
 
     return {
@@ -103,9 +90,7 @@ def build_release_feed_readiness(
         "release_size": len(release_ids),
         "feed_row_count": len(rows),
         "feed_import_ready": preflight["ready_for_offer_import"],
-        "feed_promotion_asset_ready": preflight[
-            "ready_for_promotion_assets"
-        ],
+        "feed_promotion_asset_ready": preflight["ready_for_promotion_assets"],
         "release_mapped_product_count": mapped_count,
         "release_trackable_offer_product_count": trackable_count,
         "release_feed_image_product_count": image_count,

@@ -30,18 +30,12 @@ def complete_rows() -> list[dict]:
             "price": 79.95 + index,
             "currency": "EUR",
             "in_stock": True,
-            "product_url": (
-                f"https://merchant.example/product/{index}"
-            ),
-            "affiliate_url": (
-                f"https://network.example/click/{index}"
-            ),
+            "product_url": (f"https://merchant.example/product/{index}"),
+            "affiliate_url": (f"https://network.example/click/{index}"),
             "last_updated_at": "2026-09-19T08:00:00Z",
             "data_source": "approved-affiliate-feed",
             "network": "Awin",
-            "image_url": (
-                f"https://cdn.example.com/product-{index}.jpg"
-            ),
+            "image_url": (f"https://cdn.example.com/product-{index}.jpg"),
         }
         for index in range(1, 6)
     ]
@@ -78,14 +72,8 @@ def test_incomplete_release_mapping_requires_review() -> None:
     assert report["release_trackable_offer_product_count"] == 4
     assert report["release_feed_image_product_count"] == 4
     assert "release_mapping_incomplete" in report["blockers"]
-    assert (
-        "release_affiliate_offer_coverage_incomplete"
-        in report["blockers"]
-    )
-    assert (
-        "release_feed_image_coverage_incomplete"
-        in report["blockers"]
-    )
+    assert "release_affiliate_offer_coverage_incomplete" in report["blockers"]
+    assert "release_feed_image_coverage_incomplete" in report["blockers"]
 
 
 def test_invalid_feed_blocks_release_activation() -> None:

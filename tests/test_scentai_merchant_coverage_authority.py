@@ -42,12 +42,8 @@ def test_snapshot_authority_counts_only_explicit_available_status() -> None:
 
 
 def test_fleur_du_male_2026_has_no_ambiguous_legacy_coverage() -> None:
-    verification = load_json(
-        DATA_DIR / "scentai_catalog_batch2_verification.json"
-    )
-    queue = load_json(
-        DATA_DIR / "scentai_catalog_promotion_queue.json"
-    )
+    verification = load_json(DATA_DIR / "scentai_catalog_batch2_verification.json")
+    queue = load_json(DATA_DIR / "scentai_catalog_promotion_queue.json")
 
     verified = next(
         product

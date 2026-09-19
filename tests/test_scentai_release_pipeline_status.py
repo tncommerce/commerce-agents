@@ -14,9 +14,7 @@ def product(product_id: str) -> dict:
         "community": {"provisional": False},
         "media": {
             "image_url": None,
-            "image_status": (
-                "pending_approved_feed_or_manufacturer_image"
-            ),
+            "image_status": ("pending_approved_feed_or_manufacturer_image"),
         },
     }
 
@@ -89,9 +87,7 @@ def test_release_pipeline_keeps_dependency_and_product_gates_separate() -> None:
 
     release_01, release_02 = status["releases"]
     assert release_01["dependency_state"] == "not_required"
-    assert release_02["dependency_state"] == (
-        "pending_prior_release_validation"
-    )
+    assert release_02["dependency_state"] == ("pending_prior_release_validation")
     assert release_01["summary"]["mapping_ready"] == 1
     assert release_01["summary"]["approved_images"] == 0
     assert release_02["summary"]["mapping_ready"] == 1
