@@ -107,3 +107,21 @@ engagement instead of optimizing only for social-platform views.
 - Affiliate commission must not influence content-performance interpretation.
 - Do not treat one strong video as proof that the fragrance itself is
   universally better.
+
+
+## Export the full pre-launch link set
+
+The prepared launch plan contains 15 creatives and the three organic launch
+channels TikTok, Instagram and YouTube.
+
+Generate every standardized link variant with:
+
+```powershell
+python scripts/export_scentai_launch_links.py --base-url https://YOUR-SCENTAI-DOMAIN --output examples/retail/data/scentai_launch_links.local.json
+```
+
+This produces 45 links: one link for each creative/channel combination.
+
+The generated local link export should be treated as an operating artifact,
+not as product data. Regenerate it whenever the canonical domain, campaign or
+content plan changes.
