@@ -177,7 +177,7 @@ export function customerPriceLabel(product: Product): string {
 
   if (String(product.product_id).startsWith("SC-")) {
     if (source === "current_merchant_offer") return `ab ${base}`;
-    if (source === "market_reference") return `ca. ${base}`;
+    if (source === "market_reference") return `Richtpreis ${base}`;
   }
 
   return base;
