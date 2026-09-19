@@ -14,15 +14,15 @@ const instrumentSans = Instrument_Sans({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  applicationName: "SCENTAI",
+  applicationName: "DUFYND",
   creator: "TNCommerce",
   publisher: "TNCommerce",
   title: {
-    default: "SCENTAI – Duftberatung & Parfumvergleich",
-    template: "%s | SCENTAI",
+    default: "DUFYND – Duftberatung & Parfumvergleich",
+    template: "%s | DUFYND",
   },
   description:
-    "Finde passende Parfums nach Duftprofil, Anlass und Budget. Vergleiche Düfte, Community-Erfahrungen und Händlerangebote mit SCENTAI.",
+    "Finde passende Parfums nach Duftprofil, Anlass und Budget. Vergleiche Düfte, Community-Erfahrungen und Händlerangebote mit DUFYND.",
   alternates: {
     canonical: "/",
   },
@@ -40,14 +40,14 @@ export const metadata: Metadata = {
     type: "website",
     locale: "de_DE",
     url: SITE_URL,
-    siteName: "SCENTAI",
-    title: "SCENTAI – Duftberatung & Parfumvergleich",
+    siteName: "DUFYND",
+    title: "DUFYND – Duftberatung & Parfumvergleich",
     description:
       "Persönliche Duftempfehlungen, Duftvergleiche und transparente Händlerangebote.",
   },
   twitter: {
     card: "summary",
-    title: "SCENTAI – Duftberatung & Parfumvergleich",
+    title: "DUFYND – Duftberatung & Parfumvergleich",
     description:
       "Persönliche Duftempfehlungen, Duftvergleiche und transparente Händlerangebote.",
   },
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
 const websiteStructuredData = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: "SCENTAI",
+  name: "DUFYND",
   url: SITE_URL,
   inLanguage: "de-DE",
   description:
