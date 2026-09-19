@@ -174,3 +174,17 @@ Verified manually on 2026-09-19:
 - related section now contains only Louis Vuitton Imagination, Bujairami Hectic and Marwa Extrait
 - cross-cluster broad-accord similarity is no longer sufficient for a product-detail alternative recommendation
 - same-cluster or explicitly documented relationships are required
+
+
+## Live smoke test — documented comparison
+
+Verified manually on 2026-09-19:
+- Marwa vs. Louis Vuitton Imagination comparison page renders successfully
+- product images, community ratings, rating counts, longevity, projection, profile axes, target groups and price references are shown
+- live merchant offers remain separately freshness-gated
+- full fragrance-page links are present for both products
+
+Polish applied:
+- comparison accord chips translated to German
+- relationship confidence labels translated to German
+- remaining legacy S header marks on comparison pages replaced by the DUFYND icon
