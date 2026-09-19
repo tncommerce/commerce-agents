@@ -45,3 +45,18 @@ After https://dufynd.de is publicly reachable with DUFYND branding and kontakt@d
 - No claim that a merchant has approved DUFYND until the network shows approval.
 - Affiliate compensation never changes product recommendations or merchant ranking.
 - Internal legacy identifiers such as SC-* product IDs and scentai_* data files may remain unchanged unless a technical migration later requires otherwise.
+
+
+## Awin cutover progress
+
+Completed on 2026-09-19:
+- existing promotional website updated from the temporary SCENTAI Render URL to https://dufynd.de
+- promotional-site description updated to DUFYND
+- category remains Retail & Shopping -> Gesundheit & Pflege
+- public/business contact email updated to kontakt@dufynd.de
+- existing publisher account and advertiser applications preserved
+
+Still pending:
+- replace the default profile/avatar with the DUFYND logo
+- request publisher/account display-name change from SCENTAI to DUFYND while keeping publisher ID 309922 and all existing applications intact
+- recheck pending advertiser applications after the profile cutover
