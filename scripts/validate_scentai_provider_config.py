@@ -1,3 +1,4 @@
+atus.py>>>
 from __future__ import annotations
 
 import argparse
@@ -5,127 +6,53 @@ import json
 from pathlib import Path
 from typing import Any
 
-REQUIRED_CANONICAL_FIELDS = {
-    "offer_id",
-    "price",
-    "in_stock",
-    "product_url",
-    "last_updated_at",
-}
-IDENTIFIER_FIELDS = {
-    "merchant_product_id",
-    "ean",
-    "gtin",
-}
-PROMOTION_FIELDS = {
-    "affiliate_url",
-    "image_url",
-}
-ALLOWED_FIELD_MAP_KEYS = {
-    "offer_id",
-    "merchant_product_id",
-    "ean",
-    "gtin",
-    "price",
-    "currency",
-    "shipping_cost",
-    "shipping_label",
-    "in_stock",
-    "variant_label",
-    "product_url",
-    "affiliate_url",
-    "last_updated_at",
-    "image_url",
-}
-REQUIRED_CONSTANTS = {
-    "merchant",
-    "merchant_id",
-    "merchant_name",
-    "currency",
-    "network",
-    "data_source",
-}
+from scripts.build_scentai_jarvis_operations_status import (
+    build_operations_status,
+)
+
+DATA_DIR = Path("examples/retail/data")
+DEFAULT_MAPPING = DATA_DIR / "scentai_merchant_mapping_work_queue.json"
+DEFAULT_AFFILIATE = DATA_DIR / "scentai_affiliate_activation_status.json"
+DEFAULT_IMAGES = DATA_DIR / "scentai_image_approval_work_queue.json"
+DEFAULT_RELEASE = DATA_DIR / "scentai_release_01_gate_status.json"
+DEFAULT_FEED = DATA_DIR / "scentai_release_01_feed_activation_queue.json"
+DEFAULT_STATUS = DATA_DIR / "scentai_jarvis_operations_status.json"
 
 
 def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8-sig"))
 
 
-def validate_provider_config(config: dict) -> dict[str, Any]:
+def validate_operations_status(
+    current: dict,
+    mapping: dict,
+    affiliate: dict,
+    images: dict,
+    release: dict,
+    feed: dict,
+) -> dict[str, Any]:
+    generated_at = str(current.get("generated_at") or "").strip()
+    if not generated_at:
+        return {
+            "valid": False,
+            "issues": ["operations_status_generated_at_missing"],
+        }
+
+    expected = build_operations_status(
+        mapping,
+        affiliate,
+        images,
+        release,
+        feed,
+        generated_at=generated_at,
+    )
+
     issues: list[str] = []
-    provider_name = str(config.get("provider_name") or "").strip()
-    field_map = config.get("field_map")
-    constants = config.get("constants")
 
-    if not provider_name:
-        issues.append("provider_name_missing")
-
-    if not isinstance(field_map, dict) or not field_map:
-        issues.append("field_map_missing_or_empty")
-        field_map = {}
-
-    if not isinstance(constants, dict):
-        issues.append("constants_missing_or_invalid")
-        constants = {}
-
-    unknown = sorted(set(field_map) - ALLOWED_FIELD_MAP_KEYS)
-    if unknown:
-        issues.append(
-            "unknown_canonical_field_map_keys:" + ",".join(unknown)
-        )
-
-    blank_sources = sorted(
-        key
-        for key, value in field_map.items()
-        if not isinstance(value, str) or not value.strip()
-    )
-    if blank_sources:
-        issues.append(
-            "blank_external_source_columns:" + ",".join(blank_sources)
-        )
-
-    missing_required = sorted(
-        field
-        for field in REQUIRED_CANONICAL_FIELDS
-        if field not in field_map
-    )
-    if missing_required:
-        issues.append(
-            "missing_required_field_mappings:"
-            + ",".join(missing_required)
-        )
-
-    if not any(field in field_map for field in IDENTIFIER_FIELDS):
-        issues.append("missing_product_identifier_mapping")
-
-    missing_constants = sorted(
-        key
-        for key in REQUIRED_CONSTANTS
-        if not str(constants.get(key) or "").strip()
-    )
-    if missing_constants:
-        issues.append(
-            "missing_required_constants:"
-            + ",".join(missing_constants)
-        )
-
-    currency = str(constants.get("currency") or "").strip()
-    if currency and len(currency) != 3:
-        issues.append("currency_constant_must_be_three_characters")
-
-    promotion_missing = sorted(
-        field
-        for field in PROMOTION_FIELDS
-        if field not in field_map
-    )
-
-    import_ready = not any(
-        issue.startswith(
-            (
-                "provider_name_missing",
-                "field_map_missing_or_empty",
-                "constants_missing_or_invalid",
-                "unknown_canonical_field_map_keys",
+    current_fingerprint = str(current.get("source_fingerprint_sha256") or "").strip()
+  
+…[16383 chars truncated — re-run with head/grep/tail for full output]…
+nonical_field_map_keys",
                 "blank_external_source_columns",
                 "missing_required_field_mappings",
                 "missing_product_identifier_mapping",
@@ -136,10 +63,7 @@ def validate_provider_config(config: dict) -> dict[str, Any]:
         for issue in issues
     )
 
-    promotion_ready = (
-        import_ready
-        and not promotion_missing
-    )
+    promotion_ready = import_ready and not promotion_missing
 
     return {
         "valid": import_ready,
@@ -164,8 +88,7 @@ def validate_provider_config(config: dict) -> dict[str, Any]:
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Validate a SCENTAI mapped merchant provider config before "
-            "running a real feed dry-run."
+            "Validate a SCENTAI mapped merchant provider config before running a real feed dry-run."
         )
     )
     parser.add_argument("--config", type=Path, required=True)
@@ -190,10 +113,7 @@ def main() -> int:
         for issue in report["issues"]:
             print(f"  - {issue}")
         if report["promotion_field_gaps"]:
-            print(
-                "  - promotion_field_gaps: "
-                + ", ".join(report["promotion_field_gaps"])
-            )
+            print("  - promotion_field_gaps: " + ", ".join(report["promotion_field_gaps"]))
 
     return 0 if report["valid"] else 20
 
