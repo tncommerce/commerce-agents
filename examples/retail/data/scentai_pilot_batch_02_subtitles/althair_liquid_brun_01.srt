@@ -1,0 +1,24 @@
+1
+00:00:00,000 --> 00:00:05,000
+Althaïr und Liquid Brun sind bei SCENTAI
+als Clone-Beziehung mit hoher Confidence hinterlegt.
+
+2
+00:00:05,000 --> 00:00:11,000
+Beide sind sehr süß, gourmandig und würzig,
+mit wenig Frische.
+
+3
+00:00:11,000 --> 00:00:17,000
+Die Unterschiede stecken eher
+in den Details.
+
+4
+00:00:17,000 --> 00:00:22,000
+Althaïr ist holziger eingeordnet,
+Liquid Brun etwas weniger.
+
+5
+00:00:22,000 --> 00:00:27,000
+Vergleiche die Profile direkt,
+statt nur auf den Namen zu schauen.
