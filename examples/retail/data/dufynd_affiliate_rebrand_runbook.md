@@ -88,3 +88,15 @@ Still to verify:
 - business/public contact email is kontakt@dufynd.de where editable
 - Notino application remains pending/active and was not withdrawn
 - any remaining SCENTAI display name in CJ account/profile is updated if separately editable
+
+
+## CJ Notino application verification
+
+Verified on 2026-09-19:
+- Notino DE-AT-CH (advertiser 4541231) is still listed under Open Applications
+- the application was not withdrawn or recreated during the SCENTAI -> DUFYND promotional-platform rename
+- no action is required on the application itself while advertiser approval is pending
+
+Next CJ checks:
+- verify account/profile contact email uses kontakt@dufynd.de where editable
+- verify no remaining public SCENTAI display name needs a separate profile/support update
