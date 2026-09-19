@@ -1,0 +1,270 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-19",
+  "batch_id": "launch_production_pack_01",
+  "source_script_file": "scentai_launch_scripts_batch_01.json",
+  "canvas": {
+    "aspect_ratio": "9:16",
+    "resolution": "1080x1920",
+    "safe_area_note": "Keep critical text inside the central 80% width and away from platform UI at top/bottom.",
+    "subtitle_position": "lower_third_above_platform_controls",
+    "headline_position": "upper_third",
+    "product_stage": "center_weighted"
+  },
+  "reusable_components": [
+    {
+      "id": "product_card",
+      "purpose": "Show one approved product visual with brand/name and optional profile labels."
+    },
+    {
+      "id": "split_compare",
+      "purpose": "Show two products side by side with one factual contrast per side."
+    },
+    {
+      "id": "relationship_badge",
+      "purpose": "Display only documented relationship types: clone, alternative or inspired."
+    },
+    {
+      "id": "score_bar",
+      "purpose": "Visualize SCENTAI 1-10 profile/performance scores without implying an overall winner."
+    },
+    {
+      "id": "cta_endcard",
+      "purpose": "Show SCENTAI logo/name, landing-page promise and short CTA for the final 4-5 seconds."
+    }
+  ],
+  "creatives": [
+    {
+      "content_id": "original_vs_alt_imagination_01",
+      "required_product_assets": [
+        {
+          "product_id": "SC-LV-IMAGINATION-100",
+          "image_url": "/products/pilot/louis-vuitton-imagination-editorial.png"
+        },
+        {
+          "product_id": "SC-ARABIYAT-MARWA-EDP-100",
+          "image_url": "/products/pilot/arabiyat-marwa-edp-editorial.png"
+        },
+        {
+          "product_id": "SC-BUJAIRAMI-HECTIC-100",
+          "image_url": "/products/pilot/bujairami-hectic-editorial.png"
+        }
+      ],
+      "scene_assets": [
+        {
+          "scene": 1,
+          "component": "three_product_intro",
+          "instruction": "Imagination centered, Marwa and Hectic slide in from left/right; headline only."
+        },
+        {
+          "scene": 2,
+          "component": "product_card",
+          "instruction": "Imagination with fresh/citrus/aquatic chips and simple score bars for freshness/sweetness."
+        },
+        {
+          "scene": 3,
+          "component": "split_compare",
+          "instruction": "Marwa vs Hectic; emphasize sweeter vs spicier only."
+        },
+        {
+          "scene": 4,
+          "component": "relationship_badge",
+          "instruction": "Show both as inspired; include small text 'inspiriert ≠ 1:1-Klon'."
+        },
+        {
+          "scene": 5,
+          "component": "cta_endcard",
+          "instruction": "CTA: 'Alternative in SCENTAI vergleichen' and landing label 'Parfum-Alternativen'."
+        }
+      ],
+      "missing_assets": [],
+      "production_status": "asset_ready"
+    },
+    {
+      "content_id": "dupe_battle_imagination_01",
+      "required_product_assets": [
+        {
+          "product_id": "SC-ARABIYAT-MARWA-EDP-100",
+          "image_url": "/products/pilot/arabiyat-marwa-edp-editorial.png"
+        },
+        {
+          "product_id": "SC-BUJAIRAMI-HECTIC-100",
+          "image_url": "/products/pilot/bujairami-hectic-editorial.png"
+        },
+        {
+          "product_id": "SC-ARABIYAT-MARWA-EXTRAIT-60",
+          "image_url": "/products/pilot/arabiyat-prestige-marwa-extrait-editorial.png"
+        }
+      ],
+      "scene_assets": [
+        {
+          "scene": 1,
+          "component": "three_product_intro",
+          "instruction": "Three-bottle carousel with product names fixed below each bottle."
+        },
+        {
+          "scene": 2,
+          "component": "score_bar",
+          "instruction": "Marwa: freshness 10, sweetness 6; no overall winner badge."
+        },
+        {
+          "scene": 3,
+          "component": "score_bar",
+          "instruction": "Hectic: freshness 10, spiciness 8."
+        },
+        {
+          "scene": 4,
+          "component": "product_card",
+          "instruction": "Marwa Extrait with fresh/spicy/oriental labels and 'kleinere Datenbasis' note."
+        },
+        {
+          "scene": 5,
+          "component": "cta_endcard",
+          "instruction": "CTA: 'Düfte in SCENTAI vergleichen'."
+        }
+      ],
+      "missing_assets": [],
+      "production_status": "asset_ready"
+    },
+    {
+      "content_id": "aventus_alternatives_01",
+      "required_product_assets": [
+        {
+          "product_id": "SC-CREED-AVENTUS-100",
+          "image_url": "/products/pilot/creed-aventus-editorial.png"
+        },
+        {
+          "product_id": "SC-AFNAN-SUPREMACY-COLLECTORS-100",
+          "image_url": "/products/pilot/afnan-supremacy-collectors-edition-editorial.png"
+        },
+        {
+          "product_id": "SC-MAISON-ASRAR-VANGUARD-100",
+          "image_url": "/products/pilot/maison-asrar-vanguard-editorial.png"
+        },
+        {
+          "product_id": "SC-ARMAF-CDNIM-EDP-200",
+          "image_url": "/products/pilot/armaf-club-de-nuit-intense-man-editorial.png"
+        }
+      ],
+      "scene_assets": [
+        {
+          "scene": 1,
+          "component": "four_product_intro",
+          "instruction": "Aventus first, then CDNIM / Supremacy Collector's / Vanguard; no 'best' labels."
+        },
+        {
+          "scene": 2,
+          "component": "relationship_badge",
+          "instruction": "Aventus ↔ CDNIM: clone."
+        },
+        {
+          "scene": 3,
+          "component": "relationship_badge",
+          "instruction": "Supremacy Collector's and Vanguard: visually route toward an 'Absolu direction' reference label, not classic Aventus."
+        },
+        {
+          "scene": 4,
+          "component": "profile_strip",
+          "instruction": "Shared environment: fresh / fruity / woody / smoky; avoid saying identical DNA."
+        },
+        {
+          "scene": 5,
+          "component": "cta_endcard",
+          "instruction": "CTA: 'Aventus-Alternativen prüfen'."
+        }
+      ],
+      "missing_assets": [
+        "No standalone Absolu Aventus visual is required; use a text-only reference label unless an approved image is explicitly added later."
+      ],
+      "production_status": "asset_ready_with_text_reference"
+    },
+    {
+      "content_id": "layton_alternatives_01",
+      "required_product_assets": [
+        {
+          "product_id": "SC-PDM-LAYTON-125",
+          "image_url": "/products/pilot/pdm-layton-editorial.png"
+        },
+        {
+          "product_id": "SC-ORIENTICA-ROYAL-BLEU-80",
+          "image_url": "/products/pilot/orientica-royal-bleu-editorial.png"
+        },
+        {
+          "product_id": "SC-AL-HARAMAIN-DETOUR-NOIR-100",
+          "image_url": "/products/pilot/al-haramain-detour-noir-editorial.png"
+        }
+      ],
+      "scene_assets": [
+        {
+          "scene": 1,
+          "component": "three_product_intro",
+          "instruction": "Layton centered with alternatives left/right."
+        },
+        {
+          "scene": 2,
+          "component": "relationship_badge",
+          "instruction": "Détour Noir → clone."
+        },
+        {
+          "scene": 3,
+          "component": "relationship_badge",
+          "instruction": "Royal Bleu → inspired."
+        },
+        {
+          "scene": 4,
+          "component": "dual_score_bar",
+          "instruction": "Both alternatives: sweetness 9 / spiciness 8; show equality visually."
+        },
+        {
+          "scene": 5,
+          "component": "cta_endcard",
+          "instruction": "CTA: 'Layton-Cluster vergleichen'."
+        }
+      ],
+      "missing_assets": [],
+      "production_status": "asset_ready"
+    },
+    {
+      "content_id": "althair_liquid_brun_01",
+      "required_product_assets": [
+        {
+          "product_id": "SC-PDM-ALTHAIR-125",
+          "image_url": "/products/pilot/pdm-althair-editorial.png"
+        },
+        {
+          "product_id": "SC-FRENCH-AVENUE-LIQUID-BRUN-100",
+          "image_url": "/products/pilot/liquid-brun-editorial.png"
+        }
+      ],
+      "scene_assets": [
+        {
+          "scene": 1,
+          "component": "split_compare",
+          "instruction": "Althaïr vs Liquid Brun with equal visual weight."
+        },
+        {
+          "scene": 2,
+          "component": "profile_strip",
+          "instruction": "sweet / gourmand / creamy / spicy shared direction."
+        },
+        {
+          "scene": 3,
+          "component": "dual_score_bar",
+          "instruction": "Longevity 8.3 vs 8.4; projection 8.1 vs 8.1."
+        },
+        {
+          "scene": 4,
+          "component": "relationship_badge",
+          "instruction": "Clone/high; include 'Original bleibt Option' note."
+        },
+        {
+          "scene": 5,
+          "component": "cta_endcard",
+          "instruction": "CTA: 'Beide Profile vergleichen'."
+        }
+      ],
+      "missing_assets": [],
+      "production_status": "asset_ready"
+    }
+  ]
+}
