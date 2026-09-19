@@ -59,8 +59,18 @@
       ],
       "sources": [
         "https://www.flaconi.de/parfum/chloe/chloe/chloe-chloe-eau-de-parfum.html?variant=80070876-100",
-        "https://www.parfumo.de/Parfums/Chloe/Chloe"
-      ]
+        "https://www.parfumo.de/Parfums/Chloe/Chloe",
+        "https://www.douglas.de/de/p/2010007429"
+      ],
+      "identifiers": {
+        "ean": "3616302038633",
+        "gtin": "3616302038633"
+      },
+      "merchant_snapshot": {
+        "douglas_de": "available",
+        "flaconi_de": "available"
+      },
+      "merchant_snapshot_checked_at": "2026-09-19"
     },
     {
       "candidate_id": "LATTAFA-ECLAIRE-EDP",
