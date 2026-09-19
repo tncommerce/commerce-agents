@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-19",
+  "machine_id": "scentai_media_provider_registry_v1",
+  "purpose": "Provider-neutral media generation capabilities for SCENTAI content production. Providers create drafts/renders only; publishing remains outside this layer.",
+  "active_provider": null,
+  "providers": [
+    {
+      "provider_id": "local_ffmpeg",
+      "type": "local_toolchain",
+      "connection_required": false,
+      "status": "implemented",
+      "capabilities": [
+        "visual_preview_render",
+        "subtitle_burn_in",
+        "voiceover_mux",
+        "technical_media_qa"
+      ],
+      "limitations": [
+        "No voice synthesis capability.",
+        "Requires local access to repository product assets and ffmpeg/Pillow.",
+        "Current ChatGPT GitHub connector cannot execute this local toolchain or upload binary outputs directly."
+      ],
+      "implementation_refs": [
+        "scripts/render_scentai_pilot_previews.py",
+        "scripts/render_scentai_pilot_final.py"
+      ]
+    },
+    {
+      "provider_id": "connected_media_generator",
+      "type": "external_connector",
+      "connection_required": true,
+      "status": "not_connected",
+      "preferred_connector": "Higgsfield",
+      "capabilities_required": [
+        "voice_synthesis",
+        "vertical_video_render",
+        "subtitle_render_or_timing_export",
+        "media_file_return"
+      ],
+      "integration_rule": "Provider-specific credentials and tokens must never be stored in repository state."
+    }
+  ],
+  "global_gates": [
+    "Provider output never changes fragrance claims or product relationships.",
+    "Provider output must use the approved SCENTAI script and tracked content_id.",
+    "Generated or altered bottle visuals must not materially misrepresent the real product.",
+    "Final media must pass SCENTAI technical QA before content review.",
+    "No provider is authorized to publish to social platforms automatically.",
+    "Explicit user approval is required before any publish/upload action."
+  ]
+}
