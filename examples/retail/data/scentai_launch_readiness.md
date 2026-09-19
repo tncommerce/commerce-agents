@@ -169,8 +169,14 @@ Launch smoke-test:
 3. Mark it as owned and confirm it moves out of the wishlist into
    `/sammlung`.
 4. Add a second fragrance and confirm the collection profile renders.
-5. Refresh the browser and confirm the local state persists.
-6. Clear the personal fragrance data and confirm both lists reset.
+5. From the collection, choose "Mit meiner Sammlung beraten lassen".
+6. Confirm the advisor starts only after that explicit click and asks for the
+   missing decision context instead of silently assuming owned fragrances are
+   preferences.
+7. Confirm an already-owned fragrance is not presented as a new-purchase
+   recommendation for that collection-aware request.
+8. Refresh the browser and confirm the local state persists.
+9. Clear the personal fragrance data and confirm both lists reset.
 
 The feature requires no customer account and must remain usable even if
 first-party analytics is unavailable.
