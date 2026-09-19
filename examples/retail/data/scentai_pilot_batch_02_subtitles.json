@@ -1,0 +1,158 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-19",
+  "status": "timing_draft_for_editor",
+  "note": "Scene-aligned subtitle drafts for Pilot Batch 02. Final timings must be conformed to the recorded voiceover waveform before publishing.",
+  "items": [
+    {
+      "content_id": "dupe_battle_imagination_01",
+      "segments": [
+        {
+          "start": 0,
+          "end": 4,
+          "text": "Marwa, Hectic oder Marwa Extrait –\ndrei Imagination-inspirierte Richtungen."
+        },
+        {
+          "start": 4,
+          "end": 9.5,
+          "text": "Marwa bleibt sehr frisch\nund ist deutlich süßer."
+        },
+        {
+          "start": 9.5,
+          "end": 15.5,
+          "text": "Hectic ist genauso frisch,\naber trockener und viel würziger."
+        },
+        {
+          "start": 15.5,
+          "end": 22.5,
+          "text": "Marwa Extrait liegt dazwischen:\nweniger süß, würziger und etwas dichter."
+        },
+        {
+          "start": 22.5,
+          "end": 29,
+          "text": "SCENTAI zeigt dir die Unterschiede,\nstatt alle drei einfach gleichzusetzen."
+        }
+      ]
+    },
+    {
+      "content_id": "layton_alternatives_01",
+      "segments": [
+        {
+          "start": 0,
+          "end": 4,
+          "text": "Layton, Détour Noir oder Royal Bleu?"
+        },
+        {
+          "start": 4,
+          "end": 10,
+          "text": "Die Profile sind erstaunlich ähnlich:\nsüß, würzig, holzig und mäßig frisch."
+        },
+        {
+          "start": 10,
+          "end": 16,
+          "text": "Détour Noir ist bei SCENTAI\nals Clone hinterlegt."
+        },
+        {
+          "start": 16,
+          "end": 22,
+          "text": "Royal Bleu dagegen\nals Inspired."
+        },
+        {
+          "start": 22,
+          "end": 28,
+          "text": "In den Community-Daten liegt Royal Bleu bei\nHaltbarkeit und Ausstrahlung etwas höher."
+        }
+      ]
+    },
+    {
+      "content_id": "althair_liquid_brun_01",
+      "segments": [
+        {
+          "start": 0,
+          "end": 5,
+          "text": "Althaïr und Liquid Brun sind bei SCENTAI\nals Clone-Beziehung mit hoher Confidence hinterlegt."
+        },
+        {
+          "start": 5,
+          "end": 11,
+          "text": "Beide sind sehr süß, gourmandig und würzig,\nmit wenig Frische."
+        },
+        {
+          "start": 11,
+          "end": 17,
+          "text": "Die Unterschiede stecken eher\nin den Details."
+        },
+        {
+          "start": 17,
+          "end": 22,
+          "text": "Althaïr ist holziger eingeordnet,\nLiquid Brun etwas weniger."
+        },
+        {
+          "start": 22,
+          "end": 27,
+          "text": "Vergleiche die Profile direkt,\nstatt nur auf den Namen zu schauen."
+        }
+      ]
+    },
+    {
+      "content_id": "top3_date_01",
+      "segments": [
+        {
+          "start": 0,
+          "end": 4,
+          "text": "Date Night heißt nicht automatisch\nderselbe Duftstil."
+        },
+        {
+          "start": 4,
+          "end": 10.5,
+          "text": "Stronger With You Intensely ist\nextrem süß, gourmandig und würzig."
+        },
+        {
+          "start": 10.5,
+          "end": 17.5,
+          "text": "Dior Homme Intense ist ebenfalls wenig frisch,\naber holziger und deutlich pudriger."
+        },
+        {
+          "start": 17.5,
+          "end": 24,
+          "text": "Valentino Born In Roma Intense bleibt süß,\nist im SCENTAI-Profil aber klar frischer."
+        },
+        {
+          "start": 24,
+          "end": 30,
+          "text": "Drei verschiedene Stimmungen –\nder Duftfinder hilft dir bei der Richtung."
+        }
+      ]
+    },
+    {
+      "content_id": "top3_fresh_01",
+      "segments": [
+        {
+          "start": 0,
+          "end": 4,
+          "text": "Alle drei stehen bei SCENTAI auf maximaler Frische –\naber sie riechen nicht gleich."
+        },
+        {
+          "start": 4,
+          "end": 10,
+          "text": "Imagination ist zitrisch, aquatisch\nund kaum holzig."
+        },
+        {
+          "start": 10,
+          "end": 16,
+          "text": "Tygar kombiniert die Frische\nmit deutlich mehr Holz und Würze."
+        },
+        {
+          "start": 16,
+          "end": 22,
+          "text": "Turathi Blue ist etwas süßer\nund weniger würzig als Tygar."
+        },
+        {
+          "start": 22,
+          "end": 28,
+          "text": "Gleiche Frische, anderer Charakter.\nGenau dafür gibt es den Duftfinder."
+        }
+      ]
+    }
+  ]
+}
