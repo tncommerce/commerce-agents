@@ -81,6 +81,9 @@ For the two provisional candidates:
 - current tracked affiliate offer missing
 - community/performance evidence still provisional
 
+Additional retail-channel blocker:
+- Jean Paul Gaultier Fleur du Mâle (2026): verified current merchant still pending
+
 No product should be promoted by filling any of these fields with guessed data.
 
 ## Next 10-product worklist
