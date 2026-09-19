@@ -1,0 +1,132 @@
+{
+  "version": 1,
+  "generated_at": "2026-09-19",
+  "release_id": "SCENTAI-RELEASE-01",
+  "machine_id": "scentai_image_approval_v1",
+  "policy_ref": "scentai_jarvis_operating_policy.json",
+  "status": "official_source_identity_verified_rights_pending",
+  "source_priority": [
+    "approved_affiliate_feed",
+    "manufacturer_official",
+    "licensed_asset_provider"
+  ],
+  "rules": [
+    "A source page is not itself an approved production image.",
+    "Manufacturer page identity verification does not imply image reuse permission.",
+    "Prefer an approved affiliate-feed image when the affiliate program/feed explicitly permits product-image use.",
+    "Do not use generated bottle lookalikes for live commerce.",
+    "Final visual approval remains a user/human approval gate."
+  ],
+  "products": [
+    {
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "brand": "Lancôme",
+      "name": "La Vie est Belle",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "identifiers": {
+        "ean": "3605533286555",
+        "gtin": "3605533286555"
+      },
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://www.lancome.de/duefte/frauen_parfum/la_vie_est_belle/la_vie_est_belle_eau_de_parfum/3614273088657.html",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Lancôme page lists La Vie est Belle Eau de Parfum in 100 ml."
+      },
+      "image_state": "rights_or_source_check_pending",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "brand": "Parfums de Marly",
+      "name": "Delina",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 75,
+      "identifiers": {
+        "ean": "3700578501998",
+        "gtin": "3700578501998"
+      },
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://parfums-de-marly.com/de/products/delina",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Parfums de Marly page lists Delina in 75 ml."
+      },
+      "image_state": "rights_or_source_check_pending",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+      "brand": "Dior",
+      "name": "Hypnotic Poison",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "identifiers": {
+        "ean": "3348900425309",
+        "gtin": "3348900425309"
+      },
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://www.dior.com/de_de/beauty/products/hypnotic-poison-eau-de-toilette-Y0063401.html",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Dior page lists Hypnotic Poison Eau de Toilette in 100 ml."
+      },
+      "image_state": "rights_or_source_check_pending",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "brand": "Yves Saint Laurent",
+      "name": "Black Opium",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "identifiers": {
+        "ean": "3365440787971",
+        "gtin": "3365440787971"
+      },
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://www.yslbeauty.de/dufte/dufte-fur-sie/black-opium/black-opium-eau-de-parfum/WW-40701YSL.html",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official YSL Beauty page lists Black Opium Eau de Parfum in 90 ml."
+      },
+      "image_state": "rights_or_source_check_pending",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "brand": "Yves Saint Laurent",
+      "name": "Libre",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "identifiers": {
+        "ean": "3614272648425",
+        "gtin": "3614272648425"
+      },
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://www.yslbeauty.de/dufte/dufte-fur-sie/libre/libre-eau-de-parfum/WW-50424YSL.html",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official YSL Beauty page lists Libre Eau de Parfum in 90 ml."
+      },
+      "image_state": "rights_or_source_check_pending",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    }
+  ]
+}
