@@ -187,7 +187,10 @@ def test_acquisition_sources_are_reported_with_sample_status() -> None:
         catalog(),
         acquisition_rows=[
             {
-                "acquisition_source": "duftfinder",
+                "landing_source": "parfum_alternativen_tiktok",
+                "acquisition_source": "tiktok",
+                "campaign_id": "launch01",
+                "content_id": "imagination_dupe_03",
                 "landing_sessions": 12,
                 "consultation_sessions": 8,
                 "recommendation_sessions": 7,
@@ -199,7 +202,10 @@ def test_acquisition_sources_are_reported_with_sample_status() -> None:
                 "landing_to_clickout_pct": 16.67,
             },
             {
-                "acquisition_source": "parfum_geschenkberater",
+                "landing_source": "parfum_geschenkberater_instagram",
+                "acquisition_source": "instagram",
+                "campaign_id": "launch01",
+                "content_id": "gift_guide_01",
                 "landing_sessions": 3,
                 "consultation_sessions": 2,
                 "recommendation_sessions": 2,
@@ -215,7 +221,10 @@ def test_acquisition_sources_are_reported_with_sample_status() -> None:
     )
 
     assert report["acquisition_sources"][0] == {
-        "acquisition_source": "duftfinder",
+        "landing_source": "parfum_alternativen_tiktok",
+        "acquisition_source": "tiktok",
+        "campaign_id": "launch01",
+        "content_id": "imagination_dupe_03",
         "landing_sessions": 12,
         "consultation_sessions": 8,
         "recommendation_sessions": 7,
