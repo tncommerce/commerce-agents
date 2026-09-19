@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "generated_at": "2026-09-19",
+  "source_fingerprint_sha256": "da6451fee84bc953e483099c709845a0151160c6dff0b154a54084240c77b188",
+  "system": "SCENTAI",
+  "control_plane": "commerce_jarvis_master",
+  "overall_state": "work_available",
+  "active_domain": "content",
+  "next_action": "render_and_verify_visual_preview_mp4s",
+  "next_action_class": "auto_allowed",
+  "user_approval_required_now": false,
+  "domains": {
+    "commerce": {
+      "domain": "commerce",
+      "overall_state": "waiting_external_affiliate_decision",
+      "execution_state": "waiting_external",
+      "next_action": "await_affiliate_program_decision",
+      "next_action_class": "auto_allowed",
+      "user_approval_required_now": false,
+      "blockers": [
+        "release_affiliate_program_approval_pending",
+        "release_approved_images_incomplete",
+        "release_tracked_affiliate_offers_incomplete",
+        "release_promotion_gates_incomplete"
+      ]
+    },
+    "content": {
+      "domain": "content",
+      "overall_state": "visual_preview_generation_pending",
+      "execution_state": "work_available",
+      "next_action": "render_and_verify_visual_preview_mp4s",
+      "next_action_class": "auto_allowed",
+      "user_approval_required_now": false,
+      "blockers": [
+        "visual_preview_mp4s_incomplete",
+        "pilot_visual_preview_generation_pending",
+        "voiceover_audio_pending",
+        "subtitle_timing_conformance_pending",
+        "final_video_renders_incomplete"
+      ]
+    }
+  },
+  "release_pipeline": {
+    "release_count": 3,
+    "current_release_id": "SCENTAI-RELEASE-01",
+    "pipeline_state": "blocked_on_current_release"
+  },
+  "safety": {
+    "automatic_spend_allowed": false,
+    "automatic_live_catalog_release_allowed": false,
+    "automatic_social_publish_allowed": false,
+    "secrets_allowed_in_repo_state": false,
+    "high_impact_actions_require_user_approval": true
+  },
+  "operating_rule": "Jarvis may continue non-destructive auto_allowed work in the selected domain while other domains wait on external events. High-impact or publish/live actions always stop at user approval."
+}
