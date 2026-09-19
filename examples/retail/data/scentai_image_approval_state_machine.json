@@ -1,0 +1,141 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-19",
+  "status": "active",
+  "machine_id": "scentai_image_approval_v1",
+  "purpose": "Jarvis-safe lifecycle for production fragrance images used in SCENTAI commerce surfaces.",
+  "states": {
+    "missing": {
+      "approved": false,
+      "live_eligible": false
+    },
+    "candidate_discovered": {
+      "approved": false,
+      "live_eligible": false
+    },
+    "identity_check_pending": {
+      "approved": false,
+      "live_eligible": false
+    },
+    "identity_verified": {
+      "approved": false,
+      "live_eligible": false
+    },
+    "rights_or_source_check_pending": {
+      "approved": false,
+      "live_eligible": false
+    },
+    "review_ready": {
+      "approved": false,
+      "live_eligible": false
+    },
+    "rejected": {
+      "approved": false,
+      "live_eligible": false
+    },
+    "approved_feed_image": {
+      "approved": true,
+      "live_eligible": true
+    },
+    "approved_manufacturer_image": {
+      "approved": true,
+      "live_eligible": true
+    },
+    "approved_licensed_image": {
+      "approved": true,
+      "live_eligible": true
+    },
+    "revoked": {
+      "approved": false,
+      "live_eligible": false
+    }
+  },
+  "transitions": [
+    {
+      "from": "missing",
+      "to": "candidate_discovered",
+      "trigger": "image_candidate_found",
+      "action_class": "auto_allowed"
+    },
+    {
+      "from": "candidate_discovered",
+      "to": "identity_check_pending",
+      "trigger": "candidate_normalized",
+      "action_class": "auto_allowed"
+    },
+    {
+      "from": "identity_check_pending",
+      "to": "identity_verified",
+      "trigger": "canonical_product_match_verified",
+      "action_class": "auto_allowed"
+    },
+    {
+      "from": "identity_check_pending",
+      "to": "rejected",
+      "trigger": "identity_mismatch",
+      "action_class": "auto_allowed"
+    },
+    {
+      "from": "identity_verified",
+      "to": "rights_or_source_check_pending",
+      "trigger": "identity_gate_passed",
+      "action_class": "auto_allowed"
+    },
+    {
+      "from": "rights_or_source_check_pending",
+      "to": "review_ready",
+      "trigger": "approved_source_class_verified",
+      "action_class": "auto_allowed"
+    },
+    {
+      "from": "rights_or_source_check_pending",
+      "to": "rejected",
+      "trigger": "source_or_usage_not_acceptable",
+      "action_class": "auto_allowed"
+    },
+    {
+      "from": "review_ready",
+      "to": "approved_feed_image",
+      "trigger": "explicit_visual_approval_feed_image",
+      "action_class": "approval_required"
+    },
+    {
+      "from": "review_ready",
+      "to": "approved_manufacturer_image",
+      "trigger": "explicit_visual_approval_manufacturer_image",
+      "action_class": "approval_required"
+    },
+    {
+      "from": "review_ready",
+      "to": "approved_licensed_image",
+      "trigger": "explicit_visual_approval_licensed_image",
+      "action_class": "approval_required"
+    },
+    {
+      "from": [
+        "approved_feed_image",
+        "approved_manufacturer_image",
+        "approved_licensed_image"
+      ],
+      "to": "revoked",
+      "trigger": "identity_rights_or_asset_issue_detected",
+      "action_class": "auto_allowed"
+    }
+  ],
+  "candidate_source_classes": [
+    "approved_affiliate_feed",
+    "manufacturer_official",
+    "licensed_asset_provider"
+  ],
+  "hard_rejections": [
+    "wrong_fragrance",
+    "wrong_concentration",
+    "wrong_volume_or_variant",
+    "gift_set_instead_of_bottle",
+    "tester_or_refill_instead_of_canonical_bottle",
+    "legacy_edition_for_current_canonical_product",
+    "generated_bottle_lookalike",
+    "unclear_or_unverified_source_rights"
+  ],
+  "approval_rule": "Final visual approval is a human/user approval gate. Jarvis may discover, normalize, validate and prepare candidates but may not set an approved_* state by itself."
+}
