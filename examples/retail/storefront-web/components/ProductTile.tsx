@@ -74,7 +74,7 @@ export function ProductImage({ product, className = "" }: { product: Product; cl
 
           <div className="flex h-20 w-16 items-center justify-center rounded-[18px] border border-white/80 bg-white/70 shadow-md backdrop-blur-sm">
             <span className="text-[9px] font-semibold tracking-[0.18em] text-(--ink)/75">
-              SCENTAI
+              DUFYND
             </span>
           </div>
         </div>
