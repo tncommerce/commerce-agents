@@ -1,0 +1,139 @@
+{
+  "version": 1,
+  "generated_at": "2026-09-19",
+  "release_id": "SCENTAI-RELEASE-01",
+  "policy_ref": "scentai_jarvis_operating_policy.json",
+  "image_machine_ref": "scentai_image_approval_state_machine.json",
+  "affiliate_machine_ref": "scentai_affiliate_activation_state_machine.json",
+  "summary": {
+    "release_size": 5,
+    "mapping_ready": 5,
+    "image_identity_source_verified": 5,
+    "approved_images": 0,
+    "current_tracked_affiliate_offers": 0,
+    "promotion_ready": 0
+  },
+  "release_write_policy": "All-or-nothing. Do not partially promote this manifest. Use a dry-run first; write only when all five products pass every promotion gate.",
+  "rows": [
+    {
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "candidate_id": "LANCOME-LA-VIE-EST-BELLE-EDP",
+      "brand": "Lancôme",
+      "name": "La Vie est Belle",
+      "mapping_count": 2,
+      "resolved_mapping_count": 2,
+      "image_state": "rights_or_source_check_pending",
+      "affiliate_offer_count": 0,
+      "gates": {
+        "non_provisional_community_data": true,
+        "resolved_merchant_product_mapping": true,
+        "approved_product_image": false,
+        "current_tracked_affiliate_offer": false,
+        "staging_recommendation_qa": true,
+        "not_already_live": true
+      },
+      "blockers": [
+        "approved_product_image",
+        "current_tracked_affiliate_offer"
+      ],
+      "promotion_ready": false,
+      "next_unblocking_event": "approved_affiliate_feed_or_verified_asset_usage_then_manual_visual_approval"
+    },
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "candidate_id": "PDM-DELINA-EDP",
+      "brand": "Parfums de Marly",
+      "name": "Delina",
+      "mapping_count": 2,
+      "resolved_mapping_count": 2,
+      "image_state": "rights_or_source_check_pending",
+      "affiliate_offer_count": 0,
+      "gates": {
+        "non_provisional_community_data": true,
+        "resolved_merchant_product_mapping": true,
+        "approved_product_image": false,
+        "current_tracked_affiliate_offer": false,
+        "staging_recommendation_qa": true,
+        "not_already_live": true
+      },
+      "blockers": [
+        "approved_product_image",
+        "current_tracked_affiliate_offer"
+      ],
+      "promotion_ready": false,
+      "next_unblocking_event": "approved_affiliate_feed_or_verified_asset_usage_then_manual_visual_approval"
+    },
+    {
+      "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+      "candidate_id": "DIOR-HYPNOTIC-POISON-EDT",
+      "brand": "Dior",
+      "name": "Hypnotic Poison",
+      "mapping_count": 3,
+      "resolved_mapping_count": 3,
+      "image_state": "rights_or_source_check_pending",
+      "affiliate_offer_count": 0,
+      "gates": {
+        "non_provisional_community_data": true,
+        "resolved_merchant_product_mapping": true,
+        "approved_product_image": false,
+        "current_tracked_affiliate_offer": false,
+        "staging_recommendation_qa": true,
+        "not_already_live": true
+      },
+      "blockers": [
+        "approved_product_image",
+        "current_tracked_affiliate_offer"
+      ],
+      "promotion_ready": false,
+      "next_unblocking_event": "approved_affiliate_feed_or_verified_asset_usage_then_manual_visual_approval"
+    },
+    {
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "candidate_id": "YSL-BLACK-OPIUM-EDP",
+      "brand": "Yves Saint Laurent",
+      "name": "Black Opium",
+      "mapping_count": 2,
+      "resolved_mapping_count": 2,
+      "image_state": "rights_or_source_check_pending",
+      "affiliate_offer_count": 0,
+      "gates": {
+        "non_provisional_community_data": true,
+        "resolved_merchant_product_mapping": true,
+        "approved_product_image": false,
+        "current_tracked_affiliate_offer": false,
+        "staging_recommendation_qa": true,
+        "not_already_live": true
+      },
+      "blockers": [
+        "approved_product_image",
+        "current_tracked_affiliate_offer"
+      ],
+      "promotion_ready": false,
+      "next_unblocking_event": "approved_affiliate_feed_or_verified_asset_usage_then_manual_visual_approval"
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "candidate_id": "YSL-LIBRE-EDP",
+      "brand": "Yves Saint Laurent",
+      "name": "Libre",
+      "mapping_count": 2,
+      "resolved_mapping_count": 2,
+      "image_state": "rights_or_source_check_pending",
+      "affiliate_offer_count": 0,
+      "gates": {
+        "non_provisional_community_data": true,
+        "resolved_merchant_product_mapping": true,
+        "approved_product_image": false,
+        "current_tracked_affiliate_offer": false,
+        "staging_recommendation_qa": true,
+        "not_already_live": true
+      },
+      "blockers": [
+        "approved_product_image",
+        "current_tracked_affiliate_offer"
+      ],
+      "promotion_ready": false,
+      "next_unblocking_event": "approved_affiliate_feed_or_verified_asset_usage_then_manual_visual_approval"
+    }
+  ]
+}
