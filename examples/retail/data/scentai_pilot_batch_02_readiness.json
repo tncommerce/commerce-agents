@@ -1,7 +1,7 @@
 {
   "version": 1,
   "updated_at": "2026-09-19",
-  "status": "production_data_ready_renderer_extension_pending",
+  "status": "production_pipeline_ready_assets_pending",
   "campaign_id": "launch01",
   "batch_id": "pilot_batch_02",
   "summary": {
@@ -14,15 +14,25 @@
     "voiceover_scripts_ready": 5,
     "visual_preview_mp4s_ready": 0,
     "final_video_renders_ready": 0,
-    "batch_renderer_ready": false
+    "batch_renderer_ready": true
   },
   "remaining_before_publish": [
-    "Extend the visual preview renderer to Pilot Batch 02 and generate five preview MP4 files",
+    "Generate and verify the five Batch 02 visual preview MP4 files",
     "Record or generate final German voiceover audio",
     "Conform subtitle timing to final voiceover waveform and confirm timing",
     "Render each final 9:16 video and run technical QA",
     "Perform final mobile content QA",
     "Obtain explicit user publish approval",
     "Upload using the correct channel-specific tracked link"
+  ],
+  "shared_ready": [
+    "Pilot Batch 02 scripts stored in scentai_pilot_batch_02.json",
+    "All 14 required editorial product assets verified in the repository",
+    "15 channel-specific tracked links ready",
+    "TikTok/Instagram/YouTube copy ready for all five creatives",
+    "Subtitle timing drafts and SRT files ready",
+    "Voiceover production contract ready",
+    "Shared preview renderer supports --batch batch02",
+    "Dedicated Batch 02 preview workflow exists"
   ]
 }
