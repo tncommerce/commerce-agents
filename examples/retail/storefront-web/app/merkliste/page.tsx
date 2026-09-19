@@ -8,7 +8,7 @@ import { LIVE_FRAGRANCES } from "@/lib/fragranceCatalog";
 export const metadata: Metadata = {
   title: "Meine Merkliste",
   description:
-    "Deine lokal gespeicherte SCENTAI Merkliste für interessante Parfums.",
+    "Deine lokal gespeicherte DUFYND Merkliste für interessante Parfums.",
   robots: {
     index: false,
     follow: true,
@@ -26,7 +26,7 @@ export default function WishlistPage() {
           href="/"
           className="inline-flex items-center gap-2 text-[13px] font-semibold text-(--accent-ink) hover:underline"
         >
-          ← Zurück zu SCENTAI
+          ← Zurück zu DUFYND
         </a>
         <FragranceLibraryHub
           mode="wishlist"
