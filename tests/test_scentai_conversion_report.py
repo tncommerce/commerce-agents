@@ -269,3 +269,37 @@ def test_personal_library_engagement_is_labeled_and_sampled() -> None:
     second = report["personal_library_engagement"][1]
     assert second["product"] == "Brand Two"
     assert second["sample_status"] == "early_signal"
+
+
+
+def test_retention_summary_preserves_page_and_advisor_sessions() -> None:
+    report = build_conversion_report(
+        [],
+        [],
+        [],
+        [],
+        catalog(),
+        retention_rows=[
+            {
+                "wishlist_page_views": 14,
+                "wishlist_page_sessions": 10,
+                "collection_page_views": 9,
+                "collection_page_sessions": 7,
+                "wishlist_add_sessions": 8,
+                "collection_add_sessions": 5,
+                "collection_advisor_sessions": 3,
+                "last_retention_event_at": "2026-09-19T07:00:00Z",
+            }
+        ],
+    )
+
+    assert report["retention_summary"] == {
+        "wishlist_page_views": 14,
+        "wishlist_page_sessions": 10,
+        "collection_page_views": 9,
+        "collection_page_sessions": 7,
+        "wishlist_add_sessions": 8,
+        "collection_add_sessions": 5,
+        "collection_advisor_sessions": 3,
+        "last_retention_event_at": "2026-09-19T07:00:00Z",
+    }
