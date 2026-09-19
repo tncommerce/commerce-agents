@@ -26,17 +26,18 @@ CJ Affiliate:
 
 ## Cutover sequence
 
-After https://dufynd.de is publicly reachable with DUFYND branding:
+After https://dufynd.de is publicly reachable with DUFYND branding and kontakt@dufynd.de is active:
 
 1. Update the Awin publisher/promotional-site name from SCENTAI to DUFYND.
 2. Update the Awin promotional-site URL to https://dufynd.de.
 3. Keep the same TNCommerce publisher/account identity.
 4. Update the CJ website/property name and URL to DUFYND / https://dufynd.de.
-5. Do not cancel pending merchant applications.
-6. If a network or advertiser provides a note/contact field, use a short factual notice:
+5. Where the network profile exposes a public/business contact email, use kontakt@dufynd.de.
+6. Do not cancel pending merchant applications.
+7. If a network or advertiser provides a note/contact field, use a short factual notice:
    "SCENTAI wurde vor dem öffentlichen Launch in DUFYND umbenannt. Betreiber TNCommerce und Geschäftsmodell bleiben unverändert. Neue Website: https://dufynd.de."
-7. Recheck every pending program after the profile update and record any advertiser response.
-8. Activate tracked links only after each merchant program is approved.
+8. Recheck every pending program after the profile update and record any advertiser response.
+9. Activate tracked links only after each merchant program is approved.
 
 ## Guardrails
 
