@@ -208,3 +208,20 @@ Compliance hardening applied:
 Open operational item before broad public acquisition:
 - replace the Gmail contact address with a DUFYND-domain mailbox when available
 - add VAT ID or Wirtschafts-ID to the Impressum only if/when one is actually issued and legally required
+
+
+## Live smoke test — mobile fragrance detail
+
+Verified manually on 2026-09-19 on the public https://dufynd.de domain:
+- DUFYND header and branding render correctly on iPhone Safari
+- fragrance hero image is compact enough for mobile while retaining product prominence
+- product metadata chips wrap cleanly
+- primary offer and alternative CTAs remain visible above the fold
+- wishlist and collection controls fit without horizontal overflow
+- Community, longevity and projection metrics render in a compact three-column row
+- merchant-offer section begins immediately after the key metrics
+- mobile detail-page structure is considered launch-ready for the MVP
+
+Remaining mobile polish:
+- fragrance-note section uses collapsible mobile presentation with note-category icons
+- continue visual QA when more products and live merchant offers are added
