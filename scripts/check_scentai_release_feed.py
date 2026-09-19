@@ -7,8 +7,11 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 EXAMPLES_DIR = REPO_ROOT / "examples"
-if str(EXAMPLES_DIR) not in sys.path:
-    sys.path.insert(0, str(EXAMPLES_DIR))
+
+for import_root in (REPO_ROOT, EXAMPLES_DIR):
+    import_path = str(import_root)
+    if import_path not in sys.path:
+        sys.path.insert(0, import_path)
 
 from retail.api.merchant_feed_reader import (  # noqa: E402
     DEFAULT_MAX_FEED_BYTES,
