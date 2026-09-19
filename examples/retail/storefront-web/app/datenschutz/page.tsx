@@ -6,7 +6,7 @@ import { legal, legalLocation } from "@/lib/legal";
 
 export const metadata = {
   title: "Datenschutz",
-  description: "Datenschutzhinweise für die Nutzung von SCENTAI.",
+  description: "Datenschutzhinweise für die Nutzung von DUFYND.",
   alternates: {
     canonical: "/datenschutz",
   },
@@ -22,7 +22,7 @@ export default function DatenschutzPage() {
       <div className="mx-auto max-w-3xl">
         <article className="rounded-2xl border border-(--line) bg-(--card) p-6 shadow-(--shadow-sm) sm:p-8">
           <a href="/" className="text-[13px] font-semibold text-(--accent-ink) hover:underline">
-            ← Zurück zu SCENTAI
+            ← Zurück zu DUFYND
           </a>
 
           <h1 className="mt-5 text-3xl font-semibold tracking-[-0.03em]">Datenschutzerklärung</h1>
@@ -56,7 +56,7 @@ export default function DatenschutzPage() {
             <section>
               <h2 className="font-semibold text-(--ink)">2. Hosting und Bereitstellung der Website</h2>
               <p className="mt-1">
-                SCENTAI wird über Render bereitgestellt. Beim Aufruf der Website können technisch
+                DUFYND wird über Render bereitgestellt. Beim Aufruf der Website können technisch
                 notwendige Verbindungsdaten verarbeitet werden, insbesondere IP-Adresse, Zeitpunkt
                 des Zugriffs, angeforderte Ressource und technische Angaben zum verwendeten Browser
                 oder Endgerät. Diese Verarbeitung dient der sicheren und zuverlässigen Bereitstellung
@@ -77,15 +77,15 @@ export default function DatenschutzPage() {
             </section>
 
             <section>
-              <h2 className="font-semibold text-(--ink)">3. Nutzung der SCENTAI-Beratung</h2>
+              <h2 className="font-semibold text-(--ink)">3. Nutzung der DUFYND-Beratung</h2>
               <p className="mt-1">
                 Wenn du die Duftberatung verwendest, werden deine Eingaben sowie der für die laufende
-                Unterhaltung erforderliche Gesprächskontext verarbeitet, damit SCENTAI deine Anfrage
+                Unterhaltung erforderliche Gesprächskontext verarbeitet, damit DUFYND deine Anfrage
                 beantworten und passende Produkte darstellen kann. Bitte übermittle in der Beratung
                 keine sensiblen oder für die Duftempfehlung nicht erforderlichen personenbezogenen Daten.
               </p>
               <p className="mt-2">
-                Für die Generierung der Antworten nutzt SCENTAI die Anthropic API. Dabei werden die für
+                Für die Generierung der Antworten nutzt DUFYND die Anthropic API. Dabei werden die für
                 die Bearbeitung erforderlichen Inhalte an Anthropic übermittelt. Anthropic gibt für die
                 kommerzielle API standardmäßig an, Ein- und Ausgaben innerhalb von 30 Tagen zu löschen,
                 soweit keine abweichende Vereinbarung, gesetzliche Pflicht oder Sicherheitsausnahme greift.
@@ -107,11 +107,11 @@ export default function DatenschutzPage() {
             <section>
               <h2 className="font-semibold text-(--ink)">4. Sitzungen und Gesprächsverlauf</h2>
               <p className="mt-1">
-                Für die technische Durchführung einer Beratung erzeugt SCENTAI eine zufällige Sitzungs-ID.
+                Für die technische Durchführung einer Beratung erzeugt DUFYND eine zufällige Sitzungs-ID.
                 Sie ist kein Kundenkonto und keine dauerhafte werbliche Nutzerkennung. Der Gesprächsverlauf
                 kann für die Dauer dieser technischen Sitzung im Serverprozess vorgehalten werden. Für die
                 zusammenhängende, pseudonymisierte Nutzungsstatistik beim Wechsel zwischen Beratung,
-                Duftdetail und Vergleich erzeugt SCENTAI zusätzlich eine separate zufällige Analyse-Sitzungskennung.
+                Duftdetail und Vergleich erzeugt DUFYND zusätzlich eine separate zufällige Analyse-Sitzungskennung.
                 Diese kann für die Dauer der Browser-Sitzung im sessionStorage des jeweiligen Tabs gespeichert
                 werden; die eigentliche technische Beratungs-Sitzungs-ID wird dafür nicht dauerhaft im Browser
                 abgelegt. Eine serverseitige dauerhafte persönliche Duft-Memory-Funktion ist im aktuellen
@@ -119,16 +119,16 @@ export default function DatenschutzPage() {
               </p>
               <p className="mt-2">
                 Die optionale Merkliste und Duftsammlung speichern ausschließlich die Produkt-IDs der von dir
-                ausgewählten SCENTAI-Düfte im localStorage deines Browsers. Diese Listen werden nicht als
-                Kundenkonto auf dem SCENTAI-Server gespeichert und nicht automatisch zwischen Geräten
+                ausgewählten DUFYND-Düfte im localStorage deines Browsers. Diese Listen werden nicht als
+                Kundenkonto auf dem DUFYND-Server gespeichert und nicht automatisch zwischen Geräten
                 synchronisiert. Du kannst die lokal gespeicherten Duftdaten jederzeit über die Merkliste oder
                 Sammlung löschen.
               </p>
               <p className="mt-2">
                 Wenn du in deiner Sammlung ausdrücklich „Mit meiner Sammlung beraten lassen“ auswählst,
-                erstellt SCENTAI im Browser eine kompakte Zusammenfassung der gespeicherten Düfte und
+                erstellt DUFYND im Browser eine kompakte Zusammenfassung der gespeicherten Düfte und
                 ihrer bereits im Katalog vorhandenen Profilwerte. Diese Zusammenfassung wird für die von
-                dir gestartete Beratung an den SCENTAI-Advisor und damit im Rahmen der Antwortgenerierung
+                dir gestartete Beratung an den DUFYND-Advisor und damit im Rahmen der Antwortgenerierung
                 an die Anthropic API übermittelt. Die Übergabe erfolgt nur nach dieser ausdrücklichen
                 Aktion und wird nicht als dauerhaftes Nutzerprofil gespeichert.
               </p>
@@ -137,7 +137,7 @@ export default function DatenschutzPage() {
             <section>
               <h2 className="font-semibold text-(--ink)">5. Nutzungsstatistik und Händlerlinks</h2>
               <p className="mt-1">
-                Für die interne Produktverbesserung erfasst SCENTAI im MVP eigene Nutzungsereignisse,
+                Für die interne Produktverbesserung erfasst DUFYND im MVP eigene Nutzungsereignisse,
                 zum Beispiel Seitenaufruf, Start einer Beratung, angezeigte Empfehlungen, Öffnen einer
                 Produktansicht, Duftvergleiche, Katalogsuchen, Änderungen an Merkliste oder Sammlung und
                 Händler-Clickouts. Bei Merkliste- und Sammlungsereignissen wird nur die betroffene Produkt-ID
@@ -146,14 +146,14 @@ export default function DatenschutzPage() {
                 mit der Trefferzahl
                 gespeichert werden; E-Mail-artige Eingaben und lange nummernartige Eingaben werden hierfür
                 verworfen. Zusätzlich können Produkt-ID, Vergleichsprodukt, Empfehlungsposition und die
-                jeweilige SCENTAI-Oberfläche gespeichert werden. Beratungstexte, Namen, E-Mail-Adressen,
+                jeweilige DUFYND-Oberfläche gespeichert werden. Beratungstexte, Namen, E-Mail-Adressen,
                 IP-Adressen oder Browser-Fingerprints werden nicht in den Analyse-Datensatz geschrieben.
                 Die technische Sitzungs-ID wird vor der Speicherung in einen verkürzten Einweg-Hash
                 umgewandelt, damit Ereignisse innerhalb einer Sitzung zusammengefasst werden können, ohne
                 die ursprüngliche Sitzungs-ID im Analyseprotokoll zu speichern.
               </p>
               <p className="mt-2">
-                Die pseudonymisierten Analyseereignisse werden für die interne Auswertung in der von SCENTAI
+                Die pseudonymisierten Analyseereignisse werden für die interne Auswertung in der von DUFYND
                 eingesetzten Supabase-Datenbankinfrastruktur gespeichert. Anbieter ist Supabase, Inc. Nach den
                 veröffentlichten Datenschutzinformationen verarbeitet Supabase Kundendaten im Rahmen des
                 Dienstes grundsätzlich als Auftragsverarbeiter. Weitere Informationen findest du in der{" "}
@@ -165,10 +165,10 @@ export default function DatenschutzPage() {
                 >
                   Datenschutzerklärung von Supabase
                 </a>
-                . Zusätzlich protokolliert SCENTAI beim Öffnen eines Händlerlinks einen Clickout-Datensatz mit
+                . Zusätzlich protokolliert DUFYND beim Öffnen eines Händlerlinks einen Clickout-Datensatz mit
                 Zeitpunkt, Angebot, Produkt, Händler, Netzwerk und der Information, ob ein Partnerlink verwendet
                 wurde. Der eigentliche Kauf findet beim Händler statt. Auf dessen Website gelten anschließend
-                die dortigen Datenschutz- und Trackingregeln. Partnerlinks werden bei SCENTAI entsprechend
+                die dortigen Datenschutz- und Trackingregeln. Partnerlinks werden bei DUFYND entsprechend
                 gekennzeichnet.
               </p>
             </section>
@@ -176,7 +176,7 @@ export default function DatenschutzPage() {
             <section>
               <h2 className="font-semibold text-(--ink)">6. Cookies und Tracking</h2>
               <p className="mt-1">
-                SCENTAI setzt derzeit keine Google-Analytics-, Meta-Pixel- oder vergleichbaren externen
+                DUFYND setzt derzeit keine Google-Analytics-, Meta-Pixel- oder vergleichbaren externen
                 Werbetracker ein und verwendet für die oben beschriebene interne Nutzungsstatistik keine
                 dauerhafte werbliche Nutzerkennung. Für die optionale Merkliste und Duftsammlung wird
                 funktionaler localStorage genutzt, damit deine Auswahl auf demselben Gerät erhalten bleibt.
@@ -189,7 +189,7 @@ export default function DatenschutzPage() {
             <section>
               <h2 className="font-semibold text-(--ink)">7. Rechtsgrundlagen</h2>
               <p className="mt-1">
-                Soweit die Verarbeitung erforderlich ist, um die von dir angeforderte SCENTAI-Beratung
+                Soweit die Verarbeitung erforderlich ist, um die von dir angeforderte DUFYND-Beratung
                 bereitzustellen, erfolgt sie auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO. Technische
                 Sicherheits-, Betriebs- und Missbrauchsschutzmaßnahmen sowie die datensparsame interne
                 Auswertung pseudonymisierter Nutzungsereignisse und Händler-Clickouts stützen wir, soweit
@@ -216,7 +216,7 @@ export default function DatenschutzPage() {
                 Personenbezogene Daten werden nur so lange gespeichert, wie dies für den jeweiligen Zweck
                 erforderlich ist oder gesetzliche Aufbewahrungspflichten bestehen. Technische Sitzungsdaten
                 des MVP sind nicht als dauerhaftes Kundenkonto ausgelegt. Lokal gespeicherte Merkliste- und
-                Sammlungsdaten bleiben grundsätzlich im Browser erhalten, bis du sie in SCENTAI löschst oder
+                Sammlungsdaten bleiben grundsätzlich im Browser erhalten, bis du sie in DUFYND löschst oder
                 die Browser-/Websitedaten entfernst. Für Daten, die von externen Dienstleistern verarbeitet
                 werden, gelten zusätzlich deren dokumentierte Aufbewahrungsfristen.
               </p>
@@ -246,7 +246,7 @@ export default function DatenschutzPage() {
               <h2 className="font-semibold text-(--ink)">11. Änderungen dieser Datenschutzerklärung</h2>
               <p className="mt-1">
                 Wir passen diese Datenschutzerklärung an, wenn sich Funktionen, Dienstleister oder die
-                rechtlichen Rahmenbedingungen von SCENTAI ändern.
+                rechtlichen Rahmenbedingungen von DUFYND ändern.
               </p>
             </section>
           </div>
