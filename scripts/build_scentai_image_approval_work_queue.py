@@ -109,10 +109,21 @@ def build_queue(
                 candidate.get("image_state")
                 or "rights_or_source_check_pending"
             )
-            blockers = [
-                "approved_product_image_missing",
-                "asset_usage_or_feed_rights_not_verified",
-            ]
+            if image_state == "identity_check_pending":
+                blockers = [
+                    "approved_product_image_missing",
+                    "exact_variant_identity_not_verified",
+                ]
+            elif image_state == "review_ready":
+                blockers = [
+                    "approved_product_image_missing",
+                    "manual_visual_approval_pending",
+                ]
+            else:
+                blockers = [
+                    "approved_product_image_missing",
+                    "asset_usage_or_feed_rights_not_verified",
+                ]
             next_action = str(
                 candidate.get("next_action")
                 or (
@@ -145,44 +156,54 @@ def build_queue(
             row["candidate_source"] = candidate.get(
                 "candidate_source"
             )
-            row["audit_trail"] = [
+            verified_at = candidate.get(
+                "candidate_source",
+                {},
+            ).get("verified_at")
+            audit_trail = [
                 {
-                    "at": candidate.get(
-                        "candidate_source",
-                        {},
-                    ).get("verified_at"),
+                    "at": verified_at,
                     "from": "missing",
                     "to": "candidate_discovered",
                     "trigger": "manufacturer_source_found",
                 },
                 {
-                    "at": candidate.get(
-                        "candidate_source",
-                        {},
-                    ).get("verified_at"),
+                    "at": verified_at,
                     "from": "candidate_discovered",
                     "to": "identity_check_pending",
                     "trigger": "candidate_normalized",
                 },
-                {
-                    "at": candidate.get(
-                        "candidate_source",
-                        {},
-                    ).get("verified_at"),
-                    "from": "identity_check_pending",
-                    "to": "identity_verified",
-                    "trigger": "exact_variant_verified",
-                },
-                {
-                    "at": candidate.get(
-                        "candidate_source",
-                        {},
-                    ).get("verified_at"),
-                    "from": "identity_verified",
-                    "to": "rights_or_source_check_pending",
-                    "trigger": "identity_gate_passed",
-                },
             ]
+            if image_state in {
+                "rights_or_source_check_pending",
+                "review_ready",
+            }:
+                audit_trail.extend(
+                    [
+                        {
+                            "at": verified_at,
+                            "from": "identity_check_pending",
+                            "to": "identity_verified",
+                            "trigger": "exact_variant_verified",
+                        },
+                        {
+                            "at": verified_at,
+                            "from": "identity_verified",
+                            "to": "rights_or_source_check_pending",
+                            "trigger": "identity_gate_passed",
+                        },
+                    ]
+                )
+            if image_state == "review_ready":
+                audit_trail.append(
+                    {
+                        "at": verified_at,
+                        "from": "rights_or_source_check_pending",
+                        "to": "review_ready",
+                        "trigger": "approved_source_class_verified",
+                    }
+                )
+            row["audit_trail"] = audit_trail
 
         items.append(row)
 
@@ -265,6 +286,11 @@ def build_queue(
                 for item in items
                 if item["image_state"]
                 == "rights_or_source_check_pending"
+            ),
+            "identity_check_pending": sum(
+                1
+                for item in items
+                if item["image_state"] == "identity_check_pending"
             ),
         },
         "items": items,
