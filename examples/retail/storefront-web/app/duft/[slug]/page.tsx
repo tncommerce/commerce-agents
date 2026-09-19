@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import FragranceOffers from "@/components/FragranceOffers";
+import FragranceSaveControls from "@/components/FragranceSaveControls";
 import {
   LIVE_FRAGRANCES,
   comparisonPath,
@@ -244,12 +245,20 @@ export default async function FragrancePage({
               SCENTAI
             </span>
           </a>
-          <a
-            href="/"
-            className="rounded-xl border border-(--line) px-3 py-2 text-[12px] font-semibold text-(--ink) transition hover:border-(--ink)"
-          >
-            Duftberatung öffnen
-          </a>
+          <div className="flex items-center gap-2">
+            <a
+              href="/sammlung"
+              className="hidden rounded-xl border border-(--line) px-3 py-2 text-[12px] font-semibold text-(--ink) transition hover:border-(--ink) sm:inline-flex"
+            >
+              Meine Sammlung
+            </a>
+            <a
+              href="/"
+              className="rounded-xl border border-(--line) px-3 py-2 text-[12px] font-semibold text-(--ink) transition hover:border-(--ink)"
+            >
+              Duftberatung öffnen
+            </a>
+          </div>
         </div>
       </header>
 
@@ -340,6 +349,15 @@ export default async function FragrancePage({
                   Alternativen ansehen
                 </a>
               ) : null}
+            </div>
+
+            <div className="mt-3">
+              <FragranceSaveControls
+                productId={fragrance.product_id}
+              />
+              <p className="mt-1.5 text-[10.5px] leading-4 text-(--ink-soft)">
+                Merkliste und Sammlung werden nur lokal auf diesem Gerät gespeichert.
+              </p>
             </div>
 
             <div className="mt-2 text-[10.5px] leading-4 text-(--ink-soft)">
