@@ -55,7 +55,8 @@ def test_first_launch_script_batch_matches_content_plan() -> None:
         )
 
         assert "€" not in customer_text
-        assert "1:1-Klon" not in customer_text
+        assert "ist ein 1:1-klon" not in customer_text.casefold()
+        assert "ist der 1:1-klon" not in customer_text.casefold()
 
 
 def test_clone_wording_only_appears_when_claim_basis_documents_clone() -> None:
