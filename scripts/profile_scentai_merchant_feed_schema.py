@@ -77,7 +77,7 @@ def profile_feed_rows(rows: list[dict]) -> dict[str, Any]:
         {
             str(key)
             for row in rows
-            for key in row.keys()
+            for key in row
         }
     )
 
