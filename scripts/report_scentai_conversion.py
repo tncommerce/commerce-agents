@@ -374,7 +374,8 @@ def build_conversion_report(
         "advisor_positions": positions,
         "clickout_surfaces": surfaces,
         "acquisition_sources": acquisition_sources,
-        "personal_library_engagement": (library_engagement[:limit]),
+        "personal_library_engagement": library_engagement[:limit],
+        "retention_summary": retention_summary,
     }
 
 
