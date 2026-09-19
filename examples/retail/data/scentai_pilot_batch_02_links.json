@@ -1,0 +1,115 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-19",
+  "base_url": "https://scentai-xxya.onrender.com",
+  "campaign_id": "launch01",
+  "link_count": 15,
+  "note": "Channel-specific first-party attribution links for SCENTAI Pilot Batch 02.",
+  "links": [
+    {
+      "campaign_id": "launch01",
+      "content_id": "dupe_battle_imagination_01",
+      "channel": "tiktok",
+      "landing_path": "/parfum-alternativen",
+      "url": "https://scentai-xxya.onrender.com/parfum-alternativen?src=tiktok&cmp=launch01&content=dupe_battle_imagination_01"
+    },
+    {
+      "campaign_id": "launch01",
+      "content_id": "dupe_battle_imagination_01",
+      "channel": "instagram",
+      "landing_path": "/parfum-alternativen",
+      "url": "https://scentai-xxya.onrender.com/parfum-alternativen?src=instagram&cmp=launch01&content=dupe_battle_imagination_01"
+    },
+    {
+      "campaign_id": "launch01",
+      "content_id": "dupe_battle_imagination_01",
+      "channel": "youtube",
+      "landing_path": "/parfum-alternativen",
+      "url": "https://scentai-xxya.onrender.com/parfum-alternativen?src=youtube&cmp=launch01&content=dupe_battle_imagination_01"
+    },
+    {
+      "campaign_id": "launch01",
+      "content_id": "layton_alternatives_01",
+      "channel": "tiktok",
+      "landing_path": "/parfum-alternativen",
+      "url": "https://scentai-xxya.onrender.com/parfum-alternativen?src=tiktok&cmp=launch01&content=layton_alternatives_01"
+    },
+    {
+      "campaign_id": "launch01",
+      "content_id": "layton_alternatives_01",
+      "channel": "instagram",
+      "landing_path": "/parfum-alternativen",
+      "url": "https://scentai-xxya.onrender.com/parfum-alternativen?src=instagram&cmp=launch01&content=layton_alternatives_01"
+    },
+    {
+      "campaign_id": "launch01",
+      "content_id": "layton_alternatives_01",
+      "channel": "youtube",
+      "landing_path": "/parfum-alternativen",
+      "url": "https://scentai-xxya.onrender.com/parfum-alternativen?src=youtube&cmp=launch01&content=layton_alternatives_01"
+    },
+    {
+      "campaign_id": "launch01",
+      "content_id": "althair_liquid_brun_01",
+      "channel": "tiktok",
+      "landing_path": "/parfum-alternativen",
+      "url": "https://scentai-xxya.onrender.com/parfum-alternativen?src=tiktok&cmp=launch01&content=althair_liquid_brun_01"
+    },
+    {
+      "campaign_id": "launch01",
+      "content_id": "althair_liquid_brun_01",
+      "channel": "instagram",
+      "landing_path": "/parfum-alternativen",
+      "url": "https://scentai-xxya.onrender.com/parfum-alternativen?src=instagram&cmp=launch01&content=althair_liquid_brun_01"
+    },
+    {
+      "campaign_id": "launch01",
+      "content_id": "althair_liquid_brun_01",
+      "channel": "youtube",
+      "landing_path": "/parfum-alternativen",
+      "url": "https://scentai-xxya.onrender.com/parfum-alternativen?src=youtube&cmp=launch01&content=althair_liquid_brun_01"
+    },
+    {
+      "campaign_id": "launch01",
+      "content_id": "top3_date_01",
+      "channel": "tiktok",
+      "landing_path": "/duftfinder",
+      "url": "https://scentai-xxya.onrender.com/duftfinder?src=tiktok&cmp=launch01&content=top3_date_01"
+    },
+    {
+      "campaign_id": "launch01",
+      "content_id": "top3_date_01",
+      "channel": "instagram",
+      "landing_path": "/duftfinder",
+      "url": "https://scentai-xxya.onrender.com/duftfinder?src=instagram&cmp=launch01&content=top3_date_01"
+    },
+    {
+      "campaign_id": "launch01",
+      "content_id": "top3_date_01",
+      "channel": "youtube",
+      "landing_path": "/duftfinder",
+      "url": "https://scentai-xxya.onrender.com/duftfinder?src=youtube&cmp=launch01&content=top3_date_01"
+    },
+    {
+      "campaign_id": "launch01",
+      "content_id": "top3_fresh_01",
+      "channel": "tiktok",
+      "landing_path": "/duftfinder",
+      "url": "https://scentai-xxya.onrender.com/duftfinder?src=tiktok&cmp=launch01&content=top3_fresh_01"
+    },
+    {
+      "campaign_id": "launch01",
+      "content_id": "top3_fresh_01",
+      "channel": "instagram",
+      "landing_path": "/duftfinder",
+      "url": "https://scentai-xxya.onrender.com/duftfinder?src=instagram&cmp=launch01&content=top3_fresh_01"
+    },
+    {
+      "campaign_id": "launch01",
+      "content_id": "top3_fresh_01",
+      "channel": "youtube",
+      "landing_path": "/duftfinder",
+      "url": "https://scentai-xxya.onrender.com/duftfinder?src=youtube&cmp=launch01&content=top3_fresh_01"
+    }
+  ]
+}
