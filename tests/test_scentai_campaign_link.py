@@ -1,10 +1,7 @@
 from __future__ import annotations
 
 import pytest
-
-from scripts.build_scentai_campaign_link import (
-    build_campaign_url,
-)
+from scripts.build_scentai_campaign_link import build_campaign_url
 
 
 def test_campaign_link_contains_standardized_attribution() -> None:
