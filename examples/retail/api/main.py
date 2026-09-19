@@ -66,7 +66,7 @@ def product_detail(product: ProductDetails) -> dict:
 
 
 host = build_storefront_host(
-    title="SCENTAI API",
+    title="DUFYND API",
     example_root=DATA_DIR.parent,
     backend=backend,
     agent=agent,
@@ -86,7 +86,7 @@ app.mount("/products", StaticFiles(directory=PRODUCT_IMAGES, check_dir=False), n
 async def health() -> dict:
     return {
         "ok": True,
-        "service": "scentai-api",
+        "service": "dufynd-api",
     }
 
 
@@ -97,7 +97,7 @@ async def merchant_partners() -> dict:
     return {
         "partners": [customer_partner_payload(partner) for partner in partners],
         "affiliate_disclosure": (
-            "Bei Käufen über Partnerlinks kann SCENTAI eine Provision erhalten. "
+            "Bei Käufen über Partnerlinks kann DUFYND eine Provision erhalten. "
             "Die Händlerauswahl beeinflusst nicht die Duftempfehlung."
         ),
     }
@@ -129,7 +129,7 @@ async def product_offers(product_id: str) -> dict:
         "best_offer_id": offers[0].offer_id if offers else None,
         "offers": [customer_offer_payload(offer) for offer in offers],
         "affiliate_disclosure": (
-            "Bei Käufen über Partnerlinks kann SCENTAI eine Provision erhalten. "
+            "Bei Käufen über Partnerlinks kann DUFYND eine Provision erhalten. "
             "Für dich ändert sich der Preis dadurch nicht."
         ),
     }
