@@ -165,3 +165,12 @@ Verified manually on 2026-09-19:
 - CORS now allows dufynd.de, www.dufynd.de and the temporary Render storefront origin
 - empty merchant-offer state renders correctly instead of a load error
 - DUFYND correctly withholds stale/unverified offers until price and availability pass freshness checks
+
+
+## Live smoke test — fragrance alternatives
+
+Verified manually on 2026-09-19:
+- Marwa detail page no longer includes unrelated cross-cluster Dubai Musk
+- related section now contains only Louis Vuitton Imagination, Bujairami Hectic and Marwa Extrait
+- cross-cluster broad-accord similarity is no longer sufficient for a product-detail alternative recommendation
+- same-cluster or explicitly documented relationships are required
