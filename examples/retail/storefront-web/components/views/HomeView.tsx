@@ -66,7 +66,7 @@ function Brief() {
   return (
     <span className="max-w-2xl text-[14px] leading-5 text-(--ink-soft) sm:text-[15px] sm:leading-6">
       Beschreibe, was du suchst – Duftprofil, Anlass, Budget oder einen Duft,
-      den du bereits magst. SCENTAI vergleicht das Sortiment und empfiehlt dir
+      den du bereits magst. DUFYND vergleicht das Sortiment und empfiehlt dir
       passende Optionen.
     </span>
   );
@@ -87,7 +87,7 @@ export default function HomeView({
   return (
     <div className="mx-auto flex w-full max-w-[1080px] flex-col gap-4 px-4 sm:gap-6 sm:px-6">
       <Greeting
-        eyebrow="SCENTAI · Persönliche Duftberatung"
+        eyebrow="DUFYND · Persönliche Duftberatung"
         title={
           <h1 className="max-w-3xl text-[27px] font-semibold leading-[1.12] tracking-[-0.03em] text-(--ink) sm:text-[32px] sm:leading-tight">
             Finde den Duft, der wirklich zu dir passt.
@@ -106,11 +106,11 @@ export default function HomeView({
         <span>·</span>
         <a href="/transparenz" className="font-medium text-(--accent-ink)">Mehr erfahren</a>
       </div>
-      <section className="hidden gap-3 sm:grid sm:grid-cols-3" aria-label="So funktioniert SCENTAI">
+      <section className="hidden gap-3 sm:grid sm:grid-cols-3" aria-label="So funktioniert DUFYND">
         <div className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm)">
           <div className="text-[13px] font-semibold text-(--ink)">Empfehlungen nach deinen Kriterien</div>
           <p className="mt-1 text-[12.5px] leading-5 text-(--ink-soft)">
-            SCENTAI priorisiert Passung, Preis, Verfügbarkeit und Aktualität. Partnervergütungen haben keinen Einfluss auf die Produktempfehlung oder die Reihenfolge der Händlerangebote.
+            DUFYND priorisiert Passung, Preis, Verfügbarkeit und Aktualität. Partnervergütungen haben keinen Einfluss auf die Produktempfehlung oder die Reihenfolge der Händlerangebote.
           </p>
         </div>
         <div className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm)">
@@ -122,16 +122,16 @@ export default function HomeView({
         <div className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm)">
           <div className="text-[13px] font-semibold text-(--ink)">Kauf direkt beim Händler</div>
           <p className="mt-1 text-[12.5px] leading-5 text-(--ink-soft)">
-            SCENTAI verkauft nicht selbst. Zahlung, Versand, Retouren und Kaufvertrag laufen direkt über den ausgewählten Händler.
+            DUFYND verkauft nicht selbst. Zahlung, Versand, Retouren und Kaufvertrag laufen direkt über den ausgewählten Händler.
           </p>
         </div>
       </section>
       <div className="-mt-2 hidden space-y-1 text-[12px] text-(--ink-soft) sm:block">
         <a href="/transparenz" className="font-medium text-(--accent-ink) hover:underline">
-          So bewertet SCENTAI Empfehlungen und Händlerangebote
+          So bewertet DUFYND Empfehlungen und Händlerangebote
         </a>
         <p>
-          Werbung: Händlerlinks können Partnerlinks sein. Bei einem Kauf kann SCENTAI eine Provision erhalten.
+          Werbung: Händlerlinks können Partnerlinks sein. Bei einem Kauf kann DUFYND eine Provision erhalten.
           Für dich soll sich der Händlerpreis dadurch nicht erhöhen.
         </p>
       </div>
@@ -214,7 +214,7 @@ export default function HomeView({
       <MerchantDiscovery />
 
       {picks.length ? (
-        <HomeSection title="Düfte entdecken" subtitle="Entdecke das Sortiment oder lass dich direkt von SCENTAI beraten">
+        <HomeSection title="Düfte entdecken" subtitle="Entdecke das Sortiment oder lass dich direkt von DUFYND beraten">
           <div className="flex flex-col gap-2 sm:hidden">
             {picks.map((product) => (
               <ProductRow
