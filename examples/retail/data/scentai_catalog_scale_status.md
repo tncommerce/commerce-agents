@@ -197,3 +197,34 @@ Every not-yet-approved partner remains:
 A regression test now prevents an applied/pending affiliate program from being
 missing from the partner registry or being activated before real tracking is
 configured.
+
+
+## Release batch 01
+
+The first guarded mini-release is now frozen in
+`scentai_release_batch_01.json` with five products:
+
+1. Lancôme La Vie est Belle Eau de Parfum 100 ml
+2. Parfums de Marly Delina Eau de Parfum 75 ml
+3. Dior Hypnotic Poison Eau de Toilette 100 ml
+4. Yves Saint Laurent Black Opium Eau de Parfum 90 ml
+5. Yves Saint Laurent Libre Eau de Parfum 90 ml
+
+This is an operational release batch, not a fragrance quality ranking.
+
+The promotion CLI accepts the manifest directly:
+
+```powershell
+python scripts/promote_scentai_catalog.py --manifest examples/retail/data/scentai_release_batch_01.json
+```
+
+The command is a dry-run by default. The eventual write command is allowed only
+after all five products pass every gate:
+
+```powershell
+python scripts/promote_scentai_catalog.py --manifest examples/retail/data/scentai_release_batch_01.json --write
+```
+
+Partial promotion is refused. The manifest itself is also tested for size,
+duplicate product IDs, staging existence, non-provisional community data and
+minimum researched merchant coverage.
