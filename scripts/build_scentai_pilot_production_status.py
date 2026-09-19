@@ -1,199 +1,238 @@
+>>
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
-import subprocess
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from scripts.render_scentai_pilot_final import (
-    evaluate_final_render,
-    evaluate_inputs,
-    media_summary,
-    probe_media,
-)
-
-DEFAULT_JOBS = Path(
-    "examples/retail/data/scentai_pilot_batch_01_production_jobs.json"
-)
-DEFAULT_OUTPUT = Path(
-    "examples/retail/data/scentai_pilot_batch_01_production_status.json"
-)
+DATA_DIR = Path("examples/retail/data")
+DEFAULT_MAPPING = DATA_DIR / "scentai_merchant_mapping_work_queue.json"
+DEFAULT_AFFILIATE = DATA_DIR / "scentai_affiliate_activation_status.json"
+DEFAULT_IMAGES = DATA_DIR / "scentai_image_approval_work_queue.json"
+DEFAULT_RELEASE = DATA_DIR / "scentai_release_01_gate_status.json"
+DEFAULT_FEED = DATA_DIR / "scentai_release_01_feed_activation_queue.json"
+DEFAULT_OUTPUT = DATA_DIR / "scentai_jarvis_operations_status.json"
 
 
 def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8-sig"))
 
 
-def build_job_status(job: dict) -> dict[str, Any]:
-    visual = Path(job["visual_preview_path"])
-    voiceover = Path(job["voiceover_path"])
-    subtitles = Path(job["subtitle_path"])
-    final_render = Path(job["final_render_path"])
+def canonical_bytes(payload: object) -> bytes:
+    return json.dumps(
+        payload,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
 
-    visual_summary = (
-        media_summary(probe_media(visual))
-        if visual.exists()
-        else None
-    )
-    voiceover_summary = (
-        media_summary(probe_media(voiceover))
-        if voiceover.exists()
-        else None
-    )
 
-    inputs = evaluate_inputs(
-        job,
-        visual_exists=visual.exists(),
-        voiceover_exists=voiceover.exists(),
-        subtitle_exists=subtitles.exists(),
-        visual_summary=visual_summary,
-        voiceover_summary=voiceover_summary,
-    )
+def source_fingerprint(*payloads: object) -> str:
+    digest = hashlib.sha256()
+    for payload in payloads:
+        digest.update(canonical_bytes(payload))
+    return digest.hexdigest()
 
-    final_qa = None
-    if final_render.exists():
-        final_qa = evaluate_final_render(
-            media_summary(probe_media(final_render)),
-            expected_duration_seconds=float(
-                job["expected_duration_seconds"]
-            ),
-            tolerance_seconds=float(
-                job.get("duration_tolerance_seconds", 2.0)
-            ),
+
+def build_operations_status(
+    mapping: dict,
+    affiliate: dict,
+    images: dict,
+    release: dict,
+    feed: dict,
+    *,
+    generated_at: str,
+) -> dict[str, Any]:
+    mapping_summary = mapping.get("summary", {})
+    affiliate_summary = affiliate.get("summary", {})
+    image_summary = images.get("summary", {})
+    release_summary = release.ge
+…[84824 chars truncated — re-run with head/grep/tail for full output]…
+get("description", "")
+    return mcp_tools, custom
+
+
+def backticked_after_preamble(line: str) -> set[str]:
+    return set(re.findall(r"`([a-z_]+)`", line.split("):", 1)[-1]))
+
+
+def readme_line(path: Path, marker: str) -> str:
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if marker in line:
+            return line
+    problem(f"{path.relative_to(REPO_ROOT)}: no '{marker}' line found")
+    return ""
+
+
+def check_managed_readme_tool_lists() -> None:
+    """Each managed-agents README lists the deployed tools by hand; its count row and
+    two tool bullets, and the server README's table, must match agent.yaml."""
+    print("managed-agents READMEs vs agent.yaml")
+    for role in ROLES:
+        mcp_tools, custom = manifest_tools(role.agent_dir / "agent.yaml")
+        before = len(PROBLEMS)
+        agent_readme = role.managed / "README.md"
+        parent = agent_readme.read_text(encoding="utf-8")
+        counts = re.search(rf"(\d+) {role.server_label}, (\d+) presentation tools", parent)
+        if counts is None:
+            problem(
+                f"{role.tree} managed README: no '<N> {role.server_label}, <N> presentation tools' row"
+            )
+        elif (int(counts.group(1)), int(counts.group(2))) != (len(mcp_tools), len(custom)):
+            problem(
+                f"{role.tree} managed README counts disagree with agent.yaml ({len(mcp_tools)} / {len(custom)})"
+            )
+        marker = f"**{role.server_label.split()[0].capitalize()} tools**"
+        if (listed := backticked_after_preamble(readme_line(agent_readme, marker))) != mcp_tools:
+            problem(
+                f"{agent_readme.relative_to(REPO_ROOT)}: {role.server_label} list != agent.yaml "
+                f"(missing {sorted(mcp_tools - listed)}, extra {sorted(listed - mcp_tools)})"
+            )
+        listed = backticked_after_preamble(readme_line(agent_readme, "**Presentation tools**"))
+        if listed != set(custom):
+            problem(
+                f"{agent_readme.relative_to(REPO_ROOT)}: presentation list != agent.yaml "
+                f"(missing {sorted(set(custom) - listed)}, extra {sorted(listed - set(custom))})"
+            )
+        server_readme = (role.managed / role.server_dir / "README.md").read_text(encoding="utf-8")
+        rows = set(re.findall(r"^\| `([a-z_]+)` \|", server_readme, re.MULTILINE))
+        if rows != mcp_tools:
+            problem(
+                f"{role.tree} {role.server_dir}/README.md tool table != agent.yaml "
+                f"(missing {sorted(mcp_tools - rows)}, extra {sorted(rows - mcp_tools)})"
+            )
+        if len(PROBLEMS) == before:
+            ok(f"{role.tree}: README counts, tool lists, and server table match agent.yaml")
+
+
+def check_managed_custom_tool_descriptions() -> None:
+    """The manifests' custom tool descriptions are the registries', whitespace aside."""
+    print("managed-agents custom tool descriptions vs the registries")
+    for role in ROLES:
+        registry = role.registry_descriptions()
+        _, custom = manifest_tools(role.agent_dir / "agent.yaml")
+        before = len(PROBLEMS)
+        for name, description in custom.items():
+            if name not in registry:
+                problem(f"{role.tree} agent.yaml: custom tool {name} has no registry contract")
+            elif normalize_ws(description) != normalize_ws(registry[name]):
+                problem(f"{role.tree} agent.yaml: {name} description drifted from the registry")
+        if len(PROBLEMS) == before:
+            ok(f"{role.tree}: {len(custom)} custom tool descriptions match the registry")
+
+
+def check_scentai_jarvis_operations_status() -> None:
+    """Keep the committed Jarvis control-plane snapshot aligned with source state."""
+    print("SCENTAI Jarvis operations status")
+    try:
+        from scripts.validate_scentai_jarvis_operations_status import (
+            validate_operations_status,
         )
 
-    if final_qa and final_qa["technical_qa_passed"]:
-        state = "content_qa_pending"
-        blockers = [
-            "mobile_content_review_pending",
-        ]
-        if job.get("price_recheck_required"):
-            blockers.append(
-                "publish_day_price_recheck_required"
-            )
-    elif final_render.exists():
-        state = "blocked"
-        blockers = list(final_qa["blockers"])
-    elif inputs["ready_for_render"]:
-        state = "render_ready"
-        blockers = ["final_render_missing"]
-    elif not visual.exists():
-        state = "visual_preview_pending"
-        blockers = list(inputs["blockers"])
-    elif not voiceover.exists():
-        state = "voiceover_pending"
-        blockers = list(inputs["blockers"])
-    else:
-        state = "subtitle_conform_pending"
-        blockers = list(inputs["blockers"])
-        if subtitles.exists():
-            blockers.append(
-                "subtitle_timing_manual_confirmation_required"
-            )
+        data = REPO_ROOT / "examples" / "retail" / "data"
+        report = validate_operations_status(
+            load_json(data / "scentai_jarvis_operations_status.json"),
+            load_json(data / "scentai_merchant_mapping_work_queue.json"),
+            load_json(data / "scentai_affiliate_activation_status.json"),
+            load_json(data / "scentai_image_approval_work_queue.json"),
+            load_json(data / "scentai_release_01_gate_status.json"),
+            load_json(data / "scentai_release_01_feed_activation_queue.json"),
+        )
+    except Exception as error:
+        problem(f"SCENTAI Jarvis operations parity check failed: {error}")
+        return
 
-    return {
-        "content_id": job["content_id"],
-        "state": state,
-        "blockers": list(dict.fromkeys(blockers)),
-        "ready_for_render": inputs["ready_for_render"],
-        "final_render_exists": final_render.exists(),
-        "technical_qa": final_qa,
-        "price_recheck_required": bool(
-            job.get("price_recheck_required")
-        ),
-        "publish_action_class": "approval_required",
-    }
+    if not report["valid"]:
+        for issue in report["issues"]:
+            problem(f"SCENTAI Jarvis operations status: {issue}")
+        return
+
+    ok("SCENTAI Jarvis operations snapshot matches source state")
 
 
-def build_status(payload: dict) -> dict[str, Any]:
-    rows = [
-        build_job_status(job)
-        for job in payload.get("jobs", [])
-    ]
+def check_scentai_jarvis_state_graph() -> None:
+    """Ensure every committed Jarvis derived view matches source-of-truth data."""
+    print("SCENTAI Jarvis state graph")
+    try:
+        from scripts.validate_scentai_jarvis_state_graph import (
+            validate_repo_state_graph,
+        )
 
-    return {
-        "version": 1,
-        "campaign_id": payload.get("campaign_id"),
-        "machine_id": payload.get("machine_id"),
-        "summary": {
-            "pilots": len(rows),
-            "voiceover_pending": sum(
-                1
-                for row in rows
-                if row["state"] == "voiceover_pending"
-            ),
-            "render_ready": sum(
-                1
-                for row in rows
-                if row["state"] == "render_ready"
-            ),
-            "final_render_exists": sum(
-                1 for row in rows if row["final_render_exists"]
-            ),
-            "technical_qa_passed": sum(
-                1
-                for row in rows
-                if row["technical_qa"]
-                and row["technical_qa"][
-                    "technical_qa_passed"
-                ]
-            ),
-            "ready_for_publish_approval": sum(
-                1
-                for row in rows
-                if row["state"] == "ready_for_publish_approval"
-            ),
-        },
-        "jobs": rows,
-    }
+        report = validate_repo_state_graph()
+    except Exception as error:
+        problem(f"SCENTAI Jarvis state graph check failed: {error}")
+        return
+
+    if not report["valid"]:
+        for issue in report["issues"]:
+            problem(f"SCENTAI Jarvis state graph: {issue}")
+        return
+
+    ok("SCENTAI Jarvis derived state graph matches source-of-truth")
+
+
+def check_scentai_pilot_batch_contract() -> None:
+    """Keep Pilot Batch 01 IDs, timings, links and production jobs aligned."""
+    print("SCENTAI pilot production contract")
+    try:
+        from scripts.validate_scentai_pilot_batch_contract import (
+            validate_contract,
+        )
+
+        data = REPO_ROOT / "examples" / "retail" / "data"
+        report = validate_contract(
+            load_json(data / "scentai_pilot_batch_01.json"),
+            load_json(data / "scentai_pilot_batch_01_production_jobs.json"),
+            load_json(data / "scentai_pilot_batch_01_subtitles.json"),
+            load_json(data / "scentai_pilot_batch_01_links.json"),
+            load_json(data / "scentai_pilot_batch_01_social_copy.json"),
+        )
+    except Exception as error:
+        problem(f"SCENTAI pilot production contract failed: {error}")
+        return
+
+    if not report["valid"]:
+        for issue in report["issues"]:
+            problem(f"SCENTAI pilot contract: {issue}")
+        return
+
+    ok(
+        "SCENTAI Pilot Batch 01 contract is internally consistent "
+        f"({report['summary']['pilots']} pilots, "
+        f"{report['summary']['tracked_links']} tracked links)"
+    )
+
+
+CHECKS = (
+    check_skills,
+    check_storefront_fixtures,
+    check_ticketing_fixtures,
+    check_merchant_fixtures,
+    check_verification_wiring,
+    check_package_versions,
+    check_manifests,
+    check_managed_system_prompts,
+    check_managed_readme_tool_lists,
+    check_managed_custom_tool_descriptions,
+    check_scentai_jarvis_operations_status,
+    check_scentai_jarvis_state_graph,
+    check_scentai_pilot_batch_contract,
+)
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(
-        description=(
-            "Build local-machine SCENTAI pilot production readiness "
-            "from actual voiceover, subtitle and render files."
-        )
-    )
-    parser.add_argument("--jobs", type=Path, default=DEFAULT_JOBS)
-    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
-    parser.add_argument("--write", action="store_true")
-    parser.add_argument("--machine-readable", action="store_true")
-    args = parser.parse_args()
-
-    try:
-        report = build_status(load_json(args.jobs))
-    except (
-        OSError,
-        ValueError,
-        json.JSONDecodeError,
-        subprocess.CalledProcessError,
-    ) as exc:
-        parser.error(str(exc))
-
-    if args.write:
-        args.output.parent.mkdir(parents=True, exist_ok=True)
-        args.output.write_text(
-            json.dumps(report, ensure_ascii=False, indent=2) + "\n",
-            encoding="utf-8",
-        )
-
-    if args.machine_readable:
-        print(json.dumps(report, ensure_ascii=False))
-    else:
-        summary = report["summary"]
-        print(
-            "SCENTAI pilot production | "
-            f"pilots={summary['pilots']} | "
-            f"voiceover_pending={summary['voiceover_pending']} | "
-            f"render_ready={summary['render_ready']} | "
-            f"renders={summary['final_render_exists']} | "
-            f"qa_passed={summary['technical_qa_passed']}"
-        )
-
+    for check in CHECKS:
+        check()
+        print()
+    if PROBLEMS:
+        print(f"check.py: {len(PROBLEMS)} problem(s)")
+        return 1
+    print("check.py: clean")
     return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    sys.exit(main())
