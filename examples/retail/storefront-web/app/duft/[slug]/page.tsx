@@ -238,9 +238,14 @@ export default async function FragrancePage({
             className="flex items-center gap-2.5"
             aria-label="Zur DUFYND Startseite"
           >
-            <span className="grid h-8 w-8 place-items-center rounded-lg bg-(--ink) text-[15px] font-bold text-(--surface)">
-              S
-            </span>
+            <img
+              src="/icon.svg"
+              alt=""
+              aria-hidden
+              width={32}
+              height={32}
+              className="h-8 w-8 rounded-lg"
+            />
             <span className="text-[17px] font-bold tracking-[-0.02em]">
               DUFYND
             </span>
