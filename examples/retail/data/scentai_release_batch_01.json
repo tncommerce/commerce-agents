@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "release_id": "SCENTAI-RELEASE-01",
+  "status": "prepared_blocked_pending_live_assets_and_affiliate_offers",
+  "prepared_at": "2026-09-19",
+  "release_size": 5,
+  "strategy": "First guarded mini-release focused on the largest live audience gap. Selection order is operational priority, not a fragrance quality ranking.",
+  "product_ids": [
+    "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+    "SC-PDM-DELINA-EDP-75",
+    "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+    "SC-YSL-BLACK-OPIUM-EDP-90",
+    "SC-YSL-LIBRE-EDP-90"
+  ],
+  "required_gates": [
+    "non_provisional_community_data",
+    "approved_product_image",
+    "current_tracked_affiliate_offer",
+    "staging_recommendation_qa",
+    "not_already_live",
+    "all_selected_products_ready_no_partial_release"
+  ],
+  "write_policy": "All-or-nothing. Do not partially promote this manifest. Use a dry-run first; write only when all five products pass every promotion gate."
+}
