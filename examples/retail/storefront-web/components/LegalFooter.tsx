@@ -21,6 +21,12 @@ export default function LegalFooter() {
         <a href="/parfum-alternativen" className="font-medium text-(--accent-ink) hover:underline">
           Parfum-Alternativen
         </a>
+        <a href="/sammlung" className="font-medium text-(--accent-ink) hover:underline">
+          Meine Sammlung
+        </a>
+        <a href="/merkliste" className="font-medium text-(--accent-ink) hover:underline">
+          Merkliste
+        </a>
       </div>
     </footer>
   );
