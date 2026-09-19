@@ -2,14 +2,13 @@ from __future__ import annotations
 
 import argparse
 import json
-import math
 import subprocess
-import textwrap
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
-# Workflow trigger marker: batch01\nROOT = Path(__file__).resolve().parents[1]
+# Workflow trigger marker: batch01
+ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "examples/retail/data"
 PUBLIC_DIR = ROOT / "examples/retail/storefront-web/public"
 OUTPUT_DIR = PUBLIC_DIR / "social/pilots/batch01"
