@@ -293,7 +293,7 @@ export default async function FragrancePage({
         </nav>
 
         <section className="grid gap-4 sm:gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="mx-auto w-full max-w-[300px] overflow-hidden rounded-3xl border border-(--line) bg-white shadow-(--shadow-sm) sm:max-w-none lg:mx-0">
+          <div className="mx-auto w-full max-w-[250px] overflow-hidden rounded-3xl border border-(--line) bg-white shadow-(--shadow-sm) sm:max-w-[320px] lg:max-w-none lg:mx-0">
             {fragrance.image_url ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
