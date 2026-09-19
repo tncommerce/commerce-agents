@@ -2,7 +2,10 @@
 
 import { useEffect, useRef } from "react";
 
-import { trackAnalyticsEvent } from "@/lib/analytics";
+import {
+  rememberAcquisitionAttribution,
+  trackAnalyticsEvent,
+} from "@/lib/analytics";
 
 const ALLOWED_CHANNELS = new Set([
   "tiktok",
@@ -27,14 +30,23 @@ export default function AcquisitionAnalytics({
     const params = new URLSearchParams(
       window.location.search,
     );
-    const channel = params.get("src");
-    const acquisitionSource =
-      channel && ALLOWED_CHANNELS.has(channel)
-        ? `${source}_${channel}`
-        : source;
+    const requestedChannel = params.get("src");
+    const channel =
+      requestedChannel &&
+      ALLOWED_CHANNELS.has(requestedChannel)
+        ? requestedChannel
+        : "organic";
+    const campaignId = params.get("cmp");
+    const contentId = params.get("content");
+
+    rememberAcquisitionAttribution({
+      source: channel,
+      campaignId,
+      contentId,
+    });
 
     void trackAnalyticsEvent("page_view", {
-      source: acquisitionSource,
+      source: `${source}_${channel}`,
       surface: "acquisition_landing",
     });
   }, [source]);
