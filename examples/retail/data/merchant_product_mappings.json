@@ -1,6 +1,34 @@
 {
   "mappings": [
     {
+      "product_id": "SC-BURBERRY-GODDESS-EDP-100",
+      "merchant": "douglas",
+      "merchant_product_id": "5011035040",
+      "ean": "3616302020652",
+      "gtin": "3616302020652"
+    },
+    {
+      "product_id": "SC-BURBERRY-GODDESS-EDP-100",
+      "merchant": "flaconi",
+      "merchant_product_id": "90001263-0001775",
+      "ean": "3616302020652",
+      "gtin": "3616302020652"
+    },
+    {
+      "product_id": "SC-CHLOE-CHLOE-EDP-100",
+      "merchant": "douglas",
+      "merchant_product_id": "2010007429",
+      "ean": "3616302038633",
+      "gtin": "3616302038633"
+    },
+    {
+      "product_id": "SC-CHLOE-CHLOE-EDP-100",
+      "merchant": "flaconi",
+      "merchant_product_id": "80070876-100",
+      "ean": "3616302038633",
+      "gtin": "3616302038633"
+    },
+    {
       "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
       "merchant": "douglas",
       "merchant_product_id": "1069032304",
@@ -43,6 +71,20 @@
       "gtin": null
     },
     {
+      "product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+      "merchant": "douglas",
+      "merchant_product_id": "3001034674",
+      "ean": "3346470131408",
+      "gtin": "3346470131408"
+    },
+    {
+      "product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+      "merchant": "perfumetrader",
+      "merchant_product_id": "60481349",
+      "ean": "3346470131408",
+      "gtin": "3346470131408"
+    },
+    {
       "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
       "merchant": "douglas",
       "merchant_product_id": "3000056790",
@@ -57,6 +99,20 @@
       "gtin": "3605533286555"
     },
     {
+      "product_id": "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100",
+      "merchant": "douglas",
+      "merchant_product_id": "3001052443",
+      "ean": "3423478515956",
+      "gtin": "3423478515956"
+    },
+    {
+      "product_id": "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100",
+      "merchant": "flaconi",
+      "merchant_product_id": null,
+      "ean": "3423478515956",
+      "gtin": "3423478515956"
+    },
+    {
       "product_id": "SC-PDM-DELINA-EDP-75",
       "merchant": "douglas",
       "merchant_product_id": "5010758028",
@@ -69,6 +125,20 @@
       "merchant_product_id": null,
       "ean": "3700578501998",
       "gtin": "3700578501998"
+    },
+    {
+      "product_id": "SC-PRADA-PARADOXE-EDP-90",
+      "merchant": "douglas",
+      "merchant_product_id": "5010687030",
+      "ean": "3614273760164",
+      "gtin": "3614273760164"
+    },
+    {
+      "product_id": "SC-PRADA-PARADOXE-EDP-90",
+      "merchant": "flaconi",
+      "merchant_product_id": "80070411-90",
+      "ean": "3614273760164",
+      "gtin": "3614273760164"
     },
     {
       "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
