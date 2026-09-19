@@ -52,8 +52,19 @@
         "Tahitian vanilla"
       ],
       "sources": [
-        "https://www.guerlain.com/de/de-de/p/mon-guerlain-eau-de-parfum-G013140.html"
-      ]
+        "https://www.guerlain.com/de/de-de/p/mon-guerlain-eau-de-parfum-G013140.html",
+        "https://www.douglas.de/de/p/3001034674",
+        "https://www.perfumetrader.de/de/guerlain-mon-guerlain-eau-de-parfum-100-ml"
+      ],
+      "identifiers": {
+        "ean": "3346470131408",
+        "gtin": "3346470131408"
+      },
+      "merchant_snapshot": {
+        "douglas_de": "available",
+        "perfumetrader_de": "listed_out_of_stock"
+      },
+      "merchant_snapshot_checked_at": "2026-09-19"
     },
     {
       "candidate_id": "AMOUAGE-REFLECTION-MAN-EDP",
