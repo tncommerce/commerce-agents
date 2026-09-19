@@ -9,6 +9,7 @@ from scripts.refresh_scentai_jarvis_state import (
     OUT_AFFILIATE,
     OUT_CONTENT,
     OUT_CONTENT_BATCH02,
+    OUT_CONTENT_BATCH03,
     OUT_CONTENT_PIPELINE,
     OUT_FEED,
     OUT_IMAGES,
@@ -31,6 +32,7 @@ OUTPUT_PATHS = {
     "operations": OUT_OPERATIONS,
     "content_status": OUT_CONTENT,
     "content_status_batch02": OUT_CONTENT_BATCH02,
+    "content_status_batch03": OUT_CONTENT_BATCH03,
     "content_pipeline": OUT_CONTENT_PIPELINE,
     "master_status": OUT_MASTER,
 }
