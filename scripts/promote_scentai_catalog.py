@@ -31,6 +31,28 @@ def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8-sig"))
 
 
+def load_release_manifest(path: Path) -> list[str]:
+    payload = load_json(path)
+    product_ids = payload.get("product_ids")
+
+    if not isinstance(product_ids, list):
+        raise ValueError("Release manifest requires a product_ids list")
+
+    normalized = [
+        str(product_id).strip()
+        for product_id in product_ids
+        if str(product_id).strip()
+    ]
+
+    if len(normalized) < 5 or len(normalized) > 10:
+        raise ValueError("Release manifest must contain between 5 and 10 product_ids")
+
+    if len(set(normalized)) != len(normalized):
+        raise ValueError("Release manifest product_ids must be unique")
+
+    return normalized
+
+
 def parse_timestamp(value: str) -> datetime:
     normalized = value.strip().replace("Z", "+00:00")
     parsed = datetime.fromisoformat(normalized)
@@ -416,6 +438,15 @@ def main() -> int:
         help="Select products from one staging batch.",
     )
     parser.add_argument(
+        "--manifest",
+        type=Path,
+        default=None,
+        help=(
+            "Release manifest containing 5-10 exact product_ids. "
+            "Cannot be combined with --product-id or --batch."
+        ),
+    )
+    parser.add_argument(
         "--limit",
         type=int,
         default=10,
@@ -463,6 +494,16 @@ def main() -> int:
     if args.limit < 1 or args.limit > 10:
         parser.error("--limit must be between 1 and 10")
 
+    selection_limit = args.limit
+    if args.manifest is not None:
+        if args.product_id or args.batch is not None:
+            parser.error("--manifest cannot be combined with --product-id or --batch")
+        try:
+            args.product_id = load_release_manifest(args.manifest)
+        except ValueError as exc:
+            parser.error(str(exc))
+        selection_limit = len(args.product_id)
+
     staging = load_json(args.staging)
     catalog = load_json(args.catalog)
     offers = load_json(args.offers)
@@ -474,7 +515,7 @@ def main() -> int:
             offers,
             product_ids=args.product_id,
             batch=args.batch,
-            limit=args.limit,
+            limit=selection_limit,
             now=datetime.now(UTC),
             max_offer_age_hours=args.max_offer_age_hours,
             allow_provisional=args.allow_provisional,
