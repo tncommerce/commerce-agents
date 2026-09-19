@@ -11,6 +11,7 @@ from scripts.refresh_scentai_jarvis_state import (
     OUT_IMAGES,
     OUT_MAPPING,
     OUT_OPERATIONS,
+    OUT_PIPELINE,
     OUT_RELEASE,
     load_json,
     refresh_state,
@@ -22,6 +23,7 @@ OUTPUT_PATHS = {
     "image_queue": OUT_IMAGES,
     "feed_queue": OUT_FEED,
     "release_status": OUT_RELEASE,
+    "release_pipeline": OUT_PIPELINE,
     "operations": OUT_OPERATIONS,
 }
 
