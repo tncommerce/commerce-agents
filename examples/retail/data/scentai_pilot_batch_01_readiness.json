@@ -77,5 +77,17 @@
       "price_recheck": false,
       "render": "pending"
     }
-  ]
+  ],
+  "preview_review": {
+    "status": "ready_in_repo",
+    "path": "/social/pilots/batch01/preview.html",
+    "noindex": true,
+    "uses_verified_product_assets": true
+  },
+  "automated_preview_render": {
+    "status": "workflow_created_output_not_yet_verified",
+    "renderer": "scripts/render_scentai_pilot_previews.py",
+    "workflow": ".github/workflows/scentai-pilot-preview.yml",
+    "note": "Do not treat generated MP4 previews as available until batch01/index.json exists."
+  }
 }
