@@ -38,9 +38,7 @@ def test_state_graph_detects_intermediate_node_drift() -> None:
 
     assert report["valid"] is False
     assert report["drifted_nodes"] == ["image_queue"]
-    assert report["issues"] == [
-        "drifted_state_nodes:image_queue"
-    ]
+    assert report["issues"] == ["drifted_state_nodes:image_queue"]
 
 
 def test_state_graph_detects_missing_and_extra_nodes() -> None:
