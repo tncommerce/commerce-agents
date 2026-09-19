@@ -102,7 +102,7 @@
         "gtin": "6290362340638"
       },
       "merchant_snapshot": {
-        "notino_de": "listing_identity_not_verified_for_2026_edition",
+        "notino_de": "available",
         "dm_de": "available"
       },
       "merchant_snapshot_checked_at": "2026-09-19"
@@ -370,7 +370,7 @@
       "merchant_snapshot": {
         "jean_paul_gaultier_de": "manufacturer_teaser_not_retail_available",
         "notino_de_legacy_listing": "sale_ended_not_valid_for_2026_coverage",
-        "notino_de": "available"
+        "notino_de": "listing_identity_not_verified_for_2026_edition"
       },
       "merchant_snapshot_checked_at": "2026-09-19",
       "identity_note": "2026 re-edition is tracked separately from the discontinued legacy Fleur du Mâle listing. The current official German page still presents the return as a teaser, while the indexed Notino page cannot be verified as the 2026 edition. Neither source counts as a current 2026 retail channel until the edition is explicit.",
