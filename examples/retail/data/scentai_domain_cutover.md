@@ -1,6 +1,6 @@
 # DUFYND Custom Domain / SEO Cutover
 
-Status: domains_purchased_pending_dns_cutover
+Status: primary_domain_verified_certificate_issued_propagation_pending
 Updated: 2026-09-19
 
 The temporary Render URL remains functional, but the storefront must stay non-indexable until DUFYND is connected and the final public-domain smoke test passes.
@@ -68,3 +68,29 @@ For dufynd.com:
 - keep registered as a defensive domain
 - configure a permanent redirect to https://dufynd.de after the primary domain is verified
 - do not create a second independently indexed site
+
+
+## Cutover progress — 2026-09-19
+
+Primary domain:
+- dufynd.de added to the Render storefront service
+- Render domain verification: verified
+- TLS certificate: issued
+- www.dufynd.de: verified and configured by Render to redirect to dufynd.de
+
+INWX DNS:
+- root / apex A -> 216.24.57.1
+- www CNAME -> scentai-xxya.onrender.com
+- INWX NS and SOA retained
+
+Propagation note:
+- Render has already verified the new records and issued TLS
+- some external recursive resolvers may temporarily retain the previous INWX parking address until cached TTLs expire
+- do not change DNS while propagation is converging
+
+Next:
+1. verify public HTTPS from independent resolvers/browsers after cache expiry
+2. configure dufynd.com as a permanent redirect to https://dufynd.de
+3. execute the public SCENTAI -> DUFYND website rebrand
+4. set NEXT_PUBLIC_SITE_URL=https://dufynd.de while keeping NEXT_PUBLIC_SITE_INDEXABLE=false
+5. complete smoke tests before enabling indexing
