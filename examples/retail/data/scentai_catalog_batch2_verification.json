@@ -135,8 +135,14 @@
       "sources": [
         "https://amouage.com/en-eu/pages/the-guidance-collection",
         "https://www.douglas.de/de/p/5011534080",
-        "https://www.parfumo.de/Parfums/Amouage/guidance-46"
-      ]
+        "https://www.parfumo.de/Parfums/Amouage/guidance-46",
+        "https://www.parfumdreams.de/Amouage/Collections/The-Exceptional-Extraits/Extrait-de-Parfum/index_131905.aspx"
+      ],
+      "merchant_snapshot": {
+        "douglas_de": "available",
+        "parfumdreams_de": "available"
+      },
+      "merchant_snapshot_checked_at": "2026-09-19"
     },
     {
       "candidate_id": "PDM-VALAYA-EXCLUSIF",
@@ -269,5 +275,6 @@
         "https://www.fragrantica.com/perfume/Jean-Paul-Gaultier/Fleur-du-Male-142131.html"
       ]
     }
-  ]
+  ],
+  "merchant_research_updated_at": "2026-09-19"
 }
