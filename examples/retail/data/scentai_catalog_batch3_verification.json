@@ -164,10 +164,18 @@
       "sources": [
         "https://www.dolcegabbana.com/en-ae/beauty/the-one-adv-campaign/",
         "https://www.parfumo.com/Perfumes/Dolce_Gabbana/the-one-for-men-eau-de-parfum-2025",
-        "https://www.fragrantica.com/perfume/Dolce-Gabbana/The-One-Pour-Homme-Eau-de-Parfum-121024.html"
+        "https://www.fragrantica.com/perfume/Dolce-Gabbana/The-One-Pour-Homme-Eau-de-Parfum-121024.html",
+        "https://www.douglas.de/de/p/5011977029",
+        "https://www.flaconi.de/parfum/dolce-gabbana/the-one-for-men/dolce-gabbana-the-one-for-men-new-eau-de-parfum.html"
       ],
       "version_year": 2025,
-      "identity_note": "Treat the 2025 reimagined Eau de Parfum as a separate canonical product from the older 2015 Eau de Parfum. Do not reuse 2015 community scores."
+      "identity_note": "Treat the 2025 reimagined Eau de Parfum as a separate canonical product from the older 2015 Eau de Parfum. Do not reuse 2015 community scores.",
+      "merchant_snapshot": {
+        "douglas_de": "available",
+        "flaconi_de": "available"
+      },
+      "merchant_snapshot_checked_at": "2026-09-19",
+      "verified_gtin_100ml": "8056669925859"
     },
     {
       "candidate_id": "DIOR-SAUVAGE-ELIXIR",
