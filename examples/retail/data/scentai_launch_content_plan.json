@@ -1,0 +1,210 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-19",
+  "status": "prelaunch_planned",
+  "campaign_id": "launch01",
+  "target_creatives": 15,
+  "channels": [
+    "tiktok",
+    "instagram",
+    "youtube"
+  ],
+  "objective": "Prepare 15 reusable short-form launch creatives that demonstrate SCENTAI value and send viewers to a relevant first-party landing page.",
+  "measurement_note": "Use one stable content_id per creative across platforms; channel remains separate through the src parameter.",
+  "content": [
+    {
+      "content_id": "original_vs_alt_imagination_01",
+      "format": "original_vs_alternative",
+      "working_hook": "Louis Vuitton Imagination – welche günstigeren Düfte gehen wirklich in dieselbe Richtung?",
+      "landing_path": "/parfum-alternativen",
+      "product_ids": [
+        "SC-LV-IMAGINATION-100",
+        "SC-ARABIYAT-MARWA-EDP-100",
+        "SC-BUJAIRAMI-HECTIC-100"
+      ],
+      "primary_cta": "Alternative in SCENTAI vergleichen",
+      "status": "planned"
+    },
+    {
+      "content_id": "dupe_battle_imagination_01",
+      "format": "dupe_battle",
+      "working_hook": "Marwa vs Hectic vs Marwa Extrait – welcher Imagination-Alternative passt zu wem?",
+      "landing_path": "/parfum-alternativen",
+      "product_ids": [
+        "SC-ARABIYAT-MARWA-EDP-100",
+        "SC-BUJAIRAMI-HECTIC-100",
+        "SC-ARABIYAT-MARWA-EXTRAIT-60"
+      ],
+      "primary_cta": "Düfte in SCENTAI vergleichen",
+      "status": "planned"
+    },
+    {
+      "content_id": "aventus_alternatives_01",
+      "format": "original_vs_alternative",
+      "working_hook": "Aventus-Vibe ohne Aventus-Preis: drei unterschiedliche Wege statt einer 1:1-Behauptung.",
+      "landing_path": "/parfum-alternativen",
+      "product_ids": [
+        "SC-CREED-AVENTUS-100",
+        "SC-AFNAN-SUPREMACY-COLLECTORS-100",
+        "SC-MAISON-ASRAR-VANGUARD-100",
+        "SC-ARMAF-CDNIM-EDP-200"
+      ],
+      "primary_cta": "Aventus-Alternativen prüfen",
+      "status": "planned"
+    },
+    {
+      "content_id": "layton_alternatives_01",
+      "format": "dupe_battle",
+      "working_hook": "Royal Bleu oder Détour Noir – welche Layton-Alternative ist für dich interessanter?",
+      "landing_path": "/parfum-alternativen",
+      "product_ids": [
+        "SC-PDM-LAYTON-125",
+        "SC-ORIENTICA-ROYAL-BLEU-80",
+        "SC-AL-HARAMAIN-DETOUR-NOIR-100"
+      ],
+      "primary_cta": "Layton-Cluster vergleichen",
+      "status": "planned"
+    },
+    {
+      "content_id": "althair_liquid_brun_01",
+      "format": "original_vs_alternative",
+      "working_hook": "Althaïr vs Liquid Brun: wann lohnt sich das Original und wann die günstigere Alternative?",
+      "landing_path": "/parfum-alternativen",
+      "product_ids": [
+        "SC-PDM-ALTHAIR-125",
+        "SC-FRENCH-AVENUE-LIQUID-BRUN-100"
+      ],
+      "primary_cta": "Beide Profile vergleichen",
+      "status": "planned"
+    },
+    {
+      "content_id": "tygar_vibrato_value_01",
+      "format": "dupe_battle",
+      "working_hook": "Tygar, Vibrato, Turathi Blue oder Regent – vier Preisstufen, aber nicht derselbe Duft.",
+      "landing_path": "/parfum-alternativen",
+      "product_ids": [
+        "SC-BVLGARI-TYGAR-125",
+        "SC-SOSPIRO-VIBRATO-100",
+        "SC-AFNAN-TURATHI-BLUE-90",
+        "SC-MAISON-ASRAR-REGENT-100"
+      ],
+      "primary_cta": "Frische Alternativen vergleichen",
+      "status": "planned"
+    },
+    {
+      "content_id": "naxos_value_01",
+      "format": "luxury_without_budget",
+      "working_hook": "Du magst Naxos? Diese günstigeren Richtungen solltest du kennen, bevor du kaufst.",
+      "landing_path": "/parfum-alternativen",
+      "product_ids": [
+        "SC-XERJOFF-NAXOS-100",
+        "SC-NUSUK-ATEEQ-100",
+        "SC-RAYHAAN-ITALIA-100"
+      ],
+      "primary_cta": "Naxos-Alternativen ansehen",
+      "status": "planned"
+    },
+    {
+      "content_id": "dior_homme_intense_alt_01",
+      "format": "original_vs_alternative",
+      "working_hook": "Dior Homme Intense vs Kayaan Classic – ähnlich heißt nicht identisch.",
+      "landing_path": "/parfum-alternativen",
+      "product_ids": [
+        "SC-DIOR-HOMME-INTENSE-100",
+        "SC-AL-WATANIAH-KAYAAN-CLASSIC-100"
+      ],
+      "primary_cta": "Unterschiede in SCENTAI prüfen",
+      "status": "planned"
+    },
+    {
+      "content_id": "top3_office_01",
+      "format": "top3",
+      "working_hook": "Drei Büro-Düfte für drei verschiedene Typen – statt einer pauschalen Nummer 1.",
+      "landing_path": "/duftfinder",
+      "product_ids": [
+        "SC-PRADA-LHOMME-100",
+        "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+        "SC-CHANEL-BLEU-DE-CHANEL-EDP-100"
+      ],
+      "primary_cta": "Passenden Büro-Duft finden",
+      "status": "planned"
+    },
+    {
+      "content_id": "top3_date_01",
+      "format": "occasion",
+      "working_hook": "Date Night: süß, elegant oder auffällig – welcher Stil passt wirklich zu dir?",
+      "landing_path": "/duftfinder",
+      "product_ids": [
+        "SC-ARMANI-SWY-INTENSELY-100",
+        "SC-DIOR-HOMME-INTENSE-100",
+        "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100"
+      ],
+      "primary_cta": "Date-Duft mit SCENTAI finden",
+      "status": "planned"
+    },
+    {
+      "content_id": "top3_fresh_01",
+      "format": "top3",
+      "working_hook": "Drei frische Duftprofile – clean, luxuriös oder grapefruit-holzig.",
+      "landing_path": "/duftfinder",
+      "product_ids": [
+        "SC-LV-IMAGINATION-100",
+        "SC-BVLGARI-TYGAR-125",
+        "SC-AFNAN-TURATHI-BLUE-90"
+      ],
+      "primary_cta": "Frischen Duft finden",
+      "status": "planned"
+    },
+    {
+      "content_id": "signature_vs_safe_01",
+      "format": "scentai_decides",
+      "working_hook": "Willst du unkompliziert gut riechen oder einen Duft mit mehr Charakter?",
+      "landing_path": "/duftfinder",
+      "product_ids": [
+        "SC-DIOR-SAUVAGE-EDP-100",
+        "SC-PRADA-LHOMME-100",
+        "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100"
+      ],
+      "primary_cta": "SCENTAI nach deinem Stil fragen",
+      "status": "planned"
+    },
+    {
+      "content_id": "bois_imperial_explained_01",
+      "format": "scentai_decides",
+      "working_hook": "Bois Impérial: warum dieser Duft für manche perfekt und für andere komplett falsch ist.",
+      "landing_path": "/duftfinder",
+      "product_ids": [
+        "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100"
+      ],
+      "primary_cta": "Passung mit SCENTAI prüfen",
+      "status": "planned"
+    },
+    {
+      "content_id": "not_every_dupe_clone_01",
+      "format": "education_trust",
+      "working_hook": "Warum SCENTAI nicht jede Alternative als 1:1-Klon bezeichnet.",
+      "landing_path": "/parfum-alternativen",
+      "product_ids": [
+        "SC-PDM-ALTHAIR-125",
+        "SC-FRENCH-AVENUE-LIQUID-BRUN-100",
+        "SC-CREED-AVENTUS-100",
+        "SC-MONTBLANC-EXPLORER-100"
+      ],
+      "primary_cta": "Beziehungen transparent vergleichen",
+      "status": "planned"
+    },
+    {
+      "content_id": "gift_for_him_safe_to_bold_01",
+      "format": "gift_guide",
+      "working_hook": "Parfum verschenken: drei Richtungen von sicher bis charakterstark.",
+      "landing_path": "/parfum-geschenkberater",
+      "product_ids": [
+        "SC-CHANEL-BLEU-DE-CHANEL-EDP-100",
+        "SC-PRADA-LHOMME-100",
+        "SC-XERJOFF-NAXOS-100"
+      ],
+      "primary_cta": "Geschenkberatung starten",
+      "status": "planned"
+    }
+  ]
+}
