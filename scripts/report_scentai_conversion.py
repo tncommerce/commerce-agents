@@ -250,7 +250,10 @@ def build_conversion_report(
         landing_sessions = _integer(row.get("landing_sessions"))
         acquisition_sources.append(
             {
+                "landing_source": str(row.get("landing_source") or "unknown"),
                 "acquisition_source": str(row.get("acquisition_source") or "unknown"),
+                "campaign_id": str(row.get("campaign_id") or "unknown"),
+                "content_id": str(row.get("content_id") or "unknown"),
                 "landing_sessions": landing_sessions,
                 "consultation_sessions": _integer(row.get("consultation_sessions")),
                 "recommendation_sessions": _integer(row.get("recommendation_sessions")),
@@ -293,6 +296,9 @@ def build_conversion_report(
         key=lambda row: (
             -row["landing_sessions"],
             row["acquisition_source"],
+            row["campaign_id"],
+            row["content_id"],
+            row["landing_source"],
         )
     )
 
@@ -573,7 +579,10 @@ def main() -> int:
         "Acquisition landing pages:",
         report["acquisition_sources"],
         [
-            ("acquisition_source", "source"),
+            ("landing_source", "landing"),
+            ("acquisition_source", "channel"),
+            ("campaign_id", "campaign"),
+            ("content_id", "content"),
             ("landing_sessions", "landings"),
             ("consultation_sessions", "consultations"),
             ("clickout_sessions", "clickouts"),
