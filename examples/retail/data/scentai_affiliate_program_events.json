@@ -1,0 +1,122 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-19",
+  "status": "active",
+  "purpose": "Append-only audit events for affiliate program lifecycle changes. Sequence order is authoritative when an external event timestamp is unknown.",
+  "rules": [
+    "Never delete or rewrite historical events to hide a prior state.",
+    "Use a new event for approval, rejection, pause, revoke or correction.",
+    "Do not store credentials, tokens, private feed URLs or secrets.",
+    "Current registry status must remain consistent with the latest event for each network/merchant."
+  ],
+  "events": [
+    {
+      "sequence": 1,
+      "event_id": "awin-douglas-application-submitted-20260918",
+      "network": "Awin",
+      "merchant_id": "douglas",
+      "program": "Douglas_DE",
+      "event_type": "application_submitted",
+      "event_at": "2026-09-18",
+      "recorded_at": "2026-09-19",
+      "status_after": "applied",
+      "source": "migrated_from_scentai_affiliate_programs.json"
+    },
+    {
+      "sequence": 2,
+      "event_id": "awin-flaconi-application-submitted-20260918",
+      "network": "Awin",
+      "merchant_id": "flaconi",
+      "program": "Flaconi DE",
+      "event_type": "application_submitted",
+      "event_at": "2026-09-18",
+      "recorded_at": "2026-09-19",
+      "status_after": "applied",
+      "source": "migrated_from_scentai_affiliate_programs.json"
+    },
+    {
+      "sequence": 3,
+      "event_id": "awin-parfumdreams-application-submitted-20260918",
+      "network": "Awin",
+      "merchant_id": "parfumdreams",
+      "program": "Parfumdreams DE",
+      "event_type": "application_submitted",
+      "event_at": "2026-09-18",
+      "recorded_at": "2026-09-19",
+      "status_after": "applied",
+      "source": "migrated_from_scentai_affiliate_programs.json"
+    },
+    {
+      "sequence": 4,
+      "event_id": "awin-parfumgroup-application-submitted-20260918",
+      "network": "Awin",
+      "merchant_id": "parfumgroup",
+      "program": "Parfumgroup DE",
+      "event_type": "application_submitted",
+      "event_at": "2026-09-18",
+      "recorded_at": "2026-09-19",
+      "status_after": "applied",
+      "source": "migrated_from_scentai_affiliate_programs.json"
+    },
+    {
+      "sequence": 5,
+      "event_id": "awin-breuninger-application-submitted-20260918",
+      "network": "Awin",
+      "merchant_id": "breuninger",
+      "program": "Breuninger DE",
+      "event_type": "application_submitted",
+      "event_at": "2026-09-18",
+      "recorded_at": "2026-09-19",
+      "status_after": "applied",
+      "source": "migrated_from_scentai_affiliate_programs.json"
+    },
+    {
+      "sequence": 6,
+      "event_id": "awin-perfumetrader-application-submitted-20260918",
+      "network": "Awin",
+      "merchant_id": "perfumetrader",
+      "program": "Perfumetrader DE",
+      "event_type": "application_submitted",
+      "event_at": "2026-09-18",
+      "recorded_at": "2026-09-19",
+      "status_after": "applied",
+      "source": "migrated_from_scentai_affiliate_programs.json"
+    },
+    {
+      "sequence": 7,
+      "event_id": "awin-birkholz-application-submitted-20260918",
+      "network": "Awin",
+      "merchant_id": "birkholz",
+      "program": "Birkholz Perfume Manufacture DE",
+      "event_type": "application_submitted",
+      "event_at": "2026-09-18",
+      "recorded_at": "2026-09-19",
+      "status_after": "applied",
+      "source": "migrated_from_scentai_affiliate_programs.json"
+    },
+    {
+      "sequence": 8,
+      "event_id": "awin-top-parfuemerie-application-submitted-20260918",
+      "network": "Awin",
+      "merchant_id": "top-parfuemerie",
+      "program": "top Parfümerie DE",
+      "event_type": "application_submitted",
+      "event_at": "2026-09-18",
+      "recorded_at": "2026-09-19",
+      "status_after": "applied",
+      "source": "migrated_from_scentai_affiliate_programs.json"
+    },
+    {
+      "sequence": 9,
+      "event_id": "cj-notino-pending-observed-20260919",
+      "network": "CJ Affiliate",
+      "merchant_id": "notino",
+      "program": "Notino",
+      "event_type": "pending_review_observed",
+      "event_at": null,
+      "recorded_at": "2026-09-19",
+      "status_after": "applied_pending",
+      "source": "migrated_from_scentai_affiliate_programs.json"
+    }
+  ]
+}
