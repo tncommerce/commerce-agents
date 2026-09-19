@@ -95,10 +95,7 @@ def test_source_change_marks_status_stale() -> None:
 
     assert report["valid"] is False
     assert "operations_status_source_fingerprint_stale" in report["issues"]
-    assert any(
-        issue.startswith("operations_status_field_drift:")
-        for issue in report["issues"]
-    )
+    assert any(issue.startswith("operations_status_field_drift:") for issue in report["issues"])
 
 
 def test_manual_status_edit_is_detected() -> None:
