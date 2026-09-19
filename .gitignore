@@ -46,3 +46,4 @@ examples/retail/data/.merchant_clickouts.jsonl
 examples/retail/data/.analytics_events.jsonl
 examples/retail/data/merchant_invalid.json
 examples/retail/data/merchant_unmatched.json
+examples/retail/data/scentai_launch_links.local.json
