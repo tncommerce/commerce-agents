@@ -268,7 +268,16 @@
         "https://www.douglas.de/de/p/5011497004",
         "https://www.flaconi.de/parfum/hugo-boss/boss-bottled/hugo-boss-boss-bottled-absolu-intense-parfum.html?variant=90007350-0011241",
         "https://www.parfumo.de/Parfums/Hugo_Boss/boss-bottled-absolu"
-      ]
+      ],
+      "identifiers": {
+        "ean": "3616305480620",
+        "gtin": "3616305480620"
+      },
+      "merchant_snapshot": {
+        "douglas_de": "available",
+        "flaconi_de": "available"
+      },
+      "merchant_snapshot_checked_at": "2026-09-19"
     },
     {
       "candidate_id": "YSL-MYSLF-LE-PARFUM",
@@ -290,7 +299,16 @@
         "https://www.douglas.de/de/p/5011499070",
         "https://www.flaconi.de/parfum/yves-saint-laurent/myslf/yves-saint-laurent-myslf-le-parfum-parfum.html",
         "https://www.parfumo.de/Parfums/Yves_Saint_Laurent/myslf-le-parfum"
-      ]
+      ],
+      "identifiers": {
+        "ean": "3614274114645",
+        "gtin": "3614274114645"
+      },
+      "merchant_snapshot": {
+        "douglas_de": "available",
+        "flaconi_de": "available"
+      },
+      "merchant_snapshot_checked_at": "2026-09-19"
     },
     {
       "candidate_id": "JPG-FLEUR-DU-MALE-2026",
