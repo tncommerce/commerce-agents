@@ -6,7 +6,7 @@ import { LIVE_FRAGRANCES } from "@/lib/fragranceCatalog";
 export const metadata: Metadata = {
   title: "Parfums entdecken",
   description:
-    "Entdecke das SCENTAI Duftsortiment mit Duftprofil, Community-Bewertungen, Haltbarkeit und aktuellen Händlerangeboten.",
+    "Entdecke das DUFYND Duftsortiment mit Duftprofil, Community-Bewertungen, Haltbarkeit und aktuellen Händlerangeboten.",
   alternates: {
     canonical: "/duft",
   },
@@ -27,13 +27,13 @@ export default function FragranceIndexPage() {
           <a
             href="/"
             className="flex items-center gap-2.5"
-            aria-label="Zur SCENTAI Startseite"
+            aria-label="Zur DUFYND Startseite"
           >
             <span className="grid h-8 w-8 place-items-center rounded-lg bg-(--ink) text-[15px] font-bold text-(--surface)">
               S
             </span>
             <span className="text-[17px] font-bold tracking-[-0.02em]">
-              SCENTAI
+              DUFYND
             </span>
           </a>
           <div className="flex items-center gap-2">
@@ -68,7 +68,7 @@ export default function FragranceIndexPage() {
       <div className="mx-auto max-w-[1080px] px-4 py-7 sm:px-6 sm:py-10">
         <div className="max-w-3xl">
           <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-(--ink-soft)">
-            SCENTAI Duftkatalog
+            DUFYND Duftkatalog
           </div>
           <h1 className="mt-2 text-[32px] font-semibold leading-[1.08] tracking-[-0.035em] sm:text-[42px]">
             Parfums entdecken
