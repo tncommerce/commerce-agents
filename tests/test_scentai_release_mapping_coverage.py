@@ -10,6 +10,8 @@ RELEASE_MANIFESTS = (
     DATA_DIR / "scentai_release_batch_01.json",
     DATA_DIR / "scentai_release_batch_02.json",
     DATA_DIR / "scentai_release_batch_03.json",
+    DATA_DIR / "scentai_release_batch_04.json",
+    DATA_DIR / "scentai_release_batch_05.json",
 )
 
 
@@ -80,16 +82,30 @@ def test_release_batch_product_ids_do_not_overlap() -> None:
 
 
 def test_release_write_guards_follow_operational_sequence() -> None:
-    release_01 = RELEASE_MANIFESTS[0]
-    release_02 = RELEASE_MANIFESTS[1]
-    release_03 = RELEASE_MANIFESTS[2]
+    release_01, release_02, release_03, release_04, release_05 = (
+        RELEASE_MANIFESTS
+    )
 
     assert release_manifest_write_enabled(release_01) is True
     assert release_manifest_write_enabled(release_02) is False
     assert release_manifest_write_enabled(release_03) is False
+    assert release_manifest_write_enabled(release_04) is False
+    assert release_manifest_write_enabled(release_05) is False
 
     payload_02 = load_json(release_02)
     payload_03 = load_json(release_03)
+    payload_04 = load_json(release_04)
+    payload_05 = load_json(release_05)
+
     assert "Release 01" in payload_02["write_guard_reason"]
-    assert "Release 01" in payload_03["write_guard_reason"]
-    assert "Release 02" in payload_03["write_guard_reason"]
+    for predecessor in ("Release 01", "Release 02"):
+        assert predecessor in payload_03["write_guard_reason"]
+    for predecessor in ("Release 01", "Release 02", "Release 03"):
+        assert predecessor in payload_04["write_guard_reason"]
+    for predecessor in (
+        "Release 01",
+        "Release 02",
+        "Release 03",
+        "Release 04",
+    ):
+        assert predecessor in payload_05["write_guard_reason"]
