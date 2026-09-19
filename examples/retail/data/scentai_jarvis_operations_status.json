@@ -56,7 +56,7 @@
     "approved_images": 0,
     "pending_images": 30,
     "review_ready": 0,
-    "rights_or_source_check_pending": 5
+    "rights_or_source_check_pending": 9
   },
   "release_01": {
     "release_size": 5,
@@ -68,5 +68,5 @@
   },
   "pending_manual_approvals": [],
   "operating_note": "Operational readiness summary only. This file does not authorize live writes, spending, outbound messages or affiliate activation.",
-  "source_fingerprint_sha256": "dc6f05d65cb13e2e2fe311a00daf743c14878fdaf758308197aed707374a3b5b"
+  "source_fingerprint_sha256": "97c4ee6b22eeb435bf475350dfe3a2b682032193bcf6a55db294e0eeff13e689"
 }
