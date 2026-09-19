@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated_at": "2026-09-19",
-  "source_fingerprint_sha256": "da6451fee84bc953e483099c709845a0151160c6dff0b154a54084240c77b188",
+  "source_fingerprint_sha256": "12a969009b54bb9913ac11fa27cda85018652fda7bce127501de3980409f6579",
   "system": "SCENTAI",
   "control_plane": "commerce_jarvis_master",
   "overall_state": "work_available",
@@ -52,5 +52,12 @@
     "secrets_allowed_in_repo_state": false,
     "high_impact_actions_require_user_approval": true
   },
-  "operating_rule": "Jarvis may continue non-destructive auto_allowed work in the selected domain while other domains wait on external events. High-impact or publish/live actions always stop at user approval."
+  "operating_rule": "Jarvis may continue non-destructive auto_allowed work in the selected domain while other domains wait on external events. High-impact or publish/live actions always stop at user approval.",
+  "content_pipeline": {
+    "batch_count": 2,
+    "total_pilots": 10,
+    "current_batch_id": "pilot_batch_01",
+    "pipeline_state": "production_work_available",
+    "production_parallel_allowed": true
+  }
 }
