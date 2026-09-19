@@ -10,7 +10,7 @@ import GenerativeBlock from "./generative";
 const WIDE = new Set(["comparison", "plan"]);
 
 function scentaiErrorText() {
-  return "SCENTAI ist gerade kurz nicht erreichbar. Bitte versuche es in einem Moment erneut.";
+  return "DUFYND ist gerade kurz nicht erreichbar. Bitte versuche es in einem Moment erneut.";
 }
 
 /** Shimmers where the carousel will land while a search runs. */
