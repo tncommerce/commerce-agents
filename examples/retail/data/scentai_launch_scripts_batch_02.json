@@ -1,0 +1,283 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-19",
+  "campaign_id": "launch01",
+  "status": "batch_02_scripted",
+  "production_rules": {
+    "target_duration_seconds": "20-35",
+    "aspect_ratio": "9:16",
+    "channels": [
+      "tiktok",
+      "instagram",
+      "youtube"
+    ],
+    "wording_guardrails": [
+      "Do not call an inspired relationship a 1:1 clone.",
+      "Do not quote a live price unless it is refreshed immediately before publishing.",
+      "Do not present an occasion choice as a universal best fragrance.",
+      "Do not imply affiliate commission affects recommendations."
+    ],
+    "visual_rule": "Use only approved/licensed SCENTAI product visuals or clearly labeled neutral editorial graphics."
+  },
+  "creatives": [
+    {
+      "content_id": "tygar_vibrato_value_01",
+      "title": "Tygar, Vibrato, Turathi Blue oder Regent?",
+      "format": "dupe_battle",
+      "landing_path": "/parfum-alternativen",
+      "duration_target_seconds": 32,
+      "hook": "Tygar, Vibrato, Turathi Blue und Regent landen oft im selben Gespräch – bei SCENTAI sind sie aber nicht einfach vier Versionen desselben Dufts.",
+      "scenes": [
+        {
+          "seconds": "0-4",
+          "visual": "Alle vier Flakons im schnellen Wechsel.",
+          "voiceover": "Tygar, Vibrato, Turathi Blue und Regent landen oft im selben Gespräch – bei SCENTAI sind sie aber nicht einfach vier Versionen desselben Dufts.",
+          "on_screen": "ähnliche Richtung ≠ gleicher Duft"
+        },
+        {
+          "seconds": "4-11",
+          "visual": "Tygar und Vibrato nebeneinander mit Alternative-Badge.",
+          "voiceover": "Tygar und Vibrato führen wir als Alternativen zueinander: beide sehr frisch und zitrisch, aber Vibrato wirkt in unseren Daten etwas weniger würzig.",
+          "on_screen": "Tygar ↔ Vibrato: Alternative"
+        },
+        {
+          "seconds": "11-20",
+          "visual": "Turathi Blue mit Inspired-Badges zu Tygar und Vibrato.",
+          "voiceover": "Turathi Blue ist dagegen zu beiden als inspiriert dokumentiert und bleibt ebenfalls klar zitrisch, frisch und holzig.",
+          "on_screen": "Turathi Blue → inspiriert"
+        },
+        {
+          "seconds": "20-27",
+          "visual": "Regent mit kleinerem Community-Sample-Hinweis.",
+          "voiceover": "Regent liegt ebenfalls in diesem Cluster, ist aber bei Tygar mit etwas geringerer Beziehungssicherheit hinterlegt und hat aktuell eine deutlich kleinere Community-Datenbasis.",
+          "on_screen": "Regent → inspiriert | kleinere Datenbasis"
+        },
+        {
+          "seconds": "27-32",
+          "visual": "SCENTAI Vergleichsansicht.",
+          "voiceover": "Wenn du nicht nur nach Hype auswählen willst, vergleich die vier Profile direkt bei SCENTAI.",
+          "on_screen": "Cluster vergleichen → SCENTAI"
+        }
+      ],
+      "caption_skeleton": "Tygar-DNA ist kein einzelner Duft. SCENTAI trennt Alternative, Inspiration und Datenbasis transparent. #tygar #vibrato #turathiblue #scentai",
+      "product_ids": [
+        "SC-BVLGARI-TYGAR-125",
+        "SC-SOSPIRO-VIBRATO-100",
+        "SC-AFNAN-TURATHI-BLUE-90",
+        "SC-MAISON-ASRAR-REGENT-100"
+      ],
+      "claim_basis": [
+        "Tygar <-> Vibrato alternative/high.",
+        "Turathi Blue -> Tygar inspired/high and -> Vibrato inspired/high.",
+        "Regent -> Tygar inspired/medium_high and -> Vibrato inspired/high.",
+        "Regent community sample is materially smaller than the other cluster products."
+      ]
+    },
+    {
+      "content_id": "naxos_value_01",
+      "title": "Naxos-Richtung: Ateeq oder Italia?",
+      "format": "luxury_without_budget",
+      "landing_path": "/parfum-alternativen",
+      "duration_target_seconds": 30,
+      "hook": "Du magst Xerjoff Naxos? Dann solltest du Ateeq und Italia kennen – aber nicht als angebliche Eins-zu-eins-Kopien.",
+      "scenes": [
+        {
+          "seconds": "0-4",
+          "visual": "Naxos groß, dann Ateeq und Italia einblenden.",
+          "voiceover": "Du magst Xerjoff Naxos? Dann solltest du Ateeq und Italia kennen – aber nicht als angebliche Eins-zu-eins-Kopien.",
+          "on_screen": "Naxos → 2 inspirierte Richtungen"
+        },
+        {
+          "seconds": "4-11",
+          "visual": "Gemeinsame Akkorde als Text: sweet, spicy, gourmand, creamy.",
+          "voiceover": "Alle drei liegen bei SCENTAI klar in einer süßen, würzigen, gourmandigen und cremigen Richtung.",
+          "on_screen": "süß • würzig • gourmand • cremig"
+        },
+        {
+          "seconds": "11-19",
+          "visual": "Ateeq: freshness 4; Naxos/Italia: freshness 6.",
+          "voiceover": "Ateeq ist in unseren Profildaten weniger frisch und stärker orientalisch eingeordnet.",
+          "on_screen": "Ateeq → weniger frisch • orientalischer"
+        },
+        {
+          "seconds": "19-25",
+          "visual": "Italia neben Naxos mit Citrus-Badge.",
+          "voiceover": "Italia bleibt frischer und zitrischer und liegt damit in diesem Punkt näher an Naxos.",
+          "on_screen": "Italia → frischer • zitrischer"
+        },
+        {
+          "seconds": "25-30",
+          "visual": "SCENTAI /parfum-alternativen.",
+          "voiceover": "Welches Profil besser zu dir passt, kannst du statt nach einem einzelnen Dupe-Ranking direkt vergleichen.",
+          "on_screen": "Naxos-Cluster → SCENTAI"
+        }
+      ],
+      "caption_skeleton": "Naxos-Vibe ohne die Behauptung, jeder ähnliche Duft sei identisch. Ateeq und Italia setzen andere Schwerpunkte. #naxos #parfumalternativen #scentai",
+      "product_ids": [
+        "SC-XERJOFF-NAXOS-100",
+        "SC-NUSUK-ATEEQ-100",
+        "SC-RAYHAAN-ITALIA-100"
+      ],
+      "claim_basis": [
+        "Ateeq -> Naxos inspired/high.",
+        "Italia -> Naxos inspired/high.",
+        "Ateeq freshness 4; Naxos freshness 6; Italia freshness 6.",
+        "Ateeq includes oriental among its leading community accords while Italia includes citrus."
+      ]
+    },
+    {
+      "content_id": "dior_homme_intense_alt_01",
+      "title": "Dior Homme Intense vs Kayaan Classic",
+      "format": "original_vs_alternative",
+      "landing_path": "/parfum-alternativen",
+      "duration_target_seconds": 28,
+      "hook": "Bei Dior Homme Intense und Kayaan Classic können wir tatsächlich von einer dokumentierten Clone-Beziehung sprechen – aber auch hier gibt es Unterschiede.",
+      "scenes": [
+        {
+          "seconds": "0-4",
+          "visual": "Dior Homme Intense und Kayaan Classic nebeneinander.",
+          "voiceover": "Bei Dior Homme Intense und Kayaan Classic können wir tatsächlich von einer dokumentierten Clone-Beziehung sprechen – aber auch hier gibt es Unterschiede.",
+          "on_screen": "DHI vs Kayaan Classic"
+        },
+        {
+          "seconds": "4-11",
+          "visual": "Gemeinsame Profil-Balken: powdery, sweet, woody, creamy.",
+          "voiceover": "Beide sind pudrig, süß, holzig und cremig eingeordnet und liegen bei Süße und Holzigkeit in unseren Scores gleichauf.",
+          "on_screen": "beide: süß 8/10 • holzig 7/10"
+        },
+        {
+          "seconds": "11-19",
+          "visual": "Spiciness und Performance nebeneinander.",
+          "voiceover": "Dior Homme Intense ist bei uns deutlich würziger und liegt bei Community-Haltbarkeit und Projektion etwas höher.",
+          "on_screen": "DHI → würziger + stärkere Community-Performance"
+        },
+        {
+          "seconds": "19-24",
+          "visual": "Clone/high Badge zwischen beiden.",
+          "voiceover": "Die Beziehung ist mit hoher Sicherheit als Clone dokumentiert – das heißt trotzdem nicht, dass beide für jeden gleich riechen oder gleich wirken.",
+          "on_screen": "Clone-Beziehung ≠ identische Wahrnehmung"
+        },
+        {
+          "seconds": "24-28",
+          "visual": "SCENTAI Vergleich.",
+          "voiceover": "Profil und Performance nebeneinander? Genau dafür gibt es den SCENTAI-Vergleich.",
+          "on_screen": "direkt vergleichen → SCENTAI"
+        }
+      ],
+      "caption_skeleton": "Eine echte Clone-Beziehung – trotzdem nicht einfach 'gleich'. SCENTAI zeigt Profil und Performance getrennt. #diorhommeintense #kayaanclassic #scentai",
+      "product_ids": [
+        "SC-DIOR-HOMME-INTENSE-100",
+        "SC-AL-WATANIAH-KAYAAN-CLASSIC-100"
+      ],
+      "claim_basis": [
+        "Dior Homme Intense <-> Kayaan Classic clone/high.",
+        "Both sweetness 8 and woodiness 7.",
+        "DHI spiciness 6 vs Kayaan 2.",
+        "DHI longevity/projection 8.2/7.9 vs Kayaan 7.5/7.3."
+      ]
+    },
+    {
+      "content_id": "top3_office_01",
+      "title": "Drei Büro-Profile statt einer pauschalen Nummer 1",
+      "format": "top3",
+      "landing_path": "/duftfinder",
+      "duration_target_seconds": 31,
+      "hook": "Welcher Duft passt ins Büro? Statt einer pauschalen Nummer eins: drei komplett unterschiedliche Profile.",
+      "scenes": [
+        {
+          "seconds": "0-4",
+          "visual": "Prada L'Homme, Bois Impérial und Bleu de Chanel.",
+          "voiceover": "Welcher Duft passt ins Büro? Statt einer pauschalen Nummer eins: drei komplett unterschiedliche Profile.",
+          "on_screen": "3 Büro-Profile • 3 verschiedene Typen"
+        },
+        {
+          "seconds": "4-11",
+          "visual": "Prada L'Homme mit powdery/fresh/floral.",
+          "voiceover": "Prada L'Homme ist die pudrig-frische, florale Richtung – weicher und weniger würzig.",
+          "on_screen": "Prada L'Homme → pudrig • frisch • floral"
+        },
+        {
+          "seconds": "11-19",
+          "visual": "Bleu de Chanel mit fresh/citrus/woody.",
+          "voiceover": "Bleu de Chanel geht frischer, zitrischer und holziger – ein ganz anderes Profil.",
+          "on_screen": "Bleu de Chanel → frisch • zitrisch • holzig"
+        },
+        {
+          "seconds": "19-26",
+          "visual": "Bois Impérial mit woody 9, sweetness 1.",
+          "voiceover": "Bois Impérial ist am holzigsten, sehr wenig süß und in unseren Community-Daten deutlich stärker bei Haltbarkeit und Projektion.",
+          "on_screen": "Bois Impérial → holziger • trockener • kräftiger"
+        },
+        {
+          "seconds": "26-31",
+          "visual": "SCENTAI Duftfinder.",
+          "voiceover": "Nicht welcher ist der beste – sondern welches Profil passt zu deinem Büro und deinem Stil? Frag SCENTAI.",
+          "on_screen": "dein Profil finden → SCENTAI"
+        }
+      ],
+      "caption_skeleton": "Büroduft ist nicht gleich Büroduft: pudrig-clean, zitrisch-holzig oder trocken-holzig. SCENTAI sucht nach deinem Profil. #officefragrance #parfum #scentai",
+      "product_ids": [
+        "SC-PRADA-LHOMME-100",
+        "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+        "SC-CHANEL-BLEU-DE-CHANEL-EDP-100"
+      ],
+      "claim_basis": [
+        "Prada L'Homme leading accords powdery/fresh/floral; spiciness 3.",
+        "Bleu de Chanel leading accords fresh/citrus/woody.",
+        "Bois Imperial woodiness 9, sweetness 1, longevity/projection 8.5/8.1.",
+        "Prada longevity/projection 7.4/7.1; Bleu de Chanel 7.3/7.1."
+      ]
+    },
+    {
+      "content_id": "top3_date_01",
+      "title": "Date Night: süß, elegant oder moderner?",
+      "format": "occasion",
+      "landing_path": "/duftfinder",
+      "duration_target_seconds": 31,
+      "hook": "Date Night heißt nicht automatisch ein Duft für alle. Diese drei Kandidaten setzen komplett andere Schwerpunkte.",
+      "scenes": [
+        {
+          "seconds": "0-4",
+          "visual": "SWY Intensely, Dior Homme Intense, Valentino Born in Roma Intense.",
+          "voiceover": "Date Night heißt nicht automatisch ein Duft für alle. Diese drei Kandidaten setzen komplett andere Schwerpunkte.",
+          "on_screen": "Date Night → welches Profil bist du?"
+        },
+        {
+          "seconds": "4-11",
+          "visual": "SWY Intensely mit sweetness 10.",
+          "voiceover": "Stronger With You Intensely ist die süßeste, gourmandigste und sehr würzige Richtung.",
+          "on_screen": "SWY Intensely → süß • gourmand • würzig"
+        },
+        {
+          "seconds": "11-19",
+          "visual": "Dior Homme Intense mit powdery/woody/creamy.",
+          "voiceover": "Dior Homme Intense wirkt pudriger, holziger und cremiger – weniger gourmandig, aber ebenfalls klar süß.",
+          "on_screen": "DHI → pudrig • holzig • cremig"
+        },
+        {
+          "seconds": "19-26",
+          "visual": "Valentino mit fresh/sweet/fruity.",
+          "voiceover": "Valentino Born in Roma Intense bringt deutlich mehr Frische und Fruchtigkeit in die Auswahl.",
+          "on_screen": "Valentino → süß • frischer • fruchtiger"
+        },
+        {
+          "seconds": "26-31",
+          "visual": "SCENTAI Duftfinder.",
+          "voiceover": "Welcher davon besser zu deinem Date und deinem Stil passt, sollte nicht ein Ranking entscheiden – sondern dein Profil.",
+          "on_screen": "Date-Duft finden → SCENTAI"
+        }
+      ],
+      "caption_skeleton": "Drei Date-Night-Richtungen: gourmand-süß, pudrig-elegant oder süß mit mehr Frische. Welches Profil passt zu dir? #datenight #parfum #scentai",
+      "product_ids": [
+        "SC-ARMANI-SWY-INTENSELY-100",
+        "SC-DIOR-HOMME-INTENSE-100",
+        "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100"
+      ],
+      "claim_basis": [
+        "SWY Intensely sweetness 10 and leading accords sweet/gourmand/spicy.",
+        "Dior Homme Intense leading accords powdery/sweet/woody/creamy.",
+        "Valentino Born in Roma Intense freshness 5 vs SWY 2 and DHI 2; leading accords include fresh/fruity."
+      ]
+    }
+  ]
+}
