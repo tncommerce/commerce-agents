@@ -1,0 +1,280 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-19",
+  "campaign_id": "launch01",
+  "status": "batch_01_scripted",
+  "production_rules": {
+    "target_duration_seconds": "20-35",
+    "aspect_ratio": "9:16",
+    "channels": [
+      "tiktok",
+      "instagram",
+      "youtube"
+    ],
+    "wording_guardrails": [
+      "Do not call an inspired relationship a 1:1 clone.",
+      "Do not quote a live price unless it is refreshed immediately before publishing.",
+      "Do not state clickouts as purchases.",
+      "Do not imply affiliate commission affects recommendations."
+    ],
+    "visual_rule": "Use only approved/licensed SCENTAI product visuals or clearly labeled neutral editorial graphics."
+  },
+  "creatives": [
+    {
+      "content_id": "original_vs_alt_imagination_01",
+      "title": "Imagination – zwei günstigere Richtungen",
+      "format": "original_vs_alternative",
+      "landing_path": "/parfum-alternativen",
+      "duration_target_seconds": 29,
+      "hook": "Du liebst Louis Vuitton Imagination, willst aber nicht automatisch beim Originalpreis landen?",
+      "scenes": [
+        {
+          "seconds": "0-3",
+          "visual": "Imagination groß im Bild, danach schneller Split zu Marwa und Hectic.",
+          "voiceover": "Du liebst Louis Vuitton Imagination, willst aber nicht automatisch beim Originalpreis landen?",
+          "on_screen": "Imagination – welche Alternative passt besser?"
+        },
+        {
+          "seconds": "3-10",
+          "visual": "Imagination mit den SCENTAI-Accords fresh, citrus, aquatic.",
+          "voiceover": "Imagination ist bei SCENTAI extrem frisch, zitrisch und aquatisch eingeordnet – mit eher wenig Süße.",
+          "on_screen": "frisch • zitrisch • aquatisch"
+        },
+        {
+          "seconds": "10-18",
+          "visual": "Marwa links, Hectic rechts.",
+          "voiceover": "Marwa geht ebenfalls klar in diese frische Richtung, wirkt in unseren Daten aber süßer. Hectic bleibt trockener und deutlich würziger.",
+          "on_screen": "Marwa: süßer | Hectic: würziger"
+        },
+        {
+          "seconds": "18-25",
+          "visual": "Beziehungslabel inspired bei beiden statt Clone-Badge.",
+          "voiceover": "Wichtig: SCENTAI führt beide als inspiriert – nicht als angeblichen Eins-zu-eins-Klon.",
+          "on_screen": "inspiriert ≠ 1:1-Klon"
+        },
+        {
+          "seconds": "25-29",
+          "visual": "SCENTAI Landingpage /parfum-alternativen.",
+          "voiceover": "Wenn du wissen willst, welcher besser zu dir passt, vergleich sie direkt bei SCENTAI.",
+          "on_screen": "SCENTAI → Alternativen vergleichen"
+        }
+      ],
+      "caption_skeleton": "Imagination-Vibe, aber nicht blind irgendeinen 'Dupe' kaufen. SCENTAI trennt Duftprofil und Beziehung transparent. #parfum #duft #scentai",
+      "product_ids": [
+        "SC-LV-IMAGINATION-100",
+        "SC-ARABIYAT-MARWA-EDP-100",
+        "SC-BUJAIRAMI-HECTIC-100"
+      ],
+      "claim_basis": [
+        "Imagination accords: fresh/citrus/aquatic; freshness 10, sweetness 2.",
+        "Marwa relationship to Imagination: inspired/high; sweetness 6.",
+        "Hectic relationship to Imagination: inspired/high; spiciness 8."
+      ]
+    },
+    {
+      "content_id": "dupe_battle_imagination_01",
+      "title": "Marwa vs Hectic vs Marwa Extrait",
+      "format": "dupe_battle",
+      "landing_path": "/parfum-alternativen",
+      "duration_target_seconds": 31,
+      "hook": "Drei Imagination-inspirierte Düfte – aber sie sind nicht austauschbar.",
+      "scenes": [
+        {
+          "seconds": "0-3",
+          "visual": "Marwa, Hectic und Marwa Extrait nacheinander einblenden.",
+          "voiceover": "Drei Imagination-inspirierte Düfte – aber sie sind nicht austauschbar.",
+          "on_screen": "Marwa vs Hectic vs Marwa Extrait"
+        },
+        {
+          "seconds": "3-11",
+          "visual": "Marwa mit Sweetness-Bar.",
+          "voiceover": "Marwa ist von den drei Kandidaten in unseren Daten die süßere, weichere Variante.",
+          "on_screen": "Marwa → frischer + süßer"
+        },
+        {
+          "seconds": "11-19",
+          "visual": "Hectic mit Spice-Bar.",
+          "voiceover": "Hectic ist ebenfalls sehr frisch, zieht aber deutlich stärker in die würzige Richtung.",
+          "on_screen": "Hectic → frischer + würziger"
+        },
+        {
+          "seconds": "19-26",
+          "visual": "Marwa Extrait mit fresh/spicy/oriental labels.",
+          "voiceover": "Marwa Extrait liegt dazwischen, wirkt würziger als das normale Marwa und hat aktuell noch deutlich weniger Community-Daten.",
+          "on_screen": "Extrait → würziger | kleinere Datenbasis"
+        },
+        {
+          "seconds": "26-31",
+          "visual": "SCENTAI Vergleichsansicht.",
+          "voiceover": "Nicht fragen: Welcher ist der beste? Frag: Welches Profil passt zu mir? Genau dafür ist SCENTAI da.",
+          "on_screen": "Profil statt Hype → SCENTAI"
+        }
+      ],
+      "caption_skeleton": "Gleicher Benchmark, unterschiedliche Ausprägung. Genau deshalb vergleicht SCENTAI Profile statt nur 'Dupe ja/nein'. #parfumalternativen #scentai",
+      "product_ids": [
+        "SC-ARABIYAT-MARWA-EDP-100",
+        "SC-BUJAIRAMI-HECTIC-100",
+        "SC-ARABIYAT-MARWA-EXTRAIT-60"
+      ],
+      "claim_basis": [
+        "All three sit in the lv-imagination cluster.",
+        "Marwa sweetness 6; Hectic spiciness 8; Marwa Extrait spiciness 7.",
+        "Marwa Extrait community sample is materially smaller than Marwa and Hectic."
+      ]
+    },
+    {
+      "content_id": "aventus_alternatives_01",
+      "title": "Aventus-Vibe – aber sauber getrennt",
+      "format": "original_vs_alternative",
+      "landing_path": "/parfum-alternativen",
+      "duration_target_seconds": 33,
+      "hook": "Wenn dir jemand diese drei Düfte einfach alle als Aventus-Klon verkauft, fehlt eine wichtige Unterscheidung.",
+      "scenes": [
+        {
+          "seconds": "0-4",
+          "visual": "Aventus, CDNIM, Supremacy Collector's Edition und Vanguard im schnellen Stack.",
+          "voiceover": "Wenn dir jemand diese drei Düfte einfach alle als Aventus-Klon verkauft, fehlt eine wichtige Unterscheidung.",
+          "on_screen": "Nicht alles = Aventus 1:1"
+        },
+        {
+          "seconds": "4-12",
+          "visual": "Aventus + Club de Nuit Intense Man.",
+          "voiceover": "Club de Nuit Intense Man ist in unserer Datenbank direkt als Aventus-Klonbeziehung dokumentiert.",
+          "on_screen": "CDNIM → Aventus-Clone-Beziehung"
+        },
+        {
+          "seconds": "12-22",
+          "visual": "Supremacy Collector's Edition und Vanguard; Absolu Aventus klein als Referenz.",
+          "voiceover": "Supremacy Collector's Edition und Vanguard ordnen wir dagegen näher an die Absolu-Aventus-Richtung ein – also nicht einfach identisch zum klassischen Aventus.",
+          "on_screen": "Collector's + Vanguard → eher Absolu-Richtung"
+        },
+        {
+          "seconds": "22-28",
+          "visual": "Accords: fresh/fruity/woody/smoky.",
+          "voiceover": "Alle bewegen sich im fruchtig-frischen, holzigen Umfeld, aber mit unterschiedlichen Schwerpunkten.",
+          "on_screen": "ähnliche DNA ≠ gleicher Duft"
+        },
+        {
+          "seconds": "28-33",
+          "visual": "SCENTAI /parfum-alternativen.",
+          "voiceover": "SCENTAI zeigt dir genau diese Beziehung, bevor du nur nach dem billigsten Flakon gehst.",
+          "on_screen": "Beziehung prüfen → SCENTAI"
+        }
+      ],
+      "caption_skeleton": "Aventus-Alternative ist nicht automatisch Aventus-Klon. SCENTAI trennt klassische Aventus- und Absolu-Aventus-Richtungen. #aventus #parfum #scentai",
+      "product_ids": [
+        "SC-CREED-AVENTUS-100",
+        "SC-AFNAN-SUPREMACY-COLLECTORS-100",
+        "SC-MAISON-ASRAR-VANGUARD-100",
+        "SC-ARMAF-CDNIM-EDP-200"
+      ],
+      "claim_basis": [
+        "CDNIM -> Aventus relationship_type clone/high.",
+        "Supremacy Collector's Edition -> Absolu Aventus relationship_type inspired/high.",
+        "Vanguard -> Absolu Aventus relationship_type inspired/high."
+      ]
+    },
+    {
+      "content_id": "layton_alternatives_01",
+      "title": "Layton: Détour Noir oder Royal Bleu?",
+      "format": "dupe_battle",
+      "landing_path": "/parfum-alternativen",
+      "duration_target_seconds": 28,
+      "hook": "Du willst die Layton-Richtung – aber Détour Noir und Royal Bleu sind bei SCENTAI nicht dieselbe Art Alternative.",
+      "scenes": [
+        {
+          "seconds": "0-4",
+          "visual": "Layton in der Mitte, Détour Noir und Royal Bleu links/rechts.",
+          "voiceover": "Du willst die Layton-Richtung – aber Détour Noir und Royal Bleu sind bei SCENTAI nicht dieselbe Art Alternative.",
+          "on_screen": "Layton → 2 verschiedene Alternativtypen"
+        },
+        {
+          "seconds": "4-12",
+          "visual": "Détour Noir mit Clone-Label.",
+          "voiceover": "Détour Noir ist als direkte Clone-Beziehung zu Layton dokumentiert.",
+          "on_screen": "Détour Noir → Clone-Beziehung"
+        },
+        {
+          "seconds": "12-20",
+          "visual": "Royal Bleu mit Inspired-Label.",
+          "voiceover": "Royal Bleu führen wir dagegen als inspiriert. Das Profil ist ebenfalls süß, würzig und holzig, aber wir behaupten keine Eins-zu-eins-Kopie.",
+          "on_screen": "Royal Bleu → inspiriert"
+        },
+        {
+          "seconds": "20-24",
+          "visual": "Beide mit sweetness 9 / spiciness 8.",
+          "voiceover": "Spannend: In unseren Profildaten liegen beide bei Süße und Würze sehr nah.",
+          "on_screen": "beide: süß 9/10 • würzig 8/10"
+        },
+        {
+          "seconds": "24-28",
+          "visual": "SCENTAI Vergleich.",
+          "voiceover": "Welche Variante besser zu deinen Prioritäten passt, kannst du bei SCENTAI direkt vergleichen.",
+          "on_screen": "Layton-Cluster → SCENTAI"
+        }
+      ],
+      "caption_skeleton": "Clone-Beziehung oder nur inspiriert? Bei Layton trennt SCENTAI Détour Noir und Royal Bleu bewusst. #layton #dupe #scentai",
+      "product_ids": [
+        "SC-PDM-LAYTON-125",
+        "SC-ORIENTICA-ROYAL-BLEU-80",
+        "SC-AL-HARAMAIN-DETOUR-NOIR-100"
+      ],
+      "claim_basis": [
+        "Détour Noir -> Layton clone/high.",
+        "Royal Bleu -> Layton inspired/high.",
+        "Both alternatives score sweetness 9 and spiciness 8 in SCENTAI source data."
+      ]
+    },
+    {
+      "content_id": "althair_liquid_brun_01",
+      "title": "Althaïr vs Liquid Brun",
+      "format": "original_vs_alternative",
+      "landing_path": "/parfum-alternativen",
+      "duration_target_seconds": 27,
+      "hook": "Althaïr oder Liquid Brun? Hier ist der interessante Teil: Die Performance-Daten liegen viel näher zusammen als der Preis.",
+      "scenes": [
+        {
+          "seconds": "0-4",
+          "visual": "Althaïr und Liquid Brun nebeneinander.",
+          "voiceover": "Althaïr oder Liquid Brun? Hier ist der interessante Teil: Die Performance-Daten liegen viel näher zusammen als der Preis.",
+          "on_screen": "Althaïr vs Liquid Brun"
+        },
+        {
+          "seconds": "4-11",
+          "visual": "Gemeinsame Accords sweet/gourmand/creamy/spicy.",
+          "voiceover": "Beide sind bei SCENTAI klar süß, gourmandig, cremig und würzig eingeordnet.",
+          "on_screen": "süß • gourmand • cremig • würzig"
+        },
+        {
+          "seconds": "11-18",
+          "visual": "Performance Bars: Althaïr 8.3/8.1, Liquid Brun 8.4/8.1.",
+          "voiceover": "Bei Community-Haltbarkeit und Projektion liegen sie in unseren Daten fast gleichauf.",
+          "on_screen": "Haltbarkeit: 8.3 vs 8.4 | Projektion: 8.1 vs 8.1"
+        },
+        {
+          "seconds": "18-23",
+          "visual": "Relationship badge clone/high, ohne Preiszahl.",
+          "voiceover": "Die Beziehung ist bei uns als Clone-Beziehung mit hoher Sicherheit hinterlegt – trotzdem bleibt das Original eine legitime Wahl.",
+          "on_screen": "Clone-Beziehung • Original bleibt Option"
+        },
+        {
+          "seconds": "23-27",
+          "visual": "SCENTAI Vergleichsansicht.",
+          "voiceover": "Wenn du Profil, Performance und aktuellen Händlerpreis zusammen sehen willst: SCENTAI.",
+          "on_screen": "Vergleichen statt raten → SCENTAI"
+        }
+      ],
+      "caption_skeleton": "Althaïr vs Liquid Brun: ähnliche Duft-/Performance-Richtung, aber Kaufentscheidung ist mehr als nur 'günstiger = besser'. #althair #liquidbrun #scentai",
+      "product_ids": [
+        "SC-PDM-ALTHAIR-125",
+        "SC-FRENCH-AVENUE-LIQUID-BRUN-100"
+      ],
+      "claim_basis": [
+        "Althaïr -> Liquid Brun clone/high.",
+        "Althaïr longevity/projection 8.3/8.1.",
+        "Liquid Brun longevity/projection 8.4/8.1.",
+        "Both score sweetness 10 and share gourmand/creamy/spicy profile."
+      ]
+    }
+  ]
+}
