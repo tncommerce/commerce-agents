@@ -1,0 +1,158 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-19",
+  "status": "timing_draft_for_editor",
+  "note": "Scene-aligned subtitle drafts for Pilot Batch 03. Final timings must be conformed to the recorded voiceover waveform before publishing.",
+  "items": [
+    {
+      "content_id": "tygar_vibrato_value_01",
+      "segments": [
+        {
+          "start": 0,
+          "end": 4.5,
+          "text": "Tygar, Vibrato, Turathi Blue und Regent –\nalle stehen bei SCENTAI auf maximaler Frische."
+        },
+        {
+          "start": 4.5,
+          "end": 10.5,
+          "text": "Vibrato ist als Alternative\nzu Tygar hinterlegt."
+        },
+        {
+          "start": 10.5,
+          "end": 17,
+          "text": "Turathi Blue ist zu Tygar und Vibrato\nals Inspired gespeichert."
+        },
+        {
+          "start": 17,
+          "end": 23.5,
+          "text": "Regent ist ebenfalls Inspired,\nmit stärkerer Confidence zu Vibrato."
+        },
+        {
+          "start": 23.5,
+          "end": 30,
+          "text": "Tygar ist würziger und holziger,\nVibrato weicher – die anderen liegen dazwischen."
+        }
+      ]
+    },
+    {
+      "content_id": "naxos_value_01",
+      "segments": [
+        {
+          "start": 0,
+          "end": 4.5,
+          "text": "Naxos ist bei SCENTAI sehr süß,\nwürzig und gourmandig eingeordnet."
+        },
+        {
+          "start": 4.5,
+          "end": 10,
+          "text": "Ateeq und Rayhaan Italia sind beide\nals Inspired hinterlegt."
+        },
+        {
+          "start": 10,
+          "end": 16.5,
+          "text": "Ateeq ist genauso süß und würzig,\naber etwas weniger frisch."
+        },
+        {
+          "start": 16.5,
+          "end": 22.5,
+          "text": "Italia liegt bei Frische, Süße und Würze\nfast auf Naxos-Niveau."
+        },
+        {
+          "start": 22.5,
+          "end": 28,
+          "text": "Drei ähnliche Richtungen,\ndrei eigene Profile."
+        }
+      ]
+    },
+    {
+      "content_id": "dior_homme_intense_alt_01",
+      "segments": [
+        {
+          "start": 0,
+          "end": 5,
+          "text": "Dior Homme Intense und Kayaan Classic sind bei SCENTAI\nals Clone-Beziehung mit hoher Confidence hinterlegt."
+        },
+        {
+          "start": 5,
+          "end": 11,
+          "text": "Frische, Süße und Holz liegen\nin unseren Profilen exakt gleich."
+        },
+        {
+          "start": 11,
+          "end": 17.5,
+          "text": "Der auffälligste Unterschied ist die Würze:\nDHI 6, Kayaan Classic 2."
+        },
+        {
+          "start": 17.5,
+          "end": 22.5,
+          "text": "Ähnliche Grundrichtung,\naber nicht komplett identisch."
+        },
+        {
+          "start": 22.5,
+          "end": 27,
+          "text": "Genau diese Details\nzeigt dir SCENTAI."
+        }
+      ]
+    },
+    {
+      "content_id": "signature_vs_safe_01",
+      "segments": [
+        {
+          "start": 0,
+          "end": 4,
+          "text": "Sauvage EDP, Prada L’Homme und Bois Impérial\nsind alle frisch – aber komplett unterschiedlich."
+        },
+        {
+          "start": 4,
+          "end": 10.5,
+          "text": "Sauvage ist deutlich würziger."
+        },
+        {
+          "start": 10.5,
+          "end": 17,
+          "text": "Prada L’Homme ist pudriger,\nweicher und weniger würzig."
+        },
+        {
+          "start": 17,
+          "end": 24,
+          "text": "Bois Impérial ist kaum süß,\nsehr holzig und kräftig gewürzt."
+        },
+        {
+          "start": 24,
+          "end": 30,
+          "text": "Der Duftfinder schaut deshalb\nauf dein gesamtes Profil."
+        }
+      ]
+    },
+    {
+      "content_id": "gift_for_him_safe_to_bold_01",
+      "segments": [
+        {
+          "start": 0,
+          "end": 5,
+          "text": "Beim Parfumgeschenk hilft es mehr,\nden Stil zu kennen als eine pauschale Nummer eins."
+        },
+        {
+          "start": 5,
+          "end": 11,
+          "text": "Bleu de Chanel EDP ist\nfrisch, holzig und moderat süß."
+        },
+        {
+          "start": 11,
+          "end": 17,
+          "text": "Prada L’Homme ist pudriger,\nweicher und etwas weniger frisch."
+        },
+        {
+          "start": 17,
+          "end": 24,
+          "text": "Naxos geht in die Gegenrichtung:\nsehr süß, würzig und gourmandig."
+        },
+        {
+          "start": 24,
+          "end": 30,
+          "text": "Der Geschenkberater fragt deshalb zuerst\nnach Geschmack und gewünschter Wirkung."
+        }
+      ]
+    }
+  ]
+}
