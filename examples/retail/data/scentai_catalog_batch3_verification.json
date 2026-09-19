@@ -89,8 +89,27 @@
         "cedarwood"
       ],
       "sources": [
-        "https://amouage.com/en-eu/products/reflection-man-100ml"
-      ]
+        "https://amouage.com/en-eu/products/reflection-man-100ml",
+        "https://www.douglas.de/de/p/5010864026",
+        "https://www.perfumetrader.de/de/amouage-reflection-man-eau-de-parfum-100-ml"
+      ],
+      "identifiers": {
+        "ean": "0701666410058",
+        "gtin": "0701666410058"
+      },
+      "alternate_identifiers": [
+        {
+          "ean": "701666312055",
+          "gtin": "701666312055",
+          "merchant": "perfumetrader",
+          "note": "Alternate/older merchant packaging identifier retained separately; do not collapse into the current Douglas GTIN."
+        }
+      ],
+      "merchant_snapshot": {
+        "douglas_de": "available",
+        "perfumetrader_de": "listed_out_of_stock"
+      },
+      "merchant_snapshot_checked_at": "2026-09-19"
     },
     {
       "candidate_id": "YSL-LA-NUIT-DE-LHOMME-EDT",
@@ -108,8 +127,19 @@
         "coumarin"
       ],
       "sources": [
-        "https://www.yslbeauty.de/dufte/dufte-fur-ihn/la-nuit-de-l-homme/la-nuit-de-l-homme-eau-de-toilette-spray/3365440375079.html"
-      ]
+        "https://www.yslbeauty.de/dufte/dufte-fur-ihn/la-nuit-de-l-homme/la-nuit-de-l-homme-eau-de-toilette-spray/3365440375079.html",
+        "https://www.douglas.de/de/p/3000028814",
+        "https://www.flaconi.de/parfum/yves-saint-laurent/la-nuit-de-l-homme/yves-saint-laurent-la-nuit-de-l-homme-eau-de-toilette.html?variant=20102642"
+      ],
+      "identifiers": {
+        "ean": "3365440375079",
+        "gtin": "3365440375079"
+      },
+      "merchant_snapshot": {
+        "douglas_de": "available",
+        "flaconi_de": "available"
+      },
+      "merchant_snapshot_checked_at": "2026-09-19"
     },
     {
       "candidate_id": "DOLCE-GABBANA-THE-ONE-MEN-EDP",
@@ -159,8 +189,18 @@
         "patchouli"
       ],
       "sources": [
-        "https://www.dior.com/de_de/beauty/products/sauvage-elixir-Y0996460.html"
-      ]
+        "https://www.dior.com/de_de/beauty/products/sauvage-elixir-Y0996460.html",
+        "https://www.douglas.de/de/p/5010236005"
+      ],
+      "identifiers": {
+        "ean": "3348901640916",
+        "gtin": "3348901640916"
+      },
+      "merchant_snapshot": {
+        "douglas_de": "available",
+        "parfumgroup_de": "available_via_current_price_index"
+      },
+      "merchant_snapshot_checked_at": "2026-09-19"
     },
     {
       "candidate_id": "PDM-HEROD-EDP",
@@ -217,8 +257,26 @@
         "hedione"
       ],
       "sources": [
-        "https://initioparfums.com/de/products/side-effect"
-      ]
+        "https://initioparfums.com/de/products/side-effect",
+        "https://www.douglas.de/de/p/5010758011",
+        "https://www.flaconi.de/parfum/initio/side-effect/initio-side-effect-eau-de-parfum.html?variant=80066337-90"
+      ],
+      "identifiers": {
+        "ean": "3701415901391",
+        "gtin": "3701415901391"
+      },
+      "alternate_identifiers": [
+        {
+          "ean": "3701415900073",
+          "gtin": "3701415900073",
+          "note": "Alternate 90 ml packaging barcode observed in current market listings; primary Release 05 mappings use the newer/current partner-feed candidate GTIN."
+        }
+      ],
+      "merchant_snapshot": {
+        "douglas_de": "available",
+        "flaconi_de": "available"
+      },
+      "merchant_snapshot_checked_at": "2026-09-19"
     },
     {
       "candidate_id": "TOM-FORD-OMBRE-LEATHER-EDP",
