@@ -27,12 +27,19 @@
       ],
       "identity_verified": true,
       "merchant_snapshot": {
-        "douglas_de": "available"
+        "douglas_de": "available",
+        "flaconi_de": "available"
       },
       "sources": [
         "https://www.yslbeauty.de/dufte/dufte-fur-sie/libre/libre-eau-de-parfum/WW-50424YSL.html",
-        "https://www.douglas.de/de/p/5000005003"
-      ]
+        "https://www.douglas.de/de/p/5000005003",
+        "https://www.flaconi.de/parfum/yves-saint-laurent/libre/yves-saint-laurent-libre-eau-de-parfum.html?variant=80041833-90"
+      ],
+      "identifiers": {
+        "ean": "3614272648425",
+        "gtin": "3614272648425"
+      },
+      "merchant_snapshot_checked_at": "2026-09-19"
     },
     {
       "candidate_id": "PRADA-PARADOXE-EDP",
@@ -138,7 +145,11 @@
         "https://parfums-de-marly.com/de/products/delina",
         "https://www.douglas.de/de/p/5010758028",
         "https://www.flaconi.de/parfum/parfums-de-marly/women/parfums-de-marly-women-delina-eau-de-parfum.html"
-      ]
+      ],
+      "identifiers": {
+        "ean": "3700578501998",
+        "gtin": "3700578501998"
+      }
     },
     {
       "candidate_id": "LANCOME-LA-VIE-EST-BELLE-EDP",
@@ -169,7 +180,11 @@
         "https://www.flaconi.de/parfum/lancome/la-vie-est-belle/lancome-la-vie-est-belle-refillable-eau-de-parfum.html?variant=80063214-15",
         "https://www-origin.parfumdreams.de/Lancome/Damen-Parfum/La-vie-est-belle/Eau-de-Parfum-Spray-nachfuellbar/index_38746.aspx"
       ],
-      "merchant_snapshot_checked_at": "2026-09-19"
+      "merchant_snapshot_checked_at": "2026-09-19",
+      "identifiers": {
+        "ean": "3605533286555",
+        "gtin": "3605533286555"
+      }
     },
     {
       "candidate_id": "JPG-LE-MALE-LE-PARFUM",
