@@ -58,4 +58,4 @@ def test_prelaunch_content_plan_is_trackable_and_live_safe() -> None:
         if row["status"] == "scripted":
             scripted.append(row["content_id"])
 
-    assert len(scripted) == 10
+    assert len(scripted) == 15
