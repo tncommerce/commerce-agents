@@ -7,6 +7,7 @@ DATA_DIR = Path("examples/retail/data")
 SCRIPT_FILES = (
     "scentai_launch_scripts_batch_01.json",
     "scentai_launch_scripts_batch_02.json",
+    "scentai_launch_scripts_batch_03.json",
 )
 
 
@@ -41,7 +42,7 @@ def test_launch_script_batches_match_content_plan() -> None:
     rows = scripted_rows()
     content_ids = [row["content_id"] for row in rows]
 
-    assert len(rows) == 10
+    assert len(rows) == 15
     assert len(content_ids) == len(set(content_ids))
 
     scripted_plan_ids = {
