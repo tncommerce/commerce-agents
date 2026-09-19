@@ -625,3 +625,56 @@ where product_id is not null
     'collection_remove'
   )
 group by product_id;
+
+
+create or replace view public.scentai_retention_summary
+with (security_invoker = true)
+as
+select
+  count(*) filter (
+    where event = 'page_view'
+      and surface = 'personal_library_page'
+      and source = 'wishlist_page'
+  ) as wishlist_page_views,
+  count(distinct session_key) filter (
+    where event = 'page_view'
+      and surface = 'personal_library_page'
+      and source = 'wishlist_page'
+  ) as wishlist_page_sessions,
+  count(*) filter (
+    where event = 'page_view'
+      and surface = 'personal_library_page'
+      and source = 'collection_page'
+  ) as collection_page_views,
+  count(distinct session_key) filter (
+    where event = 'page_view'
+      and surface = 'personal_library_page'
+      and source = 'collection_page'
+  ) as collection_page_sessions,
+  count(distinct session_key) filter (
+    where event = 'wishlist_add'
+  ) as wishlist_add_sessions,
+  count(distinct session_key) filter (
+    where event = 'collection_add'
+  ) as collection_add_sessions,
+  count(distinct session_key) filter (
+    where event = 'consultation_start'
+      and source = 'advisor_start_collection'
+  ) as collection_advisor_sessions,
+  max(occurred_at) filter (
+    where (
+      event = 'page_view'
+      and surface = 'personal_library_page'
+    )
+    or event in (
+      'wishlist_add',
+      'wishlist_remove',
+      'collection_add',
+      'collection_remove'
+    )
+    or (
+      event = 'consultation_start'
+      and source = 'advisor_start_collection'
+    )
+  ) as last_retention_event_at
+from public.scentai_analytics_events;
