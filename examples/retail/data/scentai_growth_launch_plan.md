@@ -206,18 +206,25 @@ partner modules remain hidden until approved affiliate links are available.
 
 These are candidates, not current launch commitments.
 
-### Personal fragrance wardrobe
+### Personal fragrance wardrobe — active MVP
 
-Let a user keep:
-- owned fragrances
-- favorites
-- wishlist
-- disliked fragrances
+The current retention loop now includes:
+- local wishlist
+- local owned-fragrance collection
+- collection profile
+- optional profile-diversity suggestions
+- explicit collection-aware advisor handoff
+- homepage return card when local fragrance data exists
 
-Possible value:
-- "What is missing from my collection?"
-- avoid redundant purchases
-- better personalized recommendations
+The advisor uses collection context only after an explicit customer action.
+Ownership is not treated as proof of preference and the collection is not
+stored as durable advisor memory.
+
+Potential future value:
+- reduce redundant purchases
+- help users deliberately add a different use case
+- make comparisons more relevant
+- create a reason to return between purchases
 
 ### Price and availability alerts
 
