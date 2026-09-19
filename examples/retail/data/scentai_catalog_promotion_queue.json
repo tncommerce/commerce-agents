@@ -307,7 +307,7 @@
       "audience_lean": "feminine",
       "identity_verified": true,
       "community_qa_verified": true,
-      "merchant_coverage_count": 2,
+      "merchant_coverage_count": 3,
       "blockers": [
         "affiliate_link_pending",
         "approved_product_image_pending"
