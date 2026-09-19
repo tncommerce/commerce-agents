@@ -150,6 +150,31 @@ Launch can technically proceed without affiliate links because SCENTAI is a
 recommendation product first. However, broad paid acquisition should not begin
 until merchant coverage is sufficient to make the clickout experience useful.
 
+## Personal library
+
+SCENTAI now includes optional device-local retention features:
+- `/merkliste`
+- `/sammlung`
+- local wishlist
+- local owned-fragrance collection
+- deterministic collection-profile summary
+- optional profile-gap suggestions with explicit non-purchase wording
+
+These pages are intentionally `noindex` and are not included in the public
+sitemap because their useful content is browser-local and user-specific.
+
+Launch smoke-test:
+1. Add a fragrance to the wishlist from a detail page.
+2. Confirm it appears under `/merkliste`.
+3. Mark it as owned and confirm it moves out of the wishlist into
+   `/sammlung`.
+4. Add a second fragrance and confirm the collection profile renders.
+5. Refresh the browser and confirm the local state persists.
+6. Clear the personal fragrance data and confirm both lists reset.
+
+The feature requires no customer account and must remain usable even if
+first-party analytics is unavailable.
+
 ## Analytics health
 
 SCENTAI conversion, search-demand and research-trigger analytics remain:
