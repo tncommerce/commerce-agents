@@ -1,10 +1,9 @@
 {
   "version": 1,
   "generated_at": "2026-09-19",
-  "source_fingerprint_sha256": "57a0afab41b5546bcf097d3cc0eff7401a90681abd2bc0df39ab75e072869611",
+  "source_fingerprint_sha256": "625ca3438a8732f6102dd78ee433de86b2326b349ed3162dd02d50a9cee1ad31",
   "system": "SCENTAI",
   "domain": "content",
-  "batch_id": "pilot_batch_03",
   "campaign_id": "launch01",
   "overall_state": "visual_preview_generation_pending",
   "next_action": "render_and_verify_visual_preview_mp4s",
@@ -15,8 +14,7 @@
     "pilot_visual_preview_generation_pending",
     "voiceover_audio_pending",
     "subtitle_timing_conformance_pending",
-    "final_video_renders_incomplete",
-    "connector_originated_github_actions_trigger_unavailable"
+    "final_video_renders_incomplete"
   ],
   "summary": {
     "pilots": 5,
@@ -83,5 +81,6 @@
       "price_recheck_required": false,
       "publish_action_class": "approval_required"
     }
-  ]
+  ],
+  "batch_id": "pilot_batch_03"
 }
