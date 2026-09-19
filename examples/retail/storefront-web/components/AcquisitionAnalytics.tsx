@@ -45,8 +45,14 @@ export default function AcquisitionAnalytics({
       contentId,
     });
 
+    const landingSource =
+      requestedChannel &&
+      ALLOWED_CHANNELS.has(requestedChannel)
+        ? `${source}_${channel}`
+        : source;
+
     void trackAnalyticsEvent("page_view", {
-      source: `${source}_${channel}`,
+      source: landingSource,
       surface: "acquisition_landing",
     });
   }, [source]);
