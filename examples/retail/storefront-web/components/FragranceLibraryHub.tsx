@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import FragranceSaveControls from "@/components/FragranceSaveControls";
+import GuidedAdvisorLink from "@/components/GuidedAdvisorLink";
 import {
   clearFragranceLibrary,
   FRAGRANCE_LIBRARY_EVENT,
@@ -169,6 +170,51 @@ function collectionProfile(
     missingAxes,
     suggestions: suggestions.slice(0, 4),
   };
+}
+
+function collectionAdvisorPrompt(
+  owned: StaticFragrance[],
+  profile: ReturnType<typeof collectionProfile>,
+): string {
+  const fragranceList = owned
+    .slice(0, 40)
+    .map(
+      (fragrance) =>
+        `${fragrance.brand} ${fragrance.name}`,
+    )
+    .join("; ");
+
+  const axisSummary = profile.axisStats
+    .map(
+      (axis) =>
+        `${axis.label} Ø ${formatOneDecimal(axis.average)}/10`,
+    )
+    .join(", ");
+
+  const accordSummary = profile.topAccords
+    .slice(0, 5)
+    .map((item) => accordLabel(item.accord))
+    .join(", ");
+
+  const omitted =
+    owned.length > 40
+      ? ` Weitere ${owned.length - 40} gespeicherte Düfte sind in dieser kompakten Übergabe nicht einzeln aufgeführt.`
+      : "";
+
+  return [
+    "Ich möchte ausdrücklich, dass du meine aktuelle SCENTAI-Duftsammlung nur für diese Beratung berücksichtigst.",
+    `Ich besitze aktuell: ${fragranceList}.${omitted}`,
+    `Das grobe SCENTAI-Sammlungsprofil lautet: ${axisSummary}.`,
+    accordSummary
+      ? `Häufige Akkorde in der Sammlung: ${accordSummary}.`
+      : "",
+    "Leite aus dem Besitz dieser Düfte nicht automatisch persönliche Vorlieben ab und behandle die Sammlung nicht als dauerhafte Erinnerung.",
+    "Empfiehl keinen bereits genannten Duft als neuen Kauf.",
+    "Hilf mir stattdessen, bewusst eine sinnvolle Ergänzung oder einen anderen Einsatzzweck zu finden.",
+    "Frage mich zuerst kurz nach Anlass, Budget und danach, welche Art von Ergänzung ich suche, bevor du konkrete Empfehlungen gibst.",
+  ]
+    .filter(Boolean)
+    .join(" ");
 }
 
 function FragranceCard({
@@ -354,6 +400,18 @@ export default function FragranceLibraryHub({
           </div>
 
           <div className="flex flex-wrap gap-2">
+            {mode === "owned" && owned.length ? (
+              <GuidedAdvisorLink
+                start="collection"
+                prompt={collectionAdvisorPrompt(
+                  owned,
+                  profile,
+                )}
+                className="rounded-xl bg-(--accent-strong) px-3 py-2 text-[12px] font-semibold text-white transition hover:brightness-95"
+              >
+                Mit meiner Sammlung beraten lassen
+              </GuidedAdvisorLink>
+            ) : null}
             <a
               href={
                 mode === "wishlist"
@@ -395,6 +453,11 @@ export default function FragranceLibraryHub({
                 Eine grobe Übersicht aus den vier redaktionellen
                 SCENTAI-Profilachsen. Sie beschreibt deine gespeicherten
                 Düfte, nicht deinen persönlichen Geschmack.
+              </p>
+              <p className="mt-1 text-[11px] leading-5 text-(--ink-soft)">
+                Erst wenn du oben ausdrücklich „Mit meiner Sammlung beraten
+                lassen“ auswählst, wird eine kompakte Zusammenfassung für
+                genau diese Beratung an den Advisor übergeben.
               </p>
             </div>
             <span className="rounded-full border border-(--line) px-3 py-1.5 text-[11px] font-semibold text-(--ink-soft)">
