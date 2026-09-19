@@ -1,0 +1,246 @@
+{
+  "version": 1,
+  "generated_at": "2026-09-19",
+  "status": "active",
+  "machine_id": "scentai_image_approval_v1",
+  "purpose": "Global source registry for SCENTAI production image candidates. Candidate identity/source evidence only; no row is an approved image unless staging media holds an approved_* state.",
+  "rules": [
+    "Manufacturer source verification confirms identity only and does not imply reuse rights.",
+    "Prefer approved affiliate-feed images when partner/feed terms permit product-image use.",
+    "Never use generated bottle lookalikes for live commerce.",
+    "Final visual approval remains a user/human approval gate.",
+    "An exact_variant_verified=false candidate must remain identity_check_pending until exact concentration/size is verified or an approved feed image resolves the variant."
+  ],
+  "products": [
+    {
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "brand": "Lancôme",
+      "name": "La Vie est Belle",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "identifiers": {
+        "ean": "3605533286555",
+        "gtin": "3605533286555"
+      },
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://www.lancome.de/duefte/frauen_parfum/la_vie_est_belle/la_vie_est_belle_eau_de_parfum/3614273088657.html",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Lancôme page lists La Vie est Belle Eau de Parfum in 100 ml."
+      },
+      "image_state": "rights_or_source_check_pending",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required",
+      "release_id": "SCENTAI-RELEASE-01"
+    },
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "brand": "Parfums de Marly",
+      "name": "Delina",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 75,
+      "identifiers": {
+        "ean": "3700578501998",
+        "gtin": "3700578501998"
+      },
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://parfums-de-marly.com/de/products/delina",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Parfums de Marly page lists Delina in 75 ml."
+      },
+      "image_state": "rights_or_source_check_pending",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required",
+      "release_id": "SCENTAI-RELEASE-01"
+    },
+    {
+      "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+      "brand": "Dior",
+      "name": "Hypnotic Poison",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "identifiers": {
+        "ean": "3348900425309",
+        "gtin": "3348900425309"
+      },
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://www.dior.com/de_de/beauty/products/hypnotic-poison-eau-de-toilette-Y0063401.html",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Dior page lists Hypnotic Poison Eau de Toilette in 100 ml."
+      },
+      "image_state": "rights_or_source_check_pending",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required",
+      "release_id": "SCENTAI-RELEASE-01"
+    },
+    {
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "brand": "Yves Saint Laurent",
+      "name": "Black Opium",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "identifiers": {
+        "ean": "3365440787971",
+        "gtin": "3365440787971"
+      },
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://www.yslbeauty.de/dufte/dufte-fur-sie/black-opium/black-opium-eau-de-parfum/WW-40701YSL.html",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official YSL Beauty page lists Black Opium Eau de Parfum in 90 ml."
+      },
+      "image_state": "rights_or_source_check_pending",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required",
+      "release_id": "SCENTAI-RELEASE-01"
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "brand": "Yves Saint Laurent",
+      "name": "Libre",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "identifiers": {
+        "ean": "3614272648425",
+        "gtin": "3614272648425"
+      },
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://www.yslbeauty.de/dufte/dufte-fur-sie/libre/libre-eau-de-parfum/WW-50424YSL.html",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official YSL Beauty page lists Libre Eau de Parfum in 90 ml."
+      },
+      "image_state": "rights_or_source_check_pending",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required",
+      "release_id": "SCENTAI-RELEASE-01"
+    },
+    {
+      "product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+      "release_id": "SCENTAI-RELEASE-02",
+      "brand": "Guerlain",
+      "name": "Mon Guerlain",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "identifiers": {
+        "ean": "3346470131408",
+        "gtin": "3346470131408"
+      },
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://www.guerlain.com/de/de-de/p/mon-guerlain-eau-de-parfum-G013140.html",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Guerlain page lists Mon Guerlain Eau de Parfum in 100 ml."
+      },
+      "image_state": "rights_or_source_check_pending",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100",
+      "release_id": "SCENTAI-RELEASE-02",
+      "brand": "Narciso Rodriguez",
+      "name": "for her PURE MUSC",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "identifiers": {
+        "ean": "3423478515956",
+        "gtin": "3423478515956"
+      },
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://www.narcisorodriguezparfums.com/de/d%C3%BCfte/for-her/",
+        "exact_variant_verified": false,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Narciso Rodriguez collection confirms for her PURE MUSC Eau de Parfum, but the current page does not explicitly verify the 100 ml variant."
+      },
+      "image_state": "identity_check_pending",
+      "next_action": "verify_exact_100ml_variant_or_use_approved_feed_image",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-CHLOE-CHLOE-EDP-100",
+      "release_id": "SCENTAI-RELEASE-02",
+      "brand": "Chloé",
+      "name": "Chloé",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "identifiers": {
+        "ean": "3616302038633",
+        "gtin": "3616302038633"
+      },
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://www.chloe.com/de-de/p/fragrances/eau-de-parfum/CHCA50133819.html",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Chloé page lists Chloé Eau de Parfum in 100 ml."
+      },
+      "image_state": "rights_or_source_check_pending",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-BURBERRY-GODDESS-EDP-100",
+      "release_id": "SCENTAI-RELEASE-02",
+      "brand": "Burberry",
+      "name": "Goddess",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "identifiers": {
+        "ean": "3616302020652",
+        "gtin": "3616302020652"
+      },
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://de.burberry.com/burberry-goddess-eau-de-parfum-for-women-100-ml-p40835981",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Burberry page lists Goddess Eau de Parfum 100 ml."
+      },
+      "image_state": "rights_or_source_check_pending",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-PRADA-PARADOXE-EDP-90",
+      "release_id": "SCENTAI-RELEASE-02",
+      "brand": "Prada",
+      "name": "Paradoxe",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "identifiers": {
+        "ean": "3614273760164",
+        "gtin": "3614273760164"
+      },
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://www.prada.com/de/de/p/paradoxe-edp-90ml/1A1351_2HDZ_F0Z99_P_ML090",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Prada page lists Paradoxe Eau de Parfum in 90 ml."
+      },
+      "image_state": "rights_or_source_check_pending",
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    }
+  ]
+}
