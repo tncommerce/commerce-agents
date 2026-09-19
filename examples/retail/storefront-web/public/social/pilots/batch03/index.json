@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "batch": "batch03",
+  "generated_from": "scentai_pilot_batch_03.json",
+  "previews": [
+    {
+      "content_id": "tygar_vibrato_value_01",
+      "cover": "/social/pilots/batch03/tygar_vibrato_value_01-cover.jpg",
+      "preview": "/social/pilots/batch03/tygar_vibrato_value_01-preview.mp4",
+      "duration_seconds": 30.0,
+      "audio": false,
+      "status": "visual_preview"
+    },
+    {
+      "content_id": "naxos_value_01",
+      "cover": "/social/pilots/batch03/naxos_value_01-cover.jpg",
+      "preview": "/social/pilots/batch03/naxos_value_01-preview.mp4",
+      "duration_seconds": 28.0,
+      "audio": false,
+      "status": "visual_preview"
+    },
+    {
+      "content_id": "dior_homme_intense_alt_01",
+      "cover": "/social/pilots/batch03/dior_homme_intense_alt_01-cover.jpg",
+      "preview": "/social/pilots/batch03/dior_homme_intense_alt_01-preview.mp4",
+      "duration_seconds": 27.0,
+      "audio": false,
+      "status": "visual_preview"
+    },
+    {
+      "content_id": "signature_vs_safe_01",
+      "cover": "/social/pilots/batch03/signature_vs_safe_01-cover.jpg",
+      "preview": "/social/pilots/batch03/signature_vs_safe_01-preview.mp4",
+      "duration_seconds": 30.0,
+      "audio": false,
+      "status": "visual_preview"
+    },
+    {
+      "content_id": "gift_for_him_safe_to_bold_01",
+      "cover": "/social/pilots/batch03/gift_for_him_safe_to_bold_01-cover.jpg",
+      "preview": "/social/pilots/batch03/gift_for_him_safe_to_bold_01-preview.mp4",
+      "duration_seconds": 30.0,
+      "audio": false,
+      "status": "visual_preview"
+    }
+  ]
+}
