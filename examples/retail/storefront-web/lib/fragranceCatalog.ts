@@ -403,6 +403,15 @@ export function getRelatedFragrances(
       const sameCluster =
         Boolean(fragrance.cluster_id) &&
         fragrance.cluster_id === candidate.cluster_id;
+
+      // Product-detail recommendations are trust-sensitive. Do not mix in
+      // unrelated cross-cluster fragrances just because a few broad accords
+      // overlap. Cross-cluster candidates need an explicit documented
+      // relationship; otherwise only the same fragrance family is eligible.
+      if (!explicit && !sameCluster) {
+        return null;
+      }
+
       const similarity = profileSimilarity(
         fragrance,
         candidate,
@@ -410,8 +419,7 @@ export function getRelatedFragrances(
 
       return {
         fragrance: candidate,
-        kind: explicit?.kind ||
-          (sameCluster ? "same_cluster" : "similar_profile"),
+        kind: explicit?.kind || "same_cluster",
         confidence: explicit?.confidence || null,
         similarity_score:
           (explicit ? 100 : 0) +
@@ -419,6 +427,10 @@ export function getRelatedFragrances(
           similarity,
       } satisfies RelatedFragrance;
     })
+    .filter(
+      (candidate): candidate is RelatedFragrance =>
+        candidate !== null,
+    )
     .sort(
       (a, b) =>
         b.similarity_score - a.similarity_score ||
