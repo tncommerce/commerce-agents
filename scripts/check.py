@@ -764,6 +764,36 @@ def check_managed_custom_tool_descriptions() -> None:
             ok(f"{role.tree}: {len(custom)} custom tool descriptions match the registry")
 
 
+
+def check_scentai_jarvis_operations_status() -> None:
+    """Keep the committed Jarvis control-plane snapshot aligned with source state."""
+    print("SCENTAI Jarvis operations status")
+    try:
+        from scripts.validate_scentai_jarvis_operations_status import (
+            validate_operations_status,
+        )
+
+        data = REPO_ROOT / "examples" / "retail" / "data"
+        report = validate_operations_status(
+            load_json(data / "scentai_jarvis_operations_status.json"),
+            load_json(data / "scentai_merchant_mapping_work_queue.json"),
+            load_json(data / "scentai_affiliate_activation_status.json"),
+            load_json(data / "scentai_image_approval_work_queue.json"),
+            load_json(data / "scentai_release_01_gate_status.json"),
+            load_json(data / "scentai_release_01_feed_activation_queue.json"),
+        )
+    except Exception as error:
+        problem(f"SCENTAI Jarvis operations parity check failed: {error}")
+        return
+
+    if not report["valid"]:
+        for issue in report["issues"]:
+            problem(f"SCENTAI Jarvis operations status: {issue}")
+        return
+
+    ok("SCENTAI Jarvis operations snapshot matches source state")
+
+
 CHECKS = (
     check_skills,
     check_storefront_fixtures,
@@ -775,6 +805,7 @@ CHECKS = (
     check_managed_system_prompts,
     check_managed_readme_tool_lists,
     check_managed_custom_tool_descriptions,
+    check_scentai_jarvis_operations_status,
 )
 
 
