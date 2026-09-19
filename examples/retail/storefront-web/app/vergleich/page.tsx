@@ -9,7 +9,7 @@ import {
 export const metadata: Metadata = {
   title: "Parfumvergleiche",
   description:
-    "Vergleiche ausgewählte Parfums bei SCENTAI nach Duftprofil, Community-Bewertung, Haltbarkeit, Ausstrahlung und Preisreferenz.",
+    "Vergleiche ausgewählte Parfums bei DUFYND nach Duftprofil, Community-Bewertung, Haltbarkeit, Ausstrahlung und Preisreferenz.",
   alternates: {
     canonical: "/vergleich",
   },
@@ -29,13 +29,13 @@ export default function ComparisonIndexPage() {
           <a
             href="/"
             className="flex items-center gap-2.5"
-            aria-label="Zur SCENTAI Startseite"
+            aria-label="Zur DUFYND Startseite"
           >
             <span className="grid h-8 w-8 place-items-center rounded-lg bg-(--ink) text-[15px] font-bold text-(--surface)">
               S
             </span>
             <span className="text-[17px] font-bold tracking-[-0.02em]">
-              SCENTAI
+              DUFYND
             </span>
           </a>
           <a
@@ -50,14 +50,14 @@ export default function ComparisonIndexPage() {
       <div className="mx-auto max-w-[1080px] px-4 py-7 sm:px-6 sm:py-10">
         <div className="max-w-3xl">
           <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-(--ink-soft)">
-            SCENTAI Vergleiche
+            DUFYND Vergleiche
           </div>
           <h1 className="mt-2 text-[32px] font-semibold leading-[1.08] tracking-[-0.035em] sm:text-[42px]">
             Parfums direkt vergleichen
           </h1>
           <p className="mt-4 text-[14px] leading-6 text-(--ink-soft)">
             Diese Vergleiche basieren auf dokumentierten Beziehungen im
-            SCENTAI-Katalog. So kannst du ähnliche Duftstile,
+            DUFYND-Katalog. So kannst du ähnliche Duftstile,
             inspirierte Alternativen und verwandte Profile direkt
             nebeneinander ansehen.
           </p>
@@ -76,7 +76,7 @@ export default function ComparisonIndexPage() {
             Dokumentierte Duftbeziehungen
           </h2>
           <p className="mt-1 max-w-2xl text-[12px] leading-5 text-(--ink-soft)">
-            Diese Paare haben zusätzlich eine im SCENTAI-Katalog
+            Diese Paare haben zusätzlich eine im DUFYND-Katalog
             dokumentierte Beziehung wie inspiriert, Alternative oder sehr
             naher Duftstil.
           </p>
@@ -126,7 +126,7 @@ export default function ComparisonIndexPage() {
 
         <section className="mt-6 rounded-2xl border border-(--line) bg-(--well)/45 p-4 text-[11px] leading-5 text-(--ink-soft)">
           Begriffe wie „inspiriert“ oder „sehr naher Duftstil“ beschreiben
-          eine dokumentierte Duftbeziehung im SCENTAI-Katalog. Sie
+          eine dokumentierte Duftbeziehung im DUFYND-Katalog. Sie
           bedeuten nicht, dass Rezeptur oder Inhaltsstoffe identisch sind.
         </section>
 
