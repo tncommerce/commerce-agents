@@ -62,3 +62,16 @@ Completed:
 Still pending:
 - request publisher/account display-name change from SCENTAI to DUFYND while keeping publisher ID 309922 and all existing applications intact
 - recheck pending advertiser applications after the profile cutover
+
+
+## Awin support request
+
+Submitted on 2026-09-19:
+- request type: Account Management
+- requested publisher/account display-name change from SCENTAI to DUFYND
+- explicitly asked Awin to keep TNCommerce, publisher ID 309922, existing advertiser applications and account settings unchanged
+- website already updated to https://dufynd.de
+- business contact email updated to kontakt@dufynd.de
+
+Next Awin action:
+- wait for Partner Success response and verify the display-name change when processed
