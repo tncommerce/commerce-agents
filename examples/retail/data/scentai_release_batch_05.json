@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "release_id": "SCENTAI-RELEASE-05",
+  "status": "mapping_ready_blocked_pending_prior_release_validation_and_live_assets",
+  "prepared_at": "2026-09-19",
+  "release_size": 5,
+  "strategy": "Fifth guarded mini-release covering the remaining stable feed-compatible staging products. Packaging-sensitive barcode variants are retained explicitly rather than collapsed into one guessed universal identifier.",
+  "product_ids": [
+    "SC-HUGO-BOSS-BOTTLED-EDT-100",
+    "SC-PRADA-LHOMME-INTENSE-EDP-100",
+    "SC-AMOUAGE-REFLECTION-MAN-EDP-100",
+    "SC-INITIO-SIDE-EFFECT-EDP-90",
+    "SC-YSL-LA-NUIT-DE-LHOMME-EDT-100"
+  ],
+  "required_gates": [
+    "release_01_through_04_operational_validation",
+    "non_provisional_community_data",
+    "resolved_merchant_product_mapping",
+    "approved_product_image",
+    "current_tracked_affiliate_offer",
+    "staging_recommendation_qa",
+    "not_already_live",
+    "all_selected_products_ready_no_partial_release"
+  ],
+  "mapping_readiness": {
+    "verified_at": "2026-09-19",
+    "products_with_mapping": 5,
+    "release_size": 5,
+    "status": "complete",
+    "note": "Every Release 05 product has at least two partner-merchant mapping paths and a GTIN/EAN fallback; Reflection Man preserves merchant-specific barcode variants."
+  },
+  "write_enabled": false,
+  "write_guard_reason": "Release 05 stays write-locked until Release 01, Release 02, Release 03 and Release 04 have completed their required real affiliate-feed, image-approval, promotion and smoke-test sequence.",
+  "write_policy": "All-or-nothing. Dry-run is allowed; live write is explicitly disabled at manifest level."
+}
