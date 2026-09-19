@@ -1,0 +1,11 @@
+file '/home/runner/work/commerce-agents/commerce-agents/examples/retail/storefront-web/public/social/pilots/batch01/original_vs_alt_imagination_01/scene-01.jpg'
+duration 3.000
+file '/home/runner/work/commerce-agents/commerce-agents/examples/retail/storefront-web/public/social/pilots/batch01/original_vs_alt_imagination_01/scene-02.jpg'
+duration 6.000
+file '/home/runner/work/commerce-agents/commerce-agents/examples/retail/storefront-web/public/social/pilots/batch01/original_vs_alt_imagination_01/scene-03.jpg'
+duration 9.000
+file '/home/runner/work/commerce-agents/commerce-agents/examples/retail/storefront-web/public/social/pilots/batch01/original_vs_alt_imagination_01/scene-04.jpg'
+duration 6.000
+file '/home/runner/work/commerce-agents/commerce-agents/examples/retail/storefront-web/public/social/pilots/batch01/original_vs_alt_imagination_01/scene-05.jpg'
+duration 5.000
+file '/home/runner/work/commerce-agents/commerce-agents/examples/retail/storefront-web/public/social/pilots/batch01/original_vs_alt_imagination_01/scene-05.jpg'

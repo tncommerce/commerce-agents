@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "batch": "batch01",
+  "generated_from": "scentai_pilot_batch_01.json",
+  "previews": [
+    {
+      "content_id": "original_vs_alt_imagination_01",
+      "cover": "/social/pilots/batch01/original_vs_alt_imagination_01-cover.jpg",
+      "preview": "/social/pilots/batch01/original_vs_alt_imagination_01-preview.mp4",
+      "duration_seconds": 29.0,
+      "audio": false,
+      "status": "visual_preview"
+    },
+    {
+      "content_id": "not_every_dupe_clone_01",
+      "cover": "/social/pilots/batch01/not_every_dupe_clone_01-cover.jpg",
+      "preview": "/social/pilots/batch01/not_every_dupe_clone_01-preview.mp4",
+      "duration_seconds": 28.0,
+      "audio": false,
+      "status": "visual_preview"
+    },
+    {
+      "content_id": "budget_three_under_50_01",
+      "cover": "/social/pilots/batch01/budget_three_under_50_01-cover.jpg",
+      "preview": "/social/pilots/batch01/budget_three_under_50_01-preview.mp4",
+      "duration_seconds": 30.0,
+      "audio": false,
+      "status": "visual_preview"
+    },
+    {
+      "content_id": "bois_imperial_explained_01",
+      "cover": "/social/pilots/batch01/bois_imperial_explained_01-cover.jpg",
+      "preview": "/social/pilots/batch01/bois_imperial_explained_01-preview.mp4",
+      "duration_seconds": 27.0,
+      "audio": false,
+      "status": "visual_preview"
+    },
+    {
+      "content_id": "top3_office_01",
+      "cover": "/social/pilots/batch01/top3_office_01-cover.jpg",
+      "preview": "/social/pilots/batch01/top3_office_01-preview.mp4",
+      "duration_seconds": 30.0,
+      "audio": false,
+      "status": "visual_preview"
+    }
+  ]
+}
