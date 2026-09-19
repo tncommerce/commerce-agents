@@ -1,7 +1,7 @@
 {
   "version": 1,
   "release_id": "SCENTAI-RELEASE-01",
-  "status": "prepared_blocked_pending_live_assets_and_affiliate_offers",
+  "status": "mapping_ready_blocked_pending_live_assets_and_affiliate_offers",
   "prepared_at": "2026-09-19",
   "release_size": 5,
   "strategy": "First guarded mini-release focused on the largest live audience gap. Selection order is operational priority, not a fragrance quality ranking.",
@@ -14,11 +14,19 @@
   ],
   "required_gates": [
     "non_provisional_community_data",
+    "resolved_merchant_product_mapping",
     "approved_product_image",
     "current_tracked_affiliate_offer",
     "staging_recommendation_qa",
     "not_already_live",
     "all_selected_products_ready_no_partial_release"
   ],
-  "write_policy": "All-or-nothing. Do not partially promote this manifest. Use a dry-run first; write only when all five products pass every promotion gate."
+  "write_policy": "All-or-nothing. Do not partially promote this manifest. Use a dry-run first; write only when all five products pass every promotion gate.",
+  "mapping_readiness": {
+    "verified_at": "2026-09-19",
+    "products_with_mapping": 5,
+    "release_size": 5,
+    "status": "complete",
+    "note": "Every Release Batch 01 product has at least two merchant mapping rows and a GTIN/EAN fallback. Live promotion remains blocked until current tracked affiliate offers and approved product images exist."
+  }
 }
