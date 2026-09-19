@@ -1,0 +1,234 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-19",
+  "campaign_id": "launch01",
+  "status": "recording_or_tts_ready",
+  "language": "de-DE",
+  "purpose": "Reproducible voiceover production contract for SCENTAI Pilot Batch 01.",
+  "global_delivery": {
+    "tone": "conversational, trustworthy, confident, compact",
+    "target_pace_wpm": [
+      105,
+      125
+    ],
+    "music_policy": "Optional. Voiceover must remain clearly dominant; use only properly licensed or platform-cleared music.",
+    "claims_policy": "Read relationship and community-data wording exactly as approved in the pilot manifest.",
+    "editing_policy": "Do not time-stretch voiceover aggressively to force duration. Re-record or minimally edit pauses if outside tolerance."
+  },
+  "audio_contract": {
+    "preferred_format": "WAV PCM",
+    "preferred_sample_rate_hz": 48000,
+    "acceptable_sample_rate_hz_min": 44100,
+    "clipping_allowed": false,
+    "excessive_noise_allowed": false,
+    "duration_rule": "Voiceover must not exceed manifest target duration + 2 seconds.",
+    "repo_policy": "Audio files remain local/gitignored; only non-secret production state is committed."
+  },
+  "pilots": [
+    {
+      "production_order": 1,
+      "content_id": "original_vs_alt_imagination_01",
+      "target_duration_seconds": 29,
+      "word_count": 58,
+      "required_wpm": 120,
+      "preferred_delivery_wpm_range": [
+        115,
+        125
+      ],
+      "script": "Du magst Louis Vuitton Imagination, willst aber nicht automatisch beim Originalpreis landen? Imagination ist bei SCENTAI extrem frisch, zitrisch und aquatisch eingeordnet. Marwa bleibt ebenfalls sehr frisch, wirkt in unseren Daten aber deutlich süßer. Hectic bleibt trockener und wesentlich würziger. Wichtig: Beide sind bei SCENTAI als inspiriert hinterlegt, nicht als pauschaler Eins-zu-eins-Klon. Vergleiche die Profile direkt bei SCENTAI.",
+      "pronunciation_hints": [
+        {
+          "term": "SCENTAI",
+          "hint": "deutsch flüssig als „Scent-AI“, zwei klare Silbenblöcke"
+        },
+        {
+          "term": "Louis Vuitton",
+          "hint": "französische Markenaussprache, natürlich und nicht überbetont"
+        },
+        {
+          "term": "Imagination",
+          "hint": "englisch/französisch markentypisch, nicht eingedeutscht"
+        },
+        {
+          "term": "Marwa",
+          "hint": "MAR-wa"
+        },
+        {
+          "term": "Hectic",
+          "hint": "englisch „hek-tik“"
+        }
+      ],
+      "delivery_notes": [
+        "conversational German",
+        "calm and confident",
+        "short natural pauses between semantic sections",
+        "no radio-announcer voice",
+        "no exaggerated sales emphasis",
+        "CTA slightly slower than the body"
+      ],
+      "output": {
+        "preferred_format": "wav",
+        "preferred_sample_rate_hz": 48000,
+        "channels": "mono_or_stereo",
+        "filename": "original_vs_alt_imagination_01.wav",
+        "local_path": "examples/retail/data/.scentai_pilot_audio/original_vs_alt_imagination_01.wav"
+      }
+    },
+    {
+      "production_order": 2,
+      "content_id": "budget_three_under_50_01",
+      "target_duration_seconds": 30,
+      "word_count": 60,
+      "required_wpm": 120,
+      "preferred_delivery_wpm_range": [
+        115,
+        125
+      ],
+      "script": "Drei interessante Düfte unter 50 Euro, die nicht einfach dasselbe machen. Kayaan Classic ist süß, pudrig und holzig und liegt bei SCENTAI im Dior-Homme-Intense-Cluster. Liquid Brun geht deutlich gourmandiger, süßer und wärmer. Turathi Blue ist die Gegenrichtung: sehr frisch, zitrisch und deutlich weniger süß. Gleicher Budgetrahmen, drei komplett unterschiedliche Profile. SCENTAI hilft dir zu entscheiden, welches davon zu dir passt.",
+      "pronunciation_hints": [
+        {
+          "term": "SCENTAI",
+          "hint": "deutsch flüssig als „Scent-AI“, zwei klare Silbenblöcke"
+        },
+        {
+          "term": "Liquid Brun",
+          "hint": "englisches Liquid, französisch angehauchtes Brun"
+        },
+        {
+          "term": "Kayaan Classic",
+          "hint": "Ka-yaan Classic"
+        },
+        {
+          "term": "Turathi Blue",
+          "hint": "Tu-ra-thi Blue"
+        }
+      ],
+      "delivery_notes": [
+        "conversational German",
+        "calm and confident",
+        "short natural pauses between semantic sections",
+        "no radio-announcer voice",
+        "no exaggerated sales emphasis",
+        "CTA slightly slower than the body"
+      ],
+      "output": {
+        "preferred_format": "wav",
+        "preferred_sample_rate_hz": 48000,
+        "channels": "mono_or_stereo",
+        "filename": "budget_three_under_50_01.wav",
+        "local_path": "examples/retail/data/.scentai_pilot_audio/budget_three_under_50_01.wav"
+      }
+    },
+    {
+      "production_order": 3,
+      "content_id": "not_every_dupe_clone_01",
+      "target_duration_seconds": 28,
+      "word_count": 50,
+      "required_wpm": 107,
+      "preferred_delivery_wpm_range": [
+        102,
+        112
+      ],
+      "script": "Nicht jeder ähnliche Duft ist automatisch ein Eins-zu-eins-Dupe. Ein Clone versucht, dem Original möglichst nahe zu kommen. Ein Inspired-Duft übernimmt eine erkennbare Grundidee und setzt eigene Akzente. Eine Alternative kann einfach einen ähnlichen Stil oder Einsatzzweck erfüllen. Deshalb unterscheidet SCENTAI diese Beziehungen transparent, statt alles pauschal als Dupe zu bezeichnen.",
+      "pronunciation_hints": [
+        {
+          "term": "SCENTAI",
+          "hint": "deutsch flüssig als „Scent-AI“, zwei klare Silbenblöcke"
+        }
+      ],
+      "delivery_notes": [
+        "conversational German",
+        "calm and confident",
+        "short natural pauses between semantic sections",
+        "no radio-announcer voice",
+        "no exaggerated sales emphasis",
+        "CTA slightly slower than the body"
+      ],
+      "output": {
+        "preferred_format": "wav",
+        "preferred_sample_rate_hz": 48000,
+        "channels": "mono_or_stereo",
+        "filename": "not_every_dupe_clone_01.wav",
+        "local_path": "examples/retail/data/.scentai_pilot_audio/not_every_dupe_clone_01.wav"
+      }
+    },
+    {
+      "production_order": 4,
+      "content_id": "top3_office_01",
+      "target_duration_seconds": 30,
+      "word_count": 55,
+      "required_wpm": 110,
+      "preferred_delivery_wpm_range": [
+        105,
+        115
+      ],
+      "script": "Der eine beste Büroduft existiert nicht, weil dein Stil entscheidet. Prada L'Homme ist sauber, pudrig und relativ ausgewogen. Bois Impérial ist trockener, holziger und deutlich charakterstärker. Bleu de Chanel Eau de Parfum verbindet viel Frische mit einer klassischen holzigen Richtung. Deshalb fragt SCENTAI nicht nur nach 'Büro', sondern auch nach Frische, Süße und gewünschter Präsenz.",
+      "pronunciation_hints": [
+        {
+          "term": "SCENTAI",
+          "hint": "deutsch flüssig als „Scent-AI“, zwei klare Silbenblöcke"
+        },
+        {
+          "term": "Bois Impérial",
+          "hint": "französisch angehaucht, „Bwa Im-pe-ri-al“"
+        },
+        {
+          "term": "Bleu de Chanel",
+          "hint": "französisch angehaucht, „Blö de Scha-nell“"
+        }
+      ],
+      "delivery_notes": [
+        "conversational German",
+        "calm and confident",
+        "short natural pauses between semantic sections",
+        "no radio-announcer voice",
+        "no exaggerated sales emphasis",
+        "CTA slightly slower than the body"
+      ],
+      "output": {
+        "preferred_format": "wav",
+        "preferred_sample_rate_hz": 48000,
+        "channels": "mono_or_stereo",
+        "filename": "top3_office_01.wav",
+        "local_path": "examples/retail/data/.scentai_pilot_audio/top3_office_01.wav"
+      }
+    },
+    {
+      "production_order": 5,
+      "content_id": "bois_imperial_explained_01",
+      "target_duration_seconds": 27,
+      "word_count": 55,
+      "required_wpm": 122,
+      "preferred_delivery_wpm_range": [
+        117,
+        127
+      ],
+      "script": "Bois Impérial ist bei SCENTAI vor allem frisch, sehr holzig, würzig und grün eingeordnet. Die Süße liegt dagegen ganz unten. In den Community-Daten stehen außerdem starke Haltbarkeit und deutliche Ausstrahlung. Das ergibt keinen typischen süßen Mainstream-Duft, sondern einen trockenen, modernen und sehr präsenten Holzstil. Wenn du genau so etwas suchst, prüf deine Passung bei SCENTAI.",
+      "pronunciation_hints": [
+        {
+          "term": "SCENTAI",
+          "hint": "deutsch flüssig als „Scent-AI“, zwei klare Silbenblöcke"
+        },
+        {
+          "term": "Bois Impérial",
+          "hint": "französisch angehaucht, „Bwa Im-pe-ri-al“"
+        }
+      ],
+      "delivery_notes": [
+        "conversational German",
+        "calm and confident",
+        "short natural pauses between semantic sections",
+        "no radio-announcer voice",
+        "no exaggerated sales emphasis",
+        "CTA slightly slower than the body"
+      ],
+      "output": {
+        "preferred_format": "wav",
+        "preferred_sample_rate_hz": 48000,
+        "channels": "mono_or_stereo",
+        "filename": "bois_imperial_explained_01.wav",
+        "local_path": "examples/retail/data/.scentai_pilot_audio/bois_imperial_explained_01.wav"
+      }
+    }
+  ]
+}
