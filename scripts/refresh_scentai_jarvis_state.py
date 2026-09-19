@@ -9,6 +9,9 @@ from typing import Any
 from scripts.build_scentai_content_operations_status import (
     build_content_operations_status,
 )
+from scripts.build_scentai_content_pipeline_status import (
+    build_content_pipeline_status,
+)
 from scripts.build_scentai_image_approval_work_queue import (
     build_queue as build_image_queue,
 )
@@ -50,6 +53,12 @@ PILOT_JOBS = DATA_DIR / "scentai_pilot_batch_01_production_jobs.json"
 PILOT_SUBTITLES = DATA_DIR / "scentai_pilot_batch_01_subtitles.json"
 PILOT_LINKS = DATA_DIR / "scentai_pilot_batch_01_links.json"
 PILOT_SOCIAL_COPY = DATA_DIR / "scentai_pilot_batch_01_social_copy.json"
+PILOT2_MANIFEST = DATA_DIR / "scentai_pilot_batch_02.json"
+PILOT2_READINESS = DATA_DIR / "scentai_pilot_batch_02_readiness.json"
+PILOT2_JOBS = DATA_DIR / "scentai_pilot_batch_02_production_jobs.json"
+PILOT2_SUBTITLES = DATA_DIR / "scentai_pilot_batch_02_subtitles.json"
+PILOT2_LINKS = DATA_DIR / "scentai_pilot_batch_02_links.json"
+PILOT2_SOCIAL_COPY = DATA_DIR / "scentai_pilot_batch_02_social_copy.json"
 
 OUT_MAPPING = DATA_DIR / "scentai_merchant_mapping_work_queue.json"
 OUT_AFFILIATE = DATA_DIR / "scentai_affiliate_activation_status.json"
@@ -59,6 +68,10 @@ OUT_RELEASE = DATA_DIR / "scentai_release_01_gate_status.json"
 OUT_PIPELINE = DATA_DIR / "scentai_release_pipeline_status.json"
 OUT_OPERATIONS = DATA_DIR / "scentai_jarvis_operations_status.json"
 OUT_CONTENT = DATA_DIR / "scentai_content_operations_status.json"
+OUT_CONTENT_BATCH02 = (
+    DATA_DIR / "scentai_content_operations_status_batch02.json"
+)
+OUT_CONTENT_PIPELINE = DATA_DIR / "scentai_content_pipeline_status.json"
 OUT_MASTER = DATA_DIR / "scentai_jarvis_master_status.json"
 
 
@@ -149,11 +162,28 @@ def refresh_state(*, generated_at: str) -> dict[str, Any]:
         load_json(PILOT_SOCIAL_COPY),
         generated_at=generated_at,
     )
+    content_status_batch02 = build_content_operations_status(
+        load_json(PILOT2_MANIFEST),
+        load_json(PILOT2_READINESS),
+        load_json(PILOT2_JOBS),
+        load_json(PILOT2_SUBTITLES),
+        load_json(PILOT2_LINKS),
+        load_json(PILOT2_SOCIAL_COPY),
+        generated_at=generated_at,
+    )
+    content_status_batch02["batch_id"] = "pilot_batch_02"
+
+    content_pipeline = build_content_pipeline_status(
+        [content_status, content_status_batch02],
+        generated_at=generated_at,
+    )
+
     master_status = build_master_status(
         operations,
         content_status,
         release_pipeline,
         generated_at=generated_at,
+        content_pipeline=content_pipeline,
     )
 
     return {
@@ -165,6 +195,8 @@ def refresh_state(*, generated_at: str) -> dict[str, Any]:
         "release_pipeline": release_pipeline,
         "operations": operations,
         "content_status": content_status,
+        "content_status_batch02": content_status_batch02,
+        "content_pipeline": content_pipeline,
         "master_status": master_status,
     }
 
@@ -178,6 +210,14 @@ def write_state(state: dict[str, Any]) -> None:
     write_json(OUT_PIPELINE, state["release_pipeline"])
     write_json(OUT_OPERATIONS, state["operations"])
     write_json(OUT_CONTENT, state["content_status"])
+    write_json(
+        OUT_CONTENT_BATCH02,
+        state["content_status_batch02"],
+    )
+    write_json(
+        OUT_CONTENT_PIPELINE,
+        state["content_pipeline"],
+    )
     write_json(OUT_MASTER, state["master_status"])
 
 
@@ -203,6 +243,16 @@ def summary(state: dict[str, Any]) -> dict[str, Any]:
             "pipeline_state": state["release_pipeline"]["pipeline_state"],
         },
         "content": state["content_status"]["summary"],
+        "content_pipeline": {
+            "batch_count": state["content_pipeline"]["batch_count"],
+            "total_pilots": state["content_pipeline"]["total_pilots"],
+            "current_batch_id": state["content_pipeline"][
+                "current_batch_id"
+            ],
+            "pipeline_state": state["content_pipeline"][
+                "pipeline_state"
+            ],
+        },
     }
 
 
