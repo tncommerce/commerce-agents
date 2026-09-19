@@ -125,3 +125,16 @@ Next smoke-test targets:
 3. legal/transparency pages
 4. mobile layout
 5. merchant-offer / outbound-link behavior
+
+
+## Live smoke test — product quick detail
+
+Verified manually on 2026-09-19:
+- Marwa quick-detail panel opens correctly from the advisor result
+- image, brand, product name, reference price and Parfumo rating render
+- full-detail and compare actions are present
+- merchant-offer section correctly withholds offers because no sufficiently current verified offer is available yet
+- DUFYND disclosure copy is visible and no legacy SCENTAI branding appears
+
+Trust improvement applied:
+- catalogue-only market-reference prices now display as "Richtpreis" instead of a generic "ca." price so users do not confuse reference data with a live merchant offer.
