@@ -47,3 +47,7 @@ examples/retail/data/.analytics_events.jsonl
 examples/retail/data/merchant_invalid.json
 examples/retail/data/merchant_unmatched.json
 examples/retail/data/scentai_launch_links.local.json
+
+examples/retail/data/.scentai_pilot_audio/
+examples/retail/data/.scentai_pilot_final_renders/
+examples/retail/data/scentai_pilot_batch_01_production_status.local.json
