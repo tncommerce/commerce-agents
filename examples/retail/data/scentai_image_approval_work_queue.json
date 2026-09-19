@@ -7,7 +7,8 @@
     "scentai_catalog_staging.json",
     "scentai_release_batch_01.json",
     "scentai_release_batch_02.json",
-    "scentai_release_batch_03.json"
+    "scentai_release_batch_03.json",
+    "scentai_release_01_asset_candidates.json"
   ],
   "summary": {
     "staged_products": 30,
@@ -775,5 +776,6 @@
       "action_class": "auto_allowed",
       "approval_action_class": "approval_required"
     }
-  ]
+  ],
+  "source_fingerprint_sha256": "f93de8bbf1c81939f37d1fd50f1be019f5224df203d17c8c652c51b54e8842e3"
 }
