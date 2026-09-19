@@ -23,15 +23,15 @@ import { trackAnalyticsEvent } from "@/lib/analytics";
 
 type View = "assistant";
 
-const ASSISTANT = "SCENTAI Advisor";
+const ASSISTANT = "DUFYND Advisor";
 
 function Wordmark() {
   return (
     <span className="flex items-center gap-2.5 pr-1">
-      <span aria-hidden className="grid h-[30px] w-[30px] place-items-center rounded-lg bg-(--ink) text-[15px] font-bold text-(--surface)">
+      <span aria-hidden className="grid h-[30px] w-[30px] place-items-center rounded-lg bg-(--ink) text-[15px] font-bold text-(--accent)">
         S
       </span>
-      <span className="text-[17px] font-bold tracking-[-0.02em] text-(--ink)">SCENTAI</span>
+      <span className="text-[17px] font-bold tracking-[-0.02em] text-(--ink)">DUFYND</span>
     </span>
   );
 }
@@ -137,7 +137,7 @@ export default function StorefrontPage() {
       api={api}
       assistantName={ASSISTANT}
       shopper={shopper}
-      bag={{ label: "SCENTAI", count: 0, noun: "Artikel" }}
+      bag={{ label: "DUFYND", count: 0, noun: "Artikel" }}
       panel={null}
       panelOpen={panelOpen}
       onPanelOpenChange={setPanelOpen}
