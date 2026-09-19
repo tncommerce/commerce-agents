@@ -46,7 +46,7 @@ export default function AcquisitionLanding({
           >
             S
           </span>
-          SCENTAI
+          DUFYND
         </a>
 
         <section className="mt-6 rounded-3xl border border-(--line) bg-(--card) p-5 shadow-(--shadow-sm) sm:p-8">
@@ -117,7 +117,7 @@ export default function AcquisitionLanding({
             href="/transparenz"
             className="font-semibold text-(--accent-ink) hover:underline"
           >
-            So arbeitet SCENTAI
+            So arbeitet DUFYND
           </a>
           .
         </section>
