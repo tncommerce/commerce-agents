@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "intake_type": "affiliate_program_decision",
+  "merchant_id": "replace-with-normalized-merchant-id",
+  "network": "Awin",
+  "program": "Replace With Exact Program Name",
+  "observed_status": "approved",
+  "observed_at": "2026-09-19T00:00:00Z",
+  "evidence": {
+    "source_type": "network_dashboard",
+    "external_program_id": null,
+    "reference_note": "Non-secret reference only. Do not paste private dashboard URLs, tokens or credentials."
+  },
+  "capabilities": {
+    "deeplink_available": null,
+    "product_feed_available": null,
+    "tracked_product_url_available": null,
+    "product_image_in_feed": null,
+    "feed_format": null
+  },
+  "integration_metadata": {
+    "credential_storage": "external_secret_store_only",
+    "provider_config_ready": false,
+    "real_feed_sample_available": false
+  },
+  "note": "Template only. This file must never contain passwords, API keys, tokens, private feed URLs or credential values."
+}
