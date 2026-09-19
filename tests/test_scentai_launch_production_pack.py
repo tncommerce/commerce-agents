@@ -34,20 +34,14 @@ def production_creatives() -> list[dict]:
 
 def test_launch_production_packs_match_scripts_and_product_assets() -> None:
     products = load_json(DATA_DIR / "scentai_products.json")
-    product_by_id = {
-        row["product_id"]: row
-        for row in products["products"]
-    }
+    product_by_id = {row["product_id"]: row for row in products["products"]}
 
     all_content_ids: list[str] = []
 
     for pack_name, script_name in PACK_SCRIPT_PAIRS:
         pack = load_json(DATA_DIR / pack_name)
         scripts = load_json(DATA_DIR / script_name)
-        script_by_id = {
-            row["content_id"]: row
-            for row in scripts["creatives"]
-        }
+        script_by_id = {row["content_id"]: row for row in scripts["creatives"]}
 
         assert len(pack["creatives"]) == 5
 
@@ -59,10 +53,7 @@ def test_launch_production_packs_match_scripts_and_product_assets() -> None:
             script = script_by_id[content_id]
             assert len(creative["scene_assets"]) == len(script["scenes"])
 
-            packed_product_ids = {
-                row["product_id"]
-                for row in creative["required_product_assets"]
-            }
+            packed_product_ids = {row["product_id"] for row in creative["required_product_assets"]}
             assert packed_product_ids == set(script["product_ids"])
 
             for asset in creative["required_product_assets"]:
@@ -90,7 +81,4 @@ def test_production_packs_keep_relationship_labels_explicit() -> None:
     assert relationship_instructions
     assert any("clone" in value for value in relationship_instructions)
     assert any("inspired" in value for value in relationship_instructions)
-    assert any(
-        "alternative" in value
-        for value in relationship_instructions
-    )
+    assert any("alternative" in value for value in relationship_instructions)
