@@ -183,6 +183,20 @@
       "gtin": "8435415032315"
     },
     {
+      "product_id": "SC-KAYALI-YUM-BOUJEE-MARSHMALLOW-81-EDPI-100",
+      "merchant": "notino",
+      "merchant_product_id": "KAY01896",
+      "ean": "6294018405283",
+      "gtin": "6294018405283"
+    },
+    {
+      "product_id": "SC-KAYALI-YUM-BOUJEE-MARSHMALLOW-81-EDPI-100",
+      "merchant": "sephora",
+      "merchant_product_id": "733612",
+      "ean": "6294018405283",
+      "gtin": "6294018405283"
+    },
+    {
       "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
       "merchant": "douglas",
       "merchant_product_id": "3000056790",
@@ -195,6 +209,34 @@
       "merchant_product_id": null,
       "ean": "3605533286555",
       "gtin": "3605533286555"
+    },
+    {
+      "product_id": "SC-LATTAFA-ANGHAM-EDP-100",
+      "merchant": "notino",
+      "merchant_product_id": "LTF00992",
+      "ean": null,
+      "gtin": null
+    },
+    {
+      "product_id": "SC-LATTAFA-ANGHAM-EDP-100",
+      "merchant": "oriental-style",
+      "merchant_product_id": "SP-LTT-AGH",
+      "ean": "6291108738924",
+      "gtin": "6291108738924"
+    },
+    {
+      "product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
+      "merchant": "dm",
+      "merchant_product_id": "3061570",
+      "ean": "6290362340638",
+      "gtin": "6290362340638"
+    },
+    {
+      "product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
+      "merchant": "notino",
+      "merchant_product_id": "LTF00869",
+      "ean": "6290362340638",
+      "gtin": "6290362340638"
     },
     {
       "product_id": "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100",
