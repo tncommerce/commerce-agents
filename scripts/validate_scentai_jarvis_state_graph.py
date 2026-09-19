@@ -8,6 +8,8 @@ from typing import Any
 from scripts.refresh_scentai_jarvis_state import (
     OUT_AFFILIATE,
     OUT_CONTENT,
+    OUT_CONTENT_BATCH02,
+    OUT_CONTENT_PIPELINE,
     OUT_FEED,
     OUT_IMAGES,
     OUT_MAPPING,
@@ -28,6 +30,8 @@ OUTPUT_PATHS = {
     "release_pipeline": OUT_PIPELINE,
     "operations": OUT_OPERATIONS,
     "content_status": OUT_CONTENT,
+    "content_status_batch02": OUT_CONTENT_BATCH02,
+    "content_pipeline": OUT_CONTENT_PIPELINE,
     "master_status": OUT_MASTER,
 }
 
