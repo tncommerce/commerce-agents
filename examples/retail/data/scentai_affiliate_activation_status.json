@@ -1,0 +1,121 @@
+{
+  "version": 1,
+  "generated_at": "2026-09-19",
+  "machine_id": "scentai_affiliate_activation_v1",
+  "summary": {
+    "programs": 9,
+    "active": 0,
+    "pending": 9,
+    "ready_for_user_approval": 0
+  },
+  "programs": [
+    {
+      "network": "Awin",
+      "merchant_id": "douglas",
+      "program": "Douglas_DE",
+      "application_status": "applied",
+      "activation_state": "applied",
+      "live_routing_allowed": false,
+      "blockers": [
+        "affiliate_program_approval_pending"
+      ],
+      "next_action": "await_program_decision"
+    },
+    {
+      "network": "Awin",
+      "merchant_id": "flaconi",
+      "program": "Flaconi DE",
+      "application_status": "applied",
+      "activation_state": "applied",
+      "live_routing_allowed": false,
+      "blockers": [
+        "affiliate_program_approval_pending"
+      ],
+      "next_action": "await_program_decision"
+    },
+    {
+      "network": "Awin",
+      "merchant_id": "parfumdreams",
+      "program": "Parfumdreams DE",
+      "application_status": "applied",
+      "activation_state": "applied",
+      "live_routing_allowed": false,
+      "blockers": [
+        "affiliate_program_approval_pending"
+      ],
+      "next_action": "await_program_decision"
+    },
+    {
+      "network": "Awin",
+      "merchant_id": "parfumgroup",
+      "program": "Parfumgroup DE",
+      "application_status": "applied",
+      "activation_state": "applied",
+      "live_routing_allowed": false,
+      "blockers": [
+        "affiliate_program_approval_pending"
+      ],
+      "next_action": "await_program_decision"
+    },
+    {
+      "network": "Awin",
+      "merchant_id": "breuninger",
+      "program": "Breuninger DE",
+      "application_status": "applied",
+      "activation_state": "applied",
+      "live_routing_allowed": false,
+      "blockers": [
+        "affiliate_program_approval_pending"
+      ],
+      "next_action": "await_program_decision"
+    },
+    {
+      "network": "Awin",
+      "merchant_id": "perfumetrader",
+      "program": "Perfumetrader DE",
+      "application_status": "applied",
+      "activation_state": "applied",
+      "live_routing_allowed": false,
+      "blockers": [
+        "affiliate_program_approval_pending"
+      ],
+      "next_action": "await_program_decision"
+    },
+    {
+      "network": "Awin",
+      "merchant_id": "birkholz",
+      "program": "Birkholz Perfume Manufacture DE",
+      "application_status": "applied",
+      "activation_state": "applied",
+      "live_routing_allowed": false,
+      "blockers": [
+        "affiliate_program_approval_pending"
+      ],
+      "next_action": "await_program_decision"
+    },
+    {
+      "network": "Awin",
+      "merchant_id": "top-parfuemerie",
+      "program": "top Parfümerie DE",
+      "application_status": "applied",
+      "activation_state": "applied",
+      "live_routing_allowed": false,
+      "blockers": [
+        "affiliate_program_approval_pending"
+      ],
+      "next_action": "await_program_decision"
+    },
+    {
+      "network": "CJ Affiliate",
+      "merchant_id": "notino",
+      "program": "Notino",
+      "application_status": "applied_pending",
+      "activation_state": "pending_review",
+      "live_routing_allowed": false,
+      "blockers": [
+        "affiliate_program_approval_pending"
+      ],
+      "next_action": "await_program_decision"
+    }
+  ]
+}
