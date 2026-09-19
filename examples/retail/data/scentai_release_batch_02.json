@@ -29,5 +29,7 @@
     "status": "complete",
     "note": "Every Release Batch 02 product has at least two merchant mapping rows and a GTIN/EAN fallback. This batch remains downstream of Release 01 operational validation."
   },
-  "write_policy": "All-or-nothing. Do not partially promote this manifest. Release 02 is additionally blocked until Release 01 has completed the real feed/image activation and smoke-test workflow."
+  "write_policy": "All-or-nothing. Do not partially promote this manifest. Release 02 is additionally blocked until Release 01 has completed the real feed/image activation and smoke-test workflow.",
+  "write_enabled": false,
+  "write_guard_reason": "Release 02 stays write-locked until Release 01 completes the real affiliate-feed, manual image approval, promotion and smoke-test workflow."
 }
