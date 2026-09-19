@@ -78,7 +78,7 @@ function ProductHeader({
             />
           ) : (
             <span className="text-[12px] font-semibold tracking-[0.16em] text-(--ink-soft)">
-              SCENTAI
+              DUFYND
             </span>
           )}
         </div>
@@ -185,13 +185,13 @@ export default async function ComparisonPage({
           <a
             href="/"
             className="flex items-center gap-2.5"
-            aria-label="Zur SCENTAI Startseite"
+            aria-label="Zur DUFYND Startseite"
           >
             <span className="grid h-8 w-8 place-items-center rounded-lg bg-(--ink) text-[15px] font-bold text-(--surface)">
               S
             </span>
             <span className="text-[17px] font-bold tracking-[-0.02em]">
-              SCENTAI
+              DUFYND
             </span>
           </a>
           <a
@@ -209,7 +209,7 @@ export default async function ComparisonPage({
           className="mb-5 text-[12px] text-(--ink-soft)"
         >
           <a href="/" className="hover:underline">
-            SCENTAI
+            DUFYND
           </a>
           <span className="px-2">/</span>
           <a href="/vergleich" className="hover:underline">
@@ -223,7 +223,7 @@ export default async function ComparisonPage({
 
         <div className="max-w-3xl">
           <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-(--ink-soft)">
-            SCENTAI Duftvergleich
+            DUFYND Duftvergleich
           </div>
           <h1 className="mt-2 text-[30px] font-semibold leading-[1.1] tracking-[-0.035em] sm:text-[40px]">
             {left.brand} {left.name} vs. {right.brand} {right.name}
@@ -235,7 +235,7 @@ export default async function ComparisonPage({
               : ""}
           </div>
           <p className="mt-4 text-[13px] leading-5 text-(--ink-soft)">
-            Dieser Vergleich basiert auf dokumentierten SCENTAI-Duftbeziehungen,
+            Dieser Vergleich basiert auf dokumentierten DUFYND-Duftbeziehungen,
             Community-Daten und redaktionellen Duftprofil-Merkmalen.
             Eine Duftbeziehung bedeutet nicht, dass die Formeln chemisch
             identisch sind.
@@ -373,7 +373,7 @@ export default async function ComparisonPage({
         <section className="mt-5 rounded-2xl border border-(--line) bg-(--well)/45 p-4 text-[10.5px] leading-5 text-(--ink-soft)">
           Community-Werte sind Nutzerbewertungen auf einer 0–10-Skala
           und keine objektiv gemessenen Stunden oder Meter. Die
-          SCENTAI-Profilachsen dienen der Suche und Empfehlung und sind
+          DUFYND-Profilachsen dienen der Suche und Empfehlung und sind
           redaktionelle Merkmale.
         </section>
 
