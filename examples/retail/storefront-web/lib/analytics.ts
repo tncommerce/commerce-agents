@@ -1,12 +1,10 @@
 import { api } from "./api";
 
-const ANALYTICS_CONTEXT_KEY = "scentai_analytics_context_v1";
-const ANALYTICS_CONTEXT_PATTERN = /^[A-Za-z0-9-]{16,80}$/;
-const ACQUISITION_CONTEXT_KEY = "scentai_acquisition_context_v1";
 const ACQUISITION_IDENTIFIER_PATTERN = /^[A-Za-z0-9._:-]{1,80}$/;
 let apiSessionPromise: Promise<string | null> | null = null;
 let analyticsOwnedApiSession: string | null = null;
 let analyticsEventQueue: Promise<void> = Promise.resolve();
+let acquisitionAttributionMemory: AcquisitionAttribution | null = null;
 
 type AcquisitionAttribution = {
   source: string;
@@ -24,33 +22,7 @@ function safeAcquisitionIdentifier(
 }
 
 function storedAcquisitionAttribution(): AcquisitionAttribution | null {
-  if (typeof window === "undefined") return null;
-
-  try {
-    const raw = window.sessionStorage.getItem(
-      ACQUISITION_CONTEXT_KEY,
-    );
-    if (!raw) return null;
-
-    const parsed = JSON.parse(raw) as Partial<AcquisitionAttribution>;
-    const source = safeAcquisitionIdentifier(parsed.source);
-    if (!source) return null;
-
-    const campaign = safeAcquisitionIdentifier(
-      parsed.campaign_id,
-    );
-    const content = safeAcquisitionIdentifier(
-      parsed.content_id,
-    );
-
-    return {
-      source,
-      ...(campaign ? { campaign_id: campaign } : {}),
-      ...(content ? { content_id: content } : {}),
-    };
-  } catch {
-    return null;
-  }
+  return acquisitionAttributionMemory;
 }
 
 export function rememberAcquisitionAttribution({
@@ -62,8 +34,6 @@ export function rememberAcquisitionAttribution({
   campaignId?: string | null;
   contentId?: string | null;
 }): void {
-  if (typeof window === "undefined") return;
-
   const safeSource = safeAcquisitionIdentifier(source);
   if (!safeSource) return;
 
@@ -76,72 +46,7 @@ export function rememberAcquisitionAttribution({
     ...(safeContent ? { content_id: safeContent } : {}),
   };
 
-  try {
-    window.sessionStorage.setItem(
-      ACQUISITION_CONTEXT_KEY,
-      JSON.stringify(attribution),
-    );
-  } catch {
-    // Acquisition attribution must never break the storefront.
-  }
-}
-
-
-function storedAnalyticsContext(): string | null {
-  if (typeof window === "undefined") return null;
-
-  try {
-    const value = window.sessionStorage.getItem(
-      ANALYTICS_CONTEXT_KEY,
-    );
-    return value && ANALYTICS_CONTEXT_PATTERN.test(value)
-      ? value
-      : null;
-  } catch {
-    return null;
-  }
-}
-
-function rememberAnalyticsContext(contextId: string): void {
-  if (typeof window === "undefined") return;
-
-  try {
-    window.sessionStorage.setItem(
-      ANALYTICS_CONTEXT_KEY,
-      contextId,
-    );
-  } catch {
-    // Analytics storage must never break the shopping experience.
-  }
-}
-
-function createAnalyticsContext(): string | null {
-  if (
-    typeof window === "undefined" ||
-    !window.crypto
-  ) {
-    return null;
-  }
-
-  if (typeof window.crypto.randomUUID === "function") {
-    return window.crypto.randomUUID();
-  }
-
-  const bytes = new Uint8Array(16);
-  window.crypto.getRandomValues(bytes);
-  return Array.from(
-    bytes,
-    (value) => value.toString(16).padStart(2, "0"),
-  ).join("");
-}
-
-function analyticsContextId(): string | null {
-  const stored = storedAnalyticsContext();
-  if (stored) return stored;
-
-  const created = createAnalyticsContext();
-  if (created) rememberAnalyticsContext(created);
-  return created;
+  acquisitionAttributionMemory = attribution;
 }
 
 async function ensureApiSession(): Promise<string | null> {
@@ -240,7 +145,7 @@ async function sendAnalyticsEvent(
     surface: context.surface,
     related_product_id: context.related_product_id,
     item_position: context.item_position,
-    analytics_session_id: analyticsContextId(),
+    analytics_session_id: undefined,
   };
 
   const recorded = await postAnalyticsPayload(payload);
