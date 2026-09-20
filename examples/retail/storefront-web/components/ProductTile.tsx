@@ -37,20 +37,20 @@ function ReturnsPromise({ className = "" }: { className?: string }) {
 
 export function ProductImage({ product, className = "" }: { product: Product; className?: string }) {
   if (product.image_url) {
-    const isScentai = String(product.product_id).startsWith("SC-");
+    const isDufynd = String(product.product_id).startsWith("SC-");
 
     // eslint-disable-next-line @next/next/no-img-element
     return (
       <div
         className={`flex items-center justify-center overflow-hidden ${
-          isScentai ? "bg-white" : ""
+          isDufynd ? "bg-white" : ""
         } ${className}`}
       >
         <img
           src={product.image_url}
           alt={product.title}
           className={
-            isScentai
+            isDufynd
               ? "h-full w-full scale-[1.25] object-contain"
               : "h-full w-full object-cover"
           }
@@ -58,9 +58,9 @@ export function ProductImage({ product, className = "" }: { product: Product; cl
       </div>
     );
   }
-  const isScentai = String(product.product_id).startsWith("SC-");
+  const isDufynd = String(product.product_id).startsWith("SC-");
 
-  if (isScentai) {
+  if (isDufynd) {
     return (
       <div
         className={`relative flex items-center justify-center overflow-hidden ${productTileClass(product.product_id)} ${className}`}
@@ -264,9 +264,9 @@ export default function ProductTile({
   onOpen?: (product: Product) => void;
 }) {
   const clickable = Boolean(onOpen);
-  const isScentai = String(product.product_id).startsWith("SC-");
+  const isDufynd = String(product.product_id).startsWith("SC-");
   const openProduct = () => {
-    if (isScentai) {
+    if (isDufynd) {
       void trackAnalyticsEvent("product_open", {
         product_id: product.product_id,
         source: "product_card",
@@ -277,7 +277,7 @@ export default function ProductTile({
   const chips = compact ? [] : attributeChips(product);
   const imageHeight = compact
     ? "h-16"
-    : isScentai
+    : isDufynd
       ? "h-36"
       : fluid
         ? "h-40"
@@ -285,7 +285,7 @@ export default function ProductTile({
   return (
     <div
       className={`relative flex shrink-0 flex-col overflow-hidden border bg-(--card) transition-[box-shadow,border-color,transform] duration-200 ${
-        isScentai
+        isDufynd
           ? "rounded-2xl shadow-sm hover:-translate-y-0.5 hover:shadow-md"
           : "rounded-xl shadow-(--shadow-sm) hover:shadow-md"
       } ${
@@ -313,11 +313,11 @@ export default function ProductTile({
             <LowStockChip product={product} className="absolute right-1.5 top-1.5" />
           )}
         </div>
-        <div className={isScentai ? "flex flex-1 flex-col gap-1 p-3.5" : "flex flex-1 flex-col gap-0.5 p-2.5"}>
-          <div className={isScentai ? "text-[10.5px] font-medium uppercase tracking-[0.08em] text-(--ink-soft)/75" : "text-[11px] uppercase tracking-wide text-(--ink-soft)/80"}>{product.brand}</div>
+        <div className={isDufynd ? "flex flex-1 flex-col gap-1 p-3.5" : "flex flex-1 flex-col gap-0.5 p-2.5"}>
+          <div className={isDufynd ? "text-[10.5px] font-medium uppercase tracking-[0.08em] text-(--ink-soft)/75" : "text-[11px] uppercase tracking-wide text-(--ink-soft)/80"}>{product.brand}</div>
           <ProductTitle
             title={product.title}
-            className={`line-clamp-2 font-medium leading-snug ${isScentai ? "text-[14.5px]" : "text-[13px]"} ${compact ? "" : isScentai ? "h-10" : "h-9"}`}
+            className={`line-clamp-2 font-medium leading-snug ${isDufynd ? "text-[14.5px]" : "text-[13px]"} ${compact ? "" : isDufynd ? "h-10" : "h-9"}`}
           />
           {compact ? null : optionText(product) ? (
             <OptionLine product={product} className="h-[18px] pt-0.5 leading-4" />
@@ -334,15 +334,15 @@ export default function ProductTile({
               ))}
             </div>
           )}
-          <div className={isScentai ? "mt-auto flex items-end justify-between gap-2 border-t border-(--line)/70 pt-2.5" : "mt-auto flex items-center justify-between gap-1 pt-0.5"}>
+          <div className={isDufynd ? "mt-auto flex items-end justify-between gap-2 border-t border-(--line)/70 pt-2.5" : "mt-auto flex items-center justify-between gap-1 pt-0.5"}>
             <span className="text-sm font-semibold">{customerPriceLabel(product)}</span>
             <ProductRating product={product} compact={compact} />
           </div>
           <DeliveryPromise product={product} />
-          {!compact && !isScentai && product.in_stock !== false ? (
+          {!compact && !isDufynd && product.in_stock !== false ? (
             <ReturnsPromise />
           ) : null}
-          {!compact && isScentai && clickable ? (
+          {!compact && isDufynd && clickable ? (
             <div className="mt-1 text-[11px] font-medium text-(--ink-soft)">
               {product.attributes?.price_source === "current_merchant_offer"
                 ? "Details & Händlerangebote ansehen →"
@@ -351,7 +351,7 @@ export default function ProductTile({
           ) : null}
         </div>
       </div>
-      {onAdd && !isScentai && product.in_stock !== false ? (
+      {onAdd && !isDufynd && product.in_stock !== false ? (
         // Over the image but a sibling of the clickable area, so one control is not nested in another.
         <div className={`pointer-events-none absolute inset-x-0 top-0 ${imageHeight}`}>
           <AddButton product={product} onAdd={onAdd} />
@@ -371,7 +371,7 @@ export function ProductRow({
   onOpen?: (product: Product) => void;
 }) {
   const clickable = Boolean(onOpen);
-  const isScentai = String(product.product_id).startsWith("SC-");
+  const isDufynd = String(product.product_id).startsWith("SC-");
   const openProduct = () => {
     if (String(product.product_id).startsWith("SC-")) {
       void trackAnalyticsEvent("product_open", {
@@ -395,7 +395,7 @@ export function ProductRow({
           product={product}
           className={`h-14 w-16 rounded-lg ${product.in_stock === false ? "opacity-50" : ""}`}
         />
-        {onAdd && !isScentai && product.in_stock !== false ? (
+        {onAdd && !isDufynd && product.in_stock !== false ? (
           <AddButton product={product} onAdd={onAdd} />
         ) : null}
       </div>

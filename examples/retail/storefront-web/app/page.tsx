@@ -10,6 +10,7 @@ import {
   useAgentTurn,
   useSession,
 } from "web-shared";
+import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
 import Chat from "@/components/Chat";
 import HomeView from "@/components/views/HomeView";
 import { api, UNREACHABLE } from "@/lib/api";
@@ -132,7 +133,12 @@ export default function StorefrontPage() {
   const shopper = session.shopper ?? { name: "Guest" };
 
   return (
-    <StoreShell
+    <>
+      <AcquisitionAnalytics
+        source="storefront"
+        trackPageView={false}
+      />
+      <StoreShell
       minimal
       brand={<Wordmark />}
       views={views}
@@ -155,6 +161,7 @@ export default function StorefrontPage() {
           home={<HomeView shopperName={shopper.name} />}
         />
       </div>
-    </StoreShell>
+      </StoreShell>
+    </>
   );
 }

@@ -12,7 +12,9 @@ user, so what a shopper asks the store to remember, or to forget, survives a res
 
 from __future__ import annotations
 
-from fastapi import HTTPException
+from uuid import uuid4
+
+from fastapi import BackgroundTasks, HTTPException
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -28,7 +30,11 @@ from shopping_agent import ProductDetails
 from shopping_agent_runtime import ShoppingAgent
 
 from .agent_config import build_shopping_config
-from .analytics import AnalyticsEventRequest, FirstPartyAnalyticsTracker
+from .analytics import (
+    AnalyticsEventRequest,
+    FirstPartyAnalyticsTracker,
+    sanitize_attribution_identifier,
+)
 from .merchant import create_merchant_router
 from .merchant_offers import MerchantClickoutTracker, MerchantOfferStore, customer_offer_payload
 from .merchant_partners import MerchantPartnerStore, customer_partner_payload
@@ -106,6 +112,11 @@ async def merchant_partners() -> dict:
 @app.get("/api/merchant-partners/{partner_key}/clickout")
 async def merchant_partner_clickout(
     partner_key: str,
+    background_tasks: BackgroundTasks,
+    src: str | None = None,
+    cmp: str | None = None,
+    content: str | None = None,
+    sid: str | None = None,
 ) -> RedirectResponse:
     partner = partner_store.eligible(partner_key)
     if partner is None or partner.affiliate_url is None:
@@ -113,6 +124,18 @@ async def merchant_partner_clickout(
             status_code=404,
             detail="Merchant partner not available",
         )
+
+    analytics_session_id = sanitize_attribution_identifier(sid) or f"partner-clickout-{uuid4()}"
+    background_tasks.add_task(
+        analytics_tracker.record,
+        session_id=analytics_session_id,
+        event="merchant_clickout",
+        source=partner.merchant_id,
+        acquisition_source=sanitize_attribution_identifier(src),
+        campaign_id=sanitize_attribution_identifier(cmp),
+        content_id=sanitize_attribution_identifier(content),
+        surface="merchant_discovery",
+    )
 
     return RedirectResponse(
         url=partner.affiliate_url,
@@ -158,12 +181,40 @@ async def analytics_event(
 
 
 @app.get("/api/clickout/{offer_id}")
-async def merchant_clickout(offer_id: str) -> RedirectResponse:
+async def merchant_clickout(
+    offer_id: str,
+    background_tasks: BackgroundTasks,
+    src: str | None = None,
+    cmp: str | None = None,
+    content: str | None = None,
+    sid: str | None = None,
+) -> RedirectResponse:
     offer = offer_store.eligible_offer(offer_id)
     if offer is None:
         raise HTTPException(status_code=404, detail="Offer not available")
 
-    clickout_tracker.record(offer)
+    acquisition_source = sanitize_attribution_identifier(src)
+    campaign_id = sanitize_attribution_identifier(cmp)
+    content_id = sanitize_attribution_identifier(content)
+
+    click_id = clickout_tracker.record(
+        offer,
+        acquisition_source=acquisition_source,
+        campaign_id=campaign_id,
+        content_id=content_id,
+    )
+    analytics_session_id = sanitize_attribution_identifier(sid) or f"offer-clickout-{click_id}"
+    background_tasks.add_task(
+        analytics_tracker.record,
+        session_id=analytics_session_id,
+        event="merchant_clickout",
+        product_id=offer.product_id,
+        source=offer.merchant_id,
+        acquisition_source=acquisition_source,
+        campaign_id=campaign_id,
+        content_id=content_id,
+        surface="merchant_offer",
+    )
     target = offer.affiliate_url or offer.product_url
     return RedirectResponse(url=target, status_code=302)
 

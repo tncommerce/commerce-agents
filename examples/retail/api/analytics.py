@@ -30,6 +30,20 @@ AnalyticsEventName = Literal[
 ]
 
 
+def sanitize_attribution_identifier(value: str | None) -> str | None:
+    if value is None:
+        return None
+
+    normalized = value.strip()[:80]
+    if not normalized:
+        return None
+
+    if not re.fullmatch(r"[A-Za-z0-9._:-]+", normalized):
+        return None
+
+    return normalized
+
+
 def sanitize_catalog_search_term(value: str | None) -> str | None:
     if value is None:
         return None

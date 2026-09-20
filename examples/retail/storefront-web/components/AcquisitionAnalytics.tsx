@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 
 import {
+  currentAcquisitionAttribution,
   rememberAcquisitionAttribution,
   trackAnalyticsEvent,
 } from "@/lib/analytics";
@@ -18,8 +19,10 @@ const ALLOWED_CHANNELS = new Set([
 
 export default function AcquisitionAnalytics({
   source,
+  trackPageView = true,
 }: {
   source: string;
+  trackPageView?: boolean;
 }) {
   const trackedRef = useRef(false);
 
@@ -31,31 +34,39 @@ export default function AcquisitionAnalytics({
       window.location.search,
     );
     const requestedChannel = params.get("src");
-    const channel =
+    const explicitChannel =
       requestedChannel &&
       ALLOWED_CHANNELS.has(requestedChannel)
         ? requestedChannel
-        : "organic";
+        : null;
     const campaignId = params.get("cmp");
     const contentId = params.get("content");
 
-    rememberAcquisitionAttribution({
-      source: channel,
-      campaignId,
-      contentId,
-    });
+    if (explicitChannel) {
+      rememberAcquisitionAttribution({
+        source: explicitChannel,
+        campaignId,
+        contentId,
+      });
+    } else if (!currentAcquisitionAttribution()) {
+      rememberAcquisitionAttribution({
+        source: "organic",
+        campaignId: null,
+        contentId: null,
+      });
+    }
 
-    const landingSource =
-      requestedChannel &&
-      ALLOWED_CHANNELS.has(requestedChannel)
-        ? `${source}_${channel}`
-        : source;
+    const landingSource = explicitChannel
+      ? `${source}_${explicitChannel}`
+      : source;
 
-    void trackAnalyticsEvent("page_view", {
-      source: landingSource,
-      surface: "acquisition_landing",
-    });
-  }, [source]);
+    if (trackPageView) {
+      void trackAnalyticsEvent("page_view", {
+        source: landingSource,
+        surface: "acquisition_landing",
+      });
+    }
+  }, [source, trackPageView]);
 
   return null;
 }

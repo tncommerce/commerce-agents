@@ -262,7 +262,7 @@ const duplicateSlugs = Array.from(slugCounts.entries())
 
 if (duplicateSlugs.length) {
   throw new Error(
-    `Duplicate SCENTAI fragrance slugs: ${duplicateSlugs.join(", ")}`,
+    `Duplicate DUFYND fragrance slugs: ${duplicateSlugs.join(", ")}`,
   );
 }
 

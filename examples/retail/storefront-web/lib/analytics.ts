@@ -5,8 +5,9 @@ let apiSessionPromise: Promise<string | null> | null = null;
 let analyticsOwnedApiSession: string | null = null;
 let analyticsEventQueue: Promise<void> = Promise.resolve();
 let acquisitionAttributionMemory: AcquisitionAttribution | null = null;
+const ACQUISITION_STORAGE_KEY = "dufynd_acquisition_attribution_v1";
 
-type AcquisitionAttribution = {
+export type AcquisitionAttribution = {
   source: string;
   campaign_id?: string;
   content_id?: string;
@@ -22,7 +23,40 @@ function safeAcquisitionIdentifier(
 }
 
 function storedAcquisitionAttribution(): AcquisitionAttribution | null {
-  return acquisitionAttributionMemory;
+  if (acquisitionAttributionMemory) {
+    return acquisitionAttributionMemory;
+  }
+
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  try {
+    const raw = window.sessionStorage.getItem(
+      ACQUISITION_STORAGE_KEY,
+    );
+    if (!raw) return null;
+
+    const parsed = JSON.parse(raw) as Partial<AcquisitionAttribution>;
+    const source = safeAcquisitionIdentifier(parsed.source);
+    const campaign = safeAcquisitionIdentifier(
+      parsed.campaign_id,
+    );
+    const content = safeAcquisitionIdentifier(
+      parsed.content_id,
+    );
+
+    if (!source) return null;
+
+    acquisitionAttributionMemory = {
+      source,
+      ...(campaign ? { campaign_id: campaign } : {}),
+      ...(content ? { content_id: content } : {}),
+    };
+    return acquisitionAttributionMemory;
+  } catch {
+    return null;
+  }
 }
 
 export function rememberAcquisitionAttribution({
@@ -47,6 +81,60 @@ export function rememberAcquisitionAttribution({
   };
 
   acquisitionAttributionMemory = attribution;
+
+  if (typeof window !== "undefined") {
+    try {
+      window.sessionStorage.setItem(
+        ACQUISITION_STORAGE_KEY,
+        JSON.stringify(attribution),
+      );
+    } catch {
+      // Attribution is helpful but must never block the storefront.
+    }
+  }
+}
+
+export function currentAcquisitionAttribution():
+  | AcquisitionAttribution
+  | null {
+  return storedAcquisitionAttribution();
+}
+
+export function appendAcquisitionAttribution(
+  url: string,
+): string {
+  const attribution = storedAcquisitionAttribution();
+  if (!attribution) return url;
+
+  const target = new URL(
+    url,
+    typeof window !== "undefined"
+      ? window.location.origin
+      : "http://localhost",
+  );
+
+  target.searchParams.set("src", attribution.source);
+  if (attribution.campaign_id) {
+    target.searchParams.set(
+      "cmp",
+      attribution.campaign_id,
+    );
+  }
+  if (attribution.content_id) {
+    target.searchParams.set(
+      "content",
+      attribution.content_id,
+    );
+  }
+
+  const activeSession = safeAcquisitionIdentifier(
+    api.session,
+  );
+  if (activeSession) {
+    target.searchParams.set("sid", activeSession);
+  }
+
+  return target.toString();
 }
 
 async function ensureApiSession(): Promise<string | null> {

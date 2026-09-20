@@ -61,25 +61,25 @@ export default function ComparisonGrid({
   const hasDecisionDetails = entries.some(
     (entry) => entry.best_for || (entry.pros?.length ?? 0) > 0 || (entry.cons?.length ?? 0) > 0,
   );
-  const comparableScentaiEntries = entries.filter(
+  const comparableDufyndEntries = entries.filter(
     (entry) =>
       String(entry.product_id).startsWith("SC-"),
   );
   const freeComparisonHref =
-    comparableScentaiEntries.length === 2
+    comparableDufyndEntries.length === 2
       ? `/vergleich?left=${encodeURIComponent(
-          comparableScentaiEntries[0].product_id,
+          comparableDufyndEntries[0].product_id,
         )}&right=${encodeURIComponent(
-          comparableScentaiEntries[1].product_id,
+          comparableDufyndEntries[1].product_id,
         )}`
       : null;
   const trackedPairRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (partial || comparableScentaiEntries.length !== 2) return;
+    if (partial || comparableDufyndEntries.length !== 2) return;
 
-    const left = comparableScentaiEntries[0].product_id;
-    const right = comparableScentaiEntries[1].product_id;
+    const left = comparableDufyndEntries[0].product_id;
+    const right = comparableDufyndEntries[1].product_id;
     const pairKey = `${left}|${right}`;
 
     if (trackedPairRef.current === pairKey) return;
@@ -91,7 +91,7 @@ export default function ComparisonGrid({
       source: "advisor",
       surface: "advisor_comparison_card",
     });
-  }, [comparableScentaiEntries, partial]);
+  }, [comparableDufyndEntries, partial]);
 
   return (
     <section className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm)">

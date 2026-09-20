@@ -151,7 +151,7 @@ function ProductDetail({
 
   const full = details ?? product;
   const specs = details?.specs ?? {};
-  const isScentai = String(full.product_id).startsWith("SC-");
+  const isDufynd = String(full.product_id).startsWith("SC-");
   return (
     <div className="ac-reveal mb-1 mt-3 rounded-xl border border-(--line) bg-(--well)/40 p-3">
       <div className="flex items-start gap-3">
@@ -236,7 +236,7 @@ function ProductDetail({
         </div>
       )}
 
-      {isScentai ? (
+      {isDufynd ? (
         <>
           <div className="mt-3 flex flex-wrap gap-2">
             <a
@@ -375,7 +375,7 @@ export default function ProductCarousel({
     });
   }, [items]);
 
-  // A single SCENTAI product is typically a detail-intent result. Open its detail
+  // A single DUFYND product is typically a detail-intent result. Open its detail
   // panel once automatically so merchant offers are immediately discoverable.
   useEffect(() => {
     if (partial || items.length !== 1) return;

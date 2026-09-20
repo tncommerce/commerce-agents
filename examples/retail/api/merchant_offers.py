@@ -193,7 +193,15 @@ class MerchantClickoutTracker:
     def __init__(self, path: Path) -> None:
         self.path = path
 
-    def record(self, offer: MerchantOffer, *, now: datetime | None = None) -> str:
+    def record(
+        self,
+        offer: MerchantOffer,
+        *,
+        now: datetime | None = None,
+        acquisition_source: str | None = None,
+        campaign_id: str | None = None,
+        content_id: str | None = None,
+    ) -> str:
         click_id = str(uuid4())
         occurred_at = _as_utc(now or datetime.now(UTC))
         event = {
@@ -205,6 +213,9 @@ class MerchantClickoutTracker:
             "merchant_name": offer.merchant_name,
             "network": offer.network,
             "affiliate_link": bool(offer.affiliate_url),
+            "acquisition_source": acquisition_source,
+            "campaign_id": campaign_id,
+            "content_id": content_id,
         }
 
         self.path.parent.mkdir(parents=True, exist_ok=True)

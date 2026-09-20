@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
 
 import ComparisonAnalytics from "@/components/ComparisonAnalytics";
 import FragranceOffers from "@/components/FragranceOffers";
@@ -208,6 +209,7 @@ export default async function ComparisonPage({
 
   return (
     <main className="min-h-screen bg-(--surface) text-(--ink)">
+      <AcquisitionAnalytics source="comparison_detail" />
       <ComparisonAnalytics
         productId={left.product_id}
         relatedProductId={right.product_id}

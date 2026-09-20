@@ -1,4 +1,4 @@
-name: SCENTAI Pilot Batch 03 Preview Render
+name: DUFYND Pilot Batch 03 Preview Render
 
 on:
   workflow_dispatch:
@@ -11,6 +11,7 @@ on:
       - "examples/retail/data/scentai_pilot_batch_03_readiness.json"
       - "examples/retail/data/scentai_products.json"
       - "examples/retail/storefront-web/public/products/pilot/**"
+      - "scripts/refresh_scentai_jarvis_state.py"
       - ".github/workflows/scentai-pilot-batch03-preview.yml"
 
 permissions:
@@ -43,7 +44,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ffmpeg fonts-dejavu-core
 
-      - name: Render SCENTAI Pilot Batch 03 previews
+      - name: Render DUFYND Pilot Batch 03 previews
         run: python scripts/render_scentai_pilot_previews.py --batch batch03
 
       - name: Verify expected Batch 03 outputs
@@ -80,8 +81,18 @@ jobs:
           assert len(previews) == 5, previews
           assert all(row.get("status") == "visual_preview" for row in previews)
           assert all(row.get("audio") is False for row in previews)
-          print("Verified 5 SCENTAI Batch 03 visual preview outputs.")
+          print("Verified 5 DUFYND Batch 03 visual preview outputs.")
           PY
+
+      - name: Refresh DUFYND derived state
+        shell: bash
+        run: |
+          set -euo pipefail
+          generated_at="$(date -u +%Y-%m-%dT%H:%M:%S+00:00)"
+          PYTHONPATH=. python -m scripts.refresh_scentai_jarvis_state \
+            --write \
+            --generated-at "$generated_at"
+          PYTHONPATH=. python -m scripts.validate_scentai_jarvis_state_graph
 
       - name: Commit generated Batch 03 previews
         shell: bash
@@ -89,13 +100,26 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add examples/retail/storefront-web/public/social/pilots/batch03
+          git add examples/retail/storefront-web/public/social/pilots/batch03 \
+            examples/retail/data/scentai_merchant_mapping_work_queue.json \
+            examples/retail/data/scentai_affiliate_activation_status.json \
+            examples/retail/data/scentai_image_approval_work_queue.json \
+            examples/retail/data/scentai_release_01_feed_activation_queue.json \
+            examples/retail/data/scentai_release_01_gate_status.json \
+            examples/retail/data/scentai_release_pipeline_status.json \
+            examples/retail/data/scentai_jarvis_operations_status.json \
+            examples/retail/data/scentai_content_operations_status.json \
+            examples/retail/data/scentai_content_operations_status_batch02.json \
+            examples/retail/data/scentai_content_operations_status_batch03.json \
+            examples/retail/data/scentai_content_pipeline_status.json \
+            examples/retail/data/scentai_media_generation_queue.json \
+            examples/retail/data/scentai_jarvis_master_status.json
 
           if git diff --cached --quiet; then
             echo "No Batch 03 preview changes to commit."
             exit 0
           fi
 
-          git commit -m "Generate SCENTAI Batch 03 preview renders [skip ci]"
+          git commit -m "Generate DUFYND Batch 03 preview renders [skip ci]"
           git pull --rebase origin scentai-mvp
           git push origin HEAD:scentai-mvp

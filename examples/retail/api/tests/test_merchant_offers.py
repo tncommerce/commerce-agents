@@ -257,3 +257,27 @@ def test_clickout_tracker_writes_anonymous_event(tmp_path) -> None:
     assert row["merchant_name"] == "Merchant A"
     assert "commission_rate" not in row
     assert "user_id" not in row
+
+
+def test_clickout_tracker_preserves_content_attribution(tmp_path) -> None:
+    log_path = tmp_path / "clickouts.jsonl"
+    tracker = MerchantClickoutTracker(log_path)
+    tracked_offer = offer(
+        "tracked-attributed",
+        merchant="Merchant A",
+        price=90,
+        shipping=0,
+    )
+
+    tracker.record(
+        tracked_offer,
+        now=NOW,
+        acquisition_source="tiktok",
+        campaign_id="launch01",
+        content_id="genesis_naxos_01",
+    )
+
+    row = json.loads(log_path.read_text(encoding="utf-8").strip())
+    assert row["acquisition_source"] == "tiktok"
+    assert row["campaign_id"] == "launch01"
+    assert row["content_id"] == "genesis_naxos_01"

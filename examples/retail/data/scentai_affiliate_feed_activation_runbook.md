@@ -1,4 +1,4 @@
-# SCENTAI Affiliate Feed Activation Runbook
+# DUFYND Affiliate Feed Activation Runbook
 
 Status: prepared
 Updated: 2026-09-19
@@ -61,7 +61,7 @@ A ready result does not approve images automatically.
 ## 4. Resolve exact product mappings
 
 Only add a mapping after the merchant SKU/EAN/GTIN is verified against the
-correct SCENTAI canonical fragrance, concentration and size.
+correct DUFYND canonical fragrance, concentration and size.
 
 Write verified mappings to:
 
@@ -125,6 +125,6 @@ Partial release is intentionally refused.
 
 ## Ranking rule
 
-Affiliate commission must never influence SCENTAI product recommendations or
+Affiliate commission must never influence DUFYND product recommendations or
 merchant ranking. Merchant selection remains based on availability, total
 customer price, trust, shipping and data freshness before commission.
