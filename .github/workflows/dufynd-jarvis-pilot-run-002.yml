@@ -1,0 +1,72 @@
+name: DUFYND Jarvis Pilot Run 002
+
+on:
+  push:
+    branches:
+      - dufynd-jarvis-pilot-run-002
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dufynd-jarvis-pilot-run-002
+  cancel-in-progress: false
+
+jobs:
+  run-one-event:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out active DUFYND development line
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: scentai-mvp
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install DUFYND runtime dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Verify bounded Jarvis readiness
+        env:
+          SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DUFYND_JARVIS_MODEL: "claude-sonnet-5"
+          DUFYND_JARVIS_MAX_TURNS: "8"
+          DUFYND_JARVIS_MAX_BUDGET_USD: "0.25"
+          DUFYND_JARVIS_BUDGET_ID: "jarvis_activation_pilot_001"
+          DUFYND_JARVIS_ACTIVE: "1"
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m scripts.dufynd_jarvis_runtime --readiness
+          python - <<'PY'
+          from scripts.dufynd_jarvis_runtime import runtime_readiness
+          r = runtime_readiness()
+          required = {
+              "active": r["active"],
+              "model_configured": r["model_configured"],
+              "anthropic_credentials_configured": r["anthropic_credentials_configured"],
+              "supabase_configured": r["supabase_configured"],
+              "ready_for_model_execution": r["ready_for_model_execution"],
+          }
+          print(required)
+          if not all(required.values()):
+              raise SystemExit("Jarvis readiness gate failed; refusing model execution.")
+          PY
+
+      - name: Process exactly one Jarvis inbox event
+        env:
+          SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DUFYND_JARVIS_MODEL: "claude-sonnet-5"
+          DUFYND_JARVIS_MAX_TURNS: "8"
+          DUFYND_JARVIS_MAX_BUDGET_USD: "0.25"
+          DUFYND_JARVIS_BUDGET_ID: "jarvis_activation_pilot_001"
+          DUFYND_JARVIS_ACTIVE: "1"
+        run: python -m scripts.dufynd_jarvis_runtime --process-next
