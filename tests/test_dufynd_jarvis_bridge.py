@@ -18,6 +18,7 @@ def mock_transport() -> httpx.MockTransport:
                 json={
                     "references": [{"id": "ex1"}, {"id": "ex2"}],
                     "formats": [{"id": "genesis"}],
+                    "creative_patterns": [{"pattern_id": "macro"}],
                     "hook_templates": [{"id": "hook1"}],
                     "model_profiles": [{"model_id": "seedance"}],
                     "ideas": [{"id": "idea1"}],
@@ -28,13 +29,74 @@ def mock_transport() -> httpx.MockTransport:
                         {"merchant_id": "notino"},
                     ],
                     "content_funnel": [{"content_id": "video1"}],
-                    "asset_business_performance": [{"asset_id": "asset1", "content_id": "video1"}],
+                    "asset_business_performance": [
+                        {"asset_id": "asset1", "content_id": "video1"}
+                    ],
+                    "autonomy_queue": {
+                        "safe_to_execute": [{"task_id": "task_safe"}],
+                        "approval_required": [{"task_id": "task_approval"}],
+                    },
+                    "experiment_rubric": [
+                        {"metric_id": "scroll_stop"},
+                        {"metric_id": "product_accuracy"},
+                    ],
                     "launch_gate": {
                         "state": "not_ready",
                         "required_passed": 4,
                         "required_total": 11,
                     },
                 },
+            )
+
+        if request.url.path.endswith("/rpc/get_dufynd_jarvis_creative_context"):
+            return httpx.Response(
+                200,
+                json={
+                    "idea_generation": {
+                        "formats": [{"id": "genesis"}],
+                        "patterns": [{"pattern_id": "macro"}],
+                    },
+                    "references": [{"id": "ex1"}],
+                    "reference_patterns": [],
+                    "idea_patterns": [],
+                    "recent_experiments": [],
+                    "recent_performance": [],
+                    "autonomy_queue": {
+                        "safe_to_execute": [{"task_id": "task_safe"}],
+                    },
+                },
+            )
+
+        if request.url.path.endswith("/rpc/get_dufynd_autonomy_queue"):
+            return httpx.Response(
+                200,
+                json={
+                    "safe_to_execute": [{"task_id": "task_safe"}],
+                    "in_progress": [{"task_id": "task_running"}],
+                    "waiting_human_input": [{"task_id": "task_input"}],
+                    "waiting_external": [{"task_id": "task_external"}],
+                    "approval_required": [{"task_id": "task_approval"}],
+                    "done_recent": [],
+                },
+            )
+
+        if request.url.path.endswith("/rpc/get_dufynd_experiment_rubric"):
+            return httpx.Response(
+                200,
+                json=[
+                    {
+                        "metric_id": "scroll_stop",
+                        "weight": 1.25,
+                        "hard_fail_below": 5,
+                        "target_score": 8.5,
+                    },
+                    {
+                        "metric_id": "product_accuracy",
+                        "weight": 1.4,
+                        "hard_fail_below": 8,
+                        "target_score": 9.5,
+                    },
+                ],
             )
 
         if request.url.path.endswith("/rpc/get_dufynd_rnd_gate"):
@@ -44,7 +106,7 @@ def mock_transport() -> httpx.MockTransport:
                     "state": "not_ready",
                     "passed": 3,
                     "total": 9,
-                    "human_pending": 3,
+                    "human_pending": 4,
                     "checks": [],
                 },
             )
@@ -56,7 +118,7 @@ def mock_transport() -> httpx.MockTransport:
                     "state": "not_ready",
                     "passed": 3,
                     "total": 9,
-                    "human_pending": 3,
+                    "human_pending": 4,
                     "checks": [],
                 },
             )
@@ -133,6 +195,7 @@ def test_bridge_loads_context_and_summary() -> None:
     assert summary.launch_state == "not_ready"
     assert summary.references == 2
     assert summary.formats == 1
+    assert summary.creative_patterns == 1
     assert summary.hook_templates == 1
     assert summary.model_profiles == 1
     assert summary.ideas == 1
@@ -140,6 +203,51 @@ def test_bridge_loads_context_and_summary() -> None:
     assert summary.affiliate_partners == 2
     assert summary.funnel_rows == 1
     assert summary.asset_performance_rows == 1
+    assert summary.autonomy_ready == 1
+    assert summary.autonomy_approval_required == 1
+    assert summary.rubric_metrics == 2
+
+
+def test_bridge_loads_creative_context() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    context = bridge.load_creative_context()
+
+    assert context["idea_generation"]["formats"][0]["id"] == "genesis"
+    assert context["idea_generation"]["patterns"][0]["pattern_id"] == "macro"
+    assert context["autonomy_queue"]["safe_to_execute"][0]["task_id"] == "task_safe"
+
+
+def test_bridge_loads_autonomy_queue() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    queue = bridge.load_autonomy_queue()
+
+    assert len(queue["safe_to_execute"]) == 1
+    assert len(queue["approval_required"]) == 1
+    assert len(queue["waiting_external"]) == 1
+
+
+def test_bridge_loads_experiment_rubric() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    rubric = bridge.load_experiment_rubric()
+
+    assert len(rubric) == 2
+    assert rubric[1]["metric_id"] == "product_accuracy"
+    assert rubric[1]["hard_fail_below"] == 8
 
 
 def test_bridge_loads_launch_gate() -> None:
@@ -256,7 +364,7 @@ def test_bridge_loads_rnd_gate() -> None:
 
     assert gate["state"] == "not_ready"
     assert gate["passed"] == 3
-    assert gate["human_pending"] == 3
+    assert gate["human_pending"] == 4
 
 
 def test_bridge_refreshes_rnd_gate() -> None:
