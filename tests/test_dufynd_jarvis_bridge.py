@@ -53,6 +53,25 @@ def mock_transport() -> httpx.MockTransport:
             assert row["human_approval_required"] is False
             return httpx.Response(201)
 
+        if request.url.path.endswith("/dufynd_content_ideas"):
+            row = json.loads(request.content)
+            assert row["title"] == "Notes Become the Bottle"
+            assert row["priority"] == 100
+            assert row["status"] == "draft"
+            return httpx.Response(201)
+
+        if request.url.path.endswith("/dufynd_experiments"):
+            row = json.loads(request.content)
+            assert row["model"] == "seedance"
+            assert row["scores"]["scroll_stop"] == 8.5
+            return httpx.Response(201)
+
+        if request.url.path.endswith("/dufynd_agent_lessons"):
+            row = json.loads(request.content)
+            assert row["domain"] == "creative"
+            assert row["confidence"] == 1.0
+            return httpx.Response(201)
+
         return httpx.Response(404)
 
     return httpx.MockTransport(handler)
@@ -110,3 +129,38 @@ def test_bridge_requires_server_credentials() -> None:
             supabase_url="",
             secret_key="",
         )
+
+
+def test_bridge_records_creative_learning_entities() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    idea_id = bridge.record_content_idea(
+        title="Notes Become the Bottle",
+        concept="Sensory world resolves into the fragrance.",
+        hook="Guess the fragrance from three notes.",
+        priority=140,
+        idea_id="idea_test",
+    )
+    experiment_id = bridge.record_experiment(
+        model="seedance",
+        prompt_summary="Macro notes into bottle reveal.",
+        verdict="promising",
+        scores={"scroll_stop": 8.5},
+        experiment_id="exp_test",
+    )
+    lesson_id = bridge.record_lesson(
+        domain="creative",
+        lesson="Protect the packshot.",
+        evidence="Label drift in generative tests.",
+        action_rule="Use deterministic final product frames.",
+        confidence=1.4,
+        lesson_id="lesson_test",
+    )
+
+    assert idea_id == "idea_test"
+    assert experiment_id == "exp_test"
+    assert lesson_id == "lesson_test"
