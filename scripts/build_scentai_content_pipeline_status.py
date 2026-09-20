@@ -98,15 +98,11 @@ def build_content_pipeline_status(
         if current is not None
         else "no_content_batches"
     )
-    strategy_next_action = (
-        str(strategy.get("next_action") or "").strip() if strategy else ""
-    )
+    strategy_next_action = str(strategy.get("next_action") or "").strip() if strategy else ""
     strategy_next_action_class = (
         str(strategy.get("next_action_class") or "").strip() if strategy else ""
     )
-    strategy_approval_now = bool(
-        strategy and strategy.get("user_approval_required_now")
-    )
+    strategy_approval_now = bool(strategy and strategy.get("user_approval_required_now"))
 
     return {
         "version": 1,
@@ -119,16 +115,8 @@ def build_content_pipeline_status(
         "total_pilots": total_pilots,
         "current_batch_id": (current.get("batch_id") if current else None),
         "pipeline_state": pipeline_state,
-        "active_track": (
-            strategy.get("active_track")
-            if strategy
-            else "legacy_pilot_production"
-        ),
-        "legacy_pilot_batches": (
-            strategy.get("legacy_pilot_batches")
-            if strategy
-            else "active"
-        ),
+        "active_track": (strategy.get("active_track") if strategy else "legacy_pilot_production"),
+        "legacy_pilot_batches": (strategy.get("legacy_pilot_batches") if strategy else "active"),
         "next_action": (
             strategy_next_action
             if legacy_hold and strategy_next_action
