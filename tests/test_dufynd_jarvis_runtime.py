@@ -2,11 +2,15 @@ from __future__ import annotations
 
 import asyncio
 
+import pytest
+
 from scripts.dufynd_jarvis_runtime import (
     SYSTEM_PROMPT,
+    _require_active_runtime,
     allowed_tool_names,
     event_prompt,
     process_next,
+    runtime_readiness,
 )
 
 
@@ -52,3 +56,43 @@ def test_process_next_is_noop_when_inbox_is_empty(capsys) -> None:
 
     assert result == 0
     assert "no pending event" in capsys.readouterr().out.lower()
+
+
+def test_runtime_readiness_is_safe_by_default(monkeypatch) -> None:
+    for name in (
+        "DUFYND_JARVIS_ACTIVE",
+        "DUFYND_JARVIS_MODEL",
+        "ANTHROPIC_API_KEY",
+        "ANTHROPIC_AUTH_TOKEN",
+        "SUPABASE_URL",
+        "SUPABASE_SECRET_KEY",
+        "SUPABASE_SERVICE_ROLE_KEY",
+    ):
+        monkeypatch.delenv(name, raising=False)
+
+    readiness = runtime_readiness()
+
+    assert readiness["active"] is False
+    assert readiness["ready_for_model_execution"] is False
+
+
+def test_runtime_refuses_model_execution_without_explicit_activation(monkeypatch) -> None:
+    monkeypatch.delenv("DUFYND_JARVIS_ACTIVE", raising=False)
+    monkeypatch.setenv("DUFYND_JARVIS_MODEL", "test-model")
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+    monkeypatch.setenv("SUPABASE_URL", "https://project.supabase.co")
+    monkeypatch.setenv("SUPABASE_SECRET_KEY", "secret")
+
+    with pytest.raises(RuntimeError, match="active model execution is disabled"):
+        _require_active_runtime()
+
+
+def test_runtime_activation_requires_explicit_model(monkeypatch) -> None:
+    monkeypatch.setenv("DUFYND_JARVIS_ACTIVE", "1")
+    monkeypatch.delenv("DUFYND_JARVIS_MODEL", raising=False)
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+    monkeypatch.setenv("SUPABASE_URL", "https://project.supabase.co")
+    monkeypatch.setenv("SUPABASE_SECRET_KEY", "secret")
+
+    with pytest.raises(RuntimeError, match="DUFYND_JARVIS_MODEL"):
+        _require_active_runtime()
