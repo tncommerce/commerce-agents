@@ -352,11 +352,13 @@ def runtime_readiness() -> dict[str, Any]:
         "model": model,
         "anthropic_credentials_configured": credentials,
         "supabase_configured": supabase,
+        "max_turns": os.getenv("DUFYND_JARVIS_MAX_TURNS", "8"),
+        "max_budget_usd": os.getenv("DUFYND_JARVIS_MAX_BUDGET_USD", "0.25"),
         "ready_for_model_execution": active and bool(model) and credentials and supabase,
     }
 
 
-def _require_active_runtime() -> tuple[str, int]:
+def _require_active_runtime() -> tuple[str, int, float]:
     readiness = runtime_readiness()
     if not readiness["active"]:
         raise RuntimeError(
@@ -368,15 +370,26 @@ def _require_active_runtime() -> tuple[str, int]:
     if not readiness["anthropic_credentials_configured"]:
         raise RuntimeError("Anthropic credentials are required for active model execution.")
     raw_turns = os.getenv("DUFYND_JARVIS_MAX_TURNS", "8")
+    raw_budget = os.getenv("DUFYND_JARVIS_MAX_BUDGET_USD", "0.25")
     try:
         max_turns = int(raw_turns)
     except ValueError as error:
         raise RuntimeError("DUFYND_JARVIS_MAX_TURNS must be an integer.") from error
-    return str(readiness["model"]), max(4, min(max_turns, 12))
+    try:
+        max_budget_usd = float(raw_budget)
+    except ValueError as error:
+        raise RuntimeError("DUFYND_JARVIS_MAX_BUDGET_USD must be numeric.") from error
+    if max_budget_usd <= 0:
+        raise RuntimeError("DUFYND_JARVIS_MAX_BUDGET_USD must be greater than zero.")
+    return (
+        str(readiness["model"]),
+        max(4, min(max_turns, 12)),
+        min(max_budget_usd, 1.0),
+    )
 
 
 def make_options(bridge: DufyndJarvisBridge) -> ClaudeAgentOptions:
-    model, max_turns = _require_active_runtime()
+    model, max_turns, max_budget_usd = _require_active_runtime()
     return ClaudeAgentOptions(
         system_prompt=SYSTEM_PROMPT,
         mcp_servers={SERVER_NAME: build_server(bridge)},
@@ -386,6 +399,7 @@ def make_options(bridge: DufyndJarvisBridge) -> ClaudeAgentOptions:
         env={"CLAUDE_CODE_DISABLE_CLAUDE_MDS": "1"},
         model=model,
         max_turns=max_turns,
+        max_budget_usd=max_budget_usd,
         permission_mode="dontAsk",
     )
 
