@@ -19,6 +19,8 @@ def mock_transport() -> httpx.MockTransport:
                 json={
                     "references": [{"id": "ex1"}, {"id": "ex2"}],
                     "formats": [{"id": "genesis"}],
+                    "hook_templates": [{"id": "hook1"}],
+                    "model_profiles": [{"model_id": "seedance"}],
                     "ideas": [{"id": "idea1"}],
                     "lessons": [{"id": "lesson1"}],
                     "recent_experiments": [],
@@ -110,6 +112,8 @@ def test_bridge_loads_context_and_summary() -> None:
     assert summary.launch_state == "not_ready"
     assert summary.references == 2
     assert summary.formats == 1
+    assert summary.hook_templates == 1
+    assert summary.model_profiles == 1
     assert summary.ideas == 1
     assert summary.lessons == 1
     assert summary.affiliate_partners == 2
