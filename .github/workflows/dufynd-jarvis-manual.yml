@@ -68,5 +68,6 @@ jobs:
           DUFYND_JARVIS_MODEL: ${{ vars.DUFYND_JARVIS_MODEL }}
           DUFYND_JARVIS_MAX_TURNS: "8"
           DUFYND_JARVIS_MAX_BUDGET_USD: "0.25"
+          DUFYND_JARVIS_BUDGET_ID: "jarvis_activation_pilot_001"
           DUFYND_JARVIS_ACTIVE: "1"
         run: python scripts/dufynd_jarvis_runtime.py --process-next
