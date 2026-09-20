@@ -95,3 +95,19 @@ def test_runtime_activation_requires_explicit_model(monkeypatch) -> None:
 
     with pytest.raises(RuntimeError, match="DUFYND_JARVIS_MODEL"):
         _require_active_runtime()
+
+
+def test_runtime_clamps_turns_and_budget(monkeypatch) -> None:
+    monkeypatch.setenv("DUFYND_JARVIS_ACTIVE", "1")
+    monkeypatch.setenv("DUFYND_JARVIS_MODEL", "claude-sonnet-5")
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+    monkeypatch.setenv("SUPABASE_URL", "https://project.supabase.co")
+    monkeypatch.setenv("SUPABASE_SECRET_KEY", "secret")
+    monkeypatch.setenv("DUFYND_JARVIS_MAX_TURNS", "99")
+    monkeypatch.setenv("DUFYND_JARVIS_MAX_BUDGET_USD", "5")
+
+    model, max_turns, max_budget_usd = _require_active_runtime()
+
+    assert model == "claude-sonnet-5"
+    assert max_turns == 12
+    assert max_budget_usd == 1.0
