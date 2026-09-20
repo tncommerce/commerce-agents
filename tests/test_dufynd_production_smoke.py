@@ -58,11 +58,7 @@ def test_smoke_fails_on_wrong_api_identity() -> None:
     )
 
     assert report.ok is False
-    assert next(
-        check
-        for check in report.checks
-        if check.name == "api_health"
-    ).ok is False
+    assert next(check for check in report.checks if check.name == "api_health").ok is False
 
 
 def test_smoke_rejects_non_absolute_url() -> None:
