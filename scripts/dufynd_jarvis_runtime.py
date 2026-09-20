@@ -410,9 +410,7 @@ async def run_once(prompt: str, bridge: DufyndJarvisBridge) -> int:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(
-        description="DUFYND Jarvis v0.1 internal Agent SDK runtime."
-    )
+    parser = argparse.ArgumentParser(description="DUFYND Jarvis v0.1 internal Agent SDK runtime.")
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument(
         "--process-next",
