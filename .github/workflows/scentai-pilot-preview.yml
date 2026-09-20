@@ -18,8 +18,8 @@ permissions:
   contents: write
 
 concurrency:
-  group: scentai-pilot-preview-scentai-mvp
-  cancel-in-progress: true
+  group: dufynd-preview-state-writer-scentai-mvp
+  cancel-in-progress: false
 
 jobs:
   render:
