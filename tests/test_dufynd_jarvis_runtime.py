@@ -156,7 +156,7 @@ def test_runtime_requires_active_budget_window(monkeypatch) -> None:
         _require_budget_window(BudgetBridge(can_run=False))
 
 
-def test_runtime_readiness_supports_direct_script_execution() -> None:
+def test_runtime_readiness_supports_module_execution() -> None:
     env = os.environ.copy()
     for name in (
         "DUFYND_JARVIS_ACTIVE",
@@ -170,7 +170,7 @@ def test_runtime_readiness_supports_direct_script_execution() -> None:
         env.pop(name, None)
 
     completed = subprocess.run(
-        [sys.executable, "scripts/dufynd_jarvis_runtime.py", "--readiness"],
+        [sys.executable, "-m", "scripts.dufynd_jarvis_runtime", "--readiness"],
         check=True,
         capture_output=True,
         text=True,
