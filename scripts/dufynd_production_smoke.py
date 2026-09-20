@@ -49,12 +49,15 @@ def _check_storefront(
 ) -> SmokeCheck:
     try:
         response = client.get(storefront_url, follow_redirects=True)
-        ok = response.status_code < 400
-        detail = (
-            "Storefront responded successfully."
-            if ok
-            else f"Storefront returned HTTP {response.status_code}."
-        )
+        status_ok = response.status_code < 400
+        brand_ok = "dufynd" in response.text.casefold()
+        ok = status_ok and brand_ok
+        if not status_ok:
+            detail = f"Storefront returned HTTP {response.status_code}."
+        elif not brand_ok:
+            detail = "Storefront response did not contain the DUFYND brand marker."
+        else:
+            detail = "Storefront responded successfully with the DUFYND brand marker."
         return SmokeCheck(
             name="storefront",
             ok=ok,
