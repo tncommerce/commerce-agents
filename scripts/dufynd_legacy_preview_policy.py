@@ -31,9 +31,7 @@ def evaluate_legacy_preview_policy(
         )
 
     active_track = str(strategy.get("active_track") or "").strip()
-    legacy_state = str(
-        strategy.get("legacy_pilot_batches") or ""
-    ).strip()
+    legacy_state = str(strategy.get("legacy_pilot_batches") or "").strip()
 
     if active_track == "high_end_rnd" and legacy_state == "hold":
         return LegacyPreviewPolicy(
@@ -66,9 +64,7 @@ def main() -> int:
     parser.add_argument(
         "--strategy",
         type=Path,
-        default=Path(
-            "examples/retail/data/dufynd_content_strategy.json"
-        ),
+        default=Path("examples/retail/data/dufynd_content_strategy.json"),
     )
     parser.add_argument(
         "--force",
