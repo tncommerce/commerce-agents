@@ -27,6 +27,7 @@ class JarvisContextSummary:
     ideas: int
     lessons: int
     experiments: int
+    affiliate_partners: int
     funnel_rows: int
 
 
@@ -138,6 +139,7 @@ def summarize_context(
         ideas=len(context.get("ideas") or []),
         lessons=len(context.get("lessons") or []),
         experiments=len(context.get("recent_experiments") or []),
+        affiliate_partners=len(context.get("affiliate_partners") or []),
         funnel_rows=len(context.get("content_funnel") or []),
     )
 
@@ -185,6 +187,7 @@ def main() -> int:
         f"ideas={summary.ideas} | "
         f"lessons={summary.lessons} | "
         f"experiments={summary.experiments} | "
+        f"affiliate_partners={summary.affiliate_partners} | "
         f"funnel_rows={summary.funnel_rows}"
     )
     return 0
