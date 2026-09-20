@@ -34,6 +34,7 @@ class JarvisContextSummary:
     affiliate_partners: int
     funnel_rows: int
     asset_performance_rows: int
+    content_board_items: int
     autonomy_ready: int
     autonomy_approval_required: int
     rubric_metrics: int
@@ -149,6 +150,148 @@ class DufyndJarvisBridge:
                 json=row,
             )
             response.raise_for_status()
+
+    def _upsert(
+        self,
+        table: str,
+        row: dict[str, Any],
+        *,
+        on_conflict: str,
+    ) -> None:
+        with self._client() as client:
+            response = client.post(
+                f"{self.supabase_url}/rest/v1/{table}",
+                headers={
+                    **_headers(self.secret_key),
+                    "Prefer": "resolution=merge-duplicates,return=minimal",
+                },
+                params={"on_conflict": on_conflict},
+                json=row,
+            )
+            response.raise_for_status()
+
+    def record_creative_reference(
+        self,
+        *,
+        label: str,
+        category: str,
+        summary: str,
+        dufynd_application: str,
+        quality_notes: str,
+        mechanics: list[str] | None = None,
+        viral_mechanisms: list[str] | None = None,
+        source_uri: str | None = None,
+        user_notes: str | None = None,
+        status: str = "candidate_reference",
+        reference_id: str | None = None,
+    ) -> str:
+        resolved_id = reference_id or f"reference_{uuid4().hex}"
+        self._insert(
+            "dufynd_creative_references",
+            {
+                "id": resolved_id,
+                "label": label,
+                "category": category,
+                "summary": summary,
+                "mechanics": mechanics or [],
+                "viral_mechanisms": viral_mechanisms or [],
+                "dufynd_application": dufynd_application,
+                "quality_notes": quality_notes,
+                "source_uri": source_uri,
+                "user_notes": user_notes,
+                "status": status,
+            },
+        )
+        return resolved_id
+
+    def record_creative_pattern(
+        self,
+        *,
+        name: str,
+        role: str,
+        description: str,
+        mechanism: str,
+        strengths: list[str] | None = None,
+        risks: list[str] | None = None,
+        best_for: list[str] | None = None,
+        generation_guidance: dict[str, Any] | None = None,
+        pattern_id: str | None = None,
+    ) -> str:
+        resolved_id = pattern_id or f"pattern_{uuid4().hex}"
+        self._insert(
+            "dufynd_creative_patterns",
+            {
+                "pattern_id": resolved_id,
+                "name": name,
+                "role": role,
+                "description": description,
+                "mechanism": mechanism,
+                "strengths": strengths or [],
+                "risks": risks or [],
+                "best_for": best_for or [],
+                "generation_guidance": generation_guidance or {},
+                "status": "active",
+            },
+        )
+        return resolved_id
+
+    def link_reference_pattern(
+        self,
+        *,
+        reference_id: str,
+        pattern_id: str,
+        confidence: float,
+        notes: str | None = None,
+    ) -> None:
+        self._upsert(
+            "dufynd_reference_patterns",
+            {
+                "reference_id": reference_id,
+                "pattern_id": pattern_id,
+                "confidence": max(0.0, min(confidence, 1.0)),
+                "notes": notes,
+            },
+            on_conflict="reference_id,pattern_id",
+        )
+
+    def link_idea_pattern(
+        self,
+        *,
+        idea_id: str,
+        pattern_id: str,
+        role: str,
+        position: int = 1,
+        notes: str | None = None,
+    ) -> None:
+        self._upsert(
+            "dufynd_idea_patterns",
+            {
+                "idea_id": idea_id,
+                "pattern_id": pattern_id,
+                "role": role,
+                "position": max(1, position),
+                "notes": notes,
+            },
+            on_conflict="idea_id,pattern_id,role",
+        )
+
+    def record_knowledge_event(
+        self,
+        *,
+        event_type: str,
+        source_type: str,
+        source_id: str | None,
+        payload: dict[str, Any],
+    ) -> None:
+        self._insert(
+            "dufynd_knowledge_events",
+            {
+                "event_type": event_type,
+                "source_type": source_type,
+                "source_id": source_id,
+                "payload": payload,
+            },
+        )
 
     def record_content_idea(
         self,
@@ -311,6 +454,7 @@ def summarize_context(
         affiliate_partners=len(context.get("affiliate_partners") or []),
         funnel_rows=len(context.get("content_funnel") or []),
         asset_performance_rows=len(context.get("asset_business_performance") or []),
+        content_board_items=len(context.get("content_board") or []),
         autonomy_ready=len(autonomy_queue.get("safe_to_execute") or []),
         autonomy_approval_required=len(autonomy_queue.get("approval_required") or []),
         rubric_metrics=len(context.get("experiment_rubric") or []),
@@ -430,6 +574,7 @@ def main() -> int:
         f"affiliate_partners={summary.affiliate_partners} | "
         f"funnel_rows={summary.funnel_rows} | "
         f"asset_performance_rows={summary.asset_performance_rows} | "
+        f"content_board={summary.content_board_items} | "
         f"autonomy_ready={summary.autonomy_ready} | "
         f"approval_required={summary.autonomy_approval_required} | "
         f"rubric_metrics={summary.rubric_metrics}"
