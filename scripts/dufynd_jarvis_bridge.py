@@ -111,6 +111,33 @@ class DufyndJarvisBridge:
             raise ValueError("DUFYND experiment rubric must be a JSON array")
         return payload
 
+    def claim_next_inbox_event(self) -> dict[str, Any] | None:
+        payload = self._rpc("claim_dufynd_jarvis_event")
+        if payload is None:
+            return None
+        if not isinstance(payload, dict):
+            raise ValueError("DUFYND Jarvis inbox claim must return an object or null")
+        return payload
+
+    def complete_inbox_event(
+        self,
+        *,
+        inbox_id: int,
+        status: str = "done",
+        error: str | None = None,
+    ) -> dict[str, Any]:
+        payload = self._rpc(
+            "complete_dufynd_jarvis_event",
+            {
+                "p_inbox_id": inbox_id,
+                "p_status": status,
+                "p_error": error,
+            },
+        )
+        if not isinstance(payload, dict):
+            raise ValueError("DUFYND Jarvis inbox completion must return an object")
+        return payload
+
     def load_rnd_gate(self) -> dict[str, Any]:
         payload = self._rpc("get_dufynd_rnd_gate")
         if not isinstance(payload, dict):
