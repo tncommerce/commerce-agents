@@ -1,18 +1,11 @@
 import json
-import pathlib
 
-
-CONTRACT_PATH = (
-    pathlib.Path(__file__).parents[1]
-    / "examples"
-    / "retail"
-    / "data"
-    / "dufynd_jarvis_contract.json"
-)
+CONTRACT_PATH = "examples/retail/data/dufynd_jarvis_contract.json"
 
 
 def load_contract() -> dict:
-    return json.loads(CONTRACT_PATH.read_text(encoding="utf-8"))
+    with open(CONTRACT_PATH, encoding="utf-8") as handle:
+        return json.load(handle)
 
 
 def test_dufynd_jarvis_contract_has_current_brand_and_version() -> None:
