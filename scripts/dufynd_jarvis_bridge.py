@@ -117,6 +117,12 @@ class DufyndJarvisBridge:
             raise ValueError("DUFYND pending decisions must be a JSON array")
         return payload
 
+    def load_health(self) -> dict[str, Any]:
+        payload = self._rpc("get_dufynd_jarvis_health")
+        if not isinstance(payload, dict):
+            raise ValueError("DUFYND Jarvis health must be a JSON object")
+        return payload
+
     def claim_next_inbox_event(self) -> dict[str, Any] | None:
         payload = self._rpc("claim_dufynd_jarvis_event")
         if payload is None:
@@ -524,6 +530,7 @@ def main() -> int:
             "creative-context",
             "autonomy",
             "experiment-rubric",
+            "health",
             "rnd-gate",
             "refresh-rnd-gate",
             "launch-gate",
@@ -568,6 +575,21 @@ def main() -> int:
                 f"metrics={len(payload)} | "
                 f"hard_fail_metrics="
                 f"{sum(1 for metric in payload if metric.get('hard_fail_below') is not None)}"
+            )
+        return 0
+
+    if args.command == "health":
+        payload = bridge.load_health()
+        if args.machine_readable:
+            print(json.dumps(payload, ensure_ascii=False))
+        else:
+            inbox = payload.get("inbox") or {}
+            print(
+                "DUFYND Jarvis health | "
+                f"state={payload.get('state')} | "
+                f"pending_events={inbox.get('pending', 0)} | "
+                f"failed_events={inbox.get('failed', 0)} | "
+                f"pending_decisions={payload.get('pending_human_decisions', 0)}"
             )
         return 0
 
