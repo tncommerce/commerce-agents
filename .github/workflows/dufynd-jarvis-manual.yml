@@ -42,7 +42,7 @@ jobs:
       - name: Readiness only
         if: inputs.mode == 'readiness'
         env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           DUFYND_JARVIS_MODEL: ${{ vars.DUFYND_JARVIS_MODEL }}
@@ -62,7 +62,7 @@ jobs:
       - name: Process one Jarvis event
         if: inputs.mode == 'process-next'
         env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           DUFYND_JARVIS_MODEL: ${{ vars.DUFYND_JARVIS_MODEL }}
