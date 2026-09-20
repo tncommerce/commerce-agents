@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import pytest
-
 from scripts.build_dufynd_tracking_url import (
     build_tracking_url,
 )
