@@ -15,9 +15,9 @@ from claude_agent_sdk import (
     create_sdk_mcp_server,
     tool,
 )
+from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
 
 from commerce_common.agent_sdk import collect_turn
-from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SERVER_NAME = "dufynd_jarvis"
