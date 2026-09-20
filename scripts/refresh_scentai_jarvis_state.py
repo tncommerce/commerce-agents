@@ -198,11 +198,7 @@ def refresh_state(*, generated_at: str) -> dict[str, Any]:
             content_status_batch03,
         ],
         generated_at=generated_at,
-        strategy=(
-            load_json(CONTENT_STRATEGY)
-            if CONTENT_STRATEGY.exists()
-            else None
-        ),
+        strategy=(load_json(CONTENT_STRATEGY) if CONTENT_STRATEGY.exists() else None),
     )
 
     media_queue = build_media_generation_queue(
