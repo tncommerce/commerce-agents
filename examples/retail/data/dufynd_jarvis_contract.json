@@ -119,7 +119,10 @@
     "max_turns_env": "DUFYND_JARVIS_MAX_TURNS",
     "default_max_turns": 8,
     "hard_max_turns": 12,
-    "rule": "Active model execution requires explicit operator approval. Passive capture remains live while active execution is off."
+    "rule": "Active model execution requires explicit operator approval. Passive capture remains live while active execution is off. Every active event run is bounded by both max turns and max_budget_usd.",
+    "max_budget_env": "DUFYND_JARVIS_MAX_BUDGET_USD",
+    "default_max_budget_usd": 0.25,
+    "hard_max_budget_usd": 1
   },
   "human_decision_tokens": {
     "brand_pack_merge": "GO-BRANDPACK",
