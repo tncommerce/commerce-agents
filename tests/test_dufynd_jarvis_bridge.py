@@ -46,6 +46,17 @@ def mock_transport() -> httpx.MockTransport:
                 },
             )
 
+        if request.url.path.endswith("/rpc/refresh_dufynd_launch_gate"):
+            return httpx.Response(
+                200,
+                json={
+                    "state": "not_ready",
+                    "required_passed": 4,
+                    "required_total": 11,
+                    "checks": [],
+                },
+            )
+
         if request.url.path.endswith("/dufynd_agent_runs"):
             row = json.loads(request.content)
             assert row["agent_name"] == "jarvis"
@@ -164,3 +175,16 @@ def test_bridge_records_creative_learning_entities() -> None:
     assert idea_id == "idea_test"
     assert experiment_id == "exp_test"
     assert lesson_id == "lesson_test"
+
+
+def test_bridge_refreshes_launch_gate() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    gate = bridge.refresh_launch_gate()
+
+    assert gate["state"] == "not_ready"
+    assert gate["required_total"] == 11
