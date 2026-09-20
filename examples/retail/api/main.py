@@ -28,7 +28,11 @@ from shopping_agent import ProductDetails
 from shopping_agent_runtime import ShoppingAgent
 
 from .agent_config import build_shopping_config
-from .analytics import AnalyticsEventRequest, FirstPartyAnalyticsTracker
+from .analytics import (
+    AnalyticsEventRequest,
+    FirstPartyAnalyticsTracker,
+    sanitize_attribution_identifier,
+)
 from .merchant import create_merchant_router
 from .merchant_offers import MerchantClickoutTracker, MerchantOfferStore, customer_offer_payload
 from .merchant_partners import MerchantPartnerStore, customer_partner_payload
@@ -158,12 +162,22 @@ async def analytics_event(
 
 
 @app.get("/api/clickout/{offer_id}")
-async def merchant_clickout(offer_id: str) -> RedirectResponse:
+async def merchant_clickout(
+    offer_id: str,
+    src: str | None = None,
+    cmp: str | None = None,
+    content: str | None = None,
+) -> RedirectResponse:
     offer = offer_store.eligible_offer(offer_id)
     if offer is None:
         raise HTTPException(status_code=404, detail="Offer not available")
 
-    clickout_tracker.record(offer)
+    clickout_tracker.record(
+        offer,
+        acquisition_source=sanitize_attribution_identifier(src),
+        campaign_id=sanitize_attribution_identifier(cmp),
+        content_id=sanitize_attribution_identifier(content),
+    )
     target = offer.affiliate_url or offer.product_url
     return RedirectResponse(url=target, status_code=302)
 
