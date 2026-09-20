@@ -1,0 +1,143 @@
+name: DUFYND Pilot Preview Render
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [scentai-mvp]
+    paths:
+      - "scripts/render_scentai_pilot_previews.py"
+      - "scripts/refresh_scentai_jarvis_state.py"
+      - "examples/retail/data/scentai_pilot_batch_01.json"
+      - "examples/retail/data/scentai_pilot_batch_01_production_jobs.json"
+      - "examples/retail/data/scentai_pilot_batch_01_readiness.json"
+      - "examples/retail/data/scentai_pilot_batch_02.json"
+      - "examples/retail/data/scentai_pilot_batch_02_production_jobs.json"
+      - "examples/retail/data/scentai_pilot_batch_02_readiness.json"
+      - "examples/retail/data/scentai_pilot_batch_03.json"
+      - "examples/retail/data/scentai_pilot_batch_03_production_jobs.json"
+      - "examples/retail/data/scentai_pilot_batch_03_readiness.json"
+      - "examples/retail/data/scentai_products.json"
+      - "examples/retail/storefront-web/public/products/pilot/**"
+      - ".github/workflows/dufynd-pilot-previews.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dufynd-pilot-previews-scentai-mvp
+  cancel-in-progress: true
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: scentai-mvp
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install renderer dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pillow
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+
+      - name: Render all DUFYND pilot previews
+        run: |
+          python scripts/render_scentai_pilot_previews.py
+          python scripts/render_scentai_pilot_previews.py --batch batch02
+          python scripts/render_scentai_pilot_previews.py --batch batch03
+
+      - name: Verify all expected preview outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          batches = {
+              "batch01": [
+                  "original_vs_alt_imagination_01",
+                  "not_every_dupe_clone_01",
+                  "budget_three_under_50_01",
+                  "bois_imperial_explained_01",
+                  "top3_office_01",
+              ],
+              "batch02": [
+                  "dupe_battle_imagination_01",
+                  "layton_alternatives_01",
+                  "althair_liquid_brun_01",
+                  "top3_date_01",
+                  "top3_fresh_01",
+              ],
+              "batch03": [
+                  "tygar_vibrato_value_01",
+                  "naxos_value_01",
+                  "dior_homme_intense_alt_01",
+                  "signature_vs_safe_01",
+                  "gift_for_him_safe_to_bold_01",
+              ],
+          }
+
+          root = Path(
+              "examples/retail/storefront-web/public/social/pilots"
+          )
+          for batch, expected in batches.items():
+              base = root / batch
+              index_path = base / "index.json"
+              assert index_path.is_file() and index_path.stat().st_size > 0
+
+              payload = json.loads(
+                  index_path.read_text(encoding="utf-8")
+              )
+              previews = payload.get("previews", [])
+              assert len(previews) == len(expected), (batch, previews)
+              assert all(
+                  row.get("status") == "visual_preview"
+                  for row in previews
+              )
+              assert all(row.get("audio") is False for row in previews)
+
+              for content_id in expected:
+                  preview = base / f"{content_id}-preview.mp4"
+                  cover = base / f"{content_id}-cover.jpg"
+                  assert preview.is_file() and preview.stat().st_size > 0
+                  assert cover.is_file() and cover.stat().st_size > 0
+
+          print("Verified all 15 DUFYND pilot preview outputs.")
+          PY
+
+      - name: Refresh DUFYND derived state once
+        shell: bash
+        run: |
+          set -euo pipefail
+          generated_at="$(date -u +%Y-%m-%dT%H:%M:%S+00:00)"
+          PYTHONPATH=. python -m scripts.refresh_scentai_jarvis_state             --write             --generated-at "$generated_at"
+          PYTHONPATH=. python -m scripts.validate_scentai_jarvis_state_graph
+
+      - name: Commit generated previews and derived state
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add             examples/retail/storefront-web/public/social/pilots/batch01             examples/retail/storefront-web/public/social/pilots/batch02             examples/retail/storefront-web/public/social/pilots/batch03             examples/retail/data/scentai_merchant_mapping_work_queue.json             examples/retail/data/scentai_affiliate_activation_status.json             examples/retail/data/scentai_image_approval_work_queue.json             examples/retail/data/scentai_release_01_feed_activation_queue.json             examples/retail/data/scentai_release_01_gate_status.json             examples/retail/data/scentai_release_pipeline_status.json             examples/retail/data/scentai_jarvis_operations_status.json             examples/retail/data/scentai_content_operations_status.json             examples/retail/data/scentai_content_operations_status_batch02.json             examples/retail/data/scentai_content_operations_status_batch03.json             examples/retail/data/scentai_content_pipeline_status.json             examples/retail/data/scentai_media_generation_queue.json             examples/retail/data/scentai_jarvis_master_status.json
+
+          if git diff --cached --quiet; then
+            echo "No DUFYND preview or derived-state changes to commit."
+            exit 0
+          fi
+
+          git commit -m "Generate DUFYND pilot previews and refresh state [skip ci]"
+          git pull --rebase origin scentai-mvp
+          git push origin HEAD:scentai-mvp
