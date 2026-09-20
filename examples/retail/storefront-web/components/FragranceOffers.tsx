@@ -7,7 +7,10 @@ import {
   fetchMerchantOffers,
   merchantClickoutUrl,
 } from "@/lib/api";
-import { trackAnalyticsEvent } from "@/lib/analytics";
+import {
+  appendAcquisitionAttribution,
+  trackAnalyticsEvent,
+} from "@/lib/analytics";
 import type { MerchantOffersPayload } from "@/lib/types";
 
 function formatUpdatedAt(value: string): string | null {
@@ -224,8 +227,10 @@ export default function FragranceOffers({
               </div>
 
               <a
-                href={merchantClickoutUrl(
-                  offer.clickout_path,
+                href={appendAcquisitionAttribution(
+                  merchantClickoutUrl(
+                    offer.clickout_path,
+                  ),
                 )}
                 target="_blank"
                 rel={
