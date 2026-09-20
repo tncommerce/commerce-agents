@@ -130,7 +130,7 @@ def build_operations_status(
             release,
             feed,
         ),
-        "system": "SCENTAI",
+        "system": "DUFYND",
         "control_plane": "commerce_jarvis",
         "policy_ref": "scentai_jarvis_operating_policy.json",
         "overall_state": overall_state,
@@ -211,7 +211,7 @@ def build_operations_status(
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Build one Jarvis-readable SCENTAI operations status from "
+            "Build one Jarvis-readable DUFYND operations status from "
             "mapping, affiliate, image and release source states."
         )
     )
@@ -270,7 +270,7 @@ def main() -> int:
         print(json.dumps(status, ensure_ascii=False))
     else:
         print(
-            "SCENTAI Jarvis operations | "
+            "DUFYND Jarvis operations | "
             f"state={status['overall_state']} | "
             f"next={status['next_action']} | "
             f"approval_now={status['user_approval_required_now']}"
