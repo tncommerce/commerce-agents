@@ -88,9 +88,7 @@ def build_master_status(
             "overall_state": content_pipeline.get("pipeline_state"),
             "next_action": content_pipeline.get("next_action"),
             "next_action_class": content_pipeline.get("next_action_class"),
-            "user_approval_required_now": bool(
-                content_pipeline.get("user_approval_required_now")
-            ),
+            "user_approval_required_now": bool(content_pipeline.get("user_approval_required_now")),
             "blockers": [
                 "legacy_pilot_batches_intentionally_on_hold",
             ],
