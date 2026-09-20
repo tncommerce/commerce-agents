@@ -95,6 +95,12 @@ class DufyndJarvisBridge:
             raise ValueError("DUFYND launch gate must be a JSON object")
         return payload
 
+    def refresh_launch_gate(self) -> dict[str, Any]:
+        payload = self._rpc("refresh_dufynd_launch_gate")
+        if not isinstance(payload, dict):
+            raise ValueError("DUFYND launch gate refresh must return a JSON object")
+        return payload
+
     def _insert(
         self,
         table: str,
@@ -246,7 +252,7 @@ def main() -> int:
     )
     parser.add_argument(
         "command",
-        choices=("context", "launch-gate"),
+        choices=("context", "launch-gate", "refresh-launch-gate"),
     )
     parser.add_argument(
         "--machine-readable",
@@ -256,8 +262,12 @@ def main() -> int:
 
     bridge = DufyndJarvisBridge()
 
-    if args.command == "launch-gate":
-        payload = bridge.load_launch_gate()
+    if args.command in {"launch-gate", "refresh-launch-gate"}:
+        payload = (
+            bridge.refresh_launch_gate()
+            if args.command == "refresh-launch-gate"
+            else bridge.load_launch_gate()
+        )
         if args.machine_readable:
             print(json.dumps(payload, ensure_ascii=False))
         else:
