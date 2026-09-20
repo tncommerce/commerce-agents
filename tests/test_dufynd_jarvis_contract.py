@@ -13,7 +13,7 @@ def test_dufynd_jarvis_contract_has_current_brand_and_version() -> None:
 
     assert contract["brand"] == "DUFYND"
     assert contract["operator"] == "TNCommerce"
-    assert contract["version"] == "2.0"
+    assert contract["version"] == "2.1"
 
 
 def test_dufynd_jarvis_contract_exposes_required_learning_surfaces() -> None:
@@ -25,6 +25,8 @@ def test_dufynd_jarvis_contract_exposes_required_learning_surfaces() -> None:
     assert rpc["autonomy_queue"] == "get_dufynd_autonomy_queue"
     assert rpc["experiment_rubric"] == "get_dufynd_experiment_rubric"
     assert rpc["content_board_learning"] == "get_dufynd_content_board_learning"
+    assert rpc["pending_decisions"] == "get_dufynd_pending_decisions"
+    assert rpc["health"] == "get_dufynd_jarvis_health"
 
     required_sections = set(contract["required_context_sections"])
     assert {
@@ -58,3 +60,12 @@ def test_dufynd_jarvis_contract_has_full_experiment_feedback_loop() -> None:
         "reproducibility",
         "conversion_fit",
     } <= metrics
+
+
+def test_dufynd_jarvis_contract_keeps_active_runtime_off_by_default() -> None:
+    contract = load_contract()
+    runtime = contract["active_runtime"]
+
+    assert runtime["default"] == "disabled"
+    assert runtime["activation_env"] == "DUFYND_JARVIS_ACTIVE=1"
+    assert runtime["default_max_turns"] <= runtime["hard_max_turns"]
