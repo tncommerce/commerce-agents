@@ -37,6 +37,7 @@ def build_content_pipeline_status(
     batches: list[dict],
     *,
     generated_at: str,
+    strategy: dict | None = None,
 ) -> dict[str, Any]:
     rows = []
     for index, status in enumerate(batches, start=1):
@@ -62,38 +63,80 @@ def build_content_pipeline_status(
             }
         )
 
-    current = next(
-        (
-            row
-            for row in rows
-            if int(
-                row.get("summary", {}).get(
-                    "final_video_renders_ready",
-                    0,
+    legacy_hold = bool(
+        strategy
+        and strategy.get("active_track") == "high_end_rnd"
+        and strategy.get("legacy_pilot_batches") == "hold"
+    )
+
+    current = (
+        None
+        if legacy_hold
+        else next(
+            (
+                row
+                for row in rows
+                if int(
+                    row.get("summary", {}).get(
+                        "final_video_renders_ready",
+                        0,
+                    )
+                    or 0
                 )
-                or 0
-            )
-            < int(row.get("summary", {}).get("pilots", 0) or 0)
-        ),
-        rows[-1] if rows else None,
+                < int(row.get("summary", {}).get("pilots", 0) or 0)
+            ),
+            rows[-1] if rows else None,
+        )
     )
 
     total_pilots = sum(int(row.get("summary", {}).get("pilots", 0) or 0) for row in rows)
+
+    pipeline_state = (
+        "legacy_batches_on_hold_for_high_end_rnd"
+        if legacy_hold
+        else "production_work_available"
+        if current is not None
+        else "no_content_batches"
+    )
+    strategy_next_action = str(strategy.get("next_action") or "").strip() if strategy else ""
+    strategy_next_action_class = (
+        str(strategy.get("next_action_class") or "").strip() if strategy else ""
+    )
+    strategy_approval_now = bool(strategy and strategy.get("user_approval_required_now"))
 
     return {
         "version": 1,
         "generated_at": generated_at,
         "source_fingerprint_sha256": source_fingerprint(*batches),
-        "system": "SCENTAI",
+        "system": "DUFYND",
         "domain": "content",
         "pipeline_id": "launch_content_pipeline_v1",
         "batch_count": len(rows),
         "total_pilots": total_pilots,
         "current_batch_id": (current.get("batch_id") if current else None),
-        "pipeline_state": (
-            "production_work_available" if current is not None else "no_content_batches"
+        "pipeline_state": pipeline_state,
+        "active_track": (strategy.get("active_track") if strategy else "legacy_pilot_production"),
+        "legacy_pilot_batches": (strategy.get("legacy_pilot_batches") if strategy else "active"),
+        "next_action": (
+            strategy_next_action
+            if legacy_hold and strategy_next_action
+            else current.get("next_action")
+            if current
+            else None
         ),
-        "production_parallel_allowed": True,
+        "next_action_class": (
+            strategy_next_action_class
+            if legacy_hold and strategy_next_action_class
+            else current.get("next_action_class")
+            if current
+            else None
+        ),
+        "user_approval_required_now": (
+            strategy_approval_now
+            if legacy_hold
+            else bool(current and current.get("user_approval_required_now"))
+        ),
+        "production_parallel_allowed": not legacy_hold,
         "publish_order": [row["batch_id"] for row in rows],
         "totals": {
             "tracked_links_ready": sum(
@@ -139,16 +182,24 @@ def build_content_pipeline_status(
         },
         "batches": rows,
         "operating_rule": (
-            "Jarvis may prepare batches in parallel, but publish decisions "
-            "remain explicit user approval gates and the declared publish "
-            "order is preserved unless the user changes it."
+            "Legacy pilot previews remain available as references and utility "
+            "prototypes. When the high-end R&D track is active and legacy batches "
+            "are on hold, Jarvis must not request voiceover or final-render work "
+            "for those legacy batches. Publish and paid-generation actions remain "
+            "explicit user approval gates."
+            if legacy_hold
+            else (
+                "Jarvis may prepare batches in parallel, but publish decisions "
+                "remain explicit user approval gates and the declared publish "
+                "order is preserved unless the user changes it."
+            )
         ),
     }
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Build SCENTAI multi-batch content pipeline status."
+        description="Build DUFYND multi-batch content pipeline status."
     )
     parser.add_argument(
         "--batch-status",
@@ -182,7 +233,7 @@ def main() -> int:
         print(json.dumps(report, ensure_ascii=False))
     else:
         print(
-            "SCENTAI content pipeline | "
+            "DUFYND content pipeline | "
             f"batches={report['batch_count']} | "
             f"pilots={report['total_pilots']} | "
             f"current={report['current_batch_id']} | "

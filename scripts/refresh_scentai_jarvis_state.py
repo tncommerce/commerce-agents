@@ -69,6 +69,7 @@ PILOT3_SUBTITLES = DATA_DIR / "scentai_pilot_batch_03_subtitles.json"
 PILOT3_LINKS = DATA_DIR / "scentai_pilot_batch_03_links.json"
 PILOT3_SOCIAL_COPY = DATA_DIR / "scentai_pilot_batch_03_social_copy.json"
 MEDIA_PROVIDERS = DATA_DIR / "scentai_media_generation_providers.json"
+CONTENT_STRATEGY = DATA_DIR / "dufynd_content_strategy.json"
 
 OUT_MAPPING = DATA_DIR / "scentai_merchant_mapping_work_queue.json"
 OUT_AFFILIATE = DATA_DIR / "scentai_affiliate_activation_status.json"
@@ -197,6 +198,7 @@ def refresh_state(*, generated_at: str) -> dict[str, Any]:
             content_status_batch03,
         ],
         generated_at=generated_at,
+        strategy=(load_json(CONTENT_STRATEGY) if CONTENT_STRATEGY.exists() else None),
     )
 
     media_queue = build_media_generation_queue(
@@ -300,6 +302,8 @@ def summary(state: dict[str, Any]) -> dict[str, Any]:
             "total_pilots": content_pipeline.get("total_pilots"),
             "current_batch_id": content_pipeline.get("current_batch_id"),
             "pipeline_state": content_pipeline.get("pipeline_state"),
+            "active_track": content_pipeline.get("active_track"),
+            "legacy_pilot_batches": content_pipeline.get("legacy_pilot_batches"),
         },
         "media_generation": (state.get("media_queue") or {}).get("summary", {}),
     }
@@ -308,7 +312,7 @@ def summary(state: dict[str, Any]) -> dict[str, Any]:
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Rebuild all derived SCENTAI Jarvis operational views in "
+            "Rebuild all derived DUFYND Jarvis operational views in "
             "dependency order from source-of-truth data. Dry-run by default."
         )
     )
@@ -339,7 +343,7 @@ def main() -> int:
     else:
         ops = report["summary"]
         print(
-            "SCENTAI Jarvis state refresh | "
+            "DUFYND Jarvis state refresh | "
             f"dry_run={report['dry_run']} | "
             f"state={ops['overall_state']} | "
             f"domain={ops['active_domain']} | "

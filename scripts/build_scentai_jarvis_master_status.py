@@ -78,9 +78,25 @@ def build_master_status(
     generated_at: str,
     content_pipeline: dict | None = None,
 ) -> dict[str, Any]:
+    content_for_domain = content
+    if (
+        content_pipeline
+        and content_pipeline.get("active_track") == "high_end_rnd"
+        and content_pipeline.get("legacy_pilot_batches") == "hold"
+    ):
+        content_for_domain = {
+            "overall_state": content_pipeline.get("pipeline_state"),
+            "next_action": content_pipeline.get("next_action"),
+            "next_action_class": content_pipeline.get("next_action_class"),
+            "user_approval_required_now": bool(content_pipeline.get("user_approval_required_now")),
+            "blockers": [
+                "legacy_pilot_batches_intentionally_on_hold",
+            ],
+        }
+
     domains = [
         classify_domain(name="commerce", status=commerce),
-        classify_domain(name="content", status=content),
+        classify_domain(name="content", status=content_for_domain),
     ]
 
     approval_domains = [
@@ -111,7 +127,7 @@ def build_master_status(
             release_pipeline,
             *([content_pipeline] if content_pipeline is not None else []),
         ),
-        "system": "SCENTAI",
+        "system": "DUFYND",
         "control_plane": "commerce_jarvis_master",
         "overall_state": overall_state,
         "active_domain": (selected.get("domain") if selected else None),
@@ -130,6 +146,8 @@ def build_master_status(
                 "total_pilots": content_pipeline.get("total_pilots"),
                 "current_batch_id": content_pipeline.get("current_batch_id"),
                 "pipeline_state": content_pipeline.get("pipeline_state"),
+                "active_track": content_pipeline.get("active_track"),
+                "legacy_pilot_batches": content_pipeline.get("legacy_pilot_batches"),
                 "production_parallel_allowed": content_pipeline.get("production_parallel_allowed"),
             }
             if content_pipeline is not None
@@ -152,7 +170,7 @@ def build_master_status(
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description=("Build the cross-domain SCENTAI Jarvis master operations status.")
+        description=("Build the cross-domain DUFYND Jarvis master operations status.")
     )
     parser.add_argument(
         "--commerce",
@@ -197,7 +215,7 @@ def main() -> int:
         print(json.dumps(report, ensure_ascii=False))
     else:
         print(
-            "SCENTAI Jarvis master | "
+            "DUFYND Jarvis master | "
             f"state={report['overall_state']} | "
             f"domain={report['active_domain']} | "
             f"next={report['next_action']} | "

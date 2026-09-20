@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "generated_at": "2026-09-20T16:34:02+00:00",
-  "source_fingerprint_sha256": "77d179341d71234620a97703d4365f3a74638588b2c1a5390d228a24f5acf063",
-  "system": "SCENTAI",
+  "generated_at": "2026-09-20T17:31:22+00:00",
+  "source_fingerprint_sha256": "6dca6515bf1f7fe02ce9e318580a6ac3cc8d425ead8a728b2d676276966fd871",
+  "system": "DUFYND",
   "control_plane": "commerce_jarvis_master",
   "overall_state": "work_available",
   "active_domain": "content",
-  "next_action": "render_and_verify_visual_preview_mp4s",
+  "next_action": "continue_high_end_rnd_preparation",
   "next_action_class": "auto_allowed",
   "user_approval_required_now": false,
   "domains": {
@@ -26,17 +26,13 @@
     },
     "content": {
       "domain": "content",
-      "overall_state": "visual_preview_generation_pending",
+      "overall_state": "legacy_batches_on_hold_for_high_end_rnd",
       "execution_state": "work_available",
-      "next_action": "render_and_verify_visual_preview_mp4s",
+      "next_action": "continue_high_end_rnd_preparation",
       "next_action_class": "auto_allowed",
       "user_approval_required_now": false,
       "blockers": [
-        "visual_preview_mp4s_incomplete",
-        "pilot_visual_preview_generation_pending",
-        "voiceover_audio_pending",
-        "subtitle_timing_conformance_pending",
-        "final_video_renders_incomplete"
+        "legacy_pilot_batches_intentionally_on_hold"
       ]
     }
   },
@@ -48,9 +44,11 @@
   "content_pipeline": {
     "batch_count": 3,
     "total_pilots": 15,
-    "current_batch_id": "pilot_batch_01",
-    "pipeline_state": "production_work_available",
-    "production_parallel_allowed": true
+    "current_batch_id": null,
+    "pipeline_state": "legacy_batches_on_hold_for_high_end_rnd",
+    "active_track": "high_end_rnd",
+    "legacy_pilot_batches": "hold",
+    "production_parallel_allowed": false
   },
   "safety": {
     "automatic_spend_allowed": false,
