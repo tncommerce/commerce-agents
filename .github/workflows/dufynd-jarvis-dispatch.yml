@@ -1,0 +1,84 @@
+name: DUFYND Jarvis Dispatch Bootstrap
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Jarvis mode
+        required: true
+        default: readiness
+        type: choice
+        options:
+          - readiness
+          - process-next
+      approval_token:
+        description: Required only for process-next
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dufynd-jarvis-dispatch
+  cancel-in-progress: false
+
+jobs:
+  jarvis:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out active DUFYND development line
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: scentai-mvp
+
+      - name: Verify Jarvis runtime is present
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f scripts/dufynd_jarvis_runtime.py || {
+            echo "Jarvis runtime is not present on scentai-mvp yet. Merge the tested Jarvis PR first."
+            exit 21
+          }
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install DUFYND runtime dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Readiness only
+        if: inputs.mode == 'readiness'
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DUFYND_JARVIS_MODEL: ${{ vars.DUFYND_JARVIS_MODEL }}
+          DUFYND_JARVIS_ACTIVE: "0"
+        run: python scripts/dufynd_jarvis_runtime.py --readiness
+
+      - name: Validate explicit active-run approval
+        if: inputs.mode == 'process-next'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ inputs.approval_token }}" != "GO-JARVIS-ACTIVE" ]; then
+            echo "Active Jarvis run refused: explicit GO-JARVIS-ACTIVE token is required."
+            exit 20
+          fi
+
+      - name: Process one Jarvis event
+        if: inputs.mode == 'process-next'
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DUFYND_JARVIS_MODEL: ${{ vars.DUFYND_JARVIS_MODEL }}
+          DUFYND_JARVIS_MAX_TURNS: "8"
+          DUFYND_JARVIS_MAX_BUDGET_USD: "0.25"
+          DUFYND_JARVIS_BUDGET_ID: "jarvis_activation_pilot_001"
+          DUFYND_JARVIS_ACTIVE: "1"
+        run: python scripts/dufynd_jarvis_runtime.py --process-next
