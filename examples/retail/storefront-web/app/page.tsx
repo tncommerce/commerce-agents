@@ -134,7 +134,10 @@ export default function StorefrontPage() {
 
   return (
     <>
-      <AcquisitionAnalytics source="storefront" />
+      <AcquisitionAnalytics
+        source="storefront"
+        trackPageView={false}
+      />
       <StoreShell
       minimal
       brand={<Wordmark />}
