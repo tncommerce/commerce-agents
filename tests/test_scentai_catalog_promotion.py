@@ -187,7 +187,7 @@ def test_promotion_plan_is_all_gate_aware() -> None:
 
     plan = promotion_plan(
         {"products": [ready, blocked]},
-        {"store_name": "SCENTAI", "products": []},
+        {"store_name": "DUFYND", "products": []},
         {"offers": [affiliate_offer()]},
         product_ids=[],
         batch=1,
