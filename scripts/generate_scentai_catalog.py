@@ -203,7 +203,7 @@ def main():
         preserved_products.append(product)
 
     output = {
-        "store_name": "SCENTAI",
+        "store_name": "DUFYND",
         "products": generated_products + preserved_products,
     }
 
