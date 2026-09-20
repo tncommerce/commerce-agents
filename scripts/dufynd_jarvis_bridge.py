@@ -92,6 +92,12 @@ class DufyndJarvisBridge:
             raise ValueError("DUFYND Jarvis context must be a JSON object")
         return payload
 
+    def load_rnd_gate(self) -> dict[str, Any]:
+        payload = self._rpc("get_dufynd_rnd_gate")
+        if not isinstance(payload, dict):
+            raise ValueError("DUFYND R&D gate must be a JSON object")
+        return payload
+
     def load_launch_gate(self) -> dict[str, Any]:
         payload = self._rpc("get_dufynd_launch_gate")
         if not isinstance(payload, dict):
@@ -290,7 +296,7 @@ def main() -> int:
     )
     parser.add_argument(
         "command",
-        choices=("context", "launch-gate", "refresh-launch-gate"),
+        choices=("context", "rnd-gate", "launch-gate", "refresh-launch-gate"),
     )
     parser.add_argument(
         "--machine-readable",
@@ -299,6 +305,20 @@ def main() -> int:
     args = parser.parse_args()
 
     bridge = DufyndJarvisBridge()
+
+    if args.command == "rnd-gate":
+        payload = bridge.load_rnd_gate()
+        if args.machine_readable:
+            print(json.dumps(payload, ensure_ascii=False))
+        else:
+            print(
+                "DUFYND R&D gate | "
+                f"state={payload.get('state')} | "
+                f"passed={payload.get('passed')}/"
+                f"{payload.get('total')} | "
+                f"human_pending={payload.get('human_pending')}"
+            )
+        return 0
 
     if args.command in {"launch-gate", "refresh-launch-gate"}:
         payload = (
