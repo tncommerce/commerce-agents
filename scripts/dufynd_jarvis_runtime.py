@@ -48,7 +48,8 @@ Operating rules:
 6. Separate observed evidence from hypotheses.
 7. A single attractive render does not prove a repeatable workflow.
 8. Store only durable, reusable lessons. Do not create duplicate ideas or
-   duplicate patterns merely to show activity.
+   duplicate patterns merely to show activity. New runtime-created ids must use
+   the prefixes jarvis_pattern_, jarvis_idea_ and jarvis_lesson_ respectively.
 9. If the event contains no genuinely new learning, say so and record the run
    without fabricating changes.
 10. Keep the operator as final decision-maker for the high-impact gates above.
@@ -81,6 +82,12 @@ def _result(text: str) -> dict[str, Any]:
 
 def _json_result(payload: Any) -> dict[str, Any]:
     return _result(json.dumps(payload, ensure_ascii=False, default=str))
+
+
+def _require_runtime_id(value: str, prefix: str) -> str:
+    if not value.startswith(prefix):
+        raise ValueError(f"Jarvis-created ids must start with {prefix}")
+    return value
 
 
 def build_tools(bridge: DufyndJarvisBridge) -> list[SdkMcpTool[Any]]:
@@ -162,7 +169,7 @@ def build_tools(bridge: DufyndJarvisBridge) -> list[SdkMcpTool[Any]]:
             risks=args.get("risks"),
             best_for=args.get("best_for"),
             generation_guidance=args.get("generation_guidance"),
-            pattern_id=args["pattern_id"],
+            pattern_id=_require_runtime_id(args["pattern_id"], "jarvis_pattern_"),
         )
         return _json_result({"pattern_id": pattern_id})
 
@@ -235,7 +242,7 @@ def build_tools(bridge: DufyndJarvisBridge) -> list[SdkMcpTool[Any]]:
             evaluation_metrics=args.get("evaluation_metrics"),
             risk_notes=args.get("risk_notes"),
             hook_template_ids=args.get("hook_template_ids"),
-            idea_id=args["idea_id"],
+            idea_id=_require_runtime_id(args["idea_id"], "jarvis_idea_"),
         )
         return _json_result({"idea_id": idea_id})
 
@@ -270,7 +277,7 @@ def build_tools(bridge: DufyndJarvisBridge) -> list[SdkMcpTool[Any]]:
             evidence=args["evidence"],
             action_rule=args["action_rule"],
             confidence=float(args["confidence"]),
-            lesson_id=args["lesson_id"],
+            lesson_id=_require_runtime_id(args["lesson_id"], "jarvis_lesson_"),
         )
         return _json_result({"lesson_id": lesson_id})
 
