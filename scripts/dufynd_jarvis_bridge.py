@@ -123,6 +123,15 @@ class DufyndJarvisBridge:
             raise ValueError("DUFYND Jarvis health must be a JSON object")
         return payload
 
+    def load_budget_status(self, budget_id: str) -> dict[str, Any]:
+        payload = self._rpc(
+            "get_dufynd_jarvis_budget_status",
+            {"p_budget_id": budget_id},
+        )
+        if not isinstance(payload, dict):
+            raise ValueError("DUFYND Jarvis budget status must be a JSON object")
+        return payload
+
     def claim_next_inbox_event(self) -> dict[str, Any] | None:
         payload = self._rpc("claim_dufynd_jarvis_event")
         if payload is None:
