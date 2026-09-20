@@ -94,6 +94,12 @@ export function rememberAcquisitionAttribution({
   }
 }
 
+export function currentAcquisitionAttribution():
+  | AcquisitionAttribution
+  | null {
+  return storedAcquisitionAttribution();
+}
+
 export function appendAcquisitionAttribution(
   url: string,
 ): string {
