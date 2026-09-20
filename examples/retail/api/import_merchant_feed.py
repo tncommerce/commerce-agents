@@ -41,7 +41,7 @@ from .merchant_run_status import (
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Import merchant feed rows into SCENTAI.")
+    parser = argparse.ArgumentParser(description="Import merchant feed rows into DUFYND.")
     parser.add_argument("--feed", type=Path, required=True)
     parser.add_argument(
         "--mappings",
