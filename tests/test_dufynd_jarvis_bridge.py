@@ -79,6 +79,31 @@ def mock_transport() -> httpx.MockTransport:
                 },
             )
 
+        if request.url.path.endswith("/rpc/claim_dufynd_jarvis_event"):
+            return httpx.Response(
+                200,
+                json={
+                    "inbox_id": 7,
+                    "event_type": "creative_reference_added",
+                    "status": "processing",
+                    "attempts": 1,
+                },
+            )
+
+        if request.url.path.endswith("/rpc/complete_dufynd_jarvis_event"):
+            row = json.loads(request.content)
+            assert row["p_inbox_id"] == 7
+            assert row["p_status"] == "done"
+            return httpx.Response(
+                200,
+                json={
+                    "inbox_id": 7,
+                    "event_type": "creative_reference_added",
+                    "status": "done",
+                    "attempts": 1,
+                },
+            )
+
         if request.url.path.endswith("/rpc/get_dufynd_experiment_rubric"):
             return httpx.Response(
                 200,
@@ -268,6 +293,22 @@ def test_bridge_loads_autonomy_queue() -> None:
     assert len(queue["safe_to_execute"]) == 1
     assert len(queue["approval_required"]) == 1
     assert len(queue["waiting_external"]) == 1
+
+
+def test_bridge_claims_and_completes_inbox_event() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    event = bridge.claim_next_inbox_event()
+    completed = bridge.complete_inbox_event(inbox_id=7)
+
+    assert event is not None
+    assert event["inbox_id"] == 7
+    assert event["status"] == "processing"
+    assert completed["status"] == "done"
 
 
 def test_bridge_loads_experiment_rubric() -> None:
