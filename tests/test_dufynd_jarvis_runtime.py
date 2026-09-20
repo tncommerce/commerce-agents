@@ -42,6 +42,7 @@ def test_runtime_has_only_internal_safe_tool_surface() -> None:
     assert "mcp__dufynd_jarvis__load_creative_context" in names
     assert "mcp__dufynd_jarvis__record_lesson" in names
     assert "mcp__dufynd_jarvis__record_content_idea" in names
+    assert "mcp__dufynd_jarvis__link_idea_pattern" in names
     assert all("publish" not in name for name in names)
     assert all("spend" not in name for name in names)
     assert all("merge" not in name for name in names)
