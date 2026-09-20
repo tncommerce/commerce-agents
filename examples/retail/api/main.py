@@ -125,10 +125,7 @@ async def merchant_partner_clickout(
             detail="Merchant partner not available",
         )
 
-    analytics_session_id = (
-        sanitize_attribution_identifier(sid)
-        or f"partner-clickout-{uuid4()}"
-    )
+    analytics_session_id = sanitize_attribution_identifier(sid) or f"partner-clickout-{uuid4()}"
     background_tasks.add_task(
         analytics_tracker.record,
         session_id=analytics_session_id,
@@ -206,10 +203,7 @@ async def merchant_clickout(
         campaign_id=campaign_id,
         content_id=content_id,
     )
-    analytics_session_id = (
-        sanitize_attribution_identifier(sid)
-        or f"offer-clickout-{click_id}"
-    )
+    analytics_session_id = sanitize_attribution_identifier(sid) or f"offer-clickout-{click_id}"
     background_tasks.add_task(
         analytics_tracker.record,
         session_id=analytics_session_id,
