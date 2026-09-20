@@ -8,7 +8,6 @@ import {
 } from "@/lib/api";
 import {
   appendAcquisitionAttribution,
-  trackAnalyticsEvent,
 } from "@/lib/analytics";
 import type { MerchantPartnersPayload } from "@/lib/types";
 
@@ -65,15 +64,6 @@ export default function MerchantDiscovery() {
             )}
             target="_blank"
             rel="sponsored noopener noreferrer"
-            onClick={() => {
-              void trackAnalyticsEvent(
-                "merchant_clickout",
-                {
-                  source: partner.merchant_id,
-                  surface: "merchant_discovery",
-                },
-              );
-            }}
             className="rounded-xl border border-(--line-strong) bg-(--surface) px-3.5 py-2 text-[12.5px] font-semibold text-(--ink) transition hover:border-(--accent)"
           >
             {partner.merchant_name} öffnen
