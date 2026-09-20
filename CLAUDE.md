@@ -22,6 +22,12 @@ paths each, four vertical examples, and a Claude Code plugin.
 `requirements.txt` installs the seven packages and their pinned dependencies (`requirements-dev.txt`
 adds pytest and ruff); `scripts/install.sh` runs it.
 
+## DUFYND compatibility
+
+- DUFYND is the current public brand for the fragrance affiliate product in the retail vertical.
+- Names such as `SCENTAI`, `scentai_*`, `SCENTAI-*`, product IDs beginning with `SC-`, and the `scentai-mvp` branch are legacy technical identifiers retained for compatibility. Do not present SCENTAI as the current brand in user-facing copy, agent responses, workflow display labels, or new business concepts.
+- Do not mass-rename legacy identifiers without a coordinated data, deployment, analytics, and affiliate-routing migration. New user-facing identifiers should use DUFYND; compatibility code may continue to read legacy names.
+
 ## Design rules
 
 - One model owns the conversation; a rule goes in a tool description, the prompt, or a skill by how often it applies.
