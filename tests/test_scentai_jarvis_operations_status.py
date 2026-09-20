@@ -64,6 +64,7 @@ def test_control_plane_waits_for_external_affiliate_decision() -> None:
         generated_at="2026-09-19T10:00:00+00:00",
     )
 
+    assert status["system"] == "DUFYND"
     assert status["overall_state"] == ("waiting_external_affiliate_decision")
     assert status["user_approval_required_now"] is False
     assert status["next_action"] == "await_affiliate_program_decision"
