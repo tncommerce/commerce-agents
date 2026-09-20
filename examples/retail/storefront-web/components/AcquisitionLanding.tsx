@@ -44,7 +44,7 @@ export default function AcquisitionLanding({
             aria-hidden
             className="grid h-7 w-7 place-items-center rounded-lg bg-(--ink) text-[13px] font-bold text-white"
           >
-            S
+            D
           </span>
           DUFYND
         </a>
