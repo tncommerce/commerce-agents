@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import pytest
-
 from scripts.build_scentai_content_operations_status import (
     DATA_DIR,
     build_content_operations_status,
