@@ -4,8 +4,8 @@ import pytest
 
 from scripts.build_scentai_content_operations_status import (
     DATA_DIR,
-    load_json,
     build_content_operations_status,
+    load_json,
 )
 
 
