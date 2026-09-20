@@ -6,7 +6,10 @@ import {
   fetchMerchantPartners,
   merchantPartnerClickoutUrl,
 } from "@/lib/api";
-import { trackAnalyticsEvent } from "@/lib/analytics";
+import {
+  appendAcquisitionAttribution,
+  trackAnalyticsEvent,
+} from "@/lib/analytics";
 import type { MerchantPartnersPayload } from "@/lib/types";
 
 export default function MerchantDiscovery() {
@@ -55,8 +58,10 @@ export default function MerchantDiscovery() {
         {payload.partners.map((partner) => (
           <a
             key={partner.merchant_id}
-            href={merchantPartnerClickoutUrl(
-              partner.merchant_id,
+            href={appendAcquisitionAttribution(
+              merchantPartnerClickoutUrl(
+                partner.merchant_id,
+              ),
             )}
             target="_blank"
             rel="sponsored noopener noreferrer"
