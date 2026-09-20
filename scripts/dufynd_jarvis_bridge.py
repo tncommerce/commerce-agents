@@ -30,6 +30,7 @@ class JarvisContextSummary:
     experiments: int
     affiliate_partners: int
     funnel_rows: int
+    asset_performance_rows: int
 
 
 class DufyndJarvisBridge:
@@ -150,6 +151,36 @@ class DufyndJarvisBridge:
         )
         return resolved_id
 
+    def record_content_asset(
+        self,
+        *,
+        content_idea_id: str | None,
+        asset_type: str,
+        uri: str,
+        platform: str | None = None,
+        version: int = 1,
+        metadata: dict[str, Any] | None = None,
+        status: str = "draft",
+        content_id: str | None = None,
+        asset_id: str | None = None,
+    ) -> str:
+        resolved_id = asset_id or f"asset_{uuid4().hex}"
+        self._insert(
+            "dufynd_content_assets",
+            {
+                "id": resolved_id,
+                "content_idea_id": content_idea_id,
+                "asset_type": asset_type,
+                "platform": platform,
+                "version": max(1, version),
+                "uri": uri,
+                "metadata": metadata or {},
+                "status": status,
+                "content_id": content_id,
+            },
+        )
+        return resolved_id
+
     def record_experiment(
         self,
         *,
@@ -243,6 +274,9 @@ def summarize_context(
         experiments=len(context.get("recent_experiments") or []),
         affiliate_partners=len(context.get("affiliate_partners") or []),
         funnel_rows=len(context.get("content_funnel") or []),
+        asset_performance_rows=len(
+            context.get("asset_business_performance") or []
+        ),
     )
 
 
@@ -294,7 +328,8 @@ def main() -> int:
         f"lessons={summary.lessons} | "
         f"experiments={summary.experiments} | "
         f"affiliate_partners={summary.affiliate_partners} | "
-        f"funnel_rows={summary.funnel_rows}"
+        f"funnel_rows={summary.funnel_rows} | "
+        f"asset_performance_rows={summary.asset_performance_rows}"
     )
     return 0
 
