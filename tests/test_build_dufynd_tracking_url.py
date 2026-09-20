@@ -16,8 +16,7 @@ def test_build_tracking_url_for_social_content() -> None:
     )
 
     assert url == (
-        "https://dufynd.de/parfum-alternativen"
-        "?src=tiktok&cmp=launch01&content=genesis_naxos_01"
+        "https://dufynd.de/parfum-alternativen?src=tiktok&cmp=launch01&content=genesis_naxos_01"
     )
 
 
