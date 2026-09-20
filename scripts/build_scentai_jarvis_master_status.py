@@ -78,9 +78,27 @@ def build_master_status(
     generated_at: str,
     content_pipeline: dict | None = None,
 ) -> dict[str, Any]:
+    content_for_domain = content
+    if (
+        content_pipeline
+        and content_pipeline.get("active_track") == "high_end_rnd"
+        and content_pipeline.get("legacy_pilot_batches") == "hold"
+    ):
+        content_for_domain = {
+            "overall_state": content_pipeline.get("pipeline_state"),
+            "next_action": content_pipeline.get("next_action"),
+            "next_action_class": content_pipeline.get("next_action_class"),
+            "user_approval_required_now": bool(
+                content_pipeline.get("user_approval_required_now")
+            ),
+            "blockers": [
+                "legacy_pilot_batches_intentionally_on_hold",
+            ],
+        }
+
     domains = [
         classify_domain(name="commerce", status=commerce),
-        classify_domain(name="content", status=content),
+        classify_domain(name="content", status=content_for_domain),
     ]
 
     approval_domains = [
@@ -130,6 +148,8 @@ def build_master_status(
                 "total_pilots": content_pipeline.get("total_pilots"),
                 "current_batch_id": content_pipeline.get("current_batch_id"),
                 "pipeline_state": content_pipeline.get("pipeline_state"),
+                "active_track": content_pipeline.get("active_track"),
+                "legacy_pilot_batches": content_pipeline.get("legacy_pilot_batches"),
                 "production_parallel_allowed": content_pipeline.get("production_parallel_allowed"),
             }
             if content_pipeline is not None
