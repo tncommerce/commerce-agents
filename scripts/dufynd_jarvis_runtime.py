@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -116,6 +117,14 @@ def build_tools(bridge: DufyndJarvisBridge) -> list[SdkMcpTool[Any]]:
         return _json_result(await asyncio.to_thread(bridge.load_experiment_rubric))
 
     @tool(
+        "load_pending_decisions",
+        "Load operator decisions that Jarvis must not make autonomously.",
+        {},
+    )
+    async def load_pending_decisions(_args: dict[str, Any]) -> dict[str, Any]:
+        return _json_result(await asyncio.to_thread(bridge.load_pending_decisions))
+
+    @tool(
         "record_creative_pattern",
         "Create one genuinely new reusable DUFYND creative pattern.",
         {
@@ -187,6 +196,13 @@ def build_tools(bridge: DufyndJarvisBridge) -> list[SdkMcpTool[Any]]:
                 "sequence": {"type": "array", "items": {"type": "string"}},
                 "model_candidates": {"type": "array", "items": {"type": "string"}},
                 "priority": {"type": "integer"},
+                "objective": {"type": "string"},
+                "target_platforms": {"type": "array", "items": {"type": "string"}},
+                "asset_requirements": {"type": "array", "items": {"type": "string"}},
+                "affiliate_role": {"type": "string"},
+                "evaluation_metrics": {"type": "array", "items": {"type": "string"}},
+                "risk_notes": {"type": "array", "items": {"type": "string"}},
+                "hook_template_ids": {"type": "array", "items": {"type": "string"}},
                 "idea_id": {"type": "string"},
             },
             "required": ["title", "concept", "hook", "idea_id"],
@@ -204,6 +220,13 @@ def build_tools(bridge: DufyndJarvisBridge) -> list[SdkMcpTool[Any]]:
             model_candidates=args.get("model_candidates"),
             priority=int(args.get("priority", 50)),
             source="jarvis_runtime",
+            objective=args.get("objective"),
+            target_platforms=args.get("target_platforms"),
+            asset_requirements=args.get("asset_requirements"),
+            affiliate_role=args.get("affiliate_role"),
+            evaluation_metrics=args.get("evaluation_metrics"),
+            risk_notes=args.get("risk_notes"),
+            hook_template_ids=args.get("hook_template_ids"),
             idea_id=args["idea_id"],
         )
         return _json_result({"idea_id": idea_id})
@@ -272,6 +295,7 @@ def build_tools(bridge: DufyndJarvisBridge) -> list[SdkMcpTool[Any]]:
         load_creative_context,
         load_autonomy_queue,
         load_experiment_rubric,
+        load_pending_decisions,
         record_creative_pattern,
         link_reference_pattern,
         record_content_idea,
@@ -294,6 +318,7 @@ def allowed_tool_names() -> list[str]:
         "load_creative_context",
         "load_autonomy_queue",
         "load_experiment_rubric",
+        "load_pending_decisions",
         "record_creative_pattern",
         "link_reference_pattern",
         "record_content_idea",
@@ -303,7 +328,45 @@ def allowed_tool_names() -> list[str]:
     return [f"mcp__{SERVER_NAME}__{name}" for name in names]
 
 
+def runtime_readiness() -> dict[str, Any]:
+    active = os.getenv("DUFYND_JARVIS_ACTIVE") == "1"
+    model = os.getenv("DUFYND_JARVIS_MODEL")
+    credentials = bool(os.getenv("ANTHROPIC_API_KEY") or os.getenv("ANTHROPIC_AUTH_TOKEN"))
+    supabase = bool(
+        os.getenv("SUPABASE_URL")
+        and (os.getenv("SUPABASE_SECRET_KEY") or os.getenv("SUPABASE_SERVICE_ROLE_KEY"))
+    )
+    return {
+        "active": active,
+        "model_configured": bool(model),
+        "model": model,
+        "anthropic_credentials_configured": credentials,
+        "supabase_configured": supabase,
+        "ready_for_model_execution": active and bool(model) and credentials and supabase,
+    }
+
+
+def _require_active_runtime() -> tuple[str, int]:
+    readiness = runtime_readiness()
+    if not readiness["active"]:
+        raise RuntimeError(
+            "DUFYND Jarvis active model execution is disabled. "
+            "Set DUFYND_JARVIS_ACTIVE=1 only after operator approval."
+        )
+    if not readiness["model_configured"]:
+        raise RuntimeError("DUFYND_JARVIS_MODEL is required for active model execution.")
+    if not readiness["anthropic_credentials_configured"]:
+        raise RuntimeError("Anthropic credentials are required for active model execution.")
+    raw_turns = os.getenv("DUFYND_JARVIS_MAX_TURNS", "8")
+    try:
+        max_turns = int(raw_turns)
+    except ValueError as error:
+        raise RuntimeError("DUFYND_JARVIS_MAX_TURNS must be an integer.") from error
+    return str(readiness["model"]), max(4, min(max_turns, 12))
+
+
 def make_options(bridge: DufyndJarvisBridge) -> ClaudeAgentOptions:
+    model, max_turns = _require_active_runtime()
     return ClaudeAgentOptions(
         system_prompt=SYSTEM_PROMPT,
         mcp_servers={SERVER_NAME: build_server(bridge)},
@@ -311,7 +374,8 @@ def make_options(bridge: DufyndJarvisBridge) -> ClaudeAgentOptions:
         tools=[],
         cwd=REPO_ROOT,
         env={"CLAUDE_CODE_DISABLE_CLAUDE_MDS": "1"},
-        max_turns=16,
+        model=model,
+        max_turns=max_turns,
         permission_mode="dontAsk",
     )
 
@@ -413,6 +477,11 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="DUFYND Jarvis v0.1 internal Agent SDK runtime.")
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument(
+        "--readiness",
+        action="store_true",
+        help="report configuration readiness without invoking a model",
+    )
+    group.add_argument(
         "--process-next",
         action="store_true",
         help="claim and process one internal Jarvis inbox event",
@@ -423,6 +492,10 @@ def main() -> int:
         help="run one manual internal Jarvis task",
     )
     args = parser.parse_args()
+
+    if args.readiness:
+        print(json.dumps(runtime_readiness(), ensure_ascii=False))
+        return 0
 
     bridge = DufyndJarvisBridge()
     if args.process_next:
