@@ -130,7 +130,7 @@ async def test_listing_update_apply_fixes_content_quality(merchant, backend, ope
 
 async def test_merchant_context_reports_alert_counts(merchant, operator_session):
     context = await merchant.get_merchant_context(operator_session)
-    assert context["store"] == "SCENTAI"
+    assert context["store"] == "DUFYND"
     assert context["alerts"]["low_stock"] >= 2
 
 

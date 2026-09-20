@@ -17,7 +17,7 @@ from shopping_agent import SearchFilters
 
 def test_catalog_loads_and_validates(backend):
     assert len(backend.products) >= 50
-    assert backend.store_name == "SCENTAI"
+    assert backend.store_name == "DUFYND"
     sample = backend.products["AR-1201"]
     assert sample.brand == "ACME Basecamp"
     assert sample.long_description  # hero products carry a long description

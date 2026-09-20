@@ -88,14 +88,6 @@ app.include_router(create_merchant_router(backend, InMemoryMemoryStore()), prefi
 app.mount("/products", StaticFiles(directory=PRODUCT_IMAGES, check_dir=False), name="products")
 
 
-@app.get("/api/health")
-async def health() -> dict:
-    return {
-        "ok": True,
-        "service": "dufynd-api",
-    }
-
-
 @app.get("/api/merchant-partners")
 async def merchant_partners() -> dict:
     partners = partner_store.active()

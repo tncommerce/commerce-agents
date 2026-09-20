@@ -8,7 +8,10 @@ from scripts.dufynd_production_smoke import run_smoke
 def transport(*, health_payload=None, partners_payload=None) -> httpx.MockTransport:
     resolved_health = health_payload or {
         "ok": True,
-        "service": "dufynd-api",
+        "store": "DUFYND",
+        "products": 119,
+        "skills": ["search-discovery"],
+        "model": "claude-sonnet-5",
     }
     resolved_partners = partners_payload or {
         "partners": [],
@@ -52,7 +55,10 @@ def test_smoke_fails_on_wrong_api_identity() -> None:
         transport=transport(
             health_payload={
                 "ok": True,
-                "service": "wrong-service",
+                "store": "SCENTAI",
+                "products": 119,
+                "skills": ["search-discovery"],
+                "model": "claude-sonnet-5",
             }
         ),
     )
@@ -77,7 +83,13 @@ def test_smoke_fails_when_storefront_is_not_dufynd() -> None:
         if request.url.path == "/api/health":
             return httpx.Response(
                 200,
-                json={"ok": True, "service": "dufynd-api"},
+                json={
+                    "ok": True,
+                    "store": "DUFYND",
+                    "products": 119,
+                    "skills": ["search-discovery"],
+                    "model": "claude-sonnet-5",
+                },
             )
         if request.url.path == "/api/merchant-partners":
             return httpx.Response(

@@ -405,7 +405,7 @@ def write_promotions(
 
     output = {
         **catalog,
-        "store_name": "SCENTAI",
+        "store_name": "DUFYND",
         "products": products,
     }
 
@@ -422,9 +422,7 @@ def write_promotions(
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description=(
-            "Validate and promote verified SCENTAI staging products into the live catalog."
-        )
+        description=("Validate and promote verified DUFYND staging products into the live catalog.")
     )
     parser.add_argument(
         "--product-id",
