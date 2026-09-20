@@ -1,0 +1,57 @@
+name: DUFYND Production Smoke
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [scentai-mvp]
+    paths:
+      - "examples/retail/api/**"
+      - "examples/retail/storefront-web/**"
+      - "scripts/dufynd_production_smoke.py"
+      - ".github/workflows/dufynd-production-smoke.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dufynd-production-smoke-scentai-mvp
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install smoke dependency
+        run: python -m pip install httpx==0.28.1
+
+      - name: Wait for Render deployment and smoke DUFYND
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          attempts=16
+          delay_seconds=30
+
+          for attempt in $(seq 1 "$attempts"); do
+            echo "DUFYND production smoke attempt $attempt/$attempts"
+
+            if python scripts/dufynd_production_smoke.py; then
+              echo "DUFYND production smoke passed."
+              exit 0
+            fi
+
+            if [ "$attempt" -lt "$attempts" ]; then
+              sleep "$delay_seconds"
+            fi
+          done
+
+          echo "DUFYND production smoke did not pass within the deployment window."
+          exit 20
