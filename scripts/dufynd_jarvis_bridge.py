@@ -49,9 +49,7 @@ class DufyndJarvisBridge:
         secret_key: str | None = None,
         transport: httpx.BaseTransport | None = None,
     ) -> None:
-        self.supabase_url = (
-            supabase_url or os.getenv("SUPABASE_URL", "")
-        ).rstrip("/")
+        self.supabase_url = (supabase_url or os.getenv("SUPABASE_URL", "")).rstrip("/")
         self.secret_key = (
             secret_key
             or os.getenv("SUPABASE_SECRET_KEY", "")
@@ -62,9 +60,7 @@ class DufyndJarvisBridge:
         if not self.supabase_url:
             raise ValueError("SUPABASE_URL is required")
         if not self.secret_key:
-            raise ValueError(
-                "SUPABASE_SECRET_KEY or SUPABASE_SERVICE_ROLE_KEY is required"
-            )
+            raise ValueError("SUPABASE_SECRET_KEY or SUPABASE_SERVICE_ROLE_KEY is required")
 
     def _client(self) -> httpx.Client:
         return httpx.Client(
@@ -284,9 +280,7 @@ def summarize_context(
         experiments=len(context.get("recent_experiments") or []),
         affiliate_partners=len(context.get("affiliate_partners") or []),
         funnel_rows=len(context.get("content_funnel") or []),
-        asset_performance_rows=len(
-            context.get("asset_business_performance") or []
-        ),
+        asset_performance_rows=len(context.get("asset_business_performance") or []),
     )
 
 
