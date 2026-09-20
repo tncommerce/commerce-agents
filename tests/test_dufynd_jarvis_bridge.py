@@ -22,6 +22,10 @@ def mock_transport() -> httpx.MockTransport:
                     "ideas": [{"id": "idea1"}],
                     "lessons": [{"id": "lesson1"}],
                     "recent_experiments": [],
+                    "affiliate_partners": [
+                        {"merchant_id": "douglas"},
+                        {"merchant_id": "notino"},
+                    ],
                     "content_funnel": [{"content_id": "video1"}],
                     "launch_gate": {
                         "state": "not_ready",
@@ -69,6 +73,7 @@ def test_bridge_loads_context_and_summary() -> None:
     assert summary.formats == 1
     assert summary.ideas == 1
     assert summary.lessons == 1
+    assert summary.affiliate_partners == 2
     assert summary.funnel_rows == 1
 
 
