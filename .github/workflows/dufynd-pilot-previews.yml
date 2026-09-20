@@ -1,7 +1,13 @@
-name: DUFYND Pilot Preview Render
+name: DUFYND Legacy Pilot Preview Render
 
 on:
   workflow_dispatch:
+    inputs:
+      force_legacy_render:
+        description: "Force re-render of legacy pilot previews"
+        required: false
+        default: false
+        type: boolean
   push:
     branches: [scentai-mvp]
     paths:
@@ -17,6 +23,7 @@ on:
       - "examples/retail/data/scentai_pilot_batch_03_production_jobs.json"
       - "examples/retail/data/scentai_pilot_batch_03_readiness.json"
       - "examples/retail/data/scentai_products.json"
+      - "examples/retail/data/dufynd_content_strategy.json"
       - "examples/retail/storefront-web/public/products/pilot/**"
       - ".github/workflows/dufynd-pilot-previews.yml"
 
@@ -43,20 +50,36 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Decide whether legacy previews should render
+        id: preview_policy
+        shell: bash
+        env:
+          FORCE_LEGACY_RENDER: ${{ github.event_name == 'workflow_dispatch' && inputs.force_legacy_render || false }}
+        run: |
+          set -euo pipefail
+          args=()
+          if [ "$FORCE_LEGACY_RENDER" = "true" ]; then
+            args+=(--force)
+          fi
+          python scripts/dufynd_legacy_preview_policy.py             --github-output             "${args[@]}" >> "$GITHUB_OUTPUT"
+
       - name: Install renderer dependencies
+        if: steps.preview_policy.outputs.render == 'true'
         run: |
           python -m pip install --upgrade pip
           python -m pip install pillow
           sudo apt-get update
           sudo apt-get install -y ffmpeg fonts-dejavu-core
 
-      - name: Render all DUFYND pilot previews
+      - name: Render all legacy DUFYND pilot previews
+        if: steps.preview_policy.outputs.render == 'true'
         run: |
           python scripts/render_scentai_pilot_previews.py
           python scripts/render_scentai_pilot_previews.py --batch batch02
           python scripts/render_scentai_pilot_previews.py --batch batch03
 
       - name: Verify all expected preview outputs
+        if: steps.preview_policy.outputs.render == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -115,6 +138,11 @@ jobs:
 
           print("Verified all 15 DUFYND pilot preview outputs.")
           PY
+
+      - name: Report skipped legacy preview render
+        if: steps.preview_policy.outputs.render != 'true'
+        run: |
+          echo "Legacy DUFYND preview rendering skipped: ${{ steps.preview_policy.outputs.reason }}"
 
       - name: Refresh DUFYND derived state once
         shell: bash

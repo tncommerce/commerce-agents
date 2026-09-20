@@ -15,7 +15,10 @@ def test_dufynd_has_one_preview_and_state_writer() -> None:
 
     assert "group: dufynd-pilot-previews-scentai-mvp" in text
     assert "cancel-in-progress: true" in text
-    assert "Render all DUFYND pilot previews" in text
+    assert "Decide whether legacy previews should render" in text
+    assert "Render all legacy DUFYND pilot previews" in text
+    assert "steps.preview_policy.outputs.render == 'true'" in text
+    assert "dufynd_legacy_preview_policy.py" in text
     assert "Refresh DUFYND derived state once" in text
 
     for legacy in LEGACY_WORKFLOWS:
