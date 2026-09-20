@@ -21,24 +21,104 @@ load the current internal context with:
 python scripts/dufynd_jarvis_bridge.py context --machine-readable
 ```
 
+For creative work:
+
+```powershell
+python scripts/dufynd_jarvis_bridge.py creative-context --machine-readable
+```
+
+For autonomous work planning:
+
+```powershell
+python scripts/dufynd_jarvis_bridge.py autonomy --machine-readable
+```
+
+For controlled creative scoring:
+
+```powershell
+python scripts/dufynd_jarvis_bridge.py experiment-rubric --machine-readable
+```
+
 For launch-specific work:
 
 ```powershell
 python scripts/dufynd_jarvis_bridge.py refresh-launch-gate --machine-readable
 ```
 
-The context contains:
+The comprehensive context contains:
 - current master/business status
 - approved creative references
+- reusable creative patterns
+- reference-to-pattern and idea-to-pattern learning
 - repeatable content formats
+- hook templates
 - content ideas
 - durable lessons
+- experiment scoring rubric
+- autonomous-task queue
 - approval boundaries
 - affiliate partner state
 - recent AI-video experiments
 - model/format learning aggregates
 - content funnel outcomes
-- launch-gate state
+- launch and R&D gate state
+
+## Autonomy control plane
+
+Jarvis should work from the autonomy queue rather than repeatedly asking the
+operator what to do next.
+
+Task states distinguish:
+- safe work that can execute now
+- work already in progress
+- work waiting for operator input
+- work waiting for external events
+- actions requiring explicit approval
+- recently completed work
+
+The autonomy queue does not override approval rules. If an action is missing
+from the rules and could materially change spend, public content, production,
+contracts, external commitments or customer behavior, treat it as
+approval-required.
+
+## Reference intake
+
+When the operator supplies a new creative reference:
+
+1. Store the reference together with the operator's comment about what matters.
+2. Extract two to six reusable creative mechanisms.
+3. Map those mechanisms to existing creative patterns before creating new ones.
+4. Create a new pattern only if the reference contains a genuinely distinct
+   mechanism.
+5. Record reference-to-pattern evidence and confidence.
+6. Generate up to three original DUFYND adaptations by recombining patterns.
+7. Apply product-identity, rights, brand and conversion guardrails.
+8. Do not copy the reference shot-for-shot.
+9. Do not spend money, publish or merge production code during reference intake.
+
+The purpose of references is to teach Jarvis mechanisms, not templates.
+
+## Creative idea generation
+
+Jarvis may autonomously draft and refine content concepts.
+
+Every serious concept should define:
+- business objective
+- hook
+- curiosity or emotion mechanism
+- product role in the scene
+- payoff
+- DUFYND brand-memory moment
+- required assets
+- AI model or deterministic editing plan
+- key risks
+
+Prefer recombining proven creative patterns over generating unrelated ideas
+from scratch.
+
+A reach-oriented concept should normally combine two to five compatible
+patterns, including at least one hook pattern and one product-reveal or payoff
+pattern.
 
 ## Creative learning loop
 
@@ -48,7 +128,8 @@ For each controlled video experiment:
 2. Keep the hypothesis and hook explicit.
 3. Test the smallest useful shot before generating a full video.
 4. Record the model, prompt summary, cost, result URI and quality scores.
-5. Score at least:
+5. Use the shared DUFYND experiment rubric.
+6. Score at least:
    - scroll_stop
    - product_accuracy
    - luxury_feel
@@ -56,10 +137,29 @@ For each controlled video experiment:
    - rewatch
    - brand_fit
    - reproducibility
-6. Record a durable lesson only when evidence supports a reusable rule.
-7. Compare model and format aggregates before choosing the next test.
+   - conversion_fit
+7. Reject identity-critical results that miss the product-accuracy hard-fail
+   threshold regardless of visual wow.
+8. Do not treat one aesthetically pleasing render as proof of a repeatable
+   format.
+9. Record a durable lesson only when evidence supports a reusable rule.
+10. Compare model, format and pattern aggregates before choosing the next test.
+11. Once content is public, connect creative performance with site clicks,
+    affiliate clickouts, conversions and revenue.
 
-Do not treat one aesthetically pleasing render as proof of a repeatable format.
+Prefer reproducible wins over lucky generations.
+
+## Product identity
+
+For final readable product frames:
+- use a clean verified product master
+- keep an exact label/logo reference
+- do not ask a video model to invent final product typography
+- do not ask a video model to invent DUFYND typography
+- use deterministic compositing for identity-critical brand/product elements
+
+A generative scene may create the sensory world around the product, but product
+identity remains protected.
 
 ## Content attribution
 
@@ -83,7 +183,8 @@ outcomes.
 
 Do not invent feed columns or tracked links.
 
-After an affiliate approval and a real feed/export sample exist:
+After an existing affiliate application is approved and a real feed/export
+sample or tracked link exists:
 
 1. Map the real source columns into the canonical merchant contract.
 2. Validate the provider config.
@@ -91,8 +192,10 @@ After an affiliate approval and a real feed/export sample exist:
 4. Run the real-feed preflight.
 5. Verify exact product mappings.
 6. Run the merchant import dry-run.
-7. Review feed image candidates manually.
-8. Activate only after tracking and release checks pass.
+7. Review feed image candidates manually where required.
+8. Smoke-test the real tracked merchant clickout.
+9. Verify content attribution survives the path.
+10. Activate only after tracking and release checks pass.
 
 Use:
 
@@ -108,11 +211,14 @@ ranking.
 Jarvis may autonomously:
 - research and analyze
 - create and refine content ideas
+- extract and combine creative patterns
 - prepare prompts and edit plans
 - compare models
 - update internal experiment records
-- derive internal lessons
-- refresh launch readiness
+- derive internal lessons from evidence
+- update internal planning/task state
+- refresh launch and R&D readiness
+- prepare tested code or documentation on a non-production branch
 
 Jarvis must obtain explicit human approval before:
 - spending money
@@ -122,7 +228,8 @@ Jarvis must obtain explicit human approval before:
 - important outbound messages
 - contracts or supplier orders
 - destructive production changes
-- merging changes that materially affect the live production experience
+- merging changes into the active DUFYND production/development line when the
+  merge can change public behavior or operational state
 
 Unknown high-impact actions should default to approval-required.
 
@@ -148,7 +255,6 @@ content -> DUFYND -> product -> merchant -> attributed clickout
 
 Content may be preproduced before affiliate approval. Do not intentionally
 send a major traffic spike into an incomplete monetization/tracking path.
-
 
 ## Production smoke
 
