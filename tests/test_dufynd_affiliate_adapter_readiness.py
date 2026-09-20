@@ -102,7 +102,4 @@ def test_network_mismatch_blocks_adapter() -> None:
     )
 
     assert report["state"] == "BLOCKED"
-    assert any(
-        issue.startswith("affiliate_network_mismatch:")
-        for issue in report["issues"]
-    )
+    assert any(issue.startswith("affiliate_network_mismatch:") for issue in report["issues"])
