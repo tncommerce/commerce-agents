@@ -6,6 +6,7 @@ import pytest
 from scripts.dufynd_jarvis_runtime import (
     SYSTEM_PROMPT,
     _require_active_runtime,
+    _require_runtime_id,
     allowed_tool_names,
     event_prompt,
     process_next,
@@ -111,3 +112,10 @@ def test_runtime_clamps_turns_and_budget(monkeypatch) -> None:
     assert model == "claude-sonnet-5"
     assert max_turns == 12
     assert max_budget_usd == 1.0
+
+
+def test_runtime_namespaces_agent_created_ids() -> None:
+    assert _require_runtime_id("jarvis_idea_test", "jarvis_idea_") == "jarvis_idea_test"
+
+    with pytest.raises(ValueError, match="jarvis_idea_"):
+        _require_runtime_id("idea_existing_human", "jarvis_idea_")
