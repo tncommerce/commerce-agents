@@ -49,6 +49,18 @@ def mock_transport() -> httpx.MockTransport:
                 },
             )
 
+        if request.url.path.endswith("/rpc/refresh_dufynd_rnd_gate"):
+            return httpx.Response(
+                200,
+                json={
+                    "state": "not_ready",
+                    "passed": 3,
+                    "total": 9,
+                    "human_pending": 3,
+                    "checks": [],
+                },
+            )
+
         if request.url.path.endswith("/rpc/get_dufynd_launch_gate"):
             return httpx.Response(
                 200,
@@ -245,3 +257,16 @@ def test_bridge_loads_rnd_gate() -> None:
     assert gate["state"] == "not_ready"
     assert gate["passed"] == 3
     assert gate["human_pending"] == 3
+
+
+def test_bridge_refreshes_rnd_gate() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    gate = bridge.refresh_rnd_gate()
+
+    assert gate["state"] == "not_ready"
+    assert gate["total"] == 9
