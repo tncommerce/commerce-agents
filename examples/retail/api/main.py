@@ -14,7 +14,7 @@ from __future__ import annotations
 
 from uuid import uuid4
 
-from fastapi import HTTPException
+from fastapi import BackgroundTasks, HTTPException
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -112,6 +112,7 @@ async def merchant_partners() -> dict:
 @app.get("/api/merchant-partners/{partner_key}/clickout")
 async def merchant_partner_clickout(
     partner_key: str,
+    background_tasks: BackgroundTasks,
     src: str | None = None,
     cmp: str | None = None,
     content: str | None = None,
@@ -128,7 +129,8 @@ async def merchant_partner_clickout(
         sanitize_attribution_identifier(sid)
         or f"partner-clickout-{uuid4()}"
     )
-    await analytics_tracker.record(
+    background_tasks.add_task(
+        analytics_tracker.record,
         session_id=analytics_session_id,
         event="merchant_clickout",
         source=partner.merchant_id,
@@ -184,6 +186,7 @@ async def analytics_event(
 @app.get("/api/clickout/{offer_id}")
 async def merchant_clickout(
     offer_id: str,
+    background_tasks: BackgroundTasks,
     src: str | None = None,
     cmp: str | None = None,
     content: str | None = None,
@@ -207,7 +210,8 @@ async def merchant_clickout(
         sanitize_attribution_identifier(sid)
         or f"offer-clickout-{click_id}"
     )
-    await analytics_tracker.record(
+    background_tasks.add_task(
+        analytics_tracker.record,
         session_id=analytics_session_id,
         event="merchant_clickout",
         product_id=offer.product_id,
