@@ -79,6 +79,18 @@ def mock_transport() -> httpx.MockTransport:
                 },
             )
 
+        if request.url.path.endswith("/rpc/get_dufynd_pending_decisions"):
+            return httpx.Response(
+                200,
+                json=[
+                    {
+                        "decision_id": "decision_test",
+                        "decision_token": "GO-TEST",
+                        "status": "pending",
+                    }
+                ],
+            )
+
         if request.url.path.endswith("/rpc/claim_dufynd_jarvis_event"):
             return httpx.Response(
                 200,
@@ -293,6 +305,19 @@ def test_bridge_loads_autonomy_queue() -> None:
     assert len(queue["safe_to_execute"]) == 1
     assert len(queue["approval_required"]) == 1
     assert len(queue["waiting_external"]) == 1
+
+
+def test_bridge_loads_pending_decisions() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    decisions = bridge.load_pending_decisions()
+
+    assert decisions[0]["decision_token"] == "GO-TEST"
+    assert decisions[0]["status"] == "pending"
 
 
 def test_bridge_claims_and_completes_inbox_event() -> None:
