@@ -69,3 +69,6 @@ def test_dufynd_jarvis_contract_keeps_active_runtime_off_by_default() -> None:
     assert runtime["default"] == "disabled"
     assert runtime["activation_env"] == "DUFYND_JARVIS_ACTIVE=1"
     assert runtime["default_max_turns"] <= runtime["hard_max_turns"]
+    assert runtime["default_max_budget_usd"] <= runtime["hard_max_budget_usd"]
+    assert runtime["initial_budget_window"]["status"] == "planned"
+    assert runtime["initial_budget_window"]["max_runs"] == 10
