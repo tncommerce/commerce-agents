@@ -34,9 +34,7 @@ def build_tracking_url(
 ) -> str:
     normalized_source = source.strip().casefold()
     if normalized_source not in ALLOWED_SOURCES:
-        raise ValueError(
-            "source must be one of: " + ", ".join(sorted(ALLOWED_SOURCES))
-        )
+        raise ValueError("source must be one of: " + ", ".join(sorted(ALLOWED_SOURCES)))
 
     campaign = validate_identifier(
         campaign_id,
@@ -65,9 +63,7 @@ def build_tracking_url(
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(
-        description="Build a DUFYND social/content attribution URL."
-    )
+    parser = argparse.ArgumentParser(description="Build a DUFYND social/content attribution URL.")
     parser.add_argument(
         "--base-url",
         default="https://dufynd.de",
