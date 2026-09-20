@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 430 80" role="img" aria-labelledby="title desc">
+  <title id="title">DUFYND logo</title>
+  <desc id="desc">DUFYND gold D mark with dark wordmark on a transparent background.</desc>
+  <g transform="translate(0 8)">
+    <rect width="64" height="64" rx="16" fill="#111111"/>
+    <path d="M18 14h15c10.5 0 18 7.1 18 18s-7.5 18-18 18H18V14Zm8 7v22h6.5C39 43 43 39 43 32s-4-11-10.5-11H26Z" fill="#d4a84f"/>
+    <path d="M35.5 12.5h8.5v5h-8.5z" rx="1" fill="#d4a84f"/>
+    <path d="M43.5 18.5c5 2.5 8 6.3 8.5 11.2" fill="none" stroke="#f0d89b" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="52.5" cy="18.5" r="1.6" fill="#d4a84f"/>
+  </g>
+  <text x="88" y="54" fill="#171513" font-family="Instrument Sans, Arial, sans-serif" font-size="42" font-weight="700" letter-spacing="-1.2">DUFYND</text>
+</svg>
