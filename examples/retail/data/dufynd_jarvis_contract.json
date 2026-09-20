@@ -119,10 +119,18 @@
     "max_turns_env": "DUFYND_JARVIS_MAX_TURNS",
     "default_max_turns": 8,
     "hard_max_turns": 12,
-    "rule": "Active model execution requires explicit operator approval. Passive capture remains live while active execution is off. Every active event run is bounded by both max turns and max_budget_usd.",
+    "rule": "Active model execution requires explicit operator approval, an active database budget window, an explicit model, and valid credentials. Passive capture remains live while active execution is off. Every event run is bounded by both max turns and max_budget_usd.",
     "max_budget_env": "DUFYND_JARVIS_MAX_BUDGET_USD",
     "default_max_budget_usd": 0.25,
-    "hard_max_budget_usd": 1
+    "hard_max_budget_usd": 1,
+    "budget_window_env": "DUFYND_JARVIS_BUDGET_ID",
+    "initial_budget_window": {
+      "id": "jarvis_activation_pilot_001",
+      "status": "planned",
+      "model": "claude-sonnet-5",
+      "cap_usd": 2.5,
+      "max_runs": 10
+    }
   },
   "human_decision_tokens": {
     "brand_pack_merge": "GO-BRANDPACK",
