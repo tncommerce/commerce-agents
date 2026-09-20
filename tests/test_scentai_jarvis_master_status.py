@@ -33,6 +33,7 @@ def test_master_selects_content_when_commerce_waits_external() -> None:
         generated_at="2026-09-19T10:00:00+00:00",
     )
 
+    assert report["system"] == "DUFYND"
     assert report["overall_state"] == "work_available"
     assert report["active_domain"] == "content"
     assert report["next_action"] == ("render_and_verify_visual_preview_mp4s")
