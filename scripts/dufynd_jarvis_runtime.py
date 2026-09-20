@@ -361,6 +361,7 @@ def runtime_readiness() -> dict[str, Any]:
         "supabase_configured": supabase,
         "max_turns": os.getenv("DUFYND_JARVIS_MAX_TURNS", "8"),
         "max_budget_usd": os.getenv("DUFYND_JARVIS_MAX_BUDGET_USD", "0.25"),
+        "budget_id": os.getenv("DUFYND_JARVIS_BUDGET_ID"),
         "ready_for_model_execution": active and bool(model) and credentials and supabase,
     }
 
@@ -395,6 +396,25 @@ def _require_active_runtime() -> tuple[str, int, float]:
     )
 
 
+def _require_budget_window(bridge: DufyndJarvisBridge) -> tuple[str, dict[str, Any]]:
+    budget_id = os.getenv("DUFYND_JARVIS_BUDGET_ID")
+    if not budget_id:
+        raise RuntimeError("DUFYND_JARVIS_BUDGET_ID is required for active model execution.")
+    status = bridge.load_budget_status(budget_id)
+    if not status.get("can_run"):
+        raise RuntimeError(
+            "DUFYND Jarvis budget window does not permit another run: "
+            + json.dumps(status, ensure_ascii=False, default=str)
+        )
+    configured_model = os.getenv("DUFYND_JARVIS_MODEL")
+    budget_model = status.get("model")
+    if budget_model and configured_model and budget_model != configured_model:
+        raise RuntimeError(
+            f"Jarvis budget window requires model {budget_model}, not {configured_model}."
+        )
+    return budget_id, status
+
+
 def make_options(bridge: DufyndJarvisBridge) -> ClaudeAgentOptions:
     model, max_turns, max_budget_usd = _require_active_runtime()
     return ClaudeAgentOptions(
@@ -420,7 +440,15 @@ def event_prompt(event: dict[str, Any]) -> str:
     )
 
 
-async def run_prompt(prompt: str, bridge: DufyndJarvisBridge) -> tuple[str, float | None]:
+async def run_prompt(
+    prompt: str,
+    bridge: DufyndJarvisBridge,
+    *,
+    budget_id: str | None = None,
+) -> tuple[str, float | None, str]:
+    resolved_budget_id = budget_id
+    if resolved_budget_id is None:
+        resolved_budget_id, _ = await asyncio.to_thread(_require_budget_window, bridge)
     options = make_options(bridge)
     async with ClaudeSDKClient(options=options) as client:
         await client.query(prompt)
@@ -428,10 +456,16 @@ async def run_prompt(prompt: str, bridge: DufyndJarvisBridge) -> tuple[str, floa
     if result.is_error:
         detail = "; ".join(result.tool_errors) or result.text or "Jarvis SDK turn failed"
         raise RuntimeError(detail)
-    return result.text.strip(), result.cost_usd
+    return result.text.strip(), result.cost_usd, resolved_budget_id
 
 
 async def process_next(bridge: DufyndJarvisBridge) -> int:
+    health = await asyncio.to_thread(bridge.load_health)
+    if int((health.get("inbox") or {}).get("pending") or 0) == 0:
+        print("DUFYND Jarvis inbox: no pending event.")
+        return 0
+
+    budget_id, _ = await asyncio.to_thread(_require_budget_window, bridge)
     event = await asyncio.to_thread(bridge.claim_next_inbox_event)
     if event is None:
         print("DUFYND Jarvis inbox: no pending event.")
@@ -440,7 +474,11 @@ async def process_next(bridge: DufyndJarvisBridge) -> int:
     inbox_id = int(event["inbox_id"])
     attempts = int(event.get("attempts") or 0)
     try:
-        text, cost_usd = await run_prompt(event_prompt(event), bridge)
+        text, cost_usd, _ = await run_prompt(
+            event_prompt(event),
+            bridge,
+            budget_id=budget_id,
+        )
         await asyncio.to_thread(
             bridge.record_run,
             run_type=f"inbox:{event.get('event_type', 'unknown')}",
@@ -451,6 +489,7 @@ async def process_next(bridge: DufyndJarvisBridge) -> int:
                     "inbox_id": inbox_id,
                     "event_type": event.get("event_type"),
                     "cost_usd": cost_usd,
+                    "budget_id": budget_id,
                     "runtime": "dufynd_jarvis_v0_1",
                 }
             ],
@@ -487,13 +526,20 @@ async def process_next(bridge: DufyndJarvisBridge) -> int:
 
 
 async def run_once(prompt: str, bridge: DufyndJarvisBridge) -> int:
-    text, cost_usd = await run_prompt(prompt, bridge)
+    budget_id, _ = await asyncio.to_thread(_require_budget_window, bridge)
+    text, cost_usd, _ = await run_prompt(prompt, bridge, budget_id=budget_id)
     await asyncio.to_thread(
         bridge.record_run,
         run_type="manual_internal",
         input_summary=prompt[:4000],
         output_summary=text[:8000] or "(Jarvis produced no prose output)",
-        decisions=[{"cost_usd": cost_usd, "runtime": "dufynd_jarvis_v0_1"}],
+        decisions=[
+            {
+                "cost_usd": cost_usd,
+                "budget_id": budget_id,
+                "runtime": "dufynd_jarvis_v0_1",
+            }
+        ],
         human_approval_required=False,
         agent_name="jarvis",
     )
