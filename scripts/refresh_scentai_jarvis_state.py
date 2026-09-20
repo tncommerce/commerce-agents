@@ -308,7 +308,7 @@ def summary(state: dict[str, Any]) -> dict[str, Any]:
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Rebuild all derived SCENTAI Jarvis operational views in "
+            "Rebuild all derived DUFYND Jarvis operational views in "
             "dependency order from source-of-truth data. Dry-run by default."
         )
     )
@@ -339,7 +339,7 @@ def main() -> int:
     else:
         ops = report["summary"]
         print(
-            "SCENTAI Jarvis state refresh | "
+            "DUFYND Jarvis state refresh | "
             f"dry_run={report['dry_run']} | "
             f"state={ops['overall_state']} | "
             f"domain={ops['active_domain']} | "
