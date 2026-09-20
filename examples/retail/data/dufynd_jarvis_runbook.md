@@ -96,7 +96,10 @@ Active model execution is disabled by default. It requires:
 - Supabase service-role credentials
 
 The runner processes one inbox event per invocation. The default maximum is eight
-agent turns and the runtime clamps the configured value to twelve.
+agent turns and the runtime clamps the configured value to twelve. Active runs also
+have a per-run USD budget guard: the default is $0.25 via
+`DUFYND_JARVIS_MAX_BUDGET_USD`, and the runtime clamps any configured value to a
+hard maximum of $1.00 per event run.
 
 A guarded GitHub Actions workflow exists at
 `.github/workflows/dufynd-jarvis-manual.yml`. Its default mode is readiness-only.
