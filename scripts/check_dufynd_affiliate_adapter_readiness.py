@@ -75,26 +75,13 @@ def evaluate_adapter_readiness(
     if merchant_id and application is None:
         issues.append("merchant_missing_from_affiliate_program_registry")
 
-    expected_network = (
-        str(application.get("network") or "").strip()
-        if application
-        else ""
-    )
-    if (
-        expected_network
-        and network
-        and expected_network.casefold() != network.casefold()
-    ):
+    expected_network = str(application.get("network") or "").strip() if application else ""
+    if expected_network and network and expected_network.casefold() != network.casefold():
         issues.append(
-            "affiliate_network_mismatch:"
-            f"expected={expected_network},configured={network}"
+            f"affiliate_network_mismatch:expected={expected_network},configured={network}"
         )
 
-    application_status = (
-        str(application.get("status") or "").strip()
-        if application
-        else None
-    )
+    application_status = str(application.get("status") or "").strip() if application else None
 
     if not contract["valid"] or any(
         issue.startswith(
@@ -126,9 +113,7 @@ def evaluate_adapter_readiness(
         "application_status": application_status,
         "partner_status": partner.get("status") if partner else None,
         "provider_contract_valid": contract["valid"],
-        "promotion_asset_contract_ready": contract[
-            "promotion_asset_contract_ready"
-        ],
+        "promotion_asset_contract_ready": contract["promotion_asset_contract_ready"],
         "issues": sorted(set(issues)),
         "next_action": next_action,
     }
