@@ -28,9 +28,7 @@ def mock_transport() -> httpx.MockTransport:
                         {"merchant_id": "notino"},
                     ],
                     "content_funnel": [{"content_id": "video1"}],
-                    "asset_business_performance": [
-                        {"asset_id": "asset1", "content_id": "video1"}
-                    ],
+                    "asset_business_performance": [{"asset_id": "asset1", "content_id": "video1"}],
                     "launch_gate": {
                         "state": "not_ready",
                         "required_passed": 4,
