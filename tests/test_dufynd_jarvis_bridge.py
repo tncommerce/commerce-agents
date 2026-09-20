@@ -91,6 +91,16 @@ def mock_transport() -> httpx.MockTransport:
                 ],
             )
 
+        if request.url.path.endswith("/rpc/get_dufynd_jarvis_health"):
+            return httpx.Response(
+                200,
+                json={
+                    "state": "events_waiting",
+                    "inbox": {"pending": 1, "processing": 0, "failed": 0},
+                    "pending_human_decisions": 5,
+                },
+            )
+
         if request.url.path.endswith("/rpc/claim_dufynd_jarvis_event"):
             return httpx.Response(
                 200,
@@ -305,6 +315,20 @@ def test_bridge_loads_autonomy_queue() -> None:
     assert len(queue["safe_to_execute"]) == 1
     assert len(queue["approval_required"]) == 1
     assert len(queue["waiting_external"]) == 1
+
+
+def test_bridge_loads_health() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    health = bridge.load_health()
+
+    assert health["state"] == "events_waiting"
+    assert health["inbox"]["pending"] == 1
+    assert health["pending_human_decisions"] == 5
 
 
 def test_bridge_loads_pending_decisions() -> None:
