@@ -42,12 +42,12 @@ jobs:
       - name: Readiness only
         if: inputs.mode == 'readiness'
         env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           DUFYND_JARVIS_MODEL: ${{ vars.DUFYND_JARVIS_MODEL }}
           DUFYND_JARVIS_ACTIVE: "0"
-        run: python scripts/dufynd_jarvis_runtime.py --readiness
+        run: python -m scripts.dufynd_jarvis_runtime --readiness
 
       - name: Validate explicit active-run approval
         if: inputs.mode == 'process-next'
@@ -62,7 +62,7 @@ jobs:
       - name: Process one Jarvis event
         if: inputs.mode == 'process-next'
         env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           DUFYND_JARVIS_MODEL: ${{ vars.DUFYND_JARVIS_MODEL }}
@@ -70,4 +70,4 @@ jobs:
           DUFYND_JARVIS_MAX_BUDGET_USD: "0.25"
           DUFYND_JARVIS_BUDGET_ID: "jarvis_activation_pilot_001"
           DUFYND_JARVIS_ACTIVE: "1"
-        run: python scripts/dufynd_jarvis_runtime.py --process-next
+        run: python -m scripts.dufynd_jarvis_runtime --process-next
