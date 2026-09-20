@@ -30,9 +30,7 @@ def mock_transport() -> httpx.MockTransport:
                     ],
                     "content_funnel": [{"content_id": "video1"}],
                     "content_board": [{"slot": 1}, {"slot": 2}],
-                    "asset_business_performance": [
-                        {"asset_id": "asset1", "content_id": "video1"}
-                    ],
+                    "asset_business_performance": [{"asset_id": "asset1", "content_id": "video1"}],
                     "autonomy_queue": {
                         "safe_to_execute": [{"task_id": "task_safe"}],
                         "approval_required": [{"task_id": "task_approval"}],
