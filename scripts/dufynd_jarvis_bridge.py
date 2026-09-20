@@ -111,6 +111,12 @@ class DufyndJarvisBridge:
             raise ValueError("DUFYND experiment rubric must be a JSON array")
         return payload
 
+    def load_pending_decisions(self) -> list[dict[str, Any]]:
+        payload = self._rpc("get_dufynd_pending_decisions")
+        if not isinstance(payload, list):
+            raise ValueError("DUFYND pending decisions must be a JSON array")
+        return payload
+
     def claim_next_inbox_event(self) -> dict[str, Any] | None:
         payload = self._rpc("claim_dufynd_jarvis_event")
         if payload is None:
@@ -245,7 +251,7 @@ class DufyndJarvisBridge:
         pattern_id: str | None = None,
     ) -> str:
         resolved_id = pattern_id or f"pattern_{uuid4().hex}"
-        self._insert(
+        self._upsert(
             "dufynd_creative_patterns",
             {
                 "pattern_id": resolved_id,
@@ -259,6 +265,7 @@ class DufyndJarvisBridge:
                 "generation_guidance": generation_guidance or {},
                 "status": "active",
             },
+            on_conflict="pattern_id",
         )
         return resolved_id
 
@@ -332,10 +339,17 @@ class DufyndJarvisBridge:
         model_candidates: list[str] | None = None,
         priority: int = 50,
         source: str = "jarvis",
+        objective: str | None = None,
+        target_platforms: list[str] | None = None,
+        asset_requirements: list[str] | None = None,
+        affiliate_role: str | None = None,
+        evaluation_metrics: list[str] | None = None,
+        risk_notes: list[str] | None = None,
+        hook_template_ids: list[str] | None = None,
         idea_id: str | None = None,
     ) -> str:
         resolved_id = idea_id or f"idea_{uuid4().hex}"
-        self._insert(
+        self._upsert(
             "dufynd_content_ideas",
             {
                 "id": resolved_id,
@@ -349,7 +363,16 @@ class DufyndJarvisBridge:
                 "status": "draft",
                 "priority": max(0, min(priority, 100)),
                 "source": source,
+                "objective": objective,
+                "target_platforms": target_platforms
+                or ["tiktok", "instagram_reels", "youtube_shorts"],
+                "asset_requirements": asset_requirements or [],
+                "affiliate_role": affiliate_role,
+                "evaluation_metrics": evaluation_metrics or [],
+                "risk_notes": risk_notes or [],
+                "hook_template_ids": hook_template_ids or [],
             },
+            on_conflict="id",
         )
         return resolved_id
 
@@ -397,7 +420,7 @@ class DufyndJarvisBridge:
         experiment_id: str | None = None,
     ) -> str:
         resolved_id = experiment_id or f"exp_{uuid4().hex}"
-        self._insert(
+        self._upsert(
             "dufynd_experiments",
             {
                 "id": resolved_id,
@@ -410,6 +433,7 @@ class DufyndJarvisBridge:
                 "cost_credits": cost_credits,
                 "cost_eur": cost_eur,
             },
+            on_conflict="id",
         )
         return resolved_id
 
@@ -424,7 +448,7 @@ class DufyndJarvisBridge:
         lesson_id: str | None = None,
     ) -> str:
         resolved_id = lesson_id or f"lesson_{uuid4().hex}"
-        self._insert(
+        self._upsert(
             "dufynd_agent_lessons",
             {
                 "id": resolved_id,
@@ -435,6 +459,7 @@ class DufyndJarvisBridge:
                 "confidence": max(0.0, min(confidence, 1.0)),
                 "status": "active",
             },
+            on_conflict="id",
         )
         return resolved_id
 
