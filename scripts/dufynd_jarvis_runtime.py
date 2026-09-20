@@ -125,6 +125,14 @@ def build_tools(bridge: DufyndJarvisBridge) -> list[SdkMcpTool[Any]]:
         return _json_result(await asyncio.to_thread(bridge.load_pending_decisions))
 
     @tool(
+        "load_runtime_health",
+        "Load Jarvis inbox health, learning counts, gates and current autonomy boundary.",
+        {},
+    )
+    async def load_runtime_health(_args: dict[str, Any]) -> dict[str, Any]:
+        return _json_result(await asyncio.to_thread(bridge.load_health))
+
+    @tool(
         "record_creative_pattern",
         "Create one genuinely new reusable DUFYND creative pattern.",
         {
@@ -296,6 +304,7 @@ def build_tools(bridge: DufyndJarvisBridge) -> list[SdkMcpTool[Any]]:
         load_autonomy_queue,
         load_experiment_rubric,
         load_pending_decisions,
+        load_runtime_health,
         record_creative_pattern,
         link_reference_pattern,
         record_content_idea,
@@ -319,6 +328,7 @@ def allowed_tool_names() -> list[str]:
         "load_autonomy_queue",
         "load_experiment_rubric",
         "load_pending_decisions",
+        "load_runtime_health",
         "record_creative_pattern",
         "link_reference_pattern",
         "record_content_idea",
