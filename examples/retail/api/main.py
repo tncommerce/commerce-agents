@@ -110,6 +110,10 @@ async def merchant_partners() -> dict:
 @app.get("/api/merchant-partners/{partner_key}/clickout")
 async def merchant_partner_clickout(
     partner_key: str,
+    record: host.CurrentSession,
+    src: str | None = None,
+    cmp: str | None = None,
+    content: str | None = None,
 ) -> RedirectResponse:
     partner = partner_store.eligible(partner_key)
     if partner is None or partner.affiliate_url is None:
@@ -117,6 +121,16 @@ async def merchant_partner_clickout(
             status_code=404,
             detail="Merchant partner not available",
         )
+
+    await analytics_tracker.record(
+        session_id=record.session_id,
+        event="merchant_clickout",
+        source=partner.merchant_id,
+        acquisition_source=sanitize_attribution_identifier(src),
+        campaign_id=sanitize_attribution_identifier(cmp),
+        content_id=sanitize_attribution_identifier(content),
+        surface="merchant_discovery",
+    )
 
     return RedirectResponse(
         url=partner.affiliate_url,
@@ -164,6 +178,7 @@ async def analytics_event(
 @app.get("/api/clickout/{offer_id}")
 async def merchant_clickout(
     offer_id: str,
+    record: host.CurrentSession,
     src: str | None = None,
     cmp: str | None = None,
     content: str | None = None,
@@ -172,11 +187,25 @@ async def merchant_clickout(
     if offer is None:
         raise HTTPException(status_code=404, detail="Offer not available")
 
+    acquisition_source = sanitize_attribution_identifier(src)
+    campaign_id = sanitize_attribution_identifier(cmp)
+    content_id = sanitize_attribution_identifier(content)
+
     clickout_tracker.record(
         offer,
-        acquisition_source=sanitize_attribution_identifier(src),
-        campaign_id=sanitize_attribution_identifier(cmp),
-        content_id=sanitize_attribution_identifier(content),
+        acquisition_source=acquisition_source,
+        campaign_id=campaign_id,
+        content_id=content_id,
+    )
+    await analytics_tracker.record(
+        session_id=record.session_id,
+        event="merchant_clickout",
+        product_id=offer.product_id,
+        source=offer.merchant_id,
+        acquisition_source=acquisition_source,
+        campaign_id=campaign_id,
+        content_id=content_id,
+        surface="merchant_offer",
     )
     target = offer.affiliate_url or offer.product_url
     return RedirectResponse(url=target, status_code=302)
