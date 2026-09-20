@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
 import FragranceOffers from "@/components/FragranceOffers";
 import FragranceSaveControls from "@/components/FragranceSaveControls";
 import {
@@ -238,6 +239,7 @@ export default async function FragrancePage({
 
   return (
     <main className="min-h-screen bg-(--surface) text-(--ink)">
+      <AcquisitionAnalytics source="fragrance_detail" />
       <header className="border-b border-(--line) bg-(--card)">
         <div className="mx-auto flex max-w-[1080px] items-center justify-between gap-4 px-4 py-4 sm:px-6">
           <a
