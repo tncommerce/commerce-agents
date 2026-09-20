@@ -4,7 +4,6 @@ import json
 
 import httpx
 import pytest
-
 from scripts.dufynd_jarvis_bridge import (
     DufyndJarvisBridge,
     summarize_context,
