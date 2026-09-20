@@ -61,6 +61,7 @@ For a creative reference event:
 - link the reference to existing patterns where possible
 - create a new pattern only when truly distinct
 - create at most three original DUFYND adaptations when they add value
+- link every new Jarvis-created idea to the reusable patterns it actually uses
 - record a concise knowledge event describing what changed
 
 For a performance event:
@@ -247,6 +248,32 @@ def build_tools(bridge: DufyndJarvisBridge) -> list[SdkMcpTool[Any]]:
         return _json_result({"idea_id": idea_id})
 
     @tool(
+        "link_idea_pattern",
+        "Link a Jarvis-created DUFYND idea to an existing reusable creative pattern.",
+        {
+            "type": "object",
+            "properties": {
+                "idea_id": {"type": "string"},
+                "pattern_id": {"type": "string"},
+                "role": {"type": "string"},
+                "position": {"type": "integer"},
+                "notes": {"type": "string"},
+            },
+            "required": ["idea_id", "pattern_id", "role"],
+        },
+    )
+    async def link_idea_pattern(args: dict[str, Any]) -> dict[str, Any]:
+        await asyncio.to_thread(
+            bridge.link_idea_pattern,
+            idea_id=_require_runtime_id(args["idea_id"], "jarvis_idea_"),
+            pattern_id=args["pattern_id"],
+            role=args["role"],
+            position=int(args.get("position", 1)),
+            notes=args.get("notes"),
+        )
+        return _json_result({"linked": True})
+
+    @tool(
         "record_lesson",
         "Store one durable DUFYND lesson supported by evidence.",
         {
@@ -315,6 +342,7 @@ def build_tools(bridge: DufyndJarvisBridge) -> list[SdkMcpTool[Any]]:
         record_creative_pattern,
         link_reference_pattern,
         record_content_idea,
+        link_idea_pattern,
         record_lesson,
         record_knowledge_event,
     ]
@@ -339,6 +367,7 @@ def allowed_tool_names() -> list[str]:
         "record_creative_pattern",
         "link_reference_pattern",
         "record_content_idea",
+        "link_idea_pattern",
         "record_lesson",
         "record_knowledge_event",
     )
