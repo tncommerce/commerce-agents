@@ -3,7 +3,6 @@ from __future__ import annotations
 import asyncio
 
 import pytest
-
 from scripts.dufynd_jarvis_runtime import (
     SYSTEM_PROMPT,
     _require_active_runtime,
