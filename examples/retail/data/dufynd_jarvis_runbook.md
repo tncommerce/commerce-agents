@@ -148,3 +148,23 @@ content -> DUFYND -> product -> merchant -> attributed clickout
 
 Content may be preproduced before affiliate approval. Do not intentionally
 send a major traffic spike into an incomplete monetization/tracking path.
+
+
+## Production smoke
+
+The current public deployment endpoints are:
+- storefront: `https://dufynd.de`
+- Render storefront hostname: `https://scentai-xxya.onrender.com`
+- API: `https://scentai-api-kxhe.onrender.com`
+
+The legacy Render hostnames are deployment identifiers only; the public brand remains
+DUFYND.
+
+Run the read-only production smoke with:
+
+```powershell
+python scripts/dufynd_production_smoke.py
+```
+
+The smoke checks the storefront, the DUFYND API identity and the merchant-partner
+contract without creating a purchase, affiliate click or customer mutation.
