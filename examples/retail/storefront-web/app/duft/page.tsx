@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
 
 import FragranceCatalogBrowser from "@/components/FragranceCatalogBrowser";
 import { LIVE_FRAGRANCES } from "@/lib/fragranceCatalog";
@@ -22,6 +23,7 @@ export default function FragranceIndexPage() {
 
   return (
     <main className="min-h-screen bg-(--surface) text-(--ink)">
+      <AcquisitionAnalytics source="catalog" />
       <header className="border-b border-(--line) bg-(--card)">
         <div className="mx-auto flex max-w-[1080px] items-center justify-between gap-4 px-4 py-4 sm:px-6">
           <a
