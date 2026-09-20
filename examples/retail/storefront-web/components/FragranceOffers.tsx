@@ -238,16 +238,6 @@ export default function FragranceOffers({
                     ? "sponsored noopener noreferrer"
                     : "noopener noreferrer"
                 }
-                onClick={() =>
-                  void trackAnalyticsEvent(
-                    "merchant_clickout",
-                    {
-                      product_id: offer.product_id,
-                      source: offer.merchant_id,
-                      surface: analyticsSurface,
-                    },
-                  )
-                }
                 className="rounded-xl bg-(--accent) px-4 py-2.5 text-[13px] font-semibold text-white transition-opacity hover:opacity-90"
               >
                 Bei {offer.merchant_name} ansehen
