@@ -1,4 +1,4 @@
-name: SCENTAI CI
+name: DUFYND CI
 
 on:
   push:
