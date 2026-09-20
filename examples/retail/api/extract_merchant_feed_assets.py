@@ -132,7 +132,7 @@ def main() -> int:
         print(json.dumps(payload, ensure_ascii=False))
     else:
         print(
-            "SCENTAI feed image candidates | "
+            "DUFYND feed image candidates | "
             f"provider={provider_name} | "
             f"candidates={result['candidate_count']} | "
             f"unmatched={result['unmatched_count']} | "
