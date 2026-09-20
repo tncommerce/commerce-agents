@@ -27,6 +27,9 @@ def mock_transport() -> httpx.MockTransport:
                         {"merchant_id": "notino"},
                     ],
                     "content_funnel": [{"content_id": "video1"}],
+                    "asset_business_performance": [
+                        {"asset_id": "asset1", "content_id": "video1"}
+                    ],
                     "launch_gate": {
                         "state": "not_ready",
                         "required_passed": 4,
@@ -71,6 +74,12 @@ def mock_transport() -> httpx.MockTransport:
             assert row["status"] == "draft"
             return httpx.Response(201)
 
+        if request.url.path.endswith("/dufynd_content_assets"):
+            row = json.loads(request.content)
+            assert row["content_id"] == "genesis_naxos_01"
+            assert row["status"] == "draft"
+            return httpx.Response(201)
+
         if request.url.path.endswith("/dufynd_experiments"):
             row = json.loads(request.content)
             assert row["model"] == "seedance"
@@ -105,6 +114,7 @@ def test_bridge_loads_context_and_summary() -> None:
     assert summary.lessons == 1
     assert summary.affiliate_partners == 2
     assert summary.funnel_rows == 1
+    assert summary.asset_performance_rows == 1
 
 
 def test_bridge_loads_launch_gate() -> None:
@@ -188,3 +198,23 @@ def test_bridge_refreshes_launch_gate() -> None:
 
     assert gate["state"] == "not_ready"
     assert gate["required_total"] == 11
+
+
+def test_bridge_records_content_asset() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    asset_id = bridge.record_content_asset(
+        content_idea_id="idea_test",
+        asset_type="video",
+        uri="https://example.test/video.mp4",
+        platform="tiktok",
+        metadata={"tier": "hero"},
+        content_id="genesis_naxos_01",
+        asset_id="asset_test",
+    )
+
+    assert asset_id == "asset_test"
