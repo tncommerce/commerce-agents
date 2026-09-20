@@ -72,3 +72,33 @@ def test_smoke_rejects_non_absolute_url() -> None:
             api_url="https://api.dufynd.test",
             transport=transport(),
         )
+
+
+def test_smoke_fails_when_storefront_is_not_dufynd() -> None:
+    def handler(request: httpx.Request) -> httpx.Response:
+        if request.url.host == "dufynd.de":
+            return httpx.Response(200, text="<html>Wrong brand</html>")
+        if request.url.path == "/api/health":
+            return httpx.Response(
+                200,
+                json={"ok": True, "service": "dufynd-api"},
+            )
+        if request.url.path == "/api/merchant-partners":
+            return httpx.Response(
+                200,
+                json={
+                    "partners": [],
+                    "affiliate_disclosure": "Affiliate disclosure",
+                },
+            )
+        return httpx.Response(404)
+
+    report = run_smoke(
+        storefront_url="https://dufynd.de",
+        api_url="https://api.dufynd.test",
+        transport=httpx.MockTransport(handler),
+    )
+
+    assert report.ok is False
+    assert report.checks[0].name == "storefront"
+    assert report.checks[0].ok is False
