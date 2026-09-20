@@ -1,17 +1,15 @@
 {
   "version": 1,
-  "generated_at": "2026-09-20T16:34:02+00:00",
-  "source_fingerprint_sha256": "d72796be893ac6a6a7a7ac2f2b7ce4670409b65406e5f8f9a66b4ee5e2e1e925",
-  "system": "SCENTAI",
+  "generated_at": "2026-09-20T17:27:33+00:00",
+  "source_fingerprint_sha256": "60d5c87b654bfa4252e9e844c48b9c877a3ec90ac17b5cb8b0cad5b10c233431",
+  "system": "DUFYND",
   "domain": "content",
   "campaign_id": "launch01",
-  "overall_state": "visual_preview_generation_pending",
-  "next_action": "render_and_verify_visual_preview_mp4s",
-  "next_action_class": "auto_allowed",
-  "user_approval_required_now": false,
+  "overall_state": "voiceover_pending",
+  "next_action": "record_or_generate_voiceover_audio",
+  "next_action_class": "approval_required",
+  "user_approval_required_now": true,
   "blockers": [
-    "visual_preview_mp4s_incomplete",
-    "pilot_visual_preview_generation_pending",
     "voiceover_audio_pending",
     "subtitle_timing_conformance_pending",
     "final_video_renders_incomplete"
@@ -21,7 +19,8 @@
     "product_assets_verified": 12,
     "product_assets_required": 12,
     "voiceover_scripts_ready": 5,
-    "visual_preview_mp4s_ready": 0,
+    "visual_preview_mp4s_ready": 5,
+    "visual_preview_source": "rendered_files",
     "subtitle_drafts_ready": 5,
     "tracked_links_ready": 15,
     "social_copy_ready": 5,
@@ -44,7 +43,7 @@
     {
       "content_id": "original_vs_alt_imagination_01",
       "production_order": 1,
-      "state": "visual_preview_pending",
+      "state": "voiceover_pending",
       "subtitle_timing_status": "draft_not_conformed",
       "price_recheck_required": false,
       "publish_action_class": "approval_required"
@@ -52,7 +51,7 @@
     {
       "content_id": "budget_three_under_50_01",
       "production_order": 2,
-      "state": "visual_preview_pending",
+      "state": "voiceover_pending",
       "subtitle_timing_status": "draft_not_conformed",
       "price_recheck_required": true,
       "publish_action_class": "approval_required"
@@ -60,7 +59,7 @@
     {
       "content_id": "not_every_dupe_clone_01",
       "production_order": 3,
-      "state": "visual_preview_pending",
+      "state": "voiceover_pending",
       "subtitle_timing_status": "draft_not_conformed",
       "price_recheck_required": false,
       "publish_action_class": "approval_required"
@@ -68,7 +67,7 @@
     {
       "content_id": "top3_office_01",
       "production_order": 4,
-      "state": "visual_preview_pending",
+      "state": "voiceover_pending",
       "subtitle_timing_status": "draft_not_conformed",
       "price_recheck_required": false,
       "publish_action_class": "approval_required"
@@ -76,7 +75,7 @@
     {
       "content_id": "bois_imperial_explained_01",
       "production_order": 5,
-      "state": "visual_preview_pending",
+      "state": "voiceover_pending",
       "subtitle_timing_status": "draft_not_conformed",
       "price_recheck_required": false,
       "publish_action_class": "approval_required"

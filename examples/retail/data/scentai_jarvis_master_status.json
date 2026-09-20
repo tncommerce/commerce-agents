@@ -1,14 +1,14 @@
 {
   "version": 1,
-  "generated_at": "2026-09-20T16:34:02+00:00",
-  "source_fingerprint_sha256": "77d179341d71234620a97703d4365f3a74638588b2c1a5390d228a24f5acf063",
-  "system": "SCENTAI",
+  "generated_at": "2026-09-20T17:27:33+00:00",
+  "source_fingerprint_sha256": "a0b766244d8dc63e763c706d233f6b9259aa9d7c76a7f1657f83c3da8bb46332",
+  "system": "DUFYND",
   "control_plane": "commerce_jarvis_master",
-  "overall_state": "work_available",
+  "overall_state": "user_approval_required",
   "active_domain": "content",
-  "next_action": "render_and_verify_visual_preview_mp4s",
-  "next_action_class": "auto_allowed",
-  "user_approval_required_now": false,
+  "next_action": "record_or_generate_voiceover_audio",
+  "next_action_class": "approval_required",
+  "user_approval_required_now": true,
   "domains": {
     "commerce": {
       "domain": "commerce",
@@ -26,14 +26,12 @@
     },
     "content": {
       "domain": "content",
-      "overall_state": "visual_preview_generation_pending",
-      "execution_state": "work_available",
-      "next_action": "render_and_verify_visual_preview_mp4s",
-      "next_action_class": "auto_allowed",
-      "user_approval_required_now": false,
+      "overall_state": "voiceover_pending",
+      "execution_state": "user_approval_required",
+      "next_action": "record_or_generate_voiceover_audio",
+      "next_action_class": "approval_required",
+      "user_approval_required_now": true,
       "blockers": [
-        "visual_preview_mp4s_incomplete",
-        "pilot_visual_preview_generation_pending",
         "voiceover_audio_pending",
         "subtitle_timing_conformance_pending",
         "final_video_renders_incomplete"
