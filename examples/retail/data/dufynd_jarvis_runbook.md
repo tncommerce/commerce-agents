@@ -63,6 +63,46 @@ The comprehensive context contains:
 - content funnel outcomes
 - launch and R&D gate state
 
+
+## Passive and active runtime
+
+Jarvis has two operating layers.
+
+Passive capture is safe to leave on continuously:
+- new creative references are queued
+- new AI-video experiments are queued
+- new content-performance rows are queued
+- affiliate partner status changes are queued
+- resolved human decisions are queued
+- no model call is made and no model cost is incurred
+
+Inspect the current internal health state with:
+
+```powershell
+python scripts/dufynd_jarvis_bridge.py health --machine-readable
+```
+
+Check whether the active runner is configured without invoking a model:
+
+```powershell
+python scripts/dufynd_jarvis_runtime.py --readiness
+```
+
+Active model execution is disabled by default. It requires:
+- explicit operator approval
+- `DUFYND_JARVIS_ACTIVE=1`
+- an explicit `DUFYND_JARVIS_MODEL`
+- Anthropic credentials
+- Supabase service-role credentials
+
+The runner processes one inbox event per invocation. The default maximum is eight
+agent turns and the runtime clamps the configured value to twelve.
+
+A guarded GitHub Actions workflow exists at
+`.github/workflows/dufynd-jarvis-manual.yml`. Its default mode is readiness-only.
+Its `process-next` mode refuses to run unless the operator deliberately supplies
+the `GO-JARVIS-ACTIVE` approval token.
+
 ## Autonomy control plane
 
 Jarvis should work from the autonomy queue rather than repeatedly asking the
