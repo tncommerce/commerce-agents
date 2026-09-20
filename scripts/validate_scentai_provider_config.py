@@ -141,7 +141,7 @@ def validate_provider_config(config: dict) -> dict[str, Any]:
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Validate a SCENTAI mapped merchant provider config before running a real feed dry-run."
+            "Validate a DUFYND mapped merchant provider config before running a real feed dry-run."
         )
     )
     parser.add_argument("--config", type=Path, required=True)
@@ -157,7 +157,7 @@ def main() -> int:
         print(json.dumps(report, ensure_ascii=False))
     else:
         print(
-            "SCENTAI provider config | "
+            "DUFYND provider config | "
             f"valid={report['valid']} | "
             f"import_ready={report['import_contract_ready']} | "
             f"promotion_ready={report['promotion_asset_contract_ready']} | "
