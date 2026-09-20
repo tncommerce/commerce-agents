@@ -34,6 +34,7 @@ def test_content_pipeline_prioritizes_first_unrendered_batch() -> None:
         generated_at="2026-09-19T10:00:00+00:00",
     )
 
+    assert report["system"] == "DUFYND"
     assert report["batch_count"] == 2
     assert report["total_pilots"] == 10
     assert report["current_batch_id"] == "pilot_batch_01"
