@@ -37,6 +37,17 @@ def source_fingerprint(*payloads: object) -> str:
     return digest.hexdigest()
 
 
+def _nonempty_file_exists(path_value: object) -> bool:
+    if not isinstance(path_value, str) or not path_value.strip():
+        return False
+
+    path = Path(path_value)
+    try:
+        return path.is_file() and path.stat().st_size > 0
+    except OSError:
+        return False
+
+
 def build_content_operations_status(
     manifest: dict,
     readiness: dict,
@@ -67,7 +78,24 @@ def build_content_operations_status(
     ]
 
     summary = readiness.get("summary", {})
-    visual_previews = int(summary.get("visual_preview_mp4s_ready", 0) or 0)
+    preview_path_rows = [
+        row
+        for row in job_rows
+        if isinstance(row.get("visual_preview_path"), str)
+        and str(row.get("visual_preview_path") or "").strip()
+    ]
+    preview_ready_ids = {
+        str(row.get("content_id") or "")
+        for row in preview_path_rows
+        if _nonempty_file_exists(row.get("visual_preview_path"))
+    }
+    if preview_path_rows:
+        visual_previews = len(preview_ready_ids)
+        visual_preview_source = "rendered_files"
+    else:
+        visual_previews = int(summary.get("visual_preview_mp4s_ready", 0) or 0)
+        visual_preview_source = "readiness_summary"
+
     final_renders = int(summary.get("final_video_renders_ready", 0) or 0)
 
     voiceover_scripts = int(summary.get("voiceover_scripts_ready", 0) or 0)
@@ -78,8 +106,15 @@ def build_content_operations_status(
     blockers: list[str] = []
     if visual_previews < len(pilot_ids):
         blockers.append("visual_preview_mp4s_incomplete")
-    if any(str(row.get("state") or "") == "visual_preview_pending" for row in job_rows):
-        blockers.append("pilot_visual_preview_generation_pending")
+        if any(
+            str(row.get("state") or "") == "visual_preview_pending"
+            and (
+                not preview_path_rows
+                or str(row.get("content_id") or "") not in preview_ready_ids
+            )
+            for row in job_rows
+        ):
+            blockers.append("pilot_visual_preview_generation_pending")
     if any("voiceover_file_missing" in row.get("blockers", []) for row in job_rows):
         blockers.append("voiceover_audio_pending")
     if any(
@@ -141,8 +176,12 @@ def build_content_operations_status(
             subtitles,
             links,
             social_copy,
+            {
+                "visual_preview_source": visual_preview_source,
+                "preview_ready_ids": sorted(preview_ready_ids),
+            },
         ),
-        "system": "SCENTAI",
+        "system": "DUFYND",
         "domain": "content",
         "campaign_id": manifest.get("campaign_id"),
         "overall_state": overall_state,
@@ -156,6 +195,7 @@ def build_content_operations_status(
             "product_assets_required": int(summary.get("product_assets_required", 0) or 0),
             "voiceover_scripts_ready": voiceover_scripts,
             "visual_preview_mp4s_ready": visual_previews,
+            "visual_preview_source": visual_preview_source,
             "subtitle_drafts_ready": subtitle_drafts,
             "tracked_links_ready": tracked_links,
             "social_copy_ready": social_ready,
@@ -172,7 +212,13 @@ def build_content_operations_status(
             {
                 "content_id": row.get("content_id"),
                 "production_order": row.get("production_order"),
-                "state": row.get("state"),
+                "state": (
+                    "voiceover_pending"
+                    if preview_path_rows
+                    and str(row.get("content_id") or "") in preview_ready_ids
+                    and "voiceover_file_missing" in row.get("blockers", [])
+                    else row.get("state")
+                ),
                 "subtitle_timing_status": row.get("subtitle_timing_status"),
                 "price_recheck_required": bool(row.get("price_recheck_required")),
                 "publish_action_class": row.get("publish_action_class"),
@@ -185,7 +231,7 @@ def build_content_operations_status(
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Build one Jarvis-readable SCENTAI content operations status "
+            "Build one Jarvis-readable DUFYND content operations status "
             "from pilot production source files."
         )
     )
@@ -226,7 +272,7 @@ def main() -> int:
         print(json.dumps(report, ensure_ascii=False))
     else:
         print(
-            "SCENTAI content operations | "
+            "DUFYND content operations | "
             f"state={report['overall_state']} | "
             f"next={report['next_action']} | "
             f"approval_now={report['user_approval_required_now']}"
