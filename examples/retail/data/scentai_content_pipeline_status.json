@@ -1,15 +1,20 @@
 {
   "version": 1,
-  "generated_at": "2026-09-20T17:27:33+00:00",
-  "source_fingerprint_sha256": "f4bb5e9e126045bd74cd3214682825ea9c61183feaba09f35430559e60ac774a",
+  "generated_at": "2026-09-20T17:31:22+00:00",
+  "source_fingerprint_sha256": "682de7a5d557f362298e7899bd3d0c6ce79e5df32f3ef1e944c7164294ff9fc5",
   "system": "DUFYND",
   "domain": "content",
   "pipeline_id": "launch_content_pipeline_v1",
   "batch_count": 3,
   "total_pilots": 15,
-  "current_batch_id": "pilot_batch_01",
-  "pipeline_state": "production_work_available",
-  "production_parallel_allowed": true,
+  "current_batch_id": null,
+  "pipeline_state": "legacy_batches_on_hold_for_high_end_rnd",
+  "active_track": "high_end_rnd",
+  "legacy_pilot_batches": "hold",
+  "next_action": "continue_high_end_rnd_preparation",
+  "next_action_class": "auto_allowed",
+  "user_approval_required_now": false,
+  "production_parallel_allowed": false,
   "publish_order": [
     "pilot_batch_01",
     "pilot_batch_02",
@@ -101,5 +106,5 @@
       }
     }
   ],
-  "operating_rule": "Jarvis may prepare batches in parallel, but publish decisions remain explicit user approval gates and the declared publish order is preserved unless the user changes it."
+  "operating_rule": "Legacy pilot previews remain available as references and utility prototypes. When the high-end R&D track is active and legacy batches are on hold, Jarvis must not request voiceover or final-render work for those legacy batches. Publish and paid-generation actions remain explicit user approval gates."
 }
