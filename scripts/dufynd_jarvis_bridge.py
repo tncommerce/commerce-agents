@@ -25,6 +25,8 @@ class JarvisContextSummary:
     launch_state: str | None
     references: int
     formats: int
+    hook_templates: int
+    model_profiles: int
     ideas: int
     lessons: int
     experiments: int
@@ -269,6 +271,8 @@ def summarize_context(
         launch_state=launch_gate.get("state"),
         references=len(context.get("references") or []),
         formats=len(context.get("formats") or []),
+        hook_templates=len(context.get("hook_templates") or []),
+        model_profiles=len(context.get("model_profiles") or []),
         ideas=len(context.get("ideas") or []),
         lessons=len(context.get("lessons") or []),
         experiments=len(context.get("recent_experiments") or []),
@@ -324,6 +328,8 @@ def main() -> int:
         f"launch={summary.launch_state} | "
         f"refs={summary.references} | "
         f"formats={summary.formats} | "
+        f"hooks={summary.hook_templates} | "
+        f"models={summary.model_profiles} | "
         f"ideas={summary.ideas} | "
         f"lessons={summary.lessons} | "
         f"experiments={summary.experiments} | "
