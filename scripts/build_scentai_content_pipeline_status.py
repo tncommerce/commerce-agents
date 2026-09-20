@@ -84,7 +84,7 @@ def build_content_pipeline_status(
         "version": 1,
         "generated_at": generated_at,
         "source_fingerprint_sha256": source_fingerprint(*batches),
-        "system": "SCENTAI",
+        "system": "DUFYND",
         "domain": "content",
         "pipeline_id": "launch_content_pipeline_v1",
         "batch_count": len(rows),
@@ -148,7 +148,7 @@ def build_content_pipeline_status(
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Build SCENTAI multi-batch content pipeline status."
+        description="Build DUFYND multi-batch content pipeline status."
     )
     parser.add_argument(
         "--batch-status",
@@ -182,7 +182,7 @@ def main() -> int:
         print(json.dumps(report, ensure_ascii=False))
     else:
         print(
-            "SCENTAI content pipeline | "
+            "DUFYND content pipeline | "
             f"batches={report['batch_count']} | "
             f"pilots={report['total_pilots']} | "
             f"current={report['current_batch_id']} | "
