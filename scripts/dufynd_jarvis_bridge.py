@@ -25,6 +25,7 @@ class JarvisContextSummary:
     launch_state: str | None
     references: int
     formats: int
+    creative_patterns: int
     hook_templates: int
     model_profiles: int
     ideas: int
@@ -33,6 +34,9 @@ class JarvisContextSummary:
     affiliate_partners: int
     funnel_rows: int
     asset_performance_rows: int
+    autonomy_ready: int
+    autonomy_approval_required: int
+    rubric_metrics: int
 
 
 class DufyndJarvisBridge:
@@ -86,6 +90,24 @@ class DufyndJarvisBridge:
         payload = self._rpc("get_dufynd_jarvis_context")
         if not isinstance(payload, dict):
             raise ValueError("DUFYND Jarvis context must be a JSON object")
+        return payload
+
+    def load_creative_context(self) -> dict[str, Any]:
+        payload = self._rpc("get_dufynd_jarvis_creative_context")
+        if not isinstance(payload, dict):
+            raise ValueError("DUFYND Jarvis creative context must be a JSON object")
+        return payload
+
+    def load_autonomy_queue(self) -> dict[str, Any]:
+        payload = self._rpc("get_dufynd_autonomy_queue")
+        if not isinstance(payload, dict):
+            raise ValueError("DUFYND Jarvis autonomy queue must be a JSON object")
+        return payload
+
+    def load_experiment_rubric(self) -> list[dict[str, Any]]:
+        payload = self._rpc("get_dufynd_experiment_rubric")
+        if not isinstance(payload, list):
+            raise ValueError("DUFYND experiment rubric must be a JSON array")
         return payload
 
     def load_rnd_gate(self) -> dict[str, Any]:
@@ -275,10 +297,12 @@ def summarize_context(
     context: dict[str, Any],
 ) -> JarvisContextSummary:
     launch_gate = context.get("launch_gate") or {}
+    autonomy_queue = context.get("autonomy_queue") or {}
     return JarvisContextSummary(
         launch_state=launch_gate.get("state"),
         references=len(context.get("references") or []),
         formats=len(context.get("formats") or []),
+        creative_patterns=len(context.get("creative_patterns") or []),
         hook_templates=len(context.get("hook_templates") or []),
         model_profiles=len(context.get("model_profiles") or []),
         ideas=len(context.get("ideas") or []),
@@ -287,6 +311,9 @@ def summarize_context(
         affiliate_partners=len(context.get("affiliate_partners") or []),
         funnel_rows=len(context.get("content_funnel") or []),
         asset_performance_rows=len(context.get("asset_business_performance") or []),
+        autonomy_ready=len(autonomy_queue.get("safe_to_execute") or []),
+        autonomy_approval_required=len(autonomy_queue.get("approval_required") or []),
+        rubric_metrics=len(context.get("experiment_rubric") or []),
     )
 
 
@@ -298,6 +325,9 @@ def main() -> int:
         "command",
         choices=(
             "context",
+            "creative-context",
+            "autonomy",
+            "experiment-rubric",
             "rnd-gate",
             "refresh-rnd-gate",
             "launch-gate",
@@ -311,6 +341,39 @@ def main() -> int:
     args = parser.parse_args()
 
     bridge = DufyndJarvisBridge()
+
+    if args.command == "creative-context":
+        payload = bridge.load_creative_context()
+        print(json.dumps(payload, ensure_ascii=False))
+        return 0
+
+    if args.command == "autonomy":
+        payload = bridge.load_autonomy_queue()
+        if args.machine_readable:
+            print(json.dumps(payload, ensure_ascii=False))
+        else:
+            print(
+                "DUFYND autonomy queue | "
+                f"ready={len(payload.get('safe_to_execute') or [])} | "
+                f"in_progress={len(payload.get('in_progress') or [])} | "
+                f"waiting_human={len(payload.get('waiting_human_input') or [])} | "
+                f"waiting_external={len(payload.get('waiting_external') or [])} | "
+                f"approval_required={len(payload.get('approval_required') or [])}"
+            )
+        return 0
+
+    if args.command == "experiment-rubric":
+        payload = bridge.load_experiment_rubric()
+        if args.machine_readable:
+            print(json.dumps(payload, ensure_ascii=False))
+        else:
+            print(
+                "DUFYND experiment rubric | "
+                f"metrics={len(payload)} | "
+                f"hard_fail_metrics="
+                f"{sum(1 for metric in payload if metric.get('hard_fail_below') is not None)}"
+            )
+        return 0
 
     if args.command in {"rnd-gate", "refresh-rnd-gate"}:
         payload = (
@@ -358,6 +421,7 @@ def main() -> int:
         f"launch={summary.launch_state} | "
         f"refs={summary.references} | "
         f"formats={summary.formats} | "
+        f"patterns={summary.creative_patterns} | "
         f"hooks={summary.hook_templates} | "
         f"models={summary.model_profiles} | "
         f"ideas={summary.ideas} | "
@@ -365,7 +429,10 @@ def main() -> int:
         f"experiments={summary.experiments} | "
         f"affiliate_partners={summary.affiliate_partners} | "
         f"funnel_rows={summary.funnel_rows} | "
-        f"asset_performance_rows={summary.asset_performance_rows}"
+        f"asset_performance_rows={summary.asset_performance_rows} | "
+        f"autonomy_ready={summary.autonomy_ready} | "
+        f"approval_required={summary.autonomy_approval_required} | "
+        f"rubric_metrics={summary.rubric_metrics}"
     )
     return 0
 
