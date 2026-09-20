@@ -6,6 +6,7 @@ from pathlib import Path
 from retail.api.analytics import (
     AnalyticsEventRequest,
     FirstPartyAnalyticsTracker,
+    sanitize_attribution_identifier,
     sanitize_catalog_search_term,
 )
 
@@ -223,3 +224,9 @@ def test_acquisition_attribution_rejects_free_form_text() -> None:
         pass
     else:
         raise AssertionError("campaign attribution must remain identifier-only")
+
+
+def test_attribution_identifier_sanitizer() -> None:
+    assert sanitize_attribution_identifier(" genesis_naxos_01 ") == "genesis_naxos_01"
+    assert sanitize_attribution_identifier("launch campaign") is None
+    assert sanitize_attribution_identifier("name@example.com") is None
