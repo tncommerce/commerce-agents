@@ -6,6 +6,7 @@ import pytest
 from scripts.dufynd_jarvis_runtime import (
     SYSTEM_PROMPT,
     _require_active_runtime,
+    _require_budget_window,
     _require_runtime_id,
     allowed_tool_names,
     event_prompt,
@@ -15,8 +16,24 @@ from scripts.dufynd_jarvis_runtime import (
 
 
 class EmptyBridge:
+    def load_health(self):
+        return {"inbox": {"pending": 0}}
+
     def claim_next_inbox_event(self):
         return None
+
+
+class BudgetBridge:
+    def __init__(self, can_run: bool = True):
+        self.can_run = can_run
+
+    def load_budget_status(self, budget_id: str):
+        return {
+            "budget_id": budget_id,
+            "status": "active" if self.can_run else "planned",
+            "model": "claude-sonnet-5",
+            "can_run": self.can_run,
+        }
 
 
 def test_runtime_has_only_internal_safe_tool_surface() -> None:
@@ -119,3 +136,16 @@ def test_runtime_namespaces_agent_created_ids() -> None:
 
     with pytest.raises(ValueError, match="jarvis_idea_"):
         _require_runtime_id("idea_existing_human", "jarvis_idea_")
+
+
+def test_runtime_requires_active_budget_window(monkeypatch) -> None:
+    monkeypatch.setenv("DUFYND_JARVIS_BUDGET_ID", "jarvis_activation_pilot_001")
+    monkeypatch.setenv("DUFYND_JARVIS_MODEL", "claude-sonnet-5")
+
+    budget_id, status = _require_budget_window(BudgetBridge(can_run=True))
+
+    assert budget_id == "jarvis_activation_pilot_001"
+    assert status["can_run"] is True
+
+    with pytest.raises(RuntimeError, match="does not permit another run"):
+        _require_budget_window(BudgetBridge(can_run=False))
