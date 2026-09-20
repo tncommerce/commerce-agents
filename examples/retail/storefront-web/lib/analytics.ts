@@ -127,6 +127,13 @@ export function appendAcquisitionAttribution(
     );
   }
 
+  const activeSession = safeAcquisitionIdentifier(
+    api.session,
+  );
+  if (activeSession) {
+    target.searchParams.set("sid", activeSession);
+  }
+
   return target.toString();
 }
 
