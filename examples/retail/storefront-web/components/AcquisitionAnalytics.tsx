@@ -19,8 +19,10 @@ const ALLOWED_CHANNELS = new Set([
 
 export default function AcquisitionAnalytics({
   source,
+  trackPageView = true,
 }: {
   source: string;
+  trackPageView?: boolean;
 }) {
   const trackedRef = useRef(false);
 
@@ -58,11 +60,13 @@ export default function AcquisitionAnalytics({
       ? `${source}_${explicitChannel}`
       : source;
 
-    void trackAnalyticsEvent("page_view", {
-      source: landingSource,
-      surface: "acquisition_landing",
-    });
-  }, [source]);
+    if (trackPageView) {
+      void trackAnalyticsEvent("page_view", {
+        source: landingSource,
+        surface: "acquisition_landing",
+      });
+    }
+  }, [source, trackPageView]);
 
   return null;
 }
