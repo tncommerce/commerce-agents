@@ -108,10 +108,7 @@ def build_content_operations_status(
         blockers.append("visual_preview_mp4s_incomplete")
         if any(
             str(row.get("state") or "") == "visual_preview_pending"
-            and (
-                not preview_path_rows
-                or str(row.get("content_id") or "") not in preview_ready_ids
-            )
+            and (not preview_path_rows or str(row.get("content_id") or "") not in preview_ready_ids)
             for row in job_rows
         ):
             blockers.append("pilot_visual_preview_generation_pending")
