@@ -74,7 +74,7 @@ export default function CartPanel({ cart, checkoutStaged = false }: { cart: Cart
         <>
           Dein Warenkorb ist noch leer.
           <br />
-          Frag SCENTAI nach einem passenden Duft.
+          Frag DUFYND nach einem passenden Duft.
         </>
       }
       footer={
