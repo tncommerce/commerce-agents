@@ -29,6 +29,7 @@ def mock_transport() -> httpx.MockTransport:
                         {"merchant_id": "notino"},
                     ],
                     "content_funnel": [{"content_id": "video1"}],
+                    "content_board": [{"slot": 1}, {"slot": 2}],
                     "asset_business_performance": [
                         {"asset_id": "asset1", "content_id": "video1"}
                     ],
@@ -145,6 +146,40 @@ def mock_transport() -> httpx.MockTransport:
                 },
             )
 
+        if request.url.path.endswith("/dufynd_creative_references"):
+            row = json.loads(request.content)
+            assert row["label"] == "Reference 99"
+            assert row["status"] == "candidate_reference"
+            return httpx.Response(201)
+
+        if request.url.path.endswith("/dufynd_creative_patterns"):
+            row = json.loads(request.content)
+            assert row["name"] == "Camera Dive"
+            assert row["role"] == "camera"
+            return httpx.Response(201)
+
+        if request.url.path.endswith("/dufynd_reference_patterns"):
+            row = json.loads(request.content)
+            assert row["reference_id"] == "reference_test"
+            assert row["pattern_id"] == "pattern_test"
+            assert row["confidence"] == 1.0
+            assert request.url.params["on_conflict"] == "reference_id,pattern_id"
+            assert "resolution=merge-duplicates" in request.headers["prefer"]
+            return httpx.Response(201)
+
+        if request.url.path.endswith("/dufynd_idea_patterns"):
+            row = json.loads(request.content)
+            assert row["idea_id"] == "idea_test"
+            assert row["position"] == 1
+            assert request.url.params["on_conflict"] == "idea_id,pattern_id,role"
+            return httpx.Response(201)
+
+        if request.url.path.endswith("/dufynd_knowledge_events"):
+            row = json.loads(request.content)
+            assert row["event_type"] == "reference_ingested"
+            assert row["payload"]["patterns_added"] == 1
+            return httpx.Response(201)
+
         if request.url.path.endswith("/dufynd_agent_runs"):
             row = json.loads(request.content)
             assert row["agent_name"] == "jarvis"
@@ -203,6 +238,7 @@ def test_bridge_loads_context_and_summary() -> None:
     assert summary.affiliate_partners == 2
     assert summary.funnel_rows == 1
     assert summary.asset_performance_rows == 1
+    assert summary.content_board_items == 2
     assert summary.autonomy_ready == 1
     assert summary.autonomy_approval_required == 1
     assert summary.rubric_metrics == 2
@@ -261,6 +297,50 @@ def test_bridge_loads_launch_gate() -> None:
 
     assert gate["state"] == "not_ready"
     assert gate["required_passed"] == 4
+
+
+def test_bridge_records_reference_and_pattern_links() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    reference_id = bridge.record_creative_reference(
+        label="Reference 99",
+        category="camera_transition",
+        summary="Camera enters one material world and exits another.",
+        dufynd_application="Use the move as a scent-world transition.",
+        quality_notes="Keep spatial continuity.",
+        reference_id="reference_test",
+    )
+    pattern_id = bridge.record_creative_pattern(
+        name="Camera Dive",
+        role="camera",
+        description="Camera physically enters a foreground object.",
+        mechanism="A motivated camera move creates a hidden transition.",
+        pattern_id="pattern_test",
+    )
+    bridge.link_reference_pattern(
+        reference_id=reference_id,
+        pattern_id=pattern_id,
+        confidence=1.3,
+    )
+    bridge.link_idea_pattern(
+        idea_id="idea_test",
+        pattern_id=pattern_id,
+        role="camera",
+        position=0,
+    )
+    bridge.record_knowledge_event(
+        event_type="reference_ingested",
+        source_type="operator_reference",
+        source_id=reference_id,
+        payload={"patterns_added": 1},
+    )
+
+    assert reference_id == "reference_test"
+    assert pattern_id == "pattern_test"
 
 
 def test_bridge_records_agent_run() -> None:
