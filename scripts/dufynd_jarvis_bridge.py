@@ -5,6 +5,7 @@ import json
 import os
 from dataclasses import dataclass
 from typing import Any
+from uuid import uuid4
 
 import httpx
 
@@ -94,6 +95,110 @@ class DufyndJarvisBridge:
             raise ValueError("DUFYND launch gate must be a JSON object")
         return payload
 
+    def _insert(
+        self,
+        table: str,
+        row: dict[str, Any],
+    ) -> None:
+        with self._client() as client:
+            response = client.post(
+                f"{self.supabase_url}/rest/v1/{table}",
+                headers={
+                    **_headers(self.secret_key),
+                    "Prefer": "return=minimal",
+                },
+                json=row,
+            )
+            response.raise_for_status()
+
+    def record_content_idea(
+        self,
+        *,
+        title: str,
+        concept: str,
+        hook: str,
+        format_id: str | None = None,
+        fragrance: str | None = None,
+        sequence: list[str] | None = None,
+        model_candidates: list[str] | None = None,
+        priority: int = 50,
+        source: str = "jarvis",
+        idea_id: str | None = None,
+    ) -> str:
+        resolved_id = idea_id or f"idea_{uuid4().hex}"
+        self._insert(
+            "dufynd_content_ideas",
+            {
+                "id": resolved_id,
+                "title": title,
+                "format_id": format_id,
+                "fragrance": fragrance,
+                "concept": concept,
+                "hook": hook,
+                "sequence": sequence or [],
+                "model_candidates": model_candidates or [],
+                "status": "draft",
+                "priority": max(0, min(priority, 100)),
+                "source": source,
+            },
+        )
+        return resolved_id
+
+    def record_experiment(
+        self,
+        *,
+        model: str,
+        prompt_summary: str,
+        verdict: str,
+        scores: dict[str, float] | None = None,
+        content_idea_id: str | None = None,
+        result_uri: str | None = None,
+        cost_credits: float | None = None,
+        cost_eur: float | None = None,
+        experiment_id: str | None = None,
+    ) -> str:
+        resolved_id = experiment_id or f"exp_{uuid4().hex}"
+        self._insert(
+            "dufynd_experiments",
+            {
+                "id": resolved_id,
+                "content_idea_id": content_idea_id,
+                "model": model,
+                "prompt_summary": prompt_summary,
+                "result_uri": result_uri,
+                "scores": scores or {},
+                "verdict": verdict,
+                "cost_credits": cost_credits,
+                "cost_eur": cost_eur,
+            },
+        )
+        return resolved_id
+
+    def record_lesson(
+        self,
+        *,
+        domain: str,
+        lesson: str,
+        evidence: str,
+        action_rule: str,
+        confidence: float,
+        lesson_id: str | None = None,
+    ) -> str:
+        resolved_id = lesson_id or f"lesson_{uuid4().hex}"
+        self._insert(
+            "dufynd_agent_lessons",
+            {
+                "id": resolved_id,
+                "domain": domain,
+                "lesson": lesson,
+                "evidence": evidence,
+                "action_rule": action_rule,
+                "confidence": max(0.0, min(confidence, 1.0)),
+                "status": "active",
+            },
+        )
+        return resolved_id
+
     def record_run(
         self,
         *,
@@ -116,16 +221,7 @@ class DufyndJarvisBridge:
             "human_approval_required": human_approval_required,
             "human_approval_status": human_approval_status,
         }
-        with self._client() as client:
-            response = client.post(
-                f"{self.supabase_url}/rest/v1/dufynd_agent_runs",
-                headers={
-                    **_headers(self.secret_key),
-                    "Prefer": "return=minimal",
-                },
-                json=row,
-            )
-            response.raise_for_status()
+        self._insert("dufynd_agent_runs", row)
 
 
 def summarize_context(
