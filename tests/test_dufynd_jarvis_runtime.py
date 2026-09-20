@@ -1,6 +1,10 @@
 from __future__ import annotations
 
 import asyncio
+import json
+import os
+import subprocess
+import sys
 
 import pytest
 from scripts.dufynd_jarvis_runtime import (
@@ -150,3 +154,29 @@ def test_runtime_requires_active_budget_window(monkeypatch) -> None:
 
     with pytest.raises(RuntimeError, match="does not permit another run"):
         _require_budget_window(BudgetBridge(can_run=False))
+
+
+def test_runtime_readiness_supports_direct_script_execution() -> None:
+    env = os.environ.copy()
+    for name in (
+        "DUFYND_JARVIS_ACTIVE",
+        "DUFYND_JARVIS_MODEL",
+        "ANTHROPIC_API_KEY",
+        "ANTHROPIC_AUTH_TOKEN",
+        "SUPABASE_URL",
+        "SUPABASE_SECRET_KEY",
+        "SUPABASE_SERVICE_ROLE_KEY",
+    ):
+        env.pop(name, None)
+
+    completed = subprocess.run(
+        [sys.executable, "scripts/dufynd_jarvis_runtime.py", "--readiness"],
+        check=True,
+        capture_output=True,
+        text=True,
+        env=env,
+    )
+    payload = json.loads(completed.stdout)
+
+    assert payload["active"] is False
+    assert payload["ready_for_model_execution"] is False
