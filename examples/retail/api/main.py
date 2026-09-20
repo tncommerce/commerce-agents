@@ -12,6 +12,8 @@ user, so what a shopper asks the store to remember, or to forget, survives a res
 
 from __future__ import annotations
 
+from uuid import uuid4
+
 from fastapi import HTTPException
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -110,10 +112,10 @@ async def merchant_partners() -> dict:
 @app.get("/api/merchant-partners/{partner_key}/clickout")
 async def merchant_partner_clickout(
     partner_key: str,
-    record: host.CurrentSession,
     src: str | None = None,
     cmp: str | None = None,
     content: str | None = None,
+    sid: str | None = None,
 ) -> RedirectResponse:
     partner = partner_store.eligible(partner_key)
     if partner is None or partner.affiliate_url is None:
@@ -122,8 +124,12 @@ async def merchant_partner_clickout(
             detail="Merchant partner not available",
         )
 
+    analytics_session_id = (
+        sanitize_attribution_identifier(sid)
+        or f"partner-clickout-{uuid4()}"
+    )
     await analytics_tracker.record(
-        session_id=record.session_id,
+        session_id=analytics_session_id,
         event="merchant_clickout",
         source=partner.merchant_id,
         acquisition_source=sanitize_attribution_identifier(src),
@@ -178,10 +184,10 @@ async def analytics_event(
 @app.get("/api/clickout/{offer_id}")
 async def merchant_clickout(
     offer_id: str,
-    record: host.CurrentSession,
     src: str | None = None,
     cmp: str | None = None,
     content: str | None = None,
+    sid: str | None = None,
 ) -> RedirectResponse:
     offer = offer_store.eligible_offer(offer_id)
     if offer is None:
@@ -191,14 +197,18 @@ async def merchant_clickout(
     campaign_id = sanitize_attribution_identifier(cmp)
     content_id = sanitize_attribution_identifier(content)
 
-    clickout_tracker.record(
+    click_id = clickout_tracker.record(
         offer,
         acquisition_source=acquisition_source,
         campaign_id=campaign_id,
         content_id=content_id,
     )
+    analytics_session_id = (
+        sanitize_attribution_identifier(sid)
+        or f"offer-clickout-{click_id}"
+    )
     await analytics_tracker.record(
-        session_id=record.session_id,
+        session_id=analytics_session_id,
         event="merchant_clickout",
         product_id=offer.product_id,
         source=offer.merchant_id,
