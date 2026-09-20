@@ -92,6 +92,7 @@ Active model execution is disabled by default. It requires:
 - explicit operator approval
 - `DUFYND_JARVIS_ACTIVE=1`
 - an explicit `DUFYND_JARVIS_MODEL`
+- an active `DUFYND_JARVIS_BUDGET_ID`
 - Anthropic credentials
 - Supabase service-role credentials
 
@@ -100,6 +101,11 @@ agent turns and the runtime clamps the configured value to twelve. Active runs a
 have a per-run USD budget guard: the default is $0.25 via
 `DUFYND_JARVIS_MAX_BUDGET_USD`, and the runtime clamps any configured value to a
 hard maximum of $1.00 per event run.
+
+The first activation window is prepared as
+`jarvis_activation_pilot_001`: it is **planned**, not active, allows at most ten
+runs and has a $2.50 total window cap. A model run is refused while that window is
+not active, even if credentials and `DUFYND_JARVIS_ACTIVE=1` are present.
 
 A guarded GitHub Actions workflow exists at
 `.github/workflows/dufynd-jarvis-manual.yml`. Its default mode is readiness-only.
