@@ -27,6 +27,7 @@ adds pytest and ruff); `scripts/install.sh` runs it.
 - DUFYND is the current public brand for the fragrance affiliate product in the retail vertical.
 - Names such as `SCENTAI`, `scentai_*`, `SCENTAI-*`, product IDs beginning with `SC-`, and the `scentai-mvp` branch are legacy technical identifiers retained for compatibility. Do not present SCENTAI as the current brand in user-facing copy, agent responses, workflow display labels, or new business concepts.
 - Do not mass-rename legacy identifiers without a coordinated data, deployment, analytics, and affiliate-routing migration. New user-facing identifiers should use DUFYND; compatibility code may continue to read legacy names.
+- For internal DUFYND business/creative/affiliate operations, load the durable Jarvis context through `scripts/dufynd_jarvis_bridge.py` and follow `examples/retail/data/dufynd_jarvis_runbook.md`. Do not inject this internal context into the customer-facing shopping advisor.
 
 ## Design rules
 
