@@ -16,12 +16,7 @@ from claude_agent_sdk import (
     create_sdk_mcp_server,
     tool,
 )
-try:
-    from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
-except ModuleNotFoundError as error:
-    if error.name != "scripts":
-        raise
-    from dufynd_jarvis_bridge import DufyndJarvisBridge
+from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
 
 from commerce_common.agent_sdk import collect_turn
 
