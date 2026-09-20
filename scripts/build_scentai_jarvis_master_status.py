@@ -111,7 +111,7 @@ def build_master_status(
             release_pipeline,
             *([content_pipeline] if content_pipeline is not None else []),
         ),
-        "system": "SCENTAI",
+        "system": "DUFYND",
         "control_plane": "commerce_jarvis_master",
         "overall_state": overall_state,
         "active_domain": (selected.get("domain") if selected else None),
@@ -152,7 +152,7 @@ def build_master_status(
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description=("Build the cross-domain SCENTAI Jarvis master operations status.")
+        description=("Build the cross-domain DUFYND Jarvis master operations status.")
     )
     parser.add_argument(
         "--commerce",
@@ -197,7 +197,7 @@ def main() -> int:
         print(json.dumps(report, ensure_ascii=False))
     else:
         print(
-            "SCENTAI Jarvis master | "
+            "DUFYND Jarvis master | "
             f"state={report['overall_state']} | "
             f"domain={report['active_domain']} | "
             f"next={report['next_action']} | "
