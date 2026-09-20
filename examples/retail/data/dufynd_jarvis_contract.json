@@ -1,0 +1,142 @@
+{
+  "version": "2.1",
+  "brand": "DUFYND",
+  "operator": "TNCommerce",
+  "purpose": "Machine-readable contract between DUFYND operating data and Jarvis.",
+  "rpc": {
+    "operating_context": "get_dufynd_jarvis_context",
+    "creative_context": "get_dufynd_jarvis_creative_context",
+    "autonomy_queue": "get_dufynd_autonomy_queue",
+    "experiment_rubric": "get_dufynd_experiment_rubric",
+    "content_board": "get_dufynd_content_board",
+    "content_board_learning": "get_dufynd_content_board_learning",
+    "rnd_gate": "get_dufynd_rnd_gate",
+    "launch_gate": "get_dufynd_launch_gate",
+    "pending_decisions": "get_dufynd_pending_decisions",
+    "health": "get_dufynd_jarvis_health",
+    "claim_inbox_event": "claim_dufynd_jarvis_event",
+    "complete_inbox_event": "complete_dufynd_jarvis_event"
+  },
+  "required_context_sections": [
+    "master_status",
+    "formats",
+    "creative_patterns",
+    "pattern_learning",
+    "hook_templates",
+    "model_profiles",
+    "references",
+    "ideas",
+    "content_board",
+    "experiment_rubric",
+    "autonomy_queue",
+    "lessons",
+    "approval_rules",
+    "affiliate_partners",
+    "rnd_gate",
+    "launch_gate"
+  ],
+  "reference_intake": {
+    "inputs": [
+      "reference media or source",
+      "operator comment when available"
+    ],
+    "outputs": [
+      "creative reference record",
+      "2-6 reusable mechanisms",
+      "reference-to-pattern evidence links",
+      "up to 3 original DUFYND adaptations"
+    ],
+    "rule": "Learn mechanisms from references; do not copy them shot-for-shot."
+  },
+  "idea_generation": {
+    "required_fields": [
+      "business objective",
+      "hook",
+      "curiosity or emotion mechanism",
+      "product role",
+      "payoff",
+      "DUFYND brand moment",
+      "asset requirements",
+      "model or deterministic editing plan",
+      "risk check"
+    ],
+    "composition_rule": "Prefer 2-5 compatible reusable creative patterns, including a hook and a product reveal or payoff."
+  },
+  "experiment_metrics": [
+    "scroll_stop",
+    "product_accuracy",
+    "luxury_feel",
+    "motion",
+    "rewatch",
+    "brand_fit",
+    "reproducibility",
+    "conversion_fit"
+  ],
+  "human_approval_gates": [
+    "spending money",
+    "buying subscriptions or credits",
+    "publishing content",
+    "scaling paid advertising",
+    "important outbound messages",
+    "contracts or supplier orders",
+    "destructive production changes",
+    "merging production-affecting code"
+  ],
+  "autonomous_scope": [
+    "research and analysis",
+    "creative reference decomposition",
+    "content idea generation",
+    "prompt and shot-plan preparation",
+    "model comparison",
+    "internal experiment recording",
+    "durable lesson derivation from evidence",
+    "internal planning and task-state updates",
+    "launch and R&D readiness refresh",
+    "tested non-production branch preparation"
+  ],
+  "identity_rules": [
+    "Use deterministic DUFYND typography in final branded frames.",
+    "Use verified clean product masters for identity-critical readable product frames.",
+    "Do not spend generations trying to repair generated label drift.",
+    "Affiliate commission must not change fragrance recommendations or merchant ranking."
+  ],
+  "event_capture": {
+    "mode": "passive",
+    "cost": "no model execution",
+    "events": [
+      "creative_reference_added",
+      "creative_experiment_recorded",
+      "content_performance_added",
+      "affiliate_partner_changed",
+      "human_decision_resolved",
+      "bootstrap_context_sync"
+    ]
+  },
+  "active_runtime": {
+    "default": "disabled",
+    "activation_env": "DUFYND_JARVIS_ACTIVE=1",
+    "required_model_env": "DUFYND_JARVIS_MODEL",
+    "max_turns_env": "DUFYND_JARVIS_MAX_TURNS",
+    "default_max_turns": 8,
+    "hard_max_turns": 12,
+    "rule": "Active model execution requires explicit operator approval, an active database budget window, an explicit model, and valid credentials. Passive capture remains live while active execution is off. Every event run is bounded by both max turns and max_budget_usd.",
+    "max_budget_env": "DUFYND_JARVIS_MAX_BUDGET_USD",
+    "default_max_budget_usd": 0.25,
+    "hard_max_budget_usd": 1,
+    "budget_window_env": "DUFYND_JARVIS_BUDGET_ID",
+    "initial_budget_window": {
+      "id": "jarvis_activation_pilot_001",
+      "status": "planned",
+      "model": "claude-sonnet-5",
+      "cap_usd": 2.5,
+      "max_runs": 10
+    }
+  },
+  "human_decision_tokens": {
+    "brand_pack_merge": "GO-BRANDPACK",
+    "jarvis_merge": "GO-JARVIS-MERGE",
+    "jarvis_active_runner": "GO-JARVIS-ACTIVE",
+    "pilot_selection": "GO-PILOT",
+    "paid_ai_rnd": "GO-AI-RND"
+  }
+}
