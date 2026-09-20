@@ -110,3 +110,29 @@ def test_content_control_plane_requires_human_for_voiceover_step() -> None:
     assert report["next_action_class"] == "approval_required"
     assert report["user_approval_required_now"] is True
     assert report["safety"]["automatic_publish_allowed"] is False
+
+
+def test_rendered_preview_files_override_stale_readiness(tmp_path) -> None:
+    manifest, readiness, jobs, subtitles, links, social_copy = sources()
+    for row in jobs["jobs"]:
+        preview = tmp_path / f"{row['content_id']}-preview.mp4"
+        preview.write_bytes(b"preview")
+        row["visual_preview_path"] = str(preview)
+
+    report = build_content_operations_status(
+        manifest,
+        readiness,
+        jobs,
+        subtitles,
+        links,
+        social_copy,
+        generated_at="2026-09-20T16:00:00+00:00",
+    )
+
+    assert report["system"] == "DUFYND"
+    assert report["summary"]["visual_preview_mp4s_ready"] == 2
+    assert report["summary"]["visual_preview_source"] == "rendered_files"
+    assert "visual_preview_mp4s_incomplete" not in report["blockers"]
+    assert "pilot_visual_preview_generation_pending" not in report["blockers"]
+    assert report["overall_state"] == "voiceover_pending"
+    assert all(row["state"] == "voiceover_pending" for row in report["jobs"])
