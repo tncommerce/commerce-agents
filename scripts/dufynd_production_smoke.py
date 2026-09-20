@@ -98,18 +98,30 @@ def _check_api_health(
                 detail="API health did not return JSON.",
             )
 
-        ok = payload == {
-            "ok": True,
-            "service": "dufynd-api",
-        }
+        store = payload.get("store")
+        products = payload.get("products")
+        skills = payload.get("skills")
+        model = payload.get("model")
+        ok = (
+            payload.get("ok") is True
+            and store == "DUFYND"
+            and isinstance(products, int)
+            and products > 0
+            and isinstance(skills, list)
+            and isinstance(model, str)
+            and bool(model)
+        )
         return SmokeCheck(
             name="api_health",
             ok=ok,
             status_code=response.status_code,
             detail=(
-                "DUFYND API health payload is valid."
+                f"DUFYND API health contract is valid ({products} products)."
                 if ok
-                else "API health payload does not identify the DUFYND API."
+                else (
+                    "API health contract is stale or misbranded: "
+                    f"store={store!r}, products={products!r}."
+                )
             ),
         )
     except httpx.HTTPError as exc:
