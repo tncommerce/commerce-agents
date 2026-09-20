@@ -1,5 +1,5 @@
 {
-  "version": "2.0",
+  "version": "2.1",
   "brand": "DUFYND",
   "operator": "TNCommerce",
   "purpose": "Machine-readable contract between DUFYND operating data and Jarvis.",
@@ -11,7 +11,11 @@
     "content_board": "get_dufynd_content_board",
     "content_board_learning": "get_dufynd_content_board_learning",
     "rnd_gate": "get_dufynd_rnd_gate",
-    "launch_gate": "get_dufynd_launch_gate"
+    "launch_gate": "get_dufynd_launch_gate",
+    "pending_decisions": "get_dufynd_pending_decisions",
+    "health": "get_dufynd_jarvis_health",
+    "claim_inbox_event": "claim_dufynd_jarvis_event",
+    "complete_inbox_event": "complete_dufynd_jarvis_event"
   },
   "required_context_sections": [
     "master_status",
@@ -95,5 +99,33 @@
     "Use verified clean product masters for identity-critical readable product frames.",
     "Do not spend generations trying to repair generated label drift.",
     "Affiliate commission must not change fragrance recommendations or merchant ranking."
-  ]
+  ],
+  "event_capture": {
+    "mode": "passive",
+    "cost": "no model execution",
+    "events": [
+      "creative_reference_added",
+      "creative_experiment_recorded",
+      "content_performance_added",
+      "affiliate_partner_changed",
+      "human_decision_resolved",
+      "bootstrap_context_sync"
+    ]
+  },
+  "active_runtime": {
+    "default": "disabled",
+    "activation_env": "DUFYND_JARVIS_ACTIVE=1",
+    "required_model_env": "DUFYND_JARVIS_MODEL",
+    "max_turns_env": "DUFYND_JARVIS_MAX_TURNS",
+    "default_max_turns": 8,
+    "hard_max_turns": 12,
+    "rule": "Active model execution requires explicit operator approval. Passive capture remains live while active execution is off."
+  },
+  "human_decision_tokens": {
+    "brand_pack_merge": "GO-BRANDPACK",
+    "jarvis_merge": "GO-JARVIS-MERGE",
+    "jarvis_active_runner": "GO-JARVIS-ACTIVE",
+    "pilot_selection": "GO-PILOT",
+    "paid_ai_rnd": "GO-AI-RND"
+  }
 }
