@@ -283,7 +283,6 @@ def test_clickout_tracker_preserves_content_attribution(tmp_path) -> None:
     assert row["content_id"] == "genesis_naxos_01"
 
 
-
 def test_perfumetrader_awin_deeplink_uses_dufynd_clickout_contract(
     tmp_path,
 ) -> None:
