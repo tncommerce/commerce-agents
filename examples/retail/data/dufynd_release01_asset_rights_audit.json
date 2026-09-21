@@ -1,0 +1,93 @@
+{
+  "version": 1,
+  "generated_at": "2026-09-21",
+  "release_id": "SCENTAI-RELEASE-01",
+  "status": "manufacturer_references_verified_public_rights_pending",
+  "purpose": "Rights audit for Release 01 product imagery. This file records legal/source evidence only and must never promote an image to an approved_* state.",
+  "policy": {
+    "official_brand_product_pages_are_identity_reference_only": true,
+    "public_catalog_use_requires_documented_commercial_rights": true,
+    "affiliate_feed_assets_require_program_or_feed_rights": true,
+    "manual_visual_approval_still_required": true,
+    "generated_product_lookalikes_are_not_valid_live_commerce_packshots": true
+  },
+  "network_evidence": [
+    {
+      "source": "Awin product feeds",
+      "url": "https://help.awin.com/developers/docs/product-feed-intro",
+      "finding": "Awin describes product feeds as publisher-facing product data used to promote advertiser products."
+    },
+    {
+      "source": "Awin publisher product-data-feed guidance",
+      "url": "https://success.awin.com/articles/en_US/Knowledge/What-is-a-Product-Data-Feed",
+      "finding": "Publisher feeds can contain product images and Awin deep links for comparison, shopping and content sites.",
+      "guard": "Feed availability does not override advertiser-specific programme terms; intended DUFYND usage must remain within granted rights."
+    }
+  ],
+  "products": [
+    {
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "brand": "Lancôme",
+      "exact_variant_verified": true,
+      "current_source_type": "official_brand_reference_unlicensed",
+      "catalog_image_status": "reference_only",
+      "public_distribution_allowed": false,
+      "final_composite_allowed": false,
+      "rights_evidence_status": "no_explicit_commercial_reuse_permission_verified_for_current_official_page",
+      "next_action": "await_licensed_affiliate_feed_image_or_written_brand_permission",
+      "feed_dependency": "perfumetrader_awin_product_feed_or_exact_product_data"
+    },
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "brand": "Parfums de Marly",
+      "exact_variant_verified": true,
+      "current_source_type": "official_brand_reference_unlicensed",
+      "catalog_image_status": "reference_only",
+      "public_distribution_allowed": false,
+      "final_composite_allowed": false,
+      "rights_evidence_status": "official_terms_personal_viewing_only_without_prior_written_permission",
+      "rights_evidence_url": "https://parfums-de-marly.com/de/policies/terms-of-service",
+      "next_action": "await_licensed_affiliate_feed_image_or_written_brand_permission",
+      "feed_dependency": "perfumetrader_awin_product_feed_or_exact_product_data"
+    },
+    {
+      "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+      "brand": "Dior",
+      "exact_variant_verified": true,
+      "current_source_type": "official_brand_reference_unlicensed",
+      "catalog_image_status": "reference_only",
+      "public_distribution_allowed": false,
+      "final_composite_allowed": false,
+      "rights_evidence_status": "official_terms_restrict_noncommercial_site_content_reuse",
+      "rights_evidence_url": "https://www.dior.com/de_de/beauty/folder?fid=legal-terms",
+      "next_action": "await_licensed_affiliate_feed_image_or_written_brand_permission",
+      "feed_dependency": "perfumetrader_awin_product_feed_or_exact_product_data"
+    },
+    {
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "brand": "Yves Saint Laurent",
+      "exact_variant_verified": true,
+      "current_source_type": "official_brand_reference_unlicensed",
+      "catalog_image_status": "reference_only",
+      "public_distribution_allowed": false,
+      "final_composite_allowed": false,
+      "rights_evidence_status": "official_terms_prohibit_commercial_use_of_site_content",
+      "rights_evidence_url": "https://www.yslbeauty.de/customer-service/nutzungsbedingungen/customer-service-terms-and-conditions.html",
+      "next_action": "await_licensed_affiliate_feed_image_or_written_brand_permission",
+      "feed_dependency": "perfumetrader_awin_product_feed_or_exact_product_data"
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "brand": "Yves Saint Laurent",
+      "exact_variant_verified": true,
+      "current_source_type": "official_brand_reference_unlicensed",
+      "catalog_image_status": "reference_only",
+      "public_distribution_allowed": false,
+      "final_composite_allowed": false,
+      "rights_evidence_status": "official_terms_prohibit_commercial_use_of_site_content",
+      "rights_evidence_url": "https://www.yslbeauty.de/customer-service/nutzungsbedingungen/customer-service-terms-and-conditions.html",
+      "next_action": "await_licensed_affiliate_feed_image_or_written_brand_permission",
+      "feed_dependency": "perfumetrader_awin_product_feed_or_exact_product_data"
+    }
+  ]
+}
