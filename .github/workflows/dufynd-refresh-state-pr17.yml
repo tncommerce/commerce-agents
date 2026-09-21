@@ -1,0 +1,50 @@
+name: DUFYND Refresh State PR17
+
+on:
+  push:
+    branches:
+      - dufynd-perfumetrader-partner-activation-20260921
+
+permissions:
+  contents: write
+
+jobs:
+  refresh-derived-state:
+    if: github.event.head_commit.message != 'Refresh DUFYND Jarvis derived state [state-refresh]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: dufynd-perfumetrader-partner-activation-20260921
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+
+      - name: Refresh derived Jarvis state
+        shell: bash
+        run: |
+          GENERATED_AT="$(python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path("examples/retail/data/scentai_jarvis_operations_status.json")
+          print(json.loads(path.read_text(encoding="utf-8-sig"))["generated_at"])
+          PY
+          )"
+          python -m scripts.refresh_scentai_jarvis_state --write --generated-at "$GENERATED_AT"
+
+      - name: Commit refreshed state
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "No derived state changes required."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add examples/retail/data/*.json
+          git commit -m "Refresh DUFYND Jarvis derived state [state-refresh]"
+          git push origin HEAD:dufynd-perfumetrader-partner-activation-20260921
