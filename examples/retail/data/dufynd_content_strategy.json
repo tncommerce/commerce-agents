@@ -3,16 +3,23 @@
   "system": "DUFYND",
   "strategy_status": "active",
   "active_track": "high_end_rnd",
+  "high_end_rnd_status": "proof_complete_on_hold",
+  "business_priority": "commerce_readiness",
   "legacy_pilot_batches": "hold",
   "legacy_pilot_role": "reference_and_utility_prototypes",
-  "reason": "The 15 legacy pilot previews remain useful as references and utility prototypes, but their voiceover/final-render pipeline is intentionally paused while DUFYND prepares the higher-quality AI-video R&D track and waits for live affiliate routing.",
-  "next_action": "continue_high_end_rnd_preparation",
+  "reason": "High-end creative proof is complete: Xerjoff Naxos Fragrance Genesis is the selected pilot, the hero review passed at 8.8/10, the pre-launch content bank target is met, and further paid generation is not the current bottleneck. Legacy voiceover/final-render work remains paused while DUFYND prioritizes catalog, product-level affiliate coverage and launch consistency.",
+  "next_action": "await_external_dependency",
   "next_action_class": "auto_allowed",
   "user_approval_required_now": false,
+  "waiting_on": [
+    "perfumetrader_feed_or_exact_variant_product_evidence",
+    "approved_product_images_and_usage_rights",
+    "social_rebrand_hold_until_2026-09-26",
+    "new_creative_references_or_explicit_new_rnd_request"
+  ],
   "approval_gates": [
-    "pilot_format_selection",
-    "pilot_fragrance_selection",
     "paid_ai_subscription_or_credits",
     "publishing"
-  ]
+  ],
+  "operating_rule": "Do not buy more AI-video credits merely to create more content while product-level commerce coverage remains the main bottleneck. Keep the proven Naxos workflow and content bank ready; resume paid R&D only after an explicit new approval and a concrete learning objective."
 }
