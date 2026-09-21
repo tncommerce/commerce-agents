@@ -11,6 +11,7 @@ DATA_DIR = Path("examples/retail/data")
 DEFAULT_RELEASE = DATA_DIR / "scentai_release_batch_01.json"
 DEFAULT_MAPPINGS = DATA_DIR / "merchant_product_mappings.json"
 DEFAULT_AFFILIATES = DATA_DIR / "scentai_affiliate_programs.json"
+DEFAULT_VARIANT_AUDIT = DATA_DIR / "dufynd_perfumetrader_release01_variant_audit.json"
 DEFAULT_OUTPUT = DATA_DIR / "scentai_release_01_feed_activation_queue.json"
 
 
@@ -67,10 +68,19 @@ def build_feed_activation_queue(
     affiliates: dict,
     *,
     generated_at: str,
+    variant_audit: dict | None = None,
 ) -> dict[str, Any]:
     release_ids = list(dict.fromkeys(release.get("product_ids", [])))
     release_set = set(release_ids)
     mappings = mappings_payload.get("mappings", [])
+    audit_payload = variant_audit or {}
+    audit_merchant = str(audit_payload.get("merchant_id") or "").strip().casefold()
+    audit_release = str(audit_payload.get("release_id") or "").strip()
+    audit_rows = {
+        str(row.get("product_id") or "").strip(): row
+        for row in audit_payload.get("rows", [])
+        if str(row.get("product_id") or "").strip() in release_set
+    }
 
     programs: list[dict[str, Any]] = []
     for program in affiliate_program_rows(affiliates):
@@ -98,13 +108,37 @@ def build_feed_activation_queue(
         mapped_count = len(mapped_product_ids)
         full_coverage = bool(release_set) and mapped_count == len(release_set)
         approved = str(program.get("application_status") or "").strip().casefold() == "approved"
+        missing_product_ids = [
+            product_id for product_id in release_ids if product_id not in mapped_product_ids
+        ]
+        audit_applies = (
+            merchant_key == audit_merchant
+            and str(release.get("release_id") or "").strip() == audit_release
+        )
+        audited_missing_product_ids = [
+            product_id
+            for product_id in missing_product_ids
+            if product_id in audit_rows and audit_rows[product_id].get("mapping_eligible") is False
+        ]
+        verified_unmapped_product_ids = [
+            product_id
+            for product_id in missing_product_ids
+            if product_id in audit_rows and audit_rows[product_id].get("mapping_eligible") is True
+        ]
+        missing_mapping_audit_complete = bool(audit_applies) and set(
+            audited_missing_product_ids
+        ) == set(missing_product_ids)
 
         if approved and full_coverage:
             state = "approved_mapping_ready_feed_sample_pending"
             next_action = "obtain_real_feed_sample_and_create_provider_config"
         elif approved:
             state = "approved_mapping_partial"
-            next_action = "resolve_remaining_release_mappings_before_feed_validation"
+            next_action = (
+                "await_exact_variant_feed_or_product_evidence"
+                if missing_mapping_audit_complete
+                else "resolve_remaining_release_mappings_before_feed_validation"
+            )
         elif full_coverage:
             state = "program_pending_full_mapping_ready"
             next_action = "await_program_decision"
@@ -112,29 +146,54 @@ def build_feed_activation_queue(
             state = "program_pending_mapping_partial"
             next_action = "await_program_decision"
 
-        programs.append(
-            {
-                **program,
-                "mapped_release_product_count": mapped_count,
-                "release_size": len(release_ids),
-                "mapped_product_ids": mapped_product_ids,
-                "full_release_mapping_coverage": full_coverage,
-                "program_approved": approved,
-                "state": state,
-                "feed_state": (
-                    "await_real_feed_or_tracked_link_sample"
-                    if approved
-                    else "await_program_approval"
+        program_row: dict[str, Any] = {
+            **program,
+            "mapped_release_product_count": mapped_count,
+            "release_size": len(release_ids),
+            "mapped_product_ids": mapped_product_ids,
+            "full_release_mapping_coverage": full_coverage,
+            "program_approved": approved,
+            "state": state,
+            "feed_state": (
+                "await_real_feed_or_tracked_link_sample"
+                if approved and full_coverage
+                else (
+                    "await_exact_variant_feed_or_product_evidence"
+                    if approved and missing_mapping_audit_complete
+                    else (
+                        "await_remaining_mapping_resolution"
+                        if approved
+                        else "await_program_approval"
+                    )
+                )
+            ),
+            "provider_config_state": ("not_configured_until_real_feed_sample"),
+            "dry_run_state": "not_run",
+            "image_candidate_state": "not_extracted",
+            "live_routing_allowed": False,
+            "next_action": next_action,
+            "action_class": "auto_allowed",
+            "live_activation_action_class": "approval_required",
+        }
+        if audit_applies:
+            program_row["variant_audit"] = {
+                "checked_at": audit_payload.get("checked_at"),
+                "scope": audit_payload.get("scope"),
+                "audited_release_product_count": len(audit_rows),
+                "exact_variant_verified_product_count": sum(
+                    row.get("audit_state") == "exact_variant_verified"
+                    for row in audit_rows.values()
                 ),
-                "provider_config_state": ("not_configured_until_real_feed_sample"),
-                "dry_run_state": "not_run",
-                "image_candidate_state": "not_extracted",
-                "live_routing_allowed": False,
-                "next_action": next_action,
-                "action_class": "auto_allowed",
-                "live_activation_action_class": "approval_required",
+                "missing_mapping_product_ids": missing_product_ids,
+                "audited_missing_mapping_product_ids": audited_missing_product_ids,
+                "verified_unmapped_product_ids": verified_unmapped_product_ids,
+                "missing_mapping_audit_complete": missing_mapping_audit_complete,
+                "missing_mapping_states": {
+                    product_id: audit_rows[product_id].get("audit_state")
+                    for product_id in audited_missing_product_ids
+                },
             }
-        )
+        programs.append(program_row)
 
     programs.sort(
         key=lambda row: (
@@ -155,6 +214,7 @@ def build_feed_activation_queue(
             release,
             mappings_payload,
             affiliates,
+            audit_payload,
         ),
         "release_id": release.get("release_id"),
         "purpose": (
@@ -212,6 +272,11 @@ def main() -> int:
         default=DEFAULT_AFFILIATES,
     )
     parser.add_argument(
+        "--variant-audit",
+        type=Path,
+        default=DEFAULT_VARIANT_AUDIT,
+    )
+    parser.add_argument(
         "--output",
         type=Path,
         default=DEFAULT_OUTPUT,
@@ -222,11 +287,13 @@ def main() -> int:
 
     generated_at = args.generated_at or datetime.now(UTC).replace(microsecond=0).isoformat()
 
+    variant_audit = load_json(args.variant_audit) if args.variant_audit.exists() else {}
     queue = build_feed_activation_queue(
         load_json(args.release),
         load_json(args.mappings),
         load_json(args.affiliates),
         generated_at=generated_at,
+        variant_audit=variant_audit,
     )
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
