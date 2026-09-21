@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from datetime import UTC, datetime, timedelta
+from pathlib import Path
 
 from retail.api.merchant_partners import (
     MerchantPartner,
@@ -114,3 +115,17 @@ def test_customer_payload_does_not_expose_tracking_url() -> None:
         "description": "Parfum und Beauty",
     }
     assert "affiliate_url" not in payload
+
+
+def test_perfumetrader_fixture_uses_verified_awin_partner_link() -> None:
+    path = Path(__file__).resolve().parents[2] / "data" / "merchant_partners.json"
+    store = MerchantPartnerStore(path)
+
+    partner = next(item for item in store.all() if item.merchant_id == "perfumetrader")
+
+    assert partner.status == "active"
+    assert partner.affiliate_url is not None
+    assert partner.affiliate_url.startswith("https://www.awin1.com/cread.php?")
+    assert "awinmid=11672" in partner.affiliate_url
+    assert "awinaffid=3099222" in partner.affiliate_url
+    assert partner.last_verified_at is not None

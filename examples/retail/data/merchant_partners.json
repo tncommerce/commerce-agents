@@ -43,10 +43,10 @@
     {
       "merchant_id": "perfumetrader",
       "merchant_name": "Perfumetrader",
-      "status": "pending_affiliate_link",
-      "affiliate_url": null,
-      "last_verified_at": null,
-      "description": "Parfum und Beauty"
+      "status": "active",
+      "affiliate_url": "https://www.awin1.com/cread.php?awinmid=11672&awinaffid=3099222&ued=https%3A%2F%2Fwww.perfumetrader.de%2Fde%2F",
+      "last_verified_at": "2026-09-21T13:04:00Z",
+      "description": "Parfum und Beauty · Awin Partner"
     },
     {
       "merchant_id": "birkholz",
