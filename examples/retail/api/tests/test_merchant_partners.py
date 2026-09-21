@@ -133,7 +133,6 @@ def test_perfumetrader_fixture_uses_verified_awin_partner_link() -> None:
     assert partner.last_verified_at is not None
 
 
-
 def test_awin_partner_clickout_adds_content_clickref() -> None:
     partner = MerchantPartner(
         merchant_id="perfumetrader",
@@ -192,7 +191,4 @@ def test_non_awin_partner_clickout_is_unchanged() -> None:
         last_verified_at=NOW,
     )
 
-    assert (
-        partner_clickout_url(partner, clickref="genesis_naxos_01")
-        == partner.affiliate_url
-    )
+    assert partner_clickout_url(partner, clickref="genesis_naxos_01") == partner.affiliate_url
