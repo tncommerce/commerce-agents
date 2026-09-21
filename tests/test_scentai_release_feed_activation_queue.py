@@ -220,7 +220,16 @@ def test_current_release01_perfumetrader_variant_audit_matches_repo_sources() ->
     merchant = next(
         row for row in queue["programs"] if row["merchant_id"] == "perfumetrader"
     )
+    committed = load_json(data_dir / "scentai_release_01_feed_activation_queue.json")
+    committed_merchant = next(
+        row
+        for row in committed["programs"]
+        if row["merchant_id"] == "perfumetrader"
+    )
 
+    assert committed["source_fingerprint_sha256"] == queue["source_fingerprint_sha256"]
+    assert committed_merchant["feed_state"] == merchant["feed_state"]
+    assert committed_merchant["next_action"] == merchant["next_action"]
     assert merchant["program_approved"] is True
     assert merchant["mapped_release_product_count"] == 1
     assert merchant["full_release_mapping_coverage"] is False
