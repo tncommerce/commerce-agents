@@ -7,7 +7,7 @@ from scripts.refresh_scentai_jarvis_state import refresh_state
 
 
 def test_dump_refreshed_jarvis_state_for_branch_reconciliation() -> None:
-    state = refresh_state(generated_at="2026-09-21T20:50:00+00:00")
+    state = refresh_state(generated_at="2026-09-20T17:55:39+00:00")
     payload = {
         "feed_queue": state["feed_queue"],
         "operations": state["operations"],
