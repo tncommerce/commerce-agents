@@ -37,7 +37,11 @@ from .analytics import (
 )
 from .merchant import create_merchant_router
 from .merchant_offers import MerchantClickoutTracker, MerchantOfferStore, customer_offer_payload
-from .merchant_partners import MerchantPartnerStore, customer_partner_payload
+from .merchant_partners import (
+    MerchantPartnerStore,
+    customer_partner_payload,
+    partner_clickout_url,
+)
 from .mock_retail import DATA_DIR, MockRetail
 
 load_demo_env(DATA_DIR.parent)
@@ -117,20 +121,27 @@ async def merchant_partner_clickout(
             detail="Merchant partner not available",
         )
 
+    acquisition_source = sanitize_attribution_identifier(src)
+    campaign_id = sanitize_attribution_identifier(cmp)
+    content_id = sanitize_attribution_identifier(content)
     analytics_session_id = sanitize_attribution_identifier(sid) or f"partner-clickout-{uuid4()}"
     background_tasks.add_task(
         analytics_tracker.record,
         session_id=analytics_session_id,
         event="merchant_clickout",
         source=partner.merchant_id,
-        acquisition_source=sanitize_attribution_identifier(src),
-        campaign_id=sanitize_attribution_identifier(cmp),
-        content_id=sanitize_attribution_identifier(content),
+        acquisition_source=acquisition_source,
+        campaign_id=campaign_id,
+        content_id=content_id,
         surface="merchant_discovery",
     )
 
+    target = partner_clickout_url(
+        partner,
+        clickref=content_id or campaign_id or acquisition_source,
+    )
     return RedirectResponse(
-        url=partner.affiliate_url,
+        url=target or partner.affiliate_url,
         status_code=302,
     )
 
