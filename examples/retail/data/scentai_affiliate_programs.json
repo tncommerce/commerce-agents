@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated_at": "2026-09-19",
+  "updated_at": "2026-09-21",
   "network": "Awin",
   "publisher": "DUFYND",
   "applications": [
@@ -36,9 +36,12 @@
     },
     {
       "program": "Perfumetrader DE",
-      "status": "applied",
+      "status": "approved",
       "applied_at": "2026-09-18",
-      "merchant_id": "perfumetrader"
+      "merchant_id": "perfumetrader",
+      "approved_at": "2026-09-21",
+      "advertiser_id": 11672,
+      "tracking_strategy": "verified_awin_partner_homepage_link"
     },
     {
       "program": "Birkholz Perfume Manufacture DE",
