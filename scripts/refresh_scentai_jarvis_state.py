@@ -45,6 +45,7 @@ DATA_DIR = Path("examples/retail/data")
 STAGING = DATA_DIR / "scentai_catalog_staging.json"
 MAPPINGS = DATA_DIR / "merchant_product_mappings.json"
 AFFILIATES = DATA_DIR / "scentai_affiliate_programs.json"
+VARIANT_AUDIT = DATA_DIR / "dufynd_perfumetrader_release01_variant_audit.json"
 OFFERS = DATA_DIR / "merchant_offers.json"
 RELEASE_01 = DATA_DIR / "scentai_release_batch_01.json"
 RELEASE_02 = DATA_DIR / "scentai_release_batch_02.json"
@@ -133,6 +134,7 @@ def refresh_state(*, generated_at: str) -> dict[str, Any]:
         mappings,
         affiliates,
         generated_at=generated_at,
+        variant_audit=(load_json(VARIANT_AUDIT) if VARIANT_AUDIT.exists() else None),
     )
     release_status = build_release_gate_status(
         release_01,
