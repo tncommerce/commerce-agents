@@ -121,11 +121,7 @@ def test_perfumetrader_fixture_uses_verified_awin_partner_link() -> None:
     path = Path(__file__).resolve().parents[2] / "data" / "merchant_partners.json"
     store = MerchantPartnerStore(path)
 
-    partner = next(
-        item
-        for item in store.all()
-        if item.merchant_id == "perfumetrader"
-    )
+    partner = next(item for item in store.all() if item.merchant_id == "perfumetrader")
 
     assert partner.status == "active"
     assert partner.affiliate_url is not None
