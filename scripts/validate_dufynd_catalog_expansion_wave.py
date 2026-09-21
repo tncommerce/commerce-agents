@@ -78,7 +78,9 @@ def validate_wave(wave: dict, catalog: dict, staging: dict) -> list[str]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(\n        description="Validate a DUFYND catalog expansion candidate queue."\n    )
+    parser = argparse.ArgumentParser(
+        description="Validate a DUFYND catalog expansion candidate queue."
+    )
     parser.add_argument("--wave", type=Path, default=DEFAULT_WAVE)
     parser.add_argument("--catalog", type=Path, default=DEFAULT_CATALOG)
     parser.add_argument("--staging", type=Path, default=DEFAULT_STAGING)
