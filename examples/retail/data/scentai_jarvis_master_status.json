@@ -1,12 +1,12 @@
 {
   "version": 1,
   "generated_at": "2026-09-21T21:06:48+00:00",
-  "source_fingerprint_sha256": "750b30ec2e676c7a0971876b0fda0664d6e967b3afb17a100e690f76b05dec75",
+  "source_fingerprint_sha256": "e05d08d9db4527231b482cd61ef23014644c2e39c7dd49ec015329d5fc770dd1",
   "system": "DUFYND",
   "control_plane": "commerce_jarvis_master",
-  "overall_state": "work_available",
-  "active_domain": "content",
-  "next_action": "continue_high_end_rnd_preparation",
+  "overall_state": "waiting_external_or_idle",
+  "active_domain": "commerce",
+  "next_action": "await_affiliate_program_decision",
   "next_action_class": "auto_allowed",
   "user_approval_required_now": false,
   "domains": {
@@ -27,8 +27,8 @@
     "content": {
       "domain": "content",
       "overall_state": "legacy_batches_on_hold_for_high_end_rnd",
-      "execution_state": "work_available",
-      "next_action": "continue_high_end_rnd_preparation",
+      "execution_state": "waiting_external",
+      "next_action": "await_external_dependency",
       "next_action_class": "auto_allowed",
       "user_approval_required_now": false,
       "blockers": [

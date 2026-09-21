@@ -11,7 +11,7 @@
   "pipeline_state": "legacy_batches_on_hold_for_high_end_rnd",
   "active_track": "high_end_rnd",
   "legacy_pilot_batches": "hold",
-  "next_action": "continue_high_end_rnd_preparation",
+  "next_action": "await_external_dependency",
   "next_action_class": "auto_allowed",
   "user_approval_required_now": false,
   "production_parallel_allowed": false,
