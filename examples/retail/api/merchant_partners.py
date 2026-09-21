@@ -4,7 +4,7 @@ import json
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Literal
-from urllib.parse import urlparse
+from urllib.parse import parse_qsl, urlencode, urlparse
 
 from pydantic import BaseModel, Field
 
@@ -103,6 +103,28 @@ class MerchantPartnerStore:
             (partner for partner in self.active(now=now) if partner.merchant_id == merchant_id),
             None,
         )
+
+
+def partner_clickout_url(
+    partner: MerchantPartner,
+    *,
+    clickref: str | None = None,
+) -> str | None:
+    url = partner.affiliate_url
+    if not url or not clickref:
+        return url
+
+    parsed = urlparse(url)
+    if parsed.hostname not in {"awin1.com", "www.awin1.com"}:
+        return url
+
+    query = [
+        (key, value)
+        for key, value in parse_qsl(parsed.query, keep_blank_values=True)
+        if key.casefold() != "clickref"
+    ]
+    query.append(("clickref", clickref))
+    return parsed._replace(query=urlencode(query)).geturl()
 
 
 def customer_partner_payload(
