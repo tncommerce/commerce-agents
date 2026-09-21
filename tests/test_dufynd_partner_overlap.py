@@ -81,15 +81,11 @@ def test_partner_overlap_separates_live_and_staged_products() -> None:
     assert report["mapped_staged_product_count"] == 1
     assert report["product_affiliate_offer_count"] == 1
 
-    live_row = next(
-        row for row in report["rows"] if row["product_id"] == "SC-LIVE-1"
-    )
+    live_row = next(row for row in report["rows"] if row["product_id"] == "SC-LIVE-1")
     assert live_row["catalog_state"] == "live"
     assert live_row["blockers"] == []
 
-    staged_row = next(
-        row for row in report["rows"] if row["product_id"] == "SC-STAGED-1"
-    )
+    staged_row = next(row for row in report["rows"] if row["product_id"] == "SC-STAGED-1")
     assert staged_row["catalog_state"] == "staged"
     assert staged_row["release_ids"] == ["DUFYND-RELEASE-01"]
     assert staged_row["blockers"] == [
