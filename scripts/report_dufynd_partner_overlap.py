@@ -127,9 +127,7 @@ def build_partner_overlap_report(
         staged_product = staged.get(product_id)
         product_offers = offers_by_product.get(product_id, [])
         affiliate_offers = [
-            offer
-            for offer in product_offers
-            if str(offer.get("affiliate_url") or "").strip()
+            offer for offer in product_offers if str(offer.get("affiliate_url") or "").strip()
         ]
 
         if live_product is not None:
@@ -191,15 +189,9 @@ def build_partner_overlap_report(
             str((partner or {}).get("affiliate_url") or "").strip()
         ),
         "mapped_product_count": len(rows),
-        "mapped_live_product_count": sum(
-            1 for row in rows if row["catalog_state"] == "live"
-        ),
-        "mapped_staged_product_count": sum(
-            1 for row in rows if row["catalog_state"] == "staged"
-        ),
-        "product_affiliate_offer_count": sum(
-            1 for row in rows if row["affiliate_offer_count"] > 0
-        ),
+        "mapped_live_product_count": sum(1 for row in rows if row["catalog_state"] == "live"),
+        "mapped_staged_product_count": sum(1 for row in rows if row["catalog_state"] == "staged"),
+        "product_affiliate_offer_count": sum(1 for row in rows if row["affiliate_offer_count"] > 0),
         "blocker_counts": dict(
             sorted(
                 blocker_counts.items(),
@@ -212,10 +204,7 @@ def build_partner_overlap_report(
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description=(
-            "Report DUFYND catalog overlap and product-level readiness "
-            "for one affiliate merchant."
-        )
+        description=("Report DUFYND catalog overlap and product-level readiness for one affiliate merchant.")
     )
     parser.add_argument("--merchant", default="perfumetrader")
     parser.add_argument("--catalog", type=Path, default=DEFAULT_CATALOG)
@@ -227,10 +216,7 @@ def main() -> int:
     parser.add_argument("--machine-readable", action="store_true")
     args = parser.parse_args()
 
-    releases = [
-        load_json(path)
-        for path in sorted(args.release_dir.glob(DEFAULT_RELEASE_GLOB))
-    ]
+    releases = [load_json(path) for path in sorted(args.release_dir.glob(DEFAULT_RELEASE_GLOB))]
     report = build_partner_overlap_report(
         catalog=load_json(args.catalog),
         staging=load_json(args.staging),
