@@ -339,12 +339,44 @@
       ],
       "rationale": "Notino explicitly lists Euphoria among popular women's fragrances; improves accessible price-tier coverage.",
       "variant_status": "verified_retail_variant",
-      "research_state": "variant_verified_product_data_pending",
+      "research_state": "retailer_profile_verified_merchant_evidence_added",
       "evidence": [
         {
           "source": "Notino",
           "url": "https://www.notino.de/calvin-klein/euphoria-eau-de-parfum-fur-damen/",
           "checked_at": "2026-09-21"
+        }
+      ],
+      "product_data": {
+        "scent_family": "oriental floral",
+        "notes": {
+          "top": [
+            "pomegranate"
+          ],
+          "heart": [
+            "lotus",
+            "orchid"
+          ],
+          "base": [
+            "violet",
+            "amber",
+            "mahogany",
+            "musk"
+          ]
+        },
+        "source_confidence": "medium_high",
+        "source_kind": "retailer_product_data",
+        "source_url": "https://www.notino.de/calvin-klein/euphoria-eau-de-parfum-fur-damen/",
+        "note": "Exact 100 ml Eau de Parfum and note pyramid verified from current retailer product data; manufacturer data remains a later upgrade path."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "notino",
+          "merchant_product_id": "CAK10204",
+          "url": "https://www.notino.de/calvin-klein/euphoria-eau-de-parfum-fur-damen/",
+          "variant": "100 ml Eau de Parfum",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "cj_application_pending"
         }
       ]
     },
@@ -364,12 +396,51 @@
       ],
       "rationale": "Notino explicitly lists Nomade among popular women's fragrances and exact 75 ml variant is available.",
       "variant_status": "verified_retail_variant",
-      "research_state": "variant_verified_product_data_pending",
+      "research_state": "official_profile_verified_merchant_evidence_added",
       "evidence": [
         {
           "source": "Notino",
           "url": "https://www.notino.de/chloe/nomade-eau-de-parfum-fuer-damen/p-11620592/",
           "checked_at": "2026-09-21"
+        }
+      ],
+      "product_data": {
+        "scent_family": "woody floral",
+        "notes": {
+          "top": [
+            "mirabelle"
+          ],
+          "heart": [
+            "freesia"
+          ],
+          "base": [
+            "oakmoss"
+          ]
+        },
+        "source_confidence": "high",
+        "source_kind": "official_brand",
+        "source_url": "https://www.chloe.com/de-de/p/fragrances/eau-de-parfum/CHCA64994090.html",
+        "official_reference": "CHCA64994090",
+        "note": "Official Chloé Germany data confirms original Nomade Eau de Parfum 75 ml. Do not confuse with Nomade Jasmin Naturel, Nuit d'Égypte or Lumière d'Égypte."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "notino",
+          "merchant_product_id": "p-11620592",
+          "url": "https://www.notino.de/chloe/nomade-eau-de-parfum-fuer-damen/p-11620592/",
+          "variant": "75 ml Eau de Parfum",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "cj_application_pending"
+        },
+        {
+          "merchant": "flaconi",
+          "merchant_product_id": "80027120-70",
+          "url": "https://www.flaconi.de/parfum/chloe/nomade/chloe-nomade-eau-de-parfum.html?variant=80027120-70",
+          "variant": "75 ml Eau de Parfum",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "application_pending",
+          "mapping_confidence": "medium",
+          "mapping_note": "Retail page displays 75 ml although legacy variant ID suffix is '-70'; keep research-only until feed/GTIN verification."
         }
       ]
     },
@@ -389,12 +460,37 @@
       ],
       "rationale": "Major missing JPG comparison point next to staged Le Male Le Parfum; exact 125 ml variant verified.",
       "variant_status": "verified_retail_variant",
-      "research_state": "variant_verified_product_data_pending",
+      "research_state": "official_profile_verified_merchant_evidence_added",
       "evidence": [
         {
           "source": "Douglas",
           "url": "https://www.douglas.de/de/p/5010945026",
           "checked_at": "2026-09-21"
+        }
+      ],
+      "product_data": {
+        "scent_family": "woody aromatic amber",
+        "key_notes": [
+          "mint",
+          "lavender",
+          "tonka bean",
+          "benzoin",
+          "vanilla facets",
+          "honey/tobacco facets"
+        ],
+        "source_confidence": "high",
+        "source_kind": "official_brand",
+        "source_url": "https://www.jeanpaulgaultier.com/de/de/p/linie-le-male/le-male-elixir-parfum-000000000065189084",
+        "note": "Official Jean Paul Gaultier data confirms Parfum concentration, 125 ml size and the Le Male Elixir composition."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "5010945026",
+          "url": "https://www.douglas.de/de/p/5010945026",
+          "variant": "125 ml Parfum",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "application_pending"
         }
       ]
     },
@@ -414,12 +510,51 @@
       ],
       "rationale": "Large mainstream men's comparison gap; exact 100 ml EDP variant verified.",
       "variant_status": "verified_retail_variant",
-      "research_state": "variant_verified_product_data_pending",
+      "research_state": "official_profile_verified_merchant_evidence_added",
       "evidence": [
         {
           "source": "Douglas",
           "url": "https://www.douglas.de/de/b/versace/eros/b012993",
           "checked_at": "2026-09-21"
+        }
+      ],
+      "product_data": {
+        "scent_family": "woody oriental fresh",
+        "notes": {
+          "top": [
+            "Italian lemon",
+            "mandarin",
+            "mint oil",
+            "candied apple"
+          ],
+          "heart": [
+            "geranium",
+            "clary sage",
+            "AmberMax"
+          ],
+          "base": [
+            "Atlas cedar",
+            "Virginia cedar",
+            "vetiver",
+            "patchouli",
+            "sandalwood",
+            "vanilla"
+          ]
+        },
+        "source_confidence": "high",
+        "source_kind": "official_brand",
+        "source_url": "https://www.versace.com/de/de/herren/accessoires/dufte/eros/eros-edp-100-ml/R740110-R100MLS_RNUL.html",
+        "official_reference": "R740110-R100MLS",
+        "note": "Official Versace Germany data confirms the Eau de Parfum 100 ml variant. Keep separate from Eros EDT and Eros Parfum."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "flaconi",
+          "merchant_product_id": "80053748-100",
+          "url": "https://www.flaconi.de/parfum/versace/eros/versace-eros-eau-de-parfum.html?variant=80053748-100",
+          "variant": "100 ml Eau de Parfum",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "application_pending"
         }
       ]
     },
@@ -439,12 +574,48 @@
       ],
       "rationale": "Adds a major aquatic comparison anchor missing from DUFYND's current fresh/blue coverage.",
       "variant_status": "verified_retail_variant",
-      "research_state": "variant_verified_product_data_pending",
+      "research_state": "official_profile_verified_merchant_evidence_added",
       "evidence": [
         {
           "source": "Douglas",
           "url": "https://www.douglas.de/de/p/5011354001",
           "checked_at": "2026-09-21"
+        }
+      ],
+      "product_data": {
+        "scent_family": "aquatic aromatic fougere",
+        "key_notes": [
+          "marine accord",
+          "bergamot",
+          "lemon/citrus",
+          "rosemary",
+          "clary sage",
+          "lavender",
+          "vetiver",
+          "patchouli",
+          "amber facets"
+        ],
+        "source_confidence": "high",
+        "source_kind": "official_brand_plus_retail_variant_detail",
+        "source_url": "https://www.armanibeauty.de/dufte/herrenduft/acqua-di-gio/acqua-di-gio-profondo-parfum/ww-00854-arm.html?dwvar_ww-00854-arm_size=100ml",
+        "note": "Official Armani Beauty confirms Profondo Parfum 100 ml; exact variant must remain separate from Profondo Eau de Parfum."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "5011354001",
+          "url": "https://www.douglas.de/de/p/5011354001",
+          "variant": "100 ml Parfum",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "application_pending"
+        },
+        {
+          "merchant": "flaconi",
+          "merchant_product_id": "90003862-0005605",
+          "url": "https://www.flaconi.de/parfum/giorgio-armani/acqua-di-gio-profondo/giorgio-armani-acqua-di-gio-profondo-parfum.html?variant=90003862-0005605",
+          "variant": "100 ml Parfum",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "application_pending"
         }
       ]
     }
@@ -456,6 +627,13 @@
       "enriched_product_count": 5,
       "completed_at": "2026-09-21",
       "scope": "Official/retailer product profile plus non-canonical merchant research evidence. No affiliate offer activation and no live publication."
-    }
+    },
+    "phase_b": {
+      "status": "complete",
+      "enriched_product_count": 5,
+      "completed_at": "2026-09-21",
+      "scope": "Official/retailer product profile plus non-canonical merchant research evidence. No affiliate offer activation and no live publication."
+    },
+    "total_enriched": 10
   }
 }
