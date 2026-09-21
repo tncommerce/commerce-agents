@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-20T17:55:39+00:00",
-  "source_fingerprint_sha256": "3c87748ce59707648160a6248fc4620636230e2693a0968eaae8cb47744e5b63",
+  "generated_at": "2026-09-21T20:40:00+00:00",
+  "source_fingerprint_sha256": "277f984891330aa53354e63db7208a683cabb3ef70077277966ba6d27fd484c6",
   "release_id": "SCENTAI-RELEASE-01",
   "purpose": "Jarvis-ready affiliate/feed activation queue. Operational integration coverage only; never use commission to rank fragrances or customer-facing merchant offers.",
   "policy_ref": "scentai_jarvis_operating_policy.json",
@@ -83,14 +83,40 @@
       "full_release_mapping_coverage": false,
       "program_approved": true,
       "state": "approved_mapping_partial",
-      "feed_state": "await_real_feed_or_tracked_link_sample",
+      "feed_state": "await_exact_variant_feed_or_product_evidence",
       "provider_config_state": "not_configured_until_real_feed_sample",
       "dry_run_state": "not_run",
       "image_candidate_state": "not_extracted",
       "live_routing_allowed": false,
-      "next_action": "resolve_remaining_release_mappings_before_feed_validation",
+      "next_action": "await_exact_variant_feed_or_product_evidence",
       "action_class": "auto_allowed",
-      "live_activation_action_class": "approval_required"
+      "live_activation_action_class": "approval_required",
+      "variant_audit": {
+        "checked_at": "2026-09-21",
+        "scope": "Public Perfumetrader product and brand pages only; no affiliate feed access.",
+        "audited_release_product_count": 5,
+        "exact_variant_verified_product_count": 1,
+        "missing_mapping_product_ids": [
+          "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+          "SC-PDM-DELINA-EDP-75",
+          "SC-YSL-BLACK-OPIUM-EDP-90",
+          "SC-YSL-LIBRE-EDP-90"
+        ],
+        "audited_missing_mapping_product_ids": [
+          "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+          "SC-PDM-DELINA-EDP-75",
+          "SC-YSL-BLACK-OPIUM-EDP-90",
+          "SC-YSL-LIBRE-EDP-90"
+        ],
+        "verified_unmapped_product_ids": [],
+        "missing_mapping_audit_complete": true,
+        "missing_mapping_states": {
+          "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100": "exact_variant_unverified_alternative_only",
+          "SC-PDM-DELINA-EDP-75": "no_exact_public_evidence_found",
+          "SC-YSL-BLACK-OPIUM-EDP-90": "exact_variant_unverified_alternative_only",
+          "SC-YSL-LIBRE-EDP-90": "exact_variant_unverified_alternative_only"
+        }
+      }
     },
     {
       "network": "Awin",
