@@ -74,6 +74,37 @@ def validate_wave(wave: dict, catalog: dict, staging: dict) -> list[str]:
         elif not all(str(item.get("url") or "").startswith("https://") for item in evidence):
             errors.append(f"{prefix}:invalid_evidence_url")
 
+        product_data = row.get("product_data")
+        if product_data is not None:
+            source_url = str(product_data.get("source_url") or "").strip()
+            if not source_url.startswith("https://"):
+                errors.append(f"{prefix}:invalid_product_data_source_url")
+            if not str(product_data.get("source_kind") or "").strip():
+                errors.append(f"{prefix}:missing_product_data_source_kind")
+
+            merchant_evidence = row.get("research_merchant_evidence") or []
+            if not merchant_evidence:
+                errors.append(f"{prefix}:missing_research_merchant_evidence")
+
+            for merchant_index, merchant_row in enumerate(merchant_evidence, start=1):
+                merchant_prefix = f"{prefix}:merchant_{merchant_index}"
+                if not str(merchant_row.get("merchant") or "").strip():
+                    errors.append(f"{merchant_prefix}:missing_merchant")
+                if not str(merchant_row.get("url") or "").startswith("https://"):
+                    errors.append(f"{merchant_prefix}:invalid_url")
+                affiliate_state = str(merchant_row.get("affiliate_state") or "").strip()
+                if affiliate_state not in {"application_pending", "cj_application_pending"}:
+                    errors.append(f"{merchant_prefix}:invalid_affiliate_state")
+                if merchant_row.get("affiliate_url"):
+                    errors.append(f"{merchant_prefix}:affiliate_url_not_allowed_in_research")
+
+    enrichment = wave.get("enrichment") or {}
+    total_enriched = enrichment.get("total_enriched")
+    if total_enriched is not None:
+        actual_enriched = sum(1 for row in candidates if row.get("product_data"))
+        if total_enriched != actual_enriched:
+            errors.append("enrichment_total_mismatch")
+
     return errors
 
 
