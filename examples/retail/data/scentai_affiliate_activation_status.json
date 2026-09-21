@@ -4,7 +4,7 @@
   "machine_id": "scentai_affiliate_activation_v1",
   "summary": {
     "programs": 9,
-    "approved": 0,
+    "approved": 1,
     "active": 0,
     "pending": 9,
     "ready_for_user_approval": 0
@@ -81,13 +81,16 @@
       "network": "Awin",
       "program": "Perfumetrader DE",
       "merchant_id": "perfumetrader",
-      "application_status": "applied",
-      "activation_state": "applied",
+      "application_status": "approved",
+      "activation_state": "approved_credentials_pending",
       "blockers": [
-        "affiliate_program_approval_pending"
+        "credentials_not_verified_in_repo_state",
+        "integration_strategy_not_verified",
+        "dry_run_not_recorded",
+        "user_approval_not_recorded"
       ],
       "live_routing_allowed": false,
-      "next_action": "await_program_decision",
+      "next_action": "verify_credentials",
       "live_activation_action_class": "approval_required"
     },
     {
