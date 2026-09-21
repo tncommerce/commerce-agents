@@ -11,7 +11,9 @@ DATA_DIR = Path("examples/retail/data")
 DEFAULT_RELEASE = DATA_DIR / "scentai_release_batch_01.json"
 DEFAULT_MAPPINGS = DATA_DIR / "merchant_product_mappings.json"
 DEFAULT_AFFILIATES = DATA_DIR / "scentai_affiliate_programs.json"
-DEFAULT_VARIANT_AUDIT = (\n    DATA_DIR / "dufynd_perfumetrader_release01_variant_audit.json"\n)
+DEFAULT_VARIANT_AUDIT = (
+    DATA_DIR / "dufynd_perfumetrader_release01_variant_audit.json"
+)
 DEFAULT_OUTPUT = DATA_DIR / "scentai_release_01_feed_activation_queue.json"
 
 
