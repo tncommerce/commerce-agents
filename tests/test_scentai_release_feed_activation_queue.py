@@ -105,3 +105,64 @@ def test_partial_mapping_cannot_be_full_release_path() -> None:
     assert merchant["full_release_mapping_coverage"] is False
     assert merchant["state"] == "approved_mapping_partial"
     assert merchant["live_routing_allowed"] is False
+
+
+def test_variant_audit_prevents_wrong_variant_mapping_for_approved_partial_program() -> None:
+    audit = {
+        "merchant_id": "merchant-two",
+        "release_id": "SCENTAI-RELEASE-TEST",
+        "checked_at": "2026-09-21",
+        "scope": "public merchant evidence",
+        "rows": [
+            {
+                "product_id": "SC-B",
+                "audit_state": "exact_variant_unverified_alternative_only",
+                "mapping_eligible": False,
+            }
+        ],
+    }
+
+    queue = build_feed_activation_queue(
+        release(),
+        mappings(),
+        affiliates("approved"),
+        generated_at="2026-09-21T20:30:00+00:00",
+        variant_audit=audit,
+    )
+
+    merchant = next(
+        row for row in queue["programs"] if row["merchant_id"] == "merchant-two"
+    )
+
+    assert merchant["mapped_release_product_count"] == 1
+    assert merchant["feed_state"] == "await_exact_variant_feed_or_product_evidence"
+    assert merchant["next_action"] == "await_exact_variant_feed_or_product_evidence"
+    assert merchant["variant_audit"]["missing_mapping_product_ids"] == ["SC-B"]
+    assert merchant["variant_audit"]["audited_missing_mapping_product_ids"] == ["SC-B"]
+    assert merchant["variant_audit"]["missing_mapping_audit_complete"] is True
+    assert merchant["live_routing_allowed"] is False
+
+
+def test_incomplete_variant_audit_does_not_hide_mapping_work() -> None:
+    audit = {
+        "merchant_id": "merchant-two",
+        "release_id": "SCENTAI-RELEASE-TEST",
+        "checked_at": "2026-09-21",
+        "rows": [],
+    }
+
+    queue = build_feed_activation_queue(
+        release(),
+        mappings(),
+        affiliates("approved"),
+        generated_at="2026-09-21T20:30:00+00:00",
+        variant_audit=audit,
+    )
+
+    merchant = next(
+        row for row in queue["programs"] if row["merchant_id"] == "merchant-two"
+    )
+
+    assert merchant["feed_state"] == "await_remaining_mapping_resolution"
+    assert merchant["next_action"] == "resolve_remaining_release_mappings_before_feed_validation"
+    assert merchant["variant_audit"]["missing_mapping_audit_complete"] is False
