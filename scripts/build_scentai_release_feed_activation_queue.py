@@ -11,9 +11,7 @@ DATA_DIR = Path("examples/retail/data")
 DEFAULT_RELEASE = DATA_DIR / "scentai_release_batch_01.json"
 DEFAULT_MAPPINGS = DATA_DIR / "merchant_product_mappings.json"
 DEFAULT_AFFILIATES = DATA_DIR / "scentai_affiliate_programs.json"
-DEFAULT_VARIANT_AUDIT = (
-    DATA_DIR / "dufynd_perfumetrader_release01_variant_audit.json"
-)
+DEFAULT_VARIANT_AUDIT = DATA_DIR / "dufynd_perfumetrader_release01_variant_audit.json"
 DEFAULT_OUTPUT = DATA_DIR / "scentai_release_01_feed_activation_queue.json"
 
 
@@ -120,14 +118,12 @@ def build_feed_activation_queue(
         audited_missing_product_ids = [
             product_id
             for product_id in missing_product_ids
-            if product_id in audit_rows
-            and audit_rows[product_id].get("mapping_eligible") is False
+            if product_id in audit_rows and audit_rows[product_id].get("mapping_eligible") is False
         ]
         verified_unmapped_product_ids = [
             product_id
             for product_id in missing_product_ids
-            if product_id in audit_rows
-            and audit_rows[product_id].get("mapping_eligible") is True
+            if product_id in audit_rows and audit_rows[product_id].get("mapping_eligible") is True
         ]
         missing_mapping_audit_complete = bool(audit_applies) and set(
             audited_missing_product_ids
