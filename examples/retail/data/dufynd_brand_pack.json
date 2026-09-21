@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "brand": "DUFYND",
+  "status": "operational_master",
+  "source": "current_live_storefront_brand",
+  "logo_assets": {
+    "mark": "/brand/dufynd-mark.svg",
+    "lockup_dark": "/brand/dufynd-logo-lockup.svg",
+    "lockup_light": "/brand/dufynd-logo-lockup-light.svg"
+  },
+  "colors": {
+    "ink": "#171513",
+    "surface": "#fffdf8",
+    "mark_background": "#111111",
+    "gold": "#d4a84f",
+    "gold_highlight": "#f0d89b",
+    "ui_accent": "#b88934",
+    "ui_accent_strong": "#785719"
+  },
+  "typography": {
+    "wordmark_family": "Instrument Sans",
+    "wordmark_weight": 700,
+    "fallbacks": ["Arial", "sans-serif"]
+  },
+  "ai_video_rules": [
+    "Use an approved deterministic DUFYND logo asset after generative footage is created.",
+    "Never ask a video model to invent or redraw DUFYND typography.",
+    "Use the dark lockup on light footage and the light lockup on dark footage.",
+    "Do not stretch, skew, recolor or morph the DUFYND mark.",
+    "Keep sufficient negative space around the lockup; do not place it directly over busy label detail."
+  ],
+  "note": "These assets mirror the currently live DUFYND storefront mark and wordmark treatment. If the brand identity is intentionally redesigned later, replace this pack in one coordinated update."
+}
