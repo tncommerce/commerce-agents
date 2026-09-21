@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-21T21:06:48+00:00",
-  "source_fingerprint_sha256": "8233b6af3eb27cd0804a920d21a37511734e6133997e4fbea4a38d39bbb07ffe",
+  "generated_at": "2026-09-21T21:18:43+00:00",
+  "source_fingerprint_sha256": "47babfaa4ea827dd6ba4a5cfc0a4580adf8ec773a3361029efbab211e3b7aea5",
   "system": "DUFYND",
   "control_plane": "commerce_jarvis",
   "policy_ref": "scentai_jarvis_operating_policy.json",
