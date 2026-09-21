@@ -166,3 +166,36 @@ def test_incomplete_variant_audit_does_not_hide_mapping_work() -> None:
     assert merchant["feed_state"] == "await_remaining_mapping_resolution"
     assert merchant["next_action"] == "resolve_remaining_release_mappings_before_feed_validation"
     assert merchant["variant_audit"]["missing_mapping_audit_complete"] is False
+
+
+
+def test_verified_but_unmapped_exact_variant_stays_mapping_work() -> None:
+    audit = {
+        "merchant_id": "merchant-two",
+        "release_id": "SCENTAI-RELEASE-TEST",
+        "checked_at": "2026-09-21",
+        "rows": [
+            {
+                "product_id": "SC-B",
+                "audit_state": "exact_variant_verified",
+                "mapping_eligible": True,
+            }
+        ],
+    }
+
+    queue = build_feed_activation_queue(
+        release(),
+        mappings(),
+        affiliates("approved"),
+        generated_at="2026-09-21T20:35:00+00:00",
+        variant_audit=audit,
+    )
+
+    merchant = next(
+        row for row in queue["programs"] if row["merchant_id"] == "merchant-two"
+    )
+
+    assert merchant["feed_state"] == "await_remaining_mapping_resolution"
+    assert merchant["next_action"] == "resolve_remaining_release_mappings_before_feed_validation"
+    assert merchant["variant_audit"]["verified_unmapped_product_ids"] == ["SC-B"]
+    assert merchant["variant_audit"]["missing_mapping_audit_complete"] is False
