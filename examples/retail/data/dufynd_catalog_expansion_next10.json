@@ -28,12 +28,45 @@
       ],
       "rationale": "Current Douglas women bestseller presence; major missing mainstream comparison anchor.",
       "variant_status": "verified_retail_variant",
-      "research_state": "variant_verified_product_data_pending",
+      "research_state": "official_profile_verified_merchant_evidence_added",
       "evidence": [
         {
           "source": "Douglas",
           "url": "https://www.douglas.de/de/p/3001044085",
           "checked_at": "2026-09-21"
+        }
+      ],
+      "product_data": {
+        "scent_family": "amber floral",
+        "key_notes": [
+          "jasmine",
+          "tuberose",
+          "almond",
+          "tonka bean",
+          "coffee",
+          "cocoa"
+        ],
+        "source_confidence": "high",
+        "source_kind": "official_brand_editorial",
+        "source_url": "https://www.carolinaherrera.com/de/de/editorial/fragrance-good-girl-fantastic-pink",
+        "note": "Official Carolina Herrera editorial explicitly describes the original Good Girl composition; exact 80 ml retail variant is separately verified."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "3001044085",
+          "url": "https://www.douglas.de/de/p/3001044085",
+          "variant": "80 ml Eau de Parfum",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "application_pending"
+        },
+        {
+          "merchant": "flaconi",
+          "merchant_product_id": "80067347-80",
+          "url": "https://www.flaconi.de/parfum/carolina-herrera/good-girl/carolina-herrera-good-girl-eau-de-parfum.html?variant=80067347-80",
+          "variant": "80 ml Eau de Parfum",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "application_pending"
         }
       ]
     },
@@ -53,7 +86,7 @@
       ],
       "rationale": "Notino names 1 Million among popular men's fragrances; broad comparison anchor currently missing.",
       "variant_status": "verified_retail_variant",
-      "research_state": "variant_verified_product_data_pending",
+      "research_state": "retailer_profile_verified_merchant_evidence_added",
       "evidence": [
         {
           "source": "Douglas",
@@ -64,6 +97,53 @@
           "source": "Notino",
           "url": "https://www.notino.de/bestseller/",
           "checked_at": "2026-09-21"
+        }
+      ],
+      "product_data": {
+        "scent_family": "spicy woody",
+        "notes": {
+          "top": [
+            "mint",
+            "mandarin"
+          ],
+          "heart": [
+            "rose",
+            "cinnamon"
+          ],
+          "base": [
+            "amber",
+            "leather"
+          ]
+        },
+        "source_confidence": "medium_high",
+        "source_kind": "retailer_product_data",
+        "source_url": "https://www.notino.de/paco-rabanne/1-million-eau-de-toilette-fur-herren/p-69790/",
+        "note": "Exact 100 ml EDT variant and note pyramid verified from current retailer product data; official Rabanne product page was not used as a canonical note source in this pass."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "3000027901",
+          "url": "https://www.douglas.de/de/p/3000027901",
+          "variant": "100 ml Eau de Toilette",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "application_pending"
+        },
+        {
+          "merchant": "flaconi",
+          "merchant_product_id": "20102446",
+          "url": "https://www.flaconi.de/parfum/rabanne/1-million/rabanne-1-million-eau-de-toilette.html?variant=20102446",
+          "variant": "100 ml Eau de Toilette",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "application_pending"
+        },
+        {
+          "merchant": "notino",
+          "merchant_product_id": "p-69790",
+          "url": "https://www.notino.de/paco-rabanne/1-million-eau-de-toilette-fur-herren/p-69790/",
+          "variant": "100 ml Eau de Toilette",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "cj_application_pending"
         }
       ]
     },
@@ -83,12 +163,43 @@
       ],
       "rationale": "High-value blue-fragrance comparison anchor missing from current DUFYND coverage.",
       "variant_status": "verified_retail_variant",
-      "research_state": "variant_verified_product_data_pending",
+      "research_state": "official_profile_verified_merchant_evidence_added",
       "evidence": [
         {
           "source": "Douglas",
           "url": "https://www.douglas.de/de/p/3001047078",
           "checked_at": "2026-09-21"
+        }
+      ],
+      "product_data": {
+        "scent_family": "fresh woody fougere",
+        "key_notes": [
+          "sage essence",
+          "geranium absolute",
+          "woody accord",
+          "tonka bean"
+        ],
+        "source_confidence": "high",
+        "source_kind": "official_brand",
+        "source_url": "https://www.yslbeauty.de/dufte/dufte-fur-ihn/y/y-eau-de-parfum/WW-50194YSL.html",
+        "note": "Official YSL Beauty data confirms the 100 ml EDP and the white/dark fougere signature."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "3001047078",
+          "url": "https://www.douglas.de/de/p/3001047078",
+          "variant": "100 ml Eau de Parfum",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "application_pending"
+        },
+        {
+          "merchant": "flaconi",
+          "merchant_product_id": "80029198-100",
+          "url": "https://www.flaconi.de/parfum/yves-saint-laurent/y-for-men/yves-saint-laurent-y-for-men-eau-de-parfum.html?variant=80029198-100",
+          "variant": "100 ml Eau de Parfum",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "application_pending"
         }
       ]
     },
@@ -108,12 +219,43 @@
       ],
       "rationale": "Iconic women fragrance and major comparison anchor absent from live and staging catalog.",
       "variant_status": "verified_retail_variant",
-      "research_state": "variant_verified_product_data_pending",
+      "research_state": "official_profile_verified_merchant_evidence_added",
       "evidence": [
         {
           "source": "Douglas",
           "url": "https://www.douglas.de/de/p/1000722295",
           "checked_at": "2026-09-21"
+        }
+      ],
+      "product_data": {
+        "scent_family": "amber",
+        "notes": {
+          "top": [
+            "orange"
+          ],
+          "heart": [
+            "jasmine",
+            "rose"
+          ],
+          "base": [
+            "patchouli",
+            "vetiver"
+          ]
+        },
+        "source_confidence": "high",
+        "source_kind": "official_brand",
+        "source_url": "https://www.chanel.com/de/parfum/p/116520/coco-mademoiselle-eau-de-parfum-zerstaeuber/",
+        "official_reference": "116520",
+        "note": "Official CHANEL Germany data confirms the 100 ml EDP composition and reference."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "1000722295",
+          "url": "https://www.douglas.de/de/p/1000722295",
+          "variant": "100 ml Eau de Parfum",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "application_pending"
         }
       ]
     },
@@ -133,12 +275,51 @@
       ],
       "rationale": "Strong Douglas presence and natural counterpart to DUFYND's existing Valentino men's coverage.",
       "variant_status": "verified_retail_variant",
-      "research_state": "variant_verified_product_data_pending",
+      "research_state": "official_profile_verified_merchant_evidence_added",
       "evidence": [
         {
           "source": "Douglas",
           "url": "https://www.douglas.de/de/p/5000004074",
           "checked_at": "2026-09-21"
+        }
+      ],
+      "product_data": {
+        "scent_family": "floral amber woody",
+        "notes": {
+          "top": [
+            "Italian bergamot"
+          ],
+          "heart": [
+            "jasmine grandiflorum",
+            "jasmine sambac",
+            "jasmine tea"
+          ],
+          "base": [
+            "bourbon vanilla",
+            "modern woods"
+          ]
+        },
+        "source_confidence": "high",
+        "source_kind": "official_brand",
+        "source_url": "https://www.valentino-beauty.de/de_DE/dufte/damendufte/born-in-roma-donna/born-in-roma-donna/MPL00468.html",
+        "note": "Official Valentino Beauty data confirms the 100 ml EDP and core floral-amber-woody structure."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "5000004074",
+          "url": "https://www.douglas.de/de/p/5000004074",
+          "variant": "100 ml Eau de Parfum",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "application_pending"
+        },
+        {
+          "merchant": "flaconi",
+          "merchant_product_id": "80052155-100",
+          "url": "https://www.flaconi.de/parfum/valentino/born-in-roma-donna/valentino-born-in-roma-donna-eau-de-parfum.html?variant=80052155-100",
+          "variant": "100 ml Eau de Parfum",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "application_pending"
         }
       ]
     },
@@ -268,5 +449,13 @@
       ]
     }
   ],
-  "note": "Naming intentionally avoids collision with existing SCENTAI/DUFYND release manifests 01-05."
+  "note": "Naming intentionally avoids collision with existing SCENTAI/DUFYND release manifests 01-05.",
+  "enrichment": {
+    "phase_a": {
+      "status": "complete",
+      "enriched_product_count": 5,
+      "completed_at": "2026-09-21",
+      "scope": "Official/retailer product profile plus non-canonical merchant research evidence. No affiliate offer activation and no live publication."
+    }
+  }
 }
