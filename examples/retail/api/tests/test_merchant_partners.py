@@ -3,11 +3,13 @@ from __future__ import annotations
 import json
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
+from urllib.parse import parse_qs, urlparse
 
 from retail.api.merchant_partners import (
     MerchantPartner,
     MerchantPartnerStore,
     customer_partner_payload,
+    partner_clickout_url,
 )
 
 NOW = datetime(2026, 9, 18, 20, 0, tzinfo=UTC)
@@ -129,3 +131,68 @@ def test_perfumetrader_fixture_uses_verified_awin_partner_link() -> None:
     assert "awinmid=11672" in partner.affiliate_url
     assert "awinaffid=3099222" in partner.affiliate_url
     assert partner.last_verified_at is not None
+
+
+
+def test_awin_partner_clickout_adds_content_clickref() -> None:
+    partner = MerchantPartner(
+        merchant_id="perfumetrader",
+        merchant_name="Perfumetrader",
+        status="active",
+        affiliate_url=(
+            "https://www.awin1.com/cread.php?"
+            "awinmid=11672&awinaffid=3099222&"
+            "ued=https%3A%2F%2Fwww.perfumetrader.de%2Fde%2F"
+        ),
+        last_verified_at=NOW,
+    )
+
+    target = partner_clickout_url(
+        partner,
+        clickref="genesis_naxos_01",
+    )
+
+    assert target is not None
+    query = parse_qs(urlparse(target).query)
+    assert query["awinmid"] == ["11672"]
+    assert query["awinaffid"] == ["3099222"]
+    assert query["ued"] == ["https://www.perfumetrader.de/de/"]
+    assert query["clickref"] == ["genesis_naxos_01"]
+
+
+def test_awin_partner_clickout_replaces_existing_clickref() -> None:
+    partner = MerchantPartner(
+        merchant_id="perfumetrader",
+        merchant_name="Perfumetrader",
+        status="active",
+        affiliate_url=(
+            "https://www.awin1.com/cread.php?"
+            "awinmid=11672&awinaffid=3099222&clickref=old_ref&"
+            "ued=https%3A%2F%2Fwww.perfumetrader.de%2Fde%2F"
+        ),
+        last_verified_at=NOW,
+    )
+
+    target = partner_clickout_url(
+        partner,
+        clickref="static_naxos_editorial_001",
+    )
+
+    assert target is not None
+    query = parse_qs(urlparse(target).query)
+    assert query["clickref"] == ["static_naxos_editorial_001"]
+
+
+def test_non_awin_partner_clickout_is_unchanged() -> None:
+    partner = MerchantPartner(
+        merchant_id="example",
+        merchant_name="Example",
+        status="active",
+        affiliate_url="https://example.com/track?foo=bar",
+        last_verified_at=NOW,
+    )
+
+    assert (
+        partner_clickout_url(partner, clickref="genesis_naxos_01")
+        == partner.affiliate_url
+    )
