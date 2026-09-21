@@ -281,3 +281,55 @@ def test_clickout_tracker_preserves_content_attribution(tmp_path) -> None:
     assert row["acquisition_source"] == "tiktok"
     assert row["campaign_id"] == "launch01"
     assert row["content_id"] == "genesis_naxos_01"
+
+
+
+def test_perfumetrader_awin_deeplink_uses_dufynd_clickout_contract(tmp_path) -> None:
+    path = tmp_path / "merchant_offers.json"
+    awin_url = (
+        "https://www.awin1.com/cread.php?"
+        "awinmid=11672&awinaffid=3099222&clickref=dufynd_smoke_001&"
+        "ued=https%3A%2F%2Fwww.perfumetrader.de%2Fde%2F"
+        "montblanc-explorer-eau-de-parfum-100-ml"
+    )
+    path.write_text(
+        json.dumps(
+            {
+                "offers": [
+                    {
+                        "offer_id": "perfumetrader-montblanc-explorer-smoke",
+                        "product_id": "SC-MONTBLANC-EXPLORER-100",
+                        "merchant_id": "perfumetrader",
+                        "merchant_name": "Perfumetrader",
+                        "merchant_product_id": "68275125",
+                        "price": 59.90,
+                        "currency": "EUR",
+                        "shipping_cost": None,
+                        "in_stock": True,
+                        "variant_label": "100 ml",
+                        "product_url": (
+                            "https://www.perfumetrader.de/de/"
+                            "montblanc-explorer-eau-de-parfum-100-ml"
+                        ),
+                        "affiliate_url": awin_url,
+                        "network": "Awin",
+                        "data_source": "manual_smoke_test",
+                        "last_updated_at": NOW.isoformat(),
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    store = MerchantOfferStore(path)
+    eligible = store.eligible_offer(
+        "perfumetrader-montblanc-explorer-smoke",
+        now=NOW,
+    )
+
+    assert eligible is not None
+    assert eligible.affiliate_url == awin_url
+    assert "awinmid=11672" in eligible.affiliate_url
+    assert "awinaffid=3099222" in eligible.affiliate_url
+    assert "clickref=dufynd_smoke_001" in eligible.affiliate_url
