@@ -284,7 +284,9 @@ def test_clickout_tracker_preserves_content_attribution(tmp_path) -> None:
 
 
 
-def test_perfumetrader_awin_deeplink_uses_dufynd_clickout_contract(\n    tmp_path,\n) -> None:
+def test_perfumetrader_awin_deeplink_uses_dufynd_clickout_contract(
+    tmp_path,
+) -> None:
     path = tmp_path / "merchant_offers.json"
     awin_url = (
         "https://www.awin1.com/cread.php?"
