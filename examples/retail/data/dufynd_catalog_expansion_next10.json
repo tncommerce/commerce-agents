@@ -28,14 +28,118 @@
       ],
       "rationale": "Current Douglas women bestseller presence; major missing mainstream comparison anchor.",
       "variant_status": "verified_retail_variant",
-      "research_state": "variant_verified_product_data_pending",
+      "research_state": "official_profile_verified_merchant_evidence_added",
       "evidence": [
         {
           "source": "Douglas",
           "url": "https://www.douglas.de/de/p/3001044085",
           "checked_at": "2026-09-21"
         }
-      ]
+      ],
+      "product_data": {
+        "scent_family": "amber floral",
+        "key_notes": [
+          "jasmine",
+          "tuberose",
+          "almond",
+          "tonka bean",
+          "coffee",
+          "cocoa"
+        ],
+        "source_confidence": "high",
+        "source_kind": "official_brand_editorial",
+        "source_url": "https://www.carolinaherrera.com/de/de/editorial/fragrance-good-girl-fantastic-pink",
+        "note": "Official Carolina Herrera editorial explicitly describes the original Good Girl composition; exact 80 ml retail variant is separately verified."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "3001044085",
+          "url": "https://www.douglas.de/de/p/3001044085",
+          "variant": "80 ml Eau de Parfum",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "application_pending"
+        },
+        {
+          "merchant": "flaconi",
+          "merchant_product_id": "80067347-80",
+          "url": "https://www.flaconi.de/parfum/carolina-herrera/good-girl/carolina-herrera-good-girl-eau-de-parfum.html?variant=80067347-80",
+          "variant": "80 ml Eau de Parfum",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "application_pending"
+        }
+      ],
+      "community": {
+        "source": "Parfumo",
+        "source_url": "https://www.parfumo.com/Perfumes/Carolina_Herrera/Good_Girl_Eau_de_Parfum",
+        "checked_at": "2026-09-21",
+        "scope": "fragrance_concentration_not_bottle_size",
+        "rating_10": 7.6,
+        "rating_count": 1597,
+        "longevity_10": 7.7,
+        "longevity_count": 1383,
+        "projection_10": 7.5,
+        "projection_count": 1363,
+        "main_accords": [
+          "sweet",
+          "floral",
+          "gourmand",
+          "creamy",
+          "oriental"
+        ],
+        "provisional": false
+      },
+      "identifiers": {
+        "status": "source_verified_feed_match_pending",
+        "canonical_gtin": null,
+        "observations": [
+          {
+            "gtin": "8411061026342",
+            "source_url": "https://www.perfumetrader.de/de/carolina-herrera-good-girl-eau-de-parfum-80-ml",
+            "source": "perfumetrader",
+            "merchant_product_id": "70727123",
+            "concentration": "Eau de Parfum",
+            "volume_ml": 80,
+            "checked_at": "2026-09-21",
+            "evidence_kind": "product_page",
+            "availability_snapshot": "out_of_stock"
+          }
+        ],
+        "note": "Research evidence only; canonical GTIN and merchant feed matching remain pending."
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image",
+        "queue_priority": 1,
+        "reference_page": "https://www.carolinaherrera.com/de/de/editorial/fragrance-good-girl-fantastic-pink",
+        "required_variant": {
+          "concentration": "Eau de Parfum",
+          "volume_ml": 80
+        },
+        "blockers": [
+          "approved_image_source_pending",
+          "exact_bottle_and_packaging_review_pending"
+        ]
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending"
+        ]
+      },
+      "recommendation_profile": {
+        "scores": {
+          "freshness": 3,
+          "sweetness": 10,
+          "woodiness": 3,
+          "spiciness": 4
+        },
+        "source": "deterministic_editorial_mapping_v1",
+        "confidence": "medium",
+        "customer_facing": false
+      }
     },
     {
       "priority": 2,
@@ -53,7 +157,7 @@
       ],
       "rationale": "Notino names 1 Million among popular men's fragrances; broad comparison anchor currently missing.",
       "variant_status": "verified_retail_variant",
-      "research_state": "variant_verified_product_data_pending",
+      "research_state": "retailer_profile_verified_merchant_evidence_added",
       "evidence": [
         {
           "source": "Douglas",
@@ -65,7 +169,125 @@
           "url": "https://www.notino.de/bestseller/",
           "checked_at": "2026-09-21"
         }
-      ]
+      ],
+      "product_data": {
+        "scent_family": "spicy woody",
+        "notes": {
+          "top": [
+            "mint",
+            "mandarin"
+          ],
+          "heart": [
+            "rose",
+            "cinnamon"
+          ],
+          "base": [
+            "amber",
+            "leather"
+          ]
+        },
+        "source_confidence": "medium_high",
+        "source_kind": "retailer_product_data",
+        "source_url": "https://www.notino.de/paco-rabanne/1-million-eau-de-toilette-fur-herren/p-69790/",
+        "note": "Exact 100 ml EDT variant and note pyramid verified from current retailer product data; official Rabanne product page was not used as a canonical note source in this pass."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "3000027901",
+          "url": "https://www.douglas.de/de/p/3000027901",
+          "variant": "100 ml Eau de Toilette",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "application_pending"
+        },
+        {
+          "merchant": "flaconi",
+          "merchant_product_id": "20102446",
+          "url": "https://www.flaconi.de/parfum/rabanne/1-million/rabanne-1-million-eau-de-toilette.html?variant=20102446",
+          "variant": "100 ml Eau de Toilette",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "application_pending"
+        },
+        {
+          "merchant": "notino",
+          "merchant_product_id": "p-69790",
+          "url": "https://www.notino.de/paco-rabanne/1-million-eau-de-toilette-fur-herren/p-69790/",
+          "variant": "100 ml Eau de Toilette",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "cj_application_pending"
+        }
+      ],
+      "community": {
+        "source": "Parfumo",
+        "source_url": "https://www.parfumo.com/Perfumes/Rabanne/1_Million_Eau_de_Toilette",
+        "checked_at": "2026-09-21",
+        "scope": "fragrance_concentration_not_bottle_size",
+        "rating_10": 6.9,
+        "rating_count": 3606,
+        "longevity_10": 7.8,
+        "longevity_count": 3159,
+        "projection_10": 7.7,
+        "projection_count": 3093,
+        "main_accords": [
+          "sweet",
+          "spicy",
+          "oriental",
+          "synthetic",
+          "fruity"
+        ],
+        "provisional": false
+      },
+      "identifiers": {
+        "status": "source_verified_feed_match_pending",
+        "canonical_gtin": null,
+        "observations": [
+          {
+            "gtin": "3349666007921",
+            "source_url": "https://www.perfumetrader.de/de/paco-rabanne-1-million-eau-de-toilette-100-ml",
+            "source": "perfumetrader",
+            "merchant_product_id": "16978322",
+            "concentration": "Eau de Toilette",
+            "volume_ml": 100,
+            "checked_at": "2026-09-21",
+            "evidence_kind": "product_page",
+            "availability_snapshot": "in_stock"
+          }
+        ],
+        "note": "Research evidence only; canonical GTIN and merchant feed matching remain pending."
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image",
+        "queue_priority": 2,
+        "reference_page": "https://www.notino.de/paco-rabanne/1-million-eau-de-toilette-fur-herren/p-69790/",
+        "required_variant": {
+          "concentration": "Eau de Toilette",
+          "volume_ml": 100
+        },
+        "blockers": [
+          "approved_image_source_pending",
+          "exact_bottle_and_packaging_review_pending"
+        ]
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending"
+        ]
+      },
+      "recommendation_profile": {
+        "scores": {
+          "freshness": 4,
+          "sweetness": 8,
+          "woodiness": 4,
+          "spiciness": 6
+        },
+        "source": "deterministic_editorial_mapping_v1",
+        "confidence": "medium",
+        "customer_facing": false
+      }
     },
     {
       "priority": 3,
@@ -83,14 +305,116 @@
       ],
       "rationale": "High-value blue-fragrance comparison anchor missing from current DUFYND coverage.",
       "variant_status": "verified_retail_variant",
-      "research_state": "variant_verified_product_data_pending",
+      "research_state": "official_profile_verified_merchant_evidence_added",
       "evidence": [
         {
           "source": "Douglas",
           "url": "https://www.douglas.de/de/p/3001047078",
           "checked_at": "2026-09-21"
         }
-      ]
+      ],
+      "product_data": {
+        "scent_family": "fresh woody fougere",
+        "key_notes": [
+          "sage essence",
+          "geranium absolute",
+          "woody accord",
+          "tonka bean"
+        ],
+        "source_confidence": "high",
+        "source_kind": "official_brand",
+        "source_url": "https://www.yslbeauty.de/dufte/dufte-fur-ihn/y/y-eau-de-parfum/WW-50194YSL.html",
+        "note": "Official YSL Beauty data confirms the 100 ml EDP and the white/dark fougere signature."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "3001047078",
+          "url": "https://www.douglas.de/de/p/3001047078",
+          "variant": "100 ml Eau de Parfum",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "application_pending"
+        },
+        {
+          "merchant": "flaconi",
+          "merchant_product_id": "80029198-100",
+          "url": "https://www.flaconi.de/parfum/yves-saint-laurent/y-for-men/yves-saint-laurent-y-for-men-eau-de-parfum.html?variant=80029198-100",
+          "variant": "100 ml Eau de Parfum",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "application_pending"
+        }
+      ],
+      "community": {
+        "source": "Parfumo",
+        "source_url": "https://www.parfumo.com/Perfumes/Yves_Saint_Laurent/Y_Eau_de_Parfum",
+        "checked_at": "2026-09-21",
+        "scope": "fragrance_concentration_not_bottle_size",
+        "rating_10": 7.5,
+        "rating_count": 4349,
+        "longevity_10": 7.6,
+        "longevity_count": 4019,
+        "projection_10": 7.4,
+        "projection_count": 3989,
+        "main_accords": [
+          "fresh",
+          "sweet",
+          "synthetic",
+          "fruity",
+          "aquatic"
+        ],
+        "provisional": false
+      },
+      "identifiers": {
+        "status": "source_verified_feed_match_pending",
+        "canonical_gtin": null,
+        "observations": [
+          {
+            "gtin": "3614272050358",
+            "source_url": "https://www.yslbeauty.de/dufte/dufte-fur-ihn/y/y-eau-de-parfum/3614272050358.html",
+            "source": "yslbeauty",
+            "merchant_product_id": null,
+            "concentration": "Eau de Parfum",
+            "volume_ml": 100,
+            "checked_at": "2026-09-21",
+            "evidence_kind": "product_page",
+            "availability_snapshot": "not_recorded"
+          }
+        ],
+        "note": "Research evidence only; canonical GTIN and merchant feed matching remain pending."
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image",
+        "queue_priority": 3,
+        "reference_page": "https://www.yslbeauty.de/dufte/dufte-fur-ihn/y/y-eau-de-parfum/WW-50194YSL.html",
+        "required_variant": {
+          "concentration": "Eau de Parfum",
+          "volume_ml": 100
+        },
+        "blockers": [
+          "approved_image_source_pending",
+          "exact_bottle_and_packaging_review_pending"
+        ]
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending"
+        ]
+      },
+      "recommendation_profile": {
+        "scores": {
+          "freshness": 10,
+          "sweetness": 6,
+          "woodiness": 2,
+          "spiciness": 2
+        },
+        "source": "deterministic_editorial_mapping_v1",
+        "confidence": "medium",
+        "customer_facing": false
+      }
     },
     {
       "priority": 4,
@@ -108,14 +432,116 @@
       ],
       "rationale": "Iconic women fragrance and major comparison anchor absent from live and staging catalog.",
       "variant_status": "verified_retail_variant",
-      "research_state": "variant_verified_product_data_pending",
+      "research_state": "official_profile_verified_merchant_evidence_added",
       "evidence": [
         {
           "source": "Douglas",
           "url": "https://www.douglas.de/de/p/1000722295",
           "checked_at": "2026-09-21"
         }
-      ]
+      ],
+      "product_data": {
+        "scent_family": "amber",
+        "notes": {
+          "top": [
+            "orange"
+          ],
+          "heart": [
+            "jasmine",
+            "rose"
+          ],
+          "base": [
+            "patchouli",
+            "vetiver"
+          ]
+        },
+        "source_confidence": "high",
+        "source_kind": "official_brand",
+        "source_url": "https://www.chanel.com/de/parfum/p/116520/coco-mademoiselle-eau-de-parfum-zerstaeuber/",
+        "official_reference": "116520",
+        "note": "Official CHANEL Germany data confirms the 100 ml EDP composition and reference."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "1000722295",
+          "url": "https://www.douglas.de/de/p/1000722295",
+          "variant": "100 ml Eau de Parfum",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "application_pending"
+        }
+      ],
+      "community": {
+        "source": "Parfumo",
+        "source_url": "https://www.parfumo.com/Perfumes/Chanel/Coco_Mademoiselle",
+        "checked_at": "2026-09-21",
+        "scope": "fragrance_concentration_not_bottle_size",
+        "rating_10": 7.8,
+        "rating_count": 2097,
+        "longevity_10": 8.1,
+        "longevity_count": 1706,
+        "projection_10": 7.8,
+        "projection_count": 1644,
+        "main_accords": [
+          "floral",
+          "sweet",
+          "fresh",
+          "fruity",
+          "powdery"
+        ],
+        "provisional": false
+      },
+      "identifiers": {
+        "status": "source_verified_feed_match_pending",
+        "canonical_gtin": null,
+        "observations": [
+          {
+            "gtin": "3145891165203",
+            "source": "pariscom",
+            "source_url": "https://pariscom2030.com/en/products/%D9%83%D9%88%D9%83%D9%88-%D9%85%D8%A7%D8%AF%D9%85%D9%88%D8%B2%D9%8A%D9%84-%D9%85%D9%86-%D8%B4%D8%A7%D9%86%D9%8A%D9%84-%D8%B9%D8%B7%D8%B1-%D9%84%D9%84%D9%86%D8%B3%D8%A7%D8%A1---%D8%A7%D9%88-%D8%AF%D9%8A-%D8%A8%D8%A7%D8%B1%D9%81%D8%A7%D9%86-100-%D9%85%D9%84",
+            "merchant_product_id": null,
+            "concentration": "Eau de Parfum",
+            "volume_ml": 100,
+            "checked_at": "2026-09-21",
+            "evidence_kind": "product_page",
+            "availability_snapshot": "not_recorded"
+          }
+        ],
+        "note": "Research evidence only; canonical GTIN and merchant feed matching remain pending."
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image",
+        "queue_priority": 4,
+        "reference_page": "https://www.chanel.com/de/parfum/p/116520/coco-mademoiselle-eau-de-parfum-zerstaeuber/",
+        "required_variant": {
+          "concentration": "Eau de Parfum",
+          "volume_ml": 100
+        },
+        "blockers": [
+          "approved_image_source_pending",
+          "exact_bottle_and_packaging_review_pending"
+        ]
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending"
+        ]
+      },
+      "recommendation_profile": {
+        "scores": {
+          "freshness": 8,
+          "sweetness": 8,
+          "woodiness": 2,
+          "spiciness": 2
+        },
+        "source": "deterministic_editorial_mapping_v1",
+        "confidence": "medium",
+        "customer_facing": false
+      }
     },
     {
       "priority": 5,
@@ -133,14 +559,125 @@
       ],
       "rationale": "Strong Douglas presence and natural counterpart to DUFYND's existing Valentino men's coverage.",
       "variant_status": "verified_retail_variant",
-      "research_state": "variant_verified_product_data_pending",
+      "research_state": "official_profile_verified_merchant_evidence_added",
       "evidence": [
         {
           "source": "Douglas",
           "url": "https://www.douglas.de/de/p/5000004074",
           "checked_at": "2026-09-21"
         }
-      ]
+      ],
+      "product_data": {
+        "scent_family": "floral amber woody",
+        "notes": {
+          "top": [
+            "Italian bergamot"
+          ],
+          "heart": [
+            "jasmine grandiflorum",
+            "jasmine sambac",
+            "jasmine tea"
+          ],
+          "base": [
+            "bourbon vanilla",
+            "modern woods"
+          ]
+        },
+        "source_confidence": "high",
+        "source_kind": "official_brand",
+        "source_url": "https://www.valentino-beauty.de/de_DE/dufte/damendufte/born-in-roma-donna/born-in-roma-donna/MPL00468.html",
+        "note": "Official Valentino Beauty data confirms the 100 ml EDP and core floral-amber-woody structure."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "5000004074",
+          "url": "https://www.douglas.de/de/p/5000004074",
+          "variant": "100 ml Eau de Parfum",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "application_pending"
+        },
+        {
+          "merchant": "flaconi",
+          "merchant_product_id": "80052155-100",
+          "url": "https://www.flaconi.de/parfum/valentino/born-in-roma-donna/valentino-born-in-roma-donna-eau-de-parfum.html?variant=80052155-100",
+          "variant": "100 ml Eau de Parfum",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "application_pending"
+        }
+      ],
+      "community": {
+        "source": "Parfumo",
+        "source_url": "https://www.parfumo.com/Perfumes/Valentino/Valentino_Donna_Born_In_Roma",
+        "checked_at": "2026-09-21",
+        "scope": "fragrance_concentration_not_bottle_size",
+        "rating_10": 7.5,
+        "rating_count": 1041,
+        "longevity_10": 7.3,
+        "longevity_count": 876,
+        "projection_10": 7.2,
+        "projection_count": 866,
+        "main_accords": [
+          "sweet",
+          "fruity",
+          "floral",
+          "synthetic",
+          "fresh"
+        ],
+        "provisional": false
+      },
+      "identifiers": {
+        "status": "indexed_evidence_feed_match_pending",
+        "canonical_gtin": null,
+        "observations": [
+          {
+            "gtin": "3614272761445",
+            "source_url": "https://www.beautyplaza.com/en-eu/p/valentino-born-in-roma-donna-eau-de-parfum/159201/",
+            "source": "beautyplaza",
+            "merchant_product_id": "159201",
+            "concentration": "Eau de Parfum",
+            "volume_ml": 100,
+            "checked_at": "2026-09-21",
+            "evidence_kind": "indexed_merchant_product_page",
+            "availability_snapshot": "out_of_stock"
+          }
+        ],
+        "note": "Research evidence only; canonical GTIN and merchant feed matching remain pending."
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image",
+        "queue_priority": 5,
+        "reference_page": "https://www.valentino-beauty.de/de_DE/dufte/damendufte/born-in-roma-donna/born-in-roma-donna/MPL00468.html",
+        "required_variant": {
+          "concentration": "Eau de Parfum",
+          "volume_ml": 100
+        },
+        "blockers": [
+          "approved_image_source_pending",
+          "exact_bottle_and_packaging_review_pending"
+        ]
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending",
+          "direct_source_or_feed_confirmation_pending"
+        ]
+      },
+      "recommendation_profile": {
+        "scores": {
+          "freshness": 8,
+          "sweetness": 6,
+          "woodiness": 2,
+          "spiciness": 2
+        },
+        "source": "deterministic_editorial_mapping_v1",
+        "confidence": "medium",
+        "customer_facing": false
+      }
     },
     {
       "priority": 6,
@@ -158,14 +695,122 @@
       ],
       "rationale": "Notino explicitly lists Euphoria among popular women's fragrances; improves accessible price-tier coverage.",
       "variant_status": "verified_retail_variant",
-      "research_state": "variant_verified_product_data_pending",
+      "research_state": "retailer_profile_verified_merchant_evidence_added",
       "evidence": [
         {
           "source": "Notino",
           "url": "https://www.notino.de/calvin-klein/euphoria-eau-de-parfum-fur-damen/",
           "checked_at": "2026-09-21"
         }
-      ]
+      ],
+      "product_data": {
+        "scent_family": "oriental floral",
+        "notes": {
+          "top": [
+            "pomegranate"
+          ],
+          "heart": [
+            "lotus",
+            "orchid"
+          ],
+          "base": [
+            "violet",
+            "amber",
+            "mahogany",
+            "musk"
+          ]
+        },
+        "source_confidence": "medium_high",
+        "source_kind": "retailer_product_data",
+        "source_url": "https://www.notino.de/calvin-klein/euphoria-eau-de-parfum-fur-damen/",
+        "note": "Exact 100 ml Eau de Parfum and note pyramid verified from current retailer product data; manufacturer data remains a later upgrade path."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "notino",
+          "merchant_product_id": "CAK10204",
+          "url": "https://www.notino.de/calvin-klein/euphoria-eau-de-parfum-fur-damen/",
+          "variant": "100 ml Eau de Parfum",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "cj_application_pending"
+        }
+      ],
+      "community": {
+        "source": "Parfumo",
+        "source_url": "https://www.parfumo.com/Perfumes/Calvin_Klein/Euphoria",
+        "checked_at": "2026-09-21",
+        "scope": "fragrance_concentration_not_bottle_size",
+        "rating_10": 7.3,
+        "rating_count": 815,
+        "longevity_10": 7.5,
+        "longevity_count": 624,
+        "projection_10": 7.1,
+        "projection_count": 588,
+        "main_accords": [
+          "floral",
+          "sweet",
+          "fruity",
+          "woody",
+          "oriental"
+        ],
+        "provisional": false
+      },
+      "identifiers": {
+        "status": "source_verified_feed_match_pending",
+        "canonical_gtin": null,
+        "observations": [
+          {
+            "gtin": "0088300162505",
+            "source": "news-parfums",
+            "source_url": "https://www.news-parfums.com/en/calvin-klein/390-calvin-klein-euphoria-eau-de-parfum-0088300162512.html",
+            "merchant_product_id": null,
+            "concentration": "Eau de Parfum",
+            "volume_ml": 100,
+            "checked_at": "2026-09-21",
+            "evidence_kind": "product_page",
+            "availability_snapshot": "not_recorded"
+          }
+        ],
+        "note": "100 ml EDP option explicitly displays reference 0088300162505; corroborated by Loja Glamourosa and Jomashop. URL suffix 0088300162512 is not used as the variant barcode. Canonical feed match remains pending.",
+        "review_source_url": "https://www.news-parfums.com/en/calvin-klein/390-calvin-klein-euphoria-eau-de-parfum-0088300162512.html",
+        "corroborating_source_urls": [
+          "https://www.lojaglamourosa.com/us/en/calvin-klein-euphoria-edp-vap---100-ml-0088300162505",
+          "https://www.jomashop.com/calvin-klein-fragrances-eupes34es-3-4oz.html"
+        ]
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image",
+        "queue_priority": 6,
+        "reference_page": "https://www.notino.de/calvin-klein/euphoria-eau-de-parfum-fur-damen/",
+        "required_variant": {
+          "concentration": "Eau de Parfum",
+          "volume_ml": 100
+        },
+        "blockers": [
+          "approved_image_source_pending",
+          "exact_bottle_and_packaging_review_pending"
+        ]
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending"
+        ]
+      },
+      "recommendation_profile": {
+        "scores": {
+          "freshness": 4,
+          "sweetness": 8,
+          "woodiness": 6,
+          "spiciness": 4
+        },
+        "source": "deterministic_editorial_mapping_v1",
+        "confidence": "medium",
+        "customer_facing": false
+      }
     },
     {
       "priority": 7,
@@ -183,14 +828,128 @@
       ],
       "rationale": "Notino explicitly lists Nomade among popular women's fragrances and exact 75 ml variant is available.",
       "variant_status": "verified_retail_variant",
-      "research_state": "variant_verified_product_data_pending",
+      "research_state": "official_profile_verified_merchant_evidence_added",
       "evidence": [
         {
           "source": "Notino",
           "url": "https://www.notino.de/chloe/nomade-eau-de-parfum-fuer-damen/p-11620592/",
           "checked_at": "2026-09-21"
         }
-      ]
+      ],
+      "product_data": {
+        "scent_family": "woody floral",
+        "notes": {
+          "top": [
+            "mirabelle"
+          ],
+          "heart": [
+            "freesia"
+          ],
+          "base": [
+            "oakmoss"
+          ]
+        },
+        "source_confidence": "high",
+        "source_kind": "official_brand",
+        "source_url": "https://www.chloe.com/de-de/p/fragrances/eau-de-parfum/CHCA64994090.html",
+        "official_reference": "CHCA64994090",
+        "note": "Official Chloé Germany data confirms original Nomade Eau de Parfum 75 ml. Do not confuse with Nomade Jasmin Naturel, Nuit d'Égypte or Lumière d'Égypte."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "notino",
+          "merchant_product_id": "p-11620592",
+          "url": "https://www.notino.de/chloe/nomade-eau-de-parfum-fuer-damen/p-11620592/",
+          "variant": "75 ml Eau de Parfum",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "cj_application_pending"
+        },
+        {
+          "merchant": "flaconi",
+          "merchant_product_id": "80027120-70",
+          "url": "https://www.flaconi.de/parfum/chloe/nomade/chloe-nomade-eau-de-parfum.html?variant=80027120-70",
+          "variant": "75 ml Eau de Parfum",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "application_pending",
+          "mapping_confidence": "medium",
+          "mapping_note": "Retail page displays 75 ml although legacy variant ID suffix is '-70'; keep research-only until feed/GTIN verification."
+        }
+      ],
+      "community": {
+        "source": "Parfumo",
+        "source_url": "https://www.parfumo.com/Perfumes/Chloe/Nomade",
+        "checked_at": "2026-09-21",
+        "scope": "fragrance_concentration_not_bottle_size",
+        "rating_10": 7.6,
+        "rating_count": 1116,
+        "longevity_10": 7.7,
+        "longevity_count": 967,
+        "projection_10": 7.2,
+        "projection_count": 966,
+        "main_accords": [
+          "floral",
+          "fruity",
+          "fresh",
+          "chypre",
+          "sweet"
+        ],
+        "provisional": false
+      },
+      "identifiers": {
+        "status": "indexed_evidence_feed_match_pending",
+        "canonical_gtin": null,
+        "observations": [
+          {
+            "gtin": "3614223113347",
+            "source": "amazon",
+            "source_url": "https://www.amazon.com/Chloe-Nomade-Parfum-Spray-Women/dp/B07F8FJ7ND",
+            "merchant_product_id": null,
+            "concentration": "Eau de Parfum",
+            "volume_ml": 75,
+            "checked_at": "2026-09-21",
+            "evidence_kind": "indexed_merchant_product_page",
+            "availability_snapshot": "not_recorded"
+          }
+        ],
+        "note": "Research evidence only; canonical GTIN and merchant feed matching remain pending.",
+        "corroborating_source_urls": [
+          "https://www.jomashop.com/chloe-fragrances-chnes25.html"
+        ]
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image",
+        "queue_priority": 7,
+        "reference_page": "https://www.chloe.com/de-de/p/fragrances/eau-de-parfum/CHCA64994090.html",
+        "required_variant": {
+          "concentration": "Eau de Parfum",
+          "volume_ml": 75
+        },
+        "blockers": [
+          "approved_image_source_pending",
+          "exact_bottle_and_packaging_review_pending"
+        ]
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending",
+          "direct_source_or_feed_confirmation_pending"
+        ]
+      },
+      "recommendation_profile": {
+        "scores": {
+          "freshness": 8,
+          "sweetness": 6,
+          "woodiness": 2,
+          "spiciness": 2
+        },
+        "source": "deterministic_editorial_mapping_v1",
+        "confidence": "medium",
+        "customer_facing": false
+      }
     },
     {
       "priority": 8,
@@ -208,14 +967,111 @@
       ],
       "rationale": "Major missing JPG comparison point next to staged Le Male Le Parfum; exact 125 ml variant verified.",
       "variant_status": "verified_retail_variant",
-      "research_state": "variant_verified_product_data_pending",
+      "research_state": "official_profile_verified_merchant_evidence_added",
       "evidence": [
         {
           "source": "Douglas",
           "url": "https://www.douglas.de/de/p/5010945026",
           "checked_at": "2026-09-21"
         }
-      ]
+      ],
+      "product_data": {
+        "scent_family": "woody aromatic amber",
+        "key_notes": [
+          "mint",
+          "lavender",
+          "tonka bean",
+          "benzoin",
+          "vanilla facets",
+          "honey/tobacco facets"
+        ],
+        "source_confidence": "high",
+        "source_kind": "official_brand",
+        "source_url": "https://www.jeanpaulgaultier.com/de/de/p/linie-le-male/le-male-elixir-parfum-000000000065189084",
+        "note": "Official Jean Paul Gaultier data confirms Parfum concentration, 125 ml size and the Le Male Elixir composition."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "5010945026",
+          "url": "https://www.douglas.de/de/p/5010945026",
+          "variant": "125 ml Parfum",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "application_pending"
+        }
+      ],
+      "community": {
+        "source": "Parfumo",
+        "source_url": "https://www.parfumo.com/Perfumes/Jean_Paul_Gaultier/le-male-elixir",
+        "checked_at": "2026-09-21",
+        "scope": "fragrance_concentration_not_bottle_size",
+        "rating_10": 8.2,
+        "rating_count": 3756,
+        "longevity_10": 8.6,
+        "longevity_count": 3528,
+        "projection_10": 8.3,
+        "projection_count": 3510,
+        "main_accords": [
+          "sweet",
+          "gourmand",
+          "creamy",
+          "spicy",
+          "powdery"
+        ],
+        "provisional": false
+      },
+      "identifiers": {
+        "status": "source_verified_feed_match_pending",
+        "canonical_gtin": null,
+        "observations": [
+          {
+            "gtin": "8435415076944",
+            "source_url": "https://www.perfumetrader.de/de/jean-paul-gaultier-le-male-elixir-parfum-125-ml",
+            "source": "perfumetrader",
+            "merchant_product_id": "175217782",
+            "concentration": "Parfum",
+            "volume_ml": 125,
+            "checked_at": "2026-09-21",
+            "evidence_kind": "product_page",
+            "availability_snapshot": "in_stock"
+          }
+        ],
+        "note": "Research evidence only; canonical GTIN and merchant feed matching remain pending. Merchant title says Parfum; generic perfume-type attribute says Eau de Parfum. Retain official Parfum concentration; feed category review required."
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image",
+        "queue_priority": 8,
+        "reference_page": "https://www.jeanpaulgaultier.com/de/de/p/linie-le-male/le-male-elixir-parfum-000000000065189084",
+        "required_variant": {
+          "concentration": "Parfum",
+          "volume_ml": 125
+        },
+        "blockers": [
+          "approved_image_source_pending",
+          "exact_bottle_and_packaging_review_pending"
+        ]
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending",
+          "merchant_concentration_attribute_review_pending"
+        ]
+      },
+      "recommendation_profile": {
+        "scores": {
+          "freshness": 2,
+          "sweetness": 10,
+          "woodiness": 2,
+          "spiciness": 5
+        },
+        "source": "deterministic_editorial_mapping_v1",
+        "confidence": "medium",
+        "customer_facing": false
+      }
     },
     {
       "priority": 9,
@@ -233,14 +1089,135 @@
       ],
       "rationale": "Large mainstream men's comparison gap; exact 100 ml EDP variant verified.",
       "variant_status": "verified_retail_variant",
-      "research_state": "variant_verified_product_data_pending",
+      "research_state": "official_profile_verified_merchant_evidence_added",
       "evidence": [
         {
           "source": "Douglas",
           "url": "https://www.douglas.de/de/b/versace/eros/b012993",
           "checked_at": "2026-09-21"
         }
-      ]
+      ],
+      "product_data": {
+        "scent_family": "woody oriental fresh",
+        "notes": {
+          "top": [
+            "Italian lemon",
+            "mandarin",
+            "mint oil",
+            "candied apple"
+          ],
+          "heart": [
+            "geranium",
+            "clary sage",
+            "AmberMax"
+          ],
+          "base": [
+            "Atlas cedar",
+            "Virginia cedar",
+            "vetiver",
+            "patchouli",
+            "sandalwood",
+            "vanilla"
+          ]
+        },
+        "source_confidence": "high",
+        "source_kind": "official_brand",
+        "source_url": "https://www.versace.com/de/de/herren/accessoires/dufte/eros/eros-edp-100-ml/R740110-R100MLS_RNUL.html",
+        "official_reference": "R740110-R100MLS",
+        "note": "Official Versace Germany data confirms the Eau de Parfum 100 ml variant. Keep separate from Eros EDT and Eros Parfum."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "flaconi",
+          "merchant_product_id": "80053748-100",
+          "url": "https://www.flaconi.de/parfum/versace/eros/versace-eros-eau-de-parfum.html?variant=80053748-100",
+          "variant": "100 ml Eau de Parfum",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "application_pending"
+        }
+      ],
+      "community": {
+        "source": "Parfumo",
+        "source_url": "https://www.parfumo.com/Perfumes/Versace/eros-eau-de-parfum",
+        "checked_at": "2026-09-21",
+        "scope": "fragrance_concentration_not_bottle_size",
+        "rating_10": 7.7,
+        "rating_count": 1873,
+        "longevity_10": 7.6,
+        "longevity_count": 1762,
+        "projection_10": 7.5,
+        "projection_count": 1740,
+        "main_accords": [
+          "fresh",
+          "sweet",
+          "citrus",
+          "fruity",
+          "synthetic"
+        ],
+        "provisional": false
+      },
+      "identifiers": {
+        "status": "indexed_evidence_feed_match_pending",
+        "canonical_gtin": null,
+        "observations": [
+          {
+            "gtin": "8011003861224",
+            "source": "jomashop",
+            "source_url": "https://www.jomashop.com/versace-mens-eros-edp-spray-3-4-oz-fragrances-8011003861224.html",
+            "merchant_product_id": null,
+            "concentration": "Eau de Parfum",
+            "volume_ml": 100,
+            "checked_at": "2026-09-21",
+            "evidence_kind": "indexed_merchant_product_page",
+            "availability_snapshot": "not_recorded"
+          }
+        ],
+        "note": "EDP 100 ml identifier corroborated by Jomashop and Hollywood Style Perfumes. 8011003872077 (also represented as 08011003872077) is listed as Parfum by Loja Glamourosa and is excluded from EDP matching.",
+        "corroborating_source_urls": [
+          "https://www.hollywoodstyleperfumes.com/fragrances/mens-fragrances/versace-eros-3-4oz-edp-men/"
+        ],
+        "excluded_observations": [
+          {
+            "gtin": "8011003872077",
+            "reason": "different_concentration_parfum",
+            "source_url": "https://www.lojaglamourosa.com/us/en/versace-eros-parfum---100ml-8011003872077"
+          }
+        ]
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image",
+        "queue_priority": 9,
+        "reference_page": "https://www.versace.com/de/de/herren/accessoires/dufte/eros/eros-edp-100-ml/R740110-R100MLS_RNUL.html",
+        "required_variant": {
+          "concentration": "Eau de Parfum",
+          "volume_ml": 100
+        },
+        "blockers": [
+          "approved_image_source_pending",
+          "exact_bottle_and_packaging_review_pending"
+        ]
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending",
+          "direct_source_or_feed_confirmation_pending"
+        ]
+      },
+      "recommendation_profile": {
+        "scores": {
+          "freshness": 10,
+          "sweetness": 6,
+          "woodiness": 2,
+          "spiciness": 2
+        },
+        "source": "deterministic_editorial_mapping_v1",
+        "confidence": "medium",
+        "customer_facing": false
+      }
     },
     {
       "priority": 10,
@@ -258,15 +1235,164 @@
       ],
       "rationale": "Adds a major aquatic comparison anchor missing from DUFYND's current fresh/blue coverage.",
       "variant_status": "verified_retail_variant",
-      "research_state": "variant_verified_product_data_pending",
+      "research_state": "official_core_notes_verified_full_pyramid_conflict_documented",
       "evidence": [
         {
           "source": "Douglas",
           "url": "https://www.douglas.de/de/p/5011354001",
           "checked_at": "2026-09-21"
         }
-      ]
+      ],
+      "product_data": {
+        "scent_family": "fresh aquatic",
+        "key_notes": [
+          "bergamot",
+          "marine notes",
+          "cistus absolute",
+          "everlasting essence",
+          "patchouli"
+        ],
+        "source_confidence": "medium_high",
+        "source_kind": "official_brand",
+        "source_url": "https://www.giorgioarmanibeauty-usa.com/fragrances/acqua-di-gio-profondo-parfum/A2772.html",
+        "checked_at": "2026-09-21",
+        "note": "Use only notes from the explicit Profondo Parfum description and the fragrance comparison panel. The generic Key Notes line on the same official page differs (cardamom/green mandarin/lavender/cypress); full note pyramid remains unresolved. Do not merge generic fields or notes from Profondo EDP."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "5011354001",
+          "url": "https://www.douglas.de/de/p/5011354001",
+          "variant": "100 ml Parfum",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "application_pending"
+        },
+        {
+          "merchant": "flaconi",
+          "merchant_product_id": "90003862-0005605",
+          "url": "https://www.flaconi.de/parfum/giorgio-armani/acqua-di-gio-profondo/giorgio-armani-acqua-di-gio-profondo-parfum.html?variant=90003862-0005605",
+          "variant": "100 ml Parfum",
+          "checked_at": "2026-09-21",
+          "affiliate_state": "application_pending"
+        }
+      ],
+      "community": {
+        "source": "Parfumo",
+        "source_url": "https://www.parfumo.com/Perfumes/Giorgio_Armani/acqua-di-gio-profondo-parfum",
+        "checked_at": "2026-09-21",
+        "scope": "fragrance_concentration_not_bottle_size",
+        "rating_10": 7.2,
+        "rating_count": 309,
+        "longevity_10": 6.9,
+        "longevity_count": 265,
+        "projection_10": 6.7,
+        "projection_count": 267,
+        "main_accords": [
+          "aquatic",
+          "fresh",
+          "citrus",
+          "synthetic",
+          "woody"
+        ],
+        "provisional": false
+      },
+      "identifiers": {
+        "status": "indexed_evidence_feed_match_pending",
+        "canonical_gtin": null,
+        "observations": [
+          {
+            "gtin": "3614273953696",
+            "source": "profumomania",
+            "source_url": "https://www.profumomania.com/en/Acqua-di-Gi%C3%B2-Profondo-Parfum",
+            "merchant_product_id": null,
+            "concentration": "Parfum",
+            "volume_ml": 100,
+            "checked_at": "2026-09-21",
+            "evidence_kind": "indexed_merchant_product_page",
+            "availability_snapshot": "not_recorded"
+          }
+        ],
+        "note": "Research evidence only; canonical GTIN and merchant feed matching remain pending. ICI PARIS XL BP_1307858 displays 3614273953764 for selected 50 ml, not the required 100 ml. Do not use that barcode.",
+        "corroborating_source_urls": [
+          "https://www.jomashop.com/giorgio-armani-mens-acqua-di-gio-profondo-parfum-3-4-oz-fragrances-3614273953696.html"
+        ],
+        "excluded_observations": [
+          {
+            "gtin": "3614273953764",
+            "reason": "different_volume_50_ml",
+            "source_url": "https://www.iciparisxl.nl/armani/acqua-di-gio-profondo-le-parfum/heren-parfum/p/BP_1307858"
+          }
+        ]
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image",
+        "queue_priority": 10,
+        "reference_page": "https://www.giorgioarmanibeauty-usa.com/fragrances/acqua-di-gio-profondo-parfum/A2772.html",
+        "required_variant": {
+          "concentration": "Parfum",
+          "volume_ml": 100
+        },
+        "blockers": [
+          "approved_image_source_pending",
+          "exact_bottle_and_packaging_review_pending"
+        ]
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending",
+          "full_note_pyramid_conflict_pending",
+          "direct_source_or_feed_confirmation_pending"
+        ]
+      },
+      "recommendation_profile": {
+        "scores": {
+          "freshness": 10,
+          "sweetness": 2,
+          "woodiness": 5,
+          "spiciness": 2
+        },
+        "source": "deterministic_editorial_mapping_v1",
+        "confidence": "medium",
+        "customer_facing": false
+      }
     }
   ],
-  "note": "Naming intentionally avoids collision with existing SCENTAI/DUFYND release manifests 01-05."
+  "note": "Naming intentionally avoids collision with existing SCENTAI/DUFYND release manifests 01-05.",
+  "enrichment": {
+    "phase_a": {
+      "status": "complete",
+      "enriched_product_count": 5,
+      "completed_at": "2026-09-21",
+      "scope": "Official/retailer product profile plus non-canonical merchant research evidence. No affiliate offer activation and no live publication."
+    },
+    "phase_b": {
+      "status": "complete",
+      "enriched_product_count": 5,
+      "completed_at": "2026-09-21",
+      "scope": "Official/retailer product profile plus non-canonical merchant research evidence. No affiliate offer activation and no live publication."
+    },
+    "total_enriched": 10,
+    "community_and_identity": {
+      "checked_at": "2026-09-21",
+      "community_product_count": 10,
+      "identifier_source_evidence_count": 10,
+      "image_queue_count": 10,
+      "catalog_ready_count": 0,
+      "status": "source_research_complete_feed_and_publication_gates_pending",
+      "note": "Source evidence includes indexed merchant pages. No canonical feed mappings or images approved."
+    },
+    "merchant_review": {
+      "checked_at": "2026-09-21",
+      "partner_status_source": "merchant_partners.json",
+      "active_partner": "perfumetrader",
+      "active_partner_product_evidence_count": 3,
+      "feed_status": "awaiting_requested_feed_or_export",
+      "image_rights_status": "awaiting_requested_usage_confirmation",
+      "note": "Three Perfumetrader product-page observations from this research wave; these are not activated offers. Other identifier sources serve identity research only, not approved DUFYND merchant recommendations."
+    }
+  }
 }
