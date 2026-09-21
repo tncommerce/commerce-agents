@@ -204,7 +204,9 @@ def build_partner_overlap_report(
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description=("Report DUFYND catalog overlap and product-level readiness for one affiliate merchant.")
+        description=(
+            "Report DUFYND catalog overlap and product-level readiness for one affiliate merchant."
+        )
     )
     parser.add_argument("--merchant", default="perfumetrader")
     parser.add_argument("--catalog", type=Path, default=DEFAULT_CATALOG)
