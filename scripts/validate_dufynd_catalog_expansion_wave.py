@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 DATA_DIR = Path("examples/retail/data")
-DEFAULT_WAVE = DATA_DIR / "dufynd_catalog_expansion_wave_04.json"
+DEFAULT_WAVE = DATA_DIR / "dufynd_catalog_expansion_next10.json"
 DEFAULT_CATALOG = DATA_DIR / "catalog.json"
 DEFAULT_STAGING = DATA_DIR / "scentai_catalog_staging.json"
 
@@ -78,7 +78,7 @@ def validate_wave(wave: dict, catalog: dict, staging: dict) -> list[str]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Validate a DUFYND catalog expansion wave.")
+    parser = argparse.ArgumentParser(description="Validate a DUFYND catalog expansion candidate queue.")
     parser.add_argument("--wave", type=Path, default=DEFAULT_WAVE)
     parser.add_argument("--catalog", type=Path, default=DEFAULT_CATALOG)
     parser.add_argument("--staging", type=Path, default=DEFAULT_STAGING)
