@@ -37,10 +37,6 @@ def test_release01_official_references_never_count_as_public_approval() -> None:
         assert row["final_composite_allowed"] is False
         assert not row["catalog_image_status"].startswith("approved_")
         assert (
-            row["next_action"]
-            == "await_licensed_affiliate_feed_image_or_written_brand_permission"
+            row["next_action"] == "await_licensed_affiliate_feed_image_or_written_brand_permission"
         )
-        assert (
-            row["feed_dependency"]
-            == "perfumetrader_awin_product_feed_or_exact_product_data"
-        )
+        assert row["feed_dependency"] == "perfumetrader_awin_product_feed_or_exact_product_data"
