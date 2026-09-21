@@ -133,9 +133,7 @@ def test_variant_audit_prevents_wrong_variant_mapping_for_approved_partial_progr
         variant_audit=audit,
     )
 
-    merchant = next(
-        row for row in queue["programs"] if row["merchant_id"] == "merchant-two"
-    )
+    merchant = next(row for row in queue["programs"] if row["merchant_id"] == "merchant-two")
 
     assert merchant["mapped_release_product_count"] == 1
     assert merchant["feed_state"] == "await_exact_variant_feed_or_product_evidence"
@@ -162,14 +160,11 @@ def test_incomplete_variant_audit_does_not_hide_mapping_work() -> None:
         variant_audit=audit,
     )
 
-    merchant = next(
-        row for row in queue["programs"] if row["merchant_id"] == "merchant-two"
-    )
+    merchant = next(row for row in queue["programs"] if row["merchant_id"] == "merchant-two")
 
     assert merchant["feed_state"] == "await_remaining_mapping_resolution"
     assert merchant["next_action"] == "resolve_remaining_release_mappings_before_feed_validation"
     assert merchant["variant_audit"]["missing_mapping_audit_complete"] is False
-
 
 
 def test_verified_but_unmapped_exact_variant_stays_mapping_work() -> None:
@@ -194,15 +189,12 @@ def test_verified_but_unmapped_exact_variant_stays_mapping_work() -> None:
         variant_audit=audit,
     )
 
-    merchant = next(
-        row for row in queue["programs"] if row["merchant_id"] == "merchant-two"
-    )
+    merchant = next(row for row in queue["programs"] if row["merchant_id"] == "merchant-two")
 
     assert merchant["feed_state"] == "await_remaining_mapping_resolution"
     assert merchant["next_action"] == "resolve_remaining_release_mappings_before_feed_validation"
     assert merchant["variant_audit"]["verified_unmapped_product_ids"] == ["SC-B"]
     assert merchant["variant_audit"]["missing_mapping_audit_complete"] is False
-
 
 
 def test_current_release01_perfumetrader_variant_audit_matches_repo_sources() -> None:
@@ -212,19 +204,13 @@ def test_current_release01_perfumetrader_variant_audit_matches_repo_sources() ->
         load_json(data_dir / "merchant_product_mappings.json"),
         load_json(data_dir / "scentai_affiliate_programs.json"),
         generated_at="2026-09-21T20:40:00+00:00",
-        variant_audit=load_json(
-            data_dir / "dufynd_perfumetrader_release01_variant_audit.json"
-        ),
+        variant_audit=load_json(data_dir / "dufynd_perfumetrader_release01_variant_audit.json"),
     )
 
-    merchant = next(
-        row for row in queue["programs"] if row["merchant_id"] == "perfumetrader"
-    )
+    merchant = next(row for row in queue["programs"] if row["merchant_id"] == "perfumetrader")
     committed = load_json(data_dir / "scentai_release_01_feed_activation_queue.json")
     committed_merchant = next(
-        row
-        for row in committed["programs"]
-        if row["merchant_id"] == "perfumetrader"
+        row for row in committed["programs"] if row["merchant_id"] == "perfumetrader"
     )
 
     assert committed["source_fingerprint_sha256"] == queue["source_fingerprint_sha256"]
