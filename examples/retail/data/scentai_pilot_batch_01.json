@@ -197,28 +197,33 @@
       "product_ids": [
         "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100"
       ],
-      "target_duration_seconds": 16,
+      "target_duration_seconds": 19.4,
       "hook": "Bois Impérial ist kein Duft für jeden.",
-      "voiceover": "Bois Impérial ist kein Duft für jeden. Er wirkt frisch, trocken, sehr holzig und würzig – Süße spielt kaum eine Rolle. Die Community bewertet Haltbarkeit und Ausstrahlung stark. Suchst du einen modernen Holzduft mit Präsenz? Auf DUFYND findest du das Profil und aktuelle Händlerangebote.",
+      "voiceover": "Bois Impérial ist kein Duft für jeden. Frisch, trocken, sehr holzig und würzig – kaum süß. Genau das macht ihn so markant. Die Community bewertet Haltbarkeit und Ausstrahlung stark. Dein Stil? Profil und Händlerangebote auf DUFYND.",
       "scenes": [
         {
-          "seconds": "0-3",
-          "visual": "Bois Impérial bottle hero with fast premium push-in",
+          "seconds": "0-3.0",
+          "visual": "Bois Impérial bottle hero with premium push-in",
           "overlay": "NICHT FÜR JEDEN."
         },
         {
-          "seconds": "3-7",
-          "visual": "dry green woods / profile motion",
-          "overlay": "FRISCH · TROCKEN · HOLZIG"
+          "seconds": "3.0-8.0",
+          "visual": "profile motion card",
+          "overlay": "FRISCH · TROCKEN · HOLZIG · WÜRZIG · KAUM SÜSS"
         },
         {
-          "seconds": "7-11",
-          "visual": "DUFYND profile + community performance cards",
-          "overlay": "SÜSSE 1/10 · HALTBARKEIT 8,5"
+          "seconds": "8.0-10.8",
+          "visual": "dramatic bottle crop / identity payoff",
+          "overlay": "MARKANT."
         },
         {
-          "seconds": "11-16",
-          "visual": "bottle payoff + DUFYND product-page cue",
+          "seconds": "10.8-15.0",
+          "visual": "community performance bars",
+          "overlay": "Haltbarkeit 8,5 · Ausstrahlung 8,1"
+        },
+        {
+          "seconds": "15.0-19.4",
+          "visual": "bottle payoff + DUFYND product-page CTA",
           "overlay": "DEIN STIL? → DUFYND"
         }
       ],
