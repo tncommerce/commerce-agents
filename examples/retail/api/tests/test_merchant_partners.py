@@ -213,8 +213,7 @@ def test_awin_product_deeplink_replaces_verified_destination() -> None:
     target = partner_product_deeplink_url(
         perfumetrader_partner(),
         destination_url=(
-            "https://www.perfumetrader.de/de/"
-            "dior-hypnotic-poison-eau-de-toilette-100-ml"
+            "https://www.perfumetrader.de/de/dior-hypnotic-poison-eau-de-toilette-100-ml"
         ),
         clickref="release01_hypnotic_poison",
     )
@@ -224,8 +223,7 @@ def test_awin_product_deeplink_replaces_verified_destination() -> None:
     assert query["awinmid"] == ["11672"]
     assert query["awinaffid"] == ["3099222"]
     assert query["ued"] == [
-        "https://www.perfumetrader.de/de/"
-        "dior-hypnotic-poison-eau-de-toilette-100-ml"
+        "https://www.perfumetrader.de/de/dior-hypnotic-poison-eau-de-toilette-100-ml"
     ]
     assert query["clickref"] == ["release01_hypnotic_poison"]
 
@@ -237,9 +235,7 @@ def test_awin_product_deeplink_accepts_www_equivalent_host() -> None:
     )
 
     assert target is not None
-    assert parse_qs(urlparse(target).query)["ued"] == [
-        "https://perfumetrader.de/de/product"
-    ]
+    assert parse_qs(urlparse(target).query)["ued"] == ["https://perfumetrader.de/de/product"]
 
 
 def test_awin_product_deeplink_rejects_external_destination() -> None:
@@ -274,10 +270,7 @@ def test_awin_product_deeplink_requires_verified_ued_template() -> None:
         merchant_id="perfumetrader",
         merchant_name="Perfumetrader",
         status="active",
-        affiliate_url=(
-            "https://www.awin1.com/cread.php?"
-            "awinmid=11672&awinaffid=3099222"
-        ),
+        affiliate_url=("https://www.awin1.com/cread.php?awinmid=11672&awinaffid=3099222"),
         last_verified_at=NOW,
     )
 
