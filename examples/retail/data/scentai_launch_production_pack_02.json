@@ -138,7 +138,7 @@
         {
           "scene": 5,
           "component": "cta_endcard",
-          "instruction": "CTA: 'Unterschiede in SCENTAI prüfen'."
+          "instruction": "CTA: 'Unterschiede in DUFYND prüfen'."
         }
       ],
       "missing_assets": [],
@@ -230,7 +230,7 @@
         {
           "scene": 5,
           "component": "cta_endcard",
-          "instruction": "CTA: 'Date-Duft mit SCENTAI finden'."
+          "instruction": "CTA: 'Date-Duft mit DUFYND finden'."
         }
       ],
       "missing_assets": [],
