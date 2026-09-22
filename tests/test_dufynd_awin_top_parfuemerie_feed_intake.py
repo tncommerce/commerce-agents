@@ -3,29 +3,44 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-CONFIG_PATH = Path("examples/retail/data/dufynd_awin_top_parfuemerie_feed_intake.json")
+INTAKE = Path("examples/retail/data/dufynd_awin_top_parfuemerie_feed_intake.json")
+PROVIDER = Path("examples/retail/data/dufynd_awin_top_parfuemerie_provider_config.json")
+AUDIT = Path("examples/retail/data/dufynd_top_parfuemerie_release01_variant_audit.json")
 
 
-def load_config() -> dict:
-    return json.loads(CONFIG_PATH.read_text(encoding="utf-8-sig"))
+def load(path: Path) -> dict:
+    return json.loads(path.read_text(encoding="utf-8-sig"))
 
 
-def test_top_parfuemerie_awin_intake_tracks_approved_feed_without_premature_mapping() -> None:
-    config = load_config()
+def test_real_feed_profile_is_recorded_without_pretending_metadata_exists() -> None:
+    intake = load(INTAKE)
+    assert intake["source_availability"]["row_count"] == 8053
+    assert intake["source_availability"]["header_count"] == 86
+    assert "ean" in intake["field_evidence"]["present_but_empty"]
+    assert "product_GTIN" in intake["field_evidence"]["present_but_empty"]
+    assert intake["quality_profile"]["zero_price_rows"] == 60
+    assert intake["quality_profile"]["rows_older_than_7_days"] == 7076
 
-    assert config["status"] == "approved_product_feed_available_awaiting_real_feed_export"
-    assert config["merchant_scope"]["awin_advertiser_id"] == "31081"
-    assert config["source_availability"]["awin_product_data_available"] is True
-    assert config["source_availability"]["create_a_feed_expected"] is True
-    assert config["feed_intake"]["field_mapping_status"] == "pending_real_feed_header"
-    assert config["feed_intake"]["real_feed_preflight_required"] is True
+
+def test_provider_mapping_uses_only_real_populated_feed_fields() -> None:
+    provider = load(PROVIDER)
+    mapping = provider["field_map"]
+    assert mapping["offer_id"] == "aw_product_id"
+    assert mapping["merchant_product_id"] == "merchant_product_id"
+    assert mapping["affiliate_url"] == "aw_deep_link"
+    assert mapping["image_url"] == "merchant_image_url"
+    assert "ean" not in mapping
+    assert "gtin" not in mapping
+    assert "shipping_cost" not in mapping
+    assert provider["safety"]["reject_nonpositive_price"] is True
 
 
-def test_top_parfuemerie_awin_intake_keeps_release_gates_closed_until_real_data() -> None:
-    config = load_config()
-    safety = config["safety"]
-
-    assert safety["no_offer_activation_before_real_feed_preflight"] is True
-    assert safety["no_catalog_write_before_exact_variant_mapping"] is True
-    assert safety["no_feed_image_approval_before_rights_gate"] is True
-    assert safety["no_assumption_that_expected_columns_are_present"] is True
+def test_release01_keeps_unverified_or_stale_offers_blocked() -> None:
+    audit = load(AUDIT)
+    rows = audit["release_01"]
+    assert len(rows) == 5
+    mapped = [row for row in rows if row["merchant_product_id"]]
+    assert len(mapped) == 4
+    hypnotic = next(row for row in rows if "Hypnotic Poison" in row["dufynd_product"])
+    assert hypnotic["offer_activation"] == "blocked_no_feed_offer"
+    assert all(row["offer_activation"].startswith("blocked") for row in rows)
