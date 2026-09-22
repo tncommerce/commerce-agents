@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-22T10:29:49+00:00",
-  "source_fingerprint_sha256": "973ef2cbae0fbf4aa85d4c7728019f7f13b463ec54c9a06a7368dd363844ff43",
+  "generated_at": "2026-09-22T10:37:00+00:00",
+  "source_fingerprint_sha256": "f2b813036c86e7e43cdfec4b0b9a8f26d7293ae1c5b9965e0495f5adfed2e401",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
     "scentai_catalog_staging.json",
@@ -14,8 +14,8 @@
     "products_with_two_or_more_resolved_mappings": 29,
     "products_without_resolved_mapping": 1,
     "affiliate_programs_registered": 9,
-    "affiliate_programs_approved": 2,
-    "affiliate_programs_pending": 7,
+    "affiliate_programs_approved": 1,
+    "affiliate_programs_pending": 8,
     "live_activation_ready_products": 3
   },
   "affiliate_programs": [
@@ -65,7 +65,7 @@
       "network": "Awin",
       "merchant_id": "top-parfuemerie",
       "program": "top Parfümerie DE",
-      "status": "approved"
+      "status": "applied"
     },
     {
       "network": "CJ Affiliate",

@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "generated_at": "2026-09-22T10:29:49+00:00",
+  "generated_at": "2026-09-22T10:37:00+00:00",
   "machine_id": "scentai_affiliate_activation_v1",
   "scope_note": "Program activation can describe a verified merchant-level homepage tracking route. Product-specific tracked offers remain independently gated by exact SKU mapping, stock, feed validation, image rights and release quality gates.",
   "summary": {
     "programs": 9,
-    "approved": 2,
+    "approved": 1,
     "active": 1,
     "pending": 6,
     "rejected": 2,
@@ -136,20 +136,17 @@
       "network": "Awin",
       "program": "top Parfümerie DE",
       "merchant_id": "top-parfuemerie",
-      "application_status": "approved",
-      "tracking_strategy": "pending_verification",
-      "activation_state": "approved_credentials_pending",
+      "application_status": "applied",
+      "tracking_strategy": null,
+      "activation_state": "applied",
       "blockers": [
-        "credentials_not_verified_in_repo_state",
-        "integration_strategy_not_verified",
-        "dry_run_not_recorded",
-        "user_approval_not_recorded"
+        "affiliate_program_approval_pending"
       ],
       "live_routing_allowed": false,
       "routing_scope": "none",
       "merchant_homepage_tracking_active": false,
       "product_offer_activation_independent": true,
-      "next_action": "verify_credentials",
+      "next_action": "await_program_decision",
       "live_activation_action_class": "approval_required"
     },
     {
