@@ -69,8 +69,8 @@
       "date": "2026-10-09",
       "slot": 8,
       "content_id": "bois_imperial_explained_01",
-      "objective": "single_product_fit",
-      "landing_path": "/duftfinder"
+      "objective": "single_product_decision_and_offer_discovery",
+      "landing_path": "/duft/essential-parfums-bois-imperial"
     },
     {
       "date": "2026-10-12",
