@@ -35,7 +35,4 @@ def test_hypnotic_poison_remains_blocked_when_absent_from_feed() -> None:
 
 
 def test_no_product_is_live_activated_by_dry_run() -> None:
-    assert all(
-        row["activation"].startswith("blocked")
-        for row in load()["products"]
-    )
+    assert all(row["activation"].startswith("blocked") for row in load()["products"])
