@@ -441,6 +441,34 @@
       "verified_at": "2026-09-19",
       "evidence_url": "https://www.flaconi.de/parfum/dolce-gabbana/the-one-for-men/dolce-gabbana-the-one-for-men-new-eau-de-parfum.html",
       "evidence_note": "Current reimagined EDP listing; exact 100 ml GTIN cross-verified from current product data."
+    },
+    {
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "merchant": "top-parfuemerie",
+      "merchant_product_id": "780879",
+      "ean": null,
+      "gtin": null
+    },
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "merchant": "top-parfuemerie",
+      "merchant_product_id": "825869",
+      "ean": null,
+      "gtin": null
+    },
+    {
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "merchant": "top-parfuemerie",
+      "merchant_product_id": "787670",
+      "ean": null,
+      "gtin": null
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "merchant": "top-parfuemerie",
+      "merchant_product_id": "856448",
+      "ean": null,
+      "gtin": null
     }
   ]
 }
