@@ -1,6 +1,6 @@
 {
-  "version": 2,
-  "updated_at": "2026-09-21",
+  "version": 3,
+  "updated_at": "2026-09-22",
   "network": "Awin",
   "publisher": "DUFYND",
   "applications": [
@@ -18,9 +18,11 @@
     },
     {
       "program": "Parfumdreams DE",
-      "status": "applied",
+      "status": "rejected",
       "applied_at": "2026-09-18",
-      "merchant_id": "parfumdreams"
+      "merchant_id": "parfumdreams",
+      "rejected_at": "2026-09-22",
+      "rejection_reason": "Website ergänzt nicht die Marke des Advertisers"
     },
     {
       "program": "Parfumgroup DE",
@@ -51,9 +53,11 @@
     },
     {
       "program": "top Parfümerie DE",
-      "status": "applied",
+      "status": "approved",
       "applied_at": "2026-09-18",
-      "merchant_id": "top-parfuemerie"
+      "merchant_id": "top-parfuemerie",
+      "approved_at": "2026-09-22",
+      "tracking_strategy": "pending_verification"
     }
   ],
   "programming_note": "Existing affiliate applications remain attached to the same TNCommerce publisher. After dufynd.de is publicly verified, update Awin/CJ promotional-site branding and URL from SCENTAI to DUFYND without withdrawing or resubmitting pending program applications. Only integrate a merchant into live affiliate routing after approval and a valid tracked-link/feed strategy is available. Affiliate commission must never influence product or merchant ranking.",
@@ -81,5 +85,33 @@
     "business_model_changed": false,
     "applications_to_preserve": true,
     "partner_profile_update_after_public_cutover": true
-  }
+  },
+  "latest_network_observations": [
+    {
+      "observed_at": "2026-09-22",
+      "network": "Awin",
+      "merchant_id": "top-parfuemerie",
+      "program": "top Parfümerie DE",
+      "decision": "approved",
+      "confidence": "explicit_program_name_in_network_activity"
+    },
+    {
+      "observed_at": "2026-09-22",
+      "network": "Awin",
+      "merchant_id": "parfumdreams",
+      "program": "Parfumdreams DE",
+      "decision": "rejected",
+      "reason": "Website ergänzt nicht die Marke des Advertisers",
+      "confidence": "explicit_program_name_in_network_activity"
+    },
+    {
+      "observed_at": "2026-09-22",
+      "network": "Awin",
+      "merchant_id": null,
+      "program": null,
+      "decision": "rejected",
+      "reviewer": "Colin Eggebrecht",
+      "confidence": "program_unidentified_do_not_assign"
+    }
+  ]
 }
