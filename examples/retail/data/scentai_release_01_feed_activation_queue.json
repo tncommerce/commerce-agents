@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated_at": "2026-09-22T10:29:49+00:00",
-  "source_fingerprint_sha256": "817e9e83229240ca065f93fe1b8786995f327095ea231289aaa20a508cb36ffc",
+  "source_fingerprint_sha256": "0b301cd31652646b45b4353e9a3a0540acdcc6cd55c2def570333808a0f78239",
   "release_id": "SCENTAI-RELEASE-01",
   "purpose": "Jarvis-ready affiliate/feed activation queue. Operational integration coverage only; never use commission to rank fragrances or customer-facing merchant offers.",
   "policy_ref": "scentai_jarvis_operating_policy.json",
@@ -95,8 +95,8 @@
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "variant_audit": {
-        "checked_at": "2026-09-21",
-        "scope": "Public Perfumetrader product and brand pages only; no affiliate feed access.",
+        "checked_at": "2026-09-22",
+        "scope": "Public Perfumetrader product/brand pages plus verified Awin programme metadata. Awin Product Data is unavailable for Perfumetrader DE (Produktdaten = Nein).",
         "audited_release_product_count": 5,
         "exact_variant_verified_product_count": 1,
         "missing_mapping_product_ids": [
