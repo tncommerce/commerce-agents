@@ -1,12 +1,12 @@
-# SCENTAI Launch Attribution
+# DUFYND Launch Attribution
 
 Status: prepared
-Updated: 2026-09-19
+Updated: 2026-09-22
 
 ## Goal
 
 Measure which organic launch content actually moves visitors deeper into
-SCENTAI without using third-party advertising trackers or storing personal
+DUFYND without using third-party advertising trackers or storing personal
 identity data.
 
 The attribution model separates:
@@ -16,7 +16,7 @@ The attribution model separates:
 - content ID
 
 These identifiers persist only for the current browser tab/session and are
-attached to first-party SCENTAI analytics events.
+attached to first-party DUFYND analytics events.
 
 ## Supported channels
 
@@ -32,7 +32,7 @@ Unknown channels are ignored by the storefront.
 
 ## URL format
 
-SCENTAI acquisition links use:
+DUFYND acquisition links use:
 
 ```text
 ?src=<channel>&cmp=<campaign_id>&content=<content_id>
@@ -76,7 +76,7 @@ content identifiers.
 From the repository root:
 
 ```powershell
-python scripts/build_scentai_campaign_link.py --base-url https://YOUR-SCENTAI-DOMAIN --landing /parfum-alternativen --channel tiktok --campaign launch01 --content original_vs_alt_imagination_01
+python scripts/build_scentai_campaign_link.py --base-url https://dufynd.de --landing /parfum-alternativen --channel tiktok --campaign launch01 --content original_vs_alt_imagination_01
 ```
 
 If `NEXT_PUBLIC_SITE_URL` is configured, `--base-url` can be omitted.
@@ -96,7 +96,7 @@ The reporting view groups performance by:
 - campaign
 - content ID
 
-This lets SCENTAI identify content formats that generate meaningful product
+This lets DUFYND identify content formats that generate meaningful product
 engagement instead of optimizing only for social-platform views.
 
 ## Interpretation guardrails
@@ -117,7 +117,7 @@ channels TikTok, Instagram and YouTube.
 Generate every standardized link variant with:
 
 ```powershell
-python scripts/export_scentai_launch_links.py --base-url https://YOUR-SCENTAI-DOMAIN --output examples/retail/data/scentai_launch_links.local.json
+python scripts/export_scentai_launch_links.py --base-url https://dufynd.de --output examples/retail/data/scentai_launch_links.local.json
 ```
 
 This produces 45 links: one link for each creative/channel combination.
