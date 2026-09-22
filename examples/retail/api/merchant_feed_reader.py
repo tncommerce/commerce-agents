@@ -68,8 +68,7 @@ def _read_file_payload(
 
     if len(payload) > max_bytes:
         raise ValueError(
-            "Merchant feed exceeds maximum decompressed file size: "
-            f">{max_bytes} bytes"
+            f"Merchant feed exceeds maximum decompressed file size: >{max_bytes} bytes"
         )
 
     return payload
