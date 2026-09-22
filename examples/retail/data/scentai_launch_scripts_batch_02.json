@@ -17,7 +17,7 @@
       "Do not present an occasion choice as a universal best fragrance.",
       "Do not imply affiliate commission affects recommendations."
     ],
-    "visual_rule": "Use only approved/licensed SCENTAI product visuals or clearly labeled neutral editorial graphics."
+    "visual_rule": "Use only approved/licensed DUFYND product visuals or clearly labeled neutral editorial graphics."
   },
   "creatives": [
     {
@@ -26,12 +26,12 @@
       "format": "dupe_battle",
       "landing_path": "/parfum-alternativen",
       "duration_target_seconds": 32,
-      "hook": "Tygar, Vibrato, Turathi Blue und Regent landen oft im selben Gespräch – bei SCENTAI sind sie aber nicht einfach vier Versionen desselben Dufts.",
+      "hook": "Tygar, Vibrato, Turathi Blue und Regent landen oft im selben Gespräch – bei DUFYND sind sie aber nicht einfach vier Versionen desselben Dufts.",
       "scenes": [
         {
           "seconds": "0-4",
           "visual": "Alle vier Flakons im schnellen Wechsel.",
-          "voiceover": "Tygar, Vibrato, Turathi Blue und Regent landen oft im selben Gespräch – bei SCENTAI sind sie aber nicht einfach vier Versionen desselben Dufts.",
+          "voiceover": "Tygar, Vibrato, Turathi Blue und Regent landen oft im selben Gespräch – bei DUFYND sind sie aber nicht einfach vier Versionen desselben Dufts.",
           "on_screen": "ähnliche Richtung ≠ gleicher Duft"
         },
         {
@@ -54,12 +54,12 @@
         },
         {
           "seconds": "27-32",
-          "visual": "SCENTAI Vergleichsansicht.",
-          "voiceover": "Wenn du nicht nur nach Hype auswählen willst, vergleich die vier Profile direkt bei SCENTAI.",
-          "on_screen": "Cluster vergleichen → SCENTAI"
+          "visual": "DUFYND Vergleichsansicht.",
+          "voiceover": "Wenn du nicht nur nach Hype auswählen willst, vergleich die vier Profile direkt bei DUFYND.",
+          "on_screen": "Cluster vergleichen → DUFYND"
         }
       ],
-      "caption_skeleton": "Tygar-DNA ist kein einzelner Duft. SCENTAI trennt Alternative, Inspiration und Datenbasis transparent. #tygar #vibrato #turathiblue #scentai",
+      "caption_skeleton": "Tygar-DNA ist kein einzelner Duft. DUFYND trennt Alternative, Inspiration und Datenbasis transparent. #tygar #vibrato #turathiblue #dufynd",
       "product_ids": [
         "SC-BVLGARI-TYGAR-125",
         "SC-SOSPIRO-VIBRATO-100",
@@ -90,7 +90,7 @@
         {
           "seconds": "4-11",
           "visual": "Gemeinsame Akkorde als Text: sweet, spicy, gourmand, creamy.",
-          "voiceover": "Alle drei liegen bei SCENTAI klar in einer süßen, würzigen, gourmandigen und cremigen Richtung.",
+          "voiceover": "Alle drei liegen bei DUFYND klar in einer süßen, würzigen, gourmandigen und cremigen Richtung.",
           "on_screen": "süß • würzig • gourmand • cremig"
         },
         {
@@ -107,12 +107,12 @@
         },
         {
           "seconds": "25-30",
-          "visual": "SCENTAI /parfum-alternativen.",
+          "visual": "DUFYND /parfum-alternativen.",
           "voiceover": "Welches Profil besser zu dir passt, kannst du statt nach einem einzelnen Dupe-Ranking direkt vergleichen.",
-          "on_screen": "Naxos-Cluster → SCENTAI"
+          "on_screen": "Naxos-Cluster → DUFYND"
         }
       ],
-      "caption_skeleton": "Naxos-Vibe ohne die Behauptung, jeder ähnliche Duft sei identisch. Ateeq und Italia setzen andere Schwerpunkte. #naxos #parfumalternativen #scentai",
+      "caption_skeleton": "Naxos-Vibe ohne die Behauptung, jeder ähnliche Duft sei identisch. Ateeq und Italia setzen andere Schwerpunkte. #naxos #parfumalternativen #dufynd",
       "product_ids": [
         "SC-XERJOFF-NAXOS-100",
         "SC-NUSUK-ATEEQ-100",
@@ -159,12 +159,12 @@
         },
         {
           "seconds": "24-28",
-          "visual": "SCENTAI Vergleich.",
-          "voiceover": "Profil und Performance nebeneinander? Genau dafür gibt es den SCENTAI-Vergleich.",
-          "on_screen": "direkt vergleichen → SCENTAI"
+          "visual": "DUFYND Vergleich.",
+          "voiceover": "Profil und Performance nebeneinander? Genau dafür gibt es den DUFYND-Vergleich.",
+          "on_screen": "direkt vergleichen → DUFYND"
         }
       ],
-      "caption_skeleton": "Eine echte Clone-Beziehung – trotzdem nicht einfach 'gleich'. SCENTAI zeigt Profil und Performance getrennt. #diorhommeintense #kayaanclassic #scentai",
+      "caption_skeleton": "Eine echte Clone-Beziehung – trotzdem nicht einfach 'gleich'. DUFYND zeigt Profil und Performance getrennt. #diorhommeintense #kayaanclassic #dufynd",
       "product_ids": [
         "SC-DIOR-HOMME-INTENSE-100",
         "SC-AL-WATANIAH-KAYAAN-CLASSIC-100"
@@ -210,12 +210,12 @@
         },
         {
           "seconds": "26-31",
-          "visual": "SCENTAI Duftfinder.",
-          "voiceover": "Nicht welcher ist der beste – sondern welches Profil passt zu deinem Büro und deinem Stil? Frag SCENTAI.",
-          "on_screen": "dein Profil finden → SCENTAI"
+          "visual": "DUFYND Duftfinder.",
+          "voiceover": "Nicht welcher ist der beste – sondern welches Profil passt zu deinem Büro und deinem Stil? Frag DUFYND.",
+          "on_screen": "dein Profil finden → DUFYND"
         }
       ],
-      "caption_skeleton": "Büroduft ist nicht gleich Büroduft: pudrig-clean, zitrisch-holzig oder trocken-holzig. SCENTAI sucht nach deinem Profil. #officefragrance #parfum #scentai",
+      "caption_skeleton": "Büroduft ist nicht gleich Büroduft: pudrig-clean, zitrisch-holzig oder trocken-holzig. DUFYND sucht nach deinem Profil. #officefragrance #parfum #dufynd",
       "product_ids": [
         "SC-PRADA-LHOMME-100",
         "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
@@ -262,12 +262,12 @@
         },
         {
           "seconds": "26-31",
-          "visual": "SCENTAI Duftfinder.",
+          "visual": "DUFYND Duftfinder.",
           "voiceover": "Welcher davon besser zu deinem Date und deinem Stil passt, sollte nicht ein Ranking entscheiden – sondern dein Profil.",
-          "on_screen": "Date-Duft finden → SCENTAI"
+          "on_screen": "Date-Duft finden → DUFYND"
         }
       ],
-      "caption_skeleton": "Drei Date-Night-Richtungen: gourmand-süß, pudrig-elegant oder süß mit mehr Frische. Welches Profil passt zu dir? #datenight #parfum #scentai",
+      "caption_skeleton": "Drei Date-Night-Richtungen: gourmand-süß, pudrig-elegant oder süß mit mehr Frische. Welches Profil passt zu dir? #datenight #parfum #dufynd",
       "product_ids": [
         "SC-ARMANI-SWY-INTENSELY-100",
         "SC-DIOR-HOMME-INTENSE-100",
