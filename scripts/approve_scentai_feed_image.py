@@ -8,9 +8,7 @@ from urllib.parse import urlparse
 
 DEFAULT_STAGING = Path("examples/retail/data/scentai_catalog_staging.json")
 DEFAULT_CANDIDATES = Path("examples/retail/data/merchant_feed_image_candidates.json")
-DEFAULT_RIGHTS_REGISTRY = Path(
-    "examples/retail/data/dufynd_affiliate_feed_image_rights.json"
-)
+DEFAULT_RIGHTS_REGISTRY = Path("examples/retail/data/dufynd_affiliate_feed_image_rights.json")
 
 APPROVED_IMAGE_STATUSES = {
     "approved_feed_image",
@@ -42,8 +40,7 @@ def candidate_rights_evidence(
         raise ValueError("candidate_rights_not_verified")
 
     required_source = str(
-        rights_registry.get("required_candidate_data_source")
-        or REQUIRED_FEED_DATA_SOURCE
+        rights_registry.get("required_candidate_data_source") or REQUIRED_FEED_DATA_SOURCE
     ).strip()
     if str(candidate.get("data_source") or "").strip() != required_source:
         raise ValueError("candidate_not_from_approved_affiliate_feed")
@@ -55,17 +52,14 @@ def candidate_rights_evidence(
         (
             row
             for row in rights_registry.get("entries", [])
-            if _norm(row.get("network")) == network
-            and _norm(row.get("merchant_id")) == merchant_id
+            if _norm(row.get("network")) == network and _norm(row.get("merchant_id")) == merchant_id
         ),
         None,
     )
     if entry is None:
         raise ValueError("candidate_rights_not_verified")
 
-    verified_status = str(
-        rights_registry.get("verified_status") or VERIFIED_RIGHTS_STATUS
-    ).strip()
+    verified_status = str(rights_registry.get("verified_status") or VERIFIED_RIGHTS_STATUS).strip()
     if str(entry.get("rights_status") or "").strip() != verified_status:
         raise ValueError("candidate_rights_not_verified")
     if _norm(entry.get("program_status")) != "approved":

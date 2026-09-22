@@ -71,9 +71,7 @@ def rights_registry(
                 "rights_status": rights_status,
                 "checked_at": "2026-09-22",
                 "publisher_scope": "dufynd_owned_publisher_service",
-                "asset_scope": (
-                    "unaltered_advertiser_materials_from_official_awin_product_feed"
-                ),
+                "asset_scope": ("unaltered_advertiser_materials_from_official_awin_product_feed"),
             }
         ],
     }
@@ -103,9 +101,7 @@ def test_pending_candidate_can_be_approved_with_verified_rights() -> None:
     assert plan["will_change"] is True
     assert plan["already_approved"] is False
     assert plan["rights_status"] == "verified_for_publisher_service"
-    assert plan["rights_basis_id"] == (
-        "awin_perfumetrader_feed_materials_20260922"
-    )
+    assert plan["rights_basis_id"] == ("awin_perfumetrader_feed_materials_20260922")
 
 
 def test_unknown_candidate_is_rejected() -> None:
@@ -159,9 +155,7 @@ def test_apply_approval_persists_rights_evidence() -> None:
     assert media["image_url"] == IMAGE_URL
     assert media["image_status"] == "approved_feed_image"
     assert media["image_reviewed_at"] == "2026-09-18T20:00:00+00:00"
-    assert media["image_rights_basis_id"] == (
-        "awin_perfumetrader_feed_materials_20260922"
-    )
+    assert media["image_rights_basis_id"] == ("awin_perfumetrader_feed_materials_20260922")
     assert media["image_rights_checked_at"] == "2026-09-22"
 
     candidate = candidates["candidates"][0]
