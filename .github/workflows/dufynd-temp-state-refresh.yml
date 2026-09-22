@@ -30,7 +30,7 @@ jobs:
         shell: bash
         run: |
           set +e
-          python scripts/refresh_scentai_jarvis_state.py --write --generated-at "2026-09-22T19:50:00+00:00" > .tmp-dufynd-refresh.log 2>&1
+          python -m scripts.refresh_scentai_jarvis_state --write --generated-at "2026-09-22T19:50:00+00:00" > .tmp-dufynd-refresh.log 2>&1
           code=$?
           echo "exit_code=$code" >> .tmp-dufynd-refresh.log
           cat .tmp-dufynd-refresh.log
