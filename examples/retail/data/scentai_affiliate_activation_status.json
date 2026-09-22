@@ -118,17 +118,17 @@
       "network": "Awin",
       "program": "Birkholz Perfume Manufacture DE",
       "merchant_id": "birkholz",
-      "application_status": "applied",
+      "application_status": "rejected",
       "tracking_strategy": null,
-      "activation_state": "applied",
+      "activation_state": "rejected",
       "blockers": [
-        "affiliate_program_approval_pending"
+        "affiliate_program_rejected"
       ],
       "live_routing_allowed": false,
       "routing_scope": "none",
       "merchant_homepage_tracking_active": false,
       "product_offer_activation_independent": true,
-      "next_action": "await_program_decision",
+      "next_action": "none",
       "live_activation_action_class": "approval_required"
     },
     {
