@@ -207,6 +207,7 @@ def test_smoke_fails_on_product_detail_identity_mismatch() -> None:
     assert report.ok is False
     assert check.ok is False
 
+
 def test_smoke_accepts_valid_disabled_robots_policy_by_default() -> None:
     report = run_smoke(
         storefront_url="https://dufynd.de",
