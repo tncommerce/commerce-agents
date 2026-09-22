@@ -1,25 +1,26 @@
 {
-  "version": 1,
+  "version": 2,
   "system": "DUFYND",
   "strategy_status": "active",
-  "active_track": "high_end_rnd",
+  "active_track": "audience_utility_content_buffer",
   "high_end_rnd_status": "proof_complete_on_hold",
-  "business_priority": "commerce_readiness",
-  "legacy_pilot_batches": "hold",
-  "legacy_pilot_role": "reference_and_utility_prototypes",
-  "reason": "High-end creative proof is complete: Xerjoff Naxos Fragrance Genesis is the selected pilot, the hero review passed at 8.8/10, the pre-launch content bank target is met, and further paid generation is not the current bottleneck. Legacy voiceover/final-render work remains paused while DUFYND prioritizes catalog, product-level affiliate coverage and launch consistency.",
-  "next_action": "await_external_dependency",
-  "next_action_class": "auto_allowed",
+  "business_priority": "audience_growth_and_product_utility",
+  "legacy_pilot_batches": "resume_for_preproduction",
+  "legacy_pilot_role": "launch_and_learning_buffer",
+  "reason": "DUFYND can create customer value before affiliate coverage is complete. The current bank already contains 15 preview-ready short-form concepts and 45 channel-specific tracking links, while final renders remain the main content-production gap. The operating strategy therefore shifts from additional paid creative R&D to finishing a reusable launch buffer, demonstrating DUFYND utility and learning from real audience behavior after the 2026-09-26 soft launch.",
+  "next_action": "build_publish_ready_buffer_from_existing_assets",
+  "next_action_class": "auto_allowed_until_voiceover_or_publish_gate",
   "user_approval_required_now": false,
+  "production_parallel_allowed": true,
+  "buffer_plan": "examples/retail/data/dufynd_content_buffer_plan.json",
   "waiting_on": [
-    "perfumetrader_feed_or_exact_variant_product_evidence",
-    "approved_product_images_and_usage_rights",
-    "social_rebrand_hold_until_2026-09-26",
-    "new_creative_references_or_explicit_new_rnd_request"
+    "voiceover_source_before_final_render",
+    "mobile_content_review_before_publish",
+    "social_rebrand_hold_until_2026-09-26"
   ],
   "approval_gates": [
     "paid_ai_subscription_or_credits",
     "publishing"
   ],
-  "operating_rule": "Do not buy more AI-video credits merely to create more content while product-level commerce coverage remains the main bottleneck. Keep the proven Naxos workflow and content bank ready; resume paid R&D only after an explicit new approval and a concrete learning objective."
+  "operating_rule": "Preproduce a rolling 2-3 week buffer from existing scripts and previews, keep roughly 30% of future slots flexible for trends and real DUFYND demand, and do not buy more AI-video credits merely to increase inventory. Affiliate approvals remain parallel commercial work and must not block useful organic content."
 }
