@@ -1,0 +1,162 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-22",
+  "system": "DUFYND",
+  "campaign_id": "launch01",
+  "window": {
+    "start": "2026-09-26",
+    "end": "2026-10-25"
+  },
+  "channels": [
+    "tiktok",
+    "instagram",
+    "youtube"
+  ],
+  "timing_rule": "Publish dates are planned, but exact clock times stay unset until real channel data exists. Cross-post the same core creative to all three channels, with channel-native caption/title adaptation.",
+  "total_core_slots": 15,
+  "expected_platform_posts_if_fully_cross_posted": 45,
+  "fixed_slots": [
+    {
+      "date": "2026-09-26",
+      "slot": 1,
+      "content_id": "original_vs_alt_imagination_01",
+      "objective": "launch_hero_and_comparison_utility",
+      "landing_path": "/parfum-alternativen"
+    },
+    {
+      "date": "2026-09-27",
+      "slot": 2,
+      "content_id": "not_every_dupe_clone_01",
+      "objective": "trust_and_method",
+      "landing_path": "/parfum-alternativen"
+    },
+    {
+      "date": "2026-09-29",
+      "slot": 3,
+      "content_id": "top3_office_01",
+      "objective": "duftfinder_utility",
+      "landing_path": "/duftfinder"
+    },
+    {
+      "date": "2026-10-01",
+      "slot": 4,
+      "content_id": "top3_fresh_01",
+      "objective": "profile_discovery_utility",
+      "landing_path": "/duftfinder"
+    },
+    {
+      "date": "2026-10-03",
+      "slot": 5,
+      "content_id": "gift_for_him_safe_to_bold_01",
+      "objective": "gift_advisor_utility",
+      "landing_path": "/parfum-geschenkberater"
+    },
+    {
+      "date": "2026-10-05",
+      "slot": 6,
+      "content_id": "althair_liquid_brun_01",
+      "objective": "comparison_value",
+      "landing_path": "/parfum-alternativen"
+    },
+    {
+      "date": "2026-10-07",
+      "slot": 7,
+      "content_id": "top3_date_01",
+      "objective": "occasion_advisor_utility",
+      "landing_path": "/duftfinder"
+    },
+    {
+      "date": "2026-10-09",
+      "slot": 8,
+      "content_id": "bois_imperial_explained_01",
+      "objective": "single_product_fit",
+      "landing_path": "/duftfinder"
+    },
+    {
+      "date": "2026-10-12",
+      "slot": 9,
+      "content_id": "dior_homme_intense_alt_01",
+      "objective": "comparison_value",
+      "landing_path": "/parfum-alternativen"
+    },
+    {
+      "date": "2026-10-14",
+      "slot": 10,
+      "content_id": "signature_vs_safe_01",
+      "objective": "profile_discovery_utility",
+      "landing_path": "/duftfinder"
+    }
+  ],
+  "adaptive_slots": [
+    {
+      "date": "2026-10-16",
+      "slot": 11,
+      "default_candidate": "dupe_battle_imagination_01",
+      "alternatives": [
+        "layton_alternatives_01",
+        "tygar_vibrato_value_01"
+      ],
+      "choose_from": "Use the strongest relevant format based on the first ten posts and DUFYND landing/advisor behavior."
+    },
+    {
+      "date": "2026-10-18",
+      "slot": 12,
+      "default_candidate": "layton_alternatives_01",
+      "alternatives": [
+        "naxos_value_01",
+        "dupe_battle_imagination_01"
+      ],
+      "choose_from": "Prefer a fragrance cluster that has not already been overrepresented in the first launch phase."
+    },
+    {
+      "date": "2026-10-21",
+      "slot": 13,
+      "default_candidate": "tygar_vibrato_value_01",
+      "alternatives": [
+        "naxos_value_01",
+        "aventus_alternatives_01"
+      ],
+      "choose_from": "Use fresh/citrus content if that audience intent is strong; otherwise rotate into gourmand or Aventus demand."
+    },
+    {
+      "date": "2026-10-23",
+      "slot": 14,
+      "default_candidate": "naxos_value_01",
+      "alternatives": [
+        "aventus_alternatives_01",
+        "budget_three_under_50_01"
+      ],
+      "choose_from": "Use gourmand/luxury-without-budget only if it broadens the recent mix rather than repeating it."
+    },
+    {
+      "date": "2026-10-25",
+      "slot": 15,
+      "default_candidate": "budget_three_under_50_01",
+      "alternatives": [
+        "aventus_alternatives_01",
+        "new_data_led_creative"
+      ],
+      "choose_from": "Price-led content requires a fresh price recheck. Replace it if the claim is stale or real DUFYND data suggests a better topic."
+    }
+  ],
+  "review_points": [
+    {
+      "after_slot": 5,
+      "action": "Review content quality, landing sessions, advisor starts and saves/shares. Do not overreact to raw views alone."
+    },
+    {
+      "after_slot": 10,
+      "action": "Select adaptive slots 11-15 from real audience and DUFYND demand signals."
+    },
+    {
+      "after_slot": 15,
+      "action": "Build the next rolling buffer using the best-performing repeatable formats and the largest unresolved user needs."
+    }
+  ],
+  "publish_gates": [
+    "explicit_operator_publish_approval",
+    "mobile_content_review",
+    "subtitle_timing_conformance",
+    "price_recheck_for_price_claims"
+  ]
+}

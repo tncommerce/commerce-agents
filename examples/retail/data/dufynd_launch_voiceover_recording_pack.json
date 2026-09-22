@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-22",
+  "system": "DUFYND",
+  "campaign_id": "launch01",
+  "purpose": "No-spend operator voiceover recording pack for the first five DUFYND soft-launch creatives.",
+  "recording_guidance": {
+    "language": "de-DE",
+    "delivery": "Natural, confident and conversational. Avoid exaggerated advertising voice. The goal is useful fragrance guidance, not a hard sell.",
+    "environment": "Quiet room, phone 15-25 cm from the mouth, no background music or room echo where practical.",
+    "take_rule": "Record one clean take per content_id. Small natural pauses between thoughts are useful; timing can be conformed during final render.",
+    "accepted_operator_input": "A clean phone voice memo or WAV/M4A audio is sufficient; production can normalize/convert it later.",
+    "filename_rule": "<content_id>.m4a or <content_id>.wav",
+    "spend_rule": "If operator-recorded voice is not used, any paid voice-synthesis path requires explicit approval before credits are consumed."
+  },
+  "recordings": [
+    {
+      "order": 1,
+      "content_id": "original_vs_alt_imagination_01",
+      "title": "Imagination – zwei günstigere Richtungen",
+      "target_seconds": 29,
+      "voiceover": "Du liebst Louis Vuitton Imagination, willst aber nicht automatisch beim Originalpreis landen? Imagination ist bei DUFYND extrem frisch, zitrisch und aquatisch eingeordnet – mit eher wenig Süße. Marwa geht ebenfalls klar in diese frische Richtung, wirkt in unseren Daten aber süßer. Hectic bleibt trockener und deutlich würziger. Wichtig: DUFYND führt beide als inspiriert – nicht als angeblichen Eins-zu-eins-Klon. Wenn du wissen willst, welcher besser zu dir passt, vergleich sie direkt bei DUFYND."
+    },
+    {
+      "order": 2,
+      "content_id": "not_every_dupe_clone_01",
+      "title": "Warum DUFYND nicht alles Dupe nennt",
+      "target_seconds": 33,
+      "voiceover": "Warum nennt DUFYND nicht einfach jede ähnliche Alternative einen Dupe? Weil die Beziehung tatsächlich unterschiedlich sein kann. Beispiel Althaïr und Liquid Brun: Hier ist in unserer Datenbank eine Clone-Beziehung mit hoher Sicherheit dokumentiert. Aventus und Montblanc Explorer führen wir dagegen als Alternative – also verwandt im Stil, aber nicht als direkte Kopie. Und bei anderen Paaren sprechen wir bewusst nur von inspiriert, wenn genau das die Datenlage hergibt. Genau diese Trennung soll verhindern, dass du eine Kaufentscheidung auf eine übertriebene Eins-zu-eins-Behauptung stützt."
+    },
+    {
+      "order": 3,
+      "content_id": "top3_office_01",
+      "title": "Drei Büro-Profile statt einer pauschalen Nummer 1",
+      "target_seconds": 31,
+      "voiceover": "Welcher Duft passt ins Büro? Statt einer pauschalen Nummer eins: drei komplett unterschiedliche Profile. Prada L'Homme ist die pudrig-frische, florale Richtung – weicher und weniger würzig. Bleu de Chanel geht frischer, zitrischer und holziger – ein ganz anderes Profil. Bois Impérial ist am holzigsten, sehr wenig süß und in unseren Community-Daten deutlich stärker bei Haltbarkeit und Projektion. Nicht welcher ist der beste – sondern welches Profil passt zu deinem Büro und deinem Stil? Frag DUFYND."
+    },
+    {
+      "order": 4,
+      "content_id": "top3_fresh_01",
+      "title": "Drei frische Profile – aber komplett unterschiedlich",
+      "target_seconds": 30,
+      "voiceover": "Frisch ist nicht gleich frisch: Imagination, Tygar und Turathi Blue zeigen drei verschiedene Wege. Imagination ist extrem frisch, zitrisch und aquatisch und bleibt in unseren Scores sehr wenig süß. Tygar ist ebenfalls maximal frisch, aber deutlich holziger und würziger. Turathi Blue bleibt frisch und zitrisch, wirkt im Profil aber fruchtiger und weniger würzig als Tygar. Welches frische Profil zu dir passt, findest du statt über ein Ranking direkt mit DUFYND heraus."
+    },
+    {
+      "order": 5,
+      "content_id": "gift_for_him_safe_to_bold_01",
+      "title": "Drei Geschenk-Richtungen statt blindem Bestseller-Kauf",
+      "target_seconds": 31,
+      "voiceover": "Parfum für ihn verschenken? Statt einfach einen Bestseller zu nehmen: drei sehr unterschiedliche Richtungen. Bleu de Chanel geht frisch, zitrisch, holzig und aquatisch. Prada L'Homme ist pudriger, floraler und cremiger – ein komplett anderer Charakter. Naxos ist dagegen sehr süß, würzig, gourmandig und deutlich kräftiger in den Community-Performance-Daten. Wenn du die Person kennst, aber nicht den Duft: Lass DUFYND zuerst nach Stil, Anlass und Budget fragen."
+    }
+  ],
+  "next_step_after_audio": "Conform subtitle timing, mux voiceover, render the five final 9:16 videos, run technical/mobile QA, and keep publishing blocked until explicit operator approval."
+}
