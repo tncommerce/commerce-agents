@@ -41,9 +41,7 @@ from retail.api.scentai_release_feed_readiness import (  # noqa: E402
     build_release_feed_readiness,
 )
 
-DEFAULT_CONFIG = Path(
-    "examples/retail/data/dufynd_awin_perfumetrader_provider_config.json"
-)
+DEFAULT_CONFIG = Path("examples/retail/data/dufynd_awin_perfumetrader_provider_config.json")
 DEFAULT_MANIFEST = Path("examples/retail/data/scentai_release_batch_01.json")
 DEFAULT_MAPPINGS = Path("examples/retail/data/merchant_product_mappings.json")
 
@@ -75,28 +73,20 @@ def _schema_gate(
     observed = {str(key) for row in rows for key in row}
 
     required_sources = {
-        source
-        for field in REQUIRED_CANONICAL_FIELDS
-        if (source := _mapped_source(config, field))
+        source for field in REQUIRED_CANONICAL_FIELDS if (source := _mapped_source(config, field))
     }
     missing_required = sorted(required_sources - observed)
 
     identifier_sources = {
-        source
-        for field in IDENTIFIER_FIELDS
-        if (source := _mapped_source(config, field))
+        source for field in IDENTIFIER_FIELDS if (source := _mapped_source(config, field))
     }
     present_identifier_sources = sorted(identifier_sources & observed)
 
     promotion_sources = {
-        field: source
-        for field in PROMOTION_FIELDS
-        if (source := _mapped_source(config, field))
+        field: source for field in PROMOTION_FIELDS if (source := _mapped_source(config, field))
     }
     missing_promotion = sorted(
-        field
-        for field, source in promotion_sources.items()
-        if source not in observed
+        field for field, source in promotion_sources.items() if source not in observed
     )
 
     all_configured_sources = {

@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from retail.api.merchant_import import MerchantProductMapping
-from retail.api.merchant_providers import MappedMerchantFeedAdapter
 from scripts.check_dufynd_perfumetrader_awin_feed import (
     build_perfumetrader_intake_report,
 )
+
+from retail.api.merchant_import import MerchantProductMapping
+from retail.api.merchant_providers import MappedMerchantFeedAdapter
 
 RELEASE_IDS = [
     "SC-DIOR-HYPNOTIC-POISON-EDT-100",
