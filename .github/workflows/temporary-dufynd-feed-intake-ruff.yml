@@ -1,0 +1,40 @@
+name: Temporary DUFYND Feed Intake Ruff Fix
+
+on:
+  push:
+    branches:
+      - dufynd-perfumetrader-feed-intake-20260922
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: dufynd-perfumetrader-feed-intake-20260922
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Ruff
+        run: python -m pip install ruff==0.16.3
+      - name: Fix and format intake files
+        run: |
+          ruff check --fix scripts/check_dufynd_perfumetrader_awin_feed.py tests/test_dufynd_perfumetrader_awin_feed_intake.py
+          ruff format scripts/check_dufynd_perfumetrader_awin_feed.py tests/test_dufynd_perfumetrader_awin_feed_intake.py
+      - name: Commit formatter output
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/check_dufynd_perfumetrader_awin_feed.py tests/test_dufynd_perfumetrader_awin_feed_intake.py
+          if git diff --cached --quiet; then
+            echo "No Ruff changes."
+            exit 0
+          fi
+          git commit -m "Normalize Perfumetrader feed intake [skip ci]"
+          git push origin HEAD:dufynd-perfumetrader-feed-intake-20260922
