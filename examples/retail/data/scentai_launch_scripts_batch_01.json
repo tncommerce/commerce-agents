@@ -17,7 +17,7 @@
       "Do not state clickouts as purchases.",
       "Do not imply affiliate commission affects recommendations."
     ],
-    "visual_rule": "Use only approved/licensed SCENTAI product visuals or clearly labeled neutral editorial graphics."
+    "visual_rule": "Use only approved/licensed DUFYND product visuals or clearly labeled neutral editorial graphics."
   },
   "creatives": [
     {
@@ -36,8 +36,8 @@
         },
         {
           "seconds": "3-10",
-          "visual": "Imagination mit den SCENTAI-Accords fresh, citrus, aquatic.",
-          "voiceover": "Imagination ist bei SCENTAI extrem frisch, zitrisch und aquatisch eingeordnet – mit eher wenig Süße.",
+          "visual": "Imagination mit den DUFYND-Accords fresh, citrus, aquatic.",
+          "voiceover": "Imagination ist bei DUFYND extrem frisch, zitrisch und aquatisch eingeordnet – mit eher wenig Süße.",
           "on_screen": "frisch • zitrisch • aquatisch"
         },
         {
@@ -49,17 +49,17 @@
         {
           "seconds": "18-25",
           "visual": "Beziehungslabel inspired bei beiden statt Clone-Badge.",
-          "voiceover": "Wichtig: SCENTAI führt beide als inspiriert – nicht als angeblichen Eins-zu-eins-Klon.",
+          "voiceover": "Wichtig: DUFYND führt beide als inspiriert – nicht als angeblichen Eins-zu-eins-Klon.",
           "on_screen": "inspiriert ≠ 1:1-Klon"
         },
         {
           "seconds": "25-29",
-          "visual": "SCENTAI Landingpage /parfum-alternativen.",
-          "voiceover": "Wenn du wissen willst, welcher besser zu dir passt, vergleich sie direkt bei SCENTAI.",
-          "on_screen": "SCENTAI → Alternativen vergleichen"
+          "visual": "DUFYND Landingpage /parfum-alternativen.",
+          "voiceover": "Wenn du wissen willst, welcher besser zu dir passt, vergleich sie direkt bei DUFYND.",
+          "on_screen": "DUFYND → Alternativen vergleichen"
         }
       ],
-      "caption_skeleton": "Imagination-Vibe, aber nicht blind irgendeinen 'Dupe' kaufen. SCENTAI trennt Duftprofil und Beziehung transparent. #parfum #duft #scentai",
+      "caption_skeleton": "Imagination-Vibe, aber nicht blind irgendeinen 'Dupe' kaufen. DUFYND trennt Duftprofil und Beziehung transparent. #parfum #duft #dufynd",
       "product_ids": [
         "SC-LV-IMAGINATION-100",
         "SC-ARABIYAT-MARWA-EDP-100",
@@ -105,12 +105,12 @@
         },
         {
           "seconds": "26-31",
-          "visual": "SCENTAI Vergleichsansicht.",
-          "voiceover": "Nicht fragen: Welcher ist der beste? Frag: Welches Profil passt zu mir? Genau dafür ist SCENTAI da.",
-          "on_screen": "Profil statt Hype → SCENTAI"
+          "visual": "DUFYND Vergleichsansicht.",
+          "voiceover": "Nicht fragen: Welcher ist der beste? Frag: Welches Profil passt zu mir? Genau dafür ist DUFYND da.",
+          "on_screen": "Profil statt Hype → DUFYND"
         }
       ],
-      "caption_skeleton": "Gleicher Benchmark, unterschiedliche Ausprägung. Genau deshalb vergleicht SCENTAI Profile statt nur 'Dupe ja/nein'. #parfumalternativen #scentai",
+      "caption_skeleton": "Gleicher Benchmark, unterschiedliche Ausprägung. Genau deshalb vergleicht DUFYND Profile statt nur 'Dupe ja/nein'. #parfumalternativen #dufynd",
       "product_ids": [
         "SC-ARABIYAT-MARWA-EDP-100",
         "SC-BUJAIRAMI-HECTIC-100",
@@ -156,12 +156,12 @@
         },
         {
           "seconds": "28-33",
-          "visual": "SCENTAI /parfum-alternativen.",
-          "voiceover": "SCENTAI zeigt dir genau diese Beziehung, bevor du nur nach dem billigsten Flakon gehst.",
-          "on_screen": "Beziehung prüfen → SCENTAI"
+          "visual": "DUFYND /parfum-alternativen.",
+          "voiceover": "DUFYND zeigt dir genau diese Beziehung, bevor du nur nach dem billigsten Flakon gehst.",
+          "on_screen": "Beziehung prüfen → DUFYND"
         }
       ],
-      "caption_skeleton": "Aventus-Alternative ist nicht automatisch Aventus-Klon. SCENTAI trennt klassische Aventus- und Absolu-Aventus-Richtungen. #aventus #parfum #scentai",
+      "caption_skeleton": "Aventus-Alternative ist nicht automatisch Aventus-Klon. DUFYND trennt klassische Aventus- und Absolu-Aventus-Richtungen. #aventus #parfum #dufynd",
       "product_ids": [
         "SC-CREED-AVENTUS-100",
         "SC-AFNAN-SUPREMACY-COLLECTORS-100",
@@ -180,12 +180,12 @@
       "format": "dupe_battle",
       "landing_path": "/parfum-alternativen",
       "duration_target_seconds": 28,
-      "hook": "Du willst die Layton-Richtung – aber Détour Noir und Royal Bleu sind bei SCENTAI nicht dieselbe Art Alternative.",
+      "hook": "Du willst die Layton-Richtung – aber Détour Noir und Royal Bleu sind bei DUFYND nicht dieselbe Art Alternative.",
       "scenes": [
         {
           "seconds": "0-4",
           "visual": "Layton in der Mitte, Détour Noir und Royal Bleu links/rechts.",
-          "voiceover": "Du willst die Layton-Richtung – aber Détour Noir und Royal Bleu sind bei SCENTAI nicht dieselbe Art Alternative.",
+          "voiceover": "Du willst die Layton-Richtung – aber Détour Noir und Royal Bleu sind bei DUFYND nicht dieselbe Art Alternative.",
           "on_screen": "Layton → 2 verschiedene Alternativtypen"
         },
         {
@@ -208,12 +208,12 @@
         },
         {
           "seconds": "24-28",
-          "visual": "SCENTAI Vergleich.",
-          "voiceover": "Welche Variante besser zu deinen Prioritäten passt, kannst du bei SCENTAI direkt vergleichen.",
-          "on_screen": "Layton-Cluster → SCENTAI"
+          "visual": "DUFYND Vergleich.",
+          "voiceover": "Welche Variante besser zu deinen Prioritäten passt, kannst du bei DUFYND direkt vergleichen.",
+          "on_screen": "Layton-Cluster → DUFYND"
         }
       ],
-      "caption_skeleton": "Clone-Beziehung oder nur inspiriert? Bei Layton trennt SCENTAI Détour Noir und Royal Bleu bewusst. #layton #dupe #scentai",
+      "caption_skeleton": "Clone-Beziehung oder nur inspiriert? Bei Layton trennt DUFYND Détour Noir und Royal Bleu bewusst. #layton #dupe #dufynd",
       "product_ids": [
         "SC-PDM-LAYTON-125",
         "SC-ORIENTICA-ROYAL-BLEU-80",
@@ -222,7 +222,7 @@
       "claim_basis": [
         "Détour Noir -> Layton clone/high.",
         "Royal Bleu -> Layton inspired/high.",
-        "Both alternatives score sweetness 9 and spiciness 8 in SCENTAI source data."
+        "Both alternatives score sweetness 9 and spiciness 8 in DUFYND source data."
       ]
     },
     {
@@ -242,7 +242,7 @@
         {
           "seconds": "4-11",
           "visual": "Gemeinsame Accords sweet/gourmand/creamy/spicy.",
-          "voiceover": "Beide sind bei SCENTAI klar süß, gourmandig, cremig und würzig eingeordnet.",
+          "voiceover": "Beide sind bei DUFYND klar süß, gourmandig, cremig und würzig eingeordnet.",
           "on_screen": "süß • gourmand • cremig • würzig"
         },
         {
@@ -259,12 +259,12 @@
         },
         {
           "seconds": "23-27",
-          "visual": "SCENTAI Vergleichsansicht.",
-          "voiceover": "Wenn du Profil, Performance und aktuellen Händlerpreis zusammen sehen willst: SCENTAI.",
-          "on_screen": "Vergleichen statt raten → SCENTAI"
+          "visual": "DUFYND Vergleichsansicht.",
+          "voiceover": "Wenn du Profil, Performance und aktuellen Händlerpreis zusammen sehen willst: DUFYND.",
+          "on_screen": "Vergleichen statt raten → DUFYND"
         }
       ],
-      "caption_skeleton": "Althaïr vs Liquid Brun: ähnliche Duft-/Performance-Richtung, aber Kaufentscheidung ist mehr als nur 'günstiger = besser'. #althair #liquidbrun #scentai",
+      "caption_skeleton": "Althaïr vs Liquid Brun: ähnliche Duft-/Performance-Richtung, aber Kaufentscheidung ist mehr als nur 'günstiger = besser'. #althair #liquidbrun #dufynd",
       "product_ids": [
         "SC-PDM-ALTHAIR-125",
         "SC-FRENCH-AVENUE-LIQUID-BRUN-100"
