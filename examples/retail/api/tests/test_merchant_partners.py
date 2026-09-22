@@ -10,6 +10,7 @@ from retail.api.merchant_partners import (
     MerchantPartnerStore,
     customer_partner_payload,
     partner_clickout_url,
+    partner_product_deeplink_url,
 )
 
 NOW = datetime(2026, 9, 18, 20, 0, tzinfo=UTC)
@@ -192,3 +193,98 @@ def test_non_awin_partner_clickout_is_unchanged() -> None:
     )
 
     assert partner_clickout_url(partner, clickref="genesis_naxos_01") == partner.affiliate_url
+
+
+def perfumetrader_partner() -> MerchantPartner:
+    return MerchantPartner(
+        merchant_id="perfumetrader",
+        merchant_name="Perfumetrader",
+        status="active",
+        affiliate_url=(
+            "https://www.awin1.com/cread.php?"
+            "awinmid=11672&awinaffid=3099222&"
+            "ued=https%3A%2F%2Fwww.perfumetrader.de%2Fde%2F"
+        ),
+        last_verified_at=NOW,
+    )
+
+
+def test_awin_product_deeplink_replaces_verified_destination() -> None:
+    target = partner_product_deeplink_url(
+        perfumetrader_partner(),
+        destination_url=(
+            "https://www.perfumetrader.de/de/"
+            "dior-hypnotic-poison-eau-de-toilette-100-ml"
+        ),
+        clickref="release01_hypnotic_poison",
+    )
+
+    assert target is not None
+    query = parse_qs(urlparse(target).query)
+    assert query["awinmid"] == ["11672"]
+    assert query["awinaffid"] == ["3099222"]
+    assert query["ued"] == [
+        "https://www.perfumetrader.de/de/"
+        "dior-hypnotic-poison-eau-de-toilette-100-ml"
+    ]
+    assert query["clickref"] == ["release01_hypnotic_poison"]
+
+
+def test_awin_product_deeplink_accepts_www_equivalent_host() -> None:
+    target = partner_product_deeplink_url(
+        perfumetrader_partner(),
+        destination_url="https://perfumetrader.de/de/product",
+    )
+
+    assert target is not None
+    assert parse_qs(urlparse(target).query)["ued"] == [
+        "https://perfumetrader.de/de/product"
+    ]
+
+
+def test_awin_product_deeplink_rejects_external_destination() -> None:
+    assert (
+        partner_product_deeplink_url(
+            perfumetrader_partner(),
+            destination_url="https://example.com/product",
+        )
+        is None
+    )
+    assert (
+        partner_product_deeplink_url(
+            perfumetrader_partner(),
+            destination_url="https://www.perfumetrader.de.evil.example/product",
+        )
+        is None
+    )
+
+
+def test_awin_product_deeplink_rejects_non_https_destination() -> None:
+    assert (
+        partner_product_deeplink_url(
+            perfumetrader_partner(),
+            destination_url="http://www.perfumetrader.de/de/product",
+        )
+        is None
+    )
+
+
+def test_awin_product_deeplink_requires_verified_ued_template() -> None:
+    partner = MerchantPartner(
+        merchant_id="perfumetrader",
+        merchant_name="Perfumetrader",
+        status="active",
+        affiliate_url=(
+            "https://www.awin1.com/cread.php?"
+            "awinmid=11672&awinaffid=3099222"
+        ),
+        last_verified_at=NOW,
+    )
+
+    assert (
+        partner_product_deeplink_url(
+            partner,
+            destination_url="https://www.perfumetrader.de/de/product",
+        )
+        is None
+    )
