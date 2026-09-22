@@ -196,18 +196,18 @@
     {
       "production_order": 5,
       "content_id": "bois_imperial_explained_01",
-      "target_duration_seconds": 16,
-      "word_count": 43,
-      "required_wpm": 161,
+      "target_duration_seconds": 19.4,
+      "word_count": 35,
+      "required_wpm": 108,
       "preferred_delivery_wpm_range": [
-        155,
-        166
+        104,
+        114
       ],
-      "script": "Bois Impérial ist kein Duft für jeden. Er wirkt frisch, trocken, sehr holzig und würzig – Süße spielt kaum eine Rolle. Die Community bewertet Haltbarkeit und Ausstrahlung stark. Suchst du einen modernen Holzduft mit Präsenz? Auf DUFYND findest du das Profil und aktuelle Händlerangebote.",
+      "script": "Bois Impérial ist kein Duft für jeden. Frisch, trocken, sehr holzig und würzig – kaum süß. Genau das macht ihn so markant. Die Community bewertet Haltbarkeit und Ausstrahlung stark. Dein Stil? Profil und Händlerangebote auf DUFYND.",
       "pronunciation_hints": [
         {
           "term": "DUFYND",
-          "hint": "Markenname klar und natürlich sprechen; keine frühere SCENTAI-Aussprache übernehmen."
+          "hint": "Use the pronunciation from selected voice job c6bf98e3-ec89-4c18-8c2b-c81ded53dd42; user explicitly approved this pronunciation."
         },
         {
           "term": "Bois Impérial",
@@ -228,7 +228,10 @@
         "channels": "mono_or_stereo",
         "filename": "bois_imperial_explained_01.wav",
         "local_path": "examples/retail/data/.scentai_pilot_audio/bois_imperial_explained_01.wav"
-      }
+      },
+      "selected_voice_job_id": "c6bf98e3-ec89-4c18-8c2b-c81ded53dd42",
+      "selected_voice_duration_seconds": 19.330612,
+      "selected_voice_status": "user_preferred"
     }
   ]
 }
