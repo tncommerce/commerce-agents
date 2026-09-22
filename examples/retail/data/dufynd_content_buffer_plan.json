@@ -94,8 +94,8 @@
     },
     {
       "content_id": "bois_imperial_explained_01",
-      "role": "single_product_fit",
-      "landing_path": "/duftfinder"
+      "role": "commerce_decision",
+      "landing_path": "/duft/essential-parfums-bois-imperial"
     },
     {
       "content_id": "dior_homme_intense_alt_01",
