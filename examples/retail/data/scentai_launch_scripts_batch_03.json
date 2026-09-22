@@ -17,7 +17,7 @@
       "Do not quote a live price unless it is refreshed immediately before publishing.",
       "Do not imply affiliate commission affects recommendations."
     ],
-    "visual_rule": "Use only approved/licensed SCENTAI product visuals or clearly labeled neutral editorial graphics."
+    "visual_rule": "Use only approved/licensed DUFYND product visuals or clearly labeled neutral editorial graphics."
   },
   "creatives": [
     {
@@ -54,12 +54,12 @@
         },
         {
           "seconds": "25-30",
-          "visual": "SCENTAI Duftfinder.",
-          "voiceover": "Welches frische Profil zu dir passt, findest du statt über ein Ranking direkt mit SCENTAI heraus.",
-          "on_screen": "frischen Duft finden → SCENTAI"
+          "visual": "DUFYND Duftfinder.",
+          "voiceover": "Welches frische Profil zu dir passt, findest du statt über ein Ranking direkt mit DUFYND heraus.",
+          "on_screen": "frischen Duft finden → DUFYND"
         }
       ],
-      "caption_skeleton": "Frisch kann aquatisch, holzig-würzig oder fruchtig sein. Genau deshalb reicht 'ich will etwas Frisches' noch nicht als Empfehlung. #freshfragrance #parfum #scentai",
+      "caption_skeleton": "Frisch kann aquatisch, holzig-würzig oder fruchtig sein. Genau deshalb reicht 'ich will etwas Frisches' noch nicht als Empfehlung. #freshfragrance #parfum #dufynd",
       "product_ids": [
         "SC-LV-IMAGINATION-100",
         "SC-BVLGARI-TYGAR-125",
@@ -105,12 +105,12 @@
         },
         {
           "seconds": "26-31",
-          "visual": "SCENTAI Duftfinder.",
-          "voiceover": "Das ist keine Frage von bester oder sicherster Wahl. SCENTAI sucht nach dem Profil, das zu dir passt.",
-          "on_screen": "dein Profil → SCENTAI"
+          "visual": "DUFYND Duftfinder.",
+          "voiceover": "Das ist keine Frage von bester oder sicherster Wahl. DUFYND sucht nach dem Profil, das zu dir passt.",
+          "on_screen": "dein Profil → DUFYND"
         }
       ],
-      "caption_skeleton": "Sauvage, Prada L'Homme oder Bois Impérial? Nicht 'welcher ist der beste?', sondern: Welche Art Duft willst du überhaupt tragen? #signaturefragrance #scentai",
+      "caption_skeleton": "Sauvage, Prada L'Homme oder Bois Impérial? Nicht 'welcher ist der beste?', sondern: Welche Art Duft willst du überhaupt tragen? #signaturefragrance #dufynd",
       "product_ids": [
         "SC-DIOR-SAUVAGE-EDP-100",
         "SC-PRADA-LHOMME-100",
@@ -139,7 +139,7 @@
         {
           "seconds": "4-11",
           "visual": "Scores freshness 8, woodiness 9, sweetness 1.",
-          "voiceover": "Bei SCENTAI ist er sehr holzig, klar frisch und fast gar nicht süß eingeordnet.",
+          "voiceover": "Bei DUFYND ist er sehr holzig, klar frisch und fast gar nicht süß eingeordnet.",
           "on_screen": "holzig 9/10 • frisch 8/10 • süß 1/10"
         },
         {
@@ -156,12 +156,12 @@
         },
         {
           "seconds": "23-27",
-          "visual": "SCENTAI Duftfinder.",
-          "voiceover": "Bevor du nach Hype kaufst: Lass SCENTAI prüfen, ob genau dieses Profil überhaupt zu dir passt.",
-          "on_screen": "Passung prüfen → SCENTAI"
+          "visual": "DUFYND Duftfinder.",
+          "voiceover": "Bevor du nach Hype kaufst: Lass DUFYND prüfen, ob genau dieses Profil überhaupt zu dir passt.",
+          "on_screen": "Passung prüfen → DUFYND"
         }
       ],
-      "caption_skeleton": "Bois Impérial ist kein universeller Crowdpleaser-Versuch, sondern ein sehr klares Profil: holzig, frisch, trocken und kräftig. #boisimperial #parfum #scentai",
+      "caption_skeleton": "Bois Impérial ist kein universeller Crowdpleaser-Versuch, sondern ein sehr klares Profil: holzig, frisch, trocken und kräftig. #boisimperial #parfum #dufynd",
       "product_ids": [
         "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100"
       ],
@@ -173,16 +173,16 @@
     },
     {
       "content_id": "not_every_dupe_clone_01",
-      "title": "Warum SCENTAI nicht alles Dupe nennt",
+      "title": "Warum DUFYND nicht alles Dupe nennt",
       "format": "education_trust",
       "landing_path": "/parfum-alternativen",
       "duration_target_seconds": 33,
-      "hook": "Warum nennt SCENTAI nicht einfach jede ähnliche Alternative einen Dupe? Weil die Beziehung tatsächlich unterschiedlich sein kann.",
+      "hook": "Warum nennt DUFYND nicht einfach jede ähnliche Alternative einen Dupe? Weil die Beziehung tatsächlich unterschiedlich sein kann.",
       "scenes": [
         {
           "seconds": "0-4",
           "visual": "Text: Clone vs Alternative vs Inspired.",
-          "voiceover": "Warum nennt SCENTAI nicht einfach jede ähnliche Alternative einen Dupe? Weil die Beziehung tatsächlich unterschiedlich sein kann.",
+          "voiceover": "Warum nennt DUFYND nicht einfach jede ähnliche Alternative einen Dupe? Weil die Beziehung tatsächlich unterschiedlich sein kann.",
           "on_screen": "Clone ≠ Alternative ≠ Inspired"
         },
         {
@@ -205,12 +205,12 @@
         },
         {
           "seconds": "27-33",
-          "visual": "SCENTAI Transparenz-/Alternativenansicht.",
+          "visual": "DUFYND Transparenz-/Alternativenansicht.",
           "voiceover": "Genau diese Trennung soll verhindern, dass du eine Kaufentscheidung auf eine übertriebene Eins-zu-eins-Behauptung stützt.",
-          "on_screen": "transparent vergleichen → SCENTAI"
+          "on_screen": "transparent vergleichen → DUFYND"
         }
       ],
-      "caption_skeleton": "Nicht jeder ähnliche Duft ist ein Clone. SCENTAI trennt Clone, Alternative und Inspired, statt alles in einen 'Dupe'-Topf zu werfen. #dupe #parfumalternativen #scentai",
+      "caption_skeleton": "Nicht jeder ähnliche Duft ist ein Clone. DUFYND trennt Clone, Alternative und Inspired, statt alles in einen 'Dupe'-Topf zu werfen. #dupe #parfumalternativen #dufynd",
       "product_ids": [
         "SC-PDM-ALTHAIR-125",
         "SC-FRENCH-AVENUE-LIQUID-BRUN-100",
@@ -257,12 +257,12 @@
         },
         {
           "seconds": "26-31",
-          "visual": "SCENTAI Geschenkberater.",
-          "voiceover": "Wenn du die Person kennst, aber nicht den Duft: Lass SCENTAI zuerst nach Stil, Anlass und Budget fragen.",
-          "on_screen": "Geschenkberatung → SCENTAI"
+          "visual": "DUFYND Geschenkberater.",
+          "voiceover": "Wenn du die Person kennst, aber nicht den Duft: Lass DUFYND zuerst nach Stil, Anlass und Budget fragen.",
+          "on_screen": "Geschenkberatung → DUFYND"
         }
       ],
-      "caption_skeleton": "Parfum verschenken ohne blind Bestseller zu kaufen: erst herausfinden, welches Duftprofil zur Person passt. #parfumgeschenk #giftguide #scentai",
+      "caption_skeleton": "Parfum verschenken ohne blind Bestseller zu kaufen: erst herausfinden, welches Duftprofil zur Person passt. #parfumgeschenk #giftguide #dufynd",
       "product_ids": [
         "SC-CHANEL-BLEU-DE-CHANEL-EDP-100",
         "SC-PRADA-LHOMME-100",

@@ -9,7 +9,7 @@
     "instagram",
     "youtube"
   ],
-  "objective": "Prepare 15 reusable short-form launch creatives that demonstrate SCENTAI value and send viewers to a relevant first-party landing page.",
+  "objective": "Prepare 15 reusable short-form launch creatives that demonstrate DUFYND value and send viewers to a relevant first-party landing page.",
   "measurement_note": "Use one stable content_id per creative across platforms; channel remains separate through the src parameter.",
   "content": [
     {
@@ -22,7 +22,7 @@
         "SC-ARABIYAT-MARWA-EDP-100",
         "SC-BUJAIRAMI-HECTIC-100"
       ],
-      "primary_cta": "Alternative in SCENTAI vergleichen",
+      "primary_cta": "Alternative in DUFYND vergleichen",
       "status": "scripted"
     },
     {
@@ -35,7 +35,7 @@
         "SC-BUJAIRAMI-HECTIC-100",
         "SC-ARABIYAT-MARWA-EXTRAIT-60"
       ],
-      "primary_cta": "Düfte in SCENTAI vergleichen",
+      "primary_cta": "Düfte in DUFYND vergleichen",
       "status": "scripted"
     },
     {
@@ -113,7 +113,7 @@
         "SC-DIOR-HOMME-INTENSE-100",
         "SC-AL-WATANIAH-KAYAAN-CLASSIC-100"
       ],
-      "primary_cta": "Unterschiede in SCENTAI prüfen",
+      "primary_cta": "Unterschiede in DUFYND prüfen",
       "status": "scripted"
     },
     {
@@ -139,7 +139,7 @@
         "SC-DIOR-HOMME-INTENSE-100",
         "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100"
       ],
-      "primary_cta": "Date-Duft mit SCENTAI finden",
+      "primary_cta": "Date-Duft mit DUFYND finden",
       "status": "scripted"
     },
     {
@@ -165,7 +165,7 @@
         "SC-PRADA-LHOMME-100",
         "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100"
       ],
-      "primary_cta": "SCENTAI nach deinem Stil fragen",
+      "primary_cta": "DUFYND nach deinem Stil fragen",
       "status": "scripted"
     },
     {
@@ -176,13 +176,13 @@
       "product_ids": [
         "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100"
       ],
-      "primary_cta": "Passung mit SCENTAI prüfen",
+      "primary_cta": "Passung mit DUFYND prüfen",
       "status": "scripted"
     },
     {
       "content_id": "not_every_dupe_clone_01",
       "format": "education_trust",
-      "working_hook": "Warum SCENTAI nicht jede Alternative als 1:1-Klon bezeichnet.",
+      "working_hook": "Warum DUFYND nicht jede Alternative als 1:1-Klon bezeichnet.",
       "landing_path": "/parfum-alternativen",
       "product_ids": [
         "SC-PDM-ALTHAIR-125",

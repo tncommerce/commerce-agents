@@ -26,11 +26,11 @@
     },
     {
       "id": "score_bar",
-      "purpose": "Visualize SCENTAI 1-10 profile/performance scores without implying an overall winner."
+      "purpose": "Visualize DUFYND 1-10 profile/performance scores without implying an overall winner."
     },
     {
       "id": "cta_endcard",
-      "purpose": "Show SCENTAI logo/name, landing-page promise and short CTA for the final 4-5 seconds."
+      "purpose": "Show DUFYND logo/name, landing-page promise and short CTA for the final 4-5 seconds."
     }
   ],
   "creatives": [
@@ -74,7 +74,7 @@
         {
           "scene": 5,
           "component": "cta_endcard",
-          "instruction": "CTA: 'Alternative in SCENTAI vergleichen' and landing label 'Parfum-Alternativen'."
+          "instruction": "CTA: 'Alternative in DUFYND vergleichen' and landing label 'Parfum-Alternativen'."
         }
       ],
       "missing_assets": [],
@@ -120,7 +120,7 @@
         {
           "scene": 5,
           "component": "cta_endcard",
-          "instruction": "CTA: 'Düfte in SCENTAI vergleichen'."
+          "instruction": "CTA: 'Düfte in DUFYND vergleichen'."
         }
       ],
       "missing_assets": [],

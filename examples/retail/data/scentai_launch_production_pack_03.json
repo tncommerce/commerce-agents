@@ -92,7 +92,7 @@
         {
           "scene": 5,
           "component": "cta_endcard",
-          "instruction": "CTA: 'SCENTAI nach deinem Stil fragen'."
+          "instruction": "CTA: 'DUFYND nach deinem Stil fragen'."
         }
       ],
       "missing_assets": [],
@@ -130,7 +130,7 @@
         {
           "scene": 5,
           "component": "cta_endcard",
-          "instruction": "CTA: 'Passung mit SCENTAI prüfen'."
+          "instruction": "CTA: 'Passung mit DUFYND prüfen'."
         }
       ],
       "missing_assets": [],
