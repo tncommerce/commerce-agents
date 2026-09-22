@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-22T07:08:52+00:00",
-  "source_fingerprint_sha256": "ccdb33e1af59bccd2392de2c4ce4039dd696dd4abbe21faaeda2785763fb0c96",
+  "generated_at": "2026-09-22T10:29:49+00:00",
+  "source_fingerprint_sha256": "4eb9894359fccebef7db7504746039822520cbb5c24a767ca79f54b411da99fa",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
     "scentai_catalog_staging.json",
@@ -14,8 +14,8 @@
     "products_with_two_or_more_resolved_mappings": 29,
     "products_without_resolved_mapping": 1,
     "affiliate_programs_registered": 9,
-    "affiliate_programs_approved": 1,
-    "affiliate_programs_pending": 8,
+    "affiliate_programs_approved": 2,
+    "affiliate_programs_pending": 7,
     "live_activation_ready_products": 3
   },
   "affiliate_programs": [
@@ -35,7 +35,7 @@
       "network": "Awin",
       "merchant_id": "parfumdreams",
       "program": "Parfumdreams DE",
-      "status": "applied"
+      "status": "rejected"
     },
     {
       "network": "Awin",
@@ -65,7 +65,7 @@
       "network": "Awin",
       "merchant_id": "top-parfuemerie",
       "program": "top Parfümerie DE",
-      "status": "applied"
+      "status": "approved"
     },
     {
       "network": "CJ Affiliate",
@@ -136,7 +136,7 @@
           "affiliate_program": {
             "network": "Awin",
             "program": "Parfumdreams DE",
-            "status": "applied"
+            "status": "rejected"
           },
           "affiliate_activation_state": "pending_program_approval"
         }
@@ -1236,7 +1236,7 @@
           "affiliate_program": {
             "network": "Awin",
             "program": "Parfumdreams DE",
-            "status": "applied"
+            "status": "rejected"
           },
           "affiliate_activation_state": "pending_program_approval"
         }
