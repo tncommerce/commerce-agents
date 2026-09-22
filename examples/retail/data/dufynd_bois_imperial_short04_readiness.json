@@ -5,7 +5,7 @@
   "content_id": "bois_imperial_explained_01",
   "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
   "target_path": "/duft/essential-parfums-bois-imperial",
-  "status": "v7_reference_audio_review_pending",
+  "status": "v8_tight_cut_review_pending",
   "product_page": {
     "catalog_ready": true,
     "product_detail_route_ready": true,
@@ -129,5 +129,22 @@
     "preferred_reference": "Example 44",
     "principle": "For this luxury reel, music and transition must be edited as one system; avoid synthetic procedural music that lowers perceived production value.",
     "publication_rights_note": "Exact reference audio requires platform/licensing clearance before public posting; use only as internal reference/test until cleared."
+  },
+  "v8_tight_cut": {
+    "media_id": "8b4c791d-624a-4576-b417-d98331f9f101",
+    "duration_seconds": 11.25,
+    "resolution": "1080x1920",
+    "fps": 24,
+    "audio_source": "exact audio from user-supplied Example 44 for internal reference test",
+    "dark_campaign_end_seconds": 6,
+    "reveal_source_window_seconds": "1.50-3.25",
+    "measured_audio_rise_seconds": 7.272,
+    "visual_peak_alignment_seconds": 7.25,
+    "bright_hero_start_seconds": 7.75,
+    "fade_start_seconds": 10.565,
+    "end_seconds": 11.245,
+    "hero_treatment": "continuous subtle zoom-out; no static hold; fade to black",
+    "credits_spent": 0,
+    "rationale": "V7 bright section lasted almost 6s and was effectively static for ~2.5-3s. V8 compresses the payoff and aligns the strongest reveal motion to the measured Example 44 audio rise."
   }
 }
