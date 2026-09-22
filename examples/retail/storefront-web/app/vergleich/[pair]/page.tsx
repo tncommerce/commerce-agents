@@ -206,9 +206,41 @@ export default async function ComparisonPage({
 
   const left = pair.left;
   const right = pair.right;
+  const canonicalUrl = `${SITE_URL}/vergleich/${pair.pair_slug}`;
+  const breadcrumbStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "DUFYND",
+        item: SITE_URL,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Vergleiche",
+        item: `${SITE_URL}/vergleich`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: `${left.brand} ${left.name} vs. ${right.brand} ${right.name}`,
+        item: canonicalUrl,
+      },
+    ],
+  };
+  const breadcrumbJson = JSON.stringify(
+    breadcrumbStructuredData,
+  ).replaceAll("<", "\\u003c");
 
   return (
     <main className="min-h-screen bg-(--surface) text-(--ink)">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: breadcrumbJson }}
+      />
       <AcquisitionAnalytics source="comparison_detail" />
       <ComparisonAnalytics
         productId={left.product_id}

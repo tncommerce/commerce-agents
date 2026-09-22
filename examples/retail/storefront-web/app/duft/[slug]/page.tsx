@@ -236,9 +236,41 @@ export default async function FragrancePage({
     fragrance,
     4,
   );
+  const canonicalUrl = `${SITE_URL}/duft/${fragrance.slug}`;
+  const breadcrumbStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "DUFYND",
+        item: SITE_URL,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Düfte",
+        item: `${SITE_URL}/duft`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: `${fragrance.brand} ${fragrance.name}`,
+        item: canonicalUrl,
+      },
+    ],
+  };
+  const breadcrumbJson = JSON.stringify(
+    breadcrumbStructuredData,
+  ).replaceAll("<", "\\u003c");
 
   return (
     <main className="min-h-screen bg-(--surface) text-(--ink)">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: breadcrumbJson }}
+      />
       <AcquisitionAnalytics source="fragrance_detail" />
       <header className="border-b border-(--line) bg-(--card)">
         <div className="mx-auto flex max-w-[1080px] items-center justify-between gap-4 px-4 py-4 sm:px-6">
