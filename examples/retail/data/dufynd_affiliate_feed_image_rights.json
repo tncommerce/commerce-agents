@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-22",
+  "status": "active",
+  "purpose": "Machine-readable evidence registry for affiliate-feed image source rights. This registry verifies source/use eligibility only; final visual approval remains a separate human gate.",
+  "required_candidate_data_source": "approved-affiliate-feed",
+  "verified_status": "verified_for_publisher_service",
+  "entries": [
+    {
+      "rights_basis_id": "awin_perfumetrader_feed_materials_20260922",
+      "network": "Awin",
+      "merchant_id": "perfumetrader",
+      "advertiser_id": "11672",
+      "program": "Perfumetrader DE",
+      "program_status": "approved",
+      "rights_status": "verified_for_publisher_service",
+      "publisher_scope": "dufynd_owned_publisher_service",
+      "asset_scope": "unaltered_advertiser_materials_from_official_awin_product_feed",
+      "checked_at": "2026-09-22",
+      "evidence": [
+        {
+          "source": "Awin Publisher Terms",
+          "url": "https://www.awin.com/de/allgemeine-geschaftsbedingungen/publisher-terms-and-conditions-2018",
+          "clauses": [
+            "4.3",
+            "4.4",
+            "10.1"
+          ],
+          "finding": "Awin makes advertiser materials available to admitted publishers and grants a revocable, non-exclusive sublicense to publish unaltered advertiser materials within the publisher service, subject to the agreement and advertiser program terms."
+        },
+        {
+          "source": "Awin Product Feed Publisher Guide",
+          "url": "https://help.awin.com/developers/docs/product-feed-publisher-guide-intro",
+          "finding": "Awin product feeds provide publishers with product details, prices, links and images for displaying and promoting advertiser products."
+        },
+        {
+          "source": "Perfumetrader DE Awin Program Terms",
+          "url": "https://ui.awin.com/merchant-profile-terms/11672",
+          "finding": "Program terms reviewed on 2026-09-22. No additional prohibition on use of official product-feed images was identified in the published terms."
+        }
+      ],
+      "constraints": [
+        "candidate_must_come_from_official_awin_product_feed",
+        "program_membership_must_remain_approved",
+        "asset_must_be_used_only_within_dufynd_publisher_service",
+        "asset_must_not_be_materially_modified",
+        "advertiser_program_terms_take_precedence_if_they_change",
+        "revoke_if_program_or_network_rights_change",
+        "final_visual_identity_approval_remains_human_required"
+      ]
+    }
+  ]
+}
