@@ -196,18 +196,18 @@
     {
       "production_order": 5,
       "content_id": "bois_imperial_explained_01",
-      "target_duration_seconds": 27,
-      "word_count": 55,
-      "required_wpm": 122,
+      "target_duration_seconds": 16,
+      "word_count": 43,
+      "required_wpm": 161,
       "preferred_delivery_wpm_range": [
-        117,
-        127
+        155,
+        166
       ],
-      "script": "Bois Impérial ist bei DUFYND vor allem frisch, sehr holzig, würzig und grün eingeordnet. Die Süße liegt dagegen ganz unten. In den Community-Daten stehen außerdem starke Haltbarkeit und deutliche Ausstrahlung. Das ergibt keinen typischen süßen Mainstream-Duft, sondern einen trockenen, modernen und sehr präsenten Holzstil. Wenn du genau so etwas suchst, prüf deine Passung bei DUFYND.",
+      "script": "Bois Impérial ist kein Duft für jeden. Er wirkt frisch, trocken, sehr holzig und würzig – Süße spielt kaum eine Rolle. Die Community bewertet Haltbarkeit und Ausstrahlung stark. Suchst du einen modernen Holzduft mit Präsenz? Auf DUFYND findest du das Profil und aktuelle Händlerangebote.",
       "pronunciation_hints": [
         {
           "term": "DUFYND",
-          "hint": "deutsch flüssig als „Scent-AI“, zwei klare Silbenblöcke"
+          "hint": "Markenname klar und natürlich sprechen; keine frühere SCENTAI-Aussprache übernehmen."
         },
         {
           "term": "Bois Impérial",
@@ -216,11 +216,11 @@
       ],
       "delivery_notes": [
         "conversational German",
-        "calm and confident",
-        "short natural pauses between semantic sections",
+        "confident and modern",
+        "slightly faster social pacing without sounding rushed",
+        "micro-pause after the opening hook",
         "no radio-announcer voice",
-        "no exaggerated sales emphasis",
-        "CTA slightly slower than the body"
+        "CTA clean and direct"
       ],
       "output": {
         "preferred_format": "wav",
