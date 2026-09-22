@@ -235,9 +235,7 @@ def test_rejected_program_is_terminal_in_feed_queue() -> None:
         generated_at="2026-09-22T10:35:00+00:00",
     )
 
-    merchant = next(
-        row for row in queue["programs"] if row["merchant_id"] == "merchant-one"
-    )
+    merchant = next(row for row in queue["programs"] if row["merchant_id"] == "merchant-one")
 
     assert merchant["application_status"] == "rejected"
     assert merchant["program_approved"] is False

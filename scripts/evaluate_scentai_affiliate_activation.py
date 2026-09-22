@@ -150,9 +150,7 @@ def build_state_report(
     ready_for_user_approval = sum(
         1 for row in rows if row["activation_state"] == "ready_for_user_approval"
     )
-    rejected_program_count = sum(
-        1 for row in rows if row["activation_state"] == "rejected"
-    )
+    rejected_program_count = sum(1 for row in rows if row["activation_state"] == "rejected")
     pending_program_count = sum(
         1
         for row in rows

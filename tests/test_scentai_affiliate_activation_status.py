@@ -174,8 +174,6 @@ def test_rejected_program_is_not_counted_as_pending() -> None:
     assert report["summary"]["programs"] == 2
     assert report["summary"]["pending"] == 1
     assert report["summary"]["rejected"] == 1
-    rejected = next(
-        row for row in report["programs"] if row["merchant_id"] == "rejected-merchant"
-    )
+    rejected = next(row for row in report["programs"] if row["merchant_id"] == "rejected-merchant")
     assert rejected["activation_state"] == "rejected"
     assert rejected["next_action"] == "none"
