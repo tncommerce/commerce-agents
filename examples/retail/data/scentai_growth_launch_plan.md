@@ -1,11 +1,11 @@
-# SCENTAI Growth Launch Plan
+# DUFYND Growth Launch Plan
 
 Status: active
-Updated: 2026-09-18
+Updated: 2026-09-22
 
 ## Goal
 
-SCENTAI should grow by solving fragrance decisions well enough that people
+DUFYND should grow by solving fragrance decisions well enough that people
 return, recommend the product and trust its merchant handoffs.
 
 The first growth objective is not maximum traffic. It is to learn which
@@ -22,7 +22,7 @@ become a recommendation-ranking signal.
 
 ## Public acquisition pages
 
-SCENTAI now has three focused entry pages.
+DUFYND now has three focused entry pages.
 
 ### Duftfinder
 
@@ -139,9 +139,9 @@ Examples:
 - Warum ein Duft auf zwei Menschen unterschiedlich wirken kann
 
 Primary CTA:
-SCENTAI Duftfinder or catalog.
+DUFYND Duftfinder or catalog.
 
-### 5. Data-backed SCENTAI decisions
+### 5. Data-backed DUFYND decisions
 
 After real traffic exists:
 - most searched fragrance gaps
@@ -172,7 +172,7 @@ Avoid meaningful paid acquisition until:
 
 ## Merchant-level affiliate layer
 
-SCENTAI supports two separate monetization paths.
+DUFYND supports two separate monetization paths.
 
 ### Product deep links
 
@@ -184,11 +184,11 @@ Use case:
 
 ### Merchant-level discovery links
 
-The customer enters a participating merchant through SCENTAI and may continue
-shopping beyond the fragrance that originally brought them to SCENTAI.
+The customer enters a participating merchant through DUFYND and may continue
+shopping beyond the fragrance that originally brought them to DUFYND.
 
 This can create additional affiliate value where the merchant/network rules
-attribute an eligible later basket to SCENTAI.
+attribute an eligible later basket to DUFYND.
 
 Guardrails:
 - the partner must have an explicit active affiliate link
@@ -280,10 +280,10 @@ and user-submitted data.
 In order:
 
 1. Customer receives useful fragrance help.
-2. Customer understands why SCENTAI recommended something.
+2. Customer understands why DUFYND recommended something.
 3. Customer trusts the comparison and merchant handoff.
-4. Customer returns or recommends SCENTAI.
+4. Customer returns or recommends DUFYND.
 5. Commercial conversion grows from that trust.
 
-This hierarchy should remain true even when SCENTAI expands into additional
+This hierarchy should remain true even when DUFYND expands into additional
 products or business models later.

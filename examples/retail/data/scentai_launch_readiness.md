@@ -1,17 +1,36 @@
-# SCENTAI Launch Readiness
+# DUFYND Launch Readiness
 
 Status: production-hardening active
-Updated: 2026-09-18
+Updated: 2026-09-22
 
 ## Purpose
 
 This checklist defines the minimum technical and operational gates before
-SCENTAI is intentionally opened to broad public traffic and search indexing.
+DUFYND is intentionally opened to broad public traffic and search indexing.
 
 A green Render build is necessary but not sufficient. Launch readiness also
 covers indexation, legal identity, API reachability, static catalog integrity,
 merchant-offer freshness, privacy-minimized analytics and graceful failure
 states.
+
+## Current live observation — 2026-09-22
+
+The read-only production smoke passed 13/13 checks against the live DUFYND
+storefront and API. This includes homepage, Duftfinder, comparison,
+Parfum-Alternativen, imprint, privacy, transparency, robots.txt, sitemap.xml,
+API health, fragrance catalog, product detail and merchant-partner contract.
+
+Observed live SEO state:
+- `robots.txt` currently permits search indexing
+- `sitemap.xml` is reachable and uses the canonical `https://dufynd.de` URL
+- an external `site:dufynd.de` verification pass returned no visible results
+  at the time of checking; that is not proof that no page is indexed
+- no SEO environment setting was changed during this audit
+
+This observed live state is separate from the planned social soft-launch hold
+through 2026-09-26. Do not interpret enabled crawling as approval to publish,
+promote or change launch timing. Any production indexability change remains an
+explicit operator decision and requires a rebuild/redeploy.
 
 ## Automated launch check
 
@@ -46,7 +65,7 @@ Affiliate availability is not allowed to influence recommendation quality.
 
 ## Search indexing and SEO
 
-SCENTAI remains fail-closed for indexing:
+DUFYND remains fail-closed for indexing:
 
 `NEXT_PUBLIC_SITE_INDEXABLE` must equal `true` at build time before the
 generated `robots.txt` allows crawling.
@@ -98,7 +117,7 @@ Production fallbacks now exist for:
 - valid but empty/stale merchant-offer set: separate trust-first empty state
 
 The distinction between an outage and "no current verified offer" is important:
-SCENTAI must never imply that no seller exists merely because its API failed.
+DUFYND must never imply that no seller exists merely because its API failed.
 
 ## API health
 
@@ -132,7 +151,7 @@ Future visual changes should preserve these behaviors.
 ## Catalog integrity
 
 Regression coverage verifies:
-- every live SCENTAI fragrance has a source-data record
+- every live DUFYND fragrance has a source-data record
 - every live fragrance has a local product image
 - live fragrance slugs remain unique
 
@@ -146,13 +165,13 @@ last verified update.
 
 Stale offers are hidden instead of being shown as current prices.
 
-Launch can technically proceed without affiliate links because SCENTAI is a
+Launch can technically proceed without affiliate links because DUFYND is a
 recommendation product first. However, broad paid acquisition should not begin
 until merchant coverage is sufficient to make the clickout experience useful.
 
 ## Personal library
 
-SCENTAI now includes optional device-local retention features:
+DUFYND now includes optional device-local retention features:
 - `/merkliste`
 - `/sammlung`
 - local wishlist
@@ -183,7 +202,7 @@ first-party analytics is unavailable.
 
 ## Analytics health
 
-SCENTAI conversion, search-demand and research-trigger analytics remain:
+DUFYND conversion, search-demand and research-trigger analytics remain:
 - first-party
 - pseudonymized by session hash
 - independent of affiliate commission
@@ -205,11 +224,17 @@ Production frontend:
 - `NEXT_PUBLIC_LEGAL_CITY`
 - `NEXT_PUBLIC_LEGAL_EMAIL`
 
-Until final launch, keep:
+Intended pre-launch baseline:
 
 ```text
 NEXT_PUBLIC_SITE_INDEXABLE=false
 ```
+
+The live production verification on 2026-09-22 observed indexing as enabled,
+so the deployed environment currently differs from that baseline. Do not
+silently flip the value in either direction. Reconcile it only through an
+explicit operator launch/SEO decision followed by a rebuild and post-deploy
+smoke test.
 
 ## Required API deployment checks
 
