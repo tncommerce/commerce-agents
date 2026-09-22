@@ -5,7 +5,7 @@
   "content_id": "bois_imperial_explained_01",
   "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
   "target_path": "/duft/essential-parfums-bois-imperial",
-  "status": "content_funnel_ready_affiliate_offer_staged_not_live",
+  "status": "visual_master_v5_ready_audio_pending",
   "product_page": {
     "catalog_ready": true,
     "product_detail_route_ready": true,
@@ -50,9 +50,40 @@
     "publish_requires_operator_approval": true
   },
   "next_actions": [
-    "Produce revised Short 04 visual/audio draft without new paid generation.",
-    "Recover or refetch exact Awin product deeplink for merchant product 924719 before affiliate activation.",
-    "Recheck offer freshness immediately before publication.",
-    "Request operator approval before publishing or activating the affiliate offer."
-  ]
+    "Review V5 visual continuity and fidelity.",
+    "Select/licence or create suitable music before locking final cut timing.",
+    "Align the designed bridge/reveal transition to a strong musical onset, following Example 44 learning.",
+    "Use at most 1-3 signature sound effects; avoid continuous micro-SFX.",
+    "Decide whether approved DUFYND voice remains appropriate for the luxury-commercial cut.",
+    "Recheck merchant offer freshness before publication.",
+    "Request operator approval before publishing or affiliate activation."
+  ],
+  "product_fidelity": {
+    "authoritative_source": "Essential Parfums official product photography",
+    "official_product_url": "https://www.essentialparfums.com/en/products/bois-imperial-eau-de-parfum-refillable-spray-100-ml",
+    "official_front_image": "https://www.essentialparfums.com/cdn/shop/files/Parfum_100ML_Bois_Imperial_01.jpg?crop=center&height=2000&v=1734443828&width=2000",
+    "official_three_quarter_image": "https://www.essentialparfums.com/cdn/shop/files/Parfum_100ML_Bois_Imperial_02.jpg?crop=center&height=2000&v=1734443828&width=2000",
+    "official_macro_image": "https://www.essentialparfums.com/cdn/shop/files/Parfum_100ML_Bois_Imperial_04.jpg?crop=center&height=2000&v=1734443828&width=2000",
+    "character_sheet_job_id": "df888222-7062-4793-90be-21318866ba3a",
+    "dark_hero_reference_job_id": "254fe6fa-b2f8-47d8-97da-fb42e8c71085",
+    "dark_hero_front_fidelity_estimate": "~9.2/10",
+    "seedance_motion_test_job_id": "e98035c3-2b9d-4ba2-8009-3a1357c4c4d8",
+    "seedance_motion_test_fidelity_estimate": "~8.8-9.0/10",
+    "first_last_reveal_job_id": "372e6438-8126-4f74-ac88-ca5eaa5bcaaf",
+    "rule": "Official brand photography is the source of truth. AI character sheets must pass front-fidelity QA before paid video generation."
+  },
+  "visual_master": {
+    "version": "V5",
+    "media_id": "060dc19b-0212-4506-ac3f-5a4813295921",
+    "duration_seconds": 15,
+    "resolution": "1080x1920",
+    "fps": 24,
+    "construction": [
+      "premium 15s campaign base trimmed before inaccurate full-front reveal",
+      "Wan 3.0 first/last-frame reveal using official front image as final frame",
+      "official-product endpoint held as final hero"
+    ],
+    "audio_status": "pending",
+    "generation_credits_for_v5_edit": 0
+  }
 }
