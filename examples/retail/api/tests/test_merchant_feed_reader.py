@@ -95,10 +95,7 @@ def test_read_gzip_csv_feed(
     tmp_path,
 ) -> None:
     path = tmp_path / "awin-feed.csv.gz"
-    payload = (
-        b"aw_product_id,merchant_product_id,search_price\n"
-        b"AW-1,SKU-123,89.95\n"
-    )
+    payload = b"aw_product_id,merchant_product_id,search_price\nAW-1,SKU-123,89.95\n"
 
     path.write_bytes(gzip.compress(payload))
 
@@ -228,9 +225,7 @@ def test_read_utf8_bom_csv(
 ) -> None:
     path = tmp_path / "feed.csv"
 
-    path.write_bytes(
-        ("\ufeffoffer_id,merchant_name\noffer-1,Parf?merie Test\n").encode("utf-8")
-    )
+    path.write_bytes(("\ufeffoffer_id,merchant_name\noffer-1,Parf?merie Test\n").encode("utf-8"))
 
     rows = read_merchant_feed_rows(path)
 
@@ -247,9 +242,7 @@ def test_read_windows_1252_csv(
 ) -> None:
     path = tmp_path / "feed.csv"
 
-    path.write_bytes(
-        ("offer_id;merchant_name\noffer-1;Parf?merie K?ln\n").encode("cp1252")
-    )
+    path.write_bytes(("offer_id;merchant_name\noffer-1;Parf?merie K?ln\n").encode("cp1252"))
 
     rows = read_merchant_feed_rows(path)
 
@@ -297,12 +290,7 @@ def test_gzip_decompressed_size_limit_is_enforced(
     tmp_path,
 ) -> None:
     path = tmp_path / "feed.csv.gz"
-    payload = (
-        "offer_id,description\n"
-        + "offer-1,"
-        + ("A" * 1000)
-        + "\n"
-    ).encode("utf-8")
+    payload = ("offer_id,description\n" + "offer-1," + ("A" * 1000) + "\n").encode("utf-8")
     compressed = gzip.compress(payload)
     assert len(compressed) < 200
     path.write_bytes(compressed)
