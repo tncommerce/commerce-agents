@@ -13,7 +13,7 @@ def load_config() -> dict:
     return json.loads(CONFIG_PATH.read_text(encoding="utf-8-sig"))
 
 
-def test_perfumetrader_awin_config_is_structurally_ready() -> None:
+def test_perfumetrader_awin_schema_template_is_structurally_ready() -> None:
     config = load_config()
     report = validate_provider_config(config)
 
@@ -21,7 +21,6 @@ def test_perfumetrader_awin_config_is_structurally_ready() -> None:
     assert report["import_contract_ready"] is True
     assert report["promotion_asset_contract_ready"] is True
     assert report["promotion_field_gaps"] == []
-    assert report["next_action"] == "run_real_feed_preflight"
 
 
 def test_perfumetrader_awin_config_maps_documented_columns() -> None:
@@ -66,15 +65,29 @@ def test_perfumetrader_awin_config_maps_documented_columns() -> None:
     }
 
 
-def test_perfumetrader_awin_config_keeps_real_feed_gates_enabled() -> None:
+def test_perfumetrader_awin_config_keeps_no_feed_safeguards_enabled() -> None:
     config = load_config()
 
-    assert config["status"] == ("documented_schema_ready_real_feed_validation_required")
+    assert config["status"] == ("awin_product_feed_unavailable_direct_merchant_data_required")
     assert config["safety"] == {
         "real_feed_preflight_required": True,
         "release_checker_required": True,
         "no_write_from_config_alone": True,
         "no_offer_activation_from_config_alone": True,
         "no_image_approval_from_config_alone": True,
+        "no_awin_create_a_feed_retry_without_status_change": True,
+        "direct_merchant_data_validation_required": True,
     }
     assert config["merchant_scope"]["awin_advertiser_id"] == "11672"
+
+
+def test_perfumetrader_awin_feed_is_marked_unavailable() -> None:
+    config = load_config()
+    availability = config["source_availability"]
+
+    assert availability["awin_product_data_available"] is False
+    assert availability["create_a_feed_expected"] is False
+    assert availability["next_source_paths"] == [
+        "direct_perfumetrader_feed_or_api",
+        "exact_product_page_evidence_plus_awin_deeplink",
+    ]
