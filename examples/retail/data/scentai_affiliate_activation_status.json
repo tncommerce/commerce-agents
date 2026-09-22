@@ -7,7 +7,8 @@
     "programs": 9,
     "approved": 2,
     "active": 1,
-    "pending": 8,
+    "pending": 6,
+    "rejected": 2,
     "ready_for_user_approval": 0,
     "merchant_homepage_tracking_active": 1
   },
