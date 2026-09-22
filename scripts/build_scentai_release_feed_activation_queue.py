@@ -107,7 +107,9 @@ def build_feed_activation_queue(
 
         mapped_count = len(mapped_product_ids)
         full_coverage = bool(release_set) and mapped_count == len(release_set)
-        approved = str(program.get("application_status") or "").strip().casefold() == "approved"
+        application_status = str(program.get("application_status") or "").strip().casefold()
+        approved = application_status == "approved"
+        rejected = application_status in {"rejected", "declined"}
         missing_product_ids = [
             product_id for product_id in release_ids if product_id not in mapped_product_ids
         ]
@@ -129,7 +131,10 @@ def build_feed_activation_queue(
             audited_missing_product_ids
         ) == set(missing_product_ids)
 
-        if approved and full_coverage:
+        if rejected:
+            state = "program_rejected"
+            next_action = "none"
+        elif approved and full_coverage:
             state = "approved_mapping_ready_feed_sample_pending"
             next_action = "obtain_real_feed_sample_and_create_provider_config"
         elif approved:
@@ -153,17 +158,22 @@ def build_feed_activation_queue(
             "mapped_product_ids": mapped_product_ids,
             "full_release_mapping_coverage": full_coverage,
             "program_approved": approved,
+            "program_rejected": rejected,
             "state": state,
             "feed_state": (
-                "await_real_feed_or_tracked_link_sample"
-                if approved and full_coverage
+                "not_applicable_program_rejected"
+                if rejected
                 else (
-                    "await_exact_variant_feed_or_product_evidence"
-                    if approved and missing_mapping_audit_complete
+                    "await_real_feed_or_tracked_link_sample"
+                    if approved and full_coverage
                     else (
-                        "await_remaining_mapping_resolution"
-                        if approved
-                        else "await_program_approval"
+                        "await_exact_variant_feed_or_product_evidence"
+                        if approved and missing_mapping_audit_complete
+                        else (
+                            "await_remaining_mapping_resolution"
+                            if approved
+                            else "await_program_approval"
+                        )
                     )
                 )
             ),

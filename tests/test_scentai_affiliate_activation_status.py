@@ -34,6 +34,7 @@ def test_affiliate_state_report_uses_control_plane_summary_schema() -> None:
         "approved": 1,
         "active": 0,
         "pending": 2,
+        "rejected": 0,
         "ready_for_user_approval": 0,
         "merchant_homepage_tracking_active": 0,
     }
@@ -148,3 +149,31 @@ def test_active_partner_requires_verified_tracking_strategy() -> None:
 
     assert row["activation_state"] == "approved_credentials_pending"
     assert row["live_routing_allowed"] is False
+
+
+def test_rejected_program_is_not_counted_as_pending() -> None:
+    programs = {
+        "network": "Awin",
+        "applications": [
+            {
+                "merchant_id": "open-merchant",
+                "program": "Open Merchant",
+                "status": "applied",
+            },
+            {
+                "merchant_id": "rejected-merchant",
+                "program": "Rejected Merchant",
+                "status": "rejected",
+            },
+        ],
+        "other_networks": [],
+    }
+
+    report = build_state_report(programs)
+
+    assert report["summary"]["programs"] == 2
+    assert report["summary"]["pending"] == 1
+    assert report["summary"]["rejected"] == 1
+    rejected = next(row for row in report["programs"] if row["merchant_id"] == "rejected-merchant")
+    assert rejected["activation_state"] == "rejected"
+    assert rejected["next_action"] == "none"

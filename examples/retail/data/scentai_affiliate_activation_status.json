@@ -1,13 +1,14 @@
 {
   "version": 2,
-  "generated_at": "2026-09-22T07:08:52+00:00",
+  "generated_at": "2026-09-22T10:29:49+00:00",
   "machine_id": "scentai_affiliate_activation_v1",
   "scope_note": "Program activation can describe a verified merchant-level homepage tracking route. Product-specific tracked offers remain independently gated by exact SKU mapping, stock, feed validation, image rights and release quality gates.",
   "summary": {
     "programs": 9,
     "approved": 1,
     "active": 1,
-    "pending": 8,
+    "pending": 6,
+    "rejected": 2,
     "ready_for_user_approval": 0,
     "merchant_homepage_tracking_active": 1
   },
@@ -52,34 +53,34 @@
       "network": "Awin",
       "program": "Parfumdreams DE",
       "merchant_id": "parfumdreams",
-      "application_status": "applied",
+      "application_status": "rejected",
       "tracking_strategy": null,
-      "activation_state": "applied",
+      "activation_state": "rejected",
       "blockers": [
-        "affiliate_program_approval_pending"
+        "affiliate_program_rejected"
       ],
       "live_routing_allowed": false,
       "routing_scope": "none",
       "merchant_homepage_tracking_active": false,
       "product_offer_activation_independent": true,
-      "next_action": "await_program_decision",
+      "next_action": "none",
       "live_activation_action_class": "approval_required"
     },
     {
       "network": "Awin",
       "program": "Parfumgroup DE",
       "merchant_id": "parfumgroup",
-      "application_status": "applied",
+      "application_status": "rejected",
       "tracking_strategy": null,
-      "activation_state": "applied",
+      "activation_state": "rejected",
       "blockers": [
-        "affiliate_program_approval_pending"
+        "affiliate_program_rejected"
       ],
       "live_routing_allowed": false,
       "routing_scope": "none",
       "merchant_homepage_tracking_active": false,
       "product_offer_activation_independent": true,
-      "next_action": "await_program_decision",
+      "next_action": "none",
       "live_activation_action_class": "approval_required"
     },
     {

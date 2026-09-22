@@ -225,3 +225,22 @@ def test_current_release01_perfumetrader_variant_audit_matches_repo_sources() ->
     assert merchant["variant_audit"]["exact_variant_verified_product_count"] == 1
     assert merchant["variant_audit"]["missing_mapping_audit_complete"] is True
     assert merchant["live_routing_allowed"] is False
+
+
+def test_rejected_program_is_terminal_in_feed_queue() -> None:
+    queue = build_feed_activation_queue(
+        release(),
+        mappings(),
+        affiliates("rejected"),
+        generated_at="2026-09-22T10:35:00+00:00",
+    )
+
+    merchant = next(row for row in queue["programs"] if row["merchant_id"] == "merchant-one")
+
+    assert merchant["application_status"] == "rejected"
+    assert merchant["program_approved"] is False
+    assert merchant["program_rejected"] is True
+    assert merchant["state"] == "program_rejected"
+    assert merchant["feed_state"] == "not_applicable_program_rejected"
+    assert merchant["next_action"] == "none"
+    assert merchant["live_routing_allowed"] is False

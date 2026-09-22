@@ -1,6 +1,6 @@
 {
-  "version": 2,
-  "updated_at": "2026-09-21",
+  "version": 3,
+  "updated_at": "2026-09-22",
   "network": "Awin",
   "publisher": "DUFYND",
   "applications": [
@@ -18,15 +18,19 @@
     },
     {
       "program": "Parfumdreams DE",
-      "status": "applied",
+      "status": "rejected",
       "applied_at": "2026-09-18",
-      "merchant_id": "parfumdreams"
+      "merchant_id": "parfumdreams",
+      "rejected_at": "2026-09-22",
+      "rejection_reason": "Website ergänzt nicht die Marke des Advertisers"
     },
     {
       "program": "Parfumgroup DE",
-      "status": "applied",
+      "status": "rejected",
       "applied_at": "2026-09-18",
-      "merchant_id": "parfumgroup"
+      "merchant_id": "parfumgroup",
+      "rejected_at": "2026-09-22",
+      "rejection_reason": "Rejected in Awin partner-program status; no reason text shown in the provided rejected-program overview."
     },
     {
       "program": "Breuninger DE",
@@ -81,5 +85,65 @@
     "business_model_changed": false,
     "applications_to_preserve": true,
     "partner_profile_update_after_public_cutover": true
-  }
+  },
+  "latest_network_observations": [
+    {
+      "observed_at": "2026-09-22",
+      "network": "Awin",
+      "merchant_id": "top-parfuemerie",
+      "program": "top Parfümerie DE",
+      "decision": "open",
+      "activity_note": "Network activity said participation was confirmed, but the authoritative program-status list still shows the application as open.",
+      "confidence": "explicit_program_name_in_open_program_list"
+    },
+    {
+      "observed_at": "2026-09-22",
+      "network": "Awin",
+      "merchant_id": "parfumdreams",
+      "program": "Parfumdreams DE",
+      "decision": "rejected",
+      "reason": "Website ergänzt nicht die Marke des Advertisers",
+      "confidence": "explicit_program_name_in_network_activity"
+    },
+    {
+      "observed_at": "2026-09-22",
+      "network": "Awin",
+      "merchant_id": "parfumgroup",
+      "program": "Parfumgroup DE",
+      "decision": "rejected",
+      "confidence": "explicit_program_name_in_rejected_program_list"
+    },
+    {
+      "observed_at": "2026-09-22",
+      "network": "Awin",
+      "merchant_id": "douglas",
+      "program": "Douglas_DE",
+      "decision": "open",
+      "confidence": "explicit_program_name_in_open_program_list"
+    },
+    {
+      "observed_at": "2026-09-22",
+      "network": "Awin",
+      "merchant_id": "flaconi",
+      "program": "Flaconi DE",
+      "decision": "open",
+      "confidence": "explicit_program_name_in_open_program_list"
+    },
+    {
+      "observed_at": "2026-09-22",
+      "network": "Awin",
+      "merchant_id": "breuninger",
+      "program": "Breuninger DE",
+      "decision": "open",
+      "confidence": "explicit_program_name_in_open_program_list"
+    },
+    {
+      "observed_at": "2026-09-22",
+      "network": "Awin",
+      "merchant_id": "birkholz",
+      "program": "Birkholz Perfume Manufacture DE",
+      "decision": "open",
+      "confidence": "explicit_program_name_in_open_program_list"
+    }
+  ]
 }

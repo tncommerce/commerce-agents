@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-22T07:08:52+00:00",
-  "source_fingerprint_sha256": "ccdb33e1af59bccd2392de2c4ce4039dd696dd4abbe21faaeda2785763fb0c96",
+  "generated_at": "2026-09-22T10:29:49+00:00",
+  "source_fingerprint_sha256": "f2b813036c86e7e43cdfec4b0b9a8f26d7293ae1c5b9965e0495f5adfed2e401",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
     "scentai_catalog_staging.json",
@@ -35,13 +35,13 @@
       "network": "Awin",
       "merchant_id": "parfumdreams",
       "program": "Parfumdreams DE",
-      "status": "applied"
+      "status": "rejected"
     },
     {
       "network": "Awin",
       "merchant_id": "parfumgroup",
       "program": "Parfumgroup DE",
-      "status": "applied"
+      "status": "rejected"
     },
     {
       "network": "Awin",
@@ -136,7 +136,7 @@
           "affiliate_program": {
             "network": "Awin",
             "program": "Parfumdreams DE",
-            "status": "applied"
+            "status": "rejected"
           },
           "affiliate_activation_state": "pending_program_approval"
         }
@@ -375,7 +375,7 @@
           "affiliate_program": {
             "network": "Awin",
             "program": "Parfumgroup DE",
-            "status": "applied"
+            "status": "rejected"
           },
           "affiliate_activation_state": "pending_program_approval"
         }
@@ -650,7 +650,7 @@
           "affiliate_program": {
             "network": "Awin",
             "program": "Parfumgroup DE",
-            "status": "applied"
+            "status": "rejected"
           },
           "affiliate_activation_state": "pending_program_approval"
         }
@@ -1236,7 +1236,7 @@
           "affiliate_program": {
             "network": "Awin",
             "program": "Parfumdreams DE",
-            "status": "applied"
+            "status": "rejected"
           },
           "affiliate_activation_state": "pending_program_approval"
         }
