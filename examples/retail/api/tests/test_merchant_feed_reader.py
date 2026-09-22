@@ -1,3 +1,4 @@
+import gzip
 import json
 
 import pytest
@@ -12,8 +13,9 @@ def test_detect_feed_format_from_extension(
     tmp_path,
 ) -> None:
     assert detect_feed_format(tmp_path / "feed.json") == "json"
-
     assert detect_feed_format(tmp_path / "feed.csv") == "csv"
+    assert detect_feed_format(tmp_path / "feed.json.gz") == "json"
+    assert detect_feed_format(tmp_path / "feed.csv.gz") == "csv"
 
 
 def test_read_json_object_feed(
@@ -89,6 +91,39 @@ def test_read_csv_feed(
     ]
 
 
+def test_read_gzip_csv_feed(
+    tmp_path,
+) -> None:
+    path = tmp_path / "awin-feed.csv.gz"
+    payload = (
+        "aw_product_id,merchant_product_id,search_price\n"
+        "AW-1,SKU-123,89.95\n"
+    ).encode("utf-8")
+
+    path.write_bytes(gzip.compress(payload))
+
+    rows = read_merchant_feed_rows(path)
+
+    assert rows == [
+        {
+            "aw_product_id": "AW-1",
+            "merchant_product_id": "SKU-123",
+            "search_price": "89.95",
+        }
+    ]
+
+
+def test_read_gzip_json_feed(
+    tmp_path,
+) -> None:
+    path = tmp_path / "feed.json.gz"
+    payload = json.dumps([{"offer_id": "offer-1"}]).encode("utf-8")
+
+    path.write_bytes(gzip.compress(payload))
+
+    assert read_merchant_feed_rows(path) == [{"offer_id": "offer-1"}]
+
+
 def test_explicit_format_can_override_extension(
     tmp_path,
 ) -> None:
@@ -98,6 +133,20 @@ def test_explicit_format_can_override_extension(
         "offer_id,price\noffer-1,89.95\n",
         encoding="utf-8",
     )
+
+    rows = read_merchant_feed_rows(
+        path,
+        feed_format="csv",
+    )
+
+    assert rows[0]["offer_id"] == "offer-1"
+
+
+def test_explicit_csv_format_can_read_gzip_extension(
+    tmp_path,
+) -> None:
+    path = tmp_path / "provider-export.gz"
+    path.write_bytes(gzip.compress(b"offer_id,price\noffer-1,89.95\n"))
 
     rows = read_merchant_feed_rows(
         path,
@@ -179,7 +228,9 @@ def test_read_utf8_bom_csv(
 ) -> None:
     path = tmp_path / "feed.csv"
 
-    path.write_bytes(("\ufeffoffer_id,merchant_name\noffer-1,Parf?merie Test\n").encode("utf-8"))
+    path.write_bytes(
+        ("\ufeffoffer_id,merchant_name\noffer-1,Parf?merie Test\n").encode("utf-8")
+    )
 
     rows = read_merchant_feed_rows(path)
 
@@ -196,7 +247,9 @@ def test_read_windows_1252_csv(
 ) -> None:
     path = tmp_path / "feed.csv"
 
-    path.write_bytes(("offer_id;merchant_name\noffer-1;Parf?merie K?ln\n").encode("cp1252"))
+    path.write_bytes(
+        ("offer_id;merchant_name\noffer-1;Parf?merie K?ln\n").encode("cp1252")
+    )
 
     rows = read_merchant_feed_rows(path)
 
@@ -238,6 +291,43 @@ def test_feed_file_size_limit_is_enforced(
             path,
             max_bytes=5,
         )
+
+
+def test_gzip_decompressed_size_limit_is_enforced(
+    tmp_path,
+) -> None:
+    path = tmp_path / "feed.csv.gz"
+    payload = (
+        "offer_id,description\n"
+        + "offer-1,"
+        + ("A" * 1000)
+        + "\n"
+    ).encode("utf-8")
+    compressed = gzip.compress(payload)
+    assert len(compressed) < 200
+    path.write_bytes(compressed)
+
+    with pytest.raises(
+        ValueError,
+        match="maximum decompressed file size",
+    ):
+        read_merchant_feed_rows(
+            path,
+            max_bytes=200,
+        )
+
+
+def test_invalid_gzip_payload_is_rejected(
+    tmp_path,
+) -> None:
+    path = tmp_path / "feed.csv.gz"
+    path.write_bytes(b"not-a-valid-gzip")
+
+    with pytest.raises(
+        ValueError,
+        match="gzip payload is invalid",
+    ):
+        read_merchant_feed_rows(path)
 
 
 def test_json_row_limit_is_enforced(
