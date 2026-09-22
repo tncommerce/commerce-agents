@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import gzip
 import io
 import json
 from pathlib import Path
@@ -12,15 +13,24 @@ DEFAULT_MAX_FEED_BYTES = 100 * 1024 * 1024
 DEFAULT_MAX_FEED_ROWS = 500_000
 
 
-def detect_feed_format(path: Path) -> str:
-    suffix = path.suffix.strip().casefold()
+def _normalized_suffixes(path: Path) -> list[str]:
+    return [suffix.strip().casefold() for suffix in path.suffixes]
 
-    if suffix == ".json":
+
+def _is_gzip_path(path: Path) -> bool:
+    return bool(_normalized_suffixes(path)) and _normalized_suffixes(path)[-1] == ".gz"
+
+
+def detect_feed_format(path: Path) -> str:
+    suffixes = _normalized_suffixes(path)
+
+    if suffixes[-2:] == [".json", ".gz"] or suffixes[-1:] == [".json"]:
         return "json"
 
-    if suffix == ".csv":
+    if suffixes[-2:] == [".csv", ".gz"] or suffixes[-1:] == [".csv"]:
         return "csv"
 
+    suffix = path.suffix.strip().casefold()
     raise ValueError(f"Unsupported merchant feed format: {suffix or '<none>'}")
 
 
@@ -37,17 +47,42 @@ def _enforce_file_size(
         )
 
 
-def _read_feed_text(
+def _read_file_payload(
     path: Path,
     *,
     max_bytes: int,
-) -> str:
+) -> bytes:
     _enforce_file_size(
         path,
         max_bytes=max_bytes,
     )
 
-    payload = path.read_bytes()
+    if not _is_gzip_path(path):
+        return path.read_bytes()
+
+    try:
+        with gzip.open(path, "rb") as handle:
+            payload = handle.read(max_bytes + 1)
+    except (gzip.BadGzipFile, OSError, EOFError) as exc:
+        raise ValueError("Merchant feed gzip payload is invalid") from exc
+
+    if len(payload) > max_bytes:
+        raise ValueError(
+            f"Merchant feed exceeds maximum decompressed file size: >{max_bytes} bytes"
+        )
+
+    return payload
+
+
+def _read_feed_text(
+    path: Path,
+    *,
+    max_bytes: int,
+) -> str:
+    payload = _read_file_payload(
+        path,
+        max_bytes=max_bytes,
+    )
 
     if not payload:
         raise ValueError("Merchant feed file is empty")
