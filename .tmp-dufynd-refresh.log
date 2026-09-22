@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/runner/work/commerce-agents/commerce-agents/scripts/refresh_scentai_jarvis_state.py", line 9, in <module>
+    from scripts.build_scentai_content_operations_status import (
+ModuleNotFoundError: No module named 'scripts'
+exit_code=1
