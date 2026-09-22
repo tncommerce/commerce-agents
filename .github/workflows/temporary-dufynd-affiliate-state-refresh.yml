@@ -23,7 +23,7 @@ jobs:
           python-version: "3.12"
       - name: Refresh deterministic Jarvis state
         run: |
-          python scripts/refresh_scentai_jarvis_state.py \
+          PYTHONPATH=. python -m scripts.refresh_scentai_jarvis_state \
             --write \
             --generated-at "2026-09-21T21:18:43+00:00"
       - name: Commit derived state
