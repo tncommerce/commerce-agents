@@ -1,0 +1,165 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-22",
+  "system": "DUFYND",
+  "campaign_id": "launch01",
+  "launch_date": "2026-09-26",
+  "status": "prelaunch_buffer_build",
+  "objective": "Start public posting with a rolling 2-3 week short-form content buffer so DUFYND can publish consistently without sacrificing room for trends, real audience signals or new affiliate developments.",
+  "operating_model": {
+    "core_creatives_per_week": "3-4",
+    "channels": [
+      "tiktok",
+      "instagram",
+      "youtube"
+    ],
+    "reuse_rule": "One strong core creative may be adapted and cross-posted across all three channels. Do not build three independent production systems.",
+    "expected_platform_posts_per_week": "9-12",
+    "first_30_days_platform_post_target": "30-50",
+    "evergreen_preproduction_share": 0.7,
+    "adaptive_share": 0.3,
+    "adaptive_examples": [
+      "high-performing format follow-up",
+      "trend or audience question",
+      "new affiliate approval",
+      "new fragrance release or timely topic",
+      "real DUFYND search/advisor demand after launch"
+    ]
+  },
+  "buffer_targets": {
+    "minimum_publish_ready_at_launch": 5,
+    "target_publish_ready_at_launch": 8,
+    "target_evergreen_core_bank": 10,
+    "minimum_rolling_publish_ready_buffer": 5,
+    "preview_or_script_reserve_target": 5,
+    "note": "Do not delay the 2026-09-26 soft launch merely to reach the stretch target if at least five strong publish-ready creatives pass mobile QA and operator review."
+  },
+  "inventory_snapshot": {
+    "planned_core_creatives": 15,
+    "preview_ready_creatives": 15,
+    "social_copy_ready": 15,
+    "tracked_channel_links_ready": 45,
+    "final_video_renders_ready": 0,
+    "launch_plan_preview_overlap": 14,
+    "preview_ready_extra": "budget_three_under_50_01",
+    "scripted_not_previewed": "aventus_alternatives_01"
+  },
+  "launch_wave": [
+    {
+      "order": 1,
+      "content_id": "original_vs_alt_imagination_01",
+      "role": "hero_problem_solution",
+      "landing_path": "/parfum-alternativen",
+      "reason": "Explains a familiar fragrance problem and immediately demonstrates DUFYND's comparison value."
+    },
+    {
+      "order": 2,
+      "content_id": "not_every_dupe_clone_01",
+      "role": "trust_education",
+      "landing_path": "/parfum-alternativen",
+      "reason": "Builds credibility by showing that DUFYND does not flatten every similar fragrance into a clone claim."
+    },
+    {
+      "order": 3,
+      "content_id": "top3_office_01",
+      "role": "advisor_utility",
+      "landing_path": "/duftfinder",
+      "reason": "Shows that DUFYND solves a real occasion-based decision instead of publishing a generic ranking."
+    },
+    {
+      "order": 4,
+      "content_id": "top3_fresh_01",
+      "role": "advisor_utility",
+      "landing_path": "/duftfinder",
+      "reason": "Demonstrates that one broad request such as 'fresh' can lead to meaningfully different scent profiles."
+    },
+    {
+      "order": 5,
+      "content_id": "gift_for_him_safe_to_bold_01",
+      "role": "gift_utility",
+      "landing_path": "/parfum-geschenkberater",
+      "reason": "Introduces the gift-advisor use case and broadens DUFYND beyond enthusiast-only comparison content."
+    }
+  ],
+  "evergreen_buffer": [
+    {
+      "content_id": "althair_liquid_brun_01",
+      "role": "comparison_value",
+      "landing_path": "/parfum-alternativen"
+    },
+    {
+      "content_id": "top3_date_01",
+      "role": "advisor_utility",
+      "landing_path": "/duftfinder"
+    },
+    {
+      "content_id": "bois_imperial_explained_01",
+      "role": "single_product_fit",
+      "landing_path": "/duftfinder"
+    },
+    {
+      "content_id": "dior_homme_intense_alt_01",
+      "role": "comparison_value",
+      "landing_path": "/parfum-alternativen"
+    },
+    {
+      "content_id": "signature_vs_safe_01",
+      "role": "advisor_utility",
+      "landing_path": "/duftfinder"
+    }
+  ],
+  "adaptive_reserve": [
+    {
+      "content_id": "dupe_battle_imagination_01",
+      "trigger": "Use if Imagination/alternative content performs well or audience asks which alternative fits which profile."
+    },
+    {
+      "content_id": "layton_alternatives_01",
+      "trigger": "Use to test whether cluster comparisons outperform single original-vs-alternative videos."
+    },
+    {
+      "content_id": "tygar_vibrato_value_01",
+      "trigger": "Use when fresh/citrus comparison content shows demand."
+    },
+    {
+      "content_id": "naxos_value_01",
+      "trigger": "Use when gourmand/luxury-without-budget content shows demand."
+    },
+    {
+      "content_id": "budget_three_under_50_01",
+      "trigger": "Use for value-oriented demand only after all referenced prices are reverified immediately before publication.",
+      "publish_day_checks": [
+        "price_recheck_required"
+      ]
+    }
+  ],
+  "next_fresh_production_slot": {
+    "content_id": "aventus_alternatives_01",
+    "current_state": "scripted_not_previewed",
+    "reason": "Keeps one genuinely new creative in the queue instead of consuming the entire bank before real launch data exists."
+  },
+  "production_rules": [
+    "Use the existing 15 previews before requesting new paid AI-video generation.",
+    "Prefer evergreen content for the fixed buffer and reserve price/trend-sensitive posts for adaptive slots.",
+    "Publishing remains an explicit operator approval action.",
+    "Any paid voice or video generation remains an explicit spend approval action.",
+    "Price claims must be refreshed immediately before publication.",
+    "Affiliate availability or commission must never change fragrance recommendations or editorial ordering."
+  ],
+  "voiceover_paths": {
+    "preferred_no_new_spend": "operator_recorded_voiceover",
+    "alternative": "approved_voice_synthesis",
+    "rule": "Do not purchase or consume new paid voice/video credits without explicit approval."
+  },
+  "learning_loop": {
+    "review_frequency": "weekly_after_launch",
+    "primary_content_signals": [
+      "qualified DUFYND landing sessions",
+      "advisor starts",
+      "comparison engagement",
+      "saves and shares where available",
+      "merchant clickouts only as a downstream signal"
+    ],
+    "decision_rule": "Do not judge a format from a single post. Prefer at least three comparable tests before materially changing the content mix unless a clear quality or compliance issue appears."
+  }
+}
