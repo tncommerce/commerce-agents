@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "status": "documented_schema_ready_real_feed_validation_required",
+  "provider_name": "awin-perfumetrader-de",
+  "merchant_scope": {
+    "merchant": "perfumetrader",
+    "merchant_id": "perfumetrader",
+    "merchant_name": "Perfumetrader",
+    "awin_advertiser_id": "11672",
+    "market": "DE"
+  },
+  "field_map": {
+    "offer_id": "aw_product_id",
+    "merchant_product_id": "merchant_product_id",
+    "ean": "ean",
+    "gtin": "product_GTIN",
+    "price": "search_price",
+    "shipping_cost": "delivery_cost",
+    "in_stock": "in_stock",
+    "variant_label": "product_name",
+    "product_url": "merchant_deep_link",
+    "affiliate_url": "aw_deep_link",
+    "last_updated_at": "last_updated",
+    "image_url": "merchant_image_url"
+  },
+  "constants": {
+    "merchant": "perfumetrader",
+    "merchant_id": "perfumetrader",
+    "merchant_name": "Perfumetrader",
+    "currency": "EUR",
+    "network": "Awin",
+    "data_source": "approved-affiliate-feed"
+  },
+  "schema_evidence": [
+    {
+      "source": "Awin Product Feed List Download",
+      "url": "https://help.awin.com/developers/docs/product-feed-list-download",
+      "checked_at": "2026-09-22",
+      "finding": "Publisher feed download URLs expose documented standard columns including aw_deep_link, aw_product_id, merchant_product_id, merchant_image_url, search_price, merchant_deep_link, last_updated, in_stock, ean and product_GTIN."
+    },
+    {
+      "source": "Awin Hosting and column descriptions",
+      "url": "https://help.awin.com/developers/docs/hosting-feeds",
+      "checked_at": "2026-09-22",
+      "finding": "Awin documents generic CSV fields and semantics including EAN/GTIN, in_stock and last_updated."
+    }
+  ],
+  "safety": {
+    "real_feed_preflight_required": true,
+    "release_checker_required": true,
+    "no_write_from_config_alone": true,
+    "no_offer_activation_from_config_alone": true,
+    "no_image_approval_from_config_alone": true
+  },
+  "note": "This config is based on Awin's documented publisher feed schema and Perfumetrader's approved Awin program. The actual Perfumetrader CSV must still be profiled and dry-run checked before any offer or image can be promoted."
+}
