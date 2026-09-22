@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-22T11:33:13+00:00",
-  "source_fingerprint_sha256": "f2b813036c86e7e43cdfec4b0b9a8f26d7293ae1c5b9965e0495f5adfed2e401",
+  "generated_at": "2026-09-22T19:50:00+00:00",
+  "source_fingerprint_sha256": "b2d3efcde6944463d6f5ef2899a1af077a33f3e94b08518d1e470ea33018a0b3",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
     "scentai_catalog_staging.json",
@@ -14,9 +14,9 @@
     "products_with_two_or_more_resolved_mappings": 29,
     "products_without_resolved_mapping": 1,
     "affiliate_programs_registered": 9,
-    "affiliate_programs_approved": 1,
-    "affiliate_programs_pending": 8,
-    "live_activation_ready_products": 3
+    "affiliate_programs_approved": 2,
+    "affiliate_programs_pending": 7,
+    "live_activation_ready_products": 7
   },
   "affiliate_programs": [
     {
@@ -65,7 +65,7 @@
       "network": "Awin",
       "merchant_id": "top-parfuemerie",
       "program": "top Parfümerie DE",
-      "status": "applied"
+      "status": "approved"
     },
     {
       "network": "CJ Affiliate",
@@ -705,13 +705,11 @@
       "name": "La Vie est Belle",
       "batch": 1,
       "researched_merchant_count": 3,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
+      "mapping_count": 3,
+      "resolved_mapping_count": 3,
       "full_mapping_count": 1,
       "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
+      "blockers": [],
       "next_action": "await_affiliate_program_approval",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
@@ -741,6 +739,19 @@
             "status": "applied"
           },
           "affiliate_activation_state": "pending_program_approval"
+        },
+        {
+          "merchant_id": "top-parfuemerie",
+          "mapping_state": "partial",
+          "merchant_product_id": "780879",
+          "ean": null,
+          "gtin": null,
+          "affiliate_program": {
+            "network": "Awin",
+            "program": "top Parfümerie DE",
+            "status": "approved"
+          },
+          "affiliate_activation_state": "approved"
         }
       ]
     },
@@ -927,13 +938,11 @@
       "name": "Delina",
       "batch": 1,
       "researched_merchant_count": 2,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
+      "mapping_count": 3,
+      "resolved_mapping_count": 3,
       "full_mapping_count": 1,
       "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
+      "blockers": [],
       "next_action": "await_affiliate_program_approval",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
@@ -963,6 +972,19 @@
             "status": "applied"
           },
           "affiliate_activation_state": "pending_program_approval"
+        },
+        {
+          "merchant_id": "top-parfuemerie",
+          "mapping_state": "partial",
+          "merchant_product_id": "825869",
+          "ean": null,
+          "gtin": null,
+          "affiliate_program": {
+            "network": "Awin",
+            "program": "top Parfümerie DE",
+            "status": "approved"
+          },
+          "affiliate_activation_state": "approved"
         }
       ]
     },
@@ -1249,13 +1271,11 @@
       "name": "Black Opium",
       "batch": 2,
       "researched_merchant_count": 2,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
+      "mapping_count": 3,
+      "resolved_mapping_count": 3,
       "full_mapping_count": 2,
       "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
+      "blockers": [],
       "next_action": "await_affiliate_program_approval",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
@@ -1285,6 +1305,19 @@
             "status": "applied"
           },
           "affiliate_activation_state": "pending_program_approval"
+        },
+        {
+          "merchant_id": "top-parfuemerie",
+          "mapping_state": "partial",
+          "merchant_product_id": "787670",
+          "ean": null,
+          "gtin": null,
+          "affiliate_program": {
+            "network": "Awin",
+            "program": "top Parfümerie DE",
+            "status": "approved"
+          },
+          "affiliate_activation_state": "approved"
         }
       ]
     },
@@ -1341,13 +1374,11 @@
       "name": "Libre",
       "batch": 1,
       "researched_merchant_count": 2,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
+      "mapping_count": 3,
+      "resolved_mapping_count": 3,
       "full_mapping_count": 2,
       "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
+      "blockers": [],
       "next_action": "await_affiliate_program_approval",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
@@ -1377,6 +1408,19 @@
             "status": "applied"
           },
           "affiliate_activation_state": "pending_program_approval"
+        },
+        {
+          "merchant_id": "top-parfuemerie",
+          "mapping_state": "partial",
+          "merchant_product_id": "856448",
+          "ean": null,
+          "gtin": null,
+          "affiliate_program": {
+            "network": "Awin",
+            "program": "top Parfümerie DE",
+            "status": "approved"
+          },
+          "affiliate_activation_state": "approved"
         }
       ]
     },
