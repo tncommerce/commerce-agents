@@ -469,6 +469,17 @@
       "merchant_product_id": "856448",
       "ean": null,
       "gtin": null
+    },
+    {
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "merchant": "top-parfuemerie",
+      "merchant_product_id": "924719",
+      "ean": "3770010614630",
+      "gtin": "3770010614630",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-09-22",
+      "evidence_url": "https://www.topparfuemerie.de/essential-parfums-bois-imperial-by-quentin-bisch-edp-nat-spray-nachfuellbar",
+      "evidence_note": "Awin feed product 38332629354 maps merchant product 924719 to Bois Impérial EDP; EAN 3770010614630 independently cross-verifies the refillable 100 ml variant."
     }
   ]
 }
