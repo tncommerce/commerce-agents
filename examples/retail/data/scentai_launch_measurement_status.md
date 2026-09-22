@@ -1,7 +1,7 @@
-# SCENTAI Organic Launch Measurement Status
+# DUFYND Organic Launch Measurement Status
 
 Status: deployed_verified
-Updated: 2026-09-19
+Updated: 2026-09-22
 
 ## Prepared
 
@@ -14,7 +14,7 @@ Updated: 2026-09-19
 - 15-creatives pre-launch content plan
 - all 15 pre-launch creatives scripted in three guarded production batches
 - all 15 scripted creatives have scene-level production packs with approved
-  SCENTAI product-image references, overlay/component instructions and CTA
+  DUFYND product-image references, overlay/component instructions and CTA
   endcards
 - three organic channels: TikTok, Instagram and YouTube
 - 45 standardized creative/channel link combinations available through the
@@ -46,9 +46,18 @@ Database migration is complete. After the matching frontend attribution deployme
 7. Confirm an untracked direct visit is attributed as organic without changing
    the historical landing-source key.
 
+## Current operating state
+
+The legacy production-pack workflow is retained as a reference/utility system,
+but public-facing copy has been rebranded to DUFYND. Paid creative generation
+is not the current bottleneck. Commerce readiness — especially the real
+Perfumetrader/Awin product feed, product-level tracked offers and production
+image approval — remains the active priority.
+
 ## Next operating block
 
-Turn the production packs into an executable editing workflow:
+After commerce readiness and explicit publishing approval, use the production
+packs as an executable editing workflow:
 - reusable 9:16 editing template
 - subtitle and on-screen text layout rules
 - voiceover recording workflow
