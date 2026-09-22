@@ -149,8 +149,7 @@ def _check_robots_policy(
             detail = "robots.txt does not match DUFYND's supported launch policies."
         elif not expected_ok:
             detail = (
-                f"robots.txt reports indexing {detected}, "
-                f"but {expected_indexing} was expected."
+                f"robots.txt reports indexing {detected}, but {expected_indexing} was expected."
             )
         else:
             detail = f"robots.txt is valid; search indexing is {detected}."
