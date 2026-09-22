@@ -192,38 +192,38 @@
       "pilot": 4,
       "content_id": "bois_imperial_explained_01",
       "canonical_launch_content_id": "bois_imperial_explained_01",
-      "format": "deep_dive",
-      "landing_path": "/duftfinder",
+      "format": "commerce_decision",
+      "landing_path": "/duft/essential-parfums-bois-imperial",
       "product_ids": [
         "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100"
       ],
-      "target_duration_seconds": 27,
-      "hook": "Bois Impérial ist fast gar nicht süß – und genau das macht ihn interessant.",
-      "voiceover": "Bois Impérial ist bei DUFYND vor allem frisch, sehr holzig, würzig und grün eingeordnet. Die Süße liegt dagegen ganz unten. In den Community-Daten stehen außerdem starke Haltbarkeit und deutliche Ausstrahlung. Das ergibt keinen typischen süßen Mainstream-Duft, sondern einen trockenen, modernen und sehr präsenten Holzstil. Wenn du genau so etwas suchst, prüf deine Passung bei DUFYND.",
+      "target_duration_seconds": 16,
+      "hook": "Bois Impérial ist kein Duft für jeden.",
+      "voiceover": "Bois Impérial ist kein Duft für jeden. Er wirkt frisch, trocken, sehr holzig und würzig – Süße spielt kaum eine Rolle. Die Community bewertet Haltbarkeit und Ausstrahlung stark. Suchst du einen modernen Holzduft mit Präsenz? Auf DUFYND findest du das Profil und aktuelle Händlerangebote.",
       "scenes": [
         {
-          "seconds": "0-4",
-          "visual": "Bois Impérial bottle hero",
-          "overlay": "KAUM SÜSS. SEHR PRÄSENT."
+          "seconds": "0-3",
+          "visual": "Bois Impérial bottle hero with fast premium push-in",
+          "overlay": "NICHT FÜR JEDEN."
         },
         {
-          "seconds": "4-13",
-          "visual": "profile bars",
-          "overlay": "Frische 8 · Holz 9 · Süße 1 · Würze 7"
+          "seconds": "3-7",
+          "visual": "dry green woods / profile motion",
+          "overlay": "FRISCH · TROCKEN · HOLZIG"
         },
         {
-          "seconds": "13-20",
-          "visual": "performance bars labelled community",
-          "overlay": "Community: Haltbarkeit 8,5 · Ausstrahlung 8,1"
+          "seconds": "7-11",
+          "visual": "DUFYND profile + community performance cards",
+          "overlay": "SÜSSE 1/10 · HALTBARKEIT 8,5"
         },
         {
-          "seconds": "20-27",
-          "visual": "advisor fit prompt",
-          "overlay": "PASST DIESER STIL ZU DIR?"
+          "seconds": "11-16",
+          "visual": "bottle payoff + DUFYND product-page cue",
+          "overlay": "DEIN STIL? → DUFYND"
         }
       ],
-      "primary_cta": "Passung mit DUFYND prüfen",
-      "thumbnail": "BOIS IMPÉRIAL IN 27 SEK."
+      "primary_cta": "Bois Impérial auf DUFYND prüfen",
+      "thumbnail": "NICHT FÜR JEDEN."
     },
     {
       "pilot": 5,
