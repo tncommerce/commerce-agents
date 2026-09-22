@@ -154,10 +154,10 @@ def partner_product_deeplink_url(
         return None
 
     parsed_affiliate = urlparse(affiliate_url)
-    if (
-        parsed_affiliate.scheme != "https"
-        or parsed_affiliate.hostname not in {"awin1.com", "www.awin1.com"}
-    ):
+    if parsed_affiliate.scheme != "https" or parsed_affiliate.hostname not in {
+        "awin1.com",
+        "www.awin1.com",
+    }:
         return None
 
     query = parse_qsl(parsed_affiliate.query, keep_blank_values=True)
@@ -186,9 +186,7 @@ def partner_product_deeplink_url(
         return None
 
     deeplink_query = [
-        (key, value)
-        for key, value in query
-        if key.casefold() not in {"ued", "clickref"}
+        (key, value) for key, value in query if key.casefold() not in {"ued", "clickref"}
     ]
     deeplink_query.append(("ued", destination_url.strip()))
     if clickref:
