@@ -6,7 +6,7 @@ from scripts.build_scentai_campaign_link import build_campaign_url
 
 def test_campaign_link_contains_standardized_attribution() -> None:
     link = build_campaign_url(
-        base_url="https://scentai.example",
+        base_url="https://dufynd.example",
         landing_path="/parfum-alternativen",
         channel="tiktok",
         campaign_id="launch01",
@@ -14,7 +14,7 @@ def test_campaign_link_contains_standardized_attribution() -> None:
     )
 
     assert link == (
-        "https://scentai.example/parfum-alternativen"
+        "https://dufynd.example/parfum-alternativen"
         "?src=tiktok&cmp=launch01&content=imagination_dupe_03"
     )
 
@@ -31,7 +31,7 @@ def test_campaign_link_rejects_free_form_attribution(
     value: str,
 ) -> None:
     kwargs = {
-        "base_url": "https://scentai.example",
+        "base_url": "https://dufynd.example",
         "landing_path": "/duftfinder",
         "channel": "instagram",
         "campaign_id": "launch01",
@@ -46,7 +46,7 @@ def test_campaign_link_rejects_free_form_attribution(
 def test_campaign_link_rejects_unknown_channel() -> None:
     with pytest.raises(ValueError):
         build_campaign_url(
-            base_url="https://scentai.example",
+            base_url="https://dufynd.example",
             landing_path="/duftfinder",
             channel="random-source",
             campaign_id="launch01",
@@ -57,7 +57,7 @@ def test_campaign_link_rejects_unknown_channel() -> None:
 def test_campaign_link_requires_public_https_origin() -> None:
     with pytest.raises(ValueError):
         build_campaign_url(
-            base_url="http://scentai.example",
+            base_url="http://dufynd.example",
             landing_path="/duftfinder",
             channel="youtube",
             campaign_id="launch01",
