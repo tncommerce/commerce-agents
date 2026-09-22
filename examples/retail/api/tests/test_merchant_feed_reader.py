@@ -96,9 +96,9 @@ def test_read_gzip_csv_feed(
 ) -> None:
     path = tmp_path / "awin-feed.csv.gz"
     payload = (
-        "aw_product_id,merchant_product_id,search_price\n"
-        "AW-1,SKU-123,89.95\n"
-    ).encode("utf-8")
+        b"aw_product_id,merchant_product_id,search_price\n"
+        b"AW-1,SKU-123,89.95\n"
+    )
 
     path.write_bytes(gzip.compress(payload))
 
