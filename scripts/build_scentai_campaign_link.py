@@ -81,7 +81,7 @@ def build_campaign_url(
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Build a privacy-safe SCENTAI launch link with standardized "
+            "Build a privacy-safe DUFYND launch link with standardized "
             "channel, campaign and content attribution."
         )
     )
