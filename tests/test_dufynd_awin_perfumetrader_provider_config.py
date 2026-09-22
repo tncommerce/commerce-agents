@@ -21,7 +21,6 @@ def test_perfumetrader_awin_schema_template_is_structurally_ready() -> None:
     assert report["import_contract_ready"] is True
     assert report["promotion_asset_contract_ready"] is True
     assert report["promotion_field_gaps"] == []
-    assert report["next_action"] == "run_real_feed_preflight"
 
 
 def test_perfumetrader_awin_config_maps_documented_columns() -> None:
@@ -66,16 +65,20 @@ def test_perfumetrader_awin_config_maps_documented_columns() -> None:
     }
 
 
-def test_perfumetrader_awin_config_keeps_real_feed_gates_enabled() -> None:
+def test_perfumetrader_awin_config_keeps_no_feed_safeguards_enabled() -> None:
     config = load_config()
 
-    assert config["status"] == ("documented_schema_ready_real_feed_validation_required")
+    assert config["status"] == (
+        "awin_product_feed_unavailable_direct_merchant_data_required"
+    )
     assert config["safety"] == {
         "real_feed_preflight_required": True,
         "release_checker_required": True,
         "no_write_from_config_alone": True,
         "no_offer_activation_from_config_alone": True,
         "no_image_approval_from_config_alone": True,
+        "no_awin_create_a_feed_retry_without_status_change": True,
+        "direct_merchant_data_validation_required": True,
     }
     assert config["merchant_scope"]["awin_advertiser_id"] == "11672"
 
