@@ -1,0 +1,51 @@
+name: Temporary DUFYND Canonical State Refresh
+
+on:
+  push:
+    branches:
+      - dufynd-affiliate-decisions-20260922
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: dufynd-affiliate-decisions-20260922
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Refresh canonical Jarvis state
+        run: |
+          PYTHONPATH=. python -m scripts.refresh_scentai_jarvis_state \
+            --write \
+            --generated-at "2026-09-22T10:29:49+00:00"
+      - name: Commit derived state
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add examples/retail/data/scentai_merchant_mapping_work_queue.json
+          git add examples/retail/data/scentai_affiliate_activation_status.json
+          git add examples/retail/data/scentai_image_approval_work_queue.json
+          git add examples/retail/data/scentai_release_01_feed_activation_queue.json
+          git add examples/retail/data/scentai_release_01_gate_status.json
+          git add examples/retail/data/scentai_release_pipeline_status.json
+          git add examples/retail/data/scentai_jarvis_operations_status.json
+          git add examples/retail/data/scentai_content_operations_status.json
+          git add examples/retail/data/scentai_content_operations_status_batch02.json
+          git add examples/retail/data/scentai_content_operations_status_batch03.json
+          git add examples/retail/data/scentai_content_pipeline_status.json
+          git add examples/retail/data/scentai_media_generation_queue.json
+          git add examples/retail/data/scentai_jarvis_master_status.json
+          if git diff --cached --quiet; then
+            echo "No derived-state changes."
+            exit 0
+          fi
+          git commit -m "Refresh canonical DUFYND affiliate state [skip ci]"
+          git push origin HEAD:dufynd-affiliate-decisions-20260922
