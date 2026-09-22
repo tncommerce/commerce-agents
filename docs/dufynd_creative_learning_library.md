@@ -428,3 +428,27 @@ Do not scatter transitions across every cut.
 - no generic halo behind bottle
 - no random wet/mirrored floor unless deliberately approved
 
+
+
+## Product Fidelity Gate — mandatory before paid video generation
+
+Before any paid fragrance video generation:
+1. Retrieve the best available authoritative product reference, preferably official brand photography.
+2. Verify the exact front view against that reference:
+   - bottle silhouette and proportions
+   - shoulder/neck geometry
+   - cap shape and dimensions
+   - label size, position and border
+   - label typography/layout
+   - visible front text
+   - glass thickness / base
+   - liquid color and transparency
+3. Verify at least one 3/4 view and one macro/detail view when available.
+4. AI-generated character sheets are secondary references only; they must not become the source of truth unless they pass comparison against the authoritative product reference.
+5. Do not proceed to expensive video generation if front fidelity is materially wrong.
+6. Record the authoritative reference source and QA result in the production notes.
+
+### Bois Impérial correction learned 2026-09-22
+The first premium Bois Impérial commercial was visually strong, but the generated character sheet had already drifted from the real front label/product design. This propagated into the video. Root cause: AI-created reference was accepted before authoritative product-photo comparison.
+
+Official Essential Parfums photography must be the source of truth for the next Bois Impérial character sheet and hero references.
