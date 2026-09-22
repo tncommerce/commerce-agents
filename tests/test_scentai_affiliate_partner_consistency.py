@@ -50,15 +50,27 @@ def test_affiliate_programs_match_partner_registry_state() -> None:
             continue
 
         assert status == "approved"
-        assert partner["status"] == "active", (
-            f"{merchant_id}: approved program with verified tracking should be active"
+        tracking_strategy = str(application.get("tracking_strategy") or "")
+
+        if tracking_strategy == "verified_awin_partner_homepage_link":
+            assert partner["status"] == "active", (
+                f"{merchant_id}: approved homepage-tracked program should be active"
+            )
+            affiliate_url = partner.get("affiliate_url")
+            assert affiliate_url, f"{merchant_id}: approved homepage partner lacks affiliate_url"
+            parsed = urlparse(affiliate_url)
+            assert parsed.scheme == "https" and parsed.netloc, (
+                f"{merchant_id}: approved homepage partner must use a valid HTTPS affiliate URL"
+            )
+            assert partner.get("last_verified_at"), (
+                f"{merchant_id}: approved homepage partner must record link verification time"
+            )
+            continue
+
+        assert partner["status"] == "pending_affiliate_link", (
+            f"{merchant_id}: approved program without a verified homepage route "
+            "must remain gated in the merchant partner registry"
         )
-        affiliate_url = partner.get("affiliate_url")
-        assert affiliate_url, f"{merchant_id}: approved partner lacks affiliate_url"
-        parsed = urlparse(affiliate_url)
-        assert parsed.scheme == "https" and parsed.netloc, (
-            f"{merchant_id}: approved partner must use a valid HTTPS affiliate URL"
-        )
-        assert partner.get("last_verified_at"), (
-            f"{merchant_id}: approved partner must record link verification time"
+        assert partner.get("affiliate_url") is None, (
+            f"{merchant_id}: gated partner must not expose a guessed homepage affiliate URL"
         )
