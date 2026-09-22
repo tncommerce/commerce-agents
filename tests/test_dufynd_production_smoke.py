@@ -225,11 +225,7 @@ def test_smoke_can_assert_enabled_indexing() -> None:
         api_url="https://api.dufynd.test",
         expected_indexing="enabled",
         transport=transport(
-            robots_text=(
-                "User-agent: *\n"
-                "Allow: /\n"
-                "Sitemap: https://dufynd.de/sitemap.xml\n"
-            )
+            robots_text=("User-agent: *\nAllow: /\nSitemap: https://dufynd.de/sitemap.xml\n")
         ),
     )
 
@@ -271,8 +267,7 @@ def test_smoke_fails_when_sitemap_is_missing_canonical_site() -> None:
         api_url="https://api.dufynd.test",
         transport=transport(
             sitemap_text=(
-                '<?xml version="1.0"?>'
-                "<urlset><url><loc>https://wrong.example</loc></url></urlset>"
+                '<?xml version="1.0"?><urlset><url><loc>https://wrong.example</loc></url></urlset>'
             )
         ),
     )
@@ -290,4 +285,3 @@ def test_smoke_rejects_invalid_expected_indexing_value() -> None:
             expected_indexing="later",
             transport=transport(),
         )
-
