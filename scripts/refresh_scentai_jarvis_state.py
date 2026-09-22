@@ -45,6 +45,7 @@ DATA_DIR = Path("examples/retail/data")
 STAGING = DATA_DIR / "scentai_catalog_staging.json"
 MAPPINGS = DATA_DIR / "merchant_product_mappings.json"
 AFFILIATES = DATA_DIR / "scentai_affiliate_programs.json"
+MERCHANT_PARTNERS = DATA_DIR / "merchant_partners.json"
 VARIANT_AUDIT = DATA_DIR / "dufynd_perfumetrader_release01_variant_audit.json"
 OFFERS = DATA_DIR / "merchant_offers.json"
 RELEASE_01 = DATA_DIR / "scentai_release_batch_01.json"
@@ -122,6 +123,7 @@ def refresh_state(*, generated_at: str) -> dict[str, Any]:
     affiliate_status = build_state_report(
         affiliates,
         generated_at=generated_at,
+        merchant_partners=load_json(MERCHANT_PARTNERS),
     )
     image_queue = build_image_queue(
         staging,
