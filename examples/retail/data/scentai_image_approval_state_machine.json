@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-09-19",
+  "updated_at": "2026-09-22",
   "status": "active",
   "machine_id": "scentai_image_approval_v1",
   "purpose": "Jarvis-safe lifecycle for production fragrance images used in SCENTAI commerce surfaces.",
@@ -137,5 +137,16 @@
     "generated_bottle_lookalike",
     "unclear_or_unverified_source_rights"
   ],
-  "approval_rule": "Final visual approval is a human/user approval gate. Jarvis may discover, normalize, validate and prepare candidates but may not set an approved_* state by itself."
+  "approval_rule": "Final visual approval is a human/user approval gate. Jarvis may discover, normalize, validate and prepare candidates but may not set an approved_* state by itself. Affiliate-feed candidates additionally require a verified rights-registry match before approval.",
+  "rights_registry_ref": "dufynd_affiliate_feed_image_rights.json",
+  "rights_rules": {
+    "affiliate_feed": [
+      "candidate_must_come_from_approved_affiliate_feed",
+      "network_and_merchant_must_match_a_verified_rights_registry_entry",
+      "affiliate_program_must_be_approved",
+      "rights_status_must_be_verified_for_publisher_service",
+      "final_visual_approval_remains_human_required"
+    ],
+    "safety_note": "Feed presence alone never proves production image approval. Rights/source verification and human visual identity approval are separate gates."
+  }
 }
