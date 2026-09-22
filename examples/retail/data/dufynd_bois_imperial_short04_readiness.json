@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-22",
+  "system": "DUFYND",
+  "content_id": "bois_imperial_explained_01",
+  "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+  "target_path": "/duft/essential-parfums-bois-imperial",
+  "status": "content_funnel_ready_affiliate_offer_staged_not_live",
+  "product_page": {
+    "catalog_ready": true,
+    "product_detail_route_ready": true,
+    "direct_offer_discovery_ready": true,
+    "affiliate_offer_live": false
+  },
+  "current_direct_offer_snapshot": [
+    {
+      "merchant": "Douglas",
+      "price_eur": 94,
+      "variant": "100 ml",
+      "affiliate": false,
+      "last_updated_at": "2026-09-18T20:44:35Z"
+    },
+    {
+      "merchant": "flaconi",
+      "price_eur": 94,
+      "variant": "100 ml",
+      "affiliate": false,
+      "last_updated_at": "2026-09-15T17:30:00Z"
+    }
+  ],
+  "top_parfuemerie": {
+    "program_status": "approved",
+    "tracking_strategy": "awin_product_feed_deeplinks",
+    "exact_variant_mapping": {
+      "merchant_product_id": "924719",
+      "aw_product_id": "38332629354",
+      "volume_ml": 100,
+      "verified_at": "2026-09-22"
+    },
+    "observed_public_price_eur": 91.95,
+    "affiliate_deeplink_in_repo": false,
+    "live_offer_activation": false,
+    "blocker": "exact_awin_product_deeplink_not_persisted_and_operator_activation_not_approved"
+  },
+  "content_rules": {
+    "safe_cta": "Profil und aktuelle Händlerangebote auf DUFYND ansehen",
+    "price_claim_in_video": false,
+    "top_parfuemerie_partner_claim_allowed": false,
+    "affiliate_purchase_cta_allowed": false,
+    "publish_requires_operator_approval": true
+  },
+  "next_actions": [
+    "Produce revised Short 04 visual/audio draft without new paid generation.",
+    "Recover or refetch exact Awin product deeplink for merchant product 924719 before affiliate activation.",
+    "Recheck offer freshness immediately before publication.",
+    "Request operator approval before publishing or activating the affiliate offer."
+  ]
+}
