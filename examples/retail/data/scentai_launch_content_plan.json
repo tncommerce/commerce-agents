@@ -170,14 +170,15 @@
     },
     {
       "content_id": "bois_imperial_explained_01",
-      "format": "scentai_decides",
-      "working_hook": "Bois Impérial: warum dieser Duft für manche perfekt und für andere komplett falsch ist.",
+      "format": "commerce_decision",
+      "working_hook": "Bois Impérial ist kein Duft für jeden.",
       "landing_path": "/duftfinder",
       "product_ids": [
         "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100"
       ],
-      "primary_cta": "Passung mit DUFYND prüfen",
-      "status": "scripted"
+      "primary_cta": "Bois Impérial auf DUFYND prüfen",
+      "status": "scripted",
+      "product_detail_path": "/duft/essential-parfums-bois-imperial"
     },
     {
       "content_id": "not_every_dupe_clone_01",
