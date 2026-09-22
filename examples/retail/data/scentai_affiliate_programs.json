@@ -47,9 +47,11 @@
     },
     {
       "program": "Birkholz Perfume Manufacture DE",
-      "status": "applied",
+      "status": "rejected",
       "applied_at": "2026-09-18",
-      "merchant_id": "birkholz"
+      "merchant_id": "birkholz",
+      "rejected_at": "2026-09-22",
+      "rejection_reason": "Rejected in Awin partner-program status; no reason text shown in the provided rejected-program overview."
     },
     {
       "program": "top Parfümerie DE",
@@ -107,11 +109,43 @@
     {
       "observed_at": "2026-09-22",
       "network": "Awin",
-      "merchant_id": null,
-      "program": null,
+      "merchant_id": "birkholz",
+      "program": "Birkholz Perfume Manufacture DE",
       "decision": "rejected",
       "reviewer": "Colin Eggebrecht",
-      "confidence": "program_unidentified_do_not_assign"
+      "confidence": "cross_checked_against_awin_rejected_and_open_program_lists"
+    },
+    {
+      "observed_at": "2026-09-22",
+      "network": "Awin",
+      "merchant_id": "douglas",
+      "program": "Douglas_DE",
+      "decision": "open",
+      "confidence": "explicit_program_name_in_open_program_list"
+    },
+    {
+      "observed_at": "2026-09-22",
+      "network": "Awin",
+      "merchant_id": "flaconi",
+      "program": "Flaconi DE",
+      "decision": "open",
+      "confidence": "explicit_program_name_in_open_program_list"
+    },
+    {
+      "observed_at": "2026-09-22",
+      "network": "Awin",
+      "merchant_id": "parfumgroup",
+      "program": "Parfumgroup DE",
+      "decision": "open",
+      "confidence": "explicit_program_name_in_open_program_list"
+    },
+    {
+      "observed_at": "2026-09-22",
+      "network": "Awin",
+      "merchant_id": "breuninger",
+      "program": "Breuninger DE",
+      "decision": "open",
+      "confidence": "explicit_program_name_in_open_program_list"
     }
   ]
 }
