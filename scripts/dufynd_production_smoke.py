@@ -4,6 +4,7 @@ import argparse
 import json
 from dataclasses import asdict, dataclass
 from typing import Any
+from urllib.parse import quote
 
 import httpx
 
@@ -73,6 +74,40 @@ def _check_storefront(
         )
 
 
+def _check_storefront_route(
+    client: httpx.Client,
+    storefront_url: str,
+    *,
+    path: str,
+    name: str,
+) -> SmokeCheck:
+    url = f"{storefront_url}{path}"
+    try:
+        response = client.get(url, follow_redirects=True)
+        status_ok = response.status_code < 400
+        brand_ok = "dufynd" in response.text.casefold()
+        ok = status_ok and brand_ok
+        if not status_ok:
+            detail = f"{path} returned HTTP {response.status_code}."
+        elif not brand_ok:
+            detail = f"{path} did not contain the DUFYND brand marker."
+        else:
+            detail = f"{path} is reachable and branded as DUFYND."
+        return SmokeCheck(
+            name=name,
+            ok=ok,
+            status_code=response.status_code,
+            detail=detail,
+        )
+    except httpx.HTTPError as exc:
+        return SmokeCheck(
+            name=name,
+            ok=False,
+            status_code=None,
+            detail=f"{path} request failed: {exc.__class__.__name__}",
+        )
+
+
 def _check_api_health(
     client: httpx.Client,
     api_url: str,
@@ -130,6 +165,128 @@ def _check_api_health(
             ok=False,
             status_code=None,
             detail=f"API health request failed: {exc.__class__.__name__}",
+        )
+
+
+def _check_product_catalog(
+    client: httpx.Client,
+    api_url: str,
+) -> tuple[SmokeCheck, str | None]:
+    url = f"{api_url}/api/products"
+    try:
+        response = client.get(
+            url,
+            params={"category": "fragrance", "limit": 1},
+            follow_redirects=True,
+        )
+        if response.status_code >= 400:
+            return (
+                SmokeCheck(
+                    name="product_catalog",
+                    ok=False,
+                    status_code=response.status_code,
+                    detail=f"Product catalog returned HTTP {response.status_code}.",
+                ),
+                None,
+            )
+
+        try:
+            payload = response.json()
+        except ValueError:
+            return (
+                SmokeCheck(
+                    name="product_catalog",
+                    ok=False,
+                    status_code=response.status_code,
+                    detail="Product catalog did not return JSON.",
+                ),
+                None,
+            )
+
+        products = payload.get("products")
+        first = products[0] if isinstance(products, list) and products else None
+        product_id = first.get("product_id") if isinstance(first, dict) else None
+        ok = isinstance(product_id, str) and product_id.startswith("SC-")
+        return (
+            SmokeCheck(
+                name="product_catalog",
+                ok=ok,
+                status_code=response.status_code,
+                detail=(
+                    f"Fragrance catalog contract is valid; sample={product_id}."
+                    if ok
+                    else "Fragrance catalog did not return a DUFYND fragrance product."
+                ),
+            ),
+            product_id if ok else None,
+        )
+    except httpx.HTTPError as exc:
+        return (
+            SmokeCheck(
+                name="product_catalog",
+                ok=False,
+                status_code=None,
+                detail=f"Product catalog request failed: {exc.__class__.__name__}",
+            ),
+            None,
+        )
+
+
+def _check_product_detail(
+    client: httpx.Client,
+    api_url: str,
+    product_id: str | None,
+) -> SmokeCheck:
+    if not product_id:
+        return SmokeCheck(
+            name="product_detail",
+            ok=False,
+            status_code=None,
+            detail="Product detail was not checked because no valid catalog product was available.",
+        )
+
+    encoded_product_id = quote(product_id, safe="")
+    url = f"{api_url}/api/products/{encoded_product_id}"
+    try:
+        response = client.get(url, follow_redirects=True)
+        if response.status_code >= 400:
+            return SmokeCheck(
+                name="product_detail",
+                ok=False,
+                status_code=response.status_code,
+                detail=f"Product detail returned HTTP {response.status_code}.",
+            )
+
+        try:
+            payload = response.json()
+        except ValueError:
+            return SmokeCheck(
+                name="product_detail",
+                ok=False,
+                status_code=response.status_code,
+                detail="Product detail did not return JSON.",
+            )
+
+        ok = payload.get("product_id") == product_id
+        return SmokeCheck(
+            name="product_detail",
+            ok=ok,
+            status_code=response.status_code,
+            detail=(
+                f"Product detail contract is valid for {product_id}."
+                if ok
+                else (
+                    "Product detail identity mismatch: "
+                    f"expected={product_id!r}, received={payload.get('product_id')!r}."
+                )
+            ),
+        )
+    except httpx.HTTPError as exc:
+        return SmokeCheck(
+            name="product_detail",
+            ok=False,
+            status_code=None,
+            detail=f"Product detail request failed: {exc.__class__.__name__}",
         )
 
 
@@ -200,9 +357,48 @@ def run_smoke(
         timeout=timeout_seconds,
         transport=transport,
     ) as client:
+        product_catalog_check, sample_product_id = _check_product_catalog(client, api)
         checks = [
             _check_storefront(client, storefront),
+            _check_storefront_route(
+                client,
+                storefront,
+                path="/duftfinder",
+                name="storefront_duftfinder",
+            ),
+            _check_storefront_route(
+                client,
+                storefront,
+                path="/vergleich",
+                name="storefront_vergleich",
+            ),
+            _check_storefront_route(
+                client,
+                storefront,
+                path="/parfum-alternativen",
+                name="storefront_alternatives",
+            ),
+            _check_storefront_route(
+                client,
+                storefront,
+                path="/impressum",
+                name="storefront_impressum",
+            ),
+            _check_storefront_route(
+                client,
+                storefront,
+                path="/datenschutz",
+                name="storefront_datenschutz",
+            ),
+            _check_storefront_route(
+                client,
+                storefront,
+                path="/transparenz",
+                name="storefront_transparenz",
+            ),
             _check_api_health(client, api),
+            product_catalog_check,
+            _check_product_detail(client, api, sample_product_id),
             _check_merchant_partners(client, api),
         ]
 
