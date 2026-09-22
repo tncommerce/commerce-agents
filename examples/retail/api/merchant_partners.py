@@ -127,6 +127,74 @@ def partner_clickout_url(
     return parsed._replace(query=urlencode(query)).geturl()
 
 
+def _normalized_hostname(value: str | None) -> str | None:
+    if not value:
+        return None
+    normalized = value.strip().casefold()
+    if normalized.startswith("www."):
+        normalized = normalized[4:]
+    return normalized or None
+
+
+def partner_product_deeplink_url(
+    partner: MerchantPartner,
+    *,
+    destination_url: str,
+    clickref: str | None = None,
+) -> str | None:
+    """Build a guarded Awin product deeplink from an already verified partner link.
+
+    The destination must stay on the same advertiser host that is encoded in the
+    verified partner homepage link. This helper only builds a candidate URL; it
+    does not activate an offer or change routing.
+    """
+
+    affiliate_url = partner.affiliate_url
+    if not affiliate_url:
+        return None
+
+    parsed_affiliate = urlparse(affiliate_url)
+    if parsed_affiliate.scheme != "https" or parsed_affiliate.hostname not in {
+        "awin1.com",
+        "www.awin1.com",
+    }:
+        return None
+
+    query = parse_qsl(parsed_affiliate.query, keep_blank_values=True)
+    verified_destination = next(
+        (value for key, value in query if key.casefold() == "ued"),
+        None,
+    )
+    if not verified_destination:
+        return None
+
+    parsed_verified = urlparse(verified_destination)
+    parsed_destination = urlparse(destination_url.strip())
+    if (
+        parsed_verified.scheme != "https"
+        or not parsed_verified.hostname
+        or parsed_destination.scheme != "https"
+        or not parsed_destination.hostname
+        or parsed_destination.username is not None
+        or parsed_destination.password is not None
+    ):
+        return None
+
+    if _normalized_hostname(parsed_verified.hostname) != _normalized_hostname(
+        parsed_destination.hostname
+    ):
+        return None
+
+    deeplink_query = [
+        (key, value) for key, value in query if key.casefold() not in {"ued", "clickref"}
+    ]
+    deeplink_query.append(("ued", destination_url.strip()))
+    if clickref:
+        deeplink_query.append(("clickref", clickref))
+
+    return parsed_affiliate._replace(query=urlencode(deeplink_query)).geturl()
+
+
 def customer_partner_payload(
     partner: MerchantPartner,
 ) -> dict:
