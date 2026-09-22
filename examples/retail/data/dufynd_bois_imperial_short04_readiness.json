@@ -5,7 +5,7 @@
   "content_id": "bois_imperial_explained_01",
   "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
   "target_path": "/duft/essential-parfums-bois-imperial",
-  "status": "music_sync_v6_ready_review_pending",
+  "status": "v7_reference_audio_review_pending",
   "product_page": {
     "catalog_ready": true,
     "product_detail_route_ready": true,
@@ -107,5 +107,27 @@
     "on_video_text": "minimal_or_none",
     "information_layer": "post caption",
     "rationale": "Preserve luxury campaign feel while moving explanatory information to the social caption."
+  },
+  "v7_reference_audio_test": {
+    "media_id": "6e2637f0-5b57-4771-ad68-67372cb5b932",
+    "duration_seconds": 13.959,
+    "resolution": "1080x1920",
+    "fps": 24,
+    "audio_source": "exact audio from user-supplied Example 44, used for internal creative comparison",
+    "generated_sfx": false,
+    "main_cut_seconds": 6.666667,
+    "official_hero_arrival_seconds": 10,
+    "final_fade_start_seconds": 13.27,
+    "final_end_seconds": 13.94,
+    "final_hero_treatment": "subtle zoom-out plus fade to black",
+    "measured_integrated_lufs": -13.8,
+    "measured_true_peak_dbfs": -2.2,
+    "note": "V6 procedural audio direction rejected. Do not reuse that generated music/SFX style for this luxury cut."
+  },
+  "audio_direction": {
+    "voiceover": false,
+    "preferred_reference": "Example 44",
+    "principle": "For this luxury reel, music and transition must be edited as one system; avoid synthetic procedural music that lowers perceived production value.",
+    "publication_rights_note": "Exact reference audio requires platform/licensing clearance before public posting; use only as internal reference/test until cleared."
   }
 }
