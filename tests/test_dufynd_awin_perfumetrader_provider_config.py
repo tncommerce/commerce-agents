@@ -13,7 +13,7 @@ def load_config() -> dict:
     return json.loads(CONFIG_PATH.read_text(encoding="utf-8-sig"))
 
 
-def test_perfumetrader_awin_config_is_structurally_ready() -> None:
+def test_perfumetrader_awin_schema_template_is_structurally_ready() -> None:
     config = load_config()
     report = validate_provider_config(config)
 
@@ -78,3 +78,15 @@ def test_perfumetrader_awin_config_keeps_real_feed_gates_enabled() -> None:
         "no_image_approval_from_config_alone": True,
     }
     assert config["merchant_scope"]["awin_advertiser_id"] == "11672"
+
+
+def test_perfumetrader_awin_feed_is_marked_unavailable() -> None:
+    config = load_config()
+    availability = config["source_availability"]
+
+    assert availability["awin_product_data_available"] is False
+    assert availability["create_a_feed_expected"] is False
+    assert availability["next_source_paths"] == [
+        "direct_perfumetrader_feed_or_api",
+        "exact_product_page_evidence_plus_awin_deeplink",
+    ]
