@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated_at": "2026-09-22T10:29:49+00:00",
-  "source_fingerprint_sha256": "66b22f8b354d2394e34b7a48fc773c8b8349944e4b4fb7a4d8edcad71a5d7da3",
+  "source_fingerprint_sha256": "973ef2cbae0fbf4aa85d4c7728019f7f13b463ec54c9a06a7368dd363844ff43",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
     "scentai_catalog_staging.json",
@@ -41,7 +41,7 @@
       "network": "Awin",
       "merchant_id": "parfumgroup",
       "program": "Parfumgroup DE",
-      "status": "applied"
+      "status": "rejected"
     },
     {
       "network": "Awin",
@@ -59,7 +59,7 @@
       "network": "Awin",
       "merchant_id": "birkholz",
       "program": "Birkholz Perfume Manufacture DE",
-      "status": "rejected"
+      "status": "applied"
     },
     {
       "network": "Awin",
@@ -375,7 +375,7 @@
           "affiliate_program": {
             "network": "Awin",
             "program": "Parfumgroup DE",
-            "status": "applied"
+            "status": "rejected"
           },
           "affiliate_activation_state": "pending_program_approval"
         }
@@ -650,7 +650,7 @@
           "affiliate_program": {
             "network": "Awin",
             "program": "Parfumgroup DE",
-            "status": "applied"
+            "status": "rejected"
           },
           "affiliate_activation_state": "pending_program_approval"
         }
