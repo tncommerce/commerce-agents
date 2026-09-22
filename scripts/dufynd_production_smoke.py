@@ -108,6 +108,105 @@ def _check_storefront_route(
         )
 
 
+def _check_robots_policy(
+    client: httpx.Client,
+    storefront_url: str,
+    *,
+    expected_indexing: str,
+) -> SmokeCheck:
+    url = f"{storefront_url}/robots.txt"
+    try:
+        response = client.get(url, follow_redirects=True)
+        if response.status_code >= 400:
+            return SmokeCheck(
+                name="robots_policy",
+                ok=False,
+                status_code=response.status_code,
+                detail=f"robots.txt returned HTTP {response.status_code}.",
+            )
+
+        lines = [
+            line.strip().casefold()
+            for line in response.text.splitlines()
+            if line.strip() and not line.lstrip().startswith("#")
+        ]
+        has_user_agent = any(line.startswith("user-agent:") for line in lines)
+        disallow_all = "disallow: /" in lines
+        allow_all = "allow: /" in lines
+        has_sitemap = any(line.startswith("sitemap:") for line in lines)
+
+        if has_user_agent and disallow_all:
+            detected = "disabled"
+        elif has_user_agent and allow_all and has_sitemap:
+            detected = "enabled"
+        else:
+            detected = "unknown"
+
+        expected_ok = expected_indexing == "any" or detected == expected_indexing
+        ok = detected != "unknown" and expected_ok
+
+        if detected == "unknown":
+            detail = "robots.txt does not match DUFYND's supported launch policies."
+        elif not expected_ok:
+            detail = (
+                f"robots.txt reports indexing {detected}, "
+                f"but {expected_indexing} was expected."
+            )
+        else:
+            detail = f"robots.txt is valid; search indexing is {detected}."
+
+        return SmokeCheck(
+            name="robots_policy",
+            ok=ok,
+            status_code=response.status_code,
+            detail=detail,
+        )
+    except httpx.HTTPError as exc:
+        return SmokeCheck(
+            name="robots_policy",
+            ok=False,
+            status_code=None,
+            detail=f"robots.txt request failed: {exc.__class__.__name__}",
+        )
+
+
+def _check_sitemap(
+    client: httpx.Client,
+    storefront_url: str,
+) -> SmokeCheck:
+    url = f"{storefront_url}/sitemap.xml"
+    try:
+        response = client.get(url, follow_redirects=True)
+        status_ok = response.status_code < 400
+        body = response.text.casefold()
+        xml_ok = "<urlset" in body
+        canonical_ok = storefront_url.casefold() in body
+        ok = status_ok and xml_ok and canonical_ok
+
+        if not status_ok:
+            detail = f"sitemap.xml returned HTTP {response.status_code}."
+        elif not xml_ok:
+            detail = "sitemap.xml is missing the urlset root."
+        elif not canonical_ok:
+            detail = "sitemap.xml does not contain the canonical DUFYND site URL."
+        else:
+            detail = "sitemap.xml is reachable and uses the canonical DUFYND site URL."
+
+        return SmokeCheck(
+            name="sitemap",
+            ok=ok,
+            status_code=response.status_code,
+            detail=detail,
+        )
+    except httpx.HTTPError as exc:
+        return SmokeCheck(
+            name="sitemap",
+            ok=False,
+            status_code=None,
+            detail=f"sitemap.xml request failed: {exc.__class__.__name__}",
+        )
+
+
 def _check_api_health(
     client: httpx.Client,
     api_url: str,
@@ -341,6 +440,7 @@ def run_smoke(
     *,
     storefront_url: str,
     api_url: str,
+    expected_indexing: str = "any",
     transport: httpx.BaseTransport | None = None,
     timeout_seconds: float = 12.0,
 ) -> SmokeReport:
@@ -352,6 +452,8 @@ def run_smoke(
         api_url,
         field="api_url",
     )
+    if expected_indexing not in {"any", "enabled", "disabled"}:
+        raise ValueError("expected_indexing must be any, enabled or disabled")
 
     with httpx.Client(
         timeout=timeout_seconds,
@@ -396,6 +498,12 @@ def run_smoke(
                 path="/transparenz",
                 name="storefront_transparenz",
             ),
+            _check_robots_policy(
+                client,
+                storefront,
+                expected_indexing=expected_indexing,
+            ),
+            _check_sitemap(client, storefront),
             _check_api_health(client, api),
             product_catalog_check,
             _check_product_detail(client, api, sample_product_id),
@@ -423,6 +531,15 @@ def main() -> int:
         help="Public DUFYND API base URL, without a trailing slash.",
     )
     parser.add_argument(
+        "--expected-indexing",
+        choices=("any", "enabled", "disabled"),
+        default="any",
+        help=(
+            "Optionally assert the live robots.txt indexing policy. "
+            "The default only validates that the policy is internally recognized."
+        ),
+    )
+    parser.add_argument(
         "--machine-readable",
         action="store_true",
     )
@@ -432,6 +549,7 @@ def main() -> int:
         report = run_smoke(
             storefront_url=args.storefront_url,
             api_url=args.api_url,
+            expected_indexing=args.expected_indexing,
         )
     except ValueError as exc:
         parser.error(str(exc))
