@@ -68,9 +68,7 @@ def test_perfumetrader_awin_config_maps_documented_columns() -> None:
 def test_perfumetrader_awin_config_keeps_no_feed_safeguards_enabled() -> None:
     config = load_config()
 
-    assert config["status"] == (
-        "awin_product_feed_unavailable_direct_merchant_data_required"
-    )
+    assert config["status"] == ("awin_product_feed_unavailable_direct_merchant_data_required")
     assert config["safety"] == {
         "real_feed_preflight_required": True,
         "release_checker_required": True,
