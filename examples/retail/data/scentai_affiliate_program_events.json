@@ -117,6 +117,20 @@
       "recorded_at": "2026-09-19",
       "status_after": "applied_pending",
       "source": "migrated_from_scentai_affiliate_programs.json"
+    },
+    {
+      "sequence": 10,
+      "event_id": "awin-top-parfuemerie-approved-20260922",
+      "network": "Awin",
+      "merchant_id": "top-parfuemerie",
+      "program": "top Parfümerie DE",
+      "event_type": "program_approved",
+      "event_at": "2026-09-22",
+      "recorded_at": "2026-09-22",
+      "status_after": "approved",
+      "source": "Awin joined-advertiser approved-program view plus real product-feed export",
+      "external_program_id": "31081",
+      "reference_note": "Product data available; real feed received and preflighted. No live product offer activation implied."
     }
   ]
 }
