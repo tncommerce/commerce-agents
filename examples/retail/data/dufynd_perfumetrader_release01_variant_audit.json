@@ -1,11 +1,11 @@
 {
-  "version": 1,
+  "version": 2,
   "merchant_id": "perfumetrader",
   "release_id": "SCENTAI-RELEASE-01",
-  "checked_at": "2026-09-21",
-  "scope": "Public Perfumetrader product and brand pages only; no affiliate feed access.",
+  "checked_at": "2026-09-22",
+  "scope": "Public Perfumetrader product/brand pages plus verified Awin programme metadata. Awin Product Data is unavailable for Perfumetrader DE (Produktdaten = Nein).",
   "identity_rule": "A merchant mapping is eligible only when fragrance name, concentration and required volume all match. Gift sets and alternative volumes are exclusion evidence, never substitutes.",
-  "absence_rule": "No exact public evidence found means unverified, not unavailable. A later approved feed or exact merchant product page may supersede this audit.",
+  "absence_rule": "No exact public evidence found means unverified, not unavailable. A later direct Perfumetrader feed/API response or exact merchant product page may supersede this audit; Awin Create-a-Feed is not an available evidence path for this advertiser.",
   "rows": [
     {
       "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
@@ -24,7 +24,7 @@
           "exclusion_reason": "volume_mismatch"
         }
       ],
-      "next_evidence": "approved_feed_or_exact_100_ml_product_page"
+      "next_evidence": "direct_perfumetrader_data_or_exact_100_ml_product_page"
     },
     {
       "product_id": "SC-PDM-DELINA-EDP-75",
@@ -36,7 +36,7 @@
       "mapping_eligible": false,
       "evidence": [],
       "note": "Site-scoped exact-variant research found no reliable Perfumetrader product evidence in this pass; do not infer merchant unavailability.",
-      "next_evidence": "approved_feed_or_exact_75_ml_product_page"
+      "next_evidence": "direct_perfumetrader_data_or_exact_75_ml_product_page"
     },
     {
       "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
@@ -75,7 +75,7 @@
           "exclusion_reason": "gift_set_and_volume_mismatch"
         }
       ],
-      "next_evidence": "approved_feed_or_exact_90_ml_product_page"
+      "next_evidence": "direct_perfumetrader_data_or_exact_90_ml_product_page"
     },
     {
       "product_id": "SC-YSL-LIBRE-EDP-90",
@@ -95,7 +95,12 @@
           "exclusion_reason": "gift_set_and_volume_mismatch"
         }
       ],
-      "next_evidence": "approved_feed_or_exact_90_ml_product_page"
+      "next_evidence": "direct_perfumetrader_data_or_exact_90_ml_product_page"
     }
-  ]
+  ],
+  "source_availability": {
+    "awin_product_data_available": false,
+    "create_a_feed_expected": false,
+    "direct_perfumetrader_data_pending": true
+  }
 }
