@@ -109,28 +109,28 @@
       "segments": [
         {
           "start": 0,
-          "end": 2.3,
+          "end": 2.38,
           "text": "Bois Impérial ist kein Duft für jeden."
         },
         {
-          "start": 2.3,
-          "end": 6.4,
-          "text": "Er wirkt frisch, trocken, sehr holzig und würzig –\nSüße spielt kaum eine Rolle."
+          "start": 3.04,
+          "end": 7.56,
+          "text": "Frisch, trocken, sehr holzig und würzig –\nkaum süß."
         },
         {
-          "start": 6.4,
-          "end": 10.1,
+          "start": 8.26,
+          "end": 10.16,
+          "text": "Genau das macht ihn so markant."
+        },
+        {
+          "start": 10.98,
+          "end": 14.24,
           "text": "Die Community bewertet Haltbarkeit\nund Ausstrahlung stark."
         },
         {
-          "start": 10.1,
-          "end": 13.2,
-          "text": "Suchst du einen modernen Holzduft\nmit Präsenz?"
-        },
-        {
-          "start": 13.2,
-          "end": 16,
-          "text": "Auf DUFYND findest du das Profil\nund aktuelle Händlerangebote."
+          "start": 15.12,
+          "end": 19.14,
+          "text": "Dein Stil? Profil und Händlerangebote\nauf DUFYND."
         }
       ]
     },
