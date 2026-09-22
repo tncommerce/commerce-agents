@@ -137,7 +137,7 @@
       "program": "top Parfümerie DE",
       "merchant_id": "top-parfuemerie",
       "application_status": "approved",
-      "tracking_strategy": "verified_awin_product_feed_deeplinks",
+      "tracking_strategy": "awin_product_feed_deeplinks",
       "activation_state": "approved_credentials_pending",
       "blockers": [
         "credentials_not_verified_in_repo_state",
