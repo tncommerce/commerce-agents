@@ -59,7 +59,7 @@ def build_launch_links(plan: dict, *, base_url: str) -> list[dict]:
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Export standardized SCENTAI launch links for every planned "
+            "Export standardized DUFYND launch links for every planned "
             "creative and organic channel."
         )
     )
@@ -118,7 +118,7 @@ def main() -> int:
     if args.machine_readable or args.output is None:
         print(json.dumps(payload, ensure_ascii=False))
     else:
-        print(f"SCENTAI launch links | count={len(rows)} | output={args.output}")
+        print(f"DUFYND launch links | count={len(rows)} | output={args.output}")
 
     return 0
 
