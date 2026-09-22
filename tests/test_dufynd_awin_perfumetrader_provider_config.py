@@ -6,9 +6,7 @@ from pathlib import Path
 from examples.retail.api.merchant_providers import load_mapped_provider_adapter
 from scripts.validate_scentai_provider_config import validate_provider_config
 
-CONFIG_PATH = Path(
-    "examples/retail/data/dufynd_awin_perfumetrader_provider_config.json"
-)
+CONFIG_PATH = Path("examples/retail/data/dufynd_awin_perfumetrader_provider_config.json")
 
 
 def load_config() -> dict:
@@ -71,9 +69,7 @@ def test_perfumetrader_awin_config_maps_documented_columns() -> None:
 def test_perfumetrader_awin_config_keeps_real_feed_gates_enabled() -> None:
     config = load_config()
 
-    assert config["status"] == (
-        "documented_schema_ready_real_feed_validation_required"
-    )
+    assert config["status"] == ("documented_schema_ready_real_feed_validation_required")
     assert config["safety"] == {
         "real_feed_preflight_required": True,
         "release_checker_required": True,
