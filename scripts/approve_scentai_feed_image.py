@@ -8,12 +8,17 @@ from urllib.parse import urlparse
 
 DEFAULT_STAGING = Path("examples/retail/data/scentai_catalog_staging.json")
 DEFAULT_CANDIDATES = Path("examples/retail/data/merchant_feed_image_candidates.json")
+DEFAULT_RIGHTS_REGISTRY = Path(
+    "examples/retail/data/dufynd_affiliate_feed_image_rights.json"
+)
 
 APPROVED_IMAGE_STATUSES = {
     "approved_feed_image",
     "approved_manufacturer_image",
     "approved_licensed_image",
 }
+VERIFIED_RIGHTS_STATUS = "verified_for_publisher_service"
+REQUIRED_FEED_DATA_SOURCE = "approved-affiliate-feed"
 
 
 def load_json(path: Path) -> dict:
@@ -25,12 +30,68 @@ def valid_http_url(value: str) -> bool:
     return parsed.scheme in {"http", "https"} and bool(parsed.netloc)
 
 
+def _norm(value: object) -> str:
+    return str(value or "").strip().casefold()
+
+
+def candidate_rights_evidence(
+    candidate: dict,
+    rights_registry: dict | None,
+) -> dict:
+    if rights_registry is None:
+        raise ValueError("candidate_rights_not_verified")
+
+    required_source = str(
+        rights_registry.get("required_candidate_data_source")
+        or REQUIRED_FEED_DATA_SOURCE
+    ).strip()
+    if str(candidate.get("data_source") or "").strip() != required_source:
+        raise ValueError("candidate_not_from_approved_affiliate_feed")
+
+    network = _norm(candidate.get("network"))
+    merchant_id = _norm(candidate.get("merchant_id") or candidate.get("merchant"))
+
+    entry = next(
+        (
+            row
+            for row in rights_registry.get("entries", [])
+            if _norm(row.get("network")) == network
+            and _norm(row.get("merchant_id")) == merchant_id
+        ),
+        None,
+    )
+    if entry is None:
+        raise ValueError("candidate_rights_not_verified")
+
+    verified_status = str(
+        rights_registry.get("verified_status") or VERIFIED_RIGHTS_STATUS
+    ).strip()
+    if str(entry.get("rights_status") or "").strip() != verified_status:
+        raise ValueError("candidate_rights_not_verified")
+    if _norm(entry.get("program_status")) != "approved":
+        raise ValueError("candidate_affiliate_program_not_approved")
+
+    rights_basis_id = str(entry.get("rights_basis_id") or "").strip()
+    checked_at = str(entry.get("checked_at") or "").strip()
+    if not rights_basis_id or not checked_at:
+        raise ValueError("candidate_rights_evidence_incomplete")
+
+    return {
+        "rights_basis_id": rights_basis_id,
+        "rights_status": verified_status,
+        "rights_checked_at": checked_at,
+        "publisher_scope": entry.get("publisher_scope"),
+        "asset_scope": entry.get("asset_scope"),
+    }
+
+
 def approval_plan(
     staging: dict,
     candidates_payload: dict,
     *,
     product_id: str,
     image_url: str,
+    rights_registry: dict | None = None,
     replace_approved_image: bool = False,
 ) -> dict:
     product_id = product_id.strip()
@@ -71,6 +132,8 @@ def approval_plan(
     if proposed_status != "approved_feed_image":
         raise ValueError("candidate_missing_approved_feed_image_proposal")
 
+    rights = candidate_rights_evidence(candidate, rights_registry)
+
     products = staging.get("products", [])
     product = next(
         (row for row in products if str(row.get("product_id") or "").strip() == product_id),
@@ -102,6 +165,7 @@ def approval_plan(
         "current_image_status": current_status or None,
         "already_approved": already_same,
         "will_change": not already_same,
+        **rights,
     }
 
 
@@ -112,6 +176,8 @@ def apply_approval(
     product_id: str,
     image_url: str,
     reviewed_at: str,
+    rights_basis_id: str,
+    rights_checked_at: str,
 ) -> None:
     product = next(
         row
@@ -124,6 +190,8 @@ def apply_approval(
             "image_url": image_url,
             "image_status": "approved_feed_image",
             "image_reviewed_at": reviewed_at,
+            "image_rights_basis_id": rights_basis_id,
+            "image_rights_checked_at": rights_checked_at,
         }
     )
     product["media"] = media
@@ -136,6 +204,9 @@ def apply_approval(
     )
     candidate["review_status"] = "approved"
     candidate["reviewed_at"] = reviewed_at
+    candidate["rights_basis_id"] = rights_basis_id
+    candidate["rights_status"] = VERIFIED_RIGHTS_STATUS
+    candidate["rights_checked_at"] = rights_checked_at
 
 
 def write_json(path: Path, payload: dict) -> None:
@@ -175,6 +246,11 @@ def main() -> int:
         default=DEFAULT_CANDIDATES,
     )
     parser.add_argument(
+        "--rights-registry",
+        type=Path,
+        default=DEFAULT_RIGHTS_REGISTRY,
+    )
+    parser.add_argument(
         "--replace-approved-image",
         action="store_true",
         help=("Allow replacement of an already approved image. Never enabled by default."),
@@ -193,11 +269,13 @@ def main() -> int:
     try:
         staging = load_json(args.staging)
         candidates = load_json(args.candidates)
+        rights_registry = load_json(args.rights_registry)
         plan = approval_plan(
             staging,
             candidates,
             product_id=args.product_id,
             image_url=args.image_url,
+            rights_registry=rights_registry,
             replace_approved_image=(args.replace_approved_image),
         )
     except (
@@ -215,6 +293,8 @@ def main() -> int:
             product_id=plan["product_id"],
             image_url=plan["image_url"],
             reviewed_at=reviewed_at,
+            rights_basis_id=plan["rights_basis_id"],
+            rights_checked_at=plan["rights_checked_at"],
         )
         write_json(args.staging, staging)
         write_json(args.candidates, candidates)
@@ -231,6 +311,7 @@ def main() -> int:
             "SCENTAI feed image approval | "
             f"mode={output['mode']} | "
             f"product={output['product_id']} | "
+            f"rights={output['rights_status']} | "
             f"will_change={output['will_change']} | "
             f"already_approved={output['already_approved']}"
         )
