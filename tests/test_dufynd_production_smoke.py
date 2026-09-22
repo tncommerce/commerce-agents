@@ -13,6 +13,12 @@ def transport(
     partners_payload=None,
     broken_storefront_path: str | None = None,
     detail_product_id: str = SAMPLE_PRODUCT_ID,
+    robots_text: str = "User-agent: *\nDisallow: /\n",
+    sitemap_text: str = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+        "<url><loc>https://dufynd.de</loc></url></urlset>"
+    ),
 ) -> httpx.MockTransport:
     resolved_health = health_payload or {
         "ok": True,
@@ -30,6 +36,10 @@ def transport(
         if request.url.host == "dufynd.de":
             if broken_storefront_path and request.url.path == broken_storefront_path:
                 return httpx.Response(404, text="Not found")
+            if request.url.path == "/robots.txt":
+                return httpx.Response(200, text=robots_text)
+            if request.url.path == "/sitemap.xml":
+                return httpx.Response(200, text=sitemap_text)
             return httpx.Response(200, text="<html>DUFYND</html>")
 
         if request.url.path == "/api/health":
@@ -83,6 +93,8 @@ def test_smoke_passes_for_expected_contract() -> None:
         "storefront_impressum",
         "storefront_datenschutz",
         "storefront_transparenz",
+        "robots_policy",
+        "sitemap",
         "api_health",
         "product_catalog",
         "product_detail",
@@ -121,6 +133,16 @@ def test_smoke_rejects_non_absolute_url() -> None:
 def test_smoke_fails_when_storefront_is_not_dufynd() -> None:
     def handler(request: httpx.Request) -> httpx.Response:
         if request.url.host == "dufynd.de":
+            if request.url.path == "/robots.txt":
+                return httpx.Response(200, text="User-agent: *\nDisallow: /\n")
+            if request.url.path == "/sitemap.xml":
+                return httpx.Response(
+                    200,
+                    text=(
+                        '<?xml version="1.0"?>'
+                        "<urlset><url><loc>https://dufynd.de</loc></url></urlset>"
+                    ),
+                )
             return httpx.Response(200, text="<html>Wrong brand</html>")
         if request.url.path == "/api/health":
             return httpx.Response(
@@ -184,3 +206,83 @@ def test_smoke_fails_on_product_detail_identity_mismatch() -> None:
     check = next(check for check in report.checks if check.name == "product_detail")
     assert report.ok is False
     assert check.ok is False
+
+
+def test_smoke_accepts_valid_disabled_robots_policy_by_default() -> None:
+    report = run_smoke(
+        storefront_url="https://dufynd.de",
+        api_url="https://api.dufynd.test",
+        transport=transport(),
+    )
+
+    check = next(check for check in report.checks if check.name == "robots_policy")
+    assert check.ok is True
+    assert "disabled" in check.detail
+
+
+def test_smoke_can_assert_enabled_indexing() -> None:
+    report = run_smoke(
+        storefront_url="https://dufynd.de",
+        api_url="https://api.dufynd.test",
+        expected_indexing="enabled",
+        transport=transport(
+            robots_text=("User-agent: *\nAllow: /\nSitemap: https://dufynd.de/sitemap.xml\n")
+        ),
+    )
+
+    check = next(check for check in report.checks if check.name == "robots_policy")
+    assert report.ok is True
+    assert check.ok is True
+    assert "enabled" in check.detail
+
+
+def test_smoke_fails_when_indexing_expectation_mismatches() -> None:
+    report = run_smoke(
+        storefront_url="https://dufynd.de",
+        api_url="https://api.dufynd.test",
+        expected_indexing="enabled",
+        transport=transport(),
+    )
+
+    check = next(check for check in report.checks if check.name == "robots_policy")
+    assert report.ok is False
+    assert check.ok is False
+    assert "disabled" in check.detail
+
+
+def test_smoke_fails_on_unrecognized_robots_policy() -> None:
+    report = run_smoke(
+        storefront_url="https://dufynd.de",
+        api_url="https://api.dufynd.test",
+        transport=transport(robots_text="User-agent: *\n"),
+    )
+
+    check = next(check for check in report.checks if check.name == "robots_policy")
+    assert report.ok is False
+    assert check.ok is False
+
+
+def test_smoke_fails_when_sitemap_is_missing_canonical_site() -> None:
+    report = run_smoke(
+        storefront_url="https://dufynd.de",
+        api_url="https://api.dufynd.test",
+        transport=transport(
+            sitemap_text=(
+                '<?xml version="1.0"?><urlset><url><loc>https://wrong.example</loc></url></urlset>'
+            )
+        ),
+    )
+
+    check = next(check for check in report.checks if check.name == "sitemap")
+    assert report.ok is False
+    assert check.ok is False
+
+
+def test_smoke_rejects_invalid_expected_indexing_value() -> None:
+    with pytest.raises(ValueError, match="expected_indexing"):
+        run_smoke(
+            storefront_url="https://dufynd.de",
+            api_url="https://api.dufynd.test",
+            expected_indexing="later",
+            transport=transport(),
+        )
