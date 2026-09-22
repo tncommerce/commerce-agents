@@ -115,8 +115,8 @@
     {
       "production_order": 5,
       "content_id": "bois_imperial_explained_01",
-      "expected_duration_seconds": 27,
-      "duration_tolerance_seconds": 2,
+      "expected_duration_seconds": 16,
+      "duration_tolerance_seconds": 1.5,
       "visual_preview_path": "examples/retail/storefront-web/public/social/pilots/batch01/bois_imperial_explained_01-preview.mp4",
       "voiceover_path": "examples/retail/data/.scentai_pilot_audio/bois_imperial_explained_01.wav",
       "subtitle_path": "examples/retail/data/scentai_pilot_batch_01_subtitles/bois_imperial_explained_01.srt",
@@ -127,16 +127,16 @@
         "youtube"
       ],
       "price_recheck_required": false,
-      "state": "visual_preview_pending",
+      "state": "visual_revision_required",
       "blockers": [
-        "voiceover_file_missing",
+        "visual_preview_revision_required",
+        "voiceover_or_no_voice_audio_decision_pending",
         "subtitle_timing_not_conformed",
         "final_render_missing",
-        "mobile_content_review_pending",
-        "visual_preview_mp4_missing"
+        "mobile_content_review_pending"
       ],
       "publish_action_class": "approval_required",
-      "subtitle_timing_status": "draft_not_conformed"
+      "subtitle_timing_status": "draft_retimed_not_conformed"
     }
   ]
 }
