@@ -263,6 +263,39 @@ Possible later inputs:
 Requires abuse prevention and clear separation between verified/catalog data
 and user-submitted data.
 
+## Rolling preproduction buffer
+
+Starting with the 2026-09-26 soft launch, DUFYND should not operate from a
+same-day content production queue.
+
+Default operating model:
+- preproduce evergreen short-form content into a 2-3 week rolling buffer
+- publish roughly 3-4 core creatives per week
+- adapt the same core creative for TikTok, Instagram Reels and YouTube Shorts
+- keep roughly 30% of future slots flexible for trends, audience questions,
+  new affiliate developments and real DUFYND search/advisor demand
+- maintain at least five publish-ready core creatives after the initial launch
+  whenever practical
+- use existing preview assets before approving additional paid generation
+
+The prelaunch bank already covers most of the first 30-day organic test.
+The content problem is therefore finalization and learning quality, not raw
+idea volume.
+
+The launch sequence should deliberately mix:
+- a recognizable fragrance comparison
+- a trust/education piece
+- an occasion-based Duftfinder demonstration
+- a profile-based discovery piece
+- a gift-advisor use case
+
+Do not optimize only for views. The more useful signals are whether the content
+creates qualified DUFYND sessions, advisor starts, comparison engagement,
+saves/shares and eventually trustworthy merchant handoffs.
+
+Price-led content remains adaptive rather than fixed evergreen inventory because
+every price claim must be rechecked immediately before publication.
+
 ## Weekly operating loop after launch
 
 1. Review acquisition source funnel.
