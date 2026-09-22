@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "status": "documented_schema_ready_real_feed_validation_required",
+  "version": 2,
+  "status": "awin_product_feed_unavailable_direct_merchant_data_required",
   "provider_name": "awin-perfumetrader-de",
   "merchant_scope": {
     "merchant": "perfumetrader",
@@ -50,7 +50,19 @@
     "release_checker_required": true,
     "no_write_from_config_alone": true,
     "no_offer_activation_from_config_alone": true,
-    "no_image_approval_from_config_alone": true
+    "no_image_approval_from_config_alone": true,
+    "no_awin_create_a_feed_retry_without_status_change": true,
+    "direct_merchant_data_validation_required": true
   },
-  "note": "This config is based on Awin's documented publisher feed schema and Perfumetrader's approved Awin program. The actual Perfumetrader CSV must still be profiled and dry-run checked before any offer or image can be promoted."
+  "note": "Awin currently shows Perfumetrader DE with Produktdaten = Nein, so Create-a-Feed is not an available source for this advertiser. The documented Awin schema mapping is retained only as a dormant compatibility template. DUFYND must use direct Perfumetrader data/API if provided, or exact product-page evidence plus separately generated Awin deeplinks. No product offer or image may be promoted without the existing exact-variant, tracking, stock and rights gates.",
+  "source_availability": {
+    "awin_product_data_available": false,
+    "create_a_feed_expected": false,
+    "observed_at": "2026-09-22",
+    "evidence": "Awin joined-advertiser view shows Perfumetrader DE with Produktdaten = Nein.",
+    "next_source_paths": [
+      "direct_perfumetrader_feed_or_api",
+      "exact_product_page_evidence_plus_awin_deeplink"
+    ]
+  }
 }
