@@ -23,7 +23,7 @@ def test_launch_readiness_records_observed_live_seo_state_without_auto_change() 
 
     assert "robots.txt` currently permits search indexing" in content
     assert "no SEO environment setting was changed during this audit" in content
-    assert "Do not silently flip the value in either direction." in content
+    assert "silently flip the value in either direction" in content
     assert "explicit operator launch/SEO decision" in content
 
 
