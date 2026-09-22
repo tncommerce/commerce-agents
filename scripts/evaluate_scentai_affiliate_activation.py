@@ -150,6 +150,20 @@ def build_state_report(
     ready_for_user_approval = sum(
         1 for row in rows if row["activation_state"] == "ready_for_user_approval"
     )
+    rejected_program_count = sum(
+        1 for row in rows if row["activation_state"] == "rejected"
+    )
+    pending_program_count = sum(
+        1
+        for row in rows
+        if row["activation_state"]
+        in {
+            "applied",
+            "pending_review",
+            "approved_credentials_pending",
+            "ready_for_user_approval",
+        }
+    )
 
     return {
         "version": 2,
@@ -164,7 +178,8 @@ def build_state_report(
             "programs": len(rows),
             "approved": approved_program_count,
             "active": live_program_count,
-            "pending": len(rows) - live_program_count,
+            "pending": pending_program_count,
+            "rejected": rejected_program_count,
             "ready_for_user_approval": ready_for_user_approval,
             "merchant_homepage_tracking_active": sum(
                 1 for row in rows if row["merchant_homepage_tracking_active"]
