@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-22T11:33:13+00:00",
-  "source_fingerprint_sha256": "9f611e911b40b61745bc236ffc8194d08df97291b5e2f29841b0b6643979cfe0",
+  "generated_at": "2026-09-22T20:05:00+00:00",
+  "source_fingerprint_sha256": "89de355dbe721a8e51eceb3f78b0ca3f8e713f720838e99cf21022fed08b7579",
   "machine_id": "scentai_media_generation_queue_v1",
   "active_provider": null,
   "summary": {
@@ -168,13 +168,13 @@
       "production_order": 5,
       "content_id": "bois_imperial_explained_01",
       "campaign_id": "launch01",
-      "state": "visual_preview_pending",
-      "target_duration_seconds": 27,
-      "script": "Bois Impérial ist bei DUFYND vor allem frisch, sehr holzig, würzig und grün eingeordnet. Die Süße liegt dagegen ganz unten. In den Community-Daten stehen außerdem starke Haltbarkeit und deutliche Ausstrahlung. Das ergibt keinen typischen süßen Mainstream-Duft, sondern einen trockenen, modernen und sehr präsenten Holzstil. Wenn du genau so etwas suchst, prüf deine Passung bei DUFYND.",
+      "state": "visual_revision_required",
+      "target_duration_seconds": 16,
+      "script": "Bois Impérial ist kein Duft für jeden. Er wirkt frisch, trocken, sehr holzig und würzig – Süße spielt kaum eine Rolle. Die Community bewertet Haltbarkeit und Ausstrahlung stark. Suchst du einen modernen Holzduft mit Präsenz? Auf DUFYND findest du das Profil und aktuelle Händlerangebote.",
       "product_ids": [
         "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100"
       ],
-      "landing_path": "/duftfinder",
+      "landing_path": "/duft/essential-parfums-bois-imperial",
       "paths": {
         "visual_preview": "examples/retail/storefront-web/public/social/pilots/batch01/bois_imperial_explained_01-preview.mp4",
         "voiceover": "examples/retail/data/.scentai_pilot_audio/bois_imperial_explained_01.wav",
