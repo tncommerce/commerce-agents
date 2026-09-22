@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "status": "approved_product_feed_available_awaiting_real_feed_export",
+  "provider_name": "awin-top-parfuemerie-de",
+  "merchant_scope": {
+    "merchant": "top-parfuemerie",
+    "merchant_id": "top-parfuemerie",
+    "merchant_name": "top Parfümerie",
+    "awin_advertiser_id": "31081",
+    "market": "DE"
+  },
+  "source_availability": {
+    "awin_product_data_available": true,
+    "create_a_feed_expected": true,
+    "observed_at": "2026-09-22",
+    "evidence": [
+      "DUFYND Awin joined-advertiser view shows top Parfümerie DE approved with Produktdaten = Ja.",
+      "Public Awin merchant profile identifies top Parfümerie DE as advertiser 31081."
+    ]
+  },
+  "feed_intake": {
+    "field_mapping_status": "pending_real_feed_header",
+    "real_feed_preflight_required": true,
+    "required_input": [
+      "generated_create_a_feed_url_or_csv",
+      "real_feed_header",
+      "at_least_one_real_product_row_for_dry_run"
+    ],
+    "expected_awin_standard_fields": [
+      "aw_product_id",
+      "merchant_product_id",
+      "product_name",
+      "merchant_deep_link",
+      "aw_deep_link",
+      "merchant_image_url",
+      "search_price",
+      "delivery_cost",
+      "in_stock",
+      "ean",
+      "product_GTIN",
+      "last_updated"
+    ]
+  },
+  "safety": {
+    "no_offer_activation_before_real_feed_preflight": true,
+    "no_catalog_write_before_exact_variant_mapping": true,
+    "no_feed_image_approval_before_rights_gate": true,
+    "no_assumption_that_expected_columns_are_present": true
+  },
+  "next_actions": [
+    "Open Awin Toolbox > Create-a-Feed.",
+    "Select top Parfümerie DE and the available German feed.",
+    "Select all columns for the first preflight export.",
+    "Provide the generated feed URL or CSV to DUFYND.",
+    "Build the final mapped-provider config from the real header.",
+    "Run release dry-run before activating any offer or image."
+  ]
+}
