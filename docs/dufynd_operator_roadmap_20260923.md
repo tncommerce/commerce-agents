@@ -31,8 +31,9 @@ Current state:
 - No social publishing action has been taken from this roadmap.
 
 Next:
-- operator visual review of Sillage and Naxos static;
-- only after review, classify them as publish-ready or revise;
+- fixed launch order starts with Naxos campaign final, then Bois Impérial final;
+- operator visual review remains required for Sillage, Imagination/Marwa/Hectic, Dupe ≠ Dupe, 3 Bürodüfte / 3 Typen and the Naxos static;
+- only after review, classify pending assets as publish-ready or revise;
 - preserve roughly 30% of future slots for real audience response after launch.
 
 ### P1 — Website premium visual layer
@@ -119,6 +120,11 @@ Next:
 
 **Objective:** turn launch data into decisions rather than reacting to vanity metrics.
 
+Fixed approved launch order:
+1. Naxos campaign final.
+2. Bois Impérial final.
+3. Review-pending assets follow only after explicit creative approval.
+
 Measurement readiness:
 - Live Supabase analytics is active and already recording first-party events.
 - Pre-launch baseline: `examples/retail/data/dufynd_prelaunch_analytics_baseline_20260923.json`.
@@ -161,4 +167,4 @@ Scale rule:
 5. Naxos `I want to smell...` 4:5 and 9:16 static concept.
 6. Website visual refresh PR #46 as a whole.
 
-Until those reviews happen, independent commercial, QA and documentation work can continue, but the three items above should not be silently promoted to production.
+Until those reviews happen, independent commercial, QA and documentation work can continue, but none of the review-pending items above may be silently promoted to production.
