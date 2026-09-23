@@ -184,3 +184,9 @@ Until those reviews happen, independent commercial, QA and documentation work ca
 - Educational content must first work as a viral/social-native visual; teaching can live in concise on-screen text and the caption.
 - Homemade synthetic music beds/generic SFX are banned from final DUFYND shorts.
 - Preferred Foley is sparse and physically motivated: atomizer spray, camera shutter, page flip, or a natural transition whoosh.
+
+
+## Revision work started after operator review
+- New Sillage visual master produced from the viral-example workflow: macro spray -> masculine airborne trail -> male wrist macro -> clean end statement. Audio intentionally withheld pending visual approval.
+- New I want to smell static produced as a three-fragrance 4:5 mood post (Naxos / Althaïr / Stronger With You Intensely) with no black description box.
+- Website visual branch extended with a lightweight 3D product-depth system: floating bottle motion, depth shadows and restrained perspective response on hero/detail/product cards.
