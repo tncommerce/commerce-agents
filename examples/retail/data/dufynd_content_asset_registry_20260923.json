@@ -123,6 +123,31 @@
       "url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/c4db1d9a-fa6a-4b49-82ab-934538bfb2d8.png",
       "ratio": "4:5",
       "source_mode": "existing_verified_editorial_product_assets"
+    },
+    {
+      "content_id": "sillage_v3_directors_cut",
+      "type": "video",
+      "state": "operator_visual_review_pending",
+      "media_id": "542b20b0-606d-4ff9-ba31-7cb4720570a6",
+      "url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/542b20b0-606d-4ff9-ba31-7cb4720570a6.mp4",
+      "duration_seconds": 10,
+      "dimensions": "1080x1920",
+      "audio": false,
+      "source_jobs": {
+        "atomizer_keyframe": "c5b1e9c4-1e86-4633-915f-72f8c6524468",
+        "atomizer_motion": "a4edf993-741a-4e73-b327-01ebfdefe90e",
+        "sillage_keyframe": "baf43d72-a93f-41f5-99f4-2334c7cdc1af",
+        "product_hero": "2711a6e1-5ff2-4c90-a962-cfe9893e0440"
+      }
+    },
+    {
+      "content_id": "i_want_to_smell_addictive_v2",
+      "type": "image",
+      "state": "operator_visual_review_pending",
+      "media_id": "cb06b514-6ab8-4d3d-a2ae-7097b09f8917",
+      "url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/cb06b514-6ab8-4d3d-a2ae-7097b09f8917.png",
+      "ratio": "4:5",
+      "source_mode": "generated_set_plate_plus_exact_dufynd_product_cutouts"
     }
   ]
 }
