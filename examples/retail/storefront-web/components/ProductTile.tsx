@@ -42,7 +42,7 @@ export function ProductImage({ product, className = "" }: { product: Product; cl
     // eslint-disable-next-line @next/next/no-img-element
     return (
       <div
-        className={`flex items-center justify-center overflow-hidden ${
+        className={`flex items-center justify-center overflow-hidden ${isDufynd ? "dufynd-card-depth " : ""}${
           isDufynd ? "bg-white" : ""
         } ${className}`}
       >
@@ -51,7 +51,7 @@ export function ProductImage({ product, className = "" }: { product: Product; cl
           alt={product.title}
           className={
             isDufynd
-              ? "h-full w-full scale-[1.18] object-contain transition-transform duration-300 group-hover:scale-[1.22]"
+              ? "dufynd-card-object h-full w-full scale-[1.18] object-contain"
               : "h-full w-full object-cover"
           }
         />
