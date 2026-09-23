@@ -327,7 +327,8 @@ export default function HomeView({
         </HomeSection>
       ) : null}
       <LegalFooter />
-    </div>
+      </div>
+    </>
   );
 }
 
