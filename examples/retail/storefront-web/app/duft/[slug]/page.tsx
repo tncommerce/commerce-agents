@@ -49,6 +49,56 @@ const TARGET_LABELS: Record<string, string> = {
   unisex: "Unisex",
 };
 
+const ACCORD_TONES: Record<
+  string,
+  { dot: string; background: string; border: string }
+> = {
+  fresh: { dot: "#79a8a2", background: "#eef7f5", border: "#d7eae6" },
+  citrus: { dot: "#d5a83f", background: "#fff8e8", border: "#f0dfb6" },
+  aquatic: { dot: "#6f9cb5", background: "#edf6fa", border: "#d7e8f0" },
+  green: { dot: "#789667", background: "#f1f6ed", border: "#dce8d5" },
+  spicy: { dot: "#b46f46", background: "#fbf1eb", border: "#edd9cc" },
+  sweet: { dot: "#c59a68", background: "#fbf3e8", border: "#eadbc8" },
+  synthetic: { dot: "#8f91a5", background: "#f3f3f6", border: "#dfdfe7" },
+  fruity: { dot: "#b96d6b", background: "#fbefef", border: "#edd6d5" },
+  woody: { dot: "#8b6949", background: "#f6f0e9", border: "#e3d7ca" },
+  smoky: { dot: "#73706d", background: "#f2f1ef", border: "#dedbd7" },
+  powdery: { dot: "#b9a98f", background: "#f8f5ef", border: "#e8e0d4" },
+  floral: { dot: "#b87f91", background: "#faf0f4", border: "#ecd9e0" },
+  creamy: { dot: "#c6ad7d", background: "#fbf7ee", border: "#eadfca" },
+  gourmand: { dot: "#a9784e", background: "#f8f0e8", border: "#e6d5c5" },
+  oriental: { dot: "#9f7545", background: "#f8f1e8", border: "#e7d8c5" },
+  aromatic: { dot: "#6e8a78", background: "#eff5f1", border: "#d9e6dd" },
+  leathery: { dot: "#705748", background: "#f3eeeb", border: "#ded3cc" },
+  resinous: { dot: "#9a713f", background: "#f8f1e5", border: "#e7d7bf" },
+};
+
+function AccordChip({ accord }: { accord: string }) {
+  const tone =
+    ACCORD_TONES[accord.toLowerCase()] || {
+      dot: "#9a7a45",
+      background: "#f7f2e8",
+      border: "#e5d9c2",
+    };
+
+  return (
+    <span
+      className="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[12px] font-medium text-(--ink)"
+      style={{
+        background: tone.background,
+        borderColor: tone.border,
+      }}
+    >
+      <span
+        aria-hidden
+        className="h-2 w-2 rounded-full shadow-[0_0_0_3px_rgba(255,255,255,0.6)]"
+        style={{ background: tone.dot }}
+      />
+      {accordLabel(accord)}
+    </span>
+  );
+}
+
 function accordLabel(value: string): string {
   return ACCORD_LABELS[value.toLowerCase()] || value;
 }
@@ -103,22 +153,58 @@ function noteSection(
 ) {
   if (!notes.length) return null;
 
+  const tierStyle =
+    title === "Kopfnote"
+      ? {
+          accent: "#c89a43",
+          surface: "linear-gradient(135deg,#fffaf0,#f7edda)",
+        }
+      : title === "Herznote"
+        ? {
+            accent: "#a97868",
+            surface: "linear-gradient(135deg,#fff9f6,#f5ece7)",
+          }
+        : {
+            accent: "#755a3a",
+            surface: "linear-gradient(135deg,#f8f3eb,#eee3d4)",
+          };
+
   return (
-    <div>
-      <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-(--ink-soft)">
+    <div
+      className="rounded-2xl border border-white/70 p-3.5 shadow-[0_10px_30px_-24px_rgba(58,40,15,0.55)] sm:p-4"
+      style={{ background: tierStyle.surface }}
+    >
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2.5">
+          <span
+            aria-hidden
+            className="grid h-8 w-8 place-items-center rounded-full border border-white/80 bg-white/80 text-[13px] shadow-sm"
+            style={{ color: tierStyle.accent }}
+          >
+            {icon}
+          </span>
+          <div>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.1em] text-(--ink)">
+              {title}
+            </div>
+            <div className="mt-0.5 text-[10px] text-(--ink-soft)">
+              {notes.length} {notes.length === 1 ? "Duftnote" : "Duftnoten"}
+            </div>
+          </div>
+        </div>
         <span
           aria-hidden
-          className="grid h-6 w-6 place-items-center rounded-lg bg-(--accent-soft) text-[12px] text-(--accent-ink)"
-        >
-          {icon}
-        </span>
-        {title}
+          className="h-px w-12"
+          style={{
+            background: `linear-gradient(90deg,${tierStyle.accent},transparent)`,
+          }}
+        />
       </div>
-      <div className="mt-2 flex flex-wrap gap-2">
+      <div className="mt-3 flex flex-wrap gap-2">
         {notes.map((note) => (
           <span
             key={note}
-            className="rounded-full border border-(--line) bg-(--well)/60 px-3 py-1.5 text-[12px] text-(--ink)"
+            className="rounded-full border border-white/80 bg-white/75 px-3 py-1.5 text-[11.5px] font-medium text-(--ink) shadow-[0_5px_16px_-14px_rgba(42,31,14,0.8)]"
           >
             {note}
           </span>
@@ -504,18 +590,16 @@ export default async function FragrancePage({
 
         <div className="mt-5 grid gap-4 lg:mt-7 lg:grid-cols-[1.05fr_0.95fr]">
           <section className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) sm:p-5">
-            <h2 className="text-[17px] font-semibold">
+            <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8a6426]">
+              Charakter
+            </div>
+            <h2 className="mt-1 text-[19px] font-semibold tracking-[-0.02em]">
               Duftprofil
             </h2>
 
             <div className="mt-3 flex flex-wrap gap-2">
               {fragrance.accords.map((accord) => (
-                <span
-                  key={accord}
-                  className="rounded-full bg-(--well) px-3 py-1.5 text-[12px] text-(--ink)"
-                >
-                  {accordLabel(accord)}
-                </span>
+                <AccordChip key={accord} accord={accord} />
               ))}
             </div>
 
@@ -571,7 +655,10 @@ export default async function FragrancePage({
           </details>
 
           <section className="hidden rounded-2xl border border-(--line) bg-(--card) p-5 shadow-(--shadow-sm) lg:block">
-            <h2 className="text-[17px] font-semibold">
+            <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8a6426]">
+              Pyramide
+            </div>
+            <h2 className="mt-1 text-[19px] font-semibold tracking-[-0.02em]">
               Duftnoten
             </h2>
             <div className="mt-4 space-y-4">
