@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-22T19:50:00+00:00",
-  "source_fingerprint_sha256": "add420a052bd618d0a7513bd231a59bdeaa14ef606b3f29895b8c93143b945ad",
+  "generated_at": "2026-09-21T20:40:00+00:00",
+  "source_fingerprint_sha256": "3ed0811f6ad84adb3b475821a3c99fb45dd578f54ca00c23eb7b90882be64577",
   "release_id": "SCENTAI-RELEASE-01",
   "purpose": "Jarvis-ready affiliate/feed activation queue. Operational integration coverage only; never use commission to rank fragrances or customer-facing merchant offers.",
   "policy_ref": "scentai_jarvis_operating_policy.json",
@@ -11,7 +11,7 @@
     "registered_programs": 9,
     "programs_with_any_release_mapping": 4,
     "programs_with_full_release_mapping": 2,
-    "approved_programs": 2,
+    "approved_programs": 1,
     "approved_programs_with_full_release_mapping": 0,
     "feed_validation_path_available": false,
     "live_activation_ready": false
@@ -76,7 +76,7 @@
       "network": "Awin",
       "merchant_id": "top-parfuemerie",
       "program": "top Parfümerie DE",
-      "application_status": "approved",
+      "application_status": "applied",
       "mapped_release_product_count": 4,
       "release_size": 5,
       "mapped_product_ids": [
@@ -86,15 +86,15 @@
         "SC-YSL-LIBRE-EDP-90"
       ],
       "full_release_mapping_coverage": false,
-      "program_approved": true,
+      "program_approved": false,
       "program_rejected": false,
-      "state": "approved_mapping_partial",
-      "feed_state": "await_remaining_mapping_resolution",
+      "state": "program_pending_mapping_partial",
+      "feed_state": "await_program_approval",
       "provider_config_state": "not_configured_until_real_feed_sample",
       "dry_run_state": "not_run",
       "image_candidate_state": "not_extracted",
       "live_routing_allowed": false,
-      "next_action": "resolve_remaining_release_mappings_before_feed_validation",
+      "next_action": "await_program_decision",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required"
     },
