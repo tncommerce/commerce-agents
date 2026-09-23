@@ -64,6 +64,90 @@
           "#Fragrance"
         ]
       }
+    },
+    {
+      "content_id": "original_vs_alt_imagination_01",
+      "landing_path": "/parfum-alternativen",
+      "tiktok": {
+        "caption": "Imagination-Vibe gesucht? Marwa und Hectic gehen beide in diese Richtung – aber mit deutlich anderem Profil. Inspired heißt bei DUFYND nicht automatisch 1:1.",
+        "hashtags": [
+          "#DUFYND",
+          "#Imagination",
+          "#Marwa",
+          "#ParfumAlternative",
+          "#Fragrance"
+        ]
+      },
+      "instagram": {
+        "caption": "Imagination, Marwa oder Hectic? Gleiche Inspirationsrichtung heißt nicht gleicher Duft. Marwa wirkt in unserem Profil süßer, Hectic deutlich würziger.",
+        "hashtags": [
+          "#DUFYND",
+          "#Imagination",
+          "#ParfumAlternative",
+          "#Fragrance",
+          "#Parfum"
+        ]
+      },
+      "youtube": {
+        "title": "Imagination-Vibe: Marwa oder Hectic? | DUFYND",
+        "description": "Drei Profile, eine Inspirationsrichtung: Imagination, Marwa und Hectic kurz gegenübergestellt. Inspired bedeutet bei DUFYND nicht automatisch 1:1."
+      }
+    },
+    {
+      "content_id": "not_every_dupe_clone_01",
+      "landing_path": "/parfum-alternativen",
+      "tiktok": {
+        "caption": "Nicht jeder ähnliche Duft ist dasselbe: Clone, Inspired und Alternative beschreiben unterschiedliche Beziehungen. Genau deshalb trennt DUFYND sie.",
+        "hashtags": [
+          "#DUFYND",
+          "#Dupe",
+          "#Parfumwissen",
+          "#Parfum",
+          "#Fragrance"
+        ]
+      },
+      "instagram": {
+        "caption": "Clone, Inspired und Alternative werden oft in einen Topf geworfen. DUFYND trennt diese Beziehungen bewusst, damit Ähnlichkeit nicht größer dargestellt wird als sie ist.",
+        "hashtags": [
+          "#DUFYND",
+          "#Parfumwissen",
+          "#Dupe",
+          "#Fragrance",
+          "#Parfum"
+        ]
+      },
+      "youtube": {
+        "title": "Clone vs. Inspired vs. Alternative in 15 Sekunden | DUFYND",
+        "description": "Warum DUFYND nicht jeden ähnlichen Duft einfach als Dupe bezeichnet: drei Beziehungstypen, kurz erklärt."
+      }
+    },
+    {
+      "content_id": "top3_office_01",
+      "landing_path": "/duftfinder",
+      "tiktok": {
+        "caption": "Den einen besten Büroduft gibt es nicht. Prada L’Homme, Bois Impérial und Bleu de Chanel EDP senden drei sehr unterschiedliche Signale.",
+        "hashtags": [
+          "#DUFYND",
+          "#Büroduft",
+          "#Parfum",
+          "#OfficeFragrance",
+          "#Fragrance"
+        ]
+      },
+      "instagram": {
+        "caption": "Büro ist nur der Anlass. Dein Profil entscheidet: clean und pudrig, trocken und charakterstark oder frisch und vielseitig.",
+        "hashtags": [
+          "#DUFYND",
+          "#Büroduft",
+          "#Parfum",
+          "#Fragrance",
+          "#OfficeStyle"
+        ]
+      },
+      "youtube": {
+        "title": "3 Bürodüfte für 3 verschiedene Typen | DUFYND",
+        "description": "Prada L’Homme, Bois Impérial und Bleu de Chanel EDP zeigen drei unterschiedliche Büroprofile. Anlass ist nur der Startpunkt – dein Duftprofil entscheidet."
+      }
     }
   ]
 }
