@@ -80,6 +80,23 @@
         "SC-CREED-AVENTUS-100",
         "SC-MONTBLANC-EXPLORER-100"
       ]
+    },
+    {
+      "content_id": "top3_office_01",
+      "type": "video",
+      "state": "operator_review_pending",
+      "media_id": "fdb9741b-a9c3-40c1-aa63-10bf0630ae13",
+      "url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/fdb9741b-a9c3-40c1-aa63-10bf0630ae13.mp4",
+      "duration_seconds": 15,
+      "dimensions": "1080x1920",
+      "fps": 30,
+      "voiceover": false,
+      "source_mode": "existing_verified_product_assets_plus_local_motion_graphics",
+      "product_ids": [
+        "SC-PRADA-LHOMME-100",
+        "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+        "SC-CHANEL-BLEU-DE-CHANEL-EDP-100"
+      ]
     }
   ]
 }
