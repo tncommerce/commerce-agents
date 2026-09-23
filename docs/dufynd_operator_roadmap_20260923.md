@@ -190,3 +190,9 @@ Until those reviews happen, independent commercial, QA and documentation work ca
 - New Sillage visual master produced from the viral-example workflow: macro spray -> masculine airborne trail -> male wrist macro -> clean end statement. Audio intentionally withheld pending visual approval.
 - New I want to smell static produced as a three-fragrance 4:5 mood post (Naxos / Althaïr / Stronger With You Intensely) with no black description box.
 - Website visual branch extended with a lightweight 3D product-depth system: floating bottle motion, depth shadows and restrained perspective response on hero/detail/product cards.
+
+
+## Director/DP production update
+- Permanent DUFYND decision lens now covers director, cinematographer, creative director, entrepreneur, content creator, sales strategist and mentor roles.
+- Sillage V3 Director's Cut created under the new shot-prompting standard. Shot A uses successful perfume-aerosol motion; Shot B uses a controlled cinematic hold because Seedance motion reduced particle readability; Shot C restores desire with a premium product hero.
+- I want to smell addictive V2 rebuilt with a generated organic-luxury set plate and transparent cutouts extracted from the exact existing DUFYND product assets to preserve product identity.
