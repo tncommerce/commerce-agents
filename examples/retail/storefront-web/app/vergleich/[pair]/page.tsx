@@ -99,15 +99,15 @@ function ProductHeader({
   fragrance: StaticFragrance;
 }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-(--line) bg-(--card)">
+    <div className="overflow-hidden rounded-[24px] border border-[#dcccae] bg-(--card) shadow-[0_18px_46px_-34px_rgba(63,44,16,0.75)]">
       <a href={`/duft/${fragrance.slug}`}>
-        <div className="flex h-56 items-center justify-center bg-white p-5">
+        <div className="flex h-64 items-center justify-center bg-[radial-gradient(circle_at_50%_42%,#fffdf8_0%,#f4ead6_58%,#e8d9bd_100%)] p-5 sm:h-72">
           {fragrance.image_url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={fragrance.image_url}
               alt={`${fragrance.brand} ${fragrance.name}`}
-              className="h-full w-full object-contain"
+              className="h-full w-full scale-[1.04] object-contain transition duration-500 hover:scale-[1.08]"
             />
           ) : (
             <span className="text-[12px] font-semibold tracking-[0.16em] text-(--ink-soft)">
@@ -115,7 +115,7 @@ function ProductHeader({
             </span>
           )}
         </div>
-        <div className="p-4">
+        <div className="border-t border-[#eadfc9] p-4">
           <div className="text-[10.5px] font-semibold uppercase tracking-[0.08em] text-(--ink-soft)">
             {fragrance.brand}
           </div>
@@ -292,34 +292,42 @@ export default async function ComparisonPage({
           </span>
         </nav>
 
-        <div className="max-w-3xl">
-          <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-(--ink-soft)">
-            DUFYND Duftvergleich
+        <section className="relative overflow-hidden rounded-[30px] border border-[#d7c7a2]/45 bg-[#15120f] p-5 text-white shadow-[0_24px_80px_-38px_rgba(40,27,10,0.75)] sm:p-7">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_12%,rgba(212,174,101,0.20),transparent_34%),linear-gradient(135deg,#17130f_0%,#0e0c0a_68%,#211a11_100%)]"
+          />
+          <div className="relative max-w-3xl">
+            <div className="text-[10px] font-semibold uppercase tracking-[0.17em] text-[#d9bd82]">
+              DUFYND · Duftvergleich
+            </div>
+            <h1 className="mt-3 text-[32px] font-semibold leading-[1.04] tracking-[-0.045em] text-[#fffaf0] sm:text-[46px]">
+              {left.brand} {left.name}
+              <span className="mx-2 text-[#d9bd82]">vs.</span>
+              {right.brand} {right.name}
+            </h1>
+            <div className="mt-4 inline-flex rounded-full border border-white/12 bg-white/[0.06] px-3 py-1.5 text-[11px] font-semibold text-white/74">
+              {RELATION_LABELS[pair.kind]}
+              {pair.confidence
+                ? ` · Datenvertrauen: ${CONFIDENCE_LABELS[pair.confidence] || pair.confidence}`
+                : ""}
+            </div>
+            <p className="mt-4 max-w-2xl text-[12.5px] leading-5 text-white/58">
+              Dokumentierte Duftbeziehungen, Community-Daten und redaktionelle Profilmerkmale – ohne die Behauptung identischer Rezepturen.
+            </p>
           </div>
-          <h1 className="mt-2 text-[30px] font-semibold leading-[1.1] tracking-[-0.035em] sm:text-[40px]">
-            {left.brand} {left.name} vs. {right.brand} {right.name}
-          </h1>
-          <div className="mt-3 inline-flex rounded-full border border-(--line) bg-(--card) px-3 py-1.5 text-[11px] font-semibold text-(--ink-soft)">
-            {RELATION_LABELS[pair.kind]}
-            {pair.confidence
-              ? ` · Datenvertrauen: ${CONFIDENCE_LABELS[pair.confidence] || pair.confidence}`
-              : ""}
-          </div>
-          <p className="mt-4 text-[13px] leading-5 text-(--ink-soft)">
-            Dieser Vergleich basiert auf dokumentierten DUFYND-Duftbeziehungen,
-            Community-Daten und redaktionellen Duftprofil-Merkmalen.
-            Eine Duftbeziehung bedeutet nicht, dass die Formeln chemisch
-            identisch sind.
-          </p>
-        </div>
+        </section>
 
-        <section className="mt-7 grid gap-4 sm:grid-cols-2">
+        <section className="relative mt-5 grid gap-4 rounded-[28px] border border-[#e1d4ba] bg-[linear-gradient(135deg,#fbf6ec,#fffdf8)] p-3 sm:grid-cols-2 sm:p-4">
           <ProductHeader fragrance={left} />
+          <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#d7bf8e] bg-[#fffaf0] px-3 py-2 text-[10px] font-bold uppercase tracking-[0.09em] text-[#7e5b20] shadow-md sm:block">
+            vs
+          </div>
           <ProductHeader fragrance={right} />
         </section>
 
-        <section className="mt-5 overflow-hidden rounded-2xl border border-(--line) bg-(--card) shadow-(--shadow-sm)">
-          <div className="grid grid-cols-[1fr_0.9fr_1fr] gap-3 bg-(--well)/55 px-3 py-3 text-[11px] sm:px-4">
+        <section className="mt-5 overflow-hidden rounded-[24px] border border-[#dfd2b9] bg-(--card) shadow-[0_18px_46px_-34px_rgba(63,44,16,0.55)]">
+          <div className="grid grid-cols-[1fr_0.9fr_1fr] gap-3 bg-[linear-gradient(90deg,#f7efdf,#fffaf0,#f7efdf)] px-3 py-3 text-[11px] sm:px-4">
             <div className="text-right font-semibold">
               {left.name}
             </div>
