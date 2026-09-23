@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-23",
+  "system": "DUFYND",
+  "purpose": "Operational asset registry for current prelaunch production. Publishing remains operator-gated.",
+  "assets": [
+    {
+      "content_id": "sillage_vs_haltbarkeit_01",
+      "type": "video",
+      "state": "operator_review_pending",
+      "media_id": "80406350-1146-4177-939b-f953c15d791a",
+      "url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/80406350-1146-4177-939b-f953c15d791a.mp4",
+      "duration_seconds": 15,
+      "dimensions": "1080x1920",
+      "fps": 24,
+      "voiceover": false,
+      "sources": {
+        "sillage_head_fix_job": "c8de3f41-df7f-4301-9b67-fd1f1b01d9a2",
+        "longevity_keyframe_job": "ad4264a0-f438-4672-bd4d-69865d087b82",
+        "longevity_video_job": "dc533f10-85a3-4d73-9eee-aa9a33c202b4"
+      }
+    },
+    {
+      "content_id": "i_want_to_smell_naxos_01",
+      "type": "image",
+      "state": "operator_review_pending",
+      "product_id": "SC-XERJOFF-NAXOS-100",
+      "variants": [
+        {
+          "ratio": "4:5",
+          "media_id": "0aa2c660-f5f8-483b-969e-b7420579fed5",
+          "url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/0aa2c660-f5f8-483b-969e-b7420579fed5.png"
+        },
+        {
+          "ratio": "9:16",
+          "media_id": "8925d273-0af3-4388-9ddd-b3f984af0ced",
+          "url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/8925d273-0af3-4388-9ddd-b3f984af0ced.png"
+        }
+      ]
+    }
+  ]
+}
