@@ -43,7 +43,7 @@
     "launch_plan_preview_overlap": 14,
     "preview_ready_extra": "budget_three_under_50_01",
     "scripted_not_previewed": "aventus_alternatives_01",
-    "final_video_renders_review_pending": 1,
+    "final_video_renders_review_pending": 2,
     "static_creatives_review_pending": 1,
     "approved_final_creatives": [
       "naxos_campaign_final",
@@ -51,7 +51,8 @@
     ],
     "review_pending_creatives": [
       "sillage_vs_haltbarkeit_01",
-      "i_want_to_smell_naxos_01"
+      "i_want_to_smell_naxos_01",
+      "original_vs_alt_imagination_01"
     ]
   },
   "launch_wave": [
@@ -212,6 +213,30 @@
         "Lavender"
       ],
       "notes": "Built from the existing approved DUFYND Naxos editorial asset with no additional image-generation spend. Do not publish before operator review."
+    },
+    {
+      "content_id": "original_vs_alt_imagination_01",
+      "format": "short_form_video",
+      "state": "operator_review_pending",
+      "duration_seconds": 15,
+      "voiceover": false,
+      "landing_path": "/parfum-alternativen",
+      "product_ids": [
+        "SC-LV-IMAGINATION-100",
+        "SC-ARABIYAT-MARWA-EDP-100",
+        "SC-BUJAIRAMI-HECTIC-100"
+      ],
+      "text_sequence": [
+        "IMAGINATION-VIBE? / MARWA ODER HECTIC?",
+        "IMAGINATION — FRISCH 10/10 · SÜSS 2/10 · WÜRZE 5/10",
+        "MARWA — FRISCH 10/10 · SÜSS 6/10 · WÜRZE 3/10",
+        "HECTIC — FRISCH 10/10 · SÜSS 2/10 · WÜRZE 8/10",
+        "BEIDE: INSPIRED ≠ AUTOMATISCH 1:1",
+        "WELCHES PROFIL PASST ZU DIR? / VERGLEICHE AUF DUFYND"
+      ],
+      "media_url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/12e60125-0b08-4fb4-b3df-e3db6caa0b42.mp4",
+      "source_preview": "examples/retail/storefront-web/public/social/pilots/batch01/original_vs_alt_imagination_01-preview.mp4",
+      "notes": "Rebuilt from existing approved product assets as a 15-second no-voice motion-graphics review render. No new paid AI-video generation was used. No price claim. Do not publish before operator review."
     }
   ],
   "social_copy_extensions": [
