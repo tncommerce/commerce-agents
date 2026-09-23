@@ -159,12 +159,18 @@ body {
   background:
     radial-gradient(circle at 50% 42%, rgba(216, 181, 106, 0.20), transparent 58%);
   filter: blur(28px);
-  transform: translateZ(-40px);
+  opacity: var(--dufynd-ambient-opacity);
+  transform: translate3d(0, var(--dufynd-bg-y), -40px) scale(1.04);
+  transition:
+    transform 180ms linear,
+    opacity 220ms ease;
   pointer-events: none;
 }
 
 .dufynd-depth-surface {
   transform-style: preserve-3d;
+  transform: translate3d(0, var(--dufynd-surface-y), 0);
+  transition: transform 180ms linear;
 }
 
 .dufynd-depth-shadow {
@@ -237,6 +243,12 @@ body {
   --dufynd-glow-y: 42%;
   --dufynd-shadow-x: 0px;
   --dufynd-shadow-y: 12px;
+  --dufynd-stage-y: 0px;
+  --dufynd-surface-y: 0px;
+  --dufynd-bg-y: 0px;
+  --dufynd-ambient-opacity: 0.82;
+  transform: translate3d(0, var(--dufynd-stage-y), 0);
+  transition: transform 180ms linear;
 }
 
 .dufynd-depth-stage::before {
@@ -307,6 +319,9 @@ body {
     display: none !important;
   }
 
+  .dufynd-depth-stage,
+  .dufynd-depth-surface,
+  .dufynd-depth-stage::after,
   .dufynd-depth-stage[data-depth-active="true"] .dufynd-depth-object,
   .dufynd-depth-stage[data-depth-active="true"] .dufynd-depth-shadow {
     transform: none !important;
