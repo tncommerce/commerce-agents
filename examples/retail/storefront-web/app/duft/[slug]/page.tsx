@@ -326,14 +326,18 @@ export default async function FragrancePage({
           </span>
         </nav>
 
-        <section className="grid gap-4 sm:gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="mx-auto w-full max-w-[250px] overflow-hidden rounded-3xl border border-(--line) bg-white shadow-(--shadow-sm) sm:max-w-[320px] lg:max-w-none lg:mx-0">
+        <section className="relative overflow-hidden rounded-[30px] border border-[#d9c9aa]/70 bg-[linear-gradient(135deg,#f8f1e4_0%,#fffdf8_48%,#eee0c5_100%)] p-4 shadow-[0_24px_70px_-42px_rgba(82,56,18,0.55)] sm:p-6 lg:grid lg:grid-cols-[0.9fr_1.1fr] lg:gap-8 lg:p-8">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-[#c79b4c]/12 blur-3xl"
+          />
+          <div className="relative mx-auto w-full max-w-[280px] overflow-hidden rounded-[26px] border border-white/80 bg-[radial-gradient(circle_at_50%_40%,#ffffff_0%,#f7edda_58%,#e8d7b6_100%)] shadow-[0_26px_65px_-34px_rgba(61,42,14,0.65)] sm:max-w-[360px] lg:mx-0 lg:max-w-none">
             {fragrance.image_url ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={fragrance.image_url}
                 alt={`${fragrance.brand} ${fragrance.name}`}
-                className="aspect-square h-full w-full object-contain p-4 sm:p-10"
+                className="aspect-square h-full w-full scale-[1.05] object-contain p-5 transition duration-500 hover:scale-[1.08] sm:p-9"
               />
             ) : (
               <div className="grid aspect-square place-items-center bg-(--well)">
@@ -350,11 +354,14 @@ export default async function FragrancePage({
             )}
           </div>
 
-          <div className="flex flex-col justify-center">
+          <div className="relative mt-5 flex flex-col justify-center lg:mt-0">
+            <div className="mb-1 text-[9.5px] font-semibold uppercase tracking-[0.19em] text-[#8a6426]">
+              DUFYND · Duftprofil
+            </div>
             <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-(--ink-soft)">
               {fragrance.brand}
             </div>
-            <h1 className="mt-2 text-[32px] font-semibold leading-[1.08] tracking-[-0.035em] sm:text-[42px]">
+            <h1 className="mt-2 max-w-2xl text-[36px] font-semibold leading-[1.02] tracking-[-0.045em] sm:text-[48px] lg:text-[54px]">
               {fragrance.name}
             </h1>
 
@@ -383,7 +390,7 @@ export default async function FragrancePage({
             <div className="mt-4 grid grid-cols-2 gap-2 sm:mt-5 sm:flex sm:flex-wrap sm:gap-2.5">
               <a
                 href="#angebote"
-                className="rounded-xl bg-(--accent) px-3 py-2.5 text-center text-[12px] font-semibold text-white transition-opacity hover:opacity-90 sm:px-4 sm:text-[13px]"
+                className="rounded-xl bg-[#8a6426] px-3 py-2.5 text-center text-[12px] font-semibold text-white shadow-[0_10px_30px_-18px_rgba(86,58,15,0.9)] transition hover:bg-[#75521d] sm:px-4 sm:text-[13px]"
               >
                 Aktuelle Angebote prüfen
               </a>
@@ -413,7 +420,7 @@ export default async function FragrancePage({
             </div>
 
             <div className="mt-4 grid grid-cols-3 gap-2 sm:mt-6 sm:gap-3">
-              <div className="rounded-2xl border border-(--line) bg-(--card) p-3 sm:p-4">
+              <div className="rounded-2xl border border-white/75 bg-white/70 p-3 shadow-[0_8px_24px_-20px_rgba(50,35,12,0.65)] backdrop-blur-sm sm:p-4">
                 <div className="text-[11px] text-(--ink-soft)">
                   Community
                 </div>
@@ -438,7 +445,7 @@ export default async function FragrancePage({
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-(--line) bg-(--card) p-3 sm:p-4">
+              <div className="rounded-2xl border border-white/75 bg-white/70 p-3 shadow-[0_8px_24px_-20px_rgba(50,35,12,0.65)] backdrop-blur-sm sm:p-4">
                 <div className="text-[11px] text-(--ink-soft)">
                   Haltbarkeit
                 </div>
@@ -458,7 +465,7 @@ export default async function FragrancePage({
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-(--line) bg-(--card) p-3 sm:p-4">
+              <div className="rounded-2xl border border-white/75 bg-white/70 p-3 shadow-[0_8px_24px_-20px_rgba(50,35,12,0.65)] backdrop-blur-sm sm:p-4">
                 <div className="text-[11px] text-(--ink-soft)">
                   Ausstrahlung
                 </div>
