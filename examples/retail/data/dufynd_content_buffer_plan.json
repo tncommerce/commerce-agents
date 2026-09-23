@@ -43,7 +43,7 @@
     "launch_plan_preview_overlap": 14,
     "preview_ready_extra": "budget_three_under_50_01",
     "scripted_not_previewed": "aventus_alternatives_01",
-    "final_video_renders_review_pending": 2,
+    "final_video_renders_review_pending": 3,
     "static_creatives_review_pending": 1,
     "approved_final_creatives": [
       "naxos_campaign_final",
@@ -52,7 +52,8 @@
     "review_pending_creatives": [
       "sillage_vs_haltbarkeit_01",
       "i_want_to_smell_naxos_01",
-      "original_vs_alt_imagination_01"
+      "original_vs_alt_imagination_01",
+      "not_every_dupe_clone_01"
     ]
   },
   "launch_wave": [
@@ -237,6 +238,32 @@
       "media_url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/12e60125-0b08-4fb4-b3df-e3db6caa0b42.mp4",
       "source_preview": "examples/retail/storefront-web/public/social/pilots/batch01/original_vs_alt_imagination_01-preview.mp4",
       "notes": "Rebuilt from existing approved product assets as a 15-second no-voice motion-graphics review render. No new paid AI-video generation was used. No price claim. Do not publish before operator review."
+    },
+    {
+      "content_id": "not_every_dupe_clone_01",
+      "format": "short_form_video",
+      "state": "operator_review_pending",
+      "duration_seconds": 15,
+      "voiceover": false,
+      "landing_path": "/parfum-alternativen",
+      "product_ids": [
+        "SC-PDM-ALTHAIR-125",
+        "SC-FRENCH-AVENUE-LIQUID-BRUN-100",
+        "SC-LV-IMAGINATION-100",
+        "SC-ARABIYAT-MARWA-EDP-100",
+        "SC-CREED-AVENTUS-100",
+        "SC-MONTBLANC-EXPLORER-100"
+      ],
+      "text_sequence": [
+        "DUPE ≠ DUPE",
+        "CLONE — möglichst nah am Originalstil",
+        "INSPIRED — gleiche Idee, eigener Twist",
+        "ALTERNATIVE — ähnliche Richtung oder Nutzen",
+        "CLONE. INSPIRED. ALTERNATIVE. / DUFYND macht den Unterschied sichtbar"
+      ],
+      "media_url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/dd8a72da-f427-4475-9905-c9460ddd370f.mp4",
+      "source_preview": "examples/retail/storefront-web/public/social/pilots/batch01/not_every_dupe_clone_01-preview.mp4",
+      "notes": "Rebuilt from existing verified product assets as a 15-second no-voice educational motion-graphics review render. No paid AI-video generation used. Relationship labels follow the existing DUFYND pilot contract. Do not publish before operator review."
     }
   ],
   "social_copy_extensions": [
