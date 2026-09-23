@@ -67,3 +67,14 @@ Use only:
 - **REJECT** — do not continue this creative direction
 
 Do not silently promote a review-pending item.
+
+
+## Review outcome — 2026-09-23
+- Sillage: 5/10 — REJECT / REBUILD.
+- Imagination-Marwa-Hectic: 7/10 — SOUND REVISION, education filler only.
+- Dupe ≠ Dupe: 7/10 — SOUND REVISION, education filler only.
+- Office 3 Types: 7/10 — SOUND REVISION, education filler only.
+- I want to smell Naxos: REBUILD with at least two fragrances; remove black description box.
+- Website refresh: 8/10 — direction approved; add 3D product dynamics.
+
+Quality floor remains the final Naxos video.
