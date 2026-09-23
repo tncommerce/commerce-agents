@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-22T11:33:13+00:00",
-  "source_fingerprint_sha256": "cdacd2e944739b8b8c6251ec6639b8609189ffa198951b425b0d32df2b1f1939",
+  "generated_at": "2026-09-22T19:50:00+00:00",
+  "source_fingerprint_sha256": "0b483506d78a94d6c7016be3d7ecd775c64000dd9044e1829d3c8d6dfc2fdff0",
   "release_id": "SCENTAI-RELEASE-01",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "image_machine_ref": "scentai_image_approval_state_machine.json",
@@ -21,8 +21,8 @@
       "candidate_id": "LANCOME-LA-VIE-EST-BELLE-EDP",
       "brand": "Lancôme",
       "name": "La Vie est Belle",
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
+      "mapping_count": 3,
+      "resolved_mapping_count": 3,
       "image_state": "rights_or_source_check_pending",
       "affiliate_offer_count": 0,
       "gates": {
@@ -45,8 +45,8 @@
       "candidate_id": "PDM-DELINA-EDP",
       "brand": "Parfums de Marly",
       "name": "Delina",
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
+      "mapping_count": 3,
+      "resolved_mapping_count": 3,
       "image_state": "rights_or_source_check_pending",
       "affiliate_offer_count": 0,
       "gates": {
@@ -93,8 +93,8 @@
       "candidate_id": "YSL-BLACK-OPIUM-EDP",
       "brand": "Yves Saint Laurent",
       "name": "Black Opium",
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
+      "mapping_count": 3,
+      "resolved_mapping_count": 3,
       "image_state": "rights_or_source_check_pending",
       "affiliate_offer_count": 0,
       "gates": {
@@ -117,8 +117,8 @@
       "candidate_id": "YSL-LIBRE-EDP",
       "brand": "Yves Saint Laurent",
       "name": "Libre",
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
+      "mapping_count": 3,
+      "resolved_mapping_count": 3,
       "image_state": "rights_or_source_check_pending",
       "affiliate_offer_count": 0,
       "gates": {

@@ -93,7 +93,7 @@
       "merchant_id": "top-parfuemerie",
       "program": "top Parfümerie DE",
       "decision": "open",
-      "activity_note": "Network activity said participation was confirmed, but the authoritative program-status list still shows the application as open.",
+      "activity_note": "Awin product-data/feed access was observed, but the authoritative program-status list still shows the application as open. Feed availability does not imply program approval.",
       "confidence": "explicit_program_name_in_open_program_list"
     },
     {

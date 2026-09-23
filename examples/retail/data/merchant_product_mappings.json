@@ -441,6 +441,45 @@
       "verified_at": "2026-09-19",
       "evidence_url": "https://www.flaconi.de/parfum/dolce-gabbana/the-one-for-men/dolce-gabbana-the-one-for-men-new-eau-de-parfum.html",
       "evidence_note": "Current reimagined EDP listing; exact 100 ml GTIN cross-verified from current product data."
+    },
+    {
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "merchant": "top-parfuemerie",
+      "merchant_product_id": "780879",
+      "ean": null,
+      "gtin": null
+    },
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "merchant": "top-parfuemerie",
+      "merchant_product_id": "825869",
+      "ean": null,
+      "gtin": null
+    },
+    {
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "merchant": "top-parfuemerie",
+      "merchant_product_id": "787670",
+      "ean": null,
+      "gtin": null
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "merchant": "top-parfuemerie",
+      "merchant_product_id": "856448",
+      "ean": null,
+      "gtin": null
+    },
+    {
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "merchant": "top-parfuemerie",
+      "merchant_product_id": "924719",
+      "ean": "3770010614630",
+      "gtin": "3770010614630",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-09-22",
+      "evidence_url": "https://www.topparfuemerie.de/essential-parfums-bois-imperial-by-quentin-bisch-edp-nat-spray-nachfuellbar",
+      "evidence_note": "Awin feed product 38332629354 maps merchant product 924719 to Bois Impérial EDP; EAN 3770010614630 independently cross-verifies the refillable 100 ml variant."
     }
   ]
 }

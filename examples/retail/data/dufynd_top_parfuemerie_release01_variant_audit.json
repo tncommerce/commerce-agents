@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "status": "candidate_mapping_four_of_five",
+  "observed_at": "2026-09-22",
+  "merchant": "top-parfuemerie",
+  "release_01": [
+    {
+      "dufynd_product": "Lancôme La vie est belle Eau de Parfum 100 ml",
+      "merchant_product_id": "780879",
+      "aw_product_id": "37127261933",
+      "feed_price_eur": 150.0,
+      "feed_last_updated": "2026-04-29 14:30:59",
+      "variant_identity": "confirmed_by_external_price_per_litre_evidence",
+      "offer_activation": "blocked_stale_feed_until_release_checker"
+    },
+    {
+      "dufynd_product": "Parfums de Marly Delina Eau de Parfum 75 ml",
+      "merchant_product_id": "825869",
+      "aw_product_id": "37127262515",
+      "feed_price_eur": 285.0,
+      "feed_last_updated": "2026-09-08 15:31:04",
+      "variant_identity": "confirmed_by_external_price_per_litre_evidence",
+      "offer_activation": "blocked_until_release_checker"
+    },
+    {
+      "dufynd_product": "Dior Hypnotic Poison Eau de Toilette 100 ml",
+      "merchant_product_id": null,
+      "aw_product_id": null,
+      "variant_identity": "not_found_in_feed",
+      "offer_activation": "blocked_no_feed_offer"
+    },
+    {
+      "dufynd_product": "Yves Saint Laurent Black Opium Eau de Parfum 90 ml",
+      "merchant_product_id": "787670",
+      "aw_product_id": "37127262871",
+      "feed_price_eur": 143.95,
+      "feed_last_updated": "2026-04-26 22:25:53",
+      "variant_identity": "confirmed_by_external_price_per_litre_evidence",
+      "offer_activation": "blocked_stale_feed_until_release_checker"
+    },
+    {
+      "dufynd_product": "Yves Saint Laurent Libre Eau de Parfum 90 ml",
+      "merchant_product_id": "856448",
+      "aw_product_id": "37127262034",
+      "feed_price_eur": 153.95,
+      "feed_last_updated": "2026-09-10 12:31:04",
+      "variant_identity": "confirmed_by_external_price_per_litre_evidence",
+      "offer_activation": "blocked_until_release_checker"
+    }
+  ]
+}

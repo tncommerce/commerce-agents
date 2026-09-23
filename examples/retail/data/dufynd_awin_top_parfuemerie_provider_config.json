@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "status": "real_feed_mapping_ready_for_release_dry_run",
+  "provider_name": "awin-top-parfuemerie-de",
+  "field_map": {
+    "offer_id": "aw_product_id",
+    "merchant_product_id": "merchant_product_id",
+    "price": "search_price",
+    "currency": "currency",
+    "in_stock": "in_stock",
+    "variant_label": "product_name",
+    "product_url": "merchant_deep_link",
+    "affiliate_url": "aw_deep_link",
+    "last_updated_at": "last_updated",
+    "image_url": "merchant_image_url"
+  },
+  "constants": {
+    "merchant": "top-parfuemerie",
+    "merchant_id": "top-parfuemerie",
+    "merchant_name": "top Parfümerie",
+    "currency": "EUR",
+    "network": "Awin",
+    "data_source": "approved-affiliate-feed"
+  },
+  "source_quality": {
+    "shipping_cost_source_unusable": true,
+    "ean_gtin_unavailable": true,
+    "brand_category_metadata_unavailable": true,
+    "exact_variant_mapping_uses_merchant_product_id": true
+  },
+  "safety": {
+    "real_feed_preflight_required": true,
+    "release_checker_required": true,
+    "no_write_from_config_alone": true,
+    "no_offer_activation_from_config_alone": true,
+    "no_image_approval_from_config_alone": true,
+    "reject_nonpositive_price": true
+  }
+}

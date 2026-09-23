@@ -1,0 +1,89 @@
+{
+  "version": 2,
+  "status": "real_feed_received_preflight_passed_with_data_quality_gaps",
+  "provider_name": "awin-top-parfuemerie-de",
+  "merchant_scope": {
+    "merchant": "top-parfuemerie",
+    "merchant_id": "top-parfuemerie",
+    "merchant_name": "top Parfümerie",
+    "awin_advertiser_id": "31081",
+    "awin_data_feed_id": "91379",
+    "market": "DE"
+  },
+  "source_availability": {
+    "awin_product_data_available": true,
+    "real_feed_received": true,
+    "observed_at": "2026-09-22",
+    "row_count": 8053,
+    "header_count": 86
+  },
+  "field_evidence": {
+    "fully_populated": [
+      "aw_deep_link",
+      "product_name",
+      "aw_product_id",
+      "merchant_product_id",
+      "merchant_image_url",
+      "search_price",
+      "merchant_name",
+      "merchant_id",
+      "aw_image_url",
+      "currency",
+      "merchant_deep_link",
+      "in_stock"
+    ],
+    "mostly_populated": {
+      "last_updated": 8027
+    },
+    "present_but_empty": [
+      "brand_name",
+      "merchant_category",
+      "category_name",
+      "delivery_cost",
+      "stock_quantity",
+      "ean",
+      "product_GTIN"
+    ]
+  },
+  "quality_profile": {
+    "zero_price_rows": 60,
+    "all_rows_marked_in_stock": true,
+    "missing_last_updated_rows": 26,
+    "rows_older_than_7_days": 7076,
+    "rows_older_than_30_days": 4281,
+    "median_last_updated_age_days_at_intake": 33.44,
+    "note": "Feed stock and price fields must not be treated as real-time truth without freshness checks. Zero-price rows must never become normal merchant offers."
+  },
+  "canonical_mapping": {
+    "offer_id": "aw_product_id",
+    "merchant_product_id": "merchant_product_id",
+    "price": "search_price",
+    "currency": "currency",
+    "in_stock": "in_stock",
+    "variant_label": "product_name",
+    "product_url": "merchant_deep_link",
+    "affiliate_url": "aw_deep_link",
+    "last_updated_at": "last_updated",
+    "image_url": "merchant_image_url"
+  },
+  "variant_identity": {
+    "merchant_product_id_required": true,
+    "ean_or_gtin_available": false,
+    "size_field_available": false,
+    "external_variant_evidence_required_when_name_is_shared_across_sizes": true
+  },
+  "safety": {
+    "no_offer_activation_before_exact_variant_mapping": true,
+    "no_zero_price_offer_activation": true,
+    "no_feed_image_approval_before_rights_gate": true,
+    "freshness_must_be_considered_in_ranking": true,
+    "no_assumption_that_in_stock_equals_current_stock": true
+  },
+  "next_actions": [
+    "Persist mapped-provider config from the real header.",
+    "Map Release 01 exact merchant product IDs using external size evidence where needed.",
+    "Keep Hypnotic Poison unresolved if absent from feed.",
+    "Run release dry-run.",
+    "Only then consider activating verified offers."
+  ]
+}
