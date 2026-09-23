@@ -424,5 +424,59 @@
     "sound_rule": "Do not use homemade synthetic music beds or generic synthetic SFX. Use music plus only sparse natural synchronized Foley when justified (e.g. atomizer spray, camera shutter, page turn, physical whoosh).",
     "desire_static_rule": "I want to smell... posts should normally show at least two matching fragrances and avoid heavy black description boxes.",
     "sillage_rule": "Discard the current final-review render as a publication candidate and rebuild from an extracted viral-example structure rather than patching it."
+  },
+  "content_strategy_20260923_v2": {
+    "primary_goal": "Grow DUFYND with premium viral product content while preserving credits and using carousels for education.",
+    "cadence_cycle": [
+      {
+        "day": 1,
+        "format": "viral_short",
+        "role": "reach_desire",
+        "production_rule": "real fragrance product, Naxos quality floor, example-led cinematography"
+      },
+      {
+        "day": 2,
+        "format": "carousel",
+        "role": "education_or_product_context",
+        "production_rule": "derive from prior short when useful"
+      },
+      {
+        "day": 3,
+        "format": "carousel",
+        "role": "mood_comparison_or_alternative",
+        "production_rule": "saveable/shareable, low-credit production"
+      },
+      {
+        "day": 4,
+        "format": "viral_short",
+        "role": "reach_desire",
+        "production_rule": "next real fragrance hero"
+      }
+    ],
+    "video_rules": [
+      "Use real, identifiable fragrances rather than generic fragrance objects.",
+      "Viral/social-native visual storytelling first; education in video is secondary.",
+      "Education videos are deprioritized; default to image carousels instead.",
+      "Use platform-native trending audio or the exact platform audio from a reference example when legally/platform-available.",
+      "Do not synthesize generic music beds or decorative transition SFX.",
+      "Naxos final remains the minimum premium-short quality floor.",
+      "Use director/DP shot prompting and keyframe validation before paid motion generation."
+    ],
+    "carousel_rules": [
+      "Use strong unified campaign art rather than pasted website cards.",
+      "Prefer 2-3+ fragrances for mood/category posts.",
+      "Use education, comparisons and alternatives primarily in carousel form.",
+      "Optimize for saves/shares and clarity on mobile."
+    ],
+    "affiliate_rule": "Content can be produced before a merchant offer is live, but merchant CTA/routing is enabled only after a currently purchasable offer from an approved affiliate is reverified.",
+    "current_hero_in_production": {
+      "content_id": "ysl_libre_example59_01",
+      "fragrance": "Yves Saint Laurent Libre Eau de Parfum",
+      "format": "viral_short",
+      "reference": "Example 59 / Ophelia Seedance 2.5",
+      "visual_palette": "midnight blue, black, champagne gold, amber",
+      "status": "generation_in_progress",
+      "affiliate_note": "Perfumetrader is approved and carries Libre listings, but availability must be rechecked before merchant CTA."
+    }
   }
 }
