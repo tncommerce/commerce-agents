@@ -53,24 +53,26 @@ export default function ComparisonIndexPage() {
       </header>
 
       <div className="mx-auto max-w-[1080px] px-4 py-7 sm:px-6 sm:py-10">
-        <div className="max-w-3xl">
-          <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-(--ink-soft)">
-            DUFYND Vergleiche
+        <section className="relative overflow-hidden rounded-[30px] border border-[#d7c7a2]/45 bg-[#15120f] px-5 py-7 text-white shadow-[0_24px_80px_-38px_rgba(40,27,10,0.75)] sm:px-8 sm:py-9">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_20%,rgba(212,174,101,0.22),transparent_34%),linear-gradient(135deg,#17130f_0%,#0e0c0a_66%,#211a11_100%)]"
+          />
+          <div className="relative max-w-3xl">
+            <div className="text-[10.5px] font-semibold uppercase tracking-[0.18em] text-[#d9bd82]">
+              DUFYND · Side by Side
+            </div>
+            <h1 className="mt-3 text-[36px] font-semibold leading-[1.02] tracking-[-0.045em] text-[#fffaf0] sm:text-[50px]">
+              Parfums direkt vergleichen
+            </h1>
+            <p className="mt-4 max-w-2xl text-[14px] leading-6 text-white/68">
+              Ähnliche Duftstile, inspirierte Alternativen und verwandte Profile nebeneinander – mit Duftcharakter, Community-Daten und Preisreferenzen auf einen Blick.
+            </p>
+            <div className="mt-5 inline-flex rounded-full border border-white/12 bg-white/[0.06] px-3 py-1.5 text-[11px] font-semibold text-white/78">
+              {EXPLICIT_COMPARISON_PAIRS.length} dokumentierte Vergleiche
+            </div>
           </div>
-          <h1 className="mt-2 text-[32px] font-semibold leading-[1.08] tracking-[-0.035em] sm:text-[42px]">
-            Parfums direkt vergleichen
-          </h1>
-          <p className="mt-4 text-[14px] leading-6 text-(--ink-soft)">
-            Diese Vergleiche basieren auf dokumentierten Beziehungen im
-            DUFYND-Katalog. So kannst du ähnliche Duftstile,
-            inspirierte Alternativen und verwandte Profile direkt
-            nebeneinander ansehen.
-          </p>
-        </div>
-
-        <div className="mt-5 inline-flex rounded-full border border-(--line) bg-(--card) px-3 py-1.5 text-[12px] text-(--ink-soft)">
-          {EXPLICIT_COMPARISON_PAIRS.length} dokumentierte Vergleiche
-        </div>
+        </section>
 
         <FragranceComparisonPicker
           fragrances={LIVE_FRAGRANCES}
@@ -92,31 +94,51 @@ export default function ComparisonIndexPage() {
             <a
               key={pair.pair_slug}
               href={`/vergleich/${pair.pair_slug}`}
-              className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) transition hover:-translate-y-0.5 hover:shadow-md"
+              className="rounded-2xl border border-[#e0d4bd] bg-(--card) p-4 shadow-[0_12px_34px_-28px_rgba(55,37,11,0.65)] transition hover:-translate-y-1 hover:border-[#c9ad77] hover:shadow-[0_20px_44px_-30px_rgba(55,37,11,0.7)]"
             >
               <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-(--ink-soft)">
                 {RELATION_LABELS[pair.kind]}
               </div>
 
-              <div className="mt-2 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+              <div className="mt-3 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
                 <div className="min-w-0">
+                  <div className="mb-2 flex h-28 items-center justify-center overflow-hidden rounded-xl border border-[#e6d9bf] bg-[radial-gradient(circle_at_50%_40%,#fffdf8_0%,#f3ead8_62%,#eadabe_100%)] p-2">
+                    {pair.left.image_url ? (
+                      <img
+                        src={pair.left.image_url}
+                        alt=""
+                        aria-hidden
+                        className="h-full w-full object-contain"
+                      />
+                    ) : null}
+                  </div>
                   <div className="truncate text-[10.5px] text-(--ink-soft)">
                     {pair.left.brand}
                   </div>
-                  <div className="mt-0.5 text-[14px] font-semibold leading-5">
+                  <div className="mt-0.5 line-clamp-2 text-[14px] font-semibold leading-5">
                     {pair.left.name}
                   </div>
                 </div>
 
-                <div className="rounded-full bg-(--well) px-2 py-1 text-[10px] font-semibold text-(--ink-soft)">
-                  vs.
+                <div className="rounded-full border border-[#d9c49c] bg-[#f8f0df] px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.08em] text-[#7e5b20]">
+                  vs
                 </div>
 
                 <div className="min-w-0 text-right">
+                  <div className="mb-2 flex h-28 items-center justify-center overflow-hidden rounded-xl border border-[#e6d9bf] bg-[radial-gradient(circle_at_50%_40%,#fffdf8_0%,#f3ead8_62%,#eadabe_100%)] p-2">
+                    {pair.right.image_url ? (
+                      <img
+                        src={pair.right.image_url}
+                        alt=""
+                        aria-hidden
+                        className="h-full w-full object-contain"
+                      />
+                    ) : null}
+                  </div>
                   <div className="truncate text-[10.5px] text-(--ink-soft)">
                     {pair.right.brand}
                   </div>
-                  <div className="mt-0.5 text-[14px] font-semibold leading-5">
+                  <div className="mt-0.5 line-clamp-2 text-[14px] font-semibold leading-5">
                     {pair.right.name}
                   </div>
                 </div>
