@@ -10,6 +10,66 @@
   ],
   "posts": [
     {
+      "content_id": "naxos_campaign_final",
+      "product_id": "SC-XERJOFF-NAXOS-100",
+      "landing_path": "/duft/xerjoff-naxos",
+      "state": "approved_master_copy_prepared",
+      "tiktok": {
+        "caption": "Xerjoff Naxos: Lavendel und Bergamotte im Auftakt, Honig und Zimt im Herz, Tabak und Vanille in der Basis. Süß, würzig und unverwechselbar.",
+        "hashtags": [
+          "#DUFYND",
+          "#XerjoffNaxos",
+          "#Naxos",
+          "#Parfum",
+          "#Fragrance"
+        ]
+      },
+      "instagram": {
+        "caption": "Xerjoff Naxos · Lavendel, Honig, Zimt, Tabak und Vanille in einem süß-würzigen Profil. Unser erster Premium-Master für den DUFYND-Launch.",
+        "hashtags": [
+          "#DUFYND",
+          "#XerjoffNaxos",
+          "#Naxos",
+          "#Parfum",
+          "#Fragrance"
+        ]
+      },
+      "youtube": {
+        "title": "Xerjoff Naxos in 15 Sekunden | DUFYND",
+        "description": "Lavendel, Honig, Zimt, Tabak und Vanille: das Xerjoff-Naxos-Profil kurz inszeniert. Mehr Duftdetails auf DUFYND."
+      }
+    },
+    {
+      "content_id": "bois_imperial_final",
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "landing_path": "/duft/essential-parfums-bois-imperial",
+      "state": "approved_master_copy_prepared",
+      "tiktok": {
+        "caption": "Frisch. Holzig. Kaum süß. Bois Impérial kombiniert Thai-Basilikum, Timut-Pfeffer und Vetiver mit einem sehr modernen Holzprofil.",
+        "hashtags": [
+          "#DUFYND",
+          "#BoisImperial",
+          "#EssentialParfums",
+          "#Parfum",
+          "#Fragrance"
+        ]
+      },
+      "instagram": {
+        "caption": "Bois Impérial · frisch, grün, würzig und sehr holzig. Mit Thai-Basilikum, Timut-Pfeffer, Vetiver, Georgywood und Akigalawood zeigt er eine deutlich trockenere Richtung als viele süße Mainstream-Düfte.",
+        "hashtags": [
+          "#DUFYND",
+          "#BoisImperial",
+          "#EssentialParfums",
+          "#Parfum",
+          "#Fragrance"
+        ]
+      },
+      "youtube": {
+        "title": "Bois Impérial in 15 Sekunden | DUFYND",
+        "description": "Essential Parfums Bois Impérial: frisch, würzig, grün und sehr holzig. Entdecke das vollständige Duftprofil auf DUFYND."
+      }
+    },
+    {
       "content_id": "sillage_vs_haltbarkeit_01",
       "landing_path": "/duftfinder",
       "tiktok": {
