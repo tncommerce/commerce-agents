@@ -7,7 +7,7 @@
     {
       "content_id": "sillage_vs_haltbarkeit_01",
       "type": "video",
-      "state": "operator_review_pending",
+      "state": "rejected_rebuild_required",
       "media_id": "6501e858-824f-4dc0-9ca9-1c2cd2b5d652",
       "url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/6501e858-824f-4dc0-9ca9-1c2cd2b5d652.mp4",
       "duration_seconds": 15,
@@ -29,7 +29,7 @@
     {
       "content_id": "i_want_to_smell_naxos_01",
       "type": "image",
-      "state": "operator_review_pending",
+      "state": "rebuild_multi_product_required",
       "product_id": "SC-XERJOFF-NAXOS-100",
       "variants": [
         {
@@ -47,7 +47,7 @@
     {
       "content_id": "original_vs_alt_imagination_01",
       "type": "video",
-      "state": "operator_review_pending",
+      "state": "sound_revision_required",
       "media_id": "12e60125-0b08-4fb4-b3df-e3db6caa0b42",
       "url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/12e60125-0b08-4fb4-b3df-e3db6caa0b42.mp4",
       "duration_seconds": 15,
@@ -64,7 +64,7 @@
     {
       "content_id": "not_every_dupe_clone_01",
       "type": "video",
-      "state": "operator_review_pending",
+      "state": "sound_revision_required",
       "media_id": "dd8a72da-f427-4475-9905-c9460ddd370f",
       "url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/dd8a72da-f427-4475-9905-c9460ddd370f.mp4",
       "duration_seconds": 15,
@@ -84,7 +84,7 @@
     {
       "content_id": "top3_office_01",
       "type": "video",
-      "state": "operator_review_pending",
+      "state": "sound_revision_required",
       "media_id": "fdb9741b-a9c3-40c1-aa63-10bf0630ae13",
       "url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/fdb9741b-a9c3-40c1-aa63-10bf0630ae13.mp4",
       "duration_seconds": 15,
