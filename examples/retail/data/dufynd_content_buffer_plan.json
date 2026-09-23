@@ -61,6 +61,10 @@
       "not_every_dupe_clone_01",
       "top3_office_01",
       "i_want_to_smell_naxos_01"
+    ],
+    "new_review_assets": [
+      "sillage_rebuild_visual_02",
+      "i_want_to_smell_addictive_01"
     ]
   },
   "launch_wave": [
@@ -299,6 +303,31 @@
       "media_url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/fdb9741b-a9c3-40c1-aa63-10bf0630ae13.mp4",
       "source_preview": "examples/retail/storefront-web/public/social/pilots/batch01/top3_office_01-preview.mp4",
       "notes": "Rebuilt from existing verified product assets as a 15-second no-voice occasion/advisor motion-graphics review render. No ranking claim and no paid AI-video generation. Do not publish before operator review."
+    },
+    {
+      "content_id": "sillage_rebuild_visual_02",
+      "format": "short_form_video_visual_master",
+      "state": "operator_visual_review_pending",
+      "duration_seconds": 11.6,
+      "voiceover": false,
+      "audio_status": "intentionally_none_for_visual_review",
+      "media_url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/b85b290a-3b72-4472-8d3f-6c04cbe6d7b3.mp4",
+      "concept": "Viral-example rebuild: atomizer macro -> masculine airborne sillage moment -> male wrist macro -> SILLAGE ≠ HALTBARKEIT.",
+      "notes": "Built after rejecting the previous Sillage render. No infographic squares or split screens. Sound layer deliberately withheld until visual approval; future sound must use premium music plus sparse natural synchronized Foley only."
+    },
+    {
+      "content_id": "i_want_to_smell_addictive_01",
+      "format": "static_social",
+      "state": "operator_visual_review_pending",
+      "ratio": "4:5",
+      "product_ids": [
+        "SC-XERJOFF-NAXOS-100",
+        "SC-PDM-ALTHAIR-125",
+        "SC-ARMANI-SWY-INTENSELY-100"
+      ],
+      "media_url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/c4db1d9a-fa6a-4b49-82ab-934538bfb2d8.png",
+      "concept": "I WANT TO SMELL addictive — three-fragrance editorial mood post.",
+      "notes": "Replaces the rejected single-fragrance Naxos mood post. No black description rectangle."
     }
   ],
   "social_copy_extensions": [
