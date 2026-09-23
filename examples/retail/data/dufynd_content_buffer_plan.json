@@ -64,8 +64,10 @@
     ],
     "new_review_assets": [
       "sillage_rebuild_visual_02",
-      "i_want_to_smell_addictive_01"
-    ]
+      "i_want_to_smell_addictive_01",
+      "three_scents_smell_expensive_01"
+    ],
+    "static_carousels_review_pending": 1
   },
   "launch_wave": [
     {
@@ -478,5 +480,31 @@
       "status": "generation_in_progress",
       "affiliate_note": "Perfumetrader is approved and carries Libre listings, but availability must be rechecked before merchant CTA."
     }
-  }
+  },
+  "proposed_20260926_20260929_sequence": [
+    {
+      "date": "2026-09-26",
+      "content_id": "naxos_campaign_final",
+      "format": "viral_short",
+      "state": "approved_master"
+    },
+    {
+      "date": "2026-09-27",
+      "content_id": "i_want_to_smell_addictive_v2",
+      "format": "carousel_or_static_series",
+      "state": "operator_rating_8_5"
+    },
+    {
+      "date": "2026-09-28",
+      "content_id": "three_scents_smell_expensive_01",
+      "format": "image_carousel",
+      "state": "operator_visual_review_pending"
+    },
+    {
+      "date": "2026-09-29",
+      "content_id": "bois_imperial_final",
+      "format": "viral_short",
+      "state": "approved_master"
+    }
+  ]
 }
