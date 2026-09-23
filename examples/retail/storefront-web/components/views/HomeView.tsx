@@ -4,7 +4,6 @@
 "use client";
 
 import {
-  Greeting,
   HomeSection,
   type Starter,
   Starters,
@@ -79,6 +78,7 @@ export default function HomeView({
 }) {
   const catalog = useCatalogIndex(fetchProducts);
   const picks = featured(catalog);
+  const hero = picks[0] ?? null;
   const scentCount = Object.values(catalog).filter(
     (product) =>
       String(product.product_id).startsWith("SC-") &&
@@ -86,17 +86,95 @@ export default function HomeView({
   ).length;
   return (
     <div className="mx-auto flex w-full max-w-[1080px] flex-col gap-4 px-4 sm:gap-6 sm:px-6">
-      <Greeting
-        eyebrow="DUFYND · Persönliche Duftberatung"
-        title={
-          <h1 className="max-w-3xl text-[27px] font-semibold leading-[1.12] tracking-[-0.03em] text-(--ink) sm:text-[32px] sm:leading-tight">
-            Finde den Duft, der wirklich zu dir passt.
-          </h1>
-        }
-      >
-        <Brief />
-      </Greeting>
-      <div className="[&_button]:py-2.5 sm:[&_button]:py-3">
+      <section className="relative overflow-hidden rounded-[28px] border border-[#d7c7a2]/45 bg-[#15120f] text-white shadow-[0_24px_80px_-38px_rgba(40,27,10,0.75)] sm:rounded-[34px]">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_35%,rgba(212,174,101,0.26),transparent_34%),radial-gradient(circle_at_12%_0%,rgba(255,255,255,0.08),transparent_28%),linear-gradient(135deg,#17130f_0%,#0e0c0a_58%,#211a11_100%)]"
+        />
+        <div className="relative grid min-h-[390px] items-center gap-7 px-5 py-7 sm:px-8 sm:py-9 lg:grid-cols-[1.08fr_0.92fr] lg:px-10 lg:py-10">
+          <div className="max-w-2xl">
+            <div className="text-[10.5px] font-semibold uppercase tracking-[0.19em] text-[#d9bd82]">
+              DUFYND · Fragrance Discovery
+            </div>
+            <h1 className="mt-4 max-w-[720px] text-[38px] font-semibold leading-[0.98] tracking-[-0.045em] text-[#fffaf0] sm:text-[52px] lg:text-[60px]">
+              Finde den Duft, der wirklich zu dir passt.
+            </h1>
+            <p className="mt-5 max-w-xl text-[14px] leading-6 text-white/68 sm:text-[15px]">
+              Entdecke Duftprofile, vergleiche Alternativen und finde aktuelle Händlerangebote – kuratiert statt überladen.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-2.5">
+              <a
+                href="#dufynd-starters"
+                className="rounded-xl bg-[#c79b4c] px-4 py-2.5 text-[13px] font-semibold text-[#15120f] transition hover:brightness-105"
+              >
+                Duftberatung starten
+              </a>
+              <a
+                href="/duft"
+                className="rounded-xl border border-white/18 bg-white/[0.06] px-4 py-2.5 text-[13px] font-semibold text-white transition hover:border-[#d9bd82]/70 hover:bg-white/[0.10]"
+              >
+                Düfte entdecken
+              </a>
+            </div>
+            <div className="mt-7 flex flex-wrap gap-x-4 gap-y-1 text-[10.5px] uppercase tracking-[0.1em] text-white/42">
+              <span>Duftprofile</span>
+              <span>Vergleiche</span>
+              <span>Alternativen</span>
+              <span>Händlerangebote</span>
+            </div>
+          </div>
+
+          <div className="relative mx-auto w-full max-w-[380px] lg:max-w-[420px]">
+            <div
+              aria-hidden
+              className="absolute inset-x-[12%] bottom-[4%] top-[10%] rounded-full bg-[#d6aa58]/15 blur-3xl"
+            />
+            <div className="relative overflow-hidden rounded-[30px] border border-white/10 bg-[linear-gradient(145deg,rgba(255,250,240,0.98),rgba(231,214,180,0.91))] p-4 shadow-[0_24px_65px_-28px_rgba(0,0,0,0.85)] sm:p-5">
+              {hero?.image_url ? (
+                <a
+                  href={fragrancePathForProduct(hero)}
+                  className="group block"
+                  aria-label={`${hero.brand} ${hero.title} ansehen`}
+                >
+                  <div className="flex aspect-[4/4.2] items-center justify-center overflow-hidden rounded-[22px] bg-[radial-gradient(circle_at_50%_42%,#fffdf8_0%,#f4e9d2_58%,#e7d5b4_100%)]">
+                    <img
+                      src={hero.image_url}
+                      alt={hero.title}
+                      className="h-full w-full scale-[1.12] object-contain transition duration-500 group-hover:scale-[1.16]"
+                    />
+                  </div>
+                  <div className="px-1 pb-1 pt-4 text-[#17130f]">
+                    <div className="text-[9.5px] font-semibold uppercase tracking-[0.15em] text-[#765b2b]">
+                      Im Fokus
+                    </div>
+                    <div className="mt-1 text-[11px] uppercase tracking-[0.08em] text-[#6b6255]">
+                      {hero.brand}
+                    </div>
+                    <div className="mt-0.5 line-clamp-2 text-[19px] font-semibold leading-tight tracking-[-0.02em]">
+                      {hero.title}
+                    </div>
+                    <div className="mt-3 text-[11.5px] font-semibold text-[#765b2b]">
+                      Duft entdecken →
+                    </div>
+                  </div>
+                </a>
+              ) : (
+                <div className="grid aspect-square place-items-center text-center text-[#17130f]">
+                  <div>
+                    <div className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[#765b2b]">
+                      DUFYND
+                    </div>
+                    <div className="mt-2 text-[24px] font-semibold">
+                      Discover your signature scent.
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+      <div id="dufynd-starters" className="scroll-mt-5 [&_button]:py-2.5 sm:[&_button]:py-3">
         <Starters items={STARTERS} />
       </div>
       <div className="flex flex-wrap gap-x-2 gap-y-1 text-[11.5px] text-(--ink-soft) sm:hidden">
