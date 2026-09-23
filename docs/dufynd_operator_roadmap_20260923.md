@@ -23,6 +23,7 @@ Current state:
 - Naxos campaign final: approved.
 - Bois Impérial final: approved.
 - Sillage vs. Haltbarkeit: final review render produced, operator review pending.
+- Imagination / Marwa / Hectic: 15-second motion-graphics review render produced from existing verified assets, operator review pending.
 - First `I want to smell...` static (Naxos): 4:5 and 9:16 review assets produced, operator review pending.
 - Existing script/preview bank remains available for later conversion.
 - No social publishing action has been taken from this roadmap.
@@ -138,7 +139,8 @@ Scale rule:
 ## Current operator review queue
 
 1. Sillage vs. Haltbarkeit 15-second final review render.
-2. Naxos `I want to smell...` 4:5 and 9:16 static concept.
-3. Website visual refresh PR #46 as a whole.
+2. Imagination / Marwa / Hectic 15-second motion-graphics review render.
+3. Naxos `I want to smell...` 4:5 and 9:16 static concept.
+4. Website visual refresh PR #46 as a whole.
 
 Until those reviews happen, independent commercial, QA and documentation work can continue, but the three items above should not be silently promoted to production.
