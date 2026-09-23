@@ -417,13 +417,13 @@ export default async function FragrancePage({
             aria-hidden
             className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-[#c79b4c]/12 blur-3xl"
           />
-          <div className="relative mx-auto w-full max-w-[280px] overflow-hidden rounded-[26px] border border-white/80 bg-[radial-gradient(circle_at_50%_40%,#ffffff_0%,#f7edda_58%,#e8d7b6_100%)] shadow-[0_26px_65px_-34px_rgba(61,42,14,0.65)] sm:max-w-[360px] lg:mx-0 lg:max-w-none">
+          <div className="dufynd-depth-stage relative mx-auto w-full max-w-[280px] overflow-hidden rounded-[26px] border border-white/80 bg-[radial-gradient(circle_at_50%_40%,#ffffff_0%,#f7edda_58%,#e8d7b6_100%)] shadow-[0_26px_65px_-34px_rgba(61,42,14,0.65)] sm:max-w-[360px] lg:mx-0 lg:max-w-none">
             {fragrance.image_url ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={fragrance.image_url}
                 alt={`${fragrance.brand} ${fragrance.name}`}
-                className="aspect-square h-full w-full scale-[1.05] object-contain p-5 transition duration-500 hover:scale-[1.08] sm:p-9"
+                className="dufynd-depth-object aspect-square h-full w-full scale-[1.05] object-contain p-5 sm:p-9"
               />
             ) : (
               <div className="grid aspect-square place-items-center bg-(--well)">
