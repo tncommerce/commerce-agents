@@ -60,38 +60,43 @@
   "launch_wave": [
     {
       "order": 1,
-      "content_id": "original_vs_alt_imagination_01",
-      "role": "hero_problem_solution",
-      "landing_path": "/parfum-alternativen",
-      "reason": "Explains a familiar fragrance problem and immediately demonstrates DUFYND's comparison value."
+      "content_id": "naxos_campaign_final",
+      "state": "approved_master",
+      "role": "premium_brand_hero",
+      "landing_path": "/duft/xerjoff-naxos",
+      "reason": "Strongest approved DUFYND quality benchmark and intended first public premium post."
     },
     {
       "order": 2,
-      "content_id": "not_every_dupe_clone_01",
-      "role": "trust_education",
-      "landing_path": "/parfum-alternativen",
-      "reason": "Builds credibility by showing that DUFYND does not flatten every similar fragrance into a clone claim."
+      "content_id": "bois_imperial_final",
+      "state": "approved_master",
+      "role": "premium_brand_hero",
+      "landing_path": "/duft/essential-parfums-bois-imperial",
+      "reason": "Second approved premium master; reinforces the visual quality bar with a distinct fresh-woody profile."
     },
     {
       "order": 3,
-      "content_id": "top3_office_01",
-      "role": "advisor_utility",
+      "content_id": "sillage_vs_haltbarkeit_01",
+      "state": "operator_review_pending",
+      "role": "education_myth_busting",
       "landing_path": "/duftfinder",
-      "reason": "Shows that DUFYND solves a real occasion-based decision instead of publishing a generic ranking."
+      "reason": "Adds useful education between premium product-led posts if approved."
     },
     {
       "order": 4,
-      "content_id": "top3_fresh_01",
-      "role": "advisor_utility",
-      "landing_path": "/duftfinder",
-      "reason": "Demonstrates that one broad request such as 'fresh' can lead to meaningfully different scent profiles."
+      "content_id": "original_vs_alt_imagination_01",
+      "state": "operator_review_pending",
+      "role": "comparison_value",
+      "landing_path": "/parfum-alternativen",
+      "reason": "Demonstrates DUFYND's comparison value after the brand-quality anchors are established."
     },
     {
       "order": 5,
-      "content_id": "gift_for_him_safe_to_bold_01",
-      "role": "gift_utility",
-      "landing_path": "/parfum-geschenkberater",
-      "reason": "Introduces the gift-advisor use case and broadens DUFYND beyond enthusiast-only comparison content."
+      "content_id": "i_want_to_smell_naxos_01",
+      "state": "operator_review_pending",
+      "role": "mood_static",
+      "landing_path": "/duft/xerjoff-naxos",
+      "reason": "Tests the saveable desire-based image format without requiring another video-generation cycle."
     }
   ],
   "evergreen_buffer": [
@@ -292,5 +297,6 @@
   ],
   "social_copy_extensions": [
     "examples/retail/data/dufynd_social_copy_20260923.json"
-  ]
+  ],
+  "launch_sequence_rule": "Orders 1-2 are fixed approved masters. Orders 3+ are conditional and must not publish unless the operator explicitly approves the corresponding creative."
 }
