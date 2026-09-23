@@ -1,0 +1,124 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-23",
+  "wave_id": "DUFYND-CATALOG-EXPANSION-NEXT-10",
+  "purpose": "Operational unblock order only. This does not change editorial selection priority, customer recommendations, product ranking, or affiliate ordering.",
+  "rules": [
+    "Prefer candidates with exact-variant evidence at an already approved merchant.",
+    "Treat public product-page observations as research evidence, not activated affiliate offers.",
+    "Do not promote a research GTIN to canonical until the normal feed/mapping gate passes.",
+    "An in-stock research snapshot is not a current stock promise.",
+    "Approved exact-variant imagery remains a separate publication gate."
+  ],
+  "queues": [
+    {
+      "execution_tier": "A",
+      "condition": "Perfumetrader supplies a usable product feed/export or confirms a product-level tracking/data path.",
+      "candidates": [
+        {
+          "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+          "current_catalog_priority": 2,
+          "reason": "Exact Perfumetrader 100 ml EDT observation with merchant product ID and GTIN; research snapshot was in stock.",
+          "immediate_checks": [
+            "match Perfumetrader feed row to merchant product 16978322 / GTIN 3349666007921",
+            "verify current price and stock freshness",
+            "confirm tracked product deeplink",
+            "approve exact-variant feed/manufacturer image"
+          ]
+        },
+        {
+          "product_id": "SC-JPG-LE-MALE-ELIXIR-PARFUM-125",
+          "current_catalog_priority": 8,
+          "reason": "Exact Perfumetrader 125 ml Parfum observation with merchant product ID and GTIN; research snapshot was in stock.",
+          "immediate_checks": [
+            "match Perfumetrader feed row to merchant product 175217782 / GTIN 8435415076944",
+            "resolve merchant concentration metadata mismatch without overriding official Parfum identity",
+            "verify current price and stock freshness",
+            "confirm tracked product deeplink",
+            "approve exact-variant feed/manufacturer image"
+          ]
+        },
+        {
+          "product_id": "SC-CAROLINA-HERRERA-GOOD-GIRL-EDP-80",
+          "current_catalog_priority": 1,
+          "reason": "Exact Perfumetrader 80 ml EDP observation with merchant product ID and GTIN, but the research snapshot was out of stock.",
+          "immediate_checks": [
+            "match Perfumetrader feed row to merchant product 70727123 / GTIN 8411061026342",
+            "only continue offer activation if current availability is verified",
+            "confirm tracked product deeplink",
+            "approve exact-variant feed/manufacturer image"
+          ]
+        }
+      ]
+    },
+    {
+      "execution_tier": "B",
+      "condition": "Douglas or Flaconi application becomes approved with usable product-level tracking/feed access.",
+      "candidates": [
+        {
+          "product_id": "SC-YSL-Y-EDP-100",
+          "current_catalog_priority": 3,
+          "reason": "Exact 100 ml EDP retail IDs already researched at both Douglas and Flaconi; official product identity is strong.",
+          "immediate_checks": [
+            "canonical feed match",
+            "tracked offer",
+            "approved exact-variant image"
+          ]
+        },
+        {
+          "product_id": "SC-VALENTINO-DONNA-BORN-IN-ROMA-EDP-100",
+          "current_catalog_priority": 5,
+          "reason": "Exact 100 ml EDP retail IDs already researched at both Douglas and Flaconi; official product profile verified.",
+          "immediate_checks": [
+            "direct feed/GTIN confirmation",
+            "tracked offer",
+            "approved exact-variant image"
+          ]
+        },
+        {
+          "product_id": "SC-ARMANI-ACQUA-DI-GIO-PROFONDO-PARFUM-100",
+          "current_catalog_priority": 10,
+          "reason": "Exact 100 ml Parfum retail IDs researched at both Douglas and Flaconi.",
+          "immediate_checks": [
+            "canonical feed match",
+            "resolve full-note-pyramid conflict",
+            "tracked offer",
+            "approved exact-variant image"
+          ]
+        },
+        {
+          "product_id": "SC-VERSACE-EROS-EDP-100",
+          "current_catalog_priority": 9,
+          "reason": "Exact 100 ml EDP Flaconi retail ID is researched and official concentration/size identity is strong.",
+          "immediate_checks": [
+            "direct feed/GTIN confirmation",
+            "tracked offer",
+            "approved exact-variant image"
+          ]
+        }
+      ]
+    },
+    {
+      "execution_tier": "C",
+      "condition": "Other pending merchant programs or direct feed evidence becomes actionable.",
+      "candidates": [
+        {
+          "product_id": "SC-CHANEL-COCO-MADEMOISELLE-EDP-100",
+          "current_catalog_priority": 4,
+          "reason": "Strong official identity and Douglas evidence, but no currently approved merchant evidence in the research record."
+        },
+        {
+          "product_id": "SC-CALVIN-KLEIN-EUPHORIA-EDP-100",
+          "current_catalog_priority": 6,
+          "reason": "Notino research evidence is available; CJ approval/tracking remains pending."
+        },
+        {
+          "product_id": "SC-CHLOE-NOMADE-EDP-75",
+          "current_catalog_priority": 7,
+          "reason": "Notino and Flaconi research evidence exists, but direct feed confirmation remains pending and the Flaconi legacy variant ID needs caution."
+        }
+      ]
+    }
+  ],
+  "conclusion": "Do not start a new broad product-research wave. First attempt to unlock Tier A through the pending Perfumetrader response, while keeping Tier B ready for any Douglas/Flaconi approval."
+}
