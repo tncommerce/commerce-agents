@@ -148,6 +148,46 @@
       "url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/cb06b514-6ab8-4d3d-a2ae-7097b09f8917.png",
       "ratio": "4:5",
       "source_mode": "generated_set_plate_plus_exact_dufynd_product_cutouts"
+    },
+    {
+      "content_id": "three_scents_smell_expensive_01",
+      "type": "image_carousel",
+      "state": "operator_visual_review_pending",
+      "ratio": "4:5",
+      "slides": [
+        {
+          "order": 1,
+          "media_id": "874f240b-f91b-4ea2-b631-907723b19fea"
+        },
+        {
+          "order": 2,
+          "media_id": "02428936-ef5c-45ec-bf6b-e75cde280cfe",
+          "product_id": "SC-AFNAN-TURATHI-BLUE-90"
+        },
+        {
+          "order": 3,
+          "media_id": "87290115-af79-445a-a1e3-89c32667ac42",
+          "product_id": "SC-AFNAN-SUPREMACY-COLLECTORS-100"
+        },
+        {
+          "order": 4,
+          "media_id": "110b61ed-25e1-43a0-9034-0d33bfddc21e",
+          "product_id": "SC-AL-HARAMAIN-DETOUR-NOIR-100"
+        },
+        {
+          "order": 5,
+          "media_id": "aef1ac56-b3a2-4630-ba58-379e44f0e732"
+        }
+      ],
+      "product_ids": [
+        "SC-AFNAN-TURATHI-BLUE-90",
+        "SC-AFNAN-SUPREMACY-COLLECTORS-100",
+        "SC-AL-HARAMAIN-DETOUR-NOIR-100"
+      ],
+      "concept": "3 Düfte, die teurer riechen als sie sind.",
+      "source_mode": "existing_verified_dufynd_editorial_assets_plus_local_layout",
+      "generation_spend": "no_paid_video_generation",
+      "notes": "Built as saveable product-led carousel under the viral-first content strategy. Exact DUFYND product assets; no AI bottle substitution."
     }
   ]
 }
