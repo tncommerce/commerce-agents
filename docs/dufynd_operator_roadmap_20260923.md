@@ -196,3 +196,20 @@ Until those reviews happen, independent commercial, QA and documentation work ca
 - Permanent DUFYND decision lens now covers director, cinematographer, creative director, entrepreneur, content creator, sales strategist and mentor roles.
 - Sillage V3 Director's Cut created under the new shot-prompting standard. Shot A uses successful perfume-aerosol motion; Shot B uses a controlled cinematic hold because Seedance motion reduced particle readability; Shot C restores desire with a premium product hero.
 - I want to smell addictive V2 rebuilt with a generated organic-luxury set plate and transparent cutouts extracted from the exact existing DUFYND product assets to preserve product identity.
+
+
+## Content strategy reset — 2026-09-23 evening
+
+Operator direction accepted:
+- Prioritize viral shorts featuring real, identifiable fragrances.
+- Move educational video concepts behind viral production; default educational topics to carousels.
+- Working cadence: viral short -> carousel -> carousel -> viral short, then repeat.
+- Use platform-native trending audio / the exact reference audio when available on the posting platform.
+- Preserve credits by validating keyframes and camera prompts before motion generation.
+- Carousels should use unified campaign visuals, not pasted website-card compositions.
+
+Current hero production:
+- YSL Libre Eau de Parfum, adapted from Example 59's cinematic grammar.
+- Visual palette: midnight blue / black / champagne gold / amber.
+- Genjutsu motion-control test uses the cropped Example 59 footage as the driving motion reference.
+- Affiliate CTA remains gated until a currently purchasable approved-merchant offer is reverified.
