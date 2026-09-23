@@ -4,8 +4,10 @@ This pack is review-only. Nothing here is approved for publishing unless explici
 
 ## Already approved masters
 
-- **Naxos campaign final** — approved
-- **Bois Impérial final** — approved
+- **Naxos campaign final** — approved · fixed launch order #1 · landing `/duft/xerjoff-naxos`
+- **Bois Impérial final** — approved · fixed launch order #2 · landing `/duft/essential-parfums-bois-imperial`
+
+Prepared launch tracking and platform copy now exist for both approved masters. Publication itself remains operator-gated.
 
 ## Operator review queue
 
