@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-23",
+  "campaign_id": "launch01",
+  "guidance": [
+    "Keep captions useful rather than salesy.",
+    "Do not add unsupported performance, similarity or ranking claims.",
+    "Publishing remains an explicit operator approval action.",
+    "Use the matching tracked link or profile link only after publication approval."
+  ],
+  "posts": [
+    {
+      "content_id": "sillage_vs_haltbarkeit_01",
+      "landing_path": "/duftfinder",
+      "tiktok": {
+        "caption": "Sillage und Haltbarkeit sind nicht dasselbe. Ein Duft kann lange auf der Haut bleiben und trotzdem längst nicht mehr stark im Raum stehen.",
+        "hashtags": [
+          "#DUFYND",
+          "#Sillage",
+          "#Parfumwissen",
+          "#Parfum"
+        ]
+      },
+      "instagram": {
+        "caption": "Sillage beschreibt deine Duftspur. Haltbarkeit beschreibt, wie lange ein Duft auf der Haut wahrnehmbar bleibt. Beides kann zusammenhängen – ist aber nicht dasselbe.",
+        "hashtags": [
+          "#DUFYND",
+          "#Sillage",
+          "#Haltbarkeit",
+          "#Parfumwissen",
+          "#Parfum"
+        ]
+      },
+      "youtube": {
+        "title": "Sillage ≠ Haltbarkeit: der Unterschied in 15 Sekunden | DUFYND",
+        "description": "Warum starke Ausstrahlung nicht automatisch lange Haltbarkeit bedeutet – kurz und visuell erklärt."
+      }
+    },
+    {
+      "content_id": "i_want_to_smell_naxos_01",
+      "product_id": "SC-XERJOFF-NAXOS-100",
+      "landing_path": "/duft/xerjoff-naxos",
+      "platforms": [
+        "instagram",
+        "tiktok_photo"
+      ],
+      "tiktok": {
+        "caption": "I want to smell warm, expensive, addictive. Naxos bringt dafür Honig, Tabak und Lavendel in ein süß-würziges Profil.",
+        "hashtags": [
+          "#DUFYND",
+          "#Naxos",
+          "#Xerjoff",
+          "#Parfum",
+          "#Fragrance"
+        ]
+      },
+      "instagram": {
+        "caption": "SCENT MOOD 01 · Naxos. Honig im Herz, Tabak in der Basis und Lavendel im Auftakt – ein süß-würziges Profil mit viel Präsenz.",
+        "hashtags": [
+          "#DUFYND",
+          "#Naxos",
+          "#XerjoffNaxos",
+          "#Parfum",
+          "#Fragrance"
+        ]
+      }
+    }
+  ]
+}
