@@ -97,6 +97,32 @@
         "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
         "SC-CHANEL-BLEU-DE-CHANEL-EDP-100"
       ]
+    },
+    {
+      "content_id": "sillage_rebuild_visual_02",
+      "type": "video",
+      "state": "operator_visual_review_pending",
+      "media_id": "b85b290a-3b72-4472-8d3f-6c04cbe6d7b3",
+      "url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/b85b290a-3b72-4472-8d3f-6c04cbe6d7b3.mp4",
+      "duration_seconds": 11.6,
+      "dimensions": "1080x1920",
+      "audio": false,
+      "source_jobs": {
+        "atomizer_keyframe": "0af517c9-cf30-41db-bde2-d460cca3271e",
+        "atomizer_motion": "00485586-669d-4f70-b859-b9b701bc835c",
+        "sillage_keyframe": "141f8330-a5b9-4199-90d4-70fe1a518617",
+        "sillage_motion": "9f8bf167-c275-4d56-8830-e9a4cf00aa8c",
+        "longevity_keyframe": "29d66f38-09d2-459c-b930-5408e5633139"
+      }
+    },
+    {
+      "content_id": "i_want_to_smell_addictive_01",
+      "type": "image",
+      "state": "operator_visual_review_pending",
+      "media_id": "c4db1d9a-fa6a-4b49-82ab-934538bfb2d8",
+      "url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/c4db1d9a-fa6a-4b49-82ab-934538bfb2d8.png",
+      "ratio": "4:5",
+      "source_mode": "existing_verified_editorial_product_assets"
     }
   ]
 }
