@@ -25,6 +25,7 @@ Current state:
 - Sillage vs. Haltbarkeit: final review render produced, operator review pending.
 - Imagination / Marwa / Hectic: 15-second motion-graphics review render produced from existing verified assets, operator review pending.
 - Dupe ≠ Dupe: 15-second relationship-education motion-graphics review render produced from existing verified assets, operator review pending.
+- 3 Bürodüfte / 3 Typen: 15-second occasion/advisor motion-graphics review render produced from existing verified assets, operator review pending.
 - First `I want to smell...` static (Naxos): 4:5 and 9:16 review assets produced, operator review pending.
 - Existing script/preview bank remains available for later conversion.
 - No social publishing action has been taken from this roadmap.
@@ -142,7 +143,8 @@ Scale rule:
 1. Sillage vs. Haltbarkeit 15-second final review render.
 2. Imagination / Marwa / Hectic 15-second motion-graphics review render.
 3. Dupe ≠ Dupe 15-second relationship-education review render.
-4. Naxos `I want to smell...` 4:5 and 9:16 static concept.
-5. Website visual refresh PR #46 as a whole.
+4. 3 Bürodüfte / 3 Typen 15-second advisor-format review render.
+5. Naxos `I want to smell...` 4:5 and 9:16 static concept.
+6. Website visual refresh PR #46 as a whole.
 
 Until those reviews happen, independent commercial, QA and documentation work can continue, but the three items above should not be silently promoted to production.
