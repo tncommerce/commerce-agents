@@ -1,0 +1,113 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-23",
+  "brand": "DUFYND",
+  "operator": "TNCommerce",
+  "purpose": "Operational affiliate status snapshot and next-action triggers. This file does not activate offers or alter editorial ranking.",
+  "network_profile_rebrand": {
+    "state": "operator_check_required",
+    "reason": "Publisher/network accounts were originally created under SCENTAI. DUFYND is now the public brand and dufynd.de is live.",
+    "rule": "Update promotional-site/brand metadata in place. Do not withdraw or resubmit existing applications merely because of the rebrand.",
+    "awin": {
+      "expected_changes": [
+        "public brand/display name -> DUFYND where editable",
+        "promotional site URL -> https://dufynd.de",
+        "site description -> current DUFYND discovery/comparison positioning"
+      ],
+      "preserve": [
+        "publisher account",
+        "publisher ID",
+        "existing program applications",
+        "approved Perfumetrader relationship"
+      ]
+    },
+    "cj": {
+      "expected_changes": [
+        "website/promotional property branding -> DUFYND where editable",
+        "website URL -> https://dufynd.de"
+      ],
+      "preserve": [
+        "publisher account",
+        "pending Notino application"
+      ]
+    }
+  },
+  "programs": [
+    {
+      "network": "Awin",
+      "merchant": "Perfumetrader",
+      "status": "approved",
+      "next_action": "await product feed/export or image-usage response; keep follow-up draft unsent until operator chooses to send",
+      "commercial_priority": "high"
+    },
+    {
+      "network": "Awin",
+      "merchant": "Douglas",
+      "status": "open",
+      "next_action": "wait; if approved, immediately match prepared Next-10 exact variants and existing catalog mappings",
+      "commercial_priority": "high"
+    },
+    {
+      "network": "Awin",
+      "merchant": "Flaconi",
+      "status": "open",
+      "next_action": "wait; if approved, immediately match prepared Next-10 exact variants and existing catalog mappings",
+      "commercial_priority": "high"
+    },
+    {
+      "network": "Awin",
+      "merchant": "Breuninger",
+      "status": "open",
+      "next_action": "wait; do not build integration before approval",
+      "commercial_priority": "medium"
+    },
+    {
+      "network": "Awin",
+      "merchant": "Birkholz",
+      "status": "open",
+      "next_action": "wait; evaluate feed/product fit only after approval",
+      "commercial_priority": "medium"
+    },
+    {
+      "network": "Awin",
+      "merchant": "top Parfümerie",
+      "status": "open",
+      "next_action": "keep PR #43 read-only/non-production; do not activate routing before authoritative approval",
+      "commercial_priority": "medium_high"
+    },
+    {
+      "network": "Awin",
+      "merchant": "Parfumdreams",
+      "status": "rejected",
+      "reason": "Website ergänzt nicht die Marke des Advertisers",
+      "next_action": "do not reapply now; revisit only after measurable traffic/content proof",
+      "commercial_priority": "later"
+    },
+    {
+      "network": "Awin",
+      "merchant": "Parfumgroup",
+      "status": "rejected",
+      "reason": "No reason text shown in rejected-program overview",
+      "next_action": "do not reapply now; revisit only after measurable traffic/content proof",
+      "commercial_priority": "later"
+    },
+    {
+      "network": "CJ Affiliate",
+      "merchant": "Notino",
+      "status": "pending",
+      "next_action": "wait; integrate only after approval and valid tracking/feed credentials",
+      "commercial_priority": "high"
+    }
+  ],
+  "evidence_summary": {
+    "mailbox_checked_at": "2026-09-23",
+    "new_partner_decisions_found": false,
+    "repo_status_source": "examples/retail/data/scentai_affiliate_programs.json",
+    "perfumetrader_followup_draft_exists": true
+  },
+  "next10_unlock_logic": [
+    "Tier A: use Perfumetrader response/feed to attempt 1 Million, Le Male Elixir, then Good Girl if available.",
+    "Tier B: if Douglas or Flaconi approves, unlock Y EDP, Born in Roma Donna, Profondo Parfum and Eros EDP using prepared exact-variant research.",
+    "Do not start another broad catalog-research wave until current Next-10 feed/image/offer gates materially improve."
+  ]
+}
