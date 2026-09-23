@@ -96,6 +96,13 @@ Decision:
 
 **Objective:** increase real merchant coverage without contaminating editorial selection.
 
+Immediate operator maintenance gate:
+- Awin/CJ publisher properties were originally created under the historical SCENTAI public brand.
+- DUFYND is now public and `dufynd.de` is live.
+- Update network-facing property/website metadata in place to DUFYND; preserve all existing applications, approvals and account history.
+- Checklist: `docs/dufynd_affiliate_rebrand_checklist_20260923.md`.
+- Current status snapshot: `examples/retail/data/dufynd_affiliate_status_20260923.json`.
+
 Current known state:
 - Perfumetrader has merchant-level approval/tracking evidence.
 - Product-level activation remains separately gated.
