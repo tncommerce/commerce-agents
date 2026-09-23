@@ -168,3 +168,19 @@ Scale rule:
 6. Website visual refresh PR #46 as a whole.
 
 Until those reviews happen, independent commercial, QA and documentation work can continue, but none of the review-pending items above may be silently promoted to production.
+
+
+## Operator review decisions — 2026-09-23
+
+- Sillage vs. Haltbarkeit: 5/10, reject as publish candidate; rebuild from a proven viral-example structure.
+- Imagination / Marwa / Hectic: 7/10; keep as education only after sound redesign.
+- Dupe ≠ Dupe: 7/10; keep as education only after sound redesign.
+- 3 Bürodüfte / 3 Typen: 7/10; keep as education only after sound redesign.
+- I want to smell Naxos: rebuild as a multi-fragrance desire post with at least two fragrances; remove the black description box.
+- Website visual refresh: 8/10 direction approved; next iteration should add stronger 3D/product dynamics.
+
+### New production standards
+- Naxos final remains the minimum premium-short quality floor.
+- Educational content must first work as a viral/social-native visual; teaching can live in concise on-screen text and the caption.
+- Homemade synthetic music beds/generic SFX are banned from final DUFYND shorts.
+- Preferred Foley is sparse and physically motivated: atomizer spray, camera shutter, page flip, or a natural transition whoosh.
