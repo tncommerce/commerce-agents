@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-23",
+  "campaign_id": "launch01",
+  "base_url": "https://dufynd.de",
+  "purpose": "Prebuilt acquisition links for the current DUFYND launch review queue. Links are safe to prepare before publication; publication remains operator-gated.",
+  "rules": [
+    "src identifies the distribution channel.",
+    "cmp remains launch01 for the initial soft-launch measurement window.",
+    "content must equal the registered DUFYND content_id.",
+    "Do not shorten links through an untrusted redirector before launch attribution is validated."
+  ],
+  "content": [
+    {
+      "content_id": "sillage_vs_haltbarkeit_01",
+      "landing_path": "/duftfinder",
+      "urls": {
+        "tiktok": "https://dufynd.de/duftfinder?src=tiktok&cmp=launch01&content=sillage_vs_haltbarkeit_01",
+        "instagram": "https://dufynd.de/duftfinder?src=instagram&cmp=launch01&content=sillage_vs_haltbarkeit_01",
+        "youtube": "https://dufynd.de/duftfinder?src=youtube&cmp=launch01&content=sillage_vs_haltbarkeit_01"
+      }
+    },
+    {
+      "content_id": "original_vs_alt_imagination_01",
+      "landing_path": "/parfum-alternativen",
+      "urls": {
+        "tiktok": "https://dufynd.de/parfum-alternativen?src=tiktok&cmp=launch01&content=original_vs_alt_imagination_01",
+        "instagram": "https://dufynd.de/parfum-alternativen?src=instagram&cmp=launch01&content=original_vs_alt_imagination_01",
+        "youtube": "https://dufynd.de/parfum-alternativen?src=youtube&cmp=launch01&content=original_vs_alt_imagination_01"
+      }
+    },
+    {
+      "content_id": "not_every_dupe_clone_01",
+      "landing_path": "/parfum-alternativen",
+      "urls": {
+        "tiktok": "https://dufynd.de/parfum-alternativen?src=tiktok&cmp=launch01&content=not_every_dupe_clone_01",
+        "instagram": "https://dufynd.de/parfum-alternativen?src=instagram&cmp=launch01&content=not_every_dupe_clone_01",
+        "youtube": "https://dufynd.de/parfum-alternativen?src=youtube&cmp=launch01&content=not_every_dupe_clone_01"
+      }
+    },
+    {
+      "content_id": "top3_office_01",
+      "landing_path": "/duftfinder",
+      "urls": {
+        "tiktok": "https://dufynd.de/duftfinder?src=tiktok&cmp=launch01&content=top3_office_01",
+        "instagram": "https://dufynd.de/duftfinder?src=instagram&cmp=launch01&content=top3_office_01",
+        "youtube": "https://dufynd.de/duftfinder?src=youtube&cmp=launch01&content=top3_office_01"
+      }
+    },
+    {
+      "content_id": "i_want_to_smell_naxos_01",
+      "landing_path": "/duft/xerjoff-naxos",
+      "urls": {
+        "tiktok": "https://dufynd.de/duft/xerjoff-naxos?src=tiktok&cmp=launch01&content=i_want_to_smell_naxos_01",
+        "instagram": "https://dufynd.de/duft/xerjoff-naxos?src=instagram&cmp=launch01&content=i_want_to_smell_naxos_01"
+      }
+    }
+  ]
+}
