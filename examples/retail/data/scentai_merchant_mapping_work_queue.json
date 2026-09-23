@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-22T19:50:00+00:00",
-  "source_fingerprint_sha256": "b2d3efcde6944463d6f5ef2899a1af077a33f3e94b08518d1e470ea33018a0b3",
+  "generated_at": "2026-09-23T13:18:00+00:00",
+  "source_fingerprint_sha256": "401bf7e319dbc8953bf4b042479f68a7578cff8fa246aa3e869b121f9aadf4f8",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
     "scentai_catalog_staging.json",
@@ -14,9 +14,9 @@
     "products_with_two_or_more_resolved_mappings": 29,
     "products_without_resolved_mapping": 1,
     "affiliate_programs_registered": 9,
-    "affiliate_programs_approved": 2,
-    "affiliate_programs_pending": 7,
-    "live_activation_ready_products": 7
+    "affiliate_programs_approved": 1,
+    "affiliate_programs_pending": 8,
+    "live_activation_ready_products": 3
   },
   "affiliate_programs": [
     {
@@ -65,7 +65,7 @@
       "network": "Awin",
       "merchant_id": "top-parfuemerie",
       "program": "top Parfümerie DE",
-      "status": "approved"
+      "status": "applied"
     },
     {
       "network": "CJ Affiliate",
@@ -76,841 +76,9 @@
   ],
   "items": [
     {
-      "product_id": "SC-JPG-FLEUR-DU-MALE-2026-EDT-125",
-      "candidate_id": "JPG-FLEUR-DU-MALE-2026",
-      "brand": "Jean Paul Gaultier",
-      "name": "Fleur du Mâle (2026)",
-      "batch": 2,
-      "researched_merchant_count": 0,
-      "mapping_count": 0,
-      "resolved_mapping_count": 0,
-      "full_mapping_count": 0,
-      "state": "research_blocked",
-      "blockers": [
-        "no_resolved_merchant_mapping",
-        "verified_current_merchant_pending",
-        "community_performance_still_provisional"
-      ],
-      "next_action": "verify_current_retail_channel_before_mapping",
-      "action_class": "auto_allowed",
-      "live_activation_action_class": "approval_required",
-      "merchants": []
-    },
-    {
-      "product_id": "SC-AMOUAGE-GUIDANCE-46-EXTRAIT-100",
-      "candidate_id": "AMOUAGE-GUIDANCE-46",
-      "brand": "Amouage",
-      "name": "Guidance 46",
-      "batch": 2,
-      "researched_merchant_count": 2,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
-      "full_mapping_count": 2,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
-      "action_class": "auto_allowed",
-      "live_activation_action_class": "approval_required",
-      "merchants": [
-        {
-          "merchant_id": "douglas",
-          "mapping_state": "full",
-          "merchant_product_id": "5011534080",
-          "ean": "0701666410980",
-          "gtin": "0701666410980",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Douglas_DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        },
-        {
-          "merchant_id": "parfumdreams",
-          "mapping_state": "full",
-          "merchant_product_id": "131905",
-          "ean": "0701666410980",
-          "gtin": "0701666410980",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Parfumdreams DE",
-            "status": "rejected"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        }
-      ]
-    },
-    {
-      "product_id": "SC-AMOUAGE-REFLECTION-MAN-EDP-100",
-      "candidate_id": "AMOUAGE-REFLECTION-MAN-EDP",
-      "brand": "Amouage",
-      "name": "Reflection Man",
-      "batch": 3,
-      "researched_merchant_count": 2,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
-      "full_mapping_count": 2,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [],
-      "next_action": "await_affiliate_program_approval",
-      "action_class": "auto_allowed",
-      "live_activation_action_class": "approval_required",
-      "merchants": [
-        {
-          "merchant_id": "douglas",
-          "mapping_state": "full",
-          "merchant_product_id": "5010864026",
-          "ean": "0701666410058",
-          "gtin": "0701666410058",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Douglas_DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        },
-        {
-          "merchant_id": "perfumetrader",
-          "mapping_state": "full",
-          "merchant_product_id": "48029617",
-          "ean": "701666312055",
-          "gtin": "701666312055",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Perfumetrader DE",
-            "status": "approved"
-          },
-          "affiliate_activation_state": "approved"
-        }
-      ]
-    },
-    {
-      "product_id": "SC-BURBERRY-GODDESS-EDP-100",
-      "candidate_id": "BURBERRY-GODDESS-EDP",
-      "brand": "Burberry",
-      "name": "Goddess",
-      "batch": 1,
-      "researched_merchant_count": 2,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
-      "full_mapping_count": 2,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
-      "action_class": "auto_allowed",
-      "live_activation_action_class": "approval_required",
-      "merchants": [
-        {
-          "merchant_id": "douglas",
-          "mapping_state": "full",
-          "merchant_product_id": "5011035040",
-          "ean": "3616302020652",
-          "gtin": "3616302020652",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Douglas_DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        },
-        {
-          "merchant_id": "flaconi",
-          "mapping_state": "full",
-          "merchant_product_id": "90001263-0001775",
-          "ean": "3616302020652",
-          "gtin": "3616302020652",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Flaconi DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        }
-      ]
-    },
-    {
-      "product_id": "SC-CHLOE-CHLOE-EDP-100",
-      "candidate_id": "CHLOE-CHLOE-EDP",
-      "brand": "Chloé",
-      "name": "Chloé",
-      "batch": 2,
-      "researched_merchant_count": 2,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
-      "full_mapping_count": 2,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
-      "action_class": "auto_allowed",
-      "live_activation_action_class": "approval_required",
-      "merchants": [
-        {
-          "merchant_id": "douglas",
-          "mapping_state": "full",
-          "merchant_product_id": "2010007429",
-          "ean": "3616302038633",
-          "gtin": "3616302038633",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Douglas_DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        },
-        {
-          "merchant_id": "flaconi",
-          "mapping_state": "full",
-          "merchant_product_id": "80070876-100",
-          "ean": "3616302038633",
-          "gtin": "3616302038633",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Flaconi DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        }
-      ]
-    },
-    {
-      "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
-      "candidate_id": "DIOR-HYPNOTIC-POISON-EDT",
-      "brand": "Dior",
-      "name": "Hypnotic Poison",
-      "batch": 3,
-      "researched_merchant_count": 2,
-      "mapping_count": 3,
-      "resolved_mapping_count": 3,
-      "full_mapping_count": 3,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [],
-      "next_action": "await_affiliate_program_approval",
-      "action_class": "auto_allowed",
-      "live_activation_action_class": "approval_required",
-      "merchants": [
-        {
-          "merchant_id": "douglas",
-          "mapping_state": "full",
-          "merchant_product_id": "1069032304",
-          "ean": "3348900425309",
-          "gtin": "3348900425309",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Douglas_DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        },
-        {
-          "merchant_id": "flaconi",
-          "mapping_state": "full",
-          "merchant_product_id": "20101775",
-          "ean": "3348900425309",
-          "gtin": "3348900425309",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Flaconi DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        },
-        {
-          "merchant_id": "perfumetrader",
-          "mapping_state": "full",
-          "merchant_product_id": "33204791",
-          "ean": "3348900425309",
-          "gtin": "3348900425309",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Perfumetrader DE",
-            "status": "approved"
-          },
-          "affiliate_activation_state": "approved"
-        }
-      ]
-    },
-    {
-      "product_id": "SC-DIOR-SAUVAGE-ELIXIR-100",
-      "candidate_id": "DIOR-SAUVAGE-ELIXIR",
-      "brand": "Dior",
-      "name": "Sauvage Elixir",
-      "batch": 3,
-      "researched_merchant_count": 2,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
-      "full_mapping_count": 1,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
-      "action_class": "auto_allowed",
-      "live_activation_action_class": "approval_required",
-      "merchants": [
-        {
-          "merchant_id": "douglas",
-          "mapping_state": "full",
-          "merchant_product_id": "5010236005",
-          "ean": "3348901640916",
-          "gtin": "3348901640916",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Douglas_DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        },
-        {
-          "merchant_id": "parfumgroup",
-          "mapping_state": "partial",
-          "merchant_product_id": null,
-          "ean": "3348901640916",
-          "gtin": "3348901640916",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Parfumgroup DE",
-            "status": "rejected"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        }
-      ]
-    },
-    {
-      "product_id": "SC-DOLCE-GABBANA-THE-ONE-MEN-EDP-2025-100",
-      "candidate_id": "DOLCE-GABBANA-THE-ONE-MEN-EDP",
-      "brand": "Dolce & Gabbana",
-      "name": "The One for Men (2025)",
-      "batch": 3,
-      "researched_merchant_count": 2,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
-      "full_mapping_count": 1,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "community_performance_still_provisional",
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
-      "action_class": "auto_allowed",
-      "live_activation_action_class": "approval_required",
-      "merchants": [
-        {
-          "merchant_id": "douglas",
-          "mapping_state": "full",
-          "merchant_product_id": "5011977029",
-          "ean": "8056669925859",
-          "gtin": "8056669925859",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Douglas_DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        },
-        {
-          "merchant_id": "flaconi",
-          "mapping_state": "partial",
-          "merchant_product_id": null,
-          "ean": "8056669925859",
-          "gtin": "8056669925859",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Flaconi DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        }
-      ]
-    },
-    {
-      "product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
-      "candidate_id": "GUERLAIN-MON-GUERLAIN-EDP",
-      "brand": "Guerlain",
-      "name": "Mon Guerlain",
-      "batch": 3,
-      "researched_merchant_count": 2,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
-      "full_mapping_count": 2,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [],
-      "next_action": "await_affiliate_program_approval",
-      "action_class": "auto_allowed",
-      "live_activation_action_class": "approval_required",
-      "merchants": [
-        {
-          "merchant_id": "douglas",
-          "mapping_state": "full",
-          "merchant_product_id": "3001034674",
-          "ean": "3346470131408",
-          "gtin": "3346470131408",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Douglas_DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        },
-        {
-          "merchant_id": "perfumetrader",
-          "mapping_state": "full",
-          "merchant_product_id": "60481349",
-          "ean": "3346470131408",
-          "gtin": "3346470131408",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Perfumetrader DE",
-            "status": "approved"
-          },
-          "affiliate_activation_state": "approved"
-        }
-      ]
-    },
-    {
-      "product_id": "SC-HUGO-BOSS-BOTTLED-EDT-100",
-      "candidate_id": "HUGO-BOSS-BOTTLED-EDT",
-      "brand": "Hugo Boss",
-      "name": "BOSS Bottled",
-      "batch": 1,
-      "researched_merchant_count": 2,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
-      "full_mapping_count": 1,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
-      "action_class": "auto_allowed",
-      "live_activation_action_class": "approval_required",
-      "merchants": [
-        {
-          "merchant_id": "douglas",
-          "mapping_state": "full",
-          "merchant_product_id": "1010209304",
-          "ean": "0737052351100",
-          "gtin": "0737052351100",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Douglas_DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        },
-        {
-          "merchant_id": "flaconi",
-          "mapping_state": "partial",
-          "merchant_product_id": null,
-          "ean": "0737052351100",
-          "gtin": "0737052351100",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Flaconi DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        }
-      ]
-    },
-    {
-      "product_id": "SC-HUGO-BOSS-BOTTLED-ABSOLU-100",
-      "candidate_id": "HUGO-BOSS-BOTTLED-ABSOLU",
-      "brand": "Hugo Boss",
-      "name": "BOSS Bottled Absolu",
-      "batch": 2,
-      "researched_merchant_count": 3,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
-      "full_mapping_count": 2,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
-      "action_class": "auto_allowed",
-      "live_activation_action_class": "approval_required",
-      "merchants": [
-        {
-          "merchant_id": "douglas",
-          "mapping_state": "full",
-          "merchant_product_id": "5011497004",
-          "ean": "3616305480620",
-          "gtin": "3616305480620",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Douglas_DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        },
-        {
-          "merchant_id": "flaconi",
-          "mapping_state": "full",
-          "merchant_product_id": "90007350-0011241",
-          "ean": "3616305480620",
-          "gtin": "3616305480620",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Flaconi DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        }
-      ]
-    },
-    {
-      "product_id": "SC-INITIO-SIDE-EFFECT-EDP-90",
-      "candidate_id": "INITIO-SIDE-EFFECT-EDP",
-      "brand": "Initio Parfums Privés",
-      "name": "Side Effect",
-      "batch": 3,
-      "researched_merchant_count": 2,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
-      "full_mapping_count": 2,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
-      "action_class": "auto_allowed",
-      "live_activation_action_class": "approval_required",
-      "merchants": [
-        {
-          "merchant_id": "douglas",
-          "mapping_state": "full",
-          "merchant_product_id": "5010758011",
-          "ean": "3701415901391",
-          "gtin": "3701415901391",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Douglas_DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        },
-        {
-          "merchant_id": "flaconi",
-          "mapping_state": "full",
-          "merchant_product_id": "80066337-90",
-          "ean": "3701415901391",
-          "gtin": "3701415901391",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Flaconi DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        }
-      ]
-    },
-    {
-      "product_id": "SC-JPG-LE-MALE-LE-PARFUM-125",
-      "candidate_id": "JPG-LE-MALE-LE-PARFUM",
-      "brand": "Jean Paul Gaultier",
-      "name": "Le Male Le Parfum",
-      "batch": 1,
-      "researched_merchant_count": 3,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
-      "full_mapping_count": 1,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
-      "action_class": "auto_allowed",
-      "live_activation_action_class": "approval_required",
-      "merchants": [
-        {
-          "merchant_id": "douglas",
-          "mapping_state": "full",
-          "merchant_product_id": "5002490497",
-          "ean": "8435415032315",
-          "gtin": "8435415032315",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Douglas_DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        },
-        {
-          "merchant_id": "parfumgroup",
-          "mapping_state": "partial",
-          "merchant_product_id": null,
-          "ean": "8435415032315",
-          "gtin": "8435415032315",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Parfumgroup DE",
-            "status": "rejected"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        }
-      ]
-    },
-    {
-      "product_id": "SC-KAYALI-YUM-BOUJEE-MARSHMALLOW-81-EDPI-100",
-      "candidate_id": "KAYALI-YUM-BOUJEE-MARSHMALLOW-81",
-      "brand": "Kayali",
-      "name": "Yum Boujee Marshmallow | 81",
-      "batch": 2,
-      "researched_merchant_count": 2,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
-      "full_mapping_count": 2,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
-      "action_class": "auto_allowed",
-      "live_activation_action_class": "approval_required",
-      "merchants": [
-        {
-          "merchant_id": "notino",
-          "mapping_state": "full",
-          "merchant_product_id": "KAY01896",
-          "ean": "6294018405283",
-          "gtin": "6294018405283",
-          "affiliate_program": {
-            "network": "CJ Affiliate",
-            "program": "Notino",
-            "status": "applied_pending"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        },
-        {
-          "merchant_id": "sephora",
-          "mapping_state": "full",
-          "merchant_product_id": "733612",
-          "ean": "6294018405283",
-          "gtin": "6294018405283",
-          "affiliate_program": null,
-          "affiliate_activation_state": "no_registered_program"
-        }
-      ]
-    },
-    {
-      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
-      "candidate_id": "LANCOME-LA-VIE-EST-BELLE-EDP",
-      "brand": "Lancôme",
-      "name": "La Vie est Belle",
-      "batch": 1,
-      "researched_merchant_count": 3,
-      "mapping_count": 3,
-      "resolved_mapping_count": 3,
-      "full_mapping_count": 1,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [],
-      "next_action": "await_affiliate_program_approval",
-      "action_class": "auto_allowed",
-      "live_activation_action_class": "approval_required",
-      "merchants": [
-        {
-          "merchant_id": "douglas",
-          "mapping_state": "full",
-          "merchant_product_id": "3000056790",
-          "ean": "3605533286555",
-          "gtin": "3605533286555",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Douglas_DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        },
-        {
-          "merchant_id": "flaconi",
-          "mapping_state": "partial",
-          "merchant_product_id": null,
-          "ean": "3605533286555",
-          "gtin": "3605533286555",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Flaconi DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        },
-        {
-          "merchant_id": "top-parfuemerie",
-          "mapping_state": "partial",
-          "merchant_product_id": "780879",
-          "ean": null,
-          "gtin": null,
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "top Parfümerie DE",
-            "status": "approved"
-          },
-          "affiliate_activation_state": "approved"
-        }
-      ]
-    },
-    {
-      "product_id": "SC-LATTAFA-ANGHAM-EDP-100",
-      "candidate_id": "LATTAFA-ANGHAM-EDP",
-      "brand": "Lattafa",
-      "name": "Angham",
-      "batch": 2,
-      "researched_merchant_count": 2,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
-      "full_mapping_count": 1,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
-      "action_class": "auto_allowed",
-      "live_activation_action_class": "approval_required",
-      "merchants": [
-        {
-          "merchant_id": "notino",
-          "mapping_state": "partial",
-          "merchant_product_id": "LTF00992",
-          "ean": null,
-          "gtin": null,
-          "affiliate_program": {
-            "network": "CJ Affiliate",
-            "program": "Notino",
-            "status": "applied_pending"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        },
-        {
-          "merchant_id": "oriental-style",
-          "mapping_state": "full",
-          "merchant_product_id": "SP-LTT-AGH",
-          "ean": "6291108738924",
-          "gtin": "6291108738924",
-          "affiliate_program": null,
-          "affiliate_activation_state": "no_registered_program"
-        }
-      ]
-    },
-    {
-      "product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
-      "candidate_id": "LATTAFA-ECLAIRE-EDP",
-      "brand": "Lattafa",
-      "name": "Eclaire",
-      "batch": 2,
-      "researched_merchant_count": 2,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
-      "full_mapping_count": 2,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
-      "action_class": "auto_allowed",
-      "live_activation_action_class": "approval_required",
-      "merchants": [
-        {
-          "merchant_id": "dm",
-          "mapping_state": "full",
-          "merchant_product_id": "3061570",
-          "ean": "6290362340638",
-          "gtin": "6290362340638",
-          "affiliate_program": null,
-          "affiliate_activation_state": "no_registered_program"
-        },
-        {
-          "merchant_id": "notino",
-          "mapping_state": "full",
-          "merchant_product_id": "LTF00869",
-          "ean": "6290362340638",
-          "gtin": "6290362340638",
-          "affiliate_program": {
-            "network": "CJ Affiliate",
-            "program": "Notino",
-            "status": "applied_pending"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        }
-      ]
-    },
-    {
-      "product_id": "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100",
-      "candidate_id": "NARCISO-RODRIGUEZ-FOR-HER-PURE-MUSC",
-      "brand": "Narciso Rodriguez",
-      "name": "for her PURE MUSC",
-      "batch": 1,
-      "researched_merchant_count": 2,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
-      "full_mapping_count": 1,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
-      "action_class": "auto_allowed",
-      "live_activation_action_class": "approval_required",
-      "merchants": [
-        {
-          "merchant_id": "douglas",
-          "mapping_state": "full",
-          "merchant_product_id": "3001052443",
-          "ean": "3423478515956",
-          "gtin": "3423478515956",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Douglas_DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        },
-        {
-          "merchant_id": "flaconi",
-          "mapping_state": "partial",
-          "merchant_product_id": null,
-          "ean": "3423478515956",
-          "gtin": "3423478515956",
-          "affiliate_program": {
-            "network": "Awin",
-            "program": "Flaconi DE",
-            "status": "applied"
-          },
-          "affiliate_activation_state": "pending_program_approval"
-        }
-      ]
-    },
-    {
-      "product_id": "SC-NISHANE-ANI-EXTRAIT-100",
-      "candidate_id": "NISHANE-ANI-EXTRAIT",
-      "brand": "Nishane",
-      "name": "Ani",
-      "batch": 3,
-      "researched_merchant_count": 2,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
-      "full_mapping_count": 2,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
-      "action_class": "auto_allowed",
-      "live_activation_action_class": "approval_required",
-      "merchants": [
-        {
-          "merchant_id": "douglas",
-          "mapping_state": "full",
-          "merchant_product_id": "5010552304",
-          "ean": "8681008055074",
-          "gtin": "8681008055074",
-          "affiliate_program": {
-            "network": "Awin",
+      "product_id": "
+…[27022 chars truncated — re-run with head/grep/tail for full output]…
+
             "program": "Douglas_DE",
             "status": "applied"
           },
@@ -942,7 +110,9 @@
       "resolved_mapping_count": 3,
       "full_mapping_count": 1,
       "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [],
+      "blockers": [
+        "affiliate_program_not_approved"
+      ],
       "next_action": "await_affiliate_program_approval",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
@@ -982,9 +152,9 @@
           "affiliate_program": {
             "network": "Awin",
             "program": "top Parfümerie DE",
-            "status": "approved"
+            "status": "applied"
           },
-          "affiliate_activation_state": "approved"
+          "affiliate_activation_state": "pending_program_approval"
         }
       ]
     },
@@ -1275,7 +445,9 @@
       "resolved_mapping_count": 3,
       "full_mapping_count": 2,
       "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [],
+      "blockers": [
+        "affiliate_program_not_approved"
+      ],
       "next_action": "await_affiliate_program_approval",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
@@ -1315,9 +487,9 @@
           "affiliate_program": {
             "network": "Awin",
             "program": "top Parfümerie DE",
-            "status": "approved"
+            "status": "applied"
           },
-          "affiliate_activation_state": "approved"
+          "affiliate_activation_state": "pending_program_approval"
         }
       ]
     },
@@ -1378,7 +550,9 @@
       "resolved_mapping_count": 3,
       "full_mapping_count": 2,
       "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [],
+      "blockers": [
+        "affiliate_program_not_approved"
+      ],
       "next_action": "await_affiliate_program_approval",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
@@ -1418,9 +592,9 @@
           "affiliate_program": {
             "network": "Awin",
             "program": "top Parfümerie DE",
-            "status": "approved"
+            "status": "applied"
           },
-          "affiliate_activation_state": "approved"
+          "affiliate_activation_state": "pending_program_approval"
         }
       ]
     },
