@@ -1,0 +1,141 @@
+{
+  "version": 1,
+  "captured_at": "2026-09-23T13:12:00+00:00",
+  "project": "DUFYND",
+  "supabase_project_id": "bqsdxaagklpkxioaqdqa",
+  "purpose": "Pre-launch analytics baseline for the 2026-09-26 DUFYND soft launch. This is observational only.",
+  "live_schema": {
+    "analytics_table": "public.scentai_analytics_events",
+    "row_count": 136,
+    "rls_enabled": true,
+    "deployed_views": [
+      "public.scentai_acquisition_funnel",
+      "public.scentai_conversion_funnel",
+      "public.scentai_product_funnel",
+      "public.scentai_clickout_surface_summary",
+      "public.scentai_product_engagement"
+    ]
+  },
+  "event_baseline": [
+    {
+      "event": "page_view",
+      "events": 89,
+      "sessions": 87
+    },
+    {
+      "event": "fragrance_detail_view",
+      "events": 21,
+      "sessions": 19
+    },
+    {
+      "event": "product_open",
+      "events": 10,
+      "sessions": 9
+    },
+    {
+      "event": "consultation_start",
+      "events": 4,
+      "sessions": 4
+    },
+    {
+      "event": "comparison_start",
+      "events": 4,
+      "sessions": 3
+    },
+    {
+      "event": "merchant_clickout",
+      "events": 4,
+      "sessions": 2
+    },
+    {
+      "event": "advisor_recommendation_view",
+      "events": 3,
+      "sessions": 1
+    },
+    {
+      "event": "advisor_product_open",
+      "events": 1,
+      "sessions": 1
+    }
+  ],
+  "acquisition_baseline": {
+    "current_attributed_activity": [
+      {
+        "acquisition_source": "organic",
+        "campaign_id": null,
+        "content_id": null,
+        "events": 34,
+        "sessions": 29
+      },
+      {
+        "acquisition_source": null,
+        "campaign_id": "naxos_genesis_pilot",
+        "content_id": null,
+        "events": 2,
+        "sessions": 1
+      },
+      {
+        "acquisition_source": null,
+        "campaign_id": "perfumetrader_live_smoke",
+        "content_id": null,
+        "events": 2,
+        "sessions": 1
+      }
+    ],
+    "current_acquisition_funnel_rows": [
+      {
+        "landing_source": "duftfinder",
+        "acquisition_source": "organic",
+        "landing_sessions": 3,
+        "consultation_sessions": 0,
+        "clickout_sessions": 0
+      },
+      {
+        "landing_source": "parfum_alternativen",
+        "acquisition_source": "organic",
+        "landing_sessions": 3,
+        "consultation_sessions": 0,
+        "clickout_sessions": 0
+      },
+      {
+        "landing_source": "fragrance_detail",
+        "acquisition_source": "organic",
+        "landing_sessions": 2,
+        "detail_sessions": 2,
+        "clickout_sessions": 0
+      },
+      {
+        "landing_source": "parfum_geschenkberater",
+        "acquisition_source": "organic",
+        "landing_sessions": 1,
+        "consultation_sessions": 0,
+        "clickout_sessions": 0
+      }
+    ]
+  },
+  "clickout_baseline": [
+    {
+      "surface": "merchant_discovery",
+      "clickouts": 4,
+      "clickout_sessions": 2,
+      "products_clicked": 0,
+      "merchants_clicked": 1
+    }
+  ],
+  "launch_measurement_ready": true,
+  "prepared_tracking_links": "examples/retail/data/dufynd_launch_tracking_links_20260923.json",
+  "launch_kpis": [
+    "landing_sessions by content_id and source",
+    "landing_to_consultation_pct",
+    "comparison_sessions by content_id",
+    "detail_sessions by content_id",
+    "merchant clickout sessions by content_id",
+    "catalog no-result searches",
+    "advisor recommendation-to-open behavior"
+  ],
+  "interpretation_guardrails": [
+    "This baseline predates the 2026-09-26 launch and includes internal/smoke activity.",
+    "Do not compare raw post-launch totals without filtering campaign/content attribution where possible.",
+    "Social platform views are external metrics; website attribution begins when a tracked DUFYND link is opened."
+  ]
+}
