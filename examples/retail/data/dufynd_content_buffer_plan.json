@@ -43,7 +43,7 @@
     "launch_plan_preview_overlap": 14,
     "preview_ready_extra": "budget_three_under_50_01",
     "scripted_not_previewed": "aventus_alternatives_01",
-    "final_video_renders_review_pending": 3,
+    "final_video_renders_review_pending": 4,
     "static_creatives_review_pending": 1,
     "approved_final_creatives": [
       "naxos_campaign_final",
@@ -53,7 +53,8 @@
       "sillage_vs_haltbarkeit_01",
       "i_want_to_smell_naxos_01",
       "original_vs_alt_imagination_01",
-      "not_every_dupe_clone_01"
+      "not_every_dupe_clone_01",
+      "top3_office_01"
     ]
   },
   "launch_wave": [
@@ -264,6 +265,29 @@
       "media_url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/dd8a72da-f427-4475-9905-c9460ddd370f.mp4",
       "source_preview": "examples/retail/storefront-web/public/social/pilots/batch01/not_every_dupe_clone_01-preview.mp4",
       "notes": "Rebuilt from existing verified product assets as a 15-second no-voice educational motion-graphics review render. No paid AI-video generation used. Relationship labels follow the existing DUFYND pilot contract. Do not publish before operator review."
+    },
+    {
+      "content_id": "top3_office_01",
+      "format": "short_form_video",
+      "state": "operator_review_pending",
+      "duration_seconds": 15,
+      "voiceover": false,
+      "landing_path": "/duftfinder",
+      "product_ids": [
+        "SC-PRADA-LHOMME-100",
+        "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+        "SC-CHANEL-BLEU-DE-CHANEL-EDP-100"
+      ],
+      "text_sequence": [
+        "DER BESTE BÜRODUFT? / KOMMT DRAUF AN.",
+        "PRADA L'HOMME — CLEAN · PUDRIG · AUSGEWOGEN",
+        "BOIS IMPÉRIAL — TROCKEN · HOLZIG · CHARAKTERSTARK",
+        "BLEU DE CHANEL — FRISCH · HOLZIG · VIELSEITIG",
+        "BÜRO IST DER ANLASS. DEIN PROFIL ENTSCHEIDET."
+      ],
+      "media_url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/fdb9741b-a9c3-40c1-aa63-10bf0630ae13.mp4",
+      "source_preview": "examples/retail/storefront-web/public/social/pilots/batch01/top3_office_01-preview.mp4",
+      "notes": "Rebuilt from existing verified product assets as a 15-second no-voice occasion/advisor motion-graphics review render. No ranking claim and no paid AI-video generation. Do not publish before operator review."
     }
   ],
   "social_copy_extensions": [
