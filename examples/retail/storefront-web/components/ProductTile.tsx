@@ -51,7 +51,7 @@ export function ProductImage({ product, className = "" }: { product: Product; cl
           alt={product.title}
           className={
             isDufynd
-              ? "h-full w-full scale-[1.25] object-contain"
+              ? "h-full w-full scale-[1.18] object-contain transition-transform duration-300 group-hover:scale-[1.22]"
               : "h-full w-full object-cover"
           }
         />
@@ -302,7 +302,7 @@ export default function ProductTile({
         }`}
       >
         <div className="relative">
-          <div className={`flex items-center justify-center w-full ${imageHeight} bg-white`}>
+          <div className={`group flex items-center justify-center w-full ${imageHeight} ${isDufynd ? "bg-transparent" : "bg-white"}`}>
             <ProductImage product={product} className="h-full w-full" />
           </div>
           {product.in_stock === false ? (
