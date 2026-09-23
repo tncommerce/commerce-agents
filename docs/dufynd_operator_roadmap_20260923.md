@@ -119,6 +119,12 @@ Next:
 
 **Objective:** turn launch data into decisions rather than reacting to vanity metrics.
 
+Measurement readiness:
+- Live Supabase analytics is active and already recording first-party events.
+- Pre-launch baseline: `examples/retail/data/dufynd_prelaunch_analytics_baseline_20260923.json`.
+- Launch tracking links: `examples/retail/data/dufynd_launch_tracking_links_20260923.json`.
+- Acquisition/content funnel views are already deployed; no analytics migration is currently required before the 2026-09-26 soft launch.
+
 Weekly review after launch:
 - qualified DUFYND landing sessions;
 - advisor starts;
