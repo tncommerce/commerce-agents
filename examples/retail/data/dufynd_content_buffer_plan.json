@@ -328,6 +328,35 @@
       "media_url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/c4db1d9a-fa6a-4b49-82ab-934538bfb2d8.png",
       "concept": "I WANT TO SMELL addictive — three-fragrance editorial mood post.",
       "notes": "Replaces the rejected single-fragrance Naxos mood post. No black description rectangle."
+    },
+    {
+      "content_id": "sillage_v3_directors_cut",
+      "format": "short_form_video_visual_master",
+      "state": "operator_visual_review_pending",
+      "duration_seconds": 10,
+      "voiceover": false,
+      "audio_status": "intentionally_none_for_visual_review",
+      "media_url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/542b20b0-606d-4ff9-ba31-7cb4720570a6.mp4",
+      "shot_structure": [
+        "fine perfume atomizer macro motion",
+        "locked cinematic Sillage hold with visible airborne microdroplets",
+        "premium bottle hero payoff with SILLAGE ≠ HALTBARKEIT"
+      ],
+      "notes": "Built under the director/DP prompting standard. Shot B intentionally uses a controlled hold after motion-model retries reduced particle readability. No audio until visual approval."
+    },
+    {
+      "content_id": "i_want_to_smell_addictive_v2",
+      "format": "static_social",
+      "state": "operator_visual_review_pending",
+      "ratio": "4:5",
+      "product_ids": [
+        "SC-XERJOFF-NAXOS-100",
+        "SC-PDM-ALTHAIR-125",
+        "SC-ARMANI-SWY-INTENSELY-100"
+      ],
+      "media_url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/cb06b514-6ab8-4d3d-a2ae-7097b09f8917.png",
+      "concept": "I WANT TO SMELL addictive — exact extracted product cutouts integrated into one generated organic-luxury set.",
+      "notes": "Rebuilt using a generated set plate plus transparent product cutouts from existing DUFYND editorial assets to preserve product identity and avoid a pasted-on-white-card look."
     }
   ],
   "social_copy_extensions": [
