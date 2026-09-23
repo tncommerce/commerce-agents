@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-09-22",
+  "updated_at": "2026-09-23",
   "system": "DUFYND",
   "campaign_id": "launch01",
   "launch_date": "2026-09-26",
@@ -39,10 +39,20 @@
     "preview_ready_creatives": 15,
     "social_copy_ready": 15,
     "tracked_channel_links_ready": 45,
-    "final_video_renders_ready": 0,
+    "final_video_renders_ready": 2,
     "launch_plan_preview_overlap": 14,
     "preview_ready_extra": "budget_three_under_50_01",
-    "scripted_not_previewed": "aventus_alternatives_01"
+    "scripted_not_previewed": "aventus_alternatives_01",
+    "final_video_renders_review_pending": 1,
+    "static_creatives_review_pending": 1,
+    "approved_final_creatives": [
+      "naxos_campaign_final",
+      "bois_imperial_final"
+    ],
+    "review_pending_creatives": [
+      "sillage_vs_haltbarkeit_01",
+      "i_want_to_smell_naxos_01"
+    ]
   },
   "launch_wave": [
     {
@@ -161,5 +171,47 @@
       "merchant clickouts only as a downstream signal"
     ],
     "decision_rule": "Do not judge a format from a single post. Prefer at least three comparable tests before materially changing the content mix unless a clear quality or compliance issue appears."
-  }
+  },
+  "recent_production": [
+    {
+      "content_id": "sillage_vs_haltbarkeit_01",
+      "format": "short_form_video",
+      "state": "operator_review_pending",
+      "duration_seconds": 15,
+      "voiceover": false,
+      "text_sequence": [
+        "STARKE DUFTSPUR = LANGE HALTBARKEIT?",
+        "NICHT DASSELBE.",
+        "SILLAGE / DEINE DUFTSPUR",
+        "HALTBARKEIT / WIE LANGE DER DUFT BLEIBT",
+        "8H AUF DER HAUT ≠ 8H STARK IM RAUM",
+        "SILLAGE ≠ HALTBARKEIT"
+      ],
+      "media_url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/80406350-1146-4177-939b-f953c15d791a.mp4",
+      "notes": "Uses the repaired Sillage V1 hero shot, a macro longevity shot, split comparison section and original 96 BPM-style synthetic audio bed. Do not publish before operator review."
+    },
+    {
+      "content_id": "i_want_to_smell_naxos_01",
+      "format": "static_social",
+      "state": "operator_review_pending",
+      "product_id": "SC-XERJOFF-NAXOS-100",
+      "concept": "I WANT TO SMELL / WARM. EXPENSIVE. ADDICTIVE.",
+      "formats": [
+        {
+          "ratio": "4:5",
+          "media_url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/0aa2c660-f5f8-483b-969e-b7420579fed5.png"
+        },
+        {
+          "ratio": "9:16",
+          "media_url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/8925d273-0af3-4388-9ddd-b3f984af0ced.png"
+        }
+      ],
+      "canonical_note_callouts": [
+        "Honey",
+        "Tobacco",
+        "Lavender"
+      ],
+      "notes": "Built from the existing approved DUFYND Naxos editorial asset with no additional image-generation spend. Do not publish before operator review."
+    }
+  ]
 }
