@@ -60,6 +60,26 @@
         "SC-ARABIYAT-MARWA-EDP-100",
         "SC-BUJAIRAMI-HECTIC-100"
       ]
+    },
+    {
+      "content_id": "not_every_dupe_clone_01",
+      "type": "video",
+      "state": "operator_review_pending",
+      "media_id": "dd8a72da-f427-4475-9905-c9460ddd370f",
+      "url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/dd8a72da-f427-4475-9905-c9460ddd370f.mp4",
+      "duration_seconds": 15,
+      "dimensions": "1080x1920",
+      "fps": 30,
+      "voiceover": false,
+      "source_mode": "existing_verified_product_assets_plus_local_motion_graphics",
+      "product_ids": [
+        "SC-PDM-ALTHAIR-125",
+        "SC-FRENCH-AVENUE-LIQUID-BRUN-100",
+        "SC-LV-IMAGINATION-100",
+        "SC-ARABIYAT-MARWA-EDP-100",
+        "SC-CREED-AVENTUS-100",
+        "SC-MONTBLANC-EXPLORER-100"
+      ]
     }
   ]
 }
