@@ -17,6 +17,47 @@ export default function DufyndDepthInteraction() {
       document.querySelectorAll<HTMLElement>(".dufynd-depth-stage"),
     );
 
+    const updateScrollDepth = () => {
+      const viewportCenter = window.innerHeight / 2;
+      const travel = Math.max(1, window.innerHeight * 0.7);
+
+      for (const stage of stages) {
+        const rect = stage.getBoundingClientRect();
+        const center = rect.top + rect.height / 2;
+        const progress = Math.min(
+          1,
+          Math.max(-1, (viewportCenter - center) / travel),
+        );
+
+        stage.style.setProperty(
+          "--dufynd-stage-y",
+          `${(progress * 6).toFixed(2)}px`,
+        );
+        stage.style.setProperty(
+          "--dufynd-surface-y",
+          `${(progress * 10).toFixed(2)}px`,
+        );
+        stage.style.setProperty(
+          "--dufynd-bg-y",
+          `${(progress * -14).toFixed(2)}px`,
+        );
+        stage.style.setProperty(
+          "--dufynd-ambient-opacity",
+          `${(0.72 + (1 - Math.abs(progress)) * 0.18).toFixed(2)}`,
+        );
+      }
+    };
+
+    let scrollFrame = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(scrollFrame);
+      scrollFrame = requestAnimationFrame(updateScrollDepth);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    updateScrollDepth();
+
     const cleanups = stages.map((stage) => {
       let frame = 0;
 
@@ -71,7 +112,12 @@ export default function DufyndDepthInteraction() {
       };
     });
 
-    return () => cleanups.forEach((cleanup) => cleanup());
+    return () => {
+      cancelAnimationFrame(scrollFrame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      cleanups.forEach((cleanup) => cleanup());
+    };
   }, []);
 
   return null;
