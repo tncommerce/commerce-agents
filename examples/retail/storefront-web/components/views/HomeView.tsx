@@ -124,7 +124,7 @@ export default function HomeView({
             </div>
           </div>
 
-          <div className="relative mx-auto w-full max-w-[380px] lg:max-w-[420px]">
+          <div className="dufynd-depth-stage group/depth relative mx-auto w-full max-w-[380px] lg:max-w-[420px]">
             <div
               aria-hidden
               className="absolute inset-x-[12%] bottom-[4%] top-[10%] rounded-full bg-[#d6aa58]/15 blur-3xl"
@@ -136,11 +136,12 @@ export default function HomeView({
                   className="group block"
                   aria-label={`${hero.brand} ${hero.title} ansehen`}
                 >
-                  <div className="flex aspect-[4/4.2] items-center justify-center overflow-hidden rounded-[22px] bg-[radial-gradient(circle_at_50%_42%,#fffdf8_0%,#f4e9d2_58%,#e7d5b4_100%)]">
+                  <div className="dufynd-depth-surface relative flex aspect-[4/4.2] items-center justify-center overflow-hidden rounded-[22px] bg-[radial-gradient(circle_at_50%_42%,#fffdf8_0%,#f4e9d2_58%,#e7d5b4_100%)]">
+                    <div aria-hidden className="dufynd-depth-shadow" />
                     <img
                       src={hero.image_url}
                       alt={hero.title}
-                      className="h-full w-full scale-[1.12] object-contain transition duration-500 group-hover:scale-[1.16]"
+                      className="dufynd-depth-object h-full w-full scale-[1.12] object-contain"
                     />
                   </div>
                   <div className="px-1 pb-1 pt-4 text-[#17130f]">
