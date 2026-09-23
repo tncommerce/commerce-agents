@@ -50,11 +50,17 @@
       "bois_imperial_final"
     ],
     "review_pending_creatives": [
-      "sillage_vs_haltbarkeit_01",
       "i_want_to_smell_naxos_01",
       "original_vs_alt_imagination_01",
       "not_every_dupe_clone_01",
       "top3_office_01"
+    ],
+    "revision_required_creatives": [
+      "sillage_vs_haltbarkeit_01",
+      "original_vs_alt_imagination_01",
+      "not_every_dupe_clone_01",
+      "top3_office_01",
+      "i_want_to_smell_naxos_01"
     ]
   },
   "launch_wave": [
@@ -184,7 +190,7 @@
     {
       "content_id": "sillage_vs_haltbarkeit_01",
       "format": "short_form_video",
-      "state": "operator_review_pending",
+      "state": "rejected_rebuild_required",
       "duration_seconds": 15,
       "voiceover": false,
       "text_sequence": [
@@ -201,7 +207,7 @@
     {
       "content_id": "i_want_to_smell_naxos_01",
       "format": "static_social",
-      "state": "operator_review_pending",
+      "state": "rebuild_multi_product_required",
       "product_id": "SC-XERJOFF-NAXOS-100",
       "concept": "I WANT TO SMELL / WARM. EXPENSIVE. ADDICTIVE.",
       "formats": [
@@ -224,7 +230,7 @@
     {
       "content_id": "original_vs_alt_imagination_01",
       "format": "short_form_video",
-      "state": "operator_review_pending",
+      "state": "sound_revision_required",
       "duration_seconds": 15,
       "voiceover": false,
       "landing_path": "/parfum-alternativen",
@@ -248,7 +254,7 @@
     {
       "content_id": "not_every_dupe_clone_01",
       "format": "short_form_video",
-      "state": "operator_review_pending",
+      "state": "sound_revision_required",
       "duration_seconds": 15,
       "voiceover": false,
       "landing_path": "/parfum-alternativen",
@@ -274,7 +280,7 @@
     {
       "content_id": "top3_office_01",
       "format": "short_form_video",
-      "state": "operator_review_pending",
+      "state": "sound_revision_required",
       "duration_seconds": 15,
       "voiceover": false,
       "landing_path": "/duftfinder",
@@ -298,5 +304,67 @@
   "social_copy_extensions": [
     "examples/retail/data/dufynd_social_copy_20260923.json"
   ],
-  "launch_sequence_rule": "Orders 1-2 are fixed approved masters. Orders 3+ are conditional and must not publish unless the operator explicitly approves the corresponding creative."
+  "launch_sequence_rule": "Orders 1-2 are fixed approved masters. Orders 3+ are conditional and must not publish unless the operator explicitly approves the corresponding creative.",
+  "operator_reviews_20260923": {
+    "sillage_vs_haltbarkeit_01": {
+      "rating": 5,
+      "decision": "reject_rebuild",
+      "notes": [
+        "Below Naxos minimum quality standard.",
+        "Visible edited square artifacts reduce perceived quality.",
+        "Human styling/gender presentation reads wrong for the intended male visual.",
+        "Rebuild concept using an existing extracted viral-example structure; do not patch current render."
+      ]
+    },
+    "original_vs_alt_imagination_01": {
+      "rating": 7,
+      "decision": "revise_sound_then_hold_as_education",
+      "notes": [
+        "Solid as education, below Naxos premium benchmark.",
+        "Current synthetic self-made sounds/SFX materially reduce quality.",
+        "Can live between stronger viral shorts after sound redesign."
+      ]
+    },
+    "not_every_dupe_clone_01": {
+      "rating": 7,
+      "decision": "revise_sound_then_hold_as_education",
+      "notes": [
+        "Solid education filler, not premium hero content.",
+        "Current synthetic self-made sounds/SFX must be replaced."
+      ]
+    },
+    "top3_office_01": {
+      "rating": 7,
+      "decision": "revise_sound_then_hold_as_education",
+      "notes": [
+        "Same assessment as the other educational motion-graphics shorts.",
+        "Keep concept, replace sound language and position between viral hero posts."
+      ]
+    },
+    "i_want_to_smell_naxos_01": {
+      "rating": 6,
+      "decision": "rebuild_as_multi_product_static",
+      "notes": [
+        "Desire-led format is directionally good.",
+        "At least two fragrances should be shown per category.",
+        "Remove the black description rectangle.",
+        "The large single-Naxos version is not suitable as the target format."
+      ]
+    },
+    "website_visual_refresh_20260923": {
+      "rating": 8,
+      "decision": "direction_approved_expand_dynamics",
+      "notes": [
+        "Clear visual upgrade.",
+        "Next iteration should add stronger 3D/product-motion dynamics inspired by the supplied examples."
+      ]
+    }
+  },
+  "production_rules_20260923": {
+    "quality_floor": "Final Naxos campaign video is the minimum standard for premium shorts.",
+    "educational_short_rule": "Education must be embedded inside a viral/social-native visual concept, not presented primarily as infographic motion graphics.",
+    "sound_rule": "Do not use homemade synthetic music beds or generic synthetic SFX. Use music plus only sparse natural synchronized Foley when justified (e.g. atomizer spray, camera shutter, page turn, physical whoosh).",
+    "desire_static_rule": "I want to smell... posts should normally show at least two matching fragrances and avoid heavy black description boxes.",
+    "sillage_rule": "Discard the current final-review render as a publication candidate and rebuild from an extracted viral-example structure rather than patching it."
+  }
 }
