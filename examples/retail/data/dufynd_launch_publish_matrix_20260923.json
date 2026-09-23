@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-23",
+  "campaign_id": "launch01",
+  "launch_date": "2026-09-26",
+  "purpose": "Operator-facing publish matrix. Approved content can be prepared but publication remains an explicit operator action.",
+  "sequence": [
+    {
+      "order": 1,
+      "content_id": "naxos_campaign_final",
+      "status": "approved",
+      "format": "premium_video",
+      "landing_path": "/duft/xerjoff-naxos",
+      "publish_gate": "operator_publish_action"
+    },
+    {
+      "order": 2,
+      "content_id": "bois_imperial_final",
+      "status": "approved",
+      "format": "premium_video",
+      "landing_path": "/duft/essential-parfums-bois-imperial",
+      "publish_gate": "operator_publish_action"
+    },
+    {
+      "order": 3,
+      "content_id": "sillage_vs_haltbarkeit_01",
+      "status": "review_pending",
+      "format": "educational_video",
+      "landing_path": "/duftfinder",
+      "publish_gate": "operator_creative_approval_then_publish_action"
+    },
+    {
+      "order": 4,
+      "content_id": "original_vs_alt_imagination_01",
+      "status": "review_pending",
+      "format": "comparison_video",
+      "landing_path": "/parfum-alternativen",
+      "publish_gate": "operator_creative_approval_then_publish_action"
+    },
+    {
+      "order": 5,
+      "content_id": "i_want_to_smell_naxos_01",
+      "status": "review_pending",
+      "format": "static_social",
+      "landing_path": "/duft/xerjoff-naxos",
+      "publish_gate": "operator_creative_approval_then_publish_action"
+    }
+  ],
+  "channel_rule": "Reuse the same approved master across TikTok, Instagram and YouTube with channel-specific copy and tracking links; do not create separate production systems.",
+  "quality_floor": "Naxos campaign final is the minimum visual quality benchmark for new premium video production.",
+  "fallback_rule": "If any review-pending creative is not approved, skip it rather than lowering the quality bar."
+}
