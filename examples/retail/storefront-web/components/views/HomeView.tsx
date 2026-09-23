@@ -13,6 +13,7 @@ import { fetchProducts } from "@/lib/api";
 import { ADVISOR_STARTS } from "@/lib/advisorStarts";
 import { fragrancePathForProduct } from "@/lib/fragranceSlug";
 import type { Product } from "@/lib/types";
+import DufyndDepthInteraction from "../DufyndDepthInteraction";
 import ProductTile, { ProductRow } from "../ProductTile";
 import LegalFooter from "../LegalFooter";
 import MerchantDiscovery from "../MerchantDiscovery";
@@ -85,7 +86,9 @@ export default function HomeView({
       product.in_stock !== false,
   ).length;
   return (
-    <div className="mx-auto flex w-full max-w-[1080px] flex-col gap-4 px-4 sm:gap-6 sm:px-6">
+    <>
+      <DufyndDepthInteraction />
+      <div className="mx-auto flex w-full max-w-[1080px] flex-col gap-4 px-4 sm:gap-6 sm:px-6">
       <section className="relative overflow-hidden rounded-[28px] border border-[#d7c7a2]/45 bg-[#15120f] text-white shadow-[0_24px_80px_-38px_rgba(40,27,10,0.75)] sm:rounded-[34px]">
         <div
           aria-hidden
