@@ -213,5 +213,8 @@
       ],
       "notes": "Built from the existing approved DUFYND Naxos editorial asset with no additional image-generation spend. Do not publish before operator review."
     }
+  ],
+  "social_copy_extensions": [
+    "examples/retail/data/dufynd_social_copy_20260923.json"
   ]
 }
