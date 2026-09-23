@@ -43,6 +43,23 @@
           "url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/8925d273-0af3-4388-9ddd-b3f984af0ced.png"
         }
       ]
+    },
+    {
+      "content_id": "original_vs_alt_imagination_01",
+      "type": "video",
+      "state": "operator_review_pending",
+      "media_id": "12e60125-0b08-4fb4-b3df-e3db6caa0b42",
+      "url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/12e60125-0b08-4fb4-b3df-e3db6caa0b42.mp4",
+      "duration_seconds": 15,
+      "dimensions": "1080x1920",
+      "fps": 30,
+      "voiceover": false,
+      "source_mode": "existing_verified_product_assets_plus_local_motion_graphics",
+      "product_ids": [
+        "SC-LV-IMAGINATION-100",
+        "SC-ARABIYAT-MARWA-EDP-100",
+        "SC-BUJAIRAMI-HECTIC-100"
+      ]
     }
   ]
 }
