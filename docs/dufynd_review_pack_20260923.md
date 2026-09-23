@@ -49,6 +49,8 @@ This pack is review-only. Nothing here is approved for publishing unless explici
 
 ## Website review
 
+- Visual review board: https://d2ol7oe51mr4n9.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/7954f778-a02c-4eed-b20e-b472f4dda665.png
+- Board includes desktop + mobile snapshots for homepage, Xerjoff Naxos detail and comparison index.
 - Draft PR: #46
 - Branch: `dufynd-visual-refresh-20260923`
 - Status: CI green, production build passed, 390×844 mobile smoke passed
