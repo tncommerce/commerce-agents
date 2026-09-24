@@ -16,6 +16,7 @@ import { ADVISOR_STARTS } from "@/lib/advisorStarts";
 import { fragrancePathForProduct } from "@/lib/fragranceSlug";
 import type { Product } from "@/lib/types";
 import FragranceVisual from "../FragranceVisual";
+import FragranceModel3D from "../FragranceModel3D";
 import ProductTile, {
   ProductRating,
   ProductRow,
@@ -170,14 +171,13 @@ export default function HomeView({
               aria-label="Xerjoff Naxos entdecken"
               className="dufynd-hero-product group relative min-h-[320px] overflow-hidden border-t border-white/10 md:min-h-[430px] md:border-l md:border-t-0"
             >
-              {spotlight.attributes?.product_cutout_url ? (
-                <FragranceVisual
+              {spotlight.attributes?.product_model_3d_url || spotlight.attributes?.product_cutout_url ? (
+                <FragranceModel3D
+                  modelUrl={spotlight.attributes?.product_model_3d_url}
                   imageUrl={spotlight.image_url}
-                  cutoutUrl={spotlight.attributes.product_cutout_url}
+                  cutoutUrl={spotlight.attributes?.product_cutout_url}
                   backdropUrl={spotlight.image_url}
                   alt={spotlight.title}
-                  variant="hero"
-                  mode="cutout"
                   className="h-full min-h-[320px] w-full md:min-h-[430px]"
                   priority
                 />
