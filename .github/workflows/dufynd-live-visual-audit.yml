@@ -28,7 +28,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p visual-audit
-          cat > /tmp/audit.mjs <<'NODE'
+          cat > audit-live.mjs <<'NODE'
           import { chromium } from "playwright";
           import fs from "node:fs";
 
@@ -130,7 +130,7 @@ jobs:
 
           await browser.close();
           NODE
-          node /tmp/audit.mjs
+          node audit-live.mjs
 
       - name: Upload audit
         uses: actions/upload-artifact@v4
