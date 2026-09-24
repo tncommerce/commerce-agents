@@ -1,12 +1,12 @@
 {
   "version": 1,
   "generated_at": "2026-09-24T13:02:49+00:00",
-  "source_fingerprint_sha256": "5b92da7d63c491553dc53827281af2d703592273c5126fb911cbe39a1895504a",
+  "source_fingerprint_sha256": "85a973196249a18ecf0a4969354979147134e1db6d016e5eefbd3304aafebf9e",
   "system": "DUFYND",
   "control_plane": "commerce_jarvis_master",
   "overall_state": "manual_step_pending",
   "active_domain": "content",
-  "next_action": "launch_day_rebrand_and_live_checks_then_request_publish_approval",
+  "next_action": "wait_for_2026_09_26_then_execute_naxos_launch_day_packet",
   "next_action_class": "manual_step_pending_at_launch",
   "user_approval_required_now": false,
   "domains": {
@@ -28,7 +28,7 @@
       "domain": "content",
       "overall_state": "strategy_work_available",
       "execution_state": "manual_step_pending",
-      "next_action": "launch_day_rebrand_and_live_checks_then_request_publish_approval",
+      "next_action": "wait_for_2026_09_26_then_execute_naxos_launch_day_packet",
       "next_action_class": "manual_step_pending_at_launch",
       "user_approval_required_now": false,
       "blockers": []
