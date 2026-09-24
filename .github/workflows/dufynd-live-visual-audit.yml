@@ -18,25 +18,124 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Install Playwright Chromium
-        run: npx --yes playwright@1.55.0 install --with-deps chromium
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
 
-      - name: Capture live DUFYND screenshots
+      - name: Audit live DUFYND after real scrolling
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p visual-audit
-          npx --yes playwright@1.55.0 screenshot --browser=chromium --full-page --wait-for-timeout=3000 https://dufynd.de visual-audit/home-desktop.png
-          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page --wait-for-timeout=3000 https://dufynd.de visual-audit/home-mobile.png
-          npx --yes playwright@1.55.0 screenshot --browser=chromium --full-page --wait-for-timeout=3000 https://dufynd.de/duft visual-audit/catalog-desktop.png
-          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page --wait-for-timeout=3000 https://dufynd.de/duft visual-audit/catalog-mobile.png
-          npx --yes playwright@1.55.0 screenshot --browser=chromium --full-page --wait-for-timeout=3000 https://dufynd.de/duft/xerjoff-naxos visual-audit/naxos-desktop.png
-          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page --wait-for-timeout=3000 https://dufynd.de/duft/xerjoff-naxos visual-audit/naxos-mobile.png
+          cat > /tmp/audit.mjs <<'NODE'
+          import { chromium } from "playwright";
+          import fs from "node:fs";
 
-      - name: Upload screenshots
+          const browser = await chromium.launch({ headless: true });
+
+          async function wakeLazyContent(page) {
+            await page.evaluate(async () => {
+              const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+              const scrollers = [
+                document.scrollingElement,
+                ...Array.from(document.querySelectorAll("*")).filter((el) => {
+                  const s = getComputedStyle(el);
+                  return (
+                    el.scrollHeight > el.clientHeight + 80 &&
+                    ["auto", "scroll"].includes(s.overflowY)
+                  );
+                }),
+              ].filter(Boolean);
+
+              for (const el of [...new Set(scrollers)]) {
+                const height = Math.max(el.clientHeight || window.innerHeight, 500);
+                for (let y = 0; y <= el.scrollHeight; y += Math.max(300, height * 0.75)) {
+                  if (el === document.scrollingElement) {
+                    window.scrollTo(0, y);
+                  } else {
+                    el.scrollTop = y;
+                  }
+                  await sleep(180);
+                }
+              }
+              window.scrollTo(0, 0);
+              for (const el of scrollers) {
+                if (el !== document.scrollingElement) el.scrollTop = 0;
+              }
+            });
+            await page.waitForTimeout(1800);
+          }
+
+          async function audit(name, url, viewport) {
+            const context = await browser.newContext({ viewport });
+            const page = await context.newPage();
+            const requestFailures = [];
+            const badResponses = [];
+
+            page.on("requestfailed", (request) => {
+              requestFailures.push({
+                url: request.url(),
+                error: request.failure()?.errorText || "unknown",
+              });
+            });
+            page.on("response", (response) => {
+              if (response.status() >= 400) {
+                badResponses.push({ url: response.url(), status: response.status() });
+              }
+            });
+
+            await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60000 });
+            await page.waitForTimeout(2500);
+            await wakeLazyContent(page);
+
+            const images = await page.locator("img").evaluateAll((imgs) =>
+              imgs.map((img) => ({
+                alt: img.alt,
+                src: img.currentSrc || img.src,
+                loading: img.loading,
+                complete: img.complete,
+                naturalWidth: img.naturalWidth,
+                naturalHeight: img.naturalHeight,
+                renderedWidth: Math.round(img.getBoundingClientRect().width),
+                renderedHeight: Math.round(img.getBoundingClientRect().height),
+              })),
+            );
+
+            const report = {
+              url,
+              viewport,
+              imageCount: images.length,
+              brokenImages: images.filter((img) => img.complete && img.naturalWidth === 0),
+              unloadedImages: images.filter((img) => !img.complete),
+              requestFailures,
+              badResponses,
+            };
+
+            fs.writeFileSync(
+              `visual-audit/${name}.json`,
+              JSON.stringify(report, null, 2),
+            );
+            await page.screenshot({
+              path: `visual-audit/${name}.png`,
+              fullPage: true,
+            });
+            await context.close();
+          }
+
+          await audit("catalog-desktop-scrolled", "https://dufynd.de/duft", { width: 1280, height: 900 });
+          await audit("catalog-mobile-scrolled", "https://dufynd.de/duft", { width: 390, height: 844 });
+          await audit("naxos-desktop-scrolled", "https://dufynd.de/duft/xerjoff-naxos", { width: 1280, height: 900 });
+          await audit("naxos-mobile-scrolled", "https://dufynd.de/duft/xerjoff-naxos", { width: 390, height: 844 });
+
+          await browser.close();
+          NODE
+          node /tmp/audit.mjs
+
+      - name: Upload audit
         uses: actions/upload-artifact@v4
         with:
-          name: dufynd-live-visual-audit
+          name: dufynd-live-scroll-audit
           path: visual-audit/
           if-no-files-found: error
           retention-days: 1
