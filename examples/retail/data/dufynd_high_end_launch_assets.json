@@ -94,5 +94,7 @@
     "This registry does not replace the legacy pilot concept bank; it separates the current quality-floor launch track from older prototypes.",
     "Sillage/Haltbarkeit and EDP-vs-EDT are explicitly rebuild-only and their old files must not be promoted to launch finals.",
     "No paid generation is authorized by this registry."
-  ]
+  ],
+  "tracked_links_file": "examples/retail/data/dufynd_high_end_launch_links.json",
+  "social_copy_file": "examples/retail/data/dufynd_high_end_social_copy.json"
 }
