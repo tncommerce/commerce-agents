@@ -7,13 +7,13 @@
   "pipeline_id": "launch_content_pipeline_v1",
   "batch_count": 3,
   "total_pilots": 15,
-  "current_batch_id": "pilot_batch_01",
-  "pipeline_state": "production_work_available",
-  "active_track": "audience_utility_content_buffer",
+  "current_batch_id": null,
+  "pipeline_state": "strategy_work_available",
+  "active_track": "high_end_launch_buffer",
   "legacy_pilot_batches": "resume_for_preproduction",
-  "next_action": "record_or_generate_voiceover_audio",
-  "next_action_class": "approval_required",
-  "user_approval_required_now": true,
+  "next_action": "finish_ysl_libre_audio_qc_and_prepare_mobile_launch_review",
+  "next_action_class": "auto_allowed_until_paid_generation_or_publish_gate",
+  "user_approval_required_now": false,
   "production_parallel_allowed": true,
   "publish_order": [
     "pilot_batch_01",
@@ -106,5 +106,5 @@
       }
     }
   ],
-  "operating_rule": "Jarvis may prepare batches in parallel, but publish decisions remain explicit user approval gates and the declared publish order is preserved unless the user changes it."
+  "operating_rule": "The declared content strategy controls the active work track. Legacy pilot batches remain available as reserve/preproduction work, while paid generation and publishing remain explicit approval gates."
 }

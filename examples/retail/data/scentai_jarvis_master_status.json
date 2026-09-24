@@ -1,14 +1,14 @@
 {
   "version": 1,
   "generated_at": "2026-09-24T10:54:57+00:00",
-  "source_fingerprint_sha256": "f9da70e7512f2e204023785977c3095c77d98f7bedffa26f33bdef061a1df22f",
+  "source_fingerprint_sha256": "6c54081e8dd567a3596852c6ed2e546b535cd6381f91445328dbd53a83840874",
   "system": "DUFYND",
   "control_plane": "commerce_jarvis_master",
-  "overall_state": "user_approval_required",
+  "overall_state": "work_available",
   "active_domain": "content",
-  "next_action": "record_or_generate_voiceover_audio",
-  "next_action_class": "approval_required",
-  "user_approval_required_now": true,
+  "next_action": "finish_ysl_libre_audio_qc_and_prepare_mobile_launch_review",
+  "next_action_class": "auto_allowed_until_paid_generation_or_publish_gate",
+  "user_approval_required_now": false,
   "domains": {
     "commerce": {
       "domain": "commerce",
@@ -26,16 +26,12 @@
     },
     "content": {
       "domain": "content",
-      "overall_state": "voiceover_pending",
-      "execution_state": "user_approval_required",
-      "next_action": "record_or_generate_voiceover_audio",
-      "next_action_class": "approval_required",
-      "user_approval_required_now": true,
-      "blockers": [
-        "voiceover_audio_pending",
-        "subtitle_timing_conformance_pending",
-        "final_video_renders_incomplete"
-      ]
+      "overall_state": "strategy_work_available",
+      "execution_state": "work_available",
+      "next_action": "finish_ysl_libre_audio_qc_and_prepare_mobile_launch_review",
+      "next_action_class": "auto_allowed_until_paid_generation_or_publish_gate",
+      "user_approval_required_now": false,
+      "blockers": []
     }
   },
   "release_pipeline": {
@@ -46,9 +42,9 @@
   "content_pipeline": {
     "batch_count": 3,
     "total_pilots": 15,
-    "current_batch_id": "pilot_batch_01",
-    "pipeline_state": "production_work_available",
-    "active_track": "audience_utility_content_buffer",
+    "current_batch_id": null,
+    "pipeline_state": "strategy_work_available",
+    "active_track": "high_end_launch_buffer",
     "legacy_pilot_batches": "resume_for_preproduction",
     "production_parallel_allowed": true
   },

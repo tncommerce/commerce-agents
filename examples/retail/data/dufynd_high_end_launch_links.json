@@ -1,0 +1,94 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-24",
+  "base_url": "https://dufynd.de",
+  "campaign_id": "launch01_high_end",
+  "link_count": 12,
+  "note": "Channel-specific first-party attribution links for the DUFYND high-end launch track. These links do not publish anything and do not imply affiliate status.",
+  "links": [
+    {
+      "campaign_id": "launch01_high_end",
+      "content_id": "naxos_high_end_01",
+      "channel": "tiktok",
+      "landing_path": "/parfum-alternativen",
+      "url": "https://dufynd.de/parfum-alternativen?src=tiktok&cmp=launch01_high_end&content=naxos_high_end_01"
+    },
+    {
+      "campaign_id": "launch01_high_end",
+      "content_id": "naxos_high_end_01",
+      "channel": "instagram",
+      "landing_path": "/parfum-alternativen",
+      "url": "https://dufynd.de/parfum-alternativen?src=instagram&cmp=launch01_high_end&content=naxos_high_end_01"
+    },
+    {
+      "campaign_id": "launch01_high_end",
+      "content_id": "naxos_high_end_01",
+      "channel": "youtube",
+      "landing_path": "/parfum-alternativen",
+      "url": "https://dufynd.de/parfum-alternativen?src=youtube&cmp=launch01_high_end&content=naxos_high_end_01"
+    },
+    {
+      "campaign_id": "launch01_high_end",
+      "content_id": "bois_imperial_high_end_01",
+      "channel": "tiktok",
+      "landing_path": "/duftfinder",
+      "url": "https://dufynd.de/duftfinder?src=tiktok&cmp=launch01_high_end&content=bois_imperial_high_end_01"
+    },
+    {
+      "campaign_id": "launch01_high_end",
+      "content_id": "bois_imperial_high_end_01",
+      "channel": "instagram",
+      "landing_path": "/duftfinder",
+      "url": "https://dufynd.de/duftfinder?src=instagram&cmp=launch01_high_end&content=bois_imperial_high_end_01"
+    },
+    {
+      "campaign_id": "launch01_high_end",
+      "content_id": "bois_imperial_high_end_01",
+      "channel": "youtube",
+      "landing_path": "/duftfinder",
+      "url": "https://dufynd.de/duftfinder?src=youtube&cmp=launch01_high_end&content=bois_imperial_high_end_01"
+    },
+    {
+      "campaign_id": "launch01_high_end",
+      "content_id": "one_million_example61_01",
+      "channel": "tiktok",
+      "landing_path": "/duftfinder",
+      "url": "https://dufynd.de/duftfinder?src=tiktok&cmp=launch01_high_end&content=one_million_example61_01"
+    },
+    {
+      "campaign_id": "launch01_high_end",
+      "content_id": "one_million_example61_01",
+      "channel": "instagram",
+      "landing_path": "/duftfinder",
+      "url": "https://dufynd.de/duftfinder?src=instagram&cmp=launch01_high_end&content=one_million_example61_01"
+    },
+    {
+      "campaign_id": "launch01_high_end",
+      "content_id": "one_million_example61_01",
+      "channel": "youtube",
+      "landing_path": "/duftfinder",
+      "url": "https://dufynd.de/duftfinder?src=youtube&cmp=launch01_high_end&content=one_million_example61_01"
+    },
+    {
+      "campaign_id": "launch01_high_end",
+      "content_id": "ysl_libre_high_end_01",
+      "channel": "tiktok",
+      "landing_path": "/duftfinder",
+      "url": "https://dufynd.de/duftfinder?src=tiktok&cmp=launch01_high_end&content=ysl_libre_high_end_01"
+    },
+    {
+      "campaign_id": "launch01_high_end",
+      "content_id": "ysl_libre_high_end_01",
+      "channel": "instagram",
+      "landing_path": "/duftfinder",
+      "url": "https://dufynd.de/duftfinder?src=instagram&cmp=launch01_high_end&content=ysl_libre_high_end_01"
+    },
+    {
+      "campaign_id": "launch01_high_end",
+      "content_id": "ysl_libre_high_end_01",
+      "channel": "youtube",
+      "landing_path": "/duftfinder",
+      "url": "https://dufynd.de/duftfinder?src=youtube&cmp=launch01_high_end&content=ysl_libre_high_end_01"
+    }
+  ]
+}

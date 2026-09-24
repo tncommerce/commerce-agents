@@ -1,26 +1,28 @@
 {
-  "version": 2,
+  "version": 3,
   "system": "DUFYND",
   "strategy_status": "active",
-  "active_track": "audience_utility_content_buffer",
-  "high_end_rnd_status": "proof_complete_on_hold",
+  "active_track": "high_end_launch_buffer",
+  "high_end_rnd_status": "proof_complete_reuse_existing_assets",
   "business_priority": "audience_growth_and_product_utility",
   "legacy_pilot_batches": "resume_for_preproduction",
   "legacy_pilot_role": "launch_and_learning_buffer",
-  "reason": "DUFYND can create customer value before affiliate coverage is complete. The current bank already contains 15 preview-ready short-form concepts and 45 channel-specific tracking links, while final renders remain the main content-production gap. The operating strategy therefore shifts from additional paid creative R&D to finishing a reusable launch buffer, demonstrating DUFYND utility and learning from real audience behavior after the 2026-09-26 soft launch.",
-  "next_action": "build_publish_ready_buffer_from_existing_assets",
-  "next_action_class": "auto_allowed_until_voiceover_or_publish_gate",
+  "reason": "DUFYND has three locked high-end final masters (Naxos, Bois Impérial and Rabanne 1 Million) plus one completed YSL Libre visual awaiting audio/final QC. The older Sillage/Haltbarkeit and EDP-vs-EDT shorts were explicitly rejected for reuse after the Naxos quality floor was established and must be rebuilt from scratch. Legacy pilot concepts remain a reserve, not the first launch wave.",
+  "next_action": "finish_ysl_libre_audio_qc_and_prepare_mobile_launch_review",
+  "next_action_class": "auto_allowed_until_paid_generation_or_publish_gate",
   "user_approval_required_now": false,
   "production_parallel_allowed": true,
   "buffer_plan": "examples/retail/data/dufynd_content_buffer_plan.json",
   "waiting_on": [
-    "voiceover_source_before_final_render",
+    "ysl_libre_audio_and_final_qc",
     "mobile_content_review_before_publish",
-    "social_rebrand_hold_until_2026-09-26"
+    "social_rebrand_hold_until_2026-09-26",
+    "two_more_publish_ready_creatives_to_reach_minimum_buffer_or_explicit_smaller_launch"
   ],
   "approval_gates": [
     "paid_ai_subscription_or_credits",
     "publishing"
   ],
-  "operating_rule": "Preproduce a rolling 2-3 week buffer from existing scripts and previews, keep roughly 30% of future slots flexible for trends and real DUFYND demand, and do not buy more AI-video credits merely to increase inventory. Affiliate approvals remain parallel commercial work and must not block useful organic content."
+  "operating_rule": "Preproduce a rolling 2-3 week buffer from existing scripts and previews, keep roughly 30% of future slots flexible for trends and real DUFYND demand, and do not buy more AI-video credits merely to increase inventory. Affiliate approvals remain parallel commercial work and must not block useful organic content.",
+  "high_end_asset_registry": "examples/retail/data/dufynd_high_end_launch_assets.json"
 }
