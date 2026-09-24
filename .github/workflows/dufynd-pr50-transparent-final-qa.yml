@@ -1,0 +1,111 @@
+name: DUFYND PR50 Transparent Final QA
+
+on:
+  push:
+    branches:
+      - dufynd-pr50-transparent-preview-20260924
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: examples
+    env:
+      NEXT_PUBLIC_API_URL: https://scentai-api-kxhe.onrender.com
+      NEXT_PUBLIC_SITE_URL: https://dufynd.de
+      NEXT_PUBLIC_SITE_INDEXABLE: "false"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: examples/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build storefront
+        run: npm --workspace retail/storefront-web run build
+
+      - name: Install Playwright Chromium
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Serve exact export and audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ../transparent-final-preview
+          npx --yes serve@14.2.5 retail/storefront-web/out -l 3000 > /tmp/dufynd-preview.log 2>&1 &
+          APP_PID=$!
+          trap 'kill $APP_PID || true' EXIT
+
+          for i in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:3000/ >/dev/null; then
+              break
+            fi
+            sleep 1
+          done
+          curl --fail http://127.0.0.1:3000/ >/dev/null
+
+          cat > final-audit.mjs <<'NODE'
+          import { chromium } from "playwright";
+          import fs from "node:fs";
+
+          const browser=await chromium.launch({headless:true});
+
+          async function capture(name,url,viewport){
+            const context=await browser.newContext({viewport});
+            const page=await context.newPage();
+            const failed=[];
+            page.on("requestfailed",r=>failed.push({url:r.url(),error:r.failure()?.errorText}));
+            await page.goto(url,{waitUntil:"domcontentloaded",timeout:60000});
+            await page.waitForTimeout(1000);
+            await page.evaluate(async()=>{
+              const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+              const root=document.scrollingElement;
+              for(let y=0;y<=root.scrollHeight;y+=Math.max(320,innerHeight*.75)){
+                scrollTo(0,y); await sleep(120);
+              }
+              scrollTo(0,0);
+            });
+            await page.waitForTimeout(1000);
+            const images=await page.locator("img").evaluateAll(imgs=>imgs.map(img=>({
+              alt:img.alt,src:img.currentSrc||img.src,complete:img.complete,
+              naturalWidth:img.naturalWidth,naturalHeight:img.naturalHeight,loading:img.loading
+            })));
+            fs.writeFileSync(`../transparent-final-preview/${name}.json`,JSON.stringify({
+              images,
+              broken:images.filter(x=>x.complete&&x.naturalWidth===0),
+              unloaded:images.filter(x=>!x.complete),
+              failed
+            },null,2));
+            await page.screenshot({path:`../transparent-final-preview/${name}.png`,fullPage:true});
+            await context.close();
+          }
+
+          await capture("home-desktop","http://127.0.0.1:3000/",{width:1280,height:900});
+          await capture("home-mobile","http://127.0.0.1:3000/",{width:390,height:844});
+          await capture("catalog-desktop","http://127.0.0.1:3000/duft",{width:1280,height:900});
+          await capture("catalog-mobile","http://127.0.0.1:3000/duft",{width:390,height:844});
+          await capture("naxos-desktop","http://127.0.0.1:3000/duft/xerjoff-naxos",{width:1280,height:900});
+          await capture("naxos-mobile","http://127.0.0.1:3000/duft/xerjoff-naxos",{width:390,height:844});
+          await browser.close();
+          NODE
+          node final-audit.mjs
+
+      - name: Upload preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: dufynd-pr50-transparent-final-preview
+          path: transparent-final-preview/
+          if-no-files-found: error
+          retention-days: 1
