@@ -543,3 +543,199 @@ body {
     transform: translateZ(0) scale(0.985);
   }
 }
+
+
+/* DUFYND immersive homepage hero
+ * Cinematic depth without sacrificing product clarity or page performance.
+ * The background is pure CSS so the hero stays lightweight; the verified
+ * product cutout remains the visual source of truth.
+ */
+.dufynd-immersive-hero {
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 68% 34%, rgba(207, 160, 72, 0.10), transparent 24%),
+    linear-gradient(128deg, #090a0c 0%, #121113 44%, #08090b 100%);
+  box-shadow:
+    0 34px 90px -46px rgba(0, 0, 0, 0.92),
+    0 18px 50px -34px rgba(184, 137, 52, 0.62),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.dufynd-hero-atmosphere {
+  background:
+    radial-gradient(circle at 12% 12%, rgba(219, 171, 78, 0.22), transparent 26%),
+    radial-gradient(circle at 78% 30%, rgba(255, 225, 165, 0.11), transparent 20%),
+    radial-gradient(circle at 67% 88%, rgba(120, 79, 30, 0.18), transparent 26%),
+    linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.025) 52%, transparent 70%);
+}
+
+.dufynd-hero-aurora {
+  top: -42%;
+  right: -12%;
+  width: min(760px, 76vw);
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background:
+    conic-gradient(
+      from 235deg,
+      transparent 0 17%,
+      rgba(126, 87, 37, 0.03) 28%,
+      rgba(224, 183, 97, 0.20) 38%,
+      rgba(255, 244, 211, 0.08) 45%,
+      rgba(137, 91, 34, 0.06) 56%,
+      transparent 69% 100%
+    );
+  filter: blur(34px);
+  opacity: 0.8;
+  transform: rotate(-8deg) scale(1.08);
+}
+
+.dufynd-hero-orbit {
+  right: 6%;
+  top: 8%;
+  width: 46%;
+  height: 78%;
+  border: 1px solid rgba(230, 196, 128, 0.13);
+  border-radius: 50%;
+  opacity: 0.5;
+  transform: rotate(-18deg);
+  box-shadow:
+    0 0 80px rgba(184, 137, 52, 0.05),
+    inset 0 0 46px rgba(255, 231, 179, 0.025);
+}
+
+.dufynd-hero-particles {
+  opacity: 0.26;
+  background-image:
+    radial-gradient(circle, rgba(255, 231, 179, 0.72) 0 0.7px, transparent 0.9px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.40) 0 0.55px, transparent 0.8px);
+  background-size: 74px 74px, 119px 119px;
+  background-position: 0 0, 31px 22px;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 27%, #000 100%);
+}
+
+.dufynd-hero-vignette {
+  background:
+    linear-gradient(90deg, rgba(4,5,7,0.12), transparent 42%, rgba(3,4,6,0.14)),
+    linear-gradient(0deg, rgba(2,3,5,0.32), transparent 32%),
+    radial-gradient(circle at 72% 46%, transparent 0 24%, rgba(3,4,5,0.14) 72%);
+}
+
+.dufynd-hero-product::before {
+  content: "";
+  position: absolute;
+  inset: 7% 9% 9%;
+  z-index: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(229, 185, 98, 0.10), transparent 63%);
+  filter: blur(18px);
+  pointer-events: none;
+}
+
+.dufynd-hero-product .dufynd-product-stage {
+  background: transparent;
+}
+
+.dufynd-hero-product .dufynd-product-backdrop {
+  opacity: 0.24;
+  filter: blur(10px) saturate(0.86) contrast(1.08) brightness(0.58);
+  transform: scale(1.12);
+}
+
+.dufynd-hero-product .dufynd-product-backdrop-shade {
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255, 231, 179, 0.12), transparent 28%),
+    linear-gradient(90deg, rgba(7,8,10,0.30), transparent 42%),
+    linear-gradient(180deg, rgba(7,8,10,0.03), rgba(7,8,10,0.32));
+}
+
+.dufynd-hero-product .dufynd-product-light {
+  background: radial-gradient(
+    circle at var(--dufynd-mx) var(--dufynd-my),
+    rgba(255, 248, 226, 0.44) 0,
+    rgba(213, 165, 76, 0.13) 20%,
+    transparent 44%
+  );
+  opacity: 0.9;
+}
+
+.dufynd-hero-product .dufynd-product-image {
+  filter:
+    drop-shadow(0 38px 30px rgba(0,0,0,0.40))
+    drop-shadow(0 10px 16px rgba(0,0,0,0.28))
+    drop-shadow(0 0 26px rgba(220,174,86,0.08));
+}
+
+.dufynd-hero-primary {
+  box-shadow:
+    0 10px 30px -16px rgba(255, 241, 210, 0.65),
+    0 0 0 1px rgba(255,255,255,0.1);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dufynd-hero-aurora {
+    animation: dufynd-hero-breathe 13s ease-in-out infinite alternate;
+  }
+
+  .dufynd-hero-orbit {
+    animation: dufynd-hero-orbit-drift 17s ease-in-out infinite alternate;
+  }
+
+  .dufynd-hero-particles {
+    animation: dufynd-hero-particles-drift 22s linear infinite;
+  }
+}
+
+@keyframes dufynd-hero-breathe {
+  0% {
+    transform: rotate(-10deg) scale(1.02) translate3d(0, 0, 0);
+    opacity: 0.62;
+  }
+  100% {
+    transform: rotate(-4deg) scale(1.14) translate3d(-2%, 3%, 0);
+    opacity: 0.92;
+  }
+}
+
+@keyframes dufynd-hero-orbit-drift {
+  0% {
+    transform: rotate(-20deg) translate3d(0, 0, 0);
+    opacity: 0.34;
+  }
+  100% {
+    transform: rotate(-14deg) translate3d(-2%, 1.5%, 0);
+    opacity: 0.58;
+  }
+}
+
+@keyframes dufynd-hero-particles-drift {
+  from {
+    background-position: 0 0, 31px 22px;
+  }
+  to {
+    background-position: 74px -74px, -88px 141px;
+  }
+}
+
+@media (max-width: 767px) {
+  .dufynd-hero-orbit {
+    right: -14%;
+    top: 42%;
+    width: 78%;
+    height: 54%;
+    opacity: 0.32;
+  }
+
+  .dufynd-hero-particles {
+    opacity: 0.18;
+    mask-image: linear-gradient(180deg, transparent 0%, #000 34%, #000 100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dufynd-hero-aurora,
+  .dufynd-hero-orbit,
+  .dufynd-hero-particles {
+    animation: none !important;
+  }
+}
