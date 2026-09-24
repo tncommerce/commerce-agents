@@ -46,8 +46,8 @@ export default function TransparencyPage() {
             <h2 className="font-semibold text-(--ink)">Partnerangebote und weitere Kaufoptionen</h2>
             <p className="mt-1">
               In den Händlerangeboten unterscheidet DUFYND sichtbar zwischen
-              <strong> Partnerangeboten</strong> und <strong>weiteren Kaufoptionen</strong>.
-              Bei Partnerangeboten kann DUFYND eine Provision erhalten, wenn du
+              <strong> Werbung · Partnerlink</strong> und <strong>weiteren Kaufoptionen</strong>.
+              Bei als Werbung gekennzeichneten Partnerlinks kann DUFYND eine Provision erhalten, wenn du
               beim Händler kaufst. Weitere Kaufoptionen zeigen wir auch dann,
               wenn aktuell keine Vergütung an DUFYND erfolgt.
             </p>
