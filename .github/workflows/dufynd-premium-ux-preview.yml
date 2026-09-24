@@ -41,7 +41,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p ../premium-preview
-          npm --workspace retail/storefront-web run start > /tmp/dufynd-preview.log 2>&1 &
+          (cd retail/storefront-web && npm run start) > /tmp/dufynd-preview.log 2>&1 &
           APP_PID=$!
           trap 'kill $APP_PID || true' EXIT
 
@@ -51,7 +51,10 @@ jobs:
             fi
             sleep 1
           done
-          curl --fail http://127.0.0.1:3000/ >/dev/null
+          if ! curl --fail http://127.0.0.1:3000/ >/dev/null; then
+            cat /tmp/dufynd-preview.log
+            exit 1
+          fi
 
           npx --yes playwright@1.55.0 screenshot --browser=chromium --full-page --wait-for-timeout=2500 http://127.0.0.1:3000/ ../premium-preview/home-desktop.png
           npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page --wait-for-timeout=2500 http://127.0.0.1:3000/ ../premium-preview/home-mobile.png
