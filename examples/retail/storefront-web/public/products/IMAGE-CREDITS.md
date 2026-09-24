@@ -27,4 +27,4 @@ and product trade dress remain the property of their respective rights holders.
 
 | File | Product | Provenance | Use |
 |---|---|---|---|
-| `pilot/xerjoff-naxos-campaign-master.webp` | Xerjoff Naxos | AI-assisted DUFYND campaign artwork, approved 2026-09-24 | Homepage spotlight and fragrance detail hero |
+| `pilot/xerjoff-naxos-campaign-master.webp` | Xerjoff Naxos | DUFYND layered backdrop rebuilt from the approved Naxos editorial master after transfer-integrity repair, 2026-09-24 | Homepage spotlight backdrop and legacy preview media |
