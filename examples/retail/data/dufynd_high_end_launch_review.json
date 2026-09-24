@@ -121,7 +121,8 @@
     "tracked_links": "examples/retail/data/dufynd_high_end_launch_links.json",
     "social_copy": "examples/retail/data/dufynd_high_end_social_copy.json",
     "launch_asset_registry": "examples/retail/data/dufynd_high_end_launch_assets.json",
-    "carousel_spec": "examples/retail/data/dufynd_launch_carousel_01.json"
+    "carousel_spec": "examples/retail/data/dufynd_launch_carousel_01.json",
+    "pre_publish_checklist": "examples/retail/data/dufynd_high_end_pre_publish_checklist.json"
   },
   "operator_decisions_required": [
     {
