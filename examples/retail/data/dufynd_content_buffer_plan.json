@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "updated_at": "2026-09-24",
   "system": "DUFYND",
   "campaign_id": "launch01",
@@ -44,17 +44,19 @@
     "preview_ready_extra": "budget_three_under_50_01",
     "scripted_not_previewed": "aventus_alternatives_01",
     "high_end_asset_registry": "examples/retail/data/dufynd_high_end_launch_assets.json",
-    "high_end_final_assets_documented": 3,
-    "high_end_creative_locked": 3,
-    "high_end_final_assets_pending_mobile_review": 3,
-    "high_end_near_final_drafts": 1,
-    "effective_launch_candidates_before_mobile_review": 3,
-    "gap_to_minimum_publish_ready_target": 2,
+    "high_end_final_assets_documented": 4,
+    "high_end_creative_locked": 4,
+    "high_end_final_assets_pending_mobile_review": 4,
+    "high_end_near_final_drafts": 0,
+    "effective_launch_candidates_before_mobile_review": 5,
+    "gap_to_minimum_publish_ready_target": 0,
     "high_end_rebuild_required": 2,
     "high_end_internal_review_file": "examples/retail/data/dufynd_high_end_launch_review.json",
-    "high_end_ysl_internal_visual_qc": "passed_sampled_frames_operator_acceptance_pending",
-    "maximum_publish_ready_after_current_review": 4,
-    "gap_to_minimum_publish_ready_after_ysl_acceptance": 1
+    "high_end_ysl_internal_visual_qc": "passed_and_operator_previously_accepted_9_of_10",
+    "maximum_publish_ready_after_current_review": 5,
+    "gap_to_minimum_publish_ready_after_ysl_acceptance": 0,
+    "high_end_static_publish_ready": 1,
+    "fifth_launch_creative": "relationship_labels_carousel_01"
   },
   "launch_wave": [
     {
@@ -151,8 +153,9 @@
     "reason": "Keeps one genuinely new creative in the queue instead of consuming the entire bank before real launch data exists."
   },
   "production_rules": [
-    "Prefer the three locked high-end finals for the first launch wave; YSL Libre may join only after audio and final QC.",
+    "Prefer the four locked high-end perfume visuals for the video launch wave. YSL Libre uses current platform-native/trending audio at publish time; do not regenerate the accepted 9/10 visual.",
     "Do not promote the old Sillage/Haltbarkeit or EDP-vs-EDT files; both are rebuild-from-scratch items under the Naxos quality floor.",
+    "Use the rendered relationship-label carousel as the fifth core launch creative on Instagram carousel and TikTok photo mode; do not force education back into the YouTube Shorts track.",
     "Use the existing 15 previews before requesting new paid AI-video generation.",
     "Prefer evergreen content for the fixed buffer and reserve price/trend-sensitive posts for adaptive slots.",
     "Publishing remains an explicit operator approval action.",
@@ -177,16 +180,15 @@
     "decision_rule": "Do not judge a format from a single post. Prefer at least three comparable tests before materially changing the content mix unless a clear quality or compliance issue appears."
   },
   "next_no_spend_completion": {
-    "content_id": "ysl_libre_high_end_01",
-    "current_state": "internal_visual_qc_passed_operator_acceptance_pending",
-    "objective": "Present YSL Libre for operator acceptance and keep the silent master for platform-native sound selection close to publication.",
-    "stop_condition": "Do not publish, purchase audio, or generate replacement visuals without explicit operator approval."
+    "state": "minimum_launch_buffer_reached",
+    "publish_ready_core_creatives_before_mobile_review": 5,
+    "next_action": "perform_mobile_review_of_four_video_visuals_and_one_carousel_pack",
+    "spend_required": false
   },
   "operator_gate": {
     "review_file": "examples/retail/data/dufynd_high_end_launch_review.json",
     "decisions": [
-      "ysl_visual_acceptance",
-      "launch_with_up_to_four_or_require_fifth_creative",
+      "mobile_launch_buffer_review",
       "publish_approval_after_channel_native_checks"
     ]
   }
