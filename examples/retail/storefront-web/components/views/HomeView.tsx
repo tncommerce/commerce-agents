@@ -4,7 +4,6 @@
 "use client";
 
 import {
-  Greeting,
   HomeSection,
   type Starter,
   Starters,
@@ -68,15 +67,6 @@ function featured(catalog: Record<string, Product>): Product[] {
 ;
 }
 
-function Brief() {
-  return (
-    <span className="max-w-2xl text-[14px] leading-5 text-(--ink-soft) sm:text-[15px] sm:leading-6">
-      Beschreibe, was du suchst – Duftprofil, Anlass, Budget oder einen Duft,
-      den du bereits magst. DUFYND vergleicht das Sortiment und empfiehlt dir
-      passende Optionen.
-    </span>
-  );
-}
 
 export default function HomeView({
   shopperName: _shopperName,
@@ -94,20 +84,6 @@ export default function HomeView({
   ).length;
   return (
     <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-4 px-4 sm:gap-6 sm:px-6">
-      <Greeting
-        eyebrow="DUFYND · Persönliche Duftberatung"
-        title={
-          <h1 className="max-w-3xl text-[27px] font-semibold leading-[1.12] tracking-[-0.03em] text-(--ink) sm:text-[32px] sm:leading-tight">
-            Finde den Duft, der wirklich zu dir passt.
-          </h1>
-        }
-      >
-        <Brief />
-      </Greeting>
-      <div className="[&_button]:py-2.5 sm:[&_button]:py-3">
-        <Starters items={STARTERS} />
-      </div>
-
       {spotlight ? (
         <section
           aria-label="DUFYND Edit"
@@ -122,18 +98,18 @@ export default function HomeView({
             <div className="flex flex-col justify-center p-6 sm:p-8 md:p-10 lg:p-12">
               <div className="mb-4 inline-flex w-fit items-center gap-2 rounded-full border border-white/12 bg-white/[0.055] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.19em] text-[#e5c782] backdrop-blur-md">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#d8ad55] shadow-[0_0_14px_rgba(216,173,85,0.9)]" />
-                DUFYND Edit · Immersive Spotlight
+                DUFYND · Persönliche Duftberatung
               </div>
-              <div className="mt-3 text-[12px] font-medium uppercase tracking-[0.11em] text-white/55">
-                {spotlight.brand}
+              <div className="mt-2 text-[11px] font-medium uppercase tracking-[0.14em] text-white/48">
+                Duft entdecken. Vergleichen. Sicherer entscheiden.
               </div>
-              <h2 className="mt-1 max-w-xl text-[30px] font-semibold leading-[0.98] tracking-[-0.045em] sm:text-[40px] lg:text-[46px]">
-                Naxos
-              </h2>
-              <p className="mt-4 max-w-xl text-[13px] leading-5 text-white/70 sm:text-[14px] sm:leading-6">
-                Ein Duft wird nicht nur beschrieben – er wird erlebbar. Entdecke
-                Charakter, Performance, Alternativen und aktuelle Händlerangebote
-                in einer immersiven Ansicht.
+              <h1 className="mt-2 max-w-2xl text-[34px] font-semibold leading-[0.98] tracking-[-0.045em] sm:text-[44px] lg:text-[54px]">
+                Finde den Duft, der wirklich zu dir passt.
+              </h1>
+              <p className="mt-5 max-w-xl text-[13px] leading-5 text-white/72 sm:text-[14px] sm:leading-6">
+                Beschreibe Duftprofil, Anlass oder Budget. DUFYND verbindet
+                Duftberatung, Community-Daten, Alternativen und aktuelle
+                Händlerangebote in einem klaren Erlebnis.
               </p>
               <div className="mt-4 flex flex-wrap gap-2 text-[10.5px] font-medium text-white/58">
                 <span className="rounded-full border border-white/10 bg-black/15 px-2.5 py-1 backdrop-blur-sm">Duftprofil</span>
@@ -143,6 +119,12 @@ export default function HomeView({
 
               <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-3">
                 <a
+                  href="/duftfinder"
+                  className="dufynd-hero-primary rounded-xl bg-[#fffdf8] px-4 py-2.5 text-[12.5px] font-semibold text-[#171513] transition hover:-translate-y-0.5"
+                >
+                  Meinen Duft finden
+                </a>
+                <a
                   href={fragrancePathForProduct(spotlight)}
                   onClick={() =>
                     void trackAnalyticsEvent("product_open", {
@@ -150,15 +132,9 @@ export default function HomeView({
                       source: "homepage_spotlight",
                     })
                   }
-                  className="dufynd-hero-primary rounded-xl bg-[#fffdf8] px-4 py-2.5 text-[12.5px] font-semibold text-[#171513] transition hover:-translate-y-0.5"
-                >
-                  Naxos entdecken
-                </a>
-                <a
-                  href="/duftfinder"
                   className="rounded-xl border border-white/14 bg-white/[0.055] px-4 py-2.5 text-[12.5px] font-semibold text-white/88 backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white/[0.09]"
                 >
-                  Duftfinder starten
+                  Naxos entdecken
                 </a>
                 <span className="[&_*]:!text-white/65 [&_span.font-semibold]:!text-white">
                   <ProductRating product={spotlight} compact />
@@ -199,10 +175,26 @@ export default function HomeView({
                   />
                 </div>
               )}
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex items-end justify-between bg-gradient-to-t from-black/55 via-black/10 to-transparent px-5 pb-4 pt-14 sm:px-6">
+                <div>
+                  <div className="text-[9.5px] font-semibold uppercase tracking-[0.18em] text-[#e3c47f]">
+                    Launch Spotlight
+                  </div>
+                  <div className="mt-0.5 text-[12px] font-semibold text-white/90">
+                    {spotlight.brand} · Naxos
+                  </div>
+                </div>
+                <span className="rounded-full border border-white/12 bg-black/20 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.12em] text-white/64 backdrop-blur-md">
+                  Immersive View
+                </span>
+              </div>
             </a>
           </div>
         </section>
       ) : null}
+      <div className="[&_button]:py-2.5 sm:[&_button]:py-3">
+        <Starters items={STARTERS} />
+      </div>
       <div className="flex flex-wrap gap-x-2 gap-y-1 text-[11.5px] text-(--ink-soft) sm:hidden">
         <span>Unabhängige Empfehlungen</span>
         <span>·</span>
