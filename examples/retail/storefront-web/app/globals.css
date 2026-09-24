@@ -823,3 +823,118 @@ body {
     opacity: 0.82;
   }
 }
+
+
+/* Accord-driven fragrance detail atmospheres
+ * Product pages share the DUFYND luxury language without becoming visually repetitive.
+ * The actual bottle image/model remains untouched; only the surrounding light world changes.
+ */
+.dufynd-fragrance-hero {
+  isolation: isolate;
+  --dufynd-detail-glow-a: rgba(209, 160, 75, 0.18);
+  --dufynd-detail-glow-b: rgba(255, 239, 204, 0.08);
+  --dufynd-detail-glow-c: rgba(98, 66, 31, 0.11);
+  background:
+    radial-gradient(circle at 17% 18%, var(--dufynd-detail-glow-a), transparent 31%),
+    linear-gradient(126deg, rgba(11, 12, 14, 0.96) 0%, rgba(20, 18, 18, 0.84) 48%, rgba(248, 245, 238, 0.96) 48%, rgba(248, 245, 238, 0.99) 100%);
+}
+
+.dufynd-fragrance-hero-atmosphere {
+  opacity: 0.92;
+  background:
+    radial-gradient(circle at 28% 30%, var(--dufynd-detail-glow-b), transparent 24%),
+    radial-gradient(circle at 72% 78%, var(--dufynd-detail-glow-c), transparent 31%),
+    linear-gradient(112deg, transparent 22%, rgba(255,255,255,0.035) 48%, transparent 72%);
+}
+
+.dufynd-fragrance-hero-orbit {
+  top: -20%;
+  left: 10%;
+  width: min(560px, 55vw);
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--dufynd-detail-glow-a) 68%, transparent);
+  border-radius: 50%;
+  opacity: 0.40;
+  transform: rotate(-22deg);
+  box-shadow:
+    0 0 90px color-mix(in srgb, var(--dufynd-detail-glow-a) 22%, transparent),
+    inset 0 0 44px color-mix(in srgb, var(--dufynd-detail-glow-b) 34%, transparent);
+}
+
+.dufynd-fragrance-hero-copy {
+  background:
+    linear-gradient(90deg, rgba(250,247,241,0.88), rgba(250,247,241,0.98) 28%, rgba(250,247,241,1));
+  backdrop-filter: blur(16px);
+}
+
+.dufynd-fragrance-hero--amber {
+  --dufynd-detail-glow-a: rgba(211, 151, 54, 0.24);
+  --dufynd-detail-glow-b: rgba(255, 212, 132, 0.13);
+  --dufynd-detail-glow-c: rgba(128, 66, 25, 0.16);
+}
+
+.dufynd-fragrance-hero--mineral {
+  --dufynd-detail-glow-a: rgba(109, 154, 142, 0.22);
+  --dufynd-detail-glow-b: rgba(191, 222, 209, 0.12);
+  --dufynd-detail-glow-c: rgba(46, 86, 78, 0.13);
+}
+
+.dufynd-fragrance-hero--ember {
+  --dufynd-detail-glow-a: rgba(177, 112, 67, 0.23);
+  --dufynd-detail-glow-b: rgba(234, 176, 119, 0.11);
+  --dufynd-detail-glow-c: rgba(89, 43, 29, 0.16);
+}
+
+.dufynd-fragrance-hero--silk {
+  --dufynd-detail-glow-a: rgba(177, 140, 153, 0.18);
+  --dufynd-detail-glow-b: rgba(235, 208, 218, 0.12);
+  --dufynd-detail-glow-c: rgba(109, 73, 84, 0.10);
+}
+
+.dufynd-fragrance-hero--noir {
+  --dufynd-detail-glow-a: rgba(130, 96, 67, 0.20);
+  --dufynd-detail-glow-b: rgba(189, 152, 111, 0.09);
+  --dufynd-detail-glow-c: rgba(22, 24, 28, 0.26);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dufynd-fragrance-hero-orbit {
+    animation: dufynd-detail-orbit-drift 19s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes dufynd-detail-orbit-drift {
+  0% {
+    transform: rotate(-24deg) translate3d(0, 0, 0) scale(0.98);
+    opacity: 0.30;
+  }
+  100% {
+    transform: rotate(-18deg) translate3d(4%, 2%, 0) scale(1.05);
+    opacity: 0.48;
+  }
+}
+
+@media (max-width: 1023px) {
+  .dufynd-fragrance-hero {
+    background:
+      radial-gradient(circle at 30% 18%, var(--dufynd-detail-glow-a), transparent 28%),
+      linear-gradient(180deg, rgba(11,12,14,0.98) 0 47%, rgba(248,245,238,0.99) 47% 100%);
+  }
+
+  .dufynd-fragrance-hero-orbit {
+    top: -8%;
+    left: 8%;
+    width: 78vw;
+    opacity: 0.28;
+  }
+
+  .dufynd-fragrance-hero-copy {
+    background: rgba(250,247,241,0.985);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dufynd-fragrance-hero-orbit {
+    animation: none !important;
+  }
+}
