@@ -1,0 +1,93 @@
+name: DUFYND Naxos Card Debug
+
+on:
+  push:
+    branches:
+      - dufynd-pr50-transparent-final-preview-20260924
+
+permissions:
+  contents: read
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: examples
+    env:
+      NEXT_PUBLIC_API_URL: https://scentai-api-kxhe.onrender.com
+      NEXT_PUBLIC_SITE_URL: https://dufynd.de
+      NEXT_PUBLIC_SITE_INDEXABLE: "false"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: examples/package-lock.json
+      - run: npm ci
+      - run: npm --workspace retail/storefront-web run build
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Inspect Naxos card
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ../naxos-card-debug
+          npx --yes serve@14.2.5 retail/storefront-web/out -l 3000 >/tmp/naxos-debug.log 2>&1 &
+          APP_PID=$!
+          trap 'kill $APP_PID || true' EXIT
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:3000/duft >/dev/null && break || sleep 1; done
+
+          cat > naxos-card-debug.mjs <<'NODE'
+          import { chromium } from "playwright";
+          import fs from "node:fs";
+          const browser=await chromium.launch({headless:true});
+          const page=await browser.newPage({viewport:{width:1280,height:900}});
+          await page.goto("http://127.0.0.1:3000/duft",{waitUntil:"domcontentloaded"});
+          const card=page.locator("article").filter({hasText:"Naxos"}).first();
+          await card.scrollIntoViewIfNeeded();
+          await page.waitForTimeout(1000);
+          const stage=card.locator(".dufynd-product-stage");
+          const img=stage.locator(".dufynd-product-image");
+          const data=await stage.evaluate((el)=>{
+            const cs=getComputedStyle(el);
+            const img=el.querySelector(".dufynd-product-image");
+            const is=img?getComputedStyle(img):null;
+            const obj=el.querySelector(".dufynd-product-object");
+            const os=obj?getComputedStyle(obj):null;
+            return {
+              stageClass:el.className,
+              stageBackground:cs.background,
+              stageBackgroundColor:cs.backgroundColor,
+              stageIsolation:cs.isolation,
+              stagePosition:cs.position,
+              stageRect:el.getBoundingClientRect().toJSON(),
+              imageSrc:img?.currentSrc||img?.getAttribute("src"),
+              imageNatural:[img?.naturalWidth,img?.naturalHeight],
+              imageRect:img?.getBoundingClientRect().toJSON(),
+              imageOpacity:is?.opacity,
+              imageDisplay:is?.display,
+              imageVisibility:is?.visibility,
+              imageZIndex:is?.zIndex,
+              objectZIndex:os?.zIndex,
+              objectTransform:os?.transform,
+              objectRect:obj?.getBoundingClientRect().toJSON(),
+              hasBackdrop:Boolean(el.querySelector(".dufynd-product-backdrop")),
+              html:el.outerHTML.slice(0,3000)
+            };
+          });
+          fs.writeFileSync("../naxos-card-debug/debug.json",JSON.stringify(data,null,2));
+          await stage.screenshot({path:"../naxos-card-debug/stage.png"});
+          await img.screenshot({path:"../naxos-card-debug/image.png"});
+          await browser.close();
+          NODE
+          node naxos-card-debug.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dufynd-naxos-card-debug
+          path: naxos-card-debug/
+          if-no-files-found: error
+          retention-days: 1
