@@ -39,9 +39,7 @@ def test_buffer_counts_match_five_creative_inventory() -> None:
         "locked",
         "locked_visual_native_audio_at_publish",
     }
-    locked_video_count = sum(
-        row["creative_state"] in locked_states for row in registry["assets"]
-    )
+    locked_video_count = sum(row["creative_state"] in locked_states for row in registry["assets"])
     publish_ready_core_count = len(registry["assets"]) + int(
         carousel["status"] == "publish_ready_pending_mobile_review"
     )
@@ -54,8 +52,7 @@ def test_buffer_counts_match_five_creative_inventory() -> None:
     assert snapshot["effective_launch_candidates_before_mobile_review"] == publish_ready_core_count
     assert snapshot["gap_to_minimum_publish_ready_target"] == max(
         0,
-        int(buffer["buffer_targets"]["minimum_publish_ready_at_launch"])
-        - publish_ready_core_count,
+        int(buffer["buffer_targets"]["minimum_publish_ready_at_launch"]) - publish_ready_core_count,
     )
 
 
@@ -73,9 +70,7 @@ def test_rejected_legacy_shorts_cannot_enter_launch_sequence() -> None:
 
 def test_ysl_libre_visual_is_locked_with_native_audio_rule() -> None:
     registry = load_json(REGISTRY)
-    ysl = next(
-        row for row in registry["assets"] if row["content_id"] == "ysl_libre_high_end_01"
-    )
+    ysl = next(row for row in registry["assets"] if row["content_id"] == "ysl_libre_high_end_01")
     sequence = next(
         row
         for row in registry["proposed_launch_sequence"]
@@ -103,9 +98,7 @@ def test_video_assets_have_three_channel_links_and_copy() -> None:
     assert video_ids.issubset(social_ids)
 
     for content_id in video_ids:
-        channels = {
-            row["channel"] for row in links["links"] if row["content_id"] == content_id
-        }
+        channels = {row["channel"] for row in links["links"] if row["content_id"] == content_id}
         assert channels == {"tiktok", "instagram", "youtube"}
 
 
@@ -115,9 +108,7 @@ def test_carousel_is_rendered_for_tiktok_and_instagram_only() -> None:
     social = load_json(SOCIAL_COPY)
 
     content_id = carousel["content_id"]
-    channels = {
-        row["channel"] for row in links["links"] if row["content_id"] == content_id
-    }
+    channels = {row["channel"] for row in links["links"] if row["content_id"] == content_id}
     post = next(row for row in social["posts"] if row["content_id"] == content_id)
 
     assert carousel["status"] == "publish_ready_pending_mobile_review"
@@ -155,9 +146,7 @@ def test_launch_review_records_full_minimum_buffer() -> None:
 
     excluded = {row["content_id"] for row in review["rebuild_exclusions"]}
     assert excluded == {"sillage_haltbarkeit_01", "edp_vs_edt_01"}
-    assert review["fifth_creative_rule"]["satisfied_by"] == (
-        "relationship_labels_carousel_01"
-    )
+    assert review["fifth_creative_rule"]["satisfied_by"] == ("relationship_labels_carousel_01")
 
 
 def test_strategy_stops_at_mobile_launch_review_gate() -> None:
