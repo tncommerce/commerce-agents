@@ -525,3 +525,21 @@ body {
   background: rgba(0,0,0,0.46);
   opacity: 0.52;
 }
+
+
+/* Detail hero framing for isolated bottle cutouts.
+ * Keeps the entire bottle visible with premium breathing room.
+ */
+.dufynd-product-stage[data-variant="hero"]:not(:has(.dufynd-product-backdrop)) .dufynd-product-object {
+  inset: 10% 16% 17%;
+}
+
+.dufynd-product-stage[data-variant="hero"]:not(:has(.dufynd-product-backdrop)) .dufynd-product-image {
+  transform: translateZ(0) scale(0.94);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .dufynd-product-stage[data-variant="hero"]:not(:has(.dufynd-product-backdrop)):hover .dufynd-product-image {
+    transform: translateZ(0) scale(0.985);
+  }
+}
