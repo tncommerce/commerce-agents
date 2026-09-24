@@ -56,7 +56,7 @@ export default function FragranceModel3D({
   const safeModelUrl = (() => {
     if (!modelUrl) return null;
     try {
-      const url = new URL(modelUrl, window.location.href);
+      const url = new URL(modelUrl);
       return url.protocol === "https:" || url.protocol === "http:"
         ? url.toString()
         : null;
