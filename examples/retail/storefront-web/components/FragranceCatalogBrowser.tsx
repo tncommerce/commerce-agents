@@ -777,13 +777,22 @@ export default function FragranceCatalogBrowser({
                   }
                   className="group block"
                 >
-                  <FragranceVisual
-                    imageUrl={fragrance.image_url}
-                    alt={`${fragrance.brand} ${fragrance.name}`}
-                    variant="card"
-                    mode="editorial"
-                    className="h-52 w-full"
-                  />
+                  <div className="h-52 w-full overflow-hidden bg-[#171513]">
+                    {fragrance.image_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={fragrance.image_url}
+                        alt={`${fragrance.brand} ${fragrance.name}`}
+                        loading="lazy"
+                        decoding="async"
+                        className="h-full w-full object-cover transition duration-500 ease-out group-hover:scale-[1.035]"
+                      />
+                    ) : (
+                      <div className="grid h-full place-items-center text-[11px] font-semibold tracking-[0.16em] text-white/65">
+                        DUFYND
+                      </div>
+                    )}
+                  </div>
 
                   <div className="p-4 pb-3">
                     <div className="text-[10.5px] font-medium uppercase tracking-[0.08em] text-(--ink-soft)">
