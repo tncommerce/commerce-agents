@@ -16,7 +16,6 @@ import { fragrancePathForProduct } from "@/lib/fragranceSlug";
 import type { Product } from "@/lib/types";
 import FragranceVisual from "../FragranceVisual";
 import ProductTile, {
-  customerPriceLabel,
   ProductRating,
   ProductRow,
 } from "../ProductTile";
@@ -145,9 +144,6 @@ export default function HomeView({
                 >
                   Naxos entdecken
                 </a>
-                <span className="text-[12px] font-semibold text-white/90">
-                  {customerPriceLabel(spotlight)}
-                </span>
                 <span className="[&_*]:!text-white/65 [&_span.font-semibold]:!text-white">
                   <ProductRating product={spotlight} compact />
                 </span>
