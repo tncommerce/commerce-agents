@@ -87,6 +87,7 @@ def test_smoke_passes_for_expected_contract() -> None:
     assert report.ok is True
     assert [check.name for check in report.checks] == [
         "storefront",
+        "storefront_social_start",
         "storefront_duftfinder",
         "storefront_vergleich",
         "storefront_alternatives",
@@ -286,3 +287,16 @@ def test_smoke_rejects_invalid_expected_indexing_value() -> None:
             expected_indexing="later",
             transport=transport(),
         )
+
+
+def test_smoke_fails_when_social_start_route_is_missing() -> None:
+    report = run_smoke(
+        storefront_url="https://dufynd.de",
+        api_url="https://api.dufynd.test",
+        transport=transport(broken_storefront_path="/start"),
+    )
+
+    check = next(check for check in report.checks if check.name == "storefront_social_start")
+    assert report.ok is False
+    assert check.ok is False
+    assert check.status_code == 404
