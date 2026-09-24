@@ -11,7 +11,7 @@
   "pipeline_state": "strategy_work_available",
   "active_track": "high_end_launch_buffer",
   "legacy_pilot_batches": "resume_for_preproduction",
-  "next_action": "operator_review_ysl_and_launch_buffer_decision",
+  "next_action": "perform_mobile_launch_buffer_review",
   "next_action_class": "approval_required",
   "user_approval_required_now": true,
   "production_parallel_allowed": true,
