@@ -27,11 +27,11 @@ jobs:
           set -euo pipefail
           mkdir -p visual-audit
           npx --yes playwright@1.55.0 screenshot --browser=chromium --full-page --wait-for-timeout=3000 https://dufynd.de visual-audit/home-desktop.png
-          npx --yes playwright@1.55.0 screenshot --browser=chromium --device="iPhone 13" --full-page --wait-for-timeout=3000 https://dufynd.de visual-audit/home-mobile.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page --wait-for-timeout=3000 https://dufynd.de visual-audit/home-mobile.png
           npx --yes playwright@1.55.0 screenshot --browser=chromium --full-page --wait-for-timeout=3000 https://dufynd.de/duft visual-audit/catalog-desktop.png
-          npx --yes playwright@1.55.0 screenshot --browser=chromium --device="iPhone 13" --full-page --wait-for-timeout=3000 https://dufynd.de/duft visual-audit/catalog-mobile.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page --wait-for-timeout=3000 https://dufynd.de/duft visual-audit/catalog-mobile.png
           npx --yes playwright@1.55.0 screenshot --browser=chromium --full-page --wait-for-timeout=3000 https://dufynd.de/duft/xerjoff-naxos visual-audit/naxos-desktop.png
-          npx --yes playwright@1.55.0 screenshot --browser=chromium --device="iPhone 13" --full-page --wait-for-timeout=3000 https://dufynd.de/duft/xerjoff-naxos visual-audit/naxos-mobile.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page --wait-for-timeout=3000 https://dufynd.de/duft/xerjoff-naxos visual-audit/naxos-mobile.png
 
       - name: Upload screenshots
         uses: actions/upload-artifact@v4
