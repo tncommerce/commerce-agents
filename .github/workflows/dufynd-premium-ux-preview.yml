@@ -58,8 +58,8 @@ jobs:
 
           npx --yes playwright@1.55.0 screenshot --browser=chromium --full-page --wait-for-timeout=2500 http://127.0.0.1:3000/ ../premium-preview/home-desktop.png
           npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page --wait-for-timeout=2500 http://127.0.0.1:3000/ ../premium-preview/home-mobile.png
-          npx --yes playwright@1.55.0 screenshot --browser=chromium --full-page --wait-for-timeout=2500 http://127.0.0.1:3000/duft/xerjoff-naxos ../premium-preview/naxos-desktop.png
-          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page --wait-for-timeout=2500 http://127.0.0.1:3000/duft/xerjoff-naxos ../premium-preview/naxos-mobile.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --full-page --wait-for-timeout=2500 http://127.0.0.1:3000/duft/xerjoff-naxos/ ../premium-preview/naxos-desktop.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page --wait-for-timeout=2500 http://127.0.0.1:3000/duft/xerjoff-naxos/ ../premium-preview/naxos-mobile.png
 
       - name: Upload preview
         uses: actions/upload-artifact@v4
