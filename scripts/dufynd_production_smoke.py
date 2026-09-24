@@ -464,6 +464,12 @@ def run_smoke(
             _check_storefront_route(
                 client,
                 storefront,
+                path="/start",
+                name="storefront_social_start",
+            ),
+            _check_storefront_route(
+                client,
+                storefront,
                 path="/duftfinder",
                 name="storefront_duftfinder",
             ),
