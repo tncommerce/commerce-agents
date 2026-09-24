@@ -201,8 +201,8 @@ body {
 
 .dufynd-product-image {
   display: block;
-  max-height: 90%;
-  max-width: 90%;
+  height: 100%;
+  width: 100%;
   object-fit: contain;
   filter:
     drop-shadow(0 20px 20px rgba(23, 21, 19, 0.14))
@@ -260,11 +260,6 @@ body {
     rotateX(var(--dufynd-rx))
     rotateY(var(--dufynd-ry))
     translateZ(34px);
-}
-
-.dufynd-product-stage[data-variant="hero"] .dufynd-product-image {
-  max-height: 92%;
-  max-width: 92%;
 }
 
 .dufynd-product-stage[data-variant="hero"] .dufynd-product-shadow {
@@ -499,6 +494,10 @@ body {
     rgba(255,237,194,0.14) 20%,
     transparent 43%
   );
+}
+
+.dufynd-product-stage[data-variant="card"]:has(.dufynd-product-backdrop) .dufynd-product-object {
+  inset: 10% 18% 12%;
 }
 
 .dufynd-product-stage:has(.dufynd-product-backdrop) .dufynd-product-image {
