@@ -93,6 +93,13 @@ export default function HomeView({
   const picks = featured(catalog);
   const spotlight =
     catalog["SC-XERJOFF-NAXOS-100"] || picks[0];
+  const spotlightName = spotlight
+    ? String(
+        spotlight.attributes?.canonical_name ||
+          spotlight.title ||
+          "Duft",
+      ).replace(/\s+(Eau de Parfum|Eau de Toilette|Parfum|Extrait).*$/i, "")
+    : "Duft";
   const scentCount = Object.values(catalog).filter(
     (product) =>
       String(product.product_id).startsWith("SC-") &&
@@ -152,7 +159,7 @@ export default function HomeView({
                   }
                   className="rounded-xl border border-white/14 bg-white/[0.055] px-4 py-2.5 text-[12.5px] font-semibold text-white/88 backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white/[0.09]"
                 >
-                  Naxos entdecken
+                  {spotlightName} entdecken
                 </a>
                 <span className="[&_*]:!text-white/65 [&_span.font-semibold]:!text-white">
                   <ProductRating product={spotlight} compact />
@@ -162,7 +169,7 @@ export default function HomeView({
 
             <a
               href={fragrancePathForProduct(spotlight)}
-              aria-label="Xerjoff Naxos entdecken"
+              aria-label={`${spotlight.brand || ""} ${spotlightName} entdecken`.trim()}
               className="dufynd-hero-product group relative min-h-[260px] sm:min-h-[320px] overflow-hidden border-t border-white/10 md:min-h-[430px] md:border-l md:border-t-0"
             >
               {spotlight.attributes?.product_model_3d_url || spotlight.attributes?.product_cutout_url ? (
@@ -199,7 +206,7 @@ export default function HomeView({
                     Launch Spotlight
                   </div>
                   <div className="mt-0.5 text-[12px] font-semibold text-white/90">
-                    {spotlight.brand} · Naxos
+                    {spotlight.brand} · {spotlightName}
                   </div>
                 </div>
                 <span className="rounded-full border border-white/12 bg-black/20 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.12em] text-white/64 backdrop-blur-md">
