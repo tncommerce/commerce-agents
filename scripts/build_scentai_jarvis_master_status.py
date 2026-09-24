@@ -80,9 +80,7 @@ def build_master_status(
 ) -> dict[str, Any]:
     content_for_domain = content
     active_track = (
-        str(content_pipeline.get("active_track") or "").strip()
-        if content_pipeline
-        else ""
+        str(content_pipeline.get("active_track") or "").strip() if content_pipeline else ""
     )
     strategy_track_active = bool(
         content_pipeline
@@ -102,9 +100,7 @@ def build_master_status(
             "overall_state": content_pipeline.get("pipeline_state"),
             "next_action": content_pipeline.get("next_action"),
             "next_action_class": content_pipeline.get("next_action_class"),
-            "user_approval_required_now": bool(
-                content_pipeline.get("user_approval_required_now")
-            ),
+            "user_approval_required_now": bool(content_pipeline.get("user_approval_required_now")),
             "blockers": blockers,
         }
 
