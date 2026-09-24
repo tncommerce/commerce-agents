@@ -11,6 +11,7 @@ import {
   useCatalogIndex,
 } from "web-shared";
 import { fetchProducts } from "@/lib/api";
+import { trackAnalyticsEvent } from "@/lib/analytics";
 import { ADVISOR_STARTS } from "@/lib/advisorStarts";
 import { fragrancePathForProduct } from "@/lib/fragranceSlug";
 import type { Product } from "@/lib/types";
