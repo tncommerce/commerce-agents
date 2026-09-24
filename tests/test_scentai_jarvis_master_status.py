@@ -111,3 +111,49 @@ def test_master_uses_high_end_rnd_strategy_over_legacy_voiceover() -> None:
     assert report["user_approval_required_now"] is False
     assert report["content_pipeline"]["active_track"] == "high_end_rnd"
     assert report["content_pipeline"]["legacy_pilot_batches"] == "hold"
+
+
+
+def test_master_uses_high_end_launch_strategy_over_legacy_voiceover() -> None:
+    commerce = {
+        "overall_state": "waiting_external_affiliate_decision",
+        "next_action": "await_affiliate_program_decision",
+        "next_action_class": "auto_allowed",
+        "user_approval_required_now": False,
+        "blockers": ["affiliate_pending"],
+    }
+    content = {
+        "overall_state": "voiceover_pending",
+        "next_action": "record_or_generate_voiceover_audio",
+        "next_action_class": "approval_required",
+        "user_approval_required_now": True,
+        "blockers": ["voiceover_audio_pending"],
+    }
+    content_pipeline = {
+        "batch_count": 3,
+        "total_pilots": 15,
+        "current_batch_id": None,
+        "pipeline_state": "strategy_work_available",
+        "active_track": "high_end_launch_buffer",
+        "legacy_pilot_batches": "resume_for_preproduction",
+        "next_action": "finish_ysl_libre_audio_qc_and_prepare_mobile_launch_review",
+        "next_action_class": "auto_allowed_until_paid_generation_or_publish_gate",
+        "user_approval_required_now": False,
+        "production_parallel_allowed": True,
+    }
+
+    report = build_master_status(
+        commerce,
+        content,
+        {},
+        generated_at="2026-09-24T10:54:57+00:00",
+        content_pipeline=content_pipeline,
+    )
+
+    assert report["overall_state"] == "work_available"
+    assert report["active_domain"] == "content"
+    assert report["next_action"] == (
+        "finish_ysl_libre_audio_qc_and_prepare_mobile_launch_review"
+    )
+    assert report["user_approval_required_now"] is False
+    assert report["content_pipeline"]["active_track"] == "high_end_launch_buffer"
