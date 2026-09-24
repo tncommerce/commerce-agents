@@ -71,9 +71,7 @@ def test_high_end_assets_have_channel_links_and_copy() -> None:
     links = load_json(LINKS)
     social = load_json(SOCIAL_COPY)
 
-    expected_ids = {
-        row["content_id"] for row in registry["assets"] + registry["near_final"]
-    }
+    expected_ids = {row["content_id"] for row in registry["assets"] + registry["near_final"]}
     link_ids = {row["content_id"] for row in links["links"]}
     social_ids = {row["content_id"] for row in social["posts"]}
 
@@ -82,7 +80,5 @@ def test_high_end_assets_have_channel_links_and_copy() -> None:
     assert social_ids == expected_ids
 
     for content_id in expected_ids:
-        channels = {
-            row["channel"] for row in links["links"] if row["content_id"] == content_id
-        }
+        channels = {row["channel"] for row in links["links"] if row["content_id"] == content_id}
         assert channels == {"tiktok", "instagram", "youtube"}
