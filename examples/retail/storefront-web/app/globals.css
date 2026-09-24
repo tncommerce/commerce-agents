@@ -357,3 +357,8 @@ body {
     transform: none !important;
   }
 }
+
+
+.dufynd-mobile-offer-bar {
+  padding-bottom: calc(0.625rem + env(safe-area-inset-bottom));
+}
