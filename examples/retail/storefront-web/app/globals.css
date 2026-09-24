@@ -391,6 +391,15 @@ body {
   background: #171513;
 }
 
+.dufynd-editorial-depth-fill {
+  position: absolute;
+  inset: -12%;
+  height: 124%;
+  width: 124%;
+  object-fit: cover;
+  filter: blur(30px) brightness(0.65) saturate(0.8);
+}
+
 .dufynd-editorial-depth-object {
   position: absolute;
   inset: -2.5%;
@@ -409,6 +418,19 @@ body {
   object-fit: cover;
   filter: saturate(1.02) contrast(1.01);
   transition: filter 320ms ease;
+}
+
+/* Detail pages must show every edge of the bottle and its label, even when
+ * the supplied artwork is portrait or landscape rather than square. */
+.dufynd-editorial-depth-stage[data-variant="hero"] .dufynd-editorial-depth-object {
+  inset: 6%;
+  transform: none;
+}
+
+.dufynd-editorial-depth-stage[data-variant="hero"] .dufynd-editorial-depth-image {
+  display: block;
+  object-fit: contain;
+  filter: drop-shadow(0 18px 28px rgba(0,0,0,0.25));
 }
 
 .dufynd-editorial-depth-vignette {
@@ -454,6 +476,14 @@ body {
   .dufynd-editorial-depth-stage:hover .dufynd-editorial-depth-glint {
     transform: translateX(62%) rotate(4deg);
     opacity: 0.78;
+  }
+
+  .dufynd-editorial-depth-stage[data-variant="hero"]:hover .dufynd-editorial-depth-object {
+    transform: none;
+  }
+
+  .dufynd-editorial-depth-stage[data-variant="hero"]:hover .dufynd-editorial-depth-image {
+    filter: drop-shadow(0 22px 32px rgba(0,0,0,0.3));
   }
 }
 

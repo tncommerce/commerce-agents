@@ -89,6 +89,11 @@ export default function FragranceVisual({
         onPointerMove={updatePointer}
         onPointerLeave={resetPointer}
       >
+        {variant === "hero" ? (
+          // Decorative fill preserves the editorial palette around the uncropped artwork.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={imageUrl} alt="" aria-hidden className="dufynd-editorial-depth-fill" />
+        ) : null}
         <div className="dufynd-editorial-depth-object">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img

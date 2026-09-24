@@ -5,6 +5,7 @@ import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
 import FragranceOffers from "@/components/FragranceOffers";
 import FragranceVisual from "@/components/FragranceVisual";
 import FragranceSaveControls from "@/components/FragranceSaveControls";
+import NoteIcon from "@/components/NoteIcon";
 import {
   LIVE_FRAGRANCES,
   comparisonPath,
@@ -100,18 +101,18 @@ function formatPrice(value: number | null): string {
 function noteSection(
   title: string,
   notes: string[],
-  icon: string,
 ) {
   if (!notes.length) return null;
+  const stage = title === "Kopfnote" ? "01" : title === "Herznote" ? "02" : title === "Basisnote" ? "03" : "·";
 
   return (
     <div>
       <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-(--ink-soft)">
         <span
           aria-hidden
-          className="grid h-6 w-6 place-items-center rounded-lg bg-(--accent-soft) text-[12px] text-(--accent-ink)"
+          className="grid h-6 w-6 place-items-center rounded-lg bg-(--accent-soft) text-[10px] tabular-nums text-(--accent-ink)"
         >
-          {icon}
+          {stage}
         </span>
         {title}
       </div>
@@ -119,8 +120,9 @@ function noteSection(
         {notes.map((note) => (
           <span
             key={note}
-            className="rounded-full border border-(--line) bg-(--well)/60 px-3 py-1.5 text-[12px] text-(--ink)"
+            className="inline-flex items-center gap-2 rounded-full border border-(--line) bg-(--well)/60 px-3 py-1.5 text-[12px] text-(--ink)"
           >
+            <NoteIcon note={note} className="h-4 w-4 shrink-0 text-(--accent-ink)" />
             {note}
           </span>
         ))}
@@ -333,6 +335,7 @@ export default async function FragrancePage({
               <FragranceVisual
                 imageUrl={fragrance.cutout_image_url}
                 cutoutUrl={fragrance.cutout_image_url}
+                backdropUrl={fragrance.image_url}
                 alt={`${fragrance.brand} ${fragrance.name}`}
                 variant="hero"
                 mode="cutout"
@@ -340,22 +343,14 @@ export default async function FragrancePage({
                 priority
               />
             ) : (
-              <div className="dufynd-editorial-media relative min-h-[330px] overflow-hidden bg-[#eee7da] sm:min-h-[430px] lg:min-h-[520px]">
-                {fragrance.image_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={fragrance.image_url}
-                    alt={`${fragrance.brand} ${fragrance.name}`}
-                    fetchPriority="high"
-                    decoding="async"
-                    className="absolute inset-0 h-full w-full object-cover"
-                  />
-                ) : null}
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_64%,rgba(23,21,19,0.14))]"
-                />
-              </div>
+              <FragranceVisual
+                imageUrl={fragrance.image_url}
+                alt={`${fragrance.brand} ${fragrance.name}`}
+                variant="hero"
+                mode="editorial"
+                className="min-h-[330px] w-full sm:min-h-[430px] lg:min-h-[520px]"
+                priority
+              />
             )}
 
             <div className="flex flex-col justify-center p-5 sm:p-7 lg:p-9">
@@ -481,6 +476,11 @@ export default async function FragrancePage({
               <p className="mt-4 text-[10.5px] leading-4 text-(--ink-soft)">
                 DUFYND verkauft nicht selbst. Kauf und Versand erfolgen beim jeweiligen Händler.
               </p>
+              {!fragrance.cutout_image_url && fragrance.image_url?.includes("/products/pilot/") ? (
+                <p className="mt-2 text-[10.5px] leading-4 text-(--ink-soft)">
+                  Bild: stilisierte DUFYND-Inszenierung. Details des Flakons können vom Original abweichen.
+                </p>
+              ) : null}
             </div>
           </div>
         </section>
@@ -552,14 +552,14 @@ export default async function FragrancePage({
               fragrance.notes.heart.length ||
               fragrance.notes.base.length ? (
                 <>
-                  {noteSection("Kopfnote", fragrance.notes.top, "✦")}
-                  {noteSection("Herznote", fragrance.notes.heart, "♥")}
-                  {noteSection("Basisnote", fragrance.notes.base, "◆")}
+                  {noteSection("Kopfnote", fragrance.notes.top)}
+                  {noteSection("Herznote", fragrance.notes.heart)}
+                  {noteSection("Basisnote", fragrance.notes.base)}
                 </>
               ) : (
                 <>
-                  {noteSection("Schlüsselnoten", fragrance.notes.key, "✦")}
-                  {noteSection("Weitere Noten", fragrance.notes.supporting, "◆")}
+                  {noteSection("Schlüsselnoten", fragrance.notes.key)}
+                  {noteSection("Weitere Noten", fragrance.notes.supporting)}
                   {!fragrance.notes.key.length &&
                   !fragrance.notes.supporting.length ? (
                     <p className="text-[13px] leading-5 text-(--ink-soft)">
@@ -581,14 +581,14 @@ export default async function FragrancePage({
               fragrance.notes.heart.length ||
               fragrance.notes.base.length ? (
                 <>
-                  {noteSection("Kopfnote", fragrance.notes.top, "✦")}
-                  {noteSection("Herznote", fragrance.notes.heart, "♥")}
-                  {noteSection("Basisnote", fragrance.notes.base, "◆")}
+                  {noteSection("Kopfnote", fragrance.notes.top)}
+                  {noteSection("Herznote", fragrance.notes.heart)}
+                  {noteSection("Basisnote", fragrance.notes.base)}
                 </>
               ) : (
                 <>
-                  {noteSection("Schlüsselnoten", fragrance.notes.key, "✦")}
-                  {noteSection("Weitere Noten", fragrance.notes.supporting, "◆")}
+                  {noteSection("Schlüsselnoten", fragrance.notes.key)}
+                  {noteSection("Weitere Noten", fragrance.notes.supporting)}
                   {!fragrance.notes.key.length &&
                   !fragrance.notes.supporting.length ? (
                     <p className="text-[13px] leading-5 text-(--ink-soft)">
