@@ -206,7 +206,7 @@ export default function FragranceOffers({
                     }`}
                   >
                     {offer.affiliate_link
-                      ? "Partnerangebot"
+                      ? "Werbung · Partnerlink"
                       : "Weitere Kaufoption"}
                   </span>
                 </div>
@@ -270,7 +270,7 @@ export default function FragranceOffers({
       <div className="mt-3 rounded-xl border border-(--line) bg-(--well)/35 px-3 py-2.5 text-[10.5px] leading-relaxed text-(--ink-soft)">
         {partnerOfferCount ? (
           <p>
-            <span className="font-semibold text-(--ink)">Partnerangebote:</span>{" "}
+            <span className="font-semibold text-(--ink)">Werbung · Partnerlink:</span>{" "}
             DUFYND kann bei entsprechend gekennzeichneten Links eine Provision
             erhalten. Das verändert weder den angezeigten Händlerpreis noch die
             Reihenfolge der Angebote.
