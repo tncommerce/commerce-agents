@@ -188,13 +188,16 @@ def test_mobile_review_records_five_publish_ready_creatives() -> None:
 def test_pre_publish_checklist_covers_five_core_slots() -> None:
     checklist = load_json(CHECKLIST)
 
-    assert checklist["state"] == "prelaunch_ready_waiting_launch_day_live_checks"
+    assert checklist["state"] == "prepublish_prepared_waiting_platform_account_checks_and_publish_approval"
     assert checklist["automatic_publish_allowed"] is False
     assert checklist["paid_generation_required"] is False
-    assert checklist["tracking_qc"]["status"] == "passed_code_level"
+    assert checklist["tracking_qc"]["status"] == "passed_code_and_live_route_level"
     assert checklist["tracking_qc"]["link_count"] == 14
     assert len(checklist["launch_slots"]) == 5
     assert checklist["final_gate"]["required"] == "explicit_operator_publish_approval"
+    assert checklist["final_gate"]["status"] == "not_yet_requested"
+    assert checklist["audio_qc"]["paid_generation_required"] is False
+    assert checklist["mobile_qc"]["status"] == "passed_for_launch_buffer"
 
     ids = {row["content_id"] for row in checklist["launch_slots"]}
     assert ids == {
@@ -248,3 +251,24 @@ def test_social_copy_has_profile_link_cta_for_every_channel() -> None:
         assert post["instagram"]["cta"].endswith("Link im Profil.")
         if "youtube" in post:
             assert post["youtube"]["cta"] == "DUFYND über den Link im Kanalprofil öffnen."
+
+
+def test_pre_publish_live_route_evidence_and_remaining_gates() -> None:
+    checklist = load_json(CHECKLIST)
+
+    live = checklist["tracking_qc"]["live_route_verification"]
+    assert live["result"] == "14/14 passed"
+    assert set(live["verified_paths"]) == {
+        "/start",
+        "/duftfinder",
+        "/parfum-alternativen",
+    }
+
+    remaining = {row["check"]: row["state"] for row in checklist["remaining_external_checks"]}
+    assert remaining == {
+        "tiktok_rebrand": "pending_time_gate",
+        "profile_link_placement": "pending_account_level_live_check",
+        "platform_native_audio": "pending_publish_context",
+        "native_mobile_upload_preview": "pending_publish_context",
+        "explicit_operator_publish_approval": "pending",
+    }
