@@ -1,18 +1,18 @@
 {
-  "version": 1,
+  "version": 2,
   "reviewed_at": "2026-09-24",
   "system": "DUFYND",
   "gate_id": "high_end_launch_review_20260924",
-  "state": "operator_review_required",
+  "state": "mobile_launch_buffer_review_required",
   "automatic_publish_allowed": false,
   "paid_generation_authorized": false,
   "quality_floor": "Naxos-level premium visual quality",
   "readiness_summary": {
-    "locked_final_masters": 3,
-    "conditional_visuals": 1,
-    "maximum_publish_ready_after_current_review": 4,
+    "locked_final_video_masters": 4,
+    "rendered_static_creatives": 1,
+    "publish_ready_core_creatives_before_mobile_review": 5,
     "minimum_launch_buffer_target": 5,
-    "gap_after_ysl_acceptance": 1
+    "gap_to_minimum": 0
   },
   "creatives": [
     {
@@ -54,8 +54,8 @@
     {
       "content_id": "ysl_libre_high_end_01",
       "title": "YSL Libre",
-      "status": "operator_review_required",
-      "operator_status": "acceptance_pending",
+      "status": "locked_final_visual",
+      "operator_status": "approved_9_of_10",
       "visual_qc": {
         "internal_sampled_frame_review": "passed",
         "scope": "Sampled visual QC, not a claim of exhaustive frame-by-frame defect detection.",
@@ -76,12 +76,29 @@
       },
       "audio_plan": {
         "strategy": "platform_native_sound",
-        "rationale": "Keep the clean silent master and select a fitting licensed/native sound per platform close to publication rather than buying or baking in a Higgsfield-generated track.",
+        "rationale": "Keep the clean silent master and select a fitting licensed/native sound per platform close to publication rather than buying or baking in a generated track.",
         "new_paid_generation_required": false
       },
       "remaining_before_publish": [
-        "explicit_operator_visual_acceptance",
         "platform_native_sound_selection",
+        "caption_and_tracking_link_check",
+        "explicit_publish_approval"
+      ]
+    },
+    {
+      "content_id": "relationship_labels_carousel_01",
+      "title": "Clone / Inspired / Alternative carousel",
+      "status": "rendered_publish_ready_pending_mobile_review",
+      "operator_status": "review_pending",
+      "format": "5-slide 4:5 carousel",
+      "channels": [
+        "instagram_carousel",
+        "tiktok_photo_mode"
+      ],
+      "archive_folder": "/DUFYND/Launch Content/Carousel 01 - Clone Inspired Alternative",
+      "visual_qc": "internal_render_check_passed",
+      "remaining_before_publish": [
+        "operator_mobile_review",
         "caption_and_tracking_link_check",
         "explicit_publish_approval"
       ]
@@ -102,17 +119,13 @@
   "prepared_support": {
     "tracked_links": "examples/retail/data/dufynd_high_end_launch_links.json",
     "social_copy": "examples/retail/data/dufynd_high_end_social_copy.json",
-    "launch_asset_registry": "examples/retail/data/dufynd_high_end_launch_assets.json"
+    "launch_asset_registry": "examples/retail/data/dufynd_high_end_launch_assets.json",
+    "carousel_spec": "examples/retail/data/dufynd_launch_carousel_01.json"
   },
   "operator_decisions_required": [
     {
-      "decision_id": "ysl_visual_acceptance",
-      "prompt": "YSL Libre visual master accept or reopen for changes.",
-      "required_before": "count_as_publish_ready"
-    },
-    {
-      "decision_id": "launch_buffer_size",
-      "prompt": "Proceed with the 2026-09-26 launch with up to four high-end creatives after YSL acceptance, or require a fifth Naxos-quality creative first.",
+      "decision_id": "mobile_launch_buffer_review",
+      "prompt": "Review the four locked perfume visuals and the rendered five-slide carousel as the launch buffer.",
       "required_before": "finalize_launch_wave"
     },
     {
@@ -122,8 +135,18 @@
     }
   ],
   "fifth_creative_rule": {
-    "new_product_generation_requires_operator_product_selection": true,
-    "paid_generation_requires_explicit_approval": true,
-    "old_rejected_shorts_cannot_fill_gap": true
-  }
+    "satisfied_by": "relationship_labels_carousel_01",
+    "new_paid_generation_used": false,
+    "old_rejected_shorts_used": false
+  },
+  "resolved_operator_decisions": [
+    {
+      "decision_id": "ysl_visual_acceptance",
+      "resolution": "approved_9_of_10_in_prior_operator_review"
+    },
+    {
+      "decision_id": "launch_buffer_size",
+      "resolution": "five_creative_minimum_reached_without_paid_generation"
+    }
+  ]
 }
