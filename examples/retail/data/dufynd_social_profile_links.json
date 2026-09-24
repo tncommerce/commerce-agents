@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-24",
+  "system": "DUFYND",
+  "campaign_id": "launch01_high_end",
+  "landing_path": "/start",
+  "purpose": "Stable channel-profile links for social launch traffic. Content-specific links remain available only for surfaces where external links are actually clickable.",
+  "links": [
+    {
+      "channel": "tiktok",
+      "url": "https://dufynd.de/start?src=tiktok&cmp=launch01_high_end&content=profile",
+      "placement": "profile_website_field_if_available",
+      "live_check_required": true
+    },
+    {
+      "channel": "instagram",
+      "url": "https://dufynd.de/start?src=instagram&cmp=launch01_high_end&content=profile",
+      "placement": "profile_link",
+      "live_check_required": true
+    },
+    {
+      "channel": "youtube",
+      "url": "https://dufynd.de/start?src=youtube&cmp=launch01_high_end&content=profile",
+      "placement": "channel_profile_link",
+      "live_check_required": true,
+      "note": "YouTube Shorts descriptions and comments do not provide a clickable external URL, so use the channel-profile link rather than relying on a raw URL in the Short description."
+    }
+  ],
+  "rules": [
+    "Do not paste a content-specific tracked URL into a caption and assume it is clickable.",
+    "Use the stable channel profile link for the main bio/profile CTA.",
+    "Use content-specific tracked links only on a verified clickable surface.",
+    "Do not rotate the channel-profile URL per post; that would misattribute older post traffic to the newest content.",
+    "Measure post-level performance with native platform analytics and site-level acquisition by channel."
+  ]
+}
