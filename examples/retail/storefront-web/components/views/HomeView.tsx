@@ -11,10 +11,15 @@ import {
   useCatalogIndex,
 } from "web-shared";
 import { fetchProducts } from "@/lib/api";
+import { trackAnalyticsEvent } from "@/lib/analytics";
 import { ADVISOR_STARTS } from "@/lib/advisorStarts";
 import { fragrancePathForProduct } from "@/lib/fragranceSlug";
 import type { Product } from "@/lib/types";
-import ProductTile, { ProductRow } from "../ProductTile";
+import FragranceVisual from "../FragranceVisual";
+import ProductTile, {
+  ProductRating,
+  ProductRow,
+} from "../ProductTile";
 import LegalFooter from "../LegalFooter";
 import MerchantDiscovery from "../MerchantDiscovery";
 import PersonalLibrarySummary from "../PersonalLibrarySummary";
@@ -79,6 +84,8 @@ export default function HomeView({
 }) {
   const catalog = useCatalogIndex(fetchProducts);
   const picks = featured(catalog);
+  const spotlight =
+    catalog["SC-XERJOFF-NAXOS-100"] || picks[0];
   const scentCount = Object.values(catalog).filter(
     (product) =>
       String(product.product_id).startsWith("SC-") &&
@@ -99,6 +106,67 @@ export default function HomeView({
       <div className="[&_button]:py-2.5 sm:[&_button]:py-3">
         <Starters items={STARTERS} />
       </div>
+
+      {spotlight ? (
+        <section
+          aria-label="DUFYND Edit"
+          className="relative overflow-hidden rounded-[28px] border border-black/10 bg-[#171513] text-[#fffdf8] shadow-(--shadow-lg)"
+        >
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(184,137,52,0.22),transparent_34%),radial-gradient(circle_at_82%_78%,rgba(255,255,255,0.08),transparent_28%)]"
+          />
+          <div className="relative grid gap-0 md:grid-cols-[1.05fr_0.95fr]">
+            <div className="flex flex-col justify-center p-5 sm:p-7 md:p-9">
+              <div className="text-[10.5px] font-semibold uppercase tracking-[0.18em] text-[#d7b56f]">
+                DUFYND Edit · Launch Spotlight
+              </div>
+              <div className="mt-3 text-[12px] font-medium uppercase tracking-[0.11em] text-white/55">
+                {spotlight.brand}
+              </div>
+              <h2 className="mt-1 max-w-xl text-[28px] font-semibold leading-[1.02] tracking-[-0.04em] sm:text-[36px]">
+                Naxos
+              </h2>
+              <p className="mt-3 max-w-xl text-[13px] leading-5 text-white/68 sm:text-[14px] sm:leading-6">
+                Entdecke Duftprofil, Community-Werte, Alternativen und aktuelle
+                Händlerangebote in einer Ansicht.
+              </p>
+
+              <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2">
+                <a
+                  href={fragrancePathForProduct(spotlight)}
+                  onClick={() =>
+                    void trackAnalyticsEvent("product_open", {
+                      product_id: spotlight.product_id,
+                      source: "homepage_spotlight",
+                    })
+                  }
+                  className="rounded-xl bg-[#fffdf8] px-4 py-2.5 text-[12.5px] font-semibold text-[#171513] transition hover:-translate-y-0.5"
+                >
+                  Naxos entdecken
+                </a>
+                <span className="[&_*]:!text-white/65 [&_span.font-semibold]:!text-white">
+                  <ProductRating product={spotlight} compact />
+                </span>
+              </div>
+            </div>
+
+            <a
+              href={fragrancePathForProduct(spotlight)}
+              aria-label="Xerjoff Naxos entdecken"
+              className="group min-h-[280px] border-t border-white/10 p-4 md:min-h-[360px] md:border-l md:border-t-0 md:p-5"
+            >
+              <FragranceVisual
+                imageUrl={spotlight.image_url}
+                alt={spotlight.title}
+                variant="hero"
+                className="h-full min-h-[248px] w-full rounded-[22px] md:min-h-[320px]"
+                priority
+              />
+            </a>
+          </div>
+        </section>
+      ) : null}
       <div className="flex flex-wrap gap-x-2 gap-y-1 text-[11.5px] text-(--ink-soft) sm:hidden">
         <span>Unabhängige Empfehlungen</span>
         <span>·</span>

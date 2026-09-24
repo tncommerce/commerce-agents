@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
 import FragranceOffers from "@/components/FragranceOffers";
+import FragranceVisual from "@/components/FragranceVisual";
 import FragranceSaveControls from "@/components/FragranceSaveControls";
 import {
   LIVE_FRAGRANCES,
@@ -327,27 +328,14 @@ export default async function FragrancePage({
         </nav>
 
         <section className="grid gap-4 sm:gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="mx-auto w-full max-w-[250px] overflow-hidden rounded-3xl border border-(--line) bg-white shadow-(--shadow-sm) sm:max-w-[320px] lg:max-w-none lg:mx-0">
-            {fragrance.image_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={fragrance.image_url}
-                alt={`${fragrance.brand} ${fragrance.name}`}
-                className="aspect-square h-full w-full object-contain p-4 sm:p-10"
-              />
-            ) : (
-              <div className="grid aspect-square place-items-center bg-(--well)">
-                <div className="text-center">
-                  <div className="mx-auto h-4 w-12 rounded-t bg-(--ink)/80" />
-                  <div className="mx-auto h-4 w-8 bg-(--ink)/60" />
-                  <div className="mx-auto grid h-28 w-24 place-items-center rounded-[24px] border border-white bg-white/80 shadow-md">
-                    <span className="text-[11px] font-semibold tracking-[0.18em]">
-                      DUFYND
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
+          <div className="mx-auto w-full max-w-[280px] overflow-hidden rounded-[28px] border border-(--line) shadow-(--shadow) sm:max-w-[350px] lg:mx-0 lg:max-w-none">
+            <FragranceVisual
+              imageUrl={fragrance.image_url}
+              alt={`${fragrance.brand} ${fragrance.name}`}
+              variant="hero"
+              className="aspect-square w-full"
+              priority
+            />
           </div>
 
           <div className="flex flex-col justify-center">
@@ -549,17 +537,27 @@ export default async function FragrancePage({
               </span>
             </summary>
             <div className="mt-4 space-y-4">
-              {noteSection("Kopfnote", fragrance.notes.top, "✦")}
-              {noteSection("Herznote", fragrance.notes.heart, "♥")}
-              {noteSection("Basisnote", fragrance.notes.base, "◆")}
-              {!fragrance.notes.top.length &&
-              !fragrance.notes.heart.length &&
-              !fragrance.notes.base.length ? (
-                <p className="text-[13px] leading-5 text-(--ink-soft)">
-                  Für diesen Duft sind aktuell keine verifizierten
-                  Notenpyramiden im DUFYND-Katalog hinterlegt.
-                </p>
-              ) : null}
+              {fragrance.notes.top.length ||
+              fragrance.notes.heart.length ||
+              fragrance.notes.base.length ? (
+                <>
+                  {noteSection("Kopfnote", fragrance.notes.top, "✦")}
+                  {noteSection("Herznote", fragrance.notes.heart, "♥")}
+                  {noteSection("Basisnote", fragrance.notes.base, "◆")}
+                </>
+              ) : (
+                <>
+                  {noteSection("Schlüsselnoten", fragrance.notes.key, "✦")}
+                  {noteSection("Weitere Noten", fragrance.notes.supporting, "◆")}
+                  {!fragrance.notes.key.length &&
+                  !fragrance.notes.supporting.length ? (
+                    <p className="text-[13px] leading-5 text-(--ink-soft)">
+                      Für diesen Duft sind aktuell keine verifizierten
+                      Duftnoten im DUFYND-Katalog hinterlegt.
+                    </p>
+                  ) : null}
+                </>
+              )}
             </div>
           </details>
 
@@ -568,17 +566,27 @@ export default async function FragrancePage({
               Duftnoten
             </h2>
             <div className="mt-4 space-y-4">
-              {noteSection("Kopfnote", fragrance.notes.top, "✦")}
-              {noteSection("Herznote", fragrance.notes.heart, "♥")}
-              {noteSection("Basisnote", fragrance.notes.base, "◆")}
-              {!fragrance.notes.top.length &&
-              !fragrance.notes.heart.length &&
-              !fragrance.notes.base.length ? (
-                <p className="text-[13px] leading-5 text-(--ink-soft)">
-                  Für diesen Duft sind aktuell keine verifizierten
-                  Notenpyramiden im DUFYND-Katalog hinterlegt.
-                </p>
-              ) : null}
+              {fragrance.notes.top.length ||
+              fragrance.notes.heart.length ||
+              fragrance.notes.base.length ? (
+                <>
+                  {noteSection("Kopfnote", fragrance.notes.top, "✦")}
+                  {noteSection("Herznote", fragrance.notes.heart, "♥")}
+                  {noteSection("Basisnote", fragrance.notes.base, "◆")}
+                </>
+              ) : (
+                <>
+                  {noteSection("Schlüsselnoten", fragrance.notes.key, "✦")}
+                  {noteSection("Weitere Noten", fragrance.notes.supporting, "◆")}
+                  {!fragrance.notes.key.length &&
+                  !fragrance.notes.supporting.length ? (
+                    <p className="text-[13px] leading-5 text-(--ink-soft)">
+                      Für diesen Duft sind aktuell keine verifizierten
+                      Duftnoten im DUFYND-Katalog hinterlegt.
+                    </p>
+                  ) : null}
+                </>
+              )}
             </div>
           </section>
         </div>
@@ -627,20 +635,12 @@ export default async function FragrancePage({
                       href={`/duft/${item.fragrance.slug}`}
                       className="block"
                     >
-                      <div className="flex h-36 items-center justify-center bg-white p-3">
-                        {item.fragrance.image_url ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={item.fragrance.image_url}
-                            alt={`${item.fragrance.brand} ${item.fragrance.name}`}
-                            className="h-full w-full object-contain"
-                          />
-                        ) : (
-                          <span className="text-[11px] font-semibold tracking-[0.14em] text-(--ink-soft)">
-                            DUFYND
-                          </span>
-                        )}
-                      </div>
+                      <FragranceVisual
+                        imageUrl={item.fragrance.image_url}
+                        alt={`${item.fragrance.brand} ${item.fragrance.name}`}
+                        variant="card"
+                        className="h-36 w-full"
+                      />
                       <div className="p-3">
                         <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-(--ink-soft)">
                           {relatedLabel(item.kind)}

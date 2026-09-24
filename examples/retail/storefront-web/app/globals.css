@@ -119,3 +119,192 @@ body {
   }
 }
 
+
+
+/* DUFYND luxury product stage
+ * Uses the real product image as source of truth and adds depth through
+ * perspective, light and shadow. No product geometry or label is regenerated.
+ */
+.dufynd-product-stage {
+  --dufynd-rx: 0deg;
+  --dufynd-ry: 0deg;
+  --dufynd-mx: 50%;
+  --dufynd-my: 34%;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  perspective: 900px;
+  background:
+    radial-gradient(circle at 50% 16%, rgba(255, 255, 255, 0.98), rgba(255, 253, 248, 0.92) 34%, transparent 58%),
+    linear-gradient(145deg, #fffdf8 0%, #f6f0e4 58%, #eee4d3 100%);
+}
+
+.dufynd-product-stage::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  z-index: -2;
+  background:
+    radial-gradient(circle at 26% 24%, rgba(184, 137, 52, 0.12), transparent 28%),
+    radial-gradient(circle at 78% 74%, rgba(23, 21, 19, 0.08), transparent 32%);
+  transform: translate3d(0, 0, 0);
+}
+
+.dufynd-product-light {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at var(--dufynd-mx) var(--dufynd-my),
+    rgba(255, 255, 255, 0.92) 0,
+    rgba(255, 245, 220, 0.42) 18%,
+    transparent 42%
+  );
+  opacity: 0.78;
+  transition: opacity 220ms ease;
+}
+
+.dufynd-product-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 10%;
+  width: 46%;
+  height: 9%;
+  border-radius: 999px;
+  background: rgba(23, 21, 19, 0.20);
+  filter: blur(13px);
+  transform: translateX(-50%) scaleX(1);
+  opacity: 0.42;
+  transition: transform 280ms ease, opacity 280ms ease;
+}
+
+.dufynd-product-object {
+  position: absolute;
+  inset: 8% 8% 10%;
+  display: grid;
+  place-items: center;
+  transform-style: preserve-3d;
+  transform:
+    rotateX(var(--dufynd-rx))
+    rotateY(var(--dufynd-ry))
+    translateZ(22px);
+  transition: transform 180ms ease-out;
+  will-change: transform;
+}
+
+.dufynd-product-float {
+  display: grid;
+  height: 100%;
+  width: 100%;
+  place-items: center;
+}
+
+.dufynd-product-image {
+  display: block;
+  max-height: 90%;
+  max-width: 90%;
+  object-fit: contain;
+  filter:
+    drop-shadow(0 20px 20px rgba(23, 21, 19, 0.14))
+    drop-shadow(0 5px 6px rgba(23, 21, 19, 0.08));
+  transform: translateZ(0) scale(1.02);
+  transition: filter 280ms ease, transform 280ms ease;
+  will-change: transform;
+}
+
+.dufynd-product-sheen {
+  position: absolute;
+  inset: -18%;
+  pointer-events: none;
+  background: linear-gradient(
+    112deg,
+    transparent 36%,
+    rgba(255, 255, 255, 0.12) 43%,
+    rgba(255, 255, 255, 0.62) 49%,
+    rgba(255, 239, 196, 0.18) 54%,
+    transparent 62%
+  );
+  transform: translateX(-55%) rotate(5deg);
+  opacity: 0.52;
+  transition: transform 620ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 280ms ease;
+}
+
+.dufynd-product-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .dufynd-product-stage:hover .dufynd-product-sheen {
+    transform: translateX(54%) rotate(5deg);
+    opacity: 0.82;
+  }
+
+  .dufynd-product-stage:hover .dufynd-product-image {
+    filter:
+      drop-shadow(0 26px 24px rgba(23, 21, 19, 0.18))
+      drop-shadow(0 8px 8px rgba(23, 21, 19, 0.10));
+    transform: translateZ(0) scale(1.045);
+  }
+
+  .dufynd-product-stage:hover .dufynd-product-shadow {
+    transform: translateX(-50%) scaleX(1.08);
+    opacity: 0.5;
+  }
+}
+
+.dufynd-product-stage[data-variant="hero"] .dufynd-product-object {
+  inset: 7% 10% 12%;
+  transform:
+    rotateX(var(--dufynd-rx))
+    rotateY(var(--dufynd-ry))
+    translateZ(34px);
+}
+
+.dufynd-product-stage[data-variant="hero"] .dufynd-product-image {
+  max-height: 92%;
+  max-width: 92%;
+}
+
+.dufynd-product-stage[data-variant="hero"] .dufynd-product-shadow {
+  bottom: 8%;
+  width: 42%;
+  height: 8%;
+  filter: blur(17px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dufynd-product-stage[data-variant="hero"] .dufynd-product-float {
+    animation: dufynd-product-float 5.8s ease-in-out infinite;
+  }
+}
+
+@keyframes dufynd-product-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dufynd-product-object,
+  .dufynd-product-image,
+  .dufynd-product-shadow,
+  .dufynd-product-sheen,
+  .dufynd-product-light {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .dufynd-product-object {
+    transform: none !important;
+  }
+
+  .dufynd-product-sheen {
+    display: none;
+  }
+}

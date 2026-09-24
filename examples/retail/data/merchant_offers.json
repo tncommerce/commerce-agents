@@ -37,6 +37,44 @@
       "data_source": "manual_verified_web",
       "last_updated_at": "2026-09-15T17:30:00Z",
       "commission_rate": null
+    },
+    {
+      "offer_id": "parfum-zentrum-naxos-100",
+      "product_id": "SC-XERJOFF-NAXOS-100",
+      "merchant_id": "parfum-zentrum-de",
+      "merchant_name": "Parfum-Zentrum",
+      "merchant_product_id": "136149",
+      "price": 148.45,
+      "currency": "EUR",
+      "shipping_cost": 0,
+      "shipping_label": "Kostenloser Versand",
+      "in_stock": true,
+      "variant_label": "100 ml",
+      "product_url": "https://www.parfum-zentrum.de/xerjoff-xj-1861-naxos-eau-de-parfum-100-ml-unisex_z775656/",
+      "affiliate_url": null,
+      "network": null,
+      "data_source": "manual_verified_web",
+      "last_updated_at": "2026-09-24T07:24:00Z",
+      "commission_rate": null
+    },
+    {
+      "offer_id": "notino-naxos-100",
+      "product_id": "SC-XERJOFF-NAXOS-100",
+      "merchant_id": "notino",
+      "merchant_name": "Notino",
+      "merchant_product_id": "XEF3191",
+      "price": 192,
+      "currency": "EUR",
+      "shipping_cost": 0,
+      "shipping_label": "Gratis Versand",
+      "in_stock": true,
+      "variant_label": "100 ml",
+      "product_url": "https://www.notino.de/xerjoff/xj-1861-naxos-eau-de-parfum-unisex/",
+      "affiliate_url": null,
+      "network": null,
+      "data_source": "manual_verified_web",
+      "last_updated_at": "2026-09-24T07:24:00Z",
+      "commission_rate": null
     }
   ]
 }

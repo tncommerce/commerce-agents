@@ -6,6 +6,7 @@
 import { useState } from "react";
 import { hasOptions, optionSummary, optionValuesLabel, priceLabel, useStoreFrame } from "web-shared";
 import type { Product } from "@/lib/types";
+import FragranceVisual from "@/components/FragranceVisual";
 import { trackAnalyticsEvent } from "@/lib/analytics";
 import { flyToCart } from "@/lib/flight";
 import { attributeChips, productGlyph, productTileClass } from "@/lib/format";
@@ -39,21 +40,24 @@ export function ProductImage({ product, className = "" }: { product: Product; cl
   if (product.image_url) {
     const isDufynd = String(product.product_id).startsWith("SC-");
 
+    if (isDufynd) {
+      return (
+        <FragranceVisual
+          imageUrl={product.image_url}
+          alt={product.title}
+          variant="card"
+          className={className}
+        />
+      );
+    }
+
     // eslint-disable-next-line @next/next/no-img-element
     return (
-      <div
-        className={`flex items-center justify-center overflow-hidden ${
-          isDufynd ? "bg-white" : ""
-        } ${className}`}
-      >
+      <div className={`flex items-center justify-center overflow-hidden ${className}`}>
         <img
           src={product.image_url}
           alt={product.title}
-          className={
-            isDufynd
-              ? "h-full w-full scale-[1.25] object-contain"
-              : "h-full w-full object-cover"
-          }
+          className="h-full w-full object-cover"
         />
       </div>
     );
