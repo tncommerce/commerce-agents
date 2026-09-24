@@ -1,0 +1,121 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-24",
+  "campaign_id": "launch01_high_end",
+  "guidance": [
+    "Keep the premium visual as the hook; copy should explain the DUFYND utility rather than oversell the fragrance.",
+    "Do not use unsupported similarity percentages, best-of rankings or 1:1 claims.",
+    "Use the matching channel-specific first-party attribution link.",
+    "Publishing remains an explicit operator approval action."
+  ],
+  "posts": [
+    {
+      "content_id": "naxos_high_end_01",
+      "tiktok": {
+        "caption": "Naxos ist süß, würzig und luxuriös – aber wenn du genau diese Richtung suchst, lohnt sich der Blick auf ähnliche Profile. DUFYND zeigt dir Alternativen, ohne sie einfach als 1:1-Dupe zu verkaufen.",
+        "hashtags": [
+          "#DUFYND",
+          "#Naxos",
+          "#Xerjoff",
+          "#Parfum",
+          "#FragranceTok"
+        ]
+      },
+      "instagram": {
+        "caption": "Xerjoff Naxos als Duftprofil: süß, würzig, gourmandig und sehr präsent. Bei DUFYND kannst du die Richtung mit günstigeren Alternativen vergleichen – transparent nach Profil und Beziehung.",
+        "hashtags": [
+          "#DUFYND",
+          "#Naxos",
+          "#Xerjoff",
+          "#Parfum",
+          "#Fragrance"
+        ]
+      },
+      "youtube": {
+        "title": "Xerjoff Naxos – welche Richtung passt zu dir? | DUFYND",
+        "description": "Ein hochwertiger Naxos-Visual mit direktem Einstieg in den DUFYND Vergleich. Entdecke ähnliche Duftprofile und ihre Unterschiede statt pauschaler 1:1-Versprechen."
+      }
+    },
+    {
+      "content_id": "bois_imperial_high_end_01",
+      "tiktok": {
+        "caption": "Bois Impérial ist frisch, trocken, holzig und deutlich weniger süß als viele Mainstream-Düfte. Wenn genau das dein Stil ist, prüft DUFYND deine Passung statt dir einfach eine pauschale Empfehlung zu geben.",
+        "hashtags": [
+          "#DUFYND",
+          "#BoisImperial",
+          "#EssentialParfums",
+          "#Parfum",
+          "#FragranceTok"
+        ]
+      },
+      "instagram": {
+        "caption": "Bois Impérial steht bei DUFYND für ein sehr holziges, würziges und kaum süßes Profil. Der Duftfinder hilft dir zu prüfen, ob genau dieser Stil zu deinem Geschmack und Anlass passt.",
+        "hashtags": [
+          "#DUFYND",
+          "#BoisImperial",
+          "#EssentialParfums",
+          "#Parfum",
+          "#Duftfinder"
+        ]
+      },
+      "youtube": {
+        "title": "Bois Impérial – passt dieser Stil zu dir? | DUFYND",
+        "description": "Bois Impérial verbindet Frische mit viel Holz, Würze und sehr wenig Süße. Der DUFYND Duftfinder hilft dir, dieses Profil gegen deine Vorlieben zu prüfen."
+      }
+    },
+    {
+      "content_id": "one_million_example61_01",
+      "tiktok": {
+        "caption": "Ein Duft kann sofort Aufmerksamkeit erzeugen – aber ob er zu dir passt, entscheidet nicht der Flakon. DUFYND bringt den visuellen Eindruck zurück zum Duftprofil und zu deinem Geschmack.",
+        "hashtags": [
+          "#DUFYND",
+          "#1Million",
+          "#Rabanne",
+          "#Parfum",
+          "#FragranceTok"
+        ]
+      },
+      "instagram": {
+        "caption": "Rabanne 1 Million ist visuell unverwechselbar. DUFYND geht danach einen Schritt weiter: Welche Duftwirkung suchst du eigentlich – und passt das Profil wirklich zu dir?",
+        "hashtags": [
+          "#DUFYND",
+          "#1Million",
+          "#Rabanne",
+          "#Parfum",
+          "#Duftfinder"
+        ]
+      },
+      "youtube": {
+        "title": "Rabanne 1 Million – mehr als nur der Flakon | DUFYND",
+        "description": "Premium Visual trifft Duftberatung: DUFYND hilft dir, vom ersten Eindruck zum passenden Duftprofil zu kommen."
+      }
+    },
+    {
+      "content_id": "ysl_libre_high_end_01",
+      "tiktok": {
+        "caption": "YSL Libre verbindet einen starken Couture-Auftritt mit einem klaren eigenen Duftcharakter. DUFYND hilft dir zu prüfen, ob genau diese Richtung zu deinem Geschmack passt.",
+        "hashtags": [
+          "#DUFYND",
+          "#YSLLibre",
+          "#YSLBeauty",
+          "#Parfum",
+          "#FragranceTok"
+        ]
+      },
+      "instagram": {
+        "caption": "Libre lebt von Kontrast: elegant, präsent und modern. Mit DUFYND kannst du den Stil gegen deine persönlichen Duftvorlieben prüfen, statt nur nach Bekanntheit zu entscheiden.",
+        "hashtags": [
+          "#DUFYND",
+          "#YSLLibre",
+          "#YSLBeauty",
+          "#Parfum",
+          "#Duftfinder"
+        ]
+      },
+      "youtube": {
+        "title": "YSL Libre – passt das Duftprofil zu dir? | DUFYND",
+        "description": "Ein High-End-Visual für YSL Libre mit direkter Brücke zum DUFYND Duftfinder. Veröffentlichung erst nach Audio- und Final-QC."
+      }
+    }
+  ]
+}
