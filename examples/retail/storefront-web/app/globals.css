@@ -362,3 +362,100 @@ body {
 .dufynd-mobile-offer-bar {
   padding-bottom: calc(0.625rem + env(safe-area-inset-bottom));
 }
+
+
+/* DUFYND editorial depth stage
+ * Campaign artwork receives spatial motion as a whole. We do not fake bottle
+ * geometry when the source is an editorial scene. True bottle/cutout assets
+ * continue to use .dufynd-product-stage above.
+ */
+.dufynd-editorial-depth-stage {
+  --dufynd-rx: 0deg;
+  --dufynd-ry: 0deg;
+  --dufynd-mx: 50%;
+  --dufynd-my: 34%;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  perspective: 1100px;
+  background: #171513;
+}
+
+.dufynd-editorial-depth-object {
+  position: absolute;
+  inset: -2.5%;
+  transform-style: preserve-3d;
+  transform:
+    rotateX(calc(var(--dufynd-rx) * 0.42))
+    rotateY(calc(var(--dufynd-ry) * 0.52))
+    scale(1.055);
+  transition: transform 240ms cubic-bezier(0.2, 0.75, 0.2, 1);
+  will-change: transform;
+}
+
+.dufynd-editorial-depth-image {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  filter: saturate(1.02) contrast(1.01);
+  transition: filter 320ms ease;
+}
+
+.dufynd-editorial-depth-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at var(--dufynd-mx) var(--dufynd-my), transparent 0 18%, rgba(255,255,255,0.035) 28%, transparent 46%),
+    linear-gradient(180deg, transparent 58%, rgba(23,21,19,0.16));
+}
+
+.dufynd-editorial-depth-glint {
+  position: absolute;
+  inset: -24%;
+  pointer-events: none;
+  background: linear-gradient(
+    116deg,
+    transparent 39%,
+    rgba(255,255,255,0.06) 46%,
+    rgba(255,248,224,0.20) 50%,
+    rgba(255,255,255,0.05) 54%,
+    transparent 61%
+  );
+  transform: translateX(-62%) rotate(4deg);
+  opacity: 0.55;
+  transition:
+    transform 850ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 300ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .dufynd-editorial-depth-stage:hover .dufynd-editorial-depth-object {
+    transform:
+      rotateX(calc(var(--dufynd-rx) * 0.42))
+      rotateY(calc(var(--dufynd-ry) * 0.52))
+      scale(1.075);
+  }
+
+  .dufynd-editorial-depth-stage:hover .dufynd-editorial-depth-image {
+    filter: saturate(1.055) contrast(1.025);
+  }
+
+  .dufynd-editorial-depth-stage:hover .dufynd-editorial-depth-glint {
+    transform: translateX(62%) rotate(4deg);
+    opacity: 0.78;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dufynd-editorial-depth-object,
+  .dufynd-editorial-depth-image,
+  .dufynd-editorial-depth-glint {
+    transition: none !important;
+    transform: none !important;
+  }
+
+  .dufynd-editorial-depth-glint {
+    display: none;
+  }
+}
