@@ -1,5 +1,5 @@
 {
-  "version": 6,
+  "version": 7,
   "system": "DUFYND",
   "strategy_status": "active",
   "active_track": "high_end_launch_buffer",
@@ -7,16 +7,16 @@
   "business_priority": "audience_growth_and_product_utility",
   "legacy_pilot_batches": "resume_for_preproduction",
   "legacy_pilot_role": "launch_and_learning_buffer",
-  "reason": "DUFYND has now passed the mobile launch-buffer review with five accepted core creatives: four locked premium perfume visuals plus the accepted Clone/Inspired/Alternative education carousel. No rework or new paid generation is required for this minimum launch buffer. Remaining work is channel-native pre-publish QA and explicit operator approval before any social post goes live.",
-  "next_action": "perform_channel_native_pre_publish_checks_then_request_explicit_publish_approval",
-  "next_action_class": "approval_required_at_publish",
+  "reason": "The five-core launch buffer has passed mobile review. Copy, tracking, stable social-profile links and a dedicated /start landing page are prepared. Remaining work is limited to launch-day live checks that cannot be finalized in advance: TikTok rebrand state, live profile links, native audio selection where applicable, final upload preview, and explicit publish approval.",
+  "next_action": "launch_day_rebrand_and_live_checks_then_request_publish_approval",
+  "next_action_class": "manual_step_pending_at_launch",
   "user_approval_required_now": false,
   "production_parallel_allowed": true,
   "buffer_plan": "examples/retail/data/dufynd_content_buffer_plan.json",
   "waiting_on": [
-    "channel_native_sound_or_audio_check",
-    "caption_and_tracking_link_final_check",
     "social_rebrand_hold_until_2026-09-26",
+    "live_profile_link_check",
+    "channel_native_sound_or_audio_check",
     "explicit_publish_approval"
   ],
   "approval_gates": [
@@ -25,5 +25,7 @@
   ],
   "operating_rule": "Preproduce a rolling 2-3 week buffer from existing scripts and previews, keep roughly 30% of future slots flexible for trends and real DUFYND demand, and do not buy more AI-video credits merely to increase inventory. Affiliate approvals remain parallel commercial work and must not block useful organic content.",
   "high_end_asset_registry": "examples/retail/data/dufynd_high_end_launch_assets.json",
-  "high_end_launch_review": "examples/retail/data/dufynd_high_end_launch_review.json"
+  "high_end_launch_review": "examples/retail/data/dufynd_high_end_launch_review.json",
+  "launch_day_runbook": "examples/retail/data/dufynd_launch_day_runbook.json",
+  "social_profile_links": "examples/retail/data/dufynd_social_profile_links.json"
 }
