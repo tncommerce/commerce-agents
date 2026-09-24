@@ -1,10 +1,10 @@
 {
-  "version": 1,
+  "version": 2,
   "updated_at": "2026-09-24",
   "system": "DUFYND",
   "status": "prelaunch_high_end_buffer",
   "archive_location": "DUFYND user asset archive",
-  "purpose": "Track final or near-final high-end creatives that exist outside the repository so launch planning does not confuse the legacy pilot renderer with the actual approved content inventory.",
+  "purpose": "Track the real high-end launch inventory separately from the legacy pilot renderer while preserving prior creative lock and rebuild decisions.",
   "automatic_publish_allowed": false,
   "publish_requires": [
     "mobile_content_review",
@@ -12,15 +12,6 @@
     "explicit_operator_publish_approval"
   ],
   "assets": [
-    {
-      "content_id": "sillage_haltbarkeit_01",
-      "title": "Sillage vs. Haltbarkeit",
-      "archive_filename": "DUFYND_Short_01_Sillage_Haltbarkeit_FINAL_1080p.mp4",
-      "asset_state": "final_master_present",
-      "creative_state": "review_before_publish",
-      "landing_path": "/duftfinder",
-      "role": "trust_education"
-    },
     {
       "content_id": "naxos_high_end_01",
       "title": "Xerjoff Naxos",
@@ -46,45 +37,62 @@
       "asset_state": "final_master_present",
       "creative_state": "locked",
       "landing_path": "/duftfinder",
-      "role": "attention_and_premium_visual_format"
+      "role": "attention_and_premium_visual_format",
+      "note": "Opening nozzle imperfection was explicitly accepted; do not trigger a new AI render for it."
     }
   ],
   "near_final": [
     {
+      "content_id": "ysl_libre_high_end_01",
+      "title": "YSL Libre",
+      "source_job_id": "5ce5e009-965d-4c97-8a19-d91bb561eeaa",
+      "asset_state": "render_complete",
+      "creative_state": "audio_and_final_qc_pending",
+      "technical_profile": "8 seconds, 720p, 9:16, no audio",
+      "next_action": "finish audio/sound and perform final QC without replacing the accepted visual unless a genuine defect is found",
+      "landing_path": "/duftfinder"
+    }
+  ],
+  "rebuild_required": [
+    {
+      "content_id": "sillage_haltbarkeit_01",
+      "title": "Sillage vs. Haltbarkeit",
+      "prior_archive_filename": "DUFYND_Short_01_Sillage_Haltbarkeit_FINAL_1080p.mp4",
+      "state": "rebuild_from_scratch",
+      "reuse_old_short": false,
+      "reason": "Operator rejected the old Short #1 after the Naxos quality floor was established."
+    },
+    {
       "content_id": "edp_vs_edt_01",
       "title": "EDP vs. EDT",
-      "archive_filename": "DUFYND_Short_02_EDP_vs_EDT_DRAFT_1080p.mp4",
-      "asset_state": "draft_present",
-      "next_action": "finish_from_existing_material_without_new_paid_generation_if_quality_allows",
-      "landing_path": "/duftfinder"
+      "prior_archive_filename": "DUFYND_Short_02_EDP_vs_EDT_DRAFT_1080p.mp4",
+      "state": "rebuild_from_scratch",
+      "reuse_old_short": false,
+      "reason": "Operator explicitly required old Short #2 to be rebuilt rather than finalized from the pre-quality-floor draft."
     }
   ],
   "proposed_launch_sequence": [
     {
       "date": "2026-09-26",
-      "content_id": "sillage_haltbarkeit_01"
-    },
-    {
-      "date": "2026-09-27",
       "content_id": "naxos_high_end_01"
     },
     {
-      "date": "2026-09-29",
+      "date": "2026-09-27",
       "content_id": "bois_imperial_high_end_01"
     },
     {
-      "date": "2026-10-01",
+      "date": "2026-09-29",
       "content_id": "one_million_example61_01"
     },
     {
-      "date": "2026-10-03",
-      "content_id": "edp_vs_edt_01",
-      "condition": "only_if_finalized_and_mobile_review_passes"
+      "date": "2026-10-01",
+      "content_id": "ysl_libre_high_end_01",
+      "condition": "only_if_audio_and_final_qc_pass"
     }
   ],
   "notes": [
-    "This registry does not replace the 15 legacy pilot concepts; it records the higher-quality launch-ready track separately.",
-    "The first four entries still require final mobile review and explicit publish approval.",
+    "This registry does not replace the legacy pilot concept bank; it separates the current quality-floor launch track from older prototypes.",
+    "Sillage/Haltbarkeit and EDP-vs-EDT are explicitly rebuild-only and their old files must not be promoted to launch finals.",
     "No paid generation is authorized by this registry."
   ]
 }
