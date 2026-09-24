@@ -793,3 +793,31 @@ body {
     pointer-events: none;
   }
 }
+
+
+.dufynd-model-hint {
+  position: absolute;
+  right: 16px;
+  bottom: 14px;
+  z-index: 3;
+  pointer-events: none;
+  border: 1px solid rgba(255,255,255,0.11);
+  border-radius: 999px;
+  background: rgba(8,9,11,0.34);
+  padding: 6px 9px;
+  color: rgba(255,255,255,0.62);
+  font-size: 9px;
+  font-weight: 650;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  backdrop-filter: blur(10px);
+}
+
+@media (max-width: 640px) {
+  .dufynd-model-hint {
+    right: 12px;
+    bottom: 11px;
+    font-size: 8px;
+    opacity: 0.82;
+  }
+}
