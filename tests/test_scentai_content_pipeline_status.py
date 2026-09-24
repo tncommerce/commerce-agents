@@ -81,3 +81,49 @@ def test_content_pipeline_holds_legacy_batches_for_high_end_rnd() -> None:
     assert report["next_action_class"] == "auto_allowed"
     assert report["user_approval_required_now"] is False
     assert report["production_parallel_allowed"] is False
+
+
+
+def test_content_pipeline_uses_active_high_end_launch_strategy() -> None:
+    batch = {
+        "campaign_id": "launch01",
+        "overall_state": "voiceover_pending",
+        "next_action": "record_or_generate_voiceover_audio",
+        "next_action_class": "approval_required",
+        "user_approval_required_now": True,
+        "blockers": ["voiceover_audio_pending"],
+        "summary": {
+            "pilots": 5,
+            "tracked_links_ready": 15,
+            "social_copy_ready": 5,
+            "visual_preview_mp4s_ready": 5,
+            "final_video_renders_ready": 0,
+        },
+    }
+    strategy = {
+        "active_track": "high_end_launch_buffer",
+        "legacy_pilot_batches": "resume_for_preproduction",
+        "next_action": "finish_ysl_libre_audio_qc_and_prepare_mobile_launch_review",
+        "next_action_class": "auto_allowed_until_paid_generation_or_publish_gate",
+        "user_approval_required_now": False,
+        "production_parallel_allowed": True,
+    }
+
+    report = build_content_pipeline_status(
+        [batch],
+        generated_at="2026-09-24T10:54:57+00:00",
+        strategy=strategy,
+    )
+
+    assert report["pipeline_state"] == "strategy_work_available"
+    assert report["active_track"] == "high_end_launch_buffer"
+    assert report["current_batch_id"] is None
+    assert report["next_action"] == (
+        "finish_ysl_libre_audio_qc_and_prepare_mobile_launch_review"
+    )
+    assert (
+        report["next_action_class"]
+        == "auto_allowed_until_paid_generation_or_publish_gate"
+    )
+    assert report["user_approval_required_now"] is False
+    assert report["production_parallel_allowed"] is True
