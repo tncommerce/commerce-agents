@@ -37,8 +37,7 @@ def test_buffer_counts_match_high_end_registry() -> None:
     assert snapshot["high_end_rebuild_required"] == len(registry["rebuild_required"])
     assert snapshot["gap_to_minimum_publish_ready_target"] == max(
         0,
-        int(buffer["buffer_targets"]["minimum_publish_ready_at_launch"])
-        - len(registry["assets"]),
+        int(buffer["buffer_targets"]["minimum_publish_ready_at_launch"]) - len(registry["assets"]),
     )
 
 
