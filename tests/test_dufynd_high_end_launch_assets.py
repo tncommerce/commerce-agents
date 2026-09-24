@@ -42,7 +42,8 @@ def test_buffer_counts_match_five_creative_inventory() -> None:
     }
     locked_video_count = sum(row["creative_state"] in locked_states for row in registry["assets"])
     publish_ready_core_count = len(registry["assets"]) + int(
-        carousel["status"] == "publish_ready_pending_mobile_review"
+        carousel["status"]
+        in {"publish_ready_pending_mobile_review", "accepted_launch_education_slot"}
     )
 
     assert snapshot["high_end_final_assets_documented"] == len(registry["assets"])
