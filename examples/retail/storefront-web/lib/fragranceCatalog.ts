@@ -34,6 +34,8 @@ type SourceRow = {
     top?: string[];
     heart?: string[];
     base?: string[];
+    key?: string[];
+    supporting?: string[];
   };
   community?: {
     source?: string;
@@ -85,6 +87,8 @@ export interface StaticFragrance {
     top: string[];
     heart: string[];
     base: string[];
+    key: string[];
+    supporting: string[];
   };
   community: {
     source: string;
@@ -192,6 +196,8 @@ function catalogToFragrance(
       top: source?.notes?.top || [],
       heart: source?.notes?.heart || [],
       base: source?.notes?.base || [],
+      key: source?.notes?.key || [],
+      supporting: source?.notes?.supporting || [],
     },
     community: {
       source:
