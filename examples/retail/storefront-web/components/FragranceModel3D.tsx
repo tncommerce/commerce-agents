@@ -53,9 +53,20 @@ export default function FragranceModel3D({
   priority?: boolean;
 }) {
   const [viewerReady, setViewerReady] = useState(false);
+  const safeModelUrl = (() => {
+    if (!modelUrl) return null;
+    try {
+      const url = new URL(modelUrl, window.location.href);
+      return url.protocol === "https:" || url.protocol === "http:"
+        ? url.toString()
+        : null;
+    } catch {
+      return null;
+    }
+  })();
 
   useEffect(() => {
-    if (!modelUrl) return;
+    if (!safeModelUrl) return;
     let active = true;
 
     ensureModelViewer()
@@ -69,9 +80,9 @@ export default function FragranceModel3D({
     return () => {
       active = false;
     };
-  }, [modelUrl]);
+  }, [safeModelUrl]);
 
-  if (!modelUrl || !viewerReady) {
+  if (!safeModelUrl || !viewerReady) {
     return (
       <FragranceVisual
         imageUrl={imageUrl}
@@ -90,7 +101,7 @@ export default function FragranceModel3D({
     <div className={`dufynd-model-stage ${className}`}>
       <div className="dufynd-model-halo" aria-hidden />
       {createElement("model-viewer", {
-        src: modelUrl,
+        src: safeModelUrl,
         poster: cutoutUrl || imageUrl || undefined,
         alt,
         "camera-controls": "",
