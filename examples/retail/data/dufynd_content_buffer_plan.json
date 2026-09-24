@@ -1,10 +1,10 @@
 {
-  "version": 4,
+  "version": 5,
   "updated_at": "2026-09-24",
   "system": "DUFYND",
   "campaign_id": "launch01",
   "launch_date": "2026-09-26",
-  "status": "minimum_launch_buffer_passed_mobile_review",
+  "status": "launch_day_package_prepared",
   "objective": "Start public posting with a rolling 2-3 week short-form content buffer so DUFYND can publish consistently without sacrificing room for trends, real audience signals or new affiliate developments.",
   "operating_model": {
     "core_creatives_per_week": "3-4",
@@ -63,38 +63,38 @@
   "launch_wave": [
     {
       "order": 1,
-      "content_id": "original_vs_alt_imagination_01",
-      "role": "hero_problem_solution",
-      "landing_path": "/parfum-alternativen",
-      "reason": "Explains a familiar fragrance problem and immediately demonstrates DUFYND's comparison value."
+      "date": "2026-09-26",
+      "content_id": "naxos_high_end_01",
+      "role": "launch_hero",
+      "landing_path": "/parfum-alternativen"
     },
     {
       "order": 2,
-      "content_id": "not_every_dupe_clone_01",
-      "role": "trust_education",
-      "landing_path": "/parfum-alternativen",
-      "reason": "Builds credibility by showing that DUFYND does not flatten every similar fragrance into a clone claim."
+      "date": "2026-09-27",
+      "content_id": "bois_imperial_high_end_01",
+      "role": "premium_followup",
+      "landing_path": "/duftfinder"
     },
     {
       "order": 3,
-      "content_id": "top3_office_01",
-      "role": "advisor_utility",
-      "landing_path": "/duftfinder",
-      "reason": "Shows that DUFYND solves a real occasion-based decision instead of publishing a generic ranking."
+      "date": "2026-09-29",
+      "content_id": "one_million_example61_01",
+      "role": "attention_format",
+      "landing_path": "/duftfinder"
     },
     {
       "order": 4,
-      "content_id": "top3_fresh_01",
-      "role": "advisor_utility",
-      "landing_path": "/duftfinder",
-      "reason": "Demonstrates that one broad request such as 'fresh' can lead to meaningfully different scent profiles."
+      "date": "2026-10-01",
+      "content_id": "ysl_libre_high_end_01",
+      "role": "premium_style_fit",
+      "landing_path": "/duftfinder"
     },
     {
       "order": 5,
-      "content_id": "gift_for_him_safe_to_bold_01",
-      "role": "gift_utility",
-      "landing_path": "/parfum-geschenkberater",
-      "reason": "Introduces the gift-advisor use case and broadens DUFYND beyond enthusiast-only comparison content."
+      "date": "2026-10-03",
+      "content_id": "relationship_labels_carousel_01",
+      "role": "trust_education",
+      "landing_path": "/parfum-alternativen"
     }
   ],
   "evergreen_buffer": [
@@ -182,15 +182,17 @@
     "decision_rule": "Do not judge a format from a single post. Prefer at least three comparable tests before materially changing the content mix unless a clear quality or compliance issue appears."
   },
   "next_no_spend_completion": {
-    "state": "minimum_launch_buffer_passed_mobile_review",
+    "state": "launch_day_package_prepared",
     "publish_ready_core_creatives": 5,
-    "next_action": "perform_channel_native_sound_caption_and_tracking_checks",
-    "spend_required": false
+    "next_action": "wait_for_launch_day_live_checks_and_publish_gate",
+    "spend_required": false,
+    "runbook": "examples/retail/data/dufynd_launch_day_runbook.json"
   },
   "operator_gate": {
     "review_file": "examples/retail/data/dufynd_high_end_launch_review.json",
+    "runbook_file": "examples/retail/data/dufynd_launch_day_runbook.json",
     "decisions": [
-      "explicit_publish_approval_after_channel_native_checks"
+      "explicit_publish_approval_after_launch_day_live_checks"
     ]
   }
 }

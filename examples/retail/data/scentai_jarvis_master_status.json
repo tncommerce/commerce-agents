@@ -1,13 +1,13 @@
 {
   "version": 1,
   "generated_at": "2026-09-24T12:47:16+00:00",
-  "source_fingerprint_sha256": "458a16590e87cc9ad4f886ae0f1b91cc7c6056f33cac3ef894ac77e39f08f322",
+  "source_fingerprint_sha256": "a6e1d74b2f7358126c816e0dea0b64d994690431f05763a9959f32a295decd65",
   "system": "DUFYND",
   "control_plane": "commerce_jarvis_master",
   "overall_state": "manual_step_pending",
   "active_domain": "content",
-  "next_action": "perform_channel_native_pre_publish_checks_then_request_explicit_publish_approval",
-  "next_action_class": "approval_required_at_publish",
+  "next_action": "launch_day_rebrand_and_live_checks_then_request_publish_approval",
+  "next_action_class": "manual_step_pending_at_launch",
   "user_approval_required_now": false,
   "domains": {
     "commerce": {
@@ -28,8 +28,8 @@
       "domain": "content",
       "overall_state": "strategy_work_available",
       "execution_state": "manual_step_pending",
-      "next_action": "perform_channel_native_pre_publish_checks_then_request_explicit_publish_approval",
-      "next_action_class": "approval_required_at_publish",
+      "next_action": "launch_day_rebrand_and_live_checks_then_request_publish_approval",
+      "next_action_class": "manual_step_pending_at_launch",
       "user_approval_required_now": false,
       "blockers": []
     }

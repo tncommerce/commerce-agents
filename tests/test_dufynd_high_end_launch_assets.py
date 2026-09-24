@@ -12,6 +12,8 @@ CAROUSEL = DATA_DIR / "dufynd_launch_carousel_01.json"
 LINKS = DATA_DIR / "dufynd_high_end_launch_links.json"
 SOCIAL_COPY = DATA_DIR / "dufynd_high_end_social_copy.json"
 CHECKLIST = DATA_DIR / "dufynd_high_end_pre_publish_checklist.json"
+PROFILE_LINKS = DATA_DIR / "dufynd_social_profile_links.json"
+RUNBOOK = DATA_DIR / "dufynd_launch_day_runbook.json"
 
 
 def load_json(path: Path) -> dict:
@@ -163,9 +165,9 @@ def test_strategy_advances_to_pre_publish_gate() -> None:
 
     assert strategy["active_track"] == "high_end_launch_buffer"
     assert strategy["next_action"] == (
-        "perform_channel_native_pre_publish_checks_then_request_explicit_publish_approval"
+        "launch_day_rebrand_and_live_checks_then_request_publish_approval"
     )
-    assert strategy["next_action_class"] == "approval_required_at_publish"
+    assert strategy["next_action_class"] == "manual_step_pending_at_launch"
     assert strategy["user_approval_required_now"] is False
     assert strategy["high_end_launch_review"] == (
         "examples/retail/data/dufynd_high_end_launch_review.json"
@@ -186,7 +188,7 @@ def test_mobile_review_records_five_publish_ready_creatives() -> None:
 def test_pre_publish_checklist_covers_five_core_slots() -> None:
     checklist = load_json(CHECKLIST)
 
-    assert checklist["state"] == "prepared_waiting_explicit_publish_approval"
+    assert checklist["state"] == "prelaunch_ready_waiting_launch_day_live_checks"
     assert checklist["automatic_publish_allowed"] is False
     assert checklist["paid_generation_required"] is False
     assert checklist["tracking_qc"]["status"] == "passed_code_level"
@@ -212,3 +214,37 @@ def test_pre_publish_checklist_keeps_rejected_legacy_shorts_out() -> None:
 
     assert excluded == {"sillage_haltbarkeit_01", "edp_vs_edt_01"}
     assert excluded.isdisjoint(slot_ids)
+
+
+def test_social_profile_links_are_stable_and_channel_specific() -> None:
+    profile_links = load_json(PROFILE_LINKS)
+
+    assert profile_links["landing_path"] == "/start"
+    assert len(profile_links["links"]) == 3
+    channels = {row["channel"] for row in profile_links["links"]}
+    assert channels == {"tiktok", "instagram", "youtube"}
+
+    for row in profile_links["links"]:
+        assert row["url"].startswith("https://dufynd.de/start?")
+        assert f"src={row['channel']}" in row["url"]
+        assert "content=profile" in row["url"]
+
+
+def test_launch_day_runbook_preserves_publish_gate_and_five_slots() -> None:
+    runbook = load_json(RUNBOOK)
+
+    assert runbook["state"] == "prelaunch_ready_waiting_launch_day_live_checks"
+    assert runbook["automatic_publish_allowed"] is False
+    assert len(runbook["benchmark_schedule"]) == 5
+    assert runbook["benchmark_schedule"][0]["content_id"] == "naxos_high_end_01"
+    assert "No social publish without explicit operator approval." in runbook["hard_stops"]
+
+
+def test_social_copy_has_profile_link_cta_for_every_channel() -> None:
+    social = load_json(SOCIAL_COPY)
+
+    for post in social["posts"]:
+        assert post["tiktok"]["cta"].endswith("Link im Profil.")
+        assert post["instagram"]["cta"].endswith("Link im Profil.")
+        if "youtube" in post:
+            assert post["youtube"]["cta"] == "DUFYND über den Link im Kanalprofil öffnen."
