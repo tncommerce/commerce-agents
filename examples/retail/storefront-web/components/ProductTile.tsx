@@ -44,8 +44,10 @@ export function ProductImage({ product, className = "" }: { product: Product; cl
       return (
         <FragranceVisual
           imageUrl={product.image_url}
+          cutoutUrl={product.attributes?.product_cutout_url}
           alt={product.title}
           variant="card"
+          mode={product.attributes?.product_cutout_url ? "cutout" : "editorial"}
           className={className}
         />
       );

@@ -3,6 +3,7 @@
 import type { CSSProperties, PointerEvent } from "react";
 
 type VisualVariant = "card" | "hero";
+type VisualMode = "auto" | "editorial" | "cutout";
 
 type StageStyle = CSSProperties & {
   "--dufynd-rx": string;
@@ -52,17 +53,59 @@ function resetPointer(event: PointerEvent<HTMLDivElement>) {
 
 export default function FragranceVisual({
   imageUrl,
+  cutoutUrl,
+  backdropUrl,
   alt,
   variant = "card",
   className = "",
   priority = false,
+  mode = "auto",
 }: {
   imageUrl?: string | null;
+  cutoutUrl?: string | null;
+  backdropUrl?: string | null;
   alt: string;
   variant?: VisualVariant;
   className?: string;
   priority?: boolean;
+  mode?: VisualMode;
 }) {
+  const resolvedImageUrl = cutoutUrl || imageUrl;
+  const resolvedMode =
+    mode === "auto"
+      ? cutoutUrl
+        ? "cutout"
+        : imageUrl?.includes("/products/pilot/")
+          ? "editorial"
+          : "cutout"
+      : mode;
+
+  if (resolvedMode === "editorial" && imageUrl) {
+    return (
+      <div
+        data-variant={variant}
+        className={`dufynd-editorial-depth-stage ${className}`}
+        style={{ ...BASE_STYLE }}
+        onPointerMove={updatePointer}
+        onPointerLeave={resetPointer}
+      >
+        <div className="dufynd-editorial-depth-object">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={imageUrl}
+            alt={alt}
+            loading={priority ? "eager" : "lazy"}
+            fetchPriority={priority ? "high" : "auto"}
+            decoding="async"
+            className="dufynd-editorial-depth-image"
+          />
+        </div>
+        <div className="dufynd-editorial-depth-vignette" aria-hidden />
+        <div className="dufynd-editorial-depth-glint" aria-hidden />
+      </div>
+    );
+  }
+
   return (
     <div
       data-variant={variant}
@@ -71,15 +114,30 @@ export default function FragranceVisual({
       onPointerMove={updatePointer}
       onPointerLeave={resetPointer}
     >
+      {backdropUrl ? (
+        <>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={backdropUrl}
+            alt=""
+            aria-hidden
+            loading={priority ? "eager" : "lazy"}
+            decoding="async"
+            className="dufynd-product-backdrop"
+          />
+          <div className="dufynd-product-backdrop-shade" aria-hidden />
+        </>
+      ) : null}
+
       <div className="dufynd-product-light" aria-hidden />
       <div className="dufynd-product-shadow" aria-hidden />
 
       <div className="dufynd-product-object">
         <div className="dufynd-product-float">
-          {imageUrl ? (
+          {resolvedImageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={imageUrl}
+              src={resolvedImageUrl}
               alt={alt}
               loading={priority ? "eager" : "lazy"}
               fetchPriority={priority ? "high" : "auto"}

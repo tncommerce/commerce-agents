@@ -15,6 +15,7 @@ import { trackAnalyticsEvent } from "@/lib/analytics";
 import { ADVISOR_STARTS } from "@/lib/advisorStarts";
 import { fragrancePathForProduct } from "@/lib/fragranceSlug";
 import type { Product } from "@/lib/types";
+import FragranceVisual from "../FragranceVisual";
 import ProductTile, {
   ProductRating,
   ProductRow,
@@ -153,22 +154,37 @@ export default function HomeView({
             <a
               href={fragrancePathForProduct(spotlight)}
               aria-label="Xerjoff Naxos entdecken"
-              className="dufynd-editorial-media group relative min-h-[290px] overflow-hidden border-t border-white/10 md:min-h-[380px] md:border-l md:border-t-0"
+              className="group relative min-h-[290px] overflow-hidden border-t border-white/10 md:min-h-[380px] md:border-l md:border-t-0"
             >
-              {spotlight.image_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={spotlight.image_url}
+              {spotlight.attributes?.product_cutout_url ? (
+                <FragranceVisual
+                  imageUrl={spotlight.image_url}
+                  cutoutUrl={spotlight.attributes.product_cutout_url}
+                  backdropUrl={spotlight.image_url}
                   alt={spotlight.title}
-                  fetchPriority="high"
-                  decoding="async"
-                  className="h-full min-h-[290px] w-full object-cover md:min-h-[380px]"
+                  variant="hero"
+                  mode="cutout"
+                  className="h-full min-h-[290px] w-full md:min-h-[380px]"
+                  priority
                 />
-              ) : null}
-              <span
-                aria-hidden
-                className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(23,21,19,0.24),transparent_28%),linear-gradient(0deg,rgba(23,21,19,0.12),transparent_30%)] md:bg-[linear-gradient(90deg,rgba(23,21,19,0.32),transparent_36%)]"
-              />
+              ) : (
+                <div className="dufynd-editorial-media relative h-full min-h-[290px] w-full md:min-h-[380px]">
+                  {spotlight.image_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={spotlight.image_url}
+                      alt={spotlight.title}
+                      fetchPriority="high"
+                      decoding="async"
+                      className="h-full min-h-[290px] w-full object-cover md:min-h-[380px]"
+                    />
+                  ) : null}
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(23,21,19,0.24),transparent_28%),linear-gradient(0deg,rgba(23,21,19,0.12),transparent_30%)] md:bg-[linear-gradient(90deg,rgba(23,21,19,0.32),transparent_36%)]"
+                  />
+                </div>
+              )}
             </a>
           </div>
         </section>

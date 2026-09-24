@@ -201,8 +201,8 @@ body {
 
 .dufynd-product-image {
   display: block;
-  max-height: 90%;
-  max-width: 90%;
+  height: 100%;
+  width: 100%;
   object-fit: contain;
   filter:
     drop-shadow(0 20px 20px rgba(23, 21, 19, 0.14))
@@ -254,17 +254,27 @@ body {
   }
 }
 
+
+.dufynd-product-stage[data-variant="card"] .dufynd-product-object {
+  inset: 9% 18% 11%;
+}
+
+.dufynd-product-stage[data-variant="card"] .dufynd-product-image {
+  transform: translateZ(0) scale(0.96);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .dufynd-product-stage[data-variant="card"]:hover .dufynd-product-image {
+    transform: translateZ(0) scale(1.0);
+  }
+}
+
 .dufynd-product-stage[data-variant="hero"] .dufynd-product-object {
   inset: 7% 10% 12%;
   transform:
     rotateX(var(--dufynd-rx))
     rotateY(var(--dufynd-ry))
     translateZ(34px);
-}
-
-.dufynd-product-stage[data-variant="hero"] .dufynd-product-image {
-  max-height: 92%;
-  max-width: 92%;
 }
 
 .dufynd-product-stage[data-variant="hero"] .dufynd-product-shadow {
@@ -361,4 +371,175 @@ body {
 
 .dufynd-mobile-offer-bar {
   padding-bottom: calc(0.625rem + env(safe-area-inset-bottom));
+}
+
+
+/* DUFYND editorial depth stage
+ * Campaign artwork receives spatial motion as a whole. We do not fake bottle
+ * geometry when the source is an editorial scene. True bottle/cutout assets
+ * continue to use .dufynd-product-stage above.
+ */
+.dufynd-editorial-depth-stage {
+  --dufynd-rx: 0deg;
+  --dufynd-ry: 0deg;
+  --dufynd-mx: 50%;
+  --dufynd-my: 34%;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  perspective: 1100px;
+  background: #171513;
+}
+
+.dufynd-editorial-depth-object {
+  position: absolute;
+  inset: -2.5%;
+  transform-style: preserve-3d;
+  transform:
+    rotateX(calc(var(--dufynd-rx) * 0.42))
+    rotateY(calc(var(--dufynd-ry) * 0.52))
+    scale(1.055);
+  transition: transform 240ms cubic-bezier(0.2, 0.75, 0.2, 1);
+  will-change: transform;
+}
+
+.dufynd-editorial-depth-image {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  filter: saturate(1.02) contrast(1.01);
+  transition: filter 320ms ease;
+}
+
+.dufynd-editorial-depth-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at var(--dufynd-mx) var(--dufynd-my), transparent 0 18%, rgba(255,255,255,0.035) 28%, transparent 46%),
+    linear-gradient(180deg, transparent 58%, rgba(23,21,19,0.16));
+}
+
+.dufynd-editorial-depth-glint {
+  position: absolute;
+  inset: -24%;
+  pointer-events: none;
+  background: linear-gradient(
+    116deg,
+    transparent 39%,
+    rgba(255,255,255,0.06) 46%,
+    rgba(255,248,224,0.20) 50%,
+    rgba(255,255,255,0.05) 54%,
+    transparent 61%
+  );
+  transform: translateX(-62%) rotate(4deg);
+  opacity: 0.55;
+  transition:
+    transform 850ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 300ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .dufynd-editorial-depth-stage:hover .dufynd-editorial-depth-object {
+    transform:
+      rotateX(calc(var(--dufynd-rx) * 0.42))
+      rotateY(calc(var(--dufynd-ry) * 0.52))
+      scale(1.075);
+  }
+
+  .dufynd-editorial-depth-stage:hover .dufynd-editorial-depth-image {
+    filter: saturate(1.055) contrast(1.025);
+  }
+
+  .dufynd-editorial-depth-stage:hover .dufynd-editorial-depth-glint {
+    transform: translateX(62%) rotate(4deg);
+    opacity: 0.78;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dufynd-editorial-depth-object,
+  .dufynd-editorial-depth-image,
+  .dufynd-editorial-depth-glint {
+    transition: none !important;
+    transform: none !important;
+  }
+
+  .dufynd-editorial-depth-glint {
+    display: none;
+  }
+}
+
+
+/* Production cutout backdrop
+ * A verified bottle cutout can float independently from the campaign artwork,
+ * giving DUFYND a genuine layered 3D look without altering product geometry.
+ */
+.dufynd-product-backdrop {
+  position: absolute;
+  inset: -5%;
+  z-index: -4;
+  height: 110%;
+  width: 110%;
+  object-fit: cover;
+  filter: blur(5px) saturate(0.92) contrast(0.94);
+  opacity: 0.38;
+  transform: scale(1.03);
+}
+
+.dufynd-product-backdrop-shade {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255,253,248,0.08), rgba(23,21,19,0.12) 52%, rgba(23,21,19,0.34) 100%),
+    linear-gradient(180deg, rgba(255,253,248,0.04), rgba(23,21,19,0.22));
+  backdrop-filter: blur(1px);
+}
+
+.dufynd-product-stage:has(.dufynd-product-backdrop) {
+  background: #171513;
+}
+
+.dufynd-product-stage:has(.dufynd-product-backdrop) .dufynd-product-light {
+  background: radial-gradient(
+    circle at var(--dufynd-mx) var(--dufynd-my),
+    rgba(255,255,255,0.44) 0,
+    rgba(255,237,194,0.14) 20%,
+    transparent 43%
+  );
+}
+
+.dufynd-product-stage[data-variant="card"]:has(.dufynd-product-backdrop) .dufynd-product-object {
+  inset: 10% 18% 12%;
+}
+
+.dufynd-product-stage:has(.dufynd-product-backdrop) .dufynd-product-image {
+  filter:
+    drop-shadow(0 30px 24px rgba(0,0,0,0.28))
+    drop-shadow(0 8px 8px rgba(0,0,0,0.18));
+}
+
+.dufynd-product-stage:has(.dufynd-product-backdrop) .dufynd-product-shadow {
+  background: rgba(0,0,0,0.46);
+  opacity: 0.52;
+}
+
+
+/* Detail hero framing for isolated bottle cutouts.
+ * Keeps the entire bottle visible with premium breathing room.
+ */
+.dufynd-product-stage[data-variant="hero"]:not(:has(.dufynd-product-backdrop)) .dufynd-product-object {
+  inset: 10% 16% 17%;
+}
+
+.dufynd-product-stage[data-variant="hero"]:not(:has(.dufynd-product-backdrop)) .dufynd-product-image {
+  transform: translateZ(0) scale(0.94);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .dufynd-product-stage[data-variant="hero"]:not(:has(.dufynd-product-backdrop)):hover .dufynd-product-image {
+    transform: translateZ(0) scale(0.985);
+  }
 }

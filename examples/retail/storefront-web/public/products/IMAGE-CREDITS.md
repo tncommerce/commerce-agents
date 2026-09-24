@@ -17,3 +17,14 @@ Products without an image here intentionally fall back to the storefront's built
 | `AR-1508.webp` | ACME Paws 10-Gallon Aquarium Starter Kit | [flickr](https://www.flickr.com/photos/43296902@N00/103922316) | Dennis S. Hurd | CC0 1.0 |
 | `AR-2104.webp` | ACME Makers 300-Piece Meadow Puzzle | [rawpixel](https://www.rawpixel.com/image/5924996/photo-image-public-domain-free-game) | — | CC0 1.0 |
 | `AR-2108.webp` | ACME Playroom Solar System Poster Set (4 pc) | [rawpixel](https://www.rawpixel.com/image/7689067/map-the-solar-system) | libraryofcongress | Public domain (1880s print, Library of Congress) |
+
+
+## DUFYND generated campaign assets
+
+The DUFYND fragrance campaign assets below are **not** covered by the CC0 statement above.
+They are generated/edited campaign artwork used by DUFYND for product presentation; brand names
+and product trade dress remain the property of their respective rights holders.
+
+| File | Product | Provenance | Use |
+|---|---|---|---|
+| `pilot/xerjoff-naxos-campaign-master.webp` | Xerjoff Naxos | AI-assisted DUFYND campaign artwork, approved 2026-09-24 | Homepage spotlight and fragrance detail hero |
