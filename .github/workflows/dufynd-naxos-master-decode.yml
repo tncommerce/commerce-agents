@@ -1,4 +1,4 @@
-name: DUFYND Naxos Master Decode
+name: DUFYND Naxos Master Recovery
 
 on:
   push:
@@ -9,29 +9,35 @@ permissions:
   contents: write
 
 jobs:
-  decode:
+  recover:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out feature branch
+      - name: Check out feature branch with history
         uses: actions/checkout@v4
         with:
           ref: dufynd-offers-3d-look-20260924
+          fetch-depth: 0
 
-      - name: Decode and verify approved Naxos campaign master
+      - name: Recover and verify approved Naxos campaign master
         shell: bash
         run: |
           set -euo pipefail
-          cat             .tmp/naxos-master/part01.b64             .tmp/naxos-master/part02.b64             .tmp/naxos-master/part03-04.b64             .tmp/naxos-master/part05-06.b64             > /tmp/naxos-master.b64
+
+          SOURCE_COMMIT="0d7162bb56964ac1cca7dbe1e577f4617baaf768"
+          {
+            git show "$SOURCE_COMMIT:.tmp/naxos-master/part01.b64"
+            git show "$SOURCE_COMMIT:.tmp/naxos-master/part02.b64"
+            git show "$SOURCE_COMMIT:.tmp/naxos-master/part03-04.b64"
+            git show "$SOURCE_COMMIT:.tmp/naxos-master/part05-06.b64"
+          } | tr -d '\n\r' > /tmp/naxos-master.b64
 
           test "$(wc -c < /tmp/naxos-master.b64 | tr -d ' ')" = "88640"
 
-          base64 -d /tmp/naxos-master.b64             > examples/retail/storefront-web/public/products/pilot/xerjoff-naxos-campaign-master.webp
+          TARGET="examples/retail/storefront-web/public/products/pilot/xerjoff-naxos-campaign-master.webp"
+          base64 -d /tmp/naxos-master.b64 > "$TARGET"
 
-          file examples/retail/storefront-web/public/products/pilot/xerjoff-naxos-campaign-master.webp
-
-          ACTUAL_SHA="$(sha256sum examples/retail/storefront-web/public/products/pilot/xerjoff-naxos-campaign-master.webp | awk '{print $1}')"
+          ACTUAL_SHA="$(sha256sum "$TARGET" | awk '{print $1}')"
           EXPECTED_SHA="d3ade7b956613196c9c878bb66e5c821fba41dde510e26c1f1a78ae749714721"
-
           echo "Naxos master SHA256: $ACTUAL_SHA"
           test "$ACTUAL_SHA" = "$EXPECTED_SHA"
 
@@ -45,19 +51,14 @@ jobs:
               assert im.size == (900, 507)
           PY
 
-      - name: Remove transfer scaffolding
+      - name: Remove recovery workflow and commit verified master
         shell: bash
         run: |
           set -euo pipefail
-          rm -rf .tmp/naxos-master
           rm -f .github/workflows/dufynd-naxos-master-decode.yml
 
-      - name: Commit verified binary
-        shell: bash
-        run: |
-          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add             examples/retail/storefront-web/public/products/pilot/xerjoff-naxos-campaign-master.webp             .tmp/naxos-master             .github/workflows/dufynd-naxos-master-decode.yml
-          git commit -m "Replace Naxos campaign master with verified WebP"
+          git add             examples/retail/storefront-web/public/products/pilot/xerjoff-naxos-campaign-master.webp             .github/workflows/dufynd-naxos-master-decode.yml
+          git commit -m "Recover verified Naxos campaign master"
           git push origin HEAD:dufynd-offers-3d-look-20260924
