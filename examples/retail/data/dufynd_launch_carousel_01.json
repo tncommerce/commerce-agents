@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-24",
+  "system": "DUFYND",
+  "campaign_id": "launch01_high_end",
+  "content_id": "relationship_labels_carousel_01",
+  "format": "carousel",
+  "status": "render_ready",
+  "objective": "Explain DUFYND's Clone, Inspired and Alternative relationship labels in a compact premium carousel without making unsupported similarity claims.",
+  "landing_path": "/parfum-alternativen",
+  "language": "de",
+  "aspect_ratio": "4:5",
+  "slide_count": 5,
+  "visual_direction": {
+    "background": "dark premium DUFYND surface",
+    "palette": [
+      "#171513",
+      "#111111",
+      "#d4a84f",
+      "#f0d89b",
+      "#fffdf8"
+    ],
+    "typography": "Instrument Sans or clean sans-serif fallback",
+    "branding": "Use the deterministic DUFYND mark/lockup; do not regenerate the logo with AI.",
+    "rule": "Minimal text, strong hierarchy, no decorative perfume imagery required."
+  },
+  "slides": [
+    {
+      "slide": 1,
+      "eyebrow": "DUFYND erklärt",
+      "headline": "ÄHNLICH ≠ IDENTISCH",
+      "body": "Darum unterscheiden wir Clone, Inspired und Alternative.",
+      "footer": "Swipe →"
+    },
+    {
+      "slide": 2,
+      "eyebrow": "01 · CLONE",
+      "headline": "Sehr nah an derselben Duft-DNA",
+      "body": "DUFYND nutzt „Clone“, wenn Profil und Charakter besonders eng am Referenzduft liegen — ohne daraus ein 1:1-Versprechen zu machen.",
+      "footer": "Nähe ist ein Label, kein Identitätsversprechen."
+    },
+    {
+      "slide": 3,
+      "eyebrow": "02 · INSPIRED",
+      "headline": "Klar dieselbe Richtung. Eigene Interpretation.",
+      "body": "„Inspired“ bedeutet bei DUFYND: Die Verwandtschaft ist deutlich erkennbar, aber der Duft setzt eigene Schwerpunkte.",
+      "footer": "Ähnlich im Stil, nicht automatisch gleich."
+    },
+    {
+      "slide": 4,
+      "eyebrow": "03 · ALTERNATIVE",
+      "headline": "Gleicher Bedarf. Anderer Weg.",
+      "body": "Eine „Alternative“ kann denselben Geschmack, Anlass oder Wunsch treffen, obwohl sie olfaktorisch spürbar anders aufgebaut ist.",
+      "footer": "Passung zählt mehr als ein Dupe-Label."
+    },
+    {
+      "slide": 5,
+      "eyebrow": "DUFYND",
+      "headline": "Vergleiche nach Profil statt Hype",
+      "body": "Sieh Beziehungen, Duftprofile und passende Richtungen transparent nebeneinander.",
+      "cta": "dufynd.de/parfum-alternativen",
+      "footer": "Finde, was wirklich zu dir passt."
+    }
+  ],
+  "publish_rules": [
+    "No price claims.",
+    "No unsupported similarity percentages.",
+    "No 1:1 clone promises.",
+    "Use the channel-specific tracked link.",
+    "Publishing requires explicit operator approval."
+  ]
+}
