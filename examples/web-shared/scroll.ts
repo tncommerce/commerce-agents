@@ -40,11 +40,29 @@ export function useStickToBottom(
   useEffect(() => {
     const appended = items.length !== previousCount.current;
     previousCount.current = items.length;
+
+    // The storefront home is rendered inside the same scroll container as the
+    // transcript. With no conversation yet, the premium landing experience
+    // must start at the top rather than inheriting chat's "follow latest"
+    // behavior and jumping past the hero on short/mobile viewports.
+    if (items.length === 0 && !busy) {
+      const node = scrollRef.current;
+      stickRef.current = true;
+      setStuck(true);
+      if (node && node.scrollTop !== 0) {
+        programmaticUntil.current = performance.now() + 50;
+        node.scrollTo({ top: 0, behavior: "auto" });
+      }
+      return;
+    }
+
     if (appended) {
       stickRef.current = true;
       setStuck(true);
     }
-    if (stickRef.current && (busy || !onlyWhileBusy)) scrollToBottom(appended ? "smooth" : "auto");
+    if (stickRef.current && (busy || !onlyWhileBusy)) {
+      scrollToBottom(appended ? "smooth" : "auto");
+    }
   }, [items, busy, onlyWhileBusy, scrollToBottom]);
 
   const onScroll = useCallback(() => {
