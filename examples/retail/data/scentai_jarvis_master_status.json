@@ -1,14 +1,14 @@
 {
   "version": 1,
   "generated_at": "2026-09-24T10:54:57+00:00",
-  "source_fingerprint_sha256": "6c54081e8dd567a3596852c6ed2e546b535cd6381f91445328dbd53a83840874",
+  "source_fingerprint_sha256": "a0090b3ab11ad2ace64b0b367ed12ca2a4cb284b32919bfcded8a4a71a77c26e",
   "system": "DUFYND",
   "control_plane": "commerce_jarvis_master",
-  "overall_state": "work_available",
+  "overall_state": "user_approval_required",
   "active_domain": "content",
-  "next_action": "finish_ysl_libre_audio_qc_and_prepare_mobile_launch_review",
-  "next_action_class": "auto_allowed_until_paid_generation_or_publish_gate",
-  "user_approval_required_now": false,
+  "next_action": "perform_mobile_launch_buffer_review",
+  "next_action_class": "approval_required",
+  "user_approval_required_now": true,
   "domains": {
     "commerce": {
       "domain": "commerce",
@@ -27,10 +27,10 @@
     "content": {
       "domain": "content",
       "overall_state": "strategy_work_available",
-      "execution_state": "work_available",
-      "next_action": "finish_ysl_libre_audio_qc_and_prepare_mobile_launch_review",
-      "next_action_class": "auto_allowed_until_paid_generation_or_publish_gate",
-      "user_approval_required_now": false,
+      "execution_state": "user_approval_required",
+      "next_action": "perform_mobile_launch_buffer_review",
+      "next_action_class": "approval_required",
+      "user_approval_required_now": true,
       "blockers": []
     }
   },
