@@ -37,7 +37,7 @@ jobs:
       - name: Install Chromium
         run: npx --yes playwright@1.55.0 install --with-deps chromium
 
-      - name: Serve exact PR export and capture
+      - name: Serve exact PR export and audit lazy media
         shell: bash
         run: |
           set -euo pipefail
@@ -58,12 +58,61 @@ jobs:
             exit 1
           fi
 
-          npx --yes playwright@1.55.0 screenshot --browser=chromium --full-page --wait-for-timeout=2500 http://127.0.0.1:3000/ ../pr50-final-preview/home-desktop.png
-          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page --wait-for-timeout=2500 http://127.0.0.1:3000/ ../pr50-final-preview/home-mobile.png
-          npx --yes playwright@1.55.0 screenshot --browser=chromium --full-page --wait-for-timeout=2500 http://127.0.0.1:3000/duft ../pr50-final-preview/catalog-desktop.png
-          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page --wait-for-timeout=2500 http://127.0.0.1:3000/duft ../pr50-final-preview/catalog-mobile.png
-          npx --yes playwright@1.55.0 screenshot --browser=chromium --full-page --wait-for-timeout=2500 http://127.0.0.1:3000/duft/xerjoff-naxos ../pr50-final-preview/naxos-desktop.png
-          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page --wait-for-timeout=2500 http://127.0.0.1:3000/duft/xerjoff-naxos ../pr50-final-preview/naxos-mobile.png
+          cat > pr50-audit.mjs <<'NODE'
+          import { chromium } from "playwright";
+          import fs from "node:fs";
+
+          const browser = await chromium.launch({ headless: true });
+
+          async function capture(name, url, viewport) {
+            const context = await browser.newContext({ viewport });
+            const page = await context.newPage();
+            const failed = [];
+            page.on("requestfailed", r => failed.push({url:r.url(),error:r.failure()?.errorText}));
+
+            await page.goto(url,{waitUntil:"domcontentloaded",timeout:60000});
+            await page.waitForTimeout(1200);
+
+            await page.evaluate(async () => {
+              const sleep = ms => new Promise(r => setTimeout(r, ms));
+              const root = document.scrollingElement;
+              for (let y=0; y<=root.scrollHeight; y+=Math.max(320,innerHeight*0.75)) {
+                scrollTo(0,y);
+                await sleep(140);
+              }
+              scrollTo(0,0);
+            });
+            await page.waitForTimeout(1200);
+
+            const images = await page.locator("img").evaluateAll(imgs=>imgs.map(img=>({
+              alt:img.alt,
+              src:img.currentSrc||img.src,
+              complete:img.complete,
+              naturalWidth:img.naturalWidth,
+              naturalHeight:img.naturalHeight,
+              loading:img.loading
+            })));
+
+            fs.writeFileSync(`../pr50-final-preview/${name}.json`,JSON.stringify({
+              images,
+              broken:images.filter(x=>x.complete&&x.naturalWidth===0),
+              unloaded:images.filter(x=>!x.complete),
+              failed
+            },null,2));
+
+            await page.screenshot({path:`../pr50-final-preview/${name}.png`,fullPage:true});
+            await context.close();
+          }
+
+          await capture("home-desktop","http://127.0.0.1:3000/",{width:1280,height:900});
+          await capture("home-mobile","http://127.0.0.1:3000/",{width:390,height:844});
+          await capture("catalog-desktop","http://127.0.0.1:3000/duft",{width:1280,height:900});
+          await capture("catalog-mobile","http://127.0.0.1:3000/duft",{width:390,height:844});
+          await capture("naxos-desktop","http://127.0.0.1:3000/duft/xerjoff-naxos",{width:1280,height:900});
+          await capture("naxos-mobile","http://127.0.0.1:3000/duft/xerjoff-naxos",{width:390,height:844});
+          await browser.close();
+          NODE
+          node pr50-audit.mjs
 
       - name: Upload preview
         uses: actions/upload-artifact@v4
