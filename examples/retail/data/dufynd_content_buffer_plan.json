@@ -1,10 +1,10 @@
 {
-  "version": 3,
+  "version": 4,
   "updated_at": "2026-09-24",
   "system": "DUFYND",
   "campaign_id": "launch01",
   "launch_date": "2026-09-26",
-  "status": "prelaunch_buffer_build",
+  "status": "minimum_launch_buffer_passed_mobile_review",
   "objective": "Start public posting with a rolling 2-3 week short-form content buffer so DUFYND can publish consistently without sacrificing room for trends, real audience signals or new affiliate developments.",
   "operating_model": {
     "core_creatives_per_week": "3-4",
@@ -46,7 +46,7 @@
     "high_end_asset_registry": "examples/retail/data/dufynd_high_end_launch_assets.json",
     "high_end_final_assets_documented": 4,
     "high_end_creative_locked": 4,
-    "high_end_final_assets_pending_mobile_review": 4,
+    "high_end_final_assets_pending_mobile_review": 0,
     "high_end_near_final_drafts": 0,
     "effective_launch_candidates_before_mobile_review": 5,
     "gap_to_minimum_publish_ready_target": 0,
@@ -56,7 +56,9 @@
     "maximum_publish_ready_after_current_review": 5,
     "gap_to_minimum_publish_ready_after_ysl_acceptance": 0,
     "high_end_static_publish_ready": 1,
-    "fifth_launch_creative": "relationship_labels_carousel_01"
+    "fifth_launch_creative": "relationship_labels_carousel_01",
+    "publish_ready_core_creatives_after_mobile_review": 5,
+    "mobile_launch_buffer_review": "passed"
   },
   "launch_wave": [
     {
@@ -180,16 +182,15 @@
     "decision_rule": "Do not judge a format from a single post. Prefer at least three comparable tests before materially changing the content mix unless a clear quality or compliance issue appears."
   },
   "next_no_spend_completion": {
-    "state": "minimum_launch_buffer_reached",
-    "publish_ready_core_creatives_before_mobile_review": 5,
-    "next_action": "perform_mobile_review_of_four_video_visuals_and_one_carousel_pack",
+    "state": "minimum_launch_buffer_passed_mobile_review",
+    "publish_ready_core_creatives": 5,
+    "next_action": "perform_channel_native_sound_caption_and_tracking_checks",
     "spend_required": false
   },
   "operator_gate": {
     "review_file": "examples/retail/data/dufynd_high_end_launch_review.json",
     "decisions": [
-      "mobile_launch_buffer_review",
-      "publish_approval_after_channel_native_checks"
+      "explicit_publish_approval_after_channel_native_checks"
     ]
   }
 }
