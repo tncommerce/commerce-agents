@@ -4,6 +4,37 @@ import { createElement, useEffect, useState } from "react";
 
 import FragranceVisual from "./FragranceVisual";
 
+const MODEL_VIEWER_SRC =
+  "https://unpkg.com/@google/model-viewer@4.3.1/dist/model-viewer.min.js";
+
+function ensureModelViewer(): Promise<void> {
+  if (typeof window === "undefined") return Promise.resolve();
+  if (customElements.get("model-viewer")) return Promise.resolve();
+
+  const existing = document.querySelector<HTMLScriptElement>(
+    'script[data-dufynd-model-viewer="true"]',
+  );
+
+  if (existing) {
+    return new Promise((resolve, reject) => {
+      existing.addEventListener("load", () => resolve(), { once: true });
+      existing.addEventListener("error", () => reject(new Error("3D viewer failed to load")), {
+        once: true,
+      });
+    });
+  }
+
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.type = "module";
+    script.src = MODEL_VIEWER_SRC;
+    script.dataset.dufyndModelViewer = "true";
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("3D viewer failed to load"));
+    document.head.appendChild(script);
+  });
+}
+
 export default function FragranceModel3D({
   modelUrl,
   imageUrl,
@@ -27,9 +58,9 @@ export default function FragranceModel3D({
     if (!modelUrl) return;
     let active = true;
 
-    import("@google/model-viewer")
+    ensureModelViewer()
       .then(() => {
-        if (active) setViewerReady(true);
+        if (active) setViewerReady(Boolean(customElements.get("model-viewer")));
       })
       .catch(() => {
         if (active) setViewerReady(false);
