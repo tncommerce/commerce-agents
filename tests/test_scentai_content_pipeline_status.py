@@ -83,7 +83,6 @@ def test_content_pipeline_holds_legacy_batches_for_high_end_rnd() -> None:
     assert report["production_parallel_allowed"] is False
 
 
-
 def test_content_pipeline_uses_active_high_end_launch_strategy() -> None:
     batch = {
         "campaign_id": "launch01",
@@ -118,12 +117,7 @@ def test_content_pipeline_uses_active_high_end_launch_strategy() -> None:
     assert report["pipeline_state"] == "strategy_work_available"
     assert report["active_track"] == "high_end_launch_buffer"
     assert report["current_batch_id"] is None
-    assert report["next_action"] == (
-        "finish_ysl_libre_audio_qc_and_prepare_mobile_launch_review"
-    )
-    assert (
-        report["next_action_class"]
-        == "auto_allowed_until_paid_generation_or_publish_gate"
-    )
+    assert report["next_action"] == ("finish_ysl_libre_audio_qc_and_prepare_mobile_launch_review")
+    assert report["next_action_class"] == "auto_allowed_until_paid_generation_or_publish_gate"
     assert report["user_approval_required_now"] is False
     assert report["production_parallel_allowed"] is True
