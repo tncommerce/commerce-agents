@@ -53,6 +53,8 @@ function resetPointer(event: PointerEvent<HTMLDivElement>) {
 
 export default function FragranceVisual({
   imageUrl,
+  cutoutUrl,
+  backdropUrl,
   alt,
   variant = "card",
   className = "",
@@ -60,17 +62,22 @@ export default function FragranceVisual({
   mode = "auto",
 }: {
   imageUrl?: string | null;
+  cutoutUrl?: string | null;
+  backdropUrl?: string | null;
   alt: string;
   variant?: VisualVariant;
   className?: string;
   priority?: boolean;
   mode?: VisualMode;
 }) {
+  const resolvedImageUrl = cutoutUrl || imageUrl;
   const resolvedMode =
     mode === "auto"
-      ? imageUrl?.includes("/products/pilot/")
-        ? "editorial"
-        : "cutout"
+      ? cutoutUrl
+        ? "cutout"
+        : imageUrl?.includes("/products/pilot/")
+          ? "editorial"
+          : "cutout"
       : mode;
 
   if (resolvedMode === "editorial" && imageUrl) {
@@ -107,15 +114,30 @@ export default function FragranceVisual({
       onPointerMove={updatePointer}
       onPointerLeave={resetPointer}
     >
+      {backdropUrl ? (
+        <>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={backdropUrl}
+            alt=""
+            aria-hidden
+            loading={priority ? "eager" : "lazy"}
+            decoding="async"
+            className="dufynd-product-backdrop"
+          />
+          <div className="dufynd-product-backdrop-shade" aria-hidden />
+        </>
+      ) : null}
+
       <div className="dufynd-product-light" aria-hidden />
       <div className="dufynd-product-shadow" aria-hidden />
 
       <div className="dufynd-product-object">
         <div className="dufynd-product-float">
-          {imageUrl ? (
+          {resolvedImageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={imageUrl}
+              src={resolvedImageUrl}
               alt={alt}
               loading={priority ? "eager" : "lazy"}
               fetchPriority={priority ? "high" : "auto"}
