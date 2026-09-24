@@ -1,9 +1,9 @@
 {
-  "version": 2,
+  "version": 4,
   "reviewed_at": "2026-09-24",
   "system": "DUFYND",
   "gate_id": "high_end_launch_review_20260924",
-  "state": "mobile_launch_buffer_review_required",
+  "state": "mobile_launch_buffer_review_passed_publish_gate_pending",
   "automatic_publish_allowed": false,
   "paid_generation_authorized": false,
   "quality_floor": "Naxos-level premium visual quality",
@@ -12,7 +12,9 @@
     "rendered_static_creatives": 1,
     "publish_ready_core_creatives_before_mobile_review": 5,
     "minimum_launch_buffer_target": 5,
-    "gap_to_minimum": 0
+    "gap_to_minimum": 0,
+    "publish_ready_core_creatives_after_mobile_review": 5,
+    "mobile_review_passed": true
   },
   "creatives": [
     {
@@ -42,9 +44,29 @@
     {
       "content_id": "one_million_example61_01",
       "title": "Rabanne 1 Million",
-      "status": "locked_final",
-      "operator_status": "approved_locked",
-      "visual_qc": "passed_with_accepted_opening_nozzle_imperfection",
+      "status": "locked_final_topaz",
+      "operator_status": "approved_locked_topaz_final",
+      "visual_qc": {
+        "result": "passed",
+        "scope": "Sampled-frame and technical QC of the uploaded Topaz final.",
+        "technical_profile": {
+          "duration_seconds": 7.042,
+          "width": 2160,
+          "height": 3840,
+          "frame_rate_fps": 24,
+          "video_codec": "h264",
+          "audio_codec": "aac",
+          "audio_present": true,
+          "mean_volume_db": -15.4,
+          "peak_volume_db": -2.7
+        },
+        "observations": [
+          "No new framing, crop, or black-bar issue detected after Topaz.",
+          "Character, hand motion, car interior and final product hero composition remain visually coherent.",
+          "Final product reveal remains sharp and recognizable after upscale.",
+          "Previously accepted opening atomizer/nozzle imperfection remains source-level and was not worsened by Topaz."
+        ]
+      },
       "remaining_before_publish": [
         "channel_native_sound_or_audio_check",
         "caption_and_tracking_link_check",
@@ -88,17 +110,16 @@
     {
       "content_id": "relationship_labels_carousel_01",
       "title": "Clone / Inspired / Alternative carousel",
-      "status": "rendered_publish_ready_pending_mobile_review",
-      "operator_status": "review_pending",
+      "status": "accepted_launch_education_slot",
+      "operator_status": "accepted_no_rework",
       "format": "5-slide 4:5 carousel",
       "channels": [
         "instagram_carousel",
         "tiktok_photo_mode"
       ],
       "archive_folder": "/DUFYND/Launch Content/Carousel 01 - Clone Inspired Alternative",
-      "visual_qc": "internal_render_check_passed",
+      "visual_qc": "accepted_for_launch_education_use",
       "remaining_before_publish": [
-        "operator_mobile_review",
         "caption_and_tracking_link_check",
         "explicit_publish_approval"
       ]
@@ -120,14 +141,10 @@
     "tracked_links": "examples/retail/data/dufynd_high_end_launch_links.json",
     "social_copy": "examples/retail/data/dufynd_high_end_social_copy.json",
     "launch_asset_registry": "examples/retail/data/dufynd_high_end_launch_assets.json",
-    "carousel_spec": "examples/retail/data/dufynd_launch_carousel_01.json"
+    "carousel_spec": "examples/retail/data/dufynd_launch_carousel_01.json",
+    "pre_publish_checklist": "examples/retail/data/dufynd_high_end_pre_publish_checklist.json"
   },
   "operator_decisions_required": [
-    {
-      "decision_id": "mobile_launch_buffer_review",
-      "prompt": "Review the four locked perfume visuals and the rendered five-slide carousel as the launch buffer.",
-      "required_before": "finalize_launch_wave"
-    },
     {
       "decision_id": "publish_approval",
       "prompt": "Explicitly approve publishing after channel-native sound, caption and tracking checks.",
@@ -147,6 +164,19 @@
     {
       "decision_id": "launch_buffer_size",
       "resolution": "five_creative_minimum_reached_without_paid_generation"
+    },
+    {
+      "decision_id": "mobile_launch_buffer_review",
+      "resolution": "passed_with_four_locked_video_visuals_and_one_accepted_education_carousel"
+    },
+    {
+      "decision_id": "relationship_labels_carousel_acceptance",
+      "resolution": "accepted_for_launch_as_education_slot_without_rework"
+    },
+    {
+      "decision_id": "one_million_topaz_final_qc",
+      "resolution": "passed_and_frozen_as_final_master"
     }
-  ]
+  ],
+  "next_action": "perform_channel_native_pre_publish_checks_then_request_explicit_publish_approval"
 }

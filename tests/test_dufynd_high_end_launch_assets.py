@@ -11,6 +11,7 @@ STRATEGY = DATA_DIR / "dufynd_content_strategy.json"
 CAROUSEL = DATA_DIR / "dufynd_launch_carousel_01.json"
 LINKS = DATA_DIR / "dufynd_high_end_launch_links.json"
 SOCIAL_COPY = DATA_DIR / "dufynd_high_end_social_copy.json"
+CHECKLIST = DATA_DIR / "dufynd_high_end_pre_publish_checklist.json"
 
 
 def load_json(path: Path) -> dict:
@@ -41,7 +42,8 @@ def test_buffer_counts_match_five_creative_inventory() -> None:
     }
     locked_video_count = sum(row["creative_state"] in locked_states for row in registry["assets"])
     publish_ready_core_count = len(registry["assets"]) + int(
-        carousel["status"] == "publish_ready_pending_mobile_review"
+        carousel["status"]
+        in {"publish_ready_pending_mobile_review", "accepted_launch_education_slot"}
     )
 
     assert snapshot["high_end_final_assets_documented"] == len(registry["assets"])
@@ -111,7 +113,8 @@ def test_carousel_is_rendered_for_tiktok_and_instagram_only() -> None:
     channels = {row["channel"] for row in links["links"] if row["content_id"] == content_id}
     post = next(row for row in social["posts"] if row["content_id"] == content_id)
 
-    assert carousel["status"] == "publish_ready_pending_mobile_review"
+    assert carousel["status"] == "accepted_launch_education_slot"
+    assert carousel["operator_review"]["state"] == "accepted_no_rework"
     assert len(carousel["rendered_assets"]) == 5
     assert channels == {"tiktok", "instagram"}
     assert set(post) == {"content_id", "tiktok", "instagram"}
@@ -121,15 +124,21 @@ def test_carousel_is_rendered_for_tiktok_and_instagram_only() -> None:
 def test_launch_review_stops_before_publish_or_spend() -> None:
     review = load_json(REVIEW)
 
-    assert review["state"] == "mobile_launch_buffer_review_required"
+    assert review["state"] == "mobile_launch_buffer_review_passed_publish_gate_pending"
     assert review["automatic_publish_allowed"] is False
     assert review["paid_generation_authorized"] is False
 
     decision_ids = {row["decision_id"] for row in review["operator_decisions_required"]}
-    assert decision_ids == {"mobile_launch_buffer_review", "publish_approval"}
+    assert decision_ids == {"publish_approval"}
 
     resolved_ids = {row["decision_id"] for row in review["resolved_operator_decisions"]}
-    assert resolved_ids == {"ysl_visual_acceptance", "launch_buffer_size"}
+    assert resolved_ids == {
+        "ysl_visual_acceptance",
+        "launch_buffer_size",
+        "mobile_launch_buffer_review",
+        "relationship_labels_carousel_acceptance",
+        "one_million_topaz_final_qc",
+    }
 
 
 def test_launch_review_records_full_minimum_buffer() -> None:
@@ -149,13 +158,57 @@ def test_launch_review_records_full_minimum_buffer() -> None:
     assert review["fifth_creative_rule"]["satisfied_by"] == ("relationship_labels_carousel_01")
 
 
-def test_strategy_stops_at_mobile_launch_review_gate() -> None:
+def test_strategy_advances_to_pre_publish_gate() -> None:
     strategy = load_json(STRATEGY)
 
     assert strategy["active_track"] == "high_end_launch_buffer"
-    assert strategy["next_action"] == "perform_mobile_launch_buffer_review"
-    assert strategy["next_action_class"] == "approval_required"
-    assert strategy["user_approval_required_now"] is True
+    assert strategy["next_action"] == (
+        "perform_channel_native_pre_publish_checks_then_request_explicit_publish_approval"
+    )
+    assert strategy["next_action_class"] == "approval_required_at_publish"
+    assert strategy["user_approval_required_now"] is False
     assert strategy["high_end_launch_review"] == (
         "examples/retail/data/dufynd_high_end_launch_review.json"
     )
+
+
+def test_mobile_review_records_five_publish_ready_creatives() -> None:
+    review = load_json(REVIEW)
+    buffer = load_json(BUFFER)
+
+    assert review["readiness_summary"]["publish_ready_core_creatives_after_mobile_review"] == 5
+    assert review["readiness_summary"]["mobile_review_passed"] is True
+    assert buffer["inventory_snapshot"]["publish_ready_core_creatives_after_mobile_review"] == 5
+    assert buffer["inventory_snapshot"]["high_end_final_assets_pending_mobile_review"] == 0
+    assert buffer["inventory_snapshot"]["mobile_launch_buffer_review"] == "passed"
+
+
+def test_pre_publish_checklist_covers_five_core_slots() -> None:
+    checklist = load_json(CHECKLIST)
+
+    assert checklist["state"] == "prepared_waiting_explicit_publish_approval"
+    assert checklist["automatic_publish_allowed"] is False
+    assert checklist["paid_generation_required"] is False
+    assert checklist["tracking_qc"]["status"] == "passed_code_level"
+    assert checklist["tracking_qc"]["link_count"] == 14
+    assert len(checklist["launch_slots"]) == 5
+    assert checklist["final_gate"]["required"] == "explicit_operator_publish_approval"
+
+    ids = {row["content_id"] for row in checklist["launch_slots"]}
+    assert ids == {
+        "naxos_high_end_01",
+        "bois_imperial_high_end_01",
+        "one_million_example61_01",
+        "ysl_libre_high_end_01",
+        "relationship_labels_carousel_01",
+    }
+
+
+def test_pre_publish_checklist_keeps_rejected_legacy_shorts_out() -> None:
+    checklist = load_json(CHECKLIST)
+
+    excluded = {row["content_id"] for row in checklist["rebuild_exclusions"]}
+    slot_ids = {row["content_id"] for row in checklist["launch_slots"]}
+
+    assert excluded == {"sillage_haltbarkeit_01", "edp_vs_edt_01"}
+    assert excluded.isdisjoint(slot_ids)

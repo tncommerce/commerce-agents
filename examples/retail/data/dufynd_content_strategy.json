@@ -1,5 +1,5 @@
 {
-  "version": 5,
+  "version": 6,
   "system": "DUFYND",
   "strategy_status": "active",
   "active_track": "high_end_launch_buffer",
@@ -7,16 +7,17 @@
   "business_priority": "audience_growth_and_product_utility",
   "legacy_pilot_batches": "resume_for_preproduction",
   "legacy_pilot_role": "launch_and_learning_buffer",
-  "reason": "DUFYND now has the minimum five-creatives launch buffer without new paid generation: four accepted high-end perfume visuals (Naxos, Bois Impérial, Rabanne 1 Million and the previously operator-approved 9/10 YSL Libre visual) plus one rendered relationship-label carousel for Instagram/TikTok. YSL Libre stays as a clean silent master and receives current platform-native/trending audio at publish time. The rejected old Sillage/Haltbarkeit and EDP-vs-EDT files remain rebuild-only.",
-  "next_action": "perform_mobile_launch_buffer_review",
-  "next_action_class": "approval_required",
-  "user_approval_required_now": true,
+  "reason": "DUFYND has now passed the mobile launch-buffer review with five accepted core creatives: four locked premium perfume visuals plus the accepted Clone/Inspired/Alternative education carousel. No rework or new paid generation is required for this minimum launch buffer. Remaining work is channel-native pre-publish QA and explicit operator approval before any social post goes live.",
+  "next_action": "perform_channel_native_pre_publish_checks_then_request_explicit_publish_approval",
+  "next_action_class": "approval_required_at_publish",
+  "user_approval_required_now": false,
   "production_parallel_allowed": true,
   "buffer_plan": "examples/retail/data/dufynd_content_buffer_plan.json",
   "waiting_on": [
-    "operator_mobile_launch_buffer_review",
+    "channel_native_sound_or_audio_check",
+    "caption_and_tracking_link_final_check",
     "social_rebrand_hold_until_2026-09-26",
-    "explicit_publish_approval_after_channel_native_checks"
+    "explicit_publish_approval"
   ],
   "approval_gates": [
     "paid_ai_subscription_or_credits",

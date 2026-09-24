@@ -1,0 +1,90 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-24",
+  "system": "DUFYND",
+  "campaign_id": "launch01_high_end",
+  "state": "prepared_waiting_explicit_publish_approval",
+  "automatic_publish_allowed": false,
+  "paid_generation_required": false,
+  "tracking_qc": {
+    "status": "passed_code_level",
+    "link_count": 14,
+    "video_channel_rule": "Each of the four video creatives has TikTok, Instagram and YouTube attribution links.",
+    "carousel_channel_rule": "The education carousel has TikTok and Instagram attribution links only.",
+    "query_parameters": ["src", "cmp", "content"],
+    "landing_capture": "AcquisitionLanding mounts AcquisitionAnalytics; supported social sources are retained in session attribution and attached to first-party analytics events."
+  },
+  "copy_qc": {
+    "status": "passed",
+    "rules": [
+      "No unsupported similarity percentages.",
+      "No best-of or universal ranking claims.",
+      "No 1:1 identity promises.",
+      "No price claims in the five-core launch wave.",
+      "Affiliate commission does not affect editorial ordering."
+    ],
+    "source_file": "examples/retail/data/dufynd_high_end_social_copy.json"
+  },
+  "launch_slots": [
+    {
+      "date": "2026-09-26",
+      "content_id": "naxos_high_end_01",
+      "channels": ["tiktok", "instagram", "youtube"],
+      "landing_path": "/parfum-alternativen",
+      "audio_check": "Verify the approved master audio at upload; only add platform-native sound if it improves the post without weakening the premium edit.",
+      "status": "ready_for_operator_publish_gate"
+    },
+    {
+      "date": "2026-09-27",
+      "content_id": "bois_imperial_high_end_01",
+      "channels": ["tiktok", "instagram", "youtube"],
+      "landing_path": "/duftfinder",
+      "audio_check": "Verify the approved master audio at upload; preserve the locked edit and do not regenerate the video.",
+      "status": "ready_for_operator_publish_gate"
+    },
+    {
+      "date": "2026-09-29",
+      "content_id": "one_million_example61_01",
+      "channels": ["tiktok", "instagram", "youtube"],
+      "landing_path": "/duftfinder",
+      "audio_check": "Verify master audio at upload; the accepted opening nozzle imperfection is not a reason to regenerate.",
+      "status": "ready_for_operator_publish_gate"
+    },
+    {
+      "date": "2026-10-01",
+      "content_id": "ysl_libre_high_end_01",
+      "channels": ["tiktok", "instagram", "youtube"],
+      "landing_path": "/duftfinder",
+      "audio_check": "Silent visual master: choose a fitting current licensed/platform-native sound at publish time.",
+      "status": "ready_for_operator_publish_gate"
+    },
+    {
+      "date": "2026-10-03",
+      "content_id": "relationship_labels_carousel_01",
+      "channels": ["tiktok", "instagram"],
+      "landing_path": "/parfum-alternativen",
+      "audio_check": "Instagram carousel needs no baked audio. For TikTok photo mode, choose native sound only if it supports the educational pacing.",
+      "status": "ready_for_operator_publish_gate"
+    }
+  ],
+  "rebuild_exclusions": [
+    {
+      "content_id": "sillage_haltbarkeit_01",
+      "rule": "old_file_must_not_be_published"
+    },
+    {
+      "content_id": "edp_vs_edt_01",
+      "rule": "old_file_must_not_be_published"
+    }
+  ],
+  "final_gate": {
+    "required": "explicit_operator_publish_approval",
+    "before_publish": [
+      "Confirm the social rebrand/name state on or after 2026-09-26.",
+      "Select or verify channel-native audio where applicable.",
+      "Use the matching channel-specific tracked link.",
+      "Use the prepared channel-specific copy.",
+      "Do not publish any excluded legacy short."
+    ]
+  }
+}

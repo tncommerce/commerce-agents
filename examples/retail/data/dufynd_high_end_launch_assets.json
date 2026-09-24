@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "updated_at": "2026-09-24",
   "system": "DUFYND",
   "status": "prelaunch_high_end_buffer",
@@ -33,12 +33,21 @@
     {
       "content_id": "one_million_example61_01",
       "title": "Rabanne 1 Million",
-      "archive_filename": "DUFYND_1Million_Example61_VisualReview_V1.mp4",
-      "asset_state": "final_master_present",
+      "archive_filename": "DUFYND_1-MILLION_FINAL_TOPAZ_4K.mp4",
+      "asset_state": "final_topaz_master_present",
       "creative_state": "locked",
       "landing_path": "/duftfinder",
       "role": "attention_and_premium_visual_format",
-      "note": "Opening nozzle imperfection was explicitly accepted; do not trigger a new AI render for it."
+      "note": "Topaz 4K final passed sampled visual/technical QC on 2026-09-24. The previously accepted opening atomizer/nozzle imperfection remains a source-level limitation and is not a reason to regenerate.",
+      "social_delivery_filename": "DUFYND_1-MILLION_FINAL_SOCIAL_MASTER_1080x1920_24fps.mp4",
+      "technical_profile": {
+        "master": "2160x3840, 24 fps, H.264, AAC, 7.042 s",
+        "social_delivery": "1080x1920, 24 fps, H.264, AAC, 7.042 s"
+      },
+      "sha256": {
+        "topaz_master": "6a332b8b31d32ee161ff6afafae70e15294a2a2851247ae938e2a11a55cc762f",
+        "social_delivery": "86fd97fa6b12593bfcc5aff14aca4a34b1c337bbed30cdcc0932087478081d63"
+      }
     },
     {
       "content_id": "ysl_libre_high_end_01",
