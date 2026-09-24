@@ -3,6 +3,8 @@
 
 "use client";
 
+import type { PointerEvent } from "react";
+
 import {
   HomeSection,
   type Starter,
@@ -52,6 +54,20 @@ const STARTERS: Starter[] = [
 ];
 
 /** What the store is featuring: labelled bestseller or new, photographed ones first. */
+function updateHeroLight(event: PointerEvent<HTMLElement>) {
+  if (event.pointerType === "touch") return;
+  const bounds = event.currentTarget.getBoundingClientRect();
+  const x = Math.min(1, Math.max(0, (event.clientX - bounds.left) / bounds.width));
+  const y = Math.min(1, Math.max(0, (event.clientY - bounds.top) / bounds.height));
+  event.currentTarget.style.setProperty("--dufynd-hero-x", `${(x * 100).toFixed(1)}%`);
+  event.currentTarget.style.setProperty("--dufynd-hero-y", `${(y * 100).toFixed(1)}%`);
+}
+
+function resetHeroLight(event: PointerEvent<HTMLElement>) {
+  event.currentTarget.style.setProperty("--dufynd-hero-x", "68%");
+  event.currentTarget.style.setProperty("--dufynd-hero-y", "34%");
+}
+
 function featured(catalog: Record<string, Product>): Product[] {
   return Object.values(catalog)
     .filter(
@@ -88,6 +104,8 @@ export default function HomeView({
         <section
           aria-label="DUFYND Edit"
           className="dufynd-immersive-hero relative overflow-hidden rounded-[30px] border border-white/10 text-[#fffdf8]"
+          onPointerMove={updateHeroLight}
+          onPointerLeave={resetHeroLight}
         >
           <div aria-hidden className="dufynd-hero-atmosphere pointer-events-none absolute inset-0" />
           <div aria-hidden className="dufynd-hero-aurora pointer-events-none absolute" />
