@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "system": "DUFYND",
   "strategy_status": "active",
   "active_track": "high_end_launch_buffer",
@@ -7,15 +7,14 @@
   "business_priority": "audience_growth_and_product_utility",
   "legacy_pilot_batches": "resume_for_preproduction",
   "legacy_pilot_role": "launch_and_learning_buffer",
-  "reason": "Non-destructive launch preparation is complete for the current high-end buffer: three locked finals are ready for channel-level checks, YSL Libre passed internal sampled-frame visual QC but still needs operator acceptance, and the buffer remains one creative short of the five-video minimum even if YSL is accepted. The next step is therefore an operator decision rather than more autonomous generation.",
-  "next_action": "operator_review_ysl_and_launch_buffer_decision",
+  "reason": "DUFYND now has the minimum five-creatives launch buffer without new paid generation: four accepted high-end perfume visuals (Naxos, Bois Impérial, Rabanne 1 Million and the previously operator-approved 9/10 YSL Libre visual) plus one rendered relationship-label carousel for Instagram/TikTok. YSL Libre stays as a clean silent master and receives current platform-native/trending audio at publish time. The rejected old Sillage/Haltbarkeit and EDP-vs-EDT files remain rebuild-only.",
+  "next_action": "perform_mobile_launch_buffer_review",
   "next_action_class": "approval_required",
   "user_approval_required_now": true,
   "production_parallel_allowed": true,
   "buffer_plan": "examples/retail/data/dufynd_content_buffer_plan.json",
   "waiting_on": [
-    "operator_ysl_visual_acceptance",
-    "operator_launch_with_four_or_require_fifth_creative",
+    "operator_mobile_launch_buffer_review",
     "social_rebrand_hold_until_2026-09-26",
     "explicit_publish_approval_after_channel_native_checks"
   ],

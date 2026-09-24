@@ -3,8 +3,8 @@
   "updated_at": "2026-09-24",
   "base_url": "https://dufynd.de",
   "campaign_id": "launch01_high_end",
-  "link_count": 12,
-  "note": "Channel-specific first-party attribution links for the DUFYND high-end launch track. These links do not publish anything and do not imply affiliate status.",
+  "link_count": 14,
+  "note": "Channel-specific first-party attribution links for the DUFYND high-end launch track. Video creatives use TikTok, Instagram and YouTube; the education carousel uses TikTok photo mode and Instagram carousel only.",
   "links": [
     {
       "campaign_id": "launch01_high_end",
@@ -89,6 +89,20 @@
       "channel": "youtube",
       "landing_path": "/duftfinder",
       "url": "https://dufynd.de/duftfinder?src=youtube&cmp=launch01_high_end&content=ysl_libre_high_end_01"
+    },
+    {
+      "campaign_id": "launch01_high_end",
+      "content_id": "relationship_labels_carousel_01",
+      "channel": "tiktok",
+      "landing_path": "/parfum-alternativen",
+      "url": "https://dufynd.de/parfum-alternativen?src=tiktok&cmp=launch01_high_end&content=relationship_labels_carousel_01"
+    },
+    {
+      "campaign_id": "launch01_high_end",
+      "content_id": "relationship_labels_carousel_01",
+      "channel": "instagram",
+      "landing_path": "/parfum-alternativen",
+      "url": "https://dufynd.de/parfum-alternativen?src=instagram&cmp=launch01_high_end&content=relationship_labels_carousel_01"
     }
   ]
 }

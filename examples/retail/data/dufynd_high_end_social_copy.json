@@ -114,7 +114,30 @@
       },
       "youtube": {
         "title": "YSL Libre – passt das Duftprofil zu dir? | DUFYND",
-        "description": "Ein High-End-Visual für YSL Libre mit direkter Brücke zum DUFYND Duftfinder. Veröffentlichung erst nach Audio- und Final-QC."
+        "description": "Ein High-End-Visual für YSL Libre mit direkter Brücke zum DUFYND Duftfinder. Der aktuelle Plattform-Sound wird erst beim Publishing nativ ausgewählt."
+      }
+    },
+    {
+      "content_id": "relationship_labels_carousel_01",
+      "tiktok": {
+        "caption": "Clone, Inspired oder Alternative? Bei DUFYND sind das bewusst drei verschiedene Beziehungstypen. Ähnlichkeit wird nicht größer dargestellt, als sie tatsächlich ist.",
+        "hashtags": [
+          "#DUFYND",
+          "#Parfum",
+          "#Dupe",
+          "#Parfumwissen",
+          "#FragranceTok"
+        ]
+      },
+      "instagram": {
+        "caption": "Ähnlich heißt nicht identisch. DUFYND trennt Clone, Inspired und Alternative, damit du Duftbeziehungen transparenter vergleichen kannst – ohne pauschale 1:1-Versprechen.",
+        "hashtags": [
+          "#DUFYND",
+          "#Parfumwissen",
+          "#Parfum",
+          "#Fragrance",
+          "#ParfumAlternative"
+        ]
       }
     }
   ]
