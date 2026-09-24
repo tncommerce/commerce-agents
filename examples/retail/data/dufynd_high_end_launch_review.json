@@ -1,0 +1,129 @@
+{
+  "version": 1,
+  "reviewed_at": "2026-09-24",
+  "system": "DUFYND",
+  "gate_id": "high_end_launch_review_20260924",
+  "state": "operator_review_required",
+  "automatic_publish_allowed": false,
+  "paid_generation_authorized": false,
+  "quality_floor": "Naxos-level premium visual quality",
+  "readiness_summary": {
+    "locked_final_masters": 3,
+    "conditional_visuals": 1,
+    "maximum_publish_ready_after_current_review": 4,
+    "minimum_launch_buffer_target": 5,
+    "gap_after_ysl_acceptance": 1
+  },
+  "creatives": [
+    {
+      "content_id": "naxos_high_end_01",
+      "title": "Xerjoff Naxos",
+      "status": "locked_final",
+      "operator_status": "approved_frozen",
+      "visual_qc": "passed",
+      "remaining_before_publish": [
+        "channel_native_sound_or_audio_check",
+        "caption_and_tracking_link_check",
+        "explicit_publish_approval"
+      ]
+    },
+    {
+      "content_id": "bois_imperial_high_end_01",
+      "title": "Bois Impérial",
+      "status": "locked_final",
+      "operator_status": "approved_frozen",
+      "visual_qc": "passed",
+      "remaining_before_publish": [
+        "channel_native_sound_or_audio_check",
+        "caption_and_tracking_link_check",
+        "explicit_publish_approval"
+      ]
+    },
+    {
+      "content_id": "one_million_example61_01",
+      "title": "Rabanne 1 Million",
+      "status": "locked_final",
+      "operator_status": "approved_locked",
+      "visual_qc": "passed_with_accepted_opening_nozzle_imperfection",
+      "remaining_before_publish": [
+        "channel_native_sound_or_audio_check",
+        "caption_and_tracking_link_check",
+        "explicit_publish_approval"
+      ]
+    },
+    {
+      "content_id": "ysl_libre_high_end_01",
+      "title": "YSL Libre",
+      "status": "operator_review_required",
+      "operator_status": "acceptance_pending",
+      "visual_qc": {
+        "internal_sampled_frame_review": "passed",
+        "scope": "Sampled visual QC, not a claim of exhaustive frame-by-frame defect detection.",
+        "technical_profile": {
+          "duration_seconds": 8.042,
+          "width": 720,
+          "height": 1280,
+          "frame_rate_fps": 24,
+          "video_codec": "h264",
+          "audio_present": false
+        },
+        "observations": [
+          "Opening product close-up preserves a recognizable Libre bottle silhouette, warm golden liquid, black asymmetric cap and gold Cassandre treatment.",
+          "Night architecture and warm-gold/cobalt contrast are coherent across sampled frames.",
+          "Talent identity and couture wardrobe remain visually consistent in sampled human shots.",
+          "Final sampled frame presents the talent front-facing with the bottle and no obvious severe product or identity drift."
+        ]
+      },
+      "audio_plan": {
+        "strategy": "platform_native_sound",
+        "rationale": "Keep the clean silent master and select a fitting licensed/native sound per platform close to publication rather than buying or baking in a Higgsfield-generated track.",
+        "new_paid_generation_required": false
+      },
+      "remaining_before_publish": [
+        "explicit_operator_visual_acceptance",
+        "platform_native_sound_selection",
+        "caption_and_tracking_link_check",
+        "explicit_publish_approval"
+      ]
+    }
+  ],
+  "rebuild_exclusions": [
+    {
+      "content_id": "sillage_haltbarkeit_01",
+      "rule": "old_file_must_not_be_published",
+      "state": "rebuild_from_scratch"
+    },
+    {
+      "content_id": "edp_vs_edt_01",
+      "rule": "old_file_must_not_be_published",
+      "state": "rebuild_from_scratch"
+    }
+  ],
+  "prepared_support": {
+    "tracked_links": "examples/retail/data/dufynd_high_end_launch_links.json",
+    "social_copy": "examples/retail/data/dufynd_high_end_social_copy.json",
+    "launch_asset_registry": "examples/retail/data/dufynd_high_end_launch_assets.json"
+  },
+  "operator_decisions_required": [
+    {
+      "decision_id": "ysl_visual_acceptance",
+      "prompt": "YSL Libre visual master accept or reopen for changes.",
+      "required_before": "count_as_publish_ready"
+    },
+    {
+      "decision_id": "launch_buffer_size",
+      "prompt": "Proceed with the 2026-09-26 launch with up to four high-end creatives after YSL acceptance, or require a fifth Naxos-quality creative first.",
+      "required_before": "finalize_launch_wave"
+    },
+    {
+      "decision_id": "publish_approval",
+      "prompt": "Explicitly approve publishing after channel-native sound, caption and tracking checks.",
+      "required_before": "any_social_publish"
+    }
+  ],
+  "fifth_creative_rule": {
+    "new_product_generation_requires_operator_product_selection": true,
+    "paid_generation_requires_explicit_approval": true,
+    "old_rejected_shorts_cannot_fill_gap": true
+  }
+}
