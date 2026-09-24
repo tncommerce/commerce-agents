@@ -210,7 +210,7 @@ export default function HomeView({
                   </div>
                 </div>
                 <span className="rounded-full border border-white/12 bg-black/20 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.12em] text-white/64 backdrop-blur-md">
-                  Immersive View
+                  {spotlight.attributes?.product_model_3d_url ? "3D View" : "Immersive View"}
                 </span>
               </div>
             </a>
