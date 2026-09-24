@@ -254,6 +254,21 @@ body {
   }
 }
 
+
+.dufynd-product-stage[data-variant="card"] .dufynd-product-object {
+  inset: 9% 18% 11%;
+}
+
+.dufynd-product-stage[data-variant="card"] .dufynd-product-image {
+  transform: translateZ(0) scale(0.96);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .dufynd-product-stage[data-variant="card"]:hover .dufynd-product-image {
+    transform: translateZ(0) scale(1.0);
+  }
+}
+
 .dufynd-product-stage[data-variant="hero"] .dufynd-product-object {
   inset: 7% 10% 12%;
   transform:
