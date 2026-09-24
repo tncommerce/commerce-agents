@@ -152,7 +152,7 @@ export default function FragranceOffers({
 
   return (
     <section
-      className={`rounded-2xl border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5"} shadow-(--shadow-sm)`}
+      className={`rounded-[24px] border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5 sm:p-6"} shadow-(--shadow)`}
       data-merchant-offers
     >
       <div className="flex flex-wrap items-end justify-between gap-2">
@@ -160,9 +160,10 @@ export default function FragranceOffers({
           <h2 className="text-[17px] font-semibold text-(--ink)">
             {heading}
           </h2>
-          <p className="mt-1 text-[12px] text-(--ink-soft)">
+          <p className="mt-1 max-w-2xl text-[12px] leading-5 text-(--ink-soft)">
+            {payload.offers.length} verifizierte {payload.offers.length === 1 ? "Option" : "Optionen"} ·
             Kauf, Zahlung, Versand und Retouren erfolgen direkt beim Händler.
-            Angebote werden nach bekanntem Gesamtpreis und Aktualität sortiert.
+            Sortiert nach bekanntem Gesamtpreis und Aktualität.
           </p>
         </div>
       </div>
@@ -176,7 +177,11 @@ export default function FragranceOffers({
           return (
             <div
               key={offer.offer_id}
-              className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-(--line) bg-(--well)/45 px-4 py-3"
+              className={`flex flex-wrap items-center justify-between gap-3 rounded-2xl border px-4 py-3.5 sm:px-5 ${
+                best
+                  ? "border-(--accent)/45 bg-(--accent-soft)/45 shadow-(--shadow-sm)"
+                  : "border-(--line) bg-(--well)/35"
+              }`}
             >
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
@@ -184,8 +189,8 @@ export default function FragranceOffers({
                     {offer.merchant_name}
                   </span>
                   {best ? (
-                    <span className="rounded-full border border-(--accent) px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-(--ink)">
-                      DUFYND Top-Angebot
+                    <span className="rounded-full bg-(--ink) px-2 py-0.5 text-[9.5px] font-semibold uppercase tracking-[0.08em] text-(--surface)">
+                      Bester Gesamtpreis
                     </span>
                   ) : null}
                   {offer.affiliate_link ? (
@@ -238,7 +243,11 @@ export default function FragranceOffers({
                     ? "sponsored noopener noreferrer"
                     : "noopener noreferrer"
                 }
-                className="rounded-xl bg-(--accent) px-4 py-2.5 text-[13px] font-semibold text-white transition-opacity hover:opacity-90"
+                className={`w-full rounded-xl px-4 py-2.5 text-center text-[13px] font-semibold text-white transition sm:w-auto ${
+                  best
+                    ? "bg-(--accent-strong) shadow-sm hover:brightness-95"
+                    : "bg-(--ink) hover:opacity-90"
+                }`}
               >
                 Bei {offer.merchant_name} ansehen
               </a>
