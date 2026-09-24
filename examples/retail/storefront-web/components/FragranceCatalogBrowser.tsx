@@ -777,8 +777,17 @@ export default function FragranceCatalogBrowser({
                   }
                   className="group block"
                 >
-                  <div className="h-52 w-full overflow-hidden bg-[#171513]">
-                    {fragrance.image_url ? (
+                  <div className="h-52 w-full overflow-hidden">
+                    {fragrance.cutout_image_url ? (
+                      <FragranceVisual
+                        imageUrl={fragrance.cutout_image_url}
+                        cutoutUrl={fragrance.cutout_image_url}
+                        alt={`${fragrance.brand} ${fragrance.name}`}
+                        variant="card"
+                        mode="cutout"
+                        className="h-full w-full"
+                      />
+                    ) : fragrance.image_url ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={fragrance.image_url}
