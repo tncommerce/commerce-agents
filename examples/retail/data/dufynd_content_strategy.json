@@ -7,16 +7,17 @@
   "business_priority": "audience_growth_and_product_utility",
   "legacy_pilot_batches": "resume_for_preproduction",
   "legacy_pilot_role": "launch_and_learning_buffer",
-  "reason": "DUFYND now has a separate documented high-end launch inventory outside the legacy pilot renderer. Four final masters are available for launch review, three are creatively locked, and one existing EDP-vs-EDT draft is the preferred no-new-spend path to reach the five-creative minimum buffer. Legacy pilots remain a reserve rather than the first launch wave.",
-  "next_action": "finish_fifth_no_spend_creative_and_prepare_mobile_launch_review",
+  "reason": "DUFYND has three locked high-end final masters (Naxos, Bois Impérial and Rabanne 1 Million) plus one completed YSL Libre visual awaiting audio/final QC. The older Sillage/Haltbarkeit and EDP-vs-EDT shorts were explicitly rejected for reuse after the Naxos quality floor was established and must be rebuilt from scratch. Legacy pilot concepts remain a reserve, not the first launch wave.",
+  "next_action": "finish_ysl_libre_audio_qc_and_prepare_mobile_launch_review",
   "next_action_class": "auto_allowed_until_paid_generation_or_publish_gate",
   "user_approval_required_now": false,
   "production_parallel_allowed": true,
   "buffer_plan": "examples/retail/data/dufynd_content_buffer_plan.json",
   "waiting_on": [
+    "ysl_libre_audio_and_final_qc",
     "mobile_content_review_before_publish",
     "social_rebrand_hold_until_2026-09-26",
-    "fifth_publish_ready_creative_or_explicit_launch_with_smaller_buffer"
+    "two_more_publish_ready_creatives_to_reach_minimum_buffer_or_explicit_smaller_launch"
   ],
   "approval_gates": [
     "paid_ai_subscription_or_credits",
