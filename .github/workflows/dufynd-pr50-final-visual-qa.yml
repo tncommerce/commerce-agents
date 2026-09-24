@@ -34,8 +34,10 @@ jobs:
       - name: Build storefront
         run: npm --workspace retail/storefront-web run build
 
-      - name: Install Chromium
-        run: npx --yes playwright@1.55.0 install --with-deps chromium
+      - name: Install Playwright Chromium
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
 
       - name: Serve exact PR export and audit lazy media
         shell: bash
