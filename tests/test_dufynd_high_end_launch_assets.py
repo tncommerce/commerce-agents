@@ -14,6 +14,7 @@ SOCIAL_COPY = DATA_DIR / "dufynd_high_end_social_copy.json"
 CHECKLIST = DATA_DIR / "dufynd_high_end_pre_publish_checklist.json"
 PROFILE_LINKS = DATA_DIR / "dufynd_social_profile_links.json"
 RUNBOOK = DATA_DIR / "dufynd_launch_day_runbook.json"
+NAXOS_EXECUTION = DATA_DIR / "dufynd_launch_day_naxos_execution.json"
 
 
 def load_json(path: Path) -> dict:
@@ -164,9 +165,7 @@ def test_strategy_advances_to_pre_publish_gate() -> None:
     strategy = load_json(STRATEGY)
 
     assert strategy["active_track"] == "high_end_launch_buffer"
-    assert strategy["next_action"] == (
-        "launch_day_rebrand_and_live_checks_then_request_publish_approval"
-    )
+    assert strategy["next_action"] == ("wait_for_2026_09_26_then_execute_naxos_launch_day_packet")
     assert strategy["next_action_class"] == "manual_step_pending_at_launch"
     assert strategy["user_approval_required_now"] is False
     assert strategy["high_end_launch_review"] == (
@@ -239,7 +238,7 @@ def test_social_profile_links_are_stable_and_channel_specific() -> None:
 def test_launch_day_runbook_preserves_publish_gate_and_five_slots() -> None:
     runbook = load_json(RUNBOOK)
 
-    assert runbook["state"] == "prelaunch_ready_waiting_launch_day_live_checks"
+    assert runbook["state"] == "launch_day_packet_prepared_waiting_time_gate"
     assert runbook["automatic_publish_allowed"] is False
     assert len(runbook["benchmark_schedule"]) == 5
     assert runbook["benchmark_schedule"][0]["content_id"] == "naxos_high_end_01"
@@ -275,3 +274,25 @@ def test_pre_publish_live_route_evidence_and_remaining_gates() -> None:
         "native_mobile_upload_preview": "pending_publish_context",
         "explicit_operator_publish_approval": "pending",
     }
+
+
+def test_naxos_launch_day_packet_is_complete_and_publish_gated() -> None:
+    packet = load_json(NAXOS_EXECUTION)
+
+    assert packet["content_id"] == "naxos_high_end_01"
+    assert packet["launch_date"] == "2026-09-26"
+    assert packet["publish_authorized"] is False
+    assert packet["asset"]["creative_state"] == "locked"
+    assert set(packet["platforms"]) == {"tiktok", "instagram", "youtube"}
+
+    assert packet["platforms"]["tiktok"]["target_local_time"] == "17:00"
+    assert packet["platforms"]["youtube"]["target_local_time"] == "19:00"
+    assert packet["platforms"]["instagram"]["target_local_time"] == "21:00"
+
+    for channel, url in packet["landing"]["profile_links"].items():
+        assert url.startswith("https://dufynd.de/start?")
+        assert f"src={channel}" in url
+        assert "content=profile" in url
+
+    assert "No public publish without explicit operator approval." in packet["hard_stops"]
+    assert "No paid AI generation." in packet["hard_stops"]

@@ -1,5 +1,5 @@
 {
-  "version": 7,
+  "version": 8,
   "system": "DUFYND",
   "strategy_status": "active",
   "active_track": "high_end_launch_buffer",
@@ -7,8 +7,8 @@
   "business_priority": "audience_growth_and_product_utility",
   "legacy_pilot_batches": "resume_for_preproduction",
   "legacy_pilot_role": "launch_and_learning_buffer",
-  "reason": "The five-core launch buffer has passed mobile review. Copy, tracking, stable social-profile links and a dedicated /start landing page are prepared. Remaining work is limited to launch-day live checks that cannot be finalized in advance: TikTok rebrand state, live profile links, native audio selection where applicable, final upload preview, and explicit publish approval.",
-  "next_action": "launch_day_rebrand_and_live_checks_then_request_publish_approval",
+  "reason": "The technical pre-publish preparation is complete and the first-post Naxos execution packet is prepared. Remaining work is time/account-gated: on 2026-09-26 confirm TikTok DUFYND branding, verify live profile links, inspect platform-native upload previews/audio, then request explicit publish approval.",
+  "next_action": "wait_for_2026_09_26_then_execute_naxos_launch_day_packet",
   "next_action_class": "manual_step_pending_at_launch",
   "user_approval_required_now": false,
   "production_parallel_allowed": true,
@@ -27,5 +27,6 @@
   "high_end_asset_registry": "examples/retail/data/dufynd_high_end_launch_assets.json",
   "high_end_launch_review": "examples/retail/data/dufynd_high_end_launch_review.json",
   "launch_day_runbook": "examples/retail/data/dufynd_launch_day_runbook.json",
-  "social_profile_links": "examples/retail/data/dufynd_social_profile_links.json"
+  "social_profile_links": "examples/retail/data/dufynd_social_profile_links.json",
+  "first_post_execution_packet": "examples/retail/data/dufynd_launch_day_naxos_execution.json"
 }

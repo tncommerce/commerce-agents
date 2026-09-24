@@ -1,10 +1,10 @@
 {
-  "version": 1,
+  "version": 2,
   "updated_at": "2026-09-24",
   "system": "DUFYND",
   "campaign_id": "launch01_high_end",
   "timezone": "Europe/Berlin",
-  "state": "prelaunch_ready_waiting_launch_day_live_checks",
+  "state": "launch_day_packet_prepared_waiting_time_gate",
   "automatic_publish_allowed": false,
   "profile_links_file": "examples/retail/data/dufynd_social_profile_links.json",
   "social_copy_file": "examples/retail/data/dufynd_high_end_social_copy.json",
@@ -87,5 +87,6 @@
     "No social publish without explicit operator approval.",
     "No paid AI generation without explicit operator approval.",
     "Do not publish the rejected old Sillage/Haltbarkeit or EDP-vs-EDT shorts."
-  ]
+  ],
+  "first_post_execution_packet": "examples/retail/data/dufynd_launch_day_naxos_execution.json"
 }
