@@ -1,12 +1,14 @@
 {
-  "version": 1,
+  "version": 2,
   "updated_at": "2026-09-24",
   "campaign_id": "launch01_high_end",
   "guidance": [
     "Keep the premium visual as the hook; copy should explain the DUFYND utility rather than oversell the fragrance.",
     "Do not use unsupported similarity percentages, best-of rankings or 1:1 claims.",
     "Use the matching channel-specific first-party attribution link.",
-    "Publishing remains an explicit operator approval action."
+    "Publishing remains an explicit operator approval action.",
+    "For TikTok and Instagram, point users to the DUFYND profile link rather than assuming a raw caption URL is clickable.",
+    "For YouTube Shorts, use the channel-profile link CTA because normal external URLs in Shorts descriptions/comments are not clickable."
   ],
   "posts": [
     {
@@ -19,7 +21,8 @@
           "#Xerjoff",
           "#Parfum",
           "#FragranceTok"
-        ]
+        ],
+        "cta": "Alternativen über den Link im Profil."
       },
       "instagram": {
         "caption": "Xerjoff Naxos als Duftprofil: süß, würzig, gourmandig und sehr präsent. Bei DUFYND kannst du die Richtung mit günstigeren Alternativen vergleichen – transparent nach Profil und Beziehung.",
@@ -29,11 +32,13 @@
           "#Xerjoff",
           "#Parfum",
           "#Fragrance"
-        ]
+        ],
+        "cta": "Alternativen über den Link im Profil."
       },
       "youtube": {
         "title": "Xerjoff Naxos – welche Richtung passt zu dir? | DUFYND",
-        "description": "Ein hochwertiger Naxos-Visual mit direktem Einstieg in den DUFYND Vergleich. Entdecke ähnliche Duftprofile und ihre Unterschiede statt pauschaler 1:1-Versprechen."
+        "description": "Ein hochwertiger Naxos-Visual mit direktem Einstieg in den DUFYND Vergleich. Entdecke ähnliche Duftprofile und ihre Unterschiede statt pauschaler 1:1-Versprechen.",
+        "cta": "DUFYND über den Link im Kanalprofil öffnen."
       }
     },
     {
@@ -46,7 +51,8 @@
           "#EssentialParfums",
           "#Parfum",
           "#FragranceTok"
-        ]
+        ],
+        "cta": "Duftfinder über den Link im Profil."
       },
       "instagram": {
         "caption": "Bois Impérial steht bei DUFYND für ein sehr holziges, würziges und kaum süßes Profil. Der Duftfinder hilft dir zu prüfen, ob genau dieser Stil zu deinem Geschmack und Anlass passt.",
@@ -56,11 +62,13 @@
           "#EssentialParfums",
           "#Parfum",
           "#Duftfinder"
-        ]
+        ],
+        "cta": "Duftfinder über den Link im Profil."
       },
       "youtube": {
         "title": "Bois Impérial – passt dieser Stil zu dir? | DUFYND",
-        "description": "Bois Impérial verbindet Frische mit viel Holz, Würze und sehr wenig Süße. Der DUFYND Duftfinder hilft dir, dieses Profil gegen deine Vorlieben zu prüfen."
+        "description": "Bois Impérial verbindet Frische mit viel Holz, Würze und sehr wenig Süße. Der DUFYND Duftfinder hilft dir, dieses Profil gegen deine Vorlieben zu prüfen.",
+        "cta": "DUFYND über den Link im Kanalprofil öffnen."
       }
     },
     {
@@ -73,7 +81,8 @@
           "#Rabanne",
           "#Parfum",
           "#FragranceTok"
-        ]
+        ],
+        "cta": "Duftfinder über den Link im Profil."
       },
       "instagram": {
         "caption": "Rabanne 1 Million ist visuell unverwechselbar. DUFYND geht danach einen Schritt weiter: Welche Duftwirkung suchst du eigentlich – und passt das Profil wirklich zu dir?",
@@ -83,11 +92,13 @@
           "#Rabanne",
           "#Parfum",
           "#Duftfinder"
-        ]
+        ],
+        "cta": "Duftfinder über den Link im Profil."
       },
       "youtube": {
         "title": "Rabanne 1 Million – mehr als nur der Flakon | DUFYND",
-        "description": "Premium Visual trifft Duftberatung: DUFYND hilft dir, vom ersten Eindruck zum passenden Duftprofil zu kommen."
+        "description": "Premium Visual trifft Duftberatung: DUFYND hilft dir, vom ersten Eindruck zum passenden Duftprofil zu kommen.",
+        "cta": "DUFYND über den Link im Kanalprofil öffnen."
       }
     },
     {
@@ -100,7 +111,8 @@
           "#YSLBeauty",
           "#Parfum",
           "#FragranceTok"
-        ]
+        ],
+        "cta": "Duftfinder über den Link im Profil."
       },
       "instagram": {
         "caption": "Libre lebt von Kontrast: elegant, präsent und modern. Mit DUFYND kannst du den Stil gegen deine persönlichen Duftvorlieben prüfen, statt nur nach Bekanntheit zu entscheiden.",
@@ -110,11 +122,13 @@
           "#YSLBeauty",
           "#Parfum",
           "#Duftfinder"
-        ]
+        ],
+        "cta": "Duftfinder über den Link im Profil."
       },
       "youtube": {
         "title": "YSL Libre – passt das Duftprofil zu dir? | DUFYND",
-        "description": "Ein High-End-Visual für YSL Libre mit direkter Brücke zum DUFYND Duftfinder. Der aktuelle Plattform-Sound wird erst beim Publishing nativ ausgewählt."
+        "description": "Ein High-End-Visual für YSL Libre mit direkter Brücke zum DUFYND Duftfinder. Der aktuelle Plattform-Sound wird erst beim Publishing nativ ausgewählt.",
+        "cta": "DUFYND über den Link im Kanalprofil öffnen."
       }
     },
     {
@@ -127,7 +141,8 @@
           "#Dupe",
           "#Parfumwissen",
           "#FragranceTok"
-        ]
+        ],
+        "cta": "Alternativen über den Link im Profil."
       },
       "instagram": {
         "caption": "Ähnlich heißt nicht identisch. DUFYND trennt Clone, Inspired und Alternative, damit du Duftbeziehungen transparenter vergleichen kannst – ohne pauschale 1:1-Versprechen.",
@@ -137,7 +152,8 @@
           "#Parfum",
           "#Fragrance",
           "#ParfumAlternative"
-        ]
+        ],
+        "cta": "Alternativen über den Link im Profil."
       }
     }
   ]
