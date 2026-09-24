@@ -146,9 +146,11 @@ export default function FragranceOffers({
     );
   }
 
-  const hasAffiliateLink = payload.offers.some(
+  const partnerOfferCount = payload.offers.filter(
     (offer) => offer.affiliate_link,
-  );
+  ).length;
+  const externalOfferCount =
+    payload.offers.length - partnerOfferCount;
 
   return (
     <section
@@ -161,9 +163,12 @@ export default function FragranceOffers({
             {heading}
           </h2>
           <p className="mt-1 max-w-2xl text-[12px] leading-5 text-(--ink-soft)">
-            {payload.offers.length} verifizierte {payload.offers.length === 1 ? "Option" : "Optionen"} ·
-            Kauf, Zahlung, Versand und Retouren erfolgen direkt beim Händler.
-            Sortiert nach bekanntem Gesamtpreis und Aktualität.
+            {payload.offers.length} verifizierte{" "}
+            {payload.offers.length === 1 ? "Kaufoption" : "Kaufoptionen"} ·
+            {partnerOfferCount ? ` ${partnerOfferCount} Partner${partnerOfferCount === 1 ? "angebot" : "angebote"}` : ""}
+            {partnerOfferCount && externalOfferCount ? " · " : ""}
+            {externalOfferCount ? ` ${externalOfferCount} weitere ${externalOfferCount === 1 ? "Option" : "Optionen"}` : ""}
+            {" · "}Sortiert nach bekanntem Gesamtpreis und Aktualität, nicht nach Provision.
           </p>
         </div>
       </div>
@@ -193,11 +198,17 @@ export default function FragranceOffers({
                       Bester Gesamtpreis
                     </span>
                   ) : null}
-                  {offer.affiliate_link ? (
-                    <span className="rounded-full border border-(--line) bg-(--card) px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-(--ink-soft)">
-                      Partnerlink
-                    </span>
-                  ) : null}
+                  <span
+                    className={`rounded-full border px-2 py-0.5 text-[9.5px] font-semibold uppercase tracking-[0.07em] ${
+                      offer.affiliate_link
+                        ? "border-(--accent)/45 bg-(--accent-soft) text-(--accent-ink)"
+                        : "border-(--line) bg-(--card) text-(--ink-soft)"
+                    }`}
+                  >
+                    {offer.affiliate_link
+                      ? "Partnerangebot"
+                      : "Weitere Kaufoption"}
+                  </span>
                 </div>
 
                 <div className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-1">
@@ -256,11 +267,27 @@ export default function FragranceOffers({
         })}
       </div>
 
-      <p className="mt-3 text-[10.5px] leading-relaxed text-(--ink-soft)">
-        {hasAffiliateLink
-          ? payload.affiliate_disclosure
-          : "Aktuell sind dies direkte Händlerlinks ohne Affiliate-Tracking."}
-      </p>
+      <div className="mt-3 rounded-xl border border-(--line) bg-(--well)/35 px-3 py-2.5 text-[10.5px] leading-relaxed text-(--ink-soft)">
+        {partnerOfferCount ? (
+          <p>
+            <span className="font-semibold text-(--ink)">Partnerangebote:</span>{" "}
+            DUFYND kann bei entsprechend gekennzeichneten Links eine Provision
+            erhalten. Das verändert weder den angezeigten Händlerpreis noch die
+            Reihenfolge der Angebote.
+          </p>
+        ) : null}
+        {externalOfferCount ? (
+          <p className={partnerOfferCount ? "mt-1.5" : ""}>
+            <span className="font-semibold text-(--ink)">Weitere Kaufoptionen:</span>{" "}
+            Diese Links zeigen wir als Orientierung, auch wenn DUFYND dafür
+            aktuell keine Provision erhält.
+          </p>
+        ) : null}
+        <p className="mt-1.5">
+          Kaufvertrag, Zahlung, Versand und Retouren erfolgen direkt beim
+          jeweiligen Händler.
+        </p>
+      </div>
     </section>
   );
 }
