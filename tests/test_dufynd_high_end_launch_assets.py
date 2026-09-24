@@ -188,7 +188,10 @@ def test_mobile_review_records_five_publish_ready_creatives() -> None:
 def test_pre_publish_checklist_covers_five_core_slots() -> None:
     checklist = load_json(CHECKLIST)
 
-    assert checklist["state"] == "prepublish_prepared_waiting_platform_account_checks_and_publish_approval"
+    assert (
+        checklist["state"]
+        == "prepublish_prepared_waiting_platform_account_checks_and_publish_approval"
+    )
     assert checklist["automatic_publish_allowed"] is False
     assert checklist["paid_generation_required"] is False
     assert checklist["tracking_qc"]["status"] == "passed_code_and_live_route_level"
