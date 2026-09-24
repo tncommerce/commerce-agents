@@ -86,7 +86,6 @@ def test_high_end_assets_have_channel_links_and_copy() -> None:
         assert channels == {"tiktok", "instagram", "youtube"}
 
 
-
 def test_launch_review_stops_before_spend_or_publish() -> None:
     review = load_json(REVIEW)
 
@@ -94,9 +93,7 @@ def test_launch_review_stops_before_spend_or_publish() -> None:
     assert review["automatic_publish_allowed"] is False
     assert review["paid_generation_authorized"] is False
 
-    decision_ids = {
-        row["decision_id"] for row in review["operator_decisions_required"]
-    }
+    decision_ids = {row["decision_id"] for row in review["operator_decisions_required"]}
     assert decision_ids == {
         "ysl_visual_acceptance",
         "launch_buffer_size",
