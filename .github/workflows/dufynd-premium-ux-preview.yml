@@ -41,7 +41,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p ../premium-preview
-          (cd retail/storefront-web && npm run start) > /tmp/dufynd-preview.log 2>&1 &
+          npx --yes serve@14.2.5 -s retail/storefront-web/out -l 3000 > /tmp/dufynd-preview.log 2>&1 &
           APP_PID=$!
           trap 'kill $APP_PID || true' EXIT
 
