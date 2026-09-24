@@ -113,7 +113,7 @@ export default function HomeView({
           <div aria-hidden className="dufynd-hero-particles pointer-events-none absolute inset-0" />
           <div aria-hidden className="dufynd-hero-vignette pointer-events-none absolute inset-0" />
           <div className="relative z-10 grid gap-0 md:grid-cols-[1.02fr_0.98fr]">
-            <div className="flex flex-col justify-center p-6 sm:p-8 md:p-10 lg:p-12">
+            <div className="flex flex-col justify-center p-5 sm:p-8 md:p-10 lg:p-12">
               <div className="mb-4 inline-flex w-fit items-center gap-2 rounded-full border border-white/12 bg-white/[0.055] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.19em] text-[#e5c782] backdrop-blur-md">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#d8ad55] shadow-[0_0_14px_rgba(216,173,85,0.9)]" />
                 DUFYND · Persönliche Duftberatung
@@ -121,21 +121,21 @@ export default function HomeView({
               <div className="mt-2 text-[11px] font-medium uppercase tracking-[0.14em] text-white/48">
                 Duft entdecken. Vergleichen. Sicherer entscheiden.
               </div>
-              <h1 className="mt-2 max-w-2xl text-[34px] font-semibold leading-[0.98] tracking-[-0.045em] sm:text-[44px] lg:text-[54px]">
+              <h1 className="mt-2 max-w-2xl text-[31px] font-semibold leading-[0.98] tracking-[-0.045em] sm:text-[44px] lg:text-[54px]">
                 Finde den Duft, der wirklich zu dir passt.
               </h1>
-              <p className="mt-5 max-w-xl text-[13px] leading-5 text-white/72 sm:text-[14px] sm:leading-6">
+              <p className="mt-3 max-w-xl text-[13px] leading-5 text-white/72 sm:mt-5 sm:text-[14px] sm:leading-6">
                 Beschreibe Duftprofil, Anlass oder Budget. DUFYND verbindet
                 Duftberatung, Community-Daten, Alternativen und aktuelle
                 Händlerangebote in einem klaren Erlebnis.
               </p>
-              <div className="mt-4 flex flex-wrap gap-2 text-[10.5px] font-medium text-white/58">
+              <div className="mt-4 hidden flex-wrap gap-2 text-[10.5px] font-medium text-white/58 sm:flex">
                 <span className="rounded-full border border-white/10 bg-black/15 px-2.5 py-1 backdrop-blur-sm">Duftprofil</span>
                 <span className="rounded-full border border-white/10 bg-black/15 px-2.5 py-1 backdrop-blur-sm">Alternativen</span>
                 <span className="rounded-full border border-white/10 bg-black/15 px-2.5 py-1 backdrop-blur-sm">Preisvergleich</span>
               </div>
 
-              <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-3">
+              <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-3 sm:mt-6">
                 <a
                   href="/duftfinder"
                   className="dufynd-hero-primary rounded-xl bg-[#fffdf8] px-4 py-2.5 text-[12.5px] font-semibold text-[#171513] transition hover:-translate-y-0.5"
@@ -163,7 +163,7 @@ export default function HomeView({
             <a
               href={fragrancePathForProduct(spotlight)}
               aria-label="Xerjoff Naxos entdecken"
-              className="dufynd-hero-product group relative min-h-[320px] overflow-hidden border-t border-white/10 md:min-h-[430px] md:border-l md:border-t-0"
+              className="dufynd-hero-product group relative min-h-[260px] sm:min-h-[320px] overflow-hidden border-t border-white/10 md:min-h-[430px] md:border-l md:border-t-0"
             >
               {spotlight.attributes?.product_model_3d_url || spotlight.attributes?.product_cutout_url ? (
                 <FragranceModel3D
@@ -172,11 +172,11 @@ export default function HomeView({
                   cutoutUrl={spotlight.attributes?.product_cutout_url}
                   backdropUrl={spotlight.image_url}
                   alt={spotlight.title}
-                  className="h-full min-h-[320px] w-full md:min-h-[430px]"
+                  className="h-full min-h-[260px] sm:min-h-[320px] w-full md:min-h-[430px]"
                   priority
                 />
               ) : (
-                <div className="dufynd-editorial-media relative h-full min-h-[320px] w-full md:min-h-[430px]">
+                <div className="dufynd-editorial-media relative h-full min-h-[260px] sm:min-h-[320px] w-full md:min-h-[430px]">
                   {spotlight.image_url ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -184,7 +184,7 @@ export default function HomeView({
                       alt={spotlight.title}
                       fetchPriority="high"
                       decoding="async"
-                      className="h-full min-h-[320px] w-full object-cover md:min-h-[430px]"
+                      className="h-full min-h-[260px] sm:min-h-[320px] w-full object-cover md:min-h-[430px]"
                     />
                   ) : null}
                   <span
