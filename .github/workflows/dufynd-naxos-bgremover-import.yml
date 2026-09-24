@@ -1,0 +1,49 @@
+name: DUFYND Naxos Background Remover Import
+
+on:
+  push:
+    branches:
+      - dufynd-offers-3d-look-20260924
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dufynd-offers-3d-look-20260924
+
+      - name: Replace Naxos cutout with background-remover result
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGET="examples/retail/storefront-web/public/products/naxos-cutout-production.png"
+          curl --fail --location --silent --show-error             'https://d8j0ntlcm91z4.cloudfront.net/user_3JXl0ZPj88sOyjaaKoV9lI8uIys/hf_20260924_101916_018e0b1b-c123-4912-a15c-e196929d4036.png'             -o "$TARGET"
+
+          python - <<'PY'
+          from PIL import Image
+          p="examples/retail/storefront-web/public/products/naxos-cutout-production.png"
+          im=Image.open(p).convert("RGBA")
+          w,h=im.size
+          a=im.getchannel("A")
+          vals=list(a.getdata())
+          print("size",w,h)
+          print("alpha",min(vals),max(vals))
+          print("transparent",sum(1 for x in vals if x==0))
+          print("semi",sum(1 for x in vals if 0<x<255))
+          print("opaque",sum(1 for x in vals if x==255))
+          print("corners",[im.getpixel(p)[3] for p in [(0,0),(w-1,0),(0,h-1),(w-1,h-1)]])
+          print("center",im.getpixel((w//2,h//2))[3])
+          assert all(im.getpixel(p)[3] == 0 for p in [(0,0),(w-1,0),(0,h-1),(w-1,h-1)])
+          assert im.getpixel((w//2,h//2))[3] >= 240
+          assert sum(1 for x in vals if 0<x<255) > 10000
+          PY
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$TARGET"
+          git commit -m "Replace Naxos cutout with preserved-glass background removal"
+          git push origin HEAD:dufynd-offers-3d-look-20260924
