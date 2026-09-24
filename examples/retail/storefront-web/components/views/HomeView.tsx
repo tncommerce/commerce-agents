@@ -169,9 +169,6 @@ export default function HomeView({
                 aria-hidden
                 className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(23,21,19,0.24),transparent_28%),linear-gradient(0deg,rgba(23,21,19,0.12),transparent_30%)] md:bg-[linear-gradient(90deg,rgba(23,21,19,0.32),transparent_36%)]"
               />
-              <span className="absolute bottom-4 right-4 rounded-full border border-white/20 bg-black/25 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/85 backdrop-blur-md">
-                DUFYND Editorial
-              </span>
             </a>
           </div>
         </section>
