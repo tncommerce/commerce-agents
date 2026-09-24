@@ -165,9 +165,7 @@ def test_strategy_advances_to_pre_publish_gate() -> None:
     strategy = load_json(STRATEGY)
 
     assert strategy["active_track"] == "high_end_launch_buffer"
-    assert strategy["next_action"] == (
-        "wait_for_2026_09_26_then_execute_naxos_launch_day_packet"
-    )
+    assert strategy["next_action"] == ("wait_for_2026_09_26_then_execute_naxos_launch_day_packet")
     assert strategy["next_action_class"] == "manual_step_pending_at_launch"
     assert strategy["user_approval_required_now"] is False
     assert strategy["high_end_launch_review"] == (
