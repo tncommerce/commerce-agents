@@ -11,9 +11,9 @@
   "pipeline_state": "strategy_work_available",
   "active_track": "high_end_launch_buffer",
   "legacy_pilot_batches": "resume_for_preproduction",
-  "next_action": "perform_mobile_launch_buffer_review",
-  "next_action_class": "approval_required",
-  "user_approval_required_now": true,
+  "next_action": "perform_channel_native_pre_publish_checks_then_request_explicit_publish_approval",
+  "next_action_class": "approval_required_at_publish",
+  "user_approval_required_now": false,
   "production_parallel_allowed": true,
   "publish_order": [
     "pilot_batch_01",
