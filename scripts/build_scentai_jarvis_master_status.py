@@ -52,7 +52,7 @@ def classify_domain(
         execution_state = "user_approval_required"
     elif next_action in external_wait_actions:
         execution_state = "waiting_external"
-    elif action_class == "auto_allowed" and next_action:
+    elif action_class.startswith("auto_allowed") and next_action:
         execution_state = "work_available"
     elif next_action:
         execution_state = "manual_step_pending"
@@ -79,19 +79,33 @@ def build_master_status(
     content_pipeline: dict | None = None,
 ) -> dict[str, Any]:
     content_for_domain = content
-    if (
+    active_track = (
+        str(content_pipeline.get("active_track") or "").strip()
+        if content_pipeline
+        else ""
+    )
+    strategy_track_active = bool(
         content_pipeline
-        and content_pipeline.get("active_track") == "high_end_rnd"
-        and content_pipeline.get("legacy_pilot_batches") == "hold"
-    ):
+        and active_track
+        and active_track != "legacy_pilot_production"
+        and content_pipeline.get("next_action")
+    )
+    if strategy_track_active:
+        blockers = []
+        if (
+            active_track == "high_end_rnd"
+            and content_pipeline.get("legacy_pilot_batches") == "hold"
+        ):
+            blockers.append("legacy_pilot_batches_intentionally_on_hold")
+
         content_for_domain = {
             "overall_state": content_pipeline.get("pipeline_state"),
             "next_action": content_pipeline.get("next_action"),
             "next_action_class": content_pipeline.get("next_action_class"),
-            "user_approval_required_now": bool(content_pipeline.get("user_approval_required_now")),
-            "blockers": [
-                "legacy_pilot_batches_intentionally_on_hold",
-            ],
+            "user_approval_required_now": bool(
+                content_pipeline.get("user_approval_required_now")
+            ),
+            "blockers": blockers,
         }
 
     domains = [
