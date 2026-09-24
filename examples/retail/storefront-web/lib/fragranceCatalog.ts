@@ -74,6 +74,7 @@ export interface StaticFragrance {
   volume_ml: number;
   release_year?: number | null;
   image_url?: string | null;
+  cutout_image_url?: string | null;
   short_description?: string | null;
   target_groups: string[];
   role: string | null;
@@ -181,6 +182,8 @@ function catalogToFragrance(
     volume_ml: volumeMl,
     release_year: source?.release_year ?? null,
     image_url: row.image_url,
+    cutout_image_url:
+      String(attributes.product_cutout_url || "").trim() || null,
     short_description: row.short_description,
     target_groups: targetGroups,
     role: source?.classification?.role || null,
