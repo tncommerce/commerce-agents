@@ -16,6 +16,13 @@ jobs:
         with:
           ref: dufynd-offers-3d-look-20260924
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install image QA dependency
+        run: python -m pip install --quiet pillow
+
       - name: Replace Naxos cutout with background-remover result
         shell: bash
         run: |
