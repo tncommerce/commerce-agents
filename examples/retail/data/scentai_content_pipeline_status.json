@@ -11,7 +11,7 @@
   "pipeline_state": "strategy_work_available",
   "active_track": "high_end_launch_buffer",
   "legacy_pilot_batches": "resume_for_preproduction",
-  "next_action": "launch_day_rebrand_and_live_checks_then_request_publish_approval",
+  "next_action": "wait_for_2026_09_26_then_execute_naxos_launch_day_packet",
   "next_action_class": "manual_step_pending_at_launch",
   "user_approval_required_now": false,
   "production_parallel_allowed": true,
