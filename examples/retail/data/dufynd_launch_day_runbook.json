@@ -1,0 +1,91 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-24",
+  "system": "DUFYND",
+  "campaign_id": "launch01_high_end",
+  "timezone": "Europe/Berlin",
+  "state": "prelaunch_ready_waiting_launch_day_live_checks",
+  "automatic_publish_allowed": false,
+  "profile_links_file": "examples/retail/data/dufynd_social_profile_links.json",
+  "social_copy_file": "examples/retail/data/dufynd_high_end_social_copy.json",
+  "asset_registry_file": "examples/retail/data/dufynd_high_end_launch_assets.json",
+  "launch_day_checks": [
+    "Confirm TikTok public name/username can be switched to DUFYND and complete the rebrand before the first TikTok post.",
+    "Confirm Instagram and YouTube still show DUFYND branding and the intended profile image.",
+    "Set or verify each channel's stable DUFYND /start profile link before publishing.",
+    "For each upload, verify the correct final asset and cover frame on mobile.",
+    "For YSL Libre, select a current licensed/platform-native sound at publish time; do not regenerate the approved visual.",
+    "For other locked videos, preserve the approved edit and only add native sound if it clearly improves the post without fighting the baked audio.",
+    "Use the prepared channel-specific copy and do not paste a raw tracked URL into a caption expecting it to be clickable.",
+    "Request explicit operator approval immediately before the first public post."
+  ],
+  "benchmark_schedule": [
+    {
+      "date": "2026-09-26",
+      "day": "Saturday",
+      "content_id": "naxos_high_end_01",
+      "tiktok_local_time": "17:00",
+      "instagram_local_time": "21:00",
+      "youtube_local_time": "19:00",
+      "role": "launch_hero"
+    },
+    {
+      "date": "2026-09-27",
+      "day": "Sunday",
+      "content_id": "bois_imperial_high_end_01",
+      "tiktok_local_time": "09:00",
+      "instagram_local_time": "21:00",
+      "youtube_local_time": "19:00",
+      "role": "premium_followup"
+    },
+    {
+      "date": "2026-09-29",
+      "day": "Tuesday",
+      "content_id": "one_million_example61_01",
+      "tiktok_local_time": "20:00",
+      "instagram_local_time": "19:00",
+      "youtube_local_time": "20:00",
+      "role": "attention_format"
+    },
+    {
+      "date": "2026-10-01",
+      "day": "Thursday",
+      "content_id": "ysl_libre_high_end_01",
+      "tiktok_local_time": "19:00",
+      "instagram_local_time": "09:00",
+      "youtube_local_time": "19:00",
+      "role": "premium_style_fit",
+      "special_check": "platform_native_audio_required"
+    },
+    {
+      "date": "2026-10-03",
+      "day": "Saturday",
+      "content_id": "relationship_labels_carousel_01",
+      "tiktok_local_time": "17:00",
+      "instagram_local_time": "21:00",
+      "youtube_local_time": null,
+      "role": "trust_education"
+    }
+  ],
+  "timing_method": {
+    "status": "benchmark_seed_not_final_truth",
+    "reason": "New DUFYND channels do not yet have enough native audience history. Use current 2026 large-sample benchmarks only as a starting seed, then switch to channel analytics after the first comparable posts.",
+    "sources_summary": [
+      "Buffer 2026 TikTok analysis: Saturday 17:00 is the strongest Saturday slot and Sunday 09:00 the strongest Sunday slot in its dataset.",
+      "Buffer 2026 Instagram analysis: Saturday/Sunday evenings around 21:00 are the strongest weekend slots; Tuesday 19:00 and Thursday morning are strong benchmark windows.",
+      "Buffer 2026 YouTube analysis: Shorts generally peak in the evening; Saturday 19:00 and Sunday 19:00 are strong weekend slots.",
+      "Published benchmark studies disagree in places, so timing is treated as a test variable rather than a quality gate."
+    ]
+  },
+  "measurement_after_each_post": [
+    "Record native views/reach, average watch time or retention where available, likes, comments, saves and shares after roughly 24 hours.",
+    "Record DUFYND sessions by acquisition source from first-party analytics.",
+    "Do not declare a format winner from a single post.",
+    "After at least three comparable tests, adjust timing and content mix using DUFYND's own audience data."
+  ],
+  "hard_stops": [
+    "No social publish without explicit operator approval.",
+    "No paid AI generation without explicit operator approval.",
+    "Do not publish the rejected old Sillage/Haltbarkeit or EDP-vs-EDT shorts."
+  ]
+}
