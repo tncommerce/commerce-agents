@@ -1,0 +1,74 @@
+name: DUFYND Naxos Layered Preview
+
+on:
+  push:
+    branches:
+      - dufynd-naxos-layered-preview-20260924
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: examples
+    env:
+      NEXT_PUBLIC_API_URL: https://scentai-api-kxhe.onrender.com
+      NEXT_PUBLIC_SITE_URL: https://dufynd.de
+      NEXT_PUBLIC_SITE_INDEXABLE: "false"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: examples/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build storefront
+        run: npm --workspace retail/storefront-web run build
+
+      - name: Install Chromium
+        run: npx --yes playwright@1.55.0 install --with-deps chromium
+
+      - name: Serve export and capture
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ../naxos-layered-preview
+          npx --yes serve@14.2.5 retail/storefront-web/out -l 3000 > /tmp/dufynd-preview.log 2>&1 &
+          APP_PID=$!
+          trap 'kill $APP_PID || true' EXIT
+
+          for i in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:3000/ >/dev/null; then
+              break
+            fi
+            sleep 1
+          done
+
+          if ! curl --fail http://127.0.0.1:3000/ >/dev/null; then
+            cat /tmp/dufynd-preview.log
+            exit 1
+          fi
+
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --full-page --wait-for-timeout=2500 http://127.0.0.1:3000/ ../naxos-layered-preview/home-desktop.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page --wait-for-timeout=2500 http://127.0.0.1:3000/ ../naxos-layered-preview/home-mobile.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --full-page --wait-for-timeout=2500 http://127.0.0.1:3000/duft ../naxos-layered-preview/catalog-desktop.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page --wait-for-timeout=2500 http://127.0.0.1:3000/duft ../naxos-layered-preview/catalog-mobile.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --full-page --wait-for-timeout=2500 http://127.0.0.1:3000/duft/xerjoff-naxos ../naxos-layered-preview/naxos-desktop.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page --wait-for-timeout=2500 http://127.0.0.1:3000/duft/xerjoff-naxos ../naxos-layered-preview/naxos-mobile.png
+
+      - name: Upload preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: dufynd-naxos-layered-preview
+          path: naxos-layered-preview/
+          if-no-files-found: error
+          retention-days: 1
