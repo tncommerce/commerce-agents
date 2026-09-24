@@ -1,0 +1,105 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-24",
+  "system": "DUFYND",
+  "campaign_id": "launch01_high_end",
+  "launch_date": "2026-09-26",
+  "timezone": "Europe/Berlin",
+  "content_id": "naxos_high_end_01",
+  "title": "Xerjoff Naxos",
+  "state": "prepared_waiting_launch_day_live_checks_and_publish_approval",
+  "publish_authorized": false,
+  "asset": {
+    "archive_filename": "Naxos FINAL(1).mp4",
+    "creative_state": "locked",
+    "rule": "Use the approved frozen master. Do not regenerate or replace the video unless a genuine upload-corruption issue appears."
+  },
+  "landing": {
+    "path": "/parfum-alternativen",
+    "profile_links": {
+      "tiktok": "https://dufynd.de/start?src=tiktok&cmp=launch01_high_end&content=profile",
+      "instagram": "https://dufynd.de/start?src=instagram&cmp=launch01_high_end&content=profile",
+      "youtube": "https://dufynd.de/start?src=youtube&cmp=launch01_high_end&content=profile"
+    },
+    "rule": "Use the stable profile link as the CTA destination. Do not rotate the profile URL per post."
+  },
+  "platforms": {
+    "tiktok": {
+      "target_local_time": "17:00",
+      "caption": "Naxos ist süß, würzig und luxuriös – aber wenn du genau diese Richtung suchst, lohnt sich der Blick auf ähnliche Profile. DUFYND zeigt dir Alternativen, ohne sie einfach als 1:1-Dupe zu verkaufen.",
+      "hashtags": [
+        "#DUFYND",
+        "#Naxos",
+        "#Xerjoff",
+        "#Parfum",
+        "#FragranceTok"
+      ],
+      "cta": "Alternativen über den Link im Profil.",
+      "audio_rule": "Preserve the approved master audio. Add a native sound only if it clearly improves the post and does not fight the edit.",
+      "cover_rule": "Choose a clean product-forward frame from the approved master. Reject any automatic crop that cuts the bottle, label, or key composition.",
+      "account_checks": [
+        "Confirm TikTok public branding is DUFYND before publishing.",
+        "Verify the stable DUFYND /start profile link is present and clickable.",
+        "Preview the full upload on mobile with UI overlays visible."
+      ]
+    },
+    "instagram": {
+      "target_local_time": "21:00",
+      "caption": "Xerjoff Naxos als Duftprofil: süß, würzig, gourmandig und sehr präsent. Bei DUFYND kannst du die Richtung mit günstigeren Alternativen vergleichen – transparent nach Profil und Beziehung.",
+      "hashtags": [
+        "#DUFYND",
+        "#Naxos",
+        "#Xerjoff",
+        "#Parfum",
+        "#Fragrance"
+      ],
+      "cta": "Alternativen über den Link im Profil.",
+      "audio_rule": "Preserve the approved master audio. Add native audio only if it improves the Reel without weakening the premium edit.",
+      "cover_rule": "Use a clean hero frame with the bottle fully readable in the Reel grid crop and full-screen preview.",
+      "account_checks": [
+        "Confirm DUFYND branding and profile image are still correct.",
+        "Verify the stable DUFYND /start profile link is present and clickable.",
+        "Preview the Reel grid crop and full-screen mobile crop before publishing."
+      ]
+    },
+    "youtube": {
+      "target_local_time": "19:00",
+      "title": "Xerjoff Naxos – welche Richtung passt zu dir? | DUFYND",
+      "description": "Ein hochwertiger Naxos-Visual mit direktem Einstieg in den DUFYND Vergleich. Entdecke ähnliche Duftprofile und ihre Unterschiede statt pauschaler 1:1-Versprechen.",
+      "cta": "DUFYND über den Link im Kanalprofil öffnen.",
+      "audio_rule": "Preserve the approved master audio unless YouTube's upload preview reveals a technical audio issue.",
+      "cover_rule": "Use the strongest product-forward frame available in the Short preview; avoid a frame with obscured bottle detail.",
+      "account_checks": [
+        "Confirm DUFYND channel branding and profile image are correct.",
+        "Verify the channel-profile DUFYND /start link is present and clickable.",
+        "Do not rely on a raw external URL in the Short description as the primary CTA."
+      ]
+    }
+  },
+  "execution_order": [
+    "Complete TikTok rebrand/live-brand check on or after 2026-09-26.",
+    "Verify the stable DUFYND /start profile link on TikTok, Instagram and YouTube.",
+    "Upload the locked Naxos master to the first platform and verify native mobile crop, cover and audio.",
+    "Repeat the same native preview checks for the remaining platforms.",
+    "Confirm prepared channel-native copy and CTA match the platform.",
+    "Stop before pressing Publish and request explicit operator approval.",
+    "After approval, publish according to the benchmark schedule unless the operator changes the timing.",
+    "Record native and first-party acquisition metrics after roughly 24 hours."
+  ],
+  "hard_stops": [
+    "No public publish without explicit operator approval.",
+    "No paid AI generation.",
+    "No regeneration of the locked Naxos master for a cosmetic preference.",
+    "Do not publish the rejected legacy Sillage/Haltbarkeit or EDP-vs-EDT shorts."
+  ],
+  "measurement_after_24h": [
+    "native views or reach",
+    "average watch time or retention where available",
+    "likes",
+    "comments",
+    "saves",
+    "shares",
+    "DUFYND sessions by acquisition source",
+    "advisor/comparison starts where available"
+  ]
+}
