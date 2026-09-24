@@ -36,11 +36,7 @@ def collect_local_product_images(value: object) -> set[str]:
             return
 
         for key, item in node.items():
-            if (
-                key in IMAGE_FIELDS
-                and isinstance(item, str)
-                and item.startswith("/products/")
-            ):
+            if key in IMAGE_FIELDS and isinstance(item, str) and item.startswith("/products/"):
                 refs.add(item)
             walk(item)
 
@@ -66,12 +62,8 @@ def test_all_referenced_local_product_images_exist_and_decode() -> None:
             with Image.open(image_path) as image:
                 image.load()
                 if image.width <= 0 or image.height <= 0:
-                    failures.append(
-                        f"{image_ref}: invalid dimensions {image.width}x{image.height}"
-                    )
+                    failures.append(f"{image_ref}: invalid dimensions {image.width}x{image.height}")
         except Exception as exc:
-            failures.append(
-                f"{image_ref}: image decode failed ({type(exc).__name__}: {exc})"
-            )
+            failures.append(f"{image_ref}: image decode failed ({type(exc).__name__}: {exc})")
 
     assert not failures, "Broken referenced product assets:\n" + "\n".join(failures)
