@@ -110,6 +110,9 @@ export default function FragranceModel3D({
         reveal: "auto",
         className: "dufynd-model-viewer",
       })}
+      <div className="dufynd-model-hint" aria-hidden>
+        Ziehen zum Drehen
+      </div>
     </div>
   );
 }
