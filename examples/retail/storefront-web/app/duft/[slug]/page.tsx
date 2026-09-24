@@ -61,7 +61,7 @@ function targetLabel(value: string): string {
 function relatedLabel(kind: RelatedFragranceKind): string {
   return {
     clone: "Sehr naher Duftstil",
-    inspired: "Inspiriert",
+    inspired: "Ähnlicher Duftstil",
     alternative: "Alternative",
     same_cluster: "Gleiche Duftfamilie",
     similar_profile: "Ähnliches Duftprofil",
@@ -267,7 +267,7 @@ export default async function FragrancePage({
   ).replaceAll("<", "\\u003c");
 
   return (
-    <main className="min-h-screen bg-(--surface) text-(--ink)">
+    <main className="min-h-screen bg-(--surface) pb-24 text-(--ink) sm:pb-0">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: breadcrumbJson }}
@@ -327,150 +327,149 @@ export default async function FragrancePage({
           </span>
         </nav>
 
-        <section className="grid gap-4 sm:gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="mx-auto w-full max-w-[280px] overflow-hidden rounded-[28px] border border-(--line) shadow-(--shadow) sm:max-w-[350px] lg:mx-0 lg:max-w-none">
-            <FragranceVisual
-              imageUrl={fragrance.image_url}
-              alt={`${fragrance.brand} ${fragrance.name}`}
-              variant="hero"
-              className="aspect-square w-full"
-              priority
-            />
-          </div>
-
-          <div className="flex flex-col justify-center">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-(--ink-soft)">
-              {fragrance.brand}
-            </div>
-            <h1 className="mt-2 text-[32px] font-semibold leading-[1.08] tracking-[-0.035em] sm:text-[42px]">
-              {fragrance.name}
-            </h1>
-
-            <div className="mt-3 flex flex-wrap gap-1.5 text-[11px] text-(--ink-soft) sm:gap-2 sm:text-[12px]">
-              <span className="rounded-full border border-(--line) bg-(--card) px-2.5 py-1.5 sm:px-3">
-                {fragrance.concentration}
-              </span>
-              <span className="rounded-full border border-(--line) bg-(--card) px-2.5 py-1.5 sm:px-3">
-                {fragrance.volume_ml} ml
-              </span>
-              {fragrance.target_groups.map((group) => (
-                <span
-                  key={group}
-                  className="rounded-full border border-(--line) bg-(--card) px-2.5 py-1.5 sm:px-3"
-                >
-                  {targetLabel(group)}
-                </span>
-              ))}
-              {fragrance.release_year ? (
-                <span className="rounded-full border border-(--line) bg-(--card) px-2.5 py-1.5 sm:px-3">
-                  Seit {fragrance.release_year}
-                </span>
+        <section className="overflow-hidden rounded-[30px] border border-(--line) bg-(--card) shadow-(--shadow)">
+          <div className="grid lg:grid-cols-[0.94fr_1.06fr]">
+            <div className="dufynd-editorial-media relative min-h-[330px] overflow-hidden bg-[#eee7da] sm:min-h-[430px] lg:min-h-[520px]">
+              {fragrance.image_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={fragrance.image_url}
+                  alt={`${fragrance.brand} ${fragrance.name}`}
+                  fetchPriority="high"
+                  decoding="async"
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
               ) : null}
-            </div>
-
-            <div className="mt-4 grid grid-cols-2 gap-2 sm:mt-5 sm:flex sm:flex-wrap sm:gap-2.5">
-              <a
-                href="#angebote"
-                className="rounded-xl bg-(--accent) px-3 py-2.5 text-center text-[12px] font-semibold text-white transition-opacity hover:opacity-90 sm:px-4 sm:text-[13px]"
-              >
-                Aktuelle Angebote prüfen
-              </a>
-              {related.length ? (
-                <a
-                  href="#alternativen"
-                  className="rounded-xl border border-(--line) bg-(--card) px-3 py-2.5 text-center text-[12px] font-semibold text-(--ink) transition hover:border-(--ink) sm:px-4 sm:text-[13px]"
-                >
-                  Alternativen ansehen
-                </a>
-              ) : null}
-            </div>
-
-            <div className="mt-3">
-              <FragranceSaveControls
-                productId={fragrance.product_id}
-                compact
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_64%,rgba(23,21,19,0.14))]"
               />
-              <p className="mt-1.5 text-[10.5px] leading-4 text-(--ink-soft)">
-                Merkliste und Sammlung werden nur lokal auf diesem Gerät gespeichert.
-              </p>
             </div>
 
-            <div className="mt-2 text-[10.5px] leading-4 text-(--ink-soft)">
-              DUFYND verkauft nicht selbst. Kauf und Versand erfolgen beim
-              jeweiligen Händler.
-            </div>
+            <div className="flex flex-col justify-center p-5 sm:p-7 lg:p-9">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-(--accent-ink)">
+                {fragrance.brand}
+              </div>
+              <h1 className="mt-2 text-[34px] font-semibold leading-[1.02] tracking-[-0.045em] sm:text-[46px]">
+                {fragrance.name}
+              </h1>
 
-            <div className="mt-4 grid grid-cols-3 gap-2 sm:mt-6 sm:gap-3">
-              <div className="rounded-2xl border border-(--line) bg-(--card) p-3 sm:p-4">
-                <div className="text-[11px] text-(--ink-soft)">
-                  Community
+              <div className="mt-4 flex flex-wrap gap-1.5 text-[11px] text-(--ink-soft) sm:gap-2 sm:text-[12px]">
+                <span className="rounded-full border border-(--line) bg-(--surface) px-2.5 py-1.5 sm:px-3">
+                  {fragrance.concentration}
+                </span>
+                <span className="rounded-full border border-(--line) bg-(--surface) px-2.5 py-1.5 sm:px-3">
+                  {fragrance.volume_ml} ml
+                </span>
+                {fragrance.target_groups.map((group) => (
+                  <span
+                    key={group}
+                    className="rounded-full border border-(--line) bg-(--surface) px-2.5 py-1.5 sm:px-3"
+                  >
+                    {targetLabel(group)}
+                  </span>
+                ))}
+                {fragrance.release_year ? (
+                  <span className="rounded-full border border-(--line) bg-(--surface) px-2.5 py-1.5 sm:px-3">
+                    Seit {fragrance.release_year}
+                  </span>
+                ) : null}
+              </div>
+
+              <div className="mt-5 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-2.5">
+                <a
+                  href="#angebote"
+                  className="rounded-xl bg-(--accent-strong) px-3 py-2.5 text-center text-[12px] font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:brightness-95 sm:px-4 sm:text-[13px]"
+                >
+                  Angebote prüfen
+                </a>
+                {related.length ? (
+                  <a
+                    href="#alternativen"
+                    className="rounded-xl border border-(--line-strong) bg-(--surface) px-3 py-2.5 text-center text-[12px] font-semibold text-(--ink) transition hover:border-(--ink) sm:px-4 sm:text-[13px]"
+                  >
+                    Alternativen ansehen
+                  </a>
+                ) : null}
+              </div>
+
+              <div className="mt-4">
+                <FragranceSaveControls
+                  productId={fragrance.product_id}
+                  compact
+                />
+              </div>
+
+              <div className="mt-5 grid grid-cols-3 overflow-hidden rounded-2xl border border-(--line) bg-(--surface)">
+                <div className="p-3 sm:p-4">
+                  <div className="text-[10.5px] text-(--ink-soft)">
+                    Community
+                  </div>
+                  <div className="mt-1 text-[19px] font-semibold tracking-[-0.03em] sm:text-[22px]">
+                    {fragrance.community.rating_10 != null
+                      ? `${fragrance.community.rating_10.toLocaleString(
+                          "de-DE",
+                          {
+                            minimumFractionDigits: 1,
+                            maximumFractionDigits: 1,
+                          },
+                        )}/10`
+                      : "–"}
+                  </div>
                 </div>
-                <div className="mt-1 text-[20px] font-semibold sm:text-[22px]">
-                  {fragrance.community.rating_10 != null
-                    ? `${fragrance.community.rating_10.toLocaleString(
-                        "de-DE",
-                        {
-                          minimumFractionDigits: 1,
-                          maximumFractionDigits: 1,
-                        },
-                      )}/10`
-                    : "–"}
+
+                <div className="border-l border-(--line) p-3 sm:p-4">
+                  <div className="text-[10.5px] text-(--ink-soft)">
+                    Haltbarkeit
+                  </div>
+                  <div className="mt-1 text-[19px] font-semibold tracking-[-0.03em] sm:text-[22px]">
+                    {fragrance.community.longevity_10 != null
+                      ? fragrance.community.longevity_10.toLocaleString(
+                          "de-DE",
+                          {
+                            minimumFractionDigits: 1,
+                            maximumFractionDigits: 1,
+                          },
+                        )
+                      : "–"}
+                  </div>
                 </div>
-                <div className="mt-0.5 hidden text-[10.5px] text-(--ink-soft) sm:block">
+
+                <div className="border-l border-(--line) p-3 sm:p-4">
+                  <div className="text-[10.5px] text-(--ink-soft)">
+                    Ausstrahlung
+                  </div>
+                  <div className="mt-1 text-[19px] font-semibold tracking-[-0.03em] sm:text-[22px]">
+                    {fragrance.community.projection_10 != null
+                      ? fragrance.community.projection_10.toLocaleString(
+                          "de-DE",
+                          {
+                            minimumFractionDigits: 1,
+                            maximumFractionDigits: 1,
+                          },
+                        )
+                      : "–"}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[10.5px] leading-4 text-(--ink-soft)">
+                <span>
                   {fragrance.community.source}
                   {fragrance.community.rating_count
                     ? ` · ${fragrance.community.rating_count.toLocaleString(
                         "de-DE",
                       )} Bewertungen`
                     : ""}
-                </div>
+                </span>
+                <span aria-hidden>·</span>
+                <span>Community-Werte, keine Laborwerte</span>
               </div>
 
-              <div className="rounded-2xl border border-(--line) bg-(--card) p-3 sm:p-4">
-                <div className="text-[11px] text-(--ink-soft)">
-                  Haltbarkeit
-                </div>
-                <div className="mt-1 text-[20px] font-semibold sm:text-[22px]">
-                  {fragrance.community.longevity_10 != null
-                    ? fragrance.community.longevity_10.toLocaleString(
-                        "de-DE",
-                        {
-                          minimumFractionDigits: 1,
-                          maximumFractionDigits: 1,
-                        },
-                      )
-                    : "–"}
-                </div>
-                <div className="mt-0.5 hidden text-[10.5px] text-(--ink-soft) sm:block">
-                  Community-Skala 0–10
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-(--line) bg-(--card) p-3 sm:p-4">
-                <div className="text-[11px] text-(--ink-soft)">
-                  Ausstrahlung
-                </div>
-                <div className="mt-1 text-[20px] font-semibold sm:text-[22px]">
-                  {fragrance.community.projection_10 != null
-                    ? fragrance.community.projection_10.toLocaleString(
-                        "de-DE",
-                        {
-                          minimumFractionDigits: 1,
-                          maximumFractionDigits: 1,
-                        },
-                      )
-                    : "–"}
-                </div>
-                <div className="mt-0.5 hidden text-[10.5px] text-(--ink-soft) sm:block">
-                  Community-Skala 0–10
-                </div>
-              </div>
+              <p className="mt-4 text-[10.5px] leading-4 text-(--ink-soft)">
+                DUFYND verkauft nicht selbst. Kauf und Versand erfolgen beim jeweiligen Händler.
+              </p>
             </div>
-
-            <p className="mt-5 hidden max-w-2xl text-[13px] leading-5 text-(--ink-soft) sm:block">
-              Community-Werte beschreiben Nutzerbewertungen und sind keine
-              objektiv gemessenen Stunden- oder Meterangaben.
-            </p>
           </div>
         </section>
 
@@ -727,6 +726,25 @@ export default async function FragrancePage({
             Datenschutz
           </a>
         </footer>
+      </div>
+
+      <div className="dufynd-mobile-offer-bar fixed inset-x-0 bottom-0 z-40 border-t border-(--line) bg-(--card)/94 px-3 pt-2.5 shadow-[0_-10px_30px_rgba(23,21,19,0.10)] backdrop-blur-xl sm:hidden">
+        <div className="mx-auto flex max-w-[420px] items-center gap-3">
+          <div className="min-w-0 flex-1">
+            <div className="truncate text-[11px] font-semibold text-(--ink)">
+              {fragrance.brand} {fragrance.name}
+            </div>
+            <div className="text-[10px] text-(--ink-soft)">
+              Händlerangebote vergleichen
+            </div>
+          </div>
+          <a
+            href="#angebote"
+            className="shrink-0 rounded-xl bg-(--accent-strong) px-4 py-2.5 text-[12px] font-semibold text-white"
+          >
+            Angebote prüfen
+          </a>
+        </div>
       </div>
     </main>
   );
