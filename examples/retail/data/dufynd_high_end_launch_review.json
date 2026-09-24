@@ -1,9 +1,9 @@
 {
-  "version": 4,
+  "version": 5,
   "reviewed_at": "2026-09-24",
   "system": "DUFYND",
   "gate_id": "high_end_launch_review_20260924",
-  "state": "mobile_launch_buffer_review_passed_publish_gate_pending",
+  "state": "prepublish_prepared_launch_day_live_checks_pending",
   "automatic_publish_allowed": false,
   "paid_generation_authorized": false,
   "quality_floor": "Naxos-level premium visual quality",
@@ -24,8 +24,9 @@
       "operator_status": "approved_frozen",
       "visual_qc": "passed",
       "remaining_before_publish": [
+        "profile_link_live_check",
         "channel_native_sound_or_audio_check",
-        "caption_and_tracking_link_check",
+        "native_mobile_upload_and_cover_check",
         "explicit_publish_approval"
       ]
     },
@@ -36,8 +37,9 @@
       "operator_status": "approved_frozen",
       "visual_qc": "passed",
       "remaining_before_publish": [
+        "profile_link_live_check",
         "channel_native_sound_or_audio_check",
-        "caption_and_tracking_link_check",
+        "native_mobile_upload_and_cover_check",
         "explicit_publish_approval"
       ]
     },
@@ -68,8 +70,9 @@
         ]
       },
       "remaining_before_publish": [
+        "profile_link_live_check",
         "channel_native_sound_or_audio_check",
-        "caption_and_tracking_link_check",
+        "native_mobile_upload_and_cover_check",
         "explicit_publish_approval"
       ]
     },
@@ -102,8 +105,9 @@
         "new_paid_generation_required": false
       },
       "remaining_before_publish": [
+        "profile_link_live_check",
         "platform_native_sound_selection",
-        "caption_and_tracking_link_check",
+        "native_mobile_upload_and_cover_check",
         "explicit_publish_approval"
       ]
     },
@@ -120,7 +124,8 @@
       "archive_folder": "/DUFYND/Launch Content/Carousel 01 - Clone Inspired Alternative",
       "visual_qc": "accepted_for_launch_education_use",
       "remaining_before_publish": [
-        "caption_and_tracking_link_check",
+        "profile_link_live_check",
+        "native_mobile_upload_and_cover_check",
         "explicit_publish_approval"
       ]
     }
@@ -176,7 +181,17 @@
     {
       "decision_id": "one_million_topaz_final_qc",
       "resolution": "passed_and_frozen_as_final_master"
+    },
+    {
+      "decision_id": "pre_publish_preparation",
+      "resolution": "tracking routes, prepared channel copy and launch-buffer mobile QC completed; latest live production smoke passed 14/14 including /start, /duftfinder and /parfum-alternativen"
     }
   ],
-  "next_action": "perform_channel_native_pre_publish_checks_then_request_explicit_publish_approval"
+  "next_action": "launch_day_rebrand_and_live_checks_then_request_publish_approval",
+  "pre_publish_preparation": {
+    "status": "completed",
+    "checklist": "examples/retail/data/dufynd_high_end_pre_publish_checklist.json",
+    "completed_at": "2026-09-24",
+    "remaining_scope": "live social-account placement, launch-day native audio/upload preview and explicit publish approval"
+  }
 }
