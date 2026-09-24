@@ -1,0 +1,63 @@
+name: DUFYND Naxos Master Decode
+
+on:
+  push:
+    branches:
+      - dufynd-offers-3d-look-20260924
+
+permissions:
+  contents: write
+
+jobs:
+  decode:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: dufynd-offers-3d-look-20260924
+
+      - name: Decode and verify approved Naxos campaign master
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat             .tmp/naxos-master/part01.b64             .tmp/naxos-master/part02.b64             .tmp/naxos-master/part03-04.b64             .tmp/naxos-master/part05-06.b64             > /tmp/naxos-master.b64
+
+          test "$(wc -c < /tmp/naxos-master.b64 | tr -d ' ')" = "88640"
+
+          base64 -d /tmp/naxos-master.b64             > examples/retail/storefront-web/public/products/pilot/xerjoff-naxos-campaign-master.webp
+
+          file examples/retail/storefront-web/public/products/pilot/xerjoff-naxos-campaign-master.webp
+
+          ACTUAL_SHA="$(sha256sum examples/retail/storefront-web/public/products/pilot/xerjoff-naxos-campaign-master.webp | awk '{print $1}')"
+          EXPECTED_SHA="d3ade7b956613196c9c878bb66e5c821fba41dde510e26c1f1a78ae749714721"
+
+          echo "Naxos master SHA256: $ACTUAL_SHA"
+          test "$ACTUAL_SHA" = "$EXPECTED_SHA"
+
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          path = Path("examples/retail/storefront-web/public/products/pilot/xerjoff-naxos-campaign-master.webp")
+          with Image.open(path) as im:
+              print("Naxos master:", im.format, im.size, im.mode)
+              assert im.format == "WEBP"
+              assert im.size == (900, 507)
+          PY
+
+      - name: Remove transfer scaffolding
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf .tmp/naxos-master
+          rm -f .github/workflows/dufynd-naxos-master-decode.yml
+
+      - name: Commit verified binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add             examples/retail/storefront-web/public/products/pilot/xerjoff-naxos-campaign-master.webp             .tmp/naxos-master             .github/workflows/dufynd-naxos-master-decode.yml
+          git commit -m "Replace Naxos campaign master with verified WebP"
+          git push origin HEAD:dufynd-offers-3d-look-20260924
