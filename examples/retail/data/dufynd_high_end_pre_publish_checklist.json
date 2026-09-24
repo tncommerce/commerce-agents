@@ -1,13 +1,13 @@
 {
-  "version": 2,
+  "version": 3,
   "updated_at": "2026-09-24",
   "system": "DUFYND",
   "campaign_id": "launch01_high_end",
-  "state": "prelaunch_ready_waiting_launch_day_live_checks",
+  "state": "prepublish_prepared_waiting_platform_account_checks_and_publish_approval",
   "automatic_publish_allowed": false,
   "paid_generation_required": false,
   "tracking_qc": {
-    "status": "passed_code_level",
+    "status": "passed_code_and_live_route_level",
     "link_count": 14,
     "video_channel_rule": "Each of the four video creatives has TikTok, Instagram and YouTube attribution links.",
     "carousel_channel_rule": "The education carousel has TikTok and Instagram attribution links only.",
@@ -16,10 +16,23 @@
       "cmp",
       "content"
     ],
-    "landing_capture": "AcquisitionLanding mounts AcquisitionAnalytics; supported social sources are retained in session attribution and attached to first-party analytics events."
+    "landing_capture": "AcquisitionLanding mounts AcquisitionAnalytics; supported social sources are retained in session attribution and attached to first-party analytics events.",
+    "live_route_verification": {
+      "checked_at": "2026-09-24",
+      "source": "DUFYND Production Smoke",
+      "branch": "scentai-mvp",
+      "commit": "42610082058af83524c9986925594e65b0e447b8",
+      "result": "14/14 passed",
+      "verified_paths": [
+        "/start",
+        "/duftfinder",
+        "/parfum-alternativen"
+      ],
+      "note": "Live storefront routes are reachable and branded as DUFYND. Actual placement of profile links inside TikTok, Instagram and YouTube still requires account-level verification."
+    }
   },
   "copy_qc": {
-    "status": "passed",
+    "status": "passed_ready_for_channel_native_use",
     "rules": [
       "No unsupported similarity percentages.",
       "No best-of or universal ranking claims.",
@@ -27,7 +40,8 @@
       "No price claims in the five-core launch wave.",
       "Affiliate commission does not affect editorial ordering."
     ],
-    "source_file": "examples/retail/data/dufynd_high_end_social_copy.json"
+    "source_file": "examples/retail/data/dufynd_high_end_social_copy.json",
+    "cta_rule": "TikTok and Instagram use profile-link CTA; YouTube Shorts uses the channel-profile link rather than relying on a raw external URL in the Short description."
   },
   "launch_slots": [
     {
@@ -109,7 +123,9 @@
       "Use the prepared channel-specific copy and profile-link CTA.",
       "Verify the correct final asset and mobile cover frame.",
       "Do not publish any excluded legacy short."
-    ]
+    ],
+    "status": "not_yet_requested",
+    "reason": "All preparatory checks that can be completed without entering the live social accounts are complete. Remaining checks depend on the platform account state or the actual upload context."
   },
   "profile_link_qc": {
     "status": "prepared_waiting_live_profile_check",
@@ -118,5 +134,56 @@
     "rule": "Use stable channel-profile links for the main CTA. Keep content-specific tracked URLs only for verified clickable surfaces.",
     "youtube_shorts_note": "Normal external URLs in YouTube Shorts descriptions/comments are not clickable; use the channel profile link instead."
   },
-  "launch_runbook": "examples/retail/data/dufynd_launch_day_runbook.json"
+  "launch_runbook": "examples/retail/data/dufynd_launch_day_runbook.json",
+  "audio_qc": {
+    "status": "prepared_publish_time_selection_required",
+    "rules": [
+      "Naxos: preserve approved master audio; add native sound only if it improves the post without fighting the edit.",
+      "Bois Impérial: preserve locked master audio and edit; do not regenerate.",
+      "Rabanne 1 Million: preserve locked Topaz/social master audio; accepted source imperfection is not a regeneration trigger.",
+      "YSL Libre: use the approved silent visual and select current licensed/platform-native audio at publish time.",
+      "Relationship-label carousel: no baked audio required for Instagram; TikTok photo mode may use native sound only if it supports educational pacing."
+    ],
+    "paid_generation_required": false
+  },
+  "mobile_qc": {
+    "status": "passed_for_launch_buffer",
+    "source": "examples/retail/data/dufynd_high_end_launch_review.json",
+    "creatives_passed": 5,
+    "quality_floor": "Naxos-level premium visual quality",
+    "note": "Final per-platform upload/cover preview remains a launch-day check because platform cropping and UI overlays must be inspected in the native app before publishing."
+  },
+  "remaining_external_checks": [
+    {
+      "check": "tiktok_rebrand",
+      "when": "on_or_after_2026-09-26",
+      "state": "pending_time_gate",
+      "reason": "Confirm TikTok public name/username is DUFYND before first TikTok post."
+    },
+    {
+      "check": "profile_link_placement",
+      "channels": [
+        "tiktok",
+        "instagram",
+        "youtube"
+      ],
+      "state": "pending_account_level_live_check",
+      "reason": "Verify the stable /start URL is actually present and clickable in each live profile surface."
+    },
+    {
+      "check": "platform_native_audio",
+      "state": "pending_publish_context",
+      "reason": "Choose/verify current licensed native sound where applicable immediately before upload."
+    },
+    {
+      "check": "native_mobile_upload_preview",
+      "state": "pending_publish_context",
+      "reason": "Verify final asset, crop and cover frame inside each platform's mobile upload flow."
+    },
+    {
+      "check": "explicit_operator_publish_approval",
+      "state": "pending",
+      "reason": "Hard gate before any public post."
+    }
+  ]
 }
