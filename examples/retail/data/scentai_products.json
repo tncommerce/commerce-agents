@@ -91,7 +91,18 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/louis-vuitton-imagination-editorial.png"
+      "image_url": "/products/pilot/louis-vuitton-imagination-editorial.png",
+      "notes": {
+        "key": [
+          "Ambrox",
+          "Black Tea from China",
+          "Tunisian Neroli",
+          "Sicilian Cedar",
+          "Calabrian Bergamot",
+          "Nigerian Ginger",
+          "Ceylon Cinnamon"
+        ]
+      }
     },
     {
       "product_id": "SC-ARABIYAT-MARWA-EDP-100",
