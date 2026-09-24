@@ -1,0 +1,42 @@
+name: DUFYND Live Visual Audit
+
+on:
+  push:
+    branches:
+      - dufynd-visual-audit-20260924
+
+permissions:
+  contents: read
+
+jobs:
+  screenshots:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Playwright Chromium
+        run: npx --yes playwright@1.55.0 install --with-deps chromium
+
+      - name: Capture live DUFYND screenshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p visual-audit
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --full-page --wait-for-timeout=3000 https://dufynd.de visual-audit/home-desktop.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --device="iPhone 13" --full-page --wait-for-timeout=3000 https://dufynd.de visual-audit/home-mobile.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --full-page --wait-for-timeout=3000 https://dufynd.de/duft visual-audit/catalog-desktop.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --device="iPhone 13" --full-page --wait-for-timeout=3000 https://dufynd.de/duft visual-audit/catalog-mobile.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --full-page --wait-for-timeout=3000 https://dufynd.de/duft/xerjoff-naxos visual-audit/naxos-desktop.png
+          npx --yes playwright@1.55.0 screenshot --browser=chromium --device="iPhone 13" --full-page --wait-for-timeout=3000 https://dufynd.de/duft/xerjoff-naxos visual-audit/naxos-mobile.png
+
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: dufynd-live-visual-audit
+          path: visual-audit/
+          if-no-files-found: error
+          retention-days: 1
