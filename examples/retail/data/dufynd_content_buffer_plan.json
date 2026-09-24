@@ -50,7 +50,11 @@
     "high_end_near_final_drafts": 1,
     "effective_launch_candidates_before_mobile_review": 3,
     "gap_to_minimum_publish_ready_target": 2,
-    "high_end_rebuild_required": 2
+    "high_end_rebuild_required": 2,
+    "high_end_internal_review_file": "examples/retail/data/dufynd_high_end_launch_review.json",
+    "high_end_ysl_internal_visual_qc": "passed_sampled_frames_operator_acceptance_pending",
+    "maximum_publish_ready_after_current_review": 4,
+    "gap_to_minimum_publish_ready_after_ysl_acceptance": 1
   },
   "launch_wave": [
     {
@@ -174,8 +178,16 @@
   },
   "next_no_spend_completion": {
     "content_id": "ysl_libre_high_end_01",
-    "current_state": "render_complete_audio_and_final_qc_pending",
-    "objective": "Complete YSL Libre from the existing accepted visual render by finishing audio/sound and final QC without replacing the visual.",
-    "stop_condition": "If completion requires paid generation or replacement visual footage, request explicit operator approval before spending."
+    "current_state": "internal_visual_qc_passed_operator_acceptance_pending",
+    "objective": "Present YSL Libre for operator acceptance and keep the silent master for platform-native sound selection close to publication.",
+    "stop_condition": "Do not publish, purchase audio, or generate replacement visuals without explicit operator approval."
+  },
+  "operator_gate": {
+    "review_file": "examples/retail/data/dufynd_high_end_launch_review.json",
+    "decisions": [
+      "ysl_visual_acceptance",
+      "launch_with_up_to_four_or_require_fifth_creative",
+      "publish_approval_after_channel_native_checks"
+    ]
   }
 }
