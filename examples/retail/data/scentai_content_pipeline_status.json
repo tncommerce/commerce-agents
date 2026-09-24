@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-24T12:47:16+00:00",
-  "source_fingerprint_sha256": "f76fea28a4fa87ba34e8621fe3c40df6d2080d9e3f20174d6ed9f2e16e054879",
+  "generated_at": "2026-09-24T13:02:49+00:00",
+  "source_fingerprint_sha256": "018db17684b48c0938cb459c8990f608a8d3b37ea67c059ea6579281bbaff96b",
   "system": "DUFYND",
   "domain": "content",
   "pipeline_id": "launch_content_pipeline_v1",
