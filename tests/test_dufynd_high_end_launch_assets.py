@@ -11,6 +11,7 @@ STRATEGY = DATA_DIR / "dufynd_content_strategy.json"
 CAROUSEL = DATA_DIR / "dufynd_launch_carousel_01.json"
 LINKS = DATA_DIR / "dufynd_high_end_launch_links.json"
 SOCIAL_COPY = DATA_DIR / "dufynd_high_end_social_copy.json"
+CHECKLIST = DATA_DIR / "dufynd_high_end_pre_publish_checklist.json"
 
 
 def load_json(path: Path) -> dict:
@@ -178,3 +179,34 @@ def test_mobile_review_records_five_publish_ready_creatives() -> None:
     assert buffer["inventory_snapshot"]["publish_ready_core_creatives_after_mobile_review"] == 5
     assert buffer["inventory_snapshot"]["high_end_final_assets_pending_mobile_review"] == 0
     assert buffer["inventory_snapshot"]["mobile_launch_buffer_review"] == "passed"
+
+
+def test_pre_publish_checklist_covers_five_core_slots() -> None:
+    checklist = load_json(CHECKLIST)
+
+    assert checklist["state"] == "prepared_waiting_explicit_publish_approval"
+    assert checklist["automatic_publish_allowed"] is False
+    assert checklist["paid_generation_required"] is False
+    assert checklist["tracking_qc"]["status"] == "passed_code_level"
+    assert checklist["tracking_qc"]["link_count"] == 14
+    assert len(checklist["launch_slots"]) == 5
+    assert checklist["final_gate"]["required"] == "explicit_operator_publish_approval"
+
+    ids = {row["content_id"] for row in checklist["launch_slots"]}
+    assert ids == {
+        "naxos_high_end_01",
+        "bois_imperial_high_end_01",
+        "one_million_example61_01",
+        "ysl_libre_high_end_01",
+        "relationship_labels_carousel_01",
+    }
+
+
+def test_pre_publish_checklist_keeps_rejected_legacy_shorts_out() -> None:
+    checklist = load_json(CHECKLIST)
+
+    excluded = {row["content_id"] for row in checklist["rebuild_exclusions"]}
+    slot_ids = {row["content_id"] for row in checklist["launch_slots"]}
+
+    assert excluded == {"sillage_haltbarkeit_01", "edp_vs_edt_01"}
+    assert excluded.isdisjoint(slot_ids)
