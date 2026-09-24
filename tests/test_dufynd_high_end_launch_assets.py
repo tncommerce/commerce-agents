@@ -126,7 +126,7 @@ def test_carousel_is_rendered_for_tiktok_and_instagram_only() -> None:
 def test_launch_review_stops_before_publish_or_spend() -> None:
     review = load_json(REVIEW)
 
-    assert review["state"] == "mobile_launch_buffer_review_passed_publish_gate_pending"
+    assert review["state"] == "prepublish_prepared_launch_day_live_checks_pending"
     assert review["automatic_publish_allowed"] is False
     assert review["paid_generation_authorized"] is False
 
@@ -140,6 +140,7 @@ def test_launch_review_stops_before_publish_or_spend() -> None:
         "mobile_launch_buffer_review",
         "relationship_labels_carousel_acceptance",
         "one_million_topaz_final_qc",
+        "pre_publish_preparation",
     }
 
 
@@ -275,3 +276,17 @@ def test_pre_publish_live_route_evidence_and_remaining_gates() -> None:
         "native_mobile_upload_preview": "pending_publish_context",
         "explicit_operator_publish_approval": "pending",
     }
+
+
+def test_launch_review_removes_completed_copy_and_tracking_checks() -> None:
+    review = load_json(REVIEW)
+
+    assert review["pre_publish_preparation"]["status"] == "completed"
+    assert review["next_action"] == (
+        "launch_day_rebrand_and_live_checks_then_request_publish_approval"
+    )
+
+    for creative in review["creatives"]:
+        remaining = set(creative["remaining_before_publish"])
+        assert "caption_and_tracking_link_check" not in remaining
+        assert "explicit_publish_approval" in remaining
