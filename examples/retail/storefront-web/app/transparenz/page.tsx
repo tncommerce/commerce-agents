@@ -43,11 +43,19 @@ export default function TransparencyPage() {
           </section>
 
           <section>
-            <h2 className="font-semibold text-(--ink)">Partnerlinks</h2>
+            <h2 className="font-semibold text-(--ink)">Partnerangebote und weitere Kaufoptionen</h2>
             <p className="mt-1">
-              Bei entsprechend gekennzeichneten Partnerlinks kann DUFYND eine Provision erhalten,
-              wenn du beim Händler kaufst. Für dich soll sich der Händlerpreis dadurch nicht erhöhen.
-              Kaufvertrag, Zahlung, Versand und Retouren erfolgen direkt über den jeweiligen Händler.
+              In den Händlerangeboten unterscheidet DUFYND sichtbar zwischen
+              <strong> Partnerangeboten</strong> und <strong>weiteren Kaufoptionen</strong>.
+              Bei Partnerangeboten kann DUFYND eine Provision erhalten, wenn du
+              beim Händler kaufst. Weitere Kaufoptionen zeigen wir auch dann,
+              wenn aktuell keine Vergütung an DUFYND erfolgt.
+            </p>
+            <p className="mt-2">
+              Der Beratungswert steht dabei vor der Monetarisierung: Ein sinnvoller
+              Händler- oder Herstellerlink kann deshalb auch ohne Partnerprogramm
+              angezeigt werden. Eine mögliche Provision hat keinen Einfluss auf die
+              Reihenfolge der Händlerangebote.
             </p>
           </section>
 
