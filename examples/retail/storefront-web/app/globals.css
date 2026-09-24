@@ -551,6 +551,8 @@ body {
  * product cutout remains the visual source of truth.
  */
 .dufynd-immersive-hero {
+  --dufynd-hero-x: 68%;
+  --dufynd-hero-y: 34%;
   isolation: isolate;
   background:
     radial-gradient(circle at 68% 34%, rgba(207, 160, 72, 0.10), transparent 24%),
@@ -563,8 +565,8 @@ body {
 
 .dufynd-hero-atmosphere {
   background:
-    radial-gradient(circle at 12% 12%, rgba(219, 171, 78, 0.22), transparent 26%),
-    radial-gradient(circle at 78% 30%, rgba(255, 225, 165, 0.11), transparent 20%),
+    radial-gradient(circle at 12% 12%, rgba(219, 171, 78, 0.20), transparent 26%),
+    radial-gradient(circle at var(--dufynd-hero-x) var(--dufynd-hero-y), rgba(255, 225, 165, 0.15), transparent 22%),
     radial-gradient(circle at 67% 88%, rgba(120, 79, 30, 0.18), transparent 26%),
     linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.025) 52%, transparent 70%);
 }
