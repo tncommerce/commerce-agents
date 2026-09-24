@@ -137,6 +137,7 @@ def test_launch_review_stops_before_publish_or_spend() -> None:
         "launch_buffer_size",
         "mobile_launch_buffer_review",
         "relationship_labels_carousel_acceptance",
+        "one_million_topaz_final_qc",
     }
 
 
