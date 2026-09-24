@@ -1,12 +1,12 @@
 {
   "version": 1,
   "generated_at": "2026-09-24T11:35:16+00:00",
-  "source_fingerprint_sha256": "1e7bbbdbc219b620ba5b704d25cd5bd03d3260f3d61e4d12ddbd765a02e21373",
+  "source_fingerprint_sha256": "e6eb7c3c8bbb881c53a5322346850bda106baa294795878ffc1f71b0943b9bba",
   "system": "DUFYND",
   "control_plane": "commerce_jarvis_master",
   "overall_state": "user_approval_required",
   "active_domain": "content",
-  "next_action": "operator_review_ysl_and_launch_buffer_decision",
+  "next_action": "perform_mobile_launch_buffer_review",
   "next_action_class": "approval_required",
   "user_approval_required_now": true,
   "domains": {
@@ -28,7 +28,7 @@
       "domain": "content",
       "overall_state": "strategy_work_available",
       "execution_state": "user_approval_required",
-      "next_action": "operator_review_ysl_and_launch_buffer_decision",
+      "next_action": "perform_mobile_launch_buffer_review",
       "next_action_class": "approval_required",
       "user_approval_required_now": true,
       "blockers": []
