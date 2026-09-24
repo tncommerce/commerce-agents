@@ -14,21 +14,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Fetch Naxos 3D v2 artifacts
+      - name: Fetch Naxos 3D v3 artifacts
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p naxos-3d
-          curl --fail --location --silent --show-error 'https://695d5a9fc666e505559765690b5db7dd.r2.cloudflarestorage.com/3d-scene-builder/projects/86d8022d-cb70-4e1d-a556-46128c41e4a8/revisions/00000002-naxos-refine-v2/artifacts/bf856a840a0a748b324936080ee0a34c.png?X-Amz-Expires=900&X-Amz-Date=20260924T075902Z&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=f4fb15da414147020cebc9c7007b912d%2F20260924%2Fauto%2Fs3%2Faws4_request&X-Amz-SignedHeaders=host&X-Amz-Signature=cde105bfcb187557b2ea653243c82182550abdabd3eadc0f7b02a3387d6deb14' -o naxos-3d/naxos-3d-pilot-v2.png
-          curl --fail --location --silent --show-error 'https://695d5a9fc666e505559765690b5db7dd.r2.cloudflarestorage.com/3d-scene-builder/projects/86d8022d-cb70-4e1d-a556-46128c41e4a8/revisions/00000002-naxos-refine-v2/preview.glb?X-Amz-Expires=900&X-Amz-Date=20260924T075902Z&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=f4fb15da414147020cebc9c7007b912d%2F20260924%2Fauto%2Fs3%2Faws4_request&X-Amz-SignedHeaders=host&X-Amz-Signature=0f7828ac310cf4362ce9ab737d9a45ae276e5bd24204d40a8192d449a1bb0537' -o naxos-3d/naxos-3d-pilot-v2.glb
-          test -s naxos-3d/naxos-3d-pilot-v2.png
-          test -s naxos-3d/naxos-3d-pilot-v2.glb
+          curl --fail --location --silent --show-error 'https://695d5a9fc666e505559765690b5db7dd.r2.cloudflarestorage.com/3d-scene-builder/projects/86d8022d-cb70-4e1d-a556-46128c41e4a8/revisions/00000003-naxos-refine-v3-ogive/artifacts/f24751d0adb40243cf8a9c2df37111f2.png?X-Amz-Expires=900&X-Amz-Date=20260924T080750Z&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=f4fb15da414147020cebc9c7007b912d%2F20260924%2Fauto%2Fs3%2Faws4_request&X-Amz-SignedHeaders=host&X-Amz-Signature=38b3d0f082ec19ab16284c28f111be3dd3391c96b946908e894b91e5074aae11' -o naxos-3d/naxos-3d-pilot-v3.png
+          curl --fail --location --silent --show-error 'https://695d5a9fc666e505559765690b5db7dd.r2.cloudflarestorage.com/3d-scene-builder/projects/86d8022d-cb70-4e1d-a556-46128c41e4a8/revisions/00000003-naxos-refine-v3-ogive/preview.glb?X-Amz-Expires=900&X-Amz-Date=20260924T080750Z&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=f4fb15da414147020cebc9c7007b912d%2F20260924%2Fauto%2Fs3%2Faws4_request&X-Amz-SignedHeaders=host&X-Amz-Signature=f7a78e8db94d754c66806c5aa107f5f127e08e61722e77956e59cb0206aaeda3' -o naxos-3d/naxos-3d-pilot-v3.glb
+          test -s naxos-3d/naxos-3d-pilot-v3.png
+          test -s naxos-3d/naxos-3d-pilot-v3.glb
           file naxos-3d/*
 
-      - name: Upload Naxos 3D v2
+      - name: Upload Naxos 3D v3
         uses: actions/upload-artifact@v4
         with:
-          name: dufynd-naxos-3d-pilot-v2
+          name: dufynd-naxos-3d-pilot-v3
           path: naxos-3d/
           if-no-files-found: error
           retention-days: 1
