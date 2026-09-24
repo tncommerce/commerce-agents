@@ -1,14 +1,14 @@
 {
   "version": 1,
   "generated_at": "2026-09-24T12:02:19+00:00",
-  "source_fingerprint_sha256": "982799530d900983a627eb61b57ff6fd1f35cfbda515126c1c8d187e90b27210",
+  "source_fingerprint_sha256": "d8ee7cf3f8908bfb6c7ceb685dc56a2876a89e49be3bf3f37f6b6238f9f8d700",
   "system": "DUFYND",
   "control_plane": "commerce_jarvis_master",
-  "overall_state": "user_approval_required",
+  "overall_state": "manual_step_pending",
   "active_domain": "content",
-  "next_action": "perform_mobile_launch_buffer_review",
-  "next_action_class": "approval_required",
-  "user_approval_required_now": true,
+  "next_action": "perform_channel_native_pre_publish_checks_then_request_explicit_publish_approval",
+  "next_action_class": "approval_required_at_publish",
+  "user_approval_required_now": false,
   "domains": {
     "commerce": {
       "domain": "commerce",
@@ -27,10 +27,10 @@
     "content": {
       "domain": "content",
       "overall_state": "strategy_work_available",
-      "execution_state": "user_approval_required",
-      "next_action": "perform_mobile_launch_buffer_review",
-      "next_action_class": "approval_required",
-      "user_approval_required_now": true,
+      "execution_state": "manual_step_pending",
+      "next_action": "perform_channel_native_pre_publish_checks_then_request_explicit_publish_approval",
+      "next_action_class": "approval_required_at_publish",
+      "user_approval_required_now": false,
       "blockers": []
     }
   },
