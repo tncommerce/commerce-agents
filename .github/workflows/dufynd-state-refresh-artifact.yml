@@ -1,0 +1,63 @@
+name: DUFYND State Refresh Artifact
+
+on:
+  push:
+    branches:
+      - dufynd-luxury-commerce-20260924
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  refresh-state:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Refresh derived Jarvis state
+        shell: bash
+        run: |
+          set -euo pipefail
+          GENERATED_AT="$(python - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.loads(Path("examples/retail/data/scentai_jarvis_operations_status.json").read_text())
+          print(data["generated_at"])
+          PY
+          )"
+          python -m scripts.refresh_scentai_jarvis_state --write --generated-at "$GENERATED_AT"
+          python -m scripts.validate_scentai_jarvis_state_graph --machine-readable
+
+      - name: Package refreshed state
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p refreshed-state
+          cp examples/retail/data/scentai_merchant_mapping_work_queue.json refreshed-state/
+          cp examples/retail/data/scentai_affiliate_activation_status.json refreshed-state/
+          cp examples/retail/data/scentai_image_approval_work_queue.json refreshed-state/
+          cp examples/retail/data/scentai_release_01_feed_activation_queue.json refreshed-state/
+          cp examples/retail/data/scentai_release_01_gate_status.json refreshed-state/
+          cp examples/retail/data/scentai_release_pipeline_status.json refreshed-state/
+          cp examples/retail/data/scentai_jarvis_operations_status.json refreshed-state/
+          cp examples/retail/data/scentai_content_operations_status.json refreshed-state/
+          cp examples/retail/data/scentai_content_operations_status_batch02.json refreshed-state/
+          cp examples/retail/data/scentai_content_operations_status_batch03.json refreshed-state/
+          cp examples/retail/data/scentai_content_pipeline_status.json refreshed-state/
+          cp examples/retail/data/scentai_media_generation_queue.json refreshed-state/
+          cp examples/retail/data/scentai_jarvis_master_status.json refreshed-state/
+
+      - name: Upload refreshed state
+        uses: actions/upload-artifact@v4
+        with:
+          name: dufynd-refreshed-state
+          path: refreshed-state/
+          if-no-files-found: error
+          retention-days: 1
