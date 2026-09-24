@@ -1,11 +1,11 @@
 {
-  "version": 1,
+  "version": 2,
   "updated_at": "2026-09-24",
   "system": "DUFYND",
   "campaign_id": "launch01_high_end",
   "content_id": "relationship_labels_carousel_01",
   "format": "carousel",
-  "status": "publish_ready_pending_mobile_review",
+  "status": "accepted_launch_education_slot",
   "objective": "Explain DUFYND's Clone, Inspired and Alternative relationship labels in a compact premium carousel without making unsupported similarity claims.",
   "landing_path": "/parfum-alternativen",
   "language": "de",
@@ -82,5 +82,11 @@
     "tiktok_photo_mode",
     "instagram_carousel"
   ],
-  "youtube_policy": "Do not force this education carousel into YouTube Shorts; use the high-end real-perfume video track for YouTube."
+  "youtube_policy": "Do not force this education carousel into YouTube Shorts; use the high-end real-perfume video track for YouTube.",
+  "operator_review": {
+    "state": "accepted_no_rework",
+    "reviewed_at": "2026-09-24",
+    "positioning": "education_trust_content",
+    "note": "Accepted for launch as an education carousel; example-based V2 remains a future optimization, not a launch blocker."
+  }
 }
