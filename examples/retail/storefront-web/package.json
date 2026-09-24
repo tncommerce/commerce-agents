@@ -16,7 +16,8 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "web-shared": "file:../../web-shared",
-    "sharp": "0.35.4"
+    "sharp": "0.35.4",
+    "@google/model-viewer": "4.3.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.0",
