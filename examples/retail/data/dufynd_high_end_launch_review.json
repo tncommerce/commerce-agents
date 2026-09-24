@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "reviewed_at": "2026-09-24",
   "system": "DUFYND",
   "gate_id": "high_end_launch_review_20260924",
@@ -44,9 +44,29 @@
     {
       "content_id": "one_million_example61_01",
       "title": "Rabanne 1 Million",
-      "status": "locked_final",
-      "operator_status": "approved_locked",
-      "visual_qc": "passed_with_accepted_opening_nozzle_imperfection",
+      "status": "locked_final_topaz",
+      "operator_status": "approved_locked_topaz_final",
+      "visual_qc": {
+        "result": "passed",
+        "scope": "Sampled-frame and technical QC of the uploaded Topaz final.",
+        "technical_profile": {
+          "duration_seconds": 7.042,
+          "width": 2160,
+          "height": 3840,
+          "frame_rate_fps": 24,
+          "video_codec": "h264",
+          "audio_codec": "aac",
+          "audio_present": true,
+          "mean_volume_db": -15.4,
+          "peak_volume_db": -2.7
+        },
+        "observations": [
+          "No new framing, crop, or black-bar issue detected after Topaz.",
+          "Character, hand motion, car interior and final product hero composition remain visually coherent.",
+          "Final product reveal remains sharp and recognizable after upscale.",
+          "Previously accepted opening atomizer/nozzle imperfection remains source-level and was not worsened by Topaz."
+        ]
+      },
       "remaining_before_publish": [
         "channel_native_sound_or_audio_check",
         "caption_and_tracking_link_check",
@@ -152,6 +172,10 @@
     {
       "decision_id": "relationship_labels_carousel_acceptance",
       "resolution": "accepted_for_launch_as_education_slot_without_rework"
+    },
+    {
+      "decision_id": "one_million_topaz_final_qc",
+      "resolution": "passed_and_frozen_as_final_master"
     }
   ],
   "next_action": "perform_channel_native_pre_publish_checks_then_request_explicit_publish_approval"
