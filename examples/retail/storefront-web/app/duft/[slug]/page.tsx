@@ -333,7 +333,6 @@ export default async function FragrancePage({
               <FragranceVisual
                 imageUrl={fragrance.cutout_image_url}
                 cutoutUrl={fragrance.cutout_image_url}
-                backdropUrl={fragrance.image_url}
                 alt={`${fragrance.brand} ${fragrance.name}`}
                 variant="hero"
                 mode="cutout"
