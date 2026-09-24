@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "updated_at": "2026-09-22",
+  "version": 2,
+  "updated_at": "2026-09-24",
   "system": "DUFYND",
   "campaign_id": "launch01",
   "launch_date": "2026-09-26",
@@ -42,7 +42,14 @@
     "final_video_renders_ready": 0,
     "launch_plan_preview_overlap": 14,
     "preview_ready_extra": "budget_three_under_50_01",
-    "scripted_not_previewed": "aventus_alternatives_01"
+    "scripted_not_previewed": "aventus_alternatives_01",
+    "high_end_asset_registry": "examples/retail/data/dufynd_high_end_launch_assets.json",
+    "high_end_final_assets_documented": 4,
+    "high_end_creative_locked": 3,
+    "high_end_final_assets_pending_mobile_review": 4,
+    "high_end_near_final_drafts": 1,
+    "effective_launch_candidates_before_mobile_review": 4,
+    "gap_to_minimum_publish_ready_target": 1
   },
   "launch_wave": [
     {
@@ -139,6 +146,7 @@
     "reason": "Keeps one genuinely new creative in the queue instead of consuming the entire bank before real launch data exists."
   },
   "production_rules": [
+    "Prefer the documented high-end final assets for the first launch wave before falling back to legacy pilot previews.",
     "Use the existing 15 previews before requesting new paid AI-video generation.",
     "Prefer evergreen content for the fixed buffer and reserve price/trend-sensitive posts for adaptive slots.",
     "Publishing remains an explicit operator approval action.",
@@ -161,5 +169,11 @@
       "merchant clickouts only as a downstream signal"
     ],
     "decision_rule": "Do not judge a format from a single post. Prefer at least three comparable tests before materially changing the content mix unless a clear quality or compliance issue appears."
+  },
+  "next_no_spend_completion": {
+    "content_id": "edp_vs_edt_01",
+    "current_state": "draft_present",
+    "objective": "Convert the existing EDP-vs-EDT draft into the fifth publish-ready launch creative without buying new generation credits if the existing material supports the required quality.",
+    "stop_condition": "If finishing it at DUFYND quality requires paid generation or replacement footage, request explicit operator approval before spending."
   }
 }
