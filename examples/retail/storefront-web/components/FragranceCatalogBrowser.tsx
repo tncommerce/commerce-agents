@@ -780,11 +780,6 @@ export default function FragranceCatalogBrowser({
                   <FragranceVisual
                     imageUrl={fragrance.image_url}
                     cutoutUrl={fragrance.cutout_image_url}
-                    backdropUrl={
-                      fragrance.cutout_image_url
-                        ? fragrance.image_url
-                        : null
-                    }
                     alt={`${fragrance.brand} ${fragrance.name}`}
                     variant="card"
                     className="h-52 w-full"
