@@ -113,7 +113,6 @@ def test_master_uses_high_end_rnd_strategy_over_legacy_voiceover() -> None:
     assert report["content_pipeline"]["legacy_pilot_batches"] == "hold"
 
 
-
 def test_master_uses_high_end_launch_strategy_over_legacy_voiceover() -> None:
     commerce = {
         "overall_state": "waiting_external_affiliate_decision",
@@ -152,8 +151,6 @@ def test_master_uses_high_end_launch_strategy_over_legacy_voiceover() -> None:
 
     assert report["overall_state"] == "work_available"
     assert report["active_domain"] == "content"
-    assert report["next_action"] == (
-        "finish_ysl_libre_audio_qc_and_prepare_mobile_launch_review"
-    )
+    assert report["next_action"] == ("finish_ysl_libre_audio_qc_and_prepare_mobile_launch_review")
     assert report["user_approval_required_now"] is False
     assert report["content_pipeline"]["active_track"] == "high_end_launch_buffer"
