@@ -2055,11 +2055,11 @@
       },
       "market": {
         "official_price_eur": 245,
-        "market_price_eur": 141.03,
-        "price_per_ml_eur": 1.4103,
+        "market_price_eur": 148.45,
+        "price_per_ml_eur": 1.4845,
         "german_availability": "high",
         "price_source_count": 3,
-        "price_checked_at": "2026-09-10"
+        "price_checked_at": "2026-09-24"
       },
       "commercial": {
         "retail_demand_proxy": 24,
