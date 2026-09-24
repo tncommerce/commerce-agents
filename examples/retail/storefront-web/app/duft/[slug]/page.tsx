@@ -344,9 +344,6 @@ export default async function FragrancePage({
                 aria-hidden
                 className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_64%,rgba(23,21,19,0.14))]"
               />
-              <div className="absolute bottom-4 left-4 rounded-full border border-white/30 bg-black/20 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/90 backdrop-blur-md">
-                DUFYND Editorial
-              </div>
             </div>
 
             <div className="flex flex-col justify-center p-5 sm:p-7 lg:p-9">
