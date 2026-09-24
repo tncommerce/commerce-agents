@@ -63,15 +63,27 @@ def build_content_pipeline_status(
             }
         )
 
-    legacy_hold = bool(
+    strategy_next_action = str(strategy.get("next_action") or "").strip() if strategy else ""
+    strategy_next_action_class = (
+        str(strategy.get("next_action_class") or "").strip() if strategy else ""
+    )
+    strategy_approval_now = bool(strategy and strategy.get("user_approval_required_now"))
+    active_track = str(strategy.get("active_track") or "").strip() if strategy else ""
+    strategy_selected = bool(
         strategy
-        and strategy.get("active_track") == "high_end_rnd"
+        and active_track
+        and active_track != "legacy_pilot_production"
+        and strategy_next_action
+    )
+    legacy_hold = bool(
+        strategy_selected
+        and active_track == "high_end_rnd"
         and strategy.get("legacy_pilot_batches") == "hold"
     )
 
     current = (
         None
-        if legacy_hold
+        if strategy_selected
         else next(
             (
                 row
@@ -94,15 +106,12 @@ def build_content_pipeline_status(
     pipeline_state = (
         "legacy_batches_on_hold_for_high_end_rnd"
         if legacy_hold
+        else "strategy_work_available"
+        if strategy_selected
         else "production_work_available"
         if current is not None
         else "no_content_batches"
     )
-    strategy_next_action = str(strategy.get("next_action") or "").strip() if strategy else ""
-    strategy_next_action_class = (
-        str(strategy.get("next_action_class") or "").strip() if strategy else ""
-    )
-    strategy_approval_now = bool(strategy and strategy.get("user_approval_required_now"))
 
     return {
         "version": 1,
@@ -119,24 +128,28 @@ def build_content_pipeline_status(
         "legacy_pilot_batches": (strategy.get("legacy_pilot_batches") if strategy else "active"),
         "next_action": (
             strategy_next_action
-            if legacy_hold and strategy_next_action
+            if strategy_selected
             else current.get("next_action")
             if current
             else None
         ),
         "next_action_class": (
             strategy_next_action_class
-            if legacy_hold and strategy_next_action_class
+            if strategy_selected
             else current.get("next_action_class")
             if current
             else None
         ),
         "user_approval_required_now": (
             strategy_approval_now
-            if legacy_hold
+            if strategy_selected
             else bool(current and current.get("user_approval_required_now"))
         ),
-        "production_parallel_allowed": not legacy_hold,
+        "production_parallel_allowed": (
+            bool(strategy.get("production_parallel_allowed", not legacy_hold))
+            if strategy_selected
+            else True
+        ),
         "publish_order": [row["batch_id"] for row in rows],
         "totals": {
             "tracked_links_ready": sum(
@@ -189,9 +202,15 @@ def build_content_pipeline_status(
             "explicit user approval gates."
             if legacy_hold
             else (
-                "Jarvis may prepare batches in parallel, but publish decisions "
-                "remain explicit user approval gates and the declared publish "
-                "order is preserved unless the user changes it."
+                "The declared content strategy controls the active work track. "
+                "Legacy pilot batches remain available as reserve/preproduction work, "
+                "while paid generation and publishing remain explicit approval gates."
+                if strategy_selected
+                else (
+                    "Jarvis may prepare batches in parallel, but publish decisions "
+                    "remain explicit user approval gates and the declared publish "
+                    "order is preserved unless the user changes it."
+                )
             )
         ),
     }
