@@ -739,3 +739,57 @@ body {
     animation: none !important;
   }
 }
+
+
+/* Verified 3D fragrance stage
+ * Loaded only when a product supplies product_model_3d_url.
+ * Static cutout/editorial fallback stays in place until the WebGL viewer is ready.
+ */
+.dufynd-model-stage {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 34%, rgba(222, 178, 93, 0.12), transparent 28%),
+    linear-gradient(145deg, #111214 0%, #090a0c 100%);
+}
+
+.dufynd-model-halo {
+  position: absolute;
+  inset: 12% 10% 8%;
+  pointer-events: none;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(248, 221, 166, 0.14), rgba(184, 137, 52, 0.04) 42%, transparent 70%);
+  filter: blur(18px);
+}
+
+.dufynd-model-viewer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: transparent;
+  --poster-color: transparent;
+  --progress-bar-color: rgba(216, 173, 85, 0.78);
+  --progress-bar-height: 2px;
+}
+
+.dufynd-model-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.025), transparent 24%, transparent 72%, rgba(0,0,0,0.20)),
+    radial-gradient(circle at 50% 88%, rgba(0,0,0,0.24), transparent 26%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dufynd-model-viewer {
+    pointer-events: none;
+  }
+}
