@@ -34,8 +34,10 @@ jobs:
       - name: Build storefront
         run: npm --workspace retail/storefront-web run build
 
-      - name: Install Chromium
-        run: npx --yes playwright@1.55.0 install --with-deps chromium
+      - name: Install Playwright Chromium
+        run: |
+          npm install --no-save --package-lock=false playwright@1.55.0
+          npx playwright install --with-deps chromium
 
       - name: Serve export and capture
         shell: bash
@@ -60,8 +62,67 @@ jobs:
 
           npx --yes playwright@1.55.0 screenshot --browser=chromium --full-page --wait-for-timeout=2500 http://127.0.0.1:3000/ ../naxos-layered-preview/home-desktop.png
           npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page --wait-for-timeout=2500 http://127.0.0.1:3000/ ../naxos-layered-preview/home-mobile.png
-          npx --yes playwright@1.55.0 screenshot --browser=chromium --full-page --wait-for-timeout=2500 http://127.0.0.1:3000/duft ../naxos-layered-preview/catalog-desktop.png
-          npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page --wait-for-timeout=2500 http://127.0.0.1:3000/duft ../naxos-layered-preview/catalog-mobile.png
+          cat > catalog-audit.mjs <<'NODE'
+          import { chromium } from "playwright";
+          import fs from "node:fs";
+
+          const browser = await chromium.launch({ headless: true });
+
+          async function capture(name, viewport) {
+            const context = await browser.newContext({ viewport });
+            const page = await context.newPage();
+            const failures = [];
+            page.on("requestfailed", req => failures.push({
+              url: req.url(),
+              error: req.failure()?.errorText || "unknown",
+            }));
+
+            await page.goto("http://127.0.0.1:3000/duft", {
+              waitUntil: "networkidle",
+              timeout: 60000,
+            });
+
+            await page.evaluate(async () => {
+              const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+              const root = document.scrollingElement;
+              for (let y = 0; y <= root.scrollHeight; y += Math.max(350, window.innerHeight * 0.72)) {
+                window.scrollTo(0, y);
+                await sleep(150);
+              }
+              window.scrollTo(0, 0);
+            });
+            await page.waitForTimeout(1500);
+
+            const images = await page.locator("img").evaluateAll(imgs =>
+              imgs.map(img => ({
+                alt: img.alt,
+                src: img.currentSrc || img.src,
+                complete: img.complete,
+                naturalWidth: img.naturalWidth,
+                naturalHeight: img.naturalHeight,
+              })),
+            );
+            fs.writeFileSync(
+              `../naxos-layered-preview/${name}.json`,
+              JSON.stringify({
+                failures,
+                broken: images.filter(img => img.complete && img.naturalWidth === 0),
+                unloaded: images.filter(img => !img.complete),
+                images,
+              }, null, 2),
+            );
+            await page.screenshot({
+              path: `../naxos-layered-preview/${name}.png`,
+              fullPage: true,
+            });
+            await context.close();
+          }
+
+          await capture("catalog-desktop", { width: 1280, height: 900 });
+          await capture("catalog-mobile", { width: 390, height: 844 });
+          await browser.close();
+          NODE
+          node catalog-audit.mjs
           npx --yes playwright@1.55.0 screenshot --browser=chromium --full-page --wait-for-timeout=2500 http://127.0.0.1:3000/duft/xerjoff-naxos ../naxos-layered-preview/naxos-desktop.png
           npx --yes playwright@1.55.0 screenshot --browser=chromium --viewport-size="390,844" --full-page --wait-for-timeout=2500 http://127.0.0.1:3000/duft/xerjoff-naxos ../naxos-layered-preview/naxos-mobile.png
 
