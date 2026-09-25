@@ -7,3 +7,5 @@ Twelve catalog products now have a curated official product page in `officialPro
 When offers are absent or the offer API fails, the panel shows a separate direct manufacturer link if one is curated. It does not represent this link as an eligible, price-verified merchant offer or affiliate link. Price and availability must be checked on the destination site. Existing fresh offers remain first-class; no fallback suppresses them.
 
 Before expanding coverage, verify the exact product and size on the manufacturer's website and add only its matching URL. Do not refresh merchant offer timestamps merely to make stale prices visible. Direct manufacturer links do not substitute for browser screenshot QA or current price comparison.
+
+The fallback map now has a regression check (`tests/test_dufynd_official_product_pages.py`). It ensures every linked product ID exists in the catalog, each HTTPS URL has a product-specific path, and its host belongs to that product's manufacturer. This is structural QA, not a live destination check or visual approval. The unresolved screenshot QA and unverified Bois Impérial front bottle remain open.
