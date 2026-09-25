@@ -27,6 +27,12 @@ const routes = [
   { name: "absolu-aventus", route: "/duft/creed-absolu-aventus", marker: "Absolu Aventus" },
   { name: "prada-lhomme", route: "/duft/prada-lhomme", marker: "L'Homme" },
   { name: "bois-imperial", route: "/duft/essential-parfums-bois-imperial", marker: "Bois Impérial" },
+  {
+    name: "swy-intensely",
+    route: "/duft/giorgio-armani-stronger-with-you-intensely",
+    marker: "Stronger With You Intensely",
+  },
+  { name: "vibrato", route: "/duft/sospiro-vibrato", marker: "Vibrato" },
 ];
 
 const forbiddenUi = [
@@ -34,6 +40,7 @@ const forbiddenUi = [
   "Launch Spotlight",
   "3D View",
   "Immersive View",
+  "Performance",
 ];
 
 const naxosGermanNotes = [
@@ -176,12 +183,39 @@ try {
               "Naxos verified truth hero is incorrectly disclosed as editorial",
             );
           }
+
+          const expectedGalleryText = [
+            "Weitere Ansichten",
+            "Freisteller",
+            "DUFYND Inszenierung",
+            "Verifiziert",
+            "Editorial",
+          ];
+          const missingGalleryText = expectedGalleryText.filter(
+            (label) => !text.includes(label),
+          );
+          if (missingGalleryText.length) {
+            throw new Error(
+              `Naxos multi-visual gallery is incomplete: ${missingGalleryText.join(", ")}`,
+            );
+          }
+
+          const editorialAsset = page.locator(
+            'img[src="/products/pilot/xerjoff-naxos-editorial.png"]',
+          );
+          if ((await editorialAsset.count()) < 1) {
+            throw new Error("Naxos editorial gallery asset is missing");
+          }
         }
 
         if (
-          ["absolu-aventus", "prada-lhomme", "bois-imperial"].includes(
-            target.name,
-          )
+          [
+            "absolu-aventus",
+            "prada-lhomme",
+            "bois-imperial",
+            "swy-intensely",
+            "vibrato",
+          ].includes(target.name)
         ) {
           const text = await page.locator("body").innerText();
           if (!text.includes("Bild: stilisierte DUFYND-Inszenierung")) {
