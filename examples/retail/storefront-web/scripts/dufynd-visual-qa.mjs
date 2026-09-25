@@ -352,7 +352,17 @@ try {
           const explodedButton = explodedSection.getByRole("button", {
             name: "Duftaufbau entfalten",
           });
+          if ((await explodedButton.getAttribute("aria-expanded")) !== "false") {
+            throw new Error(
+              "Naxos exploded-notes toggle does not expose collapsed state",
+            );
+          }
           await explodedButton.click();
+          if ((await explodedButton.getAttribute("aria-expanded")) !== "true") {
+            throw new Error(
+              "Naxos exploded-notes toggle does not expose expanded state",
+            );
+          }
 
           const explodedStage = explodedSection.locator(
             '#dufynd-exploded-stage[data-expanded="true"]:not([aria-hidden="true"])',
