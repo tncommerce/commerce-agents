@@ -63,9 +63,16 @@ Reference checks for the two externally verified P0 items:
 - Armani Stronger With You Intensely: https://www.armanibeauty.de/dufte/herrenduft/stronger-with-you/stronger-with-you-intensely-eau-de-parfum/3614272225718.html
 - Prada L'Homme Eau de Toilette: https://www.prada-beauty.com/fragrance/lhomme-prada/lhomme-prada-eau-de-toilette/8435137749607.html
 
-### P1 — visually strong enough to keep as editorial, but verify bottle details before promotion to product-truth status
+### Former P1 candidates — cleared for editorial use
 
-Prioritise side-by-side verification for `al-haramain-detour-noir-editorial.png`, `creed-aventus-editorial.png`, `armaf-club-de-nuit-intense-man-editorial.png` and `maison-asrar-vanguard-editorial.png`. These scenes are visually usable, but distinctive bottle geometry, cap/ornament details or label typography should be checked against an authorised source before DUFYND presents them as exact product depictions.
+A second visual-reference pass cleared the four initial P1 candidates for continued **editorial** use:
+
+- `al-haramain-detour-noir-editorial.png`: the distinctive curved bottle and silver neck/cap treatment are materially consistent with Al Haramain's Detour Noir presentation.
+- `armaf-club-de-nuit-intense-man-editorial.png`: the 200 ml EDP's rectangular black bottle, square cap and hanging round medallion are represented closely enough for editorial use.
+- `maison-asrar-vanguard-editorial.png`: the black cylindrical bottle, silver lattice pattern, label and cap treatment align closely with the reference product presentation.
+- `creed-aventus-editorial.png`: the clear upper bottle, black lower treatment, white label and black cap are sufficiently consistent for an editorial scene; Creed also notes that packaging can vary during its current packaging transition.
+
+These assets are **not** promoted to verified product-truth status. They simply no longer require immediate replacement.
 
 ### P2 — keep for now as editorial scenes
 
