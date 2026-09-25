@@ -975,8 +975,13 @@
       ],
       "rationale": "Major missing JPG comparison point next to staged Le Male Le Parfum; exact 125 ml variant verified.",
       "variant_status": "verified_retail_variant",
-      "research_state": "official_profile_verified_merchant_evidence_added",
+      "research_state": "official_variant_verified_merchant_metadata_conflict_resolved",
       "evidence": [
+        {
+          "source": "Jean Paul Gaultier",
+          "url": "https://www.jeanpaulgaultier.com/de/de/p/linie-le-male/le-male-elixir-parfum-000000000065189084",
+          "checked_at": "2026-09-25"
+        },
         {
           "source": "Douglas",
           "url": "https://www.douglas.de/de/p/5010945026",
@@ -1044,7 +1049,7 @@
             "availability_snapshot": "in_stock"
           }
         ],
-        "note": "Research evidence only; canonical GTIN and merchant feed matching remain pending. Merchant title says Parfum; generic perfume-type attribute says Eau de Parfum. Retain official Parfum concentration; feed category review required."
+        "note": "Research evidence only; canonical GTIN and merchant feed matching remain pending. Official Jean Paul Gaultier confirms Le Male Elixir as Parfum in 125 ml. Perfumetrader product title and product-type field also identify Parfum; its generic perfume-type attribute says Eau de Parfum and is treated as a merchant metadata taxonomy inconsistency, not a variant conflict."
       },
       "media": {
         "image_url": null,
@@ -1065,8 +1070,7 @@
         "blockers": [
           "canonical_gtin_feed_match_pending",
           "verified_affiliate_offer_pending",
-          "approved_product_image_pending",
-          "merchant_concentration_attribute_review_pending"
+          "approved_product_image_pending"
         ]
       },
       "recommendation_profile": {
