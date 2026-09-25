@@ -2094,6 +2094,22 @@
       "validation": {
         "catalog_ready": true
       },
+      "visuals": [
+        {
+          "role": "cutout",
+          "url": "/products/naxos-cutout-production.png",
+          "provenance": "dufynd_generated",
+          "fidelity_status": "verified",
+          "variant": "100ml"
+        },
+        {
+          "role": "editorial",
+          "url": "/products/pilot/xerjoff-naxos-editorial.png",
+          "provenance": "dufynd_generated",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml"
+        }
+      ],
       "image_url": "/products/pilot/xerjoff-naxos-editorial.png"
     },
     {
