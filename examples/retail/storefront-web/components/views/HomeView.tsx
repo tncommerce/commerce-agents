@@ -298,7 +298,7 @@ export default function HomeView({
               Meinen Duft finden
             </div>
             <p className="mt-1 text-[12px] leading-5 text-(--ink-soft)">
-              Nach Anlass, Budget, Duftprofil und Performance.
+              Nach Anlass, Budget, Duftprofil, Haltbarkeit und Ausstrahlung.
             </p>
           </a>
           <a

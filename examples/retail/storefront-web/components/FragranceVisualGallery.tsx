@@ -1,5 +1,8 @@
 import FragranceVisual from "@/components/FragranceVisual";
-import type { FragranceVisualAsset } from "@/lib/fragranceCatalog";
+import {
+  isVerifiedProductTruthVisual,
+  type FragranceVisualAsset,
+} from "@/lib/fragranceCatalog";
 
 const ROLE_LABELS: Record<FragranceVisualAsset["role"], string> = {
   primary: "Produktansicht",
@@ -52,7 +55,8 @@ export default function FragranceVisualGallery({
 
       <div className="mt-3 grid gap-3 sm:grid-cols-2">
         {unique.map((asset) => {
-          const isCutout = asset.role === "cutout";
+          const isProductTruth =
+            isVerifiedProductTruthVisual(asset);
           const status = STATUS_LABELS[asset.fidelity_status];
 
           return (
@@ -62,10 +66,10 @@ export default function FragranceVisualGallery({
             >
               <FragranceVisual
                 imageUrl={asset.url}
-                cutoutUrl={isCutout ? asset.url : undefined}
+                cutoutUrl={isProductTruth ? asset.url : undefined}
                 alt={`${alt} – ${ROLE_LABELS[asset.role]}`}
                 variant="card"
-                mode={isCutout ? "cutout" : "editorial"}
+                mode={isProductTruth ? "cutout" : "editorial"}
                 className="h-48 w-full sm:h-56"
               />
               <figcaption className="flex flex-wrap items-center justify-between gap-2 border-t border-(--line) px-3 py-2.5">
