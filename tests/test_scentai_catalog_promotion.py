@@ -188,6 +188,15 @@ def test_invalid_price_cannot_unlock_public_catalog() -> None:
     )
 
 
+def test_malformed_or_insecure_product_url_cannot_unlock_public_catalog() -> None:
+    for url in ("javascript:alert(1)", "http://merchant.example/product", "https://localhost/x"):
+        offer = affiliate_offer()
+        offer["product_url"] = url
+        assert "missing_current_purchase_destination" in promotion_blockers(
+            staged_product(), [offer], now=NOW
+        )
+
+
 def test_provisional_community_data_is_blocked_by_default() -> None:
     product = staged_product()
     product["community"]["provisional"] = True

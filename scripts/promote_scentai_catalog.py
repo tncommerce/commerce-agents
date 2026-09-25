@@ -7,6 +7,7 @@ import math
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
 from scripts.qa_scentai_staging import run_qa
 
@@ -136,7 +137,18 @@ def eligible_purchase_offers(
             continue
         if not offer.get("in_stock"):
             continue
-        if not str(offer.get("product_url") or "").strip():
+        product_url = str(offer.get("product_url") or "").strip()
+        try:
+            destination = urlsplit(product_url)
+            if (
+                destination.scheme != "https"
+                or not destination.hostname
+                or destination.username
+                or destination.password
+                or destination.hostname in {"localhost", "127.0.0.1", "::1"}
+            ):
+                continue
+        except ValueError:
             continue
 
         try:
