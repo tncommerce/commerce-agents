@@ -1,24 +1,23 @@
 # SCENTAI Catalog Promotion Runbook
 
 Status: active
-Updated: 2026-09-18
+Updated: 2026-09-25
 
 ## Decision
 
-Do not start Batch 4 yet.
+Batch 4 may enter isolated pre-live staging in controlled groups, but live promotion remains gated.
 
-SCENTAI already has 30 verified candidates across Batches 1-3. The bottleneck is no longer discovery; it is controlled promotion into the live catalog. New research work pauses until the promotion pipeline is operational.
+DUFYND now has 30 verified candidates across Batches 1-3 plus two controlled five-product staging intakes from the researched NEXT-10 wave (Batches 4 and 5). This raises isolated staging to 40 products while live remains at 33. Both intakes are explicitly capped at five products and do not authorize publication.
 
 ## Current gates
 
-- 30/30 identity verified
-- 30/30 community QA completed
-- 30/30 have verified merchant coverage
-- 20/30 have multi-merchant coverage
-- 0/30 have approved affiliate links
-- 0/30 have approved feed/manufacturer images prepared for live use
-- 0 unresolved identity/version blockers
-- 2 provisional community-performance cases that must not receive strong performance claims yet
+- 40 products are now in isolated staging
+- 33 fragrances are live
+- 73 unique fragrance identities exist across live + staging with zero overlap
+- Batches 4 and 5 are limited to candidates without unresolved source/version blockers
+- Batches 4 and 5 still require approved affiliate offers and approved product images before any live promotion
+- Existing Batches 1-3 remain subject to the same affiliate/image/live-offer gates
+- No staging intake authorizes a live write
 
 ## Promotion order
 
@@ -84,13 +83,16 @@ For each mini-release:
 9. Check analytics events.
 10. Only then promote the next mini-release.
 
-## Catalog expansion resumes when
+## Catalog expansion cadence
 
-Resume Batch 4 after at least one of these is true:
-- first 10 verified candidates are live with approved images/offers, or
-- affiliate/feed delays persist long enough that a separate content-only catalog strategy is explicitly approved.
+Research and staging expansion may continue in controlled waves while live promotion stays blocked behind commerce and image gates.
 
-At that point, new candidate selection should use real SCENTAI no-result searches, product opens and clickouts in addition to retailer/community demand.
+Rules:
+- stage at most 5 new products per controlled intake unless the manifest is explicitly changed
+- never stage candidates with unresolved direct-source, edition or concentration conflicts
+- never treat research merchant evidence as a live affiliate offer
+- use real DUFYND no-result searches, product opens and clickouts increasingly as the catalog grows
+- live promotion remains limited to 5-10 products at a time after all hard gates pass
 
 
 ## Promotion command

@@ -207,6 +207,16 @@ def audience_score_issues(
     return issues
 
 
+def exact_name_query(row: dict) -> str:
+    name = str(row.get("name") or "").strip()
+    brand = str(row.get("brand") or "").strip()
+
+    if len(name) <= 2 and brand:
+        return f"{brand} {name}"
+
+    return name
+
+
 async def exact_name_search_issues(
     backend: MockRetail,
     staging: dict,
@@ -220,7 +230,7 @@ async def exact_name_search_issues(
     for row in staging.get("products", []):
         results = await backend.search_products(
             session,
-            row["name"],
+            exact_name_query(row),
             limit=4,
         )
         if not results or results[0].product_id != row["product_id"]:
