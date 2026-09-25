@@ -11,6 +11,7 @@ CATALOG = Path("examples/retail/data/scentai_products.json")
 STATIC_CATALOG = Path("examples/retail/data/catalog.json")
 QUEUE = Path("examples/retail/data/dufynd_product_visual_review_queue.json")
 PUBLIC_ROOT = Path("examples/retail/storefront-web/public")
+CANDIDATE_DIR = PUBLIC_ROOT / "products/candidates"
 
 
 def test_product_visual_review_queue_references_catalog_products() -> None:
@@ -83,6 +84,13 @@ def test_p0_candidates_are_reviewable_but_not_active_product_truth() -> None:
                 active_urls.add(attributes[key])
 
     assert candidate_urls.isdisjoint(active_urls)
+
+    candidate_files = {
+        f"/products/candidates/{path.name}"
+        for path in CANDIDATE_DIR.iterdir()
+        if path.is_file()
+    }
+    assert candidate_files == candidate_urls
 
     for candidate in candidate_urls:
         candidate_path = PUBLIC_ROOT / candidate.removeprefix("/")
