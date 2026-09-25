@@ -559,8 +559,13 @@
       ],
       "rationale": "Strong Douglas presence and natural counterpart to DUFYND's existing Valentino men's coverage.",
       "variant_status": "verified_retail_variant",
-      "research_state": "official_profile_verified_merchant_evidence_added",
+      "research_state": "official_variant_verified_merchant_evidence_added",
       "evidence": [
+        {
+          "source": "Valentino Beauty",
+          "url": "https://www.valentino-beauty.de/de_DE/dufte/damendufte/born-in-roma-donna/born-in-roma-donna/MPL00468.html",
+          "checked_at": "2026-09-25"
+        },
         {
           "source": "Douglas",
           "url": "https://www.douglas.de/de/p/5000004074",
@@ -586,7 +591,7 @@
         "source_confidence": "high",
         "source_kind": "official_brand",
         "source_url": "https://www.valentino-beauty.de/de_DE/dufte/damendufte/born-in-roma-donna/born-in-roma-donna/MPL00468.html",
-        "note": "Official Valentino Beauty data confirms the 100 ml EDP and core floral-amber-woody structure."
+        "note": "Official Valentino Beauty data confirms Born In Roma Donna Eau de Parfum in the 100 ml variant and the floral-amber-woody structure."
       },
       "research_merchant_evidence": [
         {
@@ -663,8 +668,7 @@
         "blockers": [
           "canonical_gtin_feed_match_pending",
           "verified_affiliate_offer_pending",
-          "approved_product_image_pending",
-          "direct_source_or_feed_confirmation_pending"
+          "approved_product_image_pending"
         ]
       },
       "recommendation_profile": {
@@ -828,8 +832,13 @@
       ],
       "rationale": "Notino explicitly lists Nomade among popular women's fragrances and exact 75 ml variant is available.",
       "variant_status": "verified_retail_variant",
-      "research_state": "official_profile_verified_merchant_evidence_added",
+      "research_state": "official_variant_verified_merchant_evidence_added",
       "evidence": [
+        {
+          "source": "Chloé",
+          "url": "https://www.chloe.com/de-de/p/fragrances/eau-de-parfum/CHCA64994090.html",
+          "checked_at": "2026-09-25"
+        },
         {
           "source": "Notino",
           "url": "https://www.notino.de/chloe/nomade-eau-de-parfum-fuer-damen/p-11620592/",
@@ -853,7 +862,7 @@
         "source_kind": "official_brand",
         "source_url": "https://www.chloe.com/de-de/p/fragrances/eau-de-parfum/CHCA64994090.html",
         "official_reference": "CHCA64994090",
-        "note": "Official Chloé Germany data confirms original Nomade Eau de Parfum 75 ml. Do not confuse with Nomade Jasmin Naturel, Nuit d'Égypte or Lumière d'Égypte."
+        "note": "Official Chloé Germany data confirms original Nomade Eau de Parfum 75 ml with Mirabelle, Freesia and Oakmoss. Keep separate from other Nomade flankers."
       },
       "research_merchant_evidence": [
         {
@@ -935,8 +944,7 @@
         "blockers": [
           "canonical_gtin_feed_match_pending",
           "verified_affiliate_offer_pending",
-          "approved_product_image_pending",
-          "direct_source_or_feed_confirmation_pending"
+          "approved_product_image_pending"
         ]
       },
       "recommendation_profile": {
@@ -1089,8 +1097,13 @@
       ],
       "rationale": "Large mainstream men's comparison gap; exact 100 ml EDP variant verified.",
       "variant_status": "verified_retail_variant",
-      "research_state": "official_profile_verified_merchant_evidence_added",
+      "research_state": "official_variant_verified_merchant_evidence_added",
       "evidence": [
+        {
+          "source": "Versace",
+          "url": "https://www.versace.com/de/de/herren/accessoires/dufte/eros/eros-edp-100-ml/R740110-R100MLS_RNUL.html",
+          "checked_at": "2026-09-25"
+        },
         {
           "source": "Douglas",
           "url": "https://www.douglas.de/de/b/versace/eros/b012993",
@@ -1124,7 +1137,7 @@
         "source_kind": "official_brand",
         "source_url": "https://www.versace.com/de/de/herren/accessoires/dufte/eros/eros-edp-100-ml/R740110-R100MLS_RNUL.html",
         "official_reference": "R740110-R100MLS",
-        "note": "Official Versace Germany data confirms the Eau de Parfum 100 ml variant. Keep separate from Eros EDT and Eros Parfum."
+        "note": "Official Versace Germany data confirms Eros Pour Homme Eau de Parfum 100 ml, style R740110-R100MLS. Keep separate from Eros EDT and Eros Parfum."
       },
       "research_merchant_evidence": [
         {
@@ -1203,8 +1216,7 @@
         "blockers": [
           "canonical_gtin_feed_match_pending",
           "verified_affiliate_offer_pending",
-          "approved_product_image_pending",
-          "direct_source_or_feed_confirmation_pending"
+          "approved_product_image_pending"
         ]
       },
       "recommendation_profile": {
@@ -1235,8 +1247,13 @@
       ],
       "rationale": "Adds a major aquatic comparison anchor missing from DUFYND's current fresh/blue coverage.",
       "variant_status": "verified_retail_variant",
-      "research_state": "official_core_notes_verified_full_pyramid_conflict_documented",
+      "research_state": "official_variant_and_pyramid_verified_merchant_evidence_added",
       "evidence": [
+        {
+          "source": "Armani Beauty",
+          "url": "https://www.armanibeauty.de/dufte/herrenduft/acqua-di-gio/acqua-di-gio-profondo-parfum/ww-00854-arm.html?dwvar_ww-00854-arm_size=100ml",
+          "checked_at": "2026-09-25"
+        },
         {
           "source": "Douglas",
           "url": "https://www.douglas.de/de/p/5011354001",
@@ -1244,19 +1261,29 @@
         }
       ],
       "product_data": {
-        "scent_family": "fresh aquatic",
-        "key_notes": [
-          "bergamot",
-          "marine notes",
-          "cistus absolute",
-          "everlasting essence",
-          "patchouli"
-        ],
-        "source_confidence": "medium_high",
+        "scent_family": "citrus aromatic aquatic",
+        "notes": {
+          "top": [
+            "marine notes",
+            "bergamot",
+            "lemon essence"
+          ],
+          "heart": [
+            "everlasting essence",
+            "violet leaf absolute",
+            "lavandin heart"
+          ],
+          "base": [
+            "cistus absolute",
+            "vetiver essence",
+            "woody mineral accord"
+          ]
+        },
+        "source_confidence": "high",
         "source_kind": "official_brand",
-        "source_url": "https://www.giorgioarmanibeauty-usa.com/fragrances/acqua-di-gio-profondo-parfum/A2772.html",
-        "checked_at": "2026-09-21",
-        "note": "Use only notes from the explicit Profondo Parfum description and the fragrance comparison panel. The generic Key Notes line on the same official page differs (cardamom/green mandarin/lavender/cypress); full note pyramid remains unresolved. Do not merge generic fields or notes from Profondo EDP."
+        "source_url": "https://www.armanibeauty.de/dufte/herrenduft/acqua-di-gio/acqua-di-gio-profondo-parfum/ww-00854-arm.html?dwvar_ww-00854-arm_size=100ml",
+        "checked_at": "2026-09-25",
+        "note": "Official Armani Beauty Germany now exposes the Profondo Parfum note pyramid directly: marine notes and bergamot in the opening, everlasting essence in the heart, and cistus absolute with woody/mineral depth in the base. This resolves the prior cross-field note conflict."
       },
       "research_merchant_evidence": [
         {
@@ -1343,9 +1370,7 @@
         "blockers": [
           "canonical_gtin_feed_match_pending",
           "verified_affiliate_offer_pending",
-          "approved_product_image_pending",
-          "full_note_pyramid_conflict_pending",
-          "direct_source_or_feed_confirmation_pending"
+          "approved_product_image_pending"
         ]
       },
       "recommendation_profile": {

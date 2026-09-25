@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "status": "active",
+  "purpose": "Controls which researched DUFYND catalog waves may enter isolated pre-live staging. This manifest never authorizes live publication.",
+  "default_max_products_per_wave": 5,
+  "waves": [
+    {
+      "wave_id": "DUFYND-CATALOG-EXPANSION-NEXT-10",
+      "source_file": "dufynd_catalog_expansion_next10.json",
+      "enabled": true,
+      "staging_batch": 4,
+      "max_products": 5,
+      "live_publication_authorized": false,
+      "selected_product_ids": [
+        "SC-CAROLINA-HERRERA-GOOD-GIRL-EDP-80",
+        "SC-CHANEL-COCO-MADEMOISELLE-EDP-100",
+        "SC-CALVIN-KLEIN-EUPHORIA-EDP-100",
+        "SC-RABANNE-1-MILLION-EDT-100",
+        "SC-YSL-Y-EDP-100"
+      ]
+    }
+  ]
+}

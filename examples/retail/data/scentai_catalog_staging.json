@@ -2,8 +2,8 @@
   "schema_version": "1.0",
   "updated_at": "2026-09-19",
   "status": "staging_only_not_loaded_by_live_storefront",
-  "product_count": 30,
-  "note": "Canonical pre-live records for verified expansion candidates. This file is intentionally not the live catalog. No guessed prices, identifiers, affiliate URLs or product images.",
+  "product_count": 35,
+  "note": "Canonical pre-live records for verified expansion candidates. No guessed prices, identifiers, affiliate URLs or product images.",
   "products": [
     {
       "candidate_id": "BURBERRY-GODDESS-EDP",
@@ -2054,6 +2054,390 @@
         "blockers": [
           "affiliate_link_pending",
           "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "CALVIN-KLEIN-EUPHORIA-EDP-100",
+      "product_id": "SC-CALVIN-KLEIN-EUPHORIA-EDP-100",
+      "batch": 4,
+      "brand": "Calvin Klein",
+      "name": "Euphoria",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "women"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "oriental floral",
+        "key_notes": [
+          "pomegranate",
+          "lotus",
+          "orchid",
+          "violet",
+          "amber",
+          "mahogany",
+          "musk"
+        ],
+        "community_accords": [
+          "floral",
+          "sweet",
+          "fruity",
+          "woody",
+          "oriental"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 4,
+            "sweetness": 8,
+            "woodiness": 6,
+            "spiciness": 4
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7.3,
+        "rating_count": 815,
+        "longevity_10": 7.5,
+        "projection_10": 7.1,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 1,
+        "merchant_coverage_source": "dufynd_research_wave",
+        "market_status": "researched_not_integrated",
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending"
+        ]
+      },
+      "research": {
+        "source_wave_id": "DUFYND-CATALOG-EXPANSION-NEXT-10",
+        "research_state": "retailer_profile_verified_merchant_evidence_added",
+        "evidence_urls": [
+          "https://www.notino.de/calvin-klein/euphoria-eau-de-parfum-fur-damen/"
+        ]
+      }
+    },
+    {
+      "candidate_id": "CAROLINA-HERRERA-GOOD-GIRL-EDP-80",
+      "product_id": "SC-CAROLINA-HERRERA-GOOD-GIRL-EDP-80",
+      "batch": 4,
+      "brand": "Carolina Herrera",
+      "name": "Good Girl",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 80,
+      "classification": {
+        "target_groups": [
+          "women"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "amber floral",
+        "key_notes": [
+          "jasmine",
+          "tuberose",
+          "almond",
+          "tonka bean",
+          "coffee",
+          "cocoa"
+        ],
+        "community_accords": [
+          "sweet",
+          "floral",
+          "gourmand",
+          "creamy",
+          "oriental"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 3,
+            "sweetness": 10,
+            "woodiness": 3,
+            "spiciness": 4
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7.6,
+        "rating_count": 1597,
+        "longevity_10": 7.7,
+        "projection_10": 7.5,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 2,
+        "merchant_coverage_source": "dufynd_research_wave",
+        "market_status": "researched_not_integrated",
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending"
+        ]
+      },
+      "research": {
+        "source_wave_id": "DUFYND-CATALOG-EXPANSION-NEXT-10",
+        "research_state": "official_profile_verified_merchant_evidence_added",
+        "evidence_urls": [
+          "https://www.douglas.de/de/p/3001044085"
+        ]
+      }
+    },
+    {
+      "candidate_id": "CHANEL-COCO-MADEMOISELLE-EDP-100",
+      "product_id": "SC-CHANEL-COCO-MADEMOISELLE-EDP-100",
+      "batch": 4,
+      "brand": "CHANEL",
+      "name": "COCO MADEMOISELLE",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "women"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "amber",
+        "key_notes": [
+          "orange",
+          "jasmine",
+          "rose",
+          "patchouli",
+          "vetiver"
+        ],
+        "community_accords": [
+          "floral",
+          "sweet",
+          "fresh",
+          "fruity",
+          "powdery"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 8,
+            "sweetness": 8,
+            "woodiness": 2,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7.8,
+        "rating_count": 2097,
+        "longevity_10": 8.1,
+        "projection_10": 7.8,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 1,
+        "merchant_coverage_source": "dufynd_research_wave",
+        "market_status": "researched_not_integrated",
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending"
+        ]
+      },
+      "research": {
+        "source_wave_id": "DUFYND-CATALOG-EXPANSION-NEXT-10",
+        "research_state": "official_profile_verified_merchant_evidence_added",
+        "evidence_urls": [
+          "https://www.douglas.de/de/p/1000722295"
+        ]
+      }
+    },
+    {
+      "candidate_id": "RABANNE-1-MILLION-EDT-100",
+      "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+      "batch": 4,
+      "brand": "Rabanne",
+      "name": "1 Million",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "men"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "spicy woody",
+        "key_notes": [
+          "mint",
+          "mandarin",
+          "rose",
+          "cinnamon",
+          "amber",
+          "leather"
+        ],
+        "community_accords": [
+          "sweet",
+          "spicy",
+          "oriental",
+          "synthetic",
+          "fruity"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 4,
+            "sweetness": 8,
+            "woodiness": 4,
+            "spiciness": 6
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 6.9,
+        "rating_count": 3606,
+        "longevity_10": 7.8,
+        "projection_10": 7.7,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 3,
+        "merchant_coverage_source": "dufynd_research_wave",
+        "market_status": "researched_not_integrated",
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending"
+        ]
+      },
+      "research": {
+        "source_wave_id": "DUFYND-CATALOG-EXPANSION-NEXT-10",
+        "research_state": "retailer_profile_verified_merchant_evidence_added",
+        "evidence_urls": [
+          "https://www.douglas.de/de/b/rabanne/1-million/b005920",
+          "https://www.notino.de/bestseller/"
+        ]
+      }
+    },
+    {
+      "candidate_id": "YSL-Y-EDP-100",
+      "product_id": "SC-YSL-Y-EDP-100",
+      "batch": 4,
+      "brand": "Yves Saint Laurent",
+      "name": "Y",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "men"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "fresh woody fougere",
+        "key_notes": [
+          "sage essence",
+          "geranium absolute",
+          "woody accord",
+          "tonka bean"
+        ],
+        "community_accords": [
+          "fresh",
+          "sweet",
+          "synthetic",
+          "fruity",
+          "aquatic"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 10,
+            "sweetness": 6,
+            "woodiness": 2,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7.5,
+        "rating_count": 4349,
+        "longevity_10": 7.6,
+        "projection_10": 7.4,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 2,
+        "merchant_coverage_source": "dufynd_research_wave",
+        "market_status": "researched_not_integrated",
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending"
+        ]
+      },
+      "research": {
+        "source_wave_id": "DUFYND-CATALOG-EXPANSION-NEXT-10",
+        "research_state": "official_profile_verified_merchant_evidence_added",
+        "evidence_urls": [
+          "https://www.douglas.de/de/p/3001047078"
         ]
       }
     }
