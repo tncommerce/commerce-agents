@@ -23,11 +23,7 @@ def test_all_catalog_notes_have_a_specific_icon_motif() -> None:
     for product in catalog["products"]:
         for values in (product.get("notes") or {}).values():
             if isinstance(values, list):
-                notes.update(
-                    str(value).strip().lower()
-                    for value in values
-                    if str(value).strip()
-                )
+                notes.update(str(value).strip().lower() for value in values if str(value).strip())
 
     source = ICONS.read_text(encoding="utf-8")
     motif_terms = [
@@ -38,10 +34,6 @@ def test_all_catalog_notes_have_a_specific_icon_motif() -> None:
 
     assert motif_terms, "No DUFYND note-icon motif terms found"
 
-    unmapped = sorted(
-        note
-        for note in notes
-        if not any(term in note for term in motif_terms)
-    )
+    unmapped = sorted(note for note in notes if not any(term in note for term in motif_terms))
 
     assert not unmapped, f"Catalog notes fell back to the generic icon: {unmapped}"
