@@ -159,6 +159,53 @@ try {
           throw new Error("directory listing detected instead of storefront content");
         }
 
+        if (!["home", "catalog"].includes(target.name)) {
+          const productSchema = await page.evaluate(() => {
+            const schemas = Array.from(
+              document.querySelectorAll('script[type="application/ld+json"]'),
+            )
+              .map((script) => {
+                try {
+                  return JSON.parse(script.textContent || "{}");
+                } catch {
+                  return null;
+                }
+              })
+              .filter(Boolean);
+
+            return schemas.find((schema) => schema?.["@type"] === "Product") || null;
+          });
+
+          if (!productSchema) {
+            throw new Error("fragrance detail page is missing Product JSON-LD");
+          }
+
+          if (!String(productSchema.name || "").trim()) {
+            throw new Error("Product JSON-LD has no usable product name");
+          }
+
+          const schemaImages = Array.isArray(productSchema.image)
+            ? productSchema.image
+            : productSchema.image
+              ? [productSchema.image]
+              : [];
+
+          if (target.name === "naxos") {
+            if (
+              !schemaImages.some((image) =>
+                String(image).endsWith("/products/naxos-cutout-production.png"),
+              )
+            ) {
+              throw new Error(
+                "Naxos Product JSON-LD does not use the verified cutout",
+              );
+            }
+          } else if (schemaImages.length > 0) {
+            throw new Error(
+              "unverified fragrance exposed an image as Product JSON-LD truth",
+            );
+          }
+        }
         if (target.name === "naxos") {
           if (viewport.width < 1024) {
             const notesDetails = page
