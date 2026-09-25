@@ -21,6 +21,8 @@ OFFICIAL_HOSTS = {
     "Parfums de Marly": "parfums-de-marly.com",
     "Montblanc": "www.montblanc.com",
     "Valentino": "www.valentino-beauty.com",
+    "Xerjoff": "www.xerjoff.com",
+    "Giorgio Armani": "www.armanibeauty.de",
 }
 
 ENTRY = re.compile(

@@ -48,4 +48,12 @@ export const OFFICIAL_PRODUCT_PAGES: Record<string, { merchant: string; url: str
     merchant: "Valentino Beauty",
     url: "https://www.valentino-beauty.com/int/fragrances/men-fragrances/born-in-roma-uomo/born-in-roma-uomo-eau-de-parfum-intense/MPL01907.html",
   },
+  "SC-XERJOFF-NAXOS-100": {
+    merchant: "Xerjoff",
+    url: "https://www.xerjoff.com/it/products/naxos-eau-de-parfum",
+  },
+  "SC-ARMANI-SWY-INTENSELY-100": {
+    merchant: "Armani Beauty",
+    url: "https://www.armanibeauty.de/dufte/herrenduft/stronger-with-you/stronger-with-you-intensely-eau-de-parfum/ww-00180-arm.html?dwvar_ww-00180-arm_size=100ml",
+  },
 };
