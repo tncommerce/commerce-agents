@@ -114,6 +114,8 @@ export default function HomeView({
     : null;
   const spotlightVisual = spotlightFragrance?.preferred_visual;
   const spotlightModelUrl = spotlightFragrance?.model_3d_url;
+  const spotlightBackdropUrl =
+    spotlightFragrance?.backdrop_visual?.url;
   const spotlightIsProductTruth =
     isVerifiedProductTruthVisual(spotlightVisual);
   const spotlightName = spotlight
@@ -206,6 +208,11 @@ export default function HomeView({
                   cutoutUrl={
                     spotlightIsProductTruth
                       ? spotlightVisual?.url
+                      : undefined
+                  }
+                  backdropUrl={
+                    spotlightIsProductTruth
+                      ? spotlightBackdropUrl
                       : undefined
                   }
                   alt={spotlight.title}

@@ -11,6 +11,7 @@ ADAPTER = Path("examples/retail/storefront-web/lib/fragranceCatalog.ts")
 
 ALLOWED_ROLES = {"primary", "cutout", "editorial", "macro", "model_3d"}
 ALLOWED_STATUS = {"verified", "pending_review", "editorial_only", "rejected"}
+ALLOWED_COMPOSITIONS = {"product_scene", "bottle_free_backdrop"}
 
 
 def test_structured_visual_metadata_is_safe_and_consistent() -> None:
@@ -40,6 +41,14 @@ def test_structured_visual_metadata_is_safe_and_consistent() -> None:
             )
             seen_urls.add(visual["url"])
 
+            composition = visual.get("composition")
+            if composition is not None:
+                assert composition in ALLOWED_COMPOSITIONS
+
+            if composition == "bottle_free_backdrop":
+                assert visual["role"] == "editorial"
+                assert visual["fidelity_status"] == "editorial_only"
+
             if visual["role"] == "editorial":
                 assert visual["fidelity_status"] != "verified", (
                     f"{product_id}: editorial art must not be product truth"
@@ -61,6 +70,7 @@ def test_naxos_visual_pilot_matches_legacy_product_layer() -> None:
     assert visuals["cutout"]["fidelity_status"] == "verified"
     assert visuals["cutout"]["url"] == (catalog_row["attributes"]["product_cutout_url"])
     assert visuals["editorial"]["fidelity_status"] == "editorial_only"
+    assert visuals["editorial"]["composition"] == "product_scene"
     assert visuals["editorial"]["url"] == catalog_row["image_url"]
 
 
@@ -70,3 +80,11 @@ def test_model_3d_activation_requires_structured_verified_asset() -> None:
     assert 'visual.role === "model_3d"' in adapter
     assert 'visual.fidelity_status === "verified"' in adapter
     assert "attributes.product_model_3d_url" not in adapter
+
+
+def test_bottle_free_backdrop_requires_explicit_editorial_metadata() -> None:
+    adapter = ADAPTER.read_text(encoding="utf-8")
+
+    assert 'visual.composition === "bottle_free_backdrop"' in adapter
+    assert 'visual.role === "editorial"' in adapter
+    assert 'visual.fidelity_status === "editorial_only"' in adapter

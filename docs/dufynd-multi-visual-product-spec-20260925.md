@@ -12,7 +12,7 @@ A fragrance detail page can have several visuals without confusing editorial art
 - **macro** — verified close-up of cap, plaque, label, glass or material;
 - **model_3d** — verified GLB/USDZ-style interactive object when available.
 
-The UI should always know which role it is rendering. An editorial scene must never silently become the product-truth layer just because no primary exists.
+The UI should always know which role it is rendering. An editorial scene must never silently become the product-truth layer just because no primary exists. Editorials that are safe to place behind a verified cutout must additionally opt in with `composition: "bottle_free_backdrop"`; ordinary campaign scenes default to product-scene/editorial use and are never inferred as backdrops.
 
 ## Proposed source shape
 
@@ -32,7 +32,8 @@ Keep the existing fields during migration, then add a structured optional visual
       "role": "editorial",
       "url": "/products/...",
       "provenance": "dufynd_generated",
-      "fidelity_status": "editorial_only"
+      "fidelity_status": "editorial_only",
+      "composition": "bottle_free_backdrop"
     },
     {
       "role": "cutout",
@@ -132,7 +133,7 @@ Use products where the benefit is clearest:
 The first backward-compatible slice is now implemented on the integration branch:
 
 - `StaticFragrance` understands structured `visuals` metadata with explicit role and fidelity status;
-- Naxos is the first pilot with a verified cutout plus separate editorial artwork;
+- Naxos is the first pilot with a verified cutout plus separate editorial artwork; its current bottle-containing editorial is explicitly marked `product_scene`, not as a backdrop;
 - the fragrance detail page shows a compact `Weitere Ansichten` gallery only when at least two explicit visuals exist;
 - editorial and verified-product roles remain visibly distinct;
 - regression tests validate role/status values, prevent duplicate visual URLs and keep the Naxos verified cutout aligned with the legacy catalog field;
@@ -148,7 +149,7 @@ The remaining visual block is narrower: add more verified assets when they are a
 The original multi-visual implementation block is complete on PR #67. The remaining work should build on that system rather than recreate it:
 
 - review the responsive browser-QA captures at 320 / 390 / 768 / 1440 and fix only reproducible layout/fidelity defects;
-- keep Naxos on its verified cutout and add a bottle-free editorial background only when a suitable asset is approved;
+- keep Naxos on its verified cutout; the hero/homepage are already wired to accept a backdrop only from an explicit `bottle_free_backdrop` editorial, so add that metadata only when a suitable asset is approved;
 - add future `primary` / `macro` / `model_3d` assets only after the fidelity gate passes;
 - keep Creed Absolu Aventus, Prada L'Homme, Stronger With You Intensely, Sospiro Vibrato and other unverified scenes editorial-only until exact-reference review is complete;
 - extend structured visual metadata product-by-product instead of reviving legacy implicit cutout priority;

@@ -31,12 +31,17 @@ export type FragranceVisualFidelity =
   | "editorial_only"
   | "rejected";
 
+export type FragranceVisualComposition =
+  | "product_scene"
+  | "bottle_free_backdrop";
+
 export interface FragranceVisualAsset {
   role: FragranceVisualRole;
   url: string;
   provenance?: string | null;
   fidelity_status: FragranceVisualFidelity;
   variant?: string | null;
+  composition?: FragranceVisualComposition | null;
 }
 
 type SourceRow = {
@@ -100,6 +105,7 @@ export interface StaticFragrance {
   model_3d_url?: string | null;
   visuals: FragranceVisualAsset[];
   preferred_visual: FragranceVisualAsset | null;
+  backdrop_visual: FragranceVisualAsset | null;
   short_description?: string | null;
   target_groups: string[];
   role: string | null;
@@ -178,6 +184,19 @@ function selectVerifiedModel3D(
   );
 }
 
+function selectBottleFreeBackdrop(
+  visuals: FragranceVisualAsset[],
+): FragranceVisualAsset | null {
+  return (
+    visuals.find(
+      (visual) =>
+        visual.role === "editorial" &&
+        visual.composition === "bottle_free_backdrop" &&
+        visual.fidelity_status === "editorial_only",
+    ) || null
+  );
+}
+
 function selectPreferredVisual(
   visuals: FragranceVisualAsset[],
   editorialFallback?: string | null,
@@ -239,6 +258,7 @@ function catalogToFragrance(
     legacyCutoutUrl,
   );
   const verifiedModel3D = selectVerifiedModel3D(visuals);
+  const backdropVisual = selectBottleFreeBackdrop(visuals);
   const brand = String(row.brand || source?.brand || "").trim();
   const name = String(
     attributes.canonical_name ||
@@ -297,6 +317,7 @@ function catalogToFragrance(
     model_3d_url: verifiedModel3D?.url || null,
     visuals,
     preferred_visual: preferredVisual,
+    backdrop_visual: backdropVisual,
     short_description: row.short_description,
     target_groups: targetGroups,
     role: source?.classification?.role || null,

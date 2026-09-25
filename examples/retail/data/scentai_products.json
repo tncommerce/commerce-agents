@@ -2107,7 +2107,8 @@
           "url": "/products/pilot/xerjoff-naxos-editorial.png",
           "provenance": "dufynd_generated",
           "fidelity_status": "editorial_only",
-          "variant": "100ml"
+          "variant": "100ml",
+          "composition": "product_scene"
         }
       ],
       "image_url": "/products/pilot/xerjoff-naxos-editorial.png"

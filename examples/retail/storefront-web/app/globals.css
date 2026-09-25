@@ -533,9 +533,9 @@ body {
   height: 110%;
   width: 110%;
   object-fit: cover;
-  /* The source artwork already contains a bottle. Retain its palette without
-     leaving a second readable bottle behind the transparent foreground. */
-  filter: blur(36px) saturate(0.92) contrast(0.94);
+  /* Only explicitly bottle-free editorial artwork may reach this layer.
+     Keep it atmospheric so the verified product cutout remains dominant. */
+  filter: blur(28px) saturate(0.92) contrast(0.94);
   opacity: 0.32;
   transform: scale(1.17);
 }
