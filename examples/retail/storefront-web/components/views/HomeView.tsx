@@ -177,7 +177,6 @@ export default function HomeView({
                   modelUrl={spotlight.attributes?.product_model_3d_url}
                   imageUrl={spotlight.image_url}
                   cutoutUrl={spotlight.attributes?.product_cutout_url}
-                  backdropUrl={spotlight.image_url}
                   alt={spotlight.title}
                   className="h-full min-h-[260px] sm:min-h-[320px] w-full md:min-h-[430px]"
                   priority
