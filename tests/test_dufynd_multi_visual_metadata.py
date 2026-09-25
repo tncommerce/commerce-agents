@@ -8,6 +8,7 @@ from pathlib import Path
 CATALOG = Path("examples/retail/data/catalog.json")
 SOURCE = Path("examples/retail/data/scentai_products.json")
 ADAPTER = Path("examples/retail/storefront-web/lib/fragranceCatalog.ts")
+PUBLIC_ROOT = Path("examples/retail/storefront-web/public")
 
 ALLOWED_ROLES = {"primary", "cutout", "editorial", "macro", "model_3d"}
 ALLOWED_STATUS = {"verified", "pending_review", "editorial_only", "rejected"}
@@ -36,6 +37,14 @@ def test_structured_visual_metadata_is_safe_and_consistent() -> None:
             assert visual["role"] in ALLOWED_ROLES
             assert visual["fidelity_status"] in ALLOWED_STATUS
             assert visual["url"].startswith(("/", "https://"))
+            if visual["url"].startswith("/"):
+                local_path = PUBLIC_ROOT / visual["url"].removeprefix("/")
+                assert local_path.is_file(), (
+                    f"{product_id}: structured visual file is missing: {visual['url']}"
+                )
+            assert str(visual.get("provenance") or "").strip(), (
+                f"{product_id}: structured visual is missing provenance"
+            )
             assert visual["url"] not in seen_urls, (
                 f"{product_id}: duplicate visual URL {visual['url']}"
             )
@@ -52,6 +61,11 @@ def test_structured_visual_metadata_is_safe_and_consistent() -> None:
             if visual["role"] == "editorial":
                 assert visual["fidelity_status"] != "verified", (
                     f"{product_id}: editorial art must not be product truth"
+                )
+
+            if visual["role"] == "model_3d":
+                assert visual["url"].lower().split("?", 1)[0].endswith(".glb"), (
+                    f"{product_id}: model_3d visual must be a GLB"
                 )
 
 

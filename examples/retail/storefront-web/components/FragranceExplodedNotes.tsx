@@ -127,6 +127,9 @@ export default function FragranceExplodedNotes({
       <div
         id="dufynd-exploded-stage"
         data-expanded={expanded ? "true" : "false"}
+        aria-hidden={expanded ? undefined : true}
+        role={expanded ? "list" : undefined}
+        aria-label={expanded ? "Duftnoten nach Kopf, Herz und Basis" : undefined}
         className="dufynd-exploded-stage"
       >
         <div className="dufynd-exploded-halo" aria-hidden />
@@ -149,6 +152,7 @@ export default function FragranceExplodedNotes({
             <div
               key={`${stage}:${note}`}
               data-dufynd-exploded-note
+              role="listitem"
               data-stage={stage}
               data-index={index}
               className="dufynd-exploded-note"

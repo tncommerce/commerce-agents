@@ -267,13 +267,22 @@ try {
             );
           }
 
+          const explodedStageCollapsed = explodedSection.locator(
+            '#dufynd-exploded-stage[data-expanded="false"][aria-hidden="true"]',
+          );
+          if ((await explodedStageCollapsed.count()) !== 1) {
+            throw new Error(
+              "Naxos collapsed exploded-notes stage is not hidden from assistive technology",
+            );
+          }
+
           const explodedButton = explodedSection.getByRole("button", {
             name: "Duftaufbau entfalten",
           });
           await explodedButton.click();
 
           const explodedStage = explodedSection.locator(
-            '#dufynd-exploded-stage[data-expanded="true"]',
+            '#dufynd-exploded-stage[data-expanded="true"]:not([aria-hidden="true"])',
           );
           if ((await explodedStage.count()) !== 1) {
             throw new Error(
