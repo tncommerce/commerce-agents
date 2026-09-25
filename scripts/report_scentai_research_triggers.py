@@ -153,7 +153,7 @@ def recommended_action(
         return (
             "prioritize_existing_promotion_blockers"
             if level in {"research", "high"}
-            else "monitor_until_affiliate_and_image_gates_clear"
+            else "monitor_until_purchase_destination_and_image_gates_clear"
         )
 
     if kind == "research_backlog":

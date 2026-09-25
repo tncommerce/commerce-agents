@@ -59,7 +59,7 @@
         "merchant_coverage_count": 2,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -128,7 +128,7 @@
         "merchant_coverage_count": 2,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -195,7 +195,7 @@
         "merchant_coverage_count": 3,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -264,7 +264,7 @@
         "merchant_coverage_count": 3,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -333,7 +333,7 @@
         "merchant_coverage_count": 2,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -404,7 +404,7 @@
         "merchant_coverage_count": 2,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -472,7 +472,7 @@
         "merchant_coverage_count": 2,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -538,7 +538,7 @@
         "merchant_coverage_count": 2,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -607,7 +607,7 @@
         "merchant_coverage_count": 3,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -673,7 +673,7 @@
         "merchant_coverage_count": 2,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -749,7 +749,7 @@
         "merchant_coverage_count": 2,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -820,7 +820,7 @@
         "merchant_coverage_count": 2,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -889,7 +889,7 @@
         "merchant_coverage_count": 3,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -966,7 +966,7 @@
         "merchant_coverage_count": 0,
         "merchant_coverage_source": "verification_snapshot",
         "market_status": "current_edition_exists_but_no_verified_current_retail_channel",
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -1043,7 +1043,7 @@
         "merchant_coverage_count": 2,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -1117,7 +1117,7 @@
         "merchant_coverage_count": 3,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -1189,7 +1189,7 @@
         "merchant_coverage_count": 2,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -1261,7 +1261,7 @@
         "merchant_coverage_count": 2,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -1331,7 +1331,7 @@
         "merchant_coverage_count": 2,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -1398,7 +1398,7 @@
         "merchant_coverage_count": 2,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -1472,7 +1472,7 @@
         "merchant_coverage_count": 2,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -1538,7 +1538,7 @@
         "merchant_coverage_count": 2,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -1609,7 +1609,7 @@
         "merchant_coverage_count": 2,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -1681,7 +1681,7 @@
         "merchant_coverage_count": 2,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -1749,7 +1749,7 @@
         "merchant_coverage_count": 2,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -1818,7 +1818,7 @@
         "merchant_coverage_count": 2,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -1895,7 +1895,7 @@
         "merchant_coverage_count": 2,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -1968,7 +1968,7 @@
         "merchant_coverage_count": 2,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -2037,7 +2037,7 @@
         "merchant_coverage_count": 3,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -2104,7 +2104,7 @@
         "merchant_coverage_count": 2,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
@@ -2174,13 +2174,13 @@
         "merchant_coverage_count": 1,
         "merchant_coverage_source": "dufynd_research_wave",
         "market_status": "researched_not_integrated",
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
         "blockers": [
           "canonical_gtin_feed_match_pending",
-          "verified_affiliate_offer_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       },
@@ -2251,13 +2251,13 @@
         "merchant_coverage_count": 2,
         "merchant_coverage_source": "dufynd_research_wave",
         "market_status": "researched_not_integrated",
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
         "blockers": [
           "canonical_gtin_feed_match_pending",
-          "verified_affiliate_offer_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       },
@@ -2327,13 +2327,13 @@
         "merchant_coverage_count": 1,
         "merchant_coverage_source": "dufynd_research_wave",
         "market_status": "researched_not_integrated",
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
         "blockers": [
           "canonical_gtin_feed_match_pending",
-          "verified_affiliate_offer_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       },
@@ -2404,13 +2404,13 @@
         "merchant_coverage_count": 3,
         "merchant_coverage_source": "dufynd_research_wave",
         "market_status": "researched_not_integrated",
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
         "blockers": [
           "canonical_gtin_feed_match_pending",
-          "verified_affiliate_offer_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       },
@@ -2480,13 +2480,13 @@
         "merchant_coverage_count": 2,
         "merchant_coverage_source": "dufynd_research_wave",
         "market_status": "researched_not_integrated",
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
         "blockers": [
           "canonical_gtin_feed_match_pending",
-          "verified_affiliate_offer_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       },
@@ -2560,13 +2560,13 @@
         "merchant_coverage_count": 2,
         "merchant_coverage_source": "dufynd_research_wave",
         "market_status": "researched_not_integrated",
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
         "blockers": [
           "canonical_gtin_feed_match_pending",
-          "verified_affiliate_offer_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       },
@@ -2635,13 +2635,13 @@
         "merchant_coverage_count": 2,
         "merchant_coverage_source": "dufynd_research_wave",
         "market_status": "researched_not_integrated",
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
         "blockers": [
           "canonical_gtin_feed_match_pending",
-          "verified_affiliate_offer_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       },
@@ -2713,13 +2713,13 @@
         "merchant_coverage_count": 1,
         "merchant_coverage_source": "dufynd_research_wave",
         "market_status": "researched_not_integrated",
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
         "blockers": [
           "canonical_gtin_feed_match_pending",
-          "verified_affiliate_offer_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       },
@@ -2791,13 +2791,13 @@
         "merchant_coverage_count": 2,
         "merchant_coverage_source": "dufynd_research_wave",
         "market_status": "researched_not_integrated",
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
         "blockers": [
           "canonical_gtin_feed_match_pending",
-          "verified_affiliate_offer_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       },
@@ -2876,13 +2876,13 @@
         "merchant_coverage_count": 1,
         "merchant_coverage_source": "dufynd_research_wave",
         "market_status": "researched_not_integrated",
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
         "blockers": [
           "canonical_gtin_feed_match_pending",
-          "verified_affiliate_offer_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       },
@@ -2951,13 +2951,13 @@
         "merchant_coverage_count": 1,
         "merchant_coverage_source": "dufynd_research_wave",
         "market_status": "researched_not_integrated",
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
         "blockers": [
           "canonical_gtin_feed_match_pending",
-          "verified_affiliate_offer_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       },
@@ -3031,13 +3031,13 @@
         "merchant_coverage_count": 1,
         "merchant_coverage_source": "dufynd_research_wave",
         "market_status": "researched_not_integrated",
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
         "blockers": [
           "canonical_gtin_feed_match_pending",
-          "verified_affiliate_offer_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       },
@@ -3116,13 +3116,13 @@
         "merchant_coverage_count": 1,
         "merchant_coverage_source": "dufynd_research_wave",
         "market_status": "researched_not_integrated",
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
         "blockers": [
           "canonical_gtin_feed_match_pending",
-          "verified_affiliate_offer_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       },
@@ -3190,13 +3190,13 @@
         "merchant_coverage_count": 1,
         "merchant_coverage_source": "dufynd_research_wave",
         "market_status": "researched_not_integrated",
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
         "blockers": [
           "canonical_gtin_feed_match_pending",
-          "verified_affiliate_offer_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       },
@@ -3268,13 +3268,13 @@
         "merchant_coverage_count": 1,
         "merchant_coverage_source": "dufynd_research_wave",
         "market_status": "researched_not_integrated",
-        "live_offer_status": "pending_affiliate_approval_or_feed"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
         "blockers": [
           "canonical_gtin_feed_match_pending",
-          "verified_affiliate_offer_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       },
