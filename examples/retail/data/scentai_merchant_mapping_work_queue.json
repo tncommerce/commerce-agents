@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated_at": "2026-09-25T18:36:41+00:00",
-  "source_fingerprint_sha256": "f1b8c378388352af02b079d98f82e29aa50246ec0e2910b00dacc5ff33b08d30",
+  "source_fingerprint_sha256": "dbf556b4b9bb09a411fbfdcbcded3346b717501faa99076c80f40e4b1f557c68",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
     "scentai_catalog_staging.json",
@@ -9,10 +9,10 @@
     "scentai_affiliate_programs.json"
   ],
   "summary": {
-    "staged_products": 35,
+    "staged_products": 40,
     "products_with_resolved_mapping": 29,
     "products_with_two_or_more_resolved_mappings": 29,
-    "products_without_resolved_mapping": 6,
+    "products_without_resolved_mapping": 11,
     "affiliate_programs_registered": 9,
     "affiliate_programs_approved": 1,
     "affiliate_programs_pending": 8,
@@ -154,12 +154,107 @@
       "merchants": []
     },
     {
+      "product_id": "SC-CHLOE-NOMADE-EDP-75",
+      "candidate_id": "CHLOE-NOMADE-EDP-75",
+      "brand": "Chloé",
+      "name": "Nomade",
+      "batch": 5,
+      "researched_merchant_count": 2,
+      "mapping_count": 0,
+      "resolved_mapping_count": 0,
+      "full_mapping_count": 0,
+      "state": "mapping_required",
+      "blockers": [
+        "no_resolved_merchant_mapping"
+      ],
+      "next_action": "verify_exact_merchant_product_identity",
+      "action_class": "auto_allowed",
+      "live_activation_action_class": "approval_required",
+      "merchants": []
+    },
+    {
+      "product_id": "SC-ARMANI-ACQUA-DI-GIO-PROFONDO-PARFUM-100",
+      "candidate_id": "ARMANI-ACQUA-DI-GIO-PROFONDO-PARFUM-100",
+      "brand": "Giorgio Armani",
+      "name": "Acqua di Giò Profondo",
+      "batch": 5,
+      "researched_merchant_count": 2,
+      "mapping_count": 0,
+      "resolved_mapping_count": 0,
+      "full_mapping_count": 0,
+      "state": "mapping_required",
+      "blockers": [
+        "no_resolved_merchant_mapping"
+      ],
+      "next_action": "verify_exact_merchant_product_identity",
+      "action_class": "auto_allowed",
+      "live_activation_action_class": "approval_required",
+      "merchants": []
+    },
+    {
+      "product_id": "SC-JPG-LE-MALE-ELIXIR-PARFUM-125",
+      "candidate_id": "JPG-LE-MALE-ELIXIR-PARFUM-125",
+      "brand": "Jean Paul Gaultier",
+      "name": "Le Male Elixir",
+      "batch": 5,
+      "researched_merchant_count": 1,
+      "mapping_count": 0,
+      "resolved_mapping_count": 0,
+      "full_mapping_count": 0,
+      "state": "mapping_required",
+      "blockers": [
+        "no_resolved_merchant_mapping"
+      ],
+      "next_action": "verify_exact_merchant_product_identity",
+      "action_class": "auto_allowed",
+      "live_activation_action_class": "approval_required",
+      "merchants": []
+    },
+    {
       "product_id": "SC-RABANNE-1-MILLION-EDT-100",
       "candidate_id": "RABANNE-1-MILLION-EDT-100",
       "brand": "Rabanne",
       "name": "1 Million",
       "batch": 4,
       "researched_merchant_count": 3,
+      "mapping_count": 0,
+      "resolved_mapping_count": 0,
+      "full_mapping_count": 0,
+      "state": "mapping_required",
+      "blockers": [
+        "no_resolved_merchant_mapping"
+      ],
+      "next_action": "verify_exact_merchant_product_identity",
+      "action_class": "auto_allowed",
+      "live_activation_action_class": "approval_required",
+      "merchants": []
+    },
+    {
+      "product_id": "SC-VALENTINO-DONNA-BORN-IN-ROMA-EDP-100",
+      "candidate_id": "VALENTINO-DONNA-BORN-IN-ROMA-EDP-100",
+      "brand": "Valentino",
+      "name": "Born In Roma Donna",
+      "batch": 5,
+      "researched_merchant_count": 2,
+      "mapping_count": 0,
+      "resolved_mapping_count": 0,
+      "full_mapping_count": 0,
+      "state": "mapping_required",
+      "blockers": [
+        "no_resolved_merchant_mapping"
+      ],
+      "next_action": "verify_exact_merchant_product_identity",
+      "action_class": "auto_allowed",
+      "live_activation_action_class": "approval_required",
+      "merchants": []
+    },
+    {
+      "product_id": "SC-VERSACE-EROS-EDP-100",
+      "candidate_id": "VERSACE-EROS-EDP-100",
+      "brand": "Versace",
+      "name": "Eros Pour Homme",
+      "batch": 5,
+      "researched_merchant_count": 1,
       "mapping_count": 0,
       "resolved_mapping_count": 0,
       "full_mapping_count": 0,
@@ -845,7 +940,7 @@
       "brand": "Lattafa",
       "name": "Angham",
       "batch": 2,
-      "researched_merchant_count": 2,
+      "researched_merchant_count": 3,
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "full_mapping_count": 1,

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated_at": "2026-09-25T18:36:41+00:00",
-  "source_fingerprint_sha256": "f03e9f802b53325660cf71317fe5b780a4d1ef2c641973b46f16f3d7af26f5da",
+  "source_fingerprint_sha256": "eddc71b8f2211a62d3e80e8dff96ffcf1f021c0f4a8bfc6cfc2248072ab73e8e",
   "machine_id": "scentai_image_approval_v1",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
@@ -12,12 +12,12 @@
     "scentai_image_asset_candidates.json"
   ],
   "summary": {
-    "staged_products": 35,
+    "staged_products": 40,
     "release_01_products": 5,
     "release_02_products": 5,
     "release_03_products": 5,
     "approved_images": 0,
-    "pending_images": 35,
+    "pending_images": 40,
     "review_ready": 0,
     "rights_or_source_check_pending": 15,
     "identity_check_pending": 0
@@ -932,6 +932,23 @@
       "approval_action_class": "approval_required"
     },
     {
+      "product_id": "SC-CHLOE-NOMADE-EDP-75",
+      "candidate_id": "CHLOE-NOMADE-EDP-75",
+      "brand": "Chloé",
+      "name": "Nomade",
+      "batch": 5,
+      "release": null,
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
       "product_id": "SC-DIOR-SAUVAGE-ELIXIR-100",
       "candidate_id": "DIOR-SAUVAGE-ELIXIR",
       "brand": "Dior",
@@ -954,6 +971,23 @@
       "brand": "Dolce & Gabbana",
       "name": "The One for Men (2025)",
       "batch": 3,
+      "release": null,
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-ARMANI-ACQUA-DI-GIO-PROFONDO-PARFUM-100",
+      "candidate_id": "ARMANI-ACQUA-DI-GIO-PROFONDO-PARFUM-100",
+      "brand": "Giorgio Armani",
+      "name": "Acqua di Giò Profondo",
+      "batch": 5,
       "release": null,
       "current_image_url": null,
       "current_image_status": "pending_approved_feed_or_manufacturer_image",
@@ -1022,6 +1056,23 @@
       "brand": "Jean Paul Gaultier",
       "name": "Fleur du Mâle (2026)",
       "batch": 2,
+      "release": null,
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-JPG-LE-MALE-ELIXIR-PARFUM-125",
+      "candidate_id": "JPG-LE-MALE-ELIXIR-PARFUM-125",
+      "brand": "Jean Paul Gaultier",
+      "name": "Le Male Elixir",
+      "batch": 5,
       "release": null,
       "current_image_url": null,
       "current_image_status": "pending_approved_feed_or_manufacturer_image",
@@ -1124,6 +1175,40 @@
       "brand": "Rabanne",
       "name": "1 Million",
       "batch": 4,
+      "release": null,
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-VALENTINO-DONNA-BORN-IN-ROMA-EDP-100",
+      "candidate_id": "VALENTINO-DONNA-BORN-IN-ROMA-EDP-100",
+      "brand": "Valentino",
+      "name": "Born In Roma Donna",
+      "batch": 5,
+      "release": null,
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-VERSACE-EROS-EDP-100",
+      "candidate_id": "VERSACE-EROS-EDP-100",
+      "brand": "Versace",
+      "name": "Eros Pour Homme",
+      "batch": 5,
       "release": null,
       "current_image_url": null,
       "current_image_status": "pending_approved_feed_or_manufacturer_image",
