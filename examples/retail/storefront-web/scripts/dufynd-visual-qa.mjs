@@ -428,6 +428,12 @@ try {
               "catalog initial browse is missing progressive disclosure",
             );
           }
+          const catalogSummary = await page.locator("body").innerText();
+          if (!catalogSummary.includes("12 angezeigt")) {
+            throw new Error(
+              "catalog does not disclose the initial visible result count",
+            );
+          }
 
           const naxosCardTruth = page.locator(
             'a[href="/duft/xerjoff-naxos"] img[src="/products/naxos-cutout-production.png"]',
