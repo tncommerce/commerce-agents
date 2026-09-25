@@ -46,11 +46,11 @@ const MOTIFS: { motif: Motif; names: string[] }[] = [
   { motif: "flower", names: ["orange blossom", "neroli", "jasmine", "lavender", "violet", "rose", "iris", "orris", "geranium", "magnolia", "carnation", "floral", "lily", "orchid", "mahonia"] },
   { motif: "citrus", names: ["bergamot", "grapefruit", "lemon", "mandarin", "orange", "lime", "citron", "citrus", "petit grain"] },
   { motif: "leaf", names: ["patchouli", "sage", "rosemary", "basil", "mint", "papyrus", "wormwood"] },
-  { motif: "wood", names: ["akigalawood", "georgywood", "guaiac wood", "wood", "cedar", "sandal", "birch", "oud", "cashmere", "cashmeran"] },
+  { motif: "wood", names: ["akigalawood", "georgywood", "guaiac wood", "wood", "cedar", "cypress", "sandal", "birch", "oud", "cashmere", "cashmeran"] },
   { motif: "spice", names: ["ginger", "cardamom", "cinnamon", "nutmeg", "coriander", "spices"] },
   { motif: "sweet", names: ["tonka", "praline", "chestnut", "coumarin"] },
   { motif: "resin", names: ["labdanum", "elemi", "opium"] },
-  { motif: "fruit", names: ["blackcurrant", "melon"] },
+  { motif: "fruit", names: ["blackcurrant", "raspberry", "melon"] },
   { motif: "fresh", names: ["aldehyde", "aquatic", "ozonic"] },
 ];
 
