@@ -153,7 +153,7 @@ function noteSection(
   notes: string[],
 ) {
   if (!notes.length) return null;
-  const stage = title === "Kopfnote" ? "01" : title === "Herznote" ? "02" : title === "Basisnote" ? "03" : "·";
+  const stage = title === "Kopfnoten" ? "01" : title === "Herznoten" ? "02" : title === "Basisnoten" ? "03" : "·";
 
   return (
     <div>
@@ -611,9 +611,9 @@ export default async function FragrancePage({
               fragrance.notes.heart.length ||
               fragrance.notes.base.length ? (
                 <>
-                  {noteSection("Kopfnote", fragrance.notes.top)}
-                  {noteSection("Herznote", fragrance.notes.heart)}
-                  {noteSection("Basisnote", fragrance.notes.base)}
+                  {noteSection("Kopfnoten", fragrance.notes.top)}
+                  {noteSection("Herznoten", fragrance.notes.heart)}
+                  {noteSection("Basisnoten", fragrance.notes.base)}
                 </>
               ) : (
                 <>
@@ -640,9 +640,9 @@ export default async function FragrancePage({
               fragrance.notes.heart.length ||
               fragrance.notes.base.length ? (
                 <>
-                  {noteSection("Kopfnote", fragrance.notes.top)}
-                  {noteSection("Herznote", fragrance.notes.heart)}
-                  {noteSection("Basisnote", fragrance.notes.base)}
+                  {noteSection("Kopfnoten", fragrance.notes.top)}
+                  {noteSection("Herznoten", fragrance.notes.heart)}
+                  {noteSection("Basisnoten", fragrance.notes.base)}
                 </>
               ) : (
                 <>
@@ -771,7 +771,7 @@ export default async function FragrancePage({
               href="/"
               className="rounded-xl bg-(--ink) px-4 py-2.5 text-[13px] font-semibold text-(--surface)"
             >
-              DUFYND Advisor öffnen
+              DUFYND Duftberater öffnen
             </a>
           </div>
         </section>
