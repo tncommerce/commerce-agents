@@ -29,7 +29,6 @@ def test_all_catalog_notes_have_german_display_labels() -> None:
     assert all(labels[note].strip() for note in notes)
 
 
-
 def test_all_catalog_accords_and_targets_have_german_ui_labels() -> None:
     catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
     catalog_accords: set[str] = set()
