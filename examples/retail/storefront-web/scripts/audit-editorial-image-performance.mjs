@@ -15,7 +15,7 @@ const valueFor = (flag, fallback) => {
 
 const inputDir = path.resolve(
   storefrontRoot,
-  valueFor("--input", "public/products/pilot"),
+  valueFor("--input", "../review-assets/editorial-source-png"),
 );
 const outputDir = path.resolve(
   storefrontRoot,
