@@ -42,38 +42,12 @@
       "finding": "Generated visual lacks the black Saffiano-leather bottle treatment described by Prada and instead reads as a bright silver/clear bottle.",
       "evidence_url": "https://www.prada-beauty.com/fragrance/lhomme-prada/lhomme-prada-eau-de-toilette/8435137749607.html",
       "next_action": "Rebuild from an authorised/reference 100 ml product image preserving the black Saffiano treatment and raised silver Prada logo."
-    },
-    {
-      "product_id": "SC-AL-HARAMAIN-DETOUR-NOIR-100",
-      "asset": "/products/pilot/al-haramain-detour-noir-editorial.png",
-      "priority": "P1",
-      "status": "verify",
-      "finding": "Distinctive bottle geometry needs direct side-by-side verification before product-truth status.",
-      "next_action": "Compare against authorised Al Haramain product imagery before deciding keep versus replace."
-    },
-    {
-      "product_id": "SC-CREED-AVENTUS-100",
-      "asset": "/products/pilot/creed-aventus-editorial.png",
-      "priority": "P1",
-      "status": "verify",
-      "finding": "Bottle label, shoulder treatment and current 100 ml presentation should be checked against an authorised reference.",
-      "next_action": "Perform exact 100 ml bottle-fidelity comparison."
-    },
-    {
-      "product_id": "SC-ARMAF-CDNIM-EDP-200",
-      "asset": "/products/pilot/armaf-club-de-nuit-intense-man-editorial.png",
-      "priority": "P1",
-      "status": "verify",
-      "finding": "Cap, medallion/chain and label details require exact 200 ml EDP verification.",
-      "next_action": "Compare against the official 200 ml EDP presentation."
-    },
-    {
-      "product_id": "SC-MAISON-ASRAR-VANGUARD-100",
-      "asset": "/products/pilot/maison-asrar-vanguard-editorial.png",
-      "priority": "P1",
-      "status": "verify",
-      "finding": "Pattern, typography and cap details should be checked at full resolution against the manufacturer product page.",
-      "next_action": "Run full-resolution label and geometry review."
     }
+  ],
+  "cleared_for_editorial_use": [
+    "SC-AL-HARAMAIN-DETOUR-NOIR-100",
+    "SC-CREED-AVENTUS-100",
+    "SC-ARMAF-CDNIM-EDP-200",
+    "SC-MAISON-ASRAR-VANGUARD-100"
   ]
 }
