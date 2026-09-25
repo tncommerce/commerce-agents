@@ -1,0 +1,79 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-25",
+  "purpose": "Machine-readable queue for DUFYND product visual fidelity review. It does not activate, replace or approve product imagery.",
+  "rules": [
+    "P0 items must not be promoted to verified primary product depictions until replaced or corrected.",
+    "P1 items may remain editorial but require side-by-side verification before product-truth status.",
+    "No paid generation is authorized by this queue.",
+    "A replacement must preserve exact product variant and bottle size."
+  ],
+  "items": [
+    {
+      "product_id": "SC-CREED-ABSOLU-AVENTUS-100",
+      "asset": "/products/pilot/creed-absolu-aventus-editorial.png",
+      "priority": "P0",
+      "status": "replace",
+      "finding": "Illustrated bottle reads 75 ML / 2.5 FL.OZ while the catalog product is 100 ml.",
+      "next_action": "Generate or source a rights-cleared 100 ml-faithful DUFYND visual and run bottle-fidelity QA."
+    },
+    {
+      "product_id": "SC-XERJOFF-NAXOS-100",
+      "asset": "/products/pilot/xerjoff-naxos-editorial.png",
+      "priority": "P0",
+      "status": "replace_or_background_only",
+      "finding": "Editorial bottle geometry conflicts with the separately verified Naxos cutout.",
+      "next_action": "Use verified cutout without the inaccurate bottle backdrop; later create a bottle-free or geometry-faithful editorial scene."
+    },
+    {
+      "product_id": "SC-ARMANI-SWY-INTENSELY-100",
+      "asset": "/products/pilot/armani-swy-intensely-editorial.png",
+      "priority": "P0",
+      "status": "replace",
+      "finding": "Generated scene uses a glossy black spherical stopper rather than the characteristic cast-iron-grey metal cap described by Armani.",
+      "evidence_url": "https://www.armanibeauty.de/dufte/herrenduft/stronger-with-you/stronger-with-you-intensely-eau-de-parfum/3614272225718.html",
+      "next_action": "Rebuild from an authorised/reference 100 ml product image with exact cap and shoulder geometry."
+    },
+    {
+      "product_id": "SC-PRADA-LHOMME-100",
+      "asset": "/products/pilot/prada-lhomme-editorial.png",
+      "priority": "P0",
+      "status": "replace",
+      "finding": "Generated visual lacks the black Saffiano-leather bottle treatment described by Prada and instead reads as a bright silver/clear bottle.",
+      "evidence_url": "https://www.prada-beauty.com/fragrance/lhomme-prada/lhomme-prada-eau-de-toilette/8435137749607.html",
+      "next_action": "Rebuild from an authorised/reference 100 ml product image preserving the black Saffiano treatment and raised silver Prada logo."
+    },
+    {
+      "product_id": "SC-AL-HARAMAIN-DETOUR-NOIR-100",
+      "asset": "/products/pilot/al-haramain-detour-noir-editorial.png",
+      "priority": "P1",
+      "status": "verify",
+      "finding": "Distinctive bottle geometry needs direct side-by-side verification before product-truth status.",
+      "next_action": "Compare against authorised Al Haramain product imagery before deciding keep versus replace."
+    },
+    {
+      "product_id": "SC-CREED-AVENTUS-100",
+      "asset": "/products/pilot/creed-aventus-editorial.png",
+      "priority": "P1",
+      "status": "verify",
+      "finding": "Bottle label, shoulder treatment and current 100 ml presentation should be checked against an authorised reference.",
+      "next_action": "Perform exact 100 ml bottle-fidelity comparison."
+    },
+    {
+      "product_id": "SC-ARMAF-CDNIM-EDP-200",
+      "asset": "/products/pilot/armaf-club-de-nuit-intense-man-editorial.png",
+      "priority": "P1",
+      "status": "verify",
+      "finding": "Cap, medallion/chain and label details require exact 200 ml EDP verification.",
+      "next_action": "Compare against the official 200 ml EDP presentation."
+    },
+    {
+      "product_id": "SC-MAISON-ASRAR-VANGUARD-100",
+      "asset": "/products/pilot/maison-asrar-vanguard-editorial.png",
+      "priority": "P1",
+      "status": "verify",
+      "finding": "Pattern, typography and cap details should be checked at full resolution against the manufacturer product page.",
+      "next_action": "Run full-resolution label and geometry review."
+    }
+  ]
+}
