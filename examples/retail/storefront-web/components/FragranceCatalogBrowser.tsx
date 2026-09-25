@@ -940,7 +940,7 @@ export default function FragranceCatalogBrowser({
               href="/"
               className="mt-2 inline-flex rounded-xl bg-(--ink) px-4 py-2 text-[12px] font-semibold text-(--surface)"
             >
-              DUFYND Advisor öffnen
+              DUFYND Duftberater öffnen
             </a>
           </div>
         </section>
