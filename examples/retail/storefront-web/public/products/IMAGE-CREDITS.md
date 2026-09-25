@@ -31,3 +31,4 @@ documented in `docs/dufynd-product-visual-audit-20260924.md`.
 | File | Product | Provenance | Use |
 |---|---|---|---|
 | `pilot/xerjoff-naxos-editorial.png` | Xerjoff Naxos | Previously approved DUFYND editorial artwork; safe fallback while the damaged campaign-master transfer is excluded | Homepage spotlight and fragrance detail hero |
+| `naxos-cutout-production.png` | Xerjoff Naxos | DUFYND generated/edited product layer; fidelity-reviewed against the recorded Xerjoff reference | Verified product layer for DUFYND presentation; this provenance note is not a claim of ownership over Xerjoff trade dress |
