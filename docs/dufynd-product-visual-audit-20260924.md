@@ -12,7 +12,7 @@ Scope: the 41 local images referenced by `examples/retail/data/catalog.json`, an
 | Square / landscape / portrait | 16 / 18 / 7 | Product detail hero now preserves all edges regardless of aspect ratio. |
 | Verified transparent product cutout linked in catalog | 1 (Naxos) | Layer it over its editorial scene for the 3D pilot. |
 
-The former detail hero used `object-cover`. In a square hero, each 4:3 landscape image lost up to 25% of its horizontal span, and each 4:5 portrait image lost up to 20% of its vertical span before any hover effect. Sixteen of the 32 editorial images have a non-square ratio. The new detail hero uses `contain` and a blurred decorative fill from the same source image. Card previews still intentionally fill their small slots; clicking a card reveals the complete image.
+The former detail hero used `object-cover`. In a square hero, each 4:3 landscape image lost up to 25% of its horizontal span, and each 4:5 portrait image lost up to 20% of its vertical span before any hover effect. Sixteen of the 32 editorial images have a non-square ratio. The detail hero uses `contain` and a blurred decorative fill from the same source image. The catalog grid also uses `contain`: its wide slots previously clipped portrait bottles, including the top of the Supremacy Collector's Edition bottle. The complete source image is now visible in the catalog card against a blurred fill.
 
 The 32 editorial scenes are synthetic or stylized illustrations. Their presence in the catalog does not establish that the label, glass, cap or bottle shape is an exact product depiction. Detail pages identify these images as stylized and say that bottle details may differ. The Naxos cutout is the only currently linked transparent product layer; the background image remains decorative.
 
@@ -28,7 +28,7 @@ The interactive depth treatment rotates and lights image layers; it is not a 3D 
 
 ## QA checklist
 
-- Confirm the complete bottle and text remain in view at 320, 390, 768 and 1440 CSS pixels.
+- Browser screenshot verification at 320, 390, 768 and 1440 CSS pixels remains open. The cloud browser blocks the local preview URL; a passing static build is not visual proof.
 - Verify that Naxos foreground and blurred background render as separate layers, with no doubled label in the foreground.
 - Confirm reduced-motion preference removes perspective motion and glint.
 - Check keyboard navigation and visible labels of offers, comparisons and related products.

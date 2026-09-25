@@ -788,13 +788,12 @@ export default function FragranceCatalogBrowser({
                         className="h-full w-full"
                       />
                     ) : fragrance.image_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={fragrance.image_url}
+                      <FragranceVisual
+                        imageUrl={fragrance.image_url}
                         alt={`${fragrance.brand} ${fragrance.name}`}
-                        loading="lazy"
-                        decoding="async"
-                        className="h-full w-full object-cover transition duration-500 ease-out group-hover:scale-[1.035]"
+                        variant="card"
+                        mode="editorial"
+                        className="h-full w-full"
                       />
                     ) : (
                       <div className="grid h-full place-items-center text-[11px] font-semibold tracking-[0.16em] text-white/65">

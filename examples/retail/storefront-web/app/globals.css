@@ -420,6 +420,18 @@ body {
   transition: filter 320ms ease;
 }
 
+/* Catalogue thumbnails have a wide frame, while several campaign images are
+ * portrait. Keep the entire bottle and label inside the thumbnail. */
+.dufynd-editorial-depth-stage[data-variant="card"] .dufynd-editorial-depth-object {
+  inset: 4%;
+  transform: none;
+}
+
+.dufynd-editorial-depth-stage[data-variant="card"] .dufynd-editorial-depth-image {
+  display: block;
+  object-fit: contain;
+}
+
 /* Detail pages must show every edge of the bottle and its label, even when
  * the supplied artwork is portrait or landscape rather than square. */
 .dufynd-editorial-depth-stage[data-variant="hero"] .dufynd-editorial-depth-object {
@@ -473,6 +485,10 @@ body {
     filter: saturate(1.055) contrast(1.025);
   }
 
+  .dufynd-editorial-depth-stage[data-variant="card"]:hover .dufynd-editorial-depth-object {
+    transform: scale(1.025);
+  }
+
   .dufynd-editorial-depth-stage:hover .dufynd-editorial-depth-glint {
     transform: translateX(62%) rotate(4deg);
     opacity: 0.78;
@@ -497,6 +513,11 @@ body {
 
   .dufynd-editorial-depth-glint {
     display: none;
+  }
+
+  .dufynd-editorial-depth-stage:hover .dufynd-editorial-depth-object,
+  .dufynd-product-stage:hover .dufynd-product-image {
+    transform: none !important;
   }
 }
 
