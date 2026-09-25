@@ -1,0 +1,541 @@
+{
+  "schema_version": "1.0",
+  "wave_id": "DUFYND-CATALOG-EXPANSION-WAVE2-BATCH6",
+  "created_at": "2026-09-25",
+  "status": "research_queue",
+  "purpose": "Continue DUFYND catalog breadth with a controlled five-product Wave 2 intake that improves premium woody, modern men's designer, women's mainstream and affordable gourmand coverage without authorizing live publication.",
+  "selection_rules": [
+    "Must add meaningful customer comparison/advisor coverage rather than catalog volume alone.",
+    "Must not duplicate an existing live or staged DUFYND product ID.",
+    "Exact concentration and 100 ml retail variant must be verified before staging.",
+    "Affiliate commission does not influence product selection.",
+    "Live promotion remains gated by approved imagery, verified current tracked affiliate offers and all existing promotion gates."
+  ],
+  "candidates": [
+    {
+      "priority": 1,
+      "product_id": "SC-TOM-FORD-OUD-WOOD-EDP-100",
+      "brand": "Tom Ford",
+      "name": "Oud Wood",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "target_groups": [
+        "unisex"
+      ],
+      "comparison_role": [
+        "premium_woody_anchor",
+        "office_evening_woody_cluster"
+      ],
+      "rationale": "Adds a major premium woody reference point for office/evening comparisons and complements the existing leather-focused Tom Ford staging coverage.",
+      "variant_status": "verified_retail_variant",
+      "research_state": "official_profile_verified_merchant_evidence_added",
+      "evidence": [
+        {
+          "source": "Tom Ford Beauty",
+          "url": "https://www.tomfordbeauty.co.uk/product/oud-wood-eau-de-parfum?size=100_ml",
+          "checked_at": "2026-09-25"
+        },
+        {
+          "source": "Douglas",
+          "url": "https://www.douglas.de/de/p/3000073069?variant=902442",
+          "checked_at": "2026-09-25"
+        }
+      ],
+      "product_data": {
+        "scent_family": "woody amber",
+        "key_notes": [
+          "cardamom",
+          "pink pepper",
+          "patchouli",
+          "amber",
+          "oud",
+          "tonka bean"
+        ],
+        "source_confidence": "high",
+        "source_kind": "official_brand",
+        "source_url": "https://www.tomfordbeauty.co.uk/product/oud-wood-eau-de-parfum?size=100_ml",
+        "note": "Official Tom Ford Beauty product data confirms the 100 ml Eau de Parfum variant and key-note profile."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "902442",
+          "url": "https://www.douglas.de/de/p/3000073069?variant=902442",
+          "variant": "100 ml Eau de Parfum",
+          "checked_at": "2026-09-25",
+          "affiliate_state": "application_pending"
+        }
+      ],
+      "community": {
+        "source": "Parfumo",
+        "source_url": "https://www.parfumo.com/Perfumes/Tom_Ford/Oud_Wood_Eau_de_Parfum",
+        "checked_at": "2026-09-25",
+        "scope": "fragrance_concentration_not_bottle_size",
+        "rating_10": 8.4,
+        "rating_count": 6784,
+        "longevity_10": 7.1,
+        "longevity_count": 6330,
+        "projection_10": 7.1,
+        "projection_count": 6275,
+        "main_accords": [
+          "woody",
+          "spicy",
+          "oriental",
+          "resinous",
+          "smoky"
+        ],
+        "provisional": false
+      },
+      "identifiers": {
+        "status": "pending_primary_variant_verification",
+        "canonical_gtin": null,
+        "observations": [],
+        "note": "Exact retail variant verified; canonical GTIN/feed matching remains pending."
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image",
+        "queue_priority": 1,
+        "reference_page": "https://www.tomfordbeauty.co.uk/product/oud-wood-eau-de-parfum?size=100_ml",
+        "required_variant": {
+          "concentration": "Eau de Parfum",
+          "volume_ml": 100
+        },
+        "blockers": [
+          "approved_image_source_pending",
+          "exact_bottle_and_packaging_review_pending"
+        ]
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "priority": 2,
+      "product_id": "SC-PRADA-PARADIGME-EDP-100",
+      "brand": "Prada",
+      "name": "Paradigme",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "target_groups": [
+        "men"
+      ],
+      "comparison_role": [
+        "modern_mens_designer_anchor",
+        "amber_woody_cluster"
+      ],
+      "rationale": "Adds a current Prada men's designer anchor and closes a modern amber-woody comparison gap around the existing Prada catalog.",
+      "variant_status": "verified_retail_variant",
+      "research_state": "official_profile_verified_merchant_evidence_added",
+      "evidence": [
+        {
+          "source": "Prada Beauty",
+          "url": "https://www.prada-beauty.com/fragrance/paradigme/paradigme-eau-de-parfum/3614274172997.html?gclsrc=aw.ds&geo=false",
+          "checked_at": "2026-09-25"
+        },
+        {
+          "source": "Douglas",
+          "url": "https://www.douglas.de/de/p/5011831044",
+          "checked_at": "2026-09-25"
+        }
+      ],
+      "product_data": {
+        "scent_family": "amber woody",
+        "key_notes": [
+          "ambery woods",
+          "bourbon geranium",
+          "calabrian bergamot"
+        ],
+        "source_confidence": "high",
+        "source_kind": "official_brand",
+        "source_url": "https://www.prada-beauty.com/fragrance/paradigme/paradigme-eau-de-parfum/3614274172997.html?gclsrc=aw.ds&geo=false",
+        "note": "Official Prada Beauty data confirms the Paradigme Eau de Parfum profile; the exact 100 ml retail variant is separately verified."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "5011831044",
+          "url": "https://www.douglas.de/de/p/5011831044",
+          "variant": "100 ml Eau de Parfum",
+          "checked_at": "2026-09-25",
+          "affiliate_state": "application_pending"
+        }
+      ],
+      "community": {
+        "source": "Parfumo",
+        "source_url": "https://www.parfumo.com/Perfumes/Prada/paradigme-eau-de-parfum",
+        "checked_at": "2026-09-25",
+        "scope": "fragrance_concentration_not_bottle_size",
+        "rating_10": 6.7,
+        "rating_count": 971,
+        "longevity_10": 6.8,
+        "longevity_count": 787,
+        "projection_10": 6.7,
+        "projection_count": 791,
+        "main_accords": [
+          "sweet",
+          "synthetic",
+          "fresh",
+          "woody",
+          "spicy"
+        ],
+        "provisional": false
+      },
+      "identifiers": {
+        "status": "pending_primary_variant_verification",
+        "canonical_gtin": null,
+        "observations": [],
+        "note": "Exact retail variant verified; canonical GTIN/feed matching remains pending."
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image",
+        "queue_priority": 2,
+        "reference_page": "https://www.prada-beauty.com/fragrance/paradigme/paradigme-eau-de-parfum/3614274172997.html?gclsrc=aw.ds&geo=false",
+        "required_variant": {
+          "concentration": "Eau de Parfum",
+          "volume_ml": 100
+        },
+        "blockers": [
+          "approved_image_source_pending",
+          "exact_bottle_and_packaging_review_pending"
+        ]
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "priority": 3,
+      "product_id": "SC-ARMANI-SI-EDP-100",
+      "brand": "Giorgio Armani",
+      "name": "Sì",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "target_groups": [
+        "women"
+      ],
+      "comparison_role": [
+        "mainstream_women_anchor",
+        "sweet_fruity_floral_cluster"
+      ],
+      "rationale": "Strengthens women's mainstream coverage with an established Armani reference and improves sweet-fruity-floral comparison depth.",
+      "variant_status": "verified_retail_variant",
+      "research_state": "official_profile_verified_merchant_evidence_added",
+      "evidence": [
+        {
+          "source": "Armani Beauty",
+          "url": "https://www.armanibeauty.de/dufte/damenduft/si/si-eau-de-parfum/3605521816658.html",
+          "checked_at": "2026-09-25"
+        },
+        {
+          "source": "Douglas",
+          "url": "https://www.douglas.de/de/p/3000067486?variant=753263",
+          "checked_at": "2026-09-25"
+        }
+      ],
+      "product_data": {
+        "scent_family": "sweet fruity floral",
+        "key_notes": [
+          "blackcurrant",
+          "rose",
+          "patchouli"
+        ],
+        "source_confidence": "high",
+        "source_kind": "official_brand",
+        "source_url": "https://www.armanibeauty.de/dufte/damenduft/si/si-eau-de-parfum/3605521816658.html",
+        "note": "Official Armani Beauty data confirms Sì Eau de Parfum 100 ml; the official fragrance profile highlights blackcurrant, rose and patchouli."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "753263",
+          "url": "https://www.douglas.de/de/p/3000067486?variant=753263",
+          "variant": "100 ml Eau de Parfum",
+          "checked_at": "2026-09-25",
+          "affiliate_state": "application_pending"
+        }
+      ],
+      "community": {
+        "source": "Parfumo",
+        "source_url": "https://www.parfumo.com/Perfumes/Giorgio_Armani/Si",
+        "checked_at": "2026-09-25",
+        "scope": "fragrance_concentration_not_bottle_size",
+        "rating_10": 7.3,
+        "rating_count": 1260,
+        "longevity_10": 7.6,
+        "longevity_count": 1039,
+        "projection_10": 7.3,
+        "projection_count": 1035,
+        "main_accords": [
+          "sweet",
+          "fruity",
+          "floral",
+          "gourmand",
+          "woody"
+        ],
+        "provisional": false
+      },
+      "identifiers": {
+        "status": "pending_primary_variant_verification",
+        "canonical_gtin": null,
+        "observations": [],
+        "note": "Exact retail variant verified; canonical GTIN/feed matching remains pending."
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image",
+        "queue_priority": 3,
+        "reference_page": "https://www.armanibeauty.de/dufte/damenduft/si/si-eau-de-parfum/3605521816658.html",
+        "required_variant": {
+          "concentration": "Eau de Parfum",
+          "volume_ml": 100
+        },
+        "blockers": [
+          "approved_image_source_pending",
+          "exact_bottle_and_packaging_review_pending"
+        ]
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "priority": 4,
+      "product_id": "SC-LATTAFA-KHAMRAH-EDP-100",
+      "brand": "Lattafa",
+      "name": "Khamrah",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "target_groups": [
+        "unisex"
+      ],
+      "comparison_role": [
+        "arabic_value_anchor",
+        "gourmand_vanilla_cluster"
+      ],
+      "rationale": "Adds a high-demand affordable Arabic gourmand reference and improves DUFYND's value-oriented vanilla/gourmand recommendation coverage.",
+      "variant_status": "verified_retail_variant",
+      "research_state": "retailer_profile_verified_merchant_evidence_added",
+      "evidence": [
+        {
+          "source": "Notino",
+          "url": "https://www.notino.de/lattafa/khamrah-eau-de-parfum-unisex/",
+          "checked_at": "2026-09-25"
+        }
+      ],
+      "product_data": {
+        "scent_family": "oriental gourmand",
+        "notes": {
+          "top": [
+            "cinnamon",
+            "nutmeg",
+            "bergamot"
+          ],
+          "heart": [
+            "praline",
+            "date",
+            "tuberose",
+            "mahonia"
+          ],
+          "base": [
+            "vanilla",
+            "tonka bean",
+            "myrrh",
+            "benzoin",
+            "Akigalawood",
+            "amber"
+          ]
+        },
+        "source_confidence": "medium_high",
+        "source_kind": "retailer_product_data",
+        "source_url": "https://www.notino.de/lattafa/khamrah-eau-de-parfum-unisex/",
+        "note": "Notino verifies the 100 ml unisex Eau de Parfum retail variant and current note pyramid."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "notino",
+          "merchant_product_id": "LTF00307",
+          "url": "https://www.notino.de/lattafa/khamrah-eau-de-parfum-unisex/",
+          "variant": "100 ml Eau de Parfum",
+          "checked_at": "2026-09-25",
+          "affiliate_state": "cj_application_pending"
+        }
+      ],
+      "community": {
+        "source": "Parfumo",
+        "source_url": "https://www.parfumo.com/Perfumes/Lattafa/khamrah",
+        "checked_at": "2026-09-25",
+        "scope": "fragrance_concentration_not_bottle_size",
+        "rating_10": 7.9,
+        "rating_count": 4700,
+        "longevity_10": 8.4,
+        "longevity_count": 4462,
+        "projection_10": 8.2,
+        "projection_count": 4443,
+        "main_accords": [
+          "sweet",
+          "gourmand",
+          "oriental",
+          "spicy",
+          "creamy"
+        ],
+        "provisional": false
+      },
+      "identifiers": {
+        "status": "pending_primary_variant_verification",
+        "canonical_gtin": null,
+        "observations": [],
+        "note": "Exact retail variant verified; canonical GTIN/feed matching remains pending."
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image",
+        "queue_priority": 4,
+        "reference_page": "https://www.notino.de/lattafa/khamrah-eau-de-parfum-unisex/",
+        "required_variant": {
+          "concentration": "Eau de Parfum",
+          "volume_ml": 100
+        },
+        "blockers": [
+          "approved_image_source_pending",
+          "exact_bottle_and_packaging_review_pending"
+        ]
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    },
+    {
+      "priority": 5,
+      "product_id": "SC-GUCCI-FLORA-GORGEOUS-GARDENIA-EDP-100",
+      "brand": "Gucci",
+      "name": "Flora Gorgeous Gardenia",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "target_groups": [
+        "women"
+      ],
+      "comparison_role": [
+        "mainstream_women_anchor",
+        "floral_sweet_fruity_cluster"
+      ],
+      "rationale": "Adds another recognizable women's designer anchor and broadens floral/sweet/fresh comparisons without duplicating existing staging.",
+      "variant_status": "verified_retail_variant",
+      "research_state": "official_profile_verified_merchant_evidence_added",
+      "evidence": [
+        {
+          "source": "Gucci",
+          "url": "https://www.gucci.com/de/de/pr/beauty/fragrances/fragrances-for-women/gucci-flora-gorgeous-gardenia-100ml-eau-de-parfum-p-667343999990099",
+          "checked_at": "2026-09-25"
+        },
+        {
+          "source": "Douglas",
+          "url": "https://www.douglas.de/de/p/5010091002",
+          "checked_at": "2026-09-25"
+        }
+      ],
+      "product_data": {
+        "scent_family": "floral sweet fruity",
+        "notes": {
+          "top": [
+            "floral notes",
+            "Italian mandarin",
+            "red berries"
+          ],
+          "heart": [
+            "white gardenia",
+            "jasmine",
+            "frangipani"
+          ],
+          "base": [
+            "patchouli",
+            "brown sugar"
+          ]
+        },
+        "source_confidence": "high",
+        "source_kind": "official_brand",
+        "source_url": "https://www.gucci.com/de/de/pr/beauty/fragrances/fragrances-for-women/gucci-flora-gorgeous-gardenia-100ml-eau-de-parfum-p-667343999990099",
+        "note": "Official Gucci Germany data confirms the 100 ml Eau de Parfum variant and fragrance-note structure."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "5010091002",
+          "url": "https://www.douglas.de/de/p/5010091002",
+          "variant": "100 ml Eau de Parfum",
+          "checked_at": "2026-09-25",
+          "affiliate_state": "application_pending"
+        }
+      ],
+      "community": {
+        "source": "Parfumo",
+        "source_url": "https://www.parfumo.com/Perfumes/Gucci/flora-gorgeous-gardenia-eau-de-parfum",
+        "checked_at": "2026-09-25",
+        "scope": "fragrance_concentration_not_bottle_size",
+        "rating_10": 7.4,
+        "rating_count": 725,
+        "longevity_10": 6.5,
+        "longevity_count": 614,
+        "projection_10": 6.4,
+        "projection_count": 606,
+        "main_accords": [
+          "floral",
+          "sweet",
+          "fruity",
+          "fresh",
+          "synthetic"
+        ],
+        "provisional": false
+      },
+      "identifiers": {
+        "status": "pending_primary_variant_verification",
+        "canonical_gtin": null,
+        "observations": [],
+        "note": "Exact retail variant verified; canonical GTIN/feed matching remains pending."
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image",
+        "queue_priority": 5,
+        "reference_page": "https://www.gucci.com/de/de/pr/beauty/fragrances/fragrances-for-women/gucci-flora-gorgeous-gardenia-100ml-eau-de-parfum-p-667343999990099",
+        "required_variant": {
+          "concentration": "Eau de Parfum",
+          "volume_ml": 100
+        },
+        "blockers": [
+          "approved_image_source_pending",
+          "exact_bottle_and_packaging_review_pending"
+        ]
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending"
+        ]
+      }
+    }
+  ]
+}
