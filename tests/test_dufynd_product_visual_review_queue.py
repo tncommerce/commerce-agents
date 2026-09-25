@@ -67,15 +67,11 @@ def test_p0_candidates_are_reviewable_but_not_active_product_truth() -> None:
     candidate_urls = {item["candidate_asset"] for item in queue["items"]}
 
     active_urls = {
-        product["image_url"]
-        for product in source["products"]
-        if product.get("image_url")
+        product["image_url"] for product in source["products"] if product.get("image_url")
     }
     for product in source["products"]:
         active_urls.update(
-            visual["url"]
-            for visual in product.get("visuals", [])
-            if visual.get("url")
+            visual["url"] for visual in product.get("visuals", []) if visual.get("url")
         )
 
     for product in static_catalog["products"]:
