@@ -158,6 +158,21 @@ try {
         }
 
         if (target.name === "naxos") {
+          if (viewport.width < 1024) {
+            const notesDetails = page
+              .locator("details")
+              .filter({ hasText: "Duftnoten" })
+              .first();
+            if (await notesDetails.isVisible()) {
+              const isOpen = await notesDetails.evaluate(
+                (element) => element.hasAttribute("open"),
+              );
+              if (!isOpen) {
+                await notesDetails.locator("summary").click();
+              }
+            }
+          }
+
           const verifiedCutout = page.locator(
             'img[src="/products/naxos-cutout-production.png"]',
           );
@@ -172,6 +187,23 @@ try {
           if (missingNotes.length) {
             throw new Error(
               `Naxos German note labels missing: ${missingNotes.join(", ")}`,
+            );
+          }
+
+          const notesMissingIcons = await page.evaluate((expectedNotes) => {
+            const spans = Array.from(document.querySelectorAll("span"));
+            return expectedNotes.filter(
+              (note) =>
+                !spans.some(
+                  (span) =>
+                    span.textContent?.trim() === note &&
+                    Boolean(span.querySelector("svg")),
+                ),
+            );
+          }, naxosGermanNotes);
+          if (notesMissingIcons.length) {
+            throw new Error(
+              `Naxos note icons missing in rendered layout: ${notesMissingIcons.join(", ")}`,
             );
           }
 
