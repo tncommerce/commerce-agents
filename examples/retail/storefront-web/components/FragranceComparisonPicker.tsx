@@ -5,7 +5,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import FragranceOffers from "@/components/FragranceOffers";
 import FragranceVisual from "@/components/FragranceVisual";
 import { trackAnalyticsEvent } from "@/lib/analytics";
-import type { StaticFragrance } from "@/lib/fragranceCatalog";
+import {
+  isVerifiedProductTruthVisual,
+  type StaticFragrance,
+} from "@/lib/fragranceCatalog";
 import { formatPriceReference } from "@/lib/priceReference";
 
 function formatRating(value: number | null): string {
@@ -61,16 +64,20 @@ function ProductMiniHeader({
 }: {
   fragrance: StaticFragrance;
 }) {
+  const visual = fragrance.preferred_visual;
+  const isProductTruth = isVerifiedProductTruthVisual(visual);
+
   return (
     <a
       href={`/duft/${fragrance.slug}`}
       className="overflow-hidden rounded-2xl border border-(--line) bg-(--card) shadow-(--shadow-sm) transition hover:border-(--ink)"
     >
       <FragranceVisual
-        imageUrl={fragrance.image_url}
-        cutoutUrl={fragrance.cutout_image_url}
+        imageUrl={visual?.url}
+        cutoutUrl={isProductTruth ? visual?.url : undefined}
         alt={`${fragrance.brand} ${fragrance.name}`}
         variant="card"
+        mode={isProductTruth ? "cutout" : "editorial"}
         className="h-40 w-full"
       />
       <div className="p-3.5">

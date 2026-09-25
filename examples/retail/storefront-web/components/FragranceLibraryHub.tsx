@@ -12,7 +12,10 @@ import {
   readFragranceLibrary,
   type FragranceLibraryState,
 } from "@/lib/fragranceLibrary";
-import type { StaticFragrance } from "@/lib/fragranceCatalog";
+import {
+  isVerifiedProductTruthVisual,
+  type StaticFragrance,
+} from "@/lib/fragranceCatalog";
 
 type LibraryMode = "wishlist" | "owned";
 
@@ -225,6 +228,9 @@ function FragranceCard({
   fragrance: StaticFragrance;
   source: string;
 }) {
+  const visual = fragrance.preferred_visual;
+  const isProductTruth = isVerifiedProductTruthVisual(visual);
+
   return (
     <article className="overflow-hidden rounded-2xl border border-(--line) bg-(--card) shadow-(--shadow-sm)">
       <a
@@ -232,10 +238,11 @@ function FragranceCard({
         className="group block"
       >
         <FragranceVisual
-          imageUrl={fragrance.image_url}
-          cutoutUrl={fragrance.cutout_image_url}
+          imageUrl={visual?.url}
+          cutoutUrl={isProductTruth ? visual?.url : undefined}
           alt={`${fragrance.brand} ${fragrance.name}`}
           variant="card"
+          mode={isProductTruth ? "cutout" : "editorial"}
           className="h-48 w-full"
         />
 

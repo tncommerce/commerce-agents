@@ -8,6 +8,7 @@ import FragranceVisual from "@/components/FragranceVisual";
 import {
   EXPLICIT_COMPARISON_PAIRS,
   getComparisonPair,
+  isVerifiedProductTruthVisual,
   type ExplicitComparisonPair,
   type StaticFragrance,
 } from "@/lib/fragranceCatalog";
@@ -92,14 +93,18 @@ function ProductHeader({
 }: {
   fragrance: StaticFragrance;
 }) {
+  const visual = fragrance.preferred_visual;
+  const isProductTruth = isVerifiedProductTruthVisual(visual);
+
   return (
     <div className="overflow-hidden rounded-2xl border border-(--line) bg-(--card)">
       <a href={`/duft/${fragrance.slug}`}>
         <FragranceVisual
-          imageUrl={fragrance.image_url}
-          cutoutUrl={fragrance.cutout_image_url}
+          imageUrl={visual?.url}
+          cutoutUrl={isProductTruth ? visual?.url : undefined}
           alt={`${fragrance.brand} ${fragrance.name}`}
           variant="card"
+          mode={isProductTruth ? "cutout" : "editorial"}
           className="h-56 w-full"
         />
         <div className="p-4">

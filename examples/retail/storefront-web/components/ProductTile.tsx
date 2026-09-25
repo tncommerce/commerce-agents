@@ -11,6 +11,10 @@ import { trackAnalyticsEvent } from "@/lib/analytics";
 import { flyToCart } from "@/lib/flight";
 import { attributeChips, productGlyph, productTileClass } from "@/lib/format";
 import { STORE_POLICY } from "@/lib/storePolicy";
+import {
+  getLiveFragranceByProductId,
+  isVerifiedProductTruthVisual,
+} from "@/lib/fragranceCatalog";
 
 /** A trailing parenthetical such as "(48-Pack)" is kept unbreakable so the clamp cuts before it. */
 export function ProductTitle({ title, className = "" }: { title: string; className?: string }) {
@@ -37,22 +41,50 @@ function ReturnsPromise({ className = "" }: { className?: string }) {
 }
 
 export function ProductImage({ product, className = "" }: { product: Product; className?: string }) {
-  if (product.image_url) {
-    const isDufynd = String(product.product_id).startsWith("SC-");
+  const isDufynd = String(product.product_id).startsWith("SC-");
 
-    if (isDufynd) {
+  if (isDufynd) {
+    const fragrance = getLiveFragranceByProductId(
+      String(product.product_id),
+    );
+    const visual = fragrance?.preferred_visual;
+    const isProductTruth =
+      isVerifiedProductTruthVisual(visual);
+    const imageUrl = visual?.url || product.image_url;
+
+    if (imageUrl) {
       return (
         <FragranceVisual
-          imageUrl={product.image_url}
-          cutoutUrl={product.attributes?.product_cutout_url}
+          imageUrl={imageUrl}
+          cutoutUrl={isProductTruth ? imageUrl : undefined}
           alt={product.title}
           variant="card"
-          mode={product.attributes?.product_cutout_url ? "cutout" : "editorial"}
+          mode={isProductTruth ? "cutout" : "editorial"}
           className={className}
         />
       );
     }
 
+    return (
+      <div
+        className={`relative flex items-center justify-center overflow-hidden ${productTileClass(product.product_id)} ${className}`}
+        aria-hidden
+      >
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8),transparent_70%)]" />
+        <div className="relative flex flex-col items-center">
+          <div className="h-3 w-9 rounded-t-sm bg-(--ink)/80" />
+          <div className="h-3 w-6 bg-(--ink)/65" />
+          <div className="flex h-20 w-16 items-center justify-center rounded-[18px] border border-white/80 bg-white/70 shadow-md backdrop-blur-sm">
+            <span className="text-[9px] font-semibold tracking-[0.18em] text-(--ink)/75">
+              DUFYND
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (product.image_url) {
     // eslint-disable-next-line @next/next/no-img-element
     return (
       <div className={`flex items-center justify-center overflow-hidden ${className}`}>
@@ -61,29 +93,6 @@ export function ProductImage({ product, className = "" }: { product: Product; cl
           alt={product.title}
           className="h-full w-full object-cover"
         />
-      </div>
-    );
-  }
-  const isDufynd = String(product.product_id).startsWith("SC-");
-
-  if (isDufynd) {
-    return (
-      <div
-        className={`relative flex items-center justify-center overflow-hidden ${productTileClass(product.product_id)} ${className}`}
-        aria-hidden
-      >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8),transparent_70%)]" />
-
-        <div className="relative flex flex-col items-center">
-          <div className="h-3 w-9 rounded-t-sm bg-(--ink)/80" />
-          <div className="h-3 w-6 bg-(--ink)/65" />
-
-          <div className="flex h-20 w-16 items-center justify-center rounded-[18px] border border-white/80 bg-white/70 shadow-md backdrop-blur-sm">
-            <span className="text-[9px] font-semibold tracking-[0.18em] text-(--ink)/75">
-              DUFYND
-            </span>
-          </div>
-        </div>
       </div>
     );
   }
