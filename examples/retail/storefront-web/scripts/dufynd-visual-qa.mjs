@@ -43,6 +43,7 @@ const routes = [
     marker: "Stronger With You Intensely",
   },
   { name: "vibrato", route: "/duft/sospiro-vibrato", marker: "Vibrato" },
+  { name: "widian-london", route: "/duft/widian-london", marker: "London" },
 ];
 
 const forbiddenUi = [
