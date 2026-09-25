@@ -3623,6 +3623,49 @@
         "Easier than boxed mix, tastes pastry-case",
         "Our weekend ritual closer"
       ]
+    },
+    {
+      "product_id": "SC-WIDIAN-LONDON-EDP-100",
+      "title": "Widian London Eau de Parfum 100 ml",
+      "image_url": "/products/widian-london-editorial-user-higgsfield.webp",
+      "brand": "Widian",
+      "price": 330,
+      "currency": "EUR",
+      "rating": 4.6,
+      "review_count": 609,
+      "category": "fragrance",
+      "labels": [
+        "leathery",
+        "fruity",
+        "sweet",
+        "spicy",
+        "woody",
+        "benchmark"
+      ],
+      "attributes": {
+        "canonical_name": "London",
+        "community_rating_10": "9.2",
+        "rating_source": "Parfumo",
+        "volume_ml": "100",
+        "concentration": "Eau de Parfum",
+        "target_group": "unisex",
+        "main_accords": "leathery, fruity, sweet, spicy, woody",
+        "freshness": "2",
+        "sweetness": "7",
+        "woodiness": "7",
+        "spiciness": "5",
+        "longevity": "8.8",
+        "projection": "8.6",
+        "cluster_id": "widian-london",
+        "relationship_role": "benchmark",
+        "trend_bet": "false",
+        "evidence_confidence": "high",
+        "market_price_eur": "330",
+        "price_per_ml_eur": "3.3",
+        "price_checked_at": "2026-09-25"
+      },
+      "in_stock": true,
+      "short_description": "Widian London is a leathery, fruity, sweet Eau de Parfum fragrance."
     }
   ]
 }
