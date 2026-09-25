@@ -116,6 +116,7 @@ export default function FragranceExplodedNotes({
         <button
           type="button"
           aria-pressed={expanded}
+          aria-expanded={expanded}
           aria-controls="dufynd-exploded-stage"
           onClick={() => setExpanded((value) => !value)}
           className="rounded-xl border border-(--line-strong) bg-(--surface) px-3.5 py-2.5 text-[11.5px] font-semibold text-(--ink) shadow-sm transition hover:-translate-y-0.5 hover:border-(--ink)"
