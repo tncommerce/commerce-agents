@@ -230,6 +230,34 @@ try {
             );
           }
         }
+
+        if (
+          viewport.width < 640 &&
+          !["home", "catalog"].includes(target.name)
+        ) {
+          const mobileOfferBar = page.locator(".dufynd-mobile-offer-bar");
+          if (
+            (await mobileOfferBar.count()) !== 1 ||
+            !(await mobileOfferBar.isVisible())
+          ) {
+            throw new Error(
+              "mobile fragrance page is missing the fixed offer bar",
+            );
+          }
+
+          const bottomPadding = await mobileOfferBar.evaluate((element) => {
+            const value = Number.parseFloat(
+              window.getComputedStyle(element).paddingBottom,
+            );
+            return Number.isFinite(value) ? value : 0;
+          });
+          if (bottomPadding < 9.5) {
+            throw new Error(
+              `mobile offer bar lacks safe-area bottom padding: ${bottomPadding}px`,
+            );
+          }
+        }
+
         if (target.name === "naxos") {
           if (viewport.width < 1024) {
             const notesDetails = page
