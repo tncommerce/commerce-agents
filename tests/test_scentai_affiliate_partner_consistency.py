@@ -23,7 +23,8 @@ def test_affiliate_programs_match_partner_registry_state() -> None:
     tracked = [
         row
         for row in applications
-        if row.get("status") in {"applied", "applied_pending", "approved"}
+        if row.get("status")
+        in {"applied", "applied_pending", "approved", "rejected"}
     ]
 
     assert tracked
@@ -46,6 +47,15 @@ def test_affiliate_programs_match_partner_registry_state() -> None:
             )
             assert partner.get("affiliate_url") is None, (
                 f"{merchant_id}: pending partner must not expose a guessed affiliate URL"
+            )
+            continue
+
+        if status == "rejected":
+            assert partner["status"] == "rejected", (
+                f"{merchant_id}: rejected program must be explicit in partner registry"
+            )
+            assert partner.get("affiliate_url") is None, (
+                f"{merchant_id}: rejected partner must not expose an affiliate URL"
             )
             continue
 
