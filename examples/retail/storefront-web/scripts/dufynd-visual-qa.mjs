@@ -41,6 +41,8 @@ const forbiddenUi = [
   "3D View",
   "Immersive View",
   "Performance",
+  "Verified Product Truth",
+  "Exploded View",
 ];
 
 const naxosGermanNotes = [

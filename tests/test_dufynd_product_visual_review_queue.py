@@ -60,6 +60,8 @@ def test_product_visual_review_queue_references_catalog_products() -> None:
 
 
 def test_p0_candidates_are_reviewable_but_not_active_product_truth() -> None:
+    assert not (PUBLIC_ROOT / "products/candidates").exists()
+
     source = json.loads(CATALOG.read_text(encoding="utf-8"))
     static_catalog = json.loads(STATIC_CATALOG.read_text(encoding="utf-8"))
     queue = json.loads(QUEUE.read_text(encoding="utf-8"))

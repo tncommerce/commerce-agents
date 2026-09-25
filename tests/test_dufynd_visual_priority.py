@@ -44,3 +44,11 @@ def test_only_verified_primary_or_cutout_count_as_product_truth() -> None:
     assert "isVerifiedProductTruthVisual" in source
     assert 'visual.fidelity_status === "verified"' in source
     assert '(visual.role === "primary" || visual.role === "cutout")' in source
+
+
+
+def test_pending_or_rejected_visuals_never_reach_public_surfaces() -> None:
+    source = CATALOG_ADAPTER.read_text(encoding="utf-8")
+
+    assert 'visual.fidelity_status !== "rejected"' in source
+    assert 'visual.fidelity_status !== "pending_review"' in source

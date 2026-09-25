@@ -158,7 +158,8 @@ function activeVisuals(source: SourceRow | undefined): FragranceVisualAsset[] {
   return (source?.visuals || []).filter(
     (visual) =>
       Boolean(visual.url?.trim()) &&
-      visual.fidelity_status !== "rejected",
+      visual.fidelity_status !== "rejected" &&
+      visual.fidelity_status !== "pending_review",
   );
 }
 
