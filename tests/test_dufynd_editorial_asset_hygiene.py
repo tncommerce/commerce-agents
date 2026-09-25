@@ -30,9 +30,7 @@ def test_public_pilot_editorials_are_referenced_by_live_product_data() -> None:
 
     referenced = _collect_strings(source) | _collect_strings(catalog)
     public_assets = {
-        f"/products/pilot/{path.name}"
-        for path in PILOT_DIR.iterdir()
-        if path.is_file()
+        f"/products/pilot/{path.name}" for path in PILOT_DIR.iterdir() if path.is_file()
     }
 
     orphaned = sorted(public_assets - referenced)
