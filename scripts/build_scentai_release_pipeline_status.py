@@ -77,7 +77,7 @@ def build_release_pipeline_status(
         if promotion_ready == release_size and release_size > 0:
             gate_state = "product_gates_ready"
         elif int(summary.get("approved_images", 0) or 0) == 0:
-            gate_state = "blocked_pending_images_and_affiliate_offers"
+            gate_state = "blocked_pending_images_and_purchase_destinations"
         else:
             gate_state = "blocked_pending_remaining_product_gates"
 
