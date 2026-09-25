@@ -86,3 +86,153 @@ jobs:
         run: npm ci
       - name: Build every app
         run: npm run build
+
+
+  dufynd-source-trim-audit:
+    # Temporary PR #67 source-asset audit. Produces candidates only; does not
+    # modify repository images.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+      - name: Install image audit dependency
+        run: python -m pip install pillow==12.3.0
+      - name: Build white-canvas trim candidates
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image, ImageDraw, ImageFont, ImageOps
+
+          root = Path("examples/retail/storefront-web/public/products/pilot")
+          out = Path("dufynd-trim-candidates")
+          out.mkdir(exist_ok=True)
+          files = sorted(
+              p for p in root.iterdir()
+              if p.suffix.lower() in {".png", ".jpg", ".jpeg", ".webp"}
+          )
+          assert files
+
+          def edge_crop(im):
+              rgb = im.convert("RGB")
+              px = rgb.load()
+              width, height = rgb.size
+
+              def row_white(y):
+                  return (
+                      sum(1 for x in range(width) if min(px[x, y]) >= 245)
+                      / width
+                      >= 0.96
+                  )
+
+              def col_white(x):
+                  return (
+                      sum(1 for y in range(height) if min(px[x, y]) >= 245)
+                      / height
+                      >= 0.96
+                  )
+
+              top = 0
+              while top < height - 1 and row_white(top):
+                  top += 1
+              bottom = height
+              while bottom > top + 1 and row_white(bottom - 1):
+                  bottom -= 1
+              left = 0
+              while left < width - 1 and col_white(left):
+                  left += 1
+              right = width
+              while right > left + 1 and col_white(right - 1):
+                  right -= 1
+
+              top = top if top >= max(8, int(height * 0.025)) else 0
+              bottom_trim = height - bottom
+              bottom_trim = (
+                  bottom_trim
+                  if bottom_trim >= max(8, int(height * 0.025))
+                  else 0
+              )
+              left = left if left >= max(8, int(width * 0.025)) else 0
+              right_trim = width - right
+              right_trim = (
+                  right_trim
+                  if right_trim >= max(8, int(width * 0.025))
+                  else 0
+              )
+
+              box = (
+                  left,
+                  top,
+                  width - right_trim,
+                  height - bottom_trim,
+              )
+              margins = (left, top, right_trim, bottom_trim)
+              if not any(margins):
+                  return rgb, margins
+              return rgb.crop(box), margins
+
+          rows = [
+              "file,width,height,trim_left,trim_top,trim_right,trim_bottom,needs_trim"
+          ]
+          candidates = []
+          for path in files:
+              source = Image.open(path)
+              trimmed, margins = edge_crop(source)
+              needs_trim = any(margins)
+              rows.append(
+                  f"{path.name},{source.width},{source.height},"
+                  f"{margins[0]},{margins[1]},{margins[2]},{margins[3]},"
+                  f"{str(needs_trim).lower()}"
+              )
+              if needs_trim:
+                  target = out / path.name
+                  trimmed.save(target)
+              candidates.append((path.stem.replace("-editorial", ""), trimmed, margins))
+
+          Path("dufynd-product-visual-trim-metrics.csv").write_text(
+              "\n".join(rows) + "\n",
+              encoding="utf-8",
+          )
+
+          tile_w, tile_h = 360, 450
+          cols = 4
+          rows_count = (len(candidates) + cols - 1) // cols
+          canvas = Image.new(
+              "RGB",
+              (cols * tile_w, rows_count * tile_h),
+              "#ece8df",
+          )
+          draw = ImageDraw.Draw(canvas)
+          font = ImageFont.load_default()
+          for i, (name, image, margins) in enumerate(candidates):
+              col, row = i % cols, i // cols
+              ox, oy = col * tile_w, row * tile_h
+              area = Image.new("RGB", (324, 330), "white")
+              fitted = ImageOps.contain(image.convert("RGB"), area.size)
+              area.paste(
+                  fitted,
+                  ((area.width - fitted.width) // 2, (area.height - fitted.height) // 2),
+              )
+              canvas.paste(area, (ox + 18, oy + 18))
+              draw.text((ox + 18, oy + 360), name[:46], fill="#171513", font=font)
+              draw.text(
+                  (ox + 18, oy + 378),
+                  f"trim L/T/R/B: {margins}",
+                  fill="#5f584e",
+                  font=font,
+              )
+          canvas.save("dufynd-product-auto-trim-preview.jpg", quality=91)
+          print(f"Audited {len(files)} source images")
+          PY
+      - name: Upload source trim audit
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: dufynd-product-source-trim-audit
+          path: |
+            dufynd-product-auto-trim-preview.jpg
+            dufynd-product-visual-trim-metrics.csv
+            dufynd-trim-candidates/
+          retention-days: 1
+          if-no-files-found: warn
