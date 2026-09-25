@@ -87,6 +87,31 @@ jobs:
       - name: Build every app
         run: npm run build
 
+  dufynd-image-opt-audit:
+    if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'dufynd-')
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: examples
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: examples/package-lock.json
+      - name: Install
+        run: npm ci
+      - name: Generate editorial WebP audit
+        run: node retail/storefront-web/scripts/audit-editorial-image-performance.mjs
+      - name: Upload editorial image audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: dufynd-image-opt-audit-${{ github.event.pull_request.number }}
+          path: examples/retail/storefront-web/.image-opt-audit
+          if-no-files-found: error
+          retention-days: 3
+
   dufynd-visual-qa:
     if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'dufynd-')
     runs-on: ubuntu-latest

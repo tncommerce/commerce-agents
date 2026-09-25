@@ -10,7 +10,7 @@ def test_product_schema_is_conservative_and_product_truth_gated() -> None:
 
     assert '"@type": "Product"' in source
     assert '"@type": "Brand"' in source
-    assert 'sku: fragrance.product_id' in source
+    assert "sku: fragrance.product_id" in source
     assert 'name: "Konzentration"' in source
     assert 'name: "Füllmenge"' in source
 
@@ -27,6 +27,6 @@ def test_product_schema_is_conservative_and_product_truth_gated() -> None:
 def test_product_pages_override_social_metadata() -> None:
     source = DETAIL_PAGE.read_text(encoding="utf-8")
 
-    assert 'twitter: {' in source
+    assert "twitter: {" in source
     assert '"summary_large_image"' in source
-    assert 'images: fragrance.preferred_visual?.url' in source
+    assert "images: fragrance.preferred_visual?.url" in source
