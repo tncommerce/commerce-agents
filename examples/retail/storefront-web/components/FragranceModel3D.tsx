@@ -35,6 +35,23 @@ function ensureModelViewer(): Promise<void> {
   });
 }
 
+function safeModelSource(modelUrl?: string | null): string | null {
+  const candidate = modelUrl?.trim();
+  if (!candidate) return null;
+
+  // Local, version-controlled GLB assets are preferred for DUFYND pilots.
+  if (candidate.startsWith("/")) return candidate;
+
+  try {
+    const url = new URL(candidate);
+    return url.protocol === "https:" || url.protocol === "http:"
+      ? url.toString()
+      : null;
+  } catch {
+    return null;
+  }
+}
+
 export default function FragranceModel3D({
   modelUrl,
   imageUrl,
@@ -53,17 +70,16 @@ export default function FragranceModel3D({
   priority?: boolean;
 }) {
   const [viewerReady, setViewerReady] = useState(false);
-  const safeModelUrl = (() => {
-    if (!modelUrl) return null;
-    try {
-      const url = new URL(modelUrl);
-      return url.protocol === "https:" || url.protocol === "http:"
-        ? url.toString()
-        : null;
-    } catch {
-      return null;
-    }
-  })();
+  const [reducedMotion, setReducedMotion] = useState(false);
+  const safeModelUrl = safeModelSource(modelUrl);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setReducedMotion(media.matches);
+    sync();
+    media.addEventListener?.("change", sync);
+    return () => media.removeEventListener?.("change", sync);
+  }, []);
 
   useEffect(() => {
     if (!safeModelUrl) return;
@@ -108,9 +124,9 @@ export default function FragranceModel3D({
         "disable-pan": "",
         "interaction-prompt": "none",
         "touch-action": "pan-y",
-        "auto-rotate": "",
-        "auto-rotate-delay": "1400",
-        "rotation-per-second": "7deg",
+        "auto-rotate": reducedMotion ? undefined : "",
+        "auto-rotate-delay": reducedMotion ? undefined : "1400",
+        "rotation-per-second": reducedMotion ? undefined : "7deg",
         "camera-orbit": "16deg 78deg 2.8m",
         "min-camera-orbit": "auto 68deg 2.3m",
         "max-camera-orbit": "auto 86deg 3.5m",
