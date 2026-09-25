@@ -3135,6 +3135,95 @@
         "catalog_ready": true
       },
       "image_url": "/products/pilot/al-ambra-dubai-musk-editorial.webp"
+    },
+    {
+      "product_id": "SC-WIDIAN-LONDON-EDP-100",
+      "brand": "Widian",
+      "name": "London",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "release_year": 2024,
+      "classification": {
+        "official_orientation": "unisex",
+        "community_category": "unisex",
+        "scentai_target_groups": [
+          "unisex"
+        ],
+        "role": "benchmark",
+        "cluster_id": "widian-london",
+        "trend_bet": false
+      },
+      "notes": {
+        "top": [
+          "Oud",
+          "Cypress",
+          "Violet"
+        ],
+        "heart": [
+          "Raspberry",
+          "Lily of the Valley"
+        ],
+        "base": [
+          "Leather",
+          "Musk",
+          "Amber",
+          "Vanilla"
+        ]
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 9.2,
+        "rating_count": 609,
+        "rank": 142,
+        "rank_category": "unisex",
+        "longevity_10": 8.8,
+        "projection_10": 8.6
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "leathery",
+          "fruity",
+          "sweet",
+          "spicy",
+          "woody"
+        ],
+        "scores": {
+          "freshness": 2,
+          "sweetness": 7,
+          "woodiness": 7,
+          "spiciness": 5
+        },
+        "score_confidence": "medium"
+      },
+      "market": {
+        "market_price_eur": 330,
+        "price_per_ml_eur": 3.3,
+        "german_availability": "high",
+        "price_source_count": 1,
+        "price_checked_at": "2026-09-25"
+      },
+      "relationships": [],
+      "evidence": {
+        "official_product_data": "high",
+        "community_metrics": "high",
+        "market_price": "high",
+        "relationship_data": "low",
+        "overall": "high"
+      },
+      "validation": {
+        "catalog_ready": true
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/widian-london-editorial-user-higgsfield.webp",
+          "provenance": "user_higgsfield_video_20260925",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ],
+      "image_url": "/products/widian-london-editorial-user-higgsfield.webp"
     }
   ]
 }
