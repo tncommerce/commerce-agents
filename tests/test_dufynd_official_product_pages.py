@@ -59,9 +59,8 @@ def test_official_product_pages_match_catalog_and_manufacturer_domains() -> None
 
     assert entries, "No curated official product pages found"
     assert source.count('url: "') == len(entries), "An entry escaped the fallback audit"
-    assert len({match["id"] for match in entries}) == len(entries), "Duplicate product IDs"
-
     covered_ids = {match["id"] for match in entries}
+    assert len(covered_ids) == len(entries), "Duplicate product IDs"
     assert set(products) - covered_ids == INTENTIONALLY_UNRESOLVED
     assert len(covered_ids) == 30
 
@@ -73,4 +72,4 @@ def test_official_product_pages_match_catalog_and_manufacturer_domains() -> None
         host = urlparse(match["url"])
         assert host.scheme == "https" and not host.username and not host.password
         assert host.hostname == OFFICIAL_HOSTS[product["brand"]], product_id
-        assert host.path not in ("", "/"), f"Expected product-specific URL: {product_id}"
+        assert host.path not in ("", "/"), f"Non-product URL: {product_id}"
