@@ -83,3 +83,58 @@ def test_first_controlled_expansion_wave_is_staging_only() -> None:
         assert "approved_product_image_pending" in row["validation"]["blockers"]
         assert "verified_affiliate_offer_pending" in row["validation"]["blockers"]
         assert row["research"]["source_wave_id"] == "DUFYND-CATALOG-EXPANSION-NEXT-10"
+
+
+
+def test_second_controlled_expansion_wave_is_staging_only() -> None:
+    staging = load_staging()
+    live = json.loads(Path("examples/retail/data/catalog.json").read_text(encoding="utf-8"))
+    intake = json.loads(
+        Path("examples/retail/data/dufynd_catalog_staging_intake.json").read_text(encoding="utf-8")
+    )
+    wave = json.loads(
+        Path("examples/retail/data/dufynd_catalog_expansion_next10.json").read_text(
+            encoding="utf-8"
+        )
+    )
+
+    expected_batch5 = {
+        "SC-VALENTINO-DONNA-BORN-IN-ROMA-EDP-100",
+        "SC-CHLOE-NOMADE-EDP-75",
+        "SC-VERSACE-EROS-EDP-100",
+        "SC-ARMANI-ACQUA-DI-GIO-PROFONDO-PARFUM-100",
+        "SC-JPG-LE-MALE-ELIXIR-PARFUM-125",
+    }
+    staged_batch5 = {row["product_id"] for row in staging["products"] if row.get("batch") == 5}
+    live_ids = {
+        row["product_id"]
+        for row in live["products"]
+        if row.get("category") == "fragrance"
+        and row.get("in_stock") is not False
+        and str(row.get("product_id") or "").startswith("SC-")
+    }
+    manifest_batch5 = next(row for row in intake["waves"] if row["staging_batch"] == 5)
+    manifest_ids = set(manifest_batch5["selected_product_ids"])
+
+    assert staged_batch5 == expected_batch5
+    assert manifest_ids == expected_batch5
+    assert manifest_batch5["live_publication_authorized"] is False
+    assert staged_batch5.isdisjoint(live_ids)
+
+    for row in staging["products"]:
+        if row["product_id"] not in expected_batch5:
+            continue
+        assert row["media"]["image_url"] is None
+        assert row["validation"]["catalog_ready"] is False
+        assert "approved_product_image_pending" in row["validation"]["blockers"]
+        assert "verified_affiliate_offer_pending" in row["validation"]["blockers"]
+        assert row["research"]["source_wave_id"] == "DUFYND-CATALOG-EXPANSION-NEXT-10"
+
+    jpg = next(
+        row
+        for row in wave["candidates"]
+        if row["product_id"] == "SC-JPG-LE-MALE-ELIXIR-PARFUM-125"
+    )
+    assert "merchant_concentration_attribute_review_pending" not in jpg["validation"]["blockers"]
+    assert jpg["content_context"]["existing_content_state"] == "user_confirmed_final_viral_short"
+    assert jpg["content_context"]["publish_authorized"] is False
