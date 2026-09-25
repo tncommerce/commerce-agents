@@ -132,9 +132,7 @@ def test_second_controlled_expansion_wave_is_staging_only() -> None:
         assert row["research"]["source_wave_id"] == "DUFYND-CATALOG-EXPANSION-NEXT-10"
 
     jpg = next(
-        row
-        for row in wave["candidates"]
-        if row["product_id"] == "SC-JPG-LE-MALE-ELIXIR-PARFUM-125"
+        row for row in wave["candidates"] if row["product_id"] == "SC-JPG-LE-MALE-ELIXIR-PARFUM-125"
     )
     assert "merchant_concentration_attribute_review_pending" not in jpg["validation"]["blockers"]
     assert jpg["content_context"]["existing_content_state"] == "user_confirmed_final_viral_short"
