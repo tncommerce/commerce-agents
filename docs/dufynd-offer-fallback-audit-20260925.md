@@ -47,7 +47,7 @@ The current fallback map includes the following exact catalog products:
 - Orientica Royal Bleu Eau de Parfum 80 ml
 - Al Ambra Dubai Musk Extrait de Parfum 50 ml
 
-Product identity, concentration and listed bottle size were checked against manufacturer-controlled product pages before adding each URL. Some manufacturer pages expose more than one selectable size; DUFYND does not claim that a destination has preselected the catalog size unless that is explicitly encoded in the URL.
+Product identity was checked against manufacturer-controlled product pages before adding each URL. Concentration and bottle size were also checked where the manufacturer page exposes them. When a manufacturer page does not expose a fixed size in its page content, DUFYND treats the destination only as a product-information fallback and does not claim that the catalog size is preselected.
 
 ## Intentionally unresolved
 
