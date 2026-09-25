@@ -5,6 +5,8 @@
 
 import type { PointerEvent } from "react";
 
+import staticCatalog from "../../../data/catalog.json";
+
 import {
   HomeSection,
   type Starter,
@@ -25,6 +27,13 @@ import ProductTile, {
 import LegalFooter from "../LegalFooter";
 import MerchantDiscovery from "../MerchantDiscovery";
 import PersonalLibrarySummary from "../PersonalLibrarySummary";
+
+const STATIC_CATALOG: Record<string, Product> = Object.fromEntries(
+  (staticCatalog.products as Product[]).map((product) => [
+    product.product_id,
+    product,
+  ]),
+);
 
 const STARTERS: Starter[] = [
   {
@@ -89,7 +98,10 @@ export default function HomeView({
 }: {
   shopperName: string;
 }) {
-  const catalog = useCatalogIndex(fetchProducts);
+  const liveCatalog = useCatalogIndex(fetchProducts);
+  const catalog = Object.keys(liveCatalog).length
+    ? liveCatalog
+    : STATIC_CATALOG;
   const picks = featured(catalog);
   const spotlight =
     catalog["SC-XERJOFF-NAXOS-100"] || picks[0];
