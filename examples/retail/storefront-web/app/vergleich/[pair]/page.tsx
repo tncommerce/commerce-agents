@@ -27,7 +27,7 @@ const RELATION_LABELS: Record<
   string
 > = {
   clone: "Sehr naher Duftstil",
-  inspired: "Inspiriert",
+  inspired: "Ähnlicher Duftstil",
   alternative: "Alternative",
 };
 
