@@ -17,9 +17,7 @@ def test_current_dufynd_product_truth_coverage_is_consistent() -> None:
     assert report["ok"] is True
     source = json.loads(SOURCE.read_text(encoding="utf-8"))
     expected_products = sum(
-        1
-        for row in source["products"]
-        if str(row.get("product_id", "")).startswith("SC-")
+        1 for row in source["products"] if str(row.get("product_id", "")).startswith("SC-")
     )
 
     assert report["summary"]["products"] == expected_products
