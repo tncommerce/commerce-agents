@@ -142,14 +142,13 @@ The card/hero selection layer now follows the documented priority centrally: ver
 
 The remaining visual block is narrower: add more verified assets when they are approved, extend the gallery with approved macro assets, and continue browser QA across mobile and desktop. No current P0 editorial image has been promoted to product truth.
 
-## Codex implementation block
+## Next implementation block
 
-This is a good Codex task once the shared Work/Codex quota is available:
+The original multi-visual implementation block is complete on PR #67. The remaining work should build on that system rather than recreate it:
 
-- add the optional data/type shape;
-- keep backward compatibility;
-- implement the role-selection helper;
-- add tests for role priority and rejected/pending assets;
-- add a minimal detail gallery;
-- do not populate new generated primaries until image generation/fidelity approval is complete;
-- no merge/deploy without user sign-off.
+- review the responsive browser-QA captures at 320 / 390 / 768 / 1440 and fix only reproducible layout/fidelity defects;
+- keep Naxos on its verified cutout and add a bottle-free editorial background only when a suitable asset is approved;
+- add future `primary` / `macro` / `model_3d` assets only after the fidelity gate passes;
+- keep Creed Absolu Aventus, Prada L'Homme, Stronger With You Intensely, Sospiro Vibrato and other unverified scenes editorial-only until exact-reference review is complete;
+- extend structured visual metadata product-by-product instead of reviving legacy implicit cutout priority;
+- do not start paid generation, merge or deploy without user sign-off.
