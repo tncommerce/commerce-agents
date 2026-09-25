@@ -414,6 +414,14 @@ try {
             );
           }
           if (viewport.width <= 480) {
+            await explodedStage.evaluate(
+              () =>
+                new Promise((resolve) =>
+                  requestAnimationFrame(() =>
+                    requestAnimationFrame(resolve),
+                  ),
+                ),
+            );
             const expandedHeight = await explodedStage.evaluate(
               (element) => element.getBoundingClientRect().height,
             );
