@@ -16,7 +16,7 @@ const STATUS_LABELS: Partial<
   Record<FragranceVisualAsset["fidelity_status"], string>
 > = {
   verified: "Verifiziert",
-  editorial_only: "Editorial",
+  editorial_only: "Redaktionell",
   pending_review: "In Prüfung",
 };
 

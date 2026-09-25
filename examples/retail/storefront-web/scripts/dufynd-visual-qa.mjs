@@ -227,7 +227,7 @@ try {
             "Freisteller",
             "DUFYND Inszenierung",
             "Verifiziert",
-            "Editorial",
+            "Redaktionell",
           ];
           const normalizedGalleryText = text.toLocaleLowerCase("de-DE");
           const missingGalleryText = expectedGalleryText.filter(
