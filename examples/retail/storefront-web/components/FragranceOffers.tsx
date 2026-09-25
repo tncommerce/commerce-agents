@@ -21,8 +21,9 @@ function OfficialProductLink({ productId }: { productId: string }) {
   return (
     <div className="mt-3 rounded-xl border border-(--line) bg-(--surface) p-3">
       <p className="text-[12px] leading-5 text-(--ink-soft)">
-        Produktinformationen direkt beim Hersteller ansehen. Preis und Verfügbarkeit
-        prüfst du dort aktuell; DUFYND zeigt dafür keinen ungeprüften Preis an.
+        Produktinformationen direkt bei Marke bzw. Hersteller ansehen. Preis und
+        Verfügbarkeit prüfst du dort aktuell; DUFYND zeigt dafür keinen ungeprüften
+        Preis an.
         Dieser Verweis ist kein Partnerlink.
       </p>
       <a

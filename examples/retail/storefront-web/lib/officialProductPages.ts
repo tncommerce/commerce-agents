@@ -120,4 +120,12 @@ export const OFFICIAL_PRODUCT_PAGES: Record<string, { merchant: string; url: str
     merchant: "Clive Christian",
     url: "https://eu.clivechristian.com/products/jump-up-and-kiss-me-hedonistic",
   },
+  "SC-BUJAIRAMI-HECTIC-100": {
+    merchant: "Bujairami Perfumes",
+    url: "https://bujairami.com.au/products/hectic-inspired-by-louis-vuitton-imagination-extrait",
+  },
+  "SC-NUSUK-ATEEQ-100": {
+    merchant: "Riiffs / Nusuk",
+    url: "https://www.riiffsperfumes.com/product/ateeq/",
+  },
 };

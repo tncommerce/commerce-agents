@@ -4,7 +4,7 @@ The catalog currently has 32 fragrance pages. `merchant_offers.json` contains fo
 
 ## Current manufacturer fallback coverage
 
-DUFYND now has a curated, product-specific manufacturer fallback for **30 of 32** catalog fragrances. The fallback is shown only when no sufficiently fresh merchant offer is available or the merchant-offer request fails.
+DUFYND now has a curated, product-specific manufacturer fallback for **all 32 of 32** catalog fragrances. The fallback is shown only when no sufficiently fresh merchant offer is available or the merchant-offer request fails.
 
 The manufacturer fallback is informational only:
 
@@ -46,17 +46,19 @@ The current fallback map includes the following exact catalog products:
 - French Avenue Liquid Brun Eau de Parfum 100 ml
 - Orientica Royal Bleu Eau de Parfum 80 ml
 - Al Ambra Dubai Musk Extrait de Parfum 50 ml
+- Bujairami Hectic 100 ml
+- Nusuk Ateeq 100 ml
 
-Product identity was checked against manufacturer-controlled product pages before adding each URL. Concentration and bottle size were also checked where the manufacturer page exposes them. When a manufacturer page does not expose a fixed size in its page content, DUFYND treats the destination only as a product-information fallback and does not claim that the catalog size is preselected.
+Product identity was checked against manufacturer-controlled or official brand-operator product pages before adding each URL. Concentration and bottle size were also checked where the manufacturer page exposes them. When a manufacturer page does not expose a fixed size in its page content, DUFYND treats the destination only as a product-information fallback and does not claim that the catalog size is preselected.
 
-## Intentionally unresolved
+## Coverage completed
 
-Two products remain without a manufacturer fallback:
+The last two gaps were resolved on 25 September 2026 without using retailer pages as substitutes:
 
-- **Bujairami Hectic 100 ml**
-- **Nusuk Ateeq 100 ml**
+- **Bujairami Hectic 100 ml** now points to Bujairami's own 100 ml Hectic product page.
+- **Nusuk Ateeq 100 ml** now points to the official Riiffs/Nusuk product page. Riiffs' own site exposes Nusuk as a brand and identifies the product as NUSUK Ateeq 100 ml.
 
-Current search evidence surfaced retailers or secondary sources rather than a manufacturer-controlled product page that meets the same verification standard. DUFYND leaves these unresolved instead of guessing.
+These remain informational product-page fallbacks. DUFYND does not inherit live price, stock or affiliate status from either destination.
 
 ## Safety and regression gates
 
@@ -65,8 +67,8 @@ The fallback map is guarded by `tests/test_dufynd_official_product_pages.py`. Th
 - every linked product ID exists in the DUFYND catalog;
 - each fallback URL uses HTTPS and a product-specific path;
 - the hostname matches the product's manufacturer;
-- exactly the two intentionally unresolved catalog IDs remain uncovered;
-- the curated coverage stays at 30 of 32 unless the unresolved set is deliberately changed.
+- no catalog fragrance remains unintentionally uncovered;
+- the curated coverage stays at 32 of 32 unless the catalog deliberately changes.
 
 This is structural QA, not a live destination check. Manufacturer pages can move or change after verification, so live-link health should still be checked periodically.
 

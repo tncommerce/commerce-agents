@@ -48,7 +48,7 @@
     {
       "product_id": "SC-SOSPIRO-VIBRATO-100",
       "asset": "/products/pilot/sospiro-vibrato-editorial.png",
-      "priority": "P1",
+      "priority": "P0",
       "status": "reference_locked_editorial_only",
       "finding": "The current official Sospiro page confirms Vibrato as a 100 ml Eau de Parfum and shows the distinctive deep-green velvet-style bottle, gold oval front plaque and sculpted gold cap. The existing DUFYND 4:3 scene has not passed a side-by-side bottle-fidelity gate and therefore remains editorial-only.",
       "evidence_url": "https://sospirointernational.com/products/vibrato",

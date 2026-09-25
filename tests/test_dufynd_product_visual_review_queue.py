@@ -25,13 +25,14 @@ def test_product_visual_review_queue_references_catalog_products() -> None:
         assert item["priority"] == "P0"
         assert item["asset"] == products[product_id]["image_url"]
 
-    assert len(items) == 4
+    assert len(items) == 5
     p0 = {item["product_id"] for item in items}
     assert p0 == {
         "SC-CREED-ABSOLU-AVENTUS-100",
         "SC-XERJOFF-NAXOS-100",
         "SC-ARMANI-SWY-INTENSELY-100",
         "SC-PRADA-LHOMME-100",
+        "SC-SOSPIRO-VIBRATO-100",
     }
 
     assert set(queue["cleared_for_editorial_use"]) == {

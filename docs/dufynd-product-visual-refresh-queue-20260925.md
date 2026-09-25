@@ -19,6 +19,15 @@ This queue is based on the 32-source contact sheet, the safe-area simulation and
 | Prada L'Homme EDT 100 ml | Current silver rounded render does not match Prada's official product presentation for L'Homme EDT 100 ml. | Rebuild from an exact 100 ml official/rights-cleared reference. |
 | Xerjoff Naxos 100 ml | Generated editorial bottle is not the verified product layer. | Keep the existing verified cutout as primary; use editorial only as atmosphere. |
 | Giorgio Armani Stronger With You Intensely 100 ml | Current generated stopper/shoulder treatment does not match the current official product presentation closely enough for product-truth use. | Rebuild from the official 100 ml reference before promoting the image beyond editorial use. |
+| Sospiro Vibrato 100 ml | The exact 100 ml reference is now locked, but the current DUFYND 4:3 scene has not passed bottle-fidelity review. | Keep the scene editorial-only; build a new exact-reference primary only after silhouette, plaque, cap and safe-area QA pass. |
+
+### Sospiro Vibrato 100 ml · exact-reference checkpoint completed
+
+The current official Sospiro product page confirms **Vibrato 100 ml Eau de Parfum** and provides a stable fidelity reference for the next primary-image attempt. The recognizable product cues are the deep-green velvet-style rounded bottle, gold oval front plaque and sculpted gold cap. This reference lock does **not** make the current DUFYND editorial image a verified product depiction; it remains editorial-only until a direct side-by-side bottle-fidelity review passes.
+
+The source note data was also normalized to the current official presentation: top-note ordering now follows grapefruit → bergamot → mandarin → ginger → rosemary, and the base uses the more specific **Indian Sandalwood** rather than generic sandalwood. DUFYND keeps normalized internal terms such as `Damask Rose` / `Light Woods` where they map cleanly to the official wording.
+
+Reference for fidelity/data verification only: https://sospirointernational.com/products/vibrato
 
 ## P1 · landscape assets that need a dedicated primary format
 
@@ -34,18 +43,10 @@ The following 4:3 editorial scenes are visually valid source files, but they bec
 - Montblanc Explorer
 - Orientica Royal Bleu
 - Parfums de Marly Althaïr
-- Sospiro Vibrato
 - Valentino Uomo Born In Roma Intense
 
 Do **not** trim these sources: the edge audit confirmed there is no embedded white canvas to remove. The proper fix is a dedicated portrait/square primary asset or verified transparent product layer, while the 4:3 image remains available for editorial/hero use.
 
-### Sospiro Vibrato 100 ml · exact-reference checkpoint completed
-
-The current official Sospiro product page confirms **Vibrato 100 ml Eau de Parfum** and provides a stable fidelity reference for the next primary-image attempt. The recognizable product cues are the deep-green velvet-style rounded bottle, gold oval front plaque and sculpted gold cap. This reference lock does **not** make the current DUFYND editorial image a verified product depiction; it remains editorial-only until a direct side-by-side bottle-fidelity review passes.
-
-The source note data was also normalized to the current official presentation: top-note ordering now follows grapefruit → bergamot → mandarin → ginger → rosemary, and the base uses the more specific **Indian Sandalwood** rather than generic sandalwood. DUFYND keeps normalized internal terms such as `Damask Rose` / `Light Woods` where they map cleanly to the official wording.
-
-Reference for fidelity/data verification only: https://sospirointernational.com/products/vibrato
 
 ## P2 · keep as editorial, then verify product fidelity product-by-product
 

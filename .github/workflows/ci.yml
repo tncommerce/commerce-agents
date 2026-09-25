@@ -111,15 +111,17 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          npm run start --workspace acme-retail-storefront-web > /tmp/dufynd-next.log 2>&1 &
+          node retail/storefront-web/scripts/serve-static-export.mjs \
+            --root retail/storefront-web/out \
+            --port 3000 > /tmp/dufynd-static.log 2>&1 &
           server_pid=$!
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
           for attempt in {1..60}; do
-            if curl --fail --silent http://127.0.0.1:3000/duft/xerjoff-naxos > /dev/null; then
+            if curl --fail --silent --location http://127.0.0.1:3000/duft/xerjoff-naxos > /dev/null; then
               break
             fi
             if [ "$attempt" -eq 60 ]; then
-              cat /tmp/dufynd-next.log
+              cat /tmp/dufynd-static.log
               exit 1
             fi
             sleep 1

@@ -10,7 +10,7 @@ from urllib.parse import urlparse
 CATALOG = Path("examples/retail/data/scentai_products.json")
 PAGES = Path("examples/retail/storefront-web/lib/officialProductPages.ts")
 
-# A manufacturer link is only a useful fallback if it points to that brand's site.
+# A fallback is only useful if it points to the manufacturer or official brand operator.
 OFFICIAL_HOSTS = {
     "Louis Vuitton": "de.louisvuitton.com",
     "Essential Parfums": "www.essentialparfums.com",
@@ -36,6 +36,8 @@ OFFICIAL_HOSTS = {
     "French Avenue": "frenchavenue.com",
     "Orientica": "www.orienticaperfumes.com",
     "Al Ambra": "alambraperfumes.com",
+    "Bujairami": "bujairami.com.au",
+    "Nusuk": "www.riiffsperfumes.com",
 }
 
 ENTRY = re.compile(
@@ -45,10 +47,7 @@ ENTRY = re.compile(
     re.MULTILINE,
 )
 
-INTENTIONALLY_UNRESOLVED = {
-    "SC-BUJAIRAMI-HECTIC-100",
-    "SC-NUSUK-ATEEQ-100",
-}
+INTENTIONALLY_UNRESOLVED: set[str] = set()
 
 
 def test_official_product_pages_match_catalog_and_manufacturer_domains() -> None:
@@ -62,7 +61,7 @@ def test_official_product_pages_match_catalog_and_manufacturer_domains() -> None
     covered_ids = {match["id"] for match in entries}
     assert len(covered_ids) == len(entries), "Duplicate product IDs"
     assert set(products) - covered_ids == INTENTIONALLY_UNRESOLVED
-    assert len(covered_ids) == 30
+    assert len(covered_ids) == 32
 
     for match in entries:
         product_id = match["id"]
