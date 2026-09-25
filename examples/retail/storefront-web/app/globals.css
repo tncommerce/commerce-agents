@@ -1188,7 +1188,7 @@ body {
 
 @media (max-width: 480px) {
   .dufynd-exploded-stage {
-    min-height: 420px;
+    min-height: 452px;
   }
 
   .dufynd-exploded-note {
@@ -1208,8 +1208,8 @@ body {
   }
 
   .dufynd-exploded-bottle {
-    width: clamp(108px, 34%, 142px);
-    height: 68%;
+    width: clamp(126px, 40%, 158px);
+    height: 70%;
   }
 }
 

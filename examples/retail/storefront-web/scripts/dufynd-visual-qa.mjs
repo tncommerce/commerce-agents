@@ -306,6 +306,16 @@ try {
               "unverified P0 visual is missing editorial disclosure",
             );
           }
+
+          if (
+            (await page.locator(
+              '[aria-labelledby="dufynd-exploded-heading"]',
+            ).count()) > 0
+          ) {
+            throw new Error(
+              "unverified product exposed the verified-only exploded-notes view",
+            );
+          }
         }
 
         if (target.name === "catalog") {

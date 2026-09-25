@@ -158,7 +158,7 @@ export default function FragranceExplodedNotes({
                 <NoteIcon note={note} className="h-4 w-4" />
               </span>
               <span className="min-w-0">
-                <span className="block truncate text-[10.5px] font-semibold text-(--ink)">
+                <span className="block break-words text-[10.5px] font-semibold leading-[1.15] text-(--ink) sm:truncate">
                   {noteLabel(note)}
                 </span>
                 <span className="block text-[8.5px] font-semibold uppercase tracking-[0.08em] text-(--ink-soft)">
