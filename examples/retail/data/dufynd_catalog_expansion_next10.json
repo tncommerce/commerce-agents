@@ -1083,6 +1083,13 @@
         "source": "deterministic_editorial_mapping_v1",
         "confidence": "medium",
         "customer_facing": false
+      },
+      "content_context": {
+        "existing_content_state": "user_confirmed_final_viral_short",
+        "asset_location": "external_not_registered_in_repo",
+        "catalog_priority": "high",
+        "publish_authorized": false,
+        "note": "A finished viral short exists according to the operator. Treat this as a prioritization signal only; do not publish or infer asset rights/path until the source file is registered."
       }
     },
     {
