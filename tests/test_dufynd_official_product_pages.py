@@ -7,7 +7,6 @@ import re
 from pathlib import Path
 from urllib.parse import urlparse
 
-
 CATALOG = Path("examples/retail/data/scentai_products.json")
 PAGES = Path("examples/retail/storefront-web/lib/officialProductPages.ts")
 
