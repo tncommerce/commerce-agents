@@ -70,4 +70,3 @@ def test_model_3d_activation_requires_structured_verified_asset() -> None:
     assert 'visual.role === "model_3d"' in adapter
     assert 'visual.fidelity_status === "verified"' in adapter
     assert "attributes.product_model_3d_url" not in adapter
-

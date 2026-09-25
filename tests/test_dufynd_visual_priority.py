@@ -2,9 +2,7 @@
 
 from pathlib import Path
 
-CATALOG_ADAPTER = Path(
-    "examples/retail/storefront-web/lib/fragranceCatalog.ts"
-)
+CATALOG_ADAPTER = Path("examples/retail/storefront-web/lib/fragranceCatalog.ts")
 
 SURFACES = [
     Path("examples/retail/storefront-web/app/duft/[slug]/page.tsx"),
