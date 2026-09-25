@@ -45,6 +45,11 @@ ENTRY = re.compile(
     re.MULTILINE,
 )
 
+INTENTIONALLY_UNRESOLVED = {
+    "SC-BUJAIRAMI-HECTIC-100",
+    "SC-NUSUK-ATEEQ-100",
+}
+
 
 def test_official_product_pages_match_catalog_and_manufacturer_domains() -> None:
     catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
@@ -55,6 +60,10 @@ def test_official_product_pages_match_catalog_and_manufacturer_domains() -> None
     assert entries, "No curated official product pages found"
     assert source.count('url: "') == len(entries), "An entry escaped the fallback audit"
     assert len({match["id"] for match in entries}) == len(entries), "Duplicate product IDs"
+
+    covered_ids = {match["id"] for match in entries}
+    assert set(products) - covered_ids == INTENTIONALLY_UNRESOLVED
+    assert len(covered_ids) == 30
 
     for match in entries:
         product_id = match["id"]
