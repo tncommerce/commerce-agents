@@ -376,6 +376,16 @@ try {
               "Naxos collapsed exploded-notes stage is not hidden from assistive technology",
             );
           }
+          if (viewport.width <= 480) {
+            const collapsedHeight = await explodedStageCollapsed.evaluate(
+              (element) => element.getBoundingClientRect().height,
+            );
+            if (collapsedHeight > 330) {
+              throw new Error(
+                `Naxos collapsed exploded-notes stage is too tall on mobile: ${collapsedHeight}px`,
+              );
+            }
+          }
 
           const explodedButton = explodedSection.locator(
             'button[aria-controls="dufynd-exploded-stage"]',
@@ -402,6 +412,16 @@ try {
             throw new Error(
               "Naxos exploded-notes interaction did not enter expanded state",
             );
+          }
+          if (viewport.width <= 480) {
+            const expandedHeight = await explodedStage.evaluate(
+              (element) => element.getBoundingClientRect().height,
+            );
+            if (expandedHeight < 430) {
+              throw new Error(
+                `Naxos expanded exploded-notes stage is too short on mobile: ${expandedHeight}px`,
+              );
+            }
           }
 
           const explodedNotes = explodedSection.locator(
