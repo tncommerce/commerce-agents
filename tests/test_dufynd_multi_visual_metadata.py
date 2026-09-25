@@ -68,6 +68,17 @@ def test_structured_visual_metadata_is_safe_and_consistent() -> None:
                     f"{product_id}: model_3d visual must be a GLB"
                 )
 
+            if (
+                visual["fidelity_status"] == "verified"
+                and visual["role"] in {"primary", "cutout", "macro", "model_3d"}
+            ):
+                expected_variant = f"{row['volume_ml']}ml"
+                actual_variant = str(visual.get("variant") or "")
+                assert actual_variant.replace(" ", "").lower() == expected_variant.lower(), (
+                    f"{product_id}: verified {visual['role']} must match "
+                    f"catalog variant {expected_variant}"
+                )
+
 
 def test_naxos_visual_pilot_matches_legacy_product_layer() -> None:
     catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
@@ -96,6 +107,15 @@ def test_model_3d_activation_requires_structured_verified_asset() -> None:
     assert 'visual.role === "model_3d"' in adapter
     assert 'visual.fidelity_status === "verified"' in adapter
     assert "attributes.product_model_3d_url" not in adapter
+
+
+def test_verified_visual_activation_requires_matching_product_variant() -> None:
+    adapter = ADAPTER.read_text(encoding="utf-8")
+
+    assert "VARIANT_BOUND_VERIFIED_ROLES" in adapter
+    assert "visualMatchesProductVariant(source, visual)" in adapter
+    assert "normalizedVariant(visual.variant)" in adapter
+    assert "source.volume_ml" in adapter
 
 
 def test_bottle_free_backdrop_requires_explicit_editorial_metadata() -> None:
