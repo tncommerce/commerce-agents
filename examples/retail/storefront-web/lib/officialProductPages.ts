@@ -32,4 +32,20 @@ export const OFFICIAL_PRODUCT_PAGES: Record<string, { merchant: string; url: str
     merchant: "Prada Beauty",
     url: "https://www.prada-beauty.com/fragrance/lhomme-prada/lhomme-prada-eau-de-toilette/8435137749607.html",
   },
+  "SC-PDM-LAYTON-125": {
+    merchant: "Parfums de Marly",
+    url: "https://parfums-de-marly.com/de/products/layton",
+  },
+  "SC-PDM-ALTHAIR-125": {
+    merchant: "Parfums de Marly",
+    url: "https://parfums-de-marly.com/de/products/althair",
+  },
+  "SC-MONTBLANC-EXPLORER-100": {
+    merchant: "Montblanc",
+    url: "https://www.montblanc.com/de-de/explorer-eau-de-parfum-100-ml-MB124069.html",
+  },
+  "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100": {
+    merchant: "Valentino Beauty",
+    url: "https://www.valentino-beauty.com/int/fragrances/men-fragrances/born-in-roma-uomo/born-in-roma-uomo-eau-de-parfum-intense/MPL01907.html",
+  },
 };
