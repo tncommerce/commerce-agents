@@ -1,5 +1,21 @@
 /** Verified product pages, independent of time-limited merchant prices and stock. */
 export const OFFICIAL_PRODUCT_PAGES: Record<string, { merchant: string; url: string }> = {
+  "SC-MAISON-ASRAR-VANGUARD-100": {
+    merchant: "Maison Asrar",
+    url: "https://maisonasrar.com/products/vanguard",
+  },
+  "SC-MAISON-ASRAR-REGENT-100": {
+    merchant: "Maison Asrar",
+    url: "https://maisonasrar.com/products/regent",
+  },
+  "SC-AL-WATANIAH-KAYAAN-CLASSIC-100": {
+    merchant: "Al Wataniah",
+    url: "https://www.alwataniah.com/products/kayaan-classic",
+  },
+  "SC-ARMAF-CDNIM-EDP-200": {
+    merchant: "Armaf",
+    url: "https://armaf.com/products/club-de-nuit-intense-for-man",
+  },
   "SC-LV-IMAGINATION-100": {
     merchant: "Louis Vuitton",
     url: "https://de.louisvuitton.com/deu-de/produkte/imagination-nvprod7340011v/LP0476",
