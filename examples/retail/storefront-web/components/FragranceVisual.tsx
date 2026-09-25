@@ -80,6 +80,11 @@ export default function FragranceVisual({
           : "cutout"
       : mode;
 
+  const displayAlt =
+    resolvedMode === "editorial"
+      ? `${alt} – stilisierte DUFYND-Inszenierung`
+      : alt;
+
   if (resolvedMode === "editorial" && imageUrl) {
     return (
       <div
@@ -98,7 +103,7 @@ export default function FragranceVisual({
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={imageUrl}
-            alt={alt}
+            alt={displayAlt}
             loading={priority ? "eager" : "lazy"}
             fetchPriority={priority ? "high" : "auto"}
             decoding="async"
@@ -143,7 +148,7 @@ export default function FragranceVisual({
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={resolvedImageUrl}
-              alt={alt}
+              alt={displayAlt}
               loading={priority ? "eager" : "lazy"}
               fetchPriority={priority ? "high" : "auto"}
               decoding="async"
