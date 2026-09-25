@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
+import FragranceExplodedNotes from "@/components/FragranceExplodedNotes";
 import FragranceOffers from "@/components/FragranceOffers";
 import FragranceVisual from "@/components/FragranceVisual";
 import FragranceVisualGallery from "@/components/FragranceVisualGallery";
@@ -569,6 +570,16 @@ export default async function FragrancePage({
             </div>
           </div>
         </section>
+
+        {heroIsProductTruth && heroVisual?.url ? (
+          <FragranceExplodedNotes
+            cutoutUrl={heroVisual.url}
+            alt={`${fragrance.brand} ${fragrance.name}`}
+            top={fragrance.notes.top}
+            heart={fragrance.notes.heart}
+            base={fragrance.notes.base}
+          />
+        ) : null}
 
         <FragranceVisualGallery
           assets={fragrance.visuals}

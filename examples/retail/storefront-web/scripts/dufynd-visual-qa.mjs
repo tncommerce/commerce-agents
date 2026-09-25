@@ -257,6 +257,38 @@ try {
               "Naxos legacy bottle-containing editorial is still rendered",
             );
           }
+
+          const explodedSection = page.locator(
+            '[aria-labelledby="dufynd-exploded-heading"]',
+          );
+          if ((await explodedSection.count()) !== 1) {
+            throw new Error(
+              "Naxos verified product is missing the exploded-notes view",
+            );
+          }
+
+          const explodedButton = explodedSection.getByRole("button", {
+            name: "Exploded View starten",
+          });
+          await explodedButton.click();
+
+          const explodedStage = explodedSection.locator(
+            '#dufynd-exploded-stage[data-expanded="true"]',
+          );
+          if ((await explodedStage.count()) !== 1) {
+            throw new Error(
+              "Naxos exploded-notes interaction did not enter expanded state",
+            );
+          }
+
+          const explodedNotes = explodedSection.locator(
+            "[data-dufynd-exploded-note]",
+          );
+          if ((await explodedNotes.count()) < 6) {
+            throw new Error(
+              "Naxos exploded-notes view has insufficient note layers",
+            );
+          }
         }
 
         if (
