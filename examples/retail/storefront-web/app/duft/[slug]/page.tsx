@@ -683,6 +683,7 @@ export default async function FragrancePage({
                     {hasComparison ? (
                       <a
                         href={comparisonHref}
+                        aria-label={`${fragrance.brand} ${fragrance.name} mit ${item.fragrance.brand} ${item.fragrance.name} vergleichen`}
                         className="block border-t border-(--line) px-3 py-2.5 text-[11px] font-semibold text-(--accent-ink) hover:bg-(--card)"
                       >
                         Direkt vergleichen →
