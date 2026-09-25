@@ -1,5 +1,33 @@
 /** Verified product pages, independent of time-limited merchant prices and stock. */
 export const OFFICIAL_PRODUCT_PAGES: Record<string, { merchant: string; url: string }> = {
+  "SC-ARABIYAT-MARWA-EDP-100": {
+    merchant: "Arabiyat Prestige",
+    url: "https://arabiyatprestige.com/products/arabiyat-prestige-marwa-edp-100ml-unisex",
+  },
+  "SC-ARABIYAT-MARWA-EXTRAIT-60": {
+    merchant: "Arabiyat Prestige",
+    url: "https://arabiyatprestige.com/collections/new-launch/products/arabiyat-marwa-extrait-60ml",
+  },
+  "SC-RAYHAAN-ITALIA-100": {
+    merchant: "Rayhaan Perfumes",
+    url: "https://rayhaanperfumes.com/products/rayhaan-italia",
+  },
+  "SC-BVLGARI-TYGAR-125": {
+    merchant: "Bvlgari",
+    url: "https://www.bulgari.com/de-de/product/42170",
+  },
+  "SC-FRENCH-AVENUE-LIQUID-BRUN-100": {
+    merchant: "French Avenue",
+    url: "https://frenchavenue.com/products/liquid-brun",
+  },
+  "SC-ORIENTICA-ROYAL-BLEU-80": {
+    merchant: "Orientica",
+    url: "https://www.orienticaperfumes.com/products/royal-bleu",
+  },
+  "SC-AL-AMBRA-DUBAI-MUSK-50": {
+    merchant: "Al Ambra Perfumes",
+    url: "https://alambraperfumes.com/en-eu/products/al-ambra-perfumes-dubai-musk-extrait-de-parfum-50ml-unisex",
+  },
   "SC-MAISON-ASRAR-VANGUARD-100": {
     merchant: "Maison Asrar",
     url: "https://maisonasrar.com/products/vanguard",
