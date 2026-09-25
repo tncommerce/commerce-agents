@@ -15,3 +15,15 @@ The official Armaf UK site has an exact 200 ml Eau de Parfum page for Club de Nu
 The Al Haramain EU page showed sold-out status at verification. Its link serves product information only; the fallback does not claim stock or show a merchant offer.
 
 The fallback map now has a regression check (`tests/test_dufynd_official_product_pages.py`). It ensures every linked product ID exists in the catalog, each HTTPS URL has a product-specific path, and its host belongs to that product's manufacturer. This is structural QA, not a live destination check or visual approval. The unresolved screenshot QA and unverified Bois Impérial front bottle remain open.
+
+
+## Additional manufacturer fallbacks verified 2026-09-25
+
+Four more catalog products now have a product-specific manufacturer fallback:
+
+- Maison Asrar Vanguard — official Maison Asrar product page.
+- Maison Asrar Regent — official Maison Asrar product page.
+- Al Wataniah Kayaan Classic — official Al Wataniah product page.
+- Armaf Club de Nuit Intense Man Eau de Parfum 200 ml — official Armaf product page; the manufacturer page explicitly exposes the Eau de Parfum in the 6.8 oz size (approximately 200 ml).
+
+This raises the curated manufacturer fallback coverage from 19/32 to 23/32 catalog fragrances. No live price or stock value is imported from these pages; DUFYND uses them only as neutral manufacturer fallbacks when no sufficiently fresh merchant offer is available.
