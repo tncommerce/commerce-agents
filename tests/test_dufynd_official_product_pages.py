@@ -23,6 +23,8 @@ OFFICIAL_HOSTS = {
     "Valentino": "www.valentino-beauty.com",
     "Xerjoff": "www.xerjoff.com",
     "Giorgio Armani": "www.armanibeauty.de",
+    "Afnan Perfumes": "de.afnan.com",
+    "Sospiro": "sospirointernational.com",
 }
 
 ENTRY = re.compile(

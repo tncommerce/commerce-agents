@@ -56,4 +56,12 @@ export const OFFICIAL_PRODUCT_PAGES: Record<string, { merchant: string; url: str
     merchant: "Armani Beauty",
     url: "https://www.armanibeauty.de/dufte/herrenduft/stronger-with-you/stronger-with-you-intensely-eau-de-parfum/ww-00180-arm.html?dwvar_ww-00180-arm_size=100ml",
   },
+  "SC-AFNAN-TURATHI-BLUE-90": {
+    merchant: "Afnan Perfumes",
+    url: "https://de.afnan.com/products/turathi-blue-homme",
+  },
+  "SC-SOSPIRO-VIBRATO-100": {
+    merchant: "Sospiro International",
+    url: "https://sospirointernational.com/products/vibrato",
+  },
 };
