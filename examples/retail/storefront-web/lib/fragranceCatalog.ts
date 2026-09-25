@@ -154,12 +154,46 @@ function asNumber(value: string | undefined): number | null {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
+const VARIANT_BOUND_VERIFIED_ROLES = new Set<FragranceVisualRole>([
+  "primary",
+  "cutout",
+  "macro",
+  "model_3d",
+]);
+
+function normalizedVariant(value: string | null | undefined): string {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "");
+}
+
+function visualMatchesProductVariant(
+  source: SourceRow | undefined,
+  visual: FragranceVisualAsset,
+): boolean {
+  if (
+    visual.fidelity_status !== "verified" ||
+    !VARIANT_BOUND_VERIFIED_ROLES.has(visual.role)
+  ) {
+    return true;
+  }
+
+  if (!source?.volume_ml) return false;
+
+  return (
+    normalizedVariant(visual.variant) ===
+    normalizedVariant(`${source.volume_ml}ml`)
+  );
+}
+
 function activeVisuals(source: SourceRow | undefined): FragranceVisualAsset[] {
   return (source?.visuals || []).filter(
     (visual) =>
       Boolean(visual.url?.trim()) &&
       visual.fidelity_status !== "rejected" &&
-      visual.fidelity_status !== "pending_review",
+      visual.fidelity_status !== "pending_review" &&
+      visualMatchesProductVariant(source, visual),
   );
 }
 
