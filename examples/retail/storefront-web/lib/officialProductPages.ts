@@ -60,6 +60,10 @@ export const OFFICIAL_PRODUCT_PAGES: Record<string, { merchant: string; url: str
     merchant: "Afnan Perfumes",
     url: "https://de.afnan.com/products/turathi-blue-homme",
   },
+  "SC-AFNAN-SUPREMACY-COLLECTORS-100": {
+    merchant: "Afnan Perfumes",
+    url: "https://de.afnan.com/products/supremacy-collectors-edition",
+  },
   "SC-SOSPIRO-VIBRATO-100": {
     merchant: "Sospiro International",
     url: "https://sospirointernational.com/products/vibrato",
