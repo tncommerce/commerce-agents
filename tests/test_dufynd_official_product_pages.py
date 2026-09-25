@@ -27,6 +27,9 @@ OFFICIAL_HOSTS = {
     "Sospiro": "sospirointernational.com",
     "Al Haramain": "shop.alharamainperfumes.com",
     "Clive Christian": "eu.clivechristian.com",
+    "Maison Asrar": "maisonasrar.com",
+    "Al Wataniah": "www.alwataniah.com",
+    "Armaf": "armaf.com",
 }
 
 ENTRY = re.compile(
