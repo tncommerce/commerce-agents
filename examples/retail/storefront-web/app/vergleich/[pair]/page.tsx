@@ -4,6 +4,7 @@ import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
 
 import ComparisonAnalytics from "@/components/ComparisonAnalytics";
 import FragranceOffers from "@/components/FragranceOffers";
+import FragranceVisual from "@/components/FragranceVisual";
 import {
   EXPLICIT_COMPARISON_PAIRS,
   getComparisonPair,
@@ -101,20 +102,13 @@ function ProductHeader({
   return (
     <div className="overflow-hidden rounded-2xl border border-(--line) bg-(--card)">
       <a href={`/duft/${fragrance.slug}`}>
-        <div className="flex h-56 items-center justify-center bg-white p-5">
-          {fragrance.image_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={fragrance.image_url}
-              alt={`${fragrance.brand} ${fragrance.name}`}
-              className="h-full w-full object-contain"
-            />
-          ) : (
-            <span className="text-[12px] font-semibold tracking-[0.16em] text-(--ink-soft)">
-              DUFYND
-            </span>
-          )}
-        </div>
+        <FragranceVisual
+          imageUrl={fragrance.image_url}
+          cutoutUrl={fragrance.cutout_image_url}
+          alt={`${fragrance.brand} ${fragrance.name}`}
+          variant="card"
+          className="h-56 w-full"
+        />
         <div className="p-4">
           <div className="text-[10.5px] font-semibold uppercase tracking-[0.08em] text-(--ink-soft)">
             {fragrance.brand}

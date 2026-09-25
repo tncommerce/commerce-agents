@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import FragranceSaveControls from "@/components/FragranceSaveControls";
+import FragranceVisual from "@/components/FragranceVisual";
 import GuidedAdvisorLink from "@/components/GuidedAdvisorLink";
 import {
   clearFragranceLibrary,
@@ -230,22 +231,13 @@ function FragranceCard({
         href={`/duft/${fragrance.slug}`}
         className="group block"
       >
-        <div className="flex h-48 items-center justify-center bg-white p-4">
-          {fragrance.image_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={fragrance.image_url}
-              alt={`${fragrance.brand} ${fragrance.name}`}
-              loading="lazy"
-              decoding="async"
-              className="h-full w-full object-contain transition duration-200 group-hover:scale-[1.02]"
-            />
-          ) : (
-            <span className="text-[11px] font-semibold tracking-[0.14em] text-(--ink-soft)">
-              DUFYND
-            </span>
-          )}
-        </div>
+        <FragranceVisual
+          imageUrl={fragrance.image_url}
+          cutoutUrl={fragrance.cutout_image_url}
+          alt={`${fragrance.brand} ${fragrance.name}`}
+          variant="card"
+          className="h-48 w-full"
+        />
 
         <div className="p-4 pb-3">
           <div className="text-[10.5px] font-medium uppercase tracking-[0.08em] text-(--ink-soft)">

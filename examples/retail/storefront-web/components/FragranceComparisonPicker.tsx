@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import FragranceOffers from "@/components/FragranceOffers";
+import FragranceVisual from "@/components/FragranceVisual";
 import { trackAnalyticsEvent } from "@/lib/analytics";
 import type { StaticFragrance } from "@/lib/fragranceCatalog";
 
@@ -72,22 +73,13 @@ function ProductMiniHeader({
       href={`/duft/${fragrance.slug}`}
       className="overflow-hidden rounded-2xl border border-(--line) bg-(--card) shadow-(--shadow-sm) transition hover:border-(--ink)"
     >
-      <div className="flex h-40 items-center justify-center bg-white p-4">
-        {fragrance.image_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={fragrance.image_url}
-            alt={`${fragrance.brand} ${fragrance.name}`}
-            className="h-full w-full object-contain"
-            loading="lazy"
-            decoding="async"
-          />
-        ) : (
-          <span className="text-[11px] font-semibold tracking-[0.14em] text-(--ink-soft)">
-            DUFYND
-          </span>
-        )}
-      </div>
+      <FragranceVisual
+        imageUrl={fragrance.image_url}
+        cutoutUrl={fragrance.cutout_image_url}
+        alt={`${fragrance.brand} ${fragrance.name}`}
+        variant="card"
+        className="h-40 w-full"
+      />
       <div className="p-3.5">
         <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-(--ink-soft)">
           {fragrance.brand}
