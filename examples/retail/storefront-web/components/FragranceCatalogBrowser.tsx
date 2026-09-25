@@ -749,7 +749,7 @@ export default function FragranceCatalogBrowser({
             </span>{" "}
             von {fragrances.length} Düften
             {remainingCount > 0 ? (
-              <span className="hidden sm:inline">
+              <span>
                 {" "}
                 · {visibleFragrances.length} angezeigt
               </span>
