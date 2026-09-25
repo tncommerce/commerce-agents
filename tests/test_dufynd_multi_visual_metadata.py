@@ -156,6 +156,43 @@ def test_bottle_free_backdrop_requires_explicit_editorial_metadata() -> None:
     assert 'visual.fidelity_status === "editorial_only"' in adapter
 
 
+def test_exploded_notes_support_catalog_fallback_note_sets() -> None:
+    source = json.loads(SOURCE.read_text(encoding="utf-8"))
+    page = Path(
+        "examples/retail/storefront-web/app/duft/[slug]/page.tsx"
+    ).read_text(encoding="utf-8")
+    component = Path(
+        "examples/retail/storefront-web/components/FragranceExplodedNotes.tsx"
+    ).read_text(encoding="utf-8")
+
+    fallback_only = {
+        row["product_id"]
+        for row in source["products"]
+        if not (
+            (row.get("notes") or {}).get("top")
+            or (row.get("notes") or {}).get("heart")
+            or (row.get("notes") or {}).get("base")
+        )
+        and (
+            (row.get("notes") or {}).get("key")
+            or (row.get("notes") or {}).get("supporting")
+        )
+    }
+
+    assert fallback_only == {
+        "SC-LV-IMAGINATION-100",
+        "SC-CREED-AVENTUS-100",
+        "SC-CREED-ABSOLU-AVENTUS-100",
+        "SC-BVLGARI-TYGAR-125",
+        "SC-DIOR-HOMME-INTENSE-100",
+    }
+    assert "keyNotes={fragrance.notes.key}" in page
+    assert "supporting={fragrance.notes.supporting}" in page
+    assert 'data-note-mode={usesPyramid ? "pyramid" : "fallback"}' in component
+    assert 'key: "Schlüssel"' in component
+    assert 'supporting: "Weitere"' in component
+
+
 def test_exploded_notes_toggle_exposes_expansion_state() -> None:
     component = Path(
         "examples/retail/storefront-web/components/FragranceExplodedNotes.tsx"
