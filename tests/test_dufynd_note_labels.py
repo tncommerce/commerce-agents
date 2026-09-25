@@ -9,9 +9,7 @@ from pathlib import Path
 CATALOG = Path("examples/retail/data/scentai_products.json")
 LABELS = Path("examples/retail/storefront-web/lib/noteLabels.ts")
 DETAIL_PAGE = Path("examples/retail/storefront-web/app/duft/[slug]/page.tsx")
-CATALOG_BROWSER = Path(
-    "examples/retail/storefront-web/components/FragranceCatalogBrowser.tsx"
-)
+CATALOG_BROWSER = Path("examples/retail/storefront-web/components/FragranceCatalogBrowser.tsx")
 
 JSON_ENTRY = re.compile(
     r'^\s*"(?P<key>[^"]+)":\s*"(?P<label>[^"]+)",\s*$',
@@ -30,11 +28,7 @@ def test_all_catalog_notes_have_german_display_labels() -> None:
     for product in catalog["products"]:
         for values in (product.get("notes") or {}).values():
             if isinstance(values, list):
-                notes.update(
-                    str(value).strip().lower()
-                    for value in values
-                    if str(value).strip()
-                )
+                notes.update(str(value).strip().lower() for value in values if str(value).strip())
 
     source = LABELS.read_text(encoding="utf-8")
     labels = {match["key"]: match["label"] for match in JSON_ENTRY.finditer(source)}
