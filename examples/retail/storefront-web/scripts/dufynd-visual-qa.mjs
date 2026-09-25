@@ -349,9 +349,12 @@ try {
             );
           }
 
-          const explodedButton = explodedSection.getByRole("button", {
-            name: "Duftaufbau entfalten",
-          });
+          const explodedButton = explodedSection.locator(
+            'button[aria-controls="dufynd-exploded-stage"]',
+          );
+          if ((await explodedButton.innerText()).trim() !== "Duftaufbau entfalten") {
+            throw new Error("Naxos exploded-notes toggle has an unexpected collapsed label");
+          }
           if ((await explodedButton.getAttribute("aria-expanded")) !== "false") {
             throw new Error(
               "Naxos exploded-notes toggle does not expose collapsed state",
