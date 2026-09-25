@@ -1188,6 +1188,11 @@ body {
 
 @media (max-width: 480px) {
   .dufynd-exploded-stage {
+    min-height: 300px;
+    transition: min-height 420ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .dufynd-exploded-stage[data-expanded="true"] {
     min-height: 452px;
   }
 
@@ -1214,6 +1219,7 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .dufynd-exploded-stage,
   .dufynd-exploded-orbit,
   .dufynd-exploded-bottle,
   .dufynd-exploded-note {
