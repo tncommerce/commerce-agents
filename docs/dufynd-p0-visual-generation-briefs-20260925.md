@@ -67,7 +67,7 @@ A visually attractive result that misses bottle truth remains editorial-only.
 
 **Hard constraints:** no glossy black spherical stopper, no generic whisky decanter, no ornamental redesign of the shoulders or cap.
 
-**Candidate status (25 Sep 2026):** a new neutral primary candidate was generated and stored at `/products/candidates/armani-swy-intensely-p0-v2.webp`. It now follows the cognac liquid + cast-iron-grey/gunmetal cap direction much more closely, but remains inactive pending exact-reference side-by-side QA.
+**Candidate status (25 Sep 2026):** a new neutral primary candidate was generated and stored at `/products/candidates/armani-swy-intensely-p0-v3.webp`. V3 now corrects the overly broad V2 body and reduces the cap/ring dominance while preserving the cognac liquid and gunmetal direction. It remains inactive pending final human side-by-side approval.
 
 **Editorial companion:** amber/gourmand world using restrained chestnut, vanilla and spice cues. Avoid floating ingredient explosions around the bottle.
 
@@ -81,7 +81,7 @@ A visually attractive result that misses bottle truth remains editorial-only.
 
 **Hard constraints:** no generic cylindrical or rectangular redesign; no black/silver substitute cap; no missing or reshaped oval plaque; no blue colour shift; no invented visible volume marking; no promotion to verified until side-by-side fidelity QA passes.
 
-**Candidate status (25 Sep 2026):** a new neutral primary candidate was generated and stored at `/products/candidates/sospiro-vibrato-p0-v1.webp`. It follows the official current deep-green velvet-style bottle, oval gold plaque and sculpted gold cap direction, but remains inactive pending direct side-by-side fidelity QA.
+**Candidate status (25 Sep 2026):** a new neutral primary candidate was generated and stored at `/products/candidates/sospiro-vibrato-p0-v2.webp`. V2 narrows the silhouette, reduces the cap and medallion dominance, and aligns the plaque wording more closely with the current official presentation. It remains inactive pending final human side-by-side approval.
 
 **Editorial companion:** bottle-free green/gold atmosphere using citrus, magnolia/rose, pale woods and refined amber cues. The current 4:3 DUFYND scene remains editorial-only.
 
