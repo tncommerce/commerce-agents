@@ -1,8 +1,8 @@
 # Product image credits
 
-Every image in this directory is dedicated to the public domain under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/)
-(or is a public-domain work). Sources are listed for provenance; CC0 requires no attribution.
-Images were curated so that no real brand, logo, or identifiable person appears, and they illustrate
+The nine legacy ACME demo images listed below are dedicated to the public domain under
+[CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) (or are public-domain works).
+Sources are listed for provenance; CC0 requires no attribution. These images illustrate
 the *category* of each fictional ACME product — they do not depict the fictional products themselves.
 Products without an image here intentionally fall back to the storefront's built-in emoji tiles.
 
@@ -21,9 +21,12 @@ Products without an image here intentionally fall back to the storefront's built
 
 ## DUFYND generated campaign assets
 
-The DUFYND fragrance campaign assets below are **not** covered by the CC0 statement above.
-They are generated/edited campaign artwork used by DUFYND for product presentation; brand names
-and product trade dress remain the property of their respective rights holders.
+The 32 DUFYND editorial fragrance scenes under `pilot/` and the Naxos product cutout are
+**not** covered by the CC0 statement above. They are generated/edited campaign artwork
+used by DUFYND for product presentation; brand names and product trade dress remain the
+property of their respective rights holders. This table records provenance for the Naxos
+editorial asset only; the complete catalog image inventory and fidelity limitations are
+documented in `docs/dufynd-product-visual-audit-20260924.md`.
 
 | File | Product | Provenance | Use |
 |---|---|---|---|
