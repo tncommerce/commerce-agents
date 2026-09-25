@@ -1,16 +1,28 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 from scripts.audit_dufynd_product_truth import (
     evaluate_product_truth_coverage,
     load_report,
 )
+
+SOURCE = Path("examples/retail/data/scentai_products.json")
 
 
 def test_current_dufynd_product_truth_coverage_is_consistent() -> None:
     report = load_report()
 
     assert report["ok"] is True
-    assert report["summary"]["products"] == 32
+    source = json.loads(SOURCE.read_text(encoding="utf-8"))
+    expected_products = sum(
+        1
+        for row in source["products"]
+        if str(row.get("product_id", "")).startswith("SC-")
+    )
+
+    assert report["summary"]["products"] == expected_products
     assert report["verified_product_truth_product_ids"] == ["SC-XERJOFF-NAXOS-100"]
     assert report["verified_model_3d_product_ids"] == []
     assert set(report["review_queue_product_ids"]) == {
