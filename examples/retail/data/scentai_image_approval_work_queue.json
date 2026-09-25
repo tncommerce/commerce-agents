@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-25T18:36:41+00:00",
-  "source_fingerprint_sha256": "eddc71b8f2211a62d3e80e8dff96ffcf1f021c0f4a8bfc6cfc2248072ab73e8e",
+  "generated_at": "2026-09-25T19:58:00+00:00",
+  "source_fingerprint_sha256": "474f5908b1b3afc7e152c85b66e14b5a4c6d931251934a233a3e4c0ab6ede072",
   "machine_id": "scentai_image_approval_v1",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
@@ -12,12 +12,12 @@
     "scentai_image_asset_candidates.json"
   ],
   "summary": {
-    "staged_products": 40,
+    "staged_products": 45,
     "release_01_products": 5,
     "release_02_products": 5,
     "release_03_products": 5,
     "approved_images": 0,
-    "pending_images": 40,
+    "pending_images": 45,
     "review_ready": 0,
     "rights_or_source_check_pending": 15,
     "identity_check_pending": 0
@@ -1000,6 +1000,40 @@
       "approval_action_class": "approval_required"
     },
     {
+      "product_id": "SC-ARMANI-SI-EDP-100",
+      "candidate_id": "ARMANI-SI-EDP-100",
+      "brand": "Giorgio Armani",
+      "name": "Sì",
+      "batch": 6,
+      "release": null,
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-GUCCI-FLORA-GORGEOUS-GARDENIA-EDP-100",
+      "candidate_id": "GUCCI-FLORA-GORGEOUS-GARDENIA-EDP-100",
+      "brand": "Gucci",
+      "name": "Flora Gorgeous Gardenia",
+      "batch": 6,
+      "release": null,
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
       "product_id": "SC-HUGO-BOSS-BOTTLED-EDT-100",
       "candidate_id": "HUGO-BOSS-BOTTLED-EDT",
       "brand": "Hugo Boss",
@@ -1153,6 +1187,23 @@
       "approval_action_class": "approval_required"
     },
     {
+      "product_id": "SC-LATTAFA-KHAMRAH-EDP-100",
+      "candidate_id": "LATTAFA-KHAMRAH-EDP-100",
+      "brand": "Lattafa",
+      "name": "Khamrah",
+      "batch": 6,
+      "release": null,
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
       "product_id": "SC-PRADA-LHOMME-INTENSE-EDP-100",
       "candidate_id": "PRADA-LHOMME-INTENSE-EDP",
       "brand": "Prada",
@@ -1170,11 +1221,45 @@
       "approval_action_class": "approval_required"
     },
     {
+      "product_id": "SC-PRADA-PARADIGME-EDP-100",
+      "candidate_id": "PRADA-PARADIGME-EDP-100",
+      "brand": "Prada",
+      "name": "Paradigme",
+      "batch": 6,
+      "release": null,
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
       "product_id": "SC-RABANNE-1-MILLION-EDT-100",
       "candidate_id": "RABANNE-1-MILLION-EDT-100",
       "brand": "Rabanne",
       "name": "1 Million",
       "batch": 4,
+      "release": null,
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "missing",
+      "blockers": [
+        "approved_product_image_missing"
+      ],
+      "next_action": "await_real_feed_or_official_asset_candidate",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required"
+    },
+    {
+      "product_id": "SC-TOM-FORD-OUD-WOOD-EDP-100",
+      "candidate_id": "TOM-FORD-OUD-WOOD-EDP-100",
+      "brand": "Tom Ford",
+      "name": "Oud Wood",
+      "batch": 6,
       "release": null,
       "current_image_url": null,
       "current_image_status": "pending_approved_feed_or_manufacturer_image",

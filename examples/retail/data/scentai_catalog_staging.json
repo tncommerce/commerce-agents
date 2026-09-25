@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "status": "staging_only_not_loaded_by_live_storefront",
-  "product_count": 40,
+  "product_count": 45,
   "note": "Canonical pre-live records for verified expansion candidates. No guessed prices, identifiers, affiliate URLs or product images.",
   "products": [
     {
@@ -2892,6 +2892,398 @@
         "evidence_urls": [
           "https://www.versace.com/de/de/herren/accessoires/dufte/eros/eros-edp-100-ml/R740110-R100MLS_RNUL.html",
           "https://www.douglas.de/de/b/versace/eros/b012993"
+        ]
+      }
+    },
+    {
+      "candidate_id": "ARMANI-SI-EDP-100",
+      "product_id": "SC-ARMANI-SI-EDP-100",
+      "batch": 6,
+      "brand": "Giorgio Armani",
+      "name": "Sì",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "women"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "sweet fruity floral",
+        "key_notes": [
+          "blackcurrant",
+          "rose",
+          "patchouli"
+        ],
+        "community_accords": [
+          "sweet",
+          "fruity",
+          "floral",
+          "gourmand",
+          "woody"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 4,
+            "sweetness": 10,
+            "woodiness": 5,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7.3,
+        "rating_count": 1260,
+        "longevity_10": 7.6,
+        "projection_10": 7.3,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 1,
+        "merchant_coverage_source": "dufynd_research_wave",
+        "market_status": "researched_not_integrated",
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending"
+        ]
+      },
+      "research": {
+        "source_wave_id": "DUFYND-CATALOG-EXPANSION-WAVE2-BATCH6",
+        "research_state": "official_profile_verified_merchant_evidence_added",
+        "evidence_urls": [
+          "https://www.armanibeauty.de/dufte/damenduft/si/si-eau-de-parfum/3605521816658.html",
+          "https://www.douglas.de/de/p/3000067486?variant=753263"
+        ]
+      }
+    },
+    {
+      "candidate_id": "GUCCI-FLORA-GORGEOUS-GARDENIA-EDP-100",
+      "product_id": "SC-GUCCI-FLORA-GORGEOUS-GARDENIA-EDP-100",
+      "batch": 6,
+      "brand": "Gucci",
+      "name": "Flora Gorgeous Gardenia",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "women"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "floral sweet fruity",
+        "key_notes": [
+          "floral notes",
+          "Italian mandarin",
+          "red berries",
+          "white gardenia",
+          "jasmine",
+          "frangipani",
+          "patchouli",
+          "brown sugar"
+        ],
+        "community_accords": [
+          "floral",
+          "sweet",
+          "fruity",
+          "fresh",
+          "synthetic"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 8,
+            "sweetness": 6,
+            "woodiness": 2,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7.4,
+        "rating_count": 725,
+        "longevity_10": 6.5,
+        "projection_10": 6.4,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 1,
+        "merchant_coverage_source": "dufynd_research_wave",
+        "market_status": "researched_not_integrated",
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending"
+        ]
+      },
+      "research": {
+        "source_wave_id": "DUFYND-CATALOG-EXPANSION-WAVE2-BATCH6",
+        "research_state": "official_profile_verified_merchant_evidence_added",
+        "evidence_urls": [
+          "https://www.gucci.com/de/de/pr/beauty/fragrances/fragrances-for-women/gucci-flora-gorgeous-gardenia-100ml-eau-de-parfum-p-667343999990099",
+          "https://www.douglas.de/de/p/5010091002"
+        ]
+      }
+    },
+    {
+      "candidate_id": "LATTAFA-KHAMRAH-EDP-100",
+      "product_id": "SC-LATTAFA-KHAMRAH-EDP-100",
+      "batch": 6,
+      "brand": "Lattafa",
+      "name": "Khamrah",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "unisex"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "oriental gourmand",
+        "key_notes": [
+          "cinnamon",
+          "nutmeg",
+          "bergamot",
+          "praline",
+          "date",
+          "tuberose",
+          "mahonia",
+          "vanilla",
+          "tonka bean",
+          "myrrh",
+          "benzoin",
+          "Akigalawood",
+          "amber"
+        ],
+        "community_accords": [
+          "sweet",
+          "gourmand",
+          "oriental",
+          "spicy",
+          "creamy"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 2,
+            "sweetness": 10,
+            "woodiness": 4,
+            "spiciness": 6
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7.9,
+        "rating_count": 4700,
+        "longevity_10": 8.4,
+        "projection_10": 8.2,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 1,
+        "merchant_coverage_source": "dufynd_research_wave",
+        "market_status": "researched_not_integrated",
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending"
+        ]
+      },
+      "research": {
+        "source_wave_id": "DUFYND-CATALOG-EXPANSION-WAVE2-BATCH6",
+        "research_state": "retailer_profile_verified_merchant_evidence_added",
+        "evidence_urls": [
+          "https://www.notino.de/lattafa/khamrah-eau-de-parfum-unisex/"
+        ]
+      }
+    },
+    {
+      "candidate_id": "PRADA-PARADIGME-EDP-100",
+      "product_id": "SC-PRADA-PARADIGME-EDP-100",
+      "batch": 6,
+      "brand": "Prada",
+      "name": "Paradigme",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "men"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "amber woody",
+        "key_notes": [
+          "ambery woods",
+          "bourbon geranium",
+          "calabrian bergamot"
+        ],
+        "community_accords": [
+          "sweet",
+          "synthetic",
+          "fresh",
+          "woody",
+          "spicy"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 5,
+            "sweetness": 5,
+            "woodiness": 6,
+            "spiciness": 6
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 6.7,
+        "rating_count": 971,
+        "longevity_10": 6.8,
+        "projection_10": 6.7,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 1,
+        "merchant_coverage_source": "dufynd_research_wave",
+        "market_status": "researched_not_integrated",
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending"
+        ]
+      },
+      "research": {
+        "source_wave_id": "DUFYND-CATALOG-EXPANSION-WAVE2-BATCH6",
+        "research_state": "official_profile_verified_merchant_evidence_added",
+        "evidence_urls": [
+          "https://www.prada-beauty.com/fragrance/paradigme/paradigme-eau-de-parfum/3614274172997.html?gclsrc=aw.ds&geo=false",
+          "https://www.douglas.de/de/p/5011831044"
+        ]
+      }
+    },
+    {
+      "candidate_id": "TOM-FORD-OUD-WOOD-EDP-100",
+      "product_id": "SC-TOM-FORD-OUD-WOOD-EDP-100",
+      "batch": 6,
+      "brand": "Tom Ford",
+      "name": "Oud Wood",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "unisex"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "woody amber",
+        "key_notes": [
+          "cardamom",
+          "pink pepper",
+          "patchouli",
+          "amber",
+          "oud",
+          "tonka bean"
+        ],
+        "community_accords": [
+          "woody",
+          "spicy",
+          "oriental",
+          "resinous",
+          "smoky"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 2,
+            "sweetness": 4,
+            "woodiness": 10,
+            "spiciness": 8
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 8.4,
+        "rating_count": 6784,
+        "longevity_10": 7.1,
+        "projection_10": 7.1,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 1,
+        "merchant_coverage_source": "dufynd_research_wave",
+        "market_status": "researched_not_integrated",
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending"
+        ]
+      },
+      "research": {
+        "source_wave_id": "DUFYND-CATALOG-EXPANSION-WAVE2-BATCH6",
+        "research_state": "official_profile_verified_merchant_evidence_added",
+        "evidence_urls": [
+          "https://www.tomfordbeauty.co.uk/product/oud-wood-eau-de-parfum?size=100_ml",
+          "https://www.douglas.de/de/p/3000073069?variant=902442"
         ]
       }
     }

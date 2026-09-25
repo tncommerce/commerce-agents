@@ -33,6 +33,21 @@
         "SC-ARMANI-ACQUA-DI-GIO-PROFONDO-PARFUM-100",
         "SC-JPG-LE-MALE-ELIXIR-PARFUM-125"
       ]
+    },
+    {
+      "wave_id": "DUFYND-CATALOG-EXPANSION-WAVE2-BATCH6",
+      "source_file": "dufynd_catalog_expansion_wave2_batch6.json",
+      "enabled": true,
+      "staging_batch": 6,
+      "max_products": 5,
+      "live_publication_authorized": false,
+      "selected_product_ids": [
+        "SC-TOM-FORD-OUD-WOOD-EDP-100",
+        "SC-PRADA-PARADIGME-EDP-100",
+        "SC-ARMANI-SI-EDP-100",
+        "SC-LATTAFA-KHAMRAH-EDP-100",
+        "SC-GUCCI-FLORA-GORGEOUS-GARDENIA-EDP-100"
+      ]
     }
   ]
 }
