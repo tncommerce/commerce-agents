@@ -268,7 +268,7 @@ try {
           }
 
           const explodedButton = explodedSection.getByRole("button", {
-            name: "Exploded View starten",
+            name: "Duftaufbau entfalten",
           });
           await explodedButton.click();
 

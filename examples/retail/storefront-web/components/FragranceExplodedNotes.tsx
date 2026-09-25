@@ -98,7 +98,7 @@ export default function FragranceExplodedNotes({
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-(--line) px-4 py-4 sm:px-5">
         <div>
           <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-(--accent-ink)">
-            Verified Product Truth
+            Verifizierte Produktdarstellung
           </div>
           <h2
             id="dufynd-exploded-heading"
@@ -120,7 +120,7 @@ export default function FragranceExplodedNotes({
           onClick={() => setExpanded((value) => !value)}
           className="rounded-xl border border-(--line-strong) bg-(--surface) px-3.5 py-2.5 text-[11.5px] font-semibold text-(--ink) shadow-sm transition hover:-translate-y-0.5 hover:border-(--ink)"
         >
-          {expanded ? "Zusammenführen" : "Exploded View starten"}
+          {expanded ? "Zusammenführen" : "Duftaufbau entfalten"}
         </button>
       </div>
 
