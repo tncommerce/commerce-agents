@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
 import FragranceOffers from "@/components/FragranceOffers";
 import FragranceVisual from "@/components/FragranceVisual";
+import FragranceVisualGallery from "@/components/FragranceVisualGallery";
 import FragranceModel3D from "@/components/FragranceModel3D";
 import FragranceSaveControls from "@/components/FragranceSaveControls";
 import NoteIcon from "@/components/NoteIcon";
@@ -552,6 +553,11 @@ export default async function FragrancePage({
             </div>
           </div>
         </section>
+
+        <FragranceVisualGallery
+          assets={fragrance.visuals}
+          alt={`${fragrance.brand} ${fragrance.name}`}
+        />
 
         <div
           id="angebote"
