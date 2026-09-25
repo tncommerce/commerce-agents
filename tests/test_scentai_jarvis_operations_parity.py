@@ -33,6 +33,7 @@ def sources() -> tuple[dict, dict, dict, dict, dict]:
                 "mapping_ready": 5,
                 "image_identity_source_verified": 5,
                 "approved_images": 0,
+                "current_purchase_destinations": 0,
                 "current_tracked_affiliate_offers": 0,
                 "promotion_ready": 0,
             }

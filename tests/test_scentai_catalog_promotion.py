@@ -138,7 +138,6 @@ def test_stale_offer_does_not_unlock_promotion() -> None:
     assert "missing_current_purchase_destination" in blockers
 
 
-
 def test_equal_price_prefers_affiliate_then_higher_commission() -> None:
     direct = affiliate_offer()
     direct["offer_id"] = "direct"
@@ -168,6 +167,25 @@ def test_equal_price_prefers_affiliate_then_higher_commission() -> None:
         "affiliate-lower",
         "direct",
     ]
+
+
+def test_invalid_price_cannot_unlock_public_catalog() -> None:
+    offer = affiliate_offer()
+    offer["affiliate_url"] = None
+    offer["price"] = "not-a-price"
+
+    assert (
+        eligible_purchase_offers(
+            [offer],
+            product_id="SC-TEST-FRAGRANCE-100",
+            now=NOW,
+            max_age_hours=72.0,
+        )
+        == []
+    )
+    assert "missing_current_purchase_destination" in promotion_blockers(
+        staged_product(), [offer], now=NOW
+    )
 
 
 def test_provisional_community_data_is_blocked_by_default() -> None:

@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
+import math
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -115,7 +116,6 @@ def eligible_affiliate_offers(
     return sorted(eligible, key=sort_key)
 
 
-
 def eligible_purchase_offers(
     offers: list[dict],
     *,
@@ -137,6 +137,16 @@ def eligible_purchase_offers(
         if not offer.get("in_stock"):
             continue
         if not str(offer.get("product_url") or "").strip():
+            continue
+
+        try:
+            price = float(offer["price"])
+            shipping = offer.get("shipping_cost")
+            if not math.isfinite(price) or price < 0:
+                continue
+            if shipping is not None and (not math.isfinite(float(shipping)) or float(shipping) < 0):
+                continue
+        except (KeyError, TypeError, ValueError):
             continue
 
         try:
@@ -637,6 +647,7 @@ def main() -> int:
             blockers = ", ".join(row["blockers"]) or "-"
             print(
                 f"{status}: {row['product_id']} | "
+                f"purchase offers: {row['eligible_purchase_offers']} | "
                 f"affiliate offers: "
                 f"{row['eligible_affiliate_offers']} | "
                 f"blockers: {blockers}"

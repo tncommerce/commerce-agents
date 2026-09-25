@@ -34,6 +34,7 @@ def base_sources() -> tuple[dict, dict, dict, dict, dict]:
             "mapping_ready": 5,
             "image_identity_source_verified": 5,
             "approved_images": 0,
+            "current_purchase_destinations": 0,
             "current_tracked_affiliate_offers": 0,
             "promotion_ready": 0,
         }
@@ -58,16 +59,16 @@ def base_sources() -> tuple[dict, dict, dict, dict, dict]:
     return mapping, affiliate, images, release, feed
 
 
-def test_control_plane_waits_for_external_affiliate_decision() -> None:
+def test_control_plane_waits_for_purchase_destinations_and_images() -> None:
     status = build_operations_status(
         *base_sources(),
         generated_at="2026-09-19T10:00:00+00:00",
     )
 
     assert status["system"] == "DUFYND"
-    assert status["overall_state"] == ("waiting_external_affiliate_decision")
+    assert status["overall_state"] == ("waiting_purchase_destinations_and_images")
     assert status["user_approval_required_now"] is False
-    assert status["next_action"] == "await_affiliate_program_decision"
+    assert status["next_action"] == "verify_purchase_destinations_and_image_rights"
     assert status["safety"]["no_automatic_live_release"] is True
     assert status["safety"]["commission_may_affect_recommendations"] is False
 
@@ -97,7 +98,7 @@ def test_complete_release_requires_user_approval() -> None:
     mapping, affiliate, images, release, feed = base_sources()
     feed["summary"]["approved_programs_with_full_release_mapping"] = 1
     release["summary"]["approved_images"] = 5
-    release["summary"]["current_tracked_affiliate_offers"] = 5
+    release["summary"]["current_purchase_destinations"] = 5
     release["summary"]["promotion_ready"] = 5
 
     status = build_operations_status(
@@ -113,3 +114,26 @@ def test_complete_release_requires_user_approval() -> None:
     assert status["user_approval_required_now"] is True
     assert status["next_action_class"] == "approval_required"
     assert status["safety"]["live_routing_allowed"] is False
+
+
+def test_direct_purchase_destinations_need_no_affiliate_program() -> None:
+    mapping, affiliate, images, release, feed = base_sources()
+    release["summary"].update(
+        approved_images=5,
+        current_purchase_destinations=5,
+        current_tracked_affiliate_offers=0,
+        promotion_ready=5,
+    )
+
+    status = build_operations_status(
+        mapping,
+        affiliate,
+        images,
+        release,
+        feed,
+        generated_at="2026-09-19T10:00:00+00:00",
+    )
+
+    assert status["overall_state"] == "ready_for_user_approval"
+    assert status["blockers"] == []
+    assert status["affiliate"]["approved_full_release_paths"] == 0

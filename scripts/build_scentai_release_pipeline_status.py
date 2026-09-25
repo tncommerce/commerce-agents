@@ -76,7 +76,10 @@ def build_release_pipeline_status(
 
         if promotion_ready == release_size and release_size > 0:
             gate_state = "product_gates_ready"
-        elif int(summary.get("approved_images", 0) or 0) == 0:
+        elif (
+            int(summary.get("approved_images", 0) or 0) == 0
+            and int(summary.get("current_purchase_destinations", 0) or 0) == 0
+        ):
             gate_state = "blocked_pending_images_and_purchase_destinations"
         else:
             gate_state = "blocked_pending_remaining_product_gates"
@@ -185,6 +188,8 @@ def main() -> int:
                 f"mapping={summary['mapping_ready']}/"
                 f"{summary['release_size']} | "
                 f"images={summary['approved_images']}/"
+                f"{summary['release_size']} | "
+                f"purchase={summary['current_purchase_destinations']}/"
                 f"{summary['release_size']} | "
                 f"affiliate="
                 f"{summary['current_tracked_affiliate_offers']}/"

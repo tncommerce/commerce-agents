@@ -31,7 +31,7 @@
     "non_provisional_community_data",
     "resolved_merchant_product_mapping",
     "approved_product_image",
-    "current_tracked_affiliate_offer",
+    "current_purchase_destination",
     "staging_recommendation_qa",
     "not_already_live",
     "all_selected_products_ready_no_partial_release"
@@ -44,7 +44,7 @@
     "note": "All Release 03 products have redundant mapping paths at merchants already represented in the SCENTAI affiliate application registry."
   },
   "write_enabled": false,
-  "write_guard_reason": "Release 03 stays write-locked until Release 01 and Release 02 have completed their required real affiliate-feed, image-approval, promotion and smoke-test sequence.",
+  "write_guard_reason": "Release 03 stays write-locked until Release 01 and Release 02 have completed their required real purchase-destination, image-approval, promotion and smoke-test sequence.",
   "write_policy": "All-or-nothing. Dry-run is allowed; live write is explicitly disabled at manifest level.",
   "depends_on_release_ids": [
     "SCENTAI-RELEASE-01",
