@@ -78,6 +78,18 @@ Use the best verified truth layer if available. The current accord-driven backgr
 
 If only editorial exists, keep the existing visible disclosure that the image is a stylized DUFYND staging and bottle details may differ.
 
+### Verified exploded-notes view
+
+A product with a verified primary/cutout may expose a lightweight interactive exploded-notes layer. It must use the verified still image as the untouched product-truth centre and render fragrance-note icons/text as separate explanatory UI layers.
+
+Rules:
+
+- never show the interaction for editorial-only or pending-review bottle art;
+- the note layers explain the olfactory pyramid and must not imply literal physical bottle contents;
+- keep a static, readable state for reduced-motion users;
+- on narrow mobile widths, reduce note density before shrinking the verified bottle into illegibility;
+- the interaction must not require a GLB and must remain distinct from true 3D model support.
+
 ### Detail gallery
 
 Add only when at least two useful roles exist. Suggested order:
@@ -138,7 +150,9 @@ The first backward-compatible slice is now implemented on the integration branch
 - editorial and verified-product roles remain visibly distinct;
 - regression tests validate role/status values, prevent duplicate visual URLs and keep the Naxos verified cutout aligned with the legacy catalog field;
 - existing fragrances without `visuals` continue to use current still-image fallbacks;
-- `model_3d` is a structured visual role, but only an explicitly `verified` model asset can reach the interactive viewer; legacy model attributes cannot bypass the fidelity gate.
+- `model_3d` is a structured visual role, but only an explicitly `verified` model asset can reach the interactive viewer; legacy model attributes cannot bypass the fidelity gate;
+- Naxos now also pilots the verified-only `FragranceExplodedNotes` interaction: the verified cutout stays centered while up to three Kopf-, Herz- and Basisnoten move into depth around it; 320 / 390 / 768 / 1440 browser QA exercises the expanded state;
+- browser QA also asserts that current unverified product pages cannot expose the verified-only exploded-notes interaction.
 
 The card/hero selection layer now follows the documented priority centrally: verified `primary` first, verified `cutout` second, then an editorial fallback. Legacy cutouts without structured verification are not silently promoted to product truth. Naxos therefore continues to use its verified cutout, while the other current catalog products remain editorial until a fidelity-approved truth asset is added.
 
@@ -148,6 +162,7 @@ The remaining visual block is narrower: add more verified assets when they are a
 
 The original multi-visual implementation block is complete on PR #67. The remaining work should build on that system rather than recreate it:
 
+- keep the exploded-notes interaction on the verified-only path and reuse it automatically when future primary/cutout assets pass the fidelity gate;
 - review the responsive browser-QA captures at 320 / 390 / 768 / 1440 and fix only reproducible layout/fidelity defects;
 - keep Naxos on its verified cutout; the approved `bottle_free_backdrop` editorial is now wired into hero/homepage while remaining explicitly non-product-truth;
 - add future `primary` / `macro` / `model_3d` assets only after the fidelity gate passes;
