@@ -1,12 +1,13 @@
 {
   "version": 1,
   "updated_at": "2026-09-25",
-  "purpose": "Machine-readable queue for DUFYND product visual fidelity review. It does not activate, replace or approve product imagery.",
+  "purpose": "Machine-readable queue for DUFYND product visual fidelity review. Pending candidates are internal repo assets only; this queue does not activate, replace or approve product imagery.",
   "rules": [
     "P0 items must not be promoted to verified primary product depictions until replaced or corrected.",
     "P1 items may remain editorial but require side-by-side verification before product-truth status.",
     "No paid generation is authorized by this queue.",
-    "A replacement must preserve exact product variant and bottle size."
+    "A replacement must preserve exact product variant and bottle size.",
+    "Pending candidate assets must remain outside the storefront public directory until they pass the fidelity gate."
   ],
   "items": [
     {
@@ -17,7 +18,7 @@
       "finding": "The current live editorial remains invalid as product truth because it visibly reads 75 ML / 2.5 FL.OZ while the catalog item is 100 ml. A new volume-neutral black Absolu Aventus candidate has been generated, but the official current 100 ml page still uses variant-ambiguous imagery, so it remains intentionally unverified.",
       "next_action": "Keep the candidate inactive until the exact 100 ml bottle/packaging variant is resolved or a volume-neutral exact-reference side-by-side check can be completed.",
       "evidence_url": "https://www.creedfragrance.de/p/absolu-aventus/16281794/?variation=16281796",
-      "candidate_asset": "/products/candidates/creed-absolu-aventus-p0-v1.webp"
+      "candidate_asset": "examples/retail/review-assets/product-candidates/creed-absolu-aventus-p0-v1.webp"
     },
     {
       "product_id": "SC-ARMANI-SWY-INTENSELY-100",
@@ -27,7 +28,7 @@
       "finding": "Direct comparison against the current 100 ml presentation shows a major improvement: the refined candidate is taller/narrower, keeps the cognac liquid, rounded shoulder lines and gunmetal cap treatment, and reduces the oversized stopper/ring stack. It remains intentionally unverified because exact cap/ring geometry and front proportions still need final human side-by-side approval.",
       "evidence_url": "https://www.armanibeauty.de/dufte/herrenduft/stronger-with-you/stronger-with-you-intensely-eau-de-parfum/3614272225718.html",
       "next_action": "Keep inactive. Final human fidelity approval should focus on cap sphere size, ring-stack geometry, shoulder width and typography before structured-primary activation.",
-      "candidate_asset": "/products/candidates/armani-swy-intensely-p0-v3.webp"
+      "candidate_asset": "examples/retail/review-assets/product-candidates/armani-swy-intensely-p0-v3.webp"
     },
     {
       "product_id": "SC-PRADA-LHOMME-100",
@@ -37,7 +38,7 @@
       "finding": "The original DUFYND editorial remains unsuitable as product truth. A new neutral candidate now preserves the architectural rectangular bottle, black Saffiano treatment, silver mirrored face and silver cap much more closely, but is intentionally not verified until direct exact-reference side-by-side QA passes.",
       "evidence_url": "https://www.prada-beauty.com/fragrance/lhomme-prada/lhomme-prada-eau-de-toilette/8435137749607.html",
       "next_action": "Run direct side-by-side fidelity QA against the exact 100 ml reference before any structured-primary activation.",
-      "candidate_asset": "/products/candidates/prada-lhomme-p0-v5.webp"
+      "candidate_asset": "examples/retail/review-assets/product-candidates/prada-lhomme-p0-v5.webp"
     },
     {
       "product_id": "SC-SOSPIRO-VIBRATO-100",
@@ -47,7 +48,7 @@
       "finding": "Direct comparison against the current official 100 ml presentation shows the refined candidate substantially closer: the emerald velvet silhouette is slimmer, the sculpted gold cap is less dominant and the oval plaque is smaller with reference-aligned wording. It remains intentionally unverified pending final human side-by-side approval of cap sculpture, plaque placement and logo detail.",
       "evidence_url": "https://sospirointernational.com/products/vibrato",
       "next_action": "Keep inactive. Final human fidelity approval should focus on cap sculpture, plaque scale/position, emblem detail and complete 100 ml silhouette.",
-      "candidate_asset": "/products/candidates/sospiro-vibrato-p0-v2.webp"
+      "candidate_asset": "examples/retail/review-assets/product-candidates/sospiro-vibrato-p0-v2.webp"
     }
   ],
   "cleared_for_editorial_use": [

@@ -4,15 +4,16 @@ All four remaining P0 fragrances now have a neutral, inactive candidate asset. N
 
 | Product | Candidate | Current gate | Primary blocker |
 | --- | --- | --- | --- |
-| Prada L'Homme EDT 100 ml | `/products/candidates/prada-lhomme-p0-v5.webp` | Pending exact-reference QA | Confirm bottle proportions, cap/neck geometry, mirrored face, Saffiano placement and front branding against the exact 100 ml reference. |
-| Giorgio Armani Stronger With You Intensely 100 ml | `/products/candidates/armani-swy-intensely-p0-v3.webp` | Pending exact-reference QA | Refined after side-by-side review. Final human approval still needed for cap sphere/ring geometry, shoulder width and typography. |
-| Sospiro Vibrato 100 ml | `/products/candidates/sospiro-vibrato-p0-v2.webp` | Pending exact-reference QA | Refined after side-by-side review. Final human approval still needed for cap sculpture, plaque scale/position, emblem detail and silhouette. |
-| Creed Absolu Aventus 100 ml | `/products/candidates/creed-absolu-aventus-p0-v1.webp` | Pending exact-reference / variant gate | Creed's current 100 ml page still shows imagery marked 75 ml, so the candidate deliberately avoids a visible volume marking until variant ambiguity is resolved. |
+| Prada L'Homme EDT 100 ml | `examples/retail/review-assets/product-candidates/prada-lhomme-p0-v5.webp` | Pending exact-reference QA | Confirm bottle proportions, cap/neck geometry, mirrored face, Saffiano placement and front branding against the exact 100 ml reference. |
+| Giorgio Armani Stronger With You Intensely 100 ml | `examples/retail/review-assets/product-candidates/armani-swy-intensely-p0-v3.webp` | Pending exact-reference QA | Refined after side-by-side review. Final human approval still needed for cap sphere/ring geometry, shoulder width and typography. |
+| Sospiro Vibrato 100 ml | `examples/retail/review-assets/product-candidates/sospiro-vibrato-p0-v2.webp` | Pending exact-reference QA | Refined after side-by-side review. Final human approval still needed for cap sculpture, plaque scale/position, emblem detail and silhouette. |
+| Creed Absolu Aventus 100 ml | `examples/retail/review-assets/product-candidates/creed-absolu-aventus-p0-v1.webp` | Pending exact-reference / variant gate | Creed's current 100 ml page still shows imagery marked 75 ml, so the candidate deliberately avoids a visible volume marking until variant ambiguity is resolved. |
 
 ## Safety status
 
-- Candidates live only under `/products/candidates/`.
+- Candidates live only under the internal repo path `examples/retail/review-assets/product-candidates/` and are not emitted by the storefront static export.
 - The live source catalog, generated storefront catalog and structured visual metadata do not reference these candidate paths.
+- Pending candidates are deliberately kept outside `storefront-web/public/`; passing fidelity review is required before a selected asset can be promoted into a public product-truth path.
 - A regression test now fails if a candidate is accidentally promoted before review.
 - Candidate masters are portrait, at least 1000 × 1200 px, and preserve full-bottle safe area.
 - The existing live editorial images remain unchanged until a candidate explicitly passes the fidelity gate.

@@ -27,7 +27,7 @@ A visually attractive result that misses bottle truth remains editorial-only.
 
 **Hard constraints:** no visible 75 ml marking; no guessed 100 ml marking unless the exact reference clearly supports it; no bottle redesign, no smoke obscuring the lower bottle, no duplicated cap/plaque.
 
-**Candidate status (25 Sep 2026):** a new volume-neutral black primary candidate was generated and stored at `/products/candidates/creed-absolu-aventus-p0-v1.webp`. It deliberately omits a visible 75 ml/100 ml marking and remains inactive because Creed's current 100 ml page still uses variant-ambiguous imagery.
+**Candidate status (25 Sep 2026):** a new volume-neutral black primary candidate was generated and stored at `examples/retail/review-assets/product-candidates/creed-absolu-aventus-p0-v1.webp`. It deliberately omits a visible 75 ml/100 ml marking and remains inactive because Creed's current 100 ml page still uses variant-ambiguous imagery.
 
 **Editorial companion:** brighter gallery-world image inspired by DUFYND's mineral/noir atmosphere, with citrus/ginger accents kept clearly secondary to the product.
 
@@ -53,7 +53,7 @@ A visually attractive result that misses bottle truth remains editorial-only.
 
 **Hard constraints:** do not round or soften the bottle into a generic silver flask; do not replace the Saffiano treatment with plain mirror metal; preserve logo placement and cap geometry.
 
-**Candidate status (25 Sep 2026):** a new neutral primary candidate was generated and stored at `/products/candidates/prada-lhomme-p0-v5.webp`. It is a major fidelity improvement over the live editorial but remains inactive pending direct exact-reference side-by-side QA.
+**Candidate status (25 Sep 2026):** a new neutral primary candidate was generated and stored at `examples/retail/review-assets/product-candidates/prada-lhomme-p0-v5.webp`. It is a major fidelity improvement over the live editorial but remains inactive pending direct exact-reference side-by-side QA.
 
 **Editorial companion:** silk/mineral world with brushed metal, dark leather texture and clean gallery light. Avoid generic sunset/citrus scenery.
 
@@ -67,7 +67,7 @@ A visually attractive result that misses bottle truth remains editorial-only.
 
 **Hard constraints:** no glossy black spherical stopper, no generic whisky decanter, no ornamental redesign of the shoulders or cap.
 
-**Candidate status (25 Sep 2026):** a new neutral primary candidate was generated and stored at `/products/candidates/armani-swy-intensely-p0-v3.webp`. V3 now corrects the overly broad V2 body and reduces the cap/ring dominance while preserving the cognac liquid and gunmetal direction. It remains inactive pending final human side-by-side approval.
+**Candidate status (25 Sep 2026):** a new neutral primary candidate was generated and stored at `examples/retail/review-assets/product-candidates/armani-swy-intensely-p0-v3.webp`. V3 now corrects the overly broad V2 body and reduces the cap/ring dominance while preserving the cognac liquid and gunmetal direction. It remains inactive pending final human side-by-side approval.
 
 **Editorial companion:** amber/gourmand world using restrained chestnut, vanilla and spice cues. Avoid floating ingredient explosions around the bottle.
 
@@ -81,7 +81,7 @@ A visually attractive result that misses bottle truth remains editorial-only.
 
 **Hard constraints:** no generic cylindrical or rectangular redesign; no black/silver substitute cap; no missing or reshaped oval plaque; no blue colour shift; no invented visible volume marking; no promotion to verified until side-by-side fidelity QA passes.
 
-**Candidate status (25 Sep 2026):** a new neutral primary candidate was generated and stored at `/products/candidates/sospiro-vibrato-p0-v2.webp`. V2 narrows the silhouette, reduces the cap and medallion dominance, and aligns the plaque wording more closely with the current official presentation. It remains inactive pending final human side-by-side approval.
+**Candidate status (25 Sep 2026):** a new neutral primary candidate was generated and stored at `examples/retail/review-assets/product-candidates/sospiro-vibrato-p0-v2.webp`. V2 narrows the silhouette, reduces the cap and medallion dominance, and aligns the plaque wording more closely with the current official presentation. It remains inactive pending final human side-by-side approval.
 
 **Editorial companion:** bottle-free green/gold atmosphere using citrus, magnolia/rose, pale woods and refined amber cues. The current 4:3 DUFYND scene remains editorial-only.
 

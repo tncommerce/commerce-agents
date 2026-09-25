@@ -11,7 +11,7 @@ CATALOG = Path("examples/retail/data/scentai_products.json")
 STATIC_CATALOG = Path("examples/retail/data/catalog.json")
 QUEUE = Path("examples/retail/data/dufynd_product_visual_review_queue.json")
 PUBLIC_ROOT = Path("examples/retail/storefront-web/public")
-CANDIDATE_DIR = PUBLIC_ROOT / "products/candidates"
+CANDIDATE_DIR = Path("examples/retail/review-assets/product-candidates")
 
 
 def test_product_visual_review_queue_references_catalog_products() -> None:
@@ -32,12 +32,13 @@ def test_product_visual_review_queue_references_catalog_products() -> None:
 
         candidate = item.get("candidate_asset")
         if candidate:
-            assert candidate.startswith("/products/candidates/")
-            assert candidate != item["asset"]
-            candidate_path = Path("examples/retail/storefront-web/public") / candidate.removeprefix(
-                "/"
+            assert candidate.startswith(
+                "examples/retail/review-assets/product-candidates/"
             )
+            assert candidate != item["asset"]
+            candidate_path = Path(candidate)
             assert candidate_path.is_file(), f"missing candidate asset: {candidate_path}"
+            assert PUBLIC_ROOT not in candidate_path.parents
 
     assert len(items) == 4
     assert all(item.get("candidate_asset") for item in items)
@@ -65,7 +66,7 @@ def test_p0_candidates_are_reviewable_but_not_active_product_truth() -> None:
     static_catalog = json.loads(STATIC_CATALOG.read_text(encoding="utf-8"))
     queue = json.loads(QUEUE.read_text(encoding="utf-8"))
 
-    candidate_urls = {item["candidate_asset"] for item in queue["items"]}
+    candidate_assets = {item["candidate_asset"] for item in queue["items"]}
 
     active_urls = {
         product["image_url"] for product in source["products"] if product.get("image_url")
@@ -83,15 +84,17 @@ def test_p0_candidates_are_reviewable_but_not_active_product_truth() -> None:
             if attributes.get(key):
                 active_urls.add(attributes[key])
 
-    assert candidate_urls.isdisjoint(active_urls)
+    candidate_names = {Path(candidate).name for candidate in candidate_assets}
+    active_names = {Path(url).name for url in active_urls}
+    assert candidate_names.isdisjoint(active_names)
 
     candidate_files = {
-        f"/products/candidates/{path.name}" for path in CANDIDATE_DIR.iterdir() if path.is_file()
+        path.as_posix() for path in CANDIDATE_DIR.iterdir() if path.is_file()
     }
-    assert candidate_files == candidate_urls
+    assert candidate_files == candidate_assets
 
-    for candidate in candidate_urls:
-        candidate_path = PUBLIC_ROOT / candidate.removeprefix("/")
+    for candidate in candidate_assets:
+        candidate_path = Path(candidate)
         with Image.open(candidate_path) as image:
             width, height = image.size
 
