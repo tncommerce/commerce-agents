@@ -29,7 +29,7 @@ import MerchantDiscovery from "../MerchantDiscovery";
 import PersonalLibrarySummary from "../PersonalLibrarySummary";
 
 const STATIC_CATALOG: Record<string, Product> = Object.fromEntries(
-  (staticCatalog.products as Product[]).map((product) => [
+  (staticCatalog.products as unknown as Product[]).map((product) => [
     product.product_id,
     product,
   ]),
