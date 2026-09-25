@@ -23,8 +23,7 @@ def test_affiliate_programs_match_partner_registry_state() -> None:
     tracked = [
         row
         for row in applications
-        if row.get("status")
-        in {"applied", "applied_pending", "approved", "rejected"}
+        if row.get("status") in {"applied", "applied_pending", "approved", "rejected"}
     ]
 
     assert tracked
