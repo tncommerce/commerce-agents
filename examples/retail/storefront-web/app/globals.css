@@ -784,6 +784,17 @@ body {
     opacity: 0.18;
     mask-image: linear-gradient(180deg, transparent 0%, #000 34%, #000 100%);
   }
+
+  /* Keep the complete bottle clear of the spotlight caption on compact
+   * screens. The product remains contained rather than being zoom-cropped. */
+  .dufynd-hero-product .dufynd-product-object {
+    inset: 6% 10% 19%;
+  }
+
+  .dufynd-hero-product .dufynd-product-shadow {
+    bottom: 18%;
+    width: 42%;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
