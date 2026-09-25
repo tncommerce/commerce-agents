@@ -18,6 +18,26 @@ type CatalogRow = {
   short_description?: string | null;
 };
 
+export type FragranceVisualRole =
+  | "primary"
+  | "cutout"
+  | "editorial"
+  | "macro";
+
+export type FragranceVisualFidelity =
+  | "verified"
+  | "pending_review"
+  | "editorial_only"
+  | "rejected";
+
+export interface FragranceVisualAsset {
+  role: FragranceVisualRole;
+  url: string;
+  provenance?: string | null;
+  fidelity_status: FragranceVisualFidelity;
+  variant?: string | null;
+}
+
 type SourceRow = {
   product_id: string;
   brand: string;
@@ -62,6 +82,7 @@ type SourceRow = {
     relationship_type: string;
     confidence?: string | null;
   }[];
+  visuals?: FragranceVisualAsset[];
 };
 
 export interface StaticFragrance {
@@ -76,6 +97,7 @@ export interface StaticFragrance {
   image_url?: string | null;
   cutout_image_url?: string | null;
   model_3d_url?: string | null;
+  visuals: FragranceVisualAsset[];
   short_description?: string | null;
   target_groups: string[];
   role: string | null;
@@ -187,6 +209,11 @@ function catalogToFragrance(
       String(attributes.product_cutout_url || "").trim() || null,
     model_3d_url:
       String(attributes.product_model_3d_url || "").trim() || null,
+    visuals: (source?.visuals || []).filter(
+      (visual) =>
+        Boolean(visual.url?.trim()) &&
+        visual.fidelity_status !== "rejected",
+    ),
     short_description: row.short_description,
     target_groups: targetGroups,
     role: source?.classification?.role || null,
