@@ -49,11 +49,7 @@ def test_live_product_data_no_longer_references_editorial_pngs() -> None:
     catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
 
     references = _all_strings(source) | _all_strings(catalog)
-    pilot_refs = {
-        value
-        for value in references
-        if value.startswith("/products/pilot/")
-    }
+    pilot_refs = {value for value in references if value.startswith("/products/pilot/")}
 
     assert pilot_refs
     assert all(value.endswith(".webp") for value in pilot_refs)
