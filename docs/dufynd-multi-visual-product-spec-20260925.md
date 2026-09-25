@@ -136,7 +136,8 @@ The first backward-compatible slice is now implemented on the integration branch
 - the fragrance detail page shows a compact `Weitere Ansichten` gallery only when at least two explicit visuals exist;
 - editorial and verified-product roles remain visibly distinct;
 - regression tests validate role/status values, prevent duplicate visual URLs and keep the Naxos verified cutout aligned with the legacy catalog field;
-- existing fragrances without `visuals` continue to use the current image/cutout/model fields unchanged.
+- existing fragrances without `visuals` continue to use current still-image fallbacks;
+- `model_3d` is a structured visual role, but only an explicitly `verified` model asset can reach the interactive viewer; legacy model attributes cannot bypass the fidelity gate.
 
 The card/hero selection layer now follows the documented priority centrally: verified `primary` first, verified `cutout` second, then an editorial fallback. Legacy cutouts without structured verification are not silently promoted to product truth. Naxos therefore continues to use its verified cutout, while the other current catalog products remain editorial until a fidelity-approved truth asset is added.
 

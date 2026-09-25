@@ -7,8 +7,9 @@ from pathlib import Path
 
 CATALOG = Path("examples/retail/data/catalog.json")
 SOURCE = Path("examples/retail/data/scentai_products.json")
+ADAPTER = Path("examples/retail/storefront-web/lib/fragranceCatalog.ts")
 
-ALLOWED_ROLES = {"primary", "cutout", "editorial", "macro"}
+ALLOWED_ROLES = {"primary", "cutout", "editorial", "macro", "model_3d"}
 ALLOWED_STATUS = {"verified", "pending_review", "editorial_only", "rejected"}
 
 
@@ -61,3 +62,11 @@ def test_naxos_visual_pilot_matches_legacy_product_layer() -> None:
     assert visuals["cutout"]["url"] == (catalog_row["attributes"]["product_cutout_url"])
     assert visuals["editorial"]["fidelity_status"] == "editorial_only"
     assert visuals["editorial"]["url"] == catalog_row["image_url"]
+
+def test_model_3d_activation_requires_structured_verified_asset() -> None:
+    adapter = ADAPTER.read_text(encoding="utf-8")
+
+    assert 'visual.role === "model_3d"' in adapter
+    assert 'visual.fidelity_status === "verified"' in adapter
+    assert "attributes.product_model_3d_url" not in adapter
+

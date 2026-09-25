@@ -22,7 +22,8 @@ export type FragranceVisualRole =
   | "primary"
   | "cutout"
   | "editorial"
-  | "macro";
+  | "macro"
+  | "model_3d";
 
 export type FragranceVisualFidelity =
   | "verified"
@@ -165,6 +166,18 @@ export function isVerifiedProductTruthVisual(
   );
 }
 
+function selectVerifiedModel3D(
+  visuals: FragranceVisualAsset[],
+): FragranceVisualAsset | null {
+  return (
+    visuals.find(
+      (visual) =>
+        visual.role === "model_3d" &&
+        visual.fidelity_status === "verified",
+    ) || null
+  );
+}
+
 function selectPreferredVisual(
   visuals: FragranceVisualAsset[],
   editorialFallback?: string | null,
@@ -225,6 +238,7 @@ function catalogToFragrance(
     row.image_url,
     legacyCutoutUrl,
   );
+  const verifiedModel3D = selectVerifiedModel3D(visuals);
   const brand = String(row.brand || source?.brand || "").trim();
   const name = String(
     attributes.canonical_name ||
@@ -280,8 +294,7 @@ function catalogToFragrance(
     release_year: source?.release_year ?? null,
     image_url: row.image_url,
     cutout_image_url: legacyCutoutUrl,
-    model_3d_url:
-      String(attributes.product_model_3d_url || "").trim() || null,
+    model_3d_url: verifiedModel3D?.url || null,
     visuals,
     preferred_visual: preferredVisual,
     short_description: row.short_description,

@@ -113,6 +113,7 @@ export default function HomeView({
     ? getLiveFragranceByProductId(String(spotlight.product_id))
     : null;
   const spotlightVisual = spotlightFragrance?.preferred_visual;
+  const spotlightModelUrl = spotlightFragrance?.model_3d_url;
   const spotlightIsProductTruth =
     isVerifiedProductTruthVisual(spotlightVisual);
   const spotlightName = spotlight
@@ -194,9 +195,9 @@ export default function HomeView({
               aria-label={`${spotlight.brand || ""} ${spotlightName} entdecken`.trim()}
               className="dufynd-hero-product group relative min-h-[260px] sm:min-h-[320px] overflow-hidden border-t border-white/10 md:min-h-[430px] md:border-l md:border-t-0"
             >
-              {spotlight.attributes?.product_model_3d_url || spotlightIsProductTruth ? (
+              {spotlightModelUrl || spotlightIsProductTruth ? (
                 <FragranceModel3D
-                  modelUrl={spotlight.attributes?.product_model_3d_url}
+                  modelUrl={spotlightModelUrl}
                   imageUrl={
                     spotlightIsProductTruth
                       ? undefined
@@ -239,7 +240,7 @@ export default function HomeView({
                   </div>
                 </div>
                 <span className="rounded-full border border-white/12 bg-black/20 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.12em] text-white/64 backdrop-blur-md">
-                  {spotlight.attributes?.product_model_3d_url ? "3D-Ansicht" : "Immersive Ansicht"}
+                  {spotlightModelUrl ? "3D-Ansicht" : "Immersive Ansicht"}
                 </span>
               </div>
             </a>

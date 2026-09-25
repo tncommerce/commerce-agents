@@ -39,6 +39,18 @@ function safeModelSource(modelUrl?: string | null): string | null {
   const candidate = modelUrl?.trim();
   if (!candidate) return null;
 
+  const hasGlbPath = (value: string) => {
+    try {
+      return new URL(value, "https://dufynd.invalid")
+        .pathname.toLowerCase()
+        .endsWith(".glb");
+    } catch {
+      return false;
+    }
+  };
+
+  if (!hasGlbPath(candidate)) return null;
+
   // Local, version-controlled GLB assets are preferred for DUFYND pilots.
   // Reject protocol-relative URLs so "//example.com/model.glb" cannot bypass
   // the external-source policy.

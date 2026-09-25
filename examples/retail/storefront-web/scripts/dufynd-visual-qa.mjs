@@ -207,6 +207,12 @@ try {
             );
           }
 
+          if ((await page.locator("model-viewer").count()) > 0) {
+            throw new Error(
+              "Naxos exposed a true 3D viewer without a verified model_3d asset",
+            );
+          }
+
           const disclosure = text.includes(
             "Bild: stilisierte DUFYND-Inszenierung",
           );

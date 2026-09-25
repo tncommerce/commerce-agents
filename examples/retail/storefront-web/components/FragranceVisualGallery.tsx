@@ -9,6 +9,7 @@ const ROLE_LABELS: Record<FragranceVisualAsset["role"], string> = {
   cutout: "Freisteller",
   editorial: "DUFYND Inszenierung",
   macro: "Detailansicht",
+  model_3d: "3D-Modell",
 };
 
 const STATUS_LABELS: Partial<
@@ -26,7 +27,10 @@ export default function FragranceVisualGallery({
   assets: FragranceVisualAsset[];
   alt: string;
 }) {
-  const unique = assets.filter(
+  const stillAssets = assets.filter(
+    (asset) => asset.role !== "model_3d",
+  );
+  const unique = stillAssets.filter(
     (asset, index, all) =>
       all.findIndex((candidate) => candidate.url === asset.url) === index,
   );
