@@ -300,6 +300,13 @@ export default async function FragrancePage({
     fragrance,
     4,
   );
+  const notePreview = [
+    ...fragrance.notes.top,
+    ...fragrance.notes.heart,
+    ...fragrance.notes.base,
+    ...fragrance.notes.key,
+    ...fragrance.notes.supporting,
+  ].slice(0, 3);
   const canonicalUrl = `${SITE_URL}/duft/${fragrance.slug}`;
   const breadcrumbStructuredData = {
     "@context": "https://schema.org",
@@ -612,11 +619,28 @@ export default async function FragrancePage({
           </section>
 
           <details className="group rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) lg:hidden">
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-[17px] font-semibold">
-              <span>Duftnoten</span>
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3">
+              <span className="min-w-0">
+                <span className="block text-[17px] font-semibold">
+                  Duftnoten
+                </span>
+                {notePreview.length ? (
+                  <span className="mt-1.5 flex flex-wrap gap-1.5 text-[10.5px] font-medium text-(--ink-soft)">
+                    {notePreview.map((note) => (
+                      <span
+                        key={note}
+                        className="inline-flex items-center gap-1 rounded-full bg-(--well) px-2 py-1"
+                      >
+                        <NoteIcon note={note} className="h-3.5 w-3.5" />
+                        {noteLabel(note)}
+                      </span>
+                    ))}
+                  </span>
+                ) : null}
+              </span>
               <span
                 aria-hidden
-                className="text-[18px] text-(--accent-ink) transition group-open:rotate-45"
+                className="shrink-0 text-[18px] text-(--accent-ink) transition group-open:rotate-45"
               >
                 +
               </span>
