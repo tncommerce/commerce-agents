@@ -107,6 +107,30 @@ try {
         });
         await page.waitForTimeout(350);
 
+        // Full-page screenshots can capture below-the-fold lazy images before they
+        // finish loading. Decode each rendered image so the visual artifact is
+        // suitable for review rather than a page of temporary empty stages.
+        await page.evaluate(async () => {
+          const images = Array.from(document.images).filter((image) => {
+            const style = window.getComputedStyle(image);
+            return (
+              image.getAttribute("src") &&
+              style.display !== "none" &&
+              style.visibility !== "hidden"
+            );
+          });
+          await Promise.all(
+            images.map(async (image) => {
+              image.loading = "eager";
+              try {
+                await image.decode();
+              } catch {
+                // The existing broken-image diagnostic reports failed loads.
+              }
+            }),
+          );
+        });
+
         const diagnostics = await page.evaluate((blocked) => {
           const bodyText = document.body.innerText;
           const visibleBrokenImages = Array.from(document.images)
