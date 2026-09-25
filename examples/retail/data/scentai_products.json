@@ -3137,12 +3137,12 @@
       "image_url": "/products/pilot/al-ambra-dubai-musk-editorial.webp"
     },
     {
-      "product_id": "SC-WIDIAN-LONDON-EDP-100",
+      "product_id": "SC-WIDIAN-LONDON-EXTRAIT-50",
       "brand": "Widian",
       "name": "London",
-      "concentration": "Eau de Parfum",
-      "volume_ml": 100,
-      "release_year": 2024,
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 50,
+      "release_year": 2018,
       "classification": {
         "official_orientation": "unisex",
         "community_category": "unisex",
@@ -3172,11 +3172,11 @@
       },
       "community": {
         "source": "Parfumo",
-        "rating_10": 9.2,
-        "rating_count": 609,
-        "rank": 142,
+        "rating_10": 9,
+        "rating_count": 4219,
+        "rank": 4,
         "rank_category": "unisex",
-        "longevity_10": 8.8,
+        "longevity_10": 8.9,
         "projection_10": 8.6
       },
       "fragrance_profile": {
@@ -3184,23 +3184,23 @@
           "leathery",
           "fruity",
           "sweet",
-          "spicy",
+          "oriental",
           "woody"
         ],
         "scores": {
           "freshness": 2,
           "sweetness": 7,
           "woodiness": 7,
-          "spiciness": 5
+          "spiciness": 4
         },
         "score_confidence": "medium"
       },
       "market": {
-        "market_price_eur": 330,
-        "price_per_ml_eur": 3.3,
+        "market_price_eur": 270,
+        "price_per_ml_eur": 5.4,
         "german_availability": "high",
-        "price_source_count": 2,
-        "price_checked_at": "2026-09-25"
+        "price_source_count": 4,
+        "price_checked_at": "2026-09-18"
       },
       "relationships": [],
       "evidence": {
