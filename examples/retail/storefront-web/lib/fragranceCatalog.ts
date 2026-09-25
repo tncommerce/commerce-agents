@@ -18,6 +18,32 @@ type CatalogRow = {
   short_description?: string | null;
 };
 
+export type FragranceVisualRole =
+  | "primary"
+  | "cutout"
+  | "editorial"
+  | "macro"
+  | "model_3d";
+
+export type FragranceVisualFidelity =
+  | "verified"
+  | "pending_review"
+  | "editorial_only"
+  | "rejected";
+
+export type FragranceVisualComposition =
+  | "product_scene"
+  | "bottle_free_backdrop";
+
+export interface FragranceVisualAsset {
+  role: FragranceVisualRole;
+  url: string;
+  provenance?: string | null;
+  fidelity_status: FragranceVisualFidelity;
+  variant?: string | null;
+  composition?: FragranceVisualComposition | null;
+}
+
 type SourceRow = {
   product_id: string;
   brand: string;
@@ -62,6 +88,7 @@ type SourceRow = {
     relationship_type: string;
     confidence?: string | null;
   }[];
+  visuals?: FragranceVisualAsset[];
 };
 
 export interface StaticFragrance {
@@ -75,6 +102,10 @@ export interface StaticFragrance {
   release_year?: number | null;
   image_url?: string | null;
   cutout_image_url?: string | null;
+  model_3d_url?: string | null;
+  visuals: FragranceVisualAsset[];
+  preferred_visual: FragranceVisualAsset | null;
+  backdrop_visual: FragranceVisualAsset | null;
   short_description?: string | null;
   target_groups: string[];
   role: string | null;
@@ -112,7 +143,7 @@ export interface StaticFragrance {
 }
 
 const sourceById = new Map(
-  (scentaiProducts.products as SourceRow[]).map(
+  (scentaiProducts.products as unknown as SourceRow[]).map(
     (product) => [product.product_id, product],
   ),
 );
@@ -123,11 +154,112 @@ function asNumber(value: string | undefined): number | null {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
+function activeVisuals(source: SourceRow | undefined): FragranceVisualAsset[] {
+  return (source?.visuals || []).filter(
+    (visual) =>
+      Boolean(visual.url?.trim()) &&
+      visual.fidelity_status !== "rejected" &&
+      visual.fidelity_status !== "pending_review",
+  );
+}
+
+export function isVerifiedProductTruthVisual(
+  visual: FragranceVisualAsset | null | undefined,
+): boolean {
+  return Boolean(
+    visual &&
+      visual.fidelity_status === "verified" &&
+      (visual.role === "primary" || visual.role === "cutout"),
+  );
+}
+
+function selectVerifiedModel3D(
+  visuals: FragranceVisualAsset[],
+): FragranceVisualAsset | null {
+  return (
+    visuals.find(
+      (visual) =>
+        visual.role === "model_3d" &&
+        visual.fidelity_status === "verified",
+    ) || null
+  );
+}
+
+function selectBottleFreeBackdrop(
+  visuals: FragranceVisualAsset[],
+): FragranceVisualAsset | null {
+  return (
+    visuals.find(
+      (visual) =>
+        visual.role === "editorial" &&
+        visual.composition === "bottle_free_backdrop" &&
+        visual.fidelity_status === "editorial_only",
+    ) || null
+  );
+}
+
+function selectPreferredVisual(
+  visuals: FragranceVisualAsset[],
+  editorialFallback?: string | null,
+  legacyCutoutFallback?: string | null,
+): FragranceVisualAsset | null {
+  const verifiedPrimary = visuals.find(
+    (visual) =>
+      visual.role === "primary" &&
+      visual.fidelity_status === "verified",
+  );
+  if (verifiedPrimary) return verifiedPrimary;
+
+  const verifiedCutout = visuals.find(
+    (visual) =>
+      visual.role === "cutout" &&
+      visual.fidelity_status === "verified",
+  );
+  if (verifiedCutout) return verifiedCutout;
+
+  const editorial = visuals.find(
+    (visual) => visual.role === "editorial",
+  );
+  if (editorial) return editorial;
+
+  const editorialUrl = editorialFallback?.trim();
+  if (editorialUrl) {
+    return {
+      role: "editorial",
+      url: editorialUrl,
+      provenance: "legacy_catalog",
+      fidelity_status: "editorial_only",
+    };
+  }
+
+  const legacyCutoutUrl = legacyCutoutFallback?.trim();
+  if (legacyCutoutUrl) {
+    return {
+      role: "cutout",
+      url: legacyCutoutUrl,
+      provenance: "legacy_catalog",
+      fidelity_status: "pending_review",
+    };
+  }
+
+  return null;
+}
+
 function catalogToFragrance(
   row: CatalogRow,
 ): StaticFragrance {
   const source = sourceById.get(row.product_id);
   const attributes = row.attributes || {};
+  const legacyCutoutUrl =
+    String(attributes.product_cutout_url || "").trim() || null;
+  const visuals = activeVisuals(source);
+  const preferredVisual = selectPreferredVisual(
+    visuals,
+    row.image_url,
+    legacyCutoutUrl,
+  );
+  const verifiedModel3D = selectVerifiedModel3D(visuals);
+  const backdropVisual = selectBottleFreeBackdrop(visuals);
   const brand = String(row.brand || source?.brand || "").trim();
   const name = String(
     attributes.canonical_name ||
@@ -182,8 +314,11 @@ function catalogToFragrance(
     volume_ml: volumeMl,
     release_year: source?.release_year ?? null,
     image_url: row.image_url,
-    cutout_image_url:
-      String(attributes.product_cutout_url || "").trim() || null,
+    cutout_image_url: legacyCutoutUrl,
+    model_3d_url: verifiedModel3D?.url || null,
+    visuals,
+    preferred_visual: preferredVisual,
+    backdrop_visual: backdropVisual,
     short_description: row.short_description,
     target_groups: targetGroups,
     role: source?.classification?.role || null,
@@ -543,4 +678,10 @@ export function getLiveFragranceBySlug(
   slug: string,
 ): StaticFragrance | null {
   return bySlug.get(slug) || null;
+}
+
+export function getLiveFragranceByProductId(
+  productId: string,
+): StaticFragrance | null {
+  return byProductId.get(productId) || null;
 }

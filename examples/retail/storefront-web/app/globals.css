@@ -391,6 +391,15 @@ body {
   background: #171513;
 }
 
+.dufynd-editorial-depth-fill {
+  position: absolute;
+  inset: -12%;
+  height: 124%;
+  width: 124%;
+  object-fit: cover;
+  filter: blur(30px) brightness(0.65) saturate(0.8);
+}
+
 .dufynd-editorial-depth-object {
   position: absolute;
   inset: -2.5%;
@@ -409,6 +418,31 @@ body {
   object-fit: cover;
   filter: saturate(1.02) contrast(1.01);
   transition: filter 320ms ease;
+}
+
+/* Catalogue thumbnails have a wide frame, while several campaign images are
+ * portrait. Keep the entire bottle and label inside the thumbnail. */
+.dufynd-editorial-depth-stage[data-variant="card"] .dufynd-editorial-depth-object {
+  inset: 4%;
+  transform: none;
+}
+
+.dufynd-editorial-depth-stage[data-variant="card"] .dufynd-editorial-depth-image {
+  display: block;
+  object-fit: contain;
+}
+
+/* Detail pages must show every edge of the bottle and its label, even when
+ * the supplied artwork is portrait or landscape rather than square. */
+.dufynd-editorial-depth-stage[data-variant="hero"] .dufynd-editorial-depth-object {
+  inset: 6%;
+  transform: none;
+}
+
+.dufynd-editorial-depth-stage[data-variant="hero"] .dufynd-editorial-depth-image {
+  display: block;
+  object-fit: contain;
+  filter: drop-shadow(0 18px 28px rgba(0,0,0,0.25));
 }
 
 .dufynd-editorial-depth-vignette {
@@ -451,9 +485,21 @@ body {
     filter: saturate(1.055) contrast(1.025);
   }
 
+  .dufynd-editorial-depth-stage[data-variant="card"]:hover .dufynd-editorial-depth-object {
+    transform: scale(1.025);
+  }
+
   .dufynd-editorial-depth-stage:hover .dufynd-editorial-depth-glint {
     transform: translateX(62%) rotate(4deg);
     opacity: 0.78;
+  }
+
+  .dufynd-editorial-depth-stage[data-variant="hero"]:hover .dufynd-editorial-depth-object {
+    transform: none;
+  }
+
+  .dufynd-editorial-depth-stage[data-variant="hero"]:hover .dufynd-editorial-depth-image {
+    filter: drop-shadow(0 22px 32px rgba(0,0,0,0.3));
   }
 }
 
@@ -467,6 +513,11 @@ body {
 
   .dufynd-editorial-depth-glint {
     display: none;
+  }
+
+  .dufynd-editorial-depth-stage:hover .dufynd-editorial-depth-object,
+  .dufynd-product-stage:hover .dufynd-product-image {
+    transform: none !important;
   }
 }
 
@@ -482,9 +533,11 @@ body {
   height: 110%;
   width: 110%;
   object-fit: cover;
-  filter: blur(5px) saturate(0.92) contrast(0.94);
-  opacity: 0.38;
-  transform: scale(1.03);
+  /* Only explicitly bottle-free editorial artwork may reach this layer.
+     Keep it atmospheric so the verified product cutout remains dominant. */
+  filter: blur(28px) saturate(0.92) contrast(0.94);
+  opacity: 0.32;
+  transform: scale(1.17);
 }
 
 .dufynd-product-backdrop-shade {
@@ -526,6 +579,21 @@ body {
   opacity: 0.52;
 }
 
+/* Bottle-free detail backdrops should remain legible as atmosphere rather than
+ * collapsing into a generic colour wash. Product truth still sits in the
+ * verified foreground cutout. */
+.dufynd-fragrance-hero .dufynd-product-backdrop {
+  opacity: 0.46;
+  filter: blur(9px) saturate(0.96) contrast(0.98) brightness(0.82);
+  transform: scale(1.08);
+}
+
+.dufynd-fragrance-hero .dufynd-product-backdrop-shade {
+  background:
+    radial-gradient(circle at 50% 44%, rgba(255,253,248,0.03), rgba(23,21,19,0.08) 58%, rgba(23,21,19,0.25) 100%),
+    linear-gradient(180deg, rgba(255,253,248,0.02), rgba(23,21,19,0.14));
+}
+
 
 /* Detail hero framing for isolated bottle cutouts.
  * Keeps the entire bottle visible with premium breathing room.
@@ -541,5 +609,621 @@ body {
 @media (hover: hover) and (pointer: fine) {
   .dufynd-product-stage[data-variant="hero"]:not(:has(.dufynd-product-backdrop)):hover .dufynd-product-image {
     transform: translateZ(0) scale(0.985);
+  }
+}
+
+/* DUFYND immersive homepage hero
+ * Cinematic depth without sacrificing product clarity or page performance.
+ * The background is pure CSS so the hero stays lightweight; the verified
+ * product cutout remains the visual source of truth.
+ */
+.dufynd-immersive-hero {
+  --dufynd-hero-x: 68%;
+  --dufynd-hero-y: 34%;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 68% 34%, rgba(207, 160, 72, 0.10), transparent 24%),
+    linear-gradient(128deg, #090a0c 0%, #121113 44%, #08090b 100%);
+  box-shadow:
+    0 34px 90px -46px rgba(0, 0, 0, 0.92),
+    0 18px 50px -34px rgba(184, 137, 52, 0.62),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.dufynd-hero-atmosphere {
+  background:
+    radial-gradient(circle at 12% 12%, rgba(219, 171, 78, 0.20), transparent 26%),
+    radial-gradient(circle at var(--dufynd-hero-x) var(--dufynd-hero-y), rgba(255, 225, 165, 0.15), transparent 22%),
+    radial-gradient(circle at 67% 88%, rgba(120, 79, 30, 0.18), transparent 26%),
+    linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.025) 52%, transparent 70%);
+}
+
+.dufynd-hero-aurora {
+  top: -42%;
+  right: -12%;
+  width: min(760px, 76vw);
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background:
+    conic-gradient(
+      from 235deg,
+      transparent 0 17%,
+      rgba(126, 87, 37, 0.03) 28%,
+      rgba(224, 183, 97, 0.20) 38%,
+      rgba(255, 244, 211, 0.08) 45%,
+      rgba(137, 91, 34, 0.06) 56%,
+      transparent 69% 100%
+    );
+  filter: blur(34px);
+  opacity: 0.8;
+  transform: rotate(-8deg) scale(1.08);
+}
+
+.dufynd-hero-orbit {
+  right: 6%;
+  top: 8%;
+  width: 46%;
+  height: 78%;
+  border: 1px solid rgba(230, 196, 128, 0.13);
+  border-radius: 50%;
+  opacity: 0.5;
+  transform: rotate(-18deg);
+  box-shadow:
+    0 0 80px rgba(184, 137, 52, 0.05),
+    inset 0 0 46px rgba(255, 231, 179, 0.025);
+}
+
+.dufynd-hero-particles {
+  opacity: 0.26;
+  background-image:
+    radial-gradient(circle, rgba(255, 231, 179, 0.72) 0 0.7px, transparent 0.9px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.40) 0 0.55px, transparent 0.8px);
+  background-size: 74px 74px, 119px 119px;
+  background-position: 0 0, 31px 22px;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 27%, #000 100%);
+}
+
+.dufynd-hero-vignette {
+  background:
+    linear-gradient(90deg, rgba(4,5,7,0.12), transparent 42%, rgba(3,4,6,0.14)),
+    linear-gradient(0deg, rgba(2,3,5,0.32), transparent 32%),
+    radial-gradient(circle at 72% 46%, transparent 0 24%, rgba(3,4,5,0.14) 72%);
+}
+
+.dufynd-hero-product::before {
+  content: "";
+  position: absolute;
+  inset: 7% 9% 9%;
+  z-index: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(229, 185, 98, 0.10), transparent 63%);
+  filter: blur(18px);
+  pointer-events: none;
+}
+
+.dufynd-hero-product .dufynd-product-stage {
+  background: transparent;
+}
+
+.dufynd-hero-product .dufynd-product-backdrop {
+  opacity: 0.24;
+  filter: blur(10px) saturate(0.86) contrast(1.08) brightness(0.58);
+  transform: scale(1.12);
+}
+
+.dufynd-hero-product .dufynd-product-backdrop-shade {
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255, 231, 179, 0.12), transparent 28%),
+    linear-gradient(90deg, rgba(7,8,10,0.30), transparent 42%),
+    linear-gradient(180deg, rgba(7,8,10,0.03), rgba(7,8,10,0.32));
+}
+
+.dufynd-hero-product .dufynd-product-light {
+  background: radial-gradient(
+    circle at var(--dufynd-mx) var(--dufynd-my),
+    rgba(255, 248, 226, 0.44) 0,
+    rgba(213, 165, 76, 0.13) 20%,
+    transparent 44%
+  );
+  opacity: 0.9;
+}
+
+.dufynd-hero-product .dufynd-product-image {
+  filter:
+    drop-shadow(0 38px 30px rgba(0,0,0,0.40))
+    drop-shadow(0 10px 16px rgba(0,0,0,0.28))
+    drop-shadow(0 0 26px rgba(220,174,86,0.08));
+}
+
+.dufynd-hero-primary {
+  box-shadow:
+    0 10px 30px -16px rgba(255, 241, 210, 0.65),
+    0 0 0 1px rgba(255,255,255,0.1);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dufynd-hero-aurora {
+    animation: dufynd-hero-breathe 13s ease-in-out infinite alternate;
+  }
+
+  .dufynd-hero-orbit {
+    animation: dufynd-hero-orbit-drift 17s ease-in-out infinite alternate;
+  }
+
+  .dufynd-hero-particles {
+    animation: dufynd-hero-particles-drift 22s linear infinite;
+  }
+}
+
+@keyframes dufynd-hero-breathe {
+  0% {
+    transform: rotate(-10deg) scale(1.02) translate3d(0, 0, 0);
+    opacity: 0.62;
+  }
+  100% {
+    transform: rotate(-4deg) scale(1.14) translate3d(-2%, 3%, 0);
+    opacity: 0.92;
+  }
+}
+
+@keyframes dufynd-hero-orbit-drift {
+  0% {
+    transform: rotate(-20deg) translate3d(0, 0, 0);
+    opacity: 0.34;
+  }
+  100% {
+    transform: rotate(-14deg) translate3d(-2%, 1.5%, 0);
+    opacity: 0.58;
+  }
+}
+
+@keyframes dufynd-hero-particles-drift {
+  from {
+    background-position: 0 0, 31px 22px;
+  }
+  to {
+    background-position: 74px -74px, -88px 141px;
+  }
+}
+
+@media (max-width: 767px) {
+  .dufynd-hero-orbit {
+    right: -14%;
+    top: 42%;
+    width: 78%;
+    height: 54%;
+    opacity: 0.32;
+  }
+
+  .dufynd-hero-particles {
+    opacity: 0.18;
+    mask-image: linear-gradient(180deg, transparent 0%, #000 34%, #000 100%);
+  }
+
+  /* Keep the complete bottle clear of the spotlight caption on compact
+   * screens. The product remains contained rather than being zoom-cropped. */
+  .dufynd-hero-product .dufynd-product-object {
+    inset: 6% 10% 19%;
+  }
+
+  .dufynd-hero-product .dufynd-product-shadow {
+    bottom: 18%;
+    width: 42%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dufynd-hero-aurora,
+  .dufynd-hero-orbit,
+  .dufynd-hero-particles {
+    animation: none !important;
+  }
+}
+
+
+/* Verified 3D fragrance stage
+ * Loaded only when a product supplies product_model_3d_url.
+ * Static cutout/editorial fallback stays in place until the WebGL viewer is ready.
+ */
+.dufynd-model-stage {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 34%, rgba(222, 178, 93, 0.12), transparent 28%),
+    linear-gradient(145deg, #111214 0%, #090a0c 100%);
+}
+
+.dufynd-model-halo {
+  position: absolute;
+  inset: 12% 10% 8%;
+  pointer-events: none;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(248, 221, 166, 0.14), rgba(184, 137, 52, 0.04) 42%, transparent 70%);
+  filter: blur(18px);
+}
+
+.dufynd-model-viewer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: transparent;
+  --poster-color: transparent;
+  --progress-bar-color: rgba(216, 173, 85, 0.78);
+  --progress-bar-height: 2px;
+}
+
+.dufynd-model-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.025), transparent 24%, transparent 72%, rgba(0,0,0,0.20)),
+    radial-gradient(circle at 50% 88%, rgba(0,0,0,0.24), transparent 26%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dufynd-model-hint {
+    opacity: 0.72;
+  }
+}
+
+
+.dufynd-model-hint {
+  position: absolute;
+  right: 16px;
+  bottom: 14px;
+  z-index: 3;
+  pointer-events: none;
+  border: 1px solid rgba(255,255,255,0.11);
+  border-radius: 999px;
+  background: rgba(8,9,11,0.34);
+  padding: 6px 9px;
+  color: rgba(255,255,255,0.62);
+  font-size: 9px;
+  font-weight: 650;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  backdrop-filter: blur(10px);
+}
+
+@media (max-width: 640px) {
+  .dufynd-model-hint {
+    right: 12px;
+    bottom: 11px;
+    font-size: 8px;
+    opacity: 0.82;
+  }
+}
+
+
+/* Accord-driven fragrance detail atmospheres
+ * Product pages share the DUFYND luxury language without becoming visually repetitive.
+ * The actual bottle image/model remains untouched; only the surrounding light world changes.
+ */
+.dufynd-fragrance-hero {
+  isolation: isolate;
+  --dufynd-detail-glow-a: rgba(209, 160, 75, 0.18);
+  --dufynd-detail-glow-b: rgba(255, 239, 204, 0.08);
+  --dufynd-detail-glow-c: rgba(98, 66, 31, 0.11);
+  background:
+    radial-gradient(circle at 17% 18%, var(--dufynd-detail-glow-a), transparent 31%),
+    linear-gradient(126deg, rgba(11, 12, 14, 0.96) 0%, rgba(20, 18, 18, 0.84) 48%, rgba(248, 245, 238, 0.96) 48%, rgba(248, 245, 238, 0.99) 100%);
+}
+
+.dufynd-fragrance-hero-atmosphere {
+  opacity: 0.92;
+  background:
+    radial-gradient(circle at 28% 30%, var(--dufynd-detail-glow-b), transparent 24%),
+    radial-gradient(circle at 72% 78%, var(--dufynd-detail-glow-c), transparent 31%),
+    linear-gradient(112deg, transparent 22%, rgba(255,255,255,0.035) 48%, transparent 72%);
+}
+
+.dufynd-fragrance-hero-orbit {
+  top: -20%;
+  left: 10%;
+  width: min(560px, 55vw);
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--dufynd-detail-glow-a) 68%, transparent);
+  border-radius: 50%;
+  opacity: 0.40;
+  transform: rotate(-22deg);
+  box-shadow:
+    0 0 90px color-mix(in srgb, var(--dufynd-detail-glow-a) 22%, transparent),
+    inset 0 0 44px color-mix(in srgb, var(--dufynd-detail-glow-b) 34%, transparent);
+}
+
+.dufynd-fragrance-hero-copy {
+  background:
+    linear-gradient(90deg, rgba(250,247,241,0.88), rgba(250,247,241,0.98) 28%, rgba(250,247,241,1));
+  backdrop-filter: blur(16px);
+}
+
+.dufynd-fragrance-hero--amber {
+  --dufynd-detail-glow-a: rgba(211, 151, 54, 0.24);
+  --dufynd-detail-glow-b: rgba(255, 212, 132, 0.13);
+  --dufynd-detail-glow-c: rgba(128, 66, 25, 0.16);
+}
+
+.dufynd-fragrance-hero--mineral {
+  --dufynd-detail-glow-a: rgba(109, 154, 142, 0.22);
+  --dufynd-detail-glow-b: rgba(191, 222, 209, 0.12);
+  --dufynd-detail-glow-c: rgba(46, 86, 78, 0.13);
+}
+
+.dufynd-fragrance-hero--ember {
+  --dufynd-detail-glow-a: rgba(177, 112, 67, 0.23);
+  --dufynd-detail-glow-b: rgba(234, 176, 119, 0.11);
+  --dufynd-detail-glow-c: rgba(89, 43, 29, 0.16);
+}
+
+.dufynd-fragrance-hero--silk {
+  --dufynd-detail-glow-a: rgba(177, 140, 153, 0.18);
+  --dufynd-detail-glow-b: rgba(235, 208, 218, 0.12);
+  --dufynd-detail-glow-c: rgba(109, 73, 84, 0.10);
+}
+
+.dufynd-fragrance-hero--noir {
+  --dufynd-detail-glow-a: rgba(130, 96, 67, 0.20);
+  --dufynd-detail-glow-b: rgba(189, 152, 111, 0.09);
+  --dufynd-detail-glow-c: rgba(22, 24, 28, 0.26);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dufynd-fragrance-hero-orbit {
+    animation: dufynd-detail-orbit-drift 19s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes dufynd-detail-orbit-drift {
+  0% {
+    transform: rotate(-24deg) translate3d(0, 0, 0) scale(0.98);
+    opacity: 0.30;
+  }
+  100% {
+    transform: rotate(-18deg) translate3d(4%, 2%, 0) scale(1.05);
+    opacity: 0.48;
+  }
+}
+
+@media (max-width: 1023px) {
+  .dufynd-fragrance-hero {
+    background:
+      radial-gradient(circle at 30% 18%, var(--dufynd-detail-glow-a), transparent 28%),
+      linear-gradient(180deg, rgba(11,12,14,0.98) 0 47%, rgba(248,245,238,0.99) 47% 100%);
+  }
+
+  .dufynd-fragrance-hero-orbit {
+    top: -8%;
+    left: 8%;
+    width: 78vw;
+    opacity: 0.28;
+  }
+
+  .dufynd-fragrance-hero-copy {
+    background: rgba(250,247,241,0.985);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dufynd-fragrance-hero-orbit {
+    animation: none !important;
+  }
+}
+
+
+
+/* Verified-product exploded note view
+ * This visualization is intentionally gated to verified product-truth imagery.
+ * Notes are explanatory UI layers and never imply literal bottle ingredients.
+ */
+.dufynd-exploded-stage {
+  position: relative;
+  isolation: isolate;
+  min-height: 430px;
+  overflow: hidden;
+  perspective: 1100px;
+  background:
+    radial-gradient(circle at 50% 46%, rgba(218, 174, 89, 0.14), transparent 23%),
+    radial-gradient(circle at 15% 18%, rgba(114, 157, 143, 0.10), transparent 28%),
+    linear-gradient(145deg, #fbf8f1 0%, #f4eee2 56%, #ebe1d1 100%);
+}
+
+.dufynd-exploded-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.16), transparent 18%, transparent 80%, rgba(58,42,23,0.05)),
+    radial-gradient(circle at 50% 50%, transparent 0 38%, rgba(255,255,255,0.12) 74%, rgba(255,255,255,0.30) 100%);
+}
+
+.dufynd-exploded-halo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 0;
+  width: min(420px, 70%);
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(255,255,255,0.76), rgba(221,180,99,0.13) 43%, transparent 70%);
+  filter: blur(11px);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.dufynd-exploded-orbit {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  border: 1px solid rgba(139, 105, 49, 0.13);
+  border-radius: 50%;
+  pointer-events: none;
+  transition: opacity 420ms ease, transform 620ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.dufynd-exploded-orbit--outer {
+  width: min(720px, 82%);
+  aspect-ratio: 1.75;
+  transform: translate(-50%, -50%) rotate(-11deg) scale(0.72);
+  opacity: 0.14;
+}
+
+.dufynd-exploded-orbit--inner {
+  width: min(510px, 62%);
+  aspect-ratio: 1.35;
+  transform: translate(-50%, -50%) rotate(18deg) scale(0.72);
+  opacity: 0.10;
+}
+
+.dufynd-exploded-stage[data-expanded="true"] .dufynd-exploded-orbit--outer {
+  transform: translate(-50%, -50%) rotate(-11deg) scale(1);
+  opacity: 0.56;
+}
+
+.dufynd-exploded-stage[data-expanded="true"] .dufynd-exploded-orbit--inner {
+  transform: translate(-50%, -50%) rotate(18deg) scale(1);
+  opacity: 0.42;
+}
+
+.dufynd-exploded-bottle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 4;
+  display: grid;
+  width: clamp(120px, 27%, 245px);
+  height: 74%;
+  place-items: center;
+  transform: translate(-50%, -50%) translateZ(42px) scale(1.02);
+  transition: transform 620ms cubic-bezier(0.2, 0.8, 0.2, 1), filter 420ms ease;
+  filter:
+    drop-shadow(0 26px 24px rgba(23,21,19,0.18))
+    drop-shadow(0 7px 8px rgba(23,21,19,0.10));
+}
+
+.dufynd-exploded-bottle img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.dufynd-exploded-stage[data-expanded="true"] .dufynd-exploded-bottle {
+  transform: translate(-50%, -50%) translateZ(42px) scale(0.88);
+  filter:
+    drop-shadow(0 30px 27px rgba(23,21,19,0.21))
+    drop-shadow(0 9px 9px rgba(23,21,19,0.12));
+}
+
+.dufynd-exploded-note {
+  --dufynd-note-x: 50%;
+  --dufynd-note-y: 50%;
+  --dufynd-note-delay: 0ms;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 6;
+  display: flex;
+  width: min(166px, 40%);
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(93, 72, 38, 0.14);
+  border-radius: 14px;
+  background: rgba(255, 253, 248, 0.88);
+  padding: 7px 9px;
+  box-shadow:
+    0 12px 28px -18px rgba(23,21,19,0.42),
+    inset 0 1px 0 rgba(255,255,255,0.78);
+  opacity: 0;
+  transform: translate(-50%, -50%) translateZ(4px) scale(0.74);
+  backdrop-filter: blur(12px);
+  transition:
+    left 620ms cubic-bezier(0.2, 0.8, 0.2, 1) var(--dufynd-note-delay),
+    top 620ms cubic-bezier(0.2, 0.8, 0.2, 1) var(--dufynd-note-delay),
+    opacity 260ms ease var(--dufynd-note-delay),
+    transform 620ms cubic-bezier(0.2, 0.8, 0.2, 1) var(--dufynd-note-delay);
+}
+
+.dufynd-exploded-stage[data-expanded="true"] .dufynd-exploded-note {
+  left: var(--dufynd-note-x);
+  top: var(--dufynd-note-y);
+  opacity: 1;
+  transform: translate(-50%, -50%) translateZ(54px) scale(1);
+}
+
+.dufynd-exploded-note-icon {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+
+.dufynd-exploded-note[data-stage="heart"] .dufynd-exploded-note-icon {
+  background: rgba(178, 134, 145, 0.12);
+}
+
+.dufynd-exploded-note[data-stage="base"] .dufynd-exploded-note-icon {
+  background: rgba(103, 75, 49, 0.11);
+}
+
+@media (min-width: 768px) {
+  .dufynd-exploded-stage {
+    min-height: 520px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dufynd-exploded-stage {
+    min-height: 300px;
+    transition: min-height 420ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .dufynd-exploded-stage[data-expanded="true"] {
+    min-height: 452px;
+  }
+
+  .dufynd-exploded-note {
+    width: min(126px, 39%);
+    gap: 6px;
+    padding: 6px 7px;
+  }
+
+  .dufynd-exploded-note-icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+  }
+
+  .dufynd-exploded-note[data-index="2"] {
+    display: none;
+  }
+
+  .dufynd-exploded-bottle {
+    width: clamp(126px, 40%, 158px);
+    height: 70%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dufynd-exploded-stage,
+  .dufynd-exploded-orbit,
+  .dufynd-exploded-bottle,
+  .dufynd-exploded-note {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
   }
 }

@@ -9,7 +9,11 @@ import {
   trackAnalyticsEvent,
   trackCatalogSearch,
 } from "@/lib/analytics";
-import type { StaticFragrance } from "@/lib/fragranceCatalog";
+import {
+  isVerifiedProductTruthVisual,
+  type StaticFragrance,
+} from "@/lib/fragranceCatalog";
+import { noteLabel } from "@/lib/noteLabels";
 
 type AudienceFilter = "all" | "men" | "unisex" | "women";
 type ProfileFilter =
@@ -24,7 +28,7 @@ type SortMode =
   | "performance"
   | "brand";
 
-const PAGE_SIZE = 36;
+const PAGE_SIZE = 12;
 
 const AUDIENCE_OPTIONS: {
   value: AudienceFilter;
@@ -53,7 +57,7 @@ const SORT_OPTIONS: {
 }[] = [
   { value: "popular", label: "Beliebtheit" },
   { value: "rating", label: "Bewertung" },
-  { value: "performance", label: "Performance" },
+  { value: "performance", label: "Haltbarkeit & Ausstrahlung" },
   { value: "brand", label: "Marke A–Z" },
 ];
 
@@ -192,6 +196,15 @@ function searchDocument(
       ...fragrance.notes.top,
       ...fragrance.notes.heart,
       ...fragrance.notes.base,
+      ...fragrance.notes.key,
+      ...fragrance.notes.supporting,
+      ...[
+        ...fragrance.notes.top,
+        ...fragrance.notes.heart,
+        ...fragrance.notes.base,
+        ...fragrance.notes.key,
+        ...fragrance.notes.supporting,
+      ].map(noteLabel),
     ].join(" "),
   );
 }
@@ -736,7 +749,7 @@ export default function FragranceCatalogBrowser({
             </span>{" "}
             von {fragrances.length} Düften
             {remainingCount > 0 ? (
-              <span className="hidden sm:inline">
+              <span>
                 {" "}
                 · {visibleFragrances.length} angezeigt
               </span>
@@ -758,7 +771,12 @@ export default function FragranceCatalogBrowser({
       {filtered.length ? (
         <>
           <section className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {visibleFragrances.map((fragrance) => (
+            {visibleFragrances.map((fragrance) => {
+              const visual = fragrance.preferred_visual;
+              const isProductTruth =
+                isVerifiedProductTruthVisual(visual);
+
+              return (
               <article
                 key={fragrance.product_id}
                 className="overflow-hidden rounded-2xl border border-(--line) bg-(--card) shadow-(--shadow-sm) transition hover:-translate-y-0.5 hover:shadow-md"
@@ -778,23 +796,14 @@ export default function FragranceCatalogBrowser({
                   className="group block"
                 >
                   <div className="h-52 w-full overflow-hidden">
-                    {fragrance.cutout_image_url ? (
+                    {visual ? (
                       <FragranceVisual
-                        imageUrl={fragrance.cutout_image_url}
-                        cutoutUrl={fragrance.cutout_image_url}
+                        imageUrl={visual.url}
+                        cutoutUrl={isProductTruth ? visual.url : undefined}
                         alt={`${fragrance.brand} ${fragrance.name}`}
                         variant="card"
-                        mode="cutout"
+                        mode={isProductTruth ? "cutout" : "editorial"}
                         className="h-full w-full"
-                      />
-                    ) : fragrance.image_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={fragrance.image_url}
-                        alt={`${fragrance.brand} ${fragrance.name}`}
-                        loading="lazy"
-                        decoding="async"
-                        className="h-full w-full object-cover transition duration-500 ease-out group-hover:scale-[1.035]"
                       />
                     ) : (
                       <div className="grid h-full place-items-center text-[11px] font-semibold tracking-[0.16em] text-white/65">
@@ -856,7 +865,8 @@ export default function FragranceCatalogBrowser({
                   />
                 </div>
               </article>
-            ))}
+              );
+            })}
           </section>
 
           {remainingCount > 0 ? (
@@ -931,7 +941,7 @@ export default function FragranceCatalogBrowser({
               href="/"
               className="mt-2 inline-flex rounded-xl bg-(--ink) px-4 py-2 text-[12px] font-semibold text-(--surface)"
             >
-              DUFYND Advisor öffnen
+              DUFYND Duftberater öffnen
             </a>
           </div>
         </section>

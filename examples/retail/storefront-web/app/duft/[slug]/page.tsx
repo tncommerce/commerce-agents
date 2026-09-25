@@ -2,18 +2,24 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
+import FragranceExplodedNotes from "@/components/FragranceExplodedNotes";
 import FragranceOffers from "@/components/FragranceOffers";
 import FragranceVisual from "@/components/FragranceVisual";
+import FragranceVisualGallery from "@/components/FragranceVisualGallery";
+import FragranceModel3D from "@/components/FragranceModel3D";
 import FragranceSaveControls from "@/components/FragranceSaveControls";
+import NoteIcon from "@/components/NoteIcon";
 import {
   LIVE_FRAGRANCES,
   comparisonPath,
   getLiveFragranceBySlug,
   getRelatedFragrances,
+  isVerifiedProductTruthVisual,
   type RelatedFragranceKind,
   type StaticFragrance,
 } from "@/lib/fragranceCatalog";
 import { SITE_URL } from "@/lib/site";
+import { noteLabel } from "@/lib/noteLabels";
 
 export const dynamicParams = false;
 
@@ -52,6 +58,54 @@ const TARGET_LABELS: Record<string, string> = {
 
 function accordLabel(value: string): string {
   return ACCORD_LABELS[value.toLowerCase()] || value;
+}
+
+type FragranceVisualTheme =
+  | "amber"
+  | "mineral"
+  | "ember"
+  | "silk"
+  | "noir";
+
+function visualThemeFor(fragrance: StaticFragrance): FragranceVisualTheme {
+  const accords = new Set(
+    fragrance.accords.map((accord) => accord.toLowerCase()),
+  );
+
+  if (
+    accords.has("smoky") ||
+    accords.has("leathery") ||
+    accords.has("resinous")
+  ) {
+    return "noir";
+  }
+
+  if (
+    accords.has("gourmand") ||
+    accords.has("sweet") ||
+    accords.has("oriental") ||
+    accords.has("creamy")
+  ) {
+    return "amber";
+  }
+
+  if (
+    accords.has("floral") ||
+    accords.has("powdery")
+  ) {
+    return "silk";
+  }
+
+  if (
+    accords.has("fresh") ||
+    accords.has("citrus") ||
+    accords.has("aquatic") ||
+    accords.has("green")
+  ) {
+    return "mineral";
+  }
+
+  return "ember";
 }
 
 function targetLabel(value: string): string {
@@ -100,28 +154,38 @@ function formatPrice(value: number | null): string {
 function noteSection(
   title: string,
   notes: string[],
-  icon: string,
 ) {
   if (!notes.length) return null;
+  const stage =
+    title === "Kopfnoten"
+      ? "01"
+      : title === "Herznoten"
+        ? "02"
+        : title === "Basisnoten"
+          ? "03"
+          : null;
 
   return (
     <div>
       <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-(--ink-soft)">
-        <span
-          aria-hidden
-          className="grid h-6 w-6 place-items-center rounded-lg bg-(--accent-soft) text-[12px] text-(--accent-ink)"
-        >
-          {icon}
-        </span>
+        {stage ? (
+          <span
+            aria-hidden
+            className="grid h-6 w-6 place-items-center rounded-lg bg-(--accent-soft) text-[10px] tabular-nums text-(--accent-ink)"
+          >
+            {stage}
+          </span>
+        ) : null}
         {title}
       </div>
       <div className="mt-2 flex flex-wrap gap-2">
         {notes.map((note) => (
           <span
             key={note}
-            className="rounded-full border border-(--line) bg-(--well)/60 px-3 py-1.5 text-[12px] text-(--ink)"
+            className="inline-flex items-center gap-2 rounded-full border border-(--line) bg-(--well)/60 px-3 py-1.5 text-[12px] text-(--ink)"
           >
-            {note}
+            <NoteIcon note={note} className="h-4 w-4 shrink-0 text-(--accent-ink)" />
+            {noteLabel(note)}
           </span>
         ))}
       </div>
@@ -215,8 +279,18 @@ export async function generateMetadata({
       url: `${SITE_URL}${canonical}`,
       title,
       description,
-      images: fragrance.image_url
-        ? [fragrance.image_url]
+      images: fragrance.preferred_visual?.url
+        ? [fragrance.preferred_visual.url]
+        : undefined,
+    },
+    twitter: {
+      card: fragrance.preferred_visual?.url
+        ? "summary_large_image"
+        : "summary",
+      title,
+      description,
+      images: fragrance.preferred_visual?.url
+        ? [fragrance.preferred_visual.url]
         : undefined,
     },
   };
@@ -233,10 +307,21 @@ export default async function FragrancePage({
   const checkedAt = formatCheckedAt(
     fragrance.market.checked_at,
   );
+  const heroVisual = fragrance.preferred_visual;
+  const heroIsProductTruth =
+    isVerifiedProductTruthVisual(heroVisual);
+  const visualTheme = visualThemeFor(fragrance);
   const related = getRelatedFragrances(
     fragrance,
     4,
   );
+  const notePreview = [
+    ...fragrance.notes.top,
+    ...fragrance.notes.heart,
+    ...fragrance.notes.base,
+    ...fragrance.notes.key,
+    ...fragrance.notes.supporting,
+  ].slice(0, 3);
   const canonicalUrl = `${SITE_URL}/duft/${fragrance.slug}`;
   const breadcrumbStructuredData = {
     "@context": "https://schema.org",
@@ -265,12 +350,53 @@ export default async function FragrancePage({
   const breadcrumbJson = JSON.stringify(
     breadcrumbStructuredData,
   ).replaceAll("<", "\\u003c");
+  const verifiedProductImage =
+    heroIsProductTruth && heroVisual?.url
+      ? heroVisual.url.startsWith("http")
+        ? heroVisual.url
+        : `${SITE_URL}${heroVisual.url}`
+      : null;
+  const productStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: `${fragrance.brand} ${fragrance.name}`,
+    sku: fragrance.product_id,
+    category: "Parfum",
+    url: canonicalUrl,
+    description: descriptionFor(fragrance),
+    brand: {
+      "@type": "Brand",
+      name: fragrance.brand,
+    },
+    ...(verifiedProductImage
+      ? { image: [verifiedProductImage] }
+      : {}),
+    additionalProperty: [
+      {
+        "@type": "PropertyValue",
+        name: "Konzentration",
+        value: fragrance.concentration,
+      },
+      {
+        "@type": "PropertyValue",
+        name: "Füllmenge",
+        value: `${fragrance.volume_ml} ml`,
+      },
+    ],
+  };
+  const productJson = JSON.stringify(
+    productStructuredData,
+  ).replaceAll("<", "\\u003c");
 
   return (
     <main className="min-h-screen bg-(--surface) pb-24 text-(--ink) sm:pb-0">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: breadcrumbJson }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: productJson }}
       />
       <AcquisitionAnalytics source="fragrance_detail" />
       <header className="border-b border-(--line) bg-(--card)">
@@ -327,38 +453,44 @@ export default async function FragrancePage({
           </span>
         </nav>
 
-        <section className="overflow-hidden rounded-[30px] border border-(--line) bg-(--card) shadow-(--shadow)">
-          <div className="grid lg:grid-cols-[0.94fr_1.06fr]">
-            {fragrance.cutout_image_url ? (
-              <FragranceVisual
-                imageUrl={fragrance.cutout_image_url}
-                cutoutUrl={fragrance.cutout_image_url}
+        <section
+          className={`dufynd-fragrance-hero dufynd-fragrance-hero--${visualTheme} relative overflow-hidden rounded-[30px] border border-(--line) bg-(--card) shadow-(--shadow)`}
+        >
+          <div
+            aria-hidden
+            className="dufynd-fragrance-hero-atmosphere pointer-events-none absolute inset-0"
+          />
+          <div
+            aria-hidden
+            className="dufynd-fragrance-hero-orbit pointer-events-none absolute"
+          />
+          <div className="relative z-10 grid lg:grid-cols-[0.94fr_1.06fr]">
+            {fragrance.model_3d_url || heroIsProductTruth ? (
+              <FragranceModel3D
+                modelUrl={fragrance.model_3d_url}
+                imageUrl={heroIsProductTruth ? undefined : heroVisual?.url}
+                cutoutUrl={heroIsProductTruth ? heroVisual?.url : undefined}
+                backdropUrl={
+                  heroIsProductTruth
+                    ? fragrance.backdrop_visual?.url
+                    : undefined
+                }
                 alt={`${fragrance.brand} ${fragrance.name}`}
-                variant="hero"
-                mode="cutout"
                 className="min-h-[330px] w-full sm:min-h-[430px] lg:min-h-[520px]"
                 priority
               />
             ) : (
-              <div className="dufynd-editorial-media relative min-h-[330px] overflow-hidden bg-[#eee7da] sm:min-h-[430px] lg:min-h-[520px]">
-                {fragrance.image_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={fragrance.image_url}
-                    alt={`${fragrance.brand} ${fragrance.name}`}
-                    fetchPriority="high"
-                    decoding="async"
-                    className="absolute inset-0 h-full w-full object-cover"
-                  />
-                ) : null}
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_64%,rgba(23,21,19,0.14))]"
-                />
-              </div>
+              <FragranceVisual
+                imageUrl={heroVisual?.url}
+                alt={`${fragrance.brand} ${fragrance.name}`}
+                variant="hero"
+                mode="editorial"
+                className="min-h-[330px] w-full sm:min-h-[430px] lg:min-h-[520px]"
+                priority
+              />
             )}
 
-            <div className="flex flex-col justify-center p-5 sm:p-7 lg:p-9">
+            <div className="dufynd-fragrance-hero-copy flex flex-col justify-center p-5 sm:p-7 lg:p-9">
               <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-(--accent-ink)">
                 {fragrance.brand}
               </div>
@@ -481,9 +613,29 @@ export default async function FragrancePage({
               <p className="mt-4 text-[10.5px] leading-4 text-(--ink-soft)">
                 DUFYND verkauft nicht selbst. Kauf und Versand erfolgen beim jeweiligen Händler.
               </p>
+              {heroVisual && !heroIsProductTruth ? (
+                <p className="mt-2 text-[10.5px] leading-4 text-(--ink-soft)">
+                  Bild: stilisierte DUFYND-Inszenierung. Details des Flakons können vom Original abweichen.
+                </p>
+              ) : null}
             </div>
           </div>
         </section>
+
+        {heroIsProductTruth && heroVisual?.url ? (
+          <FragranceExplodedNotes
+            cutoutUrl={heroVisual.url}
+            alt={`${fragrance.brand} ${fragrance.name}`}
+            top={fragrance.notes.top}
+            heart={fragrance.notes.heart}
+            base={fragrance.notes.base}
+          />
+        ) : null}
+
+        <FragranceVisualGallery
+          assets={fragrance.visuals}
+          alt={`${fragrance.brand} ${fragrance.name}`}
+        />
 
         <div
           id="angebote"
@@ -538,11 +690,28 @@ export default async function FragrancePage({
           </section>
 
           <details className="group rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) lg:hidden">
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-[17px] font-semibold">
-              <span>Duftnoten</span>
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3">
+              <span className="min-w-0">
+                <span className="block text-[17px] font-semibold">
+                  Duftnoten
+                </span>
+                {notePreview.length ? (
+                  <span className="mt-1.5 flex flex-wrap gap-1.5 text-[10.5px] font-medium text-(--ink-soft)">
+                    {notePreview.map((note) => (
+                      <span
+                        key={note}
+                        className="inline-flex items-center gap-1 rounded-full bg-(--well) px-2 py-1"
+                      >
+                        <NoteIcon note={note} className="h-3.5 w-3.5" />
+                        {noteLabel(note)}
+                      </span>
+                    ))}
+                  </span>
+                ) : null}
+              </span>
               <span
                 aria-hidden
-                className="text-[18px] text-(--accent-ink) transition group-open:rotate-45"
+                className="shrink-0 text-[18px] text-(--accent-ink) transition group-open:rotate-45"
               >
                 +
               </span>
@@ -552,14 +721,14 @@ export default async function FragrancePage({
               fragrance.notes.heart.length ||
               fragrance.notes.base.length ? (
                 <>
-                  {noteSection("Kopfnote", fragrance.notes.top, "✦")}
-                  {noteSection("Herznote", fragrance.notes.heart, "♥")}
-                  {noteSection("Basisnote", fragrance.notes.base, "◆")}
+                  {noteSection("Kopfnoten", fragrance.notes.top)}
+                  {noteSection("Herznoten", fragrance.notes.heart)}
+                  {noteSection("Basisnoten", fragrance.notes.base)}
                 </>
               ) : (
                 <>
-                  {noteSection("Schlüsselnoten", fragrance.notes.key, "✦")}
-                  {noteSection("Weitere Noten", fragrance.notes.supporting, "◆")}
+                  {noteSection("Schlüsselnoten", fragrance.notes.key)}
+                  {noteSection("Weitere Noten", fragrance.notes.supporting)}
                   {!fragrance.notes.key.length &&
                   !fragrance.notes.supporting.length ? (
                     <p className="text-[13px] leading-5 text-(--ink-soft)">
@@ -581,14 +750,14 @@ export default async function FragrancePage({
               fragrance.notes.heart.length ||
               fragrance.notes.base.length ? (
                 <>
-                  {noteSection("Kopfnote", fragrance.notes.top, "✦")}
-                  {noteSection("Herznote", fragrance.notes.heart, "♥")}
-                  {noteSection("Basisnote", fragrance.notes.base, "◆")}
+                  {noteSection("Kopfnoten", fragrance.notes.top)}
+                  {noteSection("Herznoten", fragrance.notes.heart)}
+                  {noteSection("Basisnoten", fragrance.notes.base)}
                 </>
               ) : (
                 <>
-                  {noteSection("Schlüsselnoten", fragrance.notes.key, "✦")}
-                  {noteSection("Weitere Noten", fragrance.notes.supporting, "◆")}
+                  {noteSection("Schlüsselnoten", fragrance.notes.key)}
+                  {noteSection("Weitere Noten", fragrance.notes.supporting)}
                   {!fragrance.notes.key.length &&
                   !fragrance.notes.supporting.length ? (
                     <p className="text-[13px] leading-5 text-(--ink-soft)">
@@ -636,6 +805,10 @@ export default async function FragrancePage({
                 const hasComparison = comparisonHref.startsWith(
                   "/vergleich/",
                 );
+                const relatedVisual =
+                  item.fragrance.preferred_visual;
+                const relatedIsProductTruth =
+                  isVerifiedProductTruthVisual(relatedVisual);
 
                 return (
                   <article
@@ -647,9 +820,19 @@ export default async function FragrancePage({
                       className="block"
                     >
                       <FragranceVisual
-                        imageUrl={item.fragrance.image_url}
+                        imageUrl={relatedVisual?.url}
+                        cutoutUrl={
+                          relatedIsProductTruth
+                            ? relatedVisual?.url
+                            : undefined
+                        }
                         alt={`${item.fragrance.brand} ${item.fragrance.name}`}
                         variant="card"
+                        mode={
+                          relatedIsProductTruth
+                            ? "cutout"
+                            : "editorial"
+                        }
                         className="h-36 w-full"
                       />
                       <div className="p-3">
@@ -683,6 +866,7 @@ export default async function FragrancePage({
                     {hasComparison ? (
                       <a
                         href={comparisonHref}
+                        aria-label={`${fragrance.brand} ${fragrance.name} mit ${item.fragrance.brand} ${item.fragrance.name} vergleichen`}
                         className="block border-t border-(--line) px-3 py-2.5 text-[11px] font-semibold text-(--accent-ink) hover:bg-(--card)"
                       >
                         Direkt vergleichen →
@@ -710,7 +894,7 @@ export default async function FragrancePage({
               href="/"
               className="rounded-xl bg-(--ink) px-4 py-2.5 text-[13px] font-semibold text-(--surface)"
             >
-              DUFYND Advisor öffnen
+              DUFYND Duftberater öffnen
             </a>
           </div>
         </section>

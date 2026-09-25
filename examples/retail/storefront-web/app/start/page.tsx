@@ -24,7 +24,7 @@ const paths = [
     href: "/parfum-alternativen",
     eyebrow: "Original & ähnliche Profile",
     title: "Parfum-Alternativen",
-    text: "Vergleiche Originale, Clones, Inspired-Düfte und Alternativen transparent, ohne pauschale 1:1-Versprechen.",
+    text: "Vergleiche Düfte anhand ihres Profils und finde Alternativen, ohne pauschale 1:1-Versprechen.",
     cta: "Alternativen vergleichen",
   },
   {

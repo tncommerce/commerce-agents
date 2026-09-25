@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 const RELATION_LABELS = {
   clone: "Sehr naher Duftstil",
-  inspired: "Inspiriert",
+  inspired: "Ähnlicher Duftstil",
   alternative: "Alternative",
 } as const;
 

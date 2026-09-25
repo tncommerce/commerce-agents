@@ -3,8 +3,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import FragranceOffers from "@/components/FragranceOffers";
+import FragranceVisual from "@/components/FragranceVisual";
 import { trackAnalyticsEvent } from "@/lib/analytics";
-import type { StaticFragrance } from "@/lib/fragranceCatalog";
+import {
+  isVerifiedProductTruthVisual,
+  type StaticFragrance,
+} from "@/lib/fragranceCatalog";
+import { formatPriceReference } from "@/lib/priceReference";
 
 function formatRating(value: number | null): string {
   if (value == null) return "–";
@@ -20,14 +25,6 @@ function formatNumber(value: number | null): string {
     minimumFractionDigits: 1,
     maximumFractionDigits: 1,
   });
-}
-
-function formatPrice(value: number | null): string {
-  if (value == null) return "–";
-  return new Intl.NumberFormat("de-DE", {
-    style: "currency",
-    currency: "EUR",
-  }).format(value);
 }
 
 function targetLabel(value: string): string {
@@ -67,27 +64,22 @@ function ProductMiniHeader({
 }: {
   fragrance: StaticFragrance;
 }) {
+  const visual = fragrance.preferred_visual;
+  const isProductTruth = isVerifiedProductTruthVisual(visual);
+
   return (
     <a
       href={`/duft/${fragrance.slug}`}
       className="overflow-hidden rounded-2xl border border-(--line) bg-(--card) shadow-(--shadow-sm) transition hover:border-(--ink)"
     >
-      <div className="flex h-40 items-center justify-center bg-white p-4">
-        {fragrance.image_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={fragrance.image_url}
-            alt={`${fragrance.brand} ${fragrance.name}`}
-            className="h-full w-full object-contain"
-            loading="lazy"
-            decoding="async"
-          />
-        ) : (
-          <span className="text-[11px] font-semibold tracking-[0.14em] text-(--ink-soft)">
-            DUFYND
-          </span>
-        )}
-      </div>
+      <FragranceVisual
+        imageUrl={visual?.url}
+        cutoutUrl={isProductTruth ? visual?.url : undefined}
+        alt={`${fragrance.brand} ${fragrance.name}`}
+        variant="card"
+        mode={isProductTruth ? "cutout" : "editorial"}
+        className="h-40 w-full"
+      />
       <div className="p-3.5">
         <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-(--ink-soft)">
           {fragrance.brand}
@@ -301,11 +293,15 @@ export default function FragranceComparisonPicker({
               right={right.target_groups.map(targetLabel).join(", ") || "–"}
             />
             <ComparisonRow
-              label="Preisreferenz"
-              left={formatPrice(left.market.reference_price_eur)}
-              right={formatPrice(right.market.reference_price_eur)}
+              label="Preis-Richtwert"
+              left={formatPriceReference(left.market.reference_price_eur, left.market.checked_at)}
+              right={formatPriceReference(right.market.reference_price_eur, right.market.checked_at)}
             />
           </div>
+          <p className="mt-2 text-[11px] leading-5 text-(--ink-soft)">
+            Historische Marktbeobachtung zum angegebenen Stand, kein aktuelles Kaufangebot.
+            Verfügbare Händlerangebote werden auf den Duftseiten separat geprüft.
+          </p>
 
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             {[left, right].map((fragrance) => (

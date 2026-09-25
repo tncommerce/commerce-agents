@@ -11,6 +11,10 @@ import { trackAnalyticsEvent } from "@/lib/analytics";
 import { flyToCart } from "@/lib/flight";
 import { attributeChips, productGlyph, productTileClass } from "@/lib/format";
 import { STORE_POLICY } from "@/lib/storePolicy";
+import {
+  getLiveFragranceByProductId,
+  isVerifiedProductTruthVisual,
+} from "@/lib/fragranceCatalog";
 
 /** A trailing parenthetical such as "(48-Pack)" is kept unbreakable so the clamp cuts before it. */
 export function ProductTitle({ title, className = "" }: { title: string; className?: string }) {
@@ -37,22 +41,50 @@ function ReturnsPromise({ className = "" }: { className?: string }) {
 }
 
 export function ProductImage({ product, className = "" }: { product: Product; className?: string }) {
-  if (product.image_url) {
-    const isDufynd = String(product.product_id).startsWith("SC-");
+  const isDufynd = String(product.product_id).startsWith("SC-");
 
-    if (isDufynd) {
+  if (isDufynd) {
+    const fragrance = getLiveFragranceByProductId(
+      String(product.product_id),
+    );
+    const visual = fragrance?.preferred_visual;
+    const isProductTruth =
+      isVerifiedProductTruthVisual(visual);
+    const imageUrl = visual?.url || product.image_url;
+
+    if (imageUrl) {
       return (
         <FragranceVisual
-          imageUrl={product.image_url}
-          cutoutUrl={product.attributes?.product_cutout_url}
+          imageUrl={imageUrl}
+          cutoutUrl={isProductTruth ? imageUrl : undefined}
           alt={product.title}
           variant="card"
-          mode={product.attributes?.product_cutout_url ? "cutout" : "editorial"}
+          mode={isProductTruth ? "cutout" : "editorial"}
           className={className}
         />
       );
     }
 
+    return (
+      <div
+        className={`relative flex items-center justify-center overflow-hidden ${productTileClass(product.product_id)} ${className}`}
+        aria-hidden
+      >
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8),transparent_70%)]" />
+        <div className="relative flex flex-col items-center">
+          <div className="h-3 w-9 rounded-t-sm bg-(--ink)/80" />
+          <div className="h-3 w-6 bg-(--ink)/65" />
+          <div className="flex h-20 w-16 items-center justify-center rounded-[18px] border border-white/80 bg-white/70 shadow-md backdrop-blur-sm">
+            <span className="text-[9px] font-semibold tracking-[0.18em] text-(--ink)/75">
+              DUFYND
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (product.image_url) {
     // eslint-disable-next-line @next/next/no-img-element
     return (
       <div className={`flex items-center justify-center overflow-hidden ${className}`}>
@@ -61,29 +93,6 @@ export function ProductImage({ product, className = "" }: { product: Product; cl
           alt={product.title}
           className="h-full w-full object-cover"
         />
-      </div>
-    );
-  }
-  const isDufynd = String(product.product_id).startsWith("SC-");
-
-  if (isDufynd) {
-    return (
-      <div
-        className={`relative flex items-center justify-center overflow-hidden ${productTileClass(product.product_id)} ${className}`}
-        aria-hidden
-      >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8),transparent_70%)]" />
-
-        <div className="relative flex flex-col items-center">
-          <div className="h-3 w-9 rounded-t-sm bg-(--ink)/80" />
-          <div className="h-3 w-6 bg-(--ink)/65" />
-
-          <div className="flex h-20 w-16 items-center justify-center rounded-[18px] border border-white/80 bg-white/70 shadow-md backdrop-blur-sm">
-            <span className="text-[9px] font-semibold tracking-[0.18em] text-(--ink)/75">
-              DUFYND
-            </span>
-          </div>
-        </div>
       </div>
     );
   }
@@ -121,7 +130,7 @@ function LowStockChip({ product, className = "" }: { product: Product; className
     <span
       className={`whitespace-nowrap rounded-full bg-(--warn-soft) px-2 py-0.5 text-[11px] font-semibold text-(--warn) ${className}`}
     >
-      Only {count} left
+      Nur noch {count}
     </span>
   );
 }
@@ -222,7 +231,7 @@ export function AddButton({
           event.stopPropagation();
           ask(`Add the ${product.title} (${product.product_id}) to my cart.`);
         }}
-        aria-label={`Choose options for ${product.title}`}
+        aria-label={`Optionen für ${product.title} auswählen`}
         className="pointer-events-auto absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-(--ink) text-lg font-semibold leading-none text-(--surface) shadow-(--shadow-sm) transition-all hover:scale-105"
       >
         +
@@ -243,7 +252,7 @@ export function AddButton({
         if (added) flyToCart(product, source);
         window.setTimeout(() => setPhase("idle"), added ? 1200 : 1600);
       }}
-      aria-label={`Add ${product.title} to cart`}
+      aria-label={`${product.title} in den Warenkorb legen`}
       className={`pointer-events-auto absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full text-lg font-semibold leading-none text-(--surface) shadow-(--shadow-sm) transition-all hover:scale-105 ${
         phase === "done" ? "bg-(--ok)" : phase === "error" ? "bg-(--warn)" : "bg-(--ink)"
       } ${phase === "busy" ? "animate-pulse" : ""}`}
@@ -313,7 +322,7 @@ export default function ProductTile({
           </div>
           {product.in_stock === false ? (
             <span className="absolute right-1.5 top-1.5 rounded-full bg-(--ink)/85 px-2 py-0.5 text-[11px] font-medium text-(--surface)">
-              Out of stock
+              Nicht verfügbar
             </span>
           ) : (
             <LowStockChip product={product} className="absolute right-1.5 top-1.5" />
@@ -417,7 +426,7 @@ export function ProductRow({
           <ProductRating product={product} compact />
           {product.in_stock === false ? (
             <span className="rounded-full bg-(--ink)/85 px-2 py-0.5 text-[11px] font-medium text-(--surface)">
-              Out of stock
+              Nicht verfügbar
             </span>
           ) : (
             <LowStockChip product={product} />

@@ -11,19 +11,19 @@
       "required_product_assets": [
         {
           "product_id": "SC-BVLGARI-TYGAR-125",
-          "image_url": "/products/pilot/bvlgari-tygar-editorial.png"
+          "image_url": "/products/pilot/bvlgari-tygar-editorial.webp"
         },
         {
           "product_id": "SC-SOSPIRO-VIBRATO-100",
-          "image_url": "/products/pilot/sospiro-vibrato-editorial.png"
+          "image_url": "/products/pilot/sospiro-vibrato-editorial.webp"
         },
         {
           "product_id": "SC-AFNAN-TURATHI-BLUE-90",
-          "image_url": "/products/pilot/afnan-turathi-blue-editorial.png"
+          "image_url": "/products/pilot/afnan-turathi-blue-editorial.webp"
         },
         {
           "product_id": "SC-MAISON-ASRAR-REGENT-100",
-          "image_url": "/products/pilot/maison-asrar-regent-editorial.png"
+          "image_url": "/products/pilot/maison-asrar-regent-editorial.webp"
         }
       ],
       "scene_assets": [
@@ -61,15 +61,15 @@
       "required_product_assets": [
         {
           "product_id": "SC-XERJOFF-NAXOS-100",
-          "image_url": "/products/pilot/xerjoff-naxos-editorial.png"
+          "image_url": "/products/naxos-cutout-production.png"
         },
         {
           "product_id": "SC-NUSUK-ATEEQ-100",
-          "image_url": "/products/pilot/nusuk-ateeq-editorial.png"
+          "image_url": "/products/pilot/nusuk-ateeq-editorial.webp"
         },
         {
           "product_id": "SC-RAYHAAN-ITALIA-100",
-          "image_url": "/products/pilot/rayhaan-italia-editorial.png"
+          "image_url": "/products/pilot/rayhaan-italia-editorial.webp"
         }
       ],
       "scene_assets": [
@@ -107,11 +107,11 @@
       "required_product_assets": [
         {
           "product_id": "SC-DIOR-HOMME-INTENSE-100",
-          "image_url": "/products/pilot/dior-homme-intense-editorial.png"
+          "image_url": "/products/pilot/dior-homme-intense-editorial.webp"
         },
         {
           "product_id": "SC-AL-WATANIAH-KAYAAN-CLASSIC-100",
-          "image_url": "/products/pilot/kayaan-classic-editorial.png"
+          "image_url": "/products/pilot/kayaan-classic-editorial.webp"
         }
       ],
       "scene_assets": [
@@ -149,15 +149,15 @@
       "required_product_assets": [
         {
           "product_id": "SC-PRADA-LHOMME-100",
-          "image_url": "/products/pilot/prada-lhomme-editorial.png"
+          "image_url": "/products/pilot/prada-lhomme-editorial.webp"
         },
         {
           "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
-          "image_url": "/products/pilot/bois-imperial-editorial.png"
+          "image_url": "/products/pilot/bois-imperial-editorial.webp"
         },
         {
           "product_id": "SC-CHANEL-BLEU-DE-CHANEL-EDP-100",
-          "image_url": "/products/pilot/bleu-de-chanel-edp-editorial.png"
+          "image_url": "/products/pilot/bleu-de-chanel-edp-editorial.webp"
         }
       ],
       "scene_assets": [
@@ -195,15 +195,15 @@
       "required_product_assets": [
         {
           "product_id": "SC-ARMANI-SWY-INTENSELY-100",
-          "image_url": "/products/pilot/armani-swy-intensely-editorial.png"
+          "image_url": "/products/pilot/armani-swy-intensely-editorial.webp"
         },
         {
           "product_id": "SC-DIOR-HOMME-INTENSE-100",
-          "image_url": "/products/pilot/dior-homme-intense-editorial.png"
+          "image_url": "/products/pilot/dior-homme-intense-editorial.webp"
         },
         {
           "product_id": "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
-          "image_url": "/products/pilot/valentino-born-in-roma-intense-editorial.png"
+          "image_url": "/products/pilot/valentino-born-in-roma-intense-editorial.webp"
         }
       ],
       "scene_assets": [

@@ -12,6 +12,31 @@ import {
   trackAnalyticsEvent,
 } from "@/lib/analytics";
 import type { MerchantOffersPayload } from "@/lib/types";
+import { OFFICIAL_PRODUCT_PAGES } from "@/lib/officialProductPages";
+
+function OfficialProductLink({ productId }: { productId: string }) {
+  const page = OFFICIAL_PRODUCT_PAGES[productId];
+  if (!page) return null;
+
+  return (
+    <div className="mt-3 rounded-xl border border-(--line) bg-(--surface) p-3">
+      <p className="text-[12px] leading-5 text-(--ink-soft)">
+        Produktinformationen direkt bei Marke bzw. Hersteller ansehen. Preis und
+        Verfügbarkeit prüfst du dort aktuell; DUFYND zeigt dafür keinen ungeprüften
+        Preis an.
+        Dieser Verweis ist kein Partnerlink.
+      </p>
+      <a
+        href={page.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-2 inline-flex rounded-lg border border-(--line-strong) px-3 py-2 text-[12px] font-semibold text-(--accent-ink) hover:bg-(--card)"
+      >
+        Bei {page.merchant} ansehen ↗
+      </a>
+    </div>
+  );
+}
 
 function formatUpdatedAt(value: string): string | null {
   const parsed = new Date(value);
@@ -126,6 +151,7 @@ export default function FragranceOffers({
         >
           Angebote erneut prüfen
         </button>
+        <OfficialProductLink productId={productId} />
       </section>
     );
   }
@@ -142,6 +168,7 @@ export default function FragranceOffers({
           erst ein Angebot an, wenn Preis und Verfügbarkeit die
           Aktualitätsprüfung bestehen.
         </p>
+        <OfficialProductLink productId={productId} />
       </section>
     );
   }
