@@ -18,6 +18,21 @@
         "SC-RABANNE-1-MILLION-EDT-100",
         "SC-YSL-Y-EDP-100"
       ]
+    },
+    {
+      "wave_id": "DUFYND-CATALOG-EXPANSION-NEXT-10",
+      "source_file": "dufynd_catalog_expansion_next10.json",
+      "enabled": true,
+      "staging_batch": 5,
+      "max_products": 5,
+      "live_publication_authorized": false,
+      "selected_product_ids": [
+        "SC-VALENTINO-DONNA-BORN-IN-ROMA-EDP-100",
+        "SC-CHLOE-NOMADE-EDP-75",
+        "SC-VERSACE-EROS-EDP-100",
+        "SC-ARMANI-ACQUA-DI-GIO-PROFONDO-PARFUM-100",
+        "SC-JPG-LE-MALE-ELIXIR-PARFUM-125"
+      ]
     }
   ]
 }
