@@ -214,14 +214,14 @@ export default function HomeView({
               <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex items-end justify-between bg-gradient-to-t from-black/55 via-black/10 to-transparent px-5 pb-4 pt-14 sm:px-6">
                 <div>
                   <div className="text-[9.5px] font-semibold uppercase tracking-[0.18em] text-[#e3c47f]">
-                    Launch Spotlight
+                    DUFYND Spotlight
                   </div>
                   <div className="mt-0.5 text-[12px] font-semibold text-white/90">
                     {spotlight.brand} · {spotlightName}
                   </div>
                 </div>
                 <span className="rounded-full border border-white/12 bg-black/20 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.12em] text-white/64 backdrop-blur-md">
-                  {spotlight.attributes?.product_model_3d_url ? "3D View" : "Immersive View"}
+                  {spotlight.attributes?.product_model_3d_url ? "3D-Ansicht" : "Immersive Ansicht"}
                 </span>
               </div>
             </a>
