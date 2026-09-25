@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 
@@ -12,6 +12,16 @@ const valueFor = (flag, fallback) => {
 
 const baseUrl = valueFor("--base-url", "http://127.0.0.1:3000").replace(/\/$/, "");
 const outputDir = path.resolve(valueFor("--out", ".visual-qa"));
+
+const sourceCatalog = JSON.parse(
+  await readFile(
+    new URL("../../data/scentai_products.json", import.meta.url),
+    "utf-8",
+  ),
+);
+const expectedFragranceCount = sourceCatalog.products.filter((product) =>
+  String(product?.product_id || "").startsWith("SC-"),
+).length;
 
 const viewports = [
   { name: "320", width: 320, height: 780 },
@@ -587,9 +597,9 @@ try {
         ).sort(),
       );
 
-    if (detailRoutes.length !== 32) {
+    if (detailRoutes.length !== expectedFragranceCount) {
       throw new Error(
-        `catalog sweep expected 32 fragrance routes, got ${detailRoutes.length}`,
+        `catalog sweep expected ${expectedFragranceCount} fragrance routes, got ${detailRoutes.length}`,
       );
     }
 
