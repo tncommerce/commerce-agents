@@ -29,6 +29,18 @@ A visually attractive result that misses bottle truth remains editorial-only.
 
 **Editorial companion:** brighter gallery-world image inspired by DUFYND's mineral/noir atmosphere, with citrus/ginger accents kept clearly secondary to the product.
 
+## Creed Aventus · 100 ml
+
+**Current constraint:** Creed is actively transitioning Aventus packaging. The official German product page states that delivered packaging may differ from the imagery during this transition, while 100 ml remains one of the selectable sizes.
+
+**Reference for fidelity only:** https://www.creedfragrance.de/p/aventus/12870029/
+
+**Primary direction:** do not generate a new DUFYND primary until the exact 100 ml packaging/bottle variant to represent has been explicitly locked. Once locked, preserve the selected bottle/box generation consistently across all surfaces.
+
+**Hard constraints:** do not mix old and new packaging cues; do not infer a box or label version from generic Aventus imagery; do not present a transition-period approximation as verified product truth.
+
+**Editorial companion:** current editorial atmosphere may remain editorial-only as long as it is not used to claim exact packaging fidelity.
+
 ## Prada L'Homme Eau de Toilette · 100 ml
 
 **Current problem:** the existing scene reads too bright/silver/clear and is not reliable enough against Prada's official architectural bottle presentation.
@@ -52,6 +64,18 @@ A visually attractive result that misses bottle truth remains editorial-only.
 **Hard constraints:** no glossy black spherical stopper, no generic whisky decanter, no ornamental redesign of the shoulders or cap.
 
 **Editorial companion:** amber/gourmand world using restrained chestnut, vanilla and spice cues. Avoid floating ingredient explosions around the bottle.
+
+## Sospiro Vibrato · 100 ml
+
+**Reference status:** exact-reference checkpoint completed against Sospiro International's current product page. The official page confirms Vibrato as 100ML Eau de Parfum and shows the distinctive deep-green velvet-style bottle, oval gold plaque and sculpted gold cap.
+
+**Reference for fidelity only:** https://sospirointernational.com/products/vibrato
+
+**Primary direction:** exact current 100 ml bottle only, with the complete rounded silhouette, deep-green velvet-style surface, oval gold front plaque and sculpted gold crown-style cap. Keep 12–15% safe area around the full bottle.
+
+**Hard constraints:** no generic cylindrical or rectangular redesign; no black/silver substitute cap; no missing or reshaped oval plaque; no blue colour shift; no invented visible volume marking; no promotion to verified until side-by-side fidelity QA passes.
+
+**Editorial companion:** bottle-free green/gold atmosphere using citrus, magnolia/rose, pale woods and refined amber cues. The current 4:3 DUFYND scene remains editorial-only.
 
 ## Xerjoff Naxos · 100 ml
 
