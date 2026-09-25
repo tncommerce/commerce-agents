@@ -138,7 +138,9 @@ The first backward-compatible slice is now implemented on the integration branch
 - regression tests validate role/status values, prevent duplicate visual URLs and keep the Naxos verified cutout aligned with the legacy catalog field;
 - existing fragrances without `visuals` continue to use the current image/cutout/model fields unchanged.
 
-The remaining Codex block is therefore narrower: add more verified assets when they are approved, teach card/hero selection to prefer a future verified `primary` role, and extend the gallery with approved macro assets. No current P0 editorial image has been promoted to product truth.
+The card/hero selection layer now follows the documented priority centrally: verified `primary` first, verified `cutout` second, then an editorial fallback. Legacy cutouts without structured verification are not silently promoted to product truth. Naxos therefore continues to use its verified cutout, while the other current catalog products remain editorial until a fidelity-approved truth asset is added.
+
+The remaining visual block is narrower: add more verified assets when they are approved, extend the gallery with approved macro assets, and continue browser QA across mobile and desktop. No current P0 editorial image has been promoted to product truth.
 
 ## Codex implementation block
 

@@ -17,6 +17,10 @@ import { fetchProducts } from "@/lib/api";
 import { trackAnalyticsEvent } from "@/lib/analytics";
 import { ADVISOR_STARTS } from "@/lib/advisorStarts";
 import { fragrancePathForProduct } from "@/lib/fragranceSlug";
+import {
+  getLiveFragranceByProductId,
+  isVerifiedProductTruthVisual,
+} from "@/lib/fragranceCatalog";
 import type { Product } from "@/lib/types";
 import FragranceVisual from "../FragranceVisual";
 import FragranceModel3D from "../FragranceModel3D";
@@ -105,6 +109,12 @@ export default function HomeView({
   const picks = featured(catalog);
   const spotlight =
     catalog["SC-XERJOFF-NAXOS-100"] || picks[0];
+  const spotlightFragrance = spotlight
+    ? getLiveFragranceByProductId(String(spotlight.product_id))
+    : null;
+  const spotlightVisual = spotlightFragrance?.preferred_visual;
+  const spotlightIsProductTruth =
+    isVerifiedProductTruthVisual(spotlightVisual);
   const spotlightName = spotlight
     ? String(
         spotlight.attributes?.canonical_name ||
@@ -184,21 +194,29 @@ export default function HomeView({
               aria-label={`${spotlight.brand || ""} ${spotlightName} entdecken`.trim()}
               className="dufynd-hero-product group relative min-h-[260px] sm:min-h-[320px] overflow-hidden border-t border-white/10 md:min-h-[430px] md:border-l md:border-t-0"
             >
-              {spotlight.attributes?.product_model_3d_url || spotlight.attributes?.product_cutout_url ? (
+              {spotlight.attributes?.product_model_3d_url || spotlightIsProductTruth ? (
                 <FragranceModel3D
                   modelUrl={spotlight.attributes?.product_model_3d_url}
-                  imageUrl={spotlight.image_url}
-                  cutoutUrl={spotlight.attributes?.product_cutout_url}
+                  imageUrl={
+                    spotlightIsProductTruth
+                      ? undefined
+                      : spotlightVisual?.url || spotlight.image_url
+                  }
+                  cutoutUrl={
+                    spotlightIsProductTruth
+                      ? spotlightVisual?.url
+                      : undefined
+                  }
                   alt={spotlight.title}
                   className="h-full min-h-[260px] sm:min-h-[320px] w-full md:min-h-[430px]"
                   priority
                 />
               ) : (
                 <div className="dufynd-editorial-media relative h-full min-h-[260px] sm:min-h-[320px] w-full md:min-h-[430px]">
-                  {spotlight.image_url ? (
+                  {spotlightVisual?.url || spotlight.image_url ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
-                      src={spotlight.image_url}
+                      src={spotlightVisual?.url || spotlight.image_url || undefined}
                       alt={`${spotlight.title} – stilisierte DUFYND-Inszenierung`}
                       fetchPriority="high"
                       decoding="async"
