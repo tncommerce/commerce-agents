@@ -53,8 +53,7 @@ def evaluate_product_truth_coverage(
             if role in VARIANT_BOUND_VERIFIED_ROLES and not _variant_matches(row, visual):
                 invalid_verified_variants.append(role)
                 issues.append(
-                    f"{product_id}: verified {role} does not match "
-                    f"{row.get('volume_ml')}ml variant"
+                    f"{product_id}: verified {role} does not match {row.get('volume_ml')}ml variant"
                 )
                 continue
 
@@ -74,27 +73,17 @@ def evaluate_product_truth_coverage(
                 "verified_truth_roles": sorted(set(verified_truth_roles)),
                 "verified_model_3d": verified_model_3d,
                 "review_status": queue_item.get("status") if queue_item else None,
-                "invalid_verified_variants": sorted(
-                    set(invalid_verified_variants)
-                ),
+                "invalid_verified_variants": sorted(set(invalid_verified_variants)),
             }
         )
 
     verified_truth_products = [
-        product["product_id"]
-        for product in products
-        if product["verified_product_truth"]
+        product["product_id"] for product in products if product["verified_product_truth"]
     ]
     verified_model_products = [
-        product["product_id"]
-        for product in products
-        if product["verified_model_3d"]
+        product["product_id"] for product in products if product["verified_model_3d"]
     ]
-    queued_products = [
-        product["product_id"]
-        for product in products
-        if product["review_status"]
-    ]
+    queued_products = [product["product_id"] for product in products if product["review_status"]]
 
     return {
         "ok": not issues,
@@ -103,9 +92,7 @@ def evaluate_product_truth_coverage(
             "verified_product_truth": len(verified_truth_products),
             "verified_model_3d": len(verified_model_products),
             "review_queue": len(queued_products),
-            "without_verified_product_truth": (
-                len(products) - len(verified_truth_products)
-            ),
+            "without_verified_product_truth": (len(products) - len(verified_truth_products)),
         },
         "verified_product_truth_product_ids": verified_truth_products,
         "verified_model_3d_product_ids": verified_model_products,
@@ -140,9 +127,7 @@ def main() -> int:
         {
             "ok": report["ok"],
             "summary": report["summary"],
-            "verified_product_truth_product_ids": (
-                report["verified_product_truth_product_ids"]
-            ),
+            "verified_product_truth_product_ids": (report["verified_product_truth_product_ids"]),
             "verified_model_3d_product_ids": report["verified_model_3d_product_ids"],
             "review_queue_product_ids": report["review_queue_product_ids"],
             "issues": report["issues"],
