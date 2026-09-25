@@ -136,4 +136,5 @@ jobs:
           name: dufynd-visual-qa-${{ github.event.pull_request.number }}
           path: examples/retail/storefront-web/.visual-qa
           if-no-files-found: warn
+          include-hidden-files: true
           retention-days: 7

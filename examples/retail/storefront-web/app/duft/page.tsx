@@ -81,8 +81,8 @@ export default function FragranceIndexPage() {
             Parfums entdecken
           </h1>
           <p className="mt-4 text-[14px] leading-6 text-(--ink-soft)">
-            Vergleiche Duftprofile, Community-Erfahrungen und
-            Performance. Aktuelle Händlerangebote werden auf den
+            Vergleiche Duftprofile, Community-Erfahrungen, Haltbarkeit
+            und Ausstrahlung. Aktuelle Händlerangebote werden auf den
             jeweiligen Duftseiten separat geprüft.
           </p>
         </div>

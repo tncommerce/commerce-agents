@@ -27,11 +27,7 @@ def test_product_visual_review_queue_references_catalog_products() -> None:
 
     assert len(items) == 5
 
-    p0 = {
-        item["product_id"]
-        for item in items
-        if item["priority"] == "P0"
-    }
+    p0 = {item["product_id"] for item in items if item["priority"] == "P0"}
     assert p0 == {
         "SC-CREED-ABSOLU-AVENTUS-100",
         "SC-XERJOFF-NAXOS-100",
@@ -39,11 +35,7 @@ def test_product_visual_review_queue_references_catalog_products() -> None:
         "SC-PRADA-LHOMME-100",
     }
 
-    p1 = {
-        item["product_id"]
-        for item in items
-        if item["priority"] == "P1"
-    }
+    p1 = {item["product_id"] for item in items if item["priority"] == "P1"}
     assert p1 == {"SC-SOSPIRO-VIBRATO-100"}
 
     assert set(queue["cleared_for_editorial_use"]) == {

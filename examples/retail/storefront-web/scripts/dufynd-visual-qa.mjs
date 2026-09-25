@@ -22,7 +22,7 @@ const viewports = [
 
 const routes = [
   { name: "home", route: "/", marker: "Finde den Duft, der wirklich zu dir passt." },
-  { name: "catalog", route: "/duft", marker: "Filter" },
+  { name: "catalog", route: "/duft", marker: "Parfums entdecken" },
   { name: "naxos", route: "/duft/xerjoff-naxos", marker: "Naxos" },
   { name: "absolu-aventus", route: "/duft/creed-absolu-aventus", marker: "Absolu Aventus" },
   { name: "prada-lhomme", route: "/duft/prada-lhomme", marker: "L'Homme" },
@@ -229,8 +229,12 @@ try {
             "Verifiziert",
             "Editorial",
           ];
+          const normalizedGalleryText = text.toLocaleLowerCase("de-DE");
           const missingGalleryText = expectedGalleryText.filter(
-            (label) => !text.includes(label),
+            (label) =>
+              !normalizedGalleryText.includes(
+                label.toLocaleLowerCase("de-DE"),
+              ),
           );
           if (missingGalleryText.length) {
             throw new Error(
