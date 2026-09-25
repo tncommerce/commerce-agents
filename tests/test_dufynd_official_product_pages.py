@@ -31,11 +31,11 @@ OFFICIAL_HOSTS = {
     "Al Wataniah": "www.alwataniah.com",
     "Armaf": "armaf.com",
     "Arabiyat Prestige": "arabiyatprestige.com",
-    "Rayhaan Perfumes": "rayhaanperfumes.com",
+    "Rayhaan": "rayhaanperfumes.com",
     "Bvlgari": "www.bulgari.com",
     "French Avenue": "frenchavenue.com",
     "Orientica": "www.orienticaperfumes.com",
-    "Al Ambra Perfumes": "alambraperfumes.com",
+    "Al Ambra": "alambraperfumes.com",
 }
 
 ENTRY = re.compile(
