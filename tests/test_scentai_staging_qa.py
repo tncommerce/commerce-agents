@@ -85,8 +85,6 @@ def test_first_controlled_expansion_wave_is_staging_only() -> None:
         assert "verified_affiliate_offer_pending" in row["validation"]["blockers"]
         assert row["research"]["source_wave_id"] == "DUFYND-CATALOG-EXPANSION-NEXT-10"
 
-
-
 def test_second_controlled_expansion_wave_is_staging_only() -> None:
     staging = load_staging()
     live = json.loads(Path("examples/retail/data/catalog.json").read_text(encoding="utf-8"))
@@ -137,8 +135,6 @@ def test_second_controlled_expansion_wave_is_staging_only() -> None:
     assert "merchant_concentration_attribute_review_pending" not in jpg["validation"]["blockers"]
     assert jpg["content_context"]["existing_content_state"] == "user_confirmed_final_viral_short"
     assert jpg["content_context"]["publish_authorized"] is False
-
-
 
 def test_checked_in_staging_matches_reproducible_builder() -> None:
     assert load_staging() == build_staging_payload()
