@@ -629,6 +629,8 @@ export default async function FragrancePage({
             top={fragrance.notes.top}
             heart={fragrance.notes.heart}
             base={fragrance.notes.base}
+            keyNotes={fragrance.notes.key}
+            supporting={fragrance.notes.supporting}
           />
         ) : null}
 
