@@ -50,14 +50,10 @@ def test_naxos_visual_pilot_matches_legacy_product_layer() -> None:
     source = json.loads(SOURCE.read_text(encoding="utf-8"))
 
     catalog_row = next(
-        row
-        for row in catalog["products"]
-        if row["product_id"] == "SC-XERJOFF-NAXOS-100"
+        row for row in catalog["products"] if row["product_id"] == "SC-XERJOFF-NAXOS-100"
     )
     source_row = next(
-        row
-        for row in source["products"]
-        if row["product_id"] == "SC-XERJOFF-NAXOS-100"
+        row for row in source["products"] if row["product_id"] == "SC-XERJOFF-NAXOS-100"
     )
 
     visuals = {visual["role"]: visual for visual in source_row["visuals"]}
