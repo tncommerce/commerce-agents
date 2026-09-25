@@ -25,6 +25,8 @@ OFFICIAL_HOSTS = {
     "Giorgio Armani": "www.armanibeauty.de",
     "Afnan Perfumes": "de.afnan.com",
     "Sospiro": "sospirointernational.com",
+    "Al Haramain": "shop.alharamainperfumes.com",
+    "Clive Christian": "eu.clivechristian.com",
 }
 
 ENTRY = re.compile(

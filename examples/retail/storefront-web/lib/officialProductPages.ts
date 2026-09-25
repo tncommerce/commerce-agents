@@ -64,4 +64,12 @@ export const OFFICIAL_PRODUCT_PAGES: Record<string, { merchant: string; url: str
     merchant: "Sospiro International",
     url: "https://sospirointernational.com/products/vibrato",
   },
+  "SC-AL-HARAMAIN-DETOUR-NOIR-100": {
+    merchant: "Al Haramain Perfumes",
+    url: "https://shop.alharamainperfumes.com/eu/detour-noir.html",
+  },
+  "SC-CLIVE-CHRISTIAN-HEDONISTIC-50": {
+    merchant: "Clive Christian",
+    url: "https://eu.clivechristian.com/products/jump-up-and-kiss-me-hedonistic",
+  },
 };
