@@ -2104,14 +2104,14 @@
         },
         {
           "role": "editorial",
-          "url": "/products/pilot/xerjoff-naxos-editorial.png",
-          "provenance": "dufynd_generated",
+          "url": "/products/naxos-bottle-free-backdrop.webp",
+          "provenance": "openai_image_generation_20260925",
           "fidelity_status": "editorial_only",
           "variant": "100ml",
-          "composition": "product_scene"
+          "composition": "bottle_free_backdrop"
         }
       ],
-      "image_url": "/products/pilot/xerjoff-naxos-editorial.png"
+      "image_url": "/products/naxos-cutout-production.png"
     },
     {
       "product_id": "SC-NUSUK-ATEEQ-100",

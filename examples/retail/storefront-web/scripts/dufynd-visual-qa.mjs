@@ -242,11 +242,20 @@ try {
             );
           }
 
-          const editorialAsset = page.locator(
+          const backdropAsset = page.locator(
+            'img[src="/products/naxos-bottle-free-backdrop.webp"]',
+          );
+          if ((await backdropAsset.count()) < 1) {
+            throw new Error("Naxos bottle-free editorial backdrop is missing");
+          }
+
+          const legacyEditorial = page.locator(
             'img[src="/products/pilot/xerjoff-naxos-editorial.png"]',
           );
-          if ((await editorialAsset.count()) < 1) {
-            throw new Error("Naxos editorial gallery asset is missing");
+          if ((await legacyEditorial.count()) > 0) {
+            throw new Error(
+              "Naxos legacy bottle-containing editorial is still rendered",
+            );
           }
         }
 

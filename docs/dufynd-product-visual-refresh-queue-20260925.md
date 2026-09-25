@@ -8,7 +8,7 @@ This queue is based on the 32-source contact sheet, the safe-area simulation and
 - The current safe-area treatment now preserves complete source images; the original CSS cropping issue is therefore addressed at layout level.
 - A follow-up pixel-edge audit found **no embedded white source borders** in any of the 32 editorial assets. The white bands visible in the portrait contact-sheet simulation were created by fitting 4:3 landscape artwork into a taller safe-area frame. The problem is therefore aspect-ratio mismatch, not corrupt source canvas.
 - The catalog is visually cohesive but overuses the same Mediterranean/sunset/tabletop language. The repetition makes the generated library feel templated rather than like individual fragrance worlds.
-- Only Naxos currently has a verified transparent product layer. Its generated editorial image should remain atmosphere/background rather than the bottle source of truth.
+- Naxos has a verified transparent product layer plus a dedicated bottle-free editorial backdrop. The verified cutout remains the only product-truth layer.
 - Generated bottles must not be promoted to exact primary depictions unless variant, silhouette, cap, plaque/label, typography and visible size markings pass a reference check.
 
 ## P0 · rebuild before treating the artwork as an exact primary product image
@@ -17,9 +17,12 @@ This queue is based on the 32-source contact sheet, the safe-area simulation and
 | --- | --- | --- |
 | Creed Absolu Aventus 100 ml | The current DUFYND scene reads **75 ML / 2.5 FL.OZ.** while the catalog entry is 100 ml. Creed's current product page also uses a generic bottle image marked 75 ml while offering 50/100/490 ml selections, so the visual reference itself is variant-ambiguous. | Keep the current scene editorial-only; a future primary should use a 100 ml-faithful or volume-neutral exact-reference bottle depiction. |
 | Prada L'Homme EDT 100 ml | Current silver rounded render does not match Prada's official product presentation for L'Homme EDT 100 ml. | Rebuild from an exact 100 ml official/rights-cleared reference. |
-| Xerjoff Naxos 100 ml | Generated editorial bottle is not the verified product layer. | Keep the existing verified cutout as primary; use editorial only as atmosphere. |
 | Giorgio Armani Stronger With You Intensely 100 ml | Current generated stopper/shoulder treatment does not match the current official product presentation closely enough for product-truth use. | Rebuild from the official 100 ml reference before promoting the image beyond editorial use. |
 | Sospiro Vibrato 100 ml | The exact 100 ml reference is now locked, but the current DUFYND 4:3 scene has not passed bottle-fidelity review. | Keep the scene editorial-only; build a new exact-reference primary only after silhouette, plaque, cap and safe-area QA pass. |
+
+### Xerjoff Naxos 100 ml · P0 backdrop issue resolved
+
+The inaccurate bottle-containing editorial has been removed from Naxos' structured visual set. DUFYND now uses the verified transparent cutout as product truth and a separate bottle-free Mediterranean/tobacco/honey editorial backdrop at `/products/naxos-bottle-free-backdrop.webp`. The legacy editorial file may remain in repository history, but current structured DUFYND surfaces must not render it.
 
 ### Sospiro Vibrato 100 ml · exact-reference checkpoint completed
 

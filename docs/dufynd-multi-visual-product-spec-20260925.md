@@ -133,7 +133,7 @@ Use products where the benefit is clearest:
 The first backward-compatible slice is now implemented on the integration branch:
 
 - `StaticFragrance` understands structured `visuals` metadata with explicit role and fidelity status;
-- Naxos is the first pilot with a verified cutout plus separate editorial artwork; its current bottle-containing editorial is explicitly marked `product_scene`, not as a backdrop;
+- Naxos is the first pilot with a verified cutout plus a dedicated bottle-free editorial backdrop; the old bottle-containing editorial is no longer part of its structured visual set;
 - the fragrance detail page shows a compact `Weitere Ansichten` gallery only when at least two explicit visuals exist;
 - editorial and verified-product roles remain visibly distinct;
 - regression tests validate role/status values, prevent duplicate visual URLs and keep the Naxos verified cutout aligned with the legacy catalog field;
@@ -149,7 +149,7 @@ The remaining visual block is narrower: add more verified assets when they are a
 The original multi-visual implementation block is complete on PR #67. The remaining work should build on that system rather than recreate it:
 
 - review the responsive browser-QA captures at 320 / 390 / 768 / 1440 and fix only reproducible layout/fidelity defects;
-- keep Naxos on its verified cutout; the hero/homepage are already wired to accept a backdrop only from an explicit `bottle_free_backdrop` editorial, so add that metadata only when a suitable asset is approved;
+- keep Naxos on its verified cutout; the approved `bottle_free_backdrop` editorial is now wired into hero/homepage while remaining explicitly non-product-truth;
 - add future `primary` / `macro` / `model_3d` assets only after the fidelity gate passes;
 - keep Creed Absolu Aventus, Prada L'Homme, Stronger With You Intensely, Sospiro Vibrato and other unverified scenes editorial-only until exact-reference review is complete;
 - extend structured visual metadata product-by-product instead of reviving legacy implicit cutout priority;

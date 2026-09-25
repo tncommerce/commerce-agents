@@ -69,9 +69,11 @@ def test_naxos_visual_pilot_matches_legacy_product_layer() -> None:
     visuals = {visual["role"]: visual for visual in source_row["visuals"]}
     assert visuals["cutout"]["fidelity_status"] == "verified"
     assert visuals["cutout"]["url"] == (catalog_row["attributes"]["product_cutout_url"])
+    assert catalog_row["image_url"] == "/products/naxos-cutout-production.png"
+    assert source_row["image_url"] == "/products/naxos-cutout-production.png"
     assert visuals["editorial"]["fidelity_status"] == "editorial_only"
-    assert visuals["editorial"]["composition"] == "product_scene"
-    assert visuals["editorial"]["url"] == catalog_row["image_url"]
+    assert visuals["editorial"]["composition"] == "bottle_free_backdrop"
+    assert visuals["editorial"]["url"] == "/products/naxos-bottle-free-backdrop.webp"
 
 
 def test_model_3d_activation_requires_structured_verified_asset() -> None:

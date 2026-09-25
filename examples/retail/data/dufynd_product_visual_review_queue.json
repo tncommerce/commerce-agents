@@ -19,15 +19,6 @@
       "evidence_url": "https://www.creedfragrance.de/p/absolu-aventus/16281794/?variation=16281796"
     },
     {
-      "product_id": "SC-XERJOFF-NAXOS-100",
-      "asset": "/products/pilot/xerjoff-naxos-editorial.png",
-      "priority": "P0",
-      "status": "replace_or_background_only",
-      "finding": "Editorial bottle geometry conflicts with the separately verified Naxos cutout.",
-      "next_action": "Use verified cutout without the inaccurate bottle backdrop; later create a bottle-free or geometry-faithful editorial scene.",
-      "evidence_url": "https://www.xerjoff.com/en-dk/products/naxos-eau-de-parfum"
-    },
-    {
       "product_id": "SC-ARMANI-SWY-INTENSELY-100",
       "asset": "/products/pilot/armani-swy-intensely-editorial.png",
       "priority": "P0",
@@ -59,6 +50,7 @@
     "SC-AL-HARAMAIN-DETOUR-NOIR-100",
     "SC-CREED-AVENTUS-100",
     "SC-ARMAF-CDNIM-EDP-200",
-    "SC-MAISON-ASRAR-VANGUARD-100"
+    "SC-MAISON-ASRAR-VANGUARD-100",
+    "SC-XERJOFF-NAXOS-100"
   ]
 }

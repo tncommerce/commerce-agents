@@ -85,7 +85,7 @@ A visually attractive result that misses bottle truth remains editorial-only.
 
 **Primary direction:** do **not** generate another bottle merely to fill the primary slot. Improve the verified cutout only through rights-safe source quality/upscaling if necessary.
 
-**Editorial companion:** generate a **bottle-free** Naxos atmosphere designed to sit behind the verified cutout: refined warm ivory stone, tobacco/honey/bergamot cues, subtle Sicilian/Mediterranean light, no second bottle silhouette, no label-like objects.
+**Editorial companion:** completed on PR #67. The approved bottle-free backdrop uses warm Mediterranean stone/light with tobacco, honey, citrus and lavender cues and contains no perfume bottle, packaging, branding or label-like product silhouette. It is stored separately from the verified cutout and remains editorial-only.
 
 **3D direction:** true GLB activation waits until model proportions, cap, plaque, crown/top and surface materials pass side-by-side fidelity review. The current image-depth stage is not a true 3D mesh.
 

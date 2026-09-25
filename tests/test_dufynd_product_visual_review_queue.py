@@ -25,12 +25,11 @@ def test_product_visual_review_queue_references_catalog_products() -> None:
         assert item["priority"] == "P0"
         assert item["asset"] == products[product_id]["image_url"]
 
-    assert len(items) == 5
+    assert len(items) == 4
 
     p0 = {item["product_id"] for item in items if item["priority"] == "P0"}
     assert p0 == {
         "SC-CREED-ABSOLU-AVENTUS-100",
-        "SC-XERJOFF-NAXOS-100",
         "SC-ARMANI-SWY-INTENSELY-100",
         "SC-PRADA-LHOMME-100",
         "SC-SOSPIRO-VIBRATO-100",
@@ -41,4 +40,5 @@ def test_product_visual_review_queue_references_catalog_products() -> None:
         "SC-CREED-AVENTUS-100",
         "SC-ARMAF-CDNIM-EDP-200",
         "SC-MAISON-ASRAR-VANGUARD-100",
+        "SC-XERJOFF-NAXOS-100",
     }
