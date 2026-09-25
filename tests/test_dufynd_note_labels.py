@@ -55,14 +55,16 @@ def test_all_catalog_accords_and_targets_have_german_ui_labels() -> None:
         "examples/retail/storefront-web/components/FragranceCatalogBrowser.tsx"
     ).read_text(encoding="utf-8")
 
-    accord_entries = {match["key"]: match["label"] for match in ENTRY.finditer(detail_source)}
-    target_entries = {match["key"]: match["label"] for match in ENTRY.finditer(detail_source)}
+    detail_entries = {
+        match["key"]: match["label"] for match in TS_ENTRY.finditer(detail_source)
+    }
+    catalog_entries = {
+        match["key"]: match["label"] for match in TS_ENTRY.finditer(catalog_source)
+    }
 
-    missing_detail_accords = sorted(catalog_accords - accord_entries.keys())
-    missing_catalog_accords = sorted(
-        accord for accord in catalog_accords if f'{accord}: "' not in catalog_source
-    )
-    missing_targets = sorted(catalog_targets - target_entries.keys())
+    missing_detail_accords = sorted(catalog_accords - detail_entries.keys())
+    missing_catalog_accords = sorted(catalog_accords - catalog_entries.keys())
+    missing_targets = sorted(catalog_targets - detail_entries.keys())
 
     assert not missing_detail_accords, (
         f"Missing German detail accord labels: {missing_detail_accords}"
