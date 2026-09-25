@@ -12,6 +12,7 @@ PartnerStatus = Literal[
     "active",
     "pending_affiliate_link",
     "paused",
+    "rejected",
 ]
 
 
