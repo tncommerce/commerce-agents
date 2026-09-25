@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "updated_at": "2026-09-19",
   "status": "staging_only_not_loaded_by_live_storefront",
-  "product_count": 35,
+  "product_count": 40,
   "note": "Canonical pre-live records for verified expansion candidates. No guessed prices, identifiers, affiliate URLs or product images.",
   "products": [
     {
@@ -2438,6 +2438,403 @@
         "research_state": "official_profile_verified_merchant_evidence_added",
         "evidence_urls": [
           "https://www.douglas.de/de/p/3001047078"
+        ]
+      }
+    },
+    {
+      "candidate_id": "ARMANI-ACQUA-DI-GIO-PROFONDO-PARFUM-100",
+      "product_id": "SC-ARMANI-ACQUA-DI-GIO-PROFONDO-PARFUM-100",
+      "batch": 5,
+      "brand": "Giorgio Armani",
+      "name": "Acqua di Giò Profondo",
+      "concentration": "Parfum",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "men"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "citrus aromatic aquatic",
+        "key_notes": [
+          "marine notes",
+          "bergamot",
+          "lemon essence",
+          "everlasting essence",
+          "violet leaf absolute",
+          "lavandin heart",
+          "cistus absolute",
+          "vetiver essence",
+          "woody mineral accord"
+        ],
+        "community_accords": [
+          "aquatic",
+          "fresh",
+          "citrus",
+          "synthetic",
+          "woody"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 10,
+            "sweetness": 2,
+            "woodiness": 5,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7.2,
+        "rating_count": 309,
+        "longevity_10": 6.9,
+        "projection_10": 6.7,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 2,
+        "merchant_coverage_source": "dufynd_research_wave",
+        "market_status": "researched_not_integrated",
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending"
+        ]
+      },
+      "research": {
+        "source_wave_id": "DUFYND-CATALOG-EXPANSION-NEXT-10",
+        "research_state": "official_variant_and_pyramid_verified_merchant_evidence_added",
+        "evidence_urls": [
+          "https://www.armanibeauty.de/dufte/herrenduft/acqua-di-gio/acqua-di-gio-profondo-parfum/ww-00854-arm.html?dwvar_ww-00854-arm_size=100ml",
+          "https://www.douglas.de/de/p/5011354001"
+        ]
+      }
+    },
+    {
+      "candidate_id": "CHLOE-NOMADE-EDP-75",
+      "product_id": "SC-CHLOE-NOMADE-EDP-75",
+      "batch": 5,
+      "brand": "Chloé",
+      "name": "Nomade",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 75,
+      "classification": {
+        "target_groups": [
+          "women"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "woody floral",
+        "key_notes": [
+          "mirabelle",
+          "freesia",
+          "oakmoss"
+        ],
+        "community_accords": [
+          "floral",
+          "fruity",
+          "fresh",
+          "chypre",
+          "sweet"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 8,
+            "sweetness": 6,
+            "woodiness": 2,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7.6,
+        "rating_count": 1116,
+        "longevity_10": 7.7,
+        "projection_10": 7.2,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 2,
+        "merchant_coverage_source": "dufynd_research_wave",
+        "market_status": "researched_not_integrated",
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending"
+        ]
+      },
+      "research": {
+        "source_wave_id": "DUFYND-CATALOG-EXPANSION-NEXT-10",
+        "research_state": "official_variant_verified_merchant_evidence_added",
+        "evidence_urls": [
+          "https://www.chloe.com/de-de/p/fragrances/eau-de-parfum/CHCA64994090.html",
+          "https://www.notino.de/chloe/nomade-eau-de-parfum-fuer-damen/p-11620592/"
+        ]
+      }
+    },
+    {
+      "candidate_id": "JPG-LE-MALE-ELIXIR-PARFUM-125",
+      "product_id": "SC-JPG-LE-MALE-ELIXIR-PARFUM-125",
+      "batch": 5,
+      "brand": "Jean Paul Gaultier",
+      "name": "Le Male Elixir",
+      "concentration": "Parfum",
+      "volume_ml": 125,
+      "classification": {
+        "target_groups": [
+          "men"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "woody aromatic amber",
+        "key_notes": [
+          "mint",
+          "lavender",
+          "tonka bean",
+          "benzoin",
+          "vanilla facets",
+          "honey/tobacco facets"
+        ],
+        "community_accords": [
+          "sweet",
+          "gourmand",
+          "creamy",
+          "spicy",
+          "powdery"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 2,
+            "sweetness": 10,
+            "woodiness": 2,
+            "spiciness": 5
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 8.2,
+        "rating_count": 3756,
+        "longevity_10": 8.6,
+        "projection_10": 8.3,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 1,
+        "merchant_coverage_source": "dufynd_research_wave",
+        "market_status": "researched_not_integrated",
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending"
+        ]
+      },
+      "research": {
+        "source_wave_id": "DUFYND-CATALOG-EXPANSION-NEXT-10",
+        "research_state": "official_variant_verified_merchant_metadata_conflict_resolved",
+        "evidence_urls": [
+          "https://www.jeanpaulgaultier.com/de/de/p/linie-le-male/le-male-elixir-parfum-000000000065189084",
+          "https://www.douglas.de/de/p/5010945026"
+        ]
+      }
+    },
+    {
+      "candidate_id": "VALENTINO-DONNA-BORN-IN-ROMA-EDP-100",
+      "product_id": "SC-VALENTINO-DONNA-BORN-IN-ROMA-EDP-100",
+      "batch": 5,
+      "brand": "Valentino",
+      "name": "Born In Roma Donna",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "women"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "floral amber woody",
+        "key_notes": [
+          "Italian bergamot",
+          "jasmine grandiflorum",
+          "jasmine sambac",
+          "jasmine tea",
+          "bourbon vanilla",
+          "modern woods"
+        ],
+        "community_accords": [
+          "sweet",
+          "fruity",
+          "floral",
+          "synthetic",
+          "fresh"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 8,
+            "sweetness": 6,
+            "woodiness": 2,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7.5,
+        "rating_count": 1041,
+        "longevity_10": 7.3,
+        "projection_10": 7.2,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 2,
+        "merchant_coverage_source": "dufynd_research_wave",
+        "market_status": "researched_not_integrated",
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending"
+        ]
+      },
+      "research": {
+        "source_wave_id": "DUFYND-CATALOG-EXPANSION-NEXT-10",
+        "research_state": "official_variant_verified_merchant_evidence_added",
+        "evidence_urls": [
+          "https://www.valentino-beauty.de/de_DE/dufte/damendufte/born-in-roma-donna/born-in-roma-donna/MPL00468.html",
+          "https://www.douglas.de/de/p/5000004074"
+        ]
+      }
+    },
+    {
+      "candidate_id": "VERSACE-EROS-EDP-100",
+      "product_id": "SC-VERSACE-EROS-EDP-100",
+      "batch": 5,
+      "brand": "Versace",
+      "name": "Eros Pour Homme",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "men"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "woody oriental fresh",
+        "key_notes": [
+          "Italian lemon",
+          "mandarin",
+          "mint oil",
+          "candied apple",
+          "geranium",
+          "clary sage",
+          "AmberMax",
+          "Atlas cedar",
+          "Virginia cedar",
+          "vetiver",
+          "patchouli",
+          "sandalwood",
+          "vanilla"
+        ],
+        "community_accords": [
+          "fresh",
+          "sweet",
+          "citrus",
+          "fruity",
+          "synthetic"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 10,
+            "sweetness": 6,
+            "woodiness": 2,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7.7,
+        "rating_count": 1873,
+        "longevity_10": 7.6,
+        "projection_10": 7.5,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 1,
+        "merchant_coverage_source": "dufynd_research_wave",
+        "market_status": "researched_not_integrated",
+        "live_offer_status": "pending_affiliate_approval_or_feed"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_affiliate_offer_pending",
+          "approved_product_image_pending"
+        ]
+      },
+      "research": {
+        "source_wave_id": "DUFYND-CATALOG-EXPANSION-NEXT-10",
+        "research_state": "official_variant_verified_merchant_evidence_added",
+        "evidence_urls": [
+          "https://www.versace.com/de/de/herren/accessoires/dufte/eros/eros-edp-100-ml/R740110-R100MLS_RNUL.html",
+          "https://www.douglas.de/de/b/versace/eros/b012993"
         ]
       }
     }
