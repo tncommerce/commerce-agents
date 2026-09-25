@@ -1,0 +1,29 @@
+"""Keep all catalog fragrance notes covered by the German display-label layer."""
+
+from __future__ import annotations
+
+import json
+import re
+from pathlib import Path
+
+CATALOG = Path("examples/retail/data/scentai_products.json")
+LABELS = Path("examples/retail/storefront-web/lib/noteLabels.ts")
+
+ENTRY = re.compile(r'^\s*"(?P<key>[^"]+)":\s*"(?P<label>[^"]+)",\s*$', re.MULTILINE)
+
+
+def test_all_catalog_notes_have_german_display_labels() -> None:
+    catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
+    notes: set[str] = set()
+
+    for product in catalog["products"]:
+        for values in (product.get("notes") or {}).values():
+            if isinstance(values, list):
+                notes.update(str(value).strip().lower() for value in values if str(value).strip())
+
+    source = LABELS.read_text(encoding="utf-8")
+    labels = {match["key"]: match["label"] for match in ENTRY.finditer(source)}
+
+    missing = sorted(notes - labels.keys())
+    assert not missing, f"Missing German note labels: {missing}"
+    assert all(labels[note].strip() for note in notes)
