@@ -92,8 +92,8 @@ The interactive depth treatment rotates and lights image layers; it is not a 3D 
 
 ## QA checklist
 
-- Browser screenshot verification at 320, 390, 768 and 1440 CSS pixels remains open. The cloud browser blocks the local preview URL; a passing static build is not visual proof.
-- Verify that Naxos uses only the verified cutout on the dynamic product stage, with no second/inaccurate bottle visible behind it.
-- Confirm reduced-motion preference removes perspective motion and glint.
+- Responsive browser QA was completed on the static export at 320, 390, 768 and 1440 CSS pixels for the homepage, catalog, Naxos, Absolu Aventus, Prada L'Homme and Bois Impérial. The final QA used exported HTML route resolution and explicitly rejected directory listings before screenshots were accepted.
+- Naxos QA confirms the dynamic product stage uses the verified cutout without a second/inaccurate editorial bottle behind it. The current cutout is complete and uncropped; a higher-resolution verified source would improve large-desktop sharpness.
+- Reduced-motion handling is implemented: automatic 3D rotation is disabled while manual interaction remains available; image-stage motion/glint use the existing reduced-motion CSS fallback.
 - Check keyboard navigation and visible labels of offers, comparisons and related products.
 - Review each proposed product cutout against a lawful source image before linking it as a verified layer.
