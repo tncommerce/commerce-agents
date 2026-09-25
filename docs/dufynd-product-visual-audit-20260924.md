@@ -77,7 +77,7 @@ The generated audit artifact itself is temporary QA evidence and must not be mer
 
 | Item | Current decision | Missing evidence before a true product layer |
 | --- | --- | --- |
-| Naxos | Use existing verified cutout plus editorial depth background. | Visual QA at mobile and desktop sizes. |
+| Naxos | Use the existing verified cutout on the clean dynamic product stage; do not layer the inaccurate editorial bottle behind it. | Visual QA at mobile and desktop sizes. |
 | Bois Impérial | Keep the existing editorial scene; no new product cutout is linked. | A transparent, rights-cleared front bottle verified against the actual product, including cap, label, and glass. |
 | Remaining 30 editorial products | Preserve original scene and uncropped detail presentation. | Product-by-product visual fidelity review and approved front packshot/cutout. |
 
@@ -86,7 +86,7 @@ The interactive depth treatment rotates and lights image layers; it is not a 3D 
 ## QA checklist
 
 - Browser screenshot verification at 320, 390, 768 and 1440 CSS pixels remains open. The cloud browser blocks the local preview URL; a passing static build is not visual proof.
-- Verify that Naxos foreground and blurred background render as separate layers, with no doubled label in the foreground.
+- Verify that Naxos uses only the verified cutout on the dynamic product stage, with no second/inaccurate bottle visible behind it.
 - Confirm reduced-motion preference removes perspective motion and glint.
 - Check keyboard navigation and visible labels of offers, comparisons and related products.
 - Review each proposed product cutout against a lawful source image before linking it as a verified layer.
