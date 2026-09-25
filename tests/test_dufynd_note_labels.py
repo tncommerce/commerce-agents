@@ -27,3 +27,56 @@ def test_all_catalog_notes_have_german_display_labels() -> None:
     missing = sorted(notes - labels.keys())
     assert not missing, f"Missing German note labels: {missing}"
     assert all(labels[note].strip() for note in notes)
+
+
+
+def test_all_catalog_accords_and_targets_have_german_ui_labels() -> None:
+    catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
+    catalog_accords: set[str] = set()
+    catalog_targets: set[str] = set()
+
+    for product in catalog["products"]:
+        profile = product.get("fragrance_profile") or {}
+        catalog_accords.update(
+            str(value).strip().lower()
+            for value in profile.get("community_accords", [])
+            if str(value).strip()
+        )
+        classification = product.get("classification") or {}
+        catalog_targets.update(
+            str(value).strip().lower()
+            for value in classification.get("scentai_target_groups", [])
+            if str(value).strip()
+        )
+
+    detail_source = Path(
+        "examples/retail/storefront-web/app/duft/[slug]/page.tsx"
+    ).read_text(encoding="utf-8")
+    catalog_source = Path(
+        "examples/retail/storefront-web/components/FragranceCatalogBrowser.tsx"
+    ).read_text(encoding="utf-8")
+
+    accord_entries = {
+        match["key"]: match["label"]
+        for match in ENTRY.finditer(detail_source)
+    }
+    target_entries = {
+        match["key"]: match["label"]
+        for match in ENTRY.finditer(detail_source)
+    }
+
+    missing_detail_accords = sorted(catalog_accords - accord_entries.keys())
+    missing_catalog_accords = sorted(
+        accord
+        for accord in catalog_accords
+        if f'{accord}: "' not in catalog_source
+    )
+    missing_targets = sorted(catalog_targets - target_entries.keys())
+
+    assert not missing_detail_accords, (
+        f"Missing German detail accord labels: {missing_detail_accords}"
+    )
+    assert not missing_catalog_accords, (
+        f"Missing German catalog accord labels: {missing_catalog_accords}"
+    )
+    assert not missing_targets, f"Missing German target labels: {missing_targets}"
