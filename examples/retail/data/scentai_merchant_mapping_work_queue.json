@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated_at": "2026-09-25T18:36:41+00:00",
-  "source_fingerprint_sha256": "f2b813036c86e7e43cdfec4b0b9a8f26d7293ae1c5b9965e0495f5adfed2e401",
+  "source_fingerprint_sha256": "f1b8c378388352af02b079d98f82e29aa50246ec0e2910b00dacc5ff33b08d30",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
     "scentai_catalog_staging.json",
@@ -9,10 +9,10 @@
     "scentai_affiliate_programs.json"
   ],
   "summary": {
-    "staged_products": 30,
+    "staged_products": 35,
     "products_with_resolved_mapping": 29,
     "products_with_two_or_more_resolved_mappings": 29,
-    "products_without_resolved_mapping": 1,
+    "products_without_resolved_mapping": 6,
     "affiliate_programs_registered": 9,
     "affiliate_programs_approved": 1,
     "affiliate_programs_pending": 8,
@@ -92,6 +92,101 @@
         "community_performance_still_provisional"
       ],
       "next_action": "verify_current_retail_channel_before_mapping",
+      "action_class": "auto_allowed",
+      "live_activation_action_class": "approval_required",
+      "merchants": []
+    },
+    {
+      "product_id": "SC-CALVIN-KLEIN-EUPHORIA-EDP-100",
+      "candidate_id": "CALVIN-KLEIN-EUPHORIA-EDP-100",
+      "brand": "Calvin Klein",
+      "name": "Euphoria",
+      "batch": 4,
+      "researched_merchant_count": 1,
+      "mapping_count": 0,
+      "resolved_mapping_count": 0,
+      "full_mapping_count": 0,
+      "state": "mapping_required",
+      "blockers": [
+        "no_resolved_merchant_mapping"
+      ],
+      "next_action": "verify_exact_merchant_product_identity",
+      "action_class": "auto_allowed",
+      "live_activation_action_class": "approval_required",
+      "merchants": []
+    },
+    {
+      "product_id": "SC-CAROLINA-HERRERA-GOOD-GIRL-EDP-80",
+      "candidate_id": "CAROLINA-HERRERA-GOOD-GIRL-EDP-80",
+      "brand": "Carolina Herrera",
+      "name": "Good Girl",
+      "batch": 4,
+      "researched_merchant_count": 2,
+      "mapping_count": 0,
+      "resolved_mapping_count": 0,
+      "full_mapping_count": 0,
+      "state": "mapping_required",
+      "blockers": [
+        "no_resolved_merchant_mapping"
+      ],
+      "next_action": "verify_exact_merchant_product_identity",
+      "action_class": "auto_allowed",
+      "live_activation_action_class": "approval_required",
+      "merchants": []
+    },
+    {
+      "product_id": "SC-CHANEL-COCO-MADEMOISELLE-EDP-100",
+      "candidate_id": "CHANEL-COCO-MADEMOISELLE-EDP-100",
+      "brand": "CHANEL",
+      "name": "COCO MADEMOISELLE",
+      "batch": 4,
+      "researched_merchant_count": 1,
+      "mapping_count": 0,
+      "resolved_mapping_count": 0,
+      "full_mapping_count": 0,
+      "state": "mapping_required",
+      "blockers": [
+        "no_resolved_merchant_mapping"
+      ],
+      "next_action": "verify_exact_merchant_product_identity",
+      "action_class": "auto_allowed",
+      "live_activation_action_class": "approval_required",
+      "merchants": []
+    },
+    {
+      "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+      "candidate_id": "RABANNE-1-MILLION-EDT-100",
+      "brand": "Rabanne",
+      "name": "1 Million",
+      "batch": 4,
+      "researched_merchant_count": 3,
+      "mapping_count": 0,
+      "resolved_mapping_count": 0,
+      "full_mapping_count": 0,
+      "state": "mapping_required",
+      "blockers": [
+        "no_resolved_merchant_mapping"
+      ],
+      "next_action": "verify_exact_merchant_product_identity",
+      "action_class": "auto_allowed",
+      "live_activation_action_class": "approval_required",
+      "merchants": []
+    },
+    {
+      "product_id": "SC-YSL-Y-EDP-100",
+      "candidate_id": "YSL-Y-EDP-100",
+      "brand": "Yves Saint Laurent",
+      "name": "Y",
+      "batch": 4,
+      "researched_merchant_count": 2,
+      "mapping_count": 0,
+      "resolved_mapping_count": 0,
+      "full_mapping_count": 0,
+      "state": "mapping_required",
+      "blockers": [
+        "no_resolved_merchant_mapping"
+      ],
+      "next_action": "verify_exact_merchant_product_identity",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": []
