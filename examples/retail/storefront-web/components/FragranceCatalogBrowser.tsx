@@ -10,6 +10,7 @@ import {
   trackCatalogSearch,
 } from "@/lib/analytics";
 import type { StaticFragrance } from "@/lib/fragranceCatalog";
+import { noteLabel } from "@/lib/noteLabels";
 
 type AudienceFilter = "all" | "men" | "unisex" | "women";
 type ProfileFilter =
@@ -192,6 +193,15 @@ function searchDocument(
       ...fragrance.notes.top,
       ...fragrance.notes.heart,
       ...fragrance.notes.base,
+      ...fragrance.notes.key,
+      ...fragrance.notes.supporting,
+      ...[
+        ...fragrance.notes.top,
+        ...fragrance.notes.heart,
+        ...fragrance.notes.base,
+        ...fragrance.notes.key,
+        ...fragrance.notes.supporting,
+      ].map(noteLabel),
     ].join(" "),
   );
 }
