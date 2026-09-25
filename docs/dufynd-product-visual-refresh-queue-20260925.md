@@ -39,6 +39,14 @@ The following 4:3 editorial scenes are visually valid source files, but they bec
 
 Do **not** trim these sources: the edge audit confirmed there is no embedded white canvas to remove. The proper fix is a dedicated portrait/square primary asset or verified transparent product layer, while the 4:3 image remains available for editorial/hero use.
 
+### Sospiro Vibrato 100 ml · exact-reference checkpoint completed
+
+The current official Sospiro product page confirms **Vibrato 100 ml Eau de Parfum** and provides a stable fidelity reference for the next primary-image attempt. The recognizable product cues are the deep-green velvet-style rounded bottle, gold oval front plaque and sculpted gold cap. This reference lock does **not** make the current DUFYND editorial image a verified product depiction; it remains editorial-only until a direct side-by-side bottle-fidelity review passes.
+
+The source note data was also normalized to the current official presentation: top-note ordering now follows grapefruit → bergamot → mandarin → ginger → rosemary, and the base uses the more specific **Indian Sandalwood** rather than generic sandalwood. DUFYND keeps normalized internal terms such as `Damask Rose` / `Light Woods` where they map cleanly to the official wording.
+
+Reference for fidelity/data verification only: https://sospirointernational.com/products/vibrato
+
 ## P2 · keep as editorial, then verify product fidelity product-by-product
 
 The remaining generated visuals are attractive enough to keep in the current gallery/atmosphere layer, but are still stylized DUFYND artwork until an exact product-reference review passes:

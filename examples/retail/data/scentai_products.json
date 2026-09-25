@@ -1608,23 +1608,23 @@
       "notes": {
         "top": [
           "Grapefruit",
-          "Ginger",
           "Bergamot",
           "Mandarin",
+          "Ginger",
           "Rosemary"
         ],
         "heart": [
-          "Light Woods",
           "Magnolia",
-          "Damask Rose"
+          "Damask Rose",
+          "Light Woods"
         ],
         "base": [
-          "Crystal Amber",
-          "Musk",
-          "Sandalwood",
+          "Vetiver",
           "Patchouli",
-          "Tonka Bean",
-          "Vetiver"
+          "Indian Sandalwood",
+          "Musk",
+          "Crystal Amber",
+          "Tonka Bean"
         ]
       },
       "community": {
@@ -1688,7 +1688,7 @@
         }
       ],
       "evidence": {
-        "official_product_data": "medium_high",
+        "official_product_data": "high",
         "community_metrics": "high",
         "market_price": "high",
         "relationship_data": "high",

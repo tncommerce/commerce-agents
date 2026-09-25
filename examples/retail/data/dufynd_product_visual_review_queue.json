@@ -44,6 +44,15 @@
       "finding": "Generated visual lacks the black Saffiano-leather bottle treatment described by Prada and instead reads as a bright silver/clear bottle.",
       "evidence_url": "https://www.prada-beauty.com/fragrance/lhomme-prada/lhomme-prada-eau-de-toilette/8435137749607.html",
       "next_action": "Rebuild from an authorised/reference 100 ml product image preserving the black Saffiano treatment and raised silver Prada logo."
+    },
+    {
+      "product_id": "SC-SOSPIRO-VIBRATO-100",
+      "asset": "/products/pilot/sospiro-vibrato-editorial.png",
+      "priority": "P1",
+      "status": "reference_locked_editorial_only",
+      "finding": "The current official Sospiro page confirms Vibrato as a 100 ml Eau de Parfum and shows the distinctive deep-green velvet-style bottle, gold oval front plaque and sculpted gold cap. The existing DUFYND 4:3 scene has not passed a side-by-side bottle-fidelity gate and therefore remains editorial-only.",
+      "evidence_url": "https://sospirointernational.com/products/vibrato",
+      "next_action": "Use the official 100 ml presentation as fidelity reference for any future primary. Preserve the complete rounded bottle silhouette, deep-green velvet-style surface, gold oval plaque, sculpted gold cap and generous 12–15% safe area; do not activate a generated primary until direct side-by-side QA passes."
     }
   ],
   "cleared_for_editorial_use": [
