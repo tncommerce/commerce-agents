@@ -153,17 +153,26 @@ function noteSection(
   notes: string[],
 ) {
   if (!notes.length) return null;
-  const stage = title === "Kopfnoten" ? "01" : title === "Herznoten" ? "02" : title === "Basisnoten" ? "03" : "·";
+  const stage =
+    title === "Kopfnoten"
+      ? "01"
+      : title === "Herznoten"
+        ? "02"
+        : title === "Basisnoten"
+          ? "03"
+          : null;
 
   return (
     <div>
       <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-(--ink-soft)">
-        <span
-          aria-hidden
-          className="grid h-6 w-6 place-items-center rounded-lg bg-(--accent-soft) text-[10px] tabular-nums text-(--accent-ink)"
-        >
-          {stage}
-        </span>
+        {stage ? (
+          <span
+            aria-hidden
+            className="grid h-6 w-6 place-items-center rounded-lg bg-(--accent-soft) text-[10px] tabular-nums text-(--accent-ink)"
+          >
+            {stage}
+          </span>
+        ) : null}
         {title}
       </div>
       <div className="mt-2 flex flex-wrap gap-2">
