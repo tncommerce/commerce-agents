@@ -86,3 +86,52 @@ jobs:
         run: npm ci
       - name: Build every app
         run: npm run build
+
+  dufynd-visual-qa:
+    if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'dufynd-')
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: examples
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: examples/package-lock.json
+      - name: Install storefront dependencies
+        run: |
+          npm ci
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Build DUFYND storefront
+        run: npm run build --workspace acme-retail-storefront-web
+      - name: Run responsive DUFYND browser QA
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run start --workspace acme-retail-storefront-web > /tmp/dufynd-next.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for attempt in {1..60}; do
+            if curl --fail --silent http://127.0.0.1:3000/duft/xerjoff-naxos > /dev/null; then
+              break
+            fi
+            if [ "$attempt" -eq 60 ]; then
+              cat /tmp/dufynd-next.log
+              exit 1
+            fi
+            sleep 1
+          done
+          node retail/storefront-web/scripts/dufynd-visual-qa.mjs \
+            --base-url http://127.0.0.1:3000 \
+            --out retail/storefront-web/.visual-qa
+      - name: Upload DUFYND visual QA captures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dufynd-visual-qa-${{ github.event.pull_request.number }}
+          path: examples/retail/storefront-web/.visual-qa
+          if-no-files-found: warn
+          retention-days: 7
