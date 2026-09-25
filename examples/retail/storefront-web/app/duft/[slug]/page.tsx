@@ -708,6 +708,7 @@ export default async function FragrancePage({
                     >
                       <FragranceVisual
                         imageUrl={item.fragrance.image_url}
+                        cutoutUrl={item.fragrance.cutout_image_url}
                         alt={`${item.fragrance.brand} ${item.fragrance.name}`}
                         variant="card"
                         className="h-36 w-full"
