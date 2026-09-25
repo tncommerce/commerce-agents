@@ -7,6 +7,12 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from scripts.promote_scentai_catalog import (
+    eligible_affiliate_offers,
+    eligible_purchase_offers,
+    parse_timestamp,
+)
+
 DATA_DIR = Path("examples/retail/data")
 DEFAULT_MANIFEST = DATA_DIR / "scentai_release_batch_01.json"
 DEFAULT_STAGING = DATA_DIR / "scentai_catalog_staging.json"
@@ -67,6 +73,8 @@ def build_release_gate_status(
         if row.get("live_routing_allowed") is True
     }
 
+    now = parse_timestamp(generated_at)
+
     rows: list[dict[str, Any]] = []
     for product_id in manifest.get("product_ids", []):
         product = next(
@@ -85,17 +93,23 @@ def build_release_gate_status(
         image_state = str(image.get("image_state") or "missing")
         image_ready = image_state.startswith("approved_")
 
-        product_offers = [
-            row
-            for row in offers
-            if row.get("product_id") == product_id
-            and row.get("in_stock") is not False
-            and str(row.get("affiliate_url") or "").strip()
-        ]
+        product_offers = eligible_purchase_offers(
+            offers,
+            product_id=product_id,
+            now=now,
+            max_age_hours=72.0,
+        )
+        affiliate_offers = eligible_affiliate_offers(
+            offers,
+            product_id=product_id,
+            now=now,
+            max_age_hours=72.0,
+        )
         affiliate_ready = any(
             normalized_merchant_id(row.get("merchant_id")) in active_merchants
-            for row in product_offers
+            for row in affiliate_offers
         )
+        purchase_destination_ready = bool(product_offers)
 
         community_ready = not bool((product or {}).get("community", {}).get("provisional"))
         mapping_ready = bool(resolved_mappings)
@@ -104,7 +118,7 @@ def build_release_gate_status(
             "non_provisional_community_data": community_ready,
             "resolved_merchant_product_mapping": mapping_ready,
             "approved_product_image": image_ready,
-            "current_tracked_affiliate_offer": affiliate_ready,
+            "current_purchase_destination": purchase_destination_ready,
             "staging_recommendation_qa": True,
             "not_already_live": True,
         }
@@ -114,8 +128,8 @@ def build_release_gate_status(
             next_event = (
                 "approved_affiliate_feed_or_verified_asset_usage_then_manual_visual_approval"
             )
-        elif not affiliate_ready:
-            next_event = "affiliate_program_approval_and_current_tracked_offer_import"
+        elif not purchase_destination_ready:
+            next_event = "current_verified_purchase_destination_import"
         else:
             next_event = "release_dry_run"
 
@@ -128,7 +142,9 @@ def build_release_gate_status(
                 "mapping_count": len(product_mappings),
                 "resolved_mapping_count": len(resolved_mappings),
                 "image_state": image_state,
-                "affiliate_offer_count": len(product_offers),
+                "purchase_offer_count": len(product_offers),
+                "affiliate_offer_count": len(affiliate_offers),
+                "current_tracked_affiliate_offer": affiliate_ready,
                 "gates": gates,
                 "blockers": blockers,
                 "promotion_ready": not blockers,
@@ -169,8 +185,11 @@ def build_release_gate_status(
                 or row["image_state"].startswith("approved_")
             ),
             "approved_images": sum(1 for row in rows if row["gates"]["approved_product_image"]),
+            "current_purchase_destinations": sum(
+                1 for row in rows if row["gates"]["current_purchase_destination"]
+            ),
             "current_tracked_affiliate_offers": sum(
-                1 for row in rows if row["gates"]["current_tracked_affiliate_offer"]
+                1 for row in rows if row["current_tracked_affiliate_offer"]
             ),
             "promotion_ready": sum(1 for row in rows if row["promotion_ready"]),
         },
@@ -253,6 +272,8 @@ def main() -> int:
             f"mapping={summary['mapping_ready']}/"
             f"{summary['release_size']} | "
             f"images={summary['approved_images']}/"
+            f"{summary['release_size']} | "
+            f"purchase={summary['current_purchase_destinations']}/"
             f"{summary['release_size']} | "
             f"affiliate={summary['current_tracked_affiliate_offers']}/"
             f"{summary['release_size']} | "
