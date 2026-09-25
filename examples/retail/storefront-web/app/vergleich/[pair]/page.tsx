@@ -12,6 +12,7 @@ import {
   type StaticFragrance,
 } from "@/lib/fragranceCatalog";
 import { SITE_URL } from "@/lib/site";
+import { formatPriceReference } from "@/lib/priceReference";
 
 export const dynamicParams = false;
 
@@ -76,14 +77,6 @@ function formatNumber(value: number | null): string {
     minimumFractionDigits: 1,
     maximumFractionDigits: 1,
   });
-}
-
-function formatPrice(value: number | null): string {
-  if (value == null) return "–";
-  return new Intl.NumberFormat("de-DE", {
-    style: "currency",
-    currency: "EUR",
-  }).format(value);
 }
 
 function targetLabel(value: string): string {
@@ -371,11 +364,15 @@ export default async function ComparisonPage({
             right={right.target_groups.map(targetLabel).join(", ")}
           />
           <ComparisonRow
-            label="Preisreferenz"
-            left={formatPrice(left.market.reference_price_eur)}
-            right={formatPrice(right.market.reference_price_eur)}
+            label="Preis-Richtwert"
+            left={formatPriceReference(left.market.reference_price_eur, left.market.checked_at)}
+            right={formatPriceReference(right.market.reference_price_eur, right.market.checked_at)}
           />
         </section>
+        <p className="mt-2 text-[11px] leading-5 text-(--ink-soft)">
+          Historische Marktbeobachtung zum angegebenen Stand, kein aktuelles Kaufangebot.
+          Verfügbare Händlerangebote werden auf den Duftseiten separat geprüft.
+        </p>
 
         <section className="mt-5 grid gap-4 sm:grid-cols-2">
           {[left, right].map((fragrance) => (
