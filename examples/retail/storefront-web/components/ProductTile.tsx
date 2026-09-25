@@ -121,7 +121,7 @@ function LowStockChip({ product, className = "" }: { product: Product; className
     <span
       className={`whitespace-nowrap rounded-full bg-(--warn-soft) px-2 py-0.5 text-[11px] font-semibold text-(--warn) ${className}`}
     >
-      Only {count} left
+      Nur noch {count}
     </span>
   );
 }
@@ -222,7 +222,7 @@ export function AddButton({
           event.stopPropagation();
           ask(`Add the ${product.title} (${product.product_id}) to my cart.`);
         }}
-        aria-label={`Choose options for ${product.title}`}
+        aria-label={`Optionen für ${product.title} auswählen`}
         className="pointer-events-auto absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-(--ink) text-lg font-semibold leading-none text-(--surface) shadow-(--shadow-sm) transition-all hover:scale-105"
       >
         +
@@ -243,7 +243,7 @@ export function AddButton({
         if (added) flyToCart(product, source);
         window.setTimeout(() => setPhase("idle"), added ? 1200 : 1600);
       }}
-      aria-label={`Add ${product.title} to cart`}
+      aria-label={`${product.title} in den Warenkorb legen`}
       className={`pointer-events-auto absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full text-lg font-semibold leading-none text-(--surface) shadow-(--shadow-sm) transition-all hover:scale-105 ${
         phase === "done" ? "bg-(--ok)" : phase === "error" ? "bg-(--warn)" : "bg-(--ink)"
       } ${phase === "busy" ? "animate-pulse" : ""}`}
