@@ -843,8 +843,8 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dufynd-model-viewer {
-    pointer-events: none;
+  .dufynd-model-hint {
+    opacity: 0.72;
   }
 }
 
