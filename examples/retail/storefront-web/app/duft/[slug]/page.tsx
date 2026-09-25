@@ -924,7 +924,12 @@ export default async function FragrancePage({
         </footer>
       </div>
 
-      <div className="dufynd-mobile-offer-bar fixed inset-x-0 bottom-0 z-40 border-t border-(--line) bg-(--card)/94 px-3 pt-2.5 shadow-[0_-10px_30px_rgba(23,21,19,0.10)] backdrop-blur-xl sm:hidden">
+      <div
+        className="dufynd-mobile-offer-bar fixed inset-x-0 bottom-0 z-40 border-t border-(--line) bg-(--card)/94 px-3 pt-2.5 shadow-[0_-10px_30px_rgba(23,21,19,0.10)] backdrop-blur-xl sm:hidden"
+        style={{
+          paddingBottom: "max(0.625rem, env(safe-area-inset-bottom))",
+        }}
+      >
         <div className="mx-auto flex max-w-[420px] items-center gap-3">
           <div className="min-w-0 flex-1">
             <div className="truncate text-[11px] font-semibold text-(--ink)">
