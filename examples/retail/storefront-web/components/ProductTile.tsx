@@ -313,7 +313,7 @@ export default function ProductTile({
           </div>
           {product.in_stock === false ? (
             <span className="absolute right-1.5 top-1.5 rounded-full bg-(--ink)/85 px-2 py-0.5 text-[11px] font-medium text-(--surface)">
-              Out of stock
+              Nicht verfügbar
             </span>
           ) : (
             <LowStockChip product={product} className="absolute right-1.5 top-1.5" />
@@ -417,7 +417,7 @@ export function ProductRow({
           <ProductRating product={product} compact />
           {product.in_stock === false ? (
             <span className="rounded-full bg-(--ink)/85 px-2 py-0.5 text-[11px] font-medium text-(--surface)">
-              Out of stock
+              Nicht verfügbar
             </span>
           ) : (
             <LowStockChip product={product} />
