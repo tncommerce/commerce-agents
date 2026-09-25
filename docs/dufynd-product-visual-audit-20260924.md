@@ -46,6 +46,33 @@ That is still not a blanket licence for every advertiser asset. Before a feed im
 
 If no documented source right exists, DUFYND should prefer its own generated editorial asset while clearly keeping product-fidelity and truth-in-depiction gates separate.
 
+## Visual review pass · 25 September 2026
+
+A contact-sheet audit of all 32 DUFYND editorial fragrance scenes was generated from the actual repository assets, together with a simulation of the current card safe-area treatment. This separates two different problems: **layout cropping** and **source-image fidelity**. The layout crop issue is structurally addressed by the new contain/safe-area treatment, but several source visuals still need replacement because the illustrated bottle itself is not reliable enough.
+
+### P0 — replace before treating the scene as a trusted primary depiction
+
+| Asset | Finding | Decision |
+| --- | --- | --- |
+| `creed-absolu-aventus-editorial.png` | The illustrated bottle itself reads **75 ML / 2.5 FL.OZ**, while the DUFYND catalog product is Absolu Aventus 100 ml. | Replace with a 100 ml-faithful DUFYND render; do not use this scene as product truth. |
+| `xerjoff-naxos-editorial.png` | The illustrated rounded white bottle visibly conflicts with DUFYND's separately verified Naxos cutout geometry. | Keep only as a blurred/de-emphasised atmosphere until a bottle-free or faithful Naxos editorial is available. |
+| `armani-swy-intensely-editorial.png` | The scene uses a glossy black spherical stopper. Armani describes the Stronger With You bottle as closed by its characteristic cast-iron-grey metal cap. | Replace with a geometry-faithful render based on an authorised/reference product image. |
+| `prada-lhomme-editorial.png` | The scene presents a bright silver/clear front treatment. Prada describes L'Homme's bottle as cloaked in black Saffiano leather with a raised silver Prada logo. | Replace; current scene is attractive but not reliable enough as the primary product depiction. |
+
+Reference checks for the two externally verified P0 items:
+- Armani Stronger With You Intensely: https://www.armanibeauty.de/dufte/herrenduft/stronger-with-you/stronger-with-you-intensely-eau-de-parfum/3614272225718.html
+- Prada L'Homme Eau de Toilette: https://www.prada-beauty.com/fragrance/lhomme-prada/lhomme-prada-eau-de-toilette/8435137749607.html
+
+### P1 — visually strong enough to keep as editorial, but verify bottle details before promotion to product-truth status
+
+Prioritise side-by-side verification for `al-haramain-detour-noir-editorial.png`, `creed-aventus-editorial.png`, `armaf-club-de-nuit-intense-man-editorial.png` and `maison-asrar-vanguard-editorial.png`. These scenes are visually usable, but distinctive bottle geometry, cap/ornament details or label typography should be checked against an authorised source before DUFYND presents them as exact product depictions.
+
+### P2 — keep for now as editorial scenes
+
+The remaining scenes pass the first composition review: the bottle is fully visible, the current safe-area treatment prevents layout clipping, and the presentation is consistent enough for the DUFYND editorial layer. This is **not** an assertion that every label and surface detail is exact. They remain subject to product-by-product fidelity review before becoming verified primary product layers.
+
+The generated audit artifact itself is temporary QA evidence and must not be merged into the production website. The temporary CI artifact job should be removed after the visual review is complete.
+
 ## Release decisions for future visuals
 
 | Item | Current decision | Missing evidence before a true product layer |
