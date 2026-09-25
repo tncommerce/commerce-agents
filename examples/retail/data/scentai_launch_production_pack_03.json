@@ -11,15 +11,15 @@
       "required_product_assets": [
         {
           "product_id": "SC-LV-IMAGINATION-100",
-          "image_url": "/products/pilot/louis-vuitton-imagination-editorial.png"
+          "image_url": "/products/pilot/louis-vuitton-imagination-editorial.webp"
         },
         {
           "product_id": "SC-BVLGARI-TYGAR-125",
-          "image_url": "/products/pilot/bvlgari-tygar-editorial.png"
+          "image_url": "/products/pilot/bvlgari-tygar-editorial.webp"
         },
         {
           "product_id": "SC-AFNAN-TURATHI-BLUE-90",
-          "image_url": "/products/pilot/afnan-turathi-blue-editorial.png"
+          "image_url": "/products/pilot/afnan-turathi-blue-editorial.webp"
         }
       ],
       "scene_assets": [
@@ -57,15 +57,15 @@
       "required_product_assets": [
         {
           "product_id": "SC-DIOR-SAUVAGE-EDP-100",
-          "image_url": "/products/pilot/dior-sauvage-edp-editorial.png"
+          "image_url": "/products/pilot/dior-sauvage-edp-editorial.webp"
         },
         {
           "product_id": "SC-PRADA-LHOMME-100",
-          "image_url": "/products/pilot/prada-lhomme-editorial.png"
+          "image_url": "/products/pilot/prada-lhomme-editorial.webp"
         },
         {
           "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
-          "image_url": "/products/pilot/bois-imperial-editorial.png"
+          "image_url": "/products/pilot/bois-imperial-editorial.webp"
         }
       ],
       "scene_assets": [
@@ -103,7 +103,7 @@
       "required_product_assets": [
         {
           "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
-          "image_url": "/products/pilot/bois-imperial-editorial.png"
+          "image_url": "/products/pilot/bois-imperial-editorial.webp"
         }
       ],
       "scene_assets": [
@@ -141,19 +141,19 @@
       "required_product_assets": [
         {
           "product_id": "SC-PDM-ALTHAIR-125",
-          "image_url": "/products/pilot/pdm-althair-editorial.png"
+          "image_url": "/products/pilot/pdm-althair-editorial.webp"
         },
         {
           "product_id": "SC-FRENCH-AVENUE-LIQUID-BRUN-100",
-          "image_url": "/products/pilot/liquid-brun-editorial.png"
+          "image_url": "/products/pilot/liquid-brun-editorial.webp"
         },
         {
           "product_id": "SC-CREED-AVENTUS-100",
-          "image_url": "/products/pilot/creed-aventus-editorial.png"
+          "image_url": "/products/pilot/creed-aventus-editorial.webp"
         },
         {
           "product_id": "SC-MONTBLANC-EXPLORER-100",
-          "image_url": "/products/pilot/montblanc-explorer-editorial.png"
+          "image_url": "/products/pilot/montblanc-explorer-editorial.webp"
         }
       ],
       "scene_assets": [
@@ -191,11 +191,11 @@
       "required_product_assets": [
         {
           "product_id": "SC-CHANEL-BLEU-DE-CHANEL-EDP-100",
-          "image_url": "/products/pilot/bleu-de-chanel-edp-editorial.png"
+          "image_url": "/products/pilot/bleu-de-chanel-edp-editorial.webp"
         },
         {
           "product_id": "SC-PRADA-LHOMME-100",
-          "image_url": "/products/pilot/prada-lhomme-editorial.png"
+          "image_url": "/products/pilot/prada-lhomme-editorial.webp"
         },
         {
           "product_id": "SC-XERJOFF-NAXOS-100",

@@ -39,15 +39,15 @@
       "required_product_assets": [
         {
           "product_id": "SC-LV-IMAGINATION-100",
-          "image_url": "/products/pilot/louis-vuitton-imagination-editorial.png"
+          "image_url": "/products/pilot/louis-vuitton-imagination-editorial.webp"
         },
         {
           "product_id": "SC-ARABIYAT-MARWA-EDP-100",
-          "image_url": "/products/pilot/arabiyat-marwa-edp-editorial.png"
+          "image_url": "/products/pilot/arabiyat-marwa-edp-editorial.webp"
         },
         {
           "product_id": "SC-BUJAIRAMI-HECTIC-100",
-          "image_url": "/products/pilot/bujairami-hectic-editorial.png"
+          "image_url": "/products/pilot/bujairami-hectic-editorial.webp"
         }
       ],
       "scene_assets": [
@@ -85,15 +85,15 @@
       "required_product_assets": [
         {
           "product_id": "SC-ARABIYAT-MARWA-EDP-100",
-          "image_url": "/products/pilot/arabiyat-marwa-edp-editorial.png"
+          "image_url": "/products/pilot/arabiyat-marwa-edp-editorial.webp"
         },
         {
           "product_id": "SC-BUJAIRAMI-HECTIC-100",
-          "image_url": "/products/pilot/bujairami-hectic-editorial.png"
+          "image_url": "/products/pilot/bujairami-hectic-editorial.webp"
         },
         {
           "product_id": "SC-ARABIYAT-MARWA-EXTRAIT-60",
-          "image_url": "/products/pilot/arabiyat-prestige-marwa-extrait-editorial.png"
+          "image_url": "/products/pilot/arabiyat-prestige-marwa-extrait-editorial.webp"
         }
       ],
       "scene_assets": [
@@ -131,19 +131,19 @@
       "required_product_assets": [
         {
           "product_id": "SC-CREED-AVENTUS-100",
-          "image_url": "/products/pilot/creed-aventus-editorial.png"
+          "image_url": "/products/pilot/creed-aventus-editorial.webp"
         },
         {
           "product_id": "SC-AFNAN-SUPREMACY-COLLECTORS-100",
-          "image_url": "/products/pilot/afnan-supremacy-collectors-edition-editorial.png"
+          "image_url": "/products/pilot/afnan-supremacy-collectors-edition-editorial.webp"
         },
         {
           "product_id": "SC-MAISON-ASRAR-VANGUARD-100",
-          "image_url": "/products/pilot/maison-asrar-vanguard-editorial.png"
+          "image_url": "/products/pilot/maison-asrar-vanguard-editorial.webp"
         },
         {
           "product_id": "SC-ARMAF-CDNIM-EDP-200",
-          "image_url": "/products/pilot/armaf-club-de-nuit-intense-man-editorial.png"
+          "image_url": "/products/pilot/armaf-club-de-nuit-intense-man-editorial.webp"
         }
       ],
       "scene_assets": [
@@ -183,15 +183,15 @@
       "required_product_assets": [
         {
           "product_id": "SC-PDM-LAYTON-125",
-          "image_url": "/products/pilot/pdm-layton-editorial.png"
+          "image_url": "/products/pilot/pdm-layton-editorial.webp"
         },
         {
           "product_id": "SC-ORIENTICA-ROYAL-BLEU-80",
-          "image_url": "/products/pilot/orientica-royal-bleu-editorial.png"
+          "image_url": "/products/pilot/orientica-royal-bleu-editorial.webp"
         },
         {
           "product_id": "SC-AL-HARAMAIN-DETOUR-NOIR-100",
-          "image_url": "/products/pilot/al-haramain-detour-noir-editorial.png"
+          "image_url": "/products/pilot/al-haramain-detour-noir-editorial.webp"
         }
       ],
       "scene_assets": [
@@ -229,11 +229,11 @@
       "required_product_assets": [
         {
           "product_id": "SC-PDM-ALTHAIR-125",
-          "image_url": "/products/pilot/pdm-althair-editorial.png"
+          "image_url": "/products/pilot/pdm-althair-editorial.webp"
         },
         {
           "product_id": "SC-FRENCH-AVENUE-LIQUID-BRUN-100",
-          "image_url": "/products/pilot/liquid-brun-editorial.png"
+          "image_url": "/products/pilot/liquid-brun-editorial.webp"
         }
       ],
       "scene_assets": [

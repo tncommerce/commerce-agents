@@ -12,7 +12,7 @@
   "items": [
     {
       "product_id": "SC-CREED-ABSOLU-AVENTUS-100",
-      "asset": "/products/pilot/creed-absolu-aventus-editorial.png",
+      "asset": "/products/pilot/creed-absolu-aventus-editorial.webp",
       "priority": "P0",
       "status": "candidate_generated_pending_reference_gate",
       "finding": "The current live editorial remains invalid as product truth because it visibly reads 75 ML / 2.5 FL.OZ while the catalog item is 100 ml. A new volume-neutral black Absolu Aventus candidate has been generated, but the official current 100 ml page still uses variant-ambiguous imagery, so it remains intentionally unverified.",
@@ -22,7 +22,7 @@
     },
     {
       "product_id": "SC-ARMANI-SWY-INTENSELY-100",
-      "asset": "/products/pilot/armani-swy-intensely-editorial.png",
+      "asset": "/products/pilot/armani-swy-intensely-editorial.webp",
       "priority": "P0",
       "status": "candidate_generated_pending_reference_gate",
       "finding": "Direct comparison against the current 100 ml presentation shows a major improvement: the refined candidate is taller/narrower, keeps the cognac liquid, rounded shoulder lines and gunmetal cap treatment, and reduces the oversized stopper/ring stack. It remains intentionally unverified because exact cap/ring geometry and front proportions still need final human side-by-side approval.",
@@ -32,7 +32,7 @@
     },
     {
       "product_id": "SC-PRADA-LHOMME-100",
-      "asset": "/products/pilot/prada-lhomme-editorial.png",
+      "asset": "/products/pilot/prada-lhomme-editorial.webp",
       "priority": "P0",
       "status": "candidate_generated_pending_reference_gate",
       "finding": "The original DUFYND editorial remains unsuitable as product truth. A new neutral candidate now preserves the architectural rectangular bottle, black Saffiano treatment, silver mirrored face and silver cap much more closely, but is intentionally not verified until direct exact-reference side-by-side QA passes.",
@@ -42,7 +42,7 @@
     },
     {
       "product_id": "SC-SOSPIRO-VIBRATO-100",
-      "asset": "/products/pilot/sospiro-vibrato-editorial.png",
+      "asset": "/products/pilot/sospiro-vibrato-editorial.webp",
       "priority": "P0",
       "status": "candidate_generated_pending_reference_gate",
       "finding": "Direct comparison against the current official 100 ml presentation shows the refined candidate substantially closer: the emerald velvet silhouette is slimmer, the sculpted gold cap is less dominant and the oval plaque is smaller with reference-aligned wording. It remains intentionally unverified pending final human side-by-side approval of cap sculpture, plaque placement and logo detail.",
