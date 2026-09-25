@@ -19,17 +19,17 @@
     {
       "merchant_id": "parfumdreams",
       "merchant_name": "parfumdreams",
-      "status": "pending_affiliate_link",
+      "status": "rejected",
       "affiliate_url": null,
-      "last_verified_at": null,
+      "last_verified_at": "2026-09-22T00:00:00Z",
       "description": "Parfum und Beauty"
     },
     {
       "merchant_id": "parfumgroup",
       "merchant_name": "ParfumGroup",
-      "status": "pending_affiliate_link",
+      "status": "rejected",
       "affiliate_url": null,
-      "last_verified_at": null,
+      "last_verified_at": "2026-09-22T00:00:00Z",
       "description": "Parfum und Beauty"
     },
     {
