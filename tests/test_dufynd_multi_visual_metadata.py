@@ -22,9 +22,7 @@ def test_structured_visual_metadata_is_safe_and_consistent() -> None:
         if str(row.get("product_id", "")).startswith("SC-")
     }
 
-    rows_with_visuals = [
-        row for row in source["products"] if row.get("visuals")
-    ]
+    rows_with_visuals = [row for row in source["products"] if row.get("visuals")]
     assert rows_with_visuals, "Expected at least one multi-visual fragrance pilot"
 
     for row in rows_with_visuals:
@@ -64,8 +62,6 @@ def test_naxos_visual_pilot_matches_legacy_product_layer() -> None:
 
     visuals = {visual["role"]: visual for visual in source_row["visuals"]}
     assert visuals["cutout"]["fidelity_status"] == "verified"
-    assert visuals["cutout"]["url"] == (
-        catalog_row["attributes"]["product_cutout_url"]
-    )
+    assert visuals["cutout"]["url"] == (catalog_row["attributes"]["product_cutout_url"])
     assert visuals["editorial"]["fidelity_status"] == "editorial_only"
     assert visuals["editorial"]["url"] == catalog_row["image_url"]
