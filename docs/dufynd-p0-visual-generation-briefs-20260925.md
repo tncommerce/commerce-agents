@@ -79,6 +79,8 @@ A visually attractive result that misses bottle truth remains editorial-only.
 
 **Hard constraints:** no generic cylindrical or rectangular redesign; no black/silver substitute cap; no missing or reshaped oval plaque; no blue colour shift; no invented visible volume marking; no promotion to verified until side-by-side fidelity QA passes.
 
+**Candidate status (25 Sep 2026):** a new neutral primary candidate was generated and stored at `/products/candidates/sospiro-vibrato-p0-v1.webp`. It follows the official current deep-green velvet-style bottle, oval gold plaque and sculpted gold cap direction, but remains inactive pending direct side-by-side fidelity QA.
+
 **Editorial companion:** bottle-free green/gold atmosphere using citrus, magnolia/rose, pale woods and refined amber cues. The current 4:3 DUFYND scene remains editorial-only.
 
 ## Xerjoff Naxos · 100 ml
