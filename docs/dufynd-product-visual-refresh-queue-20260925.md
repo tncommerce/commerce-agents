@@ -15,11 +15,10 @@ This queue is based on the 32-source contact sheet, the safe-area simulation and
 
 | Product | Current issue | Next asset |
 | --- | --- | --- |
-| Creed Absolu Aventus 100 ml | Current generated bottle visibly reads **75 ML / 2.5 FL.OZ.**, while the catalog entry is 100 ml. | New DUFYND primary render from an exact current 100 ml reference; current image may remain editorial only. |
-| Prada L'Homme EDT 100 ml | Current silver rounded render does not match Prada's official description of the architectural L'Homme bottle wrapped in black Saffiano with raised silver branding. | Rebuild from an exact 100 ml official/rights-cleared reference. |
+| Creed Absolu Aventus 100 ml | The current DUFYND scene reads **75 ML / 2.5 FL.OZ.** while the catalog entry is 100 ml. Creed's current product page also uses a generic bottle image marked 75 ml while offering 50/100/490 ml selections, so the visual reference itself is variant-ambiguous. | Keep the current scene editorial-only; a future primary should use a 100 ml-faithful or volume-neutral exact-reference bottle depiction. |
+| Prada L'Homme EDT 100 ml | Current silver rounded render does not match Prada's official product presentation for L'Homme EDT 100 ml. | Rebuild from an exact 100 ml official/rights-cleared reference. |
 | Xerjoff Naxos 100 ml | Generated editorial bottle is not the verified product layer. | Keep the existing verified cutout as primary; use editorial only as atmosphere. |
-| Louis Vuitton Imagination 100 ml | Attractive image, but bottle details have not yet passed an exact-reference fidelity check. | Exact-reference DUFYND render or verified cutout before calling it the primary bottle depiction. |
-| Creed Aventus 100 ml | Attractive editorial, but current Creed packaging is in transition and the generated label/bottle should not be assumed exact. | Rebuild/verify against the exact current 100 ml variant. |
+| Giorgio Armani Stronger With You Intensely 100 ml | Current generated stopper/shoulder treatment does not match the current official product presentation closely enough for product-truth use. | Rebuild from the official 100 ml reference before promoting the image beyond editorial use. |
 
 ## P1 · landscape assets that need a dedicated primary format
 
@@ -46,6 +45,8 @@ The remaining generated visuals are attractive enough to keep in the current gal
 
 - Afnan Supremacy Collector's Edition
 - Afnan Turathi Blue
+- Creed Aventus
+- Louis Vuitton Imagination
 - Al Haramain Détour Noir
 - Arabiyat Prestige Marwa EDP
 - Giorgio Armani Stronger With You Intensely
