@@ -414,6 +414,21 @@ try {
         }
 
         if (target.name === "catalog") {
+          const catalogCards = page.locator('article');
+          const catalogLoadMore = page.getByRole("button", {
+            name: /Weitere 12 Düfte anzeigen/,
+          });
+          if ((await catalogCards.count()) !== 12) {
+            throw new Error(
+              `catalog initial browse should render 12 cards, got ${await catalogCards.count()}`,
+            );
+          }
+          if ((await catalogLoadMore.count()) !== 1) {
+            throw new Error(
+              "catalog initial browse is missing progressive disclosure",
+            );
+          }
+
           const naxosCardTruth = page.locator(
             'a[href="/duft/xerjoff-naxos"] img[src="/products/naxos-cutout-production.png"]',
           );
