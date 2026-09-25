@@ -49,7 +49,7 @@ def test_widian_london_generated_visual_remains_editorial_only() -> None:
     assert visual["role"] == "editorial"
     assert visual["fidelity_status"] == "editorial_only"
     assert visual["provenance"] == "user_higgsfield_video_20260925"
-    assert visual["variant"] == "100ml"
+    assert visual.get("variant") is None
     assert visual["composition"] == "product_scene"
     assert row["image_url"] == visual["url"]
 
