@@ -51,6 +51,8 @@ A visually attractive result that misses bottle truth remains editorial-only.
 
 **Hard constraints:** do not round or soften the bottle into a generic silver flask; do not replace the Saffiano treatment with plain mirror metal; preserve logo placement and cap geometry.
 
+**Candidate status (25 Sep 2026):** a new neutral primary candidate was generated and stored at `/products/candidates/prada-lhomme-p0-v5.webp`. It is a major fidelity improvement over the live editorial but remains inactive pending direct exact-reference side-by-side QA.
+
 **Editorial companion:** silk/mineral world with brushed metal, dark leather texture and clean gallery light. Avoid generic sunset/citrus scenery.
 
 ## Giorgio Armani Stronger With You Intensely · 100 ml
@@ -62,6 +64,8 @@ A visually attractive result that misses bottle truth remains editorial-only.
 **Primary direction:** exact 100 ml shoulder-shaped bottle, cognac/amber liquid, characteristic cast-iron-grey metal cap, warm amber studio set. Keep the bottle complete and dominant.
 
 **Hard constraints:** no glossy black spherical stopper, no generic whisky decanter, no ornamental redesign of the shoulders or cap.
+
+**Candidate status (25 Sep 2026):** a new neutral primary candidate was generated and stored at `/products/candidates/armani-swy-intensely-p0-v2.webp`. It now follows the cognac liquid + cast-iron-grey/gunmetal cap direction much more closely, but remains inactive pending exact-reference side-by-side QA.
 
 **Editorial companion:** amber/gourmand world using restrained chestnut, vanilla and spice cues. Avoid floating ingredient explosions around the bottle.
 
