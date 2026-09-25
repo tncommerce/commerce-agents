@@ -16,6 +16,21 @@ The former detail hero used `object-cover`. In a square hero, each 4:3 landscape
 
 The 32 editorial scenes are synthetic or stylized illustrations. Their presence in the catalog does not establish that the label, glass, cap or bottle shape is an exact product depiction. Detail pages identify these images as stylized and say that bottle details may differ. The Naxos cutout is the only currently linked transparent product layer; the background image remains decorative.
 
+## DUFYND product-image policy
+
+DUFYND does not treat an official manufacturer packshot as automatically preferable to a generated visual. The primary image may be a DUFYND-generated render when it is more compelling and fits the dynamic depth/3D presentation, but it must pass a product-fidelity gate first: complete bottle silhouette, cap, label/plaque, proportions, glass/material cues and visible typography must match the intended retail product closely enough that the image cannot mislead a shopper.
+
+An external original image may be used only when its commercial-use basis is documented (for example an authorised affiliate/feed asset or another rights-cleared source). A publicly accessible manufacturer image is not assumed to be reusable merely because it is online.
+
+For the storefront, the preferred asset stack is:
+
+1. a complete, uncropped primary bottle visual with safe area;
+2. an optional verified transparent bottle/cutout for interactive depth or true 3D;
+3. one or more DUFYND editorial/macro visuals for attraction and atmosphere;
+4. a real 3D model only after bottle geometry and surface details pass fidelity QA.
+
+Generated editorial art must not silently become the source of truth for bottle geometry. When fidelity is not verified, it remains labelled/presented as stylised artwork.
+
 ## Release decisions for future visuals
 
 | Item | Current decision | Missing evidence before a true product layer |
