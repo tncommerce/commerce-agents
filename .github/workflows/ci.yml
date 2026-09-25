@@ -110,6 +110,7 @@ jobs:
           name: dufynd-image-opt-audit-${{ github.event.pull_request.number }}
           path: examples/retail/storefront-web/.image-opt-audit
           if-no-files-found: error
+          include-hidden-files: true
           retention-days: 3
 
   dufynd-visual-qa:
