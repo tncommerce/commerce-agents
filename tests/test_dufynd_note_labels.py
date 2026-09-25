@@ -9,9 +9,9 @@ from pathlib import Path
 CATALOG = Path("examples/retail/data/scentai_products.json")
 LABELS = Path("examples/retail/storefront-web/lib/noteLabels.ts")
 
-ENTRY = re.compile(r'^\\s*"(?P<key>[^"]+)":\\s*"(?P<label>[^"]+)",\\s*$', re.MULTILINE)
+ENTRY = re.compile(r'^\s*"(?P<key>[^"]+)":\s*"(?P<label>[^"]+)",\s*$', re.MULTILINE)
 TS_ENTRY = re.compile(
-    r'^\\s*(?P<key>[A-Za-z0-9_]+):\\s*"(?P<label>[^"]+)",\\s*$',
+    r'^\s*(?P<key>[A-Za-z0-9_]+):\s*"(?P<label>[^"]+)",\s*$',
     re.MULTILINE,
 )
 
@@ -79,7 +79,7 @@ def test_all_catalog_accords_and_targets_have_german_ui_labels() -> None:
     assert not missing_targets, f"Missing German target labels: {missing_targets}"
 , re.MULTILINE)
 TS_ENTRY = re.compile(
-    r'^\\s*(?P<key>[A-Za-z0-9_]+):\\s*"(?P<label>[^"]+)",\\s*
+    r'^\s*(?P<key>[A-Za-z0-9_]+):\s*"(?P<label>[^"]+)",\s*
 
 
 def test_all_catalog_notes_have_german_display_labels() -> None:
