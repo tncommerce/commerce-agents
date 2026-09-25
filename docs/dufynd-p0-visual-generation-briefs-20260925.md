@@ -21,6 +21,8 @@ A visually attractive result that misses bottle truth remains editorial-only.
 
 **Current problem:** the DUFYND editorial scene visibly reads 75 ml / 2.5 fl oz while the catalog entry is 100 ml. Creed's current product page itself uses generic imagery across several selectable sizes, so visible volume text is an unreliable generation target.
 
+**Reference for fidelity only:** https://www.creedfragrance.de/p/absolu-aventus/16281794/?variation=16281796
+
 **Primary direction:** jet-black Absolu Aventus bottle, exact Creed crest/embossing and front plaque, controlled black-on-black luxury material study with a pale ivory/champagne architectural background. Full bottle centred with generous safe area.
 
 **Hard constraints:** no visible 75 ml marking; no guessed 100 ml marking unless the exact reference clearly supports it; no bottle redesign, no smoke obscuring the lower bottle, no duplicated cap/plaque.
@@ -30,6 +32,8 @@ A visually attractive result that misses bottle truth remains editorial-only.
 ## Prada L'Homme Eau de Toilette · 100 ml
 
 **Current problem:** the existing scene reads too bright/silver/clear and is not reliable enough against Prada's official architectural bottle presentation.
+
+**Reference for fidelity only:** https://www.prada-beauty.com/fragrance/lhomme-prada/lhomme-prada-eau-de-toilette/8435137749607.html
 
 **Primary direction:** exact 100 ml L'Homme bottle reference, architectural rectangular proportions, black Saffiano treatment, raised silver Prada branding, restrained silver/black studio environment, precise edge lighting.
 
@@ -41,6 +45,8 @@ A visually attractive result that misses bottle truth remains editorial-only.
 
 **Current problem:** the current generated cap/shoulder treatment is not faithful enough to the characteristic official presentation.
 
+**Reference for fidelity only:** https://www.armanibeauty.de/dufte/herrenduft/stronger-with-you/stronger-with-you-intensely-eau-de-parfum/3614272225718.html
+
 **Primary direction:** exact 100 ml shoulder-shaped bottle, cognac/amber liquid, characteristic cast-iron-grey metal cap, warm amber studio set. Keep the bottle complete and dominant.
 
 **Hard constraints:** no glossy black spherical stopper, no generic whisky decanter, no ornamental redesign of the shoulders or cap.
@@ -50,6 +56,8 @@ A visually attractive result that misses bottle truth remains editorial-only.
 ## Xerjoff Naxos · 100 ml
 
 **Current status:** DUFYND already has a separately verified transparent product cutout. That cutout remains the product-truth layer.
+
+**Reference for fidelity only:** https://www.xerjoff.com/en-dk/products/naxos-eau-de-parfum
 
 **Primary direction:** do **not** generate another bottle merely to fill the primary slot. Improve the verified cutout only through rights-safe source quality/upscaling if necessary.
 
@@ -69,4 +77,4 @@ For each new primary candidate:
 6. visual QA at 320, 390, 768 and 1440 CSS-pixel presentations;
 7. provenance entry and explicit pass/fail decision before catalog activation.
 
-No paid generation should be launched from this document without explicit approval.
+The URLs above are fidelity references, not a declaration that their image files are licensed for republication. No paid generation should be launched from this document without explicit approval.
