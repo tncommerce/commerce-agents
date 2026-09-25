@@ -49,27 +49,19 @@ def test_all_catalog_accords_and_targets_have_german_ui_labels() -> None:
             if str(value).strip()
         )
 
-    detail_source = Path(
-        "examples/retail/storefront-web/app/duft/[slug]/page.tsx"
-    ).read_text(encoding="utf-8")
+    detail_source = Path("examples/retail/storefront-web/app/duft/[slug]/page.tsx").read_text(
+        encoding="utf-8"
+    )
     catalog_source = Path(
         "examples/retail/storefront-web/components/FragranceCatalogBrowser.tsx"
     ).read_text(encoding="utf-8")
 
-    accord_entries = {
-        match["key"]: match["label"]
-        for match in ENTRY.finditer(detail_source)
-    }
-    target_entries = {
-        match["key"]: match["label"]
-        for match in ENTRY.finditer(detail_source)
-    }
+    accord_entries = {match["key"]: match["label"] for match in ENTRY.finditer(detail_source)}
+    target_entries = {match["key"]: match["label"] for match in ENTRY.finditer(detail_source)}
 
     missing_detail_accords = sorted(catalog_accords - accord_entries.keys())
     missing_catalog_accords = sorted(
-        accord
-        for accord in catalog_accords
-        if f'{accord}: "' not in catalog_source
+        accord for accord in catalog_accords if f'{accord}: "' not in catalog_source
     )
     missing_targets = sorted(catalog_targets - target_entries.keys())
 
