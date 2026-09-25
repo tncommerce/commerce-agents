@@ -15,6 +15,7 @@ import {
   type StaticFragrance,
 } from "@/lib/fragranceCatalog";
 import { SITE_URL } from "@/lib/site";
+import { noteLabel } from "@/lib/noteLabels";
 
 export const dynamicParams = false;
 
@@ -123,7 +124,7 @@ function noteSection(
             className="inline-flex items-center gap-2 rounded-full border border-(--line) bg-(--well)/60 px-3 py-1.5 text-[12px] text-(--ink)"
           >
             <NoteIcon note={note} className="h-4 w-4 shrink-0 text-(--accent-ink)" />
-            {note}
+            {noteLabel(note)}
           </span>
         ))}
       </div>
