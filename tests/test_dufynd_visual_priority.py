@@ -32,14 +32,11 @@ def test_preferred_visual_priority_is_product_truth_first() -> None:
 
 def test_customer_facing_product_surfaces_use_preferred_visual() -> None:
     missing = [
-        str(path)
-        for path in SURFACES
-        if "preferred_visual" not in path.read_text(encoding="utf-8")
+        str(path) for path in SURFACES if "preferred_visual" not in path.read_text(encoding="utf-8")
     ]
 
-    assert not missing, (
-        "DUFYND surfaces bypassed the structured preferred visual: "
-        + ", ".join(missing)
+    assert not missing, "DUFYND surfaces bypassed the structured preferred visual: " + ", ".join(
+        missing
     )
 
 
