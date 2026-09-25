@@ -1,6 +1,5 @@
 {
   "schema_version": "1.0",
-  "updated_at": "2026-09-19",
   "status": "staging_only_not_loaded_by_live_storefront",
   "product_count": 40,
   "note": "Canonical pre-live records for verified expansion candidates. No guessed prices, identifiers, affiliate URLs or product images.",
@@ -36,7 +35,7 @@
           "scores": {
             "freshness": 3,
             "sweetness": 10,
-            "woodiness": 3,
+            "woodiness": 2,
             "spiciness": 5
           },
           "source": "deterministic_editorial_mapping_v1",
@@ -58,6 +57,8 @@
       },
       "commerce": {
         "merchant_coverage_count": 2,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -101,8 +102,8 @@
         ],
         "recommendation_profile": {
           "scores": {
-            "freshness": 7,
-            "sweetness": 7,
+            "freshness": 6,
+            "sweetness": 6,
             "woodiness": 6,
             "spiciness": 6
           },
@@ -125,6 +126,8 @@
       },
       "commerce": {
         "merchant_coverage_count": 2,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -168,7 +171,7 @@
           "scores": {
             "freshness": 2,
             "sweetness": 8,
-            "woodiness": 7,
+            "woodiness": 6,
             "spiciness": 7
           },
           "source": "deterministic_editorial_mapping_v1",
@@ -190,6 +193,8 @@
       },
       "commerce": {
         "merchant_coverage_count": 3,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -233,7 +238,7 @@
         ],
         "recommendation_profile": {
           "scores": {
-            "freshness": 5,
+            "freshness": 4,
             "sweetness": 10,
             "woodiness": 2,
             "spiciness": 2
@@ -257,6 +262,8 @@
       },
       "commerce": {
         "merchant_coverage_count": 3,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -324,6 +331,8 @@
       },
       "commerce": {
         "merchant_coverage_count": 2,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -370,7 +379,7 @@
         "recommendation_profile": {
           "scores": {
             "freshness": 8,
-            "sweetness": 9,
+            "sweetness": 8,
             "woodiness": 2,
             "spiciness": 2
           },
@@ -393,6 +402,8 @@
       },
       "commerce": {
         "merchant_coverage_count": 2,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -436,7 +447,7 @@
         "recommendation_profile": {
           "scores": {
             "freshness": 2,
-            "sweetness": 9,
+            "sweetness": 8,
             "woodiness": 6,
             "spiciness": 6
           },
@@ -459,6 +470,8 @@
       },
       "commerce": {
         "merchant_coverage_count": 2,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -500,7 +513,7 @@
         "recommendation_profile": {
           "scores": {
             "freshness": 8,
-            "sweetness": 7,
+            "sweetness": 6,
             "woodiness": 2,
             "spiciness": 2
           },
@@ -523,6 +536,8 @@
       },
       "commerce": {
         "merchant_coverage_count": 2,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -568,7 +583,7 @@
           "scores": {
             "freshness": 2,
             "sweetness": 9,
-            "woodiness": 7,
+            "woodiness": 6,
             "spiciness": 7
           },
           "source": "deterministic_editorial_mapping_v1",
@@ -590,6 +605,8 @@
       },
       "commerce": {
         "merchant_coverage_count": 3,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -654,6 +671,8 @@
       },
       "commerce": {
         "merchant_coverage_count": 2,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -704,9 +723,9 @@
         ],
         "recommendation_profile": {
           "scores": {
-            "freshness": 5,
-            "sweetness": 9,
-            "woodiness": 3,
+            "freshness": 4,
+            "sweetness": 8,
+            "woodiness": 2,
             "spiciness": 5
           },
           "source": "deterministic_editorial_mapping_v1",
@@ -728,6 +747,8 @@
       },
       "commerce": {
         "merchant_coverage_count": 2,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -797,6 +818,8 @@
       },
       "commerce": {
         "merchant_coverage_count": 2,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -864,6 +887,8 @@
       },
       "commerce": {
         "merchant_coverage_count": 3,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -918,7 +943,7 @@
             "freshness": 10,
             "sweetness": 5,
             "woodiness": 5,
-            "spiciness": 3
+            "spiciness": 2
           },
           "source": "deterministic_editorial_mapping_v1",
           "confidence": "medium",
@@ -939,9 +964,9 @@
       },
       "commerce": {
         "merchant_coverage_count": 0,
-        "live_offer_status": "pending_affiliate_approval_or_feed",
         "merchant_coverage_source": "verification_snapshot",
-        "market_status": "current_edition_exists_but_no_verified_current_retail_channel"
+        "market_status": "current_edition_exists_but_no_verified_current_retail_channel",
+        "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
         "catalog_ready": false,
@@ -1016,6 +1041,8 @@
       },
       "commerce": {
         "merchant_coverage_count": 2,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -1066,7 +1093,7 @@
           "scores": {
             "freshness": 3,
             "sweetness": 10,
-            "woodiness": 3,
+            "woodiness": 2,
             "spiciness": 5
           },
           "source": "deterministic_editorial_mapping_v1",
@@ -1087,7 +1114,9 @@
         "image_status": "pending_approved_feed_or_manufacturer_image"
       },
       "commerce": {
-        "merchant_coverage_count": 2,
+        "merchant_coverage_count": 3,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -1158,6 +1187,8 @@
       },
       "commerce": {
         "merchant_coverage_count": 2,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -1205,7 +1236,7 @@
         "recommendation_profile": {
           "scores": {
             "freshness": 6,
-            "sweetness": 9,
+            "sweetness": 8,
             "woodiness": 2,
             "spiciness": 2
           },
@@ -1228,6 +1259,8 @@
       },
       "commerce": {
         "merchant_coverage_count": 2,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -1275,7 +1308,7 @@
             "freshness": 3,
             "sweetness": 9,
             "woodiness": 4,
-            "spiciness": 7
+            "spiciness": 6
           },
           "source": "deterministic_editorial_mapping_v1",
           "confidence": "medium",
@@ -1296,6 +1329,8 @@
       },
       "commerce": {
         "merchant_coverage_count": 2,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -1340,7 +1375,7 @@
             "freshness": 6,
             "sweetness": 5,
             "woodiness": 5,
-            "spiciness": 3
+            "spiciness": 2
           },
           "source": "deterministic_editorial_mapping_v1",
           "confidence": "medium",
@@ -1361,6 +1396,8 @@
       },
       "commerce": {
         "merchant_coverage_count": 2,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -1410,9 +1447,9 @@
         "recommendation_profile": {
           "scores": {
             "freshness": 6,
-            "sweetness": 7,
+            "sweetness": 6,
             "woodiness": 5,
-            "spiciness": 3
+            "spiciness": 2
           },
           "source": "deterministic_editorial_mapping_v1",
           "confidence": "medium",
@@ -1433,6 +1470,8 @@
       },
       "commerce": {
         "merchant_coverage_count": 2,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -1476,7 +1515,7 @@
             "freshness": 2,
             "sweetness": 10,
             "woodiness": 4,
-            "spiciness": 7
+            "spiciness": 6
           },
           "source": "deterministic_editorial_mapping_v1",
           "confidence": "medium",
@@ -1497,6 +1536,8 @@
       },
       "commerce": {
         "merchant_coverage_count": 2,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -1566,6 +1607,8 @@
       },
       "commerce": {
         "merchant_coverage_count": 2,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -1636,6 +1679,8 @@
       },
       "commerce": {
         "merchant_coverage_count": 2,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -1702,6 +1747,8 @@
       },
       "commerce": {
         "merchant_coverage_count": 2,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -1747,7 +1794,7 @@
           "scores": {
             "freshness": 2,
             "sweetness": 9,
-            "woodiness": 7,
+            "woodiness": 6,
             "spiciness": 7
           },
           "source": "deterministic_editorial_mapping_v1",
@@ -1769,6 +1816,8 @@
       },
       "commerce": {
         "merchant_coverage_count": 2,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -1822,7 +1871,7 @@
           "scores": {
             "freshness": 5,
             "sweetness": 10,
-            "woodiness": 3,
+            "woodiness": 2,
             "spiciness": 5
           },
           "source": "deterministic_editorial_mapping_v1",
@@ -1844,6 +1893,8 @@
       },
       "commerce": {
         "merchant_coverage_count": 2,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -1893,7 +1944,7 @@
           "scores": {
             "freshness": 2,
             "sweetness": 9,
-            "woodiness": 7,
+            "woodiness": 6,
             "spiciness": 7
           },
           "source": "deterministic_editorial_mapping_v1",
@@ -1915,6 +1966,8 @@
       },
       "commerce": {
         "merchant_coverage_count": 2,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -1982,6 +2035,8 @@
       },
       "commerce": {
         "merchant_coverage_count": 3,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
@@ -2025,7 +2080,7 @@
           "scores": {
             "freshness": 5,
             "sweetness": 6,
-            "woodiness": 7,
+            "woodiness": 6,
             "spiciness": 7
           },
           "source": "deterministic_editorial_mapping_v1",
@@ -2047,6 +2102,8 @@
       },
       "commerce": {
         "merchant_coverage_count": 2,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
         "live_offer_status": "pending_affiliate_approval_or_feed"
       },
       "validation": {
