@@ -40,13 +40,15 @@ function safeModelSource(modelUrl?: string | null): string | null {
   if (!candidate) return null;
 
   // Local, version-controlled GLB assets are preferred for DUFYND pilots.
-  if (candidate.startsWith("/")) return candidate;
+  // Reject protocol-relative URLs so "//example.com/model.glb" cannot bypass
+  // the external-source policy.
+  if (candidate.startsWith("/") && !candidate.startsWith("//")) {
+    return candidate;
+  }
 
   try {
     const url = new URL(candidate);
-    return url.protocol === "https:" || url.protocol === "http:"
-      ? url.toString()
-      : null;
+    return url.protocol === "https:" ? url.toString() : null;
   } catch {
     return null;
   }
