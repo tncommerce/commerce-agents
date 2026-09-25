@@ -128,4 +128,8 @@ export const OFFICIAL_PRODUCT_PAGES: Record<string, { merchant: string; url: str
     merchant: "Riiffs / Nusuk",
     url: "https://www.riiffsperfumes.com/product/ateeq/",
   },
+  "SC-WIDIAN-LONDON-EXTRAIT-50": {
+    merchant: "Widian",
+    url: "https://widian.com/en/products/london",
+  },
 };

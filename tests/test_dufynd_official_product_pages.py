@@ -38,6 +38,7 @@ OFFICIAL_HOSTS = {
     "Al Ambra": "alambraperfumes.com",
     "Bujairami": "bujairami.com.au",
     "Nusuk": "www.riiffsperfumes.com",
+    "Widian": "widian.com",
 }
 
 ENTRY = re.compile(
@@ -61,7 +62,7 @@ def test_official_product_pages_match_catalog_and_manufacturer_domains() -> None
     covered_ids = {match["id"] for match in entries}
     assert len(covered_ids) == len(entries), "Duplicate product IDs"
     assert set(products) - covered_ids == INTENTIONALLY_UNRESOLVED
-    assert len(covered_ids) == 32
+    assert len(covered_ids) == len(products)
 
     for match in entries:
         product_id = match["id"]

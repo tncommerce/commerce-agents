@@ -56,6 +56,7 @@ def test_product_visual_review_queue_references_catalog_products() -> None:
         "SC-ARMAF-CDNIM-EDP-200",
         "SC-MAISON-ASRAR-VANGUARD-100",
         "SC-XERJOFF-NAXOS-100",
+        "SC-WIDIAN-LONDON-EXTRAIT-50",
     }
 
 
