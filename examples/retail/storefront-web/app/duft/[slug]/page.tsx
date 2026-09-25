@@ -397,7 +397,6 @@ export default async function FragrancePage({
                 modelUrl={fragrance.model_3d_url}
                 imageUrl={fragrance.image_url}
                 cutoutUrl={fragrance.cutout_image_url}
-                backdropUrl={fragrance.image_url}
                 alt={`${fragrance.brand} ${fragrance.name}`}
                 className="min-h-[330px] w-full sm:min-h-[430px] lg:min-h-[520px]"
                 priority
