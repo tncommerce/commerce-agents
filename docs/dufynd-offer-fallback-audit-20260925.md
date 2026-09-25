@@ -26,4 +26,21 @@ Four more catalog products now have a product-specific manufacturer fallback:
 - Al Wataniah Kayaan Classic — official Al Wataniah product page.
 - Armaf Club de Nuit Intense Man Eau de Parfum 200 ml — official Armaf product page; the manufacturer page explicitly exposes the Eau de Parfum in the 6.8 oz size (approximately 200 ml).
 
-This raises the curated manufacturer fallback coverage from 19/32 to 23/32 catalog fragrances. No live price or stock value is imported from these pages; DUFYND uses them only as neutral manufacturer fallbacks when no sufficiently fresh merchant offer is available.
+This first pass raised the curated manufacturer fallback coverage from 19/32 to 23/32 catalog fragrances. No live price or stock value is imported from these pages; DUFYND uses them only as neutral manufacturer fallbacks when no sufficiently fresh merchant offer is available.
+
+
+## Coverage extension to 30/32
+
+A second verification pass added exact manufacturer pages for:
+
+- Arabiyat Prestige Marwa EDP 100 ml.
+- Arabiyat Prestige Marwa Extrait 60 ml.
+- Rayhaan Italia EDP 100 ml.
+- Bvlgari Le Gemme Tygar EDP 125 ml.
+- French Avenue Liquid Brun EDP 100 ml.
+- Orientica Royal Bleu EDP 80 ml.
+- Al Ambra Dubai Musk Extrait de Parfum 50 ml.
+
+The curated manufacturer fallback coverage is now **30 of 32** catalog fragrances.
+
+The two intentionally unresolved products are **Bujairami Hectic 100 ml** and **Nusuk Ateeq 100 ml**. Search results currently surfaced retailers or secondary sources rather than a manufacturer-controlled product page that satisfies the same evidence standard, so DUFYND leaves them without a manufacturer fallback rather than guessing.
