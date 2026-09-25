@@ -132,15 +132,33 @@ jobs:
           from playwright.sync_api import sync_playwright
 
           out = Path("dufynd-browser-qa")
-          pages = {
-              "home": "/",
-              "catalog": "/duft/",
-              "naxos": "/duft/xerjoff-naxos/",
-              "absolu-aventus": "/duft/creed-absolu-aventus/",
-              "prada-lhomme": "/duft/prada-lhomme/",
-              "bois-imperial": "/duft/essential-parfums-bois-imperial/",
+          export_root = Path("retail/storefront-web/out")
+          page_specs = {
+              "home": ("", "DUFYND"),
+              "catalog": ("duft", "Duftkatalog"),
+              "naxos": ("duft/xerjoff-naxos", "Naxos"),
+              "absolu-aventus": (
+                  "duft/creed-absolu-aventus",
+                  "Absolu Aventus",
+              ),
+              "prada-lhomme": ("duft/prada-lhomme", "L'Homme"),
+              "bois-imperial": (
+                  "duft/essential-parfums-bois-imperial",
+                  "Bois Impérial",
+              ),
           }
           widths = [320, 390, 768, 1440]
+
+          def exported_url(route: str) -> str:
+              if not route:
+                  return "/"
+              html = export_root / f"{route}.html"
+              index = export_root / route / "index.html"
+              if html.is_file():
+                  return f"/{route}.html"
+              if index.is_file():
+                  return f"/{route}/index.html"
+              raise AssertionError(f"No exported HTML for {route}")
 
           with sync_playwright() as pw:
               browser = pw.chromium.launch()
@@ -163,16 +181,33 @@ jobs:
                       "pageerror",
                       lambda exc: errors.append(f"pageerror: {exc}"),
                   )
-                  for name, route in pages.items():
+                  for name, (route, expected_text) in page_specs.items():
+                      url_path = exported_url(route)
                       response = page.goto(
-                          f"http://127.0.0.1:3000{route}",
+                          f"http://127.0.0.1:3000{url_path}",
                           wait_until="networkidle",
                       )
                       assert response is not None and response.ok, (
                           name,
-                          route,
+                          url_path,
                           response.status if response else None,
                       )
+                      body_text = page.locator("body").inner_text()
+                      assert "Directory listing for" not in body_text, (
+                          name,
+                          url_path,
+                      )
+                      assert expected_text in body_text, (
+                          name,
+                          expected_text,
+                      )
+                      if name in {
+                          "naxos",
+                          "absolu-aventus",
+                          "prada-lhomme",
+                          "bois-imperial",
+                      }:
+                          assert "Duftnoten" in body_text, name
                       page.screenshot(
                           path=str(out / f"{name}-{width}.png"),
                           full_page=True,
