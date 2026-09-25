@@ -135,7 +135,7 @@ jobs:
           export_root = Path("retail/storefront-web/out")
           page_specs = {
               "home": ("", "DUFYND"),
-              "catalog": ("duft", "Duftkatalog"),
+              "catalog": ("duft", "Parfums entdecken"),
               "naxos": ("duft/xerjoff-naxos", "Naxos"),
               "absolu-aventus": (
                   "duft/creed-absolu-aventus",
