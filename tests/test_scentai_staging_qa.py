@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 import pytest
+from scripts.build_scentai_catalog_staging import build_staging_payload
 from scripts.qa_scentai_staging import (
     TYPO_CASES,
     data_quality_issues,
@@ -138,3 +139,8 @@ def test_second_controlled_expansion_wave_is_staging_only() -> None:
     assert "merchant_concentration_attribute_review_pending" not in jpg["validation"]["blockers"]
     assert jpg["content_context"]["existing_content_state"] == "user_confirmed_final_viral_short"
     assert jpg["content_context"]["publish_authorized"] is False
+
+
+
+def test_checked_in_staging_matches_reproducible_builder() -> None:
+    assert load_staging() == build_staging_payload()
