@@ -32,9 +32,7 @@ def test_product_visual_review_queue_references_catalog_products() -> None:
 
         candidate = item.get("candidate_asset")
         if candidate:
-            assert candidate.startswith(
-                "examples/retail/review-assets/product-candidates/"
-            )
+            assert candidate.startswith("examples/retail/review-assets/product-candidates/")
             assert candidate != item["asset"]
             candidate_path = Path(candidate)
             assert candidate_path.is_file(), f"missing candidate asset: {candidate_path}"
@@ -88,9 +86,7 @@ def test_p0_candidates_are_reviewable_but_not_active_product_truth() -> None:
     active_names = {Path(url).name for url in active_urls}
     assert candidate_names.isdisjoint(active_names)
 
-    candidate_files = {
-        path.as_posix() for path in CANDIDATE_DIR.iterdir() if path.is_file()
-    }
+    candidate_files = {path.as_posix() for path in CANDIDATE_DIR.iterdir() if path.is_file()}
     assert candidate_files == candidate_assets
 
     for candidate in candidate_assets:
