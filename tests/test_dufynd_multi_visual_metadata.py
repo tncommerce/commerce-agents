@@ -68,10 +68,12 @@ def test_structured_visual_metadata_is_safe_and_consistent() -> None:
                     f"{product_id}: model_3d visual must be a GLB"
                 )
 
-            if (
-                visual["fidelity_status"] == "verified"
-                and visual["role"] in {"primary", "cutout", "macro", "model_3d"}
-            ):
+            if visual["fidelity_status"] == "verified" and visual["role"] in {
+                "primary",
+                "cutout",
+                "macro",
+                "model_3d",
+            }:
                 expected_variant = f"{row['volume_ml']}ml"
                 actual_variant = str(visual.get("variant") or "")
                 assert actual_variant.replace(" ", "").lower() == expected_variant.lower(), (
