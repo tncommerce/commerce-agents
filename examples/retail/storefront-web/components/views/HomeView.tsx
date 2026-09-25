@@ -199,7 +199,7 @@ export default function HomeView({
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={spotlight.image_url}
-                      alt={spotlight.title}
+                      alt={`${spotlight.title} – stilisierte DUFYND-Inszenierung`}
                       fetchPriority="high"
                       decoding="async"
                       className="h-full min-h-[260px] sm:min-h-[320px] w-full object-cover md:min-h-[430px]"
