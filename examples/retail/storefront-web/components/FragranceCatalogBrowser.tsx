@@ -28,7 +28,7 @@ type SortMode =
   | "performance"
   | "brand";
 
-const PAGE_SIZE = 36;
+const PAGE_SIZE = 12;
 
 const AUDIENCE_OPTIONS: {
   value: AudienceFilter;
