@@ -12,6 +12,7 @@ from scripts.promote_scentai_catalog import (
     DEFAULT_OFFERS,
     DEFAULT_STAGING,
     eligible_affiliate_offers,
+    eligible_purchase_offers,
     load_json,
     promotion_blockers,
 )
@@ -79,6 +80,16 @@ def build_readiness_report(
         tier_counts.update([tier])
 
         eligible = (
+            eligible_purchase_offers(
+                offers,
+                product_id=product_id,
+                now=now,
+                max_age_hours=max_offer_age_hours,
+            )
+            if product_id
+            else []
+        )
+        affiliate_eligible = (
             eligible_affiliate_offers(
                 offers,
                 product_id=product_id,
@@ -106,7 +117,8 @@ def build_readiness_report(
                 "name": product.get("name"),
                 "tier": tier,
                 "merchant_coverage_count": coverage,
-                "eligible_affiliate_offers": len(eligible),
+                "eligible_purchase_offers": len(eligible),
+                "eligible_affiliate_offers": len(affiliate_eligible),
                 "ready": not blockers,
                 "blockers": blockers,
             }
@@ -229,6 +241,7 @@ def main() -> int:
             f"  {status} | Tier {row['tier']} | "
             f"{row['product_id']} | merchants="
             f"{row['merchant_coverage_count']} | "
+            f"purchase_offers={row['eligible_purchase_offers']} | "
             f"affiliate_offers={row['eligible_affiliate_offers']} | "
             f"{blockers}"
         )
