@@ -283,6 +283,16 @@ export async function generateMetadata({
         ? [fragrance.preferred_visual.url]
         : undefined,
     },
+    twitter: {
+      card: fragrance.preferred_visual?.url
+        ? "summary_large_image"
+        : "summary",
+      title,
+      description,
+      images: fragrance.preferred_visual?.url
+        ? [fragrance.preferred_visual.url]
+        : undefined,
+    },
   };
 }
 
@@ -340,12 +350,53 @@ export default async function FragrancePage({
   const breadcrumbJson = JSON.stringify(
     breadcrumbStructuredData,
   ).replaceAll("<", "\\u003c");
+  const verifiedProductImage =
+    heroIsProductTruth && heroVisual?.url
+      ? heroVisual.url.startsWith("http")
+        ? heroVisual.url
+        : `${SITE_URL}${heroVisual.url}`
+      : null;
+  const productStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: `${fragrance.brand} ${fragrance.name}`,
+    sku: fragrance.product_id,
+    category: "Parfum",
+    url: canonicalUrl,
+    description: descriptionFor(fragrance),
+    brand: {
+      "@type": "Brand",
+      name: fragrance.brand,
+    },
+    ...(verifiedProductImage
+      ? { image: [verifiedProductImage] }
+      : {}),
+    additionalProperty: [
+      {
+        "@type": "PropertyValue",
+        name: "Konzentration",
+        value: fragrance.concentration,
+      },
+      {
+        "@type": "PropertyValue",
+        name: "Füllmenge",
+        value: `${fragrance.volume_ml} ml`,
+      },
+    ],
+  };
+  const productJson = JSON.stringify(
+    productStructuredData,
+  ).replaceAll("<", "\\u003c");
 
   return (
     <main className="min-h-screen bg-(--surface) pb-24 text-(--ink) sm:pb-0">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: breadcrumbJson }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: productJson }}
       />
       <AcquisitionAnalytics source="fragrance_detail" />
       <header className="border-b border-(--line) bg-(--card)">
