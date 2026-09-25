@@ -82,6 +82,34 @@ def test_structured_visual_metadata_is_safe_and_consistent() -> None:
                 )
 
 
+def test_local_glb_assets_have_valid_binary_container() -> None:
+    source = json.loads(SOURCE.read_text(encoding="utf-8"))
+
+    for row in source["products"]:
+        for visual in row.get("visuals", []):
+            if visual.get("role") != "model_3d":
+                continue
+
+            url = str(visual.get("url") or "")
+            if not url.startswith("/") or url.startswith("//"):
+                continue
+
+            model_path = PUBLIC_ROOT / url.removeprefix("/")
+            payload = model_path.read_bytes()
+
+            assert len(payload) >= 12, f"{row['product_id']}: GLB header is truncated"
+            assert payload[:4] == b"glTF", f"{row['product_id']}: invalid GLB magic"
+            assert int.from_bytes(payload[4:8], "little") == 2, (
+                f"{row['product_id']}: only GLB version 2 is supported"
+            )
+            assert int.from_bytes(payload[8:12], "little") == len(payload), (
+                f"{row['product_id']}: GLB declared length does not match file size"
+            )
+            assert len(payload) <= 15 * 1024 * 1024, (
+                f"{row['product_id']}: GLB exceeds the 15 MiB launch budget"
+            )
+
+
 def test_naxos_visual_pilot_matches_legacy_product_layer() -> None:
     catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
     source = json.loads(SOURCE.read_text(encoding="utf-8"))
