@@ -241,7 +241,7 @@ def append_enabled_research_waves(
             seen_product_ids.add(product_id)
 
 
-def main() -> int:
+def build_staging_payload() -> dict:
     queue = load_json(DATA_DIR / "scentai_catalog_promotion_queue.json")
     queue_by_id = {row["candidate_id"]: row for row in queue["candidates"]}
 
@@ -331,10 +331,9 @@ def main() -> int:
             )
 
     append_enabled_research_waves(products, seen_product_ids)
-
     products.sort(key=lambda row: (int(row.get("batch") or 999), row["product_id"]))
 
-    payload = {
+    return {
         "schema_version": "1.0",
         "status": "staging_only_not_loaded_by_live_storefront",
         "product_count": len(products),
@@ -345,12 +344,15 @@ def main() -> int:
         "products": products,
     }
 
+
+def main() -> int:
+    payload = build_staging_payload()
     OUTPUT.write_text(
         json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
 
-    print(f"Staged {len(products)} verified DUFYND products -> {OUTPUT}")
+    print(f"Staged {payload['product_count']} verified DUFYND products -> {OUTPUT}")
     return 0
 
 
