@@ -104,3 +104,13 @@ def test_bottle_free_backdrop_requires_explicit_editorial_metadata() -> None:
     assert 'visual.composition === "bottle_free_backdrop"' in adapter
     assert 'visual.role === "editorial"' in adapter
     assert 'visual.fidelity_status === "editorial_only"' in adapter
+
+
+def test_exploded_notes_toggle_exposes_expansion_state() -> None:
+    component = Path(
+        "examples/retail/storefront-web/components/FragranceExplodedNotes.tsx"
+    ).read_text(encoding="utf-8")
+
+    assert 'aria-controls="dufynd-exploded-stage"' in component
+    assert "aria-expanded={expanded}" in component
+    assert "aria-hidden={expanded ? undefined : true}" in component
