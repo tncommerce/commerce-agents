@@ -533,9 +533,11 @@ body {
   height: 110%;
   width: 110%;
   object-fit: cover;
-  filter: blur(5px) saturate(0.92) contrast(0.94);
-  opacity: 0.38;
-  transform: scale(1.03);
+  /* The source artwork already contains a bottle. Retain its palette without
+     leaving a second readable bottle behind the transparent foreground. */
+  filter: blur(36px) saturate(0.92) contrast(0.94);
+  opacity: 0.32;
+  transform: scale(1.17);
 }
 
 .dufynd-product-backdrop-shade {
