@@ -1,12 +1,12 @@
 # DUFYND product visual refresh queue · 25 September 2026
 
-This queue is based on the 32-source contact sheet and the safe-area simulation generated from the current catalog assets. It separates **layout safety** from **product fidelity**: the new `FragranceVisual` treatment prevents CSS cropping, but it cannot repair a source image whose bottle/variant is wrong or whose canvas already contains visible white letterboxing.
+This queue is based on the 32-source contact sheet, the safe-area simulation and a second edge-scan of the actual repository images. It separates **layout safety** from **product fidelity**: the new `FragranceVisual` treatment prevents CSS cropping, but it cannot repair a source image whose bottle/variant is wrong or whose aspect ratio is a poor fit for a given card.
 
 ## Findings
 
 - All 32 catalog editorial sources are technically renderable.
 - The current safe-area treatment now preserves complete source images; the original CSS cropping issue is therefore addressed at layout level.
-- The dominant remaining visual issue is source quality. Twelve horizontal editorial assets contain obvious white top/bottom canvas bands, which remain visible when the source is safely contained and make the card look like a picture inside a picture.
+- A follow-up pixel-edge audit found **no embedded white source borders** in any of the 32 editorial assets. The white bands visible in the portrait contact-sheet simulation were created by fitting 4:3 landscape artwork into a taller safe-area frame. The problem is therefore aspect-ratio mismatch, not corrupt source canvas.
 - The catalog is visually cohesive but overuses the same Mediterranean/sunset/tabletop language. The repetition makes the generated library feel templated rather than like individual fragrance worlds.
 - Only Naxos currently has a verified transparent product layer. Its generated editorial image should remain atmosphere/background rather than the bottle source of truth.
 - Generated bottles must not be promoted to exact primary depictions unless variant, silhouette, cap, plaque/label, typography and visible size markings pass a reference check.
@@ -21,9 +21,9 @@ This queue is based on the 32-source contact sheet and the safe-area simulation 
 | Louis Vuitton Imagination 100 ml | Attractive image, but bottle details have not yet passed an exact-reference fidelity check. | Exact-reference DUFYND render or verified cutout before calling it the primary bottle depiction. |
 | Creed Aventus 100 ml | Attractive editorial, but current Creed packaging is in transition and the generated label/bottle should not be assumed exact. | Rebuild/verify against the exact current 100 ml variant. |
 
-## P1 · source-canvas cleanup or regeneration
+## P1 · landscape assets that need a dedicated primary format
 
-These sources contain obvious embedded white top/bottom letterboxing in the audit sheet. The storefront now preserves them correctly, which exposes the source defect instead of hiding it through cropping:
+The following 4:3 editorial scenes are visually valid source files, but they become smaller/letterboxed when a complete uncropped scene is placed inside a taller product stage:
 
 - Al Ambra Dubai Musk
 - Arabiyat Prestige Marwa Extrait
@@ -38,7 +38,7 @@ These sources contain obvious embedded white top/bottom letterboxing in the audi
 - Sospiro Vibrato
 - Valentino Uomo Born In Roma Intense
 
-Preferred fix: regenerate or losslessly trim only confirmed empty canvas. Do **not** zoom/crop the bottle just to eliminate the bands.
+Do **not** trim these sources: the edge audit confirmed there is no embedded white canvas to remove. The proper fix is a dedicated portrait/square primary asset or verified transparent product layer, while the 4:3 image remains available for editorial/hero use.
 
 ## P2 · keep as editorial, then verify product fidelity product-by-product
 
