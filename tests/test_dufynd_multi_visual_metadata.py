@@ -68,6 +68,47 @@ def test_structured_visual_metadata_is_safe_and_consistent() -> None:
                     f"{product_id}: model_3d visual must be a GLB"
                 )
 
+            if visual["fidelity_status"] == "verified" and visual["role"] in {
+                "primary",
+                "cutout",
+                "macro",
+                "model_3d",
+            }:
+                expected_variant = f"{row['volume_ml']}ml"
+                actual_variant = str(visual.get("variant") or "")
+                assert actual_variant.replace(" ", "").lower() == expected_variant.lower(), (
+                    f"{product_id}: verified {visual['role']} must match "
+                    f"catalog variant {expected_variant}"
+                )
+
+
+def test_local_glb_assets_have_valid_binary_container() -> None:
+    source = json.loads(SOURCE.read_text(encoding="utf-8"))
+
+    for row in source["products"]:
+        for visual in row.get("visuals", []):
+            if visual.get("role") != "model_3d":
+                continue
+
+            url = str(visual.get("url") or "")
+            if not url.startswith("/") or url.startswith("//"):
+                continue
+
+            model_path = PUBLIC_ROOT / url.removeprefix("/")
+            payload = model_path.read_bytes()
+
+            assert len(payload) >= 12, f"{row['product_id']}: GLB header is truncated"
+            assert payload[:4] == b"glTF", f"{row['product_id']}: invalid GLB magic"
+            assert int.from_bytes(payload[4:8], "little") == 2, (
+                f"{row['product_id']}: only GLB version 2 is supported"
+            )
+            assert int.from_bytes(payload[8:12], "little") == len(payload), (
+                f"{row['product_id']}: GLB declared length does not match file size"
+            )
+            assert len(payload) <= 15 * 1024 * 1024, (
+                f"{row['product_id']}: GLB exceeds the 15 MiB launch budget"
+            )
+
 
 def test_naxos_visual_pilot_matches_legacy_product_layer() -> None:
     catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
@@ -98,12 +139,55 @@ def test_model_3d_activation_requires_structured_verified_asset() -> None:
     assert "attributes.product_model_3d_url" not in adapter
 
 
+def test_verified_visual_activation_requires_matching_product_variant() -> None:
+    adapter = ADAPTER.read_text(encoding="utf-8")
+
+    assert "VARIANT_BOUND_VERIFIED_ROLES" in adapter
+    assert "visualMatchesProductVariant(source, visual)" in adapter
+    assert "normalizedVariant(visual.variant)" in adapter
+    assert "source.volume_ml" in adapter
+
+
 def test_bottle_free_backdrop_requires_explicit_editorial_metadata() -> None:
     adapter = ADAPTER.read_text(encoding="utf-8")
 
     assert 'visual.composition === "bottle_free_backdrop"' in adapter
     assert 'visual.role === "editorial"' in adapter
     assert 'visual.fidelity_status === "editorial_only"' in adapter
+
+
+def test_exploded_notes_support_catalog_fallback_note_sets() -> None:
+    source = json.loads(SOURCE.read_text(encoding="utf-8"))
+    page = Path("examples/retail/storefront-web/app/duft/[slug]/page.tsx").read_text(
+        encoding="utf-8"
+    )
+    component = Path(
+        "examples/retail/storefront-web/components/FragranceExplodedNotes.tsx"
+    ).read_text(encoding="utf-8")
+
+    fallback_only = {
+        row["product_id"]
+        for row in source["products"]
+        if not (
+            (row.get("notes") or {}).get("top")
+            or (row.get("notes") or {}).get("heart")
+            or (row.get("notes") or {}).get("base")
+        )
+        and ((row.get("notes") or {}).get("key") or (row.get("notes") or {}).get("supporting"))
+    }
+
+    assert fallback_only == {
+        "SC-LV-IMAGINATION-100",
+        "SC-CREED-AVENTUS-100",
+        "SC-CREED-ABSOLU-AVENTUS-100",
+        "SC-BVLGARI-TYGAR-125",
+        "SC-DIOR-HOMME-INTENSE-100",
+    }
+    assert "keyNotes={fragrance.notes.key}" in page
+    assert "supporting={fragrance.notes.supporting}" in page
+    assert 'data-note-mode={usesPyramid ? "pyramid" : "fallback"}' in component
+    assert 'key: "Schlüssel"' in component
+    assert 'supporting: "Weitere"' in component
 
 
 def test_exploded_notes_toggle_exposes_expansion_state() -> None:

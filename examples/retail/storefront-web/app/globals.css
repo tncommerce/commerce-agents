@@ -1208,7 +1208,11 @@ body {
     border-radius: 8px;
   }
 
-  .dufynd-exploded-note[data-index="2"] {
+  .dufynd-exploded-note[data-index="2"],
+  .dufynd-exploded-stage[data-note-mode="fallback"]
+    .dufynd-exploded-note[data-index="5"],
+  .dufynd-exploded-stage[data-note-mode="fallback"]
+    .dufynd-exploded-note[data-index="8"] {
     display: none;
   }
 

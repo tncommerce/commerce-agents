@@ -541,6 +541,224 @@ try {
 
     await context.close();
   }
+
+  // Phase 2 catalogue sweep: exercise every fragrance detail route once at the
+  // primary mobile viewport without multiplying full screenshot artifacts.
+  const sweepContext = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 1,
+    reducedMotion: "reduce",
+  });
+  const sweepPage = await sweepContext.newPage();
+
+  try {
+    const catalogResponse = await sweepPage.goto(`${baseUrl}/duft`, {
+      waitUntil: "domcontentloaded",
+      timeout: 45_000,
+    });
+    if (!catalogResponse || !catalogResponse.ok()) {
+      throw new Error(
+        `catalog sweep could not open /duft: HTTP ${catalogResponse?.status() ?? "no response"}`,
+      );
+    }
+
+    for (let step = 0; step < 4; step += 1) {
+      const loadMore = sweepPage.getByRole("button", {
+        name: /Weitere \d+ Düfte anzeigen/,
+      });
+      if ((await loadMore.count()) === 0) break;
+      await loadMore.click();
+      await sweepPage.waitForTimeout(75);
+    }
+
+    const detailRoutes = await sweepPage
+      .locator('a[href^="/duft/"]')
+      .evaluateAll((links) =>
+        Array.from(
+          new Set(
+            links
+              .map((link) => link.getAttribute("href"))
+              .filter(
+                (href) =>
+                  typeof href === "string" &&
+                  href.startsWith("/duft/"),
+              ),
+          ),
+        ).sort(),
+      );
+
+    if (detailRoutes.length !== 32) {
+      throw new Error(
+        `catalog sweep expected 32 fragrance routes, got ${detailRoutes.length}`,
+      );
+    }
+
+    for (const route of detailRoutes) {
+      const slug = route.replace(/^\/duft\//, "");
+      const label = `detail-sweep-${slug}-390`;
+      const url = `${baseUrl}${route}`;
+
+      try {
+        const response = await sweepPage.goto(url, {
+          waitUntil: "domcontentloaded",
+          timeout: 45_000,
+        });
+        if (!response || !response.ok()) {
+          throw new Error(`HTTP ${response?.status() ?? "no response"}`);
+        }
+
+        await sweepPage.locator("h1").first().waitFor({
+          state: "visible",
+          timeout: 20_000,
+        });
+
+        await sweepPage.evaluate(async () => {
+          const step = Math.max(
+            320,
+            Math.floor(window.innerHeight * 0.75),
+          );
+          for (
+            let y = 0;
+            y < document.documentElement.scrollHeight;
+            y += step
+          ) {
+            window.scrollTo(0, y);
+            await new Promise((resolve) => setTimeout(resolve, 20));
+          }
+          window.scrollTo(0, 0);
+
+          const images = Array.from(document.images).filter((image) => {
+            const style = window.getComputedStyle(image);
+            return (
+              image.getAttribute("src") &&
+              style.display !== "none" &&
+              style.visibility !== "hidden"
+            );
+          });
+          await Promise.all(
+            images.map(async (image) => {
+              image.loading = "eager";
+              try {
+                await image.decode();
+              } catch {
+                // Broken-image diagnostics below report failed loads.
+              }
+            }),
+          );
+        });
+
+        const diagnostics = await sweepPage.evaluate((blocked) => {
+          const bodyText = document.body.innerText;
+          const visibleBrokenImages = Array.from(document.images)
+            .filter((image) => {
+              const rect = image.getBoundingClientRect();
+              const style = window.getComputedStyle(image);
+              return (
+                style.display !== "none" &&
+                style.visibility !== "hidden" &&
+                rect.width > 1 &&
+                rect.height > 1 &&
+                image.complete &&
+                image.naturalWidth === 0
+              );
+            })
+            .map(
+              (image) =>
+                image.getAttribute("src") || "(missing src)",
+            );
+
+          return {
+            body_length: bodyText.length,
+            horizontal_overflow:
+              document.documentElement.scrollWidth - window.innerWidth,
+            visible_broken_images: visibleBrokenImages,
+            forbidden_ui: blocked.filter((phrase) =>
+              bodyText.includes(phrase),
+            ),
+            directory_listing:
+              bodyText.includes("Index of /") ||
+              bodyText.includes("Directory listing for"),
+          };
+        }, forbiddenUi);
+
+        if (diagnostics.body_length < 250) {
+          throw new Error(
+            `page content unexpectedly short: ${diagnostics.body_length}`,
+          );
+        }
+        if (diagnostics.horizontal_overflow > 2) {
+          throw new Error(
+            `horizontal overflow: ${diagnostics.horizontal_overflow}px`,
+          );
+        }
+        if (diagnostics.visible_broken_images.length) {
+          throw new Error(
+            `broken images: ${diagnostics.visible_broken_images.join(", ")}`,
+          );
+        }
+        if (diagnostics.forbidden_ui.length) {
+          throw new Error(
+            `English UI regression: ${diagnostics.forbidden_ui.join(", ")}`,
+          );
+        }
+        if (diagnostics.directory_listing) {
+          throw new Error(
+            "directory listing detected instead of storefront content",
+          );
+        }
+
+        const productSchema = await sweepPage.evaluate(() => {
+          const schemas = Array.from(
+            document.querySelectorAll(
+              'script[type="application/ld+json"]',
+            ),
+          )
+            .map((script) => {
+              try {
+                return JSON.parse(script.textContent || "{}");
+              } catch {
+                return null;
+              }
+            })
+            .filter(Boolean);
+
+          return (
+            schemas.find(
+              (schema) => schema?.["@type"] === "Product",
+            ) || null
+          );
+        });
+
+        if (!productSchema) {
+          throw new Error(
+            "fragrance detail page is missing Product JSON-LD",
+          );
+        }
+        if (!String(productSchema.name || "").trim()) {
+          throw new Error(
+            "Product JSON-LD has no usable product name",
+          );
+        }
+
+        report.checks.push({
+          label,
+          status: "passed",
+          ...diagnostics,
+        });
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : String(error);
+        report.failures.push({ label, url, message });
+        report.checks.push({
+          label,
+          status: "failed",
+          message,
+        });
+      }
+    }
+  } finally {
+    await sweepContext.close();
+  }
 } finally {
   await browser.close();
 }
