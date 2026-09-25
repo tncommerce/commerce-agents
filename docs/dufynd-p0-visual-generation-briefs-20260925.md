@@ -27,6 +27,8 @@ A visually attractive result that misses bottle truth remains editorial-only.
 
 **Hard constraints:** no visible 75 ml marking; no guessed 100 ml marking unless the exact reference clearly supports it; no bottle redesign, no smoke obscuring the lower bottle, no duplicated cap/plaque.
 
+**Candidate status (25 Sep 2026):** a new volume-neutral black primary candidate was generated and stored at `/products/candidates/creed-absolu-aventus-p0-v1.webp`. It deliberately omits a visible 75 ml/100 ml marking and remains inactive because Creed's current 100 ml page still uses variant-ambiguous imagery.
+
 **Editorial companion:** brighter gallery-world image inspired by DUFYND's mineral/noir atmosphere, with citrus/ginger accents kept clearly secondary to the product.
 
 ## Creed Aventus · 100 ml

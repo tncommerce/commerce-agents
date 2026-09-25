@@ -25,7 +25,19 @@ def test_product_visual_review_queue_references_catalog_products() -> None:
         assert item["priority"] == "P0"
         assert item["asset"] == products[product_id]["image_url"]
 
+        candidate = item.get("candidate_asset")
+        if candidate:
+            assert candidate.startswith("/products/candidates/")
+            assert candidate != item["asset"]
+            candidate_path = Path("examples/retail/storefront-web/public") / candidate.removeprefix("/")
+            assert candidate_path.is_file(), f"missing candidate asset: {candidate_path}"
+
     assert len(items) == 4
+    assert all(item.get("candidate_asset") for item in items)
+    assert all(
+        item["status"] == "candidate_generated_pending_reference_gate"
+        for item in items
+    )
 
     p0 = {item["product_id"] for item in items if item["priority"] == "P0"}
     assert p0 == {

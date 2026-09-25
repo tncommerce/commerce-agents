@@ -13,10 +13,11 @@
       "product_id": "SC-CREED-ABSOLU-AVENTUS-100",
       "asset": "/products/pilot/creed-absolu-aventus-editorial.png",
       "priority": "P0",
-      "status": "replace",
-      "finding": "DUFYND's current illustrated bottle reads 75 ML / 2.5 FL.OZ while the catalog product is 100 ml. Creed's current product page also uses a generic product image marked 75 ml while offering multiple selectable sizes, so exact variant imagery is ambiguous.",
-      "next_action": "Keep the current scene editorial-only. A future primary should use a 100 ml-faithful or volume-neutral exact-reference depiction.",
-      "evidence_url": "https://www.creedfragrance.de/p/absolu-aventus/16281794/?variation=16281796"
+      "status": "candidate_generated_pending_reference_gate",
+      "finding": "The current live editorial remains invalid as product truth because it visibly reads 75 ML / 2.5 FL.OZ while the catalog item is 100 ml. A new volume-neutral black Absolu Aventus candidate has been generated, but the official current 100 ml page still uses variant-ambiguous imagery, so it remains intentionally unverified.",
+      "next_action": "Keep the candidate inactive until the exact 100 ml bottle/packaging variant is resolved or a volume-neutral exact-reference side-by-side check can be completed.",
+      "evidence_url": "https://www.creedfragrance.de/p/absolu-aventus/16281794/?variation=16281796",
+      "candidate_asset": "/products/candidates/creed-absolu-aventus-p0-v1.webp"
     },
     {
       "product_id": "SC-ARMANI-SWY-INTENSELY-100",
