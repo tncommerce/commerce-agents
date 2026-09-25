@@ -11,7 +11,7 @@ OFFICIAL = Path("examples/retail/storefront-web/lib/officialProductPages.ts")
 PUBLIC = Path("examples/retail/storefront-web/public")
 NOTE_LABELS = Path("examples/retail/storefront-web/lib/noteLabels.ts")
 
-PRODUCT_ID = "SC-WIDIAN-LONDON-EDP-100"
+PRODUCT_ID = "SC-WIDIAN-LONDON-EXTRAIT-50"
 
 
 def test_widian_london_catalog_variant_and_metrics_are_consistent() -> None:
@@ -23,21 +23,21 @@ def test_widian_london_catalog_variant_and_metrics_are_consistent() -> None:
 
     assert source_row["brand"] == "Widian"
     assert source_row["name"] == "London"
-    assert source_row["concentration"] == "Eau de Parfum"
-    assert source_row["volume_ml"] == 100
-    assert source_row["release_year"] == 2024
+    assert source_row["concentration"] == "Extrait de Parfum"
+    assert source_row["volume_ml"] == 50
+    assert source_row["release_year"] == 2018
 
-    assert catalog_row["attributes"]["volume_ml"] == "100"
-    assert catalog_row["attributes"]["concentration"] == "Eau de Parfum"
-    assert catalog_row["attributes"]["community_rating_10"] == "9.2"
-    assert catalog_row["attributes"]["longevity"] == "8.8"
+    assert catalog_row["attributes"]["volume_ml"] == "50"
+    assert catalog_row["attributes"]["concentration"] == "Extrait de Parfum"
+    assert catalog_row["attributes"]["community_rating_10"] == "9.0"
+    assert catalog_row["attributes"]["longevity"] == "8.9"
     assert catalog_row["attributes"]["projection"] == "8.6"
 
     assert source_row["community"]["source"] == "Parfumo"
-    assert source_row["community"]["rating_10"] == 9.2
-    assert source_row["community"]["rating_count"] == 609
-    assert source_row["market"]["market_price_eur"] == 330
-    assert source_row["market"]["price_checked_at"] == "2026-09-25"
+    assert source_row["community"]["rating_10"] == 9.0
+    assert source_row["community"]["rating_count"] == 4219
+    assert source_row["market"]["market_price_eur"] == 270
+    assert source_row["market"]["price_checked_at"] == "2026-09-18"
 
 
 def test_widian_london_generated_visual_remains_editorial_only() -> None:
