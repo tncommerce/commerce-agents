@@ -29,7 +29,7 @@ jobs:
           python-version: "3.12"
 
       - name: Refresh derived DUFYND state
-        run: python scripts/refresh_scentai_jarvis_state.py --write --generated-at "2026-09-25T19:55:00+00:00"
+        run: python -m scripts.refresh_scentai_jarvis_state --write --generated-at "2026-09-25T19:58:00+00:00"
 
       - name: Commit regenerated state
         shell: bash
