@@ -3,13 +3,13 @@ import type { ReactNode } from "react";
 type Motif = "citrus" | "flower" | "leaf" | "wood" | "spice" | "sweet" | "resin" | "fruit" | "fresh" | "abstract";
 
 const MOTIFS: { motif: Motif; names: string[] }[] = [
-  { motif: "flower", names: ["orange blossom", "neroli", "jasmine", "lavender", "violet", "rose", "iris", "orris", "geranium", "magnolia", "carnation", "floral", "lily", "orchid"] },
-  { motif: "citrus", names: ["bergamot", "grapefruit", "lemon", "mandarin", "orange", "lime", "citron", "petit grain"] },
+  { motif: "flower", names: ["orange blossom", "neroli", "jasmine", "lavender", "violet", "rose", "iris", "orris", "geranium", "magnolia", "carnation", "floral", "lily", "orchid", "mahonia"] },
+  { motif: "citrus", names: ["bergamot", "grapefruit", "lemon", "mandarin", "orange", "lime", "citron", "citrus", "petit grain"] },
   { motif: "leaf", names: ["patchouli", "vetiver", "sage", "rosemary", "basil", "mint", "moss", "tea", "maté", "wormwood", "papyrus"] },
   { motif: "wood", names: ["wood", "cedar", "sandal", "birch", "oud", "cashmere", "cashmeran"] },
   { motif: "spice", names: ["pepper", "ginger", "cardamom", "cinnamon", "nutmeg", "coriander", "spices"] },
   { motif: "sweet", names: ["vanilla", "tonka", "honey", "praline", "cocoa", "chestnut", "coumarin"] },
-  { motif: "resin", names: ["amber", "incense", "frankincense", "labdanum", "elemi", "musk", "ambrox", "leather", "tobacco", "opium"] },
+  { motif: "resin", names: ["amber", "ambrette", "ambrofix", "incense", "frankincense", "labdanum", "elemi", "musk", "ambrox", "leather", "tobacco", "opium"] },
   { motif: "fruit", names: ["apple", "pineapple", "cherry", "melon", "blackcurrant"] },
   { motif: "fresh", names: ["aldehyde", "aquatic", "ozonic"] },
 ];
