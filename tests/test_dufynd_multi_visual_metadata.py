@@ -63,6 +63,7 @@ def test_naxos_visual_pilot_matches_legacy_product_layer() -> None:
     assert visuals["editorial"]["fidelity_status"] == "editorial_only"
     assert visuals["editorial"]["url"] == catalog_row["image_url"]
 
+
 def test_model_3d_activation_requires_structured_verified_asset() -> None:
     adapter = ADAPTER.read_text(encoding="utf-8")
 
