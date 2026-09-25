@@ -127,6 +127,19 @@ Use products where the benefit is clearest:
 4. **Stronger With You Intensely** — same pattern as Prada.
 5. **Bois Impérial** — editorial now; verified cutout later if rights/fidelity are solved.
 
+## Implementation status · 25 September 2026
+
+The first backward-compatible slice is now implemented on the integration branch:
+
+- `StaticFragrance` understands structured `visuals` metadata with explicit role and fidelity status;
+- Naxos is the first pilot with a verified cutout plus separate editorial artwork;
+- the fragrance detail page shows a compact `Weitere Ansichten` gallery only when at least two explicit visuals exist;
+- editorial and verified-product roles remain visibly distinct;
+- regression tests validate role/status values, prevent duplicate visual URLs and keep the Naxos verified cutout aligned with the legacy catalog field;
+- existing fragrances without `visuals` continue to use the current image/cutout/model fields unchanged.
+
+The remaining Codex block is therefore narrower: add more verified assets when they are approved, teach card/hero selection to prefer a future verified `primary` role, and extend the gallery with approved macro assets. No current P0 editorial image has been promoted to product truth.
+
 ## Codex implementation block
 
 This is a good Codex task once the shared Work/Codex quota is available:
