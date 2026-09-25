@@ -158,9 +158,9 @@ def test_bottle_free_backdrop_requires_explicit_editorial_metadata() -> None:
 
 def test_exploded_notes_support_catalog_fallback_note_sets() -> None:
     source = json.loads(SOURCE.read_text(encoding="utf-8"))
-    page = Path(
-        "examples/retail/storefront-web/app/duft/[slug]/page.tsx"
-    ).read_text(encoding="utf-8")
+    page = Path("examples/retail/storefront-web/app/duft/[slug]/page.tsx").read_text(
+        encoding="utf-8"
+    )
     component = Path(
         "examples/retail/storefront-web/components/FragranceExplodedNotes.tsx"
     ).read_text(encoding="utf-8")
@@ -173,10 +173,7 @@ def test_exploded_notes_support_catalog_fallback_note_sets() -> None:
             or (row.get("notes") or {}).get("heart")
             or (row.get("notes") or {}).get("base")
         )
-        and (
-            (row.get("notes") or {}).get("key")
-            or (row.get("notes") or {}).get("supporting")
-        )
+        and ((row.get("notes") or {}).get("key") or (row.get("notes") or {}).get("supporting"))
     }
 
     assert fallback_only == {
