@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
 import FragranceOffers from "@/components/FragranceOffers";
 import FragranceVisual from "@/components/FragranceVisual";
+import FragranceModel3D from "@/components/FragranceModel3D";
 import FragranceSaveControls from "@/components/FragranceSaveControls";
 import NoteIcon from "@/components/NoteIcon";
 import {
@@ -54,6 +55,54 @@ const TARGET_LABELS: Record<string, string> = {
 
 function accordLabel(value: string): string {
   return ACCORD_LABELS[value.toLowerCase()] || value;
+}
+
+type FragranceVisualTheme =
+  | "amber"
+  | "mineral"
+  | "ember"
+  | "silk"
+  | "noir";
+
+function visualThemeFor(fragrance: StaticFragrance): FragranceVisualTheme {
+  const accords = new Set(
+    fragrance.accords.map((accord) => accord.toLowerCase()),
+  );
+
+  if (
+    accords.has("smoky") ||
+    accords.has("leathery") ||
+    accords.has("resinous")
+  ) {
+    return "noir";
+  }
+
+  if (
+    accords.has("gourmand") ||
+    accords.has("sweet") ||
+    accords.has("oriental") ||
+    accords.has("creamy")
+  ) {
+    return "amber";
+  }
+
+  if (
+    accords.has("floral") ||
+    accords.has("powdery")
+  ) {
+    return "silk";
+  }
+
+  if (
+    accords.has("fresh") ||
+    accords.has("citrus") ||
+    accords.has("aquatic") ||
+    accords.has("green")
+  ) {
+    return "mineral";
+  }
+
+  return "ember";
 }
 
 function targetLabel(value: string): string {
@@ -236,6 +285,7 @@ export default async function FragrancePage({
   const checkedAt = formatCheckedAt(
     fragrance.market.checked_at,
   );
+  const visualTheme = visualThemeFor(fragrance);
   const related = getRelatedFragrances(
     fragrance,
     4,
@@ -330,16 +380,25 @@ export default async function FragrancePage({
           </span>
         </nav>
 
-        <section className="overflow-hidden rounded-[30px] border border-(--line) bg-(--card) shadow-(--shadow)">
-          <div className="grid lg:grid-cols-[0.94fr_1.06fr]">
-            {fragrance.cutout_image_url ? (
-              <FragranceVisual
-                imageUrl={fragrance.cutout_image_url}
+        <section
+          className={`dufynd-fragrance-hero dufynd-fragrance-hero--${visualTheme} relative overflow-hidden rounded-[30px] border border-(--line) bg-(--card) shadow-(--shadow)`}
+        >
+          <div
+            aria-hidden
+            className="dufynd-fragrance-hero-atmosphere pointer-events-none absolute inset-0"
+          />
+          <div
+            aria-hidden
+            className="dufynd-fragrance-hero-orbit pointer-events-none absolute"
+          />
+          <div className="relative z-10 grid lg:grid-cols-[0.94fr_1.06fr]">
+            {fragrance.model_3d_url || fragrance.cutout_image_url ? (
+              <FragranceModel3D
+                modelUrl={fragrance.model_3d_url}
+                imageUrl={fragrance.image_url}
                 cutoutUrl={fragrance.cutout_image_url}
                 backdropUrl={fragrance.image_url}
                 alt={`${fragrance.brand} ${fragrance.name}`}
-                variant="hero"
-                mode="cutout"
                 className="min-h-[330px] w-full sm:min-h-[430px] lg:min-h-[520px]"
                 priority
               />
@@ -354,7 +413,7 @@ export default async function FragrancePage({
               />
             )}
 
-            <div className="flex flex-col justify-center p-5 sm:p-7 lg:p-9">
+            <div className="dufynd-fragrance-hero-copy flex flex-col justify-center p-5 sm:p-7 lg:p-9">
               <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-(--accent-ink)">
                 {fragrance.brand}
               </div>
