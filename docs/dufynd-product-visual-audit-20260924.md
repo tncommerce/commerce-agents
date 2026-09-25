@@ -31,6 +31,21 @@ For the storefront, the preferred asset stack is:
 
 Generated editorial art must not silently become the source of truth for bottle geometry. When fidelity is not verified, it remains labelled/presented as stylised artwork.
 
+## Affiliate-feed originals and image rights
+
+Awin's current publisher documentation describes product feeds as a publisher-facing source of product links, prices, descriptions and images that partners can display when promoting advertiser products. DUFYND therefore treats an image coming from an authorised advertiser feed as a stronger rights basis than a publicly accessible manufacturer image copied from the open web.
+
+That is still not a blanket licence for every advertiser asset. Before a feed image can become a DUFYND primary product visual, all of the following must be true:
+
+- DUFYND is currently approved for the advertiser/program;
+- the image comes from the advertiser's official affiliate feed or another documented authorised asset source;
+- current advertiser/program terms do not add a conflicting restriction;
+- the asset is used within the DUFYND publisher service and is not materially altered beyond presentation-safe resizing/cropping;
+- exact product/variant/size identity is verified;
+- provenance is recorded in the machine-readable rights registry.
+
+If no documented source right exists, DUFYND should prefer its own generated editorial asset while clearly keeping product-fidelity and truth-in-depiction gates separate.
+
 ## Release decisions for future visuals
 
 | Item | Current decision | Missing evidence before a true product layer |
