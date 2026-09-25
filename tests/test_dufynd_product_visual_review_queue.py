@@ -86,9 +86,7 @@ def test_p0_candidates_are_reviewable_but_not_active_product_truth() -> None:
     assert candidate_urls.isdisjoint(active_urls)
 
     candidate_files = {
-        f"/products/candidates/{path.name}"
-        for path in CANDIDATE_DIR.iterdir()
-        if path.is_file()
+        f"/products/candidates/{path.name}" for path in CANDIDATE_DIR.iterdir() if path.is_file()
     }
     assert candidate_files == candidate_urls
 
