@@ -98,6 +98,7 @@ export interface StaticFragrance {
   cutout_image_url?: string | null;
   model_3d_url?: string | null;
   visuals: FragranceVisualAsset[];
+  preferred_visual: FragranceVisualAsset | null;
   short_description?: string | null;
   target_groups: string[];
   role: string | null;
@@ -146,11 +147,84 @@ function asNumber(value: string | undefined): number | null {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
+function activeVisuals(source: SourceRow | undefined): FragranceVisualAsset[] {
+  return (source?.visuals || []).filter(
+    (visual) =>
+      Boolean(visual.url?.trim()) &&
+      visual.fidelity_status !== "rejected",
+  );
+}
+
+export function isVerifiedProductTruthVisual(
+  visual: FragranceVisualAsset | null | undefined,
+): boolean {
+  return Boolean(
+    visual &&
+      visual.fidelity_status === "verified" &&
+      (visual.role === "primary" || visual.role === "cutout"),
+  );
+}
+
+function selectPreferredVisual(
+  visuals: FragranceVisualAsset[],
+  editorialFallback?: string | null,
+  legacyCutoutFallback?: string | null,
+): FragranceVisualAsset | null {
+  const verifiedPrimary = visuals.find(
+    (visual) =>
+      visual.role === "primary" &&
+      visual.fidelity_status === "verified",
+  );
+  if (verifiedPrimary) return verifiedPrimary;
+
+  const verifiedCutout = visuals.find(
+    (visual) =>
+      visual.role === "cutout" &&
+      visual.fidelity_status === "verified",
+  );
+  if (verifiedCutout) return verifiedCutout;
+
+  const editorial = visuals.find(
+    (visual) => visual.role === "editorial",
+  );
+  if (editorial) return editorial;
+
+  const editorialUrl = editorialFallback?.trim();
+  if (editorialUrl) {
+    return {
+      role: "editorial",
+      url: editorialUrl,
+      provenance: "legacy_catalog",
+      fidelity_status: "editorial_only",
+    };
+  }
+
+  const legacyCutoutUrl = legacyCutoutFallback?.trim();
+  if (legacyCutoutUrl) {
+    return {
+      role: "cutout",
+      url: legacyCutoutUrl,
+      provenance: "legacy_catalog",
+      fidelity_status: "pending_review",
+    };
+  }
+
+  return null;
+}
+
 function catalogToFragrance(
   row: CatalogRow,
 ): StaticFragrance {
   const source = sourceById.get(row.product_id);
   const attributes = row.attributes || {};
+  const legacyCutoutUrl =
+    String(attributes.product_cutout_url || "").trim() || null;
+  const visuals = activeVisuals(source);
+  const preferredVisual = selectPreferredVisual(
+    visuals,
+    row.image_url,
+    legacyCutoutUrl,
+  );
   const brand = String(row.brand || source?.brand || "").trim();
   const name = String(
     attributes.canonical_name ||
@@ -205,15 +279,11 @@ function catalogToFragrance(
     volume_ml: volumeMl,
     release_year: source?.release_year ?? null,
     image_url: row.image_url,
-    cutout_image_url:
-      String(attributes.product_cutout_url || "").trim() || null,
+    cutout_image_url: legacyCutoutUrl,
     model_3d_url:
       String(attributes.product_model_3d_url || "").trim() || null,
-    visuals: (source?.visuals || []).filter(
-      (visual) =>
-        Boolean(visual.url?.trim()) &&
-        visual.fidelity_status !== "rejected",
-    ),
+    visuals,
+    preferred_visual: preferredVisual,
     short_description: row.short_description,
     target_groups: targetGroups,
     role: source?.classification?.role || null,
@@ -573,4 +643,10 @@ export function getLiveFragranceBySlug(
   slug: string,
 ): StaticFragrance | null {
   return bySlug.get(slug) || null;
+}
+
+export function getLiveFragranceByProductId(
+  productId: string,
+): StaticFragrance | null {
+  return byProductId.get(productId) || null;
 }

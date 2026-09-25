@@ -13,6 +13,7 @@ import {
   comparisonPath,
   getLiveFragranceBySlug,
   getRelatedFragrances,
+  isVerifiedProductTruthVisual,
   type RelatedFragranceKind,
   type StaticFragrance,
 } from "@/lib/fragranceCatalog";
@@ -277,8 +278,8 @@ export async function generateMetadata({
       url: `${SITE_URL}${canonical}`,
       title,
       description,
-      images: fragrance.image_url
-        ? [fragrance.image_url]
+      images: fragrance.preferred_visual?.url
+        ? [fragrance.preferred_visual.url]
         : undefined,
     },
   };
@@ -295,6 +296,9 @@ export default async function FragrancePage({
   const checkedAt = formatCheckedAt(
     fragrance.market.checked_at,
   );
+  const heroVisual = fragrance.preferred_visual;
+  const heroIsProductTruth =
+    isVerifiedProductTruthVisual(heroVisual);
   const visualTheme = visualThemeFor(fragrance);
   const related = getRelatedFragrances(
     fragrance,
@@ -409,18 +413,18 @@ export default async function FragrancePage({
             className="dufynd-fragrance-hero-orbit pointer-events-none absolute"
           />
           <div className="relative z-10 grid lg:grid-cols-[0.94fr_1.06fr]">
-            {fragrance.model_3d_url || fragrance.cutout_image_url ? (
+            {fragrance.model_3d_url || heroIsProductTruth ? (
               <FragranceModel3D
                 modelUrl={fragrance.model_3d_url}
-                imageUrl={fragrance.image_url}
-                cutoutUrl={fragrance.cutout_image_url}
+                imageUrl={heroIsProductTruth ? undefined : heroVisual?.url}
+                cutoutUrl={heroIsProductTruth ? heroVisual?.url : undefined}
                 alt={`${fragrance.brand} ${fragrance.name}`}
                 className="min-h-[330px] w-full sm:min-h-[430px] lg:min-h-[520px]"
                 priority
               />
             ) : (
               <FragranceVisual
-                imageUrl={fragrance.image_url}
+                imageUrl={heroVisual?.url}
                 alt={`${fragrance.brand} ${fragrance.name}`}
                 variant="hero"
                 mode="editorial"
@@ -552,7 +556,7 @@ export default async function FragrancePage({
               <p className="mt-4 text-[10.5px] leading-4 text-(--ink-soft)">
                 DUFYND verkauft nicht selbst. Kauf und Versand erfolgen beim jeweiligen Händler.
               </p>
-              {!fragrance.cutout_image_url && fragrance.image_url?.includes("/products/pilot/") ? (
+              {heroVisual && !heroIsProductTruth ? (
                 <p className="mt-2 text-[10.5px] leading-4 text-(--ink-soft)">
                   Bild: stilisierte DUFYND-Inszenierung. Details des Flakons können vom Original abweichen.
                 </p>
@@ -734,6 +738,10 @@ export default async function FragrancePage({
                 const hasComparison = comparisonHref.startsWith(
                   "/vergleich/",
                 );
+                const relatedVisual =
+                  item.fragrance.preferred_visual;
+                const relatedIsProductTruth =
+                  isVerifiedProductTruthVisual(relatedVisual);
 
                 return (
                   <article
@@ -745,10 +753,19 @@ export default async function FragrancePage({
                       className="block"
                     >
                       <FragranceVisual
-                        imageUrl={item.fragrance.image_url}
-                        cutoutUrl={item.fragrance.cutout_image_url}
+                        imageUrl={relatedVisual?.url}
+                        cutoutUrl={
+                          relatedIsProductTruth
+                            ? relatedVisual?.url
+                            : undefined
+                        }
                         alt={`${item.fragrance.brand} ${item.fragrance.name}`}
                         variant="card"
+                        mode={
+                          relatedIsProductTruth
+                            ? "cutout"
+                            : "editorial"
+                        }
                         className="h-36 w-full"
                       />
                       <div className="p-3">

@@ -9,7 +9,10 @@ import {
   trackAnalyticsEvent,
   trackCatalogSearch,
 } from "@/lib/analytics";
-import type { StaticFragrance } from "@/lib/fragranceCatalog";
+import {
+  isVerifiedProductTruthVisual,
+  type StaticFragrance,
+} from "@/lib/fragranceCatalog";
 import { noteLabel } from "@/lib/noteLabels";
 
 type AudienceFilter = "all" | "men" | "unisex" | "women";
@@ -768,7 +771,12 @@ export default function FragranceCatalogBrowser({
       {filtered.length ? (
         <>
           <section className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {visibleFragrances.map((fragrance) => (
+            {visibleFragrances.map((fragrance) => {
+              const visual = fragrance.preferred_visual;
+              const isProductTruth =
+                isVerifiedProductTruthVisual(visual);
+
+              return (
               <article
                 key={fragrance.product_id}
                 className="overflow-hidden rounded-2xl border border-(--line) bg-(--card) shadow-(--shadow-sm) transition hover:-translate-y-0.5 hover:shadow-md"
@@ -788,21 +796,13 @@ export default function FragranceCatalogBrowser({
                   className="group block"
                 >
                   <div className="h-52 w-full overflow-hidden">
-                    {fragrance.cutout_image_url ? (
+                    {visual ? (
                       <FragranceVisual
-                        imageUrl={fragrance.cutout_image_url}
-                        cutoutUrl={fragrance.cutout_image_url}
+                        imageUrl={visual.url}
+                        cutoutUrl={isProductTruth ? visual.url : undefined}
                         alt={`${fragrance.brand} ${fragrance.name}`}
                         variant="card"
-                        mode="cutout"
-                        className="h-full w-full"
-                      />
-                    ) : fragrance.image_url ? (
-                      <FragranceVisual
-                        imageUrl={fragrance.image_url}
-                        alt={`${fragrance.brand} ${fragrance.name}`}
-                        variant="card"
-                        mode="editorial"
+                        mode={isProductTruth ? "cutout" : "editorial"}
                         className="h-full w-full"
                       />
                     ) : (
@@ -865,7 +865,8 @@ export default function FragranceCatalogBrowser({
                   />
                 </div>
               </article>
-            ))}
+              );
+            })}
           </section>
 
           {remainingCount > 0 ? (
