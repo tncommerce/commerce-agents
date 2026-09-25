@@ -135,7 +135,7 @@ export interface StaticFragrance {
 }
 
 const sourceById = new Map(
-  (scentaiProducts.products as SourceRow[]).map(
+  (scentaiProducts.products as unknown as SourceRow[]).map(
     (product) => [product.product_id, product],
   ),
 );
