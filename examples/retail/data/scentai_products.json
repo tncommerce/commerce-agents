@@ -3199,7 +3199,7 @@
         "market_price_eur": 330,
         "price_per_ml_eur": 3.3,
         "german_availability": "high",
-        "price_source_count": 1,
+        "price_source_count": 2,
         "price_checked_at": "2026-09-25"
       },
       "relationships": [],
