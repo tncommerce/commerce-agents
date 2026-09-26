@@ -69,6 +69,7 @@ const STARTERS: Starter[] = [
 /** What the store is featuring: labelled bestseller or new, photographed ones first. */
 function updateHeroLight(event: PointerEvent<HTMLElement>) {
   if (event.pointerType === "touch") return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   const bounds = event.currentTarget.getBoundingClientRect();
   const x = Math.min(1, Math.max(0, (event.clientX - bounds.left) / bounds.width));
   const y = Math.min(1, Math.max(0, (event.clientY - bounds.top) / bounds.height));
