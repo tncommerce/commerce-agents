@@ -153,6 +153,7 @@ export default function StorefrontPage() {
       panelOpen={panelOpen}
       onPanelOpenChange={setPanelOpen}
       placeholder="Beschreibe deinen Wunsch, einen Duft oder dein Budget…"
+      composerLabel="Nachricht an DUFYND Advisor"
     >
       {/* The conversation stays mounted under the other view so its cards keep their state. */}
       <div className={view === "assistant" ? "h-full" : "hidden"}>
