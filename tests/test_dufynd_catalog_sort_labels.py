@@ -2,9 +2,7 @@
 
 from pathlib import Path
 
-CATALOG_BROWSER = Path(
-    "examples/retail/storefront-web/components/FragranceCatalogBrowser.tsx"
-)
+CATALOG_BROWSER = Path("examples/retail/storefront-web/components/FragranceCatalogBrowser.tsx")
 
 
 def test_popular_sort_is_labeled_as_community_activity() -> None:
