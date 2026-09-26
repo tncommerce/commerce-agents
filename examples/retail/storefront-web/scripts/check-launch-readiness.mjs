@@ -233,6 +233,7 @@ const eligibleOffers = offers.filter((offer) => {
 
   return (
     offer.in_stock !== false &&
+    String(offer.currency || "").trim().toUpperCase() === "EUR" &&
     Number(offer.price) > 0 &&
     ageHours >= -MAX_FUTURE_CLOCK_SKEW_HOURS &&
     ageHours <= 72 &&
