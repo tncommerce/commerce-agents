@@ -55,12 +55,8 @@ def test_release_batch_01_dry_run_stays_blocked_until_real_assets_exist() -> Non
 
     for row in plan["rows"]:
         assert "missing_approved_image" in row["blockers"]
-        if row["product_id"] in {"SC-PDM-DELINA-EDP-75", "SC-YSL-LIBRE-EDP-90"}:
-            assert row["eligible_purchase_offers"] == 1
-            assert "missing_current_purchase_destination" not in row["blockers"]
-        else:
-            assert row["eligible_purchase_offers"] == 0
-            assert "missing_current_purchase_destination" in row["blockers"]
+        assert row["eligible_purchase_offers"] == 1
+        assert "missing_current_purchase_destination" not in row["blockers"]
         assert "provisional_community_data" not in row["blockers"]
 
 
@@ -81,3 +77,25 @@ def test_release_manifest_rejects_unsafe_shapes(tmp_path, product_ids: list[str]
 
     with pytest.raises(ValueError):
         load_release_manifest(path)
+
+
+def test_release_01_matches_current_operational_shortlist() -> None:
+    assert load_release_manifest(MANIFEST) == [
+        "SC-YSL-LIBRE-EDP-90",
+        "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+        "SC-BURBERRY-GODDESS-EDP-100",
+        "SC-PRADA-PARADOXE-EDP-90",
+        "SC-PDM-DELINA-EDP-75",
+    ]
+
+
+def test_prepared_releases_do_not_duplicate_products() -> None:
+    releases = [
+        load_release_manifest(DATA_DIR / "scentai_release_batch_01.json"),
+        load_release_manifest(DATA_DIR / "scentai_release_batch_02.json"),
+        load_release_manifest(DATA_DIR / "scentai_release_batch_03.json"),
+    ]
+    flattened = [product_id for release in releases for product_id in release]
+
+    assert len(flattened) == 15
+    assert len(set(flattened)) == 15
