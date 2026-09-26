@@ -13,12 +13,17 @@ import {
 import { formatPriceReference } from "@/lib/priceReference";
 import { targetLabel } from "@/lib/targetLabels";
 
-function formatRating(value: number | null): string {
+function formatRating(
+  value: number | null,
+  provisional = false,
+): string {
   if (value == null) return "–";
-  return `${value.toLocaleString("de-DE", {
+  const rating = `${value.toLocaleString("de-DE", {
     minimumFractionDigits: 1,
     maximumFractionDigits: 1,
   })}/10`;
+
+  return provisional ? `${rating} · vorläufig` : rating;
 }
 
 function formatNumber(value: number | null): string {
@@ -248,8 +253,14 @@ export default function FragranceComparisonPicker({
 
             <ComparisonRow
               label="Community"
-              left={formatRating(left.community.rating_10)}
-              right={formatRating(right.community.rating_10)}
+              left={formatRating(
+                  left.community.rating_10,
+                  left.community.provisional,
+                )}
+              right={formatRating(
+                  right.community.rating_10,
+                  right.community.provisional,
+                )}
             />
             <ComparisonRow
               label="Haltbarkeit"
