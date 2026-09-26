@@ -7,7 +7,7 @@ Required additions: 117
 
 ## Why expansion is the next priority
 
-The current DUFYND live catalog is still heavily skewed toward men's and male-leaning unisex fragrances. The audited live distribution is 32 men's target assignments, 17 unisex assignments and only 2 women's assignments across 33 live fragrances; target assignments can overlap. In addition, 45 verified candidates now sit in isolated pre-live staging with no overlap against the live catalog, giving 78 unique fragrance identities across live + staging. The next expansion must improve mainstream demand coverage, women's fragrance coverage, niche discovery, and Arabic/value alternatives while keeping the catalog curated.
+The current DUFYND live catalog is still heavily skewed toward men's and male-leaning unisex fragrances. The audited live distribution is 32 men's target assignments, 17 unisex assignments and only 2 women's assignments across 33 live fragrances; target assignments can overlap. In addition, 50 verified candidates now sit in isolated pre-live staging with no overlap against the live catalog, giving 83 unique fragrance identities across live + staging. The next expansion must improve mainstream demand coverage, women's fragrance coverage, niche discovery, and Arabic/value alternatives while keeping the catalog curated.
 
 The live catalog should not be bulk-filled with low-quality or invented data. New products are promoted to live only after core facts are verified.
 
