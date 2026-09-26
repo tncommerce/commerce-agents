@@ -83,10 +83,7 @@ class MerchantPartnerStore:
                 verified = verified.replace(tzinfo=UTC)
             age_hours = (current - verified.astimezone(UTC)).total_seconds() / 3600
 
-            if (
-                age_hours < -MAX_FUTURE_CLOCK_SKEW_HOURS
-                or age_hours > self.max_age_hours
-            ):
+            if age_hours < -MAX_FUTURE_CLOCK_SKEW_HOURS or age_hours > self.max_age_hours:
                 continue
 
             active.append(partner)
