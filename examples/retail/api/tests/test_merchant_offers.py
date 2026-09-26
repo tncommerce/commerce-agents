@@ -51,6 +51,48 @@ def test_excludes_out_of_stock_and_stale_offers() -> None:
     assert [item.offer_id for item in ranked] == ["good"]
 
 
+def test_rejects_materially_future_dated_offer() -> None:
+    ranked = rank_offers(
+        [
+            offer(
+                "future",
+                merchant="Future Merchant",
+                price=70,
+                shipping=0,
+                age_hours=-1,
+            ),
+            offer("current", merchant="Current Merchant", price=90, shipping=0),
+        ],
+        now=NOW,
+    )
+
+    assert [item.offer_id for item in ranked] == ["current"]
+
+
+def test_small_clock_skew_is_tolerated_without_freshness_bonus() -> None:
+    ranked = rank_offers(
+        [
+            offer(
+                "slight-future",
+                merchant="Z Merchant",
+                price=90,
+                shipping=0,
+                age_hours=-(2 / 60),
+            ),
+            offer(
+                "current",
+                merchant="A Merchant",
+                price=90,
+                shipping=0,
+                age_hours=0,
+            ),
+        ],
+        now=NOW,
+    )
+
+    assert [item.offer_id for item in ranked] == ["current", "slight-future"]
+
+
 def test_known_customer_total_beats_unknown_shipping() -> None:
     ranked = rank_offers(
         [
