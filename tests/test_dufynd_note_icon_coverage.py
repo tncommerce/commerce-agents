@@ -71,6 +71,6 @@ def test_priority_premium_motifs_are_not_monochrome_current_color_only() -> None
         block_start = source.index(f"  {motif}: (")
         block_end = source.index("\n  ),", block_start)
         block = source[block_start:block_end]
-        assert ('fill="#' in block or 'stroke="#' in block), (
+        assert 'fill="#' in block or 'stroke="#' in block, (
             f"{motif} lost its colored ingredient artwork"
         )
