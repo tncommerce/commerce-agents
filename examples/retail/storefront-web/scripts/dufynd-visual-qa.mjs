@@ -208,6 +208,28 @@ try {
         }
 
         if (!["home", "catalog"].includes(target.name)) {
+          const detailPage = page.locator("main.dufynd-fragrance-page");
+          if ((await detailPage.count()) !== 1) {
+            throw new Error("fragrance detail page is missing the DUFYND editorial page ground");
+          }
+
+          const heroVisual = page
+            .locator('[data-variant="hero"], .dufynd-model-stage')
+            .first();
+          if ((await heroVisual.count()) !== 1) {
+            throw new Error("fragrance detail page is missing the hero visual stage");
+          }
+          const heroVisualHeight = await heroVisual.evaluate(
+            (element) => element.getBoundingClientRect().height,
+          );
+          const maxHeroHeight =
+            viewport.width < 640 ? 285 : viewport.width < 1024 ? 380 : 500;
+          if (heroVisualHeight > maxHeroHeight) {
+            throw new Error(
+              `fragrance hero visual is too tall at ${viewport.width}px: ${heroVisualHeight}px > ${maxHeroHeight}px`,
+            );
+          }
+
           const productSchema = await page.evaluate(() => {
             const schemas = Array.from(
               document.querySelectorAll('script[type="application/ld+json"]'),
