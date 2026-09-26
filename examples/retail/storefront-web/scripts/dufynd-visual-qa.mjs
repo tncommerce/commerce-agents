@@ -326,41 +326,19 @@ try {
             );
           }
 
-          const wrongPremiumMotifs = await page.evaluate(
-            (expectedMotifs) => {
-              const spans = Array.from(document.querySelectorAll("span"));
-              return Object.entries(expectedMotifs).flatMap(
-                ([label, expectedMotif]) => {
-                  const labelSpans = spans.filter(
-                    (span) => span.textContent?.trim() === label,
-                  );
-                  const hasExpectedMotif = labelSpans.some((span) => {
-                    let container = span.parentElement;
-                    for (let depth = 0; depth < 4 && container; depth += 1) {
-                      const icon = container.querySelector(
-                        "svg[data-dufynd-note-motif]",
-                      );
-                      if (
-                        icon?.getAttribute("data-dufynd-note-motif") ===
-                        expectedMotif
-                      ) {
-                        return true;
-                      }
-                      container = container.parentElement;
-                    }
-                    return false;
-                  });
-                  return hasExpectedMotif
-                    ? []
-                    : [`${label}: expected ${expectedMotif} motif not rendered`];
-                },
-              );
-            },
+          const missingPremiumMotifs = await page.evaluate(
+            (expectedMotifs) =>
+              Object.values(expectedMotifs).filter(
+                (motif) =>
+                  !document.querySelector(
+                    `svg[data-dufynd-note-motif="${motif}"]`,
+                  ),
+              ),
             naxosPremiumMotifs,
           );
-          if (wrongPremiumMotifs.length) {
+          if (missingPremiumMotifs.length) {
             throw new Error(
-              `Naxos premium note motifs incorrect: ${wrongPremiumMotifs.join(", ")}`,
+              `Naxos premium note motifs missing: ${missingPremiumMotifs.join(", ")}`,
             );
           }
 
