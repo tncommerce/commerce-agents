@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-26T13:20:00+00:00",
-  "source_fingerprint_sha256": "064ca06af950cf35606f08b204abc88792ee2237d27b8f791d897c03ecf6a5bc",
+  "generated_at": "2026-09-26T13:35:00+00:00",
+  "source_fingerprint_sha256": "c0098e48f351c1d33cf64a69ffdac64fa813a459a9d945a2de85bd70b64174a3",
   "release_id": "SCENTAI-RELEASE-01",
   "purpose": "Jarvis-ready affiliate/feed activation queue. Operational integration coverage only; never use commission to rank fragrances or customer-facing merchant offers.",
   "policy_ref": "scentai_jarvis_operating_policy.json",
@@ -10,7 +10,7 @@
   "summary": {
     "registered_programs": 9,
     "programs_with_any_release_mapping": 3,
-    "programs_with_full_release_mapping": 2,
+    "programs_with_full_release_mapping": 1,
     "approved_programs": 1,
     "approved_programs_with_full_release_mapping": 0,
     "feed_validation_path_available": false,
@@ -26,11 +26,11 @@
       "mapped_release_product_count": 5,
       "release_size": 5,
       "mapped_product_ids": [
-        "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
-        "SC-PDM-DELINA-EDP-75",
-        "SC-DIOR-HYPNOTIC-POISON-EDT-100",
-        "SC-YSL-BLACK-OPIUM-EDP-90",
-        "SC-YSL-LIBRE-EDP-90"
+        "SC-YSL-LIBRE-EDP-90",
+        "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+        "SC-BURBERRY-GODDESS-EDP-100",
+        "SC-PRADA-PARADOXE-EDP-90",
+        "SC-PDM-DELINA-EDP-75"
       ],
       "full_release_mapping_coverage": true,
       "program_approved": false,
@@ -50,19 +50,18 @@
       "merchant_id": "flaconi",
       "program": "Flaconi DE",
       "application_status": "applied",
-      "mapped_release_product_count": 5,
+      "mapped_release_product_count": 4,
       "release_size": 5,
       "mapped_product_ids": [
-        "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
-        "SC-PDM-DELINA-EDP-75",
-        "SC-DIOR-HYPNOTIC-POISON-EDT-100",
-        "SC-YSL-BLACK-OPIUM-EDP-90",
-        "SC-YSL-LIBRE-EDP-90"
+        "SC-YSL-LIBRE-EDP-90",
+        "SC-BURBERRY-GODDESS-EDP-100",
+        "SC-PRADA-PARADOXE-EDP-90",
+        "SC-PDM-DELINA-EDP-75"
       ],
-      "full_release_mapping_coverage": true,
+      "full_release_mapping_coverage": false,
       "program_approved": false,
       "program_rejected": false,
-      "state": "program_pending_full_mapping_ready",
+      "state": "program_pending_mapping_partial",
       "feed_state": "await_program_approval",
       "provider_config_state": "not_configured_until_real_feed_sample",
       "dry_run_state": "not_run",
@@ -80,44 +79,40 @@
       "mapped_release_product_count": 1,
       "release_size": 5,
       "mapped_product_ids": [
-        "SC-DIOR-HYPNOTIC-POISON-EDT-100"
+        "SC-GUERLAIN-MON-GUERLAIN-EDP-100"
       ],
       "full_release_mapping_coverage": false,
       "program_approved": true,
       "program_rejected": false,
       "state": "approved_mapping_partial",
-      "feed_state": "await_exact_variant_feed_or_product_evidence",
+      "feed_state": "await_remaining_mapping_resolution",
       "provider_config_state": "not_configured_until_real_feed_sample",
       "dry_run_state": "not_run",
       "image_candidate_state": "not_extracted",
       "live_routing_allowed": false,
-      "next_action": "await_exact_variant_feed_or_product_evidence",
+      "next_action": "resolve_remaining_release_mappings_before_feed_validation",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "variant_audit": {
         "checked_at": "2026-09-22",
         "scope": "Public Perfumetrader product/brand pages plus verified Awin programme metadata. Awin Product Data is unavailable for Perfumetrader DE (Produktdaten = Nein).",
-        "audited_release_product_count": 5,
-        "exact_variant_verified_product_count": 1,
+        "audited_release_product_count": 2,
+        "exact_variant_verified_product_count": 0,
         "missing_mapping_product_ids": [
-          "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
-          "SC-PDM-DELINA-EDP-75",
-          "SC-YSL-BLACK-OPIUM-EDP-90",
-          "SC-YSL-LIBRE-EDP-90"
+          "SC-YSL-LIBRE-EDP-90",
+          "SC-BURBERRY-GODDESS-EDP-100",
+          "SC-PRADA-PARADOXE-EDP-90",
+          "SC-PDM-DELINA-EDP-75"
         ],
         "audited_missing_mapping_product_ids": [
-          "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
-          "SC-PDM-DELINA-EDP-75",
-          "SC-YSL-BLACK-OPIUM-EDP-90",
-          "SC-YSL-LIBRE-EDP-90"
+          "SC-YSL-LIBRE-EDP-90",
+          "SC-PDM-DELINA-EDP-75"
         ],
         "verified_unmapped_product_ids": [],
-        "missing_mapping_audit_complete": true,
+        "missing_mapping_audit_complete": false,
         "missing_mapping_states": {
-          "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100": "exact_variant_unverified_alternative_only",
-          "SC-PDM-DELINA-EDP-75": "no_exact_public_evidence_found",
-          "SC-YSL-BLACK-OPIUM-EDP-90": "exact_variant_unverified_alternative_only",
-          "SC-YSL-LIBRE-EDP-90": "exact_variant_unverified_alternative_only"
+          "SC-YSL-LIBRE-EDP-90": "exact_variant_unverified_alternative_only",
+          "SC-PDM-DELINA-EDP-75": "no_exact_public_evidence_found"
         }
       }
     },

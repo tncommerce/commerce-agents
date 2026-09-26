@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-26T13:20:00+00:00",
-  "source_fingerprint_sha256": "e659de29f4a8d63d218d2d4e3989ecffe62bf8563220b56896573db3c8ed082c",
+  "generated_at": "2026-09-26T13:35:00+00:00",
+  "source_fingerprint_sha256": "bed1b5eef064391b884b35f7e7dd9687322306e8b334c62e61a6e5f56827125e",
   "release_id": "SCENTAI-RELEASE-01",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "image_machine_ref": "scentai_image_approval_state_machine.json",
@@ -11,43 +11,17 @@
     "mapping_ready": 5,
     "image_identity_source_verified": 5,
     "approved_images": 0,
-    "current_purchase_destinations": 2,
+    "current_purchase_destinations": 5,
     "current_tracked_affiliate_offers": 0,
     "promotion_ready": 0
   },
   "release_write_policy": "All-or-nothing. Do not partially promote this manifest. Use a dry-run first; write only when all five products pass every promotion gate.",
   "rows": [
     {
-      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
-      "candidate_id": "LANCOME-LA-VIE-EST-BELLE-EDP",
-      "brand": "Lancôme",
-      "name": "La Vie est Belle",
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
-      "image_state": "rights_or_source_check_pending",
-      "purchase_offer_count": 0,
-      "affiliate_offer_count": 0,
-      "current_tracked_affiliate_offer": false,
-      "gates": {
-        "non_provisional_community_data": true,
-        "resolved_merchant_product_mapping": true,
-        "approved_product_image": false,
-        "current_purchase_destination": false,
-        "staging_recommendation_qa": true,
-        "not_already_live": true
-      },
-      "blockers": [
-        "approved_product_image",
-        "current_purchase_destination"
-      ],
-      "promotion_ready": false,
-      "next_unblocking_event": "approved_affiliate_feed_or_verified_asset_usage_then_manual_visual_approval"
-    },
-    {
-      "product_id": "SC-PDM-DELINA-EDP-75",
-      "candidate_id": "PDM-DELINA-EDP",
-      "brand": "Parfums de Marly",
-      "name": "Delina",
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "candidate_id": "YSL-LIBRE-EDP",
+      "brand": "Yves Saint Laurent",
+      "name": "Libre",
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "image_state": "rights_or_source_check_pending",
@@ -69,62 +43,85 @@
       "next_unblocking_event": "approved_affiliate_feed_or_verified_asset_usage_then_manual_visual_approval"
     },
     {
-      "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
-      "candidate_id": "DIOR-HYPNOTIC-POISON-EDT",
-      "brand": "Dior",
-      "name": "Hypnotic Poison",
-      "mapping_count": 3,
-      "resolved_mapping_count": 3,
-      "image_state": "rights_or_source_check_pending",
-      "purchase_offer_count": 0,
-      "affiliate_offer_count": 0,
-      "current_tracked_affiliate_offer": false,
-      "gates": {
-        "non_provisional_community_data": true,
-        "resolved_merchant_product_mapping": true,
-        "approved_product_image": false,
-        "current_purchase_destination": false,
-        "staging_recommendation_qa": true,
-        "not_already_live": true
-      },
-      "blockers": [
-        "approved_product_image",
-        "current_purchase_destination"
-      ],
-      "promotion_ready": false,
-      "next_unblocking_event": "approved_affiliate_feed_or_verified_asset_usage_then_manual_visual_approval"
-    },
-    {
-      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
-      "candidate_id": "YSL-BLACK-OPIUM-EDP",
-      "brand": "Yves Saint Laurent",
-      "name": "Black Opium",
+      "product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+      "candidate_id": "GUERLAIN-MON-GUERLAIN-EDP",
+      "brand": "Guerlain",
+      "name": "Mon Guerlain",
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "image_state": "rights_or_source_check_pending",
-      "purchase_offer_count": 0,
+      "purchase_offer_count": 1,
       "affiliate_offer_count": 0,
       "current_tracked_affiliate_offer": false,
       "gates": {
         "non_provisional_community_data": true,
         "resolved_merchant_product_mapping": true,
         "approved_product_image": false,
-        "current_purchase_destination": false,
+        "current_purchase_destination": true,
         "staging_recommendation_qa": true,
         "not_already_live": true
       },
       "blockers": [
-        "approved_product_image",
-        "current_purchase_destination"
+        "approved_product_image"
       ],
       "promotion_ready": false,
       "next_unblocking_event": "approved_affiliate_feed_or_verified_asset_usage_then_manual_visual_approval"
     },
     {
-      "product_id": "SC-YSL-LIBRE-EDP-90",
-      "candidate_id": "YSL-LIBRE-EDP",
-      "brand": "Yves Saint Laurent",
-      "name": "Libre",
+      "product_id": "SC-BURBERRY-GODDESS-EDP-100",
+      "candidate_id": "BURBERRY-GODDESS-EDP",
+      "brand": "Burberry",
+      "name": "Goddess",
+      "mapping_count": 2,
+      "resolved_mapping_count": 2,
+      "image_state": "rights_or_source_check_pending",
+      "purchase_offer_count": 1,
+      "affiliate_offer_count": 0,
+      "current_tracked_affiliate_offer": false,
+      "gates": {
+        "non_provisional_community_data": true,
+        "resolved_merchant_product_mapping": true,
+        "approved_product_image": false,
+        "current_purchase_destination": true,
+        "staging_recommendation_qa": true,
+        "not_already_live": true
+      },
+      "blockers": [
+        "approved_product_image"
+      ],
+      "promotion_ready": false,
+      "next_unblocking_event": "approved_affiliate_feed_or_verified_asset_usage_then_manual_visual_approval"
+    },
+    {
+      "product_id": "SC-PRADA-PARADOXE-EDP-90",
+      "candidate_id": "PRADA-PARADOXE-EDP",
+      "brand": "Prada",
+      "name": "Paradoxe",
+      "mapping_count": 2,
+      "resolved_mapping_count": 2,
+      "image_state": "rights_or_source_check_pending",
+      "purchase_offer_count": 1,
+      "affiliate_offer_count": 0,
+      "current_tracked_affiliate_offer": false,
+      "gates": {
+        "non_provisional_community_data": true,
+        "resolved_merchant_product_mapping": true,
+        "approved_product_image": false,
+        "current_purchase_destination": true,
+        "staging_recommendation_qa": true,
+        "not_already_live": true
+      },
+      "blockers": [
+        "approved_product_image"
+      ],
+      "promotion_ready": false,
+      "next_unblocking_event": "approved_affiliate_feed_or_verified_asset_usage_then_manual_visual_approval"
+    },
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "candidate_id": "PDM-DELINA-EDP",
+      "brand": "Parfums de Marly",
+      "name": "Delina",
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "image_state": "rights_or_source_check_pending",

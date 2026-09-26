@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-26T13:20:00+00:00",
-  "source_fingerprint_sha256": "bddd9a839728b4fc3d8b12436d0118fbb4007547a1d88af8b2bbd152354be38a",
+  "generated_at": "2026-09-26T13:35:00+00:00",
+  "source_fingerprint_sha256": "74a187c0f38776746b6df808ce46a79426574a63a60a10f97100fa3c46dbf192",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "release_count": 3,
   "current_release_id": "SCENTAI-RELEASE-01",
@@ -10,7 +10,7 @@
     {
       "release_id": "SCENTAI-RELEASE-01",
       "release_order": 1,
-      "manifest_status": "mapping_ready_blocked_pending_live_assets_and_purchase_destinations",
+      "manifest_status": "mapping_and_purchase_destinations_ready_blocked_pending_live_assets",
       "write_enabled": true,
       "depends_on_release_ids": [],
       "dependency_state": "not_required",
@@ -20,11 +20,11 @@
         "mapping_ready": 5,
         "image_identity_source_verified": 5,
         "approved_images": 0,
-        "current_purchase_destinations": 2,
+        "current_purchase_destinations": 5,
         "current_tracked_affiliate_offers": 0,
         "promotion_ready": 0
       },
-      "write_guard_reason": "Release 01 is the first operational batch. A write is still refused unless every product-level image, purchase-destination and staging QA gate passes."
+      "write_guard_reason": "Release 01 is the first operational batch. A write is still refused unless every product-level approved-image and staging QA gate passes; current purchase destinations are already verified for all five products."
     },
     {
       "release_id": "SCENTAI-RELEASE-02",
@@ -35,13 +35,13 @@
         "SCENTAI-RELEASE-01"
       ],
       "dependency_state": "pending_prior_release_validation",
-      "gate_state": "blocked_pending_remaining_product_gates",
+      "gate_state": "blocked_pending_images_and_purchase_destinations",
       "summary": {
         "release_size": 5,
         "mapping_ready": 5,
         "image_identity_source_verified": 5,
         "approved_images": 0,
-        "current_purchase_destinations": 3,
+        "current_purchase_destinations": 0,
         "current_tracked_affiliate_offers": 0,
         "promotion_ready": 0
       },

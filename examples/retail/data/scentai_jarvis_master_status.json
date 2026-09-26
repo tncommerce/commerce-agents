@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-26T13:20:00+00:00",
-  "source_fingerprint_sha256": "4f8d79a586c7b96047bb5b5c99ec684d4592777f82f83c488075036571b6e26f",
+  "generated_at": "2026-09-26T13:35:00+00:00",
+  "source_fingerprint_sha256": "5f0291522ac0c4428cd5a2a3708bba5519d3ff9347aa94cfd3587e78bf9f7c4b",
   "system": "DUFYND",
   "control_plane": "commerce_jarvis_master",
   "overall_state": "work_available",
@@ -19,7 +19,6 @@
       "user_approval_required_now": false,
       "blockers": [
         "release_approved_images_incomplete",
-        "release_purchase_destinations_incomplete",
         "release_promotion_gates_incomplete"
       ]
     },

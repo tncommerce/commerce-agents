@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-26T13:20:00+00:00",
-  "source_fingerprint_sha256": "bbcf5c3494d64c0fa52c03860bd8caab823d0c8b046e80423e45b2f9ace0770f",
+  "generated_at": "2026-09-26T13:35:00+00:00",
+  "source_fingerprint_sha256": "a6008705a10c197f1b70edb0bebed2d2caa0464f8597e39824704a58a0f257c5",
   "machine_id": "scentai_image_approval_v1",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
@@ -24,230 +24,6 @@
   },
   "items": [
     {
-      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
-      "candidate_id": "LANCOME-LA-VIE-EST-BELLE-EDP",
-      "brand": "Lancôme",
-      "name": "La Vie est Belle",
-      "batch": 1,
-      "release": {
-        "release_id": "SCENTAI-RELEASE-01",
-        "release_order": 1,
-        "position": 1,
-        "write_enabled": true
-      },
-      "current_image_url": null,
-      "current_image_status": "pending_approved_feed_or_manufacturer_image",
-      "image_state": "rights_or_source_check_pending",
-      "blockers": [
-        "approved_product_image_missing",
-        "asset_usage_or_feed_rights_not_verified"
-      ],
-      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
-      "action_class": "auto_allowed",
-      "approval_action_class": "approval_required",
-      "candidate_source": {
-        "source_class": "manufacturer_official",
-        "source_page_url": "https://www.lancome.de/duefte/frauen_parfum/la_vie_est_belle/la_vie_est_belle_eau_de_parfum/3614273088657.html",
-        "exact_variant_verified": true,
-        "verified_at": "2026-09-19",
-        "evidence_note": "Official Lancôme page lists La Vie est Belle Eau de Parfum in 100 ml."
-      },
-      "audit_trail": [
-        {
-          "at": "2026-09-19",
-          "from": "missing",
-          "to": "candidate_discovered",
-          "trigger": "manufacturer_source_found"
-        },
-        {
-          "at": "2026-09-19",
-          "from": "candidate_discovered",
-          "to": "identity_check_pending",
-          "trigger": "candidate_normalized"
-        },
-        {
-          "at": "2026-09-19",
-          "from": "identity_check_pending",
-          "to": "identity_verified",
-          "trigger": "exact_variant_verified"
-        },
-        {
-          "at": "2026-09-19",
-          "from": "identity_verified",
-          "to": "rights_or_source_check_pending",
-          "trigger": "identity_gate_passed"
-        }
-      ]
-    },
-    {
-      "product_id": "SC-PDM-DELINA-EDP-75",
-      "candidate_id": "PDM-DELINA-EDP",
-      "brand": "Parfums de Marly",
-      "name": "Delina",
-      "batch": 1,
-      "release": {
-        "release_id": "SCENTAI-RELEASE-01",
-        "release_order": 1,
-        "position": 2,
-        "write_enabled": true
-      },
-      "current_image_url": null,
-      "current_image_status": "pending_approved_feed_or_manufacturer_image",
-      "image_state": "rights_or_source_check_pending",
-      "blockers": [
-        "approved_product_image_missing",
-        "asset_usage_or_feed_rights_not_verified"
-      ],
-      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
-      "action_class": "auto_allowed",
-      "approval_action_class": "approval_required",
-      "candidate_source": {
-        "source_class": "manufacturer_official",
-        "source_page_url": "https://parfums-de-marly.com/de/products/delina",
-        "exact_variant_verified": true,
-        "verified_at": "2026-09-19",
-        "evidence_note": "Official Parfums de Marly page lists Delina in 75 ml."
-      },
-      "audit_trail": [
-        {
-          "at": "2026-09-19",
-          "from": "missing",
-          "to": "candidate_discovered",
-          "trigger": "manufacturer_source_found"
-        },
-        {
-          "at": "2026-09-19",
-          "from": "candidate_discovered",
-          "to": "identity_check_pending",
-          "trigger": "candidate_normalized"
-        },
-        {
-          "at": "2026-09-19",
-          "from": "identity_check_pending",
-          "to": "identity_verified",
-          "trigger": "exact_variant_verified"
-        },
-        {
-          "at": "2026-09-19",
-          "from": "identity_verified",
-          "to": "rights_or_source_check_pending",
-          "trigger": "identity_gate_passed"
-        }
-      ]
-    },
-    {
-      "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
-      "candidate_id": "DIOR-HYPNOTIC-POISON-EDT",
-      "brand": "Dior",
-      "name": "Hypnotic Poison",
-      "batch": 3,
-      "release": {
-        "release_id": "SCENTAI-RELEASE-01",
-        "release_order": 1,
-        "position": 3,
-        "write_enabled": true
-      },
-      "current_image_url": null,
-      "current_image_status": "pending_approved_feed_or_manufacturer_image",
-      "image_state": "rights_or_source_check_pending",
-      "blockers": [
-        "approved_product_image_missing",
-        "asset_usage_or_feed_rights_not_verified"
-      ],
-      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
-      "action_class": "auto_allowed",
-      "approval_action_class": "approval_required",
-      "candidate_source": {
-        "source_class": "manufacturer_official",
-        "source_page_url": "https://www.dior.com/de_de/beauty/products/hypnotic-poison-eau-de-toilette-Y0063401.html",
-        "exact_variant_verified": true,
-        "verified_at": "2026-09-19",
-        "evidence_note": "Official Dior page lists Hypnotic Poison Eau de Toilette in 100 ml."
-      },
-      "audit_trail": [
-        {
-          "at": "2026-09-19",
-          "from": "missing",
-          "to": "candidate_discovered",
-          "trigger": "manufacturer_source_found"
-        },
-        {
-          "at": "2026-09-19",
-          "from": "candidate_discovered",
-          "to": "identity_check_pending",
-          "trigger": "candidate_normalized"
-        },
-        {
-          "at": "2026-09-19",
-          "from": "identity_check_pending",
-          "to": "identity_verified",
-          "trigger": "exact_variant_verified"
-        },
-        {
-          "at": "2026-09-19",
-          "from": "identity_verified",
-          "to": "rights_or_source_check_pending",
-          "trigger": "identity_gate_passed"
-        }
-      ]
-    },
-    {
-      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
-      "candidate_id": "YSL-BLACK-OPIUM-EDP",
-      "brand": "Yves Saint Laurent",
-      "name": "Black Opium",
-      "batch": 2,
-      "release": {
-        "release_id": "SCENTAI-RELEASE-01",
-        "release_order": 1,
-        "position": 4,
-        "write_enabled": true
-      },
-      "current_image_url": null,
-      "current_image_status": "pending_approved_feed_or_manufacturer_image",
-      "image_state": "rights_or_source_check_pending",
-      "blockers": [
-        "approved_product_image_missing",
-        "asset_usage_or_feed_rights_not_verified"
-      ],
-      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
-      "action_class": "auto_allowed",
-      "approval_action_class": "approval_required",
-      "candidate_source": {
-        "source_class": "manufacturer_official",
-        "source_page_url": "https://www.yslbeauty.de/dufte/dufte-fur-sie/black-opium/black-opium-eau-de-parfum/WW-40701YSL.html",
-        "exact_variant_verified": true,
-        "verified_at": "2026-09-19",
-        "evidence_note": "Official YSL Beauty page lists Black Opium Eau de Parfum in 90 ml."
-      },
-      "audit_trail": [
-        {
-          "at": "2026-09-19",
-          "from": "missing",
-          "to": "candidate_discovered",
-          "trigger": "manufacturer_source_found"
-        },
-        {
-          "at": "2026-09-19",
-          "from": "candidate_discovered",
-          "to": "identity_check_pending",
-          "trigger": "candidate_normalized"
-        },
-        {
-          "at": "2026-09-19",
-          "from": "identity_check_pending",
-          "to": "identity_verified",
-          "trigger": "exact_variant_verified"
-        },
-        {
-          "at": "2026-09-19",
-          "from": "identity_verified",
-          "to": "rights_or_source_check_pending",
-          "trigger": "identity_gate_passed"
-        }
-      ]
-    },
-    {
       "product_id": "SC-YSL-LIBRE-EDP-90",
       "candidate_id": "YSL-LIBRE-EDP",
       "brand": "Yves Saint Laurent",
@@ -256,7 +32,7 @@
       "release": {
         "release_id": "SCENTAI-RELEASE-01",
         "release_order": 1,
-        "position": 5,
+        "position": 1,
         "write_enabled": true
       },
       "current_image_url": null,
@@ -310,10 +86,10 @@
       "name": "Mon Guerlain",
       "batch": 3,
       "release": {
-        "release_id": "SCENTAI-RELEASE-02",
-        "release_order": 2,
-        "position": 1,
-        "write_enabled": false
+        "release_id": "SCENTAI-RELEASE-01",
+        "release_order": 1,
+        "position": 2,
+        "write_enabled": true
       },
       "current_image_url": null,
       "current_image_status": "pending_approved_feed_or_manufacturer_image",
@@ -331,6 +107,230 @@
         "exact_variant_verified": true,
         "verified_at": "2026-09-19",
         "evidence_note": "Official Guerlain page lists Mon Guerlain Eau de Parfum in 100 ml."
+      },
+      "audit_trail": [
+        {
+          "at": "2026-09-19",
+          "from": "missing",
+          "to": "candidate_discovered",
+          "trigger": "manufacturer_source_found"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "candidate_discovered",
+          "to": "identity_check_pending",
+          "trigger": "candidate_normalized"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "identity_check_pending",
+          "to": "identity_verified",
+          "trigger": "exact_variant_verified"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "identity_verified",
+          "to": "rights_or_source_check_pending",
+          "trigger": "identity_gate_passed"
+        }
+      ]
+    },
+    {
+      "product_id": "SC-BURBERRY-GODDESS-EDP-100",
+      "candidate_id": "BURBERRY-GODDESS-EDP",
+      "brand": "Burberry",
+      "name": "Goddess",
+      "batch": 1,
+      "release": {
+        "release_id": "SCENTAI-RELEASE-01",
+        "release_order": 1,
+        "position": 3,
+        "write_enabled": true
+      },
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "rights_or_source_check_pending",
+      "blockers": [
+        "approved_product_image_missing",
+        "asset_usage_or_feed_rights_not_verified"
+      ],
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required",
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://de.burberry.com/burberry-goddess-eau-de-parfum-for-women-100-ml-p40835981",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Burberry page lists Goddess Eau de Parfum 100 ml."
+      },
+      "audit_trail": [
+        {
+          "at": "2026-09-19",
+          "from": "missing",
+          "to": "candidate_discovered",
+          "trigger": "manufacturer_source_found"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "candidate_discovered",
+          "to": "identity_check_pending",
+          "trigger": "candidate_normalized"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "identity_check_pending",
+          "to": "identity_verified",
+          "trigger": "exact_variant_verified"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "identity_verified",
+          "to": "rights_or_source_check_pending",
+          "trigger": "identity_gate_passed"
+        }
+      ]
+    },
+    {
+      "product_id": "SC-PRADA-PARADOXE-EDP-90",
+      "candidate_id": "PRADA-PARADOXE-EDP",
+      "brand": "Prada",
+      "name": "Paradoxe",
+      "batch": 1,
+      "release": {
+        "release_id": "SCENTAI-RELEASE-01",
+        "release_order": 1,
+        "position": 4,
+        "write_enabled": true
+      },
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "rights_or_source_check_pending",
+      "blockers": [
+        "approved_product_image_missing",
+        "asset_usage_or_feed_rights_not_verified"
+      ],
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required",
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://www.prada.com/de/de/p/paradoxe-edp-90ml/1A1351_2HDZ_F0Z99_P_ML090",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Prada page lists Paradoxe Eau de Parfum in 90 ml."
+      },
+      "audit_trail": [
+        {
+          "at": "2026-09-19",
+          "from": "missing",
+          "to": "candidate_discovered",
+          "trigger": "manufacturer_source_found"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "candidate_discovered",
+          "to": "identity_check_pending",
+          "trigger": "candidate_normalized"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "identity_check_pending",
+          "to": "identity_verified",
+          "trigger": "exact_variant_verified"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "identity_verified",
+          "to": "rights_or_source_check_pending",
+          "trigger": "identity_gate_passed"
+        }
+      ]
+    },
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "candidate_id": "PDM-DELINA-EDP",
+      "brand": "Parfums de Marly",
+      "name": "Delina",
+      "batch": 1,
+      "release": {
+        "release_id": "SCENTAI-RELEASE-01",
+        "release_order": 1,
+        "position": 5,
+        "write_enabled": true
+      },
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "rights_or_source_check_pending",
+      "blockers": [
+        "approved_product_image_missing",
+        "asset_usage_or_feed_rights_not_verified"
+      ],
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required",
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://parfums-de-marly.com/de/products/delina",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Parfums de Marly page lists Delina in 75 ml."
+      },
+      "audit_trail": [
+        {
+          "at": "2026-09-19",
+          "from": "missing",
+          "to": "candidate_discovered",
+          "trigger": "manufacturer_source_found"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "candidate_discovered",
+          "to": "identity_check_pending",
+          "trigger": "candidate_normalized"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "identity_check_pending",
+          "to": "identity_verified",
+          "trigger": "exact_variant_verified"
+        },
+        {
+          "at": "2026-09-19",
+          "from": "identity_verified",
+          "to": "rights_or_source_check_pending",
+          "trigger": "identity_gate_passed"
+        }
+      ]
+    },
+    {
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "candidate_id": "LANCOME-LA-VIE-EST-BELLE-EDP",
+      "brand": "Lancôme",
+      "name": "La Vie est Belle",
+      "batch": 1,
+      "release": {
+        "release_id": "SCENTAI-RELEASE-02",
+        "release_order": 2,
+        "position": 1,
+        "write_enabled": false
+      },
+      "current_image_url": null,
+      "current_image_status": "pending_approved_feed_or_manufacturer_image",
+      "image_state": "rights_or_source_check_pending",
+      "blockers": [
+        "approved_product_image_missing",
+        "asset_usage_or_feed_rights_not_verified"
+      ],
+      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
+      "action_class": "auto_allowed",
+      "approval_action_class": "approval_required",
+      "candidate_source": {
+        "source_class": "manufacturer_official",
+        "source_page_url": "https://www.lancome.de/duefte/frauen_parfum/la_vie_est_belle/la_vie_est_belle_eau_de_parfum/3614273088657.html",
+        "exact_variant_verified": true,
+        "verified_at": "2026-09-19",
+        "evidence_note": "Official Lancôme page lists La Vie est Belle Eau de Parfum in 100 ml."
       },
       "audit_trail": [
         {
@@ -472,11 +472,11 @@
       ]
     },
     {
-      "product_id": "SC-BURBERRY-GODDESS-EDP-100",
-      "candidate_id": "BURBERRY-GODDESS-EDP",
-      "brand": "Burberry",
-      "name": "Goddess",
-      "batch": 1,
+      "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+      "candidate_id": "DIOR-HYPNOTIC-POISON-EDT",
+      "brand": "Dior",
+      "name": "Hypnotic Poison",
+      "batch": 3,
       "release": {
         "release_id": "SCENTAI-RELEASE-02",
         "release_order": 2,
@@ -495,10 +495,10 @@
       "approval_action_class": "approval_required",
       "candidate_source": {
         "source_class": "manufacturer_official",
-        "source_page_url": "https://de.burberry.com/burberry-goddess-eau-de-parfum-for-women-100-ml-p40835981",
+        "source_page_url": "https://www.dior.com/de_de/beauty/products/hypnotic-poison-eau-de-toilette-Y0063401.html",
         "exact_variant_verified": true,
         "verified_at": "2026-09-19",
-        "evidence_note": "Official Burberry page lists Goddess Eau de Parfum 100 ml."
+        "evidence_note": "Official Dior page lists Hypnotic Poison Eau de Toilette in 100 ml."
       },
       "audit_trail": [
         {
@@ -528,11 +528,11 @@
       ]
     },
     {
-      "product_id": "SC-PRADA-PARADOXE-EDP-90",
-      "candidate_id": "PRADA-PARADOXE-EDP",
-      "brand": "Prada",
-      "name": "Paradoxe",
-      "batch": 1,
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "candidate_id": "YSL-BLACK-OPIUM-EDP",
+      "brand": "Yves Saint Laurent",
+      "name": "Black Opium",
+      "batch": 2,
       "release": {
         "release_id": "SCENTAI-RELEASE-02",
         "release_order": 2,
@@ -551,10 +551,10 @@
       "approval_action_class": "approval_required",
       "candidate_source": {
         "source_class": "manufacturer_official",
-        "source_page_url": "https://www.prada.com/de/de/p/paradoxe-edp-90ml/1A1351_2HDZ_F0Z99_P_ML090",
+        "source_page_url": "https://www.yslbeauty.de/dufte/dufte-fur-sie/black-opium/black-opium-eau-de-parfum/WW-40701YSL.html",
         "exact_variant_verified": true,
         "verified_at": "2026-09-19",
-        "evidence_note": "Official Prada page lists Paradoxe Eau de Parfum in 90 ml."
+        "evidence_note": "Official YSL Beauty page lists Black Opium Eau de Parfum in 90 ml."
       },
       "audit_trail": [
         {
