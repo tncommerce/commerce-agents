@@ -200,7 +200,7 @@ try {
           throw new Error("directory listing detected instead of storefront content");
         }
 
-        if (!["home", "catalog"].includes(target.name)) {
+        if (target.route.startsWith("/duft/")) {
           const productSchema = await page.evaluate(() => {
             const schemas = Array.from(
               document.querySelectorAll('script[type="application/ld+json"]'),
@@ -250,7 +250,7 @@ try {
 
         if (
           viewport.width < 640 &&
-          !["home", "catalog"].includes(target.name)
+          target.route.startsWith("/duft/")
         ) {
           const mobileOfferBar = page.locator(".dufynd-mobile-offer-bar");
           if (
