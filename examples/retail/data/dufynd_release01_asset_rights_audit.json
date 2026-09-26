@@ -1,9 +1,9 @@
 {
-  "version": 1,
-  "generated_at": "2026-09-21",
+  "version": 2,
+  "generated_at": "2026-09-26",
   "release_id": "SCENTAI-RELEASE-01",
   "status": "manufacturer_references_verified_public_rights_pending",
-  "purpose": "Rights audit for Release 01 product imagery. This file records legal/source evidence only and must never promote an image to an approved_* state.",
+  "purpose": "Rights audit for the current Release 01 product imagery. Official product pages are identity references only and never promote an image to an approved_* state.",
   "policy": {
     "official_brand_product_pages_are_identity_reference_only": true,
     "public_catalog_use_requires_documented_commercial_rights": true,
@@ -26,16 +26,56 @@
   ],
   "products": [
     {
-      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
-      "brand": "Lancôme",
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "brand": "Yves Saint Laurent",
       "exact_variant_verified": true,
       "current_source_type": "official_brand_reference_unlicensed",
       "catalog_image_status": "reference_only",
       "public_distribution_allowed": false,
       "final_composite_allowed": false,
-      "rights_evidence_status": "no_explicit_commercial_reuse_permission_verified_for_current_official_page",
-      "next_action": "await_licensed_affiliate_feed_image_or_written_brand_permission",
-      "feed_dependency": "perfumetrader_awin_product_feed_or_exact_product_data"
+      "rights_evidence_status": "official_terms_prohibit_commercial_use_of_site_content",
+      "rights_evidence_url": "https://www.yslbeauty.de/customer-service/nutzungsbedingungen/customer-service-terms-and-conditions.html",
+      "next_action": "await_licensed_partner_feed_image_or_written_rights_permission_or_owned_photography",
+      "feed_dependency": "licensed_partner_feed_or_written_permission_or_owned_photography"
+    },
+    {
+      "product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+      "brand": "Guerlain",
+      "exact_variant_verified": true,
+      "current_source_type": "official_brand_reference_unlicensed",
+      "catalog_image_status": "reference_only",
+      "public_distribution_allowed": false,
+      "final_composite_allowed": false,
+      "rights_evidence_status": "official_terms_limit_site_content_reproduction_to_private_noncommercial_use",
+      "rights_evidence_url": "https://www.guerlain.com/de/de-de/c/legal-terms.html",
+      "next_action": "await_licensed_partner_feed_image_or_written_rights_permission_or_owned_photography",
+      "feed_dependency": "licensed_partner_feed_or_written_permission_or_owned_photography"
+    },
+    {
+      "product_id": "SC-BURBERRY-GODDESS-EDP-100",
+      "brand": "Burberry",
+      "exact_variant_verified": true,
+      "current_source_type": "official_brand_reference_unlicensed",
+      "catalog_image_status": "reference_only",
+      "public_distribution_allowed": false,
+      "final_composite_allowed": false,
+      "rights_evidence_status": "official_terms_reserve_platform_content_rights_without_general_publisher_reuse_grant",
+      "rights_evidence_url": "https://de.burberry.com/rechtliche-hinweise-und-cookies/geschaftsbedingungen/",
+      "next_action": "await_licensed_partner_feed_image_or_written_rights_permission_or_owned_photography",
+      "feed_dependency": "licensed_partner_feed_or_written_permission_or_owned_photography"
+    },
+    {
+      "product_id": "SC-PRADA-PARADOXE-EDP-90",
+      "brand": "Prada",
+      "exact_variant_verified": true,
+      "current_source_type": "official_brand_reference_unlicensed",
+      "catalog_image_status": "reference_only",
+      "public_distribution_allowed": false,
+      "final_composite_allowed": false,
+      "rights_evidence_status": "official_terms_prohibit_reproduction_or_use_of_site_images_and_illustrations",
+      "rights_evidence_url": "https://www.prada.com/de/de/info/terms-conditions.html",
+      "next_action": "await_licensed_partner_feed_image_or_written_rights_permission_or_owned_photography",
+      "feed_dependency": "licensed_partner_feed_or_written_permission_or_owned_photography"
     },
     {
       "product_id": "SC-PDM-DELINA-EDP-75",
@@ -47,47 +87,8 @@
       "final_composite_allowed": false,
       "rights_evidence_status": "official_terms_personal_viewing_only_without_prior_written_permission",
       "rights_evidence_url": "https://parfums-de-marly.com/de/policies/terms-of-service",
-      "next_action": "await_licensed_affiliate_feed_image_or_written_brand_permission",
-      "feed_dependency": "perfumetrader_awin_product_feed_or_exact_product_data"
-    },
-    {
-      "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
-      "brand": "Dior",
-      "exact_variant_verified": true,
-      "current_source_type": "official_brand_reference_unlicensed",
-      "catalog_image_status": "reference_only",
-      "public_distribution_allowed": false,
-      "final_composite_allowed": false,
-      "rights_evidence_status": "official_terms_restrict_noncommercial_site_content_reuse",
-      "rights_evidence_url": "https://www.dior.com/de_de/beauty/folder?fid=legal-terms",
-      "next_action": "await_licensed_affiliate_feed_image_or_written_brand_permission",
-      "feed_dependency": "perfumetrader_awin_product_feed_or_exact_product_data"
-    },
-    {
-      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
-      "brand": "Yves Saint Laurent",
-      "exact_variant_verified": true,
-      "current_source_type": "official_brand_reference_unlicensed",
-      "catalog_image_status": "reference_only",
-      "public_distribution_allowed": false,
-      "final_composite_allowed": false,
-      "rights_evidence_status": "official_terms_prohibit_commercial_use_of_site_content",
-      "rights_evidence_url": "https://www.yslbeauty.de/customer-service/nutzungsbedingungen/customer-service-terms-and-conditions.html",
-      "next_action": "await_licensed_affiliate_feed_image_or_written_brand_permission",
-      "feed_dependency": "perfumetrader_awin_product_feed_or_exact_product_data"
-    },
-    {
-      "product_id": "SC-YSL-LIBRE-EDP-90",
-      "brand": "Yves Saint Laurent",
-      "exact_variant_verified": true,
-      "current_source_type": "official_brand_reference_unlicensed",
-      "catalog_image_status": "reference_only",
-      "public_distribution_allowed": false,
-      "final_composite_allowed": false,
-      "rights_evidence_status": "official_terms_prohibit_commercial_use_of_site_content",
-      "rights_evidence_url": "https://www.yslbeauty.de/customer-service/nutzungsbedingungen/customer-service-terms-and-conditions.html",
-      "next_action": "await_licensed_affiliate_feed_image_or_written_brand_permission",
-      "feed_dependency": "perfumetrader_awin_product_feed_or_exact_product_data"
+      "next_action": "await_licensed_partner_feed_image_or_written_rights_permission_or_owned_photography",
+      "feed_dependency": "licensed_partner_feed_or_written_permission_or_owned_photography"
     }
   ]
 }
