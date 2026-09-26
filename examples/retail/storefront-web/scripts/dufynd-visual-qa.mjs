@@ -647,7 +647,7 @@ try {
           if ([390, 1440].includes(viewport.width)) {
             const productControl = page
               .locator('[role="button"]:visible')
-              .filter({ hasText: "Details ansehen" })
+              .filter({ hasText: "Details" })
               .first();
             if ((await productControl.count()) !== 1) {
               throw new Error(
