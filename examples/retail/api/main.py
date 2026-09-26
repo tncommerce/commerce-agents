@@ -232,6 +232,15 @@ async def merchant_clickout(
 
 @app.post("/api/cart/add")
 async def cart_add(request: CartAddRequest, record: host.CurrentSession) -> dict:
+    if str(request.product_id).startswith("SC-"):
+        raise HTTPException(
+            status_code=409,
+            detail=(
+                "DUFYND fragrance purchases use verified merchant offers, "
+                "not the internal demo cart."
+            ),
+        )
+
     return await host.direct_add(
         record,
         request,
