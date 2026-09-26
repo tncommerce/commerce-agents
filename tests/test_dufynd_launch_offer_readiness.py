@@ -26,7 +26,7 @@ def test_merchant_partner_readiness_uses_public_https_and_clock_skew_tolerance()
 
     partners = source.split("const activeMerchantPartners =", 1)[1].split("add(", 1)[0]
 
-    assert 'validPublicHttpUrl(' in partners
+    assert "validPublicHttpUrl(" in partners
     assert 'String(partner.affiliate_url || "")' in partners
     assert "ageHours >= -MAX_FUTURE_CLOCK_SKEW_HOURS" in partners
     assert "ageHours <= 720" in partners
