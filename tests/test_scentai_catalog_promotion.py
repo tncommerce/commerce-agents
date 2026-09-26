@@ -57,6 +57,9 @@ def staged_product() -> dict:
         "media": {
             "image_url": "/products/test/test-fragrance.png",
             "image_status": "approved_feed_image",
+            "image_reviewed_at": "2026-09-18T10:00:00+00:00",
+            "image_rights_basis_id": "awin-test-feed-rights",
+            "image_rights_checked_at": "2026-09-18",
         },
         "validation": {
             "catalog_ready": False,
@@ -99,6 +102,29 @@ def test_current_staging_requirements_are_strict() -> None:
 
     assert "missing_approved_image" in blockers
     assert "missing_current_purchase_destination" in blockers
+
+
+@pytest.mark.parametrize(
+    "missing_field",
+    [
+        "image_reviewed_at",
+        "image_rights_basis_id",
+        "image_rights_checked_at",
+    ],
+)
+def test_approved_feed_image_requires_persisted_rights_evidence(
+    missing_field: str,
+) -> None:
+    product = staged_product()
+    product["media"].pop(missing_field)
+
+    blockers = promotion_blockers(
+        product,
+        [affiliate_offer()],
+        now=NOW,
+    )
+
+    assert "missing_feed_image_rights_evidence" in blockers
 
 
 def test_ready_product_passes_promotion_gates() -> None:

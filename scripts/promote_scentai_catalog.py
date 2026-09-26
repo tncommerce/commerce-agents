@@ -275,6 +275,14 @@ def promotion_blockers(
         blockers.append("missing_approved_image")
     elif image_status not in APPROVED_IMAGE_STATUSES:
         blockers.append("image_not_approved")
+    elif image_status == "approved_feed_image":
+        feed_evidence = (
+            media.get("image_reviewed_at"),
+            media.get("image_rights_basis_id"),
+            media.get("image_rights_checked_at"),
+        )
+        if not all(str(value or "").strip() for value in feed_evidence):
+            blockers.append("missing_feed_image_rights_evidence")
 
     scores = recommendation_scores(product)
     if set(scores) != set(PROFILE_AXES):
