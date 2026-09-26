@@ -21,6 +21,7 @@ const BASE_STYLE: StageStyle = {
 
 function updatePointer(event: PointerEvent<HTMLDivElement>) {
   if (event.pointerType === "touch") return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
   const bounds = event.currentTarget.getBoundingClientRect();
   const x = Math.min(1, Math.max(0, (event.clientX - bounds.left) / bounds.width));
