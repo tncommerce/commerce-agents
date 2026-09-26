@@ -157,3 +157,41 @@ def test_research_summary_detects_missing_identifier_observation() -> None:
     errors = validate_wave(wave, {"products": []}, {"products": []})
     assert "candidate_1:missing_identifier_evidence" in errors
     assert "enrichment_identifier_source_evidence_count_mismatch" in errors
+
+
+def test_research_allows_direct_merchant_without_affiliate_claim() -> None:
+    wave = {
+        "candidates": [
+            {
+                "product_id": "SC-DIRECT-1",
+                "brand": "Brand",
+                "name": "Direct",
+                "concentration": "Eau de Parfum",
+                "volume_ml": 100,
+                "variant_status": "verified_retail_variant",
+                "evidence": [{"url": "https://brand.example/product"}],
+                "product_data": {
+                    "source_url": "https://brand.example/product",
+                    "source_kind": "official_brand",
+                },
+                "research_merchant_evidence": [
+                    {
+                        "merchant": "official store",
+                        "url": "https://brand.example/buy",
+                        "affiliate_state": "not_applicable_direct_merchant",
+                    }
+                ],
+                "identifiers": {
+                    "status": "pending_primary_variant_verification",
+                    "canonical_gtin": None,
+                    "observations": [],
+                },
+                "validation": {
+                    "catalog_ready": False,
+                    "blockers": ["verified_purchase_destination_pending"],
+                },
+            }
+        ]
+    }
+
+    assert validate_wave(wave, {"products": []}, {"products": []}) == []
