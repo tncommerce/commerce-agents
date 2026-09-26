@@ -6,9 +6,7 @@ import re
 from pathlib import Path
 
 ENV_TEMPLATE = Path("examples/retail/storefront-web/.env.example")
-LAUNCH_CHECK = Path(
-    "examples/retail/storefront-web/scripts/check-launch-readiness.mjs"
-)
+LAUNCH_CHECK = Path("examples/retail/storefront-web/scripts/check-launch-readiness.mjs")
 
 REQUIRED_PUBLIC_ENV = {
     "NEXT_PUBLIC_API_URL",
