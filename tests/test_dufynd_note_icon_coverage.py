@@ -90,6 +90,21 @@ def test_priority_premium_motifs_are_not_monochrome_current_color_only() -> None
         "leather",
         "incense",
         "pepper",
+        "citrus",
+        "flower",
+        "leaf",
+        "root",
+        "honey",
+        "sweet",
+        "resin",
+        "tobacco",
+        "fruit",
+        "pineapple",
+        "cherry",
+        "tea",
+        "cocoa",
+        "fresh",
+        "moss",
     ):
         block_start = source.index(f"  {motif}: (")
         block_end = source.index("\n  ),", block_start)
