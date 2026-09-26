@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "wave_id": "DUFYND-CATALOG-EXPANSION-BATCH7-RESEARCH",
   "created_at": "2026-09-26",
-  "status": "research_only_not_enabled_for_staging",
+  "status": "enabled_for_isolated_staging",
   "max_products": 5,
   "live_publication_authorized": false,
   "selection_reason": "Three women fragrances fill the largest audience gap; two unisex anchors add premium and smoky comparison coverage. Designer, niche and value segments are represented. No commission influenced selection.",
@@ -550,5 +550,5 @@
       ]
     }
   ],
-  "next_gate": "All five candidates now use the normalized research-wave schema with official product profiles, community evidence and exact merchant-variant evidence. Canonical GTIN/feed matching, approved product imagery and fresh importable purchase destinations remain pending; 9 PM Pour Femme also remains provisional because its community sample is small. Do not enable staging until the normalized research wave passes its full test suite."
+  "next_gate": "Batch 7 is enabled only for isolated pre-live staging. Canonical GTIN/feed matching, approved product imagery and fresh importable purchase destinations remain live blockers; 9 PM Pour Femme remains provisional because its community sample is small. Live publication is not authorized."
 }
