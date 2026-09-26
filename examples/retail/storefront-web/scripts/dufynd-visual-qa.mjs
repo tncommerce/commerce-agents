@@ -282,21 +282,35 @@ try {
           !["home", "catalog"].includes(target.name)
         ) {
           const mobileOfferBar = page.locator(".dufynd-mobile-offer-bar");
-          if ((await mobileOfferBar.count()) !== 0) {
+          const heroOfferCta = page.locator("#dufynd-hero-offer-cta");
+          const heroCtaVisible = await heroOfferCta.evaluate((element) => {
+            const bounds = element.getBoundingClientRect();
+            return (
+              bounds.bottom > 0 &&
+              bounds.top < window.innerHeight &&
+              bounds.right > 0 &&
+              bounds.left < window.innerWidth
+            );
+          });
+          if (heroCtaVisible && (await mobileOfferBar.count()) !== 0) {
             throw new Error(
-              "mobile offer bar duplicates the hero CTA before scrolling",
+              "mobile offer bar duplicates the visible hero CTA",
             );
           }
 
           await page.locator("#angebote").scrollIntoViewIfNeeded();
-          await page.waitForTimeout(120);
+          await page.waitForFunction(
+            () => Boolean(document.querySelector(".dufynd-mobile-offer-bar")),
+            undefined,
+            { timeout: 1500 },
+          );
 
           if (
             (await mobileOfferBar.count()) !== 1 ||
             !(await mobileOfferBar.isVisible())
           ) {
             throw new Error(
-              "mobile fragrance page does not reveal the fixed offer bar after the hero leaves view",
+              "mobile fragrance page does not reveal the fixed offer bar after the hero CTA leaves view",
             );
           }
 
