@@ -1,5 +1,39 @@
 # Deployment platforms
 
+## DUFYND storefront launch environment
+
+The DUFYND storefront has an explicit pre-launch indexing gate. A technically successful
+deployment is intentionally **not** considered search-launch-ready until the public site,
+API and legal identity variables are configured.
+
+Required storefront variables:
+
+| Variable | Purpose |
+|---|---|
+| `NEXT_PUBLIC_API_URL` | Public HTTPS URL for the DUFYND API. |
+| `NEXT_PUBLIC_SITE_URL` | Canonical public HTTPS site URL, normally `https://dufynd.de`. |
+| `NEXT_PUBLIC_SITE_INDEXABLE` | Search-engine gate. Keep `false` before launch; set to `true` only for the approved public launch. |
+| `NEXT_PUBLIC_LEGAL_BUSINESS_NAME` | Legal business/operator name. |
+| `NEXT_PUBLIC_LEGAL_OWNER_NAME` | Legal owner/contact name. |
+| `NEXT_PUBLIC_LEGAL_STREET` | Legal street address. |
+| `NEXT_PUBLIC_LEGAL_POSTCODE` | Legal postcode. |
+| `NEXT_PUBLIC_LEGAL_CITY` | Legal city. |
+| `NEXT_PUBLIC_LEGAL_EMAIL` | Public legal contact email. |
+
+Before enabling indexing, run the storefront launch-readiness check with the production
+environment loaded:
+
+```bash
+cd examples/retail/storefront-web
+npm run launch:check -- --strict
+```
+
+The strict check must report no gates. In particular, do not treat a green application
+build as proof that search indexing is enabled: when `NEXT_PUBLIC_SITE_INDEXABLE` is not
+exactly `true`, DUFYND deliberately emits `noindex` metadata and a blocking
+`robots.txt`.
+
+
 The code calls the Anthropic API by default. Each runtime path has one place where a
 deployment points it at GCP Vertex AI, AWS Bedrock, Microsoft Foundry, or an in-house
 gateway instead. Everything here applies to both roles; the examples use the shopping
