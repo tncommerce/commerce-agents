@@ -25,6 +25,27 @@ def test_staging_data_quality_has_no_structural_issues() -> None:
     assert data_quality_issues(staging) == []
 
 
+def test_staging_qa_rejects_variant_and_provisional_gate_drift() -> None:
+    row = load_staging()["products"][-1].copy()
+    row["volume_ml"] = 75
+    row["community"] = {**row["community"], "provisional": True}
+    row["validation"] = {**row["validation"], "catalog_ready": True}
+
+    assert data_quality_issues({"products": [row]}) == [
+        f"{row['product_id']}:volume_product_id_mismatch",
+        f"{row['product_id']}:provisional_gate_mismatch",
+        f"{row['product_id']}:provisional_marked_ready",
+    ]
+
+
+def test_all_staged_fragrances_remain_disjoint_from_live_catalog() -> None:
+    staged_ids = {row["product_id"] for row in load_staging()["products"]}
+    live = json.loads(Path("examples/retail/data/catalog.json").read_text(encoding="utf-8"))
+    live_ids = {row["product_id"] for row in live["products"] if row.get("category") == "fragrance"}
+
+    assert staged_ids.isdisjoint(live_ids)
+
+
 @pytest.mark.asyncio
 async def test_all_staged_products_pass_pre_live_recommendation_qa() -> None:
     result = await run_qa()

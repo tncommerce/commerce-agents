@@ -122,6 +122,13 @@ def data_quality_issues(staging: dict) -> list[str]:
             if row.get(field) in (None, "", [], {}):
                 issues.append(f"{product_id}:missing_{field}")
 
+        volume_ml = row.get("volume_ml")
+        if isinstance(volume_ml, int) and volume_ml > 0:
+            if not product_id.endswith(f"-{volume_ml}"):
+                issues.append(f"{product_id}:volume_product_id_mismatch")
+        else:
+            issues.append(f"{product_id}:invalid_volume_ml")
+
         scores = (
             row.get("fragrance_profile", {}).get("recommendation_profile", {}).get("scores", {})
         )
@@ -138,6 +145,12 @@ def data_quality_issues(staging: dict) -> list[str]:
                 issues.append(f"{product_id}:invalid_{axis}_score")
 
         community = row.get("community", {})
+        blockers = row.get("validation", {}).get("blockers", [])
+        has_provisional_gate = any("provisional" in blocker for blocker in blockers)
+        if bool(community.get("provisional")) != has_provisional_gate:
+            issues.append(f"{product_id}:provisional_gate_mismatch")
+        if community.get("provisional") and row.get("validation", {}).get("catalog_ready"):
+            issues.append(f"{product_id}:provisional_marked_ready")
         if not community.get("provisional"):
             if community.get("longevity_10") is None:
                 issues.append(f"{product_id}:missing_longevity")
