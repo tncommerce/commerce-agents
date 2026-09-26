@@ -10,6 +10,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/start",
   },
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+  },
 };
 
 const paths = [
