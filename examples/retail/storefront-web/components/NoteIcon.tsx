@@ -37,6 +37,7 @@ type Motif =
   | "abstract";
 
 const MOTIFS: { motif: Motif; names: string[] }[] = [
+  { motif: "abstract", names: ["hedione"] },
   { motif: "bergamot", names: ["calabrian bergamot", "bergamot"] },
   { motif: "grapefruit", names: ["grapefruit"] },
   { motif: "jasmine", names: ["jasmine sambac", "jasmine"] },
@@ -47,7 +48,7 @@ const MOTIFS: { motif: Motif; names: string[] }[] = [
   { motif: "lemon", names: ["lemon", "citron"] },
   { motif: "geranium", names: ["geranium"] },
   { motif: "honey", names: ["honey"] },
-  { motif: "vanilla", names: ["bourbon vanilla", "vanilla orchid", "vanilla"] },
+  { motif: "vanilla", names: ["bourbon vanilla", "vanilla orchid", "vanilla", "vanillin"] },
   { motif: "tobacco", names: ["tobacco"] },
   { motif: "leather", names: ["leather"] },
   { motif: "incense", names: ["frankincense", "incense"] },
@@ -56,20 +57,20 @@ const MOTIFS: { motif: Motif; names: string[] }[] = [
   { motif: "cherry", names: ["black cherry", "cherry"] },
   { motif: "apple", names: ["green apple", "apple"] },
   { motif: "tea", names: ["black tea", "tea", "maté"] },
-  { motif: "cocoa", names: ["cocoa"] },
+  { motif: "cocoa", names: ["cocoa", "coffee"] },
   { motif: "moss", names: ["oak moss", "moss"] },
   { motif: "root", names: ["vetiver", "orris root"] },
   { motif: "musk", names: ["white musk", "pink musk", "musk", "ambrette seed", "ambrette"] },
   { motif: "amber", names: ["ambergris", "amberwood", "crystal amber", "ambrofix", "ambroxan", "ambrox", "amber"] },
-  { motif: "flower", names: ["orange blossom", "neroli", "violet", "rose", "iris", "orris", "magnolia", "carnation", "floral", "lily", "orchid", "mahonia"] },
-  { motif: "citrus", names: ["orange", "lime", "citrus", "petit grain"] },
-  { motif: "leaf", names: ["sage", "rosemary", "basil", "mint", "papyrus", "wormwood"] },
-  { motif: "wood", names: ["akigalawood", "georgywood", "guaiac wood", "wood", "cedar", "cypress", "sandal", "birch", "oud", "cashmere", "cashmeran"] },
-  { motif: "spice", names: ["ginger", "cardamom", "cinnamon", "nutmeg", "coriander", "spices"] },
-  { motif: "sweet", names: ["praline", "chestnut", "coumarin"] },
-  { motif: "resin", names: ["labdanum", "elemi", "opium"] },
-  { motif: "fruit", names: ["blackcurrant", "raspberry", "melon"] },
-  { motif: "fresh", names: ["aldehyde", "aquatic", "ozonic"] },
+  { motif: "flower", names: ["orange blossom", "neroli", "violet", "rose", "iris", "orris", "magnolia", "carnation", "floral", "lily", "orchid", "mahonia", "nectarine blossom", "everlasting essence", "frangipani", "freesia", "lavandin heart", "lotus", "osmanthus", "peony", "white gardenia", "ylang-ylang"] },
+  { motif: "citrus", names: ["orange", "lime", "citrus", "petit grain", "petitgrain"] },
+  { motif: "leaf", names: ["sage", "rosemary", "basil", "mint", "papyrus", "wormwood", "davana", "fougère accord", "green accord", "green notes", "hay", "juniper"] },
+  { motif: "wood", names: ["akigalawood", "georgywood", "guaiac wood", "wood", "cedar", "cypress", "sandal", "birch", "oud", "cashmere", "cashmeran", "cade oil", "mahogany", "pine"] },
+  { motif: "spice", names: ["ginger", "cardamom", "cinnamon", "nutmeg", "coriander", "spices", "clove", "saffron"] },
+  { motif: "sweet", names: ["praline", "chestnut", "coumarin", "almond", "bourbon", "brown sugar", "caramel", "ethyl maltol", "hazelnut", "liquorice", "marshmallow", "milk", "rum", "sugar"] },
+  { motif: "resin", names: ["labdanum", "elemi", "opium", "benzoin", "cistus absolute", "myrrh", "peru balsam resinoid"] },
+  { motif: "fruit", names: ["blackcurrant", "raspberry", "melon", "coconut", "date", "fruity fresh top", "lychee", "mirabelle", "pear", "pomegranate", "red berries", "rhubarb", "strawberry"] },
+  { motif: "fresh", names: ["aldehyde", "aquatic", "ozonic", "marine notes"] },
 ];
 
 function motifFor(note: string): Motif {
