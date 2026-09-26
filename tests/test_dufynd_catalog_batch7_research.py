@@ -23,7 +23,7 @@ def test_batch7_stays_research_only_until_sources_are_verified() -> None:
     assert wave["status"] == "research_only_not_enabled_for_staging"
     assert all(entry["wave_id"] != wave["wave_id"] for entry in intake["waves"])
     assert set(ids).isdisjoint({offer["product_id"] for offer in offers["offers"]})
-    assert sum(bool(candidate["merchant_evidence"]) for candidate in candidates) == 4
+    assert sum(bool(candidate["merchant_evidence"]) for candidate in candidates) == 5
     for candidate in candidates:
         assert candidate["manufacturer_source_url"].startswith("https://")
         for evidence in candidate["merchant_evidence"]:
@@ -37,10 +37,15 @@ def test_batch7_stays_research_only_until_sources_are_verified() -> None:
         assert (
             "current_verified_purchase_destination_pending" in candidate["validation"]["blockers"]
         )
-        assert ("merchant_variant_mapping_pending" in candidate["validation"]["blockers"]) == (
-            not candidate["merchant_evidence"]
-        )
-        assert candidate["community"] is None
+        assert "merchant_variant_mapping_pending" not in candidate["validation"]["blockers"]
+        community = candidate["community"]
+        assert community["source"] == "Parfumo"
+        assert community["source_url"].startswith("https://www.parfumo.com/")
+        assert community["rating_count"] > 0
+        assert community["longevity_count"] > 0
+        assert community["projection_count"] > 0
+        assert community["provisional"] is False
+        assert community["main_accords"]
         assert candidate["identifiers"]["canonical_gtin"] is None
         assert candidate["media"]["image_url"] is None
         assert candidate["validation"]["catalog_ready"] is False
