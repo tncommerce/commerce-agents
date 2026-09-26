@@ -153,6 +153,5 @@ def test_all_catalog_note_motifs_are_colored() -> None:
             monochrome.append(motif)
 
     assert not monochrome, (
-        "Active catalog motifs fell back to monochrome currentColor artwork: "
-        f"{monochrome}"
+        f"Active catalog motifs fell back to monochrome currentColor artwork: {monochrome}"
     )
