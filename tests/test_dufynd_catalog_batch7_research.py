@@ -23,22 +23,39 @@ def test_batch7_stays_research_only_until_sources_are_verified() -> None:
     assert wave["status"] == "research_only_not_enabled_for_staging"
     assert all(entry["wave_id"] != wave["wave_id"] for entry in intake["waves"])
     assert set(ids).isdisjoint({offer["product_id"] for offer in offers["offers"]})
-    assert sum(bool(candidate["merchant_evidence"]) for candidate in candidates) == 5
+    assert sum(bool(candidate["research_merchant_evidence"]) for candidate in candidates) == 5
     for candidate in candidates:
         assert candidate["manufacturer_source_url"].startswith("https://")
-        for evidence in candidate["merchant_evidence"]:
-            assert evidence["product_url"].startswith("https://")
-            assert evidence["selected_variant"] == f"{candidate['volume_ml']} ml"
-            assert (
-                evidence["merchant_product_id"] in candidate["identifiers"]["merchant_product_ids"]
+
+        product_data = candidate["product_data"]
+        assert product_data["scent_family"]
+        assert product_data["source_kind"] == "official_brand"
+        assert product_data["source_confidence"] == "high"
+        assert product_data["source_url"] == candidate["manufacturer_source_url"]
+        assert product_data.get("key_notes") or product_data.get("notes")
+
+        merchant_evidence = candidate["research_merchant_evidence"]
+        assert merchant_evidence
+        for evidence in merchant_evidence:
+            assert evidence["url"].startswith("https://")
+            assert evidence["variant"] == (
+                f"{candidate['volume_ml']} ml {candidate['concentration']}"
             )
-            assert evidence["observed_price_eur"] > 0
-            assert evidence["status"] == "research_only_not_imported"
-        assert (
-            "current_verified_purchase_destination_pending" in candidate["validation"]["blockers"]
-        )
+            assert evidence["merchant_product_id"]
+            assert evidence["research_state"] == "research_only_not_imported"
+
+        evidence_urls = {evidence["url"] for evidence in candidate["evidence"]}
+        assert candidate["manufacturer_source_url"] in evidence_urls
+        assert candidate["community"]["source_url"] in evidence_urls
+        assert all(evidence["url"] in evidence_urls for evidence in merchant_evidence)
+
+        assert "verified_purchase_destination_pending" in candidate["validation"]["blockers"]
+        assert "approved_product_image_pending" in candidate["validation"]["blockers"]
+        assert "canonical_gtin_feed_match_pending" in candidate["validation"]["blockers"]
+        assert "current_verified_purchase_destination_pending" not in candidate["validation"]["blockers"]
         assert "merchant_variant_mapping_pending" not in candidate["validation"]["blockers"]
         assert "community_data_pending" not in candidate["validation"]["blockers"]
+
         community = candidate["community"]
         assert community["source"] == "Parfumo"
         assert community["source_url"].startswith("https://www.parfumo.com/")
@@ -47,8 +64,17 @@ def test_batch7_stays_research_only_until_sources_are_verified() -> None:
         assert community["longevity_10"] > 0
         assert community["projection_10"] > 0
         assert len(community["main_accords"]) >= 5
+
         assert candidate["identifiers"]["canonical_gtin"] is None
+        assert candidate["identifiers"]["status"] == "pending_canonical_gtin_verification"
+        assert candidate["identifiers"]["observations"]
+
         assert candidate["media"]["image_url"] is None
+        assert candidate["media"]["image_status"] == "pending_approved_feed_or_manufacturer_image"
+        assert candidate["media"]["required_variant"] == {
+            "concentration": candidate["concentration"],
+            "volume_ml": candidate["volume_ml"],
+        }
         assert candidate["validation"]["catalog_ready"] is False
 
 
@@ -65,3 +91,17 @@ def test_batch7_small_community_sample_stays_provisional() -> None:
         row for row in wave["candidates"] if row["product_id"] == "SC-AFNAN-9-PM-POUR-FEMME-EDP-100"
     )
     assert afnan["community"]["rating_count"] == 26
+
+
+def test_batch7_normalized_schema_matches_staging_builder_contract() -> None:
+    wave = json.loads(
+        Path("examples/retail/data/dufynd_catalog_expansion_batch7_research.json").read_text()
+    )
+
+    for candidate in wave["candidates"]:
+        assert candidate["evidence"]
+        assert candidate["product_data"]
+        assert candidate["research_merchant_evidence"]
+        assert candidate["research_state"] == (
+            "official_profile_community_and_merchant_evidence_verified"
+        )
