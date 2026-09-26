@@ -63,9 +63,9 @@ def test_legacy_visual_fallbacks_never_claim_product_truth() -> None:
     assert 'provenance: "legacy_catalog"' in editorial_fallback
     assert 'fidelity_status: "editorial_only"' in editorial_fallback
 
-    legacy_cutout_fallback = source.split("const legacyCutoutUrl =", 1)[1].split(
-        "return null;", 1
-    )[0]
+    legacy_cutout_fallback = source.split("const legacyCutoutUrl =", 1)[1].split("return null;", 1)[
+        0
+    ]
     assert 'role: "cutout"' in legacy_cutout_fallback
     assert 'provenance: "legacy_catalog"' in legacy_cutout_fallback
     assert 'fidelity_status: "pending_review"' in legacy_cutout_fallback
