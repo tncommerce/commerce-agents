@@ -260,6 +260,8 @@ class MockRetail(StorefrontBackend):
             "sweetness",
             "woodiness",
             "spiciness",
+            DELIVERY_ATTRIBUTE,
+            LOW_STOCK_ATTRIBUTE,
         }
 
         attributes = {
@@ -282,6 +284,11 @@ class MockRetail(StorefrontBackend):
             "smoky": "rauchig",
             "green": "grün",
             "aromatic": "aromatisch",
+            "synthetic": "synthetisch",
+            "leathery": "ledrig",
+            "resinous": "harzig",
+            "chypre": "chypre",
+            "white floral": "weiße Blüten",
         }
 
         if attributes.get("main_accords"):
@@ -292,6 +299,21 @@ class MockRetail(StorefrontBackend):
                 )
                 for accord in str(attributes["main_accords"]).split(",")
                 if accord.strip()
+            )
+
+        target_labels_de = {
+            "men": "Herren",
+            "women": "Damen",
+            "unisex": "Unisex",
+        }
+        if attributes.get("target_group"):
+            attributes["target_group"] = ", ".join(
+                target_labels_de.get(
+                    target.strip().casefold(),
+                    target.strip(),
+                )
+                for target in str(attributes["target_group"]).split(",")
+                if target.strip()
             )
 
         def scent_profile_level(name: str) -> str | None:
