@@ -22,6 +22,7 @@ def test_affiliate_is_not_a_catalog_promotion_gate() -> None:
     rows = queue["candidates"]
 
     assert all("affiliate_link_pending" not in row["blockers"] for row in rows)
+    assert all("verified_current_merchant_pending" not in row["blockers"] for row in rows)
 
     ready_by_id = {
         row["proposed_product_id"]: row
