@@ -59,6 +59,13 @@ def test_priority_notes_use_distinct_premium_motifs() -> None:
         "musk": "musk",
         "guaiac wood": "wood",
         "amber": "amber",
+        "mandarin": "mandarin",
+        "lemon": "lemon",
+        "geranium": "geranium",
+        "apple": "apple",
+        "leather": "leather",
+        "incense": "incense",
+        "pink pepper": "pepper",
     }
 
     assert {note: mappings.get(note) for note in expected} == expected
@@ -76,6 +83,13 @@ def test_priority_premium_motifs_are_not_monochrome_current_color_only() -> None
         "wood",
         "amber",
         "musk",
+        "mandarin",
+        "lemon",
+        "geranium",
+        "apple",
+        "leather",
+        "incense",
+        "pepper",
     ):
         block_start = source.index(f"  {motif}: (")
         block_end = source.index("\n  ),", block_start)
