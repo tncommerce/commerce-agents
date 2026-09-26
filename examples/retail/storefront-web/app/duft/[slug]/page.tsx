@@ -389,7 +389,7 @@ export default async function FragrancePage({
   ).replaceAll("<", "\\u003c");
 
   return (
-    <main className="min-h-screen bg-(--surface) pb-24 text-(--ink) sm:pb-0">
+    <main className="dufynd-fragrance-page min-h-screen pb-24 text-(--ink) sm:pb-0">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: breadcrumbJson }}
@@ -399,7 +399,7 @@ export default async function FragrancePage({
         dangerouslySetInnerHTML={{ __html: productJson }}
       />
       <AcquisitionAnalytics source="fragrance_detail" />
-      <header className="border-b border-(--line) bg-(--card)">
+      <header className="dufynd-fragrance-header border-b border-(--line)">
         <div className="mx-auto flex max-w-[1080px] items-center justify-between gap-4 px-4 py-4 sm:px-6">
           <a
             href="/"
@@ -435,10 +435,10 @@ export default async function FragrancePage({
         </div>
       </header>
 
-      <div className="mx-auto max-w-[1080px] px-4 py-5 sm:px-6 sm:py-8">
+      <div className="mx-auto max-w-[1080px] px-4 py-4 sm:px-6 sm:py-7">
         <nav
           aria-label="Breadcrumb"
-          className="mb-5 text-[12px] text-(--ink-soft)"
+          className="mb-4 text-[12px] text-(--ink-soft) sm:mb-5"
         >
           <a href="/" className="hover:underline">
             DUFYND
@@ -454,7 +454,7 @@ export default async function FragrancePage({
         </nav>
 
         <section
-          className={`dufynd-fragrance-hero dufynd-fragrance-hero--${visualTheme} relative overflow-hidden rounded-[30px] border border-(--line) bg-(--card) shadow-(--shadow)`}
+          className={`dufynd-fragrance-hero dufynd-fragrance-hero--${visualTheme} relative overflow-hidden rounded-[24px] border border-(--line) bg-(--card) shadow-(--shadow) sm:rounded-[30px]`}
         >
           <div
             aria-hidden
@@ -464,7 +464,7 @@ export default async function FragrancePage({
             aria-hidden
             className="dufynd-fragrance-hero-orbit pointer-events-none absolute"
           />
-          <div className="relative z-10 grid lg:grid-cols-[0.94fr_1.06fr]">
+          <div className="relative z-10 grid lg:grid-cols-[0.86fr_1.14fr]">
             {fragrance.model_3d_url || heroIsProductTruth ? (
               <FragranceModel3D
                 modelUrl={fragrance.model_3d_url}
@@ -476,7 +476,7 @@ export default async function FragrancePage({
                     : undefined
                 }
                 alt={`${fragrance.brand} ${fragrance.name}`}
-                className="min-h-[330px] w-full sm:min-h-[430px] lg:min-h-[520px]"
+                className="min-h-[260px] w-full sm:min-h-[350px] lg:min-h-[470px]"
                 priority
               />
             ) : (
@@ -485,20 +485,20 @@ export default async function FragrancePage({
                 alt={`${fragrance.brand} ${fragrance.name}`}
                 variant="hero"
                 mode="editorial"
-                className="min-h-[330px] w-full sm:min-h-[430px] lg:min-h-[520px]"
+                className="min-h-[260px] w-full sm:min-h-[350px] lg:min-h-[470px]"
                 priority
               />
             )}
 
-            <div className="dufynd-fragrance-hero-copy flex flex-col justify-center p-5 sm:p-7 lg:p-9">
+            <div className="dufynd-fragrance-hero-copy flex flex-col justify-center p-4 sm:p-6 lg:p-8">
               <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-(--accent-ink)">
                 {fragrance.brand}
               </div>
-              <h1 className="mt-2 text-[34px] font-semibold leading-[1.02] tracking-[-0.045em] sm:text-[46px]">
+              <h1 className="mt-1.5 text-[32px] font-semibold leading-[1.02] tracking-[-0.045em] sm:text-[44px]">
                 {fragrance.name}
               </h1>
 
-              <div className="mt-4 flex flex-wrap gap-1.5 text-[11px] text-(--ink-soft) sm:gap-2 sm:text-[12px]">
+              <div className="mt-3 flex flex-wrap gap-1.5 text-[11px] text-(--ink-soft) sm:mt-4 sm:gap-2 sm:text-[12px]">
                 <span className="rounded-full border border-(--line) bg-(--surface) px-2.5 py-1.5 sm:px-3">
                   {fragrance.concentration}
                 </span>
@@ -520,7 +520,7 @@ export default async function FragrancePage({
                 ) : null}
               </div>
 
-              <div className="mt-5 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-2.5">
+              <div className="mt-4 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-2.5">
                 <a
                   href="#angebote"
                   className="rounded-xl bg-(--accent-strong) px-3 py-2.5 text-center text-[12px] font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:brightness-95 sm:px-4 sm:text-[13px]"
@@ -537,19 +537,19 @@ export default async function FragrancePage({
                 ) : null}
               </div>
 
-              <div className="mt-4">
+              <div className="mt-3 sm:mt-4">
                 <FragranceSaveControls
                   productId={fragrance.product_id}
                   compact
                 />
               </div>
 
-              <div className="mt-5 grid grid-cols-3 overflow-hidden rounded-2xl border border-(--line) bg-(--surface)">
-                <div className="p-3 sm:p-4">
+              <div className="mt-4 grid grid-cols-3 overflow-hidden rounded-2xl border border-(--line) bg-(--surface) sm:mt-5">
+                <div className="p-2.5 sm:p-4">
                   <div className="text-[10.5px] text-(--ink-soft)">
                     Community
                   </div>
-                  <div className="mt-1 text-[19px] font-semibold tracking-[-0.03em] sm:text-[22px]">
+                  <div className="mt-1 text-[18px] font-semibold tracking-[-0.03em] sm:text-[22px]">
                     {fragrance.community.rating_10 != null
                       ? `${fragrance.community.rating_10.toLocaleString(
                           "de-DE",
@@ -562,11 +562,11 @@ export default async function FragrancePage({
                   </div>
                 </div>
 
-                <div className="border-l border-(--line) p-3 sm:p-4">
+                <div className="border-l border-(--line) p-2.5 sm:p-4">
                   <div className="text-[10.5px] text-(--ink-soft)">
                     Haltbarkeit
                   </div>
-                  <div className="mt-1 text-[19px] font-semibold tracking-[-0.03em] sm:text-[22px]">
+                  <div className="mt-1 text-[18px] font-semibold tracking-[-0.03em] sm:text-[22px]">
                     {fragrance.community.longevity_10 != null
                       ? fragrance.community.longevity_10.toLocaleString(
                           "de-DE",
@@ -579,11 +579,11 @@ export default async function FragrancePage({
                   </div>
                 </div>
 
-                <div className="border-l border-(--line) p-3 sm:p-4">
+                <div className="border-l border-(--line) p-2.5 sm:p-4">
                   <div className="text-[10.5px] text-(--ink-soft)">
                     Ausstrahlung
                   </div>
-                  <div className="mt-1 text-[19px] font-semibold tracking-[-0.03em] sm:text-[22px]">
+                  <div className="mt-1 text-[18px] font-semibold tracking-[-0.03em] sm:text-[22px]">
                     {fragrance.community.projection_10 != null
                       ? fragrance.community.projection_10.toLocaleString(
                           "de-DE",
@@ -597,7 +597,7 @@ export default async function FragrancePage({
                 </div>
               </div>
 
-              <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[10.5px] leading-4 text-(--ink-soft)">
+              <div className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[10.5px] leading-4 text-(--ink-soft) sm:mt-3">
                 <span>
                   {fragrance.community.source}
                   {fragrance.community.rating_count
@@ -610,7 +610,7 @@ export default async function FragrancePage({
                 <span>Community-Werte, keine Laborwerte</span>
               </div>
 
-              <p className="mt-4 text-[10.5px] leading-4 text-(--ink-soft)">
+              <p className="mt-3 text-[10.5px] leading-4 text-(--ink-soft) sm:mt-4">
                 DUFYND verkauft nicht selbst. Kauf und Versand erfolgen beim jeweiligen Händler.
               </p>
               {heroVisual && !heroIsProductTruth ? (
