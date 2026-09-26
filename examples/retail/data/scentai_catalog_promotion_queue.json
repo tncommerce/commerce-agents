@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated_at": "2026-09-19",
+  "updated_at": "2026-09-26T16:52:00Z",
   "status": "promotion_queue_active",
   "live_catalog_count": 32,
   "verified_queue_count": 30,
@@ -24,14 +24,13 @@
     "multi_merchant_coverage": 29,
     "affiliate_links_ready": 0,
     "approved_images_ready": 0,
-    "unresolved_identity_version_blockers": 0
+    "unresolved_identity_version_blockers": 0,
+    "current_purchase_destinations_ready": 5
   },
   "blocker_counts": {
-    "affiliate_link_pending": 30,
     "approved_product_image_pending": 30,
-    "community_performance_still_provisional": 2,
-    "identity_version": 0,
-    "verified_current_merchant_pending": 1
+    "verified_purchase_destination_pending": 25,
+    "community_performance_still_provisional": 2
   },
   "candidates": [
     {
@@ -49,7 +48,6 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 2,
       "blockers": [
-        "affiliate_link_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
@@ -69,7 +67,6 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 2,
       "blockers": [
-        "affiliate_link_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
@@ -89,7 +86,6 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 2,
       "blockers": [
-        "affiliate_link_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
@@ -109,7 +105,7 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 2,
       "blockers": [
-        "affiliate_link_pending",
+        "verified_purchase_destination_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
@@ -129,7 +125,6 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 2,
       "blockers": [
-        "affiliate_link_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
@@ -149,7 +144,7 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 3,
       "blockers": [
-        "affiliate_link_pending",
+        "verified_purchase_destination_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
@@ -169,7 +164,7 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 3,
       "blockers": [
-        "affiliate_link_pending",
+        "verified_purchase_destination_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
@@ -189,7 +184,7 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 3,
       "blockers": [
-        "affiliate_link_pending",
+        "verified_purchase_destination_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
@@ -209,7 +204,7 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 2,
       "blockers": [
-        "affiliate_link_pending",
+        "verified_purchase_destination_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
@@ -229,7 +224,7 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 2,
       "blockers": [
-        "affiliate_link_pending",
+        "verified_purchase_destination_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
@@ -249,7 +244,7 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 2,
       "blockers": [
-        "affiliate_link_pending",
+        "verified_purchase_destination_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
@@ -269,7 +264,7 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 2,
       "blockers": [
-        "affiliate_link_pending",
+        "verified_purchase_destination_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
@@ -289,7 +284,7 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 2,
       "blockers": [
-        "affiliate_link_pending",
+        "verified_purchase_destination_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
@@ -309,7 +304,7 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 3,
       "blockers": [
-        "affiliate_link_pending",
+        "verified_purchase_destination_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
@@ -329,7 +324,7 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 2,
       "blockers": [
-        "affiliate_link_pending",
+        "verified_purchase_destination_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
@@ -349,7 +344,7 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 2,
       "blockers": [
-        "affiliate_link_pending",
+        "verified_purchase_destination_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
@@ -369,7 +364,7 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 2,
       "blockers": [
-        "affiliate_link_pending",
+        "verified_purchase_destination_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
@@ -389,7 +384,7 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 3,
       "blockers": [
-        "affiliate_link_pending",
+        "verified_purchase_destination_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
@@ -409,7 +404,7 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 2,
       "blockers": [
-        "affiliate_link_pending",
+        "verified_purchase_destination_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
@@ -430,9 +425,8 @@
       "merchant_coverage_count": 0,
       "blockers": [
         "community_performance_still_provisional",
-        "affiliate_link_pending",
-        "approved_product_image_pending",
-        "verified_current_merchant_pending"
+        "verified_purchase_destination_pending",
+        "approved_product_image_pending"
       ],
       "ready_for_live": false
     },
@@ -451,7 +445,7 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 2,
       "blockers": [
-        "affiliate_link_pending",
+        "verified_purchase_destination_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
@@ -471,7 +465,6 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 2,
       "blockers": [
-        "affiliate_link_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
@@ -491,7 +484,7 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 2,
       "blockers": [
-        "affiliate_link_pending",
+        "verified_purchase_destination_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
@@ -511,7 +504,7 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 2,
       "blockers": [
-        "affiliate_link_pending",
+        "verified_purchase_destination_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
@@ -531,7 +524,7 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 2,
       "blockers": [
-        "affiliate_link_pending",
+        "verified_purchase_destination_pending",
         "approved_product_image_pending",
         "community_performance_still_provisional"
       ],
@@ -552,7 +545,7 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 2,
       "blockers": [
-        "affiliate_link_pending",
+        "verified_purchase_destination_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
@@ -572,7 +565,7 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 2,
       "blockers": [
-        "affiliate_link_pending",
+        "verified_purchase_destination_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
@@ -592,7 +585,7 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 2,
       "blockers": [
-        "affiliate_link_pending",
+        "verified_purchase_destination_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
@@ -612,7 +605,7 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 3,
       "blockers": [
-        "affiliate_link_pending",
+        "verified_purchase_destination_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
@@ -632,15 +625,15 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 2,
       "blockers": [
-        "affiliate_link_pending",
+        "verified_purchase_destination_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
     }
   ],
   "next_actions": [
-    "Pause new catalog batches until the promotion pipeline is operational.",
-    "Record affiliate approvals as they arrive and map each approved merchant to feed/link ingestion.",
+    "Maintain fresh, exact-variant purchase destinations independently from affiliate approval.",
+    "Record affiliate approvals as they arrive and map approved merchants to tracked feed/link ingestion without changing fragrance recommendation priority.",
     "Ingest approved product imagery and merchant offers.",
     "Promote products in small live batches with search/recommendation QA after each promotion.",
     "Recheck provisional community-performance data for very new/reformulated releases before publishing performance claims."
