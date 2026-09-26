@@ -1,11 +1,13 @@
 const ACCORD_LABELS: Record<string, string> = {
   fresh: "Frisch",
   citrus: "Zitrisch",
+  chypre: "Chypre",
   aquatic: "Aquatisch",
   green: "Grün",
   spicy: "Würzig",
   sweet: "Süß",
   synthetic: "Synthetisch",
+  "white floral": "Weißblumig",
   fruity: "Fruchtig",
   woody: "Holzig",
   smoky: "Rauchig",
