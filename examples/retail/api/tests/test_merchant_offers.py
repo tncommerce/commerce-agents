@@ -350,6 +350,23 @@ def test_clickout_tracker_writes_anonymous_event(tmp_path) -> None:
     assert "user_id" not in row
 
 
+def test_clickout_tracker_does_not_mark_invalid_affiliate_url(tmp_path) -> None:
+    log_path = tmp_path / "clickouts.jsonl"
+    tracker = MerchantClickoutTracker(log_path)
+    tracked_offer = offer(
+        "invalid-affiliate-tracked",
+        merchant="Merchant A",
+        price=90,
+        shipping=0,
+    )
+    tracked_offer.affiliate_url = "javascript:alert(1)"
+
+    tracker.record(tracked_offer, now=NOW)
+
+    row = json.loads(log_path.read_text(encoding="utf-8").strip())
+    assert row["affiliate_link"] is False
+
+
 def test_clickout_tracker_preserves_content_attribution(tmp_path) -> None:
     log_path = tmp_path / "clickouts.jsonl"
     tracker = MerchantClickoutTracker(log_path)
