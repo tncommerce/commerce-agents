@@ -328,14 +328,13 @@ try {
 
           const wrongPremiumMotifs = await page.evaluate(
             (expectedMotifs) => {
-              const spans = Array.from(document.querySelectorAll("span"));
+              const noteCards = Array.from(
+                document.querySelectorAll("[data-dufynd-exploded-note]"),
+              );
               return Object.entries(expectedMotifs).flatMap(
                 ([label, expectedMotif]) => {
-                  const labelSpan = spans.find(
-                    (span) => span.textContent?.trim() === label,
-                  );
-                  const noteCard = labelSpan?.closest(
-                    "[data-dufynd-exploded-note]",
+                  const noteCard = noteCards.find((card) =>
+                    card.textContent?.includes(label),
                   );
                   const icon = noteCard?.querySelector(
                     "svg[data-dufynd-note-motif]",
