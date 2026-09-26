@@ -1,0 +1,84 @@
+{
+  "version": 1,
+  "release_id": "SCENTAI-RELEASE-01",
+  "merchant": "top-parfuemerie",
+  "observed_at": "2026-09-22",
+  "status": "blocked_all_or_nothing",
+  "summary": {
+    "release_size": 5,
+    "feed_rows_mapped": 4,
+    "tracking_contract_passed": 4,
+    "positive_price_passed": 4,
+    "image_candidates_present": 4,
+    "missing_feed_offer": 1,
+    "ready_for_live_activation": 0
+  },
+  "tracking_validation": {
+    "feed_row_count": 8053,
+    "valid_awin_tracking_rows": 8053,
+    "publisher_id": "3099222",
+    "advertiser_id": "31081",
+    "invalid_tracking_rows": 0
+  },
+  "products": [
+    {
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "merchant_product_id": "780879",
+      "feed_price_eur": 150.0,
+      "feed_last_updated": "2026-04-29 14:30:59",
+      "identity": "pass",
+      "tracking": "pass",
+      "price": "pass_positive",
+      "image": "candidate",
+      "freshness": "review_stale_feed",
+      "activation": "blocked"
+    },
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "merchant_product_id": "825869",
+      "feed_price_eur": 285.0,
+      "feed_last_updated": "2026-09-08 15:31:04",
+      "identity": "pass",
+      "tracking": "pass",
+      "price": "review_external_price_changed_after_feed",
+      "image": "candidate",
+      "freshness": "review",
+      "activation": "blocked"
+    },
+    {
+      "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+      "merchant_product_id": null,
+      "identity": "not_found_in_feed",
+      "tracking": "missing",
+      "price": "missing",
+      "image": "missing",
+      "freshness": "not_applicable",
+      "activation": "blocked"
+    },
+    {
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "merchant_product_id": "787670",
+      "feed_price_eur": 143.95,
+      "feed_last_updated": "2026-04-26 22:25:53",
+      "identity": "pass",
+      "tracking": "pass",
+      "price": "pass_positive_external_recent_match",
+      "image": "candidate",
+      "freshness": "review_stale_feed",
+      "activation": "blocked"
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "merchant_product_id": "856448",
+      "feed_price_eur": 153.95,
+      "feed_last_updated": "2026-09-10 12:31:04",
+      "identity": "pass",
+      "tracking": "pass",
+      "price": "pass_positive_external_recent_match",
+      "image": "candidate",
+      "freshness": "candidate",
+      "activation": "blocked_by_release_all_or_nothing"
+    }
+  ],
+  "decision": "Do not activate Release 01 from this merchant yet. Keep verified mappings and tracking data, refresh or corroborate stale prices, and leave Hypnotic Poison unresolved until a valid merchant offer exists."
+}

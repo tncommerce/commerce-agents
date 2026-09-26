@@ -92,6 +92,28 @@
       "gtin": "3348901640916"
     },
     {
+      "product_id": "SC-DOLCE-GABBANA-THE-ONE-MEN-EDP-2025-100",
+      "merchant": "douglas",
+      "merchant_product_id": "5011977029",
+      "ean": "8056669925859",
+      "gtin": "8056669925859",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-09-19",
+      "evidence_url": "https://www.douglas.de/de/p/5011977029",
+      "evidence_note": "Current 2025 Neue Auslegung product family includes 100 ml; exact 100 ml GTIN cross-verified separately."
+    },
+    {
+      "product_id": "SC-DOLCE-GABBANA-THE-ONE-MEN-EDP-2025-100",
+      "merchant": "flaconi",
+      "merchant_product_id": null,
+      "ean": "8056669925859",
+      "gtin": "8056669925859",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-09-19",
+      "evidence_url": "https://www.flaconi.de/parfum/dolce-gabbana/the-one-for-men/dolce-gabbana-the-one-for-men-new-eau-de-parfum.html",
+      "evidence_note": "Current reimagined EDP listing; exact 100 ml GTIN cross-verified from current product data."
+    },
+    {
       "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
       "merchant": "douglas",
       "merchant_product_id": "1068008",
@@ -111,6 +133,17 @@
       "merchant_product_id": null,
       "ean": null,
       "gtin": null
+    },
+    {
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "merchant": "top-parfuemerie",
+      "merchant_product_id": "924719",
+      "ean": "3770010614630",
+      "gtin": "3770010614630",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-09-22",
+      "evidence_url": "https://www.topparfuemerie.de/essential-parfums-bois-imperial-by-quentin-bisch-edp-nat-spray-nachfuellbar",
+      "evidence_note": "Awin feed product 38332629354 maps merchant product 924719 to Bois Impérial EDP; EAN 3770010614630 independently cross-verifies the refillable 100 ml variant."
     },
     {
       "product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
@@ -211,6 +244,13 @@
       "gtin": "3605533286555"
     },
     {
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "merchant": "top-parfuemerie",
+      "merchant_product_id": "780879",
+      "ean": null,
+      "gtin": null
+    },
+    {
       "product_id": "SC-LATTAFA-ANGHAM-EDP-100",
       "merchant": "notino",
       "merchant_product_id": "LTF00992",
@@ -279,6 +319,13 @@
       "merchant_product_id": null,
       "ean": "3700578501998",
       "gtin": "3700578501998"
+    },
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "merchant": "top-parfuemerie",
+      "merchant_product_id": "825869",
+      "ean": null,
+      "gtin": null
     },
     {
       "product_id": "SC-PDM-HEROD-EDP-125",
@@ -379,6 +426,13 @@
       "gtin": "3365440787971"
     },
     {
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "merchant": "top-parfuemerie",
+      "merchant_product_id": "787670",
+      "ean": null,
+      "gtin": null
+    },
+    {
       "product_id": "SC-YSL-LA-NUIT-DE-LHOMME-EDT-100",
       "merchant": "douglas",
       "merchant_product_id": "3000028814",
@@ -407,6 +461,13 @@
       "gtin": "3614272648425"
     },
     {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "merchant": "top-parfuemerie",
+      "merchant_product_id": "856448",
+      "ean": null,
+      "gtin": null
+    },
+    {
       "product_id": "SC-YSL-MYSLF-LE-PARFUM-100",
       "merchant": "douglas",
       "merchant_product_id": "5011499070",
@@ -419,28 +480,6 @@
       "merchant_product_id": null,
       "ean": "3614274114645",
       "gtin": "3614274114645"
-    },
-    {
-      "product_id": "SC-DOLCE-GABBANA-THE-ONE-MEN-EDP-2025-100",
-      "merchant": "douglas",
-      "merchant_product_id": "5011977029",
-      "ean": "8056669925859",
-      "gtin": "8056669925859",
-      "mapping_status": "verified_current_variant",
-      "verified_at": "2026-09-19",
-      "evidence_url": "https://www.douglas.de/de/p/5011977029",
-      "evidence_note": "Current 2025 Neue Auslegung product family includes 100 ml; exact 100 ml GTIN cross-verified separately."
-    },
-    {
-      "product_id": "SC-DOLCE-GABBANA-THE-ONE-MEN-EDP-2025-100",
-      "merchant": "flaconi",
-      "merchant_product_id": null,
-      "ean": "8056669925859",
-      "gtin": "8056669925859",
-      "mapping_status": "verified_current_variant",
-      "verified_at": "2026-09-19",
-      "evidence_url": "https://www.flaconi.de/parfum/dolce-gabbana/the-one-for-men/dolce-gabbana-the-one-for-men-new-eau-de-parfum.html",
-      "evidence_note": "Current reimagined EDP listing; exact 100 ml GTIN cross-verified from current product data."
     }
   ]
 }
