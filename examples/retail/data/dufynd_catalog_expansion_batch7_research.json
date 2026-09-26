@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "wave_id": "DUFYND-CATALOG-EXPANSION-BATCH7-RESEARCH",
   "created_at": "2026-09-26",
-  "status": "research_only_not_enabled_for_staging",
+  "status": "research_queue",
   "max_products": 5,
   "live_publication_authorized": false,
   "selection_reason": "Three women fragrances fill the largest audience gap; two unisex anchors add premium and smoky comparison coverage. Designer, niche and value segments are represented. No commission influenced selection.",
@@ -18,23 +18,11 @@
         "women"
       ],
       "comparison_role": "designer_white_floral_anchor",
-      "variant_status": "manufacturer_and_merchant_variant_verified",
+      "variant_status": "verified_retail_variant",
       "manufacturer_source_url": "https://de.mugler.com/de/duft/damendufte/alien/alien-eau-de-parfum/M010401002.html",
       "checked_at": "2026-09-26",
       "variant_caution": "Distinguish refillable bottle from refill pouch and Alien Hypersense.",
       "research_state": "manufacturer_merchant_and_community_verified_remaining_live_gates",
-      "merchant_evidence": [
-        {
-          "merchant": "Douglas",
-          "merchant_product_id": "913048",
-          "selected_variant": "90 ml",
-          "observed_price_eur": 99,
-          "shipping_at_check": "free",
-          "product_url": "https://www.douglas.de/de/p/2001003772?variant=913048",
-          "checked_at": "2026-09-26T04:53:10Z",
-          "status": "research_only_not_imported"
-        }
-      ],
       "community": {
         "source": "Parfumo",
         "source_url": "https://www.parfumo.com/Perfumes/mugler/Alien",
@@ -59,11 +47,24 @@
         "canonical_gtin": null,
         "merchant_product_ids": [
           "913048"
-        ]
+        ],
+        "status": "pending_primary_variant_verification",
+        "observations": [],
+        "note": "Exact retail variant verified; canonical GTIN/feed matching remains pending."
       },
       "media": {
         "image_url": null,
-        "rights_status": "unverified"
+        "image_status": "pending_approved_feed_or_manufacturer_image",
+        "queue_priority": 1,
+        "reference_page": "https://de.mugler.com/de/duft/damendufte/alien/alien-eau-de-parfum/M010401002.html",
+        "required_variant": {
+          "concentration": "Eau de Parfum",
+          "volume_ml": 90
+        },
+        "blockers": [
+          "approved_image_source_pending",
+          "exact_bottle_and_packaging_review_pending"
+        ]
       },
       "validation": {
         "catalog_ready": false,
@@ -71,7 +72,41 @@
           "approved_product_image_pending",
           "current_verified_purchase_destination_pending"
         ]
-      }
+      },
+      "evidence": [
+        {
+          "source": "Mugler",
+          "url": "https://de.mugler.com/de/duft/damendufte/alien/alien-eau-de-parfum/M010401002.html",
+          "checked_at": "2026-09-26"
+        },
+        {
+          "source": "Douglas",
+          "url": "https://www.douglas.de/de/p/2001003772?variant=913048",
+          "checked_at": "2026-09-26"
+        }
+      ],
+      "product_data": {
+        "scent_family": "amber woody floral",
+        "key_notes": [
+          "jasmine sambac",
+          "cashmeran",
+          "white amber"
+        ],
+        "source_confidence": "high",
+        "source_kind": "official_brand",
+        "source_url": "https://de.mugler.com/de/duft/damendufte/alien/alien-eau-de-parfum/M010401002.html",
+        "note": "Official Mugler product data confirms the 90 ml refillable Eau de Parfum and the jasmine sambac, Cashmeran and white amber profile."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "913048",
+          "url": "https://www.douglas.de/de/p/2001003772?variant=913048",
+          "variant": "90 ml Eau de Parfum",
+          "checked_at": "2026-09-26",
+          "affiliate_state": "application_pending"
+        }
+      ]
     },
     {
       "priority": 2,
@@ -84,23 +119,11 @@
         "unisex"
       ],
       "comparison_role": "luxury_amber_comparison_anchor",
-      "variant_status": "manufacturer_and_merchant_variant_verified",
+      "variant_status": "verified_retail_variant",
       "manufacturer_source_url": "https://www.franciskurkdjian.com/eu-de/p/baccarat-rouge-540-eau-de-parfum-10223021.html",
       "checked_at": "2026-09-26",
       "variant_caution": "Keep the 70 ml Eau de Parfum distinct from the Extrait and hair mist.",
       "research_state": "manufacturer_merchant_and_community_verified_remaining_live_gates",
-      "merchant_evidence": [
-        {
-          "merchant": "Douglas",
-          "merchant_product_id": "922888",
-          "selected_variant": "70 ml",
-          "observed_price_eur": 265,
-          "shipping_at_check": "free",
-          "product_url": "https://www.douglas.de/de/p/3001037679?variant=922888",
-          "checked_at": "2026-09-26T04:53:10Z",
-          "status": "research_only_not_imported"
-        }
-      ],
       "community": {
         "source": "Parfumo",
         "source_url": "https://www.parfumo.com/Perfumes/Maison_Francis_Kurkdjian/Baccarat_Rouge_540_Eau_de_Parfum",
@@ -125,11 +148,24 @@
         "canonical_gtin": null,
         "merchant_product_ids": [
           "922888"
-        ]
+        ],
+        "status": "pending_primary_variant_verification",
+        "observations": [],
+        "note": "Exact retail variant verified; canonical GTIN/feed matching remains pending."
       },
       "media": {
         "image_url": null,
-        "rights_status": "unverified"
+        "image_status": "pending_approved_feed_or_manufacturer_image",
+        "queue_priority": 2,
+        "reference_page": "https://www.franciskurkdjian.com/eu-de/p/baccarat-rouge-540-eau-de-parfum-10223021.html",
+        "required_variant": {
+          "concentration": "Eau de Parfum",
+          "volume_ml": 70
+        },
+        "blockers": [
+          "approved_image_source_pending",
+          "exact_bottle_and_packaging_review_pending"
+        ]
       },
       "validation": {
         "catalog_ready": false,
@@ -137,7 +173,43 @@
           "approved_product_image_pending",
           "current_verified_purchase_destination_pending"
         ]
-      }
+      },
+      "evidence": [
+        {
+          "source": "Maison Francis Kurkdjian",
+          "url": "https://www.franciskurkdjian.com/eu-de/p/baccarat-rouge-540-eau-de-parfum-10223021.html",
+          "checked_at": "2026-09-26"
+        },
+        {
+          "source": "Douglas",
+          "url": "https://www.douglas.de/de/p/3001037679?variant=922888",
+          "checked_at": "2026-09-26"
+        }
+      ],
+      "product_data": {
+        "scent_family": "woody amber floral",
+        "key_notes": [
+          "jasmine",
+          "saffron accord",
+          "ambergris accord",
+          "dry woods",
+          "ethyl maltol"
+        ],
+        "source_confidence": "high",
+        "source_kind": "official_brand",
+        "source_url": "https://www.franciskurkdjian.com/eu-de/p/baccarat-rouge-540-eau-de-parfum-10223021.html",
+        "note": "Official Maison Francis Kurkdjian data confirms the 70 ml Eau de Parfum and its woody, ambery, floral profile."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "922888",
+          "url": "https://www.douglas.de/de/p/3001037679?variant=922888",
+          "variant": "70 ml Eau de Parfum",
+          "checked_at": "2026-09-26",
+          "affiliate_state": "application_pending"
+        }
+      ]
     },
     {
       "priority": 3,
@@ -150,23 +222,11 @@
         "women"
       ],
       "comparison_role": "value_floral_amber_anchor",
-      "variant_status": "manufacturer_and_merchant_variant_verified",
+      "variant_status": "verified_retail_variant",
       "manufacturer_source_url": "https://de.afnan.com/products/9-pm-pour-femme",
       "checked_at": "2026-09-26",
       "variant_caution": "Distinguish Pour Femme from the men’s 9 PM, Rebel, and Night Out flankers.",
       "research_state": "manufacturer_merchant_and_community_verified_remaining_live_gates",
-      "merchant_evidence": [
-        {
-          "merchant": "Afnan official store",
-          "merchant_product_id": "9-pm-pour-femme",
-          "selected_variant": "100 ml",
-          "observed_price_eur": 44.5,
-          "shipping_at_check": "unknown",
-          "product_url": "https://www.de.afnan.com/products/9-pm-pour-femme",
-          "checked_at": "2026-09-26T04:53:10Z",
-          "status": "research_only_not_imported"
-        }
-      ],
       "community": {
         "source": "Parfumo",
         "source_url": "https://www.parfumo.com/Perfumes/Afnan_Perfumes/9pm-pour-femme",
@@ -191,11 +251,24 @@
         "canonical_gtin": null,
         "merchant_product_ids": [
           "9-pm-pour-femme"
-        ]
+        ],
+        "status": "pending_primary_variant_verification",
+        "observations": [],
+        "note": "Exact retail variant verified; canonical GTIN/feed matching remains pending."
       },
       "media": {
         "image_url": null,
-        "rights_status": "unverified"
+        "image_status": "pending_approved_feed_or_manufacturer_image",
+        "queue_priority": 3,
+        "reference_page": "https://de.afnan.com/products/9-pm-pour-femme",
+        "required_variant": {
+          "concentration": "Eau de Parfum",
+          "volume_ml": 100
+        },
+        "blockers": [
+          "approved_image_source_pending",
+          "exact_bottle_and_packaging_review_pending"
+        ]
       },
       "validation": {
         "catalog_ready": false,
@@ -203,7 +276,56 @@
           "approved_product_image_pending",
           "current_verified_purchase_destination_pending"
         ]
-      }
+      },
+      "evidence": [
+        {
+          "source": "Afnan Perfumes",
+          "url": "https://de.afnan.com/products/9-pm-pour-femme",
+          "checked_at": "2026-09-26"
+        },
+        {
+          "source": "Afnan official store",
+          "url": "https://www.de.afnan.com/products/9-pm-pour-femme",
+          "checked_at": "2026-09-26"
+        }
+      ],
+      "product_data": {
+        "scent_family": "amber floral woody",
+        "notes": {
+          "top": [
+            "raspberry",
+            "apple",
+            "violet",
+            "orange"
+          ],
+          "heart": [
+            "rose",
+            "peony",
+            "iris",
+            "jasmine"
+          ],
+          "base": [
+            "cedar",
+            "cypress",
+            "pine tree",
+            "amber"
+          ]
+        },
+        "source_confidence": "high",
+        "source_kind": "official_brand",
+        "source_url": "https://de.afnan.com/products/9-pm-pour-femme",
+        "note": "Official Afnan Germany product data confirms 9 PM Pour Femme Eau de Parfum 100 ml and its note pyramid."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "afnan official store",
+          "merchant_product_id": "9-pm-pour-femme",
+          "url": "https://www.de.afnan.com/products/9-pm-pour-femme",
+          "variant": "100 ml Eau de Parfum",
+          "checked_at": "2026-09-26",
+          "affiliate_state": "not_affiliate_target"
+        }
+      ]
     },
     {
       "priority": 4,
@@ -216,23 +338,11 @@
         "unisex"
       ],
       "comparison_role": "smoky_gourmand_comparison_anchor",
-      "variant_status": "manufacturer_and_merchant_variant_verified",
+      "variant_status": "verified_retail_variant",
       "manufacturer_source_url": "https://www.maisonmargiela-fragrances.us/fragrances/replica-eau-de-toilette/replica-by-the-fireplace/MM005.html",
       "checked_at": "2026-09-26",
       "variant_caution": "Distinguish 100 ml bottle from 100 ml refill and travel size; confirm German retail variant.",
       "research_state": "manufacturer_merchant_and_community_verified_remaining_live_gates",
-      "merchant_evidence": [
-        {
-          "merchant": "Douglas",
-          "merchant_product_id": "882254",
-          "selected_variant": "100 ml",
-          "observed_price_eur": 92,
-          "shipping_at_check": "free",
-          "product_url": "https://www.douglas.de/de/p/5010308068?variant=882254",
-          "checked_at": "2026-09-26T04:53:10Z",
-          "status": "research_only_not_imported"
-        }
-      ],
       "community": {
         "source": "Parfumo",
         "source_url": "https://www.parfumo.com/Perfumes/Maison_Margiela/by-the-fireplace",
@@ -257,11 +367,24 @@
         "canonical_gtin": null,
         "merchant_product_ids": [
           "882254"
-        ]
+        ],
+        "status": "pending_primary_variant_verification",
+        "observations": [],
+        "note": "Exact retail variant verified; canonical GTIN/feed matching remains pending."
       },
       "media": {
         "image_url": null,
-        "rights_status": "unverified"
+        "image_status": "pending_approved_feed_or_manufacturer_image",
+        "queue_priority": 4,
+        "reference_page": "https://www.maisonmargiela-fragrances.us/fragrances/replica-eau-de-toilette/replica-by-the-fireplace/MM005.html",
+        "required_variant": {
+          "concentration": "Eau de Toilette",
+          "volume_ml": 100
+        },
+        "blockers": [
+          "approved_image_source_pending",
+          "exact_bottle_and_packaging_review_pending"
+        ]
       },
       "validation": {
         "catalog_ready": false,
@@ -269,7 +392,53 @@
           "approved_product_image_pending",
           "current_verified_purchase_destination_pending"
         ]
-      }
+      },
+      "evidence": [
+        {
+          "source": "Maison Margiela",
+          "url": "https://www.maisonmargiela-fragrances.us/fragrances/replica-eau-de-toilette/replica-by-the-fireplace/MM005.html",
+          "checked_at": "2026-09-26"
+        },
+        {
+          "source": "Douglas",
+          "url": "https://www.douglas.de/de/p/5010308068?variant=882254",
+          "checked_at": "2026-09-26"
+        }
+      ],
+      "product_data": {
+        "scent_family": "woody ambery",
+        "notes": {
+          "top": [
+            "pink pepper",
+            "orange blossom",
+            "clove oil"
+          ],
+          "heart": [
+            "chestnut accord",
+            "guaiac wood",
+            "cade oil"
+          ],
+          "base": [
+            "vanilla accord",
+            "peru balsam",
+            "cashmeran"
+          ]
+        },
+        "source_confidence": "high",
+        "source_kind": "official_brand",
+        "source_url": "https://www.maisonmargiela-fragrances.us/fragrances/replica-eau-de-toilette/replica-by-the-fireplace/MM005.html?geo=false",
+        "note": "Official Maison Margiela data confirms the 100 ml Eau de Toilette bottle and the listed top, middle and base notes."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "882254",
+          "url": "https://www.douglas.de/de/p/5010308068?variant=882254",
+          "variant": "100 ml Eau de Toilette",
+          "checked_at": "2026-09-26",
+          "affiliate_state": "application_pending"
+        }
+      ]
     },
     {
       "priority": 5,
@@ -282,23 +451,11 @@
         "women"
       ],
       "comparison_role": "classic_floral_designer_anchor",
-      "variant_status": "manufacturer_and_merchant_variant_verified",
+      "variant_status": "verified_retail_variant",
       "manufacturer_source_url": "https://www.dior.com/de_de/beauty/products/j%E2%80%99adore-eau-de-parfum-Y0998031.html",
       "checked_at": "2026-09-26",
       "variant_caution": "Distinguish EDP from EDT, Parfum d’eau, L’Or and updated bottle presentation.",
       "research_state": "manufacturer_merchant_and_community_verified_remaining_live_gates",
-      "merchant_evidence": [
-        {
-          "merchant": "Douglas",
-          "merchant_product_id": "1217956",
-          "selected_variant": "100 ml",
-          "observed_price_eur": 115,
-          "shipping_at_check": "free",
-          "product_url": "https://www.douglas.de/de/p/5011697097",
-          "checked_at": "2026-09-26T07:20:00Z",
-          "status": "research_only_not_imported"
-        }
-      ],
       "community": {
         "source": "Parfumo",
         "source_url": "https://www.parfumo.com/Perfumes/Dior/J_Adore",
@@ -323,11 +480,24 @@
         "canonical_gtin": null,
         "merchant_product_ids": [
           "1217956"
-        ]
+        ],
+        "status": "pending_primary_variant_verification",
+        "observations": [],
+        "note": "Exact retail variant verified; canonical GTIN/feed matching remains pending."
       },
       "media": {
         "image_url": null,
-        "rights_status": "unverified"
+        "image_status": "pending_approved_feed_or_manufacturer_image",
+        "queue_priority": 5,
+        "reference_page": "https://www.dior.com/de_de/beauty/products/j%E2%80%99adore-eau-de-parfum-Y0998031.html",
+        "required_variant": {
+          "concentration": "Eau de Parfum",
+          "volume_ml": 100
+        },
+        "blockers": [
+          "approved_image_source_pending",
+          "exact_bottle_and_packaging_review_pending"
+        ]
       },
       "validation": {
         "catalog_ready": false,
@@ -335,8 +505,43 @@
           "approved_product_image_pending",
           "current_verified_purchase_destination_pending"
         ]
-      }
+      },
+      "evidence": [
+        {
+          "source": "Dior",
+          "url": "https://www.dior.com/de_de/beauty/products/j%E2%80%99adore-eau-de-parfum-Y0998031.html",
+          "checked_at": "2026-09-26"
+        },
+        {
+          "source": "Douglas",
+          "url": "https://www.douglas.de/de/p/5011697097",
+          "checked_at": "2026-09-26"
+        }
+      ],
+      "product_data": {
+        "scent_family": "floral",
+        "key_notes": [
+          "ylang-ylang",
+          "damask rose",
+          "jasmine grandiflorum",
+          "jasmine sambac"
+        ],
+        "source_confidence": "high",
+        "source_kind": "official_brand",
+        "source_url": "https://www.dior.com/de_de/beauty/products/j%E2%80%99adore-eau-de-parfum-Y0998031.html",
+        "note": "Official Dior Germany data confirms J’adore Eau de Parfum 100 ml and its ylang-ylang, Damask rose and jasmine bouquet."
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "1217956",
+          "url": "https://www.douglas.de/de/p/5011697097",
+          "variant": "100 ml Eau de Parfum",
+          "checked_at": "2026-09-26",
+          "affiliate_state": "application_pending"
+        }
+      ]
     }
   ],
-  "next_gate": "Four exact German merchant variants have research-only evidence; Dior merchant mapping, independent community evidence, image rights and fresh importable offers remain pending. Do not enable staging or infer ongoing stock from this dated snapshot."
+  "next_gate": "All five exact variants now have manufacturer profile evidence, merchant-variant evidence and non-provisional community data. They may enter isolated staging only after the intake manifest is explicitly enabled; live publication remains blocked by approved imagery, canonical feed/GTIN matching where required and a fresh verified purchase destination."
 }
