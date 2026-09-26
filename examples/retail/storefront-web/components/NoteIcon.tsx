@@ -5,6 +5,8 @@ type Motif =
   | "grapefruit"
   | "jasmine"
   | "patchouli"
+  | "lavender"
+  | "tonka"
   | "citrus"
   | "flower"
   | "leaf"
@@ -36,6 +38,8 @@ const MOTIFS: { motif: Motif; names: string[] }[] = [
   { motif: "grapefruit", names: ["grapefruit"] },
   { motif: "jasmine", names: ["jasmine sambac", "jasmine"] },
   { motif: "patchouli", names: ["patchouli"] },
+  { motif: "lavender", names: ["provençal lavender", "lavender"] },
+  { motif: "tonka", names: ["tonka bean", "tonka"] },
   { motif: "honey", names: ["honey"] },
   { motif: "vanilla", names: ["bourbon vanilla", "vanilla orchid", "vanilla"] },
   { motif: "tobacco", names: ["tobacco"] },
@@ -51,12 +55,12 @@ const MOTIFS: { motif: Motif; names: string[] }[] = [
   { motif: "root", names: ["vetiver", "orris root"] },
   { motif: "musk", names: ["white musk", "pink musk", "musk", "ambrette seed", "ambrette"] },
   { motif: "amber", names: ["ambergris", "amberwood", "crystal amber", "ambrofix", "ambroxan", "ambrox", "amber"] },
-  { motif: "flower", names: ["orange blossom", "neroli", "lavender", "violet", "rose", "iris", "orris", "geranium", "magnolia", "carnation", "floral", "lily", "orchid", "mahonia"] },
+  { motif: "flower", names: ["orange blossom", "neroli", "violet", "rose", "iris", "orris", "geranium", "magnolia", "carnation", "floral", "lily", "orchid", "mahonia"] },
   { motif: "citrus", names: ["lemon", "mandarin", "orange", "lime", "citron", "citrus", "petit grain"] },
   { motif: "leaf", names: ["sage", "rosemary", "basil", "mint", "papyrus", "wormwood"] },
   { motif: "wood", names: ["akigalawood", "georgywood", "guaiac wood", "wood", "cedar", "cypress", "sandal", "birch", "oud", "cashmere", "cashmeran"] },
   { motif: "spice", names: ["ginger", "cardamom", "cinnamon", "nutmeg", "coriander", "spices"] },
-  { motif: "sweet", names: ["tonka", "praline", "chestnut", "coumarin"] },
+  { motif: "sweet", names: ["praline", "chestnut", "coumarin"] },
   { motif: "resin", names: ["labdanum", "elemi", "opium"] },
   { motif: "fruit", names: ["blackcurrant", "raspberry", "melon"] },
   { motif: "fresh", names: ["aldehyde", "aquatic", "ozonic"] },
@@ -104,6 +108,20 @@ const paths: Record<Motif, ReactNode> = {
       <path d="M12.1 18.4v3" stroke="#5A4732" strokeWidth="1" />
     </>
   ),
+  lavender: (
+    <>
+      <path d="M11.8 21V7.3M8.8 20.2l3-4.1M15.4 19.4l-3.6-4.2" stroke="#527241" strokeWidth="1.05" />
+      <path d="M8.7 7.4c1.2-1.6 2.1-1.7 3-.7-1 1.4-2 1.7-3 .7ZM12 6.1c1.1-1.7 2.1-1.8 3-.9-.9 1.5-1.9 1.9-3 .9ZM9.6 10.2c1.2-1.6 2.2-1.7 3-.7-1 1.5-2 1.8-3 .7ZM12.4 9.2c1.2-1.7 2.2-1.7 3.1-.7-1 1.4-2.1 1.8-3.1.7ZM9.8 13.1c1.2-1.6 2.2-1.6 3-.6-1 1.4-2 1.7-3 .6ZM12.6 12.1c1.2-1.6 2.2-1.6 3-.6-1 1.4-2 1.7-3 .6Z" fill="#8C6CC1" stroke="#654B92" strokeWidth=".55" />
+      <path d="M11.8 7.2c-.2-2.5.5-4 2-4.4 1.2 1.5.8 3.3-1.3 4.7" fill="#A786D4" stroke="#6A5198" strokeWidth=".65" />
+    </>
+  ),
+  tonka: (
+    <>
+      <path d="M7.2 5.2c-3.1 3-3 8.3.2 13 1.3 1.9 3.1 2.6 4.5 1.1 1.8-2.1 1.7-7.5-.4-11.6-1.1-2.2-2.6-3.6-4.3-2.5Z" fill="#7A4A30" stroke="#4E2C20" strokeWidth=".85" />
+      <path d="M15.6 4.4c-2.5 2.8-2.3 7.9.3 12.2 1.2 2 2.9 2.7 4.2 1.2 1.7-1.9 1.5-7-.3-10.8-1.1-2.3-2.6-3.8-4.2-2.6Z" fill="#9B6541" stroke="#5B3725" strokeWidth=".85" />
+      <path d="M8.2 7.1c1.2 3.7 1.7 7.2 1.4 10.6M16.6 6.3c1 3.4 1.4 6.6 1.1 9.7" stroke="#C9966B" strokeWidth=".7" />
+    </>
+  ),
   citrus: (
     <>
       <circle cx="12" cy="12" r="8" />
@@ -131,8 +149,11 @@ const paths: Record<Motif, ReactNode> = {
   ),
   wood: (
     <>
-      <path d="M8 20V8l4-5 4 5v12M5 20h14M8 10h8M12 3v17" />
-      <path d="M9 15l3 2 3-2" />
+      <rect x="4.6" y="8.2" width="14.8" height="8.5" rx="2.2" fill="#A76D3E" stroke="#654127" strokeWidth=".9" />
+      <ellipse cx="18.3" cy="12.45" rx="2.5" ry="4.1" fill="#D39A61" stroke="#744A2D" strokeWidth=".75" />
+      <ellipse cx="18.3" cy="12.45" rx="1.4" ry="2.5" fill="none" stroke="#9A643C" strokeWidth=".65" />
+      <path d="M6.5 10.6c2.7.8 5.2.8 7.6-.1M6.4 13.1c2.7.7 5.1.7 7.4-.1M6.7 15.2c2.1.5 4.2.5 6.3 0" stroke="#D9A46F" strokeWidth=".65" />
+      <path d="M7 7.9 9 5.4l2.4 2.7M11 8.1l2.2-3.2 2.4 3" fill="none" stroke="#7E5937" strokeWidth=".8" />
     </>
   ),
   spice: (
@@ -182,14 +203,19 @@ const paths: Record<Motif, ReactNode> = {
   ),
   amber: (
     <>
-      <path d="M12 3 18 8l-2 9-4 4-4-4-2-9 6-5Z" />
-      <path d="m8 9 4 2 4-2M10 15h4" />
+      <path d="M12 2.8 18.4 8l-2.2 9.1-4.2 4-4.3-4L5.6 8 12 2.8Z" fill="#E4A73C" stroke="#9B6A24" strokeWidth=".9" />
+      <path d="m7.7 8.6 4.3 2.5 4.4-2.4-1.7 7-2.7 2.6-2.8-2.6-1.5-7.1Z" fill="#F1C55F" stroke="none" opacity=".92" />
+      <path d="M9.2 7.2 12 5l2.8 2.2M9.7 14.3h4.7" stroke="#FFF0A4" strokeWidth=".75" />
+      <circle cx="14.9" cy="6.9" r=".9" fill="#FFF7C8" stroke="none" />
     </>
   ),
   musk: (
     <>
-      <path d="M12 4c3 2 5 5 5 8a5 5 0 0 1-10 0c0-3 2-6 5-8Z" />
-      <path d="M9 18c1.5-1 2-2.2 3-4 1 1.8 1.5 3 3 4" />
+      <circle cx="12" cy="12" r="7.6" fill="#F4EFE8" stroke="#B8A99D" strokeWidth=".8" />
+      <circle cx="12" cy="12" r="5.25" fill="#E8DFE4" stroke="#C6B3BF" strokeWidth=".7" />
+      <path d="M12 6.8c2.2 1.8 3.6 3.7 3.6 5.7a3.6 3.6 0 0 1-7.2 0c0-2 1.4-3.9 3.6-5.7Z" fill="#FFFDF8" stroke="#B59EAA" strokeWidth=".7" />
+      <circle cx="12" cy="12.7" r="1.35" fill="#D1B3C2" stroke="none" />
+      <path d="M7.1 7.5c-1.1-.7-2.1-.5-2.9.6M16.9 7.5c1.1-.7 2.1-.5 2.9.6M6.6 16.8c-.9.6-1.3 1.5-1.1 2.6M17.4 16.8c.9.6 1.3 1.5 1.1 2.6" stroke="#D7C8D0" strokeWidth=".65" />
     </>
   ),
   leather: (
