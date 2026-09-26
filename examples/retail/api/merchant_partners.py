@@ -8,6 +8,8 @@ from urllib.parse import parse_qsl, urlencode, urlparse
 
 from pydantic import BaseModel, Field
 
+MAX_FUTURE_CLOCK_SKEW_HOURS = 5 / 60
+
 PartnerStatus = Literal[
     "active",
     "pending_affiliate_link",
@@ -81,7 +83,7 @@ class MerchantPartnerStore:
                 verified = verified.replace(tzinfo=UTC)
             age_hours = (current - verified.astimezone(UTC)).total_seconds() / 3600
 
-            if age_hours < 0 or age_hours > self.max_age_hours:
+            if age_hours < -MAX_FUTURE_CLOCK_SKEW_HOURS or age_hours > self.max_age_hours:
                 continue
 
             active.append(partner)
