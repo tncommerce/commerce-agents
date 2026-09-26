@@ -419,6 +419,7 @@ def build_source_product(
             "rating_count": community.get("rating_count"),
             "longevity_10": community.get("longevity_10"),
             "projection_10": community.get("projection_10"),
+            "provisional": bool(community.get("provisional")),
         },
         "fragrance_profile": {
             "community_accords": accords,

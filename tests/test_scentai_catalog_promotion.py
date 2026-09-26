@@ -318,6 +318,18 @@ def test_source_conversion_preserves_live_fragrance_truth() -> None:
     assert visual["url"] == "/products/test/test-fragrance.png"
 
 
+def test_source_conversion_preserves_provisional_community_status() -> None:
+    staged = staged_product()
+    staged["community"]["provisional"] = True
+
+    source = build_source_product(
+        staged,
+        best_offer=affiliate_offer(),
+    )
+
+    assert source["community"]["provisional"] is True
+
+
 def test_source_conversion_preserves_multiple_market_sources() -> None:
     source = build_source_product(
         staged_product(),
