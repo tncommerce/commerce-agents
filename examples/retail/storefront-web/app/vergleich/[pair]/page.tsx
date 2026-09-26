@@ -104,14 +104,20 @@ function ComparisonRow({
   right: React.ReactNode;
 }) {
   return (
-    <div className="grid grid-cols-[1fr_0.9fr_1fr] items-center gap-3 border-t border-(--line) px-3 py-3 text-[12px] sm:px-4">
-      <div className="text-right font-medium text-(--ink)">
+    <div
+      role="row"
+      className="grid grid-cols-[1fr_0.9fr_1fr] items-center gap-3 border-t border-(--line) px-3 py-3 text-[12px] sm:px-4"
+    >
+      <div role="cell" className="text-right font-medium text-(--ink)">
         {left}
       </div>
-      <div className="text-center text-[10.5px] font-semibold uppercase tracking-[0.06em] text-(--ink-soft)">
+      <div
+        role="rowheader"
+        className="text-center text-[10.5px] font-semibold uppercase tracking-[0.06em] text-(--ink-soft)"
+      >
         {label}
       </div>
-      <div className="font-medium text-(--ink)">
+      <div role="cell" className="font-medium text-(--ink)">
         {right}
       </div>
     </div>
@@ -279,15 +285,25 @@ export default async function ComparisonPage({
           <ProductHeader fragrance={right} />
         </section>
 
-        <section className="mt-5 overflow-hidden rounded-2xl border border-(--line) bg-(--card) shadow-(--shadow-sm)">
-          <div className="grid grid-cols-[1fr_0.9fr_1fr] gap-3 bg-(--well)/55 px-3 py-3 text-[11px] sm:px-4">
-            <div className="text-right font-semibold">
+        <section
+          role="table"
+          aria-label={`Duftvergleich ${left.name} und ${right.name}`}
+          className="mt-5 overflow-hidden rounded-2xl border border-(--line) bg-(--card) shadow-(--shadow-sm)"
+        >
+          <div
+            role="row"
+            className="grid grid-cols-[1fr_0.9fr_1fr] gap-3 bg-(--well)/55 px-3 py-3 text-[11px] sm:px-4"
+          >
+            <div role="columnheader" className="text-right font-semibold">
               {left.name}
             </div>
-            <div className="text-center font-semibold uppercase tracking-[0.06em] text-(--ink-soft)">
-              Vergleich
+            <div
+              role="columnheader"
+              className="text-center font-semibold uppercase tracking-[0.06em] text-(--ink-soft)"
+            >
+              Merkmal
             </div>
-            <div className="font-semibold">
+            <div role="columnheader" className="font-semibold">
               {right.name}
             </div>
           </div>
