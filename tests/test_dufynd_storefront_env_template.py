@@ -59,3 +59,23 @@ def test_launch_readiness_rejects_loopback_and_credential_urls() -> None:
         assert f'"{blocked_host}"' in readiness_source
 
     assert "if (parsed.username || parsed.password) return false;" in readiness_source
+
+
+def test_launch_readiness_rejects_non_public_ip_literals() -> None:
+    readiness_source = READINESS.read_text(encoding="utf-8")
+
+    assert "function nonPublicIpLiteral(hostname)" in readiness_source
+    for marker in (
+        "a === 10",
+        "a === 127",
+        "a === 169 && b === 254",
+        "a === 172 && b >= 16 && b <= 31",
+        "a === 192 && b === 168",
+        'host.startsWith("fc")',
+        'host.startsWith("fd")',
+        "/^fe[89ab]/",
+        'host.startsWith("ff")',
+    ):
+        assert marker in readiness_source
+
+    assert "if (nonPublicIpLiteral(parsed.hostname)) return false;" in readiness_source
