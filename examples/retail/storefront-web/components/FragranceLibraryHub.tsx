@@ -235,7 +235,7 @@ function FragranceCard({
             {fragrance.community.rating_10 != null
               ? ` · ${formatOneDecimal(
                   fragrance.community.rating_10,
-                )}/10`
+                )}/10${fragrance.community.provisional ? " · vorläufig" : ""}`
               : ""}
           </div>
         </div>

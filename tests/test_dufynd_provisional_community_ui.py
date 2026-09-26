@@ -7,6 +7,7 @@ CATALOG_UI = Path("examples/retail/storefront-web/components/FragranceCatalogBro
 FREE_COMPARE = Path("examples/retail/storefront-web/components/FragranceComparisonPicker.tsx")
 DOCUMENTED_COMPARE = Path("examples/retail/storefront-web/app/vergleich/[pair]/page.tsx")
 DETAIL = Path("examples/retail/storefront-web/app/duft/[slug]/page.tsx")
+LIBRARY = Path("examples/retail/storefront-web/components/FragranceLibraryHub.tsx")
 
 
 def test_storefront_model_preserves_provisional_community_status() -> None:
@@ -47,3 +48,11 @@ def test_provisional_performance_metrics_are_visibly_marked() -> None:
         assert "· vorläufig" in source
 
     assert detail.count("fragrance.community.provisional ? (") >= 3
+
+
+def test_library_cards_mark_provisional_community_ratings() -> None:
+    source = LIBRARY.read_text(encoding="utf-8")
+
+    assert "fragrance.community.rating_10" in source
+    assert "fragrance.community.provisional" in source
+    assert "vorläufig" in source
