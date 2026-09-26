@@ -15,6 +15,7 @@ import {
   type StaticFragrance,
 } from "@/lib/fragranceCatalog";
 import { noteLabel } from "@/lib/noteLabels";
+import { targetLabel } from "@/lib/targetLabels";
 
 type AudienceFilter = "all" | "men" | "unisex" | "women";
 type ProfileFilter =
@@ -36,9 +37,9 @@ const AUDIENCE_OPTIONS: {
   label: string;
 }[] = [
   { value: "all", label: "Alle" },
-  { value: "men", label: "Herren" },
-  { value: "unisex", label: "Unisex" },
-  { value: "women", label: "Damen" },
+  { value: "men", label: targetLabel("men") },
+  { value: "unisex", label: targetLabel("unisex") },
+  { value: "women", label: targetLabel("women") },
 ];
 
 const PROFILE_OPTIONS: {
