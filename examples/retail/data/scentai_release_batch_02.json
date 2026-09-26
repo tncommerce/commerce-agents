@@ -2,15 +2,15 @@
   "version": 1,
   "release_id": "SCENTAI-RELEASE-02",
   "status": "mapping_ready_blocked_pending_release_01_validation_and_live_assets",
-  "prepared_at": "2026-09-19",
+  "prepared_at": "2026-09-26",
   "release_size": 5,
   "strategy": "Second guarded mini-release prepared in parallel for the next highest-priority stable women's-coverage candidates. Release 02 must not be promoted before Release 01 proves the real purchase-destination, image-approval and smoke-test workflow.",
   "product_ids": [
-    "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+    "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
     "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100",
     "SC-CHLOE-CHLOE-EDP-100",
-    "SC-BURBERRY-GODDESS-EDP-100",
-    "SC-PRADA-PARADOXE-EDP-90"
+    "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+    "SC-YSL-BLACK-OPIUM-EDP-90"
   ],
   "required_gates": [
     "release_01_feed_and_image_workflow_validated",
@@ -23,11 +23,11 @@
     "all_selected_products_ready_no_partial_release"
   ],
   "mapping_readiness": {
-    "verified_at": "2026-09-19",
+    "verified_at": "2026-09-26",
     "products_with_mapping": 5,
     "release_size": 5,
     "status": "complete",
-    "note": "Every Release Batch 02 product has at least two merchant mapping rows and a GTIN/EAN fallback. This batch remains downstream of Release 01 operational validation."
+    "note": "Release 02 preserves the displaced Release 01 candidates while keeping five mapped products behind the Release 01 dependency and live-asset gates."
   },
   "write_policy": "All-or-nothing. Do not partially promote this manifest. Release 02 is additionally blocked until Release 01 has completed the real feed/image activation and smoke-test workflow.",
   "write_enabled": false,
