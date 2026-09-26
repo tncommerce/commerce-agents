@@ -142,7 +142,7 @@ export function Rating({ rating, count }: { rating?: number | null; count?: numb
     <span className="whitespace-nowrap text-[13px] text-(--ink-soft)">
       <span className="text-(--star)">★</span> {rating.toFixed(1)}
       {count ? (
-        <span className="text-[11px] text-(--ink-soft)/80"> ({count.toLocaleString()})</span>
+        <span className="text-[11px] text-(--ink-soft)"> ({count.toLocaleString()})</span>
       ) : null}
     </span>
   );
@@ -171,7 +171,7 @@ export function Rating({ rating, count }: { rating?: number | null; count?: numb
               <span className="text-[11px]"> · {ratingSource}</span>
             ) : null}
             {!compact && product.review_count ? (
-              <span className="text-[11px] text-(--ink-soft)/80">
+              <span className="text-[11px] text-(--ink-soft)">
                 {" "}({product.review_count.toLocaleString("de-DE")})
               </span>
             ) : null}
@@ -329,7 +329,7 @@ export default function ProductTile({
           )}
         </div>
         <div className={isDufynd ? "flex flex-1 flex-col gap-1 p-3.5" : "flex flex-1 flex-col gap-0.5 p-2.5"}>
-          <div className={isDufynd ? "text-[10.5px] font-medium uppercase tracking-[0.08em] text-(--ink-soft)/75" : "text-[11px] uppercase tracking-wide text-(--ink-soft)/80"}>{product.brand}</div>
+          <div className={isDufynd ? "text-[10.5px] font-medium uppercase tracking-[0.08em] text-(--ink-soft)" : "text-[11px] uppercase tracking-wide text-(--ink-soft)"}>{product.brand}</div>
           <ProductTitle
             title={product.title}
             className={`line-clamp-2 font-medium leading-snug ${isDufynd ? "text-[14.5px]" : "text-[13px]"} ${compact ? "" : isDufynd ? "h-10" : "h-9"}`}
@@ -415,7 +415,7 @@ export function ProductRow({
         ) : null}
       </div>
       <div className="min-w-0 flex-1">
-        <div className="text-[11px] uppercase tracking-wide text-(--ink-soft)/80">{product.brand}</div>
+        <div className="text-[11px] uppercase tracking-wide text-(--ink-soft)">{product.brand}</div>
         <ProductTitle
           title={product.title}
           className="line-clamp-1 text-[13px] font-medium leading-snug"
