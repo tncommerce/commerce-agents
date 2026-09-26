@@ -52,8 +52,13 @@ def test_priority_notes_use_distinct_premium_motifs() -> None:
         "grapefruit": "grapefruit",
         "jasmine": "jasmine",
         "patchouli": "patchouli",
+        "lavender": "lavender",
+        "tonka bean": "tonka",
         "vanilla": "vanilla",
         "spices": "spice",
+        "musk": "musk",
+        "guaiac wood": "wood",
+        "amber": "amber",
     }
 
     assert {note: mappings.get(note) for note in expected} == expected
@@ -61,7 +66,17 @@ def test_priority_notes_use_distinct_premium_motifs() -> None:
 
 def test_priority_premium_motifs_are_not_monochrome_current_color_only() -> None:
     source = ICONS.read_text(encoding="utf-8")
-    for motif in ("bergamot", "grapefruit", "jasmine", "patchouli"):
+    for motif in (
+        "bergamot",
+        "grapefruit",
+        "jasmine",
+        "patchouli",
+        "lavender",
+        "tonka",
+        "wood",
+        "amber",
+        "musk",
+    ):
         block_start = source.index(f"  {motif}: (")
         block_end = source.index("\n  ),", block_start)
         block = source[block_start:block_end]
