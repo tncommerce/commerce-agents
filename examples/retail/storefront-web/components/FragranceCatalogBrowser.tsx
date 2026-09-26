@@ -57,7 +57,7 @@ const SORT_OPTIONS: {
   value: SortMode;
   label: string;
 }[] = [
-  { value: "popular", label: "Beliebtheit" },
+  { value: "popular", label: "Community-Aktivität" },
   { value: "rating", label: "Bewertung" },
   { value: "performance", label: "Haltbarkeit & Ausstrahlung" },
   { value: "brand", label: "Marke A–Z" },
