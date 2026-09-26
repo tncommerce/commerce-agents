@@ -59,4 +59,5 @@ def test_fleur_du_male_2026_has_no_ambiguous_legacy_coverage() -> None:
     assert verified["merchant_coverage_source"] == "verification_snapshot"
     assert merchant_coverage_count(verified, queue_row) == 0
     assert queue_row["merchant_coverage_count"] == 0
-    assert "verified_current_merchant_pending" in queue_row["blockers"]
+    assert "verified_purchase_destination_pending" in queue_row["blockers"]
+    assert "verified_current_merchant_pending" not in queue_row["blockers"]
