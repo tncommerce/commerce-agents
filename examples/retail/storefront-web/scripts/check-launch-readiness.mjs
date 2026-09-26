@@ -217,6 +217,8 @@ add(
     : "NEXT_PUBLIC_SITE_INDEXABLE is not true; launch remains intentionally noindex.",
 );
 
+const MAX_FUTURE_CLOCK_SKEW_HOURS = 5 / 60;
+
 const offers = merchantOffers.offers || [];
 const now = Date.now();
 const eligibleOffers = offers.filter((offer) => {
@@ -225,11 +227,16 @@ const eligibleOffers = offers.filter((offer) => {
     ? (now - checkedAt) / 3_600_000
     : Number.POSITIVE_INFINITY;
 
+  const hasValidClickout =
+    validPublicHttpUrl(String(offer.affiliate_url || "")) ||
+    validPublicHttpUrl(String(offer.product_url || ""));
+
   return (
     offer.in_stock !== false &&
     Number(offer.price) > 0 &&
-    ageHours >= 0 &&
-    ageHours <= 72
+    ageHours >= -MAX_FUTURE_CLOCK_SKEW_HOURS &&
+    ageHours <= 72 &&
+    hasValidClickout
   );
 });
 
@@ -241,8 +248,8 @@ add(
     : "No merchant offers are currently within the 72-hour freshness gate; product discovery still works but active offers may be empty.",
 );
 
-const affiliateOffers = eligibleOffers.filter(
-  (offer) => String(offer.affiliate_url || "").trim(),
+const affiliateOffers = eligibleOffers.filter((offer) =>
+  validPublicHttpUrl(String(offer.affiliate_url || "")),
 );
 add(
   affiliateOffers.length ? "pass" : "warn",

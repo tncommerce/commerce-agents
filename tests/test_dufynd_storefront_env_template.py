@@ -42,3 +42,11 @@ def test_launch_readiness_rejects_placeholder_public_urls() -> None:
     assert "validPublicHttpUrl(apiUrl)" in readiness_source
     assert "validPublicHttpUrl(siteUrl)" in readiness_source
     assert "non-placeholder HTTPS public API URL" in readiness_source
+
+
+def test_launch_readiness_tolerates_only_small_future_clock_skew() -> None:
+    readiness_source = READINESS.read_text(encoding="utf-8")
+
+    assert "MAX_FUTURE_CLOCK_SKEW_HOURS = 5 / 60" in readiness_source
+    assert "ageHours >= -MAX_FUTURE_CLOCK_SKEW_HOURS" in readiness_source
+    assert "ageHours <= 72" in readiness_source
