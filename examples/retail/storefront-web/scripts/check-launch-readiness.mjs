@@ -47,7 +47,7 @@ const RESERVED_LAUNCH_HOSTS = [
 ];
 
 function reservedLaunchHost(hostname) {
-  const host = String(hostname || "").toLowerCase().replace(/\\.$/, "");
+  const host = String(hostname || "").toLowerCase().replace(/\.$/, "");
   return RESERVED_LAUNCH_HOSTS.some(
     (reserved) => host === reserved || host.endsWith("." + reserved),
   );
