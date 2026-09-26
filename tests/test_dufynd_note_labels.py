@@ -52,11 +52,7 @@ def test_all_staging_notes_have_german_display_labels() -> None:
         )
         for values in (product.get("notes") or {}).values():
             if isinstance(values, list):
-                notes.update(
-                    str(value).strip().lower()
-                    for value in values
-                    if str(value).strip()
-                )
+                notes.update(str(value).strip().lower() for value in values if str(value).strip())
 
     source = LABELS.read_text(encoding="utf-8")
     labels = {match["key"]: match["label"] for match in JSON_ENTRY.finditer(source)}
