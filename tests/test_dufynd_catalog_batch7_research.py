@@ -43,6 +43,10 @@ def test_batch7_stays_research_only_until_sources_are_verified() -> None:
             )
             assert evidence["merchant_product_id"]
             assert evidence["research_state"] == "research_only_not_imported"
+            assert evidence["affiliate_state"] in {
+                "application_pending",
+                "not_applicable_direct_merchant",
+            }
 
         evidence_urls = {evidence["url"] for evidence in candidate["evidence"]}
         assert candidate["manufacturer_source_url"] in evidence_urls
@@ -66,8 +70,8 @@ def test_batch7_stays_research_only_until_sources_are_verified() -> None:
         assert len(community["main_accords"]) >= 5
 
         assert candidate["identifiers"]["canonical_gtin"] is None
-        assert candidate["identifiers"]["status"] == "pending_canonical_gtin_verification"
-        assert candidate["identifiers"]["observations"]
+        assert candidate["identifiers"]["status"] == "pending_primary_variant_verification"
+        assert candidate["identifiers"]["observations"] == []
 
         assert candidate["media"]["image_url"] is None
         assert candidate["media"]["image_status"] == "pending_approved_feed_or_manufacturer_image"
@@ -105,3 +109,18 @@ def test_batch7_normalized_schema_matches_staging_builder_contract() -> None:
         assert candidate["research_state"] == (
             "official_profile_community_and_merchant_evidence_verified"
         )
+
+
+def test_batch7_direct_merchant_does_not_claim_affiliate_application() -> None:
+    wave = json.loads(
+        Path("examples/retail/data/dufynd_catalog_expansion_batch7_research.json").read_text()
+    )
+    afnan = next(
+        row for row in wave["candidates"] if row["product_id"] == "SC-AFNAN-9-PM-POUR-FEMME-EDP-100"
+    )
+
+    assert afnan["research_merchant_evidence"][0]["merchant"] == "afnan official store"
+    assert (
+        afnan["research_merchant_evidence"][0]["affiliate_state"]
+        == "not_applicable_direct_merchant"
+    )
