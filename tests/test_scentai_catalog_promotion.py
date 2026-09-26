@@ -214,6 +214,78 @@ def test_invalid_price_cannot_unlock_public_catalog() -> None:
     )
 
 
+def test_non_eur_offer_cannot_unlock_public_catalog_or_affiliate_coverage() -> None:
+    offer = affiliate_offer()
+    offer["currency"] = "USD"
+
+    assert (
+        eligible_purchase_offers(
+            [offer],
+            product_id="SC-TEST-FRAGRANCE-100",
+            now=NOW,
+            max_age_hours=72.0,
+        )
+        == []
+    )
+    assert (
+        eligible_affiliate_offers(
+            [offer],
+            product_id="SC-TEST-FRAGRANCE-100",
+            now=NOW,
+            max_age_hours=72.0,
+        )
+        == []
+    )
+    assert "missing_current_purchase_destination" in promotion_blockers(
+        staged_product(), [offer], now=NOW
+    )
+
+
+def test_zero_price_offer_cannot_unlock_public_catalog_or_affiliate_coverage() -> None:
+    offer = affiliate_offer()
+    offer["price"] = 0
+
+    assert (
+        eligible_purchase_offers(
+            [offer],
+            product_id="SC-TEST-FRAGRANCE-100",
+            now=NOW,
+            max_age_hours=72.0,
+        )
+        == []
+    )
+    assert (
+        eligible_affiliate_offers(
+            [offer],
+            product_id="SC-TEST-FRAGRANCE-100",
+            now=NOW,
+            max_age_hours=72.0,
+        )
+        == []
+    )
+
+
+def test_insecure_affiliate_url_does_not_count_as_affiliate_coverage() -> None:
+    offer = affiliate_offer()
+    offer["affiliate_url"] = "javascript:alert(1)"
+
+    purchase = eligible_purchase_offers(
+        [offer],
+        product_id="SC-TEST-FRAGRANCE-100",
+        now=NOW,
+        max_age_hours=72.0,
+    )
+    affiliate = eligible_affiliate_offers(
+        [offer],
+        product_id="SC-TEST-FRAGRANCE-100",
+        now=NOW,
+        max_age_hours=72.0,
+    )
+
+    assert [row["offer_id"] for row in purchase] == ["merchant-test-fragrance"]
+    assert affiliate == []
+
+
 def test_malformed_or_insecure_product_url_cannot_unlock_public_catalog() -> None:
     for url in ("javascript:alert(1)", "http://merchant.example/product", "https://localhost/x"):
         offer = affiliate_offer()

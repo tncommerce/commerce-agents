@@ -45,6 +45,7 @@ def current_offer() -> dict:
         "product_id": "SC-TEST-100",
         "merchant_name": "Merchant",
         "price": 50.0,
+        "currency": "EUR",
         "shipping_cost": 0.0,
         "in_stock": True,
         "product_url": "https://example.test/product",
