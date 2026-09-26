@@ -23,9 +23,9 @@ def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8-sig"))
 
 
-def valid_http_url(value: str) -> bool:
+def valid_https_url(value: str) -> bool:
     parsed = urlparse(value)
-    return parsed.scheme in {"http", "https"} and bool(parsed.netloc)
+    return parsed.scheme == "https" and bool(parsed.netloc)
 
 
 def _norm(value: object) -> str:
@@ -95,8 +95,8 @@ def approval_plan(
         raise ValueError("product_id_required")
     if not image_url:
         raise ValueError("image_url_required")
-    if not valid_http_url(image_url):
-        raise ValueError("image_url_must_be_http_or_https")
+    if not valid_https_url(image_url):
+        raise ValueError("image_url_must_be_https")
 
     payload_status = str(candidates_payload.get("status") or "").strip()
     if payload_status and payload_status != "review_only_not_live":
