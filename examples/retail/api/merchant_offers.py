@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from ipaddress import ip_address
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -53,6 +54,17 @@ def offer_age_hours(offer: MerchantOffer, *, now: datetime | None = None) -> flo
     return (reference - checked).total_seconds() / 3600.0
 
 
+def _public_hostname(value: str | None) -> bool:
+    hostname = str(value or "").strip().casefold().rstrip(".")
+    if not hostname or hostname == "localhost" or hostname.endswith(".localhost"):
+        return False
+
+    try:
+        return ip_address(hostname).is_global
+    except ValueError:
+        return True
+
+
 def _https_url(value: str | None) -> bool:
     candidate = str(value or "").strip()
     if not candidate:
@@ -64,7 +76,7 @@ def _https_url(value: str | None) -> bool:
         and parsed.hostname
         and parsed.username is None
         and parsed.password is None
-        and parsed.hostname not in {"localhost", "127.0.0.1", "::1"}
+        and _public_hostname(parsed.hostname)
     )
 
 
