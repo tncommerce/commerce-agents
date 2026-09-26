@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated_at": "2026-09-26T10:47:00Z",
+  "updated_at": "2026-09-26T16:52:00Z",
   "status": "promotion_queue_active",
   "live_catalog_count": 32,
   "verified_queue_count": 30,
@@ -30,8 +30,7 @@
   "blocker_counts": {
     "approved_product_image_pending": 30,
     "verified_purchase_destination_pending": 25,
-    "community_performance_still_provisional": 2,
-    "verified_current_merchant_pending": 1
+    "community_performance_still_provisional": 2
   },
   "candidates": [
     {
@@ -427,8 +426,7 @@
       "blockers": [
         "community_performance_still_provisional",
         "verified_purchase_destination_pending",
-        "approved_product_image_pending",
-        "verified_current_merchant_pending"
+        "approved_product_image_pending"
       ],
       "ready_for_live": false
     },
