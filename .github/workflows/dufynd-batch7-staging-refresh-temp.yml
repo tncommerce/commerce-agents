@@ -35,7 +35,7 @@ jobs:
         run: python -m scripts.build_scentai_catalog_staging
 
       - name: Refresh derived DUFYND state
-        run: python -m scripts.refresh_scentai_jarvis_state --write --generated-at "2026-09-26T07:50:00+00:00"
+        run: PYTHONPATH=examples python -m scripts.refresh_scentai_jarvis_state --write --generated-at "2026-09-26T07:52:00+00:00"
 
       - name: Commit regenerated state
         shell: bash
