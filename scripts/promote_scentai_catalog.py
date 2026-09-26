@@ -396,7 +396,7 @@ def build_catalog_product(
         "image_url": staged["media"]["image_url"],
         "brand": staged["brand"],
         "price": float(best_offer["price"]),
-        "currency": str(best_offer.get("currency") or "EUR"),
+        "currency": str(best_offer.get("currency") or "EUR").strip().upper(),
         "rating": round(rating_10 / 2, 1),
         "review_count": int(community.get("rating_count") or 0),
         "category": "fragrance",

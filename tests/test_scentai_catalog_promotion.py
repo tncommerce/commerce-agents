@@ -408,8 +408,21 @@ def test_catalog_conversion_marks_current_merchant_price() -> None:
 
     assert converted["product_id"] == "SC-TEST-FRAGRANCE-100"
     assert converted["price"] == 79.95
+    assert converted["currency"] == "EUR"
     assert converted["attributes"]["price_source"] == "current_merchant_offer"
     assert converted["attributes"]["profile_source"] == "deterministic_editorial_mapping_v1"
+
+
+def test_catalog_conversion_canonicalizes_eur_currency() -> None:
+    offer = affiliate_offer()
+    offer["currency"] = " eur "
+
+    converted = build_catalog_product(
+        staged_product(),
+        best_offer=offer,
+    )
+
+    assert converted["currency"] == "EUR"
 
 
 def test_promotion_plan_is_all_gate_aware() -> None:
