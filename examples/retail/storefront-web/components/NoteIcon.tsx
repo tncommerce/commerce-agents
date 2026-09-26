@@ -1,6 +1,10 @@
 import type { ReactNode } from "react";
 
 type Motif =
+  | "bergamot"
+  | "grapefruit"
+  | "jasmine"
+  | "patchouli"
   | "citrus"
   | "flower"
   | "leaf"
@@ -28,6 +32,10 @@ type Motif =
   | "abstract";
 
 const MOTIFS: { motif: Motif; names: string[] }[] = [
+  { motif: "bergamot", names: ["calabrian bergamot", "bergamot"] },
+  { motif: "grapefruit", names: ["grapefruit"] },
+  { motif: "jasmine", names: ["jasmine sambac", "jasmine"] },
+  { motif: "patchouli", names: ["patchouli"] },
   { motif: "honey", names: ["honey"] },
   { motif: "vanilla", names: ["bourbon vanilla", "vanilla orchid", "vanilla"] },
   { motif: "tobacco", names: ["tobacco"] },
@@ -43,9 +51,9 @@ const MOTIFS: { motif: Motif; names: string[] }[] = [
   { motif: "root", names: ["vetiver", "orris root"] },
   { motif: "musk", names: ["white musk", "pink musk", "musk", "ambrette seed", "ambrette"] },
   { motif: "amber", names: ["ambergris", "amberwood", "crystal amber", "ambrofix", "ambroxan", "ambrox", "amber"] },
-  { motif: "flower", names: ["orange blossom", "neroli", "jasmine", "lavender", "violet", "rose", "iris", "orris", "geranium", "magnolia", "carnation", "floral", "lily", "orchid", "mahonia"] },
-  { motif: "citrus", names: ["bergamot", "grapefruit", "lemon", "mandarin", "orange", "lime", "citron", "citrus", "petit grain"] },
-  { motif: "leaf", names: ["patchouli", "sage", "rosemary", "basil", "mint", "papyrus", "wormwood"] },
+  { motif: "flower", names: ["orange blossom", "neroli", "lavender", "violet", "rose", "iris", "orris", "geranium", "magnolia", "carnation", "floral", "lily", "orchid", "mahonia"] },
+  { motif: "citrus", names: ["lemon", "mandarin", "orange", "lime", "citron", "citrus", "petit grain"] },
+  { motif: "leaf", names: ["sage", "rosemary", "basil", "mint", "papyrus", "wormwood"] },
   { motif: "wood", names: ["akigalawood", "georgywood", "guaiac wood", "wood", "cedar", "cypress", "sandal", "birch", "oud", "cashmere", "cashmeran"] },
   { motif: "spice", names: ["ginger", "cardamom", "cinnamon", "nutmeg", "coriander", "spices"] },
   { motif: "sweet", names: ["tonka", "praline", "chestnut", "coumarin"] },
@@ -62,6 +70,40 @@ function motifFor(note: string): Motif {
 }
 
 const paths: Record<Motif, ReactNode> = {
+  bergamot: (
+    <>
+      <circle cx="12" cy="12" r="8.2" fill="#DCE66A" stroke="#66743A" strokeWidth="1.05" />
+      <circle cx="12" cy="12" r="5.8" fill="#F5D86B" stroke="#8A8D45" strokeWidth=".75" />
+      <path d="M12 6.2v11.6M6.2 12h11.6M7.9 7.9l8.2 8.2M16.1 7.9l-8.2 8.2" stroke="#FFF0A8" strokeWidth=".85" />
+      <path d="M14.5 3.9c1.5-1.1 3.1-1.2 4.5-.6-1 1.6-2.5 2.5-4.4 2.5" fill="#6E9148" stroke="#4F7135" strokeWidth=".75" />
+    </>
+  ),
+  grapefruit: (
+    <>
+      <circle cx="12" cy="12" r="8.3" fill="#F4C85B" stroke="#A86E3F" strokeWidth="1.05" />
+      <circle cx="12" cy="12" r="6.05" fill="#F47F88" stroke="#E06170" strokeWidth=".7" />
+      <circle cx="12" cy="12" r="1.05" fill="#F7D8B7" stroke="none" />
+      <path d="M12 6v5M18 12h-5M12 18v-5M6 12h5M7.8 7.8l3.5 3.5M16.2 7.8l-3.5 3.5M16.2 16.2l-3.5-3.5M7.8 16.2l3.5-3.5" stroke="#FFD7CF" strokeWidth=".78" />
+    </>
+  ),
+  jasmine: (
+    <>
+      <path d="M12 10.3C9.8 5.8 6.8 4.4 5.6 6.3c-1.1 1.9 1.3 4.1 5.2 5.1" fill="#FFFDF7" stroke="#C8C6BF" strokeWidth=".8" />
+      <path d="M13.7 11.1c4.5-2.2 5.9-5.2 4-6.4-1.9-1.1-4.1 1.3-5.1 5.2" fill="#FFFDF7" stroke="#C8C6BF" strokeWidth=".8" />
+      <path d="M13.7 12.9c4.5 2.2 5.9 5.2 4 6.4-1.9 1.1-4.1-1.3-5.1-5.2" fill="#FFFDF7" stroke="#C8C6BF" strokeWidth=".8" />
+      <path d="M10.3 12.9c-4.5 2.2-5.9 5.2-4 6.4 1.9 1.1 4.1-1.3 5.1-5.2" fill="#FFFDF7" stroke="#C8C6BF" strokeWidth=".8" />
+      <circle cx="12" cy="12" r="2.15" fill="#E9B83F" stroke="#B68C28" strokeWidth=".75" />
+      <circle cx="12" cy="12" r=".75" fill="#8A6730" stroke="none" />
+    </>
+  ),
+  patchouli: (
+    <>
+      <path d="M11.2 20C5.8 17.4 4 12.8 6 8.5c1.7-3.7 5-5.2 6.4-5.6 1.6 4.7 1.4 10.7-1.2 17.1Z" fill="#5B874A" stroke="#355E34" strokeWidth=".9" />
+      <path d="M13 19.3c5.1-2.4 7.1-6.7 5.3-10.8-1.4-3.3-4.3-4.8-5.8-5.4-1.2 4.7-.9 10.4.5 16.2Z" fill="#79A05A" stroke="#476D3C" strokeWidth=".9" />
+      <path d="M7.2 9.7c2 2.6 3.2 5.4 3.9 9M17 9.6c-1.9 2.8-3 5.7-3.7 9" stroke="#D8E0A4" strokeWidth=".72" />
+      <path d="M12.1 18.4v3" stroke="#5A4732" strokeWidth="1" />
+    </>
+  ),
   citrus: (
     <>
       <circle cx="12" cy="12" r="8" />
@@ -95,8 +137,13 @@ const paths: Record<Motif, ReactNode> = {
   ),
   spice: (
     <>
-      <path d="M12 3c1.4 4.2 2.8 5.6 7 7-4.2 1.4-5.6 2.8-7 7-1.4-4.2-2.8-5.6-7-7 4.2-1.4 5.6-2.8 7-7Z" />
-      <path d="M18.5 16.5l.6 1.4 1.4.6-1.4.6-.6 1.4-.6-1.4-1.4-.6 1.4-.6.6-1.4Z" />
+      <g transform="rotate(-28 9 13)">
+        <rect x="6.2" y="5.3" width="3.1" height="14.2" rx="1.45" fill="#A96332" stroke="#6F3D24" strokeWidth=".85" />
+        <rect x="9.1" y="5.8" width="3" height="13.6" rx="1.4" fill="#C77B3D" stroke="#7B4828" strokeWidth=".85" />
+        <path d="M7.1 7.2h1.5M10 8h1.4M7 16.7h1.5M9.9 15.8h1.4" stroke="#E3A76C" strokeWidth=".65" />
+      </g>
+      <path d="M16.7 5.4 18 9l3.6.3-2.8 2.3.9 3.5-3-2-3 2 .9-3.5-2.8-2.3 3.6-.3 1.3-3.6Z" fill="#7B4C2F" stroke="#56301E" strokeWidth=".72" />
+      <circle cx="17" cy="10" r="1.05" fill="#D5A05F" stroke="none" />
     </>
   ),
   pepper: (
@@ -109,8 +156,10 @@ const paths: Record<Motif, ReactNode> = {
   ),
   vanilla: (
     <>
-      <path d="M8 20c1-7 3-13 8-17M11 20c.5-6 2-11 5-15" />
-      <path d="M7 13c2 0 3 .8 4 2M13 9c2 0 3 .8 4 2" />
+      <path d="M7.1 20.1c1-6.8 3.2-12.6 7.8-17.1" stroke="#4D3528" strokeWidth="2.15" />
+      <path d="M10.6 20.3c.5-6.1 2-11 5.2-15.2" stroke="#7C5135" strokeWidth="1.75" />
+      <path d="M14.2 8.3c2.7-3.8 5.3-3.9 6.2-2.2.9 1.8-.7 3.9-4.5 4.4 2.9 1.7 3.4 4.2 1.7 5.2-1.8 1-3.7-.5-4.2-3.6-1.7 2.7-4.2 3.2-5.1 1.5-.9-1.7.6-3.6 3.6-4-2.7-1.7-3.2-4-1.5-5 1.6-.9 3.4.5 3.8 3.7Z" fill="#FFF7E5" stroke="#D8C6A1" strokeWidth=".72" />
+      <circle cx="14.1" cy="9.7" r="1.45" fill="#E6B94C" stroke="#B9862F" strokeWidth=".65" />
     </>
   ),
   honey: (
