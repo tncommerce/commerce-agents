@@ -2,15 +2,9 @@
 
 from pathlib import Path
 
-SHOWCASE_LAYOUT = Path(
-    "examples/retail/storefront-web/app/showcase/layout.tsx"
-)
-START_PAGE = Path(
-    "examples/retail/storefront-web/app/start/page.tsx"
-)
-SEO_SCRIPT = Path(
-    "examples/retail/storefront-web/scripts/generate-launch-seo.mjs"
-)
+SHOWCASE_LAYOUT = Path("examples/retail/storefront-web/app/showcase/layout.tsx")
+START_PAGE = Path("examples/retail/storefront-web/app/start/page.tsx")
+SEO_SCRIPT = Path("examples/retail/storefront-web/scripts/generate-launch-seo.mjs")
 
 
 def test_internal_showcase_is_explicitly_noindex() -> None:
