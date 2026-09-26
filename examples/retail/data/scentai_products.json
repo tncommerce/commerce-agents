@@ -2097,7 +2097,7 @@
       "visuals": [
         {
           "role": "cutout",
-          "url": "/products/naxos-cutout-production.png",
+          "url": "/products/naxos-cutout-production.webp",
           "provenance": "dufynd_generated",
           "fidelity_status": "verified",
           "variant": "100ml"
@@ -2111,7 +2111,7 @@
           "composition": "bottle_free_backdrop"
         }
       ],
-      "image_url": "/products/naxos-cutout-production.png"
+      "image_url": "/products/naxos-cutout-production.webp"
     },
     {
       "product_id": "SC-NUSUK-ATEEQ-100",
