@@ -56,6 +56,7 @@ export function StoreShell<V extends string>({
   panelOpen,
   onPanelOpenChange,
   placeholder,
+  composerLabel,
   banner,
   children,
   minimal = false,
@@ -79,6 +80,8 @@ export function StoreShell<V extends string>({
   panelOpen: boolean;
   onPanelOpenChange: (open: boolean) => void;
   placeholder: string;
+  /** Accessible label for the storefront composer. Defaults to an English generic label. */
+  composerLabel?: string;
   /** A strip between the app bar and the page. */
   banner?: ReactNode;
   children: ReactNode;
@@ -208,7 +211,7 @@ export function StoreShell<V extends string>({
                 send={ask}
                 ready={chat.ready}
                 busy={chat.busy}
-                label={`Message ${assistantName}`}
+                label={composerLabel ?? `Message ${assistantName}`}
                 placeholder={placeholder}
                 className="mx-auto max-w-[760px]"
               />
