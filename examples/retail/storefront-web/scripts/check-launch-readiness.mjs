@@ -39,6 +39,31 @@ function validHttpUrl(value, { requireHttps = true } = {}) {
   }
 }
 
+const RESERVED_LAUNCH_HOSTS = [
+  "example.com",
+  "example.org",
+  "example.net",
+  "localhost",
+];
+
+function reservedLaunchHost(hostname) {
+  const host = String(hostname || "").toLowerCase().replace(/\.$/, "");
+  return RESERVED_LAUNCH_HOSTS.some(
+    (reserved) => host === reserved || host.endsWith("." + reserved),
+  );
+}
+
+function validPublicHttpUrl(value, { requireHttps = true } = {}) {
+  try {
+    const parsed = new URL(value);
+    if (requireHttps && parsed.protocol !== "https:") return false;
+    if (!requireHttps && !["http:", "https:"].includes(parsed.protocol)) return false;
+    return !reservedLaunchHost(parsed.hostname);
+  } catch {
+    return false;
+  }
+}
+
 const checks = [];
 
 function add(status, id, message) {
@@ -142,24 +167,24 @@ add(
 
 const apiUrl = env("NEXT_PUBLIC_API_URL");
 add(
-  validHttpUrl(apiUrl)
+  validPublicHttpUrl(apiUrl)
     ? "pass"
     : "gate",
   "public_api_url",
-  validHttpUrl(apiUrl)
+  validPublicHttpUrl(apiUrl)
     ? `Public API URL is HTTPS: ${apiUrl}`
-    : "NEXT_PUBLIC_API_URL must be configured with an HTTPS public API URL.",
+    : "NEXT_PUBLIC_API_URL must be a non-placeholder HTTPS public API URL.",
 );
 
 const siteUrl = env("NEXT_PUBLIC_SITE_URL");
 add(
-  validHttpUrl(siteUrl)
+  validPublicHttpUrl(siteUrl)
     ? "pass"
     : "gate",
   "site_url",
-  validHttpUrl(siteUrl)
+  validPublicHttpUrl(siteUrl)
     ? `Canonical site URL is HTTPS: ${siteUrl}`
-    : "NEXT_PUBLIC_SITE_URL must be configured with the canonical HTTPS site URL.",
+    : "NEXT_PUBLIC_SITE_URL must be a non-placeholder canonical HTTPS site URL.",
 );
 
 const legalFields = [
@@ -255,7 +280,7 @@ add(
 );
 
 if (
-  validHttpUrl(siteUrl) &&
+  validPublicHttpUrl(siteUrl) &&
   new URL(siteUrl).hostname.endsWith(".onrender.com")
 ) {
   add(
@@ -263,7 +288,7 @@ if (
     "custom_domain",
     "Canonical URL still uses the Render hostname. A custom domain is optional for technical launch but recommended before broad marketing.",
   );
-} else if (validHttpUrl(siteUrl)) {
+} else if (validPublicHttpUrl(siteUrl)) {
   add("pass", "custom_domain", "Canonical URL uses a non-Render host.");
 }
 
