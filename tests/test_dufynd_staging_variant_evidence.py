@@ -9,12 +9,32 @@ DATA = Path("examples/retail/data")
 STAGING = DATA / "scentai_catalog_staging.json"
 
 SOURCES = [
-    (DATA / "scentai_catalog_batch1_verification.json", "products", "proposed_product_id", "canonical_volume_ml"),
-    (DATA / "scentai_catalog_batch2_verification.json", "products", "proposed_product_id", "canonical_volume_ml"),
-    (DATA / "scentai_catalog_batch3_verification.json", "products", "proposed_product_id", "canonical_volume_ml"),
+    (
+        DATA / "scentai_catalog_batch1_verification.json",
+        "products",
+        "proposed_product_id",
+        "canonical_volume_ml",
+    ),
+    (
+        DATA / "scentai_catalog_batch2_verification.json",
+        "products",
+        "proposed_product_id",
+        "canonical_volume_ml",
+    ),
+    (
+        DATA / "scentai_catalog_batch3_verification.json",
+        "products",
+        "proposed_product_id",
+        "canonical_volume_ml",
+    ),
     (DATA / "dufynd_catalog_expansion_next10.json", "candidates", "product_id", "volume_ml"),
     (DATA / "dufynd_catalog_expansion_wave2_batch6.json", "candidates", "product_id", "volume_ml"),
-    (DATA / "dufynd_catalog_expansion_batch7_research.json", "candidates", "product_id", "volume_ml"),
+    (
+        DATA / "dufynd_catalog_expansion_batch7_research.json",
+        "candidates",
+        "product_id",
+        "volume_ml",
+    ),
 ]
 
 
@@ -64,11 +84,7 @@ def test_research_waves_keep_retail_variant_verification_explicit() -> None:
     evidence = _evidence_by_product_id()
     staging = _load(STAGING)["products"]
 
-    research_ids = {
-        row["product_id"]
-        for row in staging
-        if int(row["batch"]) >= 4
-    }
+    research_ids = {row["product_id"] for row in staging if int(row["batch"]) >= 4}
 
     assert len(research_ids) == 20
     for product_id in research_ids:
