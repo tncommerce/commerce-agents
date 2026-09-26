@@ -56,7 +56,10 @@ def test_batch7_stays_research_only_until_sources_are_verified() -> None:
         assert "verified_purchase_destination_pending" in candidate["validation"]["blockers"]
         assert "approved_product_image_pending" in candidate["validation"]["blockers"]
         assert "canonical_gtin_feed_match_pending" in candidate["validation"]["blockers"]
-        assert "current_verified_purchase_destination_pending" not in candidate["validation"]["blockers"]
+        assert (
+            "current_verified_purchase_destination_pending"
+            not in candidate["validation"]["blockers"]
+        )
         assert "merchant_variant_mapping_pending" not in candidate["validation"]["blockers"]
         assert "community_data_pending" not in candidate["validation"]["blockers"]
 
