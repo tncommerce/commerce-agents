@@ -184,5 +184,60 @@ def test_third_controlled_expansion_wave_is_staging_only() -> None:
         assert row["research"]["source_wave_id"] == "DUFYND-CATALOG-EXPANSION-WAVE2-BATCH6"
 
 
+def test_fourth_controlled_expansion_wave_is_staging_only() -> None:
+    staging = load_staging()
+    live = json.loads(Path("examples/retail/data/catalog.json").read_text(encoding="utf-8"))
+    intake = json.loads(
+        Path("examples/retail/data/dufynd_catalog_staging_intake.json").read_text(encoding="utf-8")
+    )
+    wave = json.loads(
+        Path("examples/retail/data/dufynd_catalog_expansion_batch7_research.json").read_text(
+            encoding="utf-8"
+        )
+    )
+
+    expected_batch7 = {
+        "SC-MUGLER-ALIEN-EDP-90",
+        "SC-MFK-BACCARAT-ROUGE-540-EDP-70",
+        "SC-AFNAN-9-PM-POUR-FEMME-EDP-100",
+        "SC-MAISON-MARGIELA-BY-THE-FIREPLACE-EDT-100",
+        "SC-DIOR-JADORE-EDP-100",
+    }
+    staged_batch7 = {row["product_id"] for row in staging["products"] if row.get("batch") == 7}
+    live_ids = {
+        row["product_id"]
+        for row in live["products"]
+        if row.get("category") == "fragrance"
+        and row.get("in_stock") is not False
+        and str(row.get("product_id") or "").startswith("SC-")
+    }
+    manifest_batch7 = next(row for row in intake["waves"] if row["staging_batch"] == 7)
+    manifest_ids = set(manifest_batch7["selected_product_ids"])
+
+    assert wave["wave_id"] == "DUFYND-CATALOG-EXPANSION-BATCH7-RESEARCH"
+    assert wave["status"] == "enabled_for_isolated_staging"
+    assert staged_batch7 == expected_batch7
+    assert manifest_ids == expected_batch7
+    assert manifest_batch7["live_publication_authorized"] is False
+    assert staged_batch7.isdisjoint(live_ids)
+
+    for row in staging["products"]:
+        if row["product_id"] not in expected_batch7:
+            continue
+        assert row["media"]["image_url"] is None
+        assert row["validation"]["catalog_ready"] is False
+        assert "approved_product_image_pending" in row["validation"]["blockers"]
+        assert "verified_purchase_destination_pending" in row["validation"]["blockers"]
+        assert row["research"]["source_wave_id"] == "DUFYND-CATALOG-EXPANSION-BATCH7-RESEARCH"
+
+    afnan = next(
+        row
+        for row in staging["products"]
+        if row["product_id"] == "SC-AFNAN-9-PM-POUR-FEMME-EDP-100"
+    )
+    assert afnan["community"]["provisional"] is True
+    assert "provisional_community_data" in afnan["validation"]["blockers"]
+
+
 def test_checked_in_staging_matches_reproducible_builder() -> None:
     assert load_staging() == build_staging_payload()
