@@ -506,10 +506,7 @@ def promotion_plan(
         offers_payload if isinstance(offers_payload, list) else [],
     )
     live_ids = {product.get("product_id") for product in catalog.get("products", [])}
-    source_ids = {
-        product.get("product_id")
-        for product in (source or {}).get("products", [])
-    }
+    source_ids = {product.get("product_id") for product in (source or {}).get("products", [])}
 
     selected = choose_products(
         staged_products,
@@ -604,17 +601,9 @@ def write_promotions(
             "Refusing live write because catalog/source promotion rows are not aligned"
         )
 
-    existing_catalog_ids = {
-        product.get("product_id")
-        for product in catalog.get("products", [])
-    }
-    existing_source_ids = {
-        product.get("product_id")
-        for product in source.get("products", [])
-    }
-    duplicates = sorted(
-        set(catalog_ids) & (existing_catalog_ids | existing_source_ids)
-    )
+    existing_catalog_ids = {product.get("product_id") for product in catalog.get("products", [])}
+    existing_source_ids = {product.get("product_id") for product in source.get("products", [])}
+    duplicates = sorted(set(catalog_ids) & (existing_catalog_ids | existing_source_ids))
     if duplicates:
         raise ValueError(
             "Refusing live write because product_ids already exist in live data: "
