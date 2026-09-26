@@ -36,7 +36,12 @@ from .analytics import (
     sanitize_attribution_identifier,
 )
 from .merchant import create_merchant_router
-from .merchant_offers import MerchantClickoutTracker, MerchantOfferStore, customer_offer_payload
+from .merchant_offers import (
+    MerchantClickoutTracker,
+    MerchantOfferStore,
+    customer_offer_payload,
+    offer_clickout_target,
+)
 from .merchant_partners import (
     MerchantPartnerStore,
     customer_partner_payload,
@@ -196,6 +201,10 @@ async def merchant_clickout(
     if offer is None:
         raise HTTPException(status_code=404, detail="Offer not available")
 
+    target = offer_clickout_target(offer)
+    if target is None:
+        raise HTTPException(status_code=404, detail="Offer not available")
+
     acquisition_source = sanitize_attribution_identifier(src)
     campaign_id = sanitize_attribution_identifier(cmp)
     content_id = sanitize_attribution_identifier(content)
@@ -218,7 +227,6 @@ async def merchant_clickout(
         content_id=content_id,
         surface="merchant_offer",
     )
-    target = offer.affiliate_url or offer.product_url
     return RedirectResponse(url=target, status_code=302)
 
 
