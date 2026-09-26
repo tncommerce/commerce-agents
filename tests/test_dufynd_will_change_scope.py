@@ -6,7 +6,7 @@ CSS = Path("examples/retail/storefront-web/app/globals.css")
 
 
 def _block(source: str, selector: str) -> str:
-    return source.split(selector, 1)[1].split("}", 1)[0]
+    return source.split(f"\n{selector}", 1)[1].split("}", 1)[0]
 
 
 def test_transform_will_change_is_not_permanent_on_visual_base_rules() -> None:
