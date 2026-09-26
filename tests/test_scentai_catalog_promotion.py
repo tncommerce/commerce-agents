@@ -290,7 +290,6 @@ def test_promotion_plan_is_all_gate_aware() -> None:
     assert plan["rows"][1]["ready"] is False
 
 
-
 def test_source_conversion_preserves_live_fragrance_truth() -> None:
     source = build_source_product(
         staged_product(),
@@ -345,12 +344,8 @@ def test_live_write_updates_catalog_and_source_together(tmp_path) -> None:
     written_catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
     written_source = json.loads(source_path.read_text(encoding="utf-8"))
 
-    assert [row["product_id"] for row in written_catalog["products"]] == [
-        "SC-TEST-FRAGRANCE-100"
-    ]
-    assert [row["product_id"] for row in written_source["products"]] == [
-        "SC-TEST-FRAGRANCE-100"
-    ]
+    assert [row["product_id"] for row in written_catalog["products"]] == ["SC-TEST-FRAGRANCE-100"]
+    assert [row["product_id"] for row in written_source["products"]] == ["SC-TEST-FRAGRANCE-100"]
 
 
 def test_live_write_refuses_catalog_source_mismatch(tmp_path) -> None:
