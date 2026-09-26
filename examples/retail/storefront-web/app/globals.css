@@ -903,6 +903,23 @@ body {
 }
 
 
+
+/* DUFYND fragrance detail page ground
+ * Keeps cards light while giving the long product page a warmer editorial depth.
+ */
+.dufynd-fragrance-page {
+  background:
+    radial-gradient(circle at 50% -6%, rgba(184, 137, 52, 0.10), transparent 31rem),
+    radial-gradient(circle at 92% 18%, rgba(130, 96, 67, 0.055), transparent 24rem),
+    linear-gradient(180deg, #f4efe6 0%, #faf7f1 28%, #f3ede4 100%);
+}
+
+.dufynd-fragrance-header {
+  background: rgba(255, 253, 248, 0.90);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.72);
+}
+
 /* Accord-driven fragrance detail atmospheres
  * Product pages share the DUFYND luxury language without becoming visually repetitive.
  * The actual bottle image/model remains untouched; only the surrounding light world changes.
@@ -914,7 +931,7 @@ body {
   --dufynd-detail-glow-c: rgba(98, 66, 31, 0.11);
   background:
     radial-gradient(circle at 17% 18%, var(--dufynd-detail-glow-a), transparent 31%),
-    linear-gradient(126deg, rgba(11, 12, 14, 0.96) 0%, rgba(20, 18, 18, 0.84) 48%, rgba(248, 245, 238, 0.96) 48%, rgba(248, 245, 238, 0.99) 100%);
+    linear-gradient(126deg, rgba(11, 12, 14, 0.96) 0%, rgba(20, 18, 18, 0.84) 45%, rgba(247, 242, 233, 0.97) 45%, rgba(252, 249, 243, 0.99) 100%);
 }
 
 .dufynd-fragrance-hero-atmosphere {
@@ -941,7 +958,7 @@ body {
 
 .dufynd-fragrance-hero-copy {
   background:
-    linear-gradient(90deg, rgba(250,247,241,0.88), rgba(250,247,241,0.98) 28%, rgba(250,247,241,1));
+    linear-gradient(90deg, rgba(247,242,233,0.90), rgba(250,247,241,0.98) 30%, rgba(252,249,243,1));
   backdrop-filter: blur(16px);
 }
 
@@ -996,7 +1013,7 @@ body {
   .dufynd-fragrance-hero {
     background:
       radial-gradient(circle at 30% 18%, var(--dufynd-detail-glow-a), transparent 28%),
-      linear-gradient(180deg, rgba(11,12,14,0.98) 0 47%, rgba(248,245,238,0.99) 47% 100%);
+      linear-gradient(180deg, rgba(11,12,14,0.98) 0 42%, rgba(248,244,236,0.99) 42% 100%);
   }
 
   .dufynd-fragrance-hero-orbit {
@@ -1007,7 +1024,8 @@ body {
   }
 
   .dufynd-fragrance-hero-copy {
-    background: rgba(250,247,241,0.985);
+    background:
+      linear-gradient(180deg, rgba(248,244,236,0.985), rgba(252,249,243,0.995));
   }
 }
 
