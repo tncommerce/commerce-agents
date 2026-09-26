@@ -524,6 +524,7 @@ export default async function FragrancePage({
 
               <div className="mt-4 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-2.5">
                 <a
+                  id="dufynd-hero-offer-cta"
                   href="#angebote"
                   className="rounded-xl bg-(--accent-strong) px-3 py-2.5 text-center text-[12px] font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:brightness-95 sm:px-4 sm:text-[13px]"
                 >
