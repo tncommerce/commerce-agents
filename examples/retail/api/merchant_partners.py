@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from datetime import UTC, datetime
+from ipaddress import ip_address
 from pathlib import Path
 from typing import Literal
 from urllib.parse import parse_qsl, urlencode, urlparse
@@ -37,6 +38,17 @@ class MerchantPartner(BaseModel):
     )
 
 
+def _public_hostname(value: str | None) -> bool:
+    hostname = str(value or "").strip().casefold().rstrip(".")
+    if not hostname or hostname == "localhost" or hostname.endswith(".localhost"):
+        return False
+
+    try:
+        return ip_address(hostname).is_global
+    except ValueError:
+        return True
+
+
 def _valid_https_url(value: str | None) -> bool:
     if not value:
         return False
@@ -47,7 +59,7 @@ def _valid_https_url(value: str | None) -> bool:
         and parsed.hostname
         and parsed.username is None
         and parsed.password is None
-        and parsed.hostname not in {"localhost", "127.0.0.1", "::1"}
+        and _public_hostname(parsed.hostname)
     )
 
 
@@ -182,8 +194,10 @@ def partner_product_deeplink_url(
     if (
         parsed_verified.scheme != "https"
         or not parsed_verified.hostname
+        or not _public_hostname(parsed_verified.hostname)
         or parsed_destination.scheme != "https"
         or not parsed_destination.hostname
+        or not _public_hostname(parsed_destination.hostname)
         or parsed_destination.username is not None
         or parsed_destination.password is not None
     ):
