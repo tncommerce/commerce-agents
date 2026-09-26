@@ -5,28 +5,49 @@ import { useEffect, useState } from "react";
 export default function MobileOfferBar({
   brand,
   name,
-  heroId = "dufynd-fragrance-hero",
+  triggerId = "dufynd-hero-offer-cta",
 }: {
   brand: string;
   name: string;
-  heroId?: string;
+  triggerId?: string;
 }) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const hero = document.getElementById(heroId);
-    if (!hero || typeof IntersectionObserver === "undefined") {
-      setVisible(true);
+    const trigger = document.getElementById(triggerId);
+    if (!trigger) {
+      setVisible(false);
       return;
+    }
+
+    const syncFromBounds = () => {
+      const bounds = trigger.getBoundingClientRect();
+      const inViewport =
+        bounds.bottom > 0 &&
+        bounds.top < window.innerHeight &&
+        bounds.right > 0 &&
+        bounds.left < window.innerWidth;
+      setVisible(!inViewport);
+    };
+
+    syncFromBounds();
+
+    if (typeof IntersectionObserver === "undefined") {
+      window.addEventListener("scroll", syncFromBounds, { passive: true });
+      window.addEventListener("resize", syncFromBounds);
+      return () => {
+        window.removeEventListener("scroll", syncFromBounds);
+        window.removeEventListener("resize", syncFromBounds);
+      };
     }
 
     const observer = new IntersectionObserver(
       ([entry]) => setVisible(!entry.isIntersecting),
-      { threshold: 0.08 },
+      { threshold: 0.01 },
     );
-    observer.observe(hero);
+    observer.observe(trigger);
     return () => observer.disconnect();
-  }, [heroId]);
+  }, [triggerId]);
 
   if (!visible) return null;
 
