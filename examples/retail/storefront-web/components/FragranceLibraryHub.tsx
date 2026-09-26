@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import FragranceSaveControls from "@/components/FragranceSaveControls";
 import FragranceVisual from "@/components/FragranceVisual";
 import GuidedAdvisorLink from "@/components/GuidedAdvisorLink";
+import { accordLabel } from "@/lib/accordLabels";
 import {
   clearFragranceLibrary,
   FRAGRANCE_LIBRARY_EVENT,
@@ -37,31 +38,6 @@ const PROFILE_AXES = [
     label: "Würze",
   },
 ] as const;
-
-const ACCORD_LABELS: Record<string, string> = {
-  fresh: "Frisch",
-  citrus: "Zitrisch",
-  aquatic: "Aquatisch",
-  green: "Grün",
-  spicy: "Würzig",
-  sweet: "Süß",
-  synthetic: "Synthetisch",
-  fruity: "Fruchtig",
-  woody: "Holzig",
-  smoky: "Rauchig",
-  powdery: "Pudrig",
-  floral: "Blumig",
-  creamy: "Cremig",
-  gourmand: "Gourmand",
-  oriental: "Orientalisch",
-  aromatic: "Aromatisch",
-  leathery: "Ledrig",
-  resinous: "Harzig",
-};
-
-function accordLabel(value: string): string {
-  return ACCORD_LABELS[value.toLowerCase()] || value;
-}
 
 function emptyState(): FragranceLibraryState {
   return {
