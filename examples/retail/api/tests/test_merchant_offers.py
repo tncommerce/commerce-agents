@@ -1,7 +1,7 @@
 import json
+from datetime import UTC, datetime, timedelta
 
 import pytest
-from datetime import UTC, datetime, timedelta
 
 from retail.api.merchant_offers import (
     MerchantClickoutTracker,
