@@ -271,10 +271,10 @@ const activeMerchantPartners = (
 
   return (
     partner.status === "active" &&
-    validHttpUrl(
+    validPublicHttpUrl(
       String(partner.affiliate_url || ""),
     ) &&
-    ageHours >= 0 &&
+    ageHours >= -MAX_FUTURE_CLOCK_SKEW_HOURS &&
     ageHours <= 720
   );
 });

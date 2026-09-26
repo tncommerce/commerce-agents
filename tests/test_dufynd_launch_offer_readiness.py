@@ -19,3 +19,14 @@ def test_affiliate_readiness_requires_valid_public_https_url() -> None:
 
     assert "const affiliateOffers = eligibleOffers.filter((offer) =>" in source
     assert 'validPublicHttpUrl(String(offer.affiliate_url || ""))' in source
+
+
+def test_merchant_partner_readiness_uses_public_https_and_clock_skew_tolerance() -> None:
+    source = READINESS.read_text(encoding="utf-8")
+
+    partners = source.split("const activeMerchantPartners =", 1)[1].split("add(", 1)[0]
+
+    assert "validPublicHttpUrl(" in partners
+    assert 'String(partner.affiliate_url || "")' in partners
+    assert "ageHours >= -MAX_FUTURE_CLOCK_SKEW_HOURS" in partners
+    assert "ageHours <= 720" in partners
