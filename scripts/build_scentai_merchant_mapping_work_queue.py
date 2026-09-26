@@ -133,8 +133,8 @@ def build_queue(
                 }
             )
 
-        state = "mapping_data_ready_affiliate_blocked"
-        next_action = "await_affiliate_program_approval"
+        state = "mapping_data_ready"
+        next_action = "maintain_mapping_and_verify_purchase_destination"
         blockers: list[str] = []
 
         if not resolved:
@@ -158,11 +158,6 @@ def build_queue(
             and "community_performance_still_provisional" not in blockers
         ):
             blockers.append("community_performance_still_provisional")
-
-        if resolved and not any(
-            row["affiliate_activation_state"] == "approved" for row in merchant_rows
-        ):
-            blockers.append("affiliate_program_not_approved")
 
         items.append(
             {
@@ -193,7 +188,7 @@ def build_queue(
     state_weight = {
         "research_blocked": 0,
         "mapping_required": 1,
-        "mapping_data_ready_affiliate_blocked": 2,
+        "mapping_data_ready": 2,
     }
     items.sort(
         key=lambda item: (
@@ -233,7 +228,10 @@ def build_queue(
             "affiliate_programs_registered": len(affiliate_rows),
             "affiliate_programs_approved": len(approved_programs),
             "affiliate_programs_pending": (len(affiliate_rows) - len(approved_programs)),
-            "live_activation_ready_products": sum(
+            "mapping_ready_products": sum(
+                1 for item in items if item["resolved_mapping_count"] > 0
+            ),
+            "products_with_approved_affiliate_program": sum(
                 1
                 for item in items
                 if any(
@@ -298,7 +296,7 @@ def main() -> int:
             f"mapped={summary['products_with_resolved_mapping']} | "
             f"unmapped={summary['products_without_resolved_mapping']} | "
             f"affiliate_approved={summary['affiliate_programs_approved']} | "
-            f"activation_ready={summary['live_activation_ready_products']}"
+            f"mapping_ready={summary['mapping_ready_products']}"
         )
         print(f"source_fingerprint_sha256={queue['source_fingerprint_sha256']}")
 
