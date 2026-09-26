@@ -13,11 +13,7 @@ def test_emit_all_expected_drifted_jarvis_nodes() -> None:
     generated_at = str(current["operations"]["generated_at"])
     expected = refresh_state(generated_at=generated_at)
 
-    drifted = sorted(
-        key
-        for key in expected
-        if key in current and current[key] != expected[key]
-    )
+    drifted = sorted(key for key in expected if key in current and current[key] != expected[key])
 
     for key in drifted:
         print(f"DUFYND_STATE_BEGIN::{key}")
