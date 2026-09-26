@@ -274,7 +274,7 @@ try {
           if (target.name === "naxos") {
             if (
               !schemaImages.some((image) =>
-                String(image).endsWith("/products/naxos-cutout-production.png"),
+                String(image).endsWith("/products/naxos-cutout-production.webp"),
               )
             ) {
               throw new Error(
@@ -332,7 +332,7 @@ try {
           }
 
           const verifiedCutout = page.locator(
-            'img[src="/products/naxos-cutout-production.png"]',
+            'img[src="/products/naxos-cutout-production.webp"]',
           );
           if ((await verifiedCutout.count()) < 1) {
             throw new Error("Naxos verified cutout is missing");
@@ -565,7 +565,7 @@ try {
           }
 
           const naxosCardTruth = page.locator(
-            'a[href="/duft/xerjoff-naxos"] img[src="/products/naxos-cutout-production.png"]',
+            'a[href="/duft/xerjoff-naxos"] img[src="/products/naxos-cutout-production.webp"]',
           );
           if ((await naxosCardTruth.count()) < 1) {
             throw new Error(
@@ -576,7 +576,7 @@ try {
 
         if (target.name === "home") {
           const spotlightTruth = page.locator(
-            'a[href="/duft/xerjoff-naxos"] img[src="/products/naxos-cutout-production.png"]',
+            'a[href="/duft/xerjoff-naxos"] img[src="/products/naxos-cutout-production.webp"]',
           );
           if ((await spotlightTruth.count()) < 1) {
             throw new Error(
