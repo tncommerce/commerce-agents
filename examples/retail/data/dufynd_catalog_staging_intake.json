@@ -48,6 +48,21 @@
         "SC-LATTAFA-KHAMRAH-EDP-100",
         "SC-GUCCI-FLORA-GORGEOUS-GARDENIA-EDP-100"
       ]
+    },
+    {
+      "wave_id": "DUFYND-CATALOG-EXPANSION-BATCH7-RESEARCH",
+      "source_file": "dufynd_catalog_expansion_batch7_research.json",
+      "enabled": true,
+      "staging_batch": 7,
+      "max_products": 5,
+      "live_publication_authorized": false,
+      "selected_product_ids": [
+        "SC-MUGLER-ALIEN-EDP-90",
+        "SC-MFK-BACCARAT-ROUGE-540-EDP-70",
+        "SC-AFNAN-9-PM-POUR-FEMME-EDP-100",
+        "SC-MAISON-MARGIELA-BY-THE-FIREPLACE-EDT-100",
+        "SC-DIOR-JADORE-EDP-100"
+      ]
     }
   ]
 }
