@@ -184,6 +184,16 @@ def test_http_affiliate_url_falls_back_to_https_product_url() -> None:
     assert customer_offer_payload(candidate)["affiliate_link"] is False
 
 
+def test_eur_currency_is_canonicalized_in_customer_payload() -> None:
+    candidate = offer("eur-normalized", merchant="Merchant", price=90, shipping=0)
+    candidate.currency = " eur "
+
+    ranked = rank_offers([candidate], now=NOW)
+
+    assert [item.offer_id for item in ranked] == ["eur-normalized"]
+    assert customer_offer_payload(candidate)["currency"] == "EUR"
+
+
 def test_non_eur_offer_is_excluded_from_runtime_ranking() -> None:
     candidate = offer("usd", merchant="USD Merchant", price=50, shipping=0)
     candidate.currency = "USD"
