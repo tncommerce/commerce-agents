@@ -21,6 +21,7 @@ import {
 } from "@/lib/fragranceCatalog";
 import { SITE_URL } from "@/lib/site";
 import { noteLabel } from "@/lib/noteLabels";
+import { targetLabel } from "@/lib/targetLabels";
 
 export const dynamicParams = false;
 
@@ -28,12 +29,6 @@ type PageProps = {
   params: Promise<{
     slug: string;
   }>;
-};
-
-const TARGET_LABELS: Record<string, string> = {
-  men: "Herren",
-  women: "Damen",
-  unisex: "Unisex",
 };
 
 type FragranceVisualTheme =
@@ -82,10 +77,6 @@ function visualThemeFor(fragrance: StaticFragrance): FragranceVisualTheme {
   }
 
   return "ember";
-}
-
-function targetLabel(value: string): string {
-  return TARGET_LABELS[value.toLowerCase()] || value;
 }
 
 function relatedLabel(kind: RelatedFragranceKind): string {
