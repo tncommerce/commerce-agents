@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import FragranceOffers from "@/components/FragranceOffers";
 import FragranceVisual from "@/components/FragranceVisual";
 import { trackAnalyticsEvent } from "@/lib/analytics";
+import { accordLabel } from "@/lib/accordLabels";
 import {
   isVerifiedProductTruthVisual,
   type StaticFragrance,
@@ -315,7 +316,7 @@ export default function FragranceComparisonPicker({
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {fragrance.accords.slice(0, 5).map((accord) => (
                     <span
-                      key={accord}
+                      key={accordLabel(accord)}
                       className="rounded-full bg-(--card) px-2.5 py-1 text-[10.5px] text-(--ink-soft)"
                     >
                       {accord}
