@@ -312,7 +312,7 @@ def test_source_conversion_preserves_live_fragrance_truth() -> None:
     assert source["validation"]["catalog_ready"] is True
 
     visual = source["visuals"][0]
-    assert visual["role"] == "cutout"
+    assert visual["role"] == "primary"
     assert visual["fidelity_status"] == "verified"
     assert visual["variant"] == "100ml"
     assert visual["url"] == "/products/test/test-fragrance.png"
