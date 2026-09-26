@@ -328,23 +328,31 @@ try {
 
           const wrongPremiumMotifs = await page.evaluate(
             (expectedMotifs) => {
-              const noteCards = Array.from(
-                document.querySelectorAll("[data-dufynd-exploded-note]"),
-              );
+              const spans = Array.from(document.querySelectorAll("span"));
               return Object.entries(expectedMotifs).flatMap(
                 ([label, expectedMotif]) => {
-                  const noteCard = noteCards.find((card) =>
-                    card.textContent?.includes(label),
+                  const labelSpans = spans.filter(
+                    (span) => span.textContent?.trim() === label,
                   );
-                  const icon = noteCard?.querySelector(
-                    "svg[data-dufynd-note-motif]",
-                  );
-                  const actualMotif = icon?.getAttribute(
-                    "data-dufynd-note-motif",
-                  );
-                  return actualMotif === expectedMotif
+                  const hasExpectedMotif = labelSpans.some((span) => {
+                    let container = span.parentElement;
+                    for (let depth = 0; depth < 4 && container; depth += 1) {
+                      const icon = container.querySelector(
+                        "svg[data-dufynd-note-motif]",
+                      );
+                      if (
+                        icon?.getAttribute("data-dufynd-note-motif") ===
+                        expectedMotif
+                      ) {
+                        return true;
+                      }
+                      container = container.parentElement;
+                    }
+                    return false;
+                  });
+                  return hasExpectedMotif
                     ? []
-                    : [`${label}: ${actualMotif || "missing"} != ${expectedMotif}`];
+                    : [`${label}: expected ${expectedMotif} motif not rendered`];
                 },
               );
             },
