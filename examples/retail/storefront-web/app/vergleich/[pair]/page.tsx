@@ -284,29 +284,35 @@ export default async function ComparisonPage({
           </span>
         </nav>
 
-        <div className="max-w-3xl">
-          <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-(--ink-soft)">
-            DUFYND Duftvergleich
+        <section className="relative overflow-hidden rounded-[30px] border border-[#d7c7a2]/45 bg-[#15120f] p-5 text-white shadow-[0_24px_80px_-38px_rgba(40,27,10,0.75)] sm:p-7">
+          <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_12%,rgba(212,174,101,0.20),transparent_34%),linear-gradient(135deg,#17130f_0%,#0e0c0a_68%,#211a11_100%)]" />
+          <div className="relative max-w-3xl">
+            <div className="text-[10px] font-semibold uppercase tracking-[0.17em] text-[#d9bd82]">
+              DUFYND · Duftvergleich
+            </div>
+            <h1 className="mt-3 text-[30px] font-semibold leading-[1.08] tracking-[-0.045em] text-[#fffaf0] sm:text-[44px]">
+              {left.brand} {left.name}
+              <span className="mx-2 text-[#d9bd82]">vs.</span>
+              {right.brand} {right.name}
+            </h1>
+            <div className="mt-4 inline-flex max-w-full flex-wrap rounded-full border border-white/15 bg-white/[0.06] px-3 py-1.5 text-[11px] font-semibold text-white/80">
+              {RELATION_LABELS[pair.kind]}
+              {pair.confidence
+                ? ` · Datenvertrauen: ${CONFIDENCE_LABELS[pair.confidence] || pair.confidence}`
+                : ""}
+            </div>
+            <p className="mt-4 max-w-2xl text-[12.5px] leading-5 text-white/70">
+              Dokumentierte Duftbeziehungen, Community-Daten und redaktionelle Profilmerkmale.
+              Eine Duftbeziehung bedeutet keine identische Rezeptur.
+            </p>
           </div>
-          <h1 className="mt-2 text-[30px] font-semibold leading-[1.1] tracking-[-0.035em] sm:text-[40px]">
-            {left.brand} {left.name} vs. {right.brand} {right.name}
-          </h1>
-          <div className="mt-3 inline-flex rounded-full border border-(--line) bg-(--card) px-3 py-1.5 text-[11px] font-semibold text-(--ink-soft)">
-            {RELATION_LABELS[pair.kind]}
-            {pair.confidence
-              ? ` · Datenvertrauen: ${CONFIDENCE_LABELS[pair.confidence] || pair.confidence}`
-              : ""}
-          </div>
-          <p className="mt-4 text-[13px] leading-5 text-(--ink-soft)">
-            Dieser Vergleich basiert auf dokumentierten DUFYND-Duftbeziehungen,
-            Community-Daten und redaktionellen Duftprofil-Merkmalen.
-            Eine Duftbeziehung bedeutet nicht, dass die Formeln chemisch
-            identisch sind.
-          </p>
-        </div>
+        </section>
 
-        <section className="mt-7 grid gap-4 sm:grid-cols-2">
+        <section className="relative mt-5 grid gap-4 rounded-[28px] border border-[#e1d4ba] bg-[linear-gradient(135deg,#fbf6ec,#fffdf8)] p-3 sm:grid-cols-2 sm:p-4">
           <ProductHeader fragrance={left} />
+          <div aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#d7bf8e] bg-[#fffaf0] px-3 py-2 text-[10px] font-bold uppercase text-[#7e5b20] shadow-md sm:block">
+            vs
+          </div>
           <ProductHeader fragrance={right} />
         </section>
 
