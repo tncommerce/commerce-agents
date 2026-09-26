@@ -440,7 +440,7 @@ def build_source_product(
         "image_url": image_url,
         "visuals": [
             {
-                "role": "cutout",
+                "role": "primary",
                 "url": image_url,
                 "provenance": provenance,
                 "fidelity_status": "verified",
