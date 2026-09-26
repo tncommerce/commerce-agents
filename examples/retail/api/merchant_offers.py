@@ -9,7 +9,6 @@ from uuid import uuid4
 
 from pydantic import BaseModel, Field
 
-
 MAX_FUTURE_CLOCK_SKEW_HOURS = 5 / 60
 
 
