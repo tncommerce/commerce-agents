@@ -70,6 +70,15 @@ const naxosGermanNotes = [
   "Vanille",
 ];
 
+const naxosPremiumMotifs = {
+  Lavendel: "lavender",
+  Bergamotte: "bergamot",
+  "Sambac-Jasmin": "jasmine",
+  Zimt: "spice",
+  Tonkabohne: "tonka",
+  Vanille: "vanilla",
+};
+
 await mkdir(outputDir, { recursive: true });
 
 const browser = await chromium.launch({ headless: true });
@@ -316,6 +325,22 @@ try {
           if (notesMissingIcons.length) {
             throw new Error(
               `Naxos note icons missing in rendered layout: ${notesMissingIcons.join(", ")}`,
+            );
+          }
+
+          const missingPremiumMotifs = await page.evaluate(
+            (expectedMotifs) =>
+              Object.values(expectedMotifs).filter(
+                (motif) =>
+                  !document.querySelector(
+                    `svg[data-dufynd-note-motif="${motif}"]`,
+                  ),
+              ),
+            naxosPremiumMotifs,
+          );
+          if (missingPremiumMotifs.length) {
+            throw new Error(
+              `Naxos premium note motifs missing: ${missingPremiumMotifs.join(", ")}`,
             );
           }
 
