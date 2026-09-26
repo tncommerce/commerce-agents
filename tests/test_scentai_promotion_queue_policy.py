@@ -35,24 +35,13 @@ def test_affiliate_is_not_a_catalog_promotion_gate() -> None:
         assert row["blockers"] == ["approved_product_image_pending"]
         assert row["ready_for_live"] is False
 
-    waiting = [
-        row
-        for row in rows
-        if row["proposed_product_id"] not in DIRECT_PURCHASE_READY
-    ]
-    assert all(
-        "verified_purchase_destination_pending" in row["blockers"]
-        for row in waiting
-    )
+    waiting = [row for row in rows if row["proposed_product_id"] not in DIRECT_PURCHASE_READY]
+    assert all("verified_purchase_destination_pending" in row["blockers"] for row in waiting)
 
 
 def test_queue_blocker_summary_matches_candidate_rows() -> None:
     queue = json.loads(QUEUE.read_text(encoding="utf-8"))
-    actual = Counter(
-        blocker
-        for row in queue["candidates"]
-        for blocker in row.get("blockers", [])
-    )
+    actual = Counter(blocker for row in queue["candidates"] for blocker in row.get("blockers", []))
 
     assert queue["blocker_counts"] == dict(actual)
     assert queue["summary"]["current_purchase_destinations_ready"] == 5
