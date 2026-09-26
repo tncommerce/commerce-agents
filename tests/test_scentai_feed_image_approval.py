@@ -177,12 +177,18 @@ def test_same_approved_image_is_idempotent() -> None:
     assert plan["will_change"] is False
 
 
-def test_non_http_image_url_is_rejected() -> None:
+def test_non_https_image_url_is_rejected() -> None:
     with pytest.raises(
         ValueError,
-        match="image_url_must_be_http_or_https",
+        match="image_url_must_be_https",
     ):
         plan_for(image_url="javascript:alert(1)")
+
+    with pytest.raises(
+        ValueError,
+        match="image_url_must_be_https",
+    ):
+        plan_for(image_url="http://cdn.example.com/test.jpg")
 
 
 def test_candidate_payload_must_remain_review_only() -> None:
