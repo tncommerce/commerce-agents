@@ -64,7 +64,6 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "affiliate_link_pending",
           "approved_product_image_pending"
         ]
       }
@@ -133,7 +132,7 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "affiliate_link_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       }
@@ -200,7 +199,7 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "affiliate_link_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       }
@@ -269,7 +268,7 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "affiliate_link_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       }
@@ -338,7 +337,7 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "affiliate_link_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       }
@@ -409,7 +408,6 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "affiliate_link_pending",
           "approved_product_image_pending"
         ]
       }
@@ -477,7 +475,7 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "affiliate_link_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       }
@@ -543,7 +541,6 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "affiliate_link_pending",
           "approved_product_image_pending"
         ]
       }
@@ -612,7 +609,7 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "affiliate_link_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       }
@@ -678,7 +675,6 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "affiliate_link_pending",
           "approved_product_image_pending"
         ]
       }
@@ -754,7 +750,7 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "affiliate_link_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       }
@@ -825,7 +821,7 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "affiliate_link_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       }
@@ -894,7 +890,7 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "affiliate_link_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       }
@@ -972,7 +968,7 @@
         "catalog_ready": false,
         "blockers": [
           "community_performance_still_provisional",
-          "affiliate_link_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending",
           "verified_current_merchant_pending"
         ]
@@ -1048,7 +1044,7 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "affiliate_link_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       }
@@ -1122,7 +1118,7 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "affiliate_link_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       }
@@ -1194,7 +1190,7 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "affiliate_link_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       }
@@ -1266,7 +1262,7 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "affiliate_link_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       }
@@ -1336,7 +1332,7 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "affiliate_link_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       }
@@ -1403,7 +1399,7 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "affiliate_link_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       }
@@ -1477,7 +1473,7 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "affiliate_link_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       }
@@ -1543,7 +1539,7 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "affiliate_link_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       }
@@ -1614,7 +1610,7 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "affiliate_link_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       }
@@ -1686,7 +1682,7 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "affiliate_link_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending",
           "community_performance_still_provisional"
         ]
@@ -1754,7 +1750,6 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "affiliate_link_pending",
           "approved_product_image_pending"
         ]
       }
@@ -1823,7 +1818,7 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "affiliate_link_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       }
@@ -1900,7 +1895,7 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "affiliate_link_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       }
@@ -1973,7 +1968,7 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "affiliate_link_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       }
@@ -2042,7 +2037,7 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "affiliate_link_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       }
@@ -2109,7 +2104,7 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "affiliate_link_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       }
