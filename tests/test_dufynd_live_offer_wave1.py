@@ -40,11 +40,7 @@ def test_live_offer_wave_uses_exact_live_variants() -> None:
     offers = json.loads(OFFERS.read_text(encoding="utf-8"))["offers"]
     live = json.loads(LIVE.read_text(encoding="utf-8"))["products"]
     live_by_id = {row["product_id"]: row for row in live}
-    offers_by_product = {
-        row["product_id"]: row
-        for row in offers
-        if row["product_id"] in EXPECTED
-    }
+    offers_by_product = {row["product_id"]: row for row in offers if row["product_id"] in EXPECTED}
 
     assert set(offers_by_product) == set(EXPECTED)
 
@@ -88,15 +84,9 @@ def test_live_offer_coverage_grows_without_affiliate_claims() -> None:
     covered = {
         row["product_id"]
         for row in offers
-        if row["product_id"] in live_ids
-        and row["in_stock"] is True
-        and row["product_url"]
+        if row["product_id"] in live_ids and row["in_stock"] is True and row["product_url"]
     }
 
     assert len(covered) == 6
     assert set(EXPECTED).issubset(covered)
-    assert all(
-        row["affiliate_url"] is None
-        for row in offers
-        if row["product_id"] in EXPECTED
-    )
+    assert all(row["affiliate_url"] is None for row in offers if row["product_id"] in EXPECTED)
