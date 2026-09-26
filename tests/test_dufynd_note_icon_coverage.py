@@ -53,11 +53,7 @@ def test_all_staging_notes_have_an_intentional_icon_motif() -> None:
         )
         for values in (product.get("notes") or {}).values():
             if isinstance(values, list):
-                notes.update(
-                    str(value).strip().lower()
-                    for value in values
-                    if str(value).strip()
-                )
+                notes.update(str(value).strip().lower() for value in values if str(value).strip())
 
     source = ICONS.read_text(encoding="utf-8")
     motif_terms = [
@@ -66,9 +62,7 @@ def test_all_staging_notes_have_an_intentional_icon_motif() -> None:
         for term in QUOTED.findall(match["names"])
     ]
 
-    unmapped = sorted(
-        note for note in notes if not any(term in note for term in motif_terms)
-    )
+    unmapped = sorted(note for note in notes if not any(term in note for term in motif_terms))
 
     assert not unmapped, f"Staging notes fell back to the generic icon: {unmapped}"
 
