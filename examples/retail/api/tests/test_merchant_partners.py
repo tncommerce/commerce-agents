@@ -60,6 +60,44 @@ def test_active_partner_requires_https_and_recent_verification(tmp_path) -> None
     assert [partner.merchant_id for partner in active] == ["douglas"]
 
 
+def test_small_future_clock_skew_keeps_active_partner_visible(tmp_path) -> None:
+    path = write_payload(
+        tmp_path,
+        [
+            {
+                "merchant_id": "slight-future",
+                "merchant_name": "Slight Future",
+                "status": "active",
+                "affiliate_url": "https://example.com/track",
+                "last_verified_at": (NOW + timedelta(minutes=2)).isoformat(),
+            }
+        ],
+    )
+
+    store = MerchantPartnerStore(path)
+
+    assert [partner.merchant_id for partner in store.active(now=NOW)] == ["slight-future"]
+
+
+def test_material_future_partner_verification_is_hidden(tmp_path) -> None:
+    path = write_payload(
+        tmp_path,
+        [
+            {
+                "merchant_id": "future",
+                "merchant_name": "Future",
+                "status": "active",
+                "affiliate_url": "https://example.com/track",
+                "last_verified_at": (NOW + timedelta(minutes=10)).isoformat(),
+            }
+        ],
+    )
+
+    store = MerchantPartnerStore(path)
+
+    assert store.active(now=NOW) == []
+
+
 def test_stale_partner_is_hidden(tmp_path) -> None:
     path = write_payload(
         tmp_path,
