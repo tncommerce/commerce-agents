@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "status": "staging_only_not_loaded_by_live_storefront",
-  "product_count": 45,
+  "product_count": 50,
   "note": "Canonical pre-live records for verified expansion candidates. No guessed prices, identifiers, affiliate URLs or product images.",
   "products": [
     {
@@ -3284,6 +3284,402 @@
         "evidence_urls": [
           "https://www.tomfordbeauty.co.uk/product/oud-wood-eau-de-parfum?size=100_ml",
           "https://www.douglas.de/de/p/3000073069?variant=902442"
+        ]
+      }
+    },
+    {
+      "candidate_id": "AFNAN-9-PM-POUR-FEMME-EDP-100",
+      "product_id": "SC-AFNAN-9-PM-POUR-FEMME-EDP-100",
+      "batch": 7,
+      "brand": "Afnan Perfumes",
+      "name": "9 PM Pour Femme",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "women"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "amber floral woody",
+        "key_notes": [
+          "raspberry",
+          "apple",
+          "violet",
+          "orange",
+          "rose",
+          "peony",
+          "iris",
+          "jasmine",
+          "cedar",
+          "cypress",
+          "pine",
+          "amber"
+        ],
+        "community_accords": [
+          "fruity",
+          "floral",
+          "sweet",
+          "woody",
+          "synthetic"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 4,
+            "sweetness": 6,
+            "woodiness": 5,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7.3,
+        "rating_count": 26,
+        "longevity_10": 7.9,
+        "projection_10": 7.6,
+        "provisional": true
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 1,
+        "merchant_coverage_source": "dufynd_research_wave",
+        "market_status": "researched_not_integrated",
+        "live_offer_status": "pending_current_purchase_destination"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_purchase_destination_pending",
+          "approved_product_image_pending",
+          "provisional_community_data"
+        ]
+      },
+      "research": {
+        "source_wave_id": "DUFYND-CATALOG-EXPANSION-BATCH7-RESEARCH",
+        "research_state": "official_profile_community_and_merchant_evidence_verified",
+        "evidence_urls": [
+          "https://de.afnan.com/products/9-pm-pour-femme",
+          "https://www.parfumo.com/Perfumes/Afnan_Perfumes/9pm-pour-femme",
+          "https://www.de.afnan.com/products/9-pm-pour-femme"
+        ]
+      }
+    },
+    {
+      "candidate_id": "DIOR-JADORE-EDP-100",
+      "product_id": "SC-DIOR-JADORE-EDP-100",
+      "batch": 7,
+      "brand": "Dior",
+      "name": "J’adore",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "women"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "floral",
+        "key_notes": [
+          "ylang-ylang essence",
+          "damask rose essence",
+          "jasmine grandiflorum",
+          "arabian jasmine"
+        ],
+        "community_accords": [
+          "floral",
+          "sweet",
+          "fresh",
+          "fruity",
+          "powdery"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 8,
+            "sweetness": 8,
+            "woodiness": 2,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7.5,
+        "rating_count": 1592,
+        "longevity_10": 7.5,
+        "projection_10": 7.1,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 1,
+        "merchant_coverage_source": "dufynd_research_wave",
+        "market_status": "researched_not_integrated",
+        "live_offer_status": "pending_current_purchase_destination"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_purchase_destination_pending",
+          "approved_product_image_pending"
+        ]
+      },
+      "research": {
+        "source_wave_id": "DUFYND-CATALOG-EXPANSION-BATCH7-RESEARCH",
+        "research_state": "official_profile_community_and_merchant_evidence_verified",
+        "evidence_urls": [
+          "https://www.dior.com/de_de/beauty/products/j%E2%80%99adore-eau-de-parfum-Y0998031.html",
+          "https://www.parfumo.com/Perfumes/Dior/J_Adore",
+          "https://www.douglas.de/de/p/5011697097"
+        ]
+      }
+    },
+    {
+      "candidate_id": "MAISON-MARGIELA-BY-THE-FIREPLACE-EDT-100",
+      "product_id": "SC-MAISON-MARGIELA-BY-THE-FIREPLACE-EDT-100",
+      "batch": 7,
+      "brand": "Maison Margiela",
+      "name": "REPLICA By the Fireplace",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "unisex"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "woody ambery",
+        "key_notes": [
+          "chestnut accord",
+          "guaiac wood oil",
+          "cade oil",
+          "vanilla accord",
+          "peru balsam resinoid",
+          "cashmeran"
+        ],
+        "community_accords": [
+          "smoky",
+          "sweet",
+          "woody",
+          "spicy",
+          "gourmand"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 2,
+            "sweetness": 8,
+            "woodiness": 8,
+            "spiciness": 6
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7.9,
+        "rating_count": 4333,
+        "longevity_10": 7.7,
+        "projection_10": 7.4,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 1,
+        "merchant_coverage_source": "dufynd_research_wave",
+        "market_status": "researched_not_integrated",
+        "live_offer_status": "pending_current_purchase_destination"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_purchase_destination_pending",
+          "approved_product_image_pending"
+        ]
+      },
+      "research": {
+        "source_wave_id": "DUFYND-CATALOG-EXPANSION-BATCH7-RESEARCH",
+        "research_state": "official_profile_community_and_merchant_evidence_verified",
+        "evidence_urls": [
+          "https://www.maisonmargiela-fragrances.us/fragrances/replica-eau-de-toilette/replica-by-the-fireplace/MM005.html",
+          "https://www.parfumo.com/Perfumes/Maison_Margiela/by-the-fireplace",
+          "https://www.douglas.de/de/p/5010308068?variant=882254"
+        ]
+      }
+    },
+    {
+      "candidate_id": "MFK-BACCARAT-ROUGE-540-EDP-70",
+      "product_id": "SC-MFK-BACCARAT-ROUGE-540-EDP-70",
+      "batch": 7,
+      "brand": "Maison Francis Kurkdjian",
+      "name": "Baccarat Rouge 540",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 70,
+      "classification": {
+        "target_groups": [
+          "unisex"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "floral amber woody",
+        "key_notes": [
+          "jasmine flowers",
+          "saffron",
+          "ambergris accord",
+          "dry woody notes",
+          "ethyl maltol"
+        ],
+        "community_accords": [
+          "sweet",
+          "woody",
+          "spicy",
+          "synthetic",
+          "floral"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 3,
+            "sweetness": 5,
+            "woodiness": 6,
+            "spiciness": 6
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7.7,
+        "rating_count": 5312,
+        "longevity_10": 8.7,
+        "projection_10": 8.5,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 1,
+        "merchant_coverage_source": "dufynd_research_wave",
+        "market_status": "researched_not_integrated",
+        "live_offer_status": "pending_current_purchase_destination"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_purchase_destination_pending",
+          "approved_product_image_pending"
+        ]
+      },
+      "research": {
+        "source_wave_id": "DUFYND-CATALOG-EXPANSION-BATCH7-RESEARCH",
+        "research_state": "official_profile_community_and_merchant_evidence_verified",
+        "evidence_urls": [
+          "https://www.franciskurkdjian.com/eu-de/p/baccarat-rouge-540-eau-de-parfum-10223021.html",
+          "https://www.parfumo.com/Perfumes/Maison_Francis_Kurkdjian/Baccarat_Rouge_540_Eau_de_Parfum",
+          "https://www.douglas.de/de/p/3001037679?variant=922888"
+        ]
+      }
+    },
+    {
+      "candidate_id": "MUGLER-ALIEN-EDP-90",
+      "product_id": "SC-MUGLER-ALIEN-EDP-90",
+      "batch": 7,
+      "brand": "Mugler",
+      "name": "Alien",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "classification": {
+        "target_groups": [
+          "women"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "amber woody",
+        "key_notes": [
+          "jasmine sambac",
+          "cashmeran",
+          "white amber"
+        ],
+        "community_accords": [
+          "floral",
+          "sweet",
+          "oriental",
+          "synthetic",
+          "woody"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 3,
+            "sweetness": 6,
+            "woodiness": 6,
+            "spiciness": 4
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7.4,
+        "rating_count": 2764,
+        "longevity_10": 8.8,
+        "projection_10": 8.6,
+        "provisional": false
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "merchant_coverage_count": 1,
+        "merchant_coverage_source": "dufynd_research_wave",
+        "market_status": "researched_not_integrated",
+        "live_offer_status": "pending_current_purchase_destination"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "canonical_gtin_feed_match_pending",
+          "verified_purchase_destination_pending",
+          "approved_product_image_pending"
+        ]
+      },
+      "research": {
+        "source_wave_id": "DUFYND-CATALOG-EXPANSION-BATCH7-RESEARCH",
+        "research_state": "official_profile_community_and_merchant_evidence_verified",
+        "evidence_urls": [
+          "https://de.mugler.com/de/duft/damendufte/alien/alien-eau-de-parfum/M010401002.html",
+          "https://www.parfumo.com/Parfums/mugler/Alien",
+          "https://www.douglas.de/de/p/2001003772?variant=913048"
         ]
       }
     }

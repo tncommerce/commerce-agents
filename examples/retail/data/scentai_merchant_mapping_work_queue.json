@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-25T21:52:00+00:00",
-  "source_fingerprint_sha256": "f27794475c70081db6770d5489ab2de91756e9016a6a95953deb56f27549ed65",
+  "generated_at": "2026-09-26T07:52:00+00:00",
+  "source_fingerprint_sha256": "4973312ead084b534165dcffda3038c59de70863d27dfb86c4cc2f4b644771db",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
     "scentai_catalog_staging.json",
@@ -9,10 +9,10 @@
     "scentai_affiliate_programs.json"
   ],
   "summary": {
-    "staged_products": 45,
+    "staged_products": 50,
     "products_with_resolved_mapping": 29,
     "products_with_two_or_more_resolved_mappings": 29,
-    "products_without_resolved_mapping": 16,
+    "products_without_resolved_mapping": 21,
     "affiliate_programs_registered": 9,
     "affiliate_programs_approved": 1,
     "affiliate_programs_pending": 8,
@@ -97,6 +97,26 @@
       "merchants": []
     },
     {
+      "product_id": "SC-AFNAN-9-PM-POUR-FEMME-EDP-100",
+      "candidate_id": "AFNAN-9-PM-POUR-FEMME-EDP-100",
+      "brand": "Afnan Perfumes",
+      "name": "9 PM Pour Femme",
+      "batch": 7,
+      "researched_merchant_count": 1,
+      "mapping_count": 0,
+      "resolved_mapping_count": 0,
+      "full_mapping_count": 0,
+      "state": "mapping_required",
+      "blockers": [
+        "no_resolved_merchant_mapping",
+        "community_performance_still_provisional"
+      ],
+      "next_action": "verify_exact_merchant_product_identity",
+      "action_class": "auto_allowed",
+      "live_activation_action_class": "approval_required",
+      "merchants": []
+    },
+    {
       "product_id": "SC-CALVIN-KLEIN-EUPHORIA-EDP-100",
       "candidate_id": "CALVIN-KLEIN-EUPHORIA-EDP-100",
       "brand": "Calvin Klein",
@@ -160,6 +180,25 @@
       "name": "Nomade",
       "batch": 5,
       "researched_merchant_count": 2,
+      "mapping_count": 0,
+      "resolved_mapping_count": 0,
+      "full_mapping_count": 0,
+      "state": "mapping_required",
+      "blockers": [
+        "no_resolved_merchant_mapping"
+      ],
+      "next_action": "verify_exact_merchant_product_identity",
+      "action_class": "auto_allowed",
+      "live_activation_action_class": "approval_required",
+      "merchants": []
+    },
+    {
+      "product_id": "SC-DIOR-JADORE-EDP-100",
+      "candidate_id": "DIOR-JADORE-EDP-100",
+      "brand": "Dior",
+      "name": "J’adore",
+      "batch": 7,
+      "researched_merchant_count": 1,
       "mapping_count": 0,
       "resolved_mapping_count": 0,
       "full_mapping_count": 0,
@@ -254,6 +293,63 @@
       "brand": "Lattafa",
       "name": "Khamrah",
       "batch": 6,
+      "researched_merchant_count": 1,
+      "mapping_count": 0,
+      "resolved_mapping_count": 0,
+      "full_mapping_count": 0,
+      "state": "mapping_required",
+      "blockers": [
+        "no_resolved_merchant_mapping"
+      ],
+      "next_action": "verify_exact_merchant_product_identity",
+      "action_class": "auto_allowed",
+      "live_activation_action_class": "approval_required",
+      "merchants": []
+    },
+    {
+      "product_id": "SC-MFK-BACCARAT-ROUGE-540-EDP-70",
+      "candidate_id": "MFK-BACCARAT-ROUGE-540-EDP-70",
+      "brand": "Maison Francis Kurkdjian",
+      "name": "Baccarat Rouge 540",
+      "batch": 7,
+      "researched_merchant_count": 1,
+      "mapping_count": 0,
+      "resolved_mapping_count": 0,
+      "full_mapping_count": 0,
+      "state": "mapping_required",
+      "blockers": [
+        "no_resolved_merchant_mapping"
+      ],
+      "next_action": "verify_exact_merchant_product_identity",
+      "action_class": "auto_allowed",
+      "live_activation_action_class": "approval_required",
+      "merchants": []
+    },
+    {
+      "product_id": "SC-MAISON-MARGIELA-BY-THE-FIREPLACE-EDT-100",
+      "candidate_id": "MAISON-MARGIELA-BY-THE-FIREPLACE-EDT-100",
+      "brand": "Maison Margiela",
+      "name": "REPLICA By the Fireplace",
+      "batch": 7,
+      "researched_merchant_count": 1,
+      "mapping_count": 0,
+      "resolved_mapping_count": 0,
+      "full_mapping_count": 0,
+      "state": "mapping_required",
+      "blockers": [
+        "no_resolved_merchant_mapping"
+      ],
+      "next_action": "verify_exact_merchant_product_identity",
+      "action_class": "auto_allowed",
+      "live_activation_action_class": "approval_required",
+      "merchants": []
+    },
+    {
+      "product_id": "SC-MUGLER-ALIEN-EDP-90",
+      "candidate_id": "MUGLER-ALIEN-EDP-90",
+      "brand": "Mugler",
+      "name": "Alien",
+      "batch": 7,
       "researched_merchant_count": 1,
       "mapping_count": 0,
       "resolved_mapping_count": 0,
