@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import json
-from ipaddress import ip_address
 from datetime import UTC, datetime
+from ipaddress import ip_address
 from pathlib import Path
 from typing import Literal
 from urllib.parse import parse_qsl, urlencode, urlparse
