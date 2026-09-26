@@ -18,16 +18,29 @@
         "women"
       ],
       "comparison_role": "designer_white_floral_anchor",
-      "variant_status": "manufacturer_variant_verified",
+      "variant_status": "manufacturer_and_merchant_variant_verified",
       "manufacturer_source_url": "https://de.mugler.com/de/duft/damendufte/alien/alien-eau-de-parfum/M010401002.html",
       "checked_at": "2026-09-26",
       "variant_caution": "Distinguish refillable bottle from refill pouch and Alien Hypersense.",
-      "research_state": "identity_verified_remaining_sources_pending",
-      "merchant_evidence": [],
+      "research_state": "manufacturer_and_merchant_variant_verified_remaining_sources_pending",
+      "merchant_evidence": [
+        {
+          "merchant": "Douglas",
+          "merchant_product_id": "913048",
+          "selected_variant": "90 ml",
+          "observed_price_eur": 99.0,
+          "shipping_at_check": "free",
+          "product_url": "https://www.douglas.de/de/p/2001003772?variant=913048",
+          "checked_at": "2026-09-26T04:53:10Z",
+          "status": "research_only_not_imported"
+        }
+      ],
       "community": null,
       "identifiers": {
         "canonical_gtin": null,
-        "merchant_product_ids": []
+        "merchant_product_ids": [
+          "913048"
+        ]
       },
       "media": {
         "image_url": null,
@@ -36,7 +49,6 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "merchant_variant_mapping_pending",
           "community_data_pending",
           "approved_product_image_pending",
           "current_verified_purchase_destination_pending"
@@ -54,16 +66,29 @@
         "unisex"
       ],
       "comparison_role": "luxury_amber_comparison_anchor",
-      "variant_status": "manufacturer_variant_verified",
+      "variant_status": "manufacturer_and_merchant_variant_verified",
       "manufacturer_source_url": "https://www.franciskurkdjian.com/eu-de/p/baccarat-rouge-540-eau-de-parfum-10223021.html",
       "checked_at": "2026-09-26",
       "variant_caution": "Keep the 70 ml Eau de Parfum distinct from the Extrait and hair mist.",
-      "research_state": "identity_verified_remaining_sources_pending",
-      "merchant_evidence": [],
+      "research_state": "manufacturer_and_merchant_variant_verified_remaining_sources_pending",
+      "merchant_evidence": [
+        {
+          "merchant": "Douglas",
+          "merchant_product_id": "922888",
+          "selected_variant": "70 ml",
+          "observed_price_eur": 265.0,
+          "shipping_at_check": "free",
+          "product_url": "https://www.douglas.de/de/p/3001037679?variant=922888",
+          "checked_at": "2026-09-26T04:53:10Z",
+          "status": "research_only_not_imported"
+        }
+      ],
       "community": null,
       "identifiers": {
         "canonical_gtin": null,
-        "merchant_product_ids": []
+        "merchant_product_ids": [
+          "922888"
+        ]
       },
       "media": {
         "image_url": null,
@@ -72,7 +97,6 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "merchant_variant_mapping_pending",
           "community_data_pending",
           "approved_product_image_pending",
           "current_verified_purchase_destination_pending"
@@ -90,16 +114,29 @@
         "women"
       ],
       "comparison_role": "value_floral_amber_anchor",
-      "variant_status": "manufacturer_variant_verified",
+      "variant_status": "manufacturer_and_merchant_variant_verified",
       "manufacturer_source_url": "https://de.afnan.com/products/9-pm-pour-femme",
       "checked_at": "2026-09-26",
       "variant_caution": "Distinguish Pour Femme from the men’s 9 PM, Rebel, and Night Out flankers.",
-      "research_state": "identity_verified_remaining_sources_pending",
-      "merchant_evidence": [],
+      "research_state": "manufacturer_and_merchant_variant_verified_remaining_sources_pending",
+      "merchant_evidence": [
+        {
+          "merchant": "Afnan official store",
+          "merchant_product_id": "9-pm-pour-femme",
+          "selected_variant": "100 ml",
+          "observed_price_eur": 44.5,
+          "shipping_at_check": "unknown",
+          "product_url": "https://www.de.afnan.com/products/9-pm-pour-femme",
+          "checked_at": "2026-09-26T04:53:10Z",
+          "status": "research_only_not_imported"
+        }
+      ],
       "community": null,
       "identifiers": {
         "canonical_gtin": null,
-        "merchant_product_ids": []
+        "merchant_product_ids": [
+          "9-pm-pour-femme"
+        ]
       },
       "media": {
         "image_url": null,
@@ -108,7 +145,6 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "merchant_variant_mapping_pending",
           "community_data_pending",
           "approved_product_image_pending",
           "current_verified_purchase_destination_pending"
@@ -126,16 +162,29 @@
         "unisex"
       ],
       "comparison_role": "smoky_gourmand_comparison_anchor",
-      "variant_status": "manufacturer_variant_verified",
+      "variant_status": "manufacturer_and_merchant_variant_verified",
       "manufacturer_source_url": "https://www.maisonmargiela-fragrances.us/fragrances/replica-eau-de-toilette/replica-by-the-fireplace/MM005.html",
       "checked_at": "2026-09-26",
       "variant_caution": "Distinguish 100 ml bottle from 100 ml refill and travel size; confirm German retail variant.",
-      "research_state": "identity_verified_remaining_sources_pending",
-      "merchant_evidence": [],
+      "research_state": "manufacturer_and_merchant_variant_verified_remaining_sources_pending",
+      "merchant_evidence": [
+        {
+          "merchant": "Douglas",
+          "merchant_product_id": "882254",
+          "selected_variant": "100 ml",
+          "observed_price_eur": 92.0,
+          "shipping_at_check": "free",
+          "product_url": "https://www.douglas.de/de/p/5010308068?variant=882254",
+          "checked_at": "2026-09-26T04:53:10Z",
+          "status": "research_only_not_imported"
+        }
+      ],
       "community": null,
       "identifiers": {
         "canonical_gtin": null,
-        "merchant_product_ids": []
+        "merchant_product_ids": [
+          "882254"
+        ]
       },
       "media": {
         "image_url": null,
@@ -144,7 +193,6 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "merchant_variant_mapping_pending",
           "community_data_pending",
           "approved_product_image_pending",
           "current_verified_purchase_destination_pending"
@@ -188,5 +236,5 @@
       }
     }
   ],
-  "next_gate": "Verify independent community evidence, exact German merchant variants and links, and image usage rights before adding an enabled staging intake. Do not infer a live offer from a manufacturer page."
+  "next_gate": "Four exact German merchant variants have research-only evidence; Dior merchant mapping, independent community evidence, image rights and fresh importable offers remain pending. Do not enable staging or infer ongoing stock from this dated snapshot."
 }
