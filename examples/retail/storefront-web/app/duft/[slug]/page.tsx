@@ -495,7 +495,7 @@ export default async function FragrancePage({
                 </p>
               ) : null}
             </div>
-            {fragrance.model_3d_url || heroIsProductTruth ? (
+            {fragrance.model_3d_url ? (
               <FragranceModel3D
                 modelUrl={fragrance.model_3d_url}
                 imageUrl={heroIsProductTruth ? undefined : heroVisual?.url}
@@ -512,9 +512,15 @@ export default async function FragrancePage({
             ) : (
               <FragranceVisual
                 imageUrl={heroVisual?.url}
+                cutoutUrl={heroIsProductTruth ? heroVisual?.url : undefined}
+                backdropUrl={
+                  heroIsProductTruth
+                    ? fragrance.backdrop_visual?.url
+                    : undefined
+                }
                 alt={`${fragrance.brand} ${fragrance.name}`}
                 variant="hero"
-                mode="editorial"
+                mode={heroIsProductTruth ? "cutout" : "editorial"}
                 className="min-h-[248px] w-full sm:min-h-[340px] lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:min-h-[480px]"
                 priority
               />
