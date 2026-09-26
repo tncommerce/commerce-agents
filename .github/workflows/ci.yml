@@ -82,6 +82,13 @@ jobs:
           node-version: 22
           cache: npm
           cache-dependency-path: examples/package-lock.json
+      - name: Restore Next.js build caches
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: examples/**/.next/cache
+          key: ${{ runner.os }}-next-web-${{ hashFiles('examples/package-lock.json') }}-${{ hashFiles('examples/**/*.{js,jsx,ts,tsx,mjs,cjs,css}') }}
+          restore-keys: |
+            ${{ runner.os }}-next-web-${{ hashFiles('examples/package-lock.json') }}-
       - name: Install
         run: npm ci
       - name: Build every app
@@ -100,6 +107,13 @@ jobs:
           node-version: 22
           cache: npm
           cache-dependency-path: examples/package-lock.json
+      - name: Restore DUFYND Next.js build cache
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: examples/retail/storefront-web/.next/cache
+          key: ${{ runner.os }}-next-dufynd-qa-${{ hashFiles('examples/package-lock.json') }}-${{ hashFiles('examples/retail/storefront-web/**/*.{js,jsx,ts,tsx,mjs,cjs,css}') }}
+          restore-keys: |
+            ${{ runner.os }}-next-dufynd-qa-${{ hashFiles('examples/package-lock.json') }}-
       - name: Install storefront dependencies
         run: |
           npm ci
