@@ -7,6 +7,7 @@ from collections import Counter
 from pathlib import Path
 
 QUEUE = Path("examples/retail/data/scentai_catalog_promotion_queue.json")
+CATALOG = Path("examples/retail/data/catalog.json")
 
 DIRECT_PURCHASE_READY = {
     "SC-YSL-LIBRE-EDP-90",
@@ -47,3 +48,18 @@ def test_queue_blocker_summary_matches_candidate_rows() -> None:
     assert queue["blocker_counts"] == dict(actual)
     assert queue["summary"]["current_purchase_destinations_ready"] == 5
     assert queue["summary"]["affiliate_links_ready"] == 0
+
+
+def test_queue_live_catalog_count_matches_actual_live_fragrances() -> None:
+    queue = json.loads(QUEUE.read_text(encoding="utf-8"))
+    catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
+
+    live_fragrances = [
+        row
+        for row in catalog["products"]
+        if str(row.get("product_id", "")).startswith("SC-")
+        and row.get("category") == "fragrance"
+        and row.get("in_stock") is not False
+    ]
+
+    assert queue["live_catalog_count"] == len(live_fragrances)
