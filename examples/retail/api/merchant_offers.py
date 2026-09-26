@@ -4,6 +4,7 @@ import json
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 from uuid import uuid4
 
 from pydantic import BaseModel, Field
@@ -53,6 +54,23 @@ def offer_age_hours(offer: MerchantOffer, *, now: datetime | None = None) -> flo
     return (reference - checked).total_seconds() / 3600.0
 
 
+def _http_url(value: str | None) -> bool:
+    candidate = str(value or "").strip()
+    if not candidate:
+        return False
+
+    parsed = urlparse(candidate)
+    return parsed.scheme in {"http", "https"} and bool(parsed.netloc)
+
+
+def offer_clickout_target(offer: MerchantOffer) -> str | None:
+    if _http_url(offer.affiliate_url):
+        return str(offer.affiliate_url).strip()
+    if _http_url(offer.product_url):
+        return str(offer.product_url).strip()
+    return None
+
+
 def offer_total_price(offer: MerchantOffer) -> float | None:
     """Known customer total.
 
@@ -93,7 +111,7 @@ def rank_offers(
         if (
             offer.in_stock
             and -MAX_FUTURE_CLOCK_SKEW_HOURS <= age <= max_age_hours
-            and bool(offer.affiliate_url or offer.product_url)
+            and offer_clickout_target(offer) is not None
         ):
             eligible.append(offer)
 
@@ -105,7 +123,7 @@ def rank_offers(
         # Offers inside the same 24-hour freshness band are considered comparable.
         # A materially older offer never wins solely because it is monetized.
         freshness_band = int(age // 24)
-        affiliate = bool(str(offer.affiliate_url or "").strip())
+        affiliate = _http_url(offer.affiliate_url)
 
         return (
             0 if total_known else 1,
@@ -136,7 +154,7 @@ def customer_offer_payload(offer: MerchantOffer) -> dict[str, Any]:
         "in_stock": offer.in_stock,
         "variant_label": offer.variant_label,
         "clickout_path": f"/api/clickout/{offer.offer_id}",
-        "affiliate_link": bool(offer.affiliate_url),
+        "affiliate_link": _http_url(offer.affiliate_url),
         "last_updated_at": offer.last_updated_at.isoformat(),
     }
 
