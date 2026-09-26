@@ -59,7 +59,13 @@ def _https_url(value: str | None) -> bool:
         return False
 
     parsed = urlparse(candidate)
-    return parsed.scheme == "https" and bool(parsed.netloc)
+    return bool(
+        parsed.scheme == "https"
+        and parsed.hostname
+        and parsed.username is None
+        and parsed.password is None
+        and parsed.hostname not in {"localhost", "127.0.0.1", "::1"}
+    )
 
 
 def offer_clickout_target(offer: MerchantOffer) -> str | None:
