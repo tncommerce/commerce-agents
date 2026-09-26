@@ -217,6 +217,8 @@ add(
     : "NEXT_PUBLIC_SITE_INDEXABLE is not true; launch remains intentionally noindex.",
 );
 
+const MAX_FUTURE_CLOCK_SKEW_HOURS = 5 / 60;
+
 const offers = merchantOffers.offers || [];
 const now = Date.now();
 const eligibleOffers = offers.filter((offer) => {
@@ -228,7 +230,7 @@ const eligibleOffers = offers.filter((offer) => {
   return (
     offer.in_stock !== false &&
     Number(offer.price) > 0 &&
-    ageHours >= 0 &&
+    ageHours >= -MAX_FUTURE_CLOCK_SKEW_HOURS &&
     ageHours <= 72
   );
 });
