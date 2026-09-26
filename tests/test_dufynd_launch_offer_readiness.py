@@ -30,3 +30,11 @@ def test_merchant_partner_readiness_uses_public_https_and_clock_skew_tolerance()
     assert 'String(partner.affiliate_url || "")' in partners
     assert "ageHours >= -MAX_FUTURE_CLOCK_SKEW_HOURS" in partners
     assert "ageHours <= 720" in partners
+
+
+def test_launch_offer_readiness_requires_eur_currency() -> None:
+    source = READINESS.read_text(encoding="utf-8")
+
+    offers = source.split("const eligibleOffers =", 1)[1].split("add(", 1)[0]
+
+    assert 'String(offer.currency || "").trim().toUpperCase() === "EUR"' in offers
