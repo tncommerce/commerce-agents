@@ -172,6 +172,7 @@ def validate_wave(wave: dict, catalog: dict, staging: dict) -> list[str]:
                 if affiliate_state not in {
                     "application_pending",
                     "cj_application_pending",
+                    "not_affiliate_target",
                 }:
                     errors.append(f"{merchant_prefix}:invalid_affiliate_state")
                 if merchant_row.get("affiliate_url"):
