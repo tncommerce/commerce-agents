@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-26T07:52:00+00:00",
-  "source_fingerprint_sha256": "c229b185a723d1ac1ea6473ead0f8072bf736a9d5415b5420dd121e2e51b009a",
+  "generated_at": "2026-09-26T16:25:00+00:00",
+  "source_fingerprint_sha256": "bdf2f935cfa2763134088c15b7b5245dd943f4c3d6bb1ac08f086147218dbff7",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "release_count": 3,
   "current_release_id": "SCENTAI-RELEASE-01",
@@ -14,13 +14,13 @@
       "write_enabled": true,
       "depends_on_release_ids": [],
       "dependency_state": "not_required",
-      "gate_state": "blocked_pending_images_and_purchase_destinations",
+      "gate_state": "blocked_pending_remaining_product_gates",
       "summary": {
         "release_size": 5,
         "mapping_ready": 5,
         "image_identity_source_verified": 5,
         "approved_images": 0,
-        "current_purchase_destinations": 0,
+        "current_purchase_destinations": 2,
         "current_tracked_affiliate_offers": 0,
         "promotion_ready": 0
       },
@@ -35,13 +35,13 @@
         "SCENTAI-RELEASE-01"
       ],
       "dependency_state": "pending_prior_release_validation",
-      "gate_state": "blocked_pending_images_and_purchase_destinations",
+      "gate_state": "blocked_pending_remaining_product_gates",
       "summary": {
         "release_size": 5,
         "mapping_ready": 5,
         "image_identity_source_verified": 5,
         "approved_images": 0,
-        "current_purchase_destinations": 0,
+        "current_purchase_destinations": 3,
         "current_tracked_affiliate_offers": 0,
         "promotion_ready": 0
       },
