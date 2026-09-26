@@ -26,12 +26,16 @@ function formatRating(
   return provisional ? `${rating} · vorläufig` : rating;
 }
 
-function formatNumber(value: number | null): string {
+function formatNumber(
+  value: number | null,
+  provisional = false,
+): string {
   if (value == null) return "–";
-  return value.toLocaleString("de-DE", {
+  const formatted = value.toLocaleString("de-DE", {
     minimumFractionDigits: 1,
     maximumFractionDigits: 1,
   });
+  return provisional ? `${formatted} · vorläufig` : formatted;
 }
 
 function ComparisonRow({
@@ -264,13 +268,25 @@ export default function FragranceComparisonPicker({
             />
             <ComparisonRow
               label="Haltbarkeit"
-              left={formatNumber(left.community.longevity_10)}
-              right={formatNumber(right.community.longevity_10)}
+              left={formatNumber(
+                left.community.longevity_10,
+                left.community.provisional,
+              )}
+              right={formatNumber(
+                right.community.longevity_10,
+                right.community.provisional,
+              )}
             />
             <ComparisonRow
               label="Ausstrahlung"
-              left={formatNumber(left.community.projection_10)}
-              right={formatNumber(right.community.projection_10)}
+              left={formatNumber(
+                left.community.projection_10,
+                left.community.provisional,
+              )}
+              right={formatNumber(
+                right.community.projection_10,
+                right.community.provisional,
+              )}
             />
             <ComparisonRow
               label="Frische"
