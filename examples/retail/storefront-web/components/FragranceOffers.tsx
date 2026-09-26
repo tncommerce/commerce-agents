@@ -299,8 +299,10 @@ export default function FragranceOffers({
           <p>
             <span className="font-semibold text-(--ink)">Werbung · Partnerlink:</span>{" "}
             DUFYND kann bei entsprechend gekennzeichneten Links eine Provision
-            erhalten. Das verändert weder den angezeigten Händlerpreis noch die
-            Reihenfolge der Angebote.
+            erhalten. Sie beeinflusst weder die Duftempfehlung noch den angezeigten
+            Händlerpreis. Bei gleichem Gesamtpreis und vergleichbarer Aktualität
+            können Partnerstatus und – zwischen gleichwertigen Partnerangeboten –
+            die Provision als Tie-Breaker dienen.
           </p>
         ) : null}
         {externalOfferCount ? (
