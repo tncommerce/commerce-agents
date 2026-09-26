@@ -82,6 +82,22 @@ jobs:
           node-version: 22
           cache: npm
           cache-dependency-path: examples/package-lock.json
+      - name: Restore Next.js build cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            examples/**/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('examples/package-lock.json') }}-${{ hashFiles('examples/**/*.[jt]s', 'examples/**/*.[jt]sx', 'examples/**/*.css', 'examples/**/*.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('examples/package-lock.json') }}-
+      - name: Restore Next.js build cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            examples/**/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('examples/package-lock.json') }}-${{ hashFiles('examples/**/*.[jt]s', 'examples/**/*.[jt]sx', 'examples/**/*.css', 'examples/**/*.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('examples/package-lock.json') }}-
       - name: Install
         run: npm ci
       - name: Build every app
