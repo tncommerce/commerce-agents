@@ -92,7 +92,16 @@ jobs:
       - name: Install
         run: npm ci
       - name: Build every app
-        run: npm run build
+        shell: bash
+        run: |
+          set +e
+          npm run build
+          first_status=$?
+          set -e
+          if [ "$first_status" -ne 0 ]; then
+            echo "::warning::Workspace build failed once; retrying once for transient Next.js/Turbopack failures."
+            npm run build
+          fi
 
   dufynd-visual-qa:
     if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'dufynd-')
