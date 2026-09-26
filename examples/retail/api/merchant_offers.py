@@ -169,7 +169,7 @@ def customer_offer_payload(offer: MerchantOffer) -> dict[str, Any]:
         "merchant_name": offer.merchant_name,
         "merchant_product_id": offer.merchant_product_id,
         "price": offer.price,
-        "currency": offer.currency,
+        "currency": offer.currency.strip().upper(),
         "shipping_cost": offer.shipping_cost,
         "shipping_label": offer.shipping_label,
         "total_price": total,
