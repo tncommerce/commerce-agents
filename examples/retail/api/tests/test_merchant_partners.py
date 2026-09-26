@@ -93,6 +93,33 @@ def test_active_partner_rejects_loopback_and_credential_urls(tmp_path) -> None:
     assert store.active(now=NOW) == []
 
 
+def test_active_partner_rejects_private_and_link_local_ip_urls(tmp_path) -> None:
+    partners = []
+    for index, url in enumerate(
+        (
+            "https://10.0.0.5/track",
+            "https://172.16.0.5/track",
+            "https://192.168.1.5/track",
+            "https://169.254.1.5/track",
+            "https://[fd00::5]/track",
+            "https://[fe80::5]/track",
+        )
+    ):
+        partners.append(
+            {
+                "merchant_id": f"private-{index}",
+                "merchant_name": f"Private {index}",
+                "status": "active",
+                "affiliate_url": url,
+                "last_verified_at": NOW.isoformat(),
+            }
+        )
+
+    store = MerchantPartnerStore(write_payload(tmp_path, partners))
+
+    assert store.active(now=NOW) == []
+
+
 def test_small_future_clock_skew_keeps_active_partner_visible(tmp_path) -> None:
     path = write_payload(
         tmp_path,
@@ -331,6 +358,28 @@ def test_awin_product_deeplink_rejects_non_https_destination() -> None:
         partner_product_deeplink_url(
             perfumetrader_partner(),
             destination_url="http://www.perfumetrader.de/de/product",
+        )
+        is None
+    )
+
+
+def test_awin_product_deeplink_rejects_private_destination_host() -> None:
+    partner = MerchantPartner(
+        merchant_id="perfumetrader",
+        merchant_name="Perfumetrader",
+        status="active",
+        affiliate_url=(
+            "https://www.awin1.com/cread.php?"
+            "awinmid=11672&awinaffid=3099222&"
+            "ued=https%3A%2F%2F192.168.1.5%2F"
+        ),
+        last_verified_at=NOW,
+    )
+
+    assert (
+        partner_product_deeplink_url(
+            partner,
+            destination_url="https://192.168.1.5/product",
         )
         is None
     )
