@@ -202,7 +202,9 @@ def eligible_purchase_offers(
             price = float("inf")
 
         total = price + float(shipping) if known_total else price
-        affiliate = bool(str(offer.get("affiliate_url") or "").strip())
+        age = max(offer_age_hours(offer, now=now), 0.0)
+        freshness_band = int(age // 24)
+        affiliate = valid_public_https_url(offer.get("affiliate_url"))
 
         try:
             commission = float(offer.get("commission_rate"))
@@ -212,9 +214,10 @@ def eligible_purchase_offers(
         return (
             0 if known_total else 1,
             total,
+            freshness_band,
             0 if affiliate else 1,
-            -commission,
-            offer_age_hours(offer, now=now),
+            -commission if affiliate else 0.0,
+            age,
             str(offer.get("merchant_name") or "").casefold(),
         )
 
