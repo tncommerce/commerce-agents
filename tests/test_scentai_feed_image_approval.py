@@ -95,11 +95,12 @@ def plan_for(
     )
 
 
-def test_pending_candidate_can_be_approved_with_verified_rights() -> None:
+def test_pending_candidate_can_be_prepared_with_verified_rights() -> None:
     plan = plan_for()
 
     assert plan["will_change"] is True
     assert plan["already_approved"] is False
+    assert plan["candidate_status"] == "pending_review"
     assert plan["rights_status"] == "verified_for_publisher_service"
     assert plan["rights_basis_id"] == ("awin_perfumetrader_feed_materials_20260922")
 
@@ -137,9 +138,25 @@ def test_explicit_replace_allows_new_reviewed_image() -> None:
     assert plan["will_change"] is True
 
 
+def test_apply_approval_requires_prior_human_visual_approval() -> None:
+    with pytest.raises(
+        ValueError,
+        match="final_visual_approval_required",
+    ):
+        apply_approval(
+            staging_payload(),
+            candidates_payload(),
+            product_id=PRODUCT_ID,
+            image_url=IMAGE_URL,
+            reviewed_at="2026-09-18T20:00:00+00:00",
+            rights_basis_id="awin_perfumetrader_feed_materials_20260922",
+            rights_checked_at="2026-09-22",
+        )
+
+
 def test_apply_approval_persists_rights_evidence() -> None:
     staging = staging_payload()
-    candidates = candidates_payload()
+    candidates = candidates_payload(review_status="approved")
 
     apply_approval(
         staging,
