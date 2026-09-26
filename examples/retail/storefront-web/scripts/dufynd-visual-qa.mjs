@@ -33,6 +33,12 @@ const viewports = [
 const routes = [
   { name: "home", route: "/", marker: "Finde den Duft, der wirklich zu dir passt." },
   { name: "catalog", route: "/duft", marker: "Parfums entdecken" },
+  { name: "comparisons", route: "/vergleich", marker: "Parfums direkt vergleichen" },
+  {
+    name: "comparison-turathi-tygar",
+    route: "/vergleich/afnan-perfumes-turathi-blue-vs-bvlgari-le-gemme-tygar",
+    marker: "DUFYND · Duftvergleich",
+  },
   { name: "naxos", route: "/duft/xerjoff-naxos", marker: "Naxos" },
   { name: "absolu-aventus", route: "/duft/creed-absolu-aventus", marker: "Absolu Aventus" },
   { name: "prada-lhomme", route: "/duft/prada-lhomme", marker: "L'Homme" },
