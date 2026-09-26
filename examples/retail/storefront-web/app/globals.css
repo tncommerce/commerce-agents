@@ -908,6 +908,30 @@ body {
 }
 
 
+/* DUFYND fragrance catalog page ground
+ * A quieter editorial layer than the detail page: enough depth to separate
+ * filters and product cards without competing with fragrance imagery.
+ */
+.dufynd-catalog-page {
+  background:
+    radial-gradient(circle at 18% 2%, rgba(184, 137, 52, 0.085), transparent 28rem),
+    radial-gradient(circle at 88% 22%, rgba(96, 74, 52, 0.045), transparent 24rem),
+    linear-gradient(180deg, #f5f0e8 0%, #faf7f1 34%, #f3ede4 100%);
+}
+
+.dufynd-catalog-header {
+  background: rgba(255, 253, 248, 0.91);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.72);
+}
+
+.dufynd-catalog-page article,
+.dufynd-catalog-page section[aria-label="Duftkatalog filtern"] {
+  box-shadow:
+    0 1px 2px rgba(23, 21, 19, 0.05),
+    0 8px 24px -18px rgba(23, 21, 19, 0.28);
+}
+
 /* Accord-driven fragrance detail atmospheres
  * Product pages share the DUFYND luxury language without becoming visually repetitive.
  * The actual bottle image/model remains untouched; only the surrounding light world changes.
