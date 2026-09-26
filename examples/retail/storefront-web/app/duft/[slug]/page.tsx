@@ -476,7 +476,7 @@ export default async function FragrancePage({
                     : undefined
                 }
                 alt={`${fragrance.brand} ${fragrance.name}`}
-                className="min-h-[260px] w-full sm:min-h-[350px] lg:min-h-[470px]"
+                className="min-h-[260px] w-full sm:min-h-[350px] lg:h-[470px] lg:min-h-0 lg:self-center"
                 priority
               />
             ) : (
@@ -485,7 +485,7 @@ export default async function FragrancePage({
                 alt={`${fragrance.brand} ${fragrance.name}`}
                 variant="hero"
                 mode="editorial"
-                className="min-h-[260px] w-full sm:min-h-[350px] lg:min-h-[470px]"
+                className="min-h-[260px] w-full sm:min-h-[350px] lg:h-[470px] lg:min-h-0 lg:self-center"
                 priority
               />
             )}
