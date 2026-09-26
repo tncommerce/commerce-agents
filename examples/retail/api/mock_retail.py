@@ -282,6 +282,11 @@ class MockRetail(StorefrontBackend):
             "smoky": "rauchig",
             "green": "grün",
             "aromatic": "aromatisch",
+            "synthetic": "synthetisch",
+            "leathery": "ledrig",
+            "resinous": "harzig",
+            "chypre": "chypre",
+            "white floral": "weiße Blüten",
         }
 
         if attributes.get("main_accords"):
