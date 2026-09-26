@@ -75,8 +75,10 @@ const naxosPremiumMotifs = {
   Bergamotte: "bergamot",
   "Omanischer Weihrauch": "incense",
   Zitrone: "lemon",
+  Honig: "honey",
   "Sambac-Jasmin": "jasmine",
   Zimt: "spice",
+  Tabak: "tobacco",
   Tonkabohne: "tonka",
   Vanille: "vanilla",
 };

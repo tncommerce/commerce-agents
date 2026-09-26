@@ -103,3 +103,55 @@ def test_priority_premium_motifs_are_not_monochrome_current_color_only() -> None
         assert 'fill="#' in block or 'stroke="#' in block, (
             f"{motif} lost its colored ingredient artwork"
         )
+
+
+def test_all_catalog_note_motifs_are_colored() -> None:
+    catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
+    source = ICONS.read_text(encoding="utf-8")
+
+    motif_entries = [
+        (
+            match["motif"],
+            [term.lower() for term in QUOTED.findall(match["names"])],
+        )
+        for match in MOTIF_ENTRY.finditer(source)
+    ]
+
+    notes = {
+        str(value).strip().lower()
+        for product in catalog["products"]
+        for values in (product.get("notes") or {}).values()
+        if isinstance(values, list)
+        for value in values
+        if str(value).strip()
+    }
+
+    used_motifs: set[str] = set()
+    unresolved: list[str] = []
+    for note in notes:
+        motif = next(
+            (
+                motif_name
+                for motif_name, terms in motif_entries
+                if any(term in note for term in terms)
+            ),
+            None,
+        )
+        if motif is None:
+            unresolved.append(note)
+            continue
+        used_motifs.add(motif)
+
+    assert not unresolved, f"Catalog notes lack a motif mapping: {sorted(unresolved)}"
+
+    monochrome: list[str] = []
+    for motif in sorted(used_motifs):
+        block_start = source.index(f"  {motif}: (")
+        block_end = source.index("\n  ),", block_start)
+        block = source[block_start:block_end]
+        if 'fill="#' not in block and 'stroke="#' not in block:
+            monochrome.append(motif)
+
+    assert not monochrome, (
+        f"Active catalog motifs fell back to monochrome currentColor artwork: {monochrome}"
+    )
