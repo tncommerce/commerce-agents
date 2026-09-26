@@ -36,6 +36,7 @@ def test_workspace_lock_installs_safe_next_version() -> None:
 
     assert _version(installed) >= MIN_NEXT
 
+
 def test_workspace_lock_ranges_match_app_manifests() -> None:
     lock = json.loads(LOCKFILE.read_text(encoding="utf-8"))
 
