@@ -50,3 +50,12 @@ def test_launch_readiness_tolerates_only_small_future_clock_skew() -> None:
     assert "MAX_FUTURE_CLOCK_SKEW_HOURS = 5 / 60" in readiness_source
     assert "ageHours >= -MAX_FUTURE_CLOCK_SKEW_HOURS" in readiness_source
     assert "ageHours <= 72" in readiness_source
+
+
+def test_launch_readiness_rejects_loopback_and_credential_urls() -> None:
+    readiness_source = READINESS.read_text(encoding="utf-8")
+
+    for blocked_host in ("127.0.0.1", "::1", "[::1]"):
+        assert f'"{blocked_host}"' in readiness_source
+
+    assert "if (parsed.username || parsed.password) return false;" in readiness_source

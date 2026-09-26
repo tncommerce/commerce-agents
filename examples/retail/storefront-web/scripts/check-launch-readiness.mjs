@@ -44,6 +44,9 @@ const RESERVED_LAUNCH_HOSTS = [
   "example.org",
   "example.net",
   "localhost",
+  "127.0.0.1",
+  "::1",
+  "[::1]",
 ];
 
 function reservedLaunchHost(hostname) {
@@ -58,6 +61,7 @@ function validPublicHttpUrl(value, { requireHttps = true } = {}) {
     const parsed = new URL(value);
     if (requireHttps && parsed.protocol !== "https:") return false;
     if (!requireHttps && !["http:", "https:"].includes(parsed.protocol)) return false;
+    if (parsed.username || parsed.password) return false;
     return !reservedLaunchHost(parsed.hostname);
   } catch {
     return false;
