@@ -7,15 +7,15 @@ Updated: 2026-09-25
 
 Batch 4 may enter isolated pre-live staging in controlled groups, but live promotion remains gated.
 
-DUFYND now has 30 verified candidates across Batches 1-3 plus three controlled five-product research-wave staging intakes (Batches 4-6). This raises isolated staging to 45 products while live remains at 33. Every intake is explicitly capped at five products and does not authorize publication.
+DUFYND now has 30 verified candidates across Batches 1-3 plus four controlled five-product research-wave staging intakes (Batches 4-7). This raises isolated staging to 50 products while live remains at 33. Every intake is explicitly capped at five products and does not authorize publication.
 
 ## Current gates
 
-- 45 products are now in isolated staging
+- 50 products are now in isolated staging
 - 33 fragrances are live
-- 78 unique fragrance identities exist across live + staging with zero overlap
-- Batches 4-6 are limited to candidates without unresolved source/version blockers
-- Batches 4-6 require a current verified purchase destination and an approved product image before live promotion; affiliate coverage is optional
+- 83 unique fragrance identities exist across live + staging with zero overlap
+- Batches 4-7 are limited to candidates without unresolved source/version blockers
+- Batches 4-7 require a current verified purchase destination and an approved product image before live promotion; affiliate coverage is optional
 - Existing Batches 1-3 are subject to the same purchase-destination, image and quality gates
 - No staging intake authorizes a live write
 
