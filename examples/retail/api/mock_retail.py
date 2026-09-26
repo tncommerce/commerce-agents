@@ -299,6 +299,21 @@ class MockRetail(StorefrontBackend):
                 if accord.strip()
             )
 
+        target_labels_de = {
+            "men": "Herren",
+            "women": "Damen",
+            "unisex": "Unisex",
+        }
+        if attributes.get("target_group"):
+            attributes["target_group"] = ", ".join(
+                target_labels_de.get(
+                    target.strip().casefold(),
+                    target.strip(),
+                )
+                for target in str(attributes["target_group"]).split(",")
+                if target.strip()
+            )
+
         def scent_profile_level(name: str) -> str | None:
             try:
                 value = source_attributes.get(name)
