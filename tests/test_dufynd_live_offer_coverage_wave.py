@@ -38,11 +38,7 @@ EXPECTED = {
 
 def test_live_offer_wave_has_exact_verified_douglas_variants() -> None:
     offers = json.loads(OFFERS.read_text(encoding="utf-8"))["offers"]
-    by_product = {
-        offer["product_id"]: offer
-        for offer in offers
-        if offer["product_id"] in EXPECTED
-    }
+    by_product = {offer["product_id"]: offer for offer in offers if offer["product_id"] in EXPECTED}
 
     assert set(by_product) == set(EXPECTED)
 
