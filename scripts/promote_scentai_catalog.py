@@ -71,6 +71,44 @@ def offer_age_hours(offer: dict, *, now: datetime) -> float:
     return (now - updated).total_seconds() / 3600.0
 
 
+def valid_public_https_url(value: object) -> bool:
+    candidate = str(value or "").strip()
+    if not candidate:
+        return False
+
+    try:
+        destination = urlsplit(candidate)
+    except ValueError:
+        return False
+
+    return bool(
+        destination.scheme == "https"
+        and destination.hostname
+        and not destination.username
+        and not destination.password
+        and destination.hostname not in {"localhost", "127.0.0.1", "::1"}
+    )
+
+
+def valid_eur_offer_amounts(offer: dict) -> bool:
+    if str(offer.get("currency") or "").strip().upper() != "EUR":
+        return False
+
+    try:
+        price = float(offer["price"])
+        shipping = offer.get("shipping_cost")
+        if not math.isfinite(price) or price <= 0:
+            return False
+        if shipping is not None and (
+            not math.isfinite(float(shipping)) or float(shipping) < 0
+        ):
+            return False
+    except (KeyError, TypeError, ValueError):
+        return False
+
+    return True
+
+
 def eligible_affiliate_offers(
     offers: list[dict],
     *,
@@ -85,7 +123,9 @@ def eligible_affiliate_offers(
             continue
         if not offer.get("in_stock"):
             continue
-        if not str(offer.get("affiliate_url") or "").strip():
+        if not valid_public_https_url(offer.get("affiliate_url")):
+            continue
+        if not valid_eur_offer_amounts(offer):
             continue
 
         try:
@@ -139,28 +179,9 @@ def eligible_purchase_offers(
             continue
         if not offer.get("in_stock"):
             continue
-        product_url = str(offer.get("product_url") or "").strip()
-        try:
-            destination = urlsplit(product_url)
-            if (
-                destination.scheme != "https"
-                or not destination.hostname
-                or destination.username
-                or destination.password
-                or destination.hostname in {"localhost", "127.0.0.1", "::1"}
-            ):
-                continue
-        except ValueError:
+        if not valid_public_https_url(offer.get("product_url")):
             continue
-
-        try:
-            price = float(offer["price"])
-            shipping = offer.get("shipping_cost")
-            if not math.isfinite(price) or price < 0:
-                continue
-            if shipping is not None and (not math.isfinite(float(shipping)) or float(shipping) < 0):
-                continue
-        except (KeyError, TypeError, ValueError):
+        if not valid_eur_offer_amounts(offer):
             continue
 
         try:
