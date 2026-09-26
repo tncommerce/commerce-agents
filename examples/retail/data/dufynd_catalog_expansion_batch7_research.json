@@ -1,0 +1,192 @@
+{
+  "schema_version": "1.0",
+  "wave_id": "DUFYND-CATALOG-EXPANSION-BATCH7-RESEARCH",
+  "created_at": "2026-09-26",
+  "status": "research_only_not_enabled_for_staging",
+  "max_products": 5,
+  "live_publication_authorized": false,
+  "selection_reason": "Three women fragrances fill the largest audience gap; two unisex anchors add premium and smoky comparison coverage. Designer, niche and value segments are represented. No commission influenced selection.",
+  "candidates": [
+    {
+      "priority": 1,
+      "product_id": "SC-MUGLER-ALIEN-EDP-90",
+      "brand": "Mugler",
+      "name": "Alien",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "target_groups": [
+        "women"
+      ],
+      "comparison_role": "designer_white_floral_anchor",
+      "variant_status": "manufacturer_variant_verified",
+      "manufacturer_source_url": "https://de.mugler.com/de/duft/damendufte/alien/alien-eau-de-parfum/M010401002.html",
+      "checked_at": "2026-09-26",
+      "variant_caution": "Distinguish refillable bottle from refill pouch and Alien Hypersense.",
+      "research_state": "identity_verified_remaining_sources_pending",
+      "merchant_evidence": [],
+      "community": null,
+      "identifiers": {
+        "canonical_gtin": null,
+        "merchant_product_ids": []
+      },
+      "media": {
+        "image_url": null,
+        "rights_status": "unverified"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "merchant_variant_mapping_pending",
+          "community_data_pending",
+          "approved_product_image_pending",
+          "current_verified_purchase_destination_pending"
+        ]
+      }
+    },
+    {
+      "priority": 2,
+      "product_id": "SC-MFK-BACCARAT-ROUGE-540-EDP-70",
+      "brand": "Maison Francis Kurkdjian",
+      "name": "Baccarat Rouge 540",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 70,
+      "target_groups": [
+        "unisex"
+      ],
+      "comparison_role": "luxury_amber_comparison_anchor",
+      "variant_status": "manufacturer_variant_verified",
+      "manufacturer_source_url": "https://www.franciskurkdjian.com/eu-de/p/baccarat-rouge-540-eau-de-parfum-10223021.html",
+      "checked_at": "2026-09-26",
+      "variant_caution": "Keep the 70 ml Eau de Parfum distinct from the Extrait and hair mist.",
+      "research_state": "identity_verified_remaining_sources_pending",
+      "merchant_evidence": [],
+      "community": null,
+      "identifiers": {
+        "canonical_gtin": null,
+        "merchant_product_ids": []
+      },
+      "media": {
+        "image_url": null,
+        "rights_status": "unverified"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "merchant_variant_mapping_pending",
+          "community_data_pending",
+          "approved_product_image_pending",
+          "current_verified_purchase_destination_pending"
+        ]
+      }
+    },
+    {
+      "priority": 3,
+      "product_id": "SC-AFNAN-9-PM-POUR-FEMME-EDP-100",
+      "brand": "Afnan Perfumes",
+      "name": "9 PM Pour Femme",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "target_groups": [
+        "women"
+      ],
+      "comparison_role": "value_floral_amber_anchor",
+      "variant_status": "manufacturer_variant_verified",
+      "manufacturer_source_url": "https://de.afnan.com/products/9-pm-pour-femme",
+      "checked_at": "2026-09-26",
+      "variant_caution": "Distinguish Pour Femme from the men’s 9 PM, Rebel, and Night Out flankers.",
+      "research_state": "identity_verified_remaining_sources_pending",
+      "merchant_evidence": [],
+      "community": null,
+      "identifiers": {
+        "canonical_gtin": null,
+        "merchant_product_ids": []
+      },
+      "media": {
+        "image_url": null,
+        "rights_status": "unverified"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "merchant_variant_mapping_pending",
+          "community_data_pending",
+          "approved_product_image_pending",
+          "current_verified_purchase_destination_pending"
+        ]
+      }
+    },
+    {
+      "priority": 4,
+      "product_id": "SC-MAISON-MARGIELA-BY-THE-FIREPLACE-EDT-100",
+      "brand": "Maison Margiela",
+      "name": "REPLICA By the Fireplace",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "target_groups": [
+        "unisex"
+      ],
+      "comparison_role": "smoky_gourmand_comparison_anchor",
+      "variant_status": "manufacturer_variant_verified",
+      "manufacturer_source_url": "https://www.maisonmargiela-fragrances.us/fragrances/replica-eau-de-toilette/replica-by-the-fireplace/MM005.html",
+      "checked_at": "2026-09-26",
+      "variant_caution": "Distinguish 100 ml bottle from 100 ml refill and travel size; confirm German retail variant.",
+      "research_state": "identity_verified_remaining_sources_pending",
+      "merchant_evidence": [],
+      "community": null,
+      "identifiers": {
+        "canonical_gtin": null,
+        "merchant_product_ids": []
+      },
+      "media": {
+        "image_url": null,
+        "rights_status": "unverified"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "merchant_variant_mapping_pending",
+          "community_data_pending",
+          "approved_product_image_pending",
+          "current_verified_purchase_destination_pending"
+        ]
+      }
+    },
+    {
+      "priority": 5,
+      "product_id": "SC-DIOR-JADORE-EDP-100",
+      "brand": "Dior",
+      "name": "J’adore",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "target_groups": [
+        "women"
+      ],
+      "comparison_role": "classic_floral_designer_anchor",
+      "variant_status": "manufacturer_variant_verified",
+      "manufacturer_source_url": "https://www.dior.com/de_de/beauty/products/j%E2%80%99adore-eau-de-parfum-Y0998031.html",
+      "checked_at": "2026-09-26",
+      "variant_caution": "Distinguish EDP from EDT, Parfum d’eau, L’Or and updated bottle presentation.",
+      "research_state": "identity_verified_remaining_sources_pending",
+      "merchant_evidence": [],
+      "community": null,
+      "identifiers": {
+        "canonical_gtin": null,
+        "merchant_product_ids": []
+      },
+      "media": {
+        "image_url": null,
+        "rights_status": "unverified"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "merchant_variant_mapping_pending",
+          "community_data_pending",
+          "approved_product_image_pending",
+          "current_verified_purchase_destination_pending"
+        ]
+      }
+    }
+  ],
+  "next_gate": "Verify independent community evidence, exact German merchant variants and links, and image usage rights before adding an enabled staging intake. Do not infer a live offer from a manufacturer page."
+}
