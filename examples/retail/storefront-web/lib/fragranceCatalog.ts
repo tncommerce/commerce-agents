@@ -69,6 +69,7 @@ type SourceRow = {
     rating_count?: number | null;
     longevity_10?: number | null;
     projection_10?: number | null;
+    provisional?: boolean;
   };
   fragrance_profile?: {
     community_accords?: string[];
@@ -128,6 +129,7 @@ export interface StaticFragrance {
     rating_count: number;
     longevity_10: number | null;
     projection_10: number | null;
+    provisional: boolean;
   };
   accords: string[];
   scores: {
@@ -384,6 +386,7 @@ function catalogToFragrance(
       projection_10:
         source?.community?.projection_10 ??
         asNumber(attributes.projection),
+      provisional: source?.community?.provisional === true,
     },
     accords,
     scores: {

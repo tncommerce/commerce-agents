@@ -75,13 +75,17 @@ function ratingLabel(
 ): string | null {
   if (fragrance.community.rating_10 == null) return null;
 
-  return `${fragrance.community.rating_10.toLocaleString(
+  const rating = `${fragrance.community.rating_10.toLocaleString(
     "de-DE",
     {
       minimumFractionDigits: 1,
       maximumFractionDigits: 1,
     },
   )}/10`;
+
+  return fragrance.community.provisional
+    ? `${rating} · vorläufig`
+    : rating;
 }
 
 function performanceScore(
