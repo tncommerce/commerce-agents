@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 
 
-def test_batch7_stays_research_only_until_sources_are_verified() -> None:
+def test_batch7_research_evidence_remains_non_live_after_staging_enablement() -> None:
     data = Path("examples/retail/data")
     wave = json.loads((data / "dufynd_catalog_expansion_batch7_research.json").read_text())
     intake = json.loads((data / "dufynd_catalog_staging_intake.json").read_text())
@@ -14,14 +14,22 @@ def test_batch7_stays_research_only_until_sources_are_verified() -> None:
 
     candidates = wave["candidates"]
     ids = [row["product_id"] for row in candidates]
-    existing_ids = {row["product_id"] for row in [*staging["products"], *live["products"]]}
+    staged_ids = {row["product_id"] for row in staging["products"]}
+    live_ids = {
+        row["product_id"]
+        for row in live["products"]
+        if str(row.get("product_id") or "").startswith("SC-")
+    }
 
     assert len(candidates) == wave["max_products"] == 5
     assert len(set(ids)) == 5
-    assert set(ids).isdisjoint(existing_ids)
+    assert set(ids).issubset(staged_ids)
+    assert set(ids).isdisjoint(live_ids)
     assert wave["live_publication_authorized"] is False
-    assert wave["status"] == "research_only_not_enabled_for_staging"
-    assert all(entry["wave_id"] != wave["wave_id"] for entry in intake["waves"])
+    assert wave["status"] == "enabled_for_isolated_staging"
+    manifest = next(entry for entry in intake["waves"] if entry["wave_id"] == wave["wave_id"])
+    assert manifest["live_publication_authorized"] is False
+    assert set(manifest["selected_product_ids"]) == set(ids)
     assert set(ids).isdisjoint({offer["product_id"] for offer in offers["offers"]})
     assert sum(bool(candidate["research_merchant_evidence"]) for candidate in candidates) == 5
     for candidate in candidates:
