@@ -378,6 +378,7 @@ def build_source_product(
     staged: dict,
     *,
     best_offer: dict,
+    price_source_count: int = 1,
 ) -> dict:
     community = staged["community"]
     profile = staged["fragrance_profile"]
@@ -426,8 +427,8 @@ def build_source_product(
         },
         "market": {
             "market_price_eur": price,
-            "price_per_ml_eur": round(price / volume_ml, 2),
-            "price_source_count": 1,
+            "price_per_ml_eur": round(price / volume_ml, 4),
+            "price_source_count": max(1, int(price_source_count)),
             "price_checked_at": checked_at,
         },
         "relationships": [],
@@ -558,6 +559,7 @@ def promotion_plan(
                 build_source_product(
                     product,
                     best_offer=eligible[0],
+                    price_source_count=len(eligible),
                 )
             )
 
