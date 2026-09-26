@@ -51,3 +51,21 @@ def test_pending_or_rejected_visuals_never_reach_public_surfaces() -> None:
 
     assert 'visual.fidelity_status !== "rejected"' in source
     assert 'visual.fidelity_status !== "pending_review"' in source
+
+
+def test_legacy_visual_fallbacks_never_claim_product_truth() -> None:
+    source = CATALOG_ADAPTER.read_text(encoding="utf-8")
+
+    editorial_fallback = source.split("const editorialUrl =", 1)[1].split(
+        "const legacyCutoutUrl =", 1
+    )[0]
+    assert 'role: "editorial"' in editorial_fallback
+    assert 'provenance: "legacy_catalog"' in editorial_fallback
+    assert 'fidelity_status: "editorial_only"' in editorial_fallback
+
+    legacy_cutout_fallback = source.split("const legacyCutoutUrl =", 1)[1].split("return null;", 1)[
+        0
+    ]
+    assert 'role: "cutout"' in legacy_cutout_fallback
+    assert 'provenance: "legacy_catalog"' in legacy_cutout_fallback
+    assert 'fidelity_status: "pending_review"' in legacy_cutout_fallback
