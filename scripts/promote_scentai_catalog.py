@@ -99,9 +99,7 @@ def valid_eur_offer_amounts(offer: dict) -> bool:
         shipping = offer.get("shipping_cost")
         if not math.isfinite(price) or price <= 0:
             return False
-        if shipping is not None and (
-            not math.isfinite(float(shipping)) or float(shipping) < 0
-        ):
+        if shipping is not None and (not math.isfinite(float(shipping)) or float(shipping) < 0):
             return False
     except (KeyError, TypeError, ValueError):
         return False
