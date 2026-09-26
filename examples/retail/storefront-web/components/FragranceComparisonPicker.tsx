@@ -11,6 +11,7 @@ import {
   type StaticFragrance,
 } from "@/lib/fragranceCatalog";
 import { formatPriceReference } from "@/lib/priceReference";
+import { targetLabel } from "@/lib/targetLabels";
 
 function formatRating(value: number | null): string {
   if (value == null) return "–";
@@ -26,14 +27,6 @@ function formatNumber(value: number | null): string {
     minimumFractionDigits: 1,
     maximumFractionDigits: 1,
   });
-}
-
-function targetLabel(value: string): string {
-  return {
-    men: "Herren",
-    women: "Damen",
-    unisex: "Unisex",
-  }[value] || value;
 }
 
 function ComparisonRow({
