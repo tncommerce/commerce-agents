@@ -316,10 +316,10 @@ export default function FragranceComparisonPicker({
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {fragrance.accords.slice(0, 5).map((accord) => (
                     <span
-                      key={accordLabel(accord)}
+                      key={accord}
                       className="rounded-full bg-(--card) px-2.5 py-1 text-[10.5px] text-(--ink-soft)"
                     >
-                      {accord}
+                      {accordLabel(accord)}
                     </span>
                   ))}
                 </div>
