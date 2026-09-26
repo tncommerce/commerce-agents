@@ -18,11 +18,7 @@ EXPECTED = {
 
 def test_top_parfuemerie_mappings_are_unique_and_exact() -> None:
     payload = json.loads(MAPPINGS.read_text(encoding="utf-8"))
-    rows = [
-        row
-        for row in payload["mappings"]
-        if row.get("merchant") == "top-parfuemerie"
-    ]
+    rows = [row for row in payload["mappings"] if row.get("merchant") == "top-parfuemerie"]
 
     assert len(rows) == len(EXPECTED)
     assert len({row["product_id"] for row in rows}) == len(rows)
