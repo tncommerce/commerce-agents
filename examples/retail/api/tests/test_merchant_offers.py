@@ -124,6 +124,20 @@ def test_http_clickout_is_rejected_even_when_well_formed() -> None:
     assert offer_clickout_target(candidate) is None
 
 
+def test_loopback_and_credential_clickouts_are_rejected() -> None:
+    for url in (
+        "https://localhost/product",
+        "https://127.0.0.1/product",
+        "https://user:pass@merchant.example/product",
+    ):
+        candidate = offer("unsafe-public-target", merchant="Merchant", price=90, shipping=0)
+        candidate.product_url = url
+        candidate.affiliate_url = None
+
+        assert rank_offers([candidate], now=NOW) == []
+        assert offer_clickout_target(candidate) is None
+
+
 def test_http_affiliate_url_falls_back_to_https_product_url() -> None:
     candidate = offer("fallback-http", merchant="Merchant", price=90, shipping=0)
     candidate.affiliate_url = "http://network.example/click"
