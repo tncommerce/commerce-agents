@@ -449,7 +449,7 @@ export default async function FragrancePage({
             className="dufynd-fragrance-hero-orbit pointer-events-none absolute"
           />
           <div className="relative z-10 grid lg:grid-cols-[0.94fr_1.06fr]">
-            {fragrance.model_3d_url || heroIsProductTruth ? (
+            {fragrance.model_3d_url ? (
               <FragranceModel3D
                 modelUrl={fragrance.model_3d_url}
                 imageUrl={heroIsProductTruth ? undefined : heroVisual?.url}
@@ -466,9 +466,15 @@ export default async function FragrancePage({
             ) : (
               <FragranceVisual
                 imageUrl={heroVisual?.url}
+                cutoutUrl={heroIsProductTruth ? heroVisual?.url : undefined}
+                backdropUrl={
+                  heroIsProductTruth
+                    ? fragrance.backdrop_visual?.url
+                    : undefined
+                }
                 alt={`${fragrance.brand} ${fragrance.name}`}
                 variant="hero"
-                mode="editorial"
+                mode={heroIsProductTruth ? "cutout" : "editorial"}
                 className="min-h-[330px] w-full sm:min-h-[430px] lg:min-h-[520px]"
                 priority
               />
