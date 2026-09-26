@@ -235,7 +235,7 @@ class MerchantClickoutTracker:
             "merchant_id": offer.merchant_id,
             "merchant_name": offer.merchant_name,
             "network": offer.network,
-            "affiliate_link": bool(offer.affiliate_url),
+            "affiliate_link": _http_url(offer.affiliate_url),
             "acquisition_source": acquisition_source,
             "campaign_id": campaign_id,
             "content_id": content_id,
