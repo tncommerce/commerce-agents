@@ -57,15 +57,11 @@ def test_batch7_small_community_sample_stays_provisional() -> None:
         Path("examples/retail/data/dufynd_catalog_expansion_batch7_research.json").read_text()
     )
     provisional = {
-        row["product_id"]
-        for row in wave["candidates"]
-        if row["community"]["provisional"]
+        row["product_id"] for row in wave["candidates"] if row["community"]["provisional"]
     }
 
     assert provisional == {"SC-AFNAN-9-PM-POUR-FEMME-EDP-100"}
     afnan = next(
-        row
-        for row in wave["candidates"]
-        if row["product_id"] == "SC-AFNAN-9-PM-POUR-FEMME-EDP-100"
+        row for row in wave["candidates"] if row["product_id"] == "SC-AFNAN-9-PM-POUR-FEMME-EDP-100"
     )
     assert afnan["community"]["rating_count"] == 26
