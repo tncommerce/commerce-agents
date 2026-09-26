@@ -969,8 +969,7 @@
         "blockers": [
           "community_performance_still_provisional",
           "verified_purchase_destination_pending",
-          "approved_product_image_pending",
-          "verified_current_merchant_pending"
+          "approved_product_image_pending"
         ]
       }
     },
