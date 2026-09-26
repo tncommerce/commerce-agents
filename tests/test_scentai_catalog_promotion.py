@@ -4,6 +4,7 @@ from datetime import UTC, datetime
 
 from scripts.promote_scentai_catalog import (
     build_catalog_product,
+    eligible_affiliate_offers,
     eligible_purchase_offers,
     promotion_blockers,
     promotion_plan,
@@ -136,6 +137,27 @@ def test_stale_offer_does_not_unlock_promotion() -> None:
     )
 
     assert "missing_current_purchase_destination" in blockers
+
+
+def test_future_dated_offer_does_not_unlock_promotion_or_affiliate_coverage() -> None:
+    offer = affiliate_offer()
+    offer["last_updated_at"] = "2026-10-01T11:00:00Z"
+
+    assert (
+        eligible_purchase_offers(
+            [offer], product_id=offer["product_id"], now=NOW, max_age_hours=72.0
+        )
+        == []
+    )
+    assert (
+        eligible_affiliate_offers(
+            [offer], product_id=offer["product_id"], now=NOW, max_age_hours=72.0
+        )
+        == []
+    )
+    assert "missing_current_purchase_destination" in promotion_blockers(
+        staged_product(), [offer], now=NOW
+    )
 
 
 def test_equal_price_prefers_affiliate_then_higher_commission() -> None:
