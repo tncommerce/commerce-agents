@@ -20,7 +20,11 @@ class MerchantOffer(BaseModel):
     data lives here so price, stock and tracking can change independently.
     """
 
-    offer_id: str
+    offer_id: str = Field(
+        min_length=1,
+        max_length=120,
+        pattern=r"^[A-Za-z0-9._:-]+$",
+    )
     product_id: str
     merchant_id: str
     merchant_name: str

@@ -1,6 +1,8 @@
 import json
 from datetime import UTC, datetime, timedelta
 
+import pytest
+
 from retail.api.merchant_offers import (
     MerchantClickoutTracker,
     MerchantOffer,
@@ -38,6 +40,22 @@ def offer(
         last_updated_at=NOW - timedelta(hours=age_hours),
         commission_rate=commission,
     )
+
+
+def test_offer_id_rejects_path_and_query_characters() -> None:
+    for unsafe_id in (
+        "../merchant",
+        "offer/child",
+        "offer?next=other",
+        "offer#fragment",
+    ):
+        with pytest.raises(ValueError):
+            offer(
+                unsafe_id,
+                merchant="Merchant",
+                price=90,
+                shipping=0,
+            )
 
 
 def test_excludes_out_of_stock_and_stale_offers() -> None:
