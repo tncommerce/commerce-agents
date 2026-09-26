@@ -28,6 +28,9 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install repository Python dependencies
+        run: pip install -r requirements-dev.txt
+
       - name: Rebuild isolated staging
         run: python -m scripts.build_scentai_catalog_staging
 
