@@ -73,6 +73,8 @@ const naxosGermanNotes = [
 const naxosPremiumMotifs = {
   Lavendel: "lavender",
   Bergamotte: "bergamot",
+  "Omanischer Weihrauch": "incense",
+  Zitrone: "lemon",
   "Sambac-Jasmin": "jasmine",
   Zimt: "spice",
   Tonkabohne: "tonka",
