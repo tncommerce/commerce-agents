@@ -16,7 +16,6 @@ def test_runtime_agent_uses_dufynd_brand_and_assistant_name() -> None:
 
 def test_customer_facing_runtime_rules_do_not_name_scentai() -> None:
     source = AGENT_CONFIG.read_text(encoding="utf-8")
-    runtime_rules = source.split("extra_system_prompt=", 1)[1]
+    runtime_rules = source.split("domain_search_notes=(", 1)[1].split("        ),", 1)[0]
 
-    assert '"SCENTAI' not in runtime_rules
-    assert " SCENTAI " not in runtime_rules
+    assert "SCENTAI" not in runtime_rules
