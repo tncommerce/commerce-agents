@@ -207,6 +207,39 @@ try {
           throw new Error("directory listing detected instead of storefront content");
         }
 
+        if (target.route.startsWith("/duft/")) {
+          const layout = await page.evaluate(() => {
+            const rect = (selector) =>
+              document.querySelector(selector)?.getBoundingClientRect() || null;
+            const title = rect(".dufynd-fragrance-hero h1");
+            const stage = rect(".dufynd-fragrance-hero .dufynd-product-stage, .dufynd-fragrance-hero .dufynd-editorial-depth-stage, .dufynd-fragrance-hero .dufynd-model-stage");
+            const cutout = rect(".dufynd-fragrance-hero .dufynd-product-image");
+            const offers = rect("#angebote");
+            const exploded = rect(".dufynd-exploded-notes");
+            return {
+              title_top: title ? title.top + window.scrollY : null,
+              stage_height: stage?.height ?? null,
+              cutout_clipped: Boolean(stage && cutout && (
+                cutout.top < stage.top - 2 || cutout.bottom > stage.bottom + 2 ||
+                cutout.left < stage.left - 2 || cutout.right > stage.right + 2
+              )),
+              offers_after_exploded: Boolean(offers && exploded && offers.top > exploded.top),
+            };
+          });
+          if (layout.title_top == null || layout.title_top > 260) {
+            throw new Error(`fragrance identity starts too far below the first screen: ${layout.title_top}px`);
+          }
+          if (viewport.width <= 390 && (layout.stage_height == null || layout.stage_height > 270)) {
+            throw new Error(`mobile fragrance visual is too tall: ${layout.stage_height}px`);
+          }
+          if (layout.cutout_clipped) {
+            throw new Error("verified bottle cutout extends beyond its hero stage");
+          }
+          if (layout.offers_after_exploded) {
+            throw new Error("merchant offers appear after the exploded-note view");
+          }
+        }
+
         if (!["home", "catalog"].includes(target.name)) {
           const productSchema = await page.evaluate(() => {
             const schemas = Array.from(

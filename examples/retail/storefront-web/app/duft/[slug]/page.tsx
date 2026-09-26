@@ -389,7 +389,7 @@ export default async function FragrancePage({
   ).replaceAll("<", "\\u003c");
 
   return (
-    <main className="min-h-screen bg-(--surface) pb-24 text-(--ink) sm:pb-0">
+    <main className="dufynd-detail-page min-h-screen pb-24 text-(--ink) sm:pb-0">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: breadcrumbJson }}
@@ -465,6 +465,51 @@ export default async function FragrancePage({
             className="dufynd-fragrance-hero-orbit pointer-events-none absolute"
           />
           <div className="relative z-10 grid lg:grid-cols-[0.94fr_1.06fr]">
+            <div className="dufynd-fragrance-identity p-5 pb-4 sm:p-7 sm:pb-5 lg:col-start-2 lg:row-start-1 lg:p-9 lg:pb-0">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-(--accent-ink)">
+                {fragrance.brand}
+              </div>
+              <h1 className="mt-1.5 text-[32px] font-semibold leading-[1.05] tracking-[-0.045em] sm:text-[46px]">
+                {fragrance.name}
+              </h1>
+              <div className="mt-3 flex flex-wrap gap-1.5 text-[11px] text-(--ink-soft) sm:gap-2 sm:text-[12px]">
+                <span className="rounded-full border border-(--line) bg-(--surface) px-2.5 py-1.5 sm:px-3">
+                  {fragrance.concentration}
+                </span>
+                <span className="rounded-full border border-(--line) bg-(--surface) px-2.5 py-1.5 sm:px-3">
+                  {fragrance.volume_ml} ml
+                </span>
+                {fragrance.target_groups.map((group) => (
+                  <span key={group} className="rounded-full border border-(--line) bg-(--surface) px-2.5 py-1.5 sm:px-3">
+                    {targetLabel(group)}
+                  </span>
+                ))}
+                {fragrance.release_year ? (
+                  <span className="hidden rounded-full border border-(--line) bg-(--surface) px-2.5 py-1.5 sm:inline-flex sm:px-3">
+                    Seit {fragrance.release_year}
+                  </span>
+                ) : null}
+              </div>
+              {fragrance.accords.length ? (
+                <p className="mt-3 text-[11px] leading-4 text-(--ink-soft) sm:text-[12px]">
+                  Duftcharakter: {fragrance.accords.slice(0, 3).map(accordLabel).join(" · ")}
+                </p>
+              ) : null}
+              {fragrance.market.reference_price_eur != null ? (
+                <p className="mt-2 text-[11px] leading-4 text-(--ink-soft)">
+                  Preisreferenz {formatPrice(fragrance.market.reference_price_eur)}
+                  {checkedAt ? ` · Stand ${checkedAt}` : ""} · aktuelle Angebote separat prüfen
+                </p>
+              ) : null}
+              {fragrance.community.rating_10 != null ? (
+                <p className="mt-2 text-[11px] leading-4 text-(--ink-soft)">
+                  Community {fragrance.community.rating_10.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}/10
+                  {fragrance.community.rating_count
+                    ? ` · ${fragrance.community.rating_count.toLocaleString("de-DE")} Bewertungen`
+                    : ""}
+                </p>
+              ) : null}
+            </div>
             {fragrance.model_3d_url || heroIsProductTruth ? (
               <FragranceModel3D
                 modelUrl={fragrance.model_3d_url}
@@ -476,7 +521,7 @@ export default async function FragrancePage({
                     : undefined
                 }
                 alt={`${fragrance.brand} ${fragrance.name}`}
-                className="min-h-[330px] w-full sm:min-h-[430px] lg:min-h-[520px]"
+                className="min-h-[248px] w-full sm:min-h-[340px] lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:min-h-[480px]"
                 priority
               />
             ) : (
@@ -485,42 +530,13 @@ export default async function FragrancePage({
                 alt={`${fragrance.brand} ${fragrance.name}`}
                 variant="hero"
                 mode="editorial"
-                className="min-h-[330px] w-full sm:min-h-[430px] lg:min-h-[520px]"
+                className="min-h-[248px] w-full sm:min-h-[340px] lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:min-h-[480px]"
                 priority
               />
             )}
 
-            <div className="dufynd-fragrance-hero-copy flex flex-col justify-center p-5 sm:p-7 lg:p-9">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-(--accent-ink)">
-                {fragrance.brand}
-              </div>
-              <h1 className="mt-2 text-[34px] font-semibold leading-[1.02] tracking-[-0.045em] sm:text-[46px]">
-                {fragrance.name}
-              </h1>
-
-              <div className="mt-4 flex flex-wrap gap-1.5 text-[11px] text-(--ink-soft) sm:gap-2 sm:text-[12px]">
-                <span className="rounded-full border border-(--line) bg-(--surface) px-2.5 py-1.5 sm:px-3">
-                  {fragrance.concentration}
-                </span>
-                <span className="rounded-full border border-(--line) bg-(--surface) px-2.5 py-1.5 sm:px-3">
-                  {fragrance.volume_ml} ml
-                </span>
-                {fragrance.target_groups.map((group) => (
-                  <span
-                    key={group}
-                    className="rounded-full border border-(--line) bg-(--surface) px-2.5 py-1.5 sm:px-3"
-                  >
-                    {targetLabel(group)}
-                  </span>
-                ))}
-                {fragrance.release_year ? (
-                  <span className="rounded-full border border-(--line) bg-(--surface) px-2.5 py-1.5 sm:px-3">
-                    Seit {fragrance.release_year}
-                  </span>
-                ) : null}
-              </div>
-
-              <div className="mt-5 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-2.5">
+            <div className="dufynd-fragrance-hero-copy flex flex-col justify-center p-5 pt-4 sm:p-7 sm:pt-5 lg:col-start-2 lg:row-start-2 lg:p-9 lg:pt-3">
+              <div className={`grid gap-2 sm:flex sm:flex-wrap sm:gap-2.5 ${related.length ? "grid-cols-2" : "grid-cols-1"}`}>
                 <a
                   href="#angebote"
                   className="rounded-xl bg-(--accent-strong) px-3 py-2.5 text-center text-[12px] font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:brightness-95 sm:px-4 sm:text-[13px]"
@@ -622,6 +638,10 @@ export default async function FragrancePage({
           </div>
         </section>
 
+        <div id="angebote" className="mt-5 scroll-mt-6">
+          <FragranceOffers productId={fragrance.product_id} />
+        </div>
+
         {heroIsProductTruth && heroVisual?.url ? (
           <FragranceExplodedNotes
             cutoutUrl={heroVisual.url}
@@ -638,15 +658,6 @@ export default async function FragrancePage({
           assets={fragrance.visuals}
           alt={`${fragrance.brand} ${fragrance.name}`}
         />
-
-        <div
-          id="angebote"
-          className="mt-5 scroll-mt-6"
-        >
-          <FragranceOffers
-            productId={fragrance.product_id}
-          />
-        </div>
 
         <div className="mt-5 grid gap-4 lg:mt-7 lg:grid-cols-[1.05fr_0.95fr]">
           <section className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) sm:p-5">

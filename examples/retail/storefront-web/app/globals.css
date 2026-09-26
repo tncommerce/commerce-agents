@@ -193,16 +193,21 @@ body {
 }
 
 .dufynd-product-float {
-  display: grid;
+  display: flex;
   height: 100%;
   width: 100%;
-  place-items: center;
+  min-height: 0;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
 }
 
 .dufynd-product-image {
   display: block;
   height: 100%;
   width: 100%;
+  min-height: 0;
+  min-width: 0;
   object-fit: contain;
   filter:
     drop-shadow(0 20px 20px rgba(23, 21, 19, 0.14))
@@ -907,6 +912,12 @@ body {
  * Product pages share the DUFYND luxury language without becoming visually repetitive.
  * The actual bottle image/model remains untouched; only the surrounding light world changes.
  */
+.dufynd-detail-page {
+  background:
+    radial-gradient(circle at 12% 8%, rgba(201, 167, 105, 0.085), transparent 29rem),
+    linear-gradient(180deg, #f8f5ee 0%, #f5f0e6 44%, #f9f6f0 100%);
+}
+
 .dufynd-fragrance-hero {
   isolation: isolate;
   --dufynd-detail-glow-a: rgba(209, 160, 75, 0.18);
@@ -939,10 +950,10 @@ body {
     inset 0 0 44px color-mix(in srgb, var(--dufynd-detail-glow-b) 34%, transparent);
 }
 
+.dufynd-fragrance-identity,
 .dufynd-fragrance-hero-copy {
   background:
-    linear-gradient(90deg, rgba(250,247,241,0.88), rgba(250,247,241,0.98) 28%, rgba(250,247,241,1));
-  backdrop-filter: blur(16px);
+    linear-gradient(90deg, rgba(250,247,241,0.96), #faf7f1 35%, #faf7f1);
 }
 
 .dufynd-fragrance-hero--amber {
@@ -1006,8 +1017,9 @@ body {
     opacity: 0.28;
   }
 
+  .dufynd-fragrance-identity,
   .dufynd-fragrance-hero-copy {
-    background: rgba(250,247,241,0.985);
+    background: #faf7f1;
   }
 }
 
