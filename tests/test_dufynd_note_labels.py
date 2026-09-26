@@ -7,6 +7,7 @@ import re
 from pathlib import Path
 
 CATALOG = Path("examples/retail/data/scentai_products.json")
+STAGING = Path("examples/retail/data/scentai_catalog_staging.json")
 LABELS = Path("examples/retail/storefront-web/lib/noteLabels.ts")
 ACCORD_LABELS = Path("examples/retail/storefront-web/lib/accordLabels.ts")
 TARGET_LABELS = Path("examples/retail/storefront-web/lib/targetLabels.ts")
@@ -35,6 +36,33 @@ def test_all_catalog_notes_have_german_display_labels() -> None:
 
     missing = sorted(notes - labels.keys())
     assert not missing, f"Missing German note labels: {missing}"
+    assert all(labels[note].strip() for note in notes)
+
+
+def test_all_staging_notes_have_german_display_labels() -> None:
+    staging = json.loads(STAGING.read_text(encoding="utf-8"))
+    notes: set[str] = set()
+
+    for product in staging["products"]:
+        profile = product.get("fragrance_profile") or {}
+        notes.update(
+            str(value).strip().lower()
+            for value in profile.get("key_notes", [])
+            if str(value).strip()
+        )
+        for values in (product.get("notes") or {}).values():
+            if isinstance(values, list):
+                notes.update(
+                    str(value).strip().lower()
+                    for value in values
+                    if str(value).strip()
+                )
+
+    source = LABELS.read_text(encoding="utf-8")
+    labels = {match["key"]: match["label"] for match in JSON_ENTRY.finditer(source)}
+
+    missing = sorted(notes - labels.keys())
+    assert not missing, f"Missing German staging note labels: {missing}"
     assert all(labels[note].strip() for note in notes)
 
 
