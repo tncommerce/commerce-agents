@@ -566,6 +566,11 @@ export default async function FragrancePage({
                         )
                       : "–"}
                   </div>
+                  {fragrance.community.provisional ? (
+                    <div className="mt-0.5 text-[9.5px] font-medium text-(--ink-soft)">
+                      vorläufig
+                    </div>
+                  ) : null}
                 </div>
 
                 <div className="border-l border-(--line) p-3 sm:p-4">
@@ -583,6 +588,11 @@ export default async function FragrancePage({
                         )
                       : "–"}
                   </div>
+                  {fragrance.community.provisional ? (
+                    <div className="mt-0.5 text-[9.5px] font-medium text-(--ink-soft)">
+                      vorläufig
+                    </div>
+                  ) : null}
                 </div>
               </div>
 
