@@ -24,10 +24,7 @@ TS_ENTRY = re.compile(
 
 def _ts_labels(path: Path) -> dict[str, str]:
     source = path.read_text(encoding="utf-8")
-    return {
-        match["key"].strip('"'): match["label"]
-        for match in TS_ENTRY.finditer(source)
-    }
+    return {match["key"].strip('"'): match["label"] for match in TS_ENTRY.finditer(source)}
 
 
 def _notes_from_products(products: list[dict], *, staging: bool) -> set[str]:
@@ -44,11 +41,7 @@ def _notes_from_products(products: list[dict], *, staging: bool) -> set[str]:
 
         for values in (product.get("notes") or {}).values():
             if isinstance(values, list):
-                notes.update(
-                    str(value).strip().lower()
-                    for value in values
-                    if str(value).strip()
-                )
+                notes.update(str(value).strip().lower() for value in values if str(value).strip())
 
     return notes
 
