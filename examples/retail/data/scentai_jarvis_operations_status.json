@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-26T07:52:00+00:00",
-  "source_fingerprint_sha256": "28acf9be2a8a66b5813a9c06989698dddd978de1b5ee451464ca31e9bf5293e8",
+  "generated_at": "2026-09-26T13:20:00+00:00",
+  "source_fingerprint_sha256": "05fa6022f00d293a46c3255b6a7ca043edc8eca2967406ac0822289698aa7af7",
   "system": "DUFYND",
   "control_plane": "commerce_jarvis",
   "policy_ref": "scentai_jarvis_operating_policy.json",
@@ -63,7 +63,7 @@
     "mapping_ready": 5,
     "image_identity_source_verified": 5,
     "approved_images": 0,
-    "current_purchase_destinations": 0,
+    "current_purchase_destinations": 2,
     "current_tracked_affiliate_offers": 0,
     "promotion_ready": 0
   },
