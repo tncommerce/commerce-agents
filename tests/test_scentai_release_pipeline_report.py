@@ -36,6 +36,9 @@ def staged_product() -> dict:
         "media": {
             "image_url": "/products/test.png",
             "image_status": "approved_feed_image",
+            "image_reviewed_at": "2026-09-18T10:00:00+00:00",
+            "image_rights_basis_id": "awin-test-feed-rights",
+            "image_rights_checked_at": "2026-09-18",
         },
     }
 
