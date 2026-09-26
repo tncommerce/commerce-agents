@@ -50,6 +50,15 @@ def staged_product(
                 if image_ready
                 else "pending_approved_feed_or_manufacturer_image"
             ),
+            **(
+                {
+                    "image_reviewed_at": "2026-09-18T10:00:00+00:00",
+                    "image_rights_basis_id": "awin-test-feed-rights",
+                    "image_rights_checked_at": "2026-09-18",
+                }
+                if image_ready
+                else {}
+            ),
         },
         "commerce": {
             "merchant_coverage_count": coverage,
