@@ -1,13 +1,17 @@
 from __future__ import annotations
 
+import json
 from datetime import UTC, datetime
 
+import pytest
 from scripts.promote_scentai_catalog import (
     build_catalog_product,
+    build_source_product,
     eligible_affiliate_offers,
     eligible_purchase_offers,
     promotion_blockers,
     promotion_plan,
+    write_promotions,
 )
 
 NOW = datetime(2026, 9, 18, 12, 0, tzinfo=UTC)
@@ -284,3 +288,79 @@ def test_promotion_plan_is_all_gate_aware() -> None:
     assert plan["blocked_count"] == 1
     assert plan["rows"][0]["ready"] is True
     assert plan["rows"][1]["ready"] is False
+
+
+def test_source_conversion_preserves_live_fragrance_truth() -> None:
+    source = build_source_product(
+        staged_product(),
+        best_offer=affiliate_offer(),
+    )
+
+    assert source["product_id"] == "SC-TEST-FRAGRANCE-100"
+    assert source["classification"]["scentai_target_groups"] == ["unisex"]
+    assert source["fragrance_profile"]["scores"] == {
+        "freshness": 8,
+        "sweetness": 2,
+        "woodiness": 5,
+        "spiciness": 3,
+    }
+    assert source["notes"]["key"] == ["bergamot", "cedar"]
+    assert source["market"]["market_price_eur"] == 79.95
+    assert source["market"]["price_checked_at"] == "2026-09-18"
+    assert source["validation"]["catalog_ready"] is True
+
+    visual = source["visuals"][0]
+    assert visual["role"] == "primary"
+    assert visual["fidelity_status"] == "verified"
+    assert visual["variant"] == "100ml"
+    assert visual["url"] == "/products/test/test-fragrance.png"
+
+
+def test_live_write_updates_catalog_and_source_together(tmp_path) -> None:
+    staged = staged_product()
+    offer = affiliate_offer()
+    catalog_product = build_catalog_product(staged, best_offer=offer)
+    source_product = build_source_product(staged, best_offer=offer)
+
+    catalog_path = tmp_path / "catalog.json"
+    source_path = tmp_path / "scentai_products.json"
+    catalog = {"store_name": "DUFYND", "products": []}
+    source = {
+        "schema_version": "1.0",
+        "database_name": "DUFYND Fragrance Database",
+        "currency": "EUR",
+        "products": [],
+    }
+
+    write_promotions(
+        catalog_path,
+        catalog,
+        source_path,
+        source,
+        [catalog_product],
+        [source_product],
+    )
+
+    written_catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+    written_source = json.loads(source_path.read_text(encoding="utf-8"))
+
+    assert [row["product_id"] for row in written_catalog["products"]] == ["SC-TEST-FRAGRANCE-100"]
+    assert [row["product_id"] for row in written_source["products"]] == ["SC-TEST-FRAGRANCE-100"]
+
+
+def test_live_write_refuses_catalog_source_mismatch(tmp_path) -> None:
+    staged = staged_product()
+    offer = affiliate_offer()
+    catalog_product = build_catalog_product(staged, best_offer=offer)
+    source_product = build_source_product(staged, best_offer=offer)
+    source_product["product_id"] = "SC-DIFFERENT-100"
+
+    with pytest.raises(ValueError, match="not aligned"):
+        write_promotions(
+            tmp_path / "catalog.json",
+            {"products": []},
+            tmp_path / "scentai_products.json",
+            {"products": []},
+            [catalog_product],
+            [source_product],
+        )

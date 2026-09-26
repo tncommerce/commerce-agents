@@ -14,6 +14,7 @@ from scripts.qa_scentai_staging import run_qa
 DATA_DIR = Path("examples/retail/data")
 DEFAULT_STAGING = DATA_DIR / "scentai_catalog_staging.json"
 DEFAULT_CATALOG = DATA_DIR / "catalog.json"
+DEFAULT_SOURCE = DATA_DIR / "scentai_products.json"
 DEFAULT_OFFERS = DATA_DIR / "merchant_offers.json"
 MAX_FUTURE_CLOCK_SKEW_HOURS = 5 / 60
 
@@ -373,6 +374,90 @@ def build_catalog_product(
     }
 
 
+def build_source_product(
+    staged: dict,
+    *,
+    best_offer: dict,
+) -> dict:
+    community = staged["community"]
+    profile = staged["fragrance_profile"]
+    recommendation = profile.get("recommendation_profile", {})
+    scores = recommendation_scores(staged)
+    classification = staged.get("classification", {})
+    target_groups = list(classification.get("target_groups", []))
+    key_notes = list(profile.get("key_notes", []))
+    accords = list(profile.get("community_accords", []))
+    media = staged.get("media", {})
+    image_url = str(media.get("image_url") or "").strip()
+    image_status = str(media.get("image_status") or "").strip()
+    volume_ml = int(staged["volume_ml"])
+    price = float(best_offer["price"])
+    checked_at = str(best_offer["last_updated_at"]).split("T", 1)[0]
+
+    provenance = {
+        "approved_feed_image": "merchant_feed",
+        "approved_manufacturer_image": "manufacturer",
+        "approved_licensed_image": "licensed",
+    }.get(image_status, "approved_source")
+
+    source_product = {
+        "product_id": staged["product_id"],
+        "brand": staged["brand"],
+        "name": staged["name"],
+        "concentration": staged["concentration"],
+        "volume_ml": volume_ml,
+        "classification": {
+            "scentai_target_groups": target_groups,
+            "role": None,
+            "cluster_id": None,
+            "trend_bet": False,
+        },
+        "community": {
+            "source": community.get("source"),
+            "rating_10": community.get("rating_10"),
+            "rating_count": community.get("rating_count"),
+            "longevity_10": community.get("longevity_10"),
+            "projection_10": community.get("projection_10"),
+        },
+        "fragrance_profile": {
+            "community_accords": accords,
+            "scores": scores,
+            "score_confidence": recommendation.get("confidence") or "medium",
+        },
+        "market": {
+            "market_price_eur": price,
+            "price_per_ml_eur": round(price / volume_ml, 2),
+            "price_source_count": 1,
+            "price_checked_at": checked_at,
+        },
+        "relationships": [],
+        "evidence": {
+            "overall": "promotion_verified",
+        },
+        "validation": {
+            "catalog_ready": True,
+        },
+        "image_url": image_url,
+        "visuals": [
+            {
+                "role": "primary",
+                "url": image_url,
+                "provenance": provenance,
+                "fidelity_status": "verified",
+                "variant": f"{volume_ml}ml",
+            }
+        ],
+        "notes": {
+            "key": key_notes,
+        },
+    }
+
+    if staged.get("release_year") is not None:
+        source_product["release_year"] = staged["release_year"]
+
+    return source_product
+
+
 def choose_products(
     staging_products: list[dict],
     *,
@@ -407,6 +492,7 @@ def promotion_plan(
     catalog: dict,
     offers_payload: dict,
     *,
+    source: dict | None = None,
     product_ids: list[str],
     batch: int | None,
     limit: int,
@@ -420,6 +506,7 @@ def promotion_plan(
         offers_payload if isinstance(offers_payload, list) else [],
     )
     live_ids = {product.get("product_id") for product in catalog.get("products", [])}
+    source_ids = {product.get("product_id") for product in (source or {}).get("products", [])}
 
     selected = choose_products(
         staged_products,
@@ -430,6 +517,7 @@ def promotion_plan(
 
     rows = []
     ready_products = []
+    ready_source_products = []
 
     for product in selected:
         product_id = product["product_id"]
@@ -443,6 +531,8 @@ def promotion_plan(
 
         if product_id in live_ids:
             blockers.append("already_live")
+        elif product_id in source_ids:
+            blockers.append("already_in_live_source")
 
         eligible = eligible_purchase_offers(
             offers,
@@ -460,6 +550,12 @@ def promotion_plan(
         if not blockers:
             ready_products.append(
                 build_catalog_product(
+                    product,
+                    best_offer=eligible[0],
+                )
+            )
+            ready_source_products.append(
+                build_source_product(
                     product,
                     best_offer=eligible[0],
                 )
@@ -482,29 +578,66 @@ def promotion_plan(
         "blocked_count": len(selected) - len(ready_products),
         "rows": rows,
         "ready_products": ready_products,
+        "ready_source_products": ready_source_products,
     }
 
 
 def write_promotions(
     catalog_path: Path,
     catalog: dict,
+    source_path: Path,
+    source: dict,
     ready_products: list[dict],
+    ready_source_products: list[dict],
 ) -> None:
     if not ready_products:
         return
 
-    products = list(catalog.get("products", []))
-    products.extend(ready_products)
+    catalog_ids = [product["product_id"] for product in ready_products]
+    source_ids = [product["product_id"] for product in ready_source_products]
 
-    output = {
+    if catalog_ids != source_ids:
+        raise ValueError(
+            "Refusing live write because catalog/source promotion rows are not aligned"
+        )
+
+    existing_catalog_ids = {product.get("product_id") for product in catalog.get("products", [])}
+    existing_source_ids = {product.get("product_id") for product in source.get("products", [])}
+    duplicates = sorted(set(catalog_ids) & (existing_catalog_ids | existing_source_ids))
+    if duplicates:
+        raise ValueError(
+            "Refusing live write because product_ids already exist in live data: "
+            + ", ".join(duplicates)
+        )
+
+    catalog_output = {
         **catalog,
         "store_name": "DUFYND",
-        "products": products,
+        "products": [
+            *catalog.get("products", []),
+            *ready_products,
+        ],
+    }
+    source_output = {
+        **source,
+        "products": [
+            *source.get("products", []),
+            *ready_source_products,
+        ],
     }
 
     catalog_path.write_text(
         json.dumps(
-            output,
+            catalog_output,
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    source_path.write_text(
+        json.dumps(
+            source_output,
             ensure_ascii=False,
             indent=2,
         )
@@ -555,6 +688,12 @@ def main() -> int:
         default=DEFAULT_CATALOG,
     )
     parser.add_argument(
+        "--source",
+        type=Path,
+        default=DEFAULT_SOURCE,
+        help="Live DUFYND source database written together with catalog.json.",
+    )
+    parser.add_argument(
         "--offers",
         type=Path,
         default=DEFAULT_OFFERS,
@@ -574,7 +713,10 @@ def main() -> int:
     parser.add_argument(
         "--write",
         action="store_true",
-        help=("Write ready products to catalog.json. Without this flag the command is a dry-run."),
+        help=(
+            "Write ready products to catalog.json and scentai_products.json. "
+            "Without this flag the command is a dry-run."
+        ),
     )
     parser.add_argument(
         "--machine-readable",
@@ -598,6 +740,7 @@ def main() -> int:
 
     staging = load_json(args.staging)
     catalog = load_json(args.catalog)
+    source = load_json(args.source)
     offers = load_json(args.offers)
 
     try:
@@ -605,6 +748,7 @@ def main() -> int:
             staging,
             catalog,
             offers,
+            source=source,
             product_ids=args.product_id,
             batch=args.batch,
             limit=selection_limit,
@@ -640,10 +784,17 @@ def main() -> int:
         write_promotions(
             args.catalog,
             catalog,
+            args.source,
+            source,
             plan["ready_products"],
+            plan["ready_source_products"],
         )
 
-    output = {key: value for key, value in plan.items() if key != "ready_products"}
+    output = {
+        key: value
+        for key, value in plan.items()
+        if key not in {"ready_products", "ready_source_products"}
+    }
     output["mode"] = "WRITE" if args.write else "DRY-RUN"
 
     if args.machine_readable:
