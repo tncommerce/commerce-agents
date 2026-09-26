@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
+import { accordLabel } from "@/lib/accordLabels";
 import FragranceExplodedNotes from "@/components/FragranceExplodedNotes";
 import FragranceOffers from "@/components/FragranceOffers";
 import MobileOfferBar from "@/components/MobileOfferBar";
@@ -30,36 +31,11 @@ type PageProps = {
   }>;
 };
 
-const ACCORD_LABELS: Record<string, string> = {
-  fresh: "Frisch",
-  citrus: "Zitrisch",
-  aquatic: "Aquatisch",
-  green: "Grün",
-  spicy: "Würzig",
-  sweet: "Süß",
-  synthetic: "Synthetisch",
-  fruity: "Fruchtig",
-  woody: "Holzig",
-  smoky: "Rauchig",
-  powdery: "Pudrig",
-  floral: "Blumig",
-  creamy: "Cremig",
-  gourmand: "Gourmand",
-  oriental: "Orientalisch",
-  aromatic: "Aromatisch",
-  leathery: "Ledrig",
-  resinous: "Harzig",
-};
-
 const TARGET_LABELS: Record<string, string> = {
   men: "Herren",
   women: "Damen",
   unisex: "Unisex",
 };
-
-function accordLabel(value: string): string {
-  return ACCORD_LABELS[value.toLowerCase()] || value;
-}
 
 type FragranceVisualTheme =
   | "amber"

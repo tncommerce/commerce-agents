@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import FragranceSaveControls from "@/components/FragranceSaveControls";
 import FragranceVisual from "@/components/FragranceVisual";
+import { accordLabel } from "@/lib/accordLabels";
 import {
   safeCatalogSearchTerm,
   trackAnalyticsEvent,
@@ -61,27 +62,6 @@ const SORT_OPTIONS: {
   { value: "brand", label: "Marke A–Z" },
 ];
 
-const ACCORD_LABELS: Record<string, string> = {
-  fresh: "Frisch",
-  citrus: "Zitrisch",
-  aquatic: "Aquatisch",
-  green: "Grün",
-  spicy: "Würzig",
-  sweet: "Süß",
-  synthetic: "Synthetisch",
-  fruity: "Fruchtig",
-  woody: "Holzig",
-  smoky: "Rauchig",
-  powdery: "Pudrig",
-  floral: "Blumig",
-  creamy: "Cremig",
-  gourmand: "Gourmand",
-  oriental: "Orientalisch",
-  aromatic: "Aromatisch",
-  leathery: "Ledrig",
-  resinous: "Harzig",
-};
-
 function optionLabel<T extends string>(
   options: { value: T; label: string }[],
   value: T,
@@ -101,10 +81,6 @@ function ratingLabel(
       maximumFractionDigits: 1,
     },
   )}/10`;
-}
-
-function accordLabel(value: string): string {
-  return ACCORD_LABELS[value.toLowerCase()] || value;
 }
 
 function performanceScore(
