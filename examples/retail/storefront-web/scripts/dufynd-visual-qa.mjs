@@ -70,6 +70,13 @@ const naxosGermanNotes = [
   "Vanille",
 ];
 
+const naxosPremiumMotifs = {
+  Bergamotte: "bergamot",
+  "Sambac-Jasmin": "jasmine",
+  Zimt: "spice",
+  Vanille: "vanilla",
+};
+
 await mkdir(outputDir, { recursive: true });
 
 const browser = await chromium.launch({ headless: true });
@@ -316,6 +323,37 @@ try {
           if (notesMissingIcons.length) {
             throw new Error(
               `Naxos note icons missing in rendered layout: ${notesMissingIcons.join(", ")}`,
+            );
+          }
+
+          const wrongPremiumMotifs = await page.evaluate(
+            (expectedMotifs) => {
+              const spans = Array.from(document.querySelectorAll("span"));
+              return Object.entries(expectedMotifs).flatMap(
+                ([label, expectedMotif]) => {
+                  const labelSpan = spans.find(
+                    (span) => span.textContent?.trim() === label,
+                  );
+                  const noteCard = labelSpan?.closest(
+                    "[data-dufynd-exploded-note]",
+                  );
+                  const icon = noteCard?.querySelector(
+                    "svg[data-dufynd-note-motif]",
+                  );
+                  const actualMotif = icon?.getAttribute(
+                    "data-dufynd-note-motif",
+                  );
+                  return actualMotif === expectedMotif
+                    ? []
+                    : [`${label}: ${actualMotif || "missing"} != ${expectedMotif}`];
+                },
+              );
+            },
+            naxosPremiumMotifs,
+          );
+          if (wrongPremiumMotifs.length) {
+            throw new Error(
+              `Naxos premium note motifs incorrect: ${wrongPremiumMotifs.join(", ")}`,
             );
           }
 
