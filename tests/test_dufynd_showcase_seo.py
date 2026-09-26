@@ -14,3 +14,10 @@ def test_showcase_is_explicitly_noindex() -> None:
     assert "follow: false" in layout
     assert "nocache: true" in layout
     assert "fixture data" in page
+
+
+def test_showcase_has_no_visible_acme_branding() -> None:
+    page = SHOWCASE_PAGE.read_text(encoding="utf-8")
+
+    assert "DUFYND component showcase" in page
+    assert "ACME component showcase" not in page
