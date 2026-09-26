@@ -274,8 +274,11 @@ export default function NoteIcon({
   note: string;
   className?: string;
 }) {
+  const motif = motifFor(note);
+
   return (
     <svg
+      data-dufynd-note-motif={motif}
       aria-hidden="true"
       focusable="false"
       viewBox="0 0 24 24"
@@ -286,7 +289,7 @@ export default function NoteIcon({
       strokeLinejoin="round"
       className={className}
     >
-      {paths[motifFor(note)]}
+      {paths[motif]}
     </svg>
   );
 }
