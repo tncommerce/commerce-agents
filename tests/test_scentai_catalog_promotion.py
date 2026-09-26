@@ -306,6 +306,8 @@ def test_source_conversion_preserves_live_fragrance_truth() -> None:
     }
     assert source["notes"]["key"] == ["bergamot", "cedar"]
     assert source["market"]["market_price_eur"] == 79.95
+    assert source["market"]["price_per_ml_eur"] == 0.7995
+    assert source["market"]["price_source_count"] == 1
     assert source["market"]["price_checked_at"] == "2026-09-18"
     assert source["validation"]["catalog_ready"] is True
 
@@ -314,6 +316,17 @@ def test_source_conversion_preserves_live_fragrance_truth() -> None:
     assert visual["fidelity_status"] == "verified"
     assert visual["variant"] == "100ml"
     assert visual["url"] == "/products/test/test-fragrance.png"
+
+
+def test_source_conversion_preserves_multiple_market_sources() -> None:
+    source = build_source_product(
+        staged_product(),
+        best_offer=affiliate_offer(),
+        price_source_count=3,
+    )
+
+    assert source["market"]["price_source_count"] == 3
+    assert source["market"]["price_per_ml_eur"] == 0.7995
 
 
 def test_live_write_updates_catalog_and_source_together(tmp_path) -> None:
