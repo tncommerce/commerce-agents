@@ -33,6 +33,12 @@ const viewports = [
 const routes = [
   { name: "home", route: "/", marker: "Finde den Duft, der wirklich zu dir passt." },
   { name: "catalog", route: "/duft", marker: "Parfums entdecken" },
+  { name: "comparisons", route: "/vergleich", marker: "Parfums direkt vergleichen" },
+  {
+    name: "comparison-turathi-tygar",
+    route: "/vergleich/afnan-perfumes-turathi-blue-vs-bvlgari-le-gemme-tygar",
+    marker: "DUFYND · Duftvergleich",
+  },
   { name: "naxos", route: "/duft/xerjoff-naxos", marker: "Naxos" },
   { name: "absolu-aventus", route: "/duft/creed-absolu-aventus", marker: "Absolu Aventus" },
   { name: "prada-lhomme", route: "/duft/prada-lhomme", marker: "L'Homme" },
@@ -69,6 +75,19 @@ const naxosGermanNotes = [
   "Tonkabohne",
   "Vanille",
 ];
+
+const naxosPremiumMotifs = {
+  Lavendel: "lavender",
+  Bergamotte: "bergamot",
+  "Omanischer Weihrauch": "incense",
+  Zitrone: "lemon",
+  Honig: "honey",
+  "Sambac-Jasmin": "jasmine",
+  Zimt: "spice",
+  Tabak: "tobacco",
+  Tonkabohne: "tonka",
+  Vanille: "vanilla",
+};
 
 await mkdir(outputDir, { recursive: true });
 
@@ -194,7 +213,40 @@ try {
           throw new Error("directory listing detected instead of storefront content");
         }
 
-        if (!["home", "catalog"].includes(target.name)) {
+        if (target.route.startsWith("/duft/")) {
+          const layout = await page.evaluate(() => {
+            const rect = (selector) =>
+              document.querySelector(selector)?.getBoundingClientRect() || null;
+            const title = rect(".dufynd-fragrance-hero h1");
+            const stage = rect(".dufynd-fragrance-hero .dufynd-product-stage, .dufynd-fragrance-hero .dufynd-editorial-depth-stage, .dufynd-fragrance-hero .dufynd-model-stage");
+            const cutout = rect(".dufynd-fragrance-hero .dufynd-product-image");
+            const offers = rect("#angebote");
+            const exploded = rect(".dufynd-exploded-notes");
+            return {
+              title_top: title ? title.top + window.scrollY : null,
+              stage_height: stage?.height ?? null,
+              cutout_clipped: Boolean(stage && cutout && (
+                cutout.top < stage.top - 2 || cutout.bottom > stage.bottom + 2 ||
+                cutout.left < stage.left - 2 || cutout.right > stage.right + 2
+              )),
+              offers_after_exploded: Boolean(offers && exploded && offers.top > exploded.top),
+            };
+          });
+          if (layout.title_top == null || layout.title_top > 260) {
+            throw new Error(`fragrance identity starts too far below the first screen: ${layout.title_top}px`);
+          }
+          if (viewport.width <= 390 && (layout.stage_height == null || layout.stage_height > 270)) {
+            throw new Error(`mobile fragrance visual is too tall: ${layout.stage_height}px`);
+          }
+          if (layout.cutout_clipped) {
+            throw new Error("verified bottle cutout extends beyond its hero stage");
+          }
+          if (layout.offers_after_exploded) {
+            throw new Error("merchant offers appear after the exploded-note view");
+          }
+        }
+
+        if (target.route.startsWith("/duft/")) {
           const productSchema = await page.evaluate(() => {
             const schemas = Array.from(
               document.querySelectorAll('script[type="application/ld+json"]'),
@@ -228,7 +280,7 @@ try {
           if (target.name === "naxos") {
             if (
               !schemaImages.some((image) =>
-                String(image).endsWith("/products/naxos-cutout-production.png"),
+                String(image).endsWith("/products/naxos-cutout-production.webp"),
               )
             ) {
               throw new Error(
@@ -244,15 +296,54 @@ try {
 
         if (
           viewport.width < 640 &&
-          !["home", "catalog"].includes(target.name)
+          target.route.startsWith("/duft/")
         ) {
           const mobileOfferBar = page.locator(".dufynd-mobile-offer-bar");
+          const heroOfferCta = page.locator("#dufynd-hero-offer-cta");
+          const heroCtaVisible = await heroOfferCta.evaluate((element) => {
+            const bounds = element.getBoundingClientRect();
+            return (
+              bounds.bottom > 0 &&
+              bounds.top < window.innerHeight &&
+              bounds.right > 0 &&
+              bounds.left < window.innerWidth
+            );
+          });
+          if (heroCtaVisible && (await mobileOfferBar.count()) !== 0) {
+            throw new Error(
+              "mobile offer bar duplicates the visible hero CTA",
+            );
+          }
+
+          await heroOfferCta.evaluate((element) => {
+            const bounds = element.getBoundingClientRect();
+            const targetTop =
+              window.scrollY +
+              bounds.bottom +
+              Math.max(48, window.innerHeight * 0.08);
+            window.scrollTo({ top: targetTop, behavior: "instant" });
+          });
+          await page.waitForFunction(
+            () => {
+              const trigger = document.querySelector("#dufynd-hero-offer-cta");
+              const bar = document.querySelector(".dufynd-mobile-offer-bar");
+              if (!trigger || !bar) return false;
+              const bounds = trigger.getBoundingClientRect();
+              return (
+                bounds.bottom <= 0 &&
+                bar.getBoundingClientRect().height > 0
+              );
+            },
+            undefined,
+            { timeout: 2000 },
+          );
+
           if (
             (await mobileOfferBar.count()) !== 1 ||
             !(await mobileOfferBar.isVisible())
           ) {
             throw new Error(
-              "mobile fragrance page is missing the fixed offer bar",
+              "mobile fragrance page does not reveal the fixed offer bar after the hero CTA leaves view",
             );
           }
 
@@ -267,6 +358,9 @@ try {
               `mobile offer bar lacks safe-area bottom padding: ${bottomPadding}px`,
             );
           }
+
+          await page.evaluate(() => window.scrollTo(0, 0));
+          await page.waitForTimeout(120);
         }
 
         if (target.name === "naxos") {
@@ -286,7 +380,7 @@ try {
           }
 
           const verifiedCutout = page.locator(
-            'img[src="/products/naxos-cutout-production.png"]',
+            'img[src="/products/naxos-cutout-production.webp"]',
           );
           if ((await verifiedCutout.count()) < 1) {
             throw new Error("Naxos verified cutout is missing");
@@ -316,6 +410,22 @@ try {
           if (notesMissingIcons.length) {
             throw new Error(
               `Naxos note icons missing in rendered layout: ${notesMissingIcons.join(", ")}`,
+            );
+          }
+
+          const missingPremiumMotifs = await page.evaluate(
+            (expectedMotifs) =>
+              Object.values(expectedMotifs).filter(
+                (motif) =>
+                  !document.querySelector(
+                    `svg[data-dufynd-note-motif="${motif}"]`,
+                  ),
+              ),
+            naxosPremiumMotifs,
+          );
+          if (missingPremiumMotifs.length) {
+            throw new Error(
+              `Naxos premium note motifs missing: ${missingPremiumMotifs.join(", ")}`,
             );
           }
 
@@ -481,6 +591,18 @@ try {
         }
 
         if (target.name === "catalog") {
+          const catalogPage = page.locator("main.dufynd-catalog-page");
+          if ((await catalogPage.count()) !== 1) {
+            throw new Error(
+              "catalog is missing the DUFYND editorial page ground",
+            );
+          }
+          if ((await page.locator("header.dufynd-catalog-header").count()) !== 1) {
+            throw new Error(
+              "catalog is missing the scoped DUFYND header treatment",
+            );
+          }
+
           const catalogCards = page.locator('article');
           const catalogLoadMore = page.getByRole("button", {
             name: /Weitere 12 Düfte anzeigen/,
@@ -503,7 +625,7 @@ try {
           }
 
           const naxosCardTruth = page.locator(
-            'a[href="/duft/xerjoff-naxos"] img[src="/products/naxos-cutout-production.png"]',
+            'a[href="/duft/xerjoff-naxos"] img[src="/products/naxos-cutout-production.webp"]',
           );
           if ((await naxosCardTruth.count()) < 1) {
             throw new Error(
@@ -514,7 +636,7 @@ try {
 
         if (target.name === "home") {
           const spotlightTruth = page.locator(
-            'a[href="/duft/xerjoff-naxos"] img[src="/products/naxos-cutout-production.png"]',
+            'a[href="/duft/xerjoff-naxos"] img[src="/products/naxos-cutout-production.webp"]',
           );
           if ((await spotlightTruth.count()) < 1) {
             throw new Error(

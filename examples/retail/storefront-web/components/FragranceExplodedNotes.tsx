@@ -236,7 +236,7 @@ export default function FragranceExplodedNotes({
                 className="dufynd-exploded-note-icon"
                 aria-hidden
               >
-                <NoteIcon note={note} className="h-4 w-4" />
+                <NoteIcon note={note} className="h-5 w-5" />
               </span>
               <span className="min-w-0">
                 <span className="block break-words text-[10.5px] font-semibold leading-[1.15] text-(--ink) sm:truncate">

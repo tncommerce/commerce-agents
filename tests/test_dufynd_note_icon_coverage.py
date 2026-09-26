@@ -11,7 +11,7 @@ STAGING = Path("examples/retail/data/scentai_catalog_staging.json")
 ICONS = Path("examples/retail/storefront-web/components/NoteIcon.tsx")
 
 MOTIF_ENTRY = re.compile(
-    r'\{ motif: "[^"]+", names: \[(?P<names>[^\]]*)\] \}',
+    r'\{ motif: "(?P<motif>[^"]+)", names: \[(?P<names>[^\]]*)\] \}',
     re.MULTILINE,
 )
 QUOTED = re.compile(r'"([^"]+)"')
@@ -38,6 +38,124 @@ def test_all_catalog_notes_have_a_specific_icon_motif() -> None:
     unmapped = sorted(note for note in notes if not any(term in note for term in motif_terms))
 
     assert not unmapped, f"Catalog notes fell back to the generic icon: {unmapped}"
+
+
+def test_priority_notes_use_distinct_premium_motifs() -> None:
+    source = ICONS.read_text(encoding="utf-8")
+    mappings = {
+        term.lower(): match["motif"]
+        for match in MOTIF_ENTRY.finditer(source)
+        for term in QUOTED.findall(match["names"])
+    }
+
+    expected = {
+        "bergamot": "bergamot",
+        "grapefruit": "grapefruit",
+        "jasmine": "jasmine",
+        "patchouli": "patchouli",
+        "lavender": "lavender",
+        "tonka bean": "tonka",
+        "vanilla": "vanilla",
+        "spices": "spice",
+        "musk": "musk",
+        "guaiac wood": "wood",
+        "amber": "amber",
+        "mandarin": "mandarin",
+        "lemon": "lemon",
+        "geranium": "geranium",
+        "apple": "apple",
+        "leather": "leather",
+        "incense": "incense",
+        "pink pepper": "pepper",
+    }
+
+    assert {note: mappings.get(note) for note in expected} == expected
+
+
+def test_priority_premium_motifs_are_not_monochrome_current_color_only() -> None:
+    source = ICONS.read_text(encoding="utf-8")
+    for motif in (
+        "bergamot",
+        "grapefruit",
+        "jasmine",
+        "patchouli",
+        "lavender",
+        "tonka",
+        "wood",
+        "amber",
+        "musk",
+        "mandarin",
+        "lemon",
+        "geranium",
+        "apple",
+        "leather",
+        "incense",
+        "pepper",
+    ):
+        block_start = source.index(f"  {motif}: (")
+        block_end = source.index("\n  ),", block_start)
+        block = source[block_start:block_end]
+        assert 'fill="#' in block, f"{motif} lost its colored ingredient artwork"
+
+    for motif in ("vanilla", "spice"):
+        block_start = source.index(f"  {motif}: (")
+        block_end = source.index("\n  ),", block_start)
+        block = source[block_start:block_end]
+        assert 'fill="#' in block or 'stroke="#' in block, (
+            f"{motif} lost its colored ingredient artwork"
+        )
+
+
+def test_all_catalog_note_motifs_are_colored() -> None:
+    catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
+    source = ICONS.read_text(encoding="utf-8")
+
+    motif_entries = [
+        (
+            match["motif"],
+            [term.lower() for term in QUOTED.findall(match["names"])],
+        )
+        for match in MOTIF_ENTRY.finditer(source)
+    ]
+
+    notes = {
+        str(value).strip().lower()
+        for product in catalog["products"]
+        for values in (product.get("notes") or {}).values()
+        if isinstance(values, list)
+        for value in values
+        if str(value).strip()
+    }
+
+    used_motifs: set[str] = set()
+    unresolved: list[str] = []
+    for note in notes:
+        motif = next(
+            (
+                motif_name
+                for motif_name, terms in motif_entries
+                if any(term in note for term in terms)
+            ),
+            None,
+        )
+        if motif is None:
+            unresolved.append(note)
+            continue
+        used_motifs.add(motif)
+
+    assert not unresolved, f"Catalog notes lack a motif mapping: {sorted(unresolved)}"
+
+    monochrome: list[str] = []
+    for motif in sorted(used_motifs):
+        block_start = source.index(f"  {motif}: (")
+        block_end = source.index("\n  ),", block_start)
+        block = source[block_start:block_end]
+        if 'fill="#' not in block and 'stroke="#' not in block:
+            monochrome.append(motif)
+
+    assert not monochrome, (
+        f"Active catalog motifs fell back to monochrome currentColor artwork: {monochrome}"
+    )
 
 
 def test_all_staging_notes_have_an_intentional_icon_motif() -> None:

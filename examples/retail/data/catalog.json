@@ -906,7 +906,7 @@
     {
       "product_id": "SC-XERJOFF-NAXOS-100",
       "title": "Xerjoff Naxos Eau de Parfum 100 ml",
-      "image_url": "/products/naxos-cutout-production.png",
+      "image_url": "/products/naxos-cutout-production.webp",
       "brand": "Xerjoff",
       "price": 148.45,
       "currency": "EUR",
@@ -944,7 +944,7 @@
         "price_per_ml_eur": "1.4845",
         "price_checked_at": "2026-09-24",
         "relationship_links": "SC-NUSUK-ATEEQ-100|inspired|high;SC-RAYHAAN-ITALIA-100|inspired|high",
-        "product_cutout_url": "/products/naxos-cutout-production.png"
+        "product_cutout_url": "/products/naxos-cutout-production.webp"
       },
       "in_stock": true,
       "short_description": "Xerjoff Naxos is a sweet, spicy, gourmand Eau de Parfum fragrance."
