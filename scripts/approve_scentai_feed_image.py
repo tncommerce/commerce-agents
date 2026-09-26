@@ -173,6 +173,15 @@ def apply_approval(
     rights_basis_id: str,
     rights_checked_at: str,
 ) -> None:
+    candidate = next(
+        row
+        for row in candidates_payload.get("candidates", [])
+        if str(row.get("product_id") or "").strip() == product_id
+        and str(row.get("image_url") or "").strip() == image_url
+    )
+    if str(candidate.get("review_status") or "").strip() != "approved":
+        raise ValueError("final_visual_approval_required")
+
     product = next(
         row
         for row in staging.get("products", [])
@@ -190,12 +199,6 @@ def apply_approval(
     )
     product["media"] = media
 
-    candidate = next(
-        row
-        for row in candidates_payload.get("candidates", [])
-        if str(row.get("product_id") or "").strip() == product_id
-        and str(row.get("image_url") or "").strip() == image_url
-    )
     candidate["review_status"] = "approved"
     candidate["reviewed_at"] = reviewed_at
     candidate["rights_basis_id"] = rights_basis_id
@@ -280,6 +283,9 @@ def main() -> int:
         parser.error(str(exc))
 
     if args.write and plan["will_change"]:
+        if plan["candidate_status"] != "approved":
+            parser.error("final_visual_approval_required")
+
         reviewed_at = datetime.now(UTC).isoformat()
         apply_approval(
             staging,
