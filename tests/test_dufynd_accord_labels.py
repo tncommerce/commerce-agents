@@ -47,4 +47,4 @@ def test_customer_facing_surfaces_use_shared_accord_labeler() -> None:
 
     comparison = SURFACES[1].read_text(encoding="utf-8")
     assert "{accordLabel(accord)}" in comparison
-    assert "{accord}" not in comparison
+    assert "key={accord}" in comparison
