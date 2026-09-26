@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
 import FragranceExplodedNotes from "@/components/FragranceExplodedNotes";
 import FragranceOffers from "@/components/FragranceOffers";
+import MobileOfferBar from "@/components/MobileOfferBar";
 import FragranceVisual from "@/components/FragranceVisual";
 import FragranceVisualGallery from "@/components/FragranceVisualGallery";
 import FragranceModel3D from "@/components/FragranceModel3D";
@@ -454,6 +455,7 @@ export default async function FragrancePage({
         </nav>
 
         <section
+          id="dufynd-fragrance-hero"
           className={`dufynd-fragrance-hero dufynd-fragrance-hero--${visualTheme} relative overflow-hidden rounded-[24px] border border-(--line) bg-(--card) shadow-(--shadow) sm:rounded-[30px]`}
         >
           <div
@@ -926,24 +928,10 @@ export default async function FragrancePage({
         </footer>
       </div>
 
-      <div className="dufynd-mobile-offer-bar fixed inset-x-0 bottom-0 z-40 border-t border-(--line) bg-(--card)/94 px-3 pt-2.5 shadow-[0_-10px_30px_rgba(23,21,19,0.10)] backdrop-blur-xl sm:hidden">
-        <div className="mx-auto flex max-w-[420px] items-center gap-3">
-          <div className="min-w-0 flex-1">
-            <div className="truncate text-[11px] font-semibold text-(--ink)">
-              {fragrance.brand} {fragrance.name}
-            </div>
-            <div className="text-[10px] text-(--ink-soft)">
-              Händlerangebote vergleichen
-            </div>
-          </div>
-          <a
-            href="#angebote"
-            className="shrink-0 rounded-xl bg-(--accent-strong) px-4 py-2.5 text-[12px] font-semibold text-white"
-          >
-            Angebote prüfen
-          </a>
-        </div>
-      </div>
+      <MobileOfferBar
+        brand={fragrance.brand}
+        name={fragrance.name}
+      />
     </main>
   );
 }
