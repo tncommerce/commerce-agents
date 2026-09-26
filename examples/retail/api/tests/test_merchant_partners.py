@@ -60,6 +60,39 @@ def test_active_partner_requires_https_and_recent_verification(tmp_path) -> None
     assert [partner.merchant_id for partner in active] == ["douglas"]
 
 
+def test_active_partner_rejects_loopback_and_credential_urls(tmp_path) -> None:
+    path = write_payload(
+        tmp_path,
+        [
+            {
+                "merchant_id": "localhost",
+                "merchant_name": "Localhost",
+                "status": "active",
+                "affiliate_url": "https://localhost/track",
+                "last_verified_at": NOW.isoformat(),
+            },
+            {
+                "merchant_id": "loopback",
+                "merchant_name": "Loopback",
+                "status": "active",
+                "affiliate_url": "https://127.0.0.1/track",
+                "last_verified_at": NOW.isoformat(),
+            },
+            {
+                "merchant_id": "credentials",
+                "merchant_name": "Credentials",
+                "status": "active",
+                "affiliate_url": "https://user:pass@example.com/track",
+                "last_verified_at": NOW.isoformat(),
+            },
+        ],
+    )
+
+    store = MerchantPartnerStore(path)
+
+    assert store.active(now=NOW) == []
+
+
 def test_small_future_clock_skew_keeps_active_partner_visible(tmp_path) -> None:
     path = write_payload(
         tmp_path,
