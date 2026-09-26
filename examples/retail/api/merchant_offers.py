@@ -9,6 +9,9 @@ from uuid import uuid4
 from pydantic import BaseModel, Field
 
 
+MAX_FUTURE_CLOCK_SKEW_HOURS = 5 / 60
+
+
 class MerchantOffer(BaseModel):
     """One purchasable offer for a catalog product.
 
@@ -47,7 +50,7 @@ def _as_utc(value: datetime) -> datetime:
 def offer_age_hours(offer: MerchantOffer, *, now: datetime | None = None) -> float:
     reference = _as_utc(now or datetime.now(UTC))
     checked = _as_utc(offer.last_updated_at)
-    return max((reference - checked).total_seconds() / 3600.0, 0.0)
+    return (reference - checked).total_seconds() / 3600.0
 
 
 def offer_total_price(offer: MerchantOffer) -> float | None:
@@ -84,18 +87,20 @@ def rank_offers(
     """
 
     reference = _as_utc(now or datetime.now(UTC))
-    eligible = [
-        offer
-        for offer in offers
-        if offer.in_stock
-        and offer_age_hours(offer, now=reference) <= max_age_hours
-        and bool(offer.affiliate_url or offer.product_url)
-    ]
+    eligible = []
+    for offer in offers:
+        age = offer_age_hours(offer, now=reference)
+        if (
+            offer.in_stock
+            and -MAX_FUTURE_CLOCK_SKEW_HOURS <= age <= max_age_hours
+            and bool(offer.affiliate_url or offer.product_url)
+        ):
+            eligible.append(offer)
 
     def sort_key(offer: MerchantOffer) -> tuple[Any, ...]:
         total = offer_total_price(offer)
         total_known = total is not None
-        age = offer_age_hours(offer, now=reference)
+        age = max(offer_age_hours(offer, now=reference), 0.0)
 
         # Offers inside the same 24-hour freshness band are considered comparable.
         # A materially older offer never wins solely because it is monetized.
