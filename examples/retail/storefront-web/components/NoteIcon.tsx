@@ -154,27 +154,28 @@ const paths: Record<Motif, ReactNode> = {
   ),
   citrus: (
     <>
-      <circle cx="12" cy="12" r="8" />
-      <circle cx="12" cy="12" r="5.5" />
-      <path d="M12 6.5v11M6.5 12h11M8.1 8.1l7.8 7.8M15.9 8.1l-7.8 7.8" />
+      <circle cx="12" cy="12" r="8" fill="#E8C84A" stroke="#9D8130" strokeWidth=".9" />
+      <circle cx="12" cy="12" r="5.5" fill="#F6E57A" stroke="#C2A63E" strokeWidth=".7" />
+      <path d="M12 6.5v11M6.5 12h11M8.1 8.1l7.8 7.8M15.9 8.1l-7.8 7.8" stroke="#FFF6B9" strokeWidth=".72" />
     </>
   ),
   flower: (
     <>
-      <circle cx="12" cy="12" r="1.8" />
-      <path d="M12 10c-3-5-1-7 1-6 2 1 1 4-1 6Zm2 2c5-3 7-1 6 1-1 2-4 1-6-1Zm-2 2c3 5 1 7-1 6-2-1-1-4 1-6Zm-2-2c-5 3-7 1-6-1 1-2 4-1 6 1Z" />
+      <circle cx="12" cy="12" r="1.8" fill="#E8B84A" stroke="#A77A2D" strokeWidth=".65" />
+      <path d="M12 10c-3-5-1-7 1-6 2 1 1 4-1 6Zm2 2c5-3 7-1 6 1-1 2-4 1-6-1Zm-2 2c3 5 1 7-1 6-2-1-1-4 1-6Zm-2-2c-5 3-7 1-6-1 1-2 4-1 6 1Z" fill="#E8A5B8" stroke="#A96278" strokeWidth=".72" />
     </>
   ),
   leaf: (
     <>
-      <path d="M19 5C11 5 5 8 5 15a4 4 0 0 0 4 4c7 0 10-6 10-14Z" />
-      <path d="M5 20c2-5 6-8 11-11" />
+      <path d="M19 5C11 5 5 8 5 15a4 4 0 0 0 4 4c7 0 10-6 10-14Z" fill="#69A65B" stroke="#3F7338" strokeWidth=".85" />
+      <path d="M5 20c2-5 6-8 11-11" stroke="#D2E8B7" strokeWidth=".85" />
     </>
   ),
   root: (
     <>
-      <path d="M12 3v8M8 6c1.3 1.2 2.7 1.7 4 1.7S14.7 7.2 16 6" />
-      <path d="M12 11c-1 3-3 4-5 6M12 11c1 3 3 4 5 6M10 14l-1 6M14 14l1 6" />
+      <path d="M12 3v8M8 6c1.3 1.2 2.7 1.7 4 1.7S14.7 7.2 16 6" stroke="#5B803F" strokeWidth="1" />
+      <path d="M12 11c-1 3-3 4-5 6M12 11c1 3 3 4 5 6M10 14l-1 6M14 14l1 6" stroke="#9B6E45" strokeWidth="1.15" />
+      <circle cx="12" cy="9.8" r="1.5" fill="#B98B5F" stroke="#765136" strokeWidth=".6" />
     </>
   ),
   wood: (
@@ -217,20 +218,21 @@ const paths: Record<Motif, ReactNode> = {
   ),
   honey: (
     <>
-      <path d="M8 5h8l4 7-4 7H8l-4-7 4-7Z" />
-      <path d="M12 8c-1.4 2-3 3.8-3 5.6a3 3 0 0 0 6 0C15 11.8 13.4 10 12 8Z" />
+      <path d="M8 5h8l4 7-4 7H8l-4-7 4-7Z" fill="#F0BE3D" stroke="#A77422" strokeWidth=".85" />
+      <path d="M12 8c-1.4 2-3 3.8-3 5.6a3 3 0 0 0 6 0C15 11.8 13.4 10 12 8Z" fill="#FFD86A" stroke="#B98229" strokeWidth=".7" />
     </>
   ),
   sweet: (
     <>
-      <path d="M12 3c-2 3-6 7-6 11a6 6 0 0 0 12 0c0-4-4-8-6-11Z" />
-      <path d="M9 15c0 2 1 3 3 3" />
+      <path d="M12 3c-2 3-6 7-6 11a6 6 0 0 0 12 0c0-4-4-8-6-11Z" fill="#C88B64" stroke="#7F543B" strokeWidth=".85" />
+      <path d="M9 15c0 2 1 3 3 3" stroke="#F2C9A7" strokeWidth=".8" />
     </>
   ),
   resin: (
     <>
-      <path d="M12 2 4 9v9l8 4 8-4V9l-8-7Z" />
-      <path d="M4 9l8 4 8-4M12 13v9M8 6l8 4" />
+      <path d="M12 2 4 9v9l8 4 8-4V9l-8-7Z" fill="#C67C32" stroke="#7C4B21" strokeWidth=".85" />
+      <path d="M4 9l8 4 8-4M12 13v9M8 6l8 4" stroke="#F1B967" strokeWidth=".75" />
+      <path d="M8.7 7.4 12 5l3.2 2.5-3.2 2.2-3.3-2.3Z" fill="#E7A64F" stroke="none" />
     </>
   ),
   amber: (
@@ -259,14 +261,15 @@ const paths: Record<Motif, ReactNode> = {
   ),
   tobacco: (
     <>
-      <path d="M12 3c4 3 6 7 5 11-1 4-4 6-8 6 1-3 1-6-2-9 2-4 3-6 5-8Z" />
-      <path d="M10 18c1-5 2-8 5-11" />
+      <path d="M12 3c4 3 6 7 5 11-1 4-4 6-8 6 1-3 1-6-2-9 2-4 3-6 5-8Z" fill="#9B6A3F" stroke="#5D402B" strokeWidth=".85" />
+      <path d="M10 18c1-5 2-8 5-11" stroke="#D1A06B" strokeWidth=".8" />
     </>
   ),
   fruit: (
     <>
-      <path d="M12 8c-5-4-9 0-8 5 1 6 5 9 8 7 3 2 7-1 8-7 1-5-3-9-8-5Z" />
-      <path d="M12 8c0-3 1-5 4-6M12 7c-2-3-4-3-6-2" />
+      <path d="M12 8c-5-4-9 0-8 5 1 6 5 9 8 7 3 2 7-1 8-7 1-5-3-9-8-5Z" fill="#9A5FB1" stroke="#683C7C" strokeWidth=".85" />
+      <path d="M12 8c0-3 1-5 4-6M12 7c-2-3-4-3-6-2" stroke="#5D8745" strokeWidth=".8" />
+      <circle cx="8.8" cy="12.4" r="1.1" fill="#C58BD3" stroke="none" />
     </>
   ),
   apple: (
@@ -279,33 +282,37 @@ const paths: Record<Motif, ReactNode> = {
   ),
   pineapple: (
     <>
-      <path d="M8 9h8l2 4-2 7H8l-2-7 2-4Z" />
-      <path d="m9 9-2-4 4 2 1-4 1 4 4-2-2 4M8 12l8 5M16 12l-8 5" />
+      <path d="M8 9h8l2 4-2 7H8l-2-7 2-4Z" fill="#E2B84B" stroke="#9A7427" strokeWidth=".85" />
+      <path d="m9 9-2-4 4 2 1-4 1 4 4-2-2 4" fill="#6C9C4B" stroke="#487033" strokeWidth=".75" />
+      <path d="M8 12l8 5M16 12l-8 5" stroke="#F6DB81" strokeWidth=".72" />
     </>
   ),
   cherry: (
     <>
-      <circle cx="9" cy="15" r="3" />
-      <circle cx="16" cy="15" r="3" />
-      <path d="M9 12c1-5 3-7 7-8M16 12c0-4-1-6-4-8" />
+      <circle cx="9" cy="15" r="3" fill="#A93245" stroke="#6D2230" strokeWidth=".8" />
+      <circle cx="16" cy="15" r="3" fill="#C84353" stroke="#7C2836" strokeWidth=".8" />
+      <path d="M9 12c1-5 3-7 7-8M16 12c0-4-1-6-4-8" stroke="#4E793B" strokeWidth=".85" />
     </>
   ),
   tea: (
     <>
-      <path d="M5 8h12v7a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5V8Z" />
-      <path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17M8 4c0 1 1 1.5 1 2.5M12 3c0 1 1 1.5 1 3" />
+      <path d="M5 8h12v7a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5V8Z" fill="#D9C7A4" stroke="#8A7456" strokeWidth=".85" />
+      <path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17" stroke="#8A7456" strokeWidth=".85" />
+      <path d="M8 4c0 1 1 1.5 1 2.5M12 3c0 1 1 1.5 1 3" stroke="#B7A5C2" strokeWidth=".8" />
+      <path d="M7.3 11.6h7.4c-.4 3-1.6 4.4-3.7 4.4s-3.3-1.4-3.7-4.4Z" fill="#8A6C40" stroke="none" />
     </>
   ),
   cocoa: (
     <>
-      <path d="M12 3c4 3 6 6 5 10s-3 7-5 8c-2-1-4-4-5-8S8 6 12 3Z" />
-      <path d="M12 6v12M9 9l3 2 3-2M9 14l3 2 3-2" />
+      <path d="M12 3c4 3 6 6 5 10s-3 7-5 8c-2-1-4-4-5-8S8 6 12 3Z" fill="#7A4B30" stroke="#4D2E20" strokeWidth=".85" />
+      <path d="M12 6v12M9 9l3 2 3-2M9 14l3 2 3-2" stroke="#C08A5B" strokeWidth=".72" />
     </>
   ),
   fresh: (
     <>
-      <path d="M3 12h18M12 3v18M5.6 5.6l12.8 12.8M18.4 5.6 5.6 18.4" />
-      <path d="M9 3l3 3 3-3M9 21l3-3 3 3" />
+      <circle cx="12" cy="12" r="7.8" fill="#D9F1F2" stroke="#78AEB1" strokeWidth=".75" />
+      <path d="M3 12h18M12 3v18M5.6 5.6l12.8 12.8M18.4 5.6 5.6 18.4" stroke="#68A7AC" strokeWidth=".72" />
+      <path d="M9 3l3 3 3-3M9 21l3-3 3 3" stroke="#BEE4E6" strokeWidth=".7" />
     </>
   ),
   incense: (
@@ -318,8 +325,8 @@ const paths: Record<Motif, ReactNode> = {
   ),
   moss: (
     <>
-      <path d="M4 18c2-5 4-7 7-6 1-4 5-5 7-2 2 3 1 6-1 8H4Z" />
-      <path d="M7 18c1-2 2-3 4-3M13 18c1-2 2-3 4-3" />
+      <path d="M4 18c2-5 4-7 7-6 1-4 5-5 7-2 2 3 1 6-1 8H4Z" fill="#69844A" stroke="#445D34" strokeWidth=".85" />
+      <path d="M7 18c1-2 2-3 4-3M13 18c1-2 2-3 4-3" stroke="#A9BF75" strokeWidth=".72" />
     </>
   ),
   abstract: (
