@@ -4,7 +4,6 @@ import json
 from datetime import UTC, datetime
 
 import pytest
-
 from scripts.promote_scentai_catalog import (
     build_catalog_product,
     build_source_product,
