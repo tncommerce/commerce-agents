@@ -117,6 +117,12 @@ python scripts/promote_scentai_catalog.py --product-id SC-EXAMPLE-100 --write
 
 The command refuses partial writes. If even one selected product is blocked, nothing is promoted.
 
+A successful live write updates both live data sources in the same validated run:
+- `catalog.json` for the retail catalog row
+- `scentai_products.json` for DUFYND fragrance profile, community, notes, target groups, market data and verified product visual metadata
+
+A product must never be considered fully promoted if it exists in only one of those live files.
+
 Default hard gates enforced by the tool:
 - approved product image
 - complete deterministic recommendation profile
@@ -144,7 +150,7 @@ The QA currently checks:
 
 Budget and merchant-offer QA remains intentionally deferred until real current affiliate offers exist.
 
-Live promotion now automatically reruns this staging QA before writing to `catalog.json`. A failing recommendation QA blocks the live write.
+Live promotion now automatically reruns this staging QA before writing to `catalog.json` and `scentai_products.json`. A failing recommendation QA blocks the live write.
 
 ## Merchant integration coverage report
 
