@@ -3,7 +3,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, type KeyboardEvent } from "react";
 import { hasOptions, optionSummary, optionValuesLabel, priceLabel, useStoreFrame } from "web-shared";
 import type { Product } from "@/lib/types";
 import FragranceVisual from "@/components/FragranceVisual";
@@ -15,6 +15,15 @@ import {
   getLiveFragranceByProductId,
   isVerifiedProductTruthVisual,
 } from "@/lib/fragranceCatalog";
+
+function activateOnKeyboard(
+  event: KeyboardEvent<HTMLElement>,
+  action: () => void,
+) {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  event.preventDefault();
+  action();
+}
 
 /** A trailing parenthetical such as "(48-Pack)" is kept unbreakable so the clamp cuts before it. */
 export function ProductTitle({ title, className = "" }: { title: string; className?: string }) {
@@ -309,7 +318,7 @@ export default function ProductTile({
     >
       <div
         onClick={clickable ? openProduct : undefined}
-        onKeyDown={clickable ? (event) => event.key === "Enter" && openProduct() : undefined}
+        onKeyDown={clickable ? (event) => activateOnKeyboard(event, openProduct) : undefined}
         role={clickable ? "button" : undefined}
         tabIndex={clickable ? 0 : undefined}
         className={`flex flex-1 flex-col rounded-xl focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-(--accent) ${
@@ -400,7 +409,7 @@ export function ProductRow({
   return (
     <div
       onClick={clickable ? openProduct : undefined}
-      onKeyDown={clickable ? (event) => event.key === "Enter" && openProduct() : undefined}
+      onKeyDown={clickable ? (event) => activateOnKeyboard(event, openProduct) : undefined}
       role={clickable ? "button" : undefined}
       tabIndex={clickable ? 0 : undefined}
       className={`flex w-full items-center gap-3 rounded-xl border border-(--line) bg-(--card) p-2 shadow-(--shadow-sm) transition-shadow hover:shadow-md ${clickable ? "cursor-pointer" : ""}`}

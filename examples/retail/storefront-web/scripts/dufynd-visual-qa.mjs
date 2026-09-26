@@ -643,6 +643,30 @@ try {
               "homepage spotlight does not prioritize the Naxos verified cutout",
             );
           }
+
+          if ([390, 1440].includes(viewport.width)) {
+            const productControl = page
+              .locator('[role="button"]:visible')
+              .filter({ hasText: "Details" })
+              .first();
+            if ((await productControl.count()) !== 1) {
+              throw new Error(
+                "homepage has no visible keyboard-operable fragrance card",
+              );
+            }
+
+            await productControl.focus();
+            await page.keyboard.press("Space");
+            await page.waitForURL(
+              (current) => current.pathname.startsWith("/duft/"),
+              { timeout: 5_000 },
+            );
+            await page.goBack({ waitUntil: "domcontentloaded" });
+            await page.getByText(target.marker, { exact: false }).first().waitFor({
+              state: "visible",
+              timeout: 20_000,
+            });
+          }
         }
 
         await page.screenshot({
