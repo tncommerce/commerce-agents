@@ -14,7 +14,7 @@
     "no_unresolved_identity_or_version_blocker",
     "search_and_recommendation_qa_passed"
   ],
-  "affiliate_policy": "Affiliate approval is required before publishing trackable affiliate URLs, but commission must never influence product or merchant ranking.",
+  "affiliate_policy": "Affiliate approval is required before publishing tracked affiliate URLs. Commission never affects fragrance recommendations and is used only as a tie-breaker between equal-total, comparably fresh affiliate offers.",
   "image_policy": "Do not use generated bottle lookalikes for live commerce products. Prefer approved merchant-feed or manufacturer imagery with appropriate use rights.",
   "summary": {
     "total": 30,

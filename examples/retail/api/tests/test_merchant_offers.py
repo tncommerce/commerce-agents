@@ -87,6 +87,33 @@ def test_commission_does_not_change_customer_ranking() -> None:
     assert ranked[0].offer_id == "customer-best"
 
 
+def test_equal_total_prefers_affiliate_then_higher_commission() -> None:
+    direct = offer("direct", merchant="A", price=90, shipping=0)
+    low = offer("low", merchant="B", price=90, shipping=0, commission=0.03)
+    high = offer("high", merchant="C", price=90, shipping=0, commission=0.08)
+    low.affiliate_url = "https://network.example/low"
+    high.affiliate_url = "https://network.example/high"
+
+    ranked = rank_offers([direct, low, high], now=NOW)
+
+    assert [row.offer_id for row in ranked] == ["high", "low", "direct"]
+
+
+def test_materially_fresher_direct_offer_beats_equal_price_affiliate() -> None:
+    direct = offer("direct", merchant="A", price=90, shipping=0, age_hours=2)
+    affiliate = offer(
+        "affiliate",
+        merchant="B",
+        price=90,
+        shipping=0,
+        age_hours=30,
+        commission=0.20,
+    )
+    affiliate.affiliate_url = "https://network.example/click"
+
+    assert rank_offers([affiliate, direct], now=NOW)[0].offer_id == "direct"
+
+
 def test_fresher_offer_wins_exact_price_tie() -> None:
     ranked = rank_offers(
         [

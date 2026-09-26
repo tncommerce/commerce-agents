@@ -268,7 +268,7 @@ export default function HomeView({
         <div className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm)">
           <div className="text-[13px] font-semibold text-(--ink)">Empfehlungen nach deinen Kriterien</div>
           <p className="mt-1 text-[12.5px] leading-5 text-(--ink-soft)">
-            DUFYND priorisiert Passung, Preis, Verfügbarkeit und Aktualität. Partnervergütungen haben keinen Einfluss auf die Produktempfehlung oder die Reihenfolge der Händlerangebote.
+            DUFYND priorisiert Passung, Preis, Verfügbarkeit und Aktualität. Partnervergütungen beeinflussen keine Duftempfehlung. Bei gleichem Gesamtpreis und vergleichbarer Aktualität können Partnerlink und Provision die Angebotsreihenfolge entscheiden.
           </p>
         </div>
         <div className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm)">

@@ -37,8 +37,8 @@ export default function TransparencyPage() {
             <h2 className="font-semibold text-(--ink)">Wie Händlerangebote sortiert werden</h2>
             <p className="mt-1">
               Kaufbare Angebote werden unter anderem nach Verfügbarkeit, bekanntem Gesamtpreis
-              inklusive Versand und Aktualität der Angebotsdaten bewertet. Eine mögliche
-              Partnerprovision hat keinen Einfluss auf die Reihenfolge der Händlerangebote.
+              inklusive Versand und Aktualität der Angebotsdaten bewertet.
+              Bei gleichem Gesamtpreis und vergleichbarer Aktualität bevorzugen wir einen gültigen Partnerlink. Zwischen solchen Partnerangeboten kann die höhere Provision die Reihenfolge entscheiden.
             </p>
           </section>
 
@@ -54,8 +54,7 @@ export default function TransparencyPage() {
             <p className="mt-2">
               Der Beratungswert steht dabei vor der Monetarisierung: Ein sinnvoller
               Händler- oder Herstellerlink kann deshalb auch ohne Partnerprogramm
-              angezeigt werden. Eine mögliche Provision hat keinen Einfluss auf die
-              Reihenfolge der Händlerangebote.
+              angezeigt werden. Ein günstigeres oder deutlich aktuelleres Angebot wird nicht wegen einer Provision verdrängt.
             </p>
           </section>
 
