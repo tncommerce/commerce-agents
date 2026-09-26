@@ -166,8 +166,11 @@ def eligible_purchase_offers(
 ) -> list[dict]:
     """Return current, in-stock purchase destinations.
 
-    Affiliate routing is preferred when price is equal, but monetization is not
-    a requirement for a fragrance to be eligible for the public catalog.
+    Trust-first ordering matches runtime behavior: known customer totals and
+    materially fresher data win before affiliate status. Within the same
+    24-hour freshness band and at an equal total, a valid affiliate route and
+    then commission may act as tie-breakers. Monetization is never required
+    for public-catalog eligibility.
     """
 
     eligible = []
