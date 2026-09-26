@@ -15,6 +15,7 @@ import {
 } from "@/lib/fragranceCatalog";
 import { SITE_URL } from "@/lib/site";
 import { formatPriceReference } from "@/lib/priceReference";
+import { targetLabel } from "@/lib/targetLabels";
 
 export const dynamicParams = false;
 
@@ -54,14 +55,6 @@ function formatNumber(value: number | null): string {
     minimumFractionDigits: 1,
     maximumFractionDigits: 1,
   });
-}
-
-function targetLabel(value: string): string {
-  return {
-    men: "Herren",
-    women: "Damen",
-    unisex: "Unisex",
-  }[value] || value;
 }
 
 function ProductHeader({
