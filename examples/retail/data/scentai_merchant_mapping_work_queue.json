@@ -16,7 +16,8 @@
     "affiliate_programs_registered": 9,
     "affiliate_programs_approved": 1,
     "affiliate_programs_pending": 8,
-    "live_activation_ready_products": 3
+    "mapping_ready_products": 29,
+    "products_with_approved_affiliate_program": 3
   },
   "affiliate_programs": [
     {
@@ -487,11 +488,9 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "full_mapping_count": 2,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
+      "state": "mapping_data_ready",
+      "blockers": [],
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": [
@@ -533,9 +532,9 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "full_mapping_count": 2,
-      "state": "mapping_data_ready_affiliate_blocked",
+      "state": "mapping_data_ready",
       "blockers": [],
-      "next_action": "await_affiliate_program_approval",
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": [
@@ -577,11 +576,9 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "full_mapping_count": 2,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
+      "state": "mapping_data_ready",
+      "blockers": [],
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": [
@@ -623,11 +620,9 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "full_mapping_count": 2,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
+      "state": "mapping_data_ready",
+      "blockers": [],
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": [
@@ -669,9 +664,9 @@
       "mapping_count": 3,
       "resolved_mapping_count": 3,
       "full_mapping_count": 3,
-      "state": "mapping_data_ready_affiliate_blocked",
+      "state": "mapping_data_ready",
       "blockers": [],
-      "next_action": "await_affiliate_program_approval",
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": [
@@ -726,11 +721,9 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "full_mapping_count": 1,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
+      "state": "mapping_data_ready",
+      "blockers": [],
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": [
@@ -772,12 +765,11 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "full_mapping_count": 1,
-      "state": "mapping_data_ready_affiliate_blocked",
+      "state": "mapping_data_ready",
       "blockers": [
-        "community_performance_still_provisional",
-        "affiliate_program_not_approved"
+        "community_performance_still_provisional"
       ],
-      "next_action": "await_affiliate_program_approval",
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": [
@@ -819,9 +811,9 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "full_mapping_count": 2,
-      "state": "mapping_data_ready_affiliate_blocked",
+      "state": "mapping_data_ready",
       "blockers": [],
-      "next_action": "await_affiliate_program_approval",
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": [
@@ -863,11 +855,9 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "full_mapping_count": 1,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
+      "state": "mapping_data_ready",
+      "blockers": [],
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": [
@@ -909,11 +899,9 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "full_mapping_count": 2,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
+      "state": "mapping_data_ready",
+      "blockers": [],
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": [
@@ -955,11 +943,9 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "full_mapping_count": 2,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
+      "state": "mapping_data_ready",
+      "blockers": [],
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": [
@@ -1001,11 +987,9 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "full_mapping_count": 1,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
+      "state": "mapping_data_ready",
+      "blockers": [],
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": [
@@ -1047,11 +1031,9 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "full_mapping_count": 2,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
+      "state": "mapping_data_ready",
+      "blockers": [],
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": [
@@ -1089,11 +1071,9 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "full_mapping_count": 1,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
+      "state": "mapping_data_ready",
+      "blockers": [],
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": [
@@ -1135,11 +1115,9 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "full_mapping_count": 1,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
+      "state": "mapping_data_ready",
+      "blockers": [],
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": [
@@ -1177,11 +1155,9 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "full_mapping_count": 2,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
+      "state": "mapping_data_ready",
+      "blockers": [],
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": [
@@ -1219,11 +1195,9 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "full_mapping_count": 1,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
+      "state": "mapping_data_ready",
+      "blockers": [],
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": [
@@ -1265,11 +1239,9 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "full_mapping_count": 2,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
+      "state": "mapping_data_ready",
+      "blockers": [],
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": [
@@ -1311,11 +1283,9 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "full_mapping_count": 1,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
+      "state": "mapping_data_ready",
+      "blockers": [],
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": [
@@ -1357,11 +1327,9 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "full_mapping_count": 2,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
+      "state": "mapping_data_ready",
+      "blockers": [],
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": [
@@ -1403,11 +1371,9 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "full_mapping_count": 2,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
+      "state": "mapping_data_ready",
+      "blockers": [],
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": [
@@ -1449,11 +1415,9 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "full_mapping_count": 1,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
+      "state": "mapping_data_ready",
+      "blockers": [],
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": [
@@ -1495,11 +1459,9 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "full_mapping_count": 2,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
+      "state": "mapping_data_ready",
+      "blockers": [],
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": [
@@ -1541,11 +1503,9 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "full_mapping_count": 1,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
+      "state": "mapping_data_ready",
+      "blockers": [],
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": [
@@ -1587,11 +1547,9 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "full_mapping_count": 1,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
+      "state": "mapping_data_ready",
+      "blockers": [],
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": [
@@ -1633,11 +1591,9 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "full_mapping_count": 2,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
+      "state": "mapping_data_ready",
+      "blockers": [],
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": [
@@ -1679,11 +1635,9 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "full_mapping_count": 2,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
+      "state": "mapping_data_ready",
+      "blockers": [],
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": [
@@ -1725,11 +1679,9 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "full_mapping_count": 2,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
+      "state": "mapping_data_ready",
+      "blockers": [],
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": [
@@ -1771,11 +1723,9 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "full_mapping_count": 1,
-      "state": "mapping_data_ready_affiliate_blocked",
-      "blockers": [
-        "affiliate_program_not_approved"
-      ],
-      "next_action": "await_affiliate_program_approval",
+      "state": "mapping_data_ready",
+      "blockers": [],
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": [
