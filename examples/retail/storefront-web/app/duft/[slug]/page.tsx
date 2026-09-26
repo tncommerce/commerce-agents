@@ -118,6 +118,20 @@ function formatPrice(value: number | null): string {
   }).format(value);
 }
 
+function formatCommunityRating(
+  value: number | null,
+  provisional = false,
+): string | null {
+  if (value == null) return null;
+
+  const rating = `${value.toLocaleString("de-DE", {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  })}/10`;
+
+  return provisional ? `${rating} (vorläufig)` : rating;
+}
+
 function noteSection(
   title: string,
   notes: string[],
@@ -201,11 +215,14 @@ function descriptionFor(
     `${fragrance.brand} ${fragrance.name}`,
     fragrance.concentration,
     accords ? `Duftprofil: ${accords}` : null,
-    fragrance.community.rating_10 != null
-      ? `${fragrance.community.rating_10.toLocaleString("de-DE", {
-          minimumFractionDigits: 1,
-          maximumFractionDigits: 1,
-        })}/10 Community-Bewertung`
+    formatCommunityRating(
+      fragrance.community.rating_10,
+      fragrance.community.provisional,
+    )
+      ? `${formatCommunityRating(
+          fragrance.community.rating_10,
+          fragrance.community.provisional,
+        )} Community-Bewertung`
       : null,
   ]
     .filter(Boolean)
@@ -527,6 +544,11 @@ export default async function FragrancePage({
                         )}/10`
                       : "–"}
                   </div>
+                  {fragrance.community.provisional ? (
+                    <div className="mt-0.5 text-[9.5px] font-medium text-(--ink-soft)">
+                      vorläufig
+                    </div>
+                  ) : null}
                 </div>
 
                 <div className="border-l border-(--line) p-3 sm:p-4">
@@ -817,13 +839,10 @@ export default async function FragrancePage({
                         {item.fragrance.community.rating_10 != null ? (
                           <div className="mt-2 text-[11px] text-(--ink-soft)">
                             <span className="font-semibold text-(--ink)">
-                              {item.fragrance.community.rating_10.toLocaleString(
-                                "de-DE",
-                                {
-                                  minimumFractionDigits: 1,
-                                  maximumFractionDigits: 1,
-                                },
-                              )}/10
+                              {formatCommunityRating(
+                                item.fragrance.community.rating_10,
+                                item.fragrance.community.provisional,
+                              )}
                             </span>
                             {" · "}
                             {item.fragrance.community.source}
