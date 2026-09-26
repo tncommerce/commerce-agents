@@ -1,16 +1,16 @@
 {
   "version": 1,
   "release_id": "SCENTAI-RELEASE-01",
-  "status": "mapping_ready_blocked_pending_live_assets_and_purchase_destinations",
-  "prepared_at": "2026-09-19",
+  "status": "mapping_and_purchase_destinations_ready_blocked_pending_live_assets",
+  "prepared_at": "2026-09-26",
   "release_size": 5,
-  "strategy": "First guarded mini-release focused on the largest live audience gap. Selection order is operational priority, not a fragrance quality ranking.",
+  "strategy": "First guarded mini-release aligned to the current strongest operational shortlist: exact variants, non-provisional community data, resolved merchant mappings and current direct purchase destinations are already verified. Selection order is operational priority, not a fragrance quality ranking.",
   "product_ids": [
-    "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
-    "SC-PDM-DELINA-EDP-75",
-    "SC-DIOR-HYPNOTIC-POISON-EDT-100",
-    "SC-YSL-BLACK-OPIUM-EDP-90",
-    "SC-YSL-LIBRE-EDP-90"
+    "SC-YSL-LIBRE-EDP-90",
+    "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+    "SC-BURBERRY-GODDESS-EDP-100",
+    "SC-PRADA-PARADOXE-EDP-90",
+    "SC-PDM-DELINA-EDP-75"
   ],
   "required_gates": [
     "non_provisional_community_data",
@@ -23,13 +23,13 @@
   ],
   "write_policy": "All-or-nothing. Do not partially promote this manifest. Use a dry-run first; write only when all five products pass every promotion gate.",
   "mapping_readiness": {
-    "verified_at": "2026-09-19",
+    "verified_at": "2026-09-26",
     "products_with_mapping": 5,
     "release_size": 5,
     "status": "complete",
-    "note": "Every Release Batch 01 product has at least two merchant mapping rows and a GTIN/EAN fallback. Live promotion remains blocked until current verified purchase destinations and approved product images exist."
+    "note": "Every Release Batch 01 product has at least two resolved merchant mapping rows and a current verified direct purchase destination. Live promotion remains blocked until approved product images exist."
   },
   "write_enabled": true,
-  "write_guard_reason": "Release 01 is the first operational batch. A write is still refused unless every product-level image, purchase-destination and staging QA gate passes.",
+  "write_guard_reason": "Release 01 is the first operational batch. A write is still refused unless every product-level approved-image and staging QA gate passes; current purchase destinations are already verified for all five products.",
   "depends_on_release_ids": []
 }
