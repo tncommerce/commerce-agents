@@ -252,8 +252,7 @@ Use:
 python scripts/check_dufynd_affiliate_adapter_readiness.py --config <PROVIDER_CONFIG>
 ```
 
-Affiliate commission must never change fragrance recommendations or merchant
-ranking.
+Affiliate commission never changes fragrance recommendations; among equal-total, comparably fresh affiliate offers it may break a tie.
 
 ## Human approval boundaries
 

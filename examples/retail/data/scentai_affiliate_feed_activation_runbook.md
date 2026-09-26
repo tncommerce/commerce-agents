@@ -125,6 +125,8 @@ Partial release is intentionally refused.
 
 ## Ranking rule
 
-Affiliate commission must never influence DUFYND product recommendations or
-merchant ranking. Merchant selection remains based on availability, total
-customer price, trust, shipping and data freshness before commission.
+Affiliate commission never influences DUFYND product recommendations.
+Merchant selection prioritizes availability, known customer total, trust,
+shipping and freshness. At an equal total within a comparable freshness
+band, a valid affiliate route is preferred; commission can break a tie
+between those partner offers.

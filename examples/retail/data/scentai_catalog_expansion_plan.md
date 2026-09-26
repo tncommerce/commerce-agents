@@ -16,7 +16,7 @@ The live catalog should not be bulk-filled with low-quality or invented data. Ne
 - Never invent EAN/GTIN, merchant IDs, prices, ratings, review counts, notes, or affiliate URLs.
 - Keep one canonical SCENTAI product per fragrance/size/concentration identity.
 - Merchant offers attach underneath the canonical product.
-- Affiliate commission must never affect recommendation ranking or merchant ranking.
+- Affiliate commission never affects fragrance recommendations. Among merchant offers, it may break an equal-total, comparable-freshness affiliate tie.
 - Product relationships such as clone/inspired/alternative must be evidence-backed before going live.
 - Prefer verified merchant-feed images once partner feeds are available.
 - Do not use a generated product image if it materially misrepresents the real bottle.

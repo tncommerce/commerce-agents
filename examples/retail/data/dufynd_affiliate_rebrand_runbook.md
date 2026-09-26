@@ -43,7 +43,7 @@ After https://dufynd.de is publicly reachable with DUFYND branding and kontakt@d
 
 - No self-referrals or artificial orders to generate commission.
 - No claim that a merchant has approved DUFYND until the network shows approval.
-- Affiliate compensation never changes product recommendations or merchant ranking.
+- Affiliate commission never changes fragrance recommendations; among equal-total, comparably fresh affiliate offers it may break a tie.
 - Internal legacy identifiers such as SC-* product IDs and scentai_* data files may remain unchanged unless a technical migration later requires otherwise.
 
 

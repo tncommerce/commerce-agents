@@ -111,8 +111,9 @@ export default function AcquisitionLanding({
             Empfehlungen vor Provision.
           </strong>{" "}
           {trustNote} Händlerlinks können Partnerlinks sein. Eine
-          mögliche Provision beeinflusst weder die Duftempfehlung noch
-          die Reihenfolge der Händlerangebote.{" "}
+          mögliche Provision beeinflusst nie die Duftempfehlung. Bei
+          preisgleichen, vergleichbar aktuellen Händlerangeboten kann sie
+          zwischen Partnerlinks entscheiden.{" "}
           <a
             href="/transparenz"
             className="font-semibold text-(--accent-ink) hover:underline"

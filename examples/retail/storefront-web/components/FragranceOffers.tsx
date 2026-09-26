@@ -195,7 +195,7 @@ export default function FragranceOffers({
             {partnerOfferCount ? ` ${partnerOfferCount} Partner${partnerOfferCount === 1 ? "angebot" : "angebote"}` : ""}
             {partnerOfferCount && externalOfferCount ? " · " : ""}
             {externalOfferCount ? ` ${externalOfferCount} weitere ${externalOfferCount === 1 ? "Option" : "Optionen"}` : ""}
-            {" · "}Sortiert nach bekanntem Gesamtpreis und Aktualität, nicht nach Provision.
+            {" · "}Sortiert nach bekanntem Gesamtpreis und Aktualität. Bei Preisgleichheit und vergleichbarer Aktualität können Partnerlink und Provision entscheiden.
           </p>
         </div>
       </div>

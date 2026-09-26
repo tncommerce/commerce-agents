@@ -96,8 +96,9 @@ export default function SocialStartPage() {
           <strong className="text-(--ink)">Empfehlungen vor Provision.</strong>{" "}
           DUFYND soll zuerst den passenden Duft oder die passende Richtung
           finden. Händlerlinks können Partnerlinks sein; eine mögliche
-          Provision beeinflusst weder die Duftempfehlung noch die Reihenfolge
-          der Händlerangebote.{" "}
+          Provision beeinflusst nie die Duftempfehlung. Bei gleichem Gesamtpreis
+          und vergleichbarer Aktualität kann ein Partnerlink bevorzugt werden;
+          zwischen solchen Links kann die höhere Provision entscheiden.{" "}
           <a
             href="/transparenz"
             className="font-semibold text-(--accent-ink) hover:underline"

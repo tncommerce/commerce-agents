@@ -140,5 +140,4 @@ It must stop at:
 Only explicit user approval may transition to:
 `active`
 
-Affiliate commission must never influence fragrance recommendation ranking or
-customer-facing merchant ordering.
+Affiliate commission never influences fragrance recommendation ranking. For equal customer totals within the same freshness band, a valid affiliate route is preferred; among affiliate routes commission may break the tie.
