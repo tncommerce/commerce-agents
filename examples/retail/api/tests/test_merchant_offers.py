@@ -5,6 +5,8 @@ from retail.api.merchant_offers import (
     MerchantClickoutTracker,
     MerchantOffer,
     MerchantOfferStore,
+    customer_offer_payload,
+    offer_clickout_target,
     rank_offers,
 )
 from retail.api.mock_retail import MockRetail
@@ -91,6 +93,26 @@ def test_small_clock_skew_is_tolerated_without_freshness_bonus() -> None:
     )
 
     assert [item.offer_id for item in ranked] == ["current", "slight-future"]
+
+
+def test_invalid_affiliate_url_falls_back_to_valid_product_url() -> None:
+    candidate = offer("fallback", merchant="Merchant", price=90, shipping=0)
+    candidate.affiliate_url = "javascript:alert(1)"
+
+    ranked = rank_offers([candidate], now=NOW)
+
+    assert [item.offer_id for item in ranked] == ["fallback"]
+    assert offer_clickout_target(candidate) == candidate.product_url
+    assert customer_offer_payload(candidate)["affiliate_link"] is False
+
+
+def test_offer_without_valid_http_clickout_is_excluded() -> None:
+    candidate = offer("invalid", merchant="Merchant", price=90, shipping=0)
+    candidate.product_url = "javascript:alert(1)"
+    candidate.affiliate_url = "data:text/plain,invalid"
+
+    assert rank_offers([candidate], now=NOW) == []
+    assert offer_clickout_target(candidate) is None
 
 
 def test_known_customer_total_beats_unknown_shipping() -> None:
