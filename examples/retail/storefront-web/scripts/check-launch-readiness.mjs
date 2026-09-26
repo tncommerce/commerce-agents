@@ -56,13 +56,61 @@ function reservedLaunchHost(hostname) {
   );
 }
 
+function nonPublicIpLiteral(hostname) {
+  const host = String(hostname || "")
+    .toLowerCase()
+    .replace(/^\[/, "")
+    .replace(/\]$/, "")
+    .replace(/\.$/, "");
+
+  const ipv4 = host.match(
+    /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/,
+  );
+  if (ipv4) {
+    const octets = ipv4.slice(1).map(Number);
+    if (octets.some((value) => value > 255)) return true;
+
+    const [a, b, c] = octets;
+    return (
+      a === 0 ||
+      a === 10 ||
+      a === 127 ||
+      (a === 100 && b >= 64 && b <= 127) ||
+      (a === 169 && b === 254) ||
+      (a === 172 && b >= 16 && b <= 31) ||
+      (a === 192 && b === 168) ||
+      (a === 192 && b === 0 && (c === 0 || c === 2)) ||
+      (a === 198 && (b === 18 || b === 19)) ||
+      (a === 198 && b === 51 && c === 100) ||
+      (a === 203 && b === 0 && c === 113) ||
+      a >= 224
+    );
+  }
+
+  if (host.includes(":")) {
+    return (
+      host === "::" ||
+      host === "::1" ||
+      host.startsWith("fc") ||
+      host.startsWith("fd") ||
+      /^fe[89ab]/.test(host) ||
+      host.startsWith("ff") ||
+      host.startsWith("2001:db8:")
+    );
+  }
+
+  return false;
+}
+
 function validPublicHttpUrl(value, { requireHttps = true } = {}) {
   try {
     const parsed = new URL(value);
     if (requireHttps && parsed.protocol !== "https:") return false;
     if (!requireHttps && !["http:", "https:"].includes(parsed.protocol)) return false;
     if (parsed.username || parsed.password) return false;
-    return !reservedLaunchHost(parsed.hostname);
+    if (reservedLaunchHost(parsed.hostname)) return false;
+    if (nonPublicIpLiteral(parsed.hostname)) return false;
+    return true;
   } catch {
     return false;
   }
