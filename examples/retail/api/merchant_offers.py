@@ -109,6 +109,7 @@ def rank_offers(
         age = offer_age_hours(offer, now=reference)
         if (
             offer.in_stock
+            and offer.currency.strip().upper() == "EUR"
             and -MAX_FUTURE_CLOCK_SKEW_HOURS <= age <= max_age_hours
             and offer_clickout_target(offer) is not None
         ):
