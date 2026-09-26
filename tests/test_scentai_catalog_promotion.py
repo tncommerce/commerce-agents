@@ -4,6 +4,7 @@ from datetime import UTC, datetime
 
 from scripts.promote_scentai_catalog import (
     build_catalog_product,
+    eligible_purchase_offers,
     promotion_blockers,
     promotion_plan,
 )
@@ -92,7 +93,7 @@ def test_current_staging_requirements_are_strict() -> None:
     )
 
     assert "missing_approved_image" in blockers
-    assert "missing_current_affiliate_offer" in blockers
+    assert "missing_current_purchase_destination" in blockers
 
 
 def test_ready_product_passes_promotion_gates() -> None:
@@ -108,7 +109,7 @@ def test_ready_product_passes_promotion_gates() -> None:
     assert blockers == []
 
 
-def test_non_affiliate_offer_does_not_unlock_promotion() -> None:
+def test_non_affiliate_offer_unlocks_promotion_when_purchase_url_is_verified() -> None:
     product = staged_product()
     offer = affiliate_offer()
     offer["affiliate_url"] = None
@@ -119,7 +120,7 @@ def test_non_affiliate_offer_does_not_unlock_promotion() -> None:
         now=NOW,
     )
 
-    assert "missing_current_affiliate_offer" in blockers
+    assert blockers == []
 
 
 def test_stale_offer_does_not_unlock_promotion() -> None:
@@ -134,7 +135,66 @@ def test_stale_offer_does_not_unlock_promotion() -> None:
         max_offer_age_hours=72.0,
     )
 
-    assert "missing_current_affiliate_offer" in blockers
+    assert "missing_current_purchase_destination" in blockers
+
+
+def test_equal_price_prefers_affiliate_then_higher_commission() -> None:
+    direct = affiliate_offer()
+    direct["offer_id"] = "direct"
+    direct["merchant_name"] = "Direct Merchant"
+    direct["affiliate_url"] = None
+    direct["commission_rate"] = None
+
+    lower = affiliate_offer()
+    lower["offer_id"] = "affiliate-lower"
+    lower["merchant_name"] = "Affiliate Lower"
+    lower["commission_rate"] = 4.0
+
+    higher = affiliate_offer()
+    higher["offer_id"] = "affiliate-higher"
+    higher["merchant_name"] = "Affiliate Higher"
+    higher["commission_rate"] = 8.0
+
+    ranked = eligible_purchase_offers(
+        [direct, lower, higher],
+        product_id="SC-TEST-FRAGRANCE-100",
+        now=NOW,
+        max_age_hours=72.0,
+    )
+
+    assert [row["offer_id"] for row in ranked] == [
+        "affiliate-higher",
+        "affiliate-lower",
+        "direct",
+    ]
+
+
+def test_invalid_price_cannot_unlock_public_catalog() -> None:
+    offer = affiliate_offer()
+    offer["affiliate_url"] = None
+    offer["price"] = "not-a-price"
+
+    assert (
+        eligible_purchase_offers(
+            [offer],
+            product_id="SC-TEST-FRAGRANCE-100",
+            now=NOW,
+            max_age_hours=72.0,
+        )
+        == []
+    )
+    assert "missing_current_purchase_destination" in promotion_blockers(
+        staged_product(), [offer], now=NOW
+    )
+
+
+def test_malformed_or_insecure_product_url_cannot_unlock_public_catalog() -> None:
+    for url in ("javascript:alert(1)", "http://merchant.example/product", "https://localhost/x"):
+        offer = affiliate_offer()
+        offer["product_url"] = url
+        assert "missing_current_purchase_destination" in promotion_blockers(
+            staged_product(), [offer], now=NOW
+        )
 
 
 def test_provisional_community_data_is_blocked_by_default() -> None:

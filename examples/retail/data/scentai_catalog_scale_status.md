@@ -287,11 +287,11 @@ identifiers.
 
 Release 02 is intentionally **write-locked** at manifest level. Dry-runs remain
 allowed, but `--write` is rejected until Release 01 has completed the real
-affiliate-feed, manual image-approval, promotion and smoke-test workflow.
+purchase-destination, manual image-approval, promotion and smoke-test workflow.
 
 Release 01 remains write-capable only in the narrow sense that the CLI may
 attempt a write after every existing product-level gate passes. At the current
-state, Release 01 is still blocked because no current tracked affiliate offers
+state, Release 01 is still blocked because no current verified purchase destinations
 or approved production images exist for its five products.
 
 

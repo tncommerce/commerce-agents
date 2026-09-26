@@ -310,7 +310,7 @@ async def run_qa(
             },
             "budget_and_offer_qa": {
                 "passed": None,
-                "status": ("deferred_until_current_affiliate_offers_are_available"),
+                "status": ("deferred_until_current_purchase_destinations_are_available"),
             },
         },
         "passed": not issues,

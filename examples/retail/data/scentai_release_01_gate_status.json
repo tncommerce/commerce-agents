@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-25T19:58:00+00:00",
-  "source_fingerprint_sha256": "9632869e8346679039a2e96112af91b06158eebbc83d8b5cf48920bf08caa3b8",
+  "generated_at": "2026-09-25T21:52:00+00:00",
+  "source_fingerprint_sha256": "cf92379ec40f6b530bdece2743bdefe7766e72a55df5bf77eaf29ec7b8f69b6f",
   "release_id": "SCENTAI-RELEASE-01",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "image_machine_ref": "scentai_image_approval_state_machine.json",
@@ -11,6 +11,7 @@
     "mapping_ready": 5,
     "image_identity_source_verified": 5,
     "approved_images": 0,
+    "current_purchase_destinations": 0,
     "current_tracked_affiliate_offers": 0,
     "promotion_ready": 0
   },
@@ -24,18 +25,20 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "image_state": "rights_or_source_check_pending",
+      "purchase_offer_count": 0,
       "affiliate_offer_count": 0,
+      "current_tracked_affiliate_offer": false,
       "gates": {
         "non_provisional_community_data": true,
         "resolved_merchant_product_mapping": true,
         "approved_product_image": false,
-        "current_tracked_affiliate_offer": false,
+        "current_purchase_destination": false,
         "staging_recommendation_qa": true,
         "not_already_live": true
       },
       "blockers": [
         "approved_product_image",
-        "current_tracked_affiliate_offer"
+        "current_purchase_destination"
       ],
       "promotion_ready": false,
       "next_unblocking_event": "approved_affiliate_feed_or_verified_asset_usage_then_manual_visual_approval"
@@ -48,18 +51,20 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "image_state": "rights_or_source_check_pending",
+      "purchase_offer_count": 0,
       "affiliate_offer_count": 0,
+      "current_tracked_affiliate_offer": false,
       "gates": {
         "non_provisional_community_data": true,
         "resolved_merchant_product_mapping": true,
         "approved_product_image": false,
-        "current_tracked_affiliate_offer": false,
+        "current_purchase_destination": false,
         "staging_recommendation_qa": true,
         "not_already_live": true
       },
       "blockers": [
         "approved_product_image",
-        "current_tracked_affiliate_offer"
+        "current_purchase_destination"
       ],
       "promotion_ready": false,
       "next_unblocking_event": "approved_affiliate_feed_or_verified_asset_usage_then_manual_visual_approval"
@@ -72,18 +77,20 @@
       "mapping_count": 3,
       "resolved_mapping_count": 3,
       "image_state": "rights_or_source_check_pending",
+      "purchase_offer_count": 0,
       "affiliate_offer_count": 0,
+      "current_tracked_affiliate_offer": false,
       "gates": {
         "non_provisional_community_data": true,
         "resolved_merchant_product_mapping": true,
         "approved_product_image": false,
-        "current_tracked_affiliate_offer": false,
+        "current_purchase_destination": false,
         "staging_recommendation_qa": true,
         "not_already_live": true
       },
       "blockers": [
         "approved_product_image",
-        "current_tracked_affiliate_offer"
+        "current_purchase_destination"
       ],
       "promotion_ready": false,
       "next_unblocking_event": "approved_affiliate_feed_or_verified_asset_usage_then_manual_visual_approval"
@@ -96,18 +103,20 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "image_state": "rights_or_source_check_pending",
+      "purchase_offer_count": 0,
       "affiliate_offer_count": 0,
+      "current_tracked_affiliate_offer": false,
       "gates": {
         "non_provisional_community_data": true,
         "resolved_merchant_product_mapping": true,
         "approved_product_image": false,
-        "current_tracked_affiliate_offer": false,
+        "current_purchase_destination": false,
         "staging_recommendation_qa": true,
         "not_already_live": true
       },
       "blockers": [
         "approved_product_image",
-        "current_tracked_affiliate_offer"
+        "current_purchase_destination"
       ],
       "promotion_ready": false,
       "next_unblocking_event": "approved_affiliate_feed_or_verified_asset_usage_then_manual_visual_approval"
@@ -120,18 +129,20 @@
       "mapping_count": 2,
       "resolved_mapping_count": 2,
       "image_state": "rights_or_source_check_pending",
+      "purchase_offer_count": 0,
       "affiliate_offer_count": 0,
+      "current_tracked_affiliate_offer": false,
       "gates": {
         "non_provisional_community_data": true,
         "resolved_merchant_product_mapping": true,
         "approved_product_image": false,
-        "current_tracked_affiliate_offer": false,
+        "current_purchase_destination": false,
         "staging_recommendation_qa": true,
         "not_already_live": true
       },
       "blockers": [
         "approved_product_image",
-        "current_tracked_affiliate_offer"
+        "current_purchase_destination"
       ],
       "promotion_ready": false,
       "next_unblocking_event": "approved_affiliate_feed_or_verified_asset_usage_then_manual_visual_approval"

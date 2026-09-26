@@ -47,6 +47,7 @@ def current_offer() -> dict:
         "price": 50.0,
         "shipping_cost": 0.0,
         "in_stock": True,
+        "product_url": "https://example.test/product",
         "affiliate_url": "https://example.test/click",
         "last_updated_at": "2026-09-19T09:00:00Z",
     }
@@ -108,6 +109,7 @@ def test_pipeline_distinguishes_product_ready_from_write_ready(
 
     row = report["releases"][0]
     assert row["all_products_ready"] is True
+    assert row["purchase_offer_product_count"] == 1
     assert row["write_enabled"] is False
     assert row["write_ready"] is False
     assert "manifest_write_locked" in row["release_blockers"]

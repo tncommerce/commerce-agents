@@ -3,9 +3,11 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
+import math
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
 from scripts.qa_scentai_staging import run_qa
 
@@ -115,6 +117,89 @@ def eligible_affiliate_offers(
     return sorted(eligible, key=sort_key)
 
 
+def eligible_purchase_offers(
+    offers: list[dict],
+    *,
+    product_id: str,
+    now: datetime,
+    max_age_hours: float,
+) -> list[dict]:
+    """Return current, in-stock purchase destinations.
+
+    Affiliate routing is preferred when price is equal, but monetization is not
+    a requirement for a fragrance to be eligible for the public catalog.
+    """
+
+    eligible = []
+
+    for offer in offers:
+        if offer.get("product_id") != product_id:
+            continue
+        if not offer.get("in_stock"):
+            continue
+        product_url = str(offer.get("product_url") or "").strip()
+        try:
+            destination = urlsplit(product_url)
+            if (
+                destination.scheme != "https"
+                or not destination.hostname
+                or destination.username
+                or destination.password
+                or destination.hostname in {"localhost", "127.0.0.1", "::1"}
+            ):
+                continue
+        except ValueError:
+            continue
+
+        try:
+            price = float(offer["price"])
+            shipping = offer.get("shipping_cost")
+            if not math.isfinite(price) or price < 0:
+                continue
+            if shipping is not None and (not math.isfinite(float(shipping)) or float(shipping) < 0):
+                continue
+        except (KeyError, TypeError, ValueError):
+            continue
+
+        try:
+            age = offer_age_hours(offer, now=now)
+        except (KeyError, TypeError, ValueError):
+            continue
+
+        if age > max_age_hours:
+            continue
+
+        eligible.append(offer)
+
+    def sort_key(offer: dict) -> tuple[Any, ...]:
+        shipping = offer.get("shipping_cost")
+        known_total = shipping is not None
+
+        try:
+            price = float(offer["price"])
+        except (KeyError, TypeError, ValueError):
+            price = float("inf")
+
+        total = price + float(shipping) if known_total else price
+        affiliate = bool(str(offer.get("affiliate_url") or "").strip())
+
+        try:
+            commission = float(offer.get("commission_rate"))
+        except (TypeError, ValueError):
+            commission = 0.0
+
+        return (
+            0 if known_total else 1,
+            total,
+            0 if affiliate else 1,
+            -commission,
+            offer_age_hours(offer, now=now),
+            str(offer.get("merchant_name") or "").casefold(),
+        )
+
+    return sorted(eligible, key=sort_key)
+
+
 def recommendation_scores(product: dict) -> dict[str, int]:
     profile = product.get("fragrance_profile", {}).get("recommendation_profile", {})
     raw_scores = profile.get("scores", {})
@@ -175,14 +260,14 @@ def promotion_blockers(
         blockers.append("invalid_target_group")
 
     if product_id:
-        affiliate_offers = eligible_affiliate_offers(
+        purchase_offers = eligible_purchase_offers(
             offers,
             product_id=product_id,
             now=now,
             max_age_hours=max_offer_age_hours,
         )
-        if not affiliate_offers:
-            blockers.append("missing_current_affiliate_offer")
+        if not purchase_offers:
+            blockers.append("missing_current_purchase_destination")
 
     return blockers
 
@@ -358,7 +443,13 @@ def promotion_plan(
         if product_id in live_ids:
             blockers.append("already_live")
 
-        eligible = eligible_affiliate_offers(
+        eligible = eligible_purchase_offers(
+            offers,
+            product_id=product_id,
+            now=now,
+            max_age_hours=max_offer_age_hours,
+        )
+        affiliate_eligible = eligible_affiliate_offers(
             offers,
             product_id=product_id,
             now=now,
@@ -379,7 +470,8 @@ def promotion_plan(
                 "candidate_id": product.get("candidate_id"),
                 "ready": not blockers,
                 "blockers": blockers,
-                "eligible_affiliate_offers": len(eligible),
+                "eligible_purchase_offers": len(eligible),
+                "eligible_affiliate_offers": len(affiliate_eligible),
             }
         )
 
@@ -567,6 +659,7 @@ def main() -> int:
             blockers = ", ".join(row["blockers"]) or "-"
             print(
                 f"{status}: {row['product_id']} | "
+                f"purchase offers: {row['eligible_purchase_offers']} | "
                 f"affiliate offers: "
                 f"{row['eligible_affiliate_offers']} | "
                 f"blockers: {blockers}"

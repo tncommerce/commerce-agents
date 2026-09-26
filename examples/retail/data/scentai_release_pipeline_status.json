@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-25T19:58:00+00:00",
-  "source_fingerprint_sha256": "106a3d893b7321952d025c60e6003a183787e6116b68c55d59cee6950bf322a6",
+  "generated_at": "2026-09-25T21:52:00+00:00",
+  "source_fingerprint_sha256": "4697872a1957bded150025d0f1a7a0aee452f759b6448c7c5b2150e9ca9f5a6c",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "release_count": 3,
   "current_release_id": "SCENTAI-RELEASE-01",
@@ -10,20 +10,21 @@
     {
       "release_id": "SCENTAI-RELEASE-01",
       "release_order": 1,
-      "manifest_status": "mapping_ready_blocked_pending_live_assets_and_affiliate_offers",
+      "manifest_status": "mapping_ready_blocked_pending_live_assets_and_purchase_destinations",
       "write_enabled": true,
       "depends_on_release_ids": [],
       "dependency_state": "not_required",
-      "gate_state": "blocked_pending_images_and_affiliate_offers",
+      "gate_state": "blocked_pending_images_and_purchase_destinations",
       "summary": {
         "release_size": 5,
         "mapping_ready": 5,
         "image_identity_source_verified": 5,
         "approved_images": 0,
+        "current_purchase_destinations": 0,
         "current_tracked_affiliate_offers": 0,
         "promotion_ready": 0
       },
-      "write_guard_reason": "Release 01 is the first operational batch. A write is still refused unless every product-level image, affiliate-offer and staging QA gate passes."
+      "write_guard_reason": "Release 01 is the first operational batch. A write is still refused unless every product-level image, purchase-destination and staging QA gate passes."
     },
     {
       "release_id": "SCENTAI-RELEASE-02",
@@ -34,16 +35,17 @@
         "SCENTAI-RELEASE-01"
       ],
       "dependency_state": "pending_prior_release_validation",
-      "gate_state": "blocked_pending_images_and_affiliate_offers",
+      "gate_state": "blocked_pending_images_and_purchase_destinations",
       "summary": {
         "release_size": 5,
         "mapping_ready": 5,
         "image_identity_source_verified": 5,
         "approved_images": 0,
+        "current_purchase_destinations": 0,
         "current_tracked_affiliate_offers": 0,
         "promotion_ready": 0
       },
-      "write_guard_reason": "Release 02 stays write-locked until Release 01 completes the real affiliate-feed, manual image approval, promotion and smoke-test workflow."
+      "write_guard_reason": "Release 02 stays write-locked until Release 01 completes the real purchase-destination, manual image approval, promotion and smoke-test workflow."
     },
     {
       "release_id": "SCENTAI-RELEASE-03",
@@ -55,16 +57,17 @@
         "SCENTAI-RELEASE-02"
       ],
       "dependency_state": "pending_prior_release_validation",
-      "gate_state": "blocked_pending_images_and_affiliate_offers",
+      "gate_state": "blocked_pending_images_and_purchase_destinations",
       "summary": {
         "release_size": 5,
         "mapping_ready": 5,
         "image_identity_source_verified": 5,
         "approved_images": 0,
+        "current_purchase_destinations": 0,
         "current_tracked_affiliate_offers": 0,
         "promotion_ready": 0
       },
-      "write_guard_reason": "Release 03 stays write-locked until Release 01 and Release 02 have completed their required real affiliate-feed, image-approval, promotion and smoke-test sequence."
+      "write_guard_reason": "Release 03 stays write-locked until Release 01 and Release 02 have completed their required real purchase-destination, image-approval, promotion and smoke-test sequence."
     }
   ],
   "note": "Release ordering is operational, not a fragrance ranking. Dependency locks remain separate from product-level readiness."

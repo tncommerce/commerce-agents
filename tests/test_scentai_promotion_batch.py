@@ -155,7 +155,7 @@ def test_batch_plan_never_marks_blocked_product_ready() -> None:
     row = report["selected"][0]
     assert row["promotion_ready"] is False
     assert "missing_approved_image" in row["blockers"]
-    assert "missing_current_affiliate_offer" in row["blockers"]
+    assert "missing_current_purchase_destination" in row["blockers"]
 
 
 def test_batch_plan_limit_is_hard_capped() -> None:

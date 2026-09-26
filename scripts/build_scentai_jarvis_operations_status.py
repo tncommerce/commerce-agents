@@ -73,15 +73,14 @@ def build_operations_status(
         )
         or 0
     )
+    purchase_destinations = int(release_summary.get("current_purchase_destinations", 0) or 0)
     promotion_ready = int(release_summary.get("promotion_ready", 0) or 0)
 
     blockers: list[str] = []
-    if approved_full_paths < 1:
-        blockers.append("release_affiliate_program_approval_pending")
     if release_size and approved_images < release_size:
         blockers.append("release_approved_images_incomplete")
-    if release_size and tracked_offers < release_size:
-        blockers.append("release_tracked_affiliate_offers_incomplete")
+    if release_size and purchase_destinations < release_size:
+        blockers.append("release_purchase_destinations_incomplete")
     if promotion_ready < release_size:
         blockers.append("release_promotion_gates_incomplete")
 
@@ -96,9 +95,9 @@ def build_operations_status(
         next_action = "run_feed_preflight_and_dry_run"
         next_action_class = "auto_allowed"
     else:
-        overall_state = "waiting_external_affiliate_decision"
+        overall_state = "waiting_purchase_destinations_and_images"
         user_approval_required_now = False
-        next_action = "await_affiliate_program_decision"
+        next_action = "verify_purchase_destinations_and_image_rights"
         next_action_class = "auto_allowed"
 
     full_mapping_merchants = [
@@ -196,6 +195,7 @@ def build_operations_status(
                 or 0
             ),
             "approved_images": approved_images,
+            "current_purchase_destinations": purchase_destinations,
             "current_tracked_affiliate_offers": tracked_offers,
             "promotion_ready": promotion_ready,
         },

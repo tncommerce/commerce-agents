@@ -1,26 +1,25 @@
 {
   "version": 1,
-  "generated_at": "2026-09-25T19:58:00+00:00",
-  "source_fingerprint_sha256": "79a6d6242ab72ea48fd1faf41f457e409b407d609f6538c4ff2fc8f9b8329d1f",
+  "generated_at": "2026-09-25T21:52:00+00:00",
+  "source_fingerprint_sha256": "18b830b0221e8adc6ecef602063bc5a12c99050485f9e9cd26dade2d5684f84b",
   "system": "DUFYND",
   "control_plane": "commerce_jarvis_master",
-  "overall_state": "manual_step_pending",
-  "active_domain": "content",
-  "next_action": "wait_for_2026_09_26_then_execute_naxos_launch_day_packet",
-  "next_action_class": "manual_step_pending_at_launch",
+  "overall_state": "work_available",
+  "active_domain": "commerce",
+  "next_action": "verify_purchase_destinations_and_image_rights",
+  "next_action_class": "auto_allowed",
   "user_approval_required_now": false,
   "domains": {
     "commerce": {
       "domain": "commerce",
-      "overall_state": "waiting_external_affiliate_decision",
-      "execution_state": "waiting_external",
-      "next_action": "await_affiliate_program_decision",
+      "overall_state": "waiting_purchase_destinations_and_images",
+      "execution_state": "work_available",
+      "next_action": "verify_purchase_destinations_and_image_rights",
       "next_action_class": "auto_allowed",
       "user_approval_required_now": false,
       "blockers": [
-        "release_affiliate_program_approval_pending",
         "release_approved_images_incomplete",
-        "release_tracked_affiliate_offers_incomplete",
+        "release_purchase_destinations_incomplete",
         "release_promotion_gates_incomplete"
       ]
     },

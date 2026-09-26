@@ -15,8 +15,8 @@ DUFYND now has 30 verified candidates across Batches 1-3 plus three controlled f
 - 33 fragrances are live
 - 78 unique fragrance identities exist across live + staging with zero overlap
 - Batches 4-6 are limited to candidates without unresolved source/version blockers
-- Batches 4-6 still require approved affiliate offers and approved product images before any live promotion
-- Existing Batches 1-3 remain subject to the same affiliate/image/live-offer gates
+- Batches 4-6 require a current verified purchase destination and an approved product image before live promotion; affiliate coverage is optional
+- Existing Batches 1-3 are subject to the same purchase-destination, image and quality gates
 - No staging intake authorizes a live write
 
 ## Promotion order
@@ -29,7 +29,7 @@ Candidates with:
 - no unresolved identity/version blocker
 - stable enough community data
 
-Once affiliate approval + approved images are available, promote these first.
+Once current purchase destinations and approved images are available, assess these first.
 
 ### Tier B — second live promotion pool
 Candidates with:
@@ -56,7 +56,7 @@ When an approval arrives:
 3. Import feed or tracked links into the merchant-offer layer.
 4. Match merchant products to canonical SCENTAI products; never create duplicate canonical fragrances per merchant.
 5. Store current merchant price/availability with timestamps.
-6. Never use commission in recommendation or merchant ranking.
+6. Never use commission in fragrance recommendations. For equal total prices, prefer a valid affiliate route; among equal-price affiliate offers, commission may break the tie.
 
 ## Image workflow
 
@@ -120,7 +120,7 @@ The command refuses partial writes. If even one selected product is blocked, not
 Default hard gates enforced by the tool:
 - approved product image
 - complete deterministic recommendation profile
-- current in-stock affiliate offer with tracking URL
+- current in-stock offer with a verified merchant product URL (affiliate tracking is optional)
 - non-provisional community data
 - product not already live
 

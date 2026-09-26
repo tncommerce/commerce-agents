@@ -142,7 +142,7 @@ def wave_staging_row(candidate: dict, *, wave_id: str, batch: int) -> dict:
             "merchant_coverage_count": len(candidate.get("research_merchant_evidence") or []),
             "merchant_coverage_source": "dufynd_research_wave",
             "market_status": "researched_not_integrated",
-            "live_offer_status": "pending_affiliate_approval_or_feed",
+            "live_offer_status": "pending_current_purchase_destination",
         },
         "validation": {
             "catalog_ready": False,
@@ -321,7 +321,7 @@ def build_staging_payload() -> dict:
                             "promotion_queue",
                         ),
                         "market_status": verified.get("market_status"),
-                        "live_offer_status": "pending_affiliate_approval_or_feed",
+                        "live_offer_status": "pending_current_purchase_destination",
                     },
                     "validation": {
                         "catalog_ready": False,

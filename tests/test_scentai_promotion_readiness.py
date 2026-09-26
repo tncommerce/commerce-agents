@@ -67,6 +67,7 @@ def affiliate_offer(product_id: str) -> dict:
         "currency": "EUR",
         "shipping_cost": 0.0,
         "in_stock": True,
+        "product_url": "https://merchant.example/product",
         "affiliate_url": "https://network.example/click",
         "last_updated_at": "2026-09-18T11:00:00Z",
     }
@@ -113,10 +114,12 @@ def test_readiness_report_summarizes_live_blockers() -> None:
     }
     assert report["blocker_counts"] == {
         "missing_approved_image": 1,
-        "missing_current_affiliate_offer": 1,
+        "missing_current_purchase_destination": 1,
     }
 
     assert report["rows"][0]["product_id"] == "SC-READY"
     assert report["rows"][0]["ready"] is True
+    assert report["rows"][0]["eligible_purchase_offers"] == 1
+    assert report["rows"][0]["eligible_affiliate_offers"] == 1
     assert report["rows"][1]["product_id"] == "SC-BLOCKED"
     assert report["rows"][1]["ready"] is False

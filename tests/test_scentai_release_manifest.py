@@ -55,7 +55,7 @@ def test_release_batch_01_dry_run_stays_blocked_until_real_assets_exist() -> Non
 
     for row in plan["rows"]:
         assert "missing_approved_image" in row["blockers"]
-        assert "missing_current_affiliate_offer" in row["blockers"]
+        assert "missing_current_purchase_destination" in row["blockers"]
         assert "provisional_community_data" not in row["blockers"]
 
 

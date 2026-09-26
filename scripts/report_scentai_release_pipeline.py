@@ -9,6 +9,7 @@ from typing import Any
 
 from scripts.promote_scentai_catalog import (
     eligible_affiliate_offers,
+    eligible_purchase_offers,
     load_json,
     promotion_blockers,
     release_manifest_write_enabled,
@@ -98,6 +99,7 @@ def build_release_pipeline_report(
 
             product_blockers: list[str] = []
             affiliate_offer_count = 0
+            purchase_offer_count = 0
 
             if product is None:
                 product_blockers.append("missing_staging_product")
@@ -112,6 +114,14 @@ def build_release_pipeline_report(
                 )
                 affiliate_offer_count = len(
                     eligible_affiliate_offers(
+                        offers,
+                        product_id=product_id,
+                        now=now,
+                        max_age_hours=max_offer_age_hours,
+                    )
+                )
+                purchase_offer_count = len(
+                    eligible_purchase_offers(
                         offers,
                         product_id=product_id,
                         now=now,
@@ -142,6 +152,7 @@ def build_release_pipeline_report(
                     ),
                     "has_gtin_fallback": has_gtin_fallback,
                     "eligible_affiliate_offers": affiliate_offer_count,
+                    "eligible_purchase_offers": purchase_offer_count,
                     "ready": not product_blockers,
                     "blockers": product_blockers,
                 }
@@ -173,6 +184,9 @@ def build_release_pipeline_report(
                 ),
                 "affiliate_offer_product_count": sum(
                     1 for row in product_rows if row["eligible_affiliate_offers"] > 0
+                ),
+                "purchase_offer_product_count": sum(
+                    1 for row in product_rows if row["eligible_purchase_offers"] > 0
                 ),
                 "ready_product_count": ready_products,
                 "all_products_ready": all_products_ready,
@@ -283,6 +297,8 @@ def main() -> int:
         print(
             f"{release['release_id']} | "
             f"mapped={release['mapped_product_count']}/"
+            f"{release['product_count']} | "
+            f"purchase={release['purchase_offer_product_count']}/"
             f"{release['product_count']} | "
             f"affiliate={release['affiliate_offer_product_count']}/"
             f"{release['product_count']} | "

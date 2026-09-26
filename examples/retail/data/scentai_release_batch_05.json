@@ -17,7 +17,7 @@
     "non_provisional_community_data",
     "resolved_merchant_product_mapping",
     "approved_product_image",
-    "current_tracked_affiliate_offer",
+    "current_purchase_destination",
     "staging_recommendation_qa",
     "not_already_live",
     "all_selected_products_ready_no_partial_release"
@@ -30,6 +30,6 @@
     "note": "Every Release 05 product has at least two partner-merchant mapping paths and a GTIN/EAN fallback; Reflection Man preserves merchant-specific barcode variants."
   },
   "write_enabled": false,
-  "write_guard_reason": "Release 05 stays write-locked until Release 01, Release 02, Release 03 and Release 04 have completed their required real affiliate-feed, image-approval, promotion and smoke-test sequence.",
+  "write_guard_reason": "Release 05 stays write-locked until Release 01, Release 02, Release 03 and Release 04 have completed their required real purchase-destination, image-approval, promotion and smoke-test sequence.",
   "write_policy": "All-or-nothing. Dry-run is allowed; live write is explicitly disabled at manifest level."
 }

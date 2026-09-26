@@ -82,7 +82,7 @@ def test_first_controlled_expansion_wave_is_staging_only() -> None:
         assert row["media"]["image_url"] is None
         assert row["validation"]["catalog_ready"] is False
         assert "approved_product_image_pending" in row["validation"]["blockers"]
-        assert "verified_affiliate_offer_pending" in row["validation"]["blockers"]
+        assert "verified_purchase_destination_pending" in row["validation"]["blockers"]
         assert row["research"]["source_wave_id"] == "DUFYND-CATALOG-EXPANSION-NEXT-10"
 
 
@@ -127,7 +127,7 @@ def test_second_controlled_expansion_wave_is_staging_only() -> None:
         assert row["media"]["image_url"] is None
         assert row["validation"]["catalog_ready"] is False
         assert "approved_product_image_pending" in row["validation"]["blockers"]
-        assert "verified_affiliate_offer_pending" in row["validation"]["blockers"]
+        assert "verified_purchase_destination_pending" in row["validation"]["blockers"]
         assert row["research"]["source_wave_id"] == "DUFYND-CATALOG-EXPANSION-NEXT-10"
 
     jpg = next(
@@ -180,7 +180,7 @@ def test_third_controlled_expansion_wave_is_staging_only() -> None:
         assert row["media"]["image_url"] is None
         assert row["validation"]["catalog_ready"] is False
         assert "approved_product_image_pending" in row["validation"]["blockers"]
-        assert "verified_affiliate_offer_pending" in row["validation"]["blockers"]
+        assert "verified_purchase_destination_pending" in row["validation"]["blockers"]
         assert row["research"]["source_wave_id"] == "DUFYND-CATALOG-EXPANSION-WAVE2-BATCH6"
 
 

@@ -86,7 +86,7 @@ def test_expansion_readiness_separates_staging_from_live_blockers() -> None:
         priority=1,
         blockers=[
             "canonical_gtin_feed_match_pending",
-            "verified_affiliate_offer_pending",
+            "verified_purchase_destination_pending",
             "approved_product_image_pending",
         ],
     )
@@ -95,7 +95,7 @@ def test_expansion_readiness_separates_staging_from_live_blockers() -> None:
         target_groups=["men"],
         priority=2,
         blockers=[
-            "verified_affiliate_offer_pending",
+            "verified_purchase_destination_pending",
             "approved_product_image_pending",
             "direct_source_or_feed_confirmation_pending",
         ],

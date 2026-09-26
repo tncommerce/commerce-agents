@@ -110,7 +110,7 @@
         "catalog_ready": false,
         "blockers": [
           "canonical_gtin_feed_match_pending",
-          "verified_affiliate_offer_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       }
@@ -210,7 +210,7 @@
         "catalog_ready": false,
         "blockers": [
           "canonical_gtin_feed_match_pending",
-          "verified_affiliate_offer_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       }
@@ -310,7 +310,7 @@
         "catalog_ready": false,
         "blockers": [
           "canonical_gtin_feed_match_pending",
-          "verified_affiliate_offer_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       }
@@ -421,7 +421,7 @@
         "catalog_ready": false,
         "blockers": [
           "canonical_gtin_feed_match_pending",
-          "verified_affiliate_offer_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       }
@@ -532,7 +532,7 @@
         "catalog_ready": false,
         "blockers": [
           "canonical_gtin_feed_match_pending",
-          "verified_affiliate_offer_pending",
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       }
