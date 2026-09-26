@@ -106,13 +106,33 @@ def test_invalid_affiliate_url_falls_back_to_valid_product_url() -> None:
     assert customer_offer_payload(candidate)["affiliate_link"] is False
 
 
-def test_offer_without_valid_http_clickout_is_excluded() -> None:
+def test_offer_without_valid_https_clickout_is_excluded() -> None:
     candidate = offer("invalid", merchant="Merchant", price=90, shipping=0)
     candidate.product_url = "javascript:alert(1)"
     candidate.affiliate_url = "data:text/plain,invalid"
 
     assert rank_offers([candidate], now=NOW) == []
     assert offer_clickout_target(candidate) is None
+
+
+def test_http_clickout_is_rejected_even_when_well_formed() -> None:
+    candidate = offer("http", merchant="Merchant", price=90, shipping=0)
+    candidate.product_url = "http://merchant.example/product"
+    candidate.affiliate_url = None
+
+    assert rank_offers([candidate], now=NOW) == []
+    assert offer_clickout_target(candidate) is None
+
+
+def test_http_affiliate_url_falls_back_to_https_product_url() -> None:
+    candidate = offer("fallback-http", merchant="Merchant", price=90, shipping=0)
+    candidate.affiliate_url = "http://network.example/click"
+
+    ranked = rank_offers([candidate], now=NOW)
+
+    assert [item.offer_id for item in ranked] == ["fallback-http"]
+    assert offer_clickout_target(candidate) == candidate.product_url
+    assert customer_offer_payload(candidate)["affiliate_link"] is False
 
 
 def test_known_customer_total_beats_unknown_shipping() -> None:
