@@ -28,6 +28,9 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install repo Python dependencies
+        run: pip install -r requirements-dev.txt
+
       - name: Validate and rebuild Batch 7 staging
         shell: bash
         run: |
