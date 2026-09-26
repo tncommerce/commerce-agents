@@ -15,6 +15,7 @@ DATA_DIR = Path("examples/retail/data")
 DEFAULT_STAGING = DATA_DIR / "scentai_catalog_staging.json"
 DEFAULT_CATALOG = DATA_DIR / "catalog.json"
 DEFAULT_OFFERS = DATA_DIR / "merchant_offers.json"
+MAX_FUTURE_CLOCK_SKEW_HOURS = 5 / 60
 
 APPROVED_IMAGE_STATUSES = {
     "approved_feed_image",
@@ -66,7 +67,7 @@ def parse_timestamp(value: str) -> datetime:
 
 def offer_age_hours(offer: dict, *, now: datetime) -> float:
     updated = parse_timestamp(str(offer["last_updated_at"]))
-    return max((now - updated).total_seconds() / 3600.0, 0.0)
+    return (now - updated).total_seconds() / 3600.0
 
 
 def eligible_affiliate_offers(
@@ -91,7 +92,7 @@ def eligible_affiliate_offers(
         except (KeyError, TypeError, ValueError):
             continue
 
-        if age > max_age_hours:
+        if age < -MAX_FUTURE_CLOCK_SKEW_HOURS or age > max_age_hours:
             continue
 
         eligible.append(offer)
@@ -166,7 +167,7 @@ def eligible_purchase_offers(
         except (KeyError, TypeError, ValueError):
             continue
 
-        if age > max_age_hours:
+        if age < -MAX_FUTURE_CLOCK_SKEW_HOURS or age > max_age_hours:
             continue
 
         eligible.append(offer)
