@@ -198,7 +198,7 @@ export default function HomeView({
               aria-label={`${spotlight.brand || ""} ${spotlightName} entdecken`.trim()}
               className="dufynd-hero-product group relative min-h-[260px] sm:min-h-[320px] overflow-hidden border-t border-white/10 md:min-h-[430px] md:border-l md:border-t-0"
             >
-              {spotlightModelUrl || spotlightIsProductTruth ? (
+              {spotlightModelUrl ? (
                 <FragranceModel3D
                   modelUrl={spotlightModelUrl}
                   imageUrl={
@@ -217,6 +217,17 @@ export default function HomeView({
                       : undefined
                   }
                   alt={spotlight.title}
+                  className="h-full min-h-[260px] sm:min-h-[320px] w-full md:min-h-[430px]"
+                  priority
+                />
+              ) : spotlightIsProductTruth ? (
+                <FragranceVisual
+                  imageUrl={undefined}
+                  cutoutUrl={spotlightVisual?.url}
+                  backdropUrl={spotlightBackdropUrl}
+                  alt={spotlight.title}
+                  variant="hero"
+                  mode="cutout"
                   className="h-full min-h-[260px] sm:min-h-[320px] w-full md:min-h-[430px]"
                   priority
                 />
