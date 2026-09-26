@@ -33,3 +33,17 @@ def test_customer_facing_ratings_mark_provisional_values() -> None:
 
     for source in (catalog, free_compare, documented_compare, detail):
         assert "vorläufig" in source
+
+
+def test_provisional_performance_metrics_are_visibly_marked() -> None:
+    free_compare = FREE_COMPARE.read_text(encoding="utf-8")
+    documented_compare = DOCUMENTED_COMPARE.read_text(encoding="utf-8")
+    detail = DETAIL.read_text(encoding="utf-8")
+
+    for source in (free_compare, documented_compare):
+        assert "community.longevity_10" in source
+        assert "community.projection_10" in source
+        assert "community.provisional" in source
+        assert "· vorläufig" in source
+
+    assert detail.count("fragrance.community.provisional ? (") >= 3
