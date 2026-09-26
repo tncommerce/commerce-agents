@@ -135,6 +135,13 @@ def test_http_affiliate_url_falls_back_to_https_product_url() -> None:
     assert customer_offer_payload(candidate)["affiliate_link"] is False
 
 
+def test_non_eur_offer_is_excluded_from_runtime_ranking() -> None:
+    candidate = offer("usd", merchant="USD Merchant", price=50, shipping=0)
+    candidate.currency = "USD"
+
+    assert rank_offers([candidate], now=NOW) == []
+
+
 def test_known_customer_total_beats_unknown_shipping() -> None:
     ranked = rank_offers(
         [
