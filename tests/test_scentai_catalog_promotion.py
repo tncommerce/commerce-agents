@@ -195,6 +195,59 @@ def test_equal_price_prefers_affiliate_then_higher_commission() -> None:
     ]
 
 
+def test_materially_fresher_direct_offer_beats_older_affiliate_offer() -> None:
+    direct = affiliate_offer()
+    direct["offer_id"] = "direct-fresh"
+    direct["merchant_name"] = "Direct Fresh"
+    direct["affiliate_url"] = None
+    direct["commission_rate"] = None
+    direct["last_updated_at"] = "2026-09-18T11:00:00Z"
+
+    affiliate = affiliate_offer()
+    affiliate["offer_id"] = "affiliate-older"
+    affiliate["merchant_name"] = "Affiliate Older"
+    affiliate["commission_rate"] = 10.0
+    affiliate["last_updated_at"] = "2026-09-17T10:00:00Z"
+
+    ranked = eligible_purchase_offers(
+        [affiliate, direct],
+        product_id="SC-TEST-FRAGRANCE-100",
+        now=NOW,
+        max_age_hours=72.0,
+    )
+
+    assert [row["offer_id"] for row in ranked] == [
+        "direct-fresh",
+        "affiliate-older",
+    ]
+
+
+def test_invalid_affiliate_url_does_not_win_affiliate_tie_break() -> None:
+    direct = affiliate_offer()
+    direct["offer_id"] = "direct"
+    direct["merchant_name"] = "A Direct"
+    direct["affiliate_url"] = None
+    direct["commission_rate"] = None
+
+    invalid_affiliate = affiliate_offer()
+    invalid_affiliate["offer_id"] = "invalid-affiliate"
+    invalid_affiliate["merchant_name"] = "Z Invalid"
+    invalid_affiliate["affiliate_url"] = "javascript:alert(1)"
+    invalid_affiliate["commission_rate"] = 99.0
+
+    ranked = eligible_purchase_offers(
+        [invalid_affiliate, direct],
+        product_id="SC-TEST-FRAGRANCE-100",
+        now=NOW,
+        max_age_hours=72.0,
+    )
+
+    assert [row["offer_id"] for row in ranked] == [
+        "direct",
+        "invalid-affiliate",
+    ]
+
+
 def test_invalid_price_cannot_unlock_public_catalog() -> None:
     offer = affiliate_offer()
     offer["affiliate_url"] = None
