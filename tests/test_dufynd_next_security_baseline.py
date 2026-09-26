@@ -47,4 +47,3 @@ def test_workspace_lock_ranges_match_app_manifests() -> None:
 
         assert locked_requirement == manifest["dependencies"]["next"]
         assert _version(locked_requirement) >= MIN_NEXT
-
