@@ -6,6 +6,7 @@ LABELS = Path("examples/retail/storefront-web/lib/accordLabels.ts")
 SURFACES = [
     Path("examples/retail/storefront-web/components/FragranceCatalogBrowser.tsx"),
     Path("examples/retail/storefront-web/components/FragranceComparisonPicker.tsx"),
+    Path("examples/retail/storefront-web/components/FragranceLibraryHub.tsx"),
     Path("examples/retail/storefront-web/app/vergleich/[pair]/page.tsx"),
     Path("examples/retail/storefront-web/app/duft/[slug]/page.tsx"),
 ]
