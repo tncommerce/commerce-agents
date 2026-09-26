@@ -1,82 +1,12 @@
 {
-  "version": 2,
+  "version": 3,
   "merchant_id": "perfumetrader",
   "release_id": "SCENTAI-RELEASE-01",
-  "checked_at": "2026-09-22",
-  "scope": "Public Perfumetrader product/brand pages plus verified Awin programme metadata. Awin Product Data is unavailable for Perfumetrader DE (Produktdaten = Nein).",
+  "checked_at": "2026-09-26",
+  "scope": "Current DUFYND merchant mapping registry plus public Perfumetrader/site-scoped exact-variant research. Awin Product Data remains unavailable for Perfumetrader DE (Produktdaten = Nein).",
   "identity_rule": "A merchant mapping is eligible only when fragrance name, concentration and required volume all match. Gift sets and alternative volumes are exclusion evidence, never substitutes.",
   "absence_rule": "No exact public evidence found means unverified, not unavailable. A later direct Perfumetrader feed/API response or exact merchant product page may supersede this audit; Awin Create-a-Feed is not an available evidence path for this advertiser.",
   "rows": [
-    {
-      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
-      "required_variant": {
-        "concentration": "Eau de Parfum",
-        "volume_ml": 100
-      },
-      "audit_state": "exact_variant_unverified_alternative_only",
-      "mapping_eligible": false,
-      "evidence": [
-        {
-          "url": "https://www.perfumetrader.de/de/lancome-la-vie-est-belle-eau-de-parfum-75-ml",
-          "observed_variant": "75 ml Eau de Parfum",
-          "merchant_product_id": "47714679",
-          "gtin": "3605532612836",
-          "exclusion_reason": "volume_mismatch"
-        }
-      ],
-      "next_evidence": "direct_perfumetrader_data_or_exact_100_ml_product_page"
-    },
-    {
-      "product_id": "SC-PDM-DELINA-EDP-75",
-      "required_variant": {
-        "concentration": "Eau de Parfum",
-        "volume_ml": 75
-      },
-      "audit_state": "no_exact_public_evidence_found",
-      "mapping_eligible": false,
-      "evidence": [],
-      "note": "Site-scoped exact-variant research found no reliable Perfumetrader product evidence in this pass; do not infer merchant unavailability.",
-      "next_evidence": "direct_perfumetrader_data_or_exact_75_ml_product_page"
-    },
-    {
-      "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
-      "required_variant": {
-        "concentration": "Eau de Toilette",
-        "volume_ml": 100
-      },
-      "audit_state": "exact_variant_verified",
-      "mapping_eligible": true,
-      "evidence": [
-        {
-          "url": "https://www.perfumetrader.de/de/dior-hypnotic-poison-eau-de-toilette-100-ml",
-          "observed_variant": "100 ml Eau de Toilette",
-          "merchant_product_id": "33204791",
-          "gtin": "3348900425309",
-          "availability_snapshot": "out_of_stock"
-        }
-      ],
-      "mapping_present": true
-    },
-    {
-      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
-      "required_variant": {
-        "concentration": "Eau de Parfum",
-        "volume_ml": 90
-      },
-      "audit_state": "exact_variant_unverified_alternative_only",
-      "mapping_eligible": false,
-      "evidence": [
-        {
-          "url": "https://www.perfumetrader.de/de/yves-saint-laurent-black-opium-eau-de-parfum-30-ml-10-ml-set",
-          "observed_variant": "30 ml + 10 ml Eau de Parfum gift set",
-          "merchant_product_id": "134588464",
-          "gtin": "3614274769777",
-          "availability_snapshot": "in_stock",
-          "exclusion_reason": "gift_set_and_volume_mismatch"
-        }
-      ],
-      "next_evidence": "direct_perfumetrader_data_or_exact_90_ml_product_page"
-    },
     {
       "product_id": "SC-YSL-LIBRE-EDP-90",
       "required_variant": {
@@ -91,11 +21,64 @@
           "observed_variant": "50 ml + 10 ml Eau de Parfum gift set",
           "merchant_product_id": "134588504",
           "gtin": "3614274776522",
-          "availability_snapshot": "in_stock",
           "exclusion_reason": "gift_set_and_volume_mismatch"
         }
       ],
       "next_evidence": "direct_perfumetrader_data_or_exact_90_ml_product_page"
+    },
+    {
+      "product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+      "required_variant": {
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100
+      },
+      "audit_state": "exact_variant_verified",
+      "mapping_eligible": true,
+      "evidence": [
+        {
+          "source": "existing_verified_dufynd_mapping_registry",
+          "merchant_product_id": "60481349",
+          "gtin": "3346470131408",
+          "note": "Existing DUFYND mapping registry already contains the exact 100 ml Eau de Parfum identity for Perfumetrader; current public search did not produce a stronger direct product-page URL."
+        }
+      ],
+      "mapping_present": true
+    },
+    {
+      "product_id": "SC-BURBERRY-GODDESS-EDP-100",
+      "required_variant": {
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100
+      },
+      "audit_state": "no_exact_public_evidence_found",
+      "mapping_eligible": false,
+      "evidence": [],
+      "note": "Site-scoped exact-variant research on 2026-09-26 found no reliable public Perfumetrader product page for the required 100 ml Eau de Parfum. Do not infer merchant unavailability.",
+      "next_evidence": "direct_perfumetrader_data_or_exact_100_ml_product_page"
+    },
+    {
+      "product_id": "SC-PRADA-PARADOXE-EDP-90",
+      "required_variant": {
+        "concentration": "Eau de Parfum",
+        "volume_ml": 90
+      },
+      "audit_state": "no_exact_public_evidence_found",
+      "mapping_eligible": false,
+      "evidence": [],
+      "note": "Site-scoped exact-variant research on 2026-09-26 found no reliable public Perfumetrader product page for the required 90 ml Eau de Parfum. Do not infer merchant unavailability.",
+      "next_evidence": "direct_perfumetrader_data_or_exact_90_ml_product_page"
+    },
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "required_variant": {
+        "concentration": "Eau de Parfum",
+        "volume_ml": 75
+      },
+      "audit_state": "no_exact_public_evidence_found",
+      "mapping_eligible": false,
+      "evidence": [],
+      "note": "Site-scoped exact-variant research found no reliable Perfumetrader product evidence in this pass; do not infer merchant unavailability.",
+      "next_evidence": "direct_perfumetrader_data_or_exact_75_ml_product_page"
     }
   ],
   "source_availability": {
