@@ -222,7 +222,9 @@ export default function FragranceOffers({
                   </span>
                   {best ? (
                     <span className="rounded-full bg-(--ink) px-2 py-0.5 text-[9.5px] font-semibold uppercase tracking-[0.08em] text-(--surface)">
-                      Bester Gesamtpreis
+                      {offer.total_price != null
+                        ? "Bester Gesamtpreis"
+                        : "Beste verfügbare Option"}
                     </span>
                   ) : null}
                   <span
