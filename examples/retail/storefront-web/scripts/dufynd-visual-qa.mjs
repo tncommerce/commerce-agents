@@ -282,12 +282,21 @@ try {
           !["home", "catalog"].includes(target.name)
         ) {
           const mobileOfferBar = page.locator(".dufynd-mobile-offer-bar");
+          if ((await mobileOfferBar.count()) !== 0) {
+            throw new Error(
+              "mobile offer bar duplicates the hero CTA before scrolling",
+            );
+          }
+
+          await page.locator("#angebote").scrollIntoViewIfNeeded();
+          await page.waitForTimeout(120);
+
           if (
             (await mobileOfferBar.count()) !== 1 ||
             !(await mobileOfferBar.isVisible())
           ) {
             throw new Error(
-              "mobile fragrance page is missing the fixed offer bar",
+              "mobile fragrance page does not reveal the fixed offer bar after the hero leaves view",
             );
           }
 
@@ -302,6 +311,9 @@ try {
               `mobile offer bar lacks safe-area bottom padding: ${bottomPadding}px`,
             );
           }
+
+          await page.evaluate(() => window.scrollTo(0, 0));
+          await page.waitForTimeout(120);
         }
 
         if (target.name === "naxos") {
