@@ -293,12 +293,51 @@ try {
           !["home", "catalog"].includes(target.name)
         ) {
           const mobileOfferBar = page.locator(".dufynd-mobile-offer-bar");
+          const heroOfferCta = page.locator("#dufynd-hero-offer-cta");
+          const heroCtaVisible = await heroOfferCta.evaluate((element) => {
+            const bounds = element.getBoundingClientRect();
+            return (
+              bounds.bottom > 0 &&
+              bounds.top < window.innerHeight &&
+              bounds.right > 0 &&
+              bounds.left < window.innerWidth
+            );
+          });
+          if (heroCtaVisible && (await mobileOfferBar.count()) !== 0) {
+            throw new Error(
+              "mobile offer bar duplicates the visible hero CTA",
+            );
+          }
+
+          await heroOfferCta.evaluate((element) => {
+            const bounds = element.getBoundingClientRect();
+            const targetTop =
+              window.scrollY +
+              bounds.bottom +
+              Math.max(48, window.innerHeight * 0.08);
+            window.scrollTo({ top: targetTop, behavior: "instant" });
+          });
+          await page.waitForFunction(
+            () => {
+              const trigger = document.querySelector("#dufynd-hero-offer-cta");
+              const bar = document.querySelector(".dufynd-mobile-offer-bar");
+              if (!trigger || !bar) return false;
+              const bounds = trigger.getBoundingClientRect();
+              return (
+                bounds.bottom <= 0 &&
+                bar.getBoundingClientRect().height > 0
+              );
+            },
+            undefined,
+            { timeout: 2000 },
+          );
+
           if (
             (await mobileOfferBar.count()) !== 1 ||
             !(await mobileOfferBar.isVisible())
           ) {
             throw new Error(
-              "mobile fragrance page is missing the fixed offer bar",
+              "mobile fragrance page does not reveal the fixed offer bar after the hero CTA leaves view",
             );
           }
 
@@ -313,6 +352,9 @@ try {
               `mobile offer bar lacks safe-area bottom padding: ${bottomPadding}px`,
             );
           }
+
+          await page.evaluate(() => window.scrollTo(0, 0));
+          await page.waitForTimeout(120);
         }
 
         if (target.name === "naxos") {
