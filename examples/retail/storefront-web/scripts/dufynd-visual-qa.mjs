@@ -585,6 +585,18 @@ try {
         }
 
         if (target.name === "catalog") {
+          const catalogPage = page.locator("main.dufynd-catalog-page");
+          if ((await catalogPage.count()) !== 1) {
+            throw new Error(
+              "catalog is missing the DUFYND editorial page ground",
+            );
+          }
+          if ((await page.locator("header.dufynd-catalog-header").count()) !== 1) {
+            throw new Error(
+              "catalog is missing the scoped DUFYND header treatment",
+            );
+          }
+
           const catalogCards = page.locator('article');
           const catalogLoadMore = page.getByRole("button", {
             name: /Weitere 12 Düfte anzeigen/,
