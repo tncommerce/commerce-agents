@@ -260,6 +260,8 @@ class MockRetail(StorefrontBackend):
             "sweetness",
             "woodiness",
             "spiciness",
+            DELIVERY_ATTRIBUTE,
+            LOW_STOCK_ATTRIBUTE,
         }
 
         attributes = {
