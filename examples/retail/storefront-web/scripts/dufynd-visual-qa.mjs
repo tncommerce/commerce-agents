@@ -298,11 +298,22 @@ try {
             );
           }
 
-          await page.locator("#angebote").scrollIntoViewIfNeeded();
+          await heroOfferCta.evaluate((element) => {
+            const bounds = element.getBoundingClientRect();
+            const targetTop =
+              window.scrollY + bounds.bottom + Math.max(48, window.innerHeight * 0.08);
+            window.scrollTo({ top: targetTop, behavior: "instant" });
+          });
           await page.waitForFunction(
-            () => Boolean(document.querySelector(".dufynd-mobile-offer-bar")),
+            () => {
+              const trigger = document.querySelector("#dufynd-hero-offer-cta");
+              const bar = document.querySelector(".dufynd-mobile-offer-bar");
+              if (!trigger || !bar) return false;
+              const bounds = trigger.getBoundingClientRect();
+              return bounds.bottom <= 0 && bar.getBoundingClientRect().height > 0;
+            },
             undefined,
-            { timeout: 1500 },
+            { timeout: 2000 },
           );
 
           if (
