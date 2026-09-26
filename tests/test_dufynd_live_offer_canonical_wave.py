@@ -16,7 +16,7 @@ EXPECTED = {
         "merchant_product_id": "1068008",
         "price": 94,
         "product_url": "https://www.douglas.de/de/p/5011160013",
-        "last_updated_at": "2026-09-26T16:03:00Z"
+        "last_updated_at": "2026-09-26T16:03:00Z",
     },
     "parfum-zentrum-naxos-100": {
         "product_id": "SC-XERJOFF-NAXOS-100",
@@ -24,7 +24,7 @@ EXPECTED = {
         "merchant_product_id": "136149",
         "price": 170.71,
         "product_url": "https://www.parfum-zentrum.de/xerjoff-xj-1861-naxos-eau-de-parfum-100-ml-unisex_z775656/",
-        "last_updated_at": "2026-09-26T16:03:00Z"
+        "last_updated_at": "2026-09-26T16:03:00Z",
     },
     "notino-naxos-100": {
         "product_id": "SC-XERJOFF-NAXOS-100",
@@ -32,7 +32,7 @@ EXPECTED = {
         "merchant_product_id": "XEF3191",
         "price": 192,
         "product_url": "https://www.notino.de/xerjoff/xj-1861-naxos-eau-de-parfum-unisex/",
-        "last_updated_at": "2026-09-26T16:03:00Z"
+        "last_updated_at": "2026-09-26T16:03:00Z",
     },
     "douglas-montblanc-explorer-100": {
         "product_id": "SC-MONTBLANC-EXPLORER-100",
@@ -40,7 +40,7 @@ EXPECTED = {
         "merchant_product_id": "058199",
         "price": 79.99,
         "product_url": "https://www.douglas.de/de/p/3001052849",
-        "last_updated_at": "2026-09-26T16:03:00Z"
+        "last_updated_at": "2026-09-26T16:03:00Z",
     },
     "douglas-bleu-de-chanel-edp-100": {
         "product_id": "SC-CHANEL-BLEU-DE-CHANEL-EDP-100",
@@ -48,7 +48,7 @@ EXPECTED = {
         "merchant_product_id": "819601",
         "price": 109,
         "product_url": "https://www.douglas.de/de/p/3001004983?variant=819601",
-        "last_updated_at": "2026-09-26T16:03:00Z"
+        "last_updated_at": "2026-09-26T16:03:00Z",
     },
     "douglas-valentino-uomo-born-in-roma-intense-100": {
         "product_id": "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
@@ -56,7 +56,7 @@ EXPECTED = {
         "merchant_product_id": "1073334",
         "price": 119,
         "product_url": "https://www.douglas.de/de/p/5010863001?variant=1073334",
-        "last_updated_at": "2026-09-26T16:03:00Z"
+        "last_updated_at": "2026-09-26T16:03:00Z",
     },
     "douglas-prada-lhomme-100": {
         "product_id": "SC-PRADA-LHOMME-100",
@@ -64,7 +64,7 @@ EXPECTED = {
         "merchant_product_id": "936318",
         "price": 109.99,
         "product_url": "https://www.douglas.de/de/p/3001030828",
-        "last_updated_at": "2026-09-26T16:03:00Z"
+        "last_updated_at": "2026-09-26T16:03:00Z",
     },
     "douglas-dior-sauvage-edp-100": {
         "product_id": "SC-DIOR-SAUVAGE-EDP-100",
@@ -72,7 +72,7 @@ EXPECTED = {
         "merchant_product_id": "995604",
         "price": 97,
         "product_url": "https://www.douglas.de/de/p/3001042193?variant=995604",
-        "last_updated_at": "2026-09-26T16:03:00Z"
+        "last_updated_at": "2026-09-26T16:03:00Z",
     },
     "douglas-armani-swy-intensely-100": {
         "product_id": "SC-ARMANI-SWY-INTENSELY-100",
@@ -80,8 +80,8 @@ EXPECTED = {
         "merchant_product_id": "063552",
         "price": 79.99,
         "product_url": "https://www.douglas.de/de/p/3001052351?variant=063552",
-        "last_updated_at": "2026-09-26T14:33:00Z"
-    }
+        "last_updated_at": "2026-09-26T14:33:00Z",
+    },
 }
 
 
