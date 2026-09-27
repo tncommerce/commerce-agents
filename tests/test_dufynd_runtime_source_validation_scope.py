@@ -9,6 +9,7 @@ PRODUCTS = Path("examples/retail/data/scentai_products.json")
 FRAGRANCE_CATALOG = Path("examples/retail/storefront-web/lib/fragranceCatalog.ts")
 MOCK_RETAIL = Path("examples/retail/api/mock_retail.py")
 API_MAIN = Path("examples/retail/api/main.py")
+SEO_GENERATOR = Path("examples/retail/storefront-web/scripts/generate-launch-seo.mjs")
 
 
 def test_source_data_has_a_real_blocked_product_fixture() -> None:
@@ -52,3 +53,10 @@ def test_offer_runtime_reuses_customer_visibility_gate() -> None:
 
     assert "backend.customer_product(product_id)" in helper
     assert "backend.product(product_id)" not in helper
+
+def test_sitemap_excludes_source_blocked_fragrances() -> None:
+    source = SEO_GENERATOR.read_text(encoding="utf-8")
+
+    assert "sourceProduct?.validation?.blockers" in source
+    assert '!blockers.some((blocker) => String(blocker || "").trim())' in source
+
