@@ -40,6 +40,11 @@ def candidate(
     concentration: str,
     volume_ml: int,
     review_status: str = "pending_review",
+    source_class: str = "dufynd_owned_original_photography",
+    license_name: str | None = None,
+    license_url: str | None = None,
+    attribution_text: str | None = None,
+    share_alike_required: bool | None = None,
 ) -> dict:
     return {
         "product_id": product_id,
@@ -49,7 +54,7 @@ def candidate(
         "volume_ml": volume_ml,
         "image_url": f"/products/{product_id}.jpg",
         "review_status": review_status,
-        "source_class": "dufynd_owned_original_photography",
+        "source_class": source_class,
         "proposed_image_status": "approved_licensed_image",
         "exact_variant_verified": True,
         "registered_at": "2026-09-27T15:00:00+00:00",
@@ -60,6 +65,19 @@ def candidate(
             "rights_checked_at": "2026-09-27",
             "commercial_use_allowed": True,
             "public_distribution_allowed": True,
+            **(
+                {
+                    "license_name": license_name,
+                    "license_url": license_url,
+                    "attribution_text": attribution_text,
+                    "share_alike_required": share_alike_required,
+                }
+                if license_name is not None
+                or license_url is not None
+                or attribution_text is not None
+                or share_alike_required is not None
+                else {}
+            ),
         },
     }
 
@@ -162,6 +180,32 @@ def test_packet_rejects_incomplete_or_unverified_rights() -> None:
     row["rights_evidence"]["commercial_use_allowed"] = False
 
     with pytest.raises(ValueError, match="candidate_commercial_use_not_allowed:SC-A-50"):
+        review_packet(staging_payload(), payload(row))
+
+
+def test_packet_surfaces_licensed_provider_attribution_metadata() -> None:
+    row = candidate(
+        "SC-A-50",
+        brand="Brand A",
+        name="Fragrance A",
+        concentration="Eau de Toilette",
+        volume_ml=50,
+        source_class="licensed_asset_provider",
+        license_name="CC BY-SA 3.0",
+        license_url="https://creativecommons.org/licenses/by-sa/3.0/",
+        attribution_text="Open Beauty Facts contributors",
+        share_alike_required=True,
+    )
+    packet = review_packet(staging_payload(), payload(row))
+    item = packet["items"][0]
+
+    assert item["license_name"] == "CC BY-SA 3.0"
+    assert item["license_url"] == "https://creativecommons.org/licenses/by-sa/3.0/"
+    assert item["attribution_text"] == "Open Beauty Facts contributors"
+    assert item["share_alike_required"] is True
+
+    row["rights_evidence"].pop("attribution_text")
+    with pytest.raises(ValueError, match="candidate_license_metadata_incomplete:SC-A-50"):
         review_packet(staging_payload(), payload(row))
 
 

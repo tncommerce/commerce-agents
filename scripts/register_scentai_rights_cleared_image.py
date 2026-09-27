@@ -7,6 +7,7 @@ from pathlib import Path
 
 from scripts.approve_scentai_rights_cleared_image import (
     APPROVABLE_SOURCE_CLASSES,
+    valid_https_url,
     valid_image_target,
 )
 
@@ -38,12 +39,19 @@ def registration_plan(
     commercial_use_allowed: bool,
     public_distribution_allowed: bool,
     evidence_note: str | None = None,
+    license_name: str | None = None,
+    license_url: str | None = None,
+    attribution_text: str | None = None,
+    share_alike_required: bool | None = None,
 ) -> dict:
     product_id = product_id.strip()
     image_url = image_url.strip()
     source_class = source_class.strip()
     rights_basis_id = rights_basis_id.strip()
     rights_checked_at = rights_checked_at.strip()
+    license_name = str(license_name or "").strip() or None
+    license_url = str(license_url or "").strip() or None
+    attribution_text = str(attribution_text or "").strip() or None
 
     if not product_id:
         raise ValueError("product_id_required")
@@ -59,6 +67,14 @@ def registration_plan(
         raise ValueError("candidate_public_distribution_not_allowed")
     if not rights_basis_id or not rights_checked_at:
         raise ValueError("candidate_rights_evidence_incomplete")
+
+    if source_class == "licensed_asset_provider":
+        if not license_name or not license_url or not attribution_text:
+            raise ValueError("candidate_license_metadata_incomplete")
+        if not valid_https_url(license_url):
+            raise ValueError("candidate_license_url_must_be_https")
+        if not isinstance(share_alike_required, bool):
+            raise ValueError("candidate_share_alike_requirement_missing")
 
     payload_status = str(candidates_payload.get("status") or "").strip()
     if payload_status and payload_status != "review_only_not_live":
@@ -96,6 +112,14 @@ def registration_plan(
             "public_distribution_allowed": True,
         },
     }
+    if license_name:
+        candidate["rights_evidence"]["license_name"] = license_name
+    if license_url:
+        candidate["rights_evidence"]["license_url"] = license_url
+    if attribution_text:
+        candidate["rights_evidence"]["attribution_text"] = attribution_text
+    if share_alike_required is not None:
+        candidate["rights_evidence"]["share_alike_required"] = share_alike_required
     if evidence_note:
         candidate["evidence_note"] = evidence_note.strip()
 
@@ -163,6 +187,14 @@ def main() -> int:
     parser.add_argument("--rights-basis-id", required=True)
     parser.add_argument("--rights-checked-at", required=True)
     parser.add_argument("--evidence-note")
+    parser.add_argument("--license-name")
+    parser.add_argument("--license-url")
+    parser.add_argument("--attribution-text")
+    parser.add_argument(
+        "--share-alike-required",
+        action=argparse.BooleanOptionalAction,
+        default=None,
+    )
     parser.add_argument("--exact-variant-verified", action="store_true")
     parser.add_argument("--commercial-use-allowed", action="store_true")
     parser.add_argument("--public-distribution-allowed", action="store_true")
@@ -187,6 +219,10 @@ def main() -> int:
             commercial_use_allowed=args.commercial_use_allowed,
             public_distribution_allowed=args.public_distribution_allowed,
             evidence_note=args.evidence_note,
+            license_name=args.license_name,
+            license_url=args.license_url,
+            attribution_text=args.attribution_text,
+            share_alike_required=args.share_alike_required,
         )
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         parser.error(str(exc))

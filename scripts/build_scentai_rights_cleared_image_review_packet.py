@@ -72,9 +72,20 @@ def review_packet(
         if not rights_basis_id or not rights_checked_at:
             raise ValueError(f"candidate_rights_evidence_incomplete:{product_id}")
 
+        license_name = _norm(rights.get("license_name")) or None
+        license_url = _norm(rights.get("license_url")) or None
+        attribution_text = _norm(rights.get("attribution_text")) or None
+        share_alike_required = rights.get("share_alike_required")
+
         source_class = _norm(candidate.get("source_class"))
         proposed_image_status = _norm(candidate.get("proposed_image_status"))
         image_url = _norm(candidate.get("image_url"))
+
+        if source_class == "licensed_asset_provider":
+            if not license_name or not license_url or not attribution_text:
+                raise ValueError(f"candidate_license_metadata_incomplete:{product_id}")
+            if not isinstance(share_alike_required, bool):
+                raise ValueError(f"candidate_share_alike_requirement_missing:{product_id}")
         if not source_class or not proposed_image_status or not image_url:
             raise ValueError(f"candidate_review_metadata_incomplete:{product_id}")
 
@@ -97,6 +108,10 @@ def review_packet(
                 "rights_checked_at": rights_checked_at,
                 "commercial_use_allowed": True,
                 "public_distribution_allowed": True,
+                "license_name": license_name,
+                "license_url": license_url,
+                "attribution_text": attribution_text,
+                "share_alike_required": share_alike_required,
                 "approval_action_class": APPROVAL_ACTION_CLASS,
                 "next_action": "human_visual_review",
             }
