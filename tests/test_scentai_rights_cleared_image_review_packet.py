@@ -234,12 +234,12 @@ def test_current_repo_approved_candidate_is_not_requeued_for_visual_review() -> 
     assert packet["items"] == []
 
     candidate = next(
-        row for row in candidates["candidates"]
+        row
+        for row in candidates["candidates"]
         if row["product_id"] == "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100"
     )
     product = next(
-        row for row in staging["products"]
-        if row["product_id"] == candidate["product_id"]
+        row for row in staging["products"] if row["product_id"] == candidate["product_id"]
     )
     assert candidate["review_status"] == "approved"
     assert candidate["visual_approval_basis"] == "explicit_user_visual_approval_2026-09-27"
