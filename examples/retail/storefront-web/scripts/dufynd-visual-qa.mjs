@@ -575,13 +575,14 @@ try {
             );
           }
           if (viewport.width <= 480) {
-            await explodedStage.evaluate(
+            // The mobile min-height expands over 420 ms. Wait for the rendered
+            // state rather than sampling two frames into the transition.
+            await page.waitForFunction(
               () =>
-                new Promise((resolve) =>
-                  requestAnimationFrame(() =>
-                    requestAnimationFrame(resolve),
-                  ),
-                ),
+                (document.querySelector("#dufynd-exploded-stage")?.getBoundingClientRect()
+                  .height ?? 0) >= 430,
+              null,
+              { timeout: 2000 },
             );
             const expandedHeight = await explodedStage.evaluate(
               (element) => element.getBoundingClientRect().height,
