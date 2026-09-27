@@ -54,9 +54,9 @@ def test_offer_runtime_reuses_customer_visibility_gate() -> None:
     assert "backend.customer_product(product_id)" in helper
     assert "backend.product(product_id)" not in helper
 
+
 def test_sitemap_excludes_source_blocked_fragrances() -> None:
     source = SEO_GENERATOR.read_text(encoding="utf-8")
 
     assert "sourceProduct?.validation?.blockers" in source
     assert '!blockers.some((blocker) => String(blocker || "").trim())' in source
-
