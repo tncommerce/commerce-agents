@@ -253,6 +253,9 @@ export async function generateMetadata({
     `${fragrance.brand} ${fragrance.name} – Duftprofil & Angebote`;
   const description = descriptionFor(fragrance);
   const canonical = `/duft/${fragrance.slug}`;
+  const shareImage = isVerifiedProductTruthVisual(fragrance.preferred_visual)
+    ? fragrance.preferred_visual?.url
+    : null;
 
   return {
     title,
@@ -265,19 +268,13 @@ export async function generateMetadata({
       url: `${SITE_URL}${canonical}`,
       title,
       description,
-      images: fragrance.preferred_visual?.url
-        ? [fragrance.preferred_visual.url]
-        : undefined,
+      images: shareImage ? [shareImage] : undefined,
     },
     twitter: {
-      card: fragrance.preferred_visual?.url
-        ? "summary_large_image"
-        : "summary",
+      card: shareImage ? "summary_large_image" : "summary",
       title,
       description,
-      images: fragrance.preferred_visual?.url
-        ? [fragrance.preferred_visual.url]
-        : undefined,
+      images: shareImage ? [shareImage] : undefined,
     },
   };
 }

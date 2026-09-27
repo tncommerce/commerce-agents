@@ -29,4 +29,6 @@ def test_product_pages_override_social_metadata() -> None:
 
     assert "twitter: {" in source
     assert '"summary_large_image"' in source
-    assert "images: fragrance.preferred_visual?.url" in source
+    assert "isVerifiedProductTruthVisual(fragrance.preferred_visual)" in source
+    assert "images: shareImage ? [shareImage] : undefined" in source
+    assert 'card: shareImage ? "summary_large_image" : "summary"' in source
