@@ -41,8 +41,7 @@ def test_legacy_live_catalog_prices_are_market_references() -> None:
 
     assert legacy
     assert all(
-        (row.get("attributes") or {}).get("price_source") == "market_reference"
-        for row in legacy
+        (row.get("attributes") or {}).get("price_source") == "market_reference" for row in legacy
     )
 
 
