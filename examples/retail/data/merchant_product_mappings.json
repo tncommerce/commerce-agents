@@ -544,6 +544,20 @@
       "merchant_product_id": "620496",
       "ean": "3616302038633",
       "gtin": "3616302038633"
+    },
+    {
+      "product_id": "SC-JPG-LE-MALE-ELIXIR-PARFUM-125",
+      "merchant": "douglas",
+      "merchant_product_id": "5010945026-1092117",
+      "ean": "8435415076944",
+      "gtin": "8435415076944"
+    },
+    {
+      "product_id": "SC-JPG-LE-MALE-ELIXIR-PARFUM-125",
+      "merchant": "perfumetrader",
+      "merchant_product_id": "175217782",
+      "ean": "8435415076944",
+      "gtin": "8435415076944"
     }
   ]
 }

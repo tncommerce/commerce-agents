@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "observed_at": "2026-09-27T20:18:22Z",
+  "product_id": "SC-JPG-LE-MALE-ELIXIR-PARFUM-125",
+  "merchant": "Douglas DE",
+  "merchant_product_id": "5010945026-1092117",
+  "product_url": "https://www.douglas.de/de/p/5010945026?variant=1092117",
+  "observation_method": "current_public_merchant_page_read_only",
+  "identity": {
+    "brand": "Jean Paul Gaultier",
+    "name": "Le Male Elixir",
+    "concentration": "Parfum",
+    "volume_ml": 125,
+    "gtin": "8435415076944",
+    "gtin_corrob_source": "https://www.perfumetrader.de/de/jean-paul-gaultier-le-male-elixir-parfum-125-ml",
+    "gtin_corrob_note": "Perfumetrader lists EAN 8435415076944 for Le Male Elixir Parfum 125 ml, article 175217782. Douglas page identifies selected variant 1092117 as the 125 ml Parfum. This is neither Le Male Le Parfum nor Le Male Elixir Absolu."
+  },
+  "live_observation": {
+    "listed_price_eur": 119,
+    "shipping_cost_eur": 0,
+    "availability": "Online auf Lager; add-to-cart visible",
+    "delivery_note": "Versandkostenfrei; delivery 29 September to 1 October 2026 shown. Discount code price was not used."
+  },
+  "rights_or_affiliate_impact": {
+    "image_rights_granted": false,
+    "affiliate_tracking_verified": false,
+    "final_image_approval_granted": false
+  },
+  "freshness_policy": "Offer qualifies only while last_updated_at is within the 72-hour merchant-offer window. No live catalog promotion."
+}

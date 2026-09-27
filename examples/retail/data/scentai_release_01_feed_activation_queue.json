@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-27T20:14:05Z",
-  "source_fingerprint_sha256": "5bffcfa17394a17a9996ebc4dcc22b912ff17508081a29f55b51685a6dee2473",
+  "generated_at": "2026-09-27T20:18:22Z",
+  "source_fingerprint_sha256": "f0e96ec61388c2e590d4a962bcf36c3b75330e70e0704f1aac91aa7803ebb72f",
   "release_id": "SCENTAI-RELEASE-01",
   "purpose": "Jarvis-ready affiliate/feed activation queue. Operational integration coverage only; never use commission to rank fragrances or customer-facing merchant offers.",
   "policy_ref": "scentai_jarvis_operating_policy.json",
