@@ -57,6 +57,18 @@ partner_store = MerchantPartnerStore(DATA_DIR / "merchant_partners.json")
 clickout_tracker = MerchantClickoutTracker(DATA_DIR / ".merchant_clickouts.jsonl")
 analytics_tracker = FirstPartyAnalyticsTracker(DATA_DIR / ".analytics_events.jsonl")
 backend = MockRetail(offer_store=offer_store)
+
+
+def _live_dufynd_offer_product(product_id: str) -> bool:
+    product = backend.product(product_id)
+    return bool(
+        product is not None
+        and product.product_id.startswith("SC-")
+        and product.category == "fragrance"
+        and product.in_stock
+    )
+
+
 agent = ShoppingAgent(
     backend=backend,
     skills_dir=REPO_ROOT / "shopping-agent" / "skills",
@@ -153,6 +165,9 @@ async def merchant_partner_clickout(
 
 @app.get("/api/merchant-offers/{product_id}")
 async def product_offers(product_id: str) -> dict:
+    if not _live_dufynd_offer_product(product_id):
+        raise HTTPException(status_code=404, detail="Product not available")
+
     offers = offer_store.offers_for(product_id)
 
     return {
@@ -198,7 +213,7 @@ async def merchant_clickout(
     sid: str | None = None,
 ) -> RedirectResponse:
     offer = offer_store.eligible_offer(offer_id)
-    if offer is None:
+    if offer is None or not _live_dufynd_offer_product(offer.product_id):
         raise HTTPException(status_code=404, detail="Offer not available")
 
     target = offer_clickout_target(offer)
