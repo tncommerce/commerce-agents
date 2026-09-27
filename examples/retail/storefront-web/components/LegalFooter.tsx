@@ -15,6 +15,9 @@ export default function LegalFooter() {
         <a href="/transparenz" className="font-medium text-(--accent-ink) hover:underline">
           Transparenz
         </a>
+        <a href="/bildnachweise" className="font-medium text-(--accent-ink) hover:underline">
+          Bildnachweise
+        </a>
         <a href="/duftfinder" className="font-medium text-(--accent-ink) hover:underline">
           Duftfinder
         </a>
