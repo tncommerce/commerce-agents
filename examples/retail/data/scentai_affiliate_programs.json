@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "updated_at": "2026-09-22",
+  "updated_at": "2026-09-27",
   "network": "Awin",
   "publisher": "DUFYND",
   "applications": [
@@ -55,7 +55,7 @@
     },
     {
       "program": "top Parfümerie DE",
-      "status": "applied",
+      "status": "approved",
       "applied_at": "2026-09-18",
       "merchant_id": "top-parfuemerie"
     }
@@ -144,6 +144,19 @@
       "program": "Birkholz Perfume Manufacture DE",
       "decision": "open",
       "confidence": "explicit_program_name_in_open_program_list"
+    },
+    {
+      "observed_at": "2026-09-27",
+      "network": "Awin",
+      "merchant_id": "top-parfuemerie",
+      "program": "top Parfümerie DE",
+      "decision": "approved",
+      "approved_since": "2026-09-22",
+      "advertiser_id": 31081,
+      "product_data_available": true,
+      "product_count_reported": 8031,
+      "confidence": "explicit_approved_merchant_profile_and_create_a_feed_screen",
+      "activity_note": "Current account observation supersedes the 2026-09-22 open-program observation. Current feed contents and image rights remain unverified."
     }
   ]
 }

@@ -87,5 +87,18 @@
     "Keep Hypnotic Poison unresolved if absent from feed.",
     "Run release dry-run.",
     "Only then consider activating verified offers."
-  ]
+  ],
+  "current_account_observation": {
+    "observed_at": "2026-09-27",
+    "network": "Awin",
+    "advertiser_id": "31081",
+    "program_status": "approved",
+    "approved_since": "2026-09-22",
+    "product_data_available": true,
+    "current_feed_rows_reported": 8031,
+    "current_feed_updated": "2026-09-27",
+    "current_feed_contents_downloaded": false,
+    "exact_release01_rows_revalidated": false,
+    "note": "Read-only account observation; 8053 rows in source_availability are the historical 2026-09-22 intake and are not a current product-feed export."
+  }
 }
