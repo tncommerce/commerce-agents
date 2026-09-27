@@ -199,6 +199,7 @@ def test_apply_approval_persists_rights_and_source_metadata() -> None:
     assert candidate["review_status"] == "approved"
     assert candidate["rights_status"] == "verified_for_publisher_service"
 
+
 def test_state_machine_recognizes_rights_cleared_non_feed_sources() -> None:
     machine = json.loads(STATE_MACHINE.read_text(encoding="utf-8"))
     source_classes = set(machine["candidate_source_classes"])
@@ -212,4 +213,3 @@ def test_state_machine_recognizes_rights_cleared_non_feed_sources() -> None:
     assert machine["states"]["approved_licensed_image"]["approved"] is True
     assert machine["states"]["approved_manufacturer_image"]["approved"] is True
     assert "rights_cleared_non_feed" in machine["rights_rules"]
-
