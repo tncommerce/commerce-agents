@@ -600,6 +600,13 @@
       "merchant_product_id": "241929",
       "ean": "3349666007921",
       "gtin": "3349666007921"
+    },
+    {
+      "product_id": "SC-YSL-Y-EDP-100",
+      "merchant": "mueller",
+      "merchant_product_id": "2367515",
+      "ean": "3614272050358",
+      "gtin": "3614272050358"
     }
   ]
 }
