@@ -127,6 +127,56 @@ def test_approved_feed_image_requires_persisted_rights_evidence(
     assert "missing_feed_image_rights_evidence" in blockers
 
 
+@pytest.mark.parametrize(
+    "image_status",
+    [
+        "approved_manufacturer_image",
+        "approved_licensed_image",
+    ],
+)
+@pytest.mark.parametrize(
+    "missing_field",
+    [
+        "image_reviewed_at",
+        "image_source_class",
+        "image_rights_basis_id",
+        "image_rights_checked_at",
+    ],
+)
+def test_rights_cleared_images_require_persisted_rights_evidence(
+    image_status: str,
+    missing_field: str,
+) -> None:
+    product = staged_product()
+    product["media"]["image_status"] = image_status
+    product["media"]["image_source_class"] = "dufynd_owned_original_photography"
+    product["media"].pop(missing_field, None)
+
+    blockers = promotion_blockers(
+        product,
+        [affiliate_offer()],
+        now=NOW,
+    )
+
+    assert "missing_rights_cleared_image_evidence" in blockers
+
+
+def test_rights_cleared_licensed_image_with_evidence_passes_image_gate() -> None:
+    product = staged_product()
+    product["media"]["image_status"] = "approved_licensed_image"
+    product["media"]["image_source_class"] = "dufynd_owned_original_photography"
+
+    blockers = promotion_blockers(
+        product,
+        [affiliate_offer()],
+        now=NOW,
+    )
+
+    assert "missing_approved_image" not in blockers
+    assert "image_not_approved" not in blockers
+    assert "missing_rights_cleared_image_evidence" not in blockers
+
+
 def test_ready_product_passes_promotion_gates() -> None:
     product = staged_product()
     offer = affiliate_offer()
