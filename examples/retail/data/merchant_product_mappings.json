@@ -537,6 +537,13 @@
       "merchant_product_id": "2412797",
       "ean": "0888066075145",
       "gtin": "0888066075145"
+    },
+    {
+      "product_id": "SC-CHLOE-CHLOE-EDP-100",
+      "merchant": "sephora",
+      "merchant_product_id": "620496",
+      "ean": "3616302038633",
+      "gtin": "3616302038633"
     }
   ]
 }
