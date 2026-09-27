@@ -7,6 +7,27 @@
   "publisher_feed_guidance_url": "https://help.awin.com/developers/docs/product-feed-publisher-guide-intro",
   "feed_rights_guard": "A feed image may be registered only after access, advertiser programme approval, and asset-use rights for DUFYND are documented; an ordinary merchant product page is an identity reference only.",
   "rights_cleared_image_candidates_ref": "dufynd_rights_cleared_image_candidates.json",
+  "user_supplied_visual_references": [
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "image_filename": "image(20260927-170725).png",
+      "visible_identity": "Delina bottle appearance",
+      "exact_concentration_and_volume_visible": false
+    },
+    {
+      "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+      "image_filename": "image(20260927-170749).png",
+      "visible_identity": "Hypnotic Poison bottle appearance",
+      "exact_concentration_and_volume_visible": false
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "image_filename": "image(20260927-170905).png",
+      "visible_identity": "Libre bottle appearance",
+      "exact_concentration_and_volume_visible": false
+    }
+  ],
+  "user_supplied_visual_references_rights_status": "source and commercial/public redistribution permissions not documented; no image candidate may be registered from these files alone",
   "products": [
     {
       "product_id": "SC-PDM-DELINA-EDP-75",
@@ -71,6 +92,19 @@
       "status": "no_registerable_rights_cleared_image",
       "identity_reference_url": "https://www.yslbeauty.de/dufte/dufte-fur-sie/black-opium/black-opium-eau-de-parfum/WW-40701YSL.html",
       "identity_reference_grants_image_rights": false,
+      "visual_variant_disambiguation": {
+        "requested_release_variant": "Black Opium Eau de Parfum 90 ml, GTIN 3365440787971",
+        "user_reference_image": "image(20260927-170914).png",
+        "visual_match": "Pink circular center: original Black Opium Eau de Parfum bottle appearance. This supplied image shows older label and bottle styling; the current official 90 ml product page shows a redesigned Eau de Parfum bottle with a pink center and YSL Cassandre logo. Confirm the exact photographed packaging against the licensed feed's GTIN before registration.",
+        "excluded_user_reference_image": "image(20260927-170934).png",
+        "excluded_variant": "Black Opium Le Parfum (black glitter center), a separate concentration and product from the release's Eau de Parfum",
+        "official_exact_gtin_reference_url": "https://www.yslbeauty.co.uk/fragrances/fragrances-for-her/black-opium/black-opium-eau-de-parfum/3365440787971.html",
+        "official_other_variant_reference_url": "https://www.yslbeautyus.com/fragrance/womens-fragrances/black-opium/black-opium-le-parfum/WW-51036YSL.html",
+        "user_reference_rights_status": "undocumented; reference images alone do not grant commercial publication or public distribution rights",
+        "reference_images_establish_exact_volume": false,
+        "candidate_registration_allowed_from_reference_images": false,
+        "human_approval_status": "pending_for_any_future_rights_cleared_candidate"
+      },
       "available_next_routes": [
         "authorized_affiliate_or_merchant_feed_with_explicit_product_image_rights",
         "written_brand_or_authorized_distributor_permission",
