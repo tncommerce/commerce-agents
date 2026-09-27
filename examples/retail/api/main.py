@@ -60,7 +60,7 @@ backend = MockRetail(offer_store=offer_store)
 
 
 def _live_dufynd_offer_product(product_id: str) -> bool:
-    product = backend.product(product_id)
+    product = backend.customer_product(product_id)
     return bool(
         product is not None
         and product.product_id.startswith("SC-")
