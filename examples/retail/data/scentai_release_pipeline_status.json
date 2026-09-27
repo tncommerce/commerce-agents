@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-27T17:46:10+00:00",
-  "source_fingerprint_sha256": "d7f68aa5408684396ac51172dbd9fc76840036edb194700b703efc2122db5ce3",
+  "generated_at": "2026-09-27T17:56:02+00:00",
+  "source_fingerprint_sha256": "4032c1df250c0ea277b3573a50099843f790359477a805c1650f55b298e7763a",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "release_count": 3,
   "current_release_id": "SCENTAI-RELEASE-01",

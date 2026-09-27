@@ -57,7 +57,10 @@
       "program": "top Parfümerie DE",
       "status": "approved",
       "applied_at": "2026-09-18",
-      "merchant_id": "top-parfuemerie"
+      "merchant_id": "top-parfuemerie",
+      "product_data_available": true,
+      "current_feed_rows_reported": 8031,
+      "current_feed_updated_at": "2026-09-27"
     }
   ],
   "programming_note": "Existing affiliate applications remain attached to the same TNCommerce publisher. After dufynd.de is publicly verified, update Awin/CJ promotional-site branding and URL from SCENTAI to DUFYND without withdrawing or resubmitting pending program applications. Only integrate a merchant into live affiliate routing after approval and a valid tracked-link/feed strategy is available. Affiliate commission never changes fragrance recommendations; among equal-total, comparably fresh affiliate offers it may break a tie.",
