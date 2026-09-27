@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
+import pytest
 from scripts.approve_scentai_rights_cleared_image import approval_plan
 from scripts.register_scentai_rights_cleared_image import (
     apply_registration,
@@ -8,6 +12,7 @@ from scripts.register_scentai_rights_cleared_image import (
 
 PRODUCT_ID = "SC-TEST-100"
 IMAGE_URL = "/products/release01/test-owned.jpg"
+PLAN = Path("examples/retail/data/dufynd_release01_image_acquisition_plan.json")
 
 
 def staging_payload() -> dict:
@@ -81,7 +86,6 @@ def test_written_manufacturer_permission_targets_manufacturer_status() -> None:
 
 
 def test_intake_requires_exact_variant_and_explicit_rights() -> None:
-    import pytest
 
     with pytest.raises(ValueError, match="candidate_exact_variant_not_verified"):
         plan_for(exact_variant_verified=False)
@@ -125,7 +129,6 @@ def test_repeated_identical_registration_is_idempotent() -> None:
 
 
 def test_conflicting_existing_candidate_is_rejected() -> None:
-    import pytest
 
     payload = candidates_payload()
     first = plan_for(payload=payload)
@@ -162,3 +165,19 @@ def test_registered_candidate_is_compatible_with_approval_dry_run() -> None:
     assert approval["candidate_status"] == "pending_review"
     assert approval["rights_status"] == "verified_for_publisher_service"
     assert approval["will_change"] is True
+
+def test_release01_plan_points_to_rights_cleared_intake_workflow() -> None:
+    plan = json.loads(PLAN.read_text(encoding="utf-8"))
+    intake = plan["rights_cleared_intake"]
+
+    assert intake["candidate_queue"] == "dufynd_rights_cleared_image_candidates.json"
+    assert intake["register_command"] == (
+        "python -m scripts.register_scentai_rights_cleared_image"
+    )
+    assert intake["approval_command"] == (
+        "python -m scripts.approve_scentai_rights_cleared_image"
+    )
+    assert intake["registration_state"] == "pending_review_only"
+    assert intake["final_approval_action_class"] == "approval_required"
+    assert "dufynd_rights_cleared_image_candidates.json" in plan["source_refs"]
+
