@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "updated_at": "2026-09-22",
+  "version": 2,
+  "updated_at": "2026-09-27",
   "status": "active",
   "machine_id": "scentai_image_approval_v1",
   "purpose": "Jarvis-safe lifecycle for production fragrance images used in SCENTAI commerce surfaces.",
@@ -48,6 +48,10 @@
     "revoked": {
       "approved": false,
       "live_eligible": false
+    },
+    "licensed_source_required": {
+      "approved": false,
+      "live_eligible": false
     }
   },
   "transitions": [
@@ -89,6 +93,18 @@
     },
     {
       "from": "rights_or_source_check_pending",
+      "to": "licensed_source_required",
+      "trigger": "official_source_commercial_reuse_not_permitted",
+      "action_class": "auto_allowed"
+    },
+    {
+      "from": "licensed_source_required",
+      "to": "review_ready",
+      "trigger": "licensed_or_dufynd_owned_asset_rights_verified",
+      "action_class": "auto_allowed"
+    },
+    {
+      "from": "rights_or_source_check_pending",
       "to": "rejected",
       "trigger": "source_or_usage_not_acceptable",
       "action_class": "auto_allowed"
@@ -125,7 +141,8 @@
   "candidate_source_classes": [
     "approved_affiliate_feed",
     "manufacturer_official",
-    "licensed_asset_provider"
+    "licensed_asset_provider",
+    "dufynd_owned_original"
   ],
   "hard_rejections": [
     "wrong_fragrance",
@@ -137,7 +154,7 @@
     "generated_bottle_lookalike",
     "unclear_or_unverified_source_rights"
   ],
-  "approval_rule": "Final visual approval is a human/user approval gate. Jarvis may discover, normalize, validate and prepare candidates but may not set an approved_* state by itself. Affiliate-feed candidates additionally require a verified rights-registry match before approval.",
+  "approval_rule": "Final visual approval is a human/user approval gate. Jarvis may discover, normalize, validate, acquire and prepare candidates but may not set an approved_* state by itself. Affiliate-feed candidates require a verified rights-registry match; licensed or DUFYND-owned originals require recorded provenance and rights evidence before review_ready.",
   "rights_registry_ref": "dufynd_affiliate_feed_image_rights.json",
   "rights_rules": {
     "affiliate_feed": [
@@ -147,6 +164,13 @@
       "rights_status_must_be_verified_for_publisher_service",
       "final_visual_approval_remains_human_required"
     ],
-    "safety_note": "Feed presence alone never proves production image approval. Rights/source verification and human visual identity approval are separate gates."
+    "safety_note": "Feed presence, official-brand reference pages, or image availability alone never proves production image approval. Rights/source verification and human visual identity approval are separate gates.",
+    "licensed_or_owned_asset": [
+      "exact_variant_identity_must_remain_verified",
+      "asset_provenance_must_be_recorded",
+      "rights_basis_must_be_recorded_as_dufynd_ownership_explicit_permission_or_licensed_provider",
+      "generated_bottle_lookalikes_are_not_valid_commerce_assets",
+      "final_visual_approval_remains_human_required"
+    ]
   }
 }
