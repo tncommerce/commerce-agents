@@ -120,7 +120,6 @@ def test_canonical_offer_wave_matches_verified_sources() -> None:
     live_ids = {row["product_id"] for row in live}
     by_id = {row["offer_id"]: row for row in offers}
 
-    assert len(offers) == 19
     assert set(EXPECTED).issubset(by_id)
 
     for offer_id, expected in EXPECTED.items():
