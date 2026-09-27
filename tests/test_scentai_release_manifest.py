@@ -54,7 +54,10 @@ def test_release_batch_01_dry_run_stays_blocked_until_real_assets_exist() -> Non
     assert plan["blocked_count"] == 5
 
     for row in plan["rows"]:
-        assert "missing_approved_image" in row["blockers"]
+        if row["product_id"] == "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100":
+            assert "missing_approved_image" not in row["blockers"]
+        else:
+            assert "missing_approved_image" in row["blockers"]
         if row["product_id"] in {"SC-PDM-DELINA-EDP-75", "SC-YSL-LIBRE-EDP-90"}:
             assert row["eligible_purchase_offers"] == 1
             assert "missing_current_purchase_destination" not in row["blockers"]
