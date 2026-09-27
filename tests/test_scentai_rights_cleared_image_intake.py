@@ -166,18 +166,14 @@ def test_registered_candidate_is_compatible_with_approval_dry_run() -> None:
     assert approval["rights_status"] == "verified_for_publisher_service"
     assert approval["will_change"] is True
 
+
 def test_release01_plan_points_to_rights_cleared_intake_workflow() -> None:
     plan = json.loads(PLAN.read_text(encoding="utf-8"))
     intake = plan["rights_cleared_intake"]
 
     assert intake["candidate_queue"] == "dufynd_rights_cleared_image_candidates.json"
-    assert intake["register_command"] == (
-        "python -m scripts.register_scentai_rights_cleared_image"
-    )
-    assert intake["approval_command"] == (
-        "python -m scripts.approve_scentai_rights_cleared_image"
-    )
+    assert intake["register_command"] == ("python -m scripts.register_scentai_rights_cleared_image")
+    assert intake["approval_command"] == ("python -m scripts.approve_scentai_rights_cleared_image")
     assert intake["registration_state"] == "pending_review_only"
     assert intake["final_approval_action_class"] == "approval_required"
     assert "dufynd_rights_cleared_image_candidates.json" in plan["source_refs"]
-
