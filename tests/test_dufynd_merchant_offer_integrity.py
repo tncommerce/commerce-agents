@@ -30,9 +30,7 @@ def test_offer_ids_are_unique_and_products_are_known() -> None:
     offer_ids = [row["offer_id"] for row in offers]
     assert len(offer_ids) == len(set(offer_ids))
 
-    unknown = sorted(
-        {row["product_id"] for row in offers if row["product_id"] not in known_ids}
-    )
+    unknown = sorted({row["product_id"] for row in offers if row["product_id"] not in known_ids})
     assert not unknown, f"merchant offers reference unknown products: {unknown}"
 
 
