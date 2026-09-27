@@ -102,6 +102,7 @@ def test_approved_image_overrides_candidate_pending_state() -> None:
     assert row["next_action"] == "none"
     assert queue["summary"]["approved_images"] == 1
 
+
 def test_explicit_reuse_restriction_requires_licensed_source() -> None:
     staging = {
         "products": [
