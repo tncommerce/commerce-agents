@@ -146,9 +146,7 @@ def build_queue(
             if not licensed_source_required:
                 next_action = str(
                     candidate.get("next_action")
-                    or (
-                        "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage"
-                    )
+                    or ("prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage")
                 )
         else:
             image_state = "missing"
