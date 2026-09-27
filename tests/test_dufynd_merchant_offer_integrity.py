@@ -80,3 +80,40 @@ def test_release02_pure_musc_offer_is_exact_and_untracked() -> None:
         and row["gtin"] == evidence["identity"]["gtin"]
         for row in mappings
     )
+
+
+def test_release03_additional_offers_match_observed_variants() -> None:
+    evidence = json.loads(
+        Path("examples/retail/data/dufynd_release03_additional_purchase_evidence.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    mappings = json.loads(
+        Path("examples/retail/data/merchant_product_mappings.json").read_text(encoding="utf-8")
+    )["mappings"]
+    offers = {row["product_id"]: row for row in _offers()}
+
+    assert len(evidence["products"]) == 3
+    assert evidence["rights_or_affiliate_impact"] == {
+        "image_rights_granted": False,
+        "affiliate_tracking_verified": False,
+        "final_image_approval_granted": False,
+    }
+    for product in evidence["products"]:
+        offer = offers[product["product_id"]]
+        identity = product["identity"]
+        assert offer["merchant_product_id"] == product["merchant_product_id"]
+        assert offer["product_url"] == product["product_url"]
+        assert offer["variant_label"] == (
+            f'{identity["volume_ml"]} ml · {identity["concentration"]}'
+        )
+        assert offer["last_updated_at"] == evidence["observed_at"]
+        assert offer["affiliate_url"] is None
+        assert offer["commission_rate"] is None
+        assert any(
+            row["product_id"] == product["product_id"]
+            and row["merchant"] == "parfumdreams"
+            and row["merchant_product_id"] == product["merchant_product_id"]
+            and row["gtin"] == identity["gtin"]
+            for row in mappings
+        )

@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "observed_at": "2026-09-27T18:27:20Z",
+  "merchant": "parfumdreams DE",
+  "observation_method": "live_read_only_merchant_browser",
+  "products": [
+    {
+      "product_id": "SC-PDM-VALAYA-EXCLUSIF-EDP-75",
+      "merchant_product_id": "136630-221001",
+      "product_url": "https://www.parfumdreams.de/Parfums-de-Marly/Damenduefte/Women/Eau-de-Parfum-Spray/index_136630.aspx?variation=221001",
+      "identity": {
+        "brand": "Parfums de Marly",
+        "name": "Valaya Exclusif",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 75,
+        "gtin": "3700578505767",
+        "gtin_corrob_source": "https://parfumslubner.com/products/valaya-exclusif-edp-75ml",
+        "gtin_corrob_note": "Independent product listing corroborates the exact perfume, concentration, volume, and GTIN; the live merchant page confirms the exact selected volume, but does not display a GTIN."
+      },
+      "live_observation": {
+        "listed_price_eur": 305.0,
+        "shipping_cost_eur": 0,
+        "availability": "Sofort lieferbar; add-to-cart enabled",
+        "delivery_note": "Versandkostenfrei; DHL delivery 29 September to 1 October 2026 observed."
+      }
+    },
+    {
+      "product_id": "SC-PDM-HEROD-EDP-125",
+      "merchant_product_id": "46080-64621",
+      "product_url": "https://www.parfumdreams.de/Parfums-de-Marly/Herrenduefte/Men/Eau-de-Parfum-Spray/index_46080.aspx?variation=64621",
+      "identity": {
+        "brand": "Parfums de Marly",
+        "name": "Herod",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 125,
+        "gtin": "3700578502353",
+        "gtin_corrob_source": "https://www.careofcarl.de/de/parfums-de-marly-herod-eau-de-parfum-125ml-",
+        "gtin_corrob_note": "Independent product listing corroborates the exact perfume, concentration, volume, and GTIN; the live merchant page confirms the exact selected volume, but does not display a GTIN."
+      },
+      "live_observation": {
+        "listed_price_eur": 290.0,
+        "shipping_cost_eur": 0,
+        "availability": "Sofort lieferbar; add-to-cart enabled",
+        "delivery_note": "Versandkostenfrei; DHL delivery 29 September to 1 October 2026 observed."
+      }
+    },
+    {
+      "product_id": "SC-NISHANE-ANI-EXTRAIT-100",
+      "merchant_product_id": "106904-199817",
+      "product_url": "https://www.parfumdreams.de/NISHANE/Unisexduefte/No-Boundaries/Extrait-de-Parfum-Spray/index_106904.aspx?variation=199817",
+      "identity": {
+        "brand": "NISHANE",
+        "name": "ANI No Boundaries",
+        "concentration": "Extrait de Parfum",
+        "volume_ml": 100,
+        "gtin": "8681008055074",
+        "gtin_corrob_source": "https://www.flaconi.de/parfum/nishane/ani/nishane-ani-parfum.html?variant=80072828-100",
+        "gtin_corrob_note": "Independent product listing corroborates the exact perfume, concentration, volume, and GTIN; the live merchant page confirms the exact selected volume, but does not display a GTIN."
+      },
+      "live_observation": {
+        "listed_price_eur": 188.56,
+        "shipping_cost_eur": 0,
+        "availability": "Sofort lieferbar; add-to-cart enabled",
+        "delivery_note": "Versandkostenfrei; DHL delivery 29 September to 1 October 2026 observed."
+      }
+    }
+  ],
+  "rights_or_affiliate_impact": {
+    "image_rights_granted": false,
+    "affiliate_tracking_verified": false,
+    "final_image_approval_granted": false
+  },
+  "freshness_policy": "Each offer qualifies only while last_updated_at is within the release gate 72-hour window. Release 03 remains write-locked."
+}
