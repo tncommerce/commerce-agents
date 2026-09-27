@@ -126,6 +126,7 @@ const catalog = readJson("catalog.json");
 const source = readJson("scentai_products.json");
 const merchantOffers = readJson("merchant_offers.json");
 const merchantPartners = readJson("merchant_partners.json");
+const visualReviewQueue = readJson("dufynd_product_visual_review_queue.json");
 
 const sourceById = new Map(
   (source.products || []).map((product) => [
@@ -215,6 +216,27 @@ add(
   missingImages.length
     ? `Missing live product images: ${missingImages.join("; ")}`
     : "Every live fragrance has a resolvable product image.",
+);
+
+const liveProductIds = new Set(
+  liveProducts.map((product) => String(product.product_id || "")),
+);
+const blockingP0Visuals = (visualReviewQueue.items || []).filter(
+  (item) =>
+    item.priority === "P0" &&
+    liveProductIds.has(String(item.product_id || "")),
+);
+const blockingP0ProductIds = blockingP0Visuals
+  .map((item) => String(item.product_id || ""))
+  .filter(Boolean)
+  .sort();
+
+add(
+  blockingP0ProductIds.length ? "gate" : "pass",
+  "product_visual_fidelity",
+  blockingP0ProductIds.length
+    ? `Live fragrances still blocked by P0 visual fidelity review: ${blockingP0ProductIds.join(", ")}`
+    : "No live fragrance remains in the P0 visual-fidelity review queue.",
 );
 
 const apiUrl = env("NEXT_PUBLIC_API_URL");
