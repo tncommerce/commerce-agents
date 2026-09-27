@@ -205,9 +205,7 @@ def build_operations_status(
                 )
                 or 0
             ),
-            "licensed_source_required": int(
-                image_summary.get("licensed_source_required", 0) or 0
-            ),
+            "licensed_source_required": int(image_summary.get("licensed_source_required", 0) or 0),
             "release_01_licensed_source_required": release_01_licensed_source_required,
         },
         "release_01": {
