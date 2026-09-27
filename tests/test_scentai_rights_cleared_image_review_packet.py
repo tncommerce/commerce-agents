@@ -217,3 +217,26 @@ def test_release01_plan_exposes_review_packet_command() -> None:
         "python -m scripts.build_scentai_rights_cleared_image_review_packet"
     )
     assert intake["final_approval_action_class"] == "approval_required"
+
+
+def test_current_repo_rights_cleared_candidates_build_review_packet() -> None:
+    data_dir = Path("examples/retail/data")
+    staging = json.loads((data_dir / "scentai_catalog_staging.json").read_text(encoding="utf-8"))
+    candidates = json.loads(
+        (data_dir / "dufynd_rights_cleared_image_candidates.json").read_text(encoding="utf-8")
+    )
+
+    packet = review_packet(staging, candidates)
+
+    assert packet["status"] == "pending_visual_review"
+    assert packet["pending_review_count"] == 1
+    assert packet["automatic_approval_allowed"] is False
+
+    item = packet["items"][0]
+    assert item["product_id"] == "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100"
+    assert item["source_class"] == "licensed_asset_provider"
+    assert item["license_name"] == "CC BY-SA 3.0"
+    assert item["attribution_text"] == "Open Beauty Facts contributors"
+    assert item["share_alike_required"] is True
+    assert item["approval_action_class"] == "approval_required"
+    assert item["next_action"] == "human_visual_review"
