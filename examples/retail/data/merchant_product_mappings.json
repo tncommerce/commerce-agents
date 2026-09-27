@@ -579,6 +579,20 @@
       "merchant_product_id": "3001037679-922888",
       "ean": "3700559603116",
       "gtin": "3700559603116"
+    },
+    {
+      "product_id": "SC-ARMANI-SI-EDP-100",
+      "merchant": "mueller",
+      "merchant_product_id": "689615",
+      "ean": "3605521816658",
+      "gtin": "3605521816658"
+    },
+    {
+      "product_id": "SC-ARMANI-SI-EDP-100",
+      "merchant": "galeria",
+      "merchant_product_id": "3605521816658",
+      "ean": "3605521816658",
+      "gtin": "3605521816658"
     }
   ]
 }

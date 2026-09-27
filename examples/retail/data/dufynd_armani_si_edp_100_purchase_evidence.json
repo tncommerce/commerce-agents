@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "observed_at": "2026-09-27T20:40:59Z",
+  "product_id": "SC-ARMANI-SI-EDP-100",
+  "merchant": "Müller DE",
+  "merchant_product_id": "689615",
+  "product_url": "https://www.mueller.de/p/armani-si-eau-de-parfum-nachfuellbar-53550350/?itemId=689615",
+  "observation_method": "current_public_merchant_page_read_only_browser_dom",
+  "identity": {
+    "brand": "Giorgio Armani",
+    "name": "Sì",
+    "concentration": "Eau de Parfum",
+    "volume_ml": 100,
+    "gtin": "3605521816658",
+    "gtin_corrob_source": "https://www.galeria.de/produkt/armani-eau-de-parfum-3605521816658",
+    "gtin_corrob_note": "Galeria product 3605521816658 explicitly identifies Sì Eau de Parfum 100 ml bottle. Independent retail listing describes the same EAN as refillable EDP spray, not the separate 100 ml refill container. Müller article 689615 selects the refillable bottle. Exclude Sì Intense, Sì Passione and 100 ml refill 3614273872119."
+  },
+  "live_observation": {
+    "listed_price_eur": 89.95,
+    "shipping_cost_eur": 0,
+    "availability": "Lieferbar in 2–3 Werktagen; add-to-cart visible",
+    "delivery_note": "Müller DE shipping free for orders from €49."
+  },
+  "rights_or_affiliate_impact": {
+    "image_rights_granted": false,
+    "affiliate_tracking_verified": false,
+    "final_image_approval_granted": false
+  },
+  "freshness_policy": "Offer qualifies only while last_updated_at is within the 72-hour merchant-offer window. No live catalog promotion."
+}
