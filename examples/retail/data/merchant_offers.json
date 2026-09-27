@@ -341,6 +341,25 @@
       "data_source": "idealo_verified_merchant_redirect",
       "last_updated_at": "2026-09-27T10:27:00Z",
       "commission_rate": null
+    },
+    {
+      "offer_id": "sephora-pure-musc-edp-100",
+      "product_id": "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100",
+      "merchant_id": "sephora-de",
+      "merchant_name": "Sephora",
+      "merchant_product_id": "467702",
+      "price": 110.95,
+      "currency": "EUR",
+      "shipping_cost": 0,
+      "shipping_label": "Kostenlose Lieferung",
+      "in_stock": true,
+      "variant_label": "100 ml · Eau de Parfum",
+      "product_url": "https://www.sephora.de/p/for-her-pure-musc-eau-de-parfum-467702.html",
+      "affiliate_url": null,
+      "network": null,
+      "data_source": "manual_verified_web",
+      "last_updated_at": "2026-09-27T18:06:57Z",
+      "commission_rate": null
     }
   ]
 }

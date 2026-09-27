@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-27T17:56:02+00:00",
-  "source_fingerprint_sha256": "9fbd933f255d0d7fe3e04b6923a777e19a0a75bf33634367102bffed5842eafd",
+  "generated_at": "2026-09-27T18:07:18+00:00",
+  "source_fingerprint_sha256": "0666b66e393b163dcea7ba77a6aa9a0e9ed6f8409ba341d62f1bb5f567b30d90",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
     "scentai_catalog_staging.json",
@@ -1198,9 +1198,9 @@
       "name": "for her PURE MUSC",
       "batch": 1,
       "researched_merchant_count": 2,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
-      "full_mapping_count": 1,
+      "mapping_count": 3,
+      "resolved_mapping_count": 3,
+      "full_mapping_count": 2,
       "state": "mapping_data_ready",
       "blockers": [],
       "next_action": "maintain_mapping_and_verify_purchase_destination",
@@ -1232,6 +1232,15 @@
             "status": "applied"
           },
           "affiliate_activation_state": "pending_program_approval"
+        },
+        {
+          "merchant_id": "sephora",
+          "mapping_state": "full",
+          "merchant_product_id": "467702",
+          "ean": "3423478515956",
+          "gtin": "3423478515956",
+          "affiliate_program": null,
+          "affiliate_activation_state": "no_registered_program"
         }
       ]
     },

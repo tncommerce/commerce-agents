@@ -53,3 +53,32 @@ def test_offer_freshness_timestamps_are_parseable() -> None:
         parsed = datetime.fromisoformat(value)
 
         assert parsed.tzinfo is not None, offer["offer_id"]
+
+
+def test_release02_pure_musc_offer_is_exact_and_untracked() -> None:
+    evidence = json.loads(
+        Path("examples/retail/data/dufynd_release02_pure_musc_purchase_evidence.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    mappings = json.loads(
+        Path("examples/retail/data/merchant_product_mappings.json").read_text(
+            encoding="utf-8"
+        )
+    )["mappings"]
+    offer = next(row for row in _offers() if row["offer_id"] == "sephora-pure-musc-edp-100")
+
+    assert offer["product_id"] == evidence["product_id"]
+    assert offer["merchant_product_id"] == evidence["merchant_product_id"]
+    assert offer["product_url"] == evidence["product_url"]
+    assert offer["variant_label"] == "100 ml · Eau de Parfum"
+    assert offer["affiliate_url"] is None
+    assert offer["commission_rate"] is None
+    assert evidence["rights_or_affiliate_impact"]["image_rights_granted"] is False
+    assert any(
+        row["product_id"] == offer["product_id"]
+        and row["merchant"] == "sephora"
+        and row["merchant_product_id"] == offer["merchant_product_id"]
+        and row["gtin"] == evidence["identity"]["gtin"]
+        for row in mappings
+    )
