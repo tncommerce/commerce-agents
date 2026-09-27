@@ -256,8 +256,16 @@
         "provisional": false
       },
       "media": {
-        "image_url": null,
-        "image_status": "pending_approved_feed_or_manufacturer_image"
+        "image_url": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+        "image_status": "approved_licensed_image",
+        "image_reviewed_at": "2026-09-27T16:37:11.374941+00:00",
+        "image_source_class": "licensed_asset_provider",
+        "image_rights_basis_id": "open-beauty-facts-3605533286555-cc-by-sa-3.0",
+        "image_rights_checked_at": "2026-09-27",
+        "image_license_name": "CC BY-SA 3.0",
+        "image_license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+        "image_attribution_text": "Open Beauty Facts contributors",
+        "image_share_alike_required": true
       },
       "commerce": {
         "merchant_coverage_count": 3,

@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-27T12:07:45+00:00",
-  "source_fingerprint_sha256": "8ce0b72df57456a405e2c10046932e0c7df9354ccbfe9dec75fbb0507115c85b",
+  "generated_at": "2026-09-27T16:38:20+00:00",
+  "source_fingerprint_sha256": "6ab476d6f47c9eae1e81438699b1090795ad8db3359d164683a76ec36c6fb23c",
   "machine_id": "scentai_image_approval_v1",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
@@ -17,12 +17,12 @@
     "release_01_products": 5,
     "release_02_products": 5,
     "release_03_products": 5,
-    "approved_images": 0,
-    "pending_images": 50,
+    "approved_images": 1,
+    "pending_images": 49,
     "review_ready": 0,
     "rights_or_source_check_pending": 10,
-    "licensed_source_required": 5,
-    "release_01_licensed_source_required": 5,
+    "licensed_source_required": 4,
+    "release_01_licensed_source_required": 4,
     "identity_check_pending": 0
   },
   "items": [
@@ -38,61 +38,13 @@
         "position": 1,
         "write_enabled": true
       },
-      "current_image_url": null,
-      "current_image_status": "pending_approved_feed_or_manufacturer_image",
-      "image_state": "licensed_source_required",
-      "blockers": [
-        "approved_product_image_missing",
-        "licensed_commerce_asset_required"
-      ],
-      "next_action": "obtain_licensed_affiliate_feed_image_or_dufynd_owned_original_then_manual_visual_approval",
+      "current_image_url": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+      "current_image_status": "approved_licensed_image",
+      "image_state": "approved_licensed_image",
+      "blockers": [],
+      "next_action": "none",
       "action_class": "auto_allowed",
-      "approval_action_class": "approval_required",
-      "candidate_source": {
-        "source_class": "manufacturer_official",
-        "source_page_url": "https://www.lancome.de/duefte/frauen_parfum/la_vie_est_belle/la_vie_est_belle_eau_de_parfum/3614273088657.html",
-        "exact_variant_verified": true,
-        "verified_at": "2026-09-19",
-        "evidence_note": "Official Lancôme page lists La Vie est Belle Eau de Parfum in 100 ml."
-      },
-      "rights_evidence": {
-        "rights_evidence_status": "official_loreal_terms_prohibit_commercial_site_content_reuse",
-        "rights_evidence_url": "https://www.loreal.com/en/groupe/global-terms-of-use/",
-        "public_distribution_allowed": false,
-        "final_composite_allowed": false
-      },
-      "audit_trail": [
-        {
-          "at": "2026-09-19",
-          "from": "missing",
-          "to": "candidate_discovered",
-          "trigger": "manufacturer_source_found"
-        },
-        {
-          "at": "2026-09-19",
-          "from": "candidate_discovered",
-          "to": "identity_check_pending",
-          "trigger": "candidate_normalized"
-        },
-        {
-          "at": "2026-09-19",
-          "from": "identity_check_pending",
-          "to": "identity_verified",
-          "trigger": "exact_variant_verified"
-        },
-        {
-          "at": "2026-09-19",
-          "from": "identity_verified",
-          "to": "rights_or_source_check_pending",
-          "trigger": "identity_gate_passed"
-        },
-        {
-          "at": "2026-09-21",
-          "from": "rights_or_source_check_pending",
-          "to": "licensed_source_required",
-          "trigger": "official_source_commercial_reuse_not_permitted"
-        }
-      ]
+      "approval_action_class": "approval_required"
     },
     {
       "product_id": "SC-PDM-DELINA-EDP-75",

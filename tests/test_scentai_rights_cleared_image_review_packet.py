@@ -219,7 +219,7 @@ def test_release01_plan_exposes_review_packet_command() -> None:
     assert intake["final_approval_action_class"] == "approval_required"
 
 
-def test_current_repo_rights_cleared_candidates_build_review_packet() -> None:
+def test_current_repo_approved_candidate_is_not_requeued_for_visual_review() -> None:
     data_dir = Path("examples/retail/data")
     staging = json.loads((data_dir / "scentai_catalog_staging.json").read_text(encoding="utf-8"))
     candidates = json.loads(
@@ -228,15 +228,23 @@ def test_current_repo_rights_cleared_candidates_build_review_packet() -> None:
 
     packet = review_packet(staging, candidates)
 
-    assert packet["status"] == "pending_visual_review"
-    assert packet["pending_review_count"] == 1
+    assert packet["status"] == "no_pending_review_candidates"
+    assert packet["pending_review_count"] == 0
     assert packet["automatic_approval_allowed"] is False
+    assert packet["items"] == []
 
-    item = packet["items"][0]
-    assert item["product_id"] == "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100"
-    assert item["source_class"] == "licensed_asset_provider"
-    assert item["license_name"] == "CC BY-SA 3.0"
-    assert item["attribution_text"] == "Open Beauty Facts contributors"
-    assert item["share_alike_required"] is True
-    assert item["approval_action_class"] == "approval_required"
-    assert item["next_action"] == "human_visual_review"
+    candidate = next(
+        row for row in candidates["candidates"]
+        if row["product_id"] == "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100"
+    )
+    product = next(
+        row for row in staging["products"]
+        if row["product_id"] == candidate["product_id"]
+    )
+    assert candidate["review_status"] == "approved"
+    assert candidate["visual_approval_basis"] == "explicit_user_visual_approval_2026-09-27"
+    assert product["media"]["image_url"] == candidate["image_url"]
+    assert product["media"]["image_status"] == "approved_licensed_image"
+    assert product["media"]["image_license_name"] == "CC BY-SA 3.0"
+    assert product["media"]["image_attribution_text"] == "Open Beauty Facts contributors"
+    assert product["media"]["image_share_alike_required"] is True
