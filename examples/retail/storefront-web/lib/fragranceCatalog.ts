@@ -90,6 +90,9 @@ type SourceRow = {
     confidence?: string | null;
   }[];
   visuals?: FragranceVisualAsset[];
+  validation?: {
+    blockers?: string[];
+  };
 };
 
 export interface StaticFragrance {
@@ -417,6 +420,15 @@ function catalogToFragrance(
   };
 }
 
+function hasSourceValidationBlockers(productId: string): boolean {
+  const blockers = sourceById.get(productId)?.validation?.blockers;
+
+  return Boolean(
+    Array.isArray(blockers) &&
+      blockers.some((blocker) => String(blocker || "").trim()),
+  );
+}
+
 export const LIVE_FRAGRANCES: StaticFragrance[] = (
   catalog.products as CatalogRow[]
 )
@@ -424,7 +436,8 @@ export const LIVE_FRAGRANCES: StaticFragrance[] = (
     (product) =>
       product.product_id.startsWith("SC-") &&
       product.category === "fragrance" &&
-      product.in_stock !== false,
+      product.in_stock !== false &&
+      !hasSourceValidationBlockers(product.product_id),
   )
   .map(catalogToFragrance);
 
