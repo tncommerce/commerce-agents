@@ -49,6 +49,16 @@ def valid_image_target(value: str) -> bool:
     )
 
 
+def valid_https_url(value: str) -> bool:
+    parsed = urlparse(value.strip())
+    return bool(
+        parsed.scheme == "https"
+        and parsed.hostname
+        and parsed.username is None
+        and parsed.password is None
+    )
+
+
 def approval_plan(
     staging: dict,
     candidates_payload: dict,
@@ -122,6 +132,19 @@ def approval_plan(
     if not rights_basis_id or not rights_checked_at:
         raise ValueError("candidate_rights_evidence_incomplete")
 
+    license_name = str(rights.get("license_name") or "").strip() or None
+    license_url = str(rights.get("license_url") or "").strip() or None
+    attribution_text = str(rights.get("attribution_text") or "").strip() or None
+    share_alike_required = rights.get("share_alike_required")
+
+    if source_class == "licensed_asset_provider":
+        if not license_name or not license_url or not attribution_text:
+            raise ValueError("candidate_license_metadata_incomplete")
+        if not valid_https_url(license_url):
+            raise ValueError("candidate_license_url_must_be_https")
+        if not isinstance(share_alike_required, bool):
+            raise ValueError("candidate_share_alike_requirement_missing")
+
     product = next(
         (
             row
@@ -159,6 +182,10 @@ def approval_plan(
         "rights_basis_id": rights_basis_id,
         "rights_status": VERIFIED_RIGHTS_STATUS,
         "rights_checked_at": rights_checked_at,
+        "license_name": license_name,
+        "license_url": license_url,
+        "attribution_text": attribution_text,
+        "share_alike_required": share_alike_required,
     }
 
 
@@ -173,6 +200,10 @@ def apply_approval(
     source_class: str,
     rights_basis_id: str,
     rights_checked_at: str,
+    license_name: str | None = None,
+    license_url: str | None = None,
+    attribution_text: str | None = None,
+    share_alike_required: bool | None = None,
 ) -> None:
     candidate = next(
         row
@@ -199,6 +230,14 @@ def apply_approval(
             "image_rights_checked_at": rights_checked_at,
         }
     )
+    if license_name:
+        media["image_license_name"] = license_name
+    if license_url:
+        media["image_license_url"] = license_url
+    if attribution_text:
+        media["image_attribution_text"] = attribution_text
+    if share_alike_required is not None:
+        media["image_share_alike_required"] = share_alike_required
     product["media"] = media
 
     candidate["review_status"] = "approved"
@@ -266,6 +305,10 @@ def main() -> int:
             source_class=plan["source_class"],
             rights_basis_id=plan["rights_basis_id"],
             rights_checked_at=plan["rights_checked_at"],
+            license_name=plan["license_name"],
+            license_url=plan["license_url"],
+            attribution_text=plan["attribution_text"],
+            share_alike_required=plan["share_alike_required"],
         )
         write_json(args.staging, staging)
         write_json(args.candidates, candidates)
