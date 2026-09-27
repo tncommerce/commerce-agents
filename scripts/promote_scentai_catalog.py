@@ -301,9 +301,8 @@ def promotion_blockers(
                 media.get("image_license_url"),
                 media.get("image_attribution_text"),
             )
-            if (
-                not all(str(value or "").strip() for value in licensed_metadata)
-                or not isinstance(media.get("image_share_alike_required"), bool)
+            if not all(str(value or "").strip() for value in licensed_metadata) or not isinstance(
+                media.get("image_share_alike_required"), bool
             ):
                 blockers.append("missing_licensed_image_attribution_metadata")
 
@@ -400,15 +399,11 @@ def build_catalog_product(
         "promotion_source": "scentai_catalog_staging",
         "image_license_name": str(staged.get("media", {}).get("image_license_name") or ""),
         "image_license_url": str(staged.get("media", {}).get("image_license_url") or ""),
-        "image_attribution_text": str(
-            staged.get("media", {}).get("image_attribution_text") or ""
-        ),
+        "image_attribution_text": str(staged.get("media", {}).get("image_attribution_text") or ""),
         "image_share_alike_required": (
             ""
             if staged.get("media", {}).get("image_share_alike_required") is None
-            else str(
-                bool(staged.get("media", {}).get("image_share_alike_required"))
-            ).lower()
+            else str(bool(staged.get("media", {}).get("image_share_alike_required"))).lower()
         ),
     }
 
@@ -519,12 +514,8 @@ def build_source_product(
                     {
                         "license_name": str(media.get("image_license_name") or ""),
                         "license_url": str(media.get("image_license_url") or ""),
-                        "attribution_text": str(
-                            media.get("image_attribution_text") or ""
-                        ),
-                        "share_alike_required": bool(
-                            media.get("image_share_alike_required")
-                        ),
+                        "attribution_text": str(media.get("image_attribution_text") or ""),
+                        "share_alike_required": bool(media.get("image_share_alike_required")),
                     }
                     if image_status == "approved_licensed_image"
                     and str(media.get("image_license_name") or "").strip()
