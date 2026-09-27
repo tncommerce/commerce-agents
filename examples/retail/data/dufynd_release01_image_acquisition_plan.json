@@ -32,7 +32,8 @@
     "dufynd_top_parfuemerie_release01_dry_run.json",
     "dufynd_perfumetrader_release01_variant_audit.json",
     "scentai_affiliate_activation_status.json",
-    "dufynd_affiliate_feed_image_rights.json"
+    "dufynd_affiliate_feed_image_rights.json",
+    "dufynd_rights_cleared_image_candidates.json"
   ],
   "route_order": [
     "licensed_exact_variant_affiliate_or_merchant_feed_asset",
@@ -182,5 +183,13 @@
       "next_action": "obtain_exact_licensed_or_dufynd_owned_asset_then_manual_visual_approval"
     }
   ],
-  "decision": "No Release 01 product image can be approved from current repository sources. The next valid transition requires an exact licensed feed/media asset, written permission, or DUFYND-owned original product photography, followed by manual visual approval."
+  "decision": "No Release 01 product image can be approved from current repository sources. The next valid transition requires an exact licensed feed/media asset, written permission, or DUFYND-owned original product photography, followed by manual visual approval.",
+  "rights_cleared_intake": {
+    "candidate_queue": "dufynd_rights_cleared_image_candidates.json",
+    "register_command": "python -m scripts.register_scentai_rights_cleared_image",
+    "approval_command": "python -m scripts.approve_scentai_rights_cleared_image",
+    "registration_state": "pending_review_only",
+    "final_approval_action_class": "approval_required",
+    "rule": "Registration may validate and persist exact-variant rights-cleared candidates, but it may not approve or promote an image. Final visual approval remains human/user gated."
+  }
 }
