@@ -59,6 +59,15 @@ def test_affiliate_programs_match_partner_registry_state() -> None:
             continue
 
         assert status == "approved"
+        if partner["status"] == "pending_affiliate_link":
+            assert partner.get("affiliate_url") is None, (
+                f"{merchant_id}: approved program without verified tracking "
+                "must not expose an affiliate URL"
+            )
+            assert not partner.get("last_verified_at"), (
+                f"{merchant_id}: unverified tracking must not claim verification"
+            )
+            continue
         assert partner["status"] == "active", (
             f"{merchant_id}: approved program with verified tracking should be active"
         )
