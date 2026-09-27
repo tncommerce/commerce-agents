@@ -86,6 +86,15 @@ EXPECTED = {
 }
 
 RELEASE01_EXPECTED = {
+    "flaconi-dior-hypnotic-poison-edt-100": {
+        "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+        "merchant_id": "flaconi-de",
+        "merchant_product_id": "20101775",
+        "price": 84.66,
+        "product_url": "https://www.flaconi.de/parfum/dior/hypnotic-poison/dior-hypnotic-poison-eau-de-toilette.html?variant=20101775",
+        "last_updated_at": "2026-09-27T10:27:00Z",
+        "data_source": "idealo_verified_merchant_redirect",
+    },
     "douglas-lancome-la-vie-est-belle-edp-100": {
         "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
         "merchant_id": "douglas-de",
@@ -111,7 +120,7 @@ def test_canonical_offer_wave_matches_verified_sources() -> None:
     live_ids = {row["product_id"] for row in live}
     by_id = {row["offer_id"]: row for row in offers}
 
-    assert len(offers) == 17
+    assert len(offers) == 18
     assert set(EXPECTED).issubset(by_id)
 
     for offer_id, expected in EXPECTED.items():
@@ -154,7 +163,7 @@ def test_release01_purchase_destination_matches_verified_staging_source() -> Non
         assert urlparse(offer["product_url"]).scheme == "https"
         assert offer["affiliate_url"] is None
         assert offer["commission_rate"] is None
-        assert offer["data_source"] == "manual_verified_web"
+        assert offer["data_source"] == expected.get("data_source", "manual_verified_web")
         assert offer["last_updated_at"] == expected["last_updated_at"]
 
 
