@@ -322,6 +322,25 @@
       "data_source": "manual_verified_web",
       "last_updated_at": "2026-09-27T11:32:00Z",
       "commission_rate": null
+    },
+    {
+      "offer_id": "flaconi-dior-hypnotic-poison-edt-100",
+      "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+      "merchant_id": "flaconi-de",
+      "merchant_name": "flaconi",
+      "merchant_product_id": "20101775",
+      "price": 84.66,
+      "currency": "EUR",
+      "shipping_cost": 0,
+      "shipping_label": "Versandkostenfrei",
+      "in_stock": true,
+      "variant_label": "100 ml",
+      "product_url": "https://www.flaconi.de/parfum/dior/hypnotic-poison/dior-hypnotic-poison-eau-de-toilette.html?variant=20101775",
+      "affiliate_url": null,
+      "network": "Awin",
+      "data_source": "idealo_verified_merchant_redirect",
+      "last_updated_at": "2026-09-27T10:27:00Z",
+      "commission_rate": null
     }
   ]
 }
