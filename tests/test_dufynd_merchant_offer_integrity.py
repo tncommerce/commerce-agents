@@ -62,9 +62,7 @@ def test_release02_pure_musc_offer_is_exact_and_untracked() -> None:
         )
     )
     mappings = json.loads(
-        Path("examples/retail/data/merchant_product_mappings.json").read_text(
-            encoding="utf-8"
-        )
+        Path("examples/retail/data/merchant_product_mappings.json").read_text(encoding="utf-8")
     )["mappings"]
     offer = next(row for row in _offers() if row["offer_id"] == "sephora-pure-musc-edp-100")
 
