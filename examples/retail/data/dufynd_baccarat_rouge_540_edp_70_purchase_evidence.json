@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "observed_at": "2026-09-27T20:34:05Z",
+  "product_id": "SC-MFK-BACCARAT-ROUGE-540-EDP-70",
+  "merchant": "Douglas DE",
+  "merchant_product_id": "3001037679-922888",
+  "product_url": "https://www.douglas.de/de/p/3001037679?variant=922888",
+  "observation_method": "current_public_merchant_page_read_only_browser_dom",
+  "identity": {
+    "brand": "Maison Francis Kurkdjian",
+    "name": "Baccarat Rouge 540",
+    "concentration": "Eau de Parfum",
+    "volume_ml": 70,
+    "gtin": "3700559603116",
+    "gtin_corrob_source": "https://monparfum.de/Maison-Francis-Kurkdjian-Baccarat-Rouge-540-Eau-de-Parfum-70ml",
+    "gtin_corrob_note": "Independent monPARFUM listing identifies EAN 3700559603116 for Baccarat Rouge 540 Eau de Parfum 70 ml. Douglas selected variant 922888 identifies 70 ml Eau de Parfum. Exclude Extrait de Parfum 70 ml, 35 ml EDP and hair mist 70 ml."
+  },
+  "live_observation": {
+    "listed_price_eur": 265,
+    "shipping_cost_eur": 0,
+    "availability": "Online auf Lager; add-to-cart visible",
+    "delivery_note": "Versandkostenfrei; delivery 29 September to 1 October 2026 shown."
+  },
+  "rights_or_affiliate_impact": {
+    "image_rights_granted": false,
+    "affiliate_tracking_verified": false,
+    "final_image_approval_granted": false
+  },
+  "freshness_policy": "Offer qualifies only while last_updated_at is within the 72-hour merchant-offer window. No live catalog promotion."
+}

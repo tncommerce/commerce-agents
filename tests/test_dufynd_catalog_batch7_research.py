@@ -30,7 +30,13 @@ def test_batch7_research_evidence_remains_non_live_after_staging_enablement() ->
     manifest = next(entry for entry in intake["waves"] if entry["wave_id"] == wave["wave_id"])
     assert manifest["live_publication_authorized"] is False
     assert set(manifest["selected_product_ids"]) == set(ids)
-    assert set(ids).isdisjoint({offer["product_id"] for offer in offers["offers"]})
+    # Later verified offers may exist for staged candidates. Their presence must
+    # not turn a research wave into a live publication or affiliate link.
+    for offer in offers["offers"]:
+        if offer["product_id"] in ids:
+            assert offer["data_source"] == "manual_verified_web"
+            assert offer["affiliate_url"] is None
+            assert offer["product_id"] not in live_ids
     assert sum(bool(candidate["research_merchant_evidence"]) for candidate in candidates) == 5
     for candidate in candidates:
         assert candidate["manufacturer_source_url"].startswith("https://")

@@ -572,6 +572,13 @@
       "merchant_product_id": "70727123",
       "ean": "8411061026342",
       "gtin": "8411061026342"
+    },
+    {
+      "product_id": "SC-MFK-BACCARAT-ROUGE-540-EDP-70",
+      "merchant": "douglas",
+      "merchant_product_id": "3001037679-922888",
+      "ean": "3700559603116",
+      "gtin": "3700559603116"
     }
   ]
 }
