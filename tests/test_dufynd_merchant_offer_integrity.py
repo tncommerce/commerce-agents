@@ -105,7 +105,7 @@ def test_release03_additional_offers_match_observed_variants() -> None:
         assert offer["merchant_product_id"] == product["merchant_product_id"]
         assert offer["product_url"] == product["product_url"]
         assert offer["variant_label"] == (
-            f'{identity["volume_ml"]} ml · {identity["concentration"]}'
+            f"{identity['volume_ml']} ml · {identity['concentration']}"
         )
         assert offer["last_updated_at"] == evidence["observed_at"]
         assert offer["affiliate_url"] is None
