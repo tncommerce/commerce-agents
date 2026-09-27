@@ -138,6 +138,7 @@ def test_direct_purchase_destinations_need_no_affiliate_program() -> None:
     assert status["blockers"] == []
     assert status["affiliate"]["approved_full_release_paths"] == 0
 
+
 def test_control_plane_focuses_on_images_after_purchase_destinations_are_complete() -> None:
     mapping, affiliate, images, release, feed = base_sources()
     release["summary"]["current_purchase_destinations"] = 5
@@ -198,4 +199,3 @@ def test_control_plane_exposes_other_promotion_gates_after_core_assets_are_compl
     assert status["overall_state"] == "waiting_remaining_promotion_gates"
     assert status["next_action"] == "resolve_remaining_release_promotion_gates"
     assert status["blockers"] == ["release_promotion_gates_incomplete"]
-
