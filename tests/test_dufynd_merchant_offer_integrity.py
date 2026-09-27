@@ -291,9 +291,9 @@ def test_armani_si_offer_selects_refillable_edp_bottle_not_refill() -> None:
 
 def test_rabanne_1_million_offer_selects_edt_100ml_not_parfum() -> None:
     evidence = json.loads(
-        Path("examples/retail/data/dufynd_rabanne_1_million_edt_100_purchase_evidence.json").read_text(
-            encoding="utf-8"
-        )
+        Path(
+            "examples/retail/data/dufynd_rabanne_1_million_edt_100_purchase_evidence.json"
+        ).read_text(encoding="utf-8")
     )
     mappings = json.loads(
         Path("examples/retail/data/merchant_product_mappings.json").read_text(encoding="utf-8")
