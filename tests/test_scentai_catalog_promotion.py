@@ -177,6 +177,56 @@ def test_rights_cleared_licensed_image_with_evidence_passes_image_gate() -> None
     assert "missing_rights_cleared_image_evidence" not in blockers
 
 
+def test_licensed_provider_image_requires_public_attribution_metadata() -> None:
+    product = staged_product()
+    product["media"].update(
+        {
+            "image_status": "approved_licensed_image",
+            "image_source_class": "licensed_asset_provider",
+        }
+    )
+
+    blockers = promotion_blockers(product, [affiliate_offer()], now=NOW)
+    assert "missing_licensed_image_attribution_metadata" in blockers
+
+    product["media"].update(
+        {
+            "image_license_name": "CC BY-SA 3.0",
+            "image_license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+            "image_attribution_text": "Open Beauty Facts contributors",
+            "image_share_alike_required": True,
+        }
+    )
+    blockers = promotion_blockers(product, [affiliate_offer()], now=NOW)
+    assert "missing_licensed_image_attribution_metadata" not in blockers
+
+
+def test_source_conversion_preserves_licensed_image_attribution() -> None:
+    product = staged_product()
+    product["media"].update(
+        {
+            "image_status": "approved_licensed_image",
+            "image_source_class": "licensed_asset_provider",
+            "image_license_name": "CC BY-SA 3.0",
+            "image_license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+            "image_attribution_text": "Open Beauty Facts contributors",
+            "image_share_alike_required": True,
+        }
+    )
+
+    catalog = build_catalog_product(product, best_offer=affiliate_offer())
+    source = build_source_product(product, best_offer=affiliate_offer())
+    visual = source["visuals"][0]
+
+    assert catalog["attributes"]["image_license_name"] == "CC BY-SA 3.0"
+    assert catalog["attributes"]["image_attribution_text"] == "Open Beauty Facts contributors"
+    assert catalog["attributes"]["image_share_alike_required"] == "true"
+    assert visual["license_name"] == "CC BY-SA 3.0"
+    assert visual["license_url"] == "https://creativecommons.org/licenses/by-sa/3.0/"
+    assert visual["attribution_text"] == "Open Beauty Facts contributors"
+    assert visual["share_alike_required"] is True
+
+
 def test_ready_product_passes_promotion_gates() -> None:
     product = staged_product()
     offer = affiliate_offer()
