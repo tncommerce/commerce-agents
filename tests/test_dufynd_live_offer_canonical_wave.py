@@ -10,6 +10,14 @@ OFFERS = Path("examples/retail/data/merchant_offers.json")
 LIVE = Path("examples/retail/data/scentai_products.json")
 
 EXPECTED = {
+    "douglas-ysl-black-opium-edp-90": {
+        "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+        "merchant_id": "douglas-de",
+        "merchant_product_id": "818764",
+        "price": 115.59,
+        "product_url": "https://www.douglas.de/de/p/3001005867?variant=818764",
+        "last_updated_at": "2026-09-27T09:34:00Z",
+    },
     "douglas-bois-imperial-100": {
         "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
         "merchant_id": "douglas-de",
@@ -91,7 +99,7 @@ def test_canonical_offer_wave_matches_verified_sources() -> None:
     live_ids = {row["product_id"] for row in live}
     by_id = {row["offer_id"]: row for row in offers}
 
-    assert len(offers) == 15
+    assert len(offers) == 16
     assert set(EXPECTED).issubset(by_id)
 
     for offer_id, expected in EXPECTED.items():
