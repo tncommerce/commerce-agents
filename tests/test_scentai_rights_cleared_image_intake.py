@@ -1,0 +1,164 @@
+from __future__ import annotations
+
+from scripts.approve_scentai_rights_cleared_image import approval_plan
+from scripts.register_scentai_rights_cleared_image import (
+    apply_registration,
+    registration_plan,
+)
+
+PRODUCT_ID = "SC-TEST-100"
+IMAGE_URL = "/products/release01/test-owned.jpg"
+
+
+def staging_payload() -> dict:
+    return {
+        "products": [
+            {
+                "product_id": PRODUCT_ID,
+                "candidate_id": "TEST-100",
+                "brand": "Test Brand",
+                "name": "Test Fragrance",
+                "concentration": "Eau de Parfum",
+                "volume_ml": 100,
+                "media": {
+                    "image_url": None,
+                    "image_status": "pending_approved_feed_or_manufacturer_image",
+                },
+            }
+        ]
+    }
+
+
+def candidates_payload() -> dict:
+    return {
+        "version": 1,
+        "status": "review_only_not_live",
+        "candidates": [],
+    }
+
+
+def plan_for(
+    *,
+    payload=None,
+    source_class="dufynd_owned_original_photography",
+    exact_variant_verified=True,
+    commercial_use_allowed=True,
+    public_distribution_allowed=True,
+) -> dict:
+    return registration_plan(
+        staging_payload(),
+        payload or candidates_payload(),
+        product_id=PRODUCT_ID,
+        image_url=IMAGE_URL,
+        source_class=source_class,
+        rights_basis_id="dufynd-photo-session-001",
+        rights_checked_at="2026-09-27",
+        exact_variant_verified=exact_variant_verified,
+        commercial_use_allowed=commercial_use_allowed,
+        public_distribution_allowed=public_distribution_allowed,
+        evidence_note="Exact bottle photographed by DUFYND.",
+    )
+
+
+def test_owned_original_registers_as_pending_licensed_candidate() -> None:
+    plan = plan_for()
+    candidate = plan["candidate"]
+
+    assert plan["will_change"] is True
+    assert plan["already_registered"] is False
+    assert candidate["review_status"] == "pending_review"
+    assert candidate["source_class"] == "dufynd_owned_original_photography"
+    assert candidate["proposed_image_status"] == "approved_licensed_image"
+    assert candidate["exact_variant_verified"] is True
+    assert candidate["rights_evidence"]["commercial_use_allowed"] is True
+    assert candidate["rights_evidence"]["public_distribution_allowed"] is True
+
+
+def test_written_manufacturer_permission_targets_manufacturer_status() -> None:
+    plan = plan_for(source_class="written_manufacturer_permission")
+
+    assert plan["candidate"]["proposed_image_status"] == "approved_manufacturer_image"
+
+
+def test_intake_requires_exact_variant_and_explicit_rights() -> None:
+    import pytest
+
+    with pytest.raises(ValueError, match="candidate_exact_variant_not_verified"):
+        plan_for(exact_variant_verified=False)
+
+    with pytest.raises(ValueError, match="candidate_commercial_use_not_allowed"):
+        plan_for(commercial_use_allowed=False)
+
+    with pytest.raises(ValueError, match="candidate_public_distribution_not_allowed"):
+        plan_for(public_distribution_allowed=False)
+
+
+def test_apply_registration_never_auto_approves_candidate() -> None:
+    payload = candidates_payload()
+    plan = plan_for(payload=payload)
+
+    apply_registration(
+        payload,
+        plan,
+        registered_at="2026-09-27T15:00:00+00:00",
+    )
+
+    candidate = payload["candidates"][0]
+    assert candidate["review_status"] == "pending_review"
+    assert candidate["registered_at"] == "2026-09-27T15:00:00+00:00"
+    assert payload["status"] == "review_only_not_live"
+
+
+def test_repeated_identical_registration_is_idempotent() -> None:
+    payload = candidates_payload()
+    first = plan_for(payload=payload)
+    apply_registration(
+        payload,
+        first,
+        registered_at="2026-09-27T15:00:00+00:00",
+    )
+
+    second = plan_for(payload=payload)
+
+    assert second["already_registered"] is True
+    assert second["will_change"] is False
+
+
+def test_conflicting_existing_candidate_is_rejected() -> None:
+    import pytest
+
+    payload = candidates_payload()
+    first = plan_for(payload=payload)
+    apply_registration(
+        payload,
+        first,
+        registered_at="2026-09-27T15:00:00+00:00",
+    )
+    payload["candidates"][0]["rights_evidence"]["rights_basis_id"] = "other-basis"
+
+    with pytest.raises(
+        ValueError,
+        match="existing_candidate_conflicts_with_registration",
+    ):
+        plan_for(payload=payload)
+
+
+def test_registered_candidate_is_compatible_with_approval_dry_run() -> None:
+    payload = candidates_payload()
+    intake = plan_for(payload=payload)
+    apply_registration(
+        payload,
+        intake,
+        registered_at="2026-09-27T15:00:00+00:00",
+    )
+
+    approval = approval_plan(
+        staging_payload(),
+        payload,
+        product_id=PRODUCT_ID,
+        image_url=IMAGE_URL,
+    )
+
+    assert approval["candidate_status"] == "pending_review"
+    assert approval["rights_status"] == "verified_for_publisher_service"
+    assert approval["will_change"] is True
