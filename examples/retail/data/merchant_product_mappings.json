@@ -558,6 +558,20 @@
       "merchant_product_id": "175217782",
       "ean": "8435415076944",
       "gtin": "8435415076944"
+    },
+    {
+      "product_id": "SC-CAROLINA-HERRERA-GOOD-GIRL-EDP-80",
+      "merchant": "mueller",
+      "merchant_product_id": "2070740",
+      "ean": "8411061026342",
+      "gtin": "8411061026342"
+    },
+    {
+      "product_id": "SC-CAROLINA-HERRERA-GOOD-GIRL-EDP-80",
+      "merchant": "perfumetrader",
+      "merchant_product_id": "70727123",
+      "ean": "8411061026342",
+      "gtin": "8411061026342"
     }
   ]
 }

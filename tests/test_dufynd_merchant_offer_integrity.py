@@ -203,3 +203,31 @@ def test_le_male_elixir_offer_selects_parfum_125ml_variant() -> None:
         and row["gtin"] == evidence["identity"]["gtin"]
         for row in mappings
     )
+
+
+def test_good_girl_offer_selects_original_edp_80ml_not_refill() -> None:
+    evidence = json.loads(
+        Path("examples/retail/data/dufynd_good_girl_80_purchase_evidence.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    mappings = json.loads(
+        Path("examples/retail/data/merchant_product_mappings.json").read_text(encoding="utf-8")
+    )["mappings"]
+    offer = next(row for row in _offers() if row["offer_id"] == "mueller-good-girl-edp-80")
+
+    assert offer["product_id"] == evidence["product_id"]
+    assert offer["merchant_product_id"] == evidence["merchant_product_id"] == "2070740"
+    assert offer["product_url"].endswith("?itemId=2070740")
+    assert offer["variant_label"] == "80 ml · Eau de Parfum"
+    assert offer["last_updated_at"] == evidence["observed_at"]
+    assert offer["affiliate_url"] is None
+    assert offer["commission_rate"] is None
+    assert evidence["rights_or_affiliate_impact"]["image_rights_granted"] is False
+    assert any(
+        row["product_id"] == offer["product_id"]
+        and row["merchant"] == "mueller"
+        and row["merchant_product_id"] == offer["merchant_product_id"]
+        and row["gtin"] == evidence["identity"]["gtin"]
+        for row in mappings
+    )
