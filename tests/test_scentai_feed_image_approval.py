@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import pytest
 from scripts.approve_scentai_feed_image import (
+    DEFAULT_RIGHTS_REGISTRY,
     apply_approval,
     approval_plan,
+    load_json,
 )
 
 PRODUCT_ID = "SC-TEST-100"
@@ -103,6 +105,18 @@ def test_pending_candidate_can_be_prepared_with_verified_rights() -> None:
     assert plan["candidate_status"] == "pending_review"
     assert plan["rights_status"] == "verified_for_publisher_service"
     assert plan["rights_basis_id"] == ("awin_perfumetrader_feed_materials_20260922")
+
+
+def test_committed_2018_rights_basis_cannot_approve_a_new_feed_image() -> None:
+    committed = load_json(DEFAULT_RIGHTS_REGISTRY)
+    perfumetrader = next(
+        row for row in committed["entries"] if row["merchant_id"] == "perfumetrader"
+    )
+    assert perfumetrader["program_status"] == "approved"
+    assert perfumetrader["rights_status"] == "current_network_terms_reverification_required"
+
+    with pytest.raises(ValueError, match="candidate_rights_not_verified"):
+        plan_for(rights=committed)
 
 
 def test_unknown_candidate_is_rejected() -> None:
