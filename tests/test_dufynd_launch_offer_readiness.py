@@ -38,3 +38,12 @@ def test_launch_offer_readiness_requires_eur_currency() -> None:
     offers = source.split("const eligibleOffers =", 1)[1].split("add(", 1)[0]
 
     assert 'String(offer.currency || "").trim().toUpperCase() === "EUR"' in offers
+
+def test_launch_offer_readiness_counts_only_live_product_offers() -> None:
+    source = READINESS.read_text(encoding="utf-8")
+
+    assert "const liveOffers = offers.filter((offer) =>" in source
+    assert 'liveProductIds.has(String(offer.product_id || ""))' in source
+    assert "const eligibleOffers = liveOffers.filter((offer) =>" in source
+    assert "live-product merchant offers are within the 72-hour freshness gate" in source
+
