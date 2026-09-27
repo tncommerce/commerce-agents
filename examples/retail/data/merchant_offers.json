@@ -531,6 +531,25 @@
       "data_source": "manual_verified_web",
       "last_updated_at": "2026-09-27T20:34:05Z",
       "commission_rate": null
+    },
+    {
+      "offer_id": "mueller-armani-si-edp-100",
+      "product_id": "SC-ARMANI-SI-EDP-100",
+      "merchant_id": "mueller-de",
+      "merchant_name": "Müller",
+      "merchant_product_id": "689615",
+      "price": 89.95,
+      "currency": "EUR",
+      "shipping_cost": 0,
+      "shipping_label": "Versandkostenfrei ab 49,00 €",
+      "in_stock": true,
+      "variant_label": "100 ml · Eau de Parfum · nachfüllbarer Flakon",
+      "product_url": "https://www.mueller.de/p/armani-si-eau-de-parfum-nachfuellbar-53550350/?itemId=689615",
+      "affiliate_url": null,
+      "network": null,
+      "data_source": "manual_verified_web",
+      "last_updated_at": "2026-09-27T20:40:59Z",
+      "commission_rate": null
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-27T20:34:05Z",
-  "source_fingerprint_sha256": "f83f3038d727dc7edc2e59d4afb4154f3d726c22ce3f81e682455f378e5b1ee1",
+  "generated_at": "2026-09-27T20:40:59Z",
+  "source_fingerprint_sha256": "8c640cb12568c53a6b2b045db2eddd6b915a3e0f869d6086aac229a7112bfcd4",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
     "scentai_catalog_staging.json",
@@ -10,13 +10,13 @@
   ],
   "summary": {
     "staged_products": 50,
-    "products_with_resolved_mapping": 34,
-    "products_with_two_or_more_resolved_mappings": 31,
-    "products_without_resolved_mapping": 16,
+    "products_with_resolved_mapping": 35,
+    "products_with_two_or_more_resolved_mappings": 32,
+    "products_without_resolved_mapping": 15,
     "affiliate_programs_registered": 9,
     "affiliate_programs_approved": 2,
     "affiliate_programs_pending": 7,
-    "mapping_ready_products": 34,
+    "mapping_ready_products": 35,
     "products_with_approved_affiliate_program": 11
   },
   "affiliate_programs": [
@@ -181,25 +181,6 @@
       "name": "Acqua di Giò Profondo",
       "batch": 5,
       "researched_merchant_count": 2,
-      "mapping_count": 0,
-      "resolved_mapping_count": 0,
-      "full_mapping_count": 0,
-      "state": "mapping_required",
-      "blockers": [
-        "no_resolved_merchant_mapping"
-      ],
-      "next_action": "verify_exact_merchant_product_identity",
-      "action_class": "auto_allowed",
-      "live_activation_action_class": "approval_required",
-      "merchants": []
-    },
-    {
-      "product_id": "SC-ARMANI-SI-EDP-100",
-      "candidate_id": "ARMANI-SI-EDP-100",
-      "brand": "Giorgio Armani",
-      "name": "Sì",
-      "batch": 6,
-      "researched_merchant_count": 1,
       "mapping_count": 0,
       "resolved_mapping_count": 0,
       "full_mapping_count": 0,
@@ -783,6 +764,42 @@
             "status": "applied"
           },
           "affiliate_activation_state": "pending_program_approval"
+        }
+      ]
+    },
+    {
+      "product_id": "SC-ARMANI-SI-EDP-100",
+      "candidate_id": "ARMANI-SI-EDP-100",
+      "brand": "Giorgio Armani",
+      "name": "Sì",
+      "batch": 6,
+      "researched_merchant_count": 1,
+      "mapping_count": 2,
+      "resolved_mapping_count": 2,
+      "full_mapping_count": 2,
+      "state": "mapping_data_ready",
+      "blockers": [],
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
+      "action_class": "auto_allowed",
+      "live_activation_action_class": "approval_required",
+      "merchants": [
+        {
+          "merchant_id": "mueller",
+          "mapping_state": "full",
+          "merchant_product_id": "689615",
+          "ean": "3605521816658",
+          "gtin": "3605521816658",
+          "affiliate_program": null,
+          "affiliate_activation_state": "no_registered_program"
+        },
+        {
+          "merchant_id": "galeria",
+          "mapping_state": "full",
+          "merchant_product_id": "3605521816658",
+          "ean": "3605521816658",
+          "gtin": "3605521816658",
+          "affiliate_program": null,
+          "affiliate_activation_state": "no_registered_program"
         }
       ]
     },
