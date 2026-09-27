@@ -77,15 +77,15 @@ def review_packet(
         attribution_text = _norm(rights.get("attribution_text")) or None
         share_alike_required = rights.get("share_alike_required")
 
+        source_class = _norm(candidate.get("source_class"))
+        proposed_image_status = _norm(candidate.get("proposed_image_status"))
+        image_url = _norm(candidate.get("image_url"))
+
         if source_class == "licensed_asset_provider":
             if not license_name or not license_url or not attribution_text:
                 raise ValueError(f"candidate_license_metadata_incomplete:{product_id}")
             if not isinstance(share_alike_required, bool):
                 raise ValueError(f"candidate_share_alike_requirement_missing:{product_id}")
-
-        source_class = _norm(candidate.get("source_class"))
-        proposed_image_status = _norm(candidate.get("proposed_image_status"))
-        image_url = _norm(candidate.get("image_url"))
         if not source_class or not proposed_image_status or not image_url:
             raise ValueError(f"candidate_review_metadata_incomplete:{product_id}")
 
