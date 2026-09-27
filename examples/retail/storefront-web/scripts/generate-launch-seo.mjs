@@ -60,12 +60,19 @@ const sourceById = new Map(
   ]),
 );
 
-const liveProducts = (catalog.products || []).filter(
-  (product) =>
+const liveProducts = (catalog.products || []).filter((product) => {
+  const sourceProduct = sourceById.get(product.product_id);
+  const blockers = Array.isArray(sourceProduct?.validation?.blockers)
+    ? sourceProduct.validation.blockers
+    : [];
+
+  return (
     String(product.product_id || "").startsWith("SC-") &&
     product.category === "fragrance" &&
-    product.in_stock !== false,
-);
+    product.in_stock !== false &&
+    !blockers.some((blocker) => String(blocker || "").trim())
+  );
+});
 
 const liveById = new Map();
 for (const product of liveProducts) {

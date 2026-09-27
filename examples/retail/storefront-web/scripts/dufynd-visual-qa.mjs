@@ -19,9 +19,45 @@ const sourceCatalog = JSON.parse(
     "utf-8",
   ),
 );
-const expectedFragranceCount = sourceCatalog.products.filter((product) =>
-  String(product?.product_id || "").startsWith("SC-"),
+function hasValidationBlockers(product) {
+  const blockers = Array.isArray(product?.validation?.blockers)
+    ? product.validation.blockers
+    : [];
+
+  return blockers.some((blocker) => String(blocker || "").trim());
+}
+
+function slugifyFragrance(value) {
+  return String(value || "")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[’']/g, "")
+    .replace(/&/g, " und ")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+const expectedFragranceCount = sourceCatalog.products.filter(
+  (product) =>
+    String(product?.product_id || "").startsWith("SC-") &&
+    !hasValidationBlockers(product),
 ).length;
+
+const blockedFragranceRoutes = new Set(
+  sourceCatalog.products
+    .filter(
+      (product) =>
+        String(product?.product_id || "").startsWith("SC-") &&
+        hasValidationBlockers(product),
+    )
+    .map(
+      (product) =>
+        `/duft/${slugifyFragrance(
+          `${String(product?.brand || "").trim()} ${String(product?.name || "").trim()}`,
+        )}`,
+    ),
+);
 
 const viewports = [
   { name: "320", width: 320, height: 780 },
@@ -30,7 +66,7 @@ const viewports = [
   { name: "1440", width: 1440, height: 1000 },
 ];
 
-const routes = [
+const coreRoutes = [
   { name: "home", route: "/", marker: "Finde den Duft, der wirklich zu dir passt." },
   { name: "catalog", route: "/duft", marker: "Parfums entdecken" },
   { name: "comparisons", route: "/vergleich", marker: "Parfums direkt vergleichen" },
@@ -51,6 +87,10 @@ const routes = [
   { name: "vibrato", route: "/duft/sospiro-vibrato", marker: "Vibrato" },
   { name: "widian-london", route: "/duft/widian-london", marker: "London" },
 ];
+
+const routes = coreRoutes.filter(
+  ({ route }) => !blockedFragranceRoutes.has(route),
+);
 
 const forbiddenUi = [
   "Out of stock",
