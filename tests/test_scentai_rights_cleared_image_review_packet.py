@@ -240,4 +240,3 @@ def test_current_repo_rights_cleared_candidates_build_review_packet() -> None:
     assert item["share_alike_required"] is True
     assert item["approval_action_class"] == "approval_required"
     assert item["next_action"] == "human_visual_review"
-
