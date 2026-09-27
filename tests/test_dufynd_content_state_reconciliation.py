@@ -5,6 +5,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from scripts.refresh_scentai_jarvis_state import refresh_state
+
 STRATEGY = Path("examples/retail/data/dufynd_content_strategy.json")
 PIPELINE = Path("examples/retail/data/scentai_content_pipeline_status.json")
 MASTER = Path("examples/retail/data/scentai_jarvis_master_status.json")
@@ -45,3 +47,10 @@ def test_reconciliation_state_does_not_authorize_social_publish() -> None:
 
     assert "This state does not authorize publishing." in strategy["reason"]
     assert master["safety"]["automatic_social_publish_allowed"] is False
+
+def test_master_fingerprint_matches_rebuilt_control_plane() -> None:
+    master = json.loads(MASTER.read_text(encoding="utf-8"))
+    expected = refresh_state(generated_at=master["generated_at"])["master_status"]
+
+    assert master["source_fingerprint_sha256"] == expected["source_fingerprint_sha256"]
+
