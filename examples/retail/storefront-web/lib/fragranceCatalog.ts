@@ -42,6 +42,10 @@ export interface FragranceVisualAsset {
   fidelity_status: FragranceVisualFidelity;
   variant?: string | null;
   composition?: FragranceVisualComposition | null;
+  license_name?: string | null;
+  license_url?: string | null;
+  attribution_text?: string | null;
+  share_alike_required?: boolean | null;
 }
 
 type SourceRow = {
