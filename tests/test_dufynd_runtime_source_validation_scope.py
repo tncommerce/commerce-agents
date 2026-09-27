@@ -20,9 +20,7 @@ def test_source_data_has_a_real_blocked_product_fixture() -> None:
         if row.get("validation", {}).get("blockers")
     }
 
-    assert blocked["SC-WIDIAN-LONDON-EXTRAIT-50"] == [
-        "identity_concentration_review_required"
-    ]
+    assert blocked["SC-WIDIAN-LONDON-EXTRAIT-50"] == ["identity_concentration_review_required"]
 
 
 def test_static_fragrance_runtime_excludes_source_blockers() -> None:
