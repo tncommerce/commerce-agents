@@ -157,7 +157,10 @@
       "commercial_use_must_be_explicitly_allowed",
       "public_distribution_must_be_explicitly_allowed",
       "rights_basis_and_rights_check_date_must_be_persisted",
-      "final_visual_identity_approval_remains_human_required"
+      "final_visual_identity_approval_remains_human_required",
+      "licensed_asset_provider_candidates_must_persist_license_name_and_https_license_url",
+      "licensed_asset_provider_candidates_must_persist_required_attribution_text",
+      "licensed_asset_provider_candidates_must_persist_share_alike_requirement"
     ]
   }
 }
