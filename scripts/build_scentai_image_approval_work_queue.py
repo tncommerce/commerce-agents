@@ -11,6 +11,7 @@ DATA_DIR = Path("examples/retail/data")
 DEFAULT_STAGING = DATA_DIR / "scentai_catalog_staging.json"
 DEFAULT_OUTPUT = DATA_DIR / "scentai_image_approval_work_queue.json"
 DEFAULT_ASSET_CANDIDATES = DATA_DIR / "scentai_image_asset_candidates.json"
+DEFAULT_RIGHTS_AUDIT = DATA_DIR / "dufynd_release01_asset_rights_audit.json"
 DEFAULT_RELEASES = [
     DATA_DIR / "scentai_release_batch_01.json",
     DATA_DIR / "scentai_release_batch_02.json",
@@ -40,6 +41,7 @@ def source_fingerprint(
     staging: dict,
     releases: list[dict],
     asset_candidates: dict | None = None,
+    rights_audit: dict | None = None,
 ) -> str:
     digest = hashlib.sha256()
     digest.update(canonical_bytes(staging))
@@ -47,6 +49,8 @@ def source_fingerprint(
         digest.update(canonical_bytes(release))
     if asset_candidates is not None:
         digest.update(canonical_bytes(asset_candidates))
+    if rights_audit is not None:
+        digest.update(canonical_bytes(rights_audit))
     return digest.hexdigest()
 
 
@@ -77,11 +81,17 @@ def build_queue(
     *,
     generated_at: str,
     asset_candidates: dict | None = None,
+    rights_audit: dict | None = None,
 ) -> dict[str, Any]:
     release_index = build_release_index(releases)
     candidate_by_product = {
         str(row.get("product_id") or ""): row
         for row in (asset_candidates or {}).get("products", [])
+        if str(row.get("product_id") or "").strip()
+    }
+    rights_by_product = {
+        str(row.get("product_id") or ""): row
+        for row in (rights_audit or {}).get("products", [])
         if str(row.get("product_id") or "").strip()
     }
     items: list[dict[str, Any]] = []
@@ -94,6 +104,13 @@ def build_queue(
         approved = image_status in APPROVED_IMAGE_STATES and image_url is not None
 
         candidate = candidate_by_product.get(product_id)
+        rights = rights_by_product.get(product_id)
+        licensed_source_required = bool(
+            rights
+            and str(rights.get("rights_evidence_status") or "").strip()
+            and rights.get("public_distribution_allowed") is False
+            and rights.get("final_composite_allowed") is False
+        )
 
         if approved:
             image_state = image_status
@@ -101,7 +118,17 @@ def build_queue(
             next_action = "none"
         elif candidate is not None:
             image_state = str(candidate.get("image_state") or "rights_or_source_check_pending")
-            if image_state == "identity_check_pending":
+            if licensed_source_required:
+                image_state = "licensed_source_required"
+                blockers = [
+                    "approved_product_image_missing",
+                    "licensed_commerce_asset_required",
+                ]
+                next_action = (
+                    "obtain_licensed_affiliate_feed_image_or_dufynd_owned_original_"
+                    "then_manual_visual_approval"
+                )
+            elif image_state == "identity_check_pending":
                 blockers = [
                     "approved_product_image_missing",
                     "exact_variant_identity_not_verified",
@@ -116,10 +143,13 @@ def build_queue(
                     "approved_product_image_missing",
                     "asset_usage_or_feed_rights_not_verified",
                 ]
-            next_action = str(
-                candidate.get("next_action")
-                or ("prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage")
-            )
+            if not licensed_source_required:
+                next_action = str(
+                    candidate.get("next_action")
+                    or (
+                        "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage"
+                    )
+                )
         else:
             image_state = "missing"
             blockers = ["approved_product_image_missing"]
@@ -143,6 +173,13 @@ def build_queue(
 
         if candidate is not None and not approved:
             row["candidate_source"] = candidate.get("candidate_source")
+            if rights is not None:
+                row["rights_evidence"] = {
+                    "rights_evidence_status": rights.get("rights_evidence_status"),
+                    "rights_evidence_url": rights.get("rights_evidence_url"),
+                    "public_distribution_allowed": rights.get("public_distribution_allowed"),
+                    "final_composite_allowed": rights.get("final_composite_allowed"),
+                }
             verified_at = candidate.get(
                 "candidate_source",
                 {},
@@ -163,6 +200,7 @@ def build_queue(
             ]
             if image_state in {
                 "rights_or_source_check_pending",
+                "licensed_source_required",
                 "review_ready",
             }:
                 audit_trail.extend(
@@ -180,6 +218,15 @@ def build_queue(
                             "trigger": "identity_gate_passed",
                         },
                     ]
+                )
+            if image_state == "licensed_source_required":
+                audit_trail.append(
+                    {
+                        "at": (rights_audit or {}).get("generated_at") or generated_at,
+                        "from": "rights_or_source_check_pending",
+                        "to": "licensed_source_required",
+                        "trigger": "official_source_commercial_reuse_not_permitted",
+                    }
                 )
             if image_state == "review_ready":
                 audit_trail.append(
@@ -210,6 +257,7 @@ def build_queue(
             staging,
             releases,
             asset_candidates,
+            rights_audit,
         ),
         "machine_id": "scentai_image_approval_v1",
         "policy_ref": "scentai_jarvis_operating_policy.json",
@@ -217,6 +265,7 @@ def build_queue(
             DEFAULT_STAGING.name,
             *[path.name for path in DEFAULT_RELEASES],
             *([DEFAULT_ASSET_CANDIDATES.name] if asset_candidates is not None else []),
+            *([DEFAULT_RIGHTS_AUDIT.name] if rights_audit is not None else []),
         ],
         "summary": {
             "staged_products": len(items),
@@ -247,6 +296,15 @@ def build_queue(
             "review_ready": sum(1 for item in items if item["image_state"] == "review_ready"),
             "rights_or_source_check_pending": sum(
                 1 for item in items if item["image_state"] == "rights_or_source_check_pending"
+            ),
+            "licensed_source_required": sum(
+                1 for item in items if item["image_state"] == "licensed_source_required"
+            ),
+            "release_01_licensed_source_required": sum(
+                1
+                for item in items
+                if item["image_state"] == "licensed_source_required"
+                and (item.get("release") or {}).get("release_id") == "SCENTAI-RELEASE-01"
             ),
             "identity_check_pending": sum(
                 1 for item in items if item["image_state"] == "identity_check_pending"
@@ -281,6 +339,11 @@ def main() -> int:
         default=DEFAULT_ASSET_CANDIDATES,
     )
     parser.add_argument(
+        "--rights-audit",
+        type=Path,
+        default=DEFAULT_RIGHTS_AUDIT,
+    )
+    parser.add_argument(
         "--output",
         type=Path,
         default=DEFAULT_OUTPUT,
@@ -299,6 +362,7 @@ def main() -> int:
     staging = load_json(args.staging)
     releases = [load_json(path) for path in release_paths]
     asset_candidates = load_json(args.asset_candidates) if args.asset_candidates.exists() else None
+    rights_audit = load_json(args.rights_audit) if args.rights_audit.exists() else None
     generated_at = args.generated_at or datetime.now(UTC).replace(microsecond=0).isoformat()
 
     queue = build_queue(
@@ -306,6 +370,7 @@ def main() -> int:
         releases,
         generated_at=generated_at,
         asset_candidates=asset_candidates,
+        rights_audit=rights_audit,
     )
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
