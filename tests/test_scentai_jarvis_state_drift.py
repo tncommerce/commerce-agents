@@ -35,11 +35,7 @@ def _load(path: Path) -> dict[str, Any]:
 
 def _semantic(value: Any) -> Any:
     if isinstance(value, dict):
-        return {
-            key: _semantic(item)
-            for key, item in value.items()
-            if key not in VOLATILE_KEYS
-        }
+        return {key: _semantic(item) for key, item in value.items() if key not in VOLATILE_KEYS}
     if isinstance(value, list):
         return [_semantic(item) for item in value]
     return value
