@@ -48,6 +48,7 @@ def test_reconciliation_state_does_not_authorize_social_publish() -> None:
     assert "This state does not authorize publishing." in strategy["reason"]
     assert master["safety"]["automatic_social_publish_allowed"] is False
 
+
 def test_master_fingerprint_matches_rebuilt_control_plane() -> None:
     master = json.loads(MASTER.read_text(encoding="utf-8"))
     expected = refresh_state(generated_at=master["generated_at"])["master_status"]
