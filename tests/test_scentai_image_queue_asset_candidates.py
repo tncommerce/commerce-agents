@@ -169,11 +169,9 @@ def test_explicit_reuse_restriction_requires_licensed_source() -> None:
         "licensed_commerce_asset_required",
     ]
     assert row["next_action"] == (
-        "obtain_licensed_affiliate_feed_image_or_dufynd_owned_original_"
-        "then_manual_visual_approval"
+        "obtain_licensed_affiliate_feed_image_or_dufynd_owned_original_then_manual_visual_approval"
     )
     assert row["rights_evidence"]["rights_evidence_url"] == "https://example.com/terms"
     assert queue["summary"]["licensed_source_required"] == 1
     assert queue["summary"]["release_01_licensed_source_required"] == 1
     assert queue["summary"]["rights_or_source_check_pending"] == 0
-
