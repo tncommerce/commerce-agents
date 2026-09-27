@@ -10,7 +10,7 @@
   "products": [
     {
       "product_id": "SC-PDM-DELINA-EDP-75",
-      "candidate_id": "PDM-DELINA-EDP-75",
+      "candidate_id": "PDM-DELINA-EDP",
       "brand": "Parfums de Marly",
       "name": "Delina",
       "concentration": "Eau de Parfum",
@@ -36,7 +36,7 @@
     },
     {
       "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
-      "candidate_id": "DIOR-HYPNOTIC-POISON-EDT-100",
+      "candidate_id": "DIOR-HYPNOTIC-POISON-EDT",
       "brand": "Dior",
       "name": "Hypnotic Poison",
       "concentration": "Eau de Toilette",
@@ -62,7 +62,7 @@
     },
     {
       "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
-      "candidate_id": "YSL-BLACK-OPIUM-EDP-90",
+      "candidate_id": "YSL-BLACK-OPIUM-EDP",
       "brand": "Yves Saint Laurent",
       "name": "Black Opium",
       "concentration": "Eau de Parfum",
@@ -95,7 +95,7 @@
     },
     {
       "product_id": "SC-YSL-LIBRE-EDP-90",
-      "candidate_id": "YSL-LIBRE-EDP-90",
+      "candidate_id": "YSL-LIBRE-EDP",
       "brand": "Yves Saint Laurent",
       "name": "Libre",
       "concentration": "Eau de Parfum",
