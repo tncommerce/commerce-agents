@@ -166,9 +166,7 @@ def test_strategy_advances_to_post_hold_state_reconciliation() -> None:
 
     assert strategy["active_track"] == "high_end_launch_buffer"
     assert strategy["strategy_status"] == "state_reconciliation_required"
-    assert strategy["next_action"] == (
-        "reconcile_live_social_state_before_next_content_action"
-    )
+    assert strategy["next_action"] == ("reconcile_live_social_state_before_next_content_action")
     assert strategy["next_action_class"] == "manual_state_reconciliation_required"
     assert strategy["user_approval_required_now"] is False
     assert "reconcile_live_social_publish_state" in strategy["waiting_on"]
