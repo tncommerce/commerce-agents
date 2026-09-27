@@ -75,6 +75,9 @@ def build_operations_status(
     )
     purchase_destinations = int(release_summary.get("current_purchase_destinations", 0) or 0)
     promotion_ready = int(release_summary.get("promotion_ready", 0) or 0)
+    release_01_licensed_source_required = int(
+        image_summary.get("release_01_licensed_source_required", 0) or 0
+    )
 
     blockers: list[str] = []
     if release_size and approved_images < release_size:
@@ -95,10 +98,14 @@ def build_operations_status(
         next_action = "run_feed_preflight_and_dry_run"
         next_action_class = "auto_allowed"
     elif release_size and approved_images < release_size and purchase_destinations >= release_size:
-        overall_state = "waiting_image_rights_and_approval"
         user_approval_required_now = False
-        next_action = "verify_image_rights_and_prepare_manual_visual_approval"
         next_action_class = "auto_allowed"
+        if release_01_licensed_source_required > 0:
+            overall_state = "waiting_licensed_image_sources_and_approval"
+            next_action = "obtain_licensed_image_sources_then_prepare_manual_visual_approval"
+        else:
+            overall_state = "waiting_image_rights_and_approval"
+            next_action = "verify_image_rights_and_prepare_manual_visual_approval"
     elif release_size and approved_images >= release_size and purchase_destinations < release_size:
         overall_state = "waiting_purchase_destinations"
         user_approval_required_now = False
@@ -198,6 +205,10 @@ def build_operations_status(
                 )
                 or 0
             ),
+            "licensed_source_required": int(
+                image_summary.get("licensed_source_required", 0) or 0
+            ),
+            "release_01_licensed_source_required": release_01_licensed_source_required,
         },
         "release_01": {
             "release_size": release_size,
