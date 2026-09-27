@@ -41,6 +41,10 @@ def candidates_payload(
     rights_status="verified_for_publisher_service",
     commercial_use_allowed=True,
     public_distribution_allowed=True,
+    license_name=None,
+    license_url=None,
+    attribution_text=None,
+    share_alike_required=None,
 ) -> dict:
     return {
         "status": "review_only_not_live",
@@ -58,6 +62,19 @@ def candidates_payload(
                     "rights_checked_at": "2026-09-27",
                     "commercial_use_allowed": commercial_use_allowed,
                     "public_distribution_allowed": public_distribution_allowed,
+                    **(
+                        {
+                            "license_name": license_name,
+                            "license_url": license_url,
+                            "attribution_text": attribution_text,
+                            "share_alike_required": share_alike_required,
+                        }
+                        if license_name is not None
+                        or license_url is not None
+                        or attribution_text is not None
+                        or share_alike_required is not None
+                        else {}
+                    ),
                 },
             }
         ],
@@ -100,6 +117,25 @@ def test_written_manufacturer_permission_uses_manufacturer_status() -> None:
 
     assert plan["source_class"] == "written_manufacturer_permission"
     assert plan["proposed_image_status"] == "approved_manufacturer_image"
+
+
+def test_licensed_provider_requires_attribution_metadata() -> None:
+    candidates = candidates_payload(
+        source_class="licensed_asset_provider",
+        license_name="CC BY-SA 3.0",
+        license_url="https://creativecommons.org/licenses/by-sa/3.0/",
+        attribution_text="Open Beauty Facts contributors",
+        share_alike_required=True,
+    )
+    plan = plan_for(candidates=candidates)
+
+    assert plan["license_name"] == "CC BY-SA 3.0"
+    assert plan["license_url"] == "https://creativecommons.org/licenses/by-sa/3.0/"
+    assert plan["attribution_text"] == "Open Beauty Facts contributors"
+    assert plan["share_alike_required"] is True
+
+    with pytest.raises(ValueError, match="candidate_license_metadata_incomplete"):
+        plan_for(candidates=candidates_payload(source_class="licensed_asset_provider"))
 
 
 def test_unknown_candidate_is_rejected() -> None:
@@ -198,6 +234,46 @@ def test_apply_approval_persists_rights_and_source_metadata() -> None:
     candidate = candidates["candidates"][0]
     assert candidate["review_status"] == "approved"
     assert candidate["rights_status"] == "verified_for_publisher_service"
+
+
+def test_apply_approval_persists_licensed_provider_attribution() -> None:
+    staging = staging_payload()
+    candidates = candidates_payload(
+        review_status="approved",
+        source_class="licensed_asset_provider",
+        license_name="CC BY-SA 3.0",
+        license_url="https://creativecommons.org/licenses/by-sa/3.0/",
+        attribution_text="Open Beauty Facts contributors",
+        share_alike_required=True,
+    )
+
+    plan = approval_plan(
+        staging,
+        candidates,
+        product_id=PRODUCT_ID,
+        image_url=IMAGE_URL,
+    )
+    apply_approval(
+        staging,
+        candidates,
+        product_id=PRODUCT_ID,
+        image_url=IMAGE_URL,
+        reviewed_at="2026-09-27T14:30:00+00:00",
+        proposed_image_status=plan["proposed_image_status"],
+        source_class=plan["source_class"],
+        rights_basis_id=plan["rights_basis_id"],
+        rights_checked_at=plan["rights_checked_at"],
+        license_name=plan["license_name"],
+        license_url=plan["license_url"],
+        attribution_text=plan["attribution_text"],
+        share_alike_required=plan["share_alike_required"],
+    )
+
+    media = staging["products"][0]["media"]
+    assert media["image_license_name"] == "CC BY-SA 3.0"
+    assert media["image_license_url"] == "https://creativecommons.org/licenses/by-sa/3.0/"
+    assert media["image_attribution_text"] == "Open Beauty Facts contributors"
+    assert media["image_share_alike_required"] is True
 
 
 def test_state_machine_recognizes_rights_cleared_non_feed_sources() -> None:
