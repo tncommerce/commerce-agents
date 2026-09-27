@@ -78,6 +78,17 @@
       "gtin": "3348900425309"
     },
     {
+      "product_id": "SC-DIOR-JADORE-EDP-100",
+      "merchant": "perfumetrader",
+      "merchant_product_id": "15813693",
+      "ean": "3348900417878",
+      "gtin": "3348900417878",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-09-27",
+      "evidence_url": "https://www.perfumetrader.de/en/dior-j-adore-eau-de-parfum-100-ml",
+      "evidence_note": "Perfumetrader product page matches Dior J'adore Eau de Parfum 100 ml, article 15813693 and EAN 3348900417878. Product availability is not implied by this identity mapping."
+    },
+    {
       "product_id": "SC-DIOR-SAUVAGE-ELIXIR-100",
       "merchant": "douglas",
       "merchant_product_id": "5010236005",
@@ -396,6 +407,17 @@
       "merchant_product_id": null,
       "ean": "0888066075145",
       "gtin": "0888066075145"
+    },
+    {
+      "product_id": "SC-TOM-FORD-OUD-WOOD-EDP-100",
+      "merchant": "perfumetrader",
+      "merchant_product_id": "55131040",
+      "ean": "888066024099",
+      "gtin": "888066024099",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-09-27",
+      "evidence_url": "https://www.perfumetrader.de/de/tom-ford-oud-wood-eau-de-parfum-100-ml",
+      "evidence_note": "Perfumetrader product page matches Tom Ford Oud Wood Eau de Parfum 100 ml, article 55131040 and EAN 888066024099. Product availability is not implied by this identity mapping."
     },
     {
       "product_id": "SC-VIKTOR-ROLF-SPICEBOMB-EXTREME-EDP-90",
