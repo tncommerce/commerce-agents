@@ -509,6 +509,27 @@
       "merchant_product_id": "467702",
       "ean": "3423478515956",
       "gtin": "3423478515956"
+    },
+    {
+      "product_id": "SC-PDM-VALAYA-EXCLUSIF-EDP-75",
+      "merchant": "parfumdreams",
+      "merchant_product_id": "136630-221001",
+      "ean": "3700578505767",
+      "gtin": "3700578505767"
+    },
+    {
+      "product_id": "SC-PDM-HEROD-EDP-125",
+      "merchant": "parfumdreams",
+      "merchant_product_id": "46080-64621",
+      "ean": "3700578502353",
+      "gtin": "3700578502353"
+    },
+    {
+      "product_id": "SC-NISHANE-ANI-EXTRAIT-100",
+      "merchant": "parfumdreams",
+      "merchant_product_id": "106904-199817",
+      "ean": "8681008055074",
+      "gtin": "8681008055074"
     }
   ]
 }

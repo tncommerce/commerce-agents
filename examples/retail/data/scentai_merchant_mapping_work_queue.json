@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-27T18:19:40+00:00",
-  "source_fingerprint_sha256": "0666b66e393b163dcea7ba77a6aa9a0e9ed6f8409ba341d62f1bb5f567b30d90",
+  "generated_at": "2026-09-27T18:27:20Z",
+  "source_fingerprint_sha256": "327b24669e4f1b3c09211ff1229089a7afed623a71648717a6213a7f305133a8",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
     "scentai_catalog_staging.json",
@@ -1251,9 +1251,9 @@
       "name": "Ani",
       "batch": 3,
       "researched_merchant_count": 2,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
-      "full_mapping_count": 2,
+      "mapping_count": 3,
+      "resolved_mapping_count": 3,
+      "full_mapping_count": 3,
       "state": "mapping_data_ready",
       "blockers": [],
       "next_action": "maintain_mapping_and_verify_purchase_destination",
@@ -1283,6 +1283,19 @@
             "network": "Awin",
             "program": "Flaconi DE",
             "status": "applied"
+          },
+          "affiliate_activation_state": "pending_program_approval"
+        },
+        {
+          "merchant_id": "parfumdreams",
+          "mapping_state": "full",
+          "merchant_product_id": "106904-199817",
+          "ean": "8681008055074",
+          "gtin": "8681008055074",
+          "affiliate_program": {
+            "network": "Awin",
+            "program": "Parfumdreams DE",
+            "status": "rejected"
           },
           "affiliate_activation_state": "pending_program_approval"
         }
@@ -1352,9 +1365,9 @@
       "name": "Herod",
       "batch": 3,
       "researched_merchant_count": 2,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
-      "full_mapping_count": 2,
+      "mapping_count": 3,
+      "resolved_mapping_count": 3,
+      "full_mapping_count": 3,
       "state": "mapping_data_ready",
       "blockers": [],
       "next_action": "maintain_mapping_and_verify_purchase_destination",
@@ -1386,6 +1399,19 @@
             "status": "applied"
           },
           "affiliate_activation_state": "pending_program_approval"
+        },
+        {
+          "merchant_id": "parfumdreams",
+          "mapping_state": "full",
+          "merchant_product_id": "46080-64621",
+          "ean": "3700578502353",
+          "gtin": "3700578502353",
+          "affiliate_program": {
+            "network": "Awin",
+            "program": "Parfumdreams DE",
+            "status": "rejected"
+          },
+          "affiliate_activation_state": "pending_program_approval"
         }
       ]
     },
@@ -1396,9 +1422,9 @@
       "name": "Valaya Exclusif",
       "batch": 2,
       "researched_merchant_count": 2,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
-      "full_mapping_count": 2,
+      "mapping_count": 3,
+      "resolved_mapping_count": 3,
+      "full_mapping_count": 3,
       "state": "mapping_data_ready",
       "blockers": [],
       "next_action": "maintain_mapping_and_verify_purchase_destination",
@@ -1428,6 +1454,19 @@
             "network": "Awin",
             "program": "Flaconi DE",
             "status": "applied"
+          },
+          "affiliate_activation_state": "pending_program_approval"
+        },
+        {
+          "merchant_id": "parfumdreams",
+          "mapping_state": "full",
+          "merchant_product_id": "136630-221001",
+          "ean": "3700578505767",
+          "gtin": "3700578505767",
+          "affiliate_program": {
+            "network": "Awin",
+            "program": "Parfumdreams DE",
+            "status": "rejected"
           },
           "affiliate_activation_state": "pending_program_approval"
         }
