@@ -94,29 +94,17 @@ def build_operations_status(
         user_approval_required_now = False
         next_action = "run_feed_preflight_and_dry_run"
         next_action_class = "auto_allowed"
-    elif (
-        release_size
-        and approved_images < release_size
-        and purchase_destinations >= release_size
-    ):
+    elif release_size and approved_images < release_size and purchase_destinations >= release_size:
         overall_state = "waiting_image_rights_and_approval"
         user_approval_required_now = False
         next_action = "verify_image_rights_and_prepare_manual_visual_approval"
         next_action_class = "auto_allowed"
-    elif (
-        release_size
-        and approved_images >= release_size
-        and purchase_destinations < release_size
-    ):
+    elif release_size and approved_images >= release_size and purchase_destinations < release_size:
         overall_state = "waiting_purchase_destinations"
         user_approval_required_now = False
         next_action = "verify_current_purchase_destinations"
         next_action_class = "auto_allowed"
-    elif (
-        release_size
-        and approved_images >= release_size
-        and purchase_destinations >= release_size
-    ):
+    elif release_size and approved_images >= release_size and purchase_destinations >= release_size:
         overall_state = "waiting_remaining_promotion_gates"
         user_approval_required_now = False
         next_action = "resolve_remaining_release_promotion_gates"
