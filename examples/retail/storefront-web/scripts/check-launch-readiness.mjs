@@ -294,8 +294,11 @@ add(
 const MAX_FUTURE_CLOCK_SKEW_HOURS = 5 / 60;
 
 const offers = merchantOffers.offers || [];
+const liveOffers = offers.filter((offer) =>
+  liveProductIds.has(String(offer.product_id || "")),
+);
 const now = Date.now();
-const eligibleOffers = offers.filter((offer) => {
+const eligibleOffers = liveOffers.filter((offer) => {
   const checkedAt = Date.parse(offer.last_updated_at || "");
   const ageHours = Number.isFinite(checkedAt)
     ? (now - checkedAt) / 3_600_000
@@ -319,8 +322,8 @@ add(
   eligibleOffers.length ? "pass" : "warn",
   "merchant_offer_freshness",
   eligibleOffers.length
-    ? `${eligibleOffers.length} merchant offers are within the 72-hour freshness gate.`
-    : "No merchant offers are currently within the 72-hour freshness gate; product discovery still works but active offers may be empty.",
+    ? `${eligibleOffers.length} live-product merchant offers are within the 72-hour freshness gate.`
+    : "No live-product merchant offers are currently within the 72-hour freshness gate; product discovery still works but active offers may be empty.",
 );
 
 const affiliateOffers = eligibleOffers.filter((offer) =>
