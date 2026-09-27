@@ -1,5 +1,33 @@
 {
   "version": 1,
   "status": "review_only_not_live",
-  "candidates": []
+  "candidates": [
+    {
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "candidate_id": "LANCOME-LA-VIE-EST-BELLE-EDP",
+      "brand": "Lancôme",
+      "name": "La Vie est Belle",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "image_url": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+      "review_status": "pending_review",
+      "source_class": "licensed_asset_provider",
+      "proposed_image_status": "approved_licensed_image",
+      "exact_variant_verified": true,
+      "rights_evidence": {
+        "rights_basis_id": "open-beauty-facts-3605533286555-cc-by-sa-3.0",
+        "rights_status": "verified_for_publisher_service",
+        "rights_checked_at": "2026-09-27",
+        "commercial_use_allowed": true,
+        "public_distribution_allowed": true,
+        "license_name": "CC BY-SA 3.0",
+        "license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+        "attribution_text": "Open Beauty Facts contributors",
+        "share_alike_required": true
+      },
+      "evidence_note": "Exact 100 ml variant and GTIN 3605533286555 confirmed at https://fooddrinkssuppliers.com/cosmetics-personal-care/lancome-la-vie-est-belle-edp-kad-n-parfum/ . Photograph credits identify the image as Open Beauty Facts contributors under CC BY-SA 3.0 at https://fooddrinkssuppliers.com/photograph-credits/ .",
+      "registered_at": "2026-09-27T15:47:59.563613+00:00"
+    }
+  ],
+  "updated_at": "2026-09-27T15:47:59.563613+00:00"
 }
