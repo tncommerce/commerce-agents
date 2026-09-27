@@ -124,6 +124,7 @@ class MockRetail(StorefrontBackend):
     ) -> None:
         catalog, self.products, self.variants = load_catalog(data_dir)
         self.offer_store = offer_store
+        self._blocked_dufynd_product_ids = self._load_blocked_dufynd_product_ids(data_dir)
         self.store_name: str = catalog.get("store_name", "the store")
         self._users = load_users(data_dir)
         self._orders = load_orders(data_dir)
@@ -169,6 +170,32 @@ class MockRetail(StorefrontBackend):
     # ------------------------------------------------------------------
     # Catalog
     # ------------------------------------------------------------------
+
+    @staticmethod
+    def _load_blocked_dufynd_product_ids(data_dir: Path) -> set[str]:
+        source_path = data_dir / "scentai_products.json"
+        if not source_path.exists():
+            return set()
+
+        payload = json.loads(source_path.read_text(encoding="utf-8"))
+        blocked: set[str] = set()
+
+        for row in payload.get("products", []):
+            product_id = str(row.get("product_id") or "").strip()
+            validation = row.get("validation") or {}
+            blockers = validation.get("blockers") or []
+
+            if product_id and any(str(blocker or "").strip() for blocker in blockers):
+                blocked.add(product_id)
+
+        return blocked
+
+    def _customer_visible_product(self, product: ProductDetails | None) -> bool:
+        if product is None:
+            return False
+        if not product.product_id.startswith("SC-"):
+            return True
+        return product.product_id not in self._blocked_dufynd_product_ids
 
     def listing_of(self, product_id: str) -> ProductDetails | None:
         """The listing an id belongs to: itself, or its family when it is a variant."""
@@ -227,7 +254,7 @@ class MockRetail(StorefrontBackend):
 
     def customer_product(self, product_id: str) -> ProductDetails | None:
         product = self.product(product_id)
-        if product is None:
+        if not self._customer_visible_product(product):
             return None
         return self._customer_facing_product(product)
 
@@ -1383,7 +1410,11 @@ class MockRetail(StorefrontBackend):
     ) -> list[Product]:
         del session
 
-        products = [self._with_commerce_price(product) for product in self.products.values()]
+        products = [
+            self._with_commerce_price(product)
+            for product in self.products.values()
+            if self._customer_visible_product(product)
+        ]
 
         # SCENTAI cluster-aware alternative search.
         #
@@ -1776,7 +1807,7 @@ class MockRetail(StorefrontBackend):
         del session
         product = self.product(product_id)
 
-        if product is None:
+        if not self._customer_visible_product(product):
             return None
 
         return self._customer_facing_product(product)
