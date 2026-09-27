@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-27T18:27:20Z",
-  "source_fingerprint_sha256": "327b24669e4f1b3c09211ff1229089a7afed623a71648717a6213a7f305133a8",
+  "generated_at": "2026-09-27T20:02:11Z",
+  "source_fingerprint_sha256": "5b5b1915ee85a8a3745dc6640b5b7e0aebd9114604a032b6577986d7ec2f90a5",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
     "scentai_catalog_staging.json",
@@ -1567,9 +1567,9 @@
       "name": "Ombré Leather",
       "batch": 3,
       "researched_merchant_count": 3,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
-      "full_mapping_count": 1,
+      "mapping_count": 3,
+      "resolved_mapping_count": 3,
+      "full_mapping_count": 2,
       "state": "mapping_data_ready",
       "blockers": [],
       "next_action": "maintain_mapping_and_verify_purchase_destination",
@@ -1601,6 +1601,15 @@
             "status": "applied"
           },
           "affiliate_activation_state": "pending_program_approval"
+        },
+        {
+          "merchant_id": "mueller",
+          "mapping_state": "full",
+          "merchant_product_id": "2412797",
+          "ean": "0888066075145",
+          "gtin": "0888066075145",
+          "affiliate_program": null,
+          "affiliate_activation_state": "no_registered_program"
         }
       ]
     },

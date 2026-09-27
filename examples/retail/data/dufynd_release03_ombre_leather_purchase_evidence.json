@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "observed_at": "2026-09-27T20:02:11Z",
+  "product_id": "SC-TOM-FORD-OMBRE-LEATHER-EDP-100",
+  "merchant": "Müller DE",
+  "merchant_product_id": "2412797",
+  "product_url": "https://www.mueller.de/p/tom-ford-ombre-leather-eau-de-parfum-6333687784/",
+  "observation_method": "public_merchant_page_read_only",
+  "identity": {
+    "brand": "Tom Ford",
+    "name": "Ombré Leather",
+    "concentration": "Eau de Parfum",
+    "volume_ml": 100,
+    "gtin": "0888066075145",
+    "gtin_corrob_source": "https://www.galeria.de/produkt/tom-ford-signature-ombre-leather-eau-de-parfum-0888066075145",
+    "gtin_corrob_note": "Galeria lists EAN 0888066075145 for Ombré Leather Eau de Parfum 100 ml; Müller displays the exact 100 ml Eau de Parfum variant under article 2412797. This does not establish a GTIN for the retailer-specific article."
+  },
+  "live_observation": {
+    "listed_price_eur": 138.95,
+    "shipping_cost_eur": 0,
+    "availability": "Lieferbar in 2–3 Werktagen; add-to-cart visible",
+    "shipping_note": "Domestic shipping free from €49."
+  },
+  "rights_or_affiliate_impact": {
+    "image_rights_granted": false,
+    "affiliate_tracking_verified": false,
+    "final_image_approval_granted": false
+  },
+  "freshness_policy": "Offer qualifies only while last_updated_at is within release gate 72-hour window. Release 03 remains write-locked."
+}

@@ -530,6 +530,13 @@
       "merchant_product_id": "106904-199817",
       "ean": "8681008055074",
       "gtin": "8681008055074"
+    },
+    {
+      "product_id": "SC-TOM-FORD-OMBRE-LEATHER-EDP-100",
+      "merchant": "mueller",
+      "merchant_product_id": "2412797",
+      "ean": "0888066075145",
+      "gtin": "0888066075145"
     }
   ]
 }
