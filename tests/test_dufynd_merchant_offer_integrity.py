@@ -378,9 +378,9 @@ def test_versace_eros_offer_selects_edp_100ml_not_parfum_or_edt() -> None:
 
 def test_lattafa_khamrah_offer_selects_original_edp_100ml() -> None:
     evidence = json.loads(
-        Path("examples/retail/data/dufynd_lattafa_khamrah_edp_100_purchase_evidence.json").read_text(
-            encoding="utf-8"
-        )
+        Path(
+            "examples/retail/data/dufynd_lattafa_khamrah_edp_100_purchase_evidence.json"
+        ).read_text(encoding="utf-8")
     )
     mappings = json.loads(
         Path("examples/retail/data/merchant_product_mappings.json").read_text(encoding="utf-8")
