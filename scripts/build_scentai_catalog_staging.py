@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from scripts.approve_scentai_rights_cleared_image import apply_approval, approval_plan
 from scripts.report_dufynd_catalog_expansion_readiness import build_expansion_readiness
 
 DATA_DIR = Path("examples/retail/data")
@@ -333,7 +334,7 @@ def build_staging_payload() -> dict:
     append_enabled_research_waves(products, seen_product_ids)
     products.sort(key=lambda row: (int(row.get("batch") or 999), row["product_id"]))
 
-    return {
+    payload = {
         "schema_version": "1.0",
         "status": "staging_only_not_loaded_by_live_storefront",
         "product_count": len(products),
@@ -343,6 +344,46 @@ def build_staging_payload() -> dict:
         ),
         "products": products,
     }
+
+    candidates = load_json(DATA_DIR / "dufynd_rights_cleared_image_candidates.json")
+    for candidate in candidates.get("candidates", []):
+        if candidate.get("review_status") != "approved":
+            continue
+        product = next(
+            (row for row in products if row["product_id"] == candidate["product_id"]),
+            None,
+        )
+        if product is None or any(
+            product[field] != candidate.get(field)
+            for field in ("candidate_id", "brand", "name", "concentration", "volume_ml")
+        ):
+            raise ValueError("approved_candidate_identity_mismatch")
+        plan = approval_plan(
+            payload,
+            candidates,
+            product_id=candidate["product_id"],
+            image_url=candidate["image_url"],
+        )
+        reviewed_at = str(candidate.get("reviewed_at") or "").strip()
+        if not reviewed_at or not candidate.get("visual_approval_basis"):
+            raise ValueError("approved_candidate_missing_visual_review_evidence")
+        apply_approval(
+            payload,
+            candidates,
+            product_id=plan["product_id"],
+            image_url=plan["image_url"],
+            reviewed_at=reviewed_at,
+            proposed_image_status=plan["proposed_image_status"],
+            source_class=plan["source_class"],
+            rights_basis_id=plan["rights_basis_id"],
+            rights_checked_at=plan["rights_checked_at"],
+            license_name=plan["license_name"],
+            license_url=plan["license_url"],
+            attribution_text=plan["attribution_text"],
+            share_alike_required=plan["share_alike_required"],
+        )
+
+    return payload
 
 
 def main() -> int:
