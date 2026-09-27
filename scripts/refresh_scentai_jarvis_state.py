@@ -52,6 +52,7 @@ RELEASE_01 = DATA_DIR / "scentai_release_batch_01.json"
 RELEASE_02 = DATA_DIR / "scentai_release_batch_02.json"
 RELEASE_03 = DATA_DIR / "scentai_release_batch_03.json"
 ASSET_CANDIDATES = DATA_DIR / "scentai_image_asset_candidates.json"
+RIGHTS_AUDIT = DATA_DIR / "dufynd_release01_asset_rights_audit.json"
 PILOT_MANIFEST = DATA_DIR / "scentai_pilot_batch_01.json"
 PILOT_READINESS = DATA_DIR / "scentai_pilot_batch_01_readiness.json"
 PILOT_JOBS = DATA_DIR / "scentai_pilot_batch_01_production_jobs.json"
@@ -130,6 +131,7 @@ def refresh_state(*, generated_at: str) -> dict[str, Any]:
         releases,
         generated_at=generated_at,
         asset_candidates=(load_json(ASSET_CANDIDATES) if ASSET_CANDIDATES.exists() else None),
+        rights_audit=(load_json(RIGHTS_AUDIT) if RIGHTS_AUDIT.exists() else None),
     )
     feed_queue = build_feed_activation_queue(
         release_01,
