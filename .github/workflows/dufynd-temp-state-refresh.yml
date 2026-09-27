@@ -1,0 +1,67 @@
+name: DUFYND Temporary State Refresh
+
+on:
+  push:
+    branches:
+      - dufynd-release01-black-opium-offer-20260927
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dufynd-temporary-state-refresh-black-opium-offer
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: ".:examples"
+    steps:
+      - name: Check out feature branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: dufynd-release01-black-opium-offer-20260927
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install repository dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Refresh derived DUFYND state
+        run: python -m scripts.refresh_scentai_jarvis_state --write --machine-readable
+
+      - name: Validate refreshed state graph
+        run: python -m scripts.validate_scentai_jarvis_state_graph --machine-readable
+
+      - name: Commit refreshed derived state
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add \
+            examples/retail/data/scentai_merchant_mapping_work_queue.json \
+            examples/retail/data/scentai_affiliate_activation_status.json \
+            examples/retail/data/scentai_image_approval_work_queue.json \
+            examples/retail/data/scentai_release_01_feed_activation_queue.json \
+            examples/retail/data/scentai_release_01_gate_status.json \
+            examples/retail/data/scentai_release_pipeline_status.json \
+            examples/retail/data/scentai_jarvis_operations_status.json \
+            examples/retail/data/scentai_content_operations_status.json \
+            examples/retail/data/scentai_content_operations_status_batch02.json \
+            examples/retail/data/scentai_content_operations_status_batch03.json \
+            examples/retail/data/scentai_content_pipeline_status.json \
+            examples/retail/data/scentai_media_generation_queue.json \
+            examples/retail/data/scentai_jarvis_master_status.json
+          if git diff --cached --quiet; then
+            echo "No derived-state changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "DUFYND: refresh derived state after Black Opium offer [skip ci]"
+          git push origin HEAD:dufynd-release01-black-opium-offer-20260927
