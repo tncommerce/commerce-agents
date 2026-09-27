@@ -49,6 +49,10 @@ def plan_for(
     exact_variant_verified=True,
     commercial_use_allowed=True,
     public_distribution_allowed=True,
+    license_name=None,
+    license_url=None,
+    attribution_text=None,
+    share_alike_required=None,
 ) -> dict:
     return registration_plan(
         staging_payload(),
@@ -62,6 +66,10 @@ def plan_for(
         commercial_use_allowed=commercial_use_allowed,
         public_distribution_allowed=public_distribution_allowed,
         evidence_note="Exact bottle photographed by DUFYND.",
+        license_name=license_name,
+        license_url=license_url,
+        attribution_text=attribution_text,
+        share_alike_required=share_alike_required,
     )
 
 
@@ -77,6 +85,25 @@ def test_owned_original_registers_as_pending_licensed_candidate() -> None:
     assert candidate["exact_variant_verified"] is True
     assert candidate["rights_evidence"]["commercial_use_allowed"] is True
     assert candidate["rights_evidence"]["public_distribution_allowed"] is True
+
+
+def test_licensed_provider_requires_persisted_attribution_metadata() -> None:
+    plan = plan_for(
+        source_class="licensed_asset_provider",
+        license_name="CC BY-SA 3.0",
+        license_url="https://creativecommons.org/licenses/by-sa/3.0/",
+        attribution_text="Open Beauty Facts contributors",
+        share_alike_required=True,
+    )
+
+    rights = plan["candidate"]["rights_evidence"]
+    assert rights["license_name"] == "CC BY-SA 3.0"
+    assert rights["license_url"] == "https://creativecommons.org/licenses/by-sa/3.0/"
+    assert rights["attribution_text"] == "Open Beauty Facts contributors"
+    assert rights["share_alike_required"] is True
+
+    with pytest.raises(ValueError, match="candidate_license_metadata_incomplete"):
+        plan_for(source_class="licensed_asset_provider")
 
 
 def test_written_manufacturer_permission_targets_manufacturer_status() -> None:
