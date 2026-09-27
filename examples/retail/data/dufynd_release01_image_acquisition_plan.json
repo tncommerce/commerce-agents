@@ -1,0 +1,186 @@
+{
+  "version": 1,
+  "generated_at": "2026-09-27T12:16:00Z",
+  "release_id": "SCENTAI-RELEASE-01",
+  "status": "blocked_on_licensed_or_dufynd_owned_product_images",
+  "purpose": "Operational acquisition plan for exact Release 01 commerce packshots after official-brand reuse rights were found insufficient. This plan does not approve any image.",
+  "policy": {
+    "official_brand_reference_is_identity_only": true,
+    "generated_bottle_lookalikes_for_live_commerce": false,
+    "approved_affiliate_feed_asset_requires_program_and_asset_rights": true,
+    "dufynd_owned_original_photography_allowed_as_acquisition_route": true,
+    "written_brand_permission_allowed_as_acquisition_route": true,
+    "manual_visual_approval_required_after_asset_acquisition": true,
+    "automatic_image_approval_allowed": false
+  },
+  "summary": {
+    "release_products": 5,
+    "exact_variant_identity_verified": 5,
+    "current_purchase_destinations": 5,
+    "approved_images": 0,
+    "licensed_source_required": 5,
+    "currently_usable_licensed_feed_assets": 0,
+    "conditional_top_parfuemerie_feed_candidates": 4,
+    "top_parfuemerie_missing_exact_feed_candidate": 1,
+    "perfumetrader_program_approved": true,
+    "perfumetrader_product_data_feed_available": false,
+    "manual_visual_approval_ready": 0
+  },
+  "source_refs": [
+    "dufynd_release01_asset_rights_audit.json",
+    "scentai_image_approval_work_queue.json",
+    "dufynd_top_parfuemerie_release01_dry_run.json",
+    "dufynd_perfumetrader_release01_variant_audit.json",
+    "scentai_affiliate_activation_status.json",
+    "dufynd_affiliate_feed_image_rights.json"
+  ],
+  "route_order": [
+    "licensed_exact_variant_affiliate_or_merchant_feed_asset",
+    "dufynd_owned_original_product_photography",
+    "written_brand_or_authorized_distributor_permission"
+  ],
+  "products": [
+    {
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "brand": "Lancôme",
+      "name": "La Vie est Belle",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "gtin": "3605533286555",
+      "image_state": "licensed_source_required",
+      "currently_usable_licensed_asset": false,
+      "top_parfuemerie": {
+        "image_candidate_present": true,
+        "merchant_product_id": "780879",
+        "program_status": "applied_pending",
+        "acquisition_state": "blocked_until_program_approval_and_image_rights_basis_verified"
+      },
+      "perfumetrader": {
+        "program_status": "approved",
+        "official_awin_product_feed_available": false,
+        "exact_variant_public_evidence": "alternative_volume_only",
+        "acquisition_state": "not_actionable_for_feed_image"
+      },
+      "alternative_routes": [
+        "dufynd_owned_original_product_photography",
+        "written_lancome_or_authorized_distributor_permission",
+        "approved_douglas_or_flaconi_feed_asset_after_program_and_rights_verification"
+      ],
+      "next_action": "obtain_exact_licensed_or_dufynd_owned_asset_then_manual_visual_approval"
+    },
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "brand": "Parfums de Marly",
+      "name": "Delina",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 75,
+      "gtin": "3700578501998",
+      "image_state": "licensed_source_required",
+      "currently_usable_licensed_asset": false,
+      "top_parfuemerie": {
+        "image_candidate_present": true,
+        "merchant_product_id": "825869",
+        "program_status": "applied_pending",
+        "acquisition_state": "blocked_until_program_approval_and_image_rights_basis_verified"
+      },
+      "perfumetrader": {
+        "program_status": "approved",
+        "official_awin_product_feed_available": false,
+        "exact_variant_public_evidence": "not_found",
+        "acquisition_state": "not_actionable_for_feed_image"
+      },
+      "alternative_routes": [
+        "dufynd_owned_original_product_photography",
+        "written_parfums_de_marly_or_authorized_distributor_permission",
+        "approved_douglas_or_flaconi_feed_asset_after_program_and_rights_verification"
+      ],
+      "next_action": "obtain_exact_licensed_or_dufynd_owned_asset_then_manual_visual_approval"
+    },
+    {
+      "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+      "brand": "Dior",
+      "name": "Hypnotic Poison",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "gtin": "3348900425309",
+      "image_state": "licensed_source_required",
+      "currently_usable_licensed_asset": false,
+      "top_parfuemerie": {
+        "image_candidate_present": false,
+        "merchant_product_id": null,
+        "program_status": "applied_pending",
+        "acquisition_state": "exact_variant_missing_from_current_feed"
+      },
+      "perfumetrader": {
+        "program_status": "approved",
+        "official_awin_product_feed_available": false,
+        "exact_variant_public_evidence": "verified_public_product_page_only",
+        "merchant_product_id": "33204791",
+        "acquisition_state": "public_page_does_not_supply_licensed_feed_asset"
+      },
+      "alternative_routes": [
+        "dufynd_owned_original_product_photography",
+        "written_dior_or_authorized_distributor_permission",
+        "approved_douglas_or_flaconi_feed_asset_after_program_and_rights_verification"
+      ],
+      "next_action": "obtain_exact_licensed_or_dufynd_owned_asset_then_manual_visual_approval"
+    },
+    {
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "brand": "Yves Saint Laurent",
+      "name": "Black Opium",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "gtin": "3365440787971",
+      "image_state": "licensed_source_required",
+      "currently_usable_licensed_asset": false,
+      "top_parfuemerie": {
+        "image_candidate_present": true,
+        "merchant_product_id": "787670",
+        "program_status": "applied_pending",
+        "acquisition_state": "blocked_until_program_approval_and_image_rights_basis_verified"
+      },
+      "perfumetrader": {
+        "program_status": "approved",
+        "official_awin_product_feed_available": false,
+        "exact_variant_public_evidence": "alternative_gift_set_only",
+        "acquisition_state": "not_actionable_for_feed_image"
+      },
+      "alternative_routes": [
+        "dufynd_owned_original_product_photography",
+        "written_ysl_beauty_or_authorized_distributor_permission",
+        "approved_douglas_or_flaconi_feed_asset_after_program_and_rights_verification"
+      ],
+      "next_action": "obtain_exact_licensed_or_dufynd_owned_asset_then_manual_visual_approval"
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "brand": "Yves Saint Laurent",
+      "name": "Libre",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "gtin": "3614272648425",
+      "image_state": "licensed_source_required",
+      "currently_usable_licensed_asset": false,
+      "top_parfuemerie": {
+        "image_candidate_present": true,
+        "merchant_product_id": "856448",
+        "program_status": "applied_pending",
+        "acquisition_state": "blocked_until_program_approval_and_image_rights_basis_verified"
+      },
+      "perfumetrader": {
+        "program_status": "approved",
+        "official_awin_product_feed_available": false,
+        "exact_variant_public_evidence": "alternative_gift_set_only",
+        "acquisition_state": "not_actionable_for_feed_image"
+      },
+      "alternative_routes": [
+        "dufynd_owned_original_product_photography",
+        "written_ysl_beauty_or_authorized_distributor_permission",
+        "approved_douglas_or_flaconi_feed_asset_after_program_and_rights_verification"
+      ],
+      "next_action": "obtain_exact_licensed_or_dufynd_owned_asset_then_manual_visual_approval"
+    }
+  ],
+  "decision": "No Release 01 product image can be approved from current repository sources. The next valid transition requires an exact licensed feed/media asset, written permission, or DUFYND-owned original product photography, followed by manual visual approval."
+}
