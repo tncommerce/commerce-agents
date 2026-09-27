@@ -1,13 +1,13 @@
 {
   "version": 1,
-  "generated_at": "2026-09-27T11:42:58+00:00",
-  "source_fingerprint_sha256": "86da1b8406744bd022e7b305318595ee2d7005275051dab3d8060c3746a7b4a1",
+  "generated_at": "2026-09-27T12:07:45+00:00",
+  "source_fingerprint_sha256": "a7b0b7ff4b0db1481e1de93cb0926915bfd48b7c0061e1f120eb5e2401adf294",
   "system": "DUFYND",
   "control_plane": "commerce_jarvis",
   "policy_ref": "scentai_jarvis_operating_policy.json",
-  "overall_state": "waiting_image_rights_and_approval",
+  "overall_state": "waiting_licensed_image_sources_and_approval",
   "user_approval_required_now": false,
-  "next_action": "verify_image_rights_and_prepare_manual_visual_approval",
+  "next_action": "obtain_licensed_image_sources_then_prepare_manual_visual_approval",
   "next_action_class": "auto_allowed",
   "blockers": [
     "release_approved_images_incomplete",
@@ -55,7 +55,9 @@
     "approved_images": 0,
     "pending_images": 50,
     "review_ready": 0,
-    "rights_or_source_check_pending": 15
+    "rights_or_source_check_pending": 10,
+    "licensed_source_required": 5,
+    "release_01_licensed_source_required": 5
   },
   "release_01": {
     "release_size": 5,

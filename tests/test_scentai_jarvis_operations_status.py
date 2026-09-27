@@ -161,6 +161,31 @@ def test_control_plane_focuses_on_images_after_purchase_destinations_are_complet
     assert status["user_approval_required_now"] is False
 
 
+def test_control_plane_requests_licensed_sources_after_rights_are_resolved() -> None:
+    mapping, affiliate, images, release, feed = base_sources()
+    release["summary"]["current_purchase_destinations"] = 5
+    images["summary"]["rights_or_source_check_pending"] = 0
+    images["summary"]["licensed_source_required"] = 5
+    images["summary"]["release_01_licensed_source_required"] = 5
+
+    status = build_operations_status(
+        mapping,
+        affiliate,
+        images,
+        release,
+        feed,
+        generated_at="2026-09-27T12:00:00+00:00",
+    )
+
+    assert status["overall_state"] == "waiting_licensed_image_sources_and_approval"
+    assert status["next_action"] == (
+        "obtain_licensed_image_sources_then_prepare_manual_visual_approval"
+    )
+    assert status["images"]["licensed_source_required"] == 5
+    assert status["images"]["release_01_licensed_source_required"] == 5
+    assert status["user_approval_required_now"] is False
+
+
 def test_control_plane_focuses_on_purchase_destinations_when_images_are_complete() -> None:
     mapping, affiliate, images, release, feed = base_sources()
     release["summary"]["approved_images"] = 5

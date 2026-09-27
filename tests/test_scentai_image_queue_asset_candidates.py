@@ -101,3 +101,77 @@ def test_approved_image_overrides_candidate_pending_state() -> None:
     assert row["blockers"] == []
     assert row["next_action"] == "none"
     assert queue["summary"]["approved_images"] == 1
+
+
+def test_explicit_reuse_restriction_requires_licensed_source() -> None:
+    staging = {
+        "products": [
+            {
+                "product_id": "SC-TEST-100",
+                "candidate_id": "TEST",
+                "brand": "Brand",
+                "name": "Test",
+                "batch": 1,
+                "media": {
+                    "image_url": None,
+                    "image_status": "pending_approved_feed_or_manufacturer_image",
+                },
+            }
+        ]
+    }
+    releases = [
+        {
+            "release_id": "SCENTAI-RELEASE-01",
+            "write_enabled": True,
+            "product_ids": ["SC-TEST-100"],
+        }
+    ]
+    candidates = {
+        "products": [
+            {
+                "product_id": "SC-TEST-100",
+                "image_state": "rights_or_source_check_pending",
+                "candidate_source": {
+                    "source_class": "manufacturer_official",
+                    "source_page_url": "https://example.com/product",
+                    "exact_variant_verified": True,
+                    "verified_at": "2026-09-19",
+                },
+            }
+        ]
+    }
+    rights_audit = {
+        "generated_at": "2026-09-27",
+        "products": [
+            {
+                "product_id": "SC-TEST-100",
+                "rights_evidence_status": "official_terms_prohibit_commercial_use",
+                "rights_evidence_url": "https://example.com/terms",
+                "public_distribution_allowed": False,
+                "final_composite_allowed": False,
+            }
+        ],
+    }
+
+    queue = build_queue(
+        staging,
+        releases,
+        generated_at="2026-09-27T12:00:00+00:00",
+        asset_candidates=candidates,
+        rights_audit=rights_audit,
+    )
+
+    row = queue["items"][0]
+
+    assert row["image_state"] == "licensed_source_required"
+    assert row["blockers"] == [
+        "approved_product_image_missing",
+        "licensed_commerce_asset_required",
+    ]
+    assert row["next_action"] == (
+        "obtain_licensed_affiliate_feed_image_or_dufynd_owned_original_then_manual_visual_approval"
+    )
+    assert row["rights_evidence"]["rights_evidence_url"] == "https://example.com/terms"
+    assert queue["summary"]["licensed_source_required"] == 1
+    assert queue["summary"]["release_01_licensed_source_required"] == 1
+    assert queue["summary"]["rights_or_source_check_pending"] == 0

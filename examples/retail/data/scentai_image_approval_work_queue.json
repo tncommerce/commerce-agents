@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-27T11:42:58+00:00",
-  "source_fingerprint_sha256": "846dccbfd7834af6fb74b79281205257c09c3a24283a7dcdc5c3430fef292749",
+  "generated_at": "2026-09-27T12:07:45+00:00",
+  "source_fingerprint_sha256": "8ce0b72df57456a405e2c10046932e0c7df9354ccbfe9dec75fbb0507115c85b",
   "machine_id": "scentai_image_approval_v1",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
@@ -9,7 +9,8 @@
     "scentai_release_batch_01.json",
     "scentai_release_batch_02.json",
     "scentai_release_batch_03.json",
-    "scentai_image_asset_candidates.json"
+    "scentai_image_asset_candidates.json",
+    "dufynd_release01_asset_rights_audit.json"
   ],
   "summary": {
     "staged_products": 50,
@@ -19,7 +20,9 @@
     "approved_images": 0,
     "pending_images": 50,
     "review_ready": 0,
-    "rights_or_source_check_pending": 15,
+    "rights_or_source_check_pending": 10,
+    "licensed_source_required": 5,
+    "release_01_licensed_source_required": 5,
     "identity_check_pending": 0
   },
   "items": [
@@ -37,12 +40,12 @@
       },
       "current_image_url": null,
       "current_image_status": "pending_approved_feed_or_manufacturer_image",
-      "image_state": "rights_or_source_check_pending",
+      "image_state": "licensed_source_required",
       "blockers": [
         "approved_product_image_missing",
-        "asset_usage_or_feed_rights_not_verified"
+        "licensed_commerce_asset_required"
       ],
-      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
+      "next_action": "obtain_licensed_affiliate_feed_image_or_dufynd_owned_original_then_manual_visual_approval",
       "action_class": "auto_allowed",
       "approval_action_class": "approval_required",
       "candidate_source": {
@@ -51,6 +54,12 @@
         "exact_variant_verified": true,
         "verified_at": "2026-09-19",
         "evidence_note": "Official Lancôme page lists La Vie est Belle Eau de Parfum in 100 ml."
+      },
+      "rights_evidence": {
+        "rights_evidence_status": "official_loreal_terms_prohibit_commercial_site_content_reuse",
+        "rights_evidence_url": "https://www.loreal.com/en/groupe/global-terms-of-use/",
+        "public_distribution_allowed": false,
+        "final_composite_allowed": false
       },
       "audit_trail": [
         {
@@ -76,6 +85,12 @@
           "from": "identity_verified",
           "to": "rights_or_source_check_pending",
           "trigger": "identity_gate_passed"
+        },
+        {
+          "at": "2026-09-21",
+          "from": "rights_or_source_check_pending",
+          "to": "licensed_source_required",
+          "trigger": "official_source_commercial_reuse_not_permitted"
         }
       ]
     },
@@ -93,12 +108,12 @@
       },
       "current_image_url": null,
       "current_image_status": "pending_approved_feed_or_manufacturer_image",
-      "image_state": "rights_or_source_check_pending",
+      "image_state": "licensed_source_required",
       "blockers": [
         "approved_product_image_missing",
-        "asset_usage_or_feed_rights_not_verified"
+        "licensed_commerce_asset_required"
       ],
-      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
+      "next_action": "obtain_licensed_affiliate_feed_image_or_dufynd_owned_original_then_manual_visual_approval",
       "action_class": "auto_allowed",
       "approval_action_class": "approval_required",
       "candidate_source": {
@@ -107,6 +122,12 @@
         "exact_variant_verified": true,
         "verified_at": "2026-09-19",
         "evidence_note": "Official Parfums de Marly page lists Delina in 75 ml."
+      },
+      "rights_evidence": {
+        "rights_evidence_status": "official_terms_personal_viewing_only_without_prior_written_permission",
+        "rights_evidence_url": "https://parfums-de-marly.com/de/policies/terms-of-service",
+        "public_distribution_allowed": false,
+        "final_composite_allowed": false
       },
       "audit_trail": [
         {
@@ -132,6 +153,12 @@
           "from": "identity_verified",
           "to": "rights_or_source_check_pending",
           "trigger": "identity_gate_passed"
+        },
+        {
+          "at": "2026-09-21",
+          "from": "rights_or_source_check_pending",
+          "to": "licensed_source_required",
+          "trigger": "official_source_commercial_reuse_not_permitted"
         }
       ]
     },
@@ -149,12 +176,12 @@
       },
       "current_image_url": null,
       "current_image_status": "pending_approved_feed_or_manufacturer_image",
-      "image_state": "rights_or_source_check_pending",
+      "image_state": "licensed_source_required",
       "blockers": [
         "approved_product_image_missing",
-        "asset_usage_or_feed_rights_not_verified"
+        "licensed_commerce_asset_required"
       ],
-      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
+      "next_action": "obtain_licensed_affiliate_feed_image_or_dufynd_owned_original_then_manual_visual_approval",
       "action_class": "auto_allowed",
       "approval_action_class": "approval_required",
       "candidate_source": {
@@ -163,6 +190,12 @@
         "exact_variant_verified": true,
         "verified_at": "2026-09-19",
         "evidence_note": "Official Dior page lists Hypnotic Poison Eau de Toilette in 100 ml."
+      },
+      "rights_evidence": {
+        "rights_evidence_status": "official_terms_restrict_noncommercial_site_content_reuse",
+        "rights_evidence_url": "https://www.dior.com/de_de/beauty/folder?fid=legal-terms",
+        "public_distribution_allowed": false,
+        "final_composite_allowed": false
       },
       "audit_trail": [
         {
@@ -188,6 +221,12 @@
           "from": "identity_verified",
           "to": "rights_or_source_check_pending",
           "trigger": "identity_gate_passed"
+        },
+        {
+          "at": "2026-09-21",
+          "from": "rights_or_source_check_pending",
+          "to": "licensed_source_required",
+          "trigger": "official_source_commercial_reuse_not_permitted"
         }
       ]
     },
@@ -205,12 +244,12 @@
       },
       "current_image_url": null,
       "current_image_status": "pending_approved_feed_or_manufacturer_image",
-      "image_state": "rights_or_source_check_pending",
+      "image_state": "licensed_source_required",
       "blockers": [
         "approved_product_image_missing",
-        "asset_usage_or_feed_rights_not_verified"
+        "licensed_commerce_asset_required"
       ],
-      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
+      "next_action": "obtain_licensed_affiliate_feed_image_or_dufynd_owned_original_then_manual_visual_approval",
       "action_class": "auto_allowed",
       "approval_action_class": "approval_required",
       "candidate_source": {
@@ -219,6 +258,12 @@
         "exact_variant_verified": true,
         "verified_at": "2026-09-19",
         "evidence_note": "Official YSL Beauty page lists Black Opium Eau de Parfum in 90 ml."
+      },
+      "rights_evidence": {
+        "rights_evidence_status": "official_terms_prohibit_commercial_use_of_site_content",
+        "rights_evidence_url": "https://www.yslbeauty.de/customer-service/nutzungsbedingungen/customer-service-terms-and-conditions.html",
+        "public_distribution_allowed": false,
+        "final_composite_allowed": false
       },
       "audit_trail": [
         {
@@ -244,6 +289,12 @@
           "from": "identity_verified",
           "to": "rights_or_source_check_pending",
           "trigger": "identity_gate_passed"
+        },
+        {
+          "at": "2026-09-21",
+          "from": "rights_or_source_check_pending",
+          "to": "licensed_source_required",
+          "trigger": "official_source_commercial_reuse_not_permitted"
         }
       ]
     },
@@ -261,12 +312,12 @@
       },
       "current_image_url": null,
       "current_image_status": "pending_approved_feed_or_manufacturer_image",
-      "image_state": "rights_or_source_check_pending",
+      "image_state": "licensed_source_required",
       "blockers": [
         "approved_product_image_missing",
-        "asset_usage_or_feed_rights_not_verified"
+        "licensed_commerce_asset_required"
       ],
-      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
+      "next_action": "obtain_licensed_affiliate_feed_image_or_dufynd_owned_original_then_manual_visual_approval",
       "action_class": "auto_allowed",
       "approval_action_class": "approval_required",
       "candidate_source": {
@@ -275,6 +326,12 @@
         "exact_variant_verified": true,
         "verified_at": "2026-09-19",
         "evidence_note": "Official YSL Beauty page lists Libre Eau de Parfum in 90 ml."
+      },
+      "rights_evidence": {
+        "rights_evidence_status": "official_terms_prohibit_commercial_use_of_site_content",
+        "rights_evidence_url": "https://www.yslbeauty.de/customer-service/nutzungsbedingungen/customer-service-terms-and-conditions.html",
+        "public_distribution_allowed": false,
+        "final_composite_allowed": false
       },
       "audit_trail": [
         {
@@ -300,6 +357,12 @@
           "from": "identity_verified",
           "to": "rights_or_source_check_pending",
           "trigger": "identity_gate_passed"
+        },
+        {
+          "at": "2026-09-21",
+          "from": "rights_or_source_check_pending",
+          "to": "licensed_source_required",
+          "trigger": "official_source_commercial_reuse_not_permitted"
         }
       ]
     },

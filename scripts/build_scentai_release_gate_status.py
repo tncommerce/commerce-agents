@@ -180,6 +180,7 @@ def build_release_gate_status(
                 if row["image_state"]
                 in {
                     "rights_or_source_check_pending",
+                    "licensed_source_required",
                     "review_ready",
                 }
                 or row["image_state"].startswith("approved_")

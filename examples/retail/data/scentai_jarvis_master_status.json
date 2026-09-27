@@ -1,20 +1,20 @@
 {
   "version": 1,
-  "generated_at": "2026-09-27T11:42:58+00:00",
-  "source_fingerprint_sha256": "0e6bb42ca5d5f42d67b2b115330028a15537a230f555b49308c2a2882bd3973a",
+  "generated_at": "2026-09-27T12:07:45+00:00",
+  "source_fingerprint_sha256": "a7d542c3d31815f566fe345d3e6b2245827cf0ee88e15befcd5059c7089a1fb3",
   "system": "DUFYND",
   "control_plane": "commerce_jarvis_master",
   "overall_state": "work_available",
   "active_domain": "commerce",
-  "next_action": "verify_image_rights_and_prepare_manual_visual_approval",
+  "next_action": "obtain_licensed_image_sources_then_prepare_manual_visual_approval",
   "next_action_class": "auto_allowed",
   "user_approval_required_now": false,
   "domains": {
     "commerce": {
       "domain": "commerce",
-      "overall_state": "waiting_image_rights_and_approval",
+      "overall_state": "waiting_licensed_image_sources_and_approval",
       "execution_state": "work_available",
-      "next_action": "verify_image_rights_and_prepare_manual_visual_approval",
+      "next_action": "obtain_licensed_image_sources_then_prepare_manual_visual_approval",
       "next_action_class": "auto_allowed",
       "user_approval_required_now": false,
       "blockers": [
