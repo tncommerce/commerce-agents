@@ -46,6 +46,9 @@ def affiliate_program_rows(payload: dict) -> list[dict[str, Any]]:
                 "merchant_id": item.get("merchant_id"),
                 "program": item.get("program"),
                 "application_status": item.get("status"),
+                "product_data_available": item.get("product_data_available") is True,
+                "current_feed_rows_reported": item.get("current_feed_rows_reported"),
+                "current_feed_updated_at": item.get("current_feed_updated_at"),
             }
         )
 
@@ -110,6 +113,12 @@ def build_feed_activation_queue(
         application_status = str(program.get("application_status") or "").strip().casefold()
         approved = application_status == "approved"
         rejected = application_status in {"rejected", "declined"}
+        partial_preflight_eligible = (
+            approved
+            and mapped_count > 0
+            and not full_coverage
+            and program.get("product_data_available") is True
+        )
         missing_product_ids = [
             product_id for product_id in release_ids if product_id not in mapped_product_ids
         ]
@@ -142,7 +151,11 @@ def build_feed_activation_queue(
             next_action = (
                 "await_exact_variant_feed_or_product_evidence"
                 if missing_mapping_audit_complete
-                else "resolve_remaining_release_mappings_before_feed_validation"
+                else (
+                    "validate_current_mapped_feed_rows_and_resolve_remaining_mapping"
+                    if partial_preflight_eligible
+                    else "resolve_remaining_release_mappings_before_feed_validation"
+                )
             )
         elif full_coverage:
             state = "program_pending_full_mapping_ready"
@@ -157,6 +170,11 @@ def build_feed_activation_queue(
             "release_size": len(release_ids),
             "mapped_product_ids": mapped_product_ids,
             "full_release_mapping_coverage": full_coverage,
+            "partial_feed_preflight_eligible": partial_preflight_eligible,
+            "preflight_mapped_product_ids": (
+                mapped_product_ids if partial_preflight_eligible else []
+            ),
+            "current_feed_rows_revalidated": False,
             "program_approved": approved,
             "program_rejected": rejected,
             "state": state,
@@ -170,7 +188,11 @@ def build_feed_activation_queue(
                         "await_exact_variant_feed_or_product_evidence"
                         if approved and missing_mapping_audit_complete
                         else (
-                            "await_remaining_mapping_resolution"
+                            (
+                                "await_current_mapped_rows_validation"
+                                if partial_preflight_eligible
+                                else "await_remaining_mapping_resolution"
+                            )
                             if approved
                             else "await_program_approval"
                         )
@@ -245,6 +267,9 @@ def build_feed_activation_queue(
             ),
             "approved_programs": sum(1 for row in programs if row["program_approved"]),
             "approved_programs_with_full_release_mapping": len(approved_full),
+            "approved_partial_feed_preflight_paths": sum(
+                row["partial_feed_preflight_eligible"] for row in programs
+            ),
             "feed_validation_path_available": bool(approved_full),
             "live_activation_ready": False,
         },

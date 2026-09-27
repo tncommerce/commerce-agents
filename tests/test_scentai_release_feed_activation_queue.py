@@ -110,6 +110,49 @@ def test_partial_mapping_cannot_be_full_release_path() -> None:
     assert merchant["live_routing_allowed"] is False
 
 
+def test_approved_partial_feed_can_preflight_only_its_mapped_rows() -> None:
+    programs = affiliates("approved")
+    programs["applications"][1]["product_data_available"] = True
+    programs["applications"][1]["current_feed_rows_reported"] = 8031
+    queue = build_feed_activation_queue(
+        release(),
+        mappings(),
+        programs,
+        generated_at="2026-09-27T18:00:00+00:00",
+    )
+
+    partial = next(row for row in queue["programs"] if row["merchant_id"] == "merchant-two")
+    assert partial["partial_feed_preflight_eligible"] is True
+    assert partial["preflight_mapped_product_ids"] == ["SC-A"]
+    assert partial["current_feed_rows_revalidated"] is False
+    assert partial["feed_state"] == "await_current_mapped_rows_validation"
+    assert partial["next_action"] == (
+        "validate_current_mapped_feed_rows_and_resolve_remaining_mapping"
+    )
+    assert queue["summary"]["approved_partial_feed_preflight_paths"] == 1
+    assert queue["summary"]["feed_validation_path_available"] is True
+    assert queue["summary"]["live_activation_ready"] is False
+    assert partial["live_routing_allowed"] is False
+
+
+def test_current_top_parfuemerie_preflight_does_not_mark_feed_or_images_ready() -> None:
+    data_dir = Path("examples/retail/data")
+    queue = build_feed_activation_queue(
+        load_json(data_dir / "scentai_release_batch_01.json"),
+        load_json(data_dir / "merchant_product_mappings.json"),
+        load_json(data_dir / "scentai_affiliate_programs.json"),
+        generated_at="2026-09-27T18:00:00+00:00",
+    )
+    top = next(row for row in queue["programs"] if row["merchant_id"] == "top-parfuemerie")
+    assert top["partial_feed_preflight_eligible"] is True
+    assert len(top["preflight_mapped_product_ids"]) == 4
+    assert "SC-YSL-BLACK-OPIUM-EDP-90" in top["preflight_mapped_product_ids"]
+    assert "SC-DIOR-HYPNOTIC-POISON-EDT-100" not in top["preflight_mapped_product_ids"]
+    assert top["current_feed_rows_revalidated"] is False
+    assert top["live_routing_allowed"] is False
+    assert queue["summary"]["feed_validation_path_available"] is False
+
+
 def test_variant_audit_prevents_wrong_variant_mapping_for_approved_partial_program() -> None:
     audit = {
         "merchant_id": "merchant-two",
