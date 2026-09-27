@@ -31,6 +31,16 @@ def test_release01_official_references_never_count_as_public_approval() -> None:
 
     for row in audit["products"]:
         assert row["exact_variant_verified"] is True
+        if row["product_id"] == "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100":
+            assert row["current_source_type"] == "licensed_asset_provider"
+            assert row["catalog_image_status"] == "approved_licensed_image"
+            assert row["public_distribution_allowed"] is True
+            assert row["final_composite_allowed"] is True
+            assert row["license_name"] == "CC BY-SA 3.0"
+            assert row["attribution_text"] == "Open Beauty Facts contributors"
+            assert row["share_alike_required"] is True
+            assert row["next_action"] == "none"
+            continue
         assert row["current_source_type"] == "official_brand_reference_unlicensed"
         assert row["catalog_image_status"] == "reference_only"
         assert row["public_distribution_allowed"] is False
@@ -50,7 +60,8 @@ def test_release01_rights_evidence_is_explicit_for_every_product() -> None:
         rights_url = str(row.get("rights_evidence_url") or "").strip()
         assert rights_url.startswith("https://")
         assert (
-            "commercial" in row["rights_evidence_status"]
+            row["rights_evidence_status"] == "verified_for_publisher_service"
+            or "commercial" in row["rights_evidence_status"]
             or "written_permission" in row["rights_evidence_status"]
             or "personal_viewing" in row["rights_evidence_status"]
         )

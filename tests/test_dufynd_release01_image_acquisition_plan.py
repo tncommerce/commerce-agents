@@ -24,7 +24,8 @@ def test_image_acquisition_plan_matches_release01_manifest() -> None:
     assert plan["release_id"] == release["release_id"]
     assert plan_ids == release["product_ids"]
     assert plan["summary"]["release_products"] == len(release["product_ids"])
-    assert plan["summary"]["licensed_source_required"] == len(release["product_ids"])
+    assert plan["summary"]["approved_images"] == 1
+    assert plan["summary"]["licensed_source_required"] == len(release["product_ids"]) - 1
     assert plan["summary"]["currently_usable_licensed_feed_assets"] == 0
     assert plan["summary"]["manual_visual_approval_ready"] == 0
 
@@ -38,6 +39,13 @@ def test_acquisition_plan_never_treats_reference_images_as_approved() -> None:
         product_id = row["product_id"]
         evidence = rights_by_id[product_id]
 
+        if product_id == "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100":
+            assert row["image_state"] == "approved_licensed_image"
+            assert row["currently_usable_licensed_asset"] is True
+            assert evidence["rights_basis_id"] == row["approved_rights_basis_id"]
+            assert evidence["image_url"] == row["approved_image_url"]
+            assert row["next_action"] == "none"
+            continue
         assert row["image_state"] == "licensed_source_required"
         assert row["currently_usable_licensed_asset"] is False
         assert evidence["public_distribution_allowed"] is False

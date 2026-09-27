@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-27T16:38:20+00:00",
-  "source_fingerprint_sha256": "6ab476d6f47c9eae1e81438699b1090795ad8db3359d164683a76ec36c6fb23c",
+  "generated_at": "2026-09-27T16:49:20+00:00",
+  "source_fingerprint_sha256": "ee05d4b1b4c956596dc016ac533dde13be86f980d8c3ce806ff9a5ab30a14aa2",
   "machine_id": "scentai_image_approval_v1",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
@@ -107,7 +107,7 @@
           "trigger": "identity_gate_passed"
         },
         {
-          "at": "2026-09-21",
+          "at": "2026-09-27",
           "from": "rights_or_source_check_pending",
           "to": "licensed_source_required",
           "trigger": "official_source_commercial_reuse_not_permitted"
@@ -175,7 +175,7 @@
           "trigger": "identity_gate_passed"
         },
         {
-          "at": "2026-09-21",
+          "at": "2026-09-27",
           "from": "rights_or_source_check_pending",
           "to": "licensed_source_required",
           "trigger": "official_source_commercial_reuse_not_permitted"
@@ -243,7 +243,7 @@
           "trigger": "identity_gate_passed"
         },
         {
-          "at": "2026-09-21",
+          "at": "2026-09-27",
           "from": "rights_or_source_check_pending",
           "to": "licensed_source_required",
           "trigger": "official_source_commercial_reuse_not_permitted"
@@ -311,7 +311,7 @@
           "trigger": "identity_gate_passed"
         },
         {
-          "at": "2026-09-21",
+          "at": "2026-09-27",
           "from": "rights_or_source_check_pending",
           "to": "licensed_source_required",
           "trigger": "official_source_commercial_reuse_not_permitted"
