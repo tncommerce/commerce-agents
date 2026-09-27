@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-27T16:49:20+00:00",
-  "source_fingerprint_sha256": "6add796d3bbc2dd609420ba05dfae13bb546ee5ca620733e3a4880264b1c0761",
+  "generated_at": "2026-09-27T17:46:10+00:00",
+  "source_fingerprint_sha256": "6828dbbd5b8a902ab3405903186e0dc7d1a09f05134282869cae43a98dcf7152",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
     "scentai_catalog_staging.json",
@@ -14,10 +14,10 @@
     "products_with_two_or_more_resolved_mappings": 29,
     "products_without_resolved_mapping": 19,
     "affiliate_programs_registered": 9,
-    "affiliate_programs_approved": 1,
-    "affiliate_programs_pending": 8,
+    "affiliate_programs_approved": 2,
+    "affiliate_programs_pending": 7,
     "mapping_ready_products": 31,
-    "products_with_approved_affiliate_program": 5
+    "products_with_approved_affiliate_program": 9
   },
   "affiliate_programs": [
     {
@@ -66,7 +66,7 @@
       "network": "Awin",
       "merchant_id": "top-parfuemerie",
       "program": "top Parfümerie DE",
-      "status": "applied"
+      "status": "approved"
     },
     {
       "network": "CJ Affiliate",
@@ -1105,9 +1105,9 @@
           "affiliate_program": {
             "network": "Awin",
             "program": "top Parfümerie DE",
-            "status": "applied"
+            "status": "approved"
           },
-          "affiliate_activation_state": "pending_program_approval"
+          "affiliate_activation_state": "approved"
         }
       ]
     },
@@ -1330,9 +1330,9 @@
           "affiliate_program": {
             "network": "Awin",
             "program": "top Parfümerie DE",
-            "status": "applied"
+            "status": "approved"
           },
-          "affiliate_activation_state": "pending_program_approval"
+          "affiliate_activation_state": "approved"
         }
       ]
     },
@@ -1682,9 +1682,9 @@
           "affiliate_program": {
             "network": "Awin",
             "program": "top Parfümerie DE",
-            "status": "applied"
+            "status": "approved"
           },
-          "affiliate_activation_state": "pending_program_approval"
+          "affiliate_activation_state": "approved"
         }
       ]
     },
@@ -1783,9 +1783,9 @@
           "affiliate_program": {
             "network": "Awin",
             "program": "top Parfümerie DE",
-            "status": "applied"
+            "status": "approved"
           },
-          "affiliate_activation_state": "pending_program_approval"
+          "affiliate_activation_state": "approved"
         }
       ]
     },

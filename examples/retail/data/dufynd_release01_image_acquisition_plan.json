@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-09-27T16:48:58.087783+00:00",
+  "generated_at": "2026-09-27T17:46:10+00:00",
   "release_id": "SCENTAI-RELEASE-01",
   "status": "blocked_on_licensed_or_dufynd_owned_product_images",
   "purpose": "Operational acquisition plan for exact Release 01 commerce packshots after official-brand reuse rights were found insufficient. This plan does not approve any image.",
@@ -24,7 +24,9 @@
     "top_parfuemerie_missing_exact_feed_candidate": 1,
     "perfumetrader_program_approved": true,
     "perfumetrader_product_data_feed_available": false,
-    "manual_visual_approval_ready": 0
+    "manual_visual_approval_ready": 0,
+    "top_parfuemerie_program_approved": true,
+    "top_parfuemerie_current_feed_rows_revalidated": false
   },
   "source_refs": [
     "dufynd_release01_asset_rights_audit.json",
@@ -53,8 +55,8 @@
       "top_parfuemerie": {
         "image_candidate_present": true,
         "merchant_product_id": "780879",
-        "program_status": "applied_pending",
-        "acquisition_state": "blocked_until_program_approval_and_image_rights_basis_verified"
+        "program_status": "approved",
+        "acquisition_state": "blocked_until_current_exact_feed_row_and_image_rights_basis_verified"
       },
       "perfumetrader": {
         "program_status": "approved",
@@ -87,8 +89,8 @@
       "top_parfuemerie": {
         "image_candidate_present": true,
         "merchant_product_id": "825869",
-        "program_status": "applied_pending",
-        "acquisition_state": "blocked_until_program_approval_and_image_rights_basis_verified"
+        "program_status": "approved",
+        "acquisition_state": "blocked_until_current_exact_feed_row_and_image_rights_basis_verified"
       },
       "perfumetrader": {
         "program_status": "approved",
@@ -115,8 +117,8 @@
       "top_parfuemerie": {
         "image_candidate_present": false,
         "merchant_product_id": null,
-        "program_status": "applied_pending",
-        "acquisition_state": "exact_variant_missing_from_current_feed"
+        "program_status": "approved",
+        "acquisition_state": "exact_variant_missing_from_historical_feed_sample_current_unverified"
       },
       "perfumetrader": {
         "program_status": "approved",
@@ -144,8 +146,8 @@
       "top_parfuemerie": {
         "image_candidate_present": true,
         "merchant_product_id": "787670",
-        "program_status": "applied_pending",
-        "acquisition_state": "blocked_until_program_approval_and_image_rights_basis_verified"
+        "program_status": "approved",
+        "acquisition_state": "blocked_until_current_exact_feed_row_and_image_rights_basis_verified"
       },
       "perfumetrader": {
         "program_status": "approved",
@@ -172,8 +174,8 @@
       "top_parfuemerie": {
         "image_candidate_present": true,
         "merchant_product_id": "856448",
-        "program_status": "applied_pending",
-        "acquisition_state": "blocked_until_program_approval_and_image_rights_basis_verified"
+        "program_status": "approved",
+        "acquisition_state": "blocked_until_current_exact_feed_row_and_image_rights_basis_verified"
       },
       "perfumetrader": {
         "program_status": "approved",
@@ -189,7 +191,7 @@
       "next_action": "obtain_exact_licensed_or_dufynd_owned_asset_then_manual_visual_approval"
     }
   ],
-  "decision": "No Release 01 product image can be approved from current repository sources. The next valid transition requires an exact licensed feed/media asset, written permission, or DUFYND-owned original product photography, followed by manual visual approval.",
+  "decision": "The four images still awaiting approval require exact licensed feed/media assets, written permission, or DUFYND-owned original product photography followed by manual visual approval. The approved La Vie est Belle image remains unchanged.",
   "rights_cleared_intake": {
     "candidate_queue": "dufynd_rights_cleared_image_candidates.json",
     "register_command": "python -m scripts.register_scentai_rights_cleared_image",

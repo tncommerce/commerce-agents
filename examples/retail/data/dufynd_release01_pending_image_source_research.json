@@ -46,7 +46,7 @@
         "dufynd_owned_original_photography"
       ],
       "top_parfuemerie_feed_candidate_present": true,
-      "top_parfuemerie_program_status": "applied_pending",
+      "top_parfuemerie_program_status": "approved",
       "required_before_registration": [
         "image_url_or_owned_asset_path",
         "same_image_exact_concentration_and_volume_evidence",
@@ -72,7 +72,7 @@
         "dufynd_owned_original_photography"
       ],
       "top_parfuemerie_feed_candidate_present": false,
-      "top_parfuemerie_program_status": "applied_pending",
+      "top_parfuemerie_program_status": "approved",
       "required_before_registration": [
         "image_url_or_owned_asset_path",
         "same_image_exact_concentration_and_volume_evidence",
@@ -111,7 +111,7 @@
         "dufynd_owned_original_photography"
       ],
       "top_parfuemerie_feed_candidate_present": true,
-      "top_parfuemerie_program_status": "applied_pending",
+      "top_parfuemerie_program_status": "approved",
       "required_before_registration": [
         "image_url_or_owned_asset_path",
         "same_image_exact_concentration_and_volume_evidence",
@@ -125,6 +125,14 @@
         "author": "Dsuarez04",
         "assessment": "not_registerable",
         "reason": "Photograph shows Black Opium bottle, but page and visible photograph do not establish Eau de Parfum 90 ml or the exact GTIN."
+      },
+      "top_parfuemerie_current_feed_check": {
+        "observed_at": "2026-09-27",
+        "program_approved_since": "2026-09-22",
+        "feed_rows_reported": 8031,
+        "current_exact_gtin_or_merchant_product_row_verified": false,
+        "image_source_and_rights_for_exact_row_verified": false,
+        "next_evidence": "Read current official Awin feed row for merchant product 787670 and corroborate GTIN 3365440787971 before registering a review-only image candidate."
       }
     },
     {
@@ -144,7 +152,7 @@
         "dufynd_owned_original_photography"
       ],
       "top_parfuemerie_feed_candidate_present": true,
-      "top_parfuemerie_program_status": "applied_pending",
+      "top_parfuemerie_program_status": "approved",
       "required_before_registration": [
         "image_url_or_owned_asset_path",
         "same_image_exact_concentration_and_volume_evidence",

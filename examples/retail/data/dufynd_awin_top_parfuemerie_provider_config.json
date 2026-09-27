@@ -37,6 +37,7 @@
     "reject_nonpositive_price": true,
     "feed_access_does_not_imply_program_approval": true
   },
-  "affiliate_program_status": "applied_open",
-  "live_routing_allowed": false
+  "affiliate_program_status": "approved",
+  "live_routing_allowed": false,
+  "program_approval_observed_at": "2026-09-27"
 }
