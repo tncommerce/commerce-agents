@@ -502,6 +502,13 @@
       "merchant_product_id": null,
       "ean": "3614274114645",
       "gtin": "3614274114645"
+    },
+    {
+      "product_id": "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100",
+      "merchant": "sephora",
+      "merchant_product_id": "467702",
+      "ean": "3423478515956",
+      "gtin": "3423478515956"
     }
   ]
 }
