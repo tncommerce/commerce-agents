@@ -474,6 +474,25 @@
       "data_source": "manual_verified_web",
       "last_updated_at": "2026-09-27T20:14:05Z",
       "commission_rate": null
+    },
+    {
+      "offer_id": "douglas-jpg-le-male-elixir-parfum-125",
+      "product_id": "SC-JPG-LE-MALE-ELIXIR-PARFUM-125",
+      "merchant_id": "douglas-de",
+      "merchant_name": "Douglas",
+      "merchant_product_id": "5010945026-1092117",
+      "price": 119,
+      "currency": "EUR",
+      "shipping_cost": 0,
+      "shipping_label": "Versandkostenfrei",
+      "in_stock": true,
+      "variant_label": "125 ml · Parfum",
+      "product_url": "https://www.douglas.de/de/p/5010945026?variant=1092117",
+      "affiliate_url": null,
+      "network": null,
+      "data_source": "manual_verified_web",
+      "last_updated_at": "2026-09-27T20:18:22Z",
+      "commission_rate": null
     }
   ]
 }
