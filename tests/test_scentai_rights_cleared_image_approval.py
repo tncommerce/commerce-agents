@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 import pytest
 from scripts.approve_scentai_rights_cleared_image import (
     apply_approval,
@@ -8,6 +11,7 @@ from scripts.approve_scentai_rights_cleared_image import (
 
 PRODUCT_ID = "SC-TEST-100"
 IMAGE_URL = "/products/test-owned.jpg"
+STATE_MACHINE = Path("examples/retail/data/scentai_image_approval_state_machine.json")
 
 
 def staging_payload(
@@ -194,3 +198,18 @@ def test_apply_approval_persists_rights_and_source_metadata() -> None:
     candidate = candidates["candidates"][0]
     assert candidate["review_status"] == "approved"
     assert candidate["rights_status"] == "verified_for_publisher_service"
+
+def test_state_machine_recognizes_rights_cleared_non_feed_sources() -> None:
+    machine = json.loads(STATE_MACHINE.read_text(encoding="utf-8"))
+    source_classes = set(machine["candidate_source_classes"])
+
+    assert {
+        "dufynd_owned_original_photography",
+        "licensed_asset_provider",
+        "written_asset_permission",
+        "written_manufacturer_permission",
+    } <= source_classes
+    assert machine["states"]["approved_licensed_image"]["approved"] is True
+    assert machine["states"]["approved_manufacturer_image"]["approved"] is True
+    assert "rights_cleared_non_feed" in machine["rights_rules"]
+
