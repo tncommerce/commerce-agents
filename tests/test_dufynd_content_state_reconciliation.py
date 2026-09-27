@@ -53,4 +53,3 @@ def test_master_fingerprint_matches_rebuilt_control_plane() -> None:
     expected = refresh_state(generated_at=master["generated_at"])["master_status"]
 
     assert master["source_fingerprint_sha256"] == expected["source_fingerprint_sha256"]
-
