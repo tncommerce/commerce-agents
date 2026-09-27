@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-27T11:29:20+00:00",
-  "source_fingerprint_sha256": "ff177db315eb06c0e7498ffdcd8770e9b8e2608d8ee9a56dc40dca8402cbdc8f",
+  "generated_at": "2026-09-27T11:37:49+00:00",
+  "source_fingerprint_sha256": "9eea772895e31c7396b18d6f4d64f7eda9f5780b0f056e1128bfed9481bbaeef",
   "system": "DUFYND",
   "control_plane": "commerce_jarvis",
   "policy_ref": "scentai_jarvis_operating_policy.json",
@@ -11,7 +11,6 @@
   "next_action_class": "auto_allowed",
   "blockers": [
     "release_approved_images_incomplete",
-    "release_purchase_destinations_incomplete",
     "release_promotion_gates_incomplete"
   ],
   "safety": {
@@ -63,7 +62,7 @@
     "mapping_ready": 5,
     "image_identity_source_verified": 5,
     "approved_images": 0,
-    "current_purchase_destinations": 4,
+    "current_purchase_destinations": 5,
     "current_tracked_affiliate_offers": 0,
     "promotion_ready": 0
   },
