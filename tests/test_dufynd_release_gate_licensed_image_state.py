@@ -51,5 +51,5 @@ def test_licensed_source_required_preserves_verified_image_identity() -> None:
 
     assert status["summary"]["image_identity_source_verified"] == 1
     assert status["summary"]["approved_images"] == 0
-    assert status["products"][0]["image_state"] == "licensed_source_required"
-    assert status["products"][0]["gates"]["approved_product_image"] is False
+    assert status["rows"][0]["image_state"] == "licensed_source_required"
+    assert status["rows"][0]["gates"]["approved_product_image"] is False
