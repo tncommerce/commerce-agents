@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "observed_at": "2026-09-27T20:14:05Z",
+  "product_id": "SC-CHLOE-CHLOE-EDP-100",
+  "merchant": "Sephora DE",
+  "merchant_product_id": "620496",
+  "product_url": "https://www.sephora.de/p/chloe-eau-de-parfum-620496.html",
+  "observation_method": "live_read_only_merchant_browser",
+  "identity": {
+    "brand": "Chloé",
+    "name": "Chloé",
+    "concentration": "Eau de Parfum",
+    "volume_ml": 100,
+    "package": "refillable spray bottle (not 150 ml refill or Le Parfum)",
+    "gtin": "3616302038633",
+    "gtin_corrob_source": "https://www.galeria.de/produkt/chloe-eau-de-parfum-refillable-3616302038633",
+    "gtin_corrob_note": "Independent Galeria listing identifies the 100 ml refillable Eau de Parfum spray bottle by GTIN. Sephora visibly selects the 100 ml refillable bottle and describes its glass flacon."
+  },
+  "live_observation": {
+    "listed_price_eur": 111.45,
+    "shipping_cost_eur": 0,
+    "availability": "Verfügbar; add-to-cart enabled",
+    "delivery_note": "Kostenlose Lieferung nach Hause oder Packstation ab 1 Oktober 2026 shown."
+  },
+  "excluded_leads": [
+    {
+      "url": "https://www.parfumdreams.de/Chloe/Damenduefte/Signature/Eau-de-Parfum-Spray/index_15857.aspx?variation=182807",
+      "reason": "Selected 100 ml / Nachfüllung is a refill container, not the requested perfume bottle."
+    },
+    {
+      "url": "https://www.sephora.de/p/chloe-le-parfum",
+      "reason": "Le Parfum is a separate concentration; no offer inferred from this lead."
+    }
+  ],
+  "rights_or_affiliate_impact": {
+    "image_rights_granted": false,
+    "affiliate_tracking_verified": false,
+    "final_image_approval_granted": false
+  },
+  "freshness_policy": "Offer qualifies only while last_updated_at is within the release gate 72-hour window. Release 02 remains write-locked."
+}
