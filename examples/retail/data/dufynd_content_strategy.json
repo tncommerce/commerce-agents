@@ -1,23 +1,23 @@
 {
-  "version": 8,
+  "version": 9,
   "system": "DUFYND",
-  "strategy_status": "active",
+  "strategy_status": "state_reconciliation_required",
   "active_track": "high_end_launch_buffer",
   "high_end_rnd_status": "proof_complete_reuse_existing_assets",
   "business_priority": "audience_growth_and_product_utility",
   "legacy_pilot_batches": "resume_for_preproduction",
   "legacy_pilot_role": "launch_and_learning_buffer",
-  "reason": "The technical pre-publish preparation is complete and the first-post Naxos execution packet is prepared. Remaining work is time/account-gated: on 2026-09-26 confirm TikTok DUFYND branding, verify live profile links, inspect platform-native upload previews/audio, then request explicit publish approval.",
-  "next_action": "wait_for_2026_09_26_then_execute_naxos_launch_day_packet",
-  "next_action_class": "manual_step_pending_at_launch",
+  "reason": "The dated 2026-09-26 social rebrand/launch hold has elapsed. Repository state alone does not prove which profile-link, native-audio or publish steps were completed, so DUFYND must reconcile the current live social state before selecting the next content execution packet. This state does not authorize publishing.",
+  "next_action": "reconcile_live_social_state_before_next_content_action",
+  "next_action_class": "manual_state_reconciliation_required",
   "user_approval_required_now": false,
   "production_parallel_allowed": true,
   "buffer_plan": "examples/retail/data/dufynd_content_buffer_plan.json",
   "waiting_on": [
-    "social_rebrand_hold_until_2026-09-26",
+    "reconcile_live_social_publish_state",
     "live_profile_link_check",
     "channel_native_sound_or_audio_check",
-    "explicit_publish_approval"
+    "explicit_publish_approval_for_any_new_post"
   ],
   "approval_gates": [
     "paid_ai_subscription_or_credits",
