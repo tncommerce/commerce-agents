@@ -24,8 +24,13 @@ def test_every_live_dufynd_price_has_an_explicit_source() -> None:
     assert len(fragrances) == 33
 
     for row in fragrances:
-        source = (row.get("attributes") or {}).get("price_source")
+        attributes = row.get("attributes") or {}
+        source = attributes.get("price_source")
         assert source in ALLOWED_SOURCES, row["product_id"]
+
+        if source == "market_reference":
+            assert float(row["price"]) == float(attributes["market_price_eur"])
+            assert str(attributes.get("price_checked_at") or "").strip()
 
 
 def test_legacy_live_catalog_prices_are_market_references() -> None:
