@@ -190,6 +190,8 @@
     "approval_command": "python -m scripts.approve_scentai_rights_cleared_image",
     "registration_state": "pending_review_only",
     "final_approval_action_class": "approval_required",
-    "rule": "Registration may validate and persist exact-variant rights-cleared candidates, but it may not approve or promote an image. Final visual approval remains human/user gated."
+    "rule": "Registration may validate and persist exact-variant rights-cleared candidates, but it may not approve or promote an image. Final visual approval remains human/user gated.",
+    "review_packet_command": "python -m scripts.build_scentai_rights_cleared_image_review_packet",
+    "review_packet_mode": "read_only"
   }
 }
