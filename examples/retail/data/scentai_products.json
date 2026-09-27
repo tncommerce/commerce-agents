@@ -3211,7 +3211,10 @@
         "overall": "high"
       },
       "validation": {
-        "catalog_ready": true
+        "catalog_ready": true,
+        "blockers": [
+          "identity_concentration_review_required"
+        ]
       },
       "visuals": [
         {
