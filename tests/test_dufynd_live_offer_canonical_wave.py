@@ -86,6 +86,14 @@ EXPECTED = {
 }
 
 RELEASE01_EXPECTED = {
+    "douglas-lancome-la-vie-est-belle-edp-100": {
+        "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+        "merchant_id": "douglas-de",
+        "merchant_product_id": "3000056790",
+        "price": 89,
+        "product_url": "https://www.douglas.de/de/p/3000056790",
+        "last_updated_at": "2026-09-27T11:32:00Z",
+    },
     "douglas-ysl-black-opium-edp-90": {
         "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
         "merchant_id": "douglas-de",
@@ -93,7 +101,7 @@ RELEASE01_EXPECTED = {
         "price": 115.59,
         "product_url": "https://www.douglas.de/de/p/3001005867?variant=818764",
         "last_updated_at": "2026-09-27T09:34:00Z",
-    }
+    },
 }
 
 
@@ -103,7 +111,7 @@ def test_canonical_offer_wave_matches_verified_sources() -> None:
     live_ids = {row["product_id"] for row in live}
     by_id = {row["offer_id"]: row for row in offers}
 
-    assert len(offers) == 16
+    assert len(offers) == 17
     assert set(EXPECTED).issubset(by_id)
 
     for offer_id, expected in EXPECTED.items():
