@@ -7,6 +7,7 @@ import { useState, type KeyboardEvent } from "react";
 import { hasOptions, optionSummary, optionValuesLabel, priceLabel, useStoreFrame } from "web-shared";
 import type { Product } from "@/lib/types";
 import FragranceVisual from "@/components/FragranceVisual";
+import ImageAttribution from "@/components/ImageAttribution";
 import { trackAnalyticsEvent } from "@/lib/analytics";
 import { flyToCart } from "@/lib/flight";
 import { attributeChips, productGlyph, productTileClass } from "@/lib/format";
@@ -63,14 +64,17 @@ export function ProductImage({ product, className = "" }: { product: Product; cl
 
     if (imageUrl) {
       return (
-        <FragranceVisual
-          imageUrl={imageUrl}
-          cutoutUrl={isProductTruth ? imageUrl : undefined}
-          alt={product.title}
-          variant="card"
-          mode={isProductTruth ? "cutout" : "editorial"}
-          className={className}
-        />
+        <div className={`relative overflow-hidden ${className}`}>
+          <FragranceVisual
+            imageUrl={imageUrl}
+            cutoutUrl={isProductTruth ? imageUrl : undefined}
+            alt={product.title}
+            variant="card"
+            mode={isProductTruth ? "cutout" : "editorial"}
+            className="h-full w-full"
+          />
+          <ImageAttribution visual={visual} compact />
+        </div>
       );
     }
 
