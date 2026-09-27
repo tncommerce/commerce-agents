@@ -21,9 +21,7 @@ def test_widian_london_live_identity_is_consistent_inside_dufynd() -> None:
 
     assert source_row["concentration"] == "Extrait de Parfum"
     assert source_row["volume_ml"] == 50
-    assert source_row["validation"]["blockers"] == [
-        "identity_concentration_review_required"
-    ]
+    assert source_row["validation"]["blockers"] == ["identity_concentration_review_required"]
     assert catalog_row["attributes"]["concentration"] == "Extrait de Parfum"
     assert catalog_row["attributes"]["volume_ml"] == "50"
 
