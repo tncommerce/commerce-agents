@@ -137,3 +137,65 @@ def test_direct_purchase_destinations_need_no_affiliate_program() -> None:
     assert status["overall_state"] == "ready_for_user_approval"
     assert status["blockers"] == []
     assert status["affiliate"]["approved_full_release_paths"] == 0
+
+def test_control_plane_focuses_on_images_after_purchase_destinations_are_complete() -> None:
+    mapping, affiliate, images, release, feed = base_sources()
+    release["summary"]["current_purchase_destinations"] = 5
+
+    status = build_operations_status(
+        mapping,
+        affiliate,
+        images,
+        release,
+        feed,
+        generated_at="2026-09-27T11:45:00+00:00",
+    )
+
+    assert status["overall_state"] == "waiting_image_rights_and_approval"
+    assert status["next_action"] == "verify_image_rights_and_prepare_manual_visual_approval"
+    assert status["blockers"] == [
+        "release_approved_images_incomplete",
+        "release_promotion_gates_incomplete",
+    ]
+    assert status["user_approval_required_now"] is False
+
+
+def test_control_plane_focuses_on_purchase_destinations_when_images_are_complete() -> None:
+    mapping, affiliate, images, release, feed = base_sources()
+    release["summary"]["approved_images"] = 5
+
+    status = build_operations_status(
+        mapping,
+        affiliate,
+        images,
+        release,
+        feed,
+        generated_at="2026-09-27T11:45:00+00:00",
+    )
+
+    assert status["overall_state"] == "waiting_purchase_destinations"
+    assert status["next_action"] == "verify_current_purchase_destinations"
+    assert status["blockers"] == [
+        "release_purchase_destinations_incomplete",
+        "release_promotion_gates_incomplete",
+    ]
+
+
+def test_control_plane_exposes_other_promotion_gates_after_core_assets_are_complete() -> None:
+    mapping, affiliate, images, release, feed = base_sources()
+    release["summary"]["approved_images"] = 5
+    release["summary"]["current_purchase_destinations"] = 5
+
+    status = build_operations_status(
+        mapping,
+        affiliate,
+        images,
+        release,
+        feed,
+        generated_at="2026-09-27T11:45:00+00:00",
+    )
+
+    assert status["overall_state"] == "waiting_remaining_promotion_gates"
+    assert status["next_action"] == "resolve_remaining_release_promotion_gates"
+    assert status["blockers"] == ["release_promotion_gates_incomplete"]
+
