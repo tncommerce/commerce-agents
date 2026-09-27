@@ -210,6 +210,26 @@ add(
     : "Every live fragrance has a source-data row.",
 );
 
+const liveSourceValidationBlockers = liveProducts.flatMap((product) => {
+  const sourceProduct = sourceById.get(product.product_id);
+  const blockers = Array.isArray(sourceProduct?.validation?.blockers)
+    ? sourceProduct.validation.blockers
+    : [];
+
+  return blockers
+    .map((blocker) => String(blocker || "").trim())
+    .filter(Boolean)
+    .map((blocker) => `${product.product_id}:${blocker}`);
+});
+
+add(
+  liveSourceValidationBlockers.length ? "gate" : "pass",
+  "live_source_validation",
+  liveSourceValidationBlockers.length
+    ? `Live fragrance source validation blockers: ${liveSourceValidationBlockers.join(", ")}`
+    : "No live fragrance has unresolved source-validation blockers.",
+);
+
 add(
   missingImages.length ? "gate" : "pass",
   "image_coverage",
