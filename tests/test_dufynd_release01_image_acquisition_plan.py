@@ -57,9 +57,7 @@ def test_top_parfuemerie_candidates_remain_conditional() -> None:
     ]
 
     assert len(with_candidate) == 4
-    assert [row["product_id"] for row in without_candidate] == [
-        "SC-DIOR-HYPNOTIC-POISON-EDT-100"
-    ]
+    assert [row["product_id"] for row in without_candidate] == ["SC-DIOR-HYPNOTIC-POISON-EDT-100"]
 
     for row in with_candidate:
         top = row["top_parfuemerie"]
