@@ -161,13 +161,17 @@ def test_launch_review_records_full_minimum_buffer() -> None:
     assert review["fifth_creative_rule"]["satisfied_by"] == ("relationship_labels_carousel_01")
 
 
-def test_strategy_advances_to_pre_publish_gate() -> None:
+def test_strategy_advances_to_post_hold_state_reconciliation() -> None:
     strategy = load_json(STRATEGY)
 
     assert strategy["active_track"] == "high_end_launch_buffer"
-    assert strategy["next_action"] == ("wait_for_2026_09_26_then_execute_naxos_launch_day_packet")
-    assert strategy["next_action_class"] == "manual_step_pending_at_launch"
+    assert strategy["strategy_status"] == "state_reconciliation_required"
+    assert strategy["next_action"] == (
+        "reconcile_live_social_state_before_next_content_action"
+    )
+    assert strategy["next_action_class"] == "manual_state_reconciliation_required"
     assert strategy["user_approval_required_now"] is False
+    assert "reconcile_live_social_publish_state" in strategy["waiting_on"]
     assert strategy["high_end_launch_review"] == (
         "examples/retail/data/dufynd_high_end_launch_review.json"
     )
