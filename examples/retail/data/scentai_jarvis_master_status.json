@@ -27,8 +27,8 @@
       "domain": "content",
       "overall_state": "strategy_work_available",
       "execution_state": "manual_step_pending",
-      "next_action": "wait_for_2026_09_26_then_execute_naxos_launch_day_packet",
-      "next_action_class": "manual_step_pending_at_launch",
+      "next_action": "reconcile_live_social_state_before_next_content_action",
+      "next_action_class": "manual_state_reconciliation_required",
       "user_approval_required_now": false,
       "blockers": []
     }
