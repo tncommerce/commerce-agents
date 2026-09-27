@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "observed_at": "2026-09-27T20:50:00Z",
+  "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+  "merchant": "Müller DE",
+  "merchant_product_id": "241929",
+  "product_url": "https://www.mueller.de/p/rabanne-1-million-eau-de-toilette-235492166/",
+  "observation_method": "current_public_merchant_page_read_only_web",
+  "identity": {
+    "brand": "Rabanne",
+    "name": "1 Million",
+    "concentration": "Eau de Toilette",
+    "volume_ml": 100,
+    "gtin": "3349666007921",
+    "gtin_corrob_source": "https://www.shop-apotheke.com/beauty/8031299/paco-rabanne-1-million-men.htm",
+    "gtin_corrob_note": "Shop Apotheke identifies pack size 100 ml, Eau de Toilette and EAN 3349666007921. This distinguishes the 100 ml EDT from the 50 ml EDT (EAN 3349666007891) and from 1 Million Parfum/Elixir variants."
+  },
+  "live_observation": {
+    "listed_price_eur": 67.95,
+    "shipping_cost_eur": 0,
+    "availability": "Lieferbar in 2–3 Werktagen; add-to-cart visible",
+    "delivery_note": "Müller DE shipping free for orders from €49."
+  },
+  "rights_or_affiliate_impact": {
+    "image_rights_granted": false,
+    "affiliate_tracking_verified": false,
+    "final_image_approval_granted": false
+  },
+  "freshness_policy": "Offer qualifies only while last_updated_at is within the 72-hour merchant-offer window. No live catalog promotion."
+}
