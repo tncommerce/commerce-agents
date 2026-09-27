@@ -14,8 +14,7 @@ def _live_catalog_rows() -> list[dict]:
     return [
         row
         for row in rows
-        if str(row.get("product_id") or "").startswith("SC-")
-        and row.get("category") == "fragrance"
+        if str(row.get("product_id") or "").startswith("SC-") and row.get("category") == "fragrance"
     ]
 
 
@@ -56,10 +55,10 @@ def test_live_catalog_market_reference_matches_fragrance_source() -> None:
         assert catalog_row["currency"] == "EUR", product_id
         assert attributes["price_source"] == "market_reference", product_id
         assert float(catalog_row["price"]) == float(market["market_price_eur"]), product_id
-        assert float(attributes["market_price_eur"]) == float(
-            market["market_price_eur"]
-        ), product_id
+        assert float(attributes["market_price_eur"]) == float(market["market_price_eur"]), (
+            product_id
+        )
         assert attributes["price_checked_at"] == market["price_checked_at"], product_id
-        assert int(catalog_row["review_count"]) == int(
-            source_row["community"]["rating_count"]
-        ), product_id
+        assert int(catalog_row["review_count"]) == int(source_row["community"]["rating_count"]), (
+            product_id
+        )
