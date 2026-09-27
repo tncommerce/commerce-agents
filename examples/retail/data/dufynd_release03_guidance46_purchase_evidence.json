@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "observed_at": "2026-09-27T18:19:36Z",
+  "product_id": "SC-AMOUAGE-GUIDANCE-46-EXTRAIT-100",
+  "merchant": "parfumdreams DE",
+  "merchant_product_id": "131905",
+  "product_url": "https://www.parfumdreams.de/Amouage/Collections/The-Exceptional-Extraits/Extrait-de-Parfum/index_131905.aspx",
+  "observation_method": "live_read_only_merchant_browser",
+  "identity": {
+    "brand": "Amouage",
+    "name": "Guidance 46 The Exceptional Extraits",
+    "concentration": "Extrait de Parfum",
+    "volume_ml": 100,
+    "gtin": "0701666410980",
+    "gtin_corrob_source": "https://www.lajeteeperfumery.com/products/guidance-46",
+    "gtin_corrob_note": "Independent merchant lists barcode 701666410980 for the 100 ml Extrait de Parfum; live parfumdreams DE page confirms the mapped merchant product 131905 as 100 ml Guidance 46 Extrait de Parfum."
+  },
+  "live_observation": {
+    "listed_price_eur": 510.0,
+    "shipping_cost_eur": 0,
+    "availability": "Sofort lieferbar, add-to-cart enabled",
+    "delivery_note": "Versandkostenfrei; DHL delivery 29 September to 1 October 2026 observed."
+  },
+  "rights_or_affiliate_impact": {
+    "image_rights_granted": false,
+    "affiliate_tracking_verified": false,
+    "final_image_approval_granted": false
+  },
+  "freshness_policy": "Offer qualifies only while last_updated_at is within the release gate 72-hour window; Release 03 remains write-locked."
+}
