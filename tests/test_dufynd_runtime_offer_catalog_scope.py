@@ -18,6 +18,7 @@ def test_offer_listing_requires_live_dufynd_catalog_product() -> None:
     assert 'product.category == "fragrance"' in source
     assert "and product.in_stock" in source
     assert guard in source
+    assert 'raise HTTPException(status_code=404, detail="Product not available")' in source
     assert source.index(guard) < source.index(lookup)
 
 
@@ -31,4 +32,5 @@ def test_offer_clickout_rechecks_live_catalog_scope() -> None:
     target = "target = offer_clickout_target(offer)"
 
     assert guard in source
+    assert 'raise HTTPException(status_code=404, detail="Offer not available")' in source
     assert source.index(guard) < source.index(target)
