@@ -607,6 +607,13 @@
       "merchant_product_id": "2367515",
       "ean": "3614272050358",
       "gtin": "3614272050358"
+    },
+    {
+      "product_id": "SC-VERSACE-EROS-EDP-100",
+      "merchant": "mueller",
+      "merchant_product_id": "2658284",
+      "ean": "8011003861224",
+      "gtin": "8011003861224"
     }
   ]
 }
