@@ -125,7 +125,10 @@
   "candidate_source_classes": [
     "approved_affiliate_feed",
     "manufacturer_official",
-    "licensed_asset_provider"
+    "licensed_asset_provider",
+    "dufynd_owned_original_photography",
+    "written_asset_permission",
+    "written_manufacturer_permission"
   ],
   "hard_rejections": [
     "wrong_fragrance",
@@ -137,7 +140,7 @@
     "generated_bottle_lookalike",
     "unclear_or_unverified_source_rights"
   ],
-  "approval_rule": "Final visual approval is a human/user approval gate. Jarvis may discover, normalize, validate and prepare candidates but may not set an approved_* state by itself. Affiliate-feed candidates additionally require a verified rights-registry match before approval.",
+  "approval_rule": "Final visual approval is a human/user approval gate. Jarvis may discover, normalize, validate and prepare candidates but may not set an approved_* state by itself. Affiliate-feed candidates additionally require a verified rights-registry match before approval. Rights-cleared non-feed candidates must persist exact-variant verification, source class, commercial/public-use rights, rights basis, rights check date and human visual approval evidence.",
   "rights_registry_ref": "dufynd_affiliate_feed_image_rights.json",
   "rights_rules": {
     "affiliate_feed": [
@@ -147,6 +150,14 @@
       "rights_status_must_be_verified_for_publisher_service",
       "final_visual_approval_remains_human_required"
     ],
-    "safety_note": "Feed presence alone never proves production image approval. Rights/source verification and human visual identity approval are separate gates."
+    "safety_note": "Feed presence alone never proves production image approval. Rights/source verification and human visual identity approval are separate gates.",
+    "rights_cleared_non_feed": [
+      "candidate_must_match_exact_canonical_variant",
+      "source_class_must_be_dufynd_owned_original_or_documented_permission_or_licensed_provider",
+      "commercial_use_must_be_explicitly_allowed",
+      "public_distribution_must_be_explicitly_allowed",
+      "rights_basis_and_rights_check_date_must_be_persisted",
+      "final_visual_identity_approval_remains_human_required"
+    ]
   }
 }

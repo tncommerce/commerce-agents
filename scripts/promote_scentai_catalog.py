@@ -283,6 +283,18 @@ def promotion_blockers(
         )
         if not all(str(value or "").strip() for value in feed_evidence):
             blockers.append("missing_feed_image_rights_evidence")
+    elif image_status in {
+        "approved_manufacturer_image",
+        "approved_licensed_image",
+    }:
+        rights_cleared_evidence = (
+            media.get("image_reviewed_at"),
+            media.get("image_source_class"),
+            media.get("image_rights_basis_id"),
+            media.get("image_rights_checked_at"),
+        )
+        if not all(str(value or "").strip() for value in rights_cleared_evidence):
+            blockers.append("missing_rights_cleared_image_evidence")
 
     scores = recommendation_scores(product)
     if set(scores) != set(PROFILE_AXES):
