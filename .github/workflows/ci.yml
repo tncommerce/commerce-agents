@@ -103,6 +103,9 @@ jobs:
             npm run build
           fi
 
+      - name: Exercise DUFYND launch readiness checker
+        run: npm run launch:check --workspace acme-retail-storefront-web
+
   dufynd-visual-qa:
     if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'dufynd-')
     runs-on: ubuntu-latest
