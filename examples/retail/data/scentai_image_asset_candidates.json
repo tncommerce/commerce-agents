@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-09-19",
+  "generated_at": "2026-09-27",
   "status": "active",
   "machine_id": "scentai_image_approval_v1",
   "purpose": "Global source registry for SCENTAI production image candidates. Candidate identity/source evidence only; no row is an approved image unless staging media holds an approved_* state.",
@@ -29,11 +29,14 @@
         "verified_at": "2026-09-19",
         "evidence_note": "Official Lancôme page lists La Vie est Belle Eau de Parfum in 100 ml."
       },
-      "image_state": "rights_or_source_check_pending",
-      "next_action": "prefer_approved_affiliate_feed_image_else_verify_manufacturer_asset_usage",
+      "image_state": "approved_licensed_image",
+      "next_action": "none",
       "action_class": "auto_allowed",
       "approval_action_class": "approval_required",
-      "release_id": "SCENTAI-RELEASE-01"
+      "release_id": "SCENTAI-RELEASE-01",
+      "approved_image_url": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+      "approved_image_source_class": "licensed_asset_provider",
+      "approved_rights_basis_id": "open-beauty-facts-3605533286555-cc-by-sa-3.0"
     },
     {
       "product_id": "SC-PDM-DELINA-EDP-75",

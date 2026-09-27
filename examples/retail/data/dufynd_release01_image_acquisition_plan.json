@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-09-27T12:16:00Z",
+  "generated_at": "2026-09-27T16:48:58.087783+00:00",
   "release_id": "SCENTAI-RELEASE-01",
   "status": "blocked_on_licensed_or_dufynd_owned_product_images",
   "purpose": "Operational acquisition plan for exact Release 01 commerce packshots after official-brand reuse rights were found insufficient. This plan does not approve any image.",
@@ -17,8 +17,8 @@
     "release_products": 5,
     "exact_variant_identity_verified": 5,
     "current_purchase_destinations": 5,
-    "approved_images": 0,
-    "licensed_source_required": 5,
+    "approved_images": 1,
+    "licensed_source_required": 4,
     "currently_usable_licensed_feed_assets": 0,
     "conditional_top_parfuemerie_feed_candidates": 4,
     "top_parfuemerie_missing_exact_feed_candidate": 1,
@@ -48,8 +48,8 @@
       "concentration": "Eau de Parfum",
       "volume_ml": 100,
       "gtin": "3605533286555",
-      "image_state": "licensed_source_required",
-      "currently_usable_licensed_asset": false,
+      "image_state": "approved_licensed_image",
+      "currently_usable_licensed_asset": true,
       "top_parfuemerie": {
         "image_candidate_present": true,
         "merchant_product_id": "780879",
@@ -67,7 +67,13 @@
         "written_lancome_or_authorized_distributor_permission",
         "approved_douglas_or_flaconi_feed_asset_after_program_and_rights_verification"
       ],
-      "next_action": "obtain_exact_licensed_or_dufynd_owned_asset_then_manual_visual_approval"
+      "next_action": "none",
+      "approved_image_url": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+      "approved_rights_basis_id": "open-beauty-facts-3605533286555-cc-by-sa-3.0",
+      "approved_source_class": "licensed_asset_provider",
+      "approved_license_name": "CC BY-SA 3.0",
+      "approved_attribution_text": "Open Beauty Facts contributors",
+      "approved_share_alike_required": true
     },
     {
       "product_id": "SC-PDM-DELINA-EDP-75",
