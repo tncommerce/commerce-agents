@@ -19,9 +19,16 @@ const sourceCatalog = JSON.parse(
     "utf-8",
   ),
 );
-const expectedFragranceCount = sourceCatalog.products.filter((product) =>
-  String(product?.product_id || "").startsWith("SC-"),
-).length;
+const expectedFragranceCount = sourceCatalog.products.filter((product) => {
+  const blockers = Array.isArray(product?.validation?.blockers)
+    ? product.validation.blockers
+    : [];
+
+  return (
+    String(product?.product_id || "").startsWith("SC-") &&
+    !blockers.some((blocker) => String(blocker || "").trim())
+  );
+}).length;
 
 const viewports = [
   { name: "320", width: 320, height: 780 },
