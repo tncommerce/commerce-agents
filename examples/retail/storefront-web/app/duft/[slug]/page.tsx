@@ -7,6 +7,7 @@ import FragranceExplodedNotes from "@/components/FragranceExplodedNotes";
 import FragranceOffers from "@/components/FragranceOffers";
 import MobileOfferBar from "@/components/MobileOfferBar";
 import FragranceVisual from "@/components/FragranceVisual";
+import ImageAttribution from "@/components/ImageAttribution";
 import FragranceVisualGallery from "@/components/FragranceVisualGallery";
 import FragranceModel3D from "@/components/FragranceModel3D";
 import FragranceSaveControls from "@/components/FragranceSaveControls";
@@ -494,6 +495,11 @@ export default async function FragrancePage({
                     : ""}
                 </p>
               ) : null}
+              {heroIsProductTruth ? (
+                <div className="mt-2">
+                  <ImageAttribution visual={heroVisual} />
+                </div>
+              ) : null}
             </div>
             {fragrance.model_3d_url ? (
               <FragranceModel3D
@@ -937,6 +943,9 @@ export default async function FragrancePage({
           </a>
           <a href="/datenschutz" className="hover:underline">
             Datenschutz
+          </a>
+          <a href="/bildnachweise" className="hover:underline">
+            Bildnachweise
           </a>
         </footer>
       </div>
