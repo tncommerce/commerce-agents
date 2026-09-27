@@ -101,7 +101,7 @@ RELEASE01_EXPECTED = {
         "price": 115.59,
         "product_url": "https://www.douglas.de/de/p/3001005867?variant=818764",
         "last_updated_at": "2026-09-27T09:34:00Z",
-    }
+    },
 }
 
 
