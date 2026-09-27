@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-27T21:01:59+00:00",
-  "source_fingerprint_sha256": "77eddcc6c435f957477447b1c2699eda4c8452e86c9b2ed497b8ddd4c1572d76",
+  "generated_at": "2026-09-27T21:07:14+00:00",
+  "source_fingerprint_sha256": "b2f54db1ae1a21f30da13fa798049d70d1267c76cf396d3dd4e16b520742ec00",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
     "scentai_catalog_staging.json",
@@ -10,13 +10,13 @@
   ],
   "summary": {
     "staged_products": 50,
-    "products_with_resolved_mapping": 37,
+    "products_with_resolved_mapping": 38,
     "products_with_two_or_more_resolved_mappings": 32,
-    "products_without_resolved_mapping": 13,
+    "products_without_resolved_mapping": 12,
     "affiliate_programs_registered": 9,
     "affiliate_programs_approved": 2,
     "affiliate_programs_pending": 7,
-    "mapping_ready_products": 37,
+    "mapping_ready_products": 38,
     "products_with_approved_affiliate_program": 11
   },
   "affiliate_programs": [
@@ -295,25 +295,6 @@
       "name": "Born In Roma Donna",
       "batch": 5,
       "researched_merchant_count": 2,
-      "mapping_count": 0,
-      "resolved_mapping_count": 0,
-      "full_mapping_count": 0,
-      "state": "mapping_required",
-      "blockers": [
-        "no_resolved_merchant_mapping"
-      ],
-      "next_action": "verify_exact_merchant_product_identity",
-      "action_class": "auto_allowed",
-      "live_activation_action_class": "approval_required",
-      "merchants": []
-    },
-    {
-      "product_id": "SC-VERSACE-EROS-EDP-100",
-      "candidate_id": "VERSACE-EROS-EDP-100",
-      "brand": "Versace",
-      "name": "Eros Pour Homme",
-      "batch": 5,
-      "researched_merchant_count": 1,
       "mapping_count": 0,
       "resolved_mapping_count": 0,
       "full_mapping_count": 0,
@@ -1714,6 +1695,33 @@
             "status": "approved"
           },
           "affiliate_activation_state": "approved"
+        }
+      ]
+    },
+    {
+      "product_id": "SC-VERSACE-EROS-EDP-100",
+      "candidate_id": "VERSACE-EROS-EDP-100",
+      "brand": "Versace",
+      "name": "Eros Pour Homme",
+      "batch": 5,
+      "researched_merchant_count": 1,
+      "mapping_count": 1,
+      "resolved_mapping_count": 1,
+      "full_mapping_count": 1,
+      "state": "mapping_data_ready",
+      "blockers": [],
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
+      "action_class": "auto_allowed",
+      "live_activation_action_class": "approval_required",
+      "merchants": [
+        {
+          "merchant_id": "mueller",
+          "mapping_state": "full",
+          "merchant_product_id": "2658284",
+          "ean": "8011003861224",
+          "gtin": "8011003861224",
+          "affiliate_program": null,
+          "affiliate_activation_state": "no_registered_program"
         }
       ]
     },
