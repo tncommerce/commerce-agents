@@ -46,16 +46,10 @@ def test_mapping_product_ids_belong_to_known_dufynd_products() -> None:
     rows = json.loads(MAPPINGS.read_text(encoding="utf-8"))["mappings"]
     staged = json.loads(STAGING.read_text(encoding="utf-8"))["products"]
     source = json.loads(SOURCE.read_text(encoding="utf-8"))["products"]
-    known_ids = {row["product_id"] for row in staged} | {
-        row["product_id"] for row in source
-    }
+    known_ids = {row["product_id"] for row in staged} | {row["product_id"] for row in source}
 
     unknown = sorted(
-        {
-            str(row.get("product_id") or "")
-            for row in rows
-            if row.get("product_id") not in known_ids
-        }
+        {str(row.get("product_id") or "") for row in rows if row.get("product_id") not in known_ids}
     )
     assert not unknown, f"merchant mappings reference unknown products: {unknown}"
 
@@ -88,6 +82,4 @@ def test_gtins_are_not_reused_across_dufynd_products() -> None:
 
         product_id = str(row.get("product_id") or "")
         previous = seen.setdefault(gtin, product_id)
-        assert previous == product_id, (
-            f"GTIN {gtin} maps to both {previous} and {product_id}"
-        )
+        assert previous == product_id, f"GTIN {gtin} maps to both {previous} and {product_id}"
