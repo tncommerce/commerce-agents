@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-27T09:42:40+00:00",
-  "source_fingerprint_sha256": "3400e59416e6a706f076c5b7fc09c0ec0668565f24c057ff44fa4a8c6d3184a9",
+  "generated_at": "2026-09-27T11:29:20+00:00",
+  "source_fingerprint_sha256": "55ccb5de166a78f0cfed56756e17d6a0e9fe79595da6c62df5b8b6050ff6f6b8",
   "release_id": "SCENTAI-RELEASE-01",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "image_machine_ref": "scentai_image_approval_state_machine.json",
@@ -11,7 +11,7 @@
     "mapping_ready": 5,
     "image_identity_source_verified": 5,
     "approved_images": 0,
-    "current_purchase_destinations": 3,
+    "current_purchase_destinations": 4,
     "current_tracked_affiliate_offers": 0,
     "promotion_ready": 0
   },
@@ -25,20 +25,19 @@
       "mapping_count": 3,
       "resolved_mapping_count": 3,
       "image_state": "rights_or_source_check_pending",
-      "purchase_offer_count": 0,
+      "purchase_offer_count": 1,
       "affiliate_offer_count": 0,
       "current_tracked_affiliate_offer": false,
       "gates": {
         "non_provisional_community_data": true,
         "resolved_merchant_product_mapping": true,
         "approved_product_image": false,
-        "current_purchase_destination": false,
+        "current_purchase_destination": true,
         "staging_recommendation_qa": true,
         "not_already_live": true
       },
       "blockers": [
-        "approved_product_image",
-        "current_purchase_destination"
+        "approved_product_image"
       ],
       "promotion_ready": false,
       "next_unblocking_event": "approved_affiliate_feed_or_verified_asset_usage_then_manual_visual_approval"
