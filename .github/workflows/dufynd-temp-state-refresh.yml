@@ -32,10 +32,10 @@ jobs:
         run: pip install -r requirements-dev.txt
 
       - name: Refresh derived DUFYND state
-        run: python scripts/refresh_scentai_jarvis_state.py --write --machine-readable
+        run: python -m scripts.refresh_scentai_jarvis_state --write --machine-readable
 
       - name: Validate refreshed state graph
-        run: python scripts/validate_scentai_jarvis_state_graph.py --machine-readable
+        run: python -m scripts.validate_scentai_jarvis_state_graph --machine-readable
 
       - name: Commit refreshed derived state
         shell: bash
