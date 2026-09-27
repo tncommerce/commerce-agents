@@ -40,3 +40,15 @@ def test_release01_official_references_never_count_as_public_approval() -> None:
             row["next_action"] == "await_licensed_affiliate_feed_image_or_written_brand_permission"
         )
         assert row["feed_dependency"] == "perfumetrader_awin_product_feed_or_exact_product_data"
+
+def test_release01_rights_evidence_is_explicit_for_every_product() -> None:
+    audit = load_json(AUDIT_PATH)
+
+    for row in audit["products"]:
+        assert str(row.get("rights_evidence_status") or "").strip()
+        rights_url = str(row.get("rights_evidence_url") or "").strip()
+        assert rights_url.startswith("https://")
+        assert "commercial" in row["rights_evidence_status"] or "written_permission" in row[
+            "rights_evidence_status"
+        ] or "personal_viewing" in row["rights_evidence_status"]
+
