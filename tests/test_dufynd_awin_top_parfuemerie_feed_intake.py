@@ -38,8 +38,15 @@ def test_provider_mapping_uses_only_real_populated_feed_fields() -> None:
 def test_feed_access_never_implies_program_approval_or_live_routing() -> None:
     intake = load(INTAKE)
     provider = load(PROVIDER)
+    observation = intake["current_account_observation"]
 
-    assert provider["affiliate_program_status"] == "applied_open"
+    assert provider["affiliate_program_status"] == "approved"
+    assert provider["program_approval_observed_at"] == observation["observed_at"]
+    assert observation["program_status"] == "approved"
+    assert observation["advertiser_id"] == "31081"
+    assert observation["current_feed_rows_reported"] == 8031
+    assert observation["current_feed_contents_downloaded"] is False
+    assert observation["exact_release01_rows_revalidated"] is False
     assert provider["live_routing_allowed"] is False
     assert provider["safety"]["feed_access_does_not_imply_program_approval"] is True
     assert intake["safety"]["feed_access_does_not_imply_program_approval"] is True

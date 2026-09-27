@@ -66,13 +66,22 @@ def test_top_parfuemerie_candidates_remain_conditional() -> None:
 
     assert len(with_candidate) == 4
     assert [row["product_id"] for row in without_candidate] == ["SC-DIOR-HYPNOTIC-POISON-EDT-100"]
+    assert plan["summary"]["top_parfuemerie_program_approved"] is True
+    assert plan["summary"]["top_parfuemerie_current_feed_rows_revalidated"] is False
 
     for row in with_candidate:
         top = row["top_parfuemerie"]
-        assert top["program_status"] == "applied_pending"
+        assert top["program_status"] == "approved"
         assert top["acquisition_state"] == (
-            "blocked_until_program_approval_and_image_rights_basis_verified"
+            "blocked_until_current_exact_feed_row_and_image_rights_basis_verified"
         )
+        assert row["currently_usable_licensed_asset"] is (
+            row["image_state"] == "approved_licensed_image"
+        )
+
+    assert without_candidate[0]["top_parfuemerie"]["acquisition_state"] == (
+        "exact_variant_missing_from_historical_feed_sample_current_unverified"
+    )
 
 
 def test_perfumetrader_approval_does_not_fake_product_feed_availability() -> None:
