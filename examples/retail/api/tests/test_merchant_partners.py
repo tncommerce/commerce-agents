@@ -401,3 +401,78 @@ def test_awin_product_deeplink_requires_verified_ued_template() -> None:
         )
         is None
     )
+
+
+def test_active_partner_rejects_secret_bearing_tracking_url(tmp_path) -> None:
+    path = write_payload(
+        tmp_path,
+        [
+            {
+                "merchant_id": "secret-link",
+                "merchant_name": "Secret Link",
+                "status": "active",
+                "affiliate_url": "https://example.com/track?client_secret=SECRET",
+                "last_verified_at": NOW.isoformat(),
+            }
+        ],
+    )
+
+    store = MerchantPartnerStore(path)
+
+    assert store.active(now=NOW) == []
+
+
+def test_partner_clickout_rejects_secret_bearing_tracking_url() -> None:
+    partner = MerchantPartner(
+        merchant_id="example",
+        merchant_name="Example",
+        status="active",
+        affiliate_url="https://example.com/track?api_key=SECRET",
+        last_verified_at=NOW,
+    )
+
+    assert partner_clickout_url(partner, clickref="test") is None
+
+
+def test_awin_product_deeplink_rejects_secret_bearing_destination() -> None:
+    assert (
+        partner_product_deeplink_url(
+            perfumetrader_partner(),
+            destination_url="https://www.perfumetrader.de/de/product?api_key=SECRET",
+        )
+        is None
+    )
+
+
+def test_awin_product_deeplink_rejects_secret_bearing_verified_ued() -> None:
+    partner = MerchantPartner(
+        merchant_id="perfumetrader",
+        merchant_name="Perfumetrader",
+        status="active",
+        affiliate_url=(
+            "https://www.awin1.com/cread.php?"
+            "awinmid=11672&awinaffid=3099222&"
+            "ued=https%3A%2F%2Fwww.perfumetrader.de%2Fde%2F%3Fclient_secret%3DSECRET"
+        ),
+        last_verified_at=NOW,
+    )
+
+    assert (
+        partner_product_deeplink_url(
+            partner,
+            destination_url="https://www.perfumetrader.de/de/product",
+        )
+        is None
+    )
+
+
+def test_awin_tracking_parameters_remain_valid() -> None:
+    partner = perfumetrader_partner()
+
+    target = partner_clickout_url(partner, clickref="release01_safe")
+
+    assert target is not None
+    query = parse_qs(urlparse(target).query)
+    assert query["awinmid"] == ["11672"]
+    assert query["awinaffid"] == ["3099222"]
+    assert query["clickref"] == ["release01_safe"]

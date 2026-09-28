@@ -10,6 +10,15 @@ from urllib.parse import parse_qsl, urlencode, urlparse
 from pydantic import BaseModel, Field
 
 MAX_FUTURE_CLOCK_SKEW_HOURS = 5 / 60
+SECRET_QUERY_KEYS = {
+    "apikey",
+    "accesstoken",
+    "authtoken",
+    "clientsecret",
+    "password",
+    "privatekey",
+    "secretkey",
+}
 
 PartnerStatus = Literal[
     "active",
@@ -53,13 +62,22 @@ def _valid_https_url(value: str | None) -> bool:
     if not value:
         return False
 
-    parsed = urlparse(value)
+    try:
+        parsed = urlparse(value)
+        query_keys = {
+            "".join(ch for ch in key.casefold() if ch.isalnum())
+            for key, _ in parse_qsl(parsed.query, keep_blank_values=True)
+        }
+    except ValueError:
+        return False
+
     return bool(
         parsed.scheme == "https"
         and parsed.hostname
         and parsed.username is None
         and parsed.password is None
         and _public_hostname(parsed.hostname)
+        and not SECRET_QUERY_KEYS.intersection(query_keys)
     )
 
 
@@ -132,7 +150,11 @@ def partner_clickout_url(
     clickref: str | None = None,
 ) -> str | None:
     url = partner.affiliate_url
-    if not url or not clickref:
+    if not url:
+        return None
+    if not _valid_https_url(url):
+        return None
+    if not clickref:
         return url
 
     parsed = urlparse(url)
@@ -174,8 +196,11 @@ def partner_product_deeplink_url(
     if not affiliate_url:
         return None
 
+    if not _valid_https_url(affiliate_url):
+        return None
+
     parsed_affiliate = urlparse(affiliate_url)
-    if parsed_affiliate.scheme != "https" or parsed_affiliate.hostname not in {
+    if parsed_affiliate.hostname not in {
         "awin1.com",
         "www.awin1.com",
     }:
@@ -189,19 +214,12 @@ def partner_product_deeplink_url(
     if not verified_destination:
         return None
 
-    parsed_verified = urlparse(verified_destination)
-    parsed_destination = urlparse(destination_url.strip())
-    if (
-        parsed_verified.scheme != "https"
-        or not parsed_verified.hostname
-        or not _public_hostname(parsed_verified.hostname)
-        or parsed_destination.scheme != "https"
-        or not parsed_destination.hostname
-        or not _public_hostname(parsed_destination.hostname)
-        or parsed_destination.username is not None
-        or parsed_destination.password is not None
-    ):
+    destination = destination_url.strip()
+    if not _valid_https_url(verified_destination) or not _valid_https_url(destination):
         return None
+
+    parsed_verified = urlparse(verified_destination)
+    parsed_destination = urlparse(destination)
 
     if _normalized_hostname(parsed_verified.hostname) != _normalized_hostname(
         parsed_destination.hostname
@@ -211,7 +229,7 @@ def partner_product_deeplink_url(
     deeplink_query = [
         (key, value) for key, value in query if key.casefold() not in {"ued", "clickref"}
     ]
-    deeplink_query.append(("ued", destination_url.strip()))
+    deeplink_query.append(("ued", destination))
     if clickref:
         deeplink_query.append(("clickref", clickref))
 
