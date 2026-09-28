@@ -2,9 +2,7 @@
 
 from pathlib import Path
 
-CATALOG_BROWSER = Path(
-    "examples/retail/storefront-web/components/FragranceCatalogBrowser.tsx"
-)
+CATALOG_BROWSER = Path("examples/retail/storefront-web/components/FragranceCatalogBrowser.tsx")
 
 
 def test_catalog_has_immersive_profile_discovery_rail() -> None:
