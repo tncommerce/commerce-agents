@@ -163,13 +163,16 @@ function noteSection(
       </div>
       <div className="mt-2 flex flex-wrap gap-2">
         {notes.map((note) => (
-          <span
+          <a
             key={note}
-            className="inline-flex items-center gap-2 rounded-full border border-(--line) bg-(--well)/60 px-3 py-1.5 text-[12px] text-(--ink)"
+            href={`/duft?q=${encodeURIComponent(noteLabel(note))}`}
+            className="inline-flex items-center gap-2 rounded-full border border-(--line) bg-(--well)/60 px-3 py-1.5 text-[12px] text-(--ink) transition hover:border-(--accent) hover:bg-(--accent-soft)/45"
+            aria-label={`Weitere Düfte mit ${noteLabel(note)} entdecken`}
           >
             <NoteIcon note={note} className="h-4 w-4 shrink-0 text-(--accent-ink)" />
             {noteLabel(note)}
-          </span>
+            <span aria-hidden className="text-(--ink-soft)">→</span>
+          </a>
         ))}
       </div>
     </div>
@@ -677,12 +680,14 @@ export default async function FragrancePage({
 
             <div className="mt-3 flex flex-wrap gap-2">
               {fragrance.accords.map((accord) => (
-                <span
+                <a
                   key={accord}
-                  className="rounded-full bg-(--well) px-3 py-1.5 text-[12px] text-(--ink)"
+                  href={`/duft?q=${encodeURIComponent(accordLabel(accord))}`}
+                  className="rounded-full border border-transparent bg-(--well) px-3 py-1.5 text-[12px] text-(--ink) transition hover:border-(--accent) hover:bg-(--accent-soft)/45"
+                  aria-label={`Weitere ${accordLabel(accord)}e Düfte entdecken`}
                 >
-                  {accordLabel(accord)}
-                </span>
+                  {accordLabel(accord)} <span aria-hidden>→</span>
+                </a>
               ))}
             </div>
 
