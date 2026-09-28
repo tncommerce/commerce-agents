@@ -29,6 +29,7 @@ def test_immersive_fallback_does_not_generate_or_transform_bottle_geometry() -> 
     css = CSS.read_text(encoding="utf-8")
     source = DETAIL.read_text(encoding="utf-8")
 
-    assert "simulated bottle geometry" in css
+    assert "depth staging, not simulated" in css
+    assert "bottle geometry" in css
     assert "model_3d_url" in source
     assert "dufynd-product-image" in css
