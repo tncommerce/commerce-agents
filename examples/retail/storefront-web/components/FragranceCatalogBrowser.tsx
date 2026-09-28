@@ -24,6 +24,8 @@ type ProfileFilter =
   | "sweetness"
   | "woodiness"
   | "spiciness";
+
+type DiscoveryProfile = Exclude<ProfileFilter, "all">;
 type SortMode =
   | "popular"
   | "rating"
@@ -51,6 +53,38 @@ const PROFILE_OPTIONS: {
   { value: "sweetness", label: "Süß" },
   { value: "woodiness", label: "Holzig" },
   { value: "spiciness", label: "Würzig" },
+];
+
+const PROFILE_DISCOVERY: {
+  value: DiscoveryProfile;
+  label: string;
+  mood: string;
+  notes: string;
+}[] = [
+  {
+    value: "freshness",
+    label: "Frisch",
+    mood: "Klar & energiegeladen",
+    notes: "Zitrisch · aromatisch · luftig",
+  },
+  {
+    value: "sweetness",
+    label: "Süß",
+    mood: "Warm & einnehmend",
+    notes: "Vanille · gourmand · cremig",
+  },
+  {
+    value: "woodiness",
+    label: "Holzig",
+    mood: "Trocken & souverän",
+    notes: "Hölzer · Vetiver · erdig",
+  },
+  {
+    value: "spiciness",
+    label: "Würzig",
+    mood: "Markant & intensiv",
+    notes: "Gewürze · Amber · warm",
+  },
 ];
 
 const SORT_OPTIONS: {
@@ -308,6 +342,24 @@ export default function FragranceCatalogBrowser({
     [fragrances],
   );
 
+  const profileCounts = useMemo<Record<DiscoveryProfile, number>>(
+    () => ({
+      freshness: fragrances.filter((fragrance) =>
+        matchesProfile(fragrance, "freshness"),
+      ).length,
+      sweetness: fragrances.filter((fragrance) =>
+        matchesProfile(fragrance, "sweetness"),
+      ).length,
+      woodiness: fragrances.filter((fragrance) =>
+        matchesProfile(fragrance, "woodiness"),
+      ).length,
+      spiciness: fragrances.filter((fragrance) =>
+        matchesProfile(fragrance, "spiciness"),
+      ).length,
+    }),
+    [fragrances],
+  );
+
   const filtered = useMemo(() => {
     const minimum = Number(minimumRating);
 
@@ -468,7 +520,88 @@ export default function FragranceCatalogBrowser({
   return (
     <>
       <section
-        className="mt-7 rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) sm:p-5"
+        className="mt-7 overflow-hidden rounded-[26px] border border-white/10 p-4 text-white shadow-[0_26px_70px_-38px_rgba(23,21,19,0.9)] sm:p-5"
+        style={{
+          background:
+            "radial-gradient(circle at 16% 0%, rgba(184, 137, 52, 0.28), transparent 32%), radial-gradient(circle at 86% 100%, rgba(92, 74, 52, 0.18), transparent 34%), linear-gradient(135deg, #161618 0%, #0a0b0d 72%)",
+        }}
+        aria-label="Duftgefühl entdecken"
+      >
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <div className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-white/[0.55]">
+              Discovery
+            </div>
+            <h2 className="mt-1.5 text-[21px] font-semibold tracking-[-0.025em] sm:text-[24px]">
+              Nach Duftgefühl entdecken
+            </h2>
+            <p className="mt-2 max-w-2xl text-[12px] leading-5 text-white/[0.62] sm:text-[13px]">
+              Spring direkt in die Duftwelt, die zu deinem Moment passt. Jeder Einstieg filtert den Katalog sofort und lässt sich mit einem zweiten Klick wieder lösen.
+            </p>
+          </div>
+          <div className="shrink-0 rounded-full border border-white/10 bg-white/[0.05] px-3 py-1.5 text-[10.5px] font-medium text-white/[0.58]">
+            {fragrances.length} Düfte · 4 Welten
+          </div>
+        </div>
+
+        <div className="mt-5 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 lg:grid lg:grid-cols-4 lg:overflow-visible lg:pb-0">
+          {PROFILE_DISCOVERY.map((card) => {
+            const active = profile === card.value;
+
+            return (
+              <button
+                key={card.value}
+                type="button"
+                onClick={() =>
+                  setProfile(active ? "all" : card.value)
+                }
+                className={`group min-w-[224px] snap-start rounded-2xl border p-4 text-left transition duration-200 lg:min-w-0 ${
+                  active
+                    ? "border-[#d5a84f]/70 bg-[#d5a84f]/[0.12] shadow-[0_14px_34px_-22px_rgba(213,168,79,0.9)]"
+                    : "border-white/10 bg-white/[0.045] hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.07]"
+                }`}
+                aria-pressed={active}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <span className="text-[17px] font-semibold tracking-[-0.02em] text-white">
+                    {card.label}
+                  </span>
+                  <span
+                    className={`rounded-full border px-2 py-1 text-[9.5px] font-semibold ${
+                      active
+                        ? "border-[#d5a84f]/[0.35] bg-[#d5a84f]/[0.12] text-[#f1d493]"
+                        : "border-white/10 bg-black/[0.15] text-white/[0.55]"
+                    }`}
+                  >
+                    {profileCounts[card.value]} Düfte
+                  </span>
+                </div>
+                <div className="mt-5 text-[12px] font-semibold text-white/[0.78]">
+                  {card.mood}
+                </div>
+                <div className="mt-1 text-[11px] leading-4 text-white/[0.48]">
+                  {card.notes}
+                </div>
+                <div
+                  className={`mt-4 flex items-center justify-between border-t pt-3 text-[10.5px] font-semibold uppercase tracking-[0.08em] ${
+                    active
+                      ? "border-[#d5a84f]/[0.24] text-[#f1d493]"
+                      : "border-white/[0.08] text-white/[0.48] group-hover:text-white/[0.68]"
+                  }`}
+                >
+                  <span>{active ? "Profil aktiv" : "Entdecken"}</span>
+                  <span aria-hidden="true">
+                    {active ? "✓" : "→"}
+                  </span>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
+      <section
+        className="mt-4 rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) sm:p-5"
         aria-label="Duftkatalog filtern"
       >
         <div className="grid gap-3 md:grid-cols-[1fr_auto] md:items-end">
