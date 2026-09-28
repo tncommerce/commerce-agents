@@ -476,4 +476,3 @@ def test_awin_tracking_parameters_remain_valid() -> None:
     assert query["awinmid"] == ["11672"]
     assert query["awinaffid"] == ["3099222"]
     assert query["clickref"] == ["release01_safe"]
-
