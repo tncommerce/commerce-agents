@@ -292,3 +292,24 @@ def test_candidate_rights_status_must_be_verified() -> None:
         match="candidate_rights_not_verified",
     ):
         plan_for(rights=rights_registry(rights_status="pending"))
+
+
+def test_committed_top_parfuemerie_rights_can_prepare_review_candidate() -> None:
+    committed = load_json(DEFAULT_RIGHTS_REGISTRY)
+    top = next(
+        row for row in committed["entries"] if row["merchant_id"] == "top-parfuemerie"
+    )
+
+    assert top["program_status"] == "approved"
+    assert top["rights_status"] == "verified_for_publisher_service"
+    assert top["rights_basis_id"] == "awin_top_parfuemerie_feed_materials_20260928"
+
+    plan = plan_for(
+        candidates=candidates_payload(merchant_id="top-parfuemerie"),
+        rights=committed,
+    )
+
+    assert plan["candidate_status"] == "pending_review"
+    assert plan["rights_status"] == "verified_for_publisher_service"
+    assert plan["rights_basis_id"] == "awin_top_parfuemerie_feed_materials_20260928"
+    assert plan["will_change"] is True
