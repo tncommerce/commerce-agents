@@ -4,7 +4,11 @@ import argparse
 import json
 from datetime import UTC, datetime
 from pathlib import Path
-from urllib.parse import urlparse
+
+if __package__:
+    from .prepare_scentai_feed_image_review import _public_image_url
+else:
+    from prepare_scentai_feed_image_review import _public_image_url
 
 DEFAULT_STAGING = Path("examples/retail/data/scentai_catalog_staging.json")
 DEFAULT_CANDIDATES = Path("examples/retail/data/merchant_feed_image_candidates.json")
@@ -25,8 +29,11 @@ def load_json(path: Path) -> dict:
 
 
 def valid_https_url(value: str) -> bool:
-    parsed = urlparse(value)
-    return parsed.scheme == "https" and bool(parsed.netloc)
+    try:
+        _public_image_url(value)
+    except ValueError:
+        return False
+    return True
 
 
 def _norm(value: object) -> str:
@@ -218,6 +225,8 @@ def apply_approval(
     rights_basis_id: str,
     rights_checked_at: str,
 ) -> None:
+    if not valid_https_url(image_url):
+        raise ValueError("image_url_must_be_https")
     candidate = next(
         row
         for row in candidates_payload.get("candidates", [])
