@@ -5,6 +5,7 @@ import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
 import ComparisonAnalytics from "@/components/ComparisonAnalytics";
 import { accordLabel } from "@/lib/accordLabels";
 import FragranceOffers from "@/components/FragranceOffers";
+import FragranceModel3D from "@/components/FragranceModel3D";
 import FragranceVisual from "@/components/FragranceVisual";
 import {
   EXPLICIT_COMPARISON_PAIRS,
@@ -77,14 +78,30 @@ function ProductHeader({
   return (
     <div className="overflow-hidden rounded-2xl border border-(--line) bg-(--card)">
       <a href={`/duft/${fragrance.slug}`}>
-        <FragranceVisual
-          imageUrl={visual?.url}
-          cutoutUrl={isProductTruth ? visual?.url : undefined}
-          alt={`${fragrance.brand} ${fragrance.name}`}
-          variant="card"
-          mode={isProductTruth ? "cutout" : "editorial"}
-          className="h-56 w-full"
-        />
+        {fragrance.model_3d_url ? (
+          <FragranceModel3D
+            modelUrl={fragrance.model_3d_url}
+            imageUrl={isProductTruth ? undefined : visual?.url}
+            cutoutUrl={isProductTruth ? visual?.url : undefined}
+            backdropUrl={
+              isProductTruth ? fragrance.backdrop_visual?.url : undefined
+            }
+            alt={`${fragrance.brand} ${fragrance.name}`}
+            className="h-56 w-full"
+          />
+        ) : (
+          <FragranceVisual
+            imageUrl={visual?.url}
+            cutoutUrl={isProductTruth ? visual?.url : undefined}
+            backdropUrl={
+              isProductTruth ? fragrance.backdrop_visual?.url : undefined
+            }
+            alt={`${fragrance.brand} ${fragrance.name}`}
+            variant="card"
+            mode={isProductTruth ? "cutout" : "editorial"}
+            className="h-56 w-full"
+          />
+        )}
         <div className="p-4">
           <div className="text-[10.5px] font-semibold uppercase tracking-[0.08em] text-(--ink-soft)">
             {fragrance.brand}
