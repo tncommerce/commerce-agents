@@ -21,5 +21,5 @@ def test_catalog_card_scent_dna_is_clamped_to_visual_scale() -> None:
     source = CATALOG_BROWSER.read_text(encoding="utf-8")
 
     assert "Math.min(10, fragrance.scores[profile] ?? 0)" in source
-    assert 'width: `${value * 10}%`' in source
+    assert "width: `${value * 10}%`" in source
     assert "Profil 0–10" in source
