@@ -8,7 +8,6 @@ from scripts.fetch_dufynd_awin_data_feed import (
     sanitized_feed_metadata,
 )
 
-
 CSV = """Advertiser ID,Advertiser Name,Primary Region,Membership Status,Feed ID,Feed Name,Language,Last Imported,URL
 31081,top Parfümerie,DE,Joined,91379,Default,German,2026-09-28 09:00:00,https://datafeed.api.productserve.com/datafeed/download/apikey/SECRET/fid/91379/format/csv/
 11672,Perfumetrader,DE,Joined,99999,Default,German,2026-09-27 09:00:00,https://datafeed.api.productserve.com/datafeed/download/apikey/OTHER/fid/99999/format/csv/
