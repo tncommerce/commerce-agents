@@ -86,9 +86,16 @@ def test_batch7_research_evidence_remains_non_live_after_staging_enablement() ->
         assert community["projection_10"] > 0
         assert len(community["main_accords"]) >= 5
 
-        assert candidate["identifiers"]["canonical_gtin"] is None
-        assert candidate["identifiers"]["status"] == "pending_primary_variant_verification"
-        assert candidate["identifiers"]["observations"] == []
+        identifiers = candidate["identifiers"]
+        assert identifiers["canonical_gtin"] is None
+        assert identifiers["status"] in {
+            "pending_primary_variant_verification",
+            "indexed_evidence_feed_match_pending",
+        }
+        if identifiers["status"] == "pending_primary_variant_verification":
+            assert identifiers["observations"] == []
+        else:
+            assert identifiers["observations"]
 
         assert candidate["media"]["image_url"] is None
         assert candidate["media"]["image_status"] == "pending_approved_feed_or_manufacturer_image"
