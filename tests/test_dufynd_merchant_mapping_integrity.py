@@ -83,3 +83,27 @@ def test_gtins_are_not_reused_across_dufynd_products() -> None:
         product_id = str(row.get("product_id") or "")
         previous = seen.setdefault(gtin, product_id)
         assert previous == product_id, f"GTIN {gtin} maps to both {previous} and {product_id}"
+
+
+def test_mugler_alien_mapping_selects_edp_90ml_bottle() -> None:
+    evidence = json.loads(
+        Path("examples/retail/data/dufynd_mugler_alien_edp_90_mapping_evidence.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    rows = json.loads(MAPPINGS.read_text(encoding="utf-8"))["mappings"]
+
+    assert evidence["product_id"] == "SC-MUGLER-ALIEN-EDP-90"
+    assert evidence["merchant_product_id"] == "388723"
+    assert evidence["identity"]["concentration"] == "Eau de Parfum"
+    assert evidence["identity"]["volume_ml"] == 90
+    assert evidence["identity"]["gtin"] == "3439600056969"
+    assert evidence["freshness_policy"]["current_purchase_destination_registered"] is False
+    assert evidence["freshness_policy"]["price_or_stock_freshness_asserted"] is False
+    assert any(
+        row["product_id"] == evidence["product_id"]
+        and row["merchant"] == "mueller"
+        and row["merchant_product_id"] == evidence["merchant_product_id"]
+        and row["gtin"] == evidence["identity"]["gtin"]
+        for row in rows
+    )

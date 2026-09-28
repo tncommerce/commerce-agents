@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "verified_at": "2026-09-28",
+  "product_id": "SC-MUGLER-ALIEN-EDP-90",
+  "merchant": "Müller DE",
+  "merchant_product_id": "388723",
+  "product_url": "https://www.mueller.de/p/mugler-alien-eau-de-parfum-nachfuellbar-6818853202/?itemId=388723",
+  "identity": {
+    "brand": "MUGLER",
+    "name": "Alien",
+    "concentration": "Eau de Parfum",
+    "volume_ml": 90,
+    "gtin": "3439600056969"
+  },
+  "corroboration": [
+    {
+      "source": "Galeria",
+      "url": "https://www.galeria.de/produkt/mugler-eau-de-parfum-3439600056969",
+      "note": "Exact Alien Eau de Parfum 90 ml variant; article number matches GTIN 3439600056969."
+    },
+    {
+      "source": "Müller brand listing",
+      "url": "https://www.mueller.de/b/mugler/",
+      "note": "Current retail-channel listing keeps the original Alien Eau de Parfum refillable family online and distinguishes it from the refill bottle, Alien Extraintense, Alien Pulp, Alien Goddess and Alien Hypersense."
+    }
+  ],
+  "freshness_policy": {
+    "current_purchase_destination_registered": false,
+    "price_or_stock_freshness_asserted": false,
+    "reason": "The exact 90 ml SKU identity is sufficiently corroborated for merchant mapping, but the exact-variant price observation was not fresh enough to satisfy DUFYND's 72-hour offer gate."
+  },
+  "rights_or_affiliate_impact": {
+    "image_rights_granted": false,
+    "affiliate_tracking_verified": false,
+    "final_image_approval_granted": false
+  }
+}
