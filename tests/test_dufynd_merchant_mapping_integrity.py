@@ -329,3 +329,28 @@ def test_margiela_by_the_fireplace_mapping_selects_edt_100ml() -> None:
         and row["gtin"] == evidence["identity"]["gtin"]
         for row in rows
     )
+
+
+def test_fleur_du_male_2026_mapping_uses_current_official_dtc_identifier() -> None:
+    evidence = json.loads(
+        Path(
+            "examples/retail/data/dufynd_jpg_fleur_du_male_2026_mapping_evidence.json"
+        ).read_text(encoding="utf-8")
+    )
+    rows = json.loads(MAPPINGS.read_text(encoding="utf-8"))["mappings"]
+
+    assert evidence["product_id"] == "SC-JPG-FLEUR-DU-MALE-2026-EDT-125"
+    assert evidence["merchant_product_id"] == "000000000065228018"
+    assert evidence["identity"]["concentration"] == "Eau de Toilette"
+    assert evidence["identity"]["volume_ml"] == 125
+    assert evidence["identity"]["gtin"] is None
+    assert evidence["identifier_boundary"]["legacy_gtin_reused"] is False
+    assert evidence["freshness_policy"]["current_retail_channel_verified"] is True
+    assert evidence["freshness_policy"]["current_purchase_destination_registered"] is False
+    assert any(
+        row["product_id"] == evidence["product_id"]
+        and row["merchant"] == "jean-paul-gaultier"
+        and row["merchant_product_id"] == evidence["merchant_product_id"]
+        and row["gtin"] is None
+        for row in rows
+    )
