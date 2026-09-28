@@ -41,7 +41,7 @@ def test_snapshot_authority_counts_only_explicit_available_status() -> None:
     assert merchant_coverage_count(verified, queue_row) == 1
 
 
-def test_fleur_du_male_2026_has_no_ambiguous_legacy_coverage() -> None:
+def test_fleur_du_male_2026_counts_current_dtc_but_not_ambiguous_legacy_coverage() -> None:
     verification = load_json(DATA_DIR / "scentai_catalog_batch2_verification.json")
     queue = load_json(DATA_DIR / "scentai_catalog_promotion_queue.json")
 
@@ -57,7 +57,10 @@ def test_fleur_du_male_2026_has_no_ambiguous_legacy_coverage() -> None:
     )
 
     assert verified["merchant_coverage_source"] == "verification_snapshot"
-    assert merchant_coverage_count(verified, queue_row) == 0
-    assert queue_row["merchant_coverage_count"] == 0
+    assert verified["merchant_snapshot"]["jean_paul_gaultier_de"] == "available"
+    assert verified["merchant_snapshot"]["notino_de_legacy_listing"] != "available"
+    assert verified["merchant_snapshot"]["notino_de"] != "available"
+    assert merchant_coverage_count(verified, queue_row) == 1
+    assert queue_row["merchant_coverage_count"] == 1
     assert "verified_purchase_destination_pending" in queue_row["blockers"]
     assert "verified_current_merchant_pending" not in queue_row["blockers"]
