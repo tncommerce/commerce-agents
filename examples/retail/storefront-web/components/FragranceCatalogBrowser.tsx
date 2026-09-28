@@ -329,6 +329,19 @@ export default function FragranceCatalogBrowser({
   const [visibleCount, setVisibleCount] =
     useState(PAGE_SIZE);
   const lastTrackedSearchRef = useRef("");
+  const initialSearchAppliedRef = useRef(false);
+
+  useEffect(() => {
+    if (initialSearchAppliedRef.current) return;
+    initialSearchAppliedRef.current = true;
+
+    const params = new URLSearchParams(window.location.search);
+    const initialSearch = params.get("q")?.trim();
+
+    if (initialSearch) {
+      setSearch(initialSearch.slice(0, 80));
+    }
+  }, []);
 
   const brands = useMemo(
     () =>
