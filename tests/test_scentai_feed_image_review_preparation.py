@@ -117,9 +117,7 @@ def test_current_feed_candidate_becomes_pending_review_only() -> None:
     assert packet["pending_review_count"] == 1
     assert packet["automatic_approval_allowed"] is False
     assert packet["approval_action_class"] == "approval_required"
-    assert packet["skipped_already_approved_product_ids"] == [
-        "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100"
-    ]
+    assert packet["skipped_already_approved_product_ids"] == ["SC-LANCOME-LA-VIE-EST-BELLE-EDP-100"]
 
     row = packet["candidates"][0]
     assert row["product_id"] == "SC-PDM-DELINA-EDP-75"
