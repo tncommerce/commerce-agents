@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "verified_at": "2026-09-28",
+  "product_id": "SC-ARMANI-ACQUA-DI-GIO-PROFONDO-PARFUM-100",
+  "merchant": "Giorgio Armani official Germany",
+  "merchant_product_id": "LE309800-NLP-100ML",
+  "product_url": "https://www.armani.com/de-de/giorgio-armani/parfum-acqua-di-gio-profondo-100-ml-cod-LE309800-NLP-100ML/",
+  "identity": {
+    "brand": "Giorgio Armani",
+    "name": "ACQUA DI GIÒ PROFONDO",
+    "concentration": "Parfum",
+    "volume_ml": 100,
+    "gtin": "3614273953696"
+  },
+  "corroboration": [
+    {
+      "source": "Giorgio Armani Germany",
+      "url": "https://www.armani.com/de-de/giorgio-armani/parfum-acqua-di-gio-profondo-100-ml-cod-LE309800-NLP-100ML/",
+      "note": "Official product page identifies Profondo Parfum 100 ml, separate from Profondo Eau de Toilette and the broader Acqua di Giò families."
+    },
+    {
+      "source": "Shop Apotheke product data",
+      "url": "https://www.shop-apotheke.com/beauty/upm2WFZZG/giorgio-armani-acqua-di-gio-profondo-parfum-100ml.htm",
+      "note": "Exact 100 ml Profondo Parfum is identified under EAN/GTIN 3614273953696."
+    }
+  ],
+  "freshness_policy": {
+    "current_purchase_destination_registered": false,
+    "price_or_stock_freshness_asserted": false,
+    "reason": "Exact identity is sufficient for canonical mapping, but the available exact-variant price observations are not asserted as being inside DUFYND's 72-hour offer freshness window."
+  },
+  "rights_or_affiliate_impact": {
+    "image_rights_granted": false,
+    "affiliate_tracking_verified": false,
+    "final_image_approval_granted": false
+  }
+}

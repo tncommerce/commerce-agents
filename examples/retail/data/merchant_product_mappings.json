@@ -676,6 +676,17 @@
       "verified_at": "2026-09-28",
       "evidence_url": "https://www.valentino-beauty.de/de_DE/dufte/damendufte/born-in-roma-donna/born-in-roma-donna/MPL00468.html",
       "evidence_note": "Official Valentino Beauty Germany page identifies the original Born In Roma Donna Eau de Parfum family with a 100 ml option under product MPL00468. GTIN 3614272761445 independently identifies the original 100 ml EDP and excludes Intense, Extradose, Green Stravaganza, Coral Fantasy and Purple Melancholia."
+    },
+    {
+      "product_id": "SC-ARMANI-ACQUA-DI-GIO-PROFONDO-PARFUM-100",
+      "merchant": "armani",
+      "merchant_product_id": "LE309800-NLP-100ML",
+      "ean": "3614273953696",
+      "gtin": "3614273953696",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-09-28",
+      "evidence_url": "https://www.armani.com/de-de/giorgio-armani/parfum-acqua-di-gio-profondo-100-ml-cod-LE309800-NLP-100ML/",
+      "evidence_note": "Official Giorgio Armani Germany product page identifies ACQUA DI GIÒ PROFONDO Parfum 100 ml as style LE309800-NLP-100ML. GTIN 3614273953696 is independently corroborated for the exact 100 ml Parfum and excludes the Profondo EDT/EDP families."
     }
   ]
 }
