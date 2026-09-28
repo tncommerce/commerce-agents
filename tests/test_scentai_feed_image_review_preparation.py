@@ -105,6 +105,16 @@ def rights_registry() -> dict:
     }
 
 
+def identity_plan() -> dict:
+    return {
+        "release_id": "SCENTAI-RELEASE-01",
+        "products": [
+            {"product_id": "SC-PDM-DELINA-EDP-75", "gtin": "3700578501998"},
+            {"product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100", "gtin": "3605533286555"},
+        ],
+    }
+
+
 def test_current_feed_candidate_becomes_pending_review_only() -> None:
     packet = prepare_review_candidates(
         candidates(),
@@ -112,6 +122,7 @@ def test_current_feed_candidate_becomes_pending_review_only() -> None:
         staging(),
         release(),
         rights_registry(),
+        identity_plan(),
     )
 
     assert packet["status"] == "review_only_not_live"
@@ -152,6 +163,7 @@ def test_current_feed_provenance_is_mandatory(field: str, value: object, error: 
             staging(),
             release(),
             rights_registry(),
+            identity_plan(),
         )
 
 
@@ -166,4 +178,21 @@ def test_unverified_rights_never_promote_candidate_to_review_ready_source() -> N
             staging(),
             release(),
             rights,
+            identity_plan(),
+        )
+
+
+@pytest.mark.parametrize("identifier", ["gtin", "ean"])
+def test_conflicting_current_feed_gtin_cannot_enter_review(identifier: str) -> None:
+    feed_candidates = candidates()
+    feed_candidates["candidates"][0][identifier] = "0000000000000"
+
+    with pytest.raises(ValueError, match="candidate_gtin_mismatch"):
+        prepare_review_candidates(
+            feed_candidates,
+            feed_metadata(),
+            staging(),
+            release(),
+            rights_registry(),
+            identity_plan(),
         )
