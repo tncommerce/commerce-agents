@@ -10,12 +10,14 @@ PRODUCTS = {
 }
 
 
-def test_send_ready_packet_stays_prepared_not_sent() -> None:
+def test_send_ready_packet_tracks_partial_send_state() -> None:
     source = PACKET.read_text(encoding="utf-8")
 
-    assert "Status: prepared_not_sent" in source
+    assert "Status: partially_sent" in source
+    assert "Status: sent_2026-09-28_after_explicit_user_approval" in source
+    assert "Recipient: contact@dior.com" in source
     assert "USER_APPROVAL_REQUIRED before any outbound message" in source
-    assert "No outbound message in this file may be sent without explicit user approval." in source
+    assert "No remaining outbound message in this file may be sent without explicit user approval." in source
 
 
 def test_send_ready_packet_covers_all_four_release01_products() -> None:
