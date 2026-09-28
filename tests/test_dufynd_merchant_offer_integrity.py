@@ -403,3 +403,36 @@ def test_lattafa_khamrah_offer_selects_original_edp_not_qahwa_or_dukhan() -> Non
         and row["gtin"] == evidence["identity"]["gtin"]
         for row in mappings
     )
+
+
+def test_valentino_born_in_roma_offer_selects_original_edp_100ml() -> None:
+    evidence = json.loads(
+        Path(
+            "examples/retail/data/dufynd_valentino_born_in_roma_edp_100_purchase_evidence.json"
+        ).read_text(encoding="utf-8")
+    )
+    mappings = json.loads(
+        Path("examples/retail/data/merchant_product_mappings.json").read_text(encoding="utf-8")
+    )["mappings"]
+    offer = next(
+        row
+        for row in _offers()
+        if row["offer_id"] == "douglas-valentino-born-in-roma-donna-edp-100"
+    )
+
+    assert offer["product_id"] == evidence["product_id"]
+    assert offer["merchant_product_id"] == evidence["merchant_product_id"] == "293494"
+    assert offer["product_url"] == evidence["product_url"]
+    assert offer["variant_label"] == "100 ml · Eau de Parfum"
+    assert offer["last_updated_at"] == evidence["observed_at"]
+    assert offer["affiliate_url"] is None
+    assert offer["commission_rate"] is None
+    assert evidence["identity"]["gtin"] == "3614272761445"
+    assert evidence["rights_or_affiliate_impact"]["image_rights_granted"] is False
+    assert any(
+        row["product_id"] == offer["product_id"]
+        and row["merchant"] == "douglas"
+        and row["merchant_product_id"] == offer["merchant_product_id"]
+        and row["gtin"] == evidence["identity"]["gtin"]
+        for row in mappings
+    )
