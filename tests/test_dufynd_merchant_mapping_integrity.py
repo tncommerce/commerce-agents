@@ -135,9 +135,9 @@ def test_chloe_nomade_mapping_selects_original_edp_75ml() -> None:
 
 def test_prada_paradigme_mapping_selects_edp_100ml_not_le_parfum() -> None:
     evidence = json.loads(
-        Path(
-            "examples/retail/data/dufynd_prada_paradigme_edp_100_mapping_evidence.json"
-        ).read_text(encoding="utf-8")
+        Path("examples/retail/data/dufynd_prada_paradigme_edp_100_mapping_evidence.json").read_text(
+            encoding="utf-8"
+        )
     )
     rows = json.loads(MAPPINGS.read_text(encoding="utf-8"))["mappings"]
 
