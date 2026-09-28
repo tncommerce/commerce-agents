@@ -36,21 +36,32 @@ def candidates_payload(
     data_source="approved-affiliate-feed",
     network="Awin",
     merchant_id="perfumetrader",
+    feed_id=None,
+    advertiser_id=None,
+    feed_snapshot_observed_at=None,
+    feed_snapshot_sha256=None,
 ) -> dict:
+    candidate = {
+        "product_id": PRODUCT_ID,
+        "image_url": IMAGE_URL,
+        "review_status": review_status,
+        "proposed_image_status": "approved_feed_image",
+        "data_source": data_source,
+        "network": network,
+        "merchant_id": merchant_id,
+        "merchant": merchant_id,
+    }
+    optional = {
+        "feed_id": feed_id,
+        "advertiser_id": advertiser_id,
+        "feed_snapshot_observed_at": feed_snapshot_observed_at,
+        "feed_snapshot_sha256": feed_snapshot_sha256,
+    }
+    candidate.update({key: value for key, value in optional.items() if value is not None})
+
     return {
         "status": "review_only_not_live",
-        "candidates": [
-            {
-                "product_id": PRODUCT_ID,
-                "image_url": IMAGE_URL,
-                "review_status": review_status,
-                "proposed_image_status": "approved_feed_image",
-                "data_source": data_source,
-                "network": network,
-                "merchant_id": merchant_id,
-                "merchant": merchant_id,
-            }
-        ],
+        "candidates": [candidate],
     }
 
 
@@ -303,7 +314,13 @@ def test_committed_top_parfuemerie_rights_can_prepare_review_candidate() -> None
     assert top["rights_basis_id"] == "awin_top_parfuemerie_feed_materials_20260928"
 
     plan = plan_for(
-        candidates=candidates_payload(merchant_id="top-parfuemerie"),
+        candidates=candidates_payload(
+            merchant_id="top-parfuemerie",
+            feed_id="91379",
+            advertiser_id="31081",
+            feed_snapshot_observed_at="2026-09-28T09:00:00+00:00",
+            feed_snapshot_sha256="a" * 64,
+        ),
         rights=committed,
     )
 
@@ -311,3 +328,50 @@ def test_committed_top_parfuemerie_rights_can_prepare_review_candidate() -> None
     assert plan["rights_status"] == "verified_for_publisher_service"
     assert plan["rights_basis_id"] == "awin_top_parfuemerie_feed_materials_20260928"
     assert plan["will_change"] is True
+
+
+def test_top_parfuemerie_candidate_rejects_wrong_feed_identity() -> None:
+    committed = load_json(DEFAULT_RIGHTS_REGISTRY)
+
+    with pytest.raises(ValueError, match="candidate_feed_id_not_verified"):
+        plan_for(
+            candidates=candidates_payload(
+                merchant_id="top-parfuemerie",
+                feed_id="wrong-feed",
+                advertiser_id="31081",
+                feed_snapshot_observed_at="2026-09-28T09:00:00+00:00",
+                feed_snapshot_sha256="a" * 64,
+            ),
+            rights=committed,
+        )
+
+
+def test_top_parfuemerie_candidate_rejects_pre_rights_snapshot() -> None:
+    committed = load_json(DEFAULT_RIGHTS_REGISTRY)
+
+    with pytest.raises(ValueError, match="candidate_feed_snapshot_too_old"):
+        plan_for(
+            candidates=candidates_payload(
+                merchant_id="top-parfuemerie",
+                feed_id="91379",
+                advertiser_id="31081",
+                feed_snapshot_observed_at="2026-09-27T23:59:59+00:00",
+                feed_snapshot_sha256="a" * 64,
+            ),
+            rights=committed,
+        )
+
+
+def test_top_parfuemerie_candidate_requires_feed_snapshot_fingerprint() -> None:
+    committed = load_json(DEFAULT_RIGHTS_REGISTRY)
+
+    with pytest.raises(ValueError, match="candidate_feed_snapshot_sha256_required"):
+        plan_for(
+            candidates=candidates_payload(
+                merchant_id="top-parfuemerie",
+                feed_id="91379",
+                advertiser_id="31081",
+                feed_snapshot_observed_at="2026-09-28T09:00:00+00:00",
+            ),
+            rights=committed,
+        )
