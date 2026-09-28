@@ -7,7 +7,7 @@ import math
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
-from urllib.parse import urlsplit
+from urllib.parse import parse_qsl, urlsplit
 
 from scripts.qa_scentai_staging import run_qa
 
@@ -17,6 +17,15 @@ DEFAULT_CATALOG = DATA_DIR / "catalog.json"
 DEFAULT_SOURCE = DATA_DIR / "scentai_products.json"
 DEFAULT_OFFERS = DATA_DIR / "merchant_offers.json"
 MAX_FUTURE_CLOCK_SKEW_HOURS = 5 / 60
+SECRET_QUERY_KEYS = {
+    "apikey",
+    "accesstoken",
+    "authtoken",
+    "clientsecret",
+    "password",
+    "privatekey",
+    "secretkey",
+}
 
 APPROVED_IMAGE_STATUSES = {
     "approved_feed_image",
@@ -78,6 +87,10 @@ def valid_public_https_url(value: object) -> bool:
 
     try:
         destination = urlsplit(candidate)
+        query_keys = {
+            "".join(ch for ch in key.casefold() if ch.isalnum())
+            for key, _ in parse_qsl(destination.query, keep_blank_values=True)
+        }
     except ValueError:
         return False
 
@@ -87,6 +100,7 @@ def valid_public_https_url(value: object) -> bool:
         and not destination.username
         and not destination.password
         and destination.hostname not in {"localhost", "127.0.0.1", "::1"}
+        and not SECRET_QUERY_KEYS.intersection(query_keys)
     )
 
 
