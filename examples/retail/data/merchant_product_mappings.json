@@ -720,6 +720,17 @@
       "verified_at": "2026-09-28",
       "evidence_url": "https://www.notino.de/calvin-klein/euphoria-eau-de-parfum-fur-damen/",
       "evidence_note": "Notino DE identifies Calvin Klein euphoria Eau de Parfum für Damen in the 100 ml variant under code CAK10204. GTIN 0088300162512 is independently corroborated for the original women's Euphoria Eau de Parfum 100 ml and excludes Euphoria Men and newer Elixir flankers."
+    },
+    {
+      "product_id": "SC-MAISON-MARGIELA-BY-THE-FIREPLACE-EDT-100",
+      "merchant": "maison-margiela",
+      "merchant_product_id": "S33YX0024S11331961",
+      "ean": "3614270562112",
+      "gtin": "3614270562112",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-09-28",
+      "evidence_url": "https://www.maisonmargiela.com/de-de/replica-by-the-fireplace-eau-de-toilette-8050143254190.html",
+      "evidence_note": "Official Maison Margiela Germany page identifies Replica By the Fireplace Eau de Toilette under item code S33YX0024S11331961; official international product data exposes size 100 ml. GTIN 3614270562112 is independently corroborated for the exact 100 ml Eau de Toilette."
     }
   ]
 }
