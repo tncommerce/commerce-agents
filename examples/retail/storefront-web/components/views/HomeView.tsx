@@ -66,7 +66,6 @@ const STARTERS: Starter[] = [
   },
 ];
 
-/** What the store is featuring: labelled bestseller or new, photographed ones first. */
 function updateHeroLight(event: PointerEvent<HTMLElement>) {
   if (event.pointerType === "touch") return;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -82,8 +81,9 @@ function resetHeroLight(event: PointerEvent<HTMLElement>) {
   event.currentTarget.style.setProperty("--dufynd-hero-y", "34%");
 }
 
+/** Keep the homepage preview short and represent the available audiences. */
 function featured(catalog: Record<string, Product>): Product[] {
-  return Object.values(catalog)
+  const candidates = Object.values(catalog)
     .filter(
       (product) =>
         String(product.product_id).startsWith("SC-") &&
@@ -93,8 +93,33 @@ function featured(catalog: Record<string, Product>): Product[] {
     .sort(
       (a, b) =>
         Number(b.review_count ?? 0) - Number(a.review_count ?? 0),
-    )
-;
+    );
+
+  const picks: Product[] = [];
+  const chosen = new Set<string>();
+  const add = (product: Product) => {
+    const id = String(product.product_id);
+    if (chosen.has(id)) return;
+    chosen.add(id);
+    picks.push(product);
+  };
+
+  for (const audience of ["women", "unisex", "men"] as const) {
+    candidates
+      .filter((product) =>
+        getLiveFragranceByProductId(String(product.product_id))
+          ?.target_groups.includes(audience),
+      )
+      .slice(0, 2)
+      .forEach(add);
+  }
+
+  for (const product of candidates) {
+    if (picks.length >= 6) break;
+    add(product);
+  }
+
+  return picks.slice(0, 6);
 }
 
 
@@ -384,7 +409,7 @@ export default function HomeView({
       <MerchantDiscovery />
 
       {picks.length ? (
-        <HomeSection title="Düfte entdecken" subtitle="Entdecke das Sortiment oder lass dich direkt von DUFYND beraten">
+        <HomeSection title="Ausgewählte Düfte" subtitle="Ein schneller Einstieg für Damen, Herren und Unisex">
           <div className="flex flex-col gap-2 sm:hidden">
             {picks.map((product) => (
               <ProductRow
@@ -412,10 +437,15 @@ export default function HomeView({
               />
             ))}
           </div>
+          <a
+            href="/duft"
+            className="mt-3 inline-flex w-fit rounded-xl border border-(--line) bg-(--card) px-4 py-2.5 text-[12px] font-semibold text-(--accent-ink) transition hover:border-(--accent)"
+          >
+            Alle {scentCount} Düfte im Katalog entdecken →
+          </a>
         </HomeSection>
       ) : null}
       <LegalFooter />
     </div>
   );
 }
-
