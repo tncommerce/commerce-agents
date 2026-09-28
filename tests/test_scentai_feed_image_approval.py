@@ -107,15 +107,20 @@ def test_pending_candidate_can_be_prepared_with_verified_rights() -> None:
     assert plan["rights_basis_id"] == ("awin_perfumetrader_feed_materials_20260922")
 
 
-def test_committed_2018_rights_basis_cannot_approve_a_new_feed_image() -> None:
+def test_committed_perfumetrader_rights_require_current_feed_provenance() -> None:
     committed = load_json(DEFAULT_RIGHTS_REGISTRY)
     perfumetrader = next(
         row for row in committed["entries"] if row["merchant_id"] == "perfumetrader"
     )
     assert perfumetrader["program_status"] == "approved"
-    assert perfumetrader["rights_status"] == "current_network_terms_reverification_required"
+    assert perfumetrader["rights_status"] == "verified_for_publisher_service"
+    assert perfumetrader["current_terms_verified_at"] == "2026-09-28"
+    assert (
+        "candidate_must_come_from_current_official_awin_product_feed"
+        in perfumetrader["constraints"]
+    )
 
-    with pytest.raises(ValueError, match="candidate_rights_not_verified"):
+    with pytest.raises(ValueError, match="candidate_current_feed_provenance_required"):
         plan_for(rights=committed)
 
 
