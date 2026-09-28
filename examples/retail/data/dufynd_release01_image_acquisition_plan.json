@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-09-27T17:46:10+00:00",
+  "generated_at": "2026-09-28T09:10:00+00:00",
   "release_id": "SCENTAI-RELEASE-01",
   "status": "blocked_on_licensed_or_dufynd_owned_product_images",
   "purpose": "Operational acquisition plan for exact Release 01 commerce packshots after official-brand reuse rights were found insufficient. This plan does not approve any image.",
@@ -26,7 +26,9 @@
     "perfumetrader_product_data_feed_available": false,
     "manual_visual_approval_ready": 0,
     "top_parfuemerie_program_approved": true,
-    "top_parfuemerie_current_feed_rows_revalidated": false
+    "top_parfuemerie_current_feed_rows_revalidated": false,
+    "top_parfuemerie_feed_image_rights_verified": true,
+    "top_parfuemerie_rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928"
   },
   "source_refs": [
     "dufynd_release01_asset_rights_audit.json",
@@ -56,7 +58,10 @@
         "image_candidate_present": true,
         "merchant_product_id": "780879",
         "program_status": "approved",
-        "acquisition_state": "blocked_until_current_exact_feed_row_and_image_rights_basis_verified"
+        "acquisition_state": "blocked_until_current_exact_feed_row_revalidated",
+        "rights_status": "verified_for_publisher_service",
+        "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+        "rights_checked_at": "2026-09-28"
       },
       "perfumetrader": {
         "program_status": "approved",
@@ -90,7 +95,10 @@
         "image_candidate_present": true,
         "merchant_product_id": "825869",
         "program_status": "approved",
-        "acquisition_state": "blocked_until_current_exact_feed_row_and_image_rights_basis_verified"
+        "acquisition_state": "blocked_until_current_exact_feed_row_revalidated",
+        "rights_status": "verified_for_publisher_service",
+        "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+        "rights_checked_at": "2026-09-28"
       },
       "perfumetrader": {
         "program_status": "approved",
@@ -118,7 +126,10 @@
         "image_candidate_present": false,
         "merchant_product_id": null,
         "program_status": "approved",
-        "acquisition_state": "exact_variant_missing_from_historical_feed_sample_current_unverified"
+        "acquisition_state": "exact_variant_missing_from_historical_feed_sample_current_feed_revalidation_required",
+        "rights_status": "verified_for_publisher_service",
+        "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+        "rights_checked_at": "2026-09-28"
       },
       "perfumetrader": {
         "program_status": "approved",
@@ -147,7 +158,10 @@
         "image_candidate_present": true,
         "merchant_product_id": "787670",
         "program_status": "approved",
-        "acquisition_state": "blocked_until_current_exact_feed_row_and_image_rights_basis_verified"
+        "acquisition_state": "blocked_until_current_exact_feed_row_revalidated",
+        "rights_status": "verified_for_publisher_service",
+        "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+        "rights_checked_at": "2026-09-28"
       },
       "perfumetrader": {
         "program_status": "approved",
@@ -175,7 +189,10 @@
         "image_candidate_present": true,
         "merchant_product_id": "856448",
         "program_status": "approved",
-        "acquisition_state": "blocked_until_current_exact_feed_row_and_image_rights_basis_verified"
+        "acquisition_state": "blocked_until_current_exact_feed_row_revalidated",
+        "rights_status": "verified_for_publisher_service",
+        "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+        "rights_checked_at": "2026-09-28"
       },
       "perfumetrader": {
         "program_status": "approved",
@@ -191,7 +208,7 @@
       "next_action": "obtain_exact_licensed_or_dufynd_owned_asset_then_manual_visual_approval"
     }
   ],
-  "decision": "The four images still awaiting approval require exact licensed feed/media assets, written permission, or DUFYND-owned original product photography followed by manual visual approval. The approved La Vie est Belle image remains unchanged.",
+  "decision": "Awin/top Parfümerie feed-image rights are now current-term verified for unmodified advertiser materials within DUFYND's publisher service. Delina, Black Opium and Libre still require current exact feed-row revalidation before any candidate can enter manual visual review; Hypnotic Poison still needs an exact current feed row or another licensed/owned asset. La Vie est Belle remains approved from its existing CC BY-SA source.",
   "rights_cleared_intake": {
     "candidate_queue": "dufynd_rights_cleared_image_candidates.json",
     "register_command": "python -m scripts.register_scentai_rights_cleared_image",
