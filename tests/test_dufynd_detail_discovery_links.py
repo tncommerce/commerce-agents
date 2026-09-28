@@ -24,9 +24,9 @@ def test_detail_accords_and_notes_link_back_to_discovery() -> None:
 
 
 def test_visual_qa_accepts_interactive_note_chips() -> None:
-    source = Path(
-        "examples/retail/storefront-web/scripts/dufynd-visual-qa.mjs"
-    ).read_text(encoding="utf-8")
+    source = Path("examples/retail/storefront-web/scripts/dufynd-visual-qa.mjs").read_text(
+        encoding="utf-8"
+    )
 
     assert 'document.querySelectorAll("span, a")' in source
     assert 'replace("→", "").trim() === note' in source
