@@ -654,6 +654,17 @@
       "verified_at": "2026-09-28",
       "evidence_url": "https://www.prada-beauty.com/fragrance/paradigme/paradigme-eau-de-parfum/3614274172997.html?geo=false",
       "evidence_note": "Official Prada Beauty canonical URL identifies Paradigme Eau de Parfum under GTIN/product identifier 3614274172997. Current Douglas listing separately confirms the exact Paradigme Eau de Parfum 100 ml variant and distinguishes it from Paradigme Le Parfum."
+    },
+    {
+      "product_id": "SC-GUCCI-FLORA-GORGEOUS-GARDENIA-EDP-100",
+      "merchant": "gucci",
+      "merchant_product_id": "667343999990099",
+      "ean": "3616302022472",
+      "gtin": "3616302022472",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-09-28",
+      "evidence_url": "https://www.gucci.com/de/de/pr/beauty/fragrances/fragrances-for-women/gucci-flora-gorgeous-gardenia-100ml-eau-de-parfum-p-667343999990099",
+      "evidence_note": "Official Gucci Germany page identifies Flora Gorgeous Gardenia Eau de Parfum 100 ml as style 667343 99999 0099. GTIN 3616302022472 is independently corroborated for the regular 100 ml EDP. Gorgeous Gardenia Intense is a separate product family and is excluded."
     }
   ]
 }
