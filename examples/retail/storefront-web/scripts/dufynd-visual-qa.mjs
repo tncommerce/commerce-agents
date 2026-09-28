@@ -68,6 +68,11 @@ const viewports = [
 
 const coreRoutes = [
   { name: "home", route: "/", marker: "Finde den Duft, der wirklich zu dir passt." },
+  {
+    name: "social-start",
+    route: "/start",
+    marker: "Finde deinen schnellsten Weg zum passenden Duft.",
+  },
   { name: "catalog", route: "/duft", marker: "Parfums entdecken" },
   { name: "comparisons", route: "/vergleich", marker: "Parfums direkt vergleichen" },
   {
@@ -672,6 +677,24 @@ try {
             throw new Error(
               "catalog does not prioritize the Naxos verified cutout",
             );
+          }
+        }
+
+        if (target.name === "social-start") {
+          const requiredEntryPaths = [
+            "/duftfinder",
+            "/duft",
+            "/parfum-alternativen",
+            "/parfum-geschenkberater",
+          ];
+          for (const href of requiredEntryPaths) {
+            if ((await page.locator(`a[href="${href}"]`).count()) < 1) {
+              throw new Error(`social start is missing entry path: ${href}`);
+            }
+          }
+
+          if ((await page.locator('img[src="/icon.svg"]').count()) < 1) {
+            throw new Error("social start is missing the DUFYND brand mark");
           }
         }
 
