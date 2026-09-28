@@ -115,8 +115,14 @@ def test_glb_guard_rejects_nonlocal_or_ambiguous_targets(model_url: str) -> None
     [
         (b"", "glb_header_truncated"),
         (b"BAD!" + (2).to_bytes(4, "little") + (12).to_bytes(4, "little"), "glb_magic_invalid"),
-        (b"glTF" + (1).to_bytes(4, "little") + (12).to_bytes(4, "little"), "glb_version_unsupported"),
-        (b"glTF" + (2).to_bytes(4, "little") + (99).to_bytes(4, "little"), "glb_declared_length_mismatch"),
+        (
+            b"glTF" + (1).to_bytes(4, "little") + (12).to_bytes(4, "little"),
+            "glb_version_unsupported",
+        ),
+        (
+            b"glTF" + (2).to_bytes(4, "little") + (99).to_bytes(4, "little"),
+            "glb_declared_length_mismatch",
+        ),
     ],
 )
 def test_glb_guard_rejects_invalid_container(payload: bytes, error: str) -> None:
@@ -166,9 +172,7 @@ def test_licensed_3d_asset_requires_license_metadata() -> None:
         license_url="https://assets.example.com/license",
         attribution_text="Asset creator",
     )
-    assert plan["candidate"]["rights_evidence"]["license_name"] == (
-        "Commercial 3D asset licence"
-    )
+    assert plan["candidate"]["rights_evidence"]["license_name"] == ("Commercial 3D asset licence")
 
 
 def test_registration_never_auto_approves() -> None:
@@ -240,9 +244,7 @@ def test_human_approved_model_activates_as_verified_structured_visual() -> None:
     )
 
     model = next(
-        visual
-        for visual in products["products"][0]["visuals"]
-        if visual["role"] == "model_3d"
+        visual for visual in products["products"][0]["visuals"] if visual["role"] == "model_3d"
     )
     assert model["url"] == MODEL_URL
     assert model["fidelity_status"] == "verified"
@@ -285,9 +287,7 @@ def test_existing_verified_model_requires_explicit_replace() -> None:
 
 def test_committed_candidate_queue_starts_review_only_and_empty() -> None:
     queue = json.loads(
-        Path("examples/retail/data/dufynd_model3d_candidates.json").read_text(
-            encoding="utf-8"
-        )
+        Path("examples/retail/data/dufynd_model3d_candidates.json").read_text(encoding="utf-8")
     )
     assert queue["status"] == "review_only_not_live"
     assert queue["candidates"] == []
