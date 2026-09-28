@@ -5,8 +5,8 @@ from __future__ import annotations
 import json
 from datetime import datetime
 from pathlib import Path
-from urllib.parse import urlparse
 
+from scripts.promote_scentai_catalog import valid_public_https_url
 OFFERS = Path("examples/retail/data/merchant_offers.json")
 SOURCE = Path("examples/retail/data/scentai_products.json")
 STAGING = Path("examples/retail/data/scentai_catalog_staging.json")
@@ -17,8 +17,7 @@ def _offers() -> list[dict]:
 
 
 def _valid_https_url(value: str) -> bool:
-    parsed = urlparse(value)
-    return parsed.scheme == "https" and bool(parsed.hostname)
+    return valid_public_https_url(value)
 
 
 def test_offer_ids_are_unique_and_products_are_known() -> None:
