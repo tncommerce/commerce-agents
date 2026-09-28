@@ -111,9 +111,9 @@ def test_mugler_alien_mapping_selects_edp_90ml_bottle() -> None:
 
 def test_chloe_nomade_mapping_selects_original_edp_75ml() -> None:
     evidence = json.loads(
-        Path(
-            "examples/retail/data/dufynd_chloe_nomade_edp_75_mapping_evidence.json"
-        ).read_text(encoding="utf-8")
+        Path("examples/retail/data/dufynd_chloe_nomade_edp_75_mapping_evidence.json").read_text(
+            encoding="utf-8"
+        )
     )
     rows = json.loads(MAPPINGS.read_text(encoding="utf-8"))["mappings"]
 
