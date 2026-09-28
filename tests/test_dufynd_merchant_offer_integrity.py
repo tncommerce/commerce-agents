@@ -7,6 +7,7 @@ from datetime import datetime
 from pathlib import Path
 
 from scripts.promote_scentai_catalog import valid_public_https_url
+
 OFFERS = Path("examples/retail/data/merchant_offers.json")
 SOURCE = Path("examples/retail/data/scentai_products.json")
 STAGING = Path("examples/retail/data/scentai_catalog_staging.json")
