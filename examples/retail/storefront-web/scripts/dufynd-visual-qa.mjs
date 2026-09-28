@@ -451,13 +451,15 @@ try {
           }
 
           const notesMissingIcons = await page.evaluate((expectedNotes) => {
-            const spans = Array.from(document.querySelectorAll("span"));
+            const noteChips = Array.from(
+              document.querySelectorAll("span, a"),
+            );
             return expectedNotes.filter(
               (note) =>
-                !spans.some(
-                  (span) =>
-                    span.textContent?.trim() === note &&
-                    Boolean(span.querySelector("svg")),
+                !noteChips.some(
+                  (chip) =>
+                    chip.textContent?.replace("→", "").trim() === note &&
+                    Boolean(chip.querySelector("svg")),
                 ),
             );
           }, naxosGermanNotes);
