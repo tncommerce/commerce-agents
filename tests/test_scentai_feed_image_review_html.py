@@ -27,6 +27,7 @@ def payload() -> dict:
                 "concentration": "Eau de Parfum",
                 "volume_ml": 75,
                 "merchant_product_id": "825869",
+                "gtin": "3700578501998",
                 "offer_id": "123",
                 "image_url": "https://images.example/delina.jpg?x=1&y=2",
                 "last_updated_at": "2026-09-28",
@@ -53,6 +54,8 @@ def test_renders_exact_pending_candidate_without_approving_it() -> None:
     assert "Eau de Parfum" in rendered
     assert "75 ml" in rendered
     assert "825869" in rendered
+    assert "GTIN / EAN" in rendered
+    assert "3700578501998" in rendered
     assert "awin_top_parfuemerie_feed_materials_20260928" in rendered
     assert "pending_review" in rendered
     assert "Human visual approval required" in rendered
