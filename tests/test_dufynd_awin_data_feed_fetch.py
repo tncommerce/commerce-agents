@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import gzip
 
+import pytest
 from scripts.fetch_dufynd_awin_data_feed import (
+    _maybe_decompress,
     find_feed,
     parse_feed_list,
     sanitized_feed_metadata,
@@ -24,6 +26,17 @@ def test_parse_feed_list_accepts_gzip_csv() -> None:
     rows = parse_feed_list(gzip.compress(CSV.encode("utf-8")))
     assert len(rows) == 2
     assert rows[0]["Feed ID"] == "91379"
+
+
+def test_compressed_payload_cannot_exceed_expanded_limit() -> None:
+    payload = gzip.compress(b"x" * 10_000)
+    with pytest.raises(ValueError, match="awin_response_exceeds_max_bytes"):
+        _maybe_decompress(payload, max_bytes=1_000)
+
+
+def test_plain_payload_cannot_exceed_limit() -> None:
+    with pytest.raises(ValueError, match="awin_response_exceeds_max_bytes"):
+        _maybe_decompress(b"x" * 1_001, max_bytes=1_000)
 
 
 def test_find_feed_selects_exact_advertiser_and_feed() -> None:
