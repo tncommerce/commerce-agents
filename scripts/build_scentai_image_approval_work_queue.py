@@ -7,6 +7,11 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+if __package__:
+    from .approve_scentai_rights_cleared_image import valid_https_url, valid_image_target
+else:
+    from approve_scentai_rights_cleared_image import valid_https_url, valid_image_target
+
 DATA_DIR = Path("examples/retail/data")
 DEFAULT_STAGING = DATA_DIR / "scentai_catalog_staging.json"
 DEFAULT_OUTPUT = DATA_DIR / "scentai_image_approval_work_queue.json"
@@ -101,10 +106,23 @@ def build_queue(
         media = product.get("media", {})
         image_status = str(media.get("image_status") or "").strip()
         image_url = str(media.get("image_url") or "").strip() or None
+        if image_url is not None and not valid_image_target(image_url):
+            raise ValueError(f"current_image_target_invalid:{product_id}")
         approved = image_status in APPROVED_IMAGE_STATES and image_url is not None
 
         candidate = candidate_by_product.get(product_id)
         rights = rights_by_product.get(product_id)
+
+        if candidate is not None:
+            candidate_source = candidate.get("candidate_source") or {}
+            source_page_url = str(candidate_source.get("source_page_url") or "").strip()
+            if source_page_url and not valid_https_url(source_page_url):
+                raise ValueError(f"candidate_source_url_invalid:{product_id}")
+
+        if rights is not None:
+            rights_evidence_url = str(rights.get("rights_evidence_url") or "").strip()
+            if rights_evidence_url and not valid_https_url(rights_evidence_url):
+                raise ValueError(f"rights_evidence_url_invalid:{product_id}")
         licensed_source_required = bool(
             rights
             and str(rights.get("rights_evidence_status") or "").strip()
