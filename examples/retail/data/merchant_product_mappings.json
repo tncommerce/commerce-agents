@@ -665,6 +665,17 @@
       "verified_at": "2026-09-28",
       "evidence_url": "https://www.gucci.com/de/de/pr/beauty/fragrances/fragrances-for-women/gucci-flora-gorgeous-gardenia-100ml-eau-de-parfum-p-667343999990099",
       "evidence_note": "Official Gucci Germany page identifies Flora Gorgeous Gardenia Eau de Parfum 100 ml as style 667343 99999 0099. GTIN 3616302022472 is independently corroborated for the regular 100 ml EDP. Gorgeous Gardenia Intense is a separate product family and is excluded."
+    },
+    {
+      "product_id": "SC-VALENTINO-DONNA-BORN-IN-ROMA-EDP-100",
+      "merchant": "valentino",
+      "merchant_product_id": "MPL00468",
+      "ean": "3614272761445",
+      "gtin": "3614272761445",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-09-28",
+      "evidence_url": "https://www.valentino-beauty.de/de_DE/dufte/damendufte/born-in-roma-donna/born-in-roma-donna/MPL00468.html",
+      "evidence_note": "Official Valentino Beauty Germany page identifies the original Born In Roma Donna Eau de Parfum family with a 100 ml option under product MPL00468. GTIN 3614272761445 independently identifies the original 100 ml EDP and excludes Intense, Extradose, Green Stravaganza, Coral Fantasy and Purple Melancholia."
     }
   ]
 }
