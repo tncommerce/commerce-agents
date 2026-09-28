@@ -227,6 +227,37 @@ def test_non_https_image_url_is_rejected() -> None:
         plan_for(image_url="http://cdn.example.com/test.jpg")
 
 
+@pytest.mark.parametrize(
+    "image_url",
+    [
+        "https://user:SECRET@cdn.example.com/test.jpg",
+        "https://cdn.example.com/test.jpg?api_key=SECRET",
+        "https://cdn.example.com/test.jpg?X-Amz-Signature=SECRET",
+        "https://cdn.example.com/apikey/SECRET/test.jpg",
+        "https://cdn.example.com/test.jpg#token=SECRET",
+    ],
+)
+def test_approval_paths_reject_secret_bearing_image_urls(image_url: str) -> None:
+    candidates = candidates_payload(review_status="approved")
+    candidates["candidates"][0]["image_url"] = image_url
+
+    with pytest.raises(ValueError, match="image_url_must_be_https") as plan_error:
+        plan_for(candidates=candidates, image_url=image_url)
+    assert "SECRET" not in str(plan_error.value)
+
+    with pytest.raises(ValueError, match="image_url_must_be_https") as apply_error:
+        apply_approval(
+            staging_payload(),
+            candidates,
+            product_id=PRODUCT_ID,
+            image_url=image_url,
+            reviewed_at="2026-09-28T12:00:00+00:00",
+            rights_basis_id="test-rights",
+            rights_checked_at="2026-09-28",
+        )
+    assert "SECRET" not in str(apply_error.value)
+
+
 def test_candidate_payload_must_remain_review_only() -> None:
     payload = candidates_payload()
     payload["status"] = "live"
