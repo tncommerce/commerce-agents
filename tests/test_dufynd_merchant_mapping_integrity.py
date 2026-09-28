@@ -227,3 +227,30 @@ def test_armani_profondo_mapping_selects_parfum_100ml_not_edt_or_edp() -> None:
         and row["gtin"] == evidence["identity"]["gtin"]
         for row in rows
     )
+
+
+def test_afnan_9pm_femme_mapping_uses_rendered_identity_not_url_slug() -> None:
+    evidence = json.loads(
+        Path("examples/retail/data/dufynd_afnan_9pm_femme_100_mapping_evidence.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    rows = json.loads(MAPPINGS.read_text(encoding="utf-8"))["mappings"]
+
+    assert evidence["product_id"] == "SC-AFNAN-9-PM-POUR-FEMME-EDP-100"
+    assert evidence["merchant_product_id"] == "AFN00282"
+    assert evidence["identity"]["name"] == "9 PM Pour Femme"
+    assert evidence["identity"]["concentration"] == "Eau de Parfum"
+    assert evidence["identity"]["volume_ml"] == 100
+    assert evidence["identity"]["gtin"] == "6290171072607"
+    assert evidence["source_anomaly"]["rendered_product_name"] == "9 PM Pour Femme"
+    assert "9-am" in evidence["source_anomaly"]["url_slug"]
+    assert evidence["freshness_policy"]["current_purchase_destination_registered"] is False
+    assert evidence["freshness_policy"]["price_or_stock_freshness_asserted"] is False
+    assert any(
+        row["product_id"] == evidence["product_id"]
+        and row["merchant"] == "notino"
+        and row["merchant_product_id"] == evidence["merchant_product_id"]
+        and row["gtin"] == evidence["identity"]["gtin"]
+        for row in rows
+    )

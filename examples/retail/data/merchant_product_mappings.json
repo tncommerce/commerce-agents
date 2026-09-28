@@ -687,6 +687,17 @@
       "verified_at": "2026-09-28",
       "evidence_url": "https://www.armani.com/de-de/giorgio-armani/parfum-acqua-di-gio-profondo-100-ml-cod-LE309800-NLP-100ML/",
       "evidence_note": "Official Giorgio Armani Germany product page identifies ACQUA DI GIÒ PROFONDO Parfum 100 ml as style LE309800-NLP-100ML. GTIN 3614273953696 is independently corroborated for the exact 100 ml Parfum and excludes the Profondo EDT/EDP families."
+    },
+    {
+      "product_id": "SC-AFNAN-9-PM-POUR-FEMME-EDP-100",
+      "merchant": "notino",
+      "merchant_product_id": "AFN00282",
+      "ean": "6290171072607",
+      "gtin": "6290171072607",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-09-28",
+      "evidence_url": "https://www.notino.de/afnan/9-am-pour-femme-eau-de-parfum-ii-fuer-damen/",
+      "evidence_note": "Notino page content identifies Afnan 9 PM Pour Femme Eau de Parfum 100 ml under code AFN00282. The URL slug says '9-am', but the rendered product identity, collection listing and variant details consistently say 9 PM Pour Femme. GTIN 6290171072607 is independently corroborated for the 100 ml EDP."
     }
   ]
 }
