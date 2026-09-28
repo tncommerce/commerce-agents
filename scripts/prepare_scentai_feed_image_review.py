@@ -158,6 +158,7 @@ def prepare_review_candidates(
                 "merchant": EXPECTED_MERCHANT_ID,
                 "merchant_id": EXPECTED_MERCHANT_ID,
                 "merchant_product_id": merchant_product_id,
+                "gtin": _norm(candidate.get("gtin") or candidate.get("ean")) or None,
                 "offer_id": candidate.get("offer_id"),
                 "image_url": image_url,
                 "network": EXPECTED_NETWORK,
