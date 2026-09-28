@@ -126,3 +126,51 @@ def test_unresolved_mapping_still_requires_identity_work() -> None:
     assert item["next_action"] == "verify_exact_merchant_product_identity"
     assert "no_resolved_merchant_mapping" in item["blockers"]
     assert "community_performance_still_provisional" in item["blockers"]
+
+
+def test_fleur_du_male_remains_research_blocked_without_resolved_mapping() -> None:
+    product_id = "SC-JPG-FLEUR-DU-MALE-2026-EDT-125"
+    staging = {"products": [_staging_product(product_id, provisional=True)]}
+    queue = build_queue(
+        staging,
+        {"mappings": []},
+        {"network": "Awin", "applications": [], "other_networks": []},
+        generated_at="2026-09-28T08:00:00+00:00",
+    )
+    item = queue["items"][0]
+
+    assert item["state"] == "research_blocked"
+    assert item["next_action"] == "verify_current_retail_channel_before_mapping"
+    assert "verified_current_merchant_pending" in item["blockers"]
+    assert "community_performance_still_provisional" in item["blockers"]
+
+
+def test_fleur_du_male_resolved_mapping_clears_merchant_research_block_only() -> None:
+    product_id = "SC-JPG-FLEUR-DU-MALE-2026-EDT-125"
+    staging = {"products": [_staging_product(product_id, provisional=True)]}
+    mappings = {
+        "mappings": [
+            {
+                "product_id": product_id,
+                "merchant": "jean-paul-gaultier",
+                "merchant_product_id": "000000000065228018",
+                "ean": None,
+                "gtin": None,
+            }
+        ]
+    }
+    queue = build_queue(
+        staging,
+        mappings,
+        {"network": "Awin", "applications": [], "other_networks": []},
+        generated_at="2026-09-28T08:00:00+00:00",
+    )
+    item = queue["items"][0]
+
+    assert item["state"] == "mapping_data_ready"
+    assert item["next_action"] == "maintain_mapping_and_verify_purchase_destination"
+    assert "verified_current_merchant_pending" not in item["blockers"]
+    assert "no_resolved_merchant_mapping" not in item["blockers"]
+    assert "community_performance_still_provisional" in item["blockers"]
+    assert item["resolved_mapping_count"] == 1
+    assert item["full_mapping_count"] == 0

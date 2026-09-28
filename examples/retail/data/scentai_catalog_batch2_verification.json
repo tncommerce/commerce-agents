@@ -362,20 +362,21 @@
         "vanillin"
       ],
       "sources": [
-        "Official Jean Paul Gaultier German product page screenshot supplied by user",
+        "https://www.jeanpaulgaultier.com/de/de/p/linie-le-male/fleur-du-male-eau-de-toilette-000000000065228018",
+        "https://www.jeanpaulgaultier.com/de/de/duefte",
+        "https://www.jeanpaulgaultier.com/de/de/c/gaultier-reeditions",
         "https://www.notino.de/jean-p-gaultier/fleur-du-male-eau-de-toilette-fur-herren/",
-        "https://www.fragrantica.com/perfume/Jean-Paul-Gaultier/Fleur-du-Male-142131.html",
-        "https://www.jeanpaulgaultier.com/de/de/c/classique-le-male-pride--classique-le-male-pride"
+        "https://www.fragrantica.com/perfume/Jean-Paul-Gaultier/Fleur-du-Male-142131.html"
       ],
       "merchant_snapshot": {
-        "jean_paul_gaultier_de": "manufacturer_teaser_not_retail_available",
+        "jean_paul_gaultier_de": "available",
         "notino_de_legacy_listing": "sale_ended_not_valid_for_2026_coverage",
         "notino_de": "listing_identity_not_verified_for_2026_edition"
       },
-      "merchant_snapshot_checked_at": "2026-09-19",
-      "identity_note": "2026 re-edition is tracked separately from the discontinued legacy Fleur du Mâle listing. The current official German page still presents the return as a teaser, while the indexed Notino page cannot be verified as the 2026 edition. Neither source counts as a current 2026 retail channel until the edition is explicit.",
+      "merchant_snapshot_checked_at": "2026-09-28",
+      "identity_note": "The 2026 re-edition remains tracked separately from discontinued legacy listings. Jean Paul Gaultier Germany now exposes an explicit Fleur Du Male Eau de Toilette 125 ml product page with a buy action, while official current fragrance/re-editions pages state that the original version is back and exclusive to jeanpaulgaultier.com. Legacy Notino evidence remains excluded from 2026 coverage.",
       "merchant_coverage_source": "verification_snapshot",
-      "market_status": "current_edition_exists_but_no_verified_current_retail_channel"
+      "market_status": "current_official_dtc_channel_verified"
     }
   ],
   "merchant_research_updated_at": "2026-09-19"

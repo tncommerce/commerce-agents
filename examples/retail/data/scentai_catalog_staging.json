@@ -967,9 +967,9 @@
         "image_status": "pending_approved_feed_or_manufacturer_image"
       },
       "commerce": {
-        "merchant_coverage_count": 0,
+        "merchant_coverage_count": 1,
         "merchant_coverage_source": "verification_snapshot",
-        "market_status": "current_edition_exists_but_no_verified_current_retail_channel",
+        "market_status": "current_official_dtc_channel_verified",
         "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {

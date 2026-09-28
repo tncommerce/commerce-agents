@@ -422,7 +422,7 @@
       "audience_lean": null,
       "identity_verified": true,
       "community_qa_verified": true,
-      "merchant_coverage_count": 0,
+      "merchant_coverage_count": 1,
       "blockers": [
         "community_performance_still_provisional",
         "verified_purchase_destination_pending",
