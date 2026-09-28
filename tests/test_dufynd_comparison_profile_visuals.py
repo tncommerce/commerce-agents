@@ -24,7 +24,7 @@ def test_profile_meter_clamps_scores_to_visual_scale() -> None:
 
 
 def test_visual_qa_opens_a_real_free_comparison() -> None:
-    qa = Path("examples/retail/storefront-web/scripts/dufynd-visual-qa.mjs").read_text(encoding="utf-8")
+    qa = Path("examples/retail/storefront-web/scripts/dufynd-visual-qa.mjs").read_text(\n        encoding="utf-8"\n    )
 
     assert "/vergleich?left=SC-XERJOFF-NAXOS-100&right=SC-SOSPIRO-VIBRATO-100" in qa
     assert 'marker: "Duft-DNA auf einen Blick"' in qa
