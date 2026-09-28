@@ -87,6 +87,33 @@ def test_owned_original_registers_as_pending_licensed_candidate() -> None:
     assert candidate["rights_evidence"]["public_distribution_allowed"] is True
 
 
+@pytest.mark.parametrize(
+    "image_url",
+    [
+        "/products/release01/test.jpg?token=SECRET",
+        "/products/%2e%2e/secret.jpg",
+        "https://cdn.example.com/test.jpg?api_key=SECRET",
+    ],
+)
+def test_rights_candidate_registration_rejects_non_public_targets(image_url: str) -> None:
+    with pytest.raises(
+        ValueError, match="image_target_must_be_https_or_safe_root_relative_path"
+    ) as error:
+        registration_plan(
+            staging_payload(),
+            candidates_payload(),
+            product_id=PRODUCT_ID,
+            image_url=image_url,
+            source_class="dufynd_owned_original_photography",
+            rights_basis_id="test-rights",
+            rights_checked_at="2026-09-28",
+            exact_variant_verified=True,
+            commercial_use_allowed=True,
+            public_distribution_allowed=True,
+        )
+    assert "SECRET" not in str(error.value)
+
+
 def test_licensed_provider_requires_persisted_attribution_metadata() -> None:
     plan = plan_for(
         source_class="licensed_asset_provider",
