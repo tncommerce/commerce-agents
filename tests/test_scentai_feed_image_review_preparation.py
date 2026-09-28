@@ -51,6 +51,7 @@ def candidates() -> dict:
                 "merchant": "top-parfuemerie",
                 "merchant_id": "top-parfuemerie",
                 "merchant_product_id": "825869",
+                "ean": "3700578501998",
                 "offer_id": "123",
                 "image_url": "https://images.example/delina.jpg",
                 "network": "Awin",
@@ -122,6 +123,7 @@ def test_current_feed_candidate_becomes_pending_review_only() -> None:
     row = packet["candidates"][0]
     assert row["product_id"] == "SC-PDM-DELINA-EDP-75"
     assert row["merchant_product_id"] == "825869"
+    assert row["gtin"] == "3700578501998"
     assert row["data_source"] == "approved-affiliate-feed"
     assert row["original_data_source"] == "awin-product-data-feed-preflight"
     assert row["review_status"] == "pending_review"

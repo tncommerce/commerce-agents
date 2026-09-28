@@ -105,6 +105,7 @@ def render_html(payload: dict) -> str:
         concentration = html.escape(_norm(row.get("concentration")))
         volume_ml = html.escape(_norm(row.get("volume_ml")))
         merchant_product_id = html.escape(_norm(row.get("merchant_product_id")))
+        gtin = html.escape(_norm(row.get("gtin")) or "not supplied")
         offer_id = html.escape(_norm(row.get("offer_id")))
         image_url = html.escape(_norm(row.get("image_url")), quote=True)
         rights_basis_id = html.escape(_norm(row.get("rights_basis_id")))
@@ -123,6 +124,7 @@ def render_html(payload: dict) -> str:
                 <dl>
                   <dt>DUFYND product ID</dt><dd><code>{product_id}</code></dd>
                   <dt>Merchant product ID</dt><dd><code>{merchant_product_id}</code></dd>
+                  <dt>GTIN / EAN</dt><dd><code>{gtin}</code></dd>
                   <dt>Awin offer ID</dt><dd><code>{offer_id or "not supplied"}</code></dd>
                   <dt>Feed row updated</dt><dd>{last_updated_at}</dd>
                   <dt>Rights basis</dt><dd><code>{rights_basis_id}</code></dd>
