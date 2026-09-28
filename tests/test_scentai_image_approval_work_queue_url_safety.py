@@ -102,13 +102,21 @@ def test_queue_rejects_unsafe_current_image_targets_without_echoing_secret(image
 
 def test_queue_rejects_secret_bearing_candidate_source_url() -> None:
     with pytest.raises(ValueError, match=f"candidate_source_url_invalid:{PRODUCT_ID}") as error:
-        build(candidate_payload=asset_candidates(source_page_url="https://brand.example/product?token=SECRET"))
+        build(
+            candidate_payload=asset_candidates(
+                source_page_url="https://brand.example/product?token=SECRET"
+            )
+        )
 
     assert "SECRET" not in str(error.value)
 
 
 def test_queue_rejects_secret_bearing_rights_evidence_url() -> None:
     with pytest.raises(ValueError, match=f"rights_evidence_url_invalid:{PRODUCT_ID}") as error:
-        build(rights_payload=rights_audit(rights_evidence_url="https://brand.example/terms?api_key=SECRET"))
+        build(
+            rights_payload=rights_audit(
+                rights_evidence_url="https://brand.example/terms?api_key=SECRET"
+            )
+        )
 
     assert "SECRET" not in str(error.value)
