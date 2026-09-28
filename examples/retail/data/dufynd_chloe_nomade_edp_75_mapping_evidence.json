@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "verified_at": "2026-09-28",
+  "product_id": "SC-CHLOE-NOMADE-EDP-75",
+  "merchant": "Chloé official Germany",
+  "merchant_product_id": "CHCA64994090",
+  "product_url": "https://www.chloe.com/de-de/p/fragrances/eau-de-parfum/CHCA64994090.html",
+  "identity": {
+    "brand": "Chloé",
+    "name": "Nomade",
+    "concentration": "Eau de Parfum",
+    "volume_ml": 75,
+    "gtin": "3614223113347"
+  },
+  "corroboration": [
+    {
+      "source": "Chloé official Germany",
+      "url": "https://www.chloe.com/de-de/p/fragrances/eau-de-parfum/CHCA64994090.html",
+      "note": "Official product page identifies the original Nomade Eau de Parfum, size 75 ml and product code CHCA64994090."
+    },
+    {
+      "source": "billiger.de product data",
+      "url": "https://www.billiger.de/products/1310425821-chloe-nomade-eau-de-parfum-75-ml",
+      "note": "Independent product data corroborates original Chloé Nomade Eau de Parfum 75 ml under EAN/GTIN 3614223113347."
+    }
+  ],
+  "freshness_policy": {
+    "current_purchase_destination_registered": false,
+    "price_or_stock_freshness_asserted": false,
+    "reason": "Identity evidence is sufficient for canonical merchant mapping, but no exact-variant observation inside DUFYND's 72-hour offer freshness window is being asserted."
+  },
+  "rights_or_affiliate_impact": {
+    "image_rights_granted": false,
+    "affiliate_tracking_verified": false,
+    "final_image_approval_granted": false
+  }
+}
