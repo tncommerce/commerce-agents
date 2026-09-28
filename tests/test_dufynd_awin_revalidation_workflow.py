@@ -13,11 +13,15 @@ def test_awin_revalidation_workflow_stays_manual_read_only_and_secret_safe() -> 
     assert "permissions:\n  contents: read" in text
     assert "secrets.AWIN_DATA_FEED_API_KEY" in text
     assert "RUNNER_TEMP" in text
+    assert "Prepare Release 01 feed-image review candidates" in text
+    assert "scripts/prepare_scentai_feed_image_review.py" in text
+    assert "release01-feed-image-review-candidates.json" in text
     assert "Upload sanitized review packet" in text
 
     artifact_block = text.split("Upload sanitized review packet", 1)[1]
     assert "top-parfuemerie.csv" not in artifact_block
     assert "AWIN_DATA_FEED_API_KEY" not in artifact_block
+    assert "release01-feed-image-review-candidates.json" in artifact_block
 
 
 def test_awin_revalidation_runbook_keeps_raw_feed_and_approval_boundaries() -> None:
