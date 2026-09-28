@@ -1,0 +1,45 @@
+name: DUFYND temporary Profondo mapping refresh
+
+on:
+  push:
+    branches:
+      - dufynd-armani-profondo-parfum-100-mapping-20260928
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dufynd-armani-profondo-parfum-100-mapping-20260928
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+      - name: Focused mapping test
+        run: pytest -q tests/test_dufynd_merchant_mapping_integrity.py
+      - name: Format check
+        run: ruff format --check tests/test_dufynd_merchant_mapping_integrity.py
+      - name: Refresh Jarvis state
+        env:
+          PYTHONPATH: ".:examples"
+        run: python -m scripts.refresh_scentai_jarvis_state --write --machine-readable
+      - name: Validate Jarvis state graph
+        env:
+          PYTHONPATH: ".:examples"
+        run: python -m scripts.validate_scentai_jarvis_state_graph --machine-readable
+      - name: Commit derived state
+        run: |
+          if git diff --quiet; then
+            echo "No derived-state changes."
+            exit 0
+          fi
+          git config user.name "tncommerce"
+          git config user.email "tuanaicommerce@gmail.com"
+          git add examples/retail/data
+          git commit -m "DUFYND: refresh state after Profondo Parfum mapping"
+          git push
