@@ -1,11 +1,12 @@
 # DUFYND Release 01 — Send-Ready Image Rights Requests
 
-Status: prepared_not_sent  
+Status: partially_sent  
 Prepared: 2026-09-28  
 Action class: USER_APPROVAL_REQUIRED before any outbound message
 
 This file converts the approved internal request template into product-specific,
-ready-to-send outreach. Nothing in this file has been sent.
+ready-to-send outreach. Request 2 (Dior / Hypnotic Poison EDT 100 ml) was sent on
+2026-09-28 after explicit user approval. Requests 1 and 3 remain unsent.
 
 ## Shared rules
 
@@ -69,6 +70,9 @@ DUFYND / TNCommerce
 ---
 
 ## Request 2 — Dior / Hypnotic Poison EDT 100 ml
+
+Status: sent_2026-09-28_after_explicit_user_approval  
+Recipient: contact@dior.com  
 
 Routing:
 - Primary email: contact@dior.com
@@ -202,4 +206,4 @@ After valid rights evidence is recorded:
 3. request human/user visual approval;
 4. only then approve the image.
 
-No outbound message in this file may be sent without explicit user approval.
+No remaining outbound message in this file may be sent without explicit user approval.
