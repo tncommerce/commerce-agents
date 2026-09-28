@@ -141,3 +141,29 @@ def test_batch7_direct_merchant_does_not_claim_affiliate_application() -> None:
         afnan["research_merchant_evidence"][0]["affiliate_state"]
         == "not_applicable_direct_merchant"
     )
+
+
+def test_batch7_identifier_evidence_preserves_conflicts_without_canonicalizing() -> None:
+    wave = json.loads(
+        Path("examples/retail/data/dufynd_catalog_expansion_batch7_research.json").read_text()
+    )
+    by_id = {row["product_id"]: row for row in wave["candidates"]}
+
+    alien = by_id["SC-MUGLER-ALIEN-EDP-90"]["identifiers"]
+    assert alien["status"] == "indexed_evidence_feed_match_pending"
+    assert {row["gtin"] for row in alien["observations"]} == {"3439602802113"}
+    assert alien["canonical_gtin"] is None
+
+    afnan = by_id["SC-AFNAN-9-PM-POUR-FEMME-EDP-100"]["identifiers"]
+    assert {row["gtin"] for row in afnan["observations"]} == {
+        "6290171072607",
+        "6290178899719",
+    }
+    assert afnan["canonical_gtin"] is None
+
+    jadore = by_id["SC-DIOR-JADORE-EDP-100"]["identifiers"]
+    assert {row["gtin"] for row in jadore["observations"]} == {
+        "3348900417878",
+        "3348901738224",
+    }
+    assert jadore["canonical_gtin"] is None
