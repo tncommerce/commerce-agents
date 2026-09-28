@@ -32,3 +32,19 @@ def test_promotion_queue_covers_explicit_available_merchant_snapshots() -> None:
                 f"merchant(s), but verification explicitly marks "
                 f"{explicitly_available} as available"
             )
+
+
+def test_fleur_du_male_current_official_dtc_channel_is_counted() -> None:
+    verification = load_json(DATA_DIR / "scentai_catalog_batch2_verification.json")
+    queue = load_json(DATA_DIR / "scentai_catalog_promotion_queue.json")
+    product = next(
+        row for row in verification["products"] if row["candidate_id"] == "JPG-FLEUR-DU-MALE-2026"
+    )
+    queue_row = next(
+        row for row in queue["candidates"] if row["candidate_id"] == "JPG-FLEUR-DU-MALE-2026"
+    )
+
+    assert product["merchant_snapshot"]["jean_paul_gaultier_de"] == "available"
+    assert product["merchant_snapshot_checked_at"] == "2026-09-28"
+    assert product["market_status"] == "current_official_dtc_channel_verified"
+    assert queue_row["merchant_coverage_count"] >= 1
