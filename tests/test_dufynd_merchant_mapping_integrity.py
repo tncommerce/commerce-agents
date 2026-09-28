@@ -231,9 +231,9 @@ def test_armani_profondo_mapping_selects_parfum_100ml_not_edt_or_edp() -> None:
 
 def test_afnan_9pm_femme_mapping_uses_rendered_identity_not_url_slug() -> None:
     evidence = json.loads(
-        Path(
-            "examples/retail/data/dufynd_afnan_9pm_femme_100_mapping_evidence.json"
-        ).read_text(encoding="utf-8")
+        Path("examples/retail/data/dufynd_afnan_9pm_femme_100_mapping_evidence.json").read_text(
+            encoding="utf-8"
+        )
     )
     rows = json.loads(MAPPINGS.read_text(encoding="utf-8"))["mappings"]
 
