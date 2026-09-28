@@ -33,14 +33,22 @@ def _row_value(row: dict[str, str], *aliases: str) -> str:
     return ""
 
 
-def _maybe_decompress(payload: bytes) -> bytes:
+def _maybe_decompress(payload: bytes, *, max_bytes: int) -> bytes:
     if payload[:2] == bytes((0x1F, 0x8B)):
-        return gzip.decompress(payload)
+        with gzip.GzipFile(fileobj=io.BytesIO(payload)) as compressed:
+            expanded = compressed.read(max_bytes + 1)
+        if len(expanded) > max_bytes:
+            raise ValueError("awin_response_exceeds_max_bytes")
+        return expanded
+    if len(payload) > max_bytes:
+        raise ValueError("awin_response_exceeds_max_bytes")
     return payload
 
 
-def parse_feed_list(payload: bytes) -> list[dict[str, str]]:
-    decoded = _maybe_decompress(payload).decode("utf-8-sig")
+def parse_feed_list(
+    payload: bytes, *, max_bytes: int = DEFAULT_LIST_MAX_BYTES
+) -> list[dict[str, str]]:
+    decoded = _maybe_decompress(payload, max_bytes=max_bytes).decode("utf-8-sig")
     return list(csv.DictReader(io.StringIO(decoded)))
 
 
@@ -117,7 +125,7 @@ def download_feed_from_list(
         raise ValueError("awin_data_feed_api_key_required")
 
     list_url = "https://productdata.awin.com/datafeed/list/apikey/" + quote(api_key, safe="")
-    rows = parse_feed_list(_read_url(list_url, max_bytes=list_max_bytes))
+    rows = parse_feed_list(_read_url(list_url, max_bytes=list_max_bytes), max_bytes=list_max_bytes)
     row = find_feed(rows, advertiser_id=advertiser_id, feed_id=feed_id)
     metadata = sanitized_feed_metadata(row)
 
@@ -140,7 +148,9 @@ def download_feed_from_list(
     }
 
     if output_path is not None:
-        feed_payload = _maybe_decompress(_read_url(download_url, max_bytes=feed_max_bytes))
+        feed_payload = _maybe_decompress(
+            _read_url(download_url, max_bytes=feed_max_bytes), max_bytes=feed_max_bytes
+        )
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_bytes(feed_payload)
         report["downloaded"] = True
@@ -149,7 +159,7 @@ def download_feed_from_list(
     if report_path is not None:
         report_path.parent.mkdir(parents=True, exist_ok=True)
         report_path.write_text(
-            json.dumps(report, ensure_ascii=False, indent=2) + "\\n",
+            json.dumps(report, ensure_ascii=False, indent=2) + "\n",
             encoding="utf-8",
         )
 
