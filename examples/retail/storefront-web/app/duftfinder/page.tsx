@@ -5,7 +5,7 @@ import AcquisitionLanding from "@/components/AcquisitionLanding";
 export const metadata: Metadata = {
   title: "Duftfinder – Parfum nach Anlass, Budget & Profil",
   description:
-    "Finde mit DUFYND passende Parfums nach Anlass, Budget, Duftprofil und gewünschter Performance.",
+    "Finde mit DUFYND passende Parfums nach Anlass, Budget, Duftprofil, Haltbarkeit und Ausstrahlung.",
   alternates: {
     canonical: "/duftfinder",
   },
@@ -31,7 +31,7 @@ export default function DuftfinderPage() {
         },
         {
           key: "performance",
-          label: "Starke Performance suchen",
+          label: "Starke Haltbarkeit & Ausstrahlung",
         },
       ]}
       points={[
@@ -41,7 +41,7 @@ export default function DuftfinderPage() {
         },
         {
           title: "Verständlich statt Fachchinesisch",
-          text: "Du kannst einfach beschreiben, wie ein Duft wirken soll. DUFYND übersetzt das in vergleichbare Duft- und Performance-Daten.",
+          text: "Du kannst einfach beschreiben, wie ein Duft wirken soll. DUFYND übersetzt das in vergleichbare Duft-, Haltbarkeits- und Ausstrahlungsdaten.",
         },
         {
           title: "Danach direkt vergleichen",
