@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "verified_at": "2026-09-28",
+  "product_id": "SC-MAISON-MARGIELA-BY-THE-FIREPLACE-EDT-100",
+  "merchant": "Maison Margiela official",
+  "merchant_product_id": "S33YX0024S11331961",
+  "product_url": "https://www.maisonmargiela.com/de-de/replica-by-the-fireplace-eau-de-toilette-8050143254190.html",
+  "identity": {
+    "brand": "Maison Margiela",
+    "name": "REPLICA By the Fireplace",
+    "concentration": "Eau de Toilette",
+    "volume_ml": 100,
+    "gtin": "3614270562112"
+  },
+  "corroboration": [
+    {
+      "source": "Maison Margiela Germany",
+      "url": "https://www.maisonmargiela.com/de-de/replica-by-the-fireplace-eau-de-toilette-8050143254190.html",
+      "note": "Official page identifies By the Fireplace as Eau de Toilette under item code S33YX0024S11331961."
+    },
+    {
+      "source": "Maison Margiela official international",
+      "url": "https://www.maisonmargiela.com/en-us/replica-by-the-fireplace-eau-de-toilette-S33YX0024S11331961.html",
+      "note": "Official product page explicitly identifies size 100 ml and concentration Eau de Toilette for the same item code."
+    },
+    {
+      "source": "Shop Apotheke product data",
+      "url": "https://www.shop-apotheke.com/beauty/upmHAHAMT/maison-margiela-replica-by-the-fireplace-edt-nat-spray.htm",
+      "note": "Independent exact-variant data identifies Maison Margiela Replica By the Fireplace Eau de Toilette 100 ml under EAN/GTIN 3614270562112."
+    }
+  ],
+  "freshness_policy": {
+    "current_purchase_destination_registered": false,
+    "price_or_stock_freshness_asserted": false,
+    "reason": "Canonical identity is fully verified; this change does not assert an exact 72-hour current purchase offer."
+  },
+  "rights_or_affiliate_impact": {
+    "image_rights_granted": false,
+    "affiliate_tracking_verified": false,
+    "final_image_approval_granted": false
+  }
+}
