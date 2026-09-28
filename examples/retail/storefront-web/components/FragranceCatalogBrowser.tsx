@@ -309,6 +309,26 @@ function matchesProfile(
   return value != null && value >= 7;
 }
 
+const SCENT_DNA_PROFILES: {
+  key: DiscoveryProfile;
+  label: string;
+}[] = [
+  { key: "freshness", label: "Frisch" },
+  { key: "sweetness", label: "Süß" },
+  { key: "woodiness", label: "Holzig" },
+  { key: "spiciness", label: "Würzig" },
+];
+
+function scentDnaScore(
+  fragrance: StaticFragrance,
+  profile: DiscoveryProfile,
+): number {
+  return Math.max(
+    0,
+    Math.min(10, fragrance.scores[profile] ?? 0),
+  );
+}
+
 export default function FragranceCatalogBrowser({
   fragrances,
 }: {
@@ -1040,6 +1060,49 @@ export default function FragranceCatalogBrowser({
                             {accordLabel(accord)}
                           </span>
                         ))}
+                    </div>
+
+                    <div
+                      className="mt-4 rounded-xl border border-(--line) bg-(--surface)/70 px-3 py-2.5"
+                      aria-label="Duft-DNA"
+                    >
+                      <div className="mb-2 flex items-center justify-between gap-2">
+                        <span className="text-[9.5px] font-semibold uppercase tracking-[0.08em] text-(--ink-soft)">
+                          Duft-DNA
+                        </span>
+                        <span className="text-[9.5px] text-(--ink-soft)">
+                          Profil 0–10
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-4 gap-2">
+                        {SCENT_DNA_PROFILES.map(({ key, label }) => {
+                          const value = scentDnaScore(
+                            fragrance,
+                            key,
+                          );
+
+                          return (
+                            <div key={key} className="min-w-0">
+                              <div className="h-1.5 overflow-hidden rounded-full bg-(--well)">
+                                <div
+                                  className="h-full rounded-full bg-(--accent)"
+                                  style={{
+                                    width: `${value * 10}%`,
+                                  }}
+                                />
+                              </div>
+                              <div className="mt-1 flex items-center justify-between gap-1">
+                                <span className="truncate text-[8.5px] text-(--ink-soft)">
+                                  {label}
+                                </span>
+                                <span className="text-[8.5px] font-semibold text-(--ink)">
+                                  {value}
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
 
                     <div className="mt-4 border-t border-(--line) pt-3 text-[11px] font-semibold text-(--accent-ink)">
