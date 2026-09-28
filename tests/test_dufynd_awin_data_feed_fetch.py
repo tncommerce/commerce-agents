@@ -2,13 +2,12 @@ from __future__ import annotations
 
 import gzip
 
+import pytest
 from scripts.fetch_dufynd_awin_data_feed import (
     find_feed,
     parse_feed_list,
     sanitized_feed_metadata,
 )
-
-import pytest
 
 
 CSV = """Advertiser ID,Advertiser Name,Primary Region,Membership Status,Feed ID,Feed Name,Language,Last Imported,URL
