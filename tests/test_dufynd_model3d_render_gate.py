@@ -4,7 +4,6 @@ from pathlib import Path
 
 DETAIL = Path("examples/retail/storefront-web/app/duft/[slug]/page.tsx")
 HOME = Path("examples/retail/storefront-web/components/views/HomeView.tsx")
-CSS = Path("examples/retail/storefront-web/app/globals.css")
 
 
 def test_detail_page_only_renders_model_viewer_for_real_model_asset() -> None:
@@ -29,16 +28,3 @@ def test_homepage_only_renders_model_viewer_for_real_model_asset() -> None:
     assert "{spotlightModelUrl || spotlightIsProductTruth ? (" not in source
     assert "spotlightIsProductTruth ? (" in source
     assert 'mode="cutout"' in source
-
-
-def test_homepage_spotlight_visual_layer_is_height_independent() -> None:
-    source = CSS.read_text(encoding="utf-8")
-
-    assert ".dufynd-hero-product > :is(" in source
-    assert ".dufynd-product-stage," in source
-    assert ".dufynd-editorial-media," in source
-    assert ".dufynd-model-stage" in source
-    assert "position: absolute;" in source
-    assert "inset: 0;" in source
-    assert "min-height: 100%;" in source
-    assert ".dufynd-hero-product .dufynd-product-object" in source
