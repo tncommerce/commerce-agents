@@ -10,7 +10,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote, urlparse
-from urllib.request import Request, urlopen
+from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 DEFAULT_LIST_MAX_BYTES = 8 * 1024 * 1024
 DEFAULT_FEED_MAX_BYTES = 128 * 1024 * 1024
@@ -18,6 +18,19 @@ ALLOWED_FEED_HOSTS = {
     "datafeed.api.productserve.com",
     "productdata.awin.com",
 }
+
+
+class AwinRedirectHandler(HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        parsed = urlparse(newurl)
+        if (
+            parsed.scheme != "https"
+            or parsed.hostname not in ALLOWED_FEED_HOSTS
+            or parsed.username is not None
+            or parsed.password is not None
+        ):
+            raise ValueError("awin_redirect_host_not_allowed")
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
 
 
 def _normalize_header(value: str) -> str:
@@ -94,7 +107,7 @@ def _read_url(url: str, *, max_bytes: int) -> bytes:
         },
     )
     try:
-        with urlopen(request, timeout=60) as response:
+        with build_opener(AwinRedirectHandler()).open(request, timeout=60) as response:
             chunks: list[bytes] = []
             total = 0
             while True:
