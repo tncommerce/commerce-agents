@@ -632,6 +632,17 @@
       "verified_at": "2026-09-28",
       "evidence_url": "https://www.mueller.de/p/mugler-alien-eau-de-parfum-nachfuellbar-6818853202/?itemId=388723",
       "evidence_note": "Müller item 388723 identifies the refillable Alien Eau de Parfum 90 ml bottle. GTIN 3439600056969 is corroborated by Galeria and independent product data. This mapping does not assert a current 72-hour purchase offer."
+    },
+    {
+      "product_id": "SC-CHLOE-NOMADE-EDP-75",
+      "merchant": "chloe",
+      "merchant_product_id": "CHCA64994090",
+      "ean": "3614223113347",
+      "gtin": "3614223113347",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-09-28",
+      "evidence_url": "https://www.chloe.com/de-de/p/fragrances/eau-de-parfum/CHCA64994090.html",
+      "evidence_note": "Official Chloé Germany product page identifies Nomade Eau de Parfum 75 ml as product CHCA64994090. GTIN 3614223113347 is independently corroborated for the original 75 ml EDP. This mapping does not assert a current 72-hour merchant offer."
     }
   ]
 }

@@ -107,3 +107,27 @@ def test_mugler_alien_mapping_selects_edp_90ml_bottle() -> None:
         and row["gtin"] == evidence["identity"]["gtin"]
         for row in rows
     )
+
+
+def test_chloe_nomade_mapping_selects_original_edp_75ml() -> None:
+    evidence = json.loads(
+        Path("examples/retail/data/dufynd_chloe_nomade_edp_75_mapping_evidence.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    rows = json.loads(MAPPINGS.read_text(encoding="utf-8"))["mappings"]
+
+    assert evidence["product_id"] == "SC-CHLOE-NOMADE-EDP-75"
+    assert evidence["merchant_product_id"] == "CHCA64994090"
+    assert evidence["identity"]["concentration"] == "Eau de Parfum"
+    assert evidence["identity"]["volume_ml"] == 75
+    assert evidence["identity"]["gtin"] == "3614223113347"
+    assert evidence["freshness_policy"]["current_purchase_destination_registered"] is False
+    assert evidence["freshness_policy"]["price_or_stock_freshness_asserted"] is False
+    assert any(
+        row["product_id"] == evidence["product_id"]
+        and row["merchant"] == "chloe"
+        and row["merchant_product_id"] == evidence["merchant_product_id"]
+        and row["gtin"] == evidence["identity"]["gtin"]
+        for row in rows
+    )
