@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from datetime import UTC, datetime
 from pathlib import Path
 from urllib.parse import urlparse
@@ -30,6 +31,59 @@ def valid_https_url(value: str) -> bool:
 
 def _norm(value: object) -> str:
     return str(value or "").strip().casefold()
+
+
+def _parse_aware_datetime(value: object, *, error: str) -> datetime:
+    raw = str(value or "").strip()
+    if not raw:
+        raise ValueError(error)
+    try:
+        parsed = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise ValueError(error) from exc
+    if parsed.tzinfo is None:
+        raise ValueError(error)
+    return parsed.astimezone(UTC)
+
+
+def _validate_candidate_feed_evidence(candidate: dict, entry: dict) -> dict:
+    requirements = entry.get("candidate_evidence_requirements")
+    if not isinstance(requirements, dict):
+        return {}
+
+    expected_feed_id = str(requirements.get("feed_id") or "").strip()
+    expected_advertiser_id = str(requirements.get("advertiser_id") or "").strip()
+
+    if expected_feed_id and str(candidate.get("feed_id") or "").strip() != expected_feed_id:
+        raise ValueError("candidate_feed_id_not_verified")
+    if expected_advertiser_id and str(candidate.get("advertiser_id") or "").strip() != expected_advertiser_id:
+        raise ValueError("candidate_advertiser_id_not_verified")
+
+    observed_at = _parse_aware_datetime(
+        candidate.get("feed_snapshot_observed_at"),
+        error="candidate_feed_snapshot_not_verified",
+    )
+
+    minimum_raw = requirements.get("minimum_feed_snapshot_observed_at")
+    if minimum_raw:
+        minimum = _parse_aware_datetime(
+            minimum_raw,
+            error="rights_feed_snapshot_requirement_invalid",
+        )
+        if observed_at < minimum:
+            raise ValueError("candidate_feed_snapshot_too_old")
+
+    snapshot_sha256 = str(candidate.get("feed_snapshot_sha256") or "").strip().lower()
+    if requirements.get("require_feed_snapshot_sha256"):
+        if not re.fullmatch(r"[0-9a-f]{64}", snapshot_sha256):
+            raise ValueError("candidate_feed_snapshot_sha256_required")
+
+    return {
+        "feed_id": str(candidate.get("feed_id") or "").strip() or None,
+        "advertiser_id": str(candidate.get("advertiser_id") or "").strip() or None,
+        "feed_snapshot_observed_at": observed_at.isoformat(),
+        "feed_snapshot_sha256": snapshot_sha256 or None,
+    }
 
 
 def candidate_rights_evidence(
@@ -70,12 +124,15 @@ def candidate_rights_evidence(
     if not rights_basis_id or not checked_at:
         raise ValueError("candidate_rights_evidence_incomplete")
 
+    feed_evidence = _validate_candidate_feed_evidence(candidate, entry)
+
     return {
         "rights_basis_id": rights_basis_id,
         "rights_status": verified_status,
         "rights_checked_at": checked_at,
         "publisher_scope": entry.get("publisher_scope"),
         "asset_scope": entry.get("asset_scope"),
+        **feed_evidence,
     }
 
 
