@@ -142,7 +142,7 @@ def build_queue(
             next_action = "verify_exact_merchant_product_identity"
             blockers.append("no_resolved_merchant_mapping")
 
-        if product_id == "SC-JPG-FLEUR-DU-MALE-2026-EDT-125":
+        if product_id == "SC-JPG-FLEUR-DU-MALE-2026-EDT-125" and not resolved:
             state = "research_blocked"
             next_action = "verify_current_retail_channel_before_mapping"
             blockers.extend(
