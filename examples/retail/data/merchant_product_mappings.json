@@ -731,6 +731,17 @@
       "verified_at": "2026-09-28",
       "evidence_url": "https://www.maisonmargiela.com/de-de/replica-by-the-fireplace-eau-de-toilette-8050143254190.html",
       "evidence_note": "Official Maison Margiela Germany page identifies Replica By the Fireplace Eau de Toilette under item code S33YX0024S11331961; official international product data exposes size 100 ml. GTIN 3614270562112 is independently corroborated for the exact 100 ml Eau de Toilette."
+    },
+    {
+      "product_id": "SC-JPG-FLEUR-DU-MALE-2026-EDT-125",
+      "merchant": "jean-paul-gaultier",
+      "merchant_product_id": "000000000065228018",
+      "ean": null,
+      "gtin": null,
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-09-28",
+      "evidence_url": "https://www.jeanpaulgaultier.com/de/de/p/linie-le-male/fleur-du-male-eau-de-toilette-000000000065228018",
+      "evidence_note": "Official Jean Paul Gaultier Germany product page identifies the returned Fleur Du Male Eau de Toilette in the 125 ml size under product URL identifier 000000000065228018. Official current fragrance and re-editions pages state that the original version is back and exclusive to jeanpaulgaultier.com. No GTIN/EAN is asserted for the 2026 re-edition."
     }
   ]
 }
