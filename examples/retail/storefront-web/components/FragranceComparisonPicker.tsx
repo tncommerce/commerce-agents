@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import FragranceOffers from "@/components/FragranceOffers";
+import FragranceModel3D from "@/components/FragranceModel3D";
 import FragranceVisual from "@/components/FragranceVisual";
 import { trackAnalyticsEvent } from "@/lib/analytics";
 import { accordLabel } from "@/lib/accordLabels";
@@ -81,14 +82,30 @@ function ProductMiniHeader({
       href={`/duft/${fragrance.slug}`}
       className="overflow-hidden rounded-2xl border border-(--line) bg-(--card) shadow-(--shadow-sm) transition hover:border-(--ink)"
     >
-      <FragranceVisual
-        imageUrl={visual?.url}
-        cutoutUrl={isProductTruth ? visual?.url : undefined}
-        alt={`${fragrance.brand} ${fragrance.name}`}
-        variant="card"
-        mode={isProductTruth ? "cutout" : "editorial"}
-        className="h-40 w-full"
-      />
+      {fragrance.model_3d_url ? (
+        <FragranceModel3D
+          modelUrl={fragrance.model_3d_url}
+          imageUrl={isProductTruth ? undefined : visual?.url}
+          cutoutUrl={isProductTruth ? visual?.url : undefined}
+          backdropUrl={
+            isProductTruth ? fragrance.backdrop_visual?.url : undefined
+          }
+          alt={`${fragrance.brand} ${fragrance.name}`}
+          className="h-40 w-full"
+        />
+      ) : (
+        <FragranceVisual
+          imageUrl={visual?.url}
+          cutoutUrl={isProductTruth ? visual?.url : undefined}
+          backdropUrl={
+            isProductTruth ? fragrance.backdrop_visual?.url : undefined
+          }
+          alt={`${fragrance.brand} ${fragrance.name}`}
+          variant="card"
+          mode={isProductTruth ? "cutout" : "editorial"}
+          className="h-40 w-full"
+        />
+      )}
       <div className="p-3.5">
         <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-(--ink-soft)">
           {fragrance.brand}
