@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "observed_at": "2026-09-28T04:26:00Z",
+  "product_id": "SC-LATTAFA-KHAMRAH-EDP-100",
+  "merchant": "Müller DE",
+  "merchant_product_id": "3111815",
+  "product_url": "https://www.mueller.de/p/lattafa-khamrah-eau-de-parfum-PPN3111815/",
+  "observation_method": "current_public_merchant_page_read_only_web",
+  "identity": {
+    "brand": "Lattafa",
+    "name": "Khamrah",
+    "concentration": "Eau de Parfum",
+    "volume_ml": 100,
+    "gtin": "6291108737194",
+    "gtin_corrob_source": "https://www.rossmann.de/de/pflege-und-duft-lattafa-khamra-edp-100-ml/p/6291108737194",
+    "gtin_corrob_note": "Rossmann identifies Lattafa Khamrah/Khamra Eau de Parfum 100 ml under GTIN 6291108737194. Müller article 3111815 separately shows the original Khamrah EDP 100 ml. Exclude Khamrah Qahwa and Khamrah Dukhan, which are separate variants."
+  },
+  "live_observation": {
+    "listed_price_eur": 29.95,
+    "shipping_cost_eur": 3.95,
+    "availability": "Lieferbar in 2–3 Werktagen; add-to-cart visible",
+    "delivery_note": "Müller DE shipping 3.95 EUR; free from 49 EUR."
+  },
+  "rights_or_affiliate_impact": {
+    "image_rights_granted": false,
+    "affiliate_tracking_verified": false,
+    "final_image_approval_granted": false
+  },
+  "freshness_policy": "Offer qualifies only while last_updated_at is within the 72-hour merchant-offer window. No live catalog promotion."
+}
