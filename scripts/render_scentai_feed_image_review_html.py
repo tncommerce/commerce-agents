@@ -4,7 +4,11 @@ import argparse
 import html
 import json
 from pathlib import Path
-from urllib.parse import urlparse
+
+if __package__:
+    from .prepare_scentai_feed_image_review import _public_image_url
+else:
+    from prepare_scentai_feed_image_review import _public_image_url
 
 EXPECTED_ADVERTISER_ID = "31081"
 EXPECTED_FEED_ID = "91379"
@@ -23,16 +27,10 @@ def _norm(value: object) -> str:
 
 
 def _safe_https_url(value: object) -> str:
-    url = _norm(value)
-    parsed = urlparse(url)
-    if (
-        parsed.scheme != "https"
-        or not parsed.netloc
-        or parsed.username is not None
-        or parsed.password is not None
-    ):
-        raise ValueError("candidate_image_url_must_be_public_https")
-    return url
+    try:
+        return _public_image_url(value)
+    except ValueError as exc:
+        raise ValueError("candidate_image_url_must_be_public_https") from exc
 
 
 def validate_packet(payload: dict) -> list[dict]:
