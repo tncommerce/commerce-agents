@@ -3,9 +3,7 @@
 import json
 from pathlib import Path
 
-DOSSIER = Path(
-    "examples/retail/data/dufynd_batch7_identifier_evidence_20260928.json"
-)
+DOSSIER = Path("examples/retail/data/dufynd_batch7_identifier_evidence_20260928.json")
 
 
 def load_dossier() -> dict:
