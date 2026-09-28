@@ -196,3 +196,28 @@ def test_conflicting_current_feed_gtin_cannot_enter_review(identifier: str) -> N
             rights_registry(),
             identity_plan(),
         )
+
+
+@pytest.mark.parametrize(
+    "image_url",
+    [
+        "https://images.example/delina.jpg?api_key=SECRET",
+        "https://images.example/delina.jpg?X-Amz-Signature=SECRET",
+        "https://images.example/apikey/SECRET/delina.jpg",
+        "https://user:SECRET@images.example/delina.jpg",
+        "http://images.example/delina.jpg",
+    ],
+)
+def test_secret_bearing_or_non_public_image_url_never_enters_artifact(image_url: str) -> None:
+    feed_candidates = candidates()
+    feed_candidates["candidates"][0]["image_url"] = image_url
+
+    with pytest.raises(ValueError, match="candidate_image_url_not_public"):
+        prepare_review_candidates(
+            feed_candidates,
+            feed_metadata(),
+            staging(),
+            release(),
+            rights_registry(),
+            identity_plan(),
+        )
