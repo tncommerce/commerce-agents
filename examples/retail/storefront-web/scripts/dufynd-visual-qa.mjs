@@ -73,6 +73,11 @@ const coreRoutes = [
     route: "/start",
     marker: "Finde deinen schnellsten Weg zum passenden Duft.",
   },
+  {
+    name: "acquisition-duftfinder",
+    route: "/duftfinder",
+    marker: "Finde einen Duft, der zu dir und deinem Alltag passt.",
+  },
   { name: "catalog", route: "/duft", marker: "Parfums entdecken" },
   { name: "comparisons", route: "/vergleich", marker: "Parfums direkt vergleichen" },
   {
@@ -677,6 +682,22 @@ try {
             throw new Error(
               "catalog does not prioritize the Naxos verified cutout",
             );
+          }
+        }
+
+        if (target.name === "acquisition-duftfinder") {
+          if ((await page.locator('img[src="/icon.svg"]').count()) < 1) {
+            throw new Error("acquisition landing is missing the DUFYND brand mark");
+          }
+          if ((await page.locator('a[href="/duft"]').count()) < 1) {
+            throw new Error("acquisition landing is missing the catalog path");
+          }
+          if (
+            (await page.getByText("Persönliche Beratung starten", {
+              exact: true,
+            }).count()) < 1
+          ) {
+            throw new Error("acquisition landing is missing its primary advisor CTA");
           }
         }
 
