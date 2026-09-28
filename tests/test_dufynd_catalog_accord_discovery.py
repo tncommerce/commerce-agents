@@ -21,4 +21,4 @@ def test_accord_chips_reuse_catalog_search_and_are_toggleable() -> None:
     assert 'setSearch(active ? "" : label)' in source
     assert "normalize(search) === normalize(label)" in source
     assert "aria-pressed={active}" in source
-    assert 'aria-label={`${label}: ${count} Düfte`}' in source
+    assert "aria-label={`${label}: ${count} Düfte`}" in source
