@@ -643,6 +643,17 @@
       "verified_at": "2026-09-28",
       "evidence_url": "https://www.chloe.com/de-de/p/fragrances/eau-de-parfum/CHCA64994090.html",
       "evidence_note": "Official Chloé Germany product page identifies Nomade Eau de Parfum 75 ml as product CHCA64994090. GTIN 3614223113347 is independently corroborated for the original 75 ml EDP. This mapping does not assert a current 72-hour merchant offer."
+    },
+    {
+      "product_id": "SC-PRADA-PARADIGME-EDP-100",
+      "merchant": "prada",
+      "merchant_product_id": "3614274172997",
+      "ean": "3614274172997",
+      "gtin": "3614274172997",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-09-28",
+      "evidence_url": "https://www.prada-beauty.com/fragrance/paradigme/paradigme-eau-de-parfum/3614274172997.html?geo=false",
+      "evidence_note": "Official Prada Beauty canonical URL identifies Paradigme Eau de Parfum under GTIN/product identifier 3614274172997. Current Douglas listing separately confirms the exact Paradigme Eau de Parfum 100 ml variant and distinguishes it from Paradigme Le Parfum."
     }
   ]
 }
