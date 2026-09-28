@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-28T05:17:56+00:00",
-  "source_fingerprint_sha256": "9b5fb7d233c1e90d3581e1c1a8a79af2e3f912553687bf96d90614b687d5e512",
+  "generated_at": "2026-09-28T05:22:39+00:00",
+  "source_fingerprint_sha256": "149adad395ee0e3d36675d72c6ca9b1f5f7bc2a3a23c51eb583fa6d491dee49c",
   "system": "DUFYND",
   "control_plane": "commerce_jarvis",
   "policy_ref": "scentai_jarvis_operating_policy.json",
@@ -22,8 +22,8 @@
   },
   "catalog": {
     "staged_products": 50,
-    "products_with_resolved_mapping": 43,
-    "products_without_resolved_mapping": 7
+    "products_with_resolved_mapping": 44,
+    "products_without_resolved_mapping": 6
   },
   "affiliate": {
     "registered_programs": 9,
