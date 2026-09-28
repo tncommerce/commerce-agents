@@ -294,6 +294,28 @@ export default function HomeView({
       <div className="[&_button]:py-2.5 sm:[&_button]:py-3">
         <Starters items={STARTERS} />
       </div>
+      <nav
+        aria-label="Duftwelten im Katalog"
+        className="flex items-center gap-2 overflow-x-auto pb-1 text-[11px] sm:gap-3"
+      >
+        <span className="shrink-0 font-semibold text-(--ink-soft)">
+          Nach Duftgefühl:
+        </span>
+        {[
+          ["freshness", "Frisch"],
+          ["sweetness", "Süß"],
+          ["woodiness", "Holzig"],
+          ["spiciness", "Würzig"],
+        ].map(([profile, label]) => (
+          <a
+            key={profile}
+            href={`/duft?profil=${profile}`}
+            className="shrink-0 rounded-full border border-(--line) bg-(--card) px-3 py-2 font-semibold text-(--accent-ink) transition hover:border-(--accent)"
+          >
+            {label} →
+          </a>
+        ))}
+      </nav>
       <div className="flex flex-wrap gap-x-2 gap-y-1 text-[11.5px] text-(--ink-soft) sm:hidden">
         <span>Unabhängige Empfehlungen</span>
         <span>·</span>
