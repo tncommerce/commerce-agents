@@ -360,18 +360,36 @@ export default function FragranceLibraryHub({
 
   return (
     <>
-      <section className="mt-6 rounded-3xl border border-(--line) bg-(--card) p-5 shadow-(--shadow-sm) sm:p-7">
-        <div className="flex flex-wrap items-start justify-between gap-4">
+      <section className="relative mt-6 overflow-hidden rounded-[30px] border border-[#d9bd82]/25 bg-[#15120f] p-5 text-white shadow-[0_26px_80px_-42px_rgba(45,29,8,0.95)] sm:p-7">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_10%,rgba(217,189,130,0.18),transparent_32%),radial-gradient(circle_at_88%_78%,rgba(111,74,32,0.24),transparent_34%),linear-gradient(135deg,#19140f_0%,#0d0b09_58%,#20170d_100%)]"
+        />
+        <div className="relative flex flex-wrap items-start justify-between gap-5">
           <div className="max-w-2xl">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.1em] text-(--ink-soft)">
+            <div className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-[#d9bd82]">
               Persönlich · lokal gespeichert
             </div>
-            <h1 className="mt-2 text-[30px] font-semibold tracking-[-0.03em] sm:text-[38px]">
+            <h1 className="mt-2 text-[30px] font-semibold tracking-[-0.04em] text-[#fffaf0] sm:text-[42px]">
               {title}
             </h1>
-            <p className="mt-3 text-[13.5px] leading-6 text-(--ink-soft)">
+            <p className="mt-3 max-w-xl text-[13.5px] leading-6 text-white/68">
               {intro}
             </p>
+            <div
+              className="mt-5 flex flex-wrap gap-2"
+              aria-label="Persönliche Duftübersicht"
+            >
+              <span className="rounded-full border border-white/12 bg-white/[0.055] px-3 py-1.5 text-[10.5px] font-semibold text-white/75">
+                {library.owned.length} in Sammlung
+              </span>
+              <span className="rounded-full border border-white/12 bg-white/[0.055] px-3 py-1.5 text-[10.5px] font-semibold text-white/75">
+                {library.wishlist.length} auf Merkliste
+              </span>
+              <span className="rounded-full border border-[#d9bd82]/25 bg-[#d9bd82]/10 px-3 py-1.5 text-[10.5px] font-semibold text-[#e8cf9d]">
+                Nur auf diesem Gerät
+              </span>
+            </div>
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -382,7 +400,7 @@ export default function FragranceLibraryHub({
                   owned,
                   profile,
                 )}
-                className="rounded-xl bg-(--accent-strong) px-3 py-2 text-[12px] font-semibold text-white transition hover:brightness-95"
+                className="rounded-xl bg-[#d9bd82] px-3 py-2 text-[12px] font-semibold text-[#21170b] transition hover:brightness-105"
               >
                 Mit meiner Sammlung beraten lassen
               </GuidedAdvisorLink>
@@ -393,7 +411,7 @@ export default function FragranceLibraryHub({
                   ? "/sammlung"
                   : "/merkliste"
               }
-              className="rounded-xl border border-(--line) bg-(--surface) px-3 py-2 text-[12px] font-semibold text-(--ink) hover:border-(--accent)"
+              className="rounded-xl border border-white/15 bg-white/[0.055] px-3 py-2 text-[12px] font-semibold text-white/85 transition hover:border-[#d9bd82]/45 hover:bg-white/[0.08]"
             >
               {mode === "wishlist"
                 ? `Sammlung (${library.owned.length})`
@@ -401,14 +419,14 @@ export default function FragranceLibraryHub({
             </a>
             <a
               href="/duft"
-              className="rounded-xl bg-(--ink) px-3 py-2 text-[12px] font-semibold text-(--surface)"
+              className="rounded-xl border border-white/15 bg-white px-3 py-2 text-[12px] font-semibold text-[#17120d] transition hover:bg-[#fff7e7]"
             >
               Düfte entdecken
             </a>
           </div>
         </div>
 
-        <div className="mt-4 rounded-xl bg-(--well)/55 px-3.5 py-3 text-[11.5px] leading-5 text-(--ink-soft)">
+        <div className="relative mt-5 rounded-xl border border-white/10 bg-white/[0.045] px-3.5 py-3 text-[11.5px] leading-5 text-white/55">
           Diese Funktion benötigt kein Konto. Produkt-IDs deiner
           Merkliste und Sammlung werden ausschließlich im lokalen
           Browser-Speicher dieses Geräts abgelegt. Löschst du
@@ -440,30 +458,48 @@ export default function FragranceLibraryHub({
             </span>
           </div>
 
-          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {profile.axisStats.map((axis) => (
-              <div
-                key={axis.key}
-                className="rounded-xl border border-(--line) bg-(--well)/35 p-3"
-              >
-                <div className="text-[11px] text-(--ink-soft)">
-                  {axis.label}
+          <div
+            className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
+            aria-label="Visuelles Sammlungsprofil"
+          >
+            {profile.axisStats.map((axis) => {
+              const width =
+                axis.average == null
+                  ? 0
+                  : Math.max(0, Math.min(100, axis.average * 10));
+
+              return (
+                <div
+                  key={axis.key}
+                  className="rounded-xl border border-(--line) bg-(--well)/35 p-3"
+                >
+                  <div className="flex items-baseline justify-between gap-2">
+                    <div className="text-[11px] font-medium text-(--ink-soft)">
+                      {axis.label}
+                    </div>
+                    <div className="text-[18px] font-semibold tabular-nums">
+                      {formatOneDecimal(axis.average)}
+                      <span className="ml-1 text-[10px] font-normal text-(--ink-soft)">
+                        /10
+                      </span>
+                    </div>
+                  </div>
+                  <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-(--line)">
+                    <div
+                      className="h-full rounded-full bg-(--accent-strong)"
+                      style={{ width: `${width}%` }}
+                    />
+                  </div>
+                  <div className="mt-2 text-[10.5px] leading-4 text-(--ink-soft)">
+                    {axis.strongCount}{" "}
+                    {axis.strongCount === 1
+                      ? "deutlicher Vertreter"
+                      : "deutliche Vertreter"}
+                    {" "}ab 7/10
+                  </div>
                 </div>
-                <div className="mt-1 text-[21px] font-semibold">
-                  {formatOneDecimal(axis.average)}
-                  <span className="ml-1 text-[11px] font-normal text-(--ink-soft)">
-                    /10 Ø
-                  </span>
-                </div>
-                <div className="mt-1 text-[10.5px] text-(--ink-soft)">
-                  {axis.strongCount}{" "}
-                  {axis.strongCount === 1
-                    ? "deutlicher Vertreter"
-                    : "deutliche Vertreter"}
-                  {" "}ab 7/10
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {profile.topAccords.length ? (
