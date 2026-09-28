@@ -6,7 +6,6 @@ from urllib.parse import parse_qsl, unquote, urlparse
 
 from .merchant_import import MerchantProductMapping, resolve_product_id
 
-
 SECRET_URL_MARKERS = {
     "apikey",
     "accesskey",
