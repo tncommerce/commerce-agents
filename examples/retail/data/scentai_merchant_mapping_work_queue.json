@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-28T07:40:51+00:00",
-  "source_fingerprint_sha256": "32d4cd626f58ed823156fbd568b327160da297cc7fe78980a6070542f39c5e96",
+  "generated_at": "2026-09-28T07:46:08+00:00",
+  "source_fingerprint_sha256": "f7bcea3d8c3ed91e4025bd82408ffbd221d1b957f9fdd86cb708c135068ddcae",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
     "scentai_catalog_staging.json",
@@ -10,13 +10,13 @@
   ],
   "summary": {
     "staged_products": 50,
-    "products_with_resolved_mapping": 47,
+    "products_with_resolved_mapping": 48,
     "products_with_two_or_more_resolved_mappings": 32,
-    "products_without_resolved_mapping": 3,
+    "products_without_resolved_mapping": 2,
     "affiliate_programs_registered": 9,
     "affiliate_programs_approved": 2,
     "affiliate_programs_pending": 7,
-    "mapping_ready_products": 47,
+    "mapping_ready_products": 48,
     "products_with_approved_affiliate_program": 11
   },
   "affiliate_programs": [
@@ -93,25 +93,6 @@
         "community_performance_still_provisional"
       ],
       "next_action": "verify_current_retail_channel_before_mapping",
-      "action_class": "auto_allowed",
-      "live_activation_action_class": "approval_required",
-      "merchants": []
-    },
-    {
-      "product_id": "SC-CALVIN-KLEIN-EUPHORIA-EDP-100",
-      "candidate_id": "CALVIN-KLEIN-EUPHORIA-EDP-100",
-      "brand": "Calvin Klein",
-      "name": "Euphoria",
-      "batch": 4,
-      "researched_merchant_count": 1,
-      "mapping_count": 0,
-      "resolved_mapping_count": 0,
-      "full_mapping_count": 0,
-      "state": "mapping_required",
-      "blockers": [
-        "no_resolved_merchant_mapping"
-      ],
-      "next_action": "verify_exact_merchant_product_identity",
       "action_class": "auto_allowed",
       "live_activation_action_class": "approval_required",
       "merchants": []
@@ -295,6 +276,37 @@
             "network": "Awin",
             "program": "Flaconi DE",
             "status": "applied"
+          },
+          "affiliate_activation_state": "pending_program_approval"
+        }
+      ]
+    },
+    {
+      "product_id": "SC-CALVIN-KLEIN-EUPHORIA-EDP-100",
+      "candidate_id": "CALVIN-KLEIN-EUPHORIA-EDP-100",
+      "brand": "Calvin Klein",
+      "name": "Euphoria",
+      "batch": 4,
+      "researched_merchant_count": 1,
+      "mapping_count": 1,
+      "resolved_mapping_count": 1,
+      "full_mapping_count": 1,
+      "state": "mapping_data_ready",
+      "blockers": [],
+      "next_action": "maintain_mapping_and_verify_purchase_destination",
+      "action_class": "auto_allowed",
+      "live_activation_action_class": "approval_required",
+      "merchants": [
+        {
+          "merchant_id": "notino",
+          "mapping_state": "full",
+          "merchant_product_id": "CAK10204",
+          "ean": "0088300162512",
+          "gtin": "0088300162512",
+          "affiliate_program": {
+            "network": "CJ Affiliate",
+            "program": "Notino",
+            "status": "applied_pending"
           },
           "affiliate_activation_state": "pending_program_approval"
         }
