@@ -21,6 +21,6 @@ def test_visual_qa_redecodes_home_spotlight_after_history_navigation() -> None:
     source = VISUAL_QA.read_text(encoding="utf-8")
 
     assert 'await page.goBack({ waitUntil: "domcontentloaded" });' in source
-    assert 'await spotlightTruth.first().waitFor({' in source
+    assert "await spotlightTruth.first().waitFor({" in source
     assert 'image.loading = "eager";' in source
-    assert 'await image.decode();' in source
+    assert "await image.decode();" in source
