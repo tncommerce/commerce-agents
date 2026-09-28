@@ -333,9 +333,9 @@ def test_margiela_by_the_fireplace_mapping_selects_edt_100ml() -> None:
 
 def test_fleur_du_male_2026_mapping_uses_current_official_dtc_identifier() -> None:
     evidence = json.loads(
-        Path(
-            "examples/retail/data/dufynd_jpg_fleur_du_male_2026_mapping_evidence.json"
-        ).read_text(encoding="utf-8")
+        Path("examples/retail/data/dufynd_jpg_fleur_du_male_2026_mapping_evidence.json").read_text(
+            encoding="utf-8"
+        )
     )
     rows = json.loads(MAPPINGS.read_text(encoding="utf-8"))["mappings"]
 
