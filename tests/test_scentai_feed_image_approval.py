@@ -296,9 +296,7 @@ def test_candidate_rights_status_must_be_verified() -> None:
 
 def test_committed_top_parfuemerie_rights_can_prepare_review_candidate() -> None:
     committed = load_json(DEFAULT_RIGHTS_REGISTRY)
-    top = next(
-        row for row in committed["entries"] if row["merchant_id"] == "top-parfuemerie"
-    )
+    top = next(row for row in committed["entries"] if row["merchant_id"] == "top-parfuemerie")
 
     assert top["program_status"] == "approved"
     assert top["rights_status"] == "verified_for_publisher_service"
