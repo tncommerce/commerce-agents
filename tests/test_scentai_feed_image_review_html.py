@@ -74,14 +74,20 @@ def test_html_escapes_feed_controlled_text() -> None:
     assert "&lt;script&gt;" in rendered
 
 
-def test_non_https_or_credentialed_image_urls_are_rejected() -> None:
+@pytest.mark.parametrize(
+    "image_url",
+    [
+        "http://images.example/delina.jpg",
+        "https://user:pass@images.example/delina.jpg",
+        "https://images.example/delina.jpg?api_key=SECRET",
+        "https://images.example/delina.jpg?X-Amz-Signature=SECRET",
+        "https://images.example/apikey/SECRET/delina.jpg",
+        "https://images.example/delina.jpg#token=SECRET",
+    ],
+)
+def test_non_public_image_urls_are_rejected(image_url: str) -> None:
     data = payload()
-    data["candidates"][0]["image_url"] = "http://images.example/delina.jpg"
-    with pytest.raises(ValueError, match="candidate_image_url_must_be_public_https"):
-        render_html(data)
-
-    data = payload()
-    data["candidates"][0]["image_url"] = "https://user:pass@images.example/delina.jpg"
+    data["candidates"][0]["image_url"] = image_url
     with pytest.raises(ValueError, match="candidate_image_url_must_be_public_https"):
         render_html(data)
 
