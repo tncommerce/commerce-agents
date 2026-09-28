@@ -709,27 +709,6 @@ body {
   pointer-events: none;
 }
 
-/* Keep the spotlight visual as a dedicated full-bleed layer.
- * The desktop hero is a stretched grid item, so relying on h-full alone can
- * leave the visual stage without a resolvable height even though the anchor
- * itself is tall. Absolute anchoring keeps verified cutouts, editorial media
- * and future GLB models visible at every responsive width.
- */
-.dufynd-hero-product > :is(
-  .dufynd-product-stage,
-  .dufynd-editorial-media,
-  .dufynd-model-stage
-) {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  min-height: 100%;
-}
-
-.dufynd-hero-product .dufynd-product-object {
-  z-index: 2;
-}
-
 .dufynd-hero-product .dufynd-product-stage {
   background: transparent;
 }
