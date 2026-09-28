@@ -465,6 +465,61 @@ def test_insecure_affiliate_url_does_not_count_as_affiliate_coverage() -> None:
     assert affiliate == []
 
 
+def test_secret_bearing_product_url_cannot_unlock_public_catalog() -> None:
+    for key in ("api_key", "access-token", "client_secret", "private_key"):
+        offer = affiliate_offer()
+        offer["product_url"] = f"https://merchant.example/product?{key}=SECRET"
+
+        assert (
+            eligible_purchase_offers(
+                [offer],
+                product_id=offer["product_id"],
+                now=NOW,
+                max_age_hours=72.0,
+            )
+            == []
+        )
+
+
+def test_secret_bearing_affiliate_url_is_not_affiliate_eligible() -> None:
+    offer = affiliate_offer()
+    offer["affiliate_url"] = "https://network.example/click?client_secret=SECRET"
+
+    assert (
+        eligible_affiliate_offers(
+            [offer],
+            product_id=offer["product_id"],
+            now=NOW,
+            max_age_hours=72.0,
+        )
+        == []
+    )
+    purchase = eligible_purchase_offers(
+        [offer],
+        product_id=offer["product_id"],
+        now=NOW,
+        max_age_hours=72.0,
+    )
+    assert [row["offer_id"] for row in purchase] == ["merchant-test-fragrance"]
+
+
+def test_normal_variant_query_parameters_remain_valid_purchase_destinations() -> None:
+    for url in (
+        "https://merchant.example/product?variant=1092117",
+        "https://merchant.example/product?itemId=2070740",
+    ):
+        offer = affiliate_offer()
+        offer["product_url"] = url
+
+        purchase = eligible_purchase_offers(
+            [offer],
+            product_id=offer["product_id"],
+            now=NOW,
+            max_age_hours=72.0,
+        )
+        assert [row["offer_id"] for row in purchase] == ["merchant-test-fragrance"]
+
+
 def test_malformed_or_insecure_product_url_cannot_unlock_public_catalog() -> None:
     for url in ("javascript:alert(1)", "http://merchant.example/product", "https://localhost/x"):
         offer = affiliate_offer()
