@@ -34,7 +34,7 @@ def _row_value(row: dict[str, str], *aliases: str) -> str:
 
 
 def _maybe_decompress(payload: bytes) -> bytes:
-    if payload.startswith(b"\\x1f\\x8b"):
+    if payload[:2] == bytes((0x1F, 0x8B)):
         return gzip.decompress(payload)
     return payload
 
