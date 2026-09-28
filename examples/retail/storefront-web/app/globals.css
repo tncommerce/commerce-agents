@@ -1277,3 +1277,163 @@ body {
     transition-delay: 0ms !important;
   }
 }
+
+
+/* Immersive verified-product detail stage
+ * Keeps the exact verified cutout untouched while the surrounding light field
+ * carries the accord-driven page theme. This is depth staging, not simulated
+ * bottle geometry, and remains the fallback until a reviewed GLB exists.
+ */
+.dufynd-fragrance-hero .dufynd-product-stage[data-variant="hero"] {
+  background:
+    radial-gradient(
+      circle at var(--dufynd-mx) var(--dufynd-my),
+      color-mix(in srgb, var(--dufynd-detail-glow-b) 78%, transparent) 0,
+      transparent 28%
+    ),
+    radial-gradient(
+      ellipse at 50% 78%,
+      color-mix(in srgb, var(--dufynd-detail-glow-a) 36%, transparent) 0,
+      transparent 38%
+    ),
+    linear-gradient(145deg, rgba(8, 9, 11, 0.96), rgba(14, 13, 14, 0.90));
+}
+
+.dufynd-fragrance-hero .dufynd-product-stage[data-variant="hero"]::before {
+  inset: 10% 12% 18%;
+  z-index: 0;
+  border: 1px solid color-mix(in srgb, var(--dufynd-detail-glow-a) 46%, transparent);
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      color-mix(in srgb, var(--dufynd-detail-glow-b) 50%, transparent) 0,
+      transparent 64%
+    );
+  box-shadow:
+    0 0 72px color-mix(in srgb, var(--dufynd-detail-glow-a) 20%, transparent),
+    inset 0 0 42px color-mix(in srgb, var(--dufynd-detail-glow-b) 18%, transparent);
+  opacity: 0.58;
+  transform: perspective(700px) rotateX(68deg) rotateZ(-9deg) scale(0.92);
+  transform-origin: 50% 54%;
+}
+
+.dufynd-fragrance-hero .dufynd-product-stage[data-variant="hero"]::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: 5%;
+  z-index: 0;
+  height: 22%;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      ellipse,
+      color-mix(in srgb, var(--dufynd-detail-glow-a) 30%, rgba(255, 255, 255, 0.05)) 0,
+      rgba(0, 0, 0, 0.17) 42%,
+      transparent 72%
+    );
+  filter: blur(11px);
+  opacity: 0.72;
+  pointer-events: none;
+  transform: perspective(650px) rotateX(72deg) scaleX(1.18);
+}
+
+.dufynd-fragrance-hero .dufynd-product-light {
+  z-index: 1;
+  background:
+    radial-gradient(
+      circle at var(--dufynd-mx) var(--dufynd-my),
+      rgba(255, 252, 241, 0.48) 0,
+      color-mix(in srgb, var(--dufynd-detail-glow-a) 34%, transparent) 18%,
+      transparent 42%
+    );
+  opacity: 0.94;
+}
+
+.dufynd-fragrance-hero .dufynd-product-shadow {
+  z-index: 1;
+  bottom: 7%;
+  width: 48%;
+  background: rgba(0, 0, 0, 0.58);
+  filter: blur(19px);
+  opacity: 0.60;
+}
+
+.dufynd-fragrance-hero .dufynd-product-object {
+  z-index: 2;
+  transform:
+    rotateX(var(--dufynd-rx))
+    rotateY(var(--dufynd-ry))
+    translateZ(52px);
+}
+
+.dufynd-fragrance-hero .dufynd-product-image {
+  filter:
+    drop-shadow(0 34px 28px rgba(0, 0, 0, 0.42))
+    drop-shadow(0 9px 10px rgba(0, 0, 0, 0.24))
+    drop-shadow(
+      0 0 24px
+      color-mix(in srgb, var(--dufynd-detail-glow-a) 20%, transparent)
+    );
+}
+
+.dufynd-fragrance-hero .dufynd-product-sheen {
+  z-index: 3;
+  background: linear-gradient(
+    112deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.04) 42%,
+    rgba(255, 247, 224, 0.34) 49%,
+    color-mix(in srgb, var(--dufynd-detail-glow-b) 42%, transparent) 54%,
+    transparent 63%
+  );
+  opacity: 0.42;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .dufynd-fragrance-hero .dufynd-product-stage[data-variant="hero"]:hover::before {
+    opacity: 0.78;
+    transform: perspective(700px) rotateX(68deg) rotateZ(-5deg) scale(1);
+  }
+
+  .dufynd-fragrance-hero .dufynd-product-stage[data-variant="hero"]:hover .dufynd-product-image {
+    transform: translateZ(0) scale(1.01);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dufynd-fragrance-hero .dufynd-product-stage[data-variant="hero"]::before {
+    animation: dufynd-detail-stage-orbit 10s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes dufynd-detail-stage-orbit {
+  from {
+    transform: perspective(700px) rotateX(68deg) rotateZ(-11deg) scale(0.90);
+  }
+  to {
+    transform: perspective(700px) rotateX(68deg) rotateZ(-4deg) scale(1.01);
+  }
+}
+
+@media (max-width: 640px) {
+  .dufynd-fragrance-hero .dufynd-product-stage[data-variant="hero"]::before {
+    inset: 12% 9% 21%;
+    opacity: 0.44;
+  }
+
+  .dufynd-fragrance-hero .dufynd-product-stage[data-variant="hero"]::after {
+    left: 12%;
+    right: 12%;
+    bottom: 4%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dufynd-fragrance-hero .dufynd-product-stage[data-variant="hero"]::before {
+    animation: none !important;
+    transform: perspective(700px) rotateX(68deg) rotateZ(-8deg) scale(0.94);
+  }
+}
