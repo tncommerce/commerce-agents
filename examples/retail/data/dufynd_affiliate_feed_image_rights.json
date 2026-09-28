@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-09-27",
+  "updated_at": "2026-09-28",
   "status": "active",
   "purpose": "Machine-readable evidence registry for affiliate-feed image source rights. This registry verifies source/use eligibility only; final visual approval remains a separate human gate.",
   "required_candidate_data_source": "approved-affiliate-feed",
@@ -55,6 +55,55 @@
         "asset_must_not_be_materially_modified",
         "advertiser_program_terms_take_precedence_if_they_change",
         "revoke_if_program_or_network_rights_change",
+        "final_visual_identity_approval_remains_human_required"
+      ]
+    },
+    {
+      "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+      "network": "Awin",
+      "merchant_id": "top-parfuemerie",
+      "advertiser_id": "31081",
+      "program": "top Parfümerie DE",
+      "program_status": "approved",
+      "rights_status": "verified_for_publisher_service",
+      "publisher_scope": "dufynd_owned_publisher_service",
+      "asset_scope": "unaltered_advertiser_materials_from_official_awin_product_feed",
+      "checked_at": "2026-09-28",
+      "evidence": [
+        {
+          "source": "AWIN AG Publisher Terms — August 2025",
+          "url": "https://www.awin.com/docs.awin.com/Legal/Publisher%2BTerms/2025/DE-Awin-AG-Publisher-terms-August-2025.pdf",
+          "clauses": [
+            "4.3",
+            "4.4",
+            "10.1"
+          ],
+          "finding": "Current AWIN AG terms make Advertiser Materials available to approved publishers and grant a revocable, non-exclusive, non-transferable, royalty-free, worldwide sublicense to publish unmodified Advertiser Materials on the Publisher Service as necessary to market the advertiser and its products, subject to the Agreement and Programme Terms."
+        },
+        {
+          "source": "Awin Product Feed Publisher Guide",
+          "url": "https://help.awin.com/developers/docs/product-feed-publisher-guide-intro",
+          "finding": "Current Awin publisher documentation states that product feeds contain product images and are intended to let partners search, filter and display advertiser product data."
+        },
+        {
+          "source": "top Parfümerie DE Awin programme profile and programme terms",
+          "url": "https://ui.awin.com/merchant-profile/31081",
+          "finding": "The public programme terms permit price-comparison promotion and contain campaign/coupon restrictions but no additional prohibition on displaying unmodified advertiser product-feed images was identified during the 2026-09-28 review."
+        },
+        {
+          "source": "DUFYND Awin account observation",
+          "url": "repo:examples/retail/data/dufynd_awin_top_parfuemerie_feed_intake.json",
+          "finding": "DUFYND recorded advertiser 31081 as approved since 2026-09-22 and product-data access as available; the latest account observation on 2026-09-27 reported a current feed, while exact Release 01 rows still require revalidation."
+        }
+      ],
+      "constraints": [
+        "candidate_must_come_from_current_official_awin_product_feed",
+        "exact_release_variant_feed_row_must_be_revalidated_before_candidate_registration",
+        "program_membership_must_remain_approved",
+        "asset_must_be_used_only_within_dufynd_publisher_service_to_market_top_parfuemerie_and_its_products",
+        "asset_must_be_reproduced_accurately_and_without_material_modification",
+        "advertiser_program_terms_take_precedence_if_they_change",
+        "remove_material_if_requested_by_awin_or_advertiser_or_if_program_approval_ends",
         "final_visual_identity_approval_remains_human_required"
       ]
     }
