@@ -9,6 +9,7 @@ DEFAULT_FEED_METADATA = Path("awin-feed-metadata.json")
 DEFAULT_STAGING = Path("examples/retail/data/scentai_catalog_staging.json")
 DEFAULT_RELEASE = Path("examples/retail/data/scentai_release_batch_01.json")
 DEFAULT_RIGHTS = Path("examples/retail/data/dufynd_affiliate_feed_image_rights.json")
+DEFAULT_IDENTITY_PLAN = Path("examples/retail/data/dufynd_release01_image_acquisition_plan.json")
 
 APPROVED_IMAGE_STATUSES = {
     "approved_feed_image",
@@ -86,6 +87,7 @@ def prepare_review_candidates(
     staging: dict,
     release: dict,
     rights_registry: dict,
+    identity_plan: dict,
 ) -> dict:
     if _norm(candidates_payload.get("status")) != "review_only_not_live":
         raise ValueError("candidate_payload_not_review_only")
@@ -100,6 +102,14 @@ def prepare_review_candidates(
     release_ids = {_norm(value) for value in release.get("product_ids", []) if _norm(value)}
     if not release_ids:
         raise ValueError("release_product_ids_missing")
+    if _norm(identity_plan.get("release_id")) != _norm(release.get("release_id")):
+        raise ValueError("identity_plan_release_mismatch")
+    expected_gtins = {
+        _norm(row.get("product_id")): _norm(row.get("gtin"))
+        for row in identity_plan.get("products", [])
+    }
+    if any(not expected_gtins.get(product_id) for product_id in release_ids):
+        raise ValueError("release_expected_gtin_missing")
 
     staged_by_id = {
         _norm(row.get("product_id")): row
@@ -146,6 +156,11 @@ def prepare_review_candidates(
         merchant_product_id = _norm(candidate.get("merchant_product_id"))
         if not image_url or not merchant_product_id:
             raise ValueError(f"candidate_identity_evidence_incomplete:{product_id}")
+        feed_gtin = _norm(candidate.get("gtin"))
+        feed_ean = _norm(candidate.get("ean"))
+        expected_gtin = expected_gtins[product_id]
+        if any(value != expected_gtin for value in (feed_gtin, feed_ean) if value):
+            raise ValueError(f"candidate_gtin_mismatch:{product_id}")
 
         prepared.append(
             {
@@ -158,7 +173,7 @@ def prepare_review_candidates(
                 "merchant": EXPECTED_MERCHANT_ID,
                 "merchant_id": EXPECTED_MERCHANT_ID,
                 "merchant_product_id": merchant_product_id,
-                "gtin": _norm(candidate.get("gtin") or candidate.get("ean")) or None,
+                "gtin": feed_gtin or feed_ean or None,
                 "offer_id": candidate.get("offer_id"),
                 "image_url": image_url,
                 "network": EXPECTED_NETWORK,
@@ -208,6 +223,7 @@ def main() -> int:
     parser.add_argument("--staging", type=Path, default=DEFAULT_STAGING)
     parser.add_argument("--release", type=Path, default=DEFAULT_RELEASE)
     parser.add_argument("--rights-registry", type=Path, default=DEFAULT_RIGHTS)
+    parser.add_argument("--identity-plan", type=Path, default=DEFAULT_IDENTITY_PLAN)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--machine-readable", action="store_true")
     args = parser.parse_args()
@@ -219,6 +235,7 @@ def main() -> int:
             load_json(args.staging),
             load_json(args.release),
             load_json(args.rights_registry),
+            load_json(args.identity_plan),
         )
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         parser.error(str(exc))
