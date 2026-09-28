@@ -79,7 +79,11 @@ const coreRoutes = [
     marker: "Finde einen Duft, der zu dir und deinem Alltag passt.",
   },
   { name: "catalog", route: "/duft", marker: "Parfums entdecken" },
-  { name: "comparisons", route: "/vergleich", marker: "Parfums direkt vergleichen" },
+  {
+    name: "comparisons",
+    route: "/vergleich?left=SC-XERJOFF-NAXOS-100&right=SC-SOSPIRO-VIBRATO-100",
+    marker: "Duft-DNA auf einen Blick",
+  },
   {
     name: "comparison-turathi-tygar",
     route: "/vergleich/afnan-perfumes-turathi-blue-vs-bvlgari-le-gemme-tygar",
