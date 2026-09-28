@@ -94,6 +94,4 @@ def test_empty_review_bundle_still_produces_safe_artifact(tmp_path: Path) -> Non
     )
 
     assert manifest["candidate_count"] == 0
-    assert "Keine 3D-Kandidaten in Prüfung" in (output / "index.html").read_text(
-        encoding="utf-8"
-    )
+    assert "Keine 3D-Kandidaten in Prüfung" in (output / "index.html").read_text(encoding="utf-8")
