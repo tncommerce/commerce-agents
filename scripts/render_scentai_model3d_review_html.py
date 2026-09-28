@@ -59,7 +59,9 @@ def review_candidates(payload: dict, public_root: Path) -> list[dict]:
         if not _norm(rights.get("rights_basis_id")) or not _norm(rights.get("rights_checked_at")):
             raise ValueError("model_rights_evidence_incomplete")
 
-        reviewed.append({**candidate, "model_url": model_url, "verified_model_sha256": actual_sha256})
+        reviewed.append(
+            {**candidate, "model_url": model_url, "verified_model_sha256": actual_sha256}
+        )
 
     return reviewed
 
@@ -165,7 +167,7 @@ dd {{ margin:0; overflow-wrap:anywhere; }}
   <h1>True 3D Geometry Review</h1>
   <p>Interaktive Vorprüfung rights-cleared GLB-Kandidaten. Kein Kandidat wird durch diese Ansicht freigegeben oder live geschaltet.</p>
 </header>
-{''.join(cards)}
+{"".join(cards)}
 {empty}
 </main>
 </body>
