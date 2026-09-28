@@ -614,6 +614,13 @@
       "merchant_product_id": "2658284",
       "ean": "8011003861224",
       "gtin": "8011003861224"
+    },
+    {
+      "product_id": "SC-LATTAFA-KHAMRAH-EDP-100",
+      "merchant": "mueller",
+      "merchant_product_id": "3111815",
+      "ean": "6291108737194",
+      "gtin": "6291108737194"
     }
   ]
 }
