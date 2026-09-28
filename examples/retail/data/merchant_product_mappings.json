@@ -621,6 +621,17 @@
       "merchant_product_id": "3111815",
       "ean": "6291108737194",
       "gtin": "6291108737194"
+    },
+    {
+      "product_id": "SC-MUGLER-ALIEN-EDP-90",
+      "merchant": "mueller",
+      "merchant_product_id": "388723",
+      "ean": "3439600056969",
+      "gtin": "3439600056969",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-09-28",
+      "evidence_url": "https://www.mueller.de/p/mugler-alien-eau-de-parfum-nachfuellbar-6818853202/?itemId=388723",
+      "evidence_note": "Müller item 388723 identifies the refillable Alien Eau de Parfum 90 ml bottle. GTIN 3439600056969 is corroborated by Galeria and independent product data. This mapping does not assert a current 72-hour purchase offer."
     }
   ]
 }
