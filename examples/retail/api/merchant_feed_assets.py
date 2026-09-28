@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from ipaddress import ip_address
 from typing import Any
-from urllib.parse import urlparse
+from urllib.parse import parse_qsl, unquote, urlparse
 
 from .merchant_import import (
     MerchantProductMapping,
@@ -9,7 +10,36 @@ from .merchant_import import (
 )
 
 
-def _valid_http_url(value: object) -> bool:
+SECRET_URL_MARKERS = {
+    "apikey",
+    "accesskey",
+    "key",
+    "token",
+    "authtoken",
+    "credential",
+    "xamzcredential",
+    "xamzsignature",
+    "xgoogsignature",
+    "secret",
+    "password",
+    "policy",
+    "signature",
+    "sig",
+}
+
+
+def _public_hostname(value: str | None) -> bool:
+    hostname = str(value or "").strip().casefold().rstrip(".")
+    if not hostname or hostname == "localhost" or hostname.endswith(".localhost"):
+        return False
+
+    try:
+        return ip_address(hostname).is_global
+    except ValueError:
+        return True
+
+
+def _valid_public_image_url(value: object) -> bool:
     if not isinstance(value, str):
         return False
 
@@ -17,8 +47,25 @@ def _valid_http_url(value: object) -> bool:
     if not candidate:
         return False
 
-    parsed = urlparse(candidate)
-    return parsed.scheme in {"http", "https"} and bool(parsed.netloc)
+    try:
+        parsed = urlparse(candidate)
+        query_keys = {
+            "".join(ch for ch in key.casefold() if ch.isalnum())
+            for key, _ in parse_qsl(parsed.query, keep_blank_values=True)
+        }
+        path_segments = {segment.casefold() for segment in unquote(parsed.path).split("/")}
+    except ValueError:
+        return False
+
+    return bool(
+        parsed.scheme == "https"
+        and parsed.hostname
+        and parsed.username is None
+        and parsed.password is None
+        and _public_hostname(parsed.hostname)
+        and not parsed.fragment
+        and not SECRET_URL_MARKERS.intersection(query_keys | path_segments)
+    )
 
 
 def extract_feed_image_candidates(
@@ -37,13 +84,14 @@ def extract_feed_image_candidates(
         if image_url is None or not str(image_url).strip():
             continue
 
-        if not _valid_http_url(image_url):
+        if not _valid_public_image_url(image_url):
             invalid.append(
                 {
                     "row_index": row_index,
                     "offer_id": row.get("offer_id"),
                     "merchant": row.get("merchant"),
-                    "image_url": image_url,
+                    "image_url": None,
+                    "image_url_redacted": True,
                     "reason": "invalid_image_url",
                 }
             )
