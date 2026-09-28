@@ -402,6 +402,7 @@ def test_awin_product_deeplink_requires_verified_ued_template() -> None:
         is None
     )
 
+
 def test_active_partner_rejects_secret_bearing_tracking_url(tmp_path) -> None:
     path = write_payload(
         tmp_path,
