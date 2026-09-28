@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "observed_at": "2026-09-28T05:22:00Z",
+  "product_id": "SC-VALENTINO-DONNA-BORN-IN-ROMA-EDP-100",
+  "merchant": "Douglas DE",
+  "merchant_product_id": "293494",
+  "product_url": "https://www.douglas.de/de/p/5000004074",
+  "observation_method": "current_public_merchant_page_read_only_web",
+  "identity": {
+    "brand": "Valentino",
+    "name": "Born In Roma Donna",
+    "concentration": "Eau de Parfum",
+    "volume_ml": 100,
+    "gtin": "3614272761445",
+    "gtin_corrob_source": "https://www.shop-apotheke.com/beauty/upmYYHDY7/valentino-donna-born-in-roma-edp-spray.htm",
+    "gtin_corrob_note": "Shop Apotheke identifies Valentino Donna Born In Roma Eau de Parfum 100 ml with EAN 3614272761445. Independent product data matches the same 100 ml EDP."
+  },
+  "live_observation": {
+    "listed_price_eur": 119,
+    "conditional_code_price_eur": 99.95,
+    "shipping_cost_eur": 0,
+    "availability": "Online auf Lager; add-to-cart visible",
+    "delivery_note": "Douglas shows free shipping and delivery window 29 Sep to 1 Oct 2026 for the currently selected 100 ml option."
+  },
+  "variant_boundary": {
+    "selected": "Born In Roma Donna Eau de Parfum 100 ml",
+    "excluded": [
+      "Born In Roma Donna Intense 100 ml",
+      "Born In Roma Donna Extradose Parfum 100 ml",
+      "Born In Roma Donna Green Stravaganza 100 ml",
+      "Born In Roma Donna Purple Melancholia 100 ml"
+    ]
+  },
+  "rights_or_affiliate_impact": {
+    "image_rights_granted": false,
+    "affiliate_tracking_verified": false,
+    "final_image_approval_granted": false
+  },
+  "freshness_policy": "Offer qualifies only while last_updated_at is within the 72-hour merchant-offer window. No live catalog promotion."
+}
