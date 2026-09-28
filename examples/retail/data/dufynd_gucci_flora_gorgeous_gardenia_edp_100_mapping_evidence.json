@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "verified_at": "2026-09-28",
+  "product_id": "SC-GUCCI-FLORA-GORGEOUS-GARDENIA-EDP-100",
+  "merchant": "Gucci official Germany",
+  "merchant_product_id": "667343999990099",
+  "product_url": "https://www.gucci.com/de/de/pr/beauty/fragrances/fragrances-for-women/gucci-flora-gorgeous-gardenia-100ml-eau-de-parfum-p-667343999990099",
+  "identity": {
+    "brand": "Gucci",
+    "name": "Flora Gorgeous Gardenia",
+    "concentration": "Eau de Parfum",
+    "volume_ml": 100,
+    "gtin": "3616302022472",
+    "style_code": "667343 99999 0099"
+  },
+  "corroboration": [
+    {
+      "source": "Gucci Germany",
+      "url": "https://www.gucci.com/de/de/pr/beauty/fragrances/fragrances-for-women/gucci-flora-gorgeous-gardenia-100ml-eau-de-parfum-p-667343999990099",
+      "note": "Official Gucci page identifies the regular Flora Gorgeous Gardenia Eau de Parfum 100 ml and style 667343 99999 0099."
+    },
+    {
+      "source": "Kaufland product data",
+      "url": "https://www.kaufland.de/product/407161562/",
+      "note": "Independent exact-variant product data corroborates EAN/GTIN 3616302022472 for Gucci Flora Gorgeous Gardenia Eau de Parfum 100 ml."
+    },
+    {
+      "source": "Douglas Germany",
+      "url": "https://www.douglas.de/de/p/5010091002",
+      "note": "Current listing confirms the regular Flora Gorgeous Gardenia Eau de Parfum family with 100 ml option. Gorgeous Gardenia Intense is separately listed and must not be mapped to this product."
+    }
+  ],
+  "freshness_policy": {
+    "current_purchase_destination_registered": false,
+    "price_or_stock_freshness_asserted": false,
+    "reason": "Canonical exact-variant identity is sufficiently supported for mapping, but this change intentionally does not encode a 72-hour exact-variant merchant offer or current price."
+  },
+  "rights_or_affiliate_impact": {
+    "image_rights_granted": false,
+    "affiliate_tracking_verified": false,
+    "final_image_approval_granted": false
+  }
+}
