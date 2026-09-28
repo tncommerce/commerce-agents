@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "dossier_id": "DUFYND-BATCH7-IDENTIFIER-EVIDENCE-20260928",
+  "checked_at": "2026-09-28",
+  "scope": "research_only_not_builder_input",
+  "policy": {
+    "canonical_gtin_assignment": "forbidden_without_primary_feed_or_manufacturer_match",
+    "staging_mutation": "not_performed",
+    "live_catalog_mutation": "not_performed",
+    "publication": "blocked"
+  },
+  "products": [
+    {
+      "product_id": "SC-MUGLER-ALIEN-EDP-90",
+      "brand": "Mugler",
+      "name": "Alien",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "evidence_state": "two_indexed_sources_agree_primary_match_pending",
+      "canonical_gtin": null,
+      "observations": [
+        {
+          "gtin": "3439602802113",
+          "source_name": "Parfuem365",
+          "source_url": "https://www.parfuem365.de/damenduefte/4755/mugler-alien-eau-de-parfum-refillable-90-ml",
+          "evidence_kind": "indexed_merchant_product_page"
+        },
+        {
+          "gtin": "3439602802113",
+          "source_name": "Seuren Health",
+          "source_url": "https://www.seurenhealth.de/beauty-health/thierry-mugler-alien-refillable-edp-90-ml.html",
+          "evidence_kind": "indexed_merchant_product_page"
+        }
+      ],
+      "next_gate": "primary_feed_or_manufacturer_identifier_match"
+    },
+    {
+      "product_id": "SC-AFNAN-9-PM-POUR-FEMME-EDP-100",
+      "brand": "Afnan",
+      "name": "9 PM Pour Femme",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "evidence_state": "conflicting_indexed_sources",
+      "canonical_gtin": null,
+      "observations": [
+        {
+          "gtin": "6290171072607",
+          "source_name": "Parfuem365",
+          "source_url": "https://www.parfuem365.de/damenduefte/27572/afnan-9-pm-pour-femme-eau-de-parfum-100-ml",
+          "evidence_kind": "indexed_merchant_product_page"
+        },
+        {
+          "gtin": "6290171072607",
+          "source_name": "billiger.de",
+          "source_url": "https://www.billiger.de/products/4350151706-afnan-9pm-pour-femme-eau-de-parfum-100-ml",
+          "evidence_kind": "indexed_merchant_product_page"
+        },
+        {
+          "gtin": "6290178899719",
+          "source_name": "Shop Apotheke",
+          "source_url": "https://www.shop-apotheke.com/beauty/upmHF2ZPT/afnan-9pm-pour-femme-edp-damen.htm",
+          "evidence_kind": "indexed_merchant_product_page"
+        }
+      ],
+      "next_gate": "resolve_conflict_with_primary_feed_or_manufacturer"
+    },
+    {
+      "product_id": "SC-DIOR-JADORE-EDP-100",
+      "brand": "Dior",
+      "name": "J'adore",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "evidence_state": "conflicting_indexed_sources_possible_variant_transition",
+      "canonical_gtin": null,
+      "observations": [
+        {
+          "gtin": "3348900417878",
+          "source_name": "Kaufland listing 17447441",
+          "source_url": "https://www.kaufland.de/product/17447441/",
+          "evidence_kind": "indexed_merchant_product_page"
+        },
+        {
+          "gtin": "3348900417878",
+          "source_name": "CS Megastore",
+          "source_url": "https://www.csmegastore.de/i/1918409/christian-dior-jadore-edp-100ml?fwd=1",
+          "evidence_kind": "indexed_merchant_product_page"
+        },
+        {
+          "gtin": "3348901738224",
+          "source_name": "Kaufland listing 527611207",
+          "source_url": "https://www.kaufland.de/product/527611207/",
+          "evidence_kind": "indexed_merchant_product_page"
+        }
+      ],
+      "next_gate": "resolve_current_variant_with_dior_or_authoritative_feed"
+    }
+  ]
+}
