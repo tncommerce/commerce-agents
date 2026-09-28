@@ -66,7 +66,7 @@ def review_candidates(payload: dict, public_root: Path) -> list[dict]:
     return reviewed
 
 
-def render_html(candidates: list[dict]) -> str:
+def render_html(candidates: list[dict], *, relative_model_paths: bool = False) -> str:
     cards = []
     for candidate in candidates:
         rights = candidate.get("rights_evidence") or {}
@@ -80,7 +80,9 @@ def render_html(candidates: list[dict]) -> str:
             )
             if part
         )
-        model_url = html.escape(_norm(candidate.get("model_url")), quote=True)
+        model_url = _norm(candidate.get("model_url"))
+        model_src = model_url.removeprefix("/") if relative_model_paths else model_url
+        escaped_model_src = html.escape(model_src, quote=True)
         fields = [
             ("Product ID", candidate.get("product_id")),
             ("Variant", candidate.get("variant")),
@@ -99,7 +101,7 @@ def render_html(candidates: list[dict]) -> str:
             <article class="card">
               <div class="viewer">
                 <model-viewer
-                  src="{model_url}"
+                  src="{escaped_model_src}"
                   alt="{html.escape(product, quote=True)}"
                   camera-controls
                   auto-rotate
@@ -180,11 +182,12 @@ def main() -> int:
     parser.add_argument("--candidates", type=Path, default=DEFAULT_CANDIDATES)
     parser.add_argument("--public-root", type=Path, default=DEFAULT_PUBLIC_ROOT)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--relative-model-paths", action="store_true")
     args = parser.parse_args()
 
     try:
         candidates = review_candidates(load_json(args.candidates), args.public_root)
-        rendered = render_html(candidates)
+        rendered = render_html(candidates, relative_model_paths=args.relative_model_paths)
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         parser.error(str(exc))
 
