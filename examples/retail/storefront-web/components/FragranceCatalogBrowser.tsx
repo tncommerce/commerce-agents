@@ -360,6 +360,29 @@ export default function FragranceCatalogBrowser({
     [fragrances],
   );
 
+  const accordDiscovery = useMemo(() => {
+    const counts = new Map<string, number>();
+
+    for (const fragrance of fragrances) {
+      for (const accord of new Set(fragrance.accords)) {
+        counts.set(accord, (counts.get(accord) ?? 0) + 1);
+      }
+    }
+
+    return Array.from(counts.entries())
+      .map(([accord, count]) => ({
+        accord,
+        count,
+        label: accordLabel(accord),
+      }))
+      .sort(
+        (a, b) =>
+          b.count - a.count ||
+          a.label.localeCompare(b.label, "de"),
+      )
+      .slice(0, 8);
+  }, [fragrances]);
+
   const filtered = useMemo(() => {
     const minimum = Number(minimumRating);
 
@@ -597,6 +620,47 @@ export default function FragranceCatalogBrowser({
               </button>
             );
           })}
+        </div>
+
+        <div className="mt-5 border-t border-white/[0.08] pt-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/[0.45]">
+                Duft-DNA
+              </div>
+              <div className="mt-1 text-[12px] font-semibold text-white/[0.74]">
+                Beliebte Akkorde im aktuellen Katalog
+              </div>
+            </div>
+            <div className="flex max-w-full gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:justify-end sm:overflow-visible">
+              {accordDiscovery.map(({ accord, count, label }) => {
+                const active =
+                  normalize(search) === normalize(label);
+
+                return (
+                  <button
+                    key={accord}
+                    type="button"
+                    onClick={() =>
+                      setSearch(active ? "" : label)
+                    }
+                    className={`shrink-0 rounded-full border px-3 py-2 text-[10.5px] font-semibold transition ${
+                      active
+                        ? "border-[#d5a84f]/65 bg-[#d5a84f]/[0.14] text-[#f1d493]"
+                        : "border-white/10 bg-white/[0.04] text-white/[0.58] hover:border-white/20 hover:bg-white/[0.07] hover:text-white/[0.78]"
+                    }`}
+                    aria-pressed={active}
+                    aria-label={`${label}: ${count} Düfte`}
+                  >
+                    {label}
+                    <span className="ml-1.5 text-white/[0.36]">
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </section>
 
