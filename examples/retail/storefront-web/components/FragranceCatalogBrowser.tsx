@@ -352,9 +352,14 @@ export default function FragranceCatalogBrowser({
     useState(PAGE_SIZE);
   const lastTrackedSearchRef = useRef("");
   const initialSearchAppliedRef = useRef(false);
-  const resultsRef = useRef<HTMLDivElement>(null);
+  const resultsRef = useRef<HTMLHeadingElement>(null);
+  const jumpToResultsRef = useRef(false);
 
-  const selectProfile = (nextProfile: ProfileFilter) => {
+  const selectProfile = (
+    nextProfile: ProfileFilter,
+    jumpToResults = false,
+  ) => {
+    jumpToResultsRef.current = jumpToResults;
     setProfile(nextProfile);
     if (nextProfile === "all") {
       if (sort === "profile") setSort("popular");
@@ -362,15 +367,19 @@ export default function FragranceCatalogBrowser({
     }
 
     setSort("profile");
-    window.requestAnimationFrame(() => {
-      resultsRef.current?.scrollIntoView({
-        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-          ? "auto"
-          : "smooth",
-        block: "start",
-      });
-    });
   };
+
+  useEffect(() => {
+    if (!jumpToResultsRef.current || profile === "all") return;
+    jumpToResultsRef.current = false;
+    resultsRef.current?.focus({ preventScroll: true });
+    resultsRef.current?.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+      block: "start",
+    });
+  }, [profile]);
 
   useEffect(() => {
     if (initialSearchAppliedRef.current) return;
@@ -640,7 +649,7 @@ export default function FragranceCatalogBrowser({
                 key={card.value}
                 type="button"
                 onClick={() =>
-                  selectProfile(active ? "all" : card.value)
+                  selectProfile(active ? "all" : card.value, !active)
                 }
                 className={`group min-w-[224px] snap-start rounded-2xl border p-4 text-left transition duration-200 lg:min-w-0 ${
                   active
@@ -1014,10 +1023,13 @@ export default function FragranceCatalogBrowser({
         </div>
       </section>
 
-      <div ref={resultsRef} className="scroll-mt-5" />
       {profile !== "all" ? (
         <div className="mt-5 flex items-baseline justify-between gap-3">
-          <h2 className="text-[17px] font-semibold text-(--ink)">
+          <h2
+            ref={resultsRef}
+            tabIndex={-1}
+            className="scroll-mt-5 text-[17px] font-semibold text-(--ink) focus:outline-none"
+          >
             {optionLabel(PROFILE_OPTIONS, profile)} entdecken
           </h2>
           <span className="text-[11px] text-(--ink-soft)">
