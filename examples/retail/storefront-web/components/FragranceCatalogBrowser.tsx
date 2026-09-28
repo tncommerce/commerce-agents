@@ -529,17 +529,17 @@ export default function FragranceCatalogBrowser({
       >
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <div className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-white/55">
+            <div className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-white/[0.55]">
               Discovery
             </div>
             <h2 className="mt-1.5 text-[21px] font-semibold tracking-[-0.025em] sm:text-[24px]">
               Nach Duftgefühl entdecken
             </h2>
-            <p className="mt-2 max-w-2xl text-[12px] leading-5 text-white/62 sm:text-[13px]">
+            <p className="mt-2 max-w-2xl text-[12px] leading-5 text-white/[0.62] sm:text-[13px]">
               Spring direkt in die Duftwelt, die zu deinem Moment passt. Jeder Einstieg filtert den Katalog sofort und lässt sich mit einem zweiten Klick wieder lösen.
             </p>
           </div>
-          <div className="shrink-0 rounded-full border border-white/10 bg-white/[0.05] px-3 py-1.5 text-[10.5px] font-medium text-white/58">
+          <div className="shrink-0 rounded-full border border-white/10 bg-white/[0.05] px-3 py-1.5 text-[10.5px] font-medium text-white/[0.58]">
             {fragrances.length} Düfte · 4 Welten
           </div>
         </div>
@@ -557,7 +557,7 @@ export default function FragranceCatalogBrowser({
                 }
                 className={`group min-w-[224px] snap-start rounded-2xl border p-4 text-left transition duration-200 lg:min-w-0 ${
                   active
-                    ? "border-[#d5a84f]/70 bg-[#d5a84f]/12 shadow-[0_14px_34px_-22px_rgba(213,168,79,0.9)]"
+                    ? "border-[#d5a84f]/70 bg-[#d5a84f]/[0.12] shadow-[0_14px_34px_-22px_rgba(213,168,79,0.9)]"
                     : "border-white/10 bg-white/[0.045] hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.07]"
                 }`}
                 aria-pressed={active}
@@ -569,24 +569,24 @@ export default function FragranceCatalogBrowser({
                   <span
                     className={`rounded-full border px-2 py-1 text-[9.5px] font-semibold ${
                       active
-                        ? "border-[#d5a84f]/35 bg-[#d5a84f]/12 text-[#f1d493]"
-                        : "border-white/10 bg-black/15 text-white/55"
+                        ? "border-[#d5a84f]/[0.35] bg-[#d5a84f]/[0.12] text-[#f1d493]"
+                        : "border-white/10 bg-black/[0.15] text-white/[0.55]"
                     }`}
                   >
                     {profileCounts[card.value]} Düfte
                   </span>
                 </div>
-                <div className="mt-5 text-[12px] font-semibold text-white/78">
+                <div className="mt-5 text-[12px] font-semibold text-white/[0.78]">
                   {card.mood}
                 </div>
-                <div className="mt-1 text-[11px] leading-4 text-white/48">
+                <div className="mt-1 text-[11px] leading-4 text-white/[0.48]">
                   {card.notes}
                 </div>
                 <div
                   className={`mt-4 flex items-center justify-between border-t pt-3 text-[10.5px] font-semibold uppercase tracking-[0.08em] ${
                     active
-                      ? "border-[#d5a84f]/24 text-[#f1d493]"
-                      : "border-white/8 text-white/48 group-hover:text-white/68"
+                      ? "border-[#d5a84f]/[0.24] text-[#f1d493]"
+                      : "border-white/[0.08] text-white/[0.48] group-hover:text-white/[0.68]"
                   }`}
                 >
                   <span>{active ? "Profil aktiv" : "Entdecken"}</span>
