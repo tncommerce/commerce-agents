@@ -684,7 +684,7 @@ export default async function FragrancePage({
                   key={accord}
                   href={`/duft?q=${encodeURIComponent(accordLabel(accord))}`}
                   className="rounded-full border border-transparent bg-(--well) px-3 py-1.5 text-[12px] text-(--ink) transition hover:border-(--accent) hover:bg-(--accent-soft)/45"
-                  aria-label={`Weitere ${accordLabel(accord)}e Düfte entdecken`}
+                  aria-label={`Weitere Düfte mit Duftcharakter ${accordLabel(accord)} entdecken`}
                 >
                   {accordLabel(accord)} <span aria-hidden>→</span>
                 </a>
