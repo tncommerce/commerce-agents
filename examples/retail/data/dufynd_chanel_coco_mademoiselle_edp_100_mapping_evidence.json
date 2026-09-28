@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "verified_at": "2026-09-28",
+  "product_id": "SC-CHANEL-COCO-MADEMOISELLE-EDP-100",
+  "merchant": "CHANEL official Germany",
+  "merchant_product_id": "116520",
+  "product_url": "https://www.chanel.com/de/parfum/p/116520/coco-mademoiselle-eau-de-parfum-zerstaeuber/",
+  "identity": {
+    "brand": "CHANEL",
+    "name": "COCO MADEMOISELLE",
+    "concentration": "Eau de Parfum",
+    "volume_ml": 100,
+    "gtin": "3145891165203"
+  },
+  "variant_boundary": {
+    "selected": "COCO MADEMOISELLE Eau de Parfum Zerstäuber 100 ml",
+    "excluded": [
+      "COCO MADEMOISELLE Eau de Parfum Intense Ref. 116660",
+      "COCO MADEMOISELLE Eau de Toilette Ref. 116460",
+      "COCO MADEMOISELLE L'Eau Privée Ref. 116260",
+      "COCO MADEMOISELLE Crush Absolu Ref. 116190"
+    ]
+  },
+  "corroboration": [
+    {
+      "source": "CHANEL Germany",
+      "url": "https://www.chanel.com/de/parfum/p/116520/coco-mademoiselle-eau-de-parfum-zerstaeuber/",
+      "note": "Official page identifies Ref. 116520 as COCO MADEMOISELLE Eau de Parfum Zerstäuber and explicitly exposes the 100 ml size."
+    },
+    {
+      "source": "billiger.de product data",
+      "url": "https://www.billiger.de/products/133753923-chanel-coco-mademoiselle-eau-de-parfum-100-ml",
+      "note": "Independent exact-variant data identifies Chanel Coco Mademoiselle Eau de Parfum 100 ml under EAN/GTIN 3145891165203."
+    }
+  ],
+  "freshness_policy": {
+    "current_purchase_destination_registered": false,
+    "price_or_stock_freshness_asserted": false,
+    "reason": "Canonical identity is verified, but this mapping change does not encode a 72-hour current offer observation."
+  },
+  "rights_or_affiliate_impact": {
+    "image_rights_granted": false,
+    "affiliate_tracking_verified": false,
+    "final_image_approval_granted": false
+  }
+}

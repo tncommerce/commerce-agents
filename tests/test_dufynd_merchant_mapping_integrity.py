@@ -254,3 +254,29 @@ def test_afnan_9pm_femme_mapping_uses_rendered_identity_not_url_slug() -> None:
         and row["gtin"] == evidence["identity"]["gtin"]
         for row in rows
     )
+
+
+def test_chanel_coco_mademoiselle_mapping_selects_original_edp_100ml() -> None:
+    evidence = json.loads(
+        Path(
+            "examples/retail/data/dufynd_chanel_coco_mademoiselle_edp_100_mapping_evidence.json"
+        ).read_text(encoding="utf-8")
+    )
+    rows = json.loads(MAPPINGS.read_text(encoding="utf-8"))["mappings"]
+
+    assert evidence["product_id"] == "SC-CHANEL-COCO-MADEMOISELLE-EDP-100"
+    assert evidence["merchant_product_id"] == "116520"
+    assert evidence["identity"]["concentration"] == "Eau de Parfum"
+    assert evidence["identity"]["volume_ml"] == 100
+    assert evidence["identity"]["gtin"] == "3145891165203"
+    assert evidence["freshness_policy"]["current_purchase_destination_registered"] is False
+    assert evidence["freshness_policy"]["price_or_stock_freshness_asserted"] is False
+    assert "116660" in " ".join(evidence["variant_boundary"]["excluded"])
+    assert "116460" in " ".join(evidence["variant_boundary"]["excluded"])
+    assert any(
+        row["product_id"] == evidence["product_id"]
+        and row["merchant"] == "chanel"
+        and row["merchant_product_id"] == evidence["merchant_product_id"]
+        and row["gtin"] == evidence["identity"]["gtin"]
+        for row in rows
+    )

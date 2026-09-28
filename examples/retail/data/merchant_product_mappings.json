@@ -698,6 +698,17 @@
       "verified_at": "2026-09-28",
       "evidence_url": "https://www.notino.de/afnan/9-am-pour-femme-eau-de-parfum-ii-fuer-damen/",
       "evidence_note": "Notino page content identifies Afnan 9 PM Pour Femme Eau de Parfum 100 ml under code AFN00282. The URL slug says '9-am', but the rendered product identity, collection listing and variant details consistently say 9 PM Pour Femme. GTIN 6290171072607 is independently corroborated for the 100 ml EDP."
+    },
+    {
+      "product_id": "SC-CHANEL-COCO-MADEMOISELLE-EDP-100",
+      "merchant": "chanel",
+      "merchant_product_id": "116520",
+      "ean": "3145891165203",
+      "gtin": "3145891165203",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-09-28",
+      "evidence_url": "https://www.chanel.com/de/parfum/p/116520/coco-mademoiselle-eau-de-parfum-zerstaeuber/",
+      "evidence_note": "Official CHANEL Germany page identifies COCO MADEMOISELLE Eau de Parfum Zerstäuber 100 ml as Ref. 116520. GTIN 3145891165203 is independently corroborated for the exact 100 ml Eau de Parfum and distinguishes it from Eau de Parfum Intense Ref. 116660, Eau de Toilette Ref. 116460 and L'Eau Privée Ref. 116260."
     }
   ]
 }
