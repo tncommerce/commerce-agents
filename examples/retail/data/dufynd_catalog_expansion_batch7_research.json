@@ -43,10 +43,29 @@
         "provisional": false
       },
       "identifiers": {
-        "status": "pending_primary_variant_verification",
+        "status": "indexed_evidence_feed_match_pending",
         "canonical_gtin": null,
-        "observations": [],
-        "note": "Exact retail variant evidence exists; canonical GTIN/feed matching remains pending."
+        "observations": [
+          {
+            "gtin": "3439602802113",
+            "volume_ml": 90,
+            "concentration": "Eau de Parfum",
+            "source_name": "Parfuem365",
+            "source_url": "https://www.parfuem365.de/damenduefte/4755/mugler-alien-eau-de-parfum-refillable-90-ml",
+            "evidence_kind": "indexed_merchant_product_page",
+            "checked_at": "2026-09-28"
+          },
+          {
+            "gtin": "3439602802113",
+            "volume_ml": 90,
+            "concentration": "Eau de Parfum",
+            "source_name": "Seuren Health",
+            "source_url": "https://www.seurenhealth.de/beauty-health/thierry-mugler-alien-refillable-edp-90-ml.html",
+            "evidence_kind": "indexed_merchant_product_page",
+            "checked_at": "2026-09-28"
+          }
+        ],
+        "note": "Two independent indexed merchant pages agree on GTIN 3439602802113 for the refillable 90 ml Eau de Parfum. Keep canonical_gtin unset until a primary feed/manufacturer identifier match resolves the exact current German retail variant."
       },
       "media": {
         "image_url": null,
@@ -108,6 +127,16 @@
           "source": "douglas",
           "url": "https://www.douglas.de/de/p/2001003772?variant=913048",
           "checked_at": "2026-09-26"
+        },
+        {
+          "source": "Parfuem365",
+          "url": "https://www.parfuem365.de/damenduefte/4755/mugler-alien-eau-de-parfum-refillable-90-ml",
+          "checked_at": "2026-09-28"
+        },
+        {
+          "source": "Seuren Health",
+          "url": "https://www.seurenhealth.de/beauty-health/thierry-mugler-alien-refillable-edp-90-ml.html",
+          "checked_at": "2026-09-28"
         }
       ]
     },
@@ -253,10 +282,38 @@
         "provisional": true
       },
       "identifiers": {
-        "status": "pending_primary_variant_verification",
+        "status": "indexed_evidence_feed_match_pending",
         "canonical_gtin": null,
-        "observations": [],
-        "note": "Exact retail variant evidence exists; canonical GTIN/feed matching remains pending."
+        "observations": [
+          {
+            "gtin": "6290171072607",
+            "volume_ml": 100,
+            "concentration": "Eau de Parfum",
+            "source_name": "Parfuem365",
+            "source_url": "https://www.parfuem365.de/damenduefte/27572/afnan-9-pm-pour-femme-eau-de-parfum-100-ml",
+            "evidence_kind": "indexed_merchant_product_page",
+            "checked_at": "2026-09-28"
+          },
+          {
+            "gtin": "6290171072607",
+            "volume_ml": 100,
+            "concentration": "Eau de Parfum",
+            "source_name": "billiger.de",
+            "source_url": "https://www.billiger.de/products/4350151706-afnan-9pm-pour-femme-eau-de-parfum-100-ml",
+            "evidence_kind": "indexed_merchant_product_page",
+            "checked_at": "2026-09-28"
+          },
+          {
+            "gtin": "6290178899719",
+            "volume_ml": 100,
+            "concentration": "Eau de Parfum",
+            "source_name": "Shop Apotheke",
+            "source_url": "https://www.shop-apotheke.com/beauty/upmHF2ZPT/afnan-9pm-pour-femme-edp-damen.htm",
+            "evidence_kind": "indexed_merchant_product_page",
+            "checked_at": "2026-09-28"
+          }
+        ],
+        "note": "Indexed sources conflict: two pages report GTIN 6290171072607 while Shop Apotheke reports 6290178899719 for a 100 ml Eau de Parfum listing. Do not choose a canonical GTIN until a primary feed/manufacturer mapping resolves the conflict."
       },
       "media": {
         "image_url": null,
@@ -334,6 +391,21 @@
           "source": "afnan official store",
           "url": "https://www.de.afnan.com/products/9-pm-pour-femme",
           "checked_at": "2026-09-26"
+        },
+        {
+          "source": "Parfuem365",
+          "url": "https://www.parfuem365.de/damenduefte/27572/afnan-9-pm-pour-femme-eau-de-parfum-100-ml",
+          "checked_at": "2026-09-28"
+        },
+        {
+          "source": "billiger.de",
+          "url": "https://www.billiger.de/products/4350151706-afnan-9pm-pour-femme-eau-de-parfum-100-ml",
+          "checked_at": "2026-09-28"
+        },
+        {
+          "source": "Shop Apotheke",
+          "url": "https://www.shop-apotheke.com/beauty/upmHF2ZPT/afnan-9pm-pour-femme-edp-damen.htm",
+          "checked_at": "2026-09-28"
         }
       ]
     },
@@ -480,10 +552,38 @@
         "provisional": false
       },
       "identifiers": {
-        "status": "pending_primary_variant_verification",
+        "status": "indexed_evidence_feed_match_pending",
         "canonical_gtin": null,
-        "observations": [],
-        "note": "Exact retail variant evidence exists; canonical GTIN/feed matching remains pending."
+        "observations": [
+          {
+            "gtin": "3348900417878",
+            "volume_ml": 100,
+            "concentration": "Eau de Parfum",
+            "source_name": "Kaufland listing 17447441",
+            "source_url": "https://www.kaufland.de/product/17447441/",
+            "evidence_kind": "indexed_merchant_product_page",
+            "checked_at": "2026-09-28"
+          },
+          {
+            "gtin": "3348900417878",
+            "volume_ml": 100,
+            "concentration": "Eau de Parfum",
+            "source_name": "CS Megastore",
+            "source_url": "https://www.csmegastore.de/i/1918409/christian-dior-jadore-edp-100ml?fwd=1",
+            "evidence_kind": "indexed_merchant_product_page",
+            "checked_at": "2026-09-28"
+          },
+          {
+            "gtin": "3348901738224",
+            "volume_ml": 100,
+            "concentration": "Eau de Parfum",
+            "source_name": "Kaufland listing 527611207",
+            "source_url": "https://www.kaufland.de/product/527611207/",
+            "evidence_kind": "indexed_merchant_product_page",
+            "checked_at": "2026-09-28"
+          }
+        ],
+        "note": "Indexed 100 ml Eau de Parfum listings conflict between GTIN 3348900417878 and 3348901738224, consistent with a possible packaging/current-variant transition. Keep canonical GTIN unset until Dior or an authoritative feed maps the exact current variant."
       },
       "media": {
         "image_url": null,
@@ -546,6 +646,21 @@
           "source": "douglas",
           "url": "https://www.douglas.de/de/p/5011697097",
           "checked_at": "2026-09-26"
+        },
+        {
+          "source": "Kaufland listing 17447441",
+          "url": "https://www.kaufland.de/product/17447441/",
+          "checked_at": "2026-09-28"
+        },
+        {
+          "source": "CS Megastore",
+          "url": "https://www.csmegastore.de/i/1918409/christian-dior-jadore-edp-100ml?fwd=1",
+          "checked_at": "2026-09-28"
+        },
+        {
+          "source": "Kaufland listing 527611207",
+          "url": "https://www.kaufland.de/product/527611207/",
+          "checked_at": "2026-09-28"
         }
       ]
     }
