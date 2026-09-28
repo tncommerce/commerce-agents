@@ -69,6 +69,49 @@ function ComparisonRow({
   );
 }
 
+function ProfileMeter({
+  label,
+  left,
+  right,
+}: {
+  label: string;
+  left: number | null;
+  right: number | null;
+}) {
+  const width = (value: number | null) =>
+    value == null ? 0 : Math.max(0, Math.min(100, value * 10));
+
+  return (
+    <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-3">
+      <div className="flex items-center justify-end gap-2">
+        <span className="text-[10.5px] font-semibold tabular-nums text-white/75">
+          {formatNumber(left)}
+        </span>
+        <div className="h-1.5 w-full max-w-28 overflow-hidden rounded-full bg-white/10">
+          <div
+            className="ml-auto h-full rounded-full bg-[#d9bd82]"
+            style={{ width: `${width(left)}%` }}
+          />
+        </div>
+      </div>
+      <span className="min-w-16 text-center text-[9px] font-semibold uppercase tracking-[0.08em] text-white/45">
+        {label}
+      </span>
+      <div className="flex items-center gap-2">
+        <div className="h-1.5 w-full max-w-28 overflow-hidden rounded-full bg-white/10">
+          <div
+            className="h-full rounded-full bg-[#d9bd82]"
+            style={{ width: `${width(right)}%` }}
+          />
+        </div>
+        <span className="text-[10.5px] font-semibold tabular-nums text-white/75">
+          {formatNumber(right)}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 function ProductMiniHeader({
   fragrance,
 }: {
@@ -356,6 +399,36 @@ export default function FragranceComparisonPicker({
             Historische Marktbeobachtung zum angegebenen Stand, kein aktuelles Kaufangebot.
             Verfügbare Händlerangebote werden auf den Duftseiten separat geprüft.
           </p>
+
+          <section className="relative mt-4 overflow-hidden rounded-2xl border border-[#d9bd82]/20 bg-[#15120f] p-4 text-white shadow-[0_18px_55px_-34px_rgba(36,24,8,0.9)] sm:p-5">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(217,189,130,0.15),transparent_45%)]"
+            />
+            <div className="relative">
+              <div className="flex flex-wrap items-end justify-between gap-2">
+                <div>
+                  <div className="text-[9.5px] font-semibold uppercase tracking-[0.14em] text-[#d9bd82]">
+                    Duft-DNA auf einen Blick
+                  </div>
+                  <h3 className="mt-1 text-[16px] font-semibold tracking-[-0.02em] text-[#fffaf0]">
+                    Profilstärken direkt nebeneinander
+                  </h3>
+                </div>
+                <span className="text-[9.5px] text-white/45">Skala 0–10</span>
+              </div>
+              <div className="mt-4 space-y-3" aria-label="Visueller Duftprofilvergleich">
+                <ProfileMeter label="Frische" left={left.scores.freshness} right={right.scores.freshness} />
+                <ProfileMeter label="Süße" left={left.scores.sweetness} right={right.scores.sweetness} />
+                <ProfileMeter label="Holzig" left={left.scores.woodiness} right={right.scores.woodiness} />
+                <ProfileMeter label="Würzig" left={left.scores.spiciness} right={right.scores.spiciness} />
+              </div>
+              <div className="mt-4 grid grid-cols-2 gap-3 border-t border-white/10 pt-3 text-[10px] text-white/55">
+                <div className="truncate text-right font-medium text-white/75">{left.name}</div>
+                <div className="truncate font-medium text-white/75">{right.name}</div>
+              </div>
+            </div>
+          </section>
 
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             {[left, right].map((fragrance) => (
