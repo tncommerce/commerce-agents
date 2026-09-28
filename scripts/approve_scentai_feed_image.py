@@ -17,6 +17,7 @@ APPROVED_IMAGE_STATUSES = {
 }
 VERIFIED_RIGHTS_STATUS = "verified_for_publisher_service"
 REQUIRED_FEED_DATA_SOURCE = "approved-affiliate-feed"
+CURRENT_FEED_CONSTRAINT = "candidate_must_come_from_current_official_awin_product_feed"
 
 
 def load_json(path: Path) -> dict:
