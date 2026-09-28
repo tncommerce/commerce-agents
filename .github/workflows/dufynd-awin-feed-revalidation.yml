@@ -81,7 +81,6 @@ jobs:
           path: |
             ${{ runner.temp }}/awin-feed-metadata.json
             ${{ runner.temp }}/release-readiness.json
-            ${{ runner.temp }}/merchant-feed-image-candidates.json
             ${{ runner.temp }}/release01-feed-image-review-candidates.json
             ${{ runner.temp }}/release01-feed-image-review.html
           if-no-files-found: error
