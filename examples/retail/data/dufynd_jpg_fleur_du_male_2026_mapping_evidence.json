@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "verified_at": "2026-09-28",
+  "product_id": "SC-JPG-FLEUR-DU-MALE-2026-EDT-125",
+  "merchant": "Jean Paul Gaultier official Germany",
+  "merchant_product_id": "000000000065228018",
+  "product_url": "https://www.jeanpaulgaultier.com/de/de/p/linie-le-male/fleur-du-male-eau-de-toilette-000000000065228018",
+  "identity": {
+    "brand": "Jean Paul Gaultier",
+    "name": "Fleur Du Male",
+    "edition": "2026 re-edition / returned original version",
+    "concentration": "Eau de Toilette",
+    "volume_ml": 125,
+    "gtin": null,
+    "ean": null
+  },
+  "official_corroboration": [
+    {
+      "url": "https://www.jeanpaulgaultier.com/de/de/p/linie-le-male/fleur-du-male-eau-de-toilette-000000000065228018",
+      "note": "Official German product page identifies Fleur Du Male Eau de Toilette, 125 ml, at 126 EUR with a buy action."
+    },
+    {
+      "url": "https://www.jeanpaulgaultier.com/de/de/duefte",
+      "note": "Official current fragrance page states that Fleur du Male has returned in its original version and is exclusive to jeanpaulgaultier.com."
+    },
+    {
+      "url": "https://www.jeanpaulgaultier.com/de/de/c/gaultier-reeditions",
+      "note": "Official re-editions page presents Fleur du Male as returned and purchasable in 125 ml."
+    }
+  ],
+  "identifier_boundary": {
+    "current_official_identifier": "000000000065228018",
+    "legacy_gtin_reused": false,
+    "note": "No legacy Fleur du Male EAN is reused for the 2026 re-edition because exact identifier continuity has not been proven."
+  },
+  "freshness_policy": {
+    "current_retail_channel_verified": true,
+    "current_purchase_destination_registered": false,
+    "price_or_stock_freshness_asserted": false,
+    "reason": "This change resolves canonical merchant identity and retail-channel availability without encoding a merchant offer timestamp or unverified reissue GTIN."
+  },
+  "residual_blockers": [
+    "community_performance_still_provisional",
+    "verified_purchase_destination_pending",
+    "approved_product_image_pending"
+  ],
+  "rights_or_affiliate_impact": {
+    "image_rights_granted": false,
+    "affiliate_tracking_verified": false,
+    "final_image_approval_granted": false
+  }
+}
