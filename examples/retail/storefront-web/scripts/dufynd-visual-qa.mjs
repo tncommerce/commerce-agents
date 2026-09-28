@@ -707,6 +707,17 @@ try {
               state: "visible",
               timeout: 20_000,
             });
+            await spotlightTruth.first().waitFor({
+              state: "visible",
+              timeout: 20_000,
+            });
+            await spotlightTruth.first().evaluate(async (image) => {
+              image.loading = "eager";
+              if (!image.complete || image.naturalWidth === 0) {
+                await image.decode();
+              }
+            });
+            await page.waitForTimeout(100);
           }
         }
 
