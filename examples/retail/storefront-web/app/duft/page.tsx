@@ -58,7 +58,7 @@ export default function FragranceIndexPage() {
             </a>
             <a
               href="/vergleich"
-              className="hidden rounded-xl border border-(--line) px-3 py-2 text-[12px] font-semibold text-(--ink) transition hover:border-(--ink) sm:inline-flex"
+              className="hidden rounded-xl border border-(--line) px-3 py-2 text-[12px] font-semibold text-(--ink) transition hover:border-(--ink) md:inline-flex"
             >
               Vergleiche
             </a>
@@ -70,6 +70,24 @@ export default function FragranceIndexPage() {
             </a>
           </div>
         </div>
+        <nav
+          aria-label="Weitere DUFYND Bereiche"
+          className="mx-auto flex max-w-[1080px] gap-2 px-4 pb-3 text-[11px] font-semibold sm:px-6 md:hidden"
+        >
+          {[
+            ["/vergleich", "Vergleiche"],
+            ["/merkliste", "Merkliste"],
+            ["/sammlung", "Sammlung"],
+          ].map(([href, label]) => (
+            <a
+              key={href}
+              href={href}
+              className="min-w-0 flex-1 rounded-lg border border-(--line) bg-(--card) px-2 py-2 text-center text-(--ink) transition hover:border-(--accent)"
+            >
+              {label}
+            </a>
+          ))}
+        </nav>
       </header>
 
       <div className="mx-auto max-w-[1080px] px-4 py-7 sm:px-6 sm:py-10">
