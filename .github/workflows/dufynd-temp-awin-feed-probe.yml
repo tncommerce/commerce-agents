@@ -1,0 +1,76 @@
+name: DUFYND temporary Awin feed probe
+
+on:
+  push:
+    branches:
+      - dufynd-temp-awin-feed-probe-20260928
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Verify Awin feed secret is configured
+        shell: bash
+        env:
+          AWIN_DATA_FEED_API_KEY: ${{ secrets.AWIN_DATA_FEED_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${AWIN_DATA_FEED_API_KEY:-}" ]; then
+            echo "::error::AWIN_DATA_FEED_API_KEY is not configured."
+            exit 2
+          fi
+          echo "AWIN data-feed secret is configured."
+
+      - name: Download current top Parfümerie feed to runner temp only
+        env:
+          AWIN_DATA_FEED_API_KEY: ${{ secrets.AWIN_DATA_FEED_API_KEY }}
+        run: |
+          python scripts/fetch_dufynd_awin_data_feed.py \
+            --advertiser-id 31081 \
+            --feed-id 91379 \
+            --output "${RUNNER_TEMP}/top-parfuemerie.csv" \
+            --report "${RUNNER_TEMP}/awin-feed-metadata.json"
+
+      - name: Check Release 01 exact variants
+        shell: bash
+        run: |
+          set +e
+          python scripts/check_scentai_release_feed.py \
+            --feed "${RUNNER_TEMP}/top-parfuemerie.csv" \
+            --provider-config examples/retail/data/dufynd_awin_top_parfuemerie_provider_config.json \
+            --machine-readable > "${RUNNER_TEMP}/release-readiness.json"
+          status=$?
+          set -e
+          if [ "$status" -eq 20 ]; then
+            echo "::error::Current Awin feed is structurally blocked."
+            exit 20
+          fi
+          if [ "$status" -ne 0 ] && [ "$status" -ne 10 ]; then
+            exit "$status"
+          fi
+
+      - name: Extract review-only image candidates
+        run: |
+          PYTHONPATH=examples python -m retail.api.extract_merchant_feed_assets \
+            --feed "${RUNNER_TEMP}/top-parfuemerie.csv" \
+            --provider-config examples/retail/data/dufynd_awin_top_parfuemerie_provider_config.json \
+            --output "${RUNNER_TEMP}/merchant-feed-image-candidates.json"
+
+      - name: Upload sanitized review packet only
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: dufynd-awin-feed-probe-${{ github.run_number }}
+          path: |
+            ${{ runner.temp }}/awin-feed-metadata.json
+            ${{ runner.temp }}/release-readiness.json
+            ${{ runner.temp }}/merchant-feed-image-candidates.json
+          if-no-files-found: error
+          retention-days: 1
