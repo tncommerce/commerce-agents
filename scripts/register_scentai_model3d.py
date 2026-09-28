@@ -59,9 +59,8 @@ def registration_plan(
 
     if not product_id:
         raise ValueError("product_id_required")
-    if (
-        len(model_sha256) != 64
-        or any(character not in "0123456789abcdef" for character in model_sha256)
+    if len(model_sha256) != 64 or any(
+        character not in "0123456789abcdef" for character in model_sha256
     ):
         raise ValueError("model_sha256_invalid")
     if source_class not in APPROVABLE_SOURCE_CLASSES:
@@ -88,11 +87,7 @@ def registration_plan(
         raise ValueError("model_candidate_payload_not_review_only")
 
     product = next(
-        (
-            row
-            for row in products.get("products", [])
-            if _norm(row.get("product_id")) == product_id
-        ),
+        (row for row in products.get("products", []) if _norm(row.get("product_id")) == product_id),
         None,
     )
     if product is None:
