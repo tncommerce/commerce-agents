@@ -305,3 +305,27 @@ def test_calvin_klein_euphoria_mapping_selects_original_womens_edp_100ml() -> No
         and row["gtin"] == evidence["identity"]["gtin"]
         for row in rows
     )
+
+
+def test_margiela_by_the_fireplace_mapping_selects_edt_100ml() -> None:
+    evidence = json.loads(
+        Path(
+            "examples/retail/data/dufynd_margiela_by_the_fireplace_edt_100_mapping_evidence.json"
+        ).read_text(encoding="utf-8")
+    )
+    rows = json.loads(MAPPINGS.read_text(encoding="utf-8"))["mappings"]
+
+    assert evidence["product_id"] == "SC-MAISON-MARGIELA-BY-THE-FIREPLACE-EDT-100"
+    assert evidence["merchant_product_id"] == "S33YX0024S11331961"
+    assert evidence["identity"]["concentration"] == "Eau de Toilette"
+    assert evidence["identity"]["volume_ml"] == 100
+    assert evidence["identity"]["gtin"] == "3614270562112"
+    assert evidence["freshness_policy"]["current_purchase_destination_registered"] is False
+    assert evidence["freshness_policy"]["price_or_stock_freshness_asserted"] is False
+    assert any(
+        row["product_id"] == evidence["product_id"]
+        and row["merchant"] == "maison-margiela"
+        and row["merchant_product_id"] == evidence["merchant_product_id"]
+        and row["gtin"] == evidence["identity"]["gtin"]
+        for row in rows
+    )
