@@ -1183,12 +1183,19 @@ export default function FragranceCatalogBrowser({
                   </div>
                 </a>
 
-                <div className="border-t border-(--line) p-3">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-t border-(--line) p-3">
                   <FragranceSaveControls
                     productId={fragrance.product_id}
                     source="catalog_grid"
                     compact
                   />
+                  <a
+                    href={`/vergleich?left=${encodeURIComponent(fragrance.product_id)}`}
+                    aria-label={`${fragrance.brand} ${fragrance.name} mit einem anderen Duft vergleichen`}
+                    className="rounded-lg px-2 py-1.5 text-[11px] font-semibold text-(--accent-ink) transition hover:bg-(--well)"
+                  >
+                    Vergleichen →
+                  </a>
                 </div>
               </article>
               );
