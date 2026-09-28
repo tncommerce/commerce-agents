@@ -4,10 +4,7 @@ from ipaddress import ip_address
 from typing import Any
 from urllib.parse import parse_qsl, unquote, urlparse
 
-from .merchant_import import (
-    MerchantProductMapping,
-    resolve_product_id,
-)
+from .merchant_import import MerchantProductMapping, resolve_product_id
 
 
 SECRET_URL_MARKERS = {
