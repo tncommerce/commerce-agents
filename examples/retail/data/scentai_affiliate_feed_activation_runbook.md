@@ -1,7 +1,7 @@
 # DUFYND Affiliate Feed Activation Runbook
 
 Status: prepared
-Updated: 2026-09-19
+Updated: 2026-09-28
 
 ## Purpose
 
@@ -39,6 +39,54 @@ The provider config must normalize at least:
 For release promotion, the feed should additionally provide:
 - tracked affiliate URL
 - image URL
+
+## 2A. One-time Awin current-feed automation setup
+
+DUFYND has a guarded manual workflow at:
+
+`.github/workflows/dufynd-awin-feed-revalidation.yml`
+
+It expects one GitHub Actions repository secret:
+
+`AWIN_DATA_FEED_API_KEY`
+
+This is Awin's **product-data-feed download key**, not the Partner API token.
+
+To obtain it without exposing it in source control:
+
+1. Sign in to Awin.
+2. Open **Toolbox > Create-a-Feed**.
+3. Select the desired feed or generate a standard feed download.
+4. Copy the generated download URL. Awin embeds the data-feed API key in the
+   `/apikey/<KEY>/` path segment.
+5. In GitHub, add only the key value as the Actions repository secret
+   `AWIN_DATA_FEED_API_KEY`.
+6. Never paste the key, full secret-bearing download URL or raw feed into
+   commits, issues, pull requests, chat transcripts or build artifacts.
+7. Run **DUFYND Awin Feed Revalidation** manually against `scentai-mvp`.
+
+Official Awin references:
+
+- Product Feed List Download:
+  https://help.awin.com/developers/docs/product-feed-list-download
+- How to access a product data feed:
+  https://success.awin.com/articles/en_US/Knowledge/How-can-I-access-a-Product-Feed
+
+The DUFYND workflow currently targets top Parfümerie DE:
+
+- Awin advertiser ID: `31081`
+- Awin feed ID: `91379`
+- provider config:
+  `examples/retail/data/dufynd_awin_top_parfuemerie_provider_config.json`
+
+The workflow is read-only. It downloads the raw feed only into runner-temporary
+storage, runs the existing Release 01 readiness checker, extracts review-only
+image candidates, and uploads only a short-lived sanitized review packet.
+It never approves an image, promotes a catalog item, activates an offer, deploys
+the storefront or writes the raw feed to the repository.
+
+If the secret is absent, the workflow must fail before any Awin request is
+made. This is an expected safety gate, not a feed failure.
 
 ## 3. Run the release-specific read-only check
 
