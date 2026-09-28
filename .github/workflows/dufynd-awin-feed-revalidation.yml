@@ -68,6 +68,12 @@ jobs:
             --feed-metadata "${RUNNER_TEMP}/awin-feed-metadata.json" \
             --output "${RUNNER_TEMP}/release01-feed-image-review-candidates.json"
 
+      - name: Render visual image review packet
+        run: |
+          python scripts/render_scentai_feed_image_review_html.py \
+            --candidates "${RUNNER_TEMP}/release01-feed-image-review-candidates.json" \
+            --output "${RUNNER_TEMP}/release01-feed-image-review.html"
+
       - name: Upload sanitized review packet
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -77,5 +83,6 @@ jobs:
             ${{ runner.temp }}/release-readiness.json
             ${{ runner.temp }}/merchant-feed-image-candidates.json
             ${{ runner.temp }}/release01-feed-image-review-candidates.json
+            ${{ runner.temp }}/release01-feed-image-review.html
           if-no-files-found: error
           retention-days: 7
