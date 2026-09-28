@@ -209,6 +209,48 @@ def test_packet_surfaces_licensed_provider_attribution_metadata() -> None:
         review_packet(staging_payload(), payload(row))
 
 
+@pytest.mark.parametrize(
+    "image_url",
+    [
+        "/products/test.jpg?api_key=SECRET",
+        "/products/%2e%2e/secret.jpg",
+        "https://cdn.example.com/test.jpg?token=SECRET",
+    ],
+)
+def test_read_only_review_packet_rejects_non_public_image_targets(image_url: str) -> None:
+    row = candidate(
+        "SC-A-50",
+        brand="Brand A",
+        name="Fragrance A",
+        concentration="Eau de Toilette",
+        volume_ml=50,
+    )
+    row["image_url"] = image_url
+
+    with pytest.raises(ValueError, match="candidate_image_target_invalid:SC-A-50") as error:
+        review_packet(staging_payload(), payload(row))
+    assert "SECRET" not in str(error.value)
+
+
+def test_read_only_review_packet_rejects_secret_license_url() -> None:
+    row = candidate(
+        "SC-A-50",
+        brand="Brand A",
+        name="Fragrance A",
+        concentration="Eau de Toilette",
+        volume_ml=50,
+        source_class="licensed_asset_provider",
+        license_name="CC BY-SA 3.0",
+        license_url="https://licenses.example/terms?api_key=SECRET",
+        attribution_text="Photographer",
+        share_alike_required=True,
+    )
+
+    with pytest.raises(ValueError, match="candidate_license_url_invalid:SC-A-50") as error:
+        review_packet(staging_payload(), payload(row))
+    assert "SECRET" not in str(error.value)
+
+
 def test_release01_plan_exposes_review_packet_command() -> None:
     plan = json.loads(PLAN.read_text(encoding="utf-8"))
     intake = plan["rights_cleared_intake"]

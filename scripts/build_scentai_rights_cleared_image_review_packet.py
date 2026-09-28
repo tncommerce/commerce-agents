@@ -4,6 +4,11 @@ import argparse
 import json
 from pathlib import Path
 
+if __package__:
+    from .approve_scentai_rights_cleared_image import valid_https_url, valid_image_target
+else:
+    from approve_scentai_rights_cleared_image import valid_https_url, valid_image_target
+
 DEFAULT_STAGING = Path("examples/retail/data/scentai_catalog_staging.json")
 DEFAULT_CANDIDATES = Path("examples/retail/data/dufynd_rights_cleared_image_candidates.json")
 
@@ -80,6 +85,11 @@ def review_packet(
         source_class = _norm(candidate.get("source_class"))
         proposed_image_status = _norm(candidate.get("proposed_image_status"))
         image_url = _norm(candidate.get("image_url"))
+
+        if not valid_image_target(image_url):
+            raise ValueError(f"candidate_image_target_invalid:{product_id}")
+        if license_url and not valid_https_url(license_url):
+            raise ValueError(f"candidate_license_url_invalid:{product_id}")
 
         if source_class == "licensed_asset_provider":
             if not license_name or not license_url or not attribution_text:
