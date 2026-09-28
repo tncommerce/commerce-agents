@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+from urllib.parse import parse_qsl, unquote, urlparse
 
 DEFAULT_CANDIDATES = Path("examples/retail/data/merchant_feed_image_candidates.json")
 DEFAULT_FEED_METADATA = Path("awin-feed-metadata.json")
@@ -22,6 +23,22 @@ EXPECTED_NETWORK = "Awin"
 EXPECTED_MERCHANT_ID = "top-parfuemerie"
 EXPECTED_ADVERTISER_ID = "31081"
 EXPECTED_FEED_ID = "91379"
+SECRET_URL_MARKERS = {
+    "apikey",
+    "accesskey",
+    "key",
+    "token",
+    "authtoken",
+    "credential",
+    "xamzcredential",
+    "xamzsignature",
+    "xgoogsignature",
+    "secret",
+    "password",
+    "policy",
+    "signature",
+    "sig",
+}
 
 
 def load_json(path: Path) -> dict:
@@ -30,6 +47,26 @@ def load_json(path: Path) -> dict:
 
 def _norm(value: object) -> str:
     return str(value or "").strip()
+
+
+def _public_image_url(value: object) -> str:
+    url = _norm(value)
+    parsed = urlparse(url)
+    query_keys = {
+        "".join(ch for ch in key.casefold() if ch.isalnum())
+        for key, _ in parse_qsl(parsed.query, keep_blank_values=True)
+    }
+    path_segments = {segment.casefold() for segment in unquote(parsed.path).split("/")}
+    if (
+        parsed.scheme != "https"
+        or not parsed.hostname
+        or parsed.username is not None
+        or parsed.password is not None
+        or parsed.fragment
+        or SECRET_URL_MARKERS & (query_keys | path_segments)
+    ):
+        raise ValueError("candidate_image_url_not_public")
+    return url
 
 
 def _rights_entry(rights_registry: dict) -> dict:
@@ -152,7 +189,7 @@ def prepare_review_candidates(
         }:
             raise ValueError(f"candidate_source_invalid:{product_id}")
 
-        image_url = _norm(candidate.get("image_url"))
+        image_url = _public_image_url(candidate.get("image_url"))
         merchant_product_id = _norm(candidate.get("merchant_product_id"))
         if not image_url or not merchant_product_id:
             raise ValueError(f"candidate_identity_evidence_incomplete:{product_id}")
