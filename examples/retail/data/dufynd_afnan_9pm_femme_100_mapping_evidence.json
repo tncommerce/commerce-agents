@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "verified_at": "2026-09-28",
+  "product_id": "SC-AFNAN-9-PM-POUR-FEMME-EDP-100",
+  "merchant": "Notino DE",
+  "merchant_product_id": "AFN00282",
+  "product_url": "https://www.notino.de/afnan/9-am-pour-femme-eau-de-parfum-ii-fuer-damen/",
+  "identity": {
+    "brand": "Afnan",
+    "name": "9 PM Pour Femme",
+    "concentration": "Eau de Parfum",
+    "volume_ml": 100,
+    "gtin": "6290171072607"
+  },
+  "source_anomaly": {
+    "url_slug": "9-am-pour-femme-eau-de-parfum-ii-fuer-damen",
+    "rendered_product_name": "9 PM Pour Femme",
+    "handling": "Treat rendered product identity, Notino collection listing, code AFN00282 and independent GTIN corroboration as authoritative; do not reinterpret the product as 9 AM solely from the URL slug."
+  },
+  "corroboration": [
+    {
+      "source": "Notino DE",
+      "url": "https://www.notino.de/afnan/9-pm/",
+      "note": "Current collection listing identifies Afnan 9 PM Pour Femme Eau de Parfum for women in 100 ml, distinct from 9 PM for men, Rebel and Elixir."
+    },
+    {
+      "source": "billiger.de product data",
+      "url": "https://www.billiger.de/products/4350151706-afnan-9pm-pour-femme-eau-de-parfum-100-ml",
+      "note": "Independent exact-variant data identifies Afnan 9PM Pour Femme Eau de Parfum 100 ml under EAN/GTIN 6290171072607."
+    }
+  ],
+  "freshness_policy": {
+    "current_purchase_destination_registered": false,
+    "price_or_stock_freshness_asserted": false,
+    "reason": "The canonical identity is sufficiently corroborated for mapping. This change does not claim an exact 72-hour purchase offer, avoiding reliance on crawl timing for stock/delivery."
+  },
+  "rights_or_affiliate_impact": {
+    "image_rights_granted": false,
+    "affiliate_tracking_verified": false,
+    "final_image_approval_granted": false
+  }
+}
