@@ -4,7 +4,12 @@ import argparse
 import json
 from datetime import UTC, datetime
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
+
+if __package__:
+    from .prepare_scentai_feed_image_review import _public_image_url
+else:
+    from prepare_scentai_feed_image_review import _public_image_url
 
 DEFAULT_STAGING = Path("examples/retail/data/scentai_catalog_staging.json")
 DEFAULT_CANDIDATES = Path("examples/retail/data/dufynd_rights_cleared_image_candidates.json")
@@ -34,29 +39,27 @@ def load_json(path: Path) -> dict:
 def valid_image_target(value: str) -> bool:
     candidate = value.strip()
     if candidate.startswith("/"):
+        parsed = urlparse(candidate)
+        decoded_path = unquote(parsed.path)
         return (
             not candidate.startswith("//")
-            and "\\" not in candidate
-            and ".." not in Path(candidate).parts
+            and not parsed.query
+            and not parsed.fragment
+            and not parsed.netloc
+            and not decoded_path.startswith("//")
+            and "\\" not in decoded_path
+            and ".." not in Path(decoded_path).parts
         )
 
-    parsed = urlparse(candidate)
-    return bool(
-        parsed.scheme == "https"
-        and parsed.hostname
-        and parsed.username is None
-        and parsed.password is None
-    )
+    return valid_https_url(candidate)
 
 
 def valid_https_url(value: str) -> bool:
-    parsed = urlparse(value.strip())
-    return bool(
-        parsed.scheme == "https"
-        and parsed.hostname
-        and parsed.username is None
-        and parsed.password is None
-    )
+    try:
+        _public_image_url(value)
+    except ValueError:
+        return False
+    return True
 
 
 def approval_plan(
@@ -205,6 +208,8 @@ def apply_approval(
     attribution_text: str | None = None,
     share_alike_required: bool | None = None,
 ) -> None:
+    if not valid_image_target(image_url):
+        raise ValueError("image_target_must_be_https_or_safe_root_relative_path")
     candidate = next(
         row
         for row in candidates_payload.get("candidates", [])

@@ -180,6 +180,43 @@ def test_unsafe_image_targets_are_rejected() -> None:
         plan_for(image_url="/products/../secret.jpg")
 
 
+@pytest.mark.parametrize(
+    "image_url",
+    [
+        "/products/test.jpg?token=SECRET",
+        "/products/test.jpg#SECRET",
+        "/products/%2e%2e/secret.jpg",
+        "https://cdn.example.com/test.jpg?api_key=SECRET",
+        "https://cdn.example.com/apikey/SECRET/test.jpg",
+    ],
+)
+def test_rights_approval_paths_reject_secret_urls_and_encoded_traversal(image_url: str) -> None:
+    candidates = candidates_payload(review_status="approved")
+    candidates["candidates"][0]["image_url"] = image_url
+
+    with pytest.raises(
+        ValueError, match="image_target_must_be_https_or_safe_root_relative_path"
+    ) as plan_error:
+        plan_for(candidates=candidates, image_url=image_url)
+    assert "SECRET" not in str(plan_error.value)
+
+    with pytest.raises(
+        ValueError, match="image_target_must_be_https_or_safe_root_relative_path"
+    ) as apply_error:
+        apply_approval(
+            staging_payload(),
+            candidates,
+            product_id=PRODUCT_ID,
+            image_url=image_url,
+            reviewed_at="2026-09-28T12:00:00+00:00",
+            proposed_image_status="approved_licensed_image",
+            source_class="dufynd_owned_original_photography",
+            rights_basis_id="test-rights",
+            rights_checked_at="2026-09-28",
+        )
+    assert "SECRET" not in str(apply_error.value)
+
+
 def test_existing_approved_image_requires_explicit_replace() -> None:
     with pytest.raises(
         ValueError,
