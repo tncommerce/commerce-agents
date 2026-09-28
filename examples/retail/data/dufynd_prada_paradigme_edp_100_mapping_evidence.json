@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "verified_at": "2026-09-28",
+  "product_id": "SC-PRADA-PARADIGME-EDP-100",
+  "merchant": "Prada Beauty official",
+  "merchant_product_id": "3614274172997",
+  "product_url": "https://www.prada-beauty.com/fragrance/paradigme/paradigme-eau-de-parfum/3614274172997.html?geo=false",
+  "identity": {
+    "brand": "Prada",
+    "name": "Paradigme",
+    "concentration": "Eau de Parfum",
+    "volume_ml": 100,
+    "gtin": "3614274172997"
+  },
+  "corroboration": [
+    {
+      "source": "DUFYND batch-6 official research",
+      "url": "https://www.prada-beauty.com/fragrance/paradigme/paradigme-eau-de-parfum/3614274172997.html?geo=false",
+      "note": "Canonical official source already captured in catalog research for Paradigme EDP 100 ml."
+    },
+    {
+      "source": "Douglas Germany",
+      "url": "https://www.douglas.de/de/p/5011831044",
+      "note": "Current product page lists Prada Paradigme Eau de Parfum with a 100 ml option and separately identifies Paradigme Le Parfum as another product family."
+    }
+  ],
+  "freshness_policy": {
+    "current_purchase_destination_registered": false,
+    "price_or_stock_freshness_asserted": false,
+    "reason": "Canonical identity is sufficiently supported for mapping, but this change intentionally does not encode a 72-hour exact-variant offer or current price."
+  },
+  "rights_or_affiliate_impact": {
+    "image_rights_granted": false,
+    "affiliate_tracking_verified": false,
+    "final_image_approval_granted": false
+  }
+}
