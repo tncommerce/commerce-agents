@@ -64,7 +64,7 @@ def test_unmatched_feed_image_is_kept_for_mapping_review() -> None:
     assert result["unmatched"][0]["reason"] == "product_mapping_not_found"
 
 
-def test_invalid_image_url_is_rejected() -> None:
+def test_invalid_image_url_is_rejected_and_redacted() -> None:
     result = extract_feed_image_candidates(
         [
             {
@@ -80,6 +80,38 @@ def test_invalid_image_url_is_rejected() -> None:
     assert result["candidate_count"] == 0
     assert result["invalid_count"] == 1
     assert result["invalid"][0]["reason"] == "invalid_image_url"
+    assert result["invalid"][0]["image_url"] is None
+    assert result["invalid"][0]["image_url_redacted"] is True
+
+
+def test_secret_bearing_or_non_public_image_urls_are_rejected_without_leaking_value() -> None:
+    bad_urls = [
+        "http://cdn.example.com/product.jpg",
+        "https://user:SECRET@cdn.example.com/product.jpg",
+        "https://cdn.example.com/product.jpg?api_key=SECRET",
+        "https://cdn.example.com/apikey/SECRET/product.jpg",
+        "https://cdn.example.com/product.jpg#token=SECRET",
+        "https://127.0.0.1/product.jpg",
+        "https://localhost/product.jpg",
+    ]
+
+    rows = [
+        {
+            "offer_id": f"offer-{index}",
+            "merchant": "notino",
+            "merchant_product_id": "SKU-123",
+            "image_url": url,
+        }
+        for index, url in enumerate(bad_urls, start=10)
+    ]
+
+    result = extract_feed_image_candidates(rows, mappings())
+
+    assert result["candidate_count"] == 0
+    assert result["invalid_count"] == len(bad_urls)
+    assert all(row["image_url"] is None for row in result["invalid"])
+    assert all(row["image_url_redacted"] is True for row in result["invalid"])
+    assert "SECRET" not in str(result)
 
 
 def test_duplicate_product_image_is_deduplicated() -> None:
