@@ -26,5 +26,6 @@ def test_release01_rights_request_packet_cannot_be_mistaken_for_permission() -> 
     assert "prepared_not_sent" in text
     assert "USER_APPROVAL_REQUIRED" in text
     assert "No outbound request may be sent" in text
-    assert "It does not approve the visual asset automatically" in text
+    normalized = " ".join(text.split())
+    assert "It does not approve the visual asset automatically." in normalized
     assert "commercial public web use explicitly allowed" in text
