@@ -1,7 +1,7 @@
 # DUFYND Affiliate Feed Activation Runbook
 
 Status: prepared
-Updated: 2026-09-19
+Updated: 2026-09-28
 
 ## Purpose
 
@@ -20,7 +20,45 @@ The first guarded target is:
 Store the downloaded feed locally in a temporary working path. Do not commit
 affiliate credentials, private feed URLs, tokens, passwords or raw exports.
 
-## 2. Create the provider field map from the real feed
+## 2. Revalidate the current top Parfümerie Awin feed
+
+DUFYND has a manual, read-only GitHub Actions workflow for the approved
+top Parfümerie Awin product feed:
+
+`.github/workflows/dufynd-awin-feed-revalidation.yml`
+
+It targets only:
+
+- Awin advertiser: `31081`
+- feed: `91379`
+- repository secret: `AWIN_DATA_FEED_API_KEY`
+
+The secret must contain the dedicated Awin Data Feed API key. Never place the
+key itself in a commit, issue, pull request, workflow input, console command,
+artifact or chat transcript.
+
+After the repository secret exists, run the workflow manually from GitHub
+Actions. The workflow:
+
+1. reads the current Awin feed list without printing the API key or
+   secret-bearing download URL;
+2. verifies that advertiser `31081` / feed `91379` still exists and the
+   programme membership is `Joined`;
+3. downloads the raw feed only into `RUNNER_TEMP`;
+4. runs `scripts/check_scentai_release_feed.py` against the current feed;
+5. extracts review-only image candidates with the existing DUFYND feed tooling;
+6. uploads only sanitized metadata, release-readiness JSON and candidate JSON;
+7. never uploads or commits the raw feed.
+
+A missing secret must fail cleanly. It is not a reason to weaken the guard or
+copy credentials into source control.
+
+The generated image candidates are still not approved images. The exact
+Release 01 variant must be present in the current feed, the recorded feed-image
+rights basis must still be valid and final visual identity approval remains a
+human gate.
+
+## 3. Create the provider field map from the real feed
 
 Start from:
 
@@ -40,7 +78,7 @@ For release promotion, the feed should additionally provide:
 - tracked affiliate URL
 - image URL
 
-## 3. Run the release-specific read-only check
+## 4. Run the release-specific read-only check
 
 From the repository root:
 
@@ -58,7 +96,7 @@ Expected states:
 
 A ready result does not approve images automatically.
 
-## 4. Resolve exact product mappings
+## 5. Resolve exact product mappings
 
 Only add a mapping after the merchant SKU/EAN/GTIN is verified against the
 correct DUFYND canonical fragrance, concentration and size.
@@ -69,7 +107,7 @@ Write verified mappings to:
 
 Re-run the release checker after every mapping change.
 
-## 5. Dry-run the existing merchant import
+## 6. Dry-run the existing merchant import
 
 Use the existing merchant import pipeline with the same feed and provider
 config. Do not write offers until the dry-run is clean.
@@ -88,7 +126,7 @@ The import pipeline already protects against:
 - changed feed/mapping snapshots during processing
 - unsafe authoritative empty writes
 
-## 6. Extract and manually review feed images
+## 7. Extract and manually review feed images
 
 Use the existing feed-image extraction path:
 
@@ -103,7 +141,7 @@ approved.
 Never approve a generic brand image, wrong concentration, wrong bottle size,
 gift set, tester, refill or legacy edition as the canonical product image.
 
-## 7. Re-check Batch 01
+## 8. Re-check Batch 01
 
 After verified mappings, real tracked offers and approved images are present:
 
@@ -113,7 +151,7 @@ python scripts/promote_scentai_catalog.py --manifest examples/retail/data/scenta
 
 The dry-run must report all five products ready.
 
-## 8. Promote only as one guarded batch
+## 9. Promote only as one guarded batch
 
 Only after the dry-run reports 5 ready / 0 blocked:
 
