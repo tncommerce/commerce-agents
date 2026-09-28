@@ -61,6 +61,13 @@ jobs:
             --provider-config examples/retail/data/dufynd_awin_top_parfuemerie_provider_config.json \
             --output "${RUNNER_TEMP}/merchant-feed-image-candidates.json"
 
+      - name: Prepare Release 01 feed-image review candidates
+        run: |
+          python scripts/prepare_scentai_feed_image_review.py \
+            --candidates "${RUNNER_TEMP}/merchant-feed-image-candidates.json" \
+            --feed-metadata "${RUNNER_TEMP}/awin-feed-metadata.json" \
+            --output "${RUNNER_TEMP}/release01-feed-image-review-candidates.json"
+
       - name: Upload sanitized review packet
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -69,5 +76,6 @@ jobs:
             ${{ runner.temp }}/awin-feed-metadata.json
             ${{ runner.temp }}/release-readiness.json
             ${{ runner.temp }}/merchant-feed-image-candidates.json
+            ${{ runner.temp }}/release01-feed-image-review-candidates.json
           if-no-files-found: error
           retention-days: 7

@@ -294,7 +294,34 @@ def test_candidate_rights_status_must_be_verified() -> None:
         plan_for(rights=rights_registry(rights_status="pending"))
 
 
-def test_committed_top_parfuemerie_rights_can_prepare_review_candidate() -> None:
+def top_parfuemerie_candidates_payload() -> dict:
+    payload = candidates_payload(merchant_id="top-parfuemerie")
+    payload["feed_provenance"] = {
+        "source": "awin_product_feed_list",
+        "advertiser_id": "31081",
+        "feed_id": "91379",
+        "joined": True,
+        "downloaded": True,
+        "checked_at": "2026-09-28T12:00:00+00:00",
+    }
+    candidate = payload["candidates"][0]
+    candidate["advertiser_id"] = "31081"
+    candidate["feed_id"] = "91379"
+    candidate["feed_checked_at"] = "2026-09-28T12:00:00+00:00"
+    return payload
+
+
+def test_committed_top_parfuemerie_rights_require_current_feed_provenance() -> None:
+    committed = load_json(DEFAULT_RIGHTS_REGISTRY)
+
+    with pytest.raises(ValueError, match="candidate_current_feed_provenance_required"):
+        plan_for(
+            candidates=candidates_payload(merchant_id="top-parfuemerie"),
+            rights=committed,
+        )
+
+
+def test_committed_top_parfuemerie_rights_can_prepare_current_review_candidate() -> None:
     committed = load_json(DEFAULT_RIGHTS_REGISTRY)
     top = next(row for row in committed["entries"] if row["merchant_id"] == "top-parfuemerie")
 
@@ -303,7 +330,7 @@ def test_committed_top_parfuemerie_rights_can_prepare_review_candidate() -> None
     assert top["rights_basis_id"] == "awin_top_parfuemerie_feed_materials_20260928"
 
     plan = plan_for(
-        candidates=candidates_payload(merchant_id="top-parfuemerie"),
+        candidates=top_parfuemerie_candidates_payload(),
         rights=committed,
     )
 
@@ -311,3 +338,12 @@ def test_committed_top_parfuemerie_rights_can_prepare_review_candidate() -> None
     assert plan["rights_status"] == "verified_for_publisher_service"
     assert plan["rights_basis_id"] == "awin_top_parfuemerie_feed_materials_20260928"
     assert plan["will_change"] is True
+
+
+def test_top_parfuemerie_current_feed_candidate_rejects_provenance_mismatch() -> None:
+    committed = load_json(DEFAULT_RIGHTS_REGISTRY)
+    payload = top_parfuemerie_candidates_payload()
+    payload["candidates"][0]["feed_id"] = "wrong"
+
+    with pytest.raises(ValueError, match="candidate_current_feed_provenance_mismatch"):
+        plan_for(candidates=payload, rights=committed)

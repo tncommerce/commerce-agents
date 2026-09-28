@@ -17,6 +17,7 @@ APPROVED_IMAGE_STATUSES = {
 }
 VERIFIED_RIGHTS_STATUS = "verified_for_publisher_service"
 REQUIRED_FEED_DATA_SOURCE = "approved-affiliate-feed"
+CURRENT_FEED_CONSTRAINT = "candidate_must_come_from_current_official_awin_product_feed"
 
 
 def load_json(path: Path) -> dict:
@@ -76,7 +77,46 @@ def candidate_rights_evidence(
         "rights_checked_at": checked_at,
         "publisher_scope": entry.get("publisher_scope"),
         "asset_scope": entry.get("asset_scope"),
+        "advertiser_id": str(entry.get("advertiser_id") or "").strip() or None,
+        "constraints": list(entry.get("constraints") or []),
     }
+
+
+def _require_current_feed_provenance(
+    candidates_payload: dict,
+    candidate: dict,
+    rights: dict,
+) -> None:
+    constraints = set(rights.get("constraints") or [])
+    if CURRENT_FEED_CONSTRAINT not in constraints:
+        return
+
+    provenance = candidates_payload.get("feed_provenance") or {}
+    if (
+        str(provenance.get("source") or "").strip() != "awin_product_feed_list"
+        or provenance.get("joined") is not True
+        or provenance.get("downloaded") is not True
+        or not str(provenance.get("checked_at") or "").strip()
+        or not str(provenance.get("feed_id") or "").strip()
+    ):
+        raise ValueError("candidate_current_feed_provenance_required")
+
+    expected_advertiser = str(rights.get("advertiser_id") or "").strip()
+    provenance_advertiser = str(provenance.get("advertiser_id") or "").strip()
+    candidate_advertiser = str(candidate.get("advertiser_id") or "").strip()
+    provenance_feed = str(provenance.get("feed_id") or "").strip()
+    candidate_feed = str(candidate.get("feed_id") or "").strip()
+    provenance_checked_at = str(provenance.get("checked_at") or "").strip()
+    candidate_checked_at = str(candidate.get("feed_checked_at") or "").strip()
+
+    if (
+        not expected_advertiser
+        or provenance_advertiser != expected_advertiser
+        or candidate_advertiser != expected_advertiser
+        or candidate_feed != provenance_feed
+        or candidate_checked_at != provenance_checked_at
+    ):
+        raise ValueError("candidate_current_feed_provenance_mismatch")
 
 
 def approval_plan(
@@ -127,6 +167,11 @@ def approval_plan(
         raise ValueError("candidate_missing_approved_feed_image_proposal")
 
     rights = candidate_rights_evidence(candidate, rights_registry)
+    _require_current_feed_provenance(
+        candidates_payload,
+        candidate,
+        rights,
+    )
 
     products = staging.get("products", [])
     product = next(
