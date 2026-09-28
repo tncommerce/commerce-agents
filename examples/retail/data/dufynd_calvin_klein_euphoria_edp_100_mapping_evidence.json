@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "verified_at": "2026-09-28",
+  "product_id": "SC-CALVIN-KLEIN-EUPHORIA-EDP-100",
+  "merchant": "Notino DE",
+  "merchant_product_id": "CAK10204",
+  "product_url": "https://www.notino.de/calvin-klein/euphoria-eau-de-parfum-fur-damen/",
+  "identity": {
+    "brand": "Calvin Klein",
+    "name": "euphoria",
+    "concentration": "Eau de Parfum",
+    "volume_ml": 100,
+    "gtin": "0088300162512"
+  },
+  "variant_boundary": {
+    "selected": "euphoria Eau de Parfum für Damen 100 ml",
+    "excluded": [
+      "euphoria Men Eau de Toilette",
+      "euphoria Eau de Toilette für Damen",
+      "euphoria Magnetic Elixir",
+      "euphoria Solar Elixir",
+      "euphoria Bold Elixir"
+    ]
+  },
+  "corroboration": [
+    {
+      "source": "Notino DE",
+      "url": "https://www.notino.de/calvin-klein/euphoria-eau-de-parfum-fur-damen/",
+      "note": "Rendered product identity is the original women's euphoria Eau de Parfum, with 100 ml option and merchant code CAK10204."
+    },
+    {
+      "source": "billiger.de product data",
+      "url": "https://www.billiger.de/products/9741106-calvin-klein-euphoria-eau-de-parfum-100-ml",
+      "note": "Independent exact-variant data identifies Calvin Klein Euphoria Eau de Parfum 100 ml under EAN/GTIN 0088300162512."
+    }
+  ],
+  "freshness_policy": {
+    "current_purchase_destination_registered": false,
+    "price_or_stock_freshness_asserted": false,
+    "reason": "The exact product identity is sufficient for canonical mapping, but this change does not encode a fresh 72-hour offer observation."
+  },
+  "rights_or_affiliate_impact": {
+    "image_rights_granted": false,
+    "affiliate_tracking_verified": false,
+    "final_image_approval_granted": false
+  }
+}

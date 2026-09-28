@@ -709,6 +709,17 @@
       "verified_at": "2026-09-28",
       "evidence_url": "https://www.chanel.com/de/parfum/p/116520/coco-mademoiselle-eau-de-parfum-zerstaeuber/",
       "evidence_note": "Official CHANEL Germany page identifies COCO MADEMOISELLE Eau de Parfum Zerstäuber 100 ml as Ref. 116520. GTIN 3145891165203 is independently corroborated for the exact 100 ml Eau de Parfum and distinguishes it from Eau de Parfum Intense Ref. 116660, Eau de Toilette Ref. 116460 and L'Eau Privée Ref. 116260."
+    },
+    {
+      "product_id": "SC-CALVIN-KLEIN-EUPHORIA-EDP-100",
+      "merchant": "notino",
+      "merchant_product_id": "CAK10204",
+      "ean": "0088300162512",
+      "gtin": "0088300162512",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-09-28",
+      "evidence_url": "https://www.notino.de/calvin-klein/euphoria-eau-de-parfum-fur-damen/",
+      "evidence_note": "Notino DE identifies Calvin Klein euphoria Eau de Parfum für Damen in the 100 ml variant under code CAK10204. GTIN 0088300162512 is independently corroborated for the original women's Euphoria Eau de Parfum 100 ml and excludes Euphoria Men and newer Elixir flankers."
     }
   ]
 }
