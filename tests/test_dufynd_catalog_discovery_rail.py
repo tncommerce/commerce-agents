@@ -20,6 +20,8 @@ def test_catalog_has_immersive_profile_discovery_rail() -> None:
 def test_discovery_cards_toggle_the_existing_profile_filter() -> None:
     source = CATALOG_BROWSER.read_text(encoding="utf-8")
 
-    assert 'setProfile(active ? "all" : card.value)' in source
+    assert 'selectProfile(active ? "all" : card.value, !active)' in source
+    assert "setProfile(nextProfile)" in source
+    assert 'setSort("profile")' in source
     assert "aria-pressed={active}" in source
     assert 'className="mt-4 rounded-2xl' in source

@@ -28,6 +28,7 @@ type ProfileFilter =
 type DiscoveryProfile = Exclude<ProfileFilter, "all">;
 type SortMode =
   | "popular"
+  | "profile"
   | "rating"
   | "performance"
   | "brand";
@@ -92,6 +93,7 @@ const SORT_OPTIONS: {
   label: string;
 }[] = [
   { value: "popular", label: "Community-Aktivität" },
+  { value: "profile", label: "Passend zum Duftprofil" },
   { value: "rating", label: "Bewertung" },
   { value: "performance", label: "Haltbarkeit & Ausstrahlung" },
   { value: "brand", label: "Marke A–Z" },
@@ -350,6 +352,34 @@ export default function FragranceCatalogBrowser({
     useState(PAGE_SIZE);
   const lastTrackedSearchRef = useRef("");
   const initialSearchAppliedRef = useRef(false);
+  const resultsRef = useRef<HTMLHeadingElement>(null);
+  const jumpToResultsRef = useRef(false);
+
+  const selectProfile = (
+    nextProfile: ProfileFilter,
+    jumpToResults = false,
+  ) => {
+    jumpToResultsRef.current = jumpToResults;
+    setProfile(nextProfile);
+    if (nextProfile === "all") {
+      if (sort === "profile") setSort("popular");
+      return;
+    }
+
+    setSort("profile");
+  };
+
+  useEffect(() => {
+    if (!jumpToResultsRef.current || profile === "all") return;
+    jumpToResultsRef.current = false;
+    resultsRef.current?.focus({ preventScroll: true });
+    resultsRef.current?.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+      block: "start",
+    });
+  }, [profile]);
 
   useEffect(() => {
     if (initialSearchAppliedRef.current) return;
@@ -457,6 +487,16 @@ export default function FragranceCatalogBrowser({
               (a.community.rating_10 ?? 0) ||
             b.community.rating_count -
               a.community.rating_count
+          );
+        }
+
+        if (sort === "profile" && profile !== "all") {
+          return (
+            (b.scores[profile] ?? 0) -
+              (a.scores[profile] ?? 0) ||
+            b.community.rating_count -
+              a.community.rating_count ||
+            a.name.localeCompare(b.name, "de")
           );
         }
 
@@ -609,7 +649,7 @@ export default function FragranceCatalogBrowser({
                 key={card.value}
                 type="button"
                 onClick={() =>
-                  setProfile(active ? "all" : card.value)
+                  selectProfile(active ? "all" : card.value, !active)
                 }
                 className={`group min-w-[224px] snap-start rounded-2xl border p-4 text-left transition duration-200 lg:min-w-0 ${
                   active
@@ -779,7 +819,11 @@ export default function FragranceCatalogBrowser({
                 }
                 className="h-11 w-full rounded-xl border border-(--line) bg-(--surface) px-3 text-[13px] text-(--ink) outline-none focus:border-(--accent)"
               >
-                {SORT_OPTIONS.map((option) => (
+                {SORT_OPTIONS.filter(
+                  (option) =>
+                    option.value !== "profile" ||
+                    profile !== "all",
+                ).map((option) => (
                   <option
                     key={option.value}
                     value={option.value}
@@ -836,7 +880,7 @@ export default function FragranceCatalogBrowser({
                       key={option.value}
                       type="button"
                       onClick={() =>
-                        setProfile(option.value)
+                        selectProfile(option.value)
                       }
                       className={`rounded-full border px-3 py-1.5 text-[12px] font-medium transition ${
                         active
@@ -903,7 +947,7 @@ export default function FragranceCatalogBrowser({
             {profile !== "all" ? (
               <button
                 type="button"
-                onClick={() => setProfile("all")}
+                onClick={() => selectProfile("all")}
                 className="shrink-0 rounded-full border border-(--line) bg-(--surface) px-3 py-1.5 text-[11px] font-medium text-(--ink)"
                 aria-label="Duftprofilfilter entfernen"
               >
@@ -979,9 +1023,28 @@ export default function FragranceCatalogBrowser({
         </div>
       </section>
 
+      {profile !== "all" ? (
+        <div className="mt-5 flex items-baseline justify-between gap-3">
+          <h2
+            ref={resultsRef}
+            tabIndex={-1}
+            className="scroll-mt-5 text-[17px] font-semibold text-(--ink) focus:outline-none"
+          >
+            {optionLabel(PROFILE_OPTIONS, profile)} entdecken
+          </h2>
+          <span className="text-[11px] text-(--ink-soft)">
+            {filtered.length} Treffer
+            {sort === "profile" ? " · stärkstes Profil zuerst" : ""}
+          </span>
+        </div>
+      ) : null}
+
       {filtered.length ? (
         <>
-          <section className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <section
+            className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
+            aria-label="Passende Düfte"
+          >
             {visibleFragrances.map((fragrance) => {
               const visual = fragrance.preferred_visual;
               const isProductTruth =
