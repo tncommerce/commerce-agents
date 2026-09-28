@@ -83,11 +83,7 @@ def approval_plan(
         raise ValueError("model_rights_evidence_incomplete")
 
     product = next(
-        (
-            row
-            for row in products.get("products", [])
-            if _norm(row.get("product_id")) == product_id
-        ),
+        (row for row in products.get("products", []) if _norm(row.get("product_id")) == product_id),
         None,
     )
     if product is None:
