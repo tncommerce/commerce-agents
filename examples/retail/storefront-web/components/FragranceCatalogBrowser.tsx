@@ -387,9 +387,18 @@ export default function FragranceCatalogBrowser({
 
     const params = new URLSearchParams(window.location.search);
     const initialSearch = params.get("q")?.trim();
+    const initialProfile = params.get("profil");
 
     if (initialSearch) {
       setSearch(initialSearch.slice(0, 80));
+    }
+
+    const matchedProfile = PROFILE_DISCOVERY.find(
+      (card) => card.value === initialProfile,
+    );
+    if (matchedProfile) {
+      setProfile(matchedProfile.value);
+      setSort("profile");
     }
   }, []);
 
