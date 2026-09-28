@@ -3,6 +3,7 @@ from __future__ import annotations
 import gzip
 import json
 from pathlib import Path
+from urllib.request import Request
 
 import pytest
 from scripts import fetch_dufynd_awin_data_feed as awin
@@ -103,3 +104,30 @@ def test_sanitized_metadata_never_contains_secret_download_url() -> None:
     assert metadata["download_host"] == "datafeed.api.productserve.com"
     assert "URL" not in metadata
     assert "SECRET" not in str(metadata)
+
+
+@pytest.mark.parametrize(
+    "redirect_url",
+    [
+        "https://external.example/feed?apikey=SECRET",
+        "http://datafeed.api.productserve.com/feed?apikey=SECRET",
+        "https://user:SECRET@datafeed.api.productserve.com/feed",
+    ],
+)
+def test_credentialed_awin_request_cannot_redirect_outside_allowed_https_hosts(
+    redirect_url: str,
+) -> None:
+    request = Request("https://productdata.awin.com/datafeed/list/apikey/SECRET")
+
+    with pytest.raises(ValueError, match="awin_redirect_host_not_allowed") as exc:
+        awin.AwinRedirectHandler().redirect_request(request, None, 302, "Found", {}, redirect_url)
+    assert "SECRET" not in str(exc.value)
+
+
+def test_awin_request_can_redirect_to_allowed_https_feed_host() -> None:
+    request = Request("https://productdata.awin.com/datafeed/list/apikey/SECRET")
+    redirected = awin.AwinRedirectHandler().redirect_request(
+        request, None, 302, "Found", {}, "https://datafeed.api.productserve.com/feed"
+    )
+
+    assert redirected.full_url == "https://datafeed.api.productserve.com/feed"
