@@ -105,7 +105,13 @@
         "advertiser_program_terms_take_precedence_if_they_change",
         "remove_material_if_requested_by_awin_or_advertiser_or_if_program_approval_ends",
         "final_visual_identity_approval_remains_human_required"
-      ]
+      ],
+      "candidate_evidence_requirements": {
+        "feed_id": "91379",
+        "advertiser_id": "31081",
+        "minimum_feed_snapshot_observed_at": "2026-09-28T00:00:00+00:00",
+        "require_feed_snapshot_sha256": true
+      }
     }
   ]
 }
