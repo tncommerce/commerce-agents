@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import gzip
 
-import pytest
 from scripts.fetch_dufynd_awin_data_feed import (
     find_feed,
     parse_feed_list,
@@ -38,12 +37,16 @@ def test_find_feed_selects_exact_advertiser_and_feed() -> None:
 
 
 def test_find_feed_rejects_missing_target() -> None:
-    with pytest.raises(ValueError, match="target_awin_feed_not_found"):
+    try:
         find_feed(
             parse_feed_list(CSV.encode("utf-8")),
             advertiser_id="31081",
             feed_id="missing",
         )
+    except ValueError as exc:
+        assert str(exc) == "target_awin_feed_not_found"
+    else:
+        raise AssertionError("missing target feed must be rejected")
 
 
 def test_sanitized_metadata_never_contains_secret_download_url() -> None:
