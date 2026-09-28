@@ -13,28 +13,25 @@
       "advertiser_id": "11672",
       "program": "Perfumetrader DE",
       "program_status": "approved",
-      "rights_status": "current_network_terms_reverification_required",
+      "rights_status": "verified_for_publisher_service",
       "publisher_scope": "dufynd_owned_publisher_service",
       "asset_scope": "unaltered_advertiser_materials_from_official_awin_product_feed",
-      "checked_at": "2026-09-22",
-      "reverification_observed_at": "2026-09-27",
-      "reverification_reason": "The recorded sublicense finding cites the 2018 publisher terms, but Awin says revised publisher terms effective 2025-08-28 apply to all publishers. The current AWIN AG PDF was not accessible for clause review; do not treat the historic finding as current rights clearance.",
+      "checked_at": "2026-09-28",
       "evidence": [
         {
-          "source": "Awin Publisher Terms Update and current AWIN AG Publisher Terms landing page",
-          "url": "https://success.awin.com/articles/en_US/Knowledge/Publisher-Terms-Update",
-          "secondary_url": "https://www.awin.com/de/publisher-terms",
-          "finding": "Awin states the updated terms apply to all publishers since 2025-08-28. The current AWIN AG PDF link returned access denied during the 2026-09-27 review, so the 2018 clause cannot establish current publisher image rights."
-        },
-        {
-          "source": "Awin Publisher Terms",
-          "url": "https://www.awin.com/de/allgemeine-geschaftsbedingungen/publisher-terms-and-conditions-2018",
+          "source": "AWIN AG Publisher Terms — August 2025",
+          "url": "https://www.awin.com/docs.awin.com/Legal/Publisher%2BTerms/2025/DE-Awin-AG-Publisher-terms-August-2025.pdf",
           "clauses": [
             "4.3",
             "4.4",
             "10.1"
           ],
-          "finding": "Awin makes advertiser materials available to admitted publishers and grants a revocable, non-exclusive sublicense to publish unaltered advertiser materials within the publisher service, subject to the agreement and advertiser program terms."
+          "finding": "Current AWIN AG terms make Advertiser Materials available to approved publishers and grant a revocable, non-exclusive, non-transferable, royalty-free, worldwide sublicense to publish unmodified Advertiser Materials on the Publisher Service as necessary to market the advertiser and its products, subject to the Agreement and Programme Terms."
+        },
+        {
+          "source": "Awin Publisher Terms Update",
+          "url": "https://success.awin.com/articles/en_US/Knowledge/Publisher-Terms-Update",
+          "finding": "Awin states the August 2025 Publisher Terms apply to all publishers using the platform from 2025-08-28."
         },
         {
           "source": "Awin Product Feed Publisher Guide",
@@ -48,15 +45,16 @@
         }
       ],
       "constraints": [
-        "reverify_current_awin_ag_terms_before_any_candidate_registration_or_feed_image_approval",
-        "candidate_must_come_from_official_awin_product_feed",
+        "candidate_must_come_from_current_official_awin_product_feed",
+        "exact_variant_feed_row_must_be_revalidated_before_candidate_registration",
         "program_membership_must_remain_approved",
         "asset_must_be_used_only_within_dufynd_publisher_service",
         "asset_must_not_be_materially_modified",
         "advertiser_program_terms_take_precedence_if_they_change",
-        "revoke_if_program_or_network_rights_change",
+        "remove_material_if_requested_by_awin_or_advertiser_or_if_program_approval_ends",
         "final_visual_identity_approval_remains_human_required"
-      ]
+      ],
+      "current_terms_verified_at": "2026-09-28"
     },
     {
       "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
