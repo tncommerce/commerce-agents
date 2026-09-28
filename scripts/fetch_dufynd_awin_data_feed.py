@@ -116,10 +116,7 @@ def download_feed_from_list(
     if not api_key:
         raise ValueError("awin_data_feed_api_key_required")
 
-    list_url = (
-        "https://productdata.awin.com/datafeed/list/apikey/"
-        + quote(api_key, safe="")
-    )
+    list_url = "https://productdata.awin.com/datafeed/list/apikey/" + quote(api_key, safe="")
     rows = parse_feed_list(_read_url(list_url, max_bytes=list_max_bytes))
     row = find_feed(rows, advertiser_id=advertiser_id, feed_id=feed_id)
     metadata = sanitized_feed_metadata(row)
@@ -143,9 +140,7 @@ def download_feed_from_list(
     }
 
     if output_path is not None:
-        feed_payload = _maybe_decompress(
-            _read_url(download_url, max_bytes=feed_max_bytes)
-        )
+        feed_payload = _maybe_decompress(_read_url(download_url, max_bytes=feed_max_bytes))
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_bytes(feed_payload)
         report["downloaded"] = True
