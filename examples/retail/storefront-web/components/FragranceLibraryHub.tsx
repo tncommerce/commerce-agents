@@ -41,6 +41,29 @@ const PROFILE_AXES = [
   },
 ] as const;
 
+function dominantLibraryProfile(
+  fragrance: StaticFragrance,
+): {
+  key: (typeof PROFILE_AXES)[number]["key"];
+  label: string;
+  value: number;
+} | null {
+  const ranked = PROFILE_AXES.map((axis) => ({
+    key: axis.key,
+    label: axis.label,
+    value: Math.max(
+      0,
+      Math.min(10, fragrance.scores[axis.key] ?? 0),
+    ),
+  })).sort(
+    (a, b) =>
+      b.value - a.value ||
+      a.label.localeCompare(b.label, "de"),
+  );
+
+  return ranked[0]?.value > 0 ? ranked[0] : null;
+}
+
 function emptyState(): FragranceLibraryState {
   return {
     version: 1,
@@ -208,23 +231,44 @@ function FragranceCard({
 }) {
   const visual = fragrance.preferred_visual;
   const isProductTruth = isVerifiedProductTruthVisual(visual);
+  const dominantProfile = dominantLibraryProfile(fragrance);
 
   return (
-    <article className="overflow-hidden rounded-2xl border border-(--line) bg-(--card) shadow-(--shadow-sm)">
+    <article
+      className="dufynd-library-card overflow-hidden rounded-2xl border border-(--line) bg-(--card) shadow-(--shadow-sm)"
+      data-dufynd-library-theme={
+        dominantProfile?.key || "balanced"
+      }
+    >
       <a
         href={`/duft/${fragrance.slug}`}
         className="group block"
       >
-        <FragranceVisual
-          imageUrl={visual?.url}
-          cutoutUrl={isProductTruth ? visual?.url : undefined}
-          alt={`${fragrance.brand} ${fragrance.name}`}
-          variant="card"
-          mode={isProductTruth ? "cutout" : "editorial"}
-          className="h-48 w-full"
-        />
+        <div
+          className="dufynd-library-card-stage"
+          data-dufynd-library-card-stage
+        >
+          <div
+            aria-hidden
+            className="dufynd-library-card-atmosphere"
+          />
+          <FragranceVisual
+            imageUrl={visual?.url}
+            cutoutUrl={isProductTruth ? visual?.url : undefined}
+            alt={`${fragrance.brand} ${fragrance.name}`}
+            variant="card"
+            mode={isProductTruth ? "cutout" : "editorial"}
+            className="dufynd-library-card-visual h-48 w-full"
+          />
+          {dominantProfile ? (
+            <div className="dufynd-library-card-signature">
+              <span>{dominantProfile.label}</span>
+              <strong>{dominantProfile.value}/10</strong>
+            </div>
+          ) : null}
+        </div>
 
-        <div className="p-4 pb-3">
+        <div className="dufynd-library-card-body p-4 pb-3">
           <div className="text-[10.5px] font-medium uppercase tracking-[0.08em] text-(--ink-soft)">
             {fragrance.brand}
           </div>
@@ -243,7 +287,7 @@ function FragranceCard({
         </div>
       </a>
 
-      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-(--line) p-3">
+      <div className="dufynd-library-card-actions flex flex-wrap items-center justify-between gap-2 border-t border-(--line) p-3">
         <FragranceSaveControls
           productId={fragrance.product_id}
           source={source}
@@ -419,7 +463,7 @@ export default function FragranceLibraryHub({
 
   return (
     <>
-      <section className="relative mt-6 overflow-hidden rounded-[30px] border border-[#d9bd82]/25 bg-[#15120f] p-5 text-white shadow-[0_26px_80px_-42px_rgba(45,29,8,0.95)] sm:p-7">
+      <section className="dufynd-library-hero relative mt-6 overflow-hidden rounded-[30px] border border-[#d9bd82]/25 bg-[#15120f] p-5 text-white shadow-[0_26px_80px_-42px_rgba(45,29,8,0.95)] sm:p-7">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_10%,rgba(217,189,130,0.18),transparent_32%),radial-gradient(circle_at_88%_78%,rgba(111,74,32,0.24),transparent_34%),linear-gradient(135deg,#19140f_0%,#0d0b09_58%,#20170d_100%)]"
@@ -527,7 +571,7 @@ export default function FragranceLibraryHub({
       </section>
 
       {mode === "owned" && owned.length >= 2 ? (
-        <section className="mt-5 rounded-2xl border border-(--line) bg-(--card) p-5 shadow-(--shadow-sm)">
+        <section className="dufynd-library-profile mt-5 rounded-2xl border border-(--line) bg-(--card) p-5 shadow-(--shadow-sm)">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
               <h2 className="text-[18px] font-semibold">
@@ -562,7 +606,7 @@ export default function FragranceLibraryHub({
               return (
                 <div
                   key={axis.key}
-                  className="rounded-xl border border-(--line) bg-(--well)/35 p-3"
+                  className="dufynd-library-profile-axis rounded-xl border border-(--line) bg-(--well)/35 p-3"
                 >
                   <div className="flex items-baseline justify-between gap-2">
                     <div className="text-[11px] font-medium text-(--ink-soft)">
@@ -628,7 +672,7 @@ export default function FragranceLibraryHub({
                   <a
                     key={item.fragrance.product_id}
                     href={`/duft/${item.fragrance.slug}`}
-                    className="rounded-xl border border-(--line) bg-(--well)/35 p-3 transition hover:border-(--accent)"
+                    className="dufynd-library-suggestion rounded-xl border border-(--line) bg-(--well)/35 p-3 transition hover:border-(--accent)"
                   >
                     <div className="text-[10.5px] font-semibold uppercase tracking-[0.06em] text-(--ink-soft)">
                       {item.reason}
@@ -661,7 +705,10 @@ export default function FragranceLibraryHub({
 
       {active.length ? (
         <>
-          <section className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <section
+            className="dufynd-library-grid mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
+            data-dufynd-library-grid
+          >
             {active.map((fragrance) => (
               <FragranceCard
                 key={fragrance.product_id}
@@ -696,7 +743,7 @@ export default function FragranceLibraryHub({
           </div>
         </>
       ) : (
-        <section className="mt-5 rounded-2xl border border-dashed border-(--line) bg-(--card) px-5 py-10 text-center">
+        <section className="dufynd-library-empty mt-5 rounded-2xl border border-dashed border-(--line) bg-(--card) px-5 py-10 text-center">
           <h2 className="text-[17px] font-semibold">
             {emptyTitle}
           </h2>
