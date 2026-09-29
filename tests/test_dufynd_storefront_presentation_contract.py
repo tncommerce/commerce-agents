@@ -17,6 +17,7 @@ def test_discovery_surfaces_use_presentation_visual() -> None:
     detail_page = _read("app/duft/[slug]/page.tsx")
     acquisition = _read("components/AcquisitionLanding.tsx")
     library_hub = _read("components/FragranceLibraryHub.tsx")
+    home_view = _read("components/views/HomeView.tsx")
 
     assert "presentation_visual: FragranceVisualAsset | null" in catalog_lib
     assert 'composition === "product_scene"' in catalog_lib
@@ -26,6 +27,7 @@ def test_discovery_surfaces_use_presentation_visual() -> None:
     assert "item.fragrance.presentation_visual" in detail_page
     assert "fragrance.presentation_visual" in acquisition
     assert "fragrance.presentation_visual" in library_hub
+    assert "fragrance?.presentation_visual?.url" in home_view
 
 
 def test_truth_sensitive_detail_surface_stays_on_preferred_visual() -> None:
