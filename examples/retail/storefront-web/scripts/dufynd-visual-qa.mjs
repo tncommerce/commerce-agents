@@ -873,6 +873,16 @@ try {
               "social start direct search does not target the catalogue query flow",
             );
           }
+          await socialSearch.fill("1 Million");
+          const directOneMillion = page.locator(
+            '[data-dufynd-social-live-results] a[href="/duft/rabanne-1-million"]',
+          );
+          if ((await directOneMillion.count()) !== 1) {
+            throw new Error(
+              "social start live search does not surface Rabanne 1 Million directly",
+            );
+          }
+          await socialSearch.fill("");
 
           const requiredEntryPaths = [
             "/duftfinder",
