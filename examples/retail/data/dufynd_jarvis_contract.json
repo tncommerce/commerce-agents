@@ -278,7 +278,9 @@
       "yellow_handoff": "Validated engineering patches may be pushed only to a jarvis/worker-* branch and opened as a PR against scentai-mvp. They are never auto-merged.",
       "morning_report": "Generate JSON and Markdown from persisted session state, autonomy queue, health, pending decisions, budget status and audited agent runs.",
       "scheduling": "No recurring schedule is enabled. The pilot requires an explicit operator-started workflow dispatch.",
-      "main_branch_allowed": false
+      "main_branch_allowed": false,
+      "event_order": "Process bounded pending Jarvis inbox events before repo-current task selection; if backlog remains after the configured event limit, defer task execution.",
+      "policy_source": "examples/retail/data/scentai_jarvis_operating_policy.json"
     }
   },
   "human_decision_tokens": {
