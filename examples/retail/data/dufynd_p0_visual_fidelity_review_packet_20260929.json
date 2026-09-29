@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated_at": "2026-09-29",
-  "status": "review_only_not_approved",
+  "status": "partially_approved_2026-09-29",
   "purpose": "Human fidelity review packet for existing DUFYND P0 product-image candidates. This packet does not approve rights, activate imagery, or publish anything.",
   "approval_scope": {
     "decision": "visual_fidelity_only",
@@ -24,7 +24,7 @@
       "volume_ml": 100,
       "candidate_asset": "examples/retail/review-assets/product-candidates/armani-swy-intensely-p0-v3.webp",
       "reference_url": "https://www.armanibeauty.de/dufte/herrenduft/stronger-with-you/stronger-with-you-intensely-eau-de-parfum/3614272225718.html",
-      "current_state": "candidate_generated_pending_reference_gate",
+      "current_state": "fidelity_approved_promoted_product_truth",
       "review_focus": [
         "cap sphere size",
         "ring-stack geometry",
@@ -32,7 +32,11 @@
         "front proportions",
         "typography and label placement"
       ],
-      "known_finding": "Candidate is substantially closer to the current 100 ml presentation but remains intentionally unverified pending final side-by-side fidelity approval."
+      "known_finding": "Candidate is substantially closer to the current 100 ml presentation but remains intentionally unverified pending final side-by-side fidelity approval.",
+      "review_decision": "approve_fidelity",
+      "reviewed_at": "2026-09-29",
+      "rights_source_state": "dufynd_generated_internal_asset",
+      "public_asset": "/products/armani-swy-intensely-100-cutout-production.webp"
     },
     {
       "priority": "P0",
@@ -51,7 +55,9 @@
         "front typography and emblem",
         "avoid any 75 ml / 2.5 FL.OZ mismatch"
       ],
-      "known_finding": "Current official imagery remains variant-ambiguous, so this candidate must stay inactive until exact 100 ml identity can be resolved with confidence."
+      "known_finding": "Current official imagery remains variant-ambiguous, so this candidate must stay inactive until exact 100 ml identity can be resolved with confidence.",
+      "review_decision": "needs_revision",
+      "reviewed_at": "2026-09-29"
     },
     {
       "priority": "P0",
@@ -62,7 +68,7 @@
       "volume_ml": 100,
       "candidate_asset": "examples/retail/review-assets/product-candidates/prada-lhomme-p0-v5.webp",
       "reference_url": "https://www.prada-beauty.com/fragrance/lhomme-prada/lhomme-prada-eau-de-toilette/8435137749607.html",
-      "current_state": "candidate_generated_pending_reference_gate",
+      "current_state": "fidelity_approved_promoted_product_truth",
       "review_focus": [
         "architectural rectangular bottle proportions",
         "black Saffiano treatment",
@@ -70,7 +76,11 @@
         "silver cap geometry",
         "front typography and exact 100 ml silhouette"
       ],
-      "known_finding": "Candidate is much closer to the official 100 ml reference but remains inactive until exact side-by-side fidelity passes."
+      "known_finding": "Candidate is much closer to the official 100 ml reference but remains inactive until exact side-by-side fidelity passes.",
+      "review_decision": "approve_fidelity",
+      "reviewed_at": "2026-09-29",
+      "rights_source_state": "dufynd_generated_internal_asset",
+      "public_asset": "/products/prada-lhomme-100-cutout-production.webp"
     },
     {
       "priority": "P0",
@@ -81,7 +91,7 @@
       "volume_ml": 100,
       "candidate_asset": "examples/retail/review-assets/product-candidates/sospiro-vibrato-p0-v2.webp",
       "reference_url": "https://sospirointernational.com/products/vibrato",
-      "current_state": "candidate_generated_pending_reference_gate",
+      "current_state": "fidelity_approved_promoted_product_truth",
       "review_focus": [
         "emerald velvet silhouette",
         "gold cap sculpture",
@@ -89,8 +99,24 @@
         "emblem detail",
         "complete 100 ml proportions"
       ],
-      "known_finding": "Candidate is substantially closer to the official 100 ml presentation but remains intentionally unverified pending final human side-by-side approval."
+      "known_finding": "Candidate is substantially closer to the official 100 ml presentation but remains intentionally unverified pending final human side-by-side approval.",
+      "review_decision": "approve_fidelity",
+      "reviewed_at": "2026-09-29",
+      "rights_source_state": "dufynd_generated_internal_asset",
+      "public_asset": "/products/sospiro-vibrato-100-cutout-production.webp"
     }
   ],
-  "post_review_rule": "An approve_fidelity decision alone must not activate an image. Rights/source clearance and the existing image approval/promotion gates remain authoritative."
+  "post_review_rule": "Fidelity approval alone never grants rights to external imagery. The three promoted assets are DUFYND-generated internal candidates with explicit human fidelity approval; manufacturer reference imagery is not republished. Creed remains inactive.",
+  "reviewed_at": "2026-09-29",
+  "review_summary": {
+    "approved_fidelity_product_ids": [
+      "SC-ARMANI-SWY-INTENSELY-100",
+      "SC-PRADA-LHOMME-100",
+      "SC-SOSPIRO-VIBRATO-100"
+    ],
+    "needs_revision_product_ids": [
+      "SC-CREED-ABSOLU-AVENTUS-100"
+    ],
+    "note": "Human approval applies to visual fidelity of the three DUFYND-generated candidates. Creed Absolu Aventus remains blocked by exact-variant ambiguity."
+  }
 }
