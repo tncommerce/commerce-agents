@@ -36,6 +36,15 @@ def test_visual_state_distinguishes_truth_editorial_and_missing() -> None:
         )
         == "editorial_only"
     )
+    assert (
+        visual_state(
+            {
+                "image_url": "/products/pilot/legacy-editorial.webp",
+                "visuals": [],
+            }
+        )
+        == "legacy_visual"
+    )
     assert visual_state({"visuals": []}) == "missing_real_asset"
 
 
@@ -95,6 +104,15 @@ def test_storefront_presentation_distinguishes_layered_editorial_and_bare_truth(
             }
         )
         == "product_truth_stage_only"
+    )
+    assert (
+        storefront_presentation_state(
+            {
+                "image_url": "/products/pilot/legacy-editorial.webp",
+                "visuals": [],
+            }
+        )
+        == "legacy_image_presentation"
     )
 
 
