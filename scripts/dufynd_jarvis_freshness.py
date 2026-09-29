@@ -44,6 +44,15 @@ def latest_context_timestamp(master_status: list[dict[str, Any]]) -> datetime | 
     return max(candidates) if candidates else None
 
 
+def repo_control_plane_marker(
+    master_status: list[dict[str, Any]],
+) -> dict[str, Any] | None:
+    for row in master_status:
+        if row.get("key") == "jarvis.repo_control_plane":
+            return row
+    return None
+
+
 def evaluate_freshness(
     repo_status: dict[str, Any],
     supabase_context: dict[str, Any],
@@ -52,24 +61,46 @@ def evaluate_freshness(
 ) -> dict[str, Any]:
     allowed_lag = max(0.0, float(max_lag_hours))
     repo_generated_at = parse_timestamp(repo_status.get("generated_at"))
+    repo_fingerprint = str(repo_status.get("source_fingerprint_sha256") or "").strip()
 
     master_status = supabase_context.get("master_status") or []
     if not isinstance(master_status, list):
         master_status = []
-    supabase_latest_at = latest_context_timestamp(master_status)
+
+    marker = repo_control_plane_marker(master_status)
+    marker_value = marker.get("value") if isinstance(marker, dict) else None
+    if not isinstance(marker_value, dict):
+        marker_value = {}
+
+    marker_fingerprint = str(
+        marker_value.get("source_fingerprint_sha256") or ""
+    ).strip()
+    marker_verified_at = (
+        parse_timestamp(marker.get("last_verified_at"))
+        if isinstance(marker, dict)
+        else None
+    )
 
     reasons: list[str] = []
     lag_hours: float | None = None
 
     if repo_generated_at is None:
         reasons.append("repo_generated_at_missing_or_invalid")
-    if supabase_latest_at is None:
-        reasons.append("supabase_master_status_timestamp_missing")
+    if not repo_fingerprint:
+        reasons.append("repo_source_fingerprint_missing")
+    if marker is None:
+        reasons.append("repo_control_plane_sync_missing")
+    elif not marker_fingerprint:
+        reasons.append("repo_control_plane_fingerprint_missing")
+    elif repo_fingerprint and marker_fingerprint != repo_fingerprint:
+        reasons.append("repo_control_plane_fingerprint_mismatch")
 
-    if repo_generated_at is not None and supabase_latest_at is not None:
-        lag_hours = (repo_generated_at - supabase_latest_at).total_seconds() / 3600
+    if repo_generated_at is not None and marker_verified_at is not None:
+        lag_hours = (repo_generated_at - marker_verified_at).total_seconds() / 3600
         if lag_hours > allowed_lag:
-            reasons.append("supabase_control_plane_older_than_repo")
+            reasons.append("repo_control_plane_sync_too_old")
+    elif marker is not None:
+        reasons.append("repo_control_plane_verified_at_missing")
 
     stale = bool(reasons)
 
@@ -82,9 +113,11 @@ def evaluate_freshness(
             repo_generated_at.isoformat() if repo_generated_at is not None else None
         ),
         "supabase_latest_at": (
-            supabase_latest_at.isoformat() if supabase_latest_at is not None else None
+            marker_verified_at.isoformat() if marker_verified_at is not None else None
         ),
-        "repo_source_fingerprint_sha256": repo_status.get("source_fingerprint_sha256"),
+        "repo_source_fingerprint_sha256": repo_fingerprint or None,
+        "supabase_source_fingerprint_sha256": marker_fingerprint or None,
+        "sync_key": "jarvis.repo_control_plane",
         "reasons": reasons,
     }
 
