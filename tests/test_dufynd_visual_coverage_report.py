@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from scripts.report_dufynd_visual_coverage import (
     build_visual_coverage_report,
+    storefront_presentation_state,
     visual_state,
 )
 
@@ -38,6 +39,65 @@ def test_visual_state_distinguishes_truth_editorial_and_missing() -> None:
     assert visual_state({"visuals": []}) == "missing_real_asset"
 
 
+
+
+def test_storefront_presentation_distinguishes_layered_editorial_and_bare_truth() -> None:
+    assert (
+        storefront_presentation_state(
+            {
+                "visuals": [
+                    {
+                        "role": "cutout",
+                        "fidelity_status": "verified",
+                        "url": "/products/truth.webp",
+                    },
+                    {
+                        "role": "editorial",
+                        "fidelity_status": "editorial_only",
+                        "composition": "bottle_free_backdrop",
+                        "url": "/products/world.webp",
+                    },
+                ]
+            }
+        )
+        == "layered_product_truth"
+    )
+    assert (
+        storefront_presentation_state(
+            {
+                "visuals": [
+                    {
+                        "role": "cutout",
+                        "fidelity_status": "verified",
+                        "url": "/products/truth.webp",
+                    },
+                    {
+                        "role": "editorial",
+                        "fidelity_status": "editorial_only",
+                        "composition": "product_scene",
+                        "url": "/products/editorial.webp",
+                    },
+                ]
+            }
+        )
+        == "editorial_product_scene"
+    )
+    assert (
+        storefront_presentation_state(
+            {
+                "visuals": [
+                    {
+                        "role": "cutout",
+                        "fidelity_status": "verified",
+                        "url": "/products/truth.webp",
+                    }
+                ]
+            }
+        )
+        == "product_truth_stage_only"
+    )
+
+
 def test_report_prioritizes_human_review_and_release_asset_work() -> None:
     products = {
         "products": [
@@ -61,6 +121,7 @@ def test_report_prioritizes_human_review_and_release_asset_work() -> None:
                     {
                         "role": "editorial",
                         "fidelity_status": "editorial_only",
+                        "composition": "product_scene",
                         "url": "/editorial.webp",
                     }
                 ],
@@ -135,6 +196,14 @@ def test_report_prioritizes_human_review_and_release_asset_work() -> None:
     assert report["coverage"]["editorial_only"] == 1
     assert report["coverage"]["missing_real_asset"] == 1
     assert report["coverage"]["real_visual_coverage_rate_pct"] == 66.67
+    assert report["storefront_presentation"]["editorial_product_scene"] == 1
+    assert report["storefront_presentation"]["product_truth_stage_only"] == 1
+    assert report["storefront_presentation"]["missing_presentation"] == 1
+    assert report["storefront_presentation"]["background_presented_rate_pct"] == 33.33
+    assert set(report["storefront_presentation_upgrade_product_ids"]) == {
+        "SC-A-100",
+        "SC-C-100",
+    }
     assert report["fidelity_review_ready_count"] == 2
     assert report["fidelity_review_queue"][0]["product_id"] == "SC-C-100"
     assert report["release_asset_blocked_count"] == 1
@@ -159,3 +228,4 @@ def test_report_ignores_non_scentai_products() -> None:
 
     assert report["live_product_count"] == 0
     assert report["coverage"]["real_visual_coverage_rate_pct"] == 0.0
+    assert report["storefront_presentation"]["background_presented_rate_pct"] == 0.0
