@@ -145,17 +145,32 @@ function audiencePreviewProducts(picks: Product[]) {
   const used = new Set<string>();
 
   return AUDIENCE_DISCOVERY.map((audience) => {
-    const matchesAudience = (product: Product) =>
-      getLiveFragranceByProductId(
-        String(product.product_id),
-      )?.target_groups.includes(audience.key);
+    const matches = picks
+      .filter((product) =>
+        getLiveFragranceByProductId(
+          String(product.product_id),
+        )?.target_groups.includes(audience.key),
+      )
+      .sort((a, b) => {
+        const aTargets =
+          getLiveFragranceByProductId(
+            String(a.product_id),
+          )?.target_groups.length ?? Number.MAX_SAFE_INTEGER;
+        const bTargets =
+          getLiveFragranceByProductId(
+            String(b.product_id),
+          )?.target_groups.length ?? Number.MAX_SAFE_INTEGER;
+
+        return (
+          aTargets - bTargets ||
+          Number(b.review_count ?? 0) - Number(a.review_count ?? 0)
+        );
+      });
 
     const product =
-      picks.find(
-        (candidate) =>
-          matchesAudience(candidate) &&
-          !used.has(String(candidate.product_id)),
-      ) || picks.find(matchesAudience);
+      matches.find(
+        (candidate) => !used.has(String(candidate.product_id)),
+      ) || matches[0];
 
     if (product) {
       used.add(String(product.product_id));
