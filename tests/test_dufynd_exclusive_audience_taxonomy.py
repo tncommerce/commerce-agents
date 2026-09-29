@@ -6,9 +6,7 @@ import json
 from pathlib import Path
 
 CATALOG_LIB = Path("examples/retail/storefront-web/lib/fragranceCatalog.ts")
-CATALOG_BROWSER = Path(
-    "examples/retail/storefront-web/components/FragranceCatalogBrowser.tsx"
-)
+CATALOG_BROWSER = Path("examples/retail/storefront-web/components/FragranceCatalogBrowser.tsx")
 HOME = Path("examples/retail/storefront-web/components/views/HomeView.tsx")
 PRODUCTS = Path("examples/retail/data/scentai_products.json")
 
@@ -18,7 +16,7 @@ def test_unisex_has_priority_at_storefront_taxonomy_boundary() -> None:
 
     assert 'if (normalized.has("unisex")) return "unisex";' in source
     assert 'if (hasMen && hasWomen) return "unisex";' in source
-    assert 'return catalogAudienceFor(fragrance.target_groups) === audience;' in source
+    assert "return catalogAudienceFor(fragrance.target_groups) === audience;" in source
 
 
 def test_catalog_filter_uses_exclusive_audience_matcher() -> None:
@@ -43,18 +41,10 @@ def test_live_data_contains_overlap_case_that_regression_covers() -> None:
     overlapping = [
         product
         for product in products
-        if "unisex" in (product.get("classification") or {}).get(
-            "scentai_target_groups", []
-        )
+        if "unisex" in (product.get("classification") or {}).get("scentai_target_groups", [])
         and (
-            "men"
-            in (product.get("classification") or {}).get(
-                "scentai_target_groups", []
-            )
-            or "women"
-            in (product.get("classification") or {}).get(
-                "scentai_target_groups", []
-            )
+            "men" in (product.get("classification") or {}).get("scentai_target_groups", [])
+            or "women" in (product.get("classification") or {}).get("scentai_target_groups", [])
         )
     ]
 
