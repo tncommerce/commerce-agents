@@ -15,7 +15,7 @@ def test_mobile_catalog_toolbar_keeps_filters_reachable_while_scrolling() -> Non
     assert "const filterSectionRef = useRef<HTMLElement>(null);" in text
     assert "const openMobileFilters = () => {" in text
     assert "filterSectionRef.current?.scrollIntoView({" in text
-    assert 'ref={filterSectionRef}' in text
+    assert "ref={filterSectionRef}" in text
     assert 'className="sticky bottom-3 z-20 mt-4 md:hidden"' in text
     assert 'aria-label="Katalogfilter öffnen"' in text
     assert "{filtered.length} Treffer" in text
