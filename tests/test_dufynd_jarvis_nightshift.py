@@ -129,6 +129,16 @@ def task(task_id: str, domain: str, priority: int) -> dict:
     }
 
 
+def test_non_green_task_is_not_selected() -> None:
+    candidate = task("repo_current_commerce", "commerce", 100)
+    candidate["approval_action_type"] = "manual_state_reconciliation_required"
+    queue = {"safe_to_execute": [candidate]}
+
+    selected = nightshift._select_task(queue, branch_worker_used=False)
+
+    assert selected is None
+
+
 def test_select_task_skips_second_engineering_patch() -> None:
     queue = {
         "safe_to_execute": [
