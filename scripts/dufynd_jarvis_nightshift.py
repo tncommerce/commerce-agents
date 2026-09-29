@@ -27,6 +27,14 @@ DEFAULT_WORKER_TIMEOUT_SECONDS = 600
 HARD_WORKER_TIMEOUT_SECONDS = 900
 DEFAULT_MAX_RETRIES = 1
 HARD_MAX_RETRIES = 2
+SAFE_TASK_STATE_PREFIX = "DUFYND_TASK_STATE:"
+SAFE_TASK_STATES = {
+    "done",
+    "waiting_human_input",
+    "waiting_external",
+    "blocked",
+    "in_progress",
+}
 
 
 def utc_now() -> datetime:
@@ -130,9 +138,14 @@ def _select_task(
     queue: dict[str, Any],
     *,
     branch_worker_used: bool,
+    attempted_task_ids: set[str] | None = None,
 ) -> dict[str, Any] | None:
     candidates = _safe_candidates(queue)
+    attempted = attempted_task_ids or set()
     for task in candidates:
+        task_id = str(task.get("task_id") or "")
+        if task_id in attempted:
+            continue
         if str(task.get("domain") or "") == "engineering" and branch_worker_used:
             continue
         return task
@@ -144,6 +157,18 @@ def _append_evidence(existing: object, note: str) -> str:
     if not base:
         return note[:12000]
     return f"{base}\n{note}"[:12000]
+
+
+def _safe_worker_outcome(evidence: object) -> str:
+    text = str(evidence or "")
+    for line in reversed(text.splitlines()):
+        stripped = line.strip()
+        if not stripped.startswith(SAFE_TASK_STATE_PREFIX):
+            continue
+        state = stripped[len(SAFE_TASK_STATE_PREFIX) :].strip().lower()
+        if state in SAFE_TASK_STATES:
+            return state
+    return "in_progress"
 
 
 def _run_exists_for_task(
@@ -352,16 +377,32 @@ async def _run_task_with_retry(
         if result_code == 0:
             current = bridge.load_autonomy_task(task_id) or {}
             if worker == "safe_worker":
-                final_status = "done"
+                worker_state = _safe_worker_outcome(current.get("evidence"))
+                if worker_state == "done":
+                    final_status = "done"
+                    persisted_status = "done"
+                    note = "GREEN task completed for the current repo fingerprint."
+                elif worker_state in {
+                    "waiting_human_input",
+                    "waiting_external",
+                    "blocked",
+                }:
+                    final_status = worker_state
+                    persisted_status = worker_state
+                    note = f"Safe worker outcome={worker_state}; no autonomous final action taken."
+                else:
+                    final_status = "in_progress"
+                    persisted_status = "ready"
+                    note = (
+                        "Safe worker reported in_progress or omitted a valid terminal marker; "
+                        "task re-queued for a future bounded session instead of being marked done."
+                    )
                 bridge.set_autonomy_task_status(
                     task_id=task_id,
-                    status=final_status,
+                    status=persisted_status,
                     evidence=_append_evidence(
                         current.get("evidence"),
-                        (
-                            f"nightshift_session={session['session_id']}; "
-                            "GREEN task completed for the current repo fingerprint."
-                        ),
+                        f"nightshift_session={session['session_id']}; {note}",
                     ),
                 )
             else:
@@ -500,9 +541,15 @@ async def run_nightshift(
             break
 
         queue = await asyncio.to_thread(bridge.load_autonomy_queue)
+        attempted_task_ids = {
+            str(item.get("task_id") or "")
+            for item in (session.get("task_results") or [])
+            if isinstance(item, dict)
+        }
         selected = _select_task(
             queue,
             branch_worker_used=bool(session.get("branch_worker_used")),
+            attempted_task_ids=attempted_task_ids,
         )
         if selected is None:
             safe_tasks = _safe_candidates(queue)
