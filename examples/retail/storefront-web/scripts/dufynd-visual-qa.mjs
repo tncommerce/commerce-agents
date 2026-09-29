@@ -748,6 +748,22 @@ try {
               `catalog initial browse should render 12 cards, got ${await catalogCards.count()}`,
             );
           }
+          const immersiveCatalogCards = page.locator(
+            "article.dufynd-catalog-card",
+          );
+          const immersiveCardStages = page.locator(
+            "[data-dufynd-catalog-card-stage]",
+          );
+          if ((await immersiveCatalogCards.count()) !== 12) {
+            throw new Error(
+              `catalog immersive card count mismatch: ${await immersiveCatalogCards.count()}`,
+            );
+          }
+          if ((await immersiveCardStages.count()) !== 12) {
+            throw new Error(
+              `catalog immersive visual-stage count mismatch: ${await immersiveCardStages.count()}`,
+            );
+          }
           if ((await catalogLoadMore.count()) !== 1) {
             throw new Error(
               "catalog initial browse is missing progressive disclosure",
