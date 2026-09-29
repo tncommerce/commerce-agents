@@ -522,6 +522,36 @@ def test_morning_report_uses_audited_system_data(monkeypatch) -> None:
     assert report["duration"] == "1h30m"
     assert report["completed"] == 1
     assert report["ai_cost_usd"] == 0.19
+    assert report["ai_cost_source"] == "audited_agent_runs"
+    assert report["ai_cost_complete"] is True
     assert report["budget"]["remaining_usd"] == 2.1
     assert "Verify merchant data" in markdown
     assert "$0.1900" in markdown
+
+
+def test_morning_report_marks_timeout_cost_as_incomplete(monkeypatch) -> None:
+    bridge = FakeBridge()
+    bridge.master[nightshift.SESSION_KEY] = {
+        "key": nightshift.SESSION_KEY,
+        "value": {
+            "session_id": "nightshift-timeout-report",
+            "status": "completed",
+            "started_at": "2026-09-29T20:00:00+00:00",
+            "ended_at": "2026-09-29T20:10:00+00:00",
+            "stop_reason": "event_timeout",
+            "event_result": 124,
+            "source_fingerprint_sha256": "fingerprint-1",
+            "task_results": [],
+            "validation": {"status": "not_run", "pr_url": None},
+        },
+    }
+    monkeypatch.setenv("DUFYND_JARVIS_BUDGET_ID", "jarvis_activation_pilot_001")
+
+    report, markdown = nightshift.build_morning_report(
+        bridge,
+        qa_status="failure",
+    )
+
+    assert report["ai_cost_source"] == "audited_agent_runs"
+    assert report["ai_cost_complete"] is False
+    assert "zusätzlicher Provider-Verbrauch unverbucht" in markdown
