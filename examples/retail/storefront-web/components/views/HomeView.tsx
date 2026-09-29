@@ -84,12 +84,25 @@ function resetHeroLight(event: PointerEvent<HTMLElement>) {
 /** Keep the homepage preview short and represent the available audiences. */
 function featured(catalog: Record<string, Product>): Product[] {
   const candidates = Object.values(catalog)
-    .filter(
-      (product) =>
-        String(product.product_id).startsWith("SC-") &&
-        product.in_stock !== false &&
-        String(product.image_url ?? "").includes("/products/pilot/"),
-    )
+    .filter((product) => {
+      if (
+        !String(product.product_id).startsWith("SC-") ||
+        product.in_stock === false
+      ) {
+        return false;
+      }
+
+      const fragrance = getLiveFragranceByProductId(
+        String(product.product_id),
+      );
+
+      return (
+        String(product.image_url ?? "").includes("/products/pilot/") ||
+        isVerifiedProductTruthVisual(
+          fragrance?.preferred_visual,
+        )
+      );
+    })
     .sort(
       (a, b) =>
         Number(b.review_count ?? 0) - Number(a.review_count ?? 0),
@@ -156,6 +169,29 @@ export default function HomeView({
       String(product.product_id).startsWith("SC-") &&
       product.in_stock !== false,
   ).length;
+  const audienceCounts = Object.values(catalog).reduce(
+    (counts, product) => {
+      if (
+        !String(product.product_id).startsWith("SC-") ||
+        product.in_stock === false
+      ) {
+        return counts;
+      }
+
+      const fragrance = getLiveFragranceByProductId(
+        String(product.product_id),
+      );
+
+      for (const target of fragrance?.target_groups || []) {
+        if (target in counts) {
+          counts[target as keyof typeof counts] += 1;
+        }
+      }
+
+      return counts;
+    },
+    { women: 0, men: 0, unisex: 0 },
+  );
   return (
     <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-4 px-4 sm:gap-6 sm:px-6">
       {spotlight ? (
@@ -371,6 +407,27 @@ export default function HomeView({
             className="shrink-0 rounded-full border border-(--line) bg-(--card) px-3 py-2 font-semibold text-(--accent-ink) transition hover:border-(--accent)"
           >
             {label} →
+          </a>
+        ))}
+      </nav>
+      <nav
+        aria-label="Zielgruppen im Duftkatalog"
+        className="flex items-center gap-2 overflow-x-auto pb-1 text-[11px] sm:gap-3"
+      >
+        <span className="shrink-0 font-semibold text-(--ink-soft)">
+          Für wen?
+        </span>
+        {[
+          ["women", "Damen", audienceCounts.women],
+          ["men", "Herren", audienceCounts.men],
+          ["unisex", "Unisex", audienceCounts.unisex],
+        ].map(([audience, label, count]) => (
+          <a
+            key={String(audience)}
+            href={`/duft?zielgruppe=${audience}`}
+            className="shrink-0 rounded-full border border-(--line) bg-(--card) px-3 py-2 font-semibold text-(--accent-ink) transition hover:border-(--accent)"
+          >
+            {label} · {count} →
           </a>
         ))}
       </nav>
