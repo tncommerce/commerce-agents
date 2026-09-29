@@ -3226,6 +3226,82 @@
         }
       ],
       "image_url": "/products/widian-london-editorial-user-higgsfield.webp"
+    },
+    {
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "brand": "Lancôme",
+      "name": "La Vie est Belle",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "classification": {
+        "scentai_target_groups": [
+          "women"
+        ],
+        "role": null,
+        "cluster_id": null,
+        "trend_bet": false
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 6.6,
+        "rating_count": 2137,
+        "longevity_10": 8.2,
+        "projection_10": 8.1,
+        "provisional": false
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "sweet",
+          "floral",
+          "fruity",
+          "gourmand",
+          "powdery"
+        ],
+        "scores": {
+          "freshness": 4,
+          "sweetness": 10,
+          "woodiness": 2,
+          "spiciness": 2
+        },
+        "score_confidence": "medium"
+      },
+      "market": {
+        "market_price_eur": 89,
+        "price_per_ml_eur": 0.89,
+        "price_source_count": 1,
+        "price_checked_at": "2026-09-27"
+      },
+      "relationships": [],
+      "evidence": {
+        "overall": "promotion_verified"
+      },
+      "validation": {
+        "catalog_ready": true
+      },
+      "image_url": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+      "visuals": [
+        {
+          "role": "primary",
+          "url": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+          "provenance": "licensed",
+          "fidelity_status": "verified",
+          "variant": "100ml",
+          "license_name": "CC BY-SA 3.0",
+          "license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+          "attribution_text": "Open Beauty Facts contributors",
+          "share_alike_required": true
+        }
+      ],
+      "notes": {
+        "key": [
+          "iris",
+          "pear",
+          "orange blossom",
+          "jasmine",
+          "vanilla accord",
+          "patchouli"
+        ]
+      }
     }
   ]
 }
