@@ -1344,15 +1344,13 @@
       "name": "1 Million",
       "batch": 4,
       "release": null,
-      "current_image_url": null,
-      "current_image_status": "pending_approved_feed_or_manufacturer_image",
-      "image_state": "missing",
-      "blockers": [
-        "approved_product_image_missing"
-      ],
-      "next_action": "await_real_feed_or_official_asset_candidate",
+      "current_image_url": "/products/rabanne-1-million-edt-100-user-contentmaster.webp",
+      "current_image_status": "approved_licensed_image",
+      "image_state": "approved_licensed_image",
+      "blockers": [],
+      "next_action": "none",
       "action_class": "auto_allowed",
-      "approval_action_class": "approval_required"
+      "approval_action_class": "approved_by_user"
     },
     {
       "product_id": "SC-TOM-FORD-OUD-WOOD-EDP-100",
