@@ -29,6 +29,19 @@ HARD_SUPERVISOR_MAX_EVENTS = 20
 DEFAULT_AUTONOMOUS_MAX_EVENTS = 2
 HARD_AUTONOMOUS_MAX_EVENTS = 5
 
+class JarvisTurnError(RuntimeError):
+    def __init__(
+        self,
+        message: str,
+        *,
+        cost_usd: float | None = None,
+        budget_id: str | None = None,
+    ) -> None:
+        super().__init__(message)
+        self.cost_usd = cost_usd
+        self.budget_id = budget_id
+
+
 SYSTEM_PROMPT = """\
 You are Jarvis, the internal operating and learning agent for DUFYND, operated by
 TNCommerce.
@@ -570,7 +583,11 @@ async def run_prompt(
         result = await collect_turn(client)
     if result.is_error:
         detail = "; ".join(result.tool_errors) or result.text or "Jarvis SDK turn failed"
-        raise RuntimeError(detail)
+        raise JarvisTurnError(
+            detail,
+            cost_usd=result.cost_usd,
+            budget_id=resolved_budget_id,
+        )
     return result.text.strip(), result.cost_usd, resolved_budget_id
 
 
@@ -625,6 +642,25 @@ async def process_next(bridge: DufyndJarvisBridge) -> int:
             print(text)
         return 0
     except Exception as error:
+        if isinstance(error, JarvisTurnError) and error.cost_usd is not None:
+            await asyncio.to_thread(
+                bridge.record_run,
+                run_type=f"inbox_failed:{event.get('event_type', 'unknown')}",
+                input_summary=json.dumps(event, ensure_ascii=False, default=str)[:4000],
+                output_summary=str(error)[:8000],
+                decisions=[
+                    {
+                        "inbox_id": inbox_id,
+                        "event_type": event.get("event_type"),
+                        "cost_usd": error.cost_usd,
+                        "budget_id": error.budget_id or budget_id,
+                        "runtime": "dufynd_jarvis_v0_1",
+                        "failed_model_turn": True,
+                    }
+                ],
+                human_approval_required=False,
+                agent_name="jarvis",
+            )
         retry = attempts < 3
         await asyncio.to_thread(
             bridge.complete_inbox_event,
@@ -719,6 +755,24 @@ async def process_safe_task(
             result = await collect_turn(client)
         if result.is_error:
             detail = "; ".join(result.tool_errors) or result.text or "Safe worker failed"
+            await asyncio.to_thread(
+                bridge.record_run,
+                run_type=f"safe_task_failed:{task_id}",
+                input_summary=json.dumps(task, ensure_ascii=False, default=str)[:4000],
+                output_summary=detail[:8000],
+                decisions=[
+                    {
+                        "task_id": task_id,
+                        "cost_usd": result.cost_usd,
+                        "budget_id": budget_id,
+                        "runtime": "dufynd_jarvis_safe_worker_v1",
+                        "worker_role": str(task.get("domain") or "research"),
+                        "failed_model_turn": True,
+                    }
+                ],
+                human_approval_required=False,
+                agent_name="jarvis",
+            )
             raise RuntimeError(detail)
 
         text = result.text.strip()
@@ -739,11 +793,12 @@ async def process_safe_task(
                     "cost_usd": result.cost_usd,
                     "budget_id": budget_id,
                     "runtime": "dufynd_jarvis_safe_worker_v1",
+                    "worker_role": str(task.get("domain") or "research"),
                     "terminal_completion_recorded": False,
                 }
             ],
             human_approval_required=False,
-            agent_name="jarvis_safe_worker",
+            agent_name="jarvis",
         )
         print(
             "DUFYND Jarvis safe worker processed "
@@ -826,6 +881,24 @@ async def process_branch_task(
             result = await collect_turn(client)
         if result.is_error:
             detail = "; ".join(result.tool_errors) or result.text or "Branch worker failed"
+            await asyncio.to_thread(
+                bridge.record_run,
+                run_type=f"branch_task_failed:{task_id}",
+                input_summary=json.dumps(task, ensure_ascii=False, default=str)[:4000],
+                output_summary=detail[:8000],
+                decisions=[
+                    {
+                        "task_id": task_id,
+                        "cost_usd": result.cost_usd,
+                        "budget_id": budget_id,
+                        "runtime": "dufynd_jarvis_branch_worker_v1",
+                        "worker_role": "engineering",
+                        "failed_model_turn": True,
+                    }
+                ],
+                human_approval_required=False,
+                agent_name="jarvis",
+            )
             raise RuntimeError(detail)
 
         text = result.text.strip()
@@ -848,13 +921,14 @@ async def process_branch_task(
                     "cost_usd": result.cost_usd,
                     "budget_id": budget_id,
                     "runtime": "dufynd_jarvis_branch_worker_v1",
+                    "worker_role": "engineering",
                     "push_performed": False,
                     "merge_performed": False,
                     "terminal_completion_recorded": False,
                 }
             ],
             human_approval_required=False,
-            agent_name="jarvis_branch_worker",
+            agent_name="jarvis",
         )
         if text:
             print(text)
