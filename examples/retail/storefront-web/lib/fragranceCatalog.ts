@@ -161,6 +161,40 @@ export interface StaticFragrance {
   };
 }
 
+export type CatalogAudience = "men" | "women" | "unisex";
+
+export function catalogAudienceFor(
+  targetGroups: readonly string[],
+): CatalogAudience | null {
+  const normalized = new Set(
+    targetGroups
+      .map((target) => String(target).trim().toLowerCase())
+      .filter(Boolean),
+  );
+
+  // Storefront audience categories are intentionally exclusive. Source data
+  // may preserve a leaning such as ["men", "unisex"], but any fragrance
+  // explicitly tagged unisex belongs only to the Unisex catalog category.
+  if (normalized.has("unisex")) return "unisex";
+
+  const hasMen = normalized.has("men");
+  const hasWomen = normalized.has("women");
+
+  // A fragrance explicitly tagged for both binary audiences is also treated
+  // as unisex at the storefront taxonomy boundary to prevent duplication.
+  if (hasMen && hasWomen) return "unisex";
+  if (hasWomen) return "women";
+  if (hasMen) return "men";
+  return null;
+}
+
+export function fragranceMatchesAudience(
+  fragrance: Pick<StaticFragrance, "target_groups">,
+  audience: CatalogAudience,
+): boolean {
+  return catalogAudienceFor(fragrance.target_groups) === audience;
+}
+
 const sourceById = new Map(
   (scentaiProducts.products as unknown as SourceRow[]).map(
     (product) => [product.product_id, product],
