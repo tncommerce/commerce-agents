@@ -232,9 +232,7 @@ class DufyndJarvisBridge:
             "blocked",
         }
         if status not in allowed_statuses:
-            raise ValueError(
-                "Safe worker may only record non-terminal autonomy task progress."
-            )
+            raise ValueError("Safe worker may only record non-terminal autonomy task progress.")
         with self._client() as client:
             response = client.patch(
                 f"{self.supabase_url}/rest/v1/dufynd_autonomy_tasks",
