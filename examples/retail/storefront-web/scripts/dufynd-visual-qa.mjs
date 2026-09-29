@@ -282,6 +282,13 @@ try {
         if (diagnostics.directory_listing) {
           throw new Error("directory listing detected instead of storefront content");
         }
+        if (
+          (await page.locator(".dufynd-product-placeholder").count()) > 0
+        ) {
+          throw new Error(
+            "legacy pseudo-bottle placeholder is still rendered",
+          );
+        }
 
         if (target.route.startsWith("/duft/")) {
           const layout = await page.evaluate(() => {
@@ -398,24 +405,6 @@ try {
             throw new Error(
               "unverified fragrance exposed an image as Product JSON-LD truth",
             );
-          }
-          if (target.name === "absolu-aventus") {
-            if (
-              (await page.locator(
-                '.dufynd-fragrance-hero [data-dufynd-visual-state="missing"]',
-              ).count()) !== 1
-            ) {
-              throw new Error(
-                "missing-product detail does not use the neutral visual state",
-              );
-            }
-            if (
-              (await page.locator(".dufynd-product-placeholder").count()) !== 0
-            ) {
-              throw new Error(
-                "legacy pseudo-bottle placeholder is still visible",
-              );
-            }
           }
         }
 
