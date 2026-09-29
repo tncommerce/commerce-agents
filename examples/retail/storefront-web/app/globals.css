@@ -232,10 +232,113 @@ body {
   transition: transform 620ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 280ms ease;
 }
 
-.dufynd-product-placeholder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.dufynd-product-stage--asset-pending {
+  background:
+    radial-gradient(circle at 50% 34%, rgba(202, 158, 82, 0.18), transparent 31%),
+    radial-gradient(circle at 80% 72%, rgba(255, 255, 255, 0.035), transparent 28%),
+    linear-gradient(145deg, #151517 0%, #0b0c0e 100%);
+}
+
+.dufynd-product-stage--asset-pending .dufynd-product-shadow {
+  display: none;
+}
+
+.dufynd-product-stage--asset-pending .dufynd-product-sheen {
+  opacity: 0.14;
+}
+
+.dufynd-product-stage--asset-pending .dufynd-product-object {
+  transform: none;
+}
+
+.dufynd-product-stage--asset-pending .dufynd-product-float {
+  animation: none !important;
+}
+
+.dufynd-product-asset-pending {
+  position: relative;
+  display: grid;
+  width: min(72%, 300px);
+  aspect-ratio: 1;
+  place-items: center;
+  color: rgba(255, 250, 239, 0.88);
+}
+
+.dufynd-product-asset-pending::before {
+  content: "";
+  position: absolute;
+  inset: 17%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(218, 184, 119, 0.13), rgba(255,255,255,0.015) 48%, transparent 70%);
+  filter: blur(2px);
+}
+
+.dufynd-product-asset-pending-orbit {
+  position: absolute;
+  border: 1px solid rgba(220, 186, 121, 0.18);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.dufynd-product-asset-pending-orbit--outer {
+  inset: 8%;
+  transform: rotate(-14deg) scaleY(0.62);
+  box-shadow: 0 0 44px rgba(202, 158, 82, 0.08);
+}
+
+.dufynd-product-asset-pending-orbit--inner {
+  inset: 24%;
+  border-color: rgba(255,255,255,0.08);
+  transform: rotate(21deg) scaleX(0.74);
+}
+
+.dufynd-product-asset-pending-copy {
+  position: relative;
+  z-index: 2;
+  max-width: 170px;
+  text-align: center;
+}
+
+.dufynd-product-asset-pending-copy span,
+.dufynd-product-asset-pending-copy strong {
+  display: block;
+}
+
+.dufynd-product-asset-pending-copy span {
+  font-size: 9px;
+  font-weight: 760;
+  letter-spacing: 0.19em;
+  color: rgba(225, 190, 123, 0.82);
+}
+
+.dufynd-product-asset-pending-copy strong {
+  margin-top: 7px;
+  font-size: 10.5px;
+  line-height: 1.45;
+  font-weight: 600;
+  color: rgba(255,255,255,0.48);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dufynd-product-asset-pending-orbit--outer {
+    animation: dufynd-asset-pending-orbit 16s linear infinite;
+  }
+}
+
+@keyframes dufynd-asset-pending-orbit {
+  from {
+    transform: rotate(-14deg) scaleY(0.62);
+  }
+  to {
+    transform: rotate(346deg) scaleY(0.62);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dufynd-product-asset-pending-orbit {
+    animation: none !important;
+  }
 }
 
 @media (hover: hover) and (pointer: fine) {
