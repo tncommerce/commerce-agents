@@ -9,9 +9,13 @@ from scripts.sync_dufynd_repo_state_to_supabase import (
 
 
 class RecordingBridge:
-    def __init__(self) -> None:
+    def __init__(self, existing_tasks: dict[str, dict] | None = None) -> None:
         self.master_rows = []
         self.tasks = []
+        self.existing_tasks = existing_tasks or {}
+
+    def load_autonomy_task(self, task_id: str):
+        return self.existing_tasks.get(task_id)
 
     def upsert_master_status(self, **kwargs):
         self.master_rows.append(kwargs)
@@ -102,6 +106,44 @@ def test_apply_sync_plan_upserts_snapshot_and_tasks() -> None:
     assert bridge.master_rows[0]["key"] == SNAPSHOT_KEY
     assert len(bridge.tasks) == 2
     assert bridge.tasks[0]["task_id"] == "repo_current_commerce"
+
+
+def test_apply_sync_plan_preserves_terminal_state_for_same_fingerprint() -> None:
+    bridge = RecordingBridge(
+        existing_tasks={
+            "repo_current_commerce": {
+                "task_id": "repo_current_commerce",
+                "status": "done",
+                "evidence": "source_fingerprint_sha256=abc123; completed in nightshift",
+            }
+        }
+    )
+    plan = build_sync_plan(sample_repo_status())
+
+    apply_sync_plan(bridge, plan)
+
+    commerce = next(task for task in bridge.tasks if task["task_id"] == "repo_current_commerce")
+    assert commerce["status"] == "done"
+    assert commerce["evidence"] == ("source_fingerprint_sha256=abc123; completed in nightshift")
+
+
+def test_apply_sync_plan_resets_task_when_repo_fingerprint_changes() -> None:
+    bridge = RecordingBridge(
+        existing_tasks={
+            "repo_current_commerce": {
+                "task_id": "repo_current_commerce",
+                "status": "done",
+                "evidence": "source_fingerprint_sha256=old123; completed in prior state",
+            }
+        }
+    )
+    plan = build_sync_plan(sample_repo_status())
+
+    apply_sync_plan(bridge, plan)
+
+    commerce = next(task for task in bridge.tasks if task["task_id"] == "repo_current_commerce")
+    assert commerce["status"] == "ready"
+    assert "source_fingerprint_sha256=abc123" in commerce["evidence"]
 
 
 def test_build_sync_plan_requires_fingerprint() -> None:
