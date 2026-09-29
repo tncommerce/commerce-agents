@@ -8,6 +8,8 @@ PRODUCT_TILE = Path("examples/retail/storefront-web/components/ProductTile.tsx")
 ACQUISITION = Path("examples/retail/storefront-web/components/AcquisitionLanding.tsx")
 LIBRARY = Path("examples/retail/storefront-web/components/FragranceLibraryHub.tsx")
 DUFT_PAGE = Path("examples/retail/storefront-web/app/duft/page.tsx")
+CATALOG_BROWSER = Path("examples/retail/storefront-web/components/FragranceCatalogBrowser.tsx")
+HOME = Path("examples/retail/storefront-web/components/views/HomeView.tsx")
 STANDARD = Path("docs/dufynd-storefront-visual-standard-20260929.md")
 
 
@@ -32,6 +34,8 @@ def test_discovery_surfaces_pass_shared_world_context() -> None:
     assert 'visualWorldFor(fragrance)' in ACQUISITION.read_text(encoding="utf-8")
     assert 'visualWorldFor(fragrance)' in LIBRARY.read_text(encoding="utf-8")
     assert 'visualWorldFor(fragrance)' in DUFT_PAGE.read_text(encoding="utf-8")
+    assert 'visualWorldFor(fragrance)' in CATALOG_BROWSER.read_text(encoding="utf-8")
+    assert 'visualWorldFor(spotlightFragrance)' in HOME.read_text(encoding="utf-8")
 
 
 def test_visual_standard_keeps_worlds_atmospheric_only() -> None:
