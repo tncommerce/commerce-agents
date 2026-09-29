@@ -4098,3 +4098,217 @@ a.dufynd-comparison-product-card > div:last-child {
     animation: none !important;
   }
 }
+
+
+/* DUFYND immersive home discovery — shared house-language worlds */
+.dufynd-home-audience-stage,
+.dufynd-home-selected-stage {
+  --dufynd-home-glow-a: rgba(193, 144, 68, 0.26);
+  --dufynd-home-glow-b: rgba(230, 198, 135, 0.12);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  color: #fffaf1;
+  background:
+    radial-gradient(circle at 9% 4%, rgba(198, 148, 65, 0.20), transparent 27rem),
+    radial-gradient(circle at 93% 92%, rgba(89, 72, 58, 0.20), transparent 26rem),
+    linear-gradient(138deg, #151517 0%, #090a0c 72%);
+  box-shadow:
+    0 30px 76px -48px rgba(15, 12, 9, 0.90),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+.dufynd-home-audience-stage::before,
+.dufynd-home-selected-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.16;
+  background-image:
+    radial-gradient(circle, rgba(255,241,208,0.72) 0 0.55px, transparent 0.8px),
+    radial-gradient(circle, rgba(255,255,255,0.40) 0 0.45px, transparent 0.75px);
+  background-size: 83px 83px, 137px 137px;
+  background-position: 11px 17px, 58px 39px;
+  mask-image: linear-gradient(180deg, #000, transparent 96%);
+}
+
+.dufynd-home-audience-card,
+.dufynd-home-selected-card {
+  --dufynd-home-glow-a: rgba(193, 144, 68, 0.28);
+  --dufynd-home-glow-b: rgba(230, 198, 135, 0.13);
+}
+
+.dufynd-home-audience-card[data-dufynd-home-world="mineral"],
+.dufynd-home-selected-card[data-dufynd-home-world="mineral"] {
+  --dufynd-home-glow-a: rgba(77, 150, 139, 0.34);
+  --dufynd-home-glow-b: rgba(177, 220, 208, 0.15);
+}
+
+.dufynd-home-audience-card[data-dufynd-home-world="amber"],
+.dufynd-home-selected-card[data-dufynd-home-world="amber"] {
+  --dufynd-home-glow-a: rgba(207, 140, 68, 0.35);
+  --dufynd-home-glow-b: rgba(240, 188, 125, 0.16);
+}
+
+.dufynd-home-audience-card[data-dufynd-home-world="silk"],
+.dufynd-home-selected-card[data-dufynd-home-world="silk"] {
+  --dufynd-home-glow-a: rgba(174, 124, 151, 0.31);
+  --dufynd-home-glow-b: rgba(226, 184, 204, 0.14);
+}
+
+.dufynd-home-audience-card[data-dufynd-home-world="noir"],
+.dufynd-home-selected-card[data-dufynd-home-world="noir"] {
+  --dufynd-home-glow-a: rgba(124, 92, 63, 0.34);
+  --dufynd-home-glow-b: rgba(185, 148, 109, 0.14);
+}
+
+.dufynd-home-audience-card[data-dufynd-home-world="ember"],
+.dufynd-home-selected-card[data-dufynd-home-world="ember"] {
+  --dufynd-home-glow-a: rgba(170, 87, 49, 0.34);
+  --dufynd-home-glow-b: rgba(225, 145, 93, 0.14);
+}
+
+.dufynd-home-audience-card {
+  background:
+    radial-gradient(circle at 80% 36%, var(--dufynd-home-glow-a), transparent 34%),
+    linear-gradient(140deg, rgba(255,255,255,0.075), rgba(255,255,255,0.022));
+  box-shadow:
+    0 18px 38px -28px rgba(0,0,0,0.80),
+    inset 0 1px 0 rgba(255,255,255,0.07);
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.dufynd-home-audience-card:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--dufynd-home-glow-a) 60%, rgba(255,255,255,0.14));
+  box-shadow:
+    0 28px 52px -31px rgba(0,0,0,0.88),
+    0 16px 30px -25px var(--dufynd-home-glow-a),
+    inset 0 1px 0 rgba(255,255,255,0.09);
+}
+
+.dufynd-home-audience-atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(116deg, rgba(255,255,255,0.045), transparent 32% 64%, rgba(255,255,255,0.02)),
+    radial-gradient(circle at 84% 22%, var(--dufynd-home-glow-b), transparent 31%);
+}
+
+.dufynd-home-audience-product {
+  filter: drop-shadow(0 20px 20px rgba(0,0,0,0.34));
+}
+
+.dufynd-home-audience-product .dufynd-product-stage,
+.dufynd-home-audience-product .dufynd-editorial-depth-stage,
+.dufynd-home-selected-card .dufynd-product-stage,
+.dufynd-home-selected-card .dufynd-editorial-depth-stage {
+  background: transparent;
+}
+
+.dufynd-home-audience-product .dufynd-product-light,
+.dufynd-home-selected-card .dufynd-product-light {
+  background: radial-gradient(
+    circle at var(--dufynd-mx) var(--dufynd-my),
+    rgba(255,248,225,0.38),
+    var(--dufynd-home-glow-a) 24%,
+    transparent 52%
+  );
+}
+
+.dufynd-home-audience-shade {
+  z-index: 2;
+  background:
+    linear-gradient(90deg, rgba(13,14,16,0.96) 0%, rgba(13,14,16,0.86) 43%, rgba(13,14,16,0.16) 72%, rgba(13,14,16,0.03) 100%),
+    linear-gradient(180deg, transparent 58%, rgba(8,9,11,0.20));
+}
+
+.dufynd-home-selected-stage {
+  padding-top: 14px;
+}
+
+.dufynd-home-selected-card > div {
+  height: 100%;
+  border-color: rgba(255,255,255,0.11);
+  background:
+    linear-gradient(180deg, rgba(28,27,27,0.92), rgba(14,15,17,0.90));
+  color: #fffaf1;
+  box-shadow:
+    0 24px 48px -35px rgba(0,0,0,0.86),
+    inset 0 1px 0 rgba(255,255,255,0.07);
+}
+
+.dufynd-home-selected-card > div:hover {
+  border-color: color-mix(in srgb, var(--dufynd-home-glow-a) 54%, rgba(255,255,255,0.12));
+  box-shadow:
+    0 32px 58px -35px rgba(0,0,0,0.92),
+    0 17px 34px -28px var(--dufynd-home-glow-a),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+.dufynd-home-selected-card .dufynd-product-image {
+  filter:
+    drop-shadow(0 28px 22px rgba(0,0,0,0.42))
+    drop-shadow(0 0 20px var(--dufynd-home-glow-b));
+}
+
+.dufynd-home-selected-card .dufynd-editorial-depth-fill {
+  filter: blur(28px) brightness(0.44) saturate(0.88);
+}
+
+.dufynd-home-selected-all {
+  backdrop-filter: blur(10px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dufynd-home-audience-stage::before,
+  .dufynd-home-selected-stage::before {
+    animation: dufynd-home-discovery-particles 28s linear infinite;
+  }
+}
+
+@keyframes dufynd-home-discovery-particles {
+  from {
+    background-position: 11px 17px, 58px 39px;
+  }
+  to {
+    background-position: 94px -66px, -79px 176px;
+  }
+}
+
+@media (max-width: 639px) {
+  .dufynd-home-audience-card {
+    min-height: 138px;
+  }
+
+  .dufynd-home-audience-product {
+    width: 50%;
+  }
+
+  .dufynd-home-selected-stage {
+    padding: 10px;
+  }
+
+  .dufynd-home-selected-card > div {
+    border-radius: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dufynd-home-audience-stage::before,
+  .dufynd-home-selected-stage::before {
+    animation: none !important;
+  }
+
+  .dufynd-home-audience-card,
+  .dufynd-home-selected-card > div {
+    transition: none !important;
+  }
+}
