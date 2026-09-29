@@ -1967,3 +1967,259 @@ body {
     transform: perspective(700px) rotateX(68deg) rotateZ(-8deg) scale(0.94);
   }
 }
+
+
+/* DUFYND immersive hero cohesion v2 */
+.dufynd-fragrance-panel-section {
+  --ink: #f7f1e7;
+  --ink-soft: rgba(235, 224, 207, 0.68);
+  --surface: rgba(255, 255, 255, 0.055);
+  --well: rgba(255, 255, 255, 0.072);
+  --line: rgba(255, 255, 255, 0.105);
+  --line-strong: rgba(255, 255, 255, 0.18);
+  --accent-ink: #ddb76f;
+  --accent-soft: rgba(215, 174, 98, 0.14);
+  --accent-strong: #9f7134;
+  border-color: rgba(255, 255, 255, 0.09);
+  color: var(--ink);
+  background:
+    linear-gradient(145deg, rgba(24, 22, 22, 0.82), rgba(11, 12, 14, 0.66)),
+    radial-gradient(circle at 10% 8%, var(--dufynd-detail-glow-a), transparent 36%);
+  backdrop-filter: blur(26px) saturate(1.08);
+  box-shadow:
+    0 24px 70px -44px rgba(0, 0, 0, 0.92),
+    inset 0 1px 0 rgba(255, 255, 255, 0.085);
+}
+
+.dufynd-fragrance-panel-section--identity {
+  border-color: rgba(255, 255, 255, 0.09);
+}
+
+.dufynd-fragrance-panel-section--copy {
+  border-color: rgba(255, 255, 255, 0.09);
+}
+
+.dufynd-fragrance-panel-section a,
+.dufynd-fragrance-panel-section button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.dufynd-fragrance-stage-shell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.028), transparent 21%, transparent 71%, rgba(0,0,0,0.26)),
+    radial-gradient(circle at 50% 45%, transparent 0 42%, rgba(3,4,6,0.18) 78%, rgba(2,3,5,0.34) 100%);
+}
+
+.dufynd-fragrance-stage-reflection {
+  position: absolute;
+  left: 20%;
+  right: 20%;
+  bottom: 3.5%;
+  z-index: 3;
+  height: 13%;
+  pointer-events: none;
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse at center, rgba(255, 238, 201, 0.17), rgba(137, 92, 43, 0.075) 34%, rgba(0,0,0,0.44) 58%, transparent 72%);
+  filter: blur(9px);
+  opacity: 0.75;
+  transform: perspective(720px) rotateX(70deg) scaleX(1.08);
+}
+
+.dufynd-fragrance-phase-rail {
+  position: absolute;
+  right: 17px;
+  top: 50%;
+  z-index: 7;
+  display: grid;
+  gap: 7px;
+  width: min(128px, 29%);
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.dufynd-fragrance-phase-rail::before {
+  content: "";
+  position: absolute;
+  left: 13px;
+  top: 17px;
+  bottom: 17px;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    color-mix(in srgb, var(--dufynd-detail-glow-b) 68%, rgba(255,255,255,0.14)) 18% 82%,
+    transparent
+  );
+  opacity: 0.58;
+}
+
+.dufynd-fragrance-phase {
+  position: relative;
+  display: grid;
+  grid-template-columns: 27px minmax(0, 1fr);
+  align-items: center;
+  min-height: 47px;
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 14px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.022)),
+    rgba(8, 9, 11, 0.44);
+  box-shadow:
+    0 12px 30px -21px rgba(0,0,0,0.88),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+  backdrop-filter: blur(12px);
+}
+
+.dufynd-fragrance-phase-index {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: 27px;
+  height: 27px;
+  place-items: center;
+  margin-left: 0;
+  border: 1px solid color-mix(in srgb, var(--dufynd-detail-glow-b) 70%, rgba(255,255,255,0.10));
+  border-radius: 999px;
+  color: rgba(255,244,218,0.82);
+  background: rgba(8,9,11,0.74);
+  font-size: 8px;
+  font-weight: 750;
+  letter-spacing: 0.05em;
+}
+
+.dufynd-fragrance-phase-copy {
+  min-width: 0;
+  padding: 6px 7px 6px 5px;
+}
+
+.dufynd-fragrance-phase-copy strong,
+.dufynd-fragrance-phase-copy em {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dufynd-fragrance-phase-copy strong {
+  color: rgba(255,250,240,0.92);
+  font-size: 8.5px;
+  font-style: normal;
+  font-weight: 760;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.dufynd-fragrance-phase-copy em {
+  margin-top: 1px;
+  color: rgba(235,224,207,0.62);
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 520;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dufynd-fragrance-stage-reflection {
+    animation: dufynd-detail-reflection-breathe 8.5s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes dufynd-detail-reflection-breathe {
+  from {
+    opacity: 0.56;
+    transform: perspective(720px) rotateX(70deg) scaleX(0.96);
+  }
+  to {
+    opacity: 0.82;
+    transform: perspective(720px) rotateX(70deg) scaleX(1.12);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  .dufynd-fragrance-stage-visual {
+    animation: dufynd-detail-scroll-product linear both;
+    animation-timeline: view();
+    animation-range: entry 0% exit 86%;
+  }
+
+  .dufynd-fragrance-phase {
+    animation: dufynd-detail-scroll-phase linear both;
+    animation-timeline: view();
+    animation-range: entry 4% exit 80%;
+  }
+
+  .dufynd-fragrance-phase[data-dufynd-phase="02"] {
+    animation-range: entry 12% exit 84%;
+  }
+
+  .dufynd-fragrance-phase[data-dufynd-phase="03"] {
+    animation-range: entry 20% exit 88%;
+  }
+}
+
+@keyframes dufynd-detail-scroll-product {
+  from {
+    transform: translate3d(0, 16px, 0) scale(0.965);
+    opacity: 0.92;
+  }
+  45% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translate3d(0, -7px, 0) scale(1.018);
+    opacity: 1;
+  }
+}
+
+@keyframes dufynd-detail-scroll-phase {
+  from {
+    transform: translate3d(9px, 4px, 0);
+    opacity: 0.18;
+  }
+  35% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  to {
+    transform: translate3d(-2px, -3px, 0);
+    opacity: 0.82;
+  }
+}
+
+@media (max-width: 1023px) {
+  .dufynd-fragrance-phase-rail {
+    right: 12px;
+    width: min(116px, 31%);
+  }
+}
+
+@media (max-width: 639px) {
+  .dufynd-fragrance-panel-section {
+    backdrop-filter: blur(20px) saturate(1.04);
+  }
+
+  .dufynd-fragrance-phase-rail {
+    display: none;
+  }
+
+  .dufynd-fragrance-stage-reflection {
+    left: 24%;
+    right: 24%;
+    bottom: 5%;
+    height: 11%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dufynd-fragrance-stage-reflection,
+  .dufynd-fragrance-stage-visual,
+  .dufynd-fragrance-phase {
+    animation: none !important;
+  }
+}
