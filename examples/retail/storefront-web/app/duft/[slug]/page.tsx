@@ -11,6 +11,7 @@ import ImageAttribution from "@/components/ImageAttribution";
 import FragranceVisualGallery from "@/components/FragranceVisualGallery";
 import FragranceModel3D from "@/components/FragranceModel3D";
 import FragranceSaveControls from "@/components/FragranceSaveControls";
+import FragranceShareButton from "@/components/FragranceShareButton";
 import NoteIcon from "@/components/NoteIcon";
 import {
   LIVE_FRAGRANCES,
@@ -557,6 +558,10 @@ export default async function FragrancePage({
                 <FragranceSaveControls
                   productId={fragrance.product_id}
                   compact
+                />
+                <FragranceShareButton
+                  brand={fragrance.brand}
+                  name={fragrance.name}
                 />
                 <a
                   href={`/vergleich?left=${encodeURIComponent(fragrance.product_id)}`}
