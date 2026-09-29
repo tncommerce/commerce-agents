@@ -177,6 +177,7 @@ export type AnalyticsEventName =
   | "advisor_recommendation_view"
   | "advisor_product_open"
   | "fragrance_detail_view"
+  | "offer_section_open"
   | "comparison_start"
   | "wishlist_add"
   | "wishlist_remove"
