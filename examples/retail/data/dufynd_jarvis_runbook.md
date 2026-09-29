@@ -160,9 +160,16 @@ Before the cycle can run:
 5. the configured database budget window must still report `can_run=true`
 
 A cycle processes at most two inbox events by default (hard maximum five). If an
-inbox backlog remains, Jarvis defers repo-current safe work. Once the inbox is
-clear, the cycle may run one existing safe repo-current task through the read-only
-safe worker.
+inbox backlog remains, Jarvis defers repo-current work. Once the inbox is clear,
+the cycle loads the current safe repo-derived task and routes it deterministically:
+engineering work goes to the isolated branch worker; commerce, content, research
+and other non-engineering safe work go to the read-only safe worker.
+
+When the autonomous cycle invokes the branch worker, the workflow applies the same
+path allowlist, Python checks and storefront web/visual QA used by explicit
+`process-branch-task` runs. The resulting patch remains local to the workflow and
+may be uploaded as an artifact; autonomous-cycle still has no push, merge, deploy,
+publish or live-catalog mutation authority.
 
 The autonomous switch is deliberately separate from the database budget window:
 the switch authorizes unattended execution behavior, while the budget window is
