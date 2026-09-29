@@ -8,10 +8,7 @@ import scripts.dufynd_jarvis_nightshift as nightshift
 
 class FakeBridge:
     def __init__(self, tasks: list[dict] | None = None) -> None:
-        self.tasks = {
-            task["task_id"]: dict(task)
-            for task in (tasks or [])
-        }
+        self.tasks = {task["task_id"]: dict(task) for task in (tasks or [])}
         self.master = {
             "jarvis.repo_state_snapshot": {
                 "key": "jarvis.repo_state_snapshot",
@@ -34,18 +31,12 @@ class FakeBridge:
         }
 
     def load_autonomy_queue(self):
-        ready = [
-            dict(task)
-            for task in self.tasks.values()
-            if task.get("status") == "ready"
-        ]
+        ready = [dict(task) for task in self.tasks.values() if task.get("status") == "ready"]
         ready.sort(key=lambda task: (-int(task.get("priority") or 0), task["task_id"]))
         return {
             "safe_to_execute": ready,
             "in_progress": [
-                dict(task)
-                for task in self.tasks.values()
-                if task.get("status") == "in_progress"
+                dict(task) for task in self.tasks.values() if task.get("status") == "in_progress"
             ],
             "waiting_human_input": [
                 dict(task)
@@ -63,9 +54,7 @@ class FakeBridge:
                 if task.get("status") == "approval_required"
             ],
             "done_recent": [
-                dict(task)
-                for task in self.tasks.values()
-                if task.get("status") == "done"
+                dict(task) for task in self.tasks.values() if task.get("status") == "done"
             ],
         }
 
