@@ -26,6 +26,8 @@ SERVER_VERSION = "0.1.0"
 
 DEFAULT_SUPERVISOR_MAX_EVENTS = 8
 HARD_SUPERVISOR_MAX_EVENTS = 20
+DEFAULT_AUTONOMOUS_MAX_EVENTS = 2
+HARD_AUTONOMOUS_MAX_EVENTS = 5
 
 SYSTEM_PROMPT = """\
 You are Jarvis, the internal operating and learning agent for DUFYND, operated by
@@ -385,8 +387,10 @@ def runtime_readiness() -> dict[str, Any]:
         os.getenv("SUPABASE_URL")
         and (os.getenv("SUPABASE_SECRET_KEY") or os.getenv("SUPABASE_SERVICE_ROLE_KEY"))
     )
+    autonomous = os.getenv("DUFYND_JARVIS_AUTONOMOUS") == "1"
     return {
         "active": active,
+        "autonomous": autonomous,
         "model_configured": bool(model),
         "model": model,
         "anthropic_credentials_configured": credentials,
@@ -395,6 +399,9 @@ def runtime_readiness() -> dict[str, Any]:
         "max_budget_usd": os.getenv("DUFYND_JARVIS_MAX_BUDGET_USD", "0.25"),
         "budget_id": os.getenv("DUFYND_JARVIS_BUDGET_ID"),
         "ready_for_model_execution": active and bool(model) and credentials and supabase,
+        "ready_for_autonomous_cycle": (
+            active and autonomous and bool(model) and credentials and supabase
+        ),
     }
 
 
@@ -445,6 +452,19 @@ def _require_budget_window(bridge: DufyndJarvisBridge) -> tuple[str, dict[str, A
             f"Jarvis budget window requires model {budget_model}, not {configured_model}."
         )
     return budget_id, status
+
+
+def _require_autonomous_session(
+    bridge: DufyndJarvisBridge,
+) -> tuple[str, dict[str, Any]]:
+    readiness = runtime_readiness()
+    if not readiness["autonomous"]:
+        raise RuntimeError(
+            "DUFYND Jarvis autonomous cycle is disabled. "
+            "Set DUFYND_JARVIS_AUTONOMOUS=1 only for an operator-approved budget session."
+        )
+    _require_active_runtime()
+    return _require_budget_window(bridge)
 
 
 def make_options(bridge: DufyndJarvisBridge) -> ClaudeAgentOptions:
@@ -844,6 +864,40 @@ async def process_loop(
     return 0
 
 
+def _bounded_autonomous_max_events(value: int) -> int:
+    return max(0, min(int(value), HARD_AUTONOMOUS_MAX_EVENTS))
+
+
+async def process_autonomous_cycle(
+    bridge: DufyndJarvisBridge,
+    *,
+    max_events: int = DEFAULT_AUTONOMOUS_MAX_EVENTS,
+) -> int:
+    _require_autonomous_session(bridge)
+    event_limit = _bounded_autonomous_max_events(max_events)
+
+    if event_limit:
+        event_result = await process_loop(bridge, max_events=event_limit)
+        if event_result != 0:
+            return event_result
+
+    health = await asyncio.to_thread(bridge.load_health)
+    pending = int((health.get("inbox") or {}).get("pending") or 0)
+    if pending > 0:
+        print(
+            "DUFYND Jarvis autonomous cycle: inbox backlog remains; "
+            "safe-task execution deferred."
+        )
+        return 0
+
+    task_result = await process_safe_task(bridge)
+    print(
+        "DUFYND Jarvis autonomous cycle summary | "
+        f"event_limit={event_limit} | safe_task_result={task_result}"
+    )
+    return task_result
+
+
 async def run_once(prompt: str, bridge: DufyndJarvisBridge) -> int:
     budget_id, _ = await asyncio.to_thread(_require_budget_window, bridge)
     text, cost_usd, _ = await run_prompt(prompt, bridge, budget_id=budget_id)
@@ -888,6 +942,11 @@ def main() -> int:
         help="process multiple queued Jarvis events until a safe stop condition",
     )
     group.add_argument(
+        "--autonomous-cycle",
+        action="store_true",
+        help="run one bounded budget-gated Jarvis autonomous operating cycle",
+    )
+    group.add_argument(
         "--process-safe-task",
         action="store_true",
         help="research one current repo-derived safe autonomy task",
@@ -910,6 +969,15 @@ def main() -> int:
             f"maximum events for --process-loop; values are clamped to {HARD_SUPERVISOR_MAX_EVENTS}"
         ),
     )
+    parser.add_argument(
+        "--autonomous-max-events",
+        type=int,
+        default=DEFAULT_AUTONOMOUS_MAX_EVENTS,
+        help=(
+            "maximum inbox events for --autonomous-cycle; values are clamped to "
+            f"{HARD_AUTONOMOUS_MAX_EVENTS}"
+        ),
+    )
     args = parser.parse_args()
 
     if args.readiness:
@@ -917,6 +985,13 @@ def main() -> int:
         return 0
 
     bridge = DufyndJarvisBridge()
+    if args.autonomous_cycle:
+        return asyncio.run(
+            process_autonomous_cycle(
+                bridge,
+                max_events=args.autonomous_max_events,
+            )
+        )
     if args.process_branch_task:
         return asyncio.run(process_branch_task(bridge))
     if args.process_safe_task:
