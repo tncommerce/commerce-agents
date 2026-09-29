@@ -6,6 +6,7 @@ import FragranceVisual from "@/components/FragranceVisual";
 import {
   isVerifiedProductTruthVisual,
   LIVE_FRAGRANCES,
+  visualWorldFor,
 } from "@/lib/fragranceCatalog";
 
 export const metadata: Metadata = {
@@ -191,6 +192,7 @@ export default function FragranceIndexPage() {
                         mode={
                           isProductTruth ? "cutout" : "editorial"
                         }
+                        world={visualWorldFor(fragrance)}
                         className="h-full w-full"
                         priority={index === 0}
                       />
