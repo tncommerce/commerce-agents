@@ -134,6 +134,16 @@ const coreRoutes = [
   },
   { name: "vibrato", route: "/duft/sospiro-vibrato", marker: "Vibrato" },
   { name: "widian-london", route: "/duft/widian-london", marker: "London" },
+  {
+    name: "rabanne-1-million",
+    route: "/duft/rabanne-1-million",
+    marker: "1 Million",
+  },
+  {
+    name: "la-vie-est-belle",
+    route: "/duft/lancome-la-vie-est-belle",
+    marker: "La Vie est Belle",
+  },
 ];
 
 const routes = coreRoutes.filter(
