@@ -207,6 +207,10 @@ Action classes are fail-closed:
   credentials/secrets, external commitments, live social publishing, irreversible
   production data changes, production merges and gate bypasses
 
+Nightshift consumes the bounded inbox/event backlog before selecting repo-current
+tasks. If the event backlog still remains after the configured event limit, Jarvis
+defers task execution rather than acting on an event-stale control plane.
+
 The Nightshift worker router sends engineering work to the isolated branch worker
 and non-engineering safe work to the read-only research worker. One engineering
 patch may be prepared per checkout; non-engineering GREEN work can continue while
