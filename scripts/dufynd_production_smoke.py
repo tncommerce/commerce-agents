@@ -8,6 +8,10 @@ from urllib.parse import quote
 
 import httpx
 
+CRITICAL_PRODUCT_ID = "SC-RABANNE-1-MILLION-EDT-100"
+CRITICAL_PRODUCT_PATH = "/duft/rabanne-1-million"
+CRITICAL_PRODUCT_MARKER = "1 million"
+
 
 @dataclass
 class SmokeCheck:
@@ -93,6 +97,45 @@ def _check_storefront_route(
             detail = f"{path} did not contain the DUFYND brand marker."
         else:
             detail = f"{path} is reachable and branded as DUFYND."
+        return SmokeCheck(
+            name=name,
+            ok=ok,
+            status_code=response.status_code,
+            detail=detail,
+        )
+    except httpx.HTTPError as exc:
+        return SmokeCheck(
+            name=name,
+            ok=False,
+            status_code=None,
+            detail=f"{path} request failed: {exc.__class__.__name__}",
+        )
+
+
+def _check_storefront_product_route(
+    client: httpx.Client,
+    storefront_url: str,
+    *,
+    path: str,
+    name: str,
+    marker: str,
+) -> SmokeCheck:
+    url = f"{storefront_url}{path}"
+    try:
+        response = client.get(url, follow_redirects=True)
+        status_ok = response.status_code < 400
+        body = response.text.casefold()
+        brand_ok = "dufynd" in body
+        marker_ok = marker.casefold() in body
+        ok = status_ok and brand_ok and marker_ok
+        if not status_ok:
+            detail = f"{path} returned HTTP {response.status_code}."
+        elif not brand_ok:
+            detail = f"{path} did not contain the DUFYND brand marker."
+        elif not marker_ok:
+            detail = f"{path} did not contain the expected product marker {marker!r}."
+        else:
+            detail = f"{path} is reachable and contains the expected product marker."
         return SmokeCheck(
             name=name,
             ok=ok,
@@ -334,10 +377,12 @@ def _check_product_detail(
     client: httpx.Client,
     api_url: str,
     product_id: str | None,
+    *,
+    name: str = "product_detail",
 ) -> SmokeCheck:
     if not product_id:
         return SmokeCheck(
-            name="product_detail",
+            name=name,
             ok=False,
             status_code=None,
             detail="Product detail was not checked because no valid catalog product was available.",
@@ -349,7 +394,7 @@ def _check_product_detail(
         response = client.get(url, follow_redirects=True)
         if response.status_code >= 400:
             return SmokeCheck(
-                name="product_detail",
+                name=name,
                 ok=False,
                 status_code=response.status_code,
                 detail=f"Product detail returned HTTP {response.status_code}.",
@@ -359,7 +404,7 @@ def _check_product_detail(
             payload = response.json()
         except ValueError:
             return SmokeCheck(
-                name="product_detail",
+                name=name,
                 ok=False,
                 status_code=response.status_code,
                 detail="Product detail did not return JSON.",
@@ -367,7 +412,7 @@ def _check_product_detail(
 
         ok = payload.get("product_id") == product_id
         return SmokeCheck(
-            name="product_detail",
+            name=name,
             ok=ok,
             status_code=response.status_code,
             detail=(
@@ -381,7 +426,7 @@ def _check_product_detail(
         )
     except httpx.HTTPError as exc:
         return SmokeCheck(
-            name="product_detail",
+            name=name,
             ok=False,
             status_code=None,
             detail=f"Product detail request failed: {exc.__class__.__name__}",
@@ -467,6 +512,13 @@ def run_smoke(
                 path="/start",
                 name="storefront_social_start",
             ),
+            _check_storefront_product_route(
+                client,
+                storefront,
+                path=CRITICAL_PRODUCT_PATH,
+                name="storefront_rabanne_1_million",
+                marker=CRITICAL_PRODUCT_MARKER,
+            ),
             _check_storefront_route(
                 client,
                 storefront,
@@ -512,6 +564,12 @@ def run_smoke(
             _check_api_health(client, api),
             product_catalog_check,
             _check_product_detail(client, api, sample_product_id),
+            _check_product_detail(
+                client,
+                api,
+                CRITICAL_PRODUCT_ID,
+                name="product_detail_rabanne_1_million",
+            ),
             _check_merchant_partners(client, api),
         ]
 
