@@ -44,6 +44,8 @@ def test_homepage_renders_visual_audience_discovery_cards() -> None:
     assert "min-w-[76%]" in text
     assert "snap-x snap-mandatory" in text
     assert "product?.image_url" in text
+    assert "<ProductImage" in text
+    assert "product={product}" in text
     assert "audienceCounts[key]" in text
 
 
