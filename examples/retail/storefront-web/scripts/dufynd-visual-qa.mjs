@@ -20,6 +20,27 @@ const sourceCatalog = JSON.parse(
     "utf-8",
   ),
 );
+const fragranceVisualSource = await readFile(
+  new URL("../components/FragranceVisual.tsx", import.meta.url),
+  "utf-8",
+);
+if (
+  !fragranceVisualSource.includes('data-dufynd-asset-state="pending"') ||
+  !fragranceVisualSource.includes("Produktbild in Prüfung")
+) {
+  throw new Error(
+    "FragranceVisual is missing the neutral pending-asset fallback contract",
+  );
+}
+if (
+  fragranceVisualSource.includes('className="dufynd-product-placeholder"') ||
+  fragranceVisualSource.includes("h-3 w-10 rounded-t")
+) {
+  throw new Error(
+    "FragranceVisual still contains the fabricated bottle placeholder",
+  );
+}
+
 function hasValidationBlockers(product) {
   const blockers = Array.isArray(product?.validation?.blockers)
     ? product.validation.blockers
@@ -855,22 +876,6 @@ try {
             }).count()) < 1
           ) {
             throw new Error("acquisition landing is missing its primary advisor CTA");
-          }
-        }
-
-        if (target.name === "prada-lhomme") {
-          const pendingAsset = page.locator(
-            '[data-dufynd-asset-state="pending"]',
-          );
-          if ((await pendingAsset.count()) < 1) {
-            throw new Error(
-              "missing fragrance visual does not use the neutral pending-asset state",
-            );
-          }
-          if ((await page.locator(".dufynd-product-placeholder").count()) !== 0) {
-            throw new Error(
-              "legacy fabricated bottle placeholder is still rendered",
-            );
           }
         }
 
