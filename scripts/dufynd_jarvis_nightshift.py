@@ -142,11 +142,7 @@ def _select_task(
 ) -> dict[str, Any] | None:
     candidates = _safe_candidates(queue)
     attempted = attempted_task_ids or set()
-    eligible = [
-        task
-        for task in candidates
-        if str(task.get("task_id") or "") not in attempted
-    ]
+    eligible = [task for task in candidates if str(task.get("task_id") or "") not in attempted]
 
     # Keep the shared checkout trustworthy for read-only workers: consume
     # non-engineering GREEN work first, then prepare at most one engineering
