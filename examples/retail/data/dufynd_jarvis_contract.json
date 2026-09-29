@@ -1,5 +1,5 @@
 {
-  "version": "2.2",
+  "version": "2.3",
   "brand": "DUFYND",
   "operator": "TNCommerce",
   "purpose": "Machine-readable contract between DUFYND operating data and Jarvis.",
@@ -144,6 +144,18 @@
         "runtime_or_budget_gate"
       ],
       "safety": "Supervisor mode does not expand the tool surface. Publishing, spending, contracts, production merges and destructive production changes remain unavailable."
+    },
+    "control_plane_sync": {
+      "status": "required_before_active_processing",
+      "repo_source": "examples/retail/data/scentai_jarvis_master_status.json",
+      "snapshot_key": "jarvis.repo_state_snapshot",
+      "stable_task_ids": [
+        "repo_current_commerce",
+        "repo_current_content"
+      ],
+      "rule": "Refresh derived repository state, upsert the canonical repo snapshot and current domain tasks, then require exact source_fingerprint_sha256 parity before Jarvis may use the autonomy queue.",
+      "dry_run_default": true,
+      "live_customer_state_modified": false
     }
   },
   "human_decision_tokens": {

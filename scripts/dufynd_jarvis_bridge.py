@@ -218,6 +218,60 @@ class DufyndJarvisBridge:
             )
             response.raise_for_status()
 
+    def upsert_master_status(
+        self,
+        *,
+        key: str,
+        category: str,
+        value: dict[str, Any],
+        priority: int = 100,
+        last_verified_at: str | None = None,
+    ) -> None:
+        self._upsert(
+            "dufynd_master_status",
+            {
+                "key": key,
+                "category": category,
+                "value": value,
+                "priority": max(0, min(priority, 100)),
+                "last_verified_at": last_verified_at,
+            },
+            on_conflict="key",
+        )
+
+    def upsert_autonomy_task(
+        self,
+        *,
+        task_id: str,
+        domain: str,
+        title: str,
+        instruction: str,
+        status: str,
+        priority: int,
+        requires_human_approval: bool,
+        approval_action_type: str | None = None,
+        dependencies: list[str] | None = None,
+        evidence: str | None = None,
+        owner: str = "jarvis",
+    ) -> None:
+        self._upsert(
+            "dufynd_autonomy_tasks",
+            {
+                "task_id": task_id,
+                "domain": domain,
+                "title": title,
+                "instruction": instruction,
+                "status": status,
+                "priority": max(0, min(priority, 100)),
+                "requires_human_approval": requires_human_approval,
+                "approval_action_type": approval_action_type,
+                "dependencies": dependencies or [],
+                "evidence": evidence,
+                "owner": owner,
+            },
+            on_conflict="task_id",
+        )
+
     def record_creative_reference(
         self,
         *,

@@ -10,6 +10,7 @@ on:
         type: choice
         options:
           - readiness
+          - sync-state
           - process-next
           - process-loop
       max_events:
@@ -54,6 +55,33 @@ jobs:
           DUFYND_JARVIS_MODEL: ${{ vars.DUFYND_JARVIS_MODEL }}
           DUFYND_JARVIS_ACTIVE: "0"
         run: python -m scripts.dufynd_jarvis_runtime --readiness
+
+      - name: Refresh repository Jarvis state
+        if: inputs.mode == 'sync-state' || inputs.mode == 'process-next' || inputs.mode == 'process-loop'
+        run: >-
+          python -m scripts.refresh_scentai_jarvis_state
+          --write
+          --machine-readable
+
+      - name: Sync Jarvis control plane
+        if: inputs.mode == 'sync-state' || inputs.mode == 'process-next' || inputs.mode == 'process-loop'
+        env:
+          SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: >-
+          python -m scripts.sync_dufynd_repo_state_to_supabase
+          --write
+          --machine-readable
+
+      - name: Verify Jarvis control-plane freshness
+        if: inputs.mode == 'sync-state' || inputs.mode == 'process-next' || inputs.mode == 'process-loop'
+        env:
+          SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: >-
+          python -m scripts.dufynd_jarvis_freshness
+          --max-lag-hours 0
+          --machine-readable
 
       - name: Validate explicit active-run approval
         if: inputs.mode == 'process-next' || inputs.mode == 'process-loop'

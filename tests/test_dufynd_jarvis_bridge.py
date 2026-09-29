@@ -191,6 +191,24 @@ def mock_transport() -> httpx.MockTransport:
                 },
             )
 
+        if request.url.path.endswith("/dufynd_master_status"):
+            row = json.loads(request.content)
+            assert row["key"] == "jarvis.repo_state_snapshot"
+            assert row["category"] == "jarvis"
+            assert row["value"]["source_fingerprint_sha256"] == "abc123"
+            assert request.url.params["on_conflict"] == "key"
+            assert "resolution=merge-duplicates" in request.headers["prefer"]
+            return httpx.Response(201)
+
+        if request.url.path.endswith("/dufynd_autonomy_tasks"):
+            row = json.loads(request.content)
+            assert row["task_id"] == "repo_current_commerce"
+            assert row["status"] == "ready"
+            assert row["priority"] == 100
+            assert row["requires_human_approval"] is False
+            assert request.url.params["on_conflict"] == "task_id"
+            return httpx.Response(201)
+
         if request.url.path.endswith("/dufynd_creative_references"):
             row = json.loads(request.content)
             assert row["label"] == "Reference 99"
@@ -385,6 +403,36 @@ def test_bridge_loads_launch_gate() -> None:
 
     assert gate["state"] == "not_ready"
     assert gate["required_passed"] == 4
+
+
+def test_bridge_upserts_repo_control_plane_state() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    bridge.upsert_master_status(
+        key="jarvis.repo_state_snapshot",
+        category="jarvis",
+        value={
+            "generated_at": "2026-09-29T17:00:00+00:00",
+            "source_fingerprint_sha256": "abc123",
+        },
+        priority=100,
+        last_verified_at="2026-09-29T17:00:00+00:00",
+    )
+    bridge.upsert_autonomy_task(
+        task_id="repo_current_commerce",
+        domain="commerce",
+        title="Obtain licensed image sources",
+        instruction="Use current repository state.",
+        status="ready",
+        priority=100,
+        requires_human_approval=False,
+        dependencies=["approved_images_incomplete"],
+        evidence="repo-derived",
+    )
 
 
 def test_bridge_records_reference_and_pattern_links() -> None:

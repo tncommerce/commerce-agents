@@ -122,6 +122,30 @@ operator deliberately supplies the `GO-JARVIS-ACTIVE` approval token. Supervisor
 mode therefore replaces repeated per-event confirmations with one bounded-session
 approval without expanding Jarvis's tool permissions.
 
+## Control-plane state sync
+
+The repository-derived Jarvis master status is the operational source of truth for
+current work selection. Supabase remains the durable memory, audit and event store.
+
+Before active Jarvis processing, the runner should:
+
+1. rebuild the derived repository state with `refresh_scentai_jarvis_state.py --write`
+2. mirror the canonical master snapshot and current domain tasks with
+   `sync_dufynd_repo_state_to_supabase.py --write`
+3. verify exact `source_fingerprint_sha256` parity with
+   `dufynd_jarvis_freshness.py`
+4. refuse autonomy-queue work when the fingerprint or canonical snapshot is stale
+
+The sync is intentionally narrow. It upserts
+`jarvis.repo_state_snapshot`, `repo_current_commerce` and
+`repo_current_content`; it does not delete historical Jarvis records and does not
+modify the live catalog, affiliate routing, public content or spend.
+
+The GitHub Actions runner exposes a no-model `sync-state` mode for refreshing this
+control plane without consuming Jarvis model budget. Both `process-next` and
+`process-loop` perform the same refresh/sync/freshness sequence before active
+model execution.
+
 ## Autonomy control plane
 
 Jarvis should work from the autonomy queue rather than repeatedly asking the
