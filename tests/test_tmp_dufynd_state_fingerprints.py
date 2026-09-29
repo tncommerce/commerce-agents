@@ -25,4 +25,5 @@ def test_dump_expected_derived_state_fingerprints() -> None:
         key: rebuilt[key].get("source_fingerprint_sha256")
         for key in keys
     }
-    raise AssertionError("DUFYND_EXPECTED_FINGERPRINTS=" + json.dumps(fingerprints, sort_keys=True))
+    payload = json.dumps(fingerprints, sort_keys=True)
+    raise AssertionError("DUFYND_EXPECTED_FINGERPRINTS=" + payload)
