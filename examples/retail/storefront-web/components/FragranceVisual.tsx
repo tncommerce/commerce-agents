@@ -20,6 +20,26 @@ const BASE_STYLE: StageStyle = {
   "--dufynd-my": "34%",
 };
 
+const WORLD_BACKGROUNDS: Record<FragranceVisualWorld, string> = {
+  amber:
+    "radial-gradient(circle at 50% 34%, rgba(211,151,54,0.18), transparent 34%), linear-gradient(145deg, #171310 0%, #0b0c0e 100%)",
+  mineral:
+    "radial-gradient(circle at 50% 34%, rgba(91,151,138,0.18), transparent 34%), linear-gradient(145deg, #101716 0%, #090c0d 100%)",
+  ember:
+    "radial-gradient(circle at 50% 34%, rgba(177,112,67,0.19), transparent 34%), linear-gradient(145deg, #18110e 0%, #0b0b0d 100%)",
+  silk:
+    "radial-gradient(circle at 50% 34%, rgba(177,140,153,0.17), transparent 34%), linear-gradient(145deg, #181315 0%, #0c0b0d 100%)",
+  noir:
+    "radial-gradient(circle at 50% 34%, rgba(154,111,72,0.15), transparent 32%), linear-gradient(145deg, #111214 0%, #07080a 100%)",
+};
+
+function stageStyle(world: FragranceVisualWorld): StageStyle {
+  return {
+    ...BASE_STYLE,
+    background: WORLD_BACKGROUNDS[world],
+  };
+}
+
 function updatePointer(event: PointerEvent<HTMLDivElement>) {
   if (event.pointerType === "touch") return;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -124,7 +144,7 @@ export default function FragranceVisual({
         data-variant={variant}
         data-dufynd-visual-world={world}
         className={`dufynd-editorial-depth-stage ${className}`}
-        style={{ ...BASE_STYLE }}
+        style={stageStyle(world)}
         onPointerMove={updatePointer}
         onPointerLeave={resetPointer}
       >
@@ -155,7 +175,7 @@ export default function FragranceVisual({
       data-variant={variant}
       data-dufynd-visual-world={world}
       className={`dufynd-product-stage ${className}`}
-      style={{ ...BASE_STYLE }}
+      style={stageStyle(world)}
       onPointerMove={updatePointer}
       onPointerLeave={resetPointer}
     >
