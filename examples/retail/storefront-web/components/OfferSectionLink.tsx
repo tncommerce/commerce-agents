@@ -8,15 +8,18 @@ export default function OfferSectionLink({
   productId,
   source,
   className,
+  id,
   children,
 }: {
   productId: string;
   source: string;
   className: string;
+  id?: string;
   children: ReactNode;
 }) {
   return (
     <a
+      id={id}
       href="#angebote"
       className={className}
       onClick={() => {
