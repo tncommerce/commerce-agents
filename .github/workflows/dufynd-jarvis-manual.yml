@@ -97,6 +97,20 @@ jobs:
           --max-lag-hours 0
           --machine-readable
 
+      - name: Restore clean worker checkout after control-plane sync
+        if: inputs.mode == 'process-branch-task' || inputs.mode == 'process-branch-task-pr' || inputs.mode == 'autonomous-cycle' || inputs.mode == 'nightshift-pilot'
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Control-plane refresh changed these tracked files before worker execution:"
+          git diff --name-only || true
+          git restore --worktree --staged .
+          if [ -n "$(git status --porcelain --untracked-files=no)" ]; then
+            echo "Tracked checkout is still dirty after control-plane reset."
+            git status --short
+            exit 28
+          fi
+
       - name: Validate explicit active-run approval
         if: inputs.mode == 'process-next' || inputs.mode == 'process-loop' || inputs.mode == 'process-safe-task' || inputs.mode == 'process-branch-task' || inputs.mode == 'process-branch-task-pr'
         shell: bash
