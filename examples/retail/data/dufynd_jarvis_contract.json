@@ -1,5 +1,5 @@
 {
-  "version": "3.0",
+  "version": "3.1",
   "brand": "DUFYND",
   "operator": "TNCommerce",
   "purpose": "Machine-readable contract between DUFYND operating data and Jarvis.",
@@ -290,6 +290,35 @@
       "main_branch_allowed": false,
       "event_order": "Process bounded pending Jarvis inbox events before repo-current task selection; if backlog remains after the configured event limit, defer task execution.",
       "policy_source": "examples/retail/data/scentai_jarvis_operating_policy.json"
+    },
+    "project_continuity": {
+      "status": "available_guarded_manual_bootstrap",
+      "command": "python -m scripts.dufynd_project_continuity bootstrap --domain <tech|content|jarvis|business|global> --live",
+      "checkpoint_command": "python -m scripts.dufynd_project_continuity checkpoint --domain <domain> --checkpoint-json <file> --repo-head <verified-scentai-mvp-head> --write",
+      "instruction_command": "python -m scripts.dufynd_project_continuity instruction --domain <domain>",
+      "checkpoint_store": "dufynd_master_status",
+      "checkpoint_prefix": "continuity.checkpoint.",
+      "canonical_sources": [
+        "live GitHub scentai-mvp HEAD/PR/CI",
+        "repository Jarvis master status and source fingerprint",
+        "Supabase jarvis.repo_state_snapshot",
+        "Supabase autonomy queue",
+        "Supabase pending human decisions",
+        "Supabase Jarvis health",
+        "fingerprint-current domain checkpoint"
+      ],
+      "domains": [
+        "tech",
+        "content",
+        "jarvis",
+        "business",
+        "global"
+      ],
+      "freshness_rule": "A saved domain checkpoint is current only when both its repo-derived source fingerprint and verified scentai-mvp Git HEAD match the cold-start context. Supabase repo-state fingerprint drift still fails closed before autonomy-queue continuation.",
+      "chat_history_rule": "Chat history is advisory only and is never the canonical project state.",
+      "secret_rule": "Bootstrap and checkpoint payloads must not contain credentials, secrets, API keys or tokens.",
+      "live_git_rule": "Every cold start must verify the current scentai-mvp HEAD, relevant pull requests and CI before material work.",
+      "database_rule": "Reuse existing dufynd_master_status; no separate continuity table or second source of truth."
     }
   },
   "human_decision_tokens": {
