@@ -3,7 +3,6 @@
 
 from pathlib import Path
 
-
 WORKFLOW = Path(".github/workflows/dufynd-production-smoke.yml")
 
 
