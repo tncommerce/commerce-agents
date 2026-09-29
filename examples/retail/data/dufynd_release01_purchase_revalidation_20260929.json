@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "verified_on": "2026-09-29",
+  "status": "read_only_purchase_destination_revalidation",
+  "purpose": "Record exact-variant public merchant evidence for Release 01 purchase destinations whose 72-hour freshness gate expired. This file does not itself modify live offers or affiliate routing.",
+  "policy": {
+    "exact_variant_required": true,
+    "public_https_product_page_required": true,
+    "in_stock_required": true,
+    "affiliate_tracking_added": false,
+    "recommendation_priority_changed": false,
+    "image_reuse_rights_inferred": false
+  },
+  "products": [
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "brand": "Parfums de Marly",
+      "name": "Delina",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 75,
+      "gtin": "3700578501998",
+      "merchant_id": "douglas-de",
+      "merchant_name": "Douglas",
+      "merchant_product_id": "968233",
+      "product_url": "https://www.douglas.de/de/p/5010758028?variant=968233",
+      "observed_price_eur": 285,
+      "shipping_cost_eur": 0,
+      "in_stock": true,
+      "variant_evidence": "Douglas product page exposes Delina Eau de Parfum with selectable 75 ml variant at 285 EUR and online stock.",
+      "intended_offer_id": "douglas-pdm-delina-edp-75",
+      "current_live_offer_action": "refresh_last_verified_timestamp_after_state_rebuild_path_is_prepared"
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "brand": "Yves Saint Laurent",
+      "name": "Libre",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "gtin": "3614272648425",
+      "merchant_id": "douglas-de",
+      "merchant_name": "Douglas",
+      "merchant_product_id": "289703",
+      "product_url": "https://www.douglas.de/de/p/5000005003?variant=289703",
+      "observed_price_eur": 119,
+      "shipping_cost_eur": 0,
+      "in_stock": true,
+      "variant_evidence": "Douglas product page exposes Libre Eau de Parfum Refillable with selectable 90 ml variant at 119 EUR, article 289703, and online stock.",
+      "intended_offer_id": "douglas-ysl-libre-edp-90",
+      "current_live_offer_action": "refresh_last_verified_timestamp_after_state_rebuild_path_is_prepared"
+    }
+  ],
+  "limitations": [
+    "No permission to reuse Douglas product imagery is inferred from these product pages.",
+    "No affiliate URL or commission is activated by this revalidation.",
+    "Live merchant_offers.json remains unchanged in this evidence-only step."
+  ]
+}
