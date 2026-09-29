@@ -290,7 +290,7 @@ def test_nightshift_routes_workers_and_consumes_multiple_tasks(
     monkeypatch.setattr(
         nightshift,
         "_require_autonomous_mode",
-        lambda _bridge: ("budget", {"can_run": True}),
+        lambda: None,
     )
     monkeypatch.setattr(
         nightshift,
@@ -383,7 +383,7 @@ def test_nightshift_defers_tasks_while_event_backlog_remains(monkeypatch) -> Non
     monkeypatch.setattr(
         nightshift,
         "_require_autonomous_mode",
-        lambda _bridge: ("budget", {"can_run": True}),
+        lambda: None,
     )
     monkeypatch.setattr(
         nightshift,
@@ -428,7 +428,7 @@ def test_nightshift_does_not_mark_unclassified_safe_success_done(monkeypatch) ->
     monkeypatch.setattr(
         nightshift,
         "_require_autonomous_mode",
-        lambda _bridge: ("budget", {"can_run": True}),
+        lambda: None,
     )
     monkeypatch.setattr(
         nightshift,
@@ -469,7 +469,7 @@ def test_nightshift_retries_failed_task_then_continues(monkeypatch) -> None:
     monkeypatch.setattr(
         nightshift,
         "_require_autonomous_mode",
-        lambda _bridge: ("budget", {"can_run": True}),
+        lambda: None,
     )
     monkeypatch.setattr(
         nightshift,
