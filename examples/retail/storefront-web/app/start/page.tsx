@@ -148,6 +148,54 @@ export default function SocialStartPage() {
         </section>
 
         <section
+          aria-labelledby="dufynd-social-direct-search-heading"
+          className="mt-4 rounded-[22px] border border-(--line) bg-white/[0.72] p-4 shadow-(--shadow-sm) backdrop-blur-sm sm:p-5"
+        >
+          <div className="grid gap-3 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
+            <div>
+              <div className="text-[9.5px] font-semibold uppercase tracking-[0.14em] text-(--accent-ink)">
+                Konkreten Duft im Kopf?
+              </div>
+              <h2
+                id="dufynd-social-direct-search-heading"
+                className="mt-1 text-[17px] font-semibold tracking-[-0.02em] text-(--ink)"
+              >
+                Duft oder Marke direkt suchen
+              </h2>
+              <p className="mt-1 text-[11.5px] leading-5 text-(--ink-soft)">
+                Spring direkt aus dem Short zur passenden Katalogsuche.
+              </p>
+            </div>
+
+            <form
+              action="/duft"
+              method="get"
+              role="search"
+              aria-label="DUFYND Social Duftsuche"
+              className="flex min-w-0 flex-col gap-2 sm:flex-row"
+            >
+              <label htmlFor="dufynd-social-search" className="sr-only">
+                Duft oder Marke suchen
+              </label>
+              <input
+                id="dufynd-social-search"
+                name="q"
+                type="search"
+                maxLength={80}
+                placeholder="z. B. 1 Million, Naxos oder Libre"
+                className="min-w-0 flex-1 rounded-xl border border-(--line) bg-[#fffdf8] px-3.5 py-2.5 text-[12.5px] text-(--ink) outline-none transition placeholder:text-(--ink-faint) focus:border-(--accent)"
+              />
+              <button
+                type="submit"
+                className="shrink-0 rounded-xl bg-(--ink) px-4 py-2.5 text-[12px] font-semibold text-white transition hover:opacity-90"
+              >
+                Direkt suchen
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <section
           className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
           aria-label="DUFYND Wege"
         >
