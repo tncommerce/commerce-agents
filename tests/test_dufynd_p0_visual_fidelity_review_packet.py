@@ -24,7 +24,7 @@ def test_p0_fidelity_packet_matches_existing_review_queue() -> None:
 
     packet_rows = packet.get("review_order", [])
 
-    assert packet["status"] == "review_only_not_approved"
+    assert packet["status"] == "partially_fidelity_reviewed_not_live"
     assert packet["approval_scope"]["automatic_approval_allowed"] is False
     assert packet["approval_scope"]["automatic_live_activation_allowed"] is False
     assert packet["approval_scope"]["rights_clearance_implied"] is False
@@ -38,7 +38,9 @@ def test_p0_fidelity_packet_matches_existing_review_queue() -> None:
         assert row["reference_url"] == queue_by_product[product_id]["evidence_url"]
         assert Path(row["candidate_asset"]).is_file()
         assert row["review_focus"]
-        assert row["current_state"] == "candidate_generated_pending_reference_gate"
+        assert row["current_state"] == queue_by_product[product_id]["status"]
+        assert row["fidelity_decision"] == queue_by_product[product_id]["fidelity_review"]["decision"]
+        assert row["fidelity_reviewed_at"] == queue_by_product[product_id]["fidelity_review"]["reviewed_at"]
 
 
 def test_p0_fidelity_packet_never_implies_live_approval() -> None:
@@ -53,3 +55,16 @@ def test_p0_fidelity_packet_never_implies_live_approval() -> None:
     }
     assert "approve_live" not in allowed
     assert "approve_rights" not in allowed
+
+
+def test_p0_fidelity_decisions_are_recorded_without_live_activation() -> None:
+    packet = _load(PACKET)
+
+    assert set(packet["review_summary"]["approve_fidelity"]) == {
+        "SC-ARMANI-SWY-INTENSELY-100",
+        "SC-PRADA-LHOMME-100",
+        "SC-SOSPIRO-VIBRATO-100",
+    }
+    assert packet["review_summary"]["needs_revision"] == ["SC-CREED-ABSOLU-AVENTUS-100"]
+    assert packet["review_summary"]["live_activation_authorized"] is False
+    assert packet["review_summary"]["rights_clearance_implied"] is False
