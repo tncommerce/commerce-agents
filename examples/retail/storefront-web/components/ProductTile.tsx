@@ -57,10 +57,15 @@ export function ProductImage({ product, className = "" }: { product: Product; cl
     const fragrance = getLiveFragranceByProductId(
       String(product.product_id),
     );
-    const visual = fragrance?.preferred_visual;
+    const visual =
+      fragrance?.presentation_visual ||
+      fragrance?.preferred_visual;
     const isProductTruth =
       isVerifiedProductTruthVisual(visual);
     const imageUrl = visual?.url || product.image_url;
+    const backdropUrl = isProductTruth
+      ? fragrance?.backdrop_visual?.url
+      : undefined;
 
     if (imageUrl) {
       return (
@@ -68,6 +73,7 @@ export function ProductImage({ product, className = "" }: { product: Product; cl
           <FragranceVisual
             imageUrl={imageUrl}
             cutoutUrl={isProductTruth ? imageUrl : undefined}
+            backdropUrl={backdropUrl}
             alt={product.title}
             variant="card"
             mode={isProductTruth ? "cutout" : "editorial"}
@@ -330,7 +336,11 @@ export default function ProductTile({
         }`}
       >
         <div className="relative">
-          <div className={`flex items-center justify-center w-full ${imageHeight} bg-white`}>
+          <div
+            className={`flex items-center justify-center w-full ${imageHeight} ${
+              isDufynd ? "bg-[#0c0d0f]" : "bg-white"
+            }`}
+          >
             <ProductImage product={product} className="h-full w-full" />
           </div>
           {product.in_stock === false ? (
