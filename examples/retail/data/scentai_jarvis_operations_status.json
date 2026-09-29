@@ -52,8 +52,8 @@
   },
   "images": {
     "staged_products": 50,
-    "approved_images": 1,
-    "pending_images": 49,
+    "approved_images": 2,
+    "pending_images": 48,
     "review_ready": 0,
     "rights_or_source_check_pending": 10,
     "licensed_source_required": 4,
