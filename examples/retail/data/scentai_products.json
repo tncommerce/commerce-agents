@@ -1697,7 +1697,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/sospiro-vibrato-editorial.webp"
+      "image_url": "/products/sospiro-vibrato-100-cutout-production.webp",
+      "visuals": [
+        {
+          "role": "cutout",
+          "url": "/products/sospiro-vibrato-100-cutout-production.webp",
+          "provenance": "dufynd_generated",
+          "fidelity_status": "verified",
+          "variant": "100ml",
+          "approval_basis": "explicit_user_visual_approval_2026-09-29"
+        }
+      ]
     },
     {
       "product_id": "SC-AFNAN-TURATHI-BLUE-90",
@@ -1989,7 +1999,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/armani-swy-intensely-editorial.webp"
+      "image_url": "/products/armani-swy-intensely-100-cutout-production.webp",
+      "visuals": [
+        {
+          "role": "cutout",
+          "url": "/products/armani-swy-intensely-100-cutout-production.webp",
+          "provenance": "dufynd_generated",
+          "fidelity_status": "verified",
+          "variant": "100ml",
+          "approval_basis": "explicit_user_visual_approval_2026-09-29"
+        }
+      ]
     },
     {
       "product_id": "SC-XERJOFF-NAXOS-100",
@@ -2955,7 +2975,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/prada-lhomme-editorial.webp"
+      "image_url": "/products/prada-lhomme-100-cutout-production.webp",
+      "visuals": [
+        {
+          "role": "cutout",
+          "url": "/products/prada-lhomme-100-cutout-production.webp",
+          "provenance": "dufynd_generated",
+          "fidelity_status": "verified",
+          "variant": "100ml",
+          "approval_basis": "explicit_user_visual_approval_2026-09-29"
+        }
+      ]
     },
     {
       "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
