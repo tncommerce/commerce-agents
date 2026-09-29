@@ -1,5 +1,5 @@
 {
-  "version": "2.7",
+  "version": "2.8",
   "brand": "DUFYND",
   "operator": "TNCommerce",
   "purpose": "Machine-readable contract between DUFYND operating data and Jarvis.",
@@ -225,12 +225,20 @@
         "require active model runtime",
         "require active database budget window",
         "process bounded inbox backlog",
-        "defer safe task while inbox backlog remains",
-        "run one repo-current safe task only after inbox is clear"
+        "defer task execution while inbox backlog remains",
+        "load repo-current safe autonomy tasks",
+        "route engineering tasks to isolated branch worker",
+        "route non-engineering safe tasks to read-only safe worker",
+        "validate any branch-worker patch with allowlist, Python checks, and storefront web/visual QA when applicable"
       ],
       "financial_rule": "The active database budget window remains authoritative. Autonomous mode cannot create, enlarge, reactivate or bypass a budget window.",
       "scheduling": "No recurring schedule is enabled by this contract. Scheduling is a separate operator-controlled activation step.",
-      "safety": "No publishing, spending, contracts, credentials, live catalog mutation, push or merge capability is added by autonomous-cycle."
+      "safety": "Autonomous-cycle may prepare and validate an isolated repository patch but still cannot push, merge, deploy, publish, spend money, change credentials, mutate live catalog routing, or bypass the active database budget window.",
+      "worker_routing": {
+        "engineering": "branch_worker",
+        "non_engineering": "safe_worker",
+        "no_safe_task": "clean_noop"
+      }
     }
   },
   "human_decision_tokens": {
