@@ -102,7 +102,17 @@
           "Nigerian Ginger",
           "Ceylon Cinnamon"
         ]
-      }
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/louis-vuitton-imagination-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ]
     },
     {
       "product_id": "SC-ARABIYAT-MARWA-EDP-100",
@@ -199,7 +209,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/arabiyat-marwa-edp-editorial.webp"
+      "image_url": "/products/pilot/arabiyat-marwa-edp-editorial.webp",
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/arabiyat-marwa-edp-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ]
     },
     {
       "product_id": "SC-ARABIYAT-MARWA-EXTRAIT-60",
@@ -297,7 +317,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/arabiyat-prestige-marwa-extrait-editorial.webp"
+      "image_url": "/products/pilot/arabiyat-prestige-marwa-extrait-editorial.webp",
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/arabiyat-prestige-marwa-extrait-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "60ml",
+          "composition": "product_scene"
+        }
+      ]
     },
     {
       "product_id": "SC-BUJAIRAMI-HECTIC-100",
@@ -395,7 +425,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/bujairami-hectic-editorial.webp"
+      "image_url": "/products/pilot/bujairami-hectic-editorial.webp",
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/bujairami-hectic-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ]
     },
     {
       "product_id": "SC-CREED-AVENTUS-100",
@@ -488,7 +528,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/creed-aventus-editorial.webp"
+      "image_url": "/products/pilot/creed-aventus-editorial.webp",
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/creed-aventus-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ]
     },
     {
       "product_id": "SC-CREED-ABSOLU-AVENTUS-100",
@@ -588,7 +638,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/creed-absolu-aventus-editorial.webp"
+      "image_url": "/products/pilot/creed-absolu-aventus-editorial.webp",
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/creed-absolu-aventus-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ]
     },
     {
       "product_id": "SC-AFNAN-SUPREMACY-COLLECTORS-100",
@@ -686,7 +746,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/afnan-supremacy-collectors-edition-editorial.webp"
+      "image_url": "/products/pilot/afnan-supremacy-collectors-edition-editorial.webp",
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/afnan-supremacy-collectors-edition-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ]
     },
     {
       "product_id": "SC-MAISON-ASRAR-VANGUARD-100",
@@ -789,7 +859,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/maison-asrar-vanguard-editorial.webp"
+      "image_url": "/products/pilot/maison-asrar-vanguard-editorial.webp",
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/maison-asrar-vanguard-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ]
     },
     {
       "product_id": "SC-ARMAF-CDNIM-EDP-200",
@@ -888,7 +968,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/armaf-club-de-nuit-intense-man-editorial.webp"
+      "image_url": "/products/pilot/armaf-club-de-nuit-intense-man-editorial.webp",
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/armaf-club-de-nuit-intense-man-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "200ml",
+          "composition": "product_scene"
+        }
+      ]
     },
     {
       "product_id": "SC-MONTBLANC-EXPLORER-100",
@@ -985,7 +1075,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/montblanc-explorer-editorial.webp"
+      "image_url": "/products/pilot/montblanc-explorer-editorial.webp",
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/montblanc-explorer-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ]
     },
     {
       "product_id": "SC-PDM-LAYTON-125",
@@ -1089,7 +1189,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/pdm-layton-editorial.webp"
+      "image_url": "/products/pilot/pdm-layton-editorial.webp",
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/pdm-layton-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "125ml",
+          "composition": "product_scene"
+        }
+      ]
     },
     {
       "product_id": "SC-AL-HARAMAIN-DETOUR-NOIR-100",
@@ -1190,7 +1300,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/al-haramain-detour-noir-editorial.webp"
+      "image_url": "/products/pilot/al-haramain-detour-noir-editorial.webp",
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/al-haramain-detour-noir-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ]
     },
     {
       "product_id": "SC-ORIENTICA-ROYAL-BLEU-80",
@@ -1292,7 +1412,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/orientica-royal-bleu-editorial.webp"
+      "image_url": "/products/pilot/orientica-royal-bleu-editorial.webp",
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/orientica-royal-bleu-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "80ml",
+          "composition": "product_scene"
+        }
+      ]
     },
     {
       "product_id": "SC-PDM-ALTHAIR-125",
@@ -1390,7 +1520,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/pdm-althair-editorial.webp"
+      "image_url": "/products/pilot/pdm-althair-editorial.webp",
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/pdm-althair-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "125ml",
+          "composition": "product_scene"
+        }
+      ]
     },
     {
       "product_id": "SC-FRENCH-AVENUE-LIQUID-BRUN-100",
@@ -1488,7 +1628,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/liquid-brun-editorial.webp"
+      "image_url": "/products/pilot/liquid-brun-editorial.webp",
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/liquid-brun-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ]
     },
     {
       "product_id": "SC-BVLGARI-TYGAR-125",
@@ -1585,7 +1735,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/bvlgari-tygar-editorial.webp"
+      "image_url": "/products/pilot/bvlgari-tygar-editorial.webp",
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/bvlgari-tygar-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "125ml",
+          "composition": "product_scene"
+        }
+      ]
     },
     {
       "product_id": "SC-SOSPIRO-VIBRATO-100",
@@ -1814,7 +1974,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/afnan-turathi-blue-editorial.webp"
+      "image_url": "/products/pilot/afnan-turathi-blue-editorial.webp",
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/afnan-turathi-blue-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "90ml",
+          "composition": "product_scene"
+        }
+      ]
     },
     {
       "product_id": "SC-MAISON-ASRAR-REGENT-100",
@@ -1920,7 +2090,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/maison-asrar-regent-editorial.webp"
+      "image_url": "/products/pilot/maison-asrar-regent-editorial.webp",
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/maison-asrar-regent-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ]
     },
     {
       "product_id": "SC-ARMANI-SWY-INTENSELY-100",
@@ -2248,7 +2428,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/nusuk-ateeq-editorial.webp"
+      "image_url": "/products/pilot/nusuk-ateeq-editorial.webp",
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/nusuk-ateeq-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ]
     },
     {
       "product_id": "SC-RAYHAAN-ITALIA-100",
@@ -2345,7 +2535,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/rayhaan-italia-editorial.webp"
+      "image_url": "/products/pilot/rayhaan-italia-editorial.webp",
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/rayhaan-italia-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ]
     },
     {
       "product_id": "SC-DIOR-HOMME-INTENSE-100",
@@ -2432,7 +2632,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/dior-homme-intense-editorial.webp"
+      "image_url": "/products/pilot/dior-homme-intense-editorial.webp",
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/dior-homme-intense-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ]
     },
     {
       "product_id": "SC-AL-WATANIAH-KAYAAN-CLASSIC-100",
@@ -2528,7 +2738,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/kayaan-classic-editorial.webp"
+      "image_url": "/products/pilot/kayaan-classic-editorial.webp",
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/kayaan-classic-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ]
     },
     {
       "product_id": "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
@@ -2614,7 +2834,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/valentino-born-in-roma-intense-editorial.webp"
+      "image_url": "/products/pilot/valentino-born-in-roma-intense-editorial.webp",
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/valentino-born-in-roma-intense-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ]
     },
     {
       "product_id": "SC-CLIVE-CHRISTIAN-HEDONISTIC-50",
@@ -2713,7 +2943,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/clive-christian-hedonistic-editorial.webp"
+      "image_url": "/products/pilot/clive-christian-hedonistic-editorial.webp",
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/clive-christian-hedonistic-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "50ml",
+          "composition": "product_scene"
+        }
+      ]
     },
     {
       "product_id": "SC-CHANEL-BLEU-DE-CHANEL-EDP-100",
@@ -2811,7 +3051,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/bleu-de-chanel-edp-editorial.webp"
+      "image_url": "/products/pilot/bleu-de-chanel-edp-editorial.webp",
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/bleu-de-chanel-edp-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ]
     },
     {
       "product_id": "SC-DIOR-SAUVAGE-EDP-100",
@@ -2902,7 +3152,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/dior-sauvage-edp-editorial.webp"
+      "image_url": "/products/pilot/dior-sauvage-edp-editorial.webp",
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/dior-sauvage-edp-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ]
     },
     {
       "product_id": "SC-PRADA-LHOMME-100",
@@ -3097,7 +3357,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/bois-imperial-editorial.webp"
+      "image_url": "/products/pilot/bois-imperial-editorial.webp",
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/bois-imperial-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ]
     },
     {
       "product_id": "SC-AL-AMBRA-DUBAI-MUSK-50",
@@ -3188,7 +3458,17 @@
       "validation": {
         "catalog_ready": true
       },
-      "image_url": "/products/pilot/al-ambra-dubai-musk-editorial.webp"
+      "image_url": "/products/pilot/al-ambra-dubai-musk-editorial.webp",
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/al-ambra-dubai-musk-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "50ml",
+          "composition": "product_scene"
+        }
+      ]
     },
     {
       "product_id": "SC-WIDIAN-LONDON-EXTRAIT-50",
