@@ -78,11 +78,7 @@ def test_freshness_blocks_stale_matching_snapshot() -> None:
             "generated_at": "2026-09-29T15:47:18+00:00",
             "source_fingerprint_sha256": "repo-fingerprint",
         },
-        {
-            "master_status": [
-                snapshot_row(generated_at="2026-09-21T19:00:16+00:00")
-            ]
-        },
+        {"master_status": [snapshot_row(generated_at="2026-09-21T19:00:16+00:00")]},
         max_lag_hours=24,
     )
 
