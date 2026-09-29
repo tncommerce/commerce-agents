@@ -245,14 +245,6 @@ def append_enabled_research_waves(
 def build_staging_payload() -> dict:
     queue = load_json(DATA_DIR / "scentai_catalog_promotion_queue.json")
     queue_by_id = {row["candidate_id"]: row for row in queue["candidates"]}
-    live_catalog = load_json(LIVE_CATALOG)
-    live_ids = {
-        str(row.get("product_id") or "")
-        for row in live_catalog.get("products", [])
-        if row.get("category") == "fragrance"
-        and row.get("in_stock") is not False
-        and str(row.get("product_id") or "").startswith("SC-")
-    }
 
     products: list[dict] = []
     seen_product_ids: set[str] = set()
@@ -390,10 +382,6 @@ def build_staging_payload() -> dict:
             attribution_text=plan["attribution_text"],
             share_alike_required=plan["share_alike_required"],
         )
-
-    for product in products:
-        if product["product_id"] in live_ids:
-            product.setdefault("validation", {})["promoted_to_live"] = True
 
     return payload
 
