@@ -327,11 +327,7 @@ def test_smoke_fails_when_rabanne_1_million_route_is_missing() -> None:
         transport=transport(broken_storefront_path=CRITICAL_PRODUCT_PATH),
     )
 
-    check = next(
-        check
-        for check in report.checks
-        if check.name == "storefront_rabanne_1_million"
-    )
+    check = next(check for check in report.checks if check.name == "storefront_rabanne_1_million")
     assert report.ok is False
     assert check.ok is False
     assert check.status_code == 404
@@ -352,9 +348,7 @@ def test_smoke_fails_when_rabanne_1_million_api_detail_is_missing() -> None:
     )
 
     check = next(
-        check
-        for check in report.checks
-        if check.name == "product_detail_rabanne_1_million"
+        check for check in report.checks if check.name == "product_detail_rabanne_1_million"
     )
     assert report.ok is False
     assert check.ok is False
