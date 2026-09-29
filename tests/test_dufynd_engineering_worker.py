@@ -3,7 +3,6 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-
 import scripts.dufynd_engineering_worker as worker
 
 
@@ -89,7 +88,7 @@ def test_worker_write_and_replace_are_bounded(
     monkeypatch.setattr(worker, "REPO_ROOT", tmp_path)
 
     result = worker._write_text("tests/example.txt", "alpha\nbeta\n")
-    assert result["bytes"] == len("alpha\nbeta\n".encode())
+    assert result["bytes"] == len(b"alpha\nbeta\n")
     assert (tmp_path / "tests/example.txt").read_text() == "alpha\nbeta\n"
 
     replaced = worker._replace_text("tests/example.txt", "beta", "gamma")
