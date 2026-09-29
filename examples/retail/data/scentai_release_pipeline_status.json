@@ -20,7 +20,7 @@
         "mapping_ready": 5,
         "image_identity_source_verified": 5,
         "approved_images": 1,
-        "current_purchase_destinations": 0,
+        "current_purchase_destinations": 5,
         "current_tracked_affiliate_offers": 0,
         "promotion_ready": 1
       },
@@ -35,13 +35,13 @@
         "SCENTAI-RELEASE-01"
       ],
       "dependency_state": "pending_prior_release_validation",
-      "gate_state": "blocked_pending_images_and_purchase_destinations",
+      "gate_state": "blocked_pending_remaining_product_gates",
       "summary": {
         "release_size": 5,
         "mapping_ready": 5,
         "image_identity_source_verified": 5,
         "approved_images": 0,
-        "current_purchase_destinations": 0,
+        "current_purchase_destinations": 5,
         "current_tracked_affiliate_offers": 0,
         "promotion_ready": 0
       },
@@ -57,13 +57,13 @@
         "SCENTAI-RELEASE-02"
       ],
       "dependency_state": "pending_prior_release_validation",
-      "gate_state": "blocked_pending_images_and_purchase_destinations",
+      "gate_state": "blocked_pending_remaining_product_gates",
       "summary": {
         "release_size": 5,
         "mapping_ready": 5,
         "image_identity_source_verified": 5,
         "approved_images": 0,
-        "current_purchase_destinations": 0,
+        "current_purchase_destinations": 5,
         "current_tracked_affiliate_offers": 0,
         "promotion_ready": 0
       },
