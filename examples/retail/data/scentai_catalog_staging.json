@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "status": "staging_only_not_loaded_by_live_storefront",
-  "product_count": 49,
+  "product_count": 50,
   "note": "Canonical pre-live records for verified expansion candidates. No guessed prices, identifiers, affiliate URLs or product images.",
   "products": [
     {
@@ -202,6 +202,84 @@
           "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
+      }
+    },
+    {
+      "candidate_id": "LANCOME-LA-VIE-EST-BELLE-EDP",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "batch": 1,
+      "brand": "Lancôme",
+      "name": "La Vie est Belle",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "classification": {
+        "target_groups": [
+          "women"
+        ],
+        "audience_lean": null
+      },
+      "fragrance_profile": {
+        "scent_family": "floral gourmand",
+        "key_notes": [
+          "iris",
+          "pear",
+          "orange blossom",
+          "jasmine",
+          "vanilla accord",
+          "patchouli"
+        ],
+        "community_accords": [
+          "sweet",
+          "floral",
+          "fruity",
+          "gourmand",
+          "powdery"
+        ],
+        "recommendation_profile": {
+          "scores": {
+            "freshness": 4,
+            "sweetness": 10,
+            "woodiness": 2,
+            "spiciness": 2
+          },
+          "source": "deterministic_editorial_mapping_v1",
+          "confidence": "medium",
+          "customer_facing": false
+        }
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 6.6,
+        "rating_count": 2137,
+        "longevity_10": 8.2,
+        "projection_10": 8.1,
+        "provisional": false
+      },
+      "media": {
+        "image_url": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+        "image_status": "approved_licensed_image",
+        "image_reviewed_at": "2026-09-27T16:37:11.374941+00:00",
+        "image_source_class": "licensed_asset_provider",
+        "image_rights_basis_id": "open-beauty-facts-3605533286555-cc-by-sa-3.0",
+        "image_rights_checked_at": "2026-09-27",
+        "image_license_name": "CC BY-SA 3.0",
+        "image_license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+        "image_attribution_text": "Open Beauty Facts contributors",
+        "image_share_alike_required": true
+      },
+      "commerce": {
+        "merchant_coverage_count": 3,
+        "merchant_coverage_source": "promotion_queue",
+        "market_status": null,
+        "live_offer_status": "pending_current_purchase_destination"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "verified_purchase_destination_pending",
+          "approved_product_image_pending"
+        ],
+        "promoted_to_live": true
       }
     },
     {
