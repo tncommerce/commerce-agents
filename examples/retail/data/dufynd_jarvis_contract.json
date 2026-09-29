@@ -1,5 +1,5 @@
 {
-  "version": "2.7",
+  "version": "3.0",
   "brand": "DUFYND",
   "operator": "TNCommerce",
   "purpose": "Machine-readable contract between DUFYND operating data and Jarvis.",
@@ -212,6 +212,16 @@
           "responsive DUFYND browser visual QA"
         ],
         "rule": "Storefront patches must pass both repository Python checks and deterministic web/visual QA before the patch artifact is accepted."
+      },
+      "pr_orchestration": {
+        "status": "available_guarded_no_auto_merge",
+        "mode": "process-branch-task-pr",
+        "target_base": "scentai-mvp",
+        "credential_rule": "Checkout does not persist GitHub credentials during the model turn. GH_TOKEN is exposed only to the deterministic post-validation PR step.",
+        "stale_base_rule": "Refuse PR creation if scentai-mvp moved after the worker checkout and before push.",
+        "pr_rule": "Only a validated allowlisted patch may be committed, pushed to a jarvis/worker-* branch, and opened as a PR.",
+        "auto_merge": false,
+        "main_branch_allowed": false
       }
     },
     "autonomous_cycle": {
@@ -225,12 +235,52 @@
         "require active model runtime",
         "require active database budget window",
         "process bounded inbox backlog",
-        "defer safe task while inbox backlog remains",
-        "run one repo-current safe task only after inbox is clear"
+        "defer task execution while inbox backlog remains",
+        "load repo-current safe autonomy tasks",
+        "route engineering tasks to isolated branch worker",
+        "route non-engineering safe tasks to read-only safe worker",
+        "validate any branch-worker patch with allowlist, Python checks, and storefront web/visual QA when applicable"
       ],
       "financial_rule": "The active database budget window remains authoritative. Autonomous mode cannot create, enlarge, reactivate or bypass a budget window.",
       "scheduling": "No recurring schedule is enabled by this contract. Scheduling is a separate operator-controlled activation step.",
-      "safety": "No publishing, spending, contracts, credentials, live catalog mutation, push or merge capability is added by autonomous-cycle."
+      "safety": "Autonomous-cycle may prepare and validate an isolated repository patch but still cannot push, merge, deploy, publish, spend money, change credentials, mutate live catalog routing, or bypass the active database budget window.",
+      "worker_routing": {
+        "engineering": "branch_worker",
+        "non_engineering": "safe_worker",
+        "no_safe_task": "clean_noop"
+      }
+    },
+    "nightshift_orchestrator": {
+      "status": "available_guarded_not_scheduled",
+      "command": "python -m scripts.dufynd_jarvis_nightshift run",
+      "mode": "nightshift-pilot",
+      "task_driven": true,
+      "polling_loop": false,
+      "persistent_session_key": "jarvis.nightshift_session",
+      "default_max_tasks": 8,
+      "hard_max_tasks": 20,
+      "default_max_inbox_events": 2,
+      "hard_max_inbox_events": 5,
+      "worker_timeout_seconds": 600,
+      "hard_worker_timeout_seconds": 900,
+      "default_retries": 1,
+      "hard_retries": 2,
+      "worker_routing": {
+        "engineering": "isolated_branch_worker",
+        "commerce": "safe_research_worker",
+        "content": "safe_research_worker",
+        "research": "safe_research_worker",
+        "qa": "deterministic_validation_layer"
+      },
+      "resume_rule": "Reuse the open session only when the synchronized repo fingerprint is unchanged. Stable task state is preserved for the same fingerprint to avoid duplicate execution after interruption.",
+      "budget_rule": "Check the active database budget window before every paid worker attempt. Nightshift cannot create, reactivate, enlarge or bypass a budget window.",
+      "branch_rule": "Run non-engineering GREEN work before engineering work. After one engineering patch is prepared, stop model work in that checkout and run deterministic QA/PR handoff immediately.",
+      "yellow_handoff": "Validated engineering patches may be pushed only to a jarvis/worker-* branch and opened as a PR against scentai-mvp. They are never auto-merged.",
+      "morning_report": "Generate JSON and Markdown from persisted session state, autonomy queue, health, pending decisions, budget status and audited agent runs.",
+      "scheduling": "No recurring schedule is enabled. The pilot requires an explicit operator-started workflow dispatch.",
+      "main_branch_allowed": false,
+      "event_order": "Process bounded pending Jarvis inbox events before repo-current task selection; if backlog remains after the configured event limit, defer task execution.",
+      "policy_source": "examples/retail/data/scentai_jarvis_operating_policy.json"
     }
   },
   "human_decision_tokens": {
@@ -239,5 +289,47 @@
     "jarvis_active_runner": "GO-JARVIS-ACTIVE",
     "pilot_selection": "GO-PILOT",
     "paid_ai_rnd": "GO-AI-RND"
+  },
+  "nightshift_policy": {
+    "status": "v1_guarded_pilot",
+    "operating_rule": "Jarvis consumes work, not time. It must stop when no safe work remains instead of polling or burning model budget.",
+    "action_classes": {
+      "green_auto_execute": [
+        "read_project_status",
+        "analyze_backlog",
+        "prioritize_safe_tasks",
+        "public_research",
+        "product_and_affiliate_analysis",
+        "internal_reports",
+        "content_ideas_storyboards_prompts_shot_plans",
+        "isolated_code_patch_preparation",
+        "tests_and_quality_assurance",
+        "error_analysis",
+        "task_state_updates",
+        "evidence_logging"
+      ],
+      "yellow_prepare_only": [
+        "production_relevant_pull_request",
+        "live_catalog_change",
+        "new_affiliate_activation",
+        "content_ready_for_publication",
+        "recommendation_logic_change",
+        "important_external_message"
+      ],
+      "red_owner_only": [
+        "spend_money",
+        "buy_credits_or_subscriptions",
+        "increase_budget",
+        "accept_contract",
+        "change_credentials_or_secrets",
+        "send_important_external_message",
+        "publish_social_content",
+        "irreversible_production_data_change",
+        "production_merge",
+        "bypass_security_or_approval_gate"
+      ]
+    },
+    "unknown_action_rule": "fail_closed_to_owner_or_prepare_only",
+    "main_branch_allowed": false
   }
 }
