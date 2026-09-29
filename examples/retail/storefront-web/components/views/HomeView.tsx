@@ -325,7 +325,6 @@ export default function HomeView({
                       : undefined
                   }
                   alt={spotlight.title}
-                  world={spotlightFragrance ? visualWorldFor(spotlightFragrance) : undefined}
                   className="h-full min-h-[260px] sm:min-h-[320px] w-full md:min-h-[430px]"
                   priority
                 />
