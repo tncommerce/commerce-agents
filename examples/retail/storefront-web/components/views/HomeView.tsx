@@ -142,6 +142,16 @@ const AUDIENCE_DISCOVERY = [
   { key: "unisex", label: "Unisex", eyebrow: "Für alle" },
 ] as const;
 
+function homeVisualWorldFor(product: Product | undefined) {
+  if (!product) return "ember" as const;
+
+  const fragrance = getLiveFragranceByProductId(
+    String(product.product_id),
+  );
+
+  return fragrance ? visualWorldFor(fragrance) : "ember";
+}
+
 function audiencePreviewProducts(picks: Product[]) {
   const used = new Set<string>();
 
@@ -462,7 +472,8 @@ export default function HomeView({
       </nav>
       <section
         aria-labelledby="dufynd-audience-discovery-heading"
-        className="rounded-[22px] border border-(--line) bg-(--card) p-3.5 shadow-(--shadow-sm) sm:p-4"
+        className="dufynd-home-audience-stage rounded-[26px] border border-white/10 p-3.5 shadow-(--shadow-sm) sm:p-5"
+        data-dufynd-home-audience-stage
       >
         <div className="flex items-end justify-between gap-4">
           <div>
@@ -487,13 +498,31 @@ export default function HomeView({
         <div className="-mx-1 mt-3 flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-1 pb-1 sm:grid sm:grid-cols-3 sm:overflow-visible">
           {audiencePreviews.map(({ key, label, eyebrow, product }) => {
             const count = audienceCounts[key];
+            const world = homeVisualWorldFor(product);
+            const productHasVisual = Boolean(
+              product?.image_url ||
+                (product &&
+                  getLiveFragranceByProductId(
+                    String(product.product_id),
+                  )?.presentation_visual?.url) ||
+                (product &&
+                  getLiveFragranceByProductId(
+                    String(product.product_id),
+                  )?.preferred_visual?.url),
+            );
 
             return (
               <a
                 key={key}
                 href={`/duft?zielgruppe=${key}`}
-                className="group relative min-h-[126px] min-w-[76%] snap-start overflow-hidden rounded-2xl border border-(--line) bg-(--surface) p-4 transition hover:-translate-y-0.5 hover:border-(--accent) sm:min-w-0"
+                className="dufynd-home-audience-card group relative min-h-[146px] min-w-[76%] snap-start overflow-hidden rounded-2xl border border-white/10 p-4 transition sm:min-w-0"
+                data-dufynd-home-audience-card
+                data-dufynd-home-world={world}
               >
+                <span
+                  aria-hidden
+                  className="dufynd-home-audience-atmosphere"
+                />
                 <div className="relative z-10 max-w-[58%]">
                   <div className="text-[9px] font-semibold uppercase tracking-[0.14em] text-(--ink-faint)">
                     {eyebrow}
@@ -510,17 +539,17 @@ export default function HomeView({
                   </span>
                 </div>
 
-                {product?.image_url ? (
-                  <div className="pointer-events-none absolute inset-y-0 right-0 z-[1] flex w-[48%] items-center justify-center p-2">
+                {product && productHasVisual ? (
+                  <div className="dufynd-home-audience-product pointer-events-none absolute inset-y-0 right-0 z-[1] flex w-[52%] items-center justify-center p-2">
                     <ProductImage
                       product={product}
-                      className="h-[112px] w-full transition duration-300 group-hover:scale-[1.035]"
+                      className="h-[128px] w-full transition duration-300 group-hover:scale-[1.035]"
                     />
                   </div>
                 ) : null}
                 <span
                   aria-hidden
-                  className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,var(--surface)_0%,var(--surface)_48%,transparent_78%)]"
+                  className="dufynd-home-audience-shade pointer-events-none absolute inset-0"
                 />
               </a>
             );
@@ -643,39 +672,54 @@ export default function HomeView({
 
       {picks.length ? (
         <HomeSection title="Ausgewählte Düfte" subtitle="Ein schneller Einstieg für Damen, Herren und Unisex">
-          <div className="flex flex-col gap-2 sm:hidden">
-            {picks.map((product) => (
-              <ProductRow
-                key={product.product_id}
-                product={product}
-                onOpen={(item) =>
-                  window.location.assign(
-                    fragrancePathForProduct(item),
-                  )
-                }
-              />
-            ))}
-          </div>
-          <div className="hidden grid-cols-3 gap-4 sm:grid">
-            {picks.map((product) => (
-              <ProductTile
-                key={product.product_id}
-                product={product}
-                fluid
-                onOpen={(item) =>
-                  window.location.assign(
-                    fragrancePathForProduct(item),
-                  )
-                }
-              />
-            ))}
-          </div>
-          <a
-            href="/duft"
-            className="mt-3 inline-flex w-fit rounded-xl border border-(--line) bg-(--card) px-4 py-2.5 text-[12px] font-semibold text-(--accent-ink) transition hover:border-(--accent)"
+          <div
+            className="dufynd-home-selected-stage rounded-[26px] border border-white/10 p-3 sm:p-4"
+            data-dufynd-home-selected-stage
           >
-            Alle {scentCount} Düfte im Katalog entdecken →
-          </a>
+            <div className="flex flex-col gap-2 sm:hidden">
+              {picks.map((product) => (
+                <div
+                  key={product.product_id}
+                  className="dufynd-home-selected-card"
+                  data-dufynd-home-world={homeVisualWorldFor(product)}
+                >
+                  <ProductRow
+                    product={product}
+                    onOpen={(item) =>
+                      window.location.assign(
+                        fragrancePathForProduct(item),
+                      )
+                    }
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="hidden grid-cols-3 gap-4 sm:grid">
+              {picks.map((product) => (
+                <div
+                  key={product.product_id}
+                  className="dufynd-home-selected-card"
+                  data-dufynd-home-world={homeVisualWorldFor(product)}
+                >
+                  <ProductTile
+                    product={product}
+                    fluid
+                    onOpen={(item) =>
+                      window.location.assign(
+                        fragrancePathForProduct(item),
+                      )
+                    }
+                  />
+                </div>
+              ))}
+            </div>
+            <a
+              href="/duft"
+              className="dufynd-home-selected-all mt-3 inline-flex w-fit rounded-xl border border-white/10 bg-white/[0.06] px-4 py-2.5 text-[12px] font-semibold text-white/78 transition hover:border-white/20 hover:bg-white/[0.09]"
+            >
+              Alle {scentCount} Düfte im Katalog entdecken →
+            </a>
+          </div>
         </HomeSection>
       ) : null}
       <LegalFooter />
