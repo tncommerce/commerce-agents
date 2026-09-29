@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 FREE_COMPARISON = Path("examples/retail/storefront-web/components/FragranceComparisonPicker.tsx")
@@ -7,6 +8,7 @@ EXPLICIT_COMPARISON = Path("examples/retail/storefront-web/app/vergleich/[pair]/
 DETAIL_PAGE = Path("examples/retail/storefront-web/app/duft/[slug]/page.tsx")
 GALLERY = Path("examples/retail/storefront-web/components/FragranceVisualGallery.tsx")
 STANDARD = Path("docs/dufynd-storefront-visual-standard-20260929.md")
+PRODUCTS = Path("examples/retail/data/scentai_products.json")
 
 
 def test_comparison_surfaces_prefer_storefront_presentation() -> None:
@@ -42,3 +44,27 @@ def test_standard_covers_comparison_and_gallery_surfaces() -> None:
     assert "Explicit-comparison product headers" in source
     assert "Product-detail visual gallery" in source
     assert "Comparison and gallery consistency" in source
+
+
+def test_every_live_fragrance_has_a_storefront_safe_visual_source() -> None:
+    products = json.loads(PRODUCTS.read_text(encoding="utf-8"))["products"]
+
+    for product in products:
+        product_id = product["product_id"]
+        visuals = product.get("visuals", [])
+
+        has_editorial_presentation = any(
+            visual.get("role") == "editorial"
+            and visual.get("fidelity_status") == "editorial_only"
+            and visual.get("composition") in {"product_scene", "bottle_free_backdrop"}
+            and str(visual.get("url") or "").strip()
+            for visual in visuals
+        )
+        has_verified_truth = any(
+            visual.get("role") in {"primary", "cutout"}
+            and visual.get("fidelity_status") == "verified"
+            and str(visual.get("url") or "").strip()
+            for visual in visuals
+        )
+
+        assert has_editorial_presentation or has_verified_truth, product_id
