@@ -12,7 +12,7 @@ from scripts.promote_scentai_catalog import (
 
 DATA_DIR = Path("examples/retail/data")
 MANIFEST = DATA_DIR / "scentai_release_batch_01.json"
-NOW = datetime(2026, 9, 26, 5, 0, tzinfo=UTC)
+NOW = datetime(2026, 9, 29, 9, 23, 10, tzinfo=UTC)
 
 
 def load_json(path: Path) -> dict:
@@ -58,12 +58,8 @@ def test_release_batch_01_dry_run_stays_blocked_until_real_assets_exist() -> Non
             assert "missing_approved_image" not in row["blockers"]
         else:
             assert "missing_approved_image" in row["blockers"]
-        if row["product_id"] in {"SC-PDM-DELINA-EDP-75", "SC-YSL-LIBRE-EDP-90"}:
-            assert row["eligible_purchase_offers"] == 1
-            assert "missing_current_purchase_destination" not in row["blockers"]
-        else:
-            assert row["eligible_purchase_offers"] == 0
-            assert "missing_current_purchase_destination" in row["blockers"]
+        assert row["eligible_purchase_offers"] == 1
+        assert "missing_current_purchase_destination" not in row["blockers"]
         assert "provisional_community_data" not in row["blockers"]
 
 
