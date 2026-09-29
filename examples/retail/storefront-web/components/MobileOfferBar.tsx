@@ -2,13 +2,17 @@
 
 import { useEffect, useState } from "react";
 
+import OfferSectionLink from "@/components/OfferSectionLink";
+
 export default function MobileOfferBar({
   brand,
   name,
+  productId,
   triggerId = "dufynd-hero-offer-cta",
 }: {
   brand: string;
   name: string;
+  productId: string;
   triggerId?: string;
 }) {
   const [visible, setVisible] = useState(false);
@@ -68,12 +72,13 @@ export default function MobileOfferBar({
             Kaufoptionen prüfen
           </div>
         </div>
-        <a
-          href="#angebote"
+        <OfferSectionLink
+          productId={productId}
+          source="mobile_offer_bar"
           className="shrink-0 rounded-xl bg-(--accent-strong) px-4 py-2.5 text-[12px] font-semibold text-white"
         >
           Angebote prüfen
-        </a>
+        </OfferSectionLink>
       </div>
     </div>
   );

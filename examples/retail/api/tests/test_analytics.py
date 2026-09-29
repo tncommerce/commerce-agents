@@ -84,6 +84,20 @@ def test_conversion_event_request_accepts_funnel_context() -> None:
     assert request.item_position == 2
 
 
+def test_offer_section_open_event_accepts_detail_context() -> None:
+    request = AnalyticsEventRequest(
+        event="offer_section_open",
+        product_id="SC-NAXOS-100",
+        source="mobile_offer_bar",
+        surface="fragrance_detail",
+    )
+
+    assert request.event == "offer_section_open"
+    assert request.product_id == "SC-NAXOS-100"
+    assert request.source == "mobile_offer_bar"
+    assert request.surface == "fragrance_detail"
+
+
 def test_tracker_row_contains_conversion_fields(tmp_path: Path) -> None:
     tracker = FirstPartyAnalyticsTracker(tmp_path / "analytics.jsonl")
 
