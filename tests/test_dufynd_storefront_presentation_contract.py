@@ -19,7 +19,7 @@ def test_discovery_surfaces_use_presentation_visual() -> None:
     library_hub = _read("components/FragranceLibraryHub.tsx")
 
     assert "presentation_visual: FragranceVisualAsset | null" in catalog_lib
-    assert "composition === \"product_scene\"" in catalog_lib
+    assert 'composition === "product_scene"' in catalog_lib
     assert "fragrance?.presentation_visual" in product_tile
     assert "fragrance.presentation_visual" in catalog_browser
     assert "fragrance.presentation_visual" in discovery_page
