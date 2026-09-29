@@ -1048,6 +1048,7 @@ export default async function FragrancePage({
       <MobileOfferBar
         brand={fragrance.brand}
         name={fragrance.name}
+        productId={fragrance.product_id}
       />
     </main>
   );
