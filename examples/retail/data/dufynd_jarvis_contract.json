@@ -1,5 +1,5 @@
 {
-  "version": "2.6",
+  "version": "2.7",
   "brand": "DUFYND",
   "operator": "TNCommerce",
   "purpose": "Machine-readable contract between DUFYND operating data and Jarvis.",
@@ -198,7 +198,21 @@
       "push_allowed": false,
       "merge_allowed": false,
       "terminal_completion_allowed": false,
-      "safety": "No push, merge, deployment, publishing, spend, credentials, Supabase migrations, operational data writes, workflows, lockfiles or dependency-manifest changes."
+      "safety": "No push, merge, deployment, publishing, spend, credentials, Supabase migrations, operational data writes, workflows, lockfiles or dependency-manifest changes.",
+      "validation": {
+        "python": [
+          "ruff check .",
+          "ruff format --check .",
+          "pytest -q",
+          "python scripts/check.py"
+        ],
+        "storefront_when_changed": [
+          "npm ci",
+          "build acme-retail-storefront-web",
+          "responsive DUFYND browser visual QA"
+        ],
+        "rule": "Storefront patches must pass both repository Python checks and deterministic web/visual QA before the patch artifact is accepted."
+      }
     },
     "autonomous_cycle": {
       "status": "available_guarded_not_scheduled",
