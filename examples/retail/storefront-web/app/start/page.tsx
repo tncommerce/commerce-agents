@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
 import LegalFooter from "@/components/LegalFooter";
+import SocialFragranceSearch from "@/components/SocialFragranceSearch";
 import { LIVE_FRAGRANCES } from "@/lib/fragranceCatalog";
 
 export const metadata: Metadata = {
@@ -55,6 +56,11 @@ const paths = [
 
 export default function SocialStartPage() {
   const fragranceCount = LIVE_FRAGRANCES.length;
+  const searchableFragrances = LIVE_FRAGRANCES.map((fragrance) => ({
+    slug: fragrance.slug,
+    brand: fragrance.brand,
+    name: fragrance.name,
+  }));
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#f5f0e8] text-(--ink)">
@@ -138,6 +144,8 @@ export default function SocialStartPage() {
                 Katalog entdecken
               </a>
             </div>
+
+            <SocialFragranceSearch fragrances={searchableFragrances} />
 
             <div className="mt-7 flex flex-wrap gap-x-4 gap-y-2 border-t border-white/[0.08] pt-4 text-[10.5px] font-medium text-white/[0.48]">
               <span>Duftprofil statt Hype</span>
