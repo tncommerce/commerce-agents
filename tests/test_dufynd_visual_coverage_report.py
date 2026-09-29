@@ -47,6 +47,7 @@ def test_visual_state_distinguishes_truth_editorial_and_missing() -> None:
     )
     assert visual_state({"visuals": []}) == "missing_real_asset"
 
+
 def test_storefront_presentation_distinguishes_layered_editorial_and_bare_truth() -> None:
     assert (
         storefront_presentation_state(
