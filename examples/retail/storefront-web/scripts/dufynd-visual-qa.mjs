@@ -369,7 +369,30 @@ try {
             );
           }
 
-          await heroOfferCta.evaluate((element) => {
+          await page.locator("#angebote").evaluate((element) => {
+            const bounds = element.getBoundingClientRect();
+            const targetTop =
+              window.scrollY +
+              bounds.top +
+              Math.min(80, window.innerHeight * 0.1);
+            window.scrollTo({ top: targetTop, behavior: "instant" });
+          });
+          await page.waitForFunction(
+            () => {
+              const offers = document.querySelector("#angebote");
+              if (!offers) return false;
+              const bounds = offers.getBoundingClientRect();
+              return (
+                bounds.bottom > 0 &&
+                bounds.top < window.innerHeight &&
+                !document.querySelector(".dufynd-mobile-offer-bar")
+              );
+            },
+            undefined,
+            { timeout: 2000 },
+          );
+
+          await page.locator("#angebote").evaluate((element) => {
             const bounds = element.getBoundingClientRect();
             const targetTop =
               window.scrollY +
@@ -380,11 +403,14 @@ try {
           await page.waitForFunction(
             () => {
               const trigger = document.querySelector("#dufynd-hero-offer-cta");
+              const offers = document.querySelector("#angebote");
               const bar = document.querySelector(".dufynd-mobile-offer-bar");
-              if (!trigger || !bar) return false;
-              const bounds = trigger.getBoundingClientRect();
+              if (!trigger || !offers || !bar) return false;
+              const triggerBounds = trigger.getBoundingClientRect();
+              const offerBounds = offers.getBoundingClientRect();
               return (
-                bounds.bottom <= 0 &&
+                triggerBounds.bottom <= 0 &&
+                offerBounds.bottom <= 0 &&
                 bar.getBoundingClientRect().height > 0
               );
             },
@@ -397,7 +423,7 @@ try {
             !(await mobileOfferBar.isVisible())
           ) {
             throw new Error(
-              "mobile fragrance page does not reveal the fixed offer bar after the hero CTA leaves view",
+              "mobile fragrance page does not reveal the fixed offer bar after both offer entry points leave view",
             );
           }
 

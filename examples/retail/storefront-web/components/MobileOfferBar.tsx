@@ -15,19 +15,25 @@ export default function MobileOfferBar({
 
   useEffect(() => {
     const trigger = document.getElementById(triggerId);
+    const offers = document.getElementById("angebote");
     if (!trigger) {
       setVisible(false);
       return;
     }
 
-    const syncFromBounds = () => {
-      const bounds = trigger.getBoundingClientRect();
-      const inViewport =
+    const inViewport = (element: Element) => {
+      const bounds = element.getBoundingClientRect();
+      return (
         bounds.bottom > 0 &&
         bounds.top < window.innerHeight &&
         bounds.right > 0 &&
-        bounds.left < window.innerWidth;
-      setVisible(!inViewport);
+        bounds.left < window.innerWidth
+      );
+    };
+    const syncFromBounds = () => {
+      setVisible(
+        !inViewport(trigger) && !(offers && inViewport(offers)),
+      );
     };
 
     syncFromBounds();
@@ -41,11 +47,11 @@ export default function MobileOfferBar({
       };
     }
 
-    const observer = new IntersectionObserver(
-      ([entry]) => setVisible(!entry.isIntersecting),
-      { threshold: 0.01 },
-    );
+    const observer = new IntersectionObserver(syncFromBounds, {
+      threshold: 0.01,
+    });
     observer.observe(trigger);
+    if (offers) observer.observe(offers);
     return () => observer.disconnect();
   }, [triggerId]);
 
