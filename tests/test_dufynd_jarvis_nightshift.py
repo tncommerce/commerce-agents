@@ -1,0 +1,391 @@
+from __future__ import annotations
+
+import asyncio
+from pathlib import Path
+
+import scripts.dufynd_jarvis_nightshift as nightshift
+
+
+class FakeBridge:
+    def __init__(self, tasks: list[dict] | None = None) -> None:
+        self.tasks = {
+            task["task_id"]: dict(task)
+            for task in (tasks or [])
+        }
+        self.master = {
+            "jarvis.repo_state_snapshot": {
+                "key": "jarvis.repo_state_snapshot",
+                "value": {"source_fingerprint_sha256": "fingerprint-1"},
+            }
+        }
+        self.runs = []
+        self.status_writes = []
+
+    def load_master_status_entry(self, key: str):
+        return self.master.get(key)
+
+    def upsert_master_status(self, *, key, category, value, priority, last_verified_at):
+        self.master[key] = {
+            "key": key,
+            "category": category,
+            "value": dict(value),
+            "priority": priority,
+            "last_verified_at": last_verified_at,
+        }
+
+    def load_autonomy_queue(self):
+        ready = [
+            dict(task)
+            for task in self.tasks.values()
+            if task.get("status") == "ready"
+        ]
+        ready.sort(key=lambda task: (-int(task.get("priority") or 0), task["task_id"]))
+        return {
+            "safe_to_execute": ready,
+            "in_progress": [
+                dict(task)
+                for task in self.tasks.values()
+                if task.get("status") == "in_progress"
+            ],
+            "waiting_human_input": [
+                dict(task)
+                for task in self.tasks.values()
+                if task.get("status") == "waiting_human_input"
+            ],
+            "waiting_external": [
+                dict(task)
+                for task in self.tasks.values()
+                if task.get("status") == "waiting_external"
+            ],
+            "approval_required": [
+                dict(task)
+                for task in self.tasks.values()
+                if task.get("status") == "approval_required"
+            ],
+            "done_recent": [
+                dict(task)
+                for task in self.tasks.values()
+                if task.get("status") == "done"
+            ],
+        }
+
+    def load_autonomy_task(self, task_id: str):
+        task = self.tasks.get(task_id)
+        return dict(task) if task else None
+
+    def set_autonomy_task_status(self, *, task_id, status, evidence):
+        self.tasks[task_id]["status"] = status
+        self.tasks[task_id]["evidence"] = evidence
+        self.status_writes.append((task_id, status))
+
+    def record_run(self, **kwargs):
+        self.runs.append(kwargs)
+
+    def load_agent_runs_since(self, since_iso: str):
+        return [
+            {
+                "agent_name": "jarvis_safe_worker",
+                "run_type": "safe_task:repo_current_commerce",
+                "decisions": [{"cost_usd": 0.08}],
+                "created_at": since_iso,
+            },
+            {
+                "agent_name": "jarvis_branch_worker",
+                "run_type": "branch_task:repo_current_engineering",
+                "decisions": [{"cost_usd": 0.11}],
+                "created_at": since_iso,
+            },
+        ]
+
+    def load_health(self):
+        return {
+            "state": "idle",
+            "inbox": {"pending": 0, "processing": 0, "failed": 0},
+            "pending_human_decisions": 0,
+        }
+
+    def load_pending_decisions(self):
+        return []
+
+    def load_budget_status(self, _budget_id: str):
+        return {
+            "budget_id": "jarvis_activation_pilot_001",
+            "status": "active",
+            "can_run": True,
+            "spent_usd": 0.4,
+            "remaining_usd": 2.1,
+        }
+
+
+def task(task_id: str, domain: str, priority: int) -> dict:
+    return {
+        "task_id": task_id,
+        "domain": domain,
+        "title": task_id.replace("_", " "),
+        "status": "ready",
+        "priority": priority,
+        "requires_human_approval": False,
+        "evidence": "source_fingerprint_sha256=fingerprint-1",
+    }
+
+
+def test_select_task_skips_second_engineering_patch() -> None:
+    queue = {
+        "safe_to_execute": [
+            task("repo_current_engineering", "engineering", 100),
+            task("repo_current_commerce", "commerce", 90),
+        ]
+    }
+
+    selected = nightshift._select_task(queue, branch_worker_used=True)
+
+    assert selected is not None
+    assert selected["task_id"] == "repo_current_commerce"
+
+
+def test_same_fingerprint_session_is_resumed() -> None:
+    bridge = FakeBridge()
+    bridge.master[nightshift.SESSION_KEY] = {
+        "key": nightshift.SESSION_KEY,
+        "value": {
+            "session_id": "nightshift-existing",
+            "status": "running",
+            "source_fingerprint_sha256": "fingerprint-1",
+            "resume_count": 2,
+            "task_results": [],
+        },
+    }
+
+    session = nightshift._load_or_start_session(
+        bridge,
+        fingerprint="fingerprint-1",
+        max_tasks=8,
+        max_events=2,
+    )
+
+    assert session["session_id"] == "nightshift-existing"
+    assert session["resume_count"] == 3
+    assert session["status"] == "running"
+
+
+def test_changed_fingerprint_starts_new_session() -> None:
+    bridge = FakeBridge()
+    bridge.master[nightshift.SESSION_KEY] = {
+        "key": nightshift.SESSION_KEY,
+        "value": {
+            "session_id": "nightshift-old",
+            "status": "running",
+            "source_fingerprint_sha256": "old-fingerprint",
+        },
+    }
+
+    session = nightshift._load_or_start_session(
+        bridge,
+        fingerprint="fingerprint-1",
+        max_tasks=8,
+        max_events=2,
+    )
+
+    assert session["session_id"] != "nightshift-old"
+    assert session["source_fingerprint_sha256"] == "fingerprint-1"
+
+
+def test_nightshift_routes_workers_and_consumes_multiple_tasks(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    bridge = FakeBridge(
+        [
+            task("repo_current_engineering", "engineering", 100),
+            task("repo_current_commerce", "commerce", 90),
+        ]
+    )
+
+    monkeypatch.setenv(
+        "DUFYND_JARVIS_TASK_METADATA_PATH",
+        str(tmp_path / "worker-task.json"),
+    )
+    monkeypatch.setattr(
+        nightshift,
+        "_require_autonomous_session",
+        lambda _bridge: ("budget", {"can_run": True}),
+    )
+    monkeypatch.setattr(
+        nightshift,
+        "_require_budget_window",
+        lambda _bridge: ("budget", {"can_run": True}),
+    )
+
+    async def fake_loop(_bridge, *, max_events):
+        assert max_events == 2
+        return 0
+
+    async def fake_branch(_bridge):
+        bridge.tasks["repo_current_engineering"]["status"] = "in_progress"
+        bridge.tasks["repo_current_engineering"]["evidence"] = "branch prepared"
+        return 0
+
+    async def fake_safe(_bridge):
+        bridge.tasks["repo_current_commerce"]["status"] = "in_progress"
+        bridge.tasks["repo_current_commerce"]["evidence"] = "research complete"
+        return 0
+
+    monkeypatch.setattr(nightshift, "process_loop", fake_loop)
+    monkeypatch.setattr(nightshift, "process_branch_task", fake_branch)
+    monkeypatch.setattr(nightshift, "process_safe_task", fake_safe)
+
+    session = asyncio.run(
+        nightshift.run_nightshift(
+            bridge,
+            max_tasks=8,
+            max_events=2,
+            worker_timeout_seconds=60,
+            max_retries=1,
+        )
+    )
+
+    assert bridge.tasks["repo_current_engineering"]["status"] == "in_progress"
+    assert bridge.tasks["repo_current_commerce"]["status"] == "done"
+    assert session["branch_worker_used"] is True
+    assert len(session["task_results"]) == 2
+    assert {row["worker"] for row in session["task_results"]} == {
+        "branch_worker",
+        "safe_worker",
+    }
+    assert session["stop_reason"] == "no_safe_work"
+    assert session["status"] == "awaiting_validation"
+    assert (tmp_path / "worker-task.json").exists()
+
+
+def test_nightshift_retries_failed_task_then_continues(monkeypatch) -> None:
+    bridge = FakeBridge(
+        [
+            task("repo_current_commerce", "commerce", 100),
+            task("repo_current_content", "content", 90),
+        ]
+    )
+
+    monkeypatch.setattr(
+        nightshift,
+        "_require_autonomous_session",
+        lambda _bridge: ("budget", {"can_run": True}),
+    )
+    monkeypatch.setattr(
+        nightshift,
+        "_require_budget_window",
+        lambda _bridge: ("budget", {"can_run": True}),
+    )
+
+    calls = 0
+
+    async def flaky_safe(_bridge):
+        nonlocal calls
+        calls += 1
+        if calls <= 2:
+            bridge.tasks["repo_current_commerce"]["status"] = "blocked"
+            bridge.tasks["repo_current_commerce"]["evidence"] = "worker failed"
+            return 1
+        bridge.tasks["repo_current_content"]["status"] = "in_progress"
+        bridge.tasks["repo_current_content"]["evidence"] = "content prepared"
+        return 0
+
+    monkeypatch.setattr(nightshift, "process_safe_task", flaky_safe)
+
+    session = asyncio.run(
+        nightshift.run_nightshift(
+            bridge,
+            max_tasks=8,
+            max_events=0,
+            worker_timeout_seconds=60,
+            max_retries=1,
+        )
+    )
+
+    assert bridge.tasks["repo_current_commerce"]["status"] == "blocked"
+    assert bridge.tasks["repo_current_content"]["status"] == "done"
+    assert calls == 3
+    assert [row["final_status"] for row in session["task_results"]] == [
+        "blocked",
+        "done",
+    ]
+
+
+def test_finalize_branch_task_moves_yellow_work_to_owner_review() -> None:
+    bridge = FakeBridge([task("repo_current_engineering", "engineering", 100)])
+    bridge.tasks["repo_current_engineering"]["status"] = "in_progress"
+    bridge.master[nightshift.SESSION_KEY] = {
+        "key": nightshift.SESSION_KEY,
+        "value": {
+            "session_id": "nightshift-test",
+            "status": "awaiting_validation",
+            "task_results": [
+                {
+                    "task_id": "repo_current_engineering",
+                    "final_status": "in_progress",
+                }
+            ],
+            "validation": {"status": "not_run", "pr_url": None},
+        },
+    }
+
+    metadata = Path("test-nightshift-worker-metadata.json")
+    metadata.write_text(
+        '{"session_id":"nightshift-test","task_id":"repo_current_engineering"}',
+        encoding="utf-8",
+    )
+    try:
+        changed = nightshift.finalize_branch_task(
+            bridge,
+            metadata_path=metadata,
+            status="waiting_human_input",
+            evidence="QA passed. READY FOR TUAN APPROVAL.",
+            pr_url="https://github.com/tncommerce/commerce-agents/pull/999",
+        )
+    finally:
+        metadata.unlink(missing_ok=True)
+
+    assert changed is True
+    assert bridge.tasks["repo_current_engineering"]["status"] == "waiting_human_input"
+    session = bridge.master[nightshift.SESSION_KEY]["value"]
+    assert session["validation"]["status"] == "passed"
+    assert session["status"] == "completed"
+    assert session["task_results"][0]["pr_url"].endswith("/999")
+
+
+def test_morning_report_uses_audited_system_data(monkeypatch) -> None:
+    bridge = FakeBridge()
+    bridge.master[nightshift.SESSION_KEY] = {
+        "key": nightshift.SESSION_KEY,
+        "value": {
+            "session_id": "nightshift-report",
+            "status": "completed",
+            "started_at": "2026-09-29T20:00:00+00:00",
+            "ended_at": "2026-09-29T21:30:00+00:00",
+            "stop_reason": "no_safe_work",
+            "source_fingerprint_sha256": "fingerprint-1",
+            "task_results": [
+                {
+                    "task_id": "repo_current_commerce",
+                    "domain": "commerce",
+                    "title": "Verify merchant data",
+                    "worker": "safe_worker",
+                    "final_status": "done",
+                    "attempts": 1,
+                }
+            ],
+            "validation": {"status": "not_run", "pr_url": None},
+        },
+    }
+    monkeypatch.setenv("DUFYND_JARVIS_BUDGET_ID", "jarvis_activation_pilot_001")
+
+    report, markdown = nightshift.build_morning_report(
+        bridge,
+        qa_status="success",
+    )
+
+    assert report["duration"] == "1h30m"
+    assert report["completed"] == 1
+    assert report["ai_cost_usd"] == 0.19
+    assert report["budget"]["remaining_usd"] == 2.1
+    assert "Verify merchant data" in markdown
+    assert "$0.1900" in markdown
