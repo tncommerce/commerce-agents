@@ -14,6 +14,7 @@ on:
           - process-next
           - process-loop
           - process-safe-task
+          - process-branch-task
       max_events:
         description: Maximum events for process-loop
         required: false
@@ -58,14 +59,14 @@ jobs:
         run: python -m scripts.dufynd_jarvis_runtime --readiness
 
       - name: Refresh repository Jarvis state
-        if: inputs.mode == 'sync-state' || inputs.mode == 'process-next' || inputs.mode == 'process-loop' || inputs.mode == 'process-safe-task'
+        if: inputs.mode == 'sync-state' || inputs.mode == 'process-next' || inputs.mode == 'process-loop' || inputs.mode == 'process-safe-task' || inputs.mode == 'process-branch-task' || inputs.mode == 'process-safe-task' || inputs.mode == 'process-branch-task'
         run: >-
           python -m scripts.refresh_scentai_jarvis_state
           --write
           --machine-readable
 
       - name: Sync Jarvis control plane
-        if: inputs.mode == 'sync-state' || inputs.mode == 'process-next' || inputs.mode == 'process-loop'
+        if: inputs.mode == 'sync-state' || inputs.mode == 'process-next' || inputs.mode == 'process-loop' || inputs.mode == 'process-safe-task' || inputs.mode == 'process-branch-task'
         env:
           SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
@@ -75,7 +76,7 @@ jobs:
           --machine-readable
 
       - name: Verify Jarvis control-plane freshness
-        if: inputs.mode == 'sync-state' || inputs.mode == 'process-next' || inputs.mode == 'process-loop'
+        if: inputs.mode == 'sync-state' || inputs.mode == 'process-next' || inputs.mode == 'process-loop' || inputs.mode == 'process-safe-task' || inputs.mode == 'process-branch-task'
         env:
           SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
@@ -85,7 +86,7 @@ jobs:
           --machine-readable
 
       - name: Validate explicit active-run approval
-        if: inputs.mode == 'process-next' || inputs.mode == 'process-loop' || inputs.mode == 'process-safe-task'
+        if: inputs.mode == 'process-next' || inputs.mode == 'process-loop' || inputs.mode == 'process-safe-task' || inputs.mode == 'process-branch-task'
         shell: bash
         run: |
           set -euo pipefail
@@ -135,3 +136,61 @@ jobs:
           DUFYND_JARVIS_BUDGET_ID: "jarvis_activation_pilot_001"
           DUFYND_JARVIS_ACTIVE: "1"
         run: python -m scripts.dufynd_jarvis_runtime --process-safe-task
+
+      - name: Run isolated Jarvis branch worker
+        if: inputs.mode == 'process-branch-task'
+        env:
+          SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DUFYND_JARVIS_MODEL: ${{ vars.DUFYND_JARVIS_MODEL }}
+          DUFYND_JARVIS_MAX_TURNS: "8"
+          DUFYND_JARVIS_MAX_BUDGET_USD: "0.25"
+          DUFYND_JARVIS_BUDGET_ID: "jarvis_activation_pilot_001"
+          DUFYND_JARVIS_ACTIVE: "1"
+        run: python -m scripts.dufynd_jarvis_runtime --process-branch-task
+
+      - name: Validate isolated Jarvis patch
+        if: inputs.mode == 'process-branch-task'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --check
+          git diff --name-only > jarvis-worker-files.txt
+
+          if [ ! -s jarvis-worker-files.txt ]; then
+            echo "Jarvis branch worker produced no repository changes."
+            exit 0
+          fi
+
+          while IFS= read -r file; do
+            case "$file" in
+              .github/*|examples/retail/data/*|supabase/*|*.env|*.env.*|*package-lock.json|*pnpm-lock.yaml|*yarn.lock|requirements*.txt|pyproject.toml)
+                echo "Blocked Jarvis branch-worker path: $file"
+                exit 21
+                ;;
+              scripts/*.py|tests/*.py|docs/*|examples/retail/api/*.py|examples/retail/api/*|examples/retail/storefront-web/app/*|examples/retail/storefront-web/components/*|examples/retail/storefront-web/lib/*|examples/retail/storefront-web/scripts/*)
+                ;;
+              *)
+                echo "Path is outside Jarvis branch-worker allowlist: $file"
+                exit 22
+                ;;
+            esac
+          done < jarvis-worker-files.txt
+
+          git diff --binary > jarvis-worker.patch
+          ruff check .
+          ruff format --check .
+          pytest -q
+          python scripts/check.py
+
+      - name: Upload isolated Jarvis patch
+        if: inputs.mode == 'process-branch-task' && always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: dufynd-jarvis-worker-patch-${{ github.run_id }}
+          path: |
+            jarvis-worker.patch
+            jarvis-worker-files.txt
+          if-no-files-found: warn
+          retention-days: 7
