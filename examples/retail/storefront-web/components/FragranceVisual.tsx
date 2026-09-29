@@ -86,7 +86,35 @@ export default function FragranceVisual({
       ? `${alt} – stilisierte DUFYND-Inszenierung`
       : alt;
 
-  if (resolvedMode === "editorial" && imageUrl) {
+  if (!resolvedImageUrl) {
+    return (
+      <div
+        data-variant={variant}
+        data-dufynd-visual-state="missing"
+        className={`dufynd-neutral-visual-stage ${className}`}
+        role="img"
+        aria-label={`${alt} – kein freigegebenes Produktbild`}
+      >
+        <div
+          aria-hidden
+          className="dufynd-neutral-visual-atmosphere"
+        >
+          <span className="dufynd-neutral-visual-ring dufynd-neutral-visual-ring--outer" />
+          <span className="dufynd-neutral-visual-ring dufynd-neutral-visual-ring--inner" />
+          <span className="dufynd-neutral-visual-glow" />
+        </div>
+        <div className="dufynd-neutral-visual-copy">
+          <span className="dufynd-neutral-visual-brand">
+            DUFYND
+          </span>
+          <strong>{alt}</strong>
+          <em>Kein freigegebenes Produktbild</em>
+        </div>
+      </div>
+    );
+  }
+
+    if (resolvedMode === "editorial" && imageUrl) {
     return (
       <div
         data-variant={variant}
@@ -155,17 +183,7 @@ export default function FragranceVisual({
               decoding="async"
               className="dufynd-product-image"
             />
-          ) : (
-            <div className="dufynd-product-placeholder" aria-hidden>
-              <div className="h-3 w-10 rounded-t bg-(--ink)/80" />
-              <div className="h-3 w-7 bg-(--ink)/60" />
-              <div className="grid h-24 w-20 place-items-center rounded-[22px] border border-white/80 bg-white/80 shadow-lg backdrop-blur-sm">
-                <span className="text-[9px] font-semibold tracking-[0.18em] text-(--ink)/70">
-                  DUFYND
-                </span>
-              </div>
-            </div>
-          )}
+          ) : null}
         </div>
       </div>
 
