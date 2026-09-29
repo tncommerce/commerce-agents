@@ -78,3 +78,17 @@ This avoids regenerating bottle geometry in every background scene and lets the 
 `scripts/report_dufynd_visual_coverage.py` reports product-truth coverage and storefront-presentation coverage separately. The presentation backlog is a report, **not a second approval queue**.
 
 No generation spend is authorized by this standard. New paid generations still require the existing financial approval boundary.
+
+
+## Shared visual worlds
+
+Discovery and card surfaces use one deterministic DUFYND world classifier so the same fragrance does not drift between unrelated atmospheres across pages.
+
+Worlds:
+- `amber`: sweet, gourmand, oriental or creamy profiles;
+- `mineral`: fresh, citrus, aquatic or green profiles;
+- `silk`: floral or powdery profiles;
+- `noir`: smoky, leathery or resinous profiles;
+- `ember`: default warm/spiced world when none of the stronger mappings apply.
+
+The world changes only the atmosphere behind the product. It must not recolor, deform or otherwise alter the bottle itself. Existing editorial product scenes remain intact and product-truth assets remain independently auditable.
