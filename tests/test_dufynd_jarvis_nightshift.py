@@ -144,6 +144,24 @@ def test_non_green_task_is_not_selected() -> None:
     assert selected is None
 
 
+def test_select_task_prefers_non_engineering_before_branch_patch() -> None:
+    queue = {
+        "safe_to_execute": [
+            task("repo_current_engineering", "engineering", 100),
+            task("repo_current_commerce", "commerce", 90),
+        ]
+    }
+
+    selected = nightshift._select_task(
+        queue,
+        branch_worker_used=False,
+        attempted_task_ids=set(),
+    )
+
+    assert selected is not None
+    assert selected["task_id"] == "repo_current_commerce"
+
+
 def test_select_task_skips_second_engineering_patch() -> None:
     queue = {
         "safe_to_execute": [
@@ -318,7 +336,7 @@ def test_nightshift_routes_workers_and_consumes_multiple_tasks(
         "branch_worker",
         "safe_worker",
     }
-    assert session["stop_reason"] == "no_safe_work"
+    assert session["stop_reason"] == "engineering_quality_gate_pending"
     assert session["status"] == "awaiting_validation"
     assert (tmp_path / "worker-task.json").exists()
 
