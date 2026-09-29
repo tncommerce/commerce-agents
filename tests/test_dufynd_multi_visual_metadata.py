@@ -182,6 +182,7 @@ def test_exploded_notes_support_catalog_fallback_note_sets() -> None:
         "SC-CREED-ABSOLU-AVENTUS-100",
         "SC-BVLGARI-TYGAR-125",
         "SC-DIOR-HOMME-INTENSE-100",
+        "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
     }
     assert "keyNotes={fragrance.notes.key}" in page
     assert "supporting={fragrance.notes.supporting}" in page

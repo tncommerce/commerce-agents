@@ -3699,6 +3699,52 @@
       },
       "in_stock": true,
       "short_description": "Widian London is a leathery, fruity, sweet Extrait de Parfum fragrance."
+    },
+    {
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "title": "Lancôme La Vie est Belle Eau de Parfum 100 ml",
+      "image_url": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+      "brand": "Lancôme",
+      "price": 89,
+      "currency": "EUR",
+      "rating": 3.3,
+      "review_count": 2137,
+      "category": "fragrance",
+      "labels": [
+        "sweet",
+        "floral",
+        "fruity",
+        "gourmand",
+        "powdery"
+      ],
+      "attributes": {
+        "canonical_name": "La Vie est Belle",
+        "community_rating_10": "6.6",
+        "rating_source": "Parfumo",
+        "volume_ml": "100",
+        "concentration": "Eau de Parfum",
+        "target_group": "women",
+        "audience_lean": "",
+        "main_accords": "sweet, floral, fruity, gourmand, powdery",
+        "key_notes": "iris, pear, orange blossom, jasmine, vanilla accord, patchouli",
+        "freshness": "4",
+        "sweetness": "10",
+        "woodiness": "2",
+        "spiciness": "2",
+        "profile_source": "deterministic_editorial_mapping_v1",
+        "longevity": "8.2",
+        "projection": "8.1",
+        "price_source": "current_merchant_offer",
+        "market_price_eur": "89",
+        "price_checked_at": "2026-09-27T11:32:00Z",
+        "promotion_source": "scentai_catalog_staging",
+        "image_license_name": "CC BY-SA 3.0",
+        "image_license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+        "image_attribution_text": "Open Beauty Facts contributors",
+        "image_share_alike_required": "true"
+      },
+      "in_stock": true,
+      "short_description": "Lancôme La Vie est Belle ist ein sweet, floral, fruity geprägter Duft."
     }
   ]
 }

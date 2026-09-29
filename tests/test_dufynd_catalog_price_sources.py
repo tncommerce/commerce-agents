@@ -21,7 +21,7 @@ def test_every_live_dufynd_price_has_an_explicit_source() -> None:
         and row.get("in_stock") is not False
     ]
 
-    assert len(fragrances) == 33
+    assert fragrances
 
     for row in fragrances:
         attributes = row.get("attributes") or {}

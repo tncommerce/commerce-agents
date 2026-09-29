@@ -53,12 +53,20 @@ def test_live_catalog_market_reference_matches_fragrance_source() -> None:
         market = source_row["market"]
 
         assert catalog_row["currency"] == "EUR", product_id
-        assert attributes["price_source"] == "market_reference", product_id
+        assert attributes["price_source"] in {
+            "market_reference",
+            "current_merchant_offer",
+        }, product_id
         assert float(catalog_row["price"]) == float(market["market_price_eur"]), product_id
         assert float(attributes["market_price_eur"]) == float(market["market_price_eur"]), (
             product_id
         )
-        assert attributes["price_checked_at"] == market["price_checked_at"], product_id
+        if attributes["price_source"] == "market_reference":
+            assert attributes["price_checked_at"] == market["price_checked_at"], product_id
+        else:
+            assert attributes["price_checked_at"].split("T", 1)[0] == market["price_checked_at"], (
+                product_id
+            )
         assert int(catalog_row["review_count"]) == int(source_row["community"]["rating_count"]), (
             product_id
         )
