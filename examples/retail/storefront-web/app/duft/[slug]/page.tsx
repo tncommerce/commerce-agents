@@ -348,6 +348,12 @@ export default async function FragrancePage({
     (item): item is { stage: string; label: string; note: string } =>
       Boolean(item.note),
   );
+  const visualGalleryAssetCount = new Set(
+    fragrance.visuals
+      .filter((asset) => asset.role !== "model_3d")
+      .map((asset) => asset.url),
+  ).size;
+  const hasVisualGallery = visualGalleryAssetCount >= 2;
   const noteCount = new Set(allNotes).size;
   const canonicalUrl = `${SITE_URL}/duft/${fragrance.slug}`;
   const breadcrumbStructuredData = {
@@ -833,15 +839,17 @@ export default async function FragrancePage({
           </div>
         ) : null}
 
-        <div
-          className="dufynd-fragrance-chapter dufynd-fragrance-chapter--gallery"
-          data-dufynd-chapter="ansichten"
-        >
-          <FragranceVisualGallery
-            assets={fragrance.visuals}
-            alt={`${fragrance.brand} ${fragrance.name}`}
-          />
-        </div>
+        {hasVisualGallery ? (
+          <div
+            className="dufynd-fragrance-chapter dufynd-fragrance-chapter--gallery"
+            data-dufynd-chapter="ansichten"
+          >
+            <FragranceVisualGallery
+              assets={fragrance.visuals}
+              alt={`${fragrance.brand} ${fragrance.name}`}
+            />
+          </div>
+        ) : null}
 
         <div
           className="dufynd-fragrance-chapter dufynd-fragrance-chapter--profile mt-5 grid gap-4 lg:mt-7 lg:grid-cols-[1.05fr_0.95fr]"
