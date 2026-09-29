@@ -160,7 +160,9 @@ export default function FragranceIndexPage() {
             aria-label="Community-Fokus aus dem aktuellen DUFYND Katalog"
           >
             {catalogSpotlights.map((fragrance, index) => {
-              const visual = fragrance.preferred_visual;
+              const visual =
+                fragrance.presentation_visual ||
+                fragrance.preferred_visual;
               const isProductTruth =
                 isVerifiedProductTruthVisual(visual);
 
@@ -178,6 +180,11 @@ export default function FragranceIndexPage() {
                         imageUrl={visual.url}
                         cutoutUrl={
                           isProductTruth ? visual.url : undefined
+                        }
+                        backdropUrl={
+                          isProductTruth
+                            ? fragrance.backdrop_visual?.url
+                            : undefined
                         }
                         alt={`${fragrance.brand} ${fragrance.name}`}
                         variant="card"
