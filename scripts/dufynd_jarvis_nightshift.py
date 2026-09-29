@@ -19,6 +19,9 @@ from scripts.dufynd_jarvis_runtime import (
 )
 
 SESSION_KEY = "jarvis.nightshift_session"
+TECH_LEASE_KEY = "continuity.tech_lease"
+DEFAULT_TECH_LEASE_WAIT_SECONDS = 2700
+HARD_TECH_LEASE_WAIT_SECONDS = 3600
 DEFAULT_MAX_TASKS = 8
 HARD_MAX_TASKS = 20
 DEFAULT_MAX_EVENTS = 2
@@ -47,6 +50,52 @@ def iso_now() -> str:
 
 def _bounded(value: int, *, minimum: int, maximum: int) -> int:
     return max(minimum, min(int(value), maximum))
+
+
+def _parse_iso_timestamp(value: object) -> datetime | None:
+    text = str(value or "").strip()
+    if not text:
+        return None
+    try:
+        parsed = datetime.fromisoformat(text.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=UTC)
+    return parsed.astimezone(UTC)
+
+
+def _tech_lease_state(bridge: DufyndJarvisBridge) -> dict[str, Any]:
+    row = bridge.load_master_status_entry(TECH_LEASE_KEY)
+    value = (row or {}).get("value") or {}
+    expires_at = _parse_iso_timestamp(value.get("expires_at"))
+    now = utc_now()
+    active = (
+        isinstance(value, dict)
+        and str(value.get("status") or "").lower() == "active"
+        and expires_at is not None
+        and expires_at > now
+    )
+    remaining_seconds = max(0, int((expires_at - now).total_seconds())) if expires_at else 0
+    return {
+        "active": active,
+        "owner": value.get("owner"),
+        "heartbeat_at": value.get("heartbeat_at"),
+        "expires_at": expires_at.isoformat() if expires_at else None,
+        "remaining_seconds": remaining_seconds if active else 0,
+    }
+
+
+def _tech_lease_wait_cap_seconds() -> int:
+    raw = os.getenv(
+        "DUFYND_JARVIS_TECH_LEASE_WAIT_SECONDS",
+        str(DEFAULT_TECH_LEASE_WAIT_SECONDS),
+    )
+    try:
+        value = int(raw)
+    except ValueError:
+        value = DEFAULT_TECH_LEASE_WAIT_SECONDS
+    return _bounded(value, minimum=0, maximum=HARD_TECH_LEASE_WAIT_SECONDS)
 
 
 def _snapshot_fingerprint(bridge: DufyndJarvisBridge) -> str:
@@ -139,6 +188,7 @@ def _select_task(
     *,
     branch_worker_used: bool,
     attempted_task_ids: set[str] | None = None,
+    engineering_allowed: bool = True,
 ) -> dict[str, Any] | None:
     candidates = _safe_candidates(queue)
     attempted = attempted_task_ids or set()
@@ -151,7 +201,7 @@ def _select_task(
         if str(task.get("domain") or "") != "engineering":
             return task
 
-    if branch_worker_used:
+    if branch_worker_used or not engineering_allowed:
         return None
 
     for task in eligible:
@@ -511,6 +561,7 @@ async def run_nightshift(
 
     stop_reason = "no_safe_work"
     processed_this_run = 0
+    tech_lease_waited_seconds = 0
 
     # Consume event-first backlog before repo-current work. Deterministic,
     # no-cost status events do not consume the paid/model event allowance.
@@ -554,17 +605,42 @@ async def run_nightshift(
             for item in (session.get("task_results") or [])
             if isinstance(item, dict)
         }
+        tech_lease = _tech_lease_state(bridge)
         selected = _select_task(
             queue,
             branch_worker_used=bool(session.get("branch_worker_used")),
             attempted_task_ids=attempted_task_ids,
+            engineering_allowed=not bool(tech_lease.get("active")),
         )
         if selected is None:
             safe_tasks = _safe_candidates(queue)
+            remaining_engineering = [
+                task
+                for task in safe_tasks
+                if str(task.get("domain") or "") == "engineering"
+                and str(task.get("task_id") or "") not in attempted_task_ids
+            ]
             if safe_tasks and bool(session.get("branch_worker_used")):
                 stop_reason = "engineering_quality_gate_pending"
-            else:
-                stop_reason = "no_safe_work"
+                break
+            if remaining_engineering and bool(tech_lease.get("active")):
+                wait_cap = _tech_lease_wait_cap_seconds()
+                remaining_wait_cap = max(0, wait_cap - tech_lease_waited_seconds)
+                wait_seconds = min(
+                    int(tech_lease.get("remaining_seconds") or 0),
+                    remaining_wait_cap,
+                )
+                session["tech_lease"] = dict(tech_lease)
+                if wait_seconds > 0:
+                    session["tech_lease_waited_seconds"] = tech_lease_waited_seconds
+                    _persist_session(bridge, session)
+                    await asyncio.sleep(wait_seconds)
+                    tech_lease_waited_seconds += wait_seconds
+                    session["tech_lease_waited_seconds"] = tech_lease_waited_seconds
+                    continue
+                stop_reason = "tech_lease_active"
+                break
+            stop_reason = "no_safe_work"
             break
 
         session["tasks_attempted"] = int(session.get("tasks_attempted") or 0) + 1
@@ -618,6 +694,7 @@ async def run_nightshift(
                 "processed_this_run": processed_this_run,
                 "task_limit": task_limit,
                 "event_limit": event_limit,
+                "tech_lease_waited_seconds": tech_lease_waited_seconds,
             }
         ],
         human_approval_required=bool(session.get("branch_worker_used")),
