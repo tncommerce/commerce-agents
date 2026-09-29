@@ -25,7 +25,11 @@ def sync_repo_state(
         source_branch=source_branch,
     )
     context = bridge.load_context()
-    return evaluate_freshness(repo_status, context)
+    return evaluate_freshness(
+        repo_status,
+        context,
+        repo_head_sha=repo_head_sha,
+    )
 
 
 def main() -> int:
