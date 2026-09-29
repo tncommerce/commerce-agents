@@ -18,6 +18,8 @@ import { trackAnalyticsEvent } from "@/lib/analytics";
 import { ADVISOR_STARTS } from "@/lib/advisorStarts";
 import { fragrancePathForProduct } from "@/lib/fragranceSlug";
 import {
+  catalogAudienceFor,
+  fragranceMatchesAudience,
   getLiveFragranceByProductId,
   isVerifiedProductTruthVisual,
   visualWorldFor,
@@ -120,10 +122,14 @@ function featured(catalog: Record<string, Product>): Product[] {
 
   for (const audience of ["women", "unisex", "men"] as const) {
     candidates
-      .filter((product) =>
-        getLiveFragranceByProductId(String(product.product_id))
-          ?.target_groups.includes(audience),
-      )
+      .filter((product) => {
+        const fragrance = getLiveFragranceByProductId(
+          String(product.product_id),
+        );
+        return fragrance
+          ? fragranceMatchesAudience(fragrance, audience)
+          : false;
+      })
       .slice(0, 2)
       .forEach(add);
   }
@@ -157,11 +163,14 @@ function audiencePreviewProducts(picks: Product[]) {
 
   return AUDIENCE_DISCOVERY.map((audience) => {
     const matches = picks
-      .filter((product) =>
-        getLiveFragranceByProductId(
+      .filter((product) => {
+        const fragrance = getLiveFragranceByProductId(
           String(product.product_id),
-        )?.target_groups.includes(audience.key),
-      )
+        );
+        return fragrance
+          ? fragranceMatchesAudience(fragrance, audience.key)
+          : false;
+      })
       .sort((a, b) => {
         const aTargets =
           getLiveFragranceByProductId(
@@ -241,10 +250,11 @@ export default function HomeView({
         String(product.product_id),
       );
 
-      for (const target of fragrance?.target_groups || []) {
-        if (target in counts) {
-          counts[target as keyof typeof counts] += 1;
-        }
+      const audience = fragrance
+        ? catalogAudienceFor(fragrance.target_groups)
+        : null;
+      if (audience) {
+        counts[audience] += 1;
       }
 
       return counts;
