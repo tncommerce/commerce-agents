@@ -142,13 +142,25 @@ def _select_task(
 ) -> dict[str, Any] | None:
     candidates = _safe_candidates(queue)
     attempted = attempted_task_ids or set()
-    for task in candidates:
-        task_id = str(task.get("task_id") or "")
-        if task_id in attempted:
-            continue
-        if str(task.get("domain") or "") == "engineering" and branch_worker_used:
-            continue
-        return task
+    eligible = [
+        task
+        for task in candidates
+        if str(task.get("task_id") or "") not in attempted
+    ]
+
+    # Keep the shared checkout trustworthy for read-only workers: consume
+    # non-engineering GREEN work first, then prepare at most one engineering
+    # patch as the final model task before deterministic QA.
+    for task in eligible:
+        if str(task.get("domain") or "") != "engineering":
+            return task
+
+    if branch_worker_used:
+        return None
+
+    for task in eligible:
+        if str(task.get("domain") or "") == "engineering":
+            return task
     return None
 
 
@@ -574,11 +586,14 @@ async def run_nightshift(
         processed_this_run += 1
         _persist_session(bridge, session)
 
-        # A local engineering patch must be validated before another engineering
-        # patch can be prepared in the same checkout. Non-engineering GREEN work
-        # may continue while that deterministic validation is pending.
+        # An engineering patch is the final model task in this checkout. Hand it
+        # immediately to deterministic validation so no later worker observes
+        # unvalidated repository state.
+        if bool(session.get("branch_worker_used")):
+            stop_reason = "engineering_quality_gate_pending"
+            break
 
-    if processed_this_run >= task_limit:
+    if processed_this_run >= task_limit and stop_reason == "no_safe_work":
         stop_reason = "task_limit_reached"
 
     session["stop_reason"] = stop_reason
