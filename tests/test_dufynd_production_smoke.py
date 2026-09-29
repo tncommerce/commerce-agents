@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import httpx
 import pytest
-from scripts.dufynd_production_smoke import run_smoke
+from scripts.dufynd_production_smoke import CRITICAL_PRODUCT_ID, run_smoke
 
 SAMPLE_PRODUCT_ID = "SC-TEST-FRAGRANCE-EDP-100"
+CRITICAL_PRODUCT_PATH = "/duft/rabanne-1-million"
 
 
 def transport(
@@ -40,6 +41,11 @@ def transport(
                 return httpx.Response(200, text=robots_text)
             if request.url.path == "/sitemap.xml":
                 return httpx.Response(200, text=sitemap_text)
+            if request.url.path == CRITICAL_PRODUCT_PATH:
+                return httpx.Response(
+                    200,
+                    text="<html>DUFYND Rabanne 1 Million</html>",
+                )
             return httpx.Response(200, text="<html>DUFYND</html>")
 
         if request.url.path == "/api/health":
@@ -69,6 +75,16 @@ def transport(
                 },
             )
 
+        if request.url.path == f"/api/products/{CRITICAL_PRODUCT_ID}":
+            return httpx.Response(
+                200,
+                json={
+                    "product_id": CRITICAL_PRODUCT_ID,
+                    "brand": "Rabanne",
+                    "title": "Rabanne 1 Million Eau de Toilette 100 ml",
+                },
+            )
+
         if request.url.path == "/api/merchant-partners":
             return httpx.Response(200, json=resolved_partners)
 
@@ -88,6 +104,7 @@ def test_smoke_passes_for_expected_contract() -> None:
     assert [check.name for check in report.checks] == [
         "storefront",
         "storefront_social_start",
+        "storefront_rabanne_1_million",
         "storefront_duftfinder",
         "storefront_vergleich",
         "storefront_alternatives",
@@ -99,6 +116,7 @@ def test_smoke_passes_for_expected_contract() -> None:
         "api_health",
         "product_catalog",
         "product_detail",
+        "product_detail_rabanne_1_million",
         "merchant_partners",
     ]
 
@@ -297,6 +315,41 @@ def test_smoke_fails_when_social_start_route_is_missing() -> None:
     )
 
     check = next(check for check in report.checks if check.name == "storefront_social_start")
+    assert report.ok is False
+    assert check.ok is False
+    assert check.status_code == 404
+
+
+def test_smoke_fails_when_rabanne_1_million_route_is_missing() -> None:
+    report = run_smoke(
+        storefront_url="https://dufynd.de",
+        api_url="https://api.dufynd.test",
+        transport=transport(broken_storefront_path=CRITICAL_PRODUCT_PATH),
+    )
+
+    check = next(check for check in report.checks if check.name == "storefront_rabanne_1_million")
+    assert report.ok is False
+    assert check.ok is False
+    assert check.status_code == 404
+
+
+def test_smoke_fails_when_rabanne_1_million_api_detail_is_missing() -> None:
+    base_transport = transport()
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if request.url.path == f"/api/products/{CRITICAL_PRODUCT_ID}":
+            return httpx.Response(404, json={"detail": "not found"})
+        return base_transport.handle_request(request)
+
+    report = run_smoke(
+        storefront_url="https://dufynd.de",
+        api_url="https://api.dufynd.test",
+        transport=httpx.MockTransport(handler),
+    )
+
+    check = next(
+        check for check in report.checks if check.name == "product_detail_rabanne_1_million"
+    )
     assert report.ok is False
     assert check.ok is False
     assert check.status_code == 404
