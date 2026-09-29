@@ -226,7 +226,11 @@ allows Jarvis to choose another safe task instead of aborting the entire session
 
 A successful engineering patch is validated by the existing path allowlist,
 Python checks and, when storefront files changed, web build plus responsive visual
-QA. The deterministic post-model handoff may create a `jarvis/worker-*` branch
+QA. The worker is explicitly forbidden from editing the workflow, Jarvis
+control-plane/orchestrator files, `scripts/check.py`, repo-state sync/refresh code
+or storefront validator scripts used to judge its own patch.
+
+The deterministic post-model handoff may create a `jarvis/worker-*` branch
 and a PR against `scentai-mvp`, but it must never auto-merge and must never target
 `main`. The task is then presented as READY FOR TUAN APPROVAL.
 
