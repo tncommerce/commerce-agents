@@ -81,7 +81,7 @@ def storefront_presentation_state(product: dict[str, Any]) -> str:
     if has_product_scene:
         return "editorial_product_scene"
     if has_verified_truth:
-        return "product_truth_stage_only"
+        return "world_staged_product_truth"
     if has_editorial:
         return "editorial_unstructured"
     if visuals:
@@ -201,11 +201,17 @@ def build_visual_coverage_report(
     legacy = int(state_counts.get("legacy_visual", 0))
     layered = int(presentation_counts.get("layered_product_truth", 0))
     product_scene = int(presentation_counts.get("editorial_product_scene", 0))
-    background_presented = layered + product_scene
+    world_staged = int(presentation_counts.get("world_staged_product_truth", 0))
+    background_presented = layered + product_scene + world_staged
     presentation_upgrade_rows = [
         row
         for row in coverage_rows
-        if row["presentation_state"] not in {"layered_product_truth", "editorial_product_scene"}
+        if row["presentation_state"]
+        not in {
+            "layered_product_truth",
+            "editorial_product_scene",
+            "world_staged_product_truth",
+        }
     ]
 
     return {
@@ -227,7 +233,7 @@ def build_visual_coverage_report(
         "storefront_presentation": {
             "layered_product_truth": layered,
             "editorial_product_scene": product_scene,
-            "product_truth_stage_only": int(presentation_counts.get("product_truth_stage_only", 0)),
+            "world_staged_product_truth": world_staged,
             "editorial_unstructured": int(presentation_counts.get("editorial_unstructured", 0)),
             "legacy_image_presentation": int(
                 presentation_counts.get("legacy_image_presentation", 0)
@@ -298,6 +304,7 @@ def main() -> int:
         "Storefront presentation | "
         f"layered={presentation['layered_product_truth']} | "
         f"editorial_scene={presentation['editorial_product_scene']} | "
+        f"world_staged_truth={presentation['world_staged_product_truth']} | "
         f"background_presented={presentation['background_presented_rate_pct']}% | "
         f"upgrade_backlog={report['storefront_presentation_upgrade_count']}"
     )
