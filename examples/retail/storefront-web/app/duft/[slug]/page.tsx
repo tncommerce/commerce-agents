@@ -6,6 +6,7 @@ import { accordLabel } from "@/lib/accordLabels";
 import FragranceExplodedNotes from "@/components/FragranceExplodedNotes";
 import FragranceOffers from "@/components/FragranceOffers";
 import MobileOfferBar from "@/components/MobileOfferBar";
+import OfferSectionLink from "@/components/OfferSectionLink";
 import FragranceVisual from "@/components/FragranceVisual";
 import ImageAttribution from "@/components/ImageAttribution";
 import FragranceVisualGallery from "@/components/FragranceVisualGallery";
@@ -554,13 +555,13 @@ export default async function FragrancePage({
 
             <div className="dufynd-fragrance-hero-copy flex flex-col justify-center p-5 pt-4 sm:p-7 sm:pt-5 lg:col-start-2 lg:row-start-2 lg:p-9 lg:pt-3">
               <div className={`grid gap-2 sm:flex sm:flex-wrap sm:gap-2.5 ${related.length ? "grid-cols-2" : "grid-cols-1"}`}>
-                <a
-                  id="dufynd-hero-offer-cta"
-                  href="#angebote"
+                <OfferSectionLink
+                  productId={fragrance.product_id}
+                  source="hero_offer_cta"
                   className="rounded-xl bg-(--accent-strong) px-3 py-2.5 text-center text-[12px] font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:brightness-95 sm:px-4 sm:text-[13px]"
                 >
-                  Angebote prüfen
-                </a>
+                  <span id="dufynd-hero-offer-cta">Angebote prüfen</span>
+                </OfferSectionLink>
                 {related.length ? (
                   <a
                     href="#alternativen"
@@ -686,12 +687,13 @@ export default async function FragrancePage({
           className="mt-3 overflow-x-auto rounded-2xl border border-(--line) bg-(--card)/95 p-2 shadow-(--shadow-sm) backdrop-blur sm:mt-4"
         >
           <div className="flex min-w-max items-center gap-1.5">
-            <a
-              href="#angebote"
+            <OfferSectionLink
+              productId={fragrance.product_id}
+              source="detail_quick_nav"
               className="rounded-xl bg-(--accent-strong) px-3 py-2 text-[11px] font-semibold text-white transition hover:brightness-95 sm:px-4 sm:text-[12px]"
             >
               Angebote
-            </a>
+            </OfferSectionLink>
             <a
               href="#duftprofil"
               className="rounded-xl px-3 py-2 text-[11px] font-semibold text-(--ink) transition hover:bg-(--well) sm:px-4 sm:text-[12px]"
