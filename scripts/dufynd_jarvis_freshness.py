@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -57,6 +58,7 @@ def evaluate_freshness(
     repo_status: dict[str, Any],
     supabase_context: dict[str, Any],
     *,
+    repo_head_sha: str | None = None,
     max_lag_hours: float = DEFAULT_MAX_LAG_HOURS,
 ) -> dict[str, Any]:
     allowed_lag = max(0.0, float(max_lag_hours))
@@ -73,6 +75,8 @@ def evaluate_freshness(
         marker_value = {}
 
     marker_fingerprint = str(marker_value.get("source_fingerprint_sha256") or "").strip()
+    marker_head_sha = str(marker_value.get("repo_head_sha") or "").strip()
+    expected_head_sha = str(repo_head_sha or "").strip()
     marker_verified_at = (
         parse_timestamp(marker.get("last_verified_at")) if isinstance(marker, dict) else None
     )
@@ -90,6 +94,12 @@ def evaluate_freshness(
         reasons.append("repo_control_plane_fingerprint_missing")
     elif repo_fingerprint and marker_fingerprint != repo_fingerprint:
         reasons.append("repo_control_plane_fingerprint_mismatch")
+
+    if expected_head_sha:
+        if not marker_head_sha:
+            reasons.append("repo_control_plane_head_sha_missing")
+        elif marker_head_sha != expected_head_sha:
+            reasons.append("repo_control_plane_head_sha_mismatch")
 
     if repo_generated_at is not None and marker_verified_at is not None:
         lag_hours = (repo_generated_at - marker_verified_at).total_seconds() / 3600
@@ -113,6 +123,8 @@ def evaluate_freshness(
         ),
         "repo_source_fingerprint_sha256": repo_fingerprint or None,
         "supabase_source_fingerprint_sha256": marker_fingerprint or None,
+        "repo_head_sha": expected_head_sha or None,
+        "supabase_repo_head_sha": marker_head_sha or None,
         "sync_key": "jarvis.repo_control_plane",
         "reasons": reasons,
     }
@@ -134,6 +146,7 @@ def main() -> int:
     )
     parser.add_argument("--repo-status", type=Path, default=DEFAULT_REPO_STATUS_PATH)
     parser.add_argument("--max-lag-hours", type=float, default=DEFAULT_MAX_LAG_HOURS)
+    parser.add_argument("--repo-head-sha", default=os.getenv("GITHUB_SHA") or None)
     parser.add_argument("--machine-readable", action="store_true")
     args = parser.parse_args()
 
@@ -142,6 +155,7 @@ def main() -> int:
     report = evaluate_freshness(
         repo_status,
         context,
+        repo_head_sha=args.repo_head_sha,
         max_lag_hours=args.max_lag_hours,
     )
 
