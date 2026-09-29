@@ -177,6 +177,55 @@ the authoritative financial cap. Jarvis cannot create, enlarge, reactivate or
 bypass that budget. No recurring schedule is enabled yet; scheduling is a separate
 operator-controlled activation step.
 
+## Nightshift Orchestrator v1
+
+Nightshift is task-driven, not time-driven. One explicit pilot dispatch authorizes a
+bounded session; Jarvis must stop when there is no safe useful work, a budget gate
+closes, an external/human dependency blocks the next action, or a quality gate
+requires review. It must not poll the model merely to stay active.
+
+The existing control plane remains authoritative:
+
+- repo state is refreshed and synchronized before the session
+- exact fingerprint freshness is required
+- `dufynd_autonomy_tasks` supplies persistent work state
+- `dufynd_agent_runs` supplies the paid-run audit trail
+- `jarvis.nightshift_session` stores session id, heartbeat, current task, outcomes
+  and stop reason
+- the active database budget window is checked before every paid worker attempt
+- stable task state is preserved while the repo fingerprint is unchanged, avoiding
+  duplicate work after a restart
+
+Action classes are fail-closed:
+
+- **GREEN / auto execute:** internal reads, research, analysis, reports, content
+  preparation, isolated code preparation, tests, QA, evidence and task-state work
+- **YELLOW / prepare only:** production-relevant PRs, live-catalog changes, new
+  affiliate activation, publish-ready content, recommendation-logic changes and
+  important external messages
+- **RED / owner only:** spend, credits/subscriptions, budget increases, contracts,
+  credentials/secrets, external commitments, live social publishing, irreversible
+  production data changes, production merges and gate bypasses
+
+The Nightshift worker router sends engineering work to the isolated branch worker
+and non-engineering safe work to the read-only research worker. One engineering
+patch may be prepared per checkout; non-engineering GREEN work can continue while
+that patch waits for deterministic validation. Worker failures receive one bounded
+retry by default, with the budget checked again before the retry. A final failure
+marks that task blocked and allows Jarvis to choose another safe task instead of
+aborting the entire session.
+
+A successful engineering patch is validated by the existing path allowlist,
+Python checks and, when storefront files changed, web build plus responsive visual
+QA. The deterministic post-model handoff may create a `jarvis/worker-*` branch
+and a PR against `scentai-mvp`, but it must never auto-merge and must never target
+`main`. The task is then presented as READY FOR TUAN APPROVAL.
+
+Every pilot ends with a machine-readable JSON report and a concise Markdown Morning
+Report built from real persisted session state, queue state, health, pending
+decisions, budget status and audited agent runs. No recurring Nightshift schedule
+is enabled by v1.
+
 ## Autonomy control plane
 
 Jarvis should work from the autonomy queue rather than repeatedly asking the
