@@ -581,10 +581,7 @@ async def process_loop(
             result = await process_next(bridge)
         except RuntimeError as error:
             stop_reason = "runtime_or_budget_gate"
-            print(
-                "DUFYND Jarvis supervisor stopped safely after "
-                f"{processed} event(s): {error}"
-            )
+            print(f"DUFYND Jarvis supervisor stopped safely after {processed} event(s): {error}")
             break
 
         if result != 0:
@@ -657,8 +654,7 @@ def main() -> int:
         type=int,
         default=DEFAULT_SUPERVISOR_MAX_EVENTS,
         help=(
-            "maximum events for --process-loop; values are clamped to "
-            f"{HARD_SUPERVISOR_MAX_EVENTS}"
+            f"maximum events for --process-loop; values are clamped to {HARD_SUPERVISOR_MAX_EVENTS}"
         ),
     )
     args = parser.parse_args()
