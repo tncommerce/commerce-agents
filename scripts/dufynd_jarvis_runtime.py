@@ -651,7 +651,11 @@ def safe_task_prompt(task: dict[str, Any]) -> str:
     )
 
 
-async def process_safe_task(bridge: DufyndJarvisBridge) -> int:
+async def process_safe_task(
+    bridge: DufyndJarvisBridge,
+    *,
+    task_id: str | None = None,
+) -> int:
     queue = await asyncio.to_thread(bridge.load_autonomy_queue)
     safe_tasks = [
         task
@@ -660,8 +664,19 @@ async def process_safe_task(bridge: DufyndJarvisBridge) -> int:
         and str(task.get("task_id") or "").startswith("repo_current_")
         and not bool(task.get("requires_human_approval"))
     ]
+    if task_id is not None:
+        safe_tasks = [
+            task
+            for task in safe_tasks
+            if str(task.get("task_id") or "") == task_id
+        ]
     if not safe_tasks:
-        print("DUFYND Jarvis safe worker: no repo-current safe task.")
+        message = (
+            f"DUFYND Jarvis safe worker: requested task {task_id} is not safely executable."
+            if task_id is not None
+            else "DUFYND Jarvis safe worker: no repo-current safe task."
+        )
+        print(message)
         return 0
 
     task = safe_tasks[0]
@@ -741,7 +756,11 @@ def branch_task_prompt(task: dict[str, Any]) -> str:
     )
 
 
-async def process_branch_task(bridge: DufyndJarvisBridge) -> int:
+async def process_branch_task(
+    bridge: DufyndJarvisBridge,
+    *,
+    task_id: str | None = None,
+) -> int:
     queue = await asyncio.to_thread(bridge.load_autonomy_queue)
     tasks = [
         task
@@ -751,8 +770,19 @@ async def process_branch_task(bridge: DufyndJarvisBridge) -> int:
         and str(task.get("domain") or "") == "engineering"
         and not bool(task.get("requires_human_approval"))
     ]
+    if task_id is not None:
+        tasks = [
+            task
+            for task in tasks
+            if str(task.get("task_id") or "") == task_id
+        ]
     if not tasks:
-        print("DUFYND Jarvis branch worker: no repo-current safe engineering task.")
+        message = (
+            f"DUFYND Jarvis branch worker: requested task {task_id} is not safely executable."
+            if task_id is not None
+            else "DUFYND Jarvis branch worker: no repo-current safe engineering task."
+        )
+        print(message)
         return 0
 
     task = tasks[0]
