@@ -103,7 +103,22 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          git add -N --             scripts             tests             docs             examples/retail/api             examples/retail/storefront-web/app             examples/retail/storefront-web/components             examples/retail/storefront-web/lib             examples/retail/storefront-web/scripts             examples/retail/storefront-web/tests || true
+          paths=(
+            scripts
+            tests
+            docs
+            examples/retail/api
+            examples/retail/storefront-web/app
+            examples/retail/storefront-web/components
+            examples/retail/storefront-web/lib
+            examples/retail/storefront-web/scripts
+            examples/retail/storefront-web/tests
+          )
+          for path in "${paths[@]}"; do
+            if [ -e "$path" ]; then
+              git add -N -- "$path" || true
+            fi
+          done
           git status --short > dufynd-engineering-status.txt
           git diff --no-ext-diff --binary > dufynd-engineering.patch
           git diff --stat > dufynd-engineering-stat.txt
