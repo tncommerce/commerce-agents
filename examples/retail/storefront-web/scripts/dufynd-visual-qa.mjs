@@ -827,7 +827,7 @@ try {
     await context.close();
   }
 
-  // A chosen scent world and search term should survive sharing and reloads,
+  // The full catalog selection should survive sharing and reloads,
   // without discarding acquisition attribution from the incoming link.
   const shareContext = await browser.newContext();
   try {
@@ -846,16 +846,29 @@ try {
       throw new Error("catalog did not restore the shared scent world");
     }
     await sharePage.getByRole("searchbox", { name: "Duft, Marke oder Profil" }).fill("Naxos");
+    await sharePage.getByRole("button", { name: "Herren", exact: true }).click();
+    await sharePage.getByRole("combobox", { name: "Marke" }).selectOption("Xerjoff");
+    await sharePage.getByRole("combobox", { name: "Bewertung" }).selectOption("8");
+    await sharePage.getByRole("combobox", { name: "Sortierung" }).selectOption("rating");
     await sharePage.waitForFunction(() => {
       const url = new URL(window.location.href);
       return url.searchParams.get("q") === "Naxos" &&
         url.searchParams.get("profil") === "freshness" &&
+        url.searchParams.get("zielgruppe") === "men" &&
+        url.searchParams.get("marke") === "Xerjoff" &&
+        url.searchParams.get("bewertung") === "8" &&
+        url.searchParams.get("sort") === "rating" &&
         url.searchParams.get("utm_source") === "qa";
     });
     await sharePage.reload({ waitUntil: "networkidle" });
     if ((await sharePage.getByRole("searchbox", { name: "Duft, Marke oder Profil" }).inputValue()) !== "Naxos" ||
-        (await freshProfile.getAttribute("aria-pressed")) !== "true") {
-      throw new Error("catalog did not restore the shared search and scent world");
+        (await freshProfile.getAttribute("aria-pressed")) !== "true" ||
+        (await sharePage.getByRole("button", { name: "Herren", exact: true }).getAttribute("aria-pressed")) !== "true" ||
+        (await sharePage.getByRole("combobox", { name: "Marke" }).inputValue()) !== "Xerjoff" ||
+        (await sharePage.getByRole("combobox", { name: "Bewertung" }).inputValue()) !== "8" ||
+        (await sharePage.getByRole("combobox", { name: "Sortierung" }).inputValue()) !== "rating" ||
+        (await sharePage.getByRole("button", { name: "Filterlink kopieren" }).count()) !== 1) {
+      throw new Error("catalog did not restore the shared filters and sort order");
     }
     report.checks.push({ label: "catalog-share-link", status: "passed" });
   } catch (error) {
