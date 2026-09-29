@@ -3372,3 +3372,274 @@ a.dufynd-comparison-product-card > div:last-child {
     transition: none !important;
   }
 }
+
+
+/* DUFYND immersive personal library v1 */
+.dufynd-library-page {
+  background:
+    radial-gradient(circle at 14% 4%, rgba(190,145,72,0.10), transparent 29rem),
+    radial-gradient(circle at 88% 26%, rgba(104,80,61,0.06), transparent 27rem),
+    linear-gradient(180deg, #f3eee6 0%, #faf7f1 45%, #f2ece3 100%);
+}
+
+.dufynd-library-hero {
+  isolation: isolate;
+}
+
+.dufynd-library-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle, rgba(255,243,214,0.52) 0 0.55px, transparent 0.84px),
+    radial-gradient(circle, rgba(255,255,255,0.30) 0 0.46px, transparent 0.74px);
+  background-size: 89px 89px, 137px 137px;
+  background-position: 12px 18px, 54px 31px;
+  opacity: 0.15;
+  mask-image: linear-gradient(90deg, transparent, #000 20% 100%);
+}
+
+.dufynd-library-card {
+  --dufynd-library-glow: rgba(184,137,52,0.22);
+  position: relative;
+  isolation: isolate;
+  border-color: rgba(118,88,52,0.14);
+  background:
+    linear-gradient(180deg, rgba(255,253,249,0.98), rgba(248,242,233,0.94));
+  box-shadow:
+    0 24px 58px -42px rgba(40,30,20,0.50),
+    inset 0 1px 0 rgba(255,255,255,0.94);
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.dufynd-library-card[data-dufynd-library-theme="freshness"] {
+  --dufynd-library-glow: rgba(81,155,146,0.30);
+}
+
+.dufynd-library-card[data-dufynd-library-theme="sweetness"] {
+  --dufynd-library-glow: rgba(204,140,79,0.31);
+}
+
+.dufynd-library-card[data-dufynd-library-theme="woodiness"] {
+  --dufynd-library-glow: rgba(132,99,67,0.31);
+}
+
+.dufynd-library-card[data-dufynd-library-theme="spiciness"] {
+  --dufynd-library-glow: rgba(174,89,53,0.31);
+}
+
+.dufynd-library-card:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--dufynd-library-glow) 58%, rgba(118,88,52,0.15));
+  box-shadow:
+    0 34px 72px -42px rgba(40,30,20,0.58),
+    0 16px 34px -28px var(--dufynd-library-glow),
+    inset 0 1px 0 rgba(255,255,255,0.96);
+}
+
+.dufynd-library-card-stage {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  height: 192px;
+  background:
+    radial-gradient(circle at 50% 43%, var(--dufynd-library-glow), transparent 34%),
+    linear-gradient(145deg, #171719 0%, #0b0c0e 100%);
+}
+
+.dufynd-library-card-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.025), transparent 30%, transparent 70%, rgba(5,6,8,0.32)),
+    radial-gradient(circle at 50% 110%, var(--dufynd-library-glow), transparent 44%);
+}
+
+.dufynd-library-card-atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,0.40) 0 0.5px, transparent 0.78px),
+    radial-gradient(circle, rgba(242,216,165,0.40) 0 0.56px, transparent 0.82px);
+  background-size: 71px 71px, 113px 113px;
+  background-position: 7px 11px, 36px 26px;
+  opacity: 0.38;
+}
+
+.dufynd-library-card-visual {
+  position: relative;
+  z-index: 1;
+  height: 100% !important;
+  background: transparent !important;
+}
+
+.dufynd-library-card-stage .dufynd-product-stage,
+.dufynd-library-card-stage .dufynd-editorial-depth-stage {
+  background:
+    radial-gradient(circle at 50% 43%, var(--dufynd-library-glow), transparent 39%),
+    transparent;
+}
+
+.dufynd-library-card-stage .dufynd-product-light {
+  background: radial-gradient(
+    circle at var(--dufynd-mx) var(--dufynd-my),
+    rgba(255,250,232,0.42) 0,
+    var(--dufynd-library-glow) 22%,
+    transparent 48%
+  );
+}
+
+.dufynd-library-card-stage .dufynd-product-image {
+  filter:
+    drop-shadow(0 31px 25px rgba(0,0,0,0.44))
+    drop-shadow(0 8px 11px rgba(0,0,0,0.28))
+    drop-shadow(0 0 20px var(--dufynd-library-glow));
+}
+
+.dufynd-library-card-stage .dufynd-editorial-depth-fill {
+  filter: blur(28px) brightness(0.44) saturate(0.88);
+  opacity: 0.68;
+}
+
+.dufynd-library-card-signature {
+  position: absolute;
+  left: 11px;
+  top: 11px;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(255,255,255,0.11);
+  border-radius: 999px;
+  background: rgba(8,9,11,0.50);
+  padding: 5px 8px;
+  color: rgba(255,250,240,0.72);
+  box-shadow:
+    0 10px 24px -18px rgba(0,0,0,0.88),
+    inset 0 1px 0 rgba(255,255,255,0.07);
+  backdrop-filter: blur(10px);
+  font-size: 9px;
+  font-weight: 650;
+}
+
+.dufynd-library-card-signature strong {
+  color: rgba(255,244,214,0.94);
+  font-weight: 760;
+}
+
+.dufynd-library-card-body {
+  position: relative;
+}
+
+.dufynd-library-card-body::before {
+  content: "";
+  position: absolute;
+  left: 15%;
+  right: 15%;
+  top: -16px;
+  height: 25px;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, var(--dufynd-library-glow), transparent 72%);
+  filter: blur(15px);
+  opacity: 0.30;
+}
+
+.dufynd-library-card-actions {
+  background: rgba(249,245,238,0.74);
+  backdrop-filter: blur(10px);
+}
+
+.dufynd-library-profile {
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(123,92,55,0.14);
+  background:
+    linear-gradient(145deg, rgba(255,253,249,0.96), rgba(247,241,232,0.91));
+  box-shadow:
+    0 28px 68px -48px rgba(47,34,20,0.46),
+    inset 0 1px 0 rgba(255,255,255,0.92);
+}
+
+.dufynd-library-profile::after {
+  content: "";
+  position: absolute;
+  right: -8%;
+  top: -18%;
+  width: 40%;
+  aspect-ratio: 1;
+  pointer-events: none;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(193,145,72,0.09), transparent 70%);
+  filter: blur(14px);
+}
+
+.dufynd-library-profile-axis {
+  position: relative;
+  border-color: rgba(127,96,58,0.12);
+  background:
+    linear-gradient(145deg, rgba(255,255,255,0.76), rgba(244,237,227,0.62));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.84);
+}
+
+.dufynd-library-profile-axis .bg-\(--accent-strong\) {
+  box-shadow: 0 0 12px rgba(180,135,67,0.20);
+}
+
+.dufynd-library-suggestion {
+  background:
+    linear-gradient(145deg, rgba(255,255,255,0.74), rgba(244,238,228,0.60));
+}
+
+.dufynd-library-empty {
+  background:
+    linear-gradient(145deg, rgba(255,253,249,0.92), rgba(247,241,232,0.82));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dufynd-library-card-atmosphere,
+  .dufynd-library-hero::after {
+    animation: dufynd-library-particles 25s linear infinite;
+  }
+}
+
+@keyframes dufynd-library-particles {
+  from {
+    background-position: 7px 11px, 36px 26px;
+  }
+  to {
+    background-position: 78px -60px, -77px 139px;
+  }
+}
+
+@media (max-width: 639px) {
+  .dufynd-library-card-stage {
+    height: 178px;
+  }
+
+  .dufynd-library-card-signature {
+    left: 9px;
+    top: 9px;
+    padding: 4px 7px;
+    font-size: 8.5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dufynd-library-card,
+  .dufynd-library-card-atmosphere,
+  .dufynd-library-hero::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
