@@ -885,8 +885,7 @@ async def process_autonomous_cycle(
     pending = int((health.get("inbox") or {}).get("pending") or 0)
     if pending > 0:
         print(
-            "DUFYND Jarvis autonomous cycle: inbox backlog remains; "
-            "safe-task execution deferred."
+            "DUFYND Jarvis autonomous cycle: inbox backlog remains; safe-task execution deferred."
         )
         return 0
 
