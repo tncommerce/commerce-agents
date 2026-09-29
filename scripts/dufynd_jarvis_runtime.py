@@ -454,6 +454,39 @@ def _require_budget_window(bridge: DufyndJarvisBridge) -> tuple[str, dict[str, A
     if not budget_id:
         raise RuntimeError("DUFYND_JARVIS_BUDGET_ID is required for active model execution.")
     status = bridge.load_budget_status(budget_id)
+
+    window = bridge.load_budget_window(budget_id)
+    if not window:
+        raise RuntimeError(f"DUFYND Jarvis budget window {budget_id} is missing.")
+    decision_id = str(window.get("approved_decision_id") or "")
+    if not decision_id:
+        raise RuntimeError(
+            f"DUFYND Jarvis budget window {budget_id} has no approved decision reference."
+        )
+    decision = bridge.load_human_decision(decision_id)
+    approved = dict((decision or {}).get("decision") or {})
+    if not decision or decision.get("status") != "approved" or not bool(approved.get("approved")):
+        raise RuntimeError(
+            f"DUFYND Jarvis budget window {budget_id} is not backed by an approved human decision."
+        )
+
+    try:
+        window_max_runs = int(window["max_runs"])
+        approved_max_runs = int(approved["max_runs"])
+        window_cap_usd = float(window["cap_usd"])
+        approved_cap_usd = float(approved["cap_usd"])
+    except (KeyError, TypeError, ValueError) as error:
+        raise RuntimeError(
+            f"DUFYND Jarvis budget window {budget_id} has incomplete approval limits."
+        ) from error
+
+    if window_max_runs > approved_max_runs or window_cap_usd > approved_cap_usd:
+        raise RuntimeError(
+            "DUFYND Jarvis budget window exceeds its approved human limits: "
+            f"window(max_runs={window_max_runs}, cap_usd={window_cap_usd}) vs "
+            f"approved(max_runs={approved_max_runs}, cap_usd={approved_cap_usd})."
+        )
+
     if not status.get("can_run"):
         raise RuntimeError(
             "DUFYND Jarvis budget window does not permit another run: "
