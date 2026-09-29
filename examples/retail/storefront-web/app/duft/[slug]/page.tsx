@@ -340,6 +340,14 @@ export default async function FragrancePage({
       ].filter((note): note is string => Boolean(note)),
     ),
   ).slice(0, 4);
+  const phaseNotes = [
+    { stage: "01", label: "Kopf", note: fragrance.notes.top[0] },
+    { stage: "02", label: "Herz", note: fragrance.notes.heart[0] },
+    { stage: "03", label: "Basis", note: fragrance.notes.base[0] },
+  ].filter(
+    (item): item is { stage: string; label: string; note: string } =>
+      Boolean(item.note),
+  );
   const noteCount = new Set(allNotes).size;
   const canonicalUrl = `${SITE_URL}/duft/${fragrance.slug}`;
   const breadcrumbStructuredData = {
@@ -577,6 +585,34 @@ export default async function FragrancePage({
                   priority
                 />
               )}
+
+              <div
+                aria-hidden
+                className="dufynd-fragrance-stage-reflection"
+              />
+
+              {phaseNotes.length ? (
+                <div
+                  aria-hidden
+                  className="dufynd-fragrance-phase-rail"
+                >
+                  {phaseNotes.map((phase) => (
+                    <div
+                      key={phase.stage}
+                      className="dufynd-fragrance-phase"
+                      data-dufynd-phase={phase.stage}
+                    >
+                      <span className="dufynd-fragrance-phase-index">
+                        {phase.stage}
+                      </span>
+                      <span className="dufynd-fragrance-phase-copy">
+                        <strong>{phase.label}</strong>
+                        <em>{noteLabel(phase.note)}</em>
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
 
               <FragranceIngredientOrbit notes={sceneNotes} />
 
