@@ -3643,3 +3643,300 @@ a.dufynd-comparison-product-card > div:last-child {
     transition: none !important;
   }
 }
+
+
+/* DUFYND immersive acquisition stage v1 */
+.dufynd-acquisition-hero {
+  min-height: 500px;
+  background:
+    radial-gradient(circle at 79% 18%, rgba(204,160,77,0.22), transparent 28%),
+    radial-gradient(circle at 8% 90%, rgba(96,76,54,0.17), transparent 32%),
+    linear-gradient(135deg, #0a0b0d 0%, #111012 52%, #08090b 100%) !important;
+}
+
+.dufynd-acquisition-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle, rgba(255,243,216,0.48) 0 0.55px, transparent 0.84px),
+    radial-gradient(circle, rgba(255,255,255,0.28) 0 0.45px, transparent 0.72px);
+  background-size: 89px 89px, 137px 137px;
+  background-position: 16px 21px, 53px 37px;
+  opacity: 0.16;
+  mask-image: linear-gradient(90deg, transparent 0 33%, #000 59% 100%);
+}
+
+.dufynd-acquisition-stage {
+  position: relative;
+  min-height: 375px;
+  pointer-events: none;
+}
+
+.dufynd-acquisition-stage::before {
+  content: "";
+  position: absolute;
+  left: 4%;
+  right: 2%;
+  bottom: 1%;
+  height: 23%;
+  border-radius: 50%;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at center, rgba(215,177,104,0.17), rgba(0,0,0,0.34) 46%, transparent 72%);
+  filter: blur(16px);
+  transform: perspective(640px) rotateX(70deg);
+}
+
+.dufynd-acquisition-stage-glow {
+  position: absolute;
+  inset: 7% 4% 12%;
+  pointer-events: none;
+  border: 1px solid rgba(216,177,105,0.14);
+  border-radius: 48% 52% 45% 55% / 51% 42% 58% 49%;
+  box-shadow:
+    0 0 84px rgba(205,154,76,0.10),
+    inset 0 0 64px rgba(255,255,255,0.015);
+  transform: rotate(-9deg);
+}
+
+.dufynd-acquisition-bottle {
+  position: absolute;
+  z-index: 2;
+  width: 42%;
+  height: 74%;
+  color: white;
+  pointer-events: auto;
+  transition:
+    transform 220ms ease,
+    filter 220ms ease,
+    opacity 220ms ease;
+}
+
+.dufynd-acquisition-bottle[data-dufynd-acquisition-slot="1"] {
+  left: 29%;
+  top: 3%;
+  z-index: 4;
+  width: 44%;
+  height: 80%;
+}
+
+.dufynd-acquisition-bottle[data-dufynd-acquisition-slot="2"] {
+  left: -2%;
+  top: 18%;
+  transform: scale(0.83) rotate(-2deg);
+  opacity: 0.80;
+}
+
+.dufynd-acquisition-bottle[data-dufynd-acquisition-slot="3"] {
+  right: -3%;
+  top: 18%;
+  transform: scale(0.82) rotate(2deg);
+  opacity: 0.78;
+}
+
+.dufynd-acquisition-bottle:hover {
+  z-index: 7;
+  transform: translateY(-4px) scale(1.015);
+  filter: brightness(1.05);
+  opacity: 1;
+}
+
+.dufynd-acquisition-bottle-visual {
+  height: calc(100% - 52px);
+  overflow: hidden;
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 50% 43%, rgba(228,194,131,0.12), transparent 38%);
+}
+
+.dufynd-acquisition-bottle-visual .dufynd-product-stage,
+.dufynd-acquisition-bottle-visual .dufynd-editorial-depth-stage {
+  background: transparent;
+}
+
+.dufynd-acquisition-bottle-visual .dufynd-product-image {
+  filter:
+    drop-shadow(0 30px 25px rgba(0,0,0,0.47))
+    drop-shadow(0 8px 11px rgba(0,0,0,0.28));
+}
+
+.dufynd-acquisition-bottle-visual .dufynd-editorial-depth-fill {
+  filter: blur(28px) brightness(0.42) saturate(0.88);
+  opacity: 0.62;
+}
+
+.dufynd-acquisition-bottle-meta {
+  position: relative;
+  z-index: 5;
+  margin: -1px auto 0;
+  width: min(94%, 150px);
+  border: 1px solid rgba(255,255,255,0.085);
+  border-radius: 13px;
+  background: rgba(8,9,11,0.50);
+  padding: 6px 8px;
+  text-align: center;
+  box-shadow:
+    0 12px 26px -20px rgba(0,0,0,0.9),
+    inset 0 1px 0 rgba(255,255,255,0.055);
+  backdrop-filter: blur(11px);
+}
+
+.dufynd-acquisition-bottle-meta span,
+.dufynd-acquisition-bottle-meta strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dufynd-acquisition-bottle-meta span {
+  color: rgba(255,255,255,0.43);
+  font-size: 7.5px;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dufynd-acquisition-bottle-meta strong {
+  margin-top: 1px;
+  color: rgba(255,255,255,0.90);
+  font-size: 9.5px;
+  font-weight: 700;
+}
+
+.dufynd-acquisition-stage-label {
+  position: absolute;
+  left: 50%;
+  bottom: 4%;
+  z-index: 8;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 90%;
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 999px;
+  background: rgba(7,8,10,0.52);
+  padding: 6px 10px;
+  text-align: center;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+  backdrop-filter: blur(12px);
+}
+
+.dufynd-acquisition-stage-label span,
+.dufynd-acquisition-stage-label strong {
+  font-size: 8.5px;
+}
+
+.dufynd-acquisition-stage-label span {
+  color: rgba(255,255,255,0.42);
+}
+
+.dufynd-acquisition-stage-label strong {
+  margin-left: 6px;
+  color: rgba(255,240,210,0.82);
+  font-weight: 720;
+}
+
+.dufynd-acquisition-point {
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(128,98,59,0.14);
+  background:
+    linear-gradient(145deg, rgba(255,253,249,0.97), rgba(248,242,232,0.92));
+  box-shadow:
+    0 24px 60px -46px rgba(51,36,19,0.48),
+    inset 0 1px 0 rgba(255,255,255,0.92);
+  transition:
+    transform 200ms ease,
+    border-color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.dufynd-acquisition-point::after {
+  content: "";
+  position: absolute;
+  right: -30%;
+  top: -55%;
+  width: 72%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(190,143,70,0.08), transparent 68%);
+  pointer-events: none;
+}
+
+.dufynd-acquisition-point:hover {
+  transform: translateY(-2px);
+  border-color: rgba(184,137,52,0.30);
+  box-shadow:
+    0 30px 68px -44px rgba(51,36,19,0.54),
+    0 10px 30px -26px rgba(184,137,52,0.28);
+}
+
+@media (max-width: 1023px) {
+  .dufynd-acquisition-hero {
+    min-height: 720px;
+  }
+
+  .dufynd-acquisition-stage {
+    min-height: 320px;
+  }
+}
+
+@media (max-width: 639px) {
+  .dufynd-acquisition-hero {
+    min-height: auto;
+  }
+
+  .dufynd-acquisition-hero-grid {
+    gap: 18px;
+  }
+
+  .dufynd-acquisition-stage {
+    min-height: 260px;
+  }
+
+  .dufynd-acquisition-bottle {
+    height: 78%;
+  }
+
+  .dufynd-acquisition-bottle[data-dufynd-acquisition-slot="1"] {
+    left: 27%;
+    width: 46%;
+    height: 84%;
+  }
+
+  .dufynd-acquisition-bottle[data-dufynd-acquisition-slot="2"] {
+    left: -4%;
+  }
+
+  .dufynd-acquisition-bottle[data-dufynd-acquisition-slot="3"] {
+    right: -4%;
+  }
+
+  .dufynd-acquisition-stage-label {
+    bottom: 0;
+  }
+}
+
+@media (max-width: 390px) {
+  .dufynd-acquisition-stage {
+    min-height: 238px;
+  }
+
+  .dufynd-acquisition-bottle-meta {
+    padding: 5px 6px;
+  }
+
+  .dufynd-acquisition-bottle-meta strong {
+    font-size: 8.5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dufynd-acquisition-bottle,
+  .dufynd-acquisition-point {
+    transition: none !important;
+  }
+}
