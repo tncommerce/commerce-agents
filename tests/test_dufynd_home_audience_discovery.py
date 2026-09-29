@@ -12,11 +12,11 @@ def source() -> str:
 def test_homepage_links_directly_to_audience_filtered_catalog() -> None:
     text = source()
 
-    assert 'aria-label="Zielgruppen im Duftkatalog"' in text
-    assert '["women", "Damen", audienceCounts.women]' in text
-    assert '["men", "Herren", audienceCounts.men]' in text
-    assert '["unisex", "Unisex", audienceCounts.unisex]' in text
-    assert "href={`/duft?zielgruppe=${audience}`}" in text
+    assert 'aria-labelledby="dufynd-audience-discovery-heading"' in text
+    assert '{ key: "women", label: "Damen", eyebrow: "Für sie" }' in text
+    assert '{ key: "men", label: "Herren", eyebrow: "Für ihn" }' in text
+    assert '{ key: "unisex", label: "Unisex", eyebrow: "Für alle" }' in text
+    assert "href={`/duft?zielgruppe=${key}`}" in text
 
 
 def test_homepage_audience_counts_use_live_fragrance_targets() -> None:
