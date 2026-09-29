@@ -38,18 +38,21 @@ def test_staging_qa_rejects_variant_and_provisional_gate_drift() -> None:
     ]
 
 
-def test_live_staging_overlap_is_explicitly_marked_as_promoted() -> None:
-    staging = load_staging()
-    staged_ids = {row["product_id"] for row in staging["products"]}
-    promoted_ids = {
-        row["product_id"]
-        for row in staging["products"]
-        if (row.get("validation") or {}).get("promoted_to_live") is True
-    }
+def test_live_staging_overlap_requires_explicit_promotion_provenance() -> None:
+    staged_ids = {row["product_id"] for row in load_staging()["products"]}
     live = json.loads(Path("examples/retail/data/catalog.json").read_text(encoding="utf-8"))
-    live_ids = {row["product_id"] for row in live["products"] if row.get("category") == "fragrance"}
+    live_rows = {
+        row["product_id"]: row
+        for row in live["products"]
+        if row.get("category") == "fragrance"
+    }
 
-    assert staged_ids & live_ids == promoted_ids
+    overlapping_ids = staged_ids & set(live_rows)
+    assert overlapping_ids
+
+    for product_id in overlapping_ids:
+        attributes = live_rows[product_id].get("attributes") or {}
+        assert attributes.get("promotion_source") == "scentai_catalog_staging", product_id
 
 
 @pytest.mark.asyncio
