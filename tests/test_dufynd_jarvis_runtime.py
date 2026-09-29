@@ -322,9 +322,7 @@ def test_autonomous_event_limit_is_bounded() -> None:
     assert _bounded_autonomous_max_events(999) == 5
 
 
-def test_autonomous_cycle_defers_safe_task_when_inbox_backlog_remains(
-    monkeypatch, capsys
-) -> None:
+def test_autonomous_cycle_defers_safe_task_when_inbox_backlog_remains(monkeypatch, capsys) -> None:
     bridge = SupervisorBridge(pending=3)
 
     monkeypatch.setattr(
@@ -354,9 +352,7 @@ def test_autonomous_cycle_defers_safe_task_when_inbox_backlog_remains(
     assert "inbox backlog remains" in capsys.readouterr().out.lower()
 
 
-def test_autonomous_cycle_runs_safe_task_after_inbox_is_clear(
-    monkeypatch, capsys
-) -> None:
+def test_autonomous_cycle_runs_safe_task_after_inbox_is_clear(monkeypatch, capsys) -> None:
     bridge = SupervisorBridge(pending=0)
 
     monkeypatch.setattr(
