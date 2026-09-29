@@ -255,9 +255,9 @@ def append_enabled_research_waves(
                         live_row
                         and (live_row.get("attributes") or {}).get("promotion_source")
                         == "scentai_catalog_staging"
-                        and candidate_by_id[product_id].get("validation", {}).get(
-                            "catalog_ready"
-                        )
+                        and candidate_by_id[product_id]
+                        .get("validation", {})
+                        .get("catalog_ready")
                         is True
                     )
                     if not promoted_from_staging:
