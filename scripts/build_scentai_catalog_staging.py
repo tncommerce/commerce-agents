@@ -266,12 +266,8 @@ def build_staging_payload() -> dict:
             candidate_id = verified["candidate_id"]
             community_row = scent_by_id.get(candidate_id, {})
             community = community_row.get("parfumo", community_row)
-            product_id = verified["proposed_product_id"]
-
-            if product_id in live_ids:
-                continue
-
             queue_row = queue_by_id[candidate_id]
+            product_id = verified["proposed_product_id"]
 
             if product_id in seen_product_ids:
                 raise ValueError(f"Duplicate staged product_id: {product_id}")
@@ -365,8 +361,6 @@ def build_staging_payload() -> dict:
             (row for row in products if row["product_id"] == candidate["product_id"]),
             None,
         )
-        if product is None and candidate["product_id"] in live_ids:
-            continue
         if product is None or any(
             product[field] != candidate.get(field)
             for field in ("candidate_id", "brand", "name", "concentration", "volume_ml")
@@ -396,6 +390,10 @@ def build_staging_payload() -> dict:
             attribution_text=plan["attribution_text"],
             share_alike_required=plan["share_alike_required"],
         )
+
+    for product in products:
+        if product["product_id"] in live_ids:
+            product.setdefault("validation", {})["promoted_to_live"] = True
 
     return payload
 
