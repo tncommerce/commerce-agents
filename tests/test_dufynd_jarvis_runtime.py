@@ -149,6 +149,9 @@ def test_safe_worker_prompt_names_high_impact_boundaries() -> None:
 
     assert "Do not perform any high-impact action" in prompt
     assert "licensing rights" in prompt
+    assert "DUFYND_TASK_STATE:" in prompt
+    assert "waiting_human_input" in prompt
+    assert "waiting_external" in prompt
 
 
 def test_branch_worker_ignores_non_engineering_tasks(capsys) -> None:
@@ -354,6 +357,15 @@ def test_autonomous_cycle_defers_safe_task_when_inbox_backlog_remains(monkeypatc
 
 def test_autonomous_cycle_runs_safe_task_after_inbox_is_clear(monkeypatch, capsys) -> None:
     bridge = SupervisorBridge(pending=0)
+    bridge.load_autonomy_queue = lambda: {
+        "safe_to_execute": [
+            {
+                "task_id": "repo_current_commerce",
+                "domain": "commerce",
+                "requires_human_approval": False,
+            }
+        ]
+    }
 
     monkeypatch.setattr(
         jarvis_runtime,
@@ -361,25 +373,107 @@ def test_autonomous_cycle_runs_safe_task_after_inbox_is_clear(monkeypatch, capsy
         lambda _bridge: ("budget", {"can_run": True}),
     )
 
-    async def fake_process_loop(_bridge, *, max_events):
-        assert max_events == 0
-        return 0
-
     safe_called = False
+    branch_called = False
 
     async def fake_safe_task(_bridge):
         nonlocal safe_called
         safe_called = True
         return 0
 
-    monkeypatch.setattr(jarvis_runtime, "process_loop", fake_process_loop)
+    async def fake_branch_task(_bridge):
+        nonlocal branch_called
+        branch_called = True
+        return 0
+
     monkeypatch.setattr(jarvis_runtime, "process_safe_task", fake_safe_task)
+    monkeypatch.setattr(jarvis_runtime, "process_branch_task", fake_branch_task)
 
     result = asyncio.run(process_autonomous_cycle(bridge, max_events=0))
 
     assert result == 0
     assert safe_called is True
-    assert "autonomous cycle summary" in capsys.readouterr().out.lower()
+    assert branch_called is False
+    output = capsys.readouterr().out.lower()
+    assert "worker=safe_worker" in output
+
+
+def test_autonomous_cycle_routes_engineering_to_branch_worker(monkeypatch, capsys) -> None:
+    bridge = SupervisorBridge(pending=0)
+    bridge.load_autonomy_queue = lambda: {
+        "safe_to_execute": [
+            {
+                "task_id": "repo_current_engineering",
+                "domain": "engineering",
+                "requires_human_approval": False,
+            }
+        ]
+    }
+
+    monkeypatch.setattr(
+        jarvis_runtime,
+        "_require_autonomous_session",
+        lambda _bridge: ("budget", {"can_run": True}),
+    )
+
+    safe_called = False
+    branch_called = False
+
+    async def fake_safe_task(_bridge):
+        nonlocal safe_called
+        safe_called = True
+        return 0
+
+    async def fake_branch_task(_bridge):
+        nonlocal branch_called
+        branch_called = True
+        return 0
+
+    monkeypatch.setattr(jarvis_runtime, "process_safe_task", fake_safe_task)
+    monkeypatch.setattr(jarvis_runtime, "process_branch_task", fake_branch_task)
+
+    result = asyncio.run(process_autonomous_cycle(bridge, max_events=0))
+
+    assert result == 0
+    assert safe_called is False
+    assert branch_called is True
+    output = capsys.readouterr().out.lower()
+    assert "worker=branch_worker" in output
+
+
+def test_autonomous_cycle_exits_cleanly_when_no_safe_task_exists(monkeypatch, capsys) -> None:
+    bridge = SupervisorBridge(pending=0)
+    bridge.load_autonomy_queue = lambda: {"safe_to_execute": []}
+
+    monkeypatch.setattr(
+        jarvis_runtime,
+        "_require_autonomous_session",
+        lambda _bridge: ("budget", {"can_run": True}),
+    )
+
+    safe_called = False
+    branch_called = False
+
+    async def fake_safe_task(_bridge):
+        nonlocal safe_called
+        safe_called = True
+        return 0
+
+    async def fake_branch_task(_bridge):
+        nonlocal branch_called
+        branch_called = True
+        return 0
+
+    monkeypatch.setattr(jarvis_runtime, "process_safe_task", fake_safe_task)
+    monkeypatch.setattr(jarvis_runtime, "process_branch_task", fake_branch_task)
+
+    result = asyncio.run(process_autonomous_cycle(bridge, max_events=0))
+
+    assert result == 0
+    assert safe_called is False
+    assert branch_called is False
+    output = capsys.readouterr().out.lower()
+    assert "worker=none" in output
 
 
 def test_supervisor_event_limit_is_bounded() -> None:

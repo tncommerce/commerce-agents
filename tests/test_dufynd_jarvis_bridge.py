@@ -15,9 +15,24 @@ def mock_transport() -> httpx.MockTransport:
         if request.method == "PATCH" and request.url.path.endswith("/dufynd_autonomy_tasks"):
             row = json.loads(request.content)
             assert request.url.params["task_id"] == "eq.repo_current_commerce"
-            assert row["status"] == "in_progress"
-            assert row["evidence"] == "research evidence"
+            assert row["status"] in {"in_progress", "done"}
+            assert row["evidence"] in {"research evidence", "completed evidence"}
             return httpx.Response(204)
+
+        if request.method == "GET" and request.url.path.endswith("/dufynd_autonomy_tasks"):
+            assert request.url.params["task_id"] == "eq.repo_current_commerce"
+            assert request.url.params["limit"] == "1"
+            return httpx.Response(
+                200,
+                json=[
+                    {
+                        "task_id": "repo_current_commerce",
+                        "domain": "commerce",
+                        "status": "in_progress",
+                        "evidence": "fingerprint=abc123; worker evidence",
+                    }
+                ],
+            )
 
         if request.url.path.endswith("/rpc/get_dufynd_jarvis_context"):
             return httpx.Response(
@@ -198,7 +213,23 @@ def mock_transport() -> httpx.MockTransport:
                 },
             )
 
-        if request.url.path.endswith("/dufynd_master_status"):
+        if request.method == "GET" and request.url.path.endswith("/dufynd_master_status"):
+            assert request.url.params["key"] == "eq.jarvis.nightshift_session"
+            return httpx.Response(
+                200,
+                json=[
+                    {
+                        "key": "jarvis.nightshift_session",
+                        "category": "jarvis",
+                        "value": {
+                            "session_id": "nightshift-test",
+                            "status": "running",
+                        },
+                    }
+                ],
+            )
+
+        if request.method == "POST" and request.url.path.endswith("/dufynd_master_status"):
             row = json.loads(request.content)
             assert row["key"] == "jarvis.repo_state_snapshot"
             assert row["category"] == "jarvis"
@@ -206,6 +237,21 @@ def mock_transport() -> httpx.MockTransport:
             assert request.url.params["on_conflict"] == "key"
             assert "resolution=merge-duplicates" in request.headers["prefer"]
             return httpx.Response(201)
+
+        if request.method == "GET" and request.url.path.endswith("/dufynd_agent_runs"):
+            assert request.url.params["created_at"] == "gte.2026-09-29T20:00:00+00:00"
+            assert request.url.params["order"] == "created_at.asc"
+            return httpx.Response(
+                200,
+                json=[
+                    {
+                        "agent_name": "jarvis_safe_worker",
+                        "run_type": "safe_task:repo_current_commerce",
+                        "decisions": [{"cost_usd": 0.08}],
+                        "created_at": "2026-09-29T20:05:00+00:00",
+                    }
+                ],
+            )
 
         if request.url.path.endswith("/dufynd_autonomy_tasks"):
             row = json.loads(request.content)
@@ -298,6 +344,62 @@ def test_bridge_updates_safe_task_progress_without_terminal_completion() -> None
         task_id="repo_current_commerce",
         status="in_progress",
         evidence="research evidence",
+    )
+
+
+def test_bridge_loads_nightshift_session_status() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    row = bridge.load_master_status_entry("jarvis.nightshift_session")
+
+    assert row is not None
+    assert row["value"]["session_id"] == "nightshift-test"
+    assert row["value"]["status"] == "running"
+
+
+def test_bridge_loads_agent_runs_since_timestamp() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    runs = bridge.load_agent_runs_since("2026-09-29T20:00:00+00:00")
+
+    assert len(runs) == 1
+    assert runs[0]["agent_name"] == "jarvis_safe_worker"
+    assert runs[0]["decisions"][0]["cost_usd"] == 0.08
+
+
+def test_bridge_loads_single_autonomy_task() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    task = bridge.load_autonomy_task("repo_current_commerce")
+
+    assert task is not None
+    assert task["status"] == "in_progress"
+    assert "abc123" in task["evidence"]
+
+
+def test_bridge_sets_terminal_autonomy_task_status() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    bridge.set_autonomy_task_status(
+        task_id="repo_current_commerce",
+        status="done",
+        evidence="completed evidence",
     )
 
 
