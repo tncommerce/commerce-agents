@@ -1,5 +1,5 @@
 {
-  "version": "2.4",
+  "version": "2.5",
   "brand": "DUFYND",
   "operator": "TNCommerce",
   "purpose": "Machine-readable contract between DUFYND operating data and Jarvis.",
@@ -176,6 +176,29 @@
       ],
       "task_progress_rule": "Safe worker may record non-terminal progress/evidence only; it must not mark a task done automatically.",
       "safety": "No repository mutation, shell execution, publishing, spend, contracts, secrets, live catalog routing, or merge/push capability."
+    },
+    "branch_worker_mode": {
+      "status": "available_guarded_patch_only",
+      "command": "--process-branch-task",
+      "task_scope": "repo_current_* engineering tasks that are safe_to_execute and do not require human approval",
+      "builtin_tools_allowed": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Write",
+        "Edit"
+      ],
+      "builtin_tools_denied": [
+        "Bash",
+        "Task",
+        "WebSearch",
+        "WebFetch"
+      ],
+      "repository_write_scope": "local checkout only; deterministic workflow validates allowlisted paths and emits a patch artifact",
+      "push_allowed": false,
+      "merge_allowed": false,
+      "terminal_completion_allowed": false,
+      "safety": "No push, merge, deployment, publishing, spend, credentials, Supabase migrations, operational data writes, workflows, lockfiles or dependency-manifest changes."
     }
   },
   "human_decision_tokens": {

@@ -16,6 +16,7 @@ from scripts.dufynd_jarvis_runtime import (
     _require_runtime_id,
     allowed_tool_names,
     event_prompt,
+    process_branch_task,
     process_next,
     process_safe_task,
     runtime_readiness,
@@ -145,6 +146,55 @@ def test_safe_worker_prompt_names_high_impact_boundaries() -> None:
 
     assert "Do not perform any high-impact action" in prompt
     assert "licensing rights" in prompt
+
+
+def test_branch_worker_ignores_non_engineering_tasks(capsys) -> None:
+    result = asyncio.run(
+        process_branch_task(
+            SafeTaskBridge(
+                [
+                    {
+                        "task_id": "repo_current_commerce",
+                        "domain": "commerce",
+                        "requires_human_approval": False,
+                    }
+                ]
+            )
+        )
+    )
+
+    assert result == 0
+    assert "no repo-current safe engineering task" in capsys.readouterr().out.lower()
+
+
+def test_branch_worker_prompt_preserves_isolated_patch_boundary() -> None:
+    prompt = jarvis_runtime.branch_task_prompt(
+        {
+            "task_id": "repo_current_engineering",
+            "domain": "engineering",
+            "instruction": "Fix one tested UI issue.",
+        }
+    )
+
+    assert "Do not run commands yourself" in prompt
+    assert "Do not mark the task complete" in prompt
+
+
+def test_branch_worker_denies_shell_and_allows_edit_tools(monkeypatch) -> None:
+    monkeypatch.setenv("DUFYND_JARVIS_ACTIVE", "1")
+    monkeypatch.setenv("DUFYND_JARVIS_MODEL", "claude-sonnet-5")
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+    monkeypatch.setenv("SUPABASE_URL", "https://project.supabase.co")
+    monkeypatch.setenv("SUPABASE_SECRET_KEY", "secret")
+    monkeypatch.setenv("DUFYND_JARVIS_MAX_TURNS", "8")
+    monkeypatch.setenv("DUFYND_JARVIS_MAX_BUDGET_USD", "0.25")
+
+    options = jarvis_runtime.make_branch_worker_options(BudgetBridge())
+
+    assert "Write" in options.allowed_tools
+    assert "Edit" in options.allowed_tools
+    assert "Bash" in options.disallowed_tools
+    assert "WebSearch" in options.disallowed_tools
 
 
 def test_runtime_readiness_is_safe_by_default(monkeypatch) -> None:

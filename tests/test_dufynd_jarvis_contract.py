@@ -13,7 +13,7 @@ def test_dufynd_jarvis_contract_has_current_brand_and_version() -> None:
 
     assert contract["brand"] == "DUFYND"
     assert contract["operator"] == "TNCommerce"
-    assert contract["version"] == "2.4"
+    assert contract["version"] == "2.5"
 
 
 def test_dufynd_jarvis_contract_exposes_required_learning_surfaces() -> None:
@@ -85,6 +85,13 @@ def test_dufynd_jarvis_contract_keeps_active_runtime_off_by_default() -> None:
     assert "Bash" in safe_worker["builtin_tools_denied"]
     assert "Write" in safe_worker["builtin_tools_denied"]
     assert "must not mark a task done automatically" in safe_worker["task_progress_rule"]
+
+    branch_worker = runtime["branch_worker_mode"]
+    assert branch_worker["command"] == "--process-branch-task"
+    assert branch_worker["push_allowed"] is False
+    assert branch_worker["merge_allowed"] is False
+    assert "Write" in branch_worker["builtin_tools_allowed"]
+    assert "Bash" in branch_worker["builtin_tools_denied"]
 
     control_plane_sync = runtime["control_plane_sync"]
     assert control_plane_sync["status"] == "required_before_active_processing"
