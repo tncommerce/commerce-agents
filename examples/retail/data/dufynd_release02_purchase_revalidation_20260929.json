@@ -1,8 +1,8 @@
 {
   "version": 1,
   "verified_on": "2026-09-29",
-  "status": "read_only_purchase_destination_revalidation",
-  "purpose": "Record exact-variant public merchant evidence for Release 02 purchase destinations whose 72-hour freshness gate expired. This file does not itself modify live offers, affiliate routing, recommendation priority or image approval.",
+  "status": "applied_to_existing_non_affiliate_purchase_destinations",
+  "purpose": "Record and apply exact-variant public merchant evidence for Release 02 purchase destinations whose 72-hour freshness gate expired. Only existing non-affiliate offer verification timestamps are refreshed; price, URL, merchant SKU, recommendation priority and image approval remain unchanged.",
   "policy": {
     "exact_variant_required": true,
     "public_https_product_page_required": true,
@@ -12,6 +12,25 @@
     "image_reuse_rights_inferred": false
   },
   "products": [
+    {
+      "product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+      "brand": "Guerlain",
+      "name": "Mon Guerlain",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "gtin": "3346470131408",
+      "merchant_id": "douglas-de",
+      "merchant_name": "Douglas",
+      "merchant_product_id": "959272",
+      "product_url": "https://www.douglas.de/de/p/3001034674?variant=959272",
+      "observed_price_eur": 119,
+      "shipping_cost_eur": 0,
+      "in_stock": true,
+      "variant_evidence": "Douglas product page exposes Mon Guerlain Eau de Parfum with selectable 100 ml variant at 119 EUR, article 959272, and online stock.",
+      "intended_offer_id": "douglas-mon-guerlain-edp-100",
+      "current_live_offer_action": "refreshed_after_exact_variant_revalidation",
+      "live_offer_refreshed_at": "2026-09-29T10:56:59Z"
+    },
     {
       "product_id": "SC-BURBERRY-GODDESS-EDP-100",
       "brand": "Burberry",
@@ -28,7 +47,8 @@
       "in_stock": true,
       "variant_evidence": "Douglas product page exposes Burberry Goddess Eau de Parfum with selectable 100 ml variant at 99 EUR, article 1122570, and online stock.",
       "intended_offer_id": "douglas-burberry-goddess-edp-100",
-      "current_live_offer_action": "refresh_last_verified_timestamp_after_state_rebuild_path_is_prepared"
+      "current_live_offer_action": "refreshed_after_exact_variant_revalidation",
+      "live_offer_refreshed_at": "2026-09-29T10:56:59Z"
     },
     {
       "product_id": "SC-PRADA-PARADOXE-EDP-90",
@@ -46,12 +66,13 @@
       "in_stock": true,
       "variant_evidence": "Douglas product page exposes Prada Paradoxe Eau de Parfum with selectable 90 ml variant at 119 EUR, article 1027980, and online stock.",
       "intended_offer_id": "douglas-prada-paradoxe-edp-90",
-      "current_live_offer_action": "refresh_last_verified_timestamp_after_state_rebuild_path_is_prepared"
+      "current_live_offer_action": "refreshed_after_exact_variant_revalidation",
+      "live_offer_refreshed_at": "2026-09-29T10:56:59Z"
     }
   ],
   "limitations": [
     "No permission to reuse Douglas product imagery is inferred from these product pages.",
     "No affiliate URL or commission is activated by this revalidation.",
-    "Live merchant_offers.json remains unchanged in this evidence-only step."
+    "Only the existing offer verification timestamps were refreshed; price, URL, merchant SKU, affiliate state and recommendation priority were not changed."
   ]
 }
