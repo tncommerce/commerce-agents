@@ -341,10 +341,10 @@ export default async function FragrancePage({
     breadcrumbStructuredData,
   ).replaceAll("<", "\\u003c");
   const verifiedProductImage =
-    heroIsProductTruth && heroVisual?.url
-      ? heroVisual.url.startsWith("http")
-        ? heroVisual.url
-        : `${SITE_URL}${heroVisual.url}`
+    productTruthIsVerified && productTruthVisual?.url
+      ? productTruthVisual.url.startsWith("http")
+        ? productTruthVisual.url
+        : `${SITE_URL}${productTruthVisual.url}`
       : null;
   const productStructuredData = {
     "@context": "https://schema.org",
@@ -786,13 +786,13 @@ export default async function FragrancePage({
               02
             </span>
             <FragranceExplodedNotes
-            cutoutUrl={productTruthVisual.url}
-            alt={`${fragrance.brand} ${fragrance.name}`}
-            top={fragrance.notes.top}
-            heart={fragrance.notes.heart}
-            base={fragrance.notes.base}
-            keyNotes={fragrance.notes.key}
-            supporting={fragrance.notes.supporting}
+              cutoutUrl={productTruthVisual.url}
+              alt={`${fragrance.brand} ${fragrance.name}`}
+              top={fragrance.notes.top}
+              heart={fragrance.notes.heart}
+              base={fragrance.notes.base}
+              keyNotes={fragrance.notes.key}
+              supporting={fragrance.notes.supporting}
             />
           </div>
         ) : null}
