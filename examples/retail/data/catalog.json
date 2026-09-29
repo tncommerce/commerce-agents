@@ -3745,6 +3745,53 @@
       },
       "in_stock": true,
       "short_description": "Lancôme La Vie est Belle ist ein sweet, floral, fruity geprägter Duft."
+    },
+    {
+      "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+      "title": "Rabanne 1 Million Eau de Toilette 100 ml",
+      "image_url": "/products/rabanne-1-million-edt-100-user-contentmaster.webp",
+      "brand": "Rabanne",
+      "price": 67.95,
+      "currency": "EUR",
+      "rating": 3.5,
+      "review_count": 3606,
+      "category": "fragrance",
+      "labels": [
+        "sweet",
+        "spicy",
+        "oriental",
+        "synthetic",
+        "fruity"
+      ],
+      "attributes": {
+        "canonical_name": "1 Million",
+        "community_rating_10": "6.9",
+        "rating_source": "Parfumo",
+        "volume_ml": "100",
+        "concentration": "Eau de Toilette",
+        "target_group": "men",
+        "audience_lean": "",
+        "main_accords": "sweet, spicy, oriental, synthetic, fruity",
+        "key_notes": "mint, mandarin, rose, cinnamon, amber, leather",
+        "freshness": "4",
+        "sweetness": "8",
+        "woodiness": "4",
+        "spiciness": "6",
+        "profile_source": "deterministic_editorial_mapping_v1",
+        "longevity": "7.8",
+        "projection": "7.7",
+        "price_source": "current_merchant_offer",
+        "market_price_eur": "67.95",
+        "price_checked_at": "2026-09-27T20:50:00Z",
+        "promotion_source": "scentai_catalog_staging",
+        "gtin": "3349666007921",
+        "image_license_name": "",
+        "image_license_url": "",
+        "image_attribution_text": "",
+        "image_share_alike_required": ""
+      },
+      "in_stock": true,
+      "short_description": "Rabanne 1 Million ist ein süß-würziger, orientalisch geprägter Duft."
     }
   ]
 }

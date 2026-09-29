@@ -3302,6 +3302,82 @@
           "patchouli"
         ]
       }
+    },
+    {
+      "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+      "brand": "Rabanne",
+      "name": "1 Million",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "classification": {
+        "scentai_target_groups": [
+          "men"
+        ],
+        "role": null,
+        "cluster_id": null,
+        "trend_bet": false
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 6.9,
+        "rating_count": 3606,
+        "longevity_10": 7.8,
+        "projection_10": 7.7,
+        "provisional": false
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "sweet",
+          "spicy",
+          "oriental",
+          "synthetic",
+          "fruity"
+        ],
+        "scores": {
+          "freshness": 4,
+          "sweetness": 8,
+          "woodiness": 4,
+          "spiciness": 6
+        },
+        "score_confidence": "medium"
+      },
+      "market": {
+        "market_price_eur": 67.95,
+        "price_per_ml_eur": 0.6795,
+        "price_source_count": 2,
+        "price_checked_at": "2026-09-27"
+      },
+      "relationships": [],
+      "evidence": {
+        "overall": "promotion_verified"
+      },
+      "validation": {
+        "catalog_ready": true
+      },
+      "identifiers": {
+        "gtin": "3349666007921"
+      },
+      "image_url": "/products/rabanne-1-million-edt-100-user-contentmaster.webp",
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/rabanne-1-million-edt-100-user-contentmaster.webp",
+          "provenance": "dufynd_user_supplied_contentmaster_20260929",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ],
+      "notes": {
+        "key": [
+          "mint",
+          "mandarin",
+          "rose",
+          "cinnamon",
+          "amber",
+          "leather"
+        ]
+      }
     }
   ]
 }

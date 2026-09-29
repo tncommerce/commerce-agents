@@ -23,8 +23,12 @@ def test_1_million_staging_matches_verified_commerce_state() -> None:
 
     assert product["commerce"]["market_status"] == "verified_current_purchase_destination"
     assert product["commerce"]["live_offer_status"] == "verified_current_purchase_destination"
-    assert product["validation"]["catalog_ready"] is False
-    assert product["validation"]["blockers"] == ["approved_product_image_pending"]
+    assert product["media"]["image_url"] == (
+        "/products/rabanne-1-million-edt-100-user-contentmaster.webp"
+    )
+    assert product["media"]["image_status"] == "approved_licensed_image"
+    assert product["validation"]["catalog_ready"] is True
+    assert product["validation"]["blockers"] == []
 
 
 def test_1_million_verified_mapping_and_offers_support_staging_state() -> None:

@@ -39,6 +39,7 @@ OFFICIAL_HOSTS = {
     "Bujairami": "bujairami.com.au",
     "Nusuk": "www.riiffsperfumes.com",
     "Lancôme": "www.lancome.de",
+    "Rabanne": "www.rabanne.com",
     "Widian": "widian.com",
 }
 

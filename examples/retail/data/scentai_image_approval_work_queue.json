@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated_at": "2026-09-29T10:56:59+00:00",
-  "source_fingerprint_sha256": "d9e9092b4da1ca595d2a21e98d1c8a1b3b1c0ac5d9e59d03302cd76a289857d8",
+  "source_fingerprint_sha256": "a885c14e819814bdfcaf7b6771f3880d31a8b0ceff95c607af9cb4c1399bf630",
   "machine_id": "scentai_image_approval_v1",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
@@ -17,8 +17,8 @@
     "release_01_products": 5,
     "release_02_products": 5,
     "release_03_products": 5,
-    "approved_images": 1,
-    "pending_images": 49,
+    "approved_images": 2,
+    "pending_images": 48,
     "review_ready": 0,
     "rights_or_source_check_pending": 10,
     "licensed_source_required": 4,
@@ -1344,13 +1344,11 @@
       "name": "1 Million",
       "batch": 4,
       "release": null,
-      "current_image_url": null,
-      "current_image_status": "pending_approved_feed_or_manufacturer_image",
-      "image_state": "missing",
-      "blockers": [
-        "approved_product_image_missing"
-      ],
-      "next_action": "await_real_feed_or_official_asset_candidate",
+      "current_image_url": "/products/rabanne-1-million-edt-100-user-contentmaster.webp",
+      "current_image_status": "approved_licensed_image",
+      "image_state": "approved_licensed_image",
+      "blockers": [],
+      "next_action": "none",
       "action_class": "auto_allowed",
       "approval_action_class": "approval_required"
     },

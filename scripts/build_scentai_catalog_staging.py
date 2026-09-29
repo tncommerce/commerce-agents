@@ -109,6 +109,30 @@ def wave_staging_row(candidate: dict, *, wave_id: str, batch: int) -> dict:
     profile = candidate.get("recommendation_profile") or recommendation_profile(accords)
     product_data = candidate.get("product_data") or {}
     commerce = candidate.get("commerce") or {}
+    candidate_media = candidate.get("media") or {}
+    candidate_validation = candidate.get("validation") or {}
+    image_url = candidate_media.get("image_url")
+    image_status = candidate_media.get(
+        "image_status",
+        "pending_approved_feed_or_manufacturer_image",
+    )
+
+    media = {
+        "image_url": image_url,
+        "image_status": image_status,
+    }
+    for key in (
+        "image_reviewed_at",
+        "image_source_class",
+        "image_rights_basis_id",
+        "image_rights_checked_at",
+        "image_license_name",
+        "image_license_url",
+        "image_attribution_text",
+        "image_share_alike_required",
+    ):
+        if candidate_media.get(key) is not None:
+            media[key] = candidate_media[key]
 
     return {
         "candidate_id": str(candidate["product_id"]).removeprefix("SC-"),
@@ -136,10 +160,7 @@ def wave_staging_row(candidate: dict, *, wave_id: str, batch: int) -> dict:
             "projection_10": community.get("projection_10"),
             "provisional": bool(community.get("provisional")),
         },
-        "media": {
-            "image_url": None,
-            "image_status": "pending_approved_feed_or_manufacturer_image",
-        },
+        "media": media,
         "commerce": {
             "merchant_coverage_count": len(candidate.get("research_merchant_evidence") or []),
             "merchant_coverage_source": "dufynd_research_wave",
@@ -150,8 +171,8 @@ def wave_staging_row(candidate: dict, *, wave_id: str, batch: int) -> dict:
             ),
         },
         "validation": {
-            "catalog_ready": False,
-            "blockers": list(candidate.get("validation", {}).get("blockers") or []),
+            "catalog_ready": bool(candidate_validation.get("catalog_ready")),
+            "blockers": list(candidate_validation.get("blockers") or []),
         },
         "research": {
             "source_wave_id": wave_id,
@@ -222,10 +243,26 @@ def append_enabled_research_waves(
                         f"Unknown selected product_id {product_id} in {expected_wave_id}"
                     )
                 if not row["staging_ready"]:
-                    raise ValueError(
-                        f"Selected product is not staging-ready: {product_id}: "
-                        + ", ".join(row["staging_blockers"])
+                    live_row = next(
+                        (
+                            item
+                            for item in live_catalog.get("products", [])
+                            if item.get("product_id") == product_id
+                        ),
+                        None,
                     )
+                    candidate_validation = candidate_by_id[product_id].get("validation", {})
+                    promoted_from_staging = bool(
+                        live_row
+                        and (live_row.get("attributes") or {}).get("promotion_source")
+                        == "scentai_catalog_staging"
+                        and candidate_validation.get("catalog_ready") is True
+                    )
+                    if not promoted_from_staging:
+                        raise ValueError(
+                            f"Selected product is not staging-ready: {product_id}: "
+                            + ", ".join(row["staging_blockers"])
+                        )
                 selected_rows.append(row)
         else:
             selected_rows = report["recommended_staging_batch"]

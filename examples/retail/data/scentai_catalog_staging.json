@@ -2399,8 +2399,12 @@
         "provisional": false
       },
       "media": {
-        "image_url": null,
-        "image_status": "pending_approved_feed_or_manufacturer_image"
+        "image_url": "/products/rabanne-1-million-edt-100-user-contentmaster.webp",
+        "image_status": "approved_licensed_image",
+        "image_reviewed_at": "2026-09-29T14:30:00+00:00",
+        "image_source_class": "dufynd_user_supplied_contentmaster",
+        "image_rights_basis_id": "user-explicit-approval-1-million-contentmaster-2026-09-29",
+        "image_rights_checked_at": "2026-09-29"
       },
       "commerce": {
         "merchant_coverage_count": 3,
@@ -2409,14 +2413,12 @@
         "live_offer_status": "verified_current_purchase_destination"
       },
       "validation": {
-        "catalog_ready": false,
-        "blockers": [
-          "approved_product_image_pending"
-        ]
+        "catalog_ready": true,
+        "blockers": []
       },
       "research": {
         "source_wave_id": "DUFYND-CATALOG-EXPANSION-NEXT-10",
-        "research_state": "exact_variant_mapping_and_current_purchase_destinations_verified_image_pending",
+        "research_state": "exact_variant_mapping_current_purchase_destinations_and_user_asset_verified",
         "evidence_urls": [
           "https://www.douglas.de/de/b/rabanne/1-million/b005920",
           "https://www.notino.de/bestseller/",

@@ -157,7 +157,7 @@
       ],
       "rationale": "Notino names 1 Million among popular men's fragrances; broad comparison anchor currently missing.",
       "variant_status": "verified_retail_variant",
-      "research_state": "exact_variant_mapping_and_current_purchase_destinations_verified_image_pending",
+      "research_state": "exact_variant_mapping_current_purchase_destinations_and_user_asset_verified",
       "evidence": [
         {
           "source": "Douglas",
@@ -263,27 +263,26 @@
             "availability_snapshot": "in_stock"
           }
         ],
-        "note": "Research evidence only; canonical GTIN is maintained in verified merchant mapping data. Exact 100 ml EDT purchase destinations are verified; product image approval remains pending."
+        "note": "Research observation retained; exact GTIN 3349666007921 is verified in merchant mapping data. Exact 100 ml EDT purchase destinations and the user-approved DUFYND content image are verified."
       },
       "media": {
-        "image_url": null,
-        "image_status": "pending_approved_feed_or_manufacturer_image",
+        "image_url": "/products/rabanne-1-million-edt-100-user-contentmaster.webp",
+        "image_status": "approved_licensed_image",
         "queue_priority": 2,
         "reference_page": "https://www.notino.de/paco-rabanne/1-million-eau-de-toilette-fur-herren/p-69790/",
         "required_variant": {
           "concentration": "Eau de Toilette",
           "volume_ml": 100
         },
-        "blockers": [
-          "approved_image_source_pending",
-          "exact_bottle_and_packaging_review_pending"
-        ]
+        "blockers": [],
+        "image_source_class": "dufynd_user_supplied_contentmaster",
+        "image_reviewed_at": "2026-09-29T14:30:00+00:00",
+        "image_rights_basis_id": "user-explicit-approval-1-million-contentmaster-2026-09-29",
+        "image_rights_checked_at": "2026-09-29"
       },
       "validation": {
-        "catalog_ready": false,
-        "blockers": [
-          "approved_product_image_pending"
-        ]
+        "catalog_ready": true,
+        "blockers": []
       },
       "recommendation_profile": {
         "scores": {
