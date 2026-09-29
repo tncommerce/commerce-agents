@@ -288,7 +288,7 @@ try {
             const rect = (selector) =>
               document.querySelector(selector)?.getBoundingClientRect() || null;
             const title = rect(".dufynd-fragrance-hero h1");
-            const stage = rect(".dufynd-fragrance-hero .dufynd-product-stage, .dufynd-fragrance-hero .dufynd-editorial-depth-stage, .dufynd-fragrance-hero .dufynd-model-stage");
+            const stage = rect(".dufynd-fragrance-hero .dufynd-product-stage, .dufynd-fragrance-hero .dufynd-editorial-depth-stage, .dufynd-fragrance-hero .dufynd-model-stage, .dufynd-fragrance-hero .dufynd-neutral-visual-stage");
             const cutout = rect(".dufynd-fragrance-hero .dufynd-product-image");
             const offers = rect("#angebote");
             const exploded = rect(".dufynd-exploded-notes");
@@ -398,6 +398,24 @@ try {
             throw new Error(
               "unverified fragrance exposed an image as Product JSON-LD truth",
             );
+          }
+          if (target.name === "absolu-aventus") {
+            if (
+              (await page.locator(
+                '.dufynd-fragrance-hero [data-dufynd-visual-state="missing"]',
+              ).count()) !== 1
+            ) {
+              throw new Error(
+                "missing-product detail does not use the neutral visual state",
+              );
+            }
+            if (
+              (await page.locator(".dufynd-product-placeholder").count()) !== 0
+            ) {
+              throw new Error(
+                "legacy pseudo-bottle placeholder is still visible",
+              );
+            }
           }
         }
 
