@@ -418,6 +418,13 @@ The model may use Read/Grep/Glob/Write/Edit inside the checked-out repository, b
 Bash, Task, WebSearch and WebFetch are denied. The worker itself never pushes,
 merges, deploys or marks the autonomy task complete.
 
+Storefront patches receive an additional deterministic gate before the artifact is
+accepted: install the locked web dependencies, build the DUFYND storefront, launch
+the static export locally, and run the same responsive browser visual-QA script
+used by CI. The visual captures are uploaded together with the worker patch for
+review. Non-storefront patches do not pay this extra validation cost.
+
+
 After the model turn, the deterministic GitHub Actions layer:
 - rejects changes outside the explicit path allowlist
 - blocks workflows, operational data, Supabase migrations, env/secrets, lockfiles,
