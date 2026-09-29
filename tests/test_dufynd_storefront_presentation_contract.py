@@ -30,11 +30,13 @@ def test_discovery_surfaces_use_presentation_visual() -> None:
     assert "fragrance?.presentation_visual?.url" in home_view
 
 
-def test_truth_sensitive_detail_surface_stays_on_preferred_visual() -> None:
+def test_detail_hero_uses_presentation_but_truth_features_stay_verified() -> None:
     detail_page = _read("app/duft/[slug]/page.tsx")
 
-    assert "const heroVisual = fragrance.preferred_visual;" in detail_page
-    assert "heroIsProductTruth && heroVisual?.url" in detail_page
+    assert "fragrance.presentation_visual || productTruthVisual" in detail_page
+    assert "const productTruthVisual = fragrance.preferred_visual;" in detail_page
+    assert "productTruthIsVerified && productTruthVisual?.url" in detail_page
+    assert "cutoutUrl={productTruthVisual.url}" in detail_page
     assert "verifiedProductImage" in detail_page
 
 
