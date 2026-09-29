@@ -677,6 +677,9 @@ def build_morning_report(
     ai_cost_usd = _sum_run_costs(runs)
 
     results = [r for r in (session.get("task_results") or []) if isinstance(r, dict)]
+    cost_complete = not any(int(r.get("result_code") or 0) == 124 for r in results)
+    if int(session.get("event_result") or 0) == 124:
+        cost_complete = False
     completed = sum(1 for r in results if r.get("final_status") == "done")
     in_progress = len(queue.get("in_progress") or [])
     blocked = sum(1 for r in results if r.get("final_status") == "blocked")
@@ -751,6 +754,8 @@ def build_morning_report(
             "branch_validation": (session.get("validation") or {}).get("status"),
         },
         "ai_cost_usd": ai_cost_usd,
+        "ai_cost_source": "audited_agent_runs",
+        "ai_cost_complete": cost_complete,
         "budget": budget,
         "blockers": blockers,
         "approvals": approvals,
@@ -796,6 +801,11 @@ def build_morning_report(
             "",
             "## AI Cost",
             f"${ai_cost_usd:.4f}",
+            (
+                "- Quelle: auditierte Agent-Runs."
+                if cost_complete
+                else "- Quelle: auditierte Agent-Runs; wegen Timeout kann zusätzlicher Provider-Verbrauch unverbucht sein."
+            ),
             "",
             "## Blocker",
         ]
