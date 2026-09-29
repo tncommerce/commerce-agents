@@ -266,8 +266,11 @@ export default async function FragrancePage({
   const checkedAt = formatCheckedAt(
     fragrance.market.checked_at,
   );
+  const productTruthVisual = fragrance.preferred_visual;
+  const productTruthIsVerified =
+    isVerifiedProductTruthVisual(productTruthVisual);
   const heroVisual =
-    fragrance.presentation_visual || fragrance.preferred_visual;
+    fragrance.presentation_visual || productTruthVisual;
   const heroIsProductTruth =
     isVerifiedProductTruthVisual(heroVisual);
   const visualTheme = visualWorldFor(fragrance);
@@ -771,7 +774,7 @@ export default async function FragrancePage({
             <FragranceOffers productId={fragrance.product_id} />
           </div>
 
-        {heroIsProductTruth && heroVisual?.url ? (
+        {productTruthIsVerified && productTruthVisual?.url ? (
           <div
             className="dufynd-fragrance-chapter dufynd-fragrance-chapter--experience"
             data-dufynd-chapter="erleben"
@@ -783,7 +786,7 @@ export default async function FragrancePage({
               02
             </span>
             <FragranceExplodedNotes
-            cutoutUrl={heroVisual.url}
+            cutoutUrl={productTruthVisual.url}
             alt={`${fragrance.brand} ${fragrance.name}`}
             top={fragrance.notes.top}
             heart={fragrance.notes.heart}
