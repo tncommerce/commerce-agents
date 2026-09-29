@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "generated_at": "2026-09-29",
+  "status": "review_only_not_approved",
+  "purpose": "Human fidelity review packet for existing DUFYND P0 product-image candidates. This packet does not approve rights, activate imagery, or publish anything.",
+  "approval_scope": {
+    "decision": "visual_fidelity_only",
+    "allowed_decisions": [
+      "approve_fidelity",
+      "reject_fidelity",
+      "needs_revision"
+    ],
+    "automatic_approval_allowed": false,
+    "automatic_live_activation_allowed": false,
+    "rights_clearance_implied": false
+  },
+  "review_order": [
+    {
+      "priority": "P0",
+      "product_id": "SC-ARMANI-SWY-INTENSELY-100",
+      "brand": "Giorgio Armani",
+      "name": "Stronger With You Intensely",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "candidate_asset": "examples/retail/review-assets/product-candidates/armani-swy-intensely-p0-v3.webp",
+      "reference_url": "https://www.armanibeauty.de/dufte/herrenduft/stronger-with-you/stronger-with-you-intensely-eau-de-parfum/3614272225718.html",
+      "current_state": "candidate_generated_pending_reference_gate",
+      "review_focus": [
+        "cap sphere size",
+        "ring-stack geometry",
+        "shoulder width",
+        "front proportions",
+        "typography and label placement"
+      ],
+      "known_finding": "Candidate is substantially closer to the current 100 ml presentation but remains intentionally unverified pending final side-by-side fidelity approval."
+    },
+    {
+      "priority": "P0",
+      "product_id": "SC-CREED-ABSOLU-AVENTUS-100",
+      "brand": "Creed",
+      "name": "Absolu Aventus",
+      "concentration": "Parfum",
+      "volume_ml": 100,
+      "candidate_asset": "examples/retail/review-assets/product-candidates/creed-absolu-aventus-p0-v1.webp",
+      "reference_url": "https://www.creedfragrance.de/p/absolu-aventus/16281794/?variation=16281796",
+      "current_state": "candidate_generated_pending_reference_gate",
+      "review_focus": [
+        "exact 100 ml bottle silhouette",
+        "packaging/volume ambiguity",
+        "cap proportions",
+        "front typography and emblem",
+        "avoid any 75 ml / 2.5 FL.OZ mismatch"
+      ],
+      "known_finding": "Current official imagery remains variant-ambiguous, so this candidate must stay inactive until exact 100 ml identity can be resolved with confidence."
+    },
+    {
+      "priority": "P0",
+      "product_id": "SC-PRADA-LHOMME-100",
+      "brand": "Prada",
+      "name": "L'Homme",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "candidate_asset": "examples/retail/review-assets/product-candidates/prada-lhomme-p0-v5.webp",
+      "reference_url": "https://www.prada-beauty.com/fragrance/lhomme-prada/lhomme-prada-eau-de-toilette/8435137749607.html",
+      "current_state": "candidate_generated_pending_reference_gate",
+      "review_focus": [
+        "architectural rectangular bottle proportions",
+        "black Saffiano treatment",
+        "silver mirrored face",
+        "silver cap geometry",
+        "front typography and exact 100 ml silhouette"
+      ],
+      "known_finding": "Candidate is much closer to the official 100 ml reference but remains inactive until exact side-by-side fidelity passes."
+    },
+    {
+      "priority": "P0",
+      "product_id": "SC-SOSPIRO-VIBRATO-100",
+      "brand": "Sospiro",
+      "name": "Vibrato",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "candidate_asset": "examples/retail/review-assets/product-candidates/sospiro-vibrato-p0-v2.webp",
+      "reference_url": "https://sospirointernational.com/products/vibrato",
+      "current_state": "candidate_generated_pending_reference_gate",
+      "review_focus": [
+        "emerald velvet silhouette",
+        "gold cap sculpture",
+        "oval plaque scale and position",
+        "emblem detail",
+        "complete 100 ml proportions"
+      ],
+      "known_finding": "Candidate is substantially closer to the official 100 ml presentation but remains intentionally unverified pending final human side-by-side approval."
+    }
+  ],
+  "post_review_rule": "An approve_fidelity decision alone must not activate an image. Rights/source clearance and the existing image approval/promotion gates remain authoritative."
+}
