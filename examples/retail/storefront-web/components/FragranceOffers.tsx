@@ -122,7 +122,7 @@ export default function FragranceOffers({
   if (payload === undefined) {
     return (
       <section
-        className={`rounded-2xl border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5"} shadow-(--shadow-sm)`}
+        className={`dufynd-journey-offers rounded-2xl border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5"} shadow-(--shadow-sm)`}
         aria-busy="true"
       >
         <div className="text-[13px] font-semibold text-(--ink)">
@@ -134,7 +134,7 @@ export default function FragranceOffers({
 
   if (loadError) {
     return (
-      <section className={`rounded-2xl border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5"} shadow-(--shadow-sm)`}>
+      <section className={`dufynd-journey-offers rounded-2xl border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5"} shadow-(--shadow-sm)`}>
         <h2 className="text-[17px] font-semibold text-(--ink)">
           {heading}
         </h2>
@@ -158,7 +158,7 @@ export default function FragranceOffers({
 
   if (!payload || payload.offers.length === 0) {
     return (
-      <section className={`rounded-2xl border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5"} shadow-(--shadow-sm)`}>
+      <section className={`dufynd-journey-offers rounded-2xl border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5"} shadow-(--shadow-sm)`}>
         <h2 className="text-[17px] font-semibold text-(--ink)">
           {heading}
         </h2>
@@ -181,7 +181,7 @@ export default function FragranceOffers({
 
   return (
     <section
-      className={`rounded-[24px] border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5 sm:p-6"} shadow-(--shadow)`}
+      className={`dufynd-journey-offers rounded-[24px] border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5 sm:p-6"} shadow-(--shadow)`}
       data-merchant-offers
     >
       <div className="flex flex-wrap items-end justify-between gap-2">
