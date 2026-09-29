@@ -29,9 +29,6 @@ def test_active_p0_visual_reviews_are_live_launch_blockers() -> None:
 
     assert blocking == {
         "SC-CREED-ABSOLU-AVENTUS-100",
-        "SC-ARMANI-SWY-INTENSELY-100",
-        "SC-PRADA-LHOMME-100",
-        "SC-SOSPIRO-VIBRATO-100",
     }
 
 

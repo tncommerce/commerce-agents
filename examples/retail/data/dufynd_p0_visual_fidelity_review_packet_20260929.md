@@ -1,8 +1,19 @@
 # DUFYND P0 visual fidelity review packet — 2026-09-29
 
-**Status:** review-only, not approved.
+**Status:** partially reviewed on 2026-09-29.
 
-This packet collects the four existing P0 product-image candidates that are already waiting on a human fidelity gate. A decision here is **visual fidelity only**. It does **not** grant image rights, approve live use, promote a catalog item, or publish anything.
+Human fidelity decisions:
+
+| Product | Decision | Website product-truth asset |
+| --- | --- | --- |
+| Giorgio Armani Stronger With You Intensely 100 ml | approved | `/products/armani-swy-intensely-100-cutout-production.webp` |
+| Creed Absolu Aventus 100 ml | needs revision | remains inactive |
+| Prada L'Homme EDT 100 ml | approved | `/products/prada-lhomme-100-cutout-production.webp` |
+| Sospiro Vibrato 100 ml | approved | `/products/sospiro-vibrato-100-cutout-production.webp` |
+
+The three approved assets are DUFYND-generated internal candidates. Official manufacturer pages remain fidelity references only and their imagery is not republished.
+
+This packet records the four P0 product-image candidates and the human fidelity decisions completed on 2026-09-29. A decision here is **visual fidelity only**. It does **not** grant image rights, approve live use, promote a catalog item, or publish anything.
 
 Allowed review outcomes per candidate:
 
