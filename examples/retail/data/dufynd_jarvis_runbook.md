@@ -217,11 +217,12 @@ must end with an explicit `DUFYND_TASK_STATE` marker. A successful model call is
 not enough to mark work done: missing/partial outcomes are re-queued for a future
 bounded session, while human/external blockers are persisted explicitly.
 
-One engineering patch may be prepared per checkout; non-engineering GREEN work can
-continue while that patch waits for deterministic validation. Worker failures
-receive one bounded retry by default, with the budget checked again before the
-retry. A final failure marks that task blocked and allows Jarvis to choose another
-safe task instead of aborting the entire session.
+Nightshift consumes non-engineering GREEN work before engineering work. Once one
+engineering patch is prepared, model work stops in that checkout and deterministic
+validation runs immediately. This prevents later workers from reading unvalidated
+repository state. Worker failures receive one bounded retry by default, with the
+budget checked again before the retry. A final failure marks that task blocked and
+allows Jarvis to choose another safe task instead of aborting the entire session.
 
 A successful engineering patch is validated by the existing path allowlist,
 Python checks and, when storefront files changed, web build plus responsive visual
