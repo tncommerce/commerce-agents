@@ -838,6 +838,14 @@ try {
           if ((await page.locator('img[src="/icon.svg"]').count()) < 1) {
             throw new Error("acquisition landing is missing the DUFYND brand mark");
           }
+          if ((await page.locator(".dufynd-acquisition-stage").count()) !== 1) {
+            throw new Error("acquisition landing is missing its immersive product stage");
+          }
+          if ((await page.locator(".dufynd-acquisition-bottle").count()) !== 3) {
+            throw new Error(
+              `acquisition landing expected 3 catalogue spotlights, got ${await page.locator(".dufynd-acquisition-bottle").count()}`,
+            );
+          }
           if ((await page.locator('a[href="/duft"]').count()) < 1) {
             throw new Error("acquisition landing is missing the catalog path");
           }
