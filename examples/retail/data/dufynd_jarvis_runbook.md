@@ -505,3 +505,58 @@ After the model turn, the deterministic GitHub Actions layer:
 This is intentionally patch-only. Promotion from a validated patch to an
 automatically created PR is a later capability and must preserve the same
 high-impact approval and financial boundaries.
+
+## Project continuity and cold-start handoff
+
+DUFYND chats and agents are replaceable interfaces. Canonical project state lives in GitHub plus the
+existing Supabase Jarvis control plane; chat history is advisory only.
+
+Use the continuity CLI to create a compact domain bootstrap:
+
+```bash
+python -m scripts.dufynd_project_continuity bootstrap --domain tech --live --format markdown
+python -m scripts.dufynd_project_continuity bootstrap --domain content --live --format markdown
+python -m scripts.dufynd_project_continuity bootstrap --domain jarvis --live --format markdown
+python -m scripts.dufynd_project_continuity bootstrap --domain business --live --format markdown
+python -m scripts.dufynd_project_continuity bootstrap --domain global --live --format markdown
+```
+
+Every cold start must verify the current `scentai-mvp` HEAD, relevant PRs and CI before material
+work. If the repository fingerprint does not match the durable
+`jarvis.repo_state_snapshot` in Supabase, the bootstrap fails closed and the state must be
+synchronized before work continues.
+
+A domain checkpoint is stored in the existing `dufynd_master_status` table under
+`continuity.checkpoint.<domain>`. It is valid only when both the repository state fingerprint and
+the verified `scentai-mvp` Git HEAD match the values that created it. Checkpoints require:
+`summary`, `completed`, `in_progress`, `blocked`, `waiting_approval`, and
+`next_safe_action`. Secret-like fields are rejected.
+
+Validate a checkpoint without writing:
+
+```bash
+python -m scripts.dufynd_project_continuity checkpoint \
+  --domain tech \
+  --checkpoint-json /path/to/checkpoint.json \
+  --repo-head <verified-scentai-mvp-head>
+```
+
+Persist it only from a trusted server-side environment with the existing Supabase service
+credential:
+
+```bash
+python -m scripts.dufynd_project_continuity checkpoint \
+  --domain tech \
+  --checkpoint-json /path/to/checkpoint.json \
+  --repo-head <verified-scentai-mvp-head> \
+  --write
+```
+
+The minimal new-chat instruction can be printed with:
+
+```bash
+python -m scripts.dufynd_project_continuity instruction --domain tech
+```
+
+The expected bootstrap is intentionally only four lines. The receiving agent must reconstruct the
+real project state from canonical sources instead of relying on a long handoff prompt.

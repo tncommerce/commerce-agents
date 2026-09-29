@@ -13,7 +13,7 @@ def test_dufynd_jarvis_contract_has_current_brand_and_version() -> None:
 
     assert contract["brand"] == "DUFYND"
     assert contract["operator"] == "TNCommerce"
-    assert contract["version"] == "3.0"
+    assert contract["version"] == "3.1"
 
 
 def test_dufynd_jarvis_contract_exposes_required_learning_surfaces() -> None:
@@ -142,3 +142,18 @@ def test_dufynd_jarvis_contract_keeps_active_runtime_off_by_default() -> None:
     assert "production_relevant_pull_request" in policy["action_classes"]["yellow_prepare_only"]
     assert "tests_and_quality_assurance" in policy["action_classes"]["green_auto_execute"]
     assert policy["main_branch_allowed"] is False
+
+
+def test_dufynd_jarvis_contract_exposes_project_continuity() -> None:
+    contract = load_contract()
+    continuity = contract["active_runtime"]["project_continuity"]
+
+    assert continuity["status"] == "available_guarded_manual_bootstrap"
+    assert continuity["checkpoint_store"] == "dufynd_master_status"
+    assert continuity["checkpoint_prefix"] == "continuity.checkpoint."
+    assert "live GitHub scentai-mvp HEAD/PR/CI" in continuity["canonical_sources"]
+    assert "chat history is advisory only" in continuity["chat_history_rule"].lower()
+    assert "credentials" in continuity["secret_rule"].lower()
+    assert "repo-derived source fingerprint" in continuity["freshness_rule"]
+    assert "Git HEAD" in continuity["freshness_rule"]
+    assert "no separate continuity table" in continuity["database_rule"].lower()
