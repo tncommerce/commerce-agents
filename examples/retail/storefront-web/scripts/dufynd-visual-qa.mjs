@@ -858,6 +858,22 @@ try {
           }
         }
 
+        if (target.name === "prada-lhomme") {
+          const pendingAsset = page.locator(
+            '[data-dufynd-asset-state="pending"]',
+          );
+          if ((await pendingAsset.count()) < 1) {
+            throw new Error(
+              "missing fragrance visual does not use the neutral pending-asset state",
+            );
+          }
+          if ((await page.locator(".dufynd-product-placeholder").count()) !== 0) {
+            throw new Error(
+              "legacy fabricated bottle placeholder is still rendered",
+            );
+          }
+        }
+
         if (target.name === "social-start") {
           const socialSearch = page.getByRole("searchbox", {
             name: "Duft oder Marke suchen",
