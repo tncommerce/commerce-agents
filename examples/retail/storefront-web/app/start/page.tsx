@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
 import LegalFooter from "@/components/LegalFooter";
+import SocialFragranceSearch from "@/components/SocialFragranceSearch";
 import { LIVE_FRAGRANCES } from "@/lib/fragranceCatalog";
 
 export const metadata: Metadata = {
@@ -55,6 +56,12 @@ const paths = [
 
 export default function SocialStartPage() {
   const fragranceCount = LIVE_FRAGRANCES.length;
+  const searchableFragrances = LIVE_FRAGRANCES.map((fragrance) => ({
+    product_id: fragrance.product_id,
+    slug: fragrance.slug,
+    brand: fragrance.brand,
+    name: fragrance.name,
+  }));
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#f5f0e8] text-(--ink)">
@@ -167,31 +174,7 @@ export default function SocialStartPage() {
               </p>
             </div>
 
-            <form
-              action="/duft"
-              method="get"
-              role="search"
-              aria-label="DUFYND Social Duftsuche"
-              className="flex min-w-0 flex-col gap-2 sm:flex-row"
-            >
-              <label htmlFor="dufynd-social-search" className="sr-only">
-                Duft oder Marke suchen
-              </label>
-              <input
-                id="dufynd-social-search"
-                name="q"
-                type="search"
-                maxLength={80}
-                placeholder="z. B. 1 Million, Naxos oder Libre"
-                className="min-w-0 flex-1 rounded-xl border border-(--line) bg-[#fffdf8] px-3.5 py-2.5 text-[12.5px] text-(--ink) outline-none transition placeholder:text-(--ink-faint) focus:border-(--accent)"
-              />
-              <button
-                type="submit"
-                className="shrink-0 rounded-xl bg-(--ink) px-4 py-2.5 text-[12px] font-semibold text-white transition hover:opacity-90"
-              >
-                Direkt suchen
-              </button>
-            </form>
+            <SocialFragranceSearch fragrances={searchableFragrances} />
           </div>
         </section>
 
