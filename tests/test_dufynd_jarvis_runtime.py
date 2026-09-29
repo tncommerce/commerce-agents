@@ -13,6 +13,7 @@ from scripts.dufynd_jarvis_runtime import (
     _bounded_autonomous_max_events,
     _bounded_supervisor_max_events,
     _require_active_runtime,
+    _deterministic_event_summary,
     _require_autonomous_session,
     _require_budget_window,
     _require_runtime_id,
@@ -94,6 +95,45 @@ def test_event_prompt_contains_structured_event() -> None:
     assert "creative_reference_added" in prompt
     assert "example_99" in prompt
     assert '"inbox_id": 12' in prompt
+
+
+def test_deterministic_affiliate_status_change_requires_no_model() -> None:
+    summary = _deterministic_event_summary(
+        {
+            "event_type": "affiliate_partner_changed",
+            "source_id": "merchant",
+            "payload": {
+                "merchant_name": "Merchant",
+                "status_before": "applied",
+                "status_after": "rejected",
+                "feed_ready_before": False,
+                "feed_ready_after": False,
+                "tracking_ready_before": False,
+                "tracking_ready_after": False,
+            },
+        }
+    )
+
+    assert summary is not None
+    assert "no model reasoning is required" in summary
+
+
+def test_affiliate_readiness_change_still_requires_model() -> None:
+    summary = _deterministic_event_summary(
+        {
+            "event_type": "affiliate_partner_changed",
+            "payload": {
+                "status_before": "approved",
+                "status_after": "tracking_ready",
+                "feed_ready_before": False,
+                "feed_ready_after": False,
+                "tracking_ready_before": False,
+                "tracking_ready_after": True,
+            },
+        }
+    )
+
+    assert summary is None
 
 
 def test_process_next_is_noop_when_inbox_is_empty(capsys) -> None:
@@ -485,11 +525,11 @@ def test_supervisor_event_limit_is_bounded() -> None:
 def test_process_loop_drains_multiple_events_without_reapproval(monkeypatch, capsys) -> None:
     bridge = SupervisorBridge(pending=5)
 
-    async def fake_process_next(target):
+    async def fake_process_next_outcome(target):
         target.pending -= 1
-        return 0
+        return 0, True
 
-    monkeypatch.setattr(jarvis_runtime, "process_next", fake_process_next)
+    monkeypatch.setattr(jarvis_runtime, "_process_next_outcome", fake_process_next_outcome)
 
     result = asyncio.run(jarvis_runtime.process_loop(bridge, max_events=3))
 
@@ -497,7 +537,28 @@ def test_process_loop_drains_multiple_events_without_reapproval(monkeypatch, cap
     assert bridge.pending == 2
     output = capsys.readouterr().out
     assert "processed=3" in output
-    assert "stop_reason=max_events_reached" in output
+    assert "model_events=3" in output
+    assert "stop_reason=max_model_events_reached" in output
+
+
+def test_process_loop_deterministic_event_does_not_consume_model_limit(monkeypatch, capsys) -> None:
+    bridge = SupervisorBridge(pending=3)
+    outcomes = iter([(0, False), (0, True), (0, True)])
+
+    async def fake_process_next_outcome(target):
+        target.pending -= 1
+        return next(outcomes)
+
+    monkeypatch.setattr(jarvis_runtime, "_process_next_outcome", fake_process_next_outcome)
+
+    result = asyncio.run(jarvis_runtime.process_loop(bridge, max_events=2))
+
+    assert result == 0
+    assert bridge.pending == 0
+    output = capsys.readouterr().out
+    assert "processed=3" in output
+    assert "model_events=2" in output
+    assert "deterministic_events=1" in output
 
 
 def test_process_loop_stops_when_inbox_is_empty(monkeypatch, capsys) -> None:
@@ -507,9 +568,9 @@ def test_process_loop_stops_when_inbox_is_empty(monkeypatch, capsys) -> None:
     async def fake_process_next(_target):
         nonlocal called
         called = True
-        return 0
+        return 0, True
 
-    monkeypatch.setattr(jarvis_runtime, "process_next", fake_process_next)
+    monkeypatch.setattr(jarvis_runtime, "_process_next_outcome", fake_process_next)
 
     result = asyncio.run(jarvis_runtime.process_loop(bridge, max_events=8))
 
@@ -524,7 +585,7 @@ def test_process_loop_stops_safely_at_runtime_or_budget_gate(monkeypatch, capsys
     async def fake_process_next(_target):
         raise RuntimeError("budget window does not permit another run")
 
-    monkeypatch.setattr(jarvis_runtime, "process_next", fake_process_next)
+    monkeypatch.setattr(jarvis_runtime, "_process_next_outcome", fake_process_next)
 
     result = asyncio.run(jarvis_runtime.process_loop(bridge, max_events=8))
 
