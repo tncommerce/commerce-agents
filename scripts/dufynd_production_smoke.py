@@ -8,7 +8,6 @@ from urllib.parse import quote
 
 import httpx
 
-
 CRITICAL_PRODUCT_ID = "SC-RABANNE-1-MILLION-EDT-100"
 CRITICAL_PRODUCT_PATH = "/duft/rabanne-1-million"
 CRITICAL_PRODUCT_MARKER = "1 million"
