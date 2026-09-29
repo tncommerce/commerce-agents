@@ -167,6 +167,14 @@ jobs:
           DUFYND_JARVIS_ACTIVE: "1"
         run: python -m scripts.dufynd_jarvis_runtime --process-safe-task
 
+      - name: Set up Node for branch-worker web validation
+        if: inputs.mode == 'process-branch-task'
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: examples/package-lock.json
+
       - name: Run isolated Jarvis branch worker
         if: inputs.mode == 'process-branch-task'
         env:
@@ -214,6 +222,33 @@ jobs:
           pytest -q
           python scripts/check.py
 
+          if grep -q '^examples/retail/storefront-web/' jarvis-worker-files.txt; then
+            echo "Storefront changes detected; running deterministic web and visual QA."
+            pushd examples > /dev/null
+            npm ci
+            npm install --no-save playwright@1.55.0
+            npx playwright install --with-deps chromium
+            npm run build --workspace acme-retail-storefront-web
+
+            node retail/storefront-web/scripts/serve-static-export.mjs               --root retail/storefront-web/out               --port 3000 > /tmp/dufynd-jarvis-static.log 2>&1 &
+            server_pid=$!
+            trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+
+            for attempt in {1..60}; do
+              if curl --fail --silent --location                 http://127.0.0.1:3000/duft/xerjoff-naxos > /dev/null; then
+                break
+              fi
+              if [ "$attempt" -eq 60 ]; then
+                cat /tmp/dufynd-jarvis-static.log
+                exit 24
+              fi
+              sleep 1
+            done
+
+            node retail/storefront-web/scripts/dufynd-visual-qa.mjs               --base-url http://127.0.0.1:3000               --out retail/storefront-web/.visual-qa
+            popd > /dev/null
+          fi
+
       - name: Upload isolated Jarvis patch
         if: inputs.mode == 'process-branch-task' && always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
@@ -222,5 +257,6 @@ jobs:
           path: |
             jarvis-worker.patch
             jarvis-worker-files.txt
+            examples/retail/storefront-web/.visual-qa
           if-no-files-found: warn
           retention-days: 7
