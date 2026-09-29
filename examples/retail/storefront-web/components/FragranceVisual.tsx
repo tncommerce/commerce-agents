@@ -120,7 +120,7 @@ export default function FragranceVisual({
   return (
     <div
       data-variant={variant}
-      className={`dufynd-product-stage ${className}`}
+      className={`dufynd-product-stage ${resolvedImageUrl ? "" : "dufynd-product-stage--asset-pending"} ${className}`}
       style={{ ...BASE_STYLE }}
       onPointerMove={updatePointer}
       onPointerLeave={resetPointer}
@@ -156,13 +156,23 @@ export default function FragranceVisual({
               className="dufynd-product-image"
             />
           ) : (
-            <div className="dufynd-product-placeholder" aria-hidden>
-              <div className="h-3 w-10 rounded-t bg-(--ink)/80" />
-              <div className="h-3 w-7 bg-(--ink)/60" />
-              <div className="grid h-24 w-20 place-items-center rounded-[22px] border border-white/80 bg-white/80 shadow-lg backdrop-blur-sm">
-                <span className="text-[9px] font-semibold tracking-[0.18em] text-(--ink)/70">
-                  DUFYND
-                </span>
+            <div
+              className="dufynd-product-asset-pending"
+              data-dufynd-asset-state="pending"
+              role="img"
+              aria-label={`${alt} – derzeit kein freigegebenes Produktbild`}
+            >
+              <div
+                aria-hidden
+                className="dufynd-product-asset-pending-orbit dufynd-product-asset-pending-orbit--outer"
+              />
+              <div
+                aria-hidden
+                className="dufynd-product-asset-pending-orbit dufynd-product-asset-pending-orbit--inner"
+              />
+              <div className="dufynd-product-asset-pending-copy">
+                <span>DUFYND</span>
+                <strong>Produktbild in Prüfung</strong>
               </div>
             </div>
           )}
