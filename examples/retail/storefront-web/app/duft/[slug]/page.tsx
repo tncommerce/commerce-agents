@@ -1028,6 +1028,7 @@ export default async function FragrancePage({
                   "/vergleich/",
                 );
                 const relatedVisual =
+                  item.fragrance.presentation_visual ||
                   item.fragrance.preferred_visual;
                 const relatedIsProductTruth =
                   isVerifiedProductTruthVisual(relatedVisual);
@@ -1050,6 +1051,11 @@ export default async function FragrancePage({
                         cutoutUrl={
                           relatedIsProductTruth
                             ? relatedVisual?.url
+                            : undefined
+                        }
+                        backdropUrl={
+                          relatedIsProductTruth
+                            ? item.fragrance.backdrop_visual?.url
                             : undefined
                         }
                         alt={`${item.fragrance.brand} ${item.fragrance.name}`}
