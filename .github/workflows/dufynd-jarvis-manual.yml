@@ -13,6 +13,7 @@ on:
           - sync-state
           - process-next
           - process-loop
+          - process-safe-task
       max_events:
         description: Maximum events for process-loop
         required: false
@@ -57,7 +58,7 @@ jobs:
         run: python -m scripts.dufynd_jarvis_runtime --readiness
 
       - name: Refresh repository Jarvis state
-        if: inputs.mode == 'sync-state' || inputs.mode == 'process-next' || inputs.mode == 'process-loop'
+        if: inputs.mode == 'sync-state' || inputs.mode == 'process-next' || inputs.mode == 'process-loop' || inputs.mode == 'process-safe-task'
         run: >-
           python -m scripts.refresh_scentai_jarvis_state
           --write
@@ -84,7 +85,7 @@ jobs:
           --machine-readable
 
       - name: Validate explicit active-run approval
-        if: inputs.mode == 'process-next' || inputs.mode == 'process-loop'
+        if: inputs.mode == 'process-next' || inputs.mode == 'process-loop' || inputs.mode == 'process-safe-task'
         shell: bash
         run: |
           set -euo pipefail
@@ -121,3 +122,16 @@ jobs:
           python -m scripts.dufynd_jarvis_runtime
           --process-loop
           --max-events "${{ inputs.max_events }}"
+
+      - name: Run read-only Jarvis safe worker
+        if: inputs.mode == 'process-safe-task'
+        env:
+          SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DUFYND_JARVIS_MODEL: ${{ vars.DUFYND_JARVIS_MODEL }}
+          DUFYND_JARVIS_MAX_TURNS: "8"
+          DUFYND_JARVIS_MAX_BUDGET_USD: "0.25"
+          DUFYND_JARVIS_BUDGET_ID: "jarvis_activation_pilot_001"
+          DUFYND_JARVIS_ACTIVE: "1"
+        run: python -m scripts.dufynd_jarvis_runtime --process-safe-task
