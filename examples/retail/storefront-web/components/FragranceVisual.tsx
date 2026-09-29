@@ -1,6 +1,7 @@
 "use client";
 
 import type { CSSProperties, PointerEvent } from "react";
+import type { FragranceVisualWorld } from "@/lib/fragranceCatalog";
 
 type VisualVariant = "card" | "hero";
 type VisualMode = "auto" | "editorial" | "cutout";
@@ -61,6 +62,7 @@ export default function FragranceVisual({
   className = "",
   priority = false,
   mode = "auto",
+  world = "amber",
 }: {
   imageUrl?: string | null;
   cutoutUrl?: string | null;
@@ -70,6 +72,7 @@ export default function FragranceVisual({
   className?: string;
   priority?: boolean;
   mode?: VisualMode;
+  world?: FragranceVisualWorld;
 }) {
   const resolvedImageUrl = cutoutUrl || imageUrl;
   const resolvedMode =
@@ -91,6 +94,7 @@ export default function FragranceVisual({
       <div
         data-variant={variant}
         data-dufynd-visual-state="missing"
+        data-dufynd-visual-world={world}
         className={`dufynd-neutral-visual-stage ${className}`}
         role="img"
         aria-label={`${alt} – kein freigegebenes Produktbild`}
@@ -118,6 +122,7 @@ export default function FragranceVisual({
     return (
       <div
         data-variant={variant}
+        data-dufynd-visual-world={world}
         className={`dufynd-editorial-depth-stage ${className}`}
         style={{ ...BASE_STYLE }}
         onPointerMove={updatePointer}
@@ -148,6 +153,7 @@ export default function FragranceVisual({
   return (
     <div
       data-variant={variant}
+      data-dufynd-visual-world={world}
       className={`dufynd-product-stage ${className}`}
       style={{ ...BASE_STYLE }}
       onPointerMove={updatePointer}
