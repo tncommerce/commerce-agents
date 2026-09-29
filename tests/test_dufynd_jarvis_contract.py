@@ -13,7 +13,7 @@ def test_dufynd_jarvis_contract_has_current_brand_and_version() -> None:
 
     assert contract["brand"] == "DUFYND"
     assert contract["operator"] == "TNCommerce"
-    assert contract["version"] == "2.3"
+    assert contract["version"] == "2.4"
 
 
 def test_dufynd_jarvis_contract_exposes_required_learning_surfaces() -> None:
@@ -78,6 +78,13 @@ def test_dufynd_jarvis_contract_keeps_active_runtime_off_by_default() -> None:
     assert supervisor["default_max_events"] == 8
     assert supervisor["hard_max_events"] == 20
     assert "runtime_or_budget_gate" in supervisor["stop_conditions"]
+
+    safe_worker = runtime["safe_worker_mode"]
+    assert safe_worker["command"] == "--process-safe-task"
+    assert "WebSearch" in safe_worker["builtin_tools_allowed"]
+    assert "Bash" in safe_worker["builtin_tools_denied"]
+    assert "Write" in safe_worker["builtin_tools_denied"]
+    assert "must not mark a task done automatically" in safe_worker["task_progress_rule"]
 
     control_plane_sync = runtime["control_plane_sync"]
     assert control_plane_sync["status"] == "required_before_active_processing"
