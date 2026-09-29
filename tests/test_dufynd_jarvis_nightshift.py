@@ -119,6 +119,21 @@ def task(task_id: str, domain: str, priority: int) -> dict:
     }
 
 
+def test_safe_worker_outcome_defaults_to_in_progress() -> None:
+    assert nightshift._safe_worker_outcome("evidence without marker") == "in_progress"
+
+
+def test_safe_worker_outcome_uses_last_valid_marker() -> None:
+    evidence = (
+        "research notes\n"
+        "DUFYND_TASK_STATE: in_progress\n"
+        "more evidence\n"
+        "DUFYND_TASK_STATE: waiting_external"
+    )
+
+    assert nightshift._safe_worker_outcome(evidence) == "waiting_external"
+
+
 def test_non_green_task_is_not_selected() -> None:
     candidate = task("repo_current_commerce", "commerce", 100)
     candidate["approval_action_type"] = "manual_state_reconciliation_required"
@@ -276,7 +291,9 @@ def test_nightshift_routes_workers_and_consumes_multiple_tasks(
 
     async def fake_safe(_bridge, *, task_id=None):
         bridge.tasks["repo_current_commerce"]["status"] = "in_progress"
-        bridge.tasks["repo_current_commerce"]["evidence"] = "research complete"
+        bridge.tasks["repo_current_commerce"]["evidence"] = (
+            "research complete\nDUFYND_TASK_STATE: done"
+        )
         return 0
 
     monkeypatch.setattr(nightshift, "process_loop", fake_loop)
@@ -352,6 +369,42 @@ def test_nightshift_defers_tasks_while_event_backlog_remains(monkeypatch) -> Non
     assert session["inbox_after"]["pending"] == 3
 
 
+def test_nightshift_does_not_mark_unclassified_safe_success_done(monkeypatch) -> None:
+    bridge = FakeBridge([task("repo_current_commerce", "commerce", 100)])
+
+    monkeypatch.setattr(
+        nightshift,
+        "_require_autonomous_session",
+        lambda _bridge: ("budget", {"can_run": True}),
+    )
+    monkeypatch.setattr(
+        nightshift,
+        "_require_budget_window",
+        lambda _bridge: ("budget", {"can_run": True}),
+    )
+
+    async def fake_safe(_bridge, *, task_id=None):
+        bridge.tasks["repo_current_commerce"]["status"] = "in_progress"
+        bridge.tasks["repo_current_commerce"]["evidence"] = "useful partial research"
+        return 0
+
+    monkeypatch.setattr(nightshift, "process_safe_task", fake_safe)
+
+    session = asyncio.run(
+        nightshift.run_nightshift(
+            bridge,
+            max_tasks=8,
+            max_events=0,
+            worker_timeout_seconds=60,
+            max_retries=1,
+        )
+    )
+
+    assert bridge.tasks["repo_current_commerce"]["status"] == "ready"
+    assert session["task_results"][0]["final_status"] == "in_progress"
+    assert session["tasks_attempted"] == 1
+
+
 def test_nightshift_retries_failed_task_then_continues(monkeypatch) -> None:
     bridge = FakeBridge(
         [
@@ -381,7 +434,9 @@ def test_nightshift_retries_failed_task_then_continues(monkeypatch) -> None:
             bridge.tasks["repo_current_commerce"]["evidence"] = "worker failed"
             return 1
         bridge.tasks["repo_current_content"]["status"] = "in_progress"
-        bridge.tasks["repo_current_content"]["evidence"] = "content prepared"
+        bridge.tasks["repo_current_content"]["evidence"] = (
+            "content prepared\nDUFYND_TASK_STATE: done"
+        )
         return 0
 
     monkeypatch.setattr(nightshift, "process_safe_task", flaky_safe)
