@@ -13,7 +13,7 @@ def test_dufynd_jarvis_contract_has_current_brand_and_version() -> None:
 
     assert contract["brand"] == "DUFYND"
     assert contract["operator"] == "TNCommerce"
-    assert contract["version"] == "2.1"
+    assert contract["version"] == "2.2"
 
 
 def test_dufynd_jarvis_contract_exposes_required_learning_surfaces() -> None:
@@ -72,3 +72,9 @@ def test_dufynd_jarvis_contract_keeps_active_runtime_off_by_default() -> None:
     assert runtime["default_max_budget_usd"] <= runtime["hard_max_budget_usd"]
     assert runtime["initial_budget_window"]["status"] == "planned"
     assert runtime["initial_budget_window"]["max_runs"] == 10
+
+    supervisor = runtime["supervisor_mode"]
+    assert supervisor["status"] == "available_guarded"
+    assert supervisor["default_max_events"] == 8
+    assert supervisor["hard_max_events"] == 20
+    assert "runtime_or_budget_gate" in supervisor["stop_conditions"]

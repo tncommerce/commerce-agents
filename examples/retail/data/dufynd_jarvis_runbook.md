@@ -96,21 +96,31 @@ Active model execution is disabled by default. It requires:
 - Anthropic credentials
 - Supabase service-role credentials
 
-The runner processes one inbox event per invocation. The default maximum is eight
-agent turns and the runtime clamps the configured value to twelve. Active runs also
-have a per-run USD budget guard: the default is $0.25 via
-`DUFYND_JARVIS_MAX_BUDGET_USD`, and the runtime clamps any configured value to a
-hard maximum of $1.00 per event run.
+The runner supports two guarded active modes. `--process-next` processes one
+inbox event. `--process-loop` is the bounded supervisor mode: one explicit
+operator activation may process several queued events sequentially without a new
+approval between events. The loop defaults to eight events and hard-clamps the
+requested limit to twenty. It stops when the inbox is empty, the event limit is
+reached, an event fails, or the active runtime/budget window refuses another run.
 
-The first activation window is prepared as
-`jarvis_activation_pilot_001`: it is **planned**, not active, allows at most ten
-runs and has a $2.50 total window cap. A model run is refused while that window is
-not active, even if credentials and `DUFYND_JARVIS_ACTIVE=1` are present.
+Each event still has the same model guardrails. The default maximum is eight agent
+turns and the runtime clamps the configured value to twelve. Active runs also have
+a per-event USD budget guard: the default is $0.25 via
+`DUFYND_JARVIS_MAX_BUDGET_USD`, and the runtime clamps any configured value to a
+hard maximum of $1.00 per event run. The database budget window remains the
+authoritative aggregate spend/run cap, so supervisor mode cannot bypass financial
+limits by chaining events.
+
+The first activation window is `jarvis_activation_pilot_001`. A model run is
+refused whenever that window does not permit another run, even if credentials and
+`DUFYND_JARVIS_ACTIVE=1` are present.
 
 A guarded GitHub Actions workflow exists at
 `.github/workflows/dufynd-jarvis-manual.yml`. Its default mode is readiness-only.
-Its `process-next` mode refuses to run unless the operator deliberately supplies
-the `GO-JARVIS-ACTIVE` approval token.
+Both `process-next` and `process-loop` refuse active processing unless the
+operator deliberately supplies the `GO-JARVIS-ACTIVE` approval token. Supervisor
+mode therefore replaces repeated per-event confirmations with one bounded-session
+approval without expanding Jarvis's tool permissions.
 
 ## Autonomy control plane
 
