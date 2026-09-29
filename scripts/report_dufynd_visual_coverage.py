@@ -74,10 +74,7 @@ def storefront_presentation_state(product: dict[str, Any]) -> str:
         and str(visual.get("fidelity_status") or "") == "editorial_only"
         for visual in visuals
     )
-    has_editorial = any(
-        str(visual.get("role") or "") == "editorial"
-        for visual in visuals
-    )
+    has_editorial = any(str(visual.get("role") or "") == "editorial" for visual in visuals)
 
     if has_verified_truth and has_bottle_free_backdrop:
         return "layered_product_truth"
@@ -208,8 +205,7 @@ def build_visual_coverage_report(
     presentation_upgrade_rows = [
         row
         for row in coverage_rows
-        if row["presentation_state"]
-        not in {"layered_product_truth", "editorial_product_scene"}
+        if row["presentation_state"] not in {"layered_product_truth", "editorial_product_scene"}
     ]
 
     return {
@@ -231,23 +227,15 @@ def build_visual_coverage_report(
         "storefront_presentation": {
             "layered_product_truth": layered,
             "editorial_product_scene": product_scene,
-            "product_truth_stage_only": int(
-                presentation_counts.get("product_truth_stage_only", 0)
-            ),
-            "editorial_unstructured": int(
-                presentation_counts.get("editorial_unstructured", 0)
-            ),
+            "product_truth_stage_only": int(presentation_counts.get("product_truth_stage_only", 0)),
+            "editorial_unstructured": int(presentation_counts.get("editorial_unstructured", 0)),
             "legacy_image_presentation": int(
                 presentation_counts.get("legacy_image_presentation", 0)
             ),
             "other_visual": int(presentation_counts.get("other_visual", 0)),
-            "missing_presentation": int(
-                presentation_counts.get("missing_presentation", 0)
-            ),
+            "missing_presentation": int(presentation_counts.get("missing_presentation", 0)),
             "background_presented_count": background_presented,
-            "background_presented_rate_pct": round(
-                (background_presented / total * 100.0), 2
-            )
+            "background_presented_rate_pct": round((background_presented / total * 100.0), 2)
             if total
             else 0.0,
         },
