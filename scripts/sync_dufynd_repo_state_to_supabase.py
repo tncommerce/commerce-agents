@@ -107,7 +107,7 @@ def build_sync_plan(repo_status: dict[str, Any]) -> dict[str, Any]:
                 "status": status,
                 "priority": 100 if domain == active_domain else 90,
                 "requires_human_approval": requires_approval,
-                "approval_action_type": action_class if requires_approval else None,
+                "approval_action_type": action_class,
                 "dependencies": blockers,
                 "evidence": evidence,
                 "owner": "human_and_jarvis" if requires_approval else "jarvis",
