@@ -382,9 +382,7 @@ async def _run_task_with_retry(
                             "task_id": task_id,
                             "domain": domain,
                             "worker": worker,
-                            "source_fingerprint_sha256": session[
-                                "source_fingerprint_sha256"
-                            ],
+                            "source_fingerprint_sha256": session["source_fingerprint_sha256"],
                         },
                         ensure_ascii=False,
                         indent=2,
@@ -524,9 +522,7 @@ async def run_nightshift(
 
     session["stop_reason"] = stop_reason
     session["status"] = (
-        "awaiting_validation"
-        if bool(session.get("branch_worker_used"))
-        else "completed"
+        "awaiting_validation" if bool(session.get("branch_worker_used")) else "completed"
     )
     if session["status"] == "completed":
         session["ended_at"] = iso_now()
@@ -553,9 +549,7 @@ async def run_nightshift(
             }
         ],
         human_approval_required=bool(session.get("branch_worker_used")),
-        human_approval_status=(
-            "pending" if bool(session.get("branch_worker_used")) else None
-        ),
+        human_approval_status=("pending" if bool(session.get("branch_worker_used")) else None),
         agent_name="jarvis_nightshift",
     )
     return session
@@ -719,11 +713,7 @@ def build_morning_report(
         if isinstance(item, dict) and str(item.get("status") or "") == "pending"
     ]
 
-    safe = [
-        item
-        for item in (queue.get("safe_to_execute") or [])
-        if isinstance(item, dict)
-    ]
+    safe = [item for item in (queue.get("safe_to_execute") or []) if isinstance(item, dict)]
     if safe:
         next_priority = str(safe[0].get("title") or safe[0].get("task_id"))
     elif approvals:
