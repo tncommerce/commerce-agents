@@ -21,6 +21,7 @@ import {
   getLiveFragranceBySlug,
   getRelatedFragrances,
   isVerifiedProductTruthVisual,
+  visualWorldFor,
   type RelatedFragranceKind,
   type StaticFragrance,
 } from "@/lib/fragranceCatalog";
@@ -35,54 +36,6 @@ type PageProps = {
     slug: string;
   }>;
 };
-
-type FragranceVisualTheme =
-  | "amber"
-  | "mineral"
-  | "ember"
-  | "silk"
-  | "noir";
-
-function visualThemeFor(fragrance: StaticFragrance): FragranceVisualTheme {
-  const accords = new Set(
-    fragrance.accords.map((accord) => accord.toLowerCase()),
-  );
-
-  if (
-    accords.has("smoky") ||
-    accords.has("leathery") ||
-    accords.has("resinous")
-  ) {
-    return "noir";
-  }
-
-  if (
-    accords.has("gourmand") ||
-    accords.has("sweet") ||
-    accords.has("oriental") ||
-    accords.has("creamy")
-  ) {
-    return "amber";
-  }
-
-  if (
-    accords.has("floral") ||
-    accords.has("powdery")
-  ) {
-    return "silk";
-  }
-
-  if (
-    accords.has("fresh") ||
-    accords.has("citrus") ||
-    accords.has("aquatic") ||
-    accords.has("green")
-  ) {
-    return "mineral";
-  }
-
-  return "ember";
-}
 
 function relatedLabel(kind: RelatedFragranceKind): string {
   return {
@@ -313,10 +266,11 @@ export default async function FragrancePage({
   const checkedAt = formatCheckedAt(
     fragrance.market.checked_at,
   );
-  const heroVisual = fragrance.preferred_visual;
+  const heroVisual =
+    fragrance.presentation_visual || fragrance.preferred_visual;
   const heroIsProductTruth =
     isVerifiedProductTruthVisual(heroVisual);
-  const visualTheme = visualThemeFor(fragrance);
+  const visualTheme = visualWorldFor(fragrance);
   const related = getRelatedFragrances(
     fragrance,
     4,
@@ -587,6 +541,7 @@ export default async function FragrancePage({
                   alt={`${fragrance.brand} ${fragrance.name}`}
                   variant="hero"
                   mode={heroIsProductTruth ? "cutout" : "editorial"}
+                  world={visualTheme}
                   className="dufynd-fragrance-stage-visual absolute inset-0 h-full w-full"
                   priority
                 />
