@@ -72,13 +72,9 @@ def evaluate_freshness(
     if not isinstance(marker_value, dict):
         marker_value = {}
 
-    marker_fingerprint = str(
-        marker_value.get("source_fingerprint_sha256") or ""
-    ).strip()
+    marker_fingerprint = str(marker_value.get("source_fingerprint_sha256") or "").strip()
     marker_verified_at = (
-        parse_timestamp(marker.get("last_verified_at"))
-        if isinstance(marker, dict)
-        else None
+        parse_timestamp(marker.get("last_verified_at")) if isinstance(marker, dict) else None
     )
 
     reasons: list[str] = []
