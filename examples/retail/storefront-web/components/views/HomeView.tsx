@@ -20,6 +20,7 @@ import { fragrancePathForProduct } from "@/lib/fragranceSlug";
 import {
   getLiveFragranceByProductId,
   isVerifiedProductTruthVisual,
+  visualWorldFor,
 } from "@/lib/fragranceCatalog";
 import type { Product } from "@/lib/types";
 import FragranceVisual from "../FragranceVisual";
@@ -324,6 +325,7 @@ export default function HomeView({
                       : undefined
                   }
                   alt={spotlight.title}
+                  world={spotlightFragrance ? visualWorldFor(spotlightFragrance) : undefined}
                   className="h-full min-h-[260px] sm:min-h-[320px] w-full md:min-h-[430px]"
                   priority
                 />
@@ -335,6 +337,7 @@ export default function HomeView({
                   alt={spotlight.title}
                   variant="hero"
                   mode="cutout"
+                  world={spotlightFragrance ? visualWorldFor(spotlightFragrance) : undefined}
                   className="h-full min-h-[260px] sm:min-h-[320px] w-full md:min-h-[430px]"
                   priority
                 />
