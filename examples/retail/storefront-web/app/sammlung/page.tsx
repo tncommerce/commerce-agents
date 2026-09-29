@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 export default function CollectionPage() {
   return (
-    <main className="min-h-screen bg-(--surface) px-4 py-7 text-(--ink) sm:px-6 sm:py-10">
+    <main className="dufynd-library-page min-h-screen bg-(--surface) px-4 py-7 text-(--ink) sm:px-6 sm:py-10">
       <div className="mx-auto max-w-[1080px]">
         <PersonalLibraryPageAnalytics
           source="collection_page"
