@@ -899,6 +899,41 @@ try {
     await comparisonContext.close();
   }
 
+  const backupContext = await browser.newContext({ acceptDownloads: true });
+  try {
+    const backupPage = await backupContext.newPage();
+    await backupPage.goto(`${baseUrl}/merkliste`, { waitUntil: "networkidle" });
+    await backupPage.evaluate(() => {
+      window.localStorage.setItem(
+        "scentai_fragrance_library_v1",
+        JSON.stringify({ version: 1, wishlist: ["SC-XERJOFF-NAXOS-100"], owned: [] }),
+      );
+    });
+    await backupPage.reload({ waitUntil: "networkidle" });
+    const [download] = await Promise.all([
+      backupPage.waitForEvent("download"),
+      backupPage.getByRole("button", { name: "Duftliste sichern" }).click(),
+    ]);
+    const backupPath = await download.path();
+    if (!backupPath) throw new Error("library backup download is unavailable");
+    await backupPage.evaluate(() => {
+      window.localStorage.removeItem("scentai_fragrance_library_v1");
+    });
+    await backupPage.reload({ waitUntil: "networkidle" });
+    await backupPage.locator('input[type="file"]').setInputFiles(backupPath);
+    await backupPage.getByText("Sicherung geladen: 1 gemerkt, 0 in Sammlung.").waitFor();
+    if ((await backupPage.locator('a[href="/duft/xerjoff-naxos"]').count()) !== 1) {
+      throw new Error("library backup did not restore the saved fragrance");
+    }
+    report.checks.push({ label: "library-backup-roundtrip", status: "passed" });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({ label: "library-backup-roundtrip", message });
+    report.checks.push({ label: "library-backup-roundtrip", status: "failed", message });
+  } finally {
+    await backupContext.close();
+  }
+
   // Phase 2 catalogue sweep: exercise every fragrance detail route once at the
   // primary mobile viewport without multiplying full screenshot artifacts.
   const sweepContext = await browser.newContext({
