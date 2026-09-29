@@ -294,6 +294,7 @@ try {
             const exploded = rect(".dufynd-exploded-notes");
             return {
               title_top: title ? title.top + window.scrollY : null,
+              stage_top: stage ? stage.top + window.scrollY : null,
               stage_height: stage?.height ?? null,
               cutout_clipped: Boolean(stage && cutout && (
                 cutout.top < stage.top - 2 || cutout.bottom > stage.bottom + 2 ||
@@ -302,10 +303,27 @@ try {
               offers_after_exploded: Boolean(offers && exploded && offers.top > exploded.top),
             };
           });
-          if (layout.title_top == null || layout.title_top > 260) {
-            throw new Error(`fragrance identity starts too far below the first screen: ${layout.title_top}px`);
+          const mobileProductFirst = viewport.width <= 390;
+          const maxIdentityTop = mobileProductFirst ? 620 : 260;
+          if (layout.title_top == null || layout.title_top > maxIdentityTop) {
+            throw new Error(`fragrance identity starts too far below the intended first-screen composition: ${layout.title_top}px`);
           }
-          if (viewport.width <= 390 && (layout.stage_height == null || layout.stage_height > 270)) {
+          if (
+            mobileProductFirst &&
+            (
+              layout.stage_top == null ||
+              layout.title_top == null ||
+              layout.stage_top >= layout.title_top
+            )
+          ) {
+            throw new Error(
+              "mobile fragrance detail no longer presents the product stage before identity copy",
+            );
+          }
+          if (
+            mobileProductFirst &&
+            (layout.stage_height == null || layout.stage_height > 270)
+          ) {
             throw new Error(`mobile fragrance visual is too tall: ${layout.stage_height}px`);
           }
           if (layout.cutout_clipped) {
