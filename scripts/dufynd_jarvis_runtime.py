@@ -463,7 +463,9 @@ def make_options(bridge: DufyndJarvisBridge) -> ClaudeAgentOptions:
     )
 
 
-SAFE_WORKER_SYSTEM_PROMPT = SYSTEM_PROMPT + """
+SAFE_WORKER_SYSTEM_PROMPT = (
+    SYSTEM_PROMPT
+    + """
 You are running as the DUFYND safe research worker.
 You may inspect repository files and research the public web, but you must not write
 or edit repository files, run shell commands, publish content, spend money, change
@@ -472,6 +474,7 @@ credentials, or merge/push code. Treat external claims as evidence candidates un
 verified. Your output should be concise, evidence-led, and useful for the next
 controlled DUFYND step.
 """
+)
 
 
 def make_safe_worker_options(bridge: DufyndJarvisBridge) -> ClaudeAgentOptions:
