@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
 import { accordLabel } from "@/lib/accordLabels";
 import FragranceExplodedNotes from "@/components/FragranceExplodedNotes";
+import FragranceIngredientOrbit from "@/components/FragranceIngredientOrbit";
 import FragranceOffers from "@/components/FragranceOffers";
 import MobileOfferBar from "@/components/MobileOfferBar";
 import OfferSectionLink from "@/components/OfferSectionLink";
@@ -328,6 +329,17 @@ export default async function FragrancePage({
     ...fragrance.notes.supporting,
   ];
   const notePreview = allNotes.slice(0, 3);
+  const sceneNotes = Array.from(
+    new Set(
+      [
+        fragrance.notes.top[0],
+        fragrance.notes.heart[0],
+        fragrance.notes.base[0],
+        fragrance.notes.key[0],
+        fragrance.notes.supporting[0],
+      ].filter((note): note is string => Boolean(note)),
+    ),
+  ).slice(0, 4);
   const noteCount = new Set(allNotes).size;
   const canonicalUrl = `${SITE_URL}/duft/${fragrance.slug}`;
   const breadcrumbStructuredData = {
@@ -471,8 +483,20 @@ export default async function FragrancePage({
             aria-hidden
             className="dufynd-fragrance-hero-orbit pointer-events-none absolute"
           />
-          <div className="relative z-10 grid lg:grid-cols-[0.94fr_1.06fr]">
-            <div className="dufynd-fragrance-identity p-5 pb-4 sm:p-7 sm:pb-5 lg:col-start-2 lg:row-start-1 lg:p-9 lg:pb-0">
+          <div
+            aria-hidden
+            className="dufynd-fragrance-scene-beam pointer-events-none absolute"
+          />
+          <div
+            aria-hidden
+            className="dufynd-fragrance-scene-mist pointer-events-none absolute"
+          />
+          <div
+            aria-hidden
+            className="dufynd-fragrance-scene-particles pointer-events-none absolute inset-0"
+          />
+          <div className="dufynd-fragrance-hero-grid relative z-10 grid lg:grid-cols-[1.08fr_0.92fr]">
+            <div className="dufynd-fragrance-identity dufynd-fragrance-panel-section dufynd-fragrance-panel-section--identity p-5 pb-4 sm:p-7 sm:pb-5 lg:col-start-2 lg:row-start-1 lg:p-9 lg:pb-0">
               <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-(--accent-ink)">
                 {fragrance.brand}
               </div>
@@ -522,38 +546,50 @@ export default async function FragrancePage({
                 </div>
               ) : null}
             </div>
-            {fragrance.model_3d_url ? (
-              <FragranceModel3D
-                modelUrl={fragrance.model_3d_url}
-                imageUrl={heroIsProductTruth ? undefined : heroVisual?.url}
-                cutoutUrl={heroIsProductTruth ? heroVisual?.url : undefined}
-                backdropUrl={
-                  heroIsProductTruth
-                    ? fragrance.backdrop_visual?.url
-                    : undefined
-                }
-                alt={`${fragrance.brand} ${fragrance.name}`}
-                className="min-h-[248px] w-full sm:min-h-[340px] lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:min-h-[480px]"
-                priority
-              />
-            ) : (
-              <FragranceVisual
-                imageUrl={heroVisual?.url}
-                cutoutUrl={heroIsProductTruth ? heroVisual?.url : undefined}
-                backdropUrl={
-                  heroIsProductTruth
-                    ? fragrance.backdrop_visual?.url
-                    : undefined
-                }
-                alt={`${fragrance.brand} ${fragrance.name}`}
-                variant="hero"
-                mode={heroIsProductTruth ? "cutout" : "editorial"}
-                className="min-h-[248px] w-full sm:min-h-[340px] lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:min-h-[480px]"
-                priority
-              />
-            )}
+            <div className="dufynd-fragrance-stage-shell relative min-h-[304px] overflow-hidden sm:min-h-[380px] lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:min-h-[560px]">
+              {fragrance.model_3d_url ? (
+                <FragranceModel3D
+                  modelUrl={fragrance.model_3d_url}
+                  imageUrl={heroIsProductTruth ? undefined : heroVisual?.url}
+                  cutoutUrl={heroIsProductTruth ? heroVisual?.url : undefined}
+                  backdropUrl={
+                    heroIsProductTruth
+                      ? fragrance.backdrop_visual?.url
+                      : undefined
+                  }
+                  alt={`${fragrance.brand} ${fragrance.name}`}
+                  className="dufynd-fragrance-stage-visual absolute inset-0 h-full w-full"
+                  priority
+                />
+              ) : (
+                <FragranceVisual
+                  imageUrl={heroVisual?.url}
+                  cutoutUrl={heroIsProductTruth ? heroVisual?.url : undefined}
+                  backdropUrl={
+                    heroIsProductTruth
+                      ? fragrance.backdrop_visual?.url
+                      : undefined
+                  }
+                  alt={`${fragrance.brand} ${fragrance.name}`}
+                  variant="hero"
+                  mode={heroIsProductTruth ? "cutout" : "editorial"}
+                  className="dufynd-fragrance-stage-visual absolute inset-0 h-full w-full"
+                  priority
+                />
+              )}
 
-            <div className="dufynd-fragrance-hero-copy flex flex-col justify-center p-5 pt-4 sm:p-7 sm:pt-5 lg:col-start-2 lg:row-start-2 lg:p-9 lg:pt-3">
+              <FragranceIngredientOrbit notes={sceneNotes} />
+
+              <div
+                aria-hidden
+                className="dufynd-fragrance-stage-kicker"
+              >
+                <span>{fragrance.brand}</span>
+                <strong>{fragrance.name}</strong>
+              </div>
+            </div>
+
+            <div className="dufynd-fragrance-hero-copy dufynd-fragrance-panel-section dufynd-fragrance-panel-section--copy flex flex-col justify-center p-5 pt-4 sm:p-7 sm:pt-5 lg:col-start-2 lg:row-start-2 lg:p-9 lg:pt-3">
               <div className={`grid gap-2 sm:flex sm:flex-wrap sm:gap-2.5 ${related.length ? "grid-cols-2" : "grid-cols-1"}`}>
                 <OfferSectionLink
                   id="dufynd-hero-offer-cta"
