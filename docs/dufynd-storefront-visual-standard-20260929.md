@@ -68,7 +68,10 @@ This avoids regenerating bottle geometry in every background scene and lets the 
 | /duft discovery hero | storefront presentation |
 | /duft catalog cards | storefront presentation |
 | Related-product cards | storefront presentation |
+| Free-comparison product cards | storefront presentation; verified truth remains separate |
+| Explicit-comparison product headers | storefront presentation; verified truth remains separate |
 | Product-detail primary hero | storefront presentation; verified truth remains separate |
+| Product-detail visual gallery | asset role remains explicit; shared DUFYND world keeps framing consistent |
 | Product JSON-LD / metadata | verified product truth only |
 | Fidelity QA | verified product truth only |
 | Editorial gallery | editorial assets, clearly separated from product truth |
@@ -92,3 +95,10 @@ Worlds:
 - `ember`: default warm/spiced world when none of the stronger mappings apply.
 
 The world changes only the atmosphere behind the product. It must not recolor, deform or otherwise alter the bottle itself. Existing editorial product scenes remain intact and product-truth assets remain independently auditable.
+
+
+## Comparison and gallery consistency
+
+Comparison facts, ratings, notes, volume and variant identity remain data/truth concerns. The image shown beside those facts is a storefront-presentation concern unless a truth-sensitive interaction explicitly requires the verified bottle layer.
+
+The visual gallery may deliberately show both editorial and verified assets. It must preserve the role/status labels while using the same fragrance world as the primary detail surface, so switching between views does not make the page look like unrelated storefronts.

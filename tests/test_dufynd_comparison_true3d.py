@@ -30,5 +30,6 @@ def test_comparison_fallbacks_keep_verified_backdrops_without_faking_3d() -> Non
 
     for source in (documented, free):
         assert "fragrance.backdrop_visual?.url" in source
-        assert 'mode={isProductTruth ? "cutout" : "editorial"}' in source
+        assert "presentationIsProductTruth" in source
+        assert "productTruthIsVerified" in source
         assert "model_3d_url" in source

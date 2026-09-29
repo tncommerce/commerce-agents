@@ -9,6 +9,7 @@ import { trackAnalyticsEvent } from "@/lib/analytics";
 import { accordLabel } from "@/lib/accordLabels";
 import {
   isVerifiedProductTruthVisual,
+  visualWorldFor,
   type StaticFragrance,
 } from "@/lib/fragranceCatalog";
 import { formatPriceReference } from "@/lib/priceReference";
@@ -119,8 +120,13 @@ function ProductMiniHeader({
   fragrance: StaticFragrance;
   side: "left" | "right";
 }) {
-  const visual = fragrance.preferred_visual;
-  const isProductTruth = isVerifiedProductTruthVisual(visual);
+  const productTruthVisual = fragrance.preferred_visual;
+  const productTruthIsVerified =
+    isVerifiedProductTruthVisual(productTruthVisual);
+  const presentationVisual =
+    fragrance.presentation_visual || productTruthVisual;
+  const presentationIsProductTruth =
+    isVerifiedProductTruthVisual(presentationVisual);
 
   return (
     <a
@@ -131,24 +137,45 @@ function ProductMiniHeader({
       {fragrance.model_3d_url ? (
         <FragranceModel3D
           modelUrl={fragrance.model_3d_url}
-          imageUrl={isProductTruth ? undefined : visual?.url}
-          cutoutUrl={isProductTruth ? visual?.url : undefined}
+          imageUrl={
+            productTruthIsVerified
+              ? undefined
+              : productTruthVisual?.url
+          }
+          cutoutUrl={
+            productTruthIsVerified
+              ? productTruthVisual?.url
+              : undefined
+          }
           backdropUrl={
-            isProductTruth ? fragrance.backdrop_visual?.url : undefined
+            productTruthIsVerified
+              ? fragrance.backdrop_visual?.url
+              : undefined
           }
           alt={`${fragrance.brand} ${fragrance.name}`}
           className="dufynd-comparison-product-visual h-40 w-full"
         />
       ) : (
         <FragranceVisual
-          imageUrl={visual?.url}
-          cutoutUrl={isProductTruth ? visual?.url : undefined}
+          imageUrl={presentationVisual?.url}
+          cutoutUrl={
+            presentationIsProductTruth
+              ? presentationVisual?.url
+              : undefined
+          }
           backdropUrl={
-            isProductTruth ? fragrance.backdrop_visual?.url : undefined
+            presentationIsProductTruth
+              ? fragrance.backdrop_visual?.url
+              : undefined
           }
           alt={`${fragrance.brand} ${fragrance.name}`}
           variant="card"
-          mode={isProductTruth ? "cutout" : "editorial"}
+          mode={
+            presentationIsProductTruth
+              ? "cutout"
+              : "editorial"
+          }
+          world={visualWorldFor(fragrance)}
           className="dufynd-comparison-product-visual h-40 w-full"
         />
       )}
