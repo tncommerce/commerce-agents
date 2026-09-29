@@ -33,3 +33,23 @@ def test_featured_homepage_products_accept_verified_product_truth() -> None:
     assert "isVerifiedProductTruthVisual(" in text
     assert "fragrance?.preferred_visual" in text
     assert 'String(product.image_url ?? "").includes("/products/pilot/")' in text
+
+
+def test_homepage_renders_visual_audience_discovery_cards() -> None:
+    text = source()
+
+    assert 'id="dufynd-audience-discovery-heading"' in text
+    assert "const audiencePreviews = audiencePreviewProducts(picks);" in text
+    assert "AUDIENCE_DISCOVERY.map((audience) =>" in text
+    assert 'min-w-[76%]' in text
+    assert "snap-x snap-mandatory" in text
+    assert "product?.image_url" in text
+    assert "audienceCounts[key]" in text
+
+
+def test_audience_preview_products_avoid_duplicate_visuals_when_possible() -> None:
+    text = source()
+
+    assert 'const used = new Set<string>();' in text
+    assert '!used.has(String(candidate.product_id))' in text
+    assert 'used.add(String(product.product_id));' in text
