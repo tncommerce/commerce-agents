@@ -51,7 +51,7 @@ Per-fragrance variation belongs in the **world behind the bottle**: amber, miner
 
 ## Transition rule for existing AI scenes
 
-Existing DUFYND AI product scenes may remain on discovery/card surfaces while the verified product layer is stored separately. They should not be deleted merely because a white/studio fidelity asset is approved.
+Existing DUFYND AI product scenes may remain on discovery, card and product-detail hero surfaces while the verified product layer is stored separately. They should not be deleted or displaced merely because a white/studio fidelity asset is approved.
 
 The long-term upgrade path is:
 
@@ -68,7 +68,7 @@ This avoids regenerating bottle geometry in every background scene and lets the 
 | /duft discovery hero | storefront presentation |
 | /duft catalog cards | storefront presentation |
 | Related-product cards | storefront presentation |
-| Product-detail primary hero | product truth first |
+| Product-detail primary hero | storefront presentation; verified truth remains separate |
 | Product JSON-LD / metadata | verified product truth only |
 | Fidelity QA | verified product truth only |
 | Editorial gallery | editorial assets, clearly separated from product truth |

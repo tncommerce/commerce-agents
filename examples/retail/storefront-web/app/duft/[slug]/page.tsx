@@ -21,6 +21,7 @@ import {
   getLiveFragranceBySlug,
   getRelatedFragrances,
   isVerifiedProductTruthVisual,
+  visualWorldFor,
   type RelatedFragranceKind,
   type StaticFragrance,
 } from "@/lib/fragranceCatalog";
@@ -35,54 +36,6 @@ type PageProps = {
     slug: string;
   }>;
 };
-
-type FragranceVisualTheme =
-  | "amber"
-  | "mineral"
-  | "ember"
-  | "silk"
-  | "noir";
-
-function visualThemeFor(fragrance: StaticFragrance): FragranceVisualTheme {
-  const accords = new Set(
-    fragrance.accords.map((accord) => accord.toLowerCase()),
-  );
-
-  if (
-    accords.has("smoky") ||
-    accords.has("leathery") ||
-    accords.has("resinous")
-  ) {
-    return "noir";
-  }
-
-  if (
-    accords.has("gourmand") ||
-    accords.has("sweet") ||
-    accords.has("oriental") ||
-    accords.has("creamy")
-  ) {
-    return "amber";
-  }
-
-  if (
-    accords.has("floral") ||
-    accords.has("powdery")
-  ) {
-    return "silk";
-  }
-
-  if (
-    accords.has("fresh") ||
-    accords.has("citrus") ||
-    accords.has("aquatic") ||
-    accords.has("green")
-  ) {
-    return "mineral";
-  }
-
-  return "ember";
-}
 
 function relatedLabel(kind: RelatedFragranceKind): string {
   return {
@@ -313,10 +266,14 @@ export default async function FragrancePage({
   const checkedAt = formatCheckedAt(
     fragrance.market.checked_at,
   );
-  const heroVisual = fragrance.preferred_visual;
+  const productTruthVisual = fragrance.preferred_visual;
+  const productTruthIsVerified =
+    isVerifiedProductTruthVisual(productTruthVisual);
+  const heroVisual =
+    fragrance.presentation_visual || productTruthVisual;
   const heroIsProductTruth =
     isVerifiedProductTruthVisual(heroVisual);
-  const visualTheme = visualThemeFor(fragrance);
+  const visualTheme = visualWorldFor(fragrance);
   const related = getRelatedFragrances(
     fragrance,
     4,
@@ -384,10 +341,10 @@ export default async function FragrancePage({
     breadcrumbStructuredData,
   ).replaceAll("<", "\\u003c");
   const verifiedProductImage =
-    heroIsProductTruth && heroVisual?.url
-      ? heroVisual.url.startsWith("http")
-        ? heroVisual.url
-        : `${SITE_URL}${heroVisual.url}`
+    productTruthIsVerified && productTruthVisual?.url
+      ? productTruthVisual.url.startsWith("http")
+        ? productTruthVisual.url
+        : `${SITE_URL}${productTruthVisual.url}`
       : null;
   const productStructuredData = {
     "@context": "https://schema.org",
@@ -587,6 +544,7 @@ export default async function FragrancePage({
                   alt={`${fragrance.brand} ${fragrance.name}`}
                   variant="hero"
                   mode={heroIsProductTruth ? "cutout" : "editorial"}
+                  world={visualTheme}
                   className="dufynd-fragrance-stage-visual absolute inset-0 h-full w-full"
                   priority
                 />
@@ -816,7 +774,7 @@ export default async function FragrancePage({
             <FragranceOffers productId={fragrance.product_id} />
           </div>
 
-        {heroIsProductTruth && heroVisual?.url ? (
+        {productTruthIsVerified && productTruthVisual?.url ? (
           <div
             className="dufynd-fragrance-chapter dufynd-fragrance-chapter--experience"
             data-dufynd-chapter="erleben"
@@ -828,13 +786,13 @@ export default async function FragrancePage({
               02
             </span>
             <FragranceExplodedNotes
-            cutoutUrl={heroVisual.url}
-            alt={`${fragrance.brand} ${fragrance.name}`}
-            top={fragrance.notes.top}
-            heart={fragrance.notes.heart}
-            base={fragrance.notes.base}
-            keyNotes={fragrance.notes.key}
-            supporting={fragrance.notes.supporting}
+              cutoutUrl={productTruthVisual.url}
+              alt={`${fragrance.brand} ${fragrance.name}`}
+              top={fragrance.notes.top}
+              heart={fragrance.notes.heart}
+              base={fragrance.notes.base}
+              keyNotes={fragrance.notes.key}
+              supporting={fragrance.notes.supporting}
             />
           </div>
         ) : null}

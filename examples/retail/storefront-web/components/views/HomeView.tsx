@@ -198,7 +198,9 @@ export default function HomeView({
   const spotlightFragrance = spotlight
     ? getLiveFragranceByProductId(String(spotlight.product_id))
     : null;
-  const spotlightVisual = spotlightFragrance?.preferred_visual;
+  const spotlightVisual =
+    spotlightFragrance?.presentation_visual ||
+    spotlightFragrance?.preferred_visual;
   const spotlightModelUrl = spotlightFragrance?.model_3d_url;
   const spotlightBackdropUrl =
     spotlightFragrance?.backdrop_visual?.url;
