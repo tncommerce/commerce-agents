@@ -741,7 +741,7 @@
     {
       "product_id": "SC-SOSPIRO-VIBRATO-100",
       "title": "Sospiro Vibrato Eau de Parfum 100 ml",
-      "image_url": "/products/pilot/sospiro-vibrato-editorial.webp",
+      "image_url": "/products/sospiro-vibrato-100-cutout-production.webp",
       "brand": "Sospiro",
       "price": 229.99,
       "currency": "EUR",
@@ -779,7 +779,8 @@
         "market_price_eur": "229.99",
         "price_per_ml_eur": "2.2999",
         "price_checked_at": "2026-09-09",
-        "relationship_links": "SC-BVLGARI-TYGAR-125|alternative|high;SC-AFNAN-TURATHI-BLUE-90|inspired|high;SC-MAISON-ASRAR-REGENT-100|inspired|high"
+        "relationship_links": "SC-BVLGARI-TYGAR-125|alternative|high;SC-AFNAN-TURATHI-BLUE-90|inspired|high;SC-MAISON-ASRAR-REGENT-100|inspired|high",
+        "product_cutout_url": "/products/sospiro-vibrato-100-cutout-production.webp"
       },
       "in_stock": true,
       "short_description": "Sospiro Vibrato is a citrus, fresh, fruity Eau de Parfum fragrance."
@@ -880,7 +881,7 @@
     {
       "product_id": "SC-ARMANI-SWY-INTENSELY-100",
       "title": "Giorgio Armani Stronger With You Intensely Eau de Parfum 100 ml",
-      "image_url": "/products/pilot/armani-swy-intensely-editorial.webp",
+      "image_url": "/products/armani-swy-intensely-100-cutout-production.webp",
       "brand": "Giorgio Armani",
       "price": 66.04,
       "currency": "EUR",
@@ -918,7 +919,8 @@
         "market_price_eur": "66.04",
         "price_per_ml_eur": "0.6604",
         "price_checked_at": "2026-09-09",
-        "relationship_links": ""
+        "relationship_links": "",
+        "product_cutout_url": "/products/armani-swy-intensely-100-cutout-production.webp"
       },
       "in_stock": true,
       "short_description": "Giorgio Armani Stronger With You Intensely is a sweet, gourmand, spicy Eau de Parfum fragrance."
@@ -1341,7 +1343,7 @@
     {
       "product_id": "SC-PRADA-LHOMME-100",
       "title": "Prada L'Homme Eau de Toilette 100 ml",
-      "image_url": "/products/pilot/prada-lhomme-editorial.webp",
+      "image_url": "/products/prada-lhomme-100-cutout-production.webp",
       "brand": "Prada",
       "price": 74.62,
       "currency": "EUR",
@@ -1379,7 +1381,8 @@
         "market_price_eur": "74.62",
         "price_per_ml_eur": "0.7462",
         "price_checked_at": "2026-09-10",
-        "relationship_links": ""
+        "relationship_links": "",
+        "product_cutout_url": "/products/prada-lhomme-100-cutout-production.webp"
       },
       "in_stock": true,
       "short_description": "Prada L'Homme is a powdery, fresh, floral Eau de Toilette fragrance."
