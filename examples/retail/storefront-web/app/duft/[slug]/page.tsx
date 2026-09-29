@@ -805,6 +805,7 @@ export default async function FragrancePage({
             <FragranceVisualGallery
               assets={fragrance.visuals}
               alt={`${fragrance.brand} ${fragrance.name}`}
+              world={visualTheme}
             />
           </div>
         ) : null}
@@ -1023,6 +1024,7 @@ export default async function FragrancePage({
                             ? "cutout"
                             : "editorial"
                         }
+                        world={visualWorldFor(item.fragrance)}
                         className="h-36 w-full"
                       />
                       <div className="p-3">
