@@ -1,17 +1,16 @@
 {
   "version": 1,
-  "generated_at": "2026-09-29T08:50:31+00:00",
-  "source_fingerprint_sha256": "d45e18bef96bd81768a2c3eb78a7158bffe42bda3bce4ea01c9f56eb3845bc75",
+  "generated_at": "2026-09-29T09:23:10+00:00",
+  "source_fingerprint_sha256": "f08285c8cbdfb101dd35ceba30bb8ee286d891c41fd2a02aa0c5c0624807312c",
   "system": "DUFYND",
   "control_plane": "commerce_jarvis",
   "policy_ref": "scentai_jarvis_operating_policy.json",
-  "overall_state": "waiting_purchase_destinations_and_images",
+  "overall_state": "waiting_licensed_image_sources_and_approval",
   "user_approval_required_now": false,
-  "next_action": "verify_purchase_destinations_and_image_rights",
+  "next_action": "obtain_licensed_image_sources_then_prepare_manual_visual_approval",
   "next_action_class": "auto_allowed",
   "blockers": [
     "release_approved_images_incomplete",
-    "release_purchase_destinations_incomplete",
     "release_promotion_gates_incomplete"
   ],
   "safety": {
@@ -65,7 +64,7 @@
     "mapping_ready": 5,
     "image_identity_source_verified": 5,
     "approved_images": 1,
-    "current_purchase_destinations": 3,
+    "current_purchase_destinations": 5,
     "current_tracked_affiliate_offers": 0,
     "promotion_ready": 1
   },
