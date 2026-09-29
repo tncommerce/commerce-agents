@@ -105,6 +105,29 @@ class DufyndJarvisBridge:
             raise ValueError("DUFYND Jarvis autonomy queue must be a JSON object")
         return payload
 
+    def load_autonomy_task(self, task_id: str) -> dict[str, Any] | None:
+        with self._client() as client:
+            response = client.get(
+                f"{self.supabase_url}/rest/v1/dufynd_autonomy_tasks",
+                headers=_headers(self.secret_key),
+                params={
+                    "select": "*",
+                    "task_id": f"eq.{task_id}",
+                    "limit": "1",
+                },
+            )
+            response.raise_for_status()
+            payload = response.json()
+
+        if not isinstance(payload, list):
+            raise ValueError("DUFYND autonomy task lookup must return a JSON array")
+        if not payload:
+            return None
+        row = payload[0]
+        if not isinstance(row, dict):
+            raise ValueError("DUFYND autonomy task row must be a JSON object")
+        return row
+
     def load_experiment_rubric(self) -> list[dict[str, Any]]:
         payload = self._rpc("get_dufynd_experiment_rubric")
         if not isinstance(payload, list):
@@ -233,6 +256,39 @@ class DufyndJarvisBridge:
         }
         if status not in allowed_statuses:
             raise ValueError("Safe worker may only record non-terminal autonomy task progress.")
+        with self._client() as client:
+            response = client.patch(
+                f"{self.supabase_url}/rest/v1/dufynd_autonomy_tasks",
+                headers={
+                    **_headers(self.secret_key),
+                    "Prefer": "return=minimal",
+                },
+                params={"task_id": f"eq.{task_id}"},
+                json={
+                    "status": status,
+                    "evidence": evidence[:12000],
+                },
+            )
+            response.raise_for_status()
+
+    def set_autonomy_task_status(
+        self,
+        *,
+        task_id: str,
+        status: str,
+        evidence: str,
+    ) -> None:
+        allowed_statuses = {
+            "ready",
+            "in_progress",
+            "done",
+            "waiting_human_input",
+            "waiting_external",
+            "blocked",
+            "approval_required",
+        }
+        if status not in allowed_statuses:
+            raise ValueError(f"Unsupported DUFYND autonomy task status: {status}")
         with self._client() as client:
             response = client.patch(
                 f"{self.supabase_url}/rest/v1/dufynd_autonomy_tasks",
