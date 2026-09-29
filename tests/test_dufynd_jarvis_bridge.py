@@ -12,6 +12,16 @@ from scripts.dufynd_jarvis_bridge import (
 
 def mock_transport() -> httpx.MockTransport:
     def handler(request: httpx.Request) -> httpx.Response:
+        if (
+            request.method == "PATCH"
+            and request.url.path.endswith("/dufynd_autonomy_tasks")
+        ):
+            row = json.loads(request.content)
+            assert request.url.params["task_id"] == "eq.repo_current_commerce"
+            assert row["status"] == "in_progress"
+            assert row["evidence"] == "research evidence"
+            return httpx.Response(204)
+
         if request.url.path.endswith("/rpc/get_dufynd_jarvis_context"):
             return httpx.Response(
                 200,
@@ -278,6 +288,35 @@ def mock_transport() -> httpx.MockTransport:
         return httpx.Response(404)
 
     return httpx.MockTransport(handler)
+
+
+def test_bridge_updates_safe_task_progress_without_terminal_completion() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    bridge.update_autonomy_task_progress(
+        task_id="repo_current_commerce",
+        status="in_progress",
+        evidence="research evidence",
+    )
+
+
+def test_bridge_rejects_terminal_safe_worker_status() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    with pytest.raises(ValueError, match="non-terminal"):
+        bridge.update_autonomy_task_progress(
+            task_id="repo_current_commerce",
+            status="done",
+            evidence="unsafe terminal completion",
+        )
 
 
 def test_bridge_loads_context_and_summary() -> None:
