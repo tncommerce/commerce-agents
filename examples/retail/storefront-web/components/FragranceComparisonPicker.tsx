@@ -181,6 +181,8 @@ export default function FragranceComparisonPicker({
 
   const [leftId, setLeftId] = useState("");
   const [rightId, setRightId] = useState("");
+  const [urlReady, setUrlReady] = useState(false);
+  const [copyStatus, setCopyStatus] = useState("");
   const trackedPairRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -208,7 +210,36 @@ export default function FragranceComparisonPicker({
     ) {
       setRightId(requestedRight);
     }
+    setUrlReady(true);
   }, [sorted]);
+
+  useEffect(() => {
+    if (!urlReady) return;
+
+    const url = new URL(window.location.href);
+    if (leftId) url.searchParams.set("left", leftId);
+    else url.searchParams.delete("left");
+    if (rightId) url.searchParams.set("right", rightId);
+    else url.searchParams.delete("right");
+
+    const nextUrl = `${url.pathname}${url.search}${url.hash}`;
+    const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+    if (nextUrl !== currentUrl) {
+      window.history.replaceState(window.history.state, "", nextUrl);
+    }
+  }, [leftId, rightId, urlReady]);
+
+  const copyComparisonLink = async () => {
+    const url = new URL(window.location.href);
+    url.searchParams.set("left", leftId);
+    url.searchParams.set("right", rightId);
+    try {
+      await navigator.clipboard.writeText(url.href);
+      setCopyStatus("Link kopiert");
+    } catch {
+      setCopyStatus("Kopieren nicht möglich. Bitte die Adresse im Browser kopieren.");
+    }
+  };
 
   const left =
     sorted.find(
@@ -262,7 +293,10 @@ export default function FragranceComparisonPicker({
           </span>
           <select
             value={leftId}
-            onChange={(event) => setLeftId(event.target.value)}
+            onChange={(event) => {
+              setLeftId(event.target.value);
+              setCopyStatus("");
+            }}
             className="h-11 w-full rounded-xl border border-(--line) bg-(--surface) px-3 text-[12px] text-(--ink) outline-none focus:border-(--accent)"
           >
             <option value="">Duft auswählen …</option>
@@ -284,7 +318,10 @@ export default function FragranceComparisonPicker({
           </span>
           <select
             value={rightId}
-            onChange={(event) => setRightId(event.target.value)}
+            onChange={(event) => {
+              setRightId(event.target.value);
+              setCopyStatus("");
+            }}
             className="h-11 w-full rounded-xl border border-(--line) bg-(--surface) px-3 text-[12px] text-(--ink) outline-none focus:border-(--accent)"
           >
             <option value="">Duft auswählen …</option>
@@ -303,6 +340,18 @@ export default function FragranceComparisonPicker({
 
       {validPair && left && right ? (
         <div className="mt-6">
+          <div className="mb-4 flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={() => void copyComparisonLink()}
+              className="rounded-xl border border-(--line) bg-(--surface) px-4 py-2.5 text-[12px] font-semibold text-(--ink) transition hover:border-(--accent)"
+            >
+              Vergleichslink kopieren
+            </button>
+            <span role="status" className="text-[11px] text-(--ink-soft)">
+              {copyStatus}
+            </span>
+          </div>
           <div className="grid gap-3 sm:grid-cols-2">
             <ProductMiniHeader fragrance={left} />
             <ProductMiniHeader fragrance={right} />

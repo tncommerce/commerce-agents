@@ -866,6 +866,39 @@ try {
     await shareContext.close();
   }
 
+  const comparisonContext = await browser.newContext();
+  try {
+    const comparisonPage = await comparisonContext.newPage();
+    const response = await comparisonPage.goto(
+      `${baseUrl}/vergleich?utm_source=qa`,
+      { waitUntil: "networkidle" },
+    );
+    if (!response?.ok()) throw new Error("free comparison did not load");
+    await comparisonPage.getByRole("combobox", { name: "Duft 1" })
+      .selectOption("SC-XERJOFF-NAXOS-100");
+    await comparisonPage.getByRole("combobox", { name: "Duft 2" })
+      .selectOption("SC-SOSPIRO-VIBRATO-100");
+    await comparisonPage.waitForFunction(() => {
+      const url = new URL(window.location.href);
+      return url.searchParams.get("left") === "SC-XERJOFF-NAXOS-100" &&
+        url.searchParams.get("right") === "SC-SOSPIRO-VIBRATO-100" &&
+        url.searchParams.get("utm_source") === "qa";
+    });
+    await comparisonPage.reload({ waitUntil: "networkidle" });
+    if ((await comparisonPage.getByRole("combobox", { name: "Duft 1" }).inputValue()) !== "SC-XERJOFF-NAXOS-100" ||
+        (await comparisonPage.getByRole("combobox", { name: "Duft 2" }).inputValue()) !== "SC-SOSPIRO-VIBRATO-100" ||
+        (await comparisonPage.getByRole("button", { name: "Vergleichslink kopieren" }).count()) !== 1) {
+      throw new Error("free comparison did not restore the shared pair");
+    }
+    report.checks.push({ label: "comparison-share-link", status: "passed" });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({ label: "comparison-share-link", message });
+    report.checks.push({ label: "comparison-share-link", status: "failed", message });
+  } finally {
+    await comparisonContext.close();
+  }
+
   // Phase 2 catalogue sweep: exercise every fragrance detail route once at the
   // primary mobile viewport without multiplying full screenshot artifacts.
   const sweepContext = await browser.newContext({
