@@ -24,4 +24,4 @@ def test_emit_refresh_probe() -> None:
             if item["product_id"] == "SC-RABANNE-1-MILLION-EDT-100"
         ),
     }
-    raise AssertionError("DUFYND_REFRESH_PROBE=" + json.dumps(payload, ensure_ascii=False, sort_keys=True))
+    raise AssertionError(\n        "DUFYND_REFRESH_PROBE=" + json.dumps(payload, ensure_ascii=False, sort_keys=True)\n    )
