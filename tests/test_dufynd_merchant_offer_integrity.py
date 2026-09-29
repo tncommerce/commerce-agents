@@ -318,6 +318,38 @@ def test_rabanne_1_million_offer_selects_edt_100ml_not_parfum() -> None:
     )
 
 
+def test_rabanne_1_million_perfumetrader_affiliate_mapping_is_exact_variant() -> None:
+    evidence = json.loads(
+        Path(
+            "examples/retail/data/dufynd_rabanne_1_million_edt_100_affiliate_evidence_20260929.json"
+        ).read_text(encoding="utf-8")
+    )
+    mappings = json.loads(
+        Path("examples/retail/data/merchant_product_mappings.json").read_text(encoding="utf-8")
+    )["mappings"]
+    offer = next(
+        row
+        for row in _offers()
+        if row["offer_id"] == "perfumetrader-rabanne-1-million-edt-100"
+    )
+
+    assert offer["product_id"] == evidence["product_id"]
+    assert offer["merchant_product_id"] == evidence["merchant_product_id"] == "16978322"
+    assert offer["product_url"] == evidence["current_offer"]["product_url"]
+    assert offer["variant_label"] == "100 ml · Eau de Toilette"
+    assert offer["network"] == evidence["affiliate"]["network"] == "Awin"
+    assert evidence["identity"]["gtin"] == "3349666007921"
+    assert evidence["affiliate"]["tracking_verified"] is True
+    assert evidence["affiliate"]["clickref"] in offer["affiliate_url"]
+    assert any(
+        row["product_id"] == offer["product_id"]
+        and row["merchant"] == "perfumetrader"
+        and row["merchant_product_id"] == offer["merchant_product_id"]
+        and row["gtin"] == evidence["identity"]["gtin"]
+        for row in mappings
+    )
+
+
 def test_ysl_y_offer_selects_edp_100ml_refillable_bottle() -> None:
     evidence = json.loads(
         Path("examples/retail/data/dufynd_ysl_y_edp_100_purchase_evidence.json").read_text(
