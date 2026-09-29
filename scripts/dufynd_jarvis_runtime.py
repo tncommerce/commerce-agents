@@ -468,9 +468,7 @@ def _require_budget_window(bridge: DufyndJarvisBridge) -> tuple[str, dict[str, A
     return budget_id, status
 
 
-def _require_autonomous_session(
-    bridge: DufyndJarvisBridge,
-) -> tuple[str, dict[str, Any]]:
+def _require_autonomous_mode() -> None:
     readiness = runtime_readiness()
     if not readiness["autonomous"]:
         raise RuntimeError(
@@ -478,6 +476,12 @@ def _require_autonomous_session(
             "Set DUFYND_JARVIS_AUTONOMOUS=1 only for an operator-approved budget session."
         )
     _require_active_runtime()
+
+
+def _require_autonomous_session(
+    bridge: DufyndJarvisBridge,
+) -> tuple[str, dict[str, Any]]:
+    _require_autonomous_mode()
     return _require_budget_window(bridge)
 
 
@@ -592,21 +596,87 @@ async def run_prompt(
     return result.text.strip(), result.cost_usd, resolved_budget_id
 
 
-async def process_next(bridge: DufyndJarvisBridge) -> int:
+def _deterministic_event_summary(event: dict[str, Any]) -> str | None:
+    if str(event.get("event_type") or "") != "affiliate_partner_changed":
+        return None
+    payload = event.get("payload")
+    if not isinstance(payload, dict):
+        return None
+
+    readiness_keys = (
+        "feed_ready_before",
+        "feed_ready_after",
+        "tracking_ready_before",
+        "tracking_ready_after",
+    )
+    if any(key not in payload for key in readiness_keys):
+        return None
+    if payload["feed_ready_before"] != payload["feed_ready_after"]:
+        return None
+    if payload["tracking_ready_before"] != payload["tracking_ready_after"]:
+        return None
+
+    merchant = str(
+        payload.get("merchant_name")
+        or payload.get("merchant_id")
+        or event.get("source_id")
+        or "affiliate partner"
+    )
+    before = str(payload.get("status_before") or "unknown")
+    after = str(payload.get("status_after") or "unknown")
+    return (
+        f"Deterministic affiliate status update for {merchant}: {before} -> {after}. "
+        "Feed/tracking readiness did not change, so no model reasoning is required."
+    )
+
+
+async def _process_next_outcome(bridge: DufyndJarvisBridge) -> tuple[int, bool]:
     health = await asyncio.to_thread(bridge.load_health)
     if int((health.get("inbox") or {}).get("pending") or 0) == 0:
         print("DUFYND Jarvis inbox: no pending event.")
-        return 0
+        return 0, False
 
-    budget_id, _ = await asyncio.to_thread(_require_budget_window, bridge)
     event = await asyncio.to_thread(bridge.claim_next_inbox_event)
     if event is None:
         print("DUFYND Jarvis inbox: no pending event.")
-        return 0
+        return 0, False
 
     inbox_id = int(event["inbox_id"])
     attempts = int(event.get("attempts") or 0)
+    budget_id: str | None = None
+
     try:
+        deterministic_summary = _deterministic_event_summary(event)
+        if deterministic_summary is not None:
+            await asyncio.to_thread(
+                bridge.record_run,
+                run_type=f"inbox_deterministic:{event.get('event_type', 'unknown')}",
+                input_summary=json.dumps(event, ensure_ascii=False, default=str)[:4000],
+                output_summary=deterministic_summary,
+                decisions=[
+                    {
+                        "inbox_id": inbox_id,
+                        "event_type": event.get("event_type"),
+                        "cost_usd": 0,
+                        "runtime": "dufynd_jarvis_deterministic_v1",
+                        "reason": "affiliate_status_only_no_readiness_change",
+                    }
+                ],
+                human_approval_required=False,
+                agent_name="jarvis",
+            )
+            await asyncio.to_thread(
+                bridge.complete_inbox_event,
+                inbox_id=inbox_id,
+                status="done",
+            )
+            print(
+                "DUFYND Jarvis deterministically processed "
+                f"inbox_id={inbox_id} event={event.get('event_type')} cost_usd=0"
+            )
+            return 0, False
+
+        budget_id, _ = await asyncio.to_thread(_require_budget_window, bridge)
         text, cost_usd, _ = await run_prompt(
             event_prompt(event),
             bridge,
@@ -641,9 +711,21 @@ async def process_next(bridge: DufyndJarvisBridge) -> int:
         )
         if text:
             print(text)
-        return 0
-    except Exception as error:
-        if isinstance(error, JarvisTurnError) and error.cost_usd is not None:
+        return 0, True
+    except RuntimeError as error:
+        if not isinstance(error, JarvisTurnError):
+            await asyncio.to_thread(
+                bridge.complete_inbox_event,
+                inbox_id=inbox_id,
+                status="pending",
+                error=str(error)[:4000],
+            )
+            print(
+                f"DUFYND Jarvis event {inbox_id} returned to pending at runtime/budget gate: {error}",
+                file=sys.stderr,
+            )
+            raise
+        if error.cost_usd is not None:
             await asyncio.to_thread(
                 bridge.record_run,
                 run_type=f"inbox_failed:{event.get('event_type', 'unknown')}",
@@ -674,7 +756,26 @@ async def process_next(bridge: DufyndJarvisBridge) -> int:
             f"{'queued for retry' if retry else 'marked failed'}: {error}",
             file=sys.stderr,
         )
-        return 1
+        return 1, True
+    except Exception as error:
+        retry = attempts < 3
+        await asyncio.to_thread(
+            bridge.complete_inbox_event,
+            inbox_id=inbox_id,
+            status="pending" if retry else "failed",
+            error=str(error)[:4000],
+        )
+        print(
+            f"DUFYND Jarvis event {inbox_id} failed; "
+            f"{'queued for retry' if retry else 'marked failed'}: {error}",
+            file=sys.stderr,
+        )
+        return 1, budget_id is not None
+
+
+async def process_next(bridge: DufyndJarvisBridge) -> int:
+    result, _used_model = await _process_next_outcome(bridge)
+    return result
 
 
 def safe_task_prompt(task: dict[str, Any]) -> str:
@@ -953,11 +1054,13 @@ async def process_loop(
     *,
     max_events: int = DEFAULT_SUPERVISOR_MAX_EVENTS,
 ) -> int:
-    limit = _bounded_supervisor_max_events(max_events)
-    processed = 0
-    stop_reason = "max_events_reached"
+    model_limit = _bounded_supervisor_max_events(max_events)
+    model_events = 0
+    deterministic_events = 0
+    total_events = 0
+    stop_reason = "max_model_events_reached"
 
-    while processed < limit:
+    while model_events < model_limit and total_events < HARD_SUPERVISOR_MAX_EVENTS:
         health = await asyncio.to_thread(bridge.load_health)
         pending = int((health.get("inbox") or {}).get("pending") or 0)
         if pending <= 0:
@@ -965,25 +1068,34 @@ async def process_loop(
             break
 
         try:
-            result = await process_next(bridge)
+            result, used_model = await _process_next_outcome(bridge)
         except RuntimeError as error:
             stop_reason = "runtime_or_budget_gate"
-            print(f"DUFYND Jarvis supervisor stopped safely after {processed} event(s): {error}")
+            print(f"DUFYND Jarvis supervisor stopped safely after {total_events} event(s): {error}")
             break
 
         if result != 0:
             print(
                 "DUFYND Jarvis supervisor stopped after "
-                f"{processed} completed event(s) because the next event failed.",
+                f"{total_events} completed event(s) because the next event failed.",
                 file=sys.stderr,
             )
             return result
 
-        processed += 1
+        total_events += 1
+        if used_model:
+            model_events += 1
+        else:
+            deterministic_events += 1
+
+    if total_events >= HARD_SUPERVISOR_MAX_EVENTS and model_events < model_limit:
+        stop_reason = "hard_total_event_limit_reached"
 
     print(
         "DUFYND Jarvis supervisor summary | "
-        f"processed={processed} | limit={limit} | stop_reason={stop_reason}"
+        f"processed={total_events} | model_events={model_events} | "
+        f"deterministic_events={deterministic_events} | model_limit={model_limit} | "
+        f"stop_reason={stop_reason}"
     )
     return 0
 

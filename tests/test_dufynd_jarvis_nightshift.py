@@ -289,8 +289,8 @@ def test_nightshift_routes_workers_and_consumes_multiple_tasks(
     )
     monkeypatch.setattr(
         nightshift,
-        "_require_autonomous_session",
-        lambda _bridge: ("budget", {"can_run": True}),
+        "_require_autonomous_mode",
+        lambda: None,
     )
     monkeypatch.setattr(
         nightshift,
@@ -341,14 +341,49 @@ def test_nightshift_routes_workers_and_consumes_multiple_tasks(
     assert (tmp_path / "worker-task.json").exists()
 
 
+def test_nightshift_reports_budget_gate_after_no_cost_event_phase(monkeypatch) -> None:
+    bridge = FakeBridge([task("repo_current_commerce", "commerce", 100)])
+    bridge.inbox_pending = 1
+
+    monkeypatch.setattr(
+        nightshift,
+        "_require_autonomous_mode",
+        lambda: None,
+    )
+
+    async def fake_loop(_bridge, *, max_events):
+        assert max_events == 2
+        return 0
+
+    monkeypatch.setattr(nightshift, "process_loop", fake_loop)
+
+    def exhausted_budget(_bridge):
+        raise RuntimeError("budget window does not permit another run")
+
+    monkeypatch.setattr(nightshift, "_require_budget_window", exhausted_budget)
+
+    session = asyncio.run(
+        nightshift.run_nightshift(
+            bridge,
+            max_tasks=8,
+            max_events=2,
+            worker_timeout_seconds=60,
+            max_retries=1,
+        )
+    )
+
+    assert session["stop_reason"] == "budget_gate"
+    assert session["tasks_attempted"] == 0
+
+
 def test_nightshift_defers_tasks_while_event_backlog_remains(monkeypatch) -> None:
     bridge = FakeBridge([task("repo_current_commerce", "commerce", 100)])
     bridge.inbox_pending = 3
 
     monkeypatch.setattr(
         nightshift,
-        "_require_autonomous_session",
-        lambda _bridge: ("budget", {"can_run": True}),
+        "_require_autonomous_mode",
+        lambda: None,
     )
     monkeypatch.setattr(
         nightshift,
@@ -392,8 +427,8 @@ def test_nightshift_does_not_mark_unclassified_safe_success_done(monkeypatch) ->
 
     monkeypatch.setattr(
         nightshift,
-        "_require_autonomous_session",
-        lambda _bridge: ("budget", {"can_run": True}),
+        "_require_autonomous_mode",
+        lambda: None,
     )
     monkeypatch.setattr(
         nightshift,
@@ -433,8 +468,8 @@ def test_nightshift_retries_failed_task_then_continues(monkeypatch) -> None:
 
     monkeypatch.setattr(
         nightshift,
-        "_require_autonomous_session",
-        lambda _bridge: ("budget", {"can_run": True}),
+        "_require_autonomous_mode",
+        lambda: None,
     )
     monkeypatch.setattr(
         nightshift,

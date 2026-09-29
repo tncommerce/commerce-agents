@@ -11,7 +11,7 @@ from uuid import uuid4
 
 from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
 from scripts.dufynd_jarvis_runtime import (
-    _require_autonomous_session,
+    _require_autonomous_mode,
     _require_budget_window,
     process_branch_task,
     process_loop,
@@ -488,7 +488,7 @@ async def run_nightshift(
     worker_timeout_seconds: int = DEFAULT_WORKER_TIMEOUT_SECONDS,
     max_retries: int = DEFAULT_MAX_RETRIES,
 ) -> dict[str, Any]:
-    _require_autonomous_session(bridge)
+    _require_autonomous_mode()
 
     task_limit = _bounded(max_tasks, minimum=1, maximum=HARD_MAX_TASKS)
     event_limit = _bounded(max_events, minimum=0, maximum=HARD_MAX_EVENTS)
@@ -512,34 +512,34 @@ async def run_nightshift(
     stop_reason = "no_safe_work"
     processed_this_run = 0
 
-    # Consume the bounded inbox backlog before selecting repo-current work so
-    # task prioritization sees the newest audited internal events. If backlog
-    # remains after the configured event budget, fail closed for task execution
-    # instead of acting on an event-stale control plane.
+    # Consume event-first backlog before repo-current work. Deterministic,
+    # no-cost status events do not consume the paid/model event allowance.
+    # If model budget is exhausted, deterministic housekeeping may still run,
+    # then task execution fails closed at the budget gate.
     if event_limit:
+        health_before = await asyncio.to_thread(bridge.load_health)
+        session["inbox_before"] = dict(health_before.get("inbox") or {})
         try:
-            _require_budget_window(bridge)
-        except RuntimeError:
-            stop_reason = "budget_gate"
-        else:
-            health_before = await asyncio.to_thread(bridge.load_health)
-            session["inbox_before"] = dict(health_before.get("inbox") or {})
+            session["event_result"] = await asyncio.wait_for(
+                process_loop(bridge, max_events=event_limit),
+                timeout=timeout_seconds,
+            )
+        except TimeoutError:
+            session["event_result"] = 124
+            stop_reason = "event_timeout"
+        health_after = await asyncio.to_thread(bridge.load_health)
+        session["inbox_after"] = dict(health_after.get("inbox") or {})
+        before_pending = int(session["inbox_before"].get("pending") or 0)
+        after_pending = int(session["inbox_after"].get("pending") or 0)
+        session["events_processed_estimate"] = max(0, before_pending - after_pending)
+        if after_pending > 0 and stop_reason == "no_safe_work":
             try:
-                session["event_result"] = await asyncio.wait_for(
-                    process_loop(bridge, max_events=event_limit),
-                    timeout=timeout_seconds,
-                )
-            except TimeoutError:
-                session["event_result"] = 124
-                stop_reason = "event_timeout"
-            health_after = await asyncio.to_thread(bridge.load_health)
-            session["inbox_after"] = dict(health_after.get("inbox") or {})
-            before_pending = int(session["inbox_before"].get("pending") or 0)
-            after_pending = int(session["inbox_after"].get("pending") or 0)
-            session["events_processed_estimate"] = max(0, before_pending - after_pending)
-            if after_pending > 0 and stop_reason == "no_safe_work":
+                _require_budget_window(bridge)
+            except RuntimeError:
+                stop_reason = "budget_gate"
+            else:
                 stop_reason = "event_backlog_remaining"
-            _persist_session(bridge, session)
+        _persist_session(bridge, session)
 
     while processed_this_run < task_limit and stop_reason == "no_safe_work":
         try:
