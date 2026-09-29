@@ -874,7 +874,7 @@ export default function FragranceCatalogBrowser({
 
       <section
         ref={filterSectionRef}
-        className="mt-4 scroll-mt-3 rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) sm:p-5"
+        className="mt-4 rounded-2xl scroll-mt-3 border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) sm:p-5"
         aria-label="Duftkatalog filtern"
       >
         <div className="grid gap-3 md:grid-cols-[1fr_auto] md:items-end">
