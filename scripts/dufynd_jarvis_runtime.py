@@ -1071,10 +1071,7 @@ async def process_loop(
             result, used_model = await _process_next_outcome(bridge)
         except RuntimeError as error:
             stop_reason = "runtime_or_budget_gate"
-            print(
-                "DUFYND Jarvis supervisor stopped safely after "
-                f"{total_events} event(s): {error}"
-            )
+            print(f"DUFYND Jarvis supervisor stopped safely after {total_events} event(s): {error}")
             break
 
         if result != 0:
