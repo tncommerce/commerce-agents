@@ -32,7 +32,33 @@
       "rights_status": "verified_for_publisher_service",
       "rights_basis_id": "open-beauty-facts-3605533286555-cc-by-sa-3.0",
       "rights_checked_at": "2026-09-27"
+    },
+    {
+      "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+      "candidate_id": "RABANNE-1-MILLION-EDT-100",
+      "brand": "Rabanne",
+      "name": "1 Million",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/2/27/1_Million_PL.JPG",
+      "review_status": "pending_review",
+      "source_class": "licensed_asset_provider",
+      "proposed_image_status": "approved_licensed_image",
+      "exact_variant_verified": true,
+      "rights_evidence": {
+        "rights_basis_id": "wikimedia-commons-1-million-pl-cc-by-sa-3.0-20260929",
+        "rights_status": "verified_for_publisher_service",
+        "rights_checked_at": "2026-09-29",
+        "commercial_use_allowed": true,
+        "public_distribution_allowed": true,
+        "license_name": "CC BY-SA 3.0",
+        "license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+        "attribution_text": "Beemwej / Wikimedia Commons — 1 Million PL.JPG",
+        "share_alike_required": true
+      },
+      "evidence_note": "Wikimedia Commons file 1_Million_PL.JPG is described as 1 Million Paco Rabanne, 100 ml, is the uploader's own work by Beemwej, and is licensed CC BY-SA 3.0. The photographed bottle visibly carries the 100 ml / 3.4 FL.OZ. embossing; candidate is for exact Rabanne 1 Million Eau de Toilette 100 ml visual review only.",
+      "registered_at": "2026-09-29T13:52:00+00:00"
     }
   ],
-  "updated_at": "2026-09-27T16:37:11.349816+00:00"
+  "updated_at": "2026-09-29T13:52:00+00:00"
 }
