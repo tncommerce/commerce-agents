@@ -9,6 +9,14 @@ from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
 
 DEFAULT_REPO_STATUS_PATH = Path("examples/retail/data/scentai_jarvis_master_status.json")
 SNAPSHOT_KEY = "jarvis.repo_state_snapshot"
+PRESERVED_SAME_FINGERPRINT_STATUSES = {
+    "done",
+    "in_progress",
+    "blocked",
+    "waiting_human_input",
+    "waiting_external",
+    "approval_required",
+}
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -80,7 +88,7 @@ def build_sync_plan(repo_status: dict[str, Any]) -> dict[str, Any]:
         title = _humanize_action(next_action, domain)
         evidence = (
             f"Derived from repo Jarvis master status generated_at={generated_at}; "
-            f"fingerprint={fingerprint}; "
+            f"source_fingerprint_sha256={fingerprint}; "
             f"overall_state={raw_state.get('overall_state')}; "
             f"execution_state={raw_state.get('execution_state')}."
         )
@@ -114,12 +122,44 @@ def build_sync_plan(repo_status: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _evidence_has_fingerprint(evidence: object, fingerprint: str) -> bool:
+    text = str(evidence or "")
+    return (
+        f"source_fingerprint_sha256={fingerprint}" in text
+        or f"fingerprint={fingerprint}" in text
+    )
+
+
+def _preserve_same_fingerprint_state(
+    bridge: DufyndJarvisBridge,
+    task: dict[str, Any],
+    fingerprint: str,
+) -> dict[str, Any]:
+    existing = bridge.load_autonomy_task(task["task_id"])
+    if not existing:
+        return task
+
+    existing_status = str(existing.get("status") or "")
+    if existing_status not in PRESERVED_SAME_FINGERPRINT_STATUSES:
+        return task
+    if not _evidence_has_fingerprint(existing.get("evidence"), fingerprint):
+        return task
+
+    preserved = dict(task)
+    preserved["status"] = existing_status
+    preserved["evidence"] = str(existing.get("evidence") or task.get("evidence") or "")
+    return preserved
+
+
 def apply_sync_plan(bridge: DufyndJarvisBridge, plan: dict[str, Any]) -> None:
     snapshot = plan["snapshot"]
     bridge.upsert_master_status(**snapshot)
 
+    fingerprint = str(plan["source_fingerprint_sha256"])
     for task in plan["tasks"]:
-        bridge.upsert_autonomy_task(**task)
+        bridge.upsert_autonomy_task(
+            **_preserve_same_fingerprint_state(bridge, task, fingerprint)
+        )
 
 
 def main() -> int:
