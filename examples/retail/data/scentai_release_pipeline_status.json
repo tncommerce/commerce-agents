@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated_at": "2026-09-29T08:50:31+00:00",
-  "source_fingerprint_sha256": "5e7e80de0add82fe92cde800abd8d958894b13e376ff5a4f7ee204f8fec27507",
+  "source_fingerprint_sha256": "9e7289c0f0becf02b224ee7444fa5b85b58a3233b049028764b80414949d1686",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "release_count": 3,
   "current_release_id": "SCENTAI-RELEASE-01",
@@ -20,9 +20,9 @@
         "mapping_ready": 5,
         "image_identity_source_verified": 5,
         "approved_images": 1,
-        "current_purchase_destinations": 3,
+        "current_purchase_destinations": 0,
         "current_tracked_affiliate_offers": 0,
-        "promotion_ready": 1
+        "promotion_ready": 0
       },
       "write_guard_reason": "Release 01 is the first operational batch. A write is still refused unless every product-level image, purchase-destination and staging QA gate passes."
     },
@@ -35,13 +35,13 @@
         "SCENTAI-RELEASE-01"
       ],
       "dependency_state": "pending_prior_release_validation",
-      "gate_state": "blocked_pending_remaining_product_gates",
+      "gate_state": "blocked_pending_images_and_purchase_destinations",
       "summary": {
         "release_size": 5,
         "mapping_ready": 5,
         "image_identity_source_verified": 5,
         "approved_images": 0,
-        "current_purchase_destinations": 2,
+        "current_purchase_destinations": 0,
         "current_tracked_affiliate_offers": 0,
         "promotion_ready": 0
       },
@@ -57,13 +57,13 @@
         "SCENTAI-RELEASE-02"
       ],
       "dependency_state": "pending_prior_release_validation",
-      "gate_state": "blocked_pending_remaining_product_gates",
+      "gate_state": "blocked_pending_images_and_purchase_destinations",
       "summary": {
         "release_size": 5,
         "mapping_ready": 5,
         "image_identity_source_verified": 5,
         "approved_images": 0,
-        "current_purchase_destinations": 5,
+        "current_purchase_destinations": 0,
         "current_tracked_affiliate_offers": 0,
         "promotion_ready": 0
       },
