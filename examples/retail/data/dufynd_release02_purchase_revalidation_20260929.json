@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "verified_on": "2026-09-29",
+  "status": "read_only_purchase_destination_revalidation",
+  "purpose": "Record exact-variant public merchant evidence for Release 02 purchase destinations whose 72-hour freshness gate expired. This file does not itself modify live offers, affiliate routing, recommendation priority or image approval.",
+  "policy": {
+    "exact_variant_required": true,
+    "public_https_product_page_required": true,
+    "in_stock_required": true,
+    "affiliate_tracking_added": false,
+    "recommendation_priority_changed": false,
+    "image_reuse_rights_inferred": false
+  },
+  "products": [
+    {
+      "product_id": "SC-BURBERRY-GODDESS-EDP-100",
+      "brand": "Burberry",
+      "name": "Goddess",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "gtin": "3616302020652",
+      "merchant_id": "douglas-de",
+      "merchant_name": "Douglas",
+      "merchant_product_id": "1122570",
+      "product_url": "https://www.douglas.de/de/p/5011035040?variant=1122570",
+      "observed_price_eur": 99,
+      "shipping_cost_eur": 0,
+      "in_stock": true,
+      "variant_evidence": "Douglas product page exposes Burberry Goddess Eau de Parfum with selectable 100 ml variant at 99 EUR, article 1122570, and online stock.",
+      "intended_offer_id": "douglas-burberry-goddess-edp-100",
+      "current_live_offer_action": "refresh_last_verified_timestamp_after_state_rebuild_path_is_prepared"
+    },
+    {
+      "product_id": "SC-PRADA-PARADOXE-EDP-90",
+      "brand": "Prada",
+      "name": "Paradoxe",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "gtin": "3614273760164",
+      "merchant_id": "douglas-de",
+      "merchant_name": "Douglas",
+      "merchant_product_id": "1027980",
+      "product_url": "https://www.douglas.de/de/p/5010687030?variant=1027980",
+      "observed_price_eur": 119,
+      "shipping_cost_eur": 0,
+      "in_stock": true,
+      "variant_evidence": "Douglas product page exposes Prada Paradoxe Eau de Parfum with selectable 90 ml variant at 119 EUR, article 1027980, and online stock.",
+      "intended_offer_id": "douglas-prada-paradoxe-edp-90",
+      "current_live_offer_action": "refresh_last_verified_timestamp_after_state_rebuild_path_is_prepared"
+    }
+  ],
+  "limitations": [
+    "No permission to reuse Douglas product imagery is inferred from these product pages.",
+    "No affiliate URL or commission is activated by this revalidation.",
+    "Live merchant_offers.json remains unchanged in this evidence-only step."
+  ]
+}
