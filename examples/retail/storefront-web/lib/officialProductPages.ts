@@ -132,6 +132,10 @@ export const OFFICIAL_PRODUCT_PAGES: Record<string, { merchant: string; url: str
     merchant: "Lancôme",
     url: "https://www.lancome.de/duefte/frauen_parfum/la_vie_est_belle/la_vie_est_belle_eau_de_parfum/3605533286555.html",
   },
+  "SC-RABANNE-1-MILLION-EDT-100": {
+    merchant: "Rabanne",
+    url: "https://www.rabanne.com/be/nl/1million-landing-immersive",
+  },
   "SC-WIDIAN-LONDON-EXTRAIT-50": {
     merchant: "Widian",
     url: "https://widian.com/en/products/london",
