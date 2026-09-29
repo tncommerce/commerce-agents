@@ -4103,6 +4103,15 @@ a.dufynd-comparison-product-card > div:last-child {
 /* DUFYND immersive home discovery — shared house-language worlds */
 .dufynd-home-audience-stage,
 .dufynd-home-selected-stage {
+  --ink: #fffaf1;
+  --ink-soft: rgba(239, 228, 210, 0.66);
+  --ink-faint: rgba(239, 228, 210, 0.46);
+  --surface: rgba(255,255,255,0.06);
+  --card: rgba(17,18,20,0.78);
+  --well: rgba(255,255,255,0.075);
+  --line: rgba(255,255,255,0.11);
+  --accent: #d5a84f;
+  --accent-ink: #e6c57f;
   --dufynd-home-glow-a: rgba(193, 144, 68, 0.26);
   --dufynd-home-glow-b: rgba(230, 198, 135, 0.12);
   position: relative;
