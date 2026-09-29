@@ -42,9 +42,7 @@ def test_live_staging_overlap_requires_explicit_promotion_provenance() -> None:
     staged_ids = {row["product_id"] for row in load_staging()["products"]}
     live = json.loads(Path("examples/retail/data/catalog.json").read_text(encoding="utf-8"))
     live_rows = {
-        row["product_id"]: row
-        for row in live["products"]
-        if row.get("category") == "fragrance"
+        row["product_id"]: row for row in live["products"] if row.get("category") == "fragrance"
     }
 
     overlapping_ids = staged_ids & set(live_rows)
