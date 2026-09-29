@@ -616,7 +616,12 @@ def _deterministic_event_summary(event: dict[str, Any]) -> str | None:
     if payload["tracking_ready_before"] != payload["tracking_ready_after"]:
         return None
 
-    merchant = str(payload.get("merchant_name") or payload.get("merchant_id") or event.get("source_id") or "affiliate partner")
+    merchant = str(
+        payload.get("merchant_name")
+        or payload.get("merchant_id")
+        or event.get("source_id")
+        or "affiliate partner"
+    )
     before = str(payload.get("status_before") or "unknown")
     after = str(payload.get("status_after") or "unknown")
     return (
