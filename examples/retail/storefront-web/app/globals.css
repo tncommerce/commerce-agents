@@ -2204,6 +2204,16 @@ body {
     backdrop-filter: blur(20px) saturate(1.04);
   }
 
+  .dufynd-fragrance-stage-shell {
+    min-height: 258px;
+  }
+
+  .dufynd-fragrance-stage-shell
+    .dufynd-product-stage[data-variant="hero"]
+    .dufynd-product-object {
+    inset: 5% 20% 8%;
+  }
+
   .dufynd-fragrance-phase-rail {
     display: none;
   }
