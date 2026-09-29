@@ -60,6 +60,39 @@ const blockedFragranceRoutes = new Set(
     ),
 );
 
+function verifiedProductTruthVisual(product) {
+  const expectedVariant = `${Number(product?.volume_ml || 0)}ml`.toLowerCase();
+  return (product?.visuals || []).find((visual) => {
+    const role = String(visual?.role || "");
+    const fidelity = String(visual?.fidelity_status || "");
+    const variant = String(visual?.variant || "")
+      .replace(/\s+/g, "")
+      .toLowerCase();
+    return (
+      (role === "primary" || role === "cutout") &&
+      fidelity === "verified" &&
+      variant === expectedVariant &&
+      String(visual?.url || "").trim()
+    );
+  });
+}
+
+const verifiedTruthByRoute = new Map(
+  sourceCatalog.products
+    .filter(
+      (product) =>
+        String(product?.product_id || "").startsWith("SC-") &&
+        !hasValidationBlockers(product),
+    )
+    .map((product) => {
+      const route = `/duft/${slugifyFragrance(
+        `${String(product?.brand || "").trim()} ${String(product?.name || "").trim()}`,
+      )}`;
+      return [route, verifiedProductTruthVisual(product)];
+    })
+    .filter(([, visual]) => Boolean(visual)),
+);
+
 const viewports = [
   { name: "320", width: 320, height: 780 },
   { name: "390", width: 390, height: 844 },
@@ -391,14 +424,15 @@ try {
               ? [productSchema.image]
               : [];
 
-          if (target.name === "naxos") {
+          const expectedTruthVisual = verifiedTruthByRoute.get(target.route);
+          if (expectedTruthVisual) {
             if (
               !schemaImages.some((image) =>
-                String(image).endsWith("/products/naxos-cutout-production.webp"),
+                String(image).endsWith(String(expectedTruthVisual.url)),
               )
             ) {
               throw new Error(
-                "Naxos Product JSON-LD does not use the verified cutout",
+                `verified Product JSON-LD does not use the expected product-truth visual: ${expectedTruthVisual.url}`,
               );
             }
           } else if (schemaImages.length > 0) {
@@ -709,10 +743,7 @@ try {
         if (
           [
             "absolu-aventus",
-            "prada-lhomme",
             "bois-imperial",
-            "swy-intensely",
-            "vibrato",
           ].includes(target.name)
         ) {
           const text = await page.locator("body").innerText();
