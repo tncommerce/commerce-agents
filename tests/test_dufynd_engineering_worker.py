@@ -17,6 +17,7 @@ class BudgetBridge:
             "status": "active" if self.can_run else "planned",
             "model": self.model,
             "can_run": self.can_run,
+            "remaining_usd": 0.10,
         }
 
 
@@ -174,6 +175,19 @@ def test_worker_search_skips_sensitive_files(
     assert [match["path"] for match in report["matches"]] == ["scripts/visible.py"]
 
 
+def test_worker_search_is_literal_not_regex(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    monkeypatch.setattr(worker, "REPO_ROOT", tmp_path)
+    (tmp_path / "scripts").mkdir()
+    (tmp_path / "scripts/visible.py").write_text("TOKEN_MARKER = True\n")
+
+    report = worker._search_text("TOKEN.*")
+
+    assert report["matches"] == []
+
+
 def test_worker_readiness_is_disabled_by_default(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -237,6 +251,25 @@ def test_worker_requires_active_budget_window(
             BudgetBridge(can_run=False),
             "claude-sonnet-5",
         )
+
+
+def test_worker_options_clamp_to_remaining_budget(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("DUFYND_ENGINEERING_WORKER_ACTIVE", "1")
+    monkeypatch.setenv("DUFYND_ENGINEERING_WORKER_MODEL", "claude-sonnet-5")
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+    monkeypatch.setenv("SUPABASE_URL", "https://project.supabase.co")
+    monkeypatch.setenv("SUPABASE_SECRET_KEY", "secret")
+    monkeypatch.setenv("DUFYND_ENGINEERING_WORKER_BUDGET_ID", "budget_test")
+    monkeypatch.setenv("DUFYND_ENGINEERING_WORKER_MAX_BUDGET_USD", "0.25")
+
+    options = worker.make_options(budget_remaining_usd=0.04)
+
+    assert options.max_budget_usd == 0.04
+
+    with pytest.raises(RuntimeError, match="no USD remaining"):
+        worker.make_options(budget_remaining_usd=0)
 
 
 def test_worker_budget_model_must_match(
