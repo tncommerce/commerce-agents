@@ -551,11 +551,17 @@ export default async function FragrancePage({
                 ) : null}
               </div>
 
-              <div className="mt-4">
+              <div className="mt-4 flex flex-wrap items-center gap-2">
                 <FragranceSaveControls
                   productId={fragrance.product_id}
                   compact
                 />
+                <a
+                  href={`/vergleich?left=${encodeURIComponent(fragrance.product_id)}`}
+                  className="rounded-lg border border-(--line) bg-(--surface) px-2.5 py-1.5 text-[11px] font-semibold text-(--accent-ink) transition hover:border-(--accent)"
+                >
+                  Mit anderem Duft vergleichen →
+                </a>
               </div>
 
               <div className="mt-5 grid grid-cols-3 overflow-hidden rounded-2xl border border-(--line) bg-(--surface)">
@@ -817,10 +823,10 @@ export default async function FragrancePage({
                 </p>
               </div>
               <a
-                href="/vergleich"
+                href={`/vergleich?left=${encodeURIComponent(fragrance.product_id)}`}
                 className="text-[12px] font-semibold text-(--accent-ink) hover:underline"
               >
-                Vergleiche entdecken
+                Mit diesem Duft vergleichen
               </a>
             </div>
 
