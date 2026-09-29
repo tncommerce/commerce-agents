@@ -12,6 +12,7 @@ import {
 } from "@/lib/analytics";
 import {
   isVerifiedProductTruthVisual,
+  visualWorldFor,
   type StaticFragrance,
 } from "@/lib/fragranceCatalog";
 import { noteLabel } from "@/lib/noteLabels";
@@ -1344,6 +1345,7 @@ export default function FragranceCatalogBrowser({
                         alt={`${fragrance.brand} ${fragrance.name}`}
                         variant="card"
                         mode={isProductTruth ? "cutout" : "editorial"}
+                        world={visualWorldFor(fragrance)}
                         className="dufynd-catalog-card-visual h-full w-full"
                       />
                     ) : (
