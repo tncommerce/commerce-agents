@@ -13,7 +13,7 @@ def test_dufynd_jarvis_contract_has_current_brand_and_version() -> None:
 
     assert contract["brand"] == "DUFYND"
     assert contract["operator"] == "TNCommerce"
-    assert contract["version"] == "2.7"
+    assert contract["version"] == "2.8"
 
 
 def test_dufynd_jarvis_contract_exposes_required_learning_surfaces() -> None:
@@ -97,6 +97,14 @@ def test_dufynd_jarvis_contract_keeps_active_runtime_off_by_default() -> None:
     assert "pytest -q" in validation["python"]
     assert "build acme-retail-storefront-web" in validation["storefront_when_changed"]
     assert "visual QA" in validation["rule"]
+
+    pr_orchestration = branch_worker["pr_orchestration"]
+    assert pr_orchestration["mode"] == "process-branch-task-pr"
+    assert pr_orchestration["target_base"] == "scentai-mvp"
+    assert pr_orchestration["auto_merge"] is False
+    assert pr_orchestration["main_branch_allowed"] is False
+    assert "does not persist GitHub credentials" in pr_orchestration["credential_rule"]
+    assert "scentai-mvp moved" in pr_orchestration["stale_base_rule"]
 
     control_plane_sync = runtime["control_plane_sync"]
     assert control_plane_sync["status"] == "required_before_active_processing"
