@@ -64,7 +64,7 @@ jobs:
           SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          DUFYND_JARVIS_MODEL: ${{ vars.DUFYND_JARVIS_MODEL }}
+          DUFYND_JARVIS_MODEL: "claude-sonnet-5"
           DUFYND_JARVIS_ACTIVE: "0"
         run: python -m scripts.dufynd_jarvis_runtime --readiness
 
@@ -84,7 +84,7 @@ jobs:
           SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          DUFYND_JARVIS_MODEL: ${{ vars.DUFYND_JARVIS_MODEL }}
+          DUFYND_JARVIS_MODEL: "claude-sonnet-5"
           DUFYND_JARVIS_MAX_TURNS: "8"
           DUFYND_JARVIS_MAX_BUDGET_USD: "0.25"
           DUFYND_JARVIS_BUDGET_ID: "jarvis_activation_pilot_001"
@@ -181,7 +181,7 @@ jobs:
           SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          DUFYND_JARVIS_MODEL: ${{ vars.DUFYND_JARVIS_MODEL }}
+          DUFYND_JARVIS_MODEL: "claude-sonnet-5"
           DUFYND_JARVIS_MAX_TURNS: "8"
           DUFYND_JARVIS_MAX_BUDGET_USD: "0.25"
           DUFYND_JARVIS_BUDGET_ID: "jarvis_activation_pilot_001"
