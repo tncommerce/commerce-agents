@@ -6,9 +6,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-DEFAULT_POLICY_PATH = Path(
-    "examples/retail/data/dufynd_jarvis_self_approval_policy_v2.json"
-)
+DEFAULT_POLICY_PATH = Path("examples/retail/data/dufynd_jarvis_self_approval_policy_v2.json")
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -34,18 +32,12 @@ def _path_blockers(
     expected_branch = rule_context.get("target_branch")
     actual_branch = context.get("target_branch")
     if expected_branch and actual_branch != expected_branch:
-        blockers.append(
-            f"target_branch_must_equal:{expected_branch}"
-        )
+        blockers.append(f"target_branch_must_equal:{expected_branch}")
 
     raw_paths = context.get("changed_paths") or []
     changed_paths = [str(path).replace("\\", "/") for path in raw_paths]
-    denied_prefixes = [
-        str(prefix) for prefix in (rule_context.get("deny_path_prefixes") or [])
-    ]
-    denied_files = set(
-        str(name) for name in (rule_context.get("deny_files") or [])
-    )
+    denied_prefixes = [str(prefix) for prefix in (rule_context.get("deny_path_prefixes") or [])]
+    denied_files = set(str(name) for name in (rule_context.get("deny_files") or []))
 
     for path in changed_paths:
         if any(path.startswith(prefix) for prefix in denied_prefixes):
@@ -141,10 +133,9 @@ def evaluate_action(
             "blockers": [],
         }
 
-    default_decision = (
-        (policy.get("decision_contract") or {}).get("default_for_unknown_action")
-        or "owner_required"
-    )
+    default_decision = (policy.get("decision_contract") or {}).get(
+        "default_for_unknown_action"
+    ) or "owner_required"
     return {
         **base,
         "decision": default_decision,
