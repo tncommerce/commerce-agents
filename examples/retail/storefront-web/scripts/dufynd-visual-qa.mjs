@@ -827,6 +827,45 @@ try {
     await context.close();
   }
 
+  // A chosen scent world and search term should survive sharing and reloads,
+  // without discarding acquisition attribution from the incoming link.
+  const shareContext = await browser.newContext();
+  try {
+    const sharePage = await shareContext.newPage();
+    const shareResponse = await sharePage.goto(
+      `${baseUrl}/duft?utm_source=qa&profil=freshness`,
+      { waitUntil: "networkidle" },
+    );
+    if (!shareResponse?.ok()) {
+      throw new Error("catalog share link did not load");
+    }
+    const freshProfile = sharePage.locator(
+      'section[aria-label="Duftgefühl entdecken"] button[aria-pressed]',
+    ).first();
+    if ((await freshProfile.getAttribute("aria-pressed")) !== "true") {
+      throw new Error("catalog did not restore the shared scent world");
+    }
+    await sharePage.getByRole("searchbox", { name: "Duft, Marke oder Profil" }).fill("Naxos");
+    await sharePage.waitForFunction(() => {
+      const url = new URL(window.location.href);
+      return url.searchParams.get("q") === "Naxos" &&
+        url.searchParams.get("profil") === "freshness" &&
+        url.searchParams.get("utm_source") === "qa";
+    });
+    await sharePage.reload({ waitUntil: "networkidle" });
+    if ((await sharePage.getByRole("searchbox", { name: "Duft, Marke oder Profil" }).inputValue()) !== "Naxos" ||
+        (await freshProfile.getAttribute("aria-pressed")) !== "true") {
+      throw new Error("catalog did not restore the shared search and scent world");
+    }
+    report.checks.push({ label: "catalog-share-link", status: "passed" });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({ label: "catalog-share-link", message });
+    report.checks.push({ label: "catalog-share-link", status: "failed", message });
+  } finally {
+    await shareContext.close();
+  }
+
   // Phase 2 catalogue sweep: exercise every fragrance detail route once at the
   // primary mobile viewport without multiplying full screenshot artifacts.
   const sweepContext = await browser.newContext({

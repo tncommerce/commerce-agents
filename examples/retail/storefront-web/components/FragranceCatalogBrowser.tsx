@@ -350,6 +350,7 @@ export default function FragranceCatalogBrowser({
     useState(false);
   const [visibleCount, setVisibleCount] =
     useState(PAGE_SIZE);
+  const [urlReady, setUrlReady] = useState(false);
   const lastTrackedSearchRef = useRef("");
   const initialSearchAppliedRef = useRef(false);
   const resultsRef = useRef<HTMLHeadingElement>(null);
@@ -400,7 +401,30 @@ export default function FragranceCatalogBrowser({
       setProfile(matchedProfile.value);
       setSort("profile");
     }
+    setUrlReady(true);
   }, []);
+
+  useEffect(() => {
+    if (!urlReady) return;
+
+    const timeout = window.setTimeout(() => {
+      const url = new URL(window.location.href);
+      const query = search.trim().slice(0, 80);
+      if (query) url.searchParams.set("q", query);
+      else url.searchParams.delete("q");
+
+      if (profile !== "all") url.searchParams.set("profil", profile);
+      else url.searchParams.delete("profil");
+
+      const nextUrl = `${url.pathname}${url.search}${url.hash}`;
+      const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+      if (nextUrl !== currentUrl) {
+        window.history.replaceState(window.history.state, "", nextUrl);
+      }
+    }, 250);
+
+    return () => window.clearTimeout(timeout);
+  }, [search, profile, urlReady]);
 
   const brands = useMemo(
     () =>
