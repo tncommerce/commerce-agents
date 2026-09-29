@@ -17,6 +17,7 @@ class FakeBridge:
         }
         self.runs = []
         self.status_writes = []
+        self.inbox_pending = 0
 
     def load_master_status_entry(self, key: str):
         return self.master.get(key)
@@ -89,7 +90,7 @@ class FakeBridge:
     def load_health(self):
         return {
             "state": "idle",
-            "inbox": {"pending": 0, "processing": 0, "failed": 0},
+            "inbox": {"pending": self.inbox_pending, "processing": 0, "failed": 0},
             "pending_human_decisions": 0,
         }
 
@@ -303,6 +304,52 @@ def test_nightshift_routes_workers_and_consumes_multiple_tasks(
     assert session["stop_reason"] == "no_safe_work"
     assert session["status"] == "awaiting_validation"
     assert (tmp_path / "worker-task.json").exists()
+
+
+def test_nightshift_defers_tasks_while_event_backlog_remains(monkeypatch) -> None:
+    bridge = FakeBridge([task("repo_current_commerce", "commerce", 100)])
+    bridge.inbox_pending = 3
+
+    monkeypatch.setattr(
+        nightshift,
+        "_require_autonomous_session",
+        lambda _bridge: ("budget", {"can_run": True}),
+    )
+    monkeypatch.setattr(
+        nightshift,
+        "_require_budget_window",
+        lambda _bridge: ("budget", {"can_run": True}),
+    )
+
+    async def fake_loop(_bridge, *, max_events):
+        assert max_events == 2
+        return 0
+
+    worker_called = False
+
+    async def fake_safe(_bridge, *, task_id=None):
+        nonlocal worker_called
+        worker_called = True
+        return 0
+
+    monkeypatch.setattr(nightshift, "process_loop", fake_loop)
+    monkeypatch.setattr(nightshift, "process_safe_task", fake_safe)
+
+    session = asyncio.run(
+        nightshift.run_nightshift(
+            bridge,
+            max_tasks=8,
+            max_events=2,
+            worker_timeout_seconds=60,
+            max_retries=1,
+        )
+    )
+
+    assert worker_called is False
+    assert session["stop_reason"] == "event_backlog_remaining"
+    assert session["tasks_attempted"] == 0
+    assert session["inbox_before"]["pending"] == 3
+    assert session["inbox_after"]["pending"] == 3
 
 
 def test_nightshift_retries_failed_task_then_continues(monkeypatch) -> None:
