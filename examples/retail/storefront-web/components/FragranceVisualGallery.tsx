@@ -2,6 +2,7 @@ import FragranceVisual from "@/components/FragranceVisual";
 import {
   isVerifiedProductTruthVisual,
   type FragranceVisualAsset,
+  type FragranceVisualWorld,
 } from "@/lib/fragranceCatalog";
 
 const ROLE_LABELS: Record<FragranceVisualAsset["role"], string> = {
@@ -23,9 +24,11 @@ const STATUS_LABELS: Partial<
 export default function FragranceVisualGallery({
   assets,
   alt,
+  world,
 }: {
   assets: FragranceVisualAsset[];
   alt: string;
+  world?: FragranceVisualWorld;
 }) {
   const stillAssets = assets.filter(
     (asset) => asset.role !== "model_3d",
@@ -82,6 +85,7 @@ export default function FragranceVisualGallery({
                 alt={`${alt} – ${ROLE_LABELS[asset.role]}`}
                 variant="card"
                 mode={isProductTruth ? "cutout" : "editorial"}
+                world={world}
                 className="h-48 w-full sm:h-56"
               />
               <figcaption className="flex flex-wrap items-center justify-between gap-2 border-t border-(--line) px-3 py-2.5">
