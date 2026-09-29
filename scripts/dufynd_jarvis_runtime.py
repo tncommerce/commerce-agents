@@ -24,6 +24,9 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 SERVER_NAME = "dufynd_jarvis"
 SERVER_VERSION = "0.1.0"
 
+DEFAULT_SUPERVISOR_MAX_EVENTS = 8
+HARD_SUPERVISOR_MAX_EVENTS = 20
+
 SYSTEM_PROMPT = """\
 You are Jarvis, the internal operating and learning agent for DUFYND, operated by
 TNCommerce.
@@ -554,6 +557,50 @@ async def process_next(bridge: DufyndJarvisBridge) -> int:
         return 1
 
 
+def _bounded_supervisor_max_events(value: int) -> int:
+    return max(1, min(int(value), HARD_SUPERVISOR_MAX_EVENTS))
+
+
+async def process_loop(
+    bridge: DufyndJarvisBridge,
+    *,
+    max_events: int = DEFAULT_SUPERVISOR_MAX_EVENTS,
+) -> int:
+    limit = _bounded_supervisor_max_events(max_events)
+    processed = 0
+    stop_reason = "max_events_reached"
+
+    while processed < limit:
+        health = await asyncio.to_thread(bridge.load_health)
+        pending = int((health.get("inbox") or {}).get("pending") or 0)
+        if pending <= 0:
+            stop_reason = "inbox_empty"
+            break
+
+        try:
+            result = await process_next(bridge)
+        except RuntimeError as error:
+            stop_reason = "runtime_or_budget_gate"
+            print(f"DUFYND Jarvis supervisor stopped safely after {processed} event(s): {error}")
+            break
+
+        if result != 0:
+            print(
+                "DUFYND Jarvis supervisor stopped after "
+                f"{processed} completed event(s) because the next event failed.",
+                file=sys.stderr,
+            )
+            return result
+
+        processed += 1
+
+    print(
+        "DUFYND Jarvis supervisor summary | "
+        f"processed={processed} | limit={limit} | stop_reason={stop_reason}"
+    )
+    return 0
+
+
 async def run_once(prompt: str, bridge: DufyndJarvisBridge) -> int:
     budget_id, _ = await asyncio.to_thread(_require_budget_window, bridge)
     text, cost_usd, _ = await run_prompt(prompt, bridge, budget_id=budget_id)
@@ -593,9 +640,22 @@ def main() -> int:
         help="claim and process one internal Jarvis inbox event",
     )
     group.add_argument(
+        "--process-loop",
+        action="store_true",
+        help="process multiple queued Jarvis events until a safe stop condition",
+    )
+    group.add_argument(
         "--once",
         metavar="PROMPT",
         help="run one manual internal Jarvis task",
+    )
+    parser.add_argument(
+        "--max-events",
+        type=int,
+        default=DEFAULT_SUPERVISOR_MAX_EVENTS,
+        help=(
+            f"maximum events for --process-loop; values are clamped to {HARD_SUPERVISOR_MAX_EVENTS}"
+        ),
     )
     args = parser.parse_args()
 
@@ -604,6 +664,8 @@ def main() -> int:
         return 0
 
     bridge = DufyndJarvisBridge()
+    if args.process_loop:
+        return asyncio.run(process_loop(bridge, max_events=args.max_events))
     if args.process_next:
         return asyncio.run(process_next(bridge))
     return asyncio.run(run_once(args.once, bridge))
