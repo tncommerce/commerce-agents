@@ -25,6 +25,7 @@ import type { Product } from "@/lib/types";
 import FragranceVisual from "../FragranceVisual";
 import FragranceModel3D from "../FragranceModel3D";
 import ProductTile, {
+  ProductImage,
   ProductRating,
   ProductRow,
 } from "../ProductTile";
@@ -507,15 +508,10 @@ export default function HomeView({
                 </div>
 
                 {product?.image_url ? (
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex w-[48%] items-center justify-center p-2">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={product.image_url}
-                      alt=""
-                      aria-hidden
-                      loading="lazy"
-                      decoding="async"
-                      className="max-h-[112px] max-w-full object-contain transition duration-300 group-hover:scale-[1.035]"
+                  <div className="pointer-events-none absolute inset-y-0 right-0 z-[1] flex w-[48%] items-center justify-center p-2">
+                    <ProductImage
+                      product={product}
+                      className="h-[112px] w-full transition duration-300 group-hover:scale-[1.035]"
                     />
                   </div>
                 ) : null}
