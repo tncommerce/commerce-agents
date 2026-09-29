@@ -76,11 +76,7 @@ def build_sync_plan(repo_status: dict[str, Any]) -> dict[str, Any]:
         status, requires_approval = _task_state(raw_state)
         next_action = raw_state.get("next_action")
         action_class = str(raw_state.get("next_action_class") or "").strip() or None
-        blockers = [
-            str(item)
-            for item in (raw_state.get("blockers") or [])
-            if str(item).strip()
-        ]
+        blockers = [str(item) for item in (raw_state.get("blockers") or []) if str(item).strip()]
         title = _humanize_action(next_action, domain)
         evidence = (
             f"Derived from repo Jarvis master status generated_at={generated_at}; "
