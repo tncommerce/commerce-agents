@@ -104,6 +104,9 @@ def test_dufynd_jarvis_contract_keeps_active_runtime_off_by_default() -> None:
     assert "pytest -q" in validation["python"]
     assert "build acme-retail-storefront-web" in validation["storefront_when_changed"]
     assert "visual QA" in validation["rule"]
+    assert "scripts/check.py" in validation["protected_validator_paths"]
+    assert "scripts/dufynd_jarvis_*" in validation["protected_validator_paths"]
+    assert "may not edit" in validation["protected_validator_rule"]
 
     control_plane_sync = runtime["control_plane_sync"]
     assert control_plane_sync["status"] == "required_before_active_processing"
