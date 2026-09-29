@@ -1,6 +1,6 @@
 # DUFYND P0 visual fidelity review packet — 2026-09-29
 
-**Status:** review-only, not approved.
+**Status:** fidelity review recorded; not live-approved.
 
 This packet collects the four existing P0 product-image candidates that are already waiting on a human fidelity gate. A decision here is **visual fidelity only**. It does **not** grant image rights, approve live use, promote a catalog item, or publish anything.
 
@@ -87,3 +87,15 @@ Known finding: the candidate is substantially closer to the official 100 ml pres
 ## Safety boundary
 
 No candidate in this packet may be moved into a verified primary/cutout role solely because of this document. Rights clearance, source provenance, exact-variant identity, image approval and catalog promotion remain separate gates.
+
+
+## Fidelity decision recorded — 2026-09-29
+
+User review of the unified DUFYND website product-image style produced the following visual-fidelity decisions:
+
+- Giorgio Armani — Stronger With You Intensely 100 ml: `approve_fidelity`
+- Prada — L'Homme EDT 100 ml: `approve_fidelity`
+- Sospiro — Vibrato EDP 100 ml: `approve_fidelity`
+- Creed — Absolu Aventus 100 ml: `needs_revision` because exact 100 ml variant identity/fidelity remains unresolved
+
+These decisions are fidelity-only. They do not grant rights, do not authorize production activation, and do not bypass the existing image approval state machine.
