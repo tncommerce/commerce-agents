@@ -12,10 +12,7 @@ from scripts.dufynd_jarvis_bridge import (
 
 def mock_transport() -> httpx.MockTransport:
     def handler(request: httpx.Request) -> httpx.Response:
-        if (
-            request.method == "PATCH"
-            and request.url.path.endswith("/dufynd_autonomy_tasks")
-        ):
+        if request.method == "PATCH" and request.url.path.endswith("/dufynd_autonomy_tasks"):
             row = json.loads(request.content)
             assert request.url.params["task_id"] == "eq.repo_current_commerce"
             assert row["status"] == "in_progress"
