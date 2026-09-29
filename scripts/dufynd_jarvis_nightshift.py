@@ -454,23 +454,6 @@ async def run_nightshift(
     _recover_interrupted_work(bridge, session)
     _persist_session(bridge, session)
 
-    if event_limit:
-        health_before = await asyncio.to_thread(bridge.load_health)
-        session["inbox_before"] = dict(health_before.get("inbox") or {})
-        try:
-            session["event_result"] = await asyncio.wait_for(
-                process_loop(bridge, max_events=event_limit),
-                timeout=timeout_seconds,
-            )
-        except TimeoutError:
-            session["event_result"] = 124
-        health_after = await asyncio.to_thread(bridge.load_health)
-        session["inbox_after"] = dict(health_after.get("inbox") or {})
-        before_pending = int(session["inbox_before"].get("pending") or 0)
-        after_pending = int(session["inbox_after"].get("pending") or 0)
-        session["events_processed_estimate"] = max(0, before_pending - after_pending)
-        _persist_session(bridge, session)
-
     stop_reason = "no_safe_work"
     processed_this_run = 0
 
@@ -512,6 +495,29 @@ async def run_nightshift(
         # A local engineering patch must be validated before another engineering
         # patch can be prepared in the same checkout. Non-engineering GREEN work
         # may continue while that deterministic validation is pending.
+
+    if event_limit:
+        try:
+            _require_budget_window(bridge)
+        except RuntimeError:
+            if stop_reason == "no_safe_work":
+                stop_reason = "budget_gate"
+        else:
+            health_before = await asyncio.to_thread(bridge.load_health)
+            session["inbox_before"] = dict(health_before.get("inbox") or {})
+            try:
+                session["event_result"] = await asyncio.wait_for(
+                    process_loop(bridge, max_events=event_limit),
+                    timeout=timeout_seconds,
+                )
+            except TimeoutError:
+                session["event_result"] = 124
+            health_after = await asyncio.to_thread(bridge.load_health)
+            session["inbox_after"] = dict(health_after.get("inbox") or {})
+            before_pending = int(session["inbox_before"].get("pending") or 0)
+            after_pending = int(session["inbox_after"].get("pending") or 0)
+            session["events_processed_estimate"] = max(0, before_pending - after_pending)
+            _persist_session(bridge, session)
 
     if processed_this_run >= task_limit:
         stop_reason = "task_limit_reached"
