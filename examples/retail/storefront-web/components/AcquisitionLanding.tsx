@@ -1,8 +1,12 @@
 import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
 import GuidedAdvisorLink from "@/components/GuidedAdvisorLink";
 import LegalFooter from "@/components/LegalFooter";
+import FragranceVisual from "@/components/FragranceVisual";
 import type { AdvisorStartKey } from "@/lib/advisorStarts";
-import { LIVE_FRAGRANCES } from "@/lib/fragranceCatalog";
+import {
+  isVerifiedProductTruthVisual,
+  LIVE_FRAGRANCES,
+} from "@/lib/fragranceCatalog";
 
 type SecondaryStart = {
   key: AdvisorStartKey;
@@ -34,6 +38,14 @@ export default function AcquisitionLanding({
   trustNote: string;
 }) {
   const fragranceCount = LIVE_FRAGRANCES.length;
+  const acquisitionSpotlights = [...LIVE_FRAGRANCES]
+    .filter((fragrance) => Boolean(fragrance.preferred_visual?.url))
+    .sort(
+      (a, b) =>
+        b.community.rating_count - a.community.rating_count ||
+        a.brand.localeCompare(b.brand, "de"),
+    )
+    .slice(0, 3);
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#f5f0e8] text-(--ink)">
@@ -68,7 +80,7 @@ export default function AcquisitionLanding({
         </header>
 
         <section
-          className="relative mt-5 isolate overflow-hidden rounded-[30px] border border-white/10 px-5 py-7 text-[#fffdf8] shadow-[0_28px_80px_-44px_rgba(23,21,19,0.9)] sm:px-8 sm:py-10 lg:px-11 lg:py-11"
+          className="dufynd-acquisition-hero relative mt-5 isolate overflow-hidden rounded-[30px] border border-white/10 px-5 py-7 text-[#fffdf8] shadow-[0_28px_80px_-44px_rgba(23,21,19,0.9)] sm:px-8 sm:py-10 lg:px-11 lg:py-11"
           style={{
             background:
               "radial-gradient(circle at 82% 12%, rgba(204, 160, 77, 0.25), transparent 28%), radial-gradient(circle at 8% 90%, rgba(96, 76, 54, 0.17), transparent 32%), linear-gradient(135deg, #171719 0%, #0a0b0d 72%)",
@@ -87,7 +99,8 @@ export default function AcquisitionLanding({
             className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,rgba(255,255,255,0.035),transparent_30%,transparent_72%,rgba(255,255,255,0.02))]"
           />
 
-          <div className="relative z-10 max-w-3xl">
+          <div className="dufynd-acquisition-hero-grid relative z-10 grid gap-7 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
+            <div className="dufynd-acquisition-copy max-w-3xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.17em] text-[#e6c77f] backdrop-blur-md">
               <span className="h-1.5 w-1.5 rounded-full bg-[#d8ad55] shadow-[0_0_14px_rgba(216,173,85,0.9)]" />
               {eyebrow}
@@ -128,6 +141,58 @@ export default function AcquisitionLanding({
                 ))}
               </div>
             ) : null}
+            </div>
+
+            {acquisitionSpotlights.length ? (
+              <div
+                className="dufynd-acquisition-stage"
+                aria-label="Auswahl aus dem aktuellen DUFYND Katalog"
+              >
+                <div
+                  aria-hidden
+                  className="dufynd-acquisition-stage-glow"
+                />
+                {acquisitionSpotlights.map((fragrance, index) => {
+                  const visual = fragrance.preferred_visual;
+                  const isProductTruth =
+                    isVerifiedProductTruthVisual(visual);
+
+                  return (
+                    <a
+                      key={fragrance.product_id}
+                      href={`/duft/${fragrance.slug}`}
+                      className="dufynd-acquisition-bottle"
+                      data-dufynd-acquisition-slot={index + 1}
+                      aria-label={`${fragrance.brand} ${fragrance.name} im Katalog öffnen`}
+                    >
+                      <div className="dufynd-acquisition-bottle-visual">
+                        <FragranceVisual
+                          imageUrl={visual?.url}
+                          cutoutUrl={
+                            isProductTruth ? visual?.url : undefined
+                          }
+                          alt={`${fragrance.brand} ${fragrance.name}`}
+                          variant="card"
+                          mode={
+                            isProductTruth ? "cutout" : "editorial"
+                          }
+                          className="h-full w-full"
+                          priority={index === 0}
+                        />
+                      </div>
+                      <div className="dufynd-acquisition-bottle-meta">
+                        <span>{fragrance.brand}</span>
+                        <strong>{fragrance.name}</strong>
+                      </div>
+                    </a>
+                  );
+                })}
+                <div className="dufynd-acquisition-stage-label">
+                  <span>Aus dem Katalog</span>
+                  <strong>{fragranceCount} Live-Düfte</strong>
+                </div>
+              </div>
+            ) : null}
           </div>
         </section>
 
@@ -138,7 +203,7 @@ export default function AcquisitionLanding({
           {points.map((point, index) => (
             <article
               key={point.title}
-              className="group rounded-[22px] border border-(--line) bg-[#fffdf8] p-5 shadow-[0_12px_34px_-28px_rgba(23,21,19,0.55)] transition hover:-translate-y-0.5 hover:border-[#b88934]/40"
+              className="dufynd-acquisition-point group rounded-[22px] border border-(--line) bg-[#fffdf8] p-5 shadow-[0_12px_34px_-28px_rgba(23,21,19,0.55)]"
             >
               <div className="flex items-start justify-between gap-3">
                 <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#9a7636]">
