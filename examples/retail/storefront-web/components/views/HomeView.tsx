@@ -291,6 +291,64 @@ export default function HomeView({
           </div>
         </section>
       ) : null}
+
+      <section
+        aria-labelledby="dufynd-home-search-heading"
+        className="rounded-[22px] border border-(--line) bg-(--card) p-3.5 shadow-(--shadow-sm) sm:p-4"
+      >
+        <div className="grid gap-3 lg:grid-cols-[0.72fr_1.28fr] lg:items-center">
+          <div>
+            <div className="text-[9.5px] font-semibold uppercase tracking-[0.13em] text-(--accent-ink)">
+              Direkt entdecken
+            </div>
+            <h2
+              id="dufynd-home-search-heading"
+              className="mt-1 text-[16px] font-semibold tracking-[-0.02em] text-(--ink)"
+            >
+              Schon einen Duft oder eine Marke im Kopf?
+            </h2>
+            <p className="mt-1 text-[11.5px] leading-5 text-(--ink-soft)">
+              Suche direkt im aktuellen DUFYND-Katalog oder öffne den Vergleich.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <form
+              action="/duft"
+              method="get"
+              role="search"
+              aria-label="DUFYND Duftkatalog durchsuchen"
+              className="flex min-w-0 flex-1 gap-2"
+            >
+              <label htmlFor="dufynd-home-search" className="sr-only">
+                Duft oder Marke suchen
+              </label>
+              <input
+                id="dufynd-home-search"
+                name="q"
+                type="search"
+                maxLength={80}
+                placeholder="z. B. Naxos, Dior oder Vanille"
+                className="min-w-0 flex-1 rounded-xl border border-(--line) bg-(--surface) px-3.5 py-2.5 text-[12.5px] text-(--ink) outline-none transition placeholder:text-(--ink-faint) focus:border-(--accent)"
+              />
+              <button
+                type="submit"
+                className="shrink-0 rounded-xl bg-(--ink) px-4 py-2.5 text-[12px] font-semibold text-(--surface) transition hover:opacity-90"
+              >
+                Suchen
+              </button>
+            </form>
+
+            <a
+              href="/vergleich"
+              className="rounded-xl border border-(--line) bg-(--surface) px-4 py-2.5 text-center text-[12px] font-semibold text-(--accent-ink) transition hover:border-(--accent)"
+            >
+              Düfte vergleichen
+            </a>
+          </div>
+        </div>
+      </section>
+
       <div className="[&_button]:py-2.5 sm:[&_button]:py-3">
         <Starters items={STARTERS} />
       </div>
