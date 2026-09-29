@@ -114,8 +114,10 @@ function ProfileMeter({
 
 function ProductMiniHeader({
   fragrance,
+  side,
 }: {
   fragrance: StaticFragrance;
+  side: "left" | "right";
 }) {
   const visual = fragrance.preferred_visual;
   const isProductTruth = isVerifiedProductTruthVisual(visual);
@@ -123,7 +125,8 @@ function ProductMiniHeader({
   return (
     <a
       href={`/duft/${fragrance.slug}`}
-      className="overflow-hidden rounded-2xl border border-(--line) bg-(--card) shadow-(--shadow-sm) transition hover:border-(--ink)"
+      className="dufynd-comparison-product-card overflow-hidden rounded-2xl border border-(--line) bg-(--card) shadow-(--shadow-sm)"
+      data-dufynd-comparison-side={side}
     >
       {fragrance.model_3d_url ? (
         <FragranceModel3D
@@ -134,7 +137,7 @@ function ProductMiniHeader({
             isProductTruth ? fragrance.backdrop_visual?.url : undefined
           }
           alt={`${fragrance.brand} ${fragrance.name}`}
-          className="h-40 w-full"
+          className="dufynd-comparison-product-visual h-40 w-full"
         />
       ) : (
         <FragranceVisual
@@ -146,7 +149,7 @@ function ProductMiniHeader({
           alt={`${fragrance.brand} ${fragrance.name}`}
           variant="card"
           mode={isProductTruth ? "cutout" : "editorial"}
-          className="h-40 w-full"
+          className="dufynd-comparison-product-visual h-40 w-full"
         />
       )}
       <div className="p-3.5">
@@ -271,7 +274,7 @@ export default function FragranceComparisonPicker({
   }, [left, right, validPair]);
 
   return (
-    <section className="mt-8 rounded-3xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) sm:p-5">
+    <section className="dufynd-comparison-picker mt-8 rounded-3xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) sm:p-5">
       <div className="max-w-2xl">
         <div className="text-[10.5px] font-semibold uppercase tracking-[0.1em] text-(--ink-soft)">
           Freier Vergleich
@@ -352,15 +355,21 @@ export default function FragranceComparisonPicker({
               {copyStatus}
             </span>
           </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <ProductMiniHeader fragrance={left} />
-            <ProductMiniHeader fragrance={right} />
+          <div className="dufynd-comparison-live-stage grid gap-3 sm:grid-cols-2">
+            <div
+              aria-hidden
+              className="dufynd-comparison-axis"
+            >
+              <span>vs</span>
+            </div>
+            <ProductMiniHeader fragrance={left} side="left" />
+            <ProductMiniHeader fragrance={right} side="right" />
           </div>
 
           <div
             role="table"
             aria-label={`Freier Duftvergleich ${left.name} und ${right.name}`}
-            className="mt-4 overflow-hidden rounded-2xl border border-(--line) bg-(--surface)"
+            className="dufynd-comparison-table mt-4 overflow-hidden rounded-2xl border border-(--line) bg-(--surface)"
           >
             <div
               role="row"
@@ -449,7 +458,7 @@ export default function FragranceComparisonPicker({
             Verfügbare Händlerangebote werden auf den Duftseiten separat geprüft.
           </p>
 
-          <section className="relative mt-4 overflow-hidden rounded-2xl border border-[#d9bd82]/20 bg-[#15120f] p-4 text-white shadow-[0_18px_55px_-34px_rgba(36,24,8,0.9)] sm:p-5">
+          <section className="dufynd-comparison-dna-stage relative mt-4 overflow-hidden rounded-2xl border border-[#d9bd82]/20 bg-[#15120f] p-4 text-white shadow-[0_18px_55px_-34px_rgba(36,24,8,0.9)] sm:p-5">
             <div
               aria-hidden
               className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(217,189,130,0.15),transparent_45%)]"

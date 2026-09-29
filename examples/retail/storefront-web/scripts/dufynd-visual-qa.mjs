@@ -726,6 +726,31 @@ try {
           }
         }
 
+        if (target.name === "comparisons") {
+          if ((await page.locator(".dufynd-comparison-picker").count()) !== 1) {
+            throw new Error("free comparison is missing the immersive picker surface");
+          }
+          if ((await page.locator(".dufynd-comparison-live-stage").count()) !== 1) {
+            throw new Error("free comparison is missing the immersive dual stage");
+          }
+          if ((await page.locator(".dufynd-comparison-product-card").count()) !== 2) {
+            throw new Error(
+              `free comparison expected 2 product stages, got ${await page.locator(".dufynd-comparison-product-card").count()}`,
+            );
+          }
+        }
+
+        if (target.name === "comparison-turathi-tygar") {
+          if ((await page.locator(".dufynd-comparison-dual-stage").count()) !== 1) {
+            throw new Error("documented comparison is missing the immersive dual stage");
+          }
+          if ((await page.locator(".dufynd-comparison-product-card").count()) !== 2) {
+            throw new Error(
+              `documented comparison expected 2 product stages, got ${await page.locator(".dufynd-comparison-product-card").count()}`,
+            );
+          }
+        }
+
         if (target.name === "catalog") {
           const catalogPage = page.locator("main.dufynd-catalog-page");
           if ((await catalogPage.count()) !== 1) {

@@ -69,14 +69,19 @@ function formatNumber(
 
 function ProductHeader({
   fragrance,
+  side,
 }: {
   fragrance: StaticFragrance;
+  side: "left" | "right";
 }) {
   const visual = fragrance.preferred_visual;
   const isProductTruth = isVerifiedProductTruthVisual(visual);
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-(--line) bg-(--card)">
+    <div
+      className="dufynd-comparison-product-card overflow-hidden rounded-2xl border border-(--line) bg-(--card)"
+      data-dufynd-comparison-side={side}
+    >
       <a href={`/duft/${fragrance.slug}`}>
         {fragrance.model_3d_url ? (
           <FragranceModel3D
@@ -87,7 +92,7 @@ function ProductHeader({
               isProductTruth ? fragrance.backdrop_visual?.url : undefined
             }
             alt={`${fragrance.brand} ${fragrance.name}`}
-            className="h-56 w-full"
+            className="dufynd-comparison-product-visual h-56 w-full"
           />
         ) : (
           <FragranceVisual
@@ -99,7 +104,7 @@ function ProductHeader({
             alt={`${fragrance.brand} ${fragrance.name}`}
             variant="card"
             mode={isProductTruth ? "cutout" : "editorial"}
-            className="h-56 w-full"
+            className="dufynd-comparison-product-visual h-56 w-full"
           />
         )}
         <div className="p-4">
@@ -229,7 +234,7 @@ export default async function ComparisonPage({
   ).replaceAll("<", "\\u003c");
 
   return (
-    <main className="min-h-screen bg-(--surface) text-(--ink)">
+    <main className="dufynd-comparison-page min-h-screen bg-(--surface) text-(--ink)">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: breadcrumbJson }}
@@ -239,7 +244,7 @@ export default async function ComparisonPage({
         productId={left.product_id}
         relatedProductId={right.product_id}
       />
-      <header className="border-b border-(--line) bg-(--card)">
+      <header className="dufynd-comparison-header border-b border-(--line) bg-(--card)">
         <div className="mx-auto flex max-w-[1080px] items-center justify-between gap-4 px-4 py-4 sm:px-6">
           <a
             href="/"
@@ -285,7 +290,7 @@ export default async function ComparisonPage({
           </span>
         </nav>
 
-        <section className="relative overflow-hidden rounded-[30px] border border-[#d7c7a2]/45 bg-[#15120f] p-5 text-white shadow-[0_24px_80px_-38px_rgba(40,27,10,0.75)] sm:p-7">
+        <section className="dufynd-comparison-hero relative overflow-hidden rounded-[30px] border border-[#d7c7a2]/45 bg-[#15120f] p-5 text-white shadow-[0_24px_80px_-38px_rgba(40,27,10,0.75)] sm:p-7">
           <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_12%,rgba(212,174,101,0.20),transparent_34%),linear-gradient(135deg,#17130f_0%,#0e0c0a_68%,#211a11_100%)]" />
           <div className="relative max-w-3xl">
             <div className="text-[10px] font-semibold uppercase tracking-[0.17em] text-[#d9bd82]">
@@ -309,18 +314,21 @@ export default async function ComparisonPage({
           </div>
         </section>
 
-        <section className="relative mt-5 grid gap-4 rounded-[28px] border border-[#e1d4ba] bg-[linear-gradient(135deg,#fbf6ec,#fffdf8)] p-3 sm:grid-cols-2 sm:p-4">
-          <ProductHeader fragrance={left} />
-          <div aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#d7bf8e] bg-[#fffaf0] px-3 py-2 text-[10px] font-bold uppercase text-[#7e5b20] shadow-md sm:block">
-            vs
+        <section className="dufynd-comparison-dual-stage relative mt-5 grid gap-4 rounded-[28px] border border-[#e1d4ba] p-3 sm:grid-cols-2 sm:p-4">
+          <div
+            aria-hidden
+            className="dufynd-comparison-axis"
+          >
+            <span>vs</span>
           </div>
-          <ProductHeader fragrance={right} />
+          <ProductHeader fragrance={left} side="left" />
+          <ProductHeader fragrance={right} side="right" />
         </section>
 
         <section
           role="table"
           aria-label={`Duftvergleich ${left.name} und ${right.name}`}
-          className="mt-5 overflow-hidden rounded-2xl border border-(--line) bg-(--card) shadow-(--shadow-sm)"
+          className="dufynd-comparison-table mt-5 overflow-hidden rounded-2xl border border-(--line) bg-(--card) shadow-(--shadow-sm)"
         >
           <div
             role="row"

@@ -3068,3 +3068,307 @@ body {
     transition: none !important;
   }
 }
+
+
+/* DUFYND immersive comparison stage v1 */
+.dufynd-comparison-page {
+  background:
+    radial-gradient(circle at 18% 5%, rgba(191, 144, 70, 0.10), transparent 30rem),
+    radial-gradient(circle at 86% 24%, rgba(91, 75, 62, 0.07), transparent 26rem),
+    linear-gradient(180deg, #f3eee6 0%, #faf7f1 42%, #f4eee5 100%);
+}
+
+.dufynd-comparison-header {
+  position: relative;
+  z-index: 30;
+  background: rgba(252, 249, 244, 0.92);
+  backdrop-filter: blur(16px) saturate(1.05);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.82);
+}
+
+.dufynd-comparison-hero {
+  isolation: isolate;
+  border-color: rgba(255,255,255,0.09);
+  background:
+    radial-gradient(circle at 18% 18%, rgba(210,164,83,0.15), transparent 28%),
+    radial-gradient(circle at 84% 74%, rgba(120,83,47,0.13), transparent 30%),
+    linear-gradient(135deg, #08090b 0%, #111012 52%, #08090b 100%);
+  box-shadow:
+    0 38px 90px -54px rgba(20,16,11,0.92),
+    inset 0 1px 0 rgba(255,255,255,0.07);
+}
+
+.dufynd-comparison-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle, rgba(255,242,211,0.54) 0 0.55px, transparent 0.86px),
+    radial-gradient(circle, rgba(255,255,255,0.28) 0 0.45px, transparent 0.72px);
+  background-size: 97px 97px, 149px 149px;
+  background-position: 14px 17px, 62px 36px;
+  opacity: 0.16;
+  mask-image: linear-gradient(90deg, transparent, #000 32% 100%);
+}
+
+.dufynd-comparison-picker {
+  position: relative;
+  isolation: isolate;
+  border-color: rgba(125, 96, 57, 0.14);
+  background:
+    linear-gradient(145deg, rgba(255,253,249,0.96), rgba(247,241,232,0.90));
+  box-shadow:
+    0 30px 72px -50px rgba(55,38,19,0.52),
+    inset 0 1px 0 rgba(255,255,255,0.92);
+}
+
+.dufynd-comparison-live-stage,
+.dufynd-comparison-dual-stage {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 25% 28%, rgba(194,147,74,0.16), transparent 30%),
+    radial-gradient(circle at 76% 31%, rgba(112,92,77,0.16), transparent 31%),
+    linear-gradient(135deg, #0b0c0e 0%, #121113 49%, #090a0c 100%);
+  box-shadow:
+    0 30px 74px -48px rgba(0,0,0,0.86),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+.dufynd-comparison-live-stage {
+  padding: 14px;
+}
+
+.dufynd-comparison-dual-stage {
+  border-color: rgba(255,255,255,0.08);
+  background:
+    radial-gradient(circle at 24% 30%, rgba(202,152,76,0.18), transparent 30%),
+    radial-gradient(circle at 76% 30%, rgba(112,93,80,0.17), transparent 30%),
+    linear-gradient(135deg, #0a0b0d 0%, #111012 50%, #090a0c 100%);
+}
+
+.dufynd-comparison-live-stage::before,
+.dufynd-comparison-dual-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent 48.5%, rgba(255,255,255,0.055) 50%, transparent 51.5%),
+    radial-gradient(ellipse at 50% 112%, rgba(214,177,107,0.12), transparent 46%);
+}
+
+.dufynd-comparison-axis {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 8;
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(222,190,132,0.34);
+  border-radius: 999px;
+  color: rgba(255,242,214,0.90);
+  background: rgba(10,11,13,0.72);
+  box-shadow:
+    0 14px 30px -18px rgba(0,0,0,0.92),
+    0 0 28px rgba(209,169,96,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+  backdrop-filter: blur(12px);
+}
+
+.dufynd-comparison-axis span {
+  font-size: 9px;
+  font-weight: 820;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+}
+
+.dufynd-comparison-product-card {
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  border-color: rgba(255,255,255,0.09);
+  background: rgba(255,255,255,0.035);
+  color: rgba(255,255,255,0.92);
+  box-shadow:
+    0 22px 48px -34px rgba(0,0,0,0.82),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.dufynd-comparison-product-card[data-dufynd-comparison-side="left"] {
+  --dufynd-comparison-glow: rgba(205, 157, 80, 0.26);
+}
+
+.dufynd-comparison-product-card[data-dufynd-comparison-side="right"] {
+  --dufynd-comparison-glow: rgba(139, 111, 88, 0.24);
+}
+
+.dufynd-comparison-product-card:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--dufynd-comparison-glow) 62%, rgba(255,255,255,0.12));
+  box-shadow:
+    0 30px 62px -36px rgba(0,0,0,0.92),
+    0 0 34px -20px var(--dufynd-comparison-glow),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+.dufynd-comparison-product-card > a,
+a.dufynd-comparison-product-card {
+  color: inherit;
+}
+
+.dufynd-comparison-product-card > a > div:last-child,
+a.dufynd-comparison-product-card > div:last-child {
+  position: relative;
+  z-index: 3;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  background: rgba(10,11,13,0.68);
+  color: rgba(255,255,255,0.92);
+  backdrop-filter: blur(14px);
+}
+
+.dufynd-comparison-product-card .text-\(--ink\) {
+  color: rgba(255,255,255,0.92);
+}
+
+.dufynd-comparison-product-card .text-\(--ink-soft\) {
+  color: rgba(255,255,255,0.52);
+}
+
+.dufynd-comparison-product-visual {
+  position: relative;
+  z-index: 1;
+  background:
+    radial-gradient(circle at 50% 45%, var(--dufynd-comparison-glow), transparent 40%),
+    linear-gradient(145deg, rgba(255,255,255,0.025), transparent);
+}
+
+.dufynd-comparison-product-visual.dufynd-product-stage,
+.dufynd-comparison-product-visual.dufynd-editorial-depth-stage {
+  background:
+    radial-gradient(circle at 50% 43%, var(--dufynd-comparison-glow), transparent 38%),
+    transparent;
+}
+
+.dufynd-comparison-product-visual .dufynd-product-light {
+  background: radial-gradient(
+    circle at var(--dufynd-mx) var(--dufynd-my),
+    rgba(255,250,233,0.46) 0,
+    var(--dufynd-comparison-glow) 24%,
+    transparent 48%
+  );
+}
+
+.dufynd-comparison-product-visual .dufynd-product-image {
+  filter:
+    drop-shadow(0 34px 28px rgba(0,0,0,0.44))
+    drop-shadow(0 9px 12px rgba(0,0,0,0.28))
+    drop-shadow(0 0 22px var(--dufynd-comparison-glow));
+}
+
+.dufynd-comparison-product-visual .dufynd-editorial-depth-fill {
+  filter: blur(30px) brightness(0.42) saturate(0.86);
+  opacity: 0.66;
+}
+
+.dufynd-comparison-table {
+  border-color: rgba(125,96,57,0.13);
+  background:
+    linear-gradient(145deg, rgba(255,253,249,0.95), rgba(248,242,233,0.90));
+  box-shadow:
+    0 22px 58px -42px rgba(52,37,21,0.38),
+    inset 0 1px 0 rgba(255,255,255,0.90);
+}
+
+.dufynd-comparison-dna-stage {
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 50% -10%, rgba(217,189,130,0.19), transparent 42%),
+    linear-gradient(135deg, #0a0b0d, #15120f 52%, #090a0c);
+}
+
+.dufynd-comparison-pair-card {
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(129,98,58,0.14);
+  background:
+    linear-gradient(145deg, rgba(255,253,249,0.96), rgba(247,241,232,0.90));
+  box-shadow:
+    0 26px 62px -46px rgba(47,34,20,0.44),
+    inset 0 1px 0 rgba(255,255,255,0.92);
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.dufynd-comparison-pair-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(205,157,80,0.08), transparent 25%),
+    radial-gradient(circle at 82% 12%, rgba(132,104,80,0.07), transparent 25%);
+}
+
+.dufynd-comparison-pair-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(179,137,74,0.30);
+  box-shadow:
+    0 34px 74px -44px rgba(47,34,20,0.54),
+    0 12px 32px -28px rgba(184,137,52,0.36);
+}
+
+.dufynd-comparison-thumbnail {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(203,157,82,0.13), transparent 42%),
+    linear-gradient(145deg, #171719, #0b0c0e);
+}
+
+@media (max-width: 639px) {
+  .dufynd-comparison-live-stage,
+  .dufynd-comparison-dual-stage {
+    padding: 12px;
+  }
+
+  .dufynd-comparison-axis {
+    top: 50%;
+    width: 38px;
+    height: 38px;
+  }
+
+  .dufynd-comparison-live-stage {
+    grid-template-columns: 1fr;
+  }
+
+  .dufynd-comparison-live-stage::before,
+  .dufynd-comparison-dual-stage::before {
+    background:
+      linear-gradient(180deg, transparent 48.5%, rgba(255,255,255,0.05) 50%, transparent 51.5%),
+      radial-gradient(ellipse at 50% 112%, rgba(214,177,107,0.10), transparent 46%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dufynd-comparison-product-card,
+  .dufynd-comparison-pair-card {
+    transition: none !important;
+  }
+}
