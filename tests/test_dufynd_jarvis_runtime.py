@@ -7,6 +7,7 @@ import subprocess
 import sys
 
 import pytest
+
 import scripts.dufynd_jarvis_runtime as jarvis_runtime
 from scripts.dufynd_jarvis_runtime import (
     SYSTEM_PROMPT,
