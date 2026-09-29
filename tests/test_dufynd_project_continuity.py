@@ -335,3 +335,41 @@ def test_global_context_can_see_cross_domain_tasks() -> None:
     ids = {row["task_id"] for row in context["active_tasks"]}
     assert {"tech_ready", "commerce_ready", "content_ready", "jarvis_work"} <= ids
     assert context["pending_decisions"][0]["decision_id"] == "d1"
+
+
+def test_fresh_checkpoint_supplies_next_action_when_queue_has_no_domain_task() -> None:
+    context = build_bootstrap_context(
+        logical_domain="tech",
+        repo_status=sample_repo_status(),
+        contract=sample_contract(),
+        live_context=live_context(),
+        autonomy_queue={},
+        health={},
+        pending_decisions=[],
+        repo_head="deadbeef",
+    )
+
+    assert context["freshness"]["stale"] is False
+    assert context["checkpoint"]["fresh"] is True
+    assert context["active_tasks"] == []
+    assert context["next_safe_action"]["source"] == "checkpoint"
+    assert context["next_safe_action"]["action"] == "B"
+
+
+def test_stale_checkpoint_never_supplies_fallback_action() -> None:
+    context = build_bootstrap_context(
+        logical_domain="tech",
+        repo_status=sample_repo_status("new123"),
+        contract=sample_contract(),
+        live_context=live_context(
+            snapshot_fingerprint="old123",
+            checkpoint_fingerprint="old123",
+        ),
+        autonomy_queue={},
+        health={},
+        pending_decisions=[],
+        repo_head="deadbeef",
+    )
+
+    assert context["freshness"]["stale"] is True
+    assert context["next_safe_action"] is None
