@@ -97,11 +97,10 @@ function featured(catalog: Record<string, Product>): Product[] {
         String(product.product_id),
       );
 
-      return (
-        String(product.image_url ?? "").includes("/products/pilot/") ||
-        isVerifiedProductTruthVisual(
-          fragrance?.preferred_visual,
-        )
+      return Boolean(
+        fragrance?.presentation_visual?.url ||
+          fragrance?.preferred_visual?.url ||
+          product.image_url,
       );
     })
     .sort(
