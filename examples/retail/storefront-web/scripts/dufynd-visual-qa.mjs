@@ -733,6 +733,29 @@ try {
               "catalog is missing the DUFYND editorial page ground",
             );
           }
+          const discoveryHero = page.locator(
+            ".dufynd-catalog-discovery-hero",
+          );
+          if ((await discoveryHero.count()) !== 1) {
+            throw new Error(
+              "catalog is missing the immersive discovery hero",
+            );
+          }
+          const discoveryBottles = page.locator(
+            ".dufynd-catalog-discovery-bottle",
+          );
+          if ((await discoveryBottles.count()) !== 3) {
+            throw new Error(
+              `catalog discovery hero expected 3 fragrance spotlights, got ${await discoveryBottles.count()}`,
+            );
+          }
+          if (
+            (await page.locator('a[href="#dufynd-katalog"]').count()) !== 1
+          ) {
+            throw new Error(
+              "catalog discovery hero is missing its catalog jump CTA",
+            );
+          }
           if ((await page.locator("header.dufynd-catalog-header").count()) !== 1) {
             throw new Error(
               "catalog is missing the scoped DUFYND header treatment",
