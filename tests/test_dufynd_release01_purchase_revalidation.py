@@ -23,7 +23,7 @@ EXPECTED = {
 }
 
 
-def test_release01_purchase_revalidation_is_exact_and_read_only() -> None:
+def test_release01_purchase_revalidation_is_exact_and_non_affiliate() -> None:
     payload = json.loads(REVALIDATION.read_text(encoding="utf-8"))
     rows = {row["product_id"]: row for row in payload["products"]}
 
@@ -42,6 +42,7 @@ def test_release01_purchase_revalidation_is_exact_and_read_only() -> None:
         assert row["in_stock"] is True
         assert row["product_url"].startswith("https://www.douglas.de/")
         assert row["intended_offer_id"] == expected["offer_id"]
+        assert row["live_offer_refreshed_at"] == "2026-09-29T09:23:10Z"
 
 
 def test_revalidation_matches_existing_live_offer_identity_without_mutating_it() -> None:
