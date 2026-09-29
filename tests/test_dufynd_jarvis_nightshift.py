@@ -168,6 +168,55 @@ def test_same_fingerprint_session_is_resumed() -> None:
     assert session["status"] == "running"
 
 
+def test_recovery_marks_audited_safe_worker_done() -> None:
+    bridge = FakeBridge([task("repo_current_commerce", "commerce", 100)])
+    bridge.tasks["repo_current_commerce"]["status"] = "in_progress"
+    session = {
+        "session_id": "nightshift-recover-safe",
+        "started_at": "2026-09-29T20:00:00+00:00",
+        "current_task": {
+            "task_id": "repo_current_commerce",
+            "domain": "commerce",
+            "worker": "safe_worker",
+            "attempt": 1,
+            "started_at": "2026-09-29T20:00:00+00:00",
+        },
+        "task_results": [],
+    }
+
+    nightshift._recover_interrupted_work(bridge, session)
+
+    assert bridge.tasks["repo_current_commerce"]["status"] == "done"
+    assert session["current_task"] is None
+    assert session["task_results"][0]["recovered_after_interruption"] is True
+
+
+def test_recovery_requeues_interrupted_branch_patch() -> None:
+    bridge = FakeBridge([task("repo_current_engineering", "engineering", 100)])
+    bridge.tasks["repo_current_engineering"]["status"] = "in_progress"
+    session = {
+        "session_id": "nightshift-recover-branch",
+        "started_at": "2026-09-29T20:00:00+00:00",
+        "current_task": None,
+        "branch_worker_used": True,
+        "task_results": [
+            {
+                "task_id": "repo_current_engineering",
+                "domain": "engineering",
+                "worker": "branch_worker",
+                "final_status": "in_progress",
+                "finished_at": "2026-09-29T20:10:00+00:00",
+            }
+        ],
+    }
+
+    nightshift._recover_interrupted_work(bridge, session)
+
+    assert bridge.tasks["repo_current_engineering"]["status"] == "ready"
+    assert session["branch_worker_used"] is False
+    assert session["current_task"] is None
+
+
 def test_changed_fingerprint_starts_new_session() -> None:
     bridge = FakeBridge()
     bridge.master[nightshift.SESSION_KEY] = {
