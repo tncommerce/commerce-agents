@@ -331,6 +331,36 @@ function scentDnaScore(
   );
 }
 
+function catalogLink({
+  search,
+  audience,
+  profile,
+  brand,
+  minimumRating,
+  sort,
+}: {
+  search: string;
+  audience: AudienceFilter;
+  profile: ProfileFilter;
+  brand: string;
+  minimumRating: string;
+  sort: SortMode;
+}): URL {
+  const url = new URL(window.location.href);
+  const setFilter = (key: string, value: string, defaultValue: string) => {
+    if (value !== defaultValue) url.searchParams.set(key, value);
+    else url.searchParams.delete(key);
+  };
+
+  setFilter("q", search.trim().slice(0, 80), "");
+  setFilter("profil", profile, "all");
+  setFilter("zielgruppe", audience, "all");
+  setFilter("marke", brand, "all");
+  setFilter("bewertung", minimumRating, "0");
+  setFilter("sort", sort, "popular");
+  return url;
+}
+
 export default function FragranceCatalogBrowser({
   fragrances,
 }: {
@@ -351,6 +381,7 @@ export default function FragranceCatalogBrowser({
   const [visibleCount, setVisibleCount] =
     useState(PAGE_SIZE);
   const [urlReady, setUrlReady] = useState(false);
+  const [copyStatus, setCopyStatus] = useState("");
   const lastTrackedSearchRef = useRef("");
   const initialSearchAppliedRef = useRef(false);
   const resultsRef = useRef<HTMLHeadingElement>(null);
@@ -389,6 +420,14 @@ export default function FragranceCatalogBrowser({
     const params = new URLSearchParams(window.location.search);
     const initialSearch = params.get("q")?.trim();
     const initialProfile = params.get("profil");
+    const initialAudience = AUDIENCE_OPTIONS.find(
+      (option) => option.value === params.get("zielgruppe") && option.value !== "all",
+    );
+    const initialBrand = params.get("marke");
+    const initialRating = params.get("bewertung");
+    const initialSort = SORT_OPTIONS.find(
+      (option) => option.value === params.get("sort"),
+    );
 
     if (initialSearch) {
       setSearch(initialSearch.slice(0, 80));
@@ -401,20 +440,27 @@ export default function FragranceCatalogBrowser({
       setProfile(matchedProfile.value);
       setSort("profile");
     }
+    if (initialAudience) setAudience(initialAudience.value);
+    if (initialBrand && fragrances.some((item) => item.brand === initialBrand)) {
+      setBrand(initialBrand);
+    }
+    if (initialRating && ["8", "8.3", "8.5"].includes(initialRating)) {
+      setMinimumRating(initialRating);
+    }
+    if (initialSort && (initialSort.value !== "profile" || matchedProfile)) {
+      setSort(initialSort.value);
+    }
     setUrlReady(true);
-  }, []);
+  }, [fragrances]);
 
   useEffect(() => {
     if (!urlReady) return;
+    setCopyStatus("");
 
     const timeout = window.setTimeout(() => {
-      const url = new URL(window.location.href);
-      const query = search.trim().slice(0, 80);
-      if (query) url.searchParams.set("q", query);
-      else url.searchParams.delete("q");
-
-      if (profile !== "all") url.searchParams.set("profil", profile);
-      else url.searchParams.delete("profil");
+      const url = catalogLink({
+        search, audience, profile, brand, minimumRating, sort,
+      });
 
       const nextUrl = `${url.pathname}${url.search}${url.hash}`;
       const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
@@ -424,7 +470,19 @@ export default function FragranceCatalogBrowser({
     }, 250);
 
     return () => window.clearTimeout(timeout);
-  }, [search, profile, urlReady]);
+  }, [search, audience, profile, brand, minimumRating, sort, urlReady]);
+
+  const copyCatalogLink = async () => {
+    const url = catalogLink({
+      search, audience, profile, brand, minimumRating, sort,
+    });
+    try {
+      await navigator.clipboard.writeText(url.href);
+      setCopyStatus("Link kopiert");
+    } catch {
+      setCopyStatus("Kopieren nicht möglich. Bitte die Adresse im Browser kopieren.");
+    }
+  };
 
   const brands = useMemo(
     () =>
@@ -1045,15 +1103,27 @@ export default function FragranceCatalogBrowser({
           </div>
 
           {hasChanges ? (
-            <button
-              type="button"
-              onClick={resetFilters}
-              className="text-[12px] font-semibold text-(--accent-ink) hover:underline"
-            >
-              Filter zurücksetzen
-            </button>
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={() => void copyCatalogLink()}
+                className="text-[12px] font-semibold text-(--accent-ink) hover:underline"
+              >
+                Filterlink kopieren
+              </button>
+              <button
+                type="button"
+                onClick={resetFilters}
+                className="text-[12px] font-semibold text-(--accent-ink) hover:underline"
+              >
+                Filter zurücksetzen
+              </button>
+            </div>
           ) : null}
         </div>
+        <span role="status" className="text-[11px] text-(--ink-soft)">
+          {copyStatus}
+        </span>
       </section>
 
       {profile !== "all" ? (
