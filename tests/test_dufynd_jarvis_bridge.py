@@ -15,9 +15,24 @@ def mock_transport() -> httpx.MockTransport:
         if request.method == "PATCH" and request.url.path.endswith("/dufynd_autonomy_tasks"):
             row = json.loads(request.content)
             assert request.url.params["task_id"] == "eq.repo_current_commerce"
-            assert row["status"] == "in_progress"
-            assert row["evidence"] == "research evidence"
+            assert row["status"] in {"in_progress", "done"}
+            assert row["evidence"] in {"research evidence", "completed evidence"}
             return httpx.Response(204)
+
+        if request.method == "GET" and request.url.path.endswith("/dufynd_autonomy_tasks"):
+            assert request.url.params["task_id"] == "eq.repo_current_commerce"
+            assert request.url.params["limit"] == "1"
+            return httpx.Response(
+                200,
+                json=[
+                    {
+                        "task_id": "repo_current_commerce",
+                        "domain": "commerce",
+                        "status": "in_progress",
+                        "evidence": "fingerprint=abc123; worker evidence",
+                    }
+                ],
+            )
 
         if request.url.path.endswith("/rpc/get_dufynd_jarvis_context"):
             return httpx.Response(
@@ -298,6 +313,34 @@ def test_bridge_updates_safe_task_progress_without_terminal_completion() -> None
         task_id="repo_current_commerce",
         status="in_progress",
         evidence="research evidence",
+    )
+
+
+def test_bridge_loads_single_autonomy_task() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    task = bridge.load_autonomy_task("repo_current_commerce")
+
+    assert task is not None
+    assert task["status"] == "in_progress"
+    assert "abc123" in task["evidence"]
+
+
+def test_bridge_sets_terminal_autonomy_task_status() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    bridge.set_autonomy_task_status(
+        task_id="repo_current_commerce",
+        status="done",
+        evidence="completed evidence",
     )
 
 
