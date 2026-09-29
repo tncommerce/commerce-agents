@@ -1,5 +1,5 @@
 {
-  "version": "2.5",
+  "version": "2.6",
   "brand": "DUFYND",
   "operator": "TNCommerce",
   "purpose": "Machine-readable contract between DUFYND operating data and Jarvis.",
@@ -199,6 +199,24 @@
       "merge_allowed": false,
       "terminal_completion_allowed": false,
       "safety": "No push, merge, deployment, publishing, spend, credentials, Supabase migrations, operational data writes, workflows, lockfiles or dependency-manifest changes."
+    },
+    "autonomous_cycle": {
+      "status": "available_guarded_not_scheduled",
+      "command": "--autonomous-cycle",
+      "activation_env": "DUFYND_JARVIS_AUTONOMOUS=1",
+      "default_max_inbox_events": 2,
+      "hard_max_inbox_events": 5,
+      "sequence": [
+        "require autonomous session switch",
+        "require active model runtime",
+        "require active database budget window",
+        "process bounded inbox backlog",
+        "defer safe task while inbox backlog remains",
+        "run one repo-current safe task only after inbox is clear"
+      ],
+      "financial_rule": "The active database budget window remains authoritative. Autonomous mode cannot create, enlarge, reactivate or bypass a budget window.",
+      "scheduling": "No recurring schedule is enabled by this contract. Scheduling is a separate operator-controlled activation step.",
+      "safety": "No publishing, spending, contracts, credentials, live catalog mutation, push or merge capability is added by autonomous-cycle."
     }
   },
   "human_decision_tokens": {
