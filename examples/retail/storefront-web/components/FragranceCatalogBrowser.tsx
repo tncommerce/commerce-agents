@@ -11,14 +11,17 @@ import {
   trackCatalogSearch,
 } from "@/lib/analytics";
 import {
+  catalogAudienceFor,
+  fragranceMatchesAudience,
   isVerifiedProductTruthVisual,
   visualWorldFor,
+  type CatalogAudience,
   type StaticFragrance,
 } from "@/lib/fragranceCatalog";
 import { noteLabel } from "@/lib/noteLabels";
 import { targetLabel } from "@/lib/targetLabels";
 
-type AudienceFilter = "all" | "men" | "unisex" | "women";
+type AudienceFilter = "all" | CatalogAudience;
 type ProfileFilter =
   | "all"
   | "freshness"
@@ -179,10 +182,12 @@ function searchTokens(search: string): string[] {
 function searchDocument(
   fragrance: StaticFragrance,
 ): string {
-  const targetTerms = fragrance.target_groups.flatMap(
-    (target) =>
-      TARGET_SEARCH_TERMS[target.toLowerCase()] || [target],
+  const catalogAudience = catalogAudienceFor(
+    fragrance.target_groups,
   );
+  const targetTerms = catalogAudience
+    ? TARGET_SEARCH_TERMS[catalogAudience] || [catalogAudience]
+    : [];
 
   const profileTerms = (
     Object.keys(PROFILE_SEARCH_TERMS) as Exclude<
@@ -269,15 +274,17 @@ function searchScore(
     ) {
       score += 3;
     }
+    const catalogAudience = catalogAudienceFor(
+      fragrance.target_groups,
+    );
     if (
-      fragrance.target_groups.some((target) =>
-        normalize(
-          (
-            TARGET_SEARCH_TERMS[target.toLowerCase()] ||
-            [target]
-          ).join(" "),
-        ).includes(token),
-      )
+      catalogAudience &&
+      normalize(
+        (
+          TARGET_SEARCH_TERMS[catalogAudience] ||
+          [catalogAudience]
+        ).join(" "),
+      ).includes(token)
     ) {
       score += 3;
     }
@@ -570,7 +577,7 @@ export default function FragranceCatalogBrowser({
       .filter(
         (fragrance) =>
           audience === "all" ||
-          fragrance.target_groups.includes(audience),
+          fragranceMatchesAudience(fragrance, audience),
       )
       .filter(
         (fragrance) =>
