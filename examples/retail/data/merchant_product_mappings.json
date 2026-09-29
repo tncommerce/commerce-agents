@@ -602,6 +602,17 @@
       "gtin": "3349666007921"
     },
     {
+      "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+      "merchant": "perfumetrader",
+      "merchant_product_id": "16978322",
+      "ean": "3349666007921",
+      "gtin": "3349666007921",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-09-29",
+      "evidence_url": "https://www.perfumetrader.de/de/paco-rabanne-1-million-eau-de-toilette-100-ml",
+      "evidence_note": "Perfumetrader identifies Paco Rabanne 1 Million Eau de Toilette 100 ml as article 16978322 with EAN 3349666007921. This exact-variant mapping supports the tracked Awin offer and excludes the 50 ml EDT and 1 Million Parfum/Elixir variants."
+    },
+    {
       "product_id": "SC-YSL-Y-EDP-100",
       "merchant": "mueller",
       "merchant_product_id": "2367515",

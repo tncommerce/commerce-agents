@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated_at": "2026-09-29T10:56:59+00:00",
-  "source_fingerprint_sha256": "0c0c4b926f0bab201219de2f3aba54402f441c13c02923fa3bf4f1a4bba546d3",
+  "source_fingerprint_sha256": "45fbf0b101f7b1a9e1d5ff7e884aceb67ea5d2796f43007e7f5cf9d98f6a5fe7",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
     "scentai_catalog_staging.json",
@@ -11,13 +11,13 @@
   "summary": {
     "staged_products": 50,
     "products_with_resolved_mapping": 50,
-    "products_with_two_or_more_resolved_mappings": 32,
+    "products_with_two_or_more_resolved_mappings": 33,
     "products_without_resolved_mapping": 0,
     "affiliate_programs_registered": 9,
     "affiliate_programs_approved": 2,
     "affiliate_programs_pending": 7,
     "mapping_ready_products": 50,
-    "products_with_approved_affiliate_program": 11
+    "products_with_approved_affiliate_program": 12
   },
   "affiliate_programs": [
     {
@@ -1672,9 +1672,9 @@
       "name": "1 Million",
       "batch": 4,
       "researched_merchant_count": 3,
-      "mapping_count": 1,
-      "resolved_mapping_count": 1,
-      "full_mapping_count": 1,
+      "mapping_count": 2,
+      "resolved_mapping_count": 2,
+      "full_mapping_count": 2,
       "state": "mapping_data_ready",
       "blockers": [],
       "next_action": "maintain_mapping_and_verify_purchase_destination",
@@ -1689,6 +1689,19 @@
           "gtin": "3349666007921",
           "affiliate_program": null,
           "affiliate_activation_state": "no_registered_program"
+        },
+        {
+          "merchant_id": "perfumetrader",
+          "mapping_state": "full",
+          "merchant_product_id": "16978322",
+          "ean": "3349666007921",
+          "gtin": "3349666007921",
+          "affiliate_program": {
+            "network": "Awin",
+            "program": "Perfumetrader DE",
+            "status": "approved"
+          },
+          "affiliate_activation_state": "approved"
         }
       ]
     },
