@@ -25,6 +25,7 @@ import type { Product } from "@/lib/types";
 import FragranceVisual from "../FragranceVisual";
 import FragranceModel3D from "../FragranceModel3D";
 import ProductTile, {
+  ProductImage,
   ProductRating,
   ProductRow,
 } from "../ProductTile";
@@ -135,6 +136,51 @@ function featured(catalog: Record<string, Product>): Product[] {
   return picks.slice(0, 6);
 }
 
+const AUDIENCE_DISCOVERY = [
+  { key: "women", label: "Damen", eyebrow: "Für sie" },
+  { key: "men", label: "Herren", eyebrow: "Für ihn" },
+  { key: "unisex", label: "Unisex", eyebrow: "Für alle" },
+] as const;
+
+function audiencePreviewProducts(picks: Product[]) {
+  const used = new Set<string>();
+
+  return AUDIENCE_DISCOVERY.map((audience) => {
+    const matches = picks
+      .filter((product) =>
+        getLiveFragranceByProductId(
+          String(product.product_id),
+        )?.target_groups.includes(audience.key),
+      )
+      .sort((a, b) => {
+        const aTargets =
+          getLiveFragranceByProductId(
+            String(a.product_id),
+          )?.target_groups.length ?? Number.MAX_SAFE_INTEGER;
+        const bTargets =
+          getLiveFragranceByProductId(
+            String(b.product_id),
+          )?.target_groups.length ?? Number.MAX_SAFE_INTEGER;
+
+        return (
+          aTargets - bTargets ||
+          Number(b.review_count ?? 0) - Number(a.review_count ?? 0)
+        );
+      });
+
+    const product =
+      matches.find(
+        (candidate) => !used.has(String(candidate.product_id)),
+      ) || matches[0];
+
+    if (product) {
+      used.add(String(product.product_id));
+    }
+
+    return { ...audience, product };
+  });
+}
+
 
 export default function HomeView({
   shopperName: _shopperName,
@@ -146,6 +192,7 @@ export default function HomeView({
     ? liveCatalog
     : STATIC_CATALOG;
   const picks = featured(catalog);
+  const audiencePreviews = audiencePreviewProducts(picks);
   const spotlight =
     catalog["SC-XERJOFF-NAXOS-100"] || picks[0];
   const spotlightFragrance = spotlight
@@ -410,27 +457,73 @@ export default function HomeView({
           </a>
         ))}
       </nav>
-      <nav
-        aria-label="Zielgruppen im Duftkatalog"
-        className="flex items-center gap-2 overflow-x-auto pb-1 text-[11px] sm:gap-3"
+      <section
+        aria-labelledby="dufynd-audience-discovery-heading"
+        className="rounded-[22px] border border-(--line) bg-(--card) p-3.5 shadow-(--shadow-sm) sm:p-4"
       >
-        <span className="shrink-0 font-semibold text-(--ink-soft)">
-          Für wen?
-        </span>
-        {[
-          ["women", "Damen", audienceCounts.women],
-          ["men", "Herren", audienceCounts.men],
-          ["unisex", "Unisex", audienceCounts.unisex],
-        ].map(([audience, label, count]) => (
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <div className="text-[9.5px] font-semibold uppercase tracking-[0.13em] text-(--accent-ink)">
+              Zielgruppe entdecken
+            </div>
+            <h2
+              id="dufynd-audience-discovery-heading"
+              className="mt-1 text-[16px] font-semibold tracking-[-0.02em] text-(--ink)"
+            >
+              Direkt in deine Duftwelt
+            </h2>
+          </div>
           <a
-            key={String(audience)}
-            href={`/duft?zielgruppe=${audience}`}
-            className="shrink-0 rounded-full border border-(--line) bg-(--card) px-3 py-2 font-semibold text-(--accent-ink) transition hover:border-(--accent)"
+            href="/duft"
+            className="hidden text-[11px] font-semibold text-(--accent-ink) hover:underline sm:inline"
           >
-            {label} · {count} →
+            Alle Düfte →
           </a>
-        ))}
-      </nav>
+        </div>
+
+        <div className="-mx-1 mt-3 flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-1 pb-1 sm:grid sm:grid-cols-3 sm:overflow-visible">
+          {audiencePreviews.map(({ key, label, eyebrow, product }) => {
+            const count = audienceCounts[key];
+
+            return (
+              <a
+                key={key}
+                href={`/duft?zielgruppe=${key}`}
+                className="group relative min-h-[126px] min-w-[76%] snap-start overflow-hidden rounded-2xl border border-(--line) bg-(--surface) p-4 transition hover:-translate-y-0.5 hover:border-(--accent) sm:min-w-0"
+              >
+                <div className="relative z-10 max-w-[58%]">
+                  <div className="text-[9px] font-semibold uppercase tracking-[0.14em] text-(--ink-faint)">
+                    {eyebrow}
+                  </div>
+                  <h3 className="mt-1 text-[17px] font-semibold tracking-[-0.025em] text-(--ink)">
+                    {label}
+                  </h3>
+                  <p className="mt-1 text-[11px] leading-4 text-(--ink-soft)">
+                    {count === 1 ? "1 Duft" : `${count} Düfte`} im aktuellen
+                    Katalog
+                  </p>
+                  <span className="mt-3 inline-flex text-[10.5px] font-semibold text-(--accent-ink)">
+                    Entdecken →
+                  </span>
+                </div>
+
+                {product?.image_url ? (
+                  <div className="pointer-events-none absolute inset-y-0 right-0 z-[1] flex w-[48%] items-center justify-center p-2">
+                    <ProductImage
+                      product={product}
+                      className="h-[112px] w-full transition duration-300 group-hover:scale-[1.035]"
+                    />
+                  </div>
+                ) : null}
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,var(--surface)_0%,var(--surface)_48%,transparent_78%)]"
+                />
+              </a>
+            );
+          })}
+        </div>
+      </section>
       <div className="flex flex-wrap gap-x-2 gap-y-1 text-[11.5px] text-(--ink-soft) sm:hidden">
         <span>Unabhängige Empfehlungen</span>
         <span>·</span>

@@ -12,6 +12,7 @@ const valueFor = (flag, fallback) => {
 
 const baseUrl = valueFor("--base-url", "http://127.0.0.1:3000").replace(/\/$/, "");
 const outputDir = path.resolve(valueFor("--out", ".visual-qa"));
+const imageDecodeTimeoutMs = 8_000;
 
 const sourceCatalog = JSON.parse(
   await readFile(
@@ -194,26 +195,41 @@ try {
         // Full-page screenshots can capture below-the-fold lazy images before they
         // finish loading. Decode each rendered image so the visual artifact is
         // suitable for review rather than a page of temporary empty stages.
-        await page.evaluate(async () => {
-          const images = Array.from(document.images).filter((image) => {
-            const style = window.getComputedStyle(image);
-            return (
-              image.getAttribute("src") &&
-              style.display !== "none" &&
-              style.visibility !== "hidden"
+        const unsettledImages = await page.evaluate(
+          async (decodeTimeoutMs) => {
+            const images = Array.from(document.images).filter((image) => {
+              const style = window.getComputedStyle(image);
+              return (
+                image.getAttribute("src") &&
+                style.display !== "none" &&
+                style.visibility !== "hidden"
+              );
+            });
+
+            await Promise.all(
+              images.map(async (image) => {
+                image.loading = "eager";
+                await Promise.race([
+                  image.decode().catch(() => undefined),
+                  new Promise((resolve) =>
+                    window.setTimeout(resolve, decodeTimeoutMs),
+                  ),
+                ]);
+              }),
             );
-          });
-          await Promise.all(
-            images.map(async (image) => {
-              image.loading = "eager";
-              try {
-                await image.decode();
-              } catch {
-                // The existing broken-image diagnostic reports failed loads.
-              }
-            }),
+
+            return images
+              .filter((image) => !image.complete)
+              .map((image) => image.getAttribute("src") || "(missing src)");
+          },
+          imageDecodeTimeoutMs,
+        );
+
+        if (unsettledImages.length) {
+          throw new Error(
+            `images did not settle within ${imageDecodeTimeoutMs}ms: ${unsettledImages.join(", ")}`,
           );
-        });
+        }
 
         const diagnostics = await page.evaluate((blocked) => {
           const bodyText = document.body.innerText;
