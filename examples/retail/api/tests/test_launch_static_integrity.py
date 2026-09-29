@@ -47,10 +47,28 @@ def test_every_live_fragrance_has_source_data_and_local_image() -> None:
         assert product_id in source_by_id
 
         image_url = str(product.get("image_url") or "")
-        assert image_url.startswith("/products/")
+        if image_url.startswith("/products/"):
+            image_path = PUBLIC_ROOT / image_url.lstrip("/")
+            assert image_path.exists(), f"Missing launch image for {product_id}: {image_url}"
+            continue
 
-        image_path = PUBLIC_ROOT / image_url.lstrip("/")
-        assert image_path.exists(), f"Missing launch image for {product_id}: {image_url}"
+        assert image_url.startswith("https://"), product_id
+        source_product = source_by_id[product_id]
+        verified = [
+            visual
+            for visual in source_product.get("visuals", [])
+            if visual.get("url") == image_url
+            and visual.get("role") in {"primary", "cutout"}
+            and visual.get("fidelity_status") == "verified"
+        ]
+        assert verified, f"Remote launch image is not verified product truth: {product_id}"
+
+        visual = verified[0]
+        assert visual.get("provenance") == "licensed", product_id
+        assert str(visual.get("license_name") or "").strip(), product_id
+        assert str(visual.get("license_url") or "").startswith("https://"), product_id
+        assert str(visual.get("attribution_text") or "").strip(), product_id
+        assert isinstance(visual.get("share_alike_required"), bool), product_id
 
 
 def test_live_fragrance_slugs_are_unique() -> None:
