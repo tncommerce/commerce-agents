@@ -411,6 +411,47 @@ def test_finalize_branch_task_moves_yellow_work_to_owner_review() -> None:
     assert session["task_results"][0]["pr_url"].endswith("/999")
 
 
+def test_finalize_branch_task_blocks_missing_pr_url() -> None:
+    bridge = FakeBridge([task("repo_current_engineering", "engineering", 100)])
+    bridge.tasks["repo_current_engineering"]["status"] = "in_progress"
+    bridge.master[nightshift.SESSION_KEY] = {
+        "key": nightshift.SESSION_KEY,
+        "value": {
+            "session_id": "nightshift-no-pr",
+            "status": "awaiting_validation",
+            "task_results": [
+                {
+                    "task_id": "repo_current_engineering",
+                    "final_status": "in_progress",
+                }
+            ],
+            "validation": {"status": "not_run", "pr_url": None},
+        },
+    }
+
+    metadata = Path("test-nightshift-no-pr.json")
+    metadata.write_text(
+        '{"session_id":"nightshift-no-pr","task_id":"repo_current_engineering"}',
+        encoding="utf-8",
+    )
+    try:
+        changed = nightshift.finalize_branch_task(
+            bridge,
+            metadata_path=metadata,
+            status="waiting_human_input",
+            evidence="QA passed.",
+            pr_url=None,
+        )
+    finally:
+        metadata.unlink(missing_ok=True)
+
+    assert changed is True
+    assert bridge.tasks["repo_current_engineering"]["status"] == "blocked"
+    session = bridge.master[nightshift.SESSION_KEY]["value"]
+    assert session["validation"]["status"] == "failed"
+    assert session["status"] == "needs_attention"
+
+
 def test_morning_report_uses_audited_system_data(monkeypatch) -> None:
     bridge = FakeBridge()
     bridge.master[nightshift.SESSION_KEY] = {
