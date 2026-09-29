@@ -839,7 +839,9 @@ try {
     if (!shareResponse?.ok()) {
       throw new Error("catalog share link did not load");
     }
-    const freshProfile = sharePage.getByRole("button", { name: /Frisch.*Düfte/ });
+    const freshProfile = sharePage.locator(
+      'section[aria-label="Duftgefühl entdecken"] button[aria-pressed]',
+    ).first();
     if ((await freshProfile.getAttribute("aria-pressed")) !== "true") {
       throw new Error("catalog did not restore the shared scent world");
     }
