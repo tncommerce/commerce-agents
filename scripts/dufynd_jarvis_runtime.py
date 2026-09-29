@@ -29,6 +29,7 @@ HARD_SUPERVISOR_MAX_EVENTS = 20
 DEFAULT_AUTONOMOUS_MAX_EVENTS = 2
 HARD_AUTONOMOUS_MAX_EVENTS = 5
 
+
 class JarvisTurnError(RuntimeError):
     def __init__(
         self,
@@ -701,8 +702,7 @@ def safe_task_prompt(task: dict[str, Any]) -> str:
         "read/search tools and public web research when useful. Do not perform any "
         "high-impact action. Produce evidence, blockers, and the next safe step; do "
         "not claim publication, licensing rights, stock, price, or identity without "
-        "verification.\n\n"
-        + json.dumps(task, ensure_ascii=False, default=str)
+        "verification.\n\n" + json.dumps(task, ensure_ascii=False, default=str)
     )
 
 
@@ -720,11 +720,7 @@ async def process_safe_task(
         and not bool(task.get("requires_human_approval"))
     ]
     if task_id is not None:
-        safe_tasks = [
-            task
-            for task in safe_tasks
-            if str(task.get("task_id") or "") == task_id
-        ]
+        safe_tasks = [task for task in safe_tasks if str(task.get("task_id") or "") == task_id]
     if not safe_tasks:
         message = (
             f"DUFYND Jarvis safe worker: requested task {task_id} is not safely executable."
@@ -846,11 +842,7 @@ async def process_branch_task(
         and not bool(task.get("requires_human_approval"))
     ]
     if task_id is not None:
-        tasks = [
-            task
-            for task in tasks
-            if str(task.get("task_id") or "") == task_id
-        ]
+        tasks = [task for task in tasks if str(task.get("task_id") or "") == task_id]
     if not tasks:
         message = (
             f"DUFYND Jarvis branch worker: requested task {task_id} is not safely executable."
