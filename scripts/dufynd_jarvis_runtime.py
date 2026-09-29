@@ -1047,7 +1047,28 @@ async def process_autonomous_cycle(
 
 async def run_once(prompt: str, bridge: DufyndJarvisBridge) -> int:
     budget_id, _ = await asyncio.to_thread(_require_budget_window, bridge)
-    text, cost_usd, _ = await run_prompt(prompt, bridge, budget_id=budget_id)
+    try:
+        text, cost_usd, _ = await run_prompt(prompt, bridge, budget_id=budget_id)
+    except JarvisTurnError as error:
+        if error.cost_usd is not None:
+            await asyncio.to_thread(
+                bridge.record_run,
+                run_type="manual_internal_failed",
+                input_summary=prompt[:4000],
+                output_summary=str(error)[:8000],
+                decisions=[
+                    {
+                        "cost_usd": error.cost_usd,
+                        "budget_id": error.budget_id or budget_id,
+                        "runtime": "dufynd_jarvis_v0_1",
+                        "failed_model_turn": True,
+                    }
+                ],
+                human_approval_required=False,
+                agent_name="jarvis",
+            )
+        raise
+
     await asyncio.to_thread(
         bridge.record_run,
         run_type="manual_internal",
