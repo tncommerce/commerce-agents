@@ -131,6 +131,8 @@ def test_dufynd_jarvis_contract_keeps_active_runtime_off_by_default() -> None:
     assert nightshift["yellow_handoff"].endswith("They are never auto-merged.")
     assert nightshift["scheduling"].startswith("No recurring schedule")
     assert nightshift["main_branch_allowed"] is False
+    assert "inbox events before repo-current task selection" in nightshift["event_order"]
+    assert nightshift["policy_source"].endswith("scentai_jarvis_operating_policy.json")
 
     policy = contract["nightshift_policy"]
     assert "spend_money" in policy["action_classes"]["red_owner_only"]
