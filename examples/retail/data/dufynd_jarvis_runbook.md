@@ -424,6 +424,21 @@ the static export locally, and run the same responsive browser visual-QA script
 used by CI. The visual captures are uploaded together with the worker patch for
 review. Non-storefront patches do not pay this extra validation cost.
 
+### Validated PR handoff
+
+`process-branch-task-pr` uses the same isolated branch worker and deterministic
+validation as `process-branch-task`, then performs a separate post-model GitHub
+handoff. The checkout deliberately uses `persist-credentials: false`, so the model
+turn has no reusable Git credential. After validation succeeds, the deterministic
+shell step receives `GH_TOKEN`, re-checks that `scentai-mvp` has not moved,
+creates a `jarvis/worker-*` branch, commits only the allowlisted changed files,
+pushes that branch, and opens a PR against `scentai-mvp`.
+
+This mode does not merge the PR. It never targets `main`. If the target base moved
+during validation, PR creation stops and the patch artifact remains available for
+a fresh run.
+
+
 
 After the model turn, the deterministic GitHub Actions layer:
 - rejects changes outside the explicit path allowlist
