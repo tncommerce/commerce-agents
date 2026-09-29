@@ -2432,8 +2432,8 @@ body {
   }
 
   .dufynd-fragrance-journey::before {
-    inset-right: -8px;
-    inset-left: -8px;
+    right: -8px;
+    left: -8px;
     border-radius: 28px;
   }
 
