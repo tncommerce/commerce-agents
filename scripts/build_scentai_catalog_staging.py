@@ -245,6 +245,14 @@ def append_enabled_research_waves(
 def build_staging_payload() -> dict:
     queue = load_json(DATA_DIR / "scentai_catalog_promotion_queue.json")
     queue_by_id = {row["candidate_id"]: row for row in queue["candidates"]}
+    live_catalog = load_json(LIVE_CATALOG)
+    live_ids = {
+        str(row.get("product_id") or "")
+        for row in live_catalog.get("products", [])
+        if row.get("category") == "fragrance"
+        and row.get("in_stock") is not False
+        and str(row.get("product_id") or "").startswith("SC-")
+    }
 
     products: list[dict] = []
     seen_product_ids: set[str] = set()
@@ -258,8 +266,12 @@ def build_staging_payload() -> dict:
             candidate_id = verified["candidate_id"]
             community_row = scent_by_id.get(candidate_id, {})
             community = community_row.get("parfumo", community_row)
-            queue_row = queue_by_id[candidate_id]
             product_id = verified["proposed_product_id"]
+
+            if product_id in live_ids:
+                continue
+
+            queue_row = queue_by_id[candidate_id]
 
             if product_id in seen_product_ids:
                 raise ValueError(f"Duplicate staged product_id: {product_id}")
@@ -353,6 +365,8 @@ def build_staging_payload() -> dict:
             (row for row in products if row["product_id"] == candidate["product_id"]),
             None,
         )
+        if product is None and candidate["product_id"] in live_ids:
+            continue
         if product is None or any(
             product[field] != candidate.get(field)
             for field in ("candidate_id", "brand", "name", "concentration", "volume_ml")
