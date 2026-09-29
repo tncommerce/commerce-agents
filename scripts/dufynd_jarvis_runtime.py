@@ -494,6 +494,38 @@ def make_safe_worker_options(bridge: DufyndJarvisBridge) -> ClaudeAgentOptions:
     )
 
 
+BRANCH_WORKER_SYSTEM_PROMPT = (
+    SYSTEM_PROMPT
+    + """
+You are running as the DUFYND isolated branch-preparation worker.
+You may read and edit the checked-out repository only to prepare a reversible patch
+for a current safe engineering task. You must not run shell commands, publish
+content, spend money, change credentials, modify live catalog/affiliate data, send
+outbound messages, accept contracts, push, merge, or claim deployment. Avoid
+.github workflows, Supabase migrations, secrets, lockfiles, dependency manifests,
+and examples/retail/data. Keep changes minimal and add/update tests when needed.
+A deterministic workflow will validate changed paths and run tests after your turn.
+"""
+)
+
+
+def make_branch_worker_options(bridge: DufyndJarvisBridge) -> ClaudeAgentOptions:
+    model, max_turns, max_budget_usd = _require_active_runtime()
+    builtins = ["Read", "Grep", "Glob", "Write", "Edit"]
+    return ClaudeAgentOptions(
+        system_prompt=BRANCH_WORKER_SYSTEM_PROMPT,
+        mcp_servers={SERVER_NAME: build_server(bridge)},
+        allowed_tools=[*allowed_tool_names(), *builtins],
+        disallowed_tools=["Bash", "Task", "WebSearch", "WebFetch"],
+        cwd=REPO_ROOT,
+        env={"CLAUDE_CODE_DISABLE_CLAUDE_MDS": "1"},
+        model=model,
+        max_turns=max_turns,
+        max_budget_usd=max_budget_usd,
+        permission_mode="acceptEdits",
+    )
+
+
 def event_prompt(event: dict[str, Any]) -> str:
     return (
         "Process this internal DUFYND Jarvis event. Follow the system rules, "
@@ -678,6 +710,97 @@ async def process_safe_task(bridge: DufyndJarvisBridge) -> int:
         return 1
 
 
+def branch_task_prompt(task: dict[str, Any]) -> str:
+    return (
+        "Prepare a minimal tested-code patch for this DUFYND engineering task. "
+        "Only edit repository files that are necessary for the task. Do not touch "
+        "protected operational data or workflows. Do not run commands yourself; "
+        "the deterministic workflow will validate paths and run checks after your "
+        "turn. Do not mark the task complete.\n\n"
+        + json.dumps(task, ensure_ascii=False, default=str)
+    )
+
+
+async def process_branch_task(bridge: DufyndJarvisBridge) -> int:
+    queue = await asyncio.to_thread(bridge.load_autonomy_queue)
+    tasks = [
+        task
+        for task in (queue.get("safe_to_execute") or [])
+        if isinstance(task, dict)
+        and str(task.get("task_id") or "").startswith("repo_current_")
+        and str(task.get("domain") or "") == "engineering"
+        and not bool(task.get("requires_human_approval"))
+    ]
+    if not tasks:
+        print("DUFYND Jarvis branch worker: no repo-current safe engineering task.")
+        return 0
+
+    task = tasks[0]
+    task_id = str(task["task_id"])
+    budget_id, _ = await asyncio.to_thread(_require_budget_window, bridge)
+
+    await asyncio.to_thread(
+        bridge.update_autonomy_task_progress,
+        task_id=task_id,
+        status="in_progress",
+        evidence=(
+            "Branch worker claimed current safe engineering task for isolated "
+            "patch preparation. No merge or terminal completion is recorded."
+        ),
+    )
+
+    try:
+        options = make_branch_worker_options(bridge)
+        async with ClaudeSDKClient(options=options) as client:
+            await client.query(branch_task_prompt(task))
+            result = await collect_turn(client)
+        if result.is_error:
+            detail = "; ".join(result.tool_errors) or result.text or "Branch worker failed"
+            raise RuntimeError(detail)
+
+        text = result.text.strip()
+        await asyncio.to_thread(
+            bridge.update_autonomy_task_progress,
+            task_id=task_id,
+            status="in_progress",
+            evidence=(
+                text[:12000]
+                or "Branch worker prepared a local patch without terminal completion."
+            ),
+        )
+        await asyncio.to_thread(
+            bridge.record_run,
+            run_type=f"branch_task:{task_id}",
+            input_summary=json.dumps(task, ensure_ascii=False, default=str)[:4000],
+            output_summary=text[:8000] or "(branch worker produced no prose output)",
+            decisions=[
+                {
+                    "task_id": task_id,
+                    "cost_usd": result.cost_usd,
+                    "budget_id": budget_id,
+                    "runtime": "dufynd_jarvis_branch_worker_v1",
+                    "push_performed": False,
+                    "merge_performed": False,
+                    "terminal_completion_recorded": False,
+                }
+            ],
+            human_approval_required=False,
+            agent_name="jarvis_branch_worker",
+        )
+        if text:
+            print(text)
+        return 0
+    except Exception as error:
+        await asyncio.to_thread(
+            bridge.update_autonomy_task_progress,
+            task_id=task_id,
+            status="blocked",
+            evidence=f"Branch worker failed without merge/completion: {error}"[:12000],
+        )
+        print(f"DUFYND Jarvis branch worker failed for {task_id}: {error}", file=sys.stderr)
+        return 1
+
+
 def _bounded_supervisor_max_events(value: int) -> int:
     return max(1, min(int(value), HARD_SUPERVISOR_MAX_EVENTS))
 
@@ -771,6 +894,11 @@ def main() -> int:
         help="research one current repo-derived safe autonomy task",
     )
     group.add_argument(
+        "--process-branch-task",
+        action="store_true",
+        help="prepare one local patch for a safe repo-current engineering task",
+    )
+    group.add_argument(
         "--once",
         metavar="PROMPT",
         help="run one manual internal Jarvis task",
@@ -790,6 +918,8 @@ def main() -> int:
         return 0
 
     bridge = DufyndJarvisBridge()
+    if args.process_branch_task:
+        return asyncio.run(process_branch_task(bridge))
     if args.process_safe_task:
         return asyncio.run(process_safe_task(bridge))
     if args.process_loop:
