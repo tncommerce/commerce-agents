@@ -149,6 +149,9 @@ def test_safe_worker_prompt_names_high_impact_boundaries() -> None:
 
     assert "Do not perform any high-impact action" in prompt
     assert "licensing rights" in prompt
+    assert "DUFYND_TASK_STATE:" in prompt
+    assert "waiting_human_input" in prompt
+    assert "waiting_external" in prompt
 
 
 def test_branch_worker_ignores_non_engineering_tasks(capsys) -> None:
