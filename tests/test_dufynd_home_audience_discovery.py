@@ -19,12 +19,20 @@ def test_homepage_links_directly_to_audience_filtered_catalog() -> None:
     assert "href={`/duft?zielgruppe=${key}`}" in text
 
 
-def test_homepage_audience_counts_use_live_fragrance_targets() -> None:
+def test_homepage_audience_counts_use_exclusive_catalog_taxonomy() -> None:
     text = source()
 
     assert "const audienceCounts = Object.values(catalog).reduce(" in text
-    assert "fragrance?.target_groups || []" in text
+    assert "catalogAudienceFor(fragrance.target_groups)" in text
+    assert "counts[audience] += 1" in text
     assert "{ women: 0, men: 0, unisex: 0 }" in text
+
+
+def test_homepage_audience_previews_use_exclusive_matching() -> None:
+    text = source()
+
+    assert "fragranceMatchesAudience(fragrance, audience)" in text
+    assert "fragranceMatchesAudience(fragrance, audience.key)" in text
 
 
 def test_featured_homepage_products_accept_storefront_presentation() -> None:
