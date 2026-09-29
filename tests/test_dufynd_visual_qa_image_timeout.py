@@ -1,8 +1,6 @@
 from pathlib import Path
 
-QA_SCRIPT = Path(
-    "examples/retail/storefront-web/scripts/dufynd-visual-qa.mjs"
-)
+QA_SCRIPT = Path("examples/retail/storefront-web/scripts/dufynd-visual-qa.mjs")
 
 
 def test_visual_qa_bounds_remote_image_decode_waits() -> None:
