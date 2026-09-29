@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "verified_on": "2026-09-29",
+  "status": "pending_review",
+  "purpose": "Record a rights-cleared Prada Paradoxe Eau de Parfum image candidate without promoting it to product truth until the exact 90 ml variant is independently proven.",
+  "product": {
+    "product_id": "SC-PRADA-PARADOXE-EDP-90",
+    "brand": "Prada",
+    "name": "Paradoxe",
+    "concentration": "Eau de Parfum",
+    "target_volume_ml": 90,
+    "target_gtin": "3614273760164",
+    "identity_reference_url": "https://www.prada.com/de/de/p/paradoxe-edp-90ml/1A1351_2HDZ_F0Z99_P_ML090"
+  },
+  "candidate": {
+    "candidate_id": "PRADA-PARADOXE-EDP-WIKIMEDIA-JACEK-HALICKI-01",
+    "source_class": "licensed_public_media",
+    "source_provider": "Wikimedia Commons",
+    "source_page_url": "https://commons.wikimedia.org/wiki/File:2023_Woda_perfumowana_Prada_Paradoxe_(1).jpg",
+    "asset_url": "https://upload.wikimedia.org/wikipedia/commons/7/74/2023_Woda_perfumowana_Prada_Paradoxe_%281%29.jpg",
+    "published_description": "Prada Paradoxe Eau de Parfum",
+    "author": "Jacek Halicki",
+    "source_work_type": "own_work",
+    "source_date": "2023-07-23",
+    "original_dimensions": {
+      "width": 3798,
+      "height": 3312
+    },
+    "commons_quality_image": true,
+    "license": {
+      "name": "CC BY-SA 4.0",
+      "url": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "attribution_required": true,
+      "share_alike_required": true,
+      "commercial_reuse_permitted_by_license": true,
+      "changes_must_be_disclosed": true,
+      "attribution": "Jacek Halicki / Wikimedia Commons, CC BY-SA 4.0"
+    },
+    "rights_status": "verified_licensed_source",
+    "fidelity_status": "pending_exact_variant_verification",
+    "exact_variant_verified": false,
+    "approval_status": "pending_review",
+    "public_catalog_use_allowed_now": false
+  },
+  "evidence": {
+    "rights_evidence": "The Wikimedia Commons file page identifies the photograph as the author's own work and publishes it under CC BY-SA 4.0, which permits sharing and adaptation subject to attribution and ShareAlike.",
+    "identity_evidence": "The Commons metadata describes the photographed product as Prada Paradoxe Eau de Parfum, but the published file metadata does not state bottle volume or GTIN.",
+    "visual_review": "The photograph visibly depicts a Prada Paradoxe Eau de Parfum bottle. The visible front does not establish the 90 ml size.",
+    "blocking_reason": "Exact target size 90 ml / GTIN 3614273760164 cannot be inferred from product-family appearance alone."
+  },
+  "next_action": "verify_that_the_photographed_bottle_is_the_exact_90_ml_variant_before_manual_visual_approval",
+  "user_approval_required_for_final_image": true,
+  "prohibited_automatic_actions": [
+    "do_not_mark_fidelity_verified",
+    "do_not_mark_image_approved",
+    "do_not_promote_to_live_catalog",
+    "do_not_infer_90_ml_from_bottle_shape"
+  ]
+}
