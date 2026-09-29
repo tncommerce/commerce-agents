@@ -314,14 +314,22 @@ async def _run_task_with_retry(
             current = bridge.load_autonomy_task(task_id) or {}
             bridge.set_autonomy_task_status(
                 task_id=task_id,
-                status="blocked" if attempt == total_attempts else "ready",
+                status="blocked",
                 evidence=_append_evidence(
                     current.get("evidence"),
                     (
                         f"nightshift_session={session['session_id']}; "
-                        f"worker_timeout_seconds={timeout_seconds}; attempt={attempt}."
+                        f"worker_timeout_seconds={timeout_seconds}; attempt={attempt}; "
+                        "no automatic retry because provider cost is not reliably known."
                     ),
                 ),
+            )
+            return _task_result(
+                task,
+                worker=worker,
+                result_code=result_code,
+                final_status="blocked",
+                attempts=attempt,
             )
         except RuntimeError as error:
             # Budget/runtime gates are session-level stop conditions, not task failures.
