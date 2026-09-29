@@ -382,3 +382,26 @@ This worker may not:
 A successful worker run leaves the task non-terminal (normally `in_progress`)
 with evidence attached. Completion remains a separate verified step so Jarvis
 cannot self-certify a commerce blocker as resolved merely because research ran.
+
+
+## Isolated branch worker
+
+The guarded `--process-branch-task` mode is the first code-preparation worker.
+It only selects current repo-derived engineering tasks that are both
+`safe_to_execute` and free of human approval requirements.
+
+The model may use Read/Grep/Glob/Write/Edit inside the checked-out repository, but
+Bash, Task, WebSearch and WebFetch are denied. The worker itself never pushes,
+merges, deploys or marks the autonomy task complete.
+
+After the model turn, the deterministic GitHub Actions layer:
+- rejects changes outside the explicit path allowlist
+- blocks workflows, operational data, Supabase migrations, env/secrets, lockfiles,
+  dependency manifests and similar high-impact files
+- runs `git diff --check`
+- runs Ruff, pytest and `scripts/check.py`
+- emits a binary patch plus changed-file manifest as a short-lived artifact
+
+This is intentionally patch-only. Promotion from a validated patch to an
+automatically created PR is a later capability and must preserve the same
+high-impact approval and financial boundaries.
