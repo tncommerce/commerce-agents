@@ -112,7 +112,10 @@ export interface StaticFragrance {
   cutout_image_url?: string | null;
   model_3d_url?: string | null;
   visuals: FragranceVisualAsset[];
+  /** Product-truth visual used by structured data and truth-sensitive surfaces. */
   preferred_visual: FragranceVisualAsset | null;
+  /** Storefront presentation may use a DUFYND editorial scene without changing product truth. */
+  presentation_visual: FragranceVisualAsset | null;
   backdrop_visual: FragranceVisualAsset | null;
   short_description?: string | null;
   target_groups: string[];
@@ -288,6 +291,37 @@ function selectPreferredVisual(
   return null;
 }
 
+/**
+ * Keep product truth and storefront art direction independent.
+ *
+ * The long-term DUFYND ideal is a verified product layer over a bottle-free
+ * editorial world. Until that exists, an approved editorial product_scene is
+ * preferred on discovery/card surfaces so a newly verified studio source does
+ * not suddenly break the site's established visual language.
+ */
+function selectPresentationVisual(
+  visuals: FragranceVisualAsset[],
+  preferredVisual: FragranceVisualAsset | null,
+  backdropVisual: FragranceVisualAsset | null,
+): FragranceVisualAsset | null {
+  if (
+    isVerifiedProductTruthVisual(preferredVisual) &&
+    backdropVisual
+  ) {
+    return preferredVisual;
+  }
+
+  const editorialProductScene = visuals.find(
+    (visual) =>
+      visual.role === "editorial" &&
+      visual.composition === "product_scene" &&
+      visual.fidelity_status === "editorial_only" &&
+      Boolean(visual.url?.trim()),
+  );
+
+  return editorialProductScene || preferredVisual;
+}
+
 function catalogToFragrance(
   row: CatalogRow,
 ): StaticFragrance {
@@ -303,6 +337,11 @@ function catalogToFragrance(
   );
   const verifiedModel3D = selectVerifiedModel3D(visuals);
   const backdropVisual = selectBottleFreeBackdrop(visuals);
+  const presentationVisual = selectPresentationVisual(
+    visuals,
+    preferredVisual,
+    backdropVisual,
+  );
   const brand = String(row.brand || source?.brand || "").trim();
   const name = String(
     attributes.canonical_name ||
@@ -361,6 +400,7 @@ function catalogToFragrance(
     model_3d_url: verifiedModel3D?.url || null,
     visuals,
     preferred_visual: preferredVisual,
+    presentation_visual: presentationVisual,
     backdrop_visual: backdropVisual,
     short_description: row.short_description,
     target_groups: targetGroups,
