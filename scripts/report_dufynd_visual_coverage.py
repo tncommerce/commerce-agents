@@ -31,8 +31,7 @@ def visual_state(product: dict[str, Any]) -> str:
         return "verified_product_truth"
 
     if any(
-        str(visual.get("role") or "") == "editorial"
-        and str(visual.get("url") or "").strip()
+        str(visual.get("role") or "") == "editorial" and str(visual.get("url") or "").strip()
         for visual in visuals
     ):
         return "editorial_only"
@@ -57,9 +56,7 @@ def build_visual_coverage_report(
 ) -> dict[str, Any]:
     products = list(products_payload.get("products", []) or [])
     live_products = [
-        product
-        for product in products
-        if str(product.get("product_id") or "").startswith("SC-")
+        product for product in products if str(product.get("product_id") or "").startswith("SC-")
     ]
 
     coverage_rows: list[dict[str, Any]] = []
