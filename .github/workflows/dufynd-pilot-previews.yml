@@ -166,6 +166,14 @@ jobs:
             exit 0
           fi
 
-          git commit -m "Generate DUFYND pilot previews and refresh state [skip ci]"
+          staged_paths="$(git diff --cached --name-only)"
+          commit_message="Generate DUFYND pilot previews and refresh state [skip ci]"
+
+          if ! printf '%s\n' "$staged_paths" | grep -q '^examples/retail/storefront-web/public/social/pilots/'; then
+            commit_message="$commit_message [skip render]"
+            echo "Derived-state-only commit: Render auto-deploy will be skipped."
+          fi
+
+          git commit -m "$commit_message"
           git pull --rebase origin scentai-mvp
           git push origin HEAD:scentai-mvp
