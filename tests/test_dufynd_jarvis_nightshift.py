@@ -176,6 +176,70 @@ def test_select_task_skips_second_engineering_patch() -> None:
     assert selected["task_id"] == "repo_current_commerce"
 
 
+def test_select_task_blocks_engineering_while_tech_lease_is_active() -> None:
+    queue = {
+        "safe_to_execute": [
+            task("repo_current_engineering", "engineering", 100),
+        ]
+    }
+
+    selected = nightshift._select_task(
+        queue,
+        branch_worker_used=False,
+        attempted_task_ids=set(),
+        engineering_allowed=False,
+    )
+
+    assert selected is None
+
+
+def test_expired_tech_lease_allows_takeover(monkeypatch) -> None:
+    bridge = FakeBridge()
+    bridge.master[nightshift.TECH_LEASE_KEY] = {
+        "key": nightshift.TECH_LEASE_KEY,
+        "value": {
+            "status": "active",
+            "owner": "chatgpt_work_tech",
+            "heartbeat_at": "2026-09-29T20:00:00+00:00",
+            "expires_at": "2026-09-29T20:01:00+00:00",
+        },
+    }
+    monkeypatch.setattr(
+        nightshift,
+        "utc_now",
+        lambda: nightshift.datetime.fromisoformat("2026-09-29T21:00:00+00:00"),
+    )
+
+    lease = nightshift._tech_lease_state(bridge)
+
+    assert lease["active"] is False
+    assert lease["remaining_seconds"] == 0
+
+
+def test_active_tech_lease_reports_remaining_seconds(monkeypatch) -> None:
+    bridge = FakeBridge()
+    bridge.master[nightshift.TECH_LEASE_KEY] = {
+        "key": nightshift.TECH_LEASE_KEY,
+        "value": {
+            "status": "active",
+            "owner": "chatgpt_work_tech",
+            "heartbeat_at": "2026-09-29T21:00:00+00:00",
+            "expires_at": "2026-09-29T21:30:00+00:00",
+        },
+    }
+    monkeypatch.setattr(
+        nightshift,
+        "utc_now",
+        lambda: nightshift.datetime.fromisoformat("2026-09-29T21:10:00+00:00"),
+    )
+
+    lease = nightshift._tech_lease_state(bridge)
+
+    assert lease["active"] is True
+    assert lease["owner"] == "chatgpt_work_tech"
+    assert lease["remaining_seconds"] == 1200
+
+
 def test_same_fingerprint_session_is_resumed() -> None:
     bridge = FakeBridge()
     bridge.master[nightshift.SESSION_KEY] = {
