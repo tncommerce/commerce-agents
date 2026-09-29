@@ -9,8 +9,6 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qsl, urlsplit
 
-from scripts.qa_scentai_staging import run_qa
-
 DATA_DIR = Path("examples/retail/data")
 DEFAULT_STAGING = DATA_DIR / "scentai_catalog_staging.json"
 DEFAULT_CATALOG = DATA_DIR / "catalog.json"
@@ -863,6 +861,10 @@ def main() -> int:
                 "selected products are blocked. Run dry-run "
                 "and resolve every blocker first."
             )
+
+        # The recommendation QA loads the agent runtime. Read-only reports and
+        # promotion dry-runs should not require that runtime to be installed.
+        from scripts.qa_scentai_staging import run_qa
 
         staging_qa = asyncio.run(run_qa(args.staging))
         if not staging_qa["passed"]:
