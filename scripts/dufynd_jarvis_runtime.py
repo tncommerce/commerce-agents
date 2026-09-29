@@ -641,12 +641,31 @@ async def process_next(bridge: DufyndJarvisBridge) -> int:
 
 
 def safe_task_prompt(task: dict[str, Any]) -> str:
+    domain = str(task.get("domain") or "research")
+    role_guidance = {
+        "commerce": (
+            "Act as the DUFYND Commerce Worker: verify product, merchant, affiliate, "
+            "price/feed and catalog evidence without activating live routing."
+        ),
+        "content": (
+            "Act as the DUFYND Content Worker: prepare ideas, storyboards, prompts, "
+            "shot plans and review material without publishing."
+        ),
+        "research": (
+            "Act as the DUFYND Research Worker: gather and validate evidence from "
+            "current internal context and public sources."
+        ),
+    }.get(
+        domain,
+        "Act as the DUFYND Research Worker for this bounded internal task.",
+    )
     return (
-        "Work on this DUFYND safe autonomous task. First load the current autonomy "
-        "queue and operating context. Use repository read/search tools and public "
-        "web research when useful. Do not perform any high-impact action. Produce "
-        "evidence, blockers, and the next safe step; do not claim publication, "
-        "licensing rights, stock, price, or identity without verification.\n\n"
+        f"{role_guidance} "
+        "First load the current autonomy queue and operating context. Use repository "
+        "read/search tools and public web research when useful. Do not perform any "
+        "high-impact action. Produce evidence, blockers, and the next safe step; do "
+        "not claim publication, licensing rights, stock, price, or identity without "
+        "verification.\n\n"
         + json.dumps(task, ensure_ascii=False, default=str)
     )
 
@@ -747,7 +766,8 @@ async def process_safe_task(
 
 def branch_task_prompt(task: dict[str, Any]) -> str:
     return (
-        "Prepare a minimal tested-code patch for this DUFYND engineering task. "
+        "Act as the DUFYND Tech Worker. Prepare a minimal tested-code patch for "
+        "this DUFYND engineering task. "
         "Only edit repository files that are necessary for the task. Do not touch "
         "protected operational data or workflows. Do not run commands yourself; "
         "the deterministic workflow will validate paths and run checks after your "
