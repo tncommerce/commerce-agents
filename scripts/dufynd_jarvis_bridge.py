@@ -196,6 +196,52 @@ class DufyndJarvisBridge:
             raise ValueError("DUFYND Jarvis budget status must be a JSON object")
         return payload
 
+    def load_budget_window(self, budget_id: str) -> dict[str, Any] | None:
+        with self._client() as client:
+            response = client.get(
+                f"{self.supabase_url}/rest/v1/dufynd_jarvis_budget_windows",
+                headers=_headers(self.secret_key),
+                params={
+                    "select": "*",
+                    "budget_id": f"eq.{budget_id}",
+                    "limit": "1",
+                },
+            )
+            response.raise_for_status()
+            payload = response.json()
+
+        if not isinstance(payload, list):
+            raise ValueError("DUFYND Jarvis budget-window lookup must return a JSON array")
+        if not payload:
+            return None
+        row = payload[0]
+        if not isinstance(row, dict):
+            raise ValueError("DUFYND Jarvis budget-window row must be a JSON object")
+        return row
+
+    def load_human_decision(self, decision_id: str) -> dict[str, Any] | None:
+        with self._client() as client:
+            response = client.get(
+                f"{self.supabase_url}/rest/v1/dufynd_human_decisions",
+                headers=_headers(self.secret_key),
+                params={
+                    "select": "*",
+                    "decision_id": f"eq.{decision_id}",
+                    "limit": "1",
+                },
+            )
+            response.raise_for_status()
+            payload = response.json()
+
+        if not isinstance(payload, list):
+            raise ValueError("DUFYND human-decision lookup must return a JSON array")
+        if not payload:
+            return None
+        row = payload[0]
+        if not isinstance(row, dict):
+            raise ValueError("DUFYND human-decision row must be a JSON object")
+        return row
+
     def claim_next_inbox_event(self) -> dict[str, Any] | None:
         payload = self._rpc("claim_dufynd_jarvis_event")
         if payload is None:

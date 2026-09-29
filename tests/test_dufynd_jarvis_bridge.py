@@ -123,6 +123,37 @@ def mock_transport() -> httpx.MockTransport:
                 },
             )
 
+        if request.method == "GET" and request.url.path.endswith("/dufynd_jarvis_budget_windows"):
+            assert request.url.params["budget_id"] == "eq.jarvis_activation_pilot_001"
+            return httpx.Response(
+                200,
+                json=[
+                    {
+                        "budget_id": "jarvis_activation_pilot_001",
+                        "cap_usd": "2.50",
+                        "max_runs": 10,
+                        "approved_decision_id": "decision_jarvis_active_runner_001",
+                    }
+                ],
+            )
+
+        if request.method == "GET" and request.url.path.endswith("/dufynd_human_decisions"):
+            assert request.url.params["decision_id"] == "eq.decision_jarvis_active_runner_001"
+            return httpx.Response(
+                200,
+                json=[
+                    {
+                        "decision_id": "decision_jarvis_active_runner_001",
+                        "status": "approved",
+                        "decision": {
+                            "approved": True,
+                            "cap_usd": 2.5,
+                            "max_runs": 10,
+                        },
+                    }
+                ],
+            )
+
         if request.url.path.endswith("/rpc/claim_dufynd_jarvis_event"):
             return httpx.Response(
                 200,
@@ -485,6 +516,22 @@ def test_bridge_loads_health() -> None:
     assert health["state"] == "events_waiting"
     assert health["inbox"]["pending"] == 1
     assert health["pending_human_decisions"] == 5
+
+
+def test_bridge_loads_budget_window_and_approval() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    window = bridge.load_budget_window("jarvis_activation_pilot_001")
+    decision = bridge.load_human_decision("decision_jarvis_active_runner_001")
+
+    assert window is not None
+    assert window["max_runs"] == 10
+    assert decision is not None
+    assert decision["decision"]["max_runs"] == 10
 
 
 def test_bridge_loads_pending_decisions() -> None:
