@@ -110,7 +110,11 @@ def test_first_controlled_expansion_wave_is_staging_only() -> None:
         assert row["media"]["image_url"] is None
         assert row["validation"]["catalog_ready"] is False
         assert "approved_product_image_pending" in row["validation"]["blockers"]
-        assert "verified_purchase_destination_pending" in row["validation"]["blockers"]
+        if row["product_id"] == "SC-RABANNE-1-MILLION-EDT-100":
+            assert "verified_purchase_destination_pending" not in row["validation"]["blockers"]
+            assert row["commerce"]["live_offer_status"] == "verified_current_purchase_destination"
+        else:
+            assert "verified_purchase_destination_pending" in row["validation"]["blockers"]
         assert row["research"]["source_wave_id"] == "DUFYND-CATALOG-EXPANSION-NEXT-10"
 
 

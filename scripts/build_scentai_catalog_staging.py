@@ -108,6 +108,7 @@ def wave_staging_row(candidate: dict, *, wave_id: str, batch: int) -> dict:
     accords = list(community.get("main_accords") or [])
     profile = candidate.get("recommendation_profile") or recommendation_profile(accords)
     product_data = candidate.get("product_data") or {}
+    commerce = candidate.get("commerce") or {}
 
     return {
         "candidate_id": str(candidate["product_id"]).removeprefix("SC-"),
@@ -142,8 +143,11 @@ def wave_staging_row(candidate: dict, *, wave_id: str, batch: int) -> dict:
         "commerce": {
             "merchant_coverage_count": len(candidate.get("research_merchant_evidence") or []),
             "merchant_coverage_source": "dufynd_research_wave",
-            "market_status": "researched_not_integrated",
-            "live_offer_status": "pending_current_purchase_destination",
+            "market_status": commerce.get("market_status", "researched_not_integrated"),
+            "live_offer_status": commerce.get(
+                "live_offer_status",
+                "pending_current_purchase_destination",
+            ),
         },
         "validation": {
             "catalog_ready": False,
