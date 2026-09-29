@@ -145,6 +145,100 @@ def _append_evidence(existing: object, note: str) -> str:
     return f"{base}\n{note}"[:12000]
 
 
+def _run_exists_for_task(
+    bridge: DufyndJarvisBridge,
+    *,
+    task_id: str,
+    since_iso: str,
+) -> bool:
+    for run in bridge.load_agent_runs_since(since_iso):
+        if str(run.get("run_type") or "").endswith(task_id):
+            return True
+    return False
+
+
+def _recover_interrupted_work(
+    bridge: DufyndJarvisBridge,
+    session: dict[str, Any],
+) -> None:
+    candidate = session.get("current_task")
+    if not isinstance(candidate, dict):
+        for result in reversed(session.get("task_results") or []):
+            if (
+                isinstance(result, dict)
+                and result.get("worker") == "branch_worker"
+                and result.get("final_status") == "in_progress"
+            ):
+                candidate = {
+                    "task_id": result.get("task_id"),
+                    "domain": result.get("domain"),
+                    "worker": result.get("worker"),
+                    "started_at": result.get("finished_at") or session.get("started_at"),
+                }
+                break
+
+    if not isinstance(candidate, dict) or not candidate.get("task_id"):
+        return
+
+    task_id = str(candidate["task_id"])
+    current = bridge.load_autonomy_task(task_id) or {}
+    if str(current.get("status") or "") != "in_progress":
+        session["current_task"] = None
+        return
+
+    worker = str(candidate.get("worker") or "")
+    since_iso = str(candidate.get("started_at") or session.get("started_at") or iso_now())
+    completed_run_exists = _run_exists_for_task(
+        bridge,
+        task_id=task_id,
+        since_iso=since_iso,
+    )
+
+    if worker == "safe_worker" and completed_run_exists:
+        bridge.set_autonomy_task_status(
+            task_id=task_id,
+            status="done",
+            evidence=_append_evidence(
+                current.get("evidence"),
+                (
+                    f"nightshift_session={session['session_id']}; "
+                    "resume recovered audited GREEN worker completion."
+                ),
+            ),
+        )
+        session.setdefault("task_results", []).append(
+            {
+                "task_id": task_id,
+                "domain": str(candidate.get("domain") or "unknown"),
+                "title": str(current.get("title") or task_id),
+                "worker": "safe_worker",
+                "result_code": 0,
+                "final_status": "done",
+                "attempts": int(candidate.get("attempt") or 1),
+                "finished_at": iso_now(),
+                "recovered_after_interruption": True,
+            }
+        )
+    else:
+        # A branch-worker patch exists only in the interrupted checkout until the
+        # deterministic workflow uploads/pushes it. Recreate it on resume.
+        bridge.set_autonomy_task_status(
+            task_id=task_id,
+            status="ready",
+            evidence=_append_evidence(
+                current.get("evidence"),
+                (
+                    f"nightshift_session={session['session_id']}; "
+                    "resume reset interrupted work to ready for a bounded retry."
+                ),
+            ),
+        )
+        if worker == "branch_worker":
+            session["branch_worker_used"] = False
+
+    session["current_task"] = None
+
+
 def _task_result(
     task: dict[str, Any],
     *,
@@ -356,6 +450,7 @@ async def run_nightshift(
         max_tasks=task_limit,
         max_events=event_limit,
     )
+    _recover_interrupted_work(bridge, session)
     _persist_session(bridge, session)
 
     if event_limit:
