@@ -6,6 +6,7 @@ import type { AdvisorStartKey } from "@/lib/advisorStarts";
 import {
   isVerifiedProductTruthVisual,
   LIVE_FRAGRANCES,
+  visualWorldFor,
 } from "@/lib/fragranceCatalog";
 
 type SecondaryStart = {
@@ -188,6 +189,7 @@ export default function AcquisitionLanding({
                           mode={
                             isProductTruth ? "cutout" : "editorial"
                           }
+                          world={visualWorldFor(fragrance)}
                           className="h-full w-full"
                           priority={index === 0}
                         />
