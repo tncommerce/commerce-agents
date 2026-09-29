@@ -1,0 +1,157 @@
+{
+  "version": 2,
+  "brand": "DUFYND",
+  "operator": "TNCommerce",
+  "status": "candidate_pending_owner_activation",
+  "activation": {
+    "required_token": "GO-JARVIS-SELF-APPROVAL",
+    "active": false,
+    "rule": "Merging this candidate does not activate self-approval. Runtime integration must refuse autonomous high-impact execution until the owner explicitly activates this policy."
+  },
+  "principles": [
+    "Customer usefulness, product truth and data integrity take priority over monetization.",
+    "Unknown actions fail closed to owner_required.",
+    "Jarvis may self-approve only actions explicitly listed here and only when every required evidence gate passes.",
+    "Financial spend and irreversible owner-safety actions remain outside Jarvis self-approval.",
+    "main remains protected from autonomous Jarvis merges.",
+    "No CI, evidence, identity, rights, security or promotion gate may be bypassed."
+  ],
+  "action_classes": {
+    "auto_internal": {
+      "description": "Non-destructive internal work Jarvis may perform without per-action approval.",
+      "actions": [
+        "read_repo_and_status",
+        "generate_reports",
+        "validate_schemas",
+        "detect_stale_or_inconsistent_data",
+        "prepare_mapping_candidates",
+        "prepare_affiliate_activation_candidates",
+        "run_dry_run_imports",
+        "run_tests_and_quality_gates",
+        "write_machine_readable_staging_artifacts",
+        "generate_review_artifacts",
+        "prepare_non_sent_outbound_drafts",
+        "prepare_engineering_patch"
+      ]
+    },
+    "auto_after_evidence": {
+      "description": "Jarvis may self-approve these actions only after all action-specific evidence and context gates pass.",
+      "actions": {
+        "merge_non_destructive_change_to_scentai_mvp": {
+          "require_all": [
+            "control_plane_fresh",
+            "patch_scope_valid",
+            "required_ci_green",
+            "tests_green",
+            "security_checks_green",
+            "no_unresolved_review_blocker",
+            "non_destructive_change"
+          ],
+          "context": {
+            "target_branch": "scentai-mvp",
+            "deny_path_prefixes": [
+              ".github/",
+              "supabase/",
+              "examples/retail/data/"
+            ],
+            "deny_files": [
+              "requirements.txt",
+              "requirements-dev.txt",
+              "pyproject.toml",
+              "package.json",
+              "package-lock.json",
+              "pnpm-lock.yaml",
+              "yarn.lock"
+            ]
+          }
+        },
+        "promote_staging_product_to_live_catalog": {
+          "require_all": [
+            "control_plane_fresh",
+            "identity_verified",
+            "community_qa_verified",
+            "approved_product_image",
+            "image_rights_verified",
+            "fresh_current_affiliate_offer",
+            "resolved_merchant_mapping",
+            "search_and_recommendation_qa_passed",
+            "no_unresolved_identity_or_version_blocker"
+          ]
+        },
+        "enable_verified_live_affiliate_routing": {
+          "require_all": [
+            "control_plane_fresh",
+            "exact_product_mapping_verified",
+            "destination_domain_verified",
+            "tracking_link_verified",
+            "merchant_clickout_smoke_passed",
+            "fresh_price_and_stock_verified",
+            "attribution_path_verified"
+          ]
+        },
+        "publish_ready_organic_content": {
+          "require_all": [
+            "control_plane_fresh",
+            "content_marked_ready_to_publish",
+            "product_identity_quality_passed",
+            "asset_rights_verified",
+            "brand_qa_passed",
+            "destination_link_verified",
+            "organic_only_no_paid_spend"
+          ]
+        }
+      }
+    },
+    "owner_required": {
+      "description": "Jarvis must request the owner for these financial, security, legal or irreversible actions.",
+      "actions": [
+        "spend_money",
+        "buy_subscription_or_credits",
+        "start_or_scale_paid_advertising",
+        "place_supplier_or_inventory_orders",
+        "accept_or_sign_contracts",
+        "send_outbound_message_that_creates_external_commitment",
+        "change_or_rotate_credentials_or_secrets",
+        "merge_to_main",
+        "change_github_workflow_permissions",
+        "bypass_or_disable_ci_or_security_gate",
+        "change_dependency_or_lockfile",
+        "apply_production_database_schema_migration",
+        "delete_or_overwrite_material_production_data",
+        "make_destructive_production_change",
+        "make_major_price_change",
+        "change_legal_or_privacy_policy"
+      ]
+    },
+    "prohibited_without_verified_evidence": {
+      "description": "Jarvis must never fabricate or bypass these evidence requirements.",
+      "actions": [
+        "invent_or_guess_product_identifiers",
+        "invent_or_guess_prices_or_stock",
+        "invent_affiliate_links",
+        "treat_applied_affiliate_program_as_approved",
+        "bypass_promotion_gates",
+        "rank_products_or_merchants_by_commission",
+        "publish_generated_bottle_imagery_that_materially_misrepresents_the_real_product",
+        "silently_drop_blockers_or_validation_failures"
+      ]
+    }
+  },
+  "decision_contract": {
+    "default_for_unknown_action": "owner_required",
+    "decisions": [
+      "auto_allowed",
+      "blocked_missing_evidence",
+      "owner_required",
+      "prohibited"
+    ],
+    "required_audit_fields": [
+      "action",
+      "decision",
+      "policy_version",
+      "evidence",
+      "context",
+      "evaluated_at"
+    ]
+  }
+}
