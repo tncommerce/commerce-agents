@@ -3,9 +3,7 @@
 from pathlib import Path
 
 DETAIL_PAGE = Path("examples/retail/storefront-web/app/duft/[slug]/page.tsx")
-SHARE_BUTTON = Path(
-    "examples/retail/storefront-web/components/FragranceShareButton.tsx"
-)
+SHARE_BUTTON = Path("examples/retail/storefront-web/components/FragranceShareButton.tsx")
 
 
 def test_fragrance_detail_exposes_share_action() -> None:
