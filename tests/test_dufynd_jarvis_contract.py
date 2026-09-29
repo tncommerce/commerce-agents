@@ -93,6 +93,13 @@ def test_dufynd_jarvis_contract_keeps_active_runtime_off_by_default() -> None:
     assert "Write" in branch_worker["builtin_tools_allowed"]
     assert "Bash" in branch_worker["builtin_tools_denied"]
 
+    pr_orchestration = branch_worker["pr_orchestration"]
+    assert pr_orchestration["mode"] == "process-branch-task-pr"
+    assert pr_orchestration["target_base"] == "scentai-mvp"
+    assert pr_orchestration["auto_merge"] is False
+    assert pr_orchestration["main_branch_allowed"] is False
+    assert "does not persist GitHub credentials" in pr_orchestration["credential_rule"]
+
     validation = branch_worker["validation"]
     assert "pytest -q" in validation["python"]
     assert "build acme-retail-storefront-web" in validation["storefront_when_changed"]
