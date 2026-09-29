@@ -1055,6 +1055,12 @@ try {
     if ((await backupPage.locator('a[href="/duft/xerjoff-naxos"]').count()) !== 1) {
       throw new Error("library backup did not restore the saved fragrance");
     }
+    if ((await backupPage.locator(".dufynd-library-card").count()) !== 1) {
+      throw new Error("wishlist did not render the immersive library card");
+    }
+    if ((await backupPage.locator("[data-dufynd-library-card-stage]").count()) !== 1) {
+      throw new Error("wishlist immersive library card is missing its product stage");
+    }
     report.checks.push({ label: "library-backup-roundtrip", status: "passed" });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
