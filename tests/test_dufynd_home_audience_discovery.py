@@ -16,7 +16,7 @@ def test_homepage_links_directly_to_audience_filtered_catalog() -> None:
     assert '["women", "Damen", audienceCounts.women]' in text
     assert '["men", "Herren", audienceCounts.men]' in text
     assert '["unisex", "Unisex", audienceCounts.unisex]' in text
-    assert 'href={`/duft?zielgruppe=${audience}`}' in text
+    assert "href={`/duft?zielgruppe=${audience}`}" in text
 
 
 def test_homepage_audience_counts_use_live_fragrance_targets() -> None:
