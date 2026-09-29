@@ -99,6 +99,23 @@ function scoreLevel(value: number | null): string {
   return "Hoch";
 }
 
+function sharedAccordLabels(
+  left: StaticFragrance,
+  right: StaticFragrance,
+  limit = 2,
+): string[] {
+  const rightAccords = new Set(
+    right.accords.map((accord) => accord.toLowerCase()),
+  );
+
+  return left.accords
+    .filter((accord) =>
+      rightAccords.has(accord.toLowerCase()),
+    )
+    .slice(0, limit)
+    .map(accordLabel);
+}
+
 function formatCheckedAt(value: string | null): string | null {
   if (!value) return null;
 
@@ -889,6 +906,10 @@ export default async function FragrancePage({
                   item.fragrance.preferred_visual;
                 const relatedIsProductTruth =
                   isVerifiedProductTruthVisual(relatedVisual);
+                const sharedAccords = sharedAccordLabels(
+                  fragrance,
+                  item.fragrance,
+                );
 
                 return (
                   <article
@@ -925,6 +946,23 @@ export default async function FragrancePage({
                         <h3 className="mt-0.5 text-[14px] font-semibold leading-5 text-(--ink)">
                           {item.fragrance.name}
                         </h3>
+                        {sharedAccords.length ? (
+                          <div className="mt-2">
+                            <div className="text-[9.5px] font-semibold uppercase tracking-[0.07em] text-(--ink-soft)">
+                              Gemeinsame Akkorde
+                            </div>
+                            <div className="mt-1 flex flex-wrap gap-1">
+                              {sharedAccords.map((accord) => (
+                                <span
+                                  key={accord}
+                                  className="rounded-full border border-(--line) bg-(--card) px-2 py-0.5 text-[9.5px] font-medium text-(--ink-soft)"
+                                >
+                                  {accord}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        ) : null}
                         {item.fragrance.community.rating_10 != null ? (
                           <div className="mt-2 text-[11px] text-(--ink-soft)">
                             <span className="font-semibold text-(--ink)">
