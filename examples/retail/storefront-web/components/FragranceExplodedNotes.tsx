@@ -147,7 +147,7 @@ export default function FragranceExplodedNotes({
 
   return (
     <section
-      className="dufynd-exploded-notes mt-5 overflow-hidden rounded-[26px] border border-(--line) bg-(--card) shadow-(--shadow-sm)"
+      className="dufynd-exploded-notes dufynd-journey-exploded mt-5 overflow-hidden rounded-[26px] border border-(--line) bg-(--card) shadow-(--shadow-sm)"
       aria-labelledby="dufynd-exploded-heading"
     >
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-(--line) px-4 py-4 sm:px-5">
