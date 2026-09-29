@@ -465,11 +465,7 @@ def _require_budget_window(bridge: DufyndJarvisBridge) -> tuple[str, dict[str, A
         )
     decision = bridge.load_human_decision(decision_id)
     approved = dict((decision or {}).get("decision") or {})
-    if (
-        not decision
-        or decision.get("status") != "approved"
-        or not bool(approved.get("approved"))
-    ):
+    if not decision or decision.get("status") != "approved" or not bool(approved.get("approved")):
         raise RuntimeError(
             f"DUFYND Jarvis budget window {budget_id} is not backed by an approved human decision."
         )
