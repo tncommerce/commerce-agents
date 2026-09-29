@@ -20,6 +20,6 @@ def test_catalog_shortlist_reuses_existing_comparison_contract() -> None:
     source = CATALOG_BROWSER.read_text(encoding="utf-8")
 
     assert "/vergleich?left=" in source
-    assert ")&right=" in source
+    assert "}&right=${encodeURIComponent(" in source
     assert "selectedComparisonFragrances[0].product_id" in source
     assert "selectedComparisonFragrances[1].product_id" in source
