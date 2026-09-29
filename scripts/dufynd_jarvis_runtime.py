@@ -463,6 +463,37 @@ def make_options(bridge: DufyndJarvisBridge) -> ClaudeAgentOptions:
     )
 
 
+SAFE_WORKER_SYSTEM_PROMPT = (
+    SYSTEM_PROMPT
+    + """
+You are running as the DUFYND safe research worker.
+You may inspect repository files and research the public web, but you must not write
+or edit repository files, run shell commands, publish content, spend money, change
+live catalog or affiliate routing, accept contracts, send outbound messages, change
+credentials, or merge/push code. Treat external claims as evidence candidates until
+verified. Your output should be concise, evidence-led, and useful for the next
+controlled DUFYND step.
+"""
+)
+
+
+def make_safe_worker_options(bridge: DufyndJarvisBridge) -> ClaudeAgentOptions:
+    model, max_turns, max_budget_usd = _require_active_runtime()
+    builtins = ["Read", "Grep", "Glob", "WebSearch", "WebFetch"]
+    return ClaudeAgentOptions(
+        system_prompt=SAFE_WORKER_SYSTEM_PROMPT,
+        mcp_servers={SERVER_NAME: build_server(bridge)},
+        allowed_tools=[*allowed_tool_names(), *builtins],
+        disallowed_tools=["Bash", "Write", "Edit", "Task"],
+        cwd=REPO_ROOT,
+        env={"CLAUDE_CODE_DISABLE_CLAUDE_MDS": "1"},
+        model=model,
+        max_turns=max_turns,
+        max_budget_usd=max_budget_usd,
+        permission_mode="dontAsk",
+    )
+
+
 def event_prompt(event: dict[str, Any]) -> str:
     return (
         "Process this internal DUFYND Jarvis event. Follow the system rules, "
@@ -557,6 +588,96 @@ async def process_next(bridge: DufyndJarvisBridge) -> int:
         return 1
 
 
+def safe_task_prompt(task: dict[str, Any]) -> str:
+    return (
+        "Work on this DUFYND safe autonomous task. First load the current autonomy "
+        "queue and operating context. Use repository read/search tools and public "
+        "web research when useful. Do not perform any high-impact action. Produce "
+        "evidence, blockers, and the next safe step; do not claim publication, "
+        "licensing rights, stock, price, or identity without verification.\n\n"
+        + json.dumps(task, ensure_ascii=False, default=str)
+    )
+
+
+async def process_safe_task(bridge: DufyndJarvisBridge) -> int:
+    queue = await asyncio.to_thread(bridge.load_autonomy_queue)
+    safe_tasks = [
+        task
+        for task in (queue.get("safe_to_execute") or [])
+        if isinstance(task, dict)
+        and str(task.get("task_id") or "").startswith("repo_current_")
+        and not bool(task.get("requires_human_approval"))
+    ]
+    if not safe_tasks:
+        print("DUFYND Jarvis safe worker: no repo-current safe task.")
+        return 0
+
+    task = safe_tasks[0]
+    task_id = str(task["task_id"])
+    budget_id, _ = await asyncio.to_thread(_require_budget_window, bridge)
+
+    await asyncio.to_thread(
+        bridge.update_autonomy_task_progress,
+        task_id=task_id,
+        status="in_progress",
+        evidence=(
+            "Safe worker claimed current repo-derived task. "
+            "No terminal completion is recorded automatically."
+        ),
+    )
+
+    try:
+        options = make_safe_worker_options(bridge)
+        async with ClaudeSDKClient(options=options) as client:
+            await client.query(safe_task_prompt(task))
+            result = await collect_turn(client)
+        if result.is_error:
+            detail = "; ".join(result.tool_errors) or result.text or "Safe worker failed"
+            raise RuntimeError(detail)
+
+        text = result.text.strip()
+        await asyncio.to_thread(
+            bridge.update_autonomy_task_progress,
+            task_id=task_id,
+            status="in_progress",
+            evidence=text[:12000] or "Safe worker completed without prose evidence.",
+        )
+        await asyncio.to_thread(
+            bridge.record_run,
+            run_type=f"safe_task:{task_id}",
+            input_summary=json.dumps(task, ensure_ascii=False, default=str)[:4000],
+            output_summary=text[:8000] or "(safe worker produced no prose output)",
+            decisions=[
+                {
+                    "task_id": task_id,
+                    "cost_usd": result.cost_usd,
+                    "budget_id": budget_id,
+                    "runtime": "dufynd_jarvis_safe_worker_v1",
+                    "terminal_completion_recorded": False,
+                }
+            ],
+            human_approval_required=False,
+            agent_name="jarvis_safe_worker",
+        )
+        print(
+            "DUFYND Jarvis safe worker processed "
+            f"task_id={task_id} cost_usd="
+            f"{result.cost_usd if result.cost_usd is not None else 'unknown'}"
+        )
+        if text:
+            print(text)
+        return 0
+    except Exception as error:
+        await asyncio.to_thread(
+            bridge.update_autonomy_task_progress,
+            task_id=task_id,
+            status="blocked",
+            evidence=f"Safe worker failed without terminal task completion: {error}"[:12000],
+        )
+        print(f"DUFYND Jarvis safe worker failed for {task_id}: {error}", file=sys.stderr)
+        return 1
+
+
 def _bounded_supervisor_max_events(value: int) -> int:
     return max(1, min(int(value), HARD_SUPERVISOR_MAX_EVENTS))
 
@@ -645,6 +766,11 @@ def main() -> int:
         help="process multiple queued Jarvis events until a safe stop condition",
     )
     group.add_argument(
+        "--process-safe-task",
+        action="store_true",
+        help="research one current repo-derived safe autonomy task",
+    )
+    group.add_argument(
         "--once",
         metavar="PROMPT",
         help="run one manual internal Jarvis task",
@@ -664,6 +790,8 @@ def main() -> int:
         return 0
 
     bridge = DufyndJarvisBridge()
+    if args.process_safe_task:
+        return asyncio.run(process_safe_task(bridge))
     if args.process_loop:
         return asyncio.run(process_loop(bridge, max_events=args.max_events))
     if args.process_next:

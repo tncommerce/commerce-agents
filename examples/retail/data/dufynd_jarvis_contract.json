@@ -1,5 +1,5 @@
 {
-  "version": "2.3",
+  "version": "2.4",
   "brand": "DUFYND",
   "operator": "TNCommerce",
   "purpose": "Machine-readable contract between DUFYND operating data and Jarvis.",
@@ -156,6 +156,26 @@
       "rule": "Refresh derived repository state, upsert the canonical repo snapshot and current domain tasks, then require exact source_fingerprint_sha256 parity before Jarvis may use the autonomy queue.",
       "dry_run_default": true,
       "live_customer_state_modified": false
+    },
+    "safe_worker_mode": {
+      "status": "available_guarded",
+      "command": "--process-safe-task",
+      "task_scope": "repo_current_* tasks that are safe_to_execute and do not require human approval",
+      "builtin_tools_allowed": [
+        "Read",
+        "Grep",
+        "Glob",
+        "WebSearch",
+        "WebFetch"
+      ],
+      "builtin_tools_denied": [
+        "Bash",
+        "Write",
+        "Edit",
+        "Task"
+      ],
+      "task_progress_rule": "Safe worker may record non-terminal progress/evidence only; it must not mark a task done automatically.",
+      "safety": "No repository mutation, shell execution, publishing, spend, contracts, secrets, live catalog routing, or merge/push capability."
     }
   },
   "human_decision_tokens": {

@@ -17,6 +17,7 @@ from scripts.dufynd_jarvis_runtime import (
     allowed_tool_names,
     event_prompt,
     process_next,
+    process_safe_task,
     runtime_readiness,
 )
 
@@ -48,6 +49,14 @@ class SupervisorBridge:
 
     def load_health(self):
         return {"inbox": {"pending": self.pending}}
+
+
+class SafeTaskBridge:
+    def __init__(self, safe_tasks):
+        self.safe_tasks = safe_tasks
+
+    def load_autonomy_queue(self):
+        return {"safe_to_execute": self.safe_tasks}
 
 
 def test_runtime_has_only_internal_safe_tool_surface() -> None:
@@ -88,6 +97,54 @@ def test_process_next_is_noop_when_inbox_is_empty(capsys) -> None:
 
     assert result == 0
     assert "no pending event" in capsys.readouterr().out.lower()
+
+
+def test_safe_worker_ignores_non_repo_current_tasks(capsys) -> None:
+    result = asyncio.run(
+        process_safe_task(
+            SafeTaskBridge(
+                [
+                    {
+                        "task_id": "legacy_safe_task",
+                        "requires_human_approval": False,
+                    }
+                ]
+            )
+        )
+    )
+
+    assert result == 0
+    assert "no repo-current safe task" in capsys.readouterr().out.lower()
+
+
+def test_safe_worker_refuses_human_approval_task(capsys) -> None:
+    result = asyncio.run(
+        process_safe_task(
+            SafeTaskBridge(
+                [
+                    {
+                        "task_id": "repo_current_commerce",
+                        "requires_human_approval": True,
+                    }
+                ]
+            )
+        )
+    )
+
+    assert result == 0
+    assert "no repo-current safe task" in capsys.readouterr().out.lower()
+
+
+def test_safe_worker_prompt_names_high_impact_boundaries() -> None:
+    prompt = jarvis_runtime.safe_task_prompt(
+        {
+            "task_id": "repo_current_commerce",
+            "instruction": "Research licensed image sources.",
+        }
+    )
+
+    assert "Do not perform any high-impact action" in prompt
+    assert "licensing rights" in prompt
 
 
 def test_runtime_readiness_is_safe_by_default(monkeypatch) -> None:
