@@ -31,6 +31,13 @@ export type FragranceVisualFidelity =
   | "editorial_only"
   | "rejected";
 
+export type FragranceVisualWorld =
+  | "amber"
+  | "mineral"
+  | "ember"
+  | "silk"
+  | "noir";
+
 export type FragranceVisualComposition =
   | "product_scene"
   | "bottle_free_backdrop";
@@ -217,6 +224,50 @@ export function isVerifiedProductTruthVisual(
       visual.fidelity_status === "verified" &&
       (visual.role === "primary" || visual.role === "cutout"),
   );
+}
+
+/**
+ * Shared DUFYND art-direction world. The fragrance profile changes the
+ * atmosphere behind the bottle; framing and rendering grammar stay constant.
+ */
+export function visualWorldFor(
+  fragrance: Pick<StaticFragrance, "accords">,
+): FragranceVisualWorld {
+  const accords = new Set(
+    fragrance.accords.map((accord) => accord.toLowerCase()),
+  );
+
+  if (
+    accords.has("smoky") ||
+    accords.has("leathery") ||
+    accords.has("resinous")
+  ) {
+    return "noir";
+  }
+
+  if (
+    accords.has("gourmand") ||
+    accords.has("sweet") ||
+    accords.has("oriental") ||
+    accords.has("creamy")
+  ) {
+    return "amber";
+  }
+
+  if (accords.has("floral") || accords.has("powdery")) {
+    return "silk";
+  }
+
+  if (
+    accords.has("fresh") ||
+    accords.has("citrus") ||
+    accords.has("aquatic") ||
+    accords.has("green")
+  ) {
+    return "mineral";
+  }
+
+  return "ember";
 }
 
 function selectVerifiedModel3D(
