@@ -702,7 +702,15 @@ def safe_task_prompt(task: dict[str, Any]) -> str:
         "read/search tools and public web research when useful. Do not perform any "
         "high-impact action. Produce evidence, blockers, and the next safe step; do "
         "not claim publication, licensing rights, stock, price, or identity without "
-        "verification.\n\n" + json.dumps(task, ensure_ascii=False, default=str)
+        "verification. End your response with exactly one machine-readable outcome "
+        "line: DUFYND_TASK_STATE: done, DUFYND_TASK_STATE: waiting_human_input, "
+        "DUFYND_TASK_STATE: waiting_external, DUFYND_TASK_STATE: blocked, or "
+        "DUFYND_TASK_STATE: in_progress. Use done only when the requested safe task "
+        "is fully resolved for the current repository fingerprint. Use "
+        "waiting_human_input when the next action is YELLOW/owner review, "
+        "waiting_external for an external dependency, blocked for a genuine "
+        "task-local blocker, and in_progress when useful work remains.\n\n"
+        + json.dumps(task, ensure_ascii=False, default=str)
     )
 
 
