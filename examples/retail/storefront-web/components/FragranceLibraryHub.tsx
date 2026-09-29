@@ -17,6 +17,7 @@ import {
 } from "@/lib/fragranceLibrary";
 import {
   isVerifiedProductTruthVisual,
+  visualWorldFor,
   type StaticFragrance,
 } from "@/lib/fragranceCatalog";
 
@@ -263,6 +264,7 @@ function FragranceCard({
             alt={`${fragrance.brand} ${fragrance.name}`}
             variant="card"
             mode={isProductTruth ? "cutout" : "editorial"}
+            world={visualWorldFor(fragrance)}
             className="dufynd-library-card-visual h-48 w-full"
           />
           {dominantProfile ? (
