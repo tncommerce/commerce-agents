@@ -128,6 +128,10 @@ export const OFFICIAL_PRODUCT_PAGES: Record<string, { merchant: string; url: str
     merchant: "Riiffs / Nusuk",
     url: "https://www.riiffsperfumes.com/product/ateeq/",
   },
+  "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100": {
+    merchant: "Lancôme",
+    url: "https://www.lancome.de/duefte/frauen_parfum/la_vie_est_belle/la_vie_est_belle_eau_de_parfum/3605533286555.html",
+  },
   "SC-WIDIAN-LONDON-EXTRAIT-50": {
     merchant: "Widian",
     url: "https://widian.com/en/products/london",
