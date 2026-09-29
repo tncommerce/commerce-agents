@@ -1,9 +1,7 @@
 import json
 from pathlib import Path
 
-EVIDENCE = Path(
-    "examples/retail/data/dufynd_prada_paradoxe_commons_image_candidate_20260929.json"
-)
+EVIDENCE = Path("examples/retail/data/dufynd_prada_paradoxe_commons_image_candidate_20260929.json")
 
 
 def load() -> dict:
