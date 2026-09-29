@@ -8,7 +8,7 @@ CATALOG_BROWSER = Path("examples/retail/storefront-web/components/FragranceCatal
 def test_catalog_supports_two_item_comparison_shortlist() -> None:
     source = CATALOG_BROWSER.read_text(encoding="utf-8")
 
-    assert 'const [compareSelection, setCompareSelection] = useState<string[]>([])' in source
+    assert "const [compareSelection, setCompareSelection] = useState<string[]>([])" in source
     assert "if (current.length >= 2) return current" in source
     assert 'aria-label="Duftvergleich vorbereiten"' in source
     assert "Noch einen Duft auswählen" in source
