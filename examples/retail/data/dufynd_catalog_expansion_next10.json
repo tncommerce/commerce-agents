@@ -248,8 +248,8 @@
         "provisional": false
       },
       "identifiers": {
-        "status": "verified_current_variant",
-        "canonical_gtin": "3349666007921",
+        "status": "source_verified_feed_match_pending",
+        "canonical_gtin": null,
         "observations": [
           {
             "gtin": "3349666007921",
@@ -263,7 +263,7 @@
             "availability_snapshot": "in_stock"
           }
         ],
-        "note": "Canonical GTIN and exact 100 ml EDT merchant mapping verified against Perfumetrader article 16978322; product image approval remains pending."
+        "note": "Research evidence only; canonical GTIN is maintained in verified merchant mapping data. Exact 100 ml EDT purchase destinations are verified; product image approval remains pending."
       },
       "media": {
         "image_url": null,
