@@ -15,6 +15,7 @@ import { STORE_POLICY } from "@/lib/storePolicy";
 import {
   getLiveFragranceByProductId,
   isVerifiedProductTruthVisual,
+  visualWorldFor,
 } from "@/lib/fragranceCatalog";
 
 function activateOnKeyboard(
@@ -77,6 +78,7 @@ export function ProductImage({ product, className = "" }: { product: Product; cl
             alt={product.title}
             variant="card"
             mode={isProductTruth ? "cutout" : "editorial"}
+            world={fragrance ? visualWorldFor(fragrance) : undefined}
             className="h-full w-full"
           />
           <ImageAttribution visual={visual} compact />
@@ -88,6 +90,7 @@ export function ProductImage({ product, className = "" }: { product: Product; cl
       <FragranceVisual
         alt={product.title}
         variant="card"
+        world={fragrance ? visualWorldFor(fragrance) : undefined}
         className={className}
       />
     );
