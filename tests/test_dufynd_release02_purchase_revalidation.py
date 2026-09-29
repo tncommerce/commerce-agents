@@ -47,8 +47,7 @@ def test_release02_purchase_revalidation_is_exact_and_read_only() -> None:
         assert row["intended_offer_id"] == expected["offer_id"]
 
 
-def test_release02_revalidation_matches_existing_offer_identity_without_mutating_it(
-) -> None:
+def test_release02_revalidation_matches_existing_offer_identity_without_mutating_it() -> None:
     payload = json.loads(REVALIDATION.read_text(encoding="utf-8"))
     offers = json.loads(OFFERS.read_text(encoding="utf-8"))["offers"]
     offers_by_id = {row["offer_id"]: row for row in offers}
