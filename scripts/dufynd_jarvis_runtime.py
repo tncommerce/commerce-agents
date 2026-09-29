@@ -889,10 +889,34 @@ async def process_autonomous_cycle(
         )
         return 0
 
-    task_result = await process_safe_task(bridge)
+    queue = await asyncio.to_thread(bridge.load_autonomy_queue)
+    safe_tasks = [
+        task
+        for task in (queue.get("safe_to_execute") or [])
+        if isinstance(task, dict)
+        and str(task.get("task_id") or "").startswith("repo_current_")
+        and not bool(task.get("requires_human_approval"))
+    ]
+
+    if not safe_tasks:
+        print(
+            "DUFYND Jarvis autonomous cycle summary | "
+            f"event_limit={event_limit} | worker=none | task_result=0"
+        )
+        return 0
+
+    selected = safe_tasks[0]
+    selected_domain = str(selected.get("domain") or "")
+    if selected_domain == "engineering":
+        worker = "branch_worker"
+        task_result = await process_branch_task(bridge)
+    else:
+        worker = "safe_worker"
+        task_result = await process_safe_task(bridge)
+
     print(
         "DUFYND Jarvis autonomous cycle summary | "
-        f"event_limit={event_limit} | safe_task_result={task_result}"
+        f"event_limit={event_limit} | worker={worker} | task_result={task_result}"
     )
     return task_result
 
