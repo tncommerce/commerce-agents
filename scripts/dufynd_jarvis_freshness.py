@@ -65,9 +65,7 @@ def evaluate_freshness(
     if supabase_generated_at is None and isinstance(snapshot, dict):
         supabase_generated_at = parse_timestamp(snapshot.get("last_verified_at"))
 
-    supabase_fingerprint = str(
-        snapshot_value.get("source_fingerprint_sha256") or ""
-    ).strip()
+    supabase_fingerprint = str(snapshot_value.get("source_fingerprint_sha256") or "").strip()
 
     reasons: list[str] = []
     lag_hours: float | None = None
