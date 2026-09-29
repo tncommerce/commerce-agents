@@ -1,8 +1,6 @@
 from pathlib import Path
 
-CATALOG = Path(
-    "examples/retail/storefront-web/components/FragranceCatalogBrowser.tsx"
-)
+CATALOG = Path("examples/retail/storefront-web/components/FragranceCatalogBrowser.tsx")
 
 
 def source() -> str:
