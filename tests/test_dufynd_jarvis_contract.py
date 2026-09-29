@@ -13,7 +13,7 @@ def test_dufynd_jarvis_contract_has_current_brand_and_version() -> None:
 
     assert contract["brand"] == "DUFYND"
     assert contract["operator"] == "TNCommerce"
-    assert contract["version"] == "2.8"
+    assert contract["version"] == "3.0"
 
 
 def test_dufynd_jarvis_contract_exposes_required_learning_surfaces() -> None:
@@ -113,3 +113,20 @@ def test_dufynd_jarvis_contract_keeps_active_runtime_off_by_default() -> None:
     assert autonomous_cycle["worker_routing"]["engineering"] == "branch_worker"
     assert autonomous_cycle["worker_routing"]["non_engineering"] == "safe_worker"
     assert "cannot push, merge, deploy, publish, spend money" in autonomous_cycle["safety"]
+
+    nightshift = runtime["nightshift_orchestrator"]
+    assert nightshift["mode"] == "nightshift-pilot"
+    assert nightshift["task_driven"] is True
+    assert nightshift["polling_loop"] is False
+    assert nightshift["default_max_tasks"] == 8
+    assert nightshift["hard_max_tasks"] == 20
+    assert nightshift["worker_routing"]["engineering"] == "isolated_branch_worker"
+    assert nightshift["yellow_handoff"].endswith("They are never auto-merged.")
+    assert nightshift["scheduling"].startswith("No recurring schedule")
+    assert nightshift["main_branch_allowed"] is False
+
+    policy = contract["nightshift_policy"]
+    assert "spend_money" in policy["action_classes"]["red_owner_only"]
+    assert "production_relevant_pull_request" in policy["action_classes"]["yellow_prepare_only"]
+    assert "tests_and_quality_assurance" in policy["action_classes"]["green_auto_execute"]
+    assert policy["main_branch_allowed"] is False
