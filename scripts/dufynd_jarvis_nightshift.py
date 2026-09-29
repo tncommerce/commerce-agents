@@ -577,6 +577,13 @@ def finalize_branch_task(
         return False
 
     task_id = str(metadata["task_id"])
+    if status == "waiting_human_input" and not pr_url:
+        status = "blocked"
+        evidence = (
+            f"{evidence} No validated PR URL was produced; "
+            "YELLOW handoff cannot be claimed."
+        )
+
     current = bridge.load_autonomy_task(task_id) or {}
     bridge.set_autonomy_task_status(
         task_id=task_id,
