@@ -27,12 +27,12 @@ def test_homepage_audience_counts_use_live_fragrance_targets() -> None:
     assert "{ women: 0, men: 0, unisex: 0 }" in text
 
 
-def test_featured_homepage_products_accept_verified_product_truth() -> None:
+def test_featured_homepage_products_accept_storefront_presentation() -> None:
     text = source()
 
-    assert "isVerifiedProductTruthVisual(" in text
-    assert "fragrance?.preferred_visual" in text
-    assert 'String(product.image_url ?? "").includes("/products/pilot/")' in text
+    assert "fragrance?.presentation_visual?.url" in text
+    assert "fragrance?.preferred_visual?.url" in text
+    assert "product.image_url" in text
 
 
 def test_homepage_renders_visual_audience_discovery_cards() -> None:

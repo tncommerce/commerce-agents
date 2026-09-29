@@ -1294,7 +1294,9 @@ export default function FragranceCatalogBrowser({
             aria-label="Passende Düfte"
           >
             {visibleFragrances.map((fragrance) => {
-              const visual = fragrance.preferred_visual;
+              const visual =
+                fragrance.presentation_visual ||
+                fragrance.preferred_visual;
               const isProductTruth =
                 isVerifiedProductTruthVisual(visual);
               const dominantProfile =
@@ -1334,6 +1336,11 @@ export default function FragranceCatalogBrowser({
                       <FragranceVisual
                         imageUrl={visual.url}
                         cutoutUrl={isProductTruth ? visual.url : undefined}
+                        backdropUrl={
+                          isProductTruth
+                            ? fragrance.backdrop_visual?.url
+                            : undefined
+                        }
                         alt={`${fragrance.brand} ${fragrance.name}`}
                         variant="card"
                         mode={isProductTruth ? "cutout" : "editorial"}

@@ -39,7 +39,12 @@ export default function AcquisitionLanding({
 }) {
   const fragranceCount = LIVE_FRAGRANCES.length;
   const acquisitionSpotlights = [...LIVE_FRAGRANCES]
-    .filter((fragrance) => Boolean(fragrance.preferred_visual?.url))
+    .filter((fragrance) =>
+      Boolean(
+        fragrance.presentation_visual?.url ||
+          fragrance.preferred_visual?.url,
+      ),
+    )
     .sort(
       (a, b) =>
         b.community.rating_count - a.community.rating_count ||
@@ -153,7 +158,9 @@ export default function AcquisitionLanding({
                   className="dufynd-acquisition-stage-glow"
                 />
                 {acquisitionSpotlights.map((fragrance, index) => {
-                  const visual = fragrance.preferred_visual;
+                  const visual =
+                    fragrance.presentation_visual ||
+                    fragrance.preferred_visual;
                   const isProductTruth =
                     isVerifiedProductTruthVisual(visual);
 
@@ -170,6 +177,11 @@ export default function AcquisitionLanding({
                           imageUrl={visual?.url}
                           cutoutUrl={
                             isProductTruth ? visual?.url : undefined
+                          }
+                          backdropUrl={
+                            isProductTruth
+                              ? fragrance.backdrop_visual?.url
+                              : undefined
                           }
                           alt={`${fragrance.brand} ${fragrance.name}`}
                           variant="card"

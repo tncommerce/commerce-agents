@@ -57,10 +57,15 @@ export function ProductImage({ product, className = "" }: { product: Product; cl
     const fragrance = getLiveFragranceByProductId(
       String(product.product_id),
     );
-    const visual = fragrance?.preferred_visual;
+    const visual =
+      fragrance?.presentation_visual ||
+      fragrance?.preferred_visual;
     const isProductTruth =
       isVerifiedProductTruthVisual(visual);
     const imageUrl = visual?.url || product.image_url;
+    const backdropUrl = isProductTruth
+      ? fragrance?.backdrop_visual?.url
+      : undefined;
 
     if (imageUrl) {
       return (
@@ -68,6 +73,7 @@ export function ProductImage({ product, className = "" }: { product: Product; cl
           <FragranceVisual
             imageUrl={imageUrl}
             cutoutUrl={isProductTruth ? imageUrl : undefined}
+            backdropUrl={backdropUrl}
             alt={product.title}
             variant="card"
             mode={isProductTruth ? "cutout" : "editorial"}
@@ -79,21 +85,11 @@ export function ProductImage({ product, className = "" }: { product: Product; cl
     }
 
     return (
-      <div
-        className={`relative flex items-center justify-center overflow-hidden ${productTileClass(product.product_id)} ${className}`}
-        aria-hidden
-      >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8),transparent_70%)]" />
-        <div className="relative flex flex-col items-center">
-          <div className="h-3 w-9 rounded-t-sm bg-(--ink)/80" />
-          <div className="h-3 w-6 bg-(--ink)/65" />
-          <div className="flex h-20 w-16 items-center justify-center rounded-[18px] border border-white/80 bg-white/70 shadow-md backdrop-blur-sm">
-            <span className="text-[9px] font-semibold tracking-[0.18em] text-(--ink)/75">
-              DUFYND
-            </span>
-          </div>
-        </div>
-      </div>
+      <FragranceVisual
+        alt={product.title}
+        variant="card"
+        className={className}
+      />
     );
   }
 
@@ -330,7 +326,11 @@ export default function ProductTile({
         }`}
       >
         <div className="relative">
-          <div className={`flex items-center justify-center w-full ${imageHeight} bg-white`}>
+          <div
+            className={`flex items-center justify-center w-full ${imageHeight} ${
+              isDufynd ? "bg-[#0c0d0f]" : "bg-white"
+            }`}
+          >
             <ProductImage product={product} className="h-full w-full" />
           </div>
           {product.in_stock === false ? (

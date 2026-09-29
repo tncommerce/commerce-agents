@@ -39,7 +39,56 @@ def visual_state(product: dict[str, Any]) -> str:
     if any(str(visual.get("url") or "").strip() for visual in visuals):
         return "other_visual"
 
+    if str(product.get("image_url") or "").strip():
+        return "legacy_visual"
+
     return "missing_real_asset"
+
+
+def storefront_presentation_state(product: dict[str, Any]) -> str:
+    """Classify how a product is staged on discovery/card surfaces.
+
+    Product truth and storefront presentation are intentionally separate:
+    a verified bottle may be layered over a bottle-free editorial world, while
+    an existing editorial product scene can remain the presentation fallback.
+    """
+    visuals = [
+        visual
+        for visual in list(product.get("visuals", []) or [])
+        if str(visual.get("url") or "").strip()
+    ]
+    has_verified_truth = any(
+        str(visual.get("role") or "") in PRODUCT_TRUTH_ROLES
+        and str(visual.get("fidelity_status") or "") in PRODUCT_TRUTH_FIDELITY
+        for visual in visuals
+    )
+    has_bottle_free_backdrop = any(
+        str(visual.get("role") or "") == "editorial"
+        and str(visual.get("composition") or "") == "bottle_free_backdrop"
+        and str(visual.get("fidelity_status") or "") == "editorial_only"
+        for visual in visuals
+    )
+    has_product_scene = any(
+        str(visual.get("role") or "") == "editorial"
+        and str(visual.get("composition") or "") == "product_scene"
+        and str(visual.get("fidelity_status") or "") == "editorial_only"
+        for visual in visuals
+    )
+    has_editorial = any(str(visual.get("role") or "") == "editorial" for visual in visuals)
+
+    if has_verified_truth and has_bottle_free_backdrop:
+        return "layered_product_truth"
+    if has_product_scene:
+        return "editorial_product_scene"
+    if has_verified_truth:
+        return "product_truth_stage_only"
+    if has_editorial:
+        return "editorial_unstructured"
+    if visuals:
+        return "other_visual"
+    if str(product.get("image_url") or "").strip():
+        return "legacy_image_presentation"
+    return "missing_presentation"
 
 
 def priority_rank(value: str | None) -> tuple[int, str]:
@@ -61,16 +110,20 @@ def build_visual_coverage_report(
 
     coverage_rows: list[dict[str, Any]] = []
     state_counts: Counter[str] = Counter()
+    presentation_counts: Counter[str] = Counter()
 
     for product in live_products:
         state = visual_state(product)
+        presentation_state = storefront_presentation_state(product)
         state_counts[state] += 1
+        presentation_counts[presentation_state] += 1
         coverage_rows.append(
             {
                 "product_id": product.get("product_id"),
                 "brand": product.get("brand"),
                 "name": product.get("name"),
                 "visual_state": state,
+                "presentation_state": presentation_state,
                 "visual_count": len(product.get("visuals", []) or []),
             }
         )
@@ -145,6 +198,15 @@ def build_visual_coverage_report(
     editorial = int(state_counts.get("editorial_only", 0))
     missing = int(state_counts.get("missing_real_asset", 0))
     other = int(state_counts.get("other_visual", 0))
+    legacy = int(state_counts.get("legacy_visual", 0))
+    layered = int(presentation_counts.get("layered_product_truth", 0))
+    product_scene = int(presentation_counts.get("editorial_product_scene", 0))
+    background_presented = layered + product_scene
+    presentation_upgrade_rows = [
+        row
+        for row in coverage_rows
+        if row["presentation_state"] not in {"layered_product_truth", "editorial_product_scene"}
+    ]
 
     return {
         "live_product_count": total,
@@ -152,6 +214,7 @@ def build_visual_coverage_report(
             "verified_product_truth": verified,
             "editorial_only": editorial,
             "other_visual": other,
+            "legacy_visual": legacy,
             "missing_real_asset": missing,
             "has_real_visual": total - missing,
             "verified_product_truth_rate_pct": round((verified / total * 100.0), 2)
@@ -161,6 +224,25 @@ def build_visual_coverage_report(
             if total
             else 0.0,
         },
+        "storefront_presentation": {
+            "layered_product_truth": layered,
+            "editorial_product_scene": product_scene,
+            "product_truth_stage_only": int(presentation_counts.get("product_truth_stage_only", 0)),
+            "editorial_unstructured": int(presentation_counts.get("editorial_unstructured", 0)),
+            "legacy_image_presentation": int(
+                presentation_counts.get("legacy_image_presentation", 0)
+            ),
+            "other_visual": int(presentation_counts.get("other_visual", 0)),
+            "missing_presentation": int(presentation_counts.get("missing_presentation", 0)),
+            "background_presented_count": background_presented,
+            "background_presented_rate_pct": round((background_presented / total * 100.0), 2)
+            if total
+            else 0.0,
+        },
+        "storefront_presentation_upgrade_count": len(presentation_upgrade_rows),
+        "storefront_presentation_upgrade_product_ids": [
+            row["product_id"] for row in presentation_upgrade_rows
+        ],
         "fidelity_review_ready_count": len(fidelity_review_queue),
         "fidelity_review_queue": fidelity_review_queue,
         "release_asset_blocked_count": len(release_asset_queue),
@@ -203,12 +285,21 @@ def main() -> int:
         f"live={report['live_product_count']} | "
         f"verified_truth={coverage['verified_product_truth']} | "
         f"editorial={coverage['editorial_only']} | "
+        f"legacy={coverage['legacy_visual']} | "
         f"missing={coverage['missing_real_asset']}"
     )
     print(
         "Coverage rates | "
         f"real_visual={coverage['real_visual_coverage_rate_pct']}% | "
         f"verified_truth={coverage['verified_product_truth_rate_pct']}%"
+    )
+    presentation = report["storefront_presentation"]
+    print(
+        "Storefront presentation | "
+        f"layered={presentation['layered_product_truth']} | "
+        f"editorial_scene={presentation['editorial_product_scene']} | "
+        f"background_presented={presentation['background_presented_rate_pct']}% | "
+        f"upgrade_backlog={report['storefront_presentation_upgrade_count']}"
     )
 
     if report["fidelity_review_queue"]:
