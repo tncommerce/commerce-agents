@@ -124,9 +124,7 @@ def test_apply_sync_plan_preserves_terminal_state_for_same_fingerprint() -> None
 
     commerce = next(task for task in bridge.tasks if task["task_id"] == "repo_current_commerce")
     assert commerce["status"] == "done"
-    assert commerce["evidence"] == (
-        "source_fingerprint_sha256=abc123; completed in nightshift"
-    )
+    assert commerce["evidence"] == ("source_fingerprint_sha256=abc123; completed in nightshift")
 
 
 def test_apply_sync_plan_resets_task_when_repo_fingerprint_changes() -> None:
