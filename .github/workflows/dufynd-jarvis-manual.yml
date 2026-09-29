@@ -258,11 +258,11 @@ jobs:
 
           while IFS= read -r file; do
             case "$file" in
-              .github/*|examples/retail/data/*|supabase/*|*.env|*.env.*|*package-lock.json|*pnpm-lock.yaml|*yarn.lock|requirements*.txt|pyproject.toml)
+              .github/*|examples/retail/data/*|supabase/*|*.env|*.env.*|*package-lock.json|*pnpm-lock.yaml|*yarn.lock|requirements*.txt|pyproject.toml|scripts/check.py|scripts/dufynd_jarvis_*|scripts/sync_dufynd_repo_state_to_supabase.py|scripts/refresh_scentai_jarvis_state.py|examples/retail/storefront-web/scripts/*)
                 echo "Blocked Jarvis branch-worker path: $file"
                 exit 21
                 ;;
-              scripts/*.py|tests/*.py|docs/*|examples/retail/api/*.py|examples/retail/api/*|examples/retail/storefront-web/app/*|examples/retail/storefront-web/components/*|examples/retail/storefront-web/lib/*|examples/retail/storefront-web/scripts/*)
+              scripts/*.py|tests/*.py|docs/*|examples/retail/api/*.py|examples/retail/api/*|examples/retail/storefront-web/app/*|examples/retail/storefront-web/components/*|examples/retail/storefront-web/lib/*)
                 ;;
               *)
                 echo "Path is outside Jarvis branch-worker allowlist: $file"
