@@ -1,0 +1,125 @@
+name: DUFYND Jarvis Engineering Worker
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Engineering worker mode
+        required: true
+        default: readiness
+        type: choice
+        options:
+          - readiness
+          - prepare-patch
+      task:
+        description: Technical task for the disposable engineering worker
+        required: false
+        type: string
+      budget_id:
+        description: Explicit active Jarvis budget window for paid model execution
+        required: false
+        type: string
+      approval_token:
+        description: Required for prepare-patch
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dufynd-jarvis-engineering-worker
+  cancel-in-progress: false
+
+jobs:
+  worker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install DUFYND runtime dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Engineering worker readiness
+        if: inputs.mode == 'readiness'
+        env:
+          SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DUFYND_ENGINEERING_WORKER_MODEL: ${{ vars.DUFYND_JARVIS_MODEL }}
+          DUFYND_ENGINEERING_WORKER_BUDGET_ID: ${{ inputs.budget_id }}
+          DUFYND_ENGINEERING_WORKER_ACTIVE: "0"
+        run: python -m scripts.dufynd_engineering_worker --readiness
+
+      - name: Validate explicit engineering approval
+        if: inputs.mode == 'prepare-patch'
+        env:
+          APPROVAL_TOKEN: ${{ inputs.approval_token }}
+          BUDGET_ID: ${{ inputs.budget_id }}
+          ENGINEERING_TASK: ${{ inputs.task }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "$APPROVAL_TOKEN" != "GO-JARVIS-ENGINEERING" ]; then
+            echo "Engineering worker refused: GO-JARVIS-ENGINEERING is required."
+            exit 20
+          fi
+          if [ -z "$BUDGET_ID" ]; then
+            echo "Engineering worker refused: an explicit active budget_id is required."
+            exit 21
+          fi
+          if [ -z "$ENGINEERING_TASK" ]; then
+            echo "Engineering worker refused: task is required."
+            exit 22
+          fi
+
+      - name: Prepare engineering patch
+        if: inputs.mode == 'prepare-patch'
+        env:
+          SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DUFYND_ENGINEERING_WORKER_MODEL: ${{ vars.DUFYND_JARVIS_MODEL }}
+          DUFYND_ENGINEERING_WORKER_BUDGET_ID: ${{ inputs.budget_id }}
+          DUFYND_ENGINEERING_WORKER_MAX_TURNS: "12"
+          DUFYND_ENGINEERING_WORKER_MAX_BUDGET_USD: "0.25"
+          DUFYND_ENGINEERING_WORKER_ACTIVE: "1"
+          ENGINEERING_TASK: ${{ inputs.task }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m scripts.dufynd_engineering_worker --once "$ENGINEERING_TASK"
+
+      - name: Capture disposable patch
+        if: always() && inputs.mode == 'prepare-patch'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add -N --             scripts             tests             docs             examples/retail/api             examples/retail/storefront-web/app             examples/retail/storefront-web/components             examples/retail/storefront-web/lib             examples/retail/storefront-web/scripts             examples/retail/storefront-web/tests || true
+          git status --short > dufynd-engineering-status.txt
+          git diff --no-ext-diff --binary > dufynd-engineering.patch
+          git diff --stat > dufynd-engineering-stat.txt
+
+      - name: Validate disposable patch whitespace
+        if: inputs.mode == 'prepare-patch'
+        run: git diff --check
+
+      - name: Upload engineering patch artifact
+        if: always() && inputs.mode == 'prepare-patch'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: dufynd-engineering-patch-${{ github.run_id }}
+          path: |
+            dufynd-engineering.patch
+            dufynd-engineering-status.txt
+            dufynd-engineering-stat.txt
+          if-no-files-found: error
+          retention-days: 7
