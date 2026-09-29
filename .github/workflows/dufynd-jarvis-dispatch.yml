@@ -191,7 +191,7 @@ jobs:
         run: >-
           python -m scripts.dufynd_jarvis_nightshift run
           --max-tasks "${{ inputs.nightshift_max_tasks }}"
-          --max-events "2"
+          --max-events "5"
           --worker-timeout-seconds "600"
           --max-retries "1"
 
