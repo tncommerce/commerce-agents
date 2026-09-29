@@ -874,6 +874,22 @@ try {
           if ((await page.locator('img[src="/icon.svg"]').count()) < 1) {
             throw new Error("social start is missing the DUFYND brand mark");
           }
+          const directSearch = page.getByRole("searchbox", {
+            name: "Duft oder Marke direkt öffnen",
+          });
+          if ((await directSearch.count()) !== 1) {
+            throw new Error("social start is missing the direct fragrance search");
+          }
+          await directSearch.fill("1 Million");
+          const oneMillionDirect = page.locator(
+            'a[href="/duft/rabanne-1-million"]',
+          );
+          if ((await oneMillionDirect.count()) < 1) {
+            throw new Error(
+              "social start direct search does not surface Rabanne 1 Million",
+            );
+          }
+          await directSearch.fill("");
         }
 
         if (target.name === "home") {
