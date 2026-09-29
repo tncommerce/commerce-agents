@@ -191,6 +191,18 @@ def mock_transport() -> httpx.MockTransport:
                 },
             )
 
+        if request.url.path.endswith("/dufynd_master_status"):
+            row = json.loads(request.content)
+            assert row["key"] == "jarvis.repo_control_plane"
+            assert row["category"] == "jarvis"
+            assert row["value"]["source_fingerprint_sha256"] == "fingerprint-123"
+            assert row["value"]["repo_head_sha"] == "abc123"
+            assert row["value"]["source_branch"] == "scentai-mvp"
+            assert row["last_verified_at"] == "2026-09-29T15:47:18+00:00"
+            assert request.url.params["on_conflict"] == "key"
+            assert "resolution=merge-duplicates" in request.headers["prefer"]
+            return httpx.Response(201)
+
         if request.url.path.endswith("/dufynd_creative_references"):
             row = json.loads(request.content)
             assert row["label"] == "Reference 99"
@@ -385,6 +397,28 @@ def test_bridge_loads_launch_gate() -> None:
 
     assert gate["state"] == "not_ready"
     assert gate["required_passed"] == 4
+
+
+def test_bridge_syncs_repo_control_plane_fingerprint() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    bridge.sync_repo_control_plane(
+        repo_status={
+            "generated_at": "2026-09-29T15:47:18+00:00",
+            "source_fingerprint_sha256": "fingerprint-123",
+            "overall_state": "work_available",
+            "active_domain": "commerce",
+            "next_action": "verify_images",
+            "next_action_class": "auto_allowed",
+            "user_approval_required_now": False,
+        },
+        repo_head_sha="abc123",
+        source_branch="scentai-mvp",
+    )
 
 
 def test_bridge_records_reference_and_pattern_links() -> None:
