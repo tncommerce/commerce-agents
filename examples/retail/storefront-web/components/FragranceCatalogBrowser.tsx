@@ -382,6 +382,7 @@ export default function FragranceCatalogBrowser({
     useState(PAGE_SIZE);
   const [urlReady, setUrlReady] = useState(false);
   const [copyStatus, setCopyStatus] = useState("");
+  const [compareSelection, setCompareSelection] = useState<string[]>([]);
   const lastTrackedSearchRef = useRef("");
   const initialSearchAppliedRef = useRef(false);
   const resultsRef = useRef<HTMLHeadingElement>(null);
@@ -703,6 +704,36 @@ export default function FragranceCatalogBrowser({
     setMinimumRating("0");
     setSort("popular");
   };
+
+  const selectedComparisonFragrances = compareSelection
+    .map((productId) =>
+      fragrances.find(
+        (fragrance) => fragrance.product_id === productId,
+      ),
+    )
+    .filter(
+      (fragrance): fragrance is StaticFragrance =>
+        fragrance != null,
+    );
+
+  const toggleComparisonSelection = (productId: string) => {
+    setCompareSelection((current) => {
+      if (current.includes(productId)) {
+        return current.filter((id) => id !== productId);
+      }
+      if (current.length >= 2) return current;
+      return [...current, productId];
+    });
+  };
+
+  const comparisonHref =
+    selectedComparisonFragrances.length === 2
+      ? `/vergleich?left=${encodeURIComponent(
+          selectedComparisonFragrances[0].product_id,
+        )}&right=${encodeURIComponent(
+          selectedComparisonFragrances[1].product_id,
+        )}`
+      : null;
 
   return (
     <>
@@ -1142,6 +1173,60 @@ export default function FragranceCatalogBrowser({
         </div>
       ) : null}
 
+      {compareSelection.length ? (
+        <aside
+          className="sticky bottom-3 z-30 mt-5 rounded-2xl border border-[#d9bd82]/30 bg-[#15120f]/95 p-3 text-white shadow-[0_20px_55px_-28px_rgba(20,14,6,0.92)] backdrop-blur sm:p-4"
+          aria-label="Duftvergleich vorbereiten"
+        >
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0">
+              <div className="text-[9.5px] font-semibold uppercase tracking-[0.14em] text-[#d9bd82]">
+                Vergleich vorbereiten
+              </div>
+              <div className="mt-1 flex flex-wrap gap-1.5 text-[11px] text-white/70">
+                {selectedComparisonFragrances.map((fragrance, index) => (
+                  <span
+                    key={fragrance.product_id}
+                    className="rounded-full border border-white/10 bg-white/[0.06] px-2.5 py-1"
+                  >
+                    {index + 1}. {fragrance.brand} {fragrance.name}
+                  </span>
+                ))}
+                {selectedComparisonFragrances.length < 2 ? (
+                  <span className="px-1 py-1 text-white/45">
+                    Noch einen Duft auswählen
+                  </span>
+                ) : null}
+              </div>
+            </div>
+            <div className="flex shrink-0 items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setCompareSelection([])}
+                className="rounded-xl border border-white/10 px-3 py-2 text-[11px] font-semibold text-white/65 transition hover:border-white/20 hover:text-white"
+              >
+                Leeren
+              </button>
+              {comparisonHref ? (
+                <a
+                  href={comparisonHref}
+                  className="rounded-xl bg-[#d9bd82] px-4 py-2 text-[11px] font-semibold text-[#241b0e] transition hover:bg-[#e4cb98]"
+                >
+                  Jetzt vergleichen →
+                </a>
+              ) : (
+                <span
+                  className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-semibold text-white/35"
+                  aria-disabled="true"
+                >
+                  2 Düfte wählen
+                </span>
+              )}
+            </div>
+          </div>
+        </aside>
+      ) : null}
+
       {filtered.length ? (
         <>
           <section
@@ -1283,13 +1368,30 @@ export default function FragranceCatalogBrowser({
                     source="catalog_grid"
                     compact
                   />
-                  <a
-                    href={`/vergleich?left=${encodeURIComponent(fragrance.product_id)}`}
-                    aria-label={`${fragrance.brand} ${fragrance.name} mit einem anderen Duft vergleichen`}
-                    className="rounded-lg px-2 py-1.5 text-[11px] font-semibold text-(--accent-ink) transition hover:bg-(--well)"
+                  <button
+                    type="button"
+                    onClick={() =>
+                      toggleComparisonSelection(
+                        fragrance.product_id,
+                      )
+                    }
+                    disabled={
+                      !compareSelection.includes(
+                        fragrance.product_id,
+                      ) && compareSelection.length >= 2
+                    }
+                    aria-pressed={compareSelection.includes(
+                      fragrance.product_id,
+                    )}
+                    aria-label={`${fragrance.brand} ${fragrance.name} ${compareSelection.includes(fragrance.product_id) ? "aus Vergleich entfernen" : "für Vergleich auswählen"}`}
+                    className="rounded-lg px-2 py-1.5 text-[11px] font-semibold text-(--accent-ink) transition hover:bg-(--well) disabled:cursor-not-allowed disabled:opacity-35"
                   >
-                    Vergleichen →
-                  </a>
+                    {compareSelection.includes(
+                      fragrance.product_id,
+                    )
+                      ? "Ausgewählt ✓"
+                      : "Vergleichen +"}
+                  </button>
                 </div>
               </article>
               );
