@@ -15,27 +15,27 @@ STANDARD = Path("docs/dufynd-storefront-visual-standard-20260929.md")
 
 def test_shared_visual_world_classifier_is_centralized() -> None:
     source = CATALOG.read_text(encoding="utf-8")
-    assert 'export type FragranceVisualWorld' in source
-    assert 'export function visualWorldFor' in source
+    assert "export type FragranceVisualWorld" in source
+    assert "export function visualWorldFor" in source
     for world in ("amber", "mineral", "ember", "silk", "noir"):
         assert f'"{world}"' in source
 
 
 def test_fragrance_visual_stage_accepts_world_without_touching_product_truth() -> None:
     source = VISUAL.read_text(encoding="utf-8")
-    assert 'world?: FragranceVisualWorld' in source
-    assert 'data-dufynd-visual-world={world}' in source
-    assert 'WORLD_BACKGROUNDS' in source
+    assert "world?: FragranceVisualWorld" in source
+    assert "data-dufynd-visual-world={world}" in source
+    assert "WORLD_BACKGROUNDS" in source
     assert 'className="dufynd-product-image"' in source
 
 
 def test_discovery_surfaces_pass_shared_world_context() -> None:
-    assert 'visualWorldFor(fragrance)' in PRODUCT_TILE.read_text(encoding="utf-8")
-    assert 'visualWorldFor(fragrance)' in ACQUISITION.read_text(encoding="utf-8")
-    assert 'visualWorldFor(fragrance)' in LIBRARY.read_text(encoding="utf-8")
-    assert 'visualWorldFor(fragrance)' in DUFT_PAGE.read_text(encoding="utf-8")
-    assert 'visualWorldFor(fragrance)' in CATALOG_BROWSER.read_text(encoding="utf-8")
-    assert 'visualWorldFor(spotlightFragrance)' in HOME.read_text(encoding="utf-8")
+    assert "visualWorldFor(fragrance)" in PRODUCT_TILE.read_text(encoding="utf-8")
+    assert "visualWorldFor(fragrance)" in ACQUISITION.read_text(encoding="utf-8")
+    assert "visualWorldFor(fragrance)" in LIBRARY.read_text(encoding="utf-8")
+    assert "visualWorldFor(fragrance)" in DUFT_PAGE.read_text(encoding="utf-8")
+    assert "visualWorldFor(fragrance)" in CATALOG_BROWSER.read_text(encoding="utf-8")
+    assert "visualWorldFor(spotlightFragrance)" in HOME.read_text(encoding="utf-8")
 
 
 def test_visual_standard_keeps_worlds_atmospheric_only() -> None:
