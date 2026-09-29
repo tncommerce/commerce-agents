@@ -211,7 +211,16 @@
           "build acme-retail-storefront-web",
           "responsive DUFYND browser visual QA"
         ],
-        "rule": "Storefront patches must pass both repository Python checks and deterministic web/visual QA before the patch artifact is accepted."
+        "rule": "Storefront patches must pass both repository Python checks and deterministic web/visual QA before the patch artifact is accepted.",
+        "protected_validator_paths": [
+          ".github/*",
+          "scripts/check.py",
+          "scripts/dufynd_jarvis_*",
+          "scripts/sync_dufynd_repo_state_to_supabase.py",
+          "scripts/refresh_scentai_jarvis_state.py",
+          "examples/retail/storefront-web/scripts/*"
+        ],
+        "protected_validator_rule": "The branch worker may not edit the orchestration, control-plane, workflow, or deterministic validator files used to judge its own patch."
       },
       "pr_orchestration": {
         "status": "available_guarded_no_auto_merge",
