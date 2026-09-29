@@ -329,6 +329,25 @@ try {
           if (layout.cutout_clipped) {
             throw new Error("verified bottle cutout extends beyond its hero stage");
           }
+          const journey = await page.locator(".dufynd-fragrance-journey").count();
+          if (journey !== 1) {
+            throw new Error(`fragrance detail is missing its scroll journey: ${journey}`);
+          }
+          const journeyOrder = await page.evaluate(() => {
+            const rectTop = (selector) =>
+              document.querySelector(selector)?.getBoundingClientRect().top ?? null;
+            return {
+              offers: rectTop("#angebote"),
+              profile: rectTop("#duftprofil"),
+            };
+          });
+          if (
+            journeyOrder.offers == null ||
+            journeyOrder.profile == null ||
+            journeyOrder.offers >= journeyOrder.profile
+          ) {
+            throw new Error("fragrance journey chapter order is invalid");
+          }
           if (layout.offers_after_exploded) {
             throw new Error("merchant offers appear after the exploded-note view");
           }

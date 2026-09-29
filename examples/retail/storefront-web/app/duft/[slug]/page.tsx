@@ -348,6 +348,12 @@ export default async function FragrancePage({
     (item): item is { stage: string; label: string; note: string } =>
       Boolean(item.note),
   );
+  const visualGalleryAssetCount = new Set(
+    fragrance.visuals
+      .filter((asset) => asset.role !== "model_3d")
+      .map((asset) => asset.url),
+  ).size;
+  const hasVisualGallery = visualGalleryAssetCount >= 2;
   const noteCount = new Set(allNotes).size;
   const canonicalUrl = `${SITE_URL}/duft/${fragrance.slug}`;
   const breadcrumbStructuredData = {
@@ -757,7 +763,7 @@ export default async function FragrancePage({
 
         <nav
           aria-label="Schnellnavigation auf der Duftseite"
-          className="mt-3 overflow-x-auto rounded-2xl border border-(--line) bg-(--card)/95 p-2 shadow-(--shadow-sm) backdrop-blur sm:mt-4"
+          className="dufynd-detail-quick-nav mt-3 overflow-x-auto rounded-2xl border border-(--line) bg-(--card)/95 p-2 shadow-(--shadow-sm) backdrop-blur sm:mt-4"
         >
           <div className="flex min-w-max items-center gap-1.5">
             <OfferSectionLink
@@ -790,12 +796,38 @@ export default async function FragrancePage({
           </div>
         </nav>
 
-        <div id="angebote" className="mt-5 scroll-mt-6">
-          <FragranceOffers productId={fragrance.product_id} />
-        </div>
+        <div className="dufynd-fragrance-journey">
+          <div
+            aria-hidden
+            className="dufynd-fragrance-journey-axis"
+          />
+
+          <div
+            id="angebote"
+            className="dufynd-fragrance-chapter dufynd-fragrance-chapter--offers mt-5 scroll-mt-24"
+            data-dufynd-chapter="angebote"
+          >
+            <span
+              aria-hidden
+              className="dufynd-fragrance-chapter-index"
+            >
+              01
+            </span>
+            <FragranceOffers productId={fragrance.product_id} />
+          </div>
 
         {heroIsProductTruth && heroVisual?.url ? (
-          <FragranceExplodedNotes
+          <div
+            className="dufynd-fragrance-chapter dufynd-fragrance-chapter--experience"
+            data-dufynd-chapter="erleben"
+          >
+            <span
+              aria-hidden
+              className="dufynd-fragrance-chapter-index"
+            >
+              02
+            </span>
+            <FragranceExplodedNotes
             cutoutUrl={heroVisual.url}
             alt={`${fragrance.brand} ${fragrance.name}`}
             top={fragrance.notes.top}
@@ -803,18 +835,35 @@ export default async function FragrancePage({
             base={fragrance.notes.base}
             keyNotes={fragrance.notes.key}
             supporting={fragrance.notes.supporting}
-          />
+            />
+          </div>
         ) : null}
 
-        <FragranceVisualGallery
-          assets={fragrance.visuals}
-          alt={`${fragrance.brand} ${fragrance.name}`}
-        />
+        {hasVisualGallery ? (
+          <div
+            className="dufynd-fragrance-chapter dufynd-fragrance-chapter--gallery"
+            data-dufynd-chapter="ansichten"
+          >
+            <FragranceVisualGallery
+              assets={fragrance.visuals}
+              alt={`${fragrance.brand} ${fragrance.name}`}
+            />
+          </div>
+        ) : null}
 
-        <div className="mt-5 grid gap-4 lg:mt-7 lg:grid-cols-[1.05fr_0.95fr]">
+        <div
+          className="dufynd-fragrance-chapter dufynd-fragrance-chapter--profile mt-5 grid gap-4 lg:mt-7 lg:grid-cols-[1.05fr_0.95fr]"
+          data-dufynd-chapter="verstehen"
+        >
+          <span
+            aria-hidden
+            className="dufynd-fragrance-chapter-index"
+          >
+            03
+          </span>
           <section
             id="duftprofil"
-            className="scroll-mt-6 rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) sm:p-5"
+            className="dufynd-fragrance-profile-card scroll-mt-24 rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) sm:p-5"
           >
             <h2 className="text-[17px] font-semibold">
               Duftprofil
@@ -859,7 +908,7 @@ export default async function FragrancePage({
             </p>
           </section>
 
-          <div id="duftnoten" className="scroll-mt-6">
+          <div id="duftnoten" className="dufynd-fragrance-notes-card scroll-mt-24">
           <details className="group rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) lg:hidden">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-3">
               <span className="min-w-0">
@@ -941,6 +990,7 @@ export default async function FragrancePage({
             </div>
           </section>
           </div>
+        </div>
         </div>
 
         {related.length ? (

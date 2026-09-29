@@ -40,7 +40,7 @@ export default function FragranceVisualGallery({
   return (
     <section
       aria-labelledby="dufynd-visual-gallery-heading"
-      className="mt-5 rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) sm:p-5"
+      className="dufynd-visual-gallery dufynd-journey-gallery mt-5 rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) sm:p-5"
     >
       <div className="flex flex-wrap items-end justify-between gap-2">
         <div>
