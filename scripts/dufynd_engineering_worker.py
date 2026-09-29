@@ -21,6 +21,7 @@ from claude_agent_sdk import (
 )
 
 from commerce_common.agent_sdk import collect_turn
+from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SERVER_NAME = "dufynd_engineering_worker"
@@ -30,7 +31,7 @@ MAX_READ_LINES = 500
 MAX_SEARCH_RESULTS = 100
 DEFAULT_MAX_TURNS = 12
 HARD_MAX_TURNS = 20
-DEFAULT_MAX_BUDGET_USD = 0.50
+DEFAULT_MAX_BUDGET_USD = 0.25
 HARD_MAX_BUDGET_USD = 1.00
 
 WRITE_PREFIXES = (
@@ -488,18 +489,27 @@ def runtime_readiness() -> dict[str, Any]:
     active = os.getenv("DUFYND_ENGINEERING_WORKER_ACTIVE") == "1"
     model = os.getenv("DUFYND_ENGINEERING_WORKER_MODEL") or os.getenv("DUFYND_JARVIS_MODEL")
     credentials = bool(os.getenv("ANTHROPIC_API_KEY") or os.getenv("ANTHROPIC_AUTH_TOKEN"))
+    supabase = bool(
+        os.getenv("SUPABASE_URL")
+        and (os.getenv("SUPABASE_SECRET_KEY") or os.getenv("SUPABASE_SERVICE_ROLE_KEY"))
+    )
+    budget_id = os.getenv("DUFYND_ENGINEERING_WORKER_BUDGET_ID") or os.getenv(
+        "DUFYND_JARVIS_BUDGET_ID"
+    )
 
     return {
         "active": active,
         "model_configured": bool(model),
         "model": model,
         "anthropic_credentials_configured": credentials,
+        "supabase_configured": supabase,
+        "budget_id": budget_id,
         "max_turns": os.getenv("DUFYND_ENGINEERING_WORKER_MAX_TURNS", str(DEFAULT_MAX_TURNS)),
         "max_budget_usd": os.getenv(
             "DUFYND_ENGINEERING_WORKER_MAX_BUDGET_USD",
             str(DEFAULT_MAX_BUDGET_USD),
         ),
-        "ready_for_model_execution": active and bool(model) and credentials,
+        "ready_for_model_execution": active and bool(model) and credentials and supabase and bool(budget_id),
         "push_capability": False,
         "merge_capability": False,
         "network_tool_capability": False,
@@ -540,6 +550,32 @@ def _require_active_runtime() -> tuple[str, int, float]:
     )
 
 
+def _require_budget_window(
+    bridge: DufyndJarvisBridge,
+    model: str,
+) -> tuple[str, dict[str, Any]]:
+    budget_id = os.getenv("DUFYND_ENGINEERING_WORKER_BUDGET_ID") or os.getenv(
+        "DUFYND_JARVIS_BUDGET_ID"
+    )
+    if not budget_id:
+        raise RuntimeError("engineering worker budget window id is required")
+
+    status = bridge.load_budget_status(budget_id)
+    if not status.get("can_run"):
+        raise RuntimeError(
+            "DUFYND engineering worker budget window does not permit another run: "
+            + json.dumps(status, ensure_ascii=False, default=str)
+        )
+
+    budget_model = status.get("model")
+    if budget_model and budget_model != model:
+        raise RuntimeError(
+            f"engineering worker budget requires model {budget_model}, not {model}"
+        )
+
+    return budget_id, status
+
+
 def make_options() -> ClaudeAgentOptions:
     model, max_turns, max_budget_usd = _require_active_runtime()
     return ClaudeAgentOptions(
@@ -556,7 +592,13 @@ def make_options() -> ClaudeAgentOptions:
     )
 
 
-async def run_once(prompt: str) -> tuple[str, float | None]:
+async def run_once(
+    prompt: str,
+    bridge: DufyndJarvisBridge,
+) -> tuple[str, float | None, str]:
+    model, _, _ = _require_active_runtime()
+    budget_id, _ = await asyncio.to_thread(_require_budget_window, bridge, model)
+
     async with ClaudeSDKClient(options=make_options()) as client:
         await client.query(prompt)
         result = await collect_turn(client)
@@ -565,7 +607,22 @@ async def run_once(prompt: str) -> tuple[str, float | None]:
         detail = "; ".join(result.tool_errors) or result.text or "engineering worker failed"
         raise RuntimeError(detail)
 
-    return result.text.strip(), result.cost_usd
+    await asyncio.to_thread(
+        bridge.record_run,
+        run_type="engineering_patch",
+        input_summary=prompt[:4000],
+        output_summary=result.text[:8000] or "(engineering worker produced no prose output)",
+        decisions=[
+            {
+                "cost_usd": result.cost_usd,
+                "budget_id": budget_id,
+                "runtime": "dufynd_engineering_worker_v0_1",
+            }
+        ],
+        human_approval_required=False,
+        agent_name="jarvis_engineering",
+    )
+    return result.text.strip(), result.cost_usd, budget_id
 
 
 def main() -> int:
@@ -581,7 +638,8 @@ def main() -> int:
         print(json.dumps(runtime_readiness(), ensure_ascii=False))
         return 0
 
-    text, cost_usd = asyncio.run(run_once(args.once))
+    bridge = DufyndJarvisBridge()
+    text, cost_usd, _ = asyncio.run(run_once(args.once, bridge))
     if text:
         print(text)
     if cost_usd is not None:
