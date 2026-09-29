@@ -125,8 +125,7 @@ def build_sync_plan(repo_status: dict[str, Any]) -> dict[str, Any]:
 def _evidence_has_fingerprint(evidence: object, fingerprint: str) -> bool:
     text = str(evidence or "")
     return (
-        f"source_fingerprint_sha256={fingerprint}" in text
-        or f"fingerprint={fingerprint}" in text
+        f"source_fingerprint_sha256={fingerprint}" in text or f"fingerprint={fingerprint}" in text
     )
 
 
@@ -157,9 +156,7 @@ def apply_sync_plan(bridge: DufyndJarvisBridge, plan: dict[str, Any]) -> None:
 
     fingerprint = str(plan["source_fingerprint_sha256"])
     for task in plan["tasks"]:
-        bridge.upsert_autonomy_task(
-            **_preserve_same_fingerprint_state(bridge, task, fingerprint)
-        )
+        bridge.upsert_autonomy_task(**_preserve_same_fingerprint_state(bridge, task, fingerprint))
 
 
 def main() -> int:
