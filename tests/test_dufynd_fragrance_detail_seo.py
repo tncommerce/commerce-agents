@@ -14,7 +14,8 @@ def test_product_schema_is_conservative_and_product_truth_gated() -> None:
     assert 'name: "Konzentration"' in source
     assert 'name: "Füllmenge"' in source
 
-    assert "heroIsProductTruth && heroVisual?.url" in source
+    assert "productTruthIsVerified && productTruthVisual?.url" in source
+    assert "const productTruthVisual = fragrance.preferred_visual;" in source
     assert "verifiedProductImage" in source
     assert "{ image: [verifiedProductImage] }" in source
 
