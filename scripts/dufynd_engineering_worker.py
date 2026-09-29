@@ -5,7 +5,6 @@ import asyncio
 import hashlib
 import json
 import os
-import re
 import subprocess
 from pathlib import Path
 from typing import Any
@@ -28,6 +27,7 @@ SERVER_VERSION = "0.1.0"
 MAX_TEXT_BYTES = 250_000
 MAX_READ_LINES = 500
 MAX_SEARCH_RESULTS = 100
+MAX_SEARCH_FILES = 2000
 DEFAULT_MAX_TURNS = 12
 HARD_MAX_TURNS = 20
 DEFAULT_MAX_BUDGET_USD = 0.25
@@ -175,9 +175,10 @@ def _read_text(path: str, start_line: int = 1, end_line: int | None = None) -> d
 
 
 def _search_text(pattern: str, path: str = ".") -> dict[str, Any]:
+    if not pattern:
+        raise ValueError("search pattern is required")
     if len(pattern) > 500:
         raise ValueError("search pattern is too long")
-    regex = re.compile(pattern)
 
     relative_root = _relative_repo_path(path) if path != "." else Path(".")
     root = (REPO_ROOT / relative_root).resolve()
@@ -186,12 +187,16 @@ def _search_text(pattern: str, path: str = ".") -> dict[str, Any]:
 
     files = [root] if root.is_file() else root.rglob("*")
     matches: list[dict[str, Any]] = []
+    scanned_files = 0
 
     for candidate in files:
         if len(matches) >= MAX_SEARCH_RESULTS:
             break
         if not candidate.is_file():
             continue
+        scanned_files += 1
+        if scanned_files > MAX_SEARCH_FILES:
+            break
         try:
             relative = candidate.resolve().relative_to(REPO_ROOT.resolve())
         except ValueError:
@@ -210,7 +215,7 @@ def _search_text(pattern: str, path: str = ".") -> dict[str, Any]:
             continue
 
         for number, line in enumerate(lines, start=1):
-            if regex.search(line):
+            if pattern in line:
                 matches.append(
                     {
                         "path": relative.as_posix(),
@@ -225,7 +230,8 @@ def _search_text(pattern: str, path: str = ".") -> dict[str, Any]:
         "pattern": pattern,
         "path": relative_root.as_posix(),
         "matches": matches,
-        "truncated": len(matches) >= MAX_SEARCH_RESULTS,
+        "truncated": len(matches) >= MAX_SEARCH_RESULTS or scanned_files > MAX_SEARCH_FILES,
+        "scanned_files": min(scanned_files, MAX_SEARCH_FILES),
     }
 
 
@@ -366,7 +372,7 @@ def build_tools() -> list[SdkMcpTool[Any]]:
 
     @tool(
         "search_repo_text",
-        "Regex-search repository text files with bounded output.",
+        "Literal-search repository text files with bounded output.",
         {
             "type": "object",
             "properties": {
@@ -575,8 +581,12 @@ def _require_budget_window(
     return budget_id, status
 
 
-def make_options() -> ClaudeAgentOptions:
+def make_options(*, budget_remaining_usd: float | None = None) -> ClaudeAgentOptions:
     model, max_turns, max_budget_usd = _require_active_runtime()
+    if budget_remaining_usd is not None:
+        if budget_remaining_usd <= 0:
+            raise RuntimeError("engineering worker budget has no USD remaining")
+        max_budget_usd = min(max_budget_usd, budget_remaining_usd)
     return ClaudeAgentOptions(
         system_prompt=SYSTEM_PROMPT,
         mcp_servers={SERVER_NAME: build_server()},
@@ -596,9 +606,15 @@ async def run_once(
     bridge: DufyndJarvisBridge,
 ) -> tuple[str, float | None, str]:
     model, _, _ = _require_active_runtime()
-    budget_id, _ = await asyncio.to_thread(_require_budget_window, bridge, model)
+    budget_id, budget_status = await asyncio.to_thread(_require_budget_window, bridge, model)
+    try:
+        budget_remaining_usd = float(budget_status.get("remaining_usd"))
+    except (TypeError, ValueError) as error:
+        raise RuntimeError("engineering worker budget remaining_usd is invalid") from error
 
-    async with ClaudeSDKClient(options=make_options()) as client:
+    async with ClaudeSDKClient(
+        options=make_options(budget_remaining_usd=budget_remaining_usd)
+    ) as client:
         await client.query(prompt)
         result = await collect_turn(client)
 
@@ -619,7 +635,7 @@ async def run_once(
             }
         ],
         human_approval_required=False,
-        agent_name="jarvis_engineering",
+        agent_name="jarvis",
     )
     return result.text.strip(), result.cost_usd, budget_id
 
