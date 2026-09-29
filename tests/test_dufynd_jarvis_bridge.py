@@ -123,9 +123,7 @@ def mock_transport() -> httpx.MockTransport:
                 },
             )
 
-        if request.method == "GET" and request.url.path.endswith(
-            "/dufynd_jarvis_budget_windows"
-        ):
+        if request.method == "GET" and request.url.path.endswith("/dufynd_jarvis_budget_windows"):
             assert request.url.params["budget_id"] == "eq.jarvis_activation_pilot_001"
             return httpx.Response(
                 200,
