@@ -7,8 +7,10 @@ import subprocess
 import sys
 
 import pytest
+import scripts.dufynd_jarvis_runtime as jarvis_runtime
 from scripts.dufynd_jarvis_runtime import (
     SYSTEM_PROMPT,
+    _bounded_supervisor_max_events,
     _require_active_runtime,
     _require_budget_window,
     _require_runtime_id,
@@ -38,6 +40,14 @@ class BudgetBridge:
             "model": "claude-sonnet-5",
             "can_run": self.can_run,
         }
+
+
+class SupervisorBridge:
+    def __init__(self, pending: int):
+        self.pending = pending
+
+    def load_health(self):
+        return {"inbox": {"pending": self.pending}}
 
 
 def test_runtime_has_only_internal_safe_tool_surface() -> None:
@@ -154,6 +164,64 @@ def test_runtime_requires_active_budget_window(monkeypatch) -> None:
 
     with pytest.raises(RuntimeError, match="does not permit another run"):
         _require_budget_window(BudgetBridge(can_run=False))
+
+
+def test_supervisor_event_limit_is_bounded() -> None:
+    assert _bounded_supervisor_max_events(0) == 1
+    assert _bounded_supervisor_max_events(8) == 8
+    assert _bounded_supervisor_max_events(999) == 20
+
+
+def test_process_loop_drains_multiple_events_without_reapproval(monkeypatch, capsys) -> None:
+    bridge = SupervisorBridge(pending=5)
+
+    async def fake_process_next(target):
+        target.pending -= 1
+        return 0
+
+    monkeypatch.setattr(jarvis_runtime, "process_next", fake_process_next)
+
+    result = asyncio.run(jarvis_runtime.process_loop(bridge, max_events=3))
+
+    assert result == 0
+    assert bridge.pending == 2
+    output = capsys.readouterr().out
+    assert "processed=3" in output
+    assert "stop_reason=max_events_reached" in output
+
+
+def test_process_loop_stops_when_inbox_is_empty(monkeypatch, capsys) -> None:
+    bridge = SupervisorBridge(pending=0)
+    called = False
+
+    async def fake_process_next(_target):
+        nonlocal called
+        called = True
+        return 0
+
+    monkeypatch.setattr(jarvis_runtime, "process_next", fake_process_next)
+
+    result = asyncio.run(jarvis_runtime.process_loop(bridge, max_events=8))
+
+    assert result == 0
+    assert called is False
+    assert "stop_reason=inbox_empty" in capsys.readouterr().out
+
+
+def test_process_loop_stops_safely_at_runtime_or_budget_gate(monkeypatch, capsys) -> None:
+    bridge = SupervisorBridge(pending=2)
+
+    async def fake_process_next(_target):
+        raise RuntimeError("budget window does not permit another run")
+
+    monkeypatch.setattr(jarvis_runtime, "process_next", fake_process_next)
+
+    result = asyncio.run(jarvis_runtime.process_loop(bridge, max_events=8))
+
+    assert result == 0
+    output = capsys.readouterr().out
+    assert "stopped safely" in output
+    assert "stop_reason=runtime_or_budget_gate" in output
 
 
 def test_runtime_readiness_supports_module_execution() -> None:
