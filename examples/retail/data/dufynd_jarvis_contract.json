@@ -212,6 +212,16 @@
           "responsive DUFYND browser visual QA"
         ],
         "rule": "Storefront patches must pass both repository Python checks and deterministic web/visual QA before the patch artifact is accepted."
+      },
+      "pr_orchestration": {
+        "status": "available_guarded_no_auto_merge",
+        "mode": "process-branch-task-pr",
+        "target_base": "scentai-mvp",
+        "credential_rule": "Checkout does not persist GitHub credentials during the model turn. GH_TOKEN is exposed only to the deterministic post-validation PR step.",
+        "stale_base_rule": "Refuse PR creation if scentai-mvp moved after the worker checkout and before push.",
+        "pr_rule": "Only a validated allowlisted patch may be committed, pushed to a jarvis/worker-* branch, and opened as a PR.",
+        "auto_merge": false,
+        "main_branch_allowed": false
       }
     },
     "autonomous_cycle": {
