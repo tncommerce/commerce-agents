@@ -279,12 +279,12 @@ def test_nightshift_routes_workers_and_consumes_multiple_tasks(
         assert max_events == 2
         return 0
 
-    async def fake_branch(_bridge):
+    async def fake_branch(_bridge, *, task_id=None):
         bridge.tasks["repo_current_engineering"]["status"] = "in_progress"
         bridge.tasks["repo_current_engineering"]["evidence"] = "branch prepared"
         return 0
 
-    async def fake_safe(_bridge):
+    async def fake_safe(_bridge, *, task_id=None):
         bridge.tasks["repo_current_commerce"]["status"] = "in_progress"
         bridge.tasks["repo_current_commerce"]["evidence"] = "research complete"
         return 0
@@ -337,7 +337,7 @@ def test_nightshift_retries_failed_task_then_continues(monkeypatch) -> None:
 
     calls = 0
 
-    async def flaky_safe(_bridge):
+    async def flaky_safe(_bridge, *, task_id=None):
         nonlocal calls
         calls += 1
         if calls <= 2:
