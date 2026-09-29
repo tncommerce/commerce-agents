@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { type ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 
 import FragranceSaveControls from "@/components/FragranceSaveControls";
 import FragranceVisual from "@/components/FragranceVisual";
@@ -10,7 +10,9 @@ import {
   clearFragranceLibrary,
   FRAGRANCE_LIBRARY_EVENT,
   FRAGRANCE_LIBRARY_STORAGE_KEY,
+  parseFragranceLibraryBackup,
   readFragranceLibrary,
+  replaceFragranceLibrary,
   type FragranceLibraryState,
 } from "@/lib/fragranceLibrary";
 import {
@@ -269,6 +271,8 @@ export default function FragranceLibraryHub({
   const [library, setLibrary] =
     useState<FragranceLibraryState>(emptyState());
   const [ready, setReady] = useState(false);
+  const [backupStatus, setBackupStatus] = useState("");
+  const importInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const sync = () => {
@@ -353,6 +357,54 @@ export default function FragranceLibraryHub({
     mode === "wishlist"
       ? "Öffne einen Duft und tippe auf „Merken“. Deine Auswahl bleibt nur in diesem Browser gespeichert."
       : "Öffne einen Duft und markiere ihn als Teil deiner Sammlung. Es wird kein Kundenkonto benötigt.";
+
+  const exportBackup = () => {
+    const file = new Blob([JSON.stringify(library, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(file);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `dufynd-duftliste-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
+    setBackupStatus("Sicherung heruntergeladen. Bewahre die Datei selbst sicher auf.");
+  };
+
+  const importBackup = async (event: ChangeEvent<HTMLInputElement>) => {
+    const input = event.currentTarget;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    try {
+      if (file.size > 128 * 1024) throw new Error("file too large");
+      const next = parseFragranceLibraryBackup(JSON.parse(await file.text()));
+      if (!next) throw new Error("invalid backup");
+
+      const replacing = library.wishlist.length + library.owned.length > 0;
+      if (
+        replacing &&
+        !window.confirm(
+          "Diese Sicherung ersetzt deine aktuelle Merkliste und Sammlung auf diesem Gerät. Fortfahren?",
+        )
+      ) {
+        setBackupStatus("Import abgebrochen. Deine aktuelle Auswahl bleibt erhalten.");
+        return;
+      }
+
+      if (!replaceFragranceLibrary(next)) throw new Error("storage unavailable");
+      setLibrary(next);
+      setBackupStatus(
+        `Sicherung geladen: ${next.wishlist.length} gemerkt, ${next.owned.length} in Sammlung.`,
+      );
+    } catch {
+      setBackupStatus("Import fehlgeschlagen. Bitte wähle eine gültige DUFYND-Sicherungsdatei.");
+    } finally {
+      input.value = "";
+    }
+  };
 
   if (!ready) {
     return (
@@ -439,6 +491,38 @@ export default function FragranceLibraryHub({
           Browser-Speicher dieses Geräts abgelegt. Löschst du
           Browserdaten oder wechselst das Gerät, ist die Liste nicht
           automatisch verfügbar.
+        </div>
+        <div className="relative mt-3 flex flex-wrap items-center gap-2">
+          {library.wishlist.length + library.owned.length > 0 ? (
+            <button
+              type="button"
+              onClick={exportBackup}
+              className="rounded-xl border border-white/15 px-3 py-2 text-[11.5px] font-semibold text-white/85 transition hover:border-[#d9bd82]/45"
+            >
+              Duftliste sichern
+            </button>
+          ) : null}
+          <button
+            type="button"
+            onClick={() => importInputRef.current?.click()}
+            className="rounded-xl border border-white/15 px-3 py-2 text-[11.5px] font-semibold text-white/85 transition hover:border-[#d9bd82]/45"
+          >
+            Sicherung importieren
+          </button>
+          <input
+            ref={importInputRef}
+            type="file"
+            accept=".json,application/json"
+            onChange={(event) => void importBackup(event)}
+            className="sr-only"
+            aria-label="DUFYND-Duftliste aus JSON-Datei importieren"
+          />
+          <p className="w-full text-[10.5px] leading-4 text-white/55">
+            Die JSON-Datei enthält nur Produkt-IDs. Beim Import ersetzt sie die Auswahl auf diesem Gerät.
+          </p>
+          <p role="status" className="w-full text-[11px] text-[#e8cf9d]">
+            {backupStatus}
+          </p>
         </div>
       </section>
 

@@ -55,6 +55,26 @@ export function normalizeFragranceLibrary(
   };
 }
 
+export function parseFragranceLibraryBackup(
+  value: unknown,
+): FragranceLibraryState | null {
+  if (!value || typeof value !== "object") return null;
+  const candidate = value as Record<string, unknown>;
+  if (
+    candidate.version !== 1 ||
+    !Array.isArray(candidate.wishlist) ||
+    !Array.isArray(candidate.owned) ||
+    candidate.wishlist.length > 500 ||
+    candidate.owned.length > 500 ||
+    !candidate.wishlist.every(validProductId) ||
+    !candidate.owned.every(validProductId)
+  ) {
+    return null;
+  }
+
+  return normalizeFragranceLibrary(candidate);
+}
+
 export function readFragranceLibrary(): FragranceLibraryState {
   if (typeof window === "undefined") {
     return { ...EMPTY_LIBRARY };
@@ -90,6 +110,22 @@ function writeFragranceLibrary(
     return normalized;
   } catch {
     return readFragranceLibrary();
+  }
+}
+
+export function replaceFragranceLibrary(
+  next: FragranceLibraryState,
+): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    window.localStorage.setItem(
+      FRAGRANCE_LIBRARY_STORAGE_KEY,
+      JSON.stringify(normalizeFragranceLibrary(next)),
+    );
+    window.dispatchEvent(new CustomEvent(FRAGRANCE_LIBRARY_EVENT));
+    return true;
+  } catch {
+    return false;
   }
 }
 
