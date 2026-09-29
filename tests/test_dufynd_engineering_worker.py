@@ -58,8 +58,11 @@ def test_worker_blocks_dependency_and_secret_files(
 ) -> None:
     monkeypatch.setattr(worker, "REPO_ROOT", tmp_path)
 
-    with pytest.raises(ValueError, match="dependency/lockfile"):
+    with pytest.raises(ValueError, match="dependency/credential"):
         worker._relative_repo_path("requirements.txt")
+
+    with pytest.raises(ValueError, match="environment files"):
+        worker._relative_repo_path("scripts/.env.local")
 
     with pytest.raises(ValueError, match="sensitive key"):
         worker._relative_repo_path("scripts/private.pem")
@@ -107,11 +110,13 @@ def test_worker_replace_requires_unique_match_by_default(
         worker._replace_text("tests/example.txt", "x", "y")
 
 
-def test_worker_safe_checks_use_fixed_command_argv(
+def test_worker_safe_checks_use_fixed_nonexecuting_command_argv(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
 ) -> None:
     monkeypatch.setattr(worker, "REPO_ROOT", tmp_path)
+    (tmp_path / "scripts").mkdir()
+    (tmp_path / "scripts/example.py").write_text("value = 1\n")
     seen = []
 
     def fake_run(command, *, timeout_seconds=180):
@@ -120,11 +125,11 @@ def test_worker_safe_checks_use_fixed_command_argv(
 
     monkeypatch.setattr(worker, "_run_command", fake_run)
 
-    worker._run_safe_check("pytest", "tests/test_worker.py::test_one")
+    worker._run_safe_check("ruff_check", "scripts/example.py")
     worker._run_safe_check("git_diff", "scripts/example.py")
-    worker._run_safe_check("repo_check")
+    worker._run_safe_check("git_status")
 
-    assert seen[0][0] == ["pytest", "-q", "tests/test_worker.py::test_one"]
+    assert seen[0][0] == ["ruff", "check", "scripts/example.py"]
     assert seen[1][0] == [
         "git",
         "diff",
@@ -132,12 +137,41 @@ def test_worker_safe_checks_use_fixed_command_argv(
         "--",
         "scripts/example.py",
     ]
-    assert seen[2][0][1:] == ["scripts/check.py"]
+    assert seen[2][0] == ["git", "status", "--short"]
 
 
-def test_worker_rejects_unknown_check() -> None:
-    with pytest.raises(ValueError, match="unsupported check"):
-        worker._run_safe_check("curl")
+def test_worker_rejects_code_executing_or_unknown_checks() -> None:
+    for check in ("pytest", "repo_check", "curl"):
+        with pytest.raises(ValueError, match="unsupported check"):
+            worker._run_safe_check(check)
+
+
+def test_worker_rejects_check_option_injection_and_missing_targets(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    monkeypatch.setattr(worker, "REPO_ROOT", tmp_path)
+
+    with pytest.raises(ValueError, match="option prefix"):
+        worker._run_safe_check("ruff_check", "--config=evil.toml")
+
+    with pytest.raises(ValueError, match="must exist"):
+        worker._run_safe_check("ruff_check", "scripts/missing.py")
+
+
+def test_worker_search_skips_sensitive_files(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    monkeypatch.setattr(worker, "REPO_ROOT", tmp_path)
+    (tmp_path / "scripts").mkdir()
+    (tmp_path / "scripts/visible.py").write_text("TOKEN_MARKER = 'visible'\n")
+    (tmp_path / "scripts/.env.local").write_text("TOKEN_MARKER=secret\n")
+    (tmp_path / "scripts/private.pem").write_text("TOKEN_MARKER=private\n")
+
+    report = worker._search_text("TOKEN_MARKER")
+
+    assert [match["path"] for match in report["matches"]] == ["scripts/visible.py"]
 
 
 def test_worker_readiness_is_disabled_by_default(
