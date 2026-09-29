@@ -2,18 +2,10 @@ from __future__ import annotations
 
 from pathlib import Path
 
-FREE_COMPARISON = Path(
-    "examples/retail/storefront-web/components/FragranceComparisonPicker.tsx"
-)
-EXPLICIT_COMPARISON = Path(
-    "examples/retail/storefront-web/app/vergleich/[pair]/page.tsx"
-)
-DETAIL_PAGE = Path(
-    "examples/retail/storefront-web/app/duft/[slug]/page.tsx"
-)
-GALLERY = Path(
-    "examples/retail/storefront-web/components/FragranceVisualGallery.tsx"
-)
+FREE_COMPARISON = Path("examples/retail/storefront-web/components/FragranceComparisonPicker.tsx")
+EXPLICIT_COMPARISON = Path("examples/retail/storefront-web/app/vergleich/[pair]/page.tsx")
+DETAIL_PAGE = Path("examples/retail/storefront-web/app/duft/[slug]/page.tsx")
+GALLERY = Path("examples/retail/storefront-web/components/FragranceVisualGallery.tsx")
 STANDARD = Path("docs/dufynd-storefront-visual-standard-20260929.md")
 
 
