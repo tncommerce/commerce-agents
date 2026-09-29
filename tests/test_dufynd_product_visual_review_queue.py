@@ -40,7 +40,29 @@ def test_product_visual_review_queue_references_catalog_products() -> None:
 
     assert len(items) == 4
     assert all(item.get("candidate_asset") for item in items)
-    assert all(item["status"] == "candidate_generated_pending_reference_gate" for item in items)
+    status_by_product = {item["product_id"]: item["status"] for item in items}
+    assert status_by_product == {
+        "SC-CREED-ABSOLU-AVENTUS-100": "needs_revision_variant_identity_unresolved",
+        "SC-ARMANI-SWY-INTENSELY-100": "fidelity_approved_pending_rights_source_gate",
+        "SC-PRADA-LHOMME-100": "fidelity_approved_pending_rights_source_gate",
+        "SC-SOSPIRO-VIBRATO-100": "fidelity_approved_pending_rights_source_gate",
+    }
+
+    review_by_product = {item["product_id"]: item["fidelity_review"] for item in items}
+    for product_id in {
+        "SC-ARMANI-SWY-INTENSELY-100",
+        "SC-PRADA-LHOMME-100",
+        "SC-SOSPIRO-VIBRATO-100",
+    }:
+        review = review_by_product[product_id]
+        assert review["decision"] == "approve_fidelity"
+        assert review["live_activation_authorized"] is False
+        assert review["rights_clearance_implied"] is False
+
+    creed_review = review_by_product["SC-CREED-ABSOLU-AVENTUS-100"]
+    assert creed_review["decision"] == "needs_revision"
+    assert creed_review["live_activation_authorized"] is False
+    assert creed_review["rights_clearance_implied"] is False
 
     p0 = {item["product_id"] for item in items if item["priority"] == "P0"}
     assert p0 == {
