@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "observed_at": "2026-09-29T12:04:36Z",
+  "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+  "content_id": "one_million_example61_01",
+  "merchant": "Perfumetrader",
+  "merchant_id": "perfumetrader",
+  "merchant_product_id": "16978322",
+  "identity": {
+    "brand": "Rabanne",
+    "storefront_brand_label": "Paco Rabanne",
+    "name": "1 Million",
+    "concentration": "Eau de Toilette",
+    "volume_ml": 100,
+    "ean": "3349666007921",
+    "gtin": "3349666007921"
+  },
+  "current_offer": {
+    "price_eur": 71.9,
+    "shipping_cost_eur": 4.99,
+    "total_price_eur": 76.89,
+    "availability": "in_stock",
+    "product_url": "https://www.perfumetrader.de/de/paco-rabanne-1-million-eau-de-toilette-100-ml"
+  },
+  "affiliate": {
+    "network": "Awin",
+    "advertiser_id": "11672",
+    "publisher_id": "3099222",
+    "clickref": "one_million_example61_01",
+    "affiliate_url": "https://www.awin1.com/cread.php?awinmid=11672&awinaffid=3099222&clickref=one_million_example61_01&ued=https%3A%2F%2Fwww.perfumetrader.de%2Fde%2Fpaco-rabanne-1-million-eau-de-toilette-100-ml",
+    "tracking_verified": true,
+    "verification_method": "HTTP redirect smoke test",
+    "verification_result": "Awin returned HTTP 302 to the exact Perfumetrader product page with Awin attribution parameters; the clickref was preserved by Awin.",
+    "final_http_status": 200
+  },
+  "ranking_guardrail": {
+    "note": "The cheaper Müller direct offer remains eligible and should rank ahead on customer total. Affiliate monetization must not override the lower customer price."
+  },
+  "sources": [
+    "https://www.perfumetrader.de/de/paco-rabanne-1-million-eau-de-toilette-100-ml",
+    "https://www.perfumetrader.de/de/versandbedingungen",
+    "https://help.awin.com/developers/docs/consent-framework-for-partners"
+  ]
+}
