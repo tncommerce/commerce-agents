@@ -29,9 +29,7 @@ class FakeBridge:
                 {
                     "key": "jarvis.repo_control_plane",
                     "value": {
-                        "source_fingerprint_sha256": repo_status[
-                            "source_fingerprint_sha256"
-                        ],
+                        "source_fingerprint_sha256": repo_status["source_fingerprint_sha256"],
                     },
                     "last_verified_at": generated_at,
                     "updated_at": generated_at,
