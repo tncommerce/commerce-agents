@@ -556,11 +556,12 @@ export default async function FragrancePage({
             <div className="dufynd-fragrance-hero-copy flex flex-col justify-center p-5 pt-4 sm:p-7 sm:pt-5 lg:col-start-2 lg:row-start-2 lg:p-9 lg:pt-3">
               <div className={`grid gap-2 sm:flex sm:flex-wrap sm:gap-2.5 ${related.length ? "grid-cols-2" : "grid-cols-1"}`}>
                 <OfferSectionLink
+                  id="dufynd-hero-offer-cta"
                   productId={fragrance.product_id}
                   source="hero_offer_cta"
                   className="rounded-xl bg-(--accent-strong) px-3 py-2.5 text-center text-[12px] font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:brightness-95 sm:px-4 sm:text-[13px]"
                 >
-                  <span id="dufynd-hero-offer-cta">Angebote prüfen</span>
+                  Angebote prüfen
                 </OfferSectionLink>
                 {related.length ? (
                   <a
