@@ -512,6 +512,13 @@ export default function HomeView({
           {audiencePreviews.map(({ key, label, eyebrow, product }) => {
             const count = audienceCounts[key];
             const theme = homeVisualThemeFor(product);
+            const productHasVisual = Boolean(
+              product?.image_url ||
+                (product &&
+                  getLiveFragranceByProductId(
+                    String(product.product_id),
+                  )?.preferred_visual?.url),
+            );
 
             return (
               <a
@@ -541,7 +548,7 @@ export default function HomeView({
                   </span>
                 </div>
 
-                {product ? (
+                {product && productHasVisual ? (
                   <div className="dufynd-home-audience-product pointer-events-none absolute inset-y-0 right-0 z-[1] flex w-[52%] items-center justify-center p-2">
                     <ProductImage
                       product={product}
