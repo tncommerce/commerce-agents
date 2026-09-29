@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
 
 import FragranceCatalogBrowser from "@/components/FragranceCatalogBrowser";
-import { LIVE_FRAGRANCES } from "@/lib/fragranceCatalog";
+import FragranceVisual from "@/components/FragranceVisual";
+import {
+  isVerifiedProductTruthVisual,
+  LIVE_FRAGRANCES,
+} from "@/lib/fragranceCatalog";
 
 export const metadata: Metadata = {
   title: "Parfums entdecken",
@@ -20,6 +24,7 @@ export default function FragranceIndexPage() {
         a.community.rating_count ||
       a.brand.localeCompare(b.brand, "de"),
   );
+  const catalogSpotlights = fragrances.slice(0, 3);
 
   return (
     <main className="dufynd-catalog-page min-h-screen text-(--ink)">
@@ -91,30 +96,131 @@ export default function FragranceIndexPage() {
       </header>
 
       <div className="mx-auto max-w-[1080px] px-4 py-7 sm:px-6 sm:py-10">
-        <div className="max-w-3xl">
-          <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-(--ink-soft)">
-            DUFYND Duftkatalog
-          </div>
-          <h1 className="mt-2 text-[32px] font-semibold leading-[1.08] tracking-[-0.035em] sm:text-[42px]">
-            Parfums entdecken
-          </h1>
-          <p className="mt-4 text-[14px] leading-6 text-(--ink-soft)">
-            Vergleiche Duftprofile, Community-Erfahrungen, Haltbarkeit
-            und Ausstrahlung. Aktuelle Händlerangebote werden auf den
-            jeweiligen Duftseiten separat geprüft.
-          </p>
-        </div>
+        <section
+          className="dufynd-catalog-discovery-hero"
+          aria-labelledby="dufynd-catalog-discovery-heading"
+        >
+          <div
+            aria-hidden
+            className="dufynd-catalog-discovery-atmosphere"
+          />
+          <div
+            aria-hidden
+            className="dufynd-catalog-discovery-orbit"
+          />
+          <div className="dufynd-catalog-discovery-copy">
+            <div className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-white/55">
+              DUFYND Duftkatalog
+            </div>
+            <h1
+              id="dufynd-catalog-discovery-heading"
+              className="mt-2 max-w-xl text-[34px] font-semibold leading-[1.02] tracking-[-0.045em] text-white sm:text-[46px]"
+            >
+              Parfums entdecken,
+              <span className="block text-white/58">
+                bevor du sie riechst.
+              </span>
+            </h1>
+            <p className="mt-4 max-w-xl text-[13px] leading-6 text-white/60 sm:text-[14px]">
+              Vergleiche Duftprofile, Community-Erfahrungen, Haltbarkeit
+              und Ausstrahlung. Aktuelle Händlerangebote werden auf den
+              jeweiligen Duftseiten separat geprüft.
+            </p>
 
-        <div className="mt-5 flex flex-wrap gap-2 text-[12px] text-(--ink-soft)">
-          <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">
-            {fragrances.length} Düfte
-          </span>
-          <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">
-            Community-Bewertungen
-          </span>
-          <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">
-            Händlerangebote nach Aktualität
-          </span>
+            <div className="mt-5 flex flex-wrap gap-2 text-[10.5px] text-white/62 sm:text-[11px]">
+              <span className="dufynd-catalog-discovery-pill">
+                {fragrances.length} Düfte
+              </span>
+              <span className="dufynd-catalog-discovery-pill">
+                Community-Daten
+              </span>
+              <span className="dufynd-catalog-discovery-pill">
+                aktuelle Händlerchecks
+              </span>
+            </div>
+
+            <div className="mt-6 flex flex-wrap gap-2.5">
+              <a
+                href="#dufynd-katalog"
+                className="rounded-xl bg-[#d9bd82] px-4 py-2.5 text-[12px] font-semibold text-[#241b0e] shadow-sm transition hover:-translate-y-0.5 hover:bg-[#e4cb98]"
+              >
+                Katalog öffnen ↓
+              </a>
+              <a
+                href="/"
+                className="rounded-xl border border-white/12 bg-white/[0.055] px-4 py-2.5 text-[12px] font-semibold text-white/82 transition hover:border-white/22 hover:bg-white/[0.08]"
+              >
+                Duftberatung starten
+              </a>
+            </div>
+          </div>
+
+          <div
+            className="dufynd-catalog-discovery-stage"
+            aria-label="Community-Fokus aus dem aktuellen DUFYND Katalog"
+          >
+            {catalogSpotlights.map((fragrance, index) => {
+              const visual = fragrance.preferred_visual;
+              const isProductTruth =
+                isVerifiedProductTruthVisual(visual);
+
+              return (
+                <a
+                  key={fragrance.product_id}
+                  href={`/duft/${fragrance.slug}`}
+                  className="dufynd-catalog-discovery-bottle"
+                  data-dufynd-discovery-slot={index + 1}
+                  aria-label={`${fragrance.brand} ${fragrance.name} öffnen`}
+                >
+                  <div className="dufynd-catalog-discovery-bottle-stage">
+                    {visual ? (
+                      <FragranceVisual
+                        imageUrl={visual.url}
+                        cutoutUrl={
+                          isProductTruth ? visual.url : undefined
+                        }
+                        alt={`${fragrance.brand} ${fragrance.name}`}
+                        variant="card"
+                        mode={
+                          isProductTruth ? "cutout" : "editorial"
+                        }
+                        className="h-full w-full"
+                        priority={index === 0}
+                      />
+                    ) : (
+                      <div className="grid h-full place-items-center text-[9px] font-semibold tracking-[0.16em] text-white/55">
+                        DUFYND
+                      </div>
+                    )}
+                  </div>
+                  <div className="dufynd-catalog-discovery-meta">
+                    <span>{fragrance.brand}</span>
+                    <strong>{fragrance.name}</strong>
+                    <em>
+                      {fragrance.community.rating_count.toLocaleString(
+                        "de-DE",
+                      )}{" "}
+                      Community-Bewertungen
+                    </em>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </section>
+
+        <div
+          id="dufynd-katalog"
+          className="dufynd-catalog-intro scroll-mt-5 pt-7 sm:pt-9"
+        >
+          <div className="max-w-3xl">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-(--ink-soft)">
+              Entdecken
+            </div>
+            <h2 className="mt-2 text-[28px] font-semibold leading-[1.08] tracking-[-0.035em] sm:text-[34px]">
+              Finde deinen nächsten Duft
+            </h2>
+          </div>
         </div>
 
         <FragranceCatalogBrowser
