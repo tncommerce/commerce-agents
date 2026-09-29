@@ -274,7 +274,7 @@
       },
       "resume_rule": "Reuse the open session only when the synchronized repo fingerprint is unchanged. Stable task state is preserved for the same fingerprint to avoid duplicate execution after interruption.",
       "budget_rule": "Check the active database budget window before every paid worker attempt. Nightshift cannot create, reactivate, enlarge or bypass a budget window.",
-      "branch_rule": "At most one engineering patch may await deterministic validation in one checkout; non-engineering GREEN work may continue.",
+      "branch_rule": "Run non-engineering GREEN work before engineering work. After one engineering patch is prepared, stop model work in that checkout and run deterministic QA/PR handoff immediately.",
       "yellow_handoff": "Validated engineering patches may be pushed only to a jarvis/worker-* branch and opened as a PR against scentai-mvp. They are never auto-merged.",
       "morning_report": "Generate JSON and Markdown from persisted session state, autonomy queue, health, pending decisions, budget status and audited agent runs.",
       "scheduling": "No recurring schedule is enabled. The pilot requires an explicit operator-started workflow dispatch.",
