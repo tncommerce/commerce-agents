@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "updated_at": "2026-09-26T16:52:00Z",
+  "updated_at": "2026-09-29T08:24:00Z",
   "status": "promotion_queue_active",
-  "live_catalog_count": 33,
-  "verified_queue_count": 30,
+  "live_catalog_count": 34,
+  "verified_queue_count": 29,
   "purpose": "Single source of truth for promoting verified SCENTAI fragrance candidates into the live catalog.",
   "hard_gates": [
     "identity_verified",
@@ -17,19 +17,19 @@
   "affiliate_policy": "Affiliate approval is required before publishing tracked affiliate URLs. Commission never affects fragrance recommendations and is used only as a tie-breaker between equal-total, comparably fresh affiliate offers.",
   "image_policy": "Do not use generated bottle lookalikes for live commerce products. Prefer approved merchant-feed or manufacturer imagery with appropriate use rights.",
   "summary": {
-    "total": 30,
-    "identity_verified": 30,
-    "community_qa_verified": 30,
+    "total": 29,
+    "identity_verified": 29,
+    "community_qa_verified": 29,
     "with_merchant_coverage": 29,
-    "multi_merchant_coverage": 29,
+    "multi_merchant_coverage": 28,
     "affiliate_links_ready": 0,
     "approved_images_ready": 0,
     "unresolved_identity_version_blockers": 0,
     "current_purchase_destinations_ready": 5
   },
   "blocker_counts": {
-    "approved_product_image_pending": 30,
-    "verified_purchase_destination_pending": 25,
+    "approved_product_image_pending": 29,
+    "verified_purchase_destination_pending": 24,
     "community_performance_still_provisional": 2
   },
   "candidates": [
@@ -125,26 +125,6 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 2,
       "blockers": [
-        "approved_product_image_pending"
-      ],
-      "ready_for_live": false
-    },
-    {
-      "candidate_id": "LANCOME-LA-VIE-EST-BELLE-EDP",
-      "batch": 1,
-      "batch_rank": 6,
-      "proposed_product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
-      "brand": "Lancôme",
-      "canonical_name": "La Vie est Belle",
-      "concentration": "Eau de Parfum",
-      "volume_ml": 100,
-      "target_group": "women",
-      "audience_lean": null,
-      "identity_verified": true,
-      "community_qa_verified": true,
-      "merchant_coverage_count": 3,
-      "blockers": [
-        "verified_purchase_destination_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
