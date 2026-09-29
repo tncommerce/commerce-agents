@@ -844,6 +844,27 @@ try {
         }
 
         if (target.name === "home") {
+          const audienceStage = page.locator(
+            "[data-dufynd-home-audience-stage]",
+          );
+          const audienceCards = page.locator(
+            "[data-dufynd-home-audience-card]",
+          );
+          const selectedStage = page.locator(
+            "[data-dufynd-home-selected-stage]",
+          );
+          if ((await audienceStage.count()) !== 1) {
+            throw new Error("homepage is missing immersive audience discovery");
+          }
+          if ((await audienceCards.count()) !== 3) {
+            throw new Error(
+              `homepage audience discovery expected 3 cards, got ${await audienceCards.count()}`,
+            );
+          }
+          if ((await selectedStage.count()) !== 1) {
+            throw new Error("homepage is missing immersive selected fragrances");
+          }
+
           const spotlightTruth = page.locator(
             'a[href="/duft/xerjoff-naxos"] img[src="/products/naxos-cutout-production.webp"]',
           );
