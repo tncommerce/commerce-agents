@@ -55,9 +55,17 @@ export default function FragranceVisualGallery({
             getrennt.
           </p>
         </div>
+        <span className="rounded-full border border-(--line) bg-(--well) px-2.5 py-1 text-[10px] font-semibold text-(--ink-soft)">
+          {unique.length} Ansichten
+        </span>
       </div>
 
-      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+      <div className="mt-2 flex items-center justify-between text-[10px] text-(--ink-soft) sm:hidden">
+        <span>Seitlich wischen für weitere Ansichten</span>
+        <span aria-hidden>↔</span>
+      </div>
+
+      <div className="-mx-1 mt-3 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0">
         {unique.map((asset) => {
           const isProductTruth =
             isVerifiedProductTruthVisual(asset);
@@ -66,7 +74,7 @@ export default function FragranceVisualGallery({
           return (
             <figure
               key={`${asset.role}:${asset.url}`}
-              className="overflow-hidden rounded-xl border border-(--line) bg-(--surface)"
+              className="min-w-[82%] snap-start overflow-hidden rounded-xl border border-(--line) bg-(--surface) sm:min-w-0"
             >
               <FragranceVisual
                 imageUrl={asset.url}
