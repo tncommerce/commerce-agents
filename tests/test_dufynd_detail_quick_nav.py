@@ -3,9 +3,7 @@
 from pathlib import Path
 
 DETAIL_PAGE = Path("examples/retail/storefront-web/app/duft/[slug]/page.tsx")
-OFFER_SECTION_LINK = Path(
-    "examples/retail/storefront-web/components/OfferSectionLink.tsx"
-)
+OFFER_SECTION_LINK = Path("examples/retail/storefront-web/components/OfferSectionLink.tsx")
 
 
 def test_detail_page_has_compact_section_navigation() -> None:
