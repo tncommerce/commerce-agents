@@ -218,6 +218,38 @@ class DufyndJarvisBridge:
             )
             response.raise_for_status()
 
+    def update_autonomy_task_progress(
+        self,
+        *,
+        task_id: str,
+        status: str,
+        evidence: str,
+    ) -> None:
+        allowed_statuses = {
+            "in_progress",
+            "waiting_human_input",
+            "waiting_external",
+            "blocked",
+        }
+        if status not in allowed_statuses:
+            raise ValueError(
+                "Safe worker may only record non-terminal autonomy task progress."
+            )
+        with self._client() as client:
+            response = client.patch(
+                f"{self.supabase_url}/rest/v1/dufynd_autonomy_tasks",
+                headers={
+                    **_headers(self.secret_key),
+                    "Prefer": "return=minimal",
+                },
+                params={"task_id": f"eq.{task_id}"},
+                json={
+                    "status": status,
+                    "evidence": evidence[:12000],
+                },
+            )
+            response.raise_for_status()
+
     def upsert_master_status(
         self,
         *,
