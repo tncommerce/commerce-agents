@@ -301,13 +301,15 @@ export default async function FragrancePage({
     fragrance,
     4,
   );
-  const notePreview = [
+  const allNotes = [
     ...fragrance.notes.top,
     ...fragrance.notes.heart,
     ...fragrance.notes.base,
     ...fragrance.notes.key,
     ...fragrance.notes.supporting,
-  ].slice(0, 3);
+  ];
+  const notePreview = allNotes.slice(0, 3);
+  const noteCount = new Set(allNotes).size;
   const canonicalUrl = `${SITE_URL}/duft/${fragrance.slug}`;
   const breadcrumbStructuredData = {
     "@context": "https://schema.org",
@@ -657,6 +659,40 @@ export default async function FragrancePage({
           </div>
         </section>
 
+        <nav
+          aria-label="Schnellnavigation auf der Duftseite"
+          className="mt-3 overflow-x-auto rounded-2xl border border-(--line) bg-(--card)/95 p-2 shadow-(--shadow-sm) backdrop-blur sm:mt-4"
+        >
+          <div className="flex min-w-max items-center gap-1.5">
+            <a
+              href="#angebote"
+              className="rounded-xl bg-(--accent-strong) px-3 py-2 text-[11px] font-semibold text-white transition hover:brightness-95 sm:px-4 sm:text-[12px]"
+            >
+              Angebote
+            </a>
+            <a
+              href="#duftprofil"
+              className="rounded-xl px-3 py-2 text-[11px] font-semibold text-(--ink) transition hover:bg-(--well) sm:px-4 sm:text-[12px]"
+            >
+              Duft-DNA · {fragrance.accords.length} Akkorde
+            </a>
+            <a
+              href="#duftnoten"
+              className="rounded-xl px-3 py-2 text-[11px] font-semibold text-(--ink) transition hover:bg-(--well) sm:px-4 sm:text-[12px]"
+            >
+              Duftnoten · {noteCount}
+            </a>
+            {related.length ? (
+              <a
+                href="#alternativen"
+                className="rounded-xl px-3 py-2 text-[11px] font-semibold text-(--ink) transition hover:bg-(--well) sm:px-4 sm:text-[12px]"
+              >
+                Alternativen · {related.length}
+              </a>
+            ) : null}
+          </div>
+        </nav>
+
         <div id="angebote" className="mt-5 scroll-mt-6">
           <FragranceOffers productId={fragrance.product_id} />
         </div>
@@ -679,7 +715,10 @@ export default async function FragrancePage({
         />
 
         <div className="mt-5 grid gap-4 lg:mt-7 lg:grid-cols-[1.05fr_0.95fr]">
-          <section className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) sm:p-5">
+          <section
+            id="duftprofil"
+            className="scroll-mt-6 rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) sm:p-5"
+          >
             <h2 className="text-[17px] font-semibold">
               Duftprofil
             </h2>
@@ -723,6 +762,7 @@ export default async function FragrancePage({
             </p>
           </section>
 
+          <div id="duftnoten" className="scroll-mt-6">
           <details className="group rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) lg:hidden">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-3">
               <span className="min-w-0">
@@ -803,6 +843,7 @@ export default async function FragrancePage({
               )}
             </div>
           </section>
+          </div>
         </div>
 
         {related.length ? (
