@@ -7,7 +7,6 @@ import json
 import os
 import re
 import subprocess
-import sys
 from pathlib import Path
 from typing import Any
 
@@ -60,6 +59,8 @@ DENIED_PARTS = {
     "venv",
 }
 DENIED_FILENAMES = {
+    ".npmrc",
+    ".pypirc",
     "package-lock.json",
     "pnpm-lock.yaml",
     "yarn.lock",
@@ -83,7 +84,8 @@ Rules:
    lockfiles, secrets, credentials, or Supabase schema from this worker.
 4. Never use the network.
 5. Use only the provided repository tools. Do not assume raw shell access exists.
-6. Run the narrowest useful checks after edits, then inspect the worktree diff.
+6. Run only non-executing static checks after edits, then inspect the worktree diff.
+   Executing modified repository code is reserved for a separate secret-free sandbox.
 7. If a task needs a forbidden path/action, stop and report the exact escalation
    needed instead of bypassing the restriction.
 8. Do not fabricate test success or claim a change was merged/deployed.
@@ -120,8 +122,10 @@ def _relative_repo_path(path: str) -> Path:
         raise ValueError("path enters a denied repository area")
     if relative.suffix.lower() in DENIED_SUFFIXES:
         raise ValueError("sensitive key/certificate files are not accessible")
+    if relative.name.startswith(".env"):
+        raise ValueError("environment files are not accessible")
     if relative.name in DENIED_FILENAMES:
-        raise ValueError("dependency/lockfile access is not allowed in this worker")
+        raise ValueError("dependency/credential file access is not allowed in this worker")
 
     return relative
 
@@ -194,6 +198,10 @@ def _search_text(pattern: str, path: str = ".") -> dict[str, Any]:
             continue
         if any(part in DENIED_PARTS for part in relative.parts):
             continue
+        if relative.name.startswith(".env"):
+            continue
+        if relative.name in DENIED_FILENAMES or relative.suffix.lower() in DENIED_SUFFIXES:
+            continue
         if candidate.stat().st_size > MAX_TEXT_BYTES:
             continue
         try:
@@ -261,9 +269,13 @@ def _validate_check_target(target: str | None) -> str | None:
     if target is None or not str(target).strip():
         return None
     raw = str(target).strip()
-    path_part = raw.split("::", 1)[0]
-    _relative_repo_path(path_part)
-    return raw
+    if raw.startswith("-"):
+        raise ValueError("check target may not start with an option prefix")
+    relative = _relative_repo_path(raw)
+    resolved = REPO_ROOT / relative
+    if not resolved.exists():
+        raise ValueError("check target must exist inside the repository")
+    return relative.as_posix()
 
 
 def _run_command(command: list[str], *, timeout_seconds: int = 180) -> dict[str, Any]:
@@ -297,7 +309,7 @@ def _run_safe_check(check: str, target: str | None = None) -> dict[str, Any]:
     if check == "git_diff":
         command = ["git", "diff", "--no-ext-diff", "--"]
         if target:
-            command.append(target.split("::", 1)[0])
+            command.append(target)
         return _run_command(command, timeout_seconds=30)
 
     if check == "ruff_check":
@@ -308,20 +320,8 @@ def _run_safe_check(check: str, target: str | None = None) -> dict[str, Any]:
         command = ["ruff", "format", "--check", target or "."]
         return _run_command(command)
 
-    if check == "pytest":
-        command = ["pytest", "-q"]
-        if target:
-            command.append(target)
-        return _run_command(command, timeout_seconds=240)
-
-    if check == "repo_check":
-        if target is not None:
-            raise ValueError("repo_check does not accept a target")
-        return _run_command([sys.executable, "scripts/check.py"], timeout_seconds=240)
-
     raise ValueError(
-        "unsupported check; use git_status, git_diff, ruff_check, "
-        "ruff_format_check, pytest, or repo_check"
+        "unsupported check; use git_status, git_diff, ruff_check, or ruff_format_check"
     )
 
 
@@ -438,8 +438,6 @@ def build_tools() -> list[SdkMcpTool[Any]]:
                         "git_diff",
                         "ruff_check",
                         "ruff_format_check",
-                        "pytest",
-                        "repo_check",
                     ],
                 },
                 "target": {"type": "string"},
