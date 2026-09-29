@@ -2233,3 +2233,253 @@ body {
     animation: none !important;
   }
 }
+
+
+/* DUFYND immersive scroll chapters v1 */
+.dufynd-detail-quick-nav {
+  position: sticky;
+  top: 10px;
+  z-index: 24;
+  border-color: rgba(126, 96, 58, 0.13);
+  background: rgba(250, 247, 241, 0.86);
+  box-shadow:
+    0 16px 42px -30px rgba(23, 21, 19, 0.46),
+    inset 0 1px 0 rgba(255, 255, 255, 0.84);
+  backdrop-filter: blur(18px) saturate(1.08);
+}
+
+.dufynd-fragrance-journey {
+  --dufynd-journey-axis-x: 20px;
+  position: relative;
+  isolation: isolate;
+  margin-top: 4px;
+  padding-top: 1px;
+}
+
+.dufynd-fragrance-journey::before {
+  content: "";
+  position: absolute;
+  inset: 6px -14px -18px;
+  z-index: -2;
+  pointer-events: none;
+  border-radius: 40px;
+  background:
+    radial-gradient(circle at 14% 4%, rgba(197, 145, 68, 0.105), transparent 27rem),
+    radial-gradient(circle at 86% 36%, rgba(114, 92, 72, 0.06), transparent 26rem),
+    linear-gradient(180deg, rgba(239, 231, 219, 0.52), rgba(249, 246, 240, 0.11) 52%, transparent 96%);
+}
+
+.dufynd-fragrance-journey-axis {
+  position: absolute;
+  left: var(--dufynd-journey-axis-x);
+  top: 42px;
+  bottom: 22px;
+  z-index: -1;
+  width: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(153, 111, 55, 0.34) 9%,
+    rgba(153, 111, 55, 0.16) 76%,
+    transparent
+  );
+}
+
+.dufynd-fragrance-chapter {
+  position: relative;
+}
+
+.dufynd-fragrance-chapter-index {
+  position: absolute;
+  left: calc(var(--dufynd-journey-axis-x) - 13px);
+  top: 20px;
+  z-index: 6;
+  display: grid;
+  width: 27px;
+  height: 27px;
+  place-items: center;
+  border: 1px solid rgba(151, 110, 58, 0.23);
+  border-radius: 999px;
+  color: rgba(109, 77, 37, 0.78);
+  background: rgba(250, 247, 241, 0.94);
+  box-shadow:
+    0 8px 18px -12px rgba(73, 51, 27, 0.52),
+    inset 0 1px 0 rgba(255,255,255,0.90);
+  font-size: 8px;
+  font-weight: 780;
+  letter-spacing: 0.04em;
+}
+
+.dufynd-fragrance-chapter--offers,
+.dufynd-fragrance-chapter--experience,
+.dufynd-fragrance-chapter--profile {
+  padding-left: 46px;
+}
+
+.dufynd-fragrance-chapter--gallery {
+  padding-left: 46px;
+}
+
+.dufynd-journey-offers,
+.dufynd-journey-exploded,
+.dufynd-journey-gallery,
+.dufynd-fragrance-profile-card,
+.dufynd-fragrance-notes-card > details,
+.dufynd-fragrance-notes-card > section {
+  border-color: rgba(126, 96, 58, 0.13);
+  background:
+    linear-gradient(145deg, rgba(255, 253, 249, 0.93), rgba(247, 241, 232, 0.84));
+  box-shadow:
+    0 26px 68px -48px rgba(51, 37, 22, 0.46),
+    inset 0 1px 0 rgba(255,255,255,0.92);
+  backdrop-filter: blur(16px) saturate(1.04);
+}
+
+.dufynd-journey-offers {
+  position: relative;
+  overflow: hidden;
+}
+
+.dufynd-journey-offers::before {
+  content: "";
+  position: absolute;
+  right: -12%;
+  top: -70%;
+  width: 46%;
+  aspect-ratio: 1;
+  pointer-events: none;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(209, 160, 75, 0.13), transparent 67%);
+  filter: blur(14px);
+}
+
+.dufynd-journey-exploded {
+  position: relative;
+}
+
+.dufynd-journey-gallery {
+  overflow: hidden;
+}
+
+.dufynd-fragrance-profile-card,
+.dufynd-fragrance-notes-card > details,
+.dufynd-fragrance-notes-card > section {
+  min-height: 100%;
+}
+
+.dufynd-fragrance-chapter--profile::after {
+  content: "";
+  position: absolute;
+  left: 46px;
+  right: 0;
+  bottom: -18px;
+  z-index: -1;
+  height: 90px;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(185, 139, 72, 0.09),
+    transparent 72%
+  );
+  filter: blur(18px);
+}
+
+@supports (animation-timeline: view()) {
+  .dufynd-fragrance-chapter {
+    animation: dufynd-journey-chapter-rise linear both;
+    animation-timeline: view();
+    animation-range: entry 6% cover 35%;
+  }
+
+  .dufynd-fragrance-journey-axis {
+    animation: dufynd-journey-axis-reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 78%;
+    transform-origin: top;
+  }
+}
+
+@keyframes dufynd-journey-chapter-rise {
+  from {
+    transform: translate3d(0, 16px, 0);
+    opacity: 0.72;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes dufynd-journey-axis-reveal {
+  from {
+    transform: scaleY(0.18);
+    opacity: 0.16;
+  }
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 767px) {
+  .dufynd-detail-quick-nav {
+    top: 6px;
+  }
+
+  .dufynd-fragrance-journey {
+    --dufynd-journey-axis-x: 10px;
+  }
+
+  .dufynd-fragrance-journey::before {
+    inset-right: -8px;
+    inset-left: -8px;
+    border-radius: 28px;
+  }
+
+  .dufynd-fragrance-chapter--offers,
+  .dufynd-fragrance-chapter--experience,
+  .dufynd-fragrance-chapter--gallery,
+  .dufynd-fragrance-chapter--profile {
+    padding-left: 26px;
+  }
+
+  .dufynd-fragrance-chapter-index {
+    left: calc(var(--dufynd-journey-axis-x) - 10px);
+    top: 16px;
+    width: 21px;
+    height: 21px;
+    font-size: 7px;
+  }
+
+  .dufynd-fragrance-chapter--profile::after {
+    left: 26px;
+  }
+}
+
+@media (max-width: 390px) {
+  .dufynd-fragrance-journey {
+    --dufynd-journey-axis-x: 6px;
+  }
+
+  .dufynd-fragrance-chapter--offers,
+  .dufynd-fragrance-chapter--experience,
+  .dufynd-fragrance-chapter--gallery,
+  .dufynd-fragrance-chapter--profile {
+    padding-left: 18px;
+  }
+
+  .dufynd-fragrance-chapter-index {
+    left: calc(var(--dufynd-journey-axis-x) - 7px);
+    width: 17px;
+    height: 17px;
+    font-size: 6px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dufynd-fragrance-chapter,
+  .dufynd-fragrance-journey-axis {
+    animation: none !important;
+  }
+}
