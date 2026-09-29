@@ -38,12 +38,18 @@ def test_staging_qa_rejects_variant_and_provisional_gate_drift() -> None:
     ]
 
 
-def test_all_staged_fragrances_remain_disjoint_from_live_catalog() -> None:
-    staged_ids = {row["product_id"] for row in load_staging()["products"]}
+def test_live_staging_overlap_is_explicitly_marked_as_promoted() -> None:
+    staging = load_staging()
+    staged_ids = {row["product_id"] for row in staging["products"]}
+    promoted_ids = {
+        row["product_id"]
+        for row in staging["products"]
+        if (row.get("validation") or {}).get("promoted_to_live") is True
+    }
     live = json.loads(Path("examples/retail/data/catalog.json").read_text(encoding="utf-8"))
     live_ids = {row["product_id"] for row in live["products"] if row.get("category") == "fragrance"}
 
-    assert staged_ids.isdisjoint(live_ids)
+    assert staged_ids & live_ids == promoted_ids
 
 
 @pytest.mark.asyncio
