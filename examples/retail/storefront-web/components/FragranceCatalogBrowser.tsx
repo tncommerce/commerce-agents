@@ -386,6 +386,7 @@ export default function FragranceCatalogBrowser({
   const lastTrackedSearchRef = useRef("");
   const initialSearchAppliedRef = useRef(false);
   const resultsRef = useRef<HTMLHeadingElement>(null);
+  const filterSectionRef = useRef<HTMLElement>(null);
   const jumpToResultsRef = useRef(false);
 
   const selectProfile = (
@@ -705,6 +706,18 @@ export default function FragranceCatalogBrowser({
     setSort("popular");
   };
 
+  const openMobileFilters = () => {
+    setMobileFiltersOpen(true);
+    window.requestAnimationFrame(() => {
+      filterSectionRef.current?.scrollIntoView({
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "auto"
+          : "smooth",
+        block: "start",
+      });
+    });
+  };
+
   const selectedComparisonFragrances = compareSelection
     .map((productId) =>
       fragrances.find(
@@ -860,7 +873,8 @@ export default function FragranceCatalogBrowser({
       </section>
 
       <section
-        className="mt-4 rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) sm:p-5"
+        ref={filterSectionRef}
+        className="mt-4 rounded-2xl scroll-mt-3 border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) sm:p-5"
         aria-label="Duftkatalog filtern"
       >
         <div className="grid gap-3 md:grid-cols-[1fr_auto] md:items-end">
@@ -1156,6 +1170,32 @@ export default function FragranceCatalogBrowser({
           {copyStatus}
         </span>
       </section>
+
+      {compareSelection.length === 0 ? (
+        <div className="sticky bottom-3 z-20 mt-4 md:hidden">
+          <div className="mx-auto flex max-w-sm items-center gap-2 rounded-2xl border border-(--line) bg-(--card)/95 p-2 shadow-[0_18px_48px_-24px_rgba(20,18,16,0.45)] backdrop-blur">
+            <button
+              type="button"
+              onClick={openMobileFilters}
+              className="flex min-w-0 flex-1 items-center justify-between rounded-xl bg-(--ink) px-3 py-2.5 text-left text-[11.5px] font-semibold text-(--surface)"
+              aria-label="Katalogfilter öffnen"
+            >
+              <span className="truncate">
+                Filter{activeFilterCount ? ` · ${activeFilterCount}` : ""}
+              </span>
+              <span className="ml-2 truncate text-(--surface)/70">
+                {optionLabel(SORT_OPTIONS, sort)}
+              </span>
+            </button>
+            <span
+              className="shrink-0 rounded-xl border border-(--line) bg-(--surface) px-3 py-2.5 text-[11px] font-semibold text-(--ink)"
+              aria-live="polite"
+            >
+              {filtered.length} Treffer
+            </span>
+          </div>
+        </div>
+      ) : null}
 
       {profile !== "all" ? (
         <div className="mt-5 flex items-baseline justify-between gap-3">
