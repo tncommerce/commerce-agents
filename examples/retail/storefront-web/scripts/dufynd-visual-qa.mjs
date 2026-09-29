@@ -282,13 +282,20 @@ try {
         if (diagnostics.directory_listing) {
           throw new Error("directory listing detected instead of storefront content");
         }
+        if (
+          (await page.locator(".dufynd-product-placeholder").count()) > 0
+        ) {
+          throw new Error(
+            "legacy pseudo-bottle placeholder is still rendered",
+          );
+        }
 
         if (target.route.startsWith("/duft/")) {
           const layout = await page.evaluate(() => {
             const rect = (selector) =>
               document.querySelector(selector)?.getBoundingClientRect() || null;
             const title = rect(".dufynd-fragrance-hero h1");
-            const stage = rect(".dufynd-fragrance-hero .dufynd-product-stage, .dufynd-fragrance-hero .dufynd-editorial-depth-stage, .dufynd-fragrance-hero .dufynd-model-stage");
+            const stage = rect(".dufynd-fragrance-hero .dufynd-product-stage, .dufynd-fragrance-hero .dufynd-editorial-depth-stage, .dufynd-fragrance-hero .dufynd-model-stage, .dufynd-fragrance-hero .dufynd-neutral-visual-stage");
             const cutout = rect(".dufynd-fragrance-hero .dufynd-product-image");
             const offers = rect("#angebote");
             const exploded = rect(".dufynd-exploded-notes");
