@@ -328,9 +328,7 @@ def test_rabanne_1_million_perfumetrader_affiliate_mapping_is_exact_variant() ->
         Path("examples/retail/data/merchant_product_mappings.json").read_text(encoding="utf-8")
     )["mappings"]
     offer = next(
-        row
-        for row in _offers()
-        if row["offer_id"] == "perfumetrader-rabanne-1-million-edt-100"
+        row for row in _offers() if row["offer_id"] == "perfumetrader-rabanne-1-million-edt-100"
     )
 
     assert offer["product_id"] == evidence["product_id"]
