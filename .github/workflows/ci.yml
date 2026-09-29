@@ -99,7 +99,8 @@ jobs:
           first_status=$?
           set -e
           if [ "$first_status" -ne 0 ]; then
-            echo "::warning::Workspace build failed once; retrying once for transient Next.js/Turbopack failures."
+            echo "::warning::Workspace build failed once; clearing Next.js build output and retrying once."
+            find . -type d -name .next -prune -exec rm -rf {} +
             npm run build
           fi
 
