@@ -764,8 +764,7 @@ async def process_branch_task(bridge: DufyndJarvisBridge) -> int:
             task_id=task_id,
             status="in_progress",
             evidence=(
-                text[:12000]
-                or "Branch worker prepared a local patch without terminal completion."
+                text[:12000] or "Branch worker prepared a local patch without terminal completion."
             ),
         )
         await asyncio.to_thread(
