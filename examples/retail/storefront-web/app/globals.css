@@ -2483,3 +2483,240 @@ body {
     animation: none !important;
   }
 }
+
+
+/* DUFYND immersive catalog cards v1 */
+.dufynd-catalog-card {
+  --dufynd-catalog-glow-a: rgba(184, 137, 52, 0.22);
+  --dufynd-catalog-glow-b: rgba(104, 82, 63, 0.12);
+  position: relative;
+  isolation: isolate;
+  border-color: rgba(112, 86, 52, 0.13);
+  background:
+    linear-gradient(180deg, rgba(255, 253, 249, 0.98), rgba(248, 243, 235, 0.94));
+  box-shadow:
+    0 24px 58px -42px rgba(34, 27, 20, 0.52),
+    inset 0 1px 0 rgba(255,255,255,0.94);
+  transition:
+    transform 220ms ease,
+    box-shadow 220ms ease,
+    border-color 220ms ease;
+}
+
+.dufynd-catalog-card[data-dufynd-catalog-theme="freshness"] {
+  --dufynd-catalog-glow-a: rgba(84, 155, 145, 0.30);
+  --dufynd-catalog-glow-b: rgba(180, 218, 207, 0.16);
+}
+
+.dufynd-catalog-card[data-dufynd-catalog-theme="sweetness"] {
+  --dufynd-catalog-glow-a: rgba(203, 141, 80, 0.32);
+  --dufynd-catalog-glow-b: rgba(243, 194, 139, 0.15);
+}
+
+.dufynd-catalog-card[data-dufynd-catalog-theme="woodiness"] {
+  --dufynd-catalog-glow-a: rgba(132, 101, 70, 0.31);
+  --dufynd-catalog-glow-b: rgba(193, 164, 128, 0.14);
+}
+
+.dufynd-catalog-card[data-dufynd-catalog-theme="spiciness"] {
+  --dufynd-catalog-glow-a: rgba(173, 91, 54, 0.31);
+  --dufynd-catalog-glow-b: rgba(223, 151, 103, 0.15);
+}
+
+.dufynd-catalog-card:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--dufynd-catalog-glow-a) 58%, rgba(112, 86, 52, 0.16));
+  box-shadow:
+    0 34px 72px -42px rgba(34, 27, 20, 0.60),
+    0 18px 38px -30px var(--dufynd-catalog-glow-a),
+    inset 0 1px 0 rgba(255,255,255,0.96);
+}
+
+.dufynd-catalog-card-stage {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 50% 42%, var(--dufynd-catalog-glow-a), transparent 33%),
+    radial-gradient(circle at 84% 8%, var(--dufynd-catalog-glow-b), transparent 31%),
+    linear-gradient(145deg, #171719 0%, #0b0c0e 100%);
+}
+
+.dufynd-catalog-card-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.025), transparent 28%, transparent 68%, rgba(5,6,8,0.34)),
+    radial-gradient(circle at 50% 112%, var(--dufynd-catalog-glow-a), transparent 42%);
+}
+
+.dufynd-catalog-card-atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.46;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,0.44) 0 0.55px, transparent 0.8px),
+    radial-gradient(circle, rgba(242,216,165,0.42) 0 0.6px, transparent 0.85px);
+  background-size: 73px 73px, 119px 119px;
+  background-position: 8px 12px, 39px 27px;
+  mask-image: linear-gradient(180deg, #000, #000 58%, transparent 94%);
+}
+
+.dufynd-catalog-card-visual {
+  position: relative;
+  z-index: 1;
+  background: transparent !important;
+}
+
+.dufynd-catalog-card-stage .dufynd-product-stage {
+  background: transparent;
+}
+
+.dufynd-catalog-card-stage .dufynd-product-light {
+  background: radial-gradient(
+    circle at var(--dufynd-mx) var(--dufynd-my),
+    rgba(255,248,226,0.40) 0,
+    var(--dufynd-catalog-glow-a) 21%,
+    transparent 48%
+  );
+}
+
+.dufynd-catalog-card-stage .dufynd-product-image {
+  filter:
+    drop-shadow(0 28px 24px rgba(0,0,0,0.40))
+    drop-shadow(0 8px 11px rgba(0,0,0,0.28))
+    drop-shadow(0 0 22px var(--dufynd-catalog-glow-b));
+}
+
+.dufynd-catalog-card-stage .dufynd-editorial-depth-stage {
+  background: transparent;
+}
+
+.dufynd-catalog-card-stage .dufynd-editorial-depth-fill {
+  filter: blur(28px) brightness(0.46) saturate(0.90);
+  opacity: 0.76;
+}
+
+.dufynd-catalog-card-stage .dufynd-editorial-depth-vignette {
+  background:
+    radial-gradient(circle at 50% 44%, transparent 0 38%, rgba(5,6,8,0.24) 74%),
+    linear-gradient(180deg, transparent 54%, rgba(5,6,8,0.30));
+}
+
+.dufynd-catalog-card-signature {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: calc(100% - 24px);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 999px;
+  background: rgba(8,9,11,0.48);
+  padding: 5px 8px;
+  color: rgba(255,250,240,0.78);
+  box-shadow:
+    0 10px 24px -18px rgba(0,0,0,0.86),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+  backdrop-filter: blur(10px);
+  font-size: 9px;
+  font-weight: 650;
+  letter-spacing: 0.03em;
+}
+
+.dufynd-catalog-card-signature strong {
+  color: rgba(255,244,214,0.94);
+  font-weight: 760;
+}
+
+.dufynd-catalog-card-body {
+  position: relative;
+}
+
+.dufynd-catalog-card-body::before {
+  content: "";
+  position: absolute;
+  left: 16%;
+  right: 16%;
+  top: -18px;
+  height: 28px;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, var(--dufynd-catalog-glow-a), transparent 72%);
+  filter: blur(16px);
+  opacity: 0.34;
+}
+
+.dufynd-catalog-card-accord {
+  border: 1px solid color-mix(in srgb, var(--dufynd-catalog-glow-a) 20%, rgba(112,86,52,0.10));
+  background: color-mix(in srgb, var(--dufynd-catalog-glow-a) 8%, var(--well));
+}
+
+.dufynd-catalog-card-dna {
+  border-color: color-mix(in srgb, var(--dufynd-catalog-glow-a) 24%, rgba(112,86,52,0.12));
+  background:
+    linear-gradient(145deg, rgba(255,255,255,0.68), rgba(244,238,228,0.58));
+}
+
+.dufynd-catalog-card-dna .bg-\(--accent\) {
+  background: color-mix(in srgb, var(--dufynd-catalog-glow-a) 76%, #9a7138);
+}
+
+.dufynd-catalog-card-cta {
+  transition: color 180ms ease, border-color 180ms ease;
+}
+
+.dufynd-catalog-card:hover .dufynd-catalog-card-cta {
+  border-color: color-mix(in srgb, var(--dufynd-catalog-glow-a) 34%, rgba(112,86,52,0.12));
+}
+
+.dufynd-catalog-card-actions {
+  background: rgba(249,245,238,0.72);
+  backdrop-filter: blur(10px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dufynd-catalog-card-atmosphere {
+    animation: dufynd-catalog-card-particles 24s linear infinite;
+  }
+}
+
+@keyframes dufynd-catalog-card-particles {
+  from {
+    background-position: 8px 12px, 39px 27px;
+  }
+  to {
+    background-position: 81px -61px, -80px 146px;
+  }
+}
+
+@media (max-width: 639px) {
+  .dufynd-catalog-card-stage {
+    height: 190px;
+  }
+
+  .dufynd-catalog-card {
+    border-radius: 20px;
+  }
+
+  .dufynd-catalog-card-signature {
+    left: 10px;
+    top: 10px;
+    padding: 4px 7px;
+    font-size: 8.5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dufynd-catalog-card,
+  .dufynd-catalog-card-atmosphere {
+    animation: none !important;
+    transition: none !important;
+  }
+}
