@@ -13,7 +13,7 @@ def test_dufynd_jarvis_contract_has_current_brand_and_version() -> None:
 
     assert contract["brand"] == "DUFYND"
     assert contract["operator"] == "TNCommerce"
-    assert contract["version"] == "2.2"
+    assert contract["version"] == "2.3"
 
 
 def test_dufynd_jarvis_contract_exposes_required_learning_surfaces() -> None:
@@ -78,3 +78,8 @@ def test_dufynd_jarvis_contract_keeps_active_runtime_off_by_default() -> None:
     assert supervisor["default_max_events"] == 8
     assert supervisor["hard_max_events"] == 20
     assert "runtime_or_budget_gate" in supervisor["stop_conditions"]
+
+    control_plane_sync = runtime["control_plane_sync"]
+    assert control_plane_sync["status"] == "required_before_active_processing"
+    assert control_plane_sync["snapshot_key"] == "jarvis.repo_state_snapshot"
+    assert control_plane_sync["dry_run_default"] is True
