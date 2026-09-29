@@ -212,12 +212,16 @@ tasks. If the event backlog still remains after the configured event limit, Jarv
 defers task execution rather than acting on an event-stale control plane.
 
 The Nightshift worker router sends engineering work to the isolated branch worker
-and non-engineering safe work to the read-only research worker. One engineering
-patch may be prepared per checkout; non-engineering GREEN work can continue while
-that patch waits for deterministic validation. Worker failures receive one bounded
-retry by default, with the budget checked again before the retry. A final failure
-marks that task blocked and allows Jarvis to choose another safe task instead of
-aborting the entire session.
+and non-engineering safe work to the read-only research worker. Read-only workers
+must end with an explicit `DUFYND_TASK_STATE` marker. A successful model call is
+not enough to mark work done: missing/partial outcomes are re-queued for a future
+bounded session, while human/external blockers are persisted explicitly.
+
+One engineering patch may be prepared per checkout; non-engineering GREEN work can
+continue while that patch waits for deterministic validation. Worker failures
+receive one bounded retry by default, with the budget checked again before the
+retry. A final failure marks that task blocked and allows Jarvis to choose another
+safe task instead of aborting the entire session.
 
 A successful engineering patch is validated by the existing path allowlist,
 Python checks and, when storefront files changed, web build plus responsive visual
