@@ -146,6 +146,30 @@ control plane without consuming Jarvis model budget. Both `process-next` and
 `process-loop` perform the same refresh/sync/freshness sequence before active
 model execution.
 
+## Autonomous cycle
+
+The guarded `--autonomous-cycle` mode is the bridge from manual Jarvis runs to
+future unattended operation. It does not create a new spending authority.
+
+Before the cycle can run:
+
+1. repository-derived Jarvis state is refreshed and synchronized to Supabase
+2. the freshness guard must pass with exact fingerprint parity
+3. `DUFYND_JARVIS_ACTIVE=1` must be set
+4. `DUFYND_JARVIS_AUTONOMOUS=1` must be set
+5. the configured database budget window must still report `can_run=true`
+
+A cycle processes at most two inbox events by default (hard maximum five). If an
+inbox backlog remains, Jarvis defers repo-current safe work. Once the inbox is
+clear, the cycle may run one existing safe repo-current task through the read-only
+safe worker.
+
+The autonomous switch is deliberately separate from the database budget window:
+the switch authorizes unattended execution behavior, while the budget window is
+the authoritative financial cap. Jarvis cannot create, enlarge, reactivate or
+bypass that budget. No recurring schedule is enabled yet; scheduling is a separate
+operator-controlled activation step.
+
 ## Autonomy control plane
 
 Jarvis should work from the autonomy queue rather than repeatedly asking the

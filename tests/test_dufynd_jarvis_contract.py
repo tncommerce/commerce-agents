@@ -13,7 +13,7 @@ def test_dufynd_jarvis_contract_has_current_brand_and_version() -> None:
 
     assert contract["brand"] == "DUFYND"
     assert contract["operator"] == "TNCommerce"
-    assert contract["version"] == "2.5"
+    assert contract["version"] == "2.6"
 
 
 def test_dufynd_jarvis_contract_exposes_required_learning_surfaces() -> None:
@@ -97,3 +97,11 @@ def test_dufynd_jarvis_contract_keeps_active_runtime_off_by_default() -> None:
     assert control_plane_sync["status"] == "required_before_active_processing"
     assert control_plane_sync["snapshot_key"] == "jarvis.repo_state_snapshot"
     assert control_plane_sync["dry_run_default"] is True
+
+    autonomous_cycle = runtime["autonomous_cycle"]
+    assert autonomous_cycle["command"] == "--autonomous-cycle"
+    assert autonomous_cycle["activation_env"] == "DUFYND_JARVIS_AUTONOMOUS=1"
+    assert autonomous_cycle["default_max_inbox_events"] == 2
+    assert autonomous_cycle["hard_max_inbox_events"] == 5
+    assert "cannot create, enlarge, reactivate or bypass" in autonomous_cycle["financial_rule"]
+    assert autonomous_cycle["scheduling"].startswith("No recurring schedule")

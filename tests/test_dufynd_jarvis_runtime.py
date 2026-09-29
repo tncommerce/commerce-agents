@@ -10,12 +10,15 @@ import pytest
 import scripts.dufynd_jarvis_runtime as jarvis_runtime
 from scripts.dufynd_jarvis_runtime import (
     SYSTEM_PROMPT,
+    _bounded_autonomous_max_events,
     _bounded_supervisor_max_events,
     _require_active_runtime,
+    _require_autonomous_session,
     _require_budget_window,
     _require_runtime_id,
     allowed_tool_names,
     event_prompt,
+    process_autonomous_cycle,
     process_branch_task,
     process_next,
     process_safe_task,
@@ -197,6 +200,46 @@ def test_branch_worker_denies_shell_and_allows_edit_tools(monkeypatch) -> None:
     assert "WebSearch" in options.disallowed_tools
 
 
+def test_runtime_readiness_reports_autonomous_switch(monkeypatch) -> None:
+    monkeypatch.setenv("DUFYND_JARVIS_ACTIVE", "1")
+    monkeypatch.setenv("DUFYND_JARVIS_AUTONOMOUS", "1")
+    monkeypatch.setenv("DUFYND_JARVIS_MODEL", "claude-sonnet-5")
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+    monkeypatch.setenv("SUPABASE_URL", "https://project.supabase.co")
+    monkeypatch.setenv("SUPABASE_SECRET_KEY", "secret")
+
+    readiness = runtime_readiness()
+
+    assert readiness["autonomous"] is True
+    assert readiness["ready_for_autonomous_cycle"] is True
+
+
+def test_autonomous_session_requires_explicit_switch(monkeypatch) -> None:
+    monkeypatch.setenv("DUFYND_JARVIS_ACTIVE", "1")
+    monkeypatch.delenv("DUFYND_JARVIS_AUTONOMOUS", raising=False)
+    monkeypatch.setenv("DUFYND_JARVIS_MODEL", "claude-sonnet-5")
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+    monkeypatch.setenv("SUPABASE_URL", "https://project.supabase.co")
+    monkeypatch.setenv("SUPABASE_SECRET_KEY", "secret")
+    monkeypatch.setenv("DUFYND_JARVIS_BUDGET_ID", "jarvis_activation_pilot_001")
+
+    with pytest.raises(RuntimeError, match="autonomous cycle is disabled"):
+        _require_autonomous_session(BudgetBridge(can_run=True))
+
+
+def test_autonomous_session_requires_active_budget(monkeypatch) -> None:
+    monkeypatch.setenv("DUFYND_JARVIS_ACTIVE", "1")
+    monkeypatch.setenv("DUFYND_JARVIS_AUTONOMOUS", "1")
+    monkeypatch.setenv("DUFYND_JARVIS_MODEL", "claude-sonnet-5")
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+    monkeypatch.setenv("SUPABASE_URL", "https://project.supabase.co")
+    monkeypatch.setenv("SUPABASE_SECRET_KEY", "secret")
+    monkeypatch.setenv("DUFYND_JARVIS_BUDGET_ID", "jarvis_activation_pilot_001")
+
+    with pytest.raises(RuntimeError, match="does not permit another run"):
+        _require_autonomous_session(BudgetBridge(can_run=False))
+
+
 def test_runtime_readiness_is_safe_by_default(monkeypatch) -> None:
     for name in (
         "DUFYND_JARVIS_ACTIVE",
@@ -271,6 +314,72 @@ def test_runtime_requires_active_budget_window(monkeypatch) -> None:
 
     with pytest.raises(RuntimeError, match="does not permit another run"):
         _require_budget_window(BudgetBridge(can_run=False))
+
+
+def test_autonomous_event_limit_is_bounded() -> None:
+    assert _bounded_autonomous_max_events(-1) == 0
+    assert _bounded_autonomous_max_events(2) == 2
+    assert _bounded_autonomous_max_events(999) == 5
+
+
+def test_autonomous_cycle_defers_safe_task_when_inbox_backlog_remains(monkeypatch, capsys) -> None:
+    bridge = SupervisorBridge(pending=3)
+
+    monkeypatch.setattr(
+        jarvis_runtime,
+        "_require_autonomous_session",
+        lambda _bridge: ("budget", {"can_run": True}),
+    )
+
+    async def fake_process_loop(_bridge, *, max_events):
+        assert max_events == 2
+        return 0
+
+    safe_called = False
+
+    async def fake_safe_task(_bridge):
+        nonlocal safe_called
+        safe_called = True
+        return 0
+
+    monkeypatch.setattr(jarvis_runtime, "process_loop", fake_process_loop)
+    monkeypatch.setattr(jarvis_runtime, "process_safe_task", fake_safe_task)
+
+    result = asyncio.run(process_autonomous_cycle(bridge, max_events=2))
+
+    assert result == 0
+    assert safe_called is False
+    assert "inbox backlog remains" in capsys.readouterr().out.lower()
+
+
+def test_autonomous_cycle_runs_safe_task_after_inbox_is_clear(monkeypatch, capsys) -> None:
+    bridge = SupervisorBridge(pending=0)
+
+    monkeypatch.setattr(
+        jarvis_runtime,
+        "_require_autonomous_session",
+        lambda _bridge: ("budget", {"can_run": True}),
+    )
+
+    async def fake_process_loop(_bridge, *, max_events):
+        assert max_events == 0
+        return 0
+
+    safe_called = False
+
+    async def fake_safe_task(_bridge):
+        nonlocal safe_called
+        safe_called = True
+        return 0
+
+    monkeypatch.setattr(jarvis_runtime, "process_loop", fake_process_loop)
+    monkeypatch.setattr(jarvis_runtime, "process_safe_task", fake_safe_task)
+
+    result = asyncio.run(process_autonomous_cycle(bridge, max_events=0))
+
+    assert result == 0
+    assert safe_called is True
+    assert "autonomous cycle summary" in capsys.readouterr().out.lower()
 
 
 def test_supervisor_event_limit_is_bounded() -> None:
