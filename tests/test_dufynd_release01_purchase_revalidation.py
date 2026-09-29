@@ -27,7 +27,7 @@ def test_release01_purchase_revalidation_is_exact_and_read_only() -> None:
     payload = json.loads(REVALIDATION.read_text(encoding="utf-8"))
     rows = {row["product_id"]: row for row in payload["products"]}
 
-    assert payload["status"] == "read_only_purchase_destination_revalidation"
+    assert payload["status"] == "applied_to_existing_non_affiliate_purchase_destinations"
     assert set(rows) == set(EXPECTED)
     assert payload["policy"]["affiliate_tracking_added"] is False
     assert payload["policy"]["recommendation_priority_changed"] is False
@@ -55,4 +55,6 @@ def test_revalidation_matches_existing_live_offer_identity_without_mutating_it()
         assert offer["merchant_id"] == row["merchant_id"]
         assert offer["merchant_product_id"] == row["merchant_product_id"]
         assert offer["product_url"] == row["product_url"]
+        assert offer["last_updated_at"] == row["live_offer_refreshed_at"]
+        assert row["current_live_offer_action"] == "refreshed_after_exact_variant_revalidation"
         assert offer["affiliate_url"] is None
