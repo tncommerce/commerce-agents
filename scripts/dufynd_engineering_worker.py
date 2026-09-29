@@ -138,7 +138,10 @@ def _resolve_write_path(path: str) -> Path:
     relative = _relative_repo_path(path)
     normalized = relative.as_posix()
 
-    if any(normalized == prefix.rstrip("/") or normalized.startswith(prefix) for prefix in DENIED_WRITE_PREFIXES):
+    if any(
+        normalized == prefix.rstrip("/") or normalized.startswith(prefix)
+        for prefix in DENIED_WRITE_PREFIXES
+    ):
         raise ValueError("worker may not modify this protected path")
     if not any(normalized.startswith(prefix) for prefix in WRITE_PREFIXES):
         raise ValueError("worker write path is outside the approved engineering areas")
@@ -395,9 +398,7 @@ def build_tools() -> list[SdkMcpTool[Any]]:
         },
     )
     async def write_repo_file(args: dict[str, Any]) -> dict[str, Any]:
-        return _json_result(
-            await asyncio.to_thread(_write_text, args["path"], args["content"])
-        )
+        return _json_result(await asyncio.to_thread(_write_text, args["path"], args["content"]))
 
     @tool(
         "replace_repo_text",
@@ -509,7 +510,11 @@ def runtime_readiness() -> dict[str, Any]:
             "DUFYND_ENGINEERING_WORKER_MAX_BUDGET_USD",
             str(DEFAULT_MAX_BUDGET_USD),
         ),
-        "ready_for_model_execution": active and bool(model) and credentials and supabase and bool(budget_id),
+        "ready_for_model_execution": active
+        and bool(model)
+        and credentials
+        and supabase
+        and bool(budget_id),
         "push_capability": False,
         "merge_capability": False,
         "network_tool_capability": False,
@@ -536,9 +541,7 @@ def _require_active_runtime() -> tuple[str, int, float]:
     try:
         max_budget_usd = float(readiness["max_budget_usd"])
     except ValueError as error:
-        raise RuntimeError(
-            "DUFYND_ENGINEERING_WORKER_MAX_BUDGET_USD must be numeric."
-        ) from error
+        raise RuntimeError("DUFYND_ENGINEERING_WORKER_MAX_BUDGET_USD must be numeric.") from error
 
     if max_budget_usd <= 0:
         raise RuntimeError("engineering worker max budget must be greater than zero")
@@ -569,9 +572,7 @@ def _require_budget_window(
 
     budget_model = status.get("model")
     if budget_model and budget_model != model:
-        raise RuntimeError(
-            f"engineering worker budget requires model {budget_model}, not {model}"
-        )
+        raise RuntimeError(f"engineering worker budget requires model {budget_model}, not {model}")
 
     return budget_id, status
 
