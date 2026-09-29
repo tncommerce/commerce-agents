@@ -301,12 +301,12 @@ async def _run_task_with_retry(
         try:
             if worker == "branch_worker":
                 result_code = await asyncio.wait_for(
-                    process_branch_task(bridge),
+                    process_branch_task(bridge, task_id=task_id),
                     timeout=timeout_seconds,
                 )
             else:
                 result_code = await asyncio.wait_for(
-                    process_safe_task(bridge),
+                    process_safe_task(bridge, task_id=task_id),
                     timeout=timeout_seconds,
                 )
         except TimeoutError:
