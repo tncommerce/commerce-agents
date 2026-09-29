@@ -11,8 +11,14 @@ on:
         options:
           - readiness
           - process-next
+          - nightshift-pilot
+      nightshift_max_tasks:
+        description: Maximum safe tasks for one Nightshift pilot
+        required: false
+        default: "8"
+        type: string
       approval_token:
-        description: Required only for process-next
+        description: Required for process-next or nightshift-pilot
         required: false
         type: string
 
@@ -25,12 +31,14 @@ concurrency:
 
 jobs:
   jarvis:
+    if: inputs.mode != 'nightshift-pilot'
     runs-on: ubuntu-latest
     steps:
       - name: Check out active DUFYND development line
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: scentai-mvp
+          persist-credentials: false
 
       - name: Verify Jarvis runtime is present
         shell: bash
@@ -42,7 +50,7 @@ jobs:
           }
 
       - name: Set up Python
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.12"
           cache: pip
@@ -82,3 +90,275 @@ jobs:
           DUFYND_JARVIS_BUDGET_ID: "jarvis_activation_pilot_001"
           DUFYND_JARVIS_ACTIVE: "1"
         run: python -m scripts.dufynd_jarvis_runtime --process-next
+
+  nightshift:
+    if: inputs.mode == 'nightshift-pilot'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Check out active DUFYND development line
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: scentai-mvp
+          persist-credentials: false
+
+      - name: Verify Nightshift runtime is present
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f scripts/dufynd_jarvis_nightshift.py || {
+            echo "Jarvis Nightshift runtime is not present on scentai-mvp."
+            exit 21
+          }
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install DUFYND runtime dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Refresh repository Jarvis state
+        run: >-
+          python -m scripts.refresh_scentai_jarvis_state
+          --write
+          --machine-readable
+
+      - name: Sync Jarvis control plane
+        env:
+          SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: >-
+          python -m scripts.sync_dufynd_repo_state_to_supabase
+          --write
+          --machine-readable
+
+      - name: Verify Jarvis control-plane freshness
+        env:
+          SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: >-
+          python -m scripts.dufynd_jarvis_freshness
+          --max-lag-hours 0
+          --machine-readable
+
+      - name: Restore clean worker checkout after control-plane sync
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Control-plane refresh changed these tracked files before worker execution:"
+          git diff --name-only || true
+          git restore --worktree --staged .
+          if [ -n "$(git status --porcelain --untracked-files=no)" ]; then
+            echo "Tracked checkout is still dirty after control-plane reset."
+            git status --short
+            exit 28
+          fi
+
+      - name: Validate explicit Nightshift pilot approval
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ inputs.approval_token }}" != "GO-JARVIS-NIGHTSHIFT" ]; then
+            echo "Nightshift pilot refused: explicit GO-JARVIS-NIGHTSHIFT token is required."
+            exit 27
+          fi
+
+      - name: Set up Node for branch-worker web validation
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: examples/package-lock.json
+
+      - name: Run Jarvis Nightshift pilot
+        env:
+          SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DUFYND_JARVIS_MODEL: ${{ vars.DUFYND_JARVIS_MODEL }}
+          DUFYND_JARVIS_MAX_TURNS: "8"
+          DUFYND_JARVIS_MAX_BUDGET_USD: "0.25"
+          DUFYND_JARVIS_BUDGET_ID: "jarvis_activation_pilot_001"
+          DUFYND_JARVIS_ACTIVE: "1"
+          DUFYND_JARVIS_AUTONOMOUS: "1"
+          DUFYND_JARVIS_TASK_METADATA_PATH: "jarvis-worker-task.json"
+        run: >-
+          python -m scripts.dufynd_jarvis_nightshift run
+          --max-tasks "${{ inputs.nightshift_max_tasks }}"
+          --max-events "2"
+          --worker-timeout-seconds "600"
+          --max-retries "1"
+
+      - name: Validate isolated Jarvis patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --check
+          git diff --name-only > jarvis-worker-files.txt
+
+          if [ ! -s jarvis-worker-files.txt ]; then
+            echo "Jarvis branch worker produced no repository changes."
+            exit 0
+          fi
+
+          while IFS= read -r file; do
+            case "$file" in
+              .github/*|examples/retail/data/*|supabase/*|*.env|*.env.*|*package-lock.json|*pnpm-lock.yaml|*yarn.lock|requirements*.txt|pyproject.toml|scripts/check.py|scripts/dufynd_jarvis_*|scripts/sync_dufynd_repo_state_to_supabase.py|scripts/refresh_scentai_jarvis_state.py|examples/retail/storefront-web/scripts/*)
+                echo "Blocked Jarvis branch-worker path: $file"
+                exit 21
+                ;;
+              scripts/*.py|tests/*.py|docs/*|examples/retail/api/*.py|examples/retail/api/*|examples/retail/storefront-web/app/*|examples/retail/storefront-web/components/*|examples/retail/storefront-web/lib/*)
+                ;;
+              *)
+                echo "Path is outside Jarvis branch-worker allowlist: $file"
+                exit 22
+                ;;
+            esac
+          done < jarvis-worker-files.txt
+
+          git diff --binary > jarvis-worker.patch
+          ruff check .
+          ruff format --check .
+          pytest -q
+          python scripts/check.py
+
+          if grep -q '^examples/retail/storefront-web/' jarvis-worker-files.txt; then
+            echo "Storefront changes detected; running deterministic web and visual QA."
+            pushd examples > /dev/null
+            npm ci
+            npm install --no-save playwright@1.55.0
+            npx playwright install --with-deps chromium
+            npm run build --workspace acme-retail-storefront-web
+
+            node retail/storefront-web/scripts/serve-static-export.mjs \
+              --root retail/storefront-web/out \
+              --port 3000 > /tmp/dufynd-jarvis-static.log 2>&1 &
+            server_pid=$!
+            trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+
+            for attempt in {1..60}; do
+              if curl --fail --silent --location \
+                http://127.0.0.1:3000/duft/xerjoff-naxos > /dev/null; then
+                break
+              fi
+              if [ "$attempt" -eq 60 ]; then
+                cat /tmp/dufynd-jarvis-static.log
+                exit 24
+              fi
+              sleep 1
+            done
+
+            node retail/storefront-web/scripts/dufynd-visual-qa.mjs \
+              --base-url http://127.0.0.1:3000 \
+              --out retail/storefront-web/.visual-qa
+            popd > /dev/null
+          fi
+
+      - name: Create validated Jarvis worker PR
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          if [ ! -s jarvis-worker-files.txt ]; then
+            echo "No Jarvis patch exists; PR creation skipped."
+            exit 0
+          fi
+
+          base_sha="$(git rev-parse HEAD)"
+          git fetch origin scentai-mvp --depth=1
+          remote_base_sha="$(git rev-parse origin/scentai-mvp)"
+          if [ "${base_sha}" != "${remote_base_sha}" ]; then
+            echo "scentai-mvp moved during Jarvis validation; refusing stale PR creation."
+            echo "validated_base=${base_sha}"
+            echo "current_base=${remote_base_sha}"
+            exit 26
+          fi
+
+          worker_branch="jarvis/worker-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          git switch -c "${worker_branch}"
+          git config user.name "DUFYND Jarvis"
+          git config user.email "jarvis@dufynd.invalid"
+
+          while IFS= read -r file; do
+            git add -- "${file}"
+          done < jarvis-worker-files.txt
+
+          git commit -m "DUFYND: Jarvis validated safe patch"
+          gh auth setup-git
+          git push origin "HEAD:refs/heads/${worker_branch}"
+
+          pr_url="$(
+            gh pr create \
+              --base scentai-mvp \
+              --head "${worker_branch}" \
+              --title "DUFYND: Jarvis validated safe patch" \
+              --body "Automated Jarvis Nightshift branch-worker PR. The patch passed path allowlisting, repository checks, and storefront build/visual QA when applicable. READY FOR TUAN APPROVAL. No automatic merge is enabled."
+          )"
+          printf '%s\n' "${pr_url}" | tee jarvis-worker-pr.txt
+
+      - name: Finalize validated Nightshift engineering task
+        if: success()
+        env:
+          SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: >-
+          python -m scripts.dufynd_jarvis_nightshift finalize-branch
+          --metadata jarvis-worker-task.json
+          --status waiting_human_input
+          --evidence "Deterministic QA passed; validated PR prepared as READY FOR TUAN APPROVAL."
+          --pr-file jarvis-worker-pr.txt
+
+      - name: Mark failed Nightshift engineering task blocked
+        if: failure()
+        env:
+          SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: >-
+          python -m scripts.dufynd_jarvis_nightshift finalize-branch
+          --metadata jarvis-worker-task.json
+          --status blocked
+          --evidence "Nightshift deterministic QA or PR handoff failed; task blocked for review."
+
+      - name: Generate Nightshift Morning Report
+        if: always()
+        env:
+          SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          DUFYND_JARVIS_BUDGET_ID: "jarvis_activation_pilot_001"
+          DUFYND_NIGHTSHIFT_QA_STATUS: ${{ job.status }}
+        run: >-
+          python -m scripts.dufynd_jarvis_nightshift report
+          --output-dir jarvis-nightshift-report
+          --qa-status "${DUFYND_NIGHTSHIFT_QA_STATUS}"
+          --pr-file jarvis-worker-pr.txt
+
+      - name: Upload Nightshift Morning Report
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: dufynd-jarvis-nightshift-report-${{ github.run_id }}
+          path: jarvis-nightshift-report
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Upload isolated Jarvis patch
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: dufynd-jarvis-worker-patch-${{ github.run_id }}
+          path: |
+            jarvis-worker.patch
+            jarvis-worker-files.txt
+            jarvis-worker-task.json
+            jarvis-worker-pr.txt
+            examples/retail/storefront-web/.visual-qa
+          if-no-files-found: warn
+          retention-days: 7
