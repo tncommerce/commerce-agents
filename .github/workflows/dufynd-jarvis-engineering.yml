@@ -100,6 +100,38 @@ jobs:
           set -euo pipefail
           python -m scripts.dufynd_engineering_worker --once "$ENGINEERING_TASK"
 
+      - name: Validate engineering patch paths
+        if: inputs.mode == 'prepare-patch'
+        shell: bash
+        run: |
+          set -euo pipefail
+          allowed_path() {
+            case "$1" in
+              scripts/*|tests/*|docs/*|examples/retail/api/*|examples/retail/storefront-web/app/*|examples/retail/storefront-web/components/*|examples/retail/storefront-web/lib/*|examples/retail/storefront-web/scripts/*|examples/retail/storefront-web/tests/*)
+                return 0
+                ;;
+              *)
+                return 1
+                ;;
+            esac
+          }
+
+          invalid=0
+          while IFS= read -r -d '' changed; do
+            if ! allowed_path "$changed"; then
+              echo "Engineering patch refused protected/out-of-scope path: $changed"
+              invalid=1
+            fi
+          done < <(
+            {
+              git diff --name-only -z
+              git ls-files --others --exclude-standard -z
+            }
+          )
+          if [ "$invalid" -ne 0 ]; then
+            exit 23
+          fi
+
       - name: Capture disposable patch
         if: always() && inputs.mode == 'prepare-patch'
         shell: bash
@@ -124,6 +156,11 @@ jobs:
           git status --short > dufynd-engineering-status.txt
           git diff --no-ext-diff --binary > dufynd-engineering.patch
           git diff --stat > dufynd-engineering-stat.txt
+          patch_bytes="$(wc -c < dufynd-engineering.patch)"
+          if [ "$patch_bytes" -gt 2097152 ]; then
+            echo "Engineering patch refused: artifact exceeds 2 MiB."
+            exit 24
+          fi
 
       - name: Validate disposable patch whitespace
         if: inputs.mode == 'prepare-patch'
