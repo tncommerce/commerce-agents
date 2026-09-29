@@ -1350,7 +1350,7 @@
       "blockers": [],
       "next_action": "none",
       "action_class": "auto_allowed",
-      "approval_action_class": "approved_by_user"
+      "approval_action_class": "approval_required"
     },
     {
       "product_id": "SC-TOM-FORD-OUD-WOOD-EDP-100",
