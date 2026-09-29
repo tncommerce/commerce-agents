@@ -218,6 +218,50 @@ class DufyndJarvisBridge:
             )
             response.raise_for_status()
 
+    def sync_repo_control_plane(
+        self,
+        *,
+        repo_status: dict[str, Any],
+        repo_head_sha: str | None = None,
+        source_branch: str = "scentai-mvp",
+    ) -> None:
+        fingerprint = str(repo_status.get("source_fingerprint_sha256") or "").strip()
+        generated_at = str(repo_status.get("generated_at") or "").strip()
+        if not fingerprint:
+            raise ValueError("repo_status source_fingerprint_sha256 is required")
+        if not generated_at:
+            raise ValueError("repo_status generated_at is required")
+
+        self._upsert(
+            "dufynd_master_status",
+            {
+                "key": "jarvis.repo_control_plane",
+                "category": "jarvis",
+                "value": {
+                    "schema_version": 1,
+                    "source_branch": source_branch,
+                    "repo_head_sha": repo_head_sha,
+                    "source_fingerprint_sha256": fingerprint,
+                    "repo_generated_at": generated_at,
+                    "overall_state": repo_status.get("overall_state"),
+                    "active_domain": repo_status.get("active_domain"),
+                    "next_action": repo_status.get("next_action"),
+                    "next_action_class": repo_status.get("next_action_class"),
+                    "user_approval_required_now": bool(
+                        repo_status.get("user_approval_required_now")
+                    ),
+                    "domains": repo_status.get("domains") or {},
+                    "release_pipeline": repo_status.get("release_pipeline") or {},
+                    "content_pipeline": repo_status.get("content_pipeline") or {},
+                    "safety": repo_status.get("safety") or {},
+                },
+                "priority": 100,
+                "last_verified_at": generated_at,
+                "updated_at": generated_at,
+            },
+            on_conflict="key",
+        )
+
     def record_creative_reference(
         self,
         *,
