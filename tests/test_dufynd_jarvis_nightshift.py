@@ -176,8 +176,6 @@ def test_select_task_skips_second_engineering_patch() -> None:
     assert selected["task_id"] == "repo_current_commerce"
 
 
-
-
 def test_select_task_blocks_engineering_while_tech_lease_is_active() -> None:
     queue = {
         "safe_to_execute": [
