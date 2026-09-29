@@ -860,7 +860,7 @@ try {
 
         if (target.name === "social-start") {
           const socialSearch = page.getByRole("searchbox", {
-            name: "DUFYND Social Duftsuche",
+            name: "Duft oder Marke suchen",
           });
           if ((await socialSearch.count()) !== 1) {
             throw new Error("social start is missing direct fragrance search");
