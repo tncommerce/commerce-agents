@@ -455,6 +455,8 @@ async def run_nightshift(
     _persist_session(bridge, session)
 
     if event_limit:
+        health_before = await asyncio.to_thread(bridge.load_health)
+        session["inbox_before"] = dict(health_before.get("inbox") or {})
         try:
             session["event_result"] = await asyncio.wait_for(
                 process_loop(bridge, max_events=event_limit),
@@ -462,6 +464,11 @@ async def run_nightshift(
             )
         except TimeoutError:
             session["event_result"] = 124
+        health_after = await asyncio.to_thread(bridge.load_health)
+        session["inbox_after"] = dict(health_after.get("inbox") or {})
+        before_pending = int(session["inbox_before"].get("pending") or 0)
+        after_pending = int(session["inbox_after"].get("pending") or 0)
+        session["events_processed_estimate"] = max(0, before_pending - after_pending)
         _persist_session(bridge, session)
 
     stop_reason = "no_safe_work"
@@ -653,10 +660,10 @@ def build_morning_report(
 
     results = [r for r in (session.get("task_results") or []) if isinstance(r, dict)]
     completed = sum(1 for r in results if r.get("final_status") == "done")
-    in_progress = sum(1 for r in results if r.get("final_status") == "in_progress")
+    in_progress = len(queue.get("in_progress") or [])
     blocked = sum(1 for r in results if r.get("final_status") == "blocked")
-    waiting_approval = sum(
-        1 for r in results if r.get("final_status") == "waiting_human_input"
+    waiting_approval = len(queue.get("waiting_human_input") or []) + len(
+        queue.get("approval_required") or []
     )
 
     domains: dict[str, list[str]] = {}
@@ -674,10 +681,9 @@ def build_morning_report(
         if isinstance(item, dict)
     ]
     blockers += [
-        str(item.get("title") or item.get("task_id"))
-        for item in (queue.get("in_progress") or [])
-        if isinstance(item, dict)
-        and str(item.get("status") or "") == "blocked"
+        str(result.get("title") or result.get("task_id"))
+        for result in results
+        if result.get("final_status") == "blocked"
     ]
     if int((health.get("inbox") or {}).get("failed") or 0):
         blockers.append(
