@@ -102,18 +102,25 @@ def test_first_controlled_expansion_wave_is_staging_only() -> None:
     assert staged_batch4 == expected_batch4
     assert manifest_ids == expected_batch4
     assert intake["waves"][0]["live_publication_authorized"] is False
-    assert staged_batch4.isdisjoint(live_ids)
+    one_million_id = "SC-RABANNE-1-MILLION-EDT-100"
+    assert one_million_id in live_ids
+    assert (expected_batch4 - {one_million_id}).isdisjoint(live_ids)
 
     for row in staging["products"]:
         if row["product_id"] not in expected_batch4:
             continue
-        assert row["media"]["image_url"] is None
-        assert row["validation"]["catalog_ready"] is False
-        assert "approved_product_image_pending" in row["validation"]["blockers"]
-        if row["product_id"] == "SC-RABANNE-1-MILLION-EDT-100":
-            assert "verified_purchase_destination_pending" not in row["validation"]["blockers"]
+        if row["product_id"] == one_million_id:
+            assert row["media"]["image_url"] == (
+                "/products/rabanne-1-million-edt-100-user-contentmaster.webp"
+            )
+            assert row["media"]["image_status"] == "approved_licensed_image"
+            assert row["validation"]["catalog_ready"] is True
+            assert row["validation"]["blockers"] == []
             assert row["commerce"]["live_offer_status"] == "verified_current_purchase_destination"
         else:
+            assert row["media"]["image_url"] is None
+            assert row["validation"]["catalog_ready"] is False
+            assert "approved_product_image_pending" in row["validation"]["blockers"]
             assert "verified_purchase_destination_pending" in row["validation"]["blockers"]
         assert row["research"]["source_wave_id"] == "DUFYND-CATALOG-EXPANSION-NEXT-10"
 
