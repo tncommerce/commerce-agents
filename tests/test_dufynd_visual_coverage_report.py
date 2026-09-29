@@ -48,7 +48,7 @@ def test_visual_state_distinguishes_truth_editorial_and_missing() -> None:
     assert visual_state({"visuals": []}) == "missing_real_asset"
 
 
-def test_storefront_presentation_distinguishes_layered_editorial_and_bare_truth() -> None:
+def test_storefront_presentation_distinguishes_layered_editorial_and_world_staged_truth() -> None:
     assert (
         storefront_presentation_state(
             {
@@ -101,7 +101,7 @@ def test_storefront_presentation_distinguishes_layered_editorial_and_bare_truth(
                 ]
             }
         )
-        == "product_truth_stage_only"
+        == "world_staged_product_truth"
     )
     assert (
         storefront_presentation_state(
@@ -213,11 +213,10 @@ def test_report_prioritizes_human_review_and_release_asset_work() -> None:
     assert report["coverage"]["missing_real_asset"] == 1
     assert report["coverage"]["real_visual_coverage_rate_pct"] == 66.67
     assert report["storefront_presentation"]["editorial_product_scene"] == 1
-    assert report["storefront_presentation"]["product_truth_stage_only"] == 1
+    assert report["storefront_presentation"]["world_staged_product_truth"] == 1
     assert report["storefront_presentation"]["missing_presentation"] == 1
-    assert report["storefront_presentation"]["background_presented_rate_pct"] == 33.33
+    assert report["storefront_presentation"]["background_presented_rate_pct"] == 66.67
     assert set(report["storefront_presentation_upgrade_product_ids"]) == {
-        "SC-A-100",
         "SC-C-100",
     }
     assert report["fidelity_review_ready_count"] == 2
