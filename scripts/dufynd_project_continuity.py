@@ -166,6 +166,22 @@ def _compact_task(task: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _checkpoint_next_safe_action(checkpoint: dict[str, Any] | None) -> dict[str, Any] | None:
+    if not checkpoint or not bool(checkpoint.get("fresh")):
+        return None
+    value = checkpoint.get("value")
+    if not isinstance(value, dict):
+        return None
+    action = value.get("next_safe_action")
+    if action in (None, "", [], {}):
+        return None
+    return {
+        "source": "checkpoint",
+        "action": action,
+        "checkpointed_at": value.get("checkpointed_at") or checkpoint.get("last_verified_at"),
+    }
+
+
 def build_bootstrap_context(
     *,
     logical_domain: str,
@@ -226,6 +242,9 @@ def build_bootstrap_context(
     decisions = [row for row in pending_decisions if isinstance(row, dict)][:10]
     live_git_required = True
     work_allowed = bool(freshness.get("safe_to_use_autonomy_queue"))
+    next_safe_action = _compact_task(next_task) if next_task else None
+    if work_allowed and next_safe_action is None:
+        next_safe_action = _checkpoint_next_safe_action(checkpoint)
 
     return {
         "version": 1,
@@ -258,7 +277,7 @@ def build_bootstrap_context(
         "blocked_or_waiting": blocked,
         "recent_completed": recent,
         "pending_decisions": decisions,
-        "next_safe_action": _compact_task(next_task) if next_task else None,
+        "next_safe_action": next_safe_action,
         "health_summary": {
             "state": health.get("state"),
             "inbox": health.get("inbox"),
