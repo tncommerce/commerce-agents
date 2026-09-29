@@ -39,6 +39,9 @@ def visual_state(product: dict[str, Any]) -> str:
     if any(str(visual.get("url") or "").strip() for visual in visuals):
         return "other_visual"
 
+    if str(product.get("image_url") or "").strip():
+        return "legacy_visual"
+
     return "missing_real_asset"
 
 
@@ -86,6 +89,8 @@ def storefront_presentation_state(product: dict[str, Any]) -> str:
         return "editorial_unstructured"
     if visuals:
         return "other_visual"
+    if str(product.get("image_url") or "").strip():
+        return "legacy_image_presentation"
     return "missing_presentation"
 
 
@@ -196,6 +201,7 @@ def build_visual_coverage_report(
     editorial = int(state_counts.get("editorial_only", 0))
     missing = int(state_counts.get("missing_real_asset", 0))
     other = int(state_counts.get("other_visual", 0))
+    legacy = int(state_counts.get("legacy_visual", 0))
     layered = int(presentation_counts.get("layered_product_truth", 0))
     product_scene = int(presentation_counts.get("editorial_product_scene", 0))
     background_presented = layered + product_scene
@@ -212,6 +218,7 @@ def build_visual_coverage_report(
             "verified_product_truth": verified,
             "editorial_only": editorial,
             "other_visual": other,
+            "legacy_visual": legacy,
             "missing_real_asset": missing,
             "has_real_visual": total - missing,
             "verified_product_truth_rate_pct": round((verified / total * 100.0), 2)
@@ -229,6 +236,9 @@ def build_visual_coverage_report(
             ),
             "editorial_unstructured": int(
                 presentation_counts.get("editorial_unstructured", 0)
+            ),
+            "legacy_image_presentation": int(
+                presentation_counts.get("legacy_image_presentation", 0)
             ),
             "other_visual": int(presentation_counts.get("other_visual", 0)),
             "missing_presentation": int(
@@ -287,6 +297,7 @@ def main() -> int:
         f"live={report['live_product_count']} | "
         f"verified_truth={coverage['verified_product_truth']} | "
         f"editorial={coverage['editorial_only']} | "
+        f"legacy={coverage['legacy_visual']} | "
         f"missing={coverage['missing_real_asset']}"
     )
     print(
