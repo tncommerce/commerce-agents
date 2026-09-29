@@ -6,6 +6,7 @@ on:
     branches: [scentai-mvp]
     paths:
       - "examples/retail/api/**"
+      - "examples/retail/data/**"
       - "examples/retail/storefront-web/**"
       - "scripts/dufynd_production_smoke.py"
       - ".github/workflows/dufynd-production-smoke.yml"
