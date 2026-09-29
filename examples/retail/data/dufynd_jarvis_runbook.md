@@ -356,3 +356,29 @@ python scripts/dufynd_production_smoke.py
 
 The smoke checks the storefront, the DUFYND API identity and the merchant-partner
 contract without creating a purchase, affiliate click or customer mutation.
+
+
+## Safe research worker
+
+The guarded `--process-safe-task` mode works only from current repo-derived
+`safe_to_execute` tasks whose IDs start with `repo_current_` and which do not
+require human approval.
+
+This worker may:
+- read repository files with Read/Grep/Glob
+- research public sources with WebSearch/WebFetch
+- load Jarvis operating context and autonomy state
+- record non-terminal task progress and evidence
+
+This worker may not:
+- use Bash, Write, Edit or Task
+- modify repository files
+- push or merge code
+- publish content
+- spend money or buy credits/subscriptions
+- change live catalog or affiliate routing
+- accept contracts, send important outbound messages or change credentials
+
+A successful worker run leaves the task non-terminal (normally `in_progress`)
+with evidence attached. Completion remains a separate verified step so Jarvis
+cannot self-certify a commerce blocker as resolved merely because research ran.
