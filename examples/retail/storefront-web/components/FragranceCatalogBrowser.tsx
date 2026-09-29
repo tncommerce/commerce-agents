@@ -331,6 +331,26 @@ function scentDnaScore(
   );
 }
 
+function dominantCatalogProfile(
+  fragrance: StaticFragrance,
+): {
+  key: DiscoveryProfile;
+  label: string;
+  value: number;
+} | null {
+  const ranked = SCENT_DNA_PROFILES.map(({ key, label }) => ({
+    key,
+    label,
+    value: scentDnaScore(fragrance, key),
+  })).sort(
+    (a, b) =>
+      b.value - a.value ||
+      a.label.localeCompare(b.label, "de"),
+  );
+
+  return ranked[0]?.value > 0 ? ranked[0] : null;
+}
+
 function catalogLink({
   search,
   audience,
@@ -1277,11 +1297,16 @@ export default function FragranceCatalogBrowser({
               const visual = fragrance.preferred_visual;
               const isProductTruth =
                 isVerifiedProductTruthVisual(visual);
+              const dominantProfile =
+                dominantCatalogProfile(fragrance);
 
               return (
               <article
                 key={fragrance.product_id}
-                className="overflow-hidden rounded-2xl border border-(--line) bg-(--card) shadow-(--shadow-sm) transition hover:-translate-y-0.5 hover:shadow-md"
+                className="dufynd-catalog-card overflow-hidden rounded-2xl border border-(--line) bg-(--card) shadow-(--shadow-sm)"
+                data-dufynd-catalog-theme={
+                  dominantProfile?.key || "balanced"
+                }
               >
                 <a
                   href={`/duft/${fragrance.slug}`}
@@ -1297,7 +1322,14 @@ export default function FragranceCatalogBrowser({
                   }
                   className="group block"
                 >
-                  <div className="h-52 w-full overflow-hidden">
+                  <div
+                    className="dufynd-catalog-card-stage h-52 w-full overflow-hidden"
+                    data-dufynd-catalog-card-stage
+                  >
+                    <div
+                      aria-hidden
+                      className="dufynd-catalog-card-atmosphere"
+                    />
                     {visual ? (
                       <FragranceVisual
                         imageUrl={visual.url}
@@ -1305,16 +1337,22 @@ export default function FragranceCatalogBrowser({
                         alt={`${fragrance.brand} ${fragrance.name}`}
                         variant="card"
                         mode={isProductTruth ? "cutout" : "editorial"}
-                        className="h-full w-full"
+                        className="dufynd-catalog-card-visual h-full w-full"
                       />
                     ) : (
-                      <div className="grid h-full place-items-center text-[11px] font-semibold tracking-[0.16em] text-white/65">
+                      <div className="relative z-[2] grid h-full place-items-center text-[11px] font-semibold tracking-[0.16em] text-white/65">
                         DUFYND
                       </div>
                     )}
+                    {dominantProfile ? (
+                      <div className="dufynd-catalog-card-signature">
+                        <span>{dominantProfile.label}</span>
+                        <strong>{dominantProfile.value}/10</strong>
+                      </div>
+                    ) : null}
                   </div>
 
-                  <div className="p-4 pb-3">
+                  <div className="dufynd-catalog-card-body p-4 pb-3">
                     <div className="text-[10.5px] font-medium uppercase tracking-[0.08em] text-(--ink-soft)">
                       {fragrance.brand}
                     </div>
@@ -1346,7 +1384,7 @@ export default function FragranceCatalogBrowser({
                         .map((accord) => (
                           <span
                             key={accord}
-                            className="rounded-full bg-(--well) px-2 py-1 text-[10.5px] text-(--ink-soft)"
+                            className="dufynd-catalog-card-accord rounded-full bg-(--well) px-2 py-1 text-[10.5px] text-(--ink-soft)"
                           >
                             {accordLabel(accord)}
                           </span>
@@ -1354,7 +1392,7 @@ export default function FragranceCatalogBrowser({
                     </div>
 
                     <div
-                      className="mt-4 rounded-xl border border-(--line) bg-(--surface)/70 px-3 py-2.5"
+                      className="dufynd-catalog-card-dna mt-4 rounded-xl border border-(--line) bg-(--surface)/70 px-3 py-2.5"
                       aria-label="Duft-DNA"
                     >
                       <div className="mb-2 flex items-center justify-between gap-2">
@@ -1396,13 +1434,13 @@ export default function FragranceCatalogBrowser({
                       </div>
                     </div>
 
-                    <div className="mt-4 border-t border-(--line) pt-3 text-[11px] font-semibold text-(--accent-ink)">
+                    <div className="dufynd-catalog-card-cta mt-4 border-t border-(--line) pt-3 text-[11px] font-semibold text-(--accent-ink)">
                       Duftprofil & Angebote ansehen →
                     </div>
                   </div>
                 </a>
 
-                <div className="flex flex-wrap items-center justify-between gap-2 border-t border-(--line) p-3">
+                <div className="dufynd-catalog-card-actions flex flex-wrap items-center justify-between gap-2 border-t border-(--line) p-3">
                   <FragranceSaveControls
                     productId={fragrance.product_id}
                     source="catalog_grid"
