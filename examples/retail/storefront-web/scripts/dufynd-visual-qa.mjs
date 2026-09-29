@@ -859,6 +859,21 @@ try {
         }
 
         if (target.name === "social-start") {
+          const socialSearch = page.getByRole("searchbox", {
+            name: "DUFYND Social Duftsuche",
+          });
+          if ((await socialSearch.count()) !== 1) {
+            throw new Error("social start is missing direct fragrance search");
+          }
+          const socialSearchForm = page.locator(
+            'form[action="/duft"][method="get"] input[name="q"]',
+          );
+          if ((await socialSearchForm.count()) !== 1) {
+            throw new Error(
+              "social start direct search does not target the catalogue query flow",
+            );
+          }
+
           const requiredEntryPaths = [
             "/duftfinder",
             "/duft",
