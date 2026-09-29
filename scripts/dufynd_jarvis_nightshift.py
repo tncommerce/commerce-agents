@@ -122,6 +122,7 @@ def _safe_candidates(queue: dict[str, Any]) -> list[dict[str, Any]]:
         if isinstance(task, dict)
         and str(task.get("task_id") or "").startswith("repo_current_")
         and not bool(task.get("requires_human_approval"))
+        and str(task.get("approval_action_type") or "auto_allowed") == "auto_allowed"
     ]
 
 
