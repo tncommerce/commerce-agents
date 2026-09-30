@@ -19,7 +19,9 @@ def _attention_codes(payload: dict[str, Any]) -> list[str]:
     return [
         str(item.get("code"))
         for item in (payload.get("issues") or payload.get("signals") or [])
-        if isinstance(item, dict) and item.get("code")
+        if isinstance(item, dict)
+        and item.get("code")
+        and str(item.get("severity") or "attention") != "info"
     ]
 
 
@@ -73,7 +75,7 @@ def build_pilot_retrospective(
             "run_count_reconciled": bool(ledger_reconciliation.get("run_count_matches")),
             "spend_reconciled": bool(ledger_reconciliation.get("spend_matches")),
             "source_consistent": source_consistent,
-            "controls_ok": controls_ok and source_consistent,
+            "controls_ok": controls_ok,
         },
         "pilot": {
             "runs": int(ledger.get("ledger", {}).get("runs") or 0),
