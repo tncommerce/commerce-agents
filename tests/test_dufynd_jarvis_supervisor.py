@@ -362,3 +362,35 @@ def test_supervisor_hard_bounds_requested_limits(monkeypatch) -> None:
     assert state["idle_seconds"] == supervisor.HARD_IDLE_SECONDS
     assert state["max_idle_cycles"] == 0
     assert state["stop_reason"] == "idle_limit_reached"
+
+
+def test_supervisor_persists_terminal_state_when_session_raises(monkeypatch) -> None:
+    bridge = FakeBridge([safe_task("repo_current_commerce", "commerce")])
+    clock = FakeClock()
+
+    monkeypatch.setattr(supervisor, "_require_autonomous_mode", lambda: None)
+
+    async def run_once(*_args, **_kwargs):
+        raise RuntimeError("simulated session failure")
+
+    state = asyncio.run(
+        supervisor.supervise_nightshift(
+            bridge,
+            max_minutes=60,
+            max_cycles=5,
+            idle_seconds=60,
+            max_idle_cycles=2,
+            sleep=clock.sleep,
+            now=clock.now,
+            run_once=run_once,
+        )
+    )
+
+    assert state["status"] == "needs_attention"
+    assert state["stop_reason"] == "orchestration_error"
+    assert state["runtime_error_type"] == "RuntimeError"
+    assert state["ended_at"] is not None
+    persisted = bridge.master[supervisor.SUPERVISOR_KEY]["value"]
+    assert persisted["status"] == "needs_attention"
+    assert persisted["stop_reason"] == "orchestration_error"
+
