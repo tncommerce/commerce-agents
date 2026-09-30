@@ -48,6 +48,7 @@ class FakeBridge:
                     {
                         "budget_id": "jarvis_activation_pilot_001",
                         "cost_usd": 0.1,
+                        "runtime": "dufynd_jarvis_v0_1",
                     }
                 ],
             },
@@ -60,6 +61,7 @@ class FakeBridge:
                     {
                         "budget_id": "jarvis_activation_pilot_001",
                         "cost_usd": 0.11,
+                        "runtime": "dufynd_jarvis_v0_1",
                     }
                 ],
             },
@@ -72,6 +74,7 @@ class FakeBridge:
                     {
                         "budget_id": "jarvis_activation_pilot_001",
                         "cost_usd": 0.12,
+                        "runtime": "dufynd_jarvis_v0_1",
                     }
                 ],
             },
@@ -84,6 +87,7 @@ class FakeBridge:
                     {
                         "budget_id": "jarvis_activation_pilot_001",
                         "cost_usd": 0.13,
+                        "runtime": "dufynd_jarvis_safe_worker_v1",
                     }
                 ],
             },
@@ -117,6 +121,8 @@ def test_retrospective_reports_clean_reconciled_pilot() -> None:
     assert report["pilot"]["spent_usd"] == 0.46
     assert report["pilot"]["average_run_usd"] == 0.115
     assert report["pilot"]["failed_runs"] == 0
+    assert report["pilot"]["failed_model_turns"] == 0
+    assert report["pilot"]["failed_model_turn_runs"] == 0
     assert report["pilot"]["historical_attention"] is False
     assert report["attention_codes"] == []
 
@@ -191,6 +197,31 @@ def test_retrospective_flags_source_drift_between_double_reads() -> None:
     assert "retrospective_source_drift" in report["attention_codes"]
 
 
+def test_retrospective_includes_runtime_cost_attribution() -> None:
+    report = build_pilot_retrospective(FakeBridge())
+
+    assert report["runtimes"] == [
+        {
+            "runtime": "dufynd_jarvis_v0_1",
+            "runs": 3,
+            "spent_usd": 0.33,
+            "spend_share": 0.717391,
+            "average_run_usd": 0.11,
+            "max_run_usd": 0.12,
+            "failed_model_turns": 0,
+        },
+        {
+            "runtime": "dufynd_jarvis_safe_worker_v1",
+            "runs": 1,
+            "spent_usd": 0.13,
+            "spend_share": 0.282609,
+            "average_run_usd": 0.13,
+            "max_run_usd": 0.13,
+            "failed_model_turns": 0,
+        },
+    ]
+
+
 def test_retrospective_includes_repeated_cost_centers() -> None:
     report = build_pilot_retrospective(FakeBridge())
 
@@ -215,6 +246,10 @@ def test_markdown_renderer_is_operator_readable() -> None:
     assert "Checkpoint: **within_controls**" in markdown
     assert "Human approval valid: yes" in markdown
     assert "Spend: USD 0.460000" in markdown
+    assert "## Runtime cost attribution" in markdown
+    assert "dufynd_jarvis_v0_1: 3 runs, USD 0.330000" in markdown
+    assert "dufynd_jarvis_safe_worker_v1: 1 runs, USD 0.130000" in markdown
+    assert "Failed model turns: 0" in markdown
     assert "Maximum additional spend under current controls" in markdown
     assert "inbox:affiliate_partner_changed" in markdown
     assert "_Read-only retrospective." in markdown
