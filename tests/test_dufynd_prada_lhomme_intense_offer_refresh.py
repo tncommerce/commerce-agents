@@ -61,15 +61,3 @@ def test_prada_current_purchase_offer_clears_purchase_gate_only() -> None:
     assert product["validation"]["catalog_ready"] is False
     assert "verified_purchase_destination_pending" in product["validation"]["blockers"]
     assert "approved_product_image_pending" in product["validation"]["blockers"]
-
-
-def test_probe_expected_jarvis_fingerprints() -> None:
-    from scripts.refresh_scentai_jarvis_state import refresh_state
-
-    master = load("scentai_jarvis_master_status.json")
-    state = refresh_state(generated_at=master["generated_at"])
-    expected = {
-        key: state[key]["source_fingerprint_sha256"]
-        for key in ("release_status", "release_pipeline", "operations", "master_status")
-    }
-    raise AssertionError("EXPECTED_FINGERPRINTS=" + json.dumps(expected, sort_keys=True))
