@@ -131,3 +131,17 @@ def test_awin_request_can_redirect_to_allowed_https_feed_host() -> None:
     )
 
     assert redirected.full_url == "https://datafeed.api.productserve.com/feed"
+
+
+def test_active_awin_membership_is_treated_as_joined() -> None:
+    csv_payload = CSV.replace(",Joined,91379,", ",active,91379,", 1)
+    row = find_feed(
+        parse_feed_list(csv_payload.encode("utf-8")),
+        advertiser_id="31081",
+        feed_id="91379",
+    )
+
+    metadata = sanitized_feed_metadata(row)
+
+    assert metadata["membership_status"] == "active"
+    assert metadata["joined"] is True

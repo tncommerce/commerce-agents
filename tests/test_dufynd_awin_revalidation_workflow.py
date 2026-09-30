@@ -12,6 +12,7 @@ def test_awin_revalidation_workflow_stays_manual_read_only_and_secret_safe() -> 
     assert "workflow_dispatch:" in text
     assert "permissions:\n  contents: read" in text
     assert "secrets.AWIN_DATA_FEED_API_KEY" in text
+    assert "pip install -r requirements-dev.txt" in text
     assert "RUNNER_TEMP" in text
     assert "Prepare Release 01 feed-image review candidates" in text
     assert "scripts/prepare_scentai_feed_image_review.py" in text
