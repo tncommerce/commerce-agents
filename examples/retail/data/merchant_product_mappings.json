@@ -753,6 +753,62 @@
       "verified_at": "2026-09-28",
       "evidence_url": "https://www.jeanpaulgaultier.com/de/de/p/linie-le-male/fleur-du-male-eau-de-toilette-000000000065228018",
       "evidence_note": "Official Jean Paul Gaultier Germany product page identifies the returned Fleur Du Male Eau de Toilette in the 125 ml size under product URL identifier 000000000065228018. Official current fragrance and re-editions pages state that the original version is back and exclusive to jeanpaulgaultier.com. No GTIN/EAN is asserted for the 2026 re-edition."
+    },
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "merchant": "notino",
+      "merchant_product_id": "PDM0227",
+      "ean": null,
+      "gtin": null,
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-09-30",
+      "evidence_url": "https://www.notino.de/parfums-de-marly/darley-royal-essence-delina-eau-de-parfum-fuer-damen/p-11598204/",
+      "evidence_note": "Notino DE identifies Parfums de Marly Delina Eau de Parfum in the exact 75 ml variant under code PDM0227. The page also offers a separate 30 ml variant; this mapping is specifically for the 75 ml selection."
+    },
+    {
+      "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+      "merchant": "notino",
+      "merchant_product_id": "CHD0313",
+      "ean": null,
+      "gtin": null,
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-09-30",
+      "evidence_url": "https://www.notino.de/dior/hypnotic-poison-eau-de-toilette-fur-damen/p-60565/",
+      "evidence_note": "Notino DE identifies DIOR Hypnotic Poison Eau de Toilette in the exact 100 ml variant under code CHD0313. This excludes the distinct Hypnotic Poison Eau de Parfum and Eau Secrete products."
+    },
+    {
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "merchant": "notino",
+      "merchant_product_id": "YSL2377",
+      "ean": null,
+      "gtin": null,
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-09-30",
+      "evidence_url": "https://www.notino.de/yves-saint-laurent/black-opium-eau-de-parfum-fur-damen/",
+      "evidence_note": "Notino DE identifies Yves Saint Laurent Black Opium Eau de Parfum in the exact 90 ml variant under code YSL2377."
+    },
+    {
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "merchant": "notino",
+      "merchant_product_id": "LAM13175",
+      "ean": null,
+      "gtin": null,
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-09-30",
+      "evidence_url": "https://www.notino.de/lancome/la-vie-est-belle-eau-de-parfum-fuer-damen/",
+      "evidence_note": "Notino DE identifies Lancome La vie est belle Eau de Parfum in the exact 100 ml variant under code LAM13175. The product was out of stock when verified; mapping identity is retained separately from offer availability."
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "merchant": "notino",
+      "merchant_product_id": "VZR11010",
+      "ean": null,
+      "gtin": null,
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-09-30",
+      "evidence_url": "https://www.notino.de/yves-saint-laurent/yves-saint-laurent-libre-eau-de-parfum-fuer-damen/p-15968532/",
+      "evidence_note": "Notino DE identifies Yves Saint Laurent Libre Eau de Parfum nachfullbar in the exact 90 ml variant under code VZR11010. The DUFYND Release 01 identity is Libre EDP 90 ml; refillability is a packaging attribute of the current exact-size retail variant."
     }
-  ]
+  ],
+  "updated_at": "2026-09-30"
 }
