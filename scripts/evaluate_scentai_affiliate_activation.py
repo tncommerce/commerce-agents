@@ -42,6 +42,15 @@ def base_program_rows(programs: dict) -> list[dict[str, Any]]:
                 "merchant_id": item.get("merchant_id"),
                 "application_status": item.get("status"),
                 "tracking_strategy": item.get("tracking_strategy"),
+                "tracked_product_url_verified": bool(
+                    item.get("tracked_product_url_verified", False)
+                ),
+                "redirect_dry_run_passed": bool(
+                    item.get("redirect_dry_run_passed", False)
+                ),
+                "verified_product_scope": list(
+                    item.get("verified_product_scope") or []
+                ),
             }
         )
 
@@ -110,12 +119,27 @@ def build_state_report(
             and partner is not None
         )
 
+        tracked_product_ready_for_approval = (
+            normalize_application_status(row.get("application_status")) == "approved"
+            and tracking_strategy.startswith("verified_")
+            and bool(row.get("tracked_product_url_verified"))
+            and bool(row.get("redirect_dry_run_passed"))
+            and bool(row.get("verified_product_scope"))
+            and partner is None
+        )
+
         if merchant_homepage_tracking_active:
             state = "active"
             blockers = []
             live_routing_allowed = True
             next_action = "maintain_partner_health"
             routing_scope = "merchant_homepage_only"
+        elif tracked_product_ready_for_approval:
+            state = "ready_for_user_approval"
+            blockers = ["user_approval_not_recorded"]
+            live_routing_allowed = False
+            next_action = "request_explicit_user_approval"
+            routing_scope = "verified_product_only_pending_activation"
         else:
             live_routing_allowed = False
             next_action = (
