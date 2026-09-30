@@ -778,6 +778,25 @@
       "data_source": "manual_verified_web",
       "last_updated_at": "2026-09-30T10:46:00Z",
       "commission_rate": null
+    },
+    {
+      "offer_id": "notino-calvin-klein-euphoria-edp-100",
+      "product_id": "SC-CALVIN-KLEIN-EUPHORIA-EDP-100",
+      "merchant_id": "notino",
+      "merchant_name": "Notino",
+      "merchant_product_id": "CAK10204",
+      "price": 46.9,
+      "currency": "EUR",
+      "shipping_cost": 3.9,
+      "shipping_label": "3,90 € DHL",
+      "in_stock": true,
+      "variant_label": "100 ml · Euphoria Eau de Parfum für Damen",
+      "product_url": "https://www.notino.de/calvin-klein/euphoria-eau-de-parfum-fur-damen/",
+      "affiliate_url": null,
+      "network": null,
+      "data_source": "manual_verified_web",
+      "last_updated_at": "2026-09-30T10:54:00Z",
+      "commission_rate": null
     }
   ]
 }
