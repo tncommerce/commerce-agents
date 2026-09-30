@@ -188,7 +188,7 @@ jobs:
           print(json.loads(path.read_text(encoding="utf-8-sig"))["generated_at"])
           PY
           )"
-          python scripts/refresh_scentai_jarvis_state.py --write --generated-at "$generated_at"
+          PYTHONPATH=. python scripts/refresh_scentai_jarvis_state.py --write --generated-at "$generated_at"
           mkdir -p /tmp/dufynd-state-preview
           cp examples/retail/data/scentai_merchant_mapping_work_queue.json /tmp/dufynd-state-preview/
           cp examples/retail/data/scentai_affiliate_activation_status.json /tmp/dufynd-state-preview/
