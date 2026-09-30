@@ -73,6 +73,8 @@ export default function FragranceOffers({
   const [reloadToken, setReloadToken] = useState(0);
   const [clickoutSessionReady, setClickoutSessionReady] = useState(false);
   const trackedDetailViewRef = useRef<string | null>(null);
+  const offerSectionRef = useRef<HTMLElement | null>(null);
+  const trackedOfferViewRef = useRef<string | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -125,6 +127,46 @@ export default function FragranceOffers({
     reloadToken,
     trackProductOpen,
   ]);
+
+  useEffect(() => {
+    const section = offerSectionRef.current;
+    if (!section || !payload || payload.offers.length === 0) return;
+
+    const impressionKey = `${productId}:${analyticsSurface}`;
+    if (trackedOfferViewRef.current === impressionKey) return;
+
+    const trackImpression = () => {
+      if (trackedOfferViewRef.current === impressionKey) return;
+      trackedOfferViewRef.current = impressionKey;
+      void trackAnalyticsEvent("offer_section_view", {
+        product_id: productId,
+        source: "merchant_offers",
+        surface: analyticsSurface,
+      });
+    };
+
+    if (typeof IntersectionObserver === "undefined") {
+      trackImpression();
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (
+          !entry?.isIntersecting ||
+          entry.intersectionRatio < 0.35
+        ) {
+          return;
+        }
+        trackImpression();
+        observer.disconnect();
+      },
+      { threshold: [0.35] },
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, [analyticsSurface, payload, productId]);
 
   if (payload === undefined) {
     return (
@@ -188,6 +230,7 @@ export default function FragranceOffers({
 
   return (
     <section
+      ref={offerSectionRef}
       className={`dufynd-journey-offers rounded-[24px] border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5 sm:p-6"} shadow-(--shadow)`}
       data-merchant-offers
     >

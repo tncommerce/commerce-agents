@@ -46,6 +46,8 @@ alter table public.scentai_analytics_events
       'advisor_recommendation_view',
       'advisor_product_open',
       'fragrance_detail_view',
+      'offer_section_open',
+      'offer_section_view',
       'comparison_start',
       'wishlist_add',
       'wishlist_remove',

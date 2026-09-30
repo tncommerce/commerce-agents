@@ -23,6 +23,7 @@ AnalyticsEventName = Literal[
     "advisor_product_open",
     "fragrance_detail_view",
     "offer_section_open",
+    "offer_section_view",
     "comparison_start",
     "wishlist_add",
     "wishlist_remove",

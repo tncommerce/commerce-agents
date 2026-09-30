@@ -1499,6 +1499,149 @@ try {
   }
 
 
+  const offerImpressionContext = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 1,
+    reducedMotion: "reduce",
+  });
+  try {
+    const offerImpressionPage = await offerImpressionContext.newPage();
+    const offerViewEvents = [];
+
+    await offerImpressionPage.route("**/api/session", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          session_id: "qa-offer-impression-session-1234567890",
+        }),
+      });
+    });
+
+    await offerImpressionPage.route(
+      "**/api/analytics/events",
+      async (route) => {
+        try {
+          const payload = route.request().postDataJSON();
+          if (payload?.event === "offer_section_view") {
+            offerViewEvents.push(payload);
+          }
+        } catch {
+          // Non-JSON analytics payloads are irrelevant to this assertion.
+        }
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({ ok: true }),
+        });
+      },
+    );
+
+    await offerImpressionPage.route(
+      "**/api/merchant-offers/**",
+      async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            product_id: "SC-QA-OFFER-IMPRESSION",
+            best_offer_id: "qa-offer-impression-offer",
+            offers: [
+              {
+                offer_id: "qa-offer-impression-offer",
+                product_id: "SC-QA-OFFER-IMPRESSION",
+                merchant_id: "qa-merchant",
+                merchant_name: "QA Merchant",
+                merchant_product_id: "qa-offer-impression-sku",
+                price: 99,
+                currency: "EUR",
+                shipping_cost: 0,
+                shipping_label: "Versand inklusive",
+                total_price: 99,
+                in_stock: true,
+                variant_label: "QA Impression",
+                clickout_path: "/api/clickout/qa-offer-impression-offer",
+                affiliate_link: false,
+                last_updated_at: "2026-09-30T12:00:00Z",
+              },
+            ],
+            affiliate_disclosure: "QA fixture",
+          }),
+        });
+      },
+    );
+
+    const response = await offerImpressionPage.goto(
+      baseUrl +
+        "/duft/rabanne-1-million?src=instagram&cmp=qa_offer_campaign&content=qa_offer_content",
+      { waitUntil: "domcontentloaded", timeout: 45_000 },
+    );
+    if (!response?.ok()) {
+      throw new Error(
+        "offer-section impression QA did not load: HTTP " +
+          String(response?.status() ?? "no response"),
+      );
+    }
+
+    const offers = offerImpressionPage.locator("[data-merchant-offers]");
+    await offers.waitFor({ state: "visible", timeout: 20_000 });
+    await offers.scrollIntoViewIfNeeded();
+
+    for (let attempt = 0; attempt < 50 && offerViewEvents.length === 0; attempt += 1) {
+      await offerImpressionPage.waitForTimeout(100);
+    }
+
+    if (offerViewEvents.length !== 1) {
+      throw new Error(
+        "offer section did not emit exactly one visible impression event",
+      );
+    }
+
+    const impression = offerViewEvents[0];
+    if (
+      impression.event !== "offer_section_view" ||
+      impression.source !== "merchant_offers" ||
+      impression.surface !== "fragrance_detail" ||
+      impression.acquisition_source !== "instagram" ||
+      impression.campaign_id !== "qa_offer_campaign" ||
+      impression.content_id !== "qa_offer_content"
+    ) {
+      throw new Error(
+        "offer-section impression lost conversion or acquisition context",
+      );
+    }
+
+    await offerImpressionPage.evaluate(() => window.scrollTo(0, 0));
+    await offerImpressionPage.waitForTimeout(150);
+    await offers.scrollIntoViewIfNeeded();
+    await offerImpressionPage.waitForTimeout(250);
+
+    if (offerViewEvents.length !== 1) {
+      throw new Error(
+        "offer-section impression was emitted more than once for the same product surface",
+      );
+    }
+
+    report.checks.push({
+      label: "offer-section-impression-tracking",
+      status: "passed",
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({
+      label: "offer-section-impression-tracking",
+      message,
+    });
+    report.checks.push({
+      label: "offer-section-impression-tracking",
+      status: "failed",
+      message,
+    });
+  } finally {
+    await offerImpressionContext.close();
+  }
+
+
   const acquisitionNavigationContext = await browser.newContext({
     viewport: { width: 390, height: 844 },
     deviceScaleFactor: 1,
