@@ -66,6 +66,25 @@ def _parse_iso_timestamp(value: object) -> datetime | None:
     return parsed.astimezone(UTC)
 
 
+class _TimeHorizonReached(RuntimeError):
+    pass
+
+
+def _remaining_deadline_seconds(deadline_at: datetime | None) -> int | None:
+    if deadline_at is None:
+        return None
+    deadline = deadline_at if deadline_at.tzinfo is not None else deadline_at.replace(tzinfo=UTC)
+    return max(0, int((deadline.astimezone(UTC) - utc_now()).total_seconds()))
+
+
+def _full_timeout_window_available(
+    deadline_at: datetime | None,
+    timeout_seconds: int,
+) -> bool:
+    remaining = _remaining_deadline_seconds(deadline_at)
+    return remaining is None or remaining >= timeout_seconds
+
+
 def _tech_lease_state(bridge: DufyndJarvisBridge) -> dict[str, Any]:
     row = bridge.load_master_status_entry(TECH_LEASE_KEY)
     value = (row or {}).get("value") or {}
@@ -424,6 +443,7 @@ async def _run_task_with_retry(
     *,
     timeout_seconds: int,
     max_retries: int,
+    deadline_at: datetime | None = None,
 ) -> dict[str, Any]:
     task_id = str(task["task_id"])
     domain = str(task.get("domain") or "")
@@ -431,6 +451,8 @@ async def _run_task_with_retry(
     total_attempts = max_retries + 1
 
     for attempt in range(1, total_attempts + 1):
+        if not _full_timeout_window_available(deadline_at, timeout_seconds):
+            raise _TimeHorizonReached
         _require_budget_window(bridge)
         session["current_task"] = {
             "task_id": task_id,
@@ -468,6 +490,36 @@ async def _run_task_with_retry(
                     process_safe_task(bridge, task_id=task_id),
                     timeout=timeout_seconds,
                 )
+        except asyncio.CancelledError:
+            session["stop_reason"] = "worker_cancelled"
+            current_task = session.get("current_task") or {}
+            current_task["cancelled_at"] = iso_now()
+            session["current_task"] = current_task
+            try:
+                await asyncio.wait_for(
+                    asyncio.to_thread(
+                        bridge.set_autonomy_task_status,
+                        task_id=task_id,
+                        status="blocked",
+                        evidence=_append_evidence(
+                            task.get("evidence"),
+                            (
+                                f"nightshift_session={session['session_id']}; "
+                                f"worker_cancelled_attempt={attempt}; "
+                                "provider cost may be unknown; no automatic retry."
+                            ),
+                        ),
+                    ),
+                    timeout=3.0,
+                )
+            except Exception as error:
+                _record_persistence_error(
+                    session,
+                    task_id=task_id,
+                    status="blocked",
+                    error=error,
+                )
+            raise
         except TimeoutError:
             result_code = 124
             current = bridge.load_autonomy_task(task_id) or {}
@@ -650,6 +702,7 @@ async def run_nightshift(
     max_events: int = DEFAULT_MAX_EVENTS,
     worker_timeout_seconds: int = DEFAULT_WORKER_TIMEOUT_SECONDS,
     max_retries: int = DEFAULT_MAX_RETRIES,
+    deadline_at: datetime | None = None,
 ) -> dict[str, Any]:
     _require_autonomous_mode()
 
@@ -672,171 +725,205 @@ async def run_nightshift(
     _recover_interrupted_work(bridge, session)
     _persist_session(bridge, session)
 
-    stop_reason = "no_safe_work"
-    processed_this_run = 0
-    tech_lease_waited_seconds = 0
+    async def run_body() -> dict[str, Any]:
+        stop_reason = "no_safe_work"
+        processed_this_run = 0
+        tech_lease_waited_seconds = 0
 
-    # Consume event-first backlog before repo-current work. Deterministic,
-    # no-cost status events do not consume the paid/model event allowance.
-    # If model budget is exhausted, deterministic housekeeping may still run,
-    # then task execution fails closed at the budget gate.
-    if event_limit:
-        health_before = await asyncio.to_thread(bridge.load_health)
-        session["inbox_before"] = dict(health_before.get("inbox") or {})
-        try:
-            session["event_result"] = await asyncio.wait_for(
-                process_loop(bridge, max_events=event_limit),
-                timeout=timeout_seconds,
-            )
-        except TimeoutError:
-            session["event_result"] = 124
-            stop_reason = "event_timeout"
-        health_after = await asyncio.to_thread(bridge.load_health)
-        session["inbox_after"] = dict(health_after.get("inbox") or {})
-        before_pending = int(session["inbox_before"].get("pending") or 0)
-        after_pending = int(session["inbox_after"].get("pending") or 0)
-        session["events_processed_estimate"] = max(0, before_pending - after_pending)
-        if after_pending > 0 and stop_reason == "no_safe_work":
+        # Consume event-first backlog before repo-current work. Deterministic,
+        # no-cost status events do not consume the paid/model event allowance.
+        # If model budget is exhausted, deterministic housekeeping may still run,
+        # then task execution fails closed at the budget gate.
+        if event_limit and not _full_timeout_window_available(deadline_at, timeout_seconds):
+            stop_reason = "time_horizon_reached"
+
+        if event_limit and stop_reason == "no_safe_work":
+            health_before = await asyncio.to_thread(bridge.load_health)
+            session["inbox_before"] = dict(health_before.get("inbox") or {})
+            try:
+                session["event_result"] = await asyncio.wait_for(
+                    process_loop(bridge, max_events=event_limit),
+                    timeout=timeout_seconds,
+                )
+            except TimeoutError:
+                session["event_result"] = 124
+                stop_reason = "event_timeout"
+            health_after = await asyncio.to_thread(bridge.load_health)
+            session["inbox_after"] = dict(health_after.get("inbox") or {})
+            before_pending = int(session["inbox_before"].get("pending") or 0)
+            after_pending = int(session["inbox_after"].get("pending") or 0)
+            session["events_processed_estimate"] = max(0, before_pending - after_pending)
+            if after_pending > 0 and stop_reason == "no_safe_work":
+                try:
+                    _require_budget_window(bridge)
+                except RuntimeError:
+                    stop_reason = "budget_gate"
+                else:
+                    stop_reason = "event_backlog_remaining"
+            _persist_session(bridge, session)
+
+        while processed_this_run < task_limit and stop_reason == "no_safe_work":
+            if not _full_timeout_window_available(deadline_at, timeout_seconds):
+                stop_reason = "time_horizon_reached"
+                break
             try:
                 _require_budget_window(bridge)
             except RuntimeError:
                 stop_reason = "budget_gate"
-            else:
-                stop_reason = "event_backlog_remaining"
-        _persist_session(bridge, session)
+                break
 
-    while processed_this_run < task_limit and stop_reason == "no_safe_work":
-        try:
-            _require_budget_window(bridge)
-        except RuntimeError:
-            stop_reason = "budget_gate"
-            break
+            queue = await asyncio.to_thread(bridge.load_autonomy_queue)
+            attempted_task_ids = {
+                str(item.get("task_id") or "")
+                for item in (session.get("task_results") or [])
+                if isinstance(item, dict)
+            }
+            tech_lease = _tech_lease_state(bridge)
+            selected = _select_task(
+                queue,
+                branch_worker_used=bool(session.get("branch_worker_used")),
+                attempted_task_ids=attempted_task_ids,
+                engineering_allowed=not bool(tech_lease.get("active")),
+            )
+            if selected is None:
+                safe_tasks = _safe_candidates(queue)
+                remaining_engineering = [
+                    task
+                    for task in safe_tasks
+                    if str(task.get("domain") or "") == "engineering"
+                    and str(task.get("task_id") or "") not in attempted_task_ids
+                ]
+                if safe_tasks and bool(session.get("branch_worker_used")):
+                    stop_reason = "engineering_quality_gate_pending"
+                    break
+                if remaining_engineering and bool(tech_lease.get("active")):
+                    wait_cap = _tech_lease_wait_cap_seconds()
+                    remaining_wait_cap = max(0, wait_cap - tech_lease_waited_seconds)
+                    wait_seconds = min(
+                        int(tech_lease.get("remaining_seconds") or 0),
+                        remaining_wait_cap,
+                    )
+                    deadline_remaining = _remaining_deadline_seconds(deadline_at)
+                    if deadline_remaining is not None:
+                        if deadline_remaining <= 0:
+                            stop_reason = "time_horizon_reached"
+                            break
+                        wait_seconds = min(wait_seconds, deadline_remaining)
+                    session["tech_lease"] = dict(tech_lease)
+                    if wait_seconds > 0:
+                        session["tech_lease_waited_seconds"] = tech_lease_waited_seconds
+                        _persist_session(bridge, session)
+                        await asyncio.sleep(wait_seconds)
+                        tech_lease_waited_seconds += wait_seconds
+                        session["tech_lease_waited_seconds"] = tech_lease_waited_seconds
+                        continue
+                    stop_reason = "tech_lease_active"
+                    break
+                stop_reason = "no_safe_work"
+                break
 
-        queue = await asyncio.to_thread(bridge.load_autonomy_queue)
-        attempted_task_ids = {
-            str(item.get("task_id") or "")
-            for item in (session.get("task_results") or [])
-            if isinstance(item, dict)
-        }
-        tech_lease = _tech_lease_state(bridge)
-        selected = _select_task(
-            queue,
-            branch_worker_used=bool(session.get("branch_worker_used")),
-            attempted_task_ids=attempted_task_ids,
-            engineering_allowed=not bool(tech_lease.get("active")),
-        )
-        if selected is None:
-            safe_tasks = _safe_candidates(queue)
-            remaining_engineering = [
-                task
-                for task in safe_tasks
-                if str(task.get("domain") or "") == "engineering"
-                and str(task.get("task_id") or "") not in attempted_task_ids
-            ]
-            if safe_tasks and bool(session.get("branch_worker_used")):
+            session["tasks_attempted"] = int(session.get("tasks_attempted") or 0) + 1
+            try:
+                outcome = await _run_task_with_retry(
+                    bridge,
+                    session,
+                    selected,
+                    timeout_seconds=timeout_seconds,
+                    max_retries=retry_limit,
+                    deadline_at=deadline_at,
+                )
+            except _TimeHorizonReached:
+                session["current_task"] = None
+                stop_reason = "time_horizon_reached"
+                break
+            except Exception as error:
+                # A transport/status-write error must not leave the durable
+                # session running with no stop reason. Never retry unknown-cost
+                # failures automatically. Do not store exception bodies/credentials.
+                session["status"] = "needs_attention"
+                session["stop_reason"] = "worker_runtime_error"
+                session["ended_at"] = iso_now()
+                session["runtime_error_type"] = type(error).__name__
+                session["task_results"].append(
+                    _task_result(
+                        selected,
+                        worker="branch_worker"
+                        if selected.get("domain") == "engineering"
+                        else "safe_worker",
+                        result_code=1,
+                        final_status="blocked",
+                        attempts=int((session.get("current_task") or {}).get("attempt") or 1),
+                    )
+                )
+                _persist_session(bridge, session)
+                raise
+            session.setdefault("task_results", []).append(outcome)
+            session["current_task"] = None
+            if outcome["worker"] == "branch_worker" and outcome["result_code"] == 0:
+                session["branch_worker_used"] = True
+            processed_this_run += 1
+            _persist_session(bridge, session)
+
+            # An engineering patch is the final model task in this checkout. Hand it
+            # immediately to deterministic validation so no later worker observes
+            # unvalidated repository state.
+            if bool(session.get("branch_worker_used")):
                 stop_reason = "engineering_quality_gate_pending"
                 break
-            if remaining_engineering and bool(tech_lease.get("active")):
-                wait_cap = _tech_lease_wait_cap_seconds()
-                remaining_wait_cap = max(0, wait_cap - tech_lease_waited_seconds)
-                wait_seconds = min(
-                    int(tech_lease.get("remaining_seconds") or 0),
-                    remaining_wait_cap,
-                )
-                session["tech_lease"] = dict(tech_lease)
-                if wait_seconds > 0:
-                    session["tech_lease_waited_seconds"] = tech_lease_waited_seconds
-                    _persist_session(bridge, session)
-                    await asyncio.sleep(wait_seconds)
-                    tech_lease_waited_seconds += wait_seconds
-                    session["tech_lease_waited_seconds"] = tech_lease_waited_seconds
-                    continue
-                stop_reason = "tech_lease_active"
-                break
-            stop_reason = "no_safe_work"
-            break
 
-        session["tasks_attempted"] = int(session.get("tasks_attempted") or 0) + 1
-        try:
-            outcome = await _run_task_with_retry(
-                bridge,
-                session,
-                selected,
-                timeout_seconds=timeout_seconds,
-                max_retries=retry_limit,
-            )
-        except Exception as error:
-            # A transport/status-write error must not leave the durable
-            # session running with no stop reason. Never retry unknown-cost
-            # failures automatically. Do not store exception bodies/credentials.
-            session["status"] = "needs_attention"
-            session["stop_reason"] = "worker_runtime_error"
+        if processed_this_run >= task_limit and stop_reason == "no_safe_work":
+            stop_reason = "task_limit_reached"
+
+        session["stop_reason"] = stop_reason
+        session["status"] = (
+            "awaiting_validation" if bool(session.get("branch_worker_used")) else "completed"
+        )
+        if session["status"] == "completed":
             session["ended_at"] = iso_now()
-            session["runtime_error_type"] = type(error).__name__
-            session["task_results"].append(
-                _task_result(
-                    selected,
-                    worker="branch_worker"
-                    if selected.get("domain") == "engineering"
-                    else "safe_worker",
-                    result_code=1,
-                    final_status="blocked",
-                    attempts=int((session.get("current_task") or {}).get("attempt") or 1),
-                )
-            )
-            _persist_session(bridge, session)
-            raise
-        session.setdefault("task_results", []).append(outcome)
-        session["current_task"] = None
-        if outcome["worker"] == "branch_worker" and outcome["result_code"] == 0:
-            session["branch_worker_used"] = True
-        processed_this_run += 1
         _persist_session(bridge, session)
 
-        # An engineering patch is the final model task in this checkout. Hand it
-        # immediately to deterministic validation so no later worker observes
-        # unvalidated repository state.
-        if bool(session.get("branch_worker_used")):
-            stop_reason = "engineering_quality_gate_pending"
-            break
+        bridge.record_run(
+            run_type=f"nightshift:{session['session_id']}",
+            input_summary=(
+                f"Nightshift task_limit={task_limit}, event_limit={event_limit}, "
+                f"fingerprint={fingerprint}"
+            ),
+            output_summary=(
+                f"Nightshift stopped with reason={stop_reason}; "
+                f"processed_this_run={processed_this_run}; "
+                f"branch_worker_used={session.get('branch_worker_used')}"
+            ),
+            decisions=[
+                {
+                    "session_id": session["session_id"],
+                    "stop_reason": stop_reason,
+                    "processed_this_run": processed_this_run,
+                    "task_limit": task_limit,
+                    "event_limit": event_limit,
+                    "tech_lease_waited_seconds": tech_lease_waited_seconds,
+                }
+            ],
+            human_approval_required=bool(session.get("branch_worker_used")),
+            human_approval_status=("pending" if bool(session.get("branch_worker_used")) else None),
+            agent_name="jarvis_nightshift",
+        )
+        return session
 
-    if processed_this_run >= task_limit and stop_reason == "no_safe_work":
-        stop_reason = "task_limit_reached"
-
-    session["stop_reason"] = stop_reason
-    session["status"] = (
-        "awaiting_validation" if bool(session.get("branch_worker_used")) else "completed"
-    )
-    if session["status"] == "completed":
+    try:
+        return await run_body()
+    except asyncio.CancelledError:
+        session["status"] = "needs_attention"
+        session["stop_reason"] = str(session.get("stop_reason") or "nightshift_cancelled")
         session["ended_at"] = iso_now()
-    _persist_session(bridge, session)
-
-    bridge.record_run(
-        run_type=f"nightshift:{session['session_id']}",
-        input_summary=(
-            f"Nightshift task_limit={task_limit}, event_limit={event_limit}, "
-            f"fingerprint={fingerprint}"
-        ),
-        output_summary=(
-            f"Nightshift stopped with reason={stop_reason}; "
-            f"processed_this_run={processed_this_run}; "
-            f"branch_worker_used={session.get('branch_worker_used')}"
-        ),
-        decisions=[
-            {
-                "session_id": session["session_id"],
-                "stop_reason": stop_reason,
-                "processed_this_run": processed_this_run,
-                "task_limit": task_limit,
-                "event_limit": event_limit,
-                "tech_lease_waited_seconds": tech_lease_waited_seconds,
-            }
-        ],
-        human_approval_required=bool(session.get("branch_worker_used")),
-        human_approval_status=("pending" if bool(session.get("branch_worker_used")) else None),
-        agent_name="jarvis_nightshift",
-    )
-    return session
+        session["runtime_error_type"] = "CancelledError"
+        try:
+            await asyncio.wait_for(
+                asyncio.to_thread(_persist_session, bridge, session),
+                timeout=3.0,
+            )
+        except Exception:
+            pass
+        raise
 
 
 def _load_metadata(path: Path) -> dict[str, Any] | None:
