@@ -100,6 +100,7 @@ def test_runtime_has_only_internal_safe_tool_surface() -> None:
     names = allowed_tool_names()
 
     assert "mcp__dufynd_jarvis__load_creative_context" in names
+    assert "mcp__dufynd_jarvis__load_creative_catalog" in names
     assert "mcp__dufynd_jarvis__record_lesson" in names
     assert "mcp__dufynd_jarvis__record_content_idea" in names
     assert "mcp__dufynd_jarvis__link_idea_pattern" in names
@@ -113,6 +114,11 @@ def test_runtime_prompt_preserves_dufynd_and_human_gates() -> None:
     assert "SCENTAI is historical/legacy only" in SYSTEM_PROMPT
     assert "do not\npublish content" in SYSTEM_PROMPT
     assert "final decision-maker" in SYSTEM_PROMPT
+
+
+def test_runtime_prompt_prefers_bounded_creative_catalog() -> None:
+    assert "load the bounded creative catalog first" in SYSTEM_PROMPT
+    assert "use the full creative context only when the bounded catalog is insufficient" in SYSTEM_PROMPT
 
 
 def test_event_prompt_contains_structured_event() -> None:
