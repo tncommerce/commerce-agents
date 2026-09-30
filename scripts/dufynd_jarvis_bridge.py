@@ -261,6 +261,50 @@ class DufyndJarvisBridge:
             raise ValueError("DUFYND human-decision row must be a JSON object")
         return row
 
+    def complete_pending_human_decision_reconciliation(
+        self,
+        *,
+        decision_id: str,
+        decision: dict[str, Any],
+        resolved_at: str,
+    ) -> dict[str, Any] | None:
+        if not decision_id.strip():
+            raise ValueError("decision_id is required")
+        if not isinstance(decision, dict) or not decision:
+            raise ValueError("reconciliation decision payload must be a non-empty object")
+        if not resolved_at.strip():
+            raise ValueError("resolved_at is required")
+
+        with self._client() as client:
+            response = client.patch(
+                f"{self.supabase_url}/rest/v1/dufynd_human_decisions",
+                headers={
+                    **_headers(self.secret_key),
+                    "Prefer": "return=representation",
+                },
+                params={
+                    "decision_id": f"eq.{decision_id}",
+                    "status": "eq.pending",
+                },
+                json={
+                    "status": "completed",
+                    "decision": decision,
+                    "decided_at": resolved_at,
+                    "completed_at": resolved_at,
+                },
+            )
+            response.raise_for_status()
+            payload = response.json()
+
+        if not isinstance(payload, list):
+            raise ValueError("DUFYND decision reconciliation must return a JSON array")
+        if not payload:
+            return None
+        row = payload[0]
+        if not isinstance(row, dict):
+            raise ValueError("DUFYND reconciled decision row must be a JSON object")
+        return row
+
     def claim_next_inbox_event(self) -> dict[str, Any] | None:
         payload = self._rpc("claim_dufynd_jarvis_event")
         if payload is None:
