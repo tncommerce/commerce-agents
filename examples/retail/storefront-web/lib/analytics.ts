@@ -1,4 +1,4 @@
-import { api } from "./api";
+import { api, initializeAnalyticsSession } from "./api";
 
 const ACQUISITION_IDENTIFIER_PATTERN = /^[A-Za-z0-9._:-]{1,80}$/;
 let apiSessionPromise: Promise<string | null> | null = null;
@@ -149,10 +149,8 @@ export async function ensureAnalyticsSession(): Promise<string | null> {
   }
 
   if (!apiSessionPromise) {
-    apiSessionPromise = api
-      .startSession()
-      .then((started) => {
-        const sessionId = started?.sessionId ?? null;
+    apiSessionPromise = initializeAnalyticsSession()
+      .then((sessionId) => {
         if (sessionId) {
           api.session = sessionId;
           analyticsOwnedApiSession = sessionId;

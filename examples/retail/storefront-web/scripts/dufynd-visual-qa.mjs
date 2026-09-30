@@ -1552,6 +1552,110 @@ try {
     await merchantOfferTimeoutContext.close();
   }
 
+  const analyticsSessionTimeoutContext = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 1,
+    reducedMotion: "reduce",
+  });
+  try {
+    const sessionTimeoutPage = await analyticsSessionTimeoutContext.newPage();
+    let sessionTimeoutRequestCount = 0;
+    let sessionRecoveryAllowed = false;
+    const recoveredSessionId = "qa-analytics-timeout-recovery-session-1234567890";
+
+    await sessionTimeoutPage.route("**/api/session", async (route) => {
+      sessionTimeoutRequestCount += 1;
+      if (sessionRecoveryAllowed) {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({ session_id: recoveredSessionId, name: "QA Guest" }),
+        });
+        return;
+      }
+      if (sessionTimeoutRequestCount === 1) {
+        await new Promise((resolve) => setTimeout(resolve, 8_500));
+        try {
+          await route.fulfill({
+            status: 200,
+            contentType: "application/json",
+            body: JSON.stringify({ session_id: "qa-stale-late-session", name: "Late QA Guest" }),
+          });
+        } catch {
+          // The client must discard the late result of an aborted session request.
+        }
+        return;
+      }
+      await route.abort("failed");
+    });
+    await sessionTimeoutPage.route("**/api/analytics/events", (route) =>
+      route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' }),
+    );
+    await sessionTimeoutPage.route("**/api/merchant-offers/**", (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          product_id: "SC-QA-SESSION-TIMEOUT",
+          best_offer_id: "qa-session-timeout-offer",
+          offers: [{
+            offer_id: "qa-session-timeout-offer",
+            merchant_name: "QA Session Timeout Merchant",
+            price: 99,
+            total_price: 99,
+            currency: "EUR",
+            clickout_path: "/api/clickout/qa-session-timeout-offer",
+            affiliate_link: false,
+            last_updated_at: "2026-09-30T12:00:00Z",
+          }],
+        }),
+      }),
+    );
+    const response = await sessionTimeoutPage.goto(
+      baseUrl + "/duft/rabanne-1-million?src=tiktok&cmp=qa_session_timeout&content=qa_session_timeout_content",
+      { waitUntil: "domcontentloaded", timeout: 45_000 },
+    );
+    if (!response?.ok()) throw new Error("session timeout QA did not load");
+    const offers = sessionTimeoutPage.locator("[data-merchant-offers]");
+    await offers.waitFor({ state: "visible", timeout: 5_000 });
+    await offers.locator("[data-clickout-preparing]").waitFor({
+      state: "visible", timeout: 5_000,
+    });
+    const clickout = offers.getByRole("link", { name: "Bei QA Session Timeout Merchant ansehen" });
+    await clickout.waitFor({ state: "visible", timeout: 12_000 });
+    await new Promise((resolve) => setTimeout(resolve, 750));
+    const failOpenUrl = new URL(await clickout.getAttribute("href"));
+    if (
+      failOpenUrl.searchParams.has("sid") ||
+      failOpenUrl.searchParams.get("src") !== "tiktok" ||
+      failOpenUrl.searchParams.get("cmp") !== "qa_session_timeout" ||
+      failOpenUrl.searchParams.get("content") !== "qa_session_timeout_content"
+    ) {
+      throw new Error("session timeout fail-open installed a stale session or lost attribution");
+    }
+    if ((await offers.locator("[data-clickout-preparing]").count()) !== 0) {
+      throw new Error("stalled session kept a loaded merchant offer blocked");
+    }
+    sessionRecoveryAllowed = true;
+    await sessionTimeoutPage.reload({ waitUntil: "domcontentloaded", timeout: 45_000 });
+    await clickout.waitFor({ state: "visible", timeout: 10_000 });
+    const recoveredUrl = new URL(await clickout.getAttribute("href"));
+    if (
+      recoveredUrl.searchParams.get("sid") !== recoveredSessionId ||
+      recoveredUrl.searchParams.get("cmp") !== "qa_session_timeout"
+    ) {
+      throw new Error("session recovery did not restore first-party correlation");
+    }
+    report.checks.push({ label: "analytics-session-request-timeout", status: "passed" });
+    report.checks.push({ label: "analytics-session-timeout-recovery", status: "passed" });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({ label: "analytics-session-request-timeout", message });
+    report.checks.push({ label: "analytics-session-request-timeout", status: "failed", message });
+  } finally {
+    await analyticsSessionTimeoutContext.close();
+  }
+
   const attributionClickoutContext = await browser.newContext({
     viewport: { width: 390, height: 844 },
     deviceScaleFactor: 1,

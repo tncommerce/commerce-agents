@@ -43,6 +43,31 @@ export const UNREACHABLE =
     ? "DUFYND API auf Port 8000 nicht erreichbar. Starte lokal: uvicorn retail.api.main:app --app-dir examples --port 8000."
     : "DUFYND ist gerade kurz nicht erreichbar. Bitte versuche es in einem Moment erneut.";
 
+const ANALYTICS_SESSION_TIMEOUT_MS = 8_000;
+
+export async function initializeAnalyticsSession(): Promise<string | null> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(
+    () => controller.abort(),
+    ANALYTICS_SESSION_TIMEOUT_MS,
+  );
+
+  try {
+    const response = await fetch(`${api.base}/session`, {
+      method: "POST",
+      headers: api.headers(),
+      signal: controller.signal,
+    });
+    if (!response.ok) return null;
+    const data = (await response.json()) as { session_id?: string };
+    return data.session_id || null;
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
 export async function fetchProducts(): Promise<Product[] | null> {
   const data = await api.get<{ products: Product[] }>("/products", { limit: "100" });
   return data?.products ?? null;
