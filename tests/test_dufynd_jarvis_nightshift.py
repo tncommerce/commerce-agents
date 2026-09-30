@@ -1086,4 +1086,3 @@ def test_morning_report_excludes_agent_runs_after_supervisor_end(monkeypatch) ->
 
     assert report["ai_cost_usd"] == 0.08
     assert report["ai_cost_complete"] is True
-
