@@ -223,6 +223,16 @@ def build_budget_ledger(
     remaining_usd = _float(budget_status.get("remaining_usd"))
     max_runs = int(budget_status.get("max_runs") or 0)
     remaining_runs = int(budget_status.get("remaining_runs") or 0)
+    run_cap_ceiling = (
+        remaining_runs * approved_per_run_cap
+        if approved_per_run_cap is not None
+        else None
+    )
+    max_future_spend = (
+        min(remaining_usd, run_cap_ceiling)
+        if run_cap_ceiling is not None
+        else remaining_usd
+    )
 
     return {
         "status": "attention" if issues else "ok",
@@ -248,6 +258,7 @@ def build_budget_ledger(
             "runs": billed_runs,
             "spent_usd": total_spent,
             "max_single_run_usd": round(max_run_cost, 6),
+            "average_run_usd": round(total_spent / billed_runs, 6) if billed_runs else 0.0,
             "over_cap_runs": over_cap_rows,
             "by_run_type": by_run_type,
             "rows": ledger_rows,
@@ -261,6 +272,10 @@ def build_budget_ledger(
             "runs": remaining_runs,
             "budget_cap_usd": round(cap_usd, 6),
             "max_runs": max_runs,
+            "run_cap_ceiling_usd": (
+                round(run_cap_ceiling, 6) if run_cap_ceiling is not None else None
+            ),
+            "max_future_spend_usd": round(max_future_spend, 6),
         },
         "issues": issues,
     }
