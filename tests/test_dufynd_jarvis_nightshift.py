@@ -855,6 +855,174 @@ def test_morning_report_uses_audited_system_data(monkeypatch) -> None:
     assert "$0.1900" in markdown
 
 
+def test_morning_report_aggregates_supervisor_session_history(monkeypatch) -> None:
+    bridge = FakeBridge()
+    bridge.master[nightshift.SESSION_KEY] = {
+        "key": nightshift.SESSION_KEY,
+        "value": {
+            "session_id": "session-2",
+            "status": "completed",
+            "started_at": "2026-09-30T01:00:00+00:00",
+            "ended_at": "2026-09-30T01:30:00+00:00",
+            "stop_reason": "no_safe_work",
+            "task_results": [],
+            "validation": {"status": "not_run", "pr_url": None},
+        },
+    }
+    bridge.master[nightshift.SUPERVISOR_KEY] = {
+        "key": nightshift.SUPERVISOR_KEY,
+        "value": {
+            "supervisor_id": "supervisor-1",
+            "status": "completed",
+            "started_at": "2026-09-30T00:00:00+00:00",
+            "ended_at": "2026-09-30T02:00:00+00:00",
+            "stop_reason": "idle_limit_reached",
+            "cycles_completed": 2,
+            "idle_cycles": 2,
+            "session_summaries": [
+                {
+                    "session_id": "session-1",
+                    "task_results": [
+                        {
+                            "task_id": "repo_current_commerce",
+                            "domain": "commerce",
+                            "title": "Verify merchant data",
+                            "worker": "safe_worker",
+                            "result_code": 0,
+                            "final_status": "done",
+                            "attempts": 1,
+                        }
+                    ],
+                },
+                {
+                    "session_id": "session-2",
+                    "task_results": [
+                        {
+                            "task_id": "repo_current_content",
+                            "domain": "content",
+                            "title": "Prepare content queue",
+                            "worker": "safe_worker",
+                            "result_code": 1,
+                            "final_status": "blocked",
+                            "attempts": 1,
+                        }
+                    ],
+                },
+            ],
+        },
+    }
+    monkeypatch.setenv("DUFYND_JARVIS_BUDGET_ID", "jarvis_activation_pilot_001")
+
+    report, markdown = nightshift.build_morning_report(bridge, qa_status="success")
+
+    assert report["supervisor"]["supervisor_id"] == "supervisor-1"
+    assert report["session_count"] == 2
+    assert report["duration"] == "2h00m"
+    assert report["completed"] == 1
+    assert report["blocked"] == 1
+    assert report["stop_reason"] == "idle_limit_reached"
+    assert "Verify merchant data" in markdown
+    assert "Prepare content queue" in markdown
+    assert "Sessions: 2" in markdown
+
+
+def test_morning_report_ignores_stale_supervisor_for_newer_session(monkeypatch) -> None:
+    bridge = FakeBridge()
+    bridge.master[nightshift.SUPERVISOR_KEY] = {
+        "key": nightshift.SUPERVISOR_KEY,
+        "value": {
+            "supervisor_id": "old-supervisor",
+            "status": "completed",
+            "started_at": "2026-09-29T20:00:00+00:00",
+            "ended_at": "2026-09-29T21:00:00+00:00",
+            "stop_reason": "idle_limit_reached",
+            "cycles_completed": 0,
+            "session_summaries": [],
+        },
+    }
+    bridge.master[nightshift.SESSION_KEY] = {
+        "key": nightshift.SESSION_KEY,
+        "value": {
+            "session_id": "new-session",
+            "status": "completed",
+            "started_at": "2026-09-30T05:00:00+00:00",
+            "ended_at": "2026-09-30T05:20:00+00:00",
+            "stop_reason": "no_safe_work",
+            "source_fingerprint_sha256": "fresh",
+            "task_results": [
+                {
+                    "task_id": "repo_current_research",
+                    "domain": "research",
+                    "title": "Fresh research",
+                    "worker": "safe_worker",
+                    "final_status": "done",
+                    "attempts": 1,
+                }
+            ],
+            "validation": {"status": "not_run", "pr_url": None},
+        },
+    }
+    monkeypatch.setenv("DUFYND_JARVIS_BUDGET_ID", "jarvis_activation_pilot_001")
+
+    report, markdown = nightshift.build_morning_report(bridge, qa_status="success")
+
+    assert report["supervisor"] is None
+    assert report["session_id"] == "new-session"
+    assert report["start"] == "2026-09-30T05:00:00+00:00"
+    assert report["completed"] == 1
+    assert "Fresh research" in markdown
+
+
+def test_morning_report_uses_newer_idle_supervisor_without_stale_session(
+    monkeypatch,
+) -> None:
+    bridge = FakeBridge()
+    bridge.master[nightshift.SESSION_KEY] = {
+        "key": nightshift.SESSION_KEY,
+        "value": {
+            "session_id": "old-session",
+            "status": "completed",
+            "started_at": "2026-09-29T20:00:00+00:00",
+            "ended_at": "2026-09-29T20:30:00+00:00",
+            "stop_reason": "no_safe_work",
+            "task_results": [
+                {
+                    "task_id": "old-task",
+                    "domain": "commerce",
+                    "title": "Old task",
+                    "worker": "safe_worker",
+                    "final_status": "done",
+                    "attempts": 1,
+                }
+            ],
+            "validation": {"status": "not_run", "pr_url": None},
+        },
+    }
+    bridge.master[nightshift.SUPERVISOR_KEY] = {
+        "key": nightshift.SUPERVISOR_KEY,
+        "value": {
+            "supervisor_id": "idle-supervisor",
+            "status": "completed",
+            "started_at": "2026-09-30T05:00:00+00:00",
+            "ended_at": "2026-09-30T06:00:00+00:00",
+            "stop_reason": "idle_limit_reached",
+            "cycles_completed": 0,
+            "idle_cycles": 12,
+            "session_summaries": [],
+        },
+    }
+    monkeypatch.setenv("DUFYND_JARVIS_BUDGET_ID", "jarvis_activation_pilot_001")
+
+    report, markdown = nightshift.build_morning_report(bridge, qa_status="success")
+
+    assert report["supervisor"]["supervisor_id"] == "idle-supervisor"
+    assert report["session_count"] == 0
+    assert report["completed"] == 0
+    assert report["start"] == "2026-09-30T05:00:00+00:00"
+    assert report["stop_reason"] == "idle_limit_reached"
+    assert "Old task" not in markdown
+
+
 def test_morning_report_marks_timeout_cost_as_incomplete(monkeypatch) -> None:
     bridge = FakeBridge()
     bridge.master[nightshift.SESSION_KEY] = {
