@@ -157,3 +157,29 @@ def test_comparison_internal_links_preserve_acquisition_attribution() -> None:
     assert "appendAcquisitionAttribution(href)" in link_source
     assert "rememberAcquisitionAttribution({" in link_source
     assert "AcquisitionInternalLink" in comparison_page_source
+
+
+def test_comparison_footer_links_preserve_acquisition_attribution() -> None:
+    source = VISUAL_QA.read_text(encoding="utf-8")
+    comparison_page_source = Path(
+        "examples/retail/storefront-web/app/vergleich/page.tsx"
+    ).read_text(encoding="utf-8")
+
+    assert 'label: "comparison-footer-navigation-attribution"' in source
+    assert "comparison footer ${name} navigation lost acquisition attribution" in source
+    assert (
+        '<AcquisitionInternalLink href="/duft" className="hover:underline">'
+        in comparison_page_source
+    )
+    assert (
+        '<AcquisitionInternalLink href="/transparenz" className="hover:underline">'
+        in comparison_page_source
+    )
+    assert (
+        '<AcquisitionInternalLink href="/impressum" className="hover:underline">'
+        in comparison_page_source
+    )
+    assert (
+        '<AcquisitionInternalLink href="/datenschutz" className="hover:underline">'
+        in comparison_page_source
+    )

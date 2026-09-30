@@ -2210,6 +2210,35 @@ try {
       }
     }
 
+    const comparisonFooter = comparisonPage.locator("footer");
+    for (const name of [
+      "Duftkatalog",
+      "Transparenz",
+      "Impressum",
+      "Datenschutz",
+    ]) {
+      const href = await comparisonFooter
+        .getByRole("link", { name })
+        .getAttribute("href");
+      if (!href) {
+        throw new Error(`comparison footer ${name} link is missing its href`);
+      }
+      const footerUrl = new URL(href, baseUrl);
+      if (
+        footerUrl.searchParams.get("src") !== "tiktok" ||
+        footerUrl.searchParams.get("cmp") !== "qa_comparison_campaign" ||
+        footerUrl.searchParams.get("content") !== "qa_comparison_content"
+      ) {
+        throw new Error(
+          `comparison footer ${name} navigation lost acquisition attribution`,
+        );
+      }
+    }
+
+    report.checks.push({
+      label: "comparison-footer-navigation-attribution",
+      status: "passed",
+    });
     report.checks.push({
       label: "comparison-internal-navigation-attribution",
       status: "passed",
