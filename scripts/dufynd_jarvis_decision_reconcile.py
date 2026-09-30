@@ -119,7 +119,7 @@ def build_merge_decision_reconciliation(
 
 
 def _task_references_pr(task: dict[str, Any], pr_number: int) -> bool:
-    pattern = re.compile(rf"\\bPR\\s*#\\s*{pr_number}\\b")
+    pattern = re.compile(rf"\bPR\s*#\s*{pr_number}\b")
     values: list[object] = [
         task.get("title"),
         task.get("instruction"),
