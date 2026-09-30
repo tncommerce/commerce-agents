@@ -1049,3 +1049,40 @@ def test_morning_report_marks_timeout_cost_as_incomplete(monkeypatch) -> None:
     assert report["ai_cost_source"] == "audited_agent_runs"
     assert report["ai_cost_complete"] is False
     assert "zusätzlicher Provider-Verbrauch unverbucht" in markdown
+
+def test_morning_report_excludes_agent_runs_after_supervisor_end(monkeypatch) -> None:
+    bridge = FakeBridge()
+    bridge.master[nightshift.SUPERVISOR_KEY] = {
+        "key": nightshift.SUPERVISOR_KEY,
+        "value": {
+            "supervisor_id": "supervisor-cost-window",
+            "status": "completed",
+            "started_at": "2026-09-30T00:00:00+00:00",
+            "ended_at": "2026-09-30T02:00:00+00:00",
+            "stop_reason": "idle_limit_reached",
+            "cycles_completed": 1,
+            "idle_cycles": 1,
+            "session_summaries": [],
+        },
+    }
+    bridge.agent_runs_override = [
+        {
+            "agent_name": "jarvis_safe_worker",
+            "run_type": "safe_task:repo_current_commerce",
+            "decisions": [{"cost_usd": 0.08}],
+            "created_at": "2026-09-30T01:00:00+00:00",
+        },
+        {
+            "agent_name": "jarvis_safe_worker",
+            "run_type": "safe_task:later_task",
+            "decisions": [{"cost_usd": 0.99}],
+            "created_at": "2026-09-30T02:05:00+00:00",
+        },
+    ]
+    monkeypatch.setenv("DUFYND_JARVIS_BUDGET_ID", "jarvis_activation_pilot_001")
+
+    report, _markdown = nightshift.build_morning_report(bridge, qa_status="success")
+
+    assert report["ai_cost_usd"] == 0.08
+    assert report["ai_cost_complete"] is True
+
