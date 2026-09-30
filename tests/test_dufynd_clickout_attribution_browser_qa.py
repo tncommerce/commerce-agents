@@ -122,3 +122,20 @@ def test_merchant_discovery_reserves_loading_state_before_partner_data() -> None
     assert 'aria-busy="true"' in merchant_source
     assert "min-h-[132px]" in merchant_source
     assert "Partnerhändler werden geladen" in merchant_source
+
+
+def test_comparison_product_links_preserve_acquisition_attribution() -> None:
+    source = VISUAL_QA.read_text(encoding="utf-8")
+    picker_source = Path(
+        "examples/retail/storefront-web/components/FragranceComparisonPicker.tsx"
+    ).read_text(encoding="utf-8")
+    comparison_page_source = Path(
+        "examples/retail/storefront-web/app/vergleich/page.tsx"
+    ).read_text(encoding="utf-8")
+
+    assert 'label: "comparison-product-navigation-attribution"' in source
+    assert "qa_comparison_campaign" in source
+    assert "qa_comparison_content" in source
+    assert "free comparison product navigation lost acquisition attribution" in source
+    assert "appendAcquisitionAttribution(`/duft/${fragrance.slug}`)" in picker_source
+    assert 'source="comparison" trackPageView={false}' in comparison_page_source
