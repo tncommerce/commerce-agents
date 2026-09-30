@@ -99,6 +99,77 @@ class DufyndJarvisBridge:
             raise ValueError("DUFYND Jarvis creative context must be a JSON object")
         return payload
 
+    def load_creative_catalog(
+        self,
+        *,
+        kind: str = "patterns",
+        offset: int = 0,
+        limit: int = 25,
+    ) -> dict[str, Any]:
+        catalogs = {
+            "patterns": (
+                "dufynd_creative_patterns",
+                "pattern_id,name,role,description,mechanism,best_for,status,updated_at",
+                "updated_at.desc,pattern_id.asc",
+            ),
+            "lessons": (
+                "dufynd_agent_lessons",
+                "id,domain,lesson,action_rule,confidence,status,updated_at",
+                "updated_at.desc,id.asc",
+            ),
+            "references": (
+                "dufynd_creative_references",
+                "id,label,category,summary,dufynd_application,status,updated_at",
+                "updated_at.desc,id.asc",
+            ),
+            "ideas": (
+                "dufynd_content_ideas",
+                "id,title,format_id,fragrance,concept,hook,status,priority,updated_at",
+                "priority.desc,updated_at.desc,id.asc",
+            ),
+            "links": (
+                "dufynd_reference_patterns",
+                "reference_id,pattern_id,confidence,notes",
+                "reference_id.asc,pattern_id.asc",
+            ),
+        }
+        if kind not in catalogs:
+            raise ValueError(
+                "Creative catalog kind must be one of: patterns, lessons, references, ideas, links"
+            )
+
+        bounded_offset = max(0, int(offset))
+        bounded_limit = max(1, min(int(limit), 50))
+        table, select, order = catalogs[kind]
+        with self._client() as client:
+            response = client.get(
+                f"{self.supabase_url}/rest/v1/{table}",
+                headers=_headers(self.secret_key),
+                params={
+                    "select": select,
+                    "order": order,
+                    "offset": str(bounded_offset),
+                    "limit": str(bounded_limit + 1),
+                },
+            )
+            response.raise_for_status()
+            payload = response.json()
+
+        if not isinstance(payload, list):
+            raise ValueError("DUFYND creative catalog lookup must return a JSON array")
+        rows = [row for row in payload if isinstance(row, dict)]
+        has_more = len(rows) > bounded_limit
+        items = rows[:bounded_limit]
+        return {
+            "kind": kind,
+            "offset": bounded_offset,
+            "limit": bounded_limit,
+            "count": len(items),
+            "has_more": has_more,
+            "next_offset": bounded_offset + len(items) if has_more else None,
+            "items": items,
+        }
+
     def load_autonomy_queue(self) -> dict[str, Any]:
         payload = self._rpc("get_dufynd_autonomy_queue")
         if not isinstance(payload, dict):
