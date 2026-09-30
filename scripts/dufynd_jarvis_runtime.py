@@ -74,7 +74,8 @@ Operating rules:
 10. Keep the operator as final decision-maker for the high-impact gates above.
 
 For a creative reference event:
-- load creative context
+- load the bounded creative catalog first (patterns, lessons and links as needed)
+- use the full creative context only when the bounded catalog is insufficient
 - inspect existing patterns and lessons
 - identify the reusable mechanisms
 - link the reference to existing patterns where possible
@@ -126,6 +127,31 @@ def build_tools(bridge: DufyndJarvisBridge) -> list[SdkMcpTool[Any]]:
     )
     async def load_creative_context(_args: dict[str, Any]) -> dict[str, Any]:
         return _json_result(await asyncio.to_thread(bridge.load_creative_context))
+
+    @tool(
+        "load_creative_catalog",
+        "Load a bounded, paginated DUFYND creative catalog without the full knowledge-graph payload.",
+        {
+            "type": "object",
+            "properties": {
+                "kind": {
+                    "type": "string",
+                    "enum": ["patterns", "lessons", "references", "ideas", "links"],
+                },
+                "offset": {"type": "integer", "minimum": 0},
+                "limit": {"type": "integer", "minimum": 1, "maximum": 50},
+            },
+        },
+    )
+    async def load_creative_catalog(args: dict[str, Any]) -> dict[str, Any]:
+        return _json_result(
+            await asyncio.to_thread(
+                bridge.load_creative_catalog,
+                kind=str(args.get("kind") or "patterns"),
+                offset=int(args.get("offset") or 0),
+                limit=int(args.get("limit") or 25),
+            )
+        )
 
     @tool(
         "load_autonomy_queue",
@@ -354,6 +380,7 @@ def build_tools(bridge: DufyndJarvisBridge) -> list[SdkMcpTool[Any]]:
     return [
         load_operating_context,
         load_creative_context,
+        load_creative_catalog,
         load_autonomy_queue,
         load_experiment_rubric,
         load_pending_decisions,
@@ -379,6 +406,7 @@ def allowed_tool_names() -> list[str]:
     names = (
         "load_operating_context",
         "load_creative_context",
+        "load_creative_catalog",
         "load_autonomy_queue",
         "load_experiment_rubric",
         "load_pending_decisions",
