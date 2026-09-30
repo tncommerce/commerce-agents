@@ -143,9 +143,7 @@ def test_audit_flags_stale_active_nightshift_session() -> None:
 
     assert report["nightshift_session"]["stale"] is True
     assert report["nightshift_session"]["heartbeat_age_minutes"] == 90.0
-    assert "stale_active_nightshift_session" in {
-        item["code"] for item in report["issues"]
-    }
+    assert "stale_active_nightshift_session" in {item["code"] for item in report["issues"]}
 
 
 def test_audit_reports_clean_idle_control_plane() -> None:
@@ -199,8 +197,6 @@ def test_audit_surfaces_failed_inbox_events() -> None:
 
     report = audit_control_plane(bridge, now=NOW)
 
-    issue = next(
-        item for item in report["issues"] if item["code"] == "failed_jarvis_inbox_events"
-    )
+    issue = next(item for item in report["issues"] if item["code"] == "failed_jarvis_inbox_events")
     assert issue["severity"] == "warning"
     assert "2 failed event(s)" in issue["message"]
