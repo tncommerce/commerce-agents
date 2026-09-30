@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "observed_at": "2026-09-30T10:34:00Z",
+  "product_id": "SC-CHANEL-COCO-MADEMOISELLE-EDP-100",
+  "merchant": "Douglas DE",
+  "merchant_product_id": "917000",
+  "product_url": "https://www.douglas.de/de/p/1000722295",
+  "observation_method": "current_public_merchant_page_read_only_web_retrieval",
+  "identity": {
+    "brand": "CHANEL",
+    "name": "COCO MADEMOISELLE",
+    "concentration": "Eau de Parfum",
+    "volume_ml": 100,
+    "merchant_identity_note": "Douglas lists CHANEL COCO MADEMOISELLE EAU DE PARFUM VAPORISATEUR with an exact 100 ml option on the current product page; Douglas Art-Nr. 917000."
+  },
+  "live_observation": {
+    "listed_price_eur": 137,
+    "shipping_cost_eur": 0,
+    "availability": "Online: auf Lager",
+    "delivery_note": "Douglas DE shows the 100 ml option at EUR 137.00 and the product page as online in stock; the order value qualifies for free shipping."
+  },
+  "rights_or_affiliate_impact": {
+    "image_rights_granted": false,
+    "affiliate_tracking_verified": false,
+    "final_image_approval_granted": false
+  },
+  "freshness_policy": "Offer qualifies only while last_updated_at is within the 72-hour merchant-offer window. No live catalog promotion."
+}
