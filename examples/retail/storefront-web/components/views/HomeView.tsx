@@ -238,7 +238,12 @@ export default function HomeView({
   const scentCount = Object.values(catalog).filter(
     (product) =>
       String(product.product_id).startsWith("SC-") &&
-      product.in_stock !== false,
+      product.in_stock !== false &&
+      Boolean(
+        getLiveFragranceByProductId(
+          String(product.product_id),
+        ),
+      ),
   ).length;
   const audienceCounts = Object.values(catalog).reduce(
     (counts, product) => {
