@@ -7,7 +7,6 @@
     "merchant_product_id": "merchant_product_id",
     "price": "search_price",
     "currency": "currency",
-    "in_stock": "in_stock",
     "variant_label": "product_name",
     "product_url": "merchant_deep_link",
     "affiliate_url": "aw_deep_link",
@@ -20,13 +19,15 @@
     "merchant_name": "top Parfümerie",
     "currency": "EUR",
     "network": "Awin",
-    "data_source": "awin-product-data-feed-preflight"
+    "data_source": "awin-product-data-feed-preflight",
+    "in_stock": false
   },
   "source_quality": {
     "shipping_cost_source_unusable": true,
     "ean_gtin_unavailable": true,
     "brand_category_metadata_unavailable": true,
-    "exact_variant_mapping_uses_merchant_product_id": true
+    "exact_variant_mapping_uses_merchant_product_id": true,
+    "current_availability_field_absent": true
   },
   "safety": {
     "real_feed_preflight_required": true,
@@ -35,7 +36,8 @@
     "no_offer_activation_from_config_alone": true,
     "no_image_approval_from_config_alone": true,
     "reject_nonpositive_price": true,
-    "feed_access_does_not_imply_program_approval": true
+    "feed_access_does_not_imply_program_approval": true,
+    "default_missing_availability_to_out_of_stock": true
   },
   "affiliate_program_status": "approved",
   "live_routing_allowed": false,
