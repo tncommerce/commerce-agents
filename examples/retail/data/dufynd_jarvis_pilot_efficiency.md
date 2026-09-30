@@ -18,6 +18,8 @@ It groups audited model runs into cost families and reports:
 - failed/error/timeout run count and spend;
 - runs at or above 80% of the approved per-run cap;
 - spend concentration by run family;
+- spend concentration by recorded Jarvis runtime;
+- recorded failed-model-turn count and the runs that incurred that spend;
 - repeated cost centers (at least 3 runs and at least 15% of audited spend);
 - remaining approved spend/run headroom;
 - how many additional runs the remaining budget would cover if the historical

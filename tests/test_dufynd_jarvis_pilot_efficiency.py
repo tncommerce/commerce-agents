@@ -47,6 +47,7 @@ class FakeBridge:
                     {
                         "budget_id": "jarvis_activation_pilot_001",
                         "cost_usd": 0.10,
+                        "runtime": "dufynd_jarvis_v0_1",
                     }
                 ],
             },
@@ -59,6 +60,7 @@ class FakeBridge:
                     {
                         "budget_id": "jarvis_activation_pilot_001",
                         "cost_usd": 0.11,
+                        "runtime": "dufynd_jarvis_v0_1",
                     }
                 ],
             },
@@ -71,6 +73,7 @@ class FakeBridge:
                     {
                         "budget_id": "jarvis_activation_pilot_001",
                         "cost_usd": 0.12,
+                        "runtime": "dufynd_jarvis_v0_1",
                     }
                 ],
             },
@@ -83,6 +86,7 @@ class FakeBridge:
                     {
                         "budget_id": "jarvis_activation_pilot_001",
                         "cost_usd": 0.09,
+                        "runtime": "dufynd_jarvis_v0_1",
                     }
                 ],
             },
@@ -95,6 +99,9 @@ class FakeBridge:
                     {
                         "budget_id": "jarvis_activation_pilot_001",
                         "cost_usd": 0.21,
+                        "runtime": "dufynd_jarvis_safe_worker_v1",
+                        "worker_role": "commerce",
+                        "failed_model_turn": True,
                     }
                 ],
             },
@@ -124,6 +131,8 @@ def test_efficiency_report_surfaces_failed_and_near_cap_spend() -> None:
         "failed_runs": 1,
         "failed_spend_usd": 0.21,
         "failed_spend_share": 0.333333,
+        "failed_model_turns": 1,
+        "failed_model_turn_runs": 1,
     }
     assert report["near_cap"]["threshold_usd"] == 0.2
     assert report["near_cap"]["runs"] == [
@@ -133,6 +142,11 @@ def test_efficiency_report_surfaces_failed_and_near_cap_spend() -> None:
             "cost_usd": 0.21,
         }
     ]
+    failed_turn_signal = next(
+        item for item in report["signals"] if item["code"] == "failed_model_turn_cost_present"
+    )
+    assert failed_turn_signal["failed_model_turns"] == 1
+    assert failed_turn_signal["run_ids"] == ["failed-1"]
 
 
 def test_efficiency_report_groups_repeated_cost_centers() -> None:
@@ -150,6 +164,31 @@ def test_efficiency_report_groups_repeated_cost_centers() -> None:
     assert report["repeated_cost_centers"] == [affiliate]
     signal = next(item for item in report["signals"] if item["code"] == "repeated_cost_centers")
     assert signal["families"] == ["inbox:affiliate_partner_changed"]
+
+
+def test_efficiency_report_attributes_spend_by_runtime() -> None:
+    report = build_pilot_efficiency_report(FakeBridge())
+
+    assert report["runtimes"] == [
+        {
+            "runtime": "dufynd_jarvis_v0_1",
+            "runs": 4,
+            "spent_usd": 0.42,
+            "spend_share": 0.666667,
+            "average_run_usd": 0.105,
+            "max_run_usd": 0.12,
+            "failed_model_turns": 0,
+        },
+        {
+            "runtime": "dufynd_jarvis_safe_worker_v1",
+            "runs": 1,
+            "spent_usd": 0.21,
+            "spend_share": 0.333333,
+            "average_run_usd": 0.21,
+            "max_run_usd": 0.21,
+            "failed_model_turns": 1,
+        },
+    ]
 
 
 def test_efficiency_report_observed_capacity_is_descriptive_and_bounded() -> None:
@@ -177,6 +216,7 @@ def test_efficiency_report_can_be_clean_without_failures_or_near_cap_runs() -> N
 
     assert report["status"] == "ok"
     assert report["totals"]["failed_runs"] == 0
+    assert report["totals"]["failed_model_turns"] == 0
     assert report["near_cap"]["runs"] == []
     assert all(signal["severity"] != "attention" for signal in report["signals"])
 
