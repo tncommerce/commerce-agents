@@ -196,6 +196,10 @@ def test_readiness_report_exposes_image_only_promotion_candidates() -> None:
         coverage=1,
         image_ready=False,
     )
+    image_only["validation"] = {
+        "catalog_ready": False,
+        "blockers": ["approved_product_image_pending"],
+    }
     image_and_offer = staged_product(
         "SC-IMAGE-AND-OFFER",
         coverage=1,
@@ -211,9 +215,7 @@ def test_readiness_report_exposes_image_only_promotion_candidates() -> None:
     )
 
     assert report["image_only_candidate_count"] == 1
-    assert [row["product_id"] for row in report["image_only_candidates"]] == [
-        "SC-IMAGE-ONLY"
-    ]
+    assert [row["product_id"] for row in report["image_only_candidates"]] == ["SC-IMAGE-ONLY"]
     candidate = report["image_only_candidates"][0]
     assert candidate["promotion_candidate"] is True
     assert candidate["already_live"] is False
@@ -259,9 +261,7 @@ def test_readiness_report_exposes_only_true_image_only_candidates() -> None:
     )
 
     assert report["image_only_candidate_count"] == 1
-    assert [
-        row["product_id"] for row in report["image_only_candidates"]
-    ] == ["SC-IMAGE-ONLY"]
+    assert [row["product_id"] for row in report["image_only_candidates"]] == ["SC-IMAGE-ONLY"]
 
     by_id = {row["product_id"]: row for row in report["rows"]}
     assert by_id["SC-IMAGE-ONLY"]["image_only_candidate"] is True
