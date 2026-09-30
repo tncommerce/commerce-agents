@@ -21,12 +21,15 @@ It then checks:
   the RPC's display rounding);
 - audited billed-run count versus the budget RPC's `runs`;
 - the maximum single-run cost;
-- run count, spend, average cost and maximum cost grouped by Jarvis run type;
+- overall average/max run cost plus run count, spend, average cost and maximum
+  cost grouped by Jarvis run type;
 - whether any historical run exceeded the human-approved `per_run_cap_usd`;
 - whether the budget still has a resolvable explicit approved human decision;
 - whether the configured budget window stays within that decision's total cap and
   maximum run count;
-- whether the approval contains a per-run cap.
+- whether the approval contains a per-run cap;
+- the maximum additional spend possible before either the total budget headroom or
+  remaining-run × per-run-cap ceiling is reached.
 
 A historical per-run breach is reported as attention even if total spend remains
 under the overall budget. This is deliberate: total-budget compliance,
