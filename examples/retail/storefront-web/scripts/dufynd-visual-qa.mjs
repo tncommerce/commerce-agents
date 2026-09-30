@@ -1401,6 +1401,42 @@ try {
       );
     }
 
+    const exposedBlockedRoutes = detailRoutes.filter((route) =>
+      blockedFragranceRoutes.has(route),
+    );
+    if (exposedBlockedRoutes.length) {
+      throw new Error(
+        `source-blocked fragrances leaked into the catalog: ${exposedBlockedRoutes.join(", ")}`,
+      );
+    }
+
+    for (const route of [...blockedFragranceRoutes].sort()) {
+      const slug = route.replace(/^\/duft\//, "");
+      const label = `blocked-detail-${slug}-390`;
+      const url = `${baseUrl}${route}`;
+      try {
+        const response = await sweepPage.goto(url, {
+          waitUntil: "domcontentloaded",
+          timeout: 45_000,
+        });
+        if (response?.status() !== 404) {
+          throw new Error(
+            `source-blocked fragrance route returned HTTP ${response?.status() ?? "no response"} instead of 404`,
+          );
+        }
+        report.checks.push({
+          label,
+          status: "passed",
+          http_status: 404,
+        });
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : String(error);
+        report.failures.push({ label, url, message });
+        report.checks.push({ label, status: "failed", message });
+      }
+    }
+
     for (const route of detailRoutes) {
       const slug = route.replace(/^\/duft\//, "");
       const label = `detail-sweep-${slug}-390`;
