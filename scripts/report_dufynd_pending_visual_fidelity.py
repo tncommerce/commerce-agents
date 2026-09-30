@@ -99,10 +99,7 @@ def main() -> int:
 
     print(f"Pending visual fidelity reviews: {report['pending_count']}")
     for item in report["items"]:
-        print(
-            f"- {item['product_id']} | {item['status']} | "
-            f"{item['candidate_asset']}"
-        )
+        print(f"- {item['product_id']} | {item['status']} | {item['candidate_asset']}")
     print("No pending candidate is approved or activated by this report.")
     return 0
 
