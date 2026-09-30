@@ -215,6 +215,8 @@ def test_readiness_report_exposes_image_only_promotion_candidates() -> None:
     )
 
     assert report["image_only_candidate_count"] == 1
+    assert report["image_only_candidate_scope"] == "promotion_gate_only"
+    assert report["image_only_candidates_require_image_rights_and_human_approval"] is True
     assert [row["product_id"] for row in report["image_only_candidates"]] == ["SC-IMAGE-ONLY"]
     candidate = report["image_only_candidates"][0]
     assert candidate["promotion_candidate"] is True
