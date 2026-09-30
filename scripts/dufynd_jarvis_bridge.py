@@ -99,6 +99,25 @@ class DufyndJarvisBridge:
             raise ValueError("DUFYND Jarvis creative context must be a JSON object")
         return payload
 
+    def load_creative_pattern_index(self, *, limit: int = 100) -> list[dict[str, Any]]:
+        bounded_limit = max(1, min(int(limit), 200))
+        with self._client() as client:
+            response = client.get(
+                f"{self.supabase_url}/rest/v1/dufynd_creative_patterns",
+                headers=_headers(self.secret_key),
+                params={
+                    "select": "pattern_id,name,role,mechanism,best_for",
+                    "order": "pattern_id.asc",
+                    "limit": str(bounded_limit),
+                },
+            )
+            response.raise_for_status()
+            payload = response.json()
+
+        if not isinstance(payload, list):
+            raise ValueError("DUFYND creative-pattern index must return a JSON array")
+        return [row for row in payload if isinstance(row, dict)]
+
     def load_autonomy_queue(self) -> dict[str, Any]:
         payload = self._rpc("get_dufynd_autonomy_queue")
         if not isinstance(payload, dict):

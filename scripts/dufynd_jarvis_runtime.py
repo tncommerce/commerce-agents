@@ -74,8 +74,9 @@ Operating rules:
 10. Keep the operator as final decision-maker for the high-impact gates above.
 
 For a creative reference event:
-- load creative context
-- inspect existing patterns and lessons
+- load the bounded creative pattern index first
+- inspect existing patterns before deciding whether anything new is needed
+- load the full creative context only when the bounded index is insufficient and the payload is small enough
 - identify the reusable mechanisms
 - link the reference to existing patterns where possible
 - create a new pattern only when truly distinct
@@ -126,6 +127,22 @@ def build_tools(bridge: DufyndJarvisBridge) -> list[SdkMcpTool[Any]]:
     )
     async def load_creative_context(_args: dict[str, Any]) -> dict[str, Any]:
         return _json_result(await asyncio.to_thread(bridge.load_creative_context))
+
+    @tool(
+        "load_creative_pattern_index",
+        "Load a bounded compact index of existing DUFYND creative patterns for reuse-before-creation checks.",
+        {
+            "type": "object",
+            "properties": {"limit": {"type": "integer", "minimum": 1, "maximum": 200}},
+        },
+    )
+    async def load_creative_pattern_index(args: dict[str, Any]) -> dict[str, Any]:
+        return _json_result(
+            await asyncio.to_thread(
+                bridge.load_creative_pattern_index,
+                limit=int(args.get("limit", 100)),
+            )
+        )
 
     @tool(
         "load_autonomy_queue",
@@ -354,6 +371,7 @@ def build_tools(bridge: DufyndJarvisBridge) -> list[SdkMcpTool[Any]]:
     return [
         load_operating_context,
         load_creative_context,
+        load_creative_pattern_index,
         load_autonomy_queue,
         load_experiment_rubric,
         load_pending_decisions,
@@ -379,6 +397,7 @@ def allowed_tool_names() -> list[str]:
     names = (
         "load_operating_context",
         "load_creative_context",
+        "load_creative_pattern_index",
         "load_autonomy_queue",
         "load_experiment_rubric",
         "load_pending_decisions",
@@ -487,6 +506,19 @@ def _require_budget_window(bridge: DufyndJarvisBridge) -> tuple[str, dict[str, A
             f"approved(max_runs={approved_max_runs}, cap_usd={approved_cap_usd})."
         )
 
+    try:
+        approved_per_run_cap_usd = float(approved["per_run_cap_usd"])
+        configured_per_run_cap_usd = float(os.getenv("DUFYND_JARVIS_MAX_BUDGET_USD", "0.25"))
+    except (KeyError, TypeError, ValueError) as error:
+        raise RuntimeError(
+            f"DUFYND Jarvis budget window {budget_id} has incomplete per-run approval limits."
+        ) from error
+    if configured_per_run_cap_usd > approved_per_run_cap_usd:
+        raise RuntimeError(
+            "DUFYND Jarvis configured per-run budget exceeds its approved human limit: "
+            f"configured={configured_per_run_cap_usd} vs approved={approved_per_run_cap_usd}."
+        )
+
     if not status.get("can_run"):
         raise RuntimeError(
             "DUFYND Jarvis budget window does not permit another run: "
@@ -518,8 +550,14 @@ def _require_autonomous_session(
     return _require_budget_window(bridge)
 
 
+def _sdk_budget_limit(approved_per_run_cap_usd: float) -> float:
+    """Leave headroom because the SDK can finish a turn slightly above its stop threshold."""
+    return max(0.01, round(approved_per_run_cap_usd * 0.8, 4))
+
+
 def make_options(bridge: DufyndJarvisBridge) -> ClaudeAgentOptions:
     model, max_turns, max_budget_usd = _require_active_runtime()
+    sdk_budget_usd = _sdk_budget_limit(max_budget_usd)
     return ClaudeAgentOptions(
         system_prompt=SYSTEM_PROMPT,
         mcp_servers={SERVER_NAME: build_server(bridge)},
@@ -529,7 +567,7 @@ def make_options(bridge: DufyndJarvisBridge) -> ClaudeAgentOptions:
         env={"CLAUDE_CODE_DISABLE_CLAUDE_MDS": "1"},
         model=model,
         max_turns=max_turns,
-        max_budget_usd=max_budget_usd,
+        max_budget_usd=sdk_budget_usd,
         permission_mode="dontAsk",
     )
 
@@ -550,6 +588,7 @@ controlled DUFYND step.
 
 def make_safe_worker_options(bridge: DufyndJarvisBridge) -> ClaudeAgentOptions:
     model, max_turns, max_budget_usd = _require_active_runtime()
+    sdk_budget_usd = _sdk_budget_limit(max_budget_usd)
     builtins = ["Read", "Grep", "Glob", "WebSearch", "WebFetch"]
     return ClaudeAgentOptions(
         system_prompt=SAFE_WORKER_SYSTEM_PROMPT,
@@ -560,7 +599,7 @@ def make_safe_worker_options(bridge: DufyndJarvisBridge) -> ClaudeAgentOptions:
         env={"CLAUDE_CODE_DISABLE_CLAUDE_MDS": "1"},
         model=model,
         max_turns=max_turns,
-        max_budget_usd=max_budget_usd,
+        max_budget_usd=sdk_budget_usd,
         permission_mode="dontAsk",
     )
 
@@ -582,6 +621,7 @@ A deterministic workflow will validate changed paths and run tests after your tu
 
 def make_branch_worker_options(bridge: DufyndJarvisBridge) -> ClaudeAgentOptions:
     model, max_turns, max_budget_usd = _require_active_runtime()
+    sdk_budget_usd = _sdk_budget_limit(max_budget_usd)
     builtins = ["Read", "Grep", "Glob", "Write", "Edit"]
     return ClaudeAgentOptions(
         system_prompt=BRANCH_WORKER_SYSTEM_PROMPT,
@@ -592,7 +632,7 @@ def make_branch_worker_options(bridge: DufyndJarvisBridge) -> ClaudeAgentOptions
         env={"CLAUDE_CODE_DISABLE_CLAUDE_MDS": "1"},
         model=model,
         max_turns=max_turns,
-        max_budget_usd=max_budget_usd,
+        max_budget_usd=sdk_budget_usd,
         permission_mode="acceptEdits",
     )
 
@@ -832,8 +872,10 @@ def safe_task_prompt(task: dict[str, Any]) -> str:
     )
     return (
         f"{role_guidance} "
-        "First load the current autonomy queue and operating context. Use repository "
-        "read/search tools and public web research when useful. Do not perform any "
+        "First load the current autonomy queue and runtime health. Prefer bounded "
+        "indexes and targeted repository reads; load the comprehensive operating "
+        "context only when specifically necessary. Use repository read/search tools "
+        "and public web research when useful. Do not perform any "
         "high-impact action. Produce evidence, blockers, and the next safe step; do "
         "not claim publication, licensing rights, stock, price, or identity without "
         "verification. End your response with exactly one machine-readable outcome "
@@ -846,6 +888,25 @@ def safe_task_prompt(task: dict[str, Any]) -> str:
         "task-local blocker, and in_progress when useful work remains.\n\n"
         + json.dumps(task, ensure_ascii=False, default=str)
     )
+
+
+SAFE_TASK_STATES = {
+    "done",
+    "waiting_human_input",
+    "waiting_external",
+    "blocked",
+    "in_progress",
+}
+
+
+def _extract_safe_task_state(text: str) -> str | None:
+    for line in reversed(text.splitlines()):
+        normalized = line.strip()
+        if not normalized.startswith("DUFYND_TASK_STATE:"):
+            continue
+        state = normalized.split(":", 1)[1].strip()
+        return state if state in SAFE_TASK_STATES else None
+    return None
 
 
 async def process_safe_task(
@@ -891,7 +952,10 @@ async def process_safe_task(
         async with ClaudeSDKClient(options=options) as client:
             await client.query(safe_task_prompt(task))
             result = await collect_turn(client)
-        if result.is_error:
+
+        text = result.text.strip()
+        worker_state = _extract_safe_task_state(text)
+        if result.is_error and worker_state is None:
             detail = "; ".join(result.tool_errors) or result.text or "Safe worker failed"
             await asyncio.to_thread(
                 bridge.record_run,
@@ -913,16 +977,22 @@ async def process_safe_task(
             )
             raise RuntimeError(detail)
 
-        text = result.text.strip()
+        progress_status = (
+            worker_state
+            if worker_state in {"waiting_human_input", "waiting_external", "blocked"}
+            else "in_progress"
+        )
         await asyncio.to_thread(
             bridge.update_autonomy_task_progress,
             task_id=task_id,
-            status="in_progress",
+            status=progress_status,
             evidence=text[:12000] or "Safe worker completed without prose evidence.",
         )
         await asyncio.to_thread(
             bridge.record_run,
-            run_type=f"safe_task:{task_id}",
+            run_type=(
+                f"safe_task_soft_error:{task_id}" if result.is_error else f"safe_task:{task_id}"
+            ),
             input_summary=json.dumps(task, ensure_ascii=False, default=str)[:4000],
             output_summary=text[:8000] or "(safe worker produced no prose output)",
             decisions=[
@@ -933,6 +1003,8 @@ async def process_safe_task(
                     "runtime": "dufynd_jarvis_safe_worker_v1",
                     "worker_role": str(task.get("domain") or "research"),
                     "terminal_completion_recorded": False,
+                    "worker_state": worker_state,
+                    "sdk_reported_error": bool(result.is_error),
                 }
             ],
             human_approval_required=False,
