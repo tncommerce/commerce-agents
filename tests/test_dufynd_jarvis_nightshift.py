@@ -577,6 +577,41 @@ def test_nightshift_retries_failed_task_then_continues(monkeypatch) -> None:
     ]
 
 
+def test_nightshift_bounds_unexpected_task_local_exception(monkeypatch) -> None:
+    bridge = FakeBridge([task("repo_current_commerce", "commerce", 100)])
+
+    monkeypatch.setattr(
+        nightshift,
+        "_require_autonomous_mode",
+        lambda: None,
+    )
+    monkeypatch.setattr(
+        nightshift,
+        "_require_budget_window",
+        lambda _bridge: ("budget", {"can_run": True}),
+    )
+
+    async def broken_safe(_bridge, *, task_id=None):
+        raise ValueError("persistence edge case")
+
+    monkeypatch.setattr(nightshift, "process_safe_task", broken_safe)
+
+    session = asyncio.run(
+        nightshift.run_nightshift(
+            bridge,
+            max_tasks=1,
+            max_events=0,
+            worker_timeout_seconds=60,
+            max_retries=0,
+        )
+    )
+
+    assert bridge.tasks["repo_current_commerce"]["status"] == "blocked"
+    assert session["status"] == "completed"
+    assert session["current_task"] is None
+    assert session["task_results"][0]["final_status"] == "blocked"
+
+
 def test_finalize_branch_task_moves_yellow_work_to_owner_review() -> None:
     bridge = FakeBridge([task("repo_current_engineering", "engineering", 100)])
     bridge.tasks["repo_current_engineering"]["status"] = "in_progress"
