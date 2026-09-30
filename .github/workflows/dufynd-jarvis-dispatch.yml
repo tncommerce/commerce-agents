@@ -13,9 +13,14 @@ on:
           - process-next
           - nightshift-pilot
       nightshift_max_tasks:
-        description: Maximum safe tasks for one Nightshift pilot
+        description: Maximum safe tasks for each bounded Nightshift session
         required: false
         default: "8"
+        type: string
+      nightshift_max_minutes:
+        description: Maximum bounded overnight supervisor horizon in minutes
+        required: false
+        default: "300"
         type: string
       approval_token:
         description: Required for process-next or nightshift-pilot
@@ -94,7 +99,8 @@ jobs:
   nightshift:
     if: inputs.mode == 'nightshift-pilot'
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    # Supervisor hard-caps autonomous work at 330 minutes; reserve time for QA/reporting.
+    timeout-minutes: 360
     permissions:
       contents: write
       pull-requests: write
@@ -111,6 +117,14 @@ jobs:
           set -euo pipefail
           test -f scripts/dufynd_jarvis_nightshift.py || {
             echo "Jarvis Nightshift runtime is not present on scentai-mvp."
+            exit 21
+          }
+          test -f scripts/dufynd_jarvis_supervisor.py || {
+            echo "Jarvis Overnight Supervisor is not present on scentai-mvp."
+            exit 21
+          }
+          test -f scripts/audit_dufynd_jarvis_control_plane.py || {
+            echo "Jarvis control-plane audit is not present on scentai-mvp."
             exit 21
           }
 
@@ -147,6 +161,20 @@ jobs:
           --max-lag-hours 0
           --machine-readable
 
+      - name: Capture Jarvis control-plane audit
+        env:
+          SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          DUFYND_JARVIS_BUDGET_ID: "jarvis_activation_pilot_001"
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p jarvis-nightshift-report
+          python -m scripts.audit_dufynd_jarvis_control_plane --pretty \
+            | tee jarvis-nightshift-report/control-plane-audit.json
+          sha256sum jarvis-nightshift-report/control-plane-audit.json \
+            > "${RUNNER_TEMP}/dufynd-control-plane-audit.sha256"
+
       - name: Restore clean worker checkout after control-plane sync
         shell: bash
         run: |
@@ -160,6 +188,17 @@ jobs:
             exit 28
           fi
 
+          unexpected_untracked="$(
+            git ls-files --others --exclude-standard \
+              | grep -v '^jarvis-nightshift-report/control-plane-audit.json$' \
+              || true
+          )"
+          if [ -n "${unexpected_untracked}" ]; then
+            echo "Unexpected pre-worker untracked files are present."
+            printf '%s\n' "${unexpected_untracked}"
+            exit 29
+          fi
+          sha256sum -c "${RUNNER_TEMP}/dufynd-control-plane-audit.sha256"
       - name: Validate explicit Nightshift pilot approval
         shell: bash
         run: |
@@ -176,7 +215,7 @@ jobs:
           cache: npm
           cache-dependency-path: examples/package-lock.json
 
-      - name: Run Jarvis Nightshift pilot
+      - name: Run Jarvis bounded Overnight Supervisor
         env:
           SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
@@ -189,7 +228,11 @@ jobs:
           DUFYND_JARVIS_AUTONOMOUS: "1"
           DUFYND_JARVIS_TASK_METADATA_PATH: "jarvis-worker-task.json"
         run: >-
-          python -m scripts.dufynd_jarvis_nightshift run
+          python -m scripts.dufynd_jarvis_supervisor
+          --max-minutes "${{ inputs.nightshift_max_minutes }}"
+          --max-cycles "20"
+          --idle-seconds "300"
+          --max-idle-cycles "60"
           --max-tasks "${{ inputs.nightshift_max_tasks }}"
           --max-events "5"
           --worker-timeout-seconds "600"
@@ -199,8 +242,25 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          git diff --check
-          git diff --name-only > jarvis-worker-files.txt
+          sha256sum -c "${RUNNER_TEMP}/dufynd-control-plane-audit.sha256"
+
+          git diff --name-status --find-renames > "${RUNNER_TEMP}/jarvis-tracked-status.txt"
+          while IFS=$'\t' read -r change old_path new_path; do
+            case "${change}" in
+              D*|R*)
+                echo "Jarvis branch worker may not delete or rename tracked files: ${change} ${old_path} ${new_path:-}"
+                exit 23
+                ;;
+            esac
+          done < "${RUNNER_TEMP}/jarvis-tracked-status.txt"
+
+          {
+            git diff --name-only
+            git ls-files --others --exclude-standard \
+              | grep -v -E '^(jarvis-nightshift-report/control-plane-audit\.json|jarvis-worker-task\.json)$' \
+              || true
+          } | sort -u > "${RUNNER_TEMP}/jarvis-worker-files.txt"
+          cp "${RUNNER_TEMP}/jarvis-worker-files.txt" jarvis-worker-files.txt
 
           if [ ! -s jarvis-worker-files.txt ]; then
             echo "Jarvis branch worker produced no repository changes."
@@ -208,6 +268,10 @@ jobs:
           fi
 
           while IFS= read -r file; do
+            if [ -L "$file" ]; then
+              echo "Symlinks are outside the Jarvis branch-worker patch boundary: $file"
+              exit 25
+            fi
             case "$file" in
               .github/*|examples/retail/data/*|supabase/*|*.env|*.env.*|*package-lock.json|*pnpm-lock.yaml|*yarn.lock|requirements*.txt|pyproject.toml|scripts/check.py|scripts/dufynd_jarvis_*|scripts/sync_dufynd_repo_state_to_supabase.py|scripts/refresh_scentai_jarvis_state.py|examples/retail/storefront-web/scripts/*)
                 echo "Blocked Jarvis branch-worker path: $file"
@@ -220,8 +284,13 @@ jobs:
                 exit 22
                 ;;
             esac
+
+            if ! git ls-files --error-unmatch -- "$file" > /dev/null 2>&1; then
+              git add -N -- "$file"
+            fi
           done < jarvis-worker-files.txt
 
+          git diff --check
           git diff --binary > jarvis-worker.patch
           ruff check .
           ruff format --check .
@@ -259,7 +328,6 @@ jobs:
               --out retail/storefront-web/.visual-qa
             popd > /dev/null
           fi
-
       - name: Create validated Jarvis worker PR
         shell: bash
         env:
