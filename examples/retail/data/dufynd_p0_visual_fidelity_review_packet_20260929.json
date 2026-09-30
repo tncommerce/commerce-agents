@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated_at": "2026-09-29",
-  "status": "partially_approved_2026-09-29",
+  "status": "partially_approved_through_2026-09-30",
   "purpose": "Human fidelity review packet for existing DUFYND P0 product-image candidates. This packet does not approve rights, activate imagery, or publish anything.",
   "approval_scope": {
     "decision": "visual_fidelity_only",
@@ -45,9 +45,9 @@
       "name": "Absolu Aventus",
       "concentration": "Parfum",
       "volume_ml": 100,
-      "candidate_asset": "examples/retail/review-assets/product-candidates/creed-absolu-aventus-p0-v1.webp",
-      "reference_url": "https://www.creedfragrance.de/p/absolu-aventus/16281794/?variation=16281796",
-      "current_state": "candidate_generated_pending_reference_gate",
+      "candidate_asset": "examples/retail/review-assets/product-candidates/creed-absolu-aventus-p0-v2.png",
+      "reference_url": "https://www.creedfragrances.co.uk/products/absolu-aventus?variant=54334047060353",
+      "current_state": "human_fidelity_approved_pending_promotion",
       "review_focus": [
         "exact 100 ml bottle silhouette",
         "packaging/volume ambiguity",
@@ -55,9 +55,10 @@
         "front typography and emblem",
         "avoid any 75 ml / 2.5 FL.OZ mismatch"
       ],
-      "known_finding": "Current official imagery remains variant-ambiguous, so this candidate must stay inactive until exact 100 ml identity can be resolved with confidence.",
-      "review_decision": "needs_revision",
-      "reviewed_at": "2026-09-29"
+      "known_finding": "Exact 100 ml identity is resolved against official variant 54334047060353 / SKU 1110090 / barcode 3508440004352. DUFYND-generated v2 received explicit human visual-fidelity approval on 2026-09-30 and remains non-public pending the controlled product-truth promotion path.",
+      "review_decision": "approve_fidelity",
+      "reviewed_at": "2026-09-30",
+      "rights_source_state": "dufynd_generated_internal_asset"
     },
     {
       "priority": "P0",
@@ -106,17 +107,19 @@
       "public_asset": "/products/sospiro-vibrato-100-cutout-production.webp"
     }
   ],
-  "post_review_rule": "Fidelity approval alone never grants rights to external imagery. The three promoted assets are DUFYND-generated internal candidates with explicit human fidelity approval; manufacturer reference imagery is not republished. Creed remains inactive.",
-  "reviewed_at": "2026-09-29",
+  "post_review_rule": "Fidelity approval alone never grants rights to external imagery. Armani SWY Intensely, Prada L'Homme and Sospiro Vibrato are already promoted DUFYND-generated product-truth assets. Creed Absolu Aventus v2 now has explicit human fidelity approval but remains non-public pending the controlled promotion path.",
+  "reviewed_at": "2026-09-30",
   "review_summary": {
     "approved_fidelity_product_ids": [
       "SC-ARMANI-SWY-INTENSELY-100",
+      "SC-CREED-ABSOLU-AVENTUS-100",
       "SC-PRADA-LHOMME-100",
       "SC-SOSPIRO-VIBRATO-100"
     ],
-    "needs_revision_product_ids": [
+    "pending_promotion_product_ids": [
       "SC-CREED-ABSOLU-AVENTUS-100"
     ],
-    "note": "Human approval applies to visual fidelity of the three DUFYND-generated candidates. Creed Absolu Aventus remains blocked by exact-variant ambiguity."
+    "needs_revision_product_ids": [],
+    "note": "Human approval applies to visual fidelity only. Creed v2 was approved on 2026-09-30; it is not yet promoted or public, and no external reference-image rights are implied."
   }
 }
