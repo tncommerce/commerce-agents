@@ -1,10 +1,7 @@
 from __future__ import annotations
 
 import pytest
-
-from scripts.build_dufynd_cj_deep_link import (
-    build_cj_deep_link,
-)
+from scripts.build_dufynd_cj_deep_link import build_cj_deep_link
 
 
 def test_build_notino_cj_deep_link_matches_verified_preflight() -> None:
