@@ -5,9 +5,7 @@ from pathlib import Path
 
 from scripts.build_dufynd_cj_deep_link import build_cj_deep_link
 
-CANDIDATES = Path(
-    "examples/retail/data/scentai_notino_activation_candidates_20260930.json"
-)
+CANDIDATES = Path("examples/retail/data/scentai_notino_activation_candidates_20260930.json")
 
 
 def _payload() -> dict:
