@@ -158,18 +158,30 @@ def test_retrospective_marks_invalid_human_approval() -> None:
 
 def test_retrospective_flags_source_drift_between_double_reads() -> None:
     bridge = FakeBridge()
-    original_load = bridge.load_budget_status
+    original_load = bridge.load_agent_runs_since
     calls = {"count": 0}
 
-    def changing_budget_status(budget_id):
+    def changing_runs(since_iso):
         calls["count"] += 1
-        value = dict(original_load(budget_id))
+        rows = list(original_load(since_iso))
         if calls["count"] >= 2:
-            value["runs"] = value["runs"] + 1
-            value["spent_usd"] = value["spent_usd"] + 0.01
-        return value
+            rows = rows + [
+                {
+                    "id": "late-run",
+                    "agent_name": "jarvis",
+                    "run_type": "event",
+                    "created_at": "2026-09-29T20:05:00+00:00",
+                    "decisions": [
+                        {
+                            "budget_id": "jarvis_activation_pilot_001",
+                            "cost_usd": 0.01,
+                        }
+                    ],
+                }
+            ]
+        return rows
 
-    bridge.load_budget_status = changing_budget_status
+    bridge.load_agent_runs_since = changing_runs
 
     report = build_pilot_retrospective(bridge)
 
