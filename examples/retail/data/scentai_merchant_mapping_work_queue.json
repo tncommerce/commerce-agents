@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated_at": "2026-09-29T21:03:00+00:00",
-  "source_fingerprint_sha256": "898dafbe2bb8ade2c282a417e7fb707d96270fca2b8dac549e14437dd93ecb8c",
+  "source_fingerprint_sha256": "2fec663e052eadd7c3c0ffa9152437aa056d950fce96308516cbe301c2b7dc18",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
     "scentai_catalog_staging.json",
