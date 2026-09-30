@@ -305,6 +305,47 @@ class DufyndJarvisBridge:
             raise ValueError("DUFYND reconciled decision row must be a JSON object")
         return row
 
+    def complete_pending_autonomy_task_reconciliation(
+        self,
+        *,
+        task_id: str,
+        status: str,
+        evidence: str,
+    ) -> dict[str, Any] | None:
+        if not task_id.strip():
+            raise ValueError("task_id is required")
+        if status not in {"done", "cancelled"}:
+            raise ValueError("Reconciled autonomy task status must be done or cancelled.")
+
+        with self._client() as client:
+            response = client.patch(
+                f"{self.supabase_url}/rest/v1/dufynd_autonomy_tasks",
+                headers={
+                    **_headers(self.secret_key),
+                    "Prefer": "return=representation",
+                },
+                params={
+                    "task_id": f"eq.{task_id}",
+                    "status": "eq.approval_required",
+                    "approval_action_type": "eq.merge_production_code",
+                },
+                json={
+                    "status": status,
+                    "evidence": evidence[:12000],
+                },
+            )
+            response.raise_for_status()
+            payload = response.json()
+
+        if not isinstance(payload, list):
+            raise ValueError("DUFYND task reconciliation must return a JSON array")
+        if not payload:
+            return None
+        row = payload[0]
+        if not isinstance(row, dict):
+            raise ValueError("DUFYND reconciled autonomy task row must be a JSON object")
+        return row
+
     def claim_next_inbox_event(self) -> dict[str, Any] | None:
         payload = self._rpc("claim_dufynd_jarvis_event")
         if payload is None:
