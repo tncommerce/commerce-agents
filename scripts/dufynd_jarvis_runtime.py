@@ -990,7 +990,9 @@ async def process_safe_task(
         )
         await asyncio.to_thread(
             bridge.record_run,
-            run_type=(f"safe_task_soft_error:{task_id}" if result.is_error else f"safe_task:{task_id}"),
+            run_type=(
+                f"safe_task_soft_error:{task_id}" if result.is_error else f"safe_task:{task_id}"
+            ),
             input_summary=json.dumps(task, ensure_ascii=False, default=str)[:4000],
             output_summary=text[:8000] or "(safe worker produced no prose output)",
             decisions=[
