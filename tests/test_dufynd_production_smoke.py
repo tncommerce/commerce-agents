@@ -2,7 +2,12 @@ from __future__ import annotations
 
 import httpx
 import pytest
-from scripts.dufynd_production_smoke import CRITICAL_PRODUCT_ID, run_smoke
+from scripts.dufynd_production_smoke import (
+    CRITICAL_PRODUCT_ID,
+    NOTINO_ECLAIRE_OFFER_ID,
+    NOTINO_ECLAIRE_PRODUCT_ID,
+    run_smoke,
+)
 
 SAMPLE_PRODUCT_ID = "SC-TEST-FRAGRANCE-EDP-100"
 CRITICAL_PRODUCT_PATH = "/duft/rabanne-1-million"
@@ -13,6 +18,7 @@ def transport(
     health_payload=None,
     partners_payload=None,
     offers_payload=None,
+    eclaire_offers_payload=None,
     broken_storefront_path: str | None = None,
     detail_product_id: str = SAMPLE_PRODUCT_ID,
     robots_text: str = "User-agent: *\nDisallow: /\n",
@@ -52,6 +58,30 @@ def transport(
                     "clickout_path": ("/api/clickout/perfumetrader-rabanne-1-million-edt-100"),
                     "affiliate_link": True,
                     "last_updated_at": "2026-09-30T12:04:36+00:00",
+                }
+            ],
+            "affiliate_disclosure": "Affiliate disclosure",
+        }
+    )
+    resolved_eclaire_offers = (
+        eclaire_offers_payload
+        if eclaire_offers_payload is not None
+        else {
+            "product_id": NOTINO_ECLAIRE_PRODUCT_ID,
+            "best_offer_id": NOTINO_ECLAIRE_OFFER_ID,
+            "offers": [
+                {
+                    "offer_id": NOTINO_ECLAIRE_OFFER_ID,
+                    "product_id": NOTINO_ECLAIRE_PRODUCT_ID,
+                    "merchant_id": "notino",
+                    "merchant_name": "Notino",
+                    "price": 33.5,
+                    "currency": "EUR",
+                    "total_price": 33.5,
+                    "in_stock": True,
+                    "clickout_path": f"/api/clickout/{NOTINO_ECLAIRE_OFFER_ID}",
+                    "affiliate_link": True,
+                    "last_updated_at": "2026-09-30T16:22:00+00:00",
                 }
             ],
             "affiliate_disclosure": "Affiliate disclosure",
@@ -113,6 +143,9 @@ def transport(
         if request.url.path == f"/api/merchant-offers/{CRITICAL_PRODUCT_ID}":
             return httpx.Response(200, json=resolved_offers)
 
+        if request.url.path == f"/api/merchant-offers/{NOTINO_ECLAIRE_PRODUCT_ID}":
+            return httpx.Response(200, json=resolved_eclaire_offers)
+
         if request.url.path == "/api/merchant-partners":
             return httpx.Response(200, json=resolved_partners)
 
@@ -146,6 +179,7 @@ def test_smoke_passes_for_expected_contract() -> None:
         "product_detail",
         "product_detail_rabanne_1_million",
         "merchant_offers_rabanne_1_million",
+        "merchant_offers_notino_eclaire",
         "merchant_partners",
     ]
 
@@ -438,3 +472,39 @@ def test_smoke_fails_on_unsafe_merchant_clickout_path() -> None:
     assert report.ok is False
     assert check.ok is False
     assert "stale or unsafe" in check.detail
+
+
+def test_smoke_fails_when_notino_eclaire_is_not_affiliate_routed() -> None:
+    report = run_smoke(
+        storefront_url="https://dufynd.de",
+        api_url="https://api.dufynd.test",
+        transport=transport(
+            eclaire_offers_payload={
+                "product_id": NOTINO_ECLAIRE_PRODUCT_ID,
+                "best_offer_id": NOTINO_ECLAIRE_OFFER_ID,
+                "offers": [
+                    {
+                        "offer_id": NOTINO_ECLAIRE_OFFER_ID,
+                        "product_id": NOTINO_ECLAIRE_PRODUCT_ID,
+                        "merchant_id": "notino",
+                        "merchant_name": "Notino",
+                        "price": 33.5,
+                        "currency": "EUR",
+                        "total_price": 33.5,
+                        "in_stock": True,
+                        "clickout_path": f"/api/clickout/{NOTINO_ECLAIRE_OFFER_ID}",
+                        "affiliate_link": False,
+                        "last_updated_at": "2026-09-30T16:22:00+00:00",
+                    }
+                ],
+                "affiliate_disclosure": "Affiliate disclosure",
+            }
+        ),
+    )
+
+    check = next(
+        check for check in report.checks if check.name == "merchant_offers_notino_eclaire"
+    )
+    assert report.ok is False
+    assert check.ok is False
+    assert "expected_offer_ok=False" in check.detail
