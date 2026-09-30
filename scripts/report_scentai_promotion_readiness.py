@@ -170,6 +170,8 @@ def build_readiness_report(
         "blocked_count": len(rows) - ready_count,
         "promotion_blocked_count": promotion_blocked_count,
         "image_only_candidate_count": len(image_only_candidates),
+        "image_only_candidate_scope": "promotion_gate_only",
+        "image_only_candidates_require_image_rights_and_human_approval": True,
         "image_only_candidates": image_only_candidates,
         "tier_counts": {tier: tier_counts.get(tier, 0) for tier in ("A", "B", "C")},
         "blocker_counts": dict(
