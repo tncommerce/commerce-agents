@@ -43,7 +43,7 @@ function Wordmark() {
 }
 
 export default function StorefrontPage() {
-  const session = useSession(api);
+  const session = useSession(api, { timeoutMs: 8_000 });
   const [view, setView] = useState<View>("assistant");
   const [panelOpen, setPanelOpen] = useState(false);
   const analyticsSessionRef = useRef<string | null>(null);
