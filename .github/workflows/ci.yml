@@ -167,7 +167,7 @@ jobs:
           retention-days: 7
 
   dufynd-state-preview:
-    if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'dufynd-notino-eclaire-live-ci3-')
+    if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'dufynd-notino-eclaire-live-ci4-')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -197,6 +197,8 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin scentai-mvp --depth=1
+          git show FETCH_HEAD:.github/workflows/ci.yml > .github/workflows/ci.yml
           git add examples/retail/data/scentai_merchant_mapping_work_queue.json
           git add examples/retail/data/scentai_affiliate_activation_status.json
           git add examples/retail/data/scentai_image_approval_work_queue.json
@@ -210,6 +212,7 @@ jobs:
           git add examples/retail/data/scentai_content_pipeline_status.json
           git add examples/retail/data/scentai_media_generation_queue.json
           git add examples/retail/data/scentai_jarvis_master_status.json
+          git add .github/workflows/ci.yml
           if git diff --cached --quiet; then
             echo "Canonical derived state already matches source-of-truth."
             exit 0
