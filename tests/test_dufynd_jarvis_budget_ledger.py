@@ -193,9 +193,7 @@ def test_budget_ledger_accepts_budget_status_display_rounding() -> None:
 
     assert report["ledger"]["spent_usd"] == 0.30006
     assert report["reconciliation"]["spend_matches"] is True
-    assert "budget_spend_reconciliation_mismatch" not in {
-        item["code"] for item in report["issues"]
-    }
+    assert "budget_spend_reconciliation_mismatch" not in {item["code"] for item in report["issues"]}
 
 
 def test_budget_ledger_flags_spend_and_run_count_mismatch() -> None:
@@ -250,9 +248,7 @@ def test_budget_ledger_rejects_nonapproved_human_decision() -> None:
     report = build_budget_ledger(bridge)
 
     assert report["approval"]["valid"] is False
-    assert "budget_approval_not_approved" in {
-        item["code"] for item in report["issues"]
-    }
+    assert "budget_approval_not_approved" in {item["code"] for item in report["issues"]}
 
 
 def test_budget_ledger_flags_window_above_human_approval() -> None:
@@ -271,9 +267,7 @@ def test_budget_ledger_flags_window_above_human_approval() -> None:
     report = build_budget_ledger(bridge)
 
     issue = next(
-        item
-        for item in report["issues"]
-        if item["code"] == "budget_window_exceeds_human_approval"
+        item for item in report["issues"] if item["code"] == "budget_window_exceeds_human_approval"
     )
     assert issue["window_cap_usd"] == 3.0
     assert issue["approved_cap_usd"] == 2.5
