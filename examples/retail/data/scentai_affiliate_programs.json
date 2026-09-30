@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "updated_at": "2026-09-27",
+  "updated_at": "2026-09-30",
   "network": "Awin",
   "publisher": "DUFYND",
   "applications": [
@@ -68,9 +68,13 @@
     {
       "network": "CJ Affiliate",
       "program": "Notino",
-      "status": "applied_pending",
-      "programming_note": "Integrate only after approval and valid tracking/feed credentials are available.",
-      "merchant_id": "notino"
+      "status": "approved",
+      "programming_note": "Program approved on 2026-09-30. CJ Deep Link is advertised as available; keep live routing disabled until a valid tracked-link strategy and/or feed credentials are verified.",
+      "merchant_id": "notino",
+      "approved_at": "2026-09-30",
+      "deeplink_available": true,
+      "product_feed_available": null,
+      "tracked_product_url_verified": false
     }
   ],
   "direct_outreach_candidates": [
@@ -160,6 +164,18 @@
       "product_count_reported": 8031,
       "confidence": "explicit_approved_merchant_profile_and_create_a_feed_screen",
       "activity_note": "Current account observation supersedes the 2026-09-22 open-program observation. Current feed contents and image rights remain unverified."
+    },
+    {
+      "observed_at": "2026-09-30T07:20:02Z",
+      "network": "CJ Affiliate",
+      "merchant_id": "notino",
+      "program": "Notino",
+      "decision": "approved",
+      "approved_since": "2026-09-30",
+      "deeplink_available": true,
+      "product_feed_available": null,
+      "confidence": "explicit_welcome_email_from_notino_de_at_ch_via_cj",
+      "activity_note": "Welcome email confirms entry into the NOTINO.de affiliate program and mentions CJ Deep Link. No verified product feed, tracked URL template or credentials are stored in repo state."
     }
   ]
 }
