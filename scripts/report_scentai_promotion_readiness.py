@@ -114,13 +114,8 @@ def build_readiness_report(
             if str(blocker).strip()
         ]
         resolved_source_validation_blockers: list[str] = []
-        if (
-            "verified_purchase_destination_pending" in source_validation_blockers
-            and eligible
-        ):
-            resolved_source_validation_blockers.append(
-                "verified_purchase_destination_pending"
-            )
+        if "verified_purchase_destination_pending" in source_validation_blockers and eligible:
+            resolved_source_validation_blockers.append("verified_purchase_destination_pending")
 
         effective_source_validation_blockers = [
             blocker
@@ -131,8 +126,7 @@ def build_readiness_report(
         promotion_candidate = "already_live" not in blockers
         image_only_candidate = (
             promotion_candidate
-            and effective_source_validation_blockers
-            == ["approved_product_image_pending"]
+            and effective_source_validation_blockers == ["approved_product_image_pending"]
             and blockers == ["missing_approved_image"]
             and bool(eligible)
         )
@@ -152,12 +146,8 @@ def build_readiness_report(
                 "promotion_candidate": promotion_candidate,
                 "image_only_candidate": image_only_candidate,
                 "source_validation_blockers": source_validation_blockers,
-                "resolved_source_validation_blockers": (
-                    resolved_source_validation_blockers
-                ),
-                "effective_source_validation_blockers": (
-                    effective_source_validation_blockers
-                ),
+                "resolved_source_validation_blockers": (resolved_source_validation_blockers),
+                "effective_source_validation_blockers": (effective_source_validation_blockers),
                 "ready": not blockers,
                 "blockers": blockers,
             }
@@ -180,9 +170,7 @@ def build_readiness_report(
     promotion_blocked_count = sum(1 for row in promotion_candidates if not row["ready"])
     image_only_candidates = [row for row in promotion_candidates if row["image_only_candidate"]]
     source_blocker_drift = [
-        row
-        for row in promotion_candidates
-        if row["resolved_source_validation_blockers"]
+        row for row in promotion_candidates if row["resolved_source_validation_blockers"]
     ]
     candidate_blocker_counts: Counter[str] = Counter()
     for row in promotion_candidates:
