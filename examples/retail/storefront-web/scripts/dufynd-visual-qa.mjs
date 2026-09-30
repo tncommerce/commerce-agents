@@ -1995,6 +1995,120 @@ try {
     await partnerSessionFailureContext.close();
   }
 
+  const partnerLoadRecoveryContext = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 1,
+    reducedMotion: "reduce",
+  });
+  try {
+    const partnerLoadRecoveryPage =
+      await partnerLoadRecoveryContext.newPage();
+    let partnerRequestCount = 0;
+
+    await partnerLoadRecoveryPage.route("**/api/session", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          session_id: "qa-partner-recovery-session-1234567890",
+          name: "QA Guest",
+        }),
+      });
+    });
+
+    await partnerLoadRecoveryPage.route(
+      "**/api/merchant-partners",
+      async (route) => {
+        partnerRequestCount += 1;
+        if (partnerRequestCount === 1) {
+          await route.fulfill({
+            status: 503,
+            contentType: "application/json",
+            body: JSON.stringify({ detail: "QA partner discovery unavailable" }),
+          });
+          return;
+        }
+
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            partners: [
+              {
+                merchant_id: "qa-partner-recovery",
+                merchant_name: "QA Partner Recovery",
+                description: "Load recovery fixture",
+                clickout_path:
+                  "/api/merchant-partners/qa-partner-recovery/clickout",
+              },
+            ],
+            affiliate_disclosure: "QA fixture",
+          }),
+        });
+      },
+    );
+
+    const response = await partnerLoadRecoveryPage.goto(
+      baseUrl + "/?src=instagram&cmp=qa_partner_recovery",
+      { waitUntil: "domcontentloaded", timeout: 45_000 },
+    );
+    if (!response?.ok()) {
+      throw new Error(
+        "merchant discovery load-recovery QA did not load: HTTP " +
+          String(response?.status() ?? "no response"),
+      );
+    }
+
+    const recovery = partnerLoadRecoveryPage.locator(
+      "[data-merchant-discovery-error]",
+    );
+    await recovery.waitFor({ state: "visible", timeout: 20_000 });
+    await recovery
+      .getByRole("button", { name: "Partnerhändler erneut laden" })
+      .click();
+
+    const discovery = partnerLoadRecoveryPage.getByRole("region", {
+      name: "Partnerhändler entdecken",
+    });
+    await discovery
+      .getByRole("link", { name: /QA Partner Recovery öffnen/ })
+      .waitFor({ state: "visible", timeout: 10_000 });
+
+    if (partnerRequestCount !== 2) {
+      throw new Error(
+        `merchant discovery retry expected 2 partner requests, got ${partnerRequestCount}`,
+      );
+    }
+
+    if (
+      (await partnerLoadRecoveryPage.locator(
+        "[data-merchant-discovery-error]",
+      ).count()) !== 0
+    ) {
+      throw new Error(
+        "merchant discovery retry did not clear its recovery state",
+      );
+    }
+
+    report.checks.push({
+      label: "merchant-discovery-load-recovery",
+      status: "passed",
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({
+      label: "merchant-discovery-load-recovery",
+      message,
+    });
+    report.checks.push({
+      label: "merchant-discovery-load-recovery",
+      status: "failed",
+      message,
+    });
+  } finally {
+    await partnerLoadRecoveryContext.close();
+  }
+
   const comparisonContext = await browser.newContext();
   try {
     const comparisonPage = await comparisonContext.newPage();
