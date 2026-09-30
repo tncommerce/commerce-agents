@@ -11,7 +11,11 @@ import {
 } from "@/lib/analytics";
 import type { MerchantPartnersPayload } from "@/lib/types";
 
-export default function MerchantDiscovery() {
+export default function MerchantDiscovery({
+  sessionReady,
+}: {
+  sessionReady: boolean;
+}) {
   const [payload, setPayload] = useState<
     MerchantPartnersPayload | null
   >(null);
@@ -54,26 +58,37 @@ export default function MerchantDiscovery() {
       </p>
 
       <div className="mt-3 flex flex-wrap gap-2">
-        {payload.partners.map((partner) => (
-          <a
-            key={partner.merchant_id}
-            href={appendAcquisitionAttribution(
-              merchantPartnerClickoutUrl(
-                partner.merchant_id,
-              ),
-            )}
-            target="_blank"
-            rel="sponsored noopener noreferrer"
-            className="rounded-xl border border-(--line-strong) bg-(--surface) px-3.5 py-2 text-[12.5px] font-semibold text-(--ink) transition hover:border-(--accent)"
-          >
-            {partner.merchant_name} öffnen
-            {partner.description ? (
-              <span className="ml-1 font-normal text-(--ink-soft)">
-                · {partner.description}
-              </span>
-            ) : null}
-          </a>
-        ))}
+        {payload.partners.map((partner) =>
+          sessionReady ? (
+            <a
+              key={partner.merchant_id}
+              href={appendAcquisitionAttribution(
+                merchantPartnerClickoutUrl(
+                  partner.merchant_id,
+                ),
+              )}
+              target="_blank"
+              rel="sponsored noopener noreferrer"
+              className="rounded-xl border border-(--line-strong) bg-(--surface) px-3.5 py-2 text-[12.5px] font-semibold text-(--ink) transition hover:border-(--accent)"
+            >
+              {partner.merchant_name} öffnen
+              {partner.description ? (
+                <span className="ml-1 font-normal text-(--ink-soft)">
+                  · {partner.description}
+                </span>
+              ) : null}
+            </a>
+          ) : (
+            <span
+              key={partner.merchant_id}
+              aria-disabled="true"
+              data-partner-clickout-preparing
+              className="cursor-wait rounded-xl border border-(--line-strong) bg-(--surface) px-3.5 py-2 text-[12.5px] font-semibold text-(--ink) opacity-65"
+            >
+              {partner.merchant_name} wird vorbereitet …
+            </span>
+          ),
+        )}
       </div>
 
       <p className="mt-3 text-[10.5px] leading-4 text-(--ink-soft)">
