@@ -5,6 +5,8 @@ from pathlib import Path
 VISUAL_QA = Path("examples/retail/storefront-web/scripts/dufynd-visual-qa.mjs")
 FRAGRANCE_OFFERS = Path("examples/retail/storefront-web/components/FragranceOffers.tsx")
 ANALYTICS = Path("examples/retail/storefront-web/lib/analytics.ts")
+API_ANALYTICS = Path("examples/retail/api/analytics.py")
+ANALYTICS_SQL = Path("examples/retail/data/scentai_analytics_supabase.sql")
 SESSION = Path("examples/web-shared/session.ts")
 
 
@@ -18,6 +20,32 @@ def test_merchant_clickout_attribution_is_browser_covered() -> None:
     assert 'clickoutUrl.searchParams.get("cmp") !== "qa_campaign"' in source
     assert 'clickoutUrl.searchParams.get("content") !== "qa_content"' in source
     assert 'clickout.getAttribute("target")' in source
+
+
+def test_offer_section_impression_is_distinct_and_browser_covered() -> None:
+    qa_source = VISUAL_QA.read_text(encoding="utf-8")
+    offers_source = FRAGRANCE_OFFERS.read_text(encoding="utf-8")
+    analytics_source = ANALYTICS.read_text(encoding="utf-8")
+    api_source = API_ANALYTICS.read_text(encoding="utf-8")
+    sql_source = ANALYTICS_SQL.read_text(encoding="utf-8")
+
+    assert 'label: "offer-section-impression-tracking"' in qa_source
+    assert 'payload?.event === "offer_section_view"' in qa_source
+    assert "offer section did not emit exactly one visible impression event" in qa_source
+    assert "offer-section impression was emitted more than once" in qa_source
+
+    assert 'trackAnalyticsEvent("offer_section_view"' in offers_source
+    assert 'source: "merchant_offers"' in offers_source
+    assert "IntersectionObserver" in offers_source
+    assert "entry.intersectionRatio < 0.35" in offers_source
+    assert "trackedOfferViewRef.current === impressionKey" in offers_source
+
+    assert '| "offer_section_open"' in analytics_source
+    assert '| "offer_section_view"' in analytics_source
+    assert '"offer_section_open",' in api_source
+    assert '"offer_section_view",' in api_source
+    assert "'offer_section_open'," in sql_source
+    assert "'offer_section_view'," in sql_source
 
 
 def test_acquisition_attribution_survives_internal_navigation() -> None:
