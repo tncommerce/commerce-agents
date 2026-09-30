@@ -119,7 +119,13 @@
         "written_parfums_de_marly_or_authorized_distributor_permission",
         "approved_douglas_or_flaconi_feed_asset_after_program_and_rights_verification"
       ],
-      "next_action": "obtain_exact_licensed_or_dufynd_owned_asset_then_manual_visual_approval"
+      "next_action": "obtain_exact_licensed_or_dufynd_owned_asset_then_manual_visual_approval",
+      "public_rights_research": {
+        "checked_at": "2026-09-30",
+        "exact_variant_identity_reconfirmed": true,
+        "reusable_public_license_found": false,
+        "external_public_images_remain_reference_only": true
+      }
     },
     {
       "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
@@ -154,7 +160,13 @@
         "written_dior_or_authorized_distributor_permission",
         "approved_douglas_or_flaconi_feed_asset_after_program_and_rights_verification"
       ],
-      "next_action": "obtain_exact_licensed_or_dufynd_owned_asset_then_manual_visual_approval"
+      "next_action": "obtain_exact_licensed_or_dufynd_owned_asset_then_manual_visual_approval",
+      "public_rights_research": {
+        "checked_at": "2026-09-30",
+        "exact_variant_identity_reconfirmed": true,
+        "reusable_public_license_found": false,
+        "external_public_images_remain_reference_only": true
+      }
     },
     {
       "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
@@ -188,7 +200,13 @@
         "written_ysl_beauty_or_authorized_distributor_permission",
         "approved_douglas_or_flaconi_feed_asset_after_program_and_rights_verification"
       ],
-      "next_action": "obtain_exact_licensed_or_dufynd_owned_asset_then_manual_visual_approval"
+      "next_action": "obtain_exact_licensed_or_dufynd_owned_asset_then_manual_visual_approval",
+      "public_rights_research": {
+        "checked_at": "2026-09-30",
+        "exact_variant_identity_reconfirmed": true,
+        "reusable_public_license_found": false,
+        "external_public_images_remain_reference_only": true
+      }
     },
     {
       "product_id": "SC-YSL-LIBRE-EDP-90",
@@ -222,7 +240,13 @@
         "written_ysl_beauty_or_authorized_distributor_permission",
         "approved_douglas_or_flaconi_feed_asset_after_program_and_rights_verification"
       ],
-      "next_action": "obtain_exact_licensed_or_dufynd_owned_asset_then_manual_visual_approval"
+      "next_action": "obtain_exact_licensed_or_dufynd_owned_asset_then_manual_visual_approval",
+      "public_rights_research": {
+        "checked_at": "2026-09-30",
+        "exact_variant_identity_reconfirmed": true,
+        "reusable_public_license_found": false,
+        "external_public_images_remain_reference_only": true
+      }
     }
   ],
   "decision": "Awin feed-image rights are current-term verified for unmodified advertiser materials within DUFYND's publisher service for both approved Awin programmes recorded here. top Parfümerie still requires current exact feed-row revalidation before Delina, Black Opium or Libre can enter manual visual review; Hypnotic Poison still needs an exact current feed row or another licensed/owned asset. Perfumetrader currently has no usable official product feed, so its rights verification does not create an image candidate. La Vie est Belle remains approved from its existing CC BY-SA source.",
@@ -235,5 +259,20 @@
     "rule": "Registration may validate and persist exact-variant rights-cleared candidates, but it may not approve or promote an image. Final visual approval remains human/user gated.",
     "review_packet_command": "python -m scripts.build_scentai_rights_cleared_image_review_packet",
     "review_packet_mode": "read_only"
+  },
+  "research_last_verified_at": "2026-09-30T17:58:00+00:00",
+  "research_status": "no_new_reusable_public_license_found",
+  "public_rights_research": {
+    "checked_at": "2026-09-30",
+    "method": "non_destructive_public_web_research",
+    "result": "No Creative Commons, public-domain, or otherwise clearly reusable product-image grant was established for the four Release 01 products still marked licensed_source_required.",
+    "rule": "Manufacturer, retailer, barcode-database and ordinary product-page imagery remains identity/reference evidence only unless a separate reusable rights basis is verified.",
+    "affected_product_ids": [
+      "SC-PDM-DELINA-EDP-75",
+      "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+      "SC-YSL-BLACK-OPIUM-EDP-90",
+      "SC-YSL-LIBRE-EDP-90"
+    ],
+    "impact": "No image state, approval state, promotion state, or public activation state changes."
   }
 }
