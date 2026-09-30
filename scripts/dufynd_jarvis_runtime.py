@@ -5,6 +5,7 @@ import asyncio
 import json
 import os
 import sys
+from contextlib import suppress
 from pathlib import Path
 from typing import Any
 
@@ -816,7 +817,7 @@ async def _process_next_outcome(bridge: DufyndJarvisBridge) -> tuple[int, bool]:
             print(text)
         return 0, True
     except asyncio.CancelledError:
-        try:
+        with suppress(Exception):
             await asyncio.wait_for(
                 asyncio.to_thread(
                     bridge.complete_inbox_event,
@@ -829,8 +830,6 @@ async def _process_next_outcome(bridge: DufyndJarvisBridge) -> tuple[int, bool]:
                 ),
                 timeout=3.0,
             )
-        except Exception:
-            pass
         raise
     except RuntimeError as error:
         if not isinstance(error, JarvisTurnError):
