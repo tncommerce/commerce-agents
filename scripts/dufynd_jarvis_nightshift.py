@@ -901,6 +901,81 @@ def _duration_text(start_iso: str, end_iso: str) -> str:
     return f"{seconds}s"
 
 
+def _autonomy_boundary(queue: dict[str, Any]) -> dict[str, Any]:
+    counts = {
+        "safe_to_execute": len(queue.get("safe_to_execute") or []),
+        "in_progress": len(queue.get("in_progress") or []),
+        "waiting_human_input": len(queue.get("waiting_human_input") or []),
+        "waiting_external": len(queue.get("waiting_external") or []),
+        "approval_required": len(queue.get("approval_required") or []),
+    }
+    if counts["safe_to_execute"]:
+        state = "work_available"
+    elif counts["in_progress"]:
+        state = "in_progress"
+    elif counts["waiting_human_input"] or counts["approval_required"]:
+        state = "owner_review"
+    elif counts["waiting_external"]:
+        state = "waiting_external"
+    else:
+        state = "idle"
+    return {"state": state, **counts}
+
+
+def _budget_snapshot_consistency(
+    health: dict[str, Any],
+    authoritative_budget: dict[str, Any],
+) -> dict[str, Any]:
+    health_budget = ((health.get("runtime_state") or {}).get("pilot") or {})
+    if not isinstance(health_budget, dict) or not health_budget:
+        return {
+            "available": False,
+            "consistent": None,
+            "mismatches": [],
+            "authoritative_source": "database_budget_status",
+        }
+
+    comparable_fields = (
+        "budget_id",
+        "model",
+        "cap_usd",
+        "max_runs",
+        "spent_usd",
+        "remaining_usd",
+        "remaining_runs",
+    )
+    mismatches: list[str] = []
+    for field in comparable_fields:
+        current = authoritative_budget.get(field)
+        snapshot = health_budget.get(field)
+        if current is None or snapshot is None:
+            continue
+        if isinstance(current, (int, float)) and isinstance(snapshot, (int, float)):
+            if abs(float(current) - float(snapshot)) > 0.000001:
+                mismatches.append(field)
+        elif current != snapshot:
+            mismatches.append(field)
+
+    return {
+        "available": True,
+        "consistent": not mismatches,
+        "mismatches": mismatches,
+        "authoritative_source": "database_budget_status",
+    }
+
+
+def _dedupe_labels(values: list[str]) -> list[str]:
+    seen: set[str] = set()
+    result: list[str] = []
+    for value in values:
+        normalized = value.strip()
+        if not normalized or normalized in seen:
+            continue
+        seen.add(normalized)
+        result.append(normalized)
+    return result
+
+
 def build_morning_report(
     bridge: DufyndJarvisBridge,
     *,
@@ -912,6 +987,7 @@ def build_morning_report(
     if not session:
         raise RuntimeError("No Jarvis nightshift session is available for reporting.")
 
+    session_end_recorded = bool(session.get("ended_at"))
     ended_at = session.get("ended_at") or iso_now()
     started_at = str(session["started_at"])
     runs = bridge.load_agent_runs_since(started_at)
@@ -924,7 +1000,9 @@ def build_morning_report(
     ai_cost_usd = _sum_run_costs(runs)
 
     results = [r for r in (session.get("task_results") or []) if isinstance(r, dict)]
-    cost_complete = not any(int(r.get("result_code") or 0) == 124 for r in results)
+    cost_complete = session_end_recorded and not any(
+        int(r.get("result_code") or 0) == 124 for r in results
+    )
     if int(session.get("event_result") or 0) == 124:
         cost_complete = False
     completed = sum(1 for r in results if r.get("final_status") == "done")
@@ -933,6 +1011,8 @@ def build_morning_report(
     waiting_approval = len(queue.get("waiting_human_input") or []) + len(
         queue.get("approval_required") or []
     )
+    autonomy_boundary = _autonomy_boundary(queue)
+    budget_snapshot_consistency = _budget_snapshot_consistency(health, budget)
 
     domains: dict[str, list[str]] = {}
     for result in results:
@@ -957,6 +1037,7 @@ def build_morning_report(
         blockers.append(
             f"Jarvis inbox failed events: {int((health.get('inbox') or {}).get('failed') or 0)}"
         )
+    blockers = _dedupe_labels(blockers)
 
     approvals = [
         str(item.get("title") or item.get("task_id"))
@@ -973,6 +1054,7 @@ def build_morning_report(
         for item in pending_decisions
         if isinstance(item, dict) and str(item.get("status") or "") == "pending"
     ]
+    approvals = _dedupe_labels(approvals)
 
     safe = [item for item in (queue.get("safe_to_execute") or []) if isinstance(item, dict)]
     if safe:
@@ -987,6 +1069,8 @@ def build_morning_report(
     report = {
         "title": "DUFYND NIGHTSHIFT",
         "session_id": session["session_id"],
+        "session_status": session.get("status"),
+        "session_end_recorded": session_end_recorded,
         "start": started_at,
         "end": ended_at,
         "duration": _duration_text(started_at, ended_at),
@@ -1004,6 +1088,8 @@ def build_morning_report(
         "ai_cost_source": "audited_agent_runs",
         "ai_cost_complete": cost_complete,
         "budget": budget,
+        "budget_snapshot_consistency": budget_snapshot_consistency,
+        "autonomy_boundary": autonomy_boundary,
         "blockers": blockers,
         "approvals": approvals,
         "recommended_next_priority": next_priority,
@@ -1018,6 +1104,8 @@ def build_morning_report(
         f"Start: {report['start']}",
         f"Ende: {report['end']}",
         f"Dauer: {report['duration']}",
+        f"Session Status: {report['session_status']}",
+        f"Session-Ende persistiert: {'ja' if session_end_recorded else 'nein'}",
         "",
         f"Completed: {completed}",
         f"In Progress: {in_progress}",
@@ -1051,7 +1139,27 @@ def build_morning_report(
             (
                 "- Quelle: auditierte Agent-Runs."
                 if cost_complete
-                else "- Quelle: auditierte Agent-Runs; wegen Timeout kann zusätzlicher Provider-Verbrauch unverbucht sein."
+                else "- Quelle: auditierte Agent-Runs; wegen Timeout oder unvollständigem Session-Abschluss kann zusätzlicher Provider-Verbrauch unverbucht sein."
+            ),
+            f"- Budget-Quelle: {budget_snapshot_consistency['authoritative_source']}.",
+            "",
+            "## Control Plane",
+            f"- Autonomy Boundary: {autonomy_boundary['state']}",
+            f"- Safe Work: {autonomy_boundary['safe_to_execute']}",
+            f"- In Progress: {autonomy_boundary['in_progress']}",
+            f"- Waiting External: {autonomy_boundary['waiting_external']}",
+            f"- Waiting Human: {autonomy_boundary['waiting_human_input']}",
+            f"- Approval Required: {autonomy_boundary['approval_required']}",
+            (
+                "- Health-Budget-Snapshot: konsistent."
+                if budget_snapshot_consistency["consistent"] is True
+                else (
+                    "- Health-Budget-Snapshot: veraltet/abweichend bei "
+                    + ", ".join(budget_snapshot_consistency["mismatches"])
+                    + ". Direkter Budgetstatus ist maßgeblich."
+                    if budget_snapshot_consistency["consistent"] is False
+                    else "- Health-Budget-Snapshot: nicht verfügbar; direkter Budgetstatus ist maßgeblich."
+                )
             ),
             "",
             "## Blocker",
