@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "observed_at": "2026-09-30T11:15:00Z",
+  "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+  "merchant": "Douglas DE",
+  "merchant_product_id": "818764",
+  "product_url": "https://www.douglas.de/de/p/3001005867?variant=818764",
+  "observation_method": "current_public_merchant_page_read_only_web_retrieval",
+  "identity": {
+    "brand": "Yves Saint Laurent",
+    "name": "Black Opium",
+    "concentration": "Eau de Parfum",
+    "volume_ml": 90,
+    "merchant_identity_note": "Douglas DE variant 818764 identifies Yves Saint Laurent Black Opium Eau de Parfum 90 ml on the current product page. Exclude Black Opium Le Parfum, Black Opium Over Red, 30 ml, 50 ml and the 100 ml refill."
+  },
+  "live_observation": {
+    "listed_price_eur": 94.99,
+    "shipping_cost_eur": 0,
+    "availability": "Online: auf Lager; In den Warenkorb visible",
+    "delivery_note": "Douglas DE shows free shipping for the selected 90 ml variant and a current delivery window."
+  },
+  "rights_or_affiliate_impact": {
+    "image_rights_granted": false,
+    "affiliate_tracking_verified": false,
+    "final_image_approval_granted": false
+  },
+  "freshness_policy": "Offer qualifies only while last_updated_at is within the 72-hour merchant-offer window. No live catalog promotion."
+}
