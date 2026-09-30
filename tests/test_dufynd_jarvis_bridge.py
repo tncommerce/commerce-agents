@@ -154,6 +154,26 @@ def mock_transport() -> httpx.MockTransport:
                 ],
             )
 
+        if request.method == "PATCH" and request.url.path.endswith("/dufynd_human_decisions"):
+            assert request.url.params["decision_id"] == "eq.decision_merge_test"
+            assert request.url.params["status"] == "eq.pending"
+            row = json.loads(request.content)
+            assert row["status"] == "completed"
+            assert row["decision"]["resolution"] == "superseded"
+            assert row["decided_at"] == "2026-09-30T05:00:00+00:00"
+            assert row["completed_at"] == "2026-09-30T05:00:00+00:00"
+            assert request.headers["prefer"] == "return=representation"
+            return httpx.Response(
+                200,
+                json=[
+                    {
+                        "decision_id": "decision_merge_test",
+                        "status": "completed",
+                        "decision": row["decision"],
+                    }
+                ],
+            )
+
         if request.method == "GET" and request.url.path.endswith("/dufynd_human_decisions"):
             assert request.url.params["decision_id"] == "eq.decision_jarvis_active_runner_001"
             return httpx.Response(
@@ -562,6 +582,27 @@ def test_bridge_loads_budget_window_and_approval() -> None:
     assert window["max_runs"] == 10
     assert decision is not None
     assert decision["decision"]["max_runs"] == 10
+
+
+def test_bridge_completes_pending_decision_reconciliation() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    row = bridge.complete_pending_human_decision_reconciliation(
+        decision_id="decision_merge_test",
+        decision={
+            "resolution": "superseded",
+            "reconciled": True,
+        },
+        resolved_at="2026-09-30T05:00:00+00:00",
+    )
+
+    assert row is not None
+    assert row["status"] == "completed"
+    assert row["decision"]["resolution"] == "superseded"
 
 
 def test_bridge_loads_pending_decisions() -> None:
