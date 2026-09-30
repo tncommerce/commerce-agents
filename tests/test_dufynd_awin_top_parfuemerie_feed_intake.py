@@ -29,6 +29,10 @@ def test_provider_mapping_uses_only_real_populated_feed_fields() -> None:
     assert mapping["merchant_product_id"] == "merchant_product_id"
     assert mapping["affiliate_url"] == "aw_deep_link"
     assert mapping["image_url"] == "merchant_image_url"
+    assert "in_stock" not in mapping
+    assert provider["constants"]["in_stock"] is False
+    assert provider["source_quality"]["current_availability_field_absent"] is True
+    assert provider["safety"]["default_missing_availability_to_out_of_stock"] is True
     assert "ean" not in mapping
     assert "gtin" not in mapping
     assert "shipping_cost" not in mapping
