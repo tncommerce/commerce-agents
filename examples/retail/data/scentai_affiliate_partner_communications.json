@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-09-30T18:51:00Z",
+  "updated_at": "2026-09-30T18:58:00Z",
   "publisher": "DUFYND",
   "operator": "TNCommerce",
   "communications": [
@@ -52,7 +52,17 @@
       "product_data_available": true,
       "current_feed_rows_reported": 8031,
       "integration_state": "approved_credentials_pending",
-      "next_action": "verify current Awin credential/feed access and run a read-only mapped-row validation before any activation request"
+      "next_action": "Manually configure AWIN_DATA_FEED_API_KEY as a GitHub Actions repository secret, then run the existing read-only DUFYND Awin Feed Revalidation workflow before any activation request.",
+      "secret_readiness": {
+        "checked_at": "2026-09-30T18:57:41Z",
+        "workflow_run_id": 36424104026,
+        "workflow_job_id": 110047605655,
+        "required_secret": "AWIN_DATA_FEED_API_KEY",
+        "configured": false,
+        "result": "blocked_missing_repository_secret",
+        "evidence": "Read-only readiness job was re-run on 2026-09-30 and failed before feed access because AWIN_DATA_FEED_API_KEY was empty."
+      },
+      "live_routing_allowed": false
     }
   ],
   "cj_account_administration": {
