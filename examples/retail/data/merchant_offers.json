@@ -892,6 +892,25 @@
       "data_source": "manual_verified_web",
       "last_updated_at": "2026-09-30T11:29:00Z",
       "commission_rate": null
+    },
+    {
+      "offer_id": "mueller-gucci-flora-gorgeous-gardenia-edp-100-20260930",
+      "product_id": "SC-GUCCI-FLORA-GORGEOUS-GARDENIA-EDP-100",
+      "merchant_id": "mueller-de",
+      "merchant_name": "Müller",
+      "merchant_product_id": "2744197",
+      "price": 81.95,
+      "currency": "EUR",
+      "shipping_cost": 0,
+      "shipping_label": "Versandkostenfrei ab 49,00 €",
+      "in_stock": true,
+      "variant_label": "100 ml · Flora Gorgeous Gardenia Eau de Parfum",
+      "product_url": "https://www.mueller.de/p/gucci-flora-gorgeous-gardenia-eau-de-parfum-6985515378/?itemId=2744197",
+      "affiliate_url": null,
+      "network": null,
+      "data_source": "manual_verified_web",
+      "last_updated_at": "2026-09-30T11:50:00Z",
+      "commission_rate": null
     }
   ]
 }

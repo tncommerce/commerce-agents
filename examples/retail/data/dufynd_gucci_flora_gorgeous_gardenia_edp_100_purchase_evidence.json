@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "observed_at": "2026-09-30T11:50:00Z",
+  "product_id": "SC-GUCCI-FLORA-GORGEOUS-GARDENIA-EDP-100",
+  "merchant": "Müller DE",
+  "merchant_product_id": "2744197",
+  "product_url": "https://www.mueller.de/p/gucci-flora-gorgeous-gardenia-eau-de-parfum-6985515378/?itemId=2744197",
+  "observation_method": "current_public_merchant_page_read_only_web_retrieval",
+  "identity": {
+    "brand": "Gucci",
+    "name": "Flora Gorgeous Gardenia",
+    "concentration": "Eau de Parfum",
+    "volume_ml": 100,
+    "merchant_identity_note": "Müller exact item 2744197 identifies GUCCI Flora Gorgeous Gardenia Eau de Parfum, selected at 100 ml."
+  },
+  "live_observation": {
+    "listed_price_eur": 81.95,
+    "shipping_cost_eur": 0,
+    "availability": "Lieferbar in 2 - 3 Werktagen",
+    "delivery_note": "The exact 100 ml item is orderable for home delivery; Müller ships free above EUR 49."
+  },
+  "rights_or_affiliate_impact": {
+    "image_rights_granted": false,
+    "affiliate_tracking_verified": false,
+    "final_image_approval_granted": false
+  },
+  "freshness_policy": "Offer qualifies only while last_updated_at is within the 72-hour merchant-offer window. No live catalog promotion."
+}
