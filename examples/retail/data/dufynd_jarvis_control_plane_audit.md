@@ -16,6 +16,7 @@ The command reads the current Jarvis control plane and reports:
   external waits or idle);
 - stale Nightshift sessions that still claim to be active after their heartbeat
   exceeded the configured threshold;
+- autonomy tasks that remain `in_progress` beyond the configured task-age threshold;
 - TECH continuity leases that are still labelled active after expiry;
 - failed Jarvis inbox events.
 
@@ -28,11 +29,13 @@ action is performed.
 python -m scripts.audit_dufynd_jarvis_control_plane --pretty
 ```
 
-The default stale-session threshold is 45 minutes. Override it with:
+The default stale-session threshold is 45 minutes and the default stale
+`in_progress` task threshold is 24 hours. Override either with:
 
 ```bash
 python -m scripts.audit_dufynd_jarvis_control_plane \
   --stale-after-minutes 30 \
+  --stale-task-hours 12 \
   --pretty
 ```
 
@@ -43,3 +46,8 @@ attention states in JSON but exits successfully.
 The direct budget status returned by the budget RPC is always treated as
 authoritative. An older embedded `runtime_state.pilot` health snapshot is evidence
 of control-plane drift, not evidence that spend or remaining-run counts changed.
+
+The autonomy boundary counts only rows whose current status actually matches the
+queue bucket. Old completed rows that still appear in an approval bucket are not
+treated as pending approvals. Long-lived `in_progress` rows are reported separately
+so stale legacy work does not masquerade as active execution.
