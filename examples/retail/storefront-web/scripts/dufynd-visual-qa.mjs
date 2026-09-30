@@ -1403,6 +1403,39 @@ try {
   });
   try {
     const attributionPage = await attributionClickoutContext.newPage();
+    await attributionPage.route(
+      "**/api/merchant-offers/**",
+      async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            product_id: "SC-QA-ATTRIBUTION",
+            best_offer_id: "qa-attribution-offer",
+            offers: [
+              {
+                offer_id: "qa-attribution-offer",
+                product_id: "SC-QA-ATTRIBUTION",
+                merchant_id: "qa-merchant",
+                merchant_name: "QA Merchant",
+                merchant_product_id: "qa-sku",
+                price: 99,
+                currency: "EUR",
+                shipping_cost: 0,
+                shipping_label: "Versand inklusive",
+                total_price: 99,
+                in_stock: true,
+                variant_label: "QA",
+                clickout_path: "/api/clickout/qa-attribution-offer",
+                affiliate_link: false,
+                last_updated_at: "2026-09-30T12:00:00Z",
+              },
+            ],
+            affiliate_disclosure: "QA fixture",
+          }),
+        });
+      },
+    );
     const response = await attributionPage.goto(
       baseUrl +
         "/duft/rabanne-1-million?src=tiktok&cmp=qa_campaign&content=qa_content",
