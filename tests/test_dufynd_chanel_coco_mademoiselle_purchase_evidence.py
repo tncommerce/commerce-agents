@@ -22,9 +22,7 @@ def test_coco_mademoiselle_offer_matches_exact_100_ml_edp_variant() -> None:
     assert offer["product_id"] == PRODUCT_ID
     assert offer["merchant_id"] == "douglas-de"
     assert offer["merchant_product_id"] == "917000"
-    assert offer["variant_label"] == (
-        "100 ml · COCO MADEMOISELLE Eau de Parfum Vaporisateur"
-    )
+    assert offer["variant_label"] == ("100 ml · COCO MADEMOISELLE Eau de Parfum Vaporisateur")
     assert offer["price"] == 137
     assert offer["currency"] == "EUR"
     assert offer["in_stock"] is True
@@ -47,9 +45,7 @@ def test_coco_mademoiselle_evidence_does_not_grant_image_or_affiliate_rights() -
 
 
 def test_coco_mademoiselle_current_offer_clears_purchase_gate_only() -> None:
-    staging = {
-        row["product_id"]: row for row in load("scentai_catalog_staging.json")["products"]
-    }
+    staging = {row["product_id"]: row for row in load("scentai_catalog_staging.json")["products"]}
     offers = load("merchant_offers.json")["offers"]
     product = staging[PRODUCT_ID]
 
