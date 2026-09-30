@@ -50,6 +50,7 @@ def test_live_data_contains_overlap_case_that_regression_covers() -> None:
 
     assert overlapping, "Regression fixture requires at least one overlapping source tag"
 
+
 def test_mobile_catalog_filter_interaction_is_browser_covered() -> None:
     visual_qa = Path("examples/retail/storefront-web/scripts/dufynd-visual-qa.mjs").read_text(
         encoding="utf-8"
