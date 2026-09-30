@@ -119,6 +119,8 @@ def build_readiness_report(
                 "merchant_coverage_count": coverage,
                 "eligible_purchase_offers": len(eligible),
                 "eligible_affiliate_offers": len(affiliate_eligible),
+                "already_live": "already_live" in blockers,
+                "promotion_candidate": "already_live" not in blockers,
                 "ready": not blockers,
                 "blockers": blockers,
             }
@@ -136,16 +138,37 @@ def build_readiness_report(
     )
 
     ready_count = sum(1 for row in rows if row["ready"])
+    already_live_count = sum(
+        1 for row in rows if "already_live" in row["blockers"]
+    )
+    promotion_candidates = [
+        row for row in rows if "already_live" not in row["blockers"]
+    ]
+    promotion_blocked_count = sum(
+        1 for row in promotion_candidates if not row["ready"]
+    )
+    candidate_blocker_counts: Counter[str] = Counter()
+    for row in promotion_candidates:
+        candidate_blocker_counts.update(row["blockers"])
 
     return {
         "generated_at": now.astimezone(UTC).isoformat(),
         "staged_count": len(rows),
+        "already_live_count": already_live_count,
+        "promotion_candidate_count": len(promotion_candidates),
         "ready_count": ready_count,
         "blocked_count": len(rows) - ready_count,
+        "promotion_blocked_count": promotion_blocked_count,
         "tier_counts": {tier: tier_counts.get(tier, 0) for tier in ("A", "B", "C")},
         "blocker_counts": dict(
             sorted(
                 blocker_counts.items(),
+                key=lambda item: (-item[1], item[0]),
+            )
+        ),
+        "candidate_blocker_counts": dict(
+            sorted(
+                candidate_blocker_counts.items(),
                 key=lambda item: (-item[1], item[0]),
             )
         ),
@@ -221,15 +244,23 @@ def main() -> int:
     print(
         "SCENTAI promotion readiness | "
         f"staged={report['staged_count']} | "
+        f"already_live={report['already_live_count']} | "
+        f"candidates={report['promotion_candidate_count']} | "
         f"ready={report['ready_count']} | "
-        f"blocked={report['blocked_count']}"
+        f"candidate_blocked={report['promotion_blocked_count']} | "
+        f"legacy_blocked={report['blocked_count']}"
     )
     print(
         "Tiers | " + " | ".join(f"{tier}={count}" for tier, count in report["tier_counts"].items())
     )
 
-    if report["blocker_counts"]:
-        print("Blockers:")
+    if report["candidate_blocker_counts"]:
+        print("Candidate blockers:")
+        for blocker, count in report["candidate_blocker_counts"].items():
+            print(f"  {count:>2}  {blocker}")
+
+    if report["blocker_counts"] != report["candidate_blocker_counts"]:
+        print("All staged blockers (compatibility view):")
         for blocker, count in report["blocker_counts"].items():
             print(f"  {count:>2}  {blocker}")
 
