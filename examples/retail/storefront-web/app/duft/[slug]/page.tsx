@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
+import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
 import { accordLabel } from "@/lib/accordLabels";
 import FragranceExplodedNotes from "@/components/FragranceExplodedNotes";
 import FragranceIngredientOrbit from "@/components/FragranceIngredientOrbit";
@@ -391,7 +392,7 @@ export default async function FragrancePage({
       <AcquisitionAnalytics source="fragrance_detail" />
       <header className="border-b border-(--line) bg-(--card)">
         <div className="mx-auto flex max-w-[1080px] items-center justify-between gap-4 px-4 py-4 sm:px-6">
-          <a
+          <AcquisitionInternalLink
             href="/"
             className="flex items-center gap-2.5"
             aria-label="Zur DUFYND Startseite"
@@ -407,20 +408,20 @@ export default async function FragrancePage({
             <span className="text-[17px] font-bold tracking-[-0.02em]">
               DUFYND
             </span>
-          </a>
+          </AcquisitionInternalLink>
           <div className="flex items-center gap-2">
-            <a
+            <AcquisitionInternalLink
               href="/sammlung"
               className="hidden rounded-xl border border-(--line) px-3 py-2 text-[12px] font-semibold text-(--ink) transition hover:border-(--ink) sm:inline-flex"
             >
               Meine Sammlung
-            </a>
-            <a
+            </AcquisitionInternalLink>
+            <AcquisitionInternalLink
               href="/"
               className="rounded-xl border border-(--line) px-3 py-2 text-[12px] font-semibold text-(--ink) transition hover:border-(--ink)"
             >
               Duftberatung öffnen
-            </a>
+            </AcquisitionInternalLink>
           </div>
         </div>
       </header>
@@ -430,13 +431,13 @@ export default async function FragrancePage({
           aria-label="Breadcrumb"
           className="mb-5 text-[12px] text-(--ink-soft)"
         >
-          <a href="/" className="hover:underline">
+          <AcquisitionInternalLink href="/" className="hover:underline">
             DUFYND
-          </a>
+          </AcquisitionInternalLink>
           <span className="px-2">/</span>
-          <a href="/duft" className="hover:underline">
+          <AcquisitionInternalLink href="/duft" className="hover:underline">
             Düfte
-          </a>
+          </AcquisitionInternalLink>
           <span className="px-2">/</span>
           <span className="text-(--ink)">
             {fragrance.brand} {fragrance.name}
@@ -618,12 +619,12 @@ export default async function FragrancePage({
                   brand={fragrance.brand}
                   name={fragrance.name}
                 />
-                <a
+                <AcquisitionInternalLink
                   href={`/vergleich?left=${encodeURIComponent(fragrance.product_id)}`}
                   className="rounded-lg border border-(--line) bg-(--surface) px-2.5 py-1.5 text-[11px] font-semibold text-(--accent-ink) transition hover:border-(--accent)"
                 >
                   Mit anderem Duft vergleichen →
-                </a>
+                </AcquisitionInternalLink>
               </div>
 
               <div className="mt-5 grid grid-cols-3 overflow-hidden rounded-2xl border border-(--line) bg-(--surface)">
@@ -830,14 +831,14 @@ export default async function FragrancePage({
 
             <div className="mt-3 flex flex-wrap gap-2">
               {fragrance.accords.map((accord) => (
-                <a
+                <AcquisitionInternalLink
                   key={accord}
                   href={`/duft?q=${encodeURIComponent(accordLabel(accord))}`}
                   className="rounded-full border border-transparent bg-(--well) px-3 py-1.5 text-[12px] text-(--ink) transition hover:border-(--accent) hover:bg-(--accent-soft)/45"
                   aria-label={`Weitere Düfte mit Duftcharakter ${accordLabel(accord)} entdecken`}
                 >
                   {accordLabel(accord)} <span aria-hidden>→</span>
-                </a>
+                </AcquisitionInternalLink>
               ))}
             </div>
 
@@ -969,12 +970,12 @@ export default async function FragrancePage({
                   eingeordnet.
                 </p>
               </div>
-              <a
+              <AcquisitionInternalLink
                 href={`/vergleich?left=${encodeURIComponent(fragrance.product_id)}`}
                 className="text-[12px] font-semibold text-(--accent-ink) hover:underline"
               >
                 Mit diesem Duft vergleichen
-              </a>
+              </AcquisitionInternalLink>
             </div>
 
             <div className="-mx-1 mt-4 flex snap-x gap-3 overflow-x-auto px-1 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4">
@@ -1001,7 +1002,7 @@ export default async function FragrancePage({
                     key={item.fragrance.product_id}
                     className="min-w-[220px] snap-start overflow-hidden rounded-xl border border-(--line) bg-(--well)/35 sm:min-w-0"
                   >
-                    <a
+                    <AcquisitionInternalLink
                       href={`/duft/${item.fragrance.slug}`}
                       className="block"
                     >
@@ -1067,16 +1068,16 @@ export default async function FragrancePage({
                           </div>
                         ) : null}
                       </div>
-                    </a>
+                    </AcquisitionInternalLink>
 
                     {hasComparison ? (
-                      <a
+                      <AcquisitionInternalLink
                         href={comparisonHref}
                         aria-label={`${fragrance.brand} ${fragrance.name} mit ${item.fragrance.brand} ${item.fragrance.name} vergleichen`}
                         className="block border-t border-(--line) px-3 py-2.5 text-[11px] font-semibold text-(--accent-ink) hover:bg-(--card)"
                       >
                         Direkt vergleichen →
-                      </a>
+                      </AcquisitionInternalLink>
                     ) : null}
                   </article>
                 );
@@ -1096,12 +1097,12 @@ export default async function FragrancePage({
                 mit Alternativen nach Budget, Anlass und Duftprofil.
               </p>
             </div>
-            <a
+            <AcquisitionInternalLink
               href="/"
               className="rounded-xl bg-(--ink) px-4 py-2.5 text-[13px] font-semibold text-(--surface)"
             >
               DUFYND Duftberater öffnen
-            </a>
+            </AcquisitionInternalLink>
           </div>
         </section>
 
@@ -1118,18 +1119,18 @@ export default async function FragrancePage({
         </section>
 
         <footer className="mt-8 flex flex-wrap gap-x-4 gap-y-2 border-t border-(--line) py-6 text-[11px] text-(--ink-soft)">
-          <a href="/transparenz" className="hover:underline">
+          <AcquisitionInternalLink href="/transparenz" className="hover:underline">
             Transparenz
-          </a>
-          <a href="/impressum" className="hover:underline">
+          </AcquisitionInternalLink>
+          <AcquisitionInternalLink href="/impressum" className="hover:underline">
             Impressum
-          </a>
-          <a href="/datenschutz" className="hover:underline">
+          </AcquisitionInternalLink>
+          <AcquisitionInternalLink href="/datenschutz" className="hover:underline">
             Datenschutz
-          </a>
-          <a href="/bildnachweise" className="hover:underline">
+          </AcquisitionInternalLink>
+          <AcquisitionInternalLink href="/bildnachweise" className="hover:underline">
             Bildnachweise
-          </a>
+          </AcquisitionInternalLink>
         </footer>
       </div>
 

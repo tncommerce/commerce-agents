@@ -2131,6 +2131,65 @@ try {
     await partnerLoadRecoveryContext.close();
   }
 
+  const productDetailAttributionContext = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 1,
+    reducedMotion: "reduce",
+  });
+  try {
+    const productDetailAttributionPage =
+      await productDetailAttributionContext.newPage();
+    const response = await productDetailAttributionPage.goto(
+      baseUrl +
+        "/duft/rabanne-1-million?src=tiktok&cmp=qa_product_detail&content=qa_product_detail_content",
+      { waitUntil: "networkidle", timeout: 45_000 },
+    );
+    if (!response?.ok()) {
+      throw new Error(
+        "product detail attribution QA did not load: HTTP " +
+          String(response?.status() ?? "no response"),
+      );
+    }
+
+    const candidates = [
+      productDetailAttributionPage.getByRole("link", { name: "Düfte" }),
+      productDetailAttributionPage.getByRole("link", { name: "Duftberatung öffnen" }),
+      productDetailAttributionPage.getByRole("link", { name: "Mit anderem Duft vergleichen →" }),
+      productDetailAttributionPage.locator("footer").getByRole("link", { name: "Transparenz" }),
+    ];
+
+    for (const link of candidates) {
+      const href = await link.first().getAttribute("href");
+      if (!href) throw new Error("product detail internal link is missing its href");
+      const url = new URL(href, baseUrl);
+      if (
+        url.searchParams.get("src") !== "tiktok" ||
+        url.searchParams.get("cmp") !== "qa_product_detail" ||
+        url.searchParams.get("content") !== "qa_product_detail_content"
+      ) {
+        throw new Error("product detail navigation lost acquisition attribution");
+      }
+    }
+
+    report.checks.push({
+      label: "product-detail-navigation-attribution",
+      status: "passed",
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({
+      label: "product-detail-navigation-attribution",
+      message,
+    });
+    report.checks.push({
+      label: "product-detail-navigation-attribution",
+      status: "failed",
+      message,
+    });
+  } finally {
+    await productDetailAttributionContext.close();
+  }
+
   const comparisonContext = await browser.newContext();
   try {
     const comparisonPage = await comparisonContext.newPage();
