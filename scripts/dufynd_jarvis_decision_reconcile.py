@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 from collections.abc import Callable
 from datetime import UTC, datetime
 from typing import Any
@@ -78,12 +79,12 @@ def build_merge_decision_reconciliation(
 
     expected_head = str(context.get("head_sha") or "").strip()
     actual_head = str((pull_request.get("head") or {}).get("sha") or "").strip()
-    if expected_head and actual_head and expected_head != actual_head:
+    if expected_head and actual_head != expected_head:
         return None
 
     expected_base = str(context.get("base_branch") or "").strip()
     actual_base = str((pull_request.get("base") or {}).get("ref") or "").strip()
-    if expected_base and actual_base and expected_base != actual_base:
+    if expected_base and actual_base != expected_base:
         return None
 
     merged_at = pull_request.get("merged_at")
@@ -117,6 +118,58 @@ def build_merge_decision_reconciliation(
     }
 
 
+def _task_references_pr(task: dict[str, Any], pr_number: int) -> bool:
+    pattern = re.compile(rf"\\bPR\\s*#\\s*{pr_number}\\b")
+    values: list[object] = [
+        task.get("title"),
+        task.get("instruction"),
+        task.get("evidence"),
+    ]
+    dependencies = task.get("dependencies") or []
+    if isinstance(dependencies, list):
+        values.extend(dependencies)
+    return any(pattern.search(str(value or "")) is not None for value in values)
+
+
+def _approval_task_actions(
+    queue: dict[str, Any],
+    *,
+    pr_number: int,
+    resolution: str,
+    resolved_at: str,
+) -> list[dict[str, Any]]:
+    target_status = "done" if resolution == "already_merged" else "cancelled"
+    actions: list[dict[str, Any]] = []
+    for task in queue.get("approval_required") or []:
+        if not isinstance(task, dict):
+            continue
+        if str(task.get("status") or "") != "approval_required":
+            continue
+        if str(task.get("approval_action_type") or "") != "merge_production_code":
+            continue
+        if not _task_references_pr(task, pr_number):
+            continue
+
+        existing = str(task.get("evidence") or "").strip()
+        note = (
+            f"Jarvis deterministic reconciliation at {resolved_at}: "
+            f"referenced PR #{pr_number} resolved as {resolution}; "
+            f"approval task moved to {target_status} without granting approval."
+        )
+        evidence = f"{existing}\n{note}".strip()
+        actions.append(
+            {
+                "task_id": str(task.get("task_id") or ""),
+                "title": task.get("title"),
+                "from_status": "approval_required",
+                "to_status": target_status,
+                "evidence": evidence,
+                "write_applied": False,
+            }
+        )
+    return actions
+
+
 def reconcile_pending_merge_decisions(
     bridge: DufyndJarvisBridge,
     *,
@@ -129,6 +182,7 @@ def reconcile_pending_merge_decisions(
     actions: list[dict[str, Any]] = []
     skipped: list[dict[str, Any]] = []
     errors: list[dict[str, Any]] = []
+    queue = bridge.load_autonomy_queue()
 
     for decision in bridge.load_pending_decisions():
         if not isinstance(decision, dict):
@@ -176,7 +230,23 @@ def reconcile_pending_merge_decisions(
             )
             continue
 
+        task_actions = _approval_task_actions(
+            queue,
+            pr_number=pr_number,
+            resolution=action["resolution"],
+            resolved_at=timestamp,
+        )
+        action["task_actions"] = task_actions
+
         if write:
+            for task_action in task_actions:
+                task_row = bridge.complete_pending_autonomy_task_reconciliation(
+                    task_id=task_action["task_id"],
+                    status=task_action["to_status"],
+                    evidence=task_action["evidence"],
+                )
+                task_action["write_applied"] = task_row is not None
+
             row = bridge.complete_pending_human_decision_reconciliation(
                 decision_id=action["decision_id"],
                 decision=action["decision"],
