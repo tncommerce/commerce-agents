@@ -726,3 +726,57 @@ def test_runtime_readiness_supports_module_execution() -> None:
 
     assert payload["active"] is False
     assert payload["ready_for_model_execution"] is False
+
+def test_claimed_inbox_event_cancellation_fails_closed(monkeypatch) -> None:
+    class CancelEventBridge:
+        def __init__(self) -> None:
+            self.completed: list[dict] = []
+
+        def load_health(self):
+            return {"inbox": {"pending": 1}}
+
+        def claim_next_inbox_event(self):
+            return {
+                "inbox_id": 7,
+                "event_type": "creative_reference_added",
+                "source_id": "example_cancel",
+                "payload": {},
+                "attempts": 1,
+            }
+
+        def complete_inbox_event(self, *, inbox_id, status="done", error=None):
+            self.completed.append(
+                {
+                    "inbox_id": inbox_id,
+                    "status": status,
+                    "error": error,
+                }
+            )
+            return self.completed[-1]
+
+    bridge = CancelEventBridge()
+    monkeypatch.setattr(
+        jarvis_runtime,
+        "_require_budget_window",
+        lambda _bridge: ("jarvis_activation_pilot_001", {"can_run": True}),
+    )
+
+    async def cancelled_prompt(*_args, **_kwargs):
+        raise asyncio.CancelledError
+
+    monkeypatch.setattr(jarvis_runtime, "run_prompt", cancelled_prompt)
+
+    with pytest.raises(asyncio.CancelledError):
+        asyncio.run(jarvis_runtime._process_next_outcome(bridge))
+
+    assert bridge.completed == [
+        {
+            "inbox_id": 7,
+            "status": "failed",
+            "error": (
+                "Jarvis inbox processing cancelled after claim; "
+                "provider cost may be unknown; no automatic retry."
+            ),
+        }
+    ]
+
