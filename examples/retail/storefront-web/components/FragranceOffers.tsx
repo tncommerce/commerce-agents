@@ -9,6 +9,7 @@ import {
 } from "@/lib/api";
 import {
   appendAcquisitionAttribution,
+  ensureAnalyticsSession,
   trackAnalyticsEvent,
 } from "@/lib/analytics";
 import type { MerchantOffersPayload } from "@/lib/types";
@@ -70,10 +71,16 @@ export default function FragranceOffers({
   >(undefined);
   const [loadError, setLoadError] = useState(false);
   const [reloadToken, setReloadToken] = useState(0);
+  const [clickoutSessionReady, setClickoutSessionReady] = useState(false);
   const trackedDetailViewRef = useRef<string | null>(null);
 
   useEffect(() => {
     let active = true;
+
+    setClickoutSessionReady(false);
+    void ensureAnalyticsSession().finally(() => {
+      if (active) setClickoutSessionReady(true);
+    });
 
     const detailViewKey = `${productId}:${analyticsSurface}`;
     if (
@@ -271,26 +278,38 @@ export default function FragranceOffers({
                 ) : null}
               </div>
 
-              <a
-                href={appendAcquisitionAttribution(
-                  merchantClickoutUrl(
-                    offer.clickout_path,
-                  ),
-                )}
-                target="_blank"
-                rel={
-                  offer.affiliate_link
-                    ? "sponsored noopener noreferrer"
-                    : "noopener noreferrer"
-                }
-                className={`w-full rounded-xl px-4 py-2.5 text-center text-[13px] font-semibold text-white transition sm:w-auto ${
-                  best
-                    ? "bg-(--accent-strong) shadow-sm hover:brightness-95"
-                    : "bg-(--ink) hover:opacity-90"
-                }`}
-              >
-                Bei {offer.merchant_name} ansehen
-              </a>
+              {clickoutSessionReady ? (
+                <a
+                  href={appendAcquisitionAttribution(
+                    merchantClickoutUrl(
+                      offer.clickout_path,
+                    ),
+                  )}
+                  target="_blank"
+                  rel={
+                    offer.affiliate_link
+                      ? "sponsored noopener noreferrer"
+                      : "noopener noreferrer"
+                  }
+                  className={`w-full rounded-xl px-4 py-2.5 text-center text-[13px] font-semibold text-white transition sm:w-auto ${
+                    best
+                      ? "bg-(--accent-strong) shadow-sm hover:brightness-95"
+                      : "bg-(--ink) hover:opacity-90"
+                  }`}
+                >
+                  Bei {offer.merchant_name} ansehen
+                </a>
+              ) : (
+                <span
+                  aria-disabled="true"
+                  data-clickout-preparing
+                  className={`w-full cursor-wait rounded-xl px-4 py-2.5 text-center text-[13px] font-semibold text-white opacity-70 sm:w-auto ${
+                    best ? "bg-(--accent-strong)" : "bg-(--ink)"
+                  }`}
+                >
+                  Link wird vorbereitet …
+                </span>
+              )}
             </div>
           );
         })}

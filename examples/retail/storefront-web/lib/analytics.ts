@@ -137,7 +137,7 @@ export function appendAcquisitionAttribution(
   return target.toString();
 }
 
-async function ensureApiSession(): Promise<string | null> {
+export async function ensureAnalyticsSession(): Promise<string | null> {
   if (api.session) {
     if (
       analyticsOwnedApiSession &&
@@ -217,7 +217,7 @@ async function sendAnalyticsEvent(
   event: AnalyticsEventName,
   context: AnalyticsContext,
 ): Promise<void> {
-  const apiSessionId = await ensureApiSession();
+  const apiSessionId = await ensureAnalyticsSession();
   if (!apiSessionId) return;
 
   const attribution = storedAcquisitionAttribution();
@@ -249,7 +249,7 @@ async function sendAnalyticsEvent(
     api.session = null;
     analyticsOwnedApiSession = null;
 
-    const freshSession = await ensureApiSession();
+    const freshSession = await ensureAnalyticsSession();
     if (!freshSession) return;
 
     await postAnalyticsPayload(payload);
