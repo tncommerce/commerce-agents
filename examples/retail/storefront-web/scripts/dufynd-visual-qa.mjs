@@ -1396,6 +1396,108 @@ try {
     await mobileCatalogFilterContext.close();
   }
 
+  const attributionClickoutContext = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 1,
+    reducedMotion: "reduce",
+  });
+  try {
+    const attributionPage = await attributionClickoutContext.newPage();
+    await attributionPage.route(
+      "**/api/merchant-offers/**",
+      async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            product_id: "SC-QA-ATTRIBUTION",
+            best_offer_id: "qa-attribution-offer",
+            offers: [
+              {
+                offer_id: "qa-attribution-offer",
+                product_id: "SC-QA-ATTRIBUTION",
+                merchant_id: "qa-merchant",
+                merchant_name: "QA Merchant",
+                merchant_product_id: "qa-sku",
+                price: 99,
+                currency: "EUR",
+                shipping_cost: 0,
+                shipping_label: "Versand inklusive",
+                total_price: 99,
+                in_stock: true,
+                variant_label: "QA",
+                clickout_path: "/api/clickout/qa-attribution-offer",
+                affiliate_link: false,
+                last_updated_at: "2026-09-30T12:00:00Z",
+              },
+            ],
+            affiliate_disclosure: "QA fixture",
+          }),
+        });
+      },
+    );
+    const response = await attributionPage.goto(
+      baseUrl +
+        "/duft/rabanne-1-million?src=tiktok&cmp=qa_campaign&content=qa_content",
+      { waitUntil: "networkidle", timeout: 45_000 },
+    );
+    if (!response?.ok()) {
+      throw new Error(
+        "merchant clickout attribution QA did not load: HTTP " +
+          String(response?.status() ?? "no response"),
+      );
+    }
+
+    const offers = attributionPage.locator("[data-merchant-offers]");
+    await offers.waitFor({ state: "visible", timeout: 20_000 });
+
+    const clickout = offers.locator('a[href*="/api/clickout/"]').first();
+    await clickout.waitFor({ state: "visible", timeout: 10_000 });
+
+    const href = await clickout.getAttribute("href");
+    if (!href) {
+      throw new Error("merchant offer is missing its clickout href");
+    }
+
+    const clickoutUrl = new URL(href, baseUrl);
+    if (!clickoutUrl.pathname.startsWith("/api/clickout/")) {
+      throw new Error(
+        "merchant offer no longer points at the guarded internal clickout route",
+      );
+    }
+    if (
+      clickoutUrl.searchParams.get("src") !== "tiktok" ||
+      clickoutUrl.searchParams.get("cmp") !== "qa_campaign" ||
+      clickoutUrl.searchParams.get("content") !== "qa_content"
+    ) {
+      throw new Error(
+        "merchant clickout href did not preserve acquisition attribution",
+      );
+    }
+
+    if ((await clickout.getAttribute("target")) !== "_blank") {
+      throw new Error("merchant clickout no longer opens in a separate browsing context");
+    }
+
+    report.checks.push({
+      label: "merchant-clickout-attribution-link",
+      status: "passed",
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({
+      label: "merchant-clickout-attribution-link",
+      message,
+    });
+    report.checks.push({
+      label: "merchant-clickout-attribution-link",
+      status: "failed",
+      message,
+    });
+  } finally {
+    await attributionClickoutContext.close();
+  }
+
   const comparisonContext = await browser.newContext();
   try {
     const comparisonPage = await comparisonContext.newPage();
