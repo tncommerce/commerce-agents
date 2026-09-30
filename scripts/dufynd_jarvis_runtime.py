@@ -133,9 +133,7 @@ def build_tools(bridge: DufyndJarvisBridge) -> list[SdkMcpTool[Any]]:
         "Load a bounded compact index of existing DUFYND creative patterns for reuse-before-creation checks.",
         {
             "type": "object",
-            "properties": {
-                "limit": {"type": "integer", "minimum": 1, "maximum": 200}
-            },
+            "properties": {"limit": {"type": "integer", "minimum": 1, "maximum": 200}},
         },
     )
     async def load_creative_pattern_index(args: dict[str, Any]) -> dict[str, Any]:
@@ -510,9 +508,7 @@ def _require_budget_window(bridge: DufyndJarvisBridge) -> tuple[str, dict[str, A
 
     try:
         approved_per_run_cap_usd = float(approved["per_run_cap_usd"])
-        configured_per_run_cap_usd = float(
-            os.getenv("DUFYND_JARVIS_MAX_BUDGET_USD", "0.25")
-        )
+        configured_per_run_cap_usd = float(os.getenv("DUFYND_JARVIS_MAX_BUDGET_USD", "0.25"))
     except (KeyError, TypeError, ValueError) as error:
         raise RuntimeError(
             f"DUFYND Jarvis budget window {budget_id} has incomplete per-run approval limits."
@@ -994,11 +990,7 @@ async def process_safe_task(
         )
         await asyncio.to_thread(
             bridge.record_run,
-            run_type=(
-                f"safe_task_soft_error:{task_id}"
-                if result.is_error
-                else f"safe_task:{task_id}"
-            ),
+            run_type=(f"safe_task_soft_error:{task_id}" if result.is_error else f"safe_task:{task_id}"),
             input_summary=json.dumps(task, ensure_ascii=False, default=str)[:4000],
             output_summary=text[:8000] or "(safe worker produced no prose output)",
             decisions=[
