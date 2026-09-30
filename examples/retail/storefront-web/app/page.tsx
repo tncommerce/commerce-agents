@@ -159,7 +159,12 @@ export default function StorefrontPage() {
       <div className={view === "assistant" ? "h-full" : "hidden"}>
         <Chat
           chat={chat}
-          home={<HomeView shopperName={shopper.name} />}
+          home={(
+            <HomeView
+              shopperName={shopper.name}
+              sessionReady={Boolean(session.sessionId)}
+            />
+          )}
         />
       </div>
       </StoreShell>
