@@ -23,9 +23,7 @@ HARD_CONTROL_CODES = {
 def evaluate_pilot_preflight(retrospective: dict[str, Any]) -> dict[str, Any]:
     controls = retrospective.get("controls") or {}
     remaining = retrospective.get("remaining") or {}
-    attention_codes = [
-        str(code) for code in (retrospective.get("attention_codes") or []) if code
-    ]
+    attention_codes = [str(code) for code in (retrospective.get("attention_codes") or []) if code]
 
     blockers: list[str] = []
     if not controls.get("human_approval_valid"):
@@ -49,11 +47,7 @@ def evaluate_pilot_preflight(retrospective: dict[str, Any]) -> dict[str, Any]:
     hard_attention = sorted(set(attention_codes).intersection(HARD_CONTROL_CODES))
     blockers.extend(code for code in hard_attention if code not in blockers)
 
-    warnings = sorted(
-        code
-        for code in set(attention_codes)
-        if code not in HARD_CONTROL_CODES
-    )
+    warnings = sorted(code for code in set(attention_codes) if code not in HARD_CONTROL_CODES)
 
     blockers = sorted(set(blockers))
     return {
