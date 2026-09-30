@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated_at": "2026-09-29T21:03:00+00:00",
-  "source_fingerprint_sha256": "9751cdb9b841443151cdb1c74b24fa682e9a053d97b4109e73cbef518f41a14c",
+  "source_fingerprint_sha256": "af5cf9f0f57e8b14f3fcd03b43a1a030796feb713227bf80262399829dff5248",
   "release_id": "SCENTAI-RELEASE-01",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "image_machine_ref": "scentai_image_approval_state_machine.json",
