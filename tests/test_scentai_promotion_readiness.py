@@ -185,8 +185,6 @@ def test_readiness_closest_candidates_excludes_already_live_rows() -> None:
         now=NOW,
     )
 
-    assert [row["product_id"] for row in report["closest_candidates"]] == [
-        "SC-BLOCKED"
-    ]
+    assert [row["product_id"] for row in report["closest_candidates"]] == ["SC-BLOCKED"]
     assert report["closest_candidates"][0]["promotion_candidate"] is True
     assert report["closest_candidates"][0]["already_live"] is False
