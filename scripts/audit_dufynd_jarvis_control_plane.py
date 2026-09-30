@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
@@ -21,8 +21,8 @@ def _parse_iso(value: object) -> datetime | None:
     except ValueError:
         return None
     if parsed.tzinfo is None:
-        parsed = parsed.replace(tzinfo=timezone.utc)
-    return parsed.astimezone(timezone.utc)
+        parsed = parsed.replace(tzinfo=UTC)
+    return parsed.astimezone(UTC)
 
 
 def _age_minutes(value: object, now: datetime) -> float | None:
@@ -189,7 +189,7 @@ def audit_control_plane(
     stale_after_minutes: int = DEFAULT_STALE_AFTER_MINUTES,
     budget_id: str | None = None,
 ) -> dict[str, Any]:
-    current_time = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
+    current_time = (now or datetime.now(UTC)).astimezone(UTC)
     selected_budget_id = (
         budget_id
         or os.getenv("DUFYND_JARVIS_BUDGET_ID")
