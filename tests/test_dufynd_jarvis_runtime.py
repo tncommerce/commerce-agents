@@ -727,6 +727,7 @@ def test_runtime_readiness_supports_module_execution() -> None:
     assert payload["active"] is False
     assert payload["ready_for_model_execution"] is False
 
+
 def test_claimed_inbox_event_cancellation_fails_closed(monkeypatch) -> None:
     class CancelEventBridge:
         def __init__(self) -> None:
@@ -779,4 +780,3 @@ def test_claimed_inbox_event_cancellation_fails_closed(monkeypatch) -> None:
             ),
         }
     ]
-
