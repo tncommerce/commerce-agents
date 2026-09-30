@@ -9,6 +9,7 @@ from .merchant_feed_preflight import build_feed_preflight
 from .merchant_import import (
     MerchantProductMapping,
     import_feed_rows,
+    resolve_product_id,
 )
 from .merchant_provider_contract import validate_provider_contract_rows
 
@@ -31,6 +32,29 @@ def build_release_feed_readiness(
 
     preflight = build_feed_preflight(rows)
     contract = validate_provider_contract_rows(rows)
+
+    import_issue_indexes = {
+        int(issue["row_index"])
+        for issue in preflight["issues"]
+        if issue["import_failures"]
+    }
+    import_issue_indexes.update(issue.row_index for issue in contract.invalid)
+
+    release_relevant_import_issue_indexes: set[int] = set()
+    for row_index in import_issue_indexes:
+        row = rows[row_index]
+        product_id = resolve_product_id(
+            mappings,
+            merchant=str(row.get("merchant") or ""),
+            merchant_product_id=row.get("merchant_product_id"),
+            ean=row.get("ean"),
+            gtin=row.get("gtin"),
+        )
+        if product_id in release_set:
+            release_relevant_import_issue_indexes.add(row_index)
+
+    release_feed_rows_import_ready = bool(contract.rows) and not release_relevant_import_issue_indexes
+
     imported = import_feed_rows(contract.rows, mappings)
     images = extract_feed_image_candidates(rows, mappings)
 
@@ -70,7 +94,7 @@ def build_release_feed_readiness(
     image_count = sum(1 for row in product_rows if row["feed_image_candidate_ready"])
 
     blockers = []
-    if not preflight["ready_for_offer_import"]:
+    if not release_feed_rows_import_ready:
         blockers.append("feed_not_import_ready")
     if mapped_count != len(release_ids):
         blockers.append("release_mapping_incomplete")
@@ -90,6 +114,11 @@ def build_release_feed_readiness(
         "release_size": len(release_ids),
         "feed_row_count": len(rows),
         "feed_import_ready": preflight["ready_for_offer_import"],
+        "release_feed_rows_import_ready": release_feed_rows_import_ready,
+        "release_relevant_import_issue_count": len(release_relevant_import_issue_indexes),
+        "non_release_import_issue_count": len(
+            import_issue_indexes - release_relevant_import_issue_indexes
+        ),
         "feed_promotion_asset_ready": preflight["ready_for_promotion_assets"],
         "release_mapped_product_count": mapped_count,
         "release_trackable_offer_product_count": trackable_count,
