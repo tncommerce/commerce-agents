@@ -1154,7 +1154,7 @@ try {
   }
 
   const audienceContext = await browser.newContext({
-    viewport: { width: 390, height: 844 },
+    viewport: { width: 768, height: 1024 },
     deviceScaleFactor: 1,
     reducedMotion: "reduce",
   });
