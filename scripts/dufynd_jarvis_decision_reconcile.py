@@ -238,20 +238,20 @@ def reconcile_pending_merge_decisions(
         action["task_actions"] = task_actions
 
         if write:
+            for task_action in task_actions:
+                task_row = bridge.complete_pending_autonomy_task_reconciliation(
+                    task_id=task_action["task_id"],
+                    status=task_action["to_status"],
+                    evidence=task_action["evidence"],
+                )
+                task_action["write_applied"] = task_row is not None
+
             row = bridge.complete_pending_human_decision_reconciliation(
                 decision_id=action["decision_id"],
                 decision=action["decision"],
                 resolved_at=timestamp,
             )
             action["write_applied"] = row is not None
-            if row is not None:
-                for task_action in task_actions:
-                    task_row = bridge.complete_pending_autonomy_task_reconciliation(
-                        task_id=task_action["task_id"],
-                        status=task_action["to_status"],
-                        evidence=task_action["evidence"],
-                    )
-                    task_action["write_applied"] = task_row is not None
         else:
             action["write_applied"] = False
         actions.append(action)
