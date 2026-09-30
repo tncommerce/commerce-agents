@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import json
+from datetime import UTC, datetime
 from pathlib import Path
+
+from scripts.promote_scentai_catalog import promotion_blockers
 
 DATA = Path("examples/retail/data")
 OBSERVED_AT = "2026-09-30T08:17:30Z"
@@ -47,15 +50,22 @@ def test_refreshed_evidence_does_not_grant_image_or_affiliate_rights() -> None:
         }
 
 
-def test_refreshed_women_candidates_still_fail_closed_on_image_gate() -> None:
+def test_refreshed_women_offers_clear_dynamic_purchase_gate_only() -> None:
     staging = {row["product_id"]: row for row in load("scentai_catalog_staging.json")["products"]}
+    offers = load("merchant_offers.json")["offers"]
+    now = datetime(2026, 9, 30, 8, 18, tzinfo=UTC)
 
     for product_id in (
         "SC-CAROLINA-HERRERA-GOOD-GIRL-EDP-80",
         "SC-ARMANI-SI-EDP-100",
     ):
-        product = staging[product_id]
-        assert product["commerce"]["market_status"] == "verified_current_purchase_destination"
-        assert product["commerce"]["live_offer_status"] == "current_purchase_destination_verified"
-        assert product["validation"]["catalog_ready"] is False
-        assert product["validation"]["blockers"] == ["approved_product_image_pending"]
+        blockers = promotion_blockers(
+            staging[product_id],
+            offers,
+            now=now,
+            max_offer_age_hours=72.0,
+        )
+        assert "missing_current_purchase_destination" not in blockers
+        assert "missing_approved_image" in blockers
+        assert staging[product_id]["validation"]["catalog_ready"] is False
+        assert "approved_product_image_pending" in staging[product_id]["validation"]["blockers"]
