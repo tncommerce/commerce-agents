@@ -683,6 +683,25 @@
       "data_source": "manual_verified_web",
       "last_updated_at": "2026-09-30T09:26:00Z",
       "commission_rate": null
+    },
+    {
+      "offer_id": "douglas-prada-lhomme-intense-edp-100",
+      "product_id": "SC-PRADA-LHOMME-INTENSE-EDP-100",
+      "merchant_id": "douglas-de",
+      "merchant_name": "Douglas",
+      "merchant_product_id": "971573",
+      "price": 89,
+      "currency": "EUR",
+      "shipping_cost": 0,
+      "shipping_label": "Versandkostenfrei",
+      "in_stock": true,
+      "variant_label": "100 ml · L'Homme Intense Eau de Parfum",
+      "product_url": "https://www.douglas.de/de/p/3001037535",
+      "affiliate_url": null,
+      "network": null,
+      "data_source": "manual_verified_web",
+      "last_updated_at": "2026-09-30T09:42:00Z",
+      "commission_rate": null
     }
   ]
 }
