@@ -508,6 +508,21 @@ def _require_budget_window(bridge: DufyndJarvisBridge) -> tuple[str, dict[str, A
             f"approved(max_runs={approved_max_runs}, cap_usd={approved_cap_usd})."
         )
 
+    try:
+        approved_per_run_cap_usd = float(approved["per_run_cap_usd"])
+        configured_per_run_cap_usd = float(
+            os.getenv("DUFYND_JARVIS_MAX_BUDGET_USD", "0.25")
+        )
+    except (KeyError, TypeError, ValueError) as error:
+        raise RuntimeError(
+            f"DUFYND Jarvis budget window {budget_id} has incomplete per-run approval limits."
+        ) from error
+    if configured_per_run_cap_usd > approved_per_run_cap_usd:
+        raise RuntimeError(
+            "DUFYND Jarvis configured per-run budget exceeds its approved human limit: "
+            f"configured={configured_per_run_cap_usd} vs approved={approved_per_run_cap_usd}."
+        )
+
     if not status.get("can_run"):
         raise RuntimeError(
             "DUFYND Jarvis budget window does not permit another run: "
