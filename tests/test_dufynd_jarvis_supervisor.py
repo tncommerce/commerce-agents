@@ -393,4 +393,3 @@ def test_supervisor_persists_terminal_state_when_session_raises(monkeypatch) -> 
     persisted = bridge.master[supervisor.SUPERVISOR_KEY]["value"]
     assert persisted["status"] == "needs_attention"
     assert persisted["stop_reason"] == "orchestration_error"
-
