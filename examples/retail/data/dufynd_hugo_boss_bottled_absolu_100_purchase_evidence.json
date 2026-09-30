@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "observed_at": "2026-09-30T10:27:00Z",
+  "product_id": "SC-HUGO-BOSS-BOTTLED-ABSOLU-100",
+  "merchant": "Notino DE",
+  "merchant_product_id": "HUG13734",
+  "product_url": "https://www.notino.de/hugo-boss/boss-bottled-absolu-eau-de-parfum-fuer-herren/p-16261924/",
+  "observation_method": "current_public_merchant_page_read_only_web_retrieval",
+  "identity": {
+    "brand": "Hugo Boss",
+    "name": "BOSS Bottled Absolu",
+    "concentration": "Parfum Intense",
+    "volume_ml": 100,
+    "merchant_identity_note": "Notino identifies the exact 100 ml BOSS Bottled Absolu Parfüm intense variant; product code HUG13734. The page classifies the Duftstoffkonzentration as Parfum."
+  },
+  "live_observation": {
+    "listed_price_eur": 104,
+    "promotional_price_eur": 83.2,
+    "promotional_condition": "sale code shown by merchant; base listed price retained for DUFYND evidence",
+    "shipping_cost_eur": 0,
+    "availability": "Verfügbar",
+    "delivery_note": "Notino DE shows free DHL delivery for the selected 100 ml variant."
+  },
+  "rights_or_affiliate_impact": {
+    "image_rights_granted": false,
+    "affiliate_tracking_verified": false,
+    "final_image_approval_granted": false
+  },
+  "freshness_policy": "Offer qualifies only while last_updated_at is within the 72-hour merchant-offer window. No live catalog promotion."
+}
