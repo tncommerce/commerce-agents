@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "generated_at": "2026-09-30T18:27:00Z",
+  "merchant_id": "notino",
+  "network": "CJ Affiliate",
+  "program": "Notino",
+  "purpose": "Affiliate-only evidence for existing or near-complete Notino catalog mappings. No live routing or control-plane mutation.",
+  "tracking_base": "https://www.jdoqocy.com/click-101884613-12260695",
+  "live_routing_allowed": false,
+  "candidates": [
+    {
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "merchant_product_id": "ETP00580",
+      "product_url": "https://www.notino.de/essential-parfums/bois-imperial-eau-de-parfum-unisex/p-16303008/",
+      "exact_variant": "Essential Parfums Bois Imperial Eau de Parfum 100 ml",
+      "availability_observed": false,
+      "source_of_truth_mapping_row_present": true,
+      "source_of_truth_merchant_product_id_present": false,
+      "evidence_note": "Notino DE identifies the exact 100 ml Eau de Parfum under code ETP00580. Existing mapping row is present but does not yet contain the merchant product ID.",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fessential-parfums%2Fbois-imperial-eau-de-parfum-unisex%2Fp-16303008%2F",
+      "activation_state": "staged_not_live",
+      "publish_allowed": false,
+      "image_rights_status": "not_implied_by_affiliate_mapping"
+    },
+    {
+      "product_id": "SC-KAYALI-YUM-BOUJEE-MARSHMALLOW-81-EDPI-100",
+      "merchant_product_id": "KAY01896",
+      "gtin": "6294018405283",
+      "product_url": "https://www.notino.de/kayali/yum-boujee-marshmallow-81-eau-de-parfum-intense-fuer-damen/",
+      "exact_variant": "Kayali Yum Boujee Marshmallow | 81 Eau de Parfum intense 100 ml",
+      "availability_observed": false,
+      "source_of_truth_mapping_row_present": true,
+      "source_of_truth_merchant_product_id_present": true,
+      "evidence_note": "Notino DE identifies the exact 100 ml variant under code KAY01896; currently unavailable.",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fkayali%2Fyum-boujee-marshmallow-81-eau-de-parfum-intense-fuer-damen%2F",
+      "activation_state": "staged_not_live",
+      "publish_allowed": false,
+      "image_rights_status": "not_implied_by_affiliate_mapping"
+    },
+    {
+      "product_id": "SC-LATTAFA-ANGHAM-EDP-100",
+      "merchant_product_id": "LTF00992",
+      "product_url": "https://www.notino.de/lattafa/angham-eau-de-parfum-unisex/",
+      "exact_variant": "Lattafa Angham Eau de Parfum 100 ml",
+      "availability_observed": true,
+      "source_of_truth_mapping_row_present": true,
+      "source_of_truth_merchant_product_id_present": true,
+      "evidence_note": "Notino DE identifies the exact 100 ml Eau de Parfum under code LTF00992.",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Flattafa%2Fangham-eau-de-parfum-unisex%2F",
+      "activation_state": "staged_not_live",
+      "publish_allowed": false,
+      "image_rights_status": "not_implied_by_affiliate_mapping"
+    },
+    {
+      "product_id": "SC-AFNAN-9-PM-POUR-FEMME-EDP-100",
+      "merchant_product_id": "AFN00282",
+      "gtin": "6290171072607",
+      "product_url": "https://www.notino.de/afnan/9-am-pour-femme-eau-de-parfum-ii-fuer-damen/",
+      "exact_variant": "Afnan 9 PM Pour Femme Eau de Parfum 100 ml",
+      "availability_observed": true,
+      "source_of_truth_mapping_row_present": true,
+      "source_of_truth_merchant_product_id_present": true,
+      "evidence_note": "Notino DE rendered identity is 9 PM Pour Femme 100 ml under code AFN00282 despite the legacy 9-am URL slug.",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fafnan%2F9-am-pour-femme-eau-de-parfum-ii-fuer-damen%2F",
+      "activation_state": "staged_not_live",
+      "publish_allowed": false,
+      "image_rights_status": "not_implied_by_affiliate_mapping"
+    }
+  ],
+  "policy": {
+    "exact_variant_required": true,
+    "availability_must_be_revalidated_before_live_surface": true,
+    "source_of_truth_mapping_mutation": false,
+    "explicit_user_approval_required_before_live_routing": true,
+    "affiliate_approval_implies_image_rights": false
+  }
+}
