@@ -148,6 +148,56 @@ def test_budget_ledger_flags_historical_per_run_cap_breach() -> None:
     assert issue["run_ids"] == ["run-over-cap"]
 
 
+def test_budget_ledger_accepts_budget_status_display_rounding() -> None:
+    bridge = FakeBridge(
+        budget_status={
+            "budget_id": "jarvis_activation_pilot_001",
+            "status": "active",
+            "can_run": True,
+            "cap_usd": 2.5,
+            "max_runs": 20,
+            "runs": 2,
+            "spent_usd": 0.3001,
+            "remaining_usd": 2.1999,
+            "remaining_runs": 18,
+        },
+        runs=[
+            {
+                "id": "run-1",
+                "agent_name": "jarvis",
+                "run_type": "event",
+                "created_at": "2026-09-29T20:05:00+00:00",
+                "decisions": [
+                    {
+                        "budget_id": "jarvis_activation_pilot_001",
+                        "cost_usd": 0.10003,
+                    }
+                ],
+            },
+            {
+                "id": "run-2",
+                "agent_name": "jarvis",
+                "run_type": "event",
+                "created_at": "2026-09-29T20:10:00+00:00",
+                "decisions": [
+                    {
+                        "budget_id": "jarvis_activation_pilot_001",
+                        "cost_usd": 0.20003,
+                    }
+                ],
+            },
+        ],
+    )
+
+    report = build_budget_ledger(bridge)
+
+    assert report["ledger"]["spent_usd"] == 0.30006
+    assert report["reconciliation"]["spend_matches"] is True
+    assert "budget_spend_reconciliation_mismatch" not in {
+        item["code"] for item in report["issues"]
+    }
+
+
 def test_budget_ledger_flags_spend_and_run_count_mismatch() -> None:
     bridge = FakeBridge(
         budget_status={
