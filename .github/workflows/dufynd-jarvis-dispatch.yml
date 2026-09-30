@@ -170,9 +170,9 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p jarvis-nightshift-report
-          python -m scripts.audit_dufynd_jarvis_control_plane --pretty \\
+          python -m scripts.audit_dufynd_jarvis_control_plane --pretty \
             | tee jarvis-nightshift-report/control-plane-audit.json
-          sha256sum jarvis-nightshift-report/control-plane-audit.json \\
+          sha256sum jarvis-nightshift-report/control-plane-audit.json \
             > "${RUNNER_TEMP}/dufynd-control-plane-audit.sha256"
 
       - name: Restore clean worker checkout after control-plane sync
@@ -189,13 +189,13 @@ jobs:
           fi
 
           unexpected_untracked="$(
-            git ls-files --others --exclude-standard \\
-              | grep -v '^jarvis-nightshift-report/control-plane-audit.json$' \\
+            git ls-files --others --exclude-standard \
+              | grep -v '^jarvis-nightshift-report/control-plane-audit.json$' \
               || true
           )"
           if [ -n "${unexpected_untracked}" ]; then
             echo "Unexpected pre-worker untracked files are present."
-            printf '%s\\n' "${unexpected_untracked}"
+            printf '%s\n' "${unexpected_untracked}"
             exit 29
           fi
           sha256sum -c "${RUNNER_TEMP}/dufynd-control-plane-audit.sha256"
@@ -245,7 +245,7 @@ jobs:
           sha256sum -c "${RUNNER_TEMP}/dufynd-control-plane-audit.sha256"
 
           git diff --name-status --find-renames > "${RUNNER_TEMP}/jarvis-tracked-status.txt"
-          while IFS=$'\\t' read -r change old_path new_path; do
+          while IFS=$'\t' read -r change old_path new_path; do
             case "${change}" in
               D*|R*)
                 echo "Jarvis branch worker may not delete or rename tracked files: ${change} ${old_path} ${new_path:-}"
@@ -256,8 +256,8 @@ jobs:
 
           {
             git diff --name-only
-            git ls-files --others --exclude-standard \\
-              | grep -v -E '^(jarvis-nightshift-report/control-plane-audit\\.json|jarvis-worker-task\\.json)$' \\
+            git ls-files --others --exclude-standard \
+              | grep -v -E '^(jarvis-nightshift-report/control-plane-audit\.json|jarvis-worker-task\.json)$' \
               || true
           } | sort -u > "${RUNNER_TEMP}/jarvis-worker-files.txt"
           cp "${RUNNER_TEMP}/jarvis-worker-files.txt" jarvis-worker-files.txt
@@ -305,14 +305,14 @@ jobs:
             npx playwright install --with-deps chromium
             npm run build --workspace acme-retail-storefront-web
 
-            node retail/storefront-web/scripts/serve-static-export.mjs \\
-              --root retail/storefront-web/out \\
+            node retail/storefront-web/scripts/serve-static-export.mjs \
+              --root retail/storefront-web/out \
               --port 3000 > /tmp/dufynd-jarvis-static.log 2>&1 &
             server_pid=$!
             trap 'kill "$server_pid" 2>/dev/null || true' EXIT
 
             for attempt in {1..60}; do
-              if curl --fail --silent --location \\
+              if curl --fail --silent --location \
                 http://127.0.0.1:3000/duft/xerjoff-naxos > /dev/null; then
                 break
               fi
@@ -323,8 +323,8 @@ jobs:
               sleep 1
             done
 
-            node retail/storefront-web/scripts/dufynd-visual-qa.mjs \\
-              --base-url http://127.0.0.1:3000 \\
+            node retail/storefront-web/scripts/dufynd-visual-qa.mjs \
+              --base-url http://127.0.0.1:3000 \
               --out retail/storefront-web/.visual-qa
             popd > /dev/null
           fi
