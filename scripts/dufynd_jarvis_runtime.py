@@ -74,8 +74,9 @@ Operating rules:
 10. Keep the operator as final decision-maker for the high-impact gates above.
 
 For a creative reference event:
-- load creative context
-- inspect existing patterns and lessons
+- load the bounded creative pattern index first
+- inspect existing patterns before deciding whether anything new is needed
+- load the full creative context only when the bounded index is insufficient and the payload is small enough
 - identify the reusable mechanisms
 - link the reference to existing patterns where possible
 - create a new pattern only when truly distinct
@@ -126,6 +127,24 @@ def build_tools(bridge: DufyndJarvisBridge) -> list[SdkMcpTool[Any]]:
     )
     async def load_creative_context(_args: dict[str, Any]) -> dict[str, Any]:
         return _json_result(await asyncio.to_thread(bridge.load_creative_context))
+
+    @tool(
+        "load_creative_pattern_index",
+        "Load a bounded compact index of existing DUFYND creative patterns for reuse-before-creation checks.",
+        {
+            "type": "object",
+            "properties": {
+                "limit": {"type": "integer", "minimum": 1, "maximum": 200}
+            },
+        },
+    )
+    async def load_creative_pattern_index(args: dict[str, Any]) -> dict[str, Any]:
+        return _json_result(
+            await asyncio.to_thread(
+                bridge.load_creative_pattern_index,
+                limit=int(args.get("limit", 100)),
+            )
+        )
 
     @tool(
         "load_autonomy_queue",
@@ -354,6 +373,7 @@ def build_tools(bridge: DufyndJarvisBridge) -> list[SdkMcpTool[Any]]:
     return [
         load_operating_context,
         load_creative_context,
+        load_creative_pattern_index,
         load_autonomy_queue,
         load_experiment_rubric,
         load_pending_decisions,
@@ -379,6 +399,7 @@ def allowed_tool_names() -> list[str]:
     names = (
         "load_operating_context",
         "load_creative_context",
+        "load_creative_pattern_index",
         "load_autonomy_queue",
         "load_experiment_rubric",
         "load_pending_decisions",
@@ -518,8 +539,14 @@ def _require_autonomous_session(
     return _require_budget_window(bridge)
 
 
+def _sdk_budget_limit(approved_per_run_cap_usd: float) -> float:
+    """Leave headroom because the SDK can finish a turn slightly above its stop threshold."""
+    return max(0.01, round(approved_per_run_cap_usd * 0.8, 4))
+
+
 def make_options(bridge: DufyndJarvisBridge) -> ClaudeAgentOptions:
     model, max_turns, max_budget_usd = _require_active_runtime()
+    sdk_budget_usd = _sdk_budget_limit(max_budget_usd)
     return ClaudeAgentOptions(
         system_prompt=SYSTEM_PROMPT,
         mcp_servers={SERVER_NAME: build_server(bridge)},
@@ -529,7 +556,7 @@ def make_options(bridge: DufyndJarvisBridge) -> ClaudeAgentOptions:
         env={"CLAUDE_CODE_DISABLE_CLAUDE_MDS": "1"},
         model=model,
         max_turns=max_turns,
-        max_budget_usd=max_budget_usd,
+        max_budget_usd=sdk_budget_usd,
         permission_mode="dontAsk",
     )
 
@@ -550,6 +577,7 @@ controlled DUFYND step.
 
 def make_safe_worker_options(bridge: DufyndJarvisBridge) -> ClaudeAgentOptions:
     model, max_turns, max_budget_usd = _require_active_runtime()
+    sdk_budget_usd = _sdk_budget_limit(max_budget_usd)
     builtins = ["Read", "Grep", "Glob", "WebSearch", "WebFetch"]
     return ClaudeAgentOptions(
         system_prompt=SAFE_WORKER_SYSTEM_PROMPT,
@@ -560,7 +588,7 @@ def make_safe_worker_options(bridge: DufyndJarvisBridge) -> ClaudeAgentOptions:
         env={"CLAUDE_CODE_DISABLE_CLAUDE_MDS": "1"},
         model=model,
         max_turns=max_turns,
-        max_budget_usd=max_budget_usd,
+        max_budget_usd=sdk_budget_usd,
         permission_mode="dontAsk",
     )
 
@@ -582,6 +610,7 @@ A deterministic workflow will validate changed paths and run tests after your tu
 
 def make_branch_worker_options(bridge: DufyndJarvisBridge) -> ClaudeAgentOptions:
     model, max_turns, max_budget_usd = _require_active_runtime()
+    sdk_budget_usd = _sdk_budget_limit(max_budget_usd)
     builtins = ["Read", "Grep", "Glob", "Write", "Edit"]
     return ClaudeAgentOptions(
         system_prompt=BRANCH_WORKER_SYSTEM_PROMPT,
@@ -592,7 +621,7 @@ def make_branch_worker_options(bridge: DufyndJarvisBridge) -> ClaudeAgentOptions
         env={"CLAUDE_CODE_DISABLE_CLAUDE_MDS": "1"},
         model=model,
         max_turns=max_turns,
-        max_budget_usd=max_budget_usd,
+        max_budget_usd=sdk_budget_usd,
         permission_mode="acceptEdits",
     )
 
@@ -832,8 +861,10 @@ def safe_task_prompt(task: dict[str, Any]) -> str:
     )
     return (
         f"{role_guidance} "
-        "First load the current autonomy queue and operating context. Use repository "
-        "read/search tools and public web research when useful. Do not perform any "
+        "First load the current autonomy queue and runtime health. Prefer bounded "
+        "indexes and targeted repository reads; load the comprehensive operating "
+        "context only when specifically necessary. Use repository read/search tools "
+        "and public web research when useful. Do not perform any "
         "high-impact action. Produce evidence, blockers, and the next safe step; do "
         "not claim publication, licensing rights, stock, price, or identity without "
         "verification. End your response with exactly one machine-readable outcome "
