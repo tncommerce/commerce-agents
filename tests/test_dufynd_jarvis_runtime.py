@@ -242,9 +242,7 @@ def test_safe_worker_prompt_names_high_impact_boundaries() -> None:
 
 def test_safe_worker_state_parser_accepts_machine_readable_outcome() -> None:
     assert (
-        _extract_safe_task_state(
-            "Evidence complete.\nDUFYND_TASK_STATE: waiting_external"
-        )
+        _extract_safe_task_state("Evidence complete.\nDUFYND_TASK_STATE: waiting_external")
         == "waiting_external"
     )
     assert _extract_safe_task_state("DUFYND_TASK_STATE: invalid") is None
