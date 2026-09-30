@@ -44,6 +44,44 @@ const expectedFragranceCount = sourceCatalog.products.filter(
     String(product?.product_id || "").startsWith("SC-") &&
     !hasValidationBlockers(product),
 ).length;
+const audienceKeys = ["men", "women", "unisex"];
+
+function exclusiveAudience(product) {
+  const groups = new Set(
+    (product?.classification?.scentai_target_groups || [])
+      .map((group) => String(group || "").trim().toLowerCase())
+      .filter(Boolean),
+  );
+
+  if (groups.has("unisex")) return "unisex";
+  if (groups.has("men") && groups.has("women")) return "unisex";
+  if (groups.has("women")) return "women";
+  if (groups.has("men")) return "men";
+  return null;
+}
+
+const expectedAudienceRoutes = Object.fromEntries(
+  audienceKeys.map((audience) => [
+    audience,
+    sourceCatalog.products
+      .filter(
+        (product) =>
+          String(product?.product_id || "").startsWith("SC-") &&
+          !hasValidationBlockers(product) &&
+          exclusiveAudience(product) === audience,
+      )
+      .map(
+        (product) =>
+          "/duft/" +
+          slugifyFragrance(
+            String(product?.brand || "").trim() +
+              " " +
+              String(product?.name || "").trim(),
+          ),
+      )
+      .sort(),
+  ]),
+);
 
 const blockedFragranceRoutes = new Set(
   sourceCatalog.products
@@ -1115,6 +1153,129 @@ try {
     await shareContext.close();
   }
 
+  const audienceContext = await browser.newContext({
+    viewport: { width: 768, height: 1024 },
+    deviceScaleFactor: 1,
+    reducedMotion: "reduce",
+  });
+  try {
+    const audiencePage = await audienceContext.newPage();
+    const actualRoutesByAudience = {};
+
+    for (const audience of audienceKeys) {
+      const label =
+        audience === "men" ? "Herren" : audience === "women" ? "Damen" : "Unisex";
+      const response = await audiencePage.goto(
+        baseUrl + "/duft?zielgruppe=" + audience,
+        { waitUntil: "networkidle", timeout: 45_000 },
+      );
+      if (!response?.ok()) {
+        throw new Error(
+          "catalog audience " + audience +
+            " did not load: HTTP " +
+            String(response?.status() ?? "no response"),
+        );
+      }
+
+      const audienceButton = audiencePage.getByRole("button", {
+        name: label,
+        exact: true,
+      });
+      await audienceButton.waitFor({ state: "visible", timeout: 20_000 });
+      if ((await audienceButton.getAttribute("aria-pressed")) !== "true") {
+        throw new Error(
+          "catalog did not restore the " + audience + " audience filter from the URL",
+        );
+      }
+
+      for (let step = 0; step < 10; step += 1) {
+        const loadMore = audiencePage.getByRole("button", {
+          name: /Weitere \d+ Düfte anzeigen/,
+        });
+        if ((await loadMore.count()) === 0) break;
+        await loadMore.click();
+        await audiencePage.waitForTimeout(75);
+      }
+
+      const actualRoutes = await audiencePage
+        .locator('article.dufynd-catalog-card a[href^="/duft/"]')
+        .evaluateAll((links) =>
+          Array.from(
+            new Set(
+              links
+                .map((link) => link.getAttribute("href"))
+                .filter(
+                  (href) =>
+                    typeof href === "string" &&
+                    href.startsWith("/duft/"),
+                ),
+            ),
+          ).sort(),
+        );
+
+      const expectedRoutes = expectedAudienceRoutes[audience];
+      if (JSON.stringify(actualRoutes) !== JSON.stringify(expectedRoutes)) {
+        const missing = expectedRoutes.filter(
+          (route) => !actualRoutes.includes(route),
+        );
+        const unexpected = actualRoutes.filter(
+          (route) => !expectedRoutes.includes(route),
+        );
+        throw new Error(
+          "catalog audience " + audience +
+            " mismatch; missing=" + (missing.join(", ") || "none") +
+            "; unexpected=" + (unexpected.join(", ") || "none"),
+        );
+      }
+
+      actualRoutesByAudience[audience] = actualRoutes;
+      report.checks.push({
+        label: "catalog-audience-" + audience,
+        status: "passed",
+        count: actualRoutes.length,
+      });
+    }
+
+    const seenAudienceByRoute = new Map();
+    for (const audience of audienceKeys) {
+      for (const route of actualRoutesByAudience[audience] || []) {
+        const previous = seenAudienceByRoute.get(route);
+        if (previous) {
+          throw new Error(
+            "catalog audience overlap detected for " + route +
+              ": " + previous + " and " + audience,
+          );
+        }
+        seenAudienceByRoute.set(route, audience);
+      }
+    }
+
+    if (seenAudienceByRoute.size !== expectedFragranceCount) {
+      throw new Error(
+        "exclusive audience coverage expected " + expectedFragranceCount +
+          " routes, got " + seenAudienceByRoute.size,
+      );
+    }
+
+    report.checks.push({
+      label: "catalog-audience-exclusive",
+      status: "passed",
+      count: seenAudienceByRoute.size,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({
+      label: "catalog-audience-exclusive",
+      message,
+    });
+    report.checks.push({
+      label: "catalog-audience-exclusive",
+      status: "failed",
+      message,
+    });
+  } finally {
+    await audienceContext.close();
+  }
   const comparisonContext = await browser.newContext();
   try {
     const comparisonPage = await comparisonContext.newPage();
