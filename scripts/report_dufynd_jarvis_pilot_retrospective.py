@@ -188,6 +188,7 @@ def render_markdown(report: dict[str, Any]) -> str:
     )
     return "\n".join(lines) + "\n"
 
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Read-only DUFYND Jarvis pilot retrospective.")
     parser.add_argument(
