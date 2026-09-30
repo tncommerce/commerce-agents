@@ -2235,6 +2235,65 @@ try {
       }
     }
 
+    const documentedComparisonUrl = new URL(
+      comparisonPairHref,
+      baseUrl,
+    );
+    const comparisonDetailPage = await comparisonContext.newPage();
+    const comparisonDetailResponse = await comparisonDetailPage.goto(
+      documentedComparisonUrl.href,
+      { waitUntil: "networkidle", timeout: 45_000 },
+    );
+    if (!comparisonDetailResponse?.ok()) {
+      throw new Error(
+        "documented comparison attribution QA did not load: HTTP " +
+          String(comparisonDetailResponse?.status() ?? "no response"),
+      );
+    }
+
+    const detailProductHref = await comparisonDetailPage
+      .locator('[data-dufynd-comparison-side="left"] a')
+      .first()
+      .getAttribute("href");
+    const detailHeaderHref = await comparisonDetailPage
+      .locator("header")
+      .getByRole("link", { name: "Weitere Vergleiche" })
+      .getAttribute("href");
+    const detailBreadcrumbHref = await comparisonDetailPage
+      .getByRole("navigation", { name: "Breadcrumb" })
+      .getByRole("link", { name: "Vergleiche" })
+      .getAttribute("href");
+    const detailFooterHref = await comparisonDetailPage
+      .locator("footer")
+      .getByRole("link", { name: "Transparenz" })
+      .getAttribute("href");
+
+    for (const [label, href] of [
+      ["documented comparison product", detailProductHref],
+      ["documented comparison header", detailHeaderHref],
+      ["documented comparison breadcrumb", detailBreadcrumbHref],
+      ["documented comparison footer", detailFooterHref],
+    ]) {
+      if (!href) {
+        throw new Error(`${label} link is missing its href`);
+      }
+      const detailUrl = new URL(href, baseUrl);
+      if (
+        detailUrl.searchParams.get("src") !== "tiktok" ||
+        detailUrl.searchParams.get("cmp") !== "qa_comparison_campaign" ||
+        detailUrl.searchParams.get("content") !== "qa_comparison_content"
+      ) {
+        throw new Error(
+          `${label} navigation lost acquisition attribution`,
+        );
+      }
+    }
+    await comparisonDetailPage.close();
+
+    report.checks.push({
+      label: "comparison-detail-navigation-attribution",
+      status: "passed",
+    });
     report.checks.push({
       label: "comparison-footer-navigation-attribution",
       status: "passed",
