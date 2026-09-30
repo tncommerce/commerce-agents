@@ -58,12 +58,10 @@ def test_merchant_discovery_waits_for_storefront_session() -> None:
     merchant_source = Path(
         "examples/retail/storefront-web/components/MerchantDiscovery.tsx"
     ).read_text(encoding="utf-8")
-    home_source = Path(
-        "examples/retail/storefront-web/components/views/HomeView.tsx"
-    ).read_text(encoding="utf-8")
-    page_source = Path(
-        "examples/retail/storefront-web/app/page.tsx"
-    ).read_text(encoding="utf-8")
+    home_source = Path("examples/retail/storefront-web/components/views/HomeView.tsx").read_text(
+        encoding="utf-8"
+    )
+    page_source = Path("examples/retail/storefront-web/app/page.tsx").read_text(encoding="utf-8")
 
     assert 'label: "merchant-discovery-session-correlation"' in source
     assert "qa-partner-session-1234567890" in source
