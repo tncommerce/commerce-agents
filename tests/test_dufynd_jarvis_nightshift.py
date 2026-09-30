@@ -1234,6 +1234,7 @@ def test_next_action_approval_hygiene_preserves_ready_work_precedence() -> None:
     assert "when waiting_human_count > 0 then 'waiting_for_human_input'" in sql
     assert "when approval_count > 0 then 'human_approval_required'" in sql
 
+
 def test_recovery_blocks_interrupted_task_without_audited_run() -> None:
     bridge = FakeBridge([task("repo_current_commerce", "commerce", 100)])
     bridge.tasks["repo_current_commerce"]["status"] = "in_progress"
@@ -1363,4 +1364,3 @@ def test_morning_report_marks_supervisor_cancellation_cost_incomplete() -> None:
 
     assert report["stop_reason"] == "supervisor_cancelled"
     assert report["ai_cost_complete"] is False
-
