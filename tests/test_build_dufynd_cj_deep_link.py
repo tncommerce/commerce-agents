@@ -6,10 +6,7 @@ from scripts.build_dufynd_cj_deep_link import build_cj_deep_link
 
 def test_build_notino_cj_deep_link_matches_verified_preflight() -> None:
     url = build_cj_deep_link(
-        destination_url=(
-            "https://www.notino.de/lattafa/"
-            "eclaire-eau-de-parfum-unisex/"
-        )
+        destination_url=("https://www.notino.de/lattafa/eclaire-eau-de-parfum-unisex/")
     )
 
     assert url == (
