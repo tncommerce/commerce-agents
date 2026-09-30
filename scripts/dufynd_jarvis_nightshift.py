@@ -229,16 +229,69 @@ def _safe_worker_outcome(evidence: object) -> str:
     return "in_progress"
 
 
-def _run_exists_for_task(
+def _latest_task_run(
     bridge: DufyndJarvisBridge,
     *,
     task_id: str,
     since_iso: str,
+) -> dict[str, Any] | None:
+    relevant_types = {
+        f"safe_task:{task_id}",
+        f"safe_task_failed:{task_id}",
+        f"branch_task:{task_id}",
+        f"branch_task_failed:{task_id}",
+    }
+    matches = [
+        run
+        for run in bridge.load_agent_runs_since(since_iso)
+        if str(run.get("run_type") or "") in relevant_types
+    ]
+    return matches[-1] if matches else None
+
+
+def _record_persistence_error(
+    session: dict[str, Any],
+    *,
+    task_id: str,
+    status: str,
+    error: Exception,
+) -> None:
+    errors = session.setdefault("persistence_errors", [])
+    errors.append(
+        {
+            "task_id": task_id,
+            "status": status,
+            "error": str(error)[:1200],
+            "at": iso_now(),
+        }
+    )
+    if len(errors) > 20:
+        del errors[:-20]
+
+
+def _best_effort_set_task_status(
+    bridge: DufyndJarvisBridge,
+    session: dict[str, Any],
+    *,
+    task_id: str,
+    status: str,
+    evidence: str,
 ) -> bool:
-    for run in bridge.load_agent_runs_since(since_iso):
-        if str(run.get("run_type") or "").endswith(task_id):
-            return True
-    return False
+    try:
+        bridge.set_autonomy_task_status(
+            task_id=task_id,
+            status=status,
+            evidence=evidence,
+        )
+    except Exception as error:
+        _record_persistence_error(
+            session,
+            task_id=task_id,
+            status=status,
+            error=error,
+        )
+        return False
+    return True
 
 
 def _recover_interrupted_work(
@@ -272,21 +325,38 @@ def _recover_interrupted_work(
 
     worker = str(candidate.get("worker") or "")
     since_iso = str(candidate.get("started_at") or session.get("started_at") or iso_now())
-    completed_run_exists = _run_exists_for_task(
+    latest_run = _latest_task_run(
         bridge,
         task_id=task_id,
         since_iso=since_iso,
     )
 
-    if worker == "safe_worker" and completed_run_exists:
-        bridge.set_autonomy_task_status(
+    if worker == "safe_worker" and latest_run:
+        run_type = str(latest_run.get("run_type") or "")
+        recovered_state = _safe_worker_outcome(latest_run.get("output_summary"))
+        failed_run = run_type == f"safe_task_failed:{task_id}"
+
+        if recovered_state in {"waiting_human_input", "waiting_external", "blocked"}:
+            persisted_status = recovered_state
+            final_status = recovered_state
+        elif recovered_state == "done" and not failed_run:
+            persisted_status = "done"
+            final_status = "done"
+        else:
+            persisted_status = "ready"
+            final_status = "in_progress"
+
+        persisted = _best_effort_set_task_status(
+            bridge,
+            session,
             task_id=task_id,
-            status="done",
+            status=persisted_status,
             evidence=_append_evidence(
                 current.get("evidence"),
                 (
                     f"nightshift_session={session['session_id']}; "
-                    "resume recovered audited GREEN worker completion."
+                    f"resume recovered run_type={run_type}; "
+                    f"recovered_state={final_status}."
                 ),
             ),
         )
@@ -296,17 +366,20 @@ def _recover_interrupted_work(
                 "domain": str(candidate.get("domain") or "unknown"),
                 "title": str(current.get("title") or task_id),
                 "worker": "safe_worker",
-                "result_code": 0,
-                "final_status": "done",
+                "result_code": 1 if failed_run else 0,
+                "final_status": final_status if persisted else "blocked",
                 "attempts": int(candidate.get("attempt") or 1),
                 "finished_at": iso_now(),
                 "recovered_after_interruption": True,
+                "persistence_recovered": persisted,
             }
         )
     else:
-        # A branch-worker patch exists only in the interrupted checkout until the
-        # deterministic workflow uploads/pushes it. Recreate it on resume.
-        bridge.set_autonomy_task_status(
+        # Branch-worker patches are ephemeral until deterministic QA uploads/pushes
+        # them. Unknown/failed safe work is re-queued rather than guessed complete.
+        _best_effort_set_task_status(
+            bridge,
+            session,
             task_id=task_id,
             status="ready",
             evidence=_append_evidence(
@@ -321,7 +394,6 @@ def _recover_interrupted_work(
             session["branch_worker_used"] = False
 
     session["current_task"] = None
-
 
 def _task_result(
     task: dict[str, Any],
@@ -369,7 +441,9 @@ async def _run_task_with_retry(
 
         if attempt > 1:
             current = bridge.load_autonomy_task(task_id) or {}
-            bridge.set_autonomy_task_status(
+            _best_effort_set_task_status(
+                bridge,
+                session,
                 task_id=task_id,
                 status="ready",
                 evidence=_append_evidence(
@@ -395,7 +469,9 @@ async def _run_task_with_retry(
         except TimeoutError:
             result_code = 124
             current = bridge.load_autonomy_task(task_id) or {}
-            bridge.set_autonomy_task_status(
+            _best_effort_set_task_status(
+                bridge,
+                session,
                 task_id=task_id,
                 status="blocked",
                 evidence=_append_evidence(
@@ -420,7 +496,9 @@ async def _run_task_with_retry(
                 raise
             result_code = 1
             current = bridge.load_autonomy_task(task_id) or {}
-            bridge.set_autonomy_task_status(
+            _best_effort_set_task_status(
+                bridge,
+                session,
                 task_id=task_id,
                 status="blocked" if attempt == total_attempts else "ready",
                 evidence=_append_evidence(
@@ -436,7 +514,9 @@ async def _run_task_with_retry(
             # Nightshift session in a stale "running" state.
             result_code = 1
             current = bridge.load_autonomy_task(task_id) or {}
-            bridge.set_autonomy_task_status(
+            _best_effort_set_task_status(
+                bridge,
+                session,
                 task_id=task_id,
                 status="blocked" if attempt == total_attempts else "ready",
                 evidence=_append_evidence(
@@ -472,7 +552,9 @@ async def _run_task_with_retry(
                         "Safe worker reported in_progress or omitted a valid terminal marker; "
                         "task re-queued for a future bounded session instead of being marked done."
                     )
-                bridge.set_autonomy_task_status(
+                _best_effort_set_task_status(
+                bridge,
+                session,
                     task_id=task_id,
                     status=persisted_status,
                     evidence=_append_evidence(
@@ -482,7 +564,9 @@ async def _run_task_with_retry(
                 )
             else:
                 final_status = "in_progress"
-                bridge.set_autonomy_task_status(
+                _best_effort_set_task_status(
+                bridge,
+                session,
                     task_id=task_id,
                     status=final_status,
                     evidence=_append_evidence(
@@ -525,7 +609,9 @@ async def _run_task_with_retry(
         if attempt == total_attempts:
             current = bridge.load_autonomy_task(task_id) or {}
             if str(current.get("status") or "") != "blocked":
-                bridge.set_autonomy_task_status(
+                _best_effort_set_task_status(
+                bridge,
+                session,
                     task_id=task_id,
                     status="blocked",
                     evidence=_append_evidence(
