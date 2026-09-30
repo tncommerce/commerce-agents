@@ -17,6 +17,7 @@ from claude_agent_sdk import (
     tool,
 )
 from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
+from scripts.dufynd_jarvis_context_pages import context_overview, context_page
 
 from commerce_common.agent_sdk import collect_turn
 
@@ -75,8 +76,11 @@ Operating rules:
 
 For a creative reference event:
 - load the bounded creative pattern index first
-- inspect existing patterns before deciding whether anything new is needed
-- load the full creative context only when the bounded index is insufficient and the payload is small enough
+- context loaders return section inventories; use load_context_page when the
+  index is insufficient or lessons and reference details are needed
+- follow next_offset until the relevant section is complete; if sha256 changes
+  between pages, restart the section rather than mixing snapshots
+- inspect existing patterns and lessons before making changes
 - identify the reusable mechanisms
 - link the reference to existing patterns where possible
 - create a new pattern only when truly distinct
@@ -114,19 +118,43 @@ def _require_runtime_id(value: str, prefix: str) -> str:
 def build_tools(bridge: DufyndJarvisBridge) -> list[SdkMcpTool[Any]]:
     @tool(
         "load_operating_context",
-        "Load the comprehensive internal DUFYND/Jarvis operating context.",
+        "Load a bounded section inventory of the internal DUFYND operating context.",
         {},
     )
     async def load_operating_context(_args: dict[str, Any]) -> dict[str, Any]:
-        return _json_result(await asyncio.to_thread(bridge.load_context))
+        return _json_result(context_overview(await asyncio.to_thread(bridge.load_context)))
 
     @tool(
         "load_creative_context",
-        "Load the DUFYND creative knowledge graph, board, references and learning state.",
+        "Load a bounded section inventory of the DUFYND creative knowledge graph.",
         {},
     )
     async def load_creative_context(_args: dict[str, Any]) -> dict[str, Any]:
-        return _json_result(await asyncio.to_thread(bridge.load_creative_context))
+        return _json_result(context_overview(await asyncio.to_thread(bridge.load_creative_context)))
+
+    @tool(
+        "load_context_page",
+        "Read bounded, lossless JSON text pages from a creative or operating context section. "
+        "Use section paths from the inventory and follow next_offset until null.",
+        {
+            "type": "object",
+            "properties": {
+                "context": {"type": "string", "enum": ["creative", "operating"]},
+                "section": {"type": "string"},
+                "offset": {"type": "integer", "minimum": 0},
+            },
+            "required": ["context", "section"],
+        },
+    )
+    async def load_context_page(args: dict[str, Any]) -> dict[str, Any]:
+        loaders = {"creative": bridge.load_creative_context, "operating": bridge.load_context}
+        if args["context"] not in loaders:
+            raise ValueError("Context must be creative or operating")
+        payload = await asyncio.to_thread(loaders[args["context"]])
+        metadata, fragment = context_page(
+            payload, section=args["section"], offset=int(args.get("offset", 0))
+        )
+        return _result(json.dumps(metadata, ensure_ascii=False) + "\n" + fragment)
 
     @tool(
         "load_creative_pattern_index",
@@ -372,6 +400,7 @@ def build_tools(bridge: DufyndJarvisBridge) -> list[SdkMcpTool[Any]]:
         load_operating_context,
         load_creative_context,
         load_creative_pattern_index,
+        load_context_page,
         load_autonomy_queue,
         load_experiment_rubric,
         load_pending_decisions,
@@ -398,6 +427,7 @@ def allowed_tool_names() -> list[str]:
         "load_operating_context",
         "load_creative_context",
         "load_creative_pattern_index",
+        "load_context_page",
         "load_autonomy_queue",
         "load_experiment_rubric",
         "load_pending_decisions",

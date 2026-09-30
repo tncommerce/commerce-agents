@@ -20,6 +20,7 @@ QUEUE_BUCKETS = (
     "in_progress",
     "waiting_human_input",
     "waiting_external",
+    "blocked",
     "approval_required",
     "done_recent",
 )

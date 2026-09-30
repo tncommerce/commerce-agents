@@ -3,6 +3,8 @@ from __future__ import annotations
 import asyncio
 from pathlib import Path
 
+import httpx
+import pytest
 import scripts.dufynd_jarvis_nightshift as nightshift
 
 
@@ -110,6 +112,30 @@ class FakeBridge:
             "spent_usd": 0.4,
             "remaining_usd": 2.1,
         }
+
+
+def test_orchestration_failure_persists_stop_reason_and_blocked_result(monkeypatch):
+    bridge = FakeBridge([task("repo_current_commerce", "commerce", 100)])
+    monkeypatch.setattr(nightshift, "_require_autonomous_mode", lambda: None)
+    monkeypatch.setattr(nightshift, "_require_budget_window", lambda bridge: ("budget", {}))
+
+    async def failed_worker(*args, **kwargs):
+        request = httpx.Request("PATCH", "https://example.test/tasks")
+        response = httpx.Response(400, request=request)
+        raise httpx.HTTPStatusError("status rejected", request=request, response=response)
+
+    monkeypatch.setattr(nightshift, "_run_task_with_retry", failed_worker)
+    with pytest.raises(httpx.HTTPStatusError):
+        asyncio.run(nightshift.run_nightshift(bridge, max_events=0))
+    session = bridge.master[nightshift.SESSION_KEY]["value"]
+    assert session["status"] == "needs_attention"
+    assert session["stop_reason"] == "worker_runtime_error"
+    assert session["ended_at"]
+    assert session["task_results"][0]["final_status"] == "blocked"
+    report, markdown = nightshift.build_morning_report(bridge, qa_status="failure")
+    assert report["blocked"] == 1
+    assert report["ai_cost_complete"] is False
+    assert "worker_runtime_error" in markdown
 
 
 def task(task_id: str, domain: str, priority: int) -> dict:

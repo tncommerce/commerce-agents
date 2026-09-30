@@ -28,9 +28,19 @@ def canonical_bytes(payload: object) -> bytes:
 
 
 def source_fingerprint(*payloads: object) -> str:
+    def stable(value: object) -> object:
+        if isinstance(value, dict):
+            return {key: stable(item) for key, item in value.items() if key != "generated_at"}
+        if isinstance(value, list):
+            return [stable(item) for item in value]
+        return value
+
     digest = hashlib.sha256()
     for payload in payloads:
-        digest.update(canonical_bytes(payload))
+        # Rebuilding derived views at another time must not invalidate an
+        # unchanged task/checkpoint. Verification/approval timestamps remain
+        # evidence and still affect the fingerprint.
+        digest.update(canonical_bytes(stable(payload)))
     return digest.hexdigest()
 
 
