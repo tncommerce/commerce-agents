@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "review_type": "affiliate_activation_readiness",
+  "merchant_id": "notino",
+  "network": "CJ Affiliate",
+  "program": "Notino",
+  "reviewed_at": "2026-09-30T14:57:15Z",
+  "activation_scope": "verified_product_deep_links_only",
+  "verified_reference_product": {
+    "product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
+    "merchant_product_id": "LTF00869",
+    "gtin": "6290362340638",
+    "destination_url": "https://www.notino.de/lattafa/eclaire-eau-de-parfum-unisex/"
+  },
+  "gates": {
+    "affiliate_program_approved": true,
+    "cj_deep_link_generation_verified": true,
+    "destination_identity_verified": true,
+    "exact_variant_mapping_verified": true,
+    "redirect_dry_run_passed": true,
+    "reusable_link_builder_prepared": true,
+    "live_routing_allowed": false
+  },
+  "remaining_live_requirements": [
+    "explicit_user_approval_before_live_routing",
+    "only_publish exact mapped product destinations",
+    "verify current availability or stock before surfacing a product offer",
+    "do not infer image rights from affiliate approval",
+    "do not use commission to change fragrance recommendations"
+  ],
+  "readiness": "ready_for_user_approval_scoped",
+  "next_action": "After CI passes, request explicit user approval before enabling Notino live routing. Initial activation must stay scoped to exact verified product deep links and current-availability checks."
+}
