@@ -14,6 +14,23 @@ def mock_transport() -> httpx.MockTransport:
     def handler(request: httpx.Request) -> httpx.Response:
         if request.method == "PATCH" and request.url.path.endswith("/dufynd_autonomy_tasks"):
             row = json.loads(request.content)
+            if request.url.params.get("status") == "eq.approval_required":
+                assert request.url.params["task_id"] == "eq.task_merge_test"
+                assert request.url.params["approval_action_type"] == "eq.merge_production_code"
+                assert row["status"] == "cancelled"
+                assert "PR #42" in row["evidence"]
+                assert request.headers["prefer"] == "return=representation"
+                return httpx.Response(
+                    200,
+                    json=[
+                        {
+                            "task_id": "task_merge_test",
+                            "status": "cancelled",
+                            "approval_action_type": "merge_production_code",
+                            "evidence": row["evidence"],
+                        }
+                    ],
+                )
             assert request.url.params["task_id"] == "eq.repo_current_commerce"
             assert row["status"] in {"in_progress", "done"}
             assert row["evidence"] in {"research evidence", "completed evidence"}
@@ -603,6 +620,24 @@ def test_bridge_completes_pending_decision_reconciliation() -> None:
     assert row is not None
     assert row["status"] == "completed"
     assert row["decision"]["resolution"] == "superseded"
+
+
+def test_bridge_reconciles_pending_merge_approval_task() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    row = bridge.complete_pending_autonomy_task_reconciliation(
+        task_id="task_merge_test",
+        status="cancelled",
+        evidence="PR #42 closed and superseded.",
+    )
+
+    assert row is not None
+    assert row["status"] == "cancelled"
+    assert row["approval_action_type"] == "merge_production_code"
 
 
 def test_bridge_loads_pending_decisions() -> None:
