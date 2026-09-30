@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-
 MIGRATION = Path("examples/retail/data/dufynd_jarvis_v1_2_supabase_migration.sql")
 
 
