@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-09-30T18:50:00Z",
+  "updated_at": "2026-09-30T18:51:00Z",
   "publisher": "DUFYND",
   "operator": "TNCommerce",
   "communications": [
@@ -62,6 +62,8 @@
     "support_guidance_summary": "CJ Support confirmed that the superuser can change the email in CJAM under Settings/Users/Edit and then verify the new address.",
     "latest_follow_up_received_at": "2026-09-30T09:04:30Z",
     "manual_step_required": true,
-    "note": "No account setting was changed by automation. Direct Gmail reply/draft creation failed at connector level and should not be treated as sent."
+    "note": "CJ Support was asked to keep the case open while the manual CJAM user/login email change to kontakt@dufynd.de is completed and verified.",
+    "reply_status": "sent",
+    "reply_sent_at": "2026-09-30T18:50:00Z"
   }
 }
