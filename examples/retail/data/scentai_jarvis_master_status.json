@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated_at": "2026-09-29T21:03:00+00:00",
-  "source_fingerprint_sha256": "e0744c55bf3f424480dcd078362970ebad29ba01fbced27164d4d7688416d765",
+  "source_fingerprint_sha256": "cea04b73909c50dc45ba689a415291c42475ae3a54b946602fe447c7d60649d6",
   "system": "DUFYND",
   "control_plane": "commerce_jarvis_master",
   "overall_state": "manual_step_pending",
