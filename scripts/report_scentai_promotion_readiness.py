@@ -166,6 +166,7 @@ def build_readiness_report(
                 key=lambda item: (-item[1], item[0]),
             )
         ),
+        "closest_candidates": promotion_candidates[:10],
         "rows": rows,
     }
 
@@ -258,8 +259,8 @@ def main() -> int:
         for blocker, count in report["blocker_counts"].items():
             print(f"  {count:>2}  {blocker}")
 
-    print("Closest to live:")
-    for row in report["rows"][:10]:
+    print("Closest unpublished candidates:")
+    for row in report["closest_candidates"]:
         status = "READY" if row["ready"] else "BLOCKED"
         blockers = ", ".join(row["blockers"]) or "-"
         print(
