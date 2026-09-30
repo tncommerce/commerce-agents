@@ -97,6 +97,9 @@ def test_budget_ledger_reconciles_audited_runs() -> None:
     assert report["ledger"]["spent_usd"] == 0.3
     assert report["ledger"]["max_single_run_usd"] == 0.2
     assert report["ledger"]["over_cap_runs"] == []
+    assert report["approval"]["valid"] is True
+    assert report["approval"]["cap_usd"] == 2.5
+    assert report["approval"]["max_runs"] == 20
     assert report["approval"]["per_run_cap_usd"] == 0.25
     assert report["reconciliation"] == {
         "run_count_matches": True,
@@ -178,6 +181,54 @@ def test_budget_ledger_requires_resolvable_human_approval() -> None:
 
     assert report["status"] == "attention"
     assert "budget_approval_missing" in {item["code"] for item in report["issues"]}
+
+
+def test_budget_ledger_rejects_nonapproved_human_decision() -> None:
+    bridge = FakeBridge(
+        approval={
+            "decision_id": "decision_budget_001",
+            "status": "pending",
+            "decision": {
+                "approved": False,
+                "cap_usd": 2.5,
+                "max_runs": 20,
+                "per_run_cap_usd": 0.25,
+            },
+        }
+    )
+
+    report = build_budget_ledger(bridge)
+
+    assert report["approval"]["valid"] is False
+    assert "budget_approval_not_approved" in {
+        item["code"] for item in report["issues"]
+    }
+
+
+def test_budget_ledger_flags_window_above_human_approval() -> None:
+    bridge = FakeBridge(
+        budget_window={
+            "budget_id": "jarvis_activation_pilot_001",
+            "status": "active",
+            "model": "claude-sonnet-5",
+            "cap_usd": 3.0,
+            "max_runs": 25,
+            "approved_decision_id": "decision_budget_001",
+            "started_at": "2026-09-29T20:00:00+00:00",
+        }
+    )
+
+    report = build_budget_ledger(bridge)
+
+    issue = next(
+        item
+        for item in report["issues"]
+        if item["code"] == "budget_window_exceeds_human_approval"
+    )
+    assert issue["window_cap_usd"] == 3.0
+    assert issue["approved_cap_usd"] == 2.5
+    assert issue["window_max_runs"] == 25
+    assert issue["approved_max_runs"] == 20
 
 
 def test_budget_ledger_requires_per_run_cap_in_human_approval() -> None:
