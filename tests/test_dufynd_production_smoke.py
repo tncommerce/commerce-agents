@@ -502,9 +502,7 @@ def test_smoke_fails_when_notino_eclaire_is_not_affiliate_routed() -> None:
         ),
     )
 
-    check = next(
-        check for check in report.checks if check.name == "merchant_offers_notino_eclaire"
-    )
+    check = next(check for check in report.checks if check.name == "merchant_offers_notino_eclaire")
     assert report.ok is False
     assert check.ok is False
     assert "expected_offer_ok=False" in check.detail
