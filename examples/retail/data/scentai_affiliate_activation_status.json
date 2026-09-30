@@ -5,7 +5,7 @@
   "scope_note": "Program activation can describe a verified merchant-level homepage tracking route. Product-specific tracked offers remain independently gated by exact SKU mapping, stock, feed validation, image rights and release quality gates.",
   "summary": {
     "programs": 9,
-    "approved": 2,
+    "approved": 3,
     "active": 1,
     "pending": 6,
     "rejected": 2,
@@ -156,17 +156,20 @@
       "network": "CJ Affiliate",
       "program": "Notino",
       "merchant_id": "notino",
-      "application_status": "applied_pending",
+      "application_status": "approved",
       "tracking_strategy": null,
-      "activation_state": "pending_review",
+      "activation_state": "approved_credentials_pending",
       "blockers": [
-        "affiliate_program_approval_pending"
+        "credentials_not_verified_in_repo_state",
+        "integration_strategy_not_verified",
+        "dry_run_not_recorded",
+        "user_approval_not_recorded"
       ],
       "live_routing_allowed": false,
       "routing_scope": "none",
       "merchant_homepage_tracking_active": false,
       "product_offer_activation_independent": true,
-      "next_action": "await_program_decision",
+      "next_action": "verify_credentials",
       "live_activation_action_class": "approval_required"
     }
   ]
