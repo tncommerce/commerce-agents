@@ -395,6 +395,7 @@ def _recover_interrupted_work(
 
     session["current_task"] = None
 
+
 def _task_result(
     task: dict[str, Any],
     *,
