@@ -4,7 +4,6 @@ import asyncio
 from datetime import UTC, datetime, timedelta
 
 import pytest
-
 from scripts import dufynd_jarvis_supervisor as supervisor
 
 
