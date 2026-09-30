@@ -115,9 +115,7 @@ def build_budget_ledger(
     over_cap_rows: list[dict[str, Any]] = []
     if approved_per_run_cap is not None:
         over_cap_rows = [
-            row
-            for row in ledger_rows
-            if row["cost_usd"] > approved_per_run_cap + FLOAT_TOLERANCE
+            row for row in ledger_rows if row["cost_usd"] > approved_per_run_cap + FLOAT_TOLERANCE
         ]
         if over_cap_rows:
             issues.append(
