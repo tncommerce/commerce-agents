@@ -992,11 +992,7 @@ def build_morning_report(
         if supervisor_session_ids and session_id in supervisor_session_ids:
             session_matches_supervisor = True
             use_supervisor = True
-        elif (
-            supervisor_started
-            and session_started
-            and supervisor_started > session_started
-        ):
+        elif supervisor_started and session_started and supervisor_started > session_started:
             # A newer idle/no-session supervisor run must not inherit stale
             # details from the previous Nightshift session.
             use_supervisor = True
@@ -1053,12 +1049,8 @@ def build_morning_report(
     session_timeout = bool(
         session_matches_supervisor and int(session.get("event_result") or 0) == 124
     )
-    runtime_error = bool(
-        session_matches_supervisor and session.get("runtime_error_type")
-    )
-    cost_complete = not (
-        result_timeout or supervisor_timeout or session_timeout or runtime_error
-    )
+    runtime_error = bool(session_matches_supervisor and session.get("runtime_error_type"))
+    cost_complete = not (result_timeout or supervisor_timeout or session_timeout or runtime_error)
 
     completed = sum(1 for r in results if r.get("final_status") == "done")
     in_progress = len(queue.get("in_progress") or [])
@@ -1073,10 +1065,7 @@ def build_morning_report(
         title = str(result.get("title") or result.get("task_id") or "Unnamed task")
         worker = str(result.get("worker") or "unknown_worker")
         attempts = result.get("attempts")
-        line = (
-            f"{title} — {result.get('final_status')} "
-            f"({worker}, attempts={attempts})"
-        )
+        line = f"{title} — {result.get('final_status')} ({worker}, attempts={attempts})"
         domains.setdefault(domain, []).append(line)
 
     blockers = [
@@ -1122,21 +1111,11 @@ def build_morning_report(
 
     latest_summary = summaries[-1] if summaries else {}
     latest_session_id = (
-        latest_summary.get("session_id")
-        if use_supervisor
-        else session.get("session_id")
+        latest_summary.get("session_id") if use_supervisor else session.get("session_id")
     )
-    validation = (
-        dict(session.get("validation") or {})
-        if session_matches_supervisor
-        else {}
-    )
+    validation = dict(session.get("validation") or {}) if session_matches_supervisor else {}
     result_pr_url = next(
-        (
-            str(result.get("pr_url"))
-            for result in reversed(results)
-            if result.get("pr_url")
-        ),
+        (str(result.get("pr_url")) for result in reversed(results) if result.get("pr_url")),
         None,
     )
 
@@ -1168,9 +1147,7 @@ def build_morning_report(
         "pr_url": pr_url or validation.get("pr_url") or result_pr_url,
         "inbox": health.get("inbox") or {},
         "source_fingerprint_sha256": (
-            session.get("source_fingerprint_sha256")
-            if session_matches_supervisor
-            else None
+            session.get("source_fingerprint_sha256") if session_matches_supervisor else None
         ),
     }
 
