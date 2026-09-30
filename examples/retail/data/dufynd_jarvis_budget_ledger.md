@@ -17,7 +17,8 @@ The ledger reads:
 
 It then checks:
 
-- audited spend versus the budget RPC's `spent_usd`;
+- audited spend versus the budget RPC's `spent_usd` (with a small tolerance for
+  the RPC's display rounding);
 - audited billed-run count versus the budget RPC's `runs`;
 - the maximum single-run cost;
 - whether any historical run exceeded the human-approved `per_run_cap_usd`;
