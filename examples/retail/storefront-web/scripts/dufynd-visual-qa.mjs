@@ -1010,6 +1010,24 @@ try {
             throw new Error("homepage is missing immersive selected fragrances");
           }
 
+          const homepageText = await page.locator("body").innerText();
+          const expectedCatalogCta =
+            expectedFragranceCount + " Düfte im Sortiment ansehen";
+          const expectedCatalogFooter =
+            "Alle " + expectedFragranceCount + " Düfte im Katalog entdecken";
+          if (!homepageText.includes(expectedCatalogCta)) {
+            throw new Error(
+              "homepage assortment count does not match visible catalog: " +
+                expectedCatalogCta,
+            );
+          }
+          if (!homepageText.includes(expectedCatalogFooter)) {
+            throw new Error(
+              "homepage catalog footer count does not match visible catalog: " +
+                expectedCatalogFooter,
+            );
+          }
+
           const invalidWorldCards = await audienceCards.evaluateAll((cards) =>
             cards
               .map((card) => card.getAttribute("data-dufynd-home-world"))
