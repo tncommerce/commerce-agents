@@ -35,6 +35,19 @@ def build_pilot_retrospective(
     efficiency_codes = _attention_codes(efficiency)
     attention_codes = sorted(set(ledger_codes + efficiency_codes))
 
+    ledger_totals = ledger.get("ledger") or {}
+    efficiency_totals = efficiency.get("totals") or {}
+    source_consistent = bool(
+        int(ledger_totals.get("runs") or 0) == int(efficiency_totals.get("runs") or 0)
+        and abs(
+            float(ledger_totals.get("spent_usd") or 0.0)
+            - float(efficiency_totals.get("spent_usd") or 0.0)
+        )
+        <= 0.000001
+    )
+    if not source_consistent:
+        attention_codes = sorted(set(attention_codes + ["retrospective_source_drift"]))
+
     ledger_reconciliation = ledger.get("reconciliation") or {}
     approval = ledger.get("approval") or {}
     remaining = ledger.get("remaining") or {}
@@ -50,11 +63,8 @@ def build_pilot_retrospective(
         or totals.get("failed_runs")
     )
 
-    checkpoint = (
-        "attention"
-        if attention_codes or not controls_ok
-        else "within_controls"
-    )
+    controls_ok = controls_ok and source_consistent
+    checkpoint = "attention" if attention_codes or not controls_ok else "within_controls"
 
     return {
         "checkpoint": checkpoint,
@@ -63,7 +73,8 @@ def build_pilot_retrospective(
             "human_approval_valid": bool(approval.get("valid")),
             "run_count_reconciled": bool(ledger_reconciliation.get("run_count_matches")),
             "spend_reconciled": bool(ledger_reconciliation.get("spend_matches")),
-            "controls_ok": controls_ok,
+            "source_consistent": source_consistent,
+            "controls_ok": controls_ok and source_consistent,
         },
         "pilot": {
             "runs": int(ledger.get("ledger", {}).get("runs") or 0),
@@ -109,6 +120,7 @@ def render_markdown(report: dict[str, Any]) -> str:
         f"- Human approval valid: {'yes' if controls['human_approval_valid'] else 'no'}",
         f"- Run count reconciled: {'yes' if controls['run_count_reconciled'] else 'no'}",
         f"- Spend reconciled: {'yes' if controls['spend_reconciled'] else 'no'}",
+        f"- Report sources consistent: {'yes' if controls['source_consistent'] else 'no'}",
         "",
         "## Pilot",
         f"- Runs: {pilot['runs']}",
