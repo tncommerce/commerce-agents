@@ -183,3 +183,22 @@ def test_comparison_footer_links_preserve_acquisition_attribution() -> None:
         '<AcquisitionInternalLink href="/datenschutz" className="hover:underline">'
         in comparison_page_source
     )
+
+
+
+def test_documented_comparison_links_preserve_acquisition_attribution() -> None:
+    source = VISUAL_QA.read_text(encoding="utf-8")
+    detail_source = Path(
+        "examples/retail/storefront-web/app/vergleich/[pair]/page.tsx"
+    ).read_text(encoding="utf-8")
+
+    assert 'label: "comparison-detail-navigation-attribution"' in source
+    assert "documented comparison product" in source
+    assert "documented comparison header" in source
+    assert "documented comparison breadcrumb" in source
+    assert "documented comparison footer" in source
+    assert "navigation lost acquisition attribution" in source
+    assert "AcquisitionInternalLink" in detail_source
+    assert '<AcquisitionInternalLink href="/vergleich"' in detail_source
+    assert '<AcquisitionInternalLink href="/duft"' in detail_source
+    assert '<AcquisitionInternalLink href="/transparenz"' in detail_source
