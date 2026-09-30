@@ -879,6 +879,25 @@ def safe_task_prompt(task: dict[str, Any]) -> str:
     )
 
 
+SAFE_TASK_STATES = {
+    "done",
+    "waiting_human_input",
+    "waiting_external",
+    "blocked",
+    "in_progress",
+}
+
+
+def _extract_safe_task_state(text: str) -> str | None:
+    for line in reversed(text.splitlines()):
+        normalized = line.strip()
+        if not normalized.startswith("DUFYND_TASK_STATE:"):
+            continue
+        state = normalized.split(":", 1)[1].strip()
+        return state if state in SAFE_TASK_STATES else None
+    return None
+
+
 async def process_safe_task(
     bridge: DufyndJarvisBridge,
     *,
@@ -922,7 +941,10 @@ async def process_safe_task(
         async with ClaudeSDKClient(options=options) as client:
             await client.query(safe_task_prompt(task))
             result = await collect_turn(client)
-        if result.is_error:
+
+        text = result.text.strip()
+        worker_state = _extract_safe_task_state(text)
+        if result.is_error and worker_state is None:
             detail = "; ".join(result.tool_errors) or result.text or "Safe worker failed"
             await asyncio.to_thread(
                 bridge.record_run,
@@ -944,16 +966,24 @@ async def process_safe_task(
             )
             raise RuntimeError(detail)
 
-        text = result.text.strip()
+        progress_status = (
+            worker_state
+            if worker_state in {"waiting_human_input", "waiting_external", "blocked"}
+            else "in_progress"
+        )
         await asyncio.to_thread(
             bridge.update_autonomy_task_progress,
             task_id=task_id,
-            status="in_progress",
+            status=progress_status,
             evidence=text[:12000] or "Safe worker completed without prose evidence.",
         )
         await asyncio.to_thread(
             bridge.record_run,
-            run_type=f"safe_task:{task_id}",
+            run_type=(
+                f"safe_task_soft_error:{task_id}"
+                if result.is_error
+                else f"safe_task:{task_id}"
+            ),
             input_summary=json.dumps(task, ensure_ascii=False, default=str)[:4000],
             output_summary=text[:8000] or "(safe worker produced no prose output)",
             decisions=[
@@ -964,6 +994,8 @@ async def process_safe_task(
                     "runtime": "dufynd_jarvis_safe_worker_v1",
                     "worker_role": str(task.get("domain") or "research"),
                     "terminal_completion_recorded": False,
+                    "worker_state": worker_state,
+                    "sdk_reported_error": bool(result.is_error),
                 }
             ],
             human_approval_required=False,
