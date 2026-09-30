@@ -310,22 +310,14 @@ def test_current_purchase_offer_reconciles_stale_source_purchase_blocker() -> No
     report = build_readiness_report(
         {"products": [product]},
         {"store_name": "SCENTAI", "products": []},
-        {
-            "offers": [
-                affiliate_offer("SC-STALE-PURCHASE")
-            ]
-        },
+        {"offers": [affiliate_offer("SC-STALE-PURCHASE")]},
         now=NOW,
     )
 
     row = report["rows"][0]
     assert row["blockers"] == ["missing_approved_image"]
-    assert row["resolved_source_validation_blockers"] == [
-        "verified_purchase_destination_pending"
-    ]
-    assert row["effective_source_validation_blockers"] == [
-        "approved_product_image_pending"
-    ]
+    assert row["resolved_source_validation_blockers"] == ["verified_purchase_destination_pending"]
+    assert row["effective_source_validation_blockers"] == ["approved_product_image_pending"]
     assert row["image_only_candidate"] is True
     assert report["source_blocker_drift_count"] == 1
     assert report["source_blocker_drift"][0]["product_id"] == "SC-STALE-PURCHASE"
@@ -346,18 +338,12 @@ def test_current_purchase_offer_does_not_clear_non_purchase_source_blockers() ->
     report = build_readiness_report(
         {"products": [product]},
         {"store_name": "SCENTAI", "products": []},
-        {
-            "offers": [
-                affiliate_offer("SC-IDENTITY-PENDING")
-            ]
-        },
+        {"offers": [affiliate_offer("SC-IDENTITY-PENDING")]},
         now=NOW,
     )
 
     row = report["rows"][0]
-    assert row["resolved_source_validation_blockers"] == [
-        "verified_purchase_destination_pending"
-    ]
+    assert row["resolved_source_validation_blockers"] == ["verified_purchase_destination_pending"]
     assert row["effective_source_validation_blockers"] == [
         "canonical_gtin_feed_match_pending",
         "approved_product_image_pending",
