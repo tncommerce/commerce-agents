@@ -433,9 +433,7 @@ def test_smoke_fails_on_unsafe_merchant_clickout_path() -> None:
     )
 
     check = next(
-        check
-        for check in report.checks
-        if check.name == "merchant_offers_rabanne_1_million"
+        check for check in report.checks if check.name == "merchant_offers_rabanne_1_million"
     )
     assert report.ok is False
     assert check.ok is False
