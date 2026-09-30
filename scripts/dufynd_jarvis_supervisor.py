@@ -61,6 +61,18 @@ def _bounded(value: int, *, minimum: int, maximum: int) -> int:
 
 def _session_summary(session: dict[str, Any]) -> dict[str, Any]:
     results = [item for item in (session.get("task_results") or []) if isinstance(item, dict)]
+    compact_results = [
+        {
+            "task_id": item.get("task_id"),
+            "domain": item.get("domain"),
+            "title": item.get("title"),
+            "worker": item.get("worker"),
+            "final_status": item.get("final_status"),
+            "attempts": item.get("attempts"),
+            "pr_url": item.get("pr_url"),
+        }
+        for item in results
+    ]
     return {
         "session_id": session.get("session_id"),
         "status": session.get("status"),
@@ -71,6 +83,7 @@ def _session_summary(session: dict[str, Any]) -> dict[str, Any]:
         "events_processed_estimate": int(session.get("events_processed_estimate") or 0),
         "branch_worker_used": bool(session.get("branch_worker_used")),
         "result_states": [str(item.get("final_status") or "unknown") for item in results],
+        "task_results": compact_results,
     }
 
 
