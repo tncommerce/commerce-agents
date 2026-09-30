@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 from datetime import UTC, datetime, timedelta
 
+import pytest
 from scripts import dufynd_jarvis_supervisor as supervisor
 
 
@@ -393,3 +394,85 @@ def test_supervisor_persists_terminal_state_when_session_raises(monkeypatch) -> 
     persisted = bridge.master[supervisor.SUPERVISOR_KEY]["value"]
     assert persisted["status"] == "needs_attention"
     assert persisted["stop_reason"] == "orchestration_error"
+
+
+def test_supervisor_default_idle_watch_reaches_five_hour_horizon(monkeypatch) -> None:
+    bridge = FakeBridge()
+    clock = FakeClock()
+
+    monkeypatch.setattr(supervisor, "_require_autonomous_mode", lambda: None)
+
+    async def should_not_run(*_args, **_kwargs):
+        raise AssertionError("No work should trigger model execution")
+
+    state = asyncio.run(
+        supervisor.supervise_nightshift(
+            bridge,
+            max_minutes=300,
+            idle_seconds=300,
+            sleep=clock.sleep,
+            now=clock.now,
+            run_once=should_not_run,
+        )
+    )
+
+    assert len(clock.sleeps) == 60
+    assert sum(clock.sleeps) == 300 * 60
+    assert state["max_idle_cycles"] == 60
+    assert state["stop_reason"] == "time_horizon_reached"
+    assert state["status"] == "completed"
+
+
+def test_supervisor_passes_absolute_deadline_to_nightshift(monkeypatch) -> None:
+    bridge = FakeBridge([safe_task("repo_current_commerce", "commerce")])
+    clock = FakeClock()
+    captured: dict[str, datetime] = {}
+
+    monkeypatch.setattr(supervisor, "_require_autonomous_mode", lambda: None)
+
+    async def run_once(*_args, **kwargs):
+        captured["deadline_at"] = kwargs["deadline_at"]
+        return completed_session(stop_reason="time_horizon_reached")
+
+    state = asyncio.run(
+        supervisor.supervise_nightshift(
+            bridge,
+            max_minutes=60,
+            max_cycles=2,
+            sleep=clock.sleep,
+            now=clock.now,
+            run_once=run_once,
+        )
+    )
+
+    assert captured["deadline_at"] == datetime(2026, 9, 30, 6, 0, tzinfo=UTC)
+    assert state["stop_reason"] == "time_horizon_reached"
+    assert state["status"] == "completed"
+
+
+def test_supervisor_cancellation_persists_terminal_state(monkeypatch) -> None:
+    bridge = FakeBridge([safe_task("repo_current_commerce", "commerce")])
+    clock = FakeClock()
+
+    monkeypatch.setattr(supervisor, "_require_autonomous_mode", lambda: None)
+
+    async def cancelled_run(*_args, **_kwargs):
+        raise asyncio.CancelledError
+
+    with pytest.raises(asyncio.CancelledError):
+        asyncio.run(
+            supervisor.supervise_nightshift(
+                bridge,
+                max_minutes=60,
+                max_cycles=2,
+                sleep=clock.sleep,
+                now=clock.now,
+                run_once=cancelled_run,
+            )
+        )
+
+    state = bridge.master[supervisor.SUPERVISOR_KEY]["value"]
+    assert state["status"] == "needs_attention"
+    assert state["stop_reason"] == "supervisor_cancelled"
+    assert state["runtime_error_type"] == "CancelledError"
+    assert state["ended_at"] is not None
