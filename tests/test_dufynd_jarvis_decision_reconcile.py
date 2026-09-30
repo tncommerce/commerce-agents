@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import pytest
 from scripts.dufynd_jarvis_decision_reconcile import (
     build_merge_decision_reconciliation,
     reconcile_pending_merge_decisions,
@@ -197,6 +198,32 @@ def test_reconcile_pending_merge_decisions_is_dry_run_by_default() -> None:
     assert report["merged_pull_request"] is False
     assert bridge.completed == []
     assert bridge.task_completed == []
+
+
+def test_reconciliation_keeps_task_write_when_decision_write_needs_retry() -> None:
+    class DecisionWriteFailureBridge(FakeBridge):
+        def complete_pending_human_decision_reconciliation(
+            self,
+            *,
+            decision_id,
+            decision,
+            resolved_at,
+        ):
+            raise RuntimeError("simulated decision persistence failure")
+
+    bridge = DecisionWriteFailureBridge()
+
+    with pytest.raises(RuntimeError, match="decision persistence failure"):
+        reconcile_pending_merge_decisions(
+            bridge,
+            repository="tncommerce/commerce-agents",
+            write=True,
+            fetch_pr=lambda _repository, _number: pull_request(state="closed"),
+            resolved_at="2026-09-30T05:00:00+00:00",
+        )
+
+    assert bridge.task_completed[0]["task_id"] == "task_merge_test"
+    assert bridge.task_completed[0]["status"] == "cancelled"
 
 
 def test_reconcile_pending_merge_decisions_writes_only_terminal_bookkeeping() -> None:
