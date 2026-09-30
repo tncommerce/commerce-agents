@@ -4,36 +4,7 @@ import { createElement, useEffect, useState } from "react";
 
 import FragranceVisual from "./FragranceVisual";
 
-const MODEL_VIEWER_SRC =
-  "https://unpkg.com/@google/model-viewer@4.3.1/dist/model-viewer.min.js";
-
-function ensureModelViewer(): Promise<void> {
-  if (typeof window === "undefined") return Promise.resolve();
-  if (customElements.get("model-viewer")) return Promise.resolve();
-
-  const existing = document.querySelector<HTMLScriptElement>(
-    'script[data-dufynd-model-viewer="true"]',
-  );
-
-  if (existing) {
-    return new Promise((resolve, reject) => {
-      existing.addEventListener("load", () => resolve(), { once: true });
-      existing.addEventListener("error", () => reject(new Error("3D viewer failed to load")), {
-        once: true,
-      });
-    });
-  }
-
-  return new Promise((resolve, reject) => {
-    const script = document.createElement("script");
-    script.type = "module";
-    script.src = MODEL_VIEWER_SRC;
-    script.dataset.dufyndModelViewer = "true";
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error("3D viewer failed to load"));
-    document.head.appendChild(script);
-  });
-}
+import { ensureModelViewer } from "@/lib/modelViewerLoader";
 
 function safeModelSource(modelUrl?: string | null): string | null {
   const candidate = modelUrl?.trim();
@@ -84,6 +55,8 @@ export default function FragranceModel3D({
   priority?: boolean;
 }) {
   const [viewerReady, setViewerReady] = useState(false);
+  const [loadedModel, setLoadedModel] = useState<string | null>(null);
+  const [failedModel, setFailedModel] = useState<string | null>(null);
   const [reducedMotion, setReducedMotion] = useState(false);
   const safeModelUrl = safeModelSource(modelUrl);
 
@@ -112,7 +85,7 @@ export default function FragranceModel3D({
     };
   }, [safeModelUrl]);
 
-  if (!safeModelUrl || !viewerReady) {
+  if (!safeModelUrl || !viewerReady || failedModel === safeModelUrl) {
     return (
       <FragranceVisual
         imageUrl={imageUrl}
@@ -131,7 +104,10 @@ export default function FragranceModel3D({
     <div className={`dufynd-model-stage ${className}`}>
       <div className="dufynd-model-halo" aria-hidden />
       {createElement("model-viewer", {
+        key: safeModelUrl,
         src: safeModelUrl,
+        onload: () => setLoadedModel(safeModelUrl),
+        onerror: () => setFailedModel(safeModelUrl),
         poster: cutoutUrl || imageUrl || undefined,
         alt,
         "camera-controls": "",
@@ -151,9 +127,11 @@ export default function FragranceModel3D({
         reveal: "auto",
         className: "dufynd-model-viewer",
       })}
-      <div className="dufynd-model-hint" aria-hidden>
-        Ziehen zum Drehen
-      </div>
+      {loadedModel === safeModelUrl ? (
+        <div className="dufynd-model-hint" aria-hidden>
+          Ziehen zum Drehen
+        </div>
+      ) : null}
     </div>
   );
 }
