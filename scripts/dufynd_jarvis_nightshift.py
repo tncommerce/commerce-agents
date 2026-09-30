@@ -982,22 +982,28 @@ def build_morning_report(
     }
 
     session_matches_supervisor = False
-    if session and supervisor:
+    use_supervisor = False
+    if supervisor and not session:
+        use_supervisor = True
+    elif session and supervisor:
         session_id = str(session.get("session_id") or "")
-        if supervisor_session_ids:
-            session_matches_supervisor = session_id in supervisor_session_ids
-        else:
-            session_started = _parse_iso_timestamp(session.get("started_at"))
-            supervisor_started = _parse_iso_timestamp(supervisor.get("started_at"))
-            session_matches_supervisor = bool(
-                session_started
-                and supervisor_started
-                and session_started >= supervisor_started
-            )
+        session_started = _parse_iso_timestamp(session.get("started_at"))
+        supervisor_started = _parse_iso_timestamp(supervisor.get("started_at"))
+        if supervisor_session_ids and session_id in supervisor_session_ids:
+            session_matches_supervisor = True
+            use_supervisor = True
+        elif (
+            supervisor_started
+            and session_started
+            and supervisor_started > session_started
+        ):
+            # A newer idle/no-session supervisor run must not inherit stale
+            # details from the previous Nightshift session.
+            use_supervisor = True
     elif session:
         session_matches_supervisor = True
 
-    if supervisor:
+    if use_supervisor:
         started_at = str(supervisor["started_at"])
         ended_at = str(
             supervisor.get("ended_at")
@@ -1117,7 +1123,7 @@ def build_morning_report(
     latest_summary = summaries[-1] if summaries else {}
     latest_session_id = (
         latest_summary.get("session_id")
-        if supervisor
+        if use_supervisor
         else session.get("session_id")
     )
     validation = (
@@ -1138,7 +1144,7 @@ def build_morning_report(
         "title": "DUFYND NIGHTSHIFT",
         "session_id": latest_session_id,
         "session_count": session_count,
-        "supervisor": supervisor_info,
+        "supervisor": supervisor_info if use_supervisor else None,
         "start": started_at,
         "end": ended_at,
         "duration": _duration_text(started_at, ended_at),
@@ -1175,7 +1181,7 @@ def build_morning_report(
         f"Ende: {report['end']}",
         f"Dauer: {report['duration']}",
     ]
-    if supervisor_info:
+    if supervisor_info and use_supervisor:
         lines.extend(
             [
                 f"Supervisor: {supervisor_info.get('supervisor_id')}",
@@ -1247,6 +1253,7 @@ def build_morning_report(
     )
 
     return report, "\n".join(lines) + "\n"
+
 
 def write_morning_report(
     bridge: DufyndJarvisBridge,
