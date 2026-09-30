@@ -53,7 +53,8 @@ jobs:
           from retail.api.merchant_provider_contract import MerchantProviderCanonicalRow
           from retail.api.merchant_providers import load_mapped_provider_adapter
 
-          feed = Path("${RUNNER_TEMP}/top-parfuemerie.csv")
+          import os
+          feed = Path(os.environ["RUNNER_TEMP"]) / "top-parfuemerie.csv"
           config = Path(
               "examples/retail/data/dufynd_awin_top_parfuemerie_provider_config.json"
           )
