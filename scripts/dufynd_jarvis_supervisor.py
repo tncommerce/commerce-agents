@@ -60,11 +60,7 @@ def _bounded(value: int, *, minimum: int, maximum: int) -> int:
 
 
 def _session_summary(session: dict[str, Any]) -> dict[str, Any]:
-    results = [
-        item
-        for item in (session.get("task_results") or [])
-        if isinstance(item, dict)
-    ]
+    results = [item for item in (session.get("task_results") or []) if isinstance(item, dict)]
     return {
         "session_id": session.get("session_id"),
         "status": session.get("status"),
@@ -72,13 +68,9 @@ def _session_summary(session: dict[str, Any]) -> dict[str, Any]:
         "started_at": session.get("started_at"),
         "ended_at": session.get("ended_at"),
         "tasks_attempted": int(session.get("tasks_attempted") or 0),
-        "events_processed_estimate": int(
-            session.get("events_processed_estimate") or 0
-        ),
+        "events_processed_estimate": int(session.get("events_processed_estimate") or 0),
         "branch_worker_used": bool(session.get("branch_worker_used")),
-        "result_states": [
-            str(item.get("final_status") or "unknown") for item in results
-        ],
+        "result_states": [str(item.get("final_status") or "unknown") for item in results],
     }
 
 
@@ -90,15 +82,9 @@ def _preflight(bridge: DufyndJarvisBridge) -> dict[str, Any]:
     inbox = dict(health.get("inbox") or {})
     pending_events = int(inbox.get("pending") or 0)
     non_engineering = [
-        task
-        for task in safe_tasks
-        if str(task.get("domain") or "") != "engineering"
+        task for task in safe_tasks if str(task.get("domain") or "") != "engineering"
     ]
-    engineering = [
-        task
-        for task in safe_tasks
-        if str(task.get("domain") or "") == "engineering"
-    ]
+    engineering = [task for task in safe_tasks if str(task.get("domain") or "") == "engineering"]
     return {
         "pending_events": pending_events,
         "safe_task_count": len(safe_tasks),
@@ -209,9 +195,7 @@ async def supervise_nightshift(
         if not preflight["potential_work"] or lease_blocks_only_work:
             if int(state["idle_cycles"]) >= idle_limit:
                 return finish(
-                    "tech_lease_idle_limit"
-                    if lease_blocks_only_work
-                    else "idle_limit_reached"
+                    "tech_lease_idle_limit" if lease_blocks_only_work else "idle_limit_reached"
                 )
             if not bool(budget.get("can_run")) and not preflight["potential_work"]:
                 return finish("budget_gate")
@@ -246,9 +230,10 @@ async def supervise_nightshift(
             state["session_summaries"] = state["session_summaries"][-HARD_MAX_CYCLES:]
         _persist_supervisor(bridge, state, verified_at=now())
 
-        if bool(session.get("branch_worker_used")) or str(
-            session.get("status") or ""
-        ) == "awaiting_validation":
+        if (
+            bool(session.get("branch_worker_used"))
+            or str(session.get("status") or "") == "awaiting_validation"
+        ):
             return finish("engineering_quality_gate_pending")
 
         if str(session.get("status") or "") == "needs_attention":
@@ -261,9 +246,7 @@ async def supervise_nightshift(
             continue
         if reason in IDLE_CONTINUE_REASONS:
             results = [
-                item
-                for item in (session.get("task_results") or [])
-                if isinstance(item, dict)
+                item for item in (session.get("task_results") or []) if isinstance(item, dict)
             ]
             if any(str(item.get("final_status") or "") == "in_progress" for item in results):
                 return finish("unclassified_task_result", status="needs_attention")
@@ -275,9 +258,7 @@ async def supervise_nightshift(
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(
-        description="DUFYND Jarvis bounded overnight supervisor."
-    )
+    parser = argparse.ArgumentParser(description="DUFYND Jarvis bounded overnight supervisor.")
     parser.add_argument("--max-minutes", type=int, default=DEFAULT_MAX_MINUTES)
     parser.add_argument("--max-cycles", type=int, default=DEFAULT_MAX_CYCLES)
     parser.add_argument("--idle-seconds", type=int, default=DEFAULT_IDLE_SECONDS)
