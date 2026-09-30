@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "observed_at": "2026-09-30T13:49:00Z",
+  "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+  "merchant": "Douglas DE",
+  "merchant_product_id": "060294",
+  "product_url": "https://www.douglas.de/de/p/1069032304",
+  "observation_method": "current_public_merchant_page_read_only_web_retrieval",
+  "identity": {
+    "brand": "Dior",
+    "name": "Hypnotic Poison",
+    "concentration": "Eau de Toilette",
+    "volume_ml": 100,
+    "merchant_identity_note": "Douglas product 060294 exposes the 100 ml option and explicitly identifies Hypnotic Poison as Eau de Toilette in the product copy."
+  },
+  "live_observation": {
+    "listed_price_eur": 119,
+    "shipping_cost_eur": 0,
+    "availability": "Online: auf Lager",
+    "delivery_note": "The exact 100 ml option is orderable online; Douglas shows free shipping and a delivery window of 2026-10-02 through 2026-10-06."
+  },
+  "rights_or_affiliate_impact": {
+    "image_rights_granted": false,
+    "affiliate_tracking_verified": false,
+    "final_image_approval_granted": false
+  },
+  "freshness_policy": "Offer qualifies only while last_updated_at is within the 72-hour merchant-offer window. No live catalog promotion."
+}
