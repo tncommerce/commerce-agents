@@ -1089,6 +1089,7 @@ def test_morning_report_excludes_agent_runs_after_supervisor_end(monkeypatch) ->
     assert report["ai_cost_complete"] is True
 
 
+
 def test_nightshift_does_not_start_events_without_full_timeout_window(monkeypatch) -> None:
     bridge = FakeBridge()
     bridge.inbox_pending = 1
