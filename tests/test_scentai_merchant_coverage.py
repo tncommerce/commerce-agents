@@ -156,3 +156,87 @@ def test_provisional_community_data_remains_visible_as_gap() -> None:
     )
 
     assert "community_data_provisional" in report["rows"][0]["blockers"]
+
+
+def test_storefront_counts_exclude_source_blockers_and_use_exclusive_audiences() -> None:
+    catalog = {
+        "products": [
+            {
+                "product_id": "SC-UNISEX",
+                "category": "fragrance",
+                "attributes": {"target_group": "Herren, Damen, Unisex"},
+            },
+            {
+                "product_id": "SC-BLOCKED",
+                "category": "fragrance",
+                "attributes": {"target_group": "Damen"},
+            },
+            {
+                "product_id": "SC-WOMEN",
+                "category": "fragrance",
+                "attributes": {"target_group": "Herren"},
+            },
+        ]
+    }
+    source = {
+        "products": [
+            {
+                "product_id": "SC-UNISEX",
+                "classification": {"scentai_target_groups": ["men", "women"]},
+                "validation": {"blockers": [""]},
+            },
+            {
+                "product_id": "SC-BLOCKED",
+                "validation": {"blockers": ["approved_product_image_pending"]},
+            },
+            {"product_id": "SC-WOMEN", "classification": {"scentai_target_groups": ["women"]}},
+        ]
+    }
+    report = build_merchant_coverage_report(
+        {"products": []},
+        catalog,
+        {"offers": []},
+        {"mappings": []},
+        now=NOW,
+        products_payload=source,
+    )
+
+    assert report["live_fragrance_count"] == 3
+    assert report["storefront_fragrance_count"] == 2
+    assert report["storefront_blocked_product_ids"] == ["SC-BLOCKED"]
+    assert report["storefront_audience_counts"] == {"unisex": 1, "women": 1}
+    assert (
+        sum(report["storefront_audience_counts"].values()) == report["storefront_fragrance_count"]
+    )
+
+
+def test_storefront_counts_support_german_api_tags_without_source_metadata() -> None:
+    catalog = {
+        "products": [
+            {
+                "product_id": "SC-BOTH",
+                "category": "fragrance",
+                "attributes": {"target_group": "Herren, Damen"},
+            },
+            {
+                "product_id": "SC-MEN",
+                "category": "fragrance",
+                "attributes": {"target_group": "Herren"},
+            },
+            {
+                "product_id": "SC-SOLD-OUT",
+                "category": "fragrance",
+                "in_stock": False,
+                "attributes": {"target_group": "Damen"},
+            },
+        ]
+    }
+    report = build_merchant_coverage_report(
+        {"products": []},
+        catalog,
+        {"offers": []},
+        {"mappings": []},
+        now=NOW,
+    )
+    assert report["storefront_fragrance_count"] == 2
+    assert report["storefront_audience_counts"] == {"men": 1, "unisex": 1}
