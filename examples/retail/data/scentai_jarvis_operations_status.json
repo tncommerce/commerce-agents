@@ -1,13 +1,13 @@
 {
   "version": 1,
   "generated_at": "2026-09-29T21:03:00+00:00",
-  "source_fingerprint_sha256": "988bb3c71cae17139fe41b406668229032b6338aaa5c465af7c1196ec342e60f",
+  "source_fingerprint_sha256": "861b9293fb5bfd6a02e7307819fd201fe78fb481f1ae178f6fb7a486c9815c58",
   "system": "DUFYND",
   "control_plane": "commerce_jarvis",
   "policy_ref": "scentai_jarvis_operating_policy.json",
-  "overall_state": "waiting_licensed_image_sources_and_approval",
+  "overall_state": "integration_path_open",
   "user_approval_required_now": false,
-  "next_action": "obtain_licensed_image_sources_then_prepare_manual_visual_approval",
+  "next_action": "run_feed_preflight_and_dry_run",
   "next_action_class": "auto_allowed",
   "blockers": [
     "release_approved_images_incomplete",
@@ -29,8 +29,8 @@
     "registered_programs": 9,
     "active_programs": 1,
     "approved_programs": 3,
-    "full_release_mapping_paths": 2,
-    "approved_full_release_paths": 0,
+    "full_release_mapping_paths": 3,
+    "approved_full_release_paths": 1,
     "full_mapping_merchants": [
       {
         "merchant_id": "douglas",
@@ -47,6 +47,14 @@
         "application_status": "applied",
         "program_approved": false,
         "next_action": "await_program_decision"
+      },
+      {
+        "merchant_id": "notino",
+        "network": "CJ Affiliate",
+        "program": "Notino",
+        "application_status": "approved",
+        "program_approved": true,
+        "next_action": "obtain_real_feed_sample_and_create_provider_config"
       }
     ]
   },
