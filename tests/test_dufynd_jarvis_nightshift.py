@@ -1213,3 +1213,27 @@ def test_nightshift_worker_cancellation_blocks_task_and_never_auto_retries(monke
     assert session["stop_reason"] == "worker_cancelled"
     assert session["runtime_error_type"] == "CancelledError"
     assert session["current_task"]["attempt"] == 1
+
+
+def test_next_action_approval_count_only_includes_active_human_gates() -> None:
+    migration = Path(
+        "supabase/migrations/20260930120500_dufynd_next_action_approval_hygiene.sql"
+    )
+    sql = migration.read_text(encoding="utf-8")
+
+    assert "status='approval_required'" in sql
+    assert "requires_human_approval" in sql
+    assert "'planned'::text, 'ready'::text, 'in_progress'::text" in sql
+    assert "status='approval_required' or requires_human_approval" not in sql
+
+
+def test_next_action_approval_hygiene_preserves_ready_work_precedence() -> None:
+    migration = Path(
+        "supabase/migrations/20260930120500_dufynd_next_action_approval_hygiene.sql"
+    )
+    sql = migration.read_text(encoding="utf-8")
+
+    assert "when ready_count > 0 then 'work_available'" in sql
+    assert "when ready_count > 0 then null" in sql
+    assert "when waiting_human_count > 0 then 'waiting_for_human_input'" in sql
+    assert "when approval_count > 0 then 'human_approval_required'" in sql
