@@ -778,6 +778,25 @@
       "data_source": "manual_verified_web",
       "last_updated_at": "2026-09-30T10:46:00Z",
       "commission_rate": null
+    },
+    {
+      "offer_id": "sephora-kayali-yum-boujee-marshmallow-81-edpi-100",
+      "product_id": "SC-KAYALI-YUM-BOUJEE-MARSHMALLOW-81-EDPI-100",
+      "merchant_id": "sephora-de",
+      "merchant_name": "Sephora",
+      "merchant_product_id": "733612",
+      "price": 129.95,
+      "currency": "EUR",
+      "shipping_cost": 0,
+      "shipping_label": "Kostenlose Lieferung",
+      "in_stock": true,
+      "variant_label": "100 ml · Yum Boujee Marshmallow 81 Eau de Parfum Intense",
+      "product_url": "https://www.sephora.de/p/yum-boujee-marshmallow--81---eau-de-parfum-intense-733612.html",
+      "affiliate_url": null,
+      "network": null,
+      "data_source": "manual_verified_web",
+      "last_updated_at": "2026-09-30T10:54:00Z",
+      "commission_rate": null
     }
   ]
 }
