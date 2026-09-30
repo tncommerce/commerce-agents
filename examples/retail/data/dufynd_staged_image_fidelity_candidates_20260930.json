@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "generated_at": "2026-09-30",
+  "purpose": "Private exact-variant image candidates for human fidelity review. Does not approve assets, register source rights, promote catalog products or publish anything.",
+  "approval_scope": {
+    "automatic_approval_allowed": false,
+    "automatic_live_activation_allowed": false,
+    "rights_clearance_implied": false
+  },
+  "items": [
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "mapped_gtin": "3614272648425",
+      "candidate_asset": "examples/retail/review-assets/catalog-candidates/ysl-libre-edp-90-v1.png",
+      "status": "pending_human_fidelity",
+      "reference_url": "https://www.douglas.de/de/p/5000005003?variant=289703",
+      "reference_checked_at": "2026-09-30",
+      "reference_only": true,
+      "generator": "built_in_imagegen",
+      "provenance": "dufynd_generated_internal_candidate",
+      "sha256": "cec142734879d312960e0e377990d7ca967581ef2fb4db258aae7f41dacd3acc",
+      "width": 1121,
+      "height": 1403,
+      "has_alpha": true,
+      "review_focus": [
+        "exact 90 ml silhouette",
+        "asymmetric black cap",
+        "gold collar",
+        "Cassandre monogram geometry",
+        "pale champagne liquid",
+        "clear base"
+      ],
+      "source_registration_status": "not_registered",
+      "catalog_promotion": false,
+      "public_activation": false
+    },
+    {
+      "product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "mapped_gtin": "3346470131408",
+      "candidate_asset": "examples/retail/review-assets/catalog-candidates/mon-guerlain-edp-100-v1.png",
+      "status": "pending_human_fidelity",
+      "reference_url": "https://www.guerlain.com/de/de-de/p/mon-guerlain-eau-de-parfum-G013140.html",
+      "reference_checked_at": "2026-09-30",
+      "reference_only": true,
+      "generator": "built_in_imagegen",
+      "provenance": "dufynd_generated_internal_candidate",
+      "sha256": "60fe3ad72d08121d7bf99a959f5d9976c15cff23be7435c2914153eda841b260",
+      "width": 1254,
+      "height": 1254,
+      "has_alpha": true,
+      "review_focus": [
+        "exact 100 ml silhouette",
+        "quadrilobe glass stopper",
+        "gold neck texture",
+        "beveled glass shoulders",
+        "pink liquid",
+        "embossed GUERLAIN base"
+      ],
+      "source_registration_status": "not_registered",
+      "catalog_promotion": false,
+      "public_activation": false
+    }
+  ]
+}
