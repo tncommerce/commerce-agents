@@ -96,6 +96,7 @@ def test_budget_ledger_reconciles_audited_runs() -> None:
     assert report["ledger"]["runs"] == 2
     assert report["ledger"]["spent_usd"] == 0.3
     assert report["ledger"]["max_single_run_usd"] == 0.2
+    assert report["ledger"]["average_run_usd"] == 0.15
     assert report["ledger"]["over_cap_runs"] == []
     assert report["ledger"]["by_run_type"]["event"] == {
         "runs": 1,
@@ -117,7 +118,45 @@ def test_budget_ledger_reconciles_audited_runs() -> None:
         "run_count_matches": True,
         "spend_matches": True,
     }
+    assert report["remaining"]["run_cap_ceiling_usd"] == 4.5
+    assert report["remaining"]["max_future_spend_usd"] == 2.2
     assert report["issues"] == []
+
+
+def test_budget_ledger_future_spend_is_bounded_by_total_budget_headroom() -> None:
+    bridge = FakeBridge(
+        budget_status={
+            "budget_id": "jarvis_activation_pilot_001",
+            "status": "active",
+            "can_run": True,
+            "cap_usd": 2.5,
+            "max_runs": 20,
+            "runs": 16,
+            "spent_usd": 1.8161,
+            "remaining_usd": 0.6839,
+            "remaining_runs": 4,
+        },
+        runs=[
+            {
+                "id": f"run-{index}",
+                "agent_name": "jarvis",
+                "run_type": "event",
+                "created_at": "2026-09-29T20:05:00+00:00",
+                "decisions": [
+                    {
+                        "budget_id": "jarvis_activation_pilot_001",
+                        "cost_usd": 0.11350625,
+                    }
+                ],
+            }
+            for index in range(16)
+        ],
+    )
+
+    report = build_budget_ledger(bridge)
+
+    assert report["remaining"]["run_cap_ceiling_usd"] == 1.0
+    assert report["remaining"]["max_future_spend_usd"] == 0.6839
 
 
 def test_budget_ledger_flags_historical_per_run_cap_breach() -> None:
