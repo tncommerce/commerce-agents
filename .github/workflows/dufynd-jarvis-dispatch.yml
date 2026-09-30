@@ -99,6 +99,7 @@ jobs:
   nightshift:
     if: inputs.mode == 'nightshift-pilot'
     runs-on: ubuntu-latest
+    # Supervisor hard-caps autonomous work at 330 minutes; reserve time for QA/reporting.
     timeout-minutes: 360
     permissions:
       contents: write
