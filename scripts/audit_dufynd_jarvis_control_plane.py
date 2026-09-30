@@ -57,7 +57,7 @@ def _budget_snapshot_drift(
     health: dict[str, Any],
     authoritative_budget: dict[str, Any],
 ) -> dict[str, Any]:
-    snapshot = ((health.get("runtime_state") or {}).get("pilot") or {})
+    snapshot = (health.get("runtime_state") or {}).get("pilot") or {}
     if not isinstance(snapshot, dict) or not snapshot:
         return {
             "available": False,
@@ -109,9 +109,7 @@ def _session_summary(
     heartbeat_age = _age_minutes(heartbeat, now)
     active = status in {"running", "awaiting_validation"}
     stale = bool(
-        active
-        and heartbeat_age is not None
-        and heartbeat_age > max(1, stale_after_minutes)
+        active and heartbeat_age is not None and heartbeat_age > max(1, stale_after_minutes)
     )
 
     summary = {
@@ -191,9 +189,7 @@ def audit_control_plane(
 ) -> dict[str, Any]:
     current_time = (now or datetime.now(UTC)).astimezone(UTC)
     selected_budget_id = (
-        budget_id
-        or os.getenv("DUFYND_JARVIS_BUDGET_ID")
-        or "jarvis_activation_pilot_001"
+        budget_id or os.getenv("DUFYND_JARVIS_BUDGET_ID") or "jarvis_activation_pilot_001"
     )
 
     queue = bridge.load_autonomy_queue()
