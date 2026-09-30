@@ -213,5 +213,11 @@ def test_product_detail_internal_links_preserve_acquisition_attribution() -> Non
     assert "qa_product_detail_content" in source
     assert "product detail navigation lost acquisition attribution" in source
     assert "AcquisitionInternalLink" in detail_source
-    assert '<AcquisitionInternalLink href="/duft" className="hover:underline">' in detail_source
-    assert '<AcquisitionInternalLink href="/transparenz" className="hover:underline">' in detail_source
+    assert (
+        '<AcquisitionInternalLink href="/duft" className="hover:underline">'
+        in detail_source
+    )
+    assert (
+        '<AcquisitionInternalLink href="/transparenz" className="hover:underline">'
+        in detail_source
+    )
