@@ -120,3 +120,23 @@ async def test_strong_performance_under_100_respects_request_and_budget(
         longevity = float(product.attributes["longevity"])
         projection = float(product.attributes["projection"])
         assert (longevity + projection) / 2 >= 7.8
+
+
+async def test_source_blocked_widian_is_not_customer_visible(
+    backend,
+    session,
+):
+    product_id = "SC-WIDIAN-LONDON-EXTRAIT-50"
+
+    assert backend.product(product_id) is not None
+    assert backend.customer_product(product_id) is None
+    assert await backend.get_product_details(session, product_id) is None
+
+    hits = await backend.search_products(
+        session,
+        "Widian London",
+        SearchFilters(),
+        limit=10,
+    )
+
+    assert all(product.product_id != product_id for product in hits)
