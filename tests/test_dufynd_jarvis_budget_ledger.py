@@ -97,6 +97,18 @@ def test_budget_ledger_reconciles_audited_runs() -> None:
     assert report["ledger"]["spent_usd"] == 0.3
     assert report["ledger"]["max_single_run_usd"] == 0.2
     assert report["ledger"]["over_cap_runs"] == []
+    assert report["ledger"]["by_run_type"]["event"] == {
+        "runs": 1,
+        "spent_usd": 0.1,
+        "max_single_run_usd": 0.1,
+        "average_run_usd": 0.1,
+    }
+    assert report["ledger"]["by_run_type"]["safe_task"] == {
+        "runs": 1,
+        "spent_usd": 0.2,
+        "max_single_run_usd": 0.2,
+        "average_run_usd": 0.2,
+    }
     assert report["approval"]["valid"] is True
     assert report["approval"]["cap_usd"] == 2.5
     assert report["approval"]["max_runs"] == 20
