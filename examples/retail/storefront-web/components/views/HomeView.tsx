@@ -203,8 +203,10 @@ function audiencePreviewProducts(picks: Product[]) {
 
 export default function HomeView({
   shopperName: _shopperName,
+  sessionReady,
 }: {
   shopperName: string;
+  sessionReady: boolean;
 }) {
   const liveCatalog = useCatalogIndex(fetchProducts);
   const loadedCatalog = Object.keys(liveCatalog).length
@@ -686,7 +688,7 @@ export default function HomeView({
         </a>
       </div>
       <PersonalLibrarySummary />
-      <MerchantDiscovery />
+      <MerchantDiscovery sessionReady={sessionReady} />
 
       {picks.length ? (
         <HomeSection title="Ausgewählte Düfte" subtitle="Ein schneller Einstieg für Damen, Herren und Unisex">
