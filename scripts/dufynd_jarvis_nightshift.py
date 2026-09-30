@@ -142,6 +142,7 @@ def _new_session(*, fingerprint: str, max_tasks: int, max_events: int) -> dict[s
         "max_events": max_events,
         "resume_count": 0,
         "tasks_attempted": 0,
+        "events_processed_estimate": 0,
         "branch_worker_used": False,
         "current_task": None,
         "task_results": [],
