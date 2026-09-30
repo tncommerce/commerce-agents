@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
+  "merchant_id": "notino",
+  "merchant_name": "Notino",
+  "network": "CJ Affiliate",
+  "observed_at": "2026-09-30T16:16:00Z",
+  "source": "notino_de_product_page_and_verified_cj_deeplink",
+  "identity": {
+    "brand": "Lattafa",
+    "name": "Eclaire",
+    "concentration": "Eau de Parfum",
+    "volume_ml": 100,
+    "merchant_product_id": "LTF00869",
+    "gtin": "6290362340638"
+  },
+  "current_offer": {
+    "price_eur": 33.5,
+    "shipping_eur": 3.9,
+    "total_eur": 37.4,
+    "in_stock": true,
+    "product_url": "https://www.notino.de/lattafa/eclaire-eau-de-parfum-unisex/"
+  },
+  "affiliate": {
+    "tracking_strategy": "verified_cj_product_deeplink",
+    "tracked_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Flattafa%2Feclaire-eau-de-parfum-unisex%2F",
+    "redirect_verified": true,
+    "explicit_user_approval": true,
+    "activation_scope": "verified_product_only",
+    "activated_at": "2026-09-30T16:16:00Z"
+  },
+  "safeguards": {
+    "merchant_homepage_routing": false,
+    "additional_notino_products_activated": false,
+    "image_rights_granted": false,
+    "commission_changes_fragrance_recommendations": false
+  }
+}
