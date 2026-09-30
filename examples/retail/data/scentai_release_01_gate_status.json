@@ -1,14 +1,14 @@
 {
   "version": 1,
   "generated_at": "2026-09-29T21:03:00+00:00",
-  "source_fingerprint_sha256": "ca715fc04f1923e86c05d1142280cacfed222ffa02788b9c1b0c9aa00a23489f",
+  "source_fingerprint_sha256": "c9d90f6009302cebd3fa5a8f0d5796def9373308dca216ec8b46a4bdc8b7f377",
   "release_id": "SCENTAI-RELEASE-01",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "image_machine_ref": "scentai_image_approval_state_machine.json",
   "affiliate_machine_ref": "scentai_affiliate_activation_state_machine.json",
   "summary": {
     "release_size": 5,
-    "mapping_ready": 5,
+    "mapping_ready": 0,
     "image_identity_source_verified": 5,
     "approved_images": 1,
     "current_purchase_destinations": 5,
