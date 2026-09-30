@@ -27,7 +27,7 @@ import {
 } from "@/lib/fragranceCatalog";
 import { SITE_URL } from "@/lib/site";
 import { noteLabel } from "@/lib/noteLabels";
-import { targetLabel } from "@/lib/targetLabels";
+import { targetGroupLabel } from "@/lib/targetLabels";
 
 export const dynamicParams = false;
 
@@ -481,11 +481,11 @@ export default async function FragrancePage({
                 <span className="rounded-full border border-(--line) bg-(--surface) px-2.5 py-1.5 sm:px-3">
                   {fragrance.volume_ml} ml
                 </span>
-                {fragrance.target_groups.map((group) => (
-                  <span key={group} className="rounded-full border border-(--line) bg-(--surface) px-2.5 py-1.5 sm:px-3">
-                    {targetLabel(group)}
+                {targetGroupLabel(fragrance.target_groups) ? (
+                  <span className="rounded-full border border-(--line) bg-(--surface) px-2.5 py-1.5 sm:px-3">
+                    {targetGroupLabel(fragrance.target_groups)}
                   </span>
-                ))}
+                ) : null}
                 {fragrance.release_year ? (
                   <span className="hidden rounded-full border border-(--line) bg-(--surface) px-2.5 py-1.5 sm:inline-flex sm:px-3">
                     Seit {fragrance.release_year}

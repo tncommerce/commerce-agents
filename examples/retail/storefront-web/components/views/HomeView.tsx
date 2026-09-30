@@ -207,9 +207,12 @@ export default function HomeView({
   shopperName: string;
 }) {
   const liveCatalog = useCatalogIndex(fetchProducts);
-  const catalog = Object.keys(liveCatalog).length
+  const loadedCatalog = Object.keys(liveCatalog).length
     ? liveCatalog
     : STATIC_CATALOG;
+  const catalog = Object.fromEntries(
+    Object.entries(loadedCatalog).filter(([id]) => getLiveFragranceByProductId(id)),
+  );
   const picks = featured(catalog);
   const audiencePreviews = audiencePreviewProducts(picks);
   const spotlight =
