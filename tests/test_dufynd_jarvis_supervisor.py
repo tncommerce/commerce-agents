@@ -193,7 +193,7 @@ def test_supervisor_waits_for_tech_lease_without_model_call(monkeypatch) -> None
     def lease_state(_bridge):
         nonlocal lease_calls
         lease_calls += 1
-        if lease_calls <= 2:
+        if lease_calls <= 3:
             return {
                 "active": True,
                 "owner": "chatgpt_work_tech",
@@ -223,7 +223,7 @@ def test_supervisor_waits_for_tech_lease_without_model_call(monkeypatch) -> None
             max_minutes=60,
             max_cycles=5,
             idle_seconds=60,
-            max_idle_cycles=4,
+            max_idle_cycles=1,
             sleep=clock.sleep,
             now=clock.now,
             run_once=run_once,
@@ -231,7 +231,9 @@ def test_supervisor_waits_for_tech_lease_without_model_call(monkeypatch) -> None
     )
 
     assert run_calls == 1
-    assert clock.sleeps == [60, 60]
+    assert clock.sleeps == [60, 60, 60]
+    assert state["idle_cycles"] == 0
+    assert state["lease_wait_cycles"] == 3
     assert state["stop_reason"] == "engineering_quality_gate_pending"
     assert state["cycles_completed"] == 1
 
