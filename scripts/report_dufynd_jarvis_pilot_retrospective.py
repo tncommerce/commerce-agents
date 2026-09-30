@@ -83,6 +83,8 @@ def build_pilot_retrospective(
             "average_run_usd": float(ledger.get("ledger", {}).get("average_run_usd") or 0.0),
             "failed_runs": int(totals.get("failed_runs") or 0),
             "failed_spend_usd": float(totals.get("failed_spend_usd") or 0.0),
+            "failed_model_turns": int(totals.get("failed_model_turns") or 0),
+            "failed_model_turn_runs": int(totals.get("failed_model_turn_runs") or 0),
             "historical_attention": historical_attention,
         },
         "remaining": {
@@ -91,6 +93,7 @@ def build_pilot_retrospective(
             "max_future_spend_usd": float(remaining.get("max_future_spend_usd") or 0.0),
         },
         "cost_centers": efficiency.get("repeated_cost_centers") or [],
+        "runtimes": efficiency.get("runtimes") or [],
         "near_cap": efficiency.get("near_cap") or {},
         "attention_codes": attention_codes,
         "source_status": {
@@ -106,6 +109,7 @@ def render_markdown(report: dict[str, Any]) -> str:
     remaining = report["remaining"]
     near_cap = report.get("near_cap") or {}
     cost_centers = report.get("cost_centers") or []
+    runtimes = report.get("runtimes") or []
     attention_codes = report.get("attention_codes") or []
 
     lines = [
@@ -125,8 +129,10 @@ def render_markdown(report: dict[str, Any]) -> str:
         f"- Average run: USD {pilot['average_run_usd']:.6f}",
         f"- Failed runs: {pilot['failed_runs']}",
         f"- Failed-run spend: USD {pilot['failed_spend_usd']:.6f}",
+        f"- Failed model turns: {pilot['failed_model_turns']}",
+        f"- Runs with failed model turns: {pilot['failed_model_turn_runs']}",
         "",
-        "## Remaining approved headroom",
+        "## Runtime cost attribution",
         f"- Runs: {remaining['runs']}",
         f"- Budget: USD {remaining['usd']:.6f}",
         f"- Maximum additional spend under current controls: USD {remaining['max_future_spend_usd']:.6f}",
@@ -137,6 +143,34 @@ def render_markdown(report: dict[str, Any]) -> str:
         "",
         "## Repeated cost centers",
     ]
+
+    if runtimes:
+        for item in runtimes:
+            lines.append(
+                "- "
+                f"{item.get('runtime')}: {item.get('runs')} runs, "
+                f"USD {float(item.get('spent_usd') or 0):.6f}, "
+                f"{float(item.get('spend_share') or 0) * 100:.2f}% of audited spend, "
+                f"{item.get('failed_model_turns')} failed model turns"
+            )
+    else:
+        lines.append("- none")
+
+    lines.extend(
+        [
+            "",
+            "## Remaining approved headroom",
+            f"- Runs: {remaining['runs']}",
+            f"- Budget: USD {remaining['usd']:.6f}",
+            f"- Maximum additional spend under current controls: USD {remaining['max_future_spend_usd']:.6f}",
+            "",
+            "## Near-cap activity",
+            f"- Threshold: {near_cap.get('threshold_usd')}",
+            f"- Runs: {len(near_cap.get('runs') or [])}",
+            "",
+            "## Repeated cost centers",
+        ]
+    )
 
     if cost_centers:
         for item in cost_centers:
