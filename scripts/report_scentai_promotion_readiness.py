@@ -156,9 +156,7 @@ def build_readiness_report(
     already_live_count = sum(1 for row in rows if "already_live" in row["blockers"])
     promotion_candidates = [row for row in rows if "already_live" not in row["blockers"]]
     promotion_blocked_count = sum(1 for row in promotion_candidates if not row["ready"])
-    image_only_candidates = [
-        row for row in promotion_candidates if row["image_only_candidate"]
-    ]
+    image_only_candidates = [row for row in promotion_candidates if row["image_only_candidate"]]
     candidate_blocker_counts: Counter[str] = Counter()
     for row in promotion_candidates:
         candidate_blocker_counts.update(row["blockers"])
@@ -280,10 +278,7 @@ def main() -> int:
             print(f"  {count:>2}  {blocker}")
 
     if report["image_only_candidates"]:
-        print(
-            "Image-only promotion candidates: "
-            f"{report['image_only_candidate_count']}"
-        )
+        print(f"Image-only promotion candidates: {report['image_only_candidate_count']}")
         for row in report["image_only_candidates"]:
             print(
                 f"  {row['product_id']} | Tier {row['tier']} | "
