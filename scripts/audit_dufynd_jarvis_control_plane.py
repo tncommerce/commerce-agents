@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from typing import Any
 
 from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
