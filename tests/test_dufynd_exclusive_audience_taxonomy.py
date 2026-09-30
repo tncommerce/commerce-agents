@@ -49,3 +49,17 @@ def test_live_data_contains_overlap_case_that_regression_covers() -> None:
     ]
 
     assert overlapping, "Regression fixture requires at least one overlapping source tag"
+
+
+def test_mobile_catalog_filter_interaction_is_browser_covered() -> None:
+    visual_qa = Path("examples/retail/storefront-web/scripts/dufynd-visual-qa.mjs").read_text(
+        encoding="utf-8"
+    )
+
+    assert 'label: "catalog-mobile-filter-interaction"' in visual_qa
+    assert "viewport: { width: 390, height: 844 }" in visual_qa
+    assert 'name: "Katalogfilter öffnen"' in visual_qa
+    assert 'name: "Unisex"' in visual_qa
+    assert 'url.searchParams.get("zielgruppe") === "unisex"' in visual_qa
+    assert 'url.searchParams.get("utm_source") === "qa"' in visual_qa
+    assert 'name: "Filter zurücksetzen"' in visual_qa

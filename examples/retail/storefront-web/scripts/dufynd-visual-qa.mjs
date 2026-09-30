@@ -1309,6 +1309,93 @@ try {
   } finally {
     await audienceContext.close();
   }
+  const mobileCatalogFilterContext = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 1,
+    reducedMotion: "reduce",
+  });
+  try {
+    const mobileCatalogPage = await mobileCatalogFilterContext.newPage();
+    const response = await mobileCatalogPage.goto(
+      baseUrl + "/duft?utm_source=qa",
+      { waitUntil: "networkidle", timeout: 45_000 },
+    );
+    if (!response?.ok()) {
+      throw new Error(
+        "mobile catalog filter QA did not load: HTTP " +
+          String(response?.status() ?? "no response"),
+      );
+    }
+
+    const stickyFilterButton = mobileCatalogPage.getByRole("button", {
+      name: "Katalogfilter öffnen",
+    });
+    await stickyFilterButton.waitFor({ state: "visible", timeout: 20_000 });
+    await stickyFilterButton.click();
+
+    const filterPanel = mobileCatalogPage.locator("#catalog-filter-panel");
+    await filterPanel.waitFor({ state: "visible", timeout: 10_000 });
+
+    const unisexButton = filterPanel.getByRole("button", {
+      name: "Unisex",
+      exact: true,
+    });
+    await unisexButton.click();
+    await mobileCatalogPage.waitForFunction(() => {
+      const url = new URL(window.location.href);
+      return (
+        url.searchParams.get("zielgruppe") === "unisex" &&
+        url.searchParams.get("utm_source") === "qa"
+      );
+    });
+
+    if ((await unisexButton.getAttribute("aria-pressed")) !== "true") {
+      throw new Error("mobile catalog did not activate the Unisex filter");
+    }
+
+    const resultSummary = await mobileCatalogPage
+      .locator('[aria-live="polite"]')
+      .filter({ hasText: /von \d+ Düften/ })
+      .first()
+      .textContent();
+    if (!resultSummary || !/\d+\s+von\s+\d+\s+Düften/.test(resultSummary)) {
+      throw new Error("mobile catalog did not expose an updated result count");
+    }
+
+    await mobileCatalogPage
+      .getByRole("button", { name: "Filter zurücksetzen", exact: true })
+      .click();
+    await mobileCatalogPage.waitForFunction(() => {
+      const url = new URL(window.location.href);
+      return (
+        !url.searchParams.has("zielgruppe") &&
+        url.searchParams.get("utm_source") === "qa"
+      );
+    });
+
+    if ((await unisexButton.getAttribute("aria-pressed")) === "true") {
+      throw new Error("mobile catalog reset left the Unisex filter active");
+    }
+
+    report.checks.push({
+      label: "catalog-mobile-filter-interaction",
+      status: "passed",
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({
+      label: "catalog-mobile-filter-interaction",
+      message,
+    });
+    report.checks.push({
+      label: "catalog-mobile-filter-interaction",
+      status: "failed",
+      message,
+    });
+  } finally {
+    await mobileCatalogFilterContext.close();
+  }
+
   const comparisonContext = await browser.newContext();
   try {
     const comparisonPage = await comparisonContext.newPage();
