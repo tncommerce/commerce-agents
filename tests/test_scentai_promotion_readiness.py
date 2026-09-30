@@ -132,3 +132,39 @@ def test_readiness_report_summarizes_live_blockers() -> None:
     assert report["rows"][0]["eligible_affiliate_offers"] == 1
     assert report["rows"][1]["product_id"] == "SC-BLOCKED"
     assert report["rows"][1]["ready"] is False
+
+
+def test_readiness_report_separates_already_live_from_promotion_candidates() -> None:
+    live = staged_product("SC-LIVE", coverage=2)
+    blocked = staged_product(
+        "SC-BLOCKED",
+        coverage=1,
+        image_ready=False,
+    )
+
+    report = build_readiness_report(
+        {"products": [live, blocked]},
+        {"store_name": "SCENTAI", "products": [{"product_id": "SC-LIVE"}]},
+        {"offers": []},
+        now=NOW,
+    )
+
+    assert report["staged_count"] == 2
+    assert report["already_live_count"] == 1
+    assert report["promotion_candidate_count"] == 1
+    assert report["ready_count"] == 0
+    assert report["blocked_count"] == 2
+    assert report["promotion_blocked_count"] == 1
+
+    by_id = {row["product_id"]: row for row in report["rows"]}
+    assert by_id["SC-LIVE"]["already_live"] is True
+    assert by_id["SC-LIVE"]["promotion_candidate"] is False
+    assert by_id["SC-BLOCKED"]["already_live"] is False
+    assert by_id["SC-BLOCKED"]["promotion_candidate"] is True
+
+    assert report["blocker_counts"]["already_live"] == 1
+    assert "already_live" not in report["candidate_blocker_counts"]
+    assert report["candidate_blocker_counts"] == {
+        "missing_approved_image": 1,
+        "missing_current_purchase_destination": 1,
+    }
