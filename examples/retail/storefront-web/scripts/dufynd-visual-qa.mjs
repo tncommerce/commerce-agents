@@ -2756,6 +2756,99 @@ try {
     await partnerTimeoutRecoveryContext.close();
   }
 
+  const homeSessionTimeoutContext = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 1,
+    reducedMotion: "reduce",
+  });
+  try {
+    const homeSessionTimeoutPage = await homeSessionTimeoutContext.newPage();
+    let homeSessionRequestCount = 0;
+    let homeSessionRecoveryAllowed = false;
+    const recoveredHomeSessionId = "qa-home-timeout-recovery-session-1234567890";
+    await homeSessionTimeoutPage.route("**/api/session", async (route) => {
+      homeSessionRequestCount += 1;
+      if (homeSessionRecoveryAllowed) {
+        await route.fulfill({
+          status: 200, contentType: "application/json",
+          body: JSON.stringify({ session_id: recoveredHomeSessionId, name: "QA Guest" }),
+        });
+        return;
+      }
+      if (homeSessionRequestCount === 1) {
+        await new Promise((resolve) => setTimeout(resolve, 8_500));
+        try {
+          await route.fulfill({
+            status: 200, contentType: "application/json",
+            body: JSON.stringify({ session_id: "qa-home-stale-late-session", name: "Late QA Guest" }),
+          });
+        } catch {
+          // Homepage initialization must abort and ignore this late response.
+        }
+        return;
+      }
+      await route.abort("failed");
+    });
+    await homeSessionTimeoutPage.route("**/api/analytics/events", (route) =>
+      route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' }),
+    );
+    await homeSessionTimeoutPage.route("**/api/merchant-partners", (route) =>
+      route.fulfill({
+        status: 200, contentType: "application/json",
+        body: JSON.stringify({
+          partners: [{
+            merchant_id: "qa-home-timeout-partner",
+            merchant_name: "QA Home Timeout Partner",
+            description: "Session timeout fixture",
+            clickout_path: "/api/merchant-partners/qa-home-timeout-partner/clickout",
+          }],
+          affiliate_disclosure: "QA fixture",
+        }),
+      }),
+    );
+    const response = await homeSessionTimeoutPage.goto(
+      baseUrl + "/?src=instagram&cmp=qa_home_session_timeout&content=qa_home_session_content",
+      { waitUntil: "domcontentloaded", timeout: 45_000 },
+    );
+    if (!response?.ok()) throw new Error("homepage session timeout QA did not load");
+    await homeSessionTimeoutPage.locator("[data-partner-clickout-preparing]").waitFor({
+      state: "visible", timeout: 5_000,
+    });
+    const partnerLink = homeSessionTimeoutPage.getByRole("link", {
+      name: /QA Home Timeout Partner öffnen/,
+    });
+    await partnerLink.waitFor({ state: "visible", timeout: 12_000 });
+    await new Promise((resolve) => setTimeout(resolve, 750));
+    const failOpenUrl = new URL(await partnerLink.getAttribute("href"));
+    if (
+      failOpenUrl.searchParams.has("sid") ||
+      failOpenUrl.searchParams.get("src") !== "instagram" ||
+      failOpenUrl.searchParams.get("cmp") !== "qa_home_session_timeout" ||
+      failOpenUrl.searchParams.get("content") !== "qa_home_session_content" ||
+      (await homeSessionTimeoutPage.locator("[data-partner-clickout-preparing]").count()) !== 0
+    ) {
+      throw new Error("homepage session timeout retained a blocked link, stale sid or lost attribution");
+    }
+    homeSessionRecoveryAllowed = true;
+    await homeSessionTimeoutPage.reload({ waitUntil: "domcontentloaded", timeout: 45_000 });
+    await partnerLink.waitFor({ state: "visible", timeout: 10_000 });
+    const recoveredUrl = new URL(await partnerLink.getAttribute("href"));
+    if (
+      recoveredUrl.searchParams.get("sid") !== recoveredHomeSessionId ||
+      recoveredUrl.searchParams.get("cmp") !== "qa_home_session_timeout"
+    ) {
+      throw new Error("homepage session recovery lost first-party correlation");
+    }
+    report.checks.push({ label: "storefront-session-request-timeout", status: "passed" });
+    report.checks.push({ label: "storefront-session-timeout-recovery", status: "passed" });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({ label: "storefront-session-request-timeout", message });
+    report.checks.push({ label: "storefront-session-request-timeout", status: "failed", message });
+  } finally {
+    await homeSessionTimeoutContext.close();
+  }
+
   const productDetailAttributionContext = await browser.newContext({
     viewport: { width: 390, height: 844 },
     deviceScaleFactor: 1,
