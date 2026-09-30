@@ -444,9 +444,7 @@ def test_notino_eclaire_affiliate_offer_is_exact_scoped_variant() -> None:
     mappings = json.loads(
         Path("examples/retail/data/merchant_product_mappings.json").read_text(encoding="utf-8")
     )["mappings"]
-    offer = next(
-        row for row in _offers() if row["offer_id"] == "notino-lattafa-eclaire-edp-100"
-    )
+    offer = next(row for row in _offers() if row["offer_id"] == "notino-lattafa-eclaire-edp-100")
 
     assert offer["product_id"] == evidence["product_id"] == "SC-LATTAFA-ECLAIRE-EDP-100"
     assert offer["merchant_id"] == "notino"
@@ -470,9 +468,7 @@ def test_notino_affiliate_urls_do_not_escape_verified_product_scope() -> None:
     programs = json.loads(
         Path("examples/retail/data/scentai_affiliate_programs.json").read_text(encoding="utf-8")
     )
-    notino = next(
-        row for row in programs["other_networks"] if row["merchant_id"] == "notino"
-    )
+    notino = next(row for row in programs["other_networks"] if row["merchant_id"] == "notino")
     live_scope = set(notino.get("live_activation_products") or [])
     tracked_notino_products = {
         row["product_id"]
