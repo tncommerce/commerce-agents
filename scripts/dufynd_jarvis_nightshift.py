@@ -431,6 +431,23 @@ async def _run_task_with_retry(
                     ),
                 ),
             )
+        except Exception as error:
+            # Unexpected task-local worker failures must not abandon the whole
+            # Nightshift session in a stale "running" state.
+            result_code = 1
+            current = bridge.load_autonomy_task(task_id) or {}
+            bridge.set_autonomy_task_status(
+                task_id=task_id,
+                status="blocked" if attempt == total_attempts else "ready",
+                evidence=_append_evidence(
+                    current.get("evidence"),
+                    (
+                        f"nightshift_session={session['session_id']}; "
+                        f"worker_exception={type(error).__name__}: {str(error)[:1200]}; "
+                        f"attempt={attempt}."
+                    ),
+                ),
+            )
 
         if result_code == 0:
             current = bridge.load_autonomy_task(task_id) or {}
