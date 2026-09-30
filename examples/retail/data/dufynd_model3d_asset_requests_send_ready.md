@@ -37,16 +37,21 @@ The user authorized all five requests, and Gmail Sent confirms dispatch on
 | YSL Libre Eau de Parfum 90 ml | `1a0ef1069d0f3753` | 2026-09-29T21:27:05Z | Automatic acknowledgement; case 12911593 |
 | JPG Le Male Elixir Parfum 125 ml | `1a0ef106f6e313c1` | 2026-09-29T21:27:06Z | Automatic acknowledgement |
 | Sospiro Vibrato Eau de Parfum 100 ml | `1a0ef107470ef598` | 2026-09-29T21:27:08Z | Awaiting substantive reply |
-| Widian London 50 ml, concentration awaiting confirmation | `1a0ef108a890817a` | 2026-09-29T21:27:13Z | Awaiting substantive reply |
+| Widian London 50 ml, concentration awaiting confirmation | `1a0ef108a890817a` | 2026-09-29T21:27:13Z | Delivery failed; official contact form required |
 
 YSL/L’Oréal acknowledgement message `1a0ef10b7688f9b4` confirms receipt and
 asks the sender to wait for the team’s response. JPG acknowledgement
 `1a0ef10c4eddccb3` confirms receipt. Neither acknowledgement supplies a model
 or grants commercial interactive web usage rights.
 
-Widian’s prepared request uses the current internal Extrait variant. The
-concentration identity remains unresolved; a reply or asset must establish
-the exact variant before it can satisfy catalog or 3D readiness.
+Widian’s original dispatch to `support@widian.com` returned SMTP 550 5.1.10
+(recipient unknown). The already-approved request was retried on 2026-09-30
+through the other email address published by Widian, `enquiry@widian.com`,
+and that address also returned SMTP 550 5.1.10. No further email address may be guessed. The remaining official route is Widian's website contact form,
+which requires a browser-capable session. The prepared request uses the
+current internal Extrait variant; concentration identity remains unresolved,
+so a reply or supplied asset must establish the exact variant before it can
+satisfy catalog or 3D readiness.
 
 The text below is the dispatched request archive. These statuses record
 external waiting, not asset approval. Public 3D release still requires the
@@ -184,8 +189,10 @@ DUFYND / TNCommerce
 ## Request 5 — Widian / London Extrait de Parfum 50 ml
 
 Internal product ID: SC-WIDIAN-LONDON-EXTRAIT-50  
-Status: sent_waiting_external
-Primary route: support@widian.com  
+Status: delivery_failed_contact_form_required
+Original route: support@widian.com — SMTP 550 5.1.10 recipient unknown  
+Retry route: enquiry@widian.com — SMTP 550 5.1.10 recipient unknown  
+Remaining official route: Widian website contact form  
 Official contact evidence:
 - https://widian.com/en/faq
 

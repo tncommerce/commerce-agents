@@ -8,7 +8,8 @@ PACKET = Path("examples/retail/data/dufynd_model3d_asset_requests_send_ready.md"
 def test_model3d_outreach_packet_records_dispatch_without_duplicate_sending() -> None:
     source = PACKET.read_text(encoding="utf-8")
 
-    assert source.count("Status: sent_waiting_external") == 6
+    assert source.count("Status: sent_waiting_external") == 5
+    assert "Status: delivery_failed_contact_form_required" in source
     assert "prepared_not_sent" not in source
     assert "Nothing in this file has been sent." not in source
     assert "Do not resend the prepared messages below." in source
@@ -22,6 +23,11 @@ def test_model3d_outreach_packet_records_dispatch_without_duplicate_sending() ->
         assert message_id in source
     assert "Neither acknowledgement supplies a model" in source
     assert "concentration identity remains unresolved" in source
+    assert "support@widian.com" in source
+    assert "enquiry@widian.com" in source
+    assert source.count("SMTP 550 5.1.10") >= 2
+    assert "No further email address may be guessed." in source
+    assert "Widian website contact form" in source
 
 
 def test_model3d_outreach_covers_priority_exact_variants() -> None:
