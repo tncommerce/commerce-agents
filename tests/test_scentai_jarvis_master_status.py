@@ -2,7 +2,19 @@ from __future__ import annotations
 
 from scripts.build_scentai_jarvis_master_status import (
     build_master_status,
+    source_fingerprint,
 )
+
+
+def test_fingerprint_ignores_refresh_time_but_preserves_verification_evidence():
+    first = {"generated_at": "yesterday", "child": {"generated_at": "yesterday", "status": "ready"}}
+    second = {"generated_at": "today", "child": {"generated_at": "today", "status": "ready"}}
+    assert source_fingerprint(first) == source_fingerprint(second)
+    second["child"]["status"] = "waiting_external"
+    assert source_fingerprint(first) != source_fingerprint(second)
+    assert source_fingerprint({"verified_at": "yesterday"}) != source_fingerprint(
+        {"verified_at": "today"}
+    )
 
 
 def test_master_selects_content_when_commerce_waits_external() -> None:
