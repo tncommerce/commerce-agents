@@ -110,6 +110,7 @@ def test_retrospective_reports_clean_reconciled_pilot() -> None:
         "human_approval_valid": True,
         "run_count_reconciled": True,
         "spend_reconciled": True,
+        "source_consistent": True,
         "controls_ok": True,
     }
     assert report["pilot"]["runs"] == 4
@@ -153,6 +154,29 @@ def test_retrospective_marks_invalid_human_approval() -> None:
     assert report["controls"]["human_approval_valid"] is False
     assert report["controls"]["controls_ok"] is False
     assert "budget_approval_not_approved" in report["attention_codes"]
+
+
+def test_retrospective_flags_source_drift_between_double_reads() -> None:
+    bridge = FakeBridge()
+    original_load = bridge.load_budget_status
+    calls = {"count": 0}
+
+    def changing_budget_status(budget_id):
+        calls["count"] += 1
+        value = dict(original_load(budget_id))
+        if calls["count"] >= 2:
+            value["runs"] = value["runs"] + 1
+            value["spent_usd"] = value["spent_usd"] + 0.01
+        return value
+
+    bridge.load_budget_status = changing_budget_status
+
+    report = build_pilot_retrospective(bridge)
+
+    assert report["checkpoint"] == "attention"
+    assert report["controls"]["source_consistent"] is False
+    assert report["controls"]["controls_ok"] is False
+    assert "retrospective_source_drift" in report["attention_codes"]
 
 
 def test_retrospective_includes_repeated_cost_centers() -> None:
