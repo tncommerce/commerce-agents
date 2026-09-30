@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  revalidate-top-parfuemerie:
+  probe-top-parfuemerie:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -29,62 +29,33 @@ jobs:
             exit 2
           fi
 
-      - name: Download current top Parfümerie feed
+      - name: Probe sanitized top Parfümerie feed metadata
         env:
           AWIN_DATA_FEED_API_KEY: ${{ secrets.AWIN_DATA_FEED_API_KEY }}
         run: |
-          python scripts/fetch_dufynd_awin_data_feed.py \
-            --advertiser-id 31081 \
-            --feed-id 91379 \
-            --output "${RUNNER_TEMP}/top-parfuemerie.csv" \
-            --report "${RUNNER_TEMP}/awin-feed-metadata.json"
+          python - <<'PY'
+          import json
+          import os
+          from urllib.parse import quote
 
-      - name: Check Release 01 against current feed
-        shell: bash
-        run: |
-          set +e
-          python scripts/check_scentai_release_feed.py \
-            --feed "${RUNNER_TEMP}/top-parfuemerie.csv" \
-            --provider-config examples/retail/data/dufynd_awin_top_parfuemerie_provider_config.json \
-            --machine-readable > "${RUNNER_TEMP}/release-readiness.json"
-          status=$?
-          set -e
-          if [ "$status" -eq 20 ]; then
-            echo "::error::Current Awin feed is structurally blocked."
-            exit 20
-          fi
-          if [ "$status" -ne 0 ] && [ "$status" -ne 10 ]; then
-            exit "$status"
-          fi
+          from scripts.fetch_dufynd_awin_data_feed import (
+              DEFAULT_LIST_MAX_BYTES,
+              _read_url,
+              find_feed,
+              parse_feed_list,
+              sanitized_feed_metadata,
+          )
 
-      - name: Extract review-only image candidates
-        run: |
-          PYTHONPATH=examples python -m retail.api.extract_merchant_feed_assets \
-            --feed "${RUNNER_TEMP}/top-parfuemerie.csv" \
-            --provider-config examples/retail/data/dufynd_awin_top_parfuemerie_provider_config.json \
-            --output "${RUNNER_TEMP}/merchant-feed-image-candidates.json"
-
-      - name: Prepare Release 01 feed-image review candidates
-        run: |
-          python scripts/prepare_scentai_feed_image_review.py \
-            --candidates "${RUNNER_TEMP}/merchant-feed-image-candidates.json" \
-            --feed-metadata "${RUNNER_TEMP}/awin-feed-metadata.json" \
-            --output "${RUNNER_TEMP}/release01-feed-image-review-candidates.json"
-
-      - name: Render visual image review packet
-        run: |
-          python scripts/render_scentai_feed_image_review_html.py \
-            --candidates "${RUNNER_TEMP}/release01-feed-image-review-candidates.json" \
-            --output "${RUNNER_TEMP}/release01-feed-image-review.html"
-
-      - name: Upload sanitized review packet
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: dufynd-awin-top-parfuemerie-review-${{ github.run_number }}
-          path: |
-            ${{ runner.temp }}/awin-feed-metadata.json
-            ${{ runner.temp }}/release-readiness.json
-            ${{ runner.temp }}/release01-feed-image-review-candidates.json
-            ${{ runner.temp }}/release01-feed-image-review.html
-          if-no-files-found: error
-          retention-days: 7
+          api_key = os.environ["AWIN_DATA_FEED_API_KEY"].strip()
+          list_url = (
+              "https://productdata.awin.com/datafeed/list/apikey/"
+              + quote(api_key, safe="")
+          )
+          rows = parse_feed_list(
+              _read_url(list_url, max_bytes=DEFAULT_LIST_MAX_BYTES),
+              max_bytes=DEFAULT_LIST_MAX_BYTES,
+          )
+          row = find_feed(rows, advertiser_id="31081", feed_id="91379")
+          metadata = sanitized_feed_metadata(row)
+          print(json.dumps(metadata, ensure_ascii=False, sort_keys=True))
+          PY
