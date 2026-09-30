@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from scripts.audit_dufynd_jarvis_control_plane import audit_control_plane
 
 
-NOW = datetime(2026, 9, 30, 6, 0, tzinfo=timezone.utc)
+NOW = datetime(2026, 9, 30, 6, 0, tzinfo=UTC)
 
 
 class FakeBridge:
