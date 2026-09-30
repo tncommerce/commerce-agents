@@ -1768,6 +1768,120 @@ try {
     await clickoutSessionContext.close();
   }
 
+  const partnerSessionContext = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 1,
+    reducedMotion: "reduce",
+  });
+  try {
+    const partnerSessionPage = await partnerSessionContext.newPage();
+    const expectedPartnerSessionId = "qa-partner-session-1234567890";
+
+    await partnerSessionPage.route("**/api/session", async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 1200));
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          session_id: expectedPartnerSessionId,
+          name: "QA Guest",
+        }),
+      });
+    });
+
+    await partnerSessionPage.route(
+      "**/api/merchant-partners",
+      async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            partners: [
+              {
+                merchant_id: "qa-partner",
+                merchant_name: "QA Partner",
+                description: "Session correlation fixture",
+                clickout_path: "/api/merchant-partners/qa-partner/clickout",
+              },
+            ],
+            affiliate_disclosure: "QA fixture",
+          }),
+        });
+      },
+    );
+
+    const response = await partnerSessionPage.goto(
+      baseUrl +
+        "/?src=instagram&cmp=qa_partner_campaign&content=qa_partner_content",
+      { waitUntil: "domcontentloaded", timeout: 45_000 },
+    );
+    if (!response?.ok()) {
+      throw new Error(
+        "merchant discovery session-correlation QA did not load: HTTP " +
+          String(response?.status() ?? "no response"),
+      );
+    }
+
+    const discovery = partnerSessionPage.getByRole("region", {
+      name: "Partnerhändler entdecken",
+    });
+    await discovery.waitFor({ state: "visible", timeout: 20_000 });
+
+    const preparing = discovery.locator(
+      "[data-partner-clickout-preparing]",
+    );
+    await preparing.waitFor({ state: "visible", timeout: 5_000 });
+    if (
+      (await discovery.locator('a[href*="/api/merchant-partners/"]').count()) !== 0
+    ) {
+      throw new Error(
+        "merchant discovery clickout became actionable before storefront session correlation completed",
+      );
+    }
+
+    const clickout = discovery
+      .locator('a[href*="/api/merchant-partners/"]')
+      .first();
+    await clickout.waitFor({ state: "visible", timeout: 10_000 });
+
+    const href = await clickout.getAttribute("href");
+    if (!href) {
+      throw new Error(
+        "merchant discovery session-correlation QA is missing its href",
+      );
+    }
+
+    const clickoutUrl = new URL(href, baseUrl);
+    if (
+      clickoutUrl.searchParams.get("src") !== "instagram" ||
+      clickoutUrl.searchParams.get("cmp") !== "qa_partner_campaign" ||
+      clickoutUrl.searchParams.get("content") !== "qa_partner_content" ||
+      clickoutUrl.searchParams.get("sid") !== expectedPartnerSessionId
+    ) {
+      throw new Error(
+        "merchant discovery clickout did not correlate acquisition and storefront session context",
+      );
+    }
+
+    report.checks.push({
+      label: "merchant-discovery-session-correlation",
+      status: "passed",
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({
+      label: "merchant-discovery-session-correlation",
+      message,
+    });
+    report.checks.push({
+      label: "merchant-discovery-session-correlation",
+      status: "failed",
+      message,
+    });
+  } finally {
+    await partnerSessionContext.close();
+  }
+
   const comparisonContext = await browser.newContext();
   try {
     const comparisonPage = await comparisonContext.newPage();

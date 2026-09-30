@@ -51,3 +51,27 @@ def test_clickout_waits_for_first_party_analytics_session() -> None:
     assert "data-clickout-preparing" in offers_source
     assert "clickoutSessionReady ? (" in offers_source
     assert "export async function ensureAnalyticsSession" in analytics_source
+
+
+def test_merchant_discovery_waits_for_storefront_session() -> None:
+    source = VISUAL_QA.read_text(encoding="utf-8")
+    merchant_source = Path(
+        "examples/retail/storefront-web/components/MerchantDiscovery.tsx"
+    ).read_text(encoding="utf-8")
+    home_source = Path("examples/retail/storefront-web/components/views/HomeView.tsx").read_text(
+        encoding="utf-8"
+    )
+    page_source = Path("examples/retail/storefront-web/app/page.tsx").read_text(encoding="utf-8")
+
+    assert 'label: "merchant-discovery-session-correlation"' in source
+    assert "qa-partner-session-1234567890" in source
+    assert "setTimeout(resolve, 1200)" in source
+    assert (
+        "merchant discovery clickout became actionable before storefront session correlation completed"
+        in source
+    )
+    assert 'clickoutUrl.searchParams.get("sid") !== expectedPartnerSessionId' in source
+    assert "data-partner-clickout-preparing" in merchant_source
+    assert "sessionReady ? (" in merchant_source
+    assert "<MerchantDiscovery sessionReady={sessionReady} />" in home_source
+    assert "sessionReady={Boolean(session.sessionId)}" in page_source
