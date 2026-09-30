@@ -22,6 +22,7 @@ SECRET_QUERY_KEYS = {
 
 PartnerStatus = Literal[
     "active",
+    "active_product_deeplink_only",
     "pending_affiliate_link",
     "paused",
     "rejected",
