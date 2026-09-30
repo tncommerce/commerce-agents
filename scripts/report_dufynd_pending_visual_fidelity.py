@@ -37,6 +37,10 @@ def pending_visual_reviews(
                 "reference_url": row.get("reference_url"),
                 "review_focus": row.get("review_focus", []),
                 "source_manifest": str(STAGED_PACKET),
+                "provenance": row.get("provenance"),
+                "source_registration_status": row.get("source_registration_status"),
+                "rights_clearance_implied": False,
+                "production_approval_ready": False,
                 "public_activation": bool(row.get("public_activation", False)),
                 "catalog_promotion": bool(row.get("catalog_promotion", False)),
             }
@@ -57,6 +61,10 @@ def pending_visual_reviews(
                 "reference_url": row.get("evidence_url"),
                 "review_focus": [],
                 "source_manifest": str(VISUAL_QUEUE),
+                "provenance": provenance.get("source"),
+                "source_registration_status": row.get("source_registration_status"),
+                "rights_clearance_implied": False,
+                "production_approval_ready": False,
                 "public_activation": bool(provenance.get("public_activation", False)),
                 "catalog_promotion": False,
             }
@@ -71,6 +79,10 @@ def pending_visual_reviews(
         seen.add(product_id)
         if item["public_activation"] or item["catalog_promotion"]:
             raise ValueError(f"pending candidate is already active: {product_id}")
+        if item["rights_clearance_implied"] or item["production_approval_ready"]:
+            raise ValueError(
+                f"fidelity-only candidate unexpectedly bypasses later gates: {product_id}"
+            )
         unique.append(item)
 
     return sorted(unique, key=lambda item: str(item["product_id"]))
@@ -80,9 +92,12 @@ def build_report() -> dict[str, Any]:
     items = pending_visual_reviews(load_json(STAGED_PACKET), load_json(VISUAL_QUEUE))
     return {
         "status": "waiting_human_fidelity",
+        "review_gate": "fidelity_only",
         "pending_count": len(items),
         "automatic_approval_allowed": False,
         "automatic_activation_allowed": False,
+        "rights_clearance_implied": False,
+        "fidelity_approval_is_not_production_approval": True,
         "items": items,
     }
 
@@ -100,7 +115,10 @@ def main() -> int:
     print(f"Pending visual fidelity reviews: {report['pending_count']}")
     for item in report["items"]:
         print(f"- {item['product_id']} | {item['status']} | {item['candidate_asset']}")
-    print("No pending candidate is approved or activated by this report.")
+    print(
+        "Fidelity approval is not production approval; rights/source registration "
+        "and activation gates remain separate."
+    )
     return 0
 
 
