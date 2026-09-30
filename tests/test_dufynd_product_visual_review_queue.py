@@ -31,7 +31,7 @@ def test_product_visual_review_queue_references_catalog_products() -> None:
 
     assert {item["product_id"] for item in items} == ACTIVE_P0
     assert all(item["priority"] == "P0" for item in items)
-    assert all(item["status"] == "candidate_generated_pending_reference_gate" for item in items)
+    assert all(item["status"] == "candidate_generated_pending_human_fidelity" for item in items)
 
     for item in items:
         product_id = item["product_id"]
@@ -86,10 +86,17 @@ def test_pending_candidates_stay_private_and_approved_assets_are_public_product_
     queue = json.loads(QUEUE.read_text(encoding="utf-8"))
 
     active_candidate_assets = {item["candidate_asset"] for item in queue["items"]}
+    historical_candidate_assets = {
+        history["candidate_asset"]
+        for item in queue["items"]
+        for history in item.get("candidate_history", [])
+    }
     approved_source_assets = {
         item["source_candidate_asset"] for item in queue["approved_product_truth"]
     }
-    all_internal_assets = active_candidate_assets | approved_source_assets
+    all_internal_assets = (
+        active_candidate_assets | historical_candidate_assets | approved_source_assets
+    )
 
     candidate_files = {path.as_posix() for path in CANDIDATE_DIR.iterdir() if path.is_file()}
     assert candidate_files == all_internal_assets
