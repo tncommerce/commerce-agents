@@ -22,9 +22,7 @@ def _validate_https_url(
     if parsed.username or parsed.password:
         raise ValueError(f"{field} must not contain URL credentials")
     if parsed.hostname not in allowed_hosts:
-        raise ValueError(
-            f"{field} host must be one of: " + ", ".join(sorted(allowed_hosts))
-        )
+        raise ValueError(f"{field} host must be one of: " + ", ".join(sorted(allowed_hosts)))
 
     return normalized
 
@@ -60,8 +58,7 @@ def build_cj_deep_link(
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Build a guarded CJ deep link for the verified DUFYND / NOTINO.de "
-            "tracking route."
+            "Build a guarded CJ deep link for the verified DUFYND / NOTINO.de tracking route."
         )
     )
     parser.add_argument("--destination-url", required=True)
