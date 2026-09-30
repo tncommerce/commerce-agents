@@ -59,8 +59,7 @@ def build_pilot_retrospective(
         and ledger_reconciliation.get("spend_matches")
     )
     historical_attention = bool(
-        ledger.get("ledger", {}).get("over_cap_runs")
-        or totals.get("failed_runs")
+        ledger.get("ledger", {}).get("over_cap_runs") or totals.get("failed_runs")
     )
 
     controls_ok = controls_ok and source_consistent
@@ -79,9 +78,7 @@ def build_pilot_retrospective(
         "pilot": {
             "runs": int(ledger.get("ledger", {}).get("runs") or 0),
             "spent_usd": float(ledger.get("ledger", {}).get("spent_usd") or 0.0),
-            "average_run_usd": float(
-                ledger.get("ledger", {}).get("average_run_usd") or 0.0
-            ),
+            "average_run_usd": float(ledger.get("ledger", {}).get("average_run_usd") or 0.0),
             "failed_runs": int(totals.get("failed_runs") or 0),
             "failed_spend_usd": float(totals.get("failed_spend_usd") or 0.0),
             "historical_attention": historical_attention,
@@ -89,9 +86,7 @@ def build_pilot_retrospective(
         "remaining": {
             "runs": int(remaining.get("runs") or 0),
             "usd": float(remaining.get("usd") or 0.0),
-            "max_future_spend_usd": float(
-                remaining.get("max_future_spend_usd") or 0.0
-            ),
+            "max_future_spend_usd": float(remaining.get("max_future_spend_usd") or 0.0),
         },
         "cost_centers": efficiency.get("repeated_cost_centers") or [],
         "near_cap": efficiency.get("near_cap") or {},
@@ -168,9 +163,7 @@ def render_markdown(report: dict[str, Any]) -> str:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(
-        description="Read-only DUFYND Jarvis pilot retrospective."
-    )
+    parser = argparse.ArgumentParser(description="Read-only DUFYND Jarvis pilot retrospective.")
     parser.add_argument(
         "--budget-id",
         default=os.getenv("DUFYND_JARVIS_BUDGET_ID", DEFAULT_BUDGET_ID),
