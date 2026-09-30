@@ -6,12 +6,14 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
+from scripts.dufynd_planning_audiences import storefront_gap_score, visible_inventory
 from scripts.validate_dufynd_catalog_expansion_wave import validate_wave
 
 DATA_DIR = Path("examples/retail/data")
 DEFAULT_WAVE = DATA_DIR / "dufynd_catalog_expansion_next10.json"
 DEFAULT_LIVE = DATA_DIR / "catalog.json"
 DEFAULT_STAGING = DATA_DIR / "scentai_catalog_staging.json"
+DEFAULT_SOURCE = DATA_DIR / "scentai_products.json"
 
 STAGING_HARD_BLOCKERS = {
     "direct_source_or_feed_confirmation_pending",
@@ -45,16 +47,7 @@ def audience_gap_score(
     target_groups: list[str],
     live_counts: Counter[str],
 ) -> float:
-    normalized = [str(group).strip() for group in target_groups if str(group).strip()]
-    if not normalized:
-        return 0.0
-
-    maximum = max(live_counts.values(), default=0)
-    if maximum <= 0:
-        return 10.0
-
-    lowest = min(int(live_counts.get(group, 0)) for group in normalized)
-    return round(min(10.0, max(0.0, (maximum - lowest) / maximum * 10.0)), 2)
+    return storefront_gap_score(target_groups, live_counts)
 
 
 def candidate_validation_errors(
@@ -74,11 +67,13 @@ def build_expansion_readiness(
     staging: dict[str, Any],
     *,
     staging_batch_limit: int = 5,
+    source: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     if staging_batch_limit < 1:
         raise ValueError("staging_batch_limit must be at least 1")
 
     live_counts = live_audience_counts(live)
+    visible_ids, hidden_ids, storefront_counts = visible_inventory(live, source)
     live_ids = {
         str(product.get("product_id") or "").strip()
         for product in live.get("products", [])
@@ -131,7 +126,7 @@ def build_expansion_readiness(
                 "concentration": candidate.get("concentration"),
                 "volume_ml": candidate.get("volume_ml"),
                 "target_groups": target_groups,
-                "audience_gap_score_10": audience_gap_score(target_groups, live_counts),
+                "audience_gap_score_10": audience_gap_score(target_groups, storefront_counts),
                 "researched_merchant_count": merchant_count,
                 "research_state": candidate.get("research_state"),
                 "staging_ready": not staging_blockers,
@@ -167,6 +162,9 @@ def build_expansion_readiness(
         ),
         "staged_product_count": len(staged_ids),
         "live_audience_counts": dict(sorted(live_counts.items())),
+        "storefront_fragrance_count": len(visible_ids),
+        "storefront_blocked_product_ids": hidden_ids,
+        "storefront_audience_counts": dict(sorted(storefront_counts.items())),
         "staging_ready_count": sum(1 for row in rows if row["staging_ready"]),
         "staging_blocked_count": sum(1 for row in rows if not row["staging_ready"]),
         "live_ready_count": sum(1 for row in rows if row["live_ready"]),
@@ -188,6 +186,7 @@ def main() -> int:
     parser.add_argument("--wave", type=Path, default=DEFAULT_WAVE)
     parser.add_argument("--live", type=Path, default=DEFAULT_LIVE)
     parser.add_argument("--staging", type=Path, default=DEFAULT_STAGING)
+    parser.add_argument("--source", type=Path, default=DEFAULT_SOURCE)
     parser.add_argument("--staging-batch-limit", type=int, default=5)
     parser.add_argument("--machine-readable", action="store_true")
     parser.add_argument("--output", type=Path, default=None)
@@ -199,6 +198,7 @@ def main() -> int:
             load_json(args.live),
             load_json(args.staging),
             staging_batch_limit=args.staging_batch_limit,
+            source=load_json(args.source),
         )
     except ValueError as exc:
         parser.error(str(exc))
@@ -222,8 +222,10 @@ def main() -> int:
         f"live_ready={report['live_ready_count']}"
     )
     print(
-        "Live audiences | "
-        + " | ".join(f"{group}={count}" for group, count in report["live_audience_counts"].items())
+        "Storefront audiences | "
+        + " | ".join(
+            f"{group}={count}" for group, count in report["storefront_audience_counts"].items()
+        )
     )
     print("Recommended staging batch:")
     for index, row in enumerate(report["recommended_staging_batch"], start=1):
