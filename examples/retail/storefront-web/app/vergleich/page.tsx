@@ -172,18 +172,18 @@ export default function ComparisonIndexPage() {
         </section>
 
         <footer className="mt-8 flex flex-wrap gap-x-4 gap-y-2 border-t border-(--line) py-6 text-[11px] text-(--ink-soft)">
-          <a href="/duft" className="hover:underline">
+          <AcquisitionInternalLink href="/duft" className="hover:underline">
             Duftkatalog
-          </a>
-          <a href="/transparenz" className="hover:underline">
+          </AcquisitionInternalLink>
+          <AcquisitionInternalLink href="/transparenz" className="hover:underline">
             Transparenz
-          </a>
-          <a href="/impressum" className="hover:underline">
+          </AcquisitionInternalLink>
+          <AcquisitionInternalLink href="/impressum" className="hover:underline">
             Impressum
-          </a>
-          <a href="/datenschutz" className="hover:underline">
+          </AcquisitionInternalLink>
+          <AcquisitionInternalLink href="/datenschutz" className="hover:underline">
             Datenschutz
-          </a>
+          </AcquisitionInternalLink>
         </footer>
       </div>
     </main>
