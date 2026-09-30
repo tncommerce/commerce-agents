@@ -139,3 +139,21 @@ def test_comparison_product_links_preserve_acquisition_attribution() -> None:
     assert "free comparison product navigation lost acquisition attribution" in source
     assert "appendAcquisitionAttribution(`/duft/${fragrance.slug}`)" in picker_source
     assert 'source="comparison" trackPageView={false}' in comparison_page_source
+
+
+def test_comparison_internal_links_preserve_acquisition_attribution() -> None:
+    source = VISUAL_QA.read_text(encoding="utf-8")
+    link_source = Path(
+        "examples/retail/storefront-web/components/AcquisitionInternalLink.tsx"
+    ).read_text(encoding="utf-8")
+    comparison_page_source = Path(
+        "examples/retail/storefront-web/app/vergleich/page.tsx"
+    ).read_text(encoding="utf-8")
+
+    assert 'label: "comparison-internal-navigation-attribution"' in source
+    assert '["comparison catalog", comparisonCatalogHref]' in source
+    assert '["documented comparison pair", comparisonPairHref]' in source
+    assert "navigation lost acquisition attribution" in source
+    assert "appendAcquisitionAttribution(href)" in link_source
+    assert "rememberAcquisitionAttribution({" in link_source
+    assert "AcquisitionInternalLink" in comparison_page_source
