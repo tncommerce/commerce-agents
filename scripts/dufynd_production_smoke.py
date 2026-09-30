@@ -567,6 +567,67 @@ def _check_merchant_offers(
         )
 
 
+def _check_scoped_affiliate_publication_gate(
+    client: httpx.Client,
+    api_url: str,
+    *,
+    product_id: str,
+    name: str,
+    expected_offer_id: str,
+    expected_merchant_id: str,
+) -> SmokeCheck:
+    """Accept a safely hidden product, or require its exact affiliate offer once public."""
+
+    encoded_product_id = quote(product_id, safe="")
+    product_url = f"{api_url}/api/products/{encoded_product_id}"
+    offer_url = f"{api_url}/api/merchant-offers/{encoded_product_id}"
+
+    try:
+        product_response = client.get(product_url, follow_redirects=True)
+        if product_response.status_code == 404:
+            offer_response = client.get(offer_url, follow_redirects=True)
+            gated = offer_response.status_code == 404
+            return SmokeCheck(
+                name=name,
+                ok=gated,
+                status_code=offer_response.status_code,
+                detail=(
+                    "Product is not public and its affiliate offer route remains "
+                    "publication-gated."
+                    if gated
+                    else (
+                        "Product is not public, but its merchant-offer route leaked "
+                        f"HTTP {offer_response.status_code}."
+                    )
+                ),
+            )
+
+        if product_response.status_code >= 400:
+            return SmokeCheck(
+                name=name,
+                ok=False,
+                status_code=product_response.status_code,
+                detail=f"Product publication check returned HTTP {product_response.status_code}.",
+            )
+
+        return _check_merchant_offers(
+            client,
+            api_url,
+            product_id,
+            name=name,
+            expected_offer_id=expected_offer_id,
+            expected_merchant_id=expected_merchant_id,
+            require_affiliate_link=True,
+        )
+    except httpx.HTTPError as exc:
+        return SmokeCheck(
+            name=name,
+            ok=False,
+            status_code=None,
+            detail=f"Scoped affiliate publication check failed: {exc.__class__.__name__}",
+        )
+
+
 def _check_merchant_partners(
     client: httpx.Client,
     api_url: str,
@@ -710,14 +771,13 @@ def run_smoke(
                 CRITICAL_PRODUCT_ID,
                 name="merchant_offers_rabanne_1_million",
             ),
-            _check_merchant_offers(
+            _check_scoped_affiliate_publication_gate(
                 client,
                 api,
-                NOTINO_ECLAIRE_PRODUCT_ID,
+                product_id=NOTINO_ECLAIRE_PRODUCT_ID,
                 name="merchant_offers_notino_eclaire",
                 expected_offer_id=NOTINO_ECLAIRE_OFFER_ID,
                 expected_merchant_id="notino",
-                require_affiliate_link=True,
             ),
             _check_merchant_partners(client, api),
         ]
