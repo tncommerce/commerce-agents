@@ -2,9 +2,6 @@ name: DUFYND Awin Feed Revalidation
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - dufynd-awin-feed-revalidation-run-20260930
 
 permissions:
   contents: read
@@ -42,101 +39,6 @@ jobs:
             --output "${RUNNER_TEMP}/top-parfuemerie.csv" \
             --report "${RUNNER_TEMP}/awin-feed-metadata.json"
 
-      - name: Diagnose sanitized provider-contract failures
-        run: |
-          PYTHONPATH=examples python - <<'PY'
-          import json
-          from pathlib import Path
-
-          from pydantic import ValidationError
-          from retail.api.merchant_feed_reader import read_merchant_feed_rows
-          from retail.api.merchant_provider_contract import MerchantProviderCanonicalRow
-          from retail.api.merchant_providers import load_mapped_provider_adapter
-
-          import os
-          feed = Path(os.environ["RUNNER_TEMP"]) / "top-parfuemerie.csv"
-          config = Path(
-              "examples/retail/data/dufynd_awin_top_parfuemerie_provider_config.json"
-          )
-          rows = read_merchant_feed_rows(feed)
-          adapter = load_mapped_provider_adapter(config)
-          availability_headers = sorted(
-              key
-              for key in rows[0]
-              if any(token in key.casefold() for token in ("stock", "avail"))
-          )
-          availability_samples = {
-              key: sorted({str(row.get(key, "")) for row in rows[:10]})
-              for key in availability_headers
-          }
-          print(
-              json.dumps(
-                  {
-                      "availability_headers": availability_headers,
-                      "availability_samples": availability_samples,
-                  },
-                  ensure_ascii=False,
-                  sort_keys=True,
-              )
-          )
-          from collections import Counter
-          from retail.api.merchant_feed_preflight import build_feed_preflight
-
-          diagnostics = []
-          contract_errors = Counter()
-          adapted_rows = []
-          for index, raw in enumerate(rows):
-              adapted = adapter.adapt_row(raw)
-              adapted_rows.append(adapted)
-              try:
-                  MerchantProviderCanonicalRow.model_validate(adapted)
-              except ValidationError as exc:
-                  for error in exc.errors(
-                      include_url=False,
-                      include_input=False,
-                  ):
-                      loc = ".".join(str(part) for part in error["loc"])
-                      contract_errors[f"{loc}:{error['type']}"] += 1
-                  if len(diagnostics) < 5:
-                      diagnostics.append(
-                          {
-                              "row_index": index,
-                              "adapted_keys": sorted(adapted),
-                              "errors": [
-                                  {
-                                      "loc": list(error["loc"]),
-                                      "type": error["type"],
-                                      "msg": error["msg"],
-                                  }
-                                  for error in exc.errors(
-                                      include_url=False,
-                                      include_input=False,
-                                  )
-                              ],
-                          }
-                      )
-
-          preflight = build_feed_preflight(adapted_rows)
-          preflight_missing = {
-              field: values["missing_or_invalid"]
-              for field, values in preflight["coverage"].items()
-              if values["missing_or_invalid"]
-          }
-          print(
-              json.dumps(
-                  {
-                      "contract_error_counts": dict(sorted(contract_errors.items())),
-                      "preflight_missing_or_invalid": preflight_missing,
-                      "preflight_import_ready_rows": preflight["import_ready_rows"],
-                      "preflight_total_rows": preflight["row_count"],
-                  },
-                  ensure_ascii=False,
-                  sort_keys=True,
-              )
-          )
-          print(json.dumps(diagnostics, ensure_ascii=False, sort_keys=True))
-          PY
-
       - name: Check Release 01 against current feed
         shell: bash
         run: |
@@ -147,7 +49,6 @@ jobs:
             --machine-readable > "${RUNNER_TEMP}/release-readiness.json"
           status=$?
           set -e
-          cat "${RUNNER_TEMP}/release-readiness.json"
           if [ "$status" -eq 20 ]; then
             echo "::error::Current Awin feed is structurally blocked."
             exit 20
