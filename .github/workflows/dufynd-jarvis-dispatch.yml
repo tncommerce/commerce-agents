@@ -13,9 +13,14 @@ on:
           - process-next
           - nightshift-pilot
       nightshift_max_tasks:
-        description: Maximum safe tasks for one Nightshift pilot
+        description: Maximum safe tasks for each bounded Nightshift session
         required: false
         default: "8"
+        type: string
+      nightshift_max_minutes:
+        description: Maximum bounded overnight supervisor horizon in minutes
+        required: false
+        default: "300"
         type: string
       approval_token:
         description: Required for process-next or nightshift-pilot
@@ -94,7 +99,7 @@ jobs:
   nightshift:
     if: inputs.mode == 'nightshift-pilot'
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 360
     permissions:
       contents: write
       pull-requests: write
@@ -111,6 +116,10 @@ jobs:
           set -euo pipefail
           test -f scripts/dufynd_jarvis_nightshift.py || {
             echo "Jarvis Nightshift runtime is not present on scentai-mvp."
+            exit 21
+          }
+          test -f scripts/dufynd_jarvis_supervisor.py || {
+            echo "Jarvis Overnight Supervisor is not present on scentai-mvp."
             exit 21
           }
 
@@ -176,7 +185,7 @@ jobs:
           cache: npm
           cache-dependency-path: examples/package-lock.json
 
-      - name: Run Jarvis Nightshift pilot
+      - name: Run Jarvis bounded Overnight Supervisor
         env:
           SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
@@ -189,7 +198,11 @@ jobs:
           DUFYND_JARVIS_AUTONOMOUS: "1"
           DUFYND_JARVIS_TASK_METADATA_PATH: "jarvis-worker-task.json"
         run: >-
-          python -m scripts.dufynd_jarvis_nightshift run
+          python -m scripts.dufynd_jarvis_supervisor
+          --max-minutes "${{ inputs.nightshift_max_minutes }}"
+          --max-cycles "20"
+          --idle-seconds "300"
+          --max-idle-cycles "12"
           --max-tasks "${{ inputs.nightshift_max_tasks }}"
           --max-events "5"
           --worker-timeout-seconds "600"
