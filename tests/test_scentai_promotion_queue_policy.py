@@ -15,6 +15,7 @@ DIRECT_PURCHASE_READY = {
     "SC-BURBERRY-GODDESS-EDP-100",
     "SC-PRADA-PARADOXE-EDP-90",
     "SC-PDM-DELINA-EDP-75",
+    "SC-LATTAFA-ECLAIRE-EDP-100",
 }
 
 
@@ -46,7 +47,7 @@ def test_queue_blocker_summary_matches_candidate_rows() -> None:
     actual = Counter(blocker for row in queue["candidates"] for blocker in row.get("blockers", []))
 
     assert queue["blocker_counts"] == dict(actual)
-    assert queue["summary"]["current_purchase_destinations_ready"] == 5
+    assert queue["summary"]["current_purchase_destinations_ready"] == 6
     assert queue["summary"]["affiliate_links_ready"] == 0
 
 
