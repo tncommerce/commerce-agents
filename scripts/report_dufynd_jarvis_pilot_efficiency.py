@@ -42,9 +42,7 @@ def build_pilot_efficiency_report(
     total_spent = float(ledger["ledger"]["spent_usd"] or 0.0)
     approved_per_run_cap = ledger["approval"].get("per_run_cap_usd")
     near_cap_threshold = (
-        float(approved_per_run_cap) * NEAR_CAP_RATIO
-        if approved_per_run_cap is not None
-        else None
+        float(approved_per_run_cap) * NEAR_CAP_RATIO if approved_per_run_cap is not None else None
     )
 
     by_family: dict[str, dict[str, Any]] = {}
@@ -161,9 +159,7 @@ def build_pilot_efficiency_report(
         "near_cap": {
             "ratio": NEAR_CAP_RATIO,
             "threshold_usd": (
-                round(near_cap_threshold, 6)
-                if near_cap_threshold is not None
-                else None
+                round(near_cap_threshold, 6) if near_cap_threshold is not None else None
             ),
             "runs": [
                 {
