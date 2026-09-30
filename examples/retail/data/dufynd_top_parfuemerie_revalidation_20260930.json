@@ -1,0 +1,83 @@
+{
+  "version": 1,
+  "evidence_type": "awin_read_only_feed_revalidation",
+  "merchant_id": "top-parfuemerie",
+  "network": "Awin",
+  "observed_at": "2026-09-30T19:34:30Z",
+  "program": {
+    "advertiser_id": "31081",
+    "feed_id": "91379",
+    "membership_status": "active",
+    "membership_verified": true,
+    "primary_region": "DE",
+    "language": "German",
+    "feed_last_imported": "2026-09-30 00:03:36"
+  },
+  "secret_readiness": {
+    "repository_secret_name": "AWIN_DATA_FEED_API_KEY",
+    "configured": true,
+    "value_stored_in_repo": false,
+    "value_logged": false
+  },
+  "feed": {
+    "downloaded": true,
+    "row_count": 8021,
+    "downloaded_bytes": 12045198,
+    "global_import_ready_rows": 7929,
+    "provider_contract_invalid_rows": 30,
+    "nonpositive_price_rows": 62,
+    "release_relevant_import_issue_count": 0,
+    "non_release_import_issue_count": 92
+  },
+  "release_01": {
+    "status": "review",
+    "release_size": 5,
+    "mapped_product_count": 4,
+    "trackable_offer_product_count": 0,
+    "feed_image_product_count": 4,
+    "unresolved_product_ids": [
+      "SC-DIOR-HYPNOTIC-POISON-EDT-100"
+    ],
+    "mapped_product_ids": [
+      "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "SC-PDM-DELINA-EDP-75",
+      "SC-YSL-BLACK-OPIUM-EDP-90",
+      "SC-YSL-LIBRE-EDP-90"
+    ],
+    "blockers": [
+      "release_mapping_incomplete",
+      "release_affiliate_offer_coverage_incomplete",
+      "release_feed_image_coverage_incomplete"
+    ]
+  },
+  "availability_safety": {
+    "current_feed_has_availability_signal": false,
+    "provider_default_in_stock": false,
+    "live_routing_allowed": false,
+    "note": "The current Awin feed exposes no stock/availability field. DUFYND therefore defaults feed offers to out-of-stock and does not treat them as trackable/live."
+  },
+  "image_review": {
+    "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+    "rights_status": "verified_for_publisher_service",
+    "automatic_approval_allowed": false,
+    "pending_human_review_product_ids": [
+      "SC-PDM-DELINA-EDP-75",
+      "SC-YSL-BLACK-OPIUM-EDP-90",
+      "SC-YSL-LIBRE-EDP-90"
+    ],
+    "already_approved_product_ids": [
+      "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100"
+    ]
+  },
+  "workflow_evidence": {
+    "successful_read_only_run_id": 36766553182,
+    "sanitized_artifact_id": 11120932196,
+    "raw_feed_committed": false,
+    "secret_logged": false
+  },
+  "next_actions": [
+    "Keep live routing disabled until reliable product availability is independently verified.",
+    "Keep Hypnotic Poison unresolved until an exact current merchant offer exists.",
+    "Perform human visual review before registering any pending feed image candidate."
+  ]
+}
