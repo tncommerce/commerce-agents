@@ -1,6 +1,6 @@
 "use client";
 
-import type { CSSProperties, PointerEvent } from "react";
+import { useState, type CSSProperties, type PointerEvent } from "react";
 import type { FragranceVisualWorld } from "@/lib/fragranceCatalog";
 
 type VisualVariant = "card" | "hero";
@@ -95,6 +95,11 @@ export default function FragranceVisual({
   world?: FragranceVisualWorld;
 }) {
   const resolvedImageUrl = cutoutUrl || imageUrl;
+  const [failedImageUrl, setFailedImageUrl] = useState<string | null>(null);
+  const [failedBackdropUrl, setFailedBackdropUrl] = useState<string | null>(null);
+  const imageUnavailable = Boolean(
+    resolvedImageUrl && failedImageUrl === resolvedImageUrl,
+  );
   const resolvedMode =
     mode === "auto"
       ? cutoutUrl
@@ -109,15 +114,18 @@ export default function FragranceVisual({
       ? `${alt} – stilisierte DUFYND-Inszenierung`
       : alt;
 
-  if (!resolvedImageUrl) {
+  if (!resolvedImageUrl || imageUnavailable) {
+    const fallbackCopy = imageUnavailable
+      ? "Produktbild derzeit nicht verfügbar"
+      : "Kein freigegebenes Produktbild";
     return (
       <div
         data-variant={variant}
-        data-dufynd-visual-state="missing"
+        data-dufynd-visual-state={imageUnavailable ? "unavailable" : "missing"}
         data-dufynd-visual-world={world}
         className={`dufynd-neutral-visual-stage ${className}`}
         role="img"
-        aria-label={`${alt} – kein freigegebenes Produktbild`}
+        aria-label={`${alt} – ${fallbackCopy}`}
       >
         <div
           aria-hidden
@@ -132,7 +140,7 @@ export default function FragranceVisual({
             DUFYND
           </span>
           <strong>{alt}</strong>
-          <em>Kein freigegebenes Produktbild</em>
+          <em>{fallbackCopy}</em>
         </div>
       </div>
     );
@@ -157,6 +165,12 @@ export default function FragranceVisual({
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={imageUrl}
+            ref={(image) => {
+              if (image?.complete && image.naturalWidth === 0) {
+                setFailedImageUrl(resolvedImageUrl);
+              }
+            }}
+            onError={() => setFailedImageUrl(resolvedImageUrl)}
             alt={displayAlt}
             loading={priority ? "eager" : "lazy"}
             fetchPriority={priority ? "high" : "auto"}
@@ -179,11 +193,17 @@ export default function FragranceVisual({
       onPointerMove={updatePointer}
       onPointerLeave={resetPointer}
     >
-      {backdropUrl ? (
+      {backdropUrl && failedBackdropUrl !== backdropUrl ? (
         <>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={backdropUrl}
+            ref={(image) => {
+              if (image?.complete && image.naturalWidth === 0) {
+                setFailedBackdropUrl(backdropUrl);
+              }
+            }}
+            onError={() => setFailedBackdropUrl(backdropUrl)}
             alt=""
             aria-hidden
             loading={priority ? "eager" : "lazy"}
@@ -203,6 +223,12 @@ export default function FragranceVisual({
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={resolvedImageUrl}
+              ref={(image) => {
+                if (image?.complete && image.naturalWidth === 0) {
+                  setFailedImageUrl(resolvedImageUrl);
+                }
+              }}
+              onError={() => setFailedImageUrl(resolvedImageUrl)}
               alt={displayAlt}
               loading={priority ? "eager" : "lazy"}
               fetchPriority={priority ? "high" : "auto"}
