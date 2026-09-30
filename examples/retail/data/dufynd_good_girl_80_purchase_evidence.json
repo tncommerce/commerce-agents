@@ -1,11 +1,11 @@
 {
   "version": 1,
-  "observed_at": "2026-09-27T20:29:52Z",
+  "observed_at": "2026-09-30T08:17:30Z",
   "product_id": "SC-CAROLINA-HERRERA-GOOD-GIRL-EDP-80",
   "merchant": "Müller DE",
   "merchant_product_id": "2070740",
   "product_url": "https://www.mueller.de/p/carolina-herrera-good-girl-eau-de-parfum-6727568386/?itemId=2070740",
-  "observation_method": "current_public_merchant_page_read_only_browser_dom",
+  "observation_method": "current_public_merchant_page_read_only_web_retrieval",
   "identity": {
     "brand": "Carolina Herrera",
     "name": "Good Girl",
