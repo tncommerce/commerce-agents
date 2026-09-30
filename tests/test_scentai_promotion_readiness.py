@@ -188,3 +188,35 @@ def test_readiness_closest_candidates_excludes_already_live_rows() -> None:
     assert [row["product_id"] for row in report["closest_candidates"]] == ["SC-BLOCKED"]
     assert report["closest_candidates"][0]["promotion_candidate"] is True
     assert report["closest_candidates"][0]["already_live"] is False
+
+
+def test_readiness_report_exposes_image_only_promotion_candidates() -> None:
+    image_only = staged_product(
+        "SC-IMAGE-ONLY",
+        coverage=1,
+        image_ready=False,
+    )
+    image_and_offer = staged_product(
+        "SC-IMAGE-AND-OFFER",
+        coverage=1,
+        image_ready=False,
+    )
+    ready = staged_product("SC-READY", coverage=2)
+
+    report = build_readiness_report(
+        {"products": [image_only, image_and_offer, ready]},
+        {"store_name": "SCENTAI", "products": []},
+        {"offers": [affiliate_offer("SC-IMAGE-ONLY"), affiliate_offer("SC-READY")]},
+        now=NOW,
+    )
+
+    assert report["image_only_candidate_count"] == 1
+    assert [row["product_id"] for row in report["image_only_candidates"]] == [
+        "SC-IMAGE-ONLY"
+    ]
+    candidate = report["image_only_candidates"][0]
+    assert candidate["promotion_candidate"] is True
+    assert candidate["already_live"] is False
+    assert candidate["ready"] is False
+    assert candidate["blockers"] == ["missing_approved_image"]
+    assert candidate["eligible_purchase_offers"] == 1
