@@ -5,6 +5,7 @@ import asyncio
 import json
 import os
 from collections.abc import Awaitable, Callable
+from contextlib import suppress
 from datetime import UTC, datetime, timedelta
 from typing import Any
 from uuid import uuid4
@@ -287,7 +288,7 @@ async def supervise_nightshift(
         state["stop_reason"] = "supervisor_cancelled"
         state["ended_at"] = iso_at(ended)
         state["runtime_error_type"] = "CancelledError"
-        try:
+        with suppress(Exception):
             await asyncio.wait_for(
                 asyncio.to_thread(
                     _persist_supervisor,
@@ -297,8 +298,6 @@ async def supervise_nightshift(
                 ),
                 timeout=3.0,
             )
-        except Exception:
-            pass
         raise
 
 
