@@ -42,6 +42,49 @@ jobs:
             --output "${RUNNER_TEMP}/top-parfuemerie.csv" \
             --report "${RUNNER_TEMP}/awin-feed-metadata.json"
 
+      - name: Diagnose sanitized provider-contract failures
+        run: |
+          PYTHONPATH=examples python - <<'PY'
+          import json
+          from pathlib import Path
+
+          from pydantic import ValidationError
+          from retail.api.merchant_feed_reader import read_merchant_feed_rows
+          from retail.api.merchant_provider_contract import MerchantProviderCanonicalRow
+          from retail.api.merchant_providers import load_mapped_provider_adapter
+
+          feed = Path("${RUNNER_TEMP}/top-parfuemerie.csv")
+          config = Path(
+              "examples/retail/data/dufynd_awin_top_parfuemerie_provider_config.json"
+          )
+          rows = read_merchant_feed_rows(feed)
+          adapter = load_mapped_provider_adapter(config)
+          diagnostics = []
+          for index, raw in enumerate(rows[:5]):
+              adapted = adapter.adapt_row(raw)
+              try:
+                  MerchantProviderCanonicalRow.model_validate(adapted)
+              except ValidationError as exc:
+                  diagnostics.append(
+                      {
+                          "row_index": index,
+                          "adapted_keys": sorted(adapted),
+                          "errors": [
+                              {
+                                  "loc": list(error["loc"]),
+                                  "type": error["type"],
+                                  "msg": error["msg"],
+                              }
+                              for error in exc.errors(
+                                  include_url=False,
+                                  include_input=False,
+                              )
+                          ],
+                      }
+                  )
+          print(json.dumps(diagnostics, ensure_ascii=False, sort_keys=True))
+          PY
+
       - name: Check Release 01 against current feed
         shell: bash
         run: |
