@@ -50,9 +50,7 @@ def test_approved_fidelity_candidates_leave_pending_report_but_stay_non_public()
     staged = json.loads(
         (DATA / "dufynd_staged_image_fidelity_candidates_20260930.json").read_text()
     )
-    libre = next(
-        item for item in staged["items"] if item["product_id"] == "SC-YSL-LIBRE-EDP-90"
-    )
+    libre = next(item for item in staged["items"] if item["product_id"] == "SC-YSL-LIBRE-EDP-90")
     assert libre["status"] == "human_fidelity_approved_pending_registration"
     assert libre["source_registration_status"] == "not_registered"
     assert libre["catalog_promotion"] is False
