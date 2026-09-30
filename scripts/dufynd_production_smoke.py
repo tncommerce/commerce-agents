@@ -529,10 +529,7 @@ def _check_merchant_offers(
                         expected_merchant_id is None
                         or offer.get("merchant_id") == expected_merchant_id
                     )
-                    and (
-                        not require_affiliate_link
-                        or offer.get("affiliate_link") is True
-                    )
+                    and (not require_affiliate_link or offer.get("affiliate_link") is True)
                 )
 
         ok = (
