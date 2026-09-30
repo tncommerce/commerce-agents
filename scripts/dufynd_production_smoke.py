@@ -448,6 +448,8 @@ def _check_merchant_offers(
             detail="Merchant offers were not checked because no product ID was available.",
         )
 
+    # Validate the public offer contract only; smoke must never follow a real
+    # merchant redirect or generate a production clickout event.
     encoded_product_id = quote(product_id, safe="")
     url = f"{api_url}/api/merchant-offers/{encoded_product_id}"
     try:
