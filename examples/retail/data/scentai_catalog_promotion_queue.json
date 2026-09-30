@@ -25,11 +25,11 @@
     "affiliate_links_ready": 0,
     "approved_images_ready": 0,
     "unresolved_identity_version_blockers": 0,
-    "current_purchase_destinations_ready": 5
+    "current_purchase_destinations_ready": 6
   },
   "blocker_counts": {
     "approved_product_image_pending": 30,
-    "verified_purchase_destination_pending": 25,
+    "verified_purchase_destination_pending": 24,
     "community_performance_still_provisional": 2
   },
   "candidates": [
