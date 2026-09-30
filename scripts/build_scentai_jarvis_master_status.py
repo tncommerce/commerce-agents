@@ -56,6 +56,7 @@ def classify_domain(
     external_wait_actions = {
         "await_affiliate_program_decision",
         "await_external_dependency",
+        "obtain_licensed_image_sources_then_prepare_manual_visual_approval",
     }
 
     if approval_now:
