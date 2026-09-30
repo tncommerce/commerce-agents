@@ -122,9 +122,7 @@ def test_exhausted_total_budget_blocks_preflight() -> None:
 
 
 def test_hard_attention_code_blocks_even_when_control_flags_are_true() -> None:
-    payload = retrospective(
-        attention_codes=["budget_window_exceeds_human_approval"]
-    )
+    payload = retrospective(attention_codes=["budget_window_exceeds_human_approval"])
 
     report = evaluate_pilot_preflight(payload)
 
