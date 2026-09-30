@@ -2182,6 +2182,7 @@ try {
     }
 
     const comparisonCatalogHref = await comparisonPage
+      .locator("header")
       .getByRole("link", { name: "Duftkatalog" })
       .getAttribute("href");
     const comparisonPairHref = await comparisonPage
