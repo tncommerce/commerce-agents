@@ -88,6 +88,36 @@ def mock_transport() -> httpx.MockTransport:
                 },
             )
 
+        if request.method == "GET" and request.url.path.endswith("/dufynd_creative_patterns"):
+            assert request.url.params["select"].startswith("pattern_id,name,role")
+            assert request.url.params["offset"] == "0"
+            assert request.url.params["limit"] == "2"
+            return httpx.Response(
+                200,
+                json=[
+                    {
+                        "pattern_id": "macro",
+                        "name": "Macro Material Reveal",
+                        "role": "camera",
+                        "description": "Macro texture resolves into product world.",
+                        "mechanism": "Material detail becomes the reveal transition.",
+                        "best_for": ["hero"],
+                        "status": "active",
+                        "updated_at": "2026-09-29T20:00:00+00:00",
+                    },
+                    {
+                        "pattern_id": "second",
+                        "name": "Second Pattern",
+                        "role": "story",
+                        "description": "Second page sentinel.",
+                        "mechanism": "Used only to prove pagination.",
+                        "best_for": ["education"],
+                        "status": "active",
+                        "updated_at": "2026-09-28T20:00:00+00:00",
+                    },
+                ],
+            )
+
         if request.url.path.endswith("/rpc/get_dufynd_autonomy_queue"):
             return httpx.Response(
                 200,
@@ -488,6 +518,33 @@ def test_bridge_loads_creative_context() -> None:
     assert context["idea_generation"]["formats"][0]["id"] == "genesis"
     assert context["idea_generation"]["patterns"][0]["pattern_id"] == "macro"
     assert context["autonomy_queue"]["safe_to_execute"][0]["task_id"] == "task_safe"
+
+
+def test_bridge_loads_bounded_creative_catalog() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    catalog = bridge.load_creative_catalog(kind="patterns", offset=0, limit=1)
+
+    assert catalog["kind"] == "patterns"
+    assert catalog["count"] == 1
+    assert catalog["has_more"] is True
+    assert catalog["next_offset"] == 1
+    assert catalog["items"][0]["pattern_id"] == "macro"
+
+
+def test_bridge_rejects_unknown_creative_catalog_kind() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    with pytest.raises(ValueError, match="Creative catalog kind"):
+        bridge.load_creative_catalog(kind="unknown")
 
 
 def test_bridge_loads_autonomy_queue() -> None:
