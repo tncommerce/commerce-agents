@@ -123,6 +123,10 @@ jobs:
             echo "Jarvis Overnight Supervisor is not present on scentai-mvp."
             exit 21
           }
+          test -f scripts/audit_dufynd_jarvis_control_plane.py || {
+            echo "Jarvis control-plane audit is not present on scentai-mvp."
+            exit 21
+          }
 
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
@@ -156,6 +160,17 @@ jobs:
           python -m scripts.dufynd_jarvis_freshness
           --max-lag-hours 0
           --machine-readable
+
+      - name: Capture Jarvis control-plane audit
+        env:
+          SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          DUFYND_JARVIS_BUDGET_ID: "jarvis_activation_pilot_001"
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p jarvis-nightshift-report
+          python -m scripts.audit_dufynd_jarvis_control_plane --pretty             | tee jarvis-nightshift-report/control-plane-audit.json
 
       - name: Restore clean worker checkout after control-plane sync
         shell: bash
