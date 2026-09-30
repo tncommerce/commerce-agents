@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import FragranceOffers from "@/components/FragranceOffers";
 import FragranceModel3D from "@/components/FragranceModel3D";
 import FragranceVisual from "@/components/FragranceVisual";
-import { trackAnalyticsEvent } from "@/lib/analytics";
+import { appendAcquisitionAttribution, trackAnalyticsEvent } from "@/lib/analytics";
 import { accordLabel } from "@/lib/accordLabels";
 import {
   isVerifiedProductTruthVisual,
@@ -130,7 +130,7 @@ function ProductMiniHeader({
 
   return (
     <a
-      href={`/duft/${fragrance.slug}`}
+      href={appendAcquisitionAttribution(`/duft/${fragrance.slug}`)}
       className="dufynd-comparison-product-card overflow-hidden rounded-2xl border border-(--line) bg-(--card) shadow-(--shadow-sm)"
       data-dufynd-comparison-side={side}
     >

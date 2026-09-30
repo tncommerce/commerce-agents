@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
 import FragranceComparisonPicker from "@/components/FragranceComparisonPicker";
 import FragranceVisual from "@/components/FragranceVisual";
 import {
@@ -55,6 +56,7 @@ function ComparisonThumbnail({ fragrance }: { fragrance: StaticFragrance }) {
 export default function ComparisonIndexPage() {
   return (
     <main className="dufynd-comparison-page min-h-screen bg-(--surface) text-(--ink)">
+      <AcquisitionAnalytics source="comparison" trackPageView={false} />
       <header className="dufynd-comparison-header border-b border-(--line) bg-(--card)">
         <div className="mx-auto flex max-w-[1080px] items-center justify-between gap-4 px-4 py-4 sm:px-6">
           <a

@@ -2135,7 +2135,7 @@ try {
   try {
     const comparisonPage = await comparisonContext.newPage();
     const response = await comparisonPage.goto(
-      `${baseUrl}/vergleich?utm_source=qa`,
+      `${baseUrl}/vergleich?utm_source=qa&src=tiktok&cmp=qa_comparison_campaign&content=qa_comparison_content`,
       { waitUntil: "networkidle" },
     );
     if (!response?.ok()) throw new Error("free comparison did not load");
@@ -2155,6 +2155,36 @@ try {
         (await comparisonPage.getByRole("button", { name: "Vergleichslink kopieren" }).count()) !== 1) {
       throw new Error("free comparison did not restore the shared pair");
     }
+    const comparisonProductLink = comparisonPage.locator(
+      '[data-dufynd-comparison-side="left"]',
+    );
+    const comparisonProductHref =
+      await comparisonProductLink.getAttribute("href");
+    if (!comparisonProductHref) {
+      throw new Error(
+        "free comparison product card is missing its product-detail href",
+      );
+    }
+    const comparisonProductUrl = new URL(
+      comparisonProductHref,
+      baseUrl,
+    );
+    if (
+      comparisonProductUrl.searchParams.get("src") !== "tiktok" ||
+      comparisonProductUrl.searchParams.get("cmp") !==
+        "qa_comparison_campaign" ||
+      comparisonProductUrl.searchParams.get("content") !==
+        "qa_comparison_content"
+    ) {
+      throw new Error(
+        "free comparison product navigation lost acquisition attribution",
+      );
+    }
+
+    report.checks.push({
+      label: "comparison-product-navigation-attribution",
+      status: "passed",
+    });
     report.checks.push({ label: "comparison-share-link", status: "passed" });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
