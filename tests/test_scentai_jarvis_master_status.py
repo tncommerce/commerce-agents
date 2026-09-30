@@ -166,3 +166,37 @@ def test_master_uses_high_end_launch_strategy_over_legacy_voiceover() -> None:
     assert report["next_action"] == ("finish_ysl_libre_audio_qc_and_prepare_mobile_launch_review")
     assert report["user_approval_required_now"] is False
     assert report["content_pipeline"]["active_track"] == "high_end_launch_buffer"
+
+
+def test_master_treats_licensed_image_source_sourcing_as_external_wait() -> None:
+    commerce = {
+        "overall_state": "waiting_licensed_image_sources_and_approval",
+        "next_action": "obtain_licensed_image_sources_then_prepare_manual_visual_approval",
+        "next_action_class": "auto_allowed",
+        "user_approval_required_now": False,
+        "blockers": [
+            "release_approved_images_incomplete",
+            "release_promotion_gates_incomplete",
+        ],
+    }
+    content = {
+        "overall_state": "idle",
+        "next_action": None,
+        "next_action_class": None,
+        "user_approval_required_now": False,
+        "blockers": [],
+    }
+
+    report = build_master_status(
+        commerce,
+        content,
+        {},
+        generated_at="2026-09-30T07:00:00+00:00",
+    )
+
+    assert report["domains"]["commerce"]["execution_state"] == "waiting_external"
+    assert report["overall_state"] == "waiting_external_or_idle"
+    assert report["active_domain"] == "commerce"
+    assert report["next_action"] == (
+        "obtain_licensed_image_sources_then_prepare_manual_visual_approval"
+    )
