@@ -85,6 +85,43 @@ def test_reconciliation_refuses_pr_identity_mismatch() -> None:
 class FakeBridge:
     def __init__(self) -> None:
         self.completed = []
+        self.task_completed = []
+
+    def load_autonomy_queue(self):
+        return {
+            "approval_required": [
+                {
+                    "task_id": "task_merge_test",
+                    "title": "Merge tested change",
+                    "status": "approval_required",
+                    "approval_action_type": "merge_production_code",
+                    "requires_human_approval": True,
+                    "dependencies": ["PR #42 all checks green"],
+                    "instruction": "Merge PR #42 only after approval.",
+                    "evidence": "PR #42 is ready.",
+                },
+                {
+                    "task_id": "task_paid",
+                    "title": "Approve paid work",
+                    "status": "approval_required",
+                    "approval_action_type": "buy_subscription_or_credits",
+                    "requires_human_approval": True,
+                    "dependencies": [],
+                    "instruction": "Human spend gate.",
+                    "evidence": "",
+                },
+                {
+                    "task_id": "task_done_historical",
+                    "title": "Historical merge",
+                    "status": "done",
+                    "approval_action_type": "merge_production_code",
+                    "requires_human_approval": True,
+                    "dependencies": ["PR #42"],
+                    "instruction": "Already complete.",
+                    "evidence": "done",
+                },
+            ]
+        }
 
     def load_pending_decisions(self):
         return [
@@ -118,6 +155,27 @@ class FakeBridge:
         }
 
 
+    def complete_pending_autonomy_task_reconciliation(
+        self,
+        *,
+        task_id,
+        status,
+        evidence,
+    ):
+        self.task_completed.append(
+            {
+                "task_id": task_id,
+                "status": status,
+                "evidence": evidence,
+            }
+        )
+        return {
+            "task_id": task_id,
+            "status": status,
+            "evidence": evidence,
+        }
+
+
 def test_reconcile_pending_merge_decisions_is_dry_run_by_default() -> None:
     bridge = FakeBridge()
 
@@ -132,9 +190,13 @@ def test_reconcile_pending_merge_decisions_is_dry_run_by_default() -> None:
     assert report["reconciled"] == 1
     assert report["actions"][0]["resolution"] == "superseded"
     assert report["actions"][0]["write_applied"] is False
+    assert report["actions"][0]["task_actions"][0]["task_id"] == "task_merge_test"
+    assert report["actions"][0]["task_actions"][0]["to_status"] == "cancelled"
+    assert report["actions"][0]["task_actions"][0]["write_applied"] is False
     assert report["granted_new_approval"] is False
     assert report["merged_pull_request"] is False
     assert bridge.completed == []
+    assert bridge.task_completed == []
 
 
 def test_reconcile_pending_merge_decisions_writes_only_terminal_bookkeeping() -> None:
@@ -154,5 +216,9 @@ def test_reconcile_pending_merge_decisions_writes_only_terminal_bookkeeping() ->
     assert report["reconciled"] == 1
     assert report["actions"][0]["resolution"] == "already_merged"
     assert report["actions"][0]["write_applied"] is True
+    assert report["actions"][0]["task_actions"][0]["to_status"] == "done"
+    assert report["actions"][0]["task_actions"][0]["write_applied"] is True
     assert bridge.completed[0]["decision"]["resolution"] == "already_merged"
+    assert bridge.task_completed[0]["task_id"] == "task_merge_test"
+    assert bridge.task_completed[0]["status"] == "done"
     assert "approved" not in bridge.completed[0]["decision"]
