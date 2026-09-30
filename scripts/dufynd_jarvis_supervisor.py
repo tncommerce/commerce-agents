@@ -67,6 +67,7 @@ def _session_summary(session: dict[str, Any]) -> dict[str, Any]:
             "domain": item.get("domain"),
             "title": item.get("title"),
             "worker": item.get("worker"),
+            "result_code": item.get("result_code"),
             "final_status": item.get("final_status"),
             "attempts": item.get("attempts"),
             "pr_url": item.get("pr_url"),
