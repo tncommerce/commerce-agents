@@ -47,7 +47,8 @@
         "revalidate current availability before surfacing the offer",
         "keep exact Xerjoff XJ 1861 Naxos Eau de Parfum 100 ml identity",
         "explicit user approval required before live routing"
-      ]
+      ],
+      "gtin": "8033488155070"
     },
     {
       "offer_id": "notino-hugo-boss-bottled-absolu-100",
@@ -67,7 +68,8 @@
         "revalidate current availability before surfacing the offer",
         "keep exact BOSS Bottled Absolu Parfum Intense 100 ml identity and exclude BOSS Bottled Absolute",
         "explicit user approval required before live routing"
-      ]
+      ],
+      "gtin": "3616305480620"
     }
   ],
   "policy": {
