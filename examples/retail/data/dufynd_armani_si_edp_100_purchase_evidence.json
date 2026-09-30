@@ -1,11 +1,11 @@
 {
   "version": 1,
-  "observed_at": "2026-09-27T20:40:59Z",
+  "observed_at": "2026-09-30T08:17:30Z",
   "product_id": "SC-ARMANI-SI-EDP-100",
   "merchant": "Müller DE",
   "merchant_product_id": "689615",
   "product_url": "https://www.mueller.de/p/armani-si-eau-de-parfum-nachfuellbar-53550350/?itemId=689615",
-  "observation_method": "current_public_merchant_page_read_only_browser_dom",
+  "observation_method": "current_public_merchant_page_read_only_web_retrieval",
   "identity": {
     "brand": "Giorgio Armani",
     "name": "Sì",
