@@ -17,6 +17,7 @@ DEFAULT_STAGING = DATA_DIR / "scentai_catalog_staging.json"
 DEFAULT_CATALOG = DATA_DIR / "catalog.json"
 DEFAULT_OFFERS = DATA_DIR / "merchant_offers.json"
 DEFAULT_MAPPINGS = DATA_DIR / "merchant_product_mappings.json"
+DEFAULT_PRODUCTS = DATA_DIR / "scentai_products.json"
 
 
 def load_json(path: Path) -> dict:
@@ -28,6 +29,18 @@ def target_groups_from_live_product(product: dict) -> list[str]:
     return [group.strip() for group in raw.split(",") if group.strip()]
 
 
+def storefront_audience(groups: list[str]) -> str | None:
+    aliases = {"herren": "men", "damen": "women"}
+    normalized = {aliases.get(group.strip().lower(), group.strip().lower()) for group in groups}
+    if "unisex" in normalized or {"men", "women"} <= normalized:
+        return "unisex"
+    if "women" in normalized:
+        return "women"
+    if "men" in normalized:
+        return "men"
+    return None
+
+
 def build_merchant_coverage_report(
     staging: dict,
     catalog: dict,
@@ -36,6 +49,7 @@ def build_merchant_coverage_report(
     *,
     now: datetime,
     max_offer_age_hours: float = 72.0,
+    products_payload: dict | None = None,
 ) -> dict[str, Any]:
     staged_products = staging.get("products", [])
     offers = offers_payload.get(
@@ -55,6 +69,29 @@ def build_merchant_coverage_report(
     live_audience = Counter()
     for product in live_products:
         live_audience.update(target_groups_from_live_product(product))
+
+    source_by_id = {
+        str(product.get("product_id") or ""): product
+        for product in (products_payload or {}).get("products", [])
+    }
+    visible_products = [
+        product
+        for product in live_products
+        if not any(
+            str(blocker or "").strip()
+            for blocker in (
+                source_by_id.get(product["product_id"], {}).get("validation") or {}
+            ).get("blockers", [])
+            or []
+        )
+    ]
+    visible_audience: Counter[str] = Counter()
+    for product in visible_products:
+        source = source_by_id.get(product["product_id"], {})
+        groups = (source.get("classification") or {}).get("scentai_target_groups")
+        audience = storefront_audience(groups or target_groups_from_live_product(product))
+        if audience:
+            visible_audience[audience] += 1
 
     staged_audience = Counter()
     rows: list[dict[str, Any]] = []
@@ -157,6 +194,11 @@ def build_merchant_coverage_report(
     return {
         "generated_at": now.astimezone(UTC).isoformat(),
         "live_fragrance_count": len(live_products),
+        "storefront_fragrance_count": len(visible_products),
+        "storefront_blocked_product_ids": sorted(
+            product["product_id"] for product in live_products if product not in visible_products
+        ),
+        "storefront_audience_counts": dict(sorted(visible_audience.items())),
         "staged_fragrance_count": len(staged_products),
         "live_audience_counts": dict(sorted(live_audience.items())),
         "staged_audience_counts": dict(sorted(staged_audience.items())),
@@ -208,6 +250,7 @@ def main() -> int:
         type=Path,
         default=DEFAULT_CATALOG,
     )
+    parser.add_argument("--products", type=Path, default=DEFAULT_PRODUCTS)
     parser.add_argument(
         "--offers",
         type=Path,
@@ -249,6 +292,7 @@ def main() -> int:
         load_json(args.mappings),
         now=datetime.now(UTC),
         max_offer_age_hours=args.max_offer_age_hours,
+        products_payload=load_json(args.products),
     )
 
     if args.output is not None:
@@ -272,7 +316,8 @@ def main() -> int:
 
     print(
         "SCENTAI merchant coverage | "
-        f"live={report['live_fragrance_count']} | "
+        f"storefront={report['storefront_fragrance_count']} | "
+        f"catalog_rows={report['live_fragrance_count']} | "
         f"staged={report['staged_fragrance_count']} | "
         f"staged_integrated={report['staged_with_integrated_offer']} | "
         f"staged_affiliate_ready="
@@ -281,8 +326,10 @@ def main() -> int:
         f"{report['staged_with_approved_image']}"
     )
     print(
-        "Live audience | "
-        + " | ".join(f"{key}={value}" for key, value in report["live_audience_counts"].items())
+        "Storefront audience (exclusive) | "
+        + " | ".join(
+            f"{key}={value}" for key, value in report["storefront_audience_counts"].items()
+        )
     )
     print(
         "Staged audience | "
