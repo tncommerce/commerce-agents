@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-30T18:10:00Z",
+  "publisher": "DUFYND",
+  "operator": "TNCommerce",
+  "communications": [
+    {
+      "merchant_id": "notino",
+      "network": "CJ Affiliate",
+      "partner_support": "VIVNetworks / NOTINO Affiliate Team",
+      "recipient": "podpora+notino.de@vivnetworks.com",
+      "subject": "NOTINO.de Affiliate – Produktfeed / Bildnutzungsrechte für Publisher",
+      "sent_at": "2026-09-30T18:09:00Z",
+      "channel": "email",
+      "status": "awaiting_reply",
+      "scope": [
+        "availability of a NOTINO.de product feed or product catalog for publishers",
+        "publisher rights to display product images from the feed",
+        "conditions for storage/caching, resizing and background treatment",
+        "official alternative asset or image feed if no product feed is available"
+      ],
+      "product_context": {
+        "product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
+        "merchant_product_id": "LTF00869",
+        "gtin": "6290362340638"
+      },
+      "safety_state": {
+        "public_product_promotion_allowed": false,
+        "current_blocker": "approved_product_image_pending",
+        "manufacturer_image_reuse_assumed": false
+      },
+      "next_action": "On reply, verify whether the response explicitly grants publisher image/feed use, capture any restrictions, and update the image-rights evidence before changing catalog publication state."
+    }
+  ],
+  "note": "This log stores operational communication metadata only. No mailbox credentials, private tokens or message bodies containing secrets are stored."
+}
