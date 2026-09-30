@@ -218,7 +218,7 @@ jobs:
           --max-minutes "${{ inputs.nightshift_max_minutes }}"
           --max-cycles "20"
           --idle-seconds "300"
-          --max-idle-cycles "12"
+          --max-idle-cycles "60"
           --max-tasks "${{ inputs.nightshift_max_tasks }}"
           --max-events "5"
           --worker-timeout-seconds "600"
