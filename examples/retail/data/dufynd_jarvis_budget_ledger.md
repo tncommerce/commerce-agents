@@ -21,11 +21,16 @@ It then checks:
 - audited billed-run count versus the budget RPC's `runs`;
 - the maximum single-run cost;
 - whether any historical run exceeded the human-approved `per_run_cap_usd`;
-- whether the budget still has a resolvable approval containing a per-run cap.
+- whether the budget still has a resolvable explicit approved human decision;
+- whether the configured budget window stays within that decision's total cap and
+  maximum run count;
+- whether the approval contains a per-run cap.
 
 A historical per-run breach is reported as attention even if total spend remains
-under the overall budget. This is deliberate: total-budget compliance and
-per-run-cap compliance are separate controls.
+under the overall budget. This is deliberate: total-budget compliance,
+per-run-cap compliance and human-approval scope are separate controls. A budget
+window that exceeds its referenced human approval is therefore an error even when
+the current spend has not yet reached the larger window.
 
 ## Usage
 
