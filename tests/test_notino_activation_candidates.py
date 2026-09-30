@@ -38,9 +38,7 @@ def test_euphoria_candidate_uses_guarded_cj_builder() -> None:
 def test_unmapped_notino_offers_remain_blocked() -> None:
     payload = _payload()
     blocked = {
-        row["product_id"]: row
-        for row in payload["candidates"]
-        if row["readiness"] == "blocked"
+        row["product_id"]: row for row in payload["candidates"] if row["readiness"] == "blocked"
     }
 
     assert blocked["SC-XERJOFF-NAXOS-100"]["blocker"] == (
