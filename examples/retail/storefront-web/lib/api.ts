@@ -52,8 +52,30 @@ export function fetchProduct(productId: string): Promise<ProductDetails | null> 
   return api.get<ProductDetails>(`/products/${encodeURIComponent(productId)}`);
 }
 
-export function fetchMerchantOffers(productId: string): Promise<MerchantOffersPayload | null> {
-  return api.get<MerchantOffersPayload>(`/merchant-offers/${encodeURIComponent(productId)}`);
+const MERCHANT_OFFERS_TIMEOUT_MS = 8_000;
+
+export async function fetchMerchantOffers(productId: string): Promise<MerchantOffersPayload | null> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(
+    () => controller.abort(),
+    MERCHANT_OFFERS_TIMEOUT_MS,
+  );
+
+  try {
+    const response = await fetch(
+      `${API_URL}/api/merchant-offers/${encodeURIComponent(productId)}`,
+      {
+        headers: api.headers(),
+        signal: controller.signal,
+      },
+    );
+    if (!response.ok) return null;
+    return (await response.json()) as MerchantOffersPayload;
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
 
 export function merchantClickoutUrl(path: string): string {
