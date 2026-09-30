@@ -302,10 +302,13 @@ def test_current_purchase_offer_reconciles_stale_source_purchase_blocker() -> No
         coverage=2,
         image_ready=False,
     )
-    product["validation"]["blockers"] = [
-        "verified_purchase_destination_pending",
-        "approved_product_image_pending",
-    ]
+    product["validation"] = {
+        "catalog_ready": False,
+        "blockers": [
+            "verified_purchase_destination_pending",
+            "approved_product_image_pending",
+        ],
+    }
 
     report = build_readiness_report(
         {"products": [product]},
@@ -329,11 +332,14 @@ def test_current_purchase_offer_does_not_clear_non_purchase_source_blockers() ->
         coverage=2,
         image_ready=False,
     )
-    product["validation"]["blockers"] = [
-        "canonical_gtin_feed_match_pending",
-        "verified_purchase_destination_pending",
-        "approved_product_image_pending",
-    ]
+    product["validation"] = {
+        "catalog_ready": False,
+        "blockers": [
+            "canonical_gtin_feed_match_pending",
+            "verified_purchase_destination_pending",
+            "approved_product_image_pending",
+        ],
+    }
 
     report = build_readiness_report(
         {"products": [product]},
