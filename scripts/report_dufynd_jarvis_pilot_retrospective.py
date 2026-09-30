@@ -133,15 +133,6 @@ def render_markdown(report: dict[str, Any]) -> str:
         f"- Runs with failed model turns: {pilot['failed_model_turn_runs']}",
         "",
         "## Runtime cost attribution",
-        f"- Runs: {remaining['runs']}",
-        f"- Budget: USD {remaining['usd']:.6f}",
-        f"- Maximum additional spend under current controls: USD {remaining['max_future_spend_usd']:.6f}",
-        "",
-        "## Near-cap activity",
-        f"- Threshold: {near_cap.get('threshold_usd')}",
-        f"- Runs: {len(near_cap.get('runs') or [])}",
-        "",
-        "## Repeated cost centers",
     ]
 
     if runtimes:
@@ -196,7 +187,6 @@ def render_markdown(report: dict[str, Any]) -> str:
         ]
     )
     return "\n".join(lines) + "\n"
-
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Read-only DUFYND Jarvis pilot retrospective.")
