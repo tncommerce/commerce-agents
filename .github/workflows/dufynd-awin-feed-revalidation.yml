@@ -52,6 +52,7 @@ jobs:
             --machine-readable > "${RUNNER_TEMP}/release-readiness.json"
           status=$?
           set -e
+          cat "${RUNNER_TEMP}/release-readiness.json"
           if [ "$status" -eq 20 ]; then
             echo "::error::Current Awin feed is structurally blocked."
             exit 20
