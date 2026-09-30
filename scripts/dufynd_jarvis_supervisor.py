@@ -230,13 +230,18 @@ async def supervise_nightshift(
             await sleep(wait_seconds)
             continue
 
-        session = await run_once(
-            bridge,
-            max_tasks=max_tasks,
-            max_events=max_events,
-            worker_timeout_seconds=worker_timeout_seconds,
-            max_retries=max_retries,
-        )
+        try:
+            session = await run_once(
+                bridge,
+                max_tasks=max_tasks,
+                max_events=max_events,
+                worker_timeout_seconds=worker_timeout_seconds,
+                max_retries=max_retries,
+            )
+        except Exception as error:
+            state["runtime_error_type"] = type(error).__name__
+            return finish("orchestration_error", status="needs_attention")
+
         state["cycles_completed"] = int(state["cycles_completed"]) + 1
         state["idle_cycles"] = 0
         summary = _session_summary(session)
