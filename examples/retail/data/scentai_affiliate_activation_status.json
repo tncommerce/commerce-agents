@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated_at": "2026-09-30T15:00:00+00:00",
+  "generated_at": "2026-09-29T21:03:00+00:00",
   "machine_id": "scentai_affiliate_activation_v1",
   "scope_note": "Program activation can describe a verified merchant-level homepage tracking route. Product-specific tracked offers remain independently gated by exact SKU mapping, stock, feed validation, image rights and release quality gates.",
   "summary": {
@@ -158,6 +158,11 @@
       "merchant_id": "notino",
       "application_status": "approved",
       "tracking_strategy": "verified_cj_product_deeplink",
+      "tracked_product_url_verified": true,
+      "redirect_dry_run_passed": true,
+      "verified_product_scope": [
+        "SC-LATTAFA-ECLAIRE-EDP-100"
+      ],
       "activation_state": "ready_for_user_approval",
       "blockers": [
         "user_approval_not_recorded"
@@ -167,12 +172,7 @@
       "merchant_homepage_tracking_active": false,
       "product_offer_activation_independent": true,
       "next_action": "request_explicit_user_approval",
-      "live_activation_action_class": "approval_required",
-      "tracked_product_url_verified": true,
-      "redirect_dry_run_passed": true,
-      "verified_product_scope": [
-        "SC-LATTAFA-ECLAIRE-EDP-100"
-      ]
+      "live_activation_action_class": "approval_required"
     }
   ]
 }
