@@ -63,3 +63,13 @@ def test_audience_preview_products_avoid_duplicate_visuals_when_possible() -> No
     assert "const used = new Set<string>();" in text
     assert "!used.has(String(candidate.product_id))" in text
     assert "used.add(String(product.product_id));" in text
+
+
+def test_homepage_catalog_count_excludes_source_blocked_fragrances() -> None:
+    text = source()
+
+    assert "const scentCount = Object.values(catalog).filter(" in text
+    assert "getLiveFragranceByProductId(" in text
+    assert "Boolean(" in text
+    assert 'String(product.product_id).startsWith("SC-")' in text
+    assert "product.in_stock !== false" in text
