@@ -170,7 +170,10 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p jarvis-nightshift-report
-          python -m scripts.audit_dufynd_jarvis_control_plane --pretty             | tee jarvis-nightshift-report/control-plane-audit.json
+          python -m scripts.audit_dufynd_jarvis_control_plane --pretty \\
+            | tee jarvis-nightshift-report/control-plane-audit.json
+          sha256sum jarvis-nightshift-report/control-plane-audit.json \\
+            > "${RUNNER_TEMP}/dufynd-control-plane-audit.sha256"
 
       - name: Restore clean worker checkout after control-plane sync
         shell: bash
@@ -185,6 +188,17 @@ jobs:
             exit 28
           fi
 
+          unexpected_untracked="$(
+            git ls-files --others --exclude-standard \\
+              | grep -v '^jarvis-nightshift-report/control-plane-audit.json$' \\
+              || true
+          )"
+          if [ -n "${unexpected_untracked}" ]; then
+            echo "Unexpected pre-worker untracked files are present."
+            printf '%s\\n' "${unexpected_untracked}"
+            exit 29
+          fi
+          sha256sum -c "${RUNNER_TEMP}/dufynd-control-plane-audit.sha256"
       - name: Validate explicit Nightshift pilot approval
         shell: bash
         run: |
@@ -228,8 +242,25 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          git diff --check
-          git diff --name-only > jarvis-worker-files.txt
+          sha256sum -c "${RUNNER_TEMP}/dufynd-control-plane-audit.sha256"
+
+          git diff --name-status --find-renames > "${RUNNER_TEMP}/jarvis-tracked-status.txt"
+          while IFS=$'\\t' read -r change old_path new_path; do
+            case "${change}" in
+              D*|R*)
+                echo "Jarvis branch worker may not delete or rename tracked files: ${change} ${old_path} ${new_path:-}"
+                exit 23
+                ;;
+            esac
+          done < "${RUNNER_TEMP}/jarvis-tracked-status.txt"
+
+          {
+            git diff --name-only
+            git ls-files --others --exclude-standard \\
+              | grep -v -E '^(jarvis-nightshift-report/control-plane-audit\\.json|jarvis-worker-task\\.json)$' \\
+              || true
+          } | sort -u > "${RUNNER_TEMP}/jarvis-worker-files.txt"
+          cp "${RUNNER_TEMP}/jarvis-worker-files.txt" jarvis-worker-files.txt
 
           if [ ! -s jarvis-worker-files.txt ]; then
             echo "Jarvis branch worker produced no repository changes."
@@ -237,6 +268,10 @@ jobs:
           fi
 
           while IFS= read -r file; do
+            if [ -L "$file" ]; then
+              echo "Symlinks are outside the Jarvis branch-worker patch boundary: $file"
+              exit 25
+            fi
             case "$file" in
               .github/*|examples/retail/data/*|supabase/*|*.env|*.env.*|*package-lock.json|*pnpm-lock.yaml|*yarn.lock|requirements*.txt|pyproject.toml|scripts/check.py|scripts/dufynd_jarvis_*|scripts/sync_dufynd_repo_state_to_supabase.py|scripts/refresh_scentai_jarvis_state.py|examples/retail/storefront-web/scripts/*)
                 echo "Blocked Jarvis branch-worker path: $file"
@@ -249,8 +284,13 @@ jobs:
                 exit 22
                 ;;
             esac
+
+            if ! git ls-files --error-unmatch -- "$file" > /dev/null 2>&1; then
+              git add -N -- "$file"
+            fi
           done < jarvis-worker-files.txt
 
+          git diff --check
           git diff --binary > jarvis-worker.patch
           ruff check .
           ruff format --check .
@@ -265,14 +305,14 @@ jobs:
             npx playwright install --with-deps chromium
             npm run build --workspace acme-retail-storefront-web
 
-            node retail/storefront-web/scripts/serve-static-export.mjs \
-              --root retail/storefront-web/out \
+            node retail/storefront-web/scripts/serve-static-export.mjs \\
+              --root retail/storefront-web/out \\
               --port 3000 > /tmp/dufynd-jarvis-static.log 2>&1 &
             server_pid=$!
             trap 'kill "$server_pid" 2>/dev/null || true' EXIT
 
             for attempt in {1..60}; do
-              if curl --fail --silent --location \
+              if curl --fail --silent --location \\
                 http://127.0.0.1:3000/duft/xerjoff-naxos > /dev/null; then
                 break
               fi
@@ -283,12 +323,11 @@ jobs:
               sleep 1
             done
 
-            node retail/storefront-web/scripts/dufynd-visual-qa.mjs \
-              --base-url http://127.0.0.1:3000 \
+            node retail/storefront-web/scripts/dufynd-visual-qa.mjs \\
+              --base-url http://127.0.0.1:3000 \\
               --out retail/storefront-web/.visual-qa
             popd > /dev/null
           fi
-
       - name: Create validated Jarvis worker PR
         shell: bash
         env:
