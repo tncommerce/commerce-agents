@@ -168,3 +168,25 @@ def test_readiness_report_separates_already_live_from_promotion_candidates() -> 
         "missing_approved_image": 1,
         "missing_current_purchase_destination": 1,
     }
+
+
+def test_readiness_closest_candidates_excludes_already_live_rows() -> None:
+    live = staged_product("SC-LIVE", coverage=4)
+    blocked = staged_product(
+        "SC-BLOCKED",
+        coverage=1,
+        image_ready=False,
+    )
+
+    report = build_readiness_report(
+        {"products": [live, blocked]},
+        {"store_name": "SCENTAI", "products": [{"product_id": "SC-LIVE"}]},
+        {"offers": []},
+        now=NOW,
+    )
+
+    assert [row["product_id"] for row in report["closest_candidates"]] == [
+        "SC-BLOCKED"
+    ]
+    assert report["closest_candidates"][0]["promotion_candidate"] is True
+    assert report["closest_candidates"][0]["already_live"] is False
