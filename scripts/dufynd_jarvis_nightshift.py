@@ -445,9 +445,7 @@ def _recover_interrupted_work(
         session["status"] = "needs_attention"
         session["stop_reason"] = "interrupted_task_unknown_cost"
         session["runtime_error_type"] = (
-            "InterruptedTaskWithoutAuditedRun"
-            if latest_run is None
-            else "UnknownProviderCost"
+            "InterruptedTaskWithoutAuditedRun" if latest_run is None else "UnknownProviderCost"
         )
         session.setdefault("task_results", []).append(
             {
@@ -644,7 +642,9 @@ async def _run_task_with_retry(
             latest_run = _latest_task_run(
                 bridge,
                 task_id=task_id,
-                since_iso=str(current_task.get("started_at") or session.get("started_at") or iso_now()),
+                since_iso=str(
+                    current_task.get("started_at") or session.get("started_at") or iso_now()
+                ),
             )
             if not _audited_run_cost_known(latest_run):
                 current = bridge.load_autonomy_task(task_id) or {}
@@ -984,11 +984,7 @@ async def run_nightshift(
         session["status"] = (
             "needs_attention"
             if needs_attention
-            else (
-                "awaiting_validation"
-                if bool(session.get("branch_worker_used"))
-                else "completed"
-            )
+            else ("awaiting_validation" if bool(session.get("branch_worker_used")) else "completed")
         )
         if session["status"] == "completed":
             session["ended_at"] = iso_now()
@@ -1273,9 +1269,7 @@ def build_morning_report(
     supervisor_runtime_error = bool(
         use_supervisor and supervisor and supervisor.get("runtime_error_type")
     )
-    provider_cost_unknown = any(
-        bool(result.get("provider_cost_unknown")) for result in results
-    )
+    provider_cost_unknown = any(bool(result.get("provider_cost_unknown")) for result in results)
     uncertain_stop_reason = stop_reason in {
         "event_failure",
         "unknown_provider_cost",
