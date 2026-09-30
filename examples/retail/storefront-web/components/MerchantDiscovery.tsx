@@ -12,9 +12,9 @@ import {
 import type { MerchantPartnersPayload } from "@/lib/types";
 
 export default function MerchantDiscovery({
-  sessionReady,
+  sessionSettled,
 }: {
-  sessionReady: boolean;
+  sessionSettled: boolean;
 }) {
   const [payload, setPayload] = useState<
     MerchantPartnersPayload | null
@@ -59,7 +59,7 @@ export default function MerchantDiscovery({
 
       <div className="mt-3 flex flex-wrap gap-2">
         {payload.partners.map((partner) =>
-          sessionReady ? (
+          sessionSettled ? (
             <a
               key={partner.merchant_id}
               href={appendAcquisitionAttribution(

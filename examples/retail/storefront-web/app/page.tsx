@@ -162,7 +162,7 @@ export default function StorefrontPage() {
           home={(
             <HomeView
               shopperName={shopper.name}
-              sessionReady={Boolean(session.sessionId)}
+              sessionSettled={session.settled === true}
             />
           )}
         />
