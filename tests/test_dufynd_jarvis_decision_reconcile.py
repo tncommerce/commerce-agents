@@ -155,7 +155,6 @@ class FakeBridge:
             "decision": decision,
         }
 
-
     def complete_pending_autonomy_task_reconciliation(
         self,
         *,
