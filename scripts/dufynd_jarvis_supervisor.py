@@ -188,7 +188,7 @@ async def supervise_nightshift(
             current = now()
             if current >= deadline:
                 return finish("time_horizon_reached")
-    
+
             preflight = await asyncio.to_thread(_preflight, bridge)
             state["last_preflight"] = preflight
             budget_id = os.getenv(
@@ -198,7 +198,7 @@ async def supervise_nightshift(
             budget = await asyncio.to_thread(bridge.load_budget_status, budget_id)
             state["budget"] = budget
             _persist_supervisor(bridge, state, verified_at=current)
-    
+
             # Wait cheaply while the Work/TECH lease owns the only safe engineering
             # work. No model call is made during this handoff window.
             lease = preflight["tech_lease"]
@@ -208,17 +208,17 @@ async def supervise_nightshift(
                 and int(preflight["non_engineering_safe_count"]) == 0
                 and int(preflight["engineering_safe_count"]) > 0
             )
-    
+
             if not preflight["potential_work"] or lease_blocks_only_work:
                 if not lease_blocks_only_work and int(state["idle_cycles"]) >= idle_limit:
                     return finish("idle_limit_reached")
                 if not bool(budget.get("can_run")) and not preflight["potential_work"]:
                     return finish("budget_gate")
-    
+
                 remaining = max(0, int((deadline - current).total_seconds()))
                 if remaining <= 0:
                     return finish("time_horizon_reached")
-    
+
                 wait_seconds = min(idle_delay, remaining)
                 if lease_blocks_only_work:
                     lease_remaining = int(lease.get("remaining_seconds") or 0)
@@ -227,11 +227,11 @@ async def supervise_nightshift(
                     state["lease_wait_cycles"] = int(state["lease_wait_cycles"]) + 1
                 else:
                     state["idle_cycles"] = int(state["idle_cycles"]) + 1
-    
+
                 _persist_supervisor(bridge, state, verified_at=current)
                 await sleep(wait_seconds)
                 continue
-    
+
             try:
                 session = await run_once(
                     bridge,
@@ -244,7 +244,7 @@ async def supervise_nightshift(
             except Exception as error:
                 state["runtime_error_type"] = type(error).__name__
                 return finish("orchestration_error", status="needs_attention")
-    
+
             state["cycles_completed"] = int(state["cycles_completed"]) + 1
             state["idle_cycles"] = 0
             summary = _session_summary(session)
@@ -252,16 +252,16 @@ async def supervise_nightshift(
             if len(state["session_summaries"]) > HARD_MAX_CYCLES:
                 state["session_summaries"] = state["session_summaries"][-HARD_MAX_CYCLES:]
             _persist_supervisor(bridge, state, verified_at=now())
-    
+
             if (
                 bool(session.get("branch_worker_used"))
                 or str(session.get("status") or "") == "awaiting_validation"
             ):
                 return finish("engineering_quality_gate_pending")
-    
+
             if str(session.get("status") or "") == "needs_attention":
                 return finish("session_needs_attention", status="needs_attention")
-    
+
             reason = str(session.get("stop_reason") or "unknown")
             if reason in TERMINAL_REASONS:
                 return finish(reason)
@@ -274,9 +274,9 @@ async def supervise_nightshift(
                 if any(str(item.get("final_status") or "") == "in_progress" for item in results):
                     return finish("unclassified_task_result", status="needs_attention")
                 continue
-    
+
             return finish(f"unexpected_session_stop:{reason}", status="needs_attention")
-    
+
         return finish("cycle_limit_reached")
 
     try:
