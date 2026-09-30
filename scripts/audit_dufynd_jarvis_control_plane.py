@@ -9,6 +9,7 @@ from typing import Any
 from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
 
 SESSION_KEY = "jarvis.nightshift_session"
+SUPERVISOR_KEY = "jarvis.nightshift_supervisor"
 TECH_LEASE_KEY = "continuity.tech_lease"
 DEFAULT_STALE_AFTER_MINUTES = 45
 
@@ -148,6 +149,65 @@ def _session_summary(
     return summary, issues
 
 
+def _supervisor_summary(
+    row: dict[str, Any] | None,
+    *,
+    now: datetime,
+    stale_after_minutes: int,
+) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    supervisor = dict((row or {}).get("value") or {})
+    if not supervisor:
+        return {"available": False}, []
+
+    status = str(supervisor.get("status") or "unknown")
+    heartbeat = supervisor.get("last_heartbeat_at") or supervisor.get("started_at")
+    heartbeat_age = _age_minutes(heartbeat, now)
+    active = status == "running"
+    stale = bool(
+        active and heartbeat_age is not None and heartbeat_age > max(1, stale_after_minutes)
+    )
+    summary = {
+        "available": True,
+        "supervisor_id": supervisor.get("supervisor_id"),
+        "status": status,
+        "started_at": supervisor.get("started_at"),
+        "ended_at": supervisor.get("ended_at"),
+        "deadline_at": supervisor.get("deadline_at"),
+        "last_heartbeat_at": supervisor.get("last_heartbeat_at"),
+        "heartbeat_age_minutes": round(heartbeat_age, 2) if heartbeat_age is not None else None,
+        "cycles_completed": int(supervisor.get("cycles_completed") or 0),
+        "idle_cycles": int(supervisor.get("idle_cycles") or 0),
+        "lease_wait_cycles": int(supervisor.get("lease_wait_cycles") or 0),
+        "stop_reason": supervisor.get("stop_reason"),
+        "stale": stale,
+    }
+
+    issues: list[dict[str, Any]] = []
+    if stale:
+        issues.append(
+            {
+                "code": "stale_active_nightshift_supervisor",
+                "severity": "warning",
+                "message": (
+                    "Overnight Supervisor is still marked running although its heartbeat "
+                    f"is older than {stale_after_minutes} minutes."
+                ),
+            }
+        )
+    if active and heartbeat_age is None:
+        issues.append(
+            {
+                "code": "active_supervisor_missing_heartbeat",
+                "severity": "warning",
+                "message": (
+                    "Overnight Supervisor is marked running but has no parseable "
+                    "heartbeat/start timestamp."
+                ),
+            }
+        )
+    return summary, issues
+
+
 def _lease_summary(
     row: dict[str, Any] | None,
     *,
@@ -196,6 +256,7 @@ def audit_control_plane(
     health = bridge.load_health()
     budget = bridge.load_budget_status(selected_budget_id)
     session_row = bridge.load_master_status_entry(SESSION_KEY)
+    supervisor_row = bridge.load_master_status_entry(SUPERVISOR_KEY)
     lease_row = bridge.load_master_status_entry(TECH_LEASE_KEY)
 
     issues: list[dict[str, Any]] = []
@@ -205,6 +266,13 @@ def audit_control_plane(
         stale_after_minutes=stale_after_minutes,
     )
     issues.extend(session_issues)
+
+    supervisor, supervisor_issues = _supervisor_summary(
+        supervisor_row,
+        now=current_time,
+        stale_after_minutes=stale_after_minutes,
+    )
+    issues.extend(supervisor_issues)
 
     tech_lease, lease_issues = _lease_summary(lease_row, now=current_time)
     issues.extend(lease_issues)
@@ -243,6 +311,7 @@ def audit_control_plane(
         "autonomy_boundary": _queue_boundary(queue),
         "inbox": inbox,
         "nightshift_session": session,
+        "nightshift_supervisor": supervisor,
         "tech_lease": tech_lease,
         "issues": issues,
     }
