@@ -479,9 +479,7 @@ def test_runtime_clamps_effective_per_run_cap_to_remaining_budget(monkeypatch) -
     monkeypatch.setenv("DUFYND_JARVIS_MODEL", "claude-sonnet-5")
     monkeypatch.setenv("DUFYND_JARVIS_MAX_BUDGET_USD", "0.25")
 
-    _budget_id, status = _require_budget_window(
-        BudgetBridge(can_run=True, remaining_usd=0.08)
-    )
+    _budget_id, status = _require_budget_window(BudgetBridge(can_run=True, remaining_usd=0.08))
 
     assert status["effective_per_run_cap_usd"] == 0.08
     assert status["sdk_budget_usd"] == 0.064
@@ -495,9 +493,7 @@ def test_runtime_refuses_turn_when_remaining_budget_is_below_safe_sdk_minimum(
     monkeypatch.setenv("DUFYND_JARVIS_MAX_BUDGET_USD", "0.25")
 
     with pytest.raises(RuntimeError, match="budget gate"):
-        _require_budget_window(
-            BudgetBridge(can_run=True, remaining_usd=0.01)
-        )
+        _require_budget_window(BudgetBridge(can_run=True, remaining_usd=0.01))
 
 
 def test_safe_worker_options_apply_headroom_after_remaining_budget_clamp(
@@ -537,9 +533,7 @@ def test_unknown_cost_inbox_failure_is_not_retried(monkeypatch) -> None:
             }
 
         def complete_inbox_event(self, *, inbox_id, status="done", error=None):
-            self.completed.append(
-                {"inbox_id": inbox_id, "status": status, "error": error}
-            )
+            self.completed.append({"inbox_id": inbox_id, "status": status, "error": error})
             return self.completed[-1]
 
     bridge = UnknownCostBridge()
