@@ -69,12 +69,18 @@
       "network": "CJ Affiliate",
       "program": "Notino",
       "status": "approved",
-      "programming_note": "Program approved on 2026-09-30. CJ Deep Link is advertised as available; keep live routing disabled until a valid tracked-link strategy and/or feed credentials are verified.",
+      "programming_note": "Program approved on 2026-09-30. A CJ product deep link for Lattafa Eclaire 100 ml was generated and browser-redirect verified on 2026-09-30. Keep live routing disabled until explicit activation approval.",
       "merchant_id": "notino",
       "approved_at": "2026-09-30",
       "deeplink_available": true,
       "product_feed_available": null,
-      "tracked_product_url_verified": false
+      "tracked_product_url_verified": true,
+      "tracking_strategy": "verified_cj_product_deeplink",
+      "redirect_dry_run_passed": true,
+      "verified_product_scope": [
+        "SC-LATTAFA-ECLAIRE-EDP-100"
+      ],
+      "tracking_verified_at": "2026-09-30T14:49:00Z"
     }
   ],
   "direct_outreach_candidates": [
@@ -175,7 +181,10 @@
       "deeplink_available": true,
       "product_feed_available": null,
       "confidence": "explicit_welcome_email_from_notino_de_at_ch_via_cj",
-      "activity_note": "Welcome email confirms entry into the NOTINO.de affiliate program and mentions CJ Deep Link. No verified product feed, tracked URL template or credentials are stored in repo state."
+      "activity_note": "Welcome email confirms NOTINO.de program approval. CJ link generation and a browser redirect dry run for Lattafa Eclaire 100 ml were completed successfully on 2026-09-30. Live routing remains disabled pending explicit activation approval.",
+      "tracking_strategy": "verified_cj_product_deeplink",
+      "tracked_product_url_verified": true,
+      "redirect_dry_run_passed": true
     }
   ]
 }
