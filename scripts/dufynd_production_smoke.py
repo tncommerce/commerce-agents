@@ -493,9 +493,7 @@ def _check_merchant_offers(
             clickout_path = offer.get("clickout_path")
             price = offer.get("price")
             expected_clickout = (
-                f"/api/clickout/{offer_id}"
-                if isinstance(offer_id, str) and offer_id
-                else None
+                f"/api/clickout/{offer_id}" if isinstance(offer_id, str) and offer_id else None
             )
 
             row_ok = (
