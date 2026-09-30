@@ -220,3 +220,75 @@ def test_readiness_report_exposes_image_only_promotion_candidates() -> None:
     assert candidate["ready"] is False
     assert candidate["blockers"] == ["missing_approved_image"]
     assert candidate["eligible_purchase_offers"] == 1
+
+
+def test_readiness_report_exposes_only_true_image_only_candidates() -> None:
+    image_only = staged_product(
+        "SC-IMAGE-ONLY",
+        coverage=2,
+        image_ready=False,
+    )
+    image_only["validation"] = {
+        "catalog_ready": False,
+        "blockers": ["approved_product_image_pending"],
+    }
+
+    identity_blocked = staged_product(
+        "SC-IDENTITY-BLOCKED",
+        coverage=2,
+        image_ready=False,
+    )
+    identity_blocked["validation"] = {
+        "catalog_ready": False,
+        "blockers": [
+            "approved_product_image_pending",
+            "identity_review_required",
+        ],
+    }
+
+    report = build_readiness_report(
+        {"products": [image_only, identity_blocked]},
+        {"store_name": "SCENTAI", "products": []},
+        {
+            "offers": [
+                affiliate_offer("SC-IMAGE-ONLY"),
+                affiliate_offer("SC-IDENTITY-BLOCKED"),
+            ]
+        },
+        now=NOW,
+    )
+
+    assert report["image_only_candidate_count"] == 1
+    assert [
+        row["product_id"] for row in report["image_only_candidates"]
+    ] == ["SC-IMAGE-ONLY"]
+
+    by_id = {row["product_id"]: row for row in report["rows"]}
+    assert by_id["SC-IMAGE-ONLY"]["image_only_candidate"] is True
+    assert by_id["SC-IMAGE-ONLY"]["source_validation_blockers"] == [
+        "approved_product_image_pending"
+    ]
+    assert by_id["SC-IDENTITY-BLOCKED"]["image_only_candidate"] is False
+
+
+def test_image_only_candidate_requires_current_purchase_destination() -> None:
+    product = staged_product(
+        "SC-IMAGE-NO-OFFER",
+        coverage=2,
+        image_ready=False,
+    )
+    product["validation"] = {
+        "catalog_ready": False,
+        "blockers": ["approved_product_image_pending"],
+    }
+
+    report = build_readiness_report(
+        {"products": [product]},
+        {"store_name": "SCENTAI", "products": []},
+        {"offers": []},
+        now=NOW,
+    )
+
+    assert report["image_only_candidate_count"] == 0
+    assert report["rows"][0]["image_only_candidate"] is False
+    assert "missing_current_purchase_destination" in report["rows"][0]["blockers"]
