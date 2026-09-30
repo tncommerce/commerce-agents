@@ -4,18 +4,17 @@ import argparse
 import json
 import os
 from collections.abc import Callable
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 import httpx
-
 from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
 
 DEFAULT_REPOSITORY = "tncommerce/commerce-agents"
 
 
 def iso_now() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 def _github_headers(token: str | None) -> dict[str, str]:
