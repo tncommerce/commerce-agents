@@ -11,6 +11,8 @@ import httpx
 CRITICAL_PRODUCT_ID = "SC-RABANNE-1-MILLION-EDT-100"
 CRITICAL_PRODUCT_PATH = "/duft/rabanne-1-million"
 CRITICAL_PRODUCT_MARKER = "1 million"
+NOTINO_ECLAIRE_PRODUCT_ID = "SC-LATTAFA-ECLAIRE-EDP-100"
+NOTINO_ECLAIRE_OFFER_ID = "notino-lattafa-eclaire-edp-100"
 
 
 @dataclass
@@ -439,6 +441,9 @@ def _check_merchant_offers(
     product_id: str | None,
     *,
     name: str = "merchant_offers",
+    expected_offer_id: str | None = None,
+    expected_merchant_id: str | None = None,
+    require_affiliate_link: bool = False,
 ) -> SmokeCheck:
     if not product_id:
         return SmokeCheck(
@@ -486,6 +491,7 @@ def _check_merchant_offers(
 
         offer_ids: list[str] = []
         contracts_ok = True
+        expected_offer_ok = expected_offer_id is None
         for offer in offers:
             if not isinstance(offer, dict):
                 contracts_ok = False
@@ -516,6 +522,19 @@ def _check_merchant_offers(
             if isinstance(offer_id, str) and offer_id:
                 offer_ids.append(offer_id)
 
+            if expected_offer_id is not None and offer_id == expected_offer_id:
+                expected_offer_ok = (
+                    row_ok
+                    and (
+                        expected_merchant_id is None
+                        or offer.get("merchant_id") == expected_merchant_id
+                    )
+                    and (
+                        not require_affiliate_link
+                        or offer.get("affiliate_link") is True
+                    )
+                )
+
         ok = (
             payload.get("product_id") == product_id
             and isinstance(disclosure, str)
@@ -523,6 +542,7 @@ def _check_merchant_offers(
             and isinstance(best_offer_id, str)
             and best_offer_id in offer_ids
             and contracts_ok
+            and expected_offer_ok
         )
 
         return SmokeCheck(
@@ -536,7 +556,8 @@ def _check_merchant_offers(
                 else (
                     "Merchant offer payload is stale or unsafe: "
                     f"product_id={payload.get('product_id')!r}, "
-                    f"best_offer_id={best_offer_id!r}, offers={len(offers)}."
+                    f"best_offer_id={best_offer_id!r}, offers={len(offers)}, "
+                    f"expected_offer_ok={expected_offer_ok}."
                 )
             ),
         )
@@ -691,6 +712,15 @@ def run_smoke(
                 api,
                 CRITICAL_PRODUCT_ID,
                 name="merchant_offers_rabanne_1_million",
+            ),
+            _check_merchant_offers(
+                client,
+                api,
+                NOTINO_ECLAIRE_PRODUCT_ID,
+                name="merchant_offers_notino_eclaire",
+                expected_offer_id=NOTINO_ECLAIRE_OFFER_ID,
+                expected_merchant_id="notino",
+                require_affiliate_link=True,
             ),
             _check_merchant_partners(client, api),
         ]
