@@ -60,6 +60,25 @@ jobs:
           )
           rows = read_merchant_feed_rows(feed)
           adapter = load_mapped_provider_adapter(config)
+          availability_headers = sorted(
+              key
+              for key in rows[0]
+              if any(token in key.casefold() for token in ("stock", "avail"))
+          )
+          availability_samples = {
+              key: sorted({str(row.get(key, "")) for row in rows[:10]})
+              for key in availability_headers
+          }
+          print(
+              json.dumps(
+                  {
+                      "availability_headers": availability_headers,
+                      "availability_samples": availability_samples,
+                  },
+                  ensure_ascii=False,
+                  sort_keys=True,
+              )
+          )
           diagnostics = []
           for index, raw in enumerate(rows[:5]):
               adapted = adapter.adapt_row(raw)
