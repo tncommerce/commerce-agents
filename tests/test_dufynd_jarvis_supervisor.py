@@ -177,6 +177,8 @@ def test_supervisor_continues_across_task_limit_until_budget_gate(monkeypatch) -
     assert state["cycles_completed"] == 2
     assert state["stop_reason"] == "budget_gate"
     assert len(state["session_summaries"]) == 2
+    assert state["session_summaries"][0]["task_results"][0]["final_status"] == "done"
+    assert state["session_summaries"][0]["task_results"][0]["task_id"] == "task-0"
     assert clock.sleeps == []
 
 
