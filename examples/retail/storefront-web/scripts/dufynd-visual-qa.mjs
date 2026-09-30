@@ -2536,7 +2536,7 @@ try {
     });
     const recoveredUrl = new URL(await recoveredPartner.getAttribute("href"));
     if (
-      recoveredUrl.searchParams.get("sid") !== "qa-partner-recovery-session-1234567890" ||
+      recoveredUrl.searchParams.get("sid") !== "qa-partner-timeout-recovery-session-1234567890" ||
       recoveredUrl.searchParams.get("src") !== "instagram" ||
       recoveredUrl.searchParams.get("cmp") !== "qa_partner_timeout_recovery"
     ) {
