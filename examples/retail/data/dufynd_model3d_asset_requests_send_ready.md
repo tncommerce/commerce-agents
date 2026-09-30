@@ -1,6 +1,6 @@
-# DUFYND 3D fragrance asset requests — send-ready
+# DUFYND 3D fragrance asset requests — dispatch record
 
-Status: prepared_not_sent  
+Status: sent_waiting_external
 Checked: 2026-09-28  
 Owner: DUFYND / TNCommerce
 
@@ -26,12 +26,39 @@ A candidate may enter the DUFYND 3D review queue only after the brand or rights 
 
 Final geometry and visual fidelity approval remains human-only in DUFYND.
 
+## Dispatch and reply evidence — checked 2026-09-30
+
+The user authorized all five requests, and Gmail Sent confirms dispatch on
+2026-09-29 at 23:27 CEST. Do not resend the prepared messages below.
+
+| Exact requested variant | Sent message ID | Sent at (UTC) | Reply state |
+| --- | --- | --- | --- |
+| Xerjoff Naxos Eau de Parfum 100 ml | `1a0ef106235a24b9` | 2026-09-29T21:27:03Z | Awaiting substantive reply |
+| YSL Libre Eau de Parfum 90 ml | `1a0ef1069d0f3753` | 2026-09-29T21:27:05Z | Automatic acknowledgement; case 12911593 |
+| JPG Le Male Elixir Parfum 125 ml | `1a0ef106f6e313c1` | 2026-09-29T21:27:06Z | Automatic acknowledgement |
+| Sospiro Vibrato Eau de Parfum 100 ml | `1a0ef107470ef598` | 2026-09-29T21:27:08Z | Awaiting substantive reply |
+| Widian London 50 ml, concentration awaiting confirmation | `1a0ef108a890817a` | 2026-09-29T21:27:13Z | Awaiting substantive reply |
+
+YSL/L’Oréal acknowledgement message `1a0ef10b7688f9b4` confirms receipt and
+asks the sender to wait for the team’s response. JPG acknowledgement
+`1a0ef10c4eddccb3` confirms receipt. Neither acknowledgement supplies a model
+or grants commercial interactive web usage rights.
+
+Widian’s prepared request uses the current internal Extrait variant. The
+concentration identity remains unresolved; a reply or asset must establish
+the exact variant before it can satisfy catalog or 3D readiness.
+
+The text below is the dispatched request archive. These statuses record
+external waiting, not asset approval. Public 3D release still requires the
+exact supplied file, usage-rights evidence and human visual fidelity approval.
+
+
 ---
 
 ## Request 1 — Xerjoff / Naxos Eau de Parfum 100 ml
 
 Internal product ID: SC-XERJOFF-NAXOS-100  
-Status: prepared_not_sent  
+Status: sent_waiting_external
 Primary route: info@xerjoff.com  
 Fallback route: customer@xerjoff.com  
 Official contact evidence:
@@ -70,7 +97,7 @@ DUFYND / TNCommerce
 ## Request 2 — Yves Saint Laurent / Libre Eau de Parfum 90 ml
 
 Internal product ID: SC-YSL-LIBRE-EDP-90  
-Status: prepared_not_sent  
+Status: sent_waiting_external
 Primary route: consumercare@de.oaccare.com  
 Official contact evidence:
 - https://www.yslbeauty.de/customer-service/kontakt/customer-service-contact-us.html
@@ -98,7 +125,7 @@ DUFYND / TNCommerce
 ## Request 3 — Jean Paul Gaultier / Le Male Elixir Parfum 125 ml
 
 Internal product ID: SC-JPG-LE-MALE-ELIXIR-PARFUM-125  
-Status: prepared_not_sent  
+Status: sent_waiting_external
 Primary route: fragrance@jpgaultier.fr  
 Official contact evidence:
 - https://www.jeanpaulgaultier.com/de/de/duefte/linie-le-male/le-male-elixir-parfum
@@ -127,7 +154,7 @@ DUFYND / TNCommerce
 ## Request 4 — Sospiro / Vibrato Eau de Parfum 100 ml
 
 Internal product ID: SC-SOSPIRO-VIBRATO-100  
-Status: prepared_not_sent  
+Status: sent_waiting_external
 Primary route: info@sospirointernational.com  
 Fallback route: official contact form https://sospirointernational.com/pages/contact  
 Official contact evidence:
@@ -157,7 +184,7 @@ DUFYND / TNCommerce
 ## Request 5 — Widian / London Extrait de Parfum 50 ml
 
 Internal product ID: SC-WIDIAN-LONDON-EXTRAIT-50  
-Status: prepared_not_sent  
+Status: sent_waiting_external
 Primary route: support@widian.com  
 Official contact evidence:
 - https://widian.com/en/faq
