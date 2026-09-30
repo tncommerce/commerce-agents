@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
+import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
 
 import ComparisonAnalytics from "@/components/ComparisonAnalytics";
 import { accordLabel } from "@/lib/accordLabels";
@@ -88,7 +89,7 @@ function ProductHeader({
       className="dufynd-comparison-product-card overflow-hidden rounded-2xl border border-(--line) bg-(--card)"
       data-dufynd-comparison-side={side}
     >
-      <a href={`/duft/${fragrance.slug}`}>
+      <AcquisitionInternalLink href={`/duft/${fragrance.slug}`}>
         {fragrance.model_3d_url ? (
           <FragranceModel3D
             modelUrl={fragrance.model_3d_url}
@@ -147,7 +148,7 @@ function ProductHeader({
             <span>{fragrance.volume_ml} ml</span>
           </div>
         </div>
-      </a>
+      </AcquisitionInternalLink>
     </div>
   );
 }
@@ -273,7 +274,7 @@ export default async function ComparisonPage({
       />
       <header className="dufynd-comparison-header border-b border-(--line) bg-(--card)">
         <div className="mx-auto flex max-w-[1080px] items-center justify-between gap-4 px-4 py-4 sm:px-6">
-          <a
+          <AcquisitionInternalLink
             href="/"
             className="flex items-center gap-2.5"
             aria-label="Zur DUFYND Startseite"
@@ -289,13 +290,13 @@ export default async function ComparisonPage({
             <span className="text-[17px] font-bold tracking-[-0.02em]">
               DUFYND
             </span>
-          </a>
-          <a
+          </AcquisitionInternalLink>
+          <AcquisitionInternalLink
             href="/vergleich"
             className="rounded-xl border border-(--line) px-3 py-2 text-[12px] font-semibold text-(--ink)"
           >
             Weitere Vergleiche
-          </a>
+          </AcquisitionInternalLink>
         </div>
       </header>
 
@@ -304,13 +305,13 @@ export default async function ComparisonPage({
           aria-label="Breadcrumb"
           className="mb-5 text-[12px] text-(--ink-soft)"
         >
-          <a href="/" className="hover:underline">
+          <AcquisitionInternalLink href="/" className="hover:underline">
             DUFYND
-          </a>
+          </AcquisitionInternalLink>
           <span className="px-2">/</span>
-          <a href="/vergleich" className="hover:underline">
+          <AcquisitionInternalLink href="/vergleich" className="hover:underline">
             Vergleiche
-          </a>
+          </AcquisitionInternalLink>
           <span className="px-2">/</span>
           <span className="text-(--ink)">
             {left.name} vs. {right.name}
@@ -468,12 +469,12 @@ export default async function ComparisonPage({
                   </span>
                 ))}
               </div>
-              <a
+              <AcquisitionInternalLink
                 href={`/duft/${fragrance.slug}`}
                 className="mt-4 inline-block text-[12px] font-semibold text-(--accent-ink) hover:underline"
               >
                 Vollständige Duftseite ansehen →
-              </a>
+              </AcquisitionInternalLink>
             </div>
           ))}
         </section>
@@ -515,18 +516,18 @@ export default async function ComparisonPage({
         </section>
 
         <footer className="mt-8 flex flex-wrap gap-x-4 gap-y-2 border-t border-(--line) py-6 text-[11px] text-(--ink-soft)">
-          <a href="/duft" className="hover:underline">
+          <AcquisitionInternalLink href="/duft" className="hover:underline">
             Duftkatalog
-          </a>
-          <a href="/transparenz" className="hover:underline">
+          </AcquisitionInternalLink>
+          <AcquisitionInternalLink href="/transparenz" className="hover:underline">
             Transparenz
-          </a>
-          <a href="/impressum" className="hover:underline">
+          </AcquisitionInternalLink>
+          <AcquisitionInternalLink href="/impressum" className="hover:underline">
             Impressum
-          </a>
-          <a href="/datenschutz" className="hover:underline">
+          </AcquisitionInternalLink>
+          <AcquisitionInternalLink href="/datenschutz" className="hover:underline">
             Datenschutz
-          </a>
+          </AcquisitionInternalLink>
         </footer>
       </div>
     </main>
