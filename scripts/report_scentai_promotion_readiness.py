@@ -138,15 +138,9 @@ def build_readiness_report(
     )
 
     ready_count = sum(1 for row in rows if row["ready"])
-    already_live_count = sum(
-        1 for row in rows if "already_live" in row["blockers"]
-    )
-    promotion_candidates = [
-        row for row in rows if "already_live" not in row["blockers"]
-    ]
-    promotion_blocked_count = sum(
-        1 for row in promotion_candidates if not row["ready"]
-    )
+    already_live_count = sum(1 for row in rows if "already_live" in row["blockers"])
+    promotion_candidates = [row for row in rows if "already_live" not in row["blockers"]]
+    promotion_blocked_count = sum(1 for row in promotion_candidates if not row["ready"])
     candidate_blocker_counts: Counter[str] = Counter()
     for row in promotion_candidates:
         candidate_blocker_counts.update(row["blockers"])
