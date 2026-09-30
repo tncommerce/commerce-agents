@@ -45,12 +45,8 @@ def base_program_rows(programs: dict) -> list[dict[str, Any]]:
                 "tracked_product_url_verified": bool(
                     item.get("tracked_product_url_verified", False)
                 ),
-                "redirect_dry_run_passed": bool(
-                    item.get("redirect_dry_run_passed", False)
-                ),
-                "verified_product_scope": list(
-                    item.get("verified_product_scope") or []
-                ),
+                "redirect_dry_run_passed": bool(item.get("redirect_dry_run_passed", False)),
+                "verified_product_scope": list(item.get("verified_product_scope") or []),
             }
         )
 
