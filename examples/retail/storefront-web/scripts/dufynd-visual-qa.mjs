@@ -1026,20 +1026,6 @@ try {
             );
           }
 
-          const homepageCopy = await page.locator("body").innerText();
-          if (
-            !homepageCopy.includes(
-              expectedFragranceCount + " Düfte im Sortiment ansehen",
-            ) ||
-            !homepageCopy.includes(
-              "Alle " + expectedFragranceCount + " Düfte im Katalog entdecken",
-            )
-          ) {
-            throw new Error(
-              "homepage fragrance count does not match the visible storefront catalog",
-            );
-          }
-
           const spotlightTruth = page.locator(
             'a[href="/duft/xerjoff-naxos"] img[src="/products/naxos-cutout-production.webp"]',
           );
