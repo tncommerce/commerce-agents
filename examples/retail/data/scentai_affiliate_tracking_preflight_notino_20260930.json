@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "intake_type": "affiliate_tracking_preflight",
+  "merchant_id": "notino",
+  "network": "CJ Affiliate",
+  "program": "Notino",
+  "observed_at": "2026-09-30",
+  "evidence": {
+    "source_type": "cj_link_generator",
+    "advertiser_id": 4541231,
+    "creative_id": 12260695,
+    "publisher_property": "DUFYND",
+    "destination_url": "https://www.notino.de/lattafa/eclaire-eau-de-parfum-unisex/",
+    "tracked_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Flattafa%2Feclaire-eau-de-parfum-unisex%2F",
+    "target_product": {
+      "product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
+      "merchant_product_id": "LTF00869",
+      "gtin": "6290362340638"
+    }
+  },
+  "verification": {
+    "cj_link_generation": "passed",
+    "destination_identity": "passed",
+    "redirect_dry_run": "pending",
+    "live_routing_allowed": false
+  },
+  "next_action": "Open the generated tracked URL once and confirm that it redirects to the intended Notino DE Lattafa Eclaire product page. Keep live routing disabled until that dry run and subsequent quality gates pass.",
+  "note": "No password, API key, session token or private credential is stored in this evidence record."
+}
