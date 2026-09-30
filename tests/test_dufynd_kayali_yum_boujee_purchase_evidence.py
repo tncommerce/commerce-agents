@@ -22,9 +22,7 @@ def test_kayali_yum_boujee_offer_matches_exact_100_ml_variant() -> None:
     assert offer["product_id"] == PRODUCT_ID
     assert offer["merchant_id"] == "sephora-de"
     assert offer["merchant_product_id"] == "733612"
-    assert offer["variant_label"] == (
-        "100 ml · Yum Boujee Marshmallow 81 Eau de Parfum Intense"
-    )
+    assert offer["variant_label"] == ("100 ml · Yum Boujee Marshmallow 81 Eau de Parfum Intense")
     assert offer["price"] == 129.95
     assert offer["currency"] == "EUR"
     assert offer["in_stock"] is True
@@ -47,10 +45,7 @@ def test_kayali_yum_boujee_evidence_does_not_grant_image_or_affiliate_rights() -
 
 
 def test_kayali_yum_boujee_current_offer_clears_purchase_gate_only() -> None:
-    staging = {
-        row["product_id"]: row
-        for row in load("scentai_catalog_staging.json")["products"]
-    }
+    staging = {row["product_id"]: row for row in load("scentai_catalog_staging.json")["products"]}
     offers = load("merchant_offers.json")["offers"]
     product = staging[PRODUCT_ID]
 
