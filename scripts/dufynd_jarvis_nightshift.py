@@ -911,6 +911,26 @@ def _sum_run_costs(runs: list[dict[str, Any]]) -> float:
     return round(total, 6)
 
 
+def _runs_through(
+    runs: list[dict[str, Any]],
+    ended_at: str,
+) -> tuple[list[dict[str, Any]], bool]:
+    end = _parse_iso_timestamp(ended_at)
+    if end is None:
+        return [], False
+
+    bounded: list[dict[str, Any]] = []
+    timestamps_complete = True
+    for run in runs:
+        created_at = _parse_iso_timestamp(run.get("created_at"))
+        if created_at is None:
+            timestamps_complete = False
+            continue
+        if created_at <= end:
+            bounded.append(run)
+    return bounded, timestamps_complete
+
+
 def _duration_text(start_iso: str, end_iso: str) -> str:
     start = datetime.fromisoformat(start_iso.replace("Z", "+00:00"))
     end = datetime.fromisoformat(end_iso.replace("Z", "+00:00"))
@@ -1033,7 +1053,10 @@ def build_morning_report(
         )
         supervisor_info = None
 
-    runs = bridge.load_agent_runs_since(started_at)
+    runs, cost_window_complete = _runs_through(
+        bridge.load_agent_runs_since(started_at),
+        ended_at,
+    )
     queue = bridge.load_autonomy_queue()
     health = bridge.load_health()
     pending_decisions = bridge.load_pending_decisions()
@@ -1050,7 +1073,9 @@ def build_morning_report(
         session_matches_supervisor and int(session.get("event_result") or 0) == 124
     )
     runtime_error = bool(session_matches_supervisor and session.get("runtime_error_type"))
-    cost_complete = not (result_timeout or supervisor_timeout or session_timeout or runtime_error)
+    cost_complete = cost_window_complete and not (
+        result_timeout or supervisor_timeout or session_timeout or runtime_error
+    )
 
     completed = sum(1 for r in results if r.get("final_status") == "done")
     in_progress = len(queue.get("in_progress") or [])
