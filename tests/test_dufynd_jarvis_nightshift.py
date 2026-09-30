@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import httpx
@@ -1086,3 +1087,129 @@ def test_morning_report_excludes_agent_runs_after_supervisor_end(monkeypatch) ->
 
     assert report["ai_cost_usd"] == 0.08
     assert report["ai_cost_complete"] is True
+
+def test_nightshift_does_not_start_events_without_full_timeout_window(monkeypatch) -> None:
+    bridge = FakeBridge()
+    bridge.inbox_pending = 1
+    called = False
+
+    monkeypatch.setattr(nightshift, "_require_autonomous_mode", lambda: None)
+    monkeypatch.setattr(nightshift, "_require_budget_window", lambda _bridge: ("budget", {}))
+
+    async def fake_loop(_bridge, *, max_events):
+        nonlocal called
+        called = True
+        return 0
+
+    monkeypatch.setattr(nightshift, "process_loop", fake_loop)
+    deadline = nightshift.utc_now() + timedelta(seconds=30)
+
+    session = asyncio.run(
+        nightshift.run_nightshift(
+            bridge,
+            max_events=2,
+            worker_timeout_seconds=60,
+            deadline_at=deadline,
+        )
+    )
+
+    assert called is False
+    assert session["stop_reason"] == "time_horizon_reached"
+    assert session["events_processed_estimate"] == 0
+    assert session["tasks_attempted"] == 0
+
+
+def test_nightshift_does_not_start_task_without_full_timeout_window(monkeypatch) -> None:
+    bridge = FakeBridge([task("repo_current_commerce", "commerce", 100)])
+    called = False
+
+    monkeypatch.setattr(nightshift, "_require_autonomous_mode", lambda: None)
+    monkeypatch.setattr(nightshift, "_require_budget_window", lambda _bridge: ("budget", {}))
+
+    async def fake_safe(_bridge, *, task_id=None):
+        nonlocal called
+        called = True
+        return 0
+
+    monkeypatch.setattr(nightshift, "process_safe_task", fake_safe)
+    deadline = nightshift.utc_now() + timedelta(seconds=30)
+
+    session = asyncio.run(
+        nightshift.run_nightshift(
+            bridge,
+            max_events=0,
+            worker_timeout_seconds=60,
+            deadline_at=deadline,
+        )
+    )
+
+    assert called is False
+    assert session["stop_reason"] == "time_horizon_reached"
+    assert session["tasks_attempted"] == 0
+    assert bridge.tasks["repo_current_commerce"]["status"] == "ready"
+
+
+def test_nightshift_defers_retry_when_timeout_window_no_longer_fits(monkeypatch) -> None:
+    bridge = FakeBridge([task("repo_current_commerce", "commerce", 100)])
+    start = datetime(2026, 9, 30, 5, 0, tzinfo=UTC)
+    now = {"value": start}
+    calls = 0
+
+    monkeypatch.setattr(nightshift, "_require_autonomous_mode", lambda: None)
+    monkeypatch.setattr(nightshift, "_require_budget_window", lambda _bridge: ("budget", {}))
+    monkeypatch.setattr(nightshift, "utc_now", lambda: now["value"])
+
+    async def flaky_safe(_bridge, *, task_id=None):
+        nonlocal calls
+        calls += 1
+        now["value"] = start + timedelta(seconds=100)
+        raise ValueError("first attempt failed")
+
+    monkeypatch.setattr(nightshift, "process_safe_task", flaky_safe)
+
+    session = asyncio.run(
+        nightshift.run_nightshift(
+            bridge,
+            max_events=0,
+            worker_timeout_seconds=60,
+            max_retries=1,
+            deadline_at=start + timedelta(seconds=120),
+        )
+    )
+
+    assert calls == 1
+    assert session["stop_reason"] == "time_horizon_reached"
+    assert session["current_task"] is None
+    assert bridge.tasks["repo_current_commerce"]["status"] == "ready"
+
+
+def test_nightshift_worker_cancellation_blocks_task_and_never_auto_retries(monkeypatch) -> None:
+    bridge = FakeBridge([task("repo_current_commerce", "commerce", 100)])
+
+    monkeypatch.setattr(nightshift, "_require_autonomous_mode", lambda: None)
+    monkeypatch.setattr(nightshift, "_require_budget_window", lambda _bridge: ("budget", {}))
+
+    async def cancelled_safe(_bridge, *, task_id=None):
+        raise asyncio.CancelledError
+
+    monkeypatch.setattr(nightshift, "process_safe_task", cancelled_safe)
+
+    with pytest.raises(asyncio.CancelledError):
+        asyncio.run(
+            nightshift.run_nightshift(
+                bridge,
+                max_events=0,
+                worker_timeout_seconds=60,
+                max_retries=1,
+                deadline_at=nightshift.utc_now() + timedelta(minutes=5),
+            )
+        )
+
+    assert bridge.tasks["repo_current_commerce"]["status"] == "blocked"
+    assert "no automatic retry" in bridge.tasks["repo_current_commerce"]["evidence"]
+    session = bridge.master[nightshift.SESSION_KEY]["value"]
+    assert session["status"] == "needs_attention"
+    assert session["stop_reason"] == "worker_cancelled"
+    assert session["runtime_error_type"] == "CancelledError"
+    assert session["current_task"]["attempt"] == 1
+
