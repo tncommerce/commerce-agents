@@ -855,3 +855,91 @@ def test_morning_report_marks_timeout_cost_as_incomplete(monkeypatch) -> None:
     assert report["ai_cost_source"] == "audited_agent_runs"
     assert report["ai_cost_complete"] is False
     assert "zusätzlicher Provider-Verbrauch unverbucht" in markdown
+
+
+def test_budget_snapshot_consistency_flags_stale_health_snapshot() -> None:
+    result = nightshift._budget_snapshot_consistency(
+        {
+            "runtime_state": {
+                "pilot": {
+                    "budget_id": "jarvis_activation_pilot_001",
+                    "model": "claude-sonnet-5",
+                    "cap_usd": 2.5,
+                    "max_runs": 10,
+                    "spent_usd": 0.2337,
+                    "remaining_usd": 2.2663,
+                    "remaining_runs": 8,
+                }
+            }
+        },
+        {
+            "budget_id": "jarvis_activation_pilot_001",
+            "model": "claude-sonnet-5",
+            "cap_usd": 2.5,
+            "max_runs": 20,
+            "spent_usd": 1.8161,
+            "remaining_usd": 0.6839,
+            "remaining_runs": 4,
+        },
+    )
+
+    assert result["available"] is True
+    assert result["consistent"] is False
+    assert result["authoritative_source"] == "database_budget_status"
+    assert {"max_runs", "spent_usd", "remaining_usd", "remaining_runs"} <= set(
+        result["mismatches"]
+    )
+
+
+def test_morning_report_marks_missing_session_end_incomplete(monkeypatch) -> None:
+    external = task("repo_current_commerce", "commerce", 100)
+    external["status"] = "waiting_external"
+    external["title"] = "Wait for licensed image source"
+    bridge = FakeBridge([external])
+    bridge.master[nightshift.SESSION_KEY] = {
+        "key": nightshift.SESSION_KEY,
+        "value": {
+            "session_id": "nightshift-interrupted-report",
+            "status": "running",
+            "started_at": "2026-09-29T20:00:00+00:00",
+            "stop_reason": None,
+            "source_fingerprint_sha256": "fingerprint-1",
+            "task_results": [],
+            "validation": {"status": "not_run", "pr_url": None},
+        },
+    }
+    bridge.load_health = lambda: {
+        "state": "idle",
+        "inbox": {"pending": 0, "processing": 0, "failed": 0},
+        "runtime_state": {
+            "pilot": {
+                "budget_id": "jarvis_activation_pilot_001",
+                "spent_usd": 0.1,
+                "remaining_usd": 2.4,
+            }
+        },
+    }
+    monkeypatch.setenv("DUFYND_JARVIS_BUDGET_ID", "jarvis_activation_pilot_001")
+
+    report, markdown = nightshift.build_morning_report(
+        bridge,
+        qa_status="failure",
+    )
+
+    assert report["session_status"] == "running"
+    assert report["session_end_recorded"] is False
+    assert report["ai_cost_complete"] is False
+    assert report["autonomy_boundary"]["state"] == "waiting_external"
+    assert report["autonomy_boundary"]["waiting_external"] == 1
+    assert report["recommended_next_priority"] == (
+        "Resolve blocker: Wait for licensed image source"
+    )
+    assert report["budget_snapshot_consistency"]["consistent"] is False
+    assert "Session-Ende persistiert: nein" in markdown
+    assert "Autonomy Boundary: waiting_external" in markdown
+
+
+def test_dedupe_labels_preserves_first_occurrence() -> None:
+    assert nightshift._dedupe_labels(
+        ["External dependency", "External dependency", "", "Owner review"]
+    ) == ["External dependency", "Owner review"]
