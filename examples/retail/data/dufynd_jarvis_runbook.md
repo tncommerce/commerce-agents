@@ -236,8 +236,13 @@ and a PR against `scentai-mvp`, but it must never auto-merge and must never targ
 
 Every pilot ends with a machine-readable JSON report and a concise Markdown Morning
 Report built from real persisted session state, queue state, health, pending
-decisions, budget status and audited agent runs. No recurring Nightshift schedule
-is enabled by v1.
+decisions, budget status and audited agent runs. The direct database budget status
+is authoritative; a stale embedded health snapshot is reported as drift instead of
+being presented as current spend. If the persisted session has no recorded end or a
+worker/event timed out, the report marks AI cost completeness as false. The report
+also records the current autonomy boundary so "no safe work", external waits and
+owner-review gates are distinguishable. No recurring Nightshift schedule is enabled
+by v1.
 
 ## Autonomy control plane
 
