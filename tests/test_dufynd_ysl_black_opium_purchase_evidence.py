@@ -17,7 +17,7 @@ def load(name: str) -> dict:
 
 def test_black_opium_offer_matches_exact_90_ml_edp_variant() -> None:
     offers = {row["offer_id"]: row for row in load("merchant_offers.json")["offers"]}
-    offer = offers["douglas-ysl-black-opium-edp-90"]
+    offer = offers["douglas-ysl-black-opium-edp-90-20260930"]
 
     assert offer["product_id"] == PRODUCT_ID
     assert offer["merchant_id"] == "douglas-de"
@@ -29,6 +29,10 @@ def test_black_opium_offer_matches_exact_90_ml_edp_variant() -> None:
     assert offer["in_stock"] is True
     assert offer["affiliate_url"] is None
     assert offer["last_updated_at"] == OBSERVED_AT
+
+    historical = offers["douglas-ysl-black-opium-edp-90"]
+    assert historical["price"] == 115.59
+    assert historical["last_updated_at"] == "2026-09-27T09:34:00Z"
 
 
 def test_black_opium_evidence_does_not_grant_image_or_affiliate_rights() -> None:
