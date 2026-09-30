@@ -185,7 +185,6 @@ def test_comparison_footer_links_preserve_acquisition_attribution() -> None:
     )
 
 
-
 def test_documented_comparison_links_preserve_acquisition_attribution() -> None:
     source = VISUAL_QA.read_text(encoding="utf-8")
     detail_source = Path(
