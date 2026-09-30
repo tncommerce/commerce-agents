@@ -82,8 +82,27 @@ export function merchantClickoutUrl(path: string): string {
   return `${API_URL}${path}`;
 }
 
-export function fetchMerchantPartners(): Promise<MerchantPartnersPayload | null> {
-  return api.get<MerchantPartnersPayload>("/merchant-partners");
+const MERCHANT_PARTNERS_TIMEOUT_MS = 8_000;
+
+export async function fetchMerchantPartners(): Promise<MerchantPartnersPayload | null> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(
+    () => controller.abort(),
+    MERCHANT_PARTNERS_TIMEOUT_MS,
+  );
+
+  try {
+    const response = await fetch(`${api.base}/merchant-partners`, {
+      headers: api.headers(),
+      signal: controller.signal,
+    });
+    if (!response.ok) return null;
+    return (await response.json()) as MerchantPartnersPayload;
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
 
 export function merchantPartnerClickoutUrl(
