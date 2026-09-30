@@ -1088,6 +1088,7 @@ def test_morning_report_excludes_agent_runs_after_supervisor_end(monkeypatch) ->
     assert report["ai_cost_usd"] == 0.08
     assert report["ai_cost_complete"] is True
 
+
 def test_nightshift_does_not_start_events_without_full_timeout_window(monkeypatch) -> None:
     bridge = FakeBridge()
     bridge.inbox_pending = 1
@@ -1212,4 +1213,3 @@ def test_nightshift_worker_cancellation_blocks_task_and_never_auto_retries(monke
     assert session["stop_reason"] == "worker_cancelled"
     assert session["runtime_error_type"] == "CancelledError"
     assert session["current_task"]["attempt"] == 1
-
