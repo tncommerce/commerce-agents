@@ -530,9 +530,7 @@ def test_smoke_accepts_hidden_notino_eclaire_while_publication_gate_is_closed() 
         transport=transport(eclaire_public=False),
     )
 
-    check = next(
-        check for check in report.checks if check.name == "merchant_offers_notino_eclaire"
-    )
+    check = next(check for check in report.checks if check.name == "merchant_offers_notino_eclaire")
     assert report.ok is True
     assert check.ok is True
     assert check.status_code == 404
