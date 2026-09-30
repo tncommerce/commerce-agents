@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import asyncio
+from datetime import UTC, datetime, timedelta
 
 import pytest
-from datetime import UTC, datetime, timedelta
 
 from scripts import dufynd_jarvis_supervisor as supervisor
 
