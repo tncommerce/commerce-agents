@@ -5,9 +5,10 @@ Status: pending human fidelity review; private, unregistered and inactive.
 | Exact variant | New internal candidate | Exact reference |
 | --- | --- | --- |
 | YSL Libre Eau de Parfum 90 ml | `../review-assets/catalog-candidates/ysl-libre-edp-90-v1.png` | [Douglas variant 289703](https://www.douglas.de/de/p/5000005003?variant=289703) |
+| JPG Le Male Elixir Parfum 125 ml | `../review-assets/catalog-candidates/jpg-le-male-elixir-parfum-125-v1.png` | [Manufacturer-selected 125 ml](https://www.jeanpaulgaultier.com/de/de/p/linie-le-male/le-male-elixir-parfum-000000000065189084) |
 | Mon Guerlain Eau de Parfum 100 ml | `../review-assets/catalog-candidates/mon-guerlain-edp-100-v1.png` | [Manufacturer-selected 100 ml](https://www.guerlain.com/de/de-de/p/mon-guerlain-eau-de-parfum-G013140.html) |
 
-Both assets are new DUFYND-generated recreations made with built-in Imagegen,
+All three assets are new DUFYND-generated recreations made with built-in Imagegen,
 using external imagery only as an exact-variant fidelity reference. External
 reference images are not committed or copied into the public storefront.
 Each candidate has genuine alpha transparency, a complete visible bottle,
@@ -30,7 +31,7 @@ The JSON companion records candidate paths, sizes, hashes and review focus.
 Allowed human outcomes: approve fidelity, needs revision or reject fidelity.
 A fidelity decision does not register image/source evidence or promote the
 product. Existing source registration, image approval and promotion workflow
-steps remain required. Both staging rows and their blockers are unchanged;
+steps remain required. All three staging rows and their blockers are unchanged;
 promotion-ready count remains zero until the authoritative gates pass.
 
 ## Generation specifications
@@ -48,3 +49,13 @@ pale pink liquid; compact quadrilobe glass stopper, visible inner spray fitting,
 small clear neck disk and textured gold collar; subtle GUERLAIN embossing on the
 base. Preserve all proportions. No paper label, added MON GUERLAIN text, volume
 text, scene, floor, cast shadow, props or watermark.
+
+
+JPG: new neutral studio recreation of the manufacturer-selected exact 125 ml
+reference on genuine alpha. Preserve the complete gold torso, dark amber sailor
+bands, fine gold ridges, narrow waist and rounded hip base. Preserve the exposed
+gold cylindrical atomizer with front spray aperture and hanging circular gold
+safety ring. No added cap, limbs, volume typography, spray, transformation,
+scenery, floor, cast shadow or watermark. Review these exact product details and
+edge quality before any approval. Existing mapped GTIN 8435415076944 is recorded
+for context only; canonical matching and promotion gates remain authoritative.

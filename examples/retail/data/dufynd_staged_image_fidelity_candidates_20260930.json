@@ -63,6 +63,34 @@
       "source_registration_status": "not_registered",
       "catalog_promotion": false,
       "public_activation": false
+    },
+    {
+      "product_id": "SC-JPG-LE-MALE-ELIXIR-PARFUM-125",
+      "concentration": "Parfum",
+      "volume_ml": 125,
+      "mapped_gtin": "8435415076944",
+      "candidate_asset": "examples/retail/review-assets/catalog-candidates/jpg-le-male-elixir-parfum-125-v1.png",
+      "status": "pending_human_fidelity",
+      "reference_url": "https://www.jeanpaulgaultier.com/de/de/p/linie-le-male/le-male-elixir-parfum-000000000065189084",
+      "reference_checked_at": "2026-09-30",
+      "reference_only": true,
+      "generator": "built_in_imagegen",
+      "provenance": "dufynd_generated_internal_candidate",
+      "sha256": "137d4f80592fa2de4472f7d26670156148cb7b646c70ceba29b7d933a5a77538",
+      "width": 1121,
+      "height": 1403,
+      "has_alpha": true,
+      "review_focus": [
+        "exact 125 ml torso silhouette",
+        "exposed cylindrical spray head and front nozzle",
+        "hanging gold safety ring",
+        "gold ridges and dark amber sailor bands",
+        "narrow waist and rounded hip base",
+        "no added head, limbs or cap"
+      ],
+      "source_registration_status": "not_registered",
+      "catalog_promotion": false,
+      "public_activation": false
     }
   ]
 }
