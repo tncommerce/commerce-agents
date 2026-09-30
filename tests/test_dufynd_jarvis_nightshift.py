@@ -18,6 +18,7 @@ class FakeBridge:
         self.runs = []
         self.status_writes = []
         self.inbox_pending = 0
+        self.agent_runs_override = None
 
     def load_master_status_entry(self, key: str):
         return self.master.get(key)
@@ -72,16 +73,20 @@ class FakeBridge:
         self.runs.append(kwargs)
 
     def load_agent_runs_since(self, since_iso: str):
+        if self.agent_runs_override is not None:
+            return list(self.agent_runs_override)
         return [
             {
                 "agent_name": "jarvis_safe_worker",
                 "run_type": "safe_task:repo_current_commerce",
+                "output_summary": "DUFYND_TASK_STATE: done",
                 "decisions": [{"cost_usd": 0.08}],
                 "created_at": since_iso,
             },
             {
                 "agent_name": "jarvis_branch_worker",
                 "run_type": "branch_task:repo_current_engineering",
+                "output_summary": "branch prepared",
                 "decisions": [{"cost_usd": 0.11}],
                 "created_at": since_iso,
             },
@@ -288,6 +293,42 @@ def test_recovery_marks_audited_safe_worker_done() -> None:
     assert session["task_results"][0]["recovered_after_interruption"] is True
 
 
+def test_recovery_never_marks_failed_safe_run_done() -> None:
+    bridge = FakeBridge([task("repo_current_commerce", "commerce", 100)])
+    bridge.tasks["repo_current_commerce"]["status"] = "in_progress"
+    bridge.agent_runs_override = [
+        {
+            "agent_name": "jarvis",
+            "run_type": "safe_task_failed:repo_current_commerce",
+            "output_summary": (
+                "Useful evidence collected.\n"
+                "DUFYND_TASK_STATE: waiting_external"
+            ),
+            "decisions": [{"cost_usd": 0.12}],
+            "created_at": "2026-09-29T21:55:00+00:00",
+        }
+    ]
+    session = {
+        "session_id": "nightshift-recover-failed-safe",
+        "started_at": "2026-09-29T21:50:00+00:00",
+        "current_task": {
+            "task_id": "repo_current_commerce",
+            "domain": "commerce",
+            "worker": "safe_worker",
+            "attempt": 1,
+            "started_at": "2026-09-29T21:55:00+00:00",
+        },
+        "task_results": [],
+    }
+
+    nightshift._recover_interrupted_work(bridge, session)
+
+    assert bridge.tasks["repo_current_commerce"]["status"] == "waiting_external"
+    assert session["task_results"][0]["final_status"] == "waiting_external"
+    assert session["task_results"][0]["result_code"] == 1
+    assert session["current_task"] is None
+
+
 def test_recovery_requeues_interrupted_branch_patch() -> None:
     bridge = FakeBridge([task("repo_current_engineering", "engineering", 100)])
     bridge.tasks["repo_current_engineering"]["status"] = "in_progress"
@@ -484,6 +525,61 @@ def test_nightshift_defers_tasks_while_event_backlog_remains(monkeypatch) -> Non
     assert session["tasks_attempted"] == 0
     assert session["inbox_before"]["pending"] == 3
     assert session["inbox_after"]["pending"] == 3
+
+
+def test_task_persistence_failure_does_not_abort_remaining_work(monkeypatch) -> None:
+    class PersistenceFailureBridge(FakeBridge):
+        def set_autonomy_task_status(self, *, task_id, status, evidence):
+            if task_id == "repo_current_commerce" and status == "blocked":
+                raise RuntimeError("simulated Supabase schema drift")
+            return super().set_autonomy_task_status(
+                task_id=task_id,
+                status=status,
+                evidence=evidence,
+            )
+
+    bridge = PersistenceFailureBridge(
+        [
+            task("repo_current_commerce", "commerce", 100),
+            task("repo_current_content", "content", 90),
+        ]
+    )
+
+    monkeypatch.setattr(nightshift, "_require_autonomous_mode", lambda: None)
+    monkeypatch.setattr(
+        nightshift,
+        "_require_budget_window",
+        lambda _bridge: ("budget", {"can_run": True}),
+    )
+
+    async def task_worker(_bridge, *, task_id=None):
+        if task_id == "repo_current_commerce":
+            raise ValueError("simulated task-local failure")
+        bridge.tasks["repo_current_content"]["status"] = "in_progress"
+        bridge.tasks["repo_current_content"]["evidence"] = (
+            "content prepared\nDUFYND_TASK_STATE: done"
+        )
+        return 0
+
+    monkeypatch.setattr(nightshift, "process_safe_task", task_worker)
+
+    session = asyncio.run(
+        nightshift.run_nightshift(
+            bridge,
+            max_tasks=8,
+            max_events=0,
+            worker_timeout_seconds=60,
+            max_retries=0,
+        )
+    )
+
+    assert [row["final_status"] for row in session["task_results"]] == [
+        "blocked",
+        "done",
+    ]
+    assert session["status"] == "completed"
+    assert session["persistence_errors"][0]["task_id"] == "repo_current_commerce"
+    assert bridge.tasks["repo_current_content"]["status"] == "done"
 
 
 def test_nightshift_does_not_mark_unclassified_safe_success_done(monkeypatch) -> None:
