@@ -48,10 +48,7 @@ def test_refreshed_evidence_does_not_grant_image_or_affiliate_rights() -> None:
 
 
 def test_refreshed_women_candidates_still_fail_closed_on_image_gate() -> None:
-    staging = {
-        row["product_id"]: row
-        for row in load("scentai_catalog_staging.json")["products"]
-    }
+    staging = {row["product_id"]: row for row in load("scentai_catalog_staging.json")["products"]}
 
     for product_id in (
         "SC-CAROLINA-HERRERA-GOOD-GIRL-EDP-80",
@@ -59,9 +56,6 @@ def test_refreshed_women_candidates_still_fail_closed_on_image_gate() -> None:
     ):
         product = staging[product_id]
         assert product["commerce"]["market_status"] == "verified_current_purchase_destination"
-        assert (
-            product["commerce"]["live_offer_status"]
-            == "current_purchase_destination_verified"
-        )
+        assert product["commerce"]["live_offer_status"] == "current_purchase_destination_verified"
         assert product["validation"]["catalog_ready"] is False
         assert product["validation"]["blockers"] == ["approved_product_image_pending"]
