@@ -1498,6 +1498,129 @@ try {
     await attributionClickoutContext.close();
   }
 
+
+  const acquisitionNavigationContext = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 1,
+    reducedMotion: "reduce",
+  });
+  try {
+    const acquisitionNavigationPage = await acquisitionNavigationContext.newPage();
+    await acquisitionNavigationPage.route(
+      "**/api/merchant-offers/**",
+      async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            product_id: "SC-QA-ATTRIBUTION-NAV",
+            best_offer_id: "qa-attribution-nav-offer",
+            offers: [
+              {
+                offer_id: "qa-attribution-nav-offer",
+                product_id: "SC-QA-ATTRIBUTION-NAV",
+                merchant_id: "qa-merchant",
+                merchant_name: "QA Merchant",
+                merchant_product_id: "qa-nav-sku",
+                price: 99,
+                currency: "EUR",
+                shipping_cost: 0,
+                shipping_label: "Versand inklusive",
+                total_price: 99,
+                in_stock: true,
+                variant_label: "QA Navigation",
+                clickout_path: "/api/clickout/qa-attribution-nav-offer",
+                affiliate_link: false,
+                last_updated_at: "2026-09-30T12:00:00Z",
+              },
+            ],
+            affiliate_disclosure: "QA fixture",
+          }),
+        });
+      },
+    );
+
+    const landingResponse = await acquisitionNavigationPage.goto(
+      baseUrl +
+        "/start?src=tiktok&cmp=qa_navigation_campaign&content=qa_navigation_content",
+      { waitUntil: "networkidle", timeout: 45_000 },
+    );
+    if (!landingResponse?.ok()) {
+      throw new Error(
+        "acquisition navigation attribution QA did not load /start: HTTP " +
+          String(landingResponse?.status() ?? "no response"),
+      );
+    }
+
+    await acquisitionNavigationPage
+      .getByRole("link", { name: "Katalog entdecken", exact: true })
+      .click();
+    await acquisitionNavigationPage.waitForURL(
+      (url) => url.pathname === "/duft",
+      { timeout: 20_000 },
+    );
+
+    for (let step = 0; step < 4; step += 1) {
+      const targetLink = acquisitionNavigationPage.locator(
+        'a[href="/duft/rabanne-1-million"]',
+      );
+      if ((await targetLink.count()) > 0) {
+        await targetLink.first().click();
+        break;
+      }
+      const loadMore = acquisitionNavigationPage.getByRole("button", {
+        name: /Weitere \d+ Düfte anzeigen/,
+      });
+      if ((await loadMore.count()) === 0) break;
+      await loadMore.click();
+      await acquisitionNavigationPage.waitForTimeout(75);
+    }
+
+    await acquisitionNavigationPage.waitForURL(
+      (url) => url.pathname === "/duft/rabanne-1-million",
+      { timeout: 20_000 },
+    );
+
+    const navOffers = acquisitionNavigationPage.locator("[data-merchant-offers]");
+    await navOffers.waitFor({ state: "visible", timeout: 20_000 });
+    const navClickout = navOffers.locator('a[href*="/api/clickout/"]').first();
+    await navClickout.waitFor({ state: "visible", timeout: 10_000 });
+
+    const navHref = await navClickout.getAttribute("href");
+    if (!navHref) {
+      throw new Error("internally navigated merchant offer is missing its clickout href");
+    }
+
+    const navClickoutUrl = new URL(navHref, baseUrl);
+    if (
+      navClickoutUrl.searchParams.get("src") !== "tiktok" ||
+      navClickoutUrl.searchParams.get("cmp") !== "qa_navigation_campaign" ||
+      navClickoutUrl.searchParams.get("content") !== "qa_navigation_content"
+    ) {
+      throw new Error(
+        "acquisition attribution was lost across internal storefront navigation",
+      );
+    }
+
+    report.checks.push({
+      label: "acquisition-navigation-clickout-attribution",
+      status: "passed",
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({
+      label: "acquisition-navigation-clickout-attribution",
+      message,
+    });
+    report.checks.push({
+      label: "acquisition-navigation-clickout-attribution",
+      status: "failed",
+      message,
+    });
+  } finally {
+    await acquisitionNavigationContext.close();
+  }
+
   const comparisonContext = await browser.newContext();
   try {
     const comparisonPage = await comparisonContext.newPage();
