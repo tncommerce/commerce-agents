@@ -34,9 +34,7 @@ def build_release_feed_readiness(
     contract = validate_provider_contract_rows(rows)
 
     import_issue_indexes = {
-        int(issue["row_index"])
-        for issue in preflight["issues"]
-        if issue["import_failures"]
+        int(issue["row_index"]) for issue in preflight["issues"] if issue["import_failures"]
     }
     import_issue_indexes.update(issue.row_index for issue in contract.invalid)
 
@@ -53,7 +51,9 @@ def build_release_feed_readiness(
         if product_id in release_set:
             release_relevant_import_issue_indexes.add(row_index)
 
-    release_feed_rows_import_ready = bool(contract.rows) and not release_relevant_import_issue_indexes
+    release_feed_rows_import_ready = (
+        bool(contract.rows) and not release_relevant_import_issue_indexes
+    )
 
     imported = import_feed_rows(contract.rows, mappings)
     images = extract_feed_image_candidates(rows, mappings)
