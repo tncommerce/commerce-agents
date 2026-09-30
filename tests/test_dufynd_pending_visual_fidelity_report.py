@@ -47,9 +47,7 @@ def test_generated_candidates_do_not_gain_rights_from_fidelity_queue() -> None:
     report = build_report()
     by_id = {item["product_id"]: item for item in report["items"]}
 
-    assert by_id["SC-YSL-LIBRE-EDP-90"]["provenance"] == (
-        "dufynd_generated_internal_candidate"
-    )
+    assert by_id["SC-YSL-LIBRE-EDP-90"]["provenance"] == "dufynd_generated_internal_candidate"
     assert by_id["SC-YSL-LIBRE-EDP-90"]["source_registration_status"] == "not_registered"
     assert by_id["SC-CREED-ABSOLU-AVENTUS-100"]["provenance"] == "dufynd_generated"
 
