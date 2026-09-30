@@ -815,6 +815,23 @@ async def _process_next_outcome(bridge: DufyndJarvisBridge) -> tuple[int, bool]:
         if text:
             print(text)
         return 0, True
+    except asyncio.CancelledError:
+        try:
+            await asyncio.wait_for(
+                asyncio.to_thread(
+                    bridge.complete_inbox_event,
+                    inbox_id=inbox_id,
+                    status="failed",
+                    error=(
+                        "Jarvis inbox processing cancelled after claim; "
+                        "provider cost may be unknown; no automatic retry."
+                    ),
+                ),
+                timeout=3.0,
+            )
+        except Exception:
+            pass
+        raise
     except RuntimeError as error:
         if not isinstance(error, JarvisTurnError):
             await asyncio.to_thread(
