@@ -1216,9 +1216,7 @@ def test_nightshift_worker_cancellation_blocks_task_and_never_auto_retries(monke
 
 
 def test_next_action_approval_count_only_includes_active_human_gates() -> None:
-    migration = Path(
-        "supabase/migrations/20260930120500_dufynd_next_action_approval_hygiene.sql"
-    )
+    migration = Path("supabase/migrations/20260930120500_dufynd_next_action_approval_hygiene.sql")
     sql = migration.read_text(encoding="utf-8")
 
     assert "status='approval_required'" in sql
@@ -1228,9 +1226,7 @@ def test_next_action_approval_count_only_includes_active_human_gates() -> None:
 
 
 def test_next_action_approval_hygiene_preserves_ready_work_precedence() -> None:
-    migration = Path(
-        "supabase/migrations/20260930120500_dufynd_next_action_approval_hygiene.sql"
-    )
+    migration = Path("supabase/migrations/20260930120500_dufynd_next_action_approval_hygiene.sql")
     sql = migration.read_text(encoding="utf-8")
 
     assert "when ready_count > 0 then 'work_available'" in sql
