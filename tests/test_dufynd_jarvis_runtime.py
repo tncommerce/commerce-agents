@@ -46,12 +46,14 @@ class BudgetBridge:
         approved_max_runs: int = 10,
         cap_usd: float = 2.5,
         approved_cap_usd: float = 2.5,
+        approved_per_run_cap_usd: float = 0.25,
     ):
         self.can_run = can_run
         self.max_runs = max_runs
         self.approved_max_runs = approved_max_runs
         self.cap_usd = cap_usd
         self.approved_cap_usd = approved_cap_usd
+        self.approved_per_run_cap_usd = approved_per_run_cap_usd
 
     def load_budget_status(self, budget_id: str):
         return {
@@ -78,6 +80,7 @@ class BudgetBridge:
                 "approved": True,
                 "cap_usd": self.approved_cap_usd,
                 "max_runs": self.approved_max_runs,
+                "per_run_cap_usd": self.approved_per_run_cap_usd,
             },
         }
 
@@ -447,6 +450,20 @@ def test_runtime_rejects_cap_expanded_beyond_human_approval(monkeypatch) -> None
                 can_run=True,
                 cap_usd=5.0,
                 approved_cap_usd=2.5,
+            )
+        )
+
+
+def test_runtime_rejects_configured_per_run_cap_above_human_approval(monkeypatch) -> None:
+    monkeypatch.setenv("DUFYND_JARVIS_BUDGET_ID", "jarvis_activation_pilot_001")
+    monkeypatch.setenv("DUFYND_JARVIS_MODEL", "claude-sonnet-5")
+    monkeypatch.setenv("DUFYND_JARVIS_MAX_BUDGET_USD", "0.50")
+
+    with pytest.raises(RuntimeError, match="configured per-run budget exceeds"):
+        _require_budget_window(
+            BudgetBridge(
+                can_run=True,
+                approved_per_run_cap_usd=0.25,
             )
         )
 
