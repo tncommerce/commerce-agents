@@ -148,9 +148,7 @@ def test_efficiency_report_groups_repeated_cost_centers() -> None:
         "max_run_usd": 0.12,
     }
     assert report["repeated_cost_centers"] == [affiliate]
-    signal = next(
-        item for item in report["signals"] if item["code"] == "repeated_cost_centers"
-    )
+    signal = next(item for item in report["signals"] if item["code"] == "repeated_cost_centers")
     assert signal["families"] == ["inbox:affiliate_partner_changed"]
 
 
