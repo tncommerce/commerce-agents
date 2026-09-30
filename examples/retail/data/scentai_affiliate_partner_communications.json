@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-09-30T18:10:00Z",
+  "updated_at": "2026-09-30T18:50:00Z",
   "publisher": "DUFYND",
   "operator": "TNCommerce",
   "communications": [
@@ -32,5 +32,36 @@
       "next_action": "On reply, verify whether the response explicitly grants publisher image/feed use, capture any restrictions, and update the image-rights evidence before changing catalog publication state."
     }
   ],
-  "note": "This log stores operational communication metadata only. No mailbox credentials, private tokens or message bodies containing secrets are stored."
+  "note": "This log stores operational communication metadata only. No mailbox credentials, private tokens or message bodies containing secrets are stored.",
+  "operational_state_notes": [
+    {
+      "merchant_id": "notino",
+      "observed_at": "2026-09-30",
+      "activation_state": "active",
+      "activation_scope": "verified_product_only",
+      "live_products": [
+        "SC-LATTAFA-ECLAIRE-EDP-100"
+      ],
+      "release_feed_queue_live": false,
+      "interpretation": "Product-scoped CJ deeplink activation is independent from Release 01 feed activation. A non-live feed queue is expected until broader exact-SKU/feed validation exists and must not disable the already approved Eclaire deeplink."
+    },
+    {
+      "merchant_id": "top-parfuemerie",
+      "observed_at": "2026-09-30",
+      "application_status": "approved",
+      "product_data_available": true,
+      "current_feed_rows_reported": 8031,
+      "integration_state": "approved_credentials_pending",
+      "next_action": "verify current Awin credential/feed access and run a read-only mapped-row validation before any activation request"
+    }
+  ],
+  "cj_account_administration": {
+    "status": "manual_ui_step_pending",
+    "requested_change": "Update CJ user/login email from tuanaicommerce@gmail.com to kontakt@dufynd.de",
+    "support_guidance_received": true,
+    "support_guidance_summary": "CJ Support confirmed that the superuser can change the email in CJAM under Settings/Users/Edit and then verify the new address.",
+    "latest_follow_up_received_at": "2026-09-30T09:04:30Z",
+    "manual_step_required": true,
+    "note": "No account setting was changed by automation. Direct Gmail reply/draft creation failed at connector level and should not be treated as sent."
+  }
 }
