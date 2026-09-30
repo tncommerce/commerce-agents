@@ -34,5 +34,6 @@
     "additional_notino_products_activated": false,
     "image_rights_granted": false,
     "commission_changes_fragrance_recommendations": false
-  }
+  },
+  "ci_validation_note": "Canonical derived state reconciled; final read-only CI requested after the self-cleaning state-sync commit."
 }
