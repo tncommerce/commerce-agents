@@ -108,6 +108,19 @@ def build_readiness_report(
             or 0
         )
 
+        source_validation_blockers = [
+            str(blocker).strip()
+            for blocker in product.get("validation", {}).get("blockers", [])
+            if str(blocker).strip()
+        ]
+        promotion_candidate = "already_live" not in blockers
+        image_only_candidate = (
+            promotion_candidate
+            and source_validation_blockers == ["approved_product_image_pending"]
+            and blockers == ["missing_approved_image"]
+            and bool(eligible)
+        )
+
         rows.append(
             {
                 "product_id": product_id,
@@ -120,7 +133,9 @@ def build_readiness_report(
                 "eligible_purchase_offers": len(eligible),
                 "eligible_affiliate_offers": len(affiliate_eligible),
                 "already_live": "already_live" in blockers,
-                "promotion_candidate": "already_live" not in blockers,
+                "promotion_candidate": promotion_candidate,
+                "image_only_candidate": image_only_candidate,
+                "source_validation_blockers": source_validation_blockers,
                 "ready": not blockers,
                 "blockers": blockers,
             }
@@ -142,7 +157,7 @@ def build_readiness_report(
     promotion_candidates = [row for row in rows if "already_live" not in row["blockers"]]
     promotion_blocked_count = sum(1 for row in promotion_candidates if not row["ready"])
     image_only_candidates = [
-        row for row in promotion_candidates if row["blockers"] == ["missing_approved_image"]
+        row for row in promotion_candidates if row["image_only_candidate"]
     ]
     candidate_blocker_counts: Counter[str] = Counter()
     for row in promotion_candidates:
