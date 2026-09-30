@@ -187,6 +187,90 @@ def test_audit_reports_clean_idle_control_plane() -> None:
     assert report["budget_snapshot"]["consistent"] is True
 
 
+def test_audit_treats_old_in_progress_tasks_as_stale_not_active_work() -> None:
+    bridge = FakeBridge(
+        queue={
+            "safe_to_execute": [],
+            "in_progress": [
+                {
+                    "task_id": "catalog_release_01_readiness",
+                    "status": "in_progress",
+                    "updated_at": "2026-09-22T10:43:45+00:00",
+                },
+                {
+                    "task_id": "creative_pattern_system",
+                    "status": "in_progress",
+                    "updated_at": "2026-09-20T19:03:08+00:00",
+                },
+            ],
+            "waiting_human_input": [
+                {
+                    "task_id": "repo_current_content",
+                    "status": "waiting_human_input",
+                    "updated_at": "2026-09-30T05:19:54+00:00",
+                }
+            ],
+            "waiting_external": [],
+            "approval_required": [
+                {
+                    "task_id": "old_completed_approval",
+                    "status": "done",
+                    "updated_at": "2026-09-21T13:52:58+00:00",
+                }
+            ],
+        }
+    )
+
+    report = audit_control_plane(
+        bridge,
+        now=NOW,
+        stale_task_hours=24,
+    )
+
+    boundary = report["autonomy_boundary"]
+    assert boundary["state"] == "owner_review"
+    assert boundary["in_progress"] == 2
+    assert boundary["in_progress_active"] == 0
+    assert boundary["in_progress_stale"] == 2
+    assert boundary["approval_required"] == 0
+    assert boundary["stale_in_progress_task_ids"] == [
+        "catalog_release_01_readiness",
+        "creative_pattern_system",
+    ]
+    issue = next(
+        item for item in report["issues"] if item["code"] == "stale_in_progress_autonomy_tasks"
+    )
+    assert issue["task_ids"] == boundary["stale_in_progress_task_ids"]
+
+
+def test_recent_in_progress_task_remains_active_boundary() -> None:
+    bridge = FakeBridge(
+        queue={
+            "safe_to_execute": [],
+            "in_progress": [
+                {
+                    "task_id": "fresh_task",
+                    "status": "in_progress",
+                    "updated_at": "2026-09-30T05:30:00+00:00",
+                }
+            ],
+            "waiting_human_input": [],
+            "waiting_external": [],
+            "approval_required": [],
+        }
+    )
+
+    report = audit_control_plane(
+        bridge,
+        now=NOW,
+        stale_task_hours=24,
+    )
+
+    assert report["autonomy_boundary"]["state"] == "in_progress"
+    assert report["autonomy_boundary"]["in_progress_active"] == 1
+    assert report["autonomy_boundary"]["in_progress_stale"] == 0
+
+
 def test_audit_surfaces_failed_inbox_events() -> None:
     bridge = FakeBridge(
         health={
