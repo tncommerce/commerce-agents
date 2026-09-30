@@ -23,6 +23,8 @@ class FakeBridge:
         self.tasks = list(tasks or [])
         self.master: dict[str, dict] = {}
         self.pending_events = 0
+        self.processing_events = 0
+        self.failed_events = 0
         self.budget = {
             "budget_id": "jarvis_activation_pilot_001",
             "can_run": True,
@@ -35,8 +37,8 @@ class FakeBridge:
         return {
             "inbox": {
                 "pending": self.pending_events,
-                "processing": 0,
-                "failed": 0,
+                "processing": self.processing_events,
+                "failed": self.failed_events,
             }
         }
 
@@ -239,7 +241,7 @@ def test_supervisor_waits_for_tech_lease_without_model_call(monkeypatch) -> None
     assert state["cycles_completed"] == 1
 
 
-def test_supervisor_stops_immediately_when_budget_is_exhausted_and_idle(
+def test_supervisor_keeps_no_cost_watch_alive_when_budget_is_exhausted_and_idle(
     monkeypatch,
 ) -> None:
     bridge = FakeBridge()
@@ -249,7 +251,7 @@ def test_supervisor_stops_immediately_when_budget_is_exhausted_and_idle(
     monkeypatch.setattr(supervisor, "_require_autonomous_mode", lambda: None)
 
     async def should_not_run(*_args, **_kwargs):
-        raise AssertionError("Nightshift must not run when there is no work and budget is closed")
+        raise AssertionError("Idle watch must not invoke model-backed Nightshift work")
 
     state = asyncio.run(
         supervisor.supervise_nightshift(
@@ -264,9 +266,65 @@ def test_supervisor_stops_immediately_when_budget_is_exhausted_and_idle(
         )
     )
 
-    assert state["stop_reason"] == "budget_gate"
+    assert state["stop_reason"] == "idle_limit_reached"
     assert state["cycles_completed"] == 0
-    assert clock.sleeps == []
+    assert clock.sleeps == [60, 60]
+
+
+def test_supervisor_blocks_on_processing_inbox_preflight(monkeypatch) -> None:
+    bridge = FakeBridge()
+    bridge.processing_events = 1
+    clock = FakeClock()
+
+    monkeypatch.setattr(supervisor, "_require_autonomous_mode", lambda: None)
+
+    async def should_not_run(*_args, **_kwargs):
+        raise AssertionError("Blocked inbox preflight must not invoke Nightshift")
+
+    state = asyncio.run(
+        supervisor.supervise_nightshift(
+            bridge,
+            max_minutes=60,
+            max_cycles=5,
+            idle_seconds=60,
+            max_idle_cycles=2,
+            sleep=clock.sleep,
+            now=clock.now,
+            run_once=should_not_run,
+        )
+    )
+
+    assert state["status"] == "needs_attention"
+    assert state["stop_reason"] == "inbox_preflight_blocked"
+    assert state["last_preflight"]["processing_events"] == 1
+
+
+def test_supervisor_blocks_on_failed_inbox_preflight(monkeypatch) -> None:
+    bridge = FakeBridge()
+    bridge.failed_events = 2
+    clock = FakeClock()
+
+    monkeypatch.setattr(supervisor, "_require_autonomous_mode", lambda: None)
+
+    async def should_not_run(*_args, **_kwargs):
+        raise AssertionError("Failed inbox preflight must not invoke Nightshift")
+
+    state = asyncio.run(
+        supervisor.supervise_nightshift(
+            bridge,
+            max_minutes=60,
+            max_cycles=5,
+            idle_seconds=60,
+            max_idle_cycles=2,
+            sleep=clock.sleep,
+            now=clock.now,
+            run_once=should_not_run,
+        )
+    )
+
+    assert state["status"] == "needs_attention"
+    assert state["stop_reason"] == "inbox_preflight_blocked"
+    assert state["last_preflight"]["failed_events"] == 2
 
 
 def test_supervisor_fails_closed_on_unclassified_in_progress_task(monkeypatch) -> None:

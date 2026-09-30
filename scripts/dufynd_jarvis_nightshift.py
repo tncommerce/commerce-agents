@@ -271,6 +271,18 @@ def _latest_task_run(
     return matches[-1] if matches else None
 
 
+def _audited_run_cost_known(run: dict[str, Any] | None) -> bool:
+    if not isinstance(run, dict):
+        return False
+    for decision in run.get("decisions") or []:
+        if not isinstance(decision, dict):
+            continue
+        cost = decision.get("cost_usd")
+        if isinstance(cost, (int, float)) and not isinstance(cost, bool):
+            return True
+    return False
+
+
 def _record_persistence_error(
     session: dict[str, Any],
     *,
@@ -396,9 +408,9 @@ def _recover_interrupted_work(
                 "persistence_recovered": persisted,
             }
         )
-    else:
-        # Branch-worker patches are ephemeral until deterministic QA uploads/pushes
-        # them. Unknown/failed safe work is re-queued rather than guessed complete.
+    elif latest_run and _audited_run_cost_known(latest_run):
+        # A retry is only safe when an auditable worker run with known provider
+        # cost exists. The prior result is not guessed complete.
         _best_effort_set_task_status(
             bridge,
             session,
@@ -408,9 +420,47 @@ def _recover_interrupted_work(
                 current.get("evidence"),
                 (
                     f"nightshift_session={session['session_id']}; "
-                    "resume reset interrupted work to ready for a bounded retry."
+                    "resume found an audited prior worker run with known cost; "
+                    "task reset to ready for a bounded retry."
                 ),
             ),
+        )
+        if worker == "branch_worker":
+            session["branch_worker_used"] = False
+    else:
+        persisted = _best_effort_set_task_status(
+            bridge,
+            session,
+            task_id=task_id,
+            status="blocked",
+            evidence=_append_evidence(
+                current.get("evidence"),
+                (
+                    f"nightshift_session={session['session_id']}; "
+                    "interrupted in_progress work has no safely attributable "
+                    "audited provider-cost record; blocked with no automatic retry."
+                ),
+            ),
+        )
+        session["status"] = "needs_attention"
+        session["stop_reason"] = "interrupted_task_unknown_cost"
+        session["runtime_error_type"] = (
+            "InterruptedTaskWithoutAuditedRun" if latest_run is None else "UnknownProviderCost"
+        )
+        session.setdefault("task_results", []).append(
+            {
+                "task_id": task_id,
+                "domain": str(candidate.get("domain") or "unknown"),
+                "title": str(current.get("title") or task_id),
+                "worker": worker or "unknown_worker",
+                "result_code": 1,
+                "final_status": "blocked" if persisted else "blocked",
+                "attempts": int(candidate.get("attempt") or 1),
+                "finished_at": iso_now(),
+                "recovered_after_interruption": True,
+                "persistence_recovered": persisted,
+                "provider_cost_unknown": True,
+            }
         )
         if worker == "branch_worker":
             session["branch_worker_used"] = False
@@ -539,13 +589,15 @@ async def _run_task_with_retry(
                     ),
                 ),
             )
-            return _task_result(
+            outcome = _task_result(
                 task,
                 worker=worker,
                 result_code=result_code,
                 final_status="blocked",
                 attempts=attempt,
             )
+            outcome["provider_cost_unknown"] = True
+            return outcome
         except RuntimeError as error:
             # Budget/runtime gates are session-level stop conditions, not task failures.
             if "budget" in str(error).lower() or "active" in str(error).lower():
@@ -584,6 +636,41 @@ async def _run_task_with_retry(
                     ),
                 ),
             )
+
+        if result_code != 0:
+            current_task = session.get("current_task") or {}
+            latest_run = _latest_task_run(
+                bridge,
+                task_id=task_id,
+                since_iso=str(
+                    current_task.get("started_at") or session.get("started_at") or iso_now()
+                ),
+            )
+            if not _audited_run_cost_known(latest_run):
+                current = bridge.load_autonomy_task(task_id) or {}
+                _best_effort_set_task_status(
+                    bridge,
+                    session,
+                    task_id=task_id,
+                    status="blocked",
+                    evidence=_append_evidence(
+                        current.get("evidence"),
+                        (
+                            f"nightshift_session={session['session_id']}; "
+                            f"worker_result_code={result_code}; attempt={attempt}; "
+                            "provider cost is not auditable; no automatic retry."
+                        ),
+                    ),
+                )
+                outcome = _task_result(
+                    task,
+                    worker=worker,
+                    result_code=result_code,
+                    final_status="blocked",
+                    attempts=attempt,
+                )
+                outcome["provider_cost_unknown"] = True
+                return outcome
 
         if result_code == 0:
             current = bridge.load_autonomy_task(task_id) or {}
@@ -725,6 +812,10 @@ async def run_nightshift(
         max_events=event_limit,
     )
     _recover_interrupted_work(bridge, session)
+    if str(session.get("status") or "") == "needs_attention":
+        session["ended_at"] = session.get("ended_at") or iso_now()
+        _persist_session(bridge, session)
+        return session
     _persist_session(bridge, session)
 
     async def run_body() -> dict[str, Any]:
@@ -755,7 +846,10 @@ async def run_nightshift(
             before_pending = int(session["inbox_before"].get("pending") or 0)
             after_pending = int(session["inbox_after"].get("pending") or 0)
             session["events_processed_estimate"] = max(0, before_pending - after_pending)
-            if after_pending > 0 and stop_reason == "no_safe_work":
+            event_result = int(session.get("event_result") or 0)
+            if event_result != 0 and stop_reason == "no_safe_work":
+                stop_reason = "event_failure"
+            elif after_pending > 0 and stop_reason == "no_safe_work":
                 try:
                     _require_budget_window(bridge)
                 except RuntimeError:
@@ -864,7 +958,12 @@ async def run_nightshift(
             if outcome["worker"] == "branch_worker" and outcome["result_code"] == 0:
                 session["branch_worker_used"] = True
             processed_this_run += 1
+            if bool(outcome.get("provider_cost_unknown")):
+                stop_reason = "unknown_provider_cost"
             _persist_session(bridge, session)
+
+            if stop_reason == "unknown_provider_cost":
+                break
 
             # An engineering patch is the final model task in this checkout. Hand it
             # immediately to deterministic validation so no later worker observes
@@ -877,8 +976,15 @@ async def run_nightshift(
             stop_reason = "task_limit_reached"
 
         session["stop_reason"] = stop_reason
+        needs_attention = stop_reason in {
+            "event_failure",
+            "unknown_provider_cost",
+            "interrupted_task_unknown_cost",
+        }
         session["status"] = (
-            "awaiting_validation" if bool(session.get("branch_worker_used")) else "completed"
+            "needs_attention"
+            if needs_attention
+            else ("awaiting_validation" if bool(session.get("branch_worker_used")) else "completed")
         )
         if session["status"] == "completed":
             session["ended_at"] = iso_now()
@@ -1160,8 +1266,25 @@ def build_morning_report(
         session_matches_supervisor and int(session.get("event_result") or 0) == 124
     )
     runtime_error = bool(session_matches_supervisor and session.get("runtime_error_type"))
+    supervisor_runtime_error = bool(
+        use_supervisor and supervisor and supervisor.get("runtime_error_type")
+    )
+    provider_cost_unknown = any(bool(result.get("provider_cost_unknown")) for result in results)
+    uncertain_stop_reason = stop_reason in {
+        "event_failure",
+        "unknown_provider_cost",
+        "interrupted_task_unknown_cost",
+        "worker_cancelled",
+        "supervisor_cancelled",
+    }
     cost_complete = cost_window_complete and not (
-        result_timeout or supervisor_timeout or session_timeout or runtime_error
+        result_timeout
+        or supervisor_timeout
+        or session_timeout
+        or runtime_error
+        or supervisor_runtime_error
+        or provider_cost_unknown
+        or uncertain_stop_reason
     )
 
     completed = sum(1 for r in results if r.get("final_status") == "done")

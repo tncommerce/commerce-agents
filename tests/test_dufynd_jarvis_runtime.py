@@ -47,6 +47,8 @@ class BudgetBridge:
         cap_usd: float = 2.5,
         approved_cap_usd: float = 2.5,
         approved_per_run_cap_usd: float = 0.25,
+        remaining_usd: float = 2.5,
+        remaining_runs: int = 10,
     ):
         self.can_run = can_run
         self.max_runs = max_runs
@@ -54,6 +56,8 @@ class BudgetBridge:
         self.cap_usd = cap_usd
         self.approved_cap_usd = approved_cap_usd
         self.approved_per_run_cap_usd = approved_per_run_cap_usd
+        self.remaining_usd = remaining_usd
+        self.remaining_runs = remaining_runs
 
     def load_budget_status(self, budget_id: str):
         return {
@@ -61,6 +65,8 @@ class BudgetBridge:
             "status": "active" if self.can_run else "planned",
             "model": "claude-sonnet-5",
             "can_run": self.can_run,
+            "remaining_usd": self.remaining_usd,
+            "remaining_runs": self.remaining_runs,
         }
 
     def load_budget_window(self, budget_id: str):
@@ -285,6 +291,7 @@ def test_branch_worker_denies_shell_and_allows_edit_tools(monkeypatch) -> None:
     monkeypatch.setenv("SUPABASE_SECRET_KEY", "secret")
     monkeypatch.setenv("DUFYND_JARVIS_MAX_TURNS", "8")
     monkeypatch.setenv("DUFYND_JARVIS_MAX_BUDGET_USD", "0.25")
+    monkeypatch.setenv("DUFYND_JARVIS_BUDGET_ID", "jarvis_activation_pilot_001")
 
     options = jarvis_runtime.make_branch_worker_options(BudgetBridge())
 
@@ -302,6 +309,7 @@ def test_safe_worker_options_reserve_budget_headroom(monkeypatch) -> None:
     monkeypatch.setenv("SUPABASE_SECRET_KEY", "secret")
     monkeypatch.setenv("DUFYND_JARVIS_MAX_TURNS", "8")
     monkeypatch.setenv("DUFYND_JARVIS_MAX_BUDGET_USD", "0.25")
+    monkeypatch.setenv("DUFYND_JARVIS_BUDGET_ID", "jarvis_activation_pilot_001")
 
     options = jarvis_runtime.make_safe_worker_options(BudgetBridge())
 
@@ -464,6 +472,92 @@ def test_runtime_rejects_configured_per_run_cap_above_human_approval(monkeypatch
                 approved_per_run_cap_usd=0.25,
             )
         )
+
+
+def test_runtime_clamps_effective_per_run_cap_to_remaining_budget(monkeypatch) -> None:
+    monkeypatch.setenv("DUFYND_JARVIS_BUDGET_ID", "jarvis_activation_pilot_001")
+    monkeypatch.setenv("DUFYND_JARVIS_MODEL", "claude-sonnet-5")
+    monkeypatch.setenv("DUFYND_JARVIS_MAX_BUDGET_USD", "0.25")
+
+    _budget_id, status = _require_budget_window(BudgetBridge(can_run=True, remaining_usd=0.08))
+
+    assert status["effective_per_run_cap_usd"] == 0.08
+    assert status["sdk_budget_usd"] == 0.064
+
+
+def test_runtime_refuses_turn_when_remaining_budget_is_below_safe_sdk_minimum(
+    monkeypatch,
+) -> None:
+    monkeypatch.setenv("DUFYND_JARVIS_BUDGET_ID", "jarvis_activation_pilot_001")
+    monkeypatch.setenv("DUFYND_JARVIS_MODEL", "claude-sonnet-5")
+    monkeypatch.setenv("DUFYND_JARVIS_MAX_BUDGET_USD", "0.25")
+
+    with pytest.raises(RuntimeError, match="budget gate"):
+        _require_budget_window(BudgetBridge(can_run=True, remaining_usd=0.01))
+
+
+def test_safe_worker_options_apply_headroom_after_remaining_budget_clamp(
+    monkeypatch,
+) -> None:
+    monkeypatch.setenv("DUFYND_JARVIS_ACTIVE", "1")
+    monkeypatch.setenv("DUFYND_JARVIS_MODEL", "claude-sonnet-5")
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+    monkeypatch.setenv("SUPABASE_URL", "https://project.supabase.co")
+    monkeypatch.setenv("SUPABASE_SECRET_KEY", "secret")
+    monkeypatch.setenv("DUFYND_JARVIS_MAX_TURNS", "8")
+    monkeypatch.setenv("DUFYND_JARVIS_MAX_BUDGET_USD", "0.25")
+    monkeypatch.setenv("DUFYND_JARVIS_BUDGET_ID", "jarvis_activation_pilot_001")
+
+    options = jarvis_runtime.make_safe_worker_options(
+        BudgetBridge(can_run=True, remaining_usd=0.08)
+    )
+
+    assert options.max_budget_usd == 0.064
+
+
+def test_unknown_cost_inbox_failure_is_not_retried(monkeypatch) -> None:
+    class UnknownCostBridge:
+        def __init__(self) -> None:
+            self.completed: list[dict] = []
+
+        def load_health(self):
+            return {"inbox": {"pending": 1}}
+
+        def claim_next_inbox_event(self):
+            return {
+                "inbox_id": 9,
+                "event_type": "creative_reference_added",
+                "source_id": "example_unknown_cost",
+                "payload": {},
+                "attempts": 1,
+            }
+
+        def complete_inbox_event(self, *, inbox_id, status="done", error=None):
+            self.completed.append({"inbox_id": inbox_id, "status": status, "error": error})
+            return self.completed[-1]
+
+    bridge = UnknownCostBridge()
+    monkeypatch.setattr(
+        jarvis_runtime,
+        "_require_budget_window",
+        lambda _bridge: ("jarvis_activation_pilot_001", {"can_run": True}),
+    )
+
+    async def failed_prompt(*_args, **_kwargs):
+        raise jarvis_runtime.JarvisTurnError(
+            "provider transport failed",
+            cost_usd=None,
+            budget_id="jarvis_activation_pilot_001",
+        )
+
+    monkeypatch.setattr(jarvis_runtime, "run_prompt", failed_prompt)
+
+    result, used_model = asyncio.run(jarvis_runtime._process_next_outcome(bridge))
+
+    assert result == 1
+    assert used_model is True
+    assert bridge.completed[0]["status"] == "failed"
+    assert "no automatic retry" in bridge.completed[0]["error"]
 
 
 def test_autonomous_event_limit_is_bounded() -> None:
