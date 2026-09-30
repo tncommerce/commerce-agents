@@ -1050,6 +1050,7 @@ def test_morning_report_marks_timeout_cost_as_incomplete(monkeypatch) -> None:
     assert report["ai_cost_complete"] is False
     assert "zusätzlicher Provider-Verbrauch unverbucht" in markdown
 
+
 def test_morning_report_excludes_agent_runs_after_supervisor_end(monkeypatch) -> None:
     bridge = FakeBridge()
     bridge.master[nightshift.SUPERVISOR_KEY] = {
