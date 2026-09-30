@@ -898,9 +898,7 @@ async def _process_next_outcome(bridge: DufyndJarvisBridge) -> tuple[int, bool]:
         retry = attempts < 3 and not provider_cost_unknown
         failure_note = str(error)
         if provider_cost_unknown:
-            failure_note = (
-                f"{failure_note} | provider cost unknown; no automatic retry."
-            )
+            failure_note = f"{failure_note} | provider cost unknown; no automatic retry."
         await asyncio.to_thread(
             bridge.complete_inbox_event,
             inbox_id=inbox_id,
@@ -918,9 +916,7 @@ async def _process_next_outcome(bridge: DufyndJarvisBridge) -> tuple[int, bool]:
         retry = attempts < 3 and not provider_cost_unknown
         failure_note = str(error)
         if provider_cost_unknown:
-            failure_note = (
-                f"{failure_note} | provider cost unknown; no automatic retry."
-            )
+            failure_note = f"{failure_note} | provider cost unknown; no automatic retry."
         await asyncio.to_thread(
             bridge.complete_inbox_event,
             inbox_id=inbox_id,
