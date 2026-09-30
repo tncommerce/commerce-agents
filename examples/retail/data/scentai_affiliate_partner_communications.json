@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-09-30T19:46:00Z",
+  "updated_at": "2026-09-30T20:05:54Z",
   "publisher": "DUFYND",
   "operator": "TNCommerce",
   "communications": [
@@ -30,6 +30,34 @@
         "manufacturer_image_reuse_assumed": false
       },
       "next_action": "On reply, verify whether the response explicitly grants publisher image/feed use, capture any restrictions, and update the image-rights evidence before changing catalog publication state."
+    },
+    {
+      "merchant_id": "top-parfuemerie",
+      "network": "Awin",
+      "partner_support": "top Parfümerie Online Marketing",
+      "recipient": "onlinemarketing.topparfuemerie@gmail.com",
+      "subject": "DUFYND × top Parfümerie – Produktfeed / aktueller Lagerbestand",
+      "sent_at": "2026-09-30T20:05:51Z",
+      "channel": "email",
+      "status": "awaiting_reply_after_out_of_office",
+      "scope": [
+        "whether an extended product feed exposes current stock or availability",
+        "which feed field or official source publishers should use to verify that a product is currently orderable",
+        "avoid treating mere feed-row presence as proof of availability"
+      ],
+      "response_state": {
+        "automatic_reply_received_at": "2026-09-30T20:05:54Z",
+        "contact_available_again_on": "2026-10-05",
+        "emails_forwarded_during_absence": false,
+        "urgent_fallback_contact": "info@topparfuemerie.de",
+        "urgent_fallback_used": false
+      },
+      "safety_state": {
+        "live_routing_allowed": false,
+        "current_blocker": "independent_current_availability_signal_missing",
+        "feed_row_presence_treated_as_stock": false
+      },
+      "next_action": "Wait for the normal contact to return on 2026-10-05 and follow up if no substantive reply is received. Keep top Parfümerie routing disabled until a reliable current availability source is verified."
     }
   ],
   "note": "This log stores operational communication metadata only. No mailbox credentials, private tokens or message bodies containing secrets are stored.",
