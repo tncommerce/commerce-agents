@@ -395,6 +395,7 @@ def test_supervisor_persists_terminal_state_when_session_raises(monkeypatch) -> 
     assert persisted["status"] == "needs_attention"
     assert persisted["stop_reason"] == "orchestration_error"
 
+
 def test_supervisor_default_idle_watch_reaches_five_hour_horizon(monkeypatch) -> None:
     bridge = FakeBridge()
     clock = FakeClock()
@@ -475,4 +476,3 @@ def test_supervisor_cancellation_persists_terminal_state(monkeypatch) -> None:
     assert state["stop_reason"] == "supervisor_cancelled"
     assert state["runtime_error_type"] == "CancelledError"
     assert state["ended_at"] is not None
-
