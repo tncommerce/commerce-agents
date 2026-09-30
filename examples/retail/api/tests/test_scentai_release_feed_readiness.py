@@ -88,5 +88,64 @@ def test_invalid_feed_blocks_release_activation() -> None:
 
     assert report["status"] == "blocked"
     assert report["feed_import_ready"] is False
+    assert report["release_feed_rows_import_ready"] is False
+    assert report["release_relevant_import_issue_count"] == 1
     assert "feed_not_import_ready" in report["blockers"]
     assert report["provider_contract_invalid_count"] == 1
+
+
+def test_unrelated_bad_rows_do_not_block_release_scoped_review() -> None:
+    rows = complete_rows()
+    rows.extend(
+        [
+            {
+                "offer_id": "unrelated-invalid-timestamp",
+                "merchant": "merchant-de",
+                "merchant_id": "merchant-de",
+                "merchant_name": "Merchant DE",
+                "merchant_product_id": "UNRELATED-1",
+                "price": 40.0,
+                "currency": "EUR",
+                "in_stock": False,
+                "product_url": "https://merchant.example/unrelated/1",
+                "affiliate_url": "https://network.example/unrelated/1",
+                "last_updated_at": "not-a-timestamp",
+                "data_source": "approved-affiliate-feed",
+                "network": "Awin",
+                "image_url": "https://cdn.example.com/unrelated-1.jpg",
+            },
+            {
+                "offer_id": "unrelated-zero-price",
+                "merchant": "merchant-de",
+                "merchant_id": "merchant-de",
+                "merchant_name": "Merchant DE",
+                "merchant_product_id": "UNRELATED-2",
+                "price": 0,
+                "currency": "EUR",
+                "in_stock": False,
+                "product_url": "https://merchant.example/unrelated/2",
+                "affiliate_url": "https://network.example/unrelated/2",
+                "last_updated_at": "2026-09-30T08:00:00Z",
+                "data_source": "approved-affiliate-feed",
+                "network": "Awin",
+                "image_url": "https://cdn.example.com/unrelated-2.jpg",
+            },
+        ]
+    )
+
+    report = build_release_feed_readiness(
+        PRODUCT_IDS,
+        rows,
+        mappings(),
+    )
+
+    assert report["status"] == "ready_for_manual_asset_review"
+    assert report["feed_import_ready"] is False
+    assert report["release_feed_rows_import_ready"] is True
+    assert report["release_relevant_import_issue_count"] == 0
+    assert report["non_release_import_issue_count"] == 2
+    assert report["provider_contract_invalid_count"] == 1
+    assert report["release_mapped_product_count"] == 5
+    assert report["release_trackable_offer_product_count"] == 5
+    assert report["release_feed_image_product_count"] == 5
+    assert report["blockers"] == []
