@@ -35,15 +35,22 @@ def test_euphoria_candidate_uses_guarded_cj_builder() -> None:
     )
 
 
-def test_unmapped_notino_offers_remain_blocked() -> None:
+def test_naxos_and_bottled_absolu_mapping_evidence_is_verified_but_not_live() -> None:
     payload = _payload()
-    blocked = {
-        row["product_id"]: row for row in payload["candidates"] if row["readiness"] == "blocked"
-    }
+    rows = {row["product_id"]: row for row in payload["candidates"]}
 
-    assert blocked["SC-XERJOFF-NAXOS-100"]["blocker"] == (
-        "notino_exact_mapping_missing_from_merchant_product_mappings"
-    )
-    assert blocked["SC-HUGO-BOSS-BOTTLED-ABSOLU-100"]["blocker"] == (
-        "notino_exact_mapping_missing_from_merchant_product_mappings"
-    )
+    for product_id in (
+        "SC-XERJOFF-NAXOS-100",
+        "SC-HUGO-BOSS-BOTTLED-ABSOLU-100",
+    ):
+        row = rows[product_id]
+        assert row["mapping_status"] == "verified_current_variant_evidence"
+        assert row["readiness"] == "verified_mapping_evidence_staged"
+        assert row["publish_allowed"] is False
+        assert row["source_of_truth_mapping_state"] == "pending_collision_free_handoff"
+        assert row["offer_in_stock_observation"] is True
+        assert row["candidate_affiliate_url"] == build_cj_deep_link(
+            destination_url=row["product_url"]
+        )
+
+    assert "Bottled Absolute" in rows["SC-HUGO-BOSS-BOTTLED-ABSOLU-100"]["variant_disambiguation"]
