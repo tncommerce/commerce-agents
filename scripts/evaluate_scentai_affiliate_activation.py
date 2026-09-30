@@ -31,9 +31,7 @@ def base_program_rows(programs: dict) -> list[dict[str, Any]]:
                 "merchant_id": item.get("merchant_id"),
                 "application_status": item.get("status"),
                 "tracking_strategy": item.get("tracking_strategy"),
-                "live_activation_approved": bool(
-                    item.get("live_activation_approved", False)
-                ),
+                "live_activation_approved": bool(item.get("live_activation_approved", False)),
                 "live_activation_approved_at": item.get("live_activation_approved_at"),
                 "live_activation_scope": item.get("live_activation_scope"),
                 "live_activation_products": list(item.get("live_activation_products") or []),
@@ -53,9 +51,7 @@ def base_program_rows(programs: dict) -> list[dict[str, Any]]:
                 ),
                 "redirect_dry_run_passed": bool(item.get("redirect_dry_run_passed", False)),
                 "verified_product_scope": list(item.get("verified_product_scope") or []),
-                "live_activation_approved": bool(
-                    item.get("live_activation_approved", False)
-                ),
+                "live_activation_approved": bool(item.get("live_activation_approved", False)),
                 "live_activation_approved_at": item.get("live_activation_approved_at"),
                 "live_activation_scope": item.get("live_activation_scope"),
                 "live_activation_products": list(item.get("live_activation_products") or []),
@@ -139,8 +135,7 @@ def build_state_report(
         tracked_product_live = (
             tracked_product_ready_for_approval
             and bool(row.get("live_activation_approved"))
-            and str(row.get("live_activation_scope") or "").strip()
-            == "verified_product_only"
+            and str(row.get("live_activation_scope") or "").strip() == "verified_product_only"
             and set(row.get("live_activation_products") or [])
             <= set(row.get("verified_product_scope") or [])
             and bool(row.get("live_activation_products"))
