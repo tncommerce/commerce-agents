@@ -13,10 +13,12 @@ from scripts.dufynd_jarvis_runtime import (
     _bounded_autonomous_max_events,
     _bounded_supervisor_max_events,
     _deterministic_event_summary,
+    _extract_safe_task_state,
     _require_active_runtime,
     _require_autonomous_session,
     _require_budget_window,
     _require_runtime_id,
+    _sdk_budget_limit,
     allowed_tool_names,
     event_prompt,
     process_autonomous_cycle,
@@ -100,6 +102,7 @@ def test_runtime_has_only_internal_safe_tool_surface() -> None:
     names = allowed_tool_names()
 
     assert "mcp__dufynd_jarvis__load_creative_context" in names
+    assert "mcp__dufynd_jarvis__load_creative_pattern_index" in names
     assert "mcp__dufynd_jarvis__record_lesson" in names
     assert "mcp__dufynd_jarvis__record_content_idea" in names
     assert "mcp__dufynd_jarvis__link_idea_pattern" in names
@@ -226,6 +229,21 @@ def test_safe_worker_prompt_names_high_impact_boundaries() -> None:
     assert "waiting_external" in prompt
 
 
+def test_safe_worker_state_parser_accepts_machine_readable_outcome() -> None:
+    assert (
+        _extract_safe_task_state(
+            "Evidence complete.\nDUFYND_TASK_STATE: waiting_external"
+        )
+        == "waiting_external"
+    )
+    assert _extract_safe_task_state("DUFYND_TASK_STATE: invalid") is None
+
+
+def test_sdk_budget_limit_keeps_headroom_below_approved_cap() -> None:
+    assert _sdk_budget_limit(0.25) == 0.2
+    assert 0 < _sdk_budget_limit(0.05) < 0.05
+
+
 def test_branch_worker_ignores_non_engineering_tasks(capsys) -> None:
     result = asyncio.run(
         process_branch_task(
@@ -273,6 +291,20 @@ def test_branch_worker_denies_shell_and_allows_edit_tools(monkeypatch) -> None:
     assert "Edit" in options.allowed_tools
     assert "Bash" in options.disallowed_tools
     assert "WebSearch" in options.disallowed_tools
+
+
+def test_safe_worker_options_reserve_budget_headroom(monkeypatch) -> None:
+    monkeypatch.setenv("DUFYND_JARVIS_ACTIVE", "1")
+    monkeypatch.setenv("DUFYND_JARVIS_MODEL", "claude-sonnet-5")
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+    monkeypatch.setenv("SUPABASE_URL", "https://project.supabase.co")
+    monkeypatch.setenv("SUPABASE_SECRET_KEY", "secret")
+    monkeypatch.setenv("DUFYND_JARVIS_MAX_TURNS", "8")
+    monkeypatch.setenv("DUFYND_JARVIS_MAX_BUDGET_USD", "0.25")
+
+    options = jarvis_runtime.make_safe_worker_options(BudgetBridge())
+
+    assert options.max_budget_usd == 0.2
 
 
 def test_runtime_readiness_reports_autonomous_switch(monkeypatch) -> None:
