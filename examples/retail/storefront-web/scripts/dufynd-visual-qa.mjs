@@ -1621,6 +1621,153 @@ try {
     await acquisitionNavigationContext.close();
   }
 
+
+  const clickoutSessionContext = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 1,
+    reducedMotion: "reduce",
+  });
+  try {
+    const clickoutSessionPage = await clickoutSessionContext.newPage();
+    const expectedSessionId = "qa-clickout-session-1234567890";
+
+    await clickoutSessionPage.route("**/api/session", async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 1200));
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          session_id: expectedSessionId,
+        }),
+      });
+    });
+
+    await clickoutSessionPage.route(
+      "**/api/analytics/events",
+      async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({ ok: true }),
+        });
+      },
+    );
+
+    await clickoutSessionPage.route(
+      "**/api/merchant-offers/**",
+      async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            product_id: "SC-QA-SESSION-CORRELATION",
+            best_offer_id: "qa-session-correlation-offer",
+            offers: [
+              {
+                offer_id: "qa-session-correlation-offer",
+                product_id: "SC-QA-SESSION-CORRELATION",
+                merchant_id: "qa-merchant",
+                merchant_name: "QA Merchant",
+                merchant_product_id: "qa-session-sku",
+                price: 99,
+                currency: "EUR",
+                shipping_cost: 0,
+                shipping_label: "Versand inklusive",
+                total_price: 99,
+                in_stock: true,
+                variant_label: "QA Session",
+                clickout_path: "/api/clickout/qa-session-correlation-offer",
+                affiliate_link: false,
+                last_updated_at: "2026-09-30T12:00:00Z",
+              },
+            ],
+            affiliate_disclosure: "QA fixture",
+          }),
+        });
+      },
+    );
+
+    const response = await clickoutSessionPage.goto(
+      baseUrl +
+        "/duft/rabanne-1-million?src=tiktok&cmp=qa_sid_campaign&content=qa_sid_content",
+      { waitUntil: "domcontentloaded", timeout: 45_000 },
+    );
+    if (!response?.ok()) {
+      throw new Error(
+        "merchant clickout session-correlation QA did not load: HTTP " +
+          String(response?.status() ?? "no response"),
+      );
+    }
+
+    const offers = clickoutSessionPage.locator("[data-merchant-offers]");
+    await offers.waitFor({ state: "visible", timeout: 20_000 });
+
+    const preparing = offers.locator("[data-clickout-preparing]").first();
+    await preparing.waitFor({ state: "visible", timeout: 5_000 });
+    if (
+      (await offers.locator('a[href*="/api/clickout/"]').count()) !== 0
+    ) {
+      throw new Error(
+        "merchant clickout became actionable before analytics session correlation completed",
+      );
+    }
+
+    const clickout = offers.locator('a[href*="/api/clickout/"]').first();
+    await clickout.waitFor({ state: "visible", timeout: 10_000 });
+
+    await clickoutSessionPage.waitForFunction(
+      ({ selector, sessionId }) => {
+        const link = document.querySelector(selector);
+        if (!(link instanceof HTMLAnchorElement)) return false;
+        const url = new URL(link.href);
+        return url.searchParams.get("sid") === sessionId;
+      },
+      {
+        selector:
+          '[data-merchant-offers] a[href*="/api/clickout/"]',
+        sessionId: expectedSessionId,
+      },
+      { timeout: 10_000 },
+    );
+
+    const href = await clickout.getAttribute("href");
+    if (!href) {
+      throw new Error(
+        "merchant clickout session-correlation QA is missing its href",
+      );
+    }
+
+    const clickoutUrl = new URL(href, baseUrl);
+    if (
+      clickoutUrl.searchParams.get("src") !== "tiktok" ||
+      clickoutUrl.searchParams.get("cmp") !== "qa_sid_campaign" ||
+      clickoutUrl.searchParams.get("content") !== "qa_sid_content" ||
+      clickoutUrl.searchParams.get("sid") !== expectedSessionId
+    ) {
+      throw new Error(
+        "merchant clickout did not correlate acquisition and analytics session context",
+      );
+    }
+
+    report.checks.push({
+      label: "merchant-clickout-session-correlation",
+      status: "passed",
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({
+      label: "merchant-clickout-session-correlation",
+      message,
+    });
+    report.checks.push({
+      label: "merchant-clickout-session-correlation",
+      status: "failed",
+      message,
+    });
+  } finally {
+    await clickoutSessionContext.close();
+  }
+
   const comparisonContext = await browser.newContext();
   try {
     const comparisonPage = await comparisonContext.newPage();

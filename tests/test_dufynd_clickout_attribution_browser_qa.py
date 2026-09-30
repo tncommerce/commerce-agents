@@ -3,6 +3,8 @@
 from pathlib import Path
 
 VISUAL_QA = Path("examples/retail/storefront-web/scripts/dufynd-visual-qa.mjs")
+FRAGRANCE_OFFERS = Path("examples/retail/storefront-web/components/FragranceOffers.tsx")
+ANALYTICS = Path("examples/retail/storefront-web/lib/analytics.ts")
 
 
 def test_merchant_clickout_attribution_is_browser_covered() -> None:
@@ -27,3 +29,25 @@ def test_acquisition_attribution_survives_internal_navigation() -> None:
     assert 'navClickoutUrl.searchParams.get("src") !== "tiktok"' in source
     assert 'navClickoutUrl.searchParams.get("cmp") !== "qa_navigation_campaign"' in source
     assert 'navClickoutUrl.searchParams.get("content") !== "qa_navigation_content"' in source
+
+
+def test_clickout_waits_for_first_party_analytics_session() -> None:
+    source = VISUAL_QA.read_text(encoding="utf-8")
+
+    assert 'label: "merchant-clickout-session-correlation"' in source
+    assert '"**/api/session"' in source
+    assert "qa-clickout-session-1234567890" in source
+    assert "setTimeout(resolve, 1200)" in source
+    assert 'clickoutUrl.searchParams.get("sid") !== expectedSessionId' in source
+    assert "merchant clickout did not correlate acquisition and analytics session context" in source
+    assert (
+        "merchant clickout became actionable before analytics session correlation completed"
+        in source
+    )
+
+    offers_source = FRAGRANCE_OFFERS.read_text(encoding="utf-8")
+    analytics_source = ANALYTICS.read_text(encoding="utf-8")
+    assert "ensureAnalyticsSession" in offers_source
+    assert "data-clickout-preparing" in offers_source
+    assert "clickoutSessionReady ? (" in offers_source
+    assert "export async function ensureAnalyticsSession" in analytics_source
