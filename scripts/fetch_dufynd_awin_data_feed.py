@@ -90,7 +90,7 @@ def sanitized_feed_metadata(row: dict[str, str]) -> dict[str, str | bool]:
         "feed_id": _row_value(row, "Feed ID"),
         "feed_name": _row_value(row, "Feed Name"),
         "membership_status": membership,
-        "joined": membership.casefold() == "joined",
+        "joined": membership.casefold() in {"joined", "active"},
         "language": _row_value(row, "Language"),
         "primary_region": _row_value(row, "Primary Region"),
         "last_imported": _row_value(row, "Last Imported"),
