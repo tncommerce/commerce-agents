@@ -9,6 +9,8 @@ import type { AgentApi } from "./api";
 export interface Session {
   /** Null while login is in flight or after it failed. */
   sessionId: string | null;
+  /** True once the current session initialization attempt has settled. */
+  settled?: boolean;
   /** The signed-in operator's name, on merchant sessions. */
   operator?: string;
   /** The signed-in shopper, on storefront sessions. */
@@ -26,7 +28,10 @@ export function useSession(
   options: { profile?: string } = {},
 ): Session {
   const { profile } = options;
-  const [session, setSession] = useState<Session>({ sessionId: null });
+  const [session, setSession] = useState<Session>({
+    sessionId: null,
+    settled: false,
+  });
 
   useEffect(() => {
     const generation = (generations.get(api) ?? 0) + 1;
@@ -36,7 +41,12 @@ export function useSession(
       const started = await api.startSession(profile ? { user_id: profile } : undefined);
       if (!current()) return;
       api.session = started?.sessionId ?? null;
-      setSession({ sessionId: started?.sessionId ?? null, operator: started?.operator, shopper: started?.shopper });
+      setSession({
+        sessionId: started?.sessionId ?? null,
+        settled: true,
+        operator: started?.operator,
+        shopper: started?.shopper,
+      });
     })();
     return () => {
       generations.set(api, (generations.get(api) ?? 0) + 1);

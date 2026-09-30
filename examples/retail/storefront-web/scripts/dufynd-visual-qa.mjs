@@ -1882,6 +1882,119 @@ try {
     await partnerSessionContext.close();
   }
 
+  const partnerSessionFailureContext = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 1,
+    reducedMotion: "reduce",
+  });
+  try {
+    const partnerSessionFailurePage =
+      await partnerSessionFailureContext.newPage();
+
+    await partnerSessionFailurePage.route("**/api/session", async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 1200));
+      await route.fulfill({
+        status: 503,
+        contentType: "application/json",
+        body: JSON.stringify({ detail: "QA session unavailable" }),
+      });
+    });
+
+    await partnerSessionFailurePage.route(
+      "**/api/merchant-partners",
+      async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            partners: [
+              {
+                merchant_id: "qa-partner-fallback",
+                merchant_name: "QA Partner Fallback",
+                description: "Session failure fallback fixture",
+                clickout_path:
+                  "/api/merchant-partners/qa-partner-fallback/clickout",
+              },
+            ],
+            affiliate_disclosure: "QA fixture",
+          }),
+        });
+      },
+    );
+
+    const response = await partnerSessionFailurePage.goto(
+      baseUrl +
+        "/?src=youtube&cmp=qa_partner_failure&content=qa_partner_failure_content",
+      { waitUntil: "domcontentloaded", timeout: 45_000 },
+    );
+    if (!response?.ok()) {
+      throw new Error(
+        "merchant discovery session-failure QA did not load: HTTP " +
+          String(response?.status() ?? "no response"),
+      );
+    }
+
+    const discovery = partnerSessionFailurePage.getByRole("region", {
+      name: "Partnerhändler entdecken",
+    });
+    await discovery.waitFor({ state: "visible", timeout: 20_000 });
+
+    const preparing = discovery.locator(
+      "[data-partner-clickout-preparing]",
+    );
+    await preparing.waitFor({ state: "visible", timeout: 5_000 });
+    if (
+      (await discovery.locator('a[href*="/api/merchant-partners/"]').count()) !== 0
+    ) {
+      throw new Error(
+        "merchant discovery fail-open link became actionable before session initialization settled",
+      );
+    }
+
+    const clickout = discovery
+      .locator('a[href*="/api/merchant-partners/"]')
+      .first();
+    await clickout.waitFor({ state: "visible", timeout: 10_000 });
+
+    const href = await clickout.getAttribute("href");
+    if (!href) {
+      throw new Error(
+        "merchant discovery session-failure QA is missing its href",
+      );
+    }
+
+    const clickoutUrl = new URL(href, baseUrl);
+    if (
+      clickoutUrl.searchParams.get("src") !== "youtube" ||
+      clickoutUrl.searchParams.get("cmp") !== "qa_partner_failure" ||
+      clickoutUrl.searchParams.get("content") !==
+        "qa_partner_failure_content" ||
+      clickoutUrl.searchParams.has("sid")
+    ) {
+      throw new Error(
+        "merchant discovery session-failure fallback lost attribution or emitted an invalid sid",
+      );
+    }
+
+    report.checks.push({
+      label: "merchant-discovery-session-failure-fallback",
+      status: "passed",
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({
+      label: "merchant-discovery-session-failure-fallback",
+      message,
+    });
+    report.checks.push({
+      label: "merchant-discovery-session-failure-fallback",
+      status: "failed",
+      message,
+    });
+  } finally {
+    await partnerSessionFailureContext.close();
+  }
+
   const comparisonContext = await browser.newContext();
   try {
     const comparisonPage = await comparisonContext.newPage();

@@ -5,6 +5,7 @@ from pathlib import Path
 VISUAL_QA = Path("examples/retail/storefront-web/scripts/dufynd-visual-qa.mjs")
 FRAGRANCE_OFFERS = Path("examples/retail/storefront-web/components/FragranceOffers.tsx")
 ANALYTICS = Path("examples/retail/storefront-web/lib/analytics.ts")
+SESSION = Path("examples/web-shared/session.ts")
 
 
 def test_merchant_clickout_attribution_is_browser_covered() -> None:
@@ -72,6 +73,22 @@ def test_merchant_discovery_waits_for_storefront_session() -> None:
     )
     assert 'clickoutUrl.searchParams.get("sid") !== expectedPartnerSessionId' in source
     assert "data-partner-clickout-preparing" in merchant_source
-    assert "sessionReady ? (" in merchant_source
-    assert "<MerchantDiscovery sessionReady={sessionReady} />" in home_source
-    assert "sessionReady={Boolean(session.sessionId)}" in page_source
+    assert "sessionSettled ? (" in merchant_source
+    assert "<MerchantDiscovery sessionSettled={sessionSettled} />" in home_source
+    assert "sessionSettled={session.settled === true}" in page_source
+
+
+def test_merchant_discovery_fails_open_after_session_attempt_settles() -> None:
+    source = VISUAL_QA.read_text(encoding="utf-8")
+    session_source = SESSION.read_text(encoding="utf-8")
+
+    assert 'label: "merchant-discovery-session-failure-fallback"' in source
+    assert '"QA session unavailable"' in source
+    assert (
+        "merchant discovery fail-open link became actionable before session initialization settled"
+        in source
+    )
+    assert 'clickoutUrl.searchParams.has("sid")' in source
+    assert "settled?: boolean" in session_source
+    assert "settled: false" in session_source
+    assert "settled: true" in session_source
