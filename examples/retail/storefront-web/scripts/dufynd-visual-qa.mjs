@@ -1396,6 +1396,72 @@ try {
     await mobileCatalogFilterContext.close();
   }
 
+  const imageFailureContext = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 1,
+    reducedMotion: "reduce",
+  });
+  try {
+    const imageFailurePage = await imageFailureContext.newPage();
+    let failPrimaryImage = true;
+    let failBackdropImage = false;
+    await imageFailurePage.route("**/products/naxos-cutout-production.webp", (route) =>
+      failPrimaryImage ? route.abort("failed") : route.continue(),
+    );
+    await imageFailurePage.route("**/products/naxos-bottle-free-backdrop.webp", (route) =>
+      failBackdropImage ? route.abort("failed") : route.continue(),
+    );
+    const response = await imageFailurePage.goto(baseUrl + "/duft/xerjoff-naxos", {
+      waitUntil: "domcontentloaded", timeout: 45_000,
+    });
+    if (!response?.ok()) throw new Error("image failure QA did not load");
+    const hero = imageFailurePage.locator(".dufynd-fragrance-hero");
+    const fallback = hero.locator('[data-dufynd-visual-state="unavailable"]');
+    await fallback.waitFor({ state: "visible", timeout: 10_000 });
+    if (
+      !(await fallback.innerText()).includes("Produktbild derzeit nicht verfügbar") ||
+      !(await fallback.innerText()).includes("Naxos") ||
+      (await hero.locator("img").count()) !== 0
+    ) {
+      throw new Error("failed product image did not preserve identity in a neutral fallback");
+    }
+    if ((await imageFailurePage.locator("#angebote").count()) !== 1) {
+      throw new Error("image failure removed the merchant offer section");
+    }
+    failPrimaryImage = false;
+    await imageFailurePage.reload({ waitUntil: "domcontentloaded", timeout: 45_000 });
+    const recoveredImage = hero.locator("img.dufynd-product-image");
+    await recoveredImage.waitFor({ state: "visible", timeout: 10_000 });
+    await imageFailurePage.waitForFunction(() => {
+      const image = document.querySelector(".dufynd-fragrance-hero img.dufynd-product-image");
+      return image?.complete && image.naturalWidth > 0;
+    }, undefined, { timeout: 10_000 });
+    if ((await fallback.count()) !== 0) {
+      throw new Error("successful image retry retained its error fallback");
+    }
+    failBackdropImage = true;
+    await imageFailurePage.reload({ waitUntil: "domcontentloaded", timeout: 45_000 });
+    await recoveredImage.waitFor({ state: "visible", timeout: 10_000 });
+    await imageFailurePage.waitForFunction(() => {
+      const hero = document.querySelector(".dufynd-fragrance-hero");
+      const image = hero?.querySelector("img.dufynd-product-image");
+      return image?.complete && image.naturalWidth > 0 &&
+        !hero.querySelector("img.dufynd-product-backdrop");
+    }, undefined, { timeout: 10_000 });
+    if ((await fallback.count()) !== 0) {
+      throw new Error("decorative backdrop failure hid the valid product image");
+    }
+    report.checks.push({ label: "product-image-error-fallback", status: "passed" });
+    report.checks.push({ label: "product-image-error-recovery", status: "passed" });
+    report.checks.push({ label: "decorative-image-error-isolation", status: "passed" });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({ label: "product-image-error-fallback", message });
+    report.checks.push({ label: "product-image-error-fallback", status: "failed", message });
+  } finally {
+    await imageFailureContext.close();
+  }
+
   const merchantOfferTimeoutContext = await browser.newContext({
     viewport: { width: 390, height: 844 },
     deviceScaleFactor: 1,
