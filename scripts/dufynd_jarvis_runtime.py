@@ -555,12 +555,37 @@ def _require_budget_window(bridge: DufyndJarvisBridge) -> tuple[str, dict[str, A
             "DUFYND Jarvis budget window does not permit another run: "
             + json.dumps(status, ensure_ascii=False, default=str)
         )
+
+    try:
+        remaining_usd = float(status["remaining_usd"])
+    except (KeyError, TypeError, ValueError) as error:
+        raise RuntimeError(
+            f"DUFYND Jarvis budget window {budget_id} is missing a reliable remaining_usd."
+        ) from error
+
+    effective_per_run_cap_usd = min(
+        configured_per_run_cap_usd,
+        approved_per_run_cap_usd,
+        remaining_usd,
+    )
+    try:
+        sdk_budget_usd = _sdk_budget_limit(effective_per_run_cap_usd)
+    except RuntimeError as error:
+        raise RuntimeError(
+            "DUFYND Jarvis budget gate: remaining total budget is too small "
+            "for another safely bounded model turn."
+        ) from error
+
     configured_model = os.getenv("DUFYND_JARVIS_MODEL")
     budget_model = status.get("model")
     if budget_model and configured_model and budget_model != configured_model:
         raise RuntimeError(
             f"Jarvis budget window requires model {budget_model}, not {configured_model}."
         )
+
+    status = dict(status)
+    status["effective_per_run_cap_usd"] = round(effective_per_run_cap_usd, 6)
+    status["sdk_budget_usd"] = sdk_budget_usd
     return budget_id, status
 
 
@@ -583,12 +608,16 @@ def _require_autonomous_session(
 
 def _sdk_budget_limit(approved_per_run_cap_usd: float) -> float:
     """Leave headroom because the SDK can finish a turn slightly above its stop threshold."""
-    return max(0.01, round(approved_per_run_cap_usd * 0.8, 4))
+    bounded = round(float(approved_per_run_cap_usd) * 0.8, 4)
+    if bounded < 0.01:
+        raise RuntimeError("Effective per-run budget is below the safe SDK minimum.")
+    return bounded
 
 
 def make_options(bridge: DufyndJarvisBridge) -> ClaudeAgentOptions:
-    model, max_turns, max_budget_usd = _require_active_runtime()
-    sdk_budget_usd = _sdk_budget_limit(max_budget_usd)
+    model, max_turns, _configured_per_run_cap_usd = _require_active_runtime()
+    _, budget = _require_budget_window(bridge)
+    sdk_budget_usd = float(budget["sdk_budget_usd"])
     return ClaudeAgentOptions(
         system_prompt=SYSTEM_PROMPT,
         mcp_servers={SERVER_NAME: build_server(bridge)},
@@ -618,8 +647,9 @@ controlled DUFYND step.
 
 
 def make_safe_worker_options(bridge: DufyndJarvisBridge) -> ClaudeAgentOptions:
-    model, max_turns, max_budget_usd = _require_active_runtime()
-    sdk_budget_usd = _sdk_budget_limit(max_budget_usd)
+    model, max_turns, _configured_per_run_cap_usd = _require_active_runtime()
+    _, budget = _require_budget_window(bridge)
+    sdk_budget_usd = float(budget["sdk_budget_usd"])
     builtins = ["Read", "Grep", "Glob", "WebSearch", "WebFetch"]
     return ClaudeAgentOptions(
         system_prompt=SAFE_WORKER_SYSTEM_PROMPT,
@@ -651,8 +681,9 @@ A deterministic workflow will validate changed paths and run tests after your tu
 
 
 def make_branch_worker_options(bridge: DufyndJarvisBridge) -> ClaudeAgentOptions:
-    model, max_turns, max_budget_usd = _require_active_runtime()
-    sdk_budget_usd = _sdk_budget_limit(max_budget_usd)
+    model, max_turns, _configured_per_run_cap_usd = _require_active_runtime()
+    _, budget = _require_budget_window(bridge)
+    sdk_budget_usd = float(budget["sdk_budget_usd"])
     builtins = ["Read", "Grep", "Glob", "Write", "Edit"]
     return ClaudeAgentOptions(
         system_prompt=BRANCH_WORKER_SYSTEM_PROMPT,
@@ -863,30 +894,42 @@ async def _process_next_outcome(bridge: DufyndJarvisBridge) -> tuple[int, bool]:
                 human_approval_required=False,
                 agent_name="jarvis",
             )
-        retry = attempts < 3
+        provider_cost_unknown = error.cost_usd is None
+        retry = attempts < 3 and not provider_cost_unknown
+        failure_note = str(error)
+        if provider_cost_unknown:
+            failure_note = (
+                f"{failure_note} | provider cost unknown; no automatic retry."
+            )
         await asyncio.to_thread(
             bridge.complete_inbox_event,
             inbox_id=inbox_id,
             status="pending" if retry else "failed",
-            error=str(error)[:4000],
+            error=failure_note[:4000],
         )
         print(
             f"DUFYND Jarvis event {inbox_id} failed; "
-            f"{'queued for retry' if retry else 'marked failed'}: {error}",
+            f"{'queued for retry' if retry else 'marked failed'}: {failure_note}",
             file=sys.stderr,
         )
         return 1, True
     except Exception as error:
-        retry = attempts < 3
+        provider_cost_unknown = budget_id is not None
+        retry = attempts < 3 and not provider_cost_unknown
+        failure_note = str(error)
+        if provider_cost_unknown:
+            failure_note = (
+                f"{failure_note} | provider cost unknown; no automatic retry."
+            )
         await asyncio.to_thread(
             bridge.complete_inbox_event,
             inbox_id=inbox_id,
             status="pending" if retry else "failed",
-            error=str(error)[:4000],
+            error=failure_note[:4000],
         )
         print(
             f"DUFYND Jarvis event {inbox_id} failed; "
-            f"{'queued for retry' if retry else 'marked failed'}: {error}",
+            f"{'queued for retry' if retry else 'marked failed'}: {failure_note}",
             file=sys.stderr,
         )
         return 1, budget_id is not None
