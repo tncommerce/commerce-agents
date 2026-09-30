@@ -76,8 +76,6 @@ def test_staged_candidates_have_no_public_copy_or_catalog_activation() -> None:
         assert product["validation"]["catalog_ready"] is False
         assert "approved_product_image_pending" in product["validation"]["blockers"]
 
-    libre = next(
-        item for item in packet["items"] if item["product_id"] == "SC-YSL-LIBRE-EDP-90"
-    )
+    libre = next(item for item in packet["items"] if item["product_id"] == "SC-YSL-LIBRE-EDP-90")
     assert libre["approval_basis"] == "explicit_user_visual_approval_2026-09-30"
     assert libre["approved_at"] == "2026-09-30"
