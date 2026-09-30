@@ -13,7 +13,7 @@ import {
   type StaticFragrance,
 } from "@/lib/fragranceCatalog";
 import { formatPriceReference } from "@/lib/priceReference";
-import { targetLabel } from "@/lib/targetLabels";
+import { targetGroupLabel } from "@/lib/targetLabels";
 
 function formatRating(
   value: number | null,
@@ -471,8 +471,8 @@ export default function FragranceComparisonPicker({
             />
             <ComparisonRow
               label="Zielgruppe"
-              left={left.target_groups.map(targetLabel).join(", ") || "–"}
-              right={right.target_groups.map(targetLabel).join(", ") || "–"}
+              left={targetGroupLabel(left.target_groups) || "–"}
+              right={targetGroupLabel(right.target_groups) || "–"}
             />
             <ComparisonRow
               label="Preis-Richtwert"

@@ -17,7 +17,7 @@ import {
 } from "@/lib/fragranceCatalog";
 import { SITE_URL } from "@/lib/site";
 import { formatPriceReference } from "@/lib/priceReference";
-import { targetLabel } from "@/lib/targetLabels";
+import { targetGroupLabel } from "@/lib/targetLabels";
 
 export const dynamicParams = false;
 
@@ -435,8 +435,8 @@ export default async function ComparisonPage({
           />
           <ComparisonRow
             label="Zielgruppe"
-            left={left.target_groups.map(targetLabel).join(", ")}
-            right={right.target_groups.map(targetLabel).join(", ")}
+            left={targetGroupLabel(left.target_groups)}
+            right={targetGroupLabel(right.target_groups)}
           />
           <ComparisonRow
             label="Preis-Richtwert"
