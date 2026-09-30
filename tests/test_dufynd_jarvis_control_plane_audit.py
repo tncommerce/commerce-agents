@@ -15,6 +15,7 @@ class FakeBridge:
         health=None,
         budget=None,
         session=None,
+        supervisor=None,
         tech_lease=None,
     ):
         self.queue = queue or {
@@ -42,6 +43,8 @@ class FakeBridge:
         self.rows = {}
         if session is not None:
             self.rows["jarvis.nightshift_session"] = {"value": session}
+        if supervisor is not None:
+            self.rows["jarvis.nightshift_supervisor"] = {"value": supervisor}
         if tech_lease is not None:
             self.rows["continuity.tech_lease"] = {"value": tech_lease}
 
@@ -144,6 +147,34 @@ def test_audit_flags_stale_active_nightshift_session() -> None:
     assert report["nightshift_session"]["stale"] is True
     assert report["nightshift_session"]["heartbeat_age_minutes"] == 90.0
     assert "stale_active_nightshift_session" in {item["code"] for item in report["issues"]}
+
+
+def test_audit_flags_stale_active_overnight_supervisor() -> None:
+    bridge = FakeBridge(
+        supervisor={
+            "supervisor_id": "supervisor-running",
+            "status": "running",
+            "started_at": "2026-09-30T04:00:00+00:00",
+            "last_heartbeat_at": "2026-09-30T04:30:00+00:00",
+            "deadline_at": "2026-09-30T09:00:00+00:00",
+            "cycles_completed": 3,
+            "idle_cycles": 1,
+            "lease_wait_cycles": 7,
+        }
+    )
+
+    report = audit_control_plane(
+        bridge,
+        now=NOW,
+        stale_after_minutes=45,
+    )
+
+    assert report["nightshift_supervisor"]["stale"] is True
+    assert report["nightshift_supervisor"]["heartbeat_age_minutes"] == 90.0
+    assert report["nightshift_supervisor"]["lease_wait_cycles"] == 7
+    assert "stale_active_nightshift_supervisor" in {
+        item["code"] for item in report["issues"]
+    }
 
 
 def test_audit_reports_clean_idle_control_plane() -> None:
