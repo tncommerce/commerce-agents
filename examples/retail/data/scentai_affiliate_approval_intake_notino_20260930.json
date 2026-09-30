@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "intake_type": "affiliate_program_decision",
+  "merchant_id": "notino",
+  "network": "CJ Affiliate",
+  "program": "Notino",
+  "observed_status": "approved",
+  "observed_at": "2026-09-30T07:20:02Z",
+  "evidence": {
+    "source_type": "network_email",
+    "external_program_id": null,
+    "reference_note": "NOTINO.de welcome email via CJ confirms program entry. The message advertises CJ Deep Link support; no private dashboard URL or credential is stored."
+  },
+  "capabilities": {
+    "deeplink_available": true,
+    "product_feed_available": null,
+    "tracked_product_url_available": null,
+    "product_image_in_feed": null,
+    "feed_format": null
+  },
+  "integration_metadata": {
+    "credential_storage": "external_secret_store_only",
+    "provider_config_ready": false,
+    "real_feed_sample_available": false
+  },
+  "note": "Approval evidence only. This file contains no password, API key, token, private feed URL or credential value."
+}
