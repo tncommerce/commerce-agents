@@ -92,6 +92,33 @@ def build_budget_ledger(
 
     total_spent = round(total_spent, 6)
     billed_runs = len(ledger_rows)
+
+    by_run_type: dict[str, dict[str, Any]] = {}
+    for row in ledger_rows:
+        run_type = str(row.get("run_type") or "unknown")
+        summary = by_run_type.setdefault(
+            run_type,
+            {
+                "runs": 0,
+                "spent_usd": 0.0,
+                "max_single_run_usd": 0.0,
+            },
+        )
+        summary["runs"] += 1
+        summary["spent_usd"] += row["cost_usd"]
+        summary["max_single_run_usd"] = max(
+            summary["max_single_run_usd"],
+            row["cost_usd"],
+        )
+
+    for summary in by_run_type.values():
+        summary["spent_usd"] = round(summary["spent_usd"], 6)
+        summary["max_single_run_usd"] = round(summary["max_single_run_usd"], 6)
+        summary["average_run_usd"] = round(
+            summary["spent_usd"] / summary["runs"],
+            6,
+        )
+    by_run_type = dict(sorted(by_run_type.items()))
     status_spent = round(_float(budget_status.get("spent_usd")), 6)
     status_runs = int(budget_status.get("runs") or 0)
 
@@ -222,6 +249,7 @@ def build_budget_ledger(
             "spent_usd": total_spent,
             "max_single_run_usd": round(max_run_cost, 6),
             "over_cap_runs": over_cap_rows,
+            "by_run_type": by_run_type,
             "rows": ledger_rows,
         },
         "reconciliation": {
