@@ -107,3 +107,18 @@ def test_merchant_discovery_recovers_after_partner_api_failure() -> None:
     assert "data-merchant-discovery-error" in merchant_source
     assert "setReloadToken((value) => value + 1)" in merchant_source
     assert "Partnerhändler gerade nicht verfügbar" in merchant_source
+
+
+def test_merchant_discovery_reserves_loading_state_before_partner_data() -> None:
+    source = VISUAL_QA.read_text(encoding="utf-8")
+    merchant_source = Path(
+        "examples/retail/storefront-web/components/MerchantDiscovery.tsx"
+    ).read_text(encoding="utf-8")
+
+    assert 'label: "merchant-discovery-loading-stability"' in source
+    assert "merchant discovery loading state exposed an actionable partner link" in source
+    assert "merchant discovery loading placeholder did not clear after load failure" in source
+    assert "data-merchant-discovery-loading" in merchant_source
+    assert 'aria-busy="true"' in merchant_source
+    assert "min-h-[132px]" in merchant_source
+    assert "Partnerhändler werden geladen" in merchant_source
