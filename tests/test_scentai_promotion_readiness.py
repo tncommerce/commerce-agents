@@ -312,7 +312,7 @@ def test_current_purchase_offer_reconciles_stale_source_purchase_blocker() -> No
         {"store_name": "SCENTAI", "products": []},
         {
             "offers": [
-                offer(
+                affiliate_offer(
                     "SC-STALE-PURCHASE",
                     product_url="https://merchant.example/product",
                 )
@@ -351,7 +351,7 @@ def test_current_purchase_offer_does_not_clear_non_purchase_source_blockers() ->
         {"store_name": "SCENTAI", "products": []},
         {
             "offers": [
-                offer(
+                affiliate_offer(
                     "SC-IDENTITY-PENDING",
                     product_url="https://merchant.example/product",
                 )
