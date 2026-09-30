@@ -8,7 +8,7 @@ PUBLIC_ROOT = Path("examples/retail/storefront-web/public")
 PACKET = DATA_DIR / "dufynd_p0_visual_fidelity_review_packet_20260929.json"
 QUEUE = DATA_DIR / "dufynd_product_visual_review_queue.json"
 
-APPROVED_IDS = {
+PROMOTED_IDS = {
     "SC-ARMANI-SWY-INTENSELY-100",
     "SC-PRADA-LHOMME-100",
     "SC-SOSPIRO-VIBRATO-100",
@@ -24,20 +24,20 @@ def test_p0_fidelity_packet_records_human_decisions_without_auto_approval() -> N
     packet = _load(PACKET)
     queue = _load(QUEUE)
 
-    assert packet["status"] == "partially_approved_2026-09-29"
+    assert packet["status"] == "partially_approved_through_2026-09-30"
     assert packet["approval_scope"]["automatic_approval_allowed"] is False
     assert packet["approval_scope"]["automatic_live_activation_allowed"] is False
     assert packet["approval_scope"]["rights_clearance_implied"] is False
 
     rows = {row["product_id"]: row for row in packet["review_order"]}
-    assert set(rows) == APPROVED_IDS | {CREED_ID}
+    assert set(rows) == PROMOTED_IDS | {CREED_ID}
 
     active = {item["product_id"]: item for item in queue["items"]}
     promoted = {item["product_id"]: item for item in queue["approved_product_truth"]}
     assert set(active) == {CREED_ID}
-    assert set(promoted) == APPROVED_IDS
+    assert set(promoted) == PROMOTED_IDS
 
-    for product_id in APPROVED_IDS:
+    for product_id in PROMOTED_IDS:
         row = rows[product_id]
         record = promoted[product_id]
         assert row["review_decision"] == "approve_fidelity"
@@ -49,12 +49,13 @@ def test_p0_fidelity_packet_records_human_decisions_without_auto_approval() -> N
         assert (PUBLIC_ROOT / row["public_asset"].removeprefix("/")).is_file()
 
     creed = rows[CREED_ID]
-    assert creed["review_decision"] == "needs_revision"
-    assert creed["current_state"] == "candidate_generated_pending_reference_gate"
-    assert creed["candidate_asset"] in {
-        row["candidate_asset"] for row in active[CREED_ID]["candidate_history"]
-    }
-    assert active[CREED_ID]["status"] == "candidate_generated_pending_human_fidelity"
+    assert creed["review_decision"] == "approve_fidelity"
+    assert creed["current_state"] == "human_fidelity_approved_pending_promotion"
+    assert creed["rights_source_state"] == "dufynd_generated_internal_asset"
+    assert creed["candidate_asset"] == active[CREED_ID]["candidate_asset"]
+    assert active[CREED_ID]["status"] == "human_fidelity_approved_pending_promotion"
+    assert active[CREED_ID]["candidate_provenance"]["approval_status"] == "human_fidelity_approved"
+    assert active[CREED_ID]["candidate_provenance"]["public_activation"] is False
 
 
 def test_p0_fidelity_packet_never_implies_external_image_rights() -> None:
