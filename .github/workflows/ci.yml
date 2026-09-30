@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   python:
@@ -165,57 +165,3 @@ jobs:
           if-no-files-found: warn
           include-hidden-files: true
           retention-days: 7
-
-  dufynd-state-preview:
-    if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'dufynd-notino-eclaire-live-ci4-')
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          ref: ${{ github.head_ref }}
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
-        with:
-          python-version: "3.12"
-          cache: pip
-      - name: Install
-        run: pip install -r requirements-dev.txt
-      - name: Rebuild canonical DUFYND derived state
-        shell: bash
-        run: |
-          set -euo pipefail
-          generated_at="$(python - <<'PY'
-          import json
-          from pathlib import Path
-          path = Path("examples/retail/data/scentai_jarvis_operations_status.json")
-          print(json.loads(path.read_text(encoding="utf-8-sig"))["generated_at"])
-          PY
-          )"
-          PYTHONPATH=. python scripts/refresh_scentai_jarvis_state.py --write --generated-at "$generated_at"
-      - name: Commit canonical DUFYND derived state
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git fetch origin scentai-mvp --depth=1
-          git show FETCH_HEAD:.github/workflows/ci.yml > .github/workflows/ci.yml
-          git add examples/retail/data/scentai_merchant_mapping_work_queue.json
-          git add examples/retail/data/scentai_affiliate_activation_status.json
-          git add examples/retail/data/scentai_image_approval_work_queue.json
-          git add examples/retail/data/scentai_release_01_feed_activation_queue.json
-          git add examples/retail/data/scentai_release_01_gate_status.json
-          git add examples/retail/data/scentai_release_pipeline_status.json
-          git add examples/retail/data/scentai_jarvis_operations_status.json
-          git add examples/retail/data/scentai_content_operations_status.json
-          git add examples/retail/data/scentai_content_operations_status_batch02.json
-          git add examples/retail/data/scentai_content_operations_status_batch03.json
-          git add examples/retail/data/scentai_content_pipeline_status.json
-          git add examples/retail/data/scentai_media_generation_queue.json
-          git add examples/retail/data/scentai_jarvis_master_status.json
-          git add .github/workflows/ci.yml
-          if git diff --cached --quiet; then
-            echo "Canonical derived state already matches source-of-truth."
-            exit 0
-          fi
-          git commit -m "DUFYND: reconcile derived state after Notino activation"
-          git push origin HEAD:${{ github.head_ref }}
