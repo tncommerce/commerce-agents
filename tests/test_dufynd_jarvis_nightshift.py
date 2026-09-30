@@ -1233,3 +1233,134 @@ def test_next_action_approval_hygiene_preserves_ready_work_precedence() -> None:
     assert "when ready_count > 0 then null" in sql
     assert "when waiting_human_count > 0 then 'waiting_for_human_input'" in sql
     assert "when approval_count > 0 then 'human_approval_required'" in sql
+
+def test_recovery_blocks_interrupted_task_without_audited_run() -> None:
+    bridge = FakeBridge([task("repo_current_commerce", "commerce", 100)])
+    bridge.tasks["repo_current_commerce"]["status"] = "in_progress"
+    bridge.agent_runs_override = []
+    session = {
+        "session_id": "nightshift-recover-unknown-cost",
+        "started_at": "2026-09-30T10:00:00+00:00",
+        "status": "running",
+        "current_task": {
+            "task_id": "repo_current_commerce",
+            "domain": "commerce",
+            "worker": "safe_worker",
+            "attempt": 1,
+            "started_at": "2026-09-30T10:05:00+00:00",
+        },
+        "task_results": [],
+    }
+
+    nightshift._recover_interrupted_work(bridge, session)
+
+    assert bridge.tasks["repo_current_commerce"]["status"] == "blocked"
+    assert session["status"] == "needs_attention"
+    assert session["stop_reason"] == "interrupted_task_unknown_cost"
+    assert session["current_task"] is None
+    assert session["task_results"][0]["provider_cost_unknown"] is True
+
+
+def test_nightshift_event_failure_stops_before_tasks(monkeypatch) -> None:
+    bridge = FakeBridge([task("repo_current_commerce", "commerce", 100)])
+    bridge.inbox_pending = 1
+
+    monkeypatch.setattr(nightshift, "_require_autonomous_mode", lambda: None)
+    monkeypatch.setattr(
+        nightshift,
+        "_require_budget_window",
+        lambda _bridge: ("budget", {"can_run": True}),
+    )
+
+    async def failed_loop(_bridge, *, max_events):
+        assert max_events == 2
+        return 1
+
+    worker_called = False
+
+    async def should_not_run(*_args, **_kwargs):
+        nonlocal worker_called
+        worker_called = True
+        return 0
+
+    monkeypatch.setattr(nightshift, "process_loop", failed_loop)
+    monkeypatch.setattr(nightshift, "process_safe_task", should_not_run)
+
+    session = asyncio.run(
+        nightshift.run_nightshift(
+            bridge,
+            max_events=2,
+            worker_timeout_seconds=60,
+        )
+    )
+
+    assert worker_called is False
+    assert session["event_result"] == 1
+    assert session["stop_reason"] == "event_failure"
+    assert session["status"] == "needs_attention"
+    assert session["tasks_attempted"] == 0
+
+
+def test_nightshift_unknown_worker_cost_blocks_without_retry(monkeypatch) -> None:
+    bridge = FakeBridge([task("repo_current_commerce", "commerce", 100)])
+    bridge.agent_runs_override = []
+
+    monkeypatch.setattr(nightshift, "_require_autonomous_mode", lambda: None)
+    monkeypatch.setattr(
+        nightshift,
+        "_require_budget_window",
+        lambda _bridge: ("budget", {"can_run": True}),
+    )
+
+    calls = 0
+
+    async def failed_safe(_bridge, *, task_id=None):
+        nonlocal calls
+        calls += 1
+        return 1
+
+    monkeypatch.setattr(nightshift, "process_safe_task", failed_safe)
+
+    session = asyncio.run(
+        nightshift.run_nightshift(
+            bridge,
+            max_events=0,
+            worker_timeout_seconds=60,
+            max_retries=2,
+        )
+    )
+
+    assert calls == 1
+    assert bridge.tasks["repo_current_commerce"]["status"] == "blocked"
+    assert session["stop_reason"] == "unknown_provider_cost"
+    assert session["status"] == "needs_attention"
+    assert session["task_results"][0]["provider_cost_unknown"] is True
+
+
+def test_morning_report_marks_supervisor_cancellation_cost_incomplete() -> None:
+    bridge = FakeBridge()
+    bridge.agent_runs_override = []
+    bridge.master[nightshift.SUPERVISOR_KEY] = {
+        "key": nightshift.SUPERVISOR_KEY,
+        "value": {
+            "supervisor_id": "supervisor-cancelled",
+            "status": "needs_attention",
+            "started_at": "2026-09-30T12:00:00+00:00",
+            "ended_at": "2026-09-30T12:10:00+00:00",
+            "deadline_at": "2026-09-30T17:00:00+00:00",
+            "stop_reason": "supervisor_cancelled",
+            "runtime_error_type": "CancelledError",
+            "cycles_completed": 0,
+            "idle_cycles": 0,
+            "session_summaries": [],
+        },
+    }
+
+    report, _markdown = nightshift.build_morning_report(
+        bridge,
+        qa_status="cancelled",
+    )
+
+    assert report["stop_reason"] == "supervisor_cancelled"
+    assert report["ai_cost_complete"] is False
+
