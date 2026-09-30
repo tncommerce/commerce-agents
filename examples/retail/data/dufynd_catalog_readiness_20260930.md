@@ -51,3 +51,20 @@ python -m scripts.plan_scentai_promotion_batch --limit 10
 ```
 
 `storefront_fragrance_count`, `storefront_audience_counts` and `storefront_blocked_product_ids` describe customer-visible inventory. The original `live_fragrance_count` and `live_audience_counts` fields retain their raw repository meaning for compatibility.
+
+## Expansion and promotion priority
+
+The expansion-readiness report and promotion-batch planner use the visible,
+exclusive storefront audiences for their gap scores. Their `--source` input
+defaults to `scentai_products.json`, so the hidden Widian identity blocker is
+excluded from the baseline. Source classification takes precedence over legacy
+catalog tags; Unisex, including a combined Herren/Damen classification, counts
+once. Unknown audiences receive no gap bonus.
+
+Raw `live_audience_counts` remain available for research compatibility. The
+`storefront_audience_counts`, `storefront_fragrance_count` and
+`storefront_blocked_product_ids` fields explain the planning baseline. With the
+current 17 Herren, 16 Unisex and 1 Damen entries, a women's candidate has a
+9.41/10 audience-gap score, while a Unisex candidate has 0.59/10 even when its
+raw tags also contain men and women. These scores do not clear image, merchant,
+source or promotion blockers, and the plans do not publish catalog changes.

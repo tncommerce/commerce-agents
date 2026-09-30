@@ -7,12 +7,14 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from scripts.dufynd_planning_audiences import storefront_gap_score, visible_inventory
 from scripts.promote_scentai_catalog import promotion_blockers
 
 DATA_DIR = Path("examples/retail/data")
 DEFAULT_STAGING = DATA_DIR / "scentai_catalog_staging.json"
 DEFAULT_CATALOG = DATA_DIR / "catalog.json"
 DEFAULT_OFFERS = DATA_DIR / "merchant_offers.json"
+DEFAULT_SOURCE = DATA_DIR / "scentai_products.json"
 
 
 def load_json(path: Path) -> dict:
@@ -40,24 +42,7 @@ def audience_gap_score(
     target_groups: list[str],
     live_counts: Counter,
 ) -> float:
-    if not target_groups:
-        return 0.0
-
-    known_counts = [int(live_counts.get(group, 0)) for group in target_groups]
-    if not known_counts:
-        return 0.0
-
-    max_live = max([int(value) for value in live_counts.values()] or [0])
-    if max_live <= 0:
-        return 10.0
-
-    lowest_coverage = min(known_counts)
-    gap = max(max_live - lowest_coverage, 0)
-
-    return round(
-        min(10.0, (gap / max_live) * 10.0),
-        2,
-    )
+    return storefront_gap_score(target_groups, live_counts)
 
 
 def build_batch_plan(
@@ -68,6 +53,7 @@ def build_batch_plan(
     now: datetime,
     limit: int = 10,
     max_offer_age_hours: float = 72.0,
+    source: dict | None = None,
 ) -> dict[str, Any]:
     if limit < 1 or limit > 10:
         raise ValueError("limit must be between 1 and 10")
@@ -80,6 +66,7 @@ def build_batch_plan(
 
     live_ids = {product.get("product_id") for product in catalog.get("products", [])}
     live_counts = live_target_counts(catalog)
+    visible_ids, hidden_ids, storefront_counts = visible_inventory(catalog, source)
 
     rows: list[dict[str, Any]] = []
 
@@ -104,7 +91,7 @@ def build_batch_plan(
         )
         gap_score = audience_gap_score(
             target_groups,
-            live_counts,
+            storefront_counts,
         )
 
         rating_count = int(
@@ -162,6 +149,9 @@ def build_batch_plan(
         "generated_at": now.astimezone(UTC).isoformat(),
         "limit": limit,
         "live_audience_counts": dict(sorted(live_counts.items())),
+        "storefront_fragrance_count": len(visible_ids),
+        "storefront_blocked_product_ids": hidden_ids,
+        "storefront_audience_counts": dict(sorted(storefront_counts.items())),
         "selected_count": len(selected),
         "ready_count": sum(1 for row in selected if row["promotion_ready"]),
         "blocked_count": sum(1 for row in selected if not row["promotion_ready"]),
@@ -201,6 +191,7 @@ def main() -> int:
         type=int,
         default=10,
     )
+    parser.add_argument("--source", type=Path, default=DEFAULT_SOURCE)
     parser.add_argument(
         "--max-offer-age-hours",
         type=float,
@@ -225,6 +216,7 @@ def main() -> int:
             now=datetime.now(UTC),
             limit=args.limit,
             max_offer_age_hours=args.max_offer_age_hours,
+            source=load_json(args.source),
         )
     except ValueError as exc:
         parser.error(str(exc))
@@ -255,8 +247,10 @@ def main() -> int:
         f"blocked={report['blocked_count']}"
     )
     print(
-        "Live audience | "
-        + " | ".join(f"{key}={value}" for key, value in report["live_audience_counts"].items())
+        "Storefront audience | "
+        + " | ".join(
+            f"{key}={value}" for key, value in report["storefront_audience_counts"].items()
+        )
     )
 
     for index, row in enumerate(
