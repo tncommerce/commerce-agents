@@ -53,6 +53,4 @@ def test_naxos_and_bottled_absolu_mapping_evidence_is_verified_but_not_live() ->
             destination_url=row["product_url"]
         )
 
-    assert "Bottled Absolute" in rows[
-        "SC-HUGO-BOSS-BOTTLED-ABSOLU-100"
-    ]["variant_disambiguation"]
+    assert "Bottled Absolute" in rows["SC-HUGO-BOSS-BOTTLED-ABSOLU-100"]["variant_disambiguation"]
