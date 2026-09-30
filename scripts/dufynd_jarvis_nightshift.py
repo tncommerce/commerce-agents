@@ -756,13 +756,35 @@ async def run_nightshift(
             break
 
         session["tasks_attempted"] = int(session.get("tasks_attempted") or 0) + 1
-        outcome = await _run_task_with_retry(
-            bridge,
-            session,
-            selected,
-            timeout_seconds=timeout_seconds,
-            max_retries=retry_limit,
-        )
+        try:
+            outcome = await _run_task_with_retry(
+                bridge,
+                session,
+                selected,
+                timeout_seconds=timeout_seconds,
+                max_retries=retry_limit,
+            )
+        except Exception as error:
+            # A transport/status-write error must not leave the durable
+            # session running with no stop reason. Never retry unknown-cost
+            # failures automatically. Do not store exception bodies/credentials.
+            session["status"] = "needs_attention"
+            session["stop_reason"] = "worker_runtime_error"
+            session["ended_at"] = iso_now()
+            session["runtime_error_type"] = type(error).__name__
+            session["task_results"].append(
+                _task_result(
+                    selected,
+                    worker="branch_worker"
+                    if selected.get("domain") == "engineering"
+                    else "safe_worker",
+                    result_code=1,
+                    final_status="blocked",
+                    attempts=int((session.get("current_task") or {}).get("attempt") or 1),
+                )
+            )
+            _persist_session(bridge, session)
+            raise
         session.setdefault("task_results", []).append(outcome)
         session["current_task"] = None
         if outcome["worker"] == "branch_worker" and outcome["result_code"] == 0:
@@ -924,7 +946,9 @@ def build_morning_report(
     ai_cost_usd = _sum_run_costs(runs)
 
     results = [r for r in (session.get("task_results") or []) if isinstance(r, dict)]
-    cost_complete = not any(int(r.get("result_code") or 0) == 124 for r in results)
+    cost_complete = not session.get("runtime_error_type") and not any(
+        int(r.get("result_code") or 0) == 124 for r in results
+    )
     if int(session.get("event_result") or 0) == 124:
         cost_complete = False
     completed = sum(1 for r in results if r.get("final_status") == "done")
@@ -990,7 +1014,8 @@ def build_morning_report(
         "start": started_at,
         "end": ended_at,
         "duration": _duration_text(started_at, ended_at),
-        "stop_reason": session.get("stop_reason"),
+        "stop_reason": session.get("stop_reason")
+        or ("workflow_failed" if qa_status == "failure" else "unknown"),
         "completed": completed,
         "in_progress": in_progress,
         "blocked": blocked,
