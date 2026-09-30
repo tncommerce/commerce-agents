@@ -123,7 +123,10 @@ def test_runtime_prompt_preserves_dufynd_and_human_gates() -> None:
 
 def test_runtime_prompt_prefers_bounded_creative_catalog() -> None:
     assert "load the bounded creative catalog first" in SYSTEM_PROMPT
-    assert "use the full creative context only when the bounded catalog is insufficient" in SYSTEM_PROMPT
+    assert (
+        "use the full creative context only when the bounded catalog is insufficient"
+        in SYSTEM_PROMPT
+    )
 
 
 def test_event_prompt_contains_structured_event() -> None:
