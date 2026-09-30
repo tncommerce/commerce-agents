@@ -108,6 +108,19 @@ def build_readiness_report(
             or 0
         )
 
+        source_validation_blockers = [
+            str(blocker).strip()
+            for blocker in product.get("validation", {}).get("blockers", [])
+            if str(blocker).strip()
+        ]
+        promotion_candidate = "already_live" not in blockers
+        image_only_candidate = (
+            promotion_candidate
+            and source_validation_blockers == ["approved_product_image_pending"]
+            and blockers == ["missing_approved_image"]
+            and bool(eligible)
+        )
+
         rows.append(
             {
                 "product_id": product_id,
@@ -120,7 +133,9 @@ def build_readiness_report(
                 "eligible_purchase_offers": len(eligible),
                 "eligible_affiliate_offers": len(affiliate_eligible),
                 "already_live": "already_live" in blockers,
-                "promotion_candidate": "already_live" not in blockers,
+                "promotion_candidate": promotion_candidate,
+                "image_only_candidate": image_only_candidate,
+                "source_validation_blockers": source_validation_blockers,
                 "ready": not blockers,
                 "blockers": blockers,
             }
@@ -141,6 +156,7 @@ def build_readiness_report(
     already_live_count = sum(1 for row in rows if "already_live" in row["blockers"])
     promotion_candidates = [row for row in rows if "already_live" not in row["blockers"]]
     promotion_blocked_count = sum(1 for row in promotion_candidates if not row["ready"])
+    image_only_candidates = [row for row in promotion_candidates if row["image_only_candidate"]]
     candidate_blocker_counts: Counter[str] = Counter()
     for row in promotion_candidates:
         candidate_blocker_counts.update(row["blockers"])
@@ -153,6 +169,10 @@ def build_readiness_report(
         "ready_count": ready_count,
         "blocked_count": len(rows) - ready_count,
         "promotion_blocked_count": promotion_blocked_count,
+        "image_only_candidate_count": len(image_only_candidates),
+        "image_only_candidate_scope": "promotion_gate_only",
+        "image_only_candidates_require_image_rights_and_human_approval": True,
+        "image_only_candidates": image_only_candidates,
         "tier_counts": {tier: tier_counts.get(tier, 0) for tier in ("A", "B", "C")},
         "blocker_counts": dict(
             sorted(
@@ -258,6 +278,14 @@ def main() -> int:
         print("All staged blockers (compatibility view):")
         for blocker, count in report["blocker_counts"].items():
             print(f"  {count:>2}  {blocker}")
+
+    if report["image_only_candidates"]:
+        print(f"Image-only promotion candidates: {report['image_only_candidate_count']}")
+        for row in report["image_only_candidates"]:
+            print(
+                f"  {row['product_id']} | Tier {row['tier']} | "
+                f"purchase_offers={row['eligible_purchase_offers']}"
+            )
 
     print("Closest unpublished candidates:")
     for row in report["closest_candidates"]:
