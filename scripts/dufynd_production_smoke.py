@@ -592,8 +592,7 @@ def _check_scoped_affiliate_publication_gate(
                 ok=gated,
                 status_code=offer_response.status_code,
                 detail=(
-                    "Product is not public and its affiliate offer route remains "
-                    "publication-gated."
+                    "Product is not public and its affiliate offer route remains publication-gated."
                     if gated
                     else (
                         "Product is not public, but its merchant-offer route leaked "
