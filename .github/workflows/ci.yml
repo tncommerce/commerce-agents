@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   python:
@@ -189,24 +189,28 @@ jobs:
           PY
           )"
           PYTHONPATH=. python scripts/refresh_scentai_jarvis_state.py --write --generated-at "$generated_at"
-          mkdir -p /tmp/dufynd-state-preview
-          cp examples/retail/data/scentai_merchant_mapping_work_queue.json /tmp/dufynd-state-preview/
-          cp examples/retail/data/scentai_affiliate_activation_status.json /tmp/dufynd-state-preview/
-          cp examples/retail/data/scentai_image_approval_work_queue.json /tmp/dufynd-state-preview/
-          cp examples/retail/data/scentai_release_01_feed_activation_queue.json /tmp/dufynd-state-preview/
-          cp examples/retail/data/scentai_release_01_gate_status.json /tmp/dufynd-state-preview/
-          cp examples/retail/data/scentai_release_pipeline_status.json /tmp/dufynd-state-preview/
-          cp examples/retail/data/scentai_jarvis_operations_status.json /tmp/dufynd-state-preview/
-          cp examples/retail/data/scentai_content_operations_status.json /tmp/dufynd-state-preview/
-          cp examples/retail/data/scentai_content_operations_status_batch02.json /tmp/dufynd-state-preview/
-          cp examples/retail/data/scentai_content_operations_status_batch03.json /tmp/dufynd-state-preview/
-          cp examples/retail/data/scentai_content_pipeline_status.json /tmp/dufynd-state-preview/
-          cp examples/retail/data/scentai_media_generation_queue.json /tmp/dufynd-state-preview/
-          cp examples/retail/data/scentai_jarvis_master_status.json /tmp/dufynd-state-preview/
-      - name: Upload canonical DUFYND state preview
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: dufynd-state-preview-${{ github.event.pull_request.number }}
-          path: /tmp/dufynd-state-preview
-          if-no-files-found: error
-          retention-days: 1
+      - name: Commit canonical DUFYND derived state
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add examples/retail/data/scentai_merchant_mapping_work_queue.json
+          git add examples/retail/data/scentai_affiliate_activation_status.json
+          git add examples/retail/data/scentai_image_approval_work_queue.json
+          git add examples/retail/data/scentai_release_01_feed_activation_queue.json
+          git add examples/retail/data/scentai_release_01_gate_status.json
+          git add examples/retail/data/scentai_release_pipeline_status.json
+          git add examples/retail/data/scentai_jarvis_operations_status.json
+          git add examples/retail/data/scentai_content_operations_status.json
+          git add examples/retail/data/scentai_content_operations_status_batch02.json
+          git add examples/retail/data/scentai_content_operations_status_batch03.json
+          git add examples/retail/data/scentai_content_pipeline_status.json
+          git add examples/retail/data/scentai_media_generation_queue.json
+          git add examples/retail/data/scentai_jarvis_master_status.json
+          if git diff --cached --quiet; then
+            echo "Canonical derived state already matches source-of-truth."
+            exit 0
+          fi
+          git commit -m "DUFYND: reconcile derived state after Notino activation"
+          git push origin HEAD:${{ github.head_ref }}
