@@ -92,3 +92,18 @@ def test_merchant_discovery_fails_open_after_session_attempt_settles() -> None:
     assert "settled?: boolean" in session_source
     assert "settled: false" in session_source
     assert "settled: true" in session_source
+
+
+def test_merchant_discovery_recovers_after_partner_api_failure() -> None:
+    source = VISUAL_QA.read_text(encoding="utf-8")
+    merchant_source = Path(
+        "examples/retail/storefront-web/components/MerchantDiscovery.tsx"
+    ).read_text(encoding="utf-8")
+
+    assert 'label: "merchant-discovery-load-recovery"' in source
+    assert '"QA partner discovery unavailable"' in source
+    assert '"Partnerhändler erneut laden"' in source
+    assert "partnerRequestCount !== 2" in source
+    assert "data-merchant-discovery-error" in merchant_source
+    assert "setReloadToken((value) => value + 1)" in merchant_source
+    assert "Partnerhändler gerade nicht verfügbar" in merchant_source

@@ -17,24 +17,64 @@ export default function MerchantDiscovery({
   sessionSettled: boolean;
 }) {
   const [payload, setPayload] = useState<
-    MerchantPartnersPayload | null
-  >(null);
+    MerchantPartnersPayload | null | undefined
+  >(undefined);
+  const [loadError, setLoadError] = useState(false);
+  const [reloadToken, setReloadToken] = useState(0);
 
   useEffect(() => {
     let active = true;
 
+    setLoadError(false);
+    setPayload(undefined);
+
     void fetchMerchantPartners()
       .then((value) => {
-        if (active) setPayload(value);
+        if (!active) return;
+        if (value === null) {
+          setLoadError(true);
+          setPayload(null);
+          return;
+        }
+        setPayload(value);
       })
       .catch(() => {
-        if (active) setPayload(null);
+        if (!active) return;
+        setLoadError(true);
+        setPayload(null);
       });
 
     return () => {
       active = false;
     };
-  }, []);
+  }, [reloadToken]);
+
+  if (payload === undefined) return null;
+
+  if (loadError) {
+    return (
+      <section
+        aria-label="Partnerhändler entdecken"
+        className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm)"
+        data-merchant-discovery-error
+      >
+        <h2 className="text-[15px] font-semibold">
+          Partnerhändler gerade nicht verfügbar
+        </h2>
+        <p className="mt-1 max-w-2xl text-[12px] leading-5 text-(--ink-soft)">
+          Der Partnerbereich konnte nicht geladen werden. Die übrigen
+          DUFYND-Funktionen bleiben verfügbar.
+        </p>
+        <button
+          type="button"
+          onClick={() => setReloadToken((value) => value + 1)}
+          className="mt-3 rounded-xl border border-(--line-strong) bg-(--surface) px-3.5 py-2 text-[12.5px] font-semibold text-(--ink) transition hover:border-(--accent)"
+        >
+          Partnerhändler erneut laden
+        </button>
+      </section>
+    );
+  }
 
   if (!payload?.partners.length) return null;
 
