@@ -24,10 +24,24 @@
     "redirect_dry_run": "passed",
     "redirect_confirmed_at": "2026-09-30T14:49:00Z",
     "redirect_confirmation_source": "user_observed_browser_redirect",
-    "live_routing_allowed": false
+    "live_routing_allowed": true,
+    "live_activation_scope": "verified_product_only",
+    "live_activation_products": [
+      "SC-LATTAFA-ECLAIRE-EDP-100"
+    ],
+    "explicit_user_approval_received": true,
+    "explicit_user_approval_recorded_at": "2026-09-30T16:16:00Z"
   },
-  "next_action": "Run the remaining quality/activation gates and obtain explicit user approval before enabling any Notino live routing. Product-specific routing must remain scoped to verified exact variants.",
+  "next_action": "Maintain redirect, stock and freshness health for the approved Eclaire deep link. Do not activate additional Notino products until each exact SKU is independently verified and approved.",
   "note": "The user confirmed that the generated CJ tracking URL redirected to the intended Notino DE Lattafa Eclaire product page. No password, API key, session token or private credential is stored in this evidence record.",
-  "state_sync_checked_at": "2026-09-30T16:06:00Z",
-  "state_sync_note": "Final CI retrigger after derived affiliate-state reconciliation; no live routing change."
+  "state_sync_checked_at": "2026-09-30T16:16:00Z",
+  "state_sync_note": "Explicit user approval applied to the verified Lattafa Eclaire 100 ml product deeplink only.",
+  "current_offer_verification": {
+    "checked_at": "2026-09-30T16:16:00Z",
+    "price_eur": 33.5,
+    "shipping_eur": 3.9,
+    "in_stock": true,
+    "merchant_product_id": "LTF00869",
+    "product_url": "https://www.notino.de/lattafa/eclaire-eau-de-parfum-unisex/"
+  }
 }
