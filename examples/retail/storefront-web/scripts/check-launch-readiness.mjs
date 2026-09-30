@@ -142,14 +142,22 @@ const liveProducts = (catalog.products || []).filter(
     product.in_stock !== false,
 );
 
-if (liveProducts.length > 0) {
+const visibleProducts = liveProducts.filter((product) => {
+  const blockers = sourceById.get(product.product_id)?.validation?.blockers;
+  return !(
+    Array.isArray(blockers) &&
+    blockers.some((blocker) => String(blocker || "").trim())
+  );
+});
+
+if (visibleProducts.length > 0) {
   add(
     "pass",
     "live_catalog",
-    `${liveProducts.length} live fragrances are available.`,
+    `${visibleProducts.length} storefront fragrances are visible (${liveProducts.length} catalog rows; ${liveProducts.length - visibleProducts.length} hidden by source validation).`,
   );
 } else {
-  add("gate", "live_catalog", "No live fragrances are available.");
+  add("gate", "live_catalog", "No storefront fragrances are visible.");
 }
 
 const slugCounts = new Map();
