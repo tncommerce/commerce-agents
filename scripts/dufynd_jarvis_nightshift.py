@@ -4,6 +4,7 @@ import argparse
 import asyncio
 import json
 import os
+from contextlib import suppress
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -916,13 +917,11 @@ async def run_nightshift(
         session["stop_reason"] = str(session.get("stop_reason") or "nightshift_cancelled")
         session["ended_at"] = iso_now()
         session["runtime_error_type"] = "CancelledError"
-        try:
+        with suppress(Exception):
             await asyncio.wait_for(
                 asyncio.to_thread(_persist_session, bridge, session),
                 timeout=3.0,
             )
-        except Exception:
-            pass
         raise
 
 
