@@ -52,6 +52,7 @@ class FakeBridge:
                     {
                         "budget_id": "jarvis_activation_pilot_001",
                         "cost_usd": 0.1,
+                        "runtime": "dufynd_jarvis_v0_1",
                     }
                 ],
             },
@@ -64,6 +65,9 @@ class FakeBridge:
                     {
                         "budget_id": "jarvis_activation_pilot_001",
                         "cost_usd": 0.2,
+                        "runtime": "dufynd_jarvis_safe_worker_v1",
+                        "worker_role": "commerce",
+                        "failed_model_turn": True,
                     }
                 ],
             },
@@ -110,6 +114,25 @@ def test_budget_ledger_reconciles_audited_runs() -> None:
         "max_single_run_usd": 0.2,
         "average_run_usd": 0.2,
     }
+    assert report["ledger"]["by_runtime"]["dufynd_jarvis_v0_1"] == {
+        "runs": 1,
+        "spent_usd": 0.1,
+        "max_single_run_usd": 0.1,
+        "failed_model_turns": 0,
+        "average_run_usd": 0.1,
+    }
+    assert report["ledger"]["by_runtime"]["dufynd_jarvis_safe_worker_v1"] == {
+        "runs": 1,
+        "spent_usd": 0.2,
+        "max_single_run_usd": 0.2,
+        "failed_model_turns": 1,
+        "average_run_usd": 0.2,
+    }
+    assert report["ledger"]["rows"][0]["runtime"] == "dufynd_jarvis_v0_1"
+    assert report["ledger"]["rows"][0]["worker_role"] is None
+    assert report["ledger"]["rows"][1]["runtime"] == "dufynd_jarvis_safe_worker_v1"
+    assert report["ledger"]["rows"][1]["worker_role"] == "commerce"
+    assert report["ledger"]["rows"][1]["failed_model_turns"] == 1
     assert report["approval"]["valid"] is True
     assert report["approval"]["cap_usd"] == 2.5
     assert report["approval"]["max_runs"] == 20
