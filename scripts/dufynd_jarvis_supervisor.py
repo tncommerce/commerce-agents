@@ -166,6 +166,7 @@ async def supervise_nightshift(
         "max_idle_cycles": idle_limit,
         "cycles_completed": 0,
         "idle_cycles": 0,
+        "lease_wait_cycles": 0,
         "stop_reason": None,
         "session_summaries": [],
         "last_preflight": None,
@@ -207,10 +208,8 @@ async def supervise_nightshift(
         )
 
         if not preflight["potential_work"] or lease_blocks_only_work:
-            if int(state["idle_cycles"]) >= idle_limit:
-                return finish(
-                    "tech_lease_idle_limit" if lease_blocks_only_work else "idle_limit_reached"
-                )
+            if not lease_blocks_only_work and int(state["idle_cycles"]) >= idle_limit:
+                return finish("idle_limit_reached")
             if not bool(budget.get("can_run")) and not preflight["potential_work"]:
                 return finish("budget_gate")
 
@@ -223,8 +222,10 @@ async def supervise_nightshift(
                 lease_remaining = int(lease.get("remaining_seconds") or 0)
                 if lease_remaining > 0:
                     wait_seconds = min(wait_seconds, lease_remaining)
+                state["lease_wait_cycles"] = int(state["lease_wait_cycles"]) + 1
+            else:
+                state["idle_cycles"] = int(state["idle_cycles"]) + 1
 
-            state["idle_cycles"] = int(state["idle_cycles"]) + 1
             _persist_supervisor(bridge, state, verified_at=current)
             await sleep(wait_seconds)
             continue
