@@ -10,6 +10,7 @@ DATA_DIR = Path("examples/retail/data")
 OUTPUT = DATA_DIR / "scentai_catalog_staging.json"
 INTAKE = DATA_DIR / "dufynd_catalog_staging_intake.json"
 LIVE_CATALOG = DATA_DIR / "catalog.json"
+LIVE_SOURCE = DATA_DIR / "scentai_products.json"
 
 
 def load_json(path: Path) -> dict:
@@ -192,6 +193,7 @@ def append_enabled_research_waves(
 ) -> None:
     intake = load_json(INTAKE)
     live_catalog = load_json(LIVE_CATALOG)
+    live_source = load_json(LIVE_SOURCE)
     default_limit = int(intake.get("default_max_products_per_wave", 5) or 5)
 
     for config in intake.get("waves", []):
@@ -215,6 +217,7 @@ def append_enabled_research_waves(
             live_catalog,
             {"products": products},
             staging_batch_limit=limit,
+            source=live_source,
         )
         candidate_by_id = {
             str(candidate.get("product_id") or ""): candidate
