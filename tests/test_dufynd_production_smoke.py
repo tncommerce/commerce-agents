@@ -49,9 +49,7 @@ def transport(
                     "currency": "EUR",
                     "total_price": 89.0,
                     "in_stock": True,
-                    "clickout_path": (
-                        "/api/clickout/perfumetrader-rabanne-1-million-edt-100"
-                    ),
+                    "clickout_path": ("/api/clickout/perfumetrader-rabanne-1-million-edt-100"),
                     "affiliate_link": True,
                     "last_updated_at": "2026-09-30T12:04:36+00:00",
                 }
@@ -401,9 +399,7 @@ def test_smoke_fails_when_critical_merchant_offers_are_missing() -> None:
     )
 
     check = next(
-        check
-        for check in report.checks
-        if check.name == "merchant_offers_rabanne_1_million"
+        check for check in report.checks if check.name == "merchant_offers_rabanne_1_million"
     )
     assert report.ok is False
     assert check.ok is False
