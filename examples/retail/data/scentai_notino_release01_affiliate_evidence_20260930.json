@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "generated_at": "2026-09-30T18:20:00Z",
+  "purpose": "Affiliate-only evidence for exact NOTINO.de Release 01 product mappings. This file intentionally does not mutate merchant_product_mappings or Jarvis/control-plane state.",
+  "merchant_id": "notino",
+  "network": "CJ Affiliate",
+  "program": "Notino",
+  "tracking_base": "https://www.jdoqocy.com/click-101884613-12260695",
+  "release_id": "SCENTAI-RELEASE-01",
+  "scope": {
+    "candidate_count": 5,
+    "live_routing_allowed": false,
+    "source_of_truth_mapping_mutation": false,
+    "control_plane_mutation": false,
+    "website_mutation": false
+  },
+  "candidates": [
+    {
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "merchant_product_id": "LAM13175",
+      "product_url": "https://www.notino.de/lancome/la-vie-est-belle-eau-de-parfum-fuer-damen/",
+      "exact_variant": "Lancôme La vie est belle Eau de Parfum 100 ml",
+      "availability_observed": false,
+      "evidence_note": "Notino DE page identifies the exact 100 ml Eau de Parfum under code LAM13175; product was not in stock at verification.",
+      "merchant": "notino",
+      "mapping_status": "verified_current_variant_candidate",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Flancome%2Fla-vie-est-belle-eau-de-parfum-fuer-damen%2F",
+      "activation_state": "staged_not_live",
+      "publish_allowed": false,
+      "image_rights_status": "not_implied_by_affiliate_mapping"
+    },
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "merchant_product_id": "PDM0227",
+      "product_url": "https://www.notino.de/parfums-de-marly/darley-royal-essence-delina-eau-de-parfum-fuer-damen/p-11598204/",
+      "exact_variant": "Parfums de Marly Delina Eau de Parfum 75 ml",
+      "availability_observed": true,
+      "evidence_note": "Notino DE page identifies the exact 75 ml Eau de Parfum under code PDM0227.",
+      "merchant": "notino",
+      "mapping_status": "verified_current_variant_candidate",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fparfums-de-marly%2Fdarley-royal-essence-delina-eau-de-parfum-fuer-damen%2Fp-11598204%2F",
+      "activation_state": "staged_not_live",
+      "publish_allowed": false,
+      "image_rights_status": "not_implied_by_affiliate_mapping"
+    },
+    {
+      "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+      "merchant_product_id": "CHD0313",
+      "product_url": "https://www.notino.de/dior/hypnotic-poison-eau-de-toilette-fur-damen/p-60565/",
+      "exact_variant": "DIOR Hypnotic Poison Eau de Toilette 100 ml",
+      "availability_observed": true,
+      "evidence_note": "Notino DE page identifies the exact 100 ml Eau de Toilette under code CHD0313.",
+      "merchant": "notino",
+      "mapping_status": "verified_current_variant_candidate",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fdior%2Fhypnotic-poison-eau-de-toilette-fur-damen%2Fp-60565%2F",
+      "activation_state": "staged_not_live",
+      "publish_allowed": false,
+      "image_rights_status": "not_implied_by_affiliate_mapping"
+    },
+    {
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "merchant_product_id": "YSL2377",
+      "product_url": "https://www.notino.de/yves-saint-laurent/black-opium-eau-de-parfum-fur-damen/",
+      "exact_variant": "Yves Saint Laurent Black Opium Eau de Parfum 90 ml",
+      "availability_observed": true,
+      "evidence_note": "Notino DE page identifies the exact 90 ml Eau de Parfum under code YSL2377.",
+      "merchant": "notino",
+      "mapping_status": "verified_current_variant_candidate",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fyves-saint-laurent%2Fblack-opium-eau-de-parfum-fur-damen%2F",
+      "activation_state": "staged_not_live",
+      "publish_allowed": false,
+      "image_rights_status": "not_implied_by_affiliate_mapping"
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "merchant_product_id": "VZR11010",
+      "product_url": "https://www.notino.de/yves-saint-laurent/yves-saint-laurent-libre-eau-de-parfum-fuer-damen/p-15968532/",
+      "exact_variant": "Yves Saint Laurent Libre Eau de Parfum nachfüllbar 90 ml",
+      "availability_observed": true,
+      "evidence_note": "Notino DE page identifies the exact 90 ml refillable Eau de Parfum under code VZR11010.",
+      "merchant": "notino",
+      "mapping_status": "verified_current_variant_candidate",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fyves-saint-laurent%2Fyves-saint-laurent-libre-eau-de-parfum-fuer-damen%2Fp-15968532%2F",
+      "activation_state": "staged_not_live",
+      "publish_allowed": false,
+      "image_rights_status": "not_implied_by_affiliate_mapping"
+    }
+  ],
+  "policy": {
+    "exact_variant_required": true,
+    "availability_must_be_revalidated_before_live_surface": true,
+    "explicit_user_approval_required_before_live_routing": true,
+    "affiliate_approval_implies_image_rights": false,
+    "commission_may_change_fragrance_ranking": false
+  }
+}
