@@ -172,9 +172,7 @@ def test_audit_flags_stale_active_overnight_supervisor() -> None:
     assert report["nightshift_supervisor"]["stale"] is True
     assert report["nightshift_supervisor"]["heartbeat_age_minutes"] == 90.0
     assert report["nightshift_supervisor"]["lease_wait_cycles"] == 7
-    assert "stale_active_nightshift_supervisor" in {
-        item["code"] for item in report["issues"]
-    }
+    assert "stale_active_nightshift_supervisor" in {item["code"] for item in report["issues"]}
 
 
 def test_audit_reports_clean_idle_control_plane() -> None:
