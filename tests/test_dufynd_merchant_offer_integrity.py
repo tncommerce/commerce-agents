@@ -433,3 +433,48 @@ def test_lattafa_khamrah_offer_selects_original_edp_not_qahwa_or_dukhan() -> Non
         and row["gtin"] == evidence["identity"]["gtin"]
         for row in mappings
     )
+
+
+def test_notino_eclaire_affiliate_offer_is_exact_scoped_variant() -> None:
+    evidence = json.loads(
+        Path(
+            "examples/retail/data/dufynd_lattafa_eclaire_notino_affiliate_evidence_20260930.json"
+        ).read_text(encoding="utf-8")
+    )
+    mappings = json.loads(
+        Path("examples/retail/data/merchant_product_mappings.json").read_text(encoding="utf-8")
+    )["mappings"]
+    offer = next(row for row in _offers() if row["offer_id"] == "notino-lattafa-eclaire-edp-100")
+
+    assert offer["product_id"] == evidence["product_id"] == "SC-LATTAFA-ECLAIRE-EDP-100"
+    assert offer["merchant_id"] == "notino"
+    assert offer["merchant_product_id"] == evidence["identity"]["merchant_product_id"] == "LTF00869"
+    assert evidence["identity"]["gtin"] == "6290362340638"
+    assert offer["product_url"] == evidence["current_offer"]["product_url"]
+    assert offer["affiliate_url"] == evidence["affiliate"]["tracked_url"]
+    assert offer["network"] == evidence["network"] == "CJ Affiliate"
+    assert evidence["affiliate"]["explicit_user_approval"] is True
+    assert evidence["affiliate"]["activation_scope"] == "verified_product_only"
+    assert any(
+        row["product_id"] == offer["product_id"]
+        and row["merchant"] == "notino"
+        and row["merchant_product_id"] == offer["merchant_product_id"]
+        and row["gtin"] == evidence["identity"]["gtin"]
+        for row in mappings
+    )
+
+
+def test_notino_affiliate_urls_do_not_escape_verified_product_scope() -> None:
+    programs = json.loads(
+        Path("examples/retail/data/scentai_affiliate_programs.json").read_text(encoding="utf-8")
+    )
+    notino = next(row for row in programs["other_networks"] if row["merchant_id"] == "notino")
+    live_scope = set(notino.get("live_activation_products") or [])
+    tracked_notino_products = {
+        row["product_id"]
+        for row in _offers()
+        if row["merchant_id"] == "notino" and row.get("affiliate_url")
+    }
+
+    assert live_scope == {"SC-LATTAFA-ECLAIRE-EDP-100"}
+    assert tracked_notino_products == live_scope

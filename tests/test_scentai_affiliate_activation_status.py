@@ -207,3 +207,68 @@ def test_verified_product_deeplink_waits_for_explicit_user_approval() -> None:
     assert row["routing_scope"] == "verified_product_only_pending_activation"
     assert row["blockers"] == ["user_approval_not_recorded"]
     assert row["next_action"] == "request_explicit_user_approval"
+
+
+def test_verified_product_deeplink_becomes_active_after_scoped_user_approval() -> None:
+    programs = {
+        "network": "Awin",
+        "applications": [],
+        "other_networks": [
+            {
+                "network": "CJ Affiliate",
+                "merchant_id": "notino",
+                "program": "Notino",
+                "status": "approved",
+                "tracking_strategy": "verified_cj_product_deeplink",
+                "tracked_product_url_verified": True,
+                "redirect_dry_run_passed": True,
+                "verified_product_scope": ["SC-LATTAFA-ECLAIRE-EDP-100"],
+                "live_activation_approved": True,
+                "live_activation_approved_at": "2026-09-30T16:16:00Z",
+                "live_activation_scope": "verified_product_only",
+                "live_activation_products": ["SC-LATTAFA-ECLAIRE-EDP-100"],
+            }
+        ],
+    }
+
+    report = build_state_report(programs)
+    row = report["programs"][0]
+
+    assert report["summary"]["ready_for_user_approval"] == 0
+    assert report["summary"]["active"] == 1
+    assert report["summary"]["merchant_homepage_tracking_active"] == 0
+    assert row["activation_state"] == "active"
+    assert row["live_routing_allowed"] is True
+    assert row["routing_scope"] == "verified_product_only"
+    assert row["blockers"] == []
+    assert row["next_action"] == "maintain_product_deeplink_health"
+
+
+def test_product_scoped_activation_cannot_expand_beyond_verified_scope() -> None:
+    programs = {
+        "network": "Awin",
+        "applications": [],
+        "other_networks": [
+            {
+                "network": "CJ Affiliate",
+                "merchant_id": "notino",
+                "program": "Notino",
+                "status": "approved",
+                "tracking_strategy": "verified_cj_product_deeplink",
+                "tracked_product_url_verified": True,
+                "redirect_dry_run_passed": True,
+                "verified_product_scope": ["SC-LATTAFA-ECLAIRE-EDP-100"],
+                "live_activation_approved": True,
+                "live_activation_scope": "verified_product_only",
+                "live_activation_products": [
+                    "SC-LATTAFA-ECLAIRE-EDP-100",
+                    "SC-XERJOFF-NAXOS-100",
+                ],
+            }
+        ],
+    }
+
+    row = build_state_report(programs)["programs"][0]
+
+    assert row["activation_state"] == "ready_for_user_approval"
+    assert row["live_routing_allowed"] is False

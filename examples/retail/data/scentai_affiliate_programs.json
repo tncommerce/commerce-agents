@@ -69,7 +69,7 @@
       "network": "CJ Affiliate",
       "program": "Notino",
       "status": "approved",
-      "programming_note": "Program approved on 2026-09-30. A CJ product deep link for Lattafa Eclaire 100 ml was generated and browser-redirect verified on 2026-09-30. Keep live routing disabled until explicit activation approval.",
+      "programming_note": "Program approved on 2026-09-30. The verified CJ product deep link for Lattafa Eclaire 100 ml is explicitly approved for live routing. No merchant-homepage or unverified-product routing is authorized.",
       "merchant_id": "notino",
       "approved_at": "2026-09-30",
       "deeplink_available": true,
@@ -80,7 +80,13 @@
       "verified_product_scope": [
         "SC-LATTAFA-ECLAIRE-EDP-100"
       ],
-      "tracking_verified_at": "2026-09-30T14:49:00Z"
+      "tracking_verified_at": "2026-09-30T14:49:00Z",
+      "live_activation_approved": true,
+      "live_activation_approved_at": "2026-09-30T16:16:00Z",
+      "live_activation_scope": "verified_product_only",
+      "live_activation_products": [
+        "SC-LATTAFA-ECLAIRE-EDP-100"
+      ]
     }
   ],
   "direct_outreach_candidates": [
@@ -181,10 +187,13 @@
       "deeplink_available": true,
       "product_feed_available": null,
       "confidence": "explicit_welcome_email_from_notino_de_at_ch_via_cj",
-      "activity_note": "Welcome email confirms NOTINO.de program approval. CJ link generation and a browser redirect dry run for Lattafa Eclaire 100 ml were completed successfully on 2026-09-30. Live routing remains disabled pending explicit activation approval.",
+      "activity_note": "NOTINO.de program approved. The verified CJ deep link for Lattafa Eclaire 100 ml passed redirect validation and received explicit user approval for product-scoped live routing on 2026-09-30. Other Notino products remain untracked until individually verified.",
       "tracking_strategy": "verified_cj_product_deeplink",
       "tracked_product_url_verified": true,
-      "redirect_dry_run_passed": true
+      "redirect_dry_run_passed": true,
+      "live_activation_approved": true,
+      "live_activation_approved_at": "2026-09-30T16:16:00Z",
+      "live_activation_scope": "verified_product_only"
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated_at": "2026-09-29T21:03:00+00:00",
-  "source_fingerprint_sha256": "c98aea93c276bce0546e7028a4451fd1037bac5bb772ea3150794bf94d5b24b4",
+  "source_fingerprint_sha256": "7274eb698b8212da09bc1996e1c6710031d9f7ed80f0d0abca0fe9723b9ae2cf",
   "system": "DUFYND",
   "control_plane": "commerce_jarvis",
   "policy_ref": "scentai_jarvis_operating_policy.json",
@@ -27,7 +27,7 @@
   },
   "affiliate": {
     "registered_programs": 9,
-    "active_programs": 1,
+    "active_programs": 2,
     "approved_programs": 3,
     "full_release_mapping_paths": 2,
     "approved_full_release_paths": 0,

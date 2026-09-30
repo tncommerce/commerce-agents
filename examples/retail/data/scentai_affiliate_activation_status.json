@@ -6,14 +6,14 @@
   "summary": {
     "programs": 9,
     "approved": 3,
-    "active": 1,
-    "pending": 6,
+    "active": 2,
+    "pending": 5,
     "rejected": 2,
-    "ready_for_user_approval": 1,
+    "ready_for_user_approval": 0,
     "merchant_homepage_tracking_active": 1
   },
   "program_count": 9,
-  "live_program_count": 1,
+  "live_program_count": 2,
   "programs": [
     {
       "network": "Awin",
@@ -21,6 +21,10 @@
       "merchant_id": "douglas",
       "application_status": "applied",
       "tracking_strategy": null,
+      "live_activation_approved": false,
+      "live_activation_approved_at": null,
+      "live_activation_scope": null,
+      "live_activation_products": [],
       "activation_state": "applied",
       "blockers": [
         "affiliate_program_approval_pending"
@@ -38,6 +42,10 @@
       "merchant_id": "flaconi",
       "application_status": "applied",
       "tracking_strategy": null,
+      "live_activation_approved": false,
+      "live_activation_approved_at": null,
+      "live_activation_scope": null,
+      "live_activation_products": [],
       "activation_state": "applied",
       "blockers": [
         "affiliate_program_approval_pending"
@@ -55,6 +63,10 @@
       "merchant_id": "parfumdreams",
       "application_status": "rejected",
       "tracking_strategy": null,
+      "live_activation_approved": false,
+      "live_activation_approved_at": null,
+      "live_activation_scope": null,
+      "live_activation_products": [],
       "activation_state": "rejected",
       "blockers": [
         "affiliate_program_rejected"
@@ -72,6 +84,10 @@
       "merchant_id": "parfumgroup",
       "application_status": "rejected",
       "tracking_strategy": null,
+      "live_activation_approved": false,
+      "live_activation_approved_at": null,
+      "live_activation_scope": null,
+      "live_activation_products": [],
       "activation_state": "rejected",
       "blockers": [
         "affiliate_program_rejected"
@@ -89,6 +105,10 @@
       "merchant_id": "breuninger",
       "application_status": "applied",
       "tracking_strategy": null,
+      "live_activation_approved": false,
+      "live_activation_approved_at": null,
+      "live_activation_scope": null,
+      "live_activation_products": [],
       "activation_state": "applied",
       "blockers": [
         "affiliate_program_approval_pending"
@@ -106,6 +126,10 @@
       "merchant_id": "perfumetrader",
       "application_status": "approved",
       "tracking_strategy": "verified_awin_partner_homepage_link",
+      "live_activation_approved": false,
+      "live_activation_approved_at": null,
+      "live_activation_scope": null,
+      "live_activation_products": [],
       "activation_state": "active",
       "blockers": [],
       "live_routing_allowed": true,
@@ -121,6 +145,10 @@
       "merchant_id": "birkholz",
       "application_status": "applied",
       "tracking_strategy": null,
+      "live_activation_approved": false,
+      "live_activation_approved_at": null,
+      "live_activation_scope": null,
+      "live_activation_products": [],
       "activation_state": "applied",
       "blockers": [
         "affiliate_program_approval_pending"
@@ -138,6 +166,10 @@
       "merchant_id": "top-parfuemerie",
       "application_status": "approved",
       "tracking_strategy": null,
+      "live_activation_approved": false,
+      "live_activation_approved_at": null,
+      "live_activation_scope": null,
+      "live_activation_products": [],
       "activation_state": "approved_credentials_pending",
       "blockers": [
         "credentials_not_verified_in_repo_state",
@@ -163,15 +195,19 @@
       "verified_product_scope": [
         "SC-LATTAFA-ECLAIRE-EDP-100"
       ],
-      "activation_state": "ready_for_user_approval",
-      "blockers": [
-        "user_approval_not_recorded"
+      "live_activation_approved": true,
+      "live_activation_approved_at": "2026-09-30T16:16:00Z",
+      "live_activation_scope": "verified_product_only",
+      "live_activation_products": [
+        "SC-LATTAFA-ECLAIRE-EDP-100"
       ],
-      "live_routing_allowed": false,
-      "routing_scope": "verified_product_only_pending_activation",
+      "activation_state": "active",
+      "blockers": [],
+      "live_routing_allowed": true,
+      "routing_scope": "verified_product_only",
       "merchant_homepage_tracking_active": false,
       "product_offer_activation_independent": true,
-      "next_action": "request_explicit_user_approval",
+      "next_action": "maintain_product_deeplink_health",
       "live_activation_action_class": "approval_required"
     }
   ]

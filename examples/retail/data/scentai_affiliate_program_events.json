@@ -184,6 +184,23 @@
       "source": "network_email",
       "external_program_id": null,
       "reference_note": "NOTINO.de welcome email via CJ confirms program entry; email also states CJ Deep Link support. No secrets, private URLs or credentials stored."
+    },
+    {
+      "sequence": 15,
+      "event_id": "cj-notino-eclaire-live-product-scope-20260930",
+      "network": "CJ Affiliate",
+      "merchant_id": "notino",
+      "program": "Notino",
+      "event_type": "live_product_scope_activated",
+      "event_at": "2026-09-30T16:16:00Z",
+      "recorded_at": "2026-09-30T16:16:00Z",
+      "status_after": "approved",
+      "source": "explicit_user_approval",
+      "activation_scope": "verified_product_only",
+      "product_ids": [
+        "SC-LATTAFA-ECLAIRE-EDP-100"
+      ],
+      "reference_note": "Explicit user approval activated only the previously verified CJ deep link for Lattafa Eclaire 100 ml. No generic Notino homepage route or other product route was activated."
     }
   ]
 }

@@ -930,6 +930,25 @@
       "data_source": "manual_verified_web",
       "last_updated_at": "2026-09-30T13:49:00Z",
       "commission_rate": null
+    },
+    {
+      "offer_id": "notino-lattafa-eclaire-edp-100",
+      "product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
+      "merchant_id": "notino",
+      "merchant_name": "Notino",
+      "merchant_product_id": "LTF00869",
+      "price": 33.5,
+      "currency": "EUR",
+      "shipping_cost": 3.9,
+      "shipping_label": "3,90 € DHL",
+      "in_stock": true,
+      "variant_label": "100 ml · Eau de Parfum",
+      "product_url": "https://www.notino.de/lattafa/eclaire-eau-de-parfum-unisex/",
+      "affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Flattafa%2Feclaire-eau-de-parfum-unisex%2F",
+      "network": "CJ Affiliate",
+      "data_source": "manual_verified_web+cj_verified_deeplink",
+      "last_updated_at": "2026-09-30T16:16:00Z",
+      "commission_rate": null
     }
   ]
 }

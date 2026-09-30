@@ -476,3 +476,27 @@ def test_awin_tracking_parameters_remain_valid() -> None:
     assert query["awinmid"] == ["11672"]
     assert query["awinaffid"] == ["3099222"]
     assert query["clickref"] == ["release01_safe"]
+
+
+def test_product_scoped_partner_does_not_enter_generic_partner_routing(tmp_path) -> None:
+    path = write_payload(
+        tmp_path,
+        [
+            {
+                "merchant_id": "notino",
+                "merchant_name": "Notino",
+                "status": "active_product_deeplink_only",
+                "affiliate_url": None,
+                "last_verified_at": NOW.isoformat(),
+                "description": "Verified product deeplinks only",
+            }
+        ],
+    )
+
+    store = MerchantPartnerStore(path)
+    partner = store.all()[0]
+
+    assert partner.status == "active_product_deeplink_only"
+    assert store.active(now=NOW) == []
+    assert store.eligible("notino", now=NOW) is None
+    assert partner_clickout_url(partner) is None

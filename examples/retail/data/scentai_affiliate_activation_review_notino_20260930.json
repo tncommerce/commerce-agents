@@ -4,7 +4,7 @@
   "merchant_id": "notino",
   "network": "CJ Affiliate",
   "program": "Notino",
-  "reviewed_at": "2026-09-30T14:57:15Z",
+  "reviewed_at": "2026-09-30T16:16:00Z",
   "activation_scope": "verified_product_deep_links_only",
   "verified_reference_product": {
     "product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
@@ -19,15 +19,25 @@
     "exact_variant_mapping_verified": true,
     "redirect_dry_run_passed": true,
     "reusable_link_builder_prepared": true,
-    "live_routing_allowed": false
+    "live_routing_allowed": true,
+    "explicit_user_approval": true,
+    "current_availability_verified": true
   },
   "remaining_live_requirements": [
-    "explicit_user_approval_before_live_routing",
-    "only_publish exact mapped product destinations",
-    "verify current availability or stock before surfacing a product offer",
+    "only publish exact mapped product destinations",
+    "revalidate current availability and freshness before surfacing stale offers",
     "do not infer image rights from affiliate approval",
-    "do not use commission to change fragrance recommendations"
+    "do not use commission to change fragrance recommendations",
+    "pause the product route if tracking or destination identity stops validating"
   ],
-  "readiness": "ready_for_user_approval_scoped",
-  "next_action": "After CI passes, request explicit user approval before enabling Notino live routing. Initial activation must stay scoped to exact verified product deep links and current-availability checks."
+  "readiness": "active_scoped",
+  "next_action": "Maintain the active Lattafa Eclaire 100 ml CJ deeplink health. Additional Notino products require their own exact-SKU verification and approval.",
+  "activation_approved_at": "2026-09-30T16:16:00Z",
+  "current_offer_snapshot": {
+    "price_eur": 33.5,
+    "shipping_eur": 3.9,
+    "in_stock": true,
+    "merchant_product_id": "LTF00869",
+    "checked_at": "2026-09-30T16:16:00Z"
+  }
 }

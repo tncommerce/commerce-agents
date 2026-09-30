@@ -68,6 +68,17 @@ def test_affiliate_programs_match_partner_registry_state() -> None:
                 f"{merchant_id}: unverified tracking must not claim verification"
             )
             continue
+        if partner["status"] == "active_product_deeplink_only":
+            assert partner.get("affiliate_url") is None, (
+                f"{merchant_id}: product-scoped routing must not expose a generic partner URL"
+            )
+            assert partner.get("routing_scope") == "verified_product_only"
+            assert partner.get("live_routing_allowed") is True
+            assert partner.get("verified_product_scope")
+            assert partner.get("tracking_strategy", "").startswith("verified_")
+            assert partner.get("last_verified_at")
+            continue
+
         assert partner["status"] == "active", (
             f"{merchant_id}: approved program with verified tracking should be active"
         )
