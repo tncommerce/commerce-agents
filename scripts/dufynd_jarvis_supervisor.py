@@ -28,8 +28,8 @@ DEFAULT_MAX_CYCLES = 20
 HARD_MAX_CYCLES = 40
 DEFAULT_IDLE_SECONDS = 300
 HARD_IDLE_SECONDS = 900
-DEFAULT_MAX_IDLE_CYCLES = 12
-HARD_MAX_IDLE_CYCLES = 24
+DEFAULT_MAX_IDLE_CYCLES = 60
+HARD_MAX_IDLE_CYCLES = 72
 
 IMMEDIATE_CONTINUE_REASONS = {
     "event_backlog_remaining",
@@ -44,6 +44,7 @@ TERMINAL_REASONS = {
     "event_timeout",
     "worker_runtime_error",
     "orchestration_error",
+    "time_horizon_reached",
 }
 
 
@@ -182,99 +183,123 @@ async def supervise_nightshift(
         _persist_supervisor(bridge, state, verified_at=ended)
         return state
 
-    while int(state["cycles_completed"]) < cycle_limit:
-        current = now()
-        if current >= deadline:
-            return finish("time_horizon_reached")
-
-        preflight = await asyncio.to_thread(_preflight, bridge)
-        state["last_preflight"] = preflight
-        budget_id = os.getenv(
-            "DUFYND_JARVIS_BUDGET_ID",
-            "jarvis_activation_pilot_001",
-        )
-        budget = await asyncio.to_thread(bridge.load_budget_status, budget_id)
-        state["budget"] = budget
-        _persist_supervisor(bridge, state, verified_at=current)
-
-        # Wait cheaply while the Work/TECH lease owns the only safe engineering
-        # work. No model call is made during this handoff window.
-        lease = preflight["tech_lease"]
-        lease_blocks_only_work = (
-            bool(lease.get("active"))
-            and int(preflight["pending_events"]) == 0
-            and int(preflight["non_engineering_safe_count"]) == 0
-            and int(preflight["engineering_safe_count"]) > 0
-        )
-
-        if not preflight["potential_work"] or lease_blocks_only_work:
-            if not lease_blocks_only_work and int(state["idle_cycles"]) >= idle_limit:
-                return finish("idle_limit_reached")
-            if not bool(budget.get("can_run")) and not preflight["potential_work"]:
-                return finish("budget_gate")
-
-            remaining = max(0, int((deadline - current).total_seconds()))
-            if remaining <= 0:
+    async def run_loop() -> dict[str, Any]:
+        while int(state["cycles_completed"]) < cycle_limit:
+            current = now()
+            if current >= deadline:
                 return finish("time_horizon_reached")
-
-            wait_seconds = min(idle_delay, remaining)
-            if lease_blocks_only_work:
-                lease_remaining = int(lease.get("remaining_seconds") or 0)
-                if lease_remaining > 0:
-                    wait_seconds = min(wait_seconds, lease_remaining)
-                state["lease_wait_cycles"] = int(state["lease_wait_cycles"]) + 1
-            else:
-                state["idle_cycles"] = int(state["idle_cycles"]) + 1
-
-            _persist_supervisor(bridge, state, verified_at=current)
-            await sleep(wait_seconds)
-            continue
-
-        try:
-            session = await run_once(
-                bridge,
-                max_tasks=max_tasks,
-                max_events=max_events,
-                worker_timeout_seconds=worker_timeout_seconds,
-                max_retries=max_retries,
+    
+            preflight = await asyncio.to_thread(_preflight, bridge)
+            state["last_preflight"] = preflight
+            budget_id = os.getenv(
+                "DUFYND_JARVIS_BUDGET_ID",
+                "jarvis_activation_pilot_001",
             )
-        except Exception as error:
-            state["runtime_error_type"] = type(error).__name__
-            return finish("orchestration_error", status="needs_attention")
+            budget = await asyncio.to_thread(bridge.load_budget_status, budget_id)
+            state["budget"] = budget
+            _persist_supervisor(bridge, state, verified_at=current)
+    
+            # Wait cheaply while the Work/TECH lease owns the only safe engineering
+            # work. No model call is made during this handoff window.
+            lease = preflight["tech_lease"]
+            lease_blocks_only_work = (
+                bool(lease.get("active"))
+                and int(preflight["pending_events"]) == 0
+                and int(preflight["non_engineering_safe_count"]) == 0
+                and int(preflight["engineering_safe_count"]) > 0
+            )
+    
+            if not preflight["potential_work"] or lease_blocks_only_work:
+                if not lease_blocks_only_work and int(state["idle_cycles"]) >= idle_limit:
+                    return finish("idle_limit_reached")
+                if not bool(budget.get("can_run")) and not preflight["potential_work"]:
+                    return finish("budget_gate")
+    
+                remaining = max(0, int((deadline - current).total_seconds()))
+                if remaining <= 0:
+                    return finish("time_horizon_reached")
+    
+                wait_seconds = min(idle_delay, remaining)
+                if lease_blocks_only_work:
+                    lease_remaining = int(lease.get("remaining_seconds") or 0)
+                    if lease_remaining > 0:
+                        wait_seconds = min(wait_seconds, lease_remaining)
+                    state["lease_wait_cycles"] = int(state["lease_wait_cycles"]) + 1
+                else:
+                    state["idle_cycles"] = int(state["idle_cycles"]) + 1
+    
+                _persist_supervisor(bridge, state, verified_at=current)
+                await sleep(wait_seconds)
+                continue
+    
+            try:
+                session = await run_once(
+                    bridge,
+                    max_tasks=max_tasks,
+                    max_events=max_events,
+                    worker_timeout_seconds=worker_timeout_seconds,
+                    max_retries=max_retries,
+                    deadline_at=deadline,
+                )
+            except Exception as error:
+                state["runtime_error_type"] = type(error).__name__
+                return finish("orchestration_error", status="needs_attention")
+    
+            state["cycles_completed"] = int(state["cycles_completed"]) + 1
+            state["idle_cycles"] = 0
+            summary = _session_summary(session)
+            state["session_summaries"].append(summary)
+            if len(state["session_summaries"]) > HARD_MAX_CYCLES:
+                state["session_summaries"] = state["session_summaries"][-HARD_MAX_CYCLES:]
+            _persist_supervisor(bridge, state, verified_at=now())
+    
+            if (
+                bool(session.get("branch_worker_used"))
+                or str(session.get("status") or "") == "awaiting_validation"
+            ):
+                return finish("engineering_quality_gate_pending")
+    
+            if str(session.get("status") or "") == "needs_attention":
+                return finish("session_needs_attention", status="needs_attention")
+    
+            reason = str(session.get("stop_reason") or "unknown")
+            if reason in TERMINAL_REASONS:
+                return finish(reason)
+            if reason in IMMEDIATE_CONTINUE_REASONS:
+                continue
+            if reason in IDLE_CONTINUE_REASONS:
+                results = [
+                    item for item in (session.get("task_results") or []) if isinstance(item, dict)
+                ]
+                if any(str(item.get("final_status") or "") == "in_progress" for item in results):
+                    return finish("unclassified_task_result", status="needs_attention")
+                continue
+    
+            return finish(f"unexpected_session_stop:{reason}", status="needs_attention")
+    
+        return finish("cycle_limit_reached")
 
-        state["cycles_completed"] = int(state["cycles_completed"]) + 1
-        state["idle_cycles"] = 0
-        summary = _session_summary(session)
-        state["session_summaries"].append(summary)
-        if len(state["session_summaries"]) > HARD_MAX_CYCLES:
-            state["session_summaries"] = state["session_summaries"][-HARD_MAX_CYCLES:]
-        _persist_supervisor(bridge, state, verified_at=now())
-
-        if (
-            bool(session.get("branch_worker_used"))
-            or str(session.get("status") or "") == "awaiting_validation"
-        ):
-            return finish("engineering_quality_gate_pending")
-
-        if str(session.get("status") or "") == "needs_attention":
-            return finish("session_needs_attention", status="needs_attention")
-
-        reason = str(session.get("stop_reason") or "unknown")
-        if reason in TERMINAL_REASONS:
-            return finish(reason)
-        if reason in IMMEDIATE_CONTINUE_REASONS:
-            continue
-        if reason in IDLE_CONTINUE_REASONS:
-            results = [
-                item for item in (session.get("task_results") or []) if isinstance(item, dict)
-            ]
-            if any(str(item.get("final_status") or "") == "in_progress" for item in results):
-                return finish("unclassified_task_result", status="needs_attention")
-            continue
-
-        return finish(f"unexpected_session_stop:{reason}", status="needs_attention")
-
-    return finish("cycle_limit_reached")
+    try:
+        return await run_loop()
+    except asyncio.CancelledError:
+        ended = now()
+        state["status"] = "needs_attention"
+        state["stop_reason"] = "supervisor_cancelled"
+        state["ended_at"] = iso_at(ended)
+        state["runtime_error_type"] = "CancelledError"
+        try:
+            await asyncio.wait_for(
+                asyncio.to_thread(
+                    _persist_supervisor,
+                    bridge,
+                    state,
+                    verified_at=ended,
+                ),
+                timeout=3.0,
+            )
+        except Exception:
+            pass
+        raise
 
 
 def main() -> int:
