@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import datetime, UTC
 
 from scripts.audit_dufynd_jarvis_control_plane import audit_control_plane
 
