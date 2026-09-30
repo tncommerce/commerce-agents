@@ -95,6 +95,17 @@ def build_budget_ledger(
     status_runs = int(budget_status.get("runs") or 0)
 
     issues: list[dict[str, Any]] = []
+    approval_decision = (approval or {}).get("decision") or {}
+    if not isinstance(approval_decision, dict):
+        approval_decision = {}
+    approval_valid = bool(
+        approval
+        and str(approval.get("status") or "") == "approved"
+        and approval_decision.get("approved") is True
+    )
+    approved_total_cap = _float(approval_decision.get("cap_usd"), default=-1.0)
+    approved_max_runs = int(approval_decision.get("max_runs") or 0)
+
     if approval is None:
         issues.append(
             {
@@ -103,12 +114,38 @@ def build_budget_ledger(
                 "message": "Budget window has no resolvable human approval record.",
             }
         )
+    elif not approval_valid:
+        issues.append(
+            {
+                "code": "budget_approval_not_approved",
+                "severity": "error",
+                "message": "Referenced human decision is not an explicit approved budget decision.",
+            }
+        )
     elif approved_per_run_cap is None:
         issues.append(
             {
                 "code": "per_run_approval_missing",
                 "severity": "error",
                 "message": "Human approval does not contain a valid per_run_cap_usd.",
+            }
+        )
+
+    window_cap = _float(budget_window.get("cap_usd"), default=-1.0)
+    window_max_runs = int(budget_window.get("max_runs") or 0)
+    if approval_valid and (
+        window_cap > approved_total_cap + FLOAT_TOLERANCE
+        or window_max_runs > approved_max_runs
+    ):
+        issues.append(
+            {
+                "code": "budget_window_exceeds_human_approval",
+                "severity": "error",
+                "message": "Configured budget window exceeds its referenced human approval.",
+                "window_cap_usd": window_cap,
+                "approved_cap_usd": approved_total_cap,
+                "window_max_runs": window_max_runs,
+                "approved_max_runs": approved_max_runs,
             }
         )
 
@@ -175,6 +212,9 @@ def build_budget_ledger(
         "approval": {
             "decision_id": (approval or {}).get("decision_id"),
             "status": (approval or {}).get("status"),
+            "valid": approval_valid,
+            "cap_usd": approved_total_cap if approved_total_cap >= 0 else None,
+            "max_runs": approved_max_runs or None,
             "per_run_cap_usd": approved_per_run_cap,
         },
         "ledger": {
