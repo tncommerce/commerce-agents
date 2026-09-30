@@ -284,7 +284,6 @@
       "community_qa_verified": true,
       "merchant_coverage_count": 2,
       "blockers": [
-        "verified_purchase_destination_pending",
         "approved_product_image_pending"
       ],
       "ready_for_live": false
