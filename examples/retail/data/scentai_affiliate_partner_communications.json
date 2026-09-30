@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-30T18:51:00Z",
+  "publisher": "DUFYND",
+  "operator": "TNCommerce",
+  "communications": [
+    {
+      "merchant_id": "notino",
+      "network": "CJ Affiliate",
+      "partner_support": "VIVNetworks / NOTINO Affiliate Team",
+      "recipient": "podpora+notino.de@vivnetworks.com",
+      "subject": "NOTINO.de Affiliate – Produktfeed / Bildnutzungsrechte für Publisher",
+      "sent_at": "2026-09-30T18:09:00Z",
+      "channel": "email",
+      "status": "awaiting_reply",
+      "scope": [
+        "availability of a NOTINO.de product feed or product catalog for publishers",
+        "publisher rights to display product images from the feed",
+        "conditions for storage/caching, resizing and background treatment",
+        "official alternative asset or image feed if no product feed is available"
+      ],
+      "product_context": {
+        "product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
+        "merchant_product_id": "LTF00869",
+        "gtin": "6290362340638"
+      },
+      "safety_state": {
+        "public_product_promotion_allowed": false,
+        "current_blocker": "approved_product_image_pending",
+        "manufacturer_image_reuse_assumed": false
+      },
+      "next_action": "On reply, verify whether the response explicitly grants publisher image/feed use, capture any restrictions, and update the image-rights evidence before changing catalog publication state."
+    }
+  ],
+  "note": "This log stores operational communication metadata only. No mailbox credentials, private tokens or message bodies containing secrets are stored.",
+  "operational_state_notes": [
+    {
+      "merchant_id": "notino",
+      "observed_at": "2026-09-30",
+      "activation_state": "active",
+      "activation_scope": "verified_product_only",
+      "live_products": [
+        "SC-LATTAFA-ECLAIRE-EDP-100"
+      ],
+      "release_feed_queue_live": false,
+      "interpretation": "Product-scoped CJ deeplink activation is independent from Release 01 feed activation. A non-live feed queue is expected until broader exact-SKU/feed validation exists and must not disable the already approved Eclaire deeplink."
+    },
+    {
+      "merchant_id": "top-parfuemerie",
+      "observed_at": "2026-09-30",
+      "application_status": "approved",
+      "product_data_available": true,
+      "current_feed_rows_reported": 8031,
+      "integration_state": "approved_credentials_pending",
+      "next_action": "verify current Awin credential/feed access and run a read-only mapped-row validation before any activation request"
+    }
+  ],
+  "cj_account_administration": {
+    "status": "manual_ui_step_pending",
+    "requested_change": "Update CJ user/login email from tuanaicommerce@gmail.com to kontakt@dufynd.de",
+    "support_guidance_received": true,
+    "support_guidance_summary": "CJ Support confirmed that the superuser can change the email in CJAM under Settings/Users/Edit and then verify the new address.",
+    "latest_follow_up_received_at": "2026-09-30T09:04:30Z",
+    "manual_step_required": true,
+    "note": "CJ Support was asked to keep the case open while the manual CJAM user/login email change to kontakt@dufynd.de is completed and verified.",
+    "reply_status": "sent",
+    "reply_sent_at": "2026-09-30T18:50:00Z"
+  }
+}
