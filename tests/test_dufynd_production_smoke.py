@@ -12,6 +12,7 @@ def transport(
     *,
     health_payload=None,
     partners_payload=None,
+    offers_payload=None,
     broken_storefront_path: str | None = None,
     detail_product_id: str = SAMPLE_PRODUCT_ID,
     robots_text: str = "User-agent: *\nDisallow: /\n",
@@ -32,6 +33,30 @@ def transport(
         "partners": [],
         "affiliate_disclosure": "Affiliate disclosure",
     }
+    resolved_offers = (
+        offers_payload
+        if offers_payload is not None
+        else {
+            "product_id": CRITICAL_PRODUCT_ID,
+            "best_offer_id": "perfumetrader-rabanne-1-million-edt-100",
+            "offers": [
+                {
+                    "offer_id": "perfumetrader-rabanne-1-million-edt-100",
+                    "product_id": CRITICAL_PRODUCT_ID,
+                    "merchant_id": "perfumetrader",
+                    "merchant_name": "Perfumetrader",
+                    "price": 89.0,
+                    "currency": "EUR",
+                    "total_price": 89.0,
+                    "in_stock": True,
+                    "clickout_path": ("/api/clickout/perfumetrader-rabanne-1-million-edt-100"),
+                    "affiliate_link": True,
+                    "last_updated_at": "2026-09-30T12:04:36+00:00",
+                }
+            ],
+            "affiliate_disclosure": "Affiliate disclosure",
+        }
+    )
 
     def handler(request: httpx.Request) -> httpx.Response:
         if request.url.host == "dufynd.de":
@@ -85,6 +110,9 @@ def transport(
                 },
             )
 
+        if request.url.path == f"/api/merchant-offers/{CRITICAL_PRODUCT_ID}":
+            return httpx.Response(200, json=resolved_offers)
+
         if request.url.path == "/api/merchant-partners":
             return httpx.Response(200, json=resolved_partners)
 
@@ -117,6 +145,7 @@ def test_smoke_passes_for_expected_contract() -> None:
         "product_catalog",
         "product_detail",
         "product_detail_rabanne_1_million",
+        "merchant_offers_rabanne_1_million",
         "merchant_partners",
     ]
 
@@ -353,3 +382,59 @@ def test_smoke_fails_when_rabanne_1_million_api_detail_is_missing() -> None:
     assert report.ok is False
     assert check.ok is False
     assert check.status_code == 404
+
+
+def test_smoke_fails_when_critical_merchant_offers_are_missing() -> None:
+    report = run_smoke(
+        storefront_url="https://dufynd.de",
+        api_url="https://api.dufynd.test",
+        transport=transport(
+            offers_payload={
+                "product_id": CRITICAL_PRODUCT_ID,
+                "best_offer_id": None,
+                "offers": [],
+                "affiliate_disclosure": "Affiliate disclosure",
+            }
+        ),
+    )
+
+    check = next(
+        check for check in report.checks if check.name == "merchant_offers_rabanne_1_million"
+    )
+    assert report.ok is False
+    assert check.ok is False
+    assert "no current offer" in check.detail
+
+
+def test_smoke_fails_on_unsafe_merchant_clickout_path() -> None:
+    report = run_smoke(
+        storefront_url="https://dufynd.de",
+        api_url="https://api.dufynd.test",
+        transport=transport(
+            offers_payload={
+                "product_id": CRITICAL_PRODUCT_ID,
+                "best_offer_id": "unsafe-offer",
+                "offers": [
+                    {
+                        "offer_id": "unsafe-offer",
+                        "product_id": CRITICAL_PRODUCT_ID,
+                        "merchant_id": "merchant-a",
+                        "merchant_name": "Merchant A",
+                        "price": 89.0,
+                        "currency": "EUR",
+                        "in_stock": True,
+                        "clickout_path": "https://merchant.example/product",
+                        "affiliate_link": False,
+                    }
+                ],
+                "affiliate_disclosure": "Affiliate disclosure",
+            }
+        ),
+    )
+
+    check = next(
+        check for check in report.checks if check.name == "merchant_offers_rabanne_1_million"
+    )
+    assert report.ok is False
+    assert check.ok is False
+    assert "stale or unsafe" in check.detail
