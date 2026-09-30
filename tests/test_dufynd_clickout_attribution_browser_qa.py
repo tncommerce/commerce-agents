@@ -201,3 +201,17 @@ def test_documented_comparison_links_preserve_acquisition_attribution() -> None:
     assert '<AcquisitionInternalLink href="/vergleich"' in detail_source
     assert '<AcquisitionInternalLink href="/duft"' in detail_source
     assert '<AcquisitionInternalLink href="/transparenz"' in detail_source
+
+
+def test_product_detail_internal_links_preserve_acquisition_attribution() -> None:
+    source = VISUAL_QA.read_text(encoding="utf-8")
+    detail_source = Path(
+        "examples/retail/storefront-web/app/duft/[slug]/page.tsx"
+    ).read_text(encoding="utf-8")
+
+    assert 'label: "product-detail-navigation-attribution"' in source
+    assert "qa_product_detail_content" in source
+    assert "product detail navigation lost acquisition attribution" in source
+    assert "AcquisitionInternalLink" in detail_source
+    assert '<AcquisitionInternalLink href="/duft" className="hover:underline">' in detail_source
+    assert '<AcquisitionInternalLink href="/transparenz" className="hover:underline">' in detail_source
