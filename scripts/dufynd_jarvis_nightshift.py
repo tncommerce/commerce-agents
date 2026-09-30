@@ -395,6 +395,7 @@ def _recover_interrupted_work(
 
     session["current_task"] = None
 
+
 def _task_result(
     task: dict[str, Any],
     *,
@@ -552,9 +553,9 @@ async def _run_task_with_retry(
                         "Safe worker reported in_progress or omitted a valid terminal marker; "
                         "task re-queued for a future bounded session instead of being marked done."
                     )
-                _best_effort_set_task_status(
-                bridge,
-                session,
+                persisted = _best_effort_set_task_status(
+                    bridge,
+                    session,
                     task_id=task_id,
                     status=persisted_status,
                     evidence=_append_evidence(
@@ -562,11 +563,19 @@ async def _run_task_with_retry(
                         f"nightshift_session={session['session_id']}; {note}",
                     ),
                 )
+                if not persisted:
+                    return _task_result(
+                        task,
+                        worker=worker,
+                        result_code=2,
+                        final_status="blocked",
+                        attempts=attempt,
+                    )
             else:
                 final_status = "in_progress"
                 _best_effort_set_task_status(
-                bridge,
-                session,
+                    bridge,
+                    session,
                     task_id=task_id,
                     status=final_status,
                     evidence=_append_evidence(
@@ -610,8 +619,8 @@ async def _run_task_with_retry(
             current = bridge.load_autonomy_task(task_id) or {}
             if str(current.get("status") or "") != "blocked":
                 _best_effort_set_task_status(
-                bridge,
-                session,
+                    bridge,
+                    session,
                     task_id=task_id,
                     status="blocked",
                     evidence=_append_evidence(
