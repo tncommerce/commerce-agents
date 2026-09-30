@@ -21,6 +21,7 @@ It then checks:
   the RPC's display rounding);
 - audited billed-run count versus the budget RPC's `runs`;
 - the maximum single-run cost;
+- run count, spend, average cost and maximum cost grouped by Jarvis run type;
 - whether any historical run exceeded the human-approved `per_run_cap_usd`;
 - whether the budget still has a resolvable explicit approved human decision;
 - whether the configured budget window stays within that decision's total cap and
