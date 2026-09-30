@@ -300,10 +300,7 @@ def test_recovery_never_marks_failed_safe_run_done() -> None:
         {
             "agent_name": "jarvis",
             "run_type": "safe_task_failed:repo_current_commerce",
-            "output_summary": (
-                "Useful evidence collected.\n"
-                "DUFYND_TASK_STATE: waiting_external"
-            ),
+            "output_summary": ("Useful evidence collected.\nDUFYND_TASK_STATE: waiting_external"),
             "decisions": [{"cost_usd": 0.12}],
             "created_at": "2026-09-29T21:55:00+00:00",
         }
