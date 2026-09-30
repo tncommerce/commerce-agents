@@ -10,6 +10,7 @@ DATA_DIR = Path("examples/retail/data")
 DEFAULT_PRODUCTS = DATA_DIR / "scentai_products.json"
 DEFAULT_REVIEW_QUEUE = DATA_DIR / "dufynd_product_visual_review_queue.json"
 DEFAULT_APPROVAL_QUEUE = DATA_DIR / "scentai_image_approval_work_queue.json"
+DEFAULT_STAGED_CANDIDATES = DATA_DIR / "dufynd_staged_image_fidelity_candidates_20260930.json"
 
 PRODUCT_TRUTH_ROLES = {"primary", "cutout"}
 PRODUCT_TRUTH_FIDELITY = {"verified"}
@@ -102,11 +103,21 @@ def build_visual_coverage_report(
     products_payload: dict[str, Any],
     review_queue: dict[str, Any],
     approval_queue: dict[str, Any],
+    staged_candidates: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     products = list(products_payload.get("products", []) or [])
-    live_products = [
+    catalog_products = [
         product for product in products if str(product.get("product_id") or "").startswith("SC-")
     ]
+    hidden_products = [
+        product
+        for product in catalog_products
+        if any(
+            str(blocker or "").strip()
+            for blocker in (product.get("validation") or {}).get("blockers", []) or []
+        )
+    ]
+    live_products = [product for product in catalog_products if product not in hidden_products]
 
     coverage_rows: list[dict[str, Any]] = []
     state_counts: Counter[str] = Counter()
@@ -151,6 +162,31 @@ def build_visual_coverage_report(
                 "next_action": item.get("next_action"),
             }
         )
+
+    existing_candidates = {
+        (row["product_id"], row["candidate_asset"]) for row in fidelity_review_queue
+    }
+    for item in (staged_candidates or {}).get("items", []) or []:
+        candidate_asset = str(item.get("candidate_asset") or "").strip()
+        key = (item.get("product_id"), candidate_asset)
+        if (
+            not candidate_asset
+            or item.get("status") != "pending_human_fidelity"
+            or key in existing_candidates
+        ):
+            continue
+        fidelity_review_queue.append(
+            {
+                "priority": item.get("priority"),
+                "product_id": item.get("product_id"),
+                "status": item.get("status"),
+                "candidate_asset": candidate_asset,
+                "evidence_url": item.get("reference_url"),
+                "next_action": "Review exact-variant fidelity; source registration, image approval "
+                "and catalog promotion remain separate gates.",
+            }
+        )
+        existing_candidates.add(key)
 
     fidelity_review_queue.sort(
         key=lambda row: (
@@ -215,6 +251,9 @@ def build_visual_coverage_report(
     ]
 
     return {
+        "catalog_product_count": len(catalog_products),
+        "hidden_product_count": len(hidden_products),
+        "hidden_product_ids": [product["product_id"] for product in hidden_products],
         "live_product_count": total,
         "coverage": {
             "verified_product_truth": verified,
@@ -264,6 +303,7 @@ def main() -> int:
     parser.add_argument("--products", type=Path, default=DEFAULT_PRODUCTS)
     parser.add_argument("--review-queue", type=Path, default=DEFAULT_REVIEW_QUEUE)
     parser.add_argument("--approval-queue", type=Path, default=DEFAULT_APPROVAL_QUEUE)
+    parser.add_argument("--staged-candidates", type=Path, default=DEFAULT_STAGED_CANDIDATES)
     parser.add_argument("--machine-readable", action="store_true")
     parser.add_argument("--output", type=Path, default=None)
     args = parser.parse_args()
@@ -272,6 +312,7 @@ def main() -> int:
         load_json(args.products),
         load_json(args.review_queue),
         load_json(args.approval_queue),
+        load_json(args.staged_candidates),
     )
 
     if args.output is not None:
@@ -288,6 +329,7 @@ def main() -> int:
     coverage = report["coverage"]
     print(
         "DUFYND visual coverage | "
+        f"catalog={report['catalog_product_count']} | hidden={report['hidden_product_count']} | "
         f"live={report['live_product_count']} | "
         f"verified_truth={coverage['verified_product_truth']} | "
         f"editorial={coverage['editorial_only']} | "

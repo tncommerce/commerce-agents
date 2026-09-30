@@ -80,6 +80,14 @@ This avoids regenerating bottle geometry in every background scene and lets the 
 
 `scripts/report_dufynd_visual_coverage.py` reports product-truth coverage and storefront-presentation coverage separately. The presentation backlog is a report, **not a second approval queue**.
 
+Coverage rates and `live_product_count` include only source products without
+non-empty validation blockers, matching the storefront visibility gate.
+`catalog_product_count`, `hidden_product_count` and `hidden_product_ids` retain
+visibility into internal entries excluded from the public catalog. Pending
+private exact-variant candidates are also listed for fidelity review via
+`--staged-candidates`; they do not contribute to live coverage or clear any
+source, image or promotion gate. Duplicate product/asset pairs are shown once.
+
 No generation spend is authorized by this standard. New paid generations still require the existing financial approval boundary.
 
 
