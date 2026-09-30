@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-09-30T20:15:00Z",
+  "generated_at": "2026-09-30T18:22:00Z",
   "merchant_id": "notino",
   "network": "CJ Affiliate",
   "program": "Notino",
@@ -34,15 +34,16 @@
       "offer_id": "notino-naxos-100",
       "product_id": "SC-XERJOFF-NAXOS-100",
       "merchant_product_id": "XEF3191",
-      "readiness": "ready_for_user_activation_approval",
+      "readiness": "verified_mapping_evidence_staged",
       "publish_allowed": false,
       "product_url": "https://www.notino.de/xerjoff/xj-1861-naxos-eau-de-parfum-unisex/",
       "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fxerjoff%2Fxj-1861-naxos-eau-de-parfum-unisex%2F",
       "mapping_status": "verified_current_variant_evidence",
       "offer_last_updated_at": "2026-09-30T18:22:00Z",
       "offer_in_stock_observation": true,
-      "source_of_truth_mapping_state": "verified_current_variant_mapped",
+      "source_of_truth_mapping_state": "pending_collision_free_handoff",
       "remaining_runtime_guards": [
+        "promote the exact Notino mapping into merchant_product_mappings only in a collision-free control-plane window",
         "revalidate current availability before surfacing the offer",
         "keep exact Xerjoff XJ 1861 Naxos Eau de Parfum 100 ml identity",
         "explicit user approval required before live routing"
@@ -53,16 +54,17 @@
       "offer_id": "notino-hugo-boss-bottled-absolu-100",
       "product_id": "SC-HUGO-BOSS-BOTTLED-ABSOLU-100",
       "merchant_product_id": "HUG13734",
-      "readiness": "ready_for_user_activation_approval",
+      "readiness": "verified_mapping_evidence_staged",
       "publish_allowed": false,
       "product_url": "https://www.notino.de/hugo-boss/boss-bottled-absolu-eau-de-parfum-fuer-herren/p-16261924/",
       "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fhugo-boss%2Fboss-bottled-absolu-eau-de-parfum-fuer-herren%2Fp-16261924%2F",
       "mapping_status": "verified_current_variant_evidence",
       "offer_last_updated_at": "2026-09-30T18:22:00Z",
       "offer_in_stock_observation": true,
-      "source_of_truth_mapping_state": "verified_current_variant_mapped",
+      "source_of_truth_mapping_state": "pending_collision_free_handoff",
       "variant_disambiguation": "BOSS Bottled Absolu (2024 Parfum Intense), not the older BOSS Bottled Absolute Eau de Parfum",
       "remaining_runtime_guards": [
+        "promote the exact Notino mapping into merchant_product_mappings only in a collision-free control-plane window",
         "revalidate current availability before surfacing the offer",
         "keep exact BOSS Bottled Absolu Parfum Intense 100 ml identity and exclude BOSS Bottled Absolute",
         "explicit user approval required before live routing"
@@ -75,5 +77,5 @@
     "affiliate_approval_implies_image_rights": false,
     "unverified_variant_fallback_allowed": false
   },
-  "next_action": "Euphoria, Naxos and BOSS Bottled Absolu have exact Notino source-of-truth mappings and remain staged. Revalidate current availability, then request explicit user approval before any product-specific live routing."
+  "next_action": "Euphoria remains the only candidate at the explicit activation-approval gate. Naxos and BOSS Bottled Absolu now have verified current Notino mapping evidence but remain staged and non-live until their exact mappings are promoted into merchant_product_mappings in a collision-free control-plane window."
 }
