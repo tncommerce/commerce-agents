@@ -19,6 +19,7 @@ def transport(
     partners_payload=None,
     offers_payload=None,
     eclaire_offers_payload=None,
+    eclaire_public: bool = True,
     broken_storefront_path: str | None = None,
     detail_product_id: str = SAMPLE_PRODUCT_ID,
     robots_text: str = "User-agent: *\nDisallow: /\n",
@@ -140,10 +141,24 @@ def transport(
                 },
             )
 
+        if request.url.path == f"/api/products/{NOTINO_ECLAIRE_PRODUCT_ID}":
+            if not eclaire_public:
+                return httpx.Response(404, json={"detail": "not found"})
+            return httpx.Response(
+                200,
+                json={
+                    "product_id": NOTINO_ECLAIRE_PRODUCT_ID,
+                    "brand": "Lattafa",
+                    "title": "Lattafa Eclaire Eau de Parfum 100 ml",
+                },
+            )
+
         if request.url.path == f"/api/merchant-offers/{CRITICAL_PRODUCT_ID}":
             return httpx.Response(200, json=resolved_offers)
 
         if request.url.path == f"/api/merchant-offers/{NOTINO_ECLAIRE_PRODUCT_ID}":
+            if not eclaire_public:
+                return httpx.Response(404, json={"detail": "not found"})
             return httpx.Response(200, json=resolved_eclaire_offers)
 
         if request.url.path == "/api/merchant-partners":
@@ -506,3 +521,17 @@ def test_smoke_fails_when_notino_eclaire_is_not_affiliate_routed() -> None:
     assert report.ok is False
     assert check.ok is False
     assert "expected_offer_ok=False" in check.detail
+
+
+def test_smoke_accepts_hidden_notino_eclaire_while_publication_gate_is_closed() -> None:
+    report = run_smoke(
+        storefront_url="https://dufynd.de",
+        api_url="https://api.dufynd.test",
+        transport=transport(eclaire_public=False),
+    )
+
+    check = next(check for check in report.checks if check.name == "merchant_offers_notino_eclaire")
+    assert report.ok is True
+    assert check.ok is True
+    assert check.status_code == 404
+    assert "publication-gated" in check.detail
