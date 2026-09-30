@@ -1396,6 +1396,162 @@ try {
     await mobileCatalogFilterContext.close();
   }
 
+  const merchantOfferTimeoutContext = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 1,
+    reducedMotion: "reduce",
+  });
+  try {
+    const merchantOfferTimeoutPage = await merchantOfferTimeoutContext.newPage();
+    let merchantOfferRequestCount = 0;
+
+    await merchantOfferTimeoutPage.route("**/api/session", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          session_id: "qa-merchant-offer-timeout-session-1234567890",
+        }),
+      });
+    });
+
+    await merchantOfferTimeoutPage.route(
+      "**/api/analytics/events",
+      async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({ ok: true }),
+        });
+      },
+    );
+
+    await merchantOfferTimeoutPage.route(
+      "**/api/merchant-offers/**",
+      async (route) => {
+        merchantOfferRequestCount += 1;
+
+        if (merchantOfferRequestCount === 1) {
+          await new Promise((resolve) => setTimeout(resolve, 8_500));
+          try {
+            await route.fulfill({
+              status: 200,
+              contentType: "application/json",
+              body: JSON.stringify({
+                product_id: "SC-QA-TIMEOUT-LATE",
+                best_offer_id: null,
+                offers: [],
+                affiliate_disclosure: "Late QA fixture",
+              }),
+            });
+          } catch {
+            // The storefront is expected to abort this deliberately slow request.
+          }
+          return;
+        }
+
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            product_id: "SC-QA-TIMEOUT-RECOVERY",
+            best_offer_id: "qa-timeout-recovery-offer",
+            offers: [
+              {
+                offer_id: "qa-timeout-recovery-offer",
+                product_id: "SC-QA-TIMEOUT-RECOVERY",
+                merchant_id: "qa-timeout-merchant",
+                merchant_name: "QA Timeout Merchant",
+                merchant_product_id: "qa-timeout-sku",
+                price: 99,
+                currency: "EUR",
+                shipping_cost: 0,
+                shipping_label: "Versand inklusive",
+                total_price: 99,
+                in_stock: true,
+                variant_label: "QA Recovery",
+                clickout_path: "/api/clickout/qa-timeout-recovery-offer",
+                affiliate_link: false,
+                last_updated_at: "2026-09-30T12:00:00Z",
+              },
+            ],
+            affiliate_disclosure: "QA recovery fixture",
+          }),
+        });
+      },
+    );
+
+    const response = await merchantOfferTimeoutPage.goto(
+      baseUrl + "/duft/rabanne-1-million",
+      { waitUntil: "domcontentloaded", timeout: 45_000 },
+    );
+    if (!response?.ok()) {
+      throw new Error(
+        "merchant-offer timeout QA did not load: HTTP " +
+          String(response?.status() ?? "no response"),
+      );
+    }
+
+    await merchantOfferTimeoutPage
+      .getByText("Händlerangebote werden geprüft …", { exact: true })
+      .waitFor({ state: "visible", timeout: 5_000 });
+
+    const retry = merchantOfferTimeoutPage.getByRole("button", {
+      name: "Angebote erneut prüfen",
+      exact: true,
+    });
+    await retry.waitFor({ state: "visible", timeout: 12_000 });
+
+    const errorCopy = merchantOfferTimeoutPage.getByText(
+      "Die Händlerangebote konnten gerade nicht geladen werden.",
+      { exact: false },
+    );
+    if (!(await errorCopy.isVisible())) {
+      throw new Error(
+        "merchant-offer timeout did not surface the existing fail-open recovery state",
+      );
+    }
+
+    await retry.click();
+
+    const recoveredOffers = merchantOfferTimeoutPage.locator(
+      "[data-merchant-offers]",
+    );
+    await recoveredOffers.waitFor({ state: "visible", timeout: 10_000 });
+    await recoveredOffers
+      .getByText("QA Timeout Merchant", { exact: true })
+      .waitFor({ state: "visible", timeout: 5_000 });
+
+    if (merchantOfferRequestCount !== 2) {
+      throw new Error(
+        "merchant-offer timeout retry expected 2 requests, got " +
+          String(merchantOfferRequestCount),
+      );
+    }
+
+    report.checks.push({
+      label: "merchant-offer-request-timeout",
+      status: "passed",
+    });
+    report.checks.push({
+      label: "merchant-offer-timeout-recovery",
+      status: "passed",
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({
+      label: "merchant-offer-request-timeout",
+      message,
+    });
+    report.checks.push({
+      label: "merchant-offer-request-timeout",
+      status: "failed",
+      message,
+    });
+  } finally {
+    await merchantOfferTimeoutContext.close();
+  }
+
   const attributionClickoutContext = await browser.newContext({
     viewport: { width: 390, height: 844 },
     deviceScaleFactor: 1,
