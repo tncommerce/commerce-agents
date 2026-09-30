@@ -21,9 +21,11 @@
   "verification": {
     "cj_link_generation": "passed",
     "destination_identity": "passed",
-    "redirect_dry_run": "pending",
+    "redirect_dry_run": "passed",
+    "redirect_confirmed_at": "2026-09-30T14:49:00Z",
+    "redirect_confirmation_source": "user_observed_browser_redirect",
     "live_routing_allowed": false
   },
-  "next_action": "Open the generated tracked URL once and confirm that it redirects to the intended Notino DE Lattafa Eclaire product page. Keep live routing disabled until that dry run and subsequent quality gates pass.",
-  "note": "No password, API key, session token or private credential is stored in this evidence record."
+  "next_action": "Run the remaining quality/activation gates and obtain explicit user approval before enabling any Notino live routing. Product-specific routing must remain scoped to verified exact variants.",
+  "note": "The user confirmed that the generated CJ tracking URL redirected to the intended Notino DE Lattafa Eclaire product page. No password, API key, session token or private credential is stored in this evidence record."
 }
