@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-09-30T18:58:00Z",
+  "updated_at": "2026-09-30T19:46:00Z",
   "publisher": "DUFYND",
   "operator": "TNCommerce",
   "communications": [
@@ -51,18 +51,30 @@
       "application_status": "approved",
       "product_data_available": true,
       "current_feed_rows_reported": 8031,
-      "integration_state": "approved_credentials_pending",
-      "next_action": "Manually configure AWIN_DATA_FEED_API_KEY as a GitHub Actions repository secret, then run the existing read-only DUFYND Awin Feed Revalidation workflow before any activation request.",
+      "integration_state": "read_only_feed_revalidated_review",
+      "next_action": "Keep live routing disabled. Review the three rights-cleared feed image candidates manually, keep Hypnotic Poison unresolved, and require independent availability evidence before any offer activation.",
       "secret_readiness": {
-        "checked_at": "2026-09-30T18:57:41Z",
+        "checked_at": "2026-09-30T19:16:00Z",
         "workflow_run_id": 36424104026,
-        "workflow_job_id": 110047605655,
         "required_secret": "AWIN_DATA_FEED_API_KEY",
-        "configured": false,
-        "result": "blocked_missing_repository_secret",
-        "evidence": "Read-only readiness job was re-run on 2026-09-30 and failed before feed access because AWIN_DATA_FEED_API_KEY was empty."
+        "configured": true,
+        "result": "ready",
+        "evidence": "The read-only secret readiness job passed after repository-secret configuration. No secret value was stored in repository state."
       },
-      "live_routing_allowed": false
+      "live_routing_allowed": false,
+      "feed_revalidation": {
+        "checked_at": "2026-09-30T19:34:30Z",
+        "membership_status": "active",
+        "current_feed_rows": 8021,
+        "download_succeeded": true,
+        "release_status": "review",
+        "mapped_release_products": 4,
+        "trackable_release_products": 0,
+        "release_feed_image_products": 4,
+        "availability_signal_present": false,
+        "live_routing_allowed": false,
+        "evidence_file": "examples/retail/data/dufynd_top_parfuemerie_revalidation_20260930.json"
+      }
     }
   ],
   "cj_account_administration": {
