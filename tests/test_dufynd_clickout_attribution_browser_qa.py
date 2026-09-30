@@ -68,7 +68,10 @@ def test_merchant_discovery_waits_for_storefront_session() -> None:
     assert 'label: "merchant-discovery-session-correlation"' in source
     assert "qa-partner-session-1234567890" in source
     assert "setTimeout(resolve, 1200)" in source
-    assert "merchant discovery clickout became actionable before storefront session correlation completed" in source
+    assert (
+        "merchant discovery clickout became actionable before storefront session correlation completed"
+        in source
+    )
     assert 'clickoutUrl.searchParams.get("sid") !== expectedPartnerSessionId' in source
     assert "data-partner-clickout-preparing" in merchant_source
     assert "sessionReady ? (" in merchant_source
