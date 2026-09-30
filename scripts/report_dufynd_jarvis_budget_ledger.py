@@ -78,12 +78,25 @@ def build_budget_ledger(
             continue
 
         run_cost = round(sum(_float(item.get("cost_usd")) for item in decisions), 9)
+        runtimes = sorted({str(item.get("runtime")) for item in decisions if item.get("runtime")})
+        worker_roles = sorted(
+            {str(item.get("worker_role")) for item in decisions if item.get("worker_role")}
+        )
         total_spent += run_cost
         ledger_rows.append(
             {
                 "id": run.get("id"),
                 "agent_name": run.get("agent_name"),
                 "run_type": run.get("run_type"),
+                "runtime": (
+                    runtimes[0] if len(runtimes) == 1 else "mixed" if runtimes else "unknown"
+                ),
+                "worker_role": (
+                    worker_roles[0] if len(worker_roles) == 1 else "mixed" if worker_roles else None
+                ),
+                "failed_model_turns": sum(
+                    1 for item in decisions if item.get("failed_model_turn") is True
+                ),
                 "created_at": run.get("created_at"),
                 "cost_usd": run_cost,
                 "decision_count": len(decisions),
@@ -119,6 +132,35 @@ def build_budget_ledger(
             6,
         )
     by_run_type = dict(sorted(by_run_type.items()))
+
+    by_runtime: dict[str, dict[str, Any]] = {}
+    for row in ledger_rows:
+        runtime = str(row.get("runtime") or "unknown")
+        summary = by_runtime.setdefault(
+            runtime,
+            {
+                "runs": 0,
+                "spent_usd": 0.0,
+                "max_single_run_usd": 0.0,
+                "failed_model_turns": 0,
+            },
+        )
+        summary["runs"] += 1
+        summary["spent_usd"] += row["cost_usd"]
+        summary["max_single_run_usd"] = max(
+            summary["max_single_run_usd"],
+            row["cost_usd"],
+        )
+        summary["failed_model_turns"] += int(row.get("failed_model_turns") or 0)
+
+    for summary in by_runtime.values():
+        summary["spent_usd"] = round(summary["spent_usd"], 6)
+        summary["max_single_run_usd"] = round(summary["max_single_run_usd"], 6)
+        summary["average_run_usd"] = round(
+            summary["spent_usd"] / summary["runs"],
+            6,
+        )
+    by_runtime = dict(sorted(by_runtime.items()))
     status_spent = round(_float(budget_status.get("spent_usd")), 6)
     status_runs = int(budget_status.get("runs") or 0)
 
@@ -257,6 +299,7 @@ def build_budget_ledger(
             "average_run_usd": round(total_spent / billed_runs, 6) if billed_runs else 0.0,
             "over_cap_runs": over_cap_rows,
             "by_run_type": by_run_type,
+            "by_runtime": by_runtime,
             "rows": ledger_rows,
         },
         "reconciliation": {

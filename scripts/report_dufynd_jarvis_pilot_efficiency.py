@@ -88,6 +88,27 @@ def build_pilot_efficiency_report(
         )
     family_rows.sort(key=lambda row: (-row["spent_usd"], row["family"]))
 
+    runtime_rows: list[dict[str, Any]] = []
+    for runtime, summary in (ledger["ledger"].get("by_runtime") or {}).items():
+        spent = float(summary.get("spent_usd") or 0.0)
+        runtime_rows.append(
+            {
+                "runtime": runtime,
+                "runs": int(summary.get("runs") or 0),
+                "spent_usd": round(spent, 6),
+                "spend_share": round(spent / total_spent, 6) if total_spent else 0.0,
+                "average_run_usd": float(summary.get("average_run_usd") or 0.0),
+                "max_run_usd": float(summary.get("max_single_run_usd") or 0.0),
+                "failed_model_turns": int(summary.get("failed_model_turns") or 0),
+            }
+        )
+    runtime_rows.sort(key=lambda row: (-row["spent_usd"], row["runtime"]))
+
+    failed_model_turn_rows = [row for row in rows if int(row.get("failed_model_turns") or 0) > 0]
+    failed_model_turns = sum(
+        int(row.get("failed_model_turns") or 0) for row in failed_model_turn_rows
+    )
+
     repeated_cost_centers = [
         row
         for row in family_rows
@@ -133,6 +154,16 @@ def build_pilot_efficiency_report(
                 "run_ids": [row.get("id") for row in near_cap_rows],
             }
         )
+    if failed_model_turn_rows:
+        signals.append(
+            {
+                "code": "failed_model_turn_cost_present",
+                "severity": "attention",
+                "run_count": len(failed_model_turn_rows),
+                "failed_model_turns": failed_model_turns,
+                "run_ids": [row.get("id") for row in failed_model_turn_rows],
+            }
+        )
     if repeated_cost_centers:
         signals.append(
             {
@@ -153,8 +184,11 @@ def build_pilot_efficiency_report(
             "failed_runs": len(failed_rows),
             "failed_spend_usd": failed_spend,
             "failed_spend_share": round(failed_share, 6),
+            "failed_model_turns": failed_model_turns,
+            "failed_model_turn_runs": len(failed_model_turn_rows),
         },
         "families": family_rows,
+        "runtimes": runtime_rows,
         "repeated_cost_centers": repeated_cost_centers,
         "near_cap": {
             "ratio": NEAR_CAP_RATIO,
