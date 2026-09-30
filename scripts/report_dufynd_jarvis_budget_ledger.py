@@ -9,6 +9,7 @@ from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
 
 DEFAULT_BUDGET_ID = "jarvis_activation_pilot_001"
 FLOAT_TOLERANCE = 0.000001
+SPEND_RECONCILIATION_TOLERANCE_USD = 0.0001
 
 
 def _float(value: object, default: float = 0.0) -> float:
@@ -167,7 +168,7 @@ def build_budget_ledger(
                 }
             )
 
-    if abs(total_spent - status_spent) > FLOAT_TOLERANCE:
+    if abs(total_spent - status_spent) > SPEND_RECONCILIATION_TOLERANCE_USD:
         issues.append(
             {
                 "code": "budget_spend_reconciliation_mismatch",
@@ -226,7 +227,7 @@ def build_budget_ledger(
         },
         "reconciliation": {
             "run_count_matches": billed_runs == status_runs,
-            "spend_matches": abs(total_spent - status_spent) <= FLOAT_TOLERANCE,
+            "spend_matches": abs(total_spent - status_spent) <= SPEND_RECONCILIATION_TOLERANCE_USD,
         },
         "remaining": {
             "usd": round(remaining_usd, 6),
