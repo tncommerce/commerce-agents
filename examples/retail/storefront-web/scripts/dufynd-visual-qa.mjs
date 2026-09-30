@@ -2021,6 +2021,7 @@ try {
       async (route) => {
         partnerRequestCount += 1;
         if (partnerRequestCount === 1) {
+          await new Promise((resolve) => setTimeout(resolve, 1200));
           await route.fulfill({
             status: 503,
             contentType: "application/json",
@@ -2059,10 +2060,27 @@ try {
       );
     }
 
+    const loading = partnerLoadRecoveryPage.locator(
+      "[data-merchant-discovery-loading]",
+    );
+    await loading.waitFor({ state: "visible", timeout: 5_000 });
+    if (
+      (await loading.locator('a[href*="/api/merchant-partners/"]').count()) !== 0
+    ) {
+      throw new Error(
+        "merchant discovery loading state exposed an actionable partner link",
+      );
+    }
+
     const recovery = partnerLoadRecoveryPage.locator(
       "[data-merchant-discovery-error]",
     );
     await recovery.waitFor({ state: "visible", timeout: 20_000 });
+    if ((await loading.count()) !== 0) {
+      throw new Error(
+        "merchant discovery loading placeholder did not clear after load failure",
+      );
+    }
     await recovery
       .getByRole("button", { name: "Partnerhändler erneut laden" })
       .click();
@@ -2090,6 +2108,10 @@ try {
       );
     }
 
+    report.checks.push({
+      label: "merchant-discovery-loading-stability",
+      status: "passed",
+    });
     report.checks.push({
       label: "merchant-discovery-load-recovery",
       status: "passed",

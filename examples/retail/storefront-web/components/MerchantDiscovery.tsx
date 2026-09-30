@@ -49,7 +49,32 @@ export default function MerchantDiscovery({
     };
   }, [reloadToken]);
 
-  if (payload === undefined) return null;
+  if (payload === undefined) {
+    return (
+      <section
+        aria-busy="true"
+        aria-label="Partnerhändler entdecken"
+        className="min-h-[132px] rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm)"
+        data-merchant-discovery-loading
+      >
+        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+          <h2 className="text-[15px] font-semibold">
+            Partnerhändler werden geladen
+          </h2>
+          <span className="text-[11.5px] text-(--ink-soft)">
+            Einen Moment bitte
+          </span>
+        </div>
+        <p className="mt-1 max-w-2xl text-[12px] leading-5 text-(--ink-soft)">
+          Wir bereiten die verfügbaren Partneroptionen vor.
+        </p>
+        <span
+          aria-hidden="true"
+          className="mt-3 block h-9 w-40 animate-pulse rounded-xl border border-(--line-strong) bg-(--surface)"
+        />
+      </section>
+    );
+  }
 
   if (loadError) {
     return (
