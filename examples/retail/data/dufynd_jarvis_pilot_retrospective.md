@@ -13,7 +13,8 @@ The retrospective combines:
 - human-approval validity;
 - budget run-count and spend reconciliation;
 - audited pilot run count, spend and average run cost;
-- failed-run count and failed-run spend;
+- failed-run count, failed-run spend and recorded failed model turns;
+- spend/count/average/max attribution by recorded Jarvis runtime;
 - repeated cost centers;
 - near-per-run-cap activity;
 - remaining approved runs and budget headroom;
@@ -54,6 +55,10 @@ python -m scripts.report_dufynd_jarvis_pilot_retrospective \
   --pretty \
   --fail-on-attention
 ```
+
+Runtime attribution comes from the audited decision metadata recorded with each
+billed Jarvis run. Legacy rows without a runtime are shown as `unknown`; a run
+containing multiple recorded runtimes is shown as `mixed`.
 
 The report is observational only. It does not mutate budget windows, approvals,
 queue state, model runtime, production data or GitHub state.
