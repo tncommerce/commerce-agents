@@ -363,6 +363,7 @@ def test_supervisor_hard_bounds_requested_limits(monkeypatch) -> None:
     assert state["max_idle_cycles"] == 0
     assert state["stop_reason"] == "idle_limit_reached"
 
+
 def test_supervisor_persists_terminal_state_when_session_raises(monkeypatch) -> None:
     bridge = FakeBridge([safe_task("repo_current_commerce", "commerce")])
     clock = FakeClock()
