@@ -51,7 +51,10 @@ def test_p0_fidelity_packet_records_human_decisions_without_auto_approval() -> N
     creed = rows[CREED_ID]
     assert creed["review_decision"] == "needs_revision"
     assert creed["current_state"] == "candidate_generated_pending_reference_gate"
-    assert creed["candidate_asset"] == active[CREED_ID]["candidate_asset"]
+    assert creed["candidate_asset"] in {
+        row["candidate_asset"] for row in active[CREED_ID]["candidate_history"]
+    }
+    assert active[CREED_ID]["status"] == "candidate_generated_pending_human_fidelity"
 
 
 def test_p0_fidelity_packet_never_implies_external_image_rights() -> None:

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated_at": "2026-09-29",
+  "updated_at": "2026-09-30",
   "purpose": "Machine-readable DUFYND product visual fidelity queue. `items` contains active blocking reviews; `approved_product_truth` records human-approved DUFYND-generated assets promoted after fidelity review.",
   "rules": [
     "P0 items in `items` must not be promoted to verified primary product depictions until resolved.",
@@ -14,11 +14,39 @@
       "product_id": "SC-CREED-ABSOLU-AVENTUS-100",
       "asset": "/products/pilot/creed-absolu-aventus-editorial.webp",
       "priority": "P0",
-      "status": "candidate_generated_pending_reference_gate",
-      "finding": "The current live editorial remains invalid as product truth because it visibly reads 75 ML / 2.5 FL.OZ while the catalog item is 100 ml. A new volume-neutral black Absolu Aventus candidate has been generated, but the official current 100 ml page still uses variant-ambiguous imagery, so it remains intentionally unverified.",
-      "next_action": "Keep the candidate inactive until the exact 100 ml bottle/packaging variant is resolved or a volume-neutral exact-reference side-by-side check can be completed.",
-      "evidence_url": "https://www.creedfragrance.de/p/absolu-aventus/16281794/?variation=16281796",
-      "candidate_asset": "examples/retail/review-assets/product-candidates/creed-absolu-aventus-p0-v1.webp"
+      "status": "candidate_generated_pending_human_fidelity",
+      "finding": "Exact official UK 100 ml variant reference is now resolved: variant 54334047060353, SKU 1110090, barcode 3508440004352. Its textured black cuff and silver-bordered rectangular plaque differ from the previous candidate. A new transparent DUFYND-generated recreation remains inactive pending human fidelity approval.",
+      "next_action": "Review v2 against the exact 100 ml reference, especially silhouette, cap, textured cuff, silver border, rider emblem and typography. Do not activate or clear the P0 gate without explicit human fidelity approval.",
+      "evidence_url": "https://www.creedfragrances.co.uk/products/absolu-aventus?variant=54334047060353",
+      "candidate_asset": "examples/retail/review-assets/product-candidates/creed-absolu-aventus-p0-v2.png",
+      "candidate_history": [
+        {
+          "candidate_asset": "examples/retail/review-assets/product-candidates/creed-absolu-aventus-p0-v1.webp",
+          "status": "superseded_needs_revision",
+          "reason": "Smooth glass and direct-print label do not match the exact 100 ml manufacturer reference."
+        }
+      ],
+      "reference_variant": {
+        "volume_ml": 100,
+        "concentration": "Eau de Parfum",
+        "variant_id": 54334047060353,
+        "manufacturer_sku": "1110090",
+        "barcode": "3508440004352",
+        "image_url": "https://cdn.shopify.com/s/files/1/0738/7706/1942/files/Absolu_Aventus_100ml_Mobile_1.jpg?v=1788440618",
+        "evidence_api_url": "https://www.creedfragrances.co.uk/products/absolu-aventus.js",
+        "verified_at": "2026-09-30",
+        "reference_only": true
+      },
+      "candidate_provenance": {
+        "source": "dufynd_generated",
+        "generator": "built_in_imagegen",
+        "sha256": "88bdf7bf5535922bd6e5aa42195618cc4e6fa459f730a5ce086774c5d15db68e",
+        "width": 1145,
+        "height": 1374,
+        "has_alpha": true,
+        "approval_status": "pending_human_fidelity",
+        "public_activation": false
+      }
     }
   ],
   "cleared_for_editorial_use": [
