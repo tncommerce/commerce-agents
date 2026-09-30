@@ -1,12 +1,12 @@
 # DUFYND 3D fragrance asset requests — dispatch record
 
 Status: sent_waiting_external
-Checked: 2026-09-28  
+Checked: 2026-09-30
 Owner: DUFYND / TNCommerce
 
-This packet prepares product-specific requests for official 3D fragrance assets or explicit written permission to use an approved 3D asset on DUFYND. Nothing in this file has been sent.
+This packet archives the five dispatched product-specific requests for official 3D fragrance assets or explicit written permission to use an approved 3D asset on DUFYND.
 
-Every request remains USER_APPROVAL_REQUIRED before outbound sending.
+The user approved all five requests before dispatch. Any additional outreach needs its own authorization; this record does not authorize duplicate sending.
 
 ## Rights acceptance required
 
