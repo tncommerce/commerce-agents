@@ -69,6 +69,23 @@ def mock_transport() -> httpx.MockTransport:
                 },
             )
 
+        if request.method == "GET" and request.url.path.endswith("/dufynd_creative_patterns"):
+            assert request.url.params["select"] == "pattern_id,name,role,mechanism,best_for"
+            assert request.url.params["order"] == "pattern_id.asc"
+            assert request.url.params["limit"] == "25"
+            return httpx.Response(
+                200,
+                json=[
+                    {
+                        "pattern_id": "pattern_previsualization_lock",
+                        "name": "Previsualization Lock",
+                        "role": "camera",
+                        "mechanism": "Plan composition before expensive rendering.",
+                        "best_for": ["hero videos"],
+                    }
+                ],
+            )
+
         if request.url.path.endswith("/rpc/get_dufynd_jarvis_creative_context"):
             return httpx.Response(
                 200,
@@ -447,6 +464,19 @@ def test_bridge_rejects_terminal_safe_worker_status() -> None:
             status="done",
             evidence="unsafe terminal completion",
         )
+
+
+def test_bridge_loads_bounded_creative_pattern_index() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    patterns = bridge.load_creative_pattern_index(limit=25)
+
+    assert len(patterns) == 1
+    assert patterns[0]["pattern_id"] == "pattern_previsualization_lock"
 
 
 def test_bridge_loads_context_and_summary() -> None:
