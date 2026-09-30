@@ -19,6 +19,7 @@ from scripts.dufynd_jarvis_runtime import (
 )
 
 SESSION_KEY = "jarvis.nightshift_session"
+SUPERVISOR_KEY = "jarvis.nightshift_supervisor"
 TECH_LEASE_KEY = "continuity.tech_lease"
 DEFAULT_TECH_LEASE_WAIT_SECONDS = 2700
 HARD_TECH_LEASE_WAIT_SECONDS = 3600
@@ -923,6 +924,39 @@ def _duration_text(start_iso: str, end_iso: str) -> str:
     return f"{seconds}s"
 
 
+def _latest_task_results(results: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    latest: dict[str, dict[str, Any]] = {}
+    anonymous: list[dict[str, Any]] = []
+    for result in results:
+        task_id = str(result.get("task_id") or "").strip()
+        if task_id:
+            latest[task_id] = result
+        else:
+            anonymous.append(result)
+    return [*latest.values(), *anonymous]
+
+
+def _load_supervisor_report_state(
+    bridge: DufyndJarvisBridge,
+) -> dict[str, Any] | None:
+    row = bridge.load_master_status_entry(SUPERVISOR_KEY)
+    value = (row or {}).get("value") or {}
+    if not isinstance(value, dict) or not value.get("started_at"):
+        return None
+    return dict(value)
+
+
+def _supervisor_task_results(supervisor: dict[str, Any]) -> list[dict[str, Any]]:
+    collected: list[dict[str, Any]] = []
+    for summary in supervisor.get("session_summaries") or []:
+        if not isinstance(summary, dict):
+            continue
+        for result in summary.get("task_results") or []:
+            if isinstance(result, dict):
+                collected.append(dict(result))
+    return _latest_task_results(collected)
+
+
 def build_morning_report(
     bridge: DufyndJarvisBridge,
     *,
@@ -931,11 +965,74 @@ def build_morning_report(
 ) -> tuple[dict[str, Any], str]:
     row = bridge.load_master_status_entry(SESSION_KEY)
     session = dict((row or {}).get("value") or {})
-    if not session:
-        raise RuntimeError("No Jarvis nightshift session is available for reporting.")
+    supervisor = _load_supervisor_report_state(bridge)
 
-    ended_at = session.get("ended_at") or iso_now()
-    started_at = str(session["started_at"])
+    if not session and not supervisor:
+        raise RuntimeError("No Jarvis nightshift or supervisor state is available for reporting.")
+
+    summaries = [
+        item
+        for item in ((supervisor or {}).get("session_summaries") or [])
+        if isinstance(item, dict)
+    ]
+    supervisor_session_ids = {
+        str(item.get("session_id") or "")
+        for item in summaries
+        if str(item.get("session_id") or "").strip()
+    }
+
+    session_matches_supervisor = False
+    use_supervisor = False
+    if supervisor and not session:
+        use_supervisor = True
+    elif session and supervisor:
+        session_id = str(session.get("session_id") or "")
+        session_started = _parse_iso_timestamp(session.get("started_at"))
+        supervisor_started = _parse_iso_timestamp(supervisor.get("started_at"))
+        if supervisor_session_ids and session_id in supervisor_session_ids:
+            session_matches_supervisor = True
+            use_supervisor = True
+        elif supervisor_started and session_started and supervisor_started > session_started:
+            # A newer idle/no-session supervisor run must not inherit stale
+            # details from the previous Nightshift session.
+            use_supervisor = True
+    elif session:
+        session_matches_supervisor = True
+
+    if use_supervisor:
+        started_at = str(supervisor["started_at"])
+        ended_at = str(
+            supervisor.get("ended_at")
+            or (session.get("ended_at") if session_matches_supervisor else None)
+            or iso_now()
+        )
+        results = _supervisor_task_results(supervisor)
+        session_count = len(summaries)
+        stop_reason = str(
+            supervisor.get("stop_reason")
+            or ("workflow_failed" if qa_status == "failure" else "unknown")
+        )
+        supervisor_info: dict[str, Any] | None = {
+            "supervisor_id": supervisor.get("supervisor_id"),
+            "status": supervisor.get("status"),
+            "cycles_completed": int(supervisor.get("cycles_completed") or 0),
+            "idle_cycles": int(supervisor.get("idle_cycles") or 0),
+            "deadline_at": supervisor.get("deadline_at"),
+            "stop_reason": stop_reason,
+        }
+    else:
+        started_at = str(session["started_at"])
+        ended_at = str(session.get("ended_at") or iso_now())
+        results = _latest_task_results(
+            [r for r in (session.get("task_results") or []) if isinstance(r, dict)]
+        )
+        session_count = 1
+        stop_reason = str(
+            session.get("stop_reason")
+            or ("workflow_failed" if qa_status == "failure" else "unknown")
+        )
+        supervisor_info = None
+
     runs = bridge.load_agent_runs_since(started_at)
     queue = bridge.load_autonomy_queue()
     health = bridge.load_health()
@@ -945,12 +1042,16 @@ def build_morning_report(
     budget = bridge.load_budget_status(budget_id)
     ai_cost_usd = _sum_run_costs(runs)
 
-    results = [r for r in (session.get("task_results") or []) if isinstance(r, dict)]
-    cost_complete = not session.get("runtime_error_type") and not any(
-        int(r.get("result_code") or 0) == 124 for r in results
+    result_timeout = any(int(r.get("result_code") or 0) == 124 for r in results)
+    supervisor_timeout = any(
+        str(item.get("stop_reason") or "") == "event_timeout" for item in summaries
     )
-    if int(session.get("event_result") or 0) == 124:
-        cost_complete = False
+    session_timeout = bool(
+        session_matches_supervisor and int(session.get("event_result") or 0) == 124
+    )
+    runtime_error = bool(session_matches_supervisor and session.get("runtime_error_type"))
+    cost_complete = not (result_timeout or supervisor_timeout or session_timeout or runtime_error)
+
     completed = sum(1 for r in results if r.get("final_status") == "done")
     in_progress = len(queue.get("in_progress") or [])
     blocked = sum(1 for r in results if r.get("final_status") == "blocked")
@@ -961,10 +1062,10 @@ def build_morning_report(
     domains: dict[str, list[str]] = {}
     for result in results:
         domain = str(result.get("domain") or "other")
-        line = (
-            f"{result.get('title')} — {result.get('final_status')} "
-            f"({result.get('worker')}, attempts={result.get('attempts')})"
-        )
+        title = str(result.get("title") or result.get("task_id") or "Unnamed task")
+        worker = str(result.get("worker") or "unknown_worker")
+        attempts = result.get("attempts")
+        line = f"{title} — {result.get('final_status')} ({worker}, attempts={attempts})"
         domains.setdefault(domain, []).append(line)
 
     blockers = [
@@ -1008,14 +1109,25 @@ def build_morning_report(
     else:
         next_priority = "No safe autonomous work available."
 
+    latest_summary = summaries[-1] if summaries else {}
+    latest_session_id = (
+        latest_summary.get("session_id") if use_supervisor else session.get("session_id")
+    )
+    validation = dict(session.get("validation") or {}) if session_matches_supervisor else {}
+    result_pr_url = next(
+        (str(result.get("pr_url")) for result in reversed(results) if result.get("pr_url")),
+        None,
+    )
+
     report = {
         "title": "DUFYND NIGHTSHIFT",
-        "session_id": session["session_id"],
+        "session_id": latest_session_id,
+        "session_count": session_count,
+        "supervisor": supervisor_info if use_supervisor else None,
         "start": started_at,
         "end": ended_at,
         "duration": _duration_text(started_at, ended_at),
-        "stop_reason": session.get("stop_reason")
-        or ("workflow_failed" if qa_status == "failure" else "unknown"),
+        "stop_reason": stop_reason,
         "completed": completed,
         "in_progress": in_progress,
         "blocked": blocked,
@@ -1023,7 +1135,7 @@ def build_morning_report(
         "domains": domains,
         "tests": {
             "workflow_status": qa_status,
-            "branch_validation": (session.get("validation") or {}).get("status"),
+            "branch_validation": validation.get("status"),
         },
         "ai_cost_usd": ai_cost_usd,
         "ai_cost_source": "audited_agent_runs",
@@ -1032,9 +1144,11 @@ def build_morning_report(
         "blockers": blockers,
         "approvals": approvals,
         "recommended_next_priority": next_priority,
-        "pr_url": pr_url or (session.get("validation") or {}).get("pr_url"),
+        "pr_url": pr_url or validation.get("pr_url") or result_pr_url,
         "inbox": health.get("inbox") or {},
-        "source_fingerprint_sha256": session.get("source_fingerprint_sha256"),
+        "source_fingerprint_sha256": (
+            session.get("source_fingerprint_sha256") if session_matches_supervisor else None
+        ),
     }
 
     lines = [
@@ -1043,13 +1157,25 @@ def build_morning_report(
         f"Start: {report['start']}",
         f"Ende: {report['end']}",
         f"Dauer: {report['duration']}",
-        "",
-        f"Completed: {completed}",
-        f"In Progress: {in_progress}",
-        f"Blocked: {blocked}",
-        f"Waiting Approval: {waiting_approval}",
-        "",
     ]
+    if supervisor_info and use_supervisor:
+        lines.extend(
+            [
+                f"Supervisor: {supervisor_info.get('supervisor_id')}",
+                f"Sessions: {session_count}",
+                f"Cycles: {supervisor_info.get('cycles_completed')}",
+            ]
+        )
+    lines.extend(
+        [
+            "",
+            f"Completed: {completed}",
+            f"In Progress: {in_progress}",
+            f"Blocked: {blocked}",
+            f"Waiting Approval: {waiting_approval}",
+            "",
+        ]
+    )
 
     for label, domain in (
         ("Tech", "engineering"),
@@ -1069,14 +1195,14 @@ def build_morning_report(
         [
             "## Tests",
             f"- Workflow: {qa_status}",
-            f"- Branch Validation: {(session.get('validation') or {}).get('status')}",
+            f"- Branch Validation: {validation.get('status')}",
             "",
             "## AI Cost",
             f"${ai_cost_usd:.4f}",
             (
                 "- Quelle: auditierte Agent-Runs."
                 if cost_complete
-                else "- Quelle: auditierte Agent-Runs; wegen Timeout kann zusätzlicher Provider-Verbrauch unverbucht sein."
+                else "- Quelle: auditierte Agent-Runs; wegen Timeout/Abbruch kann zusätzlicher Provider-Verbrauch unverbucht sein."
             ),
             "",
             "## Blocker",
@@ -1099,7 +1225,7 @@ def build_morning_report(
             "## Empfohlene nächste Priorität",
             f"- {next_priority}",
             "",
-            f"Stop-Grund: {session.get('stop_reason')}",
+            f"Stop-Grund: {stop_reason}",
         ]
     )
 
