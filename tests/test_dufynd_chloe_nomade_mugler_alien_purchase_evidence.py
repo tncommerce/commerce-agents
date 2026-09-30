@@ -61,10 +61,7 @@ def test_new_women_purchase_evidence_does_not_grant_image_or_affiliate_rights() 
 
 
 def test_new_women_offers_clear_dynamic_purchase_gate_only() -> None:
-    staging = {
-        row["product_id"]: row
-        for row in load("scentai_catalog_staging.json")["products"]
-    }
+    staging = {row["product_id"]: row for row in load("scentai_catalog_staging.json")["products"]}
     offers = load("merchant_offers.json")["offers"]
 
     for product_id in (
