@@ -1006,6 +1006,39 @@ try {
               `homepage audience discovery expected 3 cards, got ${await audienceCards.count()}`,
             );
           }
+
+          for (const audience of audienceKeys) {
+            const card = page.locator(
+              `a[data-dufynd-home-audience-card][href="/duft?zielgruppe=${audience}"]`,
+            );
+            if ((await card.count()) !== 1) {
+              throw new Error(
+                `homepage audience card missing for ${audience}`,
+              );
+            }
+
+            const expectedCount = expectedAudienceRoutes[audience].length;
+            const expectedText =
+              expectedCount === 1
+                ? "1 Duft im aktuellen Katalog"
+                : `${expectedCount} Düfte im aktuellen Katalog`;
+            if (!(await card.innerText()).includes(expectedText)) {
+              throw new Error(
+                `homepage audience count mismatch for ${audience}: expected "${expectedText}"`,
+              );
+            }
+          }
+          report.checks.push({
+            label: "home-audience-visible-counts",
+            status: "passed",
+            counts: Object.fromEntries(
+              audienceKeys.map((audience) => [
+                audience,
+                expectedAudienceRoutes[audience].length,
+              ]),
+            ),
+          });
+
           if ((await selectedStage.count()) !== 1) {
             throw new Error("homepage is missing immersive selected fragrances");
           }
