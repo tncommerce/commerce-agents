@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "generated_at": "2026-09-30T15:20:21Z",
+  "merchant_id": "notino",
+  "network": "CJ Affiliate",
+  "program": "Notino",
+  "state": "staged_not_live",
+  "live_routing_allowed": false,
+  "verified_tracking_reference": {
+    "product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
+    "redirect_dry_run": "passed",
+    "evidence_file": "scentai_affiliate_tracking_preflight_notino_20260930.json"
+  },
+  "candidates": [
+    {
+      "offer_id": "notino-calvin-klein-euphoria-edp-100",
+      "product_id": "SC-CALVIN-KLEIN-EUPHORIA-EDP-100",
+      "merchant_product_id": "CAK10204",
+      "gtin": "0088300162512",
+      "product_url": "https://www.notino.de/calvin-klein/euphoria-eau-de-parfum-fur-damen/",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fcalvin-klein%2Feuphoria-eau-de-parfum-fur-damen%2F",
+      "mapping_status": "verified_current_variant",
+      "offer_last_updated_at": "2026-09-30T10:54:00Z",
+      "offer_in_stock_observation": true,
+      "readiness": "ready_for_user_activation_approval",
+      "publish_allowed": false,
+      "remaining_runtime_guards": [
+        "revalidate current availability before surfacing the offer",
+        "keep exact 100 ml EDP variant identity",
+        "explicit user approval required before live routing"
+      ]
+    },
+    {
+      "offer_id": "notino-naxos-100",
+      "product_id": "SC-XERJOFF-NAXOS-100",
+      "merchant_product_id": "XEF3191",
+      "readiness": "blocked",
+      "publish_allowed": false,
+      "blocker": "notino_exact_mapping_missing_from_merchant_product_mappings"
+    },
+    {
+      "offer_id": "notino-hugo-boss-bottled-absolu-100",
+      "product_id": "SC-HUGO-BOSS-BOTTLED-ABSOLU-100",
+      "merchant_product_id": "HUG13734",
+      "readiness": "blocked",
+      "publish_allowed": false,
+      "blocker": "notino_exact_mapping_missing_from_merchant_product_mappings"
+    }
+  ],
+  "policy": {
+    "commission_may_change_fragrance_ranking": false,
+    "affiliate_approval_implies_image_rights": false,
+    "unverified_variant_fallback_allowed": false
+  },
+  "next_action": "Request explicit user approval for the single scoped Euphoria activation candidate after CI passes. Keep Naxos and BOSS Bottled Absolu blocked until exact Notino mappings are verified."
+}
