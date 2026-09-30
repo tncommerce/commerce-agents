@@ -1,6 +1,8 @@
 // Copyright 2026 Anthropic PBC
 // SPDX-License-Identifier: Apache-2.0
 
+import { targetGroupLabel } from "@/lib/targetLabels";
+
 /** Image-less products get a tile color and glyph from id and category. */
 
 const TILE_CLASSES = [
@@ -105,16 +107,7 @@ export function attributeChips(product: { attributes?: Record<string, string> })
 
       if (key === "volume_ml") return `${value} ml`;
       if (key === "target_group") {
-        const labels: Record<string, string> = {
-          men: "Herren",
-          women: "Damen",
-          unisex: "Unisex",
-        };
-        return String(value)
-          .split(",")
-          .map((part) => labels[part.trim().toLowerCase()] ?? part.trim())
-          .filter(Boolean)
-          .join(", ");
+        return targetGroupLabel(String(value).split(",").map((part) => part.trim()).filter(Boolean));
       }
 
       return value;
