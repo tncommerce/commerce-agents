@@ -433,6 +433,122 @@ def _check_product_detail(
         )
 
 
+def _check_merchant_offers(
+    client: httpx.Client,
+    api_url: str,
+    product_id: str | None,
+    *,
+    name: str = "merchant_offers",
+) -> SmokeCheck:
+    if not product_id:
+        return SmokeCheck(
+            name=name,
+            ok=False,
+            status_code=None,
+            detail="Merchant offers were not checked because no product ID was available.",
+        )
+
+    encoded_product_id = quote(product_id, safe="")
+    url = f"{api_url}/api/merchant-offers/{encoded_product_id}"
+    try:
+        response = client.get(url, follow_redirects=True)
+        if response.status_code >= 400:
+            return SmokeCheck(
+                name=name,
+                ok=False,
+                status_code=response.status_code,
+                detail=f"Merchant offers returned HTTP {response.status_code}.",
+            )
+
+        try:
+            payload = response.json()
+        except ValueError:
+            return SmokeCheck(
+                name=name,
+                ok=False,
+                status_code=response.status_code,
+                detail="Merchant offers did not return JSON.",
+            )
+
+        offers = payload.get("offers")
+        best_offer_id = payload.get("best_offer_id")
+        disclosure = payload.get("affiliate_disclosure")
+
+        if not isinstance(offers, list) or not offers:
+            return SmokeCheck(
+                name=name,
+                ok=False,
+                status_code=response.status_code,
+                detail=f"Merchant offers returned no current offer for {product_id}.",
+            )
+
+        offer_ids: list[str] = []
+        contracts_ok = True
+        for offer in offers:
+            if not isinstance(offer, dict):
+                contracts_ok = False
+                continue
+
+            offer_id = offer.get("offer_id")
+            clickout_path = offer.get("clickout_path")
+            price = offer.get("price")
+            expected_clickout = (
+                f"/api/clickout/{offer_id}"
+                if isinstance(offer_id, str) and offer_id
+                else None
+            )
+
+            row_ok = (
+                isinstance(offer_id, str)
+                and bool(offer_id)
+                and offer.get("product_id") == product_id
+                and isinstance(offer.get("merchant_name"), str)
+                and bool(offer.get("merchant_name"))
+                and isinstance(price, (int, float))
+                and not isinstance(price, bool)
+                and price > 0
+                and offer.get("currency") == "EUR"
+                and offer.get("in_stock") is True
+                and isinstance(offer.get("affiliate_link"), bool)
+                and clickout_path == expected_clickout
+            )
+            contracts_ok = contracts_ok and row_ok
+            if isinstance(offer_id, str) and offer_id:
+                offer_ids.append(offer_id)
+
+        ok = (
+            payload.get("product_id") == product_id
+            and isinstance(disclosure, str)
+            and bool(disclosure.strip())
+            and isinstance(best_offer_id, str)
+            and best_offer_id in offer_ids
+            and contracts_ok
+        )
+
+        return SmokeCheck(
+            name=name,
+            ok=ok,
+            status_code=response.status_code,
+            detail=(
+                f"Merchant offer contract is valid for {product_id} "
+                f"({len(offers)} current offer(s)); clickouts remain read-only in smoke."
+                if ok
+                else (
+                    "Merchant offer payload is stale or unsafe: "
+                    f"product_id={payload.get('product_id')!r}, "
+                    f"best_offer_id={best_offer_id!r}, offers={len(offers)}."
+                )
+            ),
+        )
+    except httpx.HTTPError as exc:
+        return SmokeCheck(
+            name=name,
+            ok=False,
+            status_code=None,
+            detail=f"Merchant offers request failed: {exc.__class__.__name__}",
+        )
+
+
 def _check_merchant_partners(
     client: httpx.Client,
     api_url: str,
@@ -569,6 +685,12 @@ def run_smoke(
                 api,
                 CRITICAL_PRODUCT_ID,
                 name="product_detail_rabanne_1_million",
+            ),
+            _check_merchant_offers(
+                client,
+                api,
+                CRITICAL_PRODUCT_ID,
+                name="merchant_offers_rabanne_1_million",
             ),
             _check_merchant_partners(client, api),
         ]
