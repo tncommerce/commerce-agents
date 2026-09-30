@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-09-27",
+  "updated_at": "2026-09-30",
   "status": "active",
   "purpose": "Append-only audit events for affiliate program lifecycle changes. Sequence order is authoritative when an external event timestamp is unknown.",
   "rules": [
@@ -170,6 +170,20 @@
       "status_after": "approved",
       "source": "reconciled_from_existing_registry",
       "reference_note": "Append-only ledger reconciliation of the already documented 2026-09-21 decision; the registry contained this status before this branch."
+    },
+    {
+      "sequence": 14,
+      "event_id": "cj-affiliate-notino-approved-2026-09-30t07-20-02z",
+      "network": "CJ Affiliate",
+      "merchant_id": "notino",
+      "program": "Notino",
+      "event_type": "program_approved",
+      "event_at": "2026-09-30T07:20:02Z",
+      "recorded_at": "2026-09-30T07:20:02Z",
+      "status_after": "approved",
+      "source": "network_email",
+      "external_program_id": null,
+      "reference_note": "NOTINO.de welcome email via CJ confirms program entry; email also states CJ Deep Link support. No secrets, private URLs or credentials stored."
     }
   ]
 }
