@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
+import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
 import FragranceComparisonPicker from "@/components/FragranceComparisonPicker";
 import FragranceVisual from "@/components/FragranceVisual";
 import {
@@ -59,7 +60,7 @@ export default function ComparisonIndexPage() {
       <AcquisitionAnalytics source="comparison" trackPageView={false} />
       <header className="dufynd-comparison-header border-b border-(--line) bg-(--card)">
         <div className="mx-auto flex max-w-[1080px] items-center justify-between gap-4 px-4 py-4 sm:px-6">
-          <a
+          <AcquisitionInternalLink
             href="/"
             className="flex items-center gap-2.5"
             aria-label="Zur DUFYND Startseite"
@@ -75,13 +76,13 @@ export default function ComparisonIndexPage() {
             <span className="text-[17px] font-bold tracking-[-0.02em]">
               DUFYND
             </span>
-          </a>
-          <a
+          </AcquisitionInternalLink>
+          <AcquisitionInternalLink
             href="/duft"
             className="rounded-xl border border-(--line) px-3 py-2 text-[12px] font-semibold text-(--ink)"
           >
             Duftkatalog
-          </a>
+          </AcquisitionInternalLink>
         </div>
       </header>
 
@@ -122,7 +123,7 @@ export default function ComparisonIndexPage() {
 
         <section className="mt-5 grid gap-3 sm:grid-cols-2">
           {EXPLICIT_COMPARISON_PAIRS.map((pair) => (
-            <a
+            <AcquisitionInternalLink
               key={pair.pair_slug}
               href={`/vergleich/${pair.pair_slug}`}
               className="dufynd-comparison-pair-card rounded-2xl border border-[#e0d4bd] bg-(--card) p-4 shadow-(--shadow-sm)"
@@ -160,7 +161,7 @@ export default function ComparisonIndexPage() {
               <div className="mt-4 border-t border-(--line) pt-3 text-[11px] font-semibold text-(--accent-ink)">
                 Vergleich öffnen →
               </div>
-            </a>
+            </AcquisitionInternalLink>
           ))}
         </section>
 

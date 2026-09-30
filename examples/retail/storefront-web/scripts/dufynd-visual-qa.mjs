@@ -2181,6 +2181,39 @@ try {
       );
     }
 
+    const comparisonCatalogHref = await comparisonPage
+      .locator("header")
+      .getByRole("link", { name: "Duftkatalog" })
+      .getAttribute("href");
+    const comparisonPairHref = await comparisonPage
+      .locator(".dufynd-comparison-pair-card")
+      .first()
+      .getAttribute("href");
+    for (const [label, href] of [
+      ["comparison catalog", comparisonCatalogHref],
+      ["documented comparison pair", comparisonPairHref],
+    ]) {
+      if (!href) {
+        throw new Error(`${label} link is missing its href`);
+      }
+      const internalUrl = new URL(href, baseUrl);
+      if (
+        internalUrl.searchParams.get("src") !== "tiktok" ||
+        internalUrl.searchParams.get("cmp") !==
+          "qa_comparison_campaign" ||
+        internalUrl.searchParams.get("content") !==
+          "qa_comparison_content"
+      ) {
+        throw new Error(
+          `${label} navigation lost acquisition attribution`,
+        );
+      }
+    }
+
+    report.checks.push({
+      label: "comparison-internal-navigation-attribution",
+      status: "passed",
+    });
     report.checks.push({
       label: "comparison-product-navigation-attribution",
       status: "passed",
