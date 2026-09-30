@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "observed_at": "2026-09-30T11:28:00Z",
+  "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+  "merchant": "Douglas DE",
+  "merchant_product_id": "3000056790",
+  "product_url": "https://www.douglas.de/de/p/3000056790",
+  "observation_method": "current_public_douglas_category_and_product_page_read_only_web_retrieval",
+  "identity": {
+    "brand": "Lancôme",
+    "name": "La vie est belle",
+    "concentration": "Eau de Parfum",
+    "volume_ml": 100,
+    "merchant_identity_note": "Current Douglas category pages explicitly show Lancôme La vie est belle Eau de Parfum 100 ml at EUR 89.00. The direct Douglas product-family page confirms La vie est belle Eau de Parfum is online in stock with free shipping; family product id/path 3000056790 is preserved because the direct page does not expose a distinct 100 ml article number in the retrieved view."
+  },
+  "live_observation": {
+    "listed_price_eur": 89,
+    "conditional_code_price_eur": 76.11,
+    "shipping_cost_eur": 0,
+    "availability": "Online: auf Lager",
+    "delivery_note": "Douglas direct product page shows free shipping and current delivery window 01.10.2026 to 05.10.2026; category pages show the exact 100 ml Eau de Parfum variant."
+  },
+  "rights_or_affiliate_impact": {
+    "image_rights_granted": false,
+    "affiliate_tracking_verified": false,
+    "final_image_approval_granted": false
+  },
+  "freshness_policy": "Offer qualifies only while last_updated_at is within the 72-hour merchant-offer window. Conditional code price is recorded as evidence only; the canonical listed price is EUR 89.00. No live catalog promotion."
+}
