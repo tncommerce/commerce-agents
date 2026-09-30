@@ -73,6 +73,7 @@ def _session_summary(session: dict[str, Any]) -> dict[str, Any]:
             "final_status": item.get("final_status"),
             "attempts": item.get("attempts"),
             "pr_url": item.get("pr_url"),
+            "provider_cost_unknown": bool(item.get("provider_cost_unknown")),
         }
         for item in results
     ]
@@ -97,12 +98,17 @@ def _preflight(bridge: DufyndJarvisBridge) -> dict[str, Any]:
     lease = _tech_lease_state(bridge)
     inbox = dict(health.get("inbox") or {})
     pending_events = int(inbox.get("pending") or 0)
+    processing_events = int(inbox.get("processing") or 0)
+    failed_events = int(inbox.get("failed") or 0)
     non_engineering = [
         task for task in safe_tasks if str(task.get("domain") or "") != "engineering"
     ]
     engineering = [task for task in safe_tasks if str(task.get("domain") or "") == "engineering"]
     return {
         "pending_events": pending_events,
+        "processing_events": processing_events,
+        "failed_events": failed_events,
+        "inbox_blocked": bool(processing_events or failed_events),
         "safe_task_count": len(safe_tasks),
         "non_engineering_safe_count": len(non_engineering),
         "engineering_safe_count": len(engineering),
@@ -200,6 +206,9 @@ async def supervise_nightshift(
             state["budget"] = budget
             _persist_supervisor(bridge, state, verified_at=current)
 
+            if bool(preflight.get("inbox_blocked")):
+                return finish("inbox_preflight_blocked", status="needs_attention")
+
             # Wait cheaply while the Work/TECH lease owns the only safe engineering
             # work. No model call is made during this handoff window.
             lease = preflight["tech_lease"]
@@ -213,9 +222,9 @@ async def supervise_nightshift(
             if not preflight["potential_work"] or lease_blocks_only_work:
                 if not lease_blocks_only_work and int(state["idle_cycles"]) >= idle_limit:
                     return finish("idle_limit_reached")
-                if not bool(budget.get("can_run")) and not preflight["potential_work"]:
-                    return finish("budget_gate")
-
+                # A closed model budget does not end the no-cost watcher. This
+                # keeps the Nightshift available for later deterministic events
+                # until the bounded horizon expires.
                 remaining = max(0, int((deadline - current).total_seconds()))
                 if remaining <= 0:
                     return finish("time_horizon_reached")
