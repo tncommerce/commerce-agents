@@ -11,6 +11,7 @@ from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
 SESSION_KEY = "jarvis.nightshift_session"
 TECH_LEASE_KEY = "continuity.tech_lease"
 DEFAULT_STALE_AFTER_MINUTES = 45
+DEFAULT_STALE_TASK_HOURS = 24
 
 
 def _parse_iso(value: object) -> datetime | None:
@@ -32,25 +33,66 @@ def _age_minutes(value: object, now: datetime) -> float | None:
     return max(0.0, (now - parsed).total_seconds() / 60.0)
 
 
-def _queue_boundary(queue: dict[str, Any]) -> dict[str, Any]:
+def _status_rows(queue: dict[str, Any], bucket: str, expected_status: str) -> list[dict[str, Any]]:
+    return [
+        item
+        for item in (queue.get(bucket) or [])
+        if isinstance(item, dict) and str(item.get("status") or "") == expected_status
+    ]
+
+
+def _queue_boundary(
+    queue: dict[str, Any],
+    *,
+    now: datetime,
+    stale_task_hours: int,
+) -> dict[str, Any]:
+    safe = [item for item in (queue.get("safe_to_execute") or []) if isinstance(item, dict)]
+    in_progress = _status_rows(queue, "in_progress", "in_progress")
+    waiting_human = _status_rows(queue, "waiting_human_input", "waiting_human_input")
+    waiting_external = _status_rows(queue, "waiting_external", "waiting_external")
+    approvals = _status_rows(queue, "approval_required", "approval_required")
+
+    stale_cutoff_minutes = max(1, stale_task_hours) * 60
+    stale_in_progress: list[dict[str, Any]] = []
+    active_in_progress: list[dict[str, Any]] = []
+    for item in in_progress:
+        age = _age_minutes(item.get("updated_at"), now)
+        if age is not None and age > stale_cutoff_minutes:
+            stale_in_progress.append(item)
+        else:
+            active_in_progress.append(item)
+
     counts = {
-        "safe_to_execute": len(queue.get("safe_to_execute") or []),
-        "in_progress": len(queue.get("in_progress") or []),
-        "waiting_human_input": len(queue.get("waiting_human_input") or []),
-        "waiting_external": len(queue.get("waiting_external") or []),
-        "approval_required": len(queue.get("approval_required") or []),
+        "safe_to_execute": len(safe),
+        "in_progress": len(in_progress),
+        "in_progress_active": len(active_in_progress),
+        "in_progress_stale": len(stale_in_progress),
+        "waiting_human_input": len(waiting_human),
+        "waiting_external": len(waiting_external),
+        "approval_required": len(approvals),
     }
     if counts["safe_to_execute"]:
         state = "work_available"
-    elif counts["in_progress"]:
+    elif counts["in_progress_active"]:
         state = "in_progress"
     elif counts["waiting_human_input"] or counts["approval_required"]:
         state = "owner_review"
     elif counts["waiting_external"]:
         state = "waiting_external"
+    elif counts["in_progress_stale"]:
+        state = "stale_in_progress_only"
     else:
         state = "idle"
-    return {"state": state, **counts}
+
+    return {
+        "state": state,
+        **counts,
+        "stale_in_progress_task_ids": [
+            str(item.get("task_id") or item.get("title") or "unknown")
+            for item in stale_in_progress
+        ],
+    }
 
 
 def _budget_snapshot_drift(
@@ -185,6 +227,7 @@ def audit_control_plane(
     *,
     now: datetime | None = None,
     stale_after_minutes: int = DEFAULT_STALE_AFTER_MINUTES,
+    stale_task_hours: int = DEFAULT_STALE_TASK_HOURS,
     budget_id: str | None = None,
 ) -> dict[str, Any]:
     current_time = (now or datetime.now(UTC)).astimezone(UTC)
@@ -223,6 +266,24 @@ def audit_control_plane(
             }
         )
 
+    autonomy_boundary = _queue_boundary(
+        queue,
+        now=current_time,
+        stale_task_hours=stale_task_hours,
+    )
+    if autonomy_boundary["in_progress_stale"]:
+        issues.append(
+            {
+                "code": "stale_in_progress_autonomy_tasks",
+                "severity": "warning",
+                "message": (
+                    f"{autonomy_boundary['in_progress_stale']} autonomy task(s) are still "
+                    f"in_progress after {stale_task_hours} hours."
+                ),
+                "task_ids": autonomy_boundary["stale_in_progress_task_ids"],
+            }
+        )
+
     inbox = health.get("inbox") or {}
     failed_inbox = int(inbox.get("failed") or 0)
     if failed_inbox:
@@ -240,7 +301,7 @@ def audit_control_plane(
         "budget_id": selected_budget_id,
         "budget": budget,
         "budget_snapshot": budget_snapshot,
-        "autonomy_boundary": _queue_boundary(queue),
+        "autonomy_boundary": autonomy_boundary,
         "inbox": inbox,
         "nightshift_session": session,
         "tech_lease": tech_lease,
@@ -257,6 +318,11 @@ def main() -> int:
         type=int,
         default=DEFAULT_STALE_AFTER_MINUTES,
     )
+    parser.add_argument(
+        "--stale-task-hours",
+        type=int,
+        default=DEFAULT_STALE_TASK_HOURS,
+    )
     parser.add_argument("--budget-id")
     parser.add_argument("--pretty", action="store_true")
     parser.add_argument("--fail-on-attention", action="store_true")
@@ -265,6 +331,7 @@ def main() -> int:
     payload = audit_control_plane(
         DufyndJarvisBridge(),
         stale_after_minutes=max(1, args.stale_after_minutes),
+        stale_task_hours=max(1, args.stale_task_hours),
         budget_id=args.budget_id,
     )
     print(
