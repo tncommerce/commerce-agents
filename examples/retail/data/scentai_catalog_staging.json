@@ -1192,13 +1192,12 @@
         "merchant_coverage_count": 2,
         "merchant_coverage_source": "promotion_queue",
         "market_status": null,
-        "live_offer_status": "current_affiliate_purchase_destination_verified",
-        "current_purchase_destination_merchant": "notino",
-        "current_purchase_destination_verified_at": "2026-09-30T16:16:00Z"
+        "live_offer_status": "pending_current_purchase_destination"
       },
       "validation": {
         "catalog_ready": false,
         "blockers": [
+          "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
       }
