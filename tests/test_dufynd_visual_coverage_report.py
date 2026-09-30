@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from copy import deepcopy
+
 from scripts.report_dufynd_visual_coverage import (
     build_visual_coverage_report,
     storefront_presentation_state,
@@ -244,3 +246,70 @@ def test_report_ignores_non_scentai_products() -> None:
     assert report["live_product_count"] == 0
     assert report["coverage"]["real_visual_coverage_rate_pct"] == 0.0
     assert report["storefront_presentation"]["background_presented_rate_pct"] == 0.0
+
+
+def test_hidden_identity_blocker_is_excluded_even_when_catalog_ready() -> None:
+    report = build_visual_coverage_report(
+        {
+            "products": [
+                {"product_id": "SC-VISIBLE", "validation": {"blockers": ["", None, " "]}},
+                {
+                    "product_id": "SC-HIDDEN",
+                    "validation": {
+                        "catalog_ready": True,
+                        "blockers": ["identity_concentration_review_required"],
+                    },
+                    "visuals": [{"role": "cutout", "fidelity_status": "verified", "url": "/x"}],
+                },
+            ]
+        },
+        {"items": []},
+        {"items": []},
+    )
+    assert report["catalog_product_count"] == 2
+    assert report["live_product_count"] == 1
+    assert report["hidden_product_ids"] == ["SC-HIDDEN"]
+    assert report["coverage"]["verified_product_truth"] == 0
+    assert report["coverage"]["missing_real_asset"] == 1
+
+
+def test_staged_candidates_are_review_work_without_live_coverage_or_mutation() -> None:
+    candidate = {
+        "product_id": "SC-STAGED",
+        "candidate_asset": "review-assets/staged.png",
+        "status": "pending_human_fidelity",
+        "reference_url": "https://example.com/exact-variant",
+        "public_activation": False,
+        "catalog_promotion": False,
+    }
+    staged = {
+        "items": [
+            candidate,
+            dict(candidate),
+            {**candidate, "candidate_asset": "", "product_id": "SC-NO-ASSET"},
+            {**candidate, "status": "rejected", "product_id": "SC-REJECTED"},
+        ]
+    }
+    before = deepcopy(staged)
+    report = build_visual_coverage_report({"products": []}, {"items": []}, {"items": []}, staged)
+    assert report["live_product_count"] == 0
+    assert report["coverage"]["has_real_visual"] == 0
+    assert report["fidelity_review_ready_count"] == 1
+    assert report["fidelity_review_queue"][0]["evidence_url"] == candidate["reference_url"]
+    assert staged == before
+
+
+def test_staged_candidate_already_in_review_queue_is_not_counted_twice() -> None:
+    candidate = {
+        "product_id": "SC-STAGED",
+        "candidate_asset": "review-assets/staged.png",
+        "status": "pending_human_fidelity",
+    }
+    report = build_visual_coverage_report(
+        {"products": []},
+        {"items": [{**candidate, "priority": "P0"}]},
+        {"items": []},
+        {"items": [candidate]},
+    )
+    assert report["fidelity_review_ready_count"] == 1
+    assert report["fidelity_review_queue"][0]["priority"] == "P0"
