@@ -135,8 +135,7 @@ def build_budget_ledger(
     window_cap = _float(budget_window.get("cap_usd"), default=-1.0)
     window_max_runs = int(budget_window.get("max_runs") or 0)
     if approval_valid and (
-        window_cap > approved_total_cap + FLOAT_TOLERANCE
-        or window_max_runs > approved_max_runs
+        window_cap > approved_total_cap + FLOAT_TOLERANCE or window_max_runs > approved_max_runs
     ):
         issues.append(
             {
