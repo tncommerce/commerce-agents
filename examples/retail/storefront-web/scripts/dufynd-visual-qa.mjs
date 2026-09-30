@@ -2153,7 +2153,7 @@ try {
 
     const candidates = [
       productDetailAttributionPage.getByRole("link", { name: "Düfte" }),
-      productDetailAttributionPage.getByRole("link", { name: "Meine Sammlung" }),
+      productDetailAttributionPage.getByRole("link", { name: "Duftberatung öffnen" }),
       productDetailAttributionPage.getByRole("link", { name: "Mit anderem Duft vergleichen →" }),
       productDetailAttributionPage.locator("footer").getByRole("link", { name: "Transparenz" }),
     ];
