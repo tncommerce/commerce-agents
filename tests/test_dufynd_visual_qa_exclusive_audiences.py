@@ -21,3 +21,13 @@ def test_visual_qa_matches_audience_routes_to_visible_source_catalog() -> None:
     assert "!hasValidationBlockers(product)" in source
     assert "exclusiveAudience(product) === audience" in source
     assert "seenAudienceByRoute.size !== expectedFragranceCount" in source
+
+
+def test_home_browser_qa_uses_source_derived_exclusive_audience_counts() -> None:
+    source = VISUAL_QA.read_text(encoding="utf-8")
+
+    assert 'a[data-dufynd-home-audience-card][href="/duft?zielgruppe=${audience}"]' in source
+    assert "const expectedCount = expectedAudienceRoutes[audience].length;" in source
+    assert '"1 Duft im aktuellen Katalog"' in source
+    assert '" Düfte im aktuellen Katalog"' in source
+    assert '"home-audience-visible-counts"' in source
