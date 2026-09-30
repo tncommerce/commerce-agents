@@ -224,14 +224,10 @@ def build_budget_ledger(
     max_runs = int(budget_status.get("max_runs") or 0)
     remaining_runs = int(budget_status.get("remaining_runs") or 0)
     run_cap_ceiling = (
-        remaining_runs * approved_per_run_cap
-        if approved_per_run_cap is not None
-        else None
+        remaining_runs * approved_per_run_cap if approved_per_run_cap is not None else None
     )
     max_future_spend = (
-        min(remaining_usd, run_cap_ceiling)
-        if run_cap_ceiling is not None
-        else remaining_usd
+        min(remaining_usd, run_cap_ceiling) if run_cap_ceiling is not None else remaining_usd
     )
 
     return {
