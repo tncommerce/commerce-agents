@@ -40,7 +40,7 @@ def test_staged_candidate_files_match_reviewed_bytes_and_exact_variants() -> Non
         assert item["has_alpha"] is True
 
 
-def test_pending_staged_candidates_have_no_public_copy_or_catalog_activation() -> None:
+def test_staged_candidates_have_no_public_copy_or_catalog_activation() -> None:
     packet = json.loads(PACKET.read_text())
     assert all(value is False for value in packet["approval_scope"].values())
     public_files = [path for path in PUBLIC_ROOT.rglob("*") if path.is_file()]
@@ -53,8 +53,14 @@ def test_pending_staged_candidates_have_no_public_copy_or_catalog_activation() -
     staging = json.loads((DATA / "scentai_catalog_staging.json").read_text())
     staged = {row["product_id"]: row for row in staging["products"]}
 
+    expected_status = {
+        "SC-YSL-LIBRE-EDP-90": "human_fidelity_approved_pending_registration",
+        "SC-GUERLAIN-MON-GUERLAIN-EDP-100": "pending_human_fidelity",
+        "SC-JPG-LE-MALE-ELIXIR-PARFUM-125": "pending_human_fidelity",
+    }
+
     for item in packet["items"]:
-        assert item["status"] == "pending_human_fidelity"
+        assert item["status"] == expected_status[item["product_id"]]
         assert item["source_registration_status"] == "not_registered"
         assert item["reference_only"] is True
         assert item["catalog_promotion"] is False
@@ -69,3 +75,7 @@ def test_pending_staged_candidates_have_no_public_copy_or_catalog_activation() -
         assert product["media"]["image_url"] is None
         assert product["validation"]["catalog_ready"] is False
         assert "approved_product_image_pending" in product["validation"]["blockers"]
+
+    libre = next(item for item in packet["items"] if item["product_id"] == "SC-YSL-LIBRE-EDP-90")
+    assert libre["approval_basis"] == "explicit_user_visual_approval_2026-09-30"
+    assert libre["approved_at"] == "2026-09-30"

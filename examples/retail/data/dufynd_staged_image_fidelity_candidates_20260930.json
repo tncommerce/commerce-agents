@@ -14,7 +14,7 @@
       "volume_ml": 90,
       "mapped_gtin": "3614272648425",
       "candidate_asset": "examples/retail/review-assets/catalog-candidates/ysl-libre-edp-90-v1.png",
-      "status": "pending_human_fidelity",
+      "status": "human_fidelity_approved_pending_registration",
       "reference_url": "https://www.douglas.de/de/p/5000005003?variant=289703",
       "reference_checked_at": "2026-09-30",
       "reference_only": true,
@@ -34,7 +34,10 @@
       ],
       "source_registration_status": "not_registered",
       "catalog_promotion": false,
-      "public_activation": false
+      "public_activation": false,
+      "approval_basis": "explicit_user_visual_approval_2026-09-30",
+      "approved_at": "2026-09-30",
+      "next_action": "Register the approved DUFYND-generated candidate through the controlled product-truth path. Fidelity approval does not establish external source rights or authorize public activation."
     },
     {
       "product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",

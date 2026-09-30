@@ -31,7 +31,7 @@ def test_product_visual_review_queue_references_catalog_products() -> None:
 
     assert {item["product_id"] for item in items} == ACTIVE_P0
     assert all(item["priority"] == "P0" for item in items)
-    assert all(item["status"] == "candidate_generated_pending_human_fidelity" for item in items)
+    assert all(item["status"] == "human_fidelity_approved_pending_promotion" for item in items)
 
     for item in items:
         product_id = item["product_id"]
@@ -40,6 +40,9 @@ def test_product_visual_review_queue_references_catalog_products() -> None:
         candidate = Path(item["candidate_asset"])
         assert candidate.is_file(), f"missing candidate asset: {candidate}"
         assert PUBLIC_ROOT not in candidate.parents
+        assert item["approval_basis"] == "explicit_user_visual_approval_2026-09-30"
+        assert item["candidate_provenance"]["approval_status"] == "human_fidelity_approved"
+        assert item["candidate_provenance"]["public_activation"] is False
 
     approved_by_id = {item["product_id"]: item for item in approved}
     assert set(approved_by_id) == APPROVED_P0

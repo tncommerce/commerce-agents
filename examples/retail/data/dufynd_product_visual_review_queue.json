@@ -14,9 +14,9 @@
       "product_id": "SC-CREED-ABSOLU-AVENTUS-100",
       "asset": "/products/pilot/creed-absolu-aventus-editorial.webp",
       "priority": "P0",
-      "status": "candidate_generated_pending_human_fidelity",
+      "status": "human_fidelity_approved_pending_promotion",
       "finding": "Exact official UK 100 ml variant reference is now resolved: variant 54334047060353, SKU 1110090, barcode 3508440004352. Its textured black cuff and silver-bordered rectangular plaque differ from the previous candidate. A new transparent DUFYND-generated recreation remains inactive pending human fidelity approval.",
-      "next_action": "Review v2 against the exact 100 ml reference, especially silhouette, cap, textured cuff, silver border, rider emblem and typography. Do not activate or clear the P0 gate without explicit human fidelity approval.",
+      "next_action": "Prepare the approved DUFYND-generated v2 candidate for the normal product-truth promotion path. Preserve exact 100 ml identity and provenance. Fidelity approval does not grant external image rights or authorize public activation.",
       "evidence_url": "https://www.creedfragrances.co.uk/products/absolu-aventus?variant=54334047060353",
       "candidate_asset": "examples/retail/review-assets/product-candidates/creed-absolu-aventus-p0-v2.png",
       "candidate_history": [
@@ -44,9 +44,11 @@
         "width": 1145,
         "height": 1374,
         "has_alpha": true,
-        "approval_status": "pending_human_fidelity",
+        "approval_status": "human_fidelity_approved",
         "public_activation": false
-      }
+      },
+      "approval_basis": "explicit_user_visual_approval_2026-09-30",
+      "approved_at": "2026-09-30"
     }
   ],
   "cleared_for_editorial_use": [
