@@ -15,6 +15,7 @@ import { verifySocialSearchDismissal } from "./social-search-dismissal-qa.mjs";
 import { verifySocialSearchAttribution } from "./social-search-attribution-qa.mjs";
 import { verifySocialCatalogNavigation } from "./social-catalog-navigation-qa.mjs";
 import { verifyAcquisitionLandingNavigation } from "./acquisition-landing-navigation-qa.mjs";
+import { verifyHomeNavigationAttribution } from "./home-navigation-attribution-qa.mjs";
 import { verifyGuidedStartContext } from "./guided-start-context-qa.mjs";
 import { verifyGuidedLinkAttribution } from "./guided-link-attribution-qa.mjs";
 import { verifyProductDetailRecovery, verifySingleResponsiveProductDetail, verifyClosedProductDetailFocus } from "./product-detail-recovery-qa.mjs";
@@ -251,6 +252,13 @@ const report = {
 };
 
 try {
+  try {
+    const cases = await verifyHomeNavigationAttribution(browser, baseUrl);
+    report.checks.push({ label: "home-navigation-attribution", status: "passed", cases });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({ label: "home-navigation-attribution", message });
+  }
   try {
     await verifyAcquisitionLandingNavigation(browser, baseUrl);
     report.checks.push({ label: "acquisition-landing-navigation-attribution", status: "passed" });
