@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-10-01T13:12:00Z",
+  "generated_at": "2026-10-01T13:22:00Z",
   "merchant_id": "notino",
   "network": "CJ Affiliate",
   "program": "Notino",
@@ -713,6 +713,90 @@
         "do not infer image rights from affiliate mapping",
         "activation preparation only; live routing remains a separate controlled write"
       ]
+    },
+    {
+      "offer_id": "notino-lattafa-khamrah-edp-100",
+      "product_id": "SC-LATTAFA-KHAMRAH-EDP-100",
+      "merchant_product_id": "LTF00307",
+      "gtin": "6291108737194",
+      "product_url": "https://www.notino.de/lattafa/khamrah-eau-de-parfum-unisex/",
+      "exact_variant": "Lattafa Khamrah Eau de Parfum 100 ml",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Flattafa%2Fkhamrah-eau-de-parfum-unisex%2F",
+      "mapping_status": "verified_current_variant",
+      "offer_last_updated_at": "2026-10-01T13:22:00Z",
+      "offer_in_stock_observation": true,
+      "readiness": "ready_for_controlled_activation_preflight",
+      "publish_allowed": false,
+      "source_of_truth_mapping_state": "not_promoted",
+      "remaining_runtime_guards": [
+        "revalidate current availability before any live routing",
+        "keep exact Lattafa Khamrah Eau de Parfum 100 ml identity",
+        "do not infer image rights from affiliate mapping",
+        "activation preparation only; live routing remains a separate controlled write"
+      ]
+    },
+    {
+      "offer_id": "notino-versace-eros-edp-100",
+      "product_id": "SC-VERSACE-EROS-EDP-100",
+      "merchant_product_id": "VER08269",
+      "gtin": "8011003861224",
+      "product_url": "https://www.notino.de/versace/eros-eau-de-parfum-fuer-herren/p-16058542/",
+      "exact_variant": "Versace Eros Eau de Parfum 100 ml",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fversace%2Feros-eau-de-parfum-fuer-herren%2Fp-16058542%2F",
+      "mapping_status": "verified_current_variant",
+      "offer_last_updated_at": "2026-10-01T13:22:00Z",
+      "offer_in_stock_observation": true,
+      "readiness": "ready_for_controlled_activation_preflight",
+      "publish_allowed": false,
+      "source_of_truth_mapping_state": "not_promoted",
+      "remaining_runtime_guards": [
+        "revalidate current availability before any live routing",
+        "keep exact Versace Eros Eau de Parfum 100 ml identity",
+        "do not infer image rights from affiliate mapping",
+        "activation preparation only; live routing remains a separate controlled write"
+      ]
+    },
+    {
+      "offer_id": "notino-armani-acqua-di-gio-profondo-parfum-100",
+      "product_id": "SC-ARMANI-ACQUA-DI-GIO-PROFONDO-PARFUM-100",
+      "merchant_product_id": "GIO07610",
+      "gtin": "3614273953696",
+      "product_url": "https://www.notino.de/armani/acqua-di-gio-profondo-parfum-parfuem-fuer-herren/p-16233729/",
+      "exact_variant": "Armani Acqua di Giò Profondo Parfum 100 ml",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Farmani%2Facqua-di-gio-profondo-parfum-parfuem-fuer-herren%2Fp-16233729%2F",
+      "mapping_status": "verified_current_variant",
+      "offer_last_updated_at": "2026-10-01T13:22:00Z",
+      "offer_in_stock_observation": true,
+      "readiness": "ready_for_controlled_activation_preflight",
+      "publish_allowed": false,
+      "source_of_truth_mapping_state": "not_promoted",
+      "remaining_runtime_guards": [
+        "revalidate current availability before any live routing",
+        "keep exact Armani Acqua di Giò Profondo Parfum 100 ml identity",
+        "do not infer image rights from affiliate mapping",
+        "activation preparation only; live routing remains a separate controlled write"
+      ]
+    },
+    {
+      "offer_id": "notino-prada-paradigme-edp-100",
+      "product_id": "SC-PRADA-PARADIGME-EDP-100",
+      "merchant_product_id": "PRA03301",
+      "gtin": "3614274172997",
+      "product_url": "https://www.notino.de/prada/paradigme-eau-de-parfum-nachfuellbar-fuer-herren/p-16312939/",
+      "exact_variant": "Prada Paradigme Eau de Parfum refillable 100 ml",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fprada%2Fparadigme-eau-de-parfum-nachfuellbar-fuer-herren%2Fp-16312939%2F",
+      "mapping_status": "verified_current_variant",
+      "offer_last_updated_at": "2026-10-01T13:22:00Z",
+      "offer_in_stock_observation": true,
+      "readiness": "ready_for_controlled_activation_preflight",
+      "publish_allowed": false,
+      "source_of_truth_mapping_state": "not_promoted",
+      "remaining_runtime_guards": [
+        "revalidate current availability before any live routing",
+        "keep exact Prada Paradigme Eau de Parfum refillable 100 ml identity",
+        "do not infer image rights from affiliate mapping",
+        "activation preparation only; live routing remains a separate controlled write"
+      ]
     }
   ],
   "policy": {
@@ -720,5 +804,5 @@
     "affiliate_approval_implies_image_rights": false,
     "unverified_variant_fallback_allowed": false
   },
-  "next_action": "Commerce waves 2-9 have exact Notino activation-preflight evidence for verified available candidates. Keep live_routing_allowed=false; unavailable or ambiguous variants remain excluded."
+  "next_action": "Commerce waves 2-10 have exact Notino activation-preflight evidence for verified available candidates. Keep live_routing_allowed=false; unavailable or unresolved variants remain excluded."
 }
