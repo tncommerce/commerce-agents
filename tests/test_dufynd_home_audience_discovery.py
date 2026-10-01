@@ -47,7 +47,7 @@ def test_homepage_renders_visual_audience_discovery_cards() -> None:
     text = source()
 
     assert 'id="dufynd-audience-discovery-heading"' in text
-    assert "const audiencePreviews = audiencePreviewProducts(picks);" in text
+    assert "const audiencePreviews = audiencePreviewProducts(catalog);" in text
     assert "AUDIENCE_DISCOVERY.map((audience) =>" in text
     assert "min-w-[76%]" in text
     assert "snap-x snap-mandatory" in text
