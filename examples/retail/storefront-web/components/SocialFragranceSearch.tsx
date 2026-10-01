@@ -2,7 +2,9 @@
 
 import { FormEvent, useMemo, useRef, useState } from "react";
 
+import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
 import {
+  appendAcquisitionAttribution,
   trackAnalyticsEvent,
   trackCatalogSearch,
 } from "@/lib/analytics";
@@ -62,14 +64,17 @@ export default function SocialFragranceSearch({
   }
 
   function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
     if (!matches[0]) {
       recordSearch();
+      const target = new URL(appendAcquisitionAttribution("/duft"), window.location.origin);
+      target.searchParams.set("q", query);
+      window.location.assign(target.toString());
       return;
     }
 
-    event.preventDefault();
     openFragrance(matches[0], 1);
-    window.location.assign(`/duft/${matches[0].slug}`);
+    window.location.assign(appendAcquisitionAttribution(`/duft/${matches[0].slug}`));
   }
 
   return (
@@ -127,7 +132,7 @@ export default function SocialFragranceSearch({
         >
           {matches.length ? (
             matches.map((fragrance, index) => (
-              <a
+              <AcquisitionInternalLink
                 key={fragrance.product_id}
                 href={`/duft/${fragrance.slug}`}
                 onClick={() => openFragrance(fragrance, index + 1)}
@@ -147,7 +152,7 @@ export default function SocialFragranceSearch({
                 >
                   →
                 </span>
-              </a>
+              </AcquisitionInternalLink>
             ))
           ) : (
             <div className="rounded-xl px-3 py-2.5 text-[11px] leading-5 text-(--ink-soft)">

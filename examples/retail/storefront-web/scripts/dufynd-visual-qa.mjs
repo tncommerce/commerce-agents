@@ -12,6 +12,7 @@ import { verifyLatestProductShare } from "./product-share-race-qa.mjs";
 import { verifyCurrentLibraryImport } from "./library-import-current-qa.mjs";
 import { verifyLatestLibraryImport } from "./library-import-latest-qa.mjs";
 import { verifySocialSearchDismissal } from "./social-search-dismissal-qa.mjs";
+import { verifySocialSearchAttribution } from "./social-search-attribution-qa.mjs";
 import { verifyGuidedStartContext } from "./guided-start-context-qa.mjs";
 import { verifyGuidedLinkAttribution } from "./guided-link-attribution-qa.mjs";
 import { verifyProductDetailRecovery, verifySingleResponsiveProductDetail, verifyClosedProductDetailFocus } from "./product-detail-recovery-qa.mjs";
@@ -248,6 +249,13 @@ const report = {
 };
 
 try {
+  try {
+    await verifySocialSearchAttribution(browser, baseUrl);
+    report.checks.push({ label: "social-search-attribution-handoff", status: "passed" });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({ label: "social-search-attribution-handoff", message });
+  }
   try {
     await verifyGuidedLinkAttribution(browser, baseUrl);
     report.checks.push({ label: "guided-link-attribution-handoff", status: "passed" });
