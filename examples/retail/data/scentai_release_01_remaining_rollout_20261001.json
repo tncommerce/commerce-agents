@@ -5,9 +5,9 @@
   "created_at": "2026-10-01T10:42:00Z",
   "purpose": "Operational continuation for Release 01 products that were not already live, while preserving the original five-product Release 01 manifest as immutable audit history.",
   "historical_manifest_mutated": false,
-  "state": "blocked_pending_remaining_product_gates",
+  "state": "partially_activated_pending_remaining_product_gates",
   "write_enabled": false,
-  "write_policy": "All remaining products are evaluated independently for readiness, but this rollout does not write until every listed product passes its required gates. La Vie est Belle is excluded because it is already live and remains part of historical Release 01 audit history.",
+  "write_policy": "Delina 75 ml and Black Opium EDP 90 ml now have explicitly approved product-scoped Notino CJ routing. This rollout file does not authorize any additional write: YSL Libre EDP 90 ml remains a separate live-routing approval gate and Hypnotic Poison remains blocked by approved_product_image.",
   "product_ids": [
     "SC-PDM-DELINA-EDP-75",
     "SC-DIOR-HYPNOTIC-POISON-EDT-100",
@@ -39,6 +39,18 @@
       "SC-DIOR-HYPNOTIC-POISON-EDT-100": [
         "approved_product_image"
       ]
+    },
+    "affiliate_live_product_ids": [
+      "SC-PDM-DELINA-EDP-75",
+      "SC-YSL-BLACK-OPIUM-EDP-90"
+    ],
+    "affiliate_pending_activation_product_ids": [
+      "SC-YSL-LIBRE-EDP-90"
+    ],
+    "affiliate_blocked_product_ids": {
+      "SC-DIOR-HYPNOTIC-POISON-EDT-100": [
+        "approved_product_image"
+      ]
     }
   },
   "affiliate_preparation": {
@@ -58,8 +70,23 @@
       "gtin": "3614272648425",
       "variant_url": "https://www.notino.de/yves-saint-laurent/yves-saint-laurent-libre-eau-de-parfum-fuer-damen/p-15968532/",
       "observed_in_stock": true
-    }
+    },
+    "routing_scope": "verified_product_only",
+    "live_routing_product_ids": [
+      "SC-PDM-DELINA-EDP-75",
+      "SC-YSL-BLACK-OPIUM-EDP-90"
+    ],
+    "pending_live_routing_approval_product_ids": [
+      "SC-YSL-LIBRE-EDP-90"
+    ],
+    "blocked_live_routing_product_ids": {
+      "SC-DIOR-HYPNOTIC-POISON-EDT-100": [
+        "approved_product_image"
+      ]
+    },
+    "last_activation_merge_commit": "02f7258d7caf6f5986f939ef24f3010ce3eb4c92",
+    "live_routing_state": "partial_product_scoped_routes_active_outside_rollout_write_gate"
   },
-  "activation_guard": "Preparation is authorized by the operator decision on 2026-10-01. Live routing remains a separate controlled write and must revalidate current availability and product eligibility immediately before activation.",
-  "publication_guard": "No product publication is authorized by this rollout file. Hypnotic Poison remains blocked until an approved exact product image clears."
+  "activation_guard": "This rollout remains fail-closed for additional writes. Delina 75 ml and Black Opium EDP 90 ml are already active only within the explicitly approved verified_product_only Notino scope recorded elsewhere. YSL Libre EDP 90 ml requires independent current-availability revalidation and a separate explicit live-routing approval. Hypnotic Poison remains excluded while approved_product_image is unresolved.",
+  "publication_guard": "No additional catalog publication is authorized by this state sync. Affiliate routing remains independent from image rights and publication gates."
 }
