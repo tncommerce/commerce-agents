@@ -18,9 +18,7 @@ def test_remaining_release01_rollout_reflects_current_product_scoped_notino_stat
         "SC-PDM-DELINA-EDP-75",
         "SC-YSL-BLACK-OPIUM-EDP-90",
     }
-    assert readiness["affiliate_pending_activation_product_ids"] == [
-        "SC-YSL-LIBRE-EDP-90"
-    ]
+    assert readiness["affiliate_pending_activation_product_ids"] == ["SC-YSL-LIBRE-EDP-90"]
     assert readiness["affiliate_blocked_product_ids"] == {
         "SC-DIOR-HYPNOTIC-POISON-EDT-100": ["approved_product_image"]
     }
@@ -32,9 +30,7 @@ def test_remaining_release01_rollout_reflects_current_product_scoped_notino_stat
         "SC-PDM-DELINA-EDP-75",
         "SC-YSL-BLACK-OPIUM-EDP-90",
     }
-    assert affiliate["pending_live_routing_approval_product_ids"] == [
-        "SC-YSL-LIBRE-EDP-90"
-    ]
+    assert affiliate["pending_live_routing_approval_product_ids"] == ["SC-YSL-LIBRE-EDP-90"]
     assert affiliate["blocked_live_routing_product_ids"] == {
         "SC-DIOR-HYPNOTIC-POISON-EDT-100": ["approved_product_image"]
     }
