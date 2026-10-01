@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-10-01T10:42:00Z",
+  "generated_at": "2026-10-01T10:55:00Z",
   "merchant_id": "notino",
   "network": "CJ Affiliate",
   "program": "Notino",
@@ -132,6 +132,26 @@
         "product publication remains blocked until approved product image clears",
         "activation preparation is authorized; live routing remains a separate controlled write"
       ]
+    },
+    {
+      "offer_id": "notino-ysl-libre-edp-90",
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "merchant_product_id": "VZR11010",
+      "gtin": "3614272648425",
+      "product_url": "https://www.notino.de/yves-saint-laurent/yves-saint-laurent-libre-eau-de-parfum-fuer-damen/p-15968532/",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fyves-saint-laurent%2Fyves-saint-laurent-libre-eau-de-parfum-fuer-damen%2Fp-15968532%2F",
+      "mapping_status": "verified_current_variant",
+      "offer_last_updated_at": "2026-10-01T10:55:00Z",
+      "offer_in_stock_observation": true,
+      "readiness": "ready_for_controlled_activation_preflight",
+      "publish_allowed": false,
+      "source_of_truth_mapping_state": "not_promoted",
+      "remaining_runtime_guards": [
+        "revalidate current availability before any live routing",
+        "keep exact Libre Eau de Parfum 90 ml identity",
+        "do not infer image rights from affiliate mapping",
+        "activation preparation is authorized; live routing remains a separate controlled write"
+      ]
     }
   ],
   "policy": {
@@ -139,5 +159,5 @@
     "affiliate_approval_implies_image_rights": false,
     "unverified_variant_fallback_allowed": false
   },
-  "next_action": "Release 01 remaining-rollout candidates Delina, Black Opium and Hypnotic Poison are prepared to controlled activation preflight only. Keep live_routing_allowed=false; revalidate availability and execute live routing only as an explicit controlled write. Hypnotic Poison publication remains separately blocked on approved image rights."
+  "next_action": "All four remaining Release 01 products now have exact Notino activation-preflight evidence. Keep live_routing_allowed=false; revalidate availability and execute any live routing only as a separate controlled write. Hypnotic Poison publication remains separately blocked on approved image rights."
 }
