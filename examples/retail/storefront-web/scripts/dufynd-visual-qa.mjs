@@ -1200,12 +1200,16 @@ try {
           }
 
           const spotlightTruth = page.locator(
-            'a[href="/duft/xerjoff-naxos"] img[src="/products/naxos-cutout-production.webp"]',
+            'a.dufynd-hero-product img[src="/products/naxos-cutout-production.webp"]',
           );
           if ((await spotlightTruth.count()) < 1) {
             throw new Error(
               "homepage spotlight does not prioritize the Naxos verified cutout",
             );
+          }
+          const spotlightHref = await spotlightTruth.first().evaluate((image) => image.closest("a")?.href);
+          if (!spotlightHref || new URL(spotlightHref, baseUrl).pathname !== "/duft/xerjoff-naxos") {
+            throw new Error("homepage spotlight does not open Naxos");
           }
 
           if ([390, 1440].includes(viewport.width)) {
