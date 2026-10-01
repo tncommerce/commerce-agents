@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-10-01T12:16:00Z",
+  "generated_at": "2026-10-01T12:32:00Z",
   "merchant_id": "notino",
   "network": "CJ Affiliate",
   "program": "Notino",
@@ -395,6 +395,69 @@
         "do not infer image rights from affiliate mapping",
         "activation preparation only; live routing remains a separate controlled write"
       ]
+    },
+    {
+      "offer_id": "notino-narciso-rodriguez-pure-musc-edp-100",
+      "product_id": "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100",
+      "merchant_product_id": "NAR01382",
+      "gtin": "3423478515956",
+      "product_url": "https://www.notino.de/narciso-rodriguez/for-her-pure-musc-eau-de-parfum-fuer-damen/p-15809116/",
+      "exact_variant": "Narciso Rodriguez for her PURE MUSC Eau de Parfum 100 ml",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fnarciso-rodriguez%2Ffor-her-pure-musc-eau-de-parfum-fuer-damen%2Fp-15809116%2F",
+      "mapping_status": "verified_current_variant",
+      "offer_last_updated_at": "2026-10-01T12:32:00Z",
+      "offer_in_stock_observation": true,
+      "readiness": "ready_for_controlled_activation_preflight",
+      "publish_allowed": false,
+      "source_of_truth_mapping_state": "not_promoted",
+      "remaining_runtime_guards": [
+        "revalidate current availability before any live routing",
+        "keep exact Narciso Rodriguez for her PURE MUSC Eau de Parfum 100 ml identity",
+        "do not infer image rights from affiliate mapping",
+        "activation preparation only; live routing remains a separate controlled write"
+      ]
+    },
+    {
+      "offer_id": "notino-ysl-myslf-le-parfum-100",
+      "product_id": "SC-YSL-MYSLF-LE-PARFUM-100",
+      "merchant_product_id": "YSL12342",
+      "gtin": "3614274114645",
+      "product_url": "https://www.notino.de/yves-saint-laurent/myslf-le-parfum-eau-de-parfum-fuer-herren/p-16257145/",
+      "exact_variant": "Yves Saint Laurent MYSLF Le Parfum 100 ml",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fyves-saint-laurent%2Fmyslf-le-parfum-eau-de-parfum-fuer-herren%2Fp-16257145%2F",
+      "mapping_status": "verified_current_variant",
+      "offer_last_updated_at": "2026-10-01T12:32:00Z",
+      "offer_in_stock_observation": true,
+      "readiness": "ready_for_controlled_activation_preflight",
+      "publish_allowed": false,
+      "source_of_truth_mapping_state": "not_promoted",
+      "remaining_runtime_guards": [
+        "revalidate current availability before any live routing",
+        "keep exact Yves Saint Laurent MYSLF Le Parfum 100 ml identity",
+        "do not infer image rights from affiliate mapping",
+        "activation preparation only; live routing remains a separate controlled write"
+      ]
+    },
+    {
+      "offer_id": "notino-ysl-la-nuit-de-lhomme-edt-100",
+      "product_id": "SC-YSL-LA-NUIT-DE-LHOMME-EDT-100",
+      "merchant_product_id": "YSL0136",
+      "gtin": "3365440375079",
+      "product_url": "https://www.notino.de/yves-saint-laurent/la-nuit-de-lhomme-eau-de-toilette-fur-herren/p-68699/",
+      "exact_variant": "Yves Saint Laurent La Nuit de L'Homme Eau de Toilette 100 ml",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fyves-saint-laurent%2Fla-nuit-de-lhomme-eau-de-toilette-fur-herren%2Fp-68699%2F",
+      "mapping_status": "verified_current_variant",
+      "offer_last_updated_at": "2026-10-01T12:32:00Z",
+      "offer_in_stock_observation": true,
+      "readiness": "ready_for_controlled_activation_preflight",
+      "publish_allowed": false,
+      "source_of_truth_mapping_state": "not_promoted",
+      "remaining_runtime_guards": [
+        "revalidate current availability before any live routing",
+        "keep exact Yves Saint Laurent La Nuit de L'Homme Eau de Toilette 100 ml identity",
+        "do not infer image rights from affiliate mapping",
+        "activation preparation only; live routing remains a separate controlled write"
+      ]
     }
   ],
   "policy": {
@@ -402,5 +465,5 @@
     "affiliate_approval_implies_image_rights": false,
     "unverified_variant_fallback_allowed": false
   },
-  "next_action": "Commerce waves 2-4 and Release 01 remaining-rollout have exact Notino activation-preflight evidence. Keep live_routing_allowed=false and source-of-truth mappings unpromoted; revalidate availability immediately before any future live routing write."
+  "next_action": "Commerce waves 2-5 and Release 01 remaining-rollout have exact Notino activation-preflight evidence. Keep live_routing_allowed=false and source-of-truth mappings unpromoted; revalidate availability immediately before any future live routing write."
 }
