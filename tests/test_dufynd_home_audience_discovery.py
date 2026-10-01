@@ -47,7 +47,7 @@ def test_homepage_renders_visual_audience_discovery_cards() -> None:
     text = source()
 
     assert 'id="dufynd-audience-discovery-heading"' in text
-    assert "const audiencePreviews = audiencePreviewProducts(picks);" in text
+    assert "const audiencePreviews = audiencePreviewProducts(catalog);" in text
     assert "AUDIENCE_DISCOVERY.map((audience) =>" in text
     assert "min-w-[76%]" in text
     assert "snap-x snap-mandatory" in text
@@ -73,3 +73,14 @@ def test_homepage_catalog_count_excludes_source_blocked_fragrances() -> None:
     assert "Boolean(" in text
     assert 'String(product.product_id).startsWith("SC-")' in text
     assert "product.in_stock !== false" in text
+
+
+def test_audience_preview_products_search_full_visible_catalog_for_visuals() -> None:
+    text = source()
+
+    assert "function audiencePreviewProducts(catalog: Record<string, Product>)" in text
+    assert "const matches = Object.values(catalog)" in text
+    assert 'product.in_stock === false' in text
+    assert "fragrance.presentation_visual?.url" in text
+    assert "fragrance.preferred_visual?.url" in text
+    assert "product.image_url" in text
