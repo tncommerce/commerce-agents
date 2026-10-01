@@ -26,6 +26,9 @@ on:
         description: Required for process-next or nightshift-pilot
         required: false
         type: string
+  issue_comment:
+    types:
+      - created
 
 permissions:
   contents: read
@@ -36,7 +39,7 @@ concurrency:
 
 jobs:
   jarvis:
-    if: inputs.mode != 'nightshift-pilot'
+    if: github.event_name == 'workflow_dispatch' && inputs.mode != 'nightshift-pilot'
     runs-on: ubuntu-latest
     steps:
       - name: Check out active DUFYND development line
@@ -97,7 +100,13 @@ jobs:
         run: python -m scripts.dufynd_jarvis_runtime --process-next
 
   nightshift:
-    if: inputs.mode == 'nightshift-pilot'
+    if: >-
+      (github.event_name == 'workflow_dispatch' && inputs.mode == 'nightshift-pilot') ||
+      (github.event_name == 'issue_comment' &&
+       github.event.issue.pull_request &&
+       github.event.issue.number == 1 &&
+       github.actor == github.repository_owner &&
+       github.event.comment.body == 'GO-JARVIS-NIGHTSHIFT')
     runs-on: ubuntu-latest
     # Supervisor hard-caps autonomous work at 330 minutes; reserve time for QA/reporting.
     timeout-minutes: 360
@@ -105,6 +114,14 @@ jobs:
       contents: write
       pull-requests: write
     steps:
+      - name: Acknowledge guarded DUFYND chat signal
+        if: github.event_name == 'issue_comment'
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Accepted guarded DUFYND chat signal from repository owner on PR #1."
+          echo "Nightshift defaults: max_tasks=8, max_minutes=300."
+
       - name: Check out active DUFYND development line
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -203,7 +220,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [ "${{ inputs.approval_token }}" != "GO-JARVIS-NIGHTSHIFT" ]; then
+          if [ "${GITHUB_EVENT_NAME}" = "issue_comment" ]; then
+            echo "Nightshift approval accepted from guarded DUFYND chat signal."
+          elif [ "${{ inputs.approval_token }}" != "GO-JARVIS-NIGHTSHIFT" ]; then
             echo "Nightshift pilot refused: explicit GO-JARVIS-NIGHTSHIFT token is required."
             exit 27
           fi
@@ -229,11 +248,11 @@ jobs:
           DUFYND_JARVIS_TASK_METADATA_PATH: "jarvis-worker-task.json"
         run: >-
           python -m scripts.dufynd_jarvis_supervisor
-          --max-minutes "${{ inputs.nightshift_max_minutes }}"
+          --max-minutes "${{ github.event_name == 'issue_comment' && '300' || inputs.nightshift_max_minutes }}"
           --max-cycles "20"
           --idle-seconds "300"
           --max-idle-cycles "60"
-          --max-tasks "${{ inputs.nightshift_max_tasks }}"
+          --max-tasks "${{ github.event_name == 'issue_comment' && '8' || inputs.nightshift_max_tasks }}"
           --max-events "5"
           --worker-timeout-seconds "600"
           --max-retries "1"
