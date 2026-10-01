@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated_at": "2026-09-29T21:03:00+00:00",
-  "source_fingerprint_sha256": "983ad1d9ca1847a77589fe0542aa324c648df213587c7293aa0f8c6fbfb5723b",
+  "source_fingerprint_sha256": "a73244c51e0ef8980f034e134b13cbbf5e3713521b88f3e220832ccbdc1c0723",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "release_count": 3,
   "current_release_id": "SCENTAI-RELEASE-01",
@@ -19,10 +19,10 @@
         "release_size": 5,
         "mapping_ready": 5,
         "image_identity_source_verified": 5,
-        "approved_images": 1,
+        "approved_images": 4,
         "current_purchase_destinations": 5,
         "current_tracked_affiliate_offers": 0,
-        "promotion_ready": 1
+        "promotion_ready": 4
       },
       "write_guard_reason": "Release 01 is the first operational batch. A write is still refused unless every product-level image, purchase-destination and staging QA gate passes."
     },
