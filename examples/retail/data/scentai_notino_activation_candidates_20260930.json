@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-10-01T12:32:00Z",
+  "generated_at": "2026-10-01T12:41:00Z",
   "merchant_id": "notino",
   "network": "CJ Affiliate",
   "program": "Notino",
@@ -458,6 +458,69 @@
         "do not infer image rights from affiliate mapping",
         "activation preparation only; live routing remains a separate controlled write"
       ]
+    },
+    {
+      "offer_id": "notino-chloe-chloe-edp-100",
+      "product_id": "SC-CHLOE-CHLOE-EDP-100",
+      "merchant_product_id": "CHL03807",
+      "gtin": "3616302038633",
+      "product_url": "https://www.notino.de/chloe/chloe-eau-de-parfum-fur-damen/p-16150722/",
+      "exact_variant": "Chloé Chloé Eau de Parfum refillable 100 ml",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fchloe%2Fchloe-eau-de-parfum-fur-damen%2Fp-16150722%2F",
+      "mapping_status": "verified_current_variant",
+      "offer_last_updated_at": "2026-10-01T12:41:00Z",
+      "offer_in_stock_observation": true,
+      "readiness": "ready_for_controlled_activation_preflight",
+      "publish_allowed": false,
+      "source_of_truth_mapping_state": "not_promoted",
+      "remaining_runtime_guards": [
+        "revalidate current availability before any live routing",
+        "keep exact Chloé Chloé Eau de Parfum refillable 100 ml identity",
+        "do not infer image rights from affiliate mapping",
+        "activation preparation only; live routing remains a separate controlled write"
+      ]
+    },
+    {
+      "offer_id": "notino-tom-ford-ombre-leather-edp-100",
+      "product_id": "SC-TOM-FORD-OMBRE-LEATHER-EDP-100",
+      "merchant_product_id": "TOF01567",
+      "gtin": "888066075145",
+      "product_url": "https://www.notino.de/tom-ford/ombre-leather-eau-de-parfum-fuer-herren/p-15795571/",
+      "exact_variant": "TOM FORD Ombré Leather Eau de Parfum 100 ml",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Ftom-ford%2Fombre-leather-eau-de-parfum-fuer-herren%2Fp-15795571%2F",
+      "mapping_status": "verified_current_variant",
+      "offer_last_updated_at": "2026-10-01T12:41:00Z",
+      "offer_in_stock_observation": true,
+      "readiness": "ready_for_controlled_activation_preflight",
+      "publish_allowed": false,
+      "source_of_truth_mapping_state": "not_promoted",
+      "remaining_runtime_guards": [
+        "revalidate current availability before any live routing",
+        "keep exact TOM FORD Ombré Leather Eau de Parfum 100 ml identity",
+        "do not infer image rights from affiliate mapping",
+        "activation preparation only; live routing remains a separate controlled write"
+      ]
+    },
+    {
+      "offer_id": "notino-pdm-valaya-exclusif-edp-75",
+      "product_id": "SC-PDM-VALAYA-EXCLUSIF-EDP-75",
+      "merchant_product_id": "PDM00727",
+      "gtin": "3700578505767",
+      "product_url": "https://www.notino.de/parfums-de-marly/valaya-exclusif-eau-de-parfum-fuer-damen/p-16289789/",
+      "exact_variant": "Parfums de Marly Valaya Exclusif Eau de Parfum 75 ml",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fparfums-de-marly%2Fvalaya-exclusif-eau-de-parfum-fuer-damen%2Fp-16289789%2F",
+      "mapping_status": "verified_current_variant",
+      "offer_last_updated_at": "2026-10-01T12:41:00Z",
+      "offer_in_stock_observation": true,
+      "readiness": "ready_for_controlled_activation_preflight",
+      "publish_allowed": false,
+      "source_of_truth_mapping_state": "not_promoted",
+      "remaining_runtime_guards": [
+        "revalidate current availability before any live routing",
+        "keep exact Parfums de Marly Valaya Exclusif Eau de Parfum 75 ml identity",
+        "do not infer image rights from affiliate mapping",
+        "activation preparation only; live routing remains a separate controlled write"
+      ]
     }
   ],
   "policy": {
@@ -465,5 +528,5 @@
     "affiliate_approval_implies_image_rights": false,
     "unverified_variant_fallback_allowed": false
   },
-  "next_action": "Commerce waves 2-5 and Release 01 remaining-rollout have exact Notino activation-preflight evidence. Keep live_routing_allowed=false and source-of-truth mappings unpromoted; revalidate availability immediately before any future live routing write."
+  "next_action": "Commerce waves 2-6 and Release 01 remaining-rollout have exact Notino activation-preflight evidence. Keep live_routing_allowed=false and source-of-truth mappings unpromoted; revalidate availability immediately before any future live routing write."
 }
