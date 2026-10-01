@@ -1,7 +1,7 @@
 "use client";
 
 import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
-import { type ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
+import { type ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import FragranceSaveControls from "@/components/FragranceSaveControls";
 import FragranceVisual from "@/components/FragranceVisual";
@@ -12,7 +12,6 @@ import {
   FRAGRANCE_LIBRARY_EVENT,
   FRAGRANCE_LIBRARY_STORAGE_KEY,
   parseFragranceLibraryBackup,
-  readFragranceLibrary,
   replaceFragranceLibrary,
   tryReadFragranceLibrary,
   type FragranceLibraryState,
@@ -324,42 +323,52 @@ export default function FragranceLibraryHub({
   const [library, setLibrary] =
     useState<FragranceLibraryState>(emptyState());
   const [ready, setReady] = useState(false);
+  const [hasRead, setHasRead] = useState(false);
+  const [readError, setReadError] = useState(false);
   const [backupStatus, setBackupStatus] = useState("");
   const importInputRef = useRef<HTMLInputElement>(null);
   const importRequestRef = useRef(0);
 
+  const syncLibrary = useCallback(() => {
+    const next = tryReadFragranceLibrary();
+    setReady(true);
+    if (!next) {
+      setReadError(true);
+      return;
+    }
+    setLibrary(next);
+    setHasRead(true);
+    setReadError(false);
+  }, []);
+
   useEffect(() => {
-    const sync = () => {
-      setLibrary(readFragranceLibrary());
-      setReady(true);
-    };
     const handleStorage = (event: StorageEvent) => {
       if (
         event.key === FRAGRANCE_LIBRARY_STORAGE_KEY ||
         event.key === null
       ) {
-        sync();
+        syncLibrary();
       }
     };
 
-    sync();
+    syncLibrary();
     window.addEventListener(
       FRAGRANCE_LIBRARY_EVENT,
-      sync,
+      syncLibrary,
     );
     window.addEventListener("storage", handleStorage);
 
     return () => {
       window.removeEventListener(
         FRAGRANCE_LIBRARY_EVENT,
-        sync,
+        syncLibrary,
       );
       window.removeEventListener(
         "storage",
         handleStorage,
       );
     };
-  }, []);
+  }, [syncLibrary]);
 
   const byId = useMemo(
     () =>
@@ -462,6 +471,8 @@ export default function FragranceLibraryHub({
 
       if (!replaceFragranceLibrary(next)) throw new Error("storage unavailable");
       setLibrary(next);
+      setHasRead(true);
+      setReadError(false);
       setBackupStatus(
         `Sicherung geladen: ${next.wishlist.length} gemerkt, ${next.owned.length} in Sammlung.`,
       );
@@ -472,6 +483,24 @@ export default function FragranceLibraryHub({
       if (request === importRequestRef.current) input.value = "";
     }
   };
+
+  const readFailure = readError ? (
+    <div role="alert" className="mt-6 rounded-2xl border border-(--line) bg-(--card) p-5 text-[13px] text-(--ink-soft)">
+      <p>Deine Duftliste konnte nicht gelesen werden. Deine gespeicherte Auswahl wurde nicht geändert.</p>
+      <button type="button" onClick={() => window.dispatchEvent(new CustomEvent(FRAGRANCE_LIBRARY_EVENT))} className="mt-3 rounded-xl border border-(--line) px-3 py-2 font-semibold text-(--ink) hover:border-(--accent)">
+        Duftliste erneut laden
+      </button>
+      {!hasRead ? (
+        <>
+          <button type="button" onClick={() => importInputRef.current?.click()} className="ml-2 mt-3 rounded-xl border border-(--line) px-3 py-2 font-semibold text-(--ink) hover:border-(--accent)">
+            Sicherung importieren
+          </button>
+          <input ref={importInputRef} type="file" accept=".json,application/json" onChange={(event) => void importBackup(event)} className="sr-only" aria-label="DUFYND-Duftliste aus JSON-Datei importieren" />
+          <p role="status" className="mt-2">{backupStatus}</p>
+        </>
+      ) : null}
+    </div>
+  ) : null;
 
   if (!ready) {
     return (
@@ -484,8 +513,11 @@ export default function FragranceLibraryHub({
     );
   }
 
+  if (!hasRead) return readFailure;
+
   return (
     <>
+      {readFailure}
       <section className="dufynd-library-hero relative mt-6 overflow-hidden rounded-[30px] border border-[#d9bd82]/25 bg-[#15120f] p-5 text-white shadow-[0_26px_80px_-42px_rgba(45,29,8,0.95)] sm:p-7">
         <div
           aria-hidden

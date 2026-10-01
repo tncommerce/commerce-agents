@@ -6,7 +6,7 @@ import { trackAnalyticsEvent } from "@/lib/analytics";
 import {
   FRAGRANCE_LIBRARY_EVENT,
   FRAGRANCE_LIBRARY_STORAGE_KEY,
-  readFragranceLibrary,
+  tryReadFragranceLibrary,
   setOwnedState,
   setWishlistState,
 } from "@/lib/fragranceLibrary";
@@ -16,8 +16,9 @@ type LibraryState = {
   owned: boolean;
 };
 
-function currentState(productId: string): LibraryState {
-  const library = readFragranceLibrary();
+function currentState(productId: string): LibraryState | null {
+  const library = tryReadFragranceLibrary();
+  if (!library) return null;
 
   return {
     wishlist: library.wishlist.includes(productId),
@@ -44,7 +45,12 @@ export default function FragranceSaveControls({
 
   useEffect(() => {
     const sync = () => {
-      setState(currentState(productId));
+      const next = currentState(productId);
+      if (!next) {
+        setStatus("Deine Duftliste konnte nicht gelesen werden. Bitte versuche es erneut.");
+        return;
+      }
+      setState(next);
       setStatus("");
     };
     const handleStorage = (event: StorageEvent) => {
