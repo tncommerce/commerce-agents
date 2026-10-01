@@ -152,6 +152,14 @@ export async function ensureAnalyticsSession(): Promise<string | null> {
   if (!apiSessionPromise) {
     apiSessionPromise = initializeAnalyticsSession()
       .then((sessionId) => {
+        // The advisor can establish its session while this request is pending.
+        // Use the current owner instead of installing a late analytics session.
+        if (api.session) {
+          if (analyticsOwnedApiSession !== api.session) {
+            analyticsOwnedApiSession = null;
+          }
+          return api.session;
+        }
         if (sessionId) {
           api.session = sessionId;
           analyticsOwnedApiSession = sessionId;
@@ -249,7 +257,8 @@ async function sendAnalyticsEvent(
   // replace an active advisor session owned by the storefront.
   if (
     !recorded &&
-    analyticsOwnedApiSession === apiSessionId
+    analyticsOwnedApiSession === apiSessionId &&
+    api.session === apiSessionId
   ) {
     api.session = null;
     analyticsOwnedApiSession = null;
