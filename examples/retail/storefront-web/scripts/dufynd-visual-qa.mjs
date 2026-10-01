@@ -13,6 +13,7 @@ import { verifyCurrentLibraryImport } from "./library-import-current-qa.mjs";
 import { verifyLatestLibraryImport } from "./library-import-latest-qa.mjs";
 import { verifySocialSearchDismissal } from "./social-search-dismissal-qa.mjs";
 import { verifyGuidedStartContext } from "./guided-start-context-qa.mjs";
+import { verifyGuidedLinkAttribution } from "./guided-link-attribution-qa.mjs";
 import { verifyProductDetailRecovery, verifySingleResponsiveProductDetail, verifyClosedProductDetailFocus } from "./product-detail-recovery-qa.mjs";
 
 const args = process.argv.slice(2);
@@ -247,6 +248,13 @@ const report = {
 };
 
 try {
+  try {
+    await verifyGuidedLinkAttribution(browser, baseUrl);
+    report.checks.push({ label: "guided-link-attribution-handoff", status: "passed" });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({ label: "guided-link-attribution-handoff", message });
+  }
   try {
     await verifyGuidedStartContext(browser, baseUrl);
     report.checks.push({ label: "guided-start-url-context", status: "passed" });
