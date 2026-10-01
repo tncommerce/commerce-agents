@@ -58,11 +58,7 @@ def test_naxos_and_bottled_absolu_mapping_evidence_is_verified_but_not_live() ->
 
 def test_libre_90_candidate_is_exact_and_staged_not_live() -> None:
     payload = _payload()
-    row = next(
-        row
-        for row in payload["candidates"]
-        if row["product_id"] == "SC-YSL-LIBRE-EDP-90"
-    )
+    row = next(row for row in payload["candidates"] if row["product_id"] == "SC-YSL-LIBRE-EDP-90")
 
     assert row["merchant_product_id"] == "VZR11010"
     assert row["gtin"] == "3614272648425"
@@ -71,6 +67,4 @@ def test_libre_90_candidate_is_exact_and_staged_not_live() -> None:
     assert row["publish_allowed"] is False
     assert row["source_of_truth_mapping_state"] == "not_promoted"
     assert row["offer_in_stock_observation"] is True
-    assert row["candidate_affiliate_url"] == build_cj_deep_link(
-        destination_url=row["product_url"]
-    )
+    assert row["candidate_affiliate_url"] == build_cj_deep_link(destination_url=row["product_url"])
