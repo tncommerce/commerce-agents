@@ -46,6 +46,7 @@ def test_release01_notino_candidates_are_preflight_only() -> None:
         "SC-PDM-DELINA-EDP-75": "PDM0227",
         "SC-YSL-BLACK-OPIUM-EDP-90": "YSL2377",
         "SC-DIOR-HYPNOTIC-POISON-EDT-100": "CHD0313",
+        "SC-YSL-LIBRE-EDP-90": "VZR11010",
     }
 
     assert payload["live_routing_allowed"] is False
@@ -60,3 +61,17 @@ def test_release01_notino_candidates_are_preflight_only() -> None:
     assert rows["SC-DIOR-HYPNOTIC-POISON-EDT-100"]["product_publication_blockers"] == [
         "approved_product_image"
     ]
+
+
+def test_remaining_rollout_has_no_unresolved_notino_code() -> None:
+    payload = json.loads(ROLLOUT.read_text(encoding="utf-8"))
+    affiliate = payload["affiliate_preparation"]
+
+    assert affiliate["unresolved_exact_notino_code"] == []
+    assert "SC-YSL-LIBRE-EDP-90" in affiliate["exact_activation_preflight_candidates"]
+    assert affiliate["libre_exact_variant"] == {
+        "merchant_product_id": "VZR11010",
+        "gtin": "3614272648425",
+        "variant_url": "https://www.notino.de/yves-saint-laurent/yves-saint-laurent-libre-eau-de-parfum-fuer-damen/p-15968532/",
+        "observed_in_stock": True,
+    }
