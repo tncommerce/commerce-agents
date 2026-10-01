@@ -14,6 +14,7 @@ import {
 } from "@/lib/fragranceCatalog";
 import { formatPriceReference } from "@/lib/priceReference";
 import { publicShareUrl } from "@/lib/shareUrl";
+import ManualShareLink from "@/components/ManualShareLink";
 import { targetGroupLabel } from "@/lib/targetLabels";
 
 function formatRating(
@@ -214,6 +215,8 @@ export default function FragranceComparisonPicker({
   const [rightId, setRightId] = useState("");
   const [urlReady, setUrlReady] = useState(false);
   const [copyStatus, setCopyStatus] = useState("");
+  const [manualUrl, setManualUrl] = useState("");
+  const copyRequestRef = useRef(0);
   const trackedPairRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -261,14 +264,21 @@ export default function FragranceComparisonPicker({
   }, [leftId, rightId, urlReady]);
 
   const copyComparisonLink = async () => {
+    const request = ++copyRequestRef.current;
     const url = new URL(window.location.href);
     url.searchParams.set("left", leftId);
     url.searchParams.set("right", rightId);
+    const shareUrl = publicShareUrl(url.href);
+    setCopyStatus("");
+    setManualUrl("");
     try {
-      await navigator.clipboard.writeText(publicShareUrl(url.href));
+      await navigator.clipboard.writeText(shareUrl);
+      if (request !== copyRequestRef.current) return;
       setCopyStatus("Link kopiert");
     } catch {
-      setCopyStatus("Kopieren nicht möglich. Bitte die Adresse im Browser kopieren.");
+      if (request !== copyRequestRef.current) return;
+      setManualUrl(shareUrl);
+      setCopyStatus("Automatisches Kopieren nicht möglich. Kopiere den Link unten.");
     }
   };
 
@@ -326,7 +336,9 @@ export default function FragranceComparisonPicker({
             value={leftId}
             onChange={(event) => {
               setLeftId(event.target.value);
+              copyRequestRef.current += 1;
               setCopyStatus("");
+              setManualUrl("");
             }}
             className="h-11 w-full rounded-xl border border-(--line) bg-(--surface) px-3 text-[12px] text-(--ink) outline-none focus:border-(--accent)"
           >
@@ -351,7 +363,9 @@ export default function FragranceComparisonPicker({
             value={rightId}
             onChange={(event) => {
               setRightId(event.target.value);
+              copyRequestRef.current += 1;
               setCopyStatus("");
+              setManualUrl("");
             }}
             className="h-11 w-full rounded-xl border border-(--line) bg-(--surface) px-3 text-[12px] text-(--ink) outline-none focus:border-(--accent)"
           >
@@ -382,6 +396,7 @@ export default function FragranceComparisonPicker({
             <span role="status" className="text-[11px] text-(--ink-soft)">
               {copyStatus}
             </span>
+            <ManualShareLink url={manualUrl} />
           </div>
           <div className="dufynd-comparison-live-stage grid gap-3 sm:grid-cols-2">
             <div

@@ -21,6 +21,7 @@ import {
 import { noteLabel } from "@/lib/noteLabels";
 import { targetLabel } from "@/lib/targetLabels";
 import { publicShareUrl } from "@/lib/shareUrl";
+import ManualShareLink from "@/components/ManualShareLink";
 
 type AudienceFilter = "all" | CatalogAudience;
 type ProfileFilter =
@@ -411,6 +412,8 @@ export default function FragranceCatalogBrowser({
     useState(PAGE_SIZE);
   const [urlReady, setUrlReady] = useState(false);
   const [copyStatus, setCopyStatus] = useState("");
+  const [manualUrl, setManualUrl] = useState("");
+  const copyRequestRef = useRef(0);
   const [compareSelection, setCompareSelection] = useState<string[]>([]);
   const lastTrackedSearchRef = useRef("");
   const initialSearchAppliedRef = useRef(false);
@@ -486,7 +489,9 @@ export default function FragranceCatalogBrowser({
 
   useEffect(() => {
     if (!urlReady) return;
+    copyRequestRef.current += 1;
     setCopyStatus("");
+    setManualUrl("");
 
     const timeout = window.setTimeout(() => {
       const url = catalogLink({
@@ -504,14 +509,21 @@ export default function FragranceCatalogBrowser({
   }, [search, audience, profile, brand, minimumRating, sort, urlReady]);
 
   const copyCatalogLink = async () => {
+    const request = ++copyRequestRef.current;
     const url = catalogLink({
       search, audience, profile, brand, minimumRating, sort,
     });
+    const shareUrl = publicShareUrl(url.href);
+    setCopyStatus("");
+    setManualUrl("");
     try {
-      await navigator.clipboard.writeText(publicShareUrl(url.href));
+      await navigator.clipboard.writeText(shareUrl);
+      if (request !== copyRequestRef.current) return;
       setCopyStatus("Link kopiert");
     } catch {
-      setCopyStatus("Kopieren nicht möglich. Bitte die Adresse im Browser kopieren.");
+      if (request !== copyRequestRef.current) return;
+      setManualUrl(shareUrl);
+      setCopyStatus("Automatisches Kopieren nicht möglich. Kopiere den Link unten.");
     }
   };
 
@@ -1198,6 +1210,7 @@ export default function FragranceCatalogBrowser({
         <span role="status" className="text-[11px] text-(--ink-soft)">
           {copyStatus}
         </span>
+        <ManualShareLink url={manualUrl} />
       </section>
 
       {compareSelection.length === 0 ? (

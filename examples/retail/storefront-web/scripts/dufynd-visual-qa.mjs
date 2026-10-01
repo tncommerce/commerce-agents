@@ -7,6 +7,7 @@ import { verifyPublicShareLinks } from "./public-share-qa.mjs";
 import { verifyLibraryClearRecovery } from "./library-clear-qa.mjs";
 import { verifyLibrarySaveRecovery } from "./library-save-qa.mjs";
 import { verifyAnalyticsEventTimeout } from "./analytics-event-timeout-qa.mjs";
+import { verifyManualShareFallback } from "./manual-share-qa.mjs";
 import { verifyProductDetailRecovery, verifySingleResponsiveProductDetail, verifyClosedProductDetailFocus } from "./product-detail-recovery-qa.mjs";
 
 const args = process.argv.slice(2);
@@ -241,6 +242,13 @@ const report = {
 };
 
 try {
+  try {
+    await verifyManualShareFallback(browser, baseUrl);
+    report.checks.push({ label: "manual-share-session-isolation", status: "passed" });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({ label: "manual-share-session-isolation", message });
+  }
   try {
     await verifyAnalyticsEventTimeout(browser, baseUrl);
     report.checks.push({ label: "analytics-event-post-timeout-recovery", status: "passed" });
