@@ -333,8 +333,21 @@ def promotion_plan(
         source_path=source_path,
     )
 
+    existing_media = canonical.get("media") or {}
+    existing_image_url = str(existing_media.get("image_url") or "").strip()
+    existing_image_status = str(existing_media.get("image_status") or "").strip()
+    existing_image_conflict = bool(
+        catalog_scope == "staging"
+        and existing_image_url
+        and (
+            existing_image_url != public_asset
+            or existing_image_status != GENERATED_PRODUCT_TRUTH_STATUS
+        )
+    )
     write_supported = (
-        catalog_scope == "staging" and candidate["candidate_source"] == "staged_fidelity"
+        catalog_scope == "staging"
+        and candidate["candidate_source"] == "staged_fidelity"
+        and not existing_image_conflict
     )
     return {
         "product_id": product_id,
@@ -358,15 +371,24 @@ def promotion_plan(
         "volume_ml": canonical_volume,
         "concentration": canonical_concentration or candidate["concentration"],
         "generated_media_status": GENERATED_PRODUCT_TRUTH_STATUS,
+        "existing_image_url": existing_image_url or None,
+        "existing_image_status": existing_image_status or None,
+        "existing_image_conflict": existing_image_conflict,
         "write_supported": write_supported,
         "catalog_promotion": False,
         "public_activation": False,
         "catalog_ready_will_change": False,
-        "validation_gate_will_change": "approved_product_image_pending",
+        "validation_gate_will_change": (
+            "approved_product_image_pending" if write_supported else None
+        ),
         "next_gate": (
             "normal_catalog_promotion_after_all_remaining_gates"
             if write_supported
-            else "separate_live_catalog_product_truth_activation_required"
+            else (
+                "existing_staging_image_requires_separate_replacement_gate"
+                if existing_image_conflict
+                else "separate_live_catalog_product_truth_activation_required"
+            )
         ),
     }
 
