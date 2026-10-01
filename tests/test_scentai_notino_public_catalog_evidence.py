@@ -17,6 +17,7 @@ EXPECTED = {
     "SC-PDM-DELINA-EDP-75": "PDM0227",
     "SC-YSL-BLACK-OPIUM-EDP-90": "YSL2377",
     "SC-DIOR-HYPNOTIC-POISON-EDT-100": "CHD0313",
+    "SC-YSL-LIBRE-EDP-90": "VZR11010",
 }
 
 
@@ -56,5 +57,6 @@ def test_public_catalog_candidates_are_identified_without_activation() -> None:
         "SC-PDM-DELINA-EDP-75",
         "SC-YSL-BLACK-OPIUM-EDP-90",
         "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+        "SC-YSL-LIBRE-EDP-90",
     }
     assert all(row["publish_allowed"] is False for row in public_rows)
