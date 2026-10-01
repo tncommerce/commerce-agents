@@ -78,7 +78,7 @@ export async function fetchProducts(): Promise<Product[] | null> {
   );
 
   try {
-    const response = await fetch(`${api.base}/products?limit=100`, {
+    const response = await fetch(`${api.base}/products?category=fragrance&limit=100`, {
       headers: api.headers(),
       signal: controller.signal,
     });

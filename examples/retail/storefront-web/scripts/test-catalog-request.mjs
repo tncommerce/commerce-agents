@@ -51,7 +51,7 @@ const success = () => ({ ok: true, json: async () => ({ products }) });
   const env = client(success);
   const result = await env.fetchProducts();
   assert.equal(result, products);
-  assert.equal(env.requests[0].url, "https://api.dufynd.test/api/products?limit=100");
+  assert.equal(env.requests[0].url, "https://api.dufynd.test/api/products?category=fragrance&limit=100");
   assert.equal(env.requests[0].init.headers["X-Session-Id"], "catalog-session");
   assert.equal(env.requests[0].init.signal.aborted, false);
   assert.equal(env.timers.size, 0);
