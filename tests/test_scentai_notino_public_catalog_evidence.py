@@ -62,6 +62,10 @@ def test_public_catalog_candidates_are_identified_without_activation() -> None:
         "SC-YSL-BLACK-OPIUM-EDP-90",
         "SC-DIOR-HYPNOTIC-POISON-EDT-100",
         "SC-YSL-LIBRE-EDP-90",
+        "SC-JPG-LE-MALE-LE-PARFUM-125",
+        "SC-PDM-HEROD-EDP-125",
+        "SC-INITIO-SIDE-EFFECT-EDP-90",
+        "SC-VIKTOR-ROLF-SPICEBOMB-EXTREME-EDP-90",
     }
     assert all(row["publish_allowed"] is False for row in public_rows)
 
