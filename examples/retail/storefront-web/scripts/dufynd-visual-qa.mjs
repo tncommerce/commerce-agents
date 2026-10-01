@@ -21,6 +21,7 @@ import { verifySocialSearchDismissal } from "./social-search-dismissal-qa.mjs";
 import { verifySocialSearchAttribution } from "./social-search-attribution-qa.mjs";
 import { verifySocialCatalogNavigation } from "./social-catalog-navigation-qa.mjs";
 import { verifyAcquisitionLandingNavigation } from "./acquisition-landing-navigation-qa.mjs";
+import { verifyHomeCatalogHydration } from "./home-catalog-hydration-qa.mjs";
 import { verifyHomeNavigationAttribution } from "./home-navigation-attribution-qa.mjs";
 import { verifyLibraryNavigationAttribution } from "./library-navigation-attribution-qa.mjs";
 import { verifyGuidedStartContext } from "./guided-start-context-qa.mjs";
@@ -259,6 +260,12 @@ const report = {
 };
 
 try {
+  try {
+    const cases = await verifyHomeCatalogHydration(browser, baseUrl);
+    report.checks.push({ label: "home-catalog-hydration", status: "passed", cases });
+  } catch (error) {
+    report.failures.push({ label: "home-catalog-hydration", message: String(error) });
+  }
   try {
     const cases = await verifyFooterNavigationAttribution(browser, baseUrl);
     report.checks.push({ label: "footer-navigation-attribution", status: "passed", cases });
