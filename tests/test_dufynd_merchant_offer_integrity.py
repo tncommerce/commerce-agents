@@ -540,9 +540,9 @@ def test_notino_delina_black_opium_live_pilot_is_exact_scoped() -> None:
 
 def test_notino_ysl_libre_live_route_is_exact_scoped_variant() -> None:
     evidence = json.loads(
-        Path(
-            "examples/retail/data/dufynd_notino_ysl_libre_live_routing_20261001.json"
-        ).read_text(encoding="utf-8")
+        Path("examples/retail/data/dufynd_notino_ysl_libre_live_routing_20261001.json").read_text(
+            encoding="utf-8"
+        )
     )
     mappings = json.loads(
         Path("examples/retail/data/merchant_product_mappings.json").read_text(encoding="utf-8")
