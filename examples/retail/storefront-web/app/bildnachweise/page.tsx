@@ -1,3 +1,4 @@
+import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
 import LegalFooter from "@/components/LegalFooter";
 import scentaiProducts from "../../../data/scentai_products.json";
 
@@ -53,12 +54,12 @@ export default function ImageCreditsPage() {
     <main className="min-h-screen bg-(--ground) px-4 py-10 text-(--ink) sm:px-6">
       <div className="mx-auto max-w-3xl">
         <article className="rounded-2xl border border-(--line) bg-(--card) p-6 shadow-(--shadow-sm) sm:p-8">
-          <a
+          <AcquisitionInternalLink
             href="/"
             className="text-[13px] font-semibold text-(--accent-ink) hover:underline"
           >
             ← Zurück zu DUFYND
-          </a>
+          </AcquisitionInternalLink>
 
           <h1 className="mt-5 text-3xl font-semibold tracking-[-0.03em]">
             Bildnachweise

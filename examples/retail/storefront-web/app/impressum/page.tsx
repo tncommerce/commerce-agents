@@ -1,6 +1,7 @@
 // Copyright 2026 Anthropic PBC
 // SPDX-License-Identifier: Apache-2.0
 
+import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
 import LegalFooter from "@/components/LegalFooter";
 import { legal, legalLocation, legalReady } from "@/lib/legal";
 
@@ -21,9 +22,9 @@ export default function ImpressumPage() {
     <main className="min-h-screen bg-(--ground) px-4 py-10 text-(--ink) sm:px-6">
       <div className="mx-auto max-w-3xl">
         <article className="rounded-2xl border border-(--line) bg-(--card) p-6 shadow-(--shadow-sm) sm:p-8">
-          <a href="/" className="text-[13px] font-semibold text-(--accent-ink) hover:underline">
+          <AcquisitionInternalLink href="/" className="text-[13px] font-semibold text-(--accent-ink) hover:underline">
             ← Zurück zu DUFYND
-          </a>
+          </AcquisitionInternalLink>
 
           <h1 className="mt-5 text-3xl font-semibold tracking-[-0.03em]">Impressum</h1>
           <p className="mt-2 text-[13px] text-(--ink-soft)">Angaben gemäß § 5 DDG</p>
