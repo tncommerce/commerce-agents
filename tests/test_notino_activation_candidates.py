@@ -198,3 +198,28 @@ def test_commerce_wave6_exact_candidates_are_preflight_only() -> None:
         assert row["candidate_affiliate_url"] == build_cj_deep_link(
             destination_url=row["product_url"]
         )
+
+
+def test_commerce_wave7_exact_candidates_are_preflight_only() -> None:
+    payload = _payload()
+    rows = {row["product_id"]: row for row in payload["candidates"]}
+
+    expected = {
+        "SC-CAROLINA-HERRERA-GOOD-GIRL-EDP-80": ("CHR0865", "8411061818961"),
+        "SC-DIOR-JADORE-EDP-100": ("CHD17856", "3348901738224"),
+        "SC-VALENTINO-DONNA-BORN-IN-ROMA-EDP-100": ("VAL00621", "3614272761445"),
+    }
+
+    assert payload["live_routing_allowed"] is False
+    for product_id, (merchant_product_id, gtin) in expected.items():
+        row = rows[product_id]
+        assert row["merchant_product_id"] == merchant_product_id
+        assert row["gtin"] == gtin
+        assert row["mapping_status"] == "verified_current_variant"
+        assert row["readiness"] == "ready_for_controlled_activation_preflight"
+        assert row["offer_in_stock_observation"] is True
+        assert row["publish_allowed"] is False
+        assert row["source_of_truth_mapping_state"] == "not_promoted"
+        assert row["candidate_affiliate_url"] == build_cj_deep_link(
+            destination_url=row["product_url"]
+        )
