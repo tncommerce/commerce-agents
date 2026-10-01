@@ -14,6 +14,7 @@ import { verifyLatestLibraryImport } from "./library-import-latest-qa.mjs";
 import { verifySocialSearchDismissal } from "./social-search-dismissal-qa.mjs";
 import { verifySocialSearchAttribution } from "./social-search-attribution-qa.mjs";
 import { verifySocialCatalogNavigation } from "./social-catalog-navigation-qa.mjs";
+import { verifyAcquisitionLandingNavigation } from "./acquisition-landing-navigation-qa.mjs";
 import { verifyGuidedStartContext } from "./guided-start-context-qa.mjs";
 import { verifyGuidedLinkAttribution } from "./guided-link-attribution-qa.mjs";
 import { verifyProductDetailRecovery, verifySingleResponsiveProductDetail, verifyClosedProductDetailFocus } from "./product-detail-recovery-qa.mjs";
@@ -250,6 +251,13 @@ const report = {
 };
 
 try {
+  try {
+    await verifyAcquisitionLandingNavigation(browser, baseUrl);
+    report.checks.push({ label: "acquisition-landing-navigation-attribution", status: "passed" });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({ label: "acquisition-landing-navigation-attribution", message });
+  }
   try {
     await verifySocialCatalogNavigation(browser, baseUrl);
     report.checks.push({ label: "social-catalog-navigation-attribution", status: "passed" });
@@ -1046,7 +1054,9 @@ try {
               `acquisition landing expected 3 catalogue spotlights, got ${await page.locator(".dufynd-acquisition-bottle").count()}`,
             );
           }
-          if ((await page.locator('a[href="/duft"]').count()) < 1) {
+          if ((await page.locator("a").evaluateAll((links) => links.filter((link) =>
+            new URL(link.href).pathname === "/duft",
+          ).length)) < 1) {
             throw new Error("acquisition landing is missing the catalog path");
           }
           if (

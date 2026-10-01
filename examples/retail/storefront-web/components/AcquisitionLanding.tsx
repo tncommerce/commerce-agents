@@ -1,4 +1,5 @@
 import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
+import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
 import GuidedAdvisorLink from "@/components/GuidedAdvisorLink";
 import LegalFooter from "@/components/LegalFooter";
 import FragranceVisual from "@/components/FragranceVisual";
@@ -59,7 +60,7 @@ export default function AcquisitionLanding({
 
       <div className="mx-auto w-full max-w-[1040px] px-4 py-5 sm:px-6 sm:py-8">
         <header className="flex items-center justify-between gap-4">
-          <a
+          <AcquisitionInternalLink
             href="/"
             className="inline-flex items-center gap-2.5"
             aria-label="Zur DUFYND Startseite"
@@ -75,14 +76,14 @@ export default function AcquisitionLanding({
             <span className="text-[17px] font-bold tracking-[-0.02em]">
               DUFYND
             </span>
-          </a>
+          </AcquisitionInternalLink>
 
-          <a
+          <AcquisitionInternalLink
             href="/duft"
             className="rounded-full border border-(--line) bg-white/60 px-3 py-1.5 text-[11.5px] font-semibold text-(--ink) backdrop-blur-sm transition hover:border-(--ink)"
           >
             {fragranceCount} Düfte
-          </a>
+          </AcquisitionInternalLink>
         </header>
 
         <section
@@ -126,12 +127,12 @@ export default function AcquisitionLanding({
               >
                 {primaryLabel}
               </GuidedAdvisorLink>
-              <a
+              <AcquisitionInternalLink
                 href="/duft"
                 className="rounded-xl border border-white/15 bg-white/[0.055] px-4 py-2.5 text-[12.5px] font-semibold text-white/[0.88] backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white/[0.09]"
               >
                 Katalog entdecken
-              </a>
+              </AcquisitionInternalLink>
             </div>
 
             {secondaryStarts.length ? (
@@ -166,7 +167,7 @@ export default function AcquisitionLanding({
                     isVerifiedProductTruthVisual(visual);
 
                   return (
-                    <a
+                    <AcquisitionInternalLink
                       key={fragrance.product_id}
                       href={`/duft/${fragrance.slug}`}
                       className="dufynd-acquisition-bottle"
@@ -198,7 +199,7 @@ export default function AcquisitionLanding({
                         <span>{fragrance.brand}</span>
                         <strong>{fragrance.name}</strong>
                       </div>
-                    </a>
+                    </AcquisitionInternalLink>
                   );
                 })}
                 <div className="dufynd-acquisition-stage-label">
@@ -249,12 +250,12 @@ export default function AcquisitionLanding({
             Provision beeinflusst nie die Duftempfehlung. Bei preisgleichen,
             vergleichbar aktuellen Händlerangeboten kann sie zwischen
             Partnerlinks entscheiden.{" "}
-            <a
+            <AcquisitionInternalLink
               href="/transparenz"
               className="font-semibold text-(--accent-ink) hover:underline"
             >
               So arbeitet DUFYND
-            </a>
+            </AcquisitionInternalLink>
             .
           </p>
         </section>
