@@ -444,9 +444,7 @@ def build_catalog_product(
         "image_fidelity_approved_at": str(
             staged.get("media", {}).get("image_fidelity_approved_at") or ""
         ),
-        "image_source_sha256": str(
-            staged.get("media", {}).get("image_source_sha256") or ""
-        ),
+        "image_source_sha256": str(staged.get("media", {}).get("image_source_sha256") or ""),
         "image_variant": str(staged.get("media", {}).get("image_variant") or ""),
     }
 
@@ -567,12 +565,8 @@ def build_source_product(
                 ),
                 **(
                     {
-                        "approval_basis": str(
-                            media.get("image_fidelity_approval_basis") or ""
-                        ),
-                        "approved_at": str(
-                            media.get("image_fidelity_approved_at") or ""
-                        ),
+                        "approval_basis": str(media.get("image_fidelity_approval_basis") or ""),
+                        "approved_at": str(media.get("image_fidelity_approved_at") or ""),
                         "source_sha256": str(media.get("image_source_sha256") or ""),
                         "generator": str(media.get("image_generator") or ""),
                     }
