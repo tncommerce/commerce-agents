@@ -14,6 +14,9 @@ EXPECTED = {
     "SC-PRADA-LHOMME-100": "PRA0719",
     "SC-PRADA-LHOMME-INTENSE-EDP-100": "PRA0937",
     "SC-JPG-LE-MALE-ELIXIR-PARFUM-125": "JPG04424",
+    "SC-PDM-DELINA-EDP-75": "PDM0227",
+    "SC-YSL-BLACK-OPIUM-EDP-90": "YSL2377",
+    "SC-DIOR-HYPNOTIC-POISON-EDT-100": "CHD0313",
 }
 
 
@@ -50,5 +53,8 @@ def test_public_catalog_candidates_are_identified_without_activation() -> None:
         "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
         "SC-DIOR-SAUVAGE-EDP-100",
         "SC-PRADA-LHOMME-100",
+        "SC-PDM-DELINA-EDP-75",
+        "SC-YSL-BLACK-OPIUM-EDP-90",
+        "SC-DIOR-HYPNOTIC-POISON-EDT-100",
     }
     assert all(row["publish_allowed"] is False for row in public_rows)
