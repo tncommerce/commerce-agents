@@ -95,10 +95,7 @@ def test_current_creed_and_libre_structural_dry_runs_are_fail_closed(
     assert libre["public_activation"] is False
     assert libre["catalog_ready_will_change"] is False
     assert libre["validation_gate_will_change"] is None
-    assert (
-        libre["next_gate"]
-        == "existing_staging_image_requires_separate_replacement_gate"
-    )
+    assert libre["next_gate"] == "existing_staging_image_requires_separate_replacement_gate"
 
 
 def test_staged_write_path_requires_explicit_human_fidelity_approval(
