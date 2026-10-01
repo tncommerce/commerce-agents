@@ -122,3 +122,42 @@ export async function verifySingleResponsiveProductDetail(browser, baseUrl) {
     }
   }
 }
+
+export async function verifyClosedProductDetailFocus(browser, baseUrl) {
+  for (const reducedMotion of ["reduce", "no-preference"]) {
+    const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion });
+    const page = await context.newPage();
+    await page.route("**/api/products/AR-*", (route) => route.fulfill({ status: 503, body: "unavailable" }));
+    try {
+      await page.goto(`${baseUrl}/showcase`);
+      const products = page.locator('[data-component="products"]');
+      const opener = products.getByRole("button", { name: /Stacking Wooden/ }).first();
+      const close = products.getByRole("button", { name: "Details schließen", exact: true });
+      const collapse = products.locator(".ac-collapse");
+      await opener.focus();
+      await page.keyboard.press("Enter");
+      await products.getByRole("button", { name: "Produktdetails erneut laden" }).waitFor();
+      await close.focus();
+      await page.keyboard.press("Enter");
+      assert.equal(await collapse.getAttribute("aria-hidden"), "true");
+      assert.equal(await opener.evaluate((element) => element === document.activeElement), true,
+        `${reducedMotion}: closing must restore focus to the product card`);
+      const hiddenFocus = await collapse.evaluate((element) => {
+        const button = element.querySelector("button");
+        button?.focus();
+        return { retained: Boolean(button), focused: Boolean(button && document.activeElement === button) };
+      });
+      if (reducedMotion === "reduce") assert.equal(hiddenFocus.retained, true);
+      assert.equal(hiddenFocus.focused, false, "closed details must reject focus");
+      await page.keyboard.press("Tab");
+      assert.equal(await collapse.evaluate((element) => element.contains(document.activeElement)), false);
+      await opener.focus();
+      await page.keyboard.press("Enter");
+      await close.focus();
+      assert.equal(await close.evaluate((element) => element === document.activeElement), true,
+        "reopened detail controls must remain usable");
+    } finally {
+      await context.close();
+    }
+  }
+}

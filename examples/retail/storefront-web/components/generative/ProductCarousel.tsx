@@ -363,6 +363,7 @@ export default function ProductCarousel({
   const autoOpenedProductRef = useRef<string | null>(null);
   const viewedRecommendationsRef = useRef<Set<string>>(new Set());
   const collapseRef = useRef<HTMLDivElement>(null);
+  const detailOpenerRef = useRef<HTMLElement | null>(null);
 
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [overflow, setOverflow] = useState({ left: false, right: false });
@@ -440,8 +441,21 @@ export default function ProductCarousel({
   const rendered = items.find(({ product }) => product.product_id === renderedId);
   const open = expandedId != null && expandedId === renderedId;
 
-  const toggle = (product: Product) =>
+  const closeDetails = () => {
+    setExpandedId(null);
+    detailOpenerRef.current?.focus({ preventScroll: true });
+  };
+
+  const toggle = (product: Product) => {
+    if (expandedId === product.product_id) {
+      closeDetails();
+      return;
+    }
+    detailOpenerRef.current = document.activeElement instanceof HTMLElement
+      ? document.activeElement
+      : null;
     setExpandedId((current) => (current === product.product_id ? null : product.product_id));
+  };
 
   return (
     <section className="rounded-2xl border border-(--line) bg-(--card) p-3 shadow-(--shadow-sm)">
@@ -558,6 +572,7 @@ export default function ProductCarousel({
           if (event.propertyName === "grid-template-rows" && !expandedId) setRenderedId(null);
         }}
         aria-hidden={!open}
+        inert={!open}
       >
         <div className="ac-collapse-inner">
           {desktopDetails && rendered ? (
@@ -566,7 +581,7 @@ export default function ProductCarousel({
               product={rendered.product}
               reason={rendered.reason}
               onAdd={onAdd}
-              onClose={() => setExpandedId(null)}
+              onClose={closeDetails}
             />
           ) : null}
         </div>
