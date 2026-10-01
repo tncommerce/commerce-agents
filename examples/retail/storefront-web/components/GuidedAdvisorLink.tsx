@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
 
 import {
   advisorStartHref,
@@ -22,7 +23,7 @@ export default function GuidedAdvisorLink({
   prompt?: string;
 }) {
   return (
-    <a
+    <AcquisitionInternalLink
       href={advisorStartHref(start)}
       className={className}
       onClick={() => {
@@ -51,6 +52,6 @@ export default function GuidedAdvisorLink({
       }}
     >
       {children}
-    </a>
+    </AcquisitionInternalLink>
   );
 }
