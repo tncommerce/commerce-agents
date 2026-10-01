@@ -5,6 +5,7 @@ from datetime import UTC, datetime
 
 import pytest
 from scripts.promote_scentai_catalog import (
+    GENERATED_PRODUCT_TRUTH_STATUS,
     build_catalog_product,
     build_source_product,
     eligible_affiliate_offers,
@@ -175,6 +176,102 @@ def test_rights_cleared_licensed_image_with_evidence_passes_image_gate() -> None
     assert "missing_approved_image" not in blockers
     assert "image_not_approved" not in blockers
     assert "missing_rights_cleared_image_evidence" not in blockers
+
+
+@pytest.mark.parametrize(
+    "missing_field",
+    [
+        "image_reviewed_at",
+        "image_source_sha256",
+        "image_generator",
+        "image_fidelity_approval_basis",
+        "image_fidelity_approved_at",
+        "image_variant",
+    ],
+)
+def test_generated_product_truth_requires_persisted_approval_evidence(
+    missing_field: str,
+) -> None:
+    product = staged_product()
+    product["media"] = {
+        "image_url": "/products/test-generated.png",
+        "image_status": GENERATED_PRODUCT_TRUTH_STATUS,
+        "image_reviewed_at": "2026-10-01T20:00:00+00:00",
+        "image_source_class": "dufynd_generated",
+        "image_source_sha256": "a" * 64,
+        "image_generator": "built_in_imagegen",
+        "image_fidelity_approval_basis": "explicit_user_visual_approval_2026-10-01",
+        "image_fidelity_approved_at": "2026-10-01",
+        "image_exact_variant_verified": True,
+        "image_variant": "100ml",
+    }
+    product["media"].pop(missing_field)
+
+    blockers = promotion_blockers(product, [affiliate_offer()], now=NOW)
+
+    assert "missing_dufynd_generated_product_truth_evidence" in blockers
+
+
+def test_generated_product_truth_requires_generated_source_and_exact_variant() -> None:
+    product = staged_product()
+    product["media"] = {
+        "image_url": "/products/test-generated.png",
+        "image_status": GENERATED_PRODUCT_TRUTH_STATUS,
+        "image_reviewed_at": "2026-10-01T20:00:00+00:00",
+        "image_source_class": "licensed_asset_provider",
+        "image_source_sha256": "a" * 64,
+        "image_generator": "built_in_imagegen",
+        "image_fidelity_approval_basis": "explicit_user_visual_approval_2026-10-01",
+        "image_fidelity_approved_at": "2026-10-01",
+        "image_exact_variant_verified": True,
+        "image_variant": "100ml",
+    }
+    blockers = promotion_blockers(product, [affiliate_offer()], now=NOW)
+    assert "missing_dufynd_generated_product_truth_evidence" in blockers
+
+    product["media"]["image_source_class"] = "dufynd_generated"
+    product["media"]["image_exact_variant_verified"] = False
+    blockers = promotion_blockers(product, [affiliate_offer()], now=NOW)
+    assert "missing_dufynd_generated_product_truth_evidence" in blockers
+
+
+def test_generated_product_truth_passes_image_gate_and_preserves_provenance() -> None:
+    product = staged_product()
+    product["media"] = {
+        "image_url": "/products/test-generated.png",
+        "image_status": GENERATED_PRODUCT_TRUTH_STATUS,
+        "image_reviewed_at": "2026-10-01T20:00:00+00:00",
+        "image_source_class": "dufynd_generated",
+        "image_source_sha256": "a" * 64,
+        "image_generator": "built_in_imagegen",
+        "image_fidelity_approval_basis": "explicit_user_visual_approval_2026-10-01",
+        "image_fidelity_approved_at": "2026-10-01",
+        "image_exact_variant_verified": True,
+        "image_variant": "100ml",
+    }
+
+    blockers = promotion_blockers(product, [affiliate_offer()], now=NOW)
+    assert "missing_approved_image" not in blockers
+    assert "image_not_approved" not in blockers
+    assert "missing_dufynd_generated_product_truth_evidence" not in blockers
+
+    catalog = build_catalog_product(product, best_offer=affiliate_offer())
+    source = build_source_product(product, best_offer=affiliate_offer())
+    visual = source["visuals"][0]
+
+    assert catalog["attributes"]["image_product_truth_provenance"] == "dufynd_generated"
+    assert (
+        catalog["attributes"]["image_fidelity_approval_basis"]
+        == "explicit_user_visual_approval_2026-10-01"
+    )
+    assert catalog["attributes"]["image_source_sha256"] == "a" * 64
+    assert catalog["attributes"]["image_variant"] == "100ml"
+    assert visual["provenance"] == "dufynd_generated"
+    assert visual["fidelity_status"] == "verified"
+    assert visual["variant"] == "100ml"
+    assert visual["approval_basis"] == "explicit_user_visual_approval_2026-10-01"
+    assert visual["source_sha256"] == "a" * 64
+    assert visual["generator"] == "built_in_imagegen"
 
 
 def test_licensed_provider_image_requires_public_attribution_metadata() -> None:
