@@ -196,11 +196,7 @@ def _persist_session(bridge: DufyndJarvisBridge, session: dict[str, Any]) -> Non
 
 
 def _safe_candidates(queue: dict[str, Any]) -> list[dict[str, Any]]:
-    return [
-        task
-        for task in (queue.get("safe_to_execute") or [])
-        if _is_green_autonomy_task(task)
-    ]
+    return [task for task in (queue.get("safe_to_execute") or []) if _is_green_autonomy_task(task)]
 
 
 def _select_task(
