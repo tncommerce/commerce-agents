@@ -1024,8 +1024,7 @@ async def process_safe_task(
     safe_tasks = [
         task
         for task in (queue.get("safe_to_execute") or [])
-        if _is_green_autonomy_task(task)
-        and str(task.get("domain") or "") != "engineering"
+        if _is_green_autonomy_task(task) and str(task.get("domain") or "") != "engineering"
     ]
     if task_id is not None:
         safe_tasks = [task for task in safe_tasks if str(task.get("task_id") or "") == task_id]
@@ -1334,9 +1333,7 @@ async def process_autonomous_cycle(
 
     queue = await asyncio.to_thread(bridge.load_autonomy_queue)
     safe_tasks = [
-        task
-        for task in (queue.get("safe_to_execute") or [])
-        if _is_green_autonomy_task(task)
+        task for task in (queue.get("safe_to_execute") or []) if _is_green_autonomy_task(task)
     ]
 
     if not safe_tasks:
