@@ -471,6 +471,8 @@ export default function FragranceLibraryHub({
 
       if (!replaceFragranceLibrary(next)) throw new Error("storage unavailable");
       setLibrary(next);
+      setHasRead(true);
+      setReadError(false);
       setBackupStatus(
         `Sicherung geladen: ${next.wishlist.length} gemerkt, ${next.owned.length} in Sammlung.`,
       );
@@ -488,6 +490,15 @@ export default function FragranceLibraryHub({
       <button type="button" onClick={() => window.dispatchEvent(new CustomEvent(FRAGRANCE_LIBRARY_EVENT))} className="mt-3 rounded-xl border border-(--line) px-3 py-2 font-semibold text-(--ink) hover:border-(--accent)">
         Duftliste erneut laden
       </button>
+      {!hasRead ? (
+        <>
+          <button type="button" onClick={() => importInputRef.current?.click()} className="ml-2 mt-3 rounded-xl border border-(--line) px-3 py-2 font-semibold text-(--ink) hover:border-(--accent)">
+            Sicherung importieren
+          </button>
+          <input ref={importInputRef} type="file" accept=".json,application/json" onChange={(event) => void importBackup(event)} className="sr-only" aria-label="DUFYND-Duftliste aus JSON-Datei importieren" />
+          <p role="status" className="mt-2">{backupStatus}</p>
+        </>
+      ) : null}
     </div>
   ) : null;
 

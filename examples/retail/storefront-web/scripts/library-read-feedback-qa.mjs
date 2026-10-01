@@ -102,5 +102,43 @@ export async function verifyLibraryReadFeedback(browser, baseUrl) {
       }
     }
   }
+  for (const width of [390, 1440]) {
+    for (const mode of ["sammlung", "merkliste"]) {
+      for (const failure of ["denied", "invalid-json"]) {
+        for (const allow of [false, true]) {
+          const context = await browser.newContext({ viewport: { width, height: 900 } });
+          const page = await context.newPage();
+          const backup = { version: 1, owned: ["SC-RABANNE-1-MILLION-EDT-100"], wishlist: ["SC-XERJOFF-NAXOS-100"] };
+          try {
+            await context.addInitScript(({ key, saved, failure, allow }) => {
+              localStorage.setItem(key, JSON.stringify(saved));
+              window.qaInitialImportGet = Storage.prototype.getItem;
+              Storage.prototype.getItem = function (k) {
+                if (k === key) {
+                  if (failure === "invalid-json") return "{invalid";
+                  throw new DOMException("Denied", "SecurityError");
+                }
+                return window.qaInitialImportGet.call(this, k);
+              };
+              window.qaInitialImportConfirmations = 0;
+              window.confirm = () => { window.qaInitialImportConfirmations++; return allow; };
+            }, { key, saved, failure, allow });
+            await page.route("**/api/session", r => r.fulfill({ json: { session_id: "qa-initial-import", name: "QA" } }));
+            await page.route("**/api/analytics/events", r => r.fulfill({ json: { ok: true } }));
+            await page.goto(`${baseUrl}/${mode}`);
+            await page.getByRole("alert").getByRole("button", { name: "Sicherung importieren", exact: true }).waitFor();
+            assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), "read-error recovery actions fit the viewport");
+            await page.locator("input[type=file]").setInputFiles({ name: "backup.json", mimeType: "application/json", buffer: Buffer.from(JSON.stringify(backup)) });
+            await page.getByText(allow ? "Sicherung geladen: 1 gemerkt, 1 in Sammlung." : "Import abgebrochen. Deine aktuelle Auswahl bleibt erhalten.", { exact: true }).waitFor();
+            assert.equal(await page.evaluate(() => window.qaInitialImportConfirmations), 1, "unknown initial state still requires explicit replacement confirmation");
+            assert.deepEqual(await page.evaluate(key => JSON.parse(window.qaInitialImportGet.call(localStorage, key)), key), allow ? backup : saved, "only confirmed recovery may replace stored lists");
+            assert.equal(await page.locator(".dufynd-library-card").count(), allow ? 1 : 0, "confirmed recovery establishes a known list despite the failed read");
+            assert.equal(await page.getByRole("alert").filter({ hasText: message }).count(), allow ? 0 : 1);
+            cases++;
+          } finally { await context.close(); }
+        }
+      }
+    }
+  }
   return cases;
 }
