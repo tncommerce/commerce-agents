@@ -139,15 +139,22 @@ function ProductDetail({
   onClose: () => void;
 }) {
   const [details, setDetails] = useState<ProductDetails | null>(null);
+  const [detailState, setDetailState] = useState<"loading" | "ready" | "error">("loading");
+  const [detailAttempt, setDetailAttempt] = useState(0);
   useEffect(() => {
     let mounted = true;
+    setDetails(null);
+    setDetailState("loading");
     void fetchProduct(product.product_id).then((value) => {
-      if (mounted) setDetails(value);
+      if (mounted) {
+        setDetails(value);
+        setDetailState(value ? "ready" : "error");
+      }
     });
     return () => {
       mounted = false;
     };
-  }, [product.product_id]);
+  }, [product.product_id, detailAttempt]);
 
   const full = details ?? product;
   const specs = details?.specs ?? {};
@@ -196,9 +203,20 @@ function ProductDetail({
       {reason ? (
         <p className="mt-2 text-[13px] leading-snug text-(--ink)">{reason}</p>
       ) : null}
-      {details === null ? (
+      {detailState === "loading" ? (
         <p className="mt-2 animate-pulse text-[13px] text-(--ink-soft)">Details werden geladen…</p>
-      ) : (
+      ) : detailState === "error" ? (
+        <div role="status" className="mt-2 text-[13px] text-(--ink-soft)">
+          <p>Die Produktdetails konnten gerade nicht geladen werden.</p>
+          <button
+            type="button"
+            onClick={() => setDetailAttempt((attempt) => attempt + 1)}
+            className="mt-2 rounded-lg border border-(--line) px-3 py-2 font-medium text-(--ink)"
+          >
+            Produktdetails erneut laden
+          </button>
+        </div>
+      ) : details ? (
         <div className="ac-reveal">
           {details.price_intelligence ? (
             <PriceIntelligenceRow intel={details.price_intelligence} />
@@ -234,7 +252,7 @@ function ProductDetail({
             </div>
           ) : null}
         </div>
-      )}
+      ) : null}
 
       {isDufynd ? (
         <>
