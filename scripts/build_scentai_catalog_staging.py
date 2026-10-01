@@ -3,12 +3,12 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from scripts.approve_scentai_feed_image import (
-    apply_approval as apply_feed_approval,
-    approval_plan as feed_approval_plan,
-)
+from scripts.approve_scentai_feed_image import apply_approval as apply_feed_approval
+from scripts.approve_scentai_feed_image import approval_plan as feed_approval_plan
 from scripts.approve_scentai_rights_cleared_image import (
     apply_approval as apply_rights_approval,
+)
+from scripts.approve_scentai_rights_cleared_image import (
     approval_plan as rights_approval_plan,
 )
 from scripts.report_dufynd_catalog_expansion_readiness import build_expansion_readiness
