@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
+
 import FragranceLibraryHub from "@/components/FragranceLibraryHub";
 import LegalFooter from "@/components/LegalFooter";
 import PersonalLibraryPageAnalytics from "@/components/PersonalLibraryPageAnalytics";
@@ -22,12 +24,12 @@ export default function CollectionPage() {
         <PersonalLibraryPageAnalytics
           source="collection_page"
         />
-        <a
+        <AcquisitionInternalLink
           href="/"
           className="inline-flex items-center gap-2 text-[13px] font-semibold text-(--accent-ink) hover:underline"
         >
           ← Zurück zu DUFYND
-        </a>
+        </AcquisitionInternalLink>
         <FragranceLibraryHub
           mode="owned"
           fragrances={LIVE_FRAGRANCES}

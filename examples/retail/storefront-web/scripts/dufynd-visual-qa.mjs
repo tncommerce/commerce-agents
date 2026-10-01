@@ -16,6 +16,7 @@ import { verifySocialSearchAttribution } from "./social-search-attribution-qa.mj
 import { verifySocialCatalogNavigation } from "./social-catalog-navigation-qa.mjs";
 import { verifyAcquisitionLandingNavigation } from "./acquisition-landing-navigation-qa.mjs";
 import { verifyHomeNavigationAttribution } from "./home-navigation-attribution-qa.mjs";
+import { verifyLibraryNavigationAttribution } from "./library-navigation-attribution-qa.mjs";
 import { verifyGuidedStartContext } from "./guided-start-context-qa.mjs";
 import { verifyGuidedLinkAttribution } from "./guided-link-attribution-qa.mjs";
 import { verifyProductDetailRecovery, verifySingleResponsiveProductDetail, verifyClosedProductDetailFocus } from "./product-detail-recovery-qa.mjs";
@@ -252,6 +253,13 @@ const report = {
 };
 
 try {
+  try {
+    const cases = await verifyLibraryNavigationAttribution(browser, baseUrl);
+    report.checks.push({ label: "library-navigation-attribution", status: "passed", cases });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({ label: "library-navigation-attribution", message });
+  }
   try {
     const cases = await verifyHomeNavigationAttribution(browser, baseUrl);
     report.checks.push({ label: "home-navigation-attribution", status: "passed", cases });
@@ -3259,7 +3267,8 @@ try {
     await backupPage.reload({ waitUntil: "networkidle" });
     await backupPage.locator('input[type="file"]').setInputFiles(backupPath);
     await backupPage.getByText("Sicherung geladen: 1 gemerkt, 0 in Sammlung.").waitFor();
-    if ((await backupPage.locator('a[href="/duft/xerjoff-naxos"]').count()) !== 1) {
+    const restoredLink = backupPage.locator('.dufynd-library-card a[href*="/duft/xerjoff-naxos"]');
+    if ((await restoredLink.count()) !== 1 || new URL(await restoredLink.getAttribute("href"), baseUrl).pathname !== "/duft/xerjoff-naxos") {
       throw new Error("library backup did not restore the saved fragrance");
     }
     if ((await backupPage.locator(".dufynd-library-card").count()) !== 1) {
