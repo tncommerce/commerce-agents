@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "recorded_at": "2026-10-01T14:17:32Z",
+  "merchant_id": "notino",
+  "network": "CJ Affiliate",
+  "program": "Notino",
+  "activation_scope": "verified_product_only",
+  "user_approval": "explicit",
+  "reusable_tracking_reference": {
+    "product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
+    "redirect_dry_run": "passed",
+    "tracking_strategy": "verified_cj_product_deeplink",
+    "note": "The previously verified Eclaire CJ redirect is the reusable link-builder reference; the two new destination identities and availability were revalidated immediately before activation."
+  },
+  "approved_products": {
+    "SC-PDM-DELINA-EDP-75": {
+      "identity": {
+        "brand": "Parfums de Marly",
+        "name": "Delina",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 75,
+        "merchant_product_id": "PDM0227",
+        "gtin": "3700578501998"
+      },
+      "current_offer": {
+        "price_eur": 285,
+        "shipping_eur": 0,
+        "in_stock": true,
+        "product_url": "https://www.notino.de/parfums-de-marly/darley-royal-essence-delina-eau-de-parfum-fuer-damen/p-11598204/",
+        "checked_at": "2026-10-01T14:17:32Z"
+      },
+      "affiliate": {
+        "tracked_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fparfums-de-marly%2Fdarley-royal-essence-delina-eau-de-parfum-fuer-damen%2Fp-11598204%2F",
+        "tracking_strategy": "verified_cj_product_deeplink",
+        "live_routing_allowed": true
+      }
+    },
+    "SC-YSL-BLACK-OPIUM-EDP-90": {
+      "identity": {
+        "brand": "Yves Saint Laurent",
+        "name": "Black Opium",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 90,
+        "merchant_product_id": "YSL2377",
+        "gtin": "3365440787971"
+      },
+      "current_offer": {
+        "price_eur": 106,
+        "shipping_eur": 0,
+        "in_stock": true,
+        "product_url": "https://www.notino.de/yves-saint-laurent/black-opium-eau-de-parfum-fur-damen/",
+        "checked_at": "2026-10-01T14:17:32Z"
+      },
+      "affiliate": {
+        "tracked_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fyves-saint-laurent%2Fblack-opium-eau-de-parfum-fur-damen%2F",
+        "tracking_strategy": "verified_cj_product_deeplink",
+        "live_routing_allowed": true
+      }
+    }
+  },
+  "safeguards": {
+    "merchant_homepage_routing": false,
+    "generic_notino_routing": false,
+    "catalog_publication_authorized": false,
+    "image_rights_granted": false,
+    "commission_changes_fragrance_recommendations": false,
+    "additional_products_activated": false
+  }
+}
