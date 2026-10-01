@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements-dev.txt
       - name: Rebuild canonical staging
-        run: python scripts/build_scentai_catalog_staging.py
+        run: PYTHONPATH=. python scripts/build_scentai_catalog_staging.py
       - name: Refresh derived DUFYND status snapshots
         shell: bash
         run: |
@@ -34,7 +34,7 @@ jobs:
           print(json.loads(p.read_text(encoding="utf-8"))["generated_at"])
           PY
           )"
-          python scripts/refresh_scentai_jarvis_state.py --write --generated-at "$generated_at"
+          PYTHONPATH=. python scripts/refresh_scentai_jarvis_state.py --write --generated-at "$generated_at"
       - name: Commit deterministic outputs
         shell: bash
         run: |
