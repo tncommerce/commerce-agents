@@ -56,4 +56,4 @@ def test_export_deterministic_jarvis_snapshot_delta_for_pr589() -> None:
     ).decode("ascii")
     print("DUFYND_SNAPSHOT_BUNDLE_B64=" + encoded)
     print("DUFYND_SNAPSHOT_CHANGED_PATHS=" + json.dumps(sorted(changed), separators=(",", ":")))
-    assert False, "diagnostic export only"
+    raise AssertionError("diagnostic export only")
