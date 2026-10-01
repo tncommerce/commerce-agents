@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-10-01T10:18:00Z",
+  "generated_at": "2026-10-01T10:55:00Z",
   "merchant_id": "notino",
   "network": "CJ Affiliate",
   "program": "Notino",
@@ -132,6 +132,22 @@
       "publish_allowed": false,
       "source_of_truth_mapping_mutation": false,
       "image_rights_status": "not_implied_by_affiliate_mapping"
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "merchant_product_id": "VZR11010",
+      "gtin": "3614272648425",
+      "product_url": "https://www.notino.de/yves-saint-laurent/yves-saint-laurent-libre-eau-de-parfum-fuer-damen/p-15968532/",
+      "exact_variant": "Yves Saint Laurent Libre Eau de Parfum 90 ml",
+      "catalog_public": true,
+      "availability_observed": true,
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fyves-saint-laurent%2Fyves-saint-laurent-libre-eau-de-parfum-fuer-damen%2Fp-15968532%2F",
+      "mapping_status": "verified_current_variant_evidence",
+      "activation_state": "staged_not_live",
+      "publish_allowed": false,
+      "source_of_truth_mapping_mutation": false,
+      "image_rights_status": "not_implied_by_affiliate_mapping",
+      "evidence_note": "Direct current Notino page inspection observed 90 ml selected, EAN 3614272648425, Code VZR11010 and availability."
     }
   ],
   "policy": {

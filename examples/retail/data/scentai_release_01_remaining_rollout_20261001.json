@@ -48,12 +48,17 @@
     "exact_activation_preflight_candidates": [
       "SC-PDM-DELINA-EDP-75",
       "SC-YSL-BLACK-OPIUM-EDP-90",
-      "SC-DIOR-HYPNOTIC-POISON-EDT-100"
-    ],
-    "unresolved_exact_notino_code": [
+      "SC-DIOR-HYPNOTIC-POISON-EDT-100",
       "SC-YSL-LIBRE-EDP-90"
     ],
-    "image_rights_implied_by_affiliate_mapping": false
+    "unresolved_exact_notino_code": [],
+    "image_rights_implied_by_affiliate_mapping": false,
+    "libre_exact_variant": {
+      "merchant_product_id": "VZR11010",
+      "gtin": "3614272648425",
+      "variant_url": "https://www.notino.de/yves-saint-laurent/yves-saint-laurent-libre-eau-de-parfum-fuer-damen/p-15968532/",
+      "observed_in_stock": true
+    }
   },
   "activation_guard": "Preparation is authorized by the operator decision on 2026-10-01. Live routing remains a separate controlled write and must revalidate current availability and product eligibility immediately before activation.",
   "publication_guard": "No product publication is authorized by this rollout file. Hypnotic Poison remains blocked until an approved exact product image clears."
