@@ -156,7 +156,7 @@ export default function SocialStartPage() {
 
         <section
           aria-labelledby="dufynd-social-direct-search-heading"
-          className="mt-4 rounded-[22px] border border-(--line) bg-white/[0.72] p-4 shadow-(--shadow-sm) backdrop-blur-sm sm:p-5"
+          className="relative z-20 mt-4 rounded-[22px] border border-(--line) bg-white/[0.72] p-4 shadow-(--shadow-sm) backdrop-blur-sm sm:p-5"
         >
           <div className="grid gap-3 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
             <div>
