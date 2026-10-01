@@ -94,6 +94,9 @@ def _session_summary(session: dict[str, Any]) -> dict[str, Any]:
 def _preflight(bridge: DufyndJarvisBridge) -> dict[str, Any]:
     health = bridge.load_health()
     queue = bridge.load_autonomy_queue()
+    raw_safe_tasks = [
+        task for task in (queue.get("safe_to_execute") or []) if isinstance(task, dict)
+    ]
     safe_tasks = _safe_candidates(queue)
     lease = _tech_lease_state(bridge)
     inbox = dict(health.get("inbox") or {})
@@ -109,7 +112,9 @@ def _preflight(bridge: DufyndJarvisBridge) -> dict[str, Any]:
         "processing_events": processing_events,
         "failed_events": failed_events,
         "inbox_blocked": bool(processing_events or failed_events),
+        "raw_safe_task_count": len(raw_safe_tasks),
         "safe_task_count": len(safe_tasks),
+        "unselectable_safe_task_count": max(0, len(raw_safe_tasks) - len(safe_tasks)),
         "non_engineering_safe_count": len(non_engineering),
         "engineering_safe_count": len(engineering),
         "tech_lease": lease,
@@ -208,6 +213,12 @@ async def supervise_nightshift(
 
             if bool(preflight.get("inbox_blocked")):
                 return finish("inbox_preflight_blocked", status="needs_attention")
+
+            if (
+                int(preflight.get("raw_safe_task_count") or 0) > 0
+                and int(preflight.get("safe_task_count") or 0) == 0
+            ):
+                return finish("work_available_but_not_selectable", status="needs_attention")
 
             # Wait cheaply while the Work/TECH lease owns the only safe engineering
             # work. No model call is made during this handoff window.
