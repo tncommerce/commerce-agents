@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import {
   FRAGRANCE_LIBRARY_EVENT,
   FRAGRANCE_LIBRARY_STORAGE_KEY,
-  readFragranceLibrary,
+  tryReadFragranceLibrary,
 } from "@/lib/fragranceLibrary";
 
 export default function PersonalLibrarySummary() {
@@ -15,7 +15,8 @@ export default function PersonalLibrarySummary() {
 
   useEffect(() => {
     const sync = () => {
-      const library = readFragranceLibrary();
+      const library = tryReadFragranceLibrary();
+      if (!library) return;
       setWishlistCount(library.wishlist.length);
       setOwnedCount(library.owned.length);
     };

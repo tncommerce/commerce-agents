@@ -66,5 +66,41 @@ export async function verifyLibraryReadFeedback(browser, baseUrl) {
       }
     }
   }
+  for (const width of [390, 1440]) {
+    for (const failure of ["denied", "invalid-json"]) {
+      for (const eventType of ["custom-event", "storage-event"]) {
+        const context = await browser.newContext({ viewport: { width, height: 900 } });
+        const page = await context.newPage();
+        try {
+          await context.addInitScript(({ key, saved }) => localStorage.setItem(key, JSON.stringify(saved)), { key, saved });
+          await page.route("**/api/session", r => r.fulfill({ json: { session_id: "qa-summary-read", name: "QA" } }));
+          await page.route("**/api/analytics/events", r => r.fulfill({ json: { ok: true } }));
+          await page.goto(baseUrl);
+          const summary = page.locator("section").filter({ hasText: "Deine DUFYND Duftwelt" });
+          await summary.waitFor();
+          const before = await summary.textContent();
+          await page.evaluate(({ key, failure, eventType }) => {
+            window.qaSummaryGet = Storage.prototype.getItem;
+            Storage.prototype.getItem = function (k) {
+              if (k === key) {
+                if (failure === "invalid-json") return "{invalid";
+                throw new DOMException("Denied", "SecurityError");
+              }
+              return window.qaSummaryGet.call(this, k);
+            };
+            window.dispatchEvent(eventType === "storage-event" ? new StorageEvent("storage", { key }) : new CustomEvent("scentai:fragrance-library-changed"));
+          }, { key, failure, eventType });
+          // Allow the storage listeners and React render to complete before checking.
+          await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+          assert.equal(await summary.count(), 1, "read failure must not hide a known homepage summary");
+          assert.equal(await summary.textContent(), before, "known counts and summary links stay unchanged");
+          assert.deepEqual(await page.evaluate(key => JSON.parse(window.qaSummaryGet.call(localStorage, key)), key), saved);
+          await page.evaluate(key => { Storage.prototype.getItem = window.qaSummaryGet; localStorage.removeItem(key); window.dispatchEvent(new StorageEvent("storage", { key })); }, key);
+          await summary.waitFor({ state: "detached" });
+          cases++;
+        } finally { await context.close(); }
+      }
+    }
+  }
   return cases;
 }
