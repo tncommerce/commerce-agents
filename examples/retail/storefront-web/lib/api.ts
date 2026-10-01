@@ -68,9 +68,28 @@ export async function initializeAnalyticsSession(): Promise<string | null> {
   }
 }
 
+const PRODUCT_CATALOG_TIMEOUT_MS = 8_000;
+
 export async function fetchProducts(): Promise<Product[] | null> {
-  const data = await api.get<{ products: Product[] }>("/products", { limit: "100" });
-  return data?.products ?? null;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(
+    () => controller.abort(),
+    PRODUCT_CATALOG_TIMEOUT_MS,
+  );
+
+  try {
+    const response = await fetch(`${api.base}/products?limit=100`, {
+      headers: api.headers(),
+      signal: controller.signal,
+    });
+    if (!response.ok) return null;
+    const data = (await response.json()) as { products?: Product[] };
+    return data?.products ?? null;
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
 
 export async function fetchProduct(productId: string): Promise<ProductDetails | null> {
