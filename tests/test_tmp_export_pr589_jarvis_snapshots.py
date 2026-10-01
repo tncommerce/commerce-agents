@@ -32,12 +32,13 @@ PROTECTED = [
     "examples/retail/data/scentai_affiliate_program_events.json",
     "examples/retail/data/scentai_affiliate_programs.json",
     "examples/retail/data/scentai_affiliate_tracking_preflight_notino_20260930.json",
-    "tests/test_dufynd_merchant_offer_integrity.py"
+    "tests/test_dufynd_merchant_offer_integrity.py",
 ]
 
 
 def test_export_deterministic_jarvis_snapshot_delta_for_pr589() -> None:
-    master = json.loads(\n        (DATA_DIR / "scentai_jarvis_master_status.json").read_text(encoding="utf-8")\n    )
+    master_path = DATA_DIR / "scentai_jarvis_master_status.json"
+    master = json.loads(master_path.read_text(encoding="utf-8"))
     generated_at = str(master["generated_at"])
     rebuilt = refresh_state(generated_at=generated_at)
 
@@ -49,11 +50,17 @@ def test_export_deterministic_jarvis_snapshot_delta_for_pr589() -> None:
             changed[path.as_posix()] = rendered
 
     protected_overlap = sorted(set(changed).intersection(PROTECTED))
-    assert not protected_overlap, f"refresh would touch protected #589 files: {protected_overlap}"
+    if protected_overlap:
+        raise AssertionError(
+            f"refresh would touch protected #589 files: {protected_overlap}"
+        )
 
     encoded = base64.b64encode(
         json.dumps(changed, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     ).decode("ascii")
     print("DUFYND_SNAPSHOT_BUNDLE_B64=" + encoded)
-    print("DUFYND_SNAPSHOT_CHANGED_PATHS=" + json.dumps(sorted(changed), separators=(",", ":")))
+    print(
+        "DUFYND_SNAPSHOT_CHANGED_PATHS="
+        + json.dumps(sorted(changed), separators=(",", ":"))
+    )
     raise AssertionError("diagnostic export only")
