@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "rollout_id": "SCENTAI-RELEASE-01-REMAINING-20261001",
+  "source_release_id": "SCENTAI-RELEASE-01",
+  "created_at": "2026-10-01T10:42:00Z",
+  "purpose": "Operational continuation for Release 01 products that were not already live, while preserving the original five-product Release 01 manifest as immutable audit history.",
+  "historical_manifest_mutated": false,
+  "state": "blocked_pending_remaining_product_gates",
+  "write_enabled": false,
+  "write_policy": "All remaining products are evaluated independently for readiness, but this rollout does not write until every listed product passes its required gates. La Vie est Belle is excluded because it is already live and remains part of historical Release 01 audit history.",
+  "product_ids": [
+    "SC-PDM-DELINA-EDP-75",
+    "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+    "SC-YSL-BLACK-OPIUM-EDP-90",
+    "SC-YSL-LIBRE-EDP-90"
+  ],
+  "excluded_historical_products": [
+    {
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "reason": "already_live",
+      "retained_in_source_release": true
+    }
+  ],
+  "required_gates": [
+    "non_provisional_community_data",
+    "resolved_merchant_product_mapping",
+    "approved_product_image",
+    "current_purchase_destination",
+    "staging_recommendation_qa",
+    "not_already_live"
+  ],
+  "current_readiness": {
+    "ready_product_ids": [
+      "SC-PDM-DELINA-EDP-75",
+      "SC-YSL-BLACK-OPIUM-EDP-90",
+      "SC-YSL-LIBRE-EDP-90"
+    ],
+    "blocked_products": {
+      "SC-DIOR-HYPNOTIC-POISON-EDT-100": [
+        "approved_product_image"
+      ]
+    }
+  },
+  "affiliate_preparation": {
+    "network": "CJ Affiliate",
+    "merchant": "Notino",
+    "live_routing_allowed": false,
+    "exact_activation_preflight_candidates": [
+      "SC-PDM-DELINA-EDP-75",
+      "SC-YSL-BLACK-OPIUM-EDP-90",
+      "SC-DIOR-HYPNOTIC-POISON-EDT-100"
+    ],
+    "unresolved_exact_notino_code": [
+      "SC-YSL-LIBRE-EDP-90"
+    ],
+    "image_rights_implied_by_affiliate_mapping": false
+  },
+  "activation_guard": "Preparation is authorized by the operator decision on 2026-10-01. Live routing remains a separate controlled write and must revalidate current availability and product eligibility immediately before activation.",
+  "publication_guard": "No product publication is authorized by this rollout file. Hypnotic Poison remains blocked until an approved exact product image clears."
+}
