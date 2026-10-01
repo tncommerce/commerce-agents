@@ -94,6 +94,8 @@ def validate_packet(payload: dict) -> list[dict]:
 def render_html(payload: dict) -> str:
     rows = validate_packet(payload)
     provenance = payload["feed_provenance"]
+    review_title = _norm(payload.get("review_title")) or "DUFYND Release 01"
+    review_title_html = html.escape(review_title)
 
     cards = []
     for row in rows:
@@ -139,7 +141,7 @@ def render_html(payload: dict) -> str:
     if not body:
         body = (
             '<section class="empty"><h2>No pending candidates</h2>'
-            "<p>The current exact feed produced no Release 01 image candidates requiring review.</p></section>"
+            f"<p>The current exact feed produced no {review_title_html} image candidates requiring review.</p></section>"
         )
 
     advertiser = html.escape(_norm(provenance.get("advertiser_id")))
@@ -154,7 +156,7 @@ def render_html(payload: dict) -> str:
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'none'; img-src https: data:; style-src 'unsafe-inline';">
-  <title>DUFYND Release 01 · Awin image review</title>
+  <title>{review_title_html} · Awin image review</title>
   <style>
     :root {{ color-scheme: light dark; font-family: Inter, system-ui, sans-serif; }}
     body {{ max-width: 1100px; margin: 0 auto; padding: 24px; line-height: 1.5; }}
@@ -179,7 +181,7 @@ def render_html(payload: dict) -> str:
 </head>
 <body>
   <header>
-    <h1>DUFYND Release 01 · current Awin feed image review</h1>
+    <h1>{review_title_html} · current Awin feed image review</h1>
     <p><strong>Review-only artifact.</strong> Nothing in this file grants final image approval,
        writes to the catalog, activates an offer, or deploys anything.</p>
     <div class="meta">
