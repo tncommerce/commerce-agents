@@ -8,6 +8,7 @@ import { verifyLibraryClearRecovery } from "./library-clear-qa.mjs";
 import { verifyLibrarySaveRecovery } from "./library-save-qa.mjs";
 import { verifyLibraryReadRecovery } from "./library-read-recovery-qa.mjs";
 import { verifyLibraryImportReadFailure } from "./library-import-read-qa.mjs";
+import { verifyFooterNavigationAttribution } from "./footer-navigation-attribution-qa.mjs";
 import { verifyAnalyticsEventTimeout } from "./analytics-event-timeout-qa.mjs";
 import { verifyManualShareFallback } from "./manual-share-qa.mjs";
 import { verifyLatestProductShare } from "./product-share-race-qa.mjs";
@@ -255,6 +256,13 @@ const report = {
 };
 
 try {
+  try {
+    const cases = await verifyFooterNavigationAttribution(browser, baseUrl);
+    report.checks.push({ label: "footer-navigation-attribution", status: "passed", cases });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({ label: "footer-navigation-attribution", message });
+  }
   try {
     const cases = await verifyLibraryNavigationAttribution(browser, baseUrl);
     report.checks.push({ label: "library-navigation-attribution", status: "passed", cases });
