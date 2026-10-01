@@ -81,18 +81,14 @@
       "mapping_status": "verified_current_variant",
       "offer_last_updated_at": "2026-10-01T10:18:00Z",
       "offer_in_stock_observation": true,
-      "readiness": "live_routing_active_scoped",
+      "readiness": "ready_for_controlled_activation_preflight",
       "publish_allowed": false,
-      "source_of_truth_mapping_state": "promoted_live_product_scope",
+      "source_of_truth_mapping_state": "not_promoted",
       "remaining_runtime_guards": [
-        "revalidate current availability before surfacing a stale offer",
-        "keep exact verified variant identity",
-        "do not infer image rights from affiliate mapping",
-        "catalog publication remains independently gated"
-      ],
-      "live_routing_allowed": true,
-      "activation_scope": "verified_product_only",
-      "activated_at": "2026-10-01T14:17:32Z"
+        "revalidate current availability before any live routing",
+        "keep exact Delina Eau de Parfum 75 ml identity",
+        "activation preparation is authorized; live routing remains a separate controlled write"
+      ]
     },
     {
       "offer_id": "notino-ysl-black-opium-edp-90",
@@ -104,18 +100,14 @@
       "mapping_status": "verified_current_variant",
       "offer_last_updated_at": "2026-10-01T10:18:00Z",
       "offer_in_stock_observation": true,
-      "readiness": "live_routing_active_scoped",
+      "readiness": "ready_for_controlled_activation_preflight",
       "publish_allowed": false,
-      "source_of_truth_mapping_state": "promoted_live_product_scope",
+      "source_of_truth_mapping_state": "not_promoted",
       "remaining_runtime_guards": [
-        "revalidate current availability before surfacing a stale offer",
-        "keep exact verified variant identity",
-        "do not infer image rights from affiliate mapping",
-        "catalog publication remains independently gated"
-      ],
-      "live_routing_allowed": true,
-      "activation_scope": "verified_product_only",
-      "activated_at": "2026-10-01T14:17:32Z"
+        "revalidate current availability before any live routing",
+        "keep exact Black Opium Eau de Parfum 90 ml identity",
+        "activation preparation is authorized; live routing remains a separate controlled write"
+      ]
     },
     {
       "offer_id": "notino-dior-hypnotic-poison-edt-100",
@@ -151,18 +143,15 @@
       "mapping_status": "verified_current_variant",
       "offer_last_updated_at": "2026-10-01T10:55:00Z",
       "offer_in_stock_observation": true,
-      "readiness": "live_routing_active_scoped",
+      "readiness": "ready_for_controlled_activation_preflight",
       "publish_allowed": false,
-      "source_of_truth_mapping_state": "promoted_live_product_scope",
+      "source_of_truth_mapping_state": "not_promoted",
       "remaining_runtime_guards": [
-        "revalidate current availability before surfacing a stale offer",
-        "keep exact verified variant identity",
+        "revalidate current availability before any live routing",
+        "keep exact Libre Eau de Parfum 90 ml identity",
         "do not infer image rights from affiliate mapping",
-        "catalog publication remains independently gated"
-      ],
-      "live_routing_allowed": true,
-      "activation_scope": "verified_product_only",
-      "activated_at": "2026-10-01T16:21:51Z"
+        "activation preparation is authorized; live routing remains a separate controlled write"
+      ]
     },
     {
       "offer_id": "notino-jpg-le-male-le-parfum-125",
