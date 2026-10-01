@@ -69,7 +69,7 @@
       "network": "CJ Affiliate",
       "program": "Notino",
       "status": "approved",
-      "programming_note": "Program approved on 2026-09-30. The verified CJ product deep link for Lattafa Eclaire 100 ml is explicitly approved for live routing. No merchant-homepage or unverified-product routing is authorized.",
+      "programming_note": "Program approved on 2026-09-30. Verified CJ product deep-link routing is live only for Lattafa Eclaire 100 ml, Parfums de Marly Delina 75 ml and YSL Black Opium EDP 90 ml. No merchant-homepage or unverified-product routing is authorized.",
       "merchant_id": "notino",
       "approved_at": "2026-09-30",
       "deeplink_available": true,
@@ -78,14 +78,18 @@
       "tracking_strategy": "verified_cj_product_deeplink",
       "redirect_dry_run_passed": true,
       "verified_product_scope": [
-        "SC-LATTAFA-ECLAIRE-EDP-100"
+        "SC-LATTAFA-ECLAIRE-EDP-100",
+        "SC-PDM-DELINA-EDP-75",
+        "SC-YSL-BLACK-OPIUM-EDP-90"
       ],
       "tracking_verified_at": "2026-09-30T14:49:00Z",
       "live_activation_approved": true,
-      "live_activation_approved_at": "2026-09-30T16:16:00Z",
+      "live_activation_approved_at": "2026-10-01T14:17:32Z",
       "live_activation_scope": "verified_product_only",
       "live_activation_products": [
-        "SC-LATTAFA-ECLAIRE-EDP-100"
+        "SC-LATTAFA-ECLAIRE-EDP-100",
+        "SC-PDM-DELINA-EDP-75",
+        "SC-YSL-BLACK-OPIUM-EDP-90"
       ]
     }
   ],

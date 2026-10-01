@@ -476,5 +476,61 @@ def test_notino_affiliate_urls_do_not_escape_verified_product_scope() -> None:
         if row["merchant_id"] == "notino" and row.get("affiliate_url")
     }
 
-    assert live_scope == {"SC-LATTAFA-ECLAIRE-EDP-100"}
+    assert live_scope == {
+        "SC-LATTAFA-ECLAIRE-EDP-100",
+        "SC-PDM-DELINA-EDP-75",
+        "SC-YSL-BLACK-OPIUM-EDP-90",
+    }
     assert tracked_notino_products == live_scope
+
+
+def test_notino_delina_black_opium_live_pilot_is_exact_scoped() -> None:
+    evidence = json.loads(
+        Path(
+            "examples/retail/data/dufynd_notino_delina_black_opium_live_routing_20261001.json"
+        ).read_text(encoding="utf-8")
+    )
+    mappings = json.loads(
+        Path("examples/retail/data/merchant_product_mappings.json").read_text(encoding="utf-8")
+    )["mappings"]
+    programs = json.loads(
+        Path("examples/retail/data/scentai_affiliate_programs.json").read_text(encoding="utf-8")
+    )
+    notino = next(row for row in programs["other_networks"] if row["merchant_id"] == "notino")
+    live_scope = set(notino["live_activation_products"])
+    tracked = {
+        row["product_id"]: row
+        for row in _offers()
+        if row["merchant_id"] == "notino" and row.get("affiliate_url")
+    }
+
+    assert set(evidence["approved_products"]) == {
+        "SC-PDM-DELINA-EDP-75",
+        "SC-YSL-BLACK-OPIUM-EDP-90",
+    }
+    assert live_scope == {
+        "SC-LATTAFA-ECLAIRE-EDP-100",
+        "SC-PDM-DELINA-EDP-75",
+        "SC-YSL-BLACK-OPIUM-EDP-90",
+    }
+    assert set(tracked) == live_scope
+
+    for product_id, row in evidence["approved_products"].items():
+        offer = tracked[product_id]
+        identity = row["identity"]
+        assert offer["merchant_product_id"] == identity["merchant_product_id"]
+        assert offer["product_url"] == row["current_offer"]["product_url"]
+        assert offer["affiliate_url"] == row["affiliate"]["tracked_url"]
+        assert offer["network"] == "CJ Affiliate"
+        assert offer["in_stock"] is True
+        assert any(
+            mapping["product_id"] == product_id
+            and mapping["merchant"] == "notino"
+            and mapping["merchant_product_id"] == identity["merchant_product_id"]
+            and mapping["gtin"] == identity["gtin"]
+            for mapping in mappings
+        )
+
+    assert evidence["safeguards"]["generic_notino_routing"] is False
+    assert evidence["safeguards"]["catalog_publication_authorized"] is False
+    assert evidence["safeguards"]["image_rights_granted"] is False
