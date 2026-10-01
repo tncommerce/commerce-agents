@@ -56,7 +56,7 @@
   "affiliate_preparation": {
     "network": "CJ Affiliate",
     "merchant": "Notino",
-    "live_routing_allowed": true,
+    "live_routing_allowed": false,
     "exact_activation_preflight_candidates": [
       "SC-PDM-DELINA-EDP-75",
       "SC-YSL-BLACK-OPIUM-EDP-90",
@@ -84,8 +84,9 @@
         "approved_product_image"
       ]
     },
-    "last_activation_merge_commit": "02f7258d7caf6f5986f939ef24f3010ce3eb4c92"
+    "last_activation_merge_commit": "02f7258d7caf6f5986f939ef24f3010ce3eb4c92",
+    "live_routing_state": "partial_product_scoped_routes_active_outside_rollout_write_gate"
   },
-  "activation_guard": "Delina 75 ml and Black Opium EDP 90 ml are active only within the explicitly approved verified_product_only Notino scope. Any additional product, including YSL Libre EDP 90 ml, requires independent current-availability revalidation and a separate explicit live-routing approval. Hypnotic Poison remains excluded while approved_product_image is unresolved.",
+  "activation_guard": "This rollout remains fail-closed for additional writes. Delina 75 ml and Black Opium EDP 90 ml are already active only within the explicitly approved verified_product_only Notino scope recorded elsewhere. YSL Libre EDP 90 ml requires independent current-availability revalidation and a separate explicit live-routing approval. Hypnotic Poison remains excluded while approved_product_image is unresolved.",
   "publication_guard": "No additional catalog publication is authorized by this state sync. Affiliate routing remains independent from image rights and publication gates."
 }
