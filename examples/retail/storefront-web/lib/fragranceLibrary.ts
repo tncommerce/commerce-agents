@@ -76,7 +76,7 @@ export function parseFragranceLibraryBackup(
 }
 
 // A failed read must not become an empty list for a subsequent save.
-function tryReadFragranceLibrary(): FragranceLibraryState | null {
+export function tryReadFragranceLibrary(): FragranceLibraryState | null {
   if (typeof window === "undefined") return null;
 
   try {

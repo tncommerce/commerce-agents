@@ -14,6 +14,7 @@ import {
   parseFragranceLibraryBackup,
   readFragranceLibrary,
   replaceFragranceLibrary,
+  tryReadFragranceLibrary,
   type FragranceLibraryState,
 } from "@/lib/fragranceLibrary";
 import {
@@ -439,8 +440,10 @@ export default function FragranceLibraryHub({
       const next = parseFragranceLibraryBackup(JSON.parse(contents));
       if (!next) throw new Error("invalid backup");
 
-      const currentLibrary = readFragranceLibrary();
-      const replacing = currentLibrary.wishlist.length + currentLibrary.owned.length > 0;
+      const currentLibrary = tryReadFragranceLibrary();
+      const replacing =
+        !currentLibrary ||
+        currentLibrary.wishlist.length + currentLibrary.owned.length > 0;
       if (
         replacing &&
         !window.confirm(
