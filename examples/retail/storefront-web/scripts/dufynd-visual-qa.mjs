@@ -1145,12 +1145,16 @@ try {
 
           for (const audience of audienceKeys) {
             const card = page.locator(
-              `a[data-dufynd-home-audience-card][href="/duft?zielgruppe=${audience}"]`,
+              `a[data-dufynd-home-audience-card][href*="zielgruppe=${audience}"]`,
             );
             if ((await card.count()) !== 1) {
               throw new Error(
                 `homepage audience card missing for ${audience}`,
               );
+            }
+            const destination = new URL(await card.getAttribute("href"), baseUrl);
+            if (destination.pathname !== "/duft" || destination.searchParams.get("zielgruppe") !== audience) {
+              throw new Error(`homepage audience destination mismatch for ${audience}`);
             }
 
             const expectedCount = expectedAudienceRoutes[audience].length;
