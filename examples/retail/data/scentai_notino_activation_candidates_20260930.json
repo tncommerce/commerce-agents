@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-10-01T13:30:00Z",
+  "generated_at": "2026-10-01T13:42:00Z",
   "merchant_id": "notino",
   "network": "CJ Affiliate",
   "program": "Notino",
@@ -860,6 +860,27 @@
         "do not infer image rights from affiliate mapping",
         "activation preparation only; live routing remains a separate controlled write"
       ]
+    },
+    {
+      "offer_id": "notino-afnan-9-pm-pour-femme-edp-100",
+      "product_id": "SC-AFNAN-9-PM-POUR-FEMME-EDP-100",
+      "merchant_product_id": "AFN00282",
+      "gtin": "6290171072607",
+      "product_url": "https://www.notino.de/afnan/9-am-pour-femme-eau-de-parfum-ii-fuer-damen/",
+      "exact_variant": "Afnan 9 PM Pour Femme Eau de Parfum 100 ml",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fafnan%2F9-am-pour-femme-eau-de-parfum-ii-fuer-damen%2F",
+      "mapping_status": "verified_current_variant",
+      "offer_last_updated_at": "2026-10-01T13:42:00Z",
+      "offer_in_stock_observation": true,
+      "readiness": "ready_for_controlled_activation_preflight",
+      "publish_allowed": false,
+      "source_of_truth_mapping_state": "not_promoted",
+      "remaining_runtime_guards": [
+        "revalidate current availability before any live routing",
+        "keep exact Afnan 9 PM Pour Femme Eau de Parfum 100 ml identity despite legacy Notino URL slug using 9-am wording",
+        "do not infer image rights from affiliate mapping",
+        "activation preparation only; live routing remains a separate controlled write"
+      ]
     }
   ],
   "policy": {
@@ -867,5 +888,5 @@
     "affiliate_approval_implies_image_rights": false,
     "unverified_variant_fallback_allowed": false
   },
-  "next_action": "Commerce waves 2-11 have exact Notino activation-preflight evidence for verified available candidates. Keep live_routing_allowed=false; unavailable or unresolved variants remain excluded."
+  "next_action": "Commerce waves 2-12 have exact Notino activation-preflight evidence for verified available candidates. Keep live_routing_allowed=false; unavailable, version-conflicted or unresolved variants remain excluded."
 }
