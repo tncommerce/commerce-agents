@@ -1,5 +1,6 @@
 "use client";
 
+import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
 import { useEffect, useState } from "react";
 
 import {
@@ -70,20 +71,20 @@ export default function PersonalLibrarySummary() {
 
         <div className="flex flex-wrap gap-2">
           {ownedCount ? (
-            <a
+            <AcquisitionInternalLink
               href="/sammlung"
               className="rounded-xl bg-(--ink) px-3 py-2 text-[12px] font-semibold text-(--surface)"
             >
               Sammlung öffnen
-            </a>
+            </AcquisitionInternalLink>
           ) : null}
           {wishlistCount ? (
-            <a
+            <AcquisitionInternalLink
               href="/merkliste"
               className="rounded-xl border border-(--line) bg-(--surface) px-3 py-2 text-[12px] font-semibold text-(--ink) hover:border-(--accent)"
             >
               Merkliste öffnen
-            </a>
+            </AcquisitionInternalLink>
           ) : null}
         </div>
       </div>

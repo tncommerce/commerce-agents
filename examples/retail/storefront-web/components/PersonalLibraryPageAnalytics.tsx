@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from "react";
 
+import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
+
 import { trackAnalyticsEvent } from "@/lib/analytics";
 
 export default function PersonalLibraryPageAnalytics({
@@ -21,5 +23,5 @@ export default function PersonalLibraryPageAnalytics({
     });
   }, [source]);
 
-  return null;
+  return <AcquisitionAnalytics source={source} trackPageView={false} />;
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
 import { type ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 
 import FragranceSaveControls from "@/components/FragranceSaveControls";
@@ -243,7 +244,7 @@ function FragranceCard({
         dominantProfile?.key || "balanced"
       }
     >
-      <a
+      <AcquisitionInternalLink
         href={`/duft/${fragrance.slug}`}
         className="group block"
       >
@@ -292,7 +293,7 @@ function FragranceCard({
               : ""}
           </div>
         </div>
-      </a>
+      </AcquisitionInternalLink>
 
       <div className="dufynd-library-card-actions flex flex-wrap items-center justify-between gap-2 border-t border-(--line) p-3">
         <FragranceSaveControls
@@ -300,13 +301,13 @@ function FragranceCard({
           source={source}
           compact
         />
-        <a
+        <AcquisitionInternalLink
           href={`/vergleich?left=${encodeURIComponent(fragrance.product_id)}`}
           aria-label={`${fragrance.brand} ${fragrance.name} mit einem anderen Duft vergleichen`}
           className="rounded-lg px-2 py-1.5 text-[11px] font-semibold text-(--accent-ink) transition hover:bg-(--well)"
         >
           Vergleichen →
-        </a>
+        </AcquisitionInternalLink>
       </div>
     </article>
   );
@@ -521,7 +522,7 @@ export default function FragranceLibraryHub({
                 Mit meiner Sammlung beraten lassen
               </GuidedAdvisorLink>
             ) : null}
-            <a
+            <AcquisitionInternalLink
               href={
                 mode === "wishlist"
                   ? "/sammlung"
@@ -532,13 +533,13 @@ export default function FragranceLibraryHub({
               {mode === "wishlist"
                 ? `Sammlung (${library.owned.length})`
                 : `Merkliste (${library.wishlist.length})`}
-            </a>
-            <a
+            </AcquisitionInternalLink>
+            <AcquisitionInternalLink
               href="/duft"
               className="rounded-xl border border-white/15 bg-white px-3 py-2 text-[12px] font-semibold text-[#17120d] transition hover:bg-[#fff7e7]"
             >
               Düfte entdecken
-            </a>
+            </AcquisitionInternalLink>
           </div>
         </div>
 
@@ -682,7 +683,7 @@ export default function FragranceLibraryHub({
               </p>
               <div className="mt-3 grid gap-2 sm:grid-cols-2">
                 {profile.suggestions.map((item) => (
-                  <a
+                  <AcquisitionInternalLink
                     key={item.fragrance.product_id}
                     href={`/duft/${item.fragrance.slug}`}
                     className="dufynd-library-suggestion rounded-xl border border-(--line) bg-(--well)/35 p-3 transition hover:border-(--accent)"
@@ -694,7 +695,7 @@ export default function FragranceLibraryHub({
                       {item.fragrance.brand}{" "}
                       {item.fragrance.name}
                     </div>
-                  </a>
+                  </AcquisitionInternalLink>
                 ))}
               </div>
             </div>
@@ -767,12 +768,12 @@ export default function FragranceLibraryHub({
           <p className="mx-auto mt-2 max-w-lg text-[12.5px] leading-5 text-(--ink-soft)">
             {emptyText}
           </p>
-          <a
+          <AcquisitionInternalLink
             href="/duft"
             className="mt-4 inline-flex rounded-xl bg-(--ink) px-4 py-2.5 text-[12px] font-semibold text-(--surface)"
           >
             Duftkatalog öffnen
-          </a>
+          </AcquisitionInternalLink>
         </section>
       )}
     </>
