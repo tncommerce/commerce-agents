@@ -12,6 +12,7 @@ import { verifyLatestProductShare } from "./product-share-race-qa.mjs";
 import { verifyCurrentLibraryImport } from "./library-import-current-qa.mjs";
 import { verifyLatestLibraryImport } from "./library-import-latest-qa.mjs";
 import { verifySocialSearchDismissal } from "./social-search-dismissal-qa.mjs";
+import { verifySocialSearchAttribution } from "./social-search-attribution-qa.mjs";
 import { verifyGuidedStartContext } from "./guided-start-context-qa.mjs";
 import { verifyGuidedLinkAttribution } from "./guided-link-attribution-qa.mjs";
 import { verifyProductDetailRecovery, verifySingleResponsiveProductDetail, verifyClosedProductDetailFocus } from "./product-detail-recovery-qa.mjs";
@@ -248,6 +249,13 @@ const report = {
 };
 
 try {
+  try {
+    await verifySocialSearchAttribution(browser, baseUrl);
+    report.checks.push({ label: "social-search-attribution-handoff", status: "passed" });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({ label: "social-search-attribution-handoff", message });
+  }
   try {
     await verifyGuidedLinkAttribution(browser, baseUrl);
     report.checks.push({ label: "guided-link-attribution-handoff", status: "passed" });
@@ -1059,9 +1067,11 @@ try {
           }
           await socialSearch.fill("1 Million");
           const directOneMillion = page.locator(
-            '[data-dufynd-social-live-results] a[href="/duft/rabanne-1-million"]',
+            '[data-dufynd-social-live-results] a',
           );
-          if ((await directOneMillion.count()) !== 1) {
+          if ((await directOneMillion.evaluateAll((links) => links.filter((link) =>
+            new URL(link.href).pathname === "/duft/rabanne-1-million",
+          ).length)) !== 1) {
             throw new Error(
               "social start live search does not surface Rabanne 1 Million directly",
             );

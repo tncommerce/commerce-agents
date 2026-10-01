@@ -32,12 +32,12 @@ export async function verifySocialSearchDismissal(browser, baseUrl) {
       await input.focus();
       await results.waitFor();
       await results.getByRole("link").first().click();
-      await page.waitForURL("**/duft/xerjoff-naxos");
+      await page.waitForURL((url) => url.pathname === "/duft/xerjoff-naxos");
       await page.goto(`${baseUrl}/start`);
       await input.fill("Naxos");
       await page.keyboard.press("Escape");
       await page.keyboard.press("Enter");
-      await page.waitForURL("**/duft/xerjoff-naxos");
+      await page.waitForURL((url) => url.pathname === "/duft/xerjoff-naxos");
     } finally {
       await context.close();
     }
