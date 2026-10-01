@@ -159,18 +159,35 @@ function homeVisualWorldFor(product: Product | undefined) {
   return fragrance ? visualWorldFor(fragrance) : "ember";
 }
 
-function audiencePreviewProducts(picks: Product[]) {
+function audiencePreviewProducts(catalog: Record<string, Product>) {
   const used = new Set<string>();
 
   return AUDIENCE_DISCOVERY.map((audience) => {
-    const matches = picks
+    const matches = Object.values(catalog)
       .filter((product) => {
+        if (
+          !String(product.product_id).startsWith("SC-") ||
+          product.in_stock === false
+        ) {
+          return false;
+        }
+
         const fragrance = getLiveFragranceByProductId(
           String(product.product_id),
         );
-        return fragrance
-          ? fragranceMatchesAudience(fragrance, audience.key)
-          : false;
+
+        if (
+          !fragrance ||
+          !fragranceMatchesAudience(fragrance, audience.key)
+        ) {
+          return false;
+        }
+
+        return Boolean(
+          fragrance.presentation_visual?.url ||
+            fragrance.preferred_visual?.url ||
+            product.image_url,
+        );
       })
       .sort((a, b) => {
         const aTargets =
@@ -217,7 +234,7 @@ export default function HomeView({
     Object.entries(loadedCatalog).filter(([id]) => getLiveFragranceByProductId(id)),
   );
   const picks = featured(catalog);
-  const audiencePreviews = audiencePreviewProducts(picks);
+  const audiencePreviews = audiencePreviewProducts(catalog);
   const spotlight =
     catalog["SC-XERJOFF-NAXOS-100"] || picks[0];
   const spotlightFragrance = spotlight
