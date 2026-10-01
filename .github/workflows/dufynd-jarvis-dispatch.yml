@@ -42,14 +42,6 @@ jobs:
     if: github.event_name == 'workflow_dispatch' && inputs.mode != 'nightshift-pilot'
     runs-on: ubuntu-latest
     steps:
-      - name: Acknowledge guarded DUFYND chat signal
-        if: github.event_name == 'issue_comment'
-        shell: bash
-        run: |
-          set -euo pipefail
-          echo "Accepted guarded DUFYND chat signal from repository owner on PR #1."
-          echo "Nightshift defaults: max_tasks=8, max_minutes=300."
-
       - name: Check out active DUFYND development line
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -122,6 +114,14 @@ jobs:
       contents: write
       pull-requests: write
     steps:
+      - name: Acknowledge guarded DUFYND chat signal
+        if: github.event_name == 'issue_comment'
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Accepted guarded DUFYND chat signal from repository owner on PR #1."
+          echo "Nightshift defaults: max_tasks=8, max_minutes=300."
+
       - name: Check out active DUFYND development line
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
