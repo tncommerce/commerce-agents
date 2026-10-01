@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-10-01T12:50:00Z",
+  "generated_at": "2026-10-01T13:03:00Z",
   "merchant_id": "notino",
   "network": "CJ Affiliate",
   "program": "Notino",
@@ -587,6 +587,48 @@
         "do not infer image rights from affiliate mapping",
         "activation preparation only; live routing remains a separate controlled write"
       ]
+    },
+    {
+      "offer_id": "notino-burberry-goddess-edp-100",
+      "product_id": "SC-BURBERRY-GODDESS-EDP-100",
+      "merchant_product_id": "BUR09233",
+      "gtin": "3616302020652",
+      "product_url": "https://www.notino.de/burberry/goddess-eau-de-parfum-nachfuellbar-fuer-damen/p-16193700/",
+      "exact_variant": "Burberry Goddess Eau de Parfum refillable 100 ml",
+      "offer_last_updated_at": "2026-10-01T13:03:00Z",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fburberry%2Fgoddess-eau-de-parfum-nachfuellbar-fuer-damen%2Fp-16193700%2F",
+      "mapping_status": "verified_current_variant",
+      "offer_in_stock_observation": true,
+      "readiness": "ready_for_controlled_activation_preflight",
+      "publish_allowed": false,
+      "source_of_truth_mapping_state": "not_promoted",
+      "remaining_runtime_guards": [
+        "revalidate current availability before any live routing",
+        "keep exact Burberry Goddess Eau de Parfum refillable 100 ml identity",
+        "do not infer image rights from affiliate mapping",
+        "activation preparation only; live routing remains a separate controlled write"
+      ]
+    },
+    {
+      "offer_id": "notino-guerlain-mon-guerlain-edp-100",
+      "product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+      "merchant_product_id": "GUR2617",
+      "gtin": "3346470131408",
+      "product_url": "https://www.notino.de/guerlain/mon-guerlain-eau-de-parfum-fuer-damen/p-615722/",
+      "exact_variant": "GUERLAIN Mon Guerlain Eau de Parfum 100 ml",
+      "offer_last_updated_at": "2026-10-01T13:03:00Z",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fguerlain%2Fmon-guerlain-eau-de-parfum-fuer-damen%2Fp-615722%2F",
+      "mapping_status": "verified_current_variant",
+      "offer_in_stock_observation": true,
+      "readiness": "ready_for_controlled_activation_preflight",
+      "publish_allowed": false,
+      "source_of_truth_mapping_state": "not_promoted",
+      "remaining_runtime_guards": [
+        "revalidate current availability before any live routing",
+        "keep exact GUERLAIN Mon Guerlain Eau de Parfum 100 ml identity",
+        "do not infer image rights from affiliate mapping",
+        "activation preparation only; live routing remains a separate controlled write"
+      ]
     }
   ],
   "policy": {
@@ -594,5 +636,5 @@
     "affiliate_approval_implies_image_rights": false,
     "unverified_variant_fallback_allowed": false
   },
-  "next_action": "Commerce wave 7 exact Notino variants are staged for controlled activation preflight only. Keep live_routing_allowed=false and revalidate availability immediately before any future live routing."
+  "next_action": "Commerce waves 2-8 and Release 01 remaining-rollout have exact Notino activation-preflight evidence for verified candidates. Keep live_routing_allowed=false and revalidate availability immediately before any future live routing write."
 }
