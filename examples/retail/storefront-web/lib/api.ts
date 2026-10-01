@@ -73,8 +73,21 @@ export async function fetchProducts(): Promise<Product[] | null> {
   return data?.products ?? null;
 }
 
-export function fetchProduct(productId: string): Promise<ProductDetails | null> {
-  return api.get<ProductDetails>(`/products/${encodeURIComponent(productId)}`);
+export async function fetchProduct(productId: string): Promise<ProductDetails | null> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 8_000);
+  try {
+    const response = await fetch(`${api.base}/products/${encodeURIComponent(productId)}`, {
+      headers: api.headers(),
+      signal: controller.signal,
+    });
+    if (!response.ok) return null;
+    return (await response.json()) as ProductDetails;
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
 
 const MERCHANT_OFFERS_TIMEOUT_MS = 8_000;
