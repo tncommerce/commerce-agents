@@ -413,7 +413,13 @@ export default function FragranceLibraryHub({
       : "Öffne einen Duft und markiere ihn als Teil deiner Sammlung. Es wird kein Kundenkonto benötigt.";
 
   const exportBackup = () => {
-    const file = new Blob([JSON.stringify(library, null, 2)], {
+    const currentLibrary = tryReadFragranceLibrary();
+    if (!currentLibrary) {
+      setBackupStatus("Sicherung fehlgeschlagen. Deine Duftliste konnte nicht gelesen werden. Bitte versuche es erneut.");
+      return;
+    }
+
+    const file = new Blob([JSON.stringify(currentLibrary, null, 2)], {
       type: "application/json",
     });
     const url = URL.createObjectURL(file);
