@@ -1,5 +1,7 @@
 "use client";
 
+import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
+
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import FragranceSaveControls from "@/components/FragranceSaveControls";
@@ -1290,12 +1292,12 @@ export default function FragranceCatalogBrowser({
                 Leeren
               </button>
               {comparisonHref ? (
-                <a
+                <AcquisitionInternalLink
                   href={comparisonHref}
                   className="rounded-xl bg-[#d9bd82] px-4 py-2 text-[11px] font-semibold text-[#241b0e] transition hover:bg-[#e4cb98]"
                 >
                   Jetzt vergleichen →
-                </a>
+                </AcquisitionInternalLink>
               ) : (
                 <span
                   className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-semibold text-white/35"
@@ -1332,7 +1334,7 @@ export default function FragranceCatalogBrowser({
                   dominantProfile?.key || "balanced"
                 }
               >
-                <a
+                <AcquisitionInternalLink
                   href={`/duft/${fragrance.slug}`}
                   onClick={() =>
                     void trackAnalyticsEvent(
@@ -1468,7 +1470,7 @@ export default function FragranceCatalogBrowser({
                       Duftprofil & Angebote ansehen →
                     </div>
                   </div>
-                </a>
+                </AcquisitionInternalLink>
 
                 <div className="dufynd-catalog-card-actions flex flex-wrap items-center justify-between gap-2 border-t border-(--line) p-3">
                   <FragranceSaveControls
@@ -1574,12 +1576,12 @@ export default function FragranceCatalogBrowser({
             <p className="text-[12px] text-(--ink-soft)">
               Du suchst nach mehreren Eigenschaften gleichzeitig?
             </p>
-            <a
+            <AcquisitionInternalLink
               href="/"
               className="mt-2 inline-flex rounded-xl bg-(--ink) px-4 py-2 text-[12px] font-semibold text-(--surface)"
             >
               DUFYND Duftberater öffnen
-            </a>
+            </AcquisitionInternalLink>
           </div>
         </section>
       )}

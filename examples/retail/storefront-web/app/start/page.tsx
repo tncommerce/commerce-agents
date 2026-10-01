@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
+import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
 import LegalFooter from "@/components/LegalFooter";
 import SocialFragranceSearch from "@/components/SocialFragranceSearch";
 import { LIVE_FRAGRANCES } from "@/lib/fragranceCatalog";
@@ -69,7 +70,7 @@ export default function SocialStartPage() {
 
       <div className="mx-auto w-full max-w-[1120px] px-4 py-5 sm:px-6 sm:py-8">
         <header className="flex items-center justify-between gap-4">
-          <a
+          <AcquisitionInternalLink
             href="/"
             className="inline-flex items-center gap-2.5"
             aria-label="Zur DUFYND Startseite"
@@ -85,14 +86,14 @@ export default function SocialStartPage() {
             <span className="text-[17px] font-bold tracking-[-0.02em]">
               DUFYND
             </span>
-          </a>
+          </AcquisitionInternalLink>
 
-          <a
+          <AcquisitionInternalLink
             href="/duft"
             className="rounded-full border border-(--line) bg-white/60 px-3 py-1.5 text-[11.5px] font-semibold text-(--ink) backdrop-blur-sm transition hover:border-(--ink)"
           >
             {fragranceCount} Düfte entdecken
-          </a>
+          </AcquisitionInternalLink>
         </header>
 
         <section
@@ -132,18 +133,18 @@ export default function SocialStartPage() {
             </p>
 
             <div className="mt-6 flex flex-wrap gap-2.5">
-              <a
+              <AcquisitionInternalLink
                 href="/duftfinder"
                 className="rounded-xl bg-[#fffdf8] px-4 py-2.5 text-[12.5px] font-semibold text-[#171513] shadow-[0_12px_30px_-18px_rgba(255,241,210,0.75)] transition hover:-translate-y-0.5"
               >
                 Duftfinder starten
-              </a>
-              <a
+              </AcquisitionInternalLink>
+              <AcquisitionInternalLink
                 href="/duft"
                 className="rounded-xl border border-white/15 bg-white/[0.055] px-4 py-2.5 text-[12.5px] font-semibold text-white/[0.88] backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white/[0.09]"
               >
                 Katalog entdecken
-              </a>
+              </AcquisitionInternalLink>
             </div>
 
             <div className="mt-7 flex flex-wrap gap-x-4 gap-y-2 border-t border-white/[0.08] pt-4 text-[10.5px] font-medium text-white/[0.48]">
@@ -183,7 +184,7 @@ export default function SocialStartPage() {
           aria-label="DUFYND Wege"
         >
           {paths.map((item) => (
-            <a
+            <AcquisitionInternalLink
               key={item.href}
               href={item.href}
               className="group relative flex min-h-[210px] flex-col overflow-hidden rounded-[22px] border border-(--line) bg-[#fffdf8] p-5 shadow-[0_12px_34px_-28px_rgba(23,21,19,0.55)] transition duration-200 hover:-translate-y-0.5 hover:border-[#b88934]/45 hover:shadow-[0_18px_42px_-28px_rgba(23,21,19,0.62)]"
@@ -215,7 +216,7 @@ export default function SocialStartPage() {
                   </span>
                 </span>
               </div>
-            </a>
+            </AcquisitionInternalLink>
           ))}
         </section>
 
@@ -230,12 +231,12 @@ export default function SocialStartPage() {
             Provision beeinflusst nie die Duftempfehlung. Bei preisgleichen,
             vergleichbar aktuellen Angeboten kann sie zwischen Partnerlinks
             entscheiden.{" "}
-            <a
+            <AcquisitionInternalLink
               href="/transparenz"
               className="font-semibold text-(--accent-ink) hover:underline"
             >
               So arbeitet DUFYND
-            </a>
+            </AcquisitionInternalLink>
             .
           </p>
         </section>

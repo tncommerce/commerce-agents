@@ -13,6 +13,7 @@ import { verifyCurrentLibraryImport } from "./library-import-current-qa.mjs";
 import { verifyLatestLibraryImport } from "./library-import-latest-qa.mjs";
 import { verifySocialSearchDismissal } from "./social-search-dismissal-qa.mjs";
 import { verifySocialSearchAttribution } from "./social-search-attribution-qa.mjs";
+import { verifySocialCatalogNavigation } from "./social-catalog-navigation-qa.mjs";
 import { verifyGuidedStartContext } from "./guided-start-context-qa.mjs";
 import { verifyGuidedLinkAttribution } from "./guided-link-attribution-qa.mjs";
 import { verifyProductDetailRecovery, verifySingleResponsiveProductDetail, verifyClosedProductDetailFocus } from "./product-detail-recovery-qa.mjs";
@@ -249,6 +250,13 @@ const report = {
 };
 
 try {
+  try {
+    await verifySocialCatalogNavigation(browser, baseUrl);
+    report.checks.push({ label: "social-catalog-navigation-attribution", status: "passed" });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({ label: "social-catalog-navigation-attribution", message });
+  }
   try {
     await verifySocialSearchAttribution(browser, baseUrl);
     report.checks.push({ label: "social-search-attribution-handoff", status: "passed" });
@@ -1017,7 +1025,7 @@ try {
           }
 
           const naxosCardTruth = page.locator(
-            'a[href="/duft/xerjoff-naxos"] img[src="/products/naxos-cutout-production.webp"]',
+            'a[href*="/duft/xerjoff-naxos"] img[src="/products/naxos-cutout-production.webp"]',
           );
           if ((await naxosCardTruth.count()) < 1) {
             throw new Error(
@@ -1085,7 +1093,9 @@ try {
             "/parfum-geschenkberater",
           ];
           for (const href of requiredEntryPaths) {
-            if ((await page.locator(`a[href="${href}"]`).count()) < 1) {
+            if ((await page.locator("a").evaluateAll((links, path) => links.filter((link) =>
+              new URL(link.href).pathname === path,
+            ).length, href)) < 1) {
               throw new Error(`social start is missing entry path: ${href}`);
             }
           }
@@ -1339,12 +1349,12 @@ try {
       }
 
       const actualRoutes = await audiencePage
-        .locator('article.dufynd-catalog-card a[href^="/duft/"]')
+        .locator('article.dufynd-catalog-card a')
         .evaluateAll((links) =>
           Array.from(
             new Set(
               links
-                .map((link) => link.getAttribute("href"))
+                .map((link) => new URL(link.href).pathname)
                 .filter(
                   (href) =>
                     typeof href === "string" &&
@@ -2139,7 +2149,7 @@ try {
 
     for (let step = 0; step < 4; step += 1) {
       const targetLink = acquisitionNavigationPage.locator(
-        'a[href="/duft/rabanne-1-million"]',
+        'a[href*="/duft/rabanne-1-million"]',
       );
       if ((await targetLink.count()) > 0) {
         await targetLink.first().click();
@@ -3271,12 +3281,12 @@ try {
     }
 
     const detailRoutes = await sweepPage
-      .locator('a[href^="/duft/"]')
+      .locator('a')
       .evaluateAll((links) =>
         Array.from(
           new Set(
             links
-              .map((link) => link.getAttribute("href"))
+              .map((link) => new URL(link.href).pathname)
               .filter(
                 (href) =>
                   typeof href === "string" &&
