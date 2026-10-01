@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-10-01T13:22:00Z",
+  "generated_at": "2026-10-01T13:30:00Z",
   "merchant_id": "notino",
   "network": "CJ Affiliate",
   "program": "Notino",
@@ -797,6 +797,69 @@
         "do not infer image rights from affiliate mapping",
         "activation preparation only; live routing remains a separate controlled write"
       ]
+    },
+    {
+      "offer_id": "notino-prada-paradoxe-edp-90",
+      "product_id": "SC-PRADA-PARADOXE-EDP-90",
+      "merchant_product_id": "PRA03053",
+      "gtin": "3614273760164",
+      "product_url": "https://www.notino.de/prada/prada-paradoxe-eau-de-parfum-nachfuellbar-fuer-damen/p-16143145/",
+      "exact_variant": "Prada Paradoxe Eau de Parfum refillable 90 ml",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fprada%2Fprada-paradoxe-eau-de-parfum-nachfuellbar-fuer-damen%2Fp-16143145%2F",
+      "mapping_status": "verified_current_variant",
+      "offer_last_updated_at": "2026-10-01T13:30:00Z",
+      "offer_in_stock_observation": true,
+      "readiness": "ready_for_controlled_activation_preflight",
+      "publish_allowed": false,
+      "source_of_truth_mapping_state": "not_promoted",
+      "remaining_runtime_guards": [
+        "revalidate current availability before any live routing",
+        "keep exact Prada Paradoxe Eau de Parfum refillable 90 ml identity",
+        "do not infer image rights from affiliate mapping",
+        "activation preparation only; live routing remains a separate controlled write"
+      ]
+    },
+    {
+      "offer_id": "notino-ysl-y-edp-100",
+      "product_id": "SC-YSL-Y-EDP-100",
+      "merchant_product_id": "YSL06908",
+      "gtin": "9005803473663",
+      "product_url": "https://www.notino.de/yves-saint-laurent/y-eau-de-parfum-fuer-herren/p-15775663/",
+      "exact_variant": "Yves Saint Laurent Y Eau de Parfum refillable 100 ml",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fyves-saint-laurent%2Fy-eau-de-parfum-fuer-herren%2Fp-15775663%2F",
+      "mapping_status": "verified_current_variant",
+      "offer_last_updated_at": "2026-10-01T13:30:00Z",
+      "offer_in_stock_observation": true,
+      "readiness": "ready_for_controlled_activation_preflight",
+      "publish_allowed": false,
+      "source_of_truth_mapping_state": "not_promoted",
+      "remaining_runtime_guards": [
+        "revalidate current availability before any live routing",
+        "keep exact Yves Saint Laurent Y Eau de Parfum refillable 100 ml identity",
+        "do not infer image rights from affiliate mapping",
+        "activation preparation only; live routing remains a separate controlled write"
+      ]
+    },
+    {
+      "offer_id": "notino-maison-margiela-by-the-fireplace-edt-100",
+      "product_id": "SC-MAISON-MARGIELA-BY-THE-FIREPLACE-EDT-100",
+      "merchant_product_id": "MMG00180",
+      "gtin": "3614270562112",
+      "product_url": "https://www.notino.de/maison-margiela/replica-by-the-fireplace-eau-de-toilette-unisex/p-16017540/",
+      "exact_variant": "Maison Margiela REPLICA By the Fireplace Eau de Toilette 100 ml",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fmaison-margiela%2Freplica-by-the-fireplace-eau-de-toilette-unisex%2Fp-16017540%2F",
+      "mapping_status": "verified_current_variant",
+      "offer_last_updated_at": "2026-10-01T13:30:00Z",
+      "offer_in_stock_observation": true,
+      "readiness": "ready_for_controlled_activation_preflight",
+      "publish_allowed": false,
+      "source_of_truth_mapping_state": "not_promoted",
+      "remaining_runtime_guards": [
+        "revalidate current availability before any live routing",
+        "keep exact Maison Margiela REPLICA By the Fireplace Eau de Toilette 100 ml identity",
+        "do not infer image rights from affiliate mapping",
+        "activation preparation only; live routing remains a separate controlled write"
+      ]
     }
   ],
   "policy": {
@@ -804,5 +867,5 @@
     "affiliate_approval_implies_image_rights": false,
     "unverified_variant_fallback_allowed": false
   },
-  "next_action": "Commerce waves 2-10 have exact Notino activation-preflight evidence for verified available candidates. Keep live_routing_allowed=false; unavailable or unresolved variants remain excluded."
+  "next_action": "Commerce waves 2-11 have exact Notino activation-preflight evidence for verified available candidates. Keep live_routing_allowed=false; unavailable or unresolved variants remain excluded."
 }
