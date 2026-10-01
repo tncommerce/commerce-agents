@@ -25,10 +25,13 @@ SECRET_QUERY_KEYS = {
     "secretkey",
 }
 
+GENERATED_PRODUCT_TRUTH_STATUS = "verified_dufynd_generated_product_truth"
+
 APPROVED_IMAGE_STATUSES = {
     "approved_feed_image",
     "approved_manufacturer_image",
     "approved_licensed_image",
+    GENERATED_PRODUCT_TRUTH_STATUS,
 }
 PROFILE_AXES = (
     "freshness",
@@ -317,6 +320,21 @@ def promotion_blockers(
                 media.get("image_share_alike_required"), bool
             ):
                 blockers.append("missing_licensed_image_attribution_metadata")
+    elif image_status == GENERATED_PRODUCT_TRUTH_STATUS:
+        generated_evidence = (
+            media.get("image_reviewed_at"),
+            media.get("image_source_sha256"),
+            media.get("image_generator"),
+            media.get("image_fidelity_approval_basis"),
+            media.get("image_fidelity_approved_at"),
+            media.get("image_variant"),
+        )
+        if (
+            str(media.get("image_source_class") or "").strip() != "dufynd_generated"
+            or media.get("image_exact_variant_verified") is not True
+            or not all(str(value or "").strip() for value in generated_evidence)
+        ):
+            blockers.append("missing_dufynd_generated_product_truth_evidence")
 
     scores = recommendation_scores(product)
     if set(scores) != set(PROFILE_AXES):
@@ -417,6 +435,17 @@ def build_catalog_product(
             if staged.get("media", {}).get("image_share_alike_required") is None
             else str(bool(staged.get("media", {}).get("image_share_alike_required"))).lower()
         ),
+        "image_product_truth_provenance": str(
+            staged.get("media", {}).get("image_source_class") or ""
+        ),
+        "image_fidelity_approval_basis": str(
+            staged.get("media", {}).get("image_fidelity_approval_basis") or ""
+        ),
+        "image_fidelity_approved_at": str(
+            staged.get("media", {}).get("image_fidelity_approved_at") or ""
+        ),
+        "image_source_sha256": str(staged.get("media", {}).get("image_source_sha256") or ""),
+        "image_variant": str(staged.get("media", {}).get("image_variant") or ""),
     }
 
     labels = []
@@ -474,6 +503,7 @@ def build_source_product(
         "approved_feed_image": "merchant_feed",
         "approved_manufacturer_image": "manufacturer",
         "approved_licensed_image": "licensed",
+        GENERATED_PRODUCT_TRUTH_STATUS: "dufynd_generated",
     }.get(image_status, "approved_source")
 
     source_product = {
@@ -531,6 +561,16 @@ def build_source_product(
                     }
                     if image_status == "approved_licensed_image"
                     and str(media.get("image_license_name") or "").strip()
+                    else {}
+                ),
+                **(
+                    {
+                        "approval_basis": str(media.get("image_fidelity_approval_basis") or ""),
+                        "approved_at": str(media.get("image_fidelity_approved_at") or ""),
+                        "source_sha256": str(media.get("image_source_sha256") or ""),
+                        "generator": str(media.get("image_generator") or ""),
+                    }
+                    if image_status == GENERATED_PRODUCT_TRUTH_STATUS
                     else {}
                 ),
             }
