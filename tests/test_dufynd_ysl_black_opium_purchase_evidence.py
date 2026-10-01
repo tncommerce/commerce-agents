@@ -62,7 +62,8 @@ def test_black_opium_current_offer_clears_purchase_gate_only() -> None:
     )
 
     assert "missing_current_purchase_destination" not in blockers
-    assert "missing_approved_image" in blockers
+    assert "missing_approved_image" not in blockers
+    assert product["media"]["image_status"] == "approved_feed_image"
     assert product["validation"]["catalog_ready"] is False
     assert "verified_purchase_destination_pending" in product["validation"]["blockers"]
     assert "approved_product_image_pending" in product["validation"]["blockers"]

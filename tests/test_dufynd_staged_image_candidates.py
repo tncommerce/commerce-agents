@@ -72,7 +72,14 @@ def test_staged_candidates_have_no_public_copy_or_catalog_activation() -> None:
                 product["product_id"] for product in catalog["products"]
             }
         product = staged[item["product_id"]]
-        assert product["media"]["image_url"] is None
+        if item["product_id"] == "SC-YSL-LIBRE-EDP-90":
+            assert product["media"]["image_url"] == (
+                "https://www.topparfuemerie.de/media/catalog/product/8/5/"
+                "856448_3614272648425_051.png"
+            )
+            assert product["media"]["image_status"] == "approved_feed_image"
+        else:
+            assert product["media"]["image_url"] is None
         assert product["validation"]["catalog_ready"] is False
         assert "approved_product_image_pending" in product["validation"]["blockers"]
 

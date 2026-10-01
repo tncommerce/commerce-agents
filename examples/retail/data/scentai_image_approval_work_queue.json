@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated_at": "2026-09-29T21:03:00+00:00",
-  "source_fingerprint_sha256": "0f5cea151eb82bf02220aebb9787da0f58cb4c097e593b22d159a747464416b3",
+  "source_fingerprint_sha256": "9d7c39c467a75c2df45ccfaa03985dc9cd5e257bd2edd773867d8e07c920e6a0",
   "machine_id": "scentai_image_approval_v1",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
@@ -17,12 +17,12 @@
     "release_01_products": 5,
     "release_02_products": 5,
     "release_03_products": 5,
-    "approved_images": 2,
-    "pending_images": 48,
+    "approved_images": 5,
+    "pending_images": 45,
     "review_ready": 0,
     "rights_or_source_check_pending": 10,
-    "licensed_source_required": 4,
-    "release_01_licensed_source_required": 4,
+    "licensed_source_required": 1,
+    "release_01_licensed_source_required": 1,
     "identity_check_pending": 0
   },
   "items": [
@@ -58,61 +58,13 @@
         "position": 2,
         "write_enabled": true
       },
-      "current_image_url": null,
-      "current_image_status": "pending_approved_feed_or_manufacturer_image",
-      "image_state": "licensed_source_required",
-      "blockers": [
-        "approved_product_image_missing",
-        "licensed_commerce_asset_required"
-      ],
-      "next_action": "obtain_licensed_affiliate_feed_image_or_dufynd_owned_original_then_manual_visual_approval",
+      "current_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/2/825869_3700578501998_051.png",
+      "current_image_status": "approved_feed_image",
+      "image_state": "approved_feed_image",
+      "blockers": [],
+      "next_action": "none",
       "action_class": "auto_allowed",
-      "approval_action_class": "approval_required",
-      "candidate_source": {
-        "source_class": "manufacturer_official",
-        "source_page_url": "https://parfums-de-marly.com/de/products/delina",
-        "exact_variant_verified": true,
-        "verified_at": "2026-09-19",
-        "evidence_note": "Official Parfums de Marly page lists Delina in 75 ml."
-      },
-      "rights_evidence": {
-        "rights_evidence_status": "official_terms_personal_viewing_only_without_prior_written_permission",
-        "rights_evidence_url": "https://parfums-de-marly.com/de/policies/terms-of-service",
-        "public_distribution_allowed": false,
-        "final_composite_allowed": false
-      },
-      "audit_trail": [
-        {
-          "at": "2026-09-19",
-          "from": "missing",
-          "to": "candidate_discovered",
-          "trigger": "manufacturer_source_found"
-        },
-        {
-          "at": "2026-09-19",
-          "from": "candidate_discovered",
-          "to": "identity_check_pending",
-          "trigger": "candidate_normalized"
-        },
-        {
-          "at": "2026-09-19",
-          "from": "identity_check_pending",
-          "to": "identity_verified",
-          "trigger": "exact_variant_verified"
-        },
-        {
-          "at": "2026-09-19",
-          "from": "identity_verified",
-          "to": "rights_or_source_check_pending",
-          "trigger": "identity_gate_passed"
-        },
-        {
-          "at": "2026-09-27",
-          "from": "rights_or_source_check_pending",
-          "to": "licensed_source_required",
-          "trigger": "official_source_commercial_reuse_not_permitted"
-        }
-      ]
+      "approval_action_class": "approval_required"
     },
     {
       "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
@@ -194,61 +146,13 @@
         "position": 4,
         "write_enabled": true
       },
-      "current_image_url": null,
-      "current_image_status": "pending_approved_feed_or_manufacturer_image",
-      "image_state": "licensed_source_required",
-      "blockers": [
-        "approved_product_image_missing",
-        "licensed_commerce_asset_required"
-      ],
-      "next_action": "obtain_licensed_affiliate_feed_image_or_dufynd_owned_original_then_manual_visual_approval",
+      "current_image_url": "https://www.topparfuemerie.de/media/catalog/product/7/8/787670_3365440787971_051.png",
+      "current_image_status": "approved_feed_image",
+      "image_state": "approved_feed_image",
+      "blockers": [],
+      "next_action": "none",
       "action_class": "auto_allowed",
-      "approval_action_class": "approval_required",
-      "candidate_source": {
-        "source_class": "manufacturer_official",
-        "source_page_url": "https://www.yslbeauty.de/dufte/dufte-fur-sie/black-opium/black-opium-eau-de-parfum/WW-40701YSL.html",
-        "exact_variant_verified": true,
-        "verified_at": "2026-09-19",
-        "evidence_note": "Official YSL Beauty page lists Black Opium Eau de Parfum in 90 ml."
-      },
-      "rights_evidence": {
-        "rights_evidence_status": "official_terms_prohibit_commercial_use_of_site_content",
-        "rights_evidence_url": "https://www.yslbeauty.de/customer-service/nutzungsbedingungen/customer-service-terms-and-conditions.html",
-        "public_distribution_allowed": false,
-        "final_composite_allowed": false
-      },
-      "audit_trail": [
-        {
-          "at": "2026-09-19",
-          "from": "missing",
-          "to": "candidate_discovered",
-          "trigger": "manufacturer_source_found"
-        },
-        {
-          "at": "2026-09-19",
-          "from": "candidate_discovered",
-          "to": "identity_check_pending",
-          "trigger": "candidate_normalized"
-        },
-        {
-          "at": "2026-09-19",
-          "from": "identity_check_pending",
-          "to": "identity_verified",
-          "trigger": "exact_variant_verified"
-        },
-        {
-          "at": "2026-09-19",
-          "from": "identity_verified",
-          "to": "rights_or_source_check_pending",
-          "trigger": "identity_gate_passed"
-        },
-        {
-          "at": "2026-09-27",
-          "from": "rights_or_source_check_pending",
-          "to": "licensed_source_required",
-          "trigger": "official_source_commercial_reuse_not_permitted"
-        }
-      ]
+      "approval_action_class": "approval_required"
     },
     {
       "product_id": "SC-YSL-LIBRE-EDP-90",
@@ -262,61 +166,13 @@
         "position": 5,
         "write_enabled": true
       },
-      "current_image_url": null,
-      "current_image_status": "pending_approved_feed_or_manufacturer_image",
-      "image_state": "licensed_source_required",
-      "blockers": [
-        "approved_product_image_missing",
-        "licensed_commerce_asset_required"
-      ],
-      "next_action": "obtain_licensed_affiliate_feed_image_or_dufynd_owned_original_then_manual_visual_approval",
+      "current_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png",
+      "current_image_status": "approved_feed_image",
+      "image_state": "approved_feed_image",
+      "blockers": [],
+      "next_action": "none",
       "action_class": "auto_allowed",
-      "approval_action_class": "approval_required",
-      "candidate_source": {
-        "source_class": "manufacturer_official",
-        "source_page_url": "https://www.yslbeauty.de/dufte/dufte-fur-sie/libre/libre-eau-de-parfum/WW-50424YSL.html",
-        "exact_variant_verified": true,
-        "verified_at": "2026-09-19",
-        "evidence_note": "Official YSL Beauty page lists Libre Eau de Parfum in 90 ml."
-      },
-      "rights_evidence": {
-        "rights_evidence_status": "official_terms_prohibit_commercial_use_of_site_content",
-        "rights_evidence_url": "https://www.yslbeauty.de/customer-service/nutzungsbedingungen/customer-service-terms-and-conditions.html",
-        "public_distribution_allowed": false,
-        "final_composite_allowed": false
-      },
-      "audit_trail": [
-        {
-          "at": "2026-09-19",
-          "from": "missing",
-          "to": "candidate_discovered",
-          "trigger": "manufacturer_source_found"
-        },
-        {
-          "at": "2026-09-19",
-          "from": "candidate_discovered",
-          "to": "identity_check_pending",
-          "trigger": "candidate_normalized"
-        },
-        {
-          "at": "2026-09-19",
-          "from": "identity_check_pending",
-          "to": "identity_verified",
-          "trigger": "exact_variant_verified"
-        },
-        {
-          "at": "2026-09-19",
-          "from": "identity_verified",
-          "to": "rights_or_source_check_pending",
-          "trigger": "identity_gate_passed"
-        },
-        {
-          "at": "2026-09-27",
-          "from": "rights_or_source_check_pending",
-          "to": "licensed_source_required",
-          "trigger": "official_source_commercial_reuse_not_permitted"
-        }
-      ]
+      "approval_action_class": "approval_required"
     },
     {
       "product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",

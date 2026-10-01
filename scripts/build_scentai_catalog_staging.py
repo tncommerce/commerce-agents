@@ -3,7 +3,14 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from scripts.approve_scentai_rights_cleared_image import apply_approval, approval_plan
+from scripts.approve_scentai_feed_image import apply_approval as apply_feed_approval
+from scripts.approve_scentai_feed_image import approval_plan as feed_approval_plan
+from scripts.approve_scentai_rights_cleared_image import (
+    apply_approval as apply_rights_approval,
+)
+from scripts.approve_scentai_rights_cleared_image import (
+    approval_plan as rights_approval_plan,
+)
 from scripts.report_dufynd_catalog_expansion_readiness import build_expansion_readiness
 
 DATA_DIR = Path("examples/retail/data")
@@ -402,7 +409,7 @@ def build_staging_payload() -> dict:
             for field in ("candidate_id", "brand", "name", "concentration", "volume_ml")
         ):
             raise ValueError("approved_candidate_identity_mismatch")
-        plan = approval_plan(
+        plan = rights_approval_plan(
             payload,
             candidates,
             product_id=candidate["product_id"],
@@ -411,7 +418,7 @@ def build_staging_payload() -> dict:
         reviewed_at = str(candidate.get("reviewed_at") or "").strip()
         if not reviewed_at or not candidate.get("visual_approval_basis"):
             raise ValueError("approved_candidate_missing_visual_review_evidence")
-        apply_approval(
+        apply_rights_approval(
             payload,
             candidates,
             product_id=plan["product_id"],
@@ -425,6 +432,40 @@ def build_staging_payload() -> dict:
             license_url=plan["license_url"],
             attribution_text=plan["attribution_text"],
             share_alike_required=plan["share_alike_required"],
+        )
+
+    feed_candidates = load_json(DATA_DIR / "dufynd_approved_feed_image_candidates.json")
+    feed_rights = load_json(DATA_DIR / "dufynd_affiliate_feed_image_rights.json")
+    for candidate in feed_candidates.get("candidates", []):
+        if candidate.get("review_status") != "approved":
+            continue
+        product = next(
+            (row for row in products if row["product_id"] == candidate["product_id"]),
+            None,
+        )
+        if product is None or any(
+            product[field] != candidate.get(field)
+            for field in ("candidate_id", "brand", "name", "concentration", "volume_ml")
+        ):
+            raise ValueError("approved_feed_candidate_identity_mismatch")
+        reviewed_at = str(candidate.get("reviewed_at") or "").strip()
+        if not reviewed_at or not candidate.get("visual_approval_basis"):
+            raise ValueError("approved_feed_candidate_missing_visual_review_evidence")
+        plan = feed_approval_plan(
+            payload,
+            feed_candidates,
+            product_id=candidate["product_id"],
+            image_url=candidate["image_url"],
+            rights_registry=feed_rights,
+        )
+        apply_feed_approval(
+            payload,
+            feed_candidates,
+            product_id=plan["product_id"],
+            image_url=plan["image_url"],
+            reviewed_at=reviewed_at,
+            rights_basis_id=plan["rights_basis_id"],
+            rights_checked_at=plan["rights_checked_at"],
         )
 
     return payload
