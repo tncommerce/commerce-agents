@@ -1002,9 +1002,7 @@ def _is_green_autonomy_task(
     action_type = str(task.get("approval_action_type") or "auto_allowed")
     if action_type != "auto_allowed":
         return False
-    if domain is not None and str(task.get("domain") or "") != domain:
-        return False
-    return True
+    return domain is None or str(task.get("domain") or "") == domain
 
 
 def _extract_safe_task_state(text: str) -> str | None:
