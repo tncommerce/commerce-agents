@@ -176,6 +176,34 @@ def test_non_green_task_is_not_selected() -> None:
     assert selected is None
 
 
+def test_non_repo_current_green_task_is_selected() -> None:
+    candidate = task("jarvis_research_backlog_001", "research", 100)
+    queue = {"safe_to_execute": [candidate]}
+
+    selected = nightshift._select_task(
+        queue,
+        branch_worker_used=False,
+        attempted_task_ids=set(),
+    )
+
+    assert selected is not None
+    assert selected["task_id"] == "jarvis_research_backlog_001"
+
+
+def test_non_repo_current_engineering_task_still_respects_tech_lease() -> None:
+    candidate = task("jarvis_engineering_backlog_001", "engineering", 100)
+    queue = {"safe_to_execute": [candidate]}
+
+    selected = nightshift._select_task(
+        queue,
+        branch_worker_used=False,
+        attempted_task_ids=set(),
+        engineering_allowed=False,
+    )
+
+    assert selected is None
+
+
 def test_select_task_prefers_non_engineering_before_branch_patch() -> None:
     queue = {
         "safe_to_execute": [
