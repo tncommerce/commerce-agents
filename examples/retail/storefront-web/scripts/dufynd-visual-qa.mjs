@@ -1067,9 +1067,11 @@ try {
           }
           await socialSearch.fill("1 Million");
           const directOneMillion = page.locator(
-            '[data-dufynd-social-live-results] a[href="/duft/rabanne-1-million"]',
+            '[data-dufynd-social-live-results] a',
           );
-          if ((await directOneMillion.count()) !== 1) {
+          if ((await directOneMillion.evaluateAll((links) => links.filter((link) =>
+            new URL(link.href).pathname === "/duft/rabanne-1-million",
+          ).length)) !== 1) {
             throw new Error(
               "social start live search does not surface Rabanne 1 Million directly",
             );
