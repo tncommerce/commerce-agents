@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import ManualShareLink from "@/components/ManualShareLink";
 import { publicShareUrl } from "@/lib/shareUrl";
 
@@ -13,8 +13,10 @@ export default function FragranceShareButton({
 }) {
   const [status, setStatus] = useState("");
   const [manualUrl, setManualUrl] = useState("");
+  const shareRequestRef = useRef(0);
 
-  const copyLink = async (url: string) => {
+  const copyLink = async (url: string, request: number) => {
+    if (request !== shareRequestRef.current) return;
     if (!navigator.clipboard?.writeText) {
       setManualUrl(url);
       setStatus("Automatisches Kopieren nicht möglich. Kopiere den Link unten.");
@@ -23,14 +25,17 @@ export default function FragranceShareButton({
 
     try {
       await navigator.clipboard.writeText(url);
+      if (request !== shareRequestRef.current) return;
       setStatus("Link kopiert");
     } catch {
+      if (request !== shareRequestRef.current) return;
       setManualUrl(url);
       setStatus("Automatisches Kopieren nicht möglich. Kopiere den Link unten.");
     }
   };
 
   const share = async () => {
+    const request = ++shareRequestRef.current;
     const url = publicShareUrl(window.location.href);
     const title = `${brand} ${name} bei DUFYND`;
 
@@ -44,9 +49,11 @@ export default function FragranceShareButton({
           text: `Entdecke ${brand} ${name} bei DUFYND.`,
           url,
         });
+        if (request !== shareRequestRef.current) return;
         setStatus("Geteilt");
         return;
       } catch (error) {
+        if (request !== shareRequestRef.current) return;
         if (
           error instanceof DOMException &&
           error.name === "AbortError"
@@ -56,7 +63,7 @@ export default function FragranceShareButton({
       }
     }
 
-    await copyLink(url);
+    await copyLink(url, request);
   };
 
   return (
