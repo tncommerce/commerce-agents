@@ -775,6 +775,17 @@
       "verified_at": "2026-10-01",
       "evidence_url": "https://www.notino.de/yves-saint-laurent/black-opium-eau-de-parfum-fur-damen/",
       "evidence_note": "Notino DE exact variant revalidated immediately before approved product-scoped live routing; merchant code YSL2377. Affiliate routing does not grant image rights."
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "merchant": "notino",
+      "merchant_product_id": "VZR11010",
+      "ean": "3614272648425",
+      "gtin": "3614272648425",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-10-01",
+      "evidence_url": "https://www.notino.de/yves-saint-laurent/yves-saint-laurent-libre-eau-de-parfum-fuer-damen/p-15968532/",
+      "evidence_note": "Notino DE exact Libre Eau de Parfum 90 ml refillable bottle revalidated immediately before explicitly approved product-scoped live routing; merchant code VZR11010. Affiliate routing does not grant image rights."
     }
   ]
 }
