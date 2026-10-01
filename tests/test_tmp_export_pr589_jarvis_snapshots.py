@@ -37,7 +37,7 @@ PROTECTED = [
 
 
 def test_export_deterministic_jarvis_snapshot_delta_for_pr589() -> None:
-    master = json.loads((DATA_DIR / "scentai_jarvis_master_status.json").read_text(encoding="utf-8"))
+    master = json.loads(\n        (DATA_DIR / "scentai_jarvis_master_status.json").read_text(encoding="utf-8")\n    )
     generated_at = str(master["generated_at"])
     rebuilt = refresh_state(generated_at=generated_at)
 
