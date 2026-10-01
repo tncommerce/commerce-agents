@@ -10,6 +10,7 @@ import { verifyAnalyticsEventTimeout } from "./analytics-event-timeout-qa.mjs";
 import { verifyManualShareFallback } from "./manual-share-qa.mjs";
 import { verifyLatestProductShare } from "./product-share-race-qa.mjs";
 import { verifyCurrentLibraryImport } from "./library-import-current-qa.mjs";
+import { verifyLatestLibraryImport } from "./library-import-latest-qa.mjs";
 import { verifyProductDetailRecovery, verifySingleResponsiveProductDetail, verifyClosedProductDetailFocus } from "./product-detail-recovery-qa.mjs";
 
 const args = process.argv.slice(2);
@@ -244,6 +245,13 @@ const report = {
 };
 
 try {
+  try {
+    await verifyLatestLibraryImport(browser, baseUrl);
+    report.checks.push({ label: "library-import-latest-selection", status: "passed" });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({ label: "library-import-latest-selection", message });
+  }
   try {
     await verifyCurrentLibraryImport(browser, baseUrl);
     report.checks.push({ label: "library-import-current-replacement", status: "passed" });
