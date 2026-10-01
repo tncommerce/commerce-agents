@@ -18,6 +18,10 @@ EXPECTED = {
     "SC-YSL-BLACK-OPIUM-EDP-90": "YSL2377",
     "SC-DIOR-HYPNOTIC-POISON-EDT-100": "CHD0313",
     "SC-YSL-LIBRE-EDP-90": "VZR11010",
+    "SC-JPG-LE-MALE-LE-PARFUM-125": "JPG04167",
+    "SC-PDM-HEROD-EDP-125": "PDM0055",
+    "SC-INITIO-SIDE-EFFECT-EDP-90": "INI03376",
+    "SC-VIKTOR-ROLF-SPICEBOMB-EXTREME-EDP-90": "VRO0459",
 }
 
 
@@ -58,5 +62,24 @@ def test_public_catalog_candidates_are_identified_without_activation() -> None:
         "SC-YSL-BLACK-OPIUM-EDP-90",
         "SC-DIOR-HYPNOTIC-POISON-EDT-100",
         "SC-YSL-LIBRE-EDP-90",
+        "SC-JPG-LE-MALE-LE-PARFUM-125",
+        "SC-PDM-HEROD-EDP-125",
+        "SC-INITIO-SIDE-EFFECT-EDP-90",
+        "SC-VIKTOR-ROLF-SPICEBOMB-EXTREME-EDP-90",
     }
     assert all(row["publish_allowed"] is False for row in public_rows)
+
+
+def test_spicebomb_extreme_90_is_exact_but_not_activation_ready() -> None:
+    payload = _payload()
+    row = next(
+        row
+        for row in payload["candidates"]
+        if row["product_id"] == "SC-VIKTOR-ROLF-SPICEBOMB-EXTREME-EDP-90"
+    )
+
+    assert row["merchant_product_id"] == "VRO0459"
+    assert row["gtin"] == "3614270659706"
+    assert row["availability_observed"] is False
+    assert row["activation_state"] == "staged_not_live"
+    assert row["publish_allowed"] is False

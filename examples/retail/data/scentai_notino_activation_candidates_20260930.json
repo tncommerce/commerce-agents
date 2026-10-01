@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-10-01T10:55:00Z",
+  "generated_at": "2026-10-01T11:55:00Z",
   "merchant_id": "notino",
   "network": "CJ Affiliate",
   "program": "Notino",
@@ -152,6 +152,66 @@
         "do not infer image rights from affiliate mapping",
         "activation preparation is authorized; live routing remains a separate controlled write"
       ]
+    },
+    {
+      "offer_id": "notino-jpg-le-male-le-parfum-125",
+      "product_id": "SC-JPG-LE-MALE-LE-PARFUM-125",
+      "merchant_product_id": "JPG04167",
+      "gtin": "8435415032315",
+      "product_url": "https://www.notino.de/jean-paul-gaultier/le-male-le-parfum-eau-de-parfum-fuer-herren/",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fjean-paul-gaultier%2Fle-male-le-parfum-eau-de-parfum-fuer-herren%2F",
+      "mapping_status": "verified_current_variant",
+      "offer_last_updated_at": "2026-10-01T11:55:00Z",
+      "offer_in_stock_observation": true,
+      "readiness": "ready_for_controlled_activation_preflight",
+      "publish_allowed": false,
+      "source_of_truth_mapping_state": "not_promoted",
+      "remaining_runtime_guards": [
+        "revalidate current availability before any live routing",
+        "keep exact Jean Paul Gaultier Le Male Le Parfum Eau de Parfum 125 ml identity",
+        "do not infer image rights from affiliate mapping",
+        "activation preparation only; live routing remains a separate controlled write"
+      ]
+    },
+    {
+      "offer_id": "notino-pdm-herod-edp-125",
+      "product_id": "SC-PDM-HEROD-EDP-125",
+      "merchant_product_id": "PDM0055",
+      "gtin": "3700578502353",
+      "product_url": "https://www.notino.de/parfums-de-marly/herod-royal-essence-eau-de-parfum-fur-herren/",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fparfums-de-marly%2Fherod-royal-essence-eau-de-parfum-fur-herren%2F",
+      "mapping_status": "verified_current_variant",
+      "offer_last_updated_at": "2026-10-01T11:55:00Z",
+      "offer_in_stock_observation": true,
+      "readiness": "ready_for_controlled_activation_preflight",
+      "publish_allowed": false,
+      "source_of_truth_mapping_state": "not_promoted",
+      "remaining_runtime_guards": [
+        "revalidate current availability before any live routing",
+        "keep exact Parfums de Marly Herod Eau de Parfum 125 ml identity",
+        "do not infer image rights from affiliate mapping",
+        "activation preparation only; live routing remains a separate controlled write"
+      ]
+    },
+    {
+      "offer_id": "notino-initio-side-effect-edp-90",
+      "product_id": "SC-INITIO-SIDE-EFFECT-EDP-90",
+      "merchant_product_id": "INI03376",
+      "gtin": "3701415900073",
+      "product_url": "https://www.notino.de/initio-parfums-prives/side-effect-eau-de-parfum-unisex/",
+      "candidate_affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Finitio-parfums-prives%2Fside-effect-eau-de-parfum-unisex%2F",
+      "mapping_status": "verified_current_variant",
+      "offer_last_updated_at": "2026-10-01T11:55:00Z",
+      "offer_in_stock_observation": true,
+      "readiness": "ready_for_controlled_activation_preflight",
+      "publish_allowed": false,
+      "source_of_truth_mapping_state": "not_promoted",
+      "remaining_runtime_guards": [
+        "revalidate current availability before any live routing",
+        "keep exact Initio Parfums Privés Side Effect Eau de Parfum 90 ml identity",
+        "do not infer image rights from affiliate mapping",
+        "activation preparation only; live routing remains a separate controlled write"
+      ]
     }
   ],
   "policy": {
@@ -159,5 +219,5 @@
     "affiliate_approval_implies_image_rights": false,
     "unverified_variant_fallback_allowed": false
   },
-  "next_action": "All four remaining Release 01 products now have exact Notino activation-preflight evidence. Keep live_routing_allowed=false; revalidate availability and execute any live routing only as a separate controlled write. Hypnotic Poison publication remains separately blocked on approved image rights."
+  "next_action": "Release 01 remaining-rollout candidates remain preflight-only. Additional exact available Notino candidates Le Male Le Parfum 125 ml, Herod 125 ml and Side Effect 90 ml are now prepared for controlled activation preflight. Spicebomb Extreme 90 ml is exact but currently unavailable and remains evidence-only. Keep live_routing_allowed=false; revalidate immediately before any live write."
 }
