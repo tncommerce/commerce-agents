@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useMemo, useRef, useState } from "react";
 
 import {
   trackAnalyticsEvent,
@@ -31,6 +31,8 @@ export default function SocialFragranceSearch({
   fragrances: SearchableFragrance[];
 }) {
   const [query, setQuery] = useState("");
+  const [resultsOpen, setResultsOpen] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
   const normalizedQuery = normalize(query);
 
   const matches = useMemo(() => {
@@ -78,6 +80,16 @@ export default function SocialFragranceSearch({
       aria-label="DUFYND Social Duftsuche"
       className="relative min-w-0"
       onSubmit={submit}
+      onKeyDown={(event) => {
+        if (event.key === "Escape" && resultsOpen && normalizedQuery) {
+          event.preventDefault();
+          inputRef.current?.focus();
+          setResultsOpen(false);
+        }
+      }}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) setResultsOpen(false);
+      }}
     >
       <div className="flex min-w-0 flex-col gap-2 sm:flex-row">
         <label htmlFor="dufynd-social-search" className="sr-only">
@@ -85,11 +97,16 @@ export default function SocialFragranceSearch({
         </label>
         <input
           id="dufynd-social-search"
+          ref={inputRef}
           name="q"
           type="search"
           maxLength={80}
           value={query}
-          onChange={(event) => setQuery(event.target.value)}
+          onChange={(event) => {
+            setQuery(event.target.value);
+            setResultsOpen(true);
+          }}
+          onFocus={() => setResultsOpen(true)}
           placeholder="z. B. 1 Million, Naxos oder Libre"
           autoComplete="off"
           className="min-w-0 flex-1 rounded-xl border border-(--line) bg-[#fffdf8] px-3.5 py-2.5 text-[12.5px] text-(--ink) outline-none transition placeholder:text-(--ink-faint) focus:border-(--accent)"
@@ -102,7 +119,7 @@ export default function SocialFragranceSearch({
         </button>
       </div>
 
-      {normalizedQuery ? (
+      {normalizedQuery && resultsOpen ? (
         <div
           className="absolute left-0 right-0 top-full z-30 mt-2 overflow-hidden rounded-2xl border border-(--line) bg-[#fffdf8]/95 p-1.5 shadow-[0_20px_44px_-26px_rgba(23,21,19,0.72)] backdrop-blur-xl"
           aria-live="polite"
