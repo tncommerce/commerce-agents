@@ -34,7 +34,8 @@ def test_naxos_and_boss_absolu_notino_mappings_are_exact_and_non_live() -> None:
 
     for product_id, (merchant_product_id, gtin) in EXPECTED.items():
         exact = [
-            row for row in mappings
+            row
+            for row in mappings
             if row["product_id"] == product_id and row["merchant"] == "notino"
         ]
         assert len(exact) == 1
@@ -47,12 +48,14 @@ def test_naxos_and_boss_absolu_notino_mappings_are_exact_and_non_live() -> None:
         assert historical["source_of_truth_mapping_state"] == "pending_collision_free_handoff"
 
         notino_offer = next(
-            row for row in offers
+            row
+            for row in offers
             if row["product_id"] == product_id and row["merchant_id"] == "notino"
         )
         assert notino_offer["affiliate_url"] is None
         assert product_id not in set(notino["live_activation_products"])
 
-    assert "Bottled Absolute" in candidate_rows[
-        "SC-HUGO-BOSS-BOTTLED-ABSOLU-100"
-    ]["variant_disambiguation"]
+    assert (
+        "Bottled Absolute"
+        in candidate_rows["SC-HUGO-BOSS-BOTTLED-ABSOLU-100"]["variant_disambiguation"]
+    )
