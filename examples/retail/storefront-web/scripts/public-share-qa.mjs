@@ -54,8 +54,8 @@ export async function verifyPublicShareLinks(browser, baseUrl) {
     assert.equal(new URL(page.url()).searchParams.has("sid"), true);
 
     await page.goto(`${baseUrl}/vergleich?${query}#vergleich`);
-    const leftPicker = page.getByLabel("Duft 1", { exact: true });
-    const rightPicker = page.getByLabel("Duft 2", { exact: true });
+    const leftPicker = page.getByRole("combobox", { name: /^Duft 1/ });
+    const rightPicker = page.getByRole("combobox", { name: /^Duft 2/ });
     await leftPicker.selectOption({ index: 1 });
     await rightPicker.selectOption({ index: 2 });
     await page.getByRole("button", { name: "Vergleichslink kopieren", exact: true }).click();
