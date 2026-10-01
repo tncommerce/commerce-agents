@@ -3,6 +3,7 @@ import path from "node:path";
 import process from "node:process";
 
 import { chromium } from "playwright";
+import { verifyPublicShareLinks } from "./public-share-qa.mjs";
 import { verifyProductDetailRecovery, verifySingleResponsiveProductDetail, verifyClosedProductDetailFocus } from "./product-detail-recovery-qa.mjs";
 
 const args = process.argv.slice(2);
@@ -237,6 +238,13 @@ const report = {
 };
 
 try {
+  try {
+    await verifyPublicShareLinks(browser, baseUrl);
+    report.checks.push({ label: "public-share-session-isolation-390", status: "passed" });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({ label: "public-share-session-isolation-390", message });
+  }
   try {
     await verifyProductDetailRecovery(browser, baseUrl);
     await verifySingleResponsiveProductDetail(browser, baseUrl);

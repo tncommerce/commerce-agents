@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { publicShareUrl } from "@/lib/shareUrl";
 
 export default function FragranceShareButton({
   brand,
@@ -26,7 +27,7 @@ export default function FragranceShareButton({
   };
 
   const share = async () => {
-    const url = window.location.href;
+    const url = publicShareUrl(window.location.href);
     const title = `${brand} ${name} bei DUFYND`;
 
     setStatus("");
