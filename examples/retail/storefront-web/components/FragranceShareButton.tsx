@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import ManualShareLink from "@/components/ManualShareLink";
 import { publicShareUrl } from "@/lib/shareUrl";
 
 export default function FragranceShareButton({
@@ -11,10 +12,12 @@ export default function FragranceShareButton({
   name: string;
 }) {
   const [status, setStatus] = useState("");
+  const [manualUrl, setManualUrl] = useState("");
 
   const copyLink = async (url: string) => {
     if (!navigator.clipboard?.writeText) {
-      setStatus("Link bitte aus der Adresszeile kopieren");
+      setManualUrl(url);
+      setStatus("Automatisches Kopieren nicht möglich. Kopiere den Link unten.");
       return;
     }
 
@@ -22,7 +25,8 @@ export default function FragranceShareButton({
       await navigator.clipboard.writeText(url);
       setStatus("Link kopiert");
     } catch {
-      setStatus("Link bitte aus der Adresszeile kopieren");
+      setManualUrl(url);
+      setStatus("Automatisches Kopieren nicht möglich. Kopiere den Link unten.");
     }
   };
 
@@ -31,6 +35,7 @@ export default function FragranceShareButton({
     const title = `${brand} ${name} bei DUFYND`;
 
     setStatus("");
+    setManualUrl("");
 
     if (typeof navigator.share === "function") {
       try {
@@ -67,6 +72,7 @@ export default function FragranceShareButton({
       <span role="status" aria-live="polite" className="sr-only">
         {status}
       </span>
+      <ManualShareLink url={manualUrl} />
     </>
   );
 }
