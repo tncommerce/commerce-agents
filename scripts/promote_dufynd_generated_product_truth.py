@@ -334,8 +334,7 @@ def promotion_plan(
     )
 
     write_supported = (
-        catalog_scope == "staging"
-        and candidate["candidate_source"] == "staged_fidelity"
+        catalog_scope == "staging" and candidate["candidate_source"] == "staged_fidelity"
     )
     return {
         "product_id": product_id,
@@ -393,8 +392,7 @@ def apply_staged_registration(
     existing_url = str(media.get("image_url") or "").strip()
     existing_status = str(media.get("image_status") or "").strip()
     if existing_url and (
-        existing_url != plan["public_asset"]
-        or existing_status != GENERATED_PRODUCT_TRUTH_STATUS
+        existing_url != plan["public_asset"] or existing_status != GENERATED_PRODUCT_TRUTH_STATUS
     ):
         raise ValueError("staging_product_already_has_different_image")
 
@@ -539,9 +537,7 @@ def main() -> int:
         )
         if args.write:
             if plan["write_supported"] is not True:
-                raise ValueError(
-                    "live_catalog_product_requires_separate_activation_gate"
-                )
+                raise ValueError("live_catalog_product_requires_separate_activation_gate")
             registered_at = datetime.now(UTC).isoformat()
             apply_staged_registration(
                 staging_catalog,
