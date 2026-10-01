@@ -69,13 +69,14 @@
       "merchant_name": "Notino",
       "status": "active_product_deeplink_only",
       "affiliate_url": null,
-      "last_verified_at": "2026-10-01T14:17:32Z",
+      "last_verified_at": "2026-10-01T16:21:51Z",
       "description": "Parfum und Beauty · CJ product deep-link routing active only for individually verified SKUs",
       "tracking_strategy": "verified_cj_product_deeplink",
       "verified_product_scope": [
         "SC-LATTAFA-ECLAIRE-EDP-100",
         "SC-PDM-DELINA-EDP-75",
-        "SC-YSL-BLACK-OPIUM-EDP-90"
+        "SC-YSL-BLACK-OPIUM-EDP-90",
+        "SC-YSL-LIBRE-EDP-90"
       ],
       "live_routing_allowed": true,
       "routing_scope": "verified_product_only"
