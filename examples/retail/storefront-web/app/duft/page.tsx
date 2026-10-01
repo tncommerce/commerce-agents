@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
+import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
 
 import FragranceCatalogBrowser from "@/components/FragranceCatalogBrowser";
 import FragranceVisual from "@/components/FragranceVisual";
@@ -32,7 +33,7 @@ export default function FragranceIndexPage() {
       <AcquisitionAnalytics source="catalog" />
       <header className="dufynd-catalog-header border-b border-(--line)">
         <div className="mx-auto flex max-w-[1080px] items-center justify-between gap-4 px-4 py-4 sm:px-6">
-          <a
+          <AcquisitionInternalLink
             href="/"
             className="flex items-center gap-2.5"
             aria-label="Zur DUFYND Startseite"
@@ -48,32 +49,32 @@ export default function FragranceIndexPage() {
             <span className="text-[17px] font-bold tracking-[-0.02em]">
               DUFYND
             </span>
-          </a>
+          </AcquisitionInternalLink>
           <div className="flex items-center gap-2">
-            <a
+            <AcquisitionInternalLink
               href="/sammlung"
               className="hidden rounded-xl border border-(--line) px-3 py-2 text-[12px] font-semibold text-(--ink) transition hover:border-(--ink) md:inline-flex"
             >
               Sammlung
-            </a>
-            <a
+            </AcquisitionInternalLink>
+            <AcquisitionInternalLink
               href="/merkliste"
               className="hidden rounded-xl border border-(--line) px-3 py-2 text-[12px] font-semibold text-(--ink) transition hover:border-(--ink) md:inline-flex"
             >
               Merkliste
-            </a>
-            <a
+            </AcquisitionInternalLink>
+            <AcquisitionInternalLink
               href="/vergleich"
               className="hidden rounded-xl border border-(--line) px-3 py-2 text-[12px] font-semibold text-(--ink) transition hover:border-(--ink) md:inline-flex"
             >
               Vergleiche
-            </a>
-            <a
+            </AcquisitionInternalLink>
+            <AcquisitionInternalLink
               href="/"
               className="rounded-xl border border-(--line) px-3 py-2 text-[12px] font-semibold text-(--ink) transition hover:border-(--ink)"
             >
               Duftberatung öffnen
-            </a>
+            </AcquisitionInternalLink>
           </div>
         </div>
         <nav
@@ -85,13 +86,13 @@ export default function FragranceIndexPage() {
             ["/merkliste", "Merkliste"],
             ["/sammlung", "Sammlung"],
           ].map(([href, label]) => (
-            <a
+            <AcquisitionInternalLink
               key={href}
               href={href}
               className="min-w-0 flex-1 rounded-lg border border-(--line) bg-(--card) px-2 py-2 text-center text-(--ink) transition hover:border-(--accent)"
             >
               {label}
-            </a>
+            </AcquisitionInternalLink>
           ))}
         </nav>
       </header>
@@ -147,12 +148,12 @@ export default function FragranceIndexPage() {
               >
                 Katalog öffnen ↓
               </a>
-              <a
+              <AcquisitionInternalLink
                 href="/"
                 className="rounded-xl border border-white/12 bg-white/[0.055] px-4 py-2.5 text-[12px] font-semibold text-white/82 transition hover:border-white/22 hover:bg-white/[0.08]"
               >
                 Duftberatung starten
-              </a>
+              </AcquisitionInternalLink>
             </div>
           </div>
 
@@ -168,7 +169,7 @@ export default function FragranceIndexPage() {
                 isVerifiedProductTruthVisual(visual);
 
               return (
-                <a
+                <AcquisitionInternalLink
                   key={fragrance.product_id}
                   href={`/duft/${fragrance.slug}`}
                   className="dufynd-catalog-discovery-bottle"
@@ -212,7 +213,7 @@ export default function FragranceIndexPage() {
                       Community-Bewertungen
                     </em>
                   </div>
-                </a>
+                </AcquisitionInternalLink>
               );
             })}
           </div>
@@ -237,15 +238,15 @@ export default function FragranceIndexPage() {
         />
 
         <footer className="mt-8 flex flex-wrap gap-x-4 gap-y-2 border-t border-(--line) py-6 text-[11px] text-(--ink-soft)">
-          <a href="/transparenz" className="hover:underline">
+          <AcquisitionInternalLink href="/transparenz" className="hover:underline">
             Transparenz
-          </a>
-          <a href="/impressum" className="hover:underline">
+          </AcquisitionInternalLink>
+          <AcquisitionInternalLink href="/impressum" className="hover:underline">
             Impressum
-          </a>
-          <a href="/datenschutz" className="hover:underline">
+          </AcquisitionInternalLink>
+          <AcquisitionInternalLink href="/datenschutz" className="hover:underline">
             Datenschutz
-          </a>
+          </AcquisitionInternalLink>
         </footer>
       </div>
     </main>
