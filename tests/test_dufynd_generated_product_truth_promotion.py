@@ -88,11 +88,17 @@ def test_current_creed_and_libre_structural_dry_runs_are_fail_closed(
     assert libre["catalog_scope"] == "staging"
     assert libre["variant"] == "90ml"
     assert libre["generated_media_status"] == GENERATED_PRODUCT_TRUTH_STATUS
-    assert libre["write_supported"] is True
+    assert libre["existing_image_status"] == "approved_feed_image"
+    assert libre["existing_image_conflict"] is True
+    assert libre["write_supported"] is False
     assert libre["catalog_promotion"] is False
     assert libre["public_activation"] is False
     assert libre["catalog_ready_will_change"] is False
-    assert libre["next_gate"] == "normal_catalog_promotion_after_all_remaining_gates"
+    assert libre["validation_gate_will_change"] is None
+    assert (
+        libre["next_gate"]
+        == "existing_staging_image_requires_separate_replacement_gate"
+    )
 
 
 def test_staged_write_path_requires_explicit_human_fidelity_approval(
@@ -207,6 +213,12 @@ def test_staged_registration_preserves_separate_catalog_activation_gate(
     queue_before = copy.deepcopy(queue)
     public_root = tmp_path / "public"
 
+    staged = _staged_row(staging_catalog, LIBRE_ID)
+    staged["media"] = {
+        "image_url": None,
+        "image_status": "pending_approved_feed_or_manufacturer_image",
+    }
+
     plan = promotion_plan(
         queue,
         staged_candidates,
@@ -248,6 +260,37 @@ def test_staged_registration_preserves_separate_catalog_activation_gate(
     assert _sha256(copied) == _sha256(source)
     assert live_catalog == live_before
     assert queue == queue_before
+
+
+def test_existing_staging_image_requires_separate_replacement_gate(
+    tmp_path: Path,
+) -> None:
+    queue, staged_candidates, live_catalog, staging_catalog = _payloads()
+
+    plan = promotion_plan(
+        queue,
+        staged_candidates,
+        live_catalog,
+        staging_catalog,
+        product_id=LIBRE_ID,
+        public_asset="/products/ysl-libre-edp-90-generated.png",
+        public_root=tmp_path,
+    )
+
+    assert plan["existing_image_conflict"] is True
+    assert plan["write_supported"] is False
+    assert plan["validation_gate_will_change"] is None
+
+    with pytest.raises(
+        ValueError,
+        match="live_catalog_product_requires_separate_activation_gate",
+    ):
+        apply_staged_registration(
+            staging_catalog,
+            staged_candidates,
+            plan,
+            registered_at="2026-10-01T20:00:00+00:00",
+        )
 
 
 def test_live_creed_write_path_requires_separate_activation_gate(
