@@ -480,6 +480,7 @@ def test_notino_affiliate_urls_do_not_escape_verified_product_scope() -> None:
         "SC-LATTAFA-ECLAIRE-EDP-100",
         "SC-PDM-DELINA-EDP-75",
         "SC-YSL-BLACK-OPIUM-EDP-90",
+        "SC-YSL-LIBRE-EDP-90",
     }
     assert tracked_notino_products == live_scope
 
@@ -512,6 +513,7 @@ def test_notino_delina_black_opium_live_pilot_is_exact_scoped() -> None:
         "SC-LATTAFA-ECLAIRE-EDP-100",
         "SC-PDM-DELINA-EDP-75",
         "SC-YSL-BLACK-OPIUM-EDP-90",
+        "SC-YSL-LIBRE-EDP-90",
     }
     assert set(tracked) == live_scope
 
@@ -534,3 +536,44 @@ def test_notino_delina_black_opium_live_pilot_is_exact_scoped() -> None:
     assert evidence["safeguards"]["generic_notino_routing"] is False
     assert evidence["safeguards"]["catalog_publication_authorized"] is False
     assert evidence["safeguards"]["image_rights_granted"] is False
+
+
+def test_notino_ysl_libre_live_route_is_exact_scoped_variant() -> None:
+    evidence = json.loads(
+        Path(
+            "examples/retail/data/dufynd_notino_ysl_libre_live_routing_20261001.json"
+        ).read_text(encoding="utf-8")
+    )
+    mappings = json.loads(
+        Path("examples/retail/data/merchant_product_mappings.json").read_text(encoding="utf-8")
+    )["mappings"]
+    programs = json.loads(
+        Path("examples/retail/data/scentai_affiliate_programs.json").read_text(encoding="utf-8")
+    )
+    notino = next(row for row in programs["other_networks"] if row["merchant_id"] == "notino")
+    offer = next(row for row in _offers() if row["offer_id"] == "notino-ysl-libre-edp-90")
+
+    assert evidence["product_id"] == offer["product_id"] == "SC-YSL-LIBRE-EDP-90"
+    assert offer["merchant_id"] == "notino"
+    assert offer["merchant_product_id"] == evidence["identity"]["merchant_product_id"] == "VZR11010"
+    assert evidence["identity"]["gtin"] == "3614272648425"
+    assert offer["product_url"] == evidence["current_offer"]["product_url"]
+    assert offer["affiliate_url"] == evidence["affiliate"]["tracked_url"]
+    assert offer["network"] == "CJ Affiliate"
+    assert offer["in_stock"] is True
+    assert evidence["affiliate"]["live_routing_allowed"] is True
+    assert evidence["safeguards"]["catalog_publication_authorized"] is False
+    assert evidence["safeguards"]["image_rights_granted"] is False
+    assert set(notino["live_activation_products"]) == {
+        "SC-LATTAFA-ECLAIRE-EDP-100",
+        "SC-PDM-DELINA-EDP-75",
+        "SC-YSL-BLACK-OPIUM-EDP-90",
+        "SC-YSL-LIBRE-EDP-90",
+    }
+    assert any(
+        row["product_id"] == offer["product_id"]
+        and row["merchant"] == "notino"
+        and row["merchant_product_id"] == "VZR11010"
+        and row["gtin"] == "3614272648425"
+        for row in mappings
+    )
