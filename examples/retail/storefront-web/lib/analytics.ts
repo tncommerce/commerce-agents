@@ -6,6 +6,7 @@ let analyticsOwnedApiSession: string | null = null;
 let analyticsEventQueue: Promise<void> = Promise.resolve();
 let acquisitionAttributionMemory: AcquisitionAttribution | null = null;
 const ACQUISITION_STORAGE_KEY = "dufynd_acquisition_attribution_v1";
+const ANALYTICS_EVENT_TIMEOUT_MS = 8_000;
 
 export type AcquisitionAttribution = {
   source: string;
@@ -196,6 +197,8 @@ type AnalyticsContext = {
 async function postAnalyticsPayload(
   payload: Record<string, unknown>,
 ): Promise<boolean> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), ANALYTICS_EVENT_TIMEOUT_MS);
   try {
     const response = await fetch(
       `${api.base}/analytics/events`,
@@ -204,11 +207,14 @@ async function postAnalyticsPayload(
         headers: api.headers(true),
         body: JSON.stringify(payload),
         keepalive: true,
+        signal: controller.signal,
       },
     );
     return response.ok;
   } catch {
     return false;
+  } finally {
+    clearTimeout(timeoutId);
   }
 }
 
