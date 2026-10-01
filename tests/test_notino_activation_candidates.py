@@ -54,3 +54,23 @@ def test_naxos_and_bottled_absolu_mapping_evidence_is_verified_but_not_live() ->
         )
 
     assert "Bottled Absolute" in rows["SC-HUGO-BOSS-BOTTLED-ABSOLU-100"]["variant_disambiguation"]
+
+
+def test_libre_90_candidate_is_exact_and_staged_not_live() -> None:
+    payload = _payload()
+    row = next(
+        row
+        for row in payload["candidates"]
+        if row["product_id"] == "SC-YSL-LIBRE-EDP-90"
+    )
+
+    assert row["merchant_product_id"] == "VZR11010"
+    assert row["gtin"] == "3614272648425"
+    assert row["mapping_status"] == "verified_current_variant"
+    assert row["readiness"] == "ready_for_controlled_activation_preflight"
+    assert row["publish_allowed"] is False
+    assert row["source_of_truth_mapping_state"] == "not_promoted"
+    assert row["offer_in_stock_observation"] is True
+    assert row["candidate_affiliate_url"] == build_cj_deep_link(
+        destination_url=row["product_url"]
+    )
