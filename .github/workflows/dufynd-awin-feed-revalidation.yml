@@ -40,6 +40,7 @@ jobs:
             --report "${RUNNER_TEMP}/awin-feed-metadata.json"
 
       - name: Check Release 01 against current feed
+        id: release_check
         shell: bash
         run: |
           set +e
@@ -49,11 +50,10 @@ jobs:
             --machine-readable > "${RUNNER_TEMP}/release-readiness.json"
           status=$?
           set -e
+          echo "status=$status" >> "$GITHUB_OUTPUT"
           if [ "$status" -eq 20 ]; then
-            echo "::error::Current Awin feed is structurally blocked."
-            exit 20
-          fi
-          if [ "$status" -ne 0 ] && [ "$status" -ne 10 ]; then
+            echo "::warning::Current Awin feed is not release/import ready; continuing only through the independently guarded human image-review path."
+          elif [ "$status" -ne 0 ] && [ "$status" -ne 10 ]; then
             exit "$status"
           fi
 
@@ -88,3 +88,10 @@ jobs:
             ${{ runner.temp }}/release01-feed-image-review.html
           if-no-files-found: error
           retention-days: 7
+
+      - name: Preserve blocked Release 01 result after review artifact
+        if: ${{ steps.release_check.outputs.status == '20' }}
+        shell: bash
+        run: |
+          echo "::error::Current Awin feed remains structurally blocked for Release 01 activation. Review artifact was generated for human image review only."
+          exit 20
