@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-10-01T14:17:32Z",
+  "updated_at": "2026-10-01T16:21:51Z",
   "status": "active",
   "purpose": "Append-only audit events for affiliate program lifecycle changes. Sequence order is authoritative when an external event timestamp is unknown.",
   "rules": [
@@ -219,6 +219,23 @@
         "SC-YSL-BLACK-OPIUM-EDP-90"
       ],
       "reference_note": "Explicit user approval expanded the existing product-scoped Notino CJ route to exact Delina 75 ml (PDM0227) and Black Opium EDP 90 ml (YSL2377) only. Generic Notino routing and catalog publication remain disabled."
+    },
+    {
+      "sequence": 17,
+      "event_id": "cj-notino-ysl-libre-live-product-scope-20261001",
+      "network": "CJ Affiliate",
+      "merchant_id": "notino",
+      "program": "Notino",
+      "event_type": "live_product_scope_expanded",
+      "event_at": "2026-10-01T16:21:51Z",
+      "recorded_at": "2026-10-01T16:21:51Z",
+      "status_after": "approved",
+      "source": "explicit_user_approval",
+      "activation_scope": "verified_product_only",
+      "product_ids": [
+        "SC-YSL-LIBRE-EDP-90"
+      ],
+      "reference_note": "Explicit user approval expanded the existing product-scoped Notino CJ route to exact YSL Libre Eau de Parfum 90 ml (VZR11010 / GTIN 3614272648425) only. Generic Notino routing, catalog publication and image-rights inference remain disabled."
     }
   ]
 }
