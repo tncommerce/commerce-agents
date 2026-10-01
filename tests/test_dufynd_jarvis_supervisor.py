@@ -299,6 +299,36 @@ def test_supervisor_blocks_on_processing_inbox_preflight(monkeypatch) -> None:
     assert state["last_preflight"]["processing_events"] == 1
 
 
+def test_supervisor_flags_queued_work_that_policy_cannot_select(monkeypatch) -> None:
+    candidate = safe_task("browser_only_task", "platform")
+    candidate["approval_action_type"] = "browser_interaction_required"
+    bridge = FakeBridge([candidate])
+    clock = FakeClock()
+
+    monkeypatch.setattr(supervisor, "_require_autonomous_mode", lambda: None)
+
+    async def should_not_run(*_args, **_kwargs):
+        raise AssertionError("Unselectable queue work must fail closed before model execution")
+
+    state = asyncio.run(
+        supervisor.supervise_nightshift(
+            bridge,
+            max_minutes=60,
+            max_cycles=5,
+            idle_seconds=60,
+            max_idle_cycles=2,
+            sleep=clock.sleep,
+            now=clock.now,
+            run_once=should_not_run,
+        )
+    )
+
+    assert state["status"] == "needs_attention"
+    assert state["stop_reason"] == "work_available_but_not_selectable"
+    assert state["last_preflight"]["raw_safe_task_count"] == 1
+    assert state["last_preflight"]["safe_task_count"] == 0
+
+
 def test_supervisor_blocks_on_failed_inbox_preflight(monkeypatch) -> None:
     bridge = FakeBridge()
     bridge.failed_events = 2
