@@ -2,11 +2,6 @@ name: DUFYND Awin Feed Revalidation
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - dufynd-awin-review-trigger-20261001
-    paths:
-      - .github/workflows/dufynd-awin-feed-revalidation.yml
 
 permissions:
   contents: read
