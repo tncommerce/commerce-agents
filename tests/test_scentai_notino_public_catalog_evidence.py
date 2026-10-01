@@ -25,6 +25,9 @@ EXPECTED = {
     "SC-HUGO-BOSS-BOTTLED-EDT-100": "HUG0302",
     "SC-DIOR-SAUVAGE-ELIXIR-100": "CHD16261",
     "SC-MUGLER-ALIEN-EDP-90": "THM1124",
+    "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100": "NAR01382",
+    "SC-YSL-MYSLF-LE-PARFUM-100": "YSL12342",
+    "SC-YSL-LA-NUIT-DE-LHOMME-EDT-100": "YSL0136",
 }
 
 
@@ -72,6 +75,9 @@ def test_public_catalog_candidates_are_identified_without_activation() -> None:
         "SC-HUGO-BOSS-BOTTLED-EDT-100",
         "SC-DIOR-SAUVAGE-ELIXIR-100",
         "SC-MUGLER-ALIEN-EDP-90",
+        "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100",
+        "SC-YSL-MYSLF-LE-PARFUM-100",
+        "SC-YSL-LA-NUIT-DE-LHOMME-EDT-100",
     }
     assert all(row["publish_allowed"] is False for row in public_rows)
 
@@ -122,6 +128,26 @@ def test_commerce_wave4_evidence_is_exact_current_and_non_live() -> None:
         "SC-HUGO-BOSS-BOTTLED-EDT-100": ("HUG0302", "737052351100"),
         "SC-DIOR-SAUVAGE-ELIXIR-100": ("CHD16261", "3348901640916"),
         "SC-MUGLER-ALIEN-EDP-90": ("THM1124", "3439600056969"),
+    }
+
+    for product_id, (merchant_product_id, gtin) in expected.items():
+        row = rows[product_id]
+        assert row["merchant_product_id"] == merchant_product_id
+        assert row["gtin"] == gtin
+        assert row["availability_observed"] is True
+        assert row["activation_state"] == "staged_not_live"
+        assert row["publish_allowed"] is False
+        assert row["image_rights_status"] == "not_implied_by_affiliate_mapping"
+
+
+def test_commerce_wave5_evidence_is_exact_current_and_non_live() -> None:
+    payload = _payload()
+    rows = {row["product_id"]: row for row in payload["candidates"]}
+
+    expected = {
+        "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100": ("NAR01382", "3423478515956"),
+        "SC-YSL-MYSLF-LE-PARFUM-100": ("YSL12342", "3614274114645"),
+        "SC-YSL-LA-NUIT-DE-LHOMME-EDT-100": ("YSL0136", "3365440375079"),
     }
 
     for product_id, (merchant_product_id, gtin) in expected.items():
