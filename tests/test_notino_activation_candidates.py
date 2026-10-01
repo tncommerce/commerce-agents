@@ -348,7 +348,5 @@ def test_commerce_wave12_afnan_9_pm_pour_femme_is_exact_and_preflight_only() -> 
     assert row["publish_allowed"] is False
     assert row["source_of_truth_mapping_state"] == "not_promoted"
     assert row["exact_variant"] == "Afnan 9 PM Pour Femme Eau de Parfum 100 ml"
-    assert row["candidate_affiliate_url"] == build_cj_deep_link(
-        destination_url=row["product_url"]
-    )
+    assert row["candidate_affiliate_url"] == build_cj_deep_link(destination_url=row["product_url"])
     assert "9 PM Pour Femme" in row["remaining_runtime_guards"][1]
