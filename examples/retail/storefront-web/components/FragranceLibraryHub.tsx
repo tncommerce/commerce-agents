@@ -434,7 +434,8 @@ export default function FragranceLibraryHub({
       const next = parseFragranceLibraryBackup(JSON.parse(await file.text()));
       if (!next) throw new Error("invalid backup");
 
-      const replacing = library.wishlist.length + library.owned.length > 0;
+      const currentLibrary = readFragranceLibrary();
+      const replacing = currentLibrary.wishlist.length + currentLibrary.owned.length > 0;
       if (
         replacing &&
         !window.confirm(
