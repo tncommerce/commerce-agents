@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 
+import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
 import LegalFooter from "@/components/LegalFooter";
 
 export default function ErrorPage({
@@ -37,12 +38,12 @@ export default function ErrorPage({
             >
               Erneut versuchen
             </button>
-            <a
+            <AcquisitionInternalLink
               href="/duft"
               className="rounded-xl border border-(--line) bg-(--card) px-4 py-2.5 text-[13px] font-semibold text-(--ink)"
             >
               Duftkatalog öffnen
-            </a>
+            </AcquisitionInternalLink>
           </div>
         </section>
         <LegalFooter />
