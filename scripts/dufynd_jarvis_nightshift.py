@@ -12,6 +12,7 @@ from uuid import uuid4
 
 from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
 from scripts.dufynd_jarvis_runtime import (
+    _is_green_autonomy_task,
     _require_autonomous_mode,
     _require_budget_window,
     process_branch_task,
@@ -195,14 +196,7 @@ def _persist_session(bridge: DufyndJarvisBridge, session: dict[str, Any]) -> Non
 
 
 def _safe_candidates(queue: dict[str, Any]) -> list[dict[str, Any]]:
-    return [
-        task
-        for task in (queue.get("safe_to_execute") or [])
-        if isinstance(task, dict)
-        and str(task.get("task_id") or "").startswith("repo_current_")
-        and not bool(task.get("requires_human_approval"))
-        and str(task.get("approval_action_type") or "auto_allowed") == "auto_allowed"
-    ]
+    return [task for task in (queue.get("safe_to_execute") or []) if _is_green_autonomy_task(task)]
 
 
 def _select_task(

@@ -187,22 +187,26 @@ def test_process_next_is_noop_when_inbox_is_empty(capsys) -> None:
     assert "no pending event" in capsys.readouterr().out.lower()
 
 
-def test_safe_worker_ignores_non_repo_current_tasks(capsys) -> None:
-    result = asyncio.run(
-        process_safe_task(
-            SafeTaskBridge(
-                [
-                    {
-                        "task_id": "legacy_safe_task",
-                        "requires_human_approval": False,
-                    }
-                ]
-            )
-        )
+def test_green_task_policy_accepts_non_repo_current_ids() -> None:
+    assert jarvis_runtime._is_green_autonomy_task(
+        {
+            "task_id": "jarvis_chat_signal_nightshift_activation_20260930",
+            "domain": "research",
+            "requires_human_approval": False,
+            "approval_action_type": None,
+        }
     )
 
-    assert result == 0
-    assert "no repo-current safe task" in capsys.readouterr().out.lower()
+
+def test_green_task_policy_rejects_manual_action_type() -> None:
+    assert not jarvis_runtime._is_green_autonomy_task(
+        {
+            "task_id": "browser_only_task",
+            "domain": "platform",
+            "requires_human_approval": False,
+            "approval_action_type": "browser_interaction_required",
+        }
+    )
 
 
 def test_safe_worker_refuses_human_approval_task(capsys) -> None:
@@ -220,7 +224,7 @@ def test_safe_worker_refuses_human_approval_task(capsys) -> None:
     )
 
     assert result == 0
-    assert "no repo-current safe task" in capsys.readouterr().out.lower()
+    assert "no green safe task" in capsys.readouterr().out.lower()
 
 
 def test_safe_worker_prompt_names_high_impact_boundaries() -> None:
@@ -267,7 +271,7 @@ def test_branch_worker_ignores_non_engineering_tasks(capsys) -> None:
     )
 
     assert result == 0
-    assert "no repo-current safe engineering task" in capsys.readouterr().out.lower()
+    assert "no green safe engineering task" in capsys.readouterr().out.lower()
 
 
 def test_branch_worker_prompt_preserves_isolated_patch_boundary() -> None:
