@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated_at": "2026-09-29T21:03:00+00:00",
-  "source_fingerprint_sha256": "c550844677516ed5979c9f39f078130b98ae3851477bfb3b98514d41e8a06370",
+  "source_fingerprint_sha256": "d4a537e8de96ebe5021c42d856198d11c7ddf91c3aaf8d37976e671063aebe28",
   "release_id": "SCENTAI-RELEASE-01",
   "purpose": "Jarvis-ready affiliate/feed activation queue. Operational integration coverage only; never use commission to rank fragrances or customer-facing merchant offers.",
   "policy_ref": "scentai_jarvis_operating_policy.json",
@@ -127,11 +127,12 @@
       "merchant_id": "notino",
       "program": "Notino",
       "application_status": "approved",
-      "mapped_release_product_count": 2,
+      "mapped_release_product_count": 3,
       "release_size": 5,
       "mapped_product_ids": [
         "SC-PDM-DELINA-EDP-75",
-        "SC-YSL-BLACK-OPIUM-EDP-90"
+        "SC-YSL-BLACK-OPIUM-EDP-90",
+        "SC-YSL-LIBRE-EDP-90"
       ],
       "full_release_mapping_coverage": false,
       "partial_feed_preflight_eligible": false,

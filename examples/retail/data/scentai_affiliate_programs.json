@@ -69,7 +69,7 @@
       "network": "CJ Affiliate",
       "program": "Notino",
       "status": "approved",
-      "programming_note": "Program approved on 2026-09-30. Verified CJ product deep-link routing is live only for Lattafa Eclaire 100 ml, Parfums de Marly Delina 75 ml and YSL Black Opium EDP 90 ml. No merchant-homepage or unverified-product routing is authorized.",
+      "programming_note": "Program approved on 2026-09-30. Verified CJ product deep-link routing is live only for Lattafa Eclaire 100 ml, Parfums de Marly Delina 75 ml, YSL Black Opium EDP 90 ml and YSL Libre EDP 90 ml. No merchant-homepage or unverified-product routing is authorized.",
       "merchant_id": "notino",
       "approved_at": "2026-09-30",
       "deeplink_available": true,
@@ -80,16 +80,18 @@
       "verified_product_scope": [
         "SC-LATTAFA-ECLAIRE-EDP-100",
         "SC-PDM-DELINA-EDP-75",
-        "SC-YSL-BLACK-OPIUM-EDP-90"
+        "SC-YSL-BLACK-OPIUM-EDP-90",
+        "SC-YSL-LIBRE-EDP-90"
       ],
       "tracking_verified_at": "2026-09-30T14:49:00Z",
       "live_activation_approved": true,
-      "live_activation_approved_at": "2026-10-01T14:17:32Z",
+      "live_activation_approved_at": "2026-10-01T16:21:51Z",
       "live_activation_scope": "verified_product_only",
       "live_activation_products": [
         "SC-LATTAFA-ECLAIRE-EDP-100",
         "SC-PDM-DELINA-EDP-75",
-        "SC-YSL-BLACK-OPIUM-EDP-90"
+        "SC-YSL-BLACK-OPIUM-EDP-90",
+        "SC-YSL-LIBRE-EDP-90"
       ]
     }
   ],
@@ -191,13 +193,19 @@
       "deeplink_available": true,
       "product_feed_available": null,
       "confidence": "explicit_welcome_email_from_notino_de_at_ch_via_cj",
-      "activity_note": "NOTINO.de program approved. The verified CJ deep link for Lattafa Eclaire 100 ml passed redirect validation and received explicit user approval for product-scoped live routing on 2026-09-30. Other Notino products remain untracked until individually verified.",
+      "activity_note": "NOTINO.de program approved. Verified CJ product-deeplink routing is currently active only for Eclaire 100 ml, Delina 75 ml, Black Opium EDP 90 ml and Libre EDP 90 ml; every additional product still requires exact-SKU verification and explicit approval.",
       "tracking_strategy": "verified_cj_product_deeplink",
       "tracked_product_url_verified": true,
       "redirect_dry_run_passed": true,
       "live_activation_approved": true,
-      "live_activation_approved_at": "2026-09-30T16:16:00Z",
-      "live_activation_scope": "verified_product_only"
+      "live_activation_approved_at": "2026-10-01T16:21:51Z",
+      "live_activation_scope": "verified_product_only",
+      "live_activation_products": [
+        "SC-LATTAFA-ECLAIRE-EDP-100",
+        "SC-PDM-DELINA-EDP-75",
+        "SC-YSL-BLACK-OPIUM-EDP-90",
+        "SC-YSL-LIBRE-EDP-90"
+      ]
     }
   ]
 }

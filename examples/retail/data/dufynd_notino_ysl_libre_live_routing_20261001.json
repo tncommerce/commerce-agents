@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "recorded_at": "2026-10-01T16:21:51Z",
+  "product_id": "SC-YSL-LIBRE-EDP-90",
+  "merchant_id": "notino",
+  "merchant_name": "Notino",
+  "network": "CJ Affiliate",
+  "activation_scope": "verified_product_only",
+  "user_approval": "explicit",
+  "identity": {
+    "brand": "Yves Saint Laurent",
+    "name": "Libre",
+    "concentration": "Eau de Parfum",
+    "volume_ml": 90,
+    "refillable_bottle": true,
+    "merchant_product_id": "VZR11010",
+    "gtin": "3614272648425"
+  },
+  "current_offer": {
+    "price_eur": 119,
+    "shipping_eur": 0,
+    "in_stock": true,
+    "product_url": "https://www.notino.de/yves-saint-laurent/yves-saint-laurent-libre-eau-de-parfum-fuer-damen/p-15968532/",
+    "checked_at": "2026-10-01T16:21:51Z"
+  },
+  "affiliate": {
+    "tracked_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fyves-saint-laurent%2Fyves-saint-laurent-libre-eau-de-parfum-fuer-damen%2Fp-15968532%2F",
+    "tracking_strategy": "verified_cj_product_deeplink",
+    "reusable_redirect_reference_product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
+    "live_routing_allowed": true
+  },
+  "safeguards": {
+    "merchant_homepage_routing": false,
+    "generic_notino_routing": false,
+    "catalog_publication_authorized": false,
+    "image_rights_granted": false,
+    "commission_changes_fragrance_recommendations": false,
+    "additional_products_activated": false
+  }
+}

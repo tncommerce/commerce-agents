@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated_at": "2026-09-29T21:03:00+00:00",
-  "source_fingerprint_sha256": "28f15b058be64782377d2db311ebe652cadbe5cd4528b529682fe2b37a613a66",
+  "source_fingerprint_sha256": "fdd5ff5692b6bd5286838345210fc70f8262a3060cf783b8fe0c9dc167e4ca58",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
     "scentai_catalog_staging.json",
@@ -2021,9 +2021,9 @@
       "name": "Libre",
       "batch": 1,
       "researched_merchant_count": 2,
-      "mapping_count": 3,
-      "resolved_mapping_count": 3,
-      "full_mapping_count": 2,
+      "mapping_count": 4,
+      "resolved_mapping_count": 4,
+      "full_mapping_count": 3,
       "state": "mapping_data_ready",
       "blockers": [],
       "next_action": "maintain_mapping_and_verify_purchase_destination",
@@ -2065,6 +2065,19 @@
           "affiliate_program": {
             "network": "Awin",
             "program": "top Parfümerie DE",
+            "status": "approved"
+          },
+          "affiliate_activation_state": "approved"
+        },
+        {
+          "merchant_id": "notino",
+          "mapping_state": "full",
+          "merchant_product_id": "VZR11010",
+          "ean": "3614272648425",
+          "gtin": "3614272648425",
+          "affiliate_program": {
+            "network": "CJ Affiliate",
+            "program": "Notino",
             "status": "approved"
           },
           "affiliate_activation_state": "approved"
