@@ -332,3 +332,23 @@ def test_commerce_wave11_exact_candidates_are_preflight_only() -> None:
         "SC-VIKTOR-ROLF-SPICEBOMB-EXTREME-EDP-90",
     ):
         assert excluded_product_id not in rows
+
+
+def test_commerce_wave12_afnan_9_pm_pour_femme_is_exact_and_preflight_only() -> None:
+    payload = _payload()
+    rows = {row["product_id"]: row for row in payload["candidates"]}
+    row = rows["SC-AFNAN-9-PM-POUR-FEMME-EDP-100"]
+
+    assert payload["live_routing_allowed"] is False
+    assert row["merchant_product_id"] == "AFN00282"
+    assert row["gtin"] == "6290171072607"
+    assert row["mapping_status"] == "verified_current_variant"
+    assert row["readiness"] == "ready_for_controlled_activation_preflight"
+    assert row["offer_in_stock_observation"] is True
+    assert row["publish_allowed"] is False
+    assert row["source_of_truth_mapping_state"] == "not_promoted"
+    assert row["exact_variant"] == "Afnan 9 PM Pour Femme Eau de Parfum 100 ml"
+    assert row["candidate_affiliate_url"] == build_cj_deep_link(
+        destination_url=row["product_url"]
+    )
+    assert "9 PM Pour Femme" in row["remaining_runtime_guards"][1]
