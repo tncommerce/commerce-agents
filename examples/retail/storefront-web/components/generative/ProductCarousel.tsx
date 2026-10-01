@@ -352,6 +352,14 @@ export default function ProductCarousel({
   const [expandedId, setExpandedId] = useState<string | null>(null);
   // Keep the last product mounted while the panel folds shut, so collapse animates.
   const [renderedId, setRenderedId] = useState<string | null>(null);
+  const [desktopDetails, setDesktopDetails] = useState(false);
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 640px)");
+    const sync = () => setDesktopDetails(media.matches);
+    sync();
+    media.addEventListener("change", sync);
+    return () => media.removeEventListener("change", sync);
+  }, []);
   const autoOpenedProductRef = useRef<string | null>(null);
   const viewedRecommendationsRef = useRef<Set<string>>(new Set());
   const collapseRef = useRef<HTMLDivElement>(null);
@@ -446,7 +454,7 @@ export default function ProductCarousel({
             key={product.product_id}
             product={product}
             reason={reason}
-            expanded={expandedId === product.product_id}
+            expanded={!desktopDetails && expandedId === product.product_id}
             onToggle={() => {
               if (expandedId !== product.product_id) {
                 void trackAnalyticsEvent("advisor_product_open", {
@@ -552,7 +560,7 @@ export default function ProductCarousel({
         aria-hidden={!open}
       >
         <div className="ac-collapse-inner">
-          {rendered ? (
+          {desktopDetails && rendered ? (
             <ProductDetail
               key={rendered.product.product_id}
               product={rendered.product}

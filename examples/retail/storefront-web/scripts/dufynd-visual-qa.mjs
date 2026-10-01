@@ -3,7 +3,7 @@ import path from "node:path";
 import process from "node:process";
 
 import { chromium } from "playwright";
-import { verifyProductDetailRecovery } from "./product-detail-recovery-qa.mjs";
+import { verifyProductDetailRecovery, verifySingleResponsiveProductDetail } from "./product-detail-recovery-qa.mjs";
 
 const args = process.argv.slice(2);
 const valueFor = (flag, fallback) => {
@@ -239,6 +239,7 @@ const report = {
 try {
   try {
     await verifyProductDetailRecovery(browser, baseUrl);
+    await verifySingleResponsiveProductDetail(browser, baseUrl);
     report.checks.push({ label: "advisor-product-detail-recovery-390", status: "passed" });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
