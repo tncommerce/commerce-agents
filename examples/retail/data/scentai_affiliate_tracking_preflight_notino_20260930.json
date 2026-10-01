@@ -29,15 +29,16 @@
     "live_activation_products": [
       "SC-LATTAFA-ECLAIRE-EDP-100",
       "SC-PDM-DELINA-EDP-75",
-      "SC-YSL-BLACK-OPIUM-EDP-90"
+      "SC-YSL-BLACK-OPIUM-EDP-90",
+      "SC-YSL-LIBRE-EDP-90"
     ],
     "explicit_user_approval_received": true,
-    "explicit_user_approval_recorded_at": "2026-10-01T14:17:32Z"
+    "explicit_user_approval_recorded_at": "2026-10-01T16:21:51Z"
   },
-  "next_action": "Maintain redirect-builder health plus stock/freshness for the three approved exact-SKU routes. Do not activate additional Notino products without independent exact-SKU verification and explicit approval.",
+  "next_action": "Maintain redirect-builder health plus stock/freshness for the four approved exact-SKU routes. Do not activate additional Notino products without independent exact-SKU verification and explicit approval.",
   "note": "The user confirmed that the generated CJ tracking URL redirected to the intended Notino DE Lattafa Eclaire product page. No password, API key, session token or private credential is stored in this evidence record.",
-  "state_sync_checked_at": "2026-10-01T14:17:32Z",
-  "state_sync_note": "Explicit user approval expanded product-scoped live routing to Delina 75 ml and Black Opium EDP 90 ml; Eclaire remains the verified CJ redirect reference.",
+  "state_sync_checked_at": "2026-10-01T16:21:51Z",
+  "state_sync_note": "Explicit user approval expanded product-scoped live routing to YSL Libre EDP 90 ml; Eclaire remains the verified CJ redirect reference.",
   "current_offer_verification": {
     "checked_at": "2026-09-30T16:16:00Z",
     "price_eur": 33.5,
@@ -70,6 +71,14 @@
       "in_stock": true,
       "merchant_product_id": "YSL2377",
       "product_url": "https://www.notino.de/yves-saint-laurent/black-opium-eau-de-parfum-fur-damen/"
+    },
+    "SC-YSL-LIBRE-EDP-90": {
+      "checked_at": "2026-10-01T16:21:51Z",
+      "price_eur": 119,
+      "shipping_eur": 0,
+      "in_stock": true,
+      "merchant_product_id": "VZR11010",
+      "product_url": "https://www.notino.de/yves-saint-laurent/yves-saint-laurent-libre-eau-de-parfum-fuer-damen/p-15968532/"
     }
   }
 }
