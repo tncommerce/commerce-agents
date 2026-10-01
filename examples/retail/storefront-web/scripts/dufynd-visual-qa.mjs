@@ -10,7 +10,7 @@ import { verifyLibraryReadRecovery } from "./library-read-recovery-qa.mjs";
 import { verifyLibraryImportReadFailure } from "./library-import-read-qa.mjs";
 import { verifyLibraryExportCurrent } from "./library-export-current-qa.mjs";
 import { verifyLibraryReadFeedback } from "./library-read-feedback-qa.mjs";
-import { verifyFooterNavigationAttribution } from "./footer-navigation-attribution-qa.mjs";
+import { verifyFooterNavigationAttribution } from "./footer-navigation-attribution-qa.mjs";\nimport { verifyErrorRecoveryNavigationAttribution } from "./error-recovery-navigation-qa.mjs";
 import { verifyAnalyticsEventTimeout } from "./analytics-event-timeout-qa.mjs";
 import { verifyManualShareFallback } from "./manual-share-qa.mjs";
 import { verifyLatestProductShare } from "./product-share-race-qa.mjs";
@@ -264,6 +264,13 @@ try {
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     report.failures.push({ label: "footer-navigation-attribution", message });
+  }
+  try {
+    const cases = await verifyErrorRecoveryNavigationAttribution(browser, baseUrl);
+    report.checks.push({ label: "error-recovery-navigation-attribution", status: "passed", cases });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({ label: "error-recovery-navigation-attribution", message });
   }
   try {
     const cases = await verifyLibraryNavigationAttribution(browser, baseUrl);
