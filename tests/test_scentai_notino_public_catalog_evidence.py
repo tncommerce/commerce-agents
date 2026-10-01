@@ -31,6 +31,9 @@ EXPECTED = {
     "SC-CHLOE-CHLOE-EDP-100": "CHL03807",
     "SC-TOM-FORD-OMBRE-LEATHER-EDP-100": "TOF01567",
     "SC-PDM-VALAYA-EXCLUSIF-EDP-75": "PDM00727",
+    "SC-CAROLINA-HERRERA-GOOD-GIRL-EDP-80": "CHR0865",
+    "SC-DIOR-JADORE-EDP-100": "CHD17856",
+    "SC-VALENTINO-DONNA-BORN-IN-ROMA-EDP-100": "VAL00621",
 }
 
 
@@ -84,6 +87,9 @@ def test_public_catalog_candidates_are_identified_without_activation() -> None:
         "SC-CHLOE-CHLOE-EDP-100",
         "SC-TOM-FORD-OMBRE-LEATHER-EDP-100",
         "SC-PDM-VALAYA-EXCLUSIF-EDP-75",
+        "SC-CAROLINA-HERRERA-GOOD-GIRL-EDP-80",
+        "SC-DIOR-JADORE-EDP-100",
+        "SC-VALENTINO-DONNA-BORN-IN-ROMA-EDP-100",
     }
     assert all(row["publish_allowed"] is False for row in public_rows)
 
@@ -174,6 +180,26 @@ def test_commerce_wave6_evidence_is_exact_current_and_non_live() -> None:
         "SC-CHLOE-CHLOE-EDP-100": ("CHL03807", "3616302038633"),
         "SC-TOM-FORD-OMBRE-LEATHER-EDP-100": ("TOF01567", "888066075145"),
         "SC-PDM-VALAYA-EXCLUSIF-EDP-75": ("PDM00727", "3700578505767"),
+    }
+
+    for product_id, (merchant_product_id, gtin) in expected.items():
+        row = rows[product_id]
+        assert row["merchant_product_id"] == merchant_product_id
+        assert row["gtin"] == gtin
+        assert row["availability_observed"] is True
+        assert row["activation_state"] == "staged_not_live"
+        assert row["publish_allowed"] is False
+        assert row["image_rights_status"] == "not_implied_by_affiliate_mapping"
+
+
+def test_commerce_wave7_evidence_is_exact_current_and_non_live() -> None:
+    payload = _payload()
+    rows = {row["product_id"]: row for row in payload["candidates"]}
+
+    expected = {
+        "SC-CAROLINA-HERRERA-GOOD-GIRL-EDP-80": ("CHR0865", "8411061818961"),
+        "SC-DIOR-JADORE-EDP-100": ("CHD17856", "3348901738224"),
+        "SC-VALENTINO-DONNA-BORN-IN-ROMA-EDP-100": ("VAL00621", "3614272761445"),
     }
 
     for product_id, (merchant_product_id, gtin) in expected.items():
