@@ -15,6 +15,7 @@ import { verifySocialSearchDismissal } from "./social-search-dismissal-qa.mjs";
 import { verifySocialSearchAttribution } from "./social-search-attribution-qa.mjs";
 import { verifySocialCatalogNavigation } from "./social-catalog-navigation-qa.mjs";
 import { verifyAcquisitionLandingNavigation } from "./acquisition-landing-navigation-qa.mjs";
+import { verifyHomeNavigationAttribution } from "./home-navigation-attribution-qa.mjs";
 import { verifyGuidedStartContext } from "./guided-start-context-qa.mjs";
 import { verifyGuidedLinkAttribution } from "./guided-link-attribution-qa.mjs";
 import { verifyProductDetailRecovery, verifySingleResponsiveProductDetail, verifyClosedProductDetailFocus } from "./product-detail-recovery-qa.mjs";
@@ -251,6 +252,13 @@ const report = {
 };
 
 try {
+  try {
+    const cases = await verifyHomeNavigationAttribution(browser, baseUrl);
+    report.checks.push({ label: "home-navigation-attribution", status: "passed", cases });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({ label: "home-navigation-attribution", message });
+  }
   try {
     await verifyAcquisitionLandingNavigation(browser, baseUrl);
     report.checks.push({ label: "acquisition-landing-navigation-attribution", status: "passed" });
@@ -1137,12 +1145,16 @@ try {
 
           for (const audience of audienceKeys) {
             const card = page.locator(
-              `a[data-dufynd-home-audience-card][href="/duft?zielgruppe=${audience}"]`,
+              `a[data-dufynd-home-audience-card][href*="zielgruppe=${audience}"]`,
             );
             if ((await card.count()) !== 1) {
               throw new Error(
                 `homepage audience card missing for ${audience}`,
               );
+            }
+            const destination = new URL(await card.getAttribute("href"), baseUrl);
+            if (destination.pathname !== "/duft" || destination.searchParams.get("zielgruppe") !== audience) {
+              throw new Error(`homepage audience destination mismatch for ${audience}`);
             }
 
             const expectedCount = expectedAudienceRoutes[audience].length;
@@ -1188,12 +1200,16 @@ try {
           }
 
           const spotlightTruth = page.locator(
-            'a[href="/duft/xerjoff-naxos"] img[src="/products/naxos-cutout-production.webp"]',
+            'a.dufynd-hero-product img[src="/products/naxos-cutout-production.webp"]',
           );
           if ((await spotlightTruth.count()) < 1) {
             throw new Error(
               "homepage spotlight does not prioritize the Naxos verified cutout",
             );
+          }
+          const spotlightHref = await spotlightTruth.first().evaluate((image) => image.closest("a")?.href);
+          if (!spotlightHref || new URL(spotlightHref, baseUrl).pathname !== "/duft/xerjoff-naxos") {
+            throw new Error("homepage spotlight does not open Naxos");
           }
 
           if ([390, 1440].includes(viewport.width)) {

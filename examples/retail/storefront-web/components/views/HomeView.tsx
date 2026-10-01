@@ -14,7 +14,7 @@ import {
   useCatalogIndex,
 } from "web-shared";
 import { fetchProducts } from "@/lib/api";
-import { trackAnalyticsEvent } from "@/lib/analytics";
+import { appendAcquisitionAttribution, trackAnalyticsEvent } from "@/lib/analytics";
 import { ADVISOR_STARTS } from "@/lib/advisorStarts";
 import { fragrancePathForProduct } from "@/lib/fragranceSlug";
 import {
@@ -25,6 +25,7 @@ import {
   visualWorldFor,
 } from "@/lib/fragranceCatalog";
 import type { Product } from "@/lib/types";
+import AcquisitionInternalLink from "../AcquisitionInternalLink";
 import FragranceVisual from "../FragranceVisual";
 import FragranceModel3D from "../FragranceModel3D";
 import ProductTile, {
@@ -309,13 +310,13 @@ export default function HomeView({
               </div>
 
               <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-3 sm:mt-6">
-                <a
+                <AcquisitionInternalLink
                   href="/duftfinder"
                   className="dufynd-hero-primary rounded-xl bg-[#fffdf8] px-4 py-2.5 text-[12.5px] font-semibold text-[#171513] transition hover:-translate-y-0.5"
                 >
                   Meinen Duft finden
-                </a>
-                <a
+                </AcquisitionInternalLink>
+                <AcquisitionInternalLink
                   href={fragrancePathForProduct(spotlight)}
                   onClick={() =>
                     void trackAnalyticsEvent("product_open", {
@@ -326,14 +327,14 @@ export default function HomeView({
                   className="rounded-xl border border-white/14 bg-white/[0.055] px-4 py-2.5 text-[12.5px] font-semibold text-white/88 backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white/[0.09]"
                 >
                   {spotlightName} entdecken
-                </a>
+                </AcquisitionInternalLink>
                 <span className="[&_*]:!text-white/65 [&_span.font-semibold]:!text-white">
                   <ProductRating product={spotlight} compact />
                 </span>
               </div>
             </div>
 
-            <a
+            <AcquisitionInternalLink
               href={fragrancePathForProduct(spotlight)}
               aria-label={`${spotlight.brand || ""} ${spotlightName} entdecken`.trim()}
               className="dufynd-hero-product group relative min-h-[260px] sm:min-h-[320px] overflow-hidden border-t border-white/10 md:min-h-[430px] md:border-l md:border-t-0"
@@ -403,7 +404,7 @@ export default function HomeView({
                   {spotlightModelUrl ? "3D-Ansicht" : "Immersive Ansicht"}
                 </span>
               </div>
-            </a>
+            </AcquisitionInternalLink>
           </div>
         </section>
       ) : null}
@@ -431,6 +432,17 @@ export default function HomeView({
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
             <form
               action="/duft"
+              onSubmit={(event) => {
+                event.preventDefault();
+                const query = String(
+                  new FormData(event.currentTarget).get("q") || "",
+                );
+                const target = new URL("/duft", window.location.origin);
+                target.searchParams.set("q", query);
+                window.location.assign(
+                  appendAcquisitionAttribution(target.toString()),
+                );
+              }}
               method="get"
               role="search"
               aria-label="DUFYND Duftkatalog durchsuchen"
@@ -455,12 +467,12 @@ export default function HomeView({
               </button>
             </form>
 
-            <a
+            <AcquisitionInternalLink
               href="/vergleich"
               className="rounded-xl border border-(--line) bg-(--surface) px-4 py-2.5 text-center text-[12px] font-semibold text-(--accent-ink) transition hover:border-(--accent)"
             >
               Düfte vergleichen
-            </a>
+            </AcquisitionInternalLink>
           </div>
         </div>
       </section>
@@ -481,13 +493,13 @@ export default function HomeView({
           ["woodiness", "Holzig"],
           ["spiciness", "Würzig"],
         ].map(([profile, label]) => (
-          <a
+          <AcquisitionInternalLink
             key={profile}
             href={`/duft?profil=${profile}`}
             className="shrink-0 rounded-full border border-(--line) bg-(--card) px-3 py-2 font-semibold text-(--accent-ink) transition hover:border-(--accent)"
           >
             {label} →
-          </a>
+          </AcquisitionInternalLink>
         ))}
       </nav>
       <section
@@ -507,12 +519,12 @@ export default function HomeView({
               Direkt in deine Duftwelt
             </h2>
           </div>
-          <a
+          <AcquisitionInternalLink
             href="/duft"
             className="hidden text-[11px] font-semibold text-(--accent-ink) hover:underline sm:inline"
           >
             Alle Düfte →
-          </a>
+          </AcquisitionInternalLink>
         </div>
 
         <div className="-mx-1 mt-3 flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-1 pb-1 sm:grid sm:grid-cols-3 sm:overflow-visible">
@@ -532,7 +544,7 @@ export default function HomeView({
             );
 
             return (
-              <a
+              <AcquisitionInternalLink
                 key={key}
                 href={`/duft?zielgruppe=${key}`}
                 className="dufynd-home-audience-card group relative min-h-[146px] min-w-[76%] snap-start overflow-hidden rounded-2xl border border-white/10 p-4 transition sm:min-w-0"
@@ -571,7 +583,7 @@ export default function HomeView({
                   aria-hidden
                   className="dufynd-home-audience-shade pointer-events-none absolute inset-0"
                 />
-              </a>
+              </AcquisitionInternalLink>
             );
           })}
         </div>
@@ -581,7 +593,7 @@ export default function HomeView({
         <span>·</span>
         <span>Transparente Händlerangebote</span>
         <span>·</span>
-        <a href="/transparenz" className="font-medium text-(--accent-ink)">Mehr erfahren</a>
+        <AcquisitionInternalLink href="/transparenz" className="font-medium text-(--accent-ink)">Mehr erfahren</AcquisitionInternalLink>
       </div>
       <section className="hidden gap-3 sm:grid sm:grid-cols-3" aria-label="So funktioniert DUFYND">
         <div className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm)">
@@ -604,9 +616,9 @@ export default function HomeView({
         </div>
       </section>
       <div className="-mt-2 hidden space-y-1 text-[12px] text-(--ink-soft) sm:block">
-        <a href="/transparenz" className="font-medium text-(--accent-ink) hover:underline">
+        <AcquisitionInternalLink href="/transparenz" className="font-medium text-(--accent-ink) hover:underline">
           So bewertet DUFYND Empfehlungen und Händlerangebote
-        </a>
+        </AcquisitionInternalLink>
         <p>
           Werbung: Händlerlinks können Partnerlinks sein. Bei einem Kauf kann DUFYND eine Provision erhalten.
           Für dich soll sich der Händlerpreis dadurch nicht erhöhen.
@@ -617,7 +629,7 @@ export default function HomeView({
         subtitle="Beratung, Alternativen oder Geschenkideen"
       >
         <div className="grid gap-2.5 sm:grid-cols-3">
-          <a
+          <AcquisitionInternalLink
             href="/duftfinder"
             className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) transition hover:border-(--accent)"
           >
@@ -627,8 +639,8 @@ export default function HomeView({
             <p className="mt-1 text-[12px] leading-5 text-(--ink-soft)">
               Nach Anlass, Budget, Duftprofil, Haltbarkeit und Ausstrahlung.
             </p>
-          </a>
-          <a
+          </AcquisitionInternalLink>
+          <AcquisitionInternalLink
             href="/parfum-alternativen"
             className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) transition hover:border-(--accent)"
           >
@@ -638,8 +650,8 @@ export default function HomeView({
             <p className="mt-1 text-[12px] leading-5 text-(--ink-soft)">
               Ähnliche Duftrichtungen transparent vergleichen.
             </p>
-          </a>
-          <a
+          </AcquisitionInternalLink>
+          <AcquisitionInternalLink
             href="/parfum-geschenkberater"
             className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) transition hover:border-(--accent)"
           >
@@ -649,43 +661,43 @@ export default function HomeView({
             <p className="mt-1 text-[12px] leading-5 text-(--ink-soft)">
               Mit wenigen Fragen zu einer passenden Geschenkidee.
             </p>
-          </a>
+          </AcquisitionInternalLink>
         </div>
       </HomeSection>
 
       <div className="flex flex-wrap gap-2 text-[12.5px] text-(--ink-soft)">
-        <a
+        <AcquisitionInternalLink
           href="/duft"
           className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5 font-medium text-(--accent-ink) hover:border-(--accent)"
         >
           {scentCount
             ? `${scentCount} Düfte im Sortiment ansehen`
             : "Duftkatalog ansehen"}
-        </a>
+        </AcquisitionInternalLink>
         <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">
           Preise & Community-Bewertungen
         </span>
         <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">
           Empfehlungen nach Budget & Duftprofil
         </span>
-        <a
+        <AcquisitionInternalLink
           href="/vergleich"
           className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5 font-medium text-(--accent-ink) hover:border-(--accent)"
         >
           Parfumvergleiche
-        </a>
-        <a
+        </AcquisitionInternalLink>
+        <AcquisitionInternalLink
           href="/sammlung"
           className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5 font-medium text-(--accent-ink) hover:border-(--accent)"
         >
           Meine Duftsammlung
-        </a>
-        <a
+        </AcquisitionInternalLink>
+        <AcquisitionInternalLink
           href="/merkliste"
           className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5 font-medium text-(--accent-ink) hover:border-(--accent)"
         >
           Meine Merkliste
-        </a>
+        </AcquisitionInternalLink>
       </div>
       <PersonalLibrarySummary />
       <MerchantDiscovery sessionSettled={sessionSettled} />
@@ -707,7 +719,9 @@ export default function HomeView({
                     product={product}
                     onOpen={(item) =>
                       window.location.assign(
-                        fragrancePathForProduct(item),
+                        appendAcquisitionAttribution(
+                          fragrancePathForProduct(item),
+                        ),
                       )
                     }
                   />
@@ -726,19 +740,21 @@ export default function HomeView({
                     fluid
                     onOpen={(item) =>
                       window.location.assign(
-                        fragrancePathForProduct(item),
+                        appendAcquisitionAttribution(
+                          fragrancePathForProduct(item),
+                        ),
                       )
                     }
                   />
                 </div>
               ))}
             </div>
-            <a
+            <AcquisitionInternalLink
               href="/duft"
               className="dufynd-home-selected-all mt-3 inline-flex w-fit rounded-xl border border-white/10 bg-white/[0.06] px-4 py-2.5 text-[12px] font-semibold text-white/78 transition hover:border-white/20 hover:bg-white/[0.09]"
             >
               Alle {scentCount} Düfte im Katalog entdecken →
-            </a>
+            </AcquisitionInternalLink>
           </div>
         </HomeSection>
       ) : null}
