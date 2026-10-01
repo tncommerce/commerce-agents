@@ -37,15 +37,11 @@ def _payloads() -> tuple[dict, dict, dict, dict]:
 
 
 def _staged_row(payload: dict, product_id: str) -> dict:
-    return next(
-        row for row in payload["products"] if row["product_id"] == product_id
-    )
+    return next(row for row in payload["products"] if row["product_id"] == product_id)
 
 
 def _candidate_row(payload: dict, product_id: str) -> dict:
-    return next(
-        row for row in payload["items"] if row["product_id"] == product_id
-    )
+    return next(row for row in payload["items"] if row["product_id"] == product_id)
 
 
 def _sha256(path: Path) -> str:
