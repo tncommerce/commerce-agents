@@ -984,6 +984,29 @@ SAFE_TASK_STATES = {
 }
 
 
+def _is_green_autonomy_task(
+    task: object,
+    *,
+    domain: str | None = None,
+) -> bool:
+    """Return whether a queue item is safe for autonomous Jarvis execution.
+
+    The database queue is the authority for readiness. Task identifiers are not
+    an authorization boundary: manually queued Jarvis work must not be ignored
+    merely because its id does not use the legacy repo_current_ prefix.
+    """
+    if not isinstance(task, dict):
+        return False
+    if bool(task.get("requires_human_approval")):
+        return False
+    action_type = str(task.get("approval_action_type") or "auto_allowed")
+    if action_type != "auto_allowed":
+        return False
+    if domain is not None and str(task.get("domain") or "") != domain:
+        return False
+    return True
+
+
 def _extract_safe_task_state(text: str) -> str | None:
     for line in reversed(text.splitlines()):
         normalized = line.strip()
@@ -1003,9 +1026,8 @@ async def process_safe_task(
     safe_tasks = [
         task
         for task in (queue.get("safe_to_execute") or [])
-        if isinstance(task, dict)
-        and str(task.get("task_id") or "").startswith("repo_current_")
-        and not bool(task.get("requires_human_approval"))
+        if _is_green_autonomy_task(task)
+        and str(task.get("domain") or "") != "engineering"
     ]
     if task_id is not None:
         safe_tasks = [task for task in safe_tasks if str(task.get("task_id") or "") == task_id]
@@ -1013,7 +1035,7 @@ async def process_safe_task(
         message = (
             f"DUFYND Jarvis safe worker: requested task {task_id} is not safely executable."
             if task_id is not None
-            else "DUFYND Jarvis safe worker: no repo-current safe task."
+            else "DUFYND Jarvis safe worker: no GREEN safe task."
         )
         print(message)
         return 0
@@ -1135,10 +1157,7 @@ async def process_branch_task(
     tasks = [
         task
         for task in (queue.get("safe_to_execute") or [])
-        if isinstance(task, dict)
-        and str(task.get("task_id") or "").startswith("repo_current_")
-        and str(task.get("domain") or "") == "engineering"
-        and not bool(task.get("requires_human_approval"))
+        if _is_green_autonomy_task(task, domain="engineering")
     ]
     if task_id is not None:
         tasks = [task for task in tasks if str(task.get("task_id") or "") == task_id]
@@ -1146,7 +1165,7 @@ async def process_branch_task(
         message = (
             f"DUFYND Jarvis branch worker: requested task {task_id} is not safely executable."
             if task_id is not None
-            else "DUFYND Jarvis branch worker: no repo-current safe engineering task."
+            else "DUFYND Jarvis branch worker: no GREEN safe engineering task."
         )
         print(message)
         return 0
@@ -1319,9 +1338,7 @@ async def process_autonomous_cycle(
     safe_tasks = [
         task
         for task in (queue.get("safe_to_execute") or [])
-        if isinstance(task, dict)
-        and str(task.get("task_id") or "").startswith("repo_current_")
-        and not bool(task.get("requires_human_approval"))
+        if _is_green_autonomy_task(task)
     ]
 
     if not safe_tasks:
