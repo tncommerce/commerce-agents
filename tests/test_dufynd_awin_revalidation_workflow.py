@@ -30,6 +30,26 @@ def test_awin_revalidation_workflow_stays_manual_read_only_and_secret_safe() -> 
     assert "release01-feed-image-review.html" in artifact_block
 
 
+def test_blocked_release_still_builds_review_packet_before_preserving_failure() -> None:
+    text = WORKFLOW.read_text(encoding="utf-8")
+
+    check_pos = text.index("Check Release 01 against current feed")
+    extract_pos = text.index("Extract review-only image candidates")
+    prepare_pos = text.index("Prepare Release 01 feed-image review candidates")
+    render_pos = text.index("Render visual image review packet")
+    upload_pos = text.index("Upload sanitized review packet")
+    preserve_pos = text.index("Preserve blocked Release 01 result after review artifact")
+
+    assert check_pos < extract_pos < prepare_pos < render_pos < upload_pos < preserve_pos
+    assert "id: release_check" in text
+    assert 'echo "status=$status" >> "$GITHUB_OUTPUT"' in text
+    assert 'if [ "$status" -eq 20 ]; then' in text
+    assert "continuing only through the independently guarded human image-review path" in text
+    assert "steps.release_check.outputs.status == '20'" in text
+    assert "Review artifact was generated for human image review only." in text
+    assert "exit 20" in text
+
+
 def test_awin_revalidation_runbook_keeps_raw_feed_and_approval_boundaries() -> None:
     text = RUNBOOK.read_text(encoding="utf-8")
 
