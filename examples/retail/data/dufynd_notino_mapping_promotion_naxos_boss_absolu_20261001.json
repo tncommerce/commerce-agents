@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "recorded_at": "2026-10-01T18:03:09Z",
+  "merchant_id": "notino",
+  "network": "CJ Affiliate",
+  "operation": "canonical_mapping_promotion_non_live",
+  "source_candidate_file": "examples/retail/data/scentai_notino_activation_candidates_20260930.json",
+  "source_candidate_file_mutated": false,
+  "products": {
+    "SC-XERJOFF-NAXOS-100": {
+      "merchant_product_id": "XEF3191",
+      "gtin": "8033488155070",
+      "exact_variant": "Xerjoff XJ 1861 Naxos Eau de Parfum 100 ml",
+      "product_url": "https://www.notino.de/xerjoff/xj-1861-naxos-eau-de-parfum-unisex/",
+      "availability_revalidated": true,
+      "observed_price_eur": 172,
+      "mapping_status": "verified_current_variant",
+      "live_routing_allowed": false,
+      "publish_allowed": false
+    },
+    "SC-HUGO-BOSS-BOTTLED-ABSOLU-100": {
+      "merchant_product_id": "HUG13734",
+      "gtin": "3616305480620",
+      "exact_variant": "Hugo Boss BOSS Bottled Absolu Parfum Intense 100 ml",
+      "product_url": "https://www.notino.de/hugo-boss/boss-bottled-absolu-eau-de-parfum-fuer-herren/p-16261924/",
+      "availability_revalidated": true,
+      "observed_price_eur": 104,
+      "mapping_status": "verified_current_variant",
+      "live_routing_allowed": false,
+      "publish_allowed": false
+    }
+  },
+  "safeguards": {
+    "merchant_offers_mutated": false,
+    "affiliate_live_routing_allowed": false,
+    "catalog_publication_authorized": false,
+    "image_rights_granted": false,
+    "commission_changes_fragrance_recommendations": false,
+    "jarvis_runtime_or_control_plane_mutated": false,
+    "main_touched": false
+  }
+}
