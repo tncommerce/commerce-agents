@@ -13,6 +13,7 @@ import {
   type StaticFragrance,
 } from "@/lib/fragranceCatalog";
 import { formatPriceReference } from "@/lib/priceReference";
+import { publicShareUrl } from "@/lib/shareUrl";
 import { targetGroupLabel } from "@/lib/targetLabels";
 
 function formatRating(
@@ -264,7 +265,7 @@ export default function FragranceComparisonPicker({
     url.searchParams.set("left", leftId);
     url.searchParams.set("right", rightId);
     try {
-      await navigator.clipboard.writeText(url.href);
+      await navigator.clipboard.writeText(publicShareUrl(url.href));
       setCopyStatus("Link kopiert");
     } catch {
       setCopyStatus("Kopieren nicht möglich. Bitte die Adresse im Browser kopieren.");

@@ -20,6 +20,7 @@ import {
 } from "@/lib/fragranceCatalog";
 import { noteLabel } from "@/lib/noteLabels";
 import { targetLabel } from "@/lib/targetLabels";
+import { publicShareUrl } from "@/lib/shareUrl";
 
 type AudienceFilter = "all" | CatalogAudience;
 type ProfileFilter =
@@ -507,7 +508,7 @@ export default function FragranceCatalogBrowser({
       search, audience, profile, brand, minimumRating, sort,
     });
     try {
-      await navigator.clipboard.writeText(url.href);
+      await navigator.clipboard.writeText(publicShareUrl(url.href));
       setCopyStatus("Link kopiert");
     } catch {
       setCopyStatus("Kopieren nicht möglich. Bitte die Adresse im Browser kopieren.");
