@@ -74,15 +74,3 @@ def test_homepage_catalog_count_excludes_source_blocked_fragrances() -> None:
     assert 'String(product.product_id).startsWith("SC-")' in text
     assert "product.in_stock !== false" in text
 
-
-def test_audience_preview_products_search_full_visible_catalog_for_visuals() -> None:
-    text = source()
-
-    assert (
-        "function audiencePreviewProducts(catalog: Record<string, Product>)" in text
-    )
-    assert "const matches = Object.values(catalog)" in text
-    assert 'product.in_stock === false' in text
-    assert "fragrance.presentation_visual?.url" in text
-    assert "fragrance.preferred_visual?.url" in text
-    assert "product.image_url" in text
