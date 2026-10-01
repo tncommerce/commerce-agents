@@ -99,10 +99,12 @@ export default function StorefrontPage() {
       customPrompt = null;
     }
 
+    const nextUrl = new URL(window.location.href);
+    nextUrl.searchParams.delete("start");
     window.history.replaceState(
-      {},
+      window.history.state,
       "",
-      window.location.pathname,
+      `${nextUrl.pathname}${nextUrl.search}${nextUrl.hash}`,
     );
 
     if (confirmedStart !== startKey) return;
