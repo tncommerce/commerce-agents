@@ -324,6 +324,7 @@ export default function FragranceLibraryHub({
   const [ready, setReady] = useState(false);
   const [backupStatus, setBackupStatus] = useState("");
   const importInputRef = useRef<HTMLInputElement>(null);
+  const importRequestRef = useRef(0);
 
   useEffect(() => {
     const sync = () => {
@@ -428,10 +429,13 @@ export default function FragranceLibraryHub({
     const input = event.currentTarget;
     const file = input.files?.[0];
     if (!file) return;
+    const request = ++importRequestRef.current;
 
     try {
       if (file.size > 128 * 1024) throw new Error("file too large");
-      const next = parseFragranceLibraryBackup(JSON.parse(await file.text()));
+      const contents = await file.text();
+      if (request !== importRequestRef.current) return;
+      const next = parseFragranceLibraryBackup(JSON.parse(contents));
       if (!next) throw new Error("invalid backup");
 
       const currentLibrary = readFragranceLibrary();
@@ -452,9 +456,10 @@ export default function FragranceLibraryHub({
         `Sicherung geladen: ${next.wishlist.length} gemerkt, ${next.owned.length} in Sammlung.`,
       );
     } catch {
+      if (request !== importRequestRef.current) return;
       setBackupStatus("Import fehlgeschlagen. Bitte wähle eine gültige DUFYND-Sicherungsdatei.");
     } finally {
-      input.value = "";
+      if (request === importRequestRef.current) input.value = "";
     }
   };
 
