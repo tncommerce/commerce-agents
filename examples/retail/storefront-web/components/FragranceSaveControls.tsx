@@ -40,9 +40,13 @@ export default function FragranceSaveControls({
   });
   const [storageAvailable, setStorageAvailable] =
     useState(true);
+  const [status, setStatus] = useState("");
 
   useEffect(() => {
-    const sync = () => setState(currentState(productId));
+    const sync = () => {
+      setState(currentState(productId));
+      setStatus("");
+    };
     const handleStorage = (event: StorageEvent) => {
       if (
         event.key === FRAGRANCE_LIBRARY_STORAGE_KEY ||
@@ -97,6 +101,7 @@ export default function FragranceSaveControls({
             nextSaved,
           );
           const actualSaved = next.wishlist.includes(productId);
+          setStatus(actualSaved === nextSaved ? "" : "Änderung konnte nicht gespeichert werden. Bitte versuche es erneut.");
           setState({
             wishlist: actualSaved,
             owned: next.owned.includes(productId),
@@ -138,6 +143,7 @@ export default function FragranceSaveControls({
             nextOwned,
           );
           const actualOwned = next.owned.includes(productId);
+          setStatus(actualOwned === nextOwned ? "" : "Änderung konnte nicht gespeichert werden. Bitte versuche es erneut.");
           setState({
             wishlist: next.wishlist.includes(productId),
             owned: actualOwned,
@@ -165,6 +171,9 @@ export default function FragranceSaveControls({
           ? "✓ In meiner Sammlung"
           : "+ Meine Sammlung"}
       </button>
+      <span role="status" className={status ? "basis-full text-[11px] text-(--ink-soft)" : "sr-only"}>
+        {status}
+      </span>
     </div>
   );
 }
