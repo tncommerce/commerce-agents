@@ -51,16 +51,11 @@ def test_export_deterministic_jarvis_snapshot_delta_for_pr589() -> None:
 
     protected_overlap = sorted(set(changed).intersection(PROTECTED))
     if protected_overlap:
-        raise AssertionError(
-            f"refresh would touch protected #589 files: {protected_overlap}"
-        )
+        raise AssertionError(f"refresh would touch protected #589 files: {protected_overlap}")
 
     encoded = base64.b64encode(
         json.dumps(changed, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     ).decode("ascii")
     print("DUFYND_SNAPSHOT_BUNDLE_B64=" + encoded)
-    print(
-        "DUFYND_SNAPSHOT_CHANGED_PATHS="
-        + json.dumps(sorted(changed), separators=(",", ":"))
-    )
+    print("DUFYND_SNAPSHOT_CHANGED_PATHS=" + json.dumps(sorted(changed), separators=(",", ":")))
     raise AssertionError("diagnostic export only")
