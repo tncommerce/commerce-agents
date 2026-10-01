@@ -100,6 +100,10 @@ export default function FragranceSaveControls({
             productId,
             nextSaved,
           );
+          if (!next) {
+            setStatus("Änderung konnte nicht gespeichert werden. Bitte versuche es erneut.");
+            return;
+          }
           const actualSaved = next.wishlist.includes(productId);
           setStatus(actualSaved === nextSaved ? "" : "Änderung konnte nicht gespeichert werden. Bitte versuche es erneut.");
           setState({
@@ -142,6 +146,10 @@ export default function FragranceSaveControls({
             productId,
             nextOwned,
           );
+          if (!next) {
+            setStatus("Änderung konnte nicht gespeichert werden. Bitte versuche es erneut.");
+            return;
+          }
           const actualOwned = next.owned.includes(productId);
           setStatus(actualOwned === nextOwned ? "" : "Änderung konnte nicht gespeichert werden. Bitte versuche es erneut.");
           setState({

@@ -6,6 +6,7 @@ import { chromium } from "playwright";
 import { verifyPublicShareLinks } from "./public-share-qa.mjs";
 import { verifyLibraryClearRecovery } from "./library-clear-qa.mjs";
 import { verifyLibrarySaveRecovery } from "./library-save-qa.mjs";
+import { verifyLibraryReadRecovery } from "./library-read-recovery-qa.mjs";
 import { verifyAnalyticsEventTimeout } from "./analytics-event-timeout-qa.mjs";
 import { verifyManualShareFallback } from "./manual-share-qa.mjs";
 import { verifyLatestProductShare } from "./product-share-race-qa.mjs";
@@ -343,6 +344,13 @@ try {
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     report.failures.push({ label: "analytics-event-post-timeout-recovery", message });
+  }
+  try {
+    const cases = await verifyLibraryReadRecovery(browser, baseUrl);
+    report.checks.push({ label: "library-save-read-recovery", status: "passed", cases });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({ label: "library-save-read-recovery", message });
   }
   try {
     await verifyLibrarySaveRecovery(browser, baseUrl);

@@ -75,10 +75,9 @@ export function parseFragranceLibraryBackup(
   return normalizeFragranceLibrary(candidate);
 }
 
-export function readFragranceLibrary(): FragranceLibraryState {
-  if (typeof window === "undefined") {
-    return { ...EMPTY_LIBRARY };
-  }
+// A failed read must not become an empty list for a subsequent save.
+function tryReadFragranceLibrary(): FragranceLibraryState | null {
+  if (typeof window === "undefined") return null;
 
   try {
     const raw = window.localStorage.getItem(
@@ -88,14 +87,18 @@ export function readFragranceLibrary(): FragranceLibraryState {
 
     return normalizeFragranceLibrary(JSON.parse(raw));
   } catch {
-    return { ...EMPTY_LIBRARY };
+    return null;
   }
+}
+
+export function readFragranceLibrary(): FragranceLibraryState {
+  return tryReadFragranceLibrary() ?? { ...EMPTY_LIBRARY };
 }
 
 function writeFragranceLibrary(
   next: FragranceLibraryState,
-): FragranceLibraryState {
-  if (typeof window === "undefined") return next;
+): FragranceLibraryState | null {
+  if (typeof window === "undefined") return null;
 
   const normalized = normalizeFragranceLibrary(next);
 
@@ -109,7 +112,7 @@ function writeFragranceLibrary(
     );
     return normalized;
   } catch {
-    return readFragranceLibrary();
+    return null;
   }
 }
 
@@ -132,9 +135,10 @@ export function replaceFragranceLibrary(
 export function setWishlistState(
   productId: string,
   saved: boolean,
-): FragranceLibraryState {
-  const current = readFragranceLibrary();
+): FragranceLibraryState | null {
+  const current = tryReadFragranceLibrary();
 
+  if (!current) return null;
   if (!validProductId(productId)) return current;
 
   const wishlist = new Set(current.wishlist);
@@ -151,9 +155,10 @@ export function setWishlistState(
 export function setOwnedState(
   productId: string,
   owned: boolean,
-): FragranceLibraryState {
-  const current = readFragranceLibrary();
+): FragranceLibraryState | null {
+  const current = tryReadFragranceLibrary();
 
+  if (!current) return null;
   if (!validProductId(productId)) return current;
 
   const ownedIds = new Set(current.owned);
