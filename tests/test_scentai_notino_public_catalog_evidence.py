@@ -69,7 +69,8 @@ def test_public_catalog_candidates_are_identified_without_activation() -> None:
 def test_spicebomb_extreme_90_is_exact_but_not_activation_ready() -> None:
     payload = _payload()
     row = next(
-        row for row in payload["candidates"]
+        row
+        for row in payload["candidates"]
         if row["product_id"] == "SC-VIKTOR-ROLF-SPICEBOMB-EXTREME-EDP-90"
     )
 
