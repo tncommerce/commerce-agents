@@ -25,7 +25,8 @@ def test_remaining_release01_rollout_reflects_current_product_scoped_notino_stat
 
     affiliate = payload["affiliate_preparation"]
     assert affiliate["routing_scope"] == "verified_product_only"
-    assert affiliate["live_routing_allowed"] is True
+    assert affiliate["live_routing_state"] == "partial_product_scoped_routes_active_outside_rollout_write_gate"
+    assert affiliate["live_routing_allowed"] is False
     assert set(affiliate["live_routing_product_ids"]) == {
         "SC-PDM-DELINA-EDP-75",
         "SC-YSL-BLACK-OPIUM-EDP-90",
