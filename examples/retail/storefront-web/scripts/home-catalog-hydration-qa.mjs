@@ -19,6 +19,12 @@ export async function verifyHomeCatalogHydration(browser, baseUrl) {
     const page = await context.newPage();
     const queries = [];
     try {
+      // Selection is under test; external image-host availability is covered elsewhere.
+      for (const row of fragrances) {
+        if (String(row.image_url || "").startsWith("https://")) {
+          await page.route(row.image_url, (route) => route.fulfill({ contentType: "image/png", body: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jv1sAAAAASUVORK5CYII=", "base64") }));
+        }
+      }
       await page.route("**/api/session", (route) => route.fulfill({ json: { session_id: "qa-catalog-hydration", name: "QA Guest" } }));
       await page.route("**/api/merchant-partners", (route) => route.fulfill({ json: { partners: [] } }));
       await page.route("**/api/analytics/events", (route) => route.fulfill({ json: { ok: true } }));
@@ -50,7 +56,7 @@ export async function verifyHomeCatalogHydration(browser, baseUrl) {
           const card = document.querySelector(`a[data-dufynd-home-audience-card][href*="zielgruppe=${audience}"]`);
           return card?.innerText.includes(text);
         }, { audience, text });
-        if (count) assert.ok(await card.locator("img").count() > 0, `${audience}/${width}: populated audience must retain its product visual`);
+        if (count) await card.locator("img").first().waitFor({ state: "attached" });
       }
       cases++;
     } finally {
