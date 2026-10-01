@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated_at": "2026-09-29T21:03:00+00:00",
-  "source_fingerprint_sha256": "2d9d346a51082c684dcc331dd022c2bcf03dc6dcb7021f7653bb0ce965186c2e",
+  "source_fingerprint_sha256": "28f15b058be64782377d2db311ebe652cadbe5cd4528b529682fe2b37a613a66",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
     "scentai_catalog_staging.json",
@@ -1386,9 +1386,9 @@
       "name": "Delina",
       "batch": 1,
       "researched_merchant_count": 2,
-      "mapping_count": 3,
-      "resolved_mapping_count": 3,
-      "full_mapping_count": 1,
+      "mapping_count": 4,
+      "resolved_mapping_count": 4,
+      "full_mapping_count": 2,
       "state": "mapping_data_ready",
       "blockers": [],
       "next_action": "maintain_mapping_and_verify_purchase_destination",
@@ -1430,6 +1430,19 @@
           "affiliate_program": {
             "network": "Awin",
             "program": "top Parfümerie DE",
+            "status": "approved"
+          },
+          "affiliate_activation_state": "approved"
+        },
+        {
+          "merchant_id": "notino",
+          "mapping_state": "full",
+          "merchant_product_id": "PDM0227",
+          "ean": "3700578501998",
+          "gtin": "3700578501998",
+          "affiliate_program": {
+            "network": "CJ Affiliate",
+            "program": "Notino",
             "status": "approved"
           },
           "affiliate_activation_state": "approved"
@@ -1894,9 +1907,9 @@
       "name": "Black Opium",
       "batch": 2,
       "researched_merchant_count": 2,
-      "mapping_count": 3,
-      "resolved_mapping_count": 3,
-      "full_mapping_count": 2,
+      "mapping_count": 4,
+      "resolved_mapping_count": 4,
+      "full_mapping_count": 3,
       "state": "mapping_data_ready",
       "blockers": [],
       "next_action": "maintain_mapping_and_verify_purchase_destination",
@@ -1938,6 +1951,19 @@
           "affiliate_program": {
             "network": "Awin",
             "program": "top Parfümerie DE",
+            "status": "approved"
+          },
+          "affiliate_activation_state": "approved"
+        },
+        {
+          "merchant_id": "notino",
+          "mapping_state": "full",
+          "merchant_product_id": "YSL2377",
+          "ean": "3365440787971",
+          "gtin": "3365440787971",
+          "affiliate_program": {
+            "network": "CJ Affiliate",
+            "program": "Notino",
             "status": "approved"
           },
           "affiliate_activation_state": "approved"
