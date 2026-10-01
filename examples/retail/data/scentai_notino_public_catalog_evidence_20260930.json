@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-10-01T11:55:00Z",
+  "generated_at": "2026-10-01T12:12:00Z",
   "merchant_id": "notino",
   "network": "CJ Affiliate",
   "program": "Notino",
@@ -19,7 +19,10 @@
       "activation_state": "staged_not_live",
       "publish_allowed": false,
       "source_of_truth_mapping_mutation": false,
-      "image_rights_status": "not_implied_by_affiliate_mapping"
+      "image_rights_status": "not_implied_by_affiliate_mapping",
+      "gtin": "3770009763769",
+      "observed_at": "2026-10-01T12:12:00Z",
+      "evidence_note": "Exact target variant revalidated on current Notino.de purchase page as available on 2026-10-01."
     },
     {
       "product_id": "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
@@ -33,7 +36,10 @@
       "activation_state": "staged_not_live",
       "publish_allowed": false,
       "source_of_truth_mapping_mutation": false,
-      "image_rights_status": "not_implied_by_affiliate_mapping"
+      "image_rights_status": "not_implied_by_affiliate_mapping",
+      "gtin": "3614273790826",
+      "observed_at": "2026-10-01T12:12:00Z",
+      "evidence_note": "Exact target variant revalidated on current Notino.de purchase page as available on 2026-10-01."
     },
     {
       "product_id": "SC-DIOR-SAUVAGE-EDP-100",
@@ -47,7 +53,10 @@
       "activation_state": "staged_not_live",
       "publish_allowed": false,
       "source_of_truth_mapping_mutation": false,
-      "image_rights_status": "not_implied_by_affiliate_mapping"
+      "image_rights_status": "not_implied_by_affiliate_mapping",
+      "gtin": "3348901368247",
+      "observed_at": "2026-10-01T12:12:00Z",
+      "evidence_note": "Exact target variant revalidated on current Notino.de purchase page as available on 2026-10-01."
     },
     {
       "product_id": "SC-PRADA-LHOMME-100",
@@ -61,7 +70,10 @@
       "activation_state": "staged_not_live",
       "publish_allowed": false,
       "source_of_truth_mapping_mutation": false,
-      "image_rights_status": "not_implied_by_affiliate_mapping"
+      "image_rights_status": "not_implied_by_affiliate_mapping",
+      "gtin": "8435137749607",
+      "observed_at": "2026-10-01T12:12:00Z",
+      "evidence_note": "Exact target variant revalidated on current Notino.de purchase page as available on 2026-10-01."
     },
     {
       "product_id": "SC-PRADA-LHOMME-INTENSE-EDP-100",
@@ -75,7 +87,10 @@
       "activation_state": "staged_not_live",
       "publish_allowed": false,
       "source_of_truth_mapping_mutation": false,
-      "image_rights_status": "not_implied_by_affiliate_mapping"
+      "image_rights_status": "not_implied_by_affiliate_mapping",
+      "gtin": "8435137764730",
+      "observed_at": "2026-10-01T12:12:00Z",
+      "evidence_note": "Exact target variant revalidated on current Notino.de purchase page as available on 2026-10-01."
     },
     {
       "product_id": "SC-JPG-LE-MALE-ELIXIR-PARFUM-125",
@@ -89,7 +104,10 @@
       "activation_state": "staged_not_live",
       "publish_allowed": false,
       "source_of_truth_mapping_mutation": false,
-      "image_rights_status": "not_implied_by_affiliate_mapping"
+      "image_rights_status": "not_implied_by_affiliate_mapping",
+      "gtin": "8435415076944",
+      "observed_at": "2026-10-01T12:12:00Z",
+      "evidence_note": "Exact target variant revalidated on current Notino.de purchase page as available on 2026-10-01."
     },
     {
       "product_id": "SC-PDM-DELINA-EDP-75",

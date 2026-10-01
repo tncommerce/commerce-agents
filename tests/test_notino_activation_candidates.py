@@ -95,3 +95,31 @@ def test_commerce_wave2_exact_candidates_are_preflight_only() -> None:
         )
 
     assert "SC-VIKTOR-ROLF-SPICEBOMB-EXTREME-EDP-90" not in rows
+
+
+def test_commerce_wave3_exact_candidates_are_preflight_only() -> None:
+    payload = _payload()
+    rows = {row["product_id"]: row for row in payload["candidates"]}
+
+    expected = {
+        "SC-SOSPIRO-VIBRATO-100": ("SSR00580", "3770009763769"),
+        "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100": ("VAL18249", "3614273790826"),
+        "SC-DIOR-SAUVAGE-EDP-100": ("CHD7137", "3348901368247"),
+        "SC-PRADA-LHOMME-100": ("PRA0719", "8435137749607"),
+        "SC-PRADA-LHOMME-INTENSE-EDP-100": ("PRA0937", "8435137764730"),
+        "SC-JPG-LE-MALE-ELIXIR-PARFUM-125": ("JPG04424", "8435415076944"),
+    }
+
+    assert payload["live_routing_allowed"] is False
+    for product_id, (merchant_product_id, gtin) in expected.items():
+        row = rows[product_id]
+        assert row["merchant_product_id"] == merchant_product_id
+        assert row["gtin"] == gtin
+        assert row["mapping_status"] == "verified_current_variant"
+        assert row["readiness"] == "ready_for_controlled_activation_preflight"
+        assert row["offer_in_stock_observation"] is True
+        assert row["publish_allowed"] is False
+        assert row["source_of_truth_mapping_state"] == "not_promoted"
+        assert row["candidate_affiliate_url"] == build_cj_deep_link(
+            destination_url=row["product_url"]
+        )

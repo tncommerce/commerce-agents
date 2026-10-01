@@ -83,3 +83,26 @@ def test_spicebomb_extreme_90_is_exact_but_not_activation_ready() -> None:
     assert row["availability_observed"] is False
     assert row["activation_state"] == "staged_not_live"
     assert row["publish_allowed"] is False
+
+
+def test_commerce_wave3_evidence_is_exact_current_and_non_live() -> None:
+    payload = _payload()
+    rows = {row["product_id"]: row for row in payload["candidates"]}
+
+    expected = {
+        "SC-SOSPIRO-VIBRATO-100": ("SSR00580", "3770009763769"),
+        "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100": ("VAL18249", "3614273790826"),
+        "SC-DIOR-SAUVAGE-EDP-100": ("CHD7137", "3348901368247"),
+        "SC-PRADA-LHOMME-100": ("PRA0719", "8435137749607"),
+        "SC-PRADA-LHOMME-INTENSE-EDP-100": ("PRA0937", "8435137764730"),
+        "SC-JPG-LE-MALE-ELIXIR-PARFUM-125": ("JPG04424", "8435415076944"),
+    }
+
+    for product_id, (merchant_product_id, gtin) in expected.items():
+        row = rows[product_id]
+        assert row["merchant_product_id"] == merchant_product_id
+        assert row["gtin"] == gtin
+        assert row["availability_observed"] is True
+        assert row["activation_state"] == "staged_not_live"
+        assert row["publish_allowed"] is False
+        assert row["image_rights_status"] == "not_implied_by_affiliate_mapping"
