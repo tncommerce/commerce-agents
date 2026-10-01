@@ -4,6 +4,7 @@ import process from "node:process";
 
 import { chromium } from "playwright";
 import { verifyPublicShareLinks } from "./public-share-qa.mjs";
+import { verifyLibraryClearRecovery } from "./library-clear-qa.mjs";
 import { verifyProductDetailRecovery, verifySingleResponsiveProductDetail, verifyClosedProductDetailFocus } from "./product-detail-recovery-qa.mjs";
 
 const args = process.argv.slice(2);
@@ -238,6 +239,13 @@ const report = {
 };
 
 try {
+  try {
+    await verifyLibraryClearRecovery(browser, baseUrl);
+    report.checks.push({ label: "library-clear-storage-recovery", status: "passed" });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({ label: "library-clear-storage-recovery", message });
+  }
   try {
     await verifyPublicShareLinks(browser, baseUrl);
     report.checks.push({ label: "public-share-session-isolation-390", status: "passed" });

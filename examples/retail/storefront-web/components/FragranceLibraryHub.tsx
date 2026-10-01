@@ -740,8 +740,12 @@ export default function FragranceLibraryHub({
                 ) {
                   return;
                 }
-                clearFragranceLibrary();
+                if (!clearFragranceLibrary()) {
+                  setBackupStatus("Löschen fehlgeschlagen. Deine gespeicherten Duftdaten bleiben erhalten. Bitte versuche es erneut.");
+                  return;
+                }
                 setLibrary(emptyState());
+                setBackupStatus("Persönliche Duftdaten auf diesem Gerät gelöscht.");
               }}
               className="text-[11px] font-medium text-(--ink-soft) underline-offset-2 hover:underline"
             >

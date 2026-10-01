@@ -173,8 +173,8 @@ export function setOwnedState(
   });
 }
 
-export function clearFragranceLibrary(): void {
-  if (typeof window === "undefined") return;
+export function clearFragranceLibrary(): boolean {
+  if (typeof window === "undefined") return false;
 
   try {
     window.localStorage.removeItem(
@@ -183,7 +183,8 @@ export function clearFragranceLibrary(): void {
     window.dispatchEvent(
       new CustomEvent(FRAGRANCE_LIBRARY_EVENT),
     );
+    return true;
   } catch {
-    // Nothing else is required if browser storage is unavailable.
+    return false;
   }
 }
