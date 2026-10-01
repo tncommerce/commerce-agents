@@ -9,6 +9,7 @@ import { verifyLibrarySaveRecovery } from "./library-save-qa.mjs";
 import { verifyLibraryReadRecovery } from "./library-read-recovery-qa.mjs";
 import { verifyLibraryImportReadFailure } from "./library-import-read-qa.mjs";
 import { verifyLibraryExportCurrent } from "./library-export-current-qa.mjs";
+import { verifyLibraryReadFeedback } from "./library-read-feedback-qa.mjs";
 import { verifyFooterNavigationAttribution } from "./footer-navigation-attribution-qa.mjs";
 import { verifyAnalyticsEventTimeout } from "./analytics-event-timeout-qa.mjs";
 import { verifyManualShareFallback } from "./manual-share-qa.mjs";
@@ -354,6 +355,13 @@ try {
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     report.failures.push({ label: "analytics-event-post-timeout-recovery", message });
+  }
+  try {
+    const cases = await verifyLibraryReadFeedback(browser, baseUrl);
+    report.checks.push({ label: "library-read-failure-feedback", status: "passed", cases });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({ label: "library-read-failure-feedback", message });
   }
   try {
     const cases = await verifyLibraryExportCurrent(browser, baseUrl);
