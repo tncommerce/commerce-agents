@@ -54,7 +54,7 @@ def test_acquisition_attribution_survives_internal_navigation() -> None:
     assert 'label: "acquisition-navigation-clickout-attribution"' in source
     assert "/start?src=tiktok&cmp=qa_navigation_campaign&content=qa_navigation_content" in source
     assert 'name: "Katalog entdecken"' in source
-    assert 'a[href="/duft/rabanne-1-million"]' in source
+    assert 'a[href*="/duft/rabanne-1-million"]' in source
     assert 'navClickoutUrl.searchParams.get("src") !== "tiktok"' in source
     assert 'navClickoutUrl.searchParams.get("cmp") !== "qa_navigation_campaign"' in source
     assert 'navClickoutUrl.searchParams.get("content") !== "qa_navigation_content"' in source
