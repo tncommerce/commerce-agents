@@ -194,8 +194,9 @@ class MerchantOfferStore:
         from .purchase_freshness import apply_evidence, evidence_for
 
         return [
-            MerchantOffer.model_validate(apply_evidence(row, evidence_for(row["offer_id"])))
+            MerchantOffer.model_validate(verified)
             for row in rows
+            if (verified := apply_evidence(row, evidence_for(row["offer_id"]))) is not None
         ]
 
     def offers_for(

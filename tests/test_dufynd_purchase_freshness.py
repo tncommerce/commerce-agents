@@ -60,9 +60,8 @@ def test_unsafe_verification_does_not_present_old_offer_as_healthy(decision):
     e = evidence(r)
     e["decision"] = decision
     result = apply_evidence(r, e)
-    assert result["last_updated_at"] == r["last_updated_at"]
-    assert not result["in_stock"]
-    assert not rank_offers([MerchantOffer.model_validate(result)])
+    assert result is None
+    assert r["in_stock"] is True  # Canonical stock is never rewritten.
 
 
 def test_todays_72_hour_exclusion_and_verified_recovery():

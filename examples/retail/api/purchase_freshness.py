@@ -44,7 +44,7 @@ def evidence_for(offer_id: str) -> dict[str, Any] | None:
     return value
 
 
-def apply_evidence(row: dict[str, Any], evidence: dict[str, Any] | None) -> dict[str, Any]:
+def apply_evidence(row: dict[str, Any], evidence: dict[str, Any] | None) -> dict[str, Any] | None:
     if not evidence or row.get("offer_id") != TARGET_OFFER:
         return row
     business = {k: v for k, v in row.items() if k != "last_updated_at"}
@@ -56,7 +56,7 @@ def apply_evidence(row: dict[str, Any], evidence: dict[str, Any] | None) -> dict
         return row
     # A changed stock/price/identity finding never presents the old offer as healthy.
     if evidence.get("decision") != "safe_evidence_refresh":
-        return row | {"in_stock": False}
+        return None  # Exclude through eligibility, never invent a changed stock value.
     try:
         verified = datetime.fromisoformat(evidence["verified_at"].replace("Z", "+00:00"))
         original = datetime.fromisoformat(row["last_updated_at"].replace("Z", "+00:00"))
