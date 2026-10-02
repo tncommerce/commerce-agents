@@ -1,4 +1,4 @@
-"""Single-call reservation adapter. Phase 2A exposes only a deterministic fake.
+"""Single-call reservation adapter. Exposes deterministic fake/mock providers only.
 
 No SDK loop, automatic retry, network transport or environment switch can turn
 this module into paid execution. A paid transport and certified tariff/envelope
@@ -47,6 +47,7 @@ class ProviderResult:
     text: str
     cost_usd: Decimal
     request_id: str
+    usage_evidence: dict[str, Any] | None = None
 
 
 @dataclass(frozen=True)
@@ -92,16 +93,18 @@ class FakeBoundedProvider:
 
 
 class BoundedProviderAdapter:
-    def __init__(self, store: ReservationStore, provider: FakeBoundedProvider):
+    def __init__(self, store: ReservationStore, provider: Any):
         # Exact class prevents a subclass replacing the no-network fake contract.
-        if type(provider) is not FakeBoundedProvider:
+        from scripts.dufynd_messages_transport import SimulatedMessagesProvider
+
+        if type(provider) not in (FakeBoundedProvider, SimulatedMessagesProvider):
             raise BudgetGate("paid_canary_requires_new_owner_approval_and_certified_transport")
         self.store = store
         self.provider = provider
 
     def execute(
         self,
-        request: CallEnvelope,
+        request: Any,
         *,
         budget_id: str,
         task_id: str,
@@ -158,6 +161,7 @@ class BoundedProviderAdapter:
                 "dry_run": True,
                 "request_hash": request.fingerprint(),
                 "rule": "verified_actual_cost",
+                "bound_and_usage": result.usage_evidence,
             },
         ):
             raise BudgetGate("settlement_pending_watchdog_recovery")
