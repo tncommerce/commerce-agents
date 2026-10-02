@@ -30,6 +30,11 @@ def database():
         connection.execute(
             next((ROOT / "supabase/migrations").glob("*cost_reservations.sql")).read_text()
         )
+        connection.execute(
+            next((ROOT / "supabase/migrations").glob("*durable_executions.sql"))
+            .read_text()
+            .split("-- Hosted observer extension;")[0]
+        )
     yield
 
 
@@ -365,3 +370,297 @@ def test_simulated_canary_microdollar_overrun_rejected_before_mock():
         execute_provider_canary(f, request, provider, ProviderPostgresStore(f))
     assert provider.calls == 0
     assert query("select count(*) from dufynd_budget_reservations where budget_id=%s", (f[0],)) == 0
+
+
+def durable_fixture(*, key=None, resources=None, steps=3, interval=2):
+    import json
+
+    task = f"durable-{uuid4()}"
+    result = query(
+        "select prepare_dufynd_execution(%s,%s,'supervisor-test',%s::jsonb,%s::jsonb,'durable')",
+        (
+            task,
+            key or str(uuid4()),
+            json.dumps(resources or [f"db:{task}"]),
+            json.dumps({"kind": "durability_probe", "steps": steps, "interval_seconds": interval}),
+        ),
+    )
+    return task, result
+
+
+def take_execution(e, run="123456", worker="actions:test"):
+    return query("select take_dufynd_execution(%s,%s,%s)", (run, worker, e["execution_id"]))
+
+
+def execution_checkpoint(e, step=None):
+    return query(
+        "select checkpoint_dufynd_execution(%s,%s,%s,%s)",
+        (e["execution_id"], e["lease_token"], e["worker_id"], step),
+    )
+
+
+def execution_state(e):
+    return query(
+        "select to_jsonb(e) from dufynd_execution_runs e where execution_id=%s",
+        (e["execution_id"],),
+    )
+
+
+def finish_execution(e):
+    return query(
+        "select finish_dufynd_execution(%s,%s,%s)",
+        (e["execution_id"], e["lease_token"], e["worker_id"]),
+    )
+
+
+def force_execution_expired(e):
+    import psycopg
+
+    with psycopg.connect(DSN) as db:
+        db.execute("select set_config('dufynd.execution_write','supervisor',true)")
+        db.execute("select set_config('dufynd.worker_write','supervisor',true)")
+        db.execute(
+            "update dufynd_execution_runs set lease_expires_at=now()-interval '1 second' where execution_id=%s",
+            (e["execution_id"],),
+        )
+        db.execute(
+            "update dufynd_autonomy_tasks set lease_expires_at=now()-interval '1 second' where task_id=%s",
+            (e["task_id"],),
+        )
+
+
+def test_durable_dispatch_binding_duplicate_and_chat_loss():
+    import json
+
+    task, prepared = durable_fixture()
+    original = prepared["execution"]
+    claimed = take_execution(original)
+    assert claimed["external_run_id"] == "123456"
+    running = execution_checkpoint(claimed)
+    assert running["status"] == "running"
+    # A retry/new client needs no local/chat state; the persisted command is enough.
+    del prepared
+    duplicate = query(
+        "select prepare_dufynd_execution(%s,%s,%s,%s::jsonb,%s::jsonb,%s)",
+        (
+            task,
+            original["idempotency_key"],
+            original["scope"],
+            json.dumps(original["resources"]),
+            json.dumps(original["payload"]),
+            original["durability_policy"],
+        ),
+    )
+    assert duplicate["allowed"] and duplicate["reused"]
+    assert duplicate["execution"]["status"] == "running"
+    assert duplicate["execution"]["external_run_id"] == "123456"
+    assert take_execution(original, run="987654", worker="duplicate") is None
+    query("select reconcile_dufynd_supervisor_v2()")
+    assert execution_state(original)["status"] == "running"
+    assert query("select count(*) from dufynd_execution_runs where task_id=%s", (task,)) == 1
+
+
+def test_durable_worker_verified_success_and_released_lease():
+    task, p = durable_fixture(steps=2)
+    e = take_execution(p["execution"])
+    assert not finish_execution(e)
+    assert execution_checkpoint(e, 1)["last_checkpoint"]["sum"] == 1
+    assert execution_checkpoint(e, 1)["last_checkpoint"]["sum"] == 1  # idempotent ack
+    assert execution_checkpoint(e, 2)["status"] == "verifying"
+    assert finish_execution(e) and finish_execution(e)
+    saved = execution_state(e)
+    assert saved["status"] == "completed" and saved["completed_at"]
+    t = query("select to_jsonb(t) from dufynd_autonomy_tasks t where task_id=%s", (task,))
+    assert t["status"] == "done" and t["released_at"]
+    assert saved["execution_id"] in t["evidence"]
+
+
+def test_durable_worker_failure_retryable_and_autonomous_resume():
+    _, p = durable_fixture(steps=2)
+    e = take_execution(p["execution"])
+    assert execution_checkpoint(e, 1)
+    assert query(
+        "select fail_dufynd_execution(%s,%s,%s,'fixture_failure')",
+        (e["execution_id"], e["lease_token"], e["worker_id"]),
+    )
+    query("select reconcile_dufynd_executions()")
+    retry = execution_state(e)
+    assert retry["status"] == "retryable" and retry["recovery_count"] == 1
+    assert retry["lease_token"] != e["lease_token"]
+    assert execution_checkpoint(e, 2) is None
+    query("select reconcile_dufynd_executions()")
+    saved = execution_state(e)
+    assert saved["status"] == "completed"
+    assert saved["worker_type"] == "deterministic_supervisor" and saved["attempt"] == 2
+    assert any(
+        x["event"] == "checkpoint_resumed" and x["checkpoint"]["step"] == 1
+        for x in saved["evidence"]
+    )
+
+
+def test_durable_stale_worker_fenced_and_checkpoint_continues():
+    _, p = durable_fixture(steps=3)
+    e = take_execution(p["execution"])
+    assert execution_checkpoint(e, 1)
+    force_execution_expired(e)
+    assert execution_checkpoint(e, 2) is None
+    query("select reconcile_dufynd_supervisor_v2()")
+    assert execution_state(e)["status"] == "retryable"
+    query("select reconcile_dufynd_supervisor_v2()")
+    resumed = execution_state(e)
+    assert resumed["last_checkpoint"]["step"] == 2 and resumed["attempt"] == 2
+    assert execution_checkpoint(e, 2) is None
+    query("select reconcile_dufynd_supervisor_v2()")
+    assert execution_state(e)["status"] == "completed"
+
+
+def test_durable_verified_success_finalization_crash_reconciled():
+    _, p = durable_fixture(steps=1)
+    e = take_execution(p["execution"])
+    assert execution_checkpoint(e, 1)["status"] == "verifying"
+    force_execution_expired(e)
+    assert not finish_execution(e)  # stale worker cannot mutate even verified result
+    query("select reconcile_dufynd_supervisor_v2()")
+    assert execution_state(e)["status"] == "completed"
+
+
+def test_durable_different_scopes_and_scope_conflict():
+    scope = [f"db:durable-conflict-{uuid4()}"]
+    _, a = durable_fixture(resources=scope)
+    _, b = durable_fixture()
+    _, denied = durable_fixture(resources=scope)
+    assert a["allowed"] and b["allowed"]
+    assert not denied["allowed"] and denied["reason"] == "scope_or_task_unavailable"
+    assert a["execution"]["execution_id"] != b["execution"]["execution_id"]
+    assert take_execution(a["execution"], worker="first")
+    assert take_execution(b["execution"], worker="second")
+
+
+def test_durable_parallel_atomic_dispatch_and_idempotency():
+    import json
+
+    _, p = durable_fixture()
+    original = p["execution"]
+    barrier = Barrier(2)
+
+    def duplicate(_):
+        barrier.wait(timeout=10)
+        return query(
+            "select prepare_dufynd_execution(%s,%s,%s,%s::jsonb,%s::jsonb,%s)",
+            (
+                original["task_id"],
+                original["idempotency_key"],
+                original["scope"],
+                json.dumps(original["resources"]),
+                json.dumps(original["payload"]),
+                original["durability_policy"],
+            ),
+        )
+
+    with ThreadPoolExecutor(2) as pool:
+        results = list(pool.map(duplicate, range(2)))
+    assert all(x["allowed"] and x["reused"] for x in results)
+    barrier = Barrier(2)
+
+    def dispatch(i):
+        barrier.wait(timeout=10)
+        return take_execution(original, run=str(123456 + i), worker=f"worker-{i}")
+
+    with ThreadPoolExecutor(2) as pool:
+        assert sum(bool(x) for x in pool.map(dispatch, range(2))) == 1
+
+
+def test_durable_external_missing_and_failed_runs_recover():
+    import json
+
+    for state in ("missing", "failure", "success"):
+        _, p = durable_fixture()
+        e = take_execution(p["execution"])
+        assert not query(
+            "select observe_dufynd_execution(%s,'wrong',%s::jsonb)",
+            (e["execution_id"], json.dumps({"state": state})),
+        )
+        assert query(
+            "select observe_dufynd_execution(%s,%s,%s::jsonb)",
+            (e["execution_id"], e["external_run_id"], json.dumps({"state": state})),
+        )
+        query("select reconcile_dufynd_executions()")
+        saved = execution_state(e)
+        assert saved["status"] == "retryable"  # external success is NOT proof of work
+        assert saved["lease_token"] != e["lease_token"]
+
+
+def test_durable_status_reconstructable_without_history():
+    _, p = durable_fixture()
+    e = take_execution(p["execution"])
+    execution_checkpoint(e, 1)
+    saved = execution_state(e)
+    required = {
+        "execution_id",
+        "task_id",
+        "worker_type",
+        "worker_id",
+        "external_run_id",
+        "status",
+        "attempt",
+        "scope",
+        "resources",
+        "lease_token",
+        "started_at",
+        "heartbeat_at",
+        "last_progress_at",
+        "last_checkpoint",
+        "completed_at",
+        "recovery_count",
+        "last_error",
+        "evidence",
+    }
+    assert required <= saved.keys()
+    assert saved["last_checkpoint"]["step"] == 1 and saved["started_at"]
+    assert "chat_id" not in saved and "conversation_id" not in saved
+
+
+def test_durable_direct_and_legacy_mutations_rejected():
+    import psycopg
+
+    _, p = durable_fixture()
+    e = take_execution(p["execution"])
+    with pytest.raises(psycopg.errors.RaiseException, match="execution mutations"):
+        query(
+            "update dufynd_execution_runs set status='completed' where execution_id=%s returning true",
+            (e["execution_id"],),
+        )
+    with pytest.raises(psycopg.errors.RaiseException, match="durable task"):
+        query(
+            "select update_dufynd_worker_v2(%s,%s,'verifying','legacy mutation',null)",
+            (e["task_id"], e["lease_token"]),
+        )
+    assert execution_state(e)["status"] == "dispatched"
+
+
+def test_durable_unknown_handler_paid_task_and_changed_command_fail_closed():
+    import json
+
+    task, p = durable_fixture()
+    e = p["execution"]
+    changed = query(
+        "select prepare_dufynd_execution(%s,%s,%s,%s::jsonb,%s::jsonb,'durable')",
+        (
+            task,
+            e["idempotency_key"],
+            e["scope"],
+            json.dumps(e["resources"]),
+            json.dumps({"kind": "durability_probe", "steps": 4, "interval_seconds": 2}),
+        ),
+    )
+    assert not changed["allowed"] and changed["reason"] == "idempotency_conflict"
+    unknown = query(
+        "select prepare_dufynd_execution('unknown','unknown','test','[\"db:test\"]','{\"kind\":\"bounded_ai_worker\",\"steps\":1,\"interval_seconds\":2}')"
+    )
+    assert not unknown["allowed"]
+    paid = fixture()[2][0][0]
+    denied = query(
+        'select prepare_dufynd_execution(%s,%s,\'test\',%s::jsonb,\'{"kind":"durability_probe","steps":1,"interval_seconds":2}\')',
+        (paid, str(uuid4()), json.dumps([f"db:{paid}"])),
+    )
+    assert not denied["allowed"] and denied["reason"] == "task_contract_conflict"

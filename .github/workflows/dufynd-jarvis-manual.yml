@@ -1,6 +1,8 @@
 name: DUFYND Jarvis Manual Runner
 
 on:
+  push:
+    branches: [scentai-mvp]
   workflow_dispatch:
     inputs:
       mode:
@@ -10,6 +12,7 @@ on:
         type: choice
         options:
           - readiness
+          - durable-execution
           - sync-state
           - process-next
           - process-loop
@@ -38,11 +41,12 @@ permissions:
   pull-requests: write
 
 concurrency:
-  group: dufynd-jarvis-manual-runner
+  group: ${{ github.event_name == 'push' && format('dufynd-durable-{0}', github.run_id) || inputs.mode == 'durable-execution' && format('dufynd-durable-{0}', github.run_id) || 'dufynd-jarvis-manual-runner' }}
   cancel-in-progress: false
 
 jobs:
   jarvis:
+    if: github.event_name == 'workflow_dispatch' && inputs.mode != 'durable-execution'
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -412,3 +416,25 @@ jobs:
             examples/retail/storefront-web/.visual-qa
           if-no-files-found: warn
           retention-days: 7
+
+
+  durable-execution:
+    if: github.ref_name == 'scentai-mvp' && (github.event_name == 'push' || inputs.mode == 'durable-execution')
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements-dev.txt
+      - name: Consume existing durable execution claims (free only)
+        env:
+          SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: python -m scripts.dufynd_durable_execution consume
