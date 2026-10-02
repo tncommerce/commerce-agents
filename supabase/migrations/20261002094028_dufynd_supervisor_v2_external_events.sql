@@ -152,7 +152,7 @@ begin
    if msg is null or observed_ids ? msg then continue; end if;
    -- Thread rebaseline cannot replay messages at/before its retained watermark.
    if x->'payload' ? 'internal_date' and coalesce(o.last_snapshot->>'watermark_ms','') ~ '^[0-9]+$'
-    and (x->'payload'->>'internal_date')::numeric <= (o.last_snapshot->>'watermark_ms')::numeric then continue; end if;
+    and (x->'payload'->>'internal_date')::numeric < (o.last_snapshot->>'watermark_ms')::numeric then continue; end if;
    observed_ids:=observed_ids||jsonb_build_array(msg);
   end if;
   fp:=encode(sha256(convert_to(jsonb_build_array(o.source_type,o.source_id,x->>'event_type',case when o.source_type='gmail' then jsonb_build_object('message_id',x->'payload'->>'message_id') else x->'payload' end)::text,'UTF8')),'hex');
@@ -164,11 +164,11 @@ begin
  end loop;
  if o.source_type='gmail' then
   select coalesce(jsonb_agg(value order by ordinal),'[]') into observed_ids from jsonb_array_elements(observed_ids) with ordinality q(value,ordinal) where ordinal>greatest(0,jsonb_array_length(observed_ids)-500);
-  previous:=jsonb_build_object('seen_message_ids',observed_ids,'watermark_ms',coalesce((select max((m->>'internalDate')::numeric)::text from jsonb_array_elements(coalesce(p_raw->'messages','[]')) m),o.last_snapshot->>'watermark_ms'));
+  previous:=jsonb_build_object('seen_message_ids',observed_ids,'watermark_ms',greatest((select max((m->>'internalDate')::numeric) from jsonb_array_elements(coalesce(p_raw->'messages','[]')) m),nullif(o.last_snapshot->>'watermark_ms','')::numeric)::text);
  elsif jsonb_array_length(events)>0 then previous:=events->0->'payload'; else previous:=o.last_snapshot; end if;
  update public.dufynd_external_observers set last_attempt_at=now(),last_success_at=now(),consecutive_failures=0,health_status='healthy',last_error=null,
   next_retry_at=now()+make_interval(secs=>interval_seconds),request_id=null,request_started_at=null,last_snapshot=previous,
-  last_cursor=case when p_raw ? 'nextPageToken' then last_cursor else coalesce(p_raw->>'historyId',events->0->>'cursor',last_cursor) end,
+  last_cursor=case when p_raw ? 'nextPageToken' then last_cursor when o.source_type='gmail' then greatest(nullif(last_cursor,'')::numeric,(p_raw->>'historyId')::numeric)::text else coalesce(events->0->>'cursor',last_cursor) end,
   page_token=p_raw->>'nextPageToken',last_event_at=case when inserted>0 then now() else last_event_at end where observer_id=o.observer_id;
  return jsonb_build_object('accepted',true,'inserted',inserted);
 end $$;

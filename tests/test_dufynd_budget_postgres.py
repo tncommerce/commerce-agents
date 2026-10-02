@@ -1099,8 +1099,9 @@ def test_external_branch_movement_and_pr_freshness_are_deterministic():
 
 
 def test_external_network_transport_receipt_rate_limit_etag_and_missing_credentials():
-    import psycopg
     import json
+
+    import psycopg
 
     # Fake pg_net runs the actual portable polling/receipt logic without HTTP.
     # Every fixture/config change rolls back, including temporary net/vault schemas.
@@ -1178,3 +1179,49 @@ def test_external_network_transport_receipt_rate_limit_etag_and_missing_credenti
             == "blocked_configuration"
         )
         db.rollback()
+
+
+def test_external_gmail_watermarks_never_rewind_and_same_timestamp_new_id_detected():
+    _, observer, source = external_wait(
+        "gmail",
+        policy="review",
+        baseline={"watermark_ms": "2000", "seen_message_ids": ["abcdef12"]},
+        cursor="100",
+    )
+    assert (
+        capture(observer, mail_raw(source, message="abcdef13", date="1999", history="99"))[
+            "inserted"
+        ]
+        == 0
+    )
+    assert (
+        query("select last_cursor from dufynd_external_observers where observer_id=%s", (observer,))
+        == "100"
+    )
+    assert (
+        query(
+            "select last_snapshot->>'watermark_ms' from dufynd_external_observers where observer_id=%s",
+            (observer,),
+        )
+        == "2000"
+    )
+    assert (
+        capture(observer, mail_raw(source, message="abcdef14", date="2000", history="101"))[
+            "inserted"
+        ]
+        == 1
+    )
+
+
+def test_external_concurrent_observations_persist_one_event():
+    _, observer, source = external_wait()
+    barrier = Barrier(2)
+
+    def observe(_):
+        barrier.wait(timeout=10)
+        return capture(observer, ci_raw(source))
+
+    with ThreadPoolExecutor(2) as pool:
+        results = list(pool.map(observe, range(2)))
+    assert sum(x["inserted"] for x in results) == 1
+    assert inbox_count(observer) == 1
