@@ -92,7 +92,7 @@ begin
     when m->>'status' in ('build_failed','update_failed','pre_deploy_failed','canceled') then 'failed'
     when m->>'status' in ('created','queued','build_in_progress','update_in_progress','pre_deploy_in_progress') then 'started' else null end;
    if state is not null and nullif(m->>'id','') is not null then
-    result:=result||jsonb_build_array(jsonb_build_object('event_type','render.deployment.'||state,'cursor',m->>'id'||':'||m->>'status',
+    result:=result||jsonb_build_array(jsonb_build_object('event_type','render.deployment.'||state,'cursor',(m->>'id')||':'||(m->>'status'),
     'payload',jsonb_build_object('state',state,'deployment_id',m->>'id','service_id',p_id,'sha',m->'commit'->>'id')));
    if state='live' and coalesce(m->'commit'->>'id','') ~ '^[a-f0-9]{40}$' then
      result:=result||jsonb_build_array(jsonb_build_object('event_type','render.service.commit','cursor',m->'commit'->>'id','payload',jsonb_build_object('service_id',p_id,'sha',m->'commit'->>'id')));
@@ -102,6 +102,7 @@ begin
  elsif p_type='gmail' then
   -- Native history response: only messageAdded from the explicitly registered thread.
   if coalesce(p_raw->>'historyId','') !~ '^[0-9]+$' then raise exception 'invalid Gmail history cursor'; end if;
+  if not p_raw ? 'id' and not p_raw ? 'messages' and not p_raw ? 'history' then return '[]'; end if;
   if p_raw ? 'history' then
    if jsonb_typeof(p_raw->'history') is distinct from 'array' then raise exception 'invalid history'; end if;
    if jsonb_array_length(p_raw->'history')>100 then raise exception 'bounded Gmail history required'; end if;
@@ -291,7 +292,7 @@ declare o public.dufynd_external_observers; r record; body jsonb; url text; head
 begin
  perform pg_advisory_xact_lock(hashtext('dufynd-supervisor-v2-claims'));
  update public.dufynd_external_observers set health_status='stale',last_error='observer_success_stale'
- where enabled and health_status in ('healthy','degraded') and coalesce(last_success_at,last_attempt_at,'-infinity')<now()-make_interval(secs=>greatest(600,interval_seconds*3));
+ where enabled and source_type<>'internal_dependency' and health_status in ('healthy','degraded') and coalesce(last_success_at,last_attempt_at,'-infinity')<now()-make_interval(secs=>greatest(600,interval_seconds*3));
  if to_regnamespace('net') is null then return jsonb_build_object('available',false); end if;
  for o in select * from public.dufynd_external_observers where request_id is not null for update loop
   execute 'select status_code,content,headers,timed_out,error_msg from net._http_response where id=$1' into r using o.request_id;
@@ -367,7 +368,7 @@ language sql stable security invoker set search_path=public as $$
 select coalesce(jsonb_agg(jsonb_build_object('observer_id',observer_id,'source_type',source_type,'enabled',enabled,
  'last_attempt_at',last_attempt_at,'last_success_at',last_success_at,'last_cursor',last_cursor,'last_event_at',last_event_at,
  'consecutive_failures',consecutive_failures,'next_retry_at',next_retry_at,'last_error',last_error,
- 'health_status',case when enabled and health_status in ('healthy','degraded') and coalesce(last_success_at,last_attempt_at,'-infinity')<now()-make_interval(secs=>greatest(600,interval_seconds*3)) then 'stale' else health_status end)),'[]') from public.dufynd_external_observers;
+ 'health_status',case when enabled and source_type<>'internal_dependency' and health_status in ('healthy','degraded') and coalesce(last_success_at,last_attempt_at,'-infinity')<now()-make_interval(secs=>greatest(600,interval_seconds*3)) then 'stale' else health_status end)),'[]') from public.dufynd_external_observers;
 $$;
 
 create function public.has_dufynd_durable_event_waiters() returns boolean

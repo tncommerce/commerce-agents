@@ -1048,3 +1048,133 @@ def test_external_legacy_sdk_cannot_claim_external_event():
     _, observer, source = external_wait()
     capture(observer, ci_raw(source))
     assert query("select claim_dufynd_jarvis_event()") is None
+
+
+def test_external_empty_gmail_history_is_healthy_and_retains_no_message_content():
+    _, observer, _ = external_wait("gmail", policy="review", cursor="100")
+    assert capture(observer, {"historyId": "200"})["inserted"] == 0
+    assert (
+        query("select last_cursor from dufynd_external_observers where observer_id=%s", (observer,))
+        == "200"
+    )
+    assert (
+        query(
+            "select health_status from dufynd_external_observers where observer_id=%s", (observer,)
+        )
+        == "healthy"
+    )
+
+
+def test_external_branch_movement_and_pr_freshness_are_deterministic():
+    observer = event_query(
+        "select register_dufynd_observer('github_branch','scentai-mvp','{}',%s::jsonb,%s)",
+        {"sha": "a" * 40},
+        "a" * 40,
+    )
+    assert capture(observer, {"name": "scentai-mvp", "commit": {"sha": "a" * 40}})["inserted"] == 0
+    assert capture(observer, {"name": "scentai-mvp", "commit": {"sha": "b" * 40}})["inserted"] == 1
+    assert capture(observer, {"name": "scentai-mvp", "commit": {"sha": "b" * 40}})["inserted"] == 0
+    task, _, source = external_wait()
+    pr = event_query("select register_dufynd_observer('github_pr',%s)", source)
+    assert event_query(
+        "select bind_dufynd_external_wait(%s,%s,%s::jsonb,null,'freshness')",
+        task,
+        pr,
+        ["github.pr.base_moved"],
+    )
+    raw = {
+        "number": source,
+        "state": "open",
+        "merged": False,
+        "head": {"sha": "a" * 40},
+        "base": {"ref": "scentai-mvp", "sha": "a" * 40},
+        "updated_at": "2026-10-02T00:00:00Z",
+    }
+    capture(pr, raw)
+    raw["base"]["sha"] = "b" * 40
+    capture(pr, raw)
+    query("select process_dufynd_external_events()")
+    assert task_state(task)["needs_freshness_recheck"]
+    assert task_state(task)["status"] == "waiting_external"
+
+
+def test_external_network_transport_receipt_rate_limit_etag_and_missing_credentials():
+    import psycopg
+    import json
+
+    # Fake pg_net runs the actual portable polling/receipt logic without HTTP.
+    # Every fixture/config change rolls back, including temporary net/vault schemas.
+    with psycopg.connect(DSN) as db:
+        db.execute("create schema net; create schema vault")
+        db.execute("create table vault.decrypted_secrets(name text,decrypted_secret text)")
+        db.execute(
+            "create table net._http_response(id bigint,status_code int,content text,headers jsonb,timed_out boolean,error_msg text)"
+        )
+        db.execute("create table net.requests(id bigserial,url text,headers jsonb)")
+        db.execute(
+            "create function net.http_get(url text,headers jsonb,timeout_milliseconds int) returns bigint language sql as $$ insert into net.requests(url,headers) values(url,headers) returning id $$"
+        )
+        db.execute("update dufynd_external_observers set enabled=false")
+        source = str(uuid4().int)
+        observer = db.execute(
+            "select register_dufynd_observer('github_ci',%s)", (source,)
+        ).fetchone()[0]
+        assert db.execute("select poll_dufynd_observers()").fetchone()[0]["attempted"] == 1
+        request = db.execute(
+            "select request_id from dufynd_external_observers where observer_id=%s", (observer,)
+        ).fetchone()[0]
+        db.execute(
+            'insert into net._http_response values(%s,200,%s,\'{"etag":"fixture-etag"}\',false,null)',
+            (request, json.dumps(ci_raw(source))),
+        )
+        db.execute("select poll_dufynd_observers()")
+        assert (
+            db.execute(
+                "select health_status from dufynd_external_observers where observer_id=%s",
+                (observer,),
+            ).fetchone()[0]
+            == "healthy"
+        )
+        assert (
+            db.execute(
+                "select count(*) from dufynd_jarvis_inbox where payload->>'observer_id'=%s",
+                (observer,),
+            ).fetchone()[0]
+            == 1
+        )
+        db.execute(
+            "update dufynd_external_observers set next_retry_at=now() where observer_id=%s",
+            (observer,),
+        )
+        db.execute("select poll_dufynd_observers()")
+        assert (
+            db.execute(
+                "select headers->>'If-None-Match' from net.requests order by id desc limit 1"
+            ).fetchone()[0]
+            == "fixture-etag"
+        )
+        request = db.execute(
+            "select request_id from dufynd_external_observers where observer_id=%s", (observer,)
+        ).fetchone()[0]
+        db.execute(
+            "insert into net._http_response values(%s,429,'{}','{\"retry-after\":\"300\"}',false,null)",
+            (request,),
+        )
+        db.execute("select poll_dufynd_observers()")
+        assert (
+            db.execute(
+                "select last_error from dufynd_external_observers where observer_id=%s", (observer,)
+            ).fetchone()[0]
+            == "rate_limited"
+        )
+        mail = db.execute(
+            "select register_dufynd_observer('gmail',%s,'{}','{}','100')", (uuid4().hex[:16],)
+        ).fetchone()[0]
+        db.execute("select poll_dufynd_observers()")
+        assert (
+            db.execute(
+                "select health_status from dufynd_external_observers where observer_id=%s", (mail,)
+            ).fetchone()[0]
+            == "blocked_configuration"
+        )
+        db.rollback()
