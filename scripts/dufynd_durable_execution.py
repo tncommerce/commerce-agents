@@ -35,7 +35,12 @@ def run_execution(
     tools = PacketTools(bridge, execution)
     payload = tools.packet["payload"]
     if (
-        payload.get("kind") not in ("durability_probe", "supervisor_state_audit")
+        payload.get("kind")
+        not in (
+            "durability_probe",
+            "supervisor_state_audit",
+            "purchase_destination_freshness_audit",
+        )
         or type(payload.get("steps")) is not int
         or type(payload.get("interval_seconds")) is not int
         or not 1 <= payload["steps"] <= 30
@@ -50,6 +55,15 @@ def run_execution(
         return value
 
     state = checkpoint()
+    if payload["kind"] == "purchase_destination_freshness_audit":
+        deadline = monotonic() + 90
+        while state["status"] != "verifying" and monotonic() < deadline:
+            state = checkpoint(1)
+            if state["status"] != "verifying":
+                sleep(2)
+        if state["status"] != "verifying" or not tools.call("finish_dufynd_execution"):
+            raise ExecutionFenceLost("purchase verification deferred to durable supervisor")
+        return {"execution_id": eid, "status": "completed", "real_provider_calls": 0}
     # Resume entirely from the durable cursor, never local/chat history.
     for step in range(int(state["last_checkpoint"]["step"]) + 1, payload["steps"] + 1):
         deadline = monotonic() + payload["interval_seconds"]

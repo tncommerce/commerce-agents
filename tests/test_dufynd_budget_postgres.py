@@ -47,6 +47,10 @@ def database():
         connection.execute(
             next((ROOT / "supabase/migrations").glob("*receipt_projection.sql")).read_text()
         )
+        connection.execute(
+            next((ROOT / "supabase/migrations").glob("*purchase_freshness_handler.sql")).read_text()
+        )
+        connection.execute((ROOT / "tests/sql_dufynd_purchase_net_fixture.sql").read_text())
     yield
 
 
@@ -1467,3 +1471,230 @@ def test_acceptance_receipt_projects_verified_execution_without_inventing_ci_or_
         == "live_accepted"
     )
     assert query("select count(*) from dufynd_execution_runs where task_id=%s", (task,)) == 1
+
+
+PURCHASE_OFFER = "perfumetrader-rabanne-1-million-edt-100"
+PURCHASE_HTML = (
+    '"productName":"Paco Rabanne 1 Million Eau de Toilette 100 ml",'
+    '"productSku":"16978322","productPrice":"71.9000" '
+    '<meta itemprop="gtin13" content="3349666007921" /> '
+    '<meta itemprop="availability" content="InStock" />'
+)
+PURCHASE_SHIPPING = "pauschal mit 4,99 € pro Bestellung"
+
+
+def purchase_payload():
+    return query(
+        "select jsonb_build_object('kind','purchase_destination_freshness_audit','steps',1,'interval_seconds',2,"
+        "'offer_id',offer_id,'product_id',product_id,'canonical_identity',canonical_identity,'offer_contract',offer_contract,"
+        "'last_verified_at',last_verified_at,'expiry',last_verified_at+interval '72 hours',"
+        "'verification_contract','perfumetrader_exact_html_v1','allowed_mutations','[\"verification_evidence\"]'::jsonb)"
+        " from dufynd_purchase_verification_targets where offer_id=%s",
+        (PURCHASE_OFFER,),
+    )
+
+
+def purchase_decision(html=PURCHASE_HTML, shipping=PURCHASE_SHIPPING, payload=None):
+    import json
+
+    return query(
+        "select evaluate_dufynd_purchase_page(%s::jsonb,%s,%s,200,200)",
+        (json.dumps(payload or purchase_payload()), html, shipping),
+    )["decision"]
+
+
+def test_purchase_safe_identity_refresh():
+    assert purchase_decision() == "safe_evidence_refresh"
+
+
+@pytest.mark.parametrize(
+    ("old", "new", "decision"),
+    [
+        ("71.9000", "70.9000", "price_review_required"),
+        ("InStock", "OutOfStock", "stock_unverified_or_changed"),
+        ("100 ml", "50 ml", "variant_identity_mismatch"),
+        ("Eau de Toilette", "Eau de Parfum", "variant_identity_mismatch"),
+        ("16978322", "16978323", "merchant_identity_mismatch"),
+        ("3349666007921", "3349666007891", "gtin_mismatch"),
+        ("100 ml", "100 ml Refill", "variant_identity_mismatch"),
+    ],
+)
+def test_purchase_exact_variant_price_and_stock_fail_closed(old, new, decision):
+    assert purchase_decision(PURCHASE_HTML.replace(old, new)) == decision
+
+
+def test_purchase_invalid_route_never_refreshes():
+    payload = purchase_payload()
+    payload["offer_contract"]["affiliate_url"] += "&awinmid=99999"
+    assert purchase_decision(payload=payload) == "route_contract_mismatch"
+
+
+def test_purchase_shipping_change_requires_review():
+    assert purchase_decision(shipping="Versandkosten 5,99 €") == "shipping_review_required"
+
+
+def test_purchase_fresh_offer_no_wake():
+    import psycopg
+
+    with psycopg.connect(DSN, autocommit=True) as c:
+        c.execute(
+            "update dufynd_purchase_verification_targets set enabled=true,certification_due=false,last_result=null,last_verified_at=now()"
+        )
+    assert query("select wake_dufynd_purchase_freshness()") == {"wake_events": 0}
+
+
+def test_purchase_pre_expiry_before_today_regression():
+    # The real 09-29 12:04:36 verification would wake 10-01 12:04:36,
+    # a full day before the 10-02 12:04:36 production exclusion.
+    assert query(
+        "select '2026-09-29T12:04:36Z'::timestamptz + make_interval(hours=>max_age_hours-safety_window_hours)"
+        " < '2026-10-02T12:04:36Z'::timestamptz from dufynd_purchase_verification_targets"
+    )
+    from datetime import UTC, datetime
+
+    assert query(
+        "select '2026-09-29T12:04:36Z'::timestamptz + make_interval(hours=>max_age_hours-safety_window_hours)"
+        " from dufynd_purchase_verification_targets"
+    ) == datetime(2026, 10, 1, 12, 4, 36, tzinfo=UTC)
+
+
+def test_purchase_live_chain_deduplicates_and_fences():
+    import psycopg
+
+    with psycopg.connect(DSN, autocommit=True) as c:
+        c.execute(
+            "update dufynd_purchase_verification_targets set enabled=false,certification_due=true,last_result=null"
+        )
+    assert query("select wake_dufynd_purchase_freshness()") == {"wake_events": 1}
+    assert query("select wake_dufynd_purchase_freshness()") == {"wake_events": 0}
+    query("select process_dufynd_external_events()")
+    eid = query(
+        "select execution_id from dufynd_execution_runs where task_id='purchase_freshness_acceptance_20261002'"
+    )
+    e = query("select take_dufynd_execution('999999','purchase-test',%s)", (eid,))
+    assert e["task_packet"]["payload"]["allowed_mutations"] == ["verification_evidence"]
+    assert query("select take_dufynd_execution('999998','duplicate-worker',%s)", (eid,)) is None
+    assert (
+        query("select checkpoint_dufynd_execution(%s,%s,'wrong-worker',1)", (eid, e["lease_token"]))
+        is None
+    )
+    query("select checkpoint_dufynd_execution(%s,%s,'purchase-test',1)", (eid, e["lease_token"]))
+    verified = query(
+        "select checkpoint_dufynd_execution(%s,%s,'purchase-test',1)", (eid, e["lease_token"])
+    )
+    assert verified["last_checkpoint"]["audit"]["decision"] == "safe_evidence_refresh"
+    assert query("select finish_dufynd_execution(%s,%s,'purchase-test')", (eid, e["lease_token"]))
+    assert query("select certify_dufynd_purchase_freshness(%s)", (eid,))
+    assert (
+        query(
+            "select count(*) from dufynd_purchase_verification_evidence where execution_id=%s",
+            (eid,),
+        )
+        == 1
+    )
+    assert (
+        query(
+            "select status from dufynd_autonomy_tasks where task_id='purchase_freshness_acceptance_20261002'"
+        )
+        == "done"
+    )
+
+
+def test_purchase_approaching_expiry_wake_and_chatless_recovery():
+    import psycopg
+
+    with psycopg.connect(DSN, autocommit=True) as c:
+        c.execute(
+            "update dufynd_purchase_verification_targets set enabled=true,certification_due=false,last_result=null,last_verified_at=now()-interval '49 hours'"
+        )
+    assert query("select wake_dufynd_purchase_freshness()") == {"wake_events": 1}
+    query("select process_dufynd_external_events()")
+    eid = query(
+        "select execution_id from dufynd_execution_runs where handler_id='purchase_destination_freshness_audit' and status='dispatch_pending'"
+    )
+    e = query("select take_dufynd_execution('888888','crash-worker',%s)", (eid,))
+    assert query(
+        "select fail_dufynd_execution(%s,%s,'crash-worker','simulated_crash')",
+        (eid, e["lease_token"]),
+    )
+    query("select reconcile_dufynd_executions()")
+    assert (
+        query("select checkpoint_dufynd_execution(%s,%s,'crash-worker',1)", (eid, e["lease_token"]))
+        is None
+    )
+    for _ in range(3):
+        query("select reconcile_dufynd_executions()")
+    final = query(
+        "select row_to_json(e)::jsonb from dufynd_execution_runs e where execution_id=%s", (eid,)
+    )
+    assert final["status"] == "completed"
+    assert final["worker_type"] == "deterministic_supervisor"
+    assert final["packet_hash"] == e["packet_hash"]
+    assert final["recovery_count"] >= 1
+    assert (
+        query(
+            "select count(*) from dufynd_purchase_verification_evidence where execution_id=%s",
+            (eid,),
+        )
+        == 1
+    )
+
+
+def test_purchase_unknown_capability_cannot_dispatch():
+    import json
+
+    import psycopg
+
+    tid = f"purchase-unknown-{uuid4()}"
+    resources = f'["db:purchase-evidence:{PURCHASE_OFFER}"]'
+    with psycopg.connect(DSN, autocommit=True) as c:
+        c.execute(
+            "insert into dufynd_autonomy_tasks(task_id,domain,title,instruction,status,budget_class,durability_policy,resource_scope,required_capabilities) values(%s,'supervisor','test','test','ready','free','durable',%s::jsonb,'[\"unknown.capability\"]')",
+            (tid, resources),
+        )
+    denied = query(
+        "select prepare_dufynd_execution(%s,%s,'supervisor',%s::jsonb,%s::jsonb,'durable')",
+        (tid, tid, resources, json.dumps(purchase_payload())),
+    )
+    assert not denied["allowed"]
+    assert query("select count(*) from dufynd_execution_runs where task_id=%s", (tid,)) == 0
+
+
+def test_purchase_concurrent_same_offer_has_one_owner():
+    import json
+
+    payload = json.dumps(purchase_payload())
+    resource = f'["db:purchase-evidence:{PURCHASE_OFFER}"]'
+    tids = [f"purchase-concurrent-{uuid4()}" for _ in range(2)]
+    barrier = Barrier(2)
+
+    def claim(tid):
+        barrier.wait()
+        return query(
+            "select prepare_dufynd_execution(%s,%s,'supervisor',%s::jsonb,%s::jsonb,'durable')",
+            (tid, tid, resource, payload),
+        )
+
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        outcomes = list(pool.map(claim, tids))
+    assert sum(x["allowed"] for x in outcomes) == 1
+    winner = next(x["execution"] for x in outcomes if x["allowed"])
+    for _ in range(3):
+        query("select reconcile_dufynd_executions()")
+    assert (
+        query(
+            "select status from dufynd_execution_runs where execution_id=%s",
+            (winner["execution_id"],),
+        )
+        == "completed"
+    )
+
+
+def test_purchase_non_200_never_creates_safe_evidence():
+    import json
+
+    result = query(
+        "select evaluate_dufynd_purchase_page(%s::jsonb,%s,%s,403,200)",
+        (json.dumps(purchase_payload()), PURCHASE_HTML, PURCHASE_SHIPPING),
+    )
+    assert result["decision"] == "transport_unverified"

@@ -191,7 +191,12 @@ class MerchantOfferStore:
 
         raw = json.loads(self.path.read_text(encoding="utf-8"))
         rows = raw.get("offers", raw if isinstance(raw, list) else [])
-        return [MerchantOffer.model_validate(row) for row in rows]
+        from .purchase_freshness import apply_evidence, evidence_for
+
+        return [
+            MerchantOffer.model_validate(apply_evidence(row, evidence_for(row["offer_id"])))
+            for row in rows
+        ]
 
     def offers_for(
         self,
