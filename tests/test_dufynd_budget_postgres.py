@@ -50,7 +50,6 @@ def database():
         connection.execute(
             next((ROOT / "supabase/migrations").glob("*purchase_freshness_handler.sql")).read_text()
         )
-        connection.execute((ROOT / "tests/sql_dufynd_purchase_net_fixture.sql").read_text())
     yield
 
 
@@ -1473,6 +1472,15 @@ def test_acceptance_receipt_projects_verified_execution_without_inventing_ci_or_
     assert query("select count(*) from dufynd_execution_runs where task_id=%s", (task,)) == 1
 
 
+@pytest.fixture(scope="module")
+def purchase_net(database):
+    import psycopg
+
+    with psycopg.connect(DSN, autocommit=True) as connection:
+        connection.execute((ROOT / "tests/sql_dufynd_purchase_net_fixture.sql").read_text())
+    yield
+
+
 PURCHASE_OFFER = "perfumetrader-rabanne-1-million-edt-100"
 PURCHASE_HTML = (
     '"productName":"Paco Rabanne 1 Million Eau de Toilette 100 ml",'
@@ -1503,7 +1511,7 @@ def purchase_decision(html=PURCHASE_HTML, shipping=PURCHASE_SHIPPING, payload=No
     )["decision"]
 
 
-def test_purchase_safe_identity_refresh():
+def test_purchase_safe_identity_refresh(purchase_net):
     assert purchase_decision() == "safe_evidence_refresh"
 
 
@@ -1519,21 +1527,21 @@ def test_purchase_safe_identity_refresh():
         ("100 ml", "100 ml Refill", "variant_identity_mismatch"),
     ],
 )
-def test_purchase_exact_variant_price_and_stock_fail_closed(old, new, decision):
+def test_purchase_exact_variant_price_and_stock_fail_closed(purchase_net, old, new, decision):
     assert purchase_decision(PURCHASE_HTML.replace(old, new)) == decision
 
 
-def test_purchase_invalid_route_never_refreshes():
+def test_purchase_invalid_route_never_refreshes(purchase_net):
     payload = purchase_payload()
     payload["offer_contract"]["affiliate_url"] += "&awinmid=99999"
     assert purchase_decision(payload=payload) == "route_contract_mismatch"
 
 
-def test_purchase_shipping_change_requires_review():
+def test_purchase_shipping_change_requires_review(purchase_net):
     assert purchase_decision(shipping="Versandkosten 5,99 €") == "shipping_review_required"
 
 
-def test_purchase_fresh_offer_no_wake():
+def test_purchase_fresh_offer_no_wake(purchase_net):
     import psycopg
 
     with psycopg.connect(DSN, autocommit=True) as c:
@@ -1543,7 +1551,7 @@ def test_purchase_fresh_offer_no_wake():
     assert query("select wake_dufynd_purchase_freshness()") == {"wake_events": 0}
 
 
-def test_purchase_pre_expiry_before_today_regression():
+def test_purchase_pre_expiry_before_today_regression(purchase_net):
     # The real 09-29 12:04:36 verification would wake 10-01 12:04:36,
     # a full day before the 10-02 12:04:36 production exclusion.
     assert query(
@@ -1558,7 +1566,7 @@ def test_purchase_pre_expiry_before_today_regression():
     ) == datetime(2026, 10, 1, 12, 4, 36, tzinfo=UTC)
 
 
-def test_purchase_live_chain_deduplicates_and_fences():
+def test_purchase_live_chain_deduplicates_and_fences(purchase_net):
     import psycopg
 
     with psycopg.connect(DSN, autocommit=True) as c:
@@ -1600,7 +1608,7 @@ def test_purchase_live_chain_deduplicates_and_fences():
     )
 
 
-def test_purchase_approaching_expiry_wake_and_chatless_recovery():
+def test_purchase_approaching_expiry_wake_and_chatless_recovery(purchase_net):
     import psycopg
 
     with psycopg.connect(DSN, autocommit=True) as c:
@@ -1640,7 +1648,7 @@ def test_purchase_approaching_expiry_wake_and_chatless_recovery():
     )
 
 
-def test_purchase_unknown_capability_cannot_dispatch():
+def test_purchase_unknown_capability_cannot_dispatch(purchase_net):
     import json
 
     import psycopg
@@ -1660,7 +1668,7 @@ def test_purchase_unknown_capability_cannot_dispatch():
     assert query("select count(*) from dufynd_execution_runs where task_id=%s", (tid,)) == 0
 
 
-def test_purchase_concurrent_same_offer_has_one_owner():
+def test_purchase_concurrent_same_offer_has_one_owner(purchase_net):
     import json
 
     payload = json.dumps(purchase_payload())
@@ -1690,7 +1698,7 @@ def test_purchase_concurrent_same_offer_has_one_owner():
     )
 
 
-def test_purchase_non_200_never_creates_safe_evidence():
+def test_purchase_non_200_never_creates_safe_evidence(purchase_net):
     import json
 
     result = query(
