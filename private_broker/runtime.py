@@ -392,11 +392,21 @@ def create_app(config: Config, vault: EncryptedVault, transport: FixedTransport,
 
     @app.get("/oauth/gmail/callback")
     def callback(request: Request):
+        allowed = {
+            "state",
+            "code",
+            "scope",
+            "authuser",
+            "prompt",
+            "error",
+            "error_description",
+            "iss",
+        }
         if (
-            set(request.query_params)
-            - {"state", "code", "scope", "authuser", "prompt", "error", "error_description"}
+            set(request.query_params) - allowed
             or len(request.query_params.getlist("state")) != 1
             or len(request.query_params.getlist("code")) != 1
+            or request.query_params.getlist("iss") != ["https://accounts.google.com"]
         ):
             raise BrokerError("invalid_response")
         return oauth.callback(request.query_params["state"], request.query_params["code"])

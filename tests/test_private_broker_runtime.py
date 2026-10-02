@@ -105,6 +105,41 @@ def authorize(oauth):
     return query["state"][0]
 
 
+def test_callback_accepts_google_issuer_and_rejects_other_issuers():
+    vault, oauth, transport = setup(handler)
+    client = TestClient(
+        create_app(CONFIG, vault, transport, SimpleNamespace(verify=lambda token: None))
+    )
+    query = parse_qs(urlsplit(oauth.start()["authorization_url"]).query)
+    response = client.get(
+        "/oauth/gmail/callback",
+        params={
+            "state": query["state"][0],
+            "code": "code-canary",
+            "iss": "https://accounts.google.com",
+        },
+    )
+    assert response.status_code == 200
+    assert response.json() == {"status": "authorized"}
+
+    vault, oauth, transport = setup(handler)
+    client = TestClient(
+        create_app(CONFIG, vault, transport, SimpleNamespace(verify=lambda token: None))
+    )
+    query = parse_qs(urlsplit(oauth.start()["authorization_url"]).query)
+    response = client.get(
+        "/oauth/gmail/callback",
+        params={
+            "state": query["state"][0],
+            "code": "code-canary",
+            "iss": "https://evil.example",
+        },
+    )
+    assert response.status_code == 403
+    assert response.json() == {"error": "invalid_response"}
+    assert vault.read("gmail_known_threads")[1] is None
+
+
 def test_oauth_pkce_replay_encryption():
     def check(request):
         if request.url.path == "/token":
