@@ -44,6 +44,9 @@ def database():
         connection.execute(
             next((ROOT / "supabase/migrations").glob("*state_audit_handler.sql")).read_text()
         )
+        connection.execute(
+            next((ROOT / "supabase/migrations").glob("*receipt_projection.sql")).read_text()
+        )
     yield
 
 
@@ -1432,3 +1435,35 @@ def test_supervisor_state_audit_requires_live_certification_and_persists_readonl
         (str(uuid4()), str(uuid4()), json.dumps(payload)),
     )
     assert not other["allowed"]
+
+
+def test_acceptance_receipt_projects_verified_execution_without_inventing_ci_or_duplicates():
+    import json
+
+    task, result = durable_fixture()
+    e = take_execution(result["execution"])
+    for step in range(1, 4):
+        execution_checkpoint(e, step)
+    assert finish_execution(e)
+    key = "jarvis.capability_packet.acceptance"
+    query(
+        "insert into dufynd_master_status(key,value) values(%s,%s::jsonb) on conflict(key) do update set value=excluded.value returning key",
+        (key, json.dumps({"status": "armed", "task_id": task, "execution_id": e["execution_id"]})),
+    )
+    assert query("select project_dufynd_acceptance_receipts()")["projected"] >= 1
+    receipt = query("select value from dufynd_master_status where key=%s", (key,))
+    assert receipt["status"] == "live_execution_verified"
+    assert receipt["execution_receipt"]["execution_verified"]
+    assert receipt["execution_receipt"]["lease_released"]
+    assert not receipt["execution_receipt"]["ci_acceptance_inferred"]
+    assert query("select project_dufynd_acceptance_receipts()")["projected"] == 0
+    query(
+        'update dufynd_master_status set value=value||\'{"status":"live_accepted"}\' where key=%s returning key',
+        (key,),
+    )
+    query("select project_dufynd_acceptance_receipts()")
+    assert (
+        query("select value->>'status' from dufynd_master_status where key=%s", (key,))
+        == "live_accepted"
+    )
+    assert query("select count(*) from dufynd_execution_runs where task_id=%s", (task,)) == 1

@@ -40,3 +40,15 @@ implementations should be reused rather than duplicated. Before third-party or
 arbitrary worker admission, the task-scoped credential boundary needs an explicit
 security design and owner decision; the current trusted Actions service-role runner
 is not an untrusted code sandbox.
+
+
+## Automatic acceptance receipt projection
+
+The existing watchdog projects terminal execution facts into the three phase
+acceptance keys. An armed receipt becomes live_execution_verified only after the
+execution checkpoint is verified, the Task done and lease released. Failed/recovery
+states remain technical, never human escalations. A repeated projection is a no-op
+and cannot create an execution. Already recorded live_accepted remains accepted;
+the projector never infers CI/deployment/event acceptance from a worker exit code.
+This closes the observed Phase2C armed-status drift with no additional HTTP calls,
+queue, model or periodic runner. Further sources retain their credential blockers.
