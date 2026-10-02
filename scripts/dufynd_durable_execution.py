@@ -40,6 +40,7 @@ def run_execution(
             "durability_probe",
             "supervisor_state_audit",
             "purchase_destination_freshness_audit",
+            "ci_pr_verifier",
         )
         or type(payload.get("steps")) is not int
         or type(payload.get("interval_seconds")) is not int

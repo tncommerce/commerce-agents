@@ -55,6 +55,9 @@ def database():
                 (ROOT / "supabase/migrations").glob("*purchase_acceptance_receipt.sql")
             ).read_text()
         )
+        connection.execute(
+            next((ROOT / "supabase/migrations").glob("*ci_pr_verifier.sql")).read_text()
+        )
     yield
 
 
@@ -1750,3 +1753,204 @@ def test_purchase_acceptance_receipt_projects_existing_evidence(purchase_net):
     assert receipt["execution_receipt"]["lease_released"]
     assert receipt["execution_receipt"]["report_hash"]
     assert query("select project_dufynd_acceptance_receipts()")["projected"] == 0
+
+
+def ci_pr_target(*, acceptance=False):
+    pr = str(100000 + uuid4().int % 800000000)
+    run = str(10000000000 + uuid4().int % 80000000000)
+    scheduled = query(
+        "select schedule_dufynd_ci_pr_verification(%s,%s,%s,%s,%s)",
+        (pr, run, "a" * 40, "b" * 40, acceptance),
+    )
+    assert scheduled["scheduled"]
+    payload = task_state(scheduled["task_id"])["durable_payload"]
+    pr_raw = {
+        "number": int(pr),
+        "merged": True,
+        "state": "closed",
+        "base": {"ref": "scentai-mvp", "sha": "a" * 40},
+        "head": {"sha": "b" * 40},
+        "merge_commit_sha": "a" * 40,
+        "updated_at": "2026-10-02T13:00:00Z",
+    }
+    capture("github_pr:" + pr, pr_raw)
+    capture("github_ci:" + run, ci_raw(run))
+    return scheduled["task_id"], payload, pr_raw
+
+
+@pytest.fixture(scope="module")
+def ci_pr_admitted():
+    assert not query(
+        "select schedule_dufynd_ci_pr_verification('623','37014817569',%s,%s)", ("a" * 40, "b" * 40)
+    )["scheduled"]
+    task, payload, raw = ci_pr_target(acceptance=True)
+    assert query("select process_dufynd_external_events()")
+    query("select reconcile_dufynd_executions()")
+    e = query("select to_jsonb(e) from dufynd_execution_runs e where task_id=%s", (task,))
+    assert e["status"] == "completed"
+    assert e["last_checkpoint"]["audit"]["decision"] == "verified"
+    assert query("select certify_dufynd_ci_pr_verifier(%s)", (e["execution_id"],))
+    return e
+
+
+def test_ci_pr_free_acceptance_registry_receipt_and_packet(ci_pr_admitted):
+    import json
+
+    e = ci_pr_admitted
+    assert e["worker_type"] == "deterministic_supervisor"
+    assert task_state(e["task_id"])["released_at"]
+    assert e["task_packet"]["required_capabilities"] == [
+        "github.ci.observe",
+        "github.read",
+        "supabase.execution_state",
+        "supabase.task_state",
+    ]
+    assert e["last_checkpoint"]["audit"]["deployment_verified"] is False
+    query(
+        "insert into dufynd_master_status(key,value) values('jarvis.ci_pr_verifier.acceptance',%s::jsonb) returning key",
+        (
+            json.dumps(
+                {
+                    "task_id": e["task_id"],
+                    "execution_id": e["execution_id"],
+                    "status": "live_accepted",
+                }
+            ),
+        ),
+    )
+    query("select project_dufynd_acceptance_receipts()")
+    receipt = query(
+        "select value->'execution_receipt' from dufynd_master_status where key='jarvis.ci_pr_verifier.acceptance'"
+    )
+    assert receipt["execution_verified"] and receipt["dispatch_count"] == 1
+    assert receipt["report_hash"] == e["last_checkpoint"]["audit_hash"]
+    assert not receipt["ci_acceptance_inferred"]
+
+
+@pytest.mark.parametrize(
+    "change,decision",
+    [
+        ("pr_head", "pr_sha_mismatch"),
+        ("pr_merge", "pr_sha_mismatch"),
+        ("ci_sha", "ci_sha_mismatch"),
+        ("ci_failed", "ci_not_successful"),
+        ("ci_queued", "ci_not_successful"),
+        ("pr_open", "pr_not_merged_to_integration"),
+        ("stale", "source_unverified_or_stale"),
+        ("unhealthy", "source_unverified_or_stale"),
+    ],
+)
+def test_ci_pr_exact_truth_fail_closed(ci_pr_admitted, change, decision):
+    import json
+
+    task, payload, raw = ci_pr_target()
+    run = payload["ci_run_id"]
+    if change in ("pr_head", "pr_merge", "pr_open"):
+        if change == "pr_head":
+            raw["head"]["sha"] = "c" * 40
+        if change == "pr_merge":
+            raw["merge_commit_sha"] = "c" * 40
+        if change == "pr_open":
+            raw.update(merged=False, state="open")
+        capture("github_pr:" + payload["pr_number"], raw)
+    if change == "ci_sha":
+        capture("github_ci:" + run, ci_raw(run, sha="c" * 40))
+    if change == "ci_failed":
+        capture("github_ci:" + run, ci_raw(run, conclusion="failure"))
+    if change == "ci_queued":
+        capture("github_ci:" + run, ci_raw(run, state="queued", conclusion=None))
+    if change == "stale":
+        query(
+            "update dufynd_external_observers set last_success_at=now()-interval '21 minutes' where observer_id=%s returning true",
+            ("github_ci:" + run,),
+        )
+    if change == "unhealthy":
+        query("select dufynd_observer_failure(%s,'transport_failure',500)", ("github_ci:" + run,))
+    report = query("select read_dufynd_ci_pr_audit(%s::jsonb)", (json.dumps(payload),))
+    assert report["decision"] == decision
+    assert not report["approvals_inferred"] and not report["business_mutations"]
+    # Retire this isolated fixture target before later global event reevaluation.
+    query("update dufynd_autonomy_tasks set status='done' where task_id=%s returning true", (task,))
+
+
+@pytest.mark.parametrize("pr", ["1", "598", "0", "main", "622;select 1"])
+def test_ci_pr_protected_or_invalid_targets_not_scheduled(ci_pr_admitted, pr):
+    assert not query(
+        "select schedule_dufynd_ci_pr_verification(%s,'37014817569',%s,%s)",
+        (pr, "a" * 40, "b" * 40),
+    )["scheduled"]
+
+
+def test_ci_pr_main_and_wrong_workflow_rejected(ci_pr_admitted):
+    import psycopg
+
+    task, payload, raw = ci_pr_target()
+    raw["base"]["ref"] = "main"
+    with pytest.raises(psycopg.errors.RaiseException, match="PR identity mismatch"):
+        capture("github_pr:" + payload["pr_number"], raw)
+    bad = ci_raw(payload["ci_run_id"])
+    bad["path"] = ".github/workflows/not-ci.yml"
+    with pytest.raises(psycopg.errors.RaiseException, match="CI workflow mismatch"):
+        capture("github_ci:" + payload["ci_run_id"], bad)
+    query("update dufynd_autonomy_tasks set status='done' where task_id=%s returning true", (task,))
+
+
+def test_ci_pr_duplicate_event_schedule_and_chatless_completion(ci_pr_admitted):
+    task, payload, raw = ci_pr_target()
+    again = query(
+        "select schedule_dufynd_ci_pr_verification(%s,%s,%s,%s)",
+        tuple(
+            payload[k]
+            for k in ("pr_number", "ci_run_id", "expected_merge_sha", "expected_pr_head_sha")
+        ),
+    )
+    assert again["reused"] and again["task_id"] == task
+    assert capture("github_pr:" + payload["pr_number"], raw)["inserted"] == 0
+    query("select process_dufynd_external_events()")
+    query("select process_dufynd_external_events()")
+    query("select reconcile_dufynd_executions()")
+    e = query("select to_jsonb(e) from dufynd_execution_runs e where task_id=%s", (task,))
+    assert e["status"] == "completed" and task_state(task)["status"] == "done"
+    assert query("select count(*) from dufynd_execution_runs where task_id=%s", (task,)) == 1
+    assert (
+        query(
+            "select count(*) from dufynd_ci_pr_verification_evidence where execution_id=%s",
+            (e["execution_id"],),
+        )
+        == 1
+    )
+
+
+def test_ci_pr_changed_ci_after_dispatch_blocks_completion(ci_pr_admitted):
+    task, payload, raw = ci_pr_target()
+    query("select process_dufynd_external_events()")
+    capture("github_ci:" + payload["ci_run_id"], ci_raw(payload["ci_run_id"], conclusion="failure"))
+    query("select reconcile_dufynd_executions()")
+    assert task_state(task)["status"] == "blocked"
+    assert task_state(task)["blocked_reason"] == "ci_not_successful"
+
+
+def test_ci_pr_unknown_capability_prevents_dispatch(ci_pr_admitted):
+    task, payload, raw = ci_pr_target()
+    query(
+        "update dufynd_autonomy_tasks set required_capabilities='[\"github.unknown\"]' where task_id=%s returning true",
+        (task,),
+    )
+    query("select process_dufynd_external_events()")
+    assert query("select count(*) from dufynd_execution_runs where task_id=%s", (task,)) == 0
+
+
+def test_ci_pr_crash_rotates_fence_and_resumes_same_packet(ci_pr_admitted):
+    task, payload, raw = ci_pr_target()
+    query("select process_dufynd_external_events()")
+    e = query("select to_jsonb(e) from dufynd_execution_runs e where task_id=%s", (task,))
+    e = take_execution(e)
+    force_execution_expired(e)
+    query("select reconcile_dufynd_executions()")
+    assert execution_checkpoint(e, 1) is None
+    query("select reconcile_dufynd_executions()")
+    finished = execution_state(e)
+    assert finished["status"] == "completed"
+    assert finished["packet_hash"] == e["packet_hash"]
+    assert finished["recovery_count"] == 1
+    assert task_state(task)["released_at"]
