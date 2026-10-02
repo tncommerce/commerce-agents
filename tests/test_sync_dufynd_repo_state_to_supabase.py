@@ -91,7 +91,7 @@ def test_build_sync_plan_creates_snapshot_and_stable_domain_tasks() -> None:
     assert commerce["requires_human_approval"] is False
     assert commerce["dependencies"] == ["approved_images_incomplete"]
 
-    assert content["status"] == "waiting_human_input"
+    assert content["status"] == "waiting_external"
     assert content["priority"] == 90
     assert content["requires_human_approval"] is False
 
@@ -156,3 +156,34 @@ def test_build_sync_plan_requires_fingerprint() -> None:
         assert "source_fingerprint_sha256" in str(exc)
     else:
         raise AssertionError("expected missing fingerprint to fail")
+
+
+def test_same_fingerprint_sync_repairs_false_technical_human_gate():
+    bridge = RecordingBridge(
+        existing_tasks={
+            "repo_current_content": {
+                "status": "waiting_human_input",
+                "requires_human_approval": False,
+                "evidence": "source_fingerprint_sha256=abc123; manual observations pending",
+            }
+        }
+    )
+    apply_sync_plan(bridge, build_sync_plan(sample_repo_status()))
+    content = next(t for t in bridge.tasks if t["task_id"] == "repo_current_content")
+    assert content["status"] == "waiting_external"
+    assert "manual observations pending" in content["evidence"]
+
+
+def test_sync_preserves_explicit_typed_owner_gate():
+    bridge = RecordingBridge(
+        existing_tasks={
+            "repo_current_content": {
+                "status": "waiting_human_input",
+                "blocked_reason": "owner_decision",
+                "evidence": "source_fingerprint_sha256=abc123; actual decision required",
+            }
+        }
+    )
+    apply_sync_plan(bridge, build_sync_plan(sample_repo_status()))
+    content = next(t for t in bridge.tasks if t["task_id"] == "repo_current_content")
+    assert content["status"] == "waiting_human_input"

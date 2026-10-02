@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
+from scripts.dufynd_jarvis_control_plane import HUMAN_REASONS
 
 DEFAULT_REPO_STATUS_PATH = Path("examples/retail/data/scentai_jarvis_master_status.json")
 SNAPSHOT_KEY = "jarvis.repo_state_snapshot"
@@ -42,10 +43,12 @@ def _task_state(domain_state: dict[str, Any]) -> tuple[str, bool]:
         return "approval_required", True
     if execution_state == "work_available" and action_class == "auto_allowed":
         return "ready", False
-    if execution_state in {"manual_step_pending", "waiting_human_input"}:
+    if execution_state == "waiting_human_input":
         return "waiting_human_input", False
+    if execution_state == "manual_step_pending":
+        return "waiting_external", False
     if action_class.startswith("manual_"):
-        return "waiting_human_input", False
+        return "waiting_external", False
     if execution_state in {"waiting_external", "blocked_external"}:
         return "waiting_external", False
     if not domain_state.get("next_action"):
@@ -139,6 +142,22 @@ def _preserve_same_fingerprint_state(
         return task
 
     existing_status = str(existing.get("status") or "")
+    if (
+        existing_status == "waiting_human_input"
+        and task.get("status") == "waiting_external"
+        and not task.get("requires_human_approval")
+        and not existing.get("requires_human_approval")
+        and existing.get("blocked_reason") not in HUMAN_REASONS
+        and str(task.get("approval_action_type") or "").startswith("manual_")
+    ):
+        reconciled = dict(task)
+        reconciled["evidence"] = (
+            str(existing.get("evidence") or task.get("evidence") or "")
+            + "\n"
+            + str(task.get("evidence") or "")
+            + "\nSupervisor V2: technical reconciliation awaits external observations; no explicit owner decision encoded."
+        )[-12000:]
+        return reconciled
     if existing_status not in PRESERVED_SAME_FINGERPRINT_STATUSES:
         return task
     if not _evidence_has_fingerprint(existing.get("evidence"), fingerprint):
