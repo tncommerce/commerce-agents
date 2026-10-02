@@ -34,11 +34,16 @@ def validate_packet(execution: dict[str, Any]) -> dict[str, Any]:
     capabilities = (
         CAPABILITIES if handler == "durability_probe" else CAPABILITIES | {"supabase.task_state"}
     )
-    verification = (
-        "arithmetic_checkpoint" if handler == "durability_probe" else "supervisor_state_audit"
-    )
+    if handler == "purchase_destination_freshness_audit":
+        capabilities |= {"commerce.read", "commerce.verify_exact", "commerce.evidence.write"}
+    verification = "arithmetic_checkpoint" if handler == "durability_probe" else handler
     if (
-        handler not in ("durability_probe", "supervisor_state_audit")
+        handler
+        not in (
+            "durability_probe",
+            "supervisor_state_audit",
+            "purchase_destination_freshness_audit",
+        )
         or packet.get("handler_version") != "1"
         or execution.get("handler_id") != packet["handler_id"]
         or execution.get("handler_version") != packet["handler_version"]
@@ -63,6 +68,15 @@ def validate_packet(execution: dict[str, Any]) -> dict[str, Any]:
         != {"kind": "supervisor_state_audit", "steps": 1, "interval_seconds": 2}
     ):
         raise ValueError("uncertified_audit_resource_or_payload")
+    if handler == "purchase_destination_freshness_audit" and (
+        packet["allowed_resources"]
+        != ["db:purchase-evidence:perfumetrader-rabanne-1-million-edt-100"]
+        or packet["explicit_scope"] != "supervisor"
+        or packet["payload"].get("offer_id") != "perfumetrader-rabanne-1-million-edt-100"
+        or packet["payload"].get("verification_contract") != "perfumetrader_exact_html_v1"
+        or packet["payload"].get("allowed_mutations") != ["verification_evidence"]
+    ):
+        raise ValueError("uncertified_purchase_resource_or_payload")
     return packet
 
 
