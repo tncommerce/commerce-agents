@@ -1,0 +1,72 @@
+{
+  "version": "2026-10-02.v1",
+  "reviewed_at": "2026-10-02T08:30:00Z",
+  "expires_at": "2026-10-03T00:00:00Z",
+  "contracts": {
+    "anthropic-sonnet5-direct-v1": {
+      "provider": "anthropic",
+      "model": "claude-sonnet-5",
+      "simulation_only": false,
+      "max_input_tokens": 4096,
+      "max_output_tokens": 256,
+      "output_includes_reasoning": true,
+      "input_bound_certified": false,
+      "unit_price_ceiling_certified": false,
+      "tokenizer": "BOUND_UNKNOWN",
+      "input_usd_per_token": "0.000002",
+      "output_usd_per_token": "0.000010",
+      "blockers": [
+        "count_tokens_is_estimate_without_documented_error_bound",
+        "published_tariff_is_not_request_bound_max_price"
+      ],
+      "sources": [
+        "https://platform.claude.com/docs/en/build-with-claude/token-counting",
+        "https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost",
+        "https://platform.claude.com/docs/en/models/sonnet-5/overview",
+        "https://platform.claude.com/docs/en/about-claude/pricing"
+      ],
+      "hard_output_limit": true
+    },
+    "openrouter-sonnet5-candidate-v1": {
+      "provider": "openrouter",
+      "model": "anthropic/claude-sonnet-5",
+      "simulation_only": false,
+      "max_input_tokens": 4096,
+      "max_output_tokens": 256,
+      "output_includes_reasoning": false,
+      "input_bound_certified": false,
+      "unit_price_ceiling_certified": false,
+      "tokenizer": "BOUND_UNKNOWN",
+      "input_usd_per_token": null,
+      "output_usd_per_token": null,
+      "blockers": [
+        "max_price_filters_provider_tariffs_but_no_verified_exact_input_count",
+        "all_request_fees_and_reasoning_semantics_not_certified_for_this_route"
+      ],
+      "sources": [
+        "https://openrouter.ai/docs/guides/routing/provider-selection",
+        "https://openrouter.ai/docs/api-reference/parameters"
+      ],
+      "hard_output_limit": false
+    },
+    "simulated-messages-v1": {
+      "provider": "anthropic",
+      "model": "fixture-byte-model-v1",
+      "simulation_only": true,
+      "max_input_tokens": 128,
+      "max_output_tokens": 64,
+      "output_includes_reasoning": true,
+      "input_bound_certified": true,
+      "unit_price_ceiling_certified": true,
+      "tokenizer": "fixture-utf8-byte-plus-8-v1",
+      "input_usd_per_token": "0.000002",
+      "output_usd_per_token": "0.000010",
+      "blockers": [],
+      "sources": [
+        "tests:deterministic_fixture_only_not_a_provider_claim"
+      ],
+      "expires_at": "9999-12-31T00:00:00Z",
+      "hard_output_limit": true
+    }
+  }
+}

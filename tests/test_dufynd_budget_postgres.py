@@ -185,3 +185,183 @@ def test_old_budget_approval_cannot_authorize_paid_contract():
     r = reserve(f)
     assert not r["allowed"] and r["reason"] == "new_budget_approval_required"
     assert query("select count(*) from dufynd_budget_reservations where budget_id=%s", (f[0],)) == 0
+
+
+class ProviderPostgresStore:
+    """Existing production RPCs against the ephemeral CI database; no approval."""
+
+    def __init__(self, f, fault=None):
+        self.f, self.fault = f, fault
+
+    def reserve_model_call(self, **p):
+        return query(
+            "select reserve_dufynd_model_call(%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+            tuple(
+                p[k]
+                for k in (
+                    "budget_id",
+                    "task_id",
+                    "owner",
+                    "lease_token",
+                    "idempotency_key",
+                    "request_hash",
+                    "contract_id",
+                    "max_usd",
+                    "ttl_seconds",
+                )
+            ),
+        )
+
+    def dispatch_model_call(self, reservation_id, lease_token):
+        if self.fault == "before_dispatch":
+            raise RuntimeError("worker crash after reserve before dispatch")
+        result = query("select dispatch_dufynd_model_call(%s,%s)", (reservation_id, lease_token))
+        if self.fault == "dispatch_response_lost":
+            raise RuntimeError("dispatch acknowledgement lost")
+        return result
+
+    def settle_model_call(self, reservation_id, lease_token, actual_usd, evidence):
+        import json
+
+        if self.fault == "before_settlement":
+            raise RuntimeError("response received worker crash before settlement")
+        return query(
+            "select settle_dufynd_model_call(%s,%s,%s,%s::jsonb)",
+            (reservation_id, lease_token, actual_usd, json.dumps(evidence)),
+        )
+
+    def update_worker(self, task_id, state, **kwargs):
+        token = dict(self.f[2])[task_id]
+        assert query(
+            "select update_dufynd_worker_v2(%s,%s,%s,%s,%s)",
+            (task_id, token, state, kwargs.get("evidence"), kwargs.get("reason")),
+        )
+
+
+def provider_canary_fixture(cap="0.000896", workers=1):
+    import json
+
+    import httpx
+    import psycopg
+    from scripts.dufynd_messages_transport import SimulatedMessagesProvider
+    from scripts.dufynd_provider_contract import (
+        build_bounded_request,
+        calculate_worst_case_cost,
+        load_contract,
+    )
+
+    c = load_contract("simulated-messages-v1")
+    request = build_bounded_request(c, system="test", prompt="fully simulated canary")
+    f = fixture(cap=cap, maximum=str(calculate_worst_case_cost(c)), workers=workers)
+    with psycopg.connect(DSN, autocommit=True) as db:
+        db.execute(
+            "insert into dufynd_provider_contracts values(%s,%s,%s,true,true,%s::jsonb,now()+interval '1 hour') on conflict do nothing",
+            (
+                c.contract_id,
+                c.model,
+                str(calculate_worst_case_cost(c)),
+                json.dumps({"catalog_digest": c.catalog_digest, "simulation_only": True}),
+            ),
+        )
+        db.execute(
+            "update dufynd_jarvis_budget_windows set model=%s where budget_id=%s", (c.model, f[0])
+        )
+
+    def handler(wire):
+        assert wire.content == request.payload
+        assert (
+            query("select status from dufynd_budget_reservations where budget_id=%s", (f[0],))
+            == "dispatched"
+        )
+        return httpx.Response(
+            200,
+            json={
+                "id": "mock-receipt",
+                "model": c.model,
+                "content": [{"type": "text", "text": "offline"}],
+                "usage": {"input_tokens": request.input_tokens, "output_tokens": 8},
+            },
+        )
+
+    return f, request, SimulatedMessagesProvider(c, httpx.MockTransport(handler))
+
+
+def execute_provider_canary(f, request, provider, store, worker=0, key="canary"):
+    from scripts.dufynd_bounded_provider import BoundedProviderAdapter
+
+    task, token = f[2][worker]
+    return BoundedProviderAdapter(store, provider).execute(
+        request,
+        budget_id=f[0],
+        task_id=task,
+        worker_owner="test",
+        lease_token=token,
+        idempotency_key=key,
+    )
+
+
+def test_simulated_canary_real_reservation_to_http_mock_to_settlement():
+    from scripts.dufynd_bounded_provider import BudgetGate
+
+    f, request, provider = provider_canary_fixture()
+    store = ProviderPostgresStore(f)
+    result = execute_provider_canary(f, request, provider, store)
+    status = query("select get_dufynd_jarvis_budget_status(%s)", (f[0],))
+    assert Decimal(str(status["spent_usd"])) == result.cost_usd
+    assert status["reserved_unsettled_usd"] == 0
+    assert Decimal(str(status["remaining_usd"])) == Decimal("0.000896") - result.cost_usd
+    with pytest.raises(BudgetGate):
+        execute_provider_canary(f, request, provider, store)
+    assert provider.calls == 1
+    assert (
+        query(
+            "select approved_decision_id from dufynd_jarvis_budget_windows where budget_id=%s",
+            (f[0],),
+        )
+        is None
+    )
+
+
+@pytest.mark.parametrize(
+    "fault,expected",
+    [
+        ("before_dispatch", "released"),
+        ("dispatch_response_lost", "charged_max"),
+        ("before_settlement", "charged_max"),
+    ],
+)
+def test_simulated_canary_worker_crashes_conservatively_reconcile(fault, expected):
+    from scripts.dufynd_bounded_provider import BudgetGate
+
+    f, request, provider = provider_canary_fixture()
+    with pytest.raises(RuntimeError):
+        execute_provider_canary(f, request, provider, ProviderPostgresStore(f, fault=fault))
+    reservation = query(
+        "select reservation_id from dufynd_budget_reservations where budget_id=%s", (f[0],)
+    )
+    query(
+        "update dufynd_budget_reservations set expires_at=now()-interval '1 second' where reservation_id=%s returning reservation_id",
+        (reservation,),
+    )
+    query("select reconcile_dufynd_supervisor_v2()")
+    assert (
+        query(
+            "select status from dufynd_budget_reservations where reservation_id=%s", (reservation,)
+        )
+        == expected
+    )
+    calls = provider.calls
+    with pytest.raises(BudgetGate):
+        execute_provider_canary(f, request, provider, ProviderPostgresStore(f))
+    assert provider.calls == calls
+    assert calls == (1 if fault == "before_settlement" else 0)
+
+
+def test_simulated_canary_microdollar_overrun_rejected_before_mock():
+    from scripts.dufynd_bounded_provider import BudgetGate
+
+    f, request, provider = provider_canary_fixture(cap="0.000895")
+    with pytest.raises(BudgetGate, match="budget_exhausted"):
+        execute_provider_canary(f, request, provider, ProviderPostgresStore(f))
+    assert provider.calls == 0
+    assert query("select count(*) from dufynd_budget_reservations where budget_id=%s", (f[0],)) == 0
