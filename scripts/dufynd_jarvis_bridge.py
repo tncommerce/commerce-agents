@@ -8,6 +8,7 @@ from typing import Any
 from uuid import uuid4
 
 import httpx
+from scripts.dufynd_jarvis_control_plane import HUMAN_REASONS
 
 
 def _headers(secret_key: str) -> dict[str, str]:
@@ -487,9 +488,17 @@ class DufyndJarvisBridge:
         if task_id in self.worker_tokens:
             state = {"ready": "queued", "in_progress": "working"}.get(status, status)
             reason = {
-                "waiting_human_input": "owner_decision",
                 "waiting_external": "external_dependency",
             }.get(status)
+            if status == "waiting_human_input":
+                reason = next(
+                    (
+                        r
+                        for r in HUMAN_REASONS
+                        if f"DUFYND_BLOCK_REASON: {r}" in evidence.splitlines()
+                    ),
+                    None,
+                )
             self.update_worker(task_id, state, evidence=evidence, reason=reason)
             return
         with self._client() as client:

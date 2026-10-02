@@ -1,6 +1,12 @@
+import asyncio
+import json
 from datetime import UTC, datetime, timedelta
+from types import SimpleNamespace
 
+import httpx
 import pytest
+from scripts import dufynd_jarvis_runtime as runtime
+from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
 from scripts.dufynd_jarvis_control_plane import (
     human_gate_allowed,
     lease_state,
@@ -131,3 +137,114 @@ def test_sdk_is_fail_closed_before_any_paid_execution(monkeypatch):
     monkeypatch.setenv("DUFYND_JARVIS_MAX_BUDGET_USD", "1000")
     with pytest.raises(RuntimeError, match="unbounded_provider_cost"):
         require_bounded_provider_execution()
+
+
+def test_bridge_uses_claim_token_and_does_not_invent_human_reason():
+    requests = []
+
+    def handler(request):
+        body = json.loads(request.content)
+        requests.append(body)
+        if request.url.path.endswith("claim_dufynd_worker_v2"):
+            return httpx.Response(200, json={"task_id": "task", "lease_token": body["p_token"]})
+        return httpx.Response(200, json=True)
+
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://example.test",
+        secret_key="test",
+        transport=httpx.MockTransport(handler),
+    )
+    bridge.claim_worker("task", "worker")
+    bridge.update_worker("task", "heartbeat")
+    bridge.set_autonomy_task_status(
+        task_id="task", status="waiting_human_input", evidence="budget ran out"
+    )
+    assert requests[0]["p_token"] == requests[1]["p_token"] == requests[2]["p_token"]
+    assert requests[2]["p_reason"] is None
+
+
+def test_bridge_rejects_stale_rpc_write():
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://example.test",
+        secret_key="test",
+        transport=httpx.MockTransport(lambda r: httpx.Response(200, json=False)),
+    )
+    bridge.worker_tokens["task"] = "expired-token"
+    with pytest.raises(RuntimeError, match="lease lost"):
+        bridge.update_worker("task", "working", evidence="late result")
+
+
+class WorkerBridge:
+    def __init__(self):
+        self.task = {"task_id": "task", "domain": "research", "status": "ready", "evidence": ""}
+        self.worker_tokens = {}
+        self.states = []
+
+    def load_autonomy_queue(self):
+        return {"safe_to_execute": [dict(self.task)] if self.task["status"] == "ready" else []}
+
+    def claim_worker(self, task_id, owner):
+        self.worker_tokens[task_id] = "test-token"
+        self.task["status"] = "in_progress"
+        return dict(self.task)
+
+    def load_autonomy_task(self, task_id):
+        return dict(self.task)
+
+    def update_autonomy_task_progress(self, *, task_id, status, evidence):
+        self.task.update(status=status, evidence=evidence)
+
+    def update_worker(self, task_id, state, *, evidence=None, reason=None):
+        self.states.append(state)
+        self.task.update(evidence=evidence or self.task["evidence"])
+
+    def record_run(self, **kwargs):
+        pass
+
+
+def test_claimed_task_remains_visible_to_its_fenced_worker(monkeypatch):
+    bridge = WorkerBridge()
+    queries = []
+
+    class FakeClient:
+        def __init__(self, *, options):
+            pass
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            pass
+
+        async def query(self, prompt):
+            queries.append(prompt)
+
+    async def collect(client):
+        return SimpleNamespace(
+            text="partial evidence\nDUFYND_TASK_STATE: in_progress", cost_usd=0, is_error=False
+        )
+
+    # This harness never invokes a real provider. The production gate is tested
+    # separately and has no env-based override.
+    monkeypatch.setattr(runtime, "require_bounded_provider_execution", lambda: None)
+    monkeypatch.setattr(runtime, "_require_budget_window", lambda b: ("test-budget", {}))
+    monkeypatch.setattr(runtime, "make_safe_worker_options", lambda b: object())
+    monkeypatch.setattr(runtime, "ClaudeSDKClient", FakeClient)
+    monkeypatch.setattr(runtime, "collect_turn", collect)
+    assert asyncio.run(runtime.process_safe_task(bridge, task_id="task")) == 0
+    assert len(queries) == 1
+    assert bridge.states[-1] == "queued"
+    assert bridge.worker_tokens == {}
+
+
+def test_worker_exception_still_releases_lease_and_records_retry(monkeypatch):
+    bridge = WorkerBridge()
+    monkeypatch.setattr(runtime, "require_bounded_provider_execution", lambda: None)
+
+    async def process_safe_task(bridge, *, task_id):
+        raise ValueError("deterministic harness failure")
+
+    with pytest.raises(ValueError, match="harness failure"):
+        asyncio.run(runtime.leased_worker(process_safe_task)(bridge, task_id="task"))
+    assert bridge.states[-1] == "failed_retryable"
+    assert bridge.worker_tokens == {}

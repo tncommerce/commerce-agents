@@ -171,6 +171,12 @@ begin
      when destination='failed_terminal' then 'blocked' else destination end,
    heartbeat_at=now(),last_progress_at=case when nullif(p_evidence,'') is not null and p_evidence is distinct from t.evidence then now() else last_progress_at end,
    evidence=coalesce(p_evidence,evidence),blocked_reason=p_reason,
+   expected_next_checkpoint=case when destination='done' then null
+     when p_reason='verification_pending' then 'deterministic_verification'
+     when destination='queued' then 'next_safe_worker_or_budget_reopen'
+     when destination='waiting_human_input' then 'typed_owner_decision'
+     when destination='waiting_external' then 'external_dependency_resolution'
+     else expected_next_checkpoint end,
    lease_expires_at=case when destination in ('working','verifying') then now()+interval '180 seconds' else now() end,
    released_at=case when destination in ('working','verifying') then null else now() end,
    retry_count=retry_count+case when destination='failed_retryable' then 1 else 0 end

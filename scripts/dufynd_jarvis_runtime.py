@@ -1128,6 +1128,13 @@ async def process_safe_task(
         for task in (queue.get("safe_to_execute") or [])
         if _is_green_autonomy_task(task) and str(task.get("domain") or "") != "engineering"
     ]
+    if task_id is not None and task_id in getattr(bridge, "worker_tokens", {}):
+        owned = await asyncio.to_thread(bridge.load_autonomy_task, task_id)
+        safe_tasks = (
+            [owned]
+            if _is_green_autonomy_task(owned) and owned.get("domain") != "engineering"
+            else []
+        )
     if task_id is not None:
         safe_tasks = [task for task in safe_tasks if str(task.get("task_id") or "") == task_id]
     if not safe_tasks:
@@ -1263,6 +1270,9 @@ async def process_branch_task(
         for task in (queue.get("safe_to_execute") or [])
         if _is_green_autonomy_task(task, domain="engineering")
     ]
+    if task_id is not None and task_id in getattr(bridge, "worker_tokens", {}):
+        owned = await asyncio.to_thread(bridge.load_autonomy_task, task_id)
+        tasks = [owned] if _is_green_autonomy_task(owned, domain="engineering") else []
     if task_id is not None:
         tasks = [task for task in tasks if str(task.get("task_id") or "") == task_id]
     if not tasks:
@@ -1443,7 +1453,6 @@ async def process_autonomous_cycle(
     safe_tasks = [
         task for task in (queue.get("safe_to_execute") or []) if _is_green_autonomy_task(task)
     ]
-
     if not safe_tasks:
         print(
             "DUFYND Jarvis autonomous cycle summary | "
