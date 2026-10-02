@@ -17,7 +17,10 @@ to the existing DUFYND Supabase service-role or management credentials.
 Do not connect the private project's deploy identity to Jarvis's GitHub identity.
 The existing Render API deployment is NOT the broker runtime.
 
-The HTTPS listener is publicly reachable for Google callback, but all reads require
+For the final broker service, allow unauthenticated Cloud Run **transport invocation**
+(service-level allUsers/run.invoker only), because Google callback and raw GitHub
+OIDC are validated inside the app. Do not grant public Firestore or Secret Manager
+access. The HTTPS listener is publicly reachable for Google callback, but all reads require
 application-verified GitHub OIDC and all owner mutations require a different private
 owner key. This is an application security boundary, not a private network listener.
 Owner must audit platform logging before consent: no request bodies, query strings,
@@ -171,12 +174,17 @@ Primary references:
 
 1. **PRIVATE BROKER:** Owner creates/chooses an isolated GCP project/account and
    explicitly accepts billing; create Firestore Native default DB, Secret Manager,
-   Artifact Registry and Cloud Run. Create broker-runtime service account with the
-   above limited roles. Apply callback logging exclusions before any consent. Build
-   and deploy the isolated image by digest; use min=0, max=2, request billing. Record
-   the actual HTTPS origin assigned by Cloud Run; configure BROKER_ORIGIN to that
-   origin, BROKER_PROJECT, BROKER_MAILBOX, GOOGLE_CLIENT_ID and immutable repo ID.
-   No final URL exists before owner deployment; do not invent one.
+   Artifact Registry and reserve a Cloud Run service/HTTPS origin using an owner-only
+   private bootstrap revision without broker credentials if the provider requires a
+   revision before assigning its URL. Record that actual URL before configuring the
+   OAuth client. Create broker-runtime service account with the above limited roles.
+   Apply callback logging exclusions before any consent. Build the isolated image by
+   digest; configure BROKER_ORIGIN to the assigned origin, BROKER_PROJECT, selected
+   mailbox and immutable repo ID. Finish steps 2–3 before deploying the real broker
+   revision with its required mounted secrets and GOOGLE_CLIENT_ID. Use min=0, max=2,
+   request billing. Only then allow unauthenticated transport on this broker service;
+   application authentication remains mandatory. No final URL exists before owner
+   project/service creation; do not invent one.
 2. **RENDER:** In Render Account Settings > API Keys, prefer a dedicated owner
    automation identity with minimum workspace memberships. Account keys may grant
    broad workspace/account access. Store its key only as broker-render-key. Never
