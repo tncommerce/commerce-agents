@@ -50,6 +50,11 @@ def database():
         connection.execute(
             next((ROOT / "supabase/migrations").glob("*purchase_freshness_handler.sql")).read_text()
         )
+        connection.execute(
+            next(
+                (ROOT / "supabase/migrations").glob("*purchase_acceptance_receipt.sql")
+            ).read_text()
+        )
     yield
 
 
@@ -1716,3 +1721,32 @@ def test_purchase_ambiguous_primary_fields_fail_closed(purchase_net):
 def test_purchase_visible_variant_disagrees_with_metadata(purchase_net):
     html = PURCHASE_HTML.replace("100 ml</h1>", "50 ml</h1>")
     assert purchase_decision(html) == "variant_identity_mismatch"
+
+
+def test_purchase_acceptance_receipt_projects_existing_evidence(purchase_net):
+    import json
+
+    eid = query(
+        "select execution_id from dufynd_execution_runs where task_id='purchase_freshness_acceptance_20261002'"
+    )
+    query(
+        "insert into dufynd_master_status(key,value) values('jarvis.purchase_freshness.acceptance',%s::jsonb) on conflict(key) do update set value=excluded.value returning key",
+        (
+            json.dumps(
+                {
+                    "status": "armed",
+                    "task_id": "purchase_freshness_acceptance_20261002",
+                    "execution_id": str(eid),
+                }
+            ),
+        ),
+    )
+    query("select project_dufynd_acceptance_receipts()")
+    receipt = query(
+        "select value from dufynd_master_status where key='jarvis.purchase_freshness.acceptance'"
+    )
+    assert receipt["status"] == "live_execution_verified"
+    assert receipt["execution_receipt"]["execution_verified"]
+    assert receipt["execution_receipt"]["lease_released"]
+    assert receipt["execution_receipt"]["report_hash"]
+    assert query("select project_dufynd_acceptance_receipts()")["projected"] == 0
