@@ -64,6 +64,11 @@ def database():
         connection.execute(
             next((ROOT / "supabase/migrations").glob("*observer_credential_plane.sql")).read_text()
         )
+        connection.execute(
+            next(
+                (ROOT / "supabase/migrations").glob("*audit_known_terminal_states.sql")
+            ).read_text()
+        )
     yield
 
 
@@ -2100,3 +2105,18 @@ def test_broker_ingress_exact_source_dedupe_and_no_send():
     query(
         "update dufynd_observer_credentials set activation_enabled=false,status='missing_configuration',health_reason='missing_configuration' where provider='gmail' returning true"
     )
+
+
+@pytest.mark.parametrize("status", ["approval_required", "cancelled"])
+def test_recovery_audit_recognizes_known_nonrunning_task_states(status):
+    import json
+
+    findings = query(
+        "select dufynd_recovery_findings(%s::jsonb,null,now())",
+        (
+            json.dumps(
+                {"status": status, "worker_state": "blocked", "released_at": "2026-10-02T12:00:00Z"}
+            ),
+        ),
+    )
+    assert findings == []
