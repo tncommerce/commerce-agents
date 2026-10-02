@@ -58,6 +58,9 @@ def database():
         connection.execute(
             next((ROOT / "supabase/migrations").glob("*ci_pr_verifier.sql")).read_text()
         )
+        connection.execute(
+            next((ROOT / "supabase/migrations").glob("*supervisor_recovery_audit.sql")).read_text()
+        )
     yield
 
 
@@ -1954,3 +1957,60 @@ def test_ci_pr_crash_rotates_fence_and_resumes_same_packet(ci_pr_admitted):
     assert finished["packet_hash"] == e["packet_hash"]
     assert finished["recovery_count"] == 1
     assert task_state(task)["released_at"]
+
+
+@pytest.mark.parametrize(
+    ("task_changes", "execution", "reason"),
+    [
+        (
+            {"worker_state": "done", "status": "done", "released_at": "2026-10-02T12:00:00Z"},
+            {"status": "completed", "lease_token": "a"},
+            None,
+        ),
+        ({"lease_expires_at": "2026-10-02T11:00:00Z"}, None, "expired_active_lease"),
+        ({"released_at": "2026-10-02T11:00:00Z"}, None, "active_released_lease"),
+        ({"heartbeat_at": "2026-10-02T11:00:00Z"}, None, "stale_heartbeat"),
+        ({"last_progress_at": "2026-10-02T11:00:00Z"}, None, "progress_stalled"),
+        ({}, {"status": "completed", "lease_token": "a"}, "completed_execution_unreleased_lease"),
+        (
+            {"status": "done"},
+            {"status": "running", "lease_token": "a"},
+            "done_task_running_execution",
+        ),
+        ({}, {"status": "running", "lease_token": "old"}, "stale_fencing_token"),
+        (
+            {"worker_owner": None},
+            {"status": "retryable", "lease_token": "a"},
+            "retryable_without_owner",
+        ),
+        ({"status": "invented"}, None, "unknown_state"),
+    ],
+)
+def test_recovery_audit_readonly_classification(task_changes, execution, reason):
+    import json
+
+    task = {
+        "status": "in_progress",
+        "worker_state": "working",
+        "lease_token": "a",
+        "worker_owner": "durable_recovery",
+        "released_at": None,
+        "lease_expires_at": "2026-10-02T12:03:00Z",
+        "heartbeat_at": "2026-10-02T12:00:00Z",
+        "last_progress_at": "2026-10-02T12:00:00Z",
+    } | task_changes
+    args = (json.dumps(task), json.dumps(execution) if execution else None)
+    sql = "select dufynd_recovery_findings(%s::jsonb,%s::jsonb,'2026-10-02T12:00:00Z')"
+    first = query(sql, args)
+    assert first == query(sql, args)  # duplicate/retry requires no persisted audit owner
+    assert (reason in first) if reason else first == []
+
+
+def test_extended_audit_preserves_existing_packet_and_no_chat_contract():
+    before = query("select count(*) from dufynd_execution_runs")
+    audit = query("select read_dufynd_supervisor_audit()")
+    assert audit["extension_revision"] == 2
+    assert not audit["recovery_consistency"]["repair_performed"]
+    assert not audit["dependency_readiness"]["state_mutated"]
+    assert audit["unknown_state_fail_closed"] and not audit["chat_history_required"]
+    assert query("select count(*) from dufynd_execution_runs") == before
