@@ -7,6 +7,13 @@ import pytest
 from scripts import dufynd_jarvis_supervisor as supervisor
 
 
+@pytest.fixture(autouse=True)
+def deterministic_supervisor_harness(monkeypatch):
+    # These tests inject run_once; no provider is used. Exercise loop policy
+    # with synthetic paid availability; production availability is tested below.
+    monkeypatch.setattr(supervisor, "_model_execution_available", lambda: True)
+
+
 def safe_task(task_id: str, domain: str) -> dict:
     return {
         "task_id": task_id,
@@ -19,6 +26,9 @@ def safe_task(task_id: str, domain: str) -> dict:
 
 
 class FakeBridge:
+    def reconcile_control_plane(self):
+        return {"version": 2, "findings": []}
+
     def __init__(self, tasks: list[dict] | None = None) -> None:
         self.tasks = list(tasks or [])
         self.master: dict[str, dict] = {}
@@ -92,6 +102,76 @@ class FakeClock:
         self.value += timedelta(seconds=seconds)
 
 
+def test_paid_queue_does_not_stop_free_health_and_later_deterministic_event(monkeypatch):
+    bridge = FakeBridge([safe_task("parked_research", "research")])
+    bridge.budget["can_run"] = False
+    clock = FakeClock()
+    health_passes = []
+    event_calls = []
+    monkeypatch.setattr(supervisor, "_require_autonomous_mode", lambda: None)
+    monkeypatch.setattr(supervisor, "_model_execution_available", lambda: False)
+
+    def reconcile():
+        health_passes.append(clock.now())
+        return {"version": 2, "findings": []}
+
+    bridge.reconcile_control_plane = reconcile
+
+    async def sleep(seconds):
+        await clock.sleep(seconds)
+        if len(clock.sleeps) == 1:
+            bridge.pending_events = 1
+
+    async def deterministic_event(*args, **kwargs):
+        event_calls.append(True)
+        bridge.pending_events = 0
+        return completed_session(stop_reason="no_safe_work")
+
+    state = asyncio.run(
+        supervisor.supervise_nightshift(
+            bridge,
+            max_minutes=1,
+            idle_seconds=10,
+            max_idle_cycles=20,
+            sleep=sleep,
+            now=clock.now,
+            run_once=deterministic_event,
+        )
+    )
+    assert state["stop_reason"] == "time_horizon_reached"
+    assert len(health_passes) >= 3
+    assert event_calls == [True]
+
+
+def test_task_local_error_does_not_prevent_unrelated_safe_session(monkeypatch):
+    bridge = FakeBridge([safe_task("another_task", "research")])
+    clock = FakeClock()
+    calls = []
+    monkeypatch.setattr(supervisor, "_require_autonomous_mode", lambda: None)
+
+    async def run_once(*args, **kwargs):
+        calls.append(True)
+        if len(calls) == 1:
+            raise RuntimeError("single worker failure")
+        bridge.tasks.clear()
+        return completed_session(stop_reason="no_safe_work", result_states=["done"])
+
+    state = asyncio.run(
+        supervisor.supervise_nightshift(
+            bridge,
+            max_minutes=5,
+            idle_seconds=10,
+            max_idle_cycles=1,
+            sleep=clock.sleep,
+            now=clock.now,
+            run_once=run_once,
+        )
+    )
+    assert len(calls) == 2
+    assert state["last_recovery_reason"] == "orchestration_error"
+    assert state["status"] == "completed"
+
+
 def completed_session(
     *,
     stop_reason: str,
@@ -162,7 +242,7 @@ def test_supervisor_continues_across_task_limit_until_budget_gate(monkeypatch) -
     monkeypatch.setattr(supervisor, "_require_autonomous_mode", lambda: None)
 
     async def run_once(*_args, **_kwargs):
-        return sessions.pop(0)
+        return sessions.pop(0) if sessions else completed_session(stop_reason="budget_gate")
 
     state = asyncio.run(
         supervisor.supervise_nightshift(
@@ -177,12 +257,13 @@ def test_supervisor_continues_across_task_limit_until_budget_gate(monkeypatch) -
         )
     )
 
-    assert state["cycles_completed"] == 2
-    assert state["stop_reason"] == "budget_gate"
-    assert len(state["session_summaries"]) == 2
+    assert state["cycles_completed"] == 5
+    assert state["stop_reason"] == "cycle_limit_reached"
+    assert state["last_recovery_reason"] == "budget_gate"
+    assert len(state["session_summaries"]) == 5
     assert state["session_summaries"][0]["task_results"][0]["final_status"] == "done"
     assert state["session_summaries"][0]["task_results"][0]["task_id"] == "task-0"
-    assert clock.sleeps == []
+    assert clock.sleeps == [60, 60, 60, 60]
 
 
 def test_supervisor_waits_for_tech_lease_without_model_call(monkeypatch) -> None:
@@ -294,8 +375,9 @@ def test_supervisor_blocks_on_processing_inbox_preflight(monkeypatch) -> None:
         )
     )
 
-    assert state["status"] == "needs_attention"
-    assert state["stop_reason"] == "inbox_preflight_blocked"
+    assert state["status"] == "completed"
+    assert state["stop_reason"] == "idle_limit_reached"
+    assert state["last_preflight"]["inbox_blocked"]
     assert state["last_preflight"]["processing_events"] == 1
 
 
@@ -323,8 +405,8 @@ def test_supervisor_flags_queued_work_that_policy_cannot_select(monkeypatch) -> 
         )
     )
 
-    assert state["status"] == "needs_attention"
-    assert state["stop_reason"] == "work_available_but_not_selectable"
+    assert state["status"] == "completed"
+    assert state["stop_reason"] == "idle_limit_reached"
     assert state["last_preflight"]["raw_safe_task_count"] == 1
     assert state["last_preflight"]["safe_task_count"] == 0
 
@@ -352,8 +434,9 @@ def test_supervisor_blocks_on_failed_inbox_preflight(monkeypatch) -> None:
         )
     )
 
-    assert state["status"] == "needs_attention"
-    assert state["stop_reason"] == "inbox_preflight_blocked"
+    assert state["status"] == "completed"
+    assert state["stop_reason"] == "idle_limit_reached"
+    assert state["last_preflight"]["inbox_blocked"]
     assert state["last_preflight"]["failed_events"] == 2
 
 
@@ -475,13 +558,14 @@ def test_supervisor_persists_terminal_state_when_session_raises(monkeypatch) -> 
         )
     )
 
-    assert state["status"] == "needs_attention"
-    assert state["stop_reason"] == "orchestration_error"
+    assert state["status"] == "completed"
+    assert state["stop_reason"] == "cycle_limit_reached"
+    assert state["last_recovery_reason"] == "orchestration_error"
     assert state["runtime_error_type"] == "RuntimeError"
     assert state["ended_at"] is not None
     persisted = bridge.master[supervisor.SUPERVISOR_KEY]["value"]
-    assert persisted["status"] == "needs_attention"
-    assert persisted["stop_reason"] == "orchestration_error"
+    assert persisted["status"] == "completed"
+    assert persisted["stop_reason"] == "cycle_limit_reached"
 
 
 def test_supervisor_default_idle_watch_reaches_five_hour_horizon(monkeypatch) -> None:

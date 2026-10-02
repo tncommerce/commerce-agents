@@ -6,6 +6,7 @@ import json
 import os
 import sys
 from contextlib import suppress
+from functools import wraps
 from pathlib import Path
 from typing import Any
 
@@ -19,6 +20,7 @@ from claude_agent_sdk import (
 )
 from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
 from scripts.dufynd_jarvis_context_pages import context_overview, context_page
+from scripts.dufynd_jarvis_control_plane import HUMAN_REASONS, human_gate_allowed
 
 from commerce_common.agent_sdk import collect_turn
 
@@ -717,6 +719,7 @@ async def run_prompt(
     resolved_budget_id = budget_id
     if resolved_budget_id is None:
         resolved_budget_id, _ = await asyncio.to_thread(_require_budget_window, bridge)
+    require_bounded_provider_execution()
     options = make_options(bridge)
     async with ClaudeSDKClient(options=options) as client:
         await client.query(prompt)
@@ -970,7 +973,11 @@ def safe_task_prompt(task: dict[str, Any]) -> str:
         "is fully resolved for the current repository fingerprint. Use "
         "waiting_human_input when the next action is YELLOW/owner review, "
         "waiting_external for an external dependency, blocked for a genuine "
-        "task-local blocker, and in_progress when useful work remains.\n\n"
+        "task-local blocker, and in_progress when useful work remains. "
+        "A human gate additionally requires a line DUFYND_BLOCK_REASON: "
+        "owner_decision, spend_approval, publication_approval, or contract_approval. "
+        "Budget exhaustion, session limits, tool timeouts, unread files and technical "
+        "research are autonomous continuation reasons, never human gates.\n\n"
         + json.dumps(task, ensure_ascii=False, default=str)
     )
 
@@ -1015,6 +1022,101 @@ def _extract_safe_task_state(text: str) -> str | None:
     return None
 
 
+def require_bounded_provider_execution() -> None:
+    """SDK max_budget_usd is a post-call stop threshold, not a hard cost bound.
+
+    Until a per-call token/pricing bound and atomic reservation adapter is present,
+    starting this provider would violate the approved cap. No env switch bypasses
+    this boundary. Deterministic event/health work never calls this function.
+    """
+    raise RuntimeError("Jarvis budget gate: unbounded_provider_cost; paid SDK execution parked")
+
+
+def leased_worker(function):
+    @wraps(function)
+    async def controlled(bridge: DufyndJarvisBridge, *, task_id: str | None = None) -> int:
+        queue = await asyncio.to_thread(bridge.load_autonomy_queue)
+        candidates = [
+            t
+            for t in queue.get("safe_to_execute", [])
+            if _is_green_autonomy_task(t)
+            and (t.get("domain") == "engineering") == (function.__name__ == "process_branch_task")
+            and (task_id is None or t.get("task_id") == task_id)
+        ]
+        if not candidates:
+            return await function(bridge, task_id=task_id)
+        selected = candidates[0]
+        task_id = str(selected["task_id"])
+        # Gate before acquiring any worker lease or starting a paid provider.
+        require_bounded_provider_execution()
+        claimed = await asyncio.to_thread(bridge.claim_worker, task_id, "jarvis-runtime-v2")
+        if claimed is None:
+            return 0
+        reason = "retryable_error"
+        result = 1
+
+        async def pulse():
+            while True:
+                await asyncio.sleep(45)
+                await asyncio.to_thread(bridge.update_worker, task_id, "heartbeat")
+
+        heartbeat = asyncio.create_task(pulse())
+        work = asyncio.create_task(function(bridge, task_id=task_id))
+        try:
+            finished, _ = await asyncio.wait({heartbeat, work}, return_when=asyncio.FIRST_COMPLETED)
+            if heartbeat in finished:
+                heartbeat.result()  # A lease failure cancels the worker below.
+                raise RuntimeError("Worker heartbeat ended unexpectedly")
+            result = work.result()
+            reason = "worker_result"
+            return result
+        finally:
+            work.cancel()
+            heartbeat.cancel()
+            with suppress(Exception, asyncio.CancelledError):
+                await work
+            with suppress(asyncio.CancelledError, RuntimeError):
+                await heartbeat
+            try:
+                current = await asyncio.to_thread(bridge.load_autonomy_task, task_id) or claimed
+                evidence = str(current.get("evidence") or "")
+                marker = _extract_safe_task_state(evidence)
+                state = "queued"
+                if result == 0 and function.__name__ == "process_branch_task":
+                    state, reason = "waiting_external", "verification_pending"
+                    evidence += "\nDeterministic QA/PR verification pending; no further model work required."
+                elif result == 0 and marker == "done":
+                    await asyncio.to_thread(
+                        bridge.update_worker, task_id, "verifying", evidence=evidence
+                    )
+                    # Model completion is evidence to review, not proof of done.
+                    state, reason = "waiting_external", "verification_pending"
+                    evidence += "\nSupervisor verification required before terminal completion."
+                elif (
+                    result == 0
+                    and marker == "waiting_human_input"
+                    and human_gate_allowed(selected, evidence)
+                ):
+                    state = "waiting_human_input"
+                    reason = next(
+                        (r for r in HUMAN_REASONS if f"DUFYND_BLOCK_REASON: {r}" in evidence),
+                        "owner_decision",
+                    )
+                elif result == 0 and marker == "waiting_external":
+                    state, reason = "waiting_external", "external_dependency"
+                elif result != 0:
+                    state = "failed_retryable"
+                evidence += f"\nDUFYND_TASK_STATE: {'in_progress' if state in {'queued', 'failed_retryable'} else state}"
+                await asyncio.to_thread(
+                    bridge.update_worker, task_id, state, evidence=evidence, reason=reason
+                )
+            finally:
+                bridge.worker_tokens.pop(task_id, None)
+
+    return controlled
+
+
+@leased_worker
 async def process_safe_task(
     bridge: DufyndJarvisBridge,
     *,
@@ -1052,6 +1154,7 @@ async def process_safe_task(
     )
 
     try:
+        require_bounded_provider_execution()
         options = make_safe_worker_options(bridge)
         async with ClaudeSDKClient(options=options) as client:
             await client.query(safe_task_prompt(task))
@@ -1081,6 +1184,9 @@ async def process_safe_task(
             )
             raise RuntimeError(detail)
 
+        if worker_state == "waiting_human_input" and not human_gate_allowed(task, text):
+            worker_state = "in_progress"
+            text += "\nSupervisor V2: unclassified human gate; autonomous continuation required."
         progress_status = (
             worker_state
             if worker_state in {"waiting_human_input", "waiting_external", "blocked"}
@@ -1145,6 +1251,7 @@ def branch_task_prompt(task: dict[str, Any]) -> str:
     )
 
 
+@leased_worker
 async def process_branch_task(
     bridge: DufyndJarvisBridge,
     *,
@@ -1182,6 +1289,7 @@ async def process_branch_task(
     )
 
     try:
+        require_bounded_provider_execution()
         options = make_branch_worker_options(bridge)
         async with ClaudeSDKClient(options=options) as client:
             await client.query(branch_task_prompt(task))

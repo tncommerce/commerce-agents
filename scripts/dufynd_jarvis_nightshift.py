@@ -11,6 +11,7 @@ from typing import Any
 from uuid import uuid4
 
 from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
+from scripts.dufynd_jarvis_control_plane import human_gate_allowed, lease_state
 from scripts.dufynd_jarvis_runtime import (
     _is_green_autonomy_task,
     _require_autonomous_mode,
@@ -90,22 +91,7 @@ def _full_timeout_window_available(
 def _tech_lease_state(bridge: DufyndJarvisBridge) -> dict[str, Any]:
     row = bridge.load_master_status_entry(TECH_LEASE_KEY)
     value = (row or {}).get("value") or {}
-    expires_at = _parse_iso_timestamp(value.get("expires_at"))
-    now = utc_now()
-    active = (
-        isinstance(value, dict)
-        and str(value.get("status") or "").lower() == "active"
-        and expires_at is not None
-        and expires_at > now
-    )
-    remaining_seconds = max(0, int((expires_at - now).total_seconds())) if expires_at else 0
-    return {
-        "active": active,
-        "owner": value.get("owner"),
-        "heartbeat_at": value.get("heartbeat_at"),
-        "expires_at": expires_at.isoformat() if expires_at else None,
-        "remaining_seconds": remaining_seconds if active else 0,
-    }
+    return lease_state(value if isinstance(value, dict) else {}, utc_now())
 
 
 def _tech_lease_wait_cap_seconds() -> int:
@@ -241,6 +227,8 @@ def _safe_worker_outcome(evidence: object) -> str:
             continue
         state = stripped[len(SAFE_TASK_STATE_PREFIX) :].strip().lower()
         if state in SAFE_TASK_STATES:
+            if state == "waiting_human_input" and not human_gate_allowed({}, text):
+                return "in_progress"
             return state
     return "in_progress"
 
@@ -368,8 +356,8 @@ def _recover_interrupted_work(
             persisted_status = recovered_state
             final_status = recovered_state
         elif recovered_state == "done" and not failed_run:
-            persisted_status = "done"
-            final_status = "done"
+            persisted_status = "waiting_external"
+            final_status = "waiting_external"
         else:
             persisted_status = "ready"
             final_status = "in_progress"
@@ -671,9 +659,10 @@ async def _run_task_with_retry(
             if worker == "safe_worker":
                 worker_state = _safe_worker_outcome(current.get("evidence"))
                 if worker_state == "done":
-                    final_status = "done"
-                    persisted_status = "done"
-                    note = "GREEN task completed for the current repo fingerprint."
+                    # A model marker cannot substitute for independent evidence.
+                    final_status = "waiting_external"
+                    persisted_status = "waiting_external"
+                    note = "Worker reports completion; deterministic verification pending."
                 elif worker_state in {
                     "waiting_human_input",
                     "waiting_external",
@@ -930,9 +919,6 @@ async def run_nightshift(
                 # A transport/status-write error must not leave the durable
                 # session running with no stop reason. Never retry unknown-cost
                 # failures automatically. Do not store exception bodies/credentials.
-                session["status"] = "needs_attention"
-                session["stop_reason"] = "worker_runtime_error"
-                session["ended_at"] = iso_now()
                 session["runtime_error_type"] = type(error).__name__
                 session["task_results"].append(
                     _task_result(
@@ -945,8 +931,20 @@ async def run_nightshift(
                         attempts=int((session.get("current_task") or {}).get("attempt") or 1),
                     )
                 )
+                _best_effort_set_task_status(
+                    bridge,
+                    session,
+                    task_id=str(selected["task_id"]),
+                    status="blocked",
+                    evidence=_append_evidence(
+                        selected.get("evidence"),
+                        f"Supervisor V2 task-local failure: {type(error).__name__}; live outcome verification required.",
+                    ),
+                )
+                session["current_task"] = None
+                processed_this_run += 1
                 _persist_session(bridge, session)
-                raise
+                continue
             session.setdefault("task_results", []).append(outcome)
             session["current_task"] = None
             if outcome["worker"] == "branch_worker" and outcome["result_code"] == 0:

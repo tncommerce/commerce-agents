@@ -61,6 +61,7 @@ class DufyndJarvisBridge:
             or os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")
         )
         self.transport = transport
+        self.worker_tokens: dict[str, str] = {}
 
         if not self.supabase_url:
             raise ValueError("SUPABASE_URL is required")
@@ -447,6 +448,9 @@ class DufyndJarvisBridge:
         }
         if status not in allowed_statuses:
             raise ValueError("Safe worker may only record non-terminal autonomy task progress.")
+        if task_id in self.worker_tokens:
+            self.update_worker(task_id, "working", evidence=evidence)
+            return
         with self._client() as client:
             response = client.patch(
                 f"{self.supabase_url}/rest/v1/dufynd_autonomy_tasks",
@@ -480,6 +484,14 @@ class DufyndJarvisBridge:
         }
         if status not in allowed_statuses:
             raise ValueError(f"Unsupported DUFYND autonomy task status: {status}")
+        if task_id in self.worker_tokens:
+            state = {"ready": "queued", "in_progress": "working"}.get(status, status)
+            reason = {
+                "waiting_human_input": "owner_decision",
+                "waiting_external": "external_dependency",
+            }.get(status)
+            self.update_worker(task_id, state, evidence=evidence, reason=reason)
+            return
         with self._client() as client:
             response = client.patch(
                 f"{self.supabase_url}/rest/v1/dufynd_autonomy_tasks",
@@ -494,6 +506,39 @@ class DufyndJarvisBridge:
                 },
             )
             response.raise_for_status()
+
+    def reconcile_control_plane(self) -> dict[str, Any]:
+        result = self._rpc("reconcile_dufynd_supervisor_v2")
+        if not isinstance(result, dict):
+            raise ValueError("Supervisor reconciliation must return an object")
+        return result
+
+    def claim_worker(self, task_id: str, owner: str) -> dict[str, Any] | None:
+        token = str(uuid4())
+        result = self._rpc(
+            "claim_dufynd_worker_v2", {"p_task_id": task_id, "p_owner": owner, "p_token": token}
+        )
+        if result is not None:
+            if not isinstance(result, dict):
+                raise ValueError("Worker claim must return an object or null")
+            self.worker_tokens[task_id] = token
+        return result
+
+    def update_worker(
+        self, task_id: str, state: str, *, evidence: str | None = None, reason: str | None = None
+    ) -> None:
+        accepted = self._rpc(
+            "update_dufynd_worker_v2",
+            {
+                "p_task_id": task_id,
+                "p_token": self.worker_tokens.get(task_id),
+                "p_state": state,
+                "p_evidence": evidence[:12000] if evidence else None,
+                "p_reason": reason,
+            },
+        )
+        if accepted is not True:
+            raise RuntimeError("Worker lease lost; refusing stale write")
 
     def upsert_master_status(
         self,
