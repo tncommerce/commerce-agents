@@ -36,6 +36,8 @@ def validate_packet(execution: dict[str, Any]) -> dict[str, Any]:
     )
     if handler == "purchase_destination_freshness_audit":
         capabilities |= {"commerce.read", "commerce.verify_exact", "commerce.evidence.write"}
+    if handler == "ci_pr_verifier":
+        capabilities |= {"github.read", "github.ci.observe"}
     verification = "arithmetic_checkpoint" if handler == "durability_probe" else handler
     if (
         handler
@@ -43,6 +45,7 @@ def validate_packet(execution: dict[str, Any]) -> dict[str, Any]:
             "durability_probe",
             "supervisor_state_audit",
             "purchase_destination_freshness_audit",
+            "ci_pr_verifier",
         )
         or packet.get("handler_version") != "1"
         or execution.get("handler_id") != packet["handler_id"]
@@ -77,6 +80,23 @@ def validate_packet(execution: dict[str, Any]) -> dict[str, Any]:
         or packet["payload"].get("allowed_mutations") != ["verification_evidence"]
     ):
         raise ValueError("uncertified_purchase_resource_or_payload")
+    if handler == "ci_pr_verifier" and (
+        packet["allowed_resources"] != ["db:ci-pr-verification"]
+        or packet["explicit_scope"] != "supervisor"
+        or set(packet["payload"])
+        != {
+            "kind",
+            "steps",
+            "interval_seconds",
+            "pr_number",
+            "ci_run_id",
+            "expected_merge_sha",
+            "expected_pr_head_sha",
+        }
+        or packet["payload"].get("steps") != 1
+        or packet["payload"].get("interval_seconds") != 2
+    ):
+        raise ValueError("uncertified_ci_pr_resource_or_payload")
     return packet
 
 

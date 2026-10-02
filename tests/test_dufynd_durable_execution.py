@@ -250,3 +250,46 @@ def test_certified_state_audit_worker_runs_from_packet_and_persistent_state_only
         name in {"checkpoint_dufynd_execution", "finish_dufynd_execution"}
         for name, _ in store.calls
     )
+
+
+def test_ci_pr_packet_uses_only_fenced_read_audit_tools():
+    store, clock = Store(), Clock()
+    payload = {
+        "kind": "ci_pr_verifier",
+        "steps": 1,
+        "interval_seconds": 2,
+        "pr_number": "623",
+        "ci_run_id": "37014817569",
+        "expected_merge_sha": "a" * 40,
+        "expected_pr_head_sha": "b" * 40,
+    }
+    store.execution.update(
+        handler_id="ci_pr_verifier",
+        scope="supervisor",
+        resources=["db:ci-pr-verification"],
+        payload=payload,
+    )
+    store.execution["task_packet"].update(
+        handler_id="ci_pr_verifier",
+        explicit_scope="supervisor",
+        allowed_resources=["db:ci-pr-verification"],
+        required_capabilities=[
+            "github.ci.observe",
+            "github.read",
+            "supabase.execution_state",
+            "supabase.task_state",
+        ],
+        payload=dict(payload),
+        verification_contract={"kind": "ci_pr_verifier", "version": 1},
+    )
+    assert (
+        run_execution(store, store.execution, sleep=clock.sleep, monotonic=clock.now)["status"]
+        == "completed"
+    )
+    assert {name for name, _ in store.calls} == {
+        "checkpoint_dufynd_execution",
+        "finish_dufynd_execution",
+    }
+    store.execution["task_packet"]["allowed_resources"] = ["db:other"]
+    with pytest.raises(ValueError):
+        validate_packet(store.execution)
