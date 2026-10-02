@@ -2,6 +2,8 @@
 
 The old $2.50 pilot already incurred $2.5047 across 19 historical runs. Phase 2A
 preserves that evidence and does not increase, reset, or reactivate its budget.
+The unrounded ledger total is $2.504685399999999955; $2.5047 is its previous
+four-decimal display, not evidence of new spend.
 
 ## Admission and settlement
 
@@ -73,8 +75,12 @@ keeps the reservation conservative until the watchdog can settle it.
   adapter offline against the three original paid task IDs and exhausted budget.
   Expected: zero provider calls/new USD, three queued paid tasks, seven free
   health ticks, one free deterministic event, zero invented human gates.
-- Counterfactual historical admission: $2.49 spent + $0.0147 next maximum exceeds
-  $2.50 by $0.0047 and is rejected before dispatch. The existing historical
+- Counterfactual historical admission, actual run
+  `b01a0ed3-3a25-4f0d-af21-a05389f29ec0`: $2.334318599999999955 spent
+  left $0.165681400000000045. Observed cost $0.1703668 exceeds that remainder.
+  Even a best-case certified maximum equal to actual cost is rejected by
+  $0.004685399999999955 before dispatch. Actual cost is a lower bound for a valid
+  reservation, not a claim that a real provider price bound is known. The existing historical
   $2.5047 cannot be undone; no further call can be admitted against that window.
 
 ## OPTIMIZATION_CANDIDATE

@@ -163,3 +163,25 @@ def test_unknown_bound_old_approval_and_historical_overrun():
         (f[0],),
     )
     assert not reserve(f, amount="0.01")["allowed"]
+
+
+def test_old_budget_approval_cannot_authorize_paid_contract():
+    import psycopg
+
+    f = fixture()
+    decision = f"old-approval-{uuid4()}"
+    with psycopg.connect(DSN, autocommit=True) as c:
+        c.execute(
+            "update dufynd_provider_contracts set dry_run=false where contract_id=%s", (f[1],)
+        )
+        c.execute(
+            'insert into dufynd_human_decisions values(%s,\'approved\',\'{"approved":true,"cap_usd":2.5,"per_run_cap_usd":0.25,"max_runs":20}\')',
+            (decision,),
+        )
+        c.execute(
+            "update dufynd_jarvis_budget_windows set reservation_dry_run=false,approved_decision_id=%s where budget_id=%s",
+            (decision, f[0]),
+        )
+    r = reserve(f)
+    assert not r["allowed"] and r["reason"] == "new_budget_approval_required"
+    assert query("select count(*) from dufynd_budget_reservations where budget_id=%s", (f[0],)) == 0
