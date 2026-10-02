@@ -61,6 +61,9 @@ def database():
         connection.execute(
             next((ROOT / "supabase/migrations").glob("*supervisor_recovery_audit.sql")).read_text()
         )
+        connection.execute(
+            next((ROOT / "supabase/migrations").glob("*observer_credential_plane.sql")).read_text()
+        )
     yield
 
 
@@ -2014,3 +2017,86 @@ def test_extended_audit_preserves_existing_packet_and_no_chat_contract():
     assert not audit["dependency_readiness"]["state_mutated"]
     assert audit["unknown_state_fail_closed"] and not audit["chat_history_required"]
     assert query("select count(*) from dufynd_execution_runs") == before
+
+
+@pytest.mark.parametrize(
+    "status",
+    [
+        "missing_configuration",
+        "expired",
+        "revoked",
+        "refresh_failed",
+        "scope_mismatch",
+        "account_mismatch",
+    ],
+)
+def test_credential_health_fail_closed_and_no_false_human_gate(status):
+    query(
+        "update dufynd_observer_credentials set status=%s, health_reason=%s, activation_enabled=false where provider='gmail' returning true",
+        (status, status),
+    )
+    health = query("select get_dufynd_credential_health('gmail')")
+    assert health["status"] == status
+    assert not health["waiting_human_input"]
+    assert not query(
+        "select capture_dufynd_broker_observation('gmail_known_threads','gmail:1a0f69c169fb928f','{}')"
+    )["accepted"]
+
+
+def test_credential_metadata_exact_contract_and_public_role_denied():
+    import psycopg
+
+    with psycopg.connect(DSN, autocommit=True) as c:
+        with pytest.raises(psycopg.errors.CheckViolation):
+            c.execute(
+                "update dufynd_observer_credentials set secret_reference='token-canary' where provider='gmail'"
+            )
+        with pytest.raises(psycopg.errors.CheckViolation):
+            c.execute(
+                "update dufynd_observer_credentials set oauth_scopes='[\"gmail.readonly\"]' where provider='gmail'"
+            )
+        c.execute("set role anon")
+        with pytest.raises(psycopg.errors.InsufficientPrivilege):
+            c.execute("select * from dufynd_observer_credentials")
+        with pytest.raises(psycopg.errors.InsufficientPrivilege):
+            c.execute("select get_dufynd_credential_health('gmail')")
+
+
+def test_broker_ingress_exact_source_dedupe_and_no_send():
+    import json
+
+    oid = "gmail:1a0f69c169fb928f"
+    query("select register_dufynd_observer('gmail','1a0f69c169fb928f')")
+    query(
+        "update dufynd_observer_credentials set status='healthy',health_reason='healthy',expires_at=now()+interval '1 hour',last_health_check=now(),activation_enabled=true where provider='gmail' returning true"
+    )
+    evidence = {
+        "thread_id": "1a0f69c169fb928f",
+        "history_id": "10001",
+        "messages": [
+            {
+                "message_id": "ab123456",
+                "thread_id": "1a0f69c169fb928f",
+                "internal_date": "1790950000000",
+                "sender": "sender@example.com",
+                "delivery_failure": False,
+            }
+        ],
+    }
+    sql = "select capture_dufynd_broker_observation('gmail_known_threads',%s,%s::jsonb)"
+    first = query(sql, (oid, json.dumps(evidence)))
+    assert first["inserted"] == 1
+    assert query(sql, (oid, json.dumps(evidence)))["inserted"] == 0
+    payload = query(
+        "select payload->'evidence' from dufynd_jarvis_inbox where source_type='gmail' and payload->'evidence'->>'message_id'='ab123456'"
+    )
+    assert payload["sender"] == "sender@example.com"
+    assert not {"body", "access_token", "refresh_token"} & set(payload)
+    import psycopg
+
+    for invalid in (evidence | {"access_token": "canary"}, evidence | {"thread_id": "foreign"}):
+        with pytest.raises(psycopg.errors.RaiseException):
+            query(sql, (oid, json.dumps(invalid)))
+    query(
+        "update dufynd_observer_credentials set activation_enabled=false,status='missing_configuration',health_reason='missing_configuration' where provider='gmail' returning true"
+    )
