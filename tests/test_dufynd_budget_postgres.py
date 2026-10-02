@@ -1483,6 +1483,7 @@ def purchase_net(database):
 
 PURCHASE_OFFER = "perfumetrader-rabanne-1-million-edt-100"
 PURCHASE_HTML = (
+    '<h1 id="product-name">Paco Rabanne 1 Million Eau de Toilette 100 ml</h1> '
     '"productName":"Paco Rabanne 1 Million Eau de Toilette 100 ml",'
     '"productSku":"16978322","productPrice":"71.9000" '
     '<meta itemprop="gtin13" content="3349666007921" /> '
@@ -1706,3 +1707,12 @@ def test_purchase_non_200_never_creates_safe_evidence(purchase_net):
         (json.dumps(purchase_payload()), PURCHASE_HTML, PURCHASE_SHIPPING),
     )
     assert result["decision"] == "transport_unverified"
+
+
+def test_purchase_ambiguous_primary_fields_fail_closed(purchase_net):
+    assert purchase_decision(PURCHASE_HTML + '\n"productSku":"other"') == "ambiguous_primary_fields"
+
+
+def test_purchase_visible_variant_disagrees_with_metadata(purchase_net):
+    html = PURCHASE_HTML.replace("100 ml</h1>", "50 ml</h1>")
+    assert purchase_decision(html) == "variant_identity_mismatch"

@@ -233,10 +233,14 @@ end $$;
 -- Primary product fields only; never accept prices/stock from cross-sell cards.
 create function public.evaluate_dufynd_purchase_page(p_payload jsonb,p_html text,p_shipping text,p_status int,p_shipping_status int) returns jsonb
 language plpgsql immutable security invoker set search_path=public as $$
-declare title text; sku text; gtin text; price numeric; stock text; decision text; route text; report jsonb;
+declare title text; heading text; sku text; gtin text; price numeric; stock text; decision text; route text; report jsonb;
 begin
  if p_status<>200 or p_shipping_status<>200 or octet_length(p_html)>250000 or octet_length(p_shipping)>250000 then
   return jsonb_build_object('version',1,'decision','transport_unverified'); end if;
+ if exists(select 1 from unnest(array['"productName":"[^"]+"','"productSku":"[^"]+"','"productPrice":"[^"]+"','<meta itemprop="gtin13" content="[^"]+"','<meta itemprop="availability" content="[^"]+"','<h1[^>]*id="product-name"']) pattern
+ where (select count(*) from regexp_matches(p_html,pattern,'g'))<>1) then
+  return jsonb_build_object('version',1,'decision','ambiguous_primary_fields'); end if;
+ heading:=btrim(substring(p_html from '<h1[^>]*id="product-name"[^>]*>[[:space:]]*([^<]+)</h1>'));
  title:=substring(p_html from '"productName":"([^"]+)"');
  sku:=substring(p_html from '"productSku":"([^"]+)"');
  gtin:=substring(p_html from '<meta itemprop="gtin13" content="([0-9]+)"');
@@ -244,7 +248,7 @@ begin
  stock:=substring(p_html from '<meta itemprop="availability" content="([^"]+)"');
  route:=p_payload->'offer_contract'->>'affiliate_url';
  decision:=case
- when title is distinct from 'Paco Rabanne 1 Million Eau de Toilette 100 ml' then 'variant_identity_mismatch'
+ when title is distinct from 'Paco Rabanne 1 Million Eau de Toilette 100 ml' or heading is distinct from title then 'variant_identity_mismatch'
  when sku is distinct from p_payload->'canonical_identity'->>'merchant_product_id' then 'merchant_identity_mismatch'
  when gtin is distinct from p_payload->'canonical_identity'->>'gtin' then 'gtin_mismatch'
  when stock is distinct from 'InStock' then 'stock_unverified_or_changed'
@@ -446,7 +450,7 @@ begin
  return jsonb_build_object('checked_at',now(),'findings',findings);
 end $$;
 
--- Configured 24h margin: twelve 2-minute watchdog opportunities per retry hour,
+-- Configured 24h margin: thirty 2-minute watchdog opportunities per hour,
 -- with time for deployment/review. The 72h customer eligibility gate stays intact.
 create function public.wake_dufynd_purchase_freshness() returns jsonb
 language plpgsql security invoker set search_path=public as $$
