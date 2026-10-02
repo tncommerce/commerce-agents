@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pytest
 from scripts.dufynd_durable_execution import ExecutionFenceLost, consume, run_execution
+from scripts.dufynd_task_packet import FORBIDDEN, PacketTools, validate_packet
 
 
 class Clock:
@@ -27,6 +28,29 @@ class Store:
             "last_checkpoint": {"step": checkpoint, "sum": checkpoint * (checkpoint + 1) // 2},
             "status": "dispatched",
         }
+        self.execution.update(
+            {
+                "scope": "supervisor-test",
+                "resources": ["db:tid"],
+                "handler_id": "durability_probe",
+                "handler_version": "1",
+                "packet_hash": "persisted-hash",
+                "task_packet": {
+                    "packet_version": 1,
+                    "task_id": "tid",
+                    "execution_id": "eid",
+                    "handler_id": "durability_probe",
+                    "handler_version": "1",
+                    "explicit_scope": "supervisor-test",
+                    "allowed_resources": ["db:tid"],
+                    "payload": dict(self.execution["payload"]),
+                    "required_capabilities": ["supabase.execution_state"],
+                    "allowed_tools": ["checkpoint_dufynd_execution", "finish_dufynd_execution"],
+                    "forbidden_actions": sorted(FORBIDDEN),
+                    "verification_contract": {"kind": "arithmetic_checkpoint", "version": 1},
+                },
+            }
+        )
         self.calls = []
         self.taken = False
         self.fence_lost = fence_lost
@@ -164,3 +188,31 @@ def test_event_wake_wait_window_is_bounded_and_has_no_chat_dependency(ready_at, 
     assert len(result) == expected
     assert clock.value <= 156
     assert waiters or clock.value == 0
+
+
+@pytest.mark.parametrize(
+    "name", ["gmail.send", "social.publish", "arbitrary_shell", "take_dufynd_execution"]
+)
+def test_packet_worker_cannot_access_ungranted_tools(name):
+    store = Store()
+    with pytest.raises(ValueError, match="tool_not_in_packet"):
+        PacketTools(store, store.execution).call(name)
+    assert store.calls == []
+
+
+def test_packet_cannot_override_execution_resource_or_fence():
+    store = Store()
+    with pytest.raises(ValueError, match="outside_scope"):
+        PacketTools(store, store.execution).call("checkpoint_dufynd_execution", p_token="other")
+    store.execution["task_packet"]["allowed_resources"] = ["db:foreign"]
+    with pytest.raises(ValueError, match="uncertified"):
+        validate_packet(store.execution)
+    assert store.calls == []
+
+
+def test_uncertified_legacy_packet_has_no_worker_dispatch():
+    store = Store()
+    del store.execution["task_packet"]
+    with pytest.raises(ValueError, match="uncertified"):
+        run_execution(store, store.execution)
+    assert store.calls == []

@@ -14,6 +14,7 @@ from collections.abc import Callable
 from typing import Any
 
 from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
+from scripts.dufynd_task_packet import PacketTools
 
 REPOSITORY = "tncommerce/commerce-agents"
 BRANCH = "scentai-mvp"
@@ -30,12 +31,9 @@ def run_execution(
     sleep: Callable[[float], None] = time.sleep,
     monotonic: Callable[[], float] = time.monotonic,
 ) -> dict[str, Any]:
-    eid, token, worker = (
-        execution["execution_id"],
-        execution["lease_token"],
-        execution["worker_id"],
-    )
-    payload = execution["payload"]
+    eid = execution["execution_id"]
+    tools = PacketTools(bridge, execution)
+    payload = tools.packet["payload"]
     if (
         payload.get("kind") != "durability_probe"
         or type(payload.get("steps")) is not int
@@ -46,15 +44,7 @@ def run_execution(
         raise ValueError("uncertified_free_handler")
 
     def checkpoint(step=None):
-        value = bridge._rpc(
-            "checkpoint_dufynd_execution",
-            {
-                "p_execution_id": eid,
-                "p_token": token,
-                "p_worker_id": worker,
-                "p_step": step,
-            },
-        )
+        value = tools.call("checkpoint_dufynd_execution", p_step=step)
         if not isinstance(value, dict):
             raise ExecutionFenceLost("execution lease/fence lost; no further mutation")
         return value
@@ -70,10 +60,7 @@ def run_execution(
         print(
             json.dumps({"execution_id": eid, "step": step, "status": state["status"]}), flush=True
         )
-    if not bridge._rpc(
-        "finish_dufynd_execution",
-        {"p_execution_id": eid, "p_token": token, "p_worker_id": worker},
-    ):
+    if not tools.call("finish_dufynd_execution"):
         raise ExecutionFenceLost("verified result persists; finalization deferred to supervisor")
     return {"execution_id": eid, "status": "completed", "real_provider_calls": 0}
 

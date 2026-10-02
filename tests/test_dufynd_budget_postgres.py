@@ -38,6 +38,9 @@ def database():
         connection.execute(
             next((ROOT / "supabase/migrations").glob("*external_events.sql")).read_text()
         )
+        connection.execute(
+            next((ROOT / "supabase/migrations").glob("*capability_packets.sql")).read_text()
+        )
     yield
 
 
@@ -1244,4 +1247,124 @@ def test_external_extension_outage_cannot_stop_supervisor_reconciliation():
             ).fetchone()[0]
             == "observer_transport_unavailable"
         )
+        db.rollback()
+
+
+@pytest.mark.parametrize(
+    "required,forbidden,allowed",
+    [
+        (["supabase.execution_state"], [], True),
+        (["github.ci.observe"], [], False),
+        (["unknown.permission"], [], False),
+        (["gmail.send"], [], False),
+        (["social.publish"], [], False),
+        (["supabase.execution_state"], ["supabase.execution_state"], False),
+    ],
+)
+def test_capability_matching_required_missing_unknown_sensitive_and_forbidden(
+    required, forbidden, allowed
+):
+    import json
+
+    task, _, _ = external_wait(
+        payload={"kind": "durability_probe", "steps": 2, "interval_seconds": 2}
+    )
+    query(
+        "update dufynd_autonomy_tasks set required_capabilities=%s::jsonb, forbidden_actions=%s::jsonb where task_id=%s returning task_id",
+        (json.dumps(required), json.dumps(forbidden), task),
+    )
+    contract = query(
+        "select select_dufynd_handler(%s,'supervisor',%s::jsonb,%s::jsonb,'durable')",
+        (
+            task,
+            json.dumps(["db:" + task]),
+            json.dumps({"kind": "durability_probe", "steps": 2, "interval_seconds": 2}),
+        ),
+    )
+    assert bool(contract) == allowed
+
+
+def test_packet_is_compact_immutable_and_resume_keeps_version():
+    import json
+
+    import psycopg
+
+    task, result = durable_fixture()
+    e = result["execution"]
+    packet = e["task_packet"]
+    assert packet["packet_version"] == 1 and packet["required_capabilities"] == [
+        "supabase.execution_state"
+    ]
+    assert packet["allowed_resources"] == e["resources"]
+    assert len(json.dumps(packet)) < 8192
+    assert "instruction" not in packet and "chat_history" not in packet
+    assert packet["relevant_evidence"] == []
+    with psycopg.connect(DSN) as db:
+        db.execute("select set_config('dufynd.execution_write',%s,true)", (e["execution_id"],))
+        with pytest.raises(Exception, match="immutable execution packet"):
+            db.execute(
+                'update dufynd_execution_runs set task_packet=task_packet||\'{"goal":"silently changed"}\' where execution_id=%s',
+                (e["execution_id"],),
+            )
+        db.rollback()
+    e = take_execution(e)
+    execution_checkpoint(e, 1)
+    force_execution_expired(e)
+    query("select reconcile_dufynd_executions()")
+    resumed = execution_state(e)
+    assert resumed["task_packet"] == packet and resumed["packet_hash"] == e["packet_hash"]
+    assert resumed["lease_token"] != e["lease_token"]
+
+
+def test_handler_additional_harmless_capability_is_not_granted_to_packet():
+    import psycopg
+
+    task, result = durable_fixture()
+    e = result["execution"]
+    with psycopg.connect(DSN) as db:
+        db.execute(
+            "update dufynd_handler_contracts set contract=jsonb_set(contract,'{capabilities}','[\"supabase.execution_state\",\"github.read\"]') where handler_id='durability_probe'"
+        )
+        assert db.execute(
+            "select dufynd_execution_contract_valid(%s)", (e["execution_id"],)
+        ).fetchone()[0]
+        assert "github.read" not in e["task_packet"]["required_capabilities"]
+        db.rollback()
+
+
+@pytest.mark.parametrize(
+    "scope,resources",
+    [("commerce", ["db:fixture"]), ("supervisor", ["repo:main"]), ("supervisor", ["db:foreign"])],
+)
+def test_capability_scope_and_resource_conflicts_deny(scope, resources):
+    import json
+
+    task, _, _ = external_wait()
+    assert (
+        query(
+            "select select_dufynd_handler(%s,%s,%s::jsonb,'{\"kind\":\"durability_probe\"}','durable')",
+            (task, scope, json.dumps(resources)),
+        )
+        is None
+    )
+
+
+def test_revoked_handler_cannot_dispatch_or_progress():
+    import psycopg
+
+    _, result = durable_fixture()
+    e = result["execution"]
+    with psycopg.connect(DSN) as db:
+        db.execute(
+            "update dufynd_handler_contracts set enabled=false where handler_id='durability_probe'"
+        )
+        assert (
+            db.execute(
+                "select take_dufynd_execution('123','test',%s)", (e["execution_id"],)
+            ).fetchone()[0]
+            is None
+        )
+        assert not db.execute(
+            "select dufynd_execution_contract_valid(%s)", (e["execution_id"],)
+        ).fetchone()[0]
         db.rollback()
