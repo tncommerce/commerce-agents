@@ -78,13 +78,15 @@ class Store:
                 assert step == self.execution["last_checkpoint"]["step"] + 1
                 self.execution["last_checkpoint"]["step"] = step
             self.execution["status"] = (
-                "verifying" if self.execution["last_checkpoint"]["step"] == 3 else "running"
+                "verifying"
+                if self.execution["last_checkpoint"]["step"] == self.execution["payload"]["steps"]
+                else "running"
             )
             return self.execution.copy()
         if name == "finish_dufynd_execution":
             if self.finish_crash:
                 raise RuntimeError("response persisted before crash")
-            assert self.execution["last_checkpoint"]["step"] == 3
+            assert self.execution["last_checkpoint"]["step"] == self.execution["payload"]["steps"]
             return True
         raise AssertionError(name)
 
@@ -216,3 +218,35 @@ def test_uncertified_legacy_packet_has_no_worker_dispatch():
     with pytest.raises(ValueError, match="uncertified"):
         run_execution(store, store.execution)
     assert store.calls == []
+
+
+def test_certified_state_audit_worker_runs_from_packet_and_persistent_state_only():
+    store, clock = Store(), Clock()
+    payload = {"kind": "supervisor_state_audit", "steps": 1, "interval_seconds": 2}
+    store.execution.update(
+        {
+            "handler_id": "supervisor_state_audit",
+            "scope": "supervisor",
+            "resources": ["db:jarvis.supervisor_v2.health"],
+            "payload": payload,
+        }
+    )
+    store.execution["task_packet"].update(
+        {
+            "handler_id": "supervisor_state_audit",
+            "explicit_scope": "supervisor",
+            "allowed_resources": ["db:jarvis.supervisor_v2.health"],
+            "required_capabilities": ["supabase.execution_state", "supabase.task_state"],
+            "payload": dict(payload),
+            "verification_contract": {"kind": "supervisor_state_audit", "version": 1},
+        }
+    )
+    assert (
+        run_execution(store, store.execution, sleep=clock.sleep, monotonic=clock.now)["status"]
+        == "completed"
+    )
+    assert clock.value == 2
+    assert all(
+        name in {"checkpoint_dufynd_execution", "finish_dufynd_execution"}
+        for name, _ in store.calls
+    )

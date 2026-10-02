@@ -41,6 +41,9 @@ def database():
         connection.execute(
             next((ROOT / "supabase/migrations").glob("*capability_packets.sql")).read_text()
         )
+        connection.execute(
+            next((ROOT / "supabase/migrations").glob("*state_audit_handler.sql")).read_text()
+        )
     yield
 
 
@@ -1368,3 +1371,64 @@ def test_revoked_handler_cannot_dispatch_or_progress():
             "select dufynd_execution_contract_valid(%s)", (e["execution_id"],)
         ).fetchone()[0]
         db.rollback()
+
+
+def test_supervisor_state_audit_requires_live_certification_and_persists_readonly_findings():
+    import json
+
+    task = "supervisor_v2_state_audit_acceptance_20261002"
+    payload = {"kind": "supervisor_state_audit", "steps": 1, "interval_seconds": 2}
+    resources = ["db:jarvis.supervisor_v2.health"]
+    ordinary = "ordinary-audit-" + str(uuid4())
+    blocked = query(
+        "select prepare_dufynd_execution(%s,%s,'supervisor',%s::jsonb,%s::jsonb,'durable')",
+        (ordinary, ordinary, json.dumps(resources), json.dumps(payload)),
+    )
+    assert not blocked["allowed"]
+    prepared = query(
+        "select prepare_dufynd_execution(%s,%s,'supervisor',%s::jsonb,%s::jsonb,'durable')",
+        (task, task, json.dumps(resources), json.dumps(payload)),
+    )
+    e = prepared["execution"]
+    assert e["task_packet"]["required_capabilities"] == [
+        "supabase.execution_state",
+        "supabase.task_state",
+    ]
+    assert e["task_packet"]["handler_contract"]["allowed_resources"] == resources
+    assert not query("select certify_dufynd_state_audit(%s)", (e["execution_id"],))
+    e = take_execution(e)
+    checkpoint = execution_checkpoint(e, 1)
+    audit = checkpoint["last_checkpoint"]["audit"]
+    assert audit["audit_version"] == 1 and audit["paid_provider_calls"] == 0
+    assert type(audit["unclassified_human_gates"]) is int
+    assert type(audit["stale_active_leases"]) is int
+    assert "instruction" not in json.dumps(audit) and "task_id" not in json.dumps(audit)
+    assert finish_execution(e)
+    assert query("select certify_dufynd_state_audit(%s)", (e["execution_id"],))
+    assert (
+        query(
+            "select contract->>'certification_status' from dufynd_handler_contracts where handler_id='supervisor_state_audit'"
+        )
+        == "certified"
+    )
+    after = query(
+        "select prepare_dufynd_execution(%s,%s,'supervisor',%s::jsonb,%s::jsonb,'durable')",
+        (ordinary, ordinary, json.dumps(resources), json.dumps(payload)),
+    )
+    assert after["allowed"]
+    # Two different certified handlers may own disjoint resources simultaneously.
+    _, probe = durable_fixture()
+    assert probe["allowed"]
+    audit_run = take_execution(after["execution"])
+    probe_run = take_execution(probe["execution"])
+    assert audit_run and probe_run and audit_run["execution_id"] != probe_run["execution_id"]
+    execution_checkpoint(audit_run, 1)
+    assert finish_execution(audit_run)
+    for step in range(1, 4):
+        execution_checkpoint(probe_run, step)
+    assert finish_execution(probe_run)
+    other = query(
+        "select prepare_dufynd_execution(%s,%s,'supervisor','[\"db:foreign\"]',%s::jsonb,'durable')",
+        (str(uuid4()), str(uuid4()), json.dumps(payload)),
+    )
+    assert not other["allowed"]
