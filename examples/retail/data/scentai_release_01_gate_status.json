@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated_at": "2026-09-29T21:03:00+00:00",
-  "source_fingerprint_sha256": "407ec26c89065507ffd8e5afaacf998070bb5a8fe3aad59b6618f7a19e4e2dba",
+  "generated_at": "2026-10-02T13:12:55+00:00",
+  "source_fingerprint_sha256": "4d4d8056bf45af6787c3c36eb6014ec79424582fea0f55ddf9ab9d69de930797",
   "release_id": "SCENTAI-RELEASE-01",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "image_machine_ref": "scentai_image_approval_state_machine.json",
@@ -12,7 +12,7 @@
     "image_identity_source_verified": 5,
     "approved_images": 4,
     "current_purchase_destinations": 5,
-    "current_tracked_affiliate_offers": 0,
+    "current_tracked_affiliate_offers": 3,
     "promotion_ready": 4
   },
   "release_write_policy": "All-or-nothing. Do not partially promote this manifest. Use a dry-run first; write only when all five products pass every promotion gate.",
@@ -49,8 +49,8 @@
       "resolved_mapping_count": 4,
       "image_state": "approved_feed_image",
       "purchase_offer_count": 1,
-      "affiliate_offer_count": 0,
-      "current_tracked_affiliate_offer": false,
+      "affiliate_offer_count": 1,
+      "current_tracked_affiliate_offer": true,
       "gates": {
         "non_provisional_community_data": true,
         "resolved_merchant_product_mapping": true,
@@ -96,9 +96,9 @@
       "mapping_count": 4,
       "resolved_mapping_count": 4,
       "image_state": "approved_feed_image",
-      "purchase_offer_count": 1,
-      "affiliate_offer_count": 0,
-      "current_tracked_affiliate_offer": false,
+      "purchase_offer_count": 2,
+      "affiliate_offer_count": 1,
+      "current_tracked_affiliate_offer": true,
       "gates": {
         "non_provisional_community_data": true,
         "resolved_merchant_product_mapping": true,
@@ -120,8 +120,8 @@
       "resolved_mapping_count": 4,
       "image_state": "approved_feed_image",
       "purchase_offer_count": 1,
-      "affiliate_offer_count": 0,
-      "current_tracked_affiliate_offer": false,
+      "affiliate_offer_count": 1,
+      "current_tracked_affiliate_offer": true,
       "gates": {
         "non_provisional_community_data": true,
         "resolved_merchant_product_mapping": true,

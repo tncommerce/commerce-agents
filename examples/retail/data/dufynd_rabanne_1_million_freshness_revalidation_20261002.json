@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "offer_id": "perfumetrader-rabanne-1-million-edt-100",
+  "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+  "observed_at": "2026-10-02T13:03:47Z",
+  "method": "direct_https_no_cache_read_only",
+  "http_status": 200,
+  "response_sha256": "d4f7fa86e18597f4c43c22815cda53705ee69839334435c86dd1b9b34e1ec099",
+  "identity": {
+    "gtin": "3349666007921",
+    "concentration": "Eau de Toilette",
+    "volume_ml": 100,
+    "merchant_product_id": "16978322",
+    "variant": "standard spray, exact unchanged GTIN; no refill variant selected"
+  },
+  "observation": {
+    "price_eur": 71.9,
+    "shipping_eur": 4.99,
+    "in_stock": true,
+    "product_url": "https://www.perfumetrader.de/de/paco-rabanne-1-million-eau-de-toilette-100-ml"
+  },
+  "route": {
+    "unchanged": true,
+    "structural_validation": true,
+    "network": "Awin",
+    "prior_verification_evidence": "dufynd_rabanne_1_million_edt_100_affiliate_evidence_20260929.json",
+    "fresh_network_redirect_test": false,
+    "reason": "No tracking click generated; unchanged approved route parsed against exact configured publisher, advertiser, clickref and destination."
+  },
+  "mutation": {
+    "allowed_fields": [
+      "last_updated_at"
+    ],
+    "previous_last_updated_at": "2026-09-29T12:04:36Z",
+    "business_fields_unchanged": true
+  },
+  "policy": {
+    "max_age_hours": 72,
+    "price_change": "fail_closed",
+    "stock_change": "fail_closed",
+    "ranking_unchanged": true,
+    "catalog_publication": false
+  }
+}
