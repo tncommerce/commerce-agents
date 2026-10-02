@@ -126,17 +126,16 @@ def test_orchestration_failure_persists_stop_reason_and_blocked_result(monkeypat
         raise httpx.HTTPStatusError("status rejected", request=request, response=response)
 
     monkeypatch.setattr(nightshift, "_run_task_with_retry", failed_worker)
-    with pytest.raises(httpx.HTTPStatusError):
-        asyncio.run(nightshift.run_nightshift(bridge, max_events=0))
+    asyncio.run(nightshift.run_nightshift(bridge, max_events=0))
     session = bridge.master[nightshift.SESSION_KEY]["value"]
-    assert session["status"] == "needs_attention"
-    assert session["stop_reason"] == "worker_runtime_error"
+    assert session["status"] == "completed"
+    assert session["stop_reason"] == "no_safe_work"
     assert session["ended_at"]
     assert session["task_results"][0]["final_status"] == "blocked"
     report, markdown = nightshift.build_morning_report(bridge, qa_status="failure")
     assert report["blocked"] == 1
     assert report["ai_cost_complete"] is False
-    assert "worker_runtime_error" in markdown
+    assert "no_safe_work" in markdown
 
 
 def task(task_id: str, domain: str, priority: int) -> dict:
@@ -325,7 +324,7 @@ def test_same_fingerprint_session_is_resumed() -> None:
     assert session["status"] == "running"
 
 
-def test_recovery_marks_audited_safe_worker_done() -> None:
+def test_recovery_requires_verification_of_audited_worker_completion() -> None:
     bridge = FakeBridge([task("repo_current_commerce", "commerce", 100)])
     bridge.tasks["repo_current_commerce"]["status"] = "in_progress"
     session = {
@@ -343,7 +342,7 @@ def test_recovery_marks_audited_safe_worker_done() -> None:
 
     nightshift._recover_interrupted_work(bridge, session)
 
-    assert bridge.tasks["repo_current_commerce"]["status"] == "done"
+    assert bridge.tasks["repo_current_commerce"]["status"] == "waiting_external"
     assert session["current_task"] is None
     assert session["task_results"][0]["recovered_after_interruption"] is True
 
@@ -486,7 +485,7 @@ def test_nightshift_routes_workers_and_consumes_multiple_tasks(
     )
 
     assert bridge.tasks["repo_current_engineering"]["status"] == "in_progress"
-    assert bridge.tasks["repo_current_commerce"]["status"] == "done"
+    assert bridge.tasks["repo_current_commerce"]["status"] == "waiting_external"
     assert session["branch_worker_used"] is True
     assert len(session["task_results"]) == 2
     assert {row["worker"] for row in session["task_results"]} == {
@@ -662,11 +661,11 @@ def test_nightshift_retries_failed_task_then_continues(monkeypatch) -> None:
     )
 
     assert bridge.tasks["repo_current_commerce"]["status"] == "blocked"
-    assert bridge.tasks["repo_current_content"]["status"] == "done"
+    assert bridge.tasks["repo_current_content"]["status"] == "waiting_external"
     assert calls == 3
     assert [row["final_status"] for row in session["task_results"]] == [
         "blocked",
-        "done",
+        "waiting_external",
     ]
 
 
@@ -753,11 +752,11 @@ def test_persistence_failure_is_recorded_without_aborting_nightshift(monkeypatch
 
     assert [row["final_status"] for row in session["task_results"]] == [
         "blocked",
-        "done",
+        "waiting_external",
     ]
     assert session["status"] == "completed"
     assert session["persistence_errors"][0]["task_id"] == "repo_current_commerce"
-    assert bridge.tasks["repo_current_content"]["status"] == "done"
+    assert bridge.tasks["repo_current_content"]["status"] == "waiting_external"
 
 
 def test_finalize_branch_task_moves_yellow_work_to_owner_review() -> None:

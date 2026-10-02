@@ -11,6 +11,7 @@ from typing import Any
 from uuid import uuid4
 
 from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
+from scripts.dufynd_jarvis_control_plane import health_loop
 from scripts.dufynd_jarvis_nightshift import (
     DEFAULT_MAX_EVENTS,
     DEFAULT_MAX_RETRIES,
@@ -41,10 +42,6 @@ IDLE_CONTINUE_REASONS = {
     "tech_lease_active",
 }
 TERMINAL_REASONS = {
-    "budget_gate",
-    "event_timeout",
-    "worker_runtime_error",
-    "orchestration_error",
     "time_horizon_reached",
 }
 
@@ -92,6 +89,7 @@ def _session_summary(session: dict[str, Any]) -> dict[str, Any]:
 
 
 def _preflight(bridge: DufyndJarvisBridge) -> dict[str, Any]:
+    reconciliation = health_loop(bridge)
     health = bridge.load_health()
     queue = bridge.load_autonomy_queue()
     raw_safe_tasks = [
@@ -119,7 +117,16 @@ def _preflight(bridge: DufyndJarvisBridge) -> dict[str, Any]:
         "engineering_safe_count": len(engineering),
         "tech_lease": lease,
         "potential_work": bool(pending_events or safe_tasks),
+        "control_plane_health": reconciliation,
+        "model_execution_available": _model_execution_available(),
+        "model_pause_reason": "unbounded_provider_cost",
     }
+
+
+def _model_execution_available() -> bool:
+    # The current SDK has no enforceable pre-call maximum. No configuration
+    # setting may enable it until the bounded provider adapter exists.
+    return False
 
 
 def _persist_supervisor(
@@ -167,7 +174,7 @@ async def supervise_nightshift(
     started = now()
     deadline = started + timedelta(minutes=minute_limit)
     state: dict[str, Any] = {
-        "version": 1,
+        "version": 2,
         "supervisor_id": f"nightshift_supervisor_{uuid4().hex[:10]}",
         "status": "running",
         "started_at": iso_at(started),
@@ -211,14 +218,8 @@ async def supervise_nightshift(
             state["budget"] = budget
             _persist_supervisor(bridge, state, verified_at=current)
 
-            if bool(preflight.get("inbox_blocked")):
-                return finish("inbox_preflight_blocked", status="needs_attention")
-
-            if (
-                int(preflight.get("raw_safe_task_count") or 0) > 0
-                and int(preflight.get("safe_task_count") or 0) == 0
-            ):
-                return finish("work_available_but_not_selectable", status="needs_attention")
+            # Failed/stale individual entries are health findings, not a global
+            # stop. Unrelated deterministic work remains eligible.
 
             # Wait cheaply while the Work/TECH lease owns the only safe engineering
             # work. No model call is made during this handoff window.
@@ -230,7 +231,11 @@ async def supervise_nightshift(
                 and int(preflight["engineering_safe_count"]) > 0
             )
 
-            if not preflight["potential_work"] or lease_blocks_only_work:
+            paid_work_parked = (
+                not preflight.get("model_execution_available", True)
+                and int(preflight["pending_events"]) == 0
+            )
+            if not preflight["potential_work"] or lease_blocks_only_work or paid_work_parked:
                 if not lease_blocks_only_work and int(state["idle_cycles"]) >= idle_limit:
                     return finish("idle_limit_reached")
                 # A closed model budget does not end the no-cost watcher. This
@@ -264,7 +269,11 @@ async def supervise_nightshift(
                 )
             except Exception as error:
                 state["runtime_error_type"] = type(error).__name__
-                return finish("orchestration_error", status="needs_attention")
+                state["cycles_completed"] = int(state["cycles_completed"]) + 1
+                state["last_recovery_reason"] = "orchestration_error"
+                _persist_supervisor(bridge, state, verified_at=now())
+                await sleep(min(idle_delay, max(0, (deadline - now()).total_seconds())))
+                continue
 
             state["cycles_completed"] = int(state["cycles_completed"]) + 1
             state["idle_cycles"] = 0
@@ -280,12 +289,20 @@ async def supervise_nightshift(
             ):
                 return finish("engineering_quality_gate_pending")
 
-            if str(session.get("status") or "") == "needs_attention":
-                return finish("session_needs_attention", status="needs_attention")
-
             reason = str(session.get("stop_reason") or "unknown")
             if reason in TERMINAL_REASONS:
                 return finish(reason)
+            if reason in {
+                "budget_gate",
+                "event_timeout",
+                "worker_runtime_error",
+                "event_failure",
+                "unknown_provider_cost",
+                "interrupted_task_unknown_cost",
+            }:
+                state["last_recovery_reason"] = reason
+                await sleep(min(idle_delay, max(0, (deadline - now()).total_seconds())))
+                continue
             if reason in IMMEDIATE_CONTINUE_REASONS:
                 continue
             if reason in IDLE_CONTINUE_REASONS:
