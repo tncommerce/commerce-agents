@@ -136,3 +136,31 @@ def test_existing_workflow_has_isolated_free_durable_job():
     assert "ANTHROPIC" not in durable and "approval_token" not in durable
     assert "contents: read" in durable and "scentai-mvp" in durable
     assert "branches: [scentai-mvp]" in text
+
+
+@pytest.mark.parametrize(
+    "ready_at,waiters,expected", [(45, True, 1), (999, True, 0), (45, False, 0)]
+)
+def test_event_wake_wait_window_is_bounded_and_has_no_chat_dependency(ready_at, waiters, expected):
+    clock, store = Clock(), Store()
+    original = store._rpc
+
+    def rpc(name, params):
+        if name == "has_dufynd_durable_event_waiters":
+            return waiters
+        if name == "take_dufynd_execution" and clock.value < ready_at:
+            return None
+        return original(name, params)
+
+    store._rpc = rpc
+    result = consume(
+        store,
+        external_run_id="123",
+        worker_id="worker",
+        wait_seconds=120,
+        sleep=clock.sleep,
+        monotonic=clock.now,
+    )
+    assert len(result) == expected
+    assert clock.value <= 156
+    assert waiters or clock.value == 0

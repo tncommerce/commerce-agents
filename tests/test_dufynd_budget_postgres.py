@@ -35,6 +35,9 @@ def database():
             .read_text()
             .split("-- Hosted observer extension;")[0]
         )
+        connection.execute(
+            next((ROOT / "supabase/migrations").glob("*external_events.sql")).read_text()
+        )
     yield
 
 
@@ -706,3 +709,539 @@ def test_durable_unknown_external_state_does_not_redispatch_or_accept_null_bindi
     saved = execution_state(e)
     assert saved["status"] == "running" and saved["lease_token"] == e["lease_token"]
     assert take_execution(e, run="987654") is None
+
+
+# Phase 2C tests exercise actual SQL, not a second in-memory event/queue model.
+def event_query(sql, *args):
+    import json
+
+    return query(sql, tuple(json.dumps(a) if isinstance(a, (dict, list)) else a for a in args))
+
+
+def external_wait(
+    kind="github_ci", *, policy="dependency", payload=None, baseline=None, cursor=None
+):
+    source = str(uuid4().int) if kind.startswith("github_") else uuid4().hex[:16]
+    if kind == "render":
+        source = "srv-" + source
+    observer = event_query(
+        "select register_dufynd_observer(%s,%s,'{}',%s::jsonb,%s)",
+        kind,
+        source,
+        baseline or {},
+        cursor,
+    )
+    task = "observer-test-" + str(uuid4())
+    event_query(
+        "insert into dufynd_autonomy_tasks(task_id,domain,title,instruction,status,worker_state,budget_class,resource_scope,durability_policy,durable_payload) values(%s,'supervisor','test','free test','waiting_external','waiting_external','free',%s::jsonb,'durable',%s::jsonb) returning task_id",
+        task,
+        ["db:" + task],
+        payload,
+    )
+    events = {
+        "github_ci": ["github.ci.success"],
+        "github_workflow": ["github.workflow.success"],
+        "render": ["render.deployment.live"],
+        "gmail": ["gmail.message.received", "gmail.delivery_failure"],
+    }
+    assert event_query(
+        "select bind_dufynd_external_wait(%s,%s,%s::jsonb,%s,%s)",
+        task,
+        observer,
+        events[kind],
+        "a" * 40 if kind != "gmail" else None,
+        policy,
+    )
+    return task, observer, source
+
+
+def ci_raw(source, *, state="completed", conclusion="success", sha="a" * 40):
+    return {
+        "id": source,
+        "head_branch": "scentai-mvp",
+        "path": ".github/workflows/ci.yml",
+        "head_sha": sha,
+        "status": state,
+        "conclusion": conclusion,
+        "run_attempt": 1,
+    }
+
+
+def capture(observer, raw):
+    return event_query("select capture_dufynd_observation(%s,%s::jsonb)", observer, raw)
+
+
+def task_state(task):
+    return query("select to_jsonb(t) from dufynd_autonomy_tasks t where task_id=%s", (task,))
+
+
+def inbox_count(observer):
+    return query(
+        "select count(*) from dufynd_jarvis_inbox where payload->>'observer_id'=%s", (observer,)
+    )
+
+
+def mail_raw(source, *, message="abcdef12", date="2000", history="100", bounce=False):
+    return {
+        "id": source,
+        "historyId": history,
+        "messages": [
+            {
+                "id": message,
+                "threadId": source,
+                "internalDate": date,
+                "labelIds": ["INBOX"],
+                "payload": {
+                    "headers": [
+                        {
+                            "name": "From",
+                            "value": "mailer-daemon@example.test"
+                            if bounce
+                            else "sender@example.test",
+                        }
+                    ],
+                    "body": "PRIVATE NOT PERSISTED",
+                },
+            }
+        ],
+    }
+
+
+def test_external_ci_success_wakes_exact_task_and_is_deduplicated():
+    task, observer, source = external_wait()
+    assert capture(observer, ci_raw(source))["inserted"] == 1
+    assert capture(observer, ci_raw(source))["inserted"] == 0
+    assert inbox_count(observer) == 1
+    query("select process_dufynd_external_events()")
+    state = task_state(task)
+    assert state["status"] == "ready" and state["last_external_event_id"]
+    assert (
+        query(
+            "select attempts from dufynd_jarvis_inbox where payload->>'observer_id'=%s", (observer,)
+        )
+        == 1
+    )
+    query("select process_dufynd_external_events()")
+    assert task_state(task)["evidence"] == state["evidence"]
+
+
+def test_external_ci_failure_is_retryable_without_human_or_done():
+    task, observer, source = external_wait()
+    capture(observer, ci_raw(source, conclusion="failure"))
+    query("select process_dufynd_external_events()")
+    state = task_state(task)
+    assert state["status"] == "waiting_external" and state["worker_state"] == "failed_retryable"
+    assert state["blocked_reason"] == "external_failure_retryable"
+    assert not query(
+        "select bind_dufynd_external_wait(%s,%s,'[\"github.ci.failure\"]',%s,'dependency')",
+        (task, observer, "a" * 40),
+    )
+
+
+@pytest.mark.parametrize(
+    "status,expected", [("live", "ready"), ("build_failed", "waiting_external")]
+)
+def test_external_render_deploy_must_be_live_at_pinned_commit(status, expected):
+    task, observer, source = external_wait("render")
+    capture(
+        observer, [{"deploy": {"id": "dep-fixture", "status": status, "commit": {"id": "b" * 40}}}]
+    )
+    query("select process_dufynd_external_events()")
+    assert task_state(task)["status"] == "waiting_external"
+    capture(
+        observer, [{"deploy": {"id": "dep-fixture", "status": status, "commit": {"id": "a" * 40}}}]
+    )
+    query("select process_dufynd_external_events()")
+    assert task_state(task)["status"] == expected
+
+
+def test_external_known_gmail_reply_requires_review_never_approves_rights():
+    task, observer, source = external_wait("gmail", policy="review")
+    assert capture(observer, mail_raw(source))["inserted"] == 1
+    query("select process_dufynd_external_events()")
+    state = task_state(task)
+    assert state["status"] == "ready" and state["external_review_required"]
+    assert state["blocked_reason"] == "external_response_review" and state["status"] != "done"
+    assert "PRIVATE NOT PERSISTED" not in query(
+        "select payload::text from dufynd_jarvis_inbox where payload->>'observer_id'=%s",
+        (observer,),
+    )
+    assert not query("select exists(select 1 from dufynd_execution_runs where task_id=%s)", (task,))
+
+
+def test_external_gmail_baseline_restart_and_old_mail_never_replay():
+    baseline = {"watermark_ms": "2000", "seen_message_ids": ["abcdef12"]}
+    task, observer, source = external_wait(
+        "gmail", policy="review", baseline=baseline, cursor="100"
+    )
+    assert capture(observer, mail_raw(source))["inserted"] == 0
+    assert capture(observer, mail_raw(source, message="abcdef13", date="1999"))["inserted"] == 0
+    event_query("select register_dufynd_observer('gmail',%s,'{}','{}','1')", source)
+    assert (
+        query("select last_cursor from dufynd_external_observers where observer_id=%s", (observer,))
+        == "100"
+    )
+    assert (
+        capture(observer, mail_raw(source, message="abcdef14", date="3000", history="101"))[
+            "inserted"
+        ]
+        == 1
+    )
+    assert (
+        capture(observer, mail_raw(source, message="abcdef14", date="3000", history="102"))[
+            "inserted"
+        ]
+        == 0
+    )
+    assert inbox_count(observer) == 1 and task_state(task)["status"] == "waiting_external"
+
+
+def test_external_unknown_gmail_message_cannot_mutate_foreign_task():
+    task, observer, source = external_wait("gmail", policy="review")
+    unknown = uuid4().hex[:16]
+    result = capture(
+        observer,
+        {
+            "historyId": "100",
+            "history": [
+                {
+                    "id": "99",
+                    "messagesAdded": [
+                        {"message": {"id": "123", "threadId": unknown, "labelIds": ["INBOX"]}}
+                    ],
+                }
+            ],
+        },
+    )
+    assert result["inserted"] == 0
+    with pytest.raises(Exception, match="known bounded Gmail"):
+        capture(observer, mail_raw(unknown))
+    assert not capture("gmail:" + unknown, mail_raw(unknown))["accepted"]
+    query("select process_dufynd_external_events()")
+    assert task_state(task)["status"] == "waiting_external" and inbox_count(observer) == 0
+
+
+def test_external_gmail_bounce_is_evidence_and_review_not_success():
+    task, observer, source = external_wait("gmail", policy="review")
+    capture(observer, mail_raw(source, bounce=True))
+    query("select process_dufynd_external_events()")
+    assert (
+        query(
+            "select event_type from dufynd_jarvis_inbox where payload->>'observer_id'=%s",
+            (observer,),
+        )
+        == "gmail.delivery_failure"
+    )
+    assert task_state(task)["external_review_required"]
+
+
+def test_external_rate_limit_backoff_preserves_cursor_and_never_human_gate():
+    task, observer, source = external_wait(cursor="retained")
+    query("select dufynd_observer_failure(%s,'rate_limited',429,300)", (observer,))
+    health = query(
+        "select to_jsonb(o) from dufynd_external_observers o where observer_id=%s", (observer,)
+    )
+    assert health["last_cursor"] == "retained" and health["consecutive_failures"] == 1
+    assert health["health_status"] == "degraded"
+    assert query(
+        "select next_retry_at>=now()+interval '290 seconds' from dufynd_external_observers where observer_id=%s",
+        (observer,),
+    )
+    assert task_state(task)["status"] == "waiting_external"
+    for _ in range(2):
+        query("select dufynd_observer_failure(%s,'network_error')", (observer,))
+    assert (
+        query(
+            "select health_status from dufynd_external_observers where observer_id=%s", (observer,)
+        )
+        == "stale"
+    )
+
+
+def test_external_silent_dead_observer_distinguished_from_healthy_empty_poll():
+    task, observer, source = external_wait("gmail", policy="review")
+    capture(observer, {"id": source, "historyId": "100", "messages": []})
+    assert (
+        query(
+            "select health_status from dufynd_external_observers where observer_id=%s", (observer,)
+        )
+        == "healthy"
+    )
+    query(
+        "update dufynd_external_observers set last_success_at=now()-interval '5 hours' where observer_id=%s returning observer_id",
+        (observer,),
+    )
+    assert (
+        next(
+            x for x in query("select get_dufynd_observer_health()") if x["observer_id"] == observer
+        )["health_status"]
+        == "stale"
+    )
+    assert task_state(task)["status"] == "waiting_external"
+
+
+def test_external_internal_dependency_event_wakes_without_chat_or_binding_queue():
+    parent, _, _ = external_wait()
+    task, _, _ = external_wait()
+    query("delete from dufynd_task_external_waits where task_id=%s returning task_id", (task,))
+    event_query(
+        "update dufynd_autonomy_tasks set dependencies=%s::jsonb where task_id=%s returning task_id",
+        [parent],
+        task,
+    )
+    query(
+        "update dufynd_autonomy_tasks set status='done',worker_state='done' where task_id=%s returning task_id",
+        (parent,),
+    )
+    query("select process_dufynd_external_events()")
+    assert task_state(task)["status"] == "ready"
+    assert (
+        query(
+            "select count(*) from dufynd_jarvis_inbox where event_type='internal.dependency.completed' and source_id=%s",
+            (parent,),
+        )
+        == 1
+    )
+
+
+def test_external_ready_certified_free_handler_dispatches_existing_durable_plane_once():
+    payload = {"kind": "durability_probe", "steps": 2, "interval_seconds": 2}
+    task, observer, source = external_wait(payload=payload)
+    capture(observer, ci_raw(source))
+    query("select process_dufynd_external_events()")
+    e = query("select to_jsonb(e) from dufynd_execution_runs e where task_id=%s", (task,))
+    assert e["status"] == "dispatch_pending" and e["idempotency_key"] == "event-wake:" + task
+    query("select process_dufynd_external_events()")
+    assert query("select count(*) from dufynd_execution_runs where task_id=%s", (task,)) == 1
+    e = take_execution(e)
+    execution_checkpoint(e, 1)
+    execution_checkpoint(e, 2)
+    assert finish_execution(e)
+    assert task_state(task)["status"] == "done" and task_state(task)["released_at"]
+
+
+def test_external_ready_uncertified_handler_parked_no_improvised_dispatch():
+    task, observer, source = external_wait(payload={"kind": "arbitrary_shell", "command": "false"})
+    capture(observer, ci_raw(source))
+    query("select process_dufynd_external_events()")
+    assert task_state(task)["status"] == "ready"
+    assert not query("select exists(select 1 from dufynd_execution_runs where task_id=%s)", (task,))
+
+
+def test_external_bound_cursor_pagination_and_fail_closed_missing_identity():
+    task, observer, source = external_wait("gmail", policy="review", cursor="100")
+    capture(observer, {"historyId": "200", "nextPageToken": "page2", "history": []})
+    assert (
+        query("select last_cursor from dufynd_external_observers where observer_id=%s", (observer,))
+        == "100"
+    )
+    capture(observer, {"historyId": "200", "history": []})
+    assert (
+        query("select last_cursor from dufynd_external_observers where observer_id=%s", (observer,))
+        == "200"
+    )
+    with pytest.raises(Exception, match="identity mismatch"):
+        capture(external_wait()[1], {})
+
+
+def test_external_legacy_sdk_cannot_claim_external_event():
+    _, observer, source = external_wait()
+    capture(observer, ci_raw(source))
+    assert query("select claim_dufynd_jarvis_event()") is None
+
+
+def test_external_empty_gmail_history_is_healthy_and_retains_no_message_content():
+    _, observer, _ = external_wait("gmail", policy="review", cursor="100")
+    assert capture(observer, {"historyId": "200"})["inserted"] == 0
+    assert (
+        query("select last_cursor from dufynd_external_observers where observer_id=%s", (observer,))
+        == "200"
+    )
+    assert (
+        query(
+            "select health_status from dufynd_external_observers where observer_id=%s", (observer,)
+        )
+        == "healthy"
+    )
+
+
+def test_external_branch_movement_and_pr_freshness_are_deterministic():
+    observer = event_query(
+        "select register_dufynd_observer('github_branch','scentai-mvp','{}',%s::jsonb,%s)",
+        {"sha": "a" * 40},
+        "a" * 40,
+    )
+    assert capture(observer, {"name": "scentai-mvp", "commit": {"sha": "a" * 40}})["inserted"] == 0
+    assert capture(observer, {"name": "scentai-mvp", "commit": {"sha": "b" * 40}})["inserted"] == 1
+    assert capture(observer, {"name": "scentai-mvp", "commit": {"sha": "b" * 40}})["inserted"] == 0
+    task, _, source = external_wait()
+    pr = event_query("select register_dufynd_observer('github_pr',%s)", source)
+    assert event_query(
+        "select bind_dufynd_external_wait(%s,%s,%s::jsonb,null,'freshness')",
+        task,
+        pr,
+        ["github.pr.base_moved"],
+    )
+    raw = {
+        "number": source,
+        "state": "open",
+        "merged": False,
+        "head": {"sha": "a" * 40},
+        "base": {"ref": "scentai-mvp", "sha": "a" * 40},
+        "updated_at": "2026-10-02T00:00:00Z",
+    }
+    capture(pr, raw)
+    raw["base"]["sha"] = "b" * 40
+    capture(pr, raw)
+    query("select process_dufynd_external_events()")
+    assert task_state(task)["needs_freshness_recheck"]
+    assert task_state(task)["status"] == "waiting_external"
+
+
+def test_external_network_transport_receipt_rate_limit_etag_and_missing_credentials():
+    import json
+
+    import psycopg
+
+    # Fake pg_net runs the actual portable polling/receipt logic without HTTP.
+    # Every fixture/config change rolls back, including temporary net/vault schemas.
+    with psycopg.connect(DSN) as db:
+        db.execute("create schema net; create schema vault")
+        db.execute("create table vault.decrypted_secrets(name text,decrypted_secret text)")
+        db.execute(
+            "create table net._http_response(id bigint,status_code int,content text,headers jsonb,timed_out boolean,error_msg text)"
+        )
+        db.execute("create table net.requests(id bigserial,url text,headers jsonb)")
+        db.execute(
+            "create function net.http_get(url text,headers jsonb,timeout_milliseconds int) returns bigint language sql as $$ insert into net.requests(url,headers) values(url,headers) returning id $$"
+        )
+        db.execute("update dufynd_external_observers set enabled=false")
+        source = str(uuid4().int)
+        observer = db.execute(
+            "select register_dufynd_observer('github_ci',%s)", (source,)
+        ).fetchone()[0]
+        assert db.execute("select poll_dufynd_observers()").fetchone()[0]["attempted"] == 1
+        request = db.execute(
+            "select request_id from dufynd_external_observers where observer_id=%s", (observer,)
+        ).fetchone()[0]
+        db.execute(
+            'insert into net._http_response values(%s,200,%s,\'{"etag":"fixture-etag"}\',false,null)',
+            (request, json.dumps(ci_raw(source))),
+        )
+        db.execute("select poll_dufynd_observers()")
+        assert (
+            db.execute(
+                "select health_status from dufynd_external_observers where observer_id=%s",
+                (observer,),
+            ).fetchone()[0]
+            == "healthy"
+        )
+        assert (
+            db.execute(
+                "select count(*) from dufynd_jarvis_inbox where payload->>'observer_id'=%s",
+                (observer,),
+            ).fetchone()[0]
+            == 1
+        )
+        db.execute(
+            "update dufynd_external_observers set next_retry_at=now() where observer_id=%s",
+            (observer,),
+        )
+        db.execute("select poll_dufynd_observers()")
+        assert (
+            db.execute(
+                "select headers->>'If-None-Match' from net.requests order by id desc limit 1"
+            ).fetchone()[0]
+            == "fixture-etag"
+        )
+        request = db.execute(
+            "select request_id from dufynd_external_observers where observer_id=%s", (observer,)
+        ).fetchone()[0]
+        db.execute(
+            "insert into net._http_response values(%s,429,'{}','{\"retry-after\":\"300\"}',false,null)",
+            (request,),
+        )
+        db.execute("select poll_dufynd_observers()")
+        assert (
+            db.execute(
+                "select last_error from dufynd_external_observers where observer_id=%s", (observer,)
+            ).fetchone()[0]
+            == "rate_limited"
+        )
+        mail = db.execute(
+            "select register_dufynd_observer('gmail',%s,'{}','{}','100')", (uuid4().hex[:16],)
+        ).fetchone()[0]
+        db.execute("select poll_dufynd_observers()")
+        assert (
+            db.execute(
+                "select health_status from dufynd_external_observers where observer_id=%s", (mail,)
+            ).fetchone()[0]
+            == "blocked_configuration"
+        )
+        db.rollback()
+
+
+def test_external_gmail_watermarks_never_rewind_and_same_timestamp_new_id_detected():
+    _, observer, source = external_wait(
+        "gmail",
+        policy="review",
+        baseline={"watermark_ms": "2000", "seen_message_ids": ["abcdef12"]},
+        cursor="100",
+    )
+    assert (
+        capture(observer, mail_raw(source, message="abcdef13", date="1999", history="99"))[
+            "inserted"
+        ]
+        == 0
+    )
+    assert (
+        query("select last_cursor from dufynd_external_observers where observer_id=%s", (observer,))
+        == "100"
+    )
+    assert (
+        query(
+            "select last_snapshot->>'watermark_ms' from dufynd_external_observers where observer_id=%s",
+            (observer,),
+        )
+        == "2000"
+    )
+    assert (
+        capture(observer, mail_raw(source, message="abcdef14", date="2000", history="101"))[
+            "inserted"
+        ]
+        == 1
+    )
+
+
+def test_external_concurrent_observations_persist_one_event():
+    _, observer, source = external_wait()
+    barrier = Barrier(2)
+
+    def observe(_):
+        barrier.wait(timeout=10)
+        return capture(observer, ci_raw(source))
+
+    with ThreadPoolExecutor(2) as pool:
+        results = list(pool.map(observe, range(2)))
+    assert sum(x["inserted"] for x in results) == 1
+    assert inbox_count(observer) == 1
+
+
+def test_external_extension_outage_cannot_stop_supervisor_reconciliation():
+    import psycopg
+
+    with psycopg.connect(DSN) as db:
+        db.execute("create schema net")  # Missing pg_net response/dispatch tables.
+        db.execute("update dufynd_external_observers set enabled=false")
+        observer = db.execute(
+            "select register_dufynd_observer('github_ci',%s)", (str(uuid4().int),)
+        ).fetchone()[0]
+        result = db.execute("select reconcile_dufynd_supervisor_v2()").fetchone()[0]
+        assert "executions" in result and "external_events" in result
+        assert (
+            db.execute(
+                "select last_error from dufynd_external_observers where observer_id=%s", (observer,)
+            ).fetchone()[0]
+            == "observer_transport_unavailable"
+        )
+        db.rollback()
