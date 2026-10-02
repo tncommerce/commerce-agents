@@ -437,4 +437,4 @@ jobs:
         env:
           SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-        run: python -m scripts.dufynd_durable_execution consume
+        run: python -m scripts.dufynd_durable_execution consume --wait-seconds 360

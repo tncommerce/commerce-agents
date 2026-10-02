@@ -85,10 +85,13 @@ def consume(
     worker_id: str,
     execution_id: str | None = None,
     max_tasks: int = 2,
+    wait_seconds: int = 0,
     sleep: Callable[[float], None] = time.sleep,
     monotonic: Callable[[], float] = time.monotonic,
 ) -> list[dict[str, Any]]:
     results = []
+    # Bounded existing Actions runner window. Supabase remains the queue/owner.
+    deadline = monotonic() + max(0, min(wait_seconds, 360))
     for _ in range(max(1, min(max_tasks, 2))):
         execution = bridge._rpc(
             "take_dufynd_execution",
@@ -98,6 +101,18 @@ def consume(
                 "p_execution_id": execution_id,
             },
         )
+        while not execution and not results and monotonic() < deadline:
+            if not bridge._rpc("has_dufynd_durable_event_waiters", {}):
+                break
+            sleep(min(15, deadline - monotonic()))
+            execution = bridge._rpc(
+                "take_dufynd_execution",
+                {
+                    "p_external_run_id": external_run_id,
+                    "p_worker_id": worker_id,
+                    "p_execution_id": execution_id,
+                },
+            )
         if not execution:
             break
         print(
@@ -133,6 +148,7 @@ def main() -> int:
     )
     parser.add_argument("command", choices=("consume", "status"))
     parser.add_argument("--execution-id")
+    parser.add_argument("--wait-seconds", type=int, default=0)
     args = parser.parse_args()
     bridge = DufyndJarvisBridge()
     if args.command == "status":
@@ -164,6 +180,7 @@ def main() -> int:
                 external_run_id=os.environ["GITHUB_RUN_ID"],
                 worker_id=worker,
                 execution_id=args.execution_id,
+                wait_seconds=args.wait_seconds,
             )
         )
     )

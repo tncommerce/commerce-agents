@@ -11,5 +11,8 @@ create table public.dufynd_jarvis_budget_windows (
 create table public.dufynd_agent_runs(id uuid primary key default gen_random_uuid(),agent_name text,decisions jsonb);
 create table public.dufynd_human_decisions(decision_id text primary key,status text,decision jsonb);
 create table public.dufynd_master_status(key text primary key,category text,value jsonb,priority int,last_verified_at timestamptz);
-create table public.dufynd_jarvis_inbox(status text,claimed_at timestamptz);
+create table public.dufynd_jarvis_inbox(
+ inbox_id bigserial primary key,event_type text not null,source_type text not null,source_id text,payload jsonb not null default '{}',
+ status text not null default 'pending',available_at timestamptz default now(),claimed_at timestamptz,processed_at timestamptz,
+ attempts int not null default 0,last_error text,created_at timestamptz default now(),updated_at timestamptz default now());
 create function public.get_dufynd_jarvis_budget_status(text) returns jsonb language sql as $$ select '{"can_run":false}'::jsonb $$;
