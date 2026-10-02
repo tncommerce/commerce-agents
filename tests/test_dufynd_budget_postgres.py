@@ -1416,6 +1416,17 @@ def test_supervisor_state_audit_requires_live_certification_and_persists_readonl
         (ordinary, ordinary, json.dumps(resources), json.dumps(payload)),
     )
     assert after["allowed"]
+    # Two different certified handlers may own disjoint resources simultaneously.
+    _, probe = durable_fixture()
+    assert probe["allowed"]
+    audit_run = take_execution(after["execution"])
+    probe_run = take_execution(probe["execution"])
+    assert audit_run and probe_run and audit_run["execution_id"] != probe_run["execution_id"]
+    execution_checkpoint(audit_run, 1)
+    assert finish_execution(audit_run)
+    for step in range(1, 4):
+        execution_checkpoint(probe_run, step)
+    assert finish_execution(probe_run)
     other = query(
         "select prepare_dufynd_execution(%s,%s,'supervisor','[\"db:foreign\"]',%s::jsonb,'durable')",
         (str(uuid4()), str(uuid4()), json.dumps(payload)),

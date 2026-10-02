@@ -338,3 +338,12 @@ do $$ declare f record; begin
  execute 'grant execute on function '||f.signature||' to service_role';
  end loop;
 end $$;
+
+-- Keep the existing bounded Actions event-wait window for the new compiled handler.
+create or replace function public.has_dufynd_durable_event_waiters() returns boolean
+language sql stable security invoker set search_path=public as $$
+select exists(select 1 from public.dufynd_autonomy_tasks t where t.budget_class='free' and t.durability_policy='durable'
+ and t.durable_payload->>'kind' in ('durability_probe','supervisor_state_audit')
+ and not t.requires_human_approval and not t.external_review_required and not t.needs_freshness_recheck
+ and t.status in ('waiting_external','ready') and not exists(select 1 from public.dufynd_execution_runs where task_id=t.task_id));
+$$;
