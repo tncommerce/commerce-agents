@@ -379,6 +379,20 @@ select exists(select 1 from public.dufynd_autonomy_tasks t where t.budget_class=
 $$;
 
 alter function public.reconcile_dufynd_supervisor_v2() rename to reconcile_dufynd_supervisor_v2_phase2b;
+-- Harden the existing execution observer against the same transport outage.
+create or replace function public.reconcile_dufynd_supervisor_v2_phase2b() returns jsonb
+language plpgsql security invoker set search_path=public as $$
+declare observers jsonb; executions jsonb; workers jsonb;
+begin
+ perform pg_advisory_xact_lock(hashtext('dufynd-supervisor-v2-claims'));
+ begin observers:=public.poll_dufynd_external_runs();
+ exception when others then observers:=jsonb_build_object('available',false,'error','external_run_transport_unavailable'); end;
+ executions:=public.reconcile_dufynd_executions();
+ workers:=public.reconcile_dufynd_supervisor_v2_phase2a();
+ update public.dufynd_master_status set value=value||jsonb_build_object('executions',executions,'external_observer',observers) where key='jarvis.supervisor_v2.health';
+ return workers||jsonb_build_object('executions',executions,'external_observer',observers);
+end $$;
+
 create function public.reconcile_dufynd_supervisor_v2() returns jsonb
 language plpgsql security invoker set search_path=public as $$
 declare observers jsonb; events jsonb; prior jsonb;
@@ -386,8 +400,20 @@ begin
  perform pg_advisory_xact_lock(hashtext('dufynd-supervisor-v2-claims'));
  -- claim_worker calls the supervisor: avoid recursive event -> prepare -> claim -> event.
  if current_setting('dufynd.event_processing',true)='true' then return public.reconcile_dufynd_supervisor_v2_phase2b(); end if;
- observers:=public.poll_dufynd_observers();
- events:=public.process_dufynd_external_events();
+ begin
+  observers:=public.poll_dufynd_observers();
+ exception when others then
+  -- A transport/extension outage cannot stop leases, reservations or executions.
+  observers:=jsonb_build_object('available',false,'error','observer_transport_unavailable','sqlstate',sqlstate);
+  update public.dufynd_external_observers set health_status='degraded',last_error='observer_transport_unavailable',consecutive_failures=consecutive_failures+1,next_retry_at=now()+interval '5 minutes' where enabled and source_type<>'internal_dependency' and health_status<>'blocked_configuration';
+ end;
+ begin
+  events:=public.process_dufynd_external_events();
+ exception when others then
+  events:=jsonb_build_object('processed',0,'error','event_reevaluation_retryable','sqlstate',sqlstate);
+  perform set_config('dufynd.event_processing','',true);
+  perform set_config('dufynd.worker_write','',true);
+ end;
  prior:=public.reconcile_dufynd_supervisor_v2_phase2b();
  update public.dufynd_master_status set value=value||jsonb_build_object('observer_health',public.get_dufynd_observer_health(),'external_events',events,'observer_poll',observers) where key='jarvis.supervisor_v2.health';
  return prior||jsonb_build_object('observer_health',public.get_dufynd_observer_health(),'external_events',events);

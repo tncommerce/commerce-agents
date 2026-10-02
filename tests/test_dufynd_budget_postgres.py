@@ -1225,3 +1225,23 @@ def test_external_concurrent_observations_persist_one_event():
         results = list(pool.map(observe, range(2)))
     assert sum(x["inserted"] for x in results) == 1
     assert inbox_count(observer) == 1
+
+
+def test_external_extension_outage_cannot_stop_supervisor_reconciliation():
+    import psycopg
+
+    with psycopg.connect(DSN) as db:
+        db.execute("create schema net")  # Missing pg_net response/dispatch tables.
+        db.execute("update dufynd_external_observers set enabled=false")
+        observer = db.execute(
+            "select register_dufynd_observer('github_ci',%s)", (str(uuid4().int),)
+        ).fetchone()[0]
+        result = db.execute("select reconcile_dufynd_supervisor_v2()").fetchone()[0]
+        assert "executions" in result and "external_events" in result
+        assert (
+            db.execute(
+                "select last_error from dufynd_external_observers where observer_id=%s", (observer,)
+            ).fetchone()[0]
+            == "observer_transport_unavailable"
+        )
+        db.rollback()
