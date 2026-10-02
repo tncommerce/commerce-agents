@@ -89,6 +89,37 @@ class DufyndJarvisBridge:
             response.raise_for_status()
             return response.json()
 
+    def reserve_model_call(self, **payload: Any) -> dict[str, Any]:
+        return self._rpc(
+            "reserve_dufynd_model_call", {f"p_{key}": value for key, value in payload.items()}
+        )
+
+    def dispatch_model_call(self, reservation_id: str, lease_token: str) -> bool:
+        return bool(
+            self._rpc(
+                "dispatch_dufynd_model_call",
+                {
+                    "p_reservation_id": reservation_id,
+                    "p_lease_token": lease_token,
+                },
+            )
+        )
+
+    def settle_model_call(
+        self, reservation_id: str, lease_token: str, actual_usd: str, evidence: dict[str, Any]
+    ) -> bool:
+        return bool(
+            self._rpc(
+                "settle_dufynd_model_call",
+                {
+                    "p_reservation_id": reservation_id,
+                    "p_lease_token": lease_token,
+                    "p_actual_usd": actual_usd,
+                    "p_evidence": evidence,
+                },
+            )
+        )
+
     def load_context(self) -> dict[str, Any]:
         payload = self._rpc("get_dufynd_jarvis_context")
         if not isinstance(payload, dict):
