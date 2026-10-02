@@ -346,8 +346,15 @@ class GmailRefreshBroker:
                     last_health_check=now,
                     rotation_due_at=now + timedelta(seconds=expiry - 60),
                 )
+                if "refresh_token" in result and (
+                    not isinstance(result["refresh_token"], str) or not result["refresh_token"]
+                ):
+                    raise BrokerError("invalid_response")
                 rotated = replace(
-                    secret, access_token=result["access_token"], generation=secret.generation + 1
+                    secret,
+                    access_token=result["access_token"],
+                    refresh_token=result.get("refresh_token", secret.refresh_token),
+                    generation=secret.generation + 1,
                 )
                 if not self.vault.rotate(cid, secret.generation, rotated, updated):
                     raise BrokerError("refresh_race")
@@ -590,6 +597,9 @@ class GmailKnownThreadBroker:
                     "thread_id": thread_id,
                     "internal_date": message["internalDate"],
                     "sender": sender,
+                    "content_type": content_type.split(";", 1)[0].strip().lower()
+                    if re.fullmatch(r"[a-zA-Z0-9.+-]+/[a-zA-Z0-9.+-]+(?:;[^\r\n]*)?", content_type)
+                    else "",
                     "delivery_failure": bounce,
                 }
             )
