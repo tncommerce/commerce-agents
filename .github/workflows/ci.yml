@@ -189,3 +189,19 @@ jobs:
           if-no-files-found: warn
           include-hidden-files: true
           retention-days: 7
+
+  private-broker-container:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Build isolated broker image without credentials
+        run: docker build -f private_broker/Dockerfile -t dufynd-private-broker:test .
+      - name: Verify isolated imports and fail-closed startup
+        run: |
+          docker run --rm --entrypoint python dufynd-private-broker:test -c 'from private_broker.runtime import production_app; from private_broker.store import FirestoreCAS'
+          if docker run --rm dufynd-private-broker:test; then
+            echo 'Broker unexpectedly started without owner configuration'
+            exit 1
+          fi

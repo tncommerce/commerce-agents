@@ -1,0 +1,72 @@
+# OWNER ONLY: replace uppercase placeholders after approving project/billing.
+# No service is created by committing this template.
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: dufynd-private-observer
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: '0'
+        autoscaling.knative.dev/maxScale: '2'
+        run.googleapis.com/cpu-throttling: 'true'
+    spec:
+      serviceAccountName: broker-runtime@PRIVATE_PROJECT.iam.gserviceaccount.com
+      containerConcurrency: 4
+      timeoutSeconds: 60
+      containers:
+        - image: REGION-docker.pkg.dev/PRIVATE_PROJECT/broker/runtime@sha256:OWNER_VERIFIED_DIGEST
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              cpu: '1'
+              memory: 512Mi
+          env:
+            - name: BROKER_CALLBACK_LOGGING_READY
+              value: '0' # Owner changes to 1 only after all logging sinks audited.
+            - name: BROKER_PROJECT
+              value: PRIVATE_PROJECT
+            - name: BROKER_ORIGIN
+              value: https://OWNER_ASSIGNED_HOST
+            - name: BROKER_MAILBOX
+              value: OWNER_SELECTED_MAILBOX
+            - name: GOOGLE_CLIENT_ID
+              value: OWNER_WEB_CLIENT_ID
+            - name: BROKER_REPOSITORY_ID
+              value: '1367576041'
+          volumeMounts:
+            - name: render-key
+              mountPath: /run/secrets/render-key-dir
+            - name: google-client-secret
+              mountPath: /run/secrets/google-client-secret-dir
+            - name: encryption-key
+              mountPath: /run/secrets/encryption-key-dir
+            - name: owner-key
+              mountPath: /run/secrets/owner-key-dir
+      volumes:
+        - name: render-key
+          secret:
+            secretName: broker-render-key
+            items:
+              - key: OWNER_PINNED_VERSION
+                path: value
+        - name: google-client-secret
+          secret:
+            secretName: broker-google-client-secret
+            items:
+              - key: OWNER_PINNED_VERSION
+                path: value
+        - name: encryption-key
+          secret:
+            secretName: broker-encryption-key
+            items:
+              - key: OWNER_PINNED_VERSION
+                path: value
+        - name: owner-key
+          secret:
+            secretName: broker-owner-key
+            items:
+              - key: OWNER_PINNED_VERSION
+                path: value

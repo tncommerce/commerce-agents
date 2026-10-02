@@ -1,5 +1,9 @@
 # Observer activation preparation — 2026-10-02
 
+Deployment follow-up: [private-observer-broker-runtime.md](private-observer-broker-runtime.md)
+now supplies the standalone runtime, encrypted Firestore CAS adapter and OAuth
+callback. The preparation-only gaps below describe PR #625, not current code.
+
 ## Result and current boundary
 
 The existing state audit/watchdog/event processor remain authoritative. Credential
