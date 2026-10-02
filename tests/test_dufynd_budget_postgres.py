@@ -664,3 +664,45 @@ def test_durable_unknown_handler_paid_task_and_changed_command_fail_closed():
         (paid, str(uuid4()), json.dumps([f"db:{paid}"])),
     )
     assert not denied["allowed"] and denied["reason"] == "task_contract_conflict"
+
+
+def test_durable_unbound_queue_expiry_and_bounded_retry_exhaustion():
+    import psycopg
+
+    _, p = durable_fixture(steps=3)
+    e = p["execution"]
+    force_execution_expired(e)
+    query("select reconcile_dufynd_supervisor_v2()")
+    assert execution_state(e)["status"] == "retryable"
+    query("select reconcile_dufynd_supervisor_v2()")
+    assert execution_state(e)["attempt"] == 2
+    with psycopg.connect(DSN) as db:
+        db.execute("select set_config('dufynd.execution_write','supervisor',true)")
+        db.execute(
+            "update dufynd_execution_runs set attempt=3,status='stale',last_error='retry_test' where execution_id=%s",
+            (e["execution_id"],),
+        )
+    query("select reconcile_dufynd_supervisor_v2()")
+    assert execution_state(e)["status"] == "failed_terminal"
+    assert query(
+        "select released_at is not null from dufynd_autonomy_tasks where task_id=%s",
+        (e["task_id"],),
+    )
+
+
+def test_durable_unknown_external_state_does_not_redispatch_or_accept_null_binding():
+    _, p = durable_fixture()
+    assert take_execution(p["execution"], run=None) is None
+    e = take_execution(p["execution"])
+    execution_checkpoint(e)
+    assert not query(
+        "select observe_dufynd_execution(%s,%s,'{}')", (e["execution_id"], e["external_run_id"])
+    )
+    assert query(
+        'select observe_dufynd_execution(%s,%s,\'{"state":"unknown","http_status":429}\')',
+        (e["execution_id"], e["external_run_id"]),
+    )
+    query("select reconcile_dufynd_supervisor_v2()")
+    saved = execution_state(e)
+    assert saved["status"] == "running" and saved["lease_token"] == e["lease_token"]
+    assert take_execution(e, run="987654") is None

@@ -104,7 +104,7 @@ returns jsonb language plpgsql security invoker set search_path=public as $$
 declare e public.dufynd_execution_runs; t public.dufynd_autonomy_tasks;
 begin
  perform pg_advisory_xact_lock(hashtext('dufynd-supervisor-v2-claims'));
- if p_external_run_id !~ '^[0-9]+$' or nullif(p_worker_id,'') is null then return null; end if;
+ if coalesce(p_external_run_id,'') !~ '^[0-9]+$' or nullif(p_worker_id,'') is null then return null; end if;
  select * into e from public.dufynd_execution_runs where status='dispatch_pending' and worker_type='github_actions'
  and (p_execution_id is null or execution_id=p_execution_id) order by created_at limit 1 for update;
  if not found or e.lease_expires_at<=now() then return null; end if;
@@ -179,7 +179,7 @@ begin
  perform pg_advisory_xact_lock(hashtext('dufynd-supervisor-v2-claims'));
  select * into e from public.dufynd_execution_runs where execution_id=p_execution_id for update;
  if not found or e.external_run_id is distinct from p_external_run_id or e.status in ('completed','failed_terminal') then return false; end if;
- if p_observation->>'state' not in ('queued','running','success','failure','missing','unknown') then return false; end if;
+ if coalesce(p_observation->>'state','') not in ('queued','running','success','failure','missing','unknown') then return false; end if;
  perform set_config('dufynd.execution_write',e.execution_id::text,true);
  update public.dufynd_execution_runs set external_checked_at=now(),external_observation=p_observation,
  observer_request_id=null,observer_requested_at=null where execution_id=e.execution_id;
