@@ -1,0 +1,11 @@
+{
+  "purpose": "Reviewed wake receipt for the existing free durable Actions worker; Supabase is the execution source of truth.",
+  "task_id": "jarvis_durable_acceptance_20261002_1790933182119",
+  "idempotency_key": "durable-acceptance:jarvis_durable_acceptance_20261002_1790933182119",
+  "worker_kind": "durability_probe",
+  "steps": 12,
+  "interval_seconds": 20,
+  "real_provider_calls": 0,
+  "owner_budget_approval": "not_requested_not_simulated",
+  "origin_detachment": "recorded in Supabase only after running + external_run_id is observed"
+}
