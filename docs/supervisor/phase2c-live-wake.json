@@ -1,0 +1,13 @@
+{
+  "phase": "Supervisor V2 Phase 2C",
+  "task_id": "supervisor_v2_external_event_acceptance_20261002",
+  "external_change": "integration branch HEAD movement on reviewed PR merge",
+  "observer_id": "github_branch:scentai-mvp",
+  "pipeline": ["observe", "normalize", "deduplicate", "persist", "reevaluate", "durable dispatch", "verified completion"],
+  "handler": {"kind": "durability_probe", "steps": 6, "interval_seconds": 5},
+  "chat_mutation_between_stages": false,
+  "paid_provider_calls": 0,
+  "budget_changes": 0,
+  "receipt_key": "jarvis.external_observer.acceptance",
+  "status": "acceptance_trigger_only; persisted receipt proves actual completion"
+}
