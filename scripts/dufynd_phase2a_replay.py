@@ -149,9 +149,12 @@ def replay():
         "false_human_gates": 0,
         "supervisor_stop_reason": state["stop_reason"],
         "counterfactual": {
-            "spent_before_call_usd": "2.49",
-            "next_call_max_usd": "0.0147",
-            "remaining_after_reserve_usd": "-0.0047",
+            "spent_before_call_usd": "2.334318599999999955",
+            "observed_call_cost_lower_bound_usd": "0.1703668",
+            "remaining_before_call_usd": "0.165681400000000045",
+            "best_possible_admission_margin_usd": "-0.004685399999999955",
+            "source_run_id": "b01a0ed3-3a25-4f0d-af21-a05389f29ec0",
+            "bound_note": "Observed actual cost is only a lower bound; any certified maximum must be at least this high. Unknown real SDK bound remains fail closed.",
             "admission": "denied",
         },
     }

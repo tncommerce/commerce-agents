@@ -108,12 +108,19 @@ def test_exact_boundary_never_overruns():
     assert p.calls == 1
 
 
-def test_nightshift_250_regression():
-    store = Ledger(cap="2.50", spent="2.49")
-    p = provider(maximum="0.0147", actual="0.0147")
+@pytest.mark.parametrize(
+    "spent,actual",
+    [
+        ("2.49", "0.0147"),
+        ("2.334318599999999955", "0.1703668"),
+    ],
+)
+def test_nightshift_250_regression(spent, actual):
+    store = Ledger(cap="2.50", spent=spent)
+    p = provider(maximum=actual, actual=actual)
     with pytest.raises(BudgetGate):
         run(store, p)
-    assert p.calls == 0 and store.spent == Decimal("2.49")
+    assert p.calls == 0 and store.spent == Decimal(spent)
     store = Ledger(cap="2.50", spent="2.5047")
     with pytest.raises(BudgetGate):
         run(store, p)
