@@ -30,8 +30,15 @@ def validate_packet(execution: dict[str, Any]) -> dict[str, Any]:
         or packet.get("packet_version") != 1
     ):
         raise ValueError("uncertified_task_packet")
+    handler = packet.get("handler_id")
+    capabilities = (
+        CAPABILITIES if handler == "durability_probe" else CAPABILITIES | {"supabase.task_state"}
+    )
+    verification = (
+        "arithmetic_checkpoint" if handler == "durability_probe" else "supervisor_state_audit"
+    )
     if (
-        packet.get("handler_id") != "durability_probe"
+        handler not in ("durability_probe", "supervisor_state_audit")
         or packet.get("handler_version") != "1"
         or execution.get("handler_id") != packet["handler_id"]
         or execution.get("handler_version") != packet["handler_version"]
@@ -40,15 +47,22 @@ def validate_packet(execution: dict[str, Any]) -> dict[str, Any]:
         or packet.get("explicit_scope") != execution.get("scope")
         or packet.get("allowed_resources") != execution.get("resources")
         or packet.get("payload") != execution["payload"]
-        or packet.get("required_capabilities") != sorted(CAPABILITIES)
+        or packet.get("required_capabilities") != sorted(capabilities)
         or set(packet.get("allowed_tools", [])) != TOOLS
         or not FORBIDDEN.issubset(packet.get("forbidden_actions", []))
         or TOOLS.intersection(packet.get("forbidden_actions", []))
-        or CAPABILITIES.intersection(packet.get("forbidden_actions", []))
-        or packet.get("verification_contract") != {"kind": "arithmetic_checkpoint", "version": 1}
+        or capabilities.intersection(packet.get("forbidden_actions", []))
+        or packet.get("verification_contract") != {"kind": verification, "version": 1}
         or not execution.get("packet_hash")
     ):
         raise ValueError("uncertified_task_packet_contract")
+    if handler == "supervisor_state_audit" and (
+        packet["allowed_resources"] != ["db:jarvis.supervisor_v2.health"]
+        or packet["explicit_scope"] != "supervisor"
+        or packet["payload"]
+        != {"kind": "supervisor_state_audit", "steps": 1, "interval_seconds": 2}
+    ):
+        raise ValueError("uncertified_audit_resource_or_payload")
     return packet
 
 

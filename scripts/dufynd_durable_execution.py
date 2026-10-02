@@ -35,7 +35,7 @@ def run_execution(
     tools = PacketTools(bridge, execution)
     payload = tools.packet["payload"]
     if (
-        payload.get("kind") != "durability_probe"
+        payload.get("kind") not in ("durability_probe", "supervisor_state_audit")
         or type(payload.get("steps")) is not int
         or type(payload.get("interval_seconds")) is not int
         or not 1 <= payload["steps"] <= 30
