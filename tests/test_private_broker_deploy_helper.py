@@ -3,7 +3,6 @@ from __future__ import annotations
 from pathlib import Path
 from subprocess import run
 
-
 SCRIPT = Path("scripts/deploy_dufynd_private_broker.sh")
 
 
