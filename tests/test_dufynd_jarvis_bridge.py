@@ -157,6 +157,25 @@ def mock_transport() -> httpx.MockTransport:
                 },
             )
 
+        if request.url.path.endswith("/rpc/project_dufynd_broker_health"):
+            row = json.loads(request.content)
+            assert row["p_health"]["gmail"]["status"] == "healthy"
+            assert row["p_health"]["render"]["status"] == "healthy"
+            return httpx.Response(
+                200,
+                json={"projected": 2, "activation_changed": False},
+            )
+
+        if request.url.path.endswith("/rpc/capture_dufynd_broker_observation"):
+            row = json.loads(request.content)
+            assert row["p_credential_id"] == "gmail_known_threads"
+            assert row["p_observer_id"] == "gmail:1a0f385ed98c6af8"
+            assert row["p_evidence"]["thread_id"] == "1a0f385ed98c6af8"
+            return httpx.Response(
+                200,
+                json={"accepted": True, "inserted": 1},
+            )
+
         if request.method == "GET" and request.url.path.endswith("/dufynd_jarvis_budget_windows"):
             assert request.url.params["budget_id"] == "eq.jarvis_activation_pilot_001"
             return httpx.Response(
@@ -583,6 +602,43 @@ def test_bridge_loads_health() -> None:
     assert health["state"] == "events_waiting"
     assert health["inbox"]["pending"] == 1
     assert health["pending_human_decisions"] == 5
+
+
+def test_bridge_projects_bounded_broker_health() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    result = bridge.project_broker_health(
+        {
+            "gmail": {"status": "healthy"},
+            "render": {"status": "healthy"},
+        }
+    )
+
+    assert result == {"projected": 2, "activation_changed": False}
+
+
+def test_bridge_captures_bounded_broker_observation() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    result = bridge.capture_broker_observation(
+        credential_id="gmail_known_threads",
+        observer_id="gmail:1a0f385ed98c6af8",
+        evidence={
+            "thread_id": "1a0f385ed98c6af8",
+            "history_id": "74042",
+            "messages": [],
+        },
+    )
+
+    assert result == {"accepted": True, "inserted": 1}
 
 
 def test_bridge_loads_budget_window_and_approval() -> None:
