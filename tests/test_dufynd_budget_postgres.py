@@ -2306,13 +2306,20 @@ def test_dispatch_revalidates_current_authorization(mutation):
             (f[1],),
         )
     elif mutation.startswith("worker_"):
-        assignment = (
-            "worker_state='queued'" if mutation == "worker_state" else "worker_owner='other'"
+        task, token = f[2][0]
+        destination = "verifying" if mutation == "worker_state" else "queued"
+        assert (
+            query(
+                "select update_dufynd_worker_v2(%s,%s,%s,'controlled lease transition',null)",
+                (task, token, destination),
+            )
+            is True
         )
-        query(
-            f"update dufynd_autonomy_tasks set {assignment} where task_id=%s returning task_id",
-            (f[2][0][0],),
-        )
+        if mutation == "worker_owner":
+            assert (
+                query("select claim_dufynd_worker_v2(%s,'other',%s)", (task, str(uuid4())))
+                is not None
+            )
     else:
         query(
             "update dufynd_jarvis_budget_windows set max_runs=0 where budget_id=%s returning budget_id",
