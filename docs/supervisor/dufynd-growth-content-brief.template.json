@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "purpose": "Internal metadata template for existing content asset/performance records; no live job or publication",
+  "content_id": "one_million_example61_01",
+  "campaign_id": "launch01",
+  "stage": "DRAFT_FOR_REVIEW",
+  "objective": "Measure qualified DUFYND product interest and attributable affiliate commission",
+  "hypothesis": "An exact product landing reduces navigation loss compared with a generic advisor landing",
+  "product": {
+    "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+    "concentration": "Eau de Toilette",
+    "volume_ml": 100,
+    "gtin": "3349666007921"
+  },
+  "creative": {
+    "existing_master_ref": "one_million_example61_01",
+    "format": "single_product_story",
+    "hook_type": null,
+    "opening_visual": null,
+    "duration_seconds": null,
+    "category": "fragrance",
+    "cta": "Exakte Variante und aktuelle Händlerangebote auf DUFYND prüfen",
+    "revision_hash": null,
+    "maker_identity": null,
+    "independent_checker_identity": null
+  },
+  "distribution": {
+    "platform": null,
+    "platform_content_id": null,
+    "posted_at": null,
+    "landing_path": "/duft/rabanne-1-million",
+    "tracked_link": null,
+    "publication_authorized": false
+  },
+  "commerce": {
+    "merchant_id": "perfumetrader",
+    "offer_id": "perfumetrader-rabanne-1-million-edt-100",
+    "network": "Awin",
+    "clickref": null,
+    "affiliate_contract_verified_at": null,
+    "offer_reverified_at": null
+  },
+  "quality": {
+    "product_truth_evidence_ref": null,
+    "visual_identity_evidence_ref": null,
+    "rights_evidence_ref": null,
+    "audio_rights_evidence_ref": null,
+    "independent_review_revision_hash": null,
+    "hard_fail_reasons": [],
+    "mandatory_checks_complete": false,
+    "ready_for_owner_approval": false,
+    "max_revision_rounds": 2
+  },
+  "measurement": {
+    "window_start": null,
+    "window_end": null,
+    "measured_at": null,
+    "source_evidence_ref": null,
+    "views": null,
+    "impressions": null,
+    "reach": null,
+    "retention": null,
+    "completion": null,
+    "saves": null,
+    "shares": null,
+    "sessions": null,
+    "qualified_visits": null,
+    "product_views": null,
+    "merchant_clickouts": null,
+    "affiliate_conversions": null,
+    "settled_commission_eur": null,
+    "owner_minutes": null,
+    "production_cost_eur": null,
+    "revenue_per_content_piece_eur": null,
+    "revenue_per_1000_qualified_visits_eur": null,
+    "confidence_note": "Unmeasured; no success or revenue inferred"
+  }
+}
