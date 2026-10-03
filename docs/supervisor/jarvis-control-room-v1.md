@@ -79,8 +79,9 @@ part of this read-layer PR.
 `create_dashboard_router(reader)` denies by default before any database access.
 A real owner verifier must be explicitly supplied for activation. The route is
 GET-only, absent from OpenAPI, and successful/unavailable responses are private
-and `no-store`. It is not registered in `main.py`. This is an intentionally
-inactive implementation awaiting the owner auth boundary, not a live dashboard.
+and `no-store`. The protected shell is registered in `main.py` and stays fail-closed until
+all owner configuration is supplied. Merely shipping this code does not activate
+access or establish live acceptance.
 
 ## Validation
 
@@ -139,7 +140,39 @@ Required future factory contracts:
   New contracts must reduce owner work, have measurable business impact and
   respect the current cost, rights, security and publishing gates.
 
-After a protected V1 passes live acceptance, write the small implementation plan
-and then build only the safe foundation for plan -> specialist tasks -> produce
--> independent critique -> bounded revision -> owner approval. The architecture
-notes above do not activate that pipeline or change the current mission queue.
+After protected V1 live acceptance, measurement/attribution comes first (G0),
+then conversion/monetization (G1), then the small Content Factory V1 plan and safe
+foundation (G2). See [Growth directive](dufynd-growth-directive.md). The notes
+above do not activate that pipeline or change the current mission queue.
+
+## Protected owner shell
+
+`/internal/login` submits directly to the existing API. Supabase Auth validates
+the signed token and current user on every dashboard request. A narrow boolean
+RPC also validates the live session, expiry, deletion, ban and confirmed user.
+The configured owner UUID is the only identity authorized to read Jarvis data;
+neither email, user metadata nor a generic authenticated role grant access.
+
+The session cookie is encrypted, Secure, HttpOnly, SameSite=Strict and host-only.
+No refresh or provider token is stored. Lifetime is capped by access-token expiry
+and one hour. Login and logout enforce the fixed production origin and CSRF.
+Logout revokes the local Supabase session and clears the cookie; upstream failure
+is reported as unconfirmed. Assets contain only presentation code. CSP blocks
+inline execution and framing. Dashboard routes are absent from public OpenAPI.
+
+Activation requires `DUFYND_CONTROL_ROOM_ENABLED=1`,
+`DUFYND_CONTROL_ROOM_OWNER_ID` (confirmed Owner Auth UUID),
+`DUFYND_CONTROL_ROOM_AUTH_KEY` (publishable/anon key),
+`DUFYND_CONTROL_ROOM_SESSION_KEY` (dedicated Fernet key), and existing server-only
+`SUPABASE_SECRET_KEY` or `SUPABASE_SERVICE_ROLE_KEY`. Optional
+`DUFYND_JARVIS_BUDGET_ID` selects the existing budget window; absent data stays
+unknown. Apply the owner-session migration before enabling. Never send keys or
+passwords through chat or embed them in frontend bundles. The owner creates
+their own account; do not insert users directly or invent account credentials.
+
+Acceptance: authenticated owner loads the real endpoint; nonowner, missing,
+expired, forged and revoked sessions cannot trigger reads; cookie protections,
+CSRF and origin tests pass; real worker, task, observer, gate and budget states
+match live sources, with stale/incomplete history labeled. On read failure the UI
+keeps the last observation with an explicit unavailable warning and unknown
+current supervisor status. There are no task, spend, publish or outbound controls.

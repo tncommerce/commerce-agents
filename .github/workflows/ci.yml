@@ -58,7 +58,7 @@ jobs:
           cache: pip
       - run: pip install -r requirements-dev.txt psycopg[binary]==3.3.6
       - name: Real PostgreSQL budget contention and recovery
-        run: pytest -q tests/test_dufynd_budget_postgres.py
+        run: pytest -q tests/test_dufynd_budget_postgres.py tests/test_jarvis_owner_session_postgres.py
 
   no-pypi-fallback:
     runs-on: ubuntu-latest
