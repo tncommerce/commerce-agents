@@ -72,6 +72,11 @@ def database():
         )
         connection.execute(
             next(
+                (ROOT / "supabase/migrations").glob("*private_observer_activation_gate.sql")
+            ).read_text()
+        )
+        connection.execute(
+            next(
                 (ROOT / "supabase/migrations").glob("*audit_known_terminal_states.sql")
             ).read_text()
         )
@@ -2231,3 +2236,145 @@ def test_recovery_audit_recognizes_known_nonrunning_task_states(status):
         ),
     )
     assert findings == []
+
+
+def _private_observer_source(*, run_id="123456789", sha="a" * 40):
+    return {
+        "version": 1,
+        "repository": "tncommerce/commerce-agents",
+        "repository_id": "1367576041",
+        "repository_owner_id": "324597697",
+        "ref": "refs/heads/scentai-mvp",
+        "workflow_ref": (
+            "tncommerce/commerce-agents/.github/workflows/"
+            "dufynd-private-observer.yml@refs/heads/scentai-mvp"
+        ),
+        "event_name": "workflow_dispatch",
+        "sha": sha,
+        "run_id": run_id,
+        "run_attempt": "1",
+    }
+
+
+def test_private_observer_activation_requires_fresh_matching_preflight():
+    import json
+
+    import psycopg
+
+    source = _private_observer_source()
+    with psycopg.connect(DSN) as db:
+        db.execute(
+            """
+            update dufynd_observer_credentials
+            set status='missing_configuration',
+                health_reason='missing_configuration',
+                expires_at=null,
+                refreshed_at=null,
+                revoked_at=null,
+                last_health_check=null,
+                rotation_due_at=null,
+                activation_enabled=false
+            where credential_id in ('render_deploy_broker','gmail_known_threads')
+            """
+        )
+
+        db.execute("savepoint direct_activation")
+        with pytest.raises(psycopg.errors.RaiseException, match="guarded preflight"):
+            db.execute(
+                """
+                update dufynd_observer_credentials
+                set activation_enabled=true
+                where credential_id='render_deploy_broker'
+                """
+            )
+        db.execute("rollback to savepoint direct_activation")
+
+        db.execute("savepoint missing_health")
+        with pytest.raises(psycopg.errors.RaiseException, match="health not acceptable"):
+            db.execute(
+                "select record_dufynd_private_observer_preflight(%s::jsonb)",
+                (json.dumps(source),),
+            )
+        db.execute("rollback to savepoint missing_health")
+
+        db.execute(
+            """
+            update dufynd_observer_credentials
+            set status='healthy',
+                health_reason='healthy',
+                expires_at=case when provider='gmail' then now()+interval '1 hour' else null end,
+                refreshed_at=now(),
+                revoked_at=null,
+                last_health_check=now(),
+                rotation_due_at=null,
+                activation_enabled=false
+            where credential_id in ('render_deploy_broker','gmail_known_threads')
+            """
+        )
+        for kind, source_id in (
+            ("render", "srv-dakpfrnf3r2c73dr3f20"),
+            ("gmail", "1a0f385ed98c6af8"),
+            ("gmail", "1a0f69c169fb928f"),
+            ("gmail", "1a0f6a90772a743d"),
+        ):
+            db.execute(
+                "select register_dufynd_observer(%s,%s,'{}','{}',null)",
+                (kind, source_id),
+            )
+
+        preflight = db.execute(
+            "select record_dufynd_private_observer_preflight(%s::jsonb)",
+            (json.dumps(source),),
+        ).fetchone()[0]
+        assert preflight["status"] == "preflight_accepted"
+        assert preflight["activation_enabled"] is False
+        assert preflight["source"]["run_id"] == source["run_id"]
+
+        db.execute("savepoint wrong_source")
+        with pytest.raises(psycopg.errors.RaiseException, match="preflight missing or stale"):
+            db.execute(
+                "select set_dufynd_private_observer_activation(%s,%s,true)",
+                (source["run_id"], "b" * 40),
+            )
+        db.execute("rollback to savepoint wrong_source")
+
+        activated = db.execute(
+            "select set_dufynd_private_observer_activation(%s,%s,true)",
+            (source["run_id"], source["sha"]),
+        ).fetchone()[0]
+        assert activated["status"] == "activated"
+        assert activated["activation_enabled"] is True
+        assert activated["credentials_activated"] == 2
+        assert activated["registered_observers"] == 4
+        assert (
+            db.execute(
+                "select count(*) from dufynd_observer_credentials where activation_enabled"
+            ).fetchone()[0]
+            == 2
+        )
+
+        disabled = db.execute(
+            "select set_dufynd_private_observer_activation(null,null,false)"
+        ).fetchone()[0]
+        assert disabled["status"] == "disabled"
+        assert disabled["activation_enabled"] is False
+        assert (
+            db.execute(
+                "select count(*) from dufynd_observer_credentials where activation_enabled"
+            ).fetchone()[0]
+            == 0
+        )
+        assert (
+            db.execute(
+                """
+                select count(*)
+                from dufynd_external_observers
+                where source_type in ('render','gmail')
+                  and health_status='blocked_configuration'
+                  and last_error='broker_activation_required'
+                """
+            ).fetchone()[0]
+            >= 4
+        )
+
+        db.rollback()
