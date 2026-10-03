@@ -63,9 +63,26 @@ def main():
                 ("gmail_3", "/v1/gmail/threads/1a0f6a90772a743d/metadata"),
             ]
             results = {}
+            gmail_reads = []
             for stage, path in reads:
                 response = client.get(origin + path, headers=headers)
-                results[path] = _json(response, stage)
+                result = _json(response, stage)
+                results[path] = result
+                if stage.startswith("gmail_"):
+                    gmail_reads.append((stage, path, result))
+
+            # Before any acknowledgment exists, the broker must redeliver the
+            # exact same pending observation. This certifies the at-least-once
+            # boundary without advancing any private cursor.
+            for stage, path, first in gmail_reads:
+                repeated = _json(client.get(origin + path, headers=headers), stage + "_repeat")
+                if (
+                    not isinstance(first.get("observation_id"), str)
+                    or not first["observation_id"]
+                    or repeated.get("observation_id") != first["observation_id"]
+                    or repeated.get("evidence") != first.get("evidence")
+                ):
+                    raise ReadFailure(stage + "_repeat", "pending_redelivery_mismatch")
 
             Path("broker-observations.json").write_text(
                 json.dumps(results, sort_keys=True), encoding="utf-8"

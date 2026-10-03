@@ -82,6 +82,9 @@ def test_success_writes_only_fixed_observations(monkeypatch, tmp_path):
         FakeResponse(200, {"observation_id": "a", "evidence": {"history_id": "1"}}),
         FakeResponse(200, {"observation_id": "b", "evidence": {"history_id": "2"}}),
         FakeResponse(200, {"observation_id": "c", "evidence": {"history_id": "3"}}),
+        FakeResponse(200, {"observation_id": "a", "evidence": {"history_id": "1"}}),
+        FakeResponse(200, {"observation_id": "b", "evidence": {"history_id": "2"}}),
+        FakeResponse(200, {"observation_id": "c", "evidence": {"history_id": "3"}}),
     ]
     client = FakeClient(responses)
     configure(monkeypatch, client)
@@ -100,3 +103,28 @@ def test_success_writes_only_fixed_observations(monkeypatch, tmp_path):
         ]
     )
     assert "workload-token" not in json.dumps(result)
+
+
+def test_rejects_changed_pending_gmail_redelivery(monkeypatch, tmp_path):
+    responses = [
+        FakeResponse(200, {"value": "workload-token"}),
+        FakeResponse(200, {"gmail": {"status": "healthy"}, "render": {"status": "healthy"}}),
+        FakeResponse(200, {"deployments": [{"id": "dep-1"}]}),
+        FakeResponse(200, {"observation_id": "a", "evidence": {"history_id": "1"}}),
+        FakeResponse(200, {"observation_id": "b", "evidence": {"history_id": "2"}}),
+        FakeResponse(200, {"observation_id": "c", "evidence": {"history_id": "3"}}),
+        FakeResponse(200, {"observation_id": "changed", "evidence": {"history_id": "1"}}),
+    ]
+    client = FakeClient(responses)
+    configure(monkeypatch, client)
+    monkeypatch.chdir(tmp_path)
+
+    with pytest.raises(SystemExit) as exc:
+        observer_read.main()
+
+    assert (
+        str(exc.value)
+        == "private observer read failed at gmail_1_repeat:pending_redelivery_mismatch; "
+        "no cursor acknowledged"
+    )
+    assert not (tmp_path / "broker-observations.json").exists()
