@@ -3,6 +3,7 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import os
 import sys
 from datetime import UTC, datetime, timedelta
 
@@ -166,6 +167,46 @@ def test_paid_start_without_budget_remains_blocked(setup, monkeypatch, tmp_path)
     terminal = json.loads((tmp_path / "jarvis-nightshift-report/counted-terminal.json").read_text())
     assert terminal["worker_session_started"] is False and terminal["budget_id"] is None
     assert not (tmp_path / "jarvis-nightshift-report/morning-report.json").exists()
+
+
+def test_paid_start_binds_runtime_model_to_verified_contract(setup, monkeypatch, tmp_path):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["counted", "--approval-token", "GO-JARVIS-NIGHTSHIFT", "--max-tasks", "3"],
+    )
+    monkeypatch.setenv("GITHUB_REF", "refs/heads/scentai-mvp")
+    monkeypatch.setenv("DUFYND_JARVIS_ACTIVE", "1")
+    monkeypatch.setenv("DUFYND_JARVIS_AUTONOMOUS", "1")
+    monkeypatch.delenv("DUFYND_JARVIS_MODEL", raising=False)
+    monkeypatch.setattr(
+        counted,
+        "resolve_budget",
+        lambda bridge: (
+            "jarvis_nightshift_canary_test",
+            {"allowed": True, "budget": {"budget_id": "jarvis_nightshift_canary_test"}},
+        ),
+    )
+
+    async def fake_run_nightshift(bridge, **kwargs):
+        assert os.getenv("DUFYND_JARVIS_MODEL") == "claude-sonnet-5"
+        assert kwargs["max_tasks"] == 3
+        return {
+            "session_id": "current",
+            "started_at": "2026-10-04T00:00:00+00:00",
+            "ended_at": "2026-10-04T00:01:00+00:00",
+            "status": "completed",
+            "stop_reason": "no_safe_work",
+            "task_results": [],
+        }
+
+    monkeypatch.setattr(counted, "run_nightshift", fake_run_nightshift)
+    monkeypatch.setattr(counted, "write_morning_report", lambda *args, **kwargs: {})
+    assert counted.main() == 0
+    terminal = json.loads((tmp_path / "jarvis-nightshift-report/counted-terminal.json").read_text())
+    assert terminal["budget_id"] == "jarvis_nightshift_canary_test"
+    assert terminal["worker_session_started"] is True
 
 
 def current_session():

@@ -132,7 +132,8 @@ def main() -> int:
             stop_reason = preflight["budget_gate"]["reason"] or status
             print(json.dumps(preflight))
             return 0
-        pricing()
+        contract = pricing()
+        os.environ["DUFYND_JARVIS_MODEL"] = str(contract["model"])
         budget_id, _resolved = resolve_budget(bridge)
         os.environ["DUFYND_JARVIS_BUDGET_ID"] = budget_id
         if (
