@@ -132,9 +132,10 @@ by owner-controlled maintenance; no paid Firestore TTL feature is required.
 For owner-authorized Cloud Shell deployment, use
 `scripts/deploy_dufynd_private_broker.sh <40-char scentai-mvp SHA>`.
 The helper checks out exactly the requested immutable commit, builds and pushes a
-commit-tagged broker image, changes **only** the existing Cloud Run service image,
-then fails closed unless the newest revision is Ready, runs that exact image and
-receives 100% traffic. It does not create IAM bindings, alter secrets/environment
+commit-tagged broker image, resolves its Artifact Registry SHA-256 digest and deploys
+that digest-pinned image while changing **only** the existing Cloud Run service image.
+It then fails closed unless the newest revision is Ready, reports the exact same image
+digest and receives 100% traffic. It does not create IAM bindings, alter secrets/environment
 variables, change ingress/scaling, enable public access or touch Supabase/Render.
 
 The helper still requires an owner-authenticated Google Cloud Shell (or equivalent
