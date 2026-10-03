@@ -75,7 +75,9 @@ def main():
             f"private observer read failed at {exc.stage}:{exc.reason}; no cursor acknowledged"
         ) from None
     except Exception:
-        raise SystemExit("private observer read failed at internal; no cursor acknowledged") from None
+        raise SystemExit(
+            "private observer read failed at internal; no cursor acknowledged"
+        ) from None
 
 
 if __name__ == "__main__":
