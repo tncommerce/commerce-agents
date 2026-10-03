@@ -143,6 +143,26 @@ owner-controlled environment) with the already-approved deployment permissions.
 Jarvis/GitHub Actions must not receive those GCP deployment credentials. This is
 deliberately an owner operation, not an autonomous worker capability.
 
+## Separated ingestion and acknowledgment preparation
+
+The acceptance handoff is split so no process needs both the Supabase service-role
+credential and a broker workload token. `scripts/dufynd_private_observer_ingest.py`
+is the trusted control-plane side: it accepts only the five fixed filtered artifact
+paths, projects non-secret health, strips broker-only Gmail `content_type`, commits
+the fixed Render/Gmail evidence through the service-role RPCs and writes
+`broker-acks.json` only after all four captures return `accepted=true`.
+
+`private_broker/observer_ack.py` is the complementary OIDC-only side. It accepts
+only version 1 plans containing exactly the three registered thread IDs and
+64-character observation digests, mints the same fixed GitHub workload identity,
+acknowledges only those exact broker paths and then requires a second pass to return
+`duplicate` for all three digests. It has no Supabase, provider or owner credential.
+
+These helpers are preparation only. They are not yet wired into the workflow and
+credential activation remains false. Production wiring must keep the credential
+separation at job/runtime boundaries and must not enable activation until the real
+broker read/health acceptance has passed.
+
 ## Deployment recommendation and costs (checked 2026-10-02)
 
 **A — Cloud Run request-based billing, scale-to-zero, separate GCP project**, with
