@@ -75,6 +75,9 @@ def database():
                 (ROOT / "supabase/migrations").glob("*audit_known_terminal_states.sql")
             ).read_text()
         )
+        connection.execute(
+            next((ROOT / "supabase/migrations").glob("*paid_dispatch_revalidation.sql")).read_text()
+        )
     yield
 
 
@@ -2231,3 +2234,134 @@ def test_recovery_audit_recognizes_known_nonrunning_task_states(status):
         ),
     )
     assert findings == []
+
+
+def paid_authorization_fixture():
+    """Database-only simulation; never installs a real provider or sends a call."""
+    import json
+
+    f = fixture()
+    decision = f"decision-{uuid4()}"
+    approval = {
+        "approved": True,
+        "scope": "supervisor_v2_bounded_canary",
+        "budget_id": f[0],
+        "contract_id": f[1],
+        "cap_usd": "0.10",
+        "per_call_cap_usd": "0.10",
+        "max_runs": 20,
+    }
+    query(
+        "update dufynd_provider_contracts set dry_run=false where contract_id=%s returning contract_id",
+        (f[1],),
+    )
+    query(
+        "insert into dufynd_human_decisions values(%s,'approved',%s::jsonb) returning decision_id",
+        (decision, json.dumps(approval)),
+    )
+    query(
+        "update dufynd_jarvis_budget_windows set reservation_dry_run=false,approved_decision_id=%s where budget_id=%s returning budget_id",
+        (decision, f[0]),
+    )
+    return f, decision
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "approval_revoked",
+        "approval_scope_removed",
+        "contract_model",
+        "contract_dry_run",
+        "contract_bound",
+        "contract_evidence",
+        "worker_state",
+        "worker_owner",
+        "run_limit",
+    ],
+)
+def test_dispatch_revalidates_current_authorization(mutation):
+    f, decision = paid_authorization_fixture()
+    admitted = reserve(f)
+    assert admitted["allowed"] is True
+    if mutation == "approval_revoked":
+        query(
+            "update dufynd_human_decisions set status='pending' where decision_id=%s returning decision_id",
+            (decision,),
+        )
+    elif mutation == "approval_scope_removed":
+        query(
+            "update dufynd_human_decisions set decision=decision-'scope' where decision_id=%s returning decision_id",
+            (decision,),
+        )
+    elif mutation.startswith("contract_"):
+        assignment = {
+            "contract_model": "model='different'",
+            "contract_dry_run": "dry_run=true",
+            "contract_bound": "max_call_usd=0.11",
+            "contract_evidence": 'evidence=\'{"tariff":"changed"}\'',
+        }[mutation]
+        query(
+            f"update dufynd_provider_contracts set {assignment} where contract_id=%s returning contract_id",
+            (f[1],),
+        )
+    elif mutation.startswith("worker_"):
+        task, token = f[2][0]
+        destination = "verifying" if mutation == "worker_state" else "queued"
+        assert (
+            query(
+                "select update_dufynd_worker_v2(%s,%s,%s,'controlled lease transition',null)",
+                (task, token, destination),
+            )
+            is True
+        )
+        if mutation == "worker_owner":
+            assert (
+                query("select claim_dufynd_worker_v2(%s,'other',%s)", (task, str(uuid4())))
+                is not None
+            )
+    else:
+        query(
+            "update dufynd_jarvis_budget_windows set max_runs=0 where budget_id=%s returning budget_id",
+            (f[0],),
+        )
+    assert (
+        query(
+            "select dispatch_dufynd_model_call(%s,%s)",
+            (admitted["reservation"]["reservation_id"], f[2][0][1]),
+        )
+        is False
+    )
+    assert (
+        query(
+            "select status from dufynd_budget_reservations where reservation_id=%s",
+            (admitted["reservation"]["reservation_id"],),
+        )
+        == "reserved"
+    )
+
+
+def test_dispatch_accepts_exact_run_and_cost_boundary():
+    f, _ = paid_authorization_fixture()
+    query(
+        "update dufynd_jarvis_budget_windows set max_runs=1 where budget_id=%s returning budget_id",
+        (f[0],),
+    )
+    admitted = reserve(f)
+    assert admitted["allowed"] is True
+    assert (
+        query(
+            "select dispatch_dufynd_model_call(%s,%s)",
+            (admitted["reservation"]["reservation_id"], f[2][0][1]),
+        )
+        is True
+    )
+
+
+def test_reserve_rejects_incomplete_approval():
+    f, decision = paid_authorization_fixture()
+    query(
+        "update dufynd_human_decisions set decision=decision-'scope' where decision_id=%s returning decision_id",
+        (decision,),
+    )
+    assert reserve(f)["allowed"] is False

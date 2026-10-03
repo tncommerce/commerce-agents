@@ -95,7 +95,7 @@ class DufyndJarvisBridge:
         )
 
     def dispatch_model_call(self, reservation_id: str, lease_token: str) -> bool:
-        return bool(
+        return (
             self._rpc(
                 "dispatch_dufynd_model_call",
                 {
@@ -103,12 +103,13 @@ class DufyndJarvisBridge:
                     "p_lease_token": lease_token,
                 },
             )
+            is True
         )
 
     def settle_model_call(
         self, reservation_id: str, lease_token: str, actual_usd: str, evidence: dict[str, Any]
     ) -> bool:
-        return bool(
+        return (
             self._rpc(
                 "settle_dufynd_model_call",
                 {
@@ -118,6 +119,7 @@ class DufyndJarvisBridge:
                     "p_evidence": evidence,
                 },
             )
+            is True
         )
 
     def load_context(self) -> dict[str, Any]:

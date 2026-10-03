@@ -185,3 +185,31 @@ def test_actual_supervisor_and_adapter_nightshift_replay():
     assert result["free_deterministic_events"] == 1
     assert result["free_health_passes"] >= 3
     assert result["false_human_gates"] == 0
+
+
+@pytest.mark.parametrize("value", ["false", "true", 1, 0, None, {}, []])
+@pytest.mark.parametrize("stage", ["reserve", "dispatch", "settle"])
+def test_only_boolean_true_confirms_cost_gate(monkeypatch, value, stage):
+    store, p = Ledger(), provider()
+    if stage == "reserve":
+        monkeypatch.setattr(
+            store,
+            "reserve_model_call",
+            lambda **kw: {"allowed": value, "reservation": {"reservation_id": "one"}},
+        )
+    else:
+        method = "dispatch_model_call" if stage == "dispatch" else "settle_model_call"
+        monkeypatch.setattr(store, method, lambda *args: value)
+    with pytest.raises(BudgetGate):
+        run(store, p)
+    assert p.calls == (1 if stage == "settle" else 0)
+
+
+@pytest.mark.parametrize("value", ["false", "true", 1, 0, None, {}, [], False, True])
+def test_bridge_preserves_strict_cost_confirmation(monkeypatch, value):
+    from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
+
+    bridge = DufyndJarvisBridge(supabase_url="https://example.invalid", secret_key="fake")
+    monkeypatch.setattr(bridge, "_rpc", lambda *args: value)
+    assert bridge.dispatch_model_call("test", "test") is (value is True)
+    assert bridge.settle_model_call("test", "test", "0", {"test": True}) is (value is True)
