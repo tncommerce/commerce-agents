@@ -76,6 +76,9 @@ def _session_summary(session: dict[str, Any]) -> dict[str, Any]:
     ]
     return {
         "session_id": session.get("session_id"),
+        "github_run_id": session.get("github_run_id"),
+        "github_run_attempt": session.get("github_run_attempt"),
+        "head_sha": session.get("head_sha"),
         "status": session.get("status"),
         "stop_reason": session.get("stop_reason"),
         "started_at": session.get("started_at"),
@@ -175,6 +178,10 @@ async def supervise_nightshift(
     deadline = started + timedelta(minutes=minute_limit)
     state: dict[str, Any] = {
         "version": 2,
+        "github_run_id": os.getenv("GITHUB_RUN_ID"),
+        "github_run_attempt": os.getenv("GITHUB_RUN_ATTEMPT"),
+        "head_sha": os.getenv("GITHUB_SHA"),
+        "budget_id": os.getenv("DUFYND_JARVIS_BUDGET_ID"),
         "supervisor_id": f"nightshift_supervisor_{uuid4().hex[:10]}",
         "status": "running",
         "started_at": iso_at(started),

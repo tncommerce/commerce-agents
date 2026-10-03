@@ -442,7 +442,15 @@ async def process_counted_task(bridge, *, task_id: str | None = None) -> int:
             run_type=f"safe_task:{task_id}",
             input_summary=prompt[:4000],
             output_summary=text[:8000],
-            decisions=[result | {"response": None}],
+            decisions=[
+                result
+                | {
+                    "response": None,
+                    "github_run_id": os.getenv("GITHUB_RUN_ID"),
+                    "github_run_attempt": os.getenv("GITHUB_RUN_ATTEMPT"),
+                    "head_sha": os.getenv("GITHUB_SHA"),
+                }
+            ],
             agent_name="jarvis",
         )
         # Maker cannot mark its own task/content done. Release the lease for independent review.

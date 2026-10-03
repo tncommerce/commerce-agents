@@ -81,6 +81,9 @@ def database():
         connection.execute(
             next((ROOT / "supabase/migrations").glob("*nightshift_budget_resolver.sql")).read_text()
         )
+        connection.execute(
+            next((ROOT / "supabase/migrations").glob("*counted_preflight_snapshot.sql")).read_text()
+        )
     yield
 
 
@@ -2600,3 +2603,38 @@ def test_counted_unresolved_sent_request_blocks_next_even_with_remaining_budget(
         is True
     )
     assert counted_resolve()["allowed"] is True
+
+
+def test_counted_preflight_snapshot_is_read_only_and_service_role_only():
+    import psycopg
+
+    with psycopg.connect(DSN, autocommit=True) as connection:
+        before = connection.execute(
+            "select (select count(*) from dufynd_budget_reservations), "
+            "(select count(*) from dufynd_jarvis_budget_windows)"
+        ).fetchone()
+        connection.execute("begin read only")
+        state = connection.execute("select get_dufynd_counted_preflight_state()").fetchone()[0]
+        connection.execute("rollback")
+        after = connection.execute(
+            "select (select count(*) from dufynd_budget_reservations), "
+            "(select count(*) from dufynd_jarvis_budget_windows)"
+        ).fetchone()
+        assert before == after
+        assert "settle_dufynd_counted_call" in state["functions"]
+        assert isinstance(state["leases"]["active_workers"], list)
+        assert isinstance(state["observer_health"], list)
+        for role in ("anon", "authenticated"):
+            assert (
+                connection.execute(
+                    "select has_function_privilege(%s,'get_dufynd_counted_preflight_state()','execute')",
+                    (role,),
+                ).fetchone()[0]
+                is False
+            )
+        assert (
+            connection.execute(
+                "select has_function_privilege('service_role','get_dufynd_counted_preflight_state()','execute')"
+            ).fetchone()[0]
+            is True
+        )

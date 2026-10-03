@@ -132,7 +132,9 @@ def test_orchestration_failure_persists_stop_reason_and_blocked_result(monkeypat
     assert session["stop_reason"] == "no_safe_work"
     assert session["ended_at"]
     assert session["task_results"][0]["final_status"] == "blocked"
-    report, markdown = nightshift.build_morning_report(bridge, qa_status="failure")
+    report, markdown = nightshift.build_morning_report(
+        bridge, historical_report=True, qa_status="failure"
+    )
     assert report["blocked"] == 1
     assert report["ai_cost_complete"] is False
     assert "no_safe_work" in markdown
@@ -299,12 +301,18 @@ def test_active_tech_lease_reports_remaining_seconds(monkeypatch) -> None:
     assert lease["remaining_seconds"] == 1200
 
 
-def test_same_fingerprint_session_is_resumed() -> None:
+def test_same_fingerprint_session_is_resumed(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("GITHUB_RUN_ID", "current-run")
+    monkeypatch.setenv("GITHUB_RUN_ATTEMPT", "1")
+    monkeypatch.setenv("GITHUB_SHA", "current-head")
     bridge = FakeBridge()
     bridge.master[nightshift.SESSION_KEY] = {
         "key": nightshift.SESSION_KEY,
         "value": {
             "session_id": "nightshift-existing",
+            "github_run_id": "current-run",
+            "github_run_attempt": "1",
+            "head_sha": "current-head",
             "status": "running",
             "source_fingerprint_sha256": "fingerprint-1",
             "resume_count": 2,
@@ -870,6 +878,7 @@ def test_morning_report_uses_audited_system_data(monkeypatch) -> None:
 
     report, markdown = nightshift.build_morning_report(
         bridge,
+        historical_report=True,
         qa_status="success",
     )
 
@@ -941,7 +950,9 @@ def test_morning_report_aggregates_supervisor_session_history(monkeypatch) -> No
     }
     monkeypatch.setenv("DUFYND_JARVIS_BUDGET_ID", "jarvis_activation_pilot_001")
 
-    report, markdown = nightshift.build_morning_report(bridge, qa_status="success")
+    report, markdown = nightshift.build_morning_report(
+        bridge, historical_report=True, qa_status="success"
+    )
 
     assert report["supervisor"]["supervisor_id"] == "supervisor-1"
     assert report["session_count"] == 2
@@ -992,7 +1003,9 @@ def test_morning_report_ignores_stale_supervisor_for_newer_session(monkeypatch) 
     }
     monkeypatch.setenv("DUFYND_JARVIS_BUDGET_ID", "jarvis_activation_pilot_001")
 
-    report, markdown = nightshift.build_morning_report(bridge, qa_status="success")
+    report, markdown = nightshift.build_morning_report(
+        bridge, historical_report=True, qa_status="success"
+    )
 
     assert report["supervisor"] is None
     assert report["session_id"] == "new-session"
@@ -1041,7 +1054,9 @@ def test_morning_report_uses_newer_idle_supervisor_without_stale_session(
     }
     monkeypatch.setenv("DUFYND_JARVIS_BUDGET_ID", "jarvis_activation_pilot_001")
 
-    report, markdown = nightshift.build_morning_report(bridge, qa_status="success")
+    report, markdown = nightshift.build_morning_report(
+        bridge, historical_report=True, qa_status="success"
+    )
 
     assert report["supervisor"]["supervisor_id"] == "idle-supervisor"
     assert report["session_count"] == 0
@@ -1071,6 +1086,7 @@ def test_morning_report_marks_timeout_cost_as_incomplete(monkeypatch) -> None:
 
     report, markdown = nightshift.build_morning_report(
         bridge,
+        historical_report=True,
         qa_status="failure",
     )
 
@@ -1110,7 +1126,9 @@ def test_morning_report_excludes_agent_runs_after_supervisor_end(monkeypatch) ->
     ]
     monkeypatch.setenv("DUFYND_JARVIS_BUDGET_ID", "jarvis_activation_pilot_001")
 
-    report, _markdown = nightshift.build_morning_report(bridge, qa_status="success")
+    report, _markdown = nightshift.build_morning_report(
+        bridge, historical_report=True, qa_status="success"
+    )
 
     assert report["ai_cost_usd"] == 0.08
     assert report["ai_cost_complete"] is True
@@ -1386,6 +1404,7 @@ def test_morning_report_marks_supervisor_cancellation_cost_incomplete() -> None:
 
     report, _markdown = nightshift.build_morning_report(
         bridge,
+        historical_report=True,
         qa_status="cancelled",
     )
 

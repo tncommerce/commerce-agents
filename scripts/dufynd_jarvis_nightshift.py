@@ -119,6 +119,11 @@ def _new_session(*, fingerprint: str, max_tasks: int, max_events: int) -> dict[s
     started = iso_now()
     return {
         "version": 1,
+        "github_run_id": os.getenv("GITHUB_RUN_ID"),
+        "github_run_attempt": os.getenv("GITHUB_RUN_ATTEMPT"),
+        "head_sha": os.getenv("GITHUB_SHA"),
+        "budget_id": os.getenv("DUFYND_JARVIS_BUDGET_ID"),
+        "provider_path": os.getenv("DUFYND_JARVIS_PROVIDER_PATH"),
         "session_id": f"nightshift_{started.replace(':', '').replace('+00:00', 'Z')}_{uuid4().hex[:8]}",
         "status": "running",
         "started_at": started,
@@ -152,6 +157,7 @@ def _load_or_start_session(
         isinstance(value, dict)
         and value.get("status") in {"running", "interrupted", "awaiting_validation"}
         and value.get("source_fingerprint_sha256") == fingerprint
+        and (not os.getenv("GITHUB_RUN_ID") or _matches_current_execution(value))
     )
 
     if resumable:
@@ -1170,15 +1176,47 @@ def _supervisor_task_results(supervisor: dict[str, Any]) -> list[dict[str, Any]]
     return _latest_task_results(collected)
 
 
+def _matches_current_execution(state: dict[str, Any]) -> bool:
+    return all(
+        state.get(field) == os.getenv(env)
+        for field, env in (
+            ("github_run_id", "GITHUB_RUN_ID"),
+            ("github_run_attempt", "GITHUB_RUN_ATTEMPT"),
+            ("head_sha", "GITHUB_SHA"),
+        )
+    )
+
+
 def build_morning_report(
     bridge: DufyndJarvisBridge,
     *,
     qa_status: str,
     pr_url: str | None = None,
+    expected_session: dict[str, Any] | None = None,
+    historical_report: bool = False,
 ) -> tuple[dict[str, Any], str]:
     row = bridge.load_master_status_entry(SESSION_KEY)
     session = dict((row or {}).get("value") or {})
     supervisor = _load_supervisor_report_state(bridge)
+    if expected_session is not None:
+        # The returned session is authoritative even if another worker overwrites the DB key.
+        session = dict(expected_session)
+        supervisor = None
+        if not session.get("session_id") or not session.get("started_at"):
+            raise RuntimeError("No current Nightshift session")
+        if os.getenv("GITHUB_RUN_ID") and not _matches_current_execution(session):
+            raise RuntimeError("No current Nightshift session: provenance mismatch")
+    elif not historical_report:
+        if not os.getenv("GITHUB_RUN_ID") or not os.getenv("GITHUB_SHA"):
+            raise RuntimeError("No current Nightshift session: execution identity required")
+        session = session if _matches_current_execution(session) else {}
+        supervisor = supervisor if supervisor and _matches_current_execution(supervisor) else None
+    for state in (session, supervisor):
+        if state:
+            start = _parse_iso_timestamp(state.get("started_at"))
+            end = _parse_iso_timestamp(state.get("ended_at"))
+            if not start or (end and end < start):
+                raise RuntimeError("Invalid current Nightshift time window")
 
     if not session and not supervisor:
         raise RuntimeError("No Jarvis nightshift or supervisor state is available for reporting.")
@@ -1188,6 +1226,19 @@ def build_morning_report(
         for item in ((supervisor or {}).get("session_summaries") or [])
         if isinstance(item, dict)
     ]
+    if not historical_report and supervisor:
+        parent_start = _parse_iso_timestamp(supervisor.get("started_at"))
+        parent_end = _parse_iso_timestamp(supervisor.get("ended_at")) or datetime.now(UTC)
+        for item in summaries:
+            child_start = _parse_iso_timestamp(item.get("started_at"))
+            child_end = _parse_iso_timestamp(item.get("ended_at"))
+            if (
+                not _matches_current_execution(item)
+                or not child_start
+                or not child_end
+                or not parent_start <= child_start <= child_end <= parent_end
+            ):
+                raise RuntimeError("Nightshift supervisor/session provenance mismatch")
     supervisor_session_ids = {
         str(item.get("session_id") or "")
         for item in summaries
@@ -1250,12 +1301,25 @@ def build_morning_report(
         bridge.load_agent_runs_since(started_at),
         ended_at,
     )
+    if not historical_report:
+        bound_runs = []
+        for run in runs:
+            decisions = run.get("decisions") or []
+            bound = [d for d in decisions if isinstance(d, dict) and _matches_current_execution(d)]
+            if len(bound) != len(decisions):
+                cost_window_complete = False
+            if bound:
+                bound_runs.append({**run, "decisions": bound})
+        runs = bound_runs
     queue = bridge.load_autonomy_queue()
     health = bridge.load_health()
     pending_decisions = bridge.load_pending_decisions()
 
-    budget_id = os.getenv("DUFYND_JARVIS_BUDGET_ID", "jarvis_activation_pilot_001")
-    budget = bridge.load_budget_status(budget_id)
+    source = supervisor if use_supervisor else session
+    budget_id = (source or {}).get("budget_id")
+    if historical_report:
+        budget_id = budget_id or os.getenv("DUFYND_JARVIS_BUDGET_ID")
+    budget = bridge.load_budget_status(budget_id) if budget_id else None
     ai_cost_usd = _sum_run_costs(runs)
 
     result_timeout = any(int(r.get("result_code") or 0) == 124 for r in results)
@@ -1356,6 +1420,10 @@ def build_morning_report(
 
     report = {
         "title": "DUFYND NIGHTSHIFT",
+        "historical_report": historical_report,
+        "github_run_id": (source or {}).get("github_run_id"),
+        "github_run_attempt": (source or {}).get("github_run_attempt"),
+        "head_sha": (source or {}).get("head_sha"),
         "session_id": latest_session_id,
         "session_count": session_count,
         "supervisor": supervisor_info if use_supervisor else None,
@@ -1473,11 +1541,13 @@ def write_morning_report(
     output_dir: Path,
     qa_status: str,
     pr_url: str | None,
+    expected_session: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     report, markdown = build_morning_report(
         bridge,
         qa_status=qa_status,
         pr_url=pr_url,
+        expected_session=expected_session,
     )
     output_dir.mkdir(parents=True, exist_ok=True)
     (output_dir / "morning-report.json").write_text(
