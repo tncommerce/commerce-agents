@@ -125,12 +125,16 @@ class BoundedProviderAdapter:
                 max_usd=str(maximum),
                 ttl_seconds=180,
             )
-            if not admission.get("allowed"):
-                raise BudgetGate(str(admission.get("reason") or "reservation_denied"))
+            if not isinstance(admission, dict) or admission.get("allowed") is not True:
+                raise BudgetGate(
+                    str(admission.get("reason") or "reservation_denied")
+                    if isinstance(admission, dict)
+                    else "malformed_reservation_response"
+                )
             reservation_id = admission["reservation"]["reservation_id"]
             # Repeated reserve is safe; only the unique dispatch winner may call.
             # An ambiguous RPC response MUST NOT cause an unreserved retry.
-            if not self.store.dispatch_model_call(reservation_id, lease_token):
+            if self.store.dispatch_model_call(reservation_id, lease_token) is not True:
                 raise BudgetGate("dispatch_denied_or_already_dispatched")
         except BudgetGate as error:
             self.store.update_worker(
@@ -152,17 +156,20 @@ class BoundedProviderAdapter:
                 {"rule": "ambiguous_failure_charge_max", "dry_run": True},
             )
             raise
-        if not self.store.settle_model_call(
-            reservation_id,
-            lease_token,
-            str(result.cost_usd),
-            {
-                "provider_request_id": result.request_id,
-                "dry_run": True,
-                "request_hash": request.fingerprint(),
-                "rule": "verified_actual_cost",
-                "bound_and_usage": result.usage_evidence,
-            },
+        if (
+            self.store.settle_model_call(
+                reservation_id,
+                lease_token,
+                str(result.cost_usd),
+                {
+                    "provider_request_id": result.request_id,
+                    "dry_run": True,
+                    "request_hash": request.fingerprint(),
+                    "rule": "verified_actual_cost",
+                    "bound_and_usage": result.usage_evidence,
+                },
+            )
+            is not True
         ):
             raise BudgetGate("settlement_pending_watchdog_recovery")
         return result
