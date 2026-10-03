@@ -35,6 +35,7 @@ from scripts.dufynd_observer_credentials import (
 from private_broker.store import EncryptedVault, FirestoreCAS
 
 ISSUER = "https://token.actions.githubusercontent.com"
+OWNER_ID = "324597697"
 WORKFLOW = "tncommerce/commerce-agents/.github/workflows/dufynd-private-observer.yml@refs/heads/scentai-mvp"
 
 
@@ -97,6 +98,7 @@ class WorkloadAuth:
                         "sub",
                         "repository",
                         "repository_id",
+                        "repository_owner_id",
                         "ref",
                         "workflow_ref",
                         "event_name",
@@ -106,9 +108,13 @@ class WorkloadAuth:
             expected = {
                 "repository": "tncommerce/commerce-agents",
                 "repository_id": self.config.repository_id,
+                "repository_owner_id": OWNER_ID,
                 "ref": "refs/heads/scentai-mvp",
                 "workflow_ref": WORKFLOW,
-                "sub": "repo:tncommerce/commerce-agents:ref:refs/heads/scentai-mvp",
+                "sub": (
+                    f"repo:tncommerce@{OWNER_ID}/commerce-agents@{self.config.repository_id}"
+                    ":ref:refs/heads/scentai-mvp"
+                ),
             }
             if (
                 any(claims.get(k) != v for k, v in expected.items())
