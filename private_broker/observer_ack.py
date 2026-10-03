@@ -14,6 +14,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 import httpx
+
 from private_broker.observer_contract import ProvenanceError, validate_source
 
 MAX_ACK_PLAN_BYTES = 16_384
