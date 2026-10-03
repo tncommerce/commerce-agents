@@ -41,11 +41,30 @@ class FakeClient:
         return self.posts.pop(0)
 
 
+def source() -> dict[str, Any]:
+    return {
+        "version": 1,
+        "repository": "tncommerce/commerce-agents",
+        "repository_id": "1367576041",
+        "repository_owner_id": "324597697",
+        "ref": "refs/heads/scentai-mvp",
+        "workflow_ref": (
+            "tncommerce/commerce-agents/.github/workflows/"
+            "dufynd-private-observer.yml@refs/heads/scentai-mvp"
+        ),
+        "event_name": "workflow_dispatch",
+        "sha": "a" * 40,
+        "run_id": "123456789",
+        "run_attempt": "1",
+    }
+
+
 def write_plan(path: Path) -> None:
     path.write_text(
         json.dumps(
             {
-                "version": 1,
+                "version": 2,
+                "source": source(),
                 "acks": [
                     {"thread_id": thread_id, "observation_id": f"{index:x}" * 64}
                     for index, thread_id in enumerate(observer_ack.THREADS, start=1)
@@ -59,6 +78,8 @@ def write_plan(path: Path) -> None:
 def configure_oidc(monkeypatch) -> None:
     monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_URL", "https://oidc.example/token")
     monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN", "request-token")
+    monkeypatch.setenv("GITHUB_RUN_ID", "123456789")
+    monkeypatch.setenv("GITHUB_SHA", "a" * 40)
 
 
 def test_acknowledges_fixed_plan_then_verifies_idempotency(monkeypatch, tmp_path: Path) -> None:
@@ -85,7 +106,13 @@ def test_acknowledges_fixed_plan_then_verifies_idempotency(monkeypatch, tmp_path
     }
     assert len(client.get_calls) == 1
     assert len(client.post_calls) == 6
-    for index, (thread_id, digest) in enumerate(observer_ack.load_ack_plan(plan)):
+    for index, (thread_id, digest) in enumerate(
+        observer_ack.load_ack_plan(
+            plan,
+            expected_run_id="123456789",
+            expected_sha="a" * 40,
+        )
+    ):
         first_url, first_kwargs = client.post_calls[index]
         second_url, second_kwargs = client.post_calls[index + 3]
         expected = f"https://broker.example/v1/gmail/threads/{thread_id}/ack/{digest}"
@@ -173,4 +200,22 @@ def test_rejects_non_idempotent_second_pass(monkeypatch, tmp_path: Path) -> None
             "https://broker.example",
             plan,
             client_factory=lambda **kwargs: client,
+        )
+
+
+def test_rejects_ack_plan_from_other_workflow_run_before_oidc(monkeypatch, tmp_path: Path) -> None:
+    configure_oidc(monkeypatch)
+    plan = tmp_path / "broker-acks.json"
+    write_plan(plan)
+    payload = json.loads(plan.read_text(encoding="utf-8"))
+    payload["source"]["run_id"] = "999999999"
+    plan.write_text(json.dumps(payload), encoding="utf-8")
+
+    with pytest.raises(observer_ack.AckFailure, match="provenance_source_run_mismatch"):
+        observer_ack.acknowledge(
+            "https://broker.example",
+            plan,
+            client_factory=lambda **kwargs: (_ for _ in ()).throw(
+                AssertionError("OIDC must not be reached")
+            ),
         )
