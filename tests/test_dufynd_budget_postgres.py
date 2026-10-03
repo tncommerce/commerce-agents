@@ -66,6 +66,11 @@ def database():
         )
         connection.execute(
             next(
+                (ROOT / "supabase/migrations").glob("*private_observer_health_projection.sql")
+            ).read_text()
+        )
+        connection.execute(
+            next(
                 (ROOT / "supabase/migrations").glob("*audit_known_terminal_states.sql")
             ).read_text()
         )
