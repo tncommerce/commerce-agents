@@ -1,17 +1,20 @@
 name: DUFYND Private Observer Read
+
 on:
   workflow_dispatch:
-permissions:
-  contents: read
-  id-token: write
+
 concurrency:
   group: dufynd-private-observer
   cancel-in-progress: false
+
 jobs:
   read:
     if: github.ref == 'refs/heads/scentai-mvp' && vars.DUFYND_PRIVATE_BROKER_ENABLED == '1'
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -29,3 +32,116 @@ jobs:
           name: private-observer-filtered-${{ github.run_id }}
           path: broker-observations.json
           retention-days: 1
+
+  ingest:
+    needs: read
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -r requirements-dev.txt
+      - name: Download exact read artifact from this workflow run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh run download "${GITHUB_RUN_ID}"
+          --repo "${GITHUB_REPOSITORY}"
+          --name "private-observer-filtered-${GITHUB_RUN_ID}"
+          --dir observer-artifact
+      - name: Provenance-bound durable acceptance capture
+        env:
+          SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: >-
+          python -m scripts.dufynd_private_observer_ingest
+          --artifact observer-artifact/broker-observations.json
+          --ack-plan broker-acks.json
+          --expected-run-id "${GITHUB_RUN_ID}"
+          --expected-sha "${GITHUB_SHA}"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: private-observer-acks-${{ github.run_id }}
+          path: broker-acks.json
+          retention-days: 1
+
+  ack:
+    needs: ingest
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - run: pip install httpx==0.28.1
+      - name: Download exact ack plan from this workflow run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh run download "${GITHUB_RUN_ID}"
+          --repo "${GITHUB_REPOSITORY}"
+          --name "private-observer-acks-${GITHUB_RUN_ID}"
+          --dir ack-plan
+      - name: OIDC ack and idempotency proof
+        env:
+          BROKER_ORIGIN: ${{ vars.DUFYND_PRIVATE_BROKER_ORIGIN }}
+        run: >-
+          python -m private_broker.observer_ack
+          --ack-plan ack-plan/broker-acks.json
+          --receipt broker-ack-receipt.json
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: private-observer-ack-receipt-${{ github.run_id }}
+          path: broker-ack-receipt.json
+          retention-days: 1
+
+  finalize:
+    needs: ack
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -r requirements-dev.txt
+      - name: Download exact ack receipt from this workflow run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh run download "${GITHUB_RUN_ID}"
+          --repo "${GITHUB_REPOSITORY}"
+          --name "private-observer-ack-receipt-${GITHUB_RUN_ID}"
+          --dir ack-receipt
+      - name: Guarded activation after durable capture and idempotent ack
+        env:
+          SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: >-
+          python -m scripts.dufynd_private_observer_finalize
+          --receipt ack-receipt/broker-ack-receipt.json
+          --expected-run-id "${GITHUB_RUN_ID}"
+          --expected-sha "${GITHUB_SHA}"
+      - name: Final public production smoke
+        run: python -m scripts.dufynd_production_smoke --machine-readable

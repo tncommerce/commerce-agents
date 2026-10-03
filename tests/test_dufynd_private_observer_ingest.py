@@ -25,13 +25,18 @@ class FakeBridge:
         self.health_calls.append(health)
         return {"projected": 2, "activation_changed": False}
 
-    def capture_broker_observation(
+    def begin_broker_acceptance(self, source: dict[str, Any]) -> dict[str, Any]:
+        return {"accepted": True, "run_id": int(source["run_id"]), "state": "capturing"}
+
+    def capture_broker_acceptance_observation(
         self,
         *,
+        run_id: int,
         credential_id: str,
         observer_id: str,
         evidence: Any,
     ) -> dict[str, Any]:
+        assert run_id == 123456789
         self.capture_calls.append(
             {
                 "credential_id": credential_id,
@@ -122,7 +127,12 @@ def test_ingest_writes_ack_plan_only_after_all_durable_captures(tmp_path: Path) 
         expected_sha="a" * 40,
     )
 
-    assert summary == {"health_projected": 2, "captures": 4, "acks": 3}
+    assert summary == {
+        "health_projected": 2,
+        "acceptance_started": 1,
+        "captures": 4,
+        "acks": 3,
+    }
     assert len(bridge.health_calls) == 1
     assert len(bridge.capture_calls) == 4
 

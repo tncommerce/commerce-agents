@@ -171,14 +171,54 @@ def acknowledge(
     }
 
 
+def write_receipt(
+    ack_plan_path: Path,
+    receipt_path: Path,
+    summary: dict[str, int],
+    *,
+    expected_run_id: str,
+    expected_sha: str,
+) -> None:
+    try:
+        payload = json.loads(ack_plan_path.read_text(encoding="utf-8"))
+    except Exception:
+        raise AckFailure("receipt", "plan_unreadable") from None
+    source = payload.get("source") if isinstance(payload, dict) else None
+    try:
+        source = validate_source(
+            source,
+            expected_run_id=expected_run_id,
+            expected_sha=expected_sha,
+        )
+    except ProvenanceError as exc:
+        raise AckFailure("receipt", f"provenance_{exc}") from None
+    receipt = {"version": 1, "source": source, "ack_summary": summary}
+    temporary = receipt_path.with_name(receipt_path.name + ".tmp")
+    temporary.write_text(
+        json.dumps(receipt, sort_keys=True, separators=(",", ":")),
+        encoding="utf-8",
+    )
+    temporary.replace(receipt_path)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Acknowledge one fixed DUFYND broker ack plan.")
     parser.add_argument("--ack-plan", type=Path, default=Path("broker-acks.json"))
+    parser.add_argument("--receipt", type=Path, default=Path("broker-ack-receipt.json"))
     args = parser.parse_args()
     origin = os.environ.get("BROKER_ORIGIN", "")
+    run_id = os.environ.get("GITHUB_RUN_ID", "")
+    sha = os.environ.get("GITHUB_SHA", "")
 
     try:
         summary = acknowledge(origin, args.ack_plan)
+        write_receipt(
+            args.ack_plan,
+            args.receipt,
+            summary,
+            expected_run_id=run_id,
+            expected_sha=sha,
+        )
     except AckFailure as exc:
         raise SystemExit(f"private observer ack failed at {exc.stage}:{exc.reason}") from None
     except Exception:
