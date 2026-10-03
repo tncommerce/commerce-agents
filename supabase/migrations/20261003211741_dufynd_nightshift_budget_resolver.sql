@@ -39,6 +39,8 @@ begin
  and b.max_runs<=case when d.decision->>'max_runs' ~ '^[0-9]+$' then (d.decision->>'max_runs')::numeric end
  and c.max_call_usd<=case when d.decision->>'per_call_cap_usd' ~ '^[0-9]+([.][0-9]+)?$' then (d.decision->>'per_call_cap_usd')::numeric end
  loop
+   -- Serialize paid outcomes: no subsequent request until every sent call has a receipt.
+   if exists(select 1 from public.dufynd_budget_reservations r where r.budget_id=candidate.budget_id and r.status='dispatched') then continue; end if;
    s:=public.get_dufynd_jarvis_budget_status(candidate.budget_id);
    if (s->'can_run'='true'::jsonb and (s->>'remaining_usd')::numeric>=c.max_call_usd)
    or (candidate.budget_id=p_reserved_budget_id and s->'provider_cost_unknown'='false'::jsonb

@@ -2565,3 +2565,38 @@ def test_counted_parallel_reservation_never_exceeds_window(counted_window):
 
 def test_counted_no_new_owner_budget_after_test_cleanup():
     assert counted_resolve()["allowed"] is False
+
+
+def test_counted_unresolved_sent_request_blocks_next_even_with_remaining_budget(counted_window):
+    import json
+
+    from scripts import dufynd_anthropic_counted as c
+
+    f, decision, p = counted_window
+    query(
+        'update dufynd_human_decisions set decision=decision||\'{"cap_usd":"1","max_runs":3}\' where decision_id=%s returning decision_id',
+        (decision,),
+    )
+    query(
+        "update dufynd_jarvis_budget_windows set cap_usd=1,max_runs=3 where budget_id=%s returning budget_id",
+        (f[0],),
+    )
+    rid = counted_dispatch(f, p)
+    assert query("select get_dufynd_jarvis_budget_status(%s)", (f[0],))["remaining_runs"] == 2
+    assert counted_resolve()["allowed"] is False
+    cost, evidence, violation = c.actual_usage(
+        p,
+        {
+            "id": "msg_" + str(uuid4()),
+            "model": c.MODEL,
+            "usage": {"input_tokens": 120, "output_tokens": 10},
+        },
+    )
+    assert (
+        query(
+            "select settle_dufynd_counted_call(%s,%s,%s,%s::jsonb,%s)",
+            (rid, f[2][0][1], cost, json.dumps(evidence), violation),
+        )
+        is True
+    )
+    assert counted_resolve()["allowed"] is True
