@@ -8,6 +8,8 @@ import sys
 from datetime import UTC, datetime, timedelta
 
 import pytest
+import scripts.dufynd_anthropic_counted as counted_provider
+import scripts.dufynd_jarvis_runtime as runtime
 import scripts.dufynd_counted_nightshift as counted
 import scripts.dufynd_jarvis_nightshift as nightshift
 from scripts.dufynd_anthropic_counted import canonical
@@ -207,6 +209,26 @@ def test_paid_start_binds_runtime_model_to_verified_contract(setup, monkeypatch,
     terminal = json.loads((tmp_path / "jarvis-nightshift-report/counted-terminal.json").read_text())
     assert terminal["budget_id"] == "jarvis_nightshift_canary_test"
     assert terminal["worker_session_started"] is True
+
+
+@pytest.mark.asyncio
+async def test_counted_safe_worker_bypasses_legacy_unbounded_provider_gate(monkeypatch):
+    class Bridge:
+        def load_autonomy_queue(self):
+            raise AssertionError("counted route must bypass legacy leased-worker queue gate")
+
+        def claim_worker(self, *args, **kwargs):
+            raise AssertionError("counted route must own its worker lease")
+
+    async def fake_counted_task(bridge, *, task_id=None):
+        assert task_id == "safe-task"
+        return 0
+
+    monkeypatch.setenv("DUFYND_JARVIS_PROVIDER_PATH", "anthropic-counted-v1")
+    monkeypatch.setattr(counted_provider, "process_counted_task", fake_counted_task)
+
+    assert await runtime.process_safe_task(Bridge(), task_id="safe-task") == 0
+
 
 
 def current_session():
