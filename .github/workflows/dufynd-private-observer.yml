@@ -23,7 +23,7 @@ jobs:
       - name: Fixed read only; no upstream or management credentials
         env:
           BROKER_ORIGIN: ${{ vars.DUFYND_PRIVATE_BROKER_ORIGIN }}
-        run: python private_broker/observer_read.py
+        run: python -m private_broker.observer_read
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: private-observer-filtered-${{ github.run_id }}
