@@ -6,6 +6,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 import httpx
+
 from private_broker.observer_contract import ProvenanceError, source_from_env
 
 
