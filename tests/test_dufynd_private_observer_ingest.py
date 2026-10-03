@@ -5,7 +5,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from scripts.dufynd_private_observer_ingest import (
     GMAIL_PATHS,
     HEALTH_PATH,
