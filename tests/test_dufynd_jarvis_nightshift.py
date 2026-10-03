@@ -301,12 +301,18 @@ def test_active_tech_lease_reports_remaining_seconds(monkeypatch) -> None:
     assert lease["remaining_seconds"] == 1200
 
 
-def test_same_fingerprint_session_is_resumed() -> None:
+def test_same_fingerprint_session_is_resumed(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("GITHUB_RUN_ID", "current-run")
+    monkeypatch.setenv("GITHUB_RUN_ATTEMPT", "1")
+    monkeypatch.setenv("GITHUB_SHA", "current-head")
     bridge = FakeBridge()
     bridge.master[nightshift.SESSION_KEY] = {
         "key": nightshift.SESSION_KEY,
         "value": {
             "session_id": "nightshift-existing",
+            "github_run_id": "current-run",
+            "github_run_attempt": "1",
+            "head_sha": "current-head",
             "status": "running",
             "source_fingerprint_sha256": "fingerprint-1",
             "resume_count": 2,
