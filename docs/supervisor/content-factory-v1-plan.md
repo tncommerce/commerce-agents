@@ -31,16 +31,19 @@ Provider/observer health and checkpoints remain subject to freshness labels.
 The current API already accepts sanitized `content_id`, `campaign_id`,
 `acquisition_source`, product and anonymous hashed session identifiers in
 `analytics.py`. Product clickouts in `main.py` pass these identifiers to the
-merchant event recorder and choose affiliate clickref from content, campaign or
-source. `MerchantClickTracker` records offer, product, merchant, network and
+merchant event recorder. Merchant-discovery clickouts choose affiliate clickref
+from content, campaign or source; product-offer clickouts currently use their
+existing offer target without passing this dynamic clickref. That path needs a
+network-specific audit before content-to-conversion linkage is claimed. `MerchantClickTracker` records offer, product, merchant, network and
 time in a local JSONL file. Reuse these contracts; do not create a second tracker.
 
 Next safe implementation: inspect the browser journey, current database columns,
 existing reports and persistence configuration. Verify that a tagged landing
 retains attribution through product interest and clickout. Test redirect URL
 construction locally with a stub; do not make a live merchant click or purchase.
-Check whether local fallback/clickout records survive deploys before treating
-metrics as complete. State missing attribution and reporting coverage explicitly.
+Live `scentai_analytics_events` already contains the content/campaign/source
+columns; no duplicate schema is needed. Check whether local fallback/clickout
+records survive deploys before treating metrics as complete. State missing attribution and reporting coverage explicitly.
 
 Produce one bounded internal report of visits, product interest and clickouts
 by existing identifiers, with time window, source completeness and null unknown
