@@ -8,6 +8,7 @@ import pytest
 from scripts.dufynd_private_observer_ingest import (
     GMAIL_PATHS,
     HEALTH_PATH,
+    META_KEY,
     RENDER_PATH,
     ArtifactError,
     ingest_artifact,
@@ -63,8 +64,27 @@ def observation(thread_id: str, digest: str) -> dict[str, Any]:
     }
 
 
+def source() -> dict[str, Any]:
+    return {
+        "version": 1,
+        "repository": "tncommerce/commerce-agents",
+        "repository_id": "1367576041",
+        "repository_owner_id": "324597697",
+        "ref": "refs/heads/scentai-mvp",
+        "workflow_ref": (
+            "tncommerce/commerce-agents/.github/workflows/"
+            "dufynd-private-observer.yml@refs/heads/scentai-mvp"
+        ),
+        "event_name": "workflow_dispatch",
+        "sha": "a" * 40,
+        "run_id": "123456789",
+        "run_attempt": "1",
+    }
+
+
 def artifact() -> dict[str, Any]:
     result: dict[str, Any] = {
+        META_KEY: source(),
         HEALTH_PATH: {
             "gmail": {"status": "healthy"},
             "render": {"status": "healthy"},
@@ -94,7 +114,13 @@ def test_ingest_writes_ack_plan_only_after_all_durable_captures(tmp_path: Path) 
     write_artifact(artifact_path, artifact())
     bridge = FakeBridge()
 
-    summary = ingest_artifact(bridge, artifact_path, ack_path)
+    summary = ingest_artifact(
+        bridge,
+        artifact_path,
+        ack_path,
+        expected_run_id="123456789",
+        expected_sha="a" * 40,
+    )
 
     assert summary == {"health_projected": 2, "captures": 4, "acks": 3}
     assert len(bridge.health_calls) == 1
@@ -116,7 +142,8 @@ def test_ingest_writes_ack_plan_only_after_all_durable_captures(tmp_path: Path) 
         assert "content_type" not in message
 
     ack_plan = json.loads(ack_path.read_text(encoding="utf-8"))
-    assert ack_plan["version"] == 1
+    assert ack_plan["version"] == 2
+    assert ack_plan["source"] == source()
     assert [item["thread_id"] for item in ack_plan["acks"]] == list(GMAIL_PATHS.values())
     assert all(len(item["observation_id"]) == 64 for item in ack_plan["acks"])
 
@@ -130,7 +157,13 @@ def test_ingest_rejects_unknown_artifact_path_before_control_plane_write(tmp_pat
     bridge = FakeBridge()
 
     with pytest.raises(ArtifactError, match="path set mismatch"):
-        ingest_artifact(bridge, artifact_path, ack_path)
+        ingest_artifact(
+            bridge,
+            artifact_path,
+            ack_path,
+            expected_run_id="123456789",
+            expected_sha="a" * 40,
+        )
 
     assert bridge.health_calls == []
     assert bridge.capture_calls == []
@@ -147,7 +180,13 @@ def test_ingest_rejects_bad_observation_digest_before_capture(tmp_path: Path) ->
     bridge = FakeBridge()
 
     with pytest.raises(ArtifactError, match="digest mismatch"):
-        ingest_artifact(bridge, artifact_path, ack_path)
+        ingest_artifact(
+            bridge,
+            artifact_path,
+            ack_path,
+            expected_run_id="123456789",
+            expected_sha="a" * 40,
+        )
 
     assert len(bridge.health_calls) == 1
     assert len(bridge.capture_calls) == 1
@@ -163,6 +202,32 @@ def test_ingest_never_writes_ack_plan_after_rejected_capture(tmp_path: Path) -> 
     bridge = FakeBridge(reject_observer=rejected)
 
     with pytest.raises(ArtifactError, match="blocked_configuration"):
-        ingest_artifact(bridge, artifact_path, ack_path)
+        ingest_artifact(
+            bridge,
+            artifact_path,
+            ack_path,
+            expected_run_id="123456789",
+            expected_sha="a" * 40,
+        )
 
+    assert not ack_path.exists()
+
+
+def test_ingest_rejects_mismatched_source_run_before_control_plane_write(tmp_path: Path) -> None:
+    artifact_path = tmp_path / "broker-observations.json"
+    ack_path = tmp_path / "broker-acks.json"
+    write_artifact(artifact_path, artifact())
+    bridge = FakeBridge()
+
+    with pytest.raises(ArtifactError, match="source_run_mismatch"):
+        ingest_artifact(
+            bridge,
+            artifact_path,
+            ack_path,
+            expected_run_id="987654321",
+            expected_sha="a" * 40,
+        )
+
+    assert bridge.health_calls == []
+    assert bridge.capture_calls == []
     assert not ack_path.exists()
