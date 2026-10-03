@@ -239,6 +239,37 @@ class DufyndJarvisBridge:
             raise ValueError("DUFYND Jarvis health must be a JSON object")
         return payload
 
+    def project_broker_health(self, health: dict[str, Any]) -> dict[str, Any]:
+        if not isinstance(health, dict):
+            raise ValueError("Broker health must be a JSON object")
+        payload = self._rpc("project_dufynd_broker_health", {"p_health": health})
+        if not isinstance(payload, dict):
+            raise ValueError("Broker health projection must return a JSON object")
+        return payload
+
+    def capture_broker_observation(
+        self,
+        *,
+        credential_id: str,
+        observer_id: str,
+        evidence: Any,
+    ) -> dict[str, Any]:
+        if not credential_id.strip() or not observer_id.strip():
+            raise ValueError("Broker credential_id and observer_id are required")
+        if not isinstance(evidence, (dict, list)):
+            raise ValueError("Broker evidence must be a JSON object or array")
+        payload = self._rpc(
+            "capture_dufynd_broker_observation",
+            {
+                "p_credential_id": credential_id,
+                "p_observer_id": observer_id,
+                "p_evidence": evidence,
+            },
+        )
+        if not isinstance(payload, dict):
+            raise ValueError("Broker observation capture must return a JSON object")
+        return payload
+
     def load_budget_status(self, budget_id: str) -> dict[str, Any]:
         payload = self._rpc(
             "get_dufynd_jarvis_budget_status",
