@@ -73,10 +73,25 @@ def test_reports_fixed_broker_stage_without_response_body(monkeypatch):
     assert "workload-token" not in message
 
 
+def test_rejects_non_list_render_payload(monkeypatch):
+    client = FakeClient(
+        [
+            FakeResponse(200, {"value": "workload-token"}),
+            FakeResponse(200, {"deployments": []}),
+        ]
+    )
+    configure(monkeypatch, client)
+
+    with pytest.raises(SystemExit) as exc:
+        observer_read.main()
+
+    assert str(exc.value) == "private observer read failed at render:invalid_json; no cursor acknowledged"
+
+
 def test_success_writes_only_fixed_observations(monkeypatch, tmp_path):
     responses = [
         FakeResponse(200, {"value": "workload-token"}),
-        FakeResponse(200, {"deployments": [{"id": "dep-1"}]}),
+        FakeResponse(200, [{"deployment_id": "dep-1"}]),
         FakeResponse(200, {"observation_id": "a", "evidence": {"history_id": "1"}}),
         FakeResponse(200, {"observation_id": "b", "evidence": {"history_id": "2"}}),
         FakeResponse(200, {"observation_id": "c", "evidence": {"history_id": "3"}}),
@@ -107,7 +122,7 @@ def test_success_writes_only_fixed_observations(monkeypatch, tmp_path):
 def test_rejects_changed_pending_gmail_redelivery(monkeypatch, tmp_path):
     responses = [
         FakeResponse(200, {"value": "workload-token"}),
-        FakeResponse(200, {"deployments": [{"id": "dep-1"}]}),
+        FakeResponse(200, [{"deployment_id": "dep-1"}]),
         FakeResponse(200, {"observation_id": "a", "evidence": {"history_id": "1"}}),
         FakeResponse(200, {"observation_id": "b", "evidence": {"history_id": "2"}}),
         FakeResponse(200, {"observation_id": "c", "evidence": {"history_id": "3"}}),
