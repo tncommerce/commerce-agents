@@ -6,6 +6,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 import httpx
+from private_broker.observer_contract import ProvenanceError, source_from_env
 
 
 class ReadFailure(Exception):
@@ -64,7 +65,7 @@ def main():
                 # in the projection artifact rather than stale pre-read state.
                 ("health", "/v1/health"),
             ]
-            results = {}
+            results = {"_meta": source_from_env()}
             gmail_reads = []
             for stage, path in reads:
                 response = client.get(origin + path, headers=headers)
@@ -89,6 +90,10 @@ def main():
             Path("broker-observations.json").write_text(
                 json.dumps(results, sort_keys=True), encoding="utf-8"
             )
+    except ProvenanceError as exc:
+        raise SystemExit(
+            f"private observer read failed at provenance:{exc}; no cursor acknowledged"
+        ) from None
     except ReadFailure as exc:
         raise SystemExit(
             f"private observer read failed at {exc.stage}:{exc.reason}; no cursor acknowledged"
