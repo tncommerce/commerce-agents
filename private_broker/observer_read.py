@@ -56,11 +56,13 @@ def main():
 
             headers = {"Authorization": "Bearer " + token}
             reads = [
-                ("health", "/v1/health"),
                 ("render", "/v1/render/services/srv-dakpfrnf3r2c73dr3f20/deployments"),
                 ("gmail_1", "/v1/gmail/threads/1a0f385ed98c6af8/metadata"),
                 ("gmail_2", "/v1/gmail/threads/1a0f69c169fb928f/metadata"),
                 ("gmail_3", "/v1/gmail/threads/1a0f6a90772a743d/metadata"),
+                # Snapshot health last so provider reads/refreshes are reflected
+                # in the projection artifact rather than stale pre-read state.
+                ("health", "/v1/health"),
             ]
             results = {}
             gmail_reads = []
