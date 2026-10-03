@@ -1041,6 +1041,16 @@ def require_bounded_provider_execution() -> None:
 def leased_worker(function):
     @wraps(function)
     async def controlled(bridge: DufyndJarvisBridge, *, task_id: str | None = None) -> int:
+        # The counted Anthropic path owns its own worker lease, token count,
+        # atomic reservation/dispatch and no-retry settlement. Do not send it
+        # through the legacy SDK lease gate, which intentionally parks
+        # unbounded provider execution before the counted adapter can run.
+        if (
+            function.__name__ == "process_safe_task"
+            and os.getenv("DUFYND_JARVIS_PROVIDER_PATH") == "anthropic-counted-v1"
+        ):
+            return await function(bridge, task_id=task_id)
+
         queue = await asyncio.to_thread(bridge.load_autonomy_queue)
         candidates = [
             t
