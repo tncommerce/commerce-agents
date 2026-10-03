@@ -85,7 +85,10 @@ def test_rejects_non_list_render_payload(monkeypatch):
     with pytest.raises(SystemExit) as exc:
         observer_read.main()
 
-    assert str(exc.value) == "private observer read failed at render:invalid_json; no cursor acknowledged"
+    assert (
+        str(exc.value)
+        == "private observer read failed at render:invalid_json; no cursor acknowledged"
+    )
 
 
 def test_success_writes_only_fixed_observations(monkeypatch, tmp_path):
