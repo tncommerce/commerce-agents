@@ -227,12 +227,16 @@ Primary references:
    ciphertext exists. Do not rotate a master key blindly.
 6. Existing trusted ingestion worker (outside broker image) projects only the existing
    RPC fields: discard message content_type if calling today's strict
-   capture_dufynd_broker_observation contract. Copy non-secret health only, then ingest
-   filtered evidence through that RPC. Ack only when accepted=true AND durable inbox/
-   dedupe commit has succeeded; never ack rejected/disabled ingress. Enable observer
-   rows and credential activation only after owner acceptance. Verify task wake,
-   dependency processor and production smoke. The manual harness deliberately does
-   not do any of these activation writes.
+   capture_dufynd_broker_observation contract. The read harness snapshots `/v1/health`
+   only after its fixed Render/Gmail reads, then a trusted service-role worker may call
+   `project_dufynd_broker_health` with that exact bounded health object. The projection
+   validates the canonical provider/resource/scope contract, rejects stale health and
+   extra fields, and **never changes activation_enabled**. Ingest filtered evidence
+   through `capture_dufynd_broker_observation`. Ack only when accepted=true AND durable
+   inbox/dedupe commit has succeeded; never ack rejected/disabled ingress. Enable
+   credential activation only after owner acceptance. Verify task wake, dependency
+   processor and production smoke. The manual read harness deliberately does not make
+   Supabase writes or activation writes.
 
 Remaining acceptance gaps are actual project IAM/logging audit, real Google consent
 and policy status, real Firestore/HTTPS provider integration, and post-setup observer
