@@ -8,6 +8,27 @@ from urllib.parse import urlsplit
 import httpx
 
 
+class ReadFailure(Exception):
+    """Non-secret, bounded diagnostic for a fixed observer stage."""
+
+    def __init__(self, stage: str, reason: str):
+        self.stage = stage
+        self.reason = reason
+        super().__init__(f"{stage}:{reason}")
+
+
+def _json(response, stage: str):
+    if not 200 <= response.status_code < 300:
+        raise ReadFailure(stage, f"http_{response.status_code}")
+    try:
+        result = response.json()
+    except Exception:
+        raise ReadFailure(stage, "invalid_json") from None
+    if not isinstance(result, dict):
+        raise ReadFailure(stage, "invalid_json")
+    return result
+
+
 def main():
     origin = os.environ["BROKER_ORIGIN"]
     url = urlsplit(origin)
@@ -20,6 +41,7 @@ def main():
         or url.username
     ):
         raise SystemExit("invalid broker origin")
+
     try:
         with httpx.Client(trust_env=False, timeout=30, follow_redirects=False) as client:
             identity = client.get(
@@ -27,23 +49,33 @@ def main():
                 params={"audience": origin},
                 headers={"Authorization": "Bearer " + os.environ["ACTIONS_ID_TOKEN_REQUEST_TOKEN"]},
             )
-            identity.raise_for_status()
-            token = identity.json()["value"]
+            identity_payload = _json(identity, "oidc_identity")
+            token = identity_payload.get("value")
+            if not isinstance(token, str) or not token:
+                raise ReadFailure("oidc_identity", "invalid_response")
+
             headers = {"Authorization": "Bearer " + token}
-            paths = ["/v1/health", "/v1/render/services/srv-dakpfrnf3r2c73dr3f20/deployments"] + [
-                f"/v1/gmail/threads/{thread}/metadata"
-                for thread in ("1a0f385ed98c6af8", "1a0f69c169fb928f", "1a0f6a90772a743d")
+            reads = [
+                ("health", "/v1/health"),
+                ("render", "/v1/render/services/srv-dakpfrnf3r2c73dr3f20/deployments"),
+                ("gmail_1", "/v1/gmail/threads/1a0f385ed98c6af8/metadata"),
+                ("gmail_2", "/v1/gmail/threads/1a0f69c169fb928f/metadata"),
+                ("gmail_3", "/v1/gmail/threads/1a0f6a90772a743d/metadata"),
             ]
             results = {}
-            for path in paths:
+            for stage, path in reads:
                 response = client.get(origin + path, headers=headers)
-                response.raise_for_status()
-                results[path] = response.json()
+                results[path] = _json(response, stage)
+
             Path("broker-observations.json").write_text(
                 json.dumps(results, sort_keys=True), encoding="utf-8"
             )
+    except ReadFailure as exc:
+        raise SystemExit(
+            f"private observer read failed at {exc.stage}:{exc.reason}; no cursor acknowledged"
+        ) from None
     except Exception:
-        raise SystemExit("private observer read failed; no cursor acknowledged") from None
+        raise SystemExit("private observer read failed at internal; no cursor acknowledged") from None
 
 
 if __name__ == "__main__":
