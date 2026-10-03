@@ -230,10 +230,7 @@ def test_oidc_claim_rejection(claim, value):
     claims = {
         "iss": ISSUER,
         "aud": CONFIG.origin,
-        "sub": (
-            f"repo:tncommerce@{OWNER_ID}/commerce-agents@12345"
-            ":ref:refs/heads/scentai-mvp"
-        ),
+        "sub": (f"repo:tncommerce@{OWNER_ID}/commerce-agents@12345:ref:refs/heads/scentai-mvp"),
         "repository": "tncommerce/commerce-agents",
         "repository_id": "12345",
         "repository_owner_id": OWNER_ID,
