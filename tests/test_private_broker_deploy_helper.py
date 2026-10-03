@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-import subprocess
 from pathlib import Path
+from subprocess import run
 
 
 SCRIPT = Path("scripts/deploy_dufynd_private_broker.sh")
 
 
 def test_private_broker_owner_deploy_helper_has_valid_bash_syntax():
-    result = subprocess.run(
+    result = run(
         ["bash", "-n", str(SCRIPT)],
         check=False,
         capture_output=True,
