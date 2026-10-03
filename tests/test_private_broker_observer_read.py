@@ -48,7 +48,9 @@ def test_reports_bounded_oidc_status_without_token(monkeypatch):
         observer_read.main()
 
     message = str(exc.value)
-    assert message == "private observer read failed at oidc_identity:http_403; no cursor acknowledged"
+    assert (
+        message == "private observer read failed at oidc_identity:http_403; no cursor acknowledged"
+    )
     assert "must-not-leak" not in message
     assert "request-token" not in message
 
