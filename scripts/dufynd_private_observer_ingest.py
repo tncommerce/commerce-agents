@@ -52,6 +52,8 @@ CAPTURE_MESSAGE_KEYS = (
 class ControlPlane(Protocol):
     def project_broker_health(self, health: dict[str, Any]) -> dict[str, Any]: ...
 
+    def record_broker_preflight(self, source: dict[str, Any]) -> dict[str, Any]: ...
+
     def capture_broker_observation(
         self,
         *,
@@ -138,6 +140,33 @@ def _accepted(result: Any, stage: str) -> None:
         raise ArtifactError(f"{stage} capture {reason}")
 
 
+def _project_health(bridge: ControlPlane, artifact: dict[str, Any]) -> None:
+    _project_health(bridge, artifact)
+
+
+def preflight_artifact(
+    bridge: ControlPlane,
+    artifact_path: Path,
+    *,
+    expected_run_id: str,
+    expected_sha: str,
+) -> dict[str, Any]:
+    artifact = load_artifact(
+        artifact_path,
+        expected_run_id=expected_run_id,
+        expected_sha=expected_sha,
+    )
+    _project_health(bridge, artifact)
+    receipt = bridge.record_broker_preflight(artifact[META_KEY])
+    if (
+        receipt.get("status") != "preflight_accepted"
+        or receipt.get("activation_enabled") is not False
+        or receipt.get("source") != artifact[META_KEY]
+    ):
+        raise ArtifactError("broker preflight receipt mismatch")
+    return receipt
+
+
 def ingest_artifact(
     bridge: ControlPlane,
     artifact_path: Path,
@@ -202,18 +231,32 @@ def main() -> int:
     parser.add_argument("--ack-plan", type=Path, default=Path("broker-acks.json"))
     parser.add_argument("--expected-run-id", default=os.getenv("GITHUB_RUN_ID"))
     parser.add_argument("--expected-sha", default=os.getenv("GITHUB_SHA"))
+    parser.add_argument(
+        "--preflight-only",
+        action="store_true",
+        help="Project fresh broker health and persist a guarded preflight receipt without captures.",
+    )
     args = parser.parse_args()
     if not args.expected_run_id or not args.expected_sha:
         raise SystemExit("private observer ingest failed: expected workflow provenance is required")
 
     try:
-        summary = ingest_artifact(
-            DufyndJarvisBridge(),
-            args.artifact,
-            args.ack_plan,
-            expected_run_id=args.expected_run_id,
-            expected_sha=args.expected_sha,
-        )
+        bridge = DufyndJarvisBridge()
+        if args.preflight_only:
+            summary = preflight_artifact(
+                bridge,
+                args.artifact,
+                expected_run_id=args.expected_run_id,
+                expected_sha=args.expected_sha,
+            )
+        else:
+            summary = ingest_artifact(
+                bridge,
+                args.artifact,
+                args.ack_plan,
+                expected_run_id=args.expected_run_id,
+                expected_sha=args.expected_sha,
+            )
     except ArtifactError as exc:
         raise SystemExit(f"private observer ingest failed: {exc}") from None
 
