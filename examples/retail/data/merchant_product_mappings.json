@@ -786,6 +786,28 @@
       "verified_at": "2026-10-01",
       "evidence_url": "https://www.notino.de/yves-saint-laurent/yves-saint-laurent-libre-eau-de-parfum-fuer-damen/p-15968532/",
       "evidence_note": "Notino DE exact Libre Eau de Parfum 90 ml refillable bottle revalidated immediately before explicitly approved product-scoped live routing; merchant code VZR11010. Affiliate routing does not grant image rights."
+    },
+    {
+      "product_id": "SC-XERJOFF-NAXOS-100",
+      "merchant": "notino",
+      "merchant_product_id": "XEF3191",
+      "ean": "8033488155070",
+      "gtin": "8033488155070",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-10-01",
+      "evidence_url": "https://www.notino.de/xerjoff/xj-1861-naxos-eau-de-parfum-unisex/",
+      "evidence_note": "Notino DE exact Xerjoff XJ 1861 Naxos Eau de Parfum 100 ml identity and availability revalidated on 2026-10-01. Canonical mapping promotion only; no live routing, publication or image rights are granted."
+    },
+    {
+      "product_id": "SC-HUGO-BOSS-BOTTLED-ABSOLU-100",
+      "merchant": "notino",
+      "merchant_product_id": "HUG13734",
+      "ean": "3616305480620",
+      "gtin": "3616305480620",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-10-01",
+      "evidence_url": "https://www.notino.de/hugo-boss/boss-bottled-absolu-eau-de-parfum-fuer-herren/p-16261924/",
+      "evidence_note": "Notino DE exact BOSS Bottled Absolu Parfum Intense 100 ml identity and availability revalidated on 2026-10-01; explicitly excludes older BOSS Bottled Absolute. Canonical mapping promotion only; no live routing, publication or image rights are granted."
     }
   ]
 }
