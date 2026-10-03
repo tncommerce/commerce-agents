@@ -145,8 +145,14 @@ def _health(row: dict[str, Any], now: datetime) -> str:
 
 
 def _worker_health(row: dict[str, Any], now: datetime) -> str:
+    if row.get("status") == "stale":
+        return "STALE"
+    if str(row.get("status", "")).startswith("failed"):
+        return "FAILED"
     if row.get("released_at") or row.get("completed_at"):
         return "IDLE"
+    if row.get("status") in {"dispatch_pending", "waiting_external", "waiting_human", "retryable"}:
+        return "WAITING"
     if row.get("status") not in ACTIVE:
         return "FAILED" if str(row.get("status", "")).startswith("failed") else "IDLE"
     expiry = _time(row.get("lease_expires_at"))
@@ -159,6 +165,14 @@ def _duration(row: dict[str, Any], now: datetime) -> int | None:
     start = _time(row.get("started_at"))
     end = _time(row.get("completed_at")) or now
     return int((end - start).total_seconds()) if start is not None and start <= end else None
+
+
+def _checkpoint_step(value: object) -> str | int | None:
+    # PostgREST ->> projects numeric JSON steps as strings. Accept only bounded
+    # numbers or code-like labels, never checkpoint bodies or arbitrary prose.
+    if isinstance(value, str) and re.fullmatch(r"[0-9]{1,9}", value):
+        return int(value)
+    return _enum(value)
 
 
 def build_snapshot(
@@ -184,7 +198,11 @@ def build_snapshot(
             lane = "WAITING EXTERNAL"
         elif status in ACTIVE:
             lane = "WORKING"
-        elif status in {"ready", "queued"} and not row.get("blocked_reason"):
+        elif (
+            status in {"ready", "queued"}
+            and not row.get("blocked_reason")
+            and row.get("provider_cost_unknown") is not True
+        ):
             lane = "READY"
         else:
             lane = "BLOCKED"
@@ -195,7 +213,8 @@ def build_snapshot(
             "priority": _number(row.get("priority")),
             "status": enum(status),
             "owner": clean(row.get("worker_owner") or row.get("owner")),
-            "blocker": enum(row.get("blocked_reason")),
+            "blocker": enum(row.get("blocked_reason"))
+            or ("unknown_provider_cost" if row.get("provider_cost_unknown") is True else None),
             "next_checkpoint": clean(row.get("expected_next_checkpoint")),
             "approval_type": enum(row.get("approval_action_type")),
             "human_gate": status == "waiting_human_input",
@@ -237,7 +256,7 @@ def build_snapshot(
                 "recovery_count": _number(row.get("recovery_count")),
                 "duration_seconds": _duration(row, now),
                 "checkpoint": {
-                    "step": enum(row.get("checkpoint_step")),
+                    "step": _checkpoint_step(clean(row.get("checkpoint_step"))),
                     "verified": row.get("checkpoint_verified")
                     if type(row.get("checkpoint_verified")) is bool
                     else None,
@@ -286,6 +305,8 @@ def build_snapshot(
             "last_health_check": _stamp(row.get("last_health_check")),
             "rotation_due_at": _stamp(row.get("rotation_due_at")),
             "activation_enabled": row.get("activation_enabled") is True,
+            "owner_reauthorization_required": row.get("status") in {"revoked", "account_mismatch"}
+            or row.get("health_reason") == "invalid_grant",
             "effective_status": "expired"
             if _time(row.get("expires_at")) is not None and _time(row.get("expires_at")) <= now
             else enum(row.get("status")),
@@ -341,6 +362,18 @@ def build_snapshot(
         {"task_id": row["task_id"], "title": row["title"], "type": row["approval_type"]}
         for row in board["WAITING HUMAN"]
     ]
+    decisions.extend(
+        {
+            "provider": row["provider"],
+            "title": "Credential reauthorization",
+            "type": "credential_reauthorization",
+        }
+        for row in credentials
+        if row["owner_reauthorization_required"]
+    )
+    budget["unknown_provider_cost_task_count"] = sum(
+        row.get("provider_cost_unknown") is True for row in data.get("tasks", [])
+    )
     active_workers = sum(row["status"] == "ACTIVE" for row in workers)
     status = "IDLE"
     if board["BLOCKED"]:
@@ -475,7 +508,7 @@ class DashboardReader:
                 RUN_COLUMNS,
                 200,
                 {
-                    "status": "in.(claimed,working,verifying,in_progress,running,dispatched)",
+                    "status": "not.in.(completed,failed_terminal)",
                     "order": "created_at.desc,execution_id.asc",
                 },
             ),

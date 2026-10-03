@@ -330,6 +330,50 @@ def test_credential_expiry_is_visible_even_if_stored_status_has_not_been_reconci
 
 
 @pytest.mark.parametrize(
+    "status,expected",
+    [
+        ("dispatch_pending", "WAITING"),
+        ("waiting_external", "WAITING"),
+        ("waiting_human", "WAITING"),
+        ("retryable", "WAITING"),
+        ("stale", "STALE"),
+        ("failed_terminal", "FAILED"),
+    ],
+)
+def test_all_nonterminal_durable_states_stay_visible_outside_recent_history(status, expected):
+    data = fixture_data()
+    data["active_runs"] = [run_row(status=status, checkpoint_step="0")]
+    data["recent_runs"] = [run_row(execution_id="recent", status="completed", completed_at=STAMP)]
+    calls = []
+    result = DashboardReader(
+        secret_key="test-secret", transport=make_transport(data, calls)
+    ).snapshot(now=NOW)
+    old_worker = next(row for row in result["worker_deck"] if row["execution_id"] == "run-1")
+    assert old_worker["status"] == expected
+    assert old_worker["checkpoint"]["step"] == 0
+    nonterminal_query = next(
+        call
+        for call in calls
+        if "status" in call.url.params and call.url.path.endswith("dufynd_execution_runs")
+    )
+    assert nonterminal_query.url.params["status"] == "not.in.(completed,failed_terminal)"
+
+
+def test_only_explicit_credential_owner_gates_add_decisions_and_unknown_task_cost_is_blocked():
+    data = fixture_data()
+    data["credentials"] = [
+        {"provider": "gmail", "status": "expired"},
+        {"provider": "render", "status": "revoked"},
+    ]
+    data["tasks"].append({"task_id": "cost", "status": "ready", "provider_cost_unknown": True})
+    result = build_snapshot(data, now=NOW)
+    assert len(result["decision_center"]) == 2
+    assert result["decision_center"][1]["provider"] == "render"
+    assert result["budget"]["unknown_provider_cost_task_count"] == 1
+    assert any(row["task_id"] == "cost" for row in result["mission_board"]["BLOCKED"])
+
+
+@pytest.mark.parametrize(
     "response",
     [
         lambda _: httpx.Response(401, json={"secret": "DO NOT LEAK"}),

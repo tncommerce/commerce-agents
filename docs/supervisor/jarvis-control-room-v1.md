@@ -31,7 +31,7 @@ reservation-aware accounting. Missing budget data displays unknown, never zero.
 An observed disabled paid-execution flag is shown; an enabled flag alone cannot
 prove that all paid runtime/provider gates are open and remains unknown.
 
-Operational reads include all non-done tasks up to 500, active executions up to
+Operational reads include all non-done tasks up to 500, all nonterminal executions up to
 200, observers up to 200, and credential health rows up to 50. Counts and any
 truncation are explicit. Recent done missions/runs and inbox activity are bounded
 history. A partial operational read degrades status rather than showing false
@@ -40,8 +40,13 @@ this and preserves observation timestamps. It never equates read time with a
 successful observer wake or an external system check.
 
 Expired/missing worker leases and stale/future heartbeats are not active.
-Claims without execution records remain visible. `waiting_external` tasks with
-future approval flags are not current owner decisions. Ready tasks with budget
+Claims without execution records remain visible.
+Durable pending, retryable, waiting and stale executions remain visible even
+outside the recent history window. Numeric checkpoint steps are preserved.
+`waiting_external` tasks with future approval flags are not current owner decisions.
+Revoked/account-mismatched credentials and invalid-grant health reasons produce
+explicit reauthorization decisions; ordinary token expiry does not invent one.
+Ready tasks with budget
 blockers are shown as blocked. Unknown/missing/stale health stays visible.
 The checkpoint is shown as an observed summary with a stale marker; it is not
 used to claim current completion or execute a proposed next action.
