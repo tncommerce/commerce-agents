@@ -16,6 +16,7 @@
       if (lane === 'DONE' && !$('show-done').checked) continue;
       const filtered = rows.filter(r => !domain || r.domain === domain);
       const column = node('div', undefined, 'mission-lane');
+      column.tabIndex = 0; column.setAttribute('aria-label', lane + ' Missions');
       column.append(node('h3', lane + ' · ' + filtered.length));
       for (const m of (lane === 'DONE' ? filtered.slice(0, 12) : filtered)) {
         const card = node('article', undefined, 'mission-card');
