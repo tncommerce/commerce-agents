@@ -133,10 +133,7 @@ def ingest_artifact(
     if not isinstance(health, dict):
         raise ArtifactError("broker health shape mismatch")
     projection = bridge.project_broker_health(health)
-    if (
-        projection.get("projected") != 2
-        or projection.get("activation_changed") is not False
-    ):
+    if projection.get("projected") != 2 or projection.get("activation_changed") is not False:
         raise ArtifactError("broker health projection mismatch")
 
     render = artifact[RENDER_PATH]
@@ -175,7 +172,9 @@ def ingest_artifact(
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Ingest one fixed DUFYND Private Observer artifact.")
+    parser = argparse.ArgumentParser(
+        description="Ingest one fixed DUFYND Private Observer artifact."
+    )
     parser.add_argument("--artifact", type=Path, default=Path("broker-observations.json"))
     parser.add_argument("--ack-plan", type=Path, default=Path("broker-acks.json"))
     args = parser.parse_args()
