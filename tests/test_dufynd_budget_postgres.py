@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 from concurrent.futures import ThreadPoolExecutor
+from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 from pathlib import Path
 from threading import Barrier
@@ -2027,6 +2028,108 @@ def test_extended_audit_preserves_existing_packet_and_no_chat_contract():
     assert not audit["dependency_readiness"]["state_mutated"]
     assert audit["unknown_state_fail_closed"] and not audit["chat_history_required"]
     assert query("select count(*) from dufynd_execution_runs") == before
+
+
+def broker_health_payload(*, checked_at=None):
+    checked = checked_at or datetime.now(UTC)
+    return {
+        "render": {
+            "credential_id": "render_deploy_broker",
+            "provider": "render",
+            "account_alias": "tncommerce_render",
+            "allowed_operations": ["deployment.read"],
+            "allowed_resources": ["srv-dakpfrnf3r2c73dr3f20"],
+            "oauth_scopes": [],
+            "secret_reference": "dufynd_observer_render_read_token",
+            "status": "healthy",
+            "expires_at": None,
+            "refreshed_at": None,
+            "revoked_at": None,
+            "last_health_check": checked.isoformat(),
+            "health_reason": "healthy",
+            "rotation_due_at": None,
+        },
+        "gmail": {
+            "credential_id": "gmail_known_threads",
+            "provider": "gmail",
+            "account_alias": "dufynd_owner_mailbox",
+            "allowed_operations": ["thread.metadata", "history.read"],
+            "allowed_resources": [
+                "1a0f385ed98c6af8",
+                "1a0f69c169fb928f",
+                "1a0f6a90772a743d",
+            ],
+            "oauth_scopes": ["https://www.googleapis.com/auth/gmail.metadata"],
+            "secret_reference": "dufynd_observer_gmail_read_access_token",
+            "status": "healthy",
+            "expires_at": (checked + timedelta(hours=1)).isoformat(),
+            "refreshed_at": (checked - timedelta(minutes=1)).isoformat(),
+            "revoked_at": None,
+            "last_health_check": checked.isoformat(),
+            "health_reason": "healthy",
+            "rotation_due_at": None,
+        },
+    }
+
+
+def test_broker_health_projection_preserves_activation_and_projects_no_secrets():
+    import json
+
+    query(
+        "update dufynd_observer_credentials set status='missing_configuration',"
+        "health_reason='missing_configuration',expires_at=null,refreshed_at=null,"
+        "revoked_at=null,last_health_check=null,rotation_due_at=null,"
+        "activation_enabled=(provider='render') returning true"
+    )
+    health = broker_health_payload()
+    projected = query("select project_dufynd_broker_health(%s::jsonb)", (json.dumps(health),))
+
+    assert projected["projected"] == 2
+    assert not projected["activation_changed"]
+    assert projected["render"]["status"] == "healthy"
+    assert projected["gmail"]["status"] == "healthy"
+    assert query(
+        "select activation_enabled from dufynd_observer_credentials where provider='render'"
+    )
+    assert not query(
+        "select activation_enabled from dufynd_observer_credentials where provider='gmail'"
+    )
+    assert not query(
+        "select capture_dufynd_broker_observation("
+        "'gmail_known_threads','gmail:1a0f69c169fb928f','{}')"
+    )["accepted"]
+    saved = query(
+        "select jsonb_object_agg(provider,to_jsonb(c)-'activation_enabled') "
+        "from dufynd_observer_credentials c"
+    )
+    assert "access_token" not in json.dumps(saved)
+    assert "refresh_token" not in json.dumps(saved)
+
+    query(
+        "update dufynd_observer_credentials set status='missing_configuration',"
+        "health_reason='missing_configuration',expires_at=null,refreshed_at=null,"
+        "revoked_at=null,last_health_check=null,rotation_due_at=null,"
+        "activation_enabled=false returning true"
+    )
+
+
+def test_broker_health_projection_rejects_extra_scope_and_stale_health():
+    import json
+    import psycopg
+
+    extra = broker_health_payload()
+    extra["gmail"]["access_token"] = "must-not-project"
+    with pytest.raises(psycopg.errors.RaiseException, match="invalid bounded broker health"):
+        query("select project_dufynd_broker_health(%s::jsonb)", (json.dumps(extra),))
+
+    broadened = broker_health_payload()
+    broadened["gmail"]["oauth_scopes"] = ["https://www.googleapis.com/auth/gmail.readonly"]
+    with pytest.raises(psycopg.errors.RaiseException, match="contract mismatch"):
+        query("select project_dufynd_broker_health(%s::jsonb)", (json.dumps(broadened),))
+
+    stale = broker_health_payload(checked_at=datetime.now(UTC) - timedelta(minutes=6))
+    with pytest.raises(psycopg.errors.RaiseException, match="stale broker health"):
+        query("select project_dufynd_broker_health(%s::jsonb)", (json.dumps(stale),))
 
 
 @pytest.mark.parametrize(
