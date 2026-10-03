@@ -12,6 +12,7 @@ from scripts.dufynd_private_observer_ingest import (
     RENDER_PATH,
     ArtifactError,
     ingest_artifact,
+    preflight_artifact,
 )
 
 
@@ -19,11 +20,20 @@ class FakeBridge:
     def __init__(self, *, reject_observer: str | None = None):
         self.reject_observer = reject_observer
         self.health_calls: list[dict[str, Any]] = []
+        self.preflight_calls: list[dict[str, Any]] = []
         self.capture_calls: list[dict[str, Any]] = []
 
     def project_broker_health(self, health: dict[str, Any]) -> dict[str, Any]:
         self.health_calls.append(health)
         return {"projected": 2, "activation_changed": False}
+
+    def record_broker_preflight(self, source: dict[str, Any]) -> dict[str, Any]:
+        self.preflight_calls.append(source)
+        return {
+            "status": "preflight_accepted",
+            "source": source,
+            "activation_enabled": False,
+        }
 
     def capture_broker_observation(
         self,
@@ -231,3 +241,23 @@ def test_ingest_rejects_mismatched_source_run_before_control_plane_write(tmp_pat
     assert bridge.health_calls == []
     assert bridge.capture_calls == []
     assert not ack_path.exists()
+
+
+def test_preflight_projects_health_and_records_receipt_without_capture(tmp_path: Path) -> None:
+    artifact_path = tmp_path / "broker-observations.json"
+    write_artifact(artifact_path, artifact())
+    bridge = FakeBridge()
+
+    receipt = preflight_artifact(
+        bridge,
+        artifact_path,
+        expected_run_id="123456789",
+        expected_sha="a" * 40,
+    )
+
+    assert receipt["status"] == "preflight_accepted"
+    assert receipt["source"] == source()
+    assert receipt["activation_enabled"] is False
+    assert bridge.health_calls == [artifact()[HEALTH_PATH]]
+    assert bridge.preflight_calls == [source()]
+    assert bridge.capture_calls == []
