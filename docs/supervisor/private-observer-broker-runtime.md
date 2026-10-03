@@ -40,7 +40,7 @@ Observer identity is accepted only with a verified RS256 signature from fixed
 repository `tncommerce/commerce-agents`, immutable repository_id `1367576041`,
 ref `refs/heads/scentai-mvp`, exact workflow_ref
 `tncommerce/commerce-agents/.github/workflows/dufynd-private-observer.yml@refs/heads/scentai-mvp`,
-subject `repo:tncommerce/commerce-agents:ref:refs/heads/scentai-mvp`, event
+repository_owner_id `324597697`, subject `repo:tncommerce@324597697/commerce-agents@1367576041:ref:refs/heads/scentai-mvp`, event
 workflow_dispatch/schedule, valid exp/iat/nbf and at most ten-minute lifetime/age.
 General GitHub identity, pull-request/fork identity and Jarvis workflow identity are
 rejected. Arbitrary JWT key URLs are rejected. JWKS failure fails closed.
@@ -126,6 +126,22 @@ advances the cursor. At-least-once results are deduped by the existing control p
 A stale history cursor fails closed; owner must explicitly reset/rebaseline it after
 investigation. Expired/used OAuth records are inert but should be periodically purged
 by owner-controlled maintenance; no paid Firestore TTL feature is required.
+
+## Owner deployment helper
+
+For owner-authorized Cloud Shell deployment, use
+`scripts/deploy_dufynd_private_broker.sh <40-char scentai-mvp SHA>`.
+The helper checks out exactly the requested immutable commit, builds and pushes a
+commit-tagged broker image, resolves its Artifact Registry SHA-256 digest and deploys
+that digest-pinned image while changing **only** the existing Cloud Run service image.
+It then fails closed unless the newest revision is Ready, reports the exact same image
+digest and receives 100% traffic. It does not create IAM bindings, alter secrets/environment
+variables, change ingress/scaling, enable public access or touch Supabase/Render.
+
+The helper still requires an owner-authenticated Google Cloud Shell (or equivalent
+owner-controlled environment) with the already-approved deployment permissions.
+Jarvis/GitHub Actions must not receive those GCP deployment credentials. This is
+deliberately an owner operation, not an autonomous worker capability.
 
 ## Deployment recommendation and costs (checked 2026-10-02)
 
