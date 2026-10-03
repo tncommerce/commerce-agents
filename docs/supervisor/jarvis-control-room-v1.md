@@ -31,7 +31,7 @@ reservation-aware accounting. Missing budget data displays unknown, never zero.
 An observed disabled paid-execution flag is shown; an enabled flag alone cannot
 prove that all paid runtime/provider gates are open and remains unknown.
 
-Operational reads include all non-done tasks up to 500, active executions up to
+Operational reads include all non-done tasks up to 500, all nonterminal executions up to
 200, observers up to 200, and credential health rows up to 50. Counts and any
 truncation are explicit. Recent done missions/runs and inbox activity are bounded
 history. A partial operational read degrades status rather than showing false
@@ -40,8 +40,13 @@ this and preserves observation timestamps. It never equates read time with a
 successful observer wake or an external system check.
 
 Expired/missing worker leases and stale/future heartbeats are not active.
-Claims without execution records remain visible. `waiting_external` tasks with
-future approval flags are not current owner decisions. Ready tasks with budget
+Claims without execution records remain visible.
+Durable pending, retryable, waiting and stale executions remain visible even
+outside the recent history window. Numeric checkpoint steps are preserved.
+`waiting_external` tasks with future approval flags are not current owner decisions.
+Revoked/account-mismatched credentials and invalid-grant health reasons produce
+explicit reauthorization decisions; ordinary token expiry does not invent one.
+Ready tasks with budget
 blockers are shown as blocked. Unknown/missing/stale health stays visible.
 The checkpoint is shown as an observed summary with a stale marker; it is not
 used to claim current completion or execute a proposed next action.
@@ -85,3 +90,56 @@ denial, GET-only requests, redirect rejection, safe upstream failures, lease
 and observation freshness, incomplete counts, precise human gates, and budget
 accounting preservation. Live projection replay validates the DTO against
 current database rows without copying credentials or publishing them.
+
+## Content Factory extension boundary (owner directive, 2026-10-03)
+
+The protected, live Control Room V1 remains the first deliverable. Do not create
+fake content workers, additional infrastructure, paid dependencies or publishing
+commands to anticipate the factory. The current read model identifies workers
+by execution/task identity, worker ID, runtime type and handler. Worker transport
+and specialist role are separate concepts: a future research, critic or visual
+role may run on an existing runtime. Do not hardcode a closed list of content
+roles into the Worker Deck. Add specialist-role metadata only when the execution
+plane has an authoritative source for it.
+
+Preserve the operational mission states for scheduling and leases. Future
+content workflow stages (plan, research, produce, critique, revise, verify,
+owner approval, measure, learn) are a separate allowlisted projection, not new
+meanings for `ready`, `waiting_external` or `done`. Extend the versioned DTO
+additively with a typed content section; never forward raw task/execution
+payloads to implement it. The dashboard must show only roles/stages that exist.
+
+Required future factory contracts:
+
+- Stable `content_id`, `campaign_id`, product identity, merchant/offer identity,
+  platform, format and hook identifiers connect revisions, assets, content,
+  DUFYND visits, product interest, clickrefs, merchant clickouts and available
+  affiliate conversion/revenue evidence. Unknown conversion is unknown, not
+  zero; attribution and reporting latency remain explicit.
+- Each immutable content/asset revision has evidence provenance and a content
+  hash. Critic/verifier results bind to that exact revision, product/variant,
+  rights evidence and affiliate destination; editing any of these invalidates
+  the old approval. Creator identity cannot be its own final checker identity.
+  Independence is enforced by the orchestration/authorization layer, not by
+  giving the same worker a different display label.
+- Product/variant/bottle mismatches, unsupported facts, unclear asset rights,
+  wrong affiliate destinations and missing publication gates are hard failures.
+  Numeric quality scores cannot override them. Failure leads to a bounded
+  revision and a new independent review; unresolved failures go to the owner.
+- The first factory phase ends at `READY FOR OWNER APPROVAL`. No publisher
+  handler is enabled. Progression is explicit: owner publishing, independent
+  critic/QA with owner approval, bounded preapproved auto-publishing, then
+  full exception-based operation. No level is skipped by a successful review.
+- Optimize the measurable funnel through affiliate revenue, not views alone.
+  Preserve costs per asset/video, qualified visits, clickout and conversion
+  rates, revenue by content/product/format/source, successful asset reuse,
+  weak-format stop signals and evidence-backed learnings. A learning must link
+  to its measurement source and uncertainty before influencing later planning.
+- Reuse the existing task/execution/event system and controlled read layer.
+  New contracts must reduce owner work, have measurable business impact and
+  respect the current cost, rights, security and publishing gates.
+
+After a protected V1 passes live acceptance, write the small implementation plan
+and then build only the safe foundation for plan -> specialist tasks -> produce
+-> independent critique -> bounded revision -> owner approval. The architecture
+notes above do not activate that pipeline or change the current mission queue.
