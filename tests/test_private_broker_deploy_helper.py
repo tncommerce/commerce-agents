@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import subprocess
 from pathlib import Path
+import subprocess
 
 
 SCRIPT = Path("scripts/deploy_dufynd_private_broker.sh")
