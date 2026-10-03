@@ -502,6 +502,12 @@ def _require_active_runtime() -> tuple[str, int, float]:
 
 
 def _require_budget_window(bridge: DufyndJarvisBridge) -> tuple[str, dict[str, Any]]:
+    if os.getenv("DUFYND_JARVIS_PROVIDER_PATH") == "anthropic-counted-v1":
+        from scripts.dufynd_anthropic_counted import resolve_budget
+
+        budget_id, resolved = resolve_budget(bridge)
+        os.environ["DUFYND_JARVIS_BUDGET_ID"] = budget_id
+        return budget_id, resolved["budget"]
     budget_id = os.getenv("DUFYND_JARVIS_BUDGET_ID")
     if not budget_id:
         raise RuntimeError("DUFYND_JARVIS_BUDGET_ID is required for active model execution.")
@@ -1122,6 +1128,10 @@ async def process_safe_task(
     *,
     task_id: str | None = None,
 ) -> int:
+    if os.getenv("DUFYND_JARVIS_PROVIDER_PATH") == "anthropic-counted-v1":
+        from scripts.dufynd_anthropic_counted import process_counted_task
+
+        return await process_counted_task(bridge, task_id=task_id)
     queue = await asyncio.to_thread(bridge.load_autonomy_queue)
     safe_tasks = [
         task

@@ -1,0 +1,26 @@
+{
+  "contract_id": "anthropic-sonnet5-counted-margin-v1",
+  "provider": "anthropic",
+  "model": "claude-sonnet-5",
+  "verified_at": "2026-10-03T21:21:37.633014+00:00",
+  "expires_at": "2026-10-04T21:21:37.633014+00:00",
+  "sources": [
+    "https://platform.claude.com/docs/en/about-claude/pricing",
+    "https://platform.claude.com/docs/en/models/sonnet-5/overview"
+  ],
+  "rates_usd_per_million": {
+    "input": "2",
+    "output": "10",
+    "cache_read": "0.20",
+    "cache_write_5m": "2.50",
+    "cache_write_1h": "4"
+  },
+  "policy": "estimate_margin_v1",
+  "estimate_is_exact": false,
+  "margin_multiplier": "1.25",
+  "padding_tokens": 128,
+  "max_input_tokens": 8192,
+  "max_output_tokens": 2048,
+  "max_request_usd": "0.036864",
+  "pricing_scope": "standard_only/global/no_cache/no_tools; USD token charges before taxes"
+}

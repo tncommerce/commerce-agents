@@ -78,6 +78,9 @@ def database():
         connection.execute(
             next((ROOT / "supabase/migrations").glob("*paid_dispatch_revalidation.sql")).read_text()
         )
+        connection.execute(
+            next((ROOT / "supabase/migrations").glob("*nightshift_budget_resolver.sql")).read_text()
+        )
     yield
 
 
@@ -2365,3 +2368,200 @@ def test_reserve_rejects_incomplete_approval():
         (decision,),
     )
     assert reserve(f)["allowed"] is False
+
+
+@pytest.fixture
+def counted_window():
+    """Ephemeral test database approval only. Never runs on production, never uses HTTP."""
+    import json
+
+    from scripts import dufynd_anthropic_counted as c
+
+    f = fixture(cap="0.036864", maximum="0.036864")
+    decision = f"decision-{uuid4()}"
+    approval = {
+        "approved": True,
+        "scope": "supervisor_v2_bounded_canary",
+        "budget_id": f[0],
+        "contract_id": c.CONTRACT_ID,
+        "provider": "anthropic",
+        "model": c.MODEL,
+        "cost_policy": c.POLICY,
+        "accept_estimate_margin": True,
+        "cap_usd": "0.036864",
+        "max_runs": 1,
+        "per_call_cap_usd": "0.036864",
+    }
+    query(
+        "insert into dufynd_human_decisions values(%s,'approved',%s::jsonb) returning decision_id",
+        (decision, json.dumps(approval)),
+    )
+    query(
+        "update dufynd_jarvis_budget_windows set provider='anthropic',model=%s,max_runs=1,reservation_dry_run=false,approved_decision_id=%s where budget_id=%s returning budget_id",
+        (c.MODEL, decision, f[0]),
+    )
+    prepared = c.prepare("database-only mock draft", 100)
+    yield ((f[0], c.CONTRACT_ID, f[2]), decision, prepared)
+    query(
+        "update dufynd_jarvis_budget_windows set status='closed' where budget_id=%s returning budget_id",
+        (f[0],),
+    )
+
+
+def counted_resolve():
+    import hashlib
+
+    from scripts import dufynd_anthropic_counted as c
+
+    return query(
+        "select resolve_dufynd_nightshift_budget(%s,%s)",
+        (c.CONTRACT_ID, hashlib.sha256(c.canonical(c.pricing())).hexdigest()),
+    )
+
+
+def counted_dispatch(f, prepared):
+    r = query(
+        "select reserve_dufynd_model_call(%s,%s,'test',%s,%s,%s,%s,0.036864,180)",
+        (f[0], f[2][0][0], f[2][0][1], str(uuid4()), prepared.fingerprint(), f[1]),
+    )
+    assert r["allowed"] is True
+    rid = r["reservation"]["reservation_id"]
+    assert (
+        query(
+            "select dispatch_dufynd_counted_call(%s,%s,%s::jsonb)",
+            (rid, f[2][0][1], prepared.proof.decode()),
+        )
+        is True
+    )
+    return rid
+
+
+def test_counted_new_window_last_reservation_and_settlement(counted_window):
+    import json
+
+    from scripts import dufynd_anthropic_counted as c
+
+    f, _, prepared = counted_window
+    assert counted_resolve()["budget"]["budget_id"] == f[0]
+    rid = counted_dispatch(f, prepared)
+    assert counted_resolve()["allowed"] is False
+    cost, evidence, violation = c.actual_usage(
+        prepared,
+        {
+            "id": "msg_" + str(uuid4()),
+            "model": c.MODEL,
+            "usage": {"input_tokens": 120, "output_tokens": 10},
+        },
+    )
+    args = (rid, f[2][0][1], cost, json.dumps(evidence), violation)
+    assert query("select settle_dufynd_counted_call(%s,%s,%s,%s::jsonb,%s)", args) is True
+    assert query("select settle_dufynd_counted_call(%s,%s,%s,%s::jsonb,%s)", args) is True
+    status = query("select get_dufynd_jarvis_budget_status(%s)", (f[0],))
+    assert status["runs"] == 1 and Decimal(str(status["spent_usd"])) == cost
+
+
+@pytest.mark.parametrize(
+    "mutation", ["approval", "margin", "expiry", "start", "provider", "cap", "runs"]
+)
+def test_counted_resolver_fail_closed(counted_window, mutation):
+    f, decision, _ = counted_window
+    if mutation == "approval":
+        query(
+            "update dufynd_human_decisions set status='pending' where decision_id=%s returning decision_id",
+            (decision,),
+        )
+    elif mutation == "margin":
+        query(
+            "update dufynd_human_decisions set decision=decision-'accept_estimate_margin' where decision_id=%s returning decision_id",
+            (decision,),
+        )
+    else:
+        setters = {
+            "expiry": "ended_at=now()-interval '1 hour'",
+            "start": "started_at=now()+interval '1 hour'",
+            "provider": "provider='unknown'",
+            "cap": "cap_usd=0.02",
+            "runs": "max_runs=0",
+        }
+        query(
+            f"update dufynd_jarvis_budget_windows set {setters[mutation]} where budget_id=%s returning budget_id",
+            (f[0],),
+        )
+    assert counted_resolve()["allowed"] is False
+
+
+def test_counted_worker_crash_dispatched_expiry_pauses_window(counted_window):
+    f, _, p = counted_window
+    rid = counted_dispatch(f, p)
+    query(
+        "update dufynd_budget_reservations set expires_at=now()-interval '1 second' where reservation_id=%s returning reservation_id",
+        (rid,),
+    )
+    query("select reconcile_dufynd_budget_reservations()")
+    assert (
+        query("select status from dufynd_jarvis_budget_windows where budget_id=%s", (f[0],))
+        == "paused"
+    )
+    assert (
+        query("select status from dufynd_budget_reservations where reservation_id=%s", (rid,))
+        == "charged_max"
+    )
+
+
+def test_counted_usage_margin_breach_recorded_even_with_false_caller_flag(counted_window):
+    import json
+
+    from scripts import dufynd_anthropic_counted as c
+
+    f, _, p = counted_window
+    rid = counted_dispatch(f, p)
+    cost, evidence, _ = c.actual_usage(
+        p,
+        {
+            "id": "msg_" + str(uuid4()),
+            "model": c.MODEL,
+            "usage": {"input_tokens": 30000, "output_tokens": 10},
+        },
+    )
+    assert (
+        query(
+            "select settle_dufynd_counted_call(%s,%s,%s,%s::jsonb,false)",
+            (rid, f[2][0][1], cost, json.dumps(evidence)),
+        )
+        is True
+    )
+    assert (
+        Decimal(
+            str(
+                query(
+                    "select actual_usd from dufynd_budget_reservations where reservation_id=%s",
+                    (rid,),
+                )
+            )
+        )
+        == cost
+    )
+    assert (
+        query("select status from dufynd_jarvis_budget_windows where budget_id=%s", (f[0],))
+        == "paused"
+    )
+
+
+def test_counted_parallel_reservation_never_exceeds_window(counted_window):
+    f, _, p = counted_window
+    barrier = Barrier(2)
+
+    def claim(worker):
+        barrier.wait(timeout=10)
+        return query(
+            "select reserve_dufynd_model_call(%s,%s,'test',%s,%s,%s,%s,0.036864,180)",
+            (f[0], f[2][worker][0], f[2][worker][1], str(uuid4()), p.fingerprint(), f[1]),
+        )
+
+    with ThreadPoolExecutor(2) as pool:
+        results = list(pool.map(claim, range(2)))
+    assert sum(r["allowed"] for r in results) == 1
+
+
+def test_counted_no_new_owner_budget_after_test_cleanup():
+    assert counted_resolve()["allowed"] is False
