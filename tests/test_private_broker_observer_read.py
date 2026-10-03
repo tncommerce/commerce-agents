@@ -172,8 +172,7 @@ def test_rejects_wrong_workflow_provenance_before_oidc(monkeypatch):
         observer_read.main()
 
     assert (
-        str(exc.value)
-        == "private observer read failed at provenance:source_identity_mismatch; "
+        str(exc.value) == "private observer read failed at provenance:source_identity_mismatch; "
         "no cursor acknowledged"
     )
     assert client.calls == []
