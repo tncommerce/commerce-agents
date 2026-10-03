@@ -1,0 +1,162 @@
+{
+  "version": 2,
+  "state": "INTERNAL_PREPARATION_NOT_PUBLISHED",
+  "verified_at": "2026-10-03T18:16:26Z",
+  "integration_sha": "4c64278836d1207ed71d103d8b854a45fbbd1ccc",
+  "content_id": "one_million_example61_01",
+  "existing_campaign_id": "launch01_high_end",
+  "product": {
+    "id": "SC-RABANNE-1-MILLION-EDT-100",
+    "concentration": "Eau de Toilette",
+    "volume_ml": 100,
+    "gtin": "3349666007921"
+  },
+  "affiliate": {
+    "network": "Awin",
+    "merchant": "perfumetrader",
+    "offer_id": "perfumetrader-rabanne-1-million-edt-100",
+    "merchant_product_id": "16978322",
+    "clickref": "one_million_example61_01",
+    "price_eur": 71.9,
+    "shipping_eur": 4.99,
+    "total_eur": 76.89,
+    "in_stock": true,
+    "offer_checked_at": "2026-10-02T13:38:00.205532+00:00",
+    "dynamic_platform_campaign_forwarding": "NOT_IMPLEMENTED_FOR_PRODUCT_OFFERS",
+    "network_transaction_evidence": null,
+    "conversion_count": null,
+    "commission_eur": null,
+    "connected_awin_read_source_available": false
+  },
+  "observed_database_evidence": {
+    "scope": "all retained product-specific rows at verification; not proven human traffic",
+    "fragrance_detail_view_events": 3,
+    "product_open_events": 1,
+    "merchant_clickout_events": 1,
+    "clickout_sessions_with_prior_landing_and_product_view": 1,
+    "content_tagged_funnel_rows": 0,
+    "performance_rows": 0,
+    "matching_content_asset_rows": 0,
+    "retroactive_attribution_allowed": false
+  },
+  "experiment": {
+    "id": "one_million_mobile_cta_01",
+    "state": "PREPARED_TECH_HANDOFF_NOT_DEPLOYED",
+    "only_change": "On this product landing only, mobile merchant CTA min-height 44px with centered content; keep copy, position, price, shipping, creative and destination unchanged",
+    "hypothesis": "A larger touch target reduces missed taps and increases qualified merchant clickout rate",
+    "primary_kpi": "ordered qualified clickout sessions / qualified visits in the same tagged cohort",
+    "baseline": {
+      "viewport_width_px": 390,
+      "cta_width_px": 264,
+      "cta_height_px": 39.5,
+      "method": "live page and exact current offer replay, all writes and outbound clickouts blocked",
+      "tagged_clickout_rate": null
+    },
+    "minimum_qualified_visits_per_cohort": 30,
+    "minimum_is_not_statistical_significance": true,
+    "evaluation": "After clean tagged baseline, compare fixed 7-day windows within platform cohorts; descriptive before/after only, no causal uplift without randomization",
+    "commission_variant_comparison": "BLOCKED_STATIC_CLICKREF_SHARED",
+    "publication_authorized": false,
+    "runtime_modified": false
+  },
+  "platforms": [
+    {
+      "platform": "tiktok",
+      "platform_content_id": "7691036431489305888",
+      "post_url": "https://www.tiktok.com/@dufynd/video/7691036431489305888?utm_campaign=tt4d_open_api&utm_source=7288613544411529218",
+      "posted_at": null,
+      "published_link_verified": false,
+      "existing_prepared_url": "https://dufynd.de/duftfinder?src=tiktok&cmp=launch01_high_end&content=one_million_example61_01",
+      "proposed_product_url": "https://dufynd.de/duft/rabanne-1-million?src=tiktok&cmp=one_million_loop01&content=one_million_example61_01",
+      "exact_master_byte_match_verified": false,
+      "post_metadata_verified": true,
+      "post_attribution_from_profile_link_proven": false,
+      "campaign_link_state": "INTERNAL_PROPOSAL_NOT_PLACED",
+      "posted_at_raw": "2026-09-29T19:09:26",
+      "posted_at_timezone": "NOT_SUPPLIED_BY_CONNECTOR",
+      "observed_current_profile_url": null,
+      "evidence_fetched_at": "2026-10-03T18:15:31",
+      "source_job_id": "1387bc4570915fb5c10cdfb6edd68e9a",
+      "metrics": {
+        "views": null,
+        "reach": 221,
+        "website_clicks": null,
+        "fetched_at": "2026-10-03T18:16:26",
+        "source_job_id": "20e759caca34cfce3a9020266af8f870",
+        "scope": "connector video snapshot; null is not zero"
+      }
+    },
+    {
+      "platform": "instagram",
+      "platform_content_id": "17936625063388741",
+      "post_url": "https://www.instagram.com/reel/Dd4PqziqHde/",
+      "posted_at": "2026-09-29T17:02:00+0000",
+      "published_link_verified": true,
+      "existing_prepared_url": "https://dufynd.de/duftfinder?src=instagram&cmp=launch01_high_end&content=one_million_example61_01",
+      "proposed_product_url": "https://dufynd.de/duft/rabanne-1-million?src=instagram&cmp=one_million_loop01&content=one_million_example61_01",
+      "exact_master_byte_match_verified": false,
+      "post_metadata_verified": true,
+      "post_attribution_from_profile_link_proven": false,
+      "campaign_link_state": "INTERNAL_PROPOSAL_NOT_PLACED",
+      "observed_current_profile_url": "https://dufynd.de/duft/rabanne-1-million",
+      "profile_link_tagged": false,
+      "evidence_fetched_at": "2026-10-03T18:15:31",
+      "source_job_id": "34638857230d9c0969ab3dafd8e0359f",
+      "metrics": {
+        "views": 177,
+        "reach": 147,
+        "saves": 0,
+        "shares": 0,
+        "fetched_at": "2026-10-03T18:16:26",
+        "source_job_id": "85231a09d53c08d40efaa430485a4a23",
+        "scope": "connector media insight snapshot; no first-party session attribution"
+      }
+    },
+    {
+      "platform": "youtube",
+      "platform_content_id": "v8DlVXi-Fj8",
+      "post_url": "https://www.youtube.com/watch?v=v8DlVXi-Fj8",
+      "posted_at": "2026-09-29T16:00:58Z",
+      "published_link_verified": false,
+      "existing_prepared_url": "https://dufynd.de/duftfinder?src=youtube&cmp=launch01_high_end&content=one_million_example61_01",
+      "proposed_product_url": "https://dufynd.de/duft/rabanne-1-million?src=youtube&cmp=one_million_loop01&content=one_million_example61_01",
+      "exact_master_byte_match_verified": false,
+      "post_metadata_verified": true,
+      "post_attribution_from_profile_link_proven": false,
+      "campaign_link_state": "INTERNAL_PROPOSAL_NOT_PLACED",
+      "observed_current_profile_url": null,
+      "evidence_fetched_at": "2026-10-03T18:15:31",
+      "source_job_id": "76816586c32dc064eee1ce5ecd1edb65",
+      "metrics": {
+        "views_returned_rows": 517,
+        "engaged_views_returned_rows": 113,
+        "returned_dates": [
+          "2026-09-29",
+          "2026-09-30"
+        ],
+        "requested_start": "2026-09-29",
+        "requested_end": "2026-10-03",
+        "missing_dates_not_imputed": true,
+        "fetched_at": "2026-10-03T18:16:26",
+        "source_job_id": "57eeded0b51a2e22b7e022e3932cccd4"
+      }
+    }
+  ],
+  "maker_checker": {
+    "state": "OFFLINE_CONTRACT_TESTED_LIVE_REVIEW_NOT_COMPLETE",
+    "checker_identity": null,
+    "frozen_package_sha256": null,
+    "asset_byte_sha256": null,
+    "publish_permission": false
+  },
+  "revenue": {
+    "affiliate_conversions": null,
+    "pending_commission_eur": null,
+    "approved_commission_eur": null,
+    "settled_commission_eur": null,
+    "revenue_per_content_piece_eur": null,
+    "revenue_per_1000_qualified_visits_eur": null
+  },
+  "platform_evidence_source": "Existing Windsor.ai connected organic accounts, no new connections or forced paid refresh",
+  "attribution_campaign_id": "one_million_loop01"
+}
