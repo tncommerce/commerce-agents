@@ -15,7 +15,7 @@ usage() {
 
 SHA="${1:-}"
 [[ "$SHA" =~ ^[a-f0-9]{40}$ ]] || usage
-TAG="${SHA:0:8}"
+TAG="$SHA"
 IMAGE="${IMAGE_REPO}:${TAG}"
 WORKDIR="$(mktemp -d)"
 trap 'rm -rf "$WORKDIR"' EXIT
