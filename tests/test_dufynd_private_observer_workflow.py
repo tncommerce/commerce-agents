@@ -19,7 +19,11 @@ def test_private_observer_workflow_orders_capture_ack_and_activation():
     assert "python -m scripts.dufynd_private_observer_ingest" in workflow
     assert "python -m private_broker.observer_ack" in workflow
     assert "python -m scripts.dufynd_private_observer_finalize" in workflow
-    assert workflow.index("needs: read") < workflow.index("needs: ingest") < workflow.index("needs: ack")
+    assert (
+        workflow.index("needs: read")
+        < workflow.index("needs: ingest")
+        < workflow.index("needs: ack")
+    )
 
 
 def test_private_observer_workflow_keeps_provider_keys_out_of_actions():

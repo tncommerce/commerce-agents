@@ -17,9 +17,7 @@ from private_broker.observer_contract import ProvenanceError, validate_source
 from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
 
 MAX_RECEIPT_BYTES = 32_768
-SUMMARY_KEYS = frozenset(
-    {"acknowledged", "duplicate_first_pass", "idempotent_rechecks"}
-)
+SUMMARY_KEYS = frozenset({"acknowledged", "duplicate_first_pass", "idempotent_rechecks"})
 
 
 class FinalizeError(RuntimeError):
