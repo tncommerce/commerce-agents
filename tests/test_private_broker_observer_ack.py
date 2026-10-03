@@ -4,7 +4,6 @@ import json
 from pathlib import Path
 from typing import Any
 
-import httpx
 import pytest
 from private_broker import observer_ack
 
