@@ -59,7 +59,6 @@ def test_reports_fixed_broker_stage_without_response_body(monkeypatch):
     client = FakeClient(
         [
             FakeResponse(200, {"value": "workload-token"}),
-            FakeResponse(200, {"gmail": {}, "render": {}}),
             FakeResponse(403, {"error": "secret-provider-detail"}),
         ]
     )
@@ -77,11 +76,11 @@ def test_reports_fixed_broker_stage_without_response_body(monkeypatch):
 def test_success_writes_only_fixed_observations(monkeypatch, tmp_path):
     responses = [
         FakeResponse(200, {"value": "workload-token"}),
-        FakeResponse(200, {"gmail": {"status": "healthy"}, "render": {"status": "healthy"}}),
         FakeResponse(200, {"deployments": [{"id": "dep-1"}]}),
         FakeResponse(200, {"observation_id": "a", "evidence": {"history_id": "1"}}),
         FakeResponse(200, {"observation_id": "b", "evidence": {"history_id": "2"}}),
         FakeResponse(200, {"observation_id": "c", "evidence": {"history_id": "3"}}),
+        FakeResponse(200, {"gmail": {"status": "healthy"}, "render": {"status": "healthy"}}),
         FakeResponse(200, {"observation_id": "a", "evidence": {"history_id": "1"}}),
         FakeResponse(200, {"observation_id": "b", "evidence": {"history_id": "2"}}),
         FakeResponse(200, {"observation_id": "c", "evidence": {"history_id": "3"}}),
@@ -108,11 +107,11 @@ def test_success_writes_only_fixed_observations(monkeypatch, tmp_path):
 def test_rejects_changed_pending_gmail_redelivery(monkeypatch, tmp_path):
     responses = [
         FakeResponse(200, {"value": "workload-token"}),
-        FakeResponse(200, {"gmail": {"status": "healthy"}, "render": {"status": "healthy"}}),
         FakeResponse(200, {"deployments": [{"id": "dep-1"}]}),
         FakeResponse(200, {"observation_id": "a", "evidence": {"history_id": "1"}}),
         FakeResponse(200, {"observation_id": "b", "evidence": {"history_id": "2"}}),
         FakeResponse(200, {"observation_id": "c", "evidence": {"history_id": "3"}}),
+        FakeResponse(200, {"gmail": {"status": "healthy"}, "render": {"status": "healthy"}}),
         FakeResponse(200, {"observation_id": "changed", "evidence": {"history_id": "1"}}),
     ]
     client = FakeClient(responses)
