@@ -46,10 +46,21 @@ docker build \
 
 docker push "$IMAGE"
 
+DIGEST="$(
+  gcloud artifacts docker images describe "$IMAGE" \
+    --project="$PROJECT" \
+    --format='value(image_summary.digest)'
+)"
+if [[ ! "$DIGEST" =~ ^sha256:[a-f0-9]{64}$ ]]; then
+  echo "refusing deploy: Artifact Registry digest could not be verified" >&2
+  exit 4
+fi
+PINNED_IMAGE="${IMAGE_REPO}@${DIGEST}"
+
 gcloud run services update "$SERVICE" \
   --project="$PROJECT" \
   --region="$REGION" \
-  --image="$IMAGE" \
+  --image="$PINNED_IMAGE" \
   --quiet
 
 READY_REVISION="$(
@@ -64,11 +75,11 @@ LATEST_REVISION="$(
     --region="$REGION" \
     --format='value(status.latestCreatedRevisionName)'
 )"
-DEPLOYED_IMAGE="$(
-  gcloud run services describe "$SERVICE" \
+READY_DIGEST="$(
+  gcloud run revisions describe "$READY_REVISION" \
     --project="$PROJECT" \
     --region="$REGION" \
-    --format='value(spec.template.spec.containers[0].image)'
+    --format='value(status.imageDigest)'
 )"
 LATEST_TRAFFIC="$(
   gcloud run services describe "$SERVICE" \
@@ -79,17 +90,17 @@ LATEST_TRAFFIC="$(
 
 if [[ -z "$READY_REVISION" || "$READY_REVISION" != "$LATEST_REVISION" ]]; then
   echo "deploy verification failed: latest revision is not ready" >&2
-  exit 4
-fi
-if [[ "$DEPLOYED_IMAGE" != "$IMAGE" ]]; then
-  echo "deploy verification failed: service image mismatch" >&2
   exit 5
+fi
+if [[ "$READY_DIGEST" != "$DIGEST" ]]; then
+  echo "deploy verification failed: ready revision digest mismatch" >&2
+  exit 6
 fi
 if [[ "$LATEST_TRAFFIC" != "100" ]]; then
   echo "deploy verification failed: latest traffic is not 100 percent" >&2
-  exit 6
+  exit 7
 fi
 
 echo "verified_revision=$READY_REVISION"
-echo "verified_image=$DEPLOYED_IMAGE"
+echo "verified_image=$PINNED_IMAGE"
 echo "verified_traffic=100"
