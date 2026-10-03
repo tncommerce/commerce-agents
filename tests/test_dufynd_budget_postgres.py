@@ -2115,6 +2115,7 @@ def test_broker_health_projection_preserves_activation_and_projects_no_secrets()
 
 def test_broker_health_projection_rejects_extra_scope_and_stale_health():
     import json
+
     import psycopg
 
     extra = broker_health_payload()
