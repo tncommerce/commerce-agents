@@ -2102,8 +2102,10 @@ def test_broker_health_projection_preserves_activation_and_projects_no_secrets()
         "select jsonb_object_agg(provider,to_jsonb(c)-'activation_enabled') "
         "from dufynd_observer_credentials c"
     )
-    assert "access_token" not in json.dumps(saved)
-    assert "refresh_token" not in json.dumps(saved)
+    for metadata in saved.values():
+        assert "access_token" not in metadata
+        assert "refresh_token" not in metadata
+        assert "client_secret" not in metadata
 
     query(
         "update dufynd_observer_credentials set status='missing_configuration',"
