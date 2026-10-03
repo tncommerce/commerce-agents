@@ -1,6 +1,6 @@
 # First revenue loop: Rabanne 1 Million
 
-## Verified state — 2026-10-03, 18:05 UTC
+## Verified state — 2026-10-03, database 18:05 / platforms 18:16 UTC
 
 GitHub `scentai-mvp` and the existing Render API are live on
 `4c64278836d1207ed71d103d8b854a45fbbd1ccc` (PR #645). Only PRs #1 and
@@ -36,19 +36,34 @@ exact product/offer identity, and Awin static clickref
 launch-links and affiliate-evidence files. The previous general brief's
 example `launch01` is not evidence of an actual published campaign.
 
-The repo contains prepared URLs, a locked Topaz master and sampled technical
-QC. It does not supply exact published post URLs/platform IDs. Current public
-searches did not identify a verifiable matching post. This does not disprove
-the previously Owner-reported publication on YouTube, Instagram and TikTok.
-All post IDs, current published destinations and posting dates remain null.
+Public search and repo reads did not identify posts, but the existing Windsor
+organic account connections do. A normal read without forced refresh returned
+platform metadata fetched at 18:15:31 UTC and metrics at 18:16:26 UTC:
 
-**Next evidence handoff to Owner/CONTENT:** supply the current three post URLs
-(including the final TikTok reupload if applicable), or a free native export
-with platform post IDs, posting times and current destination URLs. Verify
-each against the exact locked master. Record the current link as observed,
-without editing it. A direct merchant link would bypass DUFYND's first-party
-funnel; a generic untagged bio link would not establish post attribution.
-Neither case is asserted without actual post evidence.
+| Platform | Verified post ID | Posting time / actual destination evidence |
+| --- | --- | --- |
+| Instagram | `17936625063388741`, [Reel](https://www.instagram.com/reel/Dd4PqziqHde/) | 2026-09-29 17:02 UTC; caption points to Bio; current account website already `/duft/rabanne-1-million`, without tags |
+| TikTok | `7691036431489305888` | Connector returns actual share URL in manifest; caption points to channel profile. Raw posting time `2026-09-29T19:09:26` has no timezone; profile destination unavailable |
+| YouTube | `v8DlVXi-Fj8`, [video](https://www.youtube.com/watch?v=v8DlVXi-Fj8) | Public, 2026-09-29 16:00:58 UTC; description points to channel profile, no direct URL in description; current profile destination unavailable |
+
+All three titles/captions identify Rabanne 1 Million. Their relation to the
+existing master is supported by metadata and the prior Owner publication
+report; exact byte/visual equivalence is not yet independently verified.
+Persisted connector job IDs and fetch times distinguish observed posts from
+prepared links. Instagram reports 177 views / reach 147; TikTok reach 221,
+views and website clicks null. YouTube returns 471 + 46 views and 98 + 15
+engaged views for Sept 29/30 only. Missing dates are not zeros. These are real
+platform observations, not proof of traffic or revenue. No Awin connection
+was present in the connected-source inventory.
+
+**Next evidence handoff to Owner/CONTENT:** verify exact master and the
+remaining current profile destinations; decide an actually clickable,
+uniquely attributable placement for one proposed tracked product URL. A
+shared Bio or channel-profile URL can measure campaign-link traffic but
+cannot prove which reel/video produced it. Instagram's current Bio URL is
+shared by other posts too, so attaching a creative ID there alone is not
+proof of per-post attribution. Do not retrospectively assign its untagged
+traffic to the 1 Million Reel. No external link has been changed.
 
 Only after verification should CONTENT bind the existing asset record's
 content ID and platform metadata using its established write path. This
@@ -58,17 +73,27 @@ tagged visits; no new analytics service or schedule is required.
 
 ## One prepared conversion test
 
-**Hypothesis:** a viewer interested in 1 Million reaches the exact EDT 100 ml
-product and merchant offer more often when the link lands on that product
-instead of requiring navigation through the general perfume finder.
+**Hypothesis:** enlarging the mobile merchant touch target reduces missed taps
+and raises qualified merchant clickout rate. The actual Instagram destination
+is already the product page, so the prepared finder link is not a valid live
+control for a landing-navigation experiment.
 
-**Only change:** `/duftfinder` → `/duft/rabanne-1-million`. Keep creative,
-caption, offer display and Mobile CTA unchanged. The manifest contains three
-platform-specific proposed links built by the existing campaign-link builder;
-start with one verified platform/post after explicit Owner approval to change
-its external link. New experiment campaign `launch01_high_end_lp01` separates
-future treatment traffic from prepared control `launch01_high_end` without
-renaming the creative. All candidate links are internal proposals.
+**Only conversion change:** on the 1 Million product landing, mobile merchant
+CTA minimum height 44 px, centered content. Baseline at viewport 390 px is
+264 × 39.5 px, measured on the live page with an exact live-offer replay while
+blocking all writes and outbound clickouts. Keep position, wording, offer,
+shipping, price and creative unchanged. TECH handoff: scope the existing
+`FragranceOffers` anchor and its preparing state to this product/surface below
+640 px; use inline-flex centering and `min-height:44px`. Do not make a global
+merchant CTA change. Verify ready/preparing states at 360/390/430 px, no
+overflow or layout shift, unchanged attribution href, and no new API calls.
+No TECH/runtime file is modified by this patch.
+
+The manifest separately prepares platform-specific tracked links to the
+unchanged product landing under campaign `one_million_loop01`. These are
+attribution foundation, not an already-running conversion test. Establish a
+clean tagged baseline first and obtain Owner approval for any external link
+placement/change. No proposed URL is asserted to have been published.
 
 **Measurement:** report ordered product-interest sessions / tagged landing
 sessions, and ordered clickout sessions / qualified visits, within identical
@@ -80,8 +105,8 @@ baseline exists yet; the single untagged clickout is not a control rate.
 Separate Owner/QA traffic before evaluating. If deployment is sequential
 and not randomized, report descriptive observations, not causal uplift.
 
-**Expected business impact:** fewer navigation steps should raise product
-interest and merchant clickouts per content visit; effect size is unknown.
+**Expected business impact:** fewer missed mobile taps should raise merchant
+clickouts per qualified product visit; effect size is unknown.
 No added operating cost. Commission uplift cannot yet be compared by test
 variant: the product affiliate URL currently uses a shared static creative
 clickref, not a forwarded campaign/platform reference. Changing that behavior

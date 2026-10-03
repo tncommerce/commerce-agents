@@ -94,7 +94,7 @@ def test_unknown_or_evidence_free_checks_fail_closed():
     assert evaluate({})["stage"] == "REVISION_REQUIRED"
 
 
-def test_first_loop_links_preserve_creative_and_separate_landing_test():
+def test_first_loop_links_preserve_creative_and_bind_observed_posts():
     path = Path(__file__).resolve().parents[1] / "docs/supervisor/dufynd-first-revenue-loop.json"
     manifest = json.loads(path.read_text())
     for post in manifest["platforms"]:
@@ -102,11 +102,12 @@ def test_first_loop_links_preserve_creative_and_separate_landing_test():
             base_url="https://dufynd.de",
             landing_path="/duft/rabanne-1-million",
             channel=post["platform"],
-            campaign_id=manifest["experiment"]["candidate_campaign"],
+            campaign_id=manifest["attribution_campaign_id"],
             content_id=manifest["content_id"],
         )
         assert post["proposed_product_url"] == expected
-        assert post["platform_content_id"] is None
-        assert post["published_link_verified"] is False
+        assert post["platform_content_id"]
+        assert post["post_metadata_verified"] is True
+        assert post["post_attribution_from_profile_link_proven"] is False
     assert all(value is None for value in manifest["revenue"].values())
     assert manifest["experiment"]["publication_authorized"] is False

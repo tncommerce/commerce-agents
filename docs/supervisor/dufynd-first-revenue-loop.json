@@ -1,7 +1,7 @@
 {
-  "version": 1,
+  "version": 2,
   "state": "INTERNAL_PREPARATION_NOT_PUBLISHED",
-  "verified_at": "2026-10-03T18:05:00Z",
+  "verified_at": "2026-10-03T18:16:26Z",
   "integration_sha": "4c64278836d1207ed71d103d8b854a45fbbd1ccc",
   "content_id": "one_million_example61_01",
   "existing_campaign_id": "launch01_high_end",
@@ -25,7 +25,8 @@
     "dynamic_platform_campaign_forwarding": "NOT_IMPLEMENTED_FOR_PRODUCT_OFFERS",
     "network_transaction_evidence": null,
     "conversion_count": null,
-    "commission_eur": null
+    "commission_eur": null,
+    "connected_awin_read_source_available": false
   },
   "observed_database_evidence": {
     "scope": "all retained product-specific rows at verification; not proven human traffic",
@@ -39,47 +40,106 @@
     "retroactive_attribution_allowed": false
   },
   "experiment": {
-    "id": "one_million_product_landing_01",
-    "state": "PREPARED_OWNER_LINK_CHANGE_REQUIRED",
-    "control_campaign": "launch01_high_end",
-    "candidate_campaign": "launch01_high_end_lp01",
-    "only_change": "duftfinder to exact product landing",
+    "id": "one_million_mobile_cta_01",
+    "state": "PREPARED_TECH_HANDOFF_NOT_DEPLOYED",
+    "only_change": "On this product landing only, mobile merchant CTA min-height 44px with centered content; keep copy, position, price, shipping, creative and destination unchanged",
+    "hypothesis": "A larger touch target reduces missed taps and increases qualified merchant clickout rate",
     "primary_kpi": "ordered qualified clickout sessions / qualified visits in the same tagged cohort",
-    "secondary_kpi": "ordered product-interest sessions / tagged landing sessions",
-    "baseline": "UNAVAILABLE_FOR_TAGGED_CONTENT",
+    "baseline": {
+      "viewport_width_px": 390,
+      "cta_width_px": 264,
+      "cta_height_px": 39.5,
+      "method": "live page and exact current offer replay, all writes and outbound clickouts blocked",
+      "tagged_clickout_rate": null
+    },
     "minimum_qualified_visits_per_cohort": 30,
     "minimum_is_not_statistical_significance": true,
-    "evaluation": "Same fixed 7-day window, platform-stratified, complete extraction; report descriptive rates and counts, no causal uplift from nonrandom sequential deployment",
+    "evaluation": "After clean tagged baseline, compare fixed 7-day windows within platform cohorts; descriptive before/after only, no causal uplift without randomization",
     "commission_variant_comparison": "BLOCKED_STATIC_CLICKREF_SHARED",
-    "publication_authorized": false
+    "publication_authorized": false,
+    "runtime_modified": false
   },
   "platforms": [
     {
       "platform": "tiktok",
-      "platform_content_id": null,
-      "post_url": null,
+      "platform_content_id": "7691036431489305888",
+      "post_url": "https://www.tiktok.com/@dufynd/video/7691036431489305888?utm_campaign=tt4d_open_api&utm_source=7288613544411529218",
       "posted_at": null,
       "published_link_verified": false,
       "existing_prepared_url": "https://dufynd.de/duftfinder?src=tiktok&cmp=launch01_high_end&content=one_million_example61_01",
-      "proposed_product_url": "https://dufynd.de/duft/rabanne-1-million?src=tiktok&cmp=launch01_high_end_lp01&content=one_million_example61_01"
+      "proposed_product_url": "https://dufynd.de/duft/rabanne-1-million?src=tiktok&cmp=one_million_loop01&content=one_million_example61_01",
+      "exact_master_byte_match_verified": false,
+      "post_metadata_verified": true,
+      "post_attribution_from_profile_link_proven": false,
+      "campaign_link_state": "INTERNAL_PROPOSAL_NOT_PLACED",
+      "posted_at_raw": "2026-09-29T19:09:26",
+      "posted_at_timezone": "NOT_SUPPLIED_BY_CONNECTOR",
+      "observed_current_profile_url": null,
+      "evidence_fetched_at": "2026-10-03T18:15:31",
+      "source_job_id": "1387bc4570915fb5c10cdfb6edd68e9a",
+      "metrics": {
+        "views": null,
+        "reach": 221,
+        "website_clicks": null,
+        "fetched_at": "2026-10-03T18:16:26",
+        "source_job_id": "20e759caca34cfce3a9020266af8f870",
+        "scope": "connector video snapshot; null is not zero"
+      }
     },
     {
       "platform": "instagram",
-      "platform_content_id": null,
-      "post_url": null,
-      "posted_at": null,
-      "published_link_verified": false,
+      "platform_content_id": "17936625063388741",
+      "post_url": "https://www.instagram.com/reel/Dd4PqziqHde/",
+      "posted_at": "2026-09-29T17:02:00+0000",
+      "published_link_verified": true,
       "existing_prepared_url": "https://dufynd.de/duftfinder?src=instagram&cmp=launch01_high_end&content=one_million_example61_01",
-      "proposed_product_url": "https://dufynd.de/duft/rabanne-1-million?src=instagram&cmp=launch01_high_end_lp01&content=one_million_example61_01"
+      "proposed_product_url": "https://dufynd.de/duft/rabanne-1-million?src=instagram&cmp=one_million_loop01&content=one_million_example61_01",
+      "exact_master_byte_match_verified": false,
+      "post_metadata_verified": true,
+      "post_attribution_from_profile_link_proven": false,
+      "campaign_link_state": "INTERNAL_PROPOSAL_NOT_PLACED",
+      "observed_current_profile_url": "https://dufynd.de/duft/rabanne-1-million",
+      "profile_link_tagged": false,
+      "evidence_fetched_at": "2026-10-03T18:15:31",
+      "source_job_id": "34638857230d9c0969ab3dafd8e0359f",
+      "metrics": {
+        "views": 177,
+        "reach": 147,
+        "saves": 0,
+        "shares": 0,
+        "fetched_at": "2026-10-03T18:16:26",
+        "source_job_id": "85231a09d53c08d40efaa430485a4a23",
+        "scope": "connector media insight snapshot; no first-party session attribution"
+      }
     },
     {
       "platform": "youtube",
-      "platform_content_id": null,
-      "post_url": null,
-      "posted_at": null,
+      "platform_content_id": "v8DlVXi-Fj8",
+      "post_url": "https://www.youtube.com/watch?v=v8DlVXi-Fj8",
+      "posted_at": "2026-09-29T16:00:58Z",
       "published_link_verified": false,
       "existing_prepared_url": "https://dufynd.de/duftfinder?src=youtube&cmp=launch01_high_end&content=one_million_example61_01",
-      "proposed_product_url": "https://dufynd.de/duft/rabanne-1-million?src=youtube&cmp=launch01_high_end_lp01&content=one_million_example61_01"
+      "proposed_product_url": "https://dufynd.de/duft/rabanne-1-million?src=youtube&cmp=one_million_loop01&content=one_million_example61_01",
+      "exact_master_byte_match_verified": false,
+      "post_metadata_verified": true,
+      "post_attribution_from_profile_link_proven": false,
+      "campaign_link_state": "INTERNAL_PROPOSAL_NOT_PLACED",
+      "observed_current_profile_url": null,
+      "evidence_fetched_at": "2026-10-03T18:15:31",
+      "source_job_id": "76816586c32dc064eee1ce5ecd1edb65",
+      "metrics": {
+        "views_returned_rows": 517,
+        "engaged_views_returned_rows": 113,
+        "returned_dates": [
+          "2026-09-29",
+          "2026-09-30"
+        ],
+        "requested_start": "2026-09-29",
+        "requested_end": "2026-10-03",
+        "missing_dates_not_imputed": true,
+        "fetched_at": "2026-10-03T18:16:26",
+        "source_job_id": "57eeded0b51a2e22b7e022e3932cccd4"
+      }
     }
   ],
   "maker_checker": {
@@ -96,5 +156,7 @@
     "settled_commission_eur": null,
     "revenue_per_content_piece_eur": null,
     "revenue_per_1000_qualified_visits_eur": null
-  }
+  },
+  "platform_evidence_source": "Existing Windsor.ai connected organic accounts, no new connections or forced paid refresh",
+  "attribution_campaign_id": "one_million_loop01"
 }
