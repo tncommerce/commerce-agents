@@ -230,7 +230,6 @@ async def test_counted_safe_worker_bypasses_legacy_unbounded_provider_gate(monke
     assert await runtime.process_safe_task(Bridge(), task_id="safe-task") == 0
 
 
-
 def current_session():
     return {
         "session_id": "current",
