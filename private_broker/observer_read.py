@@ -7,6 +7,8 @@ from urllib.parse import urlsplit
 
 import httpx
 
+from private_broker.observer_contract import ProvenanceError, source_from_env
+
 
 class ReadFailure(Exception):
     """Non-secret, bounded diagnostic for a fixed observer stage."""
@@ -43,6 +45,7 @@ def main():
         raise SystemExit("invalid broker origin")
 
     try:
+        source = source_from_env()
         with httpx.Client(trust_env=False, timeout=30, follow_redirects=False) as client:
             identity = client.get(
                 os.environ["ACTIONS_ID_TOKEN_REQUEST_URL"],
@@ -64,7 +67,7 @@ def main():
                 # in the projection artifact rather than stale pre-read state.
                 ("health", "/v1/health"),
             ]
-            results = {}
+            results = {"_meta": source}
             gmail_reads = []
             for stage, path in reads:
                 response = client.get(origin + path, headers=headers)
@@ -89,6 +92,10 @@ def main():
             Path("broker-observations.json").write_text(
                 json.dumps(results, sort_keys=True), encoding="utf-8"
             )
+    except ProvenanceError as exc:
+        raise SystemExit(
+            f"private observer read failed at provenance:{exc}; no cursor acknowledged"
+        ) from None
     except ReadFailure as exc:
         raise SystemExit(
             f"private observer read failed at {exc.stage}:{exc.reason}; no cursor acknowledged"

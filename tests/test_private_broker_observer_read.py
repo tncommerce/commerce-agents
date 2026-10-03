@@ -37,6 +37,19 @@ def configure(monkeypatch, client):
     monkeypatch.setenv("BROKER_ORIGIN", "https://broker.example")
     monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_URL", "https://oidc.example/token")
     monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN", "request-token")
+    monkeypatch.setenv("GITHUB_REPOSITORY", "tncommerce/commerce-agents")
+    monkeypatch.setenv("GITHUB_REPOSITORY_ID", "1367576041")
+    monkeypatch.setenv("GITHUB_REPOSITORY_OWNER_ID", "324597697")
+    monkeypatch.setenv("GITHUB_REF", "refs/heads/scentai-mvp")
+    monkeypatch.setenv(
+        "GITHUB_WORKFLOW_REF",
+        "tncommerce/commerce-agents/.github/workflows/"
+        "dufynd-private-observer.yml@refs/heads/scentai-mvp",
+    )
+    monkeypatch.setenv("GITHUB_EVENT_NAME", "workflow_dispatch")
+    monkeypatch.setenv("GITHUB_SHA", "a" * 40)
+    monkeypatch.setenv("GITHUB_RUN_ID", "123456789")
+    monkeypatch.setenv("GITHUB_RUN_ATTEMPT", "1")
     monkeypatch.setattr(observer_read.httpx, "Client", lambda **kwargs: client)
 
 
@@ -112,6 +125,7 @@ def test_success_writes_only_fixed_observations(monkeypatch, tmp_path):
     result = json.loads((tmp_path / "broker-observations.json").read_text(encoding="utf-8"))
     assert sorted(result) == sorted(
         [
+            "_meta",
             "/v1/health",
             "/v1/render/services/srv-dakpfrnf3r2c73dr3f20/deployments",
             "/v1/gmail/threads/1a0f385ed98c6af8/metadata",
@@ -119,6 +133,8 @@ def test_success_writes_only_fixed_observations(monkeypatch, tmp_path):
             "/v1/gmail/threads/1a0f6a90772a743d/metadata",
         ]
     )
+    assert result["_meta"]["run_id"] == "123456789"
+    assert result["_meta"]["sha"] == "a" * 40
     assert "workload-token" not in json.dumps(result)
 
 
@@ -145,3 +161,18 @@ def test_rejects_changed_pending_gmail_redelivery(monkeypatch, tmp_path):
         "no cursor acknowledged"
     )
     assert not (tmp_path / "broker-observations.json").exists()
+
+
+def test_rejects_wrong_workflow_provenance_before_oidc(monkeypatch):
+    client = FakeClient([])
+    configure(monkeypatch, client)
+    monkeypatch.setenv("GITHUB_REPOSITORY_ID", "999")
+
+    with pytest.raises(SystemExit) as exc:
+        observer_read.main()
+
+    assert (
+        str(exc.value) == "private observer read failed at provenance:source_identity_mismatch; "
+        "no cursor acknowledged"
+    )
+    assert client.calls == []

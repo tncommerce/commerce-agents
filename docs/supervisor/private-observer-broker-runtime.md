@@ -147,16 +147,26 @@ deliberately an owner operation, not an autonomous worker capability.
 
 The acceptance handoff is split so no process needs both the Supabase service-role
 credential and a broker workload token. `scripts/dufynd_private_observer_ingest.py`
-is the trusted control-plane side: it accepts only the five fixed filtered artifact
-paths, projects non-secret health, strips broker-only Gmail `content_type`, commits
-the fixed Render/Gmail evidence through the service-role RPCs and writes
-`broker-acks.json` only after all four captures return `accepted=true`.
+is the trusted control-plane side: it accepts only the fixed filtered artifact
+paths plus a strict source manifest, requires that manifest to match the same GitHub
+run ID and commit SHA supplied by the trusted orchestration job, projects non-secret
+health, strips broker-only Gmail `content_type`, commits the fixed Render/Gmail
+evidence through the service-role RPCs and writes `broker-acks.json` only after all
+four captures return `accepted=true`.
+
+The source manifest is generated before the broker read from GitHub's immutable
+workflow context and fixes repository/repository-owner IDs, integration ref, exact
+workflow ref, event, commit SHA, run ID and run attempt. An artifact from another
+run/ref/repository is rejected before any Supabase write. The resulting ack plan is
+version 2 and carries the same source manifest.
 
 `private_broker/observer_ack.py` is the complementary OIDC-only side. It accepts
-only version 1 plans containing exactly the three registered thread IDs and
-64-character observation digests, mints the same fixed GitHub workload identity,
-acknowledges only those exact broker paths and then requires a second pass to return
-`duplicate` for all three digests. It has no Supabase, provider or owner credential.
+only version 2 plans containing that same source manifest, exactly the three
+registered thread IDs and 64-character observation digests. The source run ID/SHA
+must match the current acknowledgment job before it mints the fixed GitHub workload
+identity. It acknowledges only those exact broker paths and then requires a second
+pass to return `duplicate` for all three digests. It has no Supabase, provider or
+owner credential.
 
 These helpers are preparation only. They are not yet wired into the workflow and
 credential activation remains false. Production wiring must keep the credential

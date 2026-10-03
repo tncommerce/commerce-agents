@@ -10,13 +10,16 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 from pathlib import Path
 from typing import Any, Protocol
 
+from private_broker.observer_contract import ProvenanceError, validate_source
 from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
 
 MAX_ARTIFACT_BYTES = 262_144
+META_KEY = "_meta"
 HEALTH_PATH = "/v1/health"
 RENDER_PATH = "/v1/render/services/srv-dakpfrnf3r2c73dr3f20/deployments"
 GMAIL_PATHS = {
@@ -24,7 +27,7 @@ GMAIL_PATHS = {
     "/v1/gmail/threads/1a0f69c169fb928f/metadata": "1a0f69c169fb928f",
     "/v1/gmail/threads/1a0f6a90772a743d/metadata": "1a0f6a90772a743d",
 }
-EXPECTED_PATHS = frozenset({HEALTH_PATH, RENDER_PATH, *GMAIL_PATHS})
+EXPECTED_PATHS = frozenset({META_KEY, HEALTH_PATH, RENDER_PATH, *GMAIL_PATHS})
 GMAIL_RESPONSE_KEYS = frozenset({"observation_id", "evidence"})
 GMAIL_EVIDENCE_KEYS = frozenset({"thread_id", "history_id", "messages"})
 GMAIL_MESSAGE_KEYS = frozenset(
@@ -62,7 +65,12 @@ class ArtifactError(RuntimeError):
     pass
 
 
-def load_artifact(path: Path) -> dict[str, Any]:
+def load_artifact(
+    path: Path,
+    *,
+    expected_run_id: str,
+    expected_sha: str,
+) -> dict[str, Any]:
     try:
         if path.stat().st_size > MAX_ARTIFACT_BYTES:
             raise ArtifactError("observer artifact exceeds size limit")
@@ -74,6 +82,14 @@ def load_artifact(path: Path) -> dict[str, Any]:
 
     if not isinstance(payload, dict) or set(payload) != EXPECTED_PATHS:
         raise ArtifactError("observer artifact path set mismatch")
+    try:
+        payload[META_KEY] = validate_source(
+            payload[META_KEY],
+            expected_run_id=expected_run_id,
+            expected_sha=expected_sha,
+        )
+    except ProvenanceError as exc:
+        raise ArtifactError(f"observer artifact provenance {exc}") from None
     return payload
 
 
@@ -126,8 +142,15 @@ def ingest_artifact(
     bridge: ControlPlane,
     artifact_path: Path,
     ack_plan_path: Path,
+    *,
+    expected_run_id: str,
+    expected_sha: str,
 ) -> dict[str, int]:
-    artifact = load_artifact(artifact_path)
+    artifact = load_artifact(
+        artifact_path,
+        expected_run_id=expected_run_id,
+        expected_sha=expected_sha,
+    )
 
     health = artifact[HEALTH_PATH]
     if not isinstance(health, dict):
@@ -161,7 +184,7 @@ def ingest_artifact(
         )
         acks.append({"thread_id": thread_id, "observation_id": digest})
 
-    ack_plan = {"version": 1, "acks": acks}
+    ack_plan = {"version": 2, "source": artifact[META_KEY], "acks": acks}
     temporary = ack_plan_path.with_name(ack_plan_path.name + ".tmp")
     temporary.write_text(
         json.dumps(ack_plan, sort_keys=True, separators=(",", ":")),
@@ -177,10 +200,20 @@ def main() -> int:
     )
     parser.add_argument("--artifact", type=Path, default=Path("broker-observations.json"))
     parser.add_argument("--ack-plan", type=Path, default=Path("broker-acks.json"))
+    parser.add_argument("--expected-run-id", default=os.getenv("GITHUB_RUN_ID"))
+    parser.add_argument("--expected-sha", default=os.getenv("GITHUB_SHA"))
     args = parser.parse_args()
+    if not args.expected_run_id or not args.expected_sha:
+        raise SystemExit("private observer ingest failed: expected workflow provenance is required")
 
     try:
-        summary = ingest_artifact(DufyndJarvisBridge(), args.artifact, args.ack_plan)
+        summary = ingest_artifact(
+            DufyndJarvisBridge(),
+            args.artifact,
+            args.ack_plan,
+            expected_run_id=args.expected_run_id,
+            expected_sha=args.expected_sha,
+        )
     except ArtifactError as exc:
         raise SystemExit(f"private observer ingest failed: {exc}") from None
 
