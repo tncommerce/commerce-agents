@@ -35,6 +35,7 @@ from .analytics import (
     FirstPartyAnalyticsTracker,
     sanitize_attribution_identifier,
 )
+from .jarvis_owner_auth import create_control_room_router
 from .merchant import create_merchant_router
 from .merchant_offers import (
     MerchantClickoutTracker,
@@ -105,6 +106,7 @@ host = build_storefront_host(
 )
 app = host.app
 app.include_router(create_merchant_router(backend, InMemoryMemoryStore()), prefix="/api/merchant")
+app.include_router(create_control_room_router())
 # The merchant portal shows the storefront's listing photos, so the API serves them to both apps.
 app.mount("/products", StaticFiles(directory=PRODUCT_IMAGES, check_dir=False), name="products")
 
