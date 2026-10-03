@@ -1,0 +1,34 @@
+name: DUFYND Jarvis Manual Runner
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Dispatch on scentai-mvp; paid mode requires separate owner approval
+        required: true
+        default: nightshift-bounded-preflight
+        type: choice
+        options:
+          - nightshift-bounded-preflight
+          - nightshift-bounded
+      nightshift_max_tasks:
+        description: Maximum bounded tasks
+        required: false
+        default: "2"
+        type: string
+      approval_token:
+        description: Separate owner approval required for paid execution
+        required: false
+        type: string
+
+permissions: {}
+
+jobs:
+  require-integration-ref:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: Refuse execution of the default-branch registration stub
+        run: |
+          echo "::error::Select scentai-mvp as the workflow ref. This main workflow only registers manual dispatch."
+          exit 1
