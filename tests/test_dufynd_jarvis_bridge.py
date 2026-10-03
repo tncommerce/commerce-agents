@@ -166,6 +166,33 @@ def mock_transport() -> httpx.MockTransport:
                 json={"projected": 2, "activation_changed": False},
             )
 
+        if request.url.path.endswith("/rpc/record_dufynd_private_observer_preflight"):
+            row = json.loads(request.content)
+            assert row["p_source"]["run_id"] == "123456789"
+            assert row["p_source"]["sha"] == "a" * 40
+            return httpx.Response(
+                200,
+                json={
+                    "status": "preflight_accepted",
+                    "source": row["p_source"],
+                    "activation_enabled": False,
+                },
+            )
+
+        if request.url.path.endswith("/rpc/set_dufynd_private_observer_activation"):
+            row = json.loads(request.content)
+            assert row["p_run_id"] == "123456789"
+            assert row["p_sha"] == "a" * 40
+            assert row["p_enabled"] is True
+            return httpx.Response(
+                200,
+                json={
+                    "status": "activated",
+                    "activation_enabled": True,
+                    "credentials_activated": 2,
+                },
+            )
+
         if request.url.path.endswith("/rpc/capture_dufynd_broker_observation"):
             row = json.loads(request.content)
             assert row["p_credential_id"] == "gmail_known_threads"
@@ -619,6 +646,39 @@ def test_bridge_projects_bounded_broker_health() -> None:
     )
 
     assert result == {"projected": 2, "activation_changed": False}
+
+
+def test_bridge_records_private_observer_preflight() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+    source = {"run_id": "123456789", "sha": "a" * 40}
+
+    result = bridge.record_broker_preflight(source)
+
+    assert result["status"] == "preflight_accepted"
+    assert result["source"] == source
+    assert result["activation_enabled"] is False
+
+
+def test_bridge_uses_guarded_private_observer_activation() -> None:
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://project.supabase.co",
+        secret_key="sb_secret_test",
+        transport=mock_transport(),
+    )
+
+    result = bridge.set_broker_activation(
+        run_id="123456789",
+        sha="a" * 40,
+        enabled=True,
+    )
+
+    assert result["status"] == "activated"
+    assert result["activation_enabled"] is True
+    assert result["credentials_activated"] == 2
 
 
 def test_bridge_captures_bounded_broker_observation() -> None:
