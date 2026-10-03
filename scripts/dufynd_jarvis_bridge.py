@@ -247,6 +247,33 @@ class DufyndJarvisBridge:
             raise ValueError("Broker health projection must return a JSON object")
         return payload
 
+    def record_broker_preflight(self, source: dict[str, Any]) -> dict[str, Any]:
+        if not isinstance(source, dict):
+            raise ValueError("Broker preflight source must be a JSON object")
+        payload = self._rpc("record_dufynd_private_observer_preflight", {"p_source": source})
+        if not isinstance(payload, dict):
+            raise ValueError("Broker preflight must return a JSON object")
+        return payload
+
+    def set_broker_activation(
+        self,
+        *,
+        run_id: str | None,
+        sha: str | None,
+        enabled: bool,
+    ) -> dict[str, Any]:
+        payload = self._rpc(
+            "set_dufynd_private_observer_activation",
+            {
+                "p_run_id": run_id,
+                "p_sha": sha,
+                "p_enabled": bool(enabled),
+            },
+        )
+        if not isinstance(payload, dict):
+            raise ValueError("Broker activation gate must return a JSON object")
+        return payload
+
     def capture_broker_observation(
         self,
         *,
