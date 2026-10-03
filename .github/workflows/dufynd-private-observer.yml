@@ -1,17 +1,38 @@
 name: DUFYND Private Observer Read
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "*/10 * * * *"
+
 permissions:
   contents: read
-  id-token: write
+  actions: write
+
 concurrency:
-  group: dufynd-private-observer
+  group: dufynd-private-observer-${{ github.ref_name }}
   cancel-in-progress: false
+
 jobs:
+  scheduled-dispatch:
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Dispatch accepted observer workflow on scentai-mvp
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh workflow run dufynd-private-observer.yml
+          --repo "${GITHUB_REPOSITORY}"
+          --ref scentai-mvp
+
   read:
     if: github.ref == 'refs/heads/scentai-mvp' && vars.DUFYND_PRIVATE_BROKER_ENABLED == '1'
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
