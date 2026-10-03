@@ -219,3 +219,50 @@ def test_rejects_ack_plan_from_other_workflow_run_before_oidc(monkeypatch, tmp_p
                 AssertionError("OIDC must not be reached")
             ),
         )
+
+
+def test_write_receipt_is_provenance_bound_and_bounded(tmp_path: Path) -> None:
+    plan = tmp_path / "broker-acks.json"
+    receipt = tmp_path / "broker-ack-receipt.json"
+    write_plan(plan)
+    summary = {
+        "acknowledged": 3,
+        "duplicate_first_pass": 0,
+        "idempotent_rechecks": 3,
+    }
+
+    observer_ack.write_receipt(
+        plan,
+        receipt,
+        summary,
+        expected_run_id="123456789",
+        expected_sha="a" * 40,
+    )
+
+    payload = json.loads(receipt.read_text(encoding="utf-8"))
+    assert payload == {
+        "version": 1,
+        "source": source(),
+        "ack_summary": summary,
+    }
+
+
+def test_write_receipt_rejects_foreign_run(tmp_path: Path) -> None:
+    plan = tmp_path / "broker-acks.json"
+    receipt = tmp_path / "broker-ack-receipt.json"
+    write_plan(plan)
+
+    with pytest.raises(observer_ack.AckFailure, match="provenance_source_run_mismatch"):
+        observer_ack.write_receipt(
+            plan,
+            receipt,
+            {
+                "acknowledged": 3,
+                "duplicate_first_pass": 0,
+                "idempotent_rechecks": 3,
+            },
+            expected_run_id="999999999",
+            expected_sha="a" * 40,
+        )
+
+    assert not receipt.exists()

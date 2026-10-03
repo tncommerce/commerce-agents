@@ -52,9 +52,12 @@ CAPTURE_MESSAGE_KEYS = (
 class ControlPlane(Protocol):
     def project_broker_health(self, health: dict[str, Any]) -> dict[str, Any]: ...
 
-    def capture_broker_observation(
+    def begin_broker_acceptance(self, source: dict[str, Any]) -> dict[str, Any]: ...
+
+    def capture_broker_acceptance_observation(
         self,
         *,
+        run_id: int,
         credential_id: str,
         observer_id: str,
         evidence: Any,
@@ -159,11 +162,22 @@ def ingest_artifact(
     if projection.get("projected") != 2 or projection.get("activation_changed") is not False:
         raise ArtifactError("broker health projection mismatch")
 
+    acceptance = bridge.begin_broker_acceptance(artifact[META_KEY])
+    if acceptance.get("accepted") is not True:
+        raise ArtifactError("broker acceptance session rejected")
+    try:
+        acceptance_run_id = int(acceptance["run_id"])
+    except (KeyError, TypeError, ValueError):
+        raise ArtifactError("broker acceptance session mismatch") from None
+    if acceptance_run_id != int(expected_run_id):
+        raise ArtifactError("broker acceptance session mismatch")
+
     render = artifact[RENDER_PATH]
     if not isinstance(render, list) or len(render) > 20:
         raise ArtifactError("render evidence shape mismatch")
     _accepted(
-        bridge.capture_broker_observation(
+        bridge.capture_broker_acceptance_observation(
+            run_id=acceptance_run_id,
             credential_id="render_deploy_broker",
             observer_id="render:srv-dakpfrnf3r2c73dr3f20",
             evidence=render,
@@ -175,7 +189,8 @@ def ingest_artifact(
     for path, thread_id in GMAIL_PATHS.items():
         digest, evidence = _sanitize_gmail(path, artifact[path])
         _accepted(
-            bridge.capture_broker_observation(
+            bridge.capture_broker_acceptance_observation(
+                run_id=acceptance_run_id,
                 credential_id="gmail_known_threads",
                 observer_id=f"gmail:{thread_id}",
                 evidence=evidence,
@@ -191,7 +206,12 @@ def ingest_artifact(
         encoding="utf-8",
     )
     temporary.replace(ack_plan_path)
-    return {"health_projected": 2, "captures": 4, "acks": len(acks)}
+    return {
+        "health_projected": 2,
+        "acceptance_started": 1,
+        "captures": 4,
+        "acks": len(acks),
+    }
 
 
 def main() -> int:

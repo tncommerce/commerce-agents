@@ -270,6 +270,51 @@ class DufyndJarvisBridge:
             raise ValueError("Broker observation capture must return a JSON object")
         return payload
 
+    def begin_broker_acceptance(self, source: dict[str, Any]) -> dict[str, Any]:
+        if not isinstance(source, dict):
+            raise ValueError("Broker acceptance source must be a JSON object")
+        payload = self._rpc("begin_dufynd_broker_acceptance", {"p_source": source})
+        if not isinstance(payload, dict):
+            raise ValueError("Broker acceptance begin must return a JSON object")
+        return payload
+
+    def capture_broker_acceptance_observation(
+        self,
+        *,
+        run_id: int,
+        credential_id: str,
+        observer_id: str,
+        evidence: Any,
+    ) -> dict[str, Any]:
+        if run_id <= 0:
+            raise ValueError("Broker acceptance run_id must be positive")
+        payload = self._rpc(
+            "capture_dufynd_broker_acceptance_observation",
+            {
+                "p_run_id": run_id,
+                "p_credential_id": credential_id,
+                "p_observer_id": observer_id,
+                "p_evidence": evidence,
+            },
+        )
+        if not isinstance(payload, dict):
+            raise ValueError("Broker acceptance capture must return a JSON object")
+        return payload
+
+    def finalize_broker_acceptance(
+        self,
+        *,
+        source: dict[str, Any],
+        ack_summary: dict[str, Any],
+    ) -> dict[str, Any]:
+        payload = self._rpc(
+            "finalize_dufynd_broker_acceptance",
+            {"p_source": source, "p_ack_summary": ack_summary},
+        )
+        if not isinstance(payload, dict):
+            raise ValueError("Broker acceptance finalization must return a JSON object")
+        return payload
+
     def load_budget_status(self, budget_id: str) -> dict[str, Any]:
         payload = self._rpc(
             "get_dufynd_jarvis_budget_status",
