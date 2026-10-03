@@ -85,9 +85,7 @@ def test_acknowledges_fixed_plan_then_verifies_idempotency(monkeypatch, tmp_path
     }
     assert len(client.get_calls) == 1
     assert len(client.post_calls) == 6
-    for index, (thread_id, digest) in enumerate(
-        observer_ack.load_ack_plan(plan)
-    ):
+    for index, (thread_id, digest) in enumerate(observer_ack.load_ack_plan(plan)):
         first_url, first_kwargs = client.post_calls[index]
         second_url, second_kwargs = client.post_calls[index + 3]
         expected = f"https://broker.example/v1/gmail/threads/{thread_id}/ack/{digest}"
@@ -143,9 +141,7 @@ def test_http_failure_exposes_only_bounded_status(monkeypatch, tmp_path: Path) -
     configure_oidc(monkeypatch)
     plan = tmp_path / "broker-acks.json"
     write_plan(plan)
-    client = FakeClient(
-        posts=[FakeResponse(403, {"error": "secret-provider-detail"})]
-    )
+    client = FakeClient(posts=[FakeResponse(403, {"error": "secret-provider-detail"})])
 
     with pytest.raises(observer_ack.AckFailure) as exc:
         observer_ack.acknowledge(
