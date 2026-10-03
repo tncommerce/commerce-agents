@@ -14,6 +14,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 import httpx
+from private_broker.observer_contract import ProvenanceError, validate_source
 
 MAX_ACK_PLAN_BYTES = 16_384
 THREADS = (
@@ -42,7 +43,12 @@ def _json(response: httpx.Response, stage: str) -> dict:
     return payload
 
 
-def load_ack_plan(path: Path) -> list[tuple[str, str]]:
+def load_ack_plan(
+    path: Path,
+    *,
+    expected_run_id: str,
+    expected_sha: str,
+) -> list[tuple[str, str]]:
     try:
         if path.stat().st_size > MAX_ACK_PLAN_BYTES:
             raise AckFailure("plan", "size_limit")
@@ -52,10 +58,18 @@ def load_ack_plan(path: Path) -> list[tuple[str, str]]:
     except Exception:
         raise AckFailure("plan", "unreadable") from None
 
-    if not isinstance(payload, dict) or set(payload) != {"version", "acks"}:
+    if not isinstance(payload, dict) or set(payload) != {"version", "source", "acks"}:
         raise AckFailure("plan", "shape_mismatch")
-    if payload.get("version") != 1 or not isinstance(payload.get("acks"), list):
+    if payload.get("version") != 2 or not isinstance(payload.get("acks"), list):
         raise AckFailure("plan", "version_mismatch")
+    try:
+        validate_source(
+            payload.get("source"),
+            expected_run_id=expected_run_id,
+            expected_sha=expected_sha,
+        )
+    except ProvenanceError as exc:
+        raise AckFailure("plan", f"provenance_{exc}") from None
     if len(payload["acks"]) != len(THREADS):
         raise AckFailure("plan", "thread_set_mismatch")
 
@@ -83,6 +97,8 @@ def acknowledge(
     origin: str,
     ack_plan_path: Path,
     *,
+    expected_run_id: str | None = None,
+    expected_sha: str | None = None,
     client_factory=httpx.Client,
 ) -> dict[str, int]:
     url = urlsplit(origin)
@@ -97,7 +113,15 @@ def acknowledge(
     ):
         raise AckFailure("origin", "invalid")
 
-    acks = load_ack_plan(ack_plan_path)
+    run_id = expected_run_id or os.getenv("GITHUB_RUN_ID")
+    sha = expected_sha or os.getenv("GITHUB_SHA")
+    if not run_id or not sha:
+        raise AckFailure("plan", "provenance_required")
+    acks = load_ack_plan(
+        ack_plan_path,
+        expected_run_id=run_id,
+        expected_sha=sha,
+    )
     with client_factory(trust_env=False, timeout=30, follow_redirects=False) as client:
         identity = client.get(
             os.environ["ACTIONS_ID_TOKEN_REQUEST_URL"],
