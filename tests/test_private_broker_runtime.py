@@ -12,7 +12,7 @@ import jwt
 import pytest
 from cryptography.hazmat.primitives.asymmetric import rsa
 from fastapi.testclient import TestClient
-from private_broker.runtime import ISSUER, WORKFLOW, Config, OAuth, WorkloadAuth, create_app
+from private_broker.runtime import ISSUER, OWNER_ID, WORKFLOW, Config, OAuth, WorkloadAuth, create_app
 from private_broker.store import EncryptedVault, FirestoreCAS
 from scripts.dufynd_observer_credentials import (
     GMAIL_SCOPE,
@@ -209,6 +209,8 @@ def test_lock_fencing_and_generation():
         ("aud", "wrong"),
         ("iss", "wrong"),
         ("repository_id", "999"),
+        ("repository_owner_id", "999"),
+        ("sub", "repo:tncommerce/commerce-agents:ref:refs/heads/scentai-mvp"),
         ("event_name", "pull_request"),
     ],
 )
@@ -220,9 +222,13 @@ def test_oidc_claim_rejection(claim, value):
     claims = {
         "iss": ISSUER,
         "aud": CONFIG.origin,
-        "sub": "repo:tncommerce/commerce-agents:ref:refs/heads/scentai-mvp",
+        "sub": (
+            f"repo:tncommerce@{OWNER_ID}/commerce-agents@12345"
+            ":ref:refs/heads/scentai-mvp"
+        ),
         "repository": "tncommerce/commerce-agents",
         "repository_id": "12345",
+        "repository_owner_id": OWNER_ID,
         "ref": "refs/heads/scentai-mvp",
         "workflow_ref": WORKFLOW,
         "event_name": "workflow_dispatch",
