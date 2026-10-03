@@ -44,6 +44,7 @@ def main():
         raise SystemExit("invalid broker origin")
 
     try:
+        source = source_from_env()
         with httpx.Client(trust_env=False, timeout=30, follow_redirects=False) as client:
             identity = client.get(
                 os.environ["ACTIONS_ID_TOKEN_REQUEST_URL"],
@@ -65,7 +66,7 @@ def main():
                 # in the projection artifact rather than stale pre-read state.
                 ("health", "/v1/health"),
             ]
-            results = {"_meta": source_from_env()}
+            results = {"_meta": source}
             gmail_reads = []
             for stage, path in reads:
                 response = client.get(origin + path, headers=headers)
