@@ -21,6 +21,8 @@ on:
           - process-branch-task
           - process-branch-task-pr
           - nightshift-pilot
+          - nightshift-bounded
+          - nightshift-bounded-preflight
       max_events:
         description: Maximum events for process-loop
         required: false
@@ -226,6 +228,33 @@ jobs:
           DUFYND_JARVIS_BUDGET_ID: "jarvis_activation_pilot_001"
           DUFYND_JARVIS_ACTIVE: "1"
         run: python -m scripts.dufynd_jarvis_runtime --process-branch-task
+
+      - name: Run counted Nightshift with unique approved budget
+        if: inputs.mode == 'nightshift-bounded' || inputs.mode == 'nightshift-bounded-preflight'
+        env:
+          SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DUFYND_JARVIS_ACTIVE: "1"
+          DUFYND_JARVIS_AUTONOMOUS: "1"
+          COUNTED_PREFLIGHT: ${{ inputs.mode == 'nightshift-bounded-preflight' && '1' || '0' }}
+          COUNTED_START_TOKEN: ${{ inputs.approval_token }}
+          COUNTED_MAX_TASKS: ${{ inputs.nightshift_max_tasks }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          args=()
+          if [ "$COUNTED_PREFLIGHT" = "1" ]; then args+=(--preflight); fi
+          python -m scripts.dufynd_counted_nightshift "${args[@]}" --approval-token "$COUNTED_START_TOKEN" --max-tasks "$COUNTED_MAX_TASKS"
+
+      - name: Upload counted Nightshift report
+        if: (inputs.mode == 'nightshift-bounded' || inputs.mode == 'nightshift-bounded-preflight') && always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: dufynd-counted-nightshift-${{ github.run_id }}
+          path: jarvis-nightshift-report
+          if-no-files-found: error
+          retention-days: 14
 
       - name: Run Jarvis Nightshift pilot
         if: inputs.mode == 'nightshift-pilot'
