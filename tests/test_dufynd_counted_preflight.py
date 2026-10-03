@@ -169,9 +169,7 @@ def test_paid_start_without_budget_remains_blocked(setup, monkeypatch, tmp_path)
     assert not (tmp_path / "jarvis-nightshift-report/morning-report.json").exists()
 
 
-def test_paid_start_binds_runtime_model_to_verified_contract(
-    setup, monkeypatch, tmp_path
-):
+def test_paid_start_binds_runtime_model_to_verified_contract(setup, monkeypatch, tmp_path):
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(
         sys,
