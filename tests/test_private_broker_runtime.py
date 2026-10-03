@@ -12,7 +12,15 @@ import jwt
 import pytest
 from cryptography.hazmat.primitives.asymmetric import rsa
 from fastapi.testclient import TestClient
-from private_broker.runtime import ISSUER, OWNER_ID, WORKFLOW, Config, OAuth, WorkloadAuth, create_app
+from private_broker.runtime import (
+    ISSUER,
+    OWNER_ID,
+    WORKFLOW,
+    Config,
+    OAuth,
+    WorkloadAuth,
+    create_app,
+)
 from private_broker.store import EncryptedVault, FirestoreCAS
 from scripts.dufynd_observer_credentials import (
     GMAIL_SCOPE,
