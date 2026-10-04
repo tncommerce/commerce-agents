@@ -1,0 +1,247 @@
+{
+  "version": 1,
+  "generated_at": "2026-10-04T09:22:01Z",
+  "live_head": "47175d769e95e6f04e131ab79583faa5c3580a8b",
+  "purpose": "Business/Growth execution pack for the shortest safe path from content to attributable merchant clickout and verified revenue evidence.",
+  "guardrails": {
+    "user_value_first": true,
+    "affiliate_activation_must_be_explicit": true,
+    "no_unverified_partner_links": true,
+    "no_clickout_as_sale_claim": true,
+    "no_spend": true,
+    "publishing_requires_owner_approval": true
+  },
+  "revenue_ready_matrix": [
+    {
+      "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+      "product": "Rabanne 1 Million EDT 100 ml",
+      "class": "A",
+      "live": true,
+      "product_page_ready": true,
+      "visual_status": "approved_licensed_image",
+      "merchant_state": "current affiliate route exists; non-affiliate Müller route in repo is stale and must be rechecked before price-led claims",
+      "affiliate_evidence": "Perfumetrader Awin program approved; exact merchant product mapping and tracked deep link present",
+      "tracking_ready": true,
+      "conversion_signal": "4 tagged YouTube landing sessions -> 4 detail sessions -> 1 merchant clickout; early signal only",
+      "current_blocker": "No verified network transaction/commission evidence; current customer-best-price comparison must be refreshed before price-led content."
+    },
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "product": "Parfums de Marly Delina EDP 75 ml",
+      "class": "B",
+      "live": false,
+      "product_page_ready": false,
+      "visual_status": "approved_feed_image_with_rights_evidence",
+      "merchant_state": "fresh Notino purchase route present at preparation time",
+      "affiliate_evidence": "Notino CJ approved, exact product inside explicit live activation scope, tracked product deep link present",
+      "tracking_ready": true,
+      "conversion_signal": null,
+      "current_blocker": "Catalog launch contract currently blocks feed-image promotion into live product truth; do not bypass."
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "product": "YSL Libre EDP 90 ml",
+      "class": "B",
+      "live": false,
+      "product_page_ready": false,
+      "visual_status": "approved_feed_image_with_rights_evidence",
+      "merchant_state": "fresh Notino purchase route present at preparation time; competitor/coupon price requires user-value recheck before price-led content",
+      "affiliate_evidence": "Notino CJ approved, exact product inside explicit live activation scope, tracked product deep link present",
+      "tracking_ready": true,
+      "conversion_signal": null,
+      "current_blocker": "Catalog launch contract currently blocks feed-image promotion into live product truth; do not bypass."
+    },
+    {
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "product": "YSL Black Opium EDP 90 ml",
+      "class": "B",
+      "live": false,
+      "product_page_ready": false,
+      "visual_status": "approved_feed_image_with_rights_evidence",
+      "merchant_state": "fresh Notino affiliate route exists; current external competitor price evidence suggests a materially cheaper non-affiliate option must be refreshed in repo before revenue prioritization",
+      "affiliate_evidence": "Notino CJ approved, exact product inside explicit live activation scope, tracked product deep link present",
+      "tracking_ready": true,
+      "conversion_signal": null,
+      "current_blocker": "Not live; launch contract plus user-value price gap."
+    },
+    {
+      "product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
+      "product": "Lattafa Eclaire EDP 100 ml",
+      "class": "C",
+      "live": false,
+      "product_page_ready": false,
+      "visual_status": "approved_product_image_pending",
+      "merchant_state": "Notino affiliate route exists but repository offer is outside the 72h freshness gate at this snapshot",
+      "affiliate_evidence": "Notino CJ activation scope includes exact product",
+      "tracking_ready": true,
+      "conversion_signal": null,
+      "current_blocker": "Image plus fresh purchase evidence."
+    },
+    {
+      "product_id": "SC-XERJOFF-NAXOS-100",
+      "product": "Xerjoff Naxos 100 ml",
+      "class": "C",
+      "live": true,
+      "product_page_ready": true,
+      "visual_status": "live",
+      "merchant_state": "purchase offers exist",
+      "affiliate_evidence": "No verified Notino live activation for Naxos; PR #656 correctly rejected and closed",
+      "tracking_ready": true,
+      "conversion_signal": "detail views observed; no verified affiliate clickout path",
+      "current_blocker": "Affiliate activation evidence absent."
+    },
+    {
+      "product_id": null,
+      "product": "Rabanne 1 Million Black",
+      "class": "C",
+      "live": false,
+      "product_page_ready": false,
+      "visual_status": "not_onboarded",
+      "merchant_state": "not_onboarded",
+      "affiliate_evidence": "none in repository",
+      "tracking_ready": false,
+      "conversion_signal": null,
+      "current_blocker": "New 2026 product is not present in canonical/staging commerce data."
+    },
+    {
+      "product_id": null,
+      "product": "YSL Libre Berry Crush",
+      "class": "C",
+      "live": false,
+      "product_page_ready": false,
+      "visual_status": "not_onboarded",
+      "merchant_state": "not_onboarded",
+      "affiliate_evidence": "none in repository",
+      "tracking_ready": false,
+      "conversion_signal": null,
+      "current_blocker": "Product is not present in canonical/staging commerce data."
+    },
+    {
+      "product_id": null,
+      "product": "Prada Paradoxe Sweet Chemistry",
+      "class": "C",
+      "live": false,
+      "product_page_ready": false,
+      "visual_status": "not_onboarded",
+      "merchant_state": "not_onboarded",
+      "affiliate_evidence": "none in repository",
+      "tracking_ready": false,
+      "conversion_signal": null,
+      "current_blocker": "Product is not present in canonical/staging commerce data."
+    }
+  ],
+  "top_3_revenue_products": [
+    {
+      "rank": 1,
+      "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+      "product": "Rabanne 1 Million EDT 100 ml",
+      "state": "EXECUTE_NOW",
+      "reason": "Only current candidate with live product page, verified partner route and real tagged content-to-clickout evidence."
+    },
+    {
+      "rank": 2,
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "product": "Parfums de Marly Delina EDP 75 ml",
+      "state": "ACTIVATE_AFTER_CATALOG_GATE",
+      "reason": "Affiliate route and visual evidence are ready; equal-price merchant evidence makes monetization compatible with user value."
+    },
+    {
+      "rank": 3,
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "product": "YSL Libre EDP 90 ml",
+      "state": "ACTIVATE_AFTER_CATALOG_GATE_AND_PRICE_RECHECK",
+      "reason": "Strong mainstream/content fit and approved affiliate scope, but launch contract and current competitor/coupon pricing require resolution."
+    }
+  ],
+  "content_to_product_plan": [
+    {
+      "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+      "content_id": "one_million_outdated_2026_02",
+      "campaign_id": "rev_1m_outdated_20261004",
+      "hook": "1 Million 2026: outdated – oder immer noch ein Komplimente-Magnet?",
+      "format": "fast opinion/reaction short with one clear verdict and a comment split",
+      "cta": "Duftprofil und aktuelle Kaufoptionen bei DUFYND prüfen.",
+      "landing_path": "/duft/rabanne-1-million",
+      "publish_state": "READY_FOR_OWNER_CONTENT_REVIEW",
+      "links": {
+        "tiktok": "https://dufynd.de/duft/rabanne-1-million?src=tiktok&cmp=rev_1m_outdated_20261004&content=one_million_outdated_2026_02",
+        "instagram": "https://dufynd.de/duft/rabanne-1-million?src=instagram&cmp=rev_1m_outdated_20261004&content=one_million_outdated_2026_02",
+        "youtube": "https://dufynd.de/duft/rabanne-1-million?src=youtube&cmp=rev_1m_outdated_20261004&content=one_million_outdated_2026_02"
+      },
+      "price_claim_allowed": false
+    },
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "content_id": "delina_worth_the_hype_01",
+      "campaign_id": "rev_delina_hype_20261004",
+      "hook": "285 € für einen Duft – was muss Delina dafür wirklich liefern?",
+      "format": "value-versus-hype short; sensory and occasion framing before any commerce mention",
+      "cta": "Bei DUFYND erst Profil und Händler vergleichen, dann entscheiden.",
+      "landing_path": null,
+      "publish_state": "BLOCKED_UNTIL_PRODUCT_LIVE",
+      "links": {},
+      "price_claim_allowed": false
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "content_id": "libre_safe_or_signature_01",
+      "campaign_id": "rev_libre_signature_20261004",
+      "hook": "Ist YSL Libre ein sicherer Crowd-Pleaser – oder schon zu bekannt?",
+      "format": "identity/occasion short with broad comment prompt",
+      "cta": "DUFYND zeigt Profil, Alternativen und aktuelle Kaufoptionen.",
+      "landing_path": null,
+      "publish_state": "BLOCKED_UNTIL_PRODUCT_LIVE_AND_PRICE_RECHECK",
+      "links": {},
+      "price_claim_allowed": false
+    }
+  ],
+  "attribution_contract": {
+    "allowed_sources": [
+      "tiktok",
+      "instagram",
+      "youtube"
+    ],
+    "query_params": {
+      "source": "src",
+      "campaign_id": "cmp",
+      "content_id": "content"
+    },
+    "expected_event_chain": [
+      "page_view",
+      "fragrance_detail_view",
+      "offer_section_view_or_open",
+      "merchant_clickout"
+    ],
+    "sale_event_available": false,
+    "verified_network_transaction_ingestion_available": false,
+    "rule": "Merchant clickout is the current measurable endpoint; sale, order value and commission stay null until network evidence exists."
+  },
+  "quick_cro": [
+    {
+      "priority": 1,
+      "scope": "SC-RABANNE-1-MILLION-EDT-100 mobile merchant CTA only",
+      "hypothesis": "A >=44px touch target reduces missed taps.",
+      "state": "TECH_HANDOFF_ALREADY_PREPARED",
+      "no_copy_or_offer_change": true
+    },
+    {
+      "priority": 2,
+      "scope": "price clarity",
+      "hypothesis": "Show current item + shipping total and freshness without hiding cheaper non-affiliate routes.",
+      "state": "BUSINESS_REQUIREMENT",
+      "no_copy_or_offer_change": false
+    },
+    {
+      "priority": 3,
+      "scope": "social landing",
+      "hypothesis": "Direct product landing with src/cmp/content reduces attribution loss versus generic profile/home links.",
+      "state": "EXECUTE_ON_NEXT_APPROVED_POST",
+      "no_copy_or_offer_change": false
+    }
+  ],
+  "external_partner_gates": [
+    "Awin transaction/commission export or connected read source for verified sale/revenue reconciliation.",
+    "Catalog launch contract reconciliation for approved feed images before Delina/Libre/Black Opium can become live without weakening product-truth rules.",
+    "Exact affiliate activation evidence for any new product outside the current Notino activation scope."
+  ]
+}
