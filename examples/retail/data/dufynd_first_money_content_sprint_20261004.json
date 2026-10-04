@@ -1,0 +1,262 @@
+{
+  "version": 1,
+  "generated_at": "2026-10-04",
+  "sprint": "FIRST_MONEY_SPRINT",
+  "state": "PREPARED_NOT_PUBLISHED",
+  "objective": "Generate broad reach, attributable DUFYND traffic and measurable merchant clickouts without paid production.",
+  "live_base_sha": "d85fc5f2cefbe032a30cc53ced7bf6e39c169268",
+  "constraints": {
+    "paid_tools": false,
+    "higgsfield": false,
+    "new_credits": false,
+    "publishing_authorized": false,
+    "delina_publish_allowed": false,
+    "libre_publish_allowed": false,
+    "duplicate_one_million_short": false,
+    "price_led_claims_allowed": false
+  },
+  "measurement_contract": {
+    "primary_metrics": [
+      "views",
+      "three_second_retention",
+      "completion_rate",
+      "shares_or_sends",
+      "comments",
+      "profile_visits",
+      "dufynd_sessions",
+      "product_views",
+      "merchant_clickouts"
+    ],
+    "later_metrics": [
+      "network_transactions",
+      "commission_eur",
+      "revenue_per_content_piece_eur"
+    ],
+    "attribution_params": {
+      "source": "src",
+      "experiment_id": "cmp",
+      "content_id": "content"
+    },
+    "rule": "Merchant clickouts are not sales. Transactions, commission and revenue remain null until verified network evidence exists."
+  },
+  "selection_logic": {
+    "principle": "Reach x purchase intent x zero-spend executability",
+    "external_signal_note": "2026 TikTok trend reporting explicitly maps perfume discovery into contexts such as date night and first-date preparation; current fragrance community discussion also shows recurring engagement around blind buys and gifting.",
+    "ranked_next_three": [
+      "one_million_still_hits_20261004_01",
+      "gift_for_him_no_safe_blindbuy_20261004_01",
+      "date_night_pick_by_vibe_20261004_01"
+    ]
+  },
+  "content": [
+    {
+      "rank": 1,
+      "content_id": "one_million_still_hits_20261004_01",
+      "experiment_id": "fms_1m_still_hits_20261004",
+      "hypothesis": "A polarizing but broadly understandable 'outdated vs still works' question creates more comments and qualified product curiosity than another feature-led 1 Million post, while the direct product landing converts that curiosity into measurable product views and merchant clickouts.",
+      "hook": "1 Million 2026: ausgelutscht – oder immer noch ein Komplimente-Magnet?",
+      "format": "15-20s fast opinion/reaction short plus optional 4-slide photo-mode cut; new edit, not a repost of one_million_example61_01",
+      "platforms": [
+        "TikTok",
+        "Instagram Reels",
+        "YouTube Shorts"
+      ],
+      "target_product": {
+        "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+        "landing_path": "/duft/rabanne-1-million"
+      },
+      "zero_spend_assets": [
+        "examples/retail/storefront-web/public/products/rabanne-1-million-edt-100-user-contentmaster.webp",
+        "existing DUFYND typography/endcard treatment",
+        "existing product profile facts only"
+      ],
+      "execution": {
+        "beat_1": "0-2s: bottle + hook full screen",
+        "beat_2": "2-7s: 'JA: bekannt, süß, sofort erkennbar' / quick visual punch",
+        "beat_3": "7-13s: 'ABER: Bekannt heißt nicht automatisch schlecht' / occasion framing",
+        "beat_4": "13-17s: verdict: 'Wenn du auffallen willst: diskutabel. Wenn du genau diesen DNA willst: immer noch relevant.'",
+        "beat_5": "17-20s: comment split + DUFYND CTA"
+      },
+      "cta": "Team 'immer noch stark' oder Team 'vorbei'? Duftprofil + aktuelle Kaufoptionen bei DUFYND prüfen.",
+      "tracked_links": {
+        "tiktok": "https://dufynd.de/duft/rabanne-1-million?src=tiktok&cmp=fms_1m_still_hits_20261004&content=one_million_still_hits_20261004_01",
+        "instagram": "https://dufynd.de/duft/rabanne-1-million?src=instagram&cmp=fms_1m_still_hits_20261004&content=one_million_still_hits_20261004_01",
+        "youtube": "https://dufynd.de/duft/rabanne-1-million?src=youtube&cmp=fms_1m_still_hits_20261004&content=one_million_still_hits_20261004_01"
+      },
+      "measurement": {
+        "content_metrics": [
+          "views",
+          "three_second_retention",
+          "completion_rate",
+          "shares_or_sends",
+          "comments",
+          "profile_visits"
+        ],
+        "funnel_metrics": [
+          "dufynd_sessions",
+          "product_views",
+          "merchant_clickouts"
+        ],
+        "primary_success_signal": "attributable merchant clickouts without sacrificing retention"
+      },
+      "decision": {
+        "KEEP": "After a clean measurement window: three_second_retention >= 0.70 AND completion_rate >= 0.30, OR at least 1 attributable merchant clickout from >= 10 tagged DUFYND sessions.",
+        "ITERATE": "three_second_retention >= 0.55 but completion_rate < 0.30, or comments are strong but tagged DUFYND sessions are weak; change only opening 2s or CTA/landing placement.",
+        "KILL": "After 2 hook variants: three_second_retention < 0.55 AND completion_rate < 0.20 AND 0 tagged DUFYND sessions."
+      },
+      "owner_gate": "PUBLISH_ONLY"
+    },
+    {
+      "rank": 2,
+      "content_id": "gift_for_him_no_safe_blindbuy_20261004_01",
+      "experiment_id": "fms_q4_gift_him_20261004",
+      "hypothesis": "Framing the gift problem as 'there is no universally safe perfume' creates stronger sends/shares and gift-advisor intent than a generic Top-3 gift list because it solves a common Q4 anxiety instead of pretending one bottle fits everyone.",
+      "hook": "Der größte Fehler beim Parfum-Verschenken? Nach dem 'sichersten Duft' zu fragen.",
+      "format": "20-25s carousel/photo-mode or short assembled from existing gift_for_him_safe_to_bold_01 scene assets; no new generation",
+      "platforms": [
+        "TikTok Photo Mode or short",
+        "Instagram Carousel or Reel",
+        "YouTube Short from existing scene stack"
+      ],
+      "target_product": {
+        "product_id": null,
+        "landing_path": "/parfum-geschenkberater",
+        "commerce_role": "high-intent Q4 traffic capture; product recommendation remains user-value-led"
+      },
+      "zero_spend_assets": [
+        "examples/retail/storefront-web/public/social/pilots/batch03/gift_for_him_safe_to_bold_01/scene-01.jpg",
+        "examples/retail/storefront-web/public/social/pilots/batch03/gift_for_him_safe_to_bold_01/scene-02.jpg",
+        "examples/retail/storefront-web/public/social/pilots/batch03/gift_for_him_safe_to_bold_01/scene-03.jpg",
+        "examples/retail/storefront-web/public/social/pilots/batch03/gift_for_him_safe_to_bold_01/scene-04.jpg",
+        "examples/retail/storefront-web/public/social/pilots/batch03/gift_for_him_safe_to_bold_01/scene-05.jpg",
+        "examples/retail/storefront-web/public/social/pilots/batch03/gift_for_him_safe_to_bold_01-preview.mp4"
+      ],
+      "execution": {
+        "beat_1": "0-2s: 'DEN sicheren Duft gibt es nicht.'",
+        "beat_2": "2-7s: 'Kennst du seinen Stil? frisch/clean → Richtung 1'",
+        "beat_3": "7-12s: 'pudrig/ruhig → Richtung 2'",
+        "beat_4": "12-17s: 'süß/warm/auffällig → Richtung 3'",
+        "beat_5": "17-22s: 'Nicht raten. Stil auswählen.'",
+        "beat_6": "22-25s: gift-advisor CTA"
+      },
+      "cta": "Sag DUFYND, für wen du suchst – Geschenkstil statt Blind-Buy-Roulette.",
+      "tracked_links": {
+        "tiktok": "https://dufynd.de/parfum-geschenkberater?src=tiktok&cmp=fms_q4_gift_him_20261004&content=gift_for_him_no_safe_blindbuy_20261004_01",
+        "instagram": "https://dufynd.de/parfum-geschenkberater?src=instagram&cmp=fms_q4_gift_him_20261004&content=gift_for_him_no_safe_blindbuy_20261004_01",
+        "youtube": "https://dufynd.de/parfum-geschenkberater?src=youtube&cmp=fms_q4_gift_him_20261004&content=gift_for_him_no_safe_blindbuy_20261004_01"
+      },
+      "measurement": {
+        "content_metrics": [
+          "views",
+          "three_second_retention",
+          "completion_rate",
+          "shares_or_sends",
+          "comments",
+          "profile_visits"
+        ],
+        "funnel_metrics": [
+          "dufynd_sessions",
+          "gift_advisor_starts_if_available",
+          "product_views",
+          "merchant_clickouts"
+        ],
+        "primary_success_signal": "shares_or_sends plus tagged gift-advisor sessions"
+      },
+      "decision": {
+        "KEEP": "shares_or_sends rate >= 0.015 OR >= 10 tagged DUFYND sessions with downstream product views; keep theme and test 'für sie' or budget variant next.",
+        "ITERATE": "retention is healthy but shares/sends are weak; tighten problem statement and make the 3 style choices more instantly recognizable.",
+        "KILL": "After 2 hook variants: three_second_retention < 0.55 AND shares_or_sends rate < 0.005 AND < 5 tagged DUFYND sessions."
+      },
+      "owner_gate": "PUBLISH_ONLY"
+    },
+    {
+      "rank": 3,
+      "content_id": "date_night_pick_by_vibe_20261004_01",
+      "experiment_id": "fms_date_vibe_20261004",
+      "hypothesis": "A simple 'pick 1/2/3 by vibe' mechanic combines broad date-night relatability with a low-friction comment prompt and sends high-intent users into the fragrance finder.",
+      "hook": "Date Night: Welchen Typ willst du ausstrahlen – 1, 2 oder 3?",
+      "format": "18-24s choice short using existing top3_date_01 scenes; text-first, optional operator voiceover",
+      "platforms": [
+        "TikTok",
+        "Instagram Reels",
+        "YouTube Shorts"
+      ],
+      "target_product": {
+        "product_id": null,
+        "landing_path": "/duftfinder",
+        "commerce_role": "occasion-led discovery traffic that can resolve into eligible live product pages and merchant offers"
+      },
+      "zero_spend_assets": [
+        "examples/retail/storefront-web/public/social/pilots/batch02/top3_date_01/scene-01.jpg",
+        "examples/retail/storefront-web/public/social/pilots/batch02/top3_date_01/scene-02.jpg",
+        "examples/retail/storefront-web/public/social/pilots/batch02/top3_date_01/scene-03.jpg",
+        "examples/retail/storefront-web/public/social/pilots/batch02/top3_date_01/scene-04.jpg",
+        "examples/retail/storefront-web/public/social/pilots/batch02/top3_date_01/scene-05.jpg",
+        "examples/retail/storefront-web/public/social/pilots/batch02/top3_date_01-preview.mp4"
+      ],
+      "execution": {
+        "beat_1": "0-2s: 'DATE NIGHT: 1, 2 ODER 3?'",
+        "beat_2": "2-7s: '1 · warm/süß/nahbar'",
+        "beat_3": "7-12s: '2 · elegant/dunkel/pudrig'",
+        "beat_4": "12-17s: '3 · süß, aber frischer/verspielter'",
+        "beat_5": "17-21s: 'Kommentiere 1/2/3'",
+        "beat_6": "21-24s: DUFYND finder CTA"
+      },
+      "cta": "1, 2 oder 3? Deinen Date-Night-Stil bei DUFYND finden.",
+      "tracked_links": {
+        "tiktok": "https://dufynd.de/duftfinder?src=tiktok&cmp=fms_date_vibe_20261004&content=date_night_pick_by_vibe_20261004_01",
+        "instagram": "https://dufynd.de/duftfinder?src=instagram&cmp=fms_date_vibe_20261004&content=date_night_pick_by_vibe_20261004_01",
+        "youtube": "https://dufynd.de/duftfinder?src=youtube&cmp=fms_date_vibe_20261004&content=date_night_pick_by_vibe_20261004_01"
+      },
+      "measurement": {
+        "content_metrics": [
+          "views",
+          "three_second_retention",
+          "completion_rate",
+          "shares_or_sends",
+          "comments",
+          "profile_visits"
+        ],
+        "funnel_metrics": [
+          "dufynd_sessions",
+          "advisor_starts_if_available",
+          "product_views",
+          "merchant_clickouts"
+        ],
+        "primary_success_signal": "comments plus tagged advisor sessions"
+      },
+      "decision": {
+        "KEEP": "comment rate >= 0.015 OR completion_rate >= 0.35, plus >= 8 tagged DUFYND sessions; expand into winter/date-night follow-up.",
+        "ITERATE": "comments are strong but sessions weak; make CTA earlier and more concrete. Sessions are strong but retention weak; shorten to 15-18s.",
+        "KILL": "After 2 hook variants: completion_rate < 0.20 AND comment rate < 0.005 AND < 5 tagged DUFYND sessions."
+      },
+      "owner_gate": "PUBLISH_ONLY"
+    }
+  ],
+  "held_back": [
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "reason": "Do not publish until explicit Owner Delina live approval and live verification."
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "reason": "Not live; do not publish product-led content yet."
+    },
+    {
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "reason": "Later priority."
+    }
+  ],
+  "next_cluster_after_results": [
+    "gift_for_her",
+    "gift_under_50_100_150",
+    "winter_crowd_pleaser",
+    "compliments",
+    "safe_gift_vs_signature"
+  ],
+  "publish_gate": {
+    "required": true,
+    "owner_action": "Explicit publish approval for each new post or approved batch.",
+    "no_other_owner_gate_for_preparation": true
+  }
+}
