@@ -185,6 +185,7 @@ const coreRoutes = [
     route: "/vergleich/afnan-perfumes-turathi-blue-vs-bvlgari-le-gemme-tygar",
     marker: "DUFYND · Duftvergleich",
   },
+  { name: "delina", route: "/duft/parfums-de-marly-delina", marker: "Delina" },
   { name: "naxos", route: "/duft/xerjoff-naxos", marker: "Naxos" },
   { name: "absolu-aventus", route: "/duft/creed-absolu-aventus", marker: "Absolu Aventus" },
   { name: "prada-lhomme", route: "/duft/prada-lhomme", marker: "L'Homme" },
