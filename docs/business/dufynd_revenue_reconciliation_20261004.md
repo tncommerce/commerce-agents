@@ -33,7 +33,9 @@ An older DUFYND rebrand runbook refers to publisher ID `309922`. That disagreeme
 
 ## Preferred Awin read path
 
-Awin's publisher transaction API supports `GET /publishers/{publisherId}/transactions/` for publisher transaction reporting. It requires an OAuth2 bearer access token plus a date range and can return transaction status and publisher/advertiser exchange data such as clickref/order reference.
+For the **lowest-friction first reconciliation**, use Awin Classic → `Reports > Performance > Transactions`, select the exact test date window and export CSV/Excel. Awin documents that this report contains transactions of all statuses and supports filtering plus export. This requires no DUFYND code change and is therefore the preferred first proof-of-revenue check.
+
+For repeatable automation after the first manual proof, Awin's publisher transaction API supports `GET /publishers/{publisherId}/transactions/` for publisher transaction reporting. It requires an OAuth2 bearer access token, a maximum 31-day date range, and can return transaction status plus publisher/advertiser exchange data such as clickref/order reference.
 
 Minimum first read after secure connection:
 
@@ -48,7 +50,9 @@ The existing repo secret `AWIN_DATA_FEED_API_KEY` is documented for Awin product
 
 The connected Windsor environment supports `awin` and `cj` connectors, but neither currently has an account attached.
 
-Awin Windsor connection requires:
+The Windsor Awin form currently asks for an `api_key` plus an `advertiser_id`. Because DUFYND needs **publisher-side** transaction evidence and no connected Awin schema is available yet, this is an **unproven fallback**, not the preferred 1 Million path. Do not assume it exposes the publisher Transactions report until connection + field discovery proves that.
+
+Awin Windsor connection fields:
 - `api_key` — sensitive; enter only in Windsor's secure connection form
 - `advertiser_id`
 
@@ -105,7 +109,7 @@ Always label the commission state used in revenue KPIs.
 
 ## Minimal owner action
 
-For Awin, the minimum owner action is to confirm the authoritative publisher/account ID and securely connect an Awin API credential. The token/API key must be entered in the provider's secure form, never pasted into chat.
+For Awin, the minimum owner action is **either** (A) log into Awin Classic, open `Reports > Performance > Transactions`, use the date window beginning 2026-10-03, and export the report; **or**, for automation, (B) confirm the authoritative publisher/account ID and securely provide an OAuth2 API access token through a secure integration form. Never paste the token into chat.
 
 For Windsor, use the existing Windsor connection form for `awin`; after the account appears as connected, Business can immediately discover fields and pull the first real transaction report. No new subscription is required by this specification; if Windsor itself asks for a paid upgrade, stop rather than incur spend.
 
