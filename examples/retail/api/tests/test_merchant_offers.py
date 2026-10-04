@@ -135,14 +135,7 @@ def test_awin_clickout_replaces_static_clickref_with_attribution_dimensions() ->
 
     target = offer_clickout_target(
         candidate,
-        clickrefs=[
-            "content_01",
-            "campaign_01",
-            "instagram",
-            "session-1234567890",
-            "SC-TEST-100",
-            "awin-attributed",
-        ],
+        clickrefs=["content_01", "campaign_01", "instagram", "session-1234567890"],
     )
 
     assert target is not None
