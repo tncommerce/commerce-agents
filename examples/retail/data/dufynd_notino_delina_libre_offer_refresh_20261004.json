@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "observed_at": "2026-10-04T09:44:49Z",
+  "merchant": "Notino",
+  "merchant_id": "notino",
+  "network": "CJ Affiliate",
+  "observation_method": "current_public_merchant_catalog_read_only_web",
+  "products": [
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "merchant_product_id": "PDM0227",
+      "exact_variant": "Parfums de Marly Delina Eau de Parfum 75 ml",
+      "price_eur": 285,
+      "shipping_cost_eur": 0,
+      "availability_observed": true,
+      "current_public_evidence_url": "https://www.notino.de/parfums-de-marly-bestsellers/",
+      "affiliate_activation_ref": "examples/retail/data/dufynd_notino_delina_black_opium_live_routing_20261001.json",
+      "note": "Current Notino bestseller page lists Delina Eau de Parfum 75 ml at 285 EUR with free shipping. This refresh changes offer freshness only; it does not authorize catalog publication or image rights."
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "merchant_product_id": "VZR11010",
+      "exact_variant": "Yves Saint Laurent Libre Eau de Parfum nachfüllbar 90 ml",
+      "price_eur": 119,
+      "shipping_cost_eur": 0,
+      "availability_observed": true,
+      "current_public_evidence_url": "https://www.notino.de/nachfuellbare-parfuems/",
+      "affiliate_activation_ref": "examples/retail/data/dufynd_notino_ysl_libre_live_routing_20261001.json",
+      "note": "Current Notino refillable-fragrance listing shows Libre Eau de Parfum refillable 90 ml at 119 EUR with free shipping. This refresh changes offer freshness only; it does not authorize catalog publication or image rights."
+    }
+  ],
+  "safeguards": {
+    "exact_variant_mapping_unchanged": true,
+    "tracked_deep_links_unchanged": true,
+    "affiliate_scope_unchanged": true,
+    "catalog_publication_authorized": false,
+    "image_rights_changed": false,
+    "no_commission_ranking_change": true
+  }
+}

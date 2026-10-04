@@ -1,0 +1,267 @@
+{
+  "version": 1,
+  "generated_at": "2026-10-04T09:44:49Z",
+  "base_head": "ec61c7161a6604ade405cb178e33e188493ffbd2",
+  "scope": "business_growth_monetization_only",
+  "state": "READY_FOR_OWNER_PUBLISH_DECISION",
+  "spend_eur": 0,
+  "product": {
+    "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+    "brand": "Rabanne",
+    "name": "1 Million",
+    "concentration": "Eau de Toilette",
+    "volume_ml": 100,
+    "landing_path": "/duft/rabanne-1-million",
+    "visual_asset": "/products/rabanne-1-million-edt-100-user-contentmaster.webp",
+    "visual_reuse_only": true,
+    "no_paid_generation": true
+  },
+  "publish_package": {
+    "content_id": "one_million_outdated_2026_02",
+    "campaign_id": "rev_1m_outdated_20261004",
+    "objective": "broad_reach_comment_split_plus_natural_commerce_bridge",
+    "duration_target_seconds": "9-11",
+    "hook": "1 MILLION 2026: OUTDATED?",
+    "spoken_script": "1 Million ist bewusst süß, würzig und laut. Für die einen komplett outdated. Für die anderen genau deshalb immer noch ein Komplimente-Magnet. Team outdated oder Team icon?",
+    "on_screen_timeline": [
+      {
+        "time": "0.0-1.2",
+        "copy": "1 MILLION 2026: OUTDATED?"
+      },
+      {
+        "time": "1.2-3.0",
+        "copy": "SÜSS. WÜRZIG. LAUT."
+      },
+      {
+        "time": "3.0-5.8",
+        "copy": "ODER GENAU DESHALB NOCH EIN KOMPLIMENTE-MAGNET?"
+      },
+      {
+        "time": "5.8-8.0",
+        "copy": "TEAM OUTDATED / TEAM ICON?"
+      },
+      {
+        "time": "8.0-10.5",
+        "copy": "DUFTPROFIL + KAUFOPTIONEN → DUFYND"
+      }
+    ],
+    "creative_direction": {
+      "asset_policy": "Reuse the existing approved 1 Million master/product-scene asset. No new image/video generation.",
+      "pacing": "Immediate bottle/brand recognition, fast kinetic typography, one visual idea per beat.",
+      "motion": "Crop/zoom/text motion only; preserve exact bottle identity.",
+      "audio": "Use only platform-cleared/native audio or an already-cleared owned track; audio rights must be rechecked at final upload.",
+      "price_overlay": false,
+      "merchant_overlay": false
+    },
+    "primary_engagement_cta": "Team outdated oder Team icon?",
+    "secondary_commerce_cta": "Duftprofil + aktuelle Kaufoptionen bei DUFYND prüfen.",
+    "captions": {
+      "tiktok": "1 Million 2026: komplett outdated – oder genau deshalb immer noch stark? 🥇 Team OUTDATED oder TEAM ICON? Duftprofil + aktuelle Kaufoptionen über den Link im Profil. #rabanne #onemillion #parfum #fragrance #mensfragrance",
+      "instagram": "1 Million 2026: outdated – oder immer noch ein Statement? 🥇 Süß, würzig, laut: genau das spaltet. Team OUTDATED oder TEAM ICON? Duftprofil + aktuelle Kaufoptionen → Link in Bio. #rabanne #onemillion #parfum #fragrance #mensfragrance",
+      "youtube_title": "1 Million 2026: OUTDATED oder immer noch ICON? 🥇 #shorts",
+      "youtube_description": "Süß, würzig, laut – genau deshalb spaltet Rabanne 1 Million bis heute. Team OUTDATED oder TEAM ICON? Duftprofil + aktuelle Kaufoptionen findest du über den Link im Kanalprofil. #rabanne #onemillion #fragrance"
+    },
+    "attribution_links": {
+      "tiktok": "https://dufynd.de/duft/rabanne-1-million?src=tiktok&cmp=rev_1m_outdated_20261004&content=one_million_outdated_2026_02",
+      "instagram": "https://dufynd.de/duft/rabanne-1-million?src=instagram&cmp=rev_1m_outdated_20261004&content=one_million_outdated_2026_02",
+      "youtube": "https://dufynd.de/duft/rabanne-1-million?src=youtube&cmp=rev_1m_outdated_20261004&content=one_million_outdated_2026_02"
+    },
+    "platform_link_plan": {
+      "instagram": {
+        "current_observed_profile_website": "https://dufynd.de/duft/rabanne-1-million",
+        "current_observed_state": "product_direct_but_untagged",
+        "required_for_test": "Owner changes the profile website to the Instagram-specific tracked URL immediately before the test window, then restores/updates it deliberately afterward.",
+        "attribution_limit": "Profile link is shared across posts; tagged DUFYND sessions are source/campaign/content labeled but cannot prove which Instagram post caused every profile click."
+      },
+      "tiktok": {
+        "current_profile_destination": "NOT_RETURNED_BY_CONNECTED_ANALYTICS",
+        "required_for_test": "Owner verifies the website link exists and sets it to the TikTok-specific tracked URL before publishing.",
+        "attribution_limit": "Profile link is shared across posts; platform video_website_clicks may help but null is not zero and first-party sessions remain the source of truth for DUFYND traffic."
+      },
+      "youtube": {
+        "current_profile_destination": "NOT_RETURNED_BY_CONNECTED_ANALYTICS",
+        "required_for_test": "Use the YouTube channel profile link for the tracked URL. A normal URL in a Shorts description is not clickable.",
+        "attribution_limit": "Channel profile link is shared across Shorts; do not describe attributed profile traffic as exact per-video causality without a dedicated click surface."
+      }
+    },
+    "pre_publish_checks": [
+      "Exact product is Rabanne 1 Million Eau de Toilette 100 ml; no Parfum/Elixir/50 ml substitution.",
+      "Existing approved product visual/master is used without identity-changing edits.",
+      "Perfumetrader exact 100 ml current price/stock evidence is still within the 72-hour offer freshness window at publish time.",
+      "Existing Awin affiliate route still points to advertiser 11672, exact merchant product 16978322, and clickref one_million_example61_01.",
+      "No cheapest/best-price claim; recheck current comparable non-affiliate offers before any future price claim.",
+      "All src/cmp/content identifiers are unchanged and within the storefront allowlist/identifier contract.",
+      "Platform link destination is the platform-specific tracked DUFYND product URL, not a generic homepage.",
+      "Caption contains no unsupported performance, sales or price claim.",
+      "Audio is cleared on the actual target platform at upload time.",
+      "Mobile preview: hook readable in first second; subtitles safe-area checked; no text hidden by UI.",
+      "Owner gives explicit publish approval for the frozen asset/copy/link package."
+    ],
+    "post_publish_qa": [
+      "Record platform content ID and public URL.",
+      "Confirm published caption/title matches approved package.",
+      "Open the actual profile/channel link in a clean session and confirm src/cmp/content survive the DUFYND landing.",
+      "Confirm fragrance_detail_view is recorded for SC-RABANNE-1-MILLION-EDT-100.",
+      "Confirm offer_section_view/open can be recorded without synthetic merchant clickout.",
+      "Do not generate artificial merchant clickouts or purchases.",
+      "After real traffic arrives, reconcile platform views with attributed DUFYND sessions.",
+      "Keep clickout, network transaction and commission as separate funnel stages."
+    ]
+  },
+  "current_business_evidence": {
+    "prior_creative": {
+      "content_id": "one_million_example61_01",
+      "angle": "Iconic or Overrated?",
+      "instagram": {
+        "views": 177,
+        "reach": 147,
+        "likes": 2,
+        "comments": 0,
+        "shares": 0,
+        "saves": 0,
+        "avg_watch_time_ms": 3467,
+        "skip_rate": 0.667
+      },
+      "tiktok": {
+        "views": 232,
+        "reach": 221,
+        "likes": 2,
+        "comments": 0,
+        "shares": 0,
+        "website_clicks": null,
+        "duration_seconds": 7.057
+      },
+      "youtube": {
+        "views": 539,
+        "engaged_views": 119,
+        "likes": 1,
+        "comments": 0,
+        "shares": 0,
+        "average_view_percentage": 116.5096
+      },
+      "learning": "Looping/view completion was stronger on YouTube than active interaction. P1 keeps the recognizable product but replaces the generic iconic/overrated binary with a more specific 2026 social-identity tension and explicit comment choice."
+    },
+    "first_party_funnel": {
+      "acquisition_source": "youtube",
+      "campaign_id": "yt_1million_v8DlVXi-Fj8_p1",
+      "content_id": "one_million_example61_01",
+      "landing_sessions": 4,
+      "product_detail_sessions": 4,
+      "offer_section_view_sessions": 3,
+      "offer_section_open_sessions": 1,
+      "merchant_clickout_sessions": 1,
+      "landing_to_clickout_pct": 25,
+      "interpretation": "early_signal_only_n4_not_sale"
+    },
+    "current_offer": {
+      "merchant": "Perfumetrader",
+      "merchant_product_id": "16978322",
+      "item_price_eur": 71.9,
+      "shipping_eur": 4.99,
+      "total_eur": 76.89,
+      "in_stock": true,
+      "affiliate_network": "Awin",
+      "clickref": "one_million_example61_01",
+      "best_price_claim_allowed": false,
+      "public_market_evidence_refreshed_at": "2026-10-04T09:44:49Z",
+      "canonical_offer_last_updated_at": "2026-10-02T13:03:47Z",
+      "canonical_offer_mutated_by_p1": false,
+      "note": "Fresh public price/stock evidence is retained separately. Business P1 intentionally does not mutate canonical merchant_offers because that changes Jarvis-derived state fingerprints; the existing 1 Million canonical offer remains inside its 72h gate at this P1 snapshot."
+    }
+  },
+  "success_metrics": {
+    "content_views": "Platform-native views for the exact published content ID. Never deduplicate across platforms.",
+    "link_ctr": "For profile-link platforms, report tracked DUFYND landing sessions / content views as a profile-to-site transfer proxy, not a strict per-post click CTR. If a platform supplies an exact website-click metric, report it separately.",
+    "dufynd_sessions": "Unique first-party session_key values carrying the exact source, campaign_id and content_id.",
+    "product_detail_views": "Unique attributed sessions with fragrance_detail_view for SC-RABANNE-1-MILLION-EDT-100.",
+    "offer_opens": "Unique attributed sessions with offer_section_open; report offer_section_view separately as exposure.",
+    "merchant_clickouts": "Unique attributed sessions with merchant_clickout after product/offer engagement.",
+    "clickout_rate": "merchant_clickout_sessions / qualified attributed product_detail_sessions. Also report landing_to_clickout separately.",
+    "network_transactions": "Unique Awin transaction IDs matched to the DUFYND clickref where network evidence exists; retain pending/approved/declined status.",
+    "commission": "Network-reported commission, deduplicated by transaction ID and latest amendment/validation state. Pending, approved and paid/settled amounts remain separate.",
+    "revenue_per_1000_qualified_visits": "approved_or_paid_commission_eur / qualified_product_detail_sessions * 1000, using one declared commission state consistently.",
+    "revenue_per_content_piece": "approved_or_paid commission matched to the content clickref/campaign evidence. Never substitute merchant clickouts.",
+    "forbidden_interpretation": "Merchant clickout is not a sale."
+  },
+  "quick_cro": [
+    {
+      "priority": 1,
+      "item": "Mobile merchant CTA",
+      "current_state": "CTA uses py-2.5 without an explicit min-height contract; prior 390px browser measurement was ~39.5px.",
+      "requirement": "TECH: for SC-RABANNE-1-MILLION-EDT-100 merchant offer CTA ready and preparing states, enforce min-height >=44px and centered content below 640px. Do not alter copy, offer ranking, destination or tracking.",
+      "measurement": "qualified merchant clickout sessions / attributed product detail sessions before vs after in fixed windows; descriptive unless randomized."
+    },
+    {
+      "priority": 2,
+      "item": "Price and shipping clarity",
+      "current_state": "FragranceOffers already shows total price when calculable, shipping labels, freshness timestamp and affiliate disclosure.",
+      "requirement": "Do not add marketing copy. Keep total-price-first ordering and never hide a fresher cheaper non-affiliate option. Stale offers must stay excluded rather than shown as current.",
+      "measurement": "offer_section_view -> merchant_clickout rate."
+    },
+    {
+      "priority": 3,
+      "item": "Social landing",
+      "current_state": "Direct product path already supports src/cmp/content session attribution.",
+      "requirement": "Use platform-specific tracked product URL as the profile/channel destination during the approved test window; do not route to homepage or generic finder.",
+      "measurement": "tracked DUFYND sessions / platform views, with shared-profile-link causality caveat."
+    }
+  ],
+  "revenue_reconciliation": {
+    "current_endpoint": "merchant_clickout",
+    "current_network_ingestion": "none_in_supabase",
+    "one_million_network": "Awin",
+    "canonical_clickref": "one_million_example61_01",
+    "required_join_chain": [
+      "platform_content_id -> source/campaign/content",
+      "DUFYND session -> product_id",
+      "merchant_clickout -> merchant/offer",
+      "Awin transaction -> transaction_id/clickRef/orderRef/status/sale_amount/commission",
+      "latest validated transaction state -> approved_or_paid commission"
+    ],
+    "direct_awin_path": {
+      "endpoint": "GET /publishers/{publisherId}/transactions/",
+      "auth": "OAuth2 Bearer access token",
+      "minimum_query": "startDate, endDate; filter/reconcile clickref=one_million_example61_01 after retrieval or use supported click-ref query/report paths",
+      "owner_gate": "Authoritative Awin publisher/account ID and API access token are not currently proven in repo state.",
+      "id_discrepancy": "Tracking URL contains awinaffid=3099222 while an older rebrand runbook mentions publisher ID 309922. Do not call the API until the authoritative publisher ID is confirmed in Awin.",
+      "minimum_fields": [
+        "transaction id",
+        "advertiser/merchant",
+        "transaction date",
+        "clickRef",
+        "orderRef if available",
+        "sale amount + currency",
+        "commission + currency",
+        "commission status",
+        "validation/amendment state",
+        "paid-to-publisher/settlement evidence if available"
+      ]
+    },
+    "windsor_path": {
+      "availability": "Awin and CJ connectors are available but neither is currently connected.",
+      "awin_connect_requirements": [
+        "api_key (sensitive; enter only in Windsor form)",
+        "advertiser_id"
+      ],
+      "cj_connect_requirements": [
+        "account_id",
+        "access_token (sensitive; enter only in Windsor form)"
+      ],
+      "rule": "After connection, discover actual connector fields before using them; do not assume transaction schema."
+    },
+    "reconciliation_rules": [
+      "Never create synthetic orders or clicks.",
+      "Deduplicate by stable network transaction ID.",
+      "Keep initial transaction, validation and amendment/correction history; report the latest authoritative state.",
+      "Do not sum pending and approved versions of the same transaction.",
+      "Keep order value separate from DUFYND commission.",
+      "A network transaction matched by clickref supports network attribution; first-party session causality remains a separate evidence layer.",
+      "Revenue remains null until a real network transaction exists."
+    ]
+  },
+  "owner_gates": [
+    "Explicit approval of the frozen 1 Million asset/script/caption/link package before publishing.",
+    "For cleanest source attribution, approve changing each platform profile/channel link to its platform-specific tracked product URL for the test window.",
+    "For real Awin revenue reconciliation, confirm authoritative Awin publisher/account ID and connect/provide API credentials through a secure provider form; never paste secrets into chat."
+  ]
+}
