@@ -648,6 +648,22 @@ async def _run_task_with_retry(
                     current_task.get("started_at") or session.get("started_at") or iso_now()
                 ),
             )
+            if _audited_run_cost_known(latest_run) and any(
+                isinstance(d, dict)
+                and d.get("retry_allowed") is False
+                and d.get("failure_stage")
+                and d.get("budget_id")
+                for d in (latest_run or {}).get("decisions") or []
+            ):
+                outcome = _task_result(
+                    task,
+                    worker=worker,
+                    result_code=result_code,
+                    final_status="blocked",
+                    attempts=attempt,
+                )
+                outcome["counted_worker_failed"] = True
+                return outcome
             if not _audited_run_cost_known(latest_run):
                 current = bridge.load_autonomy_task(task_id) or {}
                 _best_effort_set_task_status(
@@ -972,9 +988,11 @@ async def run_nightshift(
             processed_this_run += 1
             if bool(outcome.get("provider_cost_unknown")):
                 stop_reason = "unknown_provider_cost"
+            elif bool(outcome.get("counted_worker_failed")):
+                stop_reason = "counted_worker_failed_no_retry"
             _persist_session(bridge, session)
 
-            if stop_reason == "unknown_provider_cost":
+            if stop_reason in {"unknown_provider_cost", "counted_worker_failed_no_retry"}:
                 break
 
             # An engineering patch is the final model task in this checkout. Hand it
@@ -989,6 +1007,7 @@ async def run_nightshift(
 
         session["stop_reason"] = stop_reason
         needs_attention = stop_reason in {
+            "counted_worker_failed_no_retry",
             "event_failure",
             "unknown_provider_cost",
             "interrupted_task_unknown_cost",
@@ -1360,6 +1379,11 @@ def build_morning_report(
         "worker_cancelled",
         "supervisor_cancelled",
     }
+    cost_diagnostic_conflict = bool(
+        counted_costs
+        and not counted_costs["provider_cost_unknown"]
+        and (provider_cost_unknown or stop_reason == "unknown_provider_cost")
+    )
     cost_complete = (counted_costs is not None or cost_window_complete) and not (
         result_timeout
         or supervisor_timeout
@@ -1373,6 +1397,19 @@ def build_morning_report(
         )
         or uncertain_stop_reason
     )
+
+    if counted_costs is not None:
+        # Counted requests cannot be posted without an atomic ledger reservation.
+        # Worker failures remain visible, but do not manufacture unknown paid cost.
+        cost_complete = counted_costs["cost_report_complete"] and not (
+            result_timeout
+            or supervisor_timeout
+            or session_timeout
+            or runtime_error
+            or supervisor_runtime_error
+            or stop_reason in {"worker_cancelled", "supervisor_cancelled"}
+        )
+        provider_cost_unknown = counted_costs["provider_cost_unknown"]
 
     completed = sum(1 for r in results if r.get("final_status") == "done")
     in_progress = len(queue.get("in_progress") or [])
@@ -1463,6 +1500,7 @@ def build_morning_report(
             "workflow_status": qa_status,
             "branch_validation": validation.get("status"),
         },
+        "cost_diagnostic_conflict": cost_diagnostic_conflict,
         "ai_cost_usd": ai_cost_usd,
         "ai_cost_source": "counted_reservations_and_settlements"
         if counted_costs

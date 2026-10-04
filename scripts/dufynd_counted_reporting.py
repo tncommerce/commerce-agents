@@ -66,6 +66,10 @@ def report_counted_costs(bridge, budget_id: str, started_at: str, ended_at: str)
         "remaining_budget_usd": str(budget["remaining_usd"]),
         "remaining_runs": budget["remaining_runs"],
         "provider_cost_unknown": unknown or bool(budget.get("provider_cost_unknown")),
+        "cost_report_complete": not unknown
+        and not budget.get("provider_cost_unknown")
+        and reserved == 0
+        and Decimal(str(budget.get("reserved_unsettled_usd", 0))) == 0,
         "ledger": calls,
         "source": "counted_reservations_and_settlements",
         "scope": {"started_at": started_at, "ended_at": ended_at},

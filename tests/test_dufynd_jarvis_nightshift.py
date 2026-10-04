@@ -1410,3 +1410,49 @@ def test_morning_report_marks_supervisor_cancellation_cost_incomplete() -> None:
 
     assert report["stop_reason"] == "supervisor_cancelled"
     assert report["ai_cost_complete"] is False
+
+
+def test_counted_known_zero_failure_stops_before_next_task_without_retry(monkeypatch):
+    bridge = FakeBridge(
+        [
+            task("repo_current_commerce", "commerce", 100),
+            task("next_content", "content", 90),
+        ]
+    )
+    bridge.agent_runs_override = [
+        {
+            "run_type": "safe_task_failed:repo_current_commerce",
+            "decisions": [
+                {
+                    "cost_usd": "0",
+                    "failure_stage": "prepare",
+                    "budget_id": "bounded",
+                    "retry_allowed": False,
+                }
+            ],
+        }
+    ]
+    monkeypatch.setattr(nightshift, "_require_autonomous_mode", lambda: None)
+    monkeypatch.setattr(nightshift, "_require_budget_window", lambda _bridge: ("budget", {}))
+    calls = []
+
+    async def failed(_bridge, *, task_id=None):
+        calls.append(task_id)
+        bridge.tasks[task_id]["status"] = "blocked"
+        return 1
+
+    monkeypatch.setattr(nightshift, "process_safe_task", failed)
+    session = asyncio.run(
+        nightshift.run_nightshift(
+            bridge,
+            max_events=0,
+            max_tasks=2,
+            max_retries=2,
+            worker_timeout_seconds=60,
+        )
+    )
+    assert calls == ["repo_current_commerce"]
+    assert session["stop_reason"] == "counted_worker_failed_no_retry"
+    assert session["status"] == "needs_attention"
+    assert not session["task_results"][0].get("provider_cost_unknown")
+    assert bridge.tasks["next_content"]["status"] == "ready"

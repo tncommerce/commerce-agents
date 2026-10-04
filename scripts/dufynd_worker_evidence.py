@@ -65,7 +65,7 @@ def profile_for(task: dict) -> str:
     raise ValueError("unsupported_evidence_capability")
 
 
-def excerpt(raw: bytes, keywords: set[str]) -> dict:
+def excerpt(raw: bytes, keywords: set[str], name: str = "") -> dict:
     text = raw.decode("utf-8")
     lines = text.splitlines(keepends=True)
     # Keep every pilot script/hook identity as a structured projection instead of
@@ -74,7 +74,45 @@ def excerpt(raw: bytes, keywords: set[str]) -> dict:
         data = json.loads(text)
     except ValueError:
         data = None
-    if isinstance(data, dict) and isinstance(data.get("pilots"), list):
+    if isinstance(data, dict) and (
+        name.endswith("_subtitles.json") or name.endswith("_social_copy.json")
+    ):
+        subtitle = name.endswith("_subtitles.json")
+        key = "items" if subtitle else "posts"
+        projected = {
+            "status": data.get("status"),
+            "note": str(data.get("note") or "")[:160],
+            "guidance": str(data.get("guidance") or "")[:200],
+            key: [],
+        }
+        for item in data.get(key, []):
+            if subtitle:
+                segments = item.get("segments", [])
+                value = {
+                    "content_id": item.get("content_id"),
+                    "segment_count": len(segments),
+                    "end_seconds": segments[-1].get("end") if segments else None,
+                    "opening_text": str(segments[0].get("text") or "")[:80] if segments else "",
+                }
+            else:
+                value = {
+                    "content_id": item.get("content_id"),
+                    "tiktok": {"caption": str(item.get("tiktok", {}).get("caption") or "")[:80]},
+                }
+            projected[key].append(value)
+        return {
+            "text": encode(projected).decode(),
+            "projection": key,
+            "json_paths": [f"$.{key}[*]"],
+            "line_ranges": [],
+            "complete": False,
+            "omission_reason": "subtitle text beyond opening/caption beyond 80 characters; other segments/platforms omitted",
+        }
+    if (
+        isinstance(data, dict)
+        and isinstance(data.get("pilots"), list)
+        and not name.endswith("_voiceover_spec.json")
+    ):
         fields = ("content_id", "hook", "voiceover", "target_duration_seconds", "format", "status")
         projected = {
             "rules": {
@@ -93,7 +131,7 @@ def excerpt(raw: bytes, keywords: set[str]) -> dict:
             return {
                 "text": rendered,
                 "projection": "pilots identities/hooks/full voiceover + global rules",
-                "json_paths": ["$.global_rules", *[f"$.pilots[*].{k}" for k in fields]],
+                "json_paths": ["$.global_rules", "$.pilots[*]"],
                 "line_ranges": [],
                 "complete": False,
                 "omission_reason": "non-script fields omitted by fixed JSON projection",
@@ -106,12 +144,16 @@ def excerpt(raw: bytes, keywords: set[str]) -> dict:
     )
     selected: set[int] = set()
     used = 0
+    groups = 0
     for i in ranked:
+        if groups >= 4:
+            break
         group = [j for j in range(max(0, i - 1), min(len(lines), i + 3)) if j not in selected]
-        size = sum(len(lines[j].encode()) for j in group)
+        size = sum(len(f"L{j + 1}: {lines[j]}".encode()) for j in group)
         if size + used <= MAX_TEXT_BYTES:
             selected.update(group)
             used += size
+            groups += 1
     ranges = []
     for i in sorted(selected):
         if ranges and ranges[-1][1] == i:
@@ -170,9 +212,17 @@ def pack_evidence(task: dict, *, head: str | None, root: Path = ROOT) -> dict:
             for b in (1, 2, 3)
         ]
         sources = (
-            core_batches + specs + [name for name in sources if name not in core_batches + specs]
+            core_batches
+            + [name for name in sources if name.endswith(("_subtitles.json", "_social_copy.json"))]
+            + specs
+            + [
+                name
+                for name in sources
+                if name not in core_batches + specs
+                and not name.endswith(("_subtitles.json", "_social_copy.json"))
+            ]
         )
-    for name in sources:
+    for source_index, name in enumerate(sources):
         path = root / name
         reason = None
         if path.is_symlink() or any(p.is_symlink() for p in path.parents if p != root.parent):
@@ -195,11 +245,18 @@ def pack_evidence(task: dict, *, head: str | None, root: Path = ROOT) -> dict:
             "path": name,
             "sha256": hashlib.sha256(raw).hexdigest(),
             "source_bytes": len(raw),
-            **excerpt(raw, keywords),
+            **excerpt(raw, keywords, name),
         }
         packet["repository_evidence"].append(source)
         # Reserve room for all remaining omission records; never truncate a serialized prompt.
-        if len(encode(packet)) > MAX_PROMPT_BYTES - 4000:
+        reserved = (
+            sum(
+                len(encode({"path": remaining, "reason": "context_priority_budget"})) + 1
+                for remaining in sources[source_index + 1 :]
+            )
+            + 100
+        )
+        if len(encode(packet)) > MAX_PROMPT_BYTES - reserved:
             packet["repository_evidence"].pop()
             packet["omitted_sources"].append({"path": name, "reason": "context_priority_budget"})
     if len(encode(packet)) > MAX_PROMPT_BYTES:

@@ -27,6 +27,33 @@ MAX_OUTPUT = 2048
 MAX_REQUEST_USD = Decimal("0.036864")
 MARGIN = Decimal("1.25")
 PADDING = 128
+SAFE_FAILURE_REASONS = frozenset(
+    [
+        "budget_exhausted",
+        "budget_window_changed",
+        "conservative_input_exceeds_reservation",
+        "count_tokens_exceeds_input_limit",
+        "dispatch_denied",
+        "input_payload_too_large",
+        "invalid_count_or_reservation",
+        "invalid_count_tokens_response",
+        "invalid_thinking_usage",
+        "invalid_usage",
+        "missing_usage",
+        "pricing_contract_unverified_or_expired",
+        "provider_credential_missing",
+        "provider_outcome_unknown_no_retry",
+        "provider_usage_exceeded_conservative_policy",
+        "request_proof_mismatch",
+        "reservation_denied",
+        "settlement_pending_watchdog_no_retry",
+        "unexpected_additional_charge",
+        "unexpected_cache_usage",
+        "unexpected_pricing_tier",
+        "unknown_billing_class",
+        "unknown_provider_receipt",
+    ]
+)
 SYSTEM = (
     "You are a DUFYND internal analyst. Produce only an evidence-grounded draft analysis. "
     "No tools, publication, messages, purchases, code changes, owner approvals or final "
@@ -270,6 +297,8 @@ class CountedClient:
         if not api_key:
             raise BudgetGate("provider_credential_missing")
         self.api_key, self.transport = api_key, transport
+        self.execution_audit = {"provider_request_attempted": False, "cost_usd": "0"}
+        self.last_count = None
 
     def _post(self, path: str, payload: bytes) -> dict:
         # Fixed endpoint, no redirects, SDK, retries, beta headers or paid tools.
@@ -293,11 +322,15 @@ class CountedClient:
             raise BudgetGate("input_payload_too_large")
         pricing()
         count = self._post("/count_tokens", canonical(input_body(prompt))).get("input_tokens")
+        self.last_count = count if type(count) is int else None
+        if type(count) is int and count > MAX_INPUT:
+            raise BudgetGate("count_tokens_exceeds_input_limit")
         if type(count) is not int or not 0 <= count <= MAX_INPUT:
             raise BudgetGate("invalid_count_tokens_response")
         return count
 
     def execute(self, bridge, prepared: Prepared, *, task: dict, budget_id: str, key: str) -> dict:
+        self.execution_audit = {"provider_request_attempted": False, "cost_usd": "0"}
         proof = validate(prepared)
         if resolve_budget(bridge)[0] != budget_id:
             raise BudgetGate("budget_window_changed")
@@ -325,8 +358,10 @@ class CountedClient:
             raise BudgetGate("dispatch_denied")
         response = None
         try:
+            self.execution_audit = {"provider_request_attempted": True, "cost_usd": None}
             response = self._post("", prepared.payload)
             cost, evidence, violation = actual_usage(prepared, response)
+            self.execution_audit["cost_usd"] = str(cost)
         except BaseException as error:
             # One dispatched request, never an automatic retry. Unknown billing pauses the window.
             bridge._rpc(
@@ -396,14 +431,28 @@ async def process_counted_task(bridge, *, task_id: str | None = None) -> int:
     if task is None:
         return 0
     task_id = task["task_id"]
+    phase, client, snapshot, prompt, estimate = "pack", None, None, "", None
     try:
         from scripts.dufynd_worker_evidence import pack_evidence
 
         snapshot = pack_evidence(task, head=os.getenv("GITHUB_SHA"))
         prompt = canonical(snapshot).decode()
+        phase = "persist_context"
+        bridge.upsert_master_status(
+            key=f"jarvis.maker_context.{task_id}",
+            category="jarvis",
+            value={
+                "snapshot": snapshot,
+                "github_run_id": os.getenv("GITHUB_RUN_ID"),
+                "github_run_attempt": os.getenv("GITHUB_RUN_ATTEMPT"),
+            },
+        )
+        phase = "count"
         client = CountedClient(os.getenv("ANTHROPIC_API_KEY", ""))
         estimate = await asyncio.to_thread(client.count, prompt)
+        phase = "prepare"
         prepared = prepare(prompt, estimate)
+        phase = "execute"
         result = await asyncio.to_thread(
             client.execute,
             bridge,
@@ -412,6 +461,7 @@ async def process_counted_task(bridge, *, task_id: str | None = None) -> int:
             budget_id=budget_id,
             key=f"{task_id}:{task['lease_token']}",
         )
+        phase = "record_maker"
         blocks = result["response"].get("content") or []
         text = "\n".join(b["text"] for b in blocks if b.get("type") == "text")
         bridge.record_run(
@@ -468,10 +518,44 @@ async def process_counted_task(bridge, *, task_id: str | None = None) -> int:
         )
         return 0
     except Exception as error:
-        bridge.update_worker(
-            task_id,
-            "blocked",
-            reason="counted_worker_failed_no_retry",
-            evidence=f"Counted worker stopped: {type(error).__name__}; no retry.\nDUFYND_TASK_STATE: blocked",
+        # Never log provider response bodies, credentials or arbitrary exception text.
+        reason = str(error) if isinstance(error, BudgetGate) else type(error).__name__
+        if isinstance(error, BudgetGate) and reason not in SAFE_FAILURE_REASONS:
+            reason = type(error).__name__
+        audit = (
+            client.execution_audit
+            if client
+            else {"provider_request_attempted": False, "cost_usd": "0"}
         )
+        diagnostic = {
+            **audit,
+            "failure_stage": phase,
+            "failure_reason": reason,
+            "error_type": type(error).__name__,
+            "budget_id": budget_id,
+            "estimated_input_tokens": estimate
+            if estimate is not None
+            else (client.last_count if client else None),
+            "prompt_bytes": len(prompt.encode()),
+            "packet_sha256": (snapshot or {}).get("packet_sha256"),
+            "github_run_id": os.getenv("GITHUB_RUN_ID"),
+            "github_run_attempt": os.getenv("GITHUB_RUN_ATTEMPT"),
+            "head_sha": os.getenv("GITHUB_SHA"),
+            "retry_allowed": False,
+        }
+        try:
+            bridge.record_run(
+                run_type=f"safe_task_failed:{task_id}",
+                input_summary="Counted worker diagnostic",
+                output_summary=f"{phase}: {reason}; no retry",
+                decisions=[diagnostic],
+                agent_name="jarvis",
+            )
+        finally:
+            bridge.update_worker(
+                task_id,
+                "blocked",
+                reason="counted_worker_failed_no_retry",
+                evidence=f"Counted worker stopped at {phase}: {reason}; no retry.\nDUFYND_TASK_STATE: blocked",
+            )
         return 1
