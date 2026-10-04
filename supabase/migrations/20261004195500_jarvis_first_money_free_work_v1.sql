@@ -134,7 +134,7 @@ values(
   'supervisor',
   'First-Money launch readiness and funnel evidence audit',
   'Persist bounded First-Money funnel, purchase-evidence and supervisor metadata only.',
-  'ready',110,'free',
+  'ready',100,'free',
   '["db:jarvis.supervisor_v2.health"]'::jsonb,
   'durable',
   '{"kind":"supervisor_state_audit","steps":1,"interval_seconds":2}'::jsonb,
@@ -167,7 +167,7 @@ begin
   values(
     tid,'supervisor','First-Money live funnel signal audit',
     'Persist the current bounded First-Money funnel and supervisor evidence after a real analytics signal.',
-    'ready',110,'free',
+    'ready',100,'free',
     '["db:jarvis.supervisor_v2.health"]'::jsonb,
     'durable',
     '{"kind":"supervisor_state_audit","steps":1,"interval_seconds":2}'::jsonb,
