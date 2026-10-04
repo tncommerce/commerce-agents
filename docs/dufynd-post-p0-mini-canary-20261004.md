@@ -96,3 +96,14 @@ or click merchants to mark them passed.
 After merge stop before provider execution. The next business leverage is real
 observed launch attribution evidence and no-spend pilot finalization planning;
 next technical leverage is independently auditable context/maker/checker receipts.
+
+## Exact live-task regression
+
+The longer live content instruction changes excerpt ranking and packet size. A
+post-merge offline reconstruction exposed that it could omit every learning
+source despite shorter fixtures passing. The primary creative-learning library
+now precedes optional buffer/secondary learning/readiness assets, alongside
+quality-floor and pipeline evidence. A regression uses the exact live task ID,
+title, instruction, domain and dependencies and requires all three batch scripts,
+voiceover specs, subtitle/social projections and these essential source families.
+This proves packet coverage offline, not paid Maker quality or full visual QC.
