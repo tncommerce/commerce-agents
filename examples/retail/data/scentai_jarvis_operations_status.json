@@ -1,16 +1,17 @@
 {
   "version": 1,
-  "generated_at": "2026-10-02T13:12:55+00:00",
-  "source_fingerprint_sha256": "d04ed4c7e781ef5742de92c57d521ea9a840cf712820d95d7eb9494ad663bfd6",
+  "generated_at": "2026-10-04T12:44:59+00:00",
+  "source_fingerprint_sha256": "e7416c2d8895e1f329d438d4495de7366ef2bea7d60c69cab3813241449c2827",
   "system": "DUFYND",
   "control_plane": "commerce_jarvis",
   "policy_ref": "scentai_jarvis_operating_policy.json",
-  "overall_state": "waiting_licensed_image_sources_and_approval",
+  "overall_state": "waiting_purchase_destinations_and_images",
   "user_approval_required_now": false,
-  "next_action": "obtain_licensed_image_sources_then_prepare_manual_visual_approval",
+  "next_action": "verify_purchase_destinations_and_image_rights",
   "next_action_class": "auto_allowed",
   "blockers": [
     "release_approved_images_incomplete",
+    "release_purchase_destinations_incomplete",
     "release_promotion_gates_incomplete"
   ],
   "safety": {
@@ -64,9 +65,9 @@
     "mapping_ready": 5,
     "image_identity_source_verified": 5,
     "approved_images": 4,
-    "current_purchase_destinations": 5,
+    "current_purchase_destinations": 3,
     "current_tracked_affiliate_offers": 3,
-    "promotion_ready": 4
+    "promotion_ready": 3
   },
   "pending_manual_approvals": [],
   "operating_note": "This control-plane status summarizes operational readiness. It does not authorize live writes, spending, outbound messages or affiliate activation."
