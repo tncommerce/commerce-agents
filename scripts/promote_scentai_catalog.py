@@ -393,6 +393,8 @@ def build_catalog_product(
     ).get("target_groups", [])
     accords = profile.get("community_accords", [])
     key_notes = profile.get("key_notes", [])
+    media = staged.get("media", {})
+    image_status = str(media.get("image_status") or "").strip()
 
     rating_10 = float(community["rating_10"])
 
@@ -436,11 +438,27 @@ def build_catalog_product(
             else str(bool(staged.get("media", {}).get("image_share_alike_required"))).lower()
         ),
         "image_product_truth_provenance": str(
-            staged.get("media", {}).get("image_source_class") or ""
+            media.get("image_source_class")
+            or {
+                "approved_feed_image": "merchant_feed",
+                "approved_manufacturer_image": "manufacturer",
+                "approved_licensed_image": "licensed",
+                GENERATED_PRODUCT_TRUTH_STATUS: "dufynd_generated",
+            }.get(image_status, "")
         ),
-        "image_fidelity_approval_basis": str(
-            staged.get("media", {}).get("image_fidelity_approval_basis") or ""
+        "image_reviewed_at": str(media.get("image_reviewed_at") or ""),
+        "image_rights_basis_id": str(media.get("image_rights_basis_id") or ""),
+        "image_rights_checked_at": str(media.get("image_rights_checked_at") or ""),
+        "image_exact_variant_verified": (
+            "true"
+            if image_status == "approved_feed_image"
+            else (
+                ""
+                if media.get("image_exact_variant_verified") is None
+                else str(bool(media.get("image_exact_variant_verified"))).lower()
+            )
         ),
+        "image_fidelity_approval_basis": str(media.get("image_fidelity_approval_basis") or ""),
         "image_fidelity_approved_at": str(
             staged.get("media", {}).get("image_fidelity_approved_at") or ""
         ),
@@ -552,6 +570,16 @@ def build_source_product(
                 "provenance": provenance,
                 "fidelity_status": "verified",
                 "variant": f"{volume_ml}ml",
+                **(
+                    {
+                        "reviewed_at": str(media.get("image_reviewed_at") or ""),
+                        "rights_basis_id": str(media.get("image_rights_basis_id") or ""),
+                        "rights_checked_at": str(media.get("image_rights_checked_at") or ""),
+                        "exact_variant_verified": True,
+                    }
+                    if image_status == "approved_feed_image"
+                    else {}
+                ),
                 **(
                     {
                         "license_name": str(media.get("image_license_name") or ""),
