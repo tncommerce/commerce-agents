@@ -135,12 +135,14 @@ def test_awin_clickout_replaces_static_clickref_with_attribution_dimensions() ->
 
     target = offer_clickout_target(
         candidate,
-        clickref="content_01",
-        clickref2="campaign_01",
-        clickref3="instagram",
-        clickref4="session-1234567890",
-        clickref5="SC-TEST-100",
-        clickref6="awin-attributed",
+        clickrefs=[
+            "content_01",
+            "campaign_01",
+            "instagram",
+            "session-1234567890",
+            "SC-TEST-100",
+            "awin-attributed",
+        ],
     )
 
     assert target is not None
@@ -161,7 +163,7 @@ def test_non_awin_affiliate_clickout_is_not_rewritten() -> None:
     candidate.affiliate_url = "https://network.example/click?existing=value"
 
     assert (
-        offer_clickout_target(candidate, clickref="content_01")
+        offer_clickout_target(candidate, clickrefs=["content_01"])
         == "https://network.example/click?existing=value"
     )
 
