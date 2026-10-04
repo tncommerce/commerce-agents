@@ -28,6 +28,10 @@ BLOCKED_RENDER_MARKERS = (
     "FINAL MIT VOICEOVER",
 )
 
+PRODUCT_IMAGE_OVERRIDES = {
+    "SC-XERJOFF-NAXOS-100": "/products/naxos-cutout-production.png",
+}
+
 
 def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
@@ -110,7 +114,10 @@ def rounded_panel(
 
 def product_image(products_by_id: dict[str, dict], product_id: str) -> Image.Image:
     product = products_by_id[product_id]
-    image_url = str(product.get("image_url") or "")
+    image_url = PRODUCT_IMAGE_OVERRIDES.get(
+        product_id,
+        str(product.get("image_url") or ""),
+    )
     if not image_url.startswith("/"):
         raise ValueError(f"{product_id}: image_url must be local")
     path = PUBLIC_DIR / image_url.lstrip("/")
@@ -278,9 +285,15 @@ def render_gift_slide(
     )
 
     product_ids = list(slide.get("product_ids") or [])
+    footer = slide.get("instagram_footer" if platform == "instagram" else "tiktok_footer")
+    if platform == "instagram":
+        bottom_margin = 205 if footer else 150
+    else:
+        bottom_margin = 410 if footer else 250
+
     if len(product_ids) == 1:
         top = max(text_bottom + 48, 560 if platform == "instagram" else 760)
-        bottom = height - (150 if platform == "instagram" else 210)
+        bottom = height - bottom_margin
         box = (150, top, width - 150, bottom)
         paste_contained(
             canvas,
@@ -298,7 +311,7 @@ def render_gift_slide(
             )
     elif product_ids:
         top = max(text_bottom + 54, 610 if platform == "instagram" else 860)
-        bottom = height - (155 if platform == "instagram" else 230)
+        bottom = height - bottom_margin
         gap = 24
         card_w = (width - 140 - gap * 2) // 3
         for index, product_id in enumerate(product_ids[:3]):
@@ -311,13 +324,25 @@ def render_gift_slide(
                 panel_fill=(255, 255, 255, 232),
             )
 
-    footer = slide.get("instagram_footer" if platform == "instagram" else "tiktok_footer")
     if footer:
         draw = ImageDraw.Draw(canvas)
+        if platform == "instagram":
+            footer_box = (56, height - 155, width - 56, height - 65)
+            footer_y = height - 126
+        else:
+            footer_box = (56, height - 350, width - 56, height - 250)
+            footer_y = height - 318
+        rounded_panel(
+            canvas,
+            footer_box,
+            fill=(252, 249, 244, 238),
+            radius=28,
+            shadow=False,
+        )
         draw.text(
-            (70, height - (92 if platform == "instagram" else 132)),
+            (82, footer_y),
             str(footer),
-            font=font(FONT_BOLD, 26),
+            font=font(FONT_BOLD, 25),
             fill=(37, 44, 61),
         )
     return canvas.convert("RGB")
@@ -337,14 +362,6 @@ def render_date_slide(
     add_brand(canvas, light=True)
 
     draw = ImageDraw.Draw(canvas)
-    if 2 <= int(slide["n"]) <= 4:
-        numeral = str(int(slide["n"]) - 1)
-        draw.text(
-            (width - 330, 85 if platform == "instagram" else 120),
-            numeral,
-            font=font(FONT_CONDENSED, 230 if platform == "instagram" else 280),
-            fill=(255, 255, 255, 26),
-        )
 
     text_bottom = draw_text_block(
         canvas,
@@ -357,13 +374,19 @@ def render_date_slide(
         title_font=FONT_CONDENSED,
     )
 
+    footer = slide.get("instagram_footer" if platform == "instagram" else "tiktok_footer")
+    if platform == "instagram":
+        bottom_margin = 205 if footer else 145
+    else:
+        bottom_margin = 410 if footer else 250
+
     if len(product_ids) == 1:
         top = max(text_bottom + 40, 560 if platform == "instagram" else 790)
-        bottom = height - (145 if platform == "instagram" else 220)
+        bottom = height - bottom_margin
         rounded_panel(
             canvas,
             (120, top, width - 120, bottom),
-            fill=(255, 255, 255, 30),
+            fill=(255, 255, 255, 242),
             radius=48,
             shadow=True,
         )
@@ -382,11 +405,11 @@ def render_date_slide(
                 (145, bottom - 72),
                 str(label),
                 font=font(FONT_BOLD, 27),
-                fill=(246, 246, 250),
+                fill=(27, 31, 43),
             )
     elif product_ids:
         top = max(text_bottom + 52, 620 if platform == "instagram" else 900)
-        bottom = height - (150 if platform == "instagram" else 240)
+        bottom = height - bottom_margin
         gap = 22
         card_w = (width - 132 - gap * 2) // 3
         for index, product_id in enumerate(product_ids[:3]):
@@ -396,13 +419,13 @@ def render_date_slide(
                 canvas,
                 product_image(products_by_id, product_id),
                 (x1, top, x2, bottom),
-                panel_fill=(255, 255, 255, 34),
+                panel_fill=(255, 255, 255, 238),
             )
 
-    footer = slide.get("instagram_footer" if platform == "instagram" else "tiktok_footer")
     if footer:
+        footer_y = height - (112 if platform == "instagram" else 320)
         draw.text(
-            (70, height - (90 if platform == "instagram" else 132)),
+            (70, footer_y),
             str(footer),
             font=font(FONT_BOLD, 26),
             fill=(245, 245, 250),
