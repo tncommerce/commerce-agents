@@ -603,9 +603,7 @@ def check_outputs(packet: dict) -> None:
                     raise FileNotFoundError(path)
                 with Image.open(path) as image:
                     if image.size != expected_size:
-                        raise ValueError(
-                            f"{path}: size {image.size} != {expected_size}"
-                        )
+                        raise ValueError(f"{path}: size {image.size} != {expected_size}")
         video_path = (
             piece_root
             / "tiktok"
