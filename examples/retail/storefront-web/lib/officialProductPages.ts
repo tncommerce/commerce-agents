@@ -1,5 +1,9 @@
 /** Verified product pages, independent of time-limited merchant prices and stock. */
 export const OFFICIAL_PRODUCT_PAGES: Record<string, { merchant: string; url: string }> = {
+  "SC-PDM-DELINA-EDP-75": {
+    merchant: "Parfums de Marly",
+    url: "https://parfums-de-marly.com/de/products/delina",
+  },
   "SC-ARABIYAT-MARWA-EDP-100": {
     merchant: "Arabiyat Prestige",
     url: "https://arabiyatprestige.com/products/arabiyat-prestige-marwa-edp-100ml-unisex",
