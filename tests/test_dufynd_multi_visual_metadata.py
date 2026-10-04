@@ -183,6 +183,7 @@ def test_exploded_notes_support_catalog_fallback_note_sets() -> None:
         "SC-BVLGARI-TYGAR-125",
         "SC-DIOR-HOMME-INTENSE-100",
         "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+        "SC-PDM-DELINA-EDP-75",
         "SC-RABANNE-1-MILLION-EDT-100",
     }
     assert "keyNotes={fragrance.notes.key}" in page
