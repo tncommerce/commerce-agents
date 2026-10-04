@@ -69,3 +69,42 @@ Thin V1 is accepted only when:
 - no `main` change occurs.
 
 This acceptance proves the chat-independent control plane, not arbitrary autonomous business execution. Additional worker capabilities must be added narrowly and only after their deterministic safety contract exists.
+
+## Runtime
+
+`run_dufynd_thin_v1()` wakes every two minutes through the existing Supabase
+cron extension. It defaults to disabled. `jarvis.thin_v1.config.enabled` is
+enabled only after the branch PR, CI and runtime verification.
+
+The existing branch observer supplies HEAD. A bounded public GitHub GET observes
+the push CI run for that exact HEAD every ten minutes. Missing, failing, stale or
+foreign CI blocks task selection; a moved HEAD invalidates the previous result.
+No credential or webhook is added. Existing supervisor recovery remains separate.
+
+Selection orders eligible tasks by descending priority, creation time and ID.
+Dependencies, external waits, resource collisions and certified handler contracts
+are checked before claiming. The existing claim function also fences TECH leases.
+At most four tasks are selected per wakeup. The certified supervisor state audit
+runs directly under the existing SQL checkpoint/verifier contract; other certified
+handlers hand off to the existing durable supervisor and return `waiting_external`.
+The existing event-processing guard prevents recursive duplicate dependency claims.
+
+One First-Money/supervisor metadata audit is queued per thirty-minute slot. Its
+immutable packet, execution evidence, audit hash and terminal lease release remain
+in the existing execution ledger. There is no arbitrary task-instruction evaluator.
+
+Owner gates persist an idempotent decision, reason, risk, cost status, benefit and
+exact GO token, plus an inbox signal. They stop the loop without executing the
+action. An approval token alone never adds a forbidden worker capability. This
+signal is database-visible; no external notification is sent by this runtime.
+
+`jarvis.thin_v1.status` is the current Morning/Status Report source. It records
+queue counts, leases, reservations, unknown-cost state, CI, observer health, recent
+First-Money inbox events and CEO checkpoint age. Scheduled posts and measurement
+readiness are explicitly checkpoint assertions, not fresh platform publication or
+transaction proof. Gmail/Render observer outages remain visible without blocking
+the independent free audit. Historical budgets are never selected or reactivated.
+
+`tests/sql_dufynd_thin_v1.sql` checks real database claims, dependent successor
+execution, packet verification, idempotency, gates, stale HEAD/CI and public-role
+denial inside a transaction that rolls back all fixtures.
