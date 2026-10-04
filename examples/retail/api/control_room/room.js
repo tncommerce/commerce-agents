@@ -2,10 +2,10 @@
 (() => {
   const $ = id => document.getElementById(id);
   const value = v => v === null || v === undefined || v === '' ? 'Unknown' : String(v);
-  const stamp = v => v && Number.isFinite(Date.parse(v)) ? new Date(v).toLocaleString('de-DE') : 'Unknown';
+  const stamp = v => v && Number.isFinite(Date.parse(v)) ? new Date(v).toLocaleString('de-DE', {timeZone:'Europe/Berlin'}) : 'Unknown';
   const put = (id, v) => { $(id).textContent = value(v); };
   const node = (tag, text, cls) => { const n = document.createElement(tag); if (text !== undefined) n.textContent = value(text); if (cls) n.className = cls; return n; };
-  const badge = status => node('span', status, 'pill ' + ({ACTIVE:'good',HEALTHY:'good',READY:'good',OFF:'good',BLOCKED:'bad',FAILED:'bad',DEGRADED:'warn',STALE:'warn','WAITING HUMAN':'warn',WAITING:'warn'}[status] || 'neutral'));
+  const badge = status => node('span', status, 'pill ' + ({WORKING:'good','OWNER GATE':'warn',ERROR:'bad',ACTIVE:'good',HEALTHY:'good',READY:'good',OFF:'good',BLOCKED:'bad',FAILED:'bad',DEGRADED:'warn',STALE:'warn','WAITING HUMAN':'warn',WAITING:'warn'}[status] || 'neutral'));
   const line = (parent, label, text) => { const p = node('p'); p.append(node('small', label + ' · '), node('span', text)); parent.append(p); };
   let snapshot = null, busy = false, timer = null;
   function missions() {
@@ -46,7 +46,13 @@
     snapshot = s;
     const c = s.command_center, f = s.freshness;
     const complete = f.operational_complete === true;
-    put('priority', c.priority || 'Keine aktuelle Priorität beobachtet');
+    put('owner-now', c.owner_action);
+    put('current-task', c.current_task || 'Keine aktive Ausführung beobachtet');
+    put('allowed-task', c.next_allowed_task);
+    put('stop-reason', c.stop_reason);
+    put('lease-count', s.runtime_safety?.active_leases);
+    put('loop-time', 'Loop · ' + stamp(c.last_loop_at) + ' · nächster Wake (Schätzung) ' + stamp(c.next_loop_estimate));
+    put('priority', c.current_task || (c.status === 'WAITING' ? 'Jarvis wartet auf zulässige Arbeit oder externe Nachweise.' : 'Aktueller Status aus dem letzten verifizierten Loop.'));
     $('jarvis-state').replaceWith(Object.assign(badge(c.status), {id:'jarvis-state'}));
     put('head', c.observed_head_sha ? c.observed_head_sha.slice(0, 10) : null);
     put('head-age', 'Branch-Beobachtung · ' + stamp(c.head_observed_at));
@@ -58,11 +64,11 @@
     put('wake-time', c.last_supervisor_wake ? new Date(c.last_supervisor_wake).toLocaleTimeString('de-DE') : null);
     put('next-wake', 'Wake-Schätzung · ' + stamp(c.next_supervisor_wake_estimate));
     put('last-action', c.last_completed_action);
-    put('next-action', c.next_safe_action);
+    put('next-action', (c.checkpoint_stale ? 'STALE PLAN · ' : '') + value(c.next_safe_action));
     put('checkpoint-age', (c.checkpoint_stale ? 'STALE · ' : '') + 'Checkpoint · ' + stamp(c.checkpoint_observed_at));
     const decisions = $('decision-list'); decisions.replaceChildren();
     for (const d of s.decision_center) {
-      const n = node('article', undefined, 'decision-item'); n.append(badge('WAITING HUMAN'), node('h3', d.title)); line(n, 'Gate', d.type); if (d.provider) line(n, 'Provider', d.provider); decisions.append(n);
+      const n = node('article', undefined, 'decision-item'); n.append(badge('WAITING HUMAN'), node('h3', d.title)); line(n, 'Gate', d.type); line(n, 'Grund', d.reason); line(n, 'Risiko', d.risk); line(n, 'Kosten USD', d.cost_usd); line(n, 'Nutzen', d.benefit); line(n, 'Exakter GO-Token', d.go_token); if (d.provider) line(n, 'Provider', d.provider); decisions.append(n);
     }
     if (!s.decision_center.length) decisions.append(node('p', complete ? 'Keine offenen Owner-Gates beobachtet.' : 'Owner-Gates derzeit nicht vollständig prüfbar.', 'muted'));
     for (const key of ['cap','spend','remaining']) { const v = s.budget[{cap:'cap_usd',spend:'spent_usd',remaining:'remaining_usd'}[key]]; put('budget-' + key, v === null || v === undefined ? null : '$' + Number(v).toFixed(2)); }
@@ -80,8 +86,25 @@
     select.replaceChildren(new Option('All domains', '')); domains.forEach(d => select.add(new Option(d, d))); select.value = selected;
     put('completeness', complete ? 'Operative Quellen vollständig innerhalb der Read-Grenzen. History begrenzt; Snapshot nicht atomar.' : 'Unvollständige Quellen: ' + f.incomplete_sources.join(', ') + '. Zähler sind beobachtete Untergrenzen.');
     missions();
+    const revenue = s.first_money || {}, products = s.money_products || {}, safety = s.runtime_safety || {};
+    const publications = $('publication-list'); publications.replaceChildren();
+    for (const p of revenue.posts || []) line(publications, p.platform, stamp(p.scheduled_at) + ' · ' + value(p.state));
+    line(publications, 'Publication-Nachweis', (revenue.publication_stale ? 'STALE · ' : '') + stamp(revenue.publication_observed_at) + ' · gespeicherte Plattform-Beobachtung');
+    put('content-identifiers', 'content_id: ' + value(revenue.content_id) + ' · experiment_id: ' + value(revenue.experiment_id));
+    const funnel = $('funnel'); funnel.replaceChildren();
+    for (const [label,key] of [['Sessions','sessions'],['Product Views','product_views'],['Offer Views','offer_views'],['Merchant Clickouts','merchant_clickouts'],['Transactions','transactions'],['Commission EUR','commission_eur']]) {
+      const cell = node('div'); cell.append(node('small', label), node('strong', (key !== 'transactions' && key !== 'commission_eur' && !revenue.analytics_complete ? '≥ ' : '') + value(revenue[key]))); funnel.append(cell);
+    }
+    put('funnel-basis', 'Beobachtete Events inkl. möglicher technischer Tests. Nur diese content_id / 1 Million. ' + (revenue.analytics_complete ? '' : 'Begrenzte Daten: Untergrenzen. ') + 'Transactions und Commission: Unknown bis Affiliate-Netzwerk-Nachweis. Clickouts sind keine Verkäufe.');
+    const productList = $('money-products'); productList.replaceChildren();
+    for (const p of products.rows || []) { const cell = node('div'); cell.append(node('h4', p.product), node('p', p.state)); productList.append(cell); }
+    put('product-evidence', (products.stale ? 'STALE · ' : '') + 'Business-Checkpoint · ' + stamp(products.observed_at));
+    const queue = $('queue-counts'); queue.replaceChildren();
+    for (const key of ['done','active','waiting_external','blocked','cancelled']) { const cell = node('div'); cell.append(node('small', key), node('strong', s.queue?.[key])); queue.append(cell); }
+    put('queue-time', 'Loop-Beobachtung · ' + stamp(s.queue?.observed_at));
+    put('runtime-safety', 'Neue Jarvis-Kosten heute: ' + (safety.today_new_cost_usd === null || safety.today_new_cost_usd === undefined ? 'Unknown' : '$' + Number(safety.today_new_cost_usd).toFixed(4)) + ' · Stale leases: ' + value(safety.stale_leases) + ' · Open reservations: ' + value(safety.open_reservations) + ' · provider_cost_unknown: ' + value(safety.provider_cost_unknown) + ' · Tag: Europe/Berlin; offene/unklare Kosten bleiben Unknown.');
     const activity = $('activity-list'); activity.replaceChildren();
-    for (const e of s.live_activity) { const n = node('article', undefined, 'activity-item'); n.append(node('time', stamp(e.observed_at)), node('strong', e.event_type || 'Unclassified event')); line(n, e.source_type || 'Unknown source', e.processing_status || e.status); activity.append(n); }
+    for (const e of s.worker_deck.filter(w => w.completed_at && w.checkpoint?.verified === true).slice(0, 8)) { const n = node('article', undefined, 'activity-item'); n.append(node('time', stamp(e.completed_at)), node('strong', e.task_title || e.task_id)); line(n, 'Verified checkpoint', e.checkpoint.step); activity.append(n); }
     if (!s.live_activity.length) activity.append(node('p', 'Keine Events in der Beobachtung.', 'muted'));
     const systems = $('system-list'); systems.replaceChildren();
     for (const h of s.system_health) {
@@ -114,7 +137,8 @@
       $('connection-alert').hidden = false;
       put('connection-alert', snapshot ? 'LIVE READ UNAVAILABLE · Letzte Beobachtung bleibt sichtbar und ist nicht mehr als aktuell bestätigt.' : 'LIVE READ UNAVAILABLE · Kein Systemzustand bestätigt. Erneute Prüfung folgt.');
       put('sync-label', 'Verbindung unterbrochen');
-      $('jarvis-state').replaceWith(Object.assign(badge('UNKNOWN'), {id:'jarvis-state'}));
+      put('owner-now', 'Aktueller Entscheidungsstatus unbekannt · erneut prüfen');
+      $('jarvis-state').replaceWith(Object.assign(badge('ERROR'), {id:'jarvis-state'}));
     } finally { clearTimeout(timeout); busy = false; $('refresh').disabled = false; timer = setTimeout(refresh, 10000); }
   }
   $('refresh').addEventListener('click', refresh);
