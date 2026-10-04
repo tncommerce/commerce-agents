@@ -120,6 +120,20 @@ CJ's current developer platform uses personal access tokens as Bearer credential
 
 Always label the commission state used in revenue KPIs.
 
+## First manual network reconciliation result — 2026-10-04
+
+Owner-observed Awin Classic transaction reports were checked for Perfumetrader over 2026-10-01 through 2026-10-04:
+
+- clickref-filtered check for `one_million_example61_01`: 0 sales, EUR 0.00 amount, EUR 0.00 commission
+- advertiser-wide Perfumetrader check with the clickref search cleared: 0 sales, EUR 0.00 amount, EUR 0.00 commission
+- open, confirmed, bonus and rejected transaction counts were all zero
+
+Current evidence therefore supports:
+
+`2 DUFYND merchant clickouts -> 0 observed Awin transactions -> EUR 0.00 observed commission`
+
+This is a point-in-time network observation, not a permanent conclusion. A later-posted or amended Awin transaction must update the state rather than being inferred retroactively.
+
 ## Minimal owner action
 
 For Awin, the minimum owner action is **either** (A) log into Awin Classic, open `Reports > Performance > Transactions`, use the date window beginning 2026-10-01, and export the report; **or**, for automation, (B) confirm the authoritative publisher/account ID and securely provide an OAuth2 API access token through a secure integration form. Never paste the token into chat.
