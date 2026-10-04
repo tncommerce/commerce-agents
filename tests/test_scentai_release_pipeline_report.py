@@ -37,11 +37,8 @@ def staged_product() -> dict:
             "image_url": "/products/test.png",
             "image_status": "approved_feed_image",
             "image_reviewed_at": "2026-09-18T10:00:00+00:00",
-            "image_source_class": "merchant_feed",
             "image_rights_basis_id": "awin-test-feed-rights",
             "image_rights_checked_at": "2026-09-18",
-            "image_exact_variant_verified": True,
-            "image_variant": "100ml",
         },
     }
 
