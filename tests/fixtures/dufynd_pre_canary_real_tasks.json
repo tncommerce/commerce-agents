@@ -1,0 +1,24 @@
+[
+  {
+    "task_id": "jarvis_launch_attribution_posttech_audit_20261001",
+    "title": "Audit launch attribution after TECH correlation work",
+    "instruction": "Read-only audit using current scentai-mvp and current repository analytics implementation. Trace how src/cmp/content and sid are expected to survive landing, product/detail/comparison navigation and merchant clickout after the recent TECH correlation changes. Compare implementation with the two pending launch gates content_attribution and launch_tracking. Do not generate synthetic production analytics, click external merchant links, edit code, or mark a gate passed without real observed production evidence. Produce the exact real-world evidence still required and flag any engineering defect for TECH.",
+    "domain": "research",
+    "dependencies": [],
+    "status": "blocked",
+    "priority": 98,
+    "requires_human_approval": false,
+    "approval_action_type": "auto_allowed"
+  },
+  {
+    "task_id": "jarvis_content_preview_priority_20261001",
+    "title": "Prioritize existing preview reserve without spend",
+    "instruction": "Read-only audit of the 15 existing DUFYND pilot preview MP4s, scripts, subtitle drafts, social copy and current creative-learning documents. Select up to three strongest candidates for the next no-spend finalization wave under the current Naxos-level quality floor. Explicitly exclude rejected/rebuild-only Sillage/Haltbarkeit and EDP-vs-EDT. Distinguish what can be done with operator-recorded voiceover and local final rendering from anything that would require paid generation. Do not publish, spend credits, regenerate locked high-end assets, edit repository files or infer live social performance.",
+    "domain": "content",
+    "dependencies": [],
+    "status": "ready",
+    "priority": 97,
+    "requires_human_approval": false,
+    "approval_action_type": "auto_allowed"
+  }
+]

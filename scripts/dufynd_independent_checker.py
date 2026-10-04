@@ -110,7 +110,13 @@ def verify_receipt(handoff: dict, receipt: dict, *, identity: CheckerIdentity) -
         outcome = "waiting_human_input"
     if outcome == "rework_required" and handoff["rework_count"] >= MAX_REWORK:
         outcome = "blocked"
-    return {
+    decision = {
+        "version": 1,
+        "task_id": task["task_id"],
+        "maker": handoff["maker"],
+        "packet_sha256": handoff["evidence"].get("packet_sha256"),
+        "checks": checks,
+        "runtime": handoff["runtime"],
         "outcome": outcome,
         "checker": identity.principal,
         "handoff_sha256": digest,
@@ -124,6 +130,9 @@ def verify_receipt(handoff: dict, receipt: dict, *, identity: CheckerIdentity) -
             "rework_required": "blocked",
         }.get(outcome, outcome),
     }
+
+    decision["receipt_sha256"] = hashlib.sha256(encode(decision)).hexdigest()
+    return decision
 
 
 def run_checker(
@@ -143,7 +152,15 @@ def run_checker(
 
 def next_safe_task(tasks: list[dict], verified_task_id: str, decision: dict) -> dict | None:
     """Pure scheduling proposal; trusted control-plane must persist/verify before dispatch."""
-    if decision.get("next_state") != "done" or not decision.get("checker"):
+    receipt_body = {k: v for k, v in decision.items() if k != "receipt_sha256"}
+    if (
+        decision.get("next_state") != "done"
+        or decision.get("task_id") != verified_task_id
+        or not decision.get("checker")
+        or decision.get("checker") == decision.get("maker")
+        or decision.get("outcome") not in {"accepted", "verified"}
+        or decision.get("receipt_sha256") != hashlib.sha256(encode(receipt_body)).hexdigest()
+    ):
         return None
     candidates = [
         t
@@ -151,6 +168,7 @@ def next_safe_task(tasks: list[dict], verified_task_id: str, decision: dict) -> 
         if t["task_id"] != verified_task_id
         and t.get("status") == "ready"
         and not t.get("requires_human_approval")
+        and t.get("approval_action_type", "auto_allowed") == "auto_allowed"
         and not t.get("provider_cost_unknown")
         and all(
             d == verified_task_id

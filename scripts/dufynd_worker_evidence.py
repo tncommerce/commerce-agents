@@ -8,12 +8,16 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-MAX_PROMPT_BYTES = 30000
+MAX_PROMPT_BYTES = 24576
 MAX_SOURCE_BYTES = 262144
 MAX_TEXT_BYTES = 500
 
 ATTRIBUTION = (
     "examples/retail/storefront-web/lib/analytics.ts",
+    "examples/retail/storefront-web/components/AcquisitionLanding.tsx",
+    "examples/retail/storefront-web/app/duft/[slug]/page.tsx",
+    "examples/retail/storefront-web/app/vergleich/[pair]/page.tsx",
+    "examples/retail/api/merchant_partners.py",
     "examples/retail/storefront-web/components/AcquisitionAnalytics.tsx",
     "examples/retail/storefront-web/components/AcquisitionInternalLink.tsx",
     "examples/retail/storefront-web/components/ComparisonAnalytics.tsx",
@@ -32,6 +36,7 @@ CONTENT = (
     (
         "docs/dufynd_creative_learning_library.md",
         "examples/retail/data/dufynd_high_end_launch_assets.json",
+        "examples/retail/data/dufynd_high_end_launch_review.json",
         "examples/retail/data/scentai_content_pipeline_status.json",
         "examples/retail/data/dufynd_content_strategy.json",
         "examples/retail/data/dufynd_content_buffer_plan.json",
@@ -65,6 +70,195 @@ def profile_for(task: dict) -> str:
     raise ValueError("unsupported_evidence_capability")
 
 
+CODE_WINDOWS = {
+    "examples/retail/data/scentai_launch_attribution.md": [("## Interpretation guardrails", 0, 5)],
+    "examples/retail/api/tests/test_clickout_analytics_correlation.py": [
+        ('sid=" session-partner', 6, 2),
+        ('"campaign_id": "launch_01"', 6, 2),
+        ('sid=" session-offer', 6, 2),
+        ('"session_id": "session-offer', 2, 9),
+    ],
+    ATTRIBUTION[0]: [
+        ("export function rememberAcquisitionAttribution", 0, 33),
+        ("export function appendAcquisitionAttribution", 0, 36),
+        ("export async function ensureAnalyticsSession", 0, 34),
+        ("window.sessionStorage.getItem", 2, 8),
+    ],
+    "examples/retail/storefront-web/components/AcquisitionAnalytics.tsx": [
+        ("const params = new URLSearchParams", 0, 35)
+    ],
+    "examples/retail/storefront-web/components/AcquisitionInternalLink.tsx": [
+        ("useEffect(() =>", 0, 17)
+    ],
+    "examples/retail/storefront-web/components/AcquisitionLanding.tsx": [
+        ("<AcquisitionAnalytics", 0, 12)
+    ],
+    "examples/retail/storefront-web/app/duft/[slug]/page.tsx": [
+        ("<AcquisitionAnalytics", 0, 4),
+        ("<FragranceOffers", 0, 9),
+        ("<AcquisitionInternalLink", 0, 6),
+    ],
+    "examples/retail/storefront-web/app/vergleich/[pair]/page.tsx": [
+        ("<AcquisitionAnalytics", 0, 9),
+        ("<FragranceOffers", 0, 13),
+    ],
+    "examples/retail/storefront-web/components/ComparisonAnalytics.tsx": [
+        ("useEffect(() =>", 0, 25)
+    ],
+    "examples/retail/storefront-web/components/FragranceOffers.tsx": [
+        ("ensureAnalyticsSession().finally", 2, 10),
+        ("href={appendAcquisitionAttribution", 2, 11),
+    ],
+    "examples/retail/storefront-web/lib/api.ts": [
+        ("export async function initializeAnalyticsSession", 0, 20),
+        ("export function merchantClickoutUrl", 0, 5),
+    ],
+    "examples/retail/api/main.py": [
+        ("async def merchant_clickout(", 1, 44),
+        ("async def analytics_event(", 1, 17),
+        ("target = partner_clickout_url(", 0, 11),
+    ],
+    "examples/retail/api/merchant_offers.py": [
+        ("def offer_clickout_target(", 0, 7),
+        ("def customer_offer_payload(", 0, 20),
+    ],
+    "examples/retail/api/merchant_partners.py": [("def partner_clickout_url(", 0, 28)],
+    "examples/retail/api/analytics.py": [("def session_key(", 0, 40)],
+    "docs/dufynd_creative_learning_library.md": [("## Example 38", 0, 12)],
+}
+
+
+def content_projection(name: str, data: dict) -> dict | None:
+    """Fixed JSON fields; no live metrics, scores or inferred audiovisual quality."""
+
+    def fields(value, names):
+        return {k: value[k] for k in names if k in value}
+
+    if name.endswith("_subtitles.json"):
+        return {
+            "status": data.get("status"),
+            "items": [
+                {
+                    "content_id": item.get("content_id"),
+                    "segment_count": len(item.get("segments", [])),
+                    "opening_text": str(item.get("segments", [{}])[0].get("text", ""))[:40],
+                    "end_seconds": item.get("segments", [{}])[-1].get("end"),
+                }
+                for item in data.get("items", [])
+            ],
+        }
+    if name.endswith("_social_copy.json"):
+        return {
+            "posts": [
+                {
+                    "content_id": p.get("content_id"),
+                    "tiktok": {"caption": str(p.get("tiktok", {}).get("caption", ""))[:80]},
+                }
+                for p in data.get("posts", [])
+            ]
+        }
+    if name.endswith("_voiceover_spec.json"):
+        return {
+            "status": data.get("status"),
+            "audio_contract": fields(data.get("audio_contract", {}), ("duration_rule",)),
+            "pilots": [
+                fields(p, ("content_id", "word_count", "required_wpm"))
+                for p in data.get("pilots", [])
+            ],
+        }
+    if "/social/pilots/" in name and name.endswith("index.json"):
+        return {
+            "previews": [
+                fields(p, ("content_id", "audio", "status")) for p in data.get("previews", [])
+            ]
+        }
+    if name.endswith("dufynd_high_end_launch_assets.json"):
+        return {
+            "status": data.get("status"),
+            "automatic_publish_allowed": data.get("automatic_publish_allowed"),
+            "assets": [
+                fields(p, ("content_id", "asset_state", "creative_state"))
+                for p in data.get("assets", [])
+            ],
+            "rebuild_required": [
+                fields(p, ("content_id", "status")) for p in data.get("rebuild_required", [])
+            ],
+        }
+    if name.endswith("dufynd_high_end_launch_review.json"):
+        return fields(
+            data,
+            (
+                "state",
+                "automatic_publish_allowed",
+                "paid_generation_authorized",
+                "quality_floor",
+                "rebuild_exclusions",
+            ),
+        )
+    if name.endswith("scentai_content_pipeline_status.json"):
+        return fields(
+            data,
+            (
+                "pipeline_state",
+                "active_track",
+                "legacy_pilot_batches",
+                "total_pilots",
+                "next_action",
+                "next_action_class",
+            ),
+        )
+    if name.endswith("dufynd_content_strategy.json"):
+        return fields(
+            data,
+            (
+                "strategy_status",
+                "legacy_pilot_role",
+                "next_action",
+                "next_action_class",
+                "approval_gates",
+            ),
+        )
+    if name.endswith("dufynd_content_buffer_plan.json"):
+        return {
+            **fields(data, ("status", "next_no_spend_completion")),
+            "inventory_snapshot": fields(
+                data.get("inventory_snapshot", {}),
+                ("planned_core_creatives", "preview_ready_creatives", "final_video_renders_ready"),
+            ),
+        }
+    if name.endswith("dufynd_high_end_pre_publish_checklist.json"):
+        return {
+            **fields(data, ("state", "automatic_publish_allowed", "paid_generation_required")),
+            "copy_qc": fields(data.get("copy_qc", {}), ("status", "rules", "cta_rule")),
+        }
+    return None
+
+
+def compact_projection(data: dict) -> dict:
+    result = {}
+    for key, value in data.items():
+        if isinstance(value, list) and value and all(isinstance(row, dict) for row in value):
+            columns = list(dict.fromkeys(k for row in value for k in row))
+            result[key] = {
+                "columns": columns,
+                "rows": [[row.get(k) for k in columns] for row in value],
+            }
+        else:
+            result[key] = value
+    return result
+
+
+def projection_rows(source: dict, key: str) -> list[dict]:
+    value = source["data"].get(key, [])
+    if isinstance(value, list):
+        return value
+    return [dict(zip(value["columns"], row, strict=True)) for row in value["rows"]]
+
+
+def source_text(source: dict) -> str:
+    return source.get("text") or encode(source.get("data", {})).decode()
+
+
 def excerpt(raw: bytes, keywords: set[str], name: str = "") -> dict:
     text = raw.decode("utf-8")
     lines = text.splitlines(keepends=True)
@@ -74,51 +268,51 @@ def excerpt(raw: bytes, keywords: set[str], name: str = "") -> dict:
         data = json.loads(text)
     except ValueError:
         data = None
-    if isinstance(data, dict) and (
-        name.endswith("_subtitles.json") or name.endswith("_social_copy.json")
-    ):
-        subtitle = name.endswith("_subtitles.json")
-        key = "items" if subtitle else "posts"
-        projected = {
-            "status": data.get("status"),
-            "note": str(data.get("note") or "")[:160],
-            "guidance": str(data.get("guidance") or "")[:200],
-            key: [],
-        }
-        for item in data.get(key, []):
-            if subtitle:
-                segments = item.get("segments", [])
-                value = {
-                    "content_id": item.get("content_id"),
-                    "segment_count": len(segments),
-                    "end_seconds": segments[-1].get("end") if segments else None,
-                    "opening_text": str(segments[0].get("text") or "")[:80] if segments else "",
-                }
+    if name in CODE_WINDOWS:
+        selected = set()
+        missing = []
+        for marker, before, after in CODE_WINDOWS[name]:
+            matches = [i for i, line in enumerate(lines) if marker in line]
+            if not matches:
+                missing.append(marker)
+                continue
+            i = matches[0]
+            selected.update(range(max(0, i - before), min(len(lines), i + after + 1)))
+        ranges = []
+        for i in sorted(selected):
+            if ranges and ranges[-1][1] == i:
+                ranges[-1][1] = i + 1
             else:
-                value = {
-                    "content_id": item.get("content_id"),
-                    "tiktok": {"caption": str(item.get("tiktok", {}).get("caption") or "")[:80]},
-                }
-            projected[key].append(value)
+                ranges.append([i + 1, i + 1])
         return {
-            "text": encode(projected).decode(),
-            "projection": key,
-            "json_paths": [f"$.{key}[*]"],
-            "line_ranges": [],
+            "text": "".join(lines[i] for i in sorted(selected)),
+            "line_ranges": ranges,
             "complete": False,
-            "omission_reason": "subtitle text beyond opening/caption beyond 80 characters; other segments/platforms omitted",
+            "missing_anchors": missing,
+            "omission_reason": "code_windows_only",
         }
+    if isinstance(data, dict):
+        projection = content_projection(name, data)
+        if projection is not None:
+            return {
+                "data": compact_projection(projection),
+                "projection": "fields",
+                "complete": False,
+                "omission_reason": "projection_fields_only",
+            }
     if (
         isinstance(data, dict)
         and isinstance(data.get("pilots"), list)
         and not name.endswith("_voiceover_spec.json")
     ):
-        fields = ("content_id", "hook", "voiceover", "target_duration_seconds", "format", "status")
+        fields = ("content_id", "hook", "voiceover", "target_duration_seconds")
         projected = {
             "rules": {
-                k: data[k]
-                for k in ("global_rules", "global_delivery", "audio_contract", "status")
-                if k in data
+                "global_rules": {
+                    k: v
+                    for k, v in data.get("global_rules", {}).items()
+                    if k in ("claims_policy", "ranking_policy")
+                }
             },
             "pilots": [
                 {key: pilot[key] for key in fields if key in pilot}
@@ -129,12 +323,10 @@ def excerpt(raw: bytes, keywords: set[str], name: str = "") -> dict:
         rendered = encode(projected).decode()
         if len(rendered.encode()) <= 6000:
             return {
-                "text": rendered,
-                "projection": "pilots identities/hooks/full voiceover + global rules",
-                "json_paths": ["$.global_rules", "$.pilots[*]"],
-                "line_ranges": [],
+                "data": compact_projection(projected),
+                "projection": "pilots_fields",
                 "complete": False,
-                "omission_reason": "non-script fields omitted by fixed JSON projection",
+                "omission_reason": "unselected fields omitted",
             }
     if len(raw) <= MAX_TEXT_BYTES:
         return {"text": text, "line_ranges": [[1, len(lines)]], "complete": True}
@@ -222,6 +414,19 @@ def pack_evidence(task: dict, *, head: str | None, root: Path = ROOT) -> dict:
                 and not name.endswith(("_subtitles.json", "_social_copy.json"))
             ]
         )
+    if profile == "content_preview":
+        essential = [
+            n
+            for n in sources
+            if n.endswith(("_subtitles.json", "_social_copy.json", "_voiceover_spec.json"))
+        ]
+        strategic = [
+            "docs/dufynd_creative_learning_library.md",
+            *CONTENT[:6],
+            "examples/retail/data/dufynd_high_end_pre_publish_checklist.json",
+        ]
+        indexes = [n for n in sources if "/social/pilots/" in n]
+        sources = list(dict.fromkeys(core_batches + essential + strategic + indexes + sources))
     for source_index, name in enumerate(sources):
         path = root / name
         reason = None
@@ -244,21 +449,41 @@ def pack_evidence(task: dict, *, head: str | None, root: Path = ROOT) -> dict:
         source = {
             "path": name,
             "sha256": hashlib.sha256(raw).hexdigest(),
-            "source_bytes": len(raw),
+            "priority": source_index + 1,
             **excerpt(raw, keywords, name),
         }
+        if "data" in source:
+            source.pop("projection", None)
+            source.pop("complete", None)
+        if source.get("missing_anchors") == []:
+            source.pop("missing_anchors")
         packet["repository_evidence"].append(source)
         # Reserve room for all remaining omission records; never truncate a serialized prompt.
         reserved = (
             sum(
-                len(encode({"path": remaining, "reason": "context_priority_budget"})) + 1
+                len(
+                    encode(
+                        {
+                            "path": remaining,
+                            "reason": "context_priority_budget",
+                            "priority": 99,
+                        }
+                    )
+                )
+                + 1
                 for remaining in sources[source_index + 1 :]
             )
             + 100
         )
         if len(encode(packet)) > MAX_PROMPT_BYTES - reserved:
             packet["repository_evidence"].pop()
-            packet["omitted_sources"].append({"path": name, "reason": "context_priority_budget"})
+            packet["omitted_sources"].append(
+                {
+                    "path": name,
+                    "priority": source_index + 1,
+                    "reason": "context_priority_budget",
+                }
+            )
     if len(encode(packet)) > MAX_PROMPT_BYTES:
         raise ValueError("evidence_packet_exceeds_context_budget")
     packet["packet_sha256"] = hashlib.sha256(encode(packet)).hexdigest()

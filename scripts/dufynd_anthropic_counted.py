@@ -297,7 +297,13 @@ class CountedClient:
         if not api_key:
             raise BudgetGate("provider_credential_missing")
         self.api_key, self.transport = api_key, transport
-        self.execution_audit = {"provider_request_attempted": False, "cost_usd": "0"}
+        self.execution_audit = {
+            "provider_request_attempted": False,
+            "cost_usd": "0",
+            "reservation_state": "not_created",
+            "reservation_id": None,
+            "ledger_dispatched": False,
+        }
         self.last_count = None
 
     def _post(self, path: str, payload: bytes) -> dict:
@@ -330,10 +336,17 @@ class CountedClient:
         return count
 
     def execute(self, bridge, prepared: Prepared, *, task: dict, budget_id: str, key: str) -> dict:
-        self.execution_audit = {"provider_request_attempted": False, "cost_usd": "0"}
+        self.execution_audit = {
+            "provider_request_attempted": False,
+            "cost_usd": "0",
+            "reservation_state": "not_created",
+            "reservation_id": None,
+            "ledger_dispatched": False,
+        }
         proof = validate(prepared)
         if resolve_budget(bridge)[0] != budget_id:
             raise BudgetGate("budget_window_changed")
+        self.execution_audit["reservation_state"] = "reserve_attempted"
         admission = bridge.reserve_model_call(
             budget_id=budget_id,
             task_id=task["task_id"],
@@ -346,8 +359,11 @@ class CountedClient:
             ttl_seconds=180,
         )
         if not isinstance(admission, dict) or admission.get("allowed") is not True:
+            self.execution_audit["reservation_state"] = "denied"
             raise BudgetGate("reservation_denied")
         rid = admission["reservation"]["reservation_id"]
+        self.execution_audit.update(reservation_id=rid, reservation_state="reserved")
+        self.execution_audit["reservation_state"] = "dispatch_attempted"
         if (
             bridge._rpc(
                 "dispatch_dufynd_counted_call",
@@ -356,14 +372,16 @@ class CountedClient:
             is not True
         ):
             raise BudgetGate("dispatch_denied")
+        self.execution_audit.update(ledger_dispatched=True, reservation_state="dispatched")
         response = None
         try:
-            self.execution_audit = {"provider_request_attempted": True, "cost_usd": None}
+            self.execution_audit.update(provider_request_attempted=True, cost_usd=None)
             response = self._post("", prepared.payload)
             cost, evidence, violation = actual_usage(prepared, response)
             self.execution_audit["cost_usd"] = str(cost)
         except BaseException as error:
             # One dispatched request, never an automatic retry. Unknown billing pauses the window.
+            self.execution_audit["reservation_state"] = "unknown_settlement_attempted"
             bridge._rpc(
                 "settle_dufynd_counted_call",
                 {
@@ -384,6 +402,7 @@ class CountedClient:
                 },
             )
             raise BudgetGate("provider_outcome_unknown_no_retry") from error
+        self.execution_audit["reservation_state"] = "settlement_attempted"
         if (
             bridge._rpc(
                 "settle_dufynd_counted_call",
@@ -398,6 +417,7 @@ class CountedClient:
             is not True
         ):
             raise BudgetGate("settlement_pending_watchdog_no_retry")
+        self.execution_audit["reservation_state"] = "settled"
         if violation:
             raise BudgetGate("provider_usage_exceeded_conservative_policy")
         remaining = bridge.load_budget_status(budget_id)
@@ -525,11 +545,21 @@ async def process_counted_task(bridge, *, task_id: str | None = None) -> int:
         audit = (
             client.execution_audit
             if client
-            else {"provider_request_attempted": False, "cost_usd": "0"}
+            else {
+                "provider_request_attempted": False,
+                "cost_usd": "0",
+                "reservation_state": "not_created",
+                "reservation_id": None,
+                "ledger_dispatched": False,
+            }
         )
         diagnostic = {
             **audit,
+            "task_id": task_id,
             "failure_stage": phase,
+            "stop_reason": "counted_worker_failed_no_retry",
+            "provider_dispatched": bool(audit["provider_request_attempted"]),
+            "terminal_state": "blocked",
             "failure_reason": reason,
             "error_type": type(error).__name__,
             "budget_id": budget_id,
@@ -543,7 +573,11 @@ async def process_counted_task(bridge, *, task_id: str | None = None) -> int:
             "head_sha": os.getenv("GITHUB_SHA"),
             "retry_allowed": False,
         }
+        diagnostic["terminal_receipt_sha256"] = hashlib.sha256(canonical(diagnostic)).hexdigest()
         try:
+            bridge.upsert_master_status(
+                key=f"jarvis.failure_receipt.{task_id}", category="jarvis", value=diagnostic
+            )
             bridge.record_run(
                 run_type=f"safe_task_failed:{task_id}",
                 input_summary="Counted worker diagnostic",
