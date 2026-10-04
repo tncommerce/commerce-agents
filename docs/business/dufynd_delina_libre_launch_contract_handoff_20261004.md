@@ -25,9 +25,10 @@ Do not relabel a merchant-feed image as `licensed` merely to satisfy the current
 - Merchant product ID: `PDM0227`
 - Verified deep link exists in canonical offers.
 - Notino program is approved and Delina is inside the explicit `verified_product_only` live-activation scope.
-- Current canonical offer snapshot refreshed from current public Notino evidence: €285, free shipping, available, `2026-10-04T09:44:49Z`.
+- Current public Notino evidence refreshed at `2026-10-04T09:44:49Z`: €285, free shipping, available.
 - Refresh evidence: `examples/retail/data/dufynd_notino_delina_libre_offer_refresh_20261004.json`.
-- 72-hour freshness now expires `2026-10-07T09:44:49Z` UTC / `11:44:49` Europe/Berlin. Revalidate immediately before any promotion if that window has elapsed.
+- Canonical `merchant_offers.json` remains intentionally untouched by this Business-only handoff because direct freshness mutation changes derived Jarvis state fingerprints. Its committed timestamp remains `2026-10-01T14:17:32Z` and expires under the 72-hour runtime gate at `2026-10-04T14:17:32Z` UTC / `16:17:32` Europe/Berlin.
+- TECH/promotion must ingest/revalidate the fresh evidence through the canonical supported state path and rebuild required derived state; do not copy a timestamp merely to pass freshness.
 
 ## Libre evidence
 
@@ -44,9 +45,10 @@ Do not relabel a merchant-feed image as `licensed` merely to satisfy the current
 - Merchant product ID: `VZR11010`
 - Verified deep link exists in canonical offers.
 - Notino program is approved and Libre is inside the explicit `verified_product_only` live-activation scope.
-- Current canonical offer snapshot refreshed from current public Notino evidence: €119, free shipping, available, `2026-10-04T09:44:49Z`.
+- Current public Notino evidence refreshed at `2026-10-04T09:44:49Z`: €119, free shipping, available.
 - Refresh evidence: `examples/retail/data/dufynd_notino_delina_libre_offer_refresh_20261004.json`.
-- 72-hour freshness now expires `2026-10-07T09:44:49Z` UTC / `11:44:49` Europe/Berlin. Revalidate immediately before any promotion if that window has elapsed.
+- Canonical `merchant_offers.json` remains intentionally untouched by this Business-only handoff because direct freshness mutation changes derived Jarvis state fingerprints. Its committed timestamp remains `2026-10-01T16:21:51Z` and expires under the 72-hour runtime gate at `2026-10-04T16:21:51Z` UTC / `18:21:51` Europe/Berlin.
+- TECH/promotion must ingest/revalidate the fresh evidence through the canonical supported state path and rebuild required derived state; do not copy a timestamp merely to pass freshness.
 
 ## Existing blocker proven by PR #657
 
