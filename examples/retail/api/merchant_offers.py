@@ -5,7 +5,7 @@ from datetime import UTC, datetime
 from ipaddress import ip_address
 from pathlib import Path
 from typing import Any
-from urllib.parse import urlparse
+from urllib.parse import parse_qsl, urlencode, urlparse
 from uuid import uuid4
 
 from pydantic import BaseModel, Field
@@ -84,9 +84,37 @@ def _https_url(value: str | None) -> bool:
     )
 
 
-def offer_clickout_target(offer: MerchantOffer) -> str | None:
+def offer_clickout_target(
+    offer: MerchantOffer,
+    *,
+    clickref: str | None = None,
+    clickref2: str | None = None,
+    clickref3: str | None = None,
+    clickref4: str | None = None,
+    clickref5: str | None = None,
+    clickref6: str | None = None,
+) -> str | None:
     if _https_url(offer.affiliate_url):
-        return str(offer.affiliate_url).strip()
+        target = str(offer.affiliate_url).strip()
+        parsed = urlparse(target)
+        hostname = str(parsed.hostname or "").casefold().rstrip(".")
+        clickrefs = {
+            "clickref": clickref,
+            "clickref2": clickref2,
+            "clickref3": clickref3,
+            "clickref4": clickref4,
+            "clickref5": clickref5,
+            "clickref6": clickref6,
+        }
+        if hostname in {"awin1.com", "www.awin1.com"} and any(clickrefs.values()):
+            query = [
+                (key, value)
+                for key, value in parse_qsl(parsed.query, keep_blank_values=True)
+                if key.casefold() not in clickrefs
+            ]
+            query.extend((key, value) for key, value in clickrefs.items() if value)
+            return parsed._replace(query=urlencode(query)).geturl()
+        return target
     if _https_url(offer.product_url):
         return str(offer.product_url).strip()
     return None
