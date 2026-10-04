@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
+from urllib.parse import parse_qs, urlparse
 
 import pytest
 
@@ -163,3 +164,54 @@ async def test_offer_clickout_correlates_session_and_acquisition(
         "content_id": "offer_card_02",
         "surface": "merchant_offer",
     }
+
+
+@pytest.mark.asyncio
+async def test_offer_clickout_forwards_attribution_into_awin_clickrefs(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    offer = MerchantOffer(
+        offer_id="awin-offer",
+        product_id="SC-QA-100",
+        merchant_id="perfumetrader",
+        merchant_name="Perfumetrader",
+        merchant_product_id="16978322",
+        price=71.9,
+        currency="EUR",
+        shipping_cost=4.99,
+        in_stock=True,
+        product_url="https://www.perfumetrader.de/product",
+        affiliate_url=(
+            "https://www.awin1.com/cread.php?"
+            "awinmid=11672&awinaffid=3099222&clickref=static_old&"
+            "ued=https%3A%2F%2Fwww.perfumetrader.de%2Fproduct"
+        ),
+        last_updated_at=datetime(2026, 9, 30, 12, 0, tzinfo=UTC),
+    )
+    clickouts = CapturingClickoutTracker()
+    monkeypatch.setattr(main_module, "offer_store", StaticOfferStore(offer))
+    monkeypatch.setattr(main_module, "clickout_tracker", clickouts)
+    monkeypatch.setattr(
+        main_module,
+        "_live_dufynd_offer_product",
+        lambda product_id: product_id == "SC-QA-100",
+    )
+    tasks = CapturingBackgroundTasks()
+
+    response = await main_module.merchant_clickout(
+        "awin-offer",
+        tasks,
+        src="youtube",
+        cmp="campaign_01",
+        content="content_01",
+        sid="session-1234567890",
+    )
+
+    assert response.status_code == 302
+    query = parse_qs(urlparse(response.headers["location"]).query)
+    assert query["clickref"] == ["content_01"]
+    assert query["clickref2"] == ["campaign_01"]
+    assert query["clickref3"] == ["youtube"]
+    assert query["clickref4"] == ["session-1234567890"]
+    assert query["clickref5"] == ["SC-QA-100"]
+    assert query["clickref6"] == ["awin-offer"]

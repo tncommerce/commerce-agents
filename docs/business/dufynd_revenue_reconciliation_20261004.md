@@ -18,7 +18,7 @@ For the existing Rabanne 1 Million cohort, Supabase currently contains the order
 - 1 offer-section-open session
 - 1 merchant-clickout session
 
-The 25% landing-to-clickout figure is an early n=4 signal, not a sale conversion rate.
+The 25% landing-to-clickout figure is an early n=4 signal, not a sale conversion rate. Across 1 Million there are currently 2 first-party merchant clickouts: one unattributed/organic clickout on 2026-10-01 and one fully content-attributed YouTube clickout on 2026-10-03. Neither is a confirmed network transaction.
 
 ## 1 Million network key
 
@@ -26,8 +26,21 @@ The current Perfumetrader Awin affiliate route uses:
 
 - advertiser: `11672`
 - merchant product: `16978322`
-- clickref: `one_million_example61_01`
+- current stored clickref before the dynamic-attribution patch: `one_million_example61_01`
 - tracked URL contains `awinaffid=3099222`
+
+Because both historical Perfumetrader clickouts used the same stored Awin `clickref`, a future Awin transaction carrying only that historical clickref cannot uniquely identify which of the two DUFYND browser sessions converted. The 2026-10-03 content-to-clickout chain remains proven first-party; exact historical session-to-network-transaction linkage remains unproven unless Awin exposes additional click-level evidence for that transaction.
+
+For future Awin product-offer clickouts, DUFYND prepares the following network references at redirect time without changing merchant selection or destination:
+
+- `clickref` → `content_id` (fallback: campaign/source)
+- `clickref2` → `campaign_id`
+- `clickref3` → acquisition source
+- `clickref4` → anonymous DUFYND analytics session ID
+- `clickref5` → `product_id`
+- `clickref6` → `offer_id`
+
+Awin's publisher Transactions API can return `clickRef` plus `clickRef2` through `clickRef6`, allowing a future real network transaction to be joined back to the exact anonymous DUFYND session/product/offer when those fields are present.
 
 An older DUFYND rebrand runbook refers to publisher ID `309922`. That disagreement must be resolved from the authoritative Awin account before an API call; do not infer that the tracking affiliate ID and publisher API account ID are interchangeable.
 
@@ -39,9 +52,9 @@ For repeatable automation after the first manual proof, Awin's publisher transac
 
 Minimum first read after secure connection:
 
-- date window covering the first tagged clickout through today
+- date window beginning 2026-10-01 through today so both known 1 Million clickouts are covered
 - advertiser/program filtered to Perfumetrader when supported
-- retain transaction ID, transaction date, advertiser/merchant, clickRef, orderRef, sale amount/currency, commission/currency, commission status and validation/amendment data
+- retain transaction ID, transaction date, advertiser/merchant, clickRef, clickRef2-clickRef6 when present, orderRef, sale amount/currency, commission/currency, commission status and validation/amendment data
 - request basket/product detail only if the network actually supplies it and it is needed for product-level reconciliation
 
 The existing repo secret `AWIN_DATA_FEED_API_KEY` is documented for Awin product-feed download. It is **not** evidence that the OAuth2 publisher Transactions API token is configured.
@@ -109,7 +122,7 @@ Always label the commission state used in revenue KPIs.
 
 ## Minimal owner action
 
-For Awin, the minimum owner action is **either** (A) log into Awin Classic, open `Reports > Performance > Transactions`, use the date window beginning 2026-10-03, and export the report; **or**, for automation, (B) confirm the authoritative publisher/account ID and securely provide an OAuth2 API access token through a secure integration form. Never paste the token into chat.
+For Awin, the minimum owner action is **either** (A) log into Awin Classic, open `Reports > Performance > Transactions`, use the date window beginning 2026-10-01, and export the report; **or**, for automation, (B) confirm the authoritative publisher/account ID and securely provide an OAuth2 API access token through a secure integration form. Never paste the token into chat.
 
 For Windsor, use the existing Windsor connection form for `awin`; after the account appears as connected, Business can immediately discover fields and pull the first real transaction report. No new subscription is required by this specification; if Windsor itself asks for a paid upgrade, stop rather than incur spend.
 

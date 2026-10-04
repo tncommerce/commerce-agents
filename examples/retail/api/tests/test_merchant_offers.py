@@ -1,5 +1,6 @@
 import json
 from datetime import UTC, datetime, timedelta
+from urllib.parse import parse_qs, urlparse
 
 import pytest
 
@@ -122,6 +123,42 @@ def test_invalid_affiliate_url_falls_back_to_valid_product_url() -> None:
     assert [item.offer_id for item in ranked] == ["fallback"]
     assert offer_clickout_target(candidate) == candidate.product_url
     assert customer_offer_payload(candidate)["affiliate_link"] is False
+
+
+def test_awin_clickout_replaces_static_clickref_with_attribution_dimensions() -> None:
+    candidate = offer("awin-attributed", merchant="Merchant", price=90, shipping=0)
+    candidate.affiliate_url = (
+        "https://www.awin1.com/cread.php?"
+        "awinmid=11672&awinaffid=3099222&clickref=stale_content&"
+        "ued=https%3A%2F%2Fwww.perfumetrader.de%2Fproduct"
+    )
+
+    target = offer_clickout_target(
+        candidate,
+        clickrefs=["content_01", "campaign_01", "instagram", "session-1234567890"],
+    )
+
+    assert target is not None
+    query = parse_qs(urlparse(target).query)
+    assert query["awinmid"] == ["11672"]
+    assert query["awinaffid"] == ["3099222"]
+    assert query["clickref"] == ["content_01"]
+    assert query["clickref2"] == ["campaign_01"]
+    assert query["clickref3"] == ["instagram"]
+    assert query["clickref4"] == ["session-1234567890"]
+    assert query["clickref5"] == ["SC-TEST-100"]
+    assert query["clickref6"] == ["awin-attributed"]
+    assert query["ued"] == ["https://www.perfumetrader.de/product"]
+
+
+def test_non_awin_affiliate_clickout_is_not_rewritten() -> None:
+    candidate = offer("other-network", merchant="Merchant", price=90, shipping=0)
+    candidate.affiliate_url = "https://network.example/click?existing=value"
+
+    assert (
+        offer_clickout_target(candidate, clickrefs=["content_01"])
+        == "https://network.example/click?existing=value"
+    )
 
 
 def test_offer_without_valid_https_clickout_is_excluded() -> None:
