@@ -93,8 +93,10 @@ def offer_clickout_target(
         target = str(offer.affiliate_url).strip()
         parsed = urlparse(target)
         hostname = str(parsed.hostname or "").casefold().rstrip(".")
-        values = list(clickrefs or ())[:6]
-        values.extend([None] * (6 - len(values)))
+        context = list(clickrefs or ())[:4]
+        context.extend([None] * (4 - len(context)))
+        primary = next((value for value in context[:3] if value), None)
+        values = [primary, context[1], context[2], context[3], offer.product_id, offer.offer_id]
         names = ("clickref", "clickref2", "clickref3", "clickref4", "clickref5", "clickref6")
         refs = dict(zip(names, values, strict=True))
         if hostname in {"awin1.com", "www.awin1.com"} and any(refs.values()):
