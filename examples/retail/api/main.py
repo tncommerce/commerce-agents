@@ -227,16 +227,16 @@ async def merchant_clickout(
     content_id = sanitize_attribution_identifier(content)
     analytics_session_id = sanitize_attribution_identifier(sid)
 
-    network_refs = [content_id, campaign_id, acquisition_source, analytics_session_id]
-    target = offer_clickout_target(offer, clickrefs=network_refs) or target
-
     click_id = clickout_tracker.record(
         offer,
         acquisition_source=acquisition_source,
         campaign_id=campaign_id,
         content_id=content_id,
+        session_id=analytics_session_id,
     )
     analytics_session_id = analytics_session_id or f"offer-clickout-{click_id}"
+    network_refs = [content_id, campaign_id, acquisition_source, analytics_session_id]
+    target = offer_clickout_target(offer, clickrefs=network_refs, click_id=click_id) or target
     background_tasks.add_task(
         analytics_tracker.record,
         session_id=analytics_session_id,
@@ -247,6 +247,8 @@ async def merchant_clickout(
         campaign_id=campaign_id,
         content_id=content_id,
         surface="merchant_offer",
+        event_id=click_id,
+        offer_id=offer.offer_id,
     )
     return RedirectResponse(url=target, status_code=302)
 

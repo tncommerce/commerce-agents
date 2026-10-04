@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 import json
+import re
 from datetime import UTC, datetime
 from ipaddress import ip_address
 from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qsl, urlencode, urlparse
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 from pydantic import BaseModel, Field
 
@@ -88,6 +89,7 @@ def offer_clickout_target(
     offer: MerchantOffer,
     *,
     clickrefs: list[str | None] | tuple[str | None, ...] | None = None,
+    click_id: str | None = None,
 ) -> str | None:
     if _https_url(offer.affiliate_url):
         target = str(offer.affiliate_url).strip()
@@ -106,6 +108,22 @@ def offer_clickout_target(
                 if key.casefold() not in refs
             ]
             query.extend((key, value) for key, value in refs.items() if value)
+            return parsed._replace(query=urlencode(query)).geturl()
+        if (
+            hostname in {"jdoqocy.com", "www.jdoqocy.com"}
+            and str(offer.network or "").casefold() == "cj affiliate"
+            and re.fullmatch(r"/click-\d+-\d+", parsed.path)
+            and click_id
+        ):
+            # CJ has one SID: an opaque per-click key joins the persisted
+            # event back to content/campaign/source/session/product/offer.
+            sid = UUID(click_id).hex
+            query = [
+                (key, value)
+                for key, value in parse_qsl(parsed.query, keep_blank_values=True)
+                if key.casefold() != "sid"
+            ]
+            query.append(("sid", sid))
             return parsed._replace(query=urlencode(query)).geturl()
         return target
     if _https_url(offer.product_url):
@@ -274,11 +292,18 @@ class MerchantClickoutTracker:
         acquisition_source: str | None = None,
         campaign_id: str | None = None,
         content_id: str | None = None,
+        session_id: str | None = None,
     ) -> str:
         click_id = str(uuid4())
+        from .analytics import FirstPartyAnalyticsTracker
+
+        session_key = FirstPartyAnalyticsTracker.session_key(
+            session_id or f"offer-clickout-{click_id}"
+        )
         occurred_at = _as_utc(now or datetime.now(UTC))
         event = {
             "click_id": click_id,
+            "session_key": session_key,
             "occurred_at": occurred_at.isoformat(),
             "offer_id": offer.offer_id,
             "product_id": offer.product_id,

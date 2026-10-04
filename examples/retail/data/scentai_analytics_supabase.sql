@@ -8,6 +8,7 @@ create table if not exists public.scentai_analytics_events (
   session_key text not null,
   event text not null,
   product_id text null,
+  offer_id text null,
   source text null,
   acquisition_source text null,
   campaign_id text null,
@@ -21,6 +22,7 @@ create table if not exists public.scentai_analytics_events (
 );
 
 alter table public.scentai_analytics_events
+  add column if not exists offer_id text null,
   add column if not exists acquisition_source text null,
   add column if not exists campaign_id text null,
   add column if not exists content_id text null,

@@ -1,12 +1,15 @@
 from __future__ import annotations
 
+import json
 from datetime import UTC, datetime
+from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 import pytest
 
 from retail.api import main as main_module
-from retail.api.merchant_offers import MerchantOffer
+from retail.api.analytics import FirstPartyAnalyticsTracker
+from retail.api.merchant_offers import MerchantClickoutTracker, MerchantOffer
 from retail.api.merchant_partners import MerchantPartner
 
 
@@ -44,7 +47,7 @@ class CapturingClickoutTracker:
 
     def record(self, offer: MerchantOffer, **kwargs) -> str:
         self.calls.append((offer, kwargs))
-        return "qa-click-id"
+        return "12345678-1234-4234-8234-123456789abc"
 
 
 @pytest.mark.asyncio
@@ -146,6 +149,7 @@ async def test_offer_clickout_correlates_session_and_acquisition(
                 "acquisition_source": "instagram",
                 "campaign_id": "launch_02",
                 "content_id": "offer_card_02",
+                "session_id": "session-offer-123456",
             },
         )
     ]
@@ -163,6 +167,8 @@ async def test_offer_clickout_correlates_session_and_acquisition(
         "campaign_id": "launch_02",
         "content_id": "offer_card_02",
         "surface": "merchant_offer",
+        "offer_id": "qa-offer",
+        "event_id": "12345678-1234-4234-8234-123456789abc",
     }
 
 
@@ -215,3 +221,64 @@ async def test_offer_clickout_forwards_attribution_into_awin_clickrefs(
     assert query["clickref4"] == ["session-1234567890"]
     assert query["clickref5"] == ["SC-QA-100"]
     assert query["clickref6"] == ["awin-offer"]
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("session_id", ["session-cj-1234567890", None])
+async def test_cj_sid_joins_durable_clickout_without_changing_destination(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, session_id: str | None
+) -> None:
+    offer = MerchantOffer(
+        offer_id="notino-pdm-delina-edp-75",
+        product_id="SC-PDM-DELINA-EDP-75",
+        merchant_id="notino",
+        merchant_name="Notino",
+        price=285,
+        shipping_cost=0,
+        in_stock=True,
+        product_url="https://www.notino.de/exact-delina-75/",
+        affiliate_url=(
+            "https://www.jdoqocy.com/click-101884613-12260695?"
+            "SID=old&sid=older&url=https%3A%2F%2Fwww.notino.de%2Fexact-delina-75%2F"
+        ),
+        network="CJ Affiliate",
+        last_updated_at=datetime.now(UTC),
+    )
+    tracker = FirstPartyAnalyticsTracker(tmp_path / "analytics.jsonl")
+    tracker.supabase_url = ""
+    monkeypatch.setattr(main_module, "analytics_tracker", tracker)
+    monkeypatch.setattr(
+        main_module, "clickout_tracker", MerchantClickoutTracker(tmp_path / "clicks.jsonl")
+    )
+    monkeypatch.setattr(main_module, "offer_store", StaticOfferStore(offer))
+    monkeypatch.setattr(main_module, "_live_dufynd_offer_product", lambda _: True)
+    tasks = CapturingBackgroundTasks()
+    response = await main_module.merchant_clickout(
+        offer.offer_id,
+        tasks,
+        src="instagram",
+        cmp="qa_campaign",
+        content="qa_content",
+        sid=session_id,
+    )
+    for func, args, kwargs in tasks.calls:
+        await func(*args, **kwargs)
+    row = json.loads(tracker.path.read_text())
+    local = json.loads((tmp_path / "clicks.jsonl").read_text())
+    target = urlparse(response.headers["location"])
+    query = parse_qs(target.query)
+    assert target.netloc == "www.jdoqocy.com"
+    assert target.path == "/click-101884613-12260695"
+    assert query["url"] == [offer.product_url]
+    assert query["sid"] == [row["event_id"].replace("-", "")]
+    assert len(query["sid"][0]) == 32
+    assert "SID" not in query
+    assert row["event_id"] == local["click_id"]
+    assert row["session_key"] == local["session_key"]
+    assert row["offer_id"] == offer.offer_id
+    assert row["product_id"] == offer.product_id
+    assert row["campaign_id"] == "qa_campaign"
+    assert row["content_id"] == "qa_content"
+    assert row["acquisition_source"] == "instagram"
+    assert row["source"] == "notino"
+    assert "session_id" not in row
