@@ -159,15 +159,18 @@ class FirstPartyAnalyticsTracker:
         surface: str | None = None,
         related_product_id: str | None = None,
         item_position: int | None = None,
+        event_id: str | None = None,
+        offer_id: str | None = None,
         now: datetime | None = None,
     ) -> dict:
         occurred_at = (now or datetime.now(UTC)).astimezone(UTC)
         return {
-            "event_id": str(uuid4()),
+            "event_id": event_id or str(uuid4()),
             "occurred_at": occurred_at.isoformat(),
             "session_key": self.session_key(session_id),
             "event": event,
             "product_id": product_id,
+            "offer_id": offer_id,
             "source": source,
             "acquisition_source": acquisition_source,
             "campaign_id": campaign_id,
@@ -199,6 +202,8 @@ class FirstPartyAnalyticsTracker:
         surface: str | None = None,
         related_product_id: str | None = None,
         item_position: int | None = None,
+        event_id: str | None = None,
+        offer_id: str | None = None,
         now: datetime | None = None,
     ) -> tuple[str, str]:
         row = self._row(
@@ -214,6 +219,8 @@ class FirstPartyAnalyticsTracker:
             surface=surface,
             related_product_id=related_product_id,
             item_position=item_position,
+            event_id=event_id,
+            offer_id=offer_id,
             now=now,
         )
 

@@ -7,6 +7,33 @@ let analyticsEventQueue: Promise<void> = Promise.resolve();
 let acquisitionAttributionMemory: AcquisitionAttribution | null = null;
 const ACQUISITION_STORAGE_KEY = "dufynd_acquisition_attribution_v1";
 const ANALYTICS_EVENT_TIMEOUT_MS = 8_000;
+const ANALYTICS_SESSION_STORAGE_KEY = "dufynd_analytics_session_v1";
+let analyticsSessionMemory: string | null = null;
+
+// Keep the funnel identity across document navigation and API-session recovery.
+// API/advisor session ownership remains independent and is never restored here.
+function currentAnalyticsSessionId(): string | null {
+  if (typeof window === "undefined") return api.session;
+  if (analyticsSessionMemory) return analyticsSessionMemory;
+  try {
+    const stored = window.sessionStorage.getItem(ANALYTICS_SESSION_STORAGE_KEY);
+    if (stored && /^[A-Za-z0-9-]{16,80}$/.test(stored)) {
+      analyticsSessionMemory = stored;
+      return stored;
+    }
+  } catch {
+    // Blocked browser storage cannot block analytics or shopping.
+  }
+  const session = api.session;
+  if (!session || !/^[A-Za-z0-9-]{16,80}$/.test(session)) return null;
+  analyticsSessionMemory = session;
+  try {
+    window.sessionStorage.setItem(ANALYTICS_SESSION_STORAGE_KEY, session);
+  } catch {
+    // Retain an in-memory identity for this document when storage is unavailable.
+  }
+  return session;
+}
 
 export type AcquisitionAttribution = {
   source: string;
@@ -129,7 +156,7 @@ export function appendAcquisitionAttribution(
   }
 
   const activeSession = safeAcquisitionIdentifier(
-    api.session,
+    currentAnalyticsSessionId(),
   );
   if (activeSession) {
     target.searchParams.set("sid", activeSession);
@@ -247,7 +274,7 @@ async function sendAnalyticsEvent(
     surface: context.surface,
     related_product_id: context.related_product_id,
     item_position: context.item_position,
-    analytics_session_id: undefined,
+    analytics_session_id: currentAnalyticsSessionId(),
   };
 
   const recorded = await postAnalyticsPayload(payload);
