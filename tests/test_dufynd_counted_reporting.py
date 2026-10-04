@@ -87,3 +87,55 @@ def test_morning_report_uses_counted_ledger_instead_of_zero_text_cost(monkeypatc
     assert report["counted_costs"]["reserved_unsettled_usd"] == "0"
     assert "0.027142" in markdown
     assert "jarvis_activation_pilot_001" not in markdown
+
+
+def test_zero_counted_ledger_reconciles_old_unknown_worker_diagnostic():
+    import scripts.dufynd_jarvis_nightshift as nightshift
+    from tests.test_dufynd_jarvis_nightshift import FakeBridge
+
+    class ZeroBridge(FakeBridge, Bridge):
+        def load_budget_status(self, budget):
+            return Bridge.load_budget_status(self, budget)
+
+        def load_budget_reservations(self, budget):
+            return []
+
+    bridge = ZeroBridge()
+    bridge.master[nightshift.SESSION_KEY] = {
+        "value": {
+            "session_id": "counted",
+            "status": "needs_attention",
+            "budget_id": "mini",
+            "started_at": "2026-10-04T00:00:00+00:00",
+            "ended_at": "2026-10-04T00:01:00+00:00",
+            "stop_reason": "unknown_provider_cost",
+            "task_results": [
+                {
+                    "task_id": "audit",
+                    "final_status": "blocked",
+                    "provider_cost_unknown": True,
+                    "attempts": 1,
+                }
+            ],
+        }
+    }
+    report, _ = nightshift.build_morning_report(
+        bridge, historical_report=True, qa_status="needs_attention"
+    )
+    assert report["ai_cost_complete"] is True
+    assert report["cost_diagnostic_conflict"] is True
+    assert report["ai_cost_usd"] == 0
+    assert report["stop_reason"] == "unknown_provider_cost"  # historical diagnostic retained
+
+
+@pytest.mark.parametrize("status", ["dispatched", "provider_cost_unknown", "charged_max"])
+def test_unsettled_or_unknown_counted_ledger_never_claims_complete(status):
+    class UnknownBridge(Bridge):
+        def load_budget_reservations(self, budget):
+            row = super().load_budget_reservations(budget)[0]
+            return [row | {"status": status, "actual_usd": None}]
+
+    result = report_counted_costs(
+        UnknownBridge(), "mini", "2026-10-04T00:00:00+00:00", "2026-10-04T00:01:00+00:00"
+    )
+    assert result["cost_report_complete"] is False

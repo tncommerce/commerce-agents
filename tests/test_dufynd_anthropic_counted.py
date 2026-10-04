@@ -222,3 +222,59 @@ def test_real_usage_over_margin_persisted_unclamped_then_stop():
     with pytest.raises(BudgetGate, match="exceeded"):
         execute(client, bridge)
     assert Decimal(bridge.settlements[0]["p_actual_usd"]) > c.MAX_REQUEST_USD
+
+
+@pytest.mark.parametrize("failure", ["count", "prepare", "execute", "dispatched"])
+def test_failed_worker_preserves_stage_and_only_proves_zero_before_paid_request(
+    monkeypatch, failure
+):
+    import asyncio
+
+    class WorkerBridge(Bridge):
+        def __init__(self):
+            super().__init__()
+            self.records, self.updates, self.contexts = [], [], []
+
+        def load_autonomy_queue(self):
+            return {"safe_to_execute": [TASK | {"domain": "research"}]}
+
+        def claim_worker(self, *args):
+            return TASK | {"domain": "research", "instruction": "attribution audit"}
+
+        def record_run(self, **kwargs):
+            self.records.append(kwargs)
+
+        def update_worker(self, *args, **kwargs):
+            self.updates.append(kwargs)
+
+        def upsert_master_status(self, **kwargs):
+            self.contexts.append(kwargs)
+
+    class Client(c.CountedClient):
+        def count(self, prompt):
+            self.last_count = 7000
+            if failure == "count":
+                raise BudgetGate("count_tokens_exceeds_input_limit")
+            return 7000 if failure == "prepare" else 100
+
+        def execute(self, *args, **kwargs):
+            if failure == "dispatched":
+                self.execution_audit = {"provider_request_attempted": True, "cost_usd": None}
+            raise BudgetGate(
+                "provider_outcome_unknown_no_retry"
+                if failure == "dispatched"
+                else "reservation_denied"
+            )
+
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "mock")
+    monkeypatch.setattr(c, "CountedClient", Client)
+    bridge = WorkerBridge()
+    assert asyncio.run(c.process_counted_task(bridge)) == 1
+    decision = bridge.records[0]["decisions"][0]
+    assert decision["failure_stage"] == ("execute" if failure == "dispatched" else failure)
+    assert decision["cost_usd"] == (None if failure == "dispatched" else "0")
+    assert decision["retry_allowed"] is False
+    assert decision["prompt_bytes"] > 0
+    assert decision["packet_sha256"] == bridge.contexts[0]["value"]["snapshot"]["packet_sha256"]
+    assert len(bridge.updates) == 1
+    assert not hasattr(bridge, "reservation")

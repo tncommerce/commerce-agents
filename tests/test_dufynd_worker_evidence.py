@@ -89,3 +89,20 @@ def test_all_three_content_batches_have_full_scripts_and_voiceover_specs():
         assert (
             f"examples/retail/data/scentai_pilot_batch_{batch:02d}_voiceover_spec.json" in sources
         )
+
+
+def test_content_families_are_balanced_and_partial_media_is_explicit():
+    packet = pack_evidence(
+        task("content", "pilot preview scripts voiceover subtitles social copy"), head="a" * 40
+    )
+    sources = {s["path"]: s for s in packet["repository_evidence"]}
+    for batch in (1, 2, 3):
+        for suffix in ("subtitles", "social_copy"):
+            source = sources[f"examples/retail/data/scentai_pilot_batch_{batch:02d}_{suffix}.json"]
+            assert not source["complete"]
+            assert source["omission_reason"]
+            data = json.loads(source["text"])
+            assert len(data["items" if suffix == "subtitles" else "posts"]) == 5
+    assert "examples/retail/data/dufynd_high_end_launch_assets.json" in sources
+    assert "examples/retail/data/scentai_content_pipeline_status.json" in sources
+    assert any("creative_learning" in path for path in sources)

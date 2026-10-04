@@ -196,6 +196,8 @@ def main() -> int:
                 terminal["paid_requests"] = costs["calls"]
                 terminal["reservations_created"] = len(costs["ledger"])
                 terminal["new_spend_usd"] = costs["actual_spend_usd"]
+                terminal["provider_cost_unknown"] = costs["provider_cost_unknown"]
+                terminal["cost_report_complete"] = costs["cost_report_complete"]
             except Exception as error:
                 terminal["cost_report_complete"] = False
                 terminal["cost_report_error_type"] = type(error).__name__
