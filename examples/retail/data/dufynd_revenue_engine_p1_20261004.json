@@ -160,10 +160,13 @@
       "shipping_eur": 4.99,
       "total_eur": 76.89,
       "in_stock": true,
-      "refreshed_at": "2026-10-04T09:44:49Z",
       "affiliate_network": "Awin",
       "clickref": "one_million_example61_01",
-      "best_price_claim_allowed": false
+      "best_price_claim_allowed": false,
+      "public_market_evidence_refreshed_at": "2026-10-04T09:44:49Z",
+      "canonical_offer_last_updated_at": "2026-10-02T13:03:47Z",
+      "canonical_offer_mutated_by_p1": false,
+      "note": "Fresh public price/stock evidence is retained separately. Business P1 intentionally does not mutate canonical merchant_offers because that changes Jarvis-derived state fingerprints; the existing 1 Million canonical offer remains inside its 72h gate at this P1 snapshot."
     }
   },
   "success_metrics": {
