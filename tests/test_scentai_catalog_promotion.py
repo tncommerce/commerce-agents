@@ -59,8 +59,11 @@ def staged_product() -> dict:
             "image_url": "/products/test/test-fragrance.png",
             "image_status": "approved_feed_image",
             "image_reviewed_at": "2026-09-18T10:00:00+00:00",
+            "image_source_class": "merchant_feed",
             "image_rights_basis_id": "awin-test-feed-rights",
             "image_rights_checked_at": "2026-09-18",
+            "image_exact_variant_verified": True,
+            "image_variant": "100ml",
         },
         "validation": {
             "catalog_ready": False,
@@ -126,6 +129,50 @@ def test_approved_feed_image_requires_persisted_rights_evidence(
     )
 
     assert "missing_feed_image_rights_evidence" in blockers
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("image_source_class", ""),
+        ("image_exact_variant_verified", False),
+        ("image_variant", "75ml"),
+    ],
+)
+def test_approved_feed_image_requires_exact_variant_evidence(
+    field: str,
+    value: object,
+) -> None:
+    product = staged_product()
+    product["media"][field] = value
+
+    blockers = promotion_blockers(
+        product,
+        [affiliate_offer()],
+        now=NOW,
+    )
+
+    assert "missing_feed_image_variant_evidence" in blockers
+
+
+def test_source_conversion_preserves_feed_image_product_truth_evidence() -> None:
+    product = staged_product()
+    catalog = build_catalog_product(product, best_offer=affiliate_offer())
+    source = build_source_product(product, best_offer=affiliate_offer())
+    visual = source["visuals"][0]
+    attributes = catalog["attributes"]
+
+    assert attributes["image_product_truth_provenance"] == "merchant_feed"
+    assert attributes["image_reviewed_at"] == "2026-09-18T10:00:00+00:00"
+    assert attributes["image_rights_basis_id"] == "awin-test-feed-rights"
+    assert attributes["image_rights_checked_at"] == "2026-09-18"
+    assert attributes["image_exact_variant_verified"] == "true"
+    assert visual["provenance"] == "merchant_feed"
+    assert visual["reviewed_at"] == "2026-09-18T10:00:00+00:00"
+    assert visual["rights_basis_id"] == "awin-test-feed-rights"
+    assert visual["rights_checked_at"] == "2026-09-18"
+    assert visual["exact_variant_verified"] is True
+    assert visual["variant"] == "100ml"
 
 
 @pytest.mark.parametrize(
