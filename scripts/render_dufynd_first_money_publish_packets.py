@@ -494,9 +494,17 @@ def validate_packet(packet: dict) -> None:
             raise ValueError(f"{piece['content_id']}: invalid state")
         if piece.get("tracking", {}).get("tiktok") is not None:
             raise ValueError(f"{piece['content_id']}: TikTok tracking link must be null")
-        rendered_text = json.dumps(piece, ensure_ascii=False).upper()
+        renderable_text = json.dumps(
+            {
+                "hook": piece.get("hook"),
+                "slides": piece.get("slides"),
+                "caption": piece.get("caption"),
+                "cta": piece.get("cta"),
+            },
+            ensure_ascii=False,
+        ).upper()
         for marker in BLOCKED_RENDER_MARKERS:
-            if marker in rendered_text:
+            if marker in renderable_text:
                 raise ValueError(f"{piece['content_id']}: blocked legacy marker {marker}")
 
 
