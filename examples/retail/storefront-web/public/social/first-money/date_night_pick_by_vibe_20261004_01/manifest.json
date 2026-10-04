@@ -1,0 +1,104 @@
+{
+  "content_id": "date_night_pick_by_vibe_20261004_01",
+  "experiment_id": "fms_date_vibe_20261004",
+  "state": "READY_FOR_OWNER_PUBLISH_GO",
+  "publish_action_taken": false,
+  "existing_assets_only": true,
+  "instagram": [
+    {
+      "path": "examples/retail/storefront-web/public/social/first-money/date_night_pick_by_vibe_20261004_01/instagram/slide-01.jpg",
+      "sha256": "30dc395c399b39cfa97fb53ab0257961bec82513d7982da300f75ed6aedc52ae",
+      "size": [
+        1080,
+        1350
+      ]
+    },
+    {
+      "path": "examples/retail/storefront-web/public/social/first-money/date_night_pick_by_vibe_20261004_01/instagram/slide-02.jpg",
+      "sha256": "495e643a824e0dd3b8b7daf6f950308704078328b80f6b2f0d0484b6ad2cb433",
+      "size": [
+        1080,
+        1350
+      ]
+    },
+    {
+      "path": "examples/retail/storefront-web/public/social/first-money/date_night_pick_by_vibe_20261004_01/instagram/slide-03.jpg",
+      "sha256": "a85c357565c53e567be98c5866c2294b63ca8e1d27eb80dd5c746c2d6b9a5ac5",
+      "size": [
+        1080,
+        1350
+      ]
+    },
+    {
+      "path": "examples/retail/storefront-web/public/social/first-money/date_night_pick_by_vibe_20261004_01/instagram/slide-04.jpg",
+      "sha256": "6b9c6da01b51a25334a99334f50cbba61f5fc3125fee3419e3eada10f8fb0a65",
+      "size": [
+        1080,
+        1350
+      ]
+    },
+    {
+      "path": "examples/retail/storefront-web/public/social/first-money/date_night_pick_by_vibe_20261004_01/instagram/slide-05.jpg",
+      "sha256": "2f3eea97b619e68d8462469eed02b3415a9e8a8a2d6192c800ff28c368805ccf",
+      "size": [
+        1080,
+        1350
+      ]
+    }
+  ],
+  "tiktok_slides": [
+    {
+      "path": "examples/retail/storefront-web/public/social/first-money/date_night_pick_by_vibe_20261004_01/tiktok/slide-01.jpg",
+      "sha256": "c3dc8fe4aa7f528083b8c71491b603baeb98a6ab220fd9c78d8a692d5848c9e1",
+      "size": [
+        1080,
+        1920
+      ]
+    },
+    {
+      "path": "examples/retail/storefront-web/public/social/first-money/date_night_pick_by_vibe_20261004_01/tiktok/slide-02.jpg",
+      "sha256": "1a959dbd9cd6806360a0a78293cb9d20237d4bbd1c3e081101d339c34880b6ec",
+      "size": [
+        1080,
+        1920
+      ]
+    },
+    {
+      "path": "examples/retail/storefront-web/public/social/first-money/date_night_pick_by_vibe_20261004_01/tiktok/slide-03.jpg",
+      "sha256": "5ee374898f0a9e1f0b92d404987203c3d9caf61ffdea481f91064168dcceb40b",
+      "size": [
+        1080,
+        1920
+      ]
+    },
+    {
+      "path": "examples/retail/storefront-web/public/social/first-money/date_night_pick_by_vibe_20261004_01/tiktok/slide-04.jpg",
+      "sha256": "071af52a9ccd1027da7fb0224fe56d7f9a11793b127903d3b0edb0fecdc3975c",
+      "size": [
+        1080,
+        1920
+      ]
+    },
+    {
+      "path": "examples/retail/storefront-web/public/social/first-money/date_night_pick_by_vibe_20261004_01/tiktok/slide-05.jpg",
+      "sha256": "b6cc75a8228a4a9730cf03ae9e0e61265dc7cd3f6da6f3e6ac3e8dc91fa1623d",
+      "size": [
+        1080,
+        1920
+      ]
+    }
+  ],
+  "tiktok_video": {
+    "path": "examples/retail/storefront-web/public/social/first-money/date_night_pick_by_vibe_20261004_01/tiktok/date_night_pick_by_vibe_20261004_01.mp4",
+    "sha256": "edce3ab786df68e649e8bf42f69ff5efc9714a5082dd30701bd4bc5b11237b73",
+    "duration_seconds": 17.0,
+    "audio": false
+  },
+  "automated_quality_gates": {
+    "no_legacy_preview_markers": true,
+    "correct_platform_dimensions": true,
+    "protected_one_million_untouched": true,
+    "tiktok_fake_link_cta_absent": true,
+    "publish_not_performed": true
+  }
+}

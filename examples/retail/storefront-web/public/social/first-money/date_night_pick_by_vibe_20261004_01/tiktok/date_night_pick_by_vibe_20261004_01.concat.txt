@@ -1,0 +1,11 @@
+file '/home/runner/work/commerce-agents/commerce-agents/examples/retail/storefront-web/public/social/first-money/date_night_pick_by_vibe_20261004_01/tiktok/slide-01.jpg'
+duration 2.400
+file '/home/runner/work/commerce-agents/commerce-agents/examples/retail/storefront-web/public/social/first-money/date_night_pick_by_vibe_20261004_01/tiktok/slide-02.jpg'
+duration 3.500
+file '/home/runner/work/commerce-agents/commerce-agents/examples/retail/storefront-web/public/social/first-money/date_night_pick_by_vibe_20261004_01/tiktok/slide-03.jpg'
+duration 3.500
+file '/home/runner/work/commerce-agents/commerce-agents/examples/retail/storefront-web/public/social/first-money/date_night_pick_by_vibe_20261004_01/tiktok/slide-04.jpg'
+duration 3.600
+file '/home/runner/work/commerce-agents/commerce-agents/examples/retail/storefront-web/public/social/first-money/date_night_pick_by_vibe_20261004_01/tiktok/slide-05.jpg'
+duration 4.000
+file '/home/runner/work/commerce-agents/commerce-agents/examples/retail/storefront-web/public/social/first-money/date_night_pick_by_vibe_20261004_01/tiktok/slide-05.jpg'
