@@ -3712,6 +3712,75 @@
           "leather"
         ]
       }
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "brand": "Yves Saint Laurent",
+      "name": "Libre",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "classification": {
+        "scentai_target_groups": [
+          "women"
+        ],
+        "role": null,
+        "cluster_id": null,
+        "trend_bet": false
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7.5,
+        "rating_count": 2203,
+        "longevity_10": 7.8,
+        "projection_10": 7.6,
+        "provisional": false
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "floral",
+          "sweet",
+          "fresh",
+          "creamy",
+          "citrus"
+        ],
+        "scores": {
+          "freshness": 9,
+          "sweetness": 7,
+          "woodiness": 2,
+          "spiciness": 2
+        },
+        "score_confidence": "medium"
+      },
+      "market": {
+        "market_price_eur": 119,
+        "price_per_ml_eur": 1.3222,
+        "price_source_count": 1,
+        "price_checked_at": "2026-10-01"
+      },
+      "relationships": [],
+      "evidence": {
+        "overall": "promotion_verified"
+      },
+      "validation": {
+        "catalog_ready": true
+      },
+      "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png",
+      "visuals": [
+        {
+          "role": "primary",
+          "url": "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png",
+          "provenance": "merchant_feed",
+          "fidelity_status": "verified",
+          "variant": "90ml"
+        }
+      ],
+      "notes": {
+        "key": [
+          "French lavender",
+          "Moroccan orange blossom",
+          "vanilla"
+        ]
+      }
     }
   ]
 }
