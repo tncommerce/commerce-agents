@@ -218,6 +218,10 @@ async def merchant_clickout(
     if offer is None or not _live_dufynd_offer_product(offer.product_id):
         raise HTTPException(status_code=404, detail="Offer not available")
 
+    target = offer_clickout_target(offer)
+    if target is None:
+        raise HTTPException(status_code=404, detail="Offer not available")
+
     acquisition_source = sanitize_attribution_identifier(src)
     campaign_id = sanitize_attribution_identifier(cmp)
     content_id = sanitize_attribution_identifier(content)
@@ -231,9 +235,7 @@ async def merchant_clickout(
         clickref4=analytics_session_id,
         clickref5=offer.product_id,
         clickref6=offer.offer_id,
-    )
-    if target is None:
-        raise HTTPException(status_code=404, detail="Offer not available")
+    ) or target
 
     click_id = clickout_tracker.record(
         offer,
