@@ -9,18 +9,22 @@ No product, offer economics, visual, rights, activation or publication changes.
 `src`, `cmp`, `content` become `acquisition_source`, `campaign_id`, `content_id`.
 The browser stores these in sessionStorage and carries them through internal navigation.
 `page_view`, `fragrance_detail_view`, `offer_section_view` and `offer_section_open`
-use the active API session. Offer links carry that session as `sid`; the server hashes
+use a separate tab-stable analytics identity, seeded from the first API session and
+retained in sessionStorage across document navigation and transport-session recovery.
+API/advisor ownership is not restored or changed. Offer links carry the analytics identity
+as `sid`; the server hashes
 it with SHA-256 and retains the first 24 hex characters as `session_key`.
 The browser suite checks both products and Instagram/TikTok through landing,
-catalog, detail, visible offers and the clickout link using one API session.
+catalog, detail, visible offers and the clickout link using one analytics identity,
+even when the transport sessions differ.
 
 Merchant clickouts are recorded by the redirect endpoint, not counted again by the
 browser. Their durable row contains `event_id`, `session_key`, `product_id`,
 `offer_id`, `source` (merchant), `acquisition_source`, `campaign_id`, `content_id`.
 The local clickout log uses the same event ID and hashed session key.
 Without a valid browser session, a clickout gets a separate fallback session;
-it must not be guessed into a landing session. Full reloads, different devices,
-separate tabs and lost/blocked storage may split sessions; this is not cross-device tracking.
+it must not be guessed into a landing session. Different devices, separate tabs and
+lost/blocked storage may split sessions; this is not cross-device tracking.
 
 ## Awin
 

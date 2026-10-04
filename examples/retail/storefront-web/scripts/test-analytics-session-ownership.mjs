@@ -13,7 +13,7 @@ function deferred() {
   return { promise, resolve };
 }
 
-function client(initialize, post = async () => ({ ok: true })) {
+function client(initialize, post = async () => ({ ok: true }), browserWindow) {
   const requests = [];
   const timers = new Map();
   let initializations = 0;
@@ -26,6 +26,7 @@ function client(initialize, post = async () => ({ ok: true })) {
   const module = { exports: {} };
   vm.runInNewContext(code, {
     module, exports: module.exports, AbortController, URL, URLSearchParams,
+    ...(browserWindow ? { window: browserWindow } : {}),
     require: (name) => {
       assert.equal(name, "./api");
       return { api, initializeAnalyticsSession: () => initialize(++initializations) };
@@ -121,3 +122,48 @@ for (const retryOk of [true, false]) {
 }
 
 console.log("DUFYND analytics session ownership: late initialization, advisor takeover, queued events and bounded standalone retry passed.");
+
+// A full document navigation establishes a new transport session but retains
+// the tab's first-party funnel identity and acquisition fields.
+{
+  const storage = new Map();
+  const window = {
+    location: { origin: "https://dufynd.test" },
+    sessionStorage: { getItem: (key) => storage.get(key) ?? null, setItem: (key, value) => storage.set(key, value) },
+  };
+  const original = "11111111-1111-4111-8111-111111111111";
+  const replacement = "22222222-2222-4222-8222-222222222222";
+  const first = client(async () => original, undefined, window);
+  first.rememberAcquisitionAttribution({ source: "instagram", campaignId: "fm_campaign", contentId: "fm_content" });
+  await first.trackAnalyticsEvent("page_view");
+  const nextDocument = client(async () => replacement, undefined, window);
+  await nextDocument.trackAnalyticsEvent("fragrance_detail_view", { product_id: "SC-TEST" });
+  assert.equal(nextDocument.api.session, replacement, "do not restore an API/advisor session from analytics storage");
+  assert.equal(first.requests[0].payload.analytics_session_id, original);
+  assert.equal(nextDocument.requests[0].payload.analytics_session_id, original);
+  assert.equal(nextDocument.requests[0].init.headers["X-Session-Id"], replacement);
+  assert.equal(nextDocument.requests[0].payload.content_id, "fm_content");
+  const target = new URL(nextDocument.appendAcquisitionAttribution("/api/clickout/qa-offer"));
+  assert.equal(target.searchParams.get("sid"), original);
+  assert.equal(target.searchParams.get("cmp"), "fm_campaign");
+}
+
+// API-session recovery must not split the analytics session. Invalid persisted
+// identifiers are replaced, and blocked storage still works within a document.
+for (const blocked of [false, true]) {
+  const storage = new Map([["dufynd_analytics_session_v1", "invalid@example.com"]]);
+  const window = {
+    location: { origin: "https://dufynd.test" },
+    sessionStorage: {
+      getItem: (key) => { if (blocked) throw new Error("blocked"); return storage.get(key) ?? null; },
+      setItem: (key, value) => { if (blocked) throw new Error("blocked"); storage.set(key, value); },
+    },
+  };
+  const env = client(async (n) => `qa-transport-session-${n}-1234567890`, async (n) => ({ ok: n > 1 }), window);
+  await env.trackAnalyticsEvent("page_view");
+  assert.equal(env.initializations, 2);
+  assert.equal(env.requests[0].payload.analytics_session_id, "qa-transport-session-1-1234567890");
+  assert.equal(env.requests[1].payload.analytics_session_id, "qa-transport-session-1-1234567890");
+  assert.equal(env.api.session, "qa-transport-session-2-1234567890");
+}
+console.log("DUFYND analytics funnel identity: document navigation, transport recovery, invalid and blocked storage passed.");

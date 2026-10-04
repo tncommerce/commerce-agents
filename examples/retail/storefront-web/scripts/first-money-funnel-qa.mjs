@@ -17,7 +17,7 @@ export async function verifyFirstMoneyFunnel(browser, baseUrl) {
         let sessionRequests = 0;
         await page.route("**/api/session", (route) => {
           sessionRequests += 1;
-          return route.fulfill({ json: { session_id: session } });
+          return route.fulfill({ json: { session_id: `${session}-${sessionRequests}` } });
         });
         await page.route("**/api/analytics/events", (route) => {
           events.push({ ...route.request().postDataJSON(), session: route.request().headers()["x-session-id"] });
@@ -61,7 +61,7 @@ export async function verifyFirstMoneyFunnel(browser, baseUrl) {
         await link.waitFor({ state: "visible" });
         const clickout = new URL(await link.getAttribute("href"));
         assert.equal(clickout.pathname, `/api/clickout/${offerId}`);
-        for (const [key, value] of [["src", source], ["cmp", campaign], ["content", content], ["sid", session]]) {
+        for (const [key, value] of [["src", source], ["cmp", campaign], ["content", content], ["sid", `${session}-1`]]) {
           assert.equal(clickout.searchParams.get(key), value);
         }
         for (let attempt = 0; attempt < 100 && !events.some((e) => e.event === "offer_section_view"); attempt += 1) {
@@ -70,13 +70,15 @@ export async function verifyFirstMoneyFunnel(browser, baseUrl) {
         for (const event of ["page_view", "fragrance_detail_view", "offer_section_view"]) {
           const row = events.find((e) => e.event === event);
           assert.ok(row, `${slug}/${source} missing ${event}`);
-          assert.equal(row.session, session);
+          assert.ok(row.session.startsWith(`${session}-`), "missing valid transport session");
+          assert.equal(row.analytics_session_id, `${session}-1`, "navigation split the analytics funnel");
           assert.equal(row.acquisition_source, source);
           assert.equal(row.campaign_id, campaign);
           assert.equal(row.content_id, content);
           if (event !== "page_view") assert.equal(row.product_id, productId);
         }
-        assert.equal(sessionRequests, 1, "navigation unexpectedly replaced the analytics session");
+        // Distinct transport sessions are allowed; the analytics identity must remain stable.
+        assert.ok(sessionRequests >= 1);
         cases += 1;
       } finally {
         await context.close();
