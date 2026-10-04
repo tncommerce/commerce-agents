@@ -4396,6 +4396,7 @@ a.dufynd-comparison-product-card > div:last-child {
   background: radial-gradient(ellipse at 10% 25%, rgba(211, 177, 193, 0.19), transparent 48%), linear-gradient(120deg, rgba(255, 255, 255, 0.26), transparent 44%);
   z-index: 0;
 }
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-product-light,
 .dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-product-sheen,
 .dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-fragrance-stage-reflection,
 .dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-fragrance-hero-orbit,
