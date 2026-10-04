@@ -1,0 +1,278 @@
+{
+  "version": 1,
+  "generated_at": "2026-10-04",
+  "sprint": "FIRST_MONEY_SPRINT",
+  "state": "READY_FOR_OWNER_PUBLISH_GO",
+  "constraints": {
+    "paid_tools": false,
+    "higgsfield": false,
+    "new_credits": false,
+    "new_generated_visual_assets": false,
+    "existing_repo_assets_only": true,
+    "publishing_authorized": false,
+    "tiktok_clickable_link_available": false
+  },
+  "protected_content_ids": [
+    "one_million_still_hits_20261004_01"
+  ],
+  "guardrail": "The scheduled 1 Million experiment is immutable here: do not edit, render, schedule, duplicate, or publish it from this packet.",
+  "pieces": [
+    {
+      "order": 2,
+      "content_id": "gift_for_him_no_safe_blindbuy_20261004_01",
+      "experiment_id": "fms_q4_gift_him_20261004",
+      "state": "READY_FOR_OWNER_PUBLISH_GO",
+      "hypothesis": "A strong anti-safe-blind-buy framing should create more shares/sends and qualified gift intent than a generic Top-3 gift list because it solves the decision problem before showing products.",
+      "theme": "gift_editorial",
+      "landing_path": "/parfum-geschenkberater",
+      "source_product_ids": [
+        "SC-CHANEL-BLEU-DE-CHANEL-EDP-100",
+        "SC-PRADA-LHOMME-100",
+        "SC-XERJOFF-NAXOS-100"
+      ],
+      "format": {
+        "instagram": "5-slide 4:5 carousel",
+        "tiktok": "18-second 9:16 text-first slideshow video assembled from the same existing product assets"
+      },
+      "hook": "DEN sicheren Blind Buy gibt es nicht.",
+      "slides": [
+        {
+          "n": 1,
+          "title": "DEN SICHEREN\nBLIND BUY\nGIBT ES NICHT.",
+          "kicker": "GESCHENK FÜR IHN",
+          "body": "Schenk nicht den „besten“ Duft. Schenk die passende Richtung.",
+          "product_ids": [
+            "SC-CHANEL-BLEU-DE-CHANEL-EDP-100",
+            "SC-PRADA-LHOMME-100",
+            "SC-XERJOFF-NAXOS-100"
+          ],
+          "duration_seconds_tiktok": 2.8
+        },
+        {
+          "n": 2,
+          "title": "1 · FRISCH + HOLZIG",
+          "kicker": "RICHTUNG 1",
+          "body": "frisch · holzig · moderat süß",
+          "product_label": "Bleu de Chanel EDP",
+          "product_ids": [
+            "SC-CHANEL-BLEU-DE-CHANEL-EDP-100"
+          ],
+          "duration_seconds_tiktok": 3.6
+        },
+        {
+          "n": 3,
+          "title": "2 · PUDRIG + WEICH",
+          "kicker": "RICHTUNG 2",
+          "body": "pudriger · weicher · weniger frisch",
+          "product_label": "Prada L’Homme",
+          "product_ids": [
+            "SC-PRADA-LHOMME-100"
+          ],
+          "duration_seconds_tiktok": 3.6
+        },
+        {
+          "n": 4,
+          "title": "3 · SÜSS + WÜRZIG",
+          "kicker": "RICHTUNG 3",
+          "body": "sehr süß · würzig · gourmandig",
+          "product_label": "Xerjoff Naxos",
+          "product_ids": [
+            "SC-XERJOFF-NAXOS-100"
+          ],
+          "duration_seconds_tiktok": 4
+        },
+        {
+          "n": 5,
+          "title": "NICHT RATEN.\nSTIL WÄHLEN.",
+          "kicker": "DUFYND",
+          "body": "Welcher Typ ist er: 1, 2 oder 3?",
+          "product_ids": [
+            "SC-CHANEL-BLEU-DE-CHANEL-EDP-100",
+            "SC-PRADA-LHOMME-100",
+            "SC-XERJOFF-NAXOS-100"
+          ],
+          "instagram_footer": "Geschenkberater bei DUFYND · Link im Profil",
+          "tiktok_footer": "Kommentiere 1 / 2 / 3",
+          "duration_seconds_tiktok": 4
+        }
+      ],
+      "caption": {
+        "instagram": "DEN sicheren Blind Buy gibt es nicht. 🎁\n\nBleu de Chanel, Prada L’Homme und Naxos zeigen drei komplett andere Richtungen. Genau deshalb ist „Was ist der sicherste Duft?“ die falsche Frage.\n\n1 · frisch + holzig\n2 · pudrig + weich\n3 · süß + würzig / gourmandig\n\nWelcher Typ ist er: 1, 2 oder 3?\n\n→ Geschenkstil im DUFYND Geschenkberater finden. Link im Profil.\n\n#DUFYND #ParfumGeschenk #GeschenkFürIhn #Parfum #Fragrance",
+        "tiktok": "DEN sicheren Blind Buy gibt es nicht. 🎁\n\n1 frisch + holzig\n2 pudrig + weich\n3 süß + würzig\n\nWelcher Typ ist er: 1, 2 oder 3? 👇\n\n#DUFYND #ParfumGeschenk #GeschenkFürIhn #FragranceTok #Parfum"
+      },
+      "cta": {
+        "instagram": "Geschenkstil im DUFYND Geschenkberater finden · Link im Profil.",
+        "tiktok": "Welcher Typ ist er: 1, 2 oder 3? Kommentiere die Zahl."
+      },
+      "tracking": {
+        "instagram": "https://dufynd.de/parfum-geschenkberater?src=instagram&cmp=fms_q4_gift_him_20261004&content=gift_for_him_no_safe_blindbuy_20261004_01",
+        "tiktok": null,
+        "tiktok_reason": "No usable clickable website/bio link; TikTok is reach/retention/completion/comments/shares/profile-visits only."
+      },
+      "measurement": {
+        "instagram_primary": [
+          "shares_or_sends",
+          "profile_visits",
+          "tagged_dufynd_sessions",
+          "gift_advisor_starts_if_available",
+          "product_views",
+          "merchant_clickouts"
+        ],
+        "tiktok_primary": [
+          "views",
+          "three_second_retention",
+          "completion_rate",
+          "comments",
+          "shares",
+          "profile_visits"
+        ],
+        "keep": "KEEP if Instagram shares/sends rate >= 1.5% OR >= 10 tagged DUFYND sessions with downstream product views; on TikTok also KEEP if 3s retention >= 70% and completion >= 30%, or share/comment response is clearly above the account baseline.",
+        "iterate": "ITERATE if retention is healthy but shares/sends or tagged sessions are weak; change only the opening frame or CTA, not the core 1/2/3 style structure.",
+        "kill": "KILL only after two hook variants if Instagram shares/sends < 0.5% and tagged sessions < 5, while TikTok 3s retention < 55% and completion < 20%."
+      },
+      "quality_gate": {
+        "minimum_score": 8.5,
+        "required": [
+          "no PILOT/preview labels",
+          "first frame understandable in under 1 second",
+          "large safe-zone typography",
+          "existing product images only",
+          "no claim that any fragrance is universally safe",
+          "Instagram has real tracked DUFYND path",
+          "TikTok contains no fake link CTA",
+          "no price claim",
+          "no publish action"
+        ]
+      }
+    },
+    {
+      "order": 3,
+      "content_id": "date_night_pick_by_vibe_20261004_01",
+      "experiment_id": "fms_date_vibe_20261004",
+      "state": "READY_FOR_OWNER_PUBLISH_GO",
+      "hypothesis": "A low-friction 1/2/3 vibe choice should combine broad date-night relatability with comments and high-intent fragrance-finder traffic better than the old Top-3/rating-card format.",
+      "theme": "date_night_dark",
+      "landing_path": "/duftfinder",
+      "source_product_ids": [
+        "SC-ARMANI-SWY-INTENSELY-100",
+        "SC-DIOR-HOMME-INTENSE-100",
+        "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100"
+      ],
+      "format": {
+        "instagram": "5-slide 4:5 carousel",
+        "tiktok": "17-second 9:16 text-first slideshow video assembled from the same existing product assets"
+      },
+      "hook": "DATE NIGHT: 1, 2 ODER 3?",
+      "slides": [
+        {
+          "n": 1,
+          "title": "DATE NIGHT:\n1, 2 ODER 3?",
+          "kicker": "WELCHEN VIBE WILLST DU?",
+          "body": "Nicht „der beste“ Duft. Der Vibe muss passen.",
+          "product_ids": [
+            "SC-ARMANI-SWY-INTENSELY-100",
+            "SC-DIOR-HOMME-INTENSE-100",
+            "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100"
+          ],
+          "duration_seconds_tiktok": 2.4
+        },
+        {
+          "n": 2,
+          "title": "1 · WARM + SÜSS",
+          "kicker": "VIBE 1",
+          "body": "extrem süß · gourmandig · würzig",
+          "product_label": "Stronger With You Intensely",
+          "product_ids": [
+            "SC-ARMANI-SWY-INTENSELY-100"
+          ],
+          "duration_seconds_tiktok": 3.5
+        },
+        {
+          "n": 3,
+          "title": "2 · DUNKEL + PUDRIG",
+          "kicker": "VIBE 2",
+          "body": "holziger · deutlich pudriger · wenig frisch",
+          "product_label": "Dior Homme Intense",
+          "product_ids": [
+            "SC-DIOR-HOMME-INTENSE-100"
+          ],
+          "duration_seconds_tiktok": 3.5
+        },
+        {
+          "n": 4,
+          "title": "3 · SÜSS + FRISCHER",
+          "kicker": "VIBE 3",
+          "body": "süß · im DUFYND-Profil klar frischer",
+          "product_label": "Valentino Uomo Born In Roma Intense",
+          "product_ids": [
+            "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100"
+          ],
+          "duration_seconds_tiktok": 3.6
+        },
+        {
+          "n": 5,
+          "title": "WELCHEN VIBE\nWILLST DU?",
+          "kicker": "1 · 2 · 3",
+          "body": "Dein Date-Night-Stil entscheidet.",
+          "product_ids": [
+            "SC-ARMANI-SWY-INTENSELY-100",
+            "SC-DIOR-HOMME-INTENSE-100",
+            "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100"
+          ],
+          "instagram_footer": "Date-Night-Stil im DUFYND Duftfinder · Link im Profil",
+          "tiktok_footer": "Kommentiere 1 / 2 / 3",
+          "duration_seconds_tiktok": 4
+        }
+      ],
+      "caption": {
+        "instagram": "DATE NIGHT: 1, 2 oder 3? 🌙\n\n1 · warm + süß\n2 · dunkel + pudrig\n3 · süß, aber frischer\n\nNicht jeder Date-Night-Duft soll dasselbe ausstrahlen. Welchen Vibe willst du: 1, 2 oder 3?\n\n→ Deinen Date-Night-Stil im DUFYND Duftfinder finden. Link im Profil.\n\n#DUFYND #DateNight #Parfum #Duftfinder #Fragrance",
+        "tiktok": "DATE NIGHT: 1, 2 oder 3? 🌙\n\n1 warm + süß\n2 dunkel + pudrig\n3 süß + frischer\n\nWelchen Vibe willst du? 👇\n\n#DUFYND #DateNight #ParfumTok #FragranceTok #Parfum"
+      },
+      "cta": {
+        "instagram": "Deinen Date-Night-Stil im DUFYND Duftfinder finden · Link im Profil.",
+        "tiktok": "1, 2 oder 3? Kommentiere deinen Vibe."
+      },
+      "tracking": {
+        "instagram": "https://dufynd.de/duftfinder?src=instagram&cmp=fms_date_vibe_20261004&content=date_night_pick_by_vibe_20261004_01",
+        "tiktok": null,
+        "tiktok_reason": "No usable clickable website/bio link; TikTok is reach/retention/completion/comments/shares/profile-visits only."
+      },
+      "measurement": {
+        "instagram_primary": [
+          "comments",
+          "shares_or_sends",
+          "profile_visits",
+          "tagged_dufynd_sessions",
+          "advisor_starts_if_available",
+          "product_views",
+          "merchant_clickouts"
+        ],
+        "tiktok_primary": [
+          "views",
+          "three_second_retention",
+          "completion_rate",
+          "comments",
+          "shares",
+          "profile_visits"
+        ],
+        "keep": "KEEP if comment rate >= 1.5% OR completion >= 35%, plus >= 8 tagged Instagram DUFYND sessions; on TikTok KEEP if 3s retention >= 70% and completion >= 30% or the 1/2/3 comment mechanic clearly beats baseline.",
+        "iterate": "ITERATE if comments are strong but Instagram sessions are weak: move the DUFYND CTA earlier. If sessions are strong but retention is weak: shorten the opening and product frames.",
+        "kill": "KILL only after two hook variants if completion < 20%, comment rate < 0.5%, and Instagram tagged sessions < 5."
+      },
+      "quality_gate": {
+        "minimum_score": 8.5,
+        "required": [
+          "do not reuse the old PILOT 09 / numeric-rating-card visual",
+          "first frame understandable in under 1 second",
+          "three choices visually distinct",
+          "existing product images only",
+          "large safe-zone typography",
+          "Instagram has real tracked DUFYND path",
+          "TikTok contains no fake link CTA",
+          "no price claim",
+          "no publish action"
+        ]
+      }
+    }
+  ]
+}
