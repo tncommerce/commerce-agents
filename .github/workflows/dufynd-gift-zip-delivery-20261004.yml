@@ -1,0 +1,98 @@
+name: DUFYND Gift ZIP Delivery
+
+on:
+  push:
+    branches:
+      - delivery/gift-zip-20261004
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out delivery branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Build owner delivery package
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC="examples/retail/storefront-web/public/social/first-money/gift_for_him_no_safe_blindbuy_20261004_01"
+          OUT="/tmp/DUFYND_Gift_for_Him_2026-10-04"
+
+          mkdir -p "$OUT/Instagram" "$OUT/TikTok"
+
+          cp "$SRC"/instagram/slide-*.jpg "$OUT/Instagram/"
+          cp "$SRC"/tiktok/slide-*.jpg "$OUT/TikTok/"
+          cp "$SRC"/tiktok/gift_for_him_no_safe_blindbuy_20261004_01.mp4 "$OUT/TikTok/"
+          cp "$SRC"/manifest.json "$OUT/manifest.json"
+
+          cat > "$OUT/README.txt" <<'EOF'
+          DUFYND — Gift for Him / No Safe Blind Buy
+          =========================================
+
+          content_id:
+          gift_for_him_no_safe_blindbuy_20261004_01
+
+          experiment_id:
+          fms_q4_gift_him_20261004
+
+          STATUS:
+          READY FOR OWNER PUBLISH GO
+
+          HEUTIGER PLAN — 04.10.2026
+          Instagram: 18:30 Uhr — 5-Slide Carousel
+          TikTok:    20:00 Uhr — Photo/Slideshow oder enthaltenes MP4
+
+          INSTAGRAM CTA:
+          Geschenkstil im DUFYND Geschenkberater finden · Link im Profil.
+
+          INSTAGRAM TRACKING:
+          https://dufynd.de/parfum-geschenkberater?src=instagram&cmp=fms_q4_gift_him_20261004&content=gift_for_him_no_safe_blindbuy_20261004_01
+
+          TIKTOK CTA:
+          Welcher Typ ist er: 1, 2 oder 3? Kommentiere die Zahl.
+
+          WICHTIG:
+          TikTok hat aktuell keinen nutzbaren klickbaren Website-/Bio-Link.
+          Deshalb dort keinen Link-CTA ergänzen.
+          EOF
+
+          cat > "$OUT/Instagram/CAPTION.txt" <<'EOF'
+          DEN sicheren Blind Buy gibt es nicht. 🎁
+
+          Bleu de Chanel, Prada L’Homme und Naxos zeigen drei komplett andere Richtungen. Genau deshalb ist „Was ist der sicherste Duft?“ die falsche Frage.
+
+          1 · frisch + holzig
+          2 · pudrig + weich
+          3 · süß + würzig / gourmandig
+
+          Welcher Typ ist er: 1, 2 oder 3?
+
+          → Geschenkstil im DUFYND Geschenkberater finden. Link im Profil.
+
+          #DUFYND #ParfumGeschenk #GeschenkFürIhn #Parfum #Fragrance
+          EOF
+
+          cat > "$OUT/TikTok/CAPTION.txt" <<'EOF'
+          DEN sicheren Blind Buy gibt es nicht. 🎁
+
+          1 frisch + holzig
+          2 pudrig + weich
+          3 süß + würzig
+
+          Welcher Typ ist er: 1, 2 oder 3? 👇
+
+          #DUFYND #ParfumGeschenk #GeschenkFürIhn #FragranceTok #Parfum
+          EOF
+
+      - name: Upload delivery ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: DUFYND_Gift_for_Him_2026-10-04
+          path: /tmp/DUFYND_Gift_for_Him_2026-10-04
+          if-no-files-found: error
+          compression-level: 6
+          retention-days: 7
