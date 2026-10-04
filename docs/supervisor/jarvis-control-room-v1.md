@@ -207,3 +207,44 @@ refresh remains every 10 seconds while visible, with manual refresh and explicit
 failure/stale state. Missing/truncated decision or runtime reads cannot claim a
 complete healthy overview. Verified completed checkpoints supply the quiet activity
 list; no synthetic worker stations or noisy inbox logs are promoted as completed work.
+
+## CEO Control Room V0.6 (2026-10-04)
+
+The original Sentinel scene and CSS core replace generic visual decoration without
+external artwork, image generation, WebGL or additional production dependencies.
+Desktop separates the central Jarvis state, current execution, First Money and
+costs from the workstream orbit, candidate queue, dependencies and verified feed.
+Mobile orders status, owner gates, First Money and costs before execution detail.
+Only actual pending decisions trigger the sticky red owner alert. Unknown gate
+completeness remains amber; external waiting is monitoring, not active execution.
+
+Additive allowlisted DTO fields include workstreams, ready candidates sorted by
+actual priority, categorized waiting counts, CEO status, and a verified feed from
+completed checkpoints and successful system observations. Candidate order is
+explicitly not a handler execution promise. Workstream cards show observed task
+counts, not invented completion percentages. Domains without authoritative tasks
+show NO DATA. A historical checkpoint is not a live worker or a new completed task.
+
+The service-only STABLE `read_dufynd_first_money_runtime()` GET supplies bounded
+scalar phase and purchase-evidence metadata. Its raw object, source breakdowns and
+session identifiers never reach the browser. The seven-stage funnel distinguishes
+publication, sessions, product details, offer views, clickouts, transactions and
+commission. A scheduled post is READY, never a published stage. Analytics can
+include readiness tests. Transactions and commission remain UNKNOWN until actual
+network evidence is ingested. Missing budget numbers remain UNKNOWN, not zero.
+
+Motion uses CSS orbits, ambient light, reconciled feed entries and short text
+transitions, with no animation under prefers-reduced-motion. The visible page
+retains the existing bounded 10-second read interval and stops when hidden. Auth,
+owner allowlist, encrypted cookies, noindex, CSP and GET-only read boundaries are
+unchanged. There are no new write controls, paid calls, scheduling changes,
+merchant mappings or catalog changes.
+
+Local validation: 2,879 tests passed (162 environment-dependent tests skipped),
+repo consistency, ruff lint/format and JavaScript parse passed. Isolated browser
+replay of live allowlisted data passed at 390/430/768/1440 pixels without horizontal
+overflow or page errors. Separate browser fixtures validated zero gates, a real
+pending-gate shape, working execution, missing data, unavailable reads and reduced
+motion. These fixtures never enter production. Browser replay does not certify a
+live signed-in owner session; deployment and anonymous route denial are separately
+verified against the deployed service.

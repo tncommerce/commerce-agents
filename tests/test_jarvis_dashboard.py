@@ -259,6 +259,8 @@ def make_transport(data, calls, *, failure=None):
             name = "active_runs" if "status" in request.url.params else "recent_runs"
         elif table == "get_dufynd_jarvis_budget_status":
             return httpx.Response(200, json={"cap_usd": "2.50"})
+        elif table == "read_dufynd_first_money_runtime":
+            return httpx.Response(200, json=(data.get("first_money_runtime") or [{}])[0])
         else:
             name = {
                 "dufynd_external_observers": "observers",
@@ -285,7 +287,7 @@ def test_reader_requests_fixed_allowlisted_columns_no_generic_queries_or_provide
     )
     result = reader.snapshot(now=NOW)
     assert result["command_center"]["observed_head_sha"] == "a" * 40
-    assert len(calls) == 21
+    assert len(calls) == 22
     for call in calls:
         selected = call.url.params.get("select", "")
         assert "*" not in selected
@@ -568,3 +570,65 @@ def test_ceo_unsettled_cost_never_shown_as_zero(status):
     result = build_snapshot(data, now=NOW)
     assert result["runtime_safety"]["today_new_cost_usd"] is None
     assert result["runtime_safety"]["provider_cost_unknown"] is True
+
+
+def test_ceo_workstreams_next_and_waiting_preserve_unknown_and_priority():
+    data = fixture_data()
+    data["tasks"] += [
+        {"task_id": "later", "title": "Later", "domain": "tech", "status": "ready", "priority": 2},
+        {"task_id": "first", "title": "First", "domain": "tech", "status": "ready", "priority": 99},
+    ]
+    result = build_snapshot(data, now=NOW)
+    assert [t["task_id"] for t in result["next_tasks"]] == ["first", "later"]
+    assert result["waiting"]["external"] == 1
+    assert result["waiting"]["budget"] == 1
+    assert result["waiting"]["technical"] == 0
+    assert next(w for w in result["workstreams"] if w["name"] == "Content")["status"] == "NO DATA"
+    assert result["first_money"]["runtime"]["landing_sessions"] is None
+    assert result["first_money"]["transactions"] is None
+    assert result["first_money"]["commission_eur"] is None
+
+
+def test_first_money_runtime_projection_never_forwards_raw_rpc_payload():
+    data = fixture_data()
+    data["first_money_runtime"] = [
+        {
+            "phase": "prelaunch",
+            "observed_at": STAMP,
+            "funnel": {"landing_sessions": 1, "by_source": [{"private": "hidden-marker"}]},
+            "purchase_evidence": {"last_verified_at": STAMP, "raw": "hidden-marker"},
+            "payload": "hidden-marker",
+        }
+    ]
+    result = build_snapshot(data, now=NOW)
+    assert result["first_money"]["runtime"]["landing_sessions"] == 1
+    assert "hidden-marker" not in json.dumps(result)
+
+
+def test_ceo_gate_and_external_monitoring_are_truthful():
+    data = fixture_data()
+    data["thin"] = [{"observed_at": STAMP, "stop_reason": "waiting_external"}]
+    data["thin_config"] = [{"enabled": True}]
+    data["decisions"] = []
+    data["tasks"] = [
+        {
+            "task_id": "external",
+            "domain": "affiliate",
+            "title": "Await reply",
+            "status": "waiting_external",
+            "requires_human_approval": True,
+        }
+    ]
+    result = build_snapshot(data, now=NOW)
+    assert result["command_center"]["ceo_status"] == "JARVIS ÜBERWACHT"
+    assert result["command_center"]["human_approval_count"] == 0
+    assert result["command_center"]["gates_complete"] is True
+    data["decisions"] = [
+        {"decision_id": "real", "title": "Owner decision", "action_type": "publish"}
+    ]
+    assert (
+        build_snapshot(data, now=NOW)["command_center"]["ceo_status"] == "WARTET AUF DEINE FREIGABE"
+    )
+    data["decisions"] = []
+    data["active_runs"] = [run_row()]
+    assert build_snapshot(data, now=NOW)["command_center"]["ceo_status"] == "JARVIS AKTIV"
