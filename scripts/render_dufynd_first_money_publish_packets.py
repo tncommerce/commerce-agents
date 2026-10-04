@@ -399,9 +399,7 @@ def render_date_slide(
                 panel_fill=(255, 255, 255, 34),
             )
 
-    footer = slide.get(
-        "instagram_footer" if platform == "instagram" else "tiktok_footer"
-    )
+    footer = slide.get("instagram_footer" if platform == "instagram" else "tiktok_footer")
     if footer:
         draw.text(
             (70, height - (90 if platform == "instagram" else 132)),
