@@ -64,6 +64,11 @@ def projected_packet(task: dict, *, head: str | None, level: int, root: Path = R
                 return {row["content_id"]: row for row in value.get(key, [])}
 
             ready = indexed(readiness, "pilots")
+            shared[f"batch{batch}_readiness"] = {
+                k: readiness[k]
+                for k in ("updated_at", "status", "remaining_before_publish")
+                if k in readiness
+            }
             voice = indexed(specs, "pilots")
             subs = indexed(subtitles, "items")
             posts = indexed(social, "posts")
@@ -89,7 +94,7 @@ def projected_packet(task: dict, *, head: str | None, level: int, root: Path = R
                     else [s["overlay"] for s in row.get("scenes", []) if "overlay" in s]
                 )
                 if not message or any(
-                    identifier not in index for index in (ready, voice, subs, posts, previews)
+                    identifier not in index for index in (voice, subs, posts, previews)
                 ):
                     raise BudgetGate("insufficient_bounded_context")
                 pilot = {
