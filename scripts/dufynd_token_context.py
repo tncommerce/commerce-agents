@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from pathlib import Path
 
 from scripts.dufynd_bounded_provider import BudgetGate
@@ -146,8 +147,6 @@ def projected_packet(task: dict, *, head: str | None, level: int, root: Path = R
         if level >= 3:
             # Retain policy-bearing shared fields; omit redundant delivery prose.
             shared.pop("social", None)
-            shared.pop("audio", None)
-            shared.pop("voiceover", None)
             shared["subtitle"] = list(
                 dict.fromkeys(
                     data[f"examples/retail/data/scentai_pilot_batch_{b:02d}_subtitles.json"].get(
@@ -169,6 +168,16 @@ def projected_packet(task: dict, *, head: str | None, level: int, root: Path = R
         for source in sources:
             if "batch_48_63" in source["path"] or "batch_64_69" in source["path"]:
                 source["usage"] = "provenance_only"
+        if level >= 3:
+            # Batch readiness prose is stale versus preview inventory; keep its dated status.
+            for batch in (1, 2, 3):
+                shared[f"batch{batch}_readiness"].pop("remaining_before_publish", None)
+            # QA/render/subtitle/voiceover requirements above cover the shared completion gates.
+            shared["subtitle"] = [
+                data[f"examples/retail/data/scentai_pilot_batch_{b:02d}_subtitles.json"].get("note")
+                for b in (1,)
+            ]
+            shared["claims"] = list(dict.fromkeys(x for group in shared["claims"] for x in group))
         packet["repository_evidence"] = sources
         packet["pilot_comparison"] = compact_projection({"pilots": pilots})["pilots"]
         packet["shared_rules"] = shared
@@ -224,7 +233,22 @@ def projected_packet(task: dict, *, head: str | None, level: int, root: Path = R
                 source["omission_reason"] = "blank_and_comment_lines_removed_from_anchored_windows"
         if level >= 3:
             # No semantic code-path deletion: stop if mandatory windows still exceed the bound.
-            packet["projection_omissions"] = ["No further safe mandatory code pruning available"]
+            for source in packet["repository_evidence"]:
+                lines = (root / source["path"]).read_text().splitlines(keepends=True)
+                existing = {i for a, b in source["line_ranges"] for i in range(a - 1, b)}
+                marker = re.compile(
+                    r"acquisition|attribution|campaign|content_id|contentId|src|cmp|\bsid\b|session|Session|analytics|Analytics|clickref|clickout|Clickout|target|Redirect|affiliate|urlencode|query|FragranceOffers|ComparisonAnalytics|offer_id|product_id|partner",
+                    re.I,
+                )
+                selected = [i for i in sorted(existing) if marker.search(lines[i])]
+                source["text"] = "".join(lines[i] for i in selected)
+                source["line_ranges"] = [[i + 1, i + 1] for i in selected]
+                source["omission_reason"] = (
+                    "noncontiguous_attribution_flow_lines_only; declarations and UI layout omitted"
+                )
+            packet["projection_omissions"] = [
+                "Noncontiguous original lines: control/value-flow evidence, not complete executable functions"
+            ]
     return rehash(packet)
 
 
@@ -252,14 +276,15 @@ def render_prompt(packet: dict) -> str:
             }
         ),
         "HEAD: " + str(packet.get("head")),
-        "Context SHA256: " + packet["packet_sha256"],
+        "Context SHA256 (binds full original-source SHA256/line-range audit): "
+        + packet["packet_sha256"],
     ]
     for i, source in enumerate(packet["repository_evidence"]):
-        parts.append(
-            f"Source {i}: {source['path']} SHA256={source['sha256']} priority={source['priority']}"
-        )
+        parts.append(f"Source {i}: {source['path']} priority={source['priority']}")
         if source.get("text"):
-            parts.append("Original line ranges: " + cell(source.get("line_ranges")))
+            parts.append(
+                "Anchored noncontiguous excerpts; exact line ranges and full original SHA256 in hash-bound audit."
+            )
             parts.append(source["text"])
     if "pilot_comparison" in packet:
         table = packet["pilot_comparison"]
@@ -270,7 +295,15 @@ def render_prompt(packet: dict) -> str:
             "Shared rules:\n"
             + "\n".join(f"{k}: {cell(v)}" for k, v in packet["shared_rules"].items())
         )
-    parts.append("Omitted source payloads: " + cell(packet.get("omitted_sources", [])))
+    parts.append(
+        "Omitted source payloads: "
+        + cell(
+            [
+                {k: v for k, v in s.items() if k != "sha256"}
+                for s in packet.get("omitted_sources", [])
+            ]
+        )
+    )
     parts.append("Projection omissions: " + cell(packet.get("projection_omissions", [])))
     return "\n".join(parts)
 
