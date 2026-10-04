@@ -11,6 +11,8 @@ from scripts.dufynd_worker_evidence import (
     MAX_PROMPT_BYTES,
     encode,
     pack_evidence,
+    projection_rows,
+    source_text,
 )
 
 
@@ -37,7 +39,7 @@ def test_live_repository_pack_is_deterministic_and_bounded():
         for source in a["repository_evidence"]:
             raw = (Path(__file__).resolve().parents[1] / source["path"]).read_bytes()
             assert source["sha256"] == hashlib.sha256(raw).hexdigest()
-            assert source["line_ranges"] or source.get("projection")
+            assert source.get("line_ranges") or source.get("data")
         assert all(s.get("complete") or s.get("omission_reason") for s in a["repository_evidence"])
 
 
@@ -85,7 +87,7 @@ def test_all_three_content_batches_have_full_scripts_and_voiceover_specs():
     sources = {s["path"]: s for s in packet["repository_evidence"]}
     for batch in (1, 2, 3):
         name = f"examples/retail/data/scentai_pilot_batch_{batch:02d}.json"
-        assert "voiceover" in sources[name]["text"]
+        assert "voiceover" in source_text(sources[name])
         assert (
             f"examples/retail/data/scentai_pilot_batch_{batch:02d}_voiceover_spec.json" in sources
         )
@@ -99,10 +101,9 @@ def test_content_families_are_balanced_and_partial_media_is_explicit():
     for batch in (1, 2, 3):
         for suffix in ("subtitles", "social_copy"):
             source = sources[f"examples/retail/data/scentai_pilot_batch_{batch:02d}_{suffix}.json"]
-            assert not source["complete"]
+            assert not source.get("complete")
             assert source["omission_reason"]
-            data = json.loads(source["text"])
-            assert len(data["items" if suffix == "subtitles" else "posts"]) == 5
+            assert len(projection_rows(source, "items" if suffix == "subtitles" else "posts")) == 5
     assert "examples/retail/data/dufynd_high_end_launch_assets.json" in sources
     assert "examples/retail/data/scentai_content_pipeline_status.json" in sources
     assert any("creative_learning" in path for path in sources)

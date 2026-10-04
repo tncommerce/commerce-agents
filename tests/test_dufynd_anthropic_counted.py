@@ -151,6 +151,10 @@ def test_free_count_matches_actual_input_payload_and_generation_once():
         == json.loads(p.proof)["count_payload_hash"]
     )
     assert result["cost_usd"] == "0.000340"
+    assert client.execution_audit["reservation_state"] == "settled"
+    assert client.execution_audit["reservation_id"] is not None
+    assert client.execution_audit["ledger_dispatched"] is True
+    assert client.execution_audit["cost_usd"] == "0.000340"
     assert result["remaining_budget"]["budget_id"] == "new"
     with pytest.raises(BudgetGate):
         execute(client, bridge, p)
@@ -204,11 +208,17 @@ def test_timeout_unknown_charge_pauses_without_retry():
         raise httpx.ReadTimeout("mock")
 
     bridge = Bridge()
+    client = c.CountedClient("mock", transport=httpx.MockTransport(transport))
     with pytest.raises(BudgetGate, match="no_retry"):
-        execute(c.CountedClient("mock", transport=httpx.MockTransport(transport)), bridge)
+        execute(client, bridge)
     assert len(calls) == 1
     assert bridge.settlements[0]["p_actual_usd"] is None
     assert bridge.settlements[0]["p_violation"] is True
+    assert client.execution_audit["reservation_state"] == "unknown_settlement_attempted"
+    assert client.execution_audit["reservation_id"] is not None
+    assert client.execution_audit["ledger_dispatched"] is True
+    assert client.execution_audit["provider_request_attempted"] is True
+    assert client.execution_audit["cost_usd"] is None
 
 
 def test_real_usage_over_margin_persisted_unclamped_then_stop():
