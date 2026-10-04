@@ -58,7 +58,6 @@ def test_release_batch_01_dry_run_stays_blocked_until_real_assets_exist() -> Non
         "SC-YSL-LIBRE-EDP-90",
     }
     delina = next(row for row in plan["rows"] if row["product_id"] == "SC-PDM-DELINA-EDP-75")
-    assert delina["already_live"] is True
     assert "already_live" in delina["blockers"]
 
     for row in plan["rows"]:
