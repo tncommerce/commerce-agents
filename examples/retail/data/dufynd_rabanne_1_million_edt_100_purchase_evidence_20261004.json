@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "observed_at": "2026-10-04T09:44:49Z",
+  "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+  "merchant": "Perfumetrader",
+  "merchant_id": "perfumetrader",
+  "merchant_product_id": "16978322",
+  "observation_method": "current_public_merchant_page_read_only_web",
+  "identity": {
+    "brand": "Rabanne",
+    "storefront_brand_label": "Paco Rabanne",
+    "name": "1 Million",
+    "concentration": "Eau de Toilette",
+    "volume_ml": 100,
+    "gtin": "3349666007921",
+    "exact_variant_basis": "Existing exact merchant mapping + current Perfumetrader 1 Million assortment row for Eau de Toilette 100 ml."
+  },
+  "live_observation": {
+    "listed_price_eur": 71.9,
+    "availability": "Auf Lager",
+    "shipping_cost_eur": 4.99,
+    "total_price_eur": 76.89,
+    "product_url": "https://www.perfumetrader.de/de/paco-rabanne-1-million-eau-de-toilette-100-ml",
+    "price_stock_source": "https://www.perfumetrader.de/de/marken/paco-rabanne/1-million",
+    "shipping_source": "https://www.perfumetrader.de/de/versandbedingungen"
+  },
+  "affiliate_tracking": {
+    "affiliate_url": "https://www.awin1.com/cread.php?awinmid=11672&awinaffid=3099222&clickref=one_million_example61_01&ued=https%3A%2F%2Fwww.perfumetrader.de%2Fde%2Fpaco-rabanne-1-million-eau-de-toilette-100-ml",
+    "network": "Awin",
+    "advertiser_id": 11672,
+    "clickref": "one_million_example61_01",
+    "current_market_refresh_did_not_retest_redirect": true,
+    "existing_tracking_evidence_ref": "examples/retail/data/dufynd_rabanne_1_million_edt_100_affiliate_evidence_20260929.json",
+    "rule": "Market price/stock freshness and affiliate-routing verification are independent evidence. This refresh updates only current merchant availability evidence."
+  },
+  "customer_value_guardrail": {
+    "best_price_claim_allowed": false,
+    "note": "A previously verified Müller 100 ml route was cheaper, but its exact-variant repository observation is outside the 72-hour freshness window. Do not describe Perfumetrader as cheapest or best price until comparable current exact-variant offers are revalidated."
+  }
+}
