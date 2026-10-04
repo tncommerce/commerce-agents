@@ -3795,6 +3795,57 @@
       },
       "in_stock": true,
       "short_description": "Rabanne 1 Million ist ein süß-würziger, orientalisch geprägter Duft."
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "title": "Yves Saint Laurent Libre Eau de Parfum 90 ml",
+      "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png",
+      "brand": "Yves Saint Laurent",
+      "price": 119,
+      "currency": "EUR",
+      "rating": 3.8,
+      "review_count": 2203,
+      "category": "fragrance",
+      "labels": [
+        "floral",
+        "sweet",
+        "fresh",
+        "creamy",
+        "citrus"
+      ],
+      "attributes": {
+        "canonical_name": "Libre",
+        "community_rating_10": "7.5",
+        "rating_source": "Parfumo",
+        "volume_ml": "90",
+        "concentration": "Eau de Parfum",
+        "target_group": "women",
+        "audience_lean": "",
+        "main_accords": "floral, sweet, fresh, creamy, citrus",
+        "key_notes": "French lavender, Moroccan orange blossom, vanilla",
+        "freshness": "9",
+        "sweetness": "7",
+        "woodiness": "2",
+        "spiciness": "2",
+        "profile_source": "deterministic_editorial_mapping_v1",
+        "longevity": "7.8",
+        "projection": "7.6",
+        "price_source": "current_merchant_offer",
+        "market_price_eur": "119",
+        "price_checked_at": "2026-10-01T16:21:51Z",
+        "promotion_source": "scentai_catalog_staging",
+        "image_license_name": "",
+        "image_license_url": "",
+        "image_attribution_text": "",
+        "image_share_alike_required": "",
+        "image_product_truth_provenance": "",
+        "image_fidelity_approval_basis": "",
+        "image_fidelity_approved_at": "",
+        "image_source_sha256": "",
+        "image_variant": ""
+      },
+      "in_stock": true,
+      "short_description": "Yves Saint Laurent Libre ist ein floral, sweet, fresh geprägter Duft."
     }
   ]
 }
