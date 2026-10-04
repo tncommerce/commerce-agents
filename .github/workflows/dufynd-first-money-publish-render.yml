@@ -1,0 +1,63 @@
+name: DUFYND First Money Publish Packet Render
+
+on:
+  push:
+    branches: [scentai-mvp]
+    paths:
+      - "examples/retail/data/dufynd_first_money_publish_packets_20261004.json"
+      - "examples/retail/data/scentai_products.json"
+      - "scripts/render_dufynd_first_money_publish_packets.py"
+      - ".github/workflows/dufynd-first-money-publish-render.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dufynd-first-money-publish-render
+  cancel-in-progress: true
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out scentai-mvp
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: scentai-mvp
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+
+      - name: Install no-spend render dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pillow
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+
+      - name: Render First Money pieces 2 and 3
+        run: |
+          python scripts/render_dufynd_first_money_publish_packets.py
+          python scripts/render_dufynd_first_money_publish_packets.py --check-only
+
+      - name: Commit publish-ready media only
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add examples/retail/storefront-web/public/social/first-money
+
+          if git diff --cached --quiet; then
+            echo "No First Money media changes to commit."
+            exit 0
+          fi
+
+          git commit -m "Render First Money pieces 2 and 3 [skip ci]"
+          git pull --rebase origin scentai-mvp
+          git push origin HEAD:scentai-mvp
