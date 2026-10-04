@@ -251,24 +251,29 @@
       ? 'red'
       : c.status === 'WORKING'
         ? 'blue'
-        : c.status === 'WAITING' || c.status === 'ERROR'
-          ? 'amber'
-          : complete
-            ? 'green'
-            : 'neutral';
+        : c.status === 'WAITING'
+          ? 'blue'
+          : c.status === 'ERROR'
+            ? 'amber'
+            : complete
+              ? 'green'
+              : 'neutral';
     const jarvisMain = needsApproval
       ? 'Freigabe offen'
       : c.status === 'WORKING'
         ? 'Arbeitet'
         : c.status === 'WAITING'
-          ? 'Wartet'
+          ? 'Überwacht'
           : c.status === 'ERROR'
             ? 'Prüfen'
             : complete
               ? 'Stabil'
               : 'Unklar';
+    const waitingExternal = Number(queueData.waiting_external || 0);
+    const blockedTasks = Number(queueData.blocked || 0);
     const jarvisDetail = c.status === 'WAITING'
-      ? 'Wartet auf zulässige Arbeit oder externe Evidenz.'
+      ? ('Supervisor aktiv · aktuell kein sicher ausführbarer Task' +
+         (waitingExternal || blockedTasks ? ' · ' + waitingExternal + ' warten extern · ' + blockedTasks + ' blockiert' : '') + '.')
       : (c.current_task || 'Supervisor-State aktuell.');
 
     setPulse('pulse-jarvis', jarvisTone, jarvisMain, jarvisDetail);
