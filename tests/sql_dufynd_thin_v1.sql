@@ -49,7 +49,7 @@ begin
  if public.run_dufynd_thin_v1()->>'stop_reason'<>'waiting_external' then raise exception 'non-green CI accepted'; end if;
  update public.dufynd_master_status set value=value||jsonb_build_object('ready',true,'checked_at',now()-interval '21 minutes') where key='jarvis.thin_v1.ci';
  if public.run_dufynd_thin_v1()->>'stop_reason'<>'waiting_external' then raise exception 'stale CI accepted'; end if;
- update public.dufynd_external_observers set last_success_at=now()-interval '11 minutes' where observer_id='github_branch:scentai-mvp';
+ update public.dufynd_external_observers set last_success_at=now()-interval '151 seconds' where observer_id='github_branch:scentai-mvp';
  if public.run_dufynd_thin_v1()->>'stop_reason'<>'waiting_external' then raise exception 'stale HEAD accepted'; end if;
  update public.dufynd_external_observers set last_success_at=now(),last_snapshot=jsonb_build_object('sha',repeat('b',40)) where observer_id='github_branch:scentai-mvp';
  if public.run_dufynd_thin_v1()->>'stop_reason'<>'waiting_external' then raise exception 'moved HEAD accepted'; end if;
