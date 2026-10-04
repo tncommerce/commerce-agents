@@ -7,7 +7,7 @@
   "instagram": [
     {
       "path": "examples/retail/storefront-web/public/social/first-money/gift_for_him_no_safe_blindbuy_20261004_01/instagram/slide-01.jpg",
-      "sha256": "f4c13fd337f29db0bf3e79b61bed357ee6fb0aa1c75db58536b7a1004c24084b",
+      "sha256": "cb8ef014d955814bbeb7d290c0034458f159c48eaac49d3b65e3ff4cc9c3dd51",
       "size": [
         1080,
         1350
@@ -31,7 +31,7 @@
     },
     {
       "path": "examples/retail/storefront-web/public/social/first-money/gift_for_him_no_safe_blindbuy_20261004_01/instagram/slide-04.jpg",
-      "sha256": "f3fea8de4ccaf24c77385f3e18b022a349095b04831f9d9edecef5adf0df20be",
+      "sha256": "d46564cb576a9703261e58629cbff602316cde6580f78005595f9f19d21de264",
       "size": [
         1080,
         1350
@@ -39,7 +39,7 @@
     },
     {
       "path": "examples/retail/storefront-web/public/social/first-money/gift_for_him_no_safe_blindbuy_20261004_01/instagram/slide-05.jpg",
-      "sha256": "69894c74601535fe7b582444f42ff66dcf05e7fd58ce3c4f1288cc40996bc309",
+      "sha256": "182bf10fee4a0b2c2bb3373c52f02a2e3f671512c425f0a80941c9bcf54a1e40",
       "size": [
         1080,
         1350
@@ -49,7 +49,7 @@
   "tiktok_slides": [
     {
       "path": "examples/retail/storefront-web/public/social/first-money/gift_for_him_no_safe_blindbuy_20261004_01/tiktok/slide-01.jpg",
-      "sha256": "268e8983ea17d05e8d22a6a37444afa3022475eed257251be73f2eead668a026",
+      "sha256": "a79b07aeb2be7d346954afd241606a3eb43783ed23da9631b2a08b870c08a454",
       "size": [
         1080,
         1920
@@ -57,7 +57,7 @@
     },
     {
       "path": "examples/retail/storefront-web/public/social/first-money/gift_for_him_no_safe_blindbuy_20261004_01/tiktok/slide-02.jpg",
-      "sha256": "c06057af086983a20fd11a43694fe15042fb821cf2b6940892bfd08f0a996053",
+      "sha256": "93c78d92d8c94cea3b5ef8e57c4cd0b44e2cb8645b6664cedb5e5e50b13f2f67",
       "size": [
         1080,
         1920
@@ -65,7 +65,7 @@
     },
     {
       "path": "examples/retail/storefront-web/public/social/first-money/gift_for_him_no_safe_blindbuy_20261004_01/tiktok/slide-03.jpg",
-      "sha256": "ffea24721017342c6fb4076ce3457058cd464e4f4cfbd882f64ea52251d93a08",
+      "sha256": "005f7f0c867338a8b9559698580c75747a8ec3f9cd70ed075966d0a4792d9b58",
       "size": [
         1080,
         1920
@@ -73,7 +73,7 @@
     },
     {
       "path": "examples/retail/storefront-web/public/social/first-money/gift_for_him_no_safe_blindbuy_20261004_01/tiktok/slide-04.jpg",
-      "sha256": "0ef52f056ada61d6c8d00cf422d3c576de3dedc8ca9e4146bc560b1bac8fa13b",
+      "sha256": "556be4e5539f10398d5df38964c874d62b69105161b88910f767dc57c3585bc3",
       "size": [
         1080,
         1920
@@ -81,7 +81,7 @@
     },
     {
       "path": "examples/retail/storefront-web/public/social/first-money/gift_for_him_no_safe_blindbuy_20261004_01/tiktok/slide-05.jpg",
-      "sha256": "2fb448b446a7b35243f9086bfeec9b0c8faf5e63dabca46446ad0a0c7533bf2e",
+      "sha256": "e35b3589a69ba3cb36bcc34ee47b3e85c04527696aa86bd28fa99cb0b85448e6",
       "size": [
         1080,
         1920
@@ -90,7 +90,7 @@
   ],
   "tiktok_video": {
     "path": "examples/retail/storefront-web/public/social/first-money/gift_for_him_no_safe_blindbuy_20261004_01/tiktok/gift_for_him_no_safe_blindbuy_20261004_01.mp4",
-    "sha256": "4db34d0c49238a497b0a72495d1140f2effa4838f77073a808af8a0af46c66ca",
+    "sha256": "ef1d1de18225dcac11a0a8cd1a51fb8d62c2b92b307500affc2eb677822937fd",
     "duration_seconds": 18.0,
     "audio": false
   },

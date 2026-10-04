@@ -7,7 +7,7 @@
   "instagram": [
     {
       "path": "examples/retail/storefront-web/public/social/first-money/date_night_pick_by_vibe_20261004_01/instagram/slide-01.jpg",
-      "sha256": "30dc395c399b39cfa97fb53ab0257961bec82513d7982da300f75ed6aedc52ae",
+      "sha256": "6ef5bd029f41725c7848e12de0b9d67dd3dedb9516a40bab258f72ea9531319d",
       "size": [
         1080,
         1350
@@ -15,7 +15,7 @@
     },
     {
       "path": "examples/retail/storefront-web/public/social/first-money/date_night_pick_by_vibe_20261004_01/instagram/slide-02.jpg",
-      "sha256": "495e643a824e0dd3b8b7daf6f950308704078328b80f6b2f0d0484b6ad2cb433",
+      "sha256": "10f6ab503239ab3c8636b5ab59d868bd5aa38b773d0a220c6740014be9d4e1fc",
       "size": [
         1080,
         1350
@@ -23,7 +23,7 @@
     },
     {
       "path": "examples/retail/storefront-web/public/social/first-money/date_night_pick_by_vibe_20261004_01/instagram/slide-03.jpg",
-      "sha256": "a85c357565c53e567be98c5866c2294b63ca8e1d27eb80dd5c746c2d6b9a5ac5",
+      "sha256": "faa6bc9bac9355fd2158dac08de52842e3b5c47712ebdcf928ea1f75634a3eaa",
       "size": [
         1080,
         1350
@@ -31,7 +31,7 @@
     },
     {
       "path": "examples/retail/storefront-web/public/social/first-money/date_night_pick_by_vibe_20261004_01/instagram/slide-04.jpg",
-      "sha256": "6b9c6da01b51a25334a99334f50cbba61f5fc3125fee3419e3eada10f8fb0a65",
+      "sha256": "5fdba252db1cd46c0c32c352934a88fce513649e26d693c68994db1eb17d27cb",
       "size": [
         1080,
         1350
@@ -39,7 +39,7 @@
     },
     {
       "path": "examples/retail/storefront-web/public/social/first-money/date_night_pick_by_vibe_20261004_01/instagram/slide-05.jpg",
-      "sha256": "2f3eea97b619e68d8462469eed02b3415a9e8a8a2d6192c800ff28c368805ccf",
+      "sha256": "ebc84904072bf9c8c0bd1bb1c3e41adb374cb88f4e1bbd736034d3279d3885ab",
       "size": [
         1080,
         1350
@@ -49,7 +49,7 @@
   "tiktok_slides": [
     {
       "path": "examples/retail/storefront-web/public/social/first-money/date_night_pick_by_vibe_20261004_01/tiktok/slide-01.jpg",
-      "sha256": "c3dc8fe4aa7f528083b8c71491b603baeb98a6ab220fd9c78d8a692d5848c9e1",
+      "sha256": "0b734f694aa85f9ba4c4675354c63c5f6d1bfefea7392281ca151d85145032f1",
       "size": [
         1080,
         1920
@@ -57,7 +57,7 @@
     },
     {
       "path": "examples/retail/storefront-web/public/social/first-money/date_night_pick_by_vibe_20261004_01/tiktok/slide-02.jpg",
-      "sha256": "1a959dbd9cd6806360a0a78293cb9d20237d4bbd1c3e081101d339c34880b6ec",
+      "sha256": "9c706a807778f74204fc943b5f9f4d09b0ba3f884a4ffa014e5a60ffd544ef50",
       "size": [
         1080,
         1920
@@ -65,7 +65,7 @@
     },
     {
       "path": "examples/retail/storefront-web/public/social/first-money/date_night_pick_by_vibe_20261004_01/tiktok/slide-03.jpg",
-      "sha256": "5ee374898f0a9e1f0b92d404987203c3d9caf61ffdea481f91064168dcceb40b",
+      "sha256": "533778e9297e5516032530d290d521067eee97b9273a4ee71840d791fd4e357b",
       "size": [
         1080,
         1920
@@ -73,7 +73,7 @@
     },
     {
       "path": "examples/retail/storefront-web/public/social/first-money/date_night_pick_by_vibe_20261004_01/tiktok/slide-04.jpg",
-      "sha256": "071af52a9ccd1027da7fb0224fe56d7f9a11793b127903d3b0edb0fecdc3975c",
+      "sha256": "d420816d322faeb0d3e4eff4ae8852f76f9463872fbd4c04c74ae683a9da3883",
       "size": [
         1080,
         1920
@@ -81,7 +81,7 @@
     },
     {
       "path": "examples/retail/storefront-web/public/social/first-money/date_night_pick_by_vibe_20261004_01/tiktok/slide-05.jpg",
-      "sha256": "b6cc75a8228a4a9730cf03ae9e0e61265dc7cd3f6da6f3e6ac3e8dc91fa1623d",
+      "sha256": "fdcae5e3a9295eacf8f6cb3e48323210059e8e4c889e472c5f188a1297d8c749",
       "size": [
         1080,
         1920
@@ -90,7 +90,7 @@
   ],
   "tiktok_video": {
     "path": "examples/retail/storefront-web/public/social/first-money/date_night_pick_by_vibe_20261004_01/tiktok/date_night_pick_by_vibe_20261004_01.mp4",
-    "sha256": "edce3ab786df68e649e8bf42f69ff5efc9714a5082dd30701bd4bc5b11237b73",
+    "sha256": "4c7dcf2753dcfe2fa72a83030eaf5dbb7c263b06356d9711f0aeb4011f5122e9",
     "duration_seconds": 17.0,
     "audio": false
   },
