@@ -176,3 +176,34 @@ CSRF and origin tests pass; real worker, task, observer, gate and budget states
 match live sources, with stale/incomplete history labeled. On read failure the UI
 keeps the last observation with an explicit unavailable warning and unknown
 current supervisor status. There are no task, spend, publish or outbound controls.
+
+
+## CEO Control Room V0.1 (2026-10-04)
+
+Reuses the protected API shell and existing owner session without credential or
+Auth configuration changes. Read-only additions: fresh Thin-loop WORKING / WAITING /
+OWNER GATE / ERROR, concrete owner action, current execution, last-loop stop reason,
+next selection estimate, pending human decisions with scalar reason/risk/cost/benefit
+and exact scoped GO token, authoritative loop queue counts, CI bound to observed
+branch SHA, smoke bound to that same SHA, leases/reservations, daily provider cost,
+First-Money publication observation and exact-content product analytics, and the
+four money-product business checkpoint states. There are no approval buttons.
+
+Publication is a stored connector observation with timestamp and stale marker,
+not a continuous platform poll. Analytics are unique event-ID counts and distinct
+session hashes for the exact 1 Million product/content; hashes and IDs never reach
+the browser. Detail views, offer impressions and clickouts are distinct. The first
+readiness test may be included; no metric claims organic traffic. The bounded read
+shows lower bounds if incomplete. Transactions and commission remain unknown until
+a network reporting source exists; purchase verification is not a sale. Business
+product states are checkpoint observations, not catalog activation assertions.
+
+Daily costs use the Europe/Berlin calendar day of dispatched provider reservations.
+Only settled actual costs are totaled. Unsettled, charged-max or missing settlement
+costs remain unknown. The daily number includes earlier activity, not just this
+free dashboard task. Open-cost rows are checked separately across dates. Missing
+budget window remains unknown. Fixed GET reads run with six concurrent requests;
+refresh remains every 10 seconds while visible, with manual refresh and explicit
+failure/stale state. Missing/truncated decision or runtime reads cannot claim a
+complete healthy overview. Verified completed checkpoints supply the quiet activity
+list; no synthetic worker stations or noisy inbox logs are promoted as completed work.

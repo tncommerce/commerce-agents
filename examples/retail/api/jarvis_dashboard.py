@@ -1,7 +1,6 @@
-"""Internal Control Room V1 read model. Deliberately NOT mounted in the public API.
+"""Read-only CEO Control Room DTO behind the existing server owner boundary.
 
 No mutations, provider calls, SQL inputs, browser credentials, or auth fallback.
-Owner authentication must be chosen before mounting the router or shipping a UI.
 """
 
 from __future__ import annotations
@@ -9,9 +8,11 @@ from __future__ import annotations
 import re
 from collections import Counter
 from collections.abc import Callable
+from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal, InvalidOperation
 from typing import Any
+from zoneinfo import ZoneInfo
 
 import httpx
 from fastapi import APIRouter, Depends, HTTPException
@@ -19,7 +20,7 @@ from fastapi.responses import JSONResponse
 
 PROJECT_ORIGIN = "https://bqsdxaagklpkxioaqdqa.supabase.co"
 ACTIVE = {"claimed", "working", "verifying", "in_progress", "running", "dispatched"}
-LANES = ("READY", "WORKING", "WAITING EXTERNAL", "WAITING HUMAN", "BLOCKED", "DONE")
+LANES = ("READY", "WORKING", "WAITING EXTERNAL", "WAITING HUMAN", "BLOCKED", "DONE", "CANCELLED")
 SENSITIVE = re.compile(
     r"(?i)(bearer\s|eyJ[A-Za-z0-9_-]+\.|sb_(?:secret|publishable)_|sk-[A-Za-z0-9]"
     r"|gh[pousr]_|github_pat_|ya29\.|1//|secret[_ -]?(?:key|reference)"
@@ -70,6 +71,30 @@ MASTER_READS = {
         "total:value->total,sha:value->>live_head_sha",
     ),
 }
+
+# Scalar database projections only. Never forward raw master values.
+MASTER_READS.update(
+    {
+        "thin": (
+            "jarvis.thin_v1.status",
+            "observed_at:value->>observed_at,stop_reason:value->>stop_reason,active_leases:value->active_leases,stale_leases:value->stale_leases,open_reservations:value->open_reservations,provider_cost_unknown:value->provider_cost_unknown,done:value->queue_counts->done,active:value->queue_counts->in_progress,working:value->queue_counts->working,waiting_external:value->queue_counts->waiting_external,blocked:value->queue_counts->blocked,cancelled:value->queue_counts->cancelled,last_task:value->completed->0->>task_id",
+        ),
+        "thin_config": ("jarvis.thin_v1.config", "enabled:value->enabled"),
+        "ci": (
+            "jarvis.thin_v1.ci",
+            "sha:value->>sha,ready:value->ready,checked_at:value->>checked_at,status:value->>status,conclusion:value->>conclusion,run_id:value->>run_id",
+        ),
+        "publication": (
+            "jarvis.thin_v1.first_money_schedule_observation",
+            "observed_at:value->>observed_at,content_id:value->>content_id,experiment_id:value->>experiment_id,platform0:value->posts->0->>platform,status0:value->posts->0->>status,scheduled0:value->posts->0->>scheduled_at,platform1:value->posts->1->>platform,status1:value->posts->1->>status,scheduled1:value->posts->1->>scheduled_at",
+        ),
+        "money_products": (
+            "continuity.checkpoint.ceo_radar",
+            "last_verified_at,product0:value->money_products->0->>product,state0:value->money_products->0->>state,product1:value->money_products->1->>product,state1:value->money_products->1->>state,product2:value->money_products->2->>product,state2:value->money_products->2->>state,product3:value->money_products->3->>product,state3:value->money_products->3->>state",
+        ),
+    }
+)
+FIRST_MONEY_CONTENT = "one_million_still_hits_20261004_01"
 
 
 class DashboardUnavailable(RuntimeError):
@@ -190,7 +215,9 @@ def build_snapshot(
     board: dict[str, list[dict[str, Any]]] = {lane: [] for lane in LANES}
     for row in tasks:
         status = row.get("status")
-        if status == "done":
+        if status == "cancelled":
+            lane = "CANCELLED"
+        elif status == "done":
             lane = "DONE"
         elif status == "waiting_human_input":
             lane = "WAITING HUMAN"
@@ -392,11 +419,25 @@ def build_snapshot(
     ]
     # Recent history is intentionally bounded; truncation of operational reads is different.
     operational_incomplete = [
-        name for name in incomplete if name in {"tasks", "active_runs", "observers", "credentials"}
+        name
+        for name in incomplete
+        if name
+        in {
+            "tasks",
+            "active_runs",
+            "observers",
+            "credentials",
+            "decisions",
+            "thin",
+            "thin_config",
+            "ci",
+        }
     ]
     if operational_incomplete:
         status = "DEGRADED"
-        systems[-1]["health"] = "UNKNOWN"
+        next(system for system in systems if system["name"] == "Execution Plane")["health"] = (
+            "UNKNOWN"
+        )
     branch = next(
         (
             row
@@ -418,7 +459,7 @@ def build_snapshot(
         for row in data.get("inbox", [])
     ]
     checkpoint = first("checkpoint")
-    return {
+    snapshot = {
         "version": 1,
         "generated_at": now.isoformat(),
         "read_only": True,
@@ -466,6 +507,203 @@ def build_snapshot(
             "systems": ["GitHub", "Supabase", "Render", "Gmail"],
         },
     }
+    thin, ci, publication = first("thin"), first("ci"), first("publication")
+    thin_fresh = _fresh(thin.get("observed_at"), now, 360)
+    gates = [
+        {
+            "task_id": clean(r.get("task_id")),
+            "decision_id": clean(r.get("decision_id")),
+            "title": clean(r.get("title")),
+            "type": enum(r.get("action_type")),
+            "reason": clean(r.get("reason")),
+            "risk": clean(r.get("risk")),
+            "cost_usd": _money(r.get("cost_usd")),
+            "benefit": clean(r.get("benefit")),
+            "go_token": r.get("decision_token")
+            if isinstance(r.get("decision_token"), str)
+            and re.fullmatch(r"GO-[A-Z0-9_-]{1,150}", r["decision_token"])
+            else None,
+        }
+        for r in data.get("decisions", [])
+    ]
+    snapshot["decision_center"] = gates + [
+        d
+        for d in decisions
+        if d.get("provider") or d.get("task_id") not in {g["task_id"] for g in gates}
+    ]
+    gate_complete = "decisions" in data and "decisions" not in incomplete
+    command = snapshot["command_center"]
+    command["human_approval_count"] = len(snapshot["decision_center"])
+    command["status"] = (
+        "ERROR"
+        if not thin_fresh
+        or operational_incomplete
+        or first("thin_config").get("enabled") is not True
+        else "WORKING"
+        if active_workers
+        else "OWNER GATE"
+        if snapshot["decision_center"]
+        else "WAITING"
+    )
+    command["owner_action"] = (
+        "Owner-Gates prüfen: " + (gates[0]["title"] or "Entscheidung")
+        if gates
+        else "Owner-Gate prüfen"
+        if snapshot["decision_center"]
+        else "NICHTS"
+        if gate_complete
+        else "Owner-Gates derzeit nicht vollständig prüfbar"
+    )
+    command["current_task"] = next(
+        (w["task_title"] or w["task_id"] for w in workers if w["status"] == "ACTIVE"), None
+    )
+    command["stop_reason"] = (
+        enum(thin.get("stop_reason")) if thin_fresh else "stale_loop_observation"
+    )
+    command["next_allowed_task"] = (
+        "Kein zulässiger Task im letzten Loop ausgewählt; nächste Auswahl beim Wake-up"
+        if thin_fresh
+        and thin.get("stop_reason") in {"no_safe_work", "waiting_external", "owner_gate"}
+        else None
+    )
+    command["last_loop_at"] = _stamp(thin.get("observed_at"))
+    command["next_loop_estimate"] = (
+        (_time(thin["observed_at"]) + timedelta(seconds=120)).isoformat() if thin_fresh else None
+    )
+    command["last_verified_task"] = clean(thin.get("last_task"))
+    branch_sha = command["observed_head_sha"]
+    ci_health = (
+        "HEALTHY"
+        if ci.get("ready") is True
+        and _sha(ci.get("sha")) == branch_sha
+        and branch_sha
+        and _fresh(ci.get("checked_at"), now, 1200)
+        else "DEGRADED"
+    )
+    smoke = first("smoke")
+    smoke_health = (
+        "HEALTHY"
+        if smoke.get("status") == "healthy"
+        and _sha(smoke.get("sha")) == branch_sha
+        and branch_sha
+        and _fresh(smoke.get("observed_at"), now, 3600)
+        else "STALE"
+        if smoke
+        else "UNKNOWN"
+    )
+    systems.extend(
+        [
+            {
+                "name": "CI · scentai-mvp",
+                "health": ci_health,
+                "last_success_at": _stamp(ci.get("checked_at")),
+                "sha": _sha(ci.get("sha")),
+                "run_id": clean(ci.get("run_id")),
+            },
+            {
+                "name": "Production Smoke",
+                "health": smoke_health,
+                "last_success_at": _stamp(smoke.get("observed_at")),
+                "sha": _sha(smoke.get("sha")),
+            },
+            {
+                "name": "Jarvis free loop",
+                "health": "HEALTHY"
+                if thin_fresh and first("thin_config").get("enabled") is True
+                else "STALE",
+                "last_success_at": _stamp(thin.get("observed_at")),
+            },
+        ]
+    )
+    snapshot["queue"] = {
+        k: _number(thin.get(k)) if thin_fresh else None
+        for k in ("done", "waiting_external", "blocked", "cancelled")
+    }
+    snapshot["queue"]["active"] = (
+        ((_number(thin.get("active")) or 0) + (_number(thin.get("working")) or 0))
+        if thin_fresh
+        else None
+    )
+    snapshot["queue"]["observed_at"] = _stamp(thin.get("observed_at"))
+    reservations = data.get("daily_costs", [])
+    cost_complete = "daily_costs" in data and "daily_costs" not in incomplete
+    unknown_cost = any(
+        r.get("status") in {"dispatched", "cost_unknown", "charged_max"}
+        or (r.get("status") == "settled" and _money(r.get("actual_usd")) is None)
+        for r in reservations
+    )
+    spent = sum(
+        (
+            Decimal(_money(r.get("actual_usd")) or "0")
+            for r in reservations
+            if r.get("status") == "settled"
+        ),
+        Decimal(0),
+    )
+    open_costs = data.get("open_costs", [])
+    open_complete = "open_costs" in data and "open_costs" not in incomplete
+    global_unknown = any(
+        r.get("status") in {"dispatched", "cost_unknown", "charged_max"} for r in open_costs
+    )
+    snapshot["runtime_safety"] = {
+        "active_leases": _number(thin.get("active_leases")) if thin_fresh else None,
+        "stale_leases": _number(thin.get("stale_leases")) if thin_fresh else None,
+        "open_reservations": _number(thin.get("open_reservations")) if thin_fresh else None,
+        "provider_cost_unknown": (
+            thin.get("provider_cost_unknown") is True or unknown_cost or global_unknown
+        )
+        if thin_fresh and cost_complete and open_complete
+        else None,
+        "today_new_cost_usd": str(spent) if cost_complete and not unknown_cost else None,
+        "cost_basis": "Europe/Berlin day; settled provider reservations by dispatched_at; charged_max/unsettled remains unknown",
+    }
+    # Raw session hashes/event IDs never leave the server. Bounded reads explicitly
+    # expose lower bounds; product views are detail events, not navigation clicks.
+    events = data.get("first_money_events", [])
+    analytics_complete = "first_money_events" in data and "first_money_events" not in incomplete
+    unique = {r.get("event_id"): r for r in events if isinstance(r.get("event_id"), str)}
+    event_counts = Counter(r.get("event") for r in unique.values())
+    snapshot["first_money"] = {
+        "content_id": clean(publication.get("content_id")),
+        "experiment_id": clean(publication.get("experiment_id")),
+        "publication_observed_at": _stamp(publication.get("observed_at")),
+        "publication_stale": not _fresh(publication.get("observed_at"), now, 3600),
+        "posts": [
+            {
+                "platform": enum(publication.get(f"platform{i}")),
+                "state": clean(publication.get(f"status{i}")),
+                "scheduled_at": _stamp(publication.get(f"scheduled{i}")),
+            }
+            for i in range(2)
+        ],
+        "sessions": len({r["session_key"] for r in unique.values() if r.get("session_key")})
+        if "first_money_events" in data
+        else None,
+        "product_views": event_counts["fragrance_detail_view"]
+        if "first_money_events" in data
+        else None,
+        "offer_views": event_counts["offer_section_view"] if "first_money_events" in data else None,
+        "merchant_clickouts": event_counts["merchant_clickout"]
+        if "first_money_events" in data
+        else None,
+        "transactions": None,
+        "commission_eur": None,
+        "analytics_complete": analytics_complete,
+        "basis": "Observed events for the exact content and 1 Million product; may include readiness tests. Clickouts are not sales. Transactions/commission require affiliate-network evidence, not currently ingested.",
+    }
+    products = first("money_products")
+    snapshot["money_products"] = {
+        "observed_at": _stamp(products.get("last_verified_at")),
+        "stale": not _fresh(products.get("last_verified_at"), now, 86400),
+        "rows": [
+            {
+                "product": clean(products.get(f"product{i}")),
+                "state": enum(products.get(f"state{i}")),
+            }
+            for i in range(4)
+        ],
+    }
+    return snapshot
 
 
 class DashboardReader:
@@ -537,6 +775,50 @@ class DashboardReader:
                 {"order": "observed_at.desc.nullslast,inbox_id.desc"},
             ),
         }
+        read_now = now or datetime.now(UTC)
+        day_start = (
+            read_now.astimezone(ZoneInfo("Europe/Berlin"))
+            .replace(hour=0, minute=0, second=0, microsecond=0)
+            .astimezone(UTC)
+        )
+        reads.update(
+            {
+                "decisions": (
+                    "dufynd_human_decisions",
+                    "decision_id,task_id:context->>task_id,action_type,title,decision_token,reason:context->>reason,risk:context->>risk,cost_usd:context->cost_usd,benefit:context->>benefit",
+                    200,
+                    {"status": "eq.pending", "order": "created_at.asc,decision_id.asc"},
+                ),
+                "first_money_events": (
+                    "scentai_analytics_events",
+                    "event_id,session_key,event",
+                    10000,
+                    {
+                        "content_id": "eq." + FIRST_MONEY_CONTENT,
+                        "product_id": "eq.SC-RABANNE-1-MILLION-EDT-100",
+                        "order": "id.asc",
+                    },
+                ),
+                "open_costs": (
+                    "dufynd_budget_reservations",
+                    "status",
+                    1000,
+                    {
+                        "status": "in.(reserved,dispatched,cost_unknown,charged_max)",
+                        "order": "created_at.asc,reservation_id.asc",
+                    },
+                ),
+                "daily_costs": (
+                    "dufynd_budget_reservations",
+                    "actual_usd,status",
+                    1000,
+                    {
+                        "dispatched_at": "gte." + day_start.isoformat(),
+                        "order": "dispatched_at.asc,reservation_id.asc",
+                    },
+                ),
+            }
+        )
         reads.update(
             {
                 name: ("dufynd_master_status", columns, 1, {"key": "eq." + key})
@@ -549,7 +831,9 @@ class DashboardReader:
             with httpx.Client(
                 transport=self._transport, timeout=5, follow_redirects=False
             ) as client:
-                for name, (table, columns, limit, filters) in reads.items():
+
+                def fetch_read(item):
+                    name, (table, columns, limit, filters) = item
                     response = client.get(
                         PROJECT_ORIGIN + "/rest/v1/" + table,
                         headers=headers,
@@ -564,9 +848,12 @@ class DashboardReader:
                         or any(not isinstance(row, dict) for row in rows)
                     ):
                         raise DashboardUnavailable("Dashboard read unavailable")
-                    data[name] = rows
                     total = response.headers.get("content-range", "").rsplit("/", 1)[-1]
-                    counts[name] = int(total) if total.isdigit() else None
+                    return name, rows, int(total) if total.isdigit() else None
+
+                with ThreadPoolExecutor(max_workers=6) as pool:
+                    for name, rows, total in pool.map(fetch_read, reads.items()):
+                        data[name], counts[name] = rows, total
                 if self._budget_id:
                     response = client.get(
                         PROJECT_ORIGIN + "/rest/v1/rpc/get_dufynd_jarvis_budget_status",
@@ -611,7 +898,11 @@ def create_dashboard_router(
         try:
             return JSONResponse(
                 reader.snapshot(),
-                headers={"Cache-Control": "private, no-store", "Vary": "Cookie, Authorization"},
+                headers={
+                    "Cache-Control": "private, no-store",
+                    "Vary": "Cookie, Authorization",
+                    "X-Robots-Tag": "noindex, nofollow, noarchive",
+                },
             )
         except DashboardUnavailable:
             return JSONResponse(

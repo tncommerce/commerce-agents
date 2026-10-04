@@ -162,8 +162,8 @@ def test_observer_health_uses_own_freshness_and_blockers(health, last_success, e
     result = build_snapshot(data, now=NOW)
     assert result["system_health"][2]["health"] == expected
     assert (
-        result["command_center"]["status"] == "DEGRADED"
-    )  # Render unknown, never assumed healthy.
+        result["command_center"]["status"] == "ERROR"
+    )  # Missing live loop evidence is an error; observer warning is separate.
 
 
 def test_stale_checkpoint_and_supervisor_are_explicit():
@@ -234,8 +234,11 @@ def test_truncated_operational_reads_cannot_claim_complete_healthy_state():
     counts["active_runs"] = 999
     result = build_snapshot(data, now=NOW, source_counts=counts)
     assert not result["freshness"]["operational_complete"]
-    assert result["system_health"][-1]["health"] == "UNKNOWN"
-    assert result["command_center"]["status"] == "DEGRADED"
+    assert (
+        next(h for h in result["system_health"] if h["name"] == "Execution Plane")["health"]
+        == "UNKNOWN"
+    )
+    assert result["command_center"]["status"] == "ERROR"
 
 
 def make_transport(data, calls, *, failure=None):
@@ -261,6 +264,11 @@ def make_transport(data, calls, *, failure=None):
                 "dufynd_external_observers": "observers",
                 "dufynd_observer_credentials": "credentials",
                 "dufynd_jarvis_inbox": "inbox",
+                "dufynd_human_decisions": "decisions",
+                "scentai_analytics_events": "first_money_events",
+                "dufynd_budget_reservations": "open_costs"
+                if "status" in request.url.params
+                else "daily_costs",
             }[table]
         rows = data.get(name, [])
         return httpx.Response(200, json=rows, headers={"content-range": f"0-0/{len(rows)}"})
@@ -277,7 +285,7 @@ def test_reader_requests_fixed_allowlisted_columns_no_generic_queries_or_provide
     )
     result = reader.snapshot(now=NOW)
     assert result["command_center"]["observed_head_sha"] == "a" * 40
-    assert len(calls) == 12
+    assert len(calls) == 21
     for call in calls:
         selected = call.url.params.get("select", "")
         assert "*" not in selected
@@ -462,3 +470,101 @@ def test_production_api_does_not_mount_dashboard_before_auth_decision():
     main = Path("examples/retail/api/main.py").read_text()
     assert "create_dashboard_router" not in main
     assert "jarvis_dashboard" not in main
+
+
+def ceo_data():
+    data = fixture_data()
+    data["tasks"] = []
+    data.update(
+        thin=[
+            {
+                "observed_at": STAMP,
+                "stop_reason": "waiting_external",
+                "active_leases": 0,
+                "stale_leases": 0,
+                "open_reservations": 0,
+                "provider_cost_unknown": False,
+                "done": 78,
+                "waiting_external": 14,
+            }
+        ],
+        thin_config=[{"enabled": True}],
+        ci=[{"sha": "a" * 40, "ready": True, "checked_at": STAMP}],
+        decisions=[],
+        daily_costs=[],
+        open_costs=[],
+        first_money_events=[],
+    )
+    return data
+
+
+def test_ceo_waits_with_nothing_for_owner_despite_degraded_observer():
+    result = build_snapshot(ceo_data(), now=NOW)
+    assert result["command_center"]["status"] == "WAITING"
+    assert result["command_center"]["owner_action"] == "NICHTS"
+    assert result["runtime_safety"]["today_new_cost_usd"] == "0"
+    assert result["queue"]["done"] == 78
+    assert result["first_money"]["transactions"] is None
+    assert result["first_money"]["commission_eur"] is None
+
+
+def test_ceo_real_decision_even_without_task_contains_exact_go_and_safe_scalars():
+    data = ceo_data()
+    data["decisions"] = [
+        {
+            "decision_id": "gate1",
+            "title": "Review scope",
+            "decision_token": "GO-JARVIS-THIN-ABC",
+            "risk": "bearer secret",
+            "cost_usd": None,
+            "context": {"secret": "never-forward"},
+        }
+    ]
+    result = build_snapshot(data, now=NOW)
+    assert result["command_center"]["status"] == "OWNER GATE"
+    assert result["decision_center"][0]["go_token"] == "GO-JARVIS-THIN-ABC"
+    assert result["decision_center"][0]["risk"] == "[restricted]"
+    assert "never-forward" not in json.dumps(result)
+
+
+def test_ceo_deduplicates_analytics_and_does_not_leak_identifiers_or_invent_sales():
+    data = ceo_data()
+    event = {"event_id": "evt1", "session_key": "private-hash", "event": "merchant_clickout"}
+    data["first_money_events"] = [
+        event,
+        event,
+        {"event_id": "evt2", "session_key": "private-hash", "event": "fragrance_detail_view"},
+    ]
+    result = build_snapshot(data, now=NOW)
+    assert result["first_money"]["sessions"] == 1
+    assert result["first_money"]["merchant_clickouts"] == 1
+    assert result["first_money"]["product_views"] == 1
+    assert result["first_money"]["transactions"] is None
+    assert "private-hash" not in json.dumps(result)
+    assert "evt1" not in json.dumps(result)
+
+
+def test_ceo_stale_loop_moved_head_and_partial_counts_never_healthy():
+    data = ceo_data()
+    data["thin"][0]["observed_at"] = (NOW - timedelta(hours=1)).isoformat()
+    data["ci"][0]["sha"] = "b" * 40
+    counts = {k: len(v) for k, v in data.items()}
+    counts["first_money_events"] = 99999
+    result = build_snapshot(data, now=NOW, source_counts=counts)
+    assert result["command_center"]["status"] == "ERROR"
+    assert result["queue"]["done"] is None
+    assert not result["first_money"]["analytics_complete"]
+    assert (
+        next(h for h in result["system_health"] if h["name"].startswith("CI"))["health"]
+        == "DEGRADED"
+    )
+
+
+@pytest.mark.parametrize("status", ["dispatched", "cost_unknown", "charged_max"])
+def test_ceo_unsettled_cost_never_shown_as_zero(status):
+    data = ceo_data()
+    data["daily_costs"] = [{"status": status, "actual_usd": None}]
+    data["open_costs"] = [{"status": status}]
+    result = build_snapshot(data, now=NOW)
+    assert result["runtime_safety"]["today_new_cost_usd"] is None
+    assert result["runtime_safety"]["provider_cost_unknown"] is True
