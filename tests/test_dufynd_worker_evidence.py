@@ -106,3 +106,22 @@ def test_content_families_are_balanced_and_partial_media_is_explicit():
     assert "examples/retail/data/dufynd_high_end_launch_assets.json" in sources
     assert "examples/retail/data/scentai_content_pipeline_status.json" in sources
     assert any("creative_learning" in path for path in sources)
+
+
+def test_exact_live_content_task_keeps_learning_quality_floor_and_pipeline():
+    live_task = {
+        "task_id": "jarvis_content_preview_priority_20261001",
+        "title": "Prioritize existing preview reserve without spend",
+        "instruction": "Read-only audit of the 15 existing DUFYND pilot preview MP4s, scripts, subtitle drafts, social copy and current creative-learning documents. Select up to three strongest candidates for the next no-spend finalization wave under the current Naxos-level quality floor. Explicitly exclude rejected/rebuild-only Sillage/Haltbarkeit and EDP-vs-EDT. Distinguish what can be done with operator-recorded voiceover and local final rendering from anything that would require paid generation. Do not publish, spend credits, regenerate locked high-end assets, edit repository files or infer live social performance.",
+        "domain": "content",
+        "dependencies": [],
+    }
+    packet = pack_evidence(live_task, head="a" * 40)
+    paths = {s["path"] for s in packet["repository_evidence"]}
+    assert "docs/dufynd_creative_learning_library.md" in paths
+    assert "examples/retail/data/dufynd_high_end_launch_assets.json" in paths
+    assert "examples/retail/data/scentai_content_pipeline_status.json" in paths
+    for batch in (1, 2, 3):
+        for suffix in ("", "_voiceover_spec", "_subtitles", "_social_copy"):
+            assert f"examples/retail/data/scentai_pilot_batch_{batch:02d}{suffix}.json" in paths
+    assert len(encode(packet)) <= MAX_PROMPT_BYTES

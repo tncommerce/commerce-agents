@@ -30,11 +30,11 @@ ATTRIBUTION = (
 )
 CONTENT = (
     (
-        "examples/retail/data/dufynd_content_strategy.json",
+        "docs/dufynd_creative_learning_library.md",
         "examples/retail/data/dufynd_high_end_launch_assets.json",
         "examples/retail/data/scentai_content_pipeline_status.json",
+        "examples/retail/data/dufynd_content_strategy.json",
         "examples/retail/data/dufynd_content_buffer_plan.json",
-        "docs/dufynd_creative_learning_library.md",
         "docs/dufynd_creative_learning_batch_48_63.md",
         "docs/dufynd_creative_learning_batch_64_69.md",
         "examples/retail/data/dufynd_high_end_pre_publish_checklist.json",
