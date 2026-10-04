@@ -655,3 +655,104 @@ def test_ceo_gate_and_external_monitoring_are_truthful():
     data["decisions"] = []
     data["active_runs"] = [run_row()]
     assert build_snapshot(data, now=NOW)["command_center"]["ceo_status"] == "JARVIS AKTIV"
+
+
+def test_worker_context_joins_only_sanitized_task_evidence():
+    data = ceo_data()
+    data["tasks"] = [
+        {
+            "task_id": "work",
+            "title": "Check brand reply",
+            "domain": "tech",
+            "status": "waiting_external",
+            "dependencies": [
+                "brand_or_rightsholder_reply",
+                "private_marker",
+                "https://secret.test",
+                {},
+            ],
+            "expected_next_checkpoint": "deterministic_verification",
+            "instruction": "private_marker",
+        }
+    ]
+    data["active_runs"] = [run_row(status="waiting_external")]
+    result = build_snapshot(data, now=NOW, secrets=("private_marker",))
+    worker = result["worker_deck"][0]
+    assert worker["status"] == "WAITING"
+    assert worker["wait_reason"] == "external_dependency"
+    assert worker["task_context"]["title"] == "Check brand reply"
+    assert worker["task_context"]["dependencies"] == ["brand_or_rightsholder_reply"]
+    assert worker["next_checkpoint"] == "deterministic_verification"
+    assert "private_marker" not in json.dumps(result)
+    assert "secret.test" not in json.dumps(result)
+    assert "instruction" not in worker["task_context"]
+
+
+@pytest.mark.parametrize(
+    ("overrides", "reason"),
+    [
+        ({}, None),
+        ({"status": "dispatch_pending"}, "dispatch_pending"),
+        ({"status": "waiting_human"}, "owner_decision"),
+        ({"status": "retryable"}, "retry_pending"),
+        ({"last_progress_at": (NOW - timedelta(minutes=11)).isoformat()}, "no_recent_progress"),
+        ({"lease_expires_at": STAMP}, "lease_expired"),
+        ({"lease_expires_at": None}, "lease_missing"),
+        ({"heartbeat_at": None}, "heartbeat_missing"),
+        ({"heartbeat_at": (NOW - timedelta(minutes=4)).isoformat()}, "heartbeat_not_current"),
+    ],
+)
+def test_worker_wait_reason_distinguishes_idle_stale_and_working(overrides, reason):
+    data = ceo_data()
+    data["active_runs"] = [run_row(**overrides)]
+    worker = build_snapshot(data, now=NOW)["worker_deck"][0]
+    assert worker["wait_reason"] == reason
+
+
+def test_workstream_focus_selects_actual_blocker_and_does_not_invent_idle_worker():
+    data = ceo_data()
+    data["tasks"] = [
+        {"task_id": "external", "domain": "tech", "status": "waiting_external", "priority": 99},
+        {
+            "task_id": "blocked",
+            "domain": "tech",
+            "status": "blocked",
+            "blocked_reason": "deterministic_merchant_coverage_required",
+            "priority": 1,
+            "dependencies": ["brand_or_rightsholder_reply"] * 30,
+        },
+    ]
+    result = build_snapshot(data, now=NOW)
+    tech = next(w for w in result["workstreams"] if w["name"] == "Tech / Workmode")
+    assert tech["focus_task"]["task_id"] == "blocked"
+    assert tech["status"] == "BLOCKED"
+    assert tech["active_workers"] == []
+    assert tech["tasks_preview"][1]["dependencies"] == ["brand_or_rightsholder_reply"]
+    assert len(result["worker_deck"]) == 0
+
+
+def test_workstream_active_focus_is_actual_lease_instead_of_highest_priority_waiter():
+    data = ceo_data()
+    data["tasks"] = [
+        {"task_id": "external", "domain": "tech", "status": "waiting_external", "priority": 99},
+        {"task_id": "work", "domain": "tech", "title": "Real execution", "status": "in_progress"},
+    ]
+    data["active_runs"] = [run_row()]
+    result = build_snapshot(data, now=NOW)
+    tech = next(w for w in result["workstreams"] if w["name"] == "Tech / Workmode")
+    assert tech["focus_task"]["task_id"] == "work"
+    assert tech["active_workers"][0]["task_title"] == "Real execution"
+
+
+def test_failed_execution_with_verified_partial_checkpoint_is_not_a_verified_completion():
+    data = ceo_data()
+    data["recent_runs"] = [
+        run_row(
+            execution_id="failed-partial",
+            status="failed_terminal",
+            completed_at=STAMP,
+            checkpoint_verified=True,
+        )
+    ]
+    result = build_snapshot(data, now=NOW)
+    assert not any(event["id"] == "failed-partial" for event in result["live_feed"])

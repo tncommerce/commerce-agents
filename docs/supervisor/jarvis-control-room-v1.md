@@ -269,3 +269,26 @@ incomplete operational reads remain unknown.
 No scheduler, worker, budget, authentication, catalogue or publishing behavior is
 changed. The room remains read-only. Responsive and state regressions use isolated
 local browser fixtures; signed-in production owner verification is separate.
+
+## CEO Control Room V0.8 (2026-10-05)
+
+Active execution now shows its actual task, worker, execution phase, next recorded
+checkpoint and timestamps. Waiting execution distinguishes absent progress,
+dispatch, retry, owner decisions, missing heartbeat and expired leases. Historical
+verified checkpoints remain historical; failed execution is never completed work.
+
+Workstreams show specific allowlisted dependencies and blockers, with expandable
+task evidence that stays open across refreshes. A blocked stream focuses its actual
+blocker, and a running stream focuses its actual lease. Missing reasons and next
+checkpoints are explicitly undocumented. Idle rooms expose an observed blocker
+without inventing workers. Future publication dates are labeled observed plans,
+including stale provenance, and do not promise execution.
+
+Dependency markers are bounded, deduplicated and sanitized. Raw instructions,
+payloads, lease credentials and arbitrary evidence are excluded. The read-only
+runtime and authentication boundaries remain unchanged.
+
+Validation: 2,897 tests passed, 163 environment-dependent tests skipped. Desktop
+and mobile browser replays validated worker states and expandable details at
+390/430/768/1440 pixels. A pre-existing demo test now uses the same UTC date as its
+fixtures instead of the host timezone. Signed-in owner verification remains separate.

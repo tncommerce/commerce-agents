@@ -31,7 +31,7 @@ TASK_COLUMNS = (
     "task_id,domain,title,status,priority,requires_human_approval,approval_action_type,owner,"
     "worker_state,worker_owner,started_at,heartbeat_at,last_progress_at,lease_expires_at,"
     "expected_next_checkpoint,retry_count,blocked_reason,budget_class,provider_cost_unknown,"
-    "durability_policy,updated_at,released_at"
+    "durability_policy,updated_at,released_at,dependencies"
 )
 RUN_COLUMNS = (
     "execution_id,task_id,worker_type,worker_id,external_run_id,status,attempt,scope,"
@@ -200,6 +200,19 @@ def _checkpoint_step(value: object) -> str | int | None:
     return _enum(value)
 
 
+def _dependencies(value: object, secrets: tuple[str, ...]) -> list[str]:
+    # Dependencies are bounded code-like markers, never payloads or instructions.
+    if not isinstance(value, list):
+        return []
+    return list(
+        dict.fromkeys(
+            marker
+            for raw in value[:20]
+            if (marker := _enum(raw)) and _text(marker, secrets) not in {None, "[restricted]"}
+        )
+    )
+
+
 def build_snapshot(
     data: dict[str, list[dict[str, Any]]],
     *,
@@ -251,9 +264,11 @@ def build_snapshot(
             "budget_class": enum(row.get("budget_class")),
             "durability_policy": enum(row.get("durability_policy")),
             "retry_count": _number(row.get("retry_count")),
+            "dependencies": _dependencies(row.get("dependencies"), secrets),
         }
         board[lane].append(mission)
-    task_names = {row["task_id"]: row["title"] for lane in board.values() for row in lane}
+    task_context = {row["task_id"]: row for lane in board.values() for row in lane}
+    task_names = {key: row["title"] for key, row in task_context.items()}
     workers = []
     seen = set()
     for row in data.get("active_runs", []) + data.get("recent_runs", []):
@@ -282,6 +297,7 @@ def build_snapshot(
                 "handler_id": enum(row.get("handler_id")),
                 "recovery_count": _number(row.get("recovery_count")),
                 "duration_seconds": _duration(row, now),
+                "task_context": task_context.get(task_id),
                 "checkpoint": {
                     "step": _checkpoint_step(clean(row.get("checkpoint_step"))),
                     "verified": row.get("checkpoint_verified")
@@ -302,13 +318,52 @@ def build_snapshot(
                     "task_id": clean(row.get("task_id")),
                     "task_title": clean(row.get("title")),
                     "status": _worker_health({**row, "status": row.get("worker_state")}, now),
+                    "execution_status": enum(row.get("worker_state")),
                     "heartbeat_at": _stamp(row.get("heartbeat_at")),
                     "last_progress_at": _stamp(row.get("last_progress_at")),
                     "lease_expires_at": _stamp(row.get("lease_expires_at")),
                     "duration_seconds": _duration(row, now),
                     "next_checkpoint": clean(row.get("expected_next_checkpoint")),
+                    "started_at": _stamp(row.get("started_at")),
+                    "task_context": task_context.get(clean(row.get("task_id"))),
                 }
             )
+    for worker in workers:
+        context = worker.get("task_context") or {}
+        worker["next_checkpoint"] = context.get("next_checkpoint")
+        worker["wait_reason"] = (
+            None
+            if worker["status"] in {"ACTIVE", "IDLE"}
+            else (
+                "lease_missing"
+                if _time(worker.get("lease_expires_at")) is None
+                else "lease_expired"
+                if _time(worker.get("lease_expires_at")) <= now
+                else "heartbeat_missing"
+                if _time(worker.get("heartbeat_at")) is None
+                else "heartbeat_not_current"
+                if not _fresh(worker.get("heartbeat_at"), now, 180)
+                else "execution_marked_stale"
+            )
+            if worker["status"] == "STALE"
+            else "execution_failed"
+            if worker["status"] == "FAILED"
+            else context.get("blocker")
+            or (
+                "external_dependency"
+                if context.get("status") == "waiting_external"
+                or worker.get("execution_status") == "waiting_external"
+                else "owner_decision"
+                if context.get("human_gate") or worker.get("execution_status") == "waiting_human"
+                else "dispatch_pending"
+                if worker.get("execution_status") == "dispatch_pending"
+                else "retry_pending"
+                if worker.get("execution_status") == "retryable"
+                else "no_recent_progress"
+                if worker["status"] == "WAITING"
+                else None
+            )
+        )
     observers = [
         {
             "observer_id": clean(row.get("observer_id")),
@@ -782,6 +837,20 @@ def build_snapshot(
                 "tasks": len(rows),
                 "next_task": rows[0] if rows else None,
                 "evidence_note": evidence_note,
+                "active_workers": active,
+                "tasks_preview": rows[:15],
+                "tasks_preview_complete": len(rows) <= 15 and not operational_incomplete,
+                "focus_task": (
+                    next((m for m in rows if m["task_id"] in {w["task_id"] for w in active}), None)
+                    if active
+                    else next((m for m in rows if m["human_gate"]), None)
+                    if state == "OWNER GATE"
+                    else next((m for m in rows if m["blocker"]), None)
+                    if state == "BLOCKED"
+                    else rows[0]
+                    if rows
+                    else None
+                ),
             }
         )
     runtime = first("first_money_runtime")
@@ -819,7 +888,9 @@ def build_snapshot(
             "observed_at": w["completed_at"],
         }
         for w in workers
-        if w.get("completed_at") and w.get("checkpoint", {}).get("verified") is True
+        if w.get("completed_at")
+        and w.get("execution_status") == "completed"
+        and w.get("checkpoint", {}).get("verified") is True
     ]
     for system in systems:
         if system["health"] == "HEALTHY" and system.get("last_success_at"):

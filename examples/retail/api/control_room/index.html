@@ -27,7 +27,7 @@
           <a href="#advanced">••• <span>Details</span></a>
         </nav>
         <div class="sidebar-bottom">
-          <div class="read-only"><i></i> READ-ONLY V0.7</div>
+          <div class="read-only"><i></i> READ-ONLY V0.8</div>
           <p>Klare Signale.<br />Belegte Entscheidungen.</p>
         </div>
       </aside>
@@ -240,6 +240,7 @@
                 <strong id="allowed-task">—</strong>
               </article>
             </div>
+            <div id="execution-detail-list" class="execution-detail-list"></div>
             <p id="execution-context" class="execution-context">
               Ausführungsnachweis wird geprüft.
             </p>
@@ -260,6 +261,7 @@
               </div>
             </div>
             <div id="next-task-list"></div>
+            <div id="next-observed-trigger" class="next-observed-trigger"></div>
           </section>
           <section class="panel waiting-panel">
             <div class="panel-heading">
@@ -382,10 +384,10 @@
           <div class="panel-heading">
             <div>
               <span class="eyebrow">ARBEITSBEREICHE</span>
-              <h2>Deine Workstreams</h2>
+              <h2>Was läuft · was wartet</h2>
             </div>
             <span class="small-label"
-              >Aufgaben und Veröffentlichungsnachweise</span
+              >Aufgabe · Wartegrund · nächster Nachweis</span
             >
           </div>
           <div id="workstream-list" class="workstream-grid">
@@ -533,7 +535,7 @@
         </section>
 
         <footer class="footer">
-          <span>DUFYND · CEO Control Room V0.7</span>
+          <span>DUFYND · CEO Control Room V0.8</span>
           <span id="snapshot-time">Noch kein Snapshot</span>
           <span>Read-only · Owner gates preserved</span>
         </footer>

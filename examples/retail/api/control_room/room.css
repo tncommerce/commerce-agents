@@ -3109,3 +3109,331 @@ summary {
     padding: 12px 6px;
   }
 }
+
+/* V0.8 — evidence-led worker inspection and original signal architecture. */
+.execution-detail-list:empty,
+.next-observed-trigger:empty {
+  display: none;
+}
+.current-panel.has-execution .work-flow {
+  display: none;
+}
+.execution-evidence,
+.standby-reason {
+  margin-top: 12px;
+  padding: 12px;
+  background: linear-gradient(125deg, #163e392d, #03151c);
+  border: 1px solid #83ddc52a;
+  border-radius: 10px;
+}
+.execution-heading {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.execution-heading strong {
+  font-size: 14px;
+  line-height: 1.45;
+  color: #def6ee;
+}
+.execution-state {
+  color: #9ce6cd;
+  font-size: 10px;
+  white-space: nowrap;
+}
+.execution-evidence p,
+.worker-evidence p,
+.dependency-task p {
+  margin: 8px 0;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.execution-evidence p small,
+.worker-evidence p small,
+.dependency-task p small {
+  font-size: 10px;
+  color: #99b7c0;
+  letter-spacing: 0;
+}
+.execution-evidence p span,
+.worker-evidence p span,
+.dependency-task p span {
+  font-size: 12px;
+  color: #cedfdf;
+}
+.standby-reason > small {
+  font-size: 9px;
+  letter-spacing: 0.8px;
+}
+.standby-reason > strong {
+  display: block;
+  font-size: 14px;
+  margin: 7px 0;
+  color: #e6ce9d;
+  font-weight: 550;
+}
+.detail-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 11px;
+  line-height: 1.5;
+  text-decoration: none;
+  color: #9ee4d2;
+}
+.next-observed-trigger {
+  margin-top: 12px;
+  padding: 12px;
+  background: #0d302723;
+  border-left: 2px solid #6ac9ac;
+}
+.next-observed-trigger small {
+  font-size: 9px;
+  letter-spacing: 0.7px;
+}
+.next-observed-trigger strong {
+  display: block;
+  font-size: 13px;
+  color: #d0efe2;
+  margin: 7px 0;
+}
+.next-observed-trigger p {
+  font-size: 11px;
+  color: #a8c3c7;
+  line-height: 1.5;
+  margin: 0;
+}
+.workstream-card {
+  position: relative;
+}
+.workstream-card .workstream-purpose {
+  color: #cce3e0;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.workstream-card[data-state="WORKING"] .workstream-purpose {
+  color: #a3ece0;
+}
+.workstream-card[data-state="BLOCKED"] .workstream-purpose {
+  color: #e4c894;
+}
+.workstream-details > summary {
+  font-size: 11px;
+  min-height: 44px;
+  display: list-item;
+  color: #8edac7;
+  cursor: pointer;
+  line-height: 1.5;
+  padding-top: 8px;
+}
+.workstream-card:has(.workstream-details[open]) {
+  grid-column: 1/-1;
+  border: 1px solid #7dccb431;
+  padding: 16px;
+  border-radius: 12px;
+  background: linear-gradient(140deg, #0d302a55, #06151c);
+}
+.workstream-card:has(.workstream-details[open]) h3 {
+  display: inline-block;
+  margin-right: 14px;
+}
+.workstream-card:has(.workstream-details[open]) .workstream-purpose {
+  max-width: 850px;
+}
+.task-evidence-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 8px;
+  max-height: 420px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding-right: 6px;
+  scrollbar-color: #4e9386 #05141c;
+  scrollbar-width: thin;
+}
+.task-evidence-grid > p {
+  grid-column: 1/-1;
+}
+.dependency-task,
+.task-evidence-grid .worker-evidence {
+  border: 1px solid #84bdc522;
+  border-radius: 9px;
+  padding: 12px;
+  background: #0310178c;
+  min-width: 0;
+}
+.dependency-task > strong {
+  display: block;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #d2e8e8;
+}
+.worker-evidence {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+.task-evidence-grid .worker-evidence {
+  margin-top: 0;
+}
+.worker-card {
+  background: linear-gradient(135deg, #0a2730, #08151c);
+  border-color: var(--line);
+}
+.worker-card.active {
+  border-color: #64d7b85c;
+}
+.worker-card h3 {
+  font-size: 16px;
+}
+.worker-card > p {
+  font-size: 13px;
+}
+.worker-card > p small {
+  font-size: 10px;
+}
+.worker-card > p span {
+  font-size: 11px;
+}
+.worker-evidence .execution-heading {
+  flex-wrap: wrap;
+}
+#waiting-list .dependency-task {
+  margin-top: 9px;
+}
+.core-frame {
+  background: linear-gradient(
+    140deg,
+    #d4ffe454,
+    #27574a69 24%,
+    #03191b 64%,
+    #81e8c531
+  );
+}
+.core-frame:before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border: 1px solid #b7ffd635;
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0 6px,
+    #adffe508 7px 8px
+  );
+}
+.core-frame span,
+.core-frame small {
+  position: relative;
+  z-index: 1;
+}
+.core .orbit-three {
+  border-color: #8edecd55;
+  box-shadow: 0 0 20px #69f2bc12;
+}
+.core:before {
+  content: "";
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: repeating-conic-gradient(
+    from 5deg,
+    transparent 0deg 13deg,
+    #9be8ca42 13deg 14deg,
+    transparent 14deg 15deg
+  );
+  mask: radial-gradient(
+    circle,
+    transparent 67%,
+    #000 68%,
+    #000 69%,
+    transparent 70%
+  );
+}
+.core-floor {
+  opacity: 0.7;
+  width: 220px;
+  filter: blur(12px);
+}
+.command {
+  background:
+    radial-gradient(ellipse at 87% 42%, #2b96753b, transparent 48%),
+    radial-gradient(ellipse at 15% 0%, #1845353b, transparent 70%),
+    linear-gradient(115deg, #0b2027, #041016);
+}
+.command:after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 45%;
+  height: 50%;
+  pointer-events: none;
+  background: linear-gradient(0deg, #70ecb814, transparent);
+  transform: perspective(360px) rotateX(55deg);
+  transform-origin: bottom;
+  border-top: 1px solid #97f4c527;
+}
+.sentinel-scene {
+  opacity: 0.95;
+}
+@media (max-width: 1150px) {
+  .task-evidence-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .execution-heading {
+    flex-wrap: wrap;
+  }
+  .workstream-details {
+    grid-column: 1/-1;
+  }
+  .workstream-card:has(.workstream-details[open]) {
+    padding: 14px;
+  }
+  .task-evidence-grid {
+    grid-template-columns: 1fr;
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+  .workstream-card:has(.workstream-details[open]) h3 {
+    display: block;
+    margin: 0;
+  }
+  .standby-reason {
+    margin-top: 10px;
+  }
+  .next-observed-trigger {
+    padding: 10px;
+  }
+  .core:before {
+    opacity: 0.6;
+  }
+  .core-frame:before {
+    opacity: 0.8;
+  }
+}
+
+.execution-evidence[data-state="WAITING"] .execution-state,
+.execution-evidence[data-state="STALE"] .execution-state,
+.execution-evidence[data-state="FAILED"] .execution-state,
+.worker-evidence[data-state="WAITING"] .execution-state,
+.worker-evidence[data-state="STALE"] .execution-state,
+.worker-evidence[data-state="FAILED"] .execution-state {
+  color: #e6c58c;
+}
+.execution-evidence[data-state="ACTIVE"] .execution-state,
+.worker-evidence[data-state="ACTIVE"] .execution-state {
+  color: #8ddfe9;
+}
+.funnel > div.reached:not(.proven) {
+  --stage: #6e9dac;
+}
