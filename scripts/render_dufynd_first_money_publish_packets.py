@@ -311,9 +311,7 @@ def render_gift_slide(
                 panel_fill=(255, 255, 255, 232),
             )
 
-    footer = slide.get(
-        "instagram_footer" if platform == "instagram" else "tiktok_footer"
-    )
+    footer = slide.get("instagram_footer" if platform == "instagram" else "tiktok_footer")
     if footer:
         draw = ImageDraw.Draw(canvas)
         draw.text(
@@ -604,11 +602,7 @@ def check_outputs(packet: dict) -> None:
                 with Image.open(path) as image:
                     if image.size != expected_size:
                         raise ValueError(f"{path}: size {image.size} != {expected_size}")
-        video_path = (
-            piece_root
-            / "tiktok"
-            / f"{piece['content_id']}.mp4"
-        )
+        video_path = piece_root / "tiktok" / f"{piece['content_id']}.mp4"
         if not video_path.is_file() or video_path.stat().st_size <= 0:
             raise FileNotFoundError(video_path)
 
@@ -623,8 +617,7 @@ def main() -> int:
     packet = load_json(PACKET_PATH)
     products_payload = load_json(PRODUCTS_PATH)
     products_by_id = {
-        product["product_id"]: product
-        for product in products_payload.get("products", [])
+        product["product_id"]: product for product in products_payload.get("products", [])
     }
 
     if args.check_only:
