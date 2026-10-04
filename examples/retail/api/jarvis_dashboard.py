@@ -703,6 +703,116 @@ def build_snapshot(
             for i in range(4)
         ],
     }
+    # Additive CEO projections. A candidate is not a certified handler selection.
+    missions = [
+        m for lane, rows in board.items() if lane not in {"DONE", "CANCELLED"} for m in rows
+    ]
+    ranked = sorted(board["READY"], key=lambda m: (-(m["priority"] or 0), m["task_id"] or ""))
+    snapshot["next_tasks"] = ranked[:5]
+    snapshot["waiting"] = {
+        "owner": len(snapshot["decision_center"]) if gate_complete else None,
+        "external": len(board["WAITING EXTERNAL"]) if not operational_incomplete else None,
+        "technical": sum("budget" not in (m["blocker"] or "") for m in board["BLOCKED"])
+        if not operational_incomplete
+        else None,
+        "budget": sum("budget" in (m["blocker"] or "") for m in board["BLOCKED"])
+        if not operational_incomplete
+        else None,
+        "rows": sorted(
+            board["WAITING EXTERNAL"] + board["BLOCKED"], key=lambda m: -(m["priority"] or 0)
+        )[:5],
+    }
+    snapshot["workstreams"] = []
+    for label, domains in (
+        ("Content", {"content"}),
+        ("Tech / Workmode", {"tech", "platform"}),
+        ("Jarvis", {"jarvis", "supervisor", "automation"}),
+        ("Business / Growth", {"business", "growth", "product"}),
+        ("Affiliate", {"affiliate", "commerce"}),
+    ):
+        rows = sorted(
+            (m for m in missions if m["domain"] in domains), key=lambda m: -(m["priority"] or 0)
+        )
+        active = [
+            w
+            for w in workers
+            if w["status"] == "ACTIVE" and w["task_id"] in {m["task_id"] for m in rows}
+        ]
+        state = (
+            "UNKNOWN"
+            if operational_incomplete
+            else "WORKING"
+            if active
+            else "OWNER GATE"
+            if any(m["human_gate"] for m in rows)
+            else "BLOCKED"
+            if any(m["blocker"] for m in rows)
+            else "READY"
+            if any(m["status"] in {"ready", "queued"} for m in rows)
+            else "WAITING EXTERNAL"
+            if any(m["status"] == "waiting_external" for m in rows)
+            else "WAITING"
+            if rows
+            else "NO DATA"
+        )
+        if label == "Jarvis" and not rows and thin_fresh:
+            state = "MONITORING" if command["status"] == "WAITING" else command["status"]
+        snapshot["workstreams"].append(
+            {
+                "name": label,
+                "status": state,
+                "tasks": len(rows),
+                "next_task": rows[0] if rows else None,
+            }
+        )
+    runtime = first("first_money_runtime")
+    purchase = runtime.get("purchase_evidence")
+    purchase = purchase if isinstance(purchase, dict) else {}
+    funnel_runtime = runtime.get("funnel")
+    funnel_runtime = funnel_runtime if isinstance(funnel_runtime, dict) else {}
+    snapshot["first_money"]["runtime"] = {
+        "phase": enum(runtime.get("phase")),
+        "next_evidence": enum(runtime.get("next_evidence")),
+        "observed_at": _stamp(runtime.get("observed_at")),
+        "landing_sessions": _number(funnel_runtime.get("landing_sessions")),
+        "purchase_verified_at": _stamp(purchase.get("last_verified_at")),
+        "purchase_expires_at": _stamp(purchase.get("expires_at")),
+        "purchase_decision": enum(purchase.get("decision")),
+    }
+    command["gates_complete"] = gate_complete and not operational_incomplete
+    command["ceo_status"] = (
+        "PRÜFEN"
+        if command["status"] == "ERROR"
+        else "WARTET AUF DEINE FREIGABE"
+        if snapshot["decision_center"]
+        else "JARVIS AKTIV"
+        if active_workers
+        else "BLOCKIERT"
+        if thin.get("stop_reason") not in {"waiting_external", "no_safe_work", "owner_gate"}
+        and board["BLOCKED"]
+        else "JARVIS ÜBERWACHT"
+    )
+    feed = [
+        {
+            "id": w.get("execution_id"),
+            "title": w["task_title"] or w["task_id"],
+            "detail": "Ausführung verifiziert",
+            "observed_at": w["completed_at"],
+        }
+        for w in workers
+        if w.get("completed_at") and w.get("checkpoint", {}).get("verified") is True
+    ]
+    for system in systems:
+        if system["health"] == "HEALTHY" and system.get("last_success_at"):
+            feed.append(
+                {
+                    "id": system["name"],
+                    "title": system["name"],
+                    "detail": "Erfolgreiche Beobachtung",
+                    "observed_at": system["last_success_at"],
+                }
+            )
+    snapshot["live_feed"] = sorted(feed, key=lambda e: e["observed_at"] or "", reverse=True)[:8]
     return snapshot
 
 
@@ -854,6 +964,16 @@ class DashboardReader:
                 with ThreadPoolExecutor(max_workers=6) as pool:
                     for name, rows, total in pool.map(fetch_read, reads.items()):
                         data[name], counts[name] = rows, total
+                # Existing STABLE, service-only, read-only function; sanitize all
+                # returned scalars in build_snapshot. Raw RPC JSON never reaches clients.
+                response = client.get(
+                    PROJECT_ORIGIN + "/rest/v1/rpc/read_dufynd_first_money_runtime",
+                    headers=headers,
+                )
+                if response.status_code == 200 and len(response.content) <= 100_000:
+                    runtime = response.json()
+                    if isinstance(runtime, dict):
+                        data["first_money_runtime"], counts["first_money_runtime"] = [runtime], 1
                 if self._budget_id:
                     response = client.get(
                         PROJECT_ORIGIN + "/rest/v1/rpc/get_dufynd_jarvis_budget_status",
