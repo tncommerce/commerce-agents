@@ -631,3 +631,5 @@ body.show-advanced .command-stats.advanced-only{display:grid!important}
   html{scroll-behavior:auto}
   .core.state-blue .orbit-two,.core.state-blue .orbit-one{animation:none}
 }
+
+.approval-alert[hidden]{display:none!important}
