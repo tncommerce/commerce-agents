@@ -23,6 +23,7 @@ on:
           - nightshift-pilot
           - nightshift-bounded
           - nightshift-bounded-preflight
+          - context-count-only
       max_events:
         description: Maximum events for process-loop
         required: false
@@ -75,6 +76,21 @@ jobs:
           DUFYND_JARVIS_MODEL: ${{ vars.DUFYND_JARVIS_MODEL }}
           DUFYND_JARVIS_ACTIVE: "0"
         run: python -m scripts.dufynd_jarvis_runtime --readiness
+
+      - name: Official context counts only; paid endpoint structurally forbidden
+        if: inputs.mode == 'context-count-only'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python -m scripts.dufynd_official_context_acceptance
+
+      - name: Upload official count acceptance
+        if: inputs.mode == 'context-count-only' && always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: dufynd-context-count-${{ github.run_id }}
+          path: jarvis-context-count-report
+          if-no-files-found: error
+          retention-days: 14
 
       - name: Refresh repository Jarvis state
         if: inputs.mode == 'sync-state' || inputs.mode == 'process-next' || inputs.mode == 'process-loop' || inputs.mode == 'autonomous-cycle' || inputs.mode == 'process-safe-task' || inputs.mode == 'process-branch-task' || inputs.mode == 'process-branch-task-pr' || inputs.mode == 'nightshift-pilot'

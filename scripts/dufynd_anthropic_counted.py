@@ -52,6 +52,7 @@ SAFE_FAILURE_REASONS = frozenset(
         "unexpected_pricing_tier",
         "unknown_billing_class",
         "unknown_provider_receipt",
+        "insufficient_bounded_context",
     ]
 )
 SYSTEM = (
@@ -324,14 +325,18 @@ class CountedClient:
             return response.json()
 
     def count(self, prompt: str) -> int:
+        count = self.count_for_packing(prompt)
+        if count > MAX_INPUT:
+            raise BudgetGate("count_tokens_exceeds_input_limit")
+        return count
+
+    def count_for_packing(self, prompt: str) -> int:
         if type(prompt) is not str or len(prompt.encode()) > 32768:
             raise BudgetGate("input_payload_too_large")
         pricing()
         count = self._post("/count_tokens", canonical(input_body(prompt))).get("input_tokens")
         self.last_count = count if type(count) is int else None
-        if type(count) is int and count > MAX_INPUT:
-            raise BudgetGate("count_tokens_exceeds_input_limit")
-        if type(count) is not int or not 0 <= count <= MAX_INPUT:
+        if type(count) is not int or not 0 <= count <= 1000000:
             raise BudgetGate("invalid_count_tokens_response")
         return count
 
@@ -452,11 +457,19 @@ async def process_counted_task(bridge, *, task_id: str | None = None) -> int:
         return 0
     task_id = task["task_id"]
     phase, client, snapshot, prompt, estimate = "pack", None, None, "", None
+    count_trace = []
     try:
         from scripts.dufynd_worker_evidence import pack_evidence
 
         snapshot = pack_evidence(task, head=os.getenv("GITHUB_SHA"))
         prompt = canonical(snapshot).decode()
+        phase = "count"
+        client = CountedClient(os.getenv("ANTHROPIC_API_KEY", ""))
+        from scripts.dufynd_token_context import fit_context
+
+        snapshot, prompt, estimate = await asyncio.to_thread(
+            fit_context, task, head=os.getenv("GITHUB_SHA"), client=client, trace=count_trace
+        )
         phase = "persist_context"
         bridge.upsert_master_status(
             key=f"jarvis.maker_context.{task_id}",
@@ -465,11 +478,9 @@ async def process_counted_task(bridge, *, task_id: str | None = None) -> int:
                 "snapshot": snapshot,
                 "github_run_id": os.getenv("GITHUB_RUN_ID"),
                 "github_run_attempt": os.getenv("GITHUB_RUN_ATTEMPT"),
+                "official_count_trace": count_trace,
             },
         )
-        phase = "count"
-        client = CountedClient(os.getenv("ANTHROPIC_API_KEY", ""))
-        estimate = await asyncio.to_thread(client.count, prompt)
         phase = "prepare"
         prepared = prepare(prompt, estimate)
         phase = "execute"
@@ -572,6 +583,7 @@ async def process_counted_task(bridge, *, task_id: str | None = None) -> int:
             "github_run_attempt": os.getenv("GITHUB_RUN_ATTEMPT"),
             "head_sha": os.getenv("GITHUB_SHA"),
             "retry_allowed": False,
+            "official_count_trace": count_trace,
         }
         diagnostic["terminal_receipt_sha256"] = hashlib.sha256(canonical(diagnostic)).hexdigest()
         try:
