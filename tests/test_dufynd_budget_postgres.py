@@ -84,6 +84,16 @@ def database():
         connection.execute(
             next((ROOT / "supabase/migrations").glob("*counted_preflight_snapshot.sql")).read_text()
         )
+        connection.execute(
+            next(
+                (ROOT / "supabase/migrations").glob("*private_observer_acceptance_gate.sql")
+            ).read_text()
+        )
+        connection.execute(
+            next(
+                (ROOT / "supabase/migrations").glob("*private_observer_recurring_capture.sql")
+            ).read_text()
+        )
     yield
 
 
@@ -2638,3 +2648,82 @@ def test_counted_preflight_snapshot_is_read_only_and_service_role_only():
             ).fetchone()[0]
             is True
         )
+
+
+@pytest.mark.parametrize(
+    "active,event", [(False, "workflow_dispatch"), (True, "workflow_dispatch"), (True, "schedule")]
+)
+def test_observer_receipt_lifecycle_preserves_recurring_activation(active, event):
+    import json
+
+    from tests.test_dufynd_private_observer_ingest import artifact, source
+
+    query("update dufynd_observer_credentials set activation_enabled=%s returning true", (active,))
+    query("select project_dufynd_broker_health(%s::jsonb)", (json.dumps(broker_health_payload()),))
+    origin = source()
+    origin["event_name"] = event
+    origin["run_id"] = str(int(uuid4().hex[:12], 16))
+    run = int(origin["run_id"])
+    try:
+        result = query("select begin_dufynd_broker_acceptance(%s::jsonb)", (json.dumps(origin),))
+        assert result["accepted"]
+        assert (
+            query(
+                "select recurring_read from dufynd_broker_acceptance_sessions where run_id=%s",
+                (run,),
+            )
+            is active
+        )
+        data = artifact()
+        render_path = "/v1/render/services/srv-dakpfrnf3r2c73dr3f20/deployments"
+        entries = [("render_deploy_broker", "render:srv-dakpfrnf3r2c73dr3f20", data[render_path])]
+        for path, value in data.items():
+            if path.startswith("/v1/gmail/"):
+                evidence = value["evidence"]
+                for message in evidence["messages"]:
+                    message.pop("content_type", None)
+                entries.append(("gmail_known_threads", "gmail:" + evidence["thread_id"], evidence))
+        for credential, observer, evidence in entries:
+            assert query(
+                "select capture_dufynd_broker_acceptance_observation(%s,%s,%s,%s::jsonb)",
+                (run, credential, observer, json.dumps(evidence)),
+            )["accepted"]
+        summary = {"acknowledged": 3, "duplicate_first_pass": 0, "idempotent_rechecks": 3}
+        result = query(
+            "select finalize_dufynd_broker_acceptance(%s::jsonb,%s::jsonb)",
+            (json.dumps(origin), json.dumps(summary)),
+        )
+        assert result["accepted"]
+        assert result["activation_changed"] is (not active)
+        duplicate = query(
+            "select finalize_dufynd_broker_acceptance(%s::jsonb,%s::jsonb)",
+            (json.dumps(origin), json.dumps(summary)),
+        )
+        assert duplicate["activation_changed"] is False
+    finally:
+        query(
+            "delete from dufynd_broker_acceptance_sessions where run_id=%s returning true", (run,)
+        )
+        query("update dufynd_observer_credentials set activation_enabled=false returning true")
+
+
+def test_observer_partial_activation_and_initial_schedule_fail_closed():
+    import json
+
+    import psycopg
+    from tests.test_dufynd_private_observer_ingest import source
+
+    origin = source()
+    origin["run_id"] = str(int(uuid4().hex[:12], 16))
+    query(
+        "update dufynd_observer_credentials set activation_enabled=(provider='render') returning true"
+    )
+    try:
+        with pytest.raises(psycopg.errors.RaiseException, match="partial activation"):
+            query("select begin_dufynd_broker_acceptance(%s::jsonb)", (json.dumps(origin),))
+        query("update dufynd_observer_credentials set activation_enabled=false returning true")
+        origin["event_name"] = "schedule"
+        with pytest.raises(psycopg.errors.RaiseException, match="owner manual"):
+            query("select begin_dufynd_broker_acceptance(%s::jsonb)", (json.dumps(origin),))
+    finally:
+        query("update dufynd_observer_credentials set activation_enabled=false returning true")

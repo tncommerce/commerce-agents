@@ -274,8 +274,14 @@ def _audited_run_cost_known(run: dict[str, Any] | None) -> bool:
         if not isinstance(decision, dict):
             continue
         cost = decision.get("cost_usd")
-        if isinstance(cost, (int, float)) and not isinstance(cost, bool):
-            return True
+        if isinstance(cost, (int, float, str)) and not isinstance(cost, bool):
+            from decimal import Decimal, InvalidOperation
+
+            try:
+                if Decimal(str(cost)).is_finite() and Decimal(str(cost)) >= 0:
+                    return True
+            except InvalidOperation:
+                pass
     return False
 
 
@@ -1096,10 +1102,16 @@ def finalize_branch_task(
 def _decision_cost(decision: object) -> float:
     if not isinstance(decision, dict):
         return 0.0
+    from decimal import Decimal, InvalidOperation
+
     raw = decision.get("cost_usd")
-    if isinstance(raw, (int, float)):
-        return float(raw)
-    return 0.0
+    if isinstance(raw, bool) or not isinstance(raw, (str, int, float)):
+        return 0.0
+    try:
+        value = Decimal(str(raw))
+        return float(value) if value.is_finite() and value >= 0 else 0.0
+    except InvalidOperation:
+        return 0.0
 
 
 def _sum_run_costs(runs: list[dict[str, Any]]) -> float:
@@ -1321,6 +1333,12 @@ def build_morning_report(
         budget_id = budget_id or os.getenv("DUFYND_JARVIS_BUDGET_ID")
     budget = bridge.load_budget_status(budget_id) if budget_id else None
     ai_cost_usd = _sum_run_costs(runs)
+    counted_costs = None
+    if budget_id and budget_id != "jarvis_activation_pilot_001":
+        from scripts.dufynd_counted_reporting import report_counted_costs
+
+        counted_costs = report_counted_costs(bridge, budget_id, started_at, ended_at)
+        ai_cost_usd = float(counted_costs["actual_spend_usd"])
 
     result_timeout = any(int(r.get("result_code") or 0) == 124 for r in results)
     supervisor_timeout = any(
@@ -1334,6 +1352,7 @@ def build_morning_report(
         use_supervisor and supervisor and supervisor.get("runtime_error_type")
     )
     provider_cost_unknown = any(bool(result.get("provider_cost_unknown")) for result in results)
+    provider_cost_unknown |= bool((counted_costs or {}).get("provider_cost_unknown"))
     uncertain_stop_reason = stop_reason in {
         "event_failure",
         "unknown_provider_cost",
@@ -1341,13 +1360,17 @@ def build_morning_report(
         "worker_cancelled",
         "supervisor_cancelled",
     }
-    cost_complete = cost_window_complete and not (
+    cost_complete = (counted_costs is not None or cost_window_complete) and not (
         result_timeout
         or supervisor_timeout
         or session_timeout
         or runtime_error
         or supervisor_runtime_error
         or provider_cost_unknown
+        or bool(
+            (counted_costs or {}).get("reserved_unsettled_usd")
+            and float(counted_costs["reserved_unsettled_usd"]) > 0
+        )
         or uncertain_stop_reason
     )
 
@@ -1441,7 +1464,10 @@ def build_morning_report(
             "branch_validation": validation.get("status"),
         },
         "ai_cost_usd": ai_cost_usd,
-        "ai_cost_source": "audited_agent_runs",
+        "ai_cost_source": "counted_reservations_and_settlements"
+        if counted_costs
+        else "audited_agent_runs",
+        "counted_costs": counted_costs,
         "ai_cost_complete": cost_complete,
         "budget": budget,
         "blockers": blockers,
@@ -1532,6 +1558,16 @@ def build_morning_report(
         ]
     )
 
+    if counted_costs:
+        lines.extend(
+            [
+                "",
+                "Counted budget settlement evidence:",
+                "```json",
+                json.dumps(counted_costs, sort_keys=True, indent=2),
+                "```",
+            ]
+        )
     return report, "\n".join(lines) + "\n"
 
 
