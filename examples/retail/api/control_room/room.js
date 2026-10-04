@@ -157,6 +157,144 @@
     }
   }
 
+  const detailLabels = {
+    lease_missing: "Keine gültige Lease dokumentiert",
+    lease_expired:
+      "Lease ist abgelaufen; Ausführung nicht mehr als aktiv bestätigt",
+    heartbeat_missing: "Lebenszeichen fehlt",
+    heartbeat_not_current: "Lebenszeichen ist nicht aktuell",
+    execution_marked_stale:
+      "Ausführung ist in der Quelle als veraltet markiert",
+    waiting_external: "Wartet auf externen Nachweis",
+    waiting_human_input: "Wartet auf Owner-Entscheidung",
+    ready: "Bereit zur Auswahl",
+    queued: "Wartet auf Auswahl",
+    blocked: "Blockiert",
+    done: "Erledigt",
+    cancelled: "Abgebrochen",
+    vivnetworks_notino_image_rights_reply:
+      "Bildrechte-Antwort von VIVnetworks / Notino",
+    brand_or_rightsholder_reply: "Antwort von Marke oder Rechteinhaber",
+    approved_product_images: "Freigegebene Produktbilder",
+    current_purchase_destinations: "Aktuell geprüfte Kaufziele",
+    exact_variant_identity: "Eindeutig belegte Produktvariante",
+    human_fidelity_where_applicable:
+      "Visuelle Produktfreigabe, soweit erforderlich",
+    release_approved_images_incomplete:
+      "Noch fehlende Bildfreigaben für den Release",
+    release_promotion_gates_incomplete: "Noch fehlende Release-Nachweise",
+    deterministic_merchant_coverage_required: "Geprüfte Händlerabdeckung fehlt",
+    finish_read_only_purchase_freshness_crosscheck:
+      "Kaufziele und Händlerabdeckung prüfen",
+    external_dependency_resolution: "Externe Abhängigkeit auflösen",
+    deterministic_verification: "Ergebnis anhand fester Kriterien prüfen",
+    worker_result_or_deterministic_verification:
+      "Worker-Ergebnis oder Prüfnachweis",
+    typed_owner_decision: "Dokumentierte Owner-Entscheidung",
+    next_safe_worker_or_budget_reopen:
+      "Zulässiger Worker oder neues freigegebenes Budget",
+    unknown_provider_cost: "Ungeklärte Provider-Kosten",
+    budget_exhausted: "Freigegebenes Budget ausgeschöpft",
+    lease_or_heartbeat_stale: "Lease oder Lebenszeichen ist veraltet",
+    execution_failed: "Ausführung fehlgeschlagen; Ergebnis prüfen",
+    no_recent_progress:
+      "Seit mindestens zehn Minuten kein neuer Fortschrittsnachweis",
+    dispatch_pending: "Ausführung noch nicht gestartet",
+    retry_pending: "Ein erneuter Versuch ist noch nicht gestartet",
+    owner_decision: "Ausführung wartet laut Quelle auf eine Owner-Entscheidung",
+    external_dependency:
+      "Externe Abhängigkeit; genauer Auslöser nicht dokumentiert",
+    verifying: "Ergebnis wird geprüft",
+    working: "Aufgabe wird bearbeitet",
+    claimed: "Aufgabe übernommen",
+    running: "Ausführung läuft",
+    in_progress: "Ausführung läuft",
+    dispatched: "Auftrag gestartet",
+    completed: "Ausführung beendet",
+    failed_terminal: "Ausführung beendet · fehlgeschlagen",
+  };
+  const detailText = (code) =>
+    detailLabels[code] ||
+    (code ? String(code).replaceAll("_", " ") : "Nicht dokumentiert");
+  const taskWait = (task) => {
+    if (!task) return "Keine konkrete Aufgabe zugeordnet";
+    if (task.blocker) return detailText(task.blocker);
+    if (task.human_gate) return "Eine echte Owner-Entscheidung ist offen";
+    if (task.dependencies?.length)
+      return task.dependencies.map(detailText).join(" · ");
+    if (task.status === "waiting_external")
+      return "Externe Abhängigkeit; genauer Auslöser nicht dokumentiert";
+    if (["ready", "queued"].includes(task.status))
+      return "Wartet auf Handler-Auswahl im nächsten Loop";
+    return "Kein konkreter Wartegrund gespeichert";
+  };
+  function taskDetail(task) {
+    const item = node("article", undefined, "dependency-task");
+    item.append(node("strong", task.title || task.task_id));
+    line(item, "Status", detailText(task.status));
+    line(item, "Grund / Voraussetzung", taskWait(task));
+    line(item, "Nächster Prüfschritt", detailText(task.next_checkpoint));
+    line(item, "Aktualisiert", stamp(task.updated_at));
+    return item;
+  }
+  function workerEvidence(w, compact = false) {
+    const item = node(
+      "article",
+      undefined,
+      compact ? "execution-evidence" : "worker-evidence",
+    );
+    item.dataset.state = w.status || "UNKNOWN";
+    const state =
+      w.status === "ACTIVE"
+        ? "Arbeitet"
+        : w.status === "WAITING"
+          ? "Wartet"
+          : w.status === "STALE"
+            ? "Nachweis veraltet"
+            : w.status === "FAILED"
+              ? "Fehlgeschlagen"
+              : "Inaktiv";
+    const heading = node("div", undefined, "execution-heading");
+    heading.append(
+      node("strong", w.task_title || w.task_id || "Aufgabe nicht zugeordnet"),
+      node("span", state, "execution-state"),
+    );
+    item.append(heading);
+    line(
+      item,
+      "Worker",
+      w.worker_id || w.worker_type || "Identität nicht dokumentiert",
+    );
+    line(
+      item,
+      w.status === "ACTIVE" ? "Phase" : "Wartegrund",
+      w.status === "ACTIVE"
+        ? detailText(w.execution_status)
+        : detailText(w.wait_reason),
+    );
+    line(item, "Nächster Prüfschritt", detailText(w.next_checkpoint));
+    if (w.checkpoint?.verified === true)
+      line(
+        item,
+        "Letzter bestätigter Schritt",
+        detailText(w.checkpoint.step) + " · " + stamp(w.checkpoint.verified_at),
+      );
+    else
+      line(
+        item,
+        "Letzter bestätigter Schritt",
+        "Kein verifizierter Checkpoint vorhanden",
+      );
+    if (compact && w.status !== "ACTIVE")
+      line(item, "Letzter Fortschritt", stamp(w.last_progress_at));
+    if (!compact) {
+      line(item, "Gestartet", stamp(w.started_at));
+      line(item, "Lebenszeichen", stamp(w.heartbeat_at));
+      line(item, "Letzter Fortschritt", stamp(w.last_progress_at));
+    }
+    return item;
+  }
+
   function workerCard(w) {
     const active = w.status === "ACTIVE";
     const card = node(
@@ -179,7 +317,7 @@
     line(card, "Heartbeat", stamp(w.heartbeat_at));
     line(card, "Lease", stamp(w.lease_expires_at));
     line(card, "Handler", w.handler_id);
-    if (w.next_checkpoint) line(card, "Checkpoint", w.next_checkpoint);
+    card.append(workerEvidence(w));
     return card;
   }
 
@@ -759,6 +897,7 @@
 
     const deck = $("worker-deck");
     if (deck) {
+      const historyOpen = deck.querySelector(".worker-history")?.open === true;
       deck.replaceChildren();
       const current = workers.filter(
         (w) =>
@@ -772,7 +911,7 @@
           node(
             "p",
             complete
-              ? "Keine laufenden Worker. Jarvis wartet auf ausführbare Arbeit."
+              ? "Kein aktiver Worker zugeordnet. Konkrete Abhängigkeiten stehen unter Arbeit und Arbeitsbereichen."
               : "Keine laufenden Ausführungen in der aktuellen Beobachtung.",
           ),
         );
@@ -781,6 +920,7 @@
       const history = workers.filter((w) => !current.includes(w)).slice(0, 6);
       if (history.length) {
         const details = node("details", undefined, "worker-history");
+        details.open = historyOpen;
         details.append(
           node(
             "summary",
@@ -974,6 +1114,56 @@
     const workers = s.worker_deck || [];
     const current = workers.find((w) => w.status === "ACTIVE");
     const duration = current?.duration_seconds;
+    const executionDetails = $("execution-detail-list");
+    executionDetails.replaceChildren();
+    const liveWorkers = workers.filter(
+      (w) =>
+        !w.completed_at &&
+        !["completed", "failed_terminal"].includes(w.execution_status),
+    );
+    liveWorkers
+      .slice(0, 3)
+      .forEach((w) => executionDetails.append(workerEvidence(w, true)));
+    if (liveWorkers.length > 3)
+      executionDetails.append(
+        node(
+          "small",
+          liveWorkers.length -
+            3 +
+            " weitere Ausführungen in den technischen Details",
+        ),
+      );
+    if (!liveWorkers.length && s.freshness?.operational_complete === true) {
+      const focus = (s.workstreams || [])
+        .filter((w) => w.focus_task)
+        .sort(
+          (a, b) =>
+            (a.focus_task.blocker ? 0 : 1) - (b.focus_task.blocker ? 0 : 1),
+        );
+      const reason =
+        focus.find((w) => w.focus_task.blocker) ||
+        focus.find((w) => w.focus_task.dependencies?.length);
+      if (reason) {
+        const wait = node("div", undefined, "standby-reason");
+        wait.append(
+          node(
+            "small",
+            (reason.focus_task.blocker
+              ? "EIN OFFENER BLOCKER · "
+              : "BEOBACHTETE ABHÄNGIGKEIT · ") + reason.name,
+          ),
+          node("strong", taskWait(reason.focus_task)),
+          node(
+            "a",
+            "Alle Aufgaben und Voraussetzungen ansehen →",
+            "detail-link",
+          ),
+        );
+        wait.lastChild.href = "#workstreams";
+        executionDetails.append(wait);
+      }
+    }
+
     put(
       "execution-context",
       current
@@ -994,31 +1184,63 @@
       "Nächster Loop · " + stamp(c.next_loop_estimate) + " (Schätzung)",
     );
     const streams = $("workstream-list");
+    const expanded = new Set(
+      [...streams.querySelectorAll("details[open]")].map(
+        (el) => el.dataset.stream,
+      ),
+    );
     streams.replaceChildren();
     for (const w of s.workstreams || []) {
       const card = node("article", undefined, "workstream-card");
-      card.append(
-        node("h3", w.name),
-        badge(w.status),
-        node(
-          "p",
-          w.next_task?.title ||
-            w.evidence_note ||
+      card.dataset.state = w.status;
+      const focus = w.focus_task || w.next_task;
+      card.append(node("h3", w.name), badge(w.status));
+      const working = w.status === "WORKING";
+      const main = working
+        ? focus?.title
+        : focus
+          ? taskWait(focus)
+          : w.evidence_note ||
             (w.status === "MONITORING"
-              ? "Freier Supervisor überwacht Queue und Trigger."
-              : "Keine zugeordnete offene Aufgabe beobachtet."),
-        ),
+              ? "Überwacht Queue, Quellenfrische und neue externe Signale."
+              : "Keine offene Aufgabe aus dieser Quelle.");
+      card.append(node("p", main, "workstream-purpose"));
+      const details = node("details", undefined, "workstream-details");
+      details.dataset.stream = w.name;
+      details.open = expanded.has(w.name);
+      details.append(
         node(
-          "small",
-          w.tasks
-            ? w.tasks + " offene Aufgaben"
-            : "Keine offene Worker-Aufgabe",
+          "summary",
+          w.tasks ? w.tasks + " Aufgaben · Details" : "Nachweise ansehen",
         ),
       );
-      if (w.next_task?.blocker)
-        card.append(
-          node("span", w.next_task.blocker.replaceAll("_", " "), "muted"),
+      const grid = node("div", undefined, "task-evidence-grid");
+      for (const worker of w.active_workers || [])
+        grid.append(workerEvidence(worker));
+      for (const task of w.tasks_preview || (focus ? [focus] : []))
+        grid.append(taskDetail(task));
+      if (!grid.children.length) {
+        grid.append(
+          node(
+            "p",
+            w.evidence_note ||
+              (w.status === "MONITORING"
+                ? "Der freie Loop ist aktiv. Kein Worker wird als arbeitend dargestellt, solange keine aktive Ausführung verifiziert ist."
+                : "Kein konkreter Task zugeordnet."),
+            "muted",
+          ),
         );
+      }
+      if (w.tasks_preview_complete === false)
+        grid.append(
+          node(
+            "p",
+            "Aufgabenliste begrenzt oder Quelle unvollständig. Fehlende Aufgaben werden nicht als null gewertet.",
+            "muted",
+          ),
+        );
+      details.append(grid);
+      card.append(details);
       streams.append(card);
     }
     const next = $("next-task-list");
@@ -1048,6 +1270,36 @@
           "Nach Task-Priorität · Handler-Freigabe erfolgt erst im Loop",
         ),
       );
+    const trigger = $("next-observed-trigger");
+    trigger.replaceChildren();
+    if (!(s.next_tasks || []).length) {
+      const planned = (s.first_money?.posts || [])
+        .filter(
+          (p) =>
+            ["PENDING", "SCHEDULED"].includes(String(p.state).toUpperCase()) &&
+            Date.parse(p.scheduled_at) > Date.now(),
+        )
+        .sort(
+          (a, b) => Date.parse(a.scheduled_at) - Date.parse(b.scheduled_at),
+        )[0];
+      if (planned) {
+        trigger.append(
+          node("small", "NÄCHSTER BEOBACHTETER TERMIN"),
+          node(
+            "strong",
+            String(planned.platform).toUpperCase() +
+              " · " +
+              stamp(planned.scheduled_at),
+          ),
+          node(
+            "p",
+            s.first_money.publication_stale
+              ? "Letzter Veröffentlichungsplan; Nachweis veraltet. Keine Worker-Zuweisung."
+              : "Geplanter Veröffentlichungszeitpunkt. Keine Worker-Zuweisung.",
+          ),
+        );
+      }
+    }
     const waiting = s.waiting || {};
     const counts = $("waiting-counts");
     counts.replaceChildren();
@@ -1068,7 +1320,7 @@
     }
     const list = $("waiting-list");
     list.replaceChildren();
-    for (const t of waiting.rows || []) line(list, t.domain, t.title);
+    for (const t of waiting.rows || []) list.append(taskDetail(t));
     const safety = s.runtime_safety || {};
     const n = numeric(safety.today_new_cost_usd);
     put("cost-total", n == null ? "UNKNOWN" : "$" + n.toFixed(4));
