@@ -227,15 +227,18 @@ async def merchant_clickout(
     content_id = sanitize_attribution_identifier(content)
     analytics_session_id = sanitize_attribution_identifier(sid)
 
-    target = offer_clickout_target(
-        offer,
-        clickref=content_id or campaign_id or acquisition_source,
-        clickref2=campaign_id,
-        clickref3=acquisition_source,
-        clickref4=analytics_session_id,
-        clickref5=offer.product_id,
-        clickref6=offer.offer_id,
-    ) or target
+    target = (
+        offer_clickout_target(
+            offer,
+            clickref=content_id or campaign_id or acquisition_source,
+            clickref2=campaign_id,
+            clickref3=acquisition_source,
+            clickref4=analytics_session_id,
+            clickref5=offer.product_id,
+            clickref6=offer.offer_id,
+        )
+        or target
+    )
 
     click_id = clickout_tracker.record(
         offer,
