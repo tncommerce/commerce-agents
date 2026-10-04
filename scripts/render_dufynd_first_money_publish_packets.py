@@ -286,10 +286,7 @@ def render_gift_slide(
 
     product_ids = list(slide.get("product_ids") or [])
     footer = slide.get("instagram_footer" if platform == "instagram" else "tiktok_footer")
-    if platform == "instagram":
-        bottom_margin = 205 if footer else 150
-    else:
-        bottom_margin = 410 if footer else 250
+    bottom_margin = (205 if footer else 150) if platform == "instagram" else 410 if footer else 250
 
     if len(product_ids) == 1:
         top = max(text_bottom + 48, 560 if platform == "instagram" else 760)
@@ -375,10 +372,7 @@ def render_date_slide(
     )
 
     footer = slide.get("instagram_footer" if platform == "instagram" else "tiktok_footer")
-    if platform == "instagram":
-        bottom_margin = 205 if footer else 145
-    else:
-        bottom_margin = 410 if footer else 250
+    bottom_margin = (205 if footer else 145) if platform == "instagram" else 410 if footer else 250
 
     if len(product_ids) == 1:
         top = max(text_bottom + 40, 560 if platform == "instagram" else 790)
