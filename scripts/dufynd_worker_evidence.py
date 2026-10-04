@@ -71,6 +71,7 @@ def profile_for(task: dict) -> str:
 
 
 CODE_WINDOWS = {
+    "examples/retail/data/scentai_launch_attribution.md": [("## Interpretation guardrails", 0, 5)],
     "examples/retail/api/tests/test_clickout_analytics_correlation.py": [
         ('sid=" session-partner', 6, 2),
         ('"campaign_id": "launch_01"', 6, 2),
