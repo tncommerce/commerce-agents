@@ -2660,6 +2660,20 @@ def test_observer_receipt_lifecycle_preserves_recurring_activation(active, event
 
     query("update dufynd_observer_credentials set activation_enabled=%s returning true", (active,))
     query("select project_dufynd_broker_health(%s::jsonb)", (json.dumps(broker_health_payload()),))
+    # Earlier audit fixtures intentionally disable observers globally. Recreate
+    # only this test's fixed resource set rather than relying on shared DB state.
+    for observer, kind, resource in [
+        ("render:srv-dakpfrnf3r2c73dr3f20", "render", "srv-dakpfrnf3r2c73dr3f20"),
+        *[
+            (f"gmail:{thread}", "gmail", thread)
+            for thread in ("1a0f385ed98c6af8", "1a0f69c169fb928f", "1a0f6a90772a743d")
+        ],
+    ]:
+        query(
+            "insert into dufynd_external_observers(observer_id,source_type,source_id,enabled) "
+            "values(%s,%s,%s,true) on conflict(observer_id) do update set enabled=true returning true",
+            (observer, kind, resource),
+        )
     origin = source()
     origin["event_name"] = event
     origin["run_id"] = str(int(uuid4().hex[:12], 16))
@@ -2684,10 +2698,11 @@ def test_observer_receipt_lifecycle_preserves_recurring_activation(active, event
                     message.pop("content_type", None)
                 entries.append(("gmail_known_threads", "gmail:" + evidence["thread_id"], evidence))
         for credential, observer, evidence in entries:
-            assert query(
+            capture_result = query(
                 "select capture_dufynd_broker_acceptance_observation(%s,%s,%s,%s::jsonb)",
                 (run, credential, observer, json.dumps(evidence)),
-            )["accepted"]
+            )
+            assert capture_result["accepted"], (observer, capture_result)
         summary = {"acknowledged": 3, "duplicate_first_pass": 0, "idempotent_rechecks": 3}
         result = query(
             "select finalize_dufynd_broker_acceptance(%s::jsonb,%s::jsonb)",
