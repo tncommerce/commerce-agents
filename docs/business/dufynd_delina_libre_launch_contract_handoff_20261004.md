@@ -25,8 +25,9 @@ Do not relabel a merchant-feed image as `licensed` merely to satisfy the current
 - Merchant product ID: `PDM0227`
 - Verified deep link exists in canonical offers.
 - Notino program is approved and Delina is inside the explicit `verified_product_only` live-activation scope.
-- Current canonical offer snapshot: €285, free shipping, in stock, last checked `2026-10-01T14:17:32Z`.
-- 72-hour freshness expires `2026-10-04T14:17:32Z` UTC / `16:17:32` Europe/Berlin. Revalidate immediately before any promotion.
+- Current canonical offer snapshot refreshed from current public Notino evidence: €285, free shipping, available, `2026-10-04T09:44:49Z`.
+- Refresh evidence: `examples/retail/data/dufynd_notino_delina_libre_offer_refresh_20261004.json`.
+- 72-hour freshness now expires `2026-10-07T09:44:49Z` UTC / `11:44:49` Europe/Berlin. Revalidate immediately before any promotion if that window has elapsed.
 
 ## Libre evidence
 
@@ -43,8 +44,9 @@ Do not relabel a merchant-feed image as `licensed` merely to satisfy the current
 - Merchant product ID: `VZR11010`
 - Verified deep link exists in canonical offers.
 - Notino program is approved and Libre is inside the explicit `verified_product_only` live-activation scope.
-- Current canonical offer snapshot: €119, free shipping, in stock, last checked `2026-10-01T16:21:51Z`.
-- 72-hour freshness expires `2026-10-04T16:21:51Z` UTC / `18:21:51` Europe/Berlin. Revalidate immediately before any promotion.
+- Current canonical offer snapshot refreshed from current public Notino evidence: €119, free shipping, available, `2026-10-04T09:44:49Z`.
+- Refresh evidence: `examples/retail/data/dufynd_notino_delina_libre_offer_refresh_20261004.json`.
+- 72-hour freshness now expires `2026-10-07T09:44:49Z` UTC / `11:44:49` Europe/Berlin. Revalidate immediately before any promotion if that window has elapsed.
 
 ## Existing blocker proven by PR #657
 
