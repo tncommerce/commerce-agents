@@ -2,35 +2,92 @@
 (() => {
   const $ = id => document.getElementById(id);
   const value = v => v === null || v === undefined || v === '' ? 'Unknown' : String(v);
-  const stamp = v => v && Number.isFinite(Date.parse(v)) ? new Date(v).toLocaleString('de-DE', {timeZone:'Europe/Berlin'}) : 'Unknown';
-  const put = (id, v) => { $(id).textContent = value(v); };
-  const node = (tag, text, cls) => { const n = document.createElement(tag); if (text !== undefined) n.textContent = value(text); if (cls) n.className = cls; return n; };
-  const badge = status => node('span', status, 'pill ' + ({WORKING:'info','OWNER GATE':'action',ERROR:'warn',ACTIVE:'info',HEALTHY:'good',READY:'good',OFF:'neutral',BLOCKED:'warn',FAILED:'warn',DEGRADED:'warn',STALE:'warn','WAITING HUMAN':'action',WAITING:'warn'}[status] || 'neutral'));
-  const setTone = (id, tone) => { const el=$(id); if(!el) return; el.classList.remove('state-green','state-blue','state-amber','state-red','state-neutral'); el.classList.add('state-' + tone); };
-  const setPulse = (id, tone, main, detail) => { setTone(id,tone); put(id + '-value', main); put(id + '-detail', detail); };
-  const friendlyProductState = state => ({live_first_money_test_scheduled:'First-Money-Test geplant',live_visual_final_content_test_preparation:'Content-Test in Vorbereitung',next_after_delina_evidence:'Als Nächstes nach Delina-Daten',later:'Später priorisiert'})[state] || value(state).replaceAll('_',' ');
-  const line = (parent, label, text) => { const p = node('p'); p.append(node('small', label + ' · '), node('span', text)); parent.append(p); };
-  let snapshot = null, busy = false, timer = null;
-  const decisionPanel = document.querySelector('.decision-panel');
-  if (decisionPanel && $('command')) $('command').after(decisionPanel);
-  const commandPanel = $('command'), workPanel = $('work'), revenuePanel = $('revenue');
-  const overviewMosaic = document.createElement('section');
-  overviewMosaic.className = 'overview-mosaic';
-  overviewMosaic.setAttribute('aria-label','CEO Übersicht');
-  if (commandPanel?.parentNode) {
-    commandPanel.parentNode.insertBefore(overviewMosaic, commandPanel);
-    [commandPanel, decisionPanel, workPanel, revenuePanel].filter(Boolean).forEach(el => overviewMosaic.append(el));
-  }
+  const stamp = v => v && Number.isFinite(Date.parse(v))
+    ? new Date(v).toLocaleString('de-DE', { timeZone: 'Europe/Berlin' })
+    : 'Unknown';
+  const shortTime = v => v && Number.isFinite(Date.parse(v))
+    ? new Date(v).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Berlin' })
+    : '—';
+  const numeric = v => {
+    const n = Number(v);
+    return Number.isFinite(n) ? n : null;
+  };
+  const put = (id, v) => {
+    const el = $(id);
+    if (el) el.textContent = value(v);
+  };
+  const node = (tag, text, cls) => {
+    const n = document.createElement(tag);
+    if (text !== undefined) n.textContent = value(text);
+    if (cls) n.className = cls;
+    return n;
+  };
+  const line = (parent, label, text) => {
+    const p = node('p');
+    p.append(node('small', label + ' · '), node('span', text));
+    parent.append(p);
+  };
+  const badge = status => {
+    const tone = ({
+      WORKING: 'info',
+      ACTIVE: 'info',
+      HEALTHY: 'good',
+      READY: 'good',
+      SUCCESS: 'good',
+      LIVE: 'good',
+      'OWNER GATE': 'action',
+      'WAITING HUMAN': 'action',
+      WAITING: 'warn',
+      ERROR: 'warn',
+      BLOCKED: 'warn',
+      FAILED: 'warn',
+      DEGRADED: 'warn',
+      STALE: 'warn',
+      INITIALIZING: 'warn',
+      OFF: 'neutral'
+    })[String(status || '').toUpperCase()] || 'neutral';
+    return node('span', status, 'pill ' + tone);
+  };
+  const setTone = (id, tone) => {
+    const el = $(id);
+    if (!el) return;
+    el.classList.remove('state-green', 'state-blue', 'state-amber', 'state-red', 'state-neutral');
+    el.classList.add('state-' + tone);
+  };
+  const setPulse = (id, tone, main, detail) => {
+    setTone(id, tone);
+    put(id + '-value', main);
+    put(id + '-detail', detail);
+  };
+  const friendlyProductState = state => ({
+    live_first_money_test_scheduled: 'First-Money-Test geplant',
+    live_visual_final_content_test_preparation: 'Content-Test in Vorbereitung',
+    next_after_delina_evidence: 'Als Nächstes nach Delina-Daten',
+    later: 'Später priorisiert'
+  })[state] || value(state).replaceAll('_', ' ');
+
+  let snapshot = null;
+  let busy = false;
+  let timer = null;
+
   function missions() {
     if (!snapshot) return;
-    const board = $('mission-board'); board.replaceChildren();
-    const domain = $('domain-filter').value;
-    for (const [lane, rows] of Object.entries(snapshot.mission_board)) {
-      if (lane === 'DONE' && !$('show-done').checked) continue;
+    const board = $('mission-board');
+    if (!board) return;
+    board.replaceChildren();
+    const domain = $('domain-filter')?.value || '';
+    const showDone = $('show-done')?.checked === true;
+    const lanes = snapshot.mission_board || {};
+
+    for (const [lane, rowsRaw] of Object.entries(lanes)) {
+      if (lane === 'DONE' && !showDone) continue;
+      const rows = Array.isArray(rowsRaw) ? rowsRaw : [];
       const filtered = rows.filter(r => !domain || r.domain === domain);
       const column = node('div', undefined, 'mission-lane');
-      column.tabIndex = 0; column.setAttribute('aria-label', lane + ' Missions');
+      column.tabIndex = 0;
+      column.setAttribute('aria-label', lane + ' Missions');
       column.append(node('h3', lane + ' · ' + filtered.length));
+
       for (const m of (lane === 'DONE' ? filtered.slice(0, 12) : filtered)) {
         const card = node('article', undefined, 'mission-card');
         card.append(node('small', value(m.domain) + ' · P' + value(m.priority)), node('h4', m.title));
@@ -44,10 +101,18 @@
       board.append(column);
     }
   }
+
   function workerCard(w) {
-    const card = node('article', undefined, 'worker-card' + (w.status === 'ACTIVE' ? ' active' : ''));
-    const top = node('div', undefined, 'worker-top'); top.append(node('span', '⌘', 'station-icon'), badge(w.status)); card.append(top);
-    card.append(node('small', w.worker_type || 'Worker'), node('h3', w.worker_id || w.execution_id), node('p', w.task_title || w.task_id));
+    const active = w.status === 'ACTIVE' || ['claimed', 'working', 'verifying', 'in_progress'].includes(w.execution_status);
+    const card = node('article', undefined, 'worker-card' + (active ? ' active' : ''));
+    const top = node('div', undefined, 'worker-top');
+    top.append(node('span', '⌘', 'station-icon'), badge(active ? 'ACTIVE' : (w.status || w.execution_status)));
+    card.append(top);
+    card.append(
+      node('small', w.worker_type || 'Worker'),
+      node('h3', w.worker_id || w.execution_id || 'Worker'),
+      node('p', w.task_title || w.task_id || 'Task')
+    );
     line(card, 'Execution', w.execution_status);
     line(card, 'Heartbeat', stamp(w.heartbeat_at));
     line(card, 'Lease', stamp(w.lease_expires_at));
@@ -55,302 +120,562 @@
     if (w.next_checkpoint) line(card, 'Checkpoint', w.next_checkpoint);
     return card;
   }
+
+  function healthTone(health) {
+    const v = String(health || '').toUpperCase();
+    if (['HEALTHY', 'READY', 'SUCCESS', 'LIVE'].includes(v)) return 'green';
+    if (['ACTIVE', 'WORKING'].includes(v)) return 'blue';
+    return 'amber';
+  }
+
+  function renderDecisionIntelligence(revenue, publication) {
+    const sessions = numeric(revenue.sessions);
+    const productViews = numeric(revenue.product_views);
+    const offerViews = numeric(revenue.offer_views);
+    const clickouts = numeric(revenue.merchant_clickouts);
+    const transactions = numeric(revenue.transactions);
+    const commission = numeric(revenue.commission_eur);
+
+    const reached = [
+      publication.scheduled || publication.live,
+      (sessions || 0) > 0,
+      (productViews || 0) > 0,
+      (clickouts || 0) > 0,
+      (transactions || 0) > 0,
+      (commission || 0) > 0
+    ];
+    const stageCount = reached.filter(Boolean).length;
+    const nextLabels = [
+      'Content erfolgreich live',
+      'Erster qualifizierter Besuch',
+      'Erster Product View',
+      'Erster Merchant Clickout',
+      'Erste Affiliate-Transaktion',
+      'Erste bestätigte Provision'
+    ];
+    const firstMissing = reached.findIndex(v => !v);
+    const nextMilestone = firstMissing === -1 ? 'Revenue Loop vollständig bewiesen' : nextLabels[firstMissing];
+
+    let tone = 'blue';
+    let title = 'Test bereit';
+    let copy = 'Tracking und Veröffentlichung sind vorbereitet. Jetzt zählt reale Nutzerreaktion.';
+
+    if (publication.failed || publication.overdue || publication.stale) {
+      tone = 'amber';
+      title = 'Publication prüfen';
+      copy = publication.failed
+        ? 'Ein Plattformfehler wurde beobachtet. Erst den Publish-State klären.'
+        : publication.overdue
+          ? 'Ein geplanter Post ist überfällig, aber noch nicht als live bestätigt.'
+          : 'Die letzte Plattform-Beobachtung ist veraltet.';
+    } else if ((commission || 0) > 0) {
+      tone = 'green';
+      title = 'Revenue Loop bewiesen';
+      copy = 'Eine Provision ist bestätigt. Jetzt geht es um Wiederholbarkeit und Skalierung.';
+    } else if ((transactions || 0) > 0) {
+      tone = 'green';
+      title = 'Sale bestätigt';
+      copy = 'Eine Affiliate-Transaktion ist nachgewiesen. Die Provisionsbestätigung ist der nächste Beweis.';
+    } else if ((clickouts || 0) > 0) {
+      tone = 'blue';
+      title = 'Kaufinteresse erreicht';
+      copy = 'Mindestens ein Merchant Clickout ist da. Jetzt zählt Affiliate-Netzwerk-Evidence.';
+    } else if ((offerViews || 0) > 0) {
+      tone = 'blue';
+      title = 'Kaufoptionen werden gesehen';
+      copy = 'Nutzer erreichen die Offer-Sektion. Der nächste harte Schritt ist ein Merchant Clickout.';
+    } else if ((productViews || 0) > 0) {
+      tone = 'blue';
+      title = 'Produktinteresse vorhanden';
+      copy = 'Traffic erreicht die Produktseite. Jetzt muss der Weg zu den Kaufoptionen funktionieren.';
+    } else if ((sessions || 0) > 0) {
+      tone = 'blue';
+      title = 'Traffic erreicht DUFYND';
+      copy = 'Der Content erzeugt Besuche. Jetzt prüfen wir, ob daraus Produktinteresse entsteht.';
+    } else if (publication.live) {
+      tone = 'blue';
+      title = 'Test ist live';
+      copy = 'Der Content ist veröffentlicht. Die ersten qualifizierten Sessions sind der nächste Beweis.';
+    }
+
+    const signal = $('business-signal');
+    if (signal) {
+      signal.classList.remove('signal-green', 'signal-blue', 'signal-amber', 'signal-neutral');
+      signal.classList.add('signal-' + tone);
+    }
+    put('signal-title', title);
+    put('signal-copy', copy);
+    put('next-milestone', nextMilestone);
+    put('pipeline-stage', stageCount + '/6');
+    const ring = $('pipeline-ring');
+    if (ring) ring.style.setProperty('--progress', (stageCount / 6 * 360) + 'deg');
+
+    return { reached, firstMissing };
+  }
+
   function render(s) {
     snapshot = s;
-    const c = s.command_center, f = s.freshness;
+    const c = s.command_center || {};
+    const f = s.freshness || {};
     const complete = f.operational_complete === true;
     const gates = Array.isArray(s.decision_center) ? s.decision_center : [];
-    const gateCount = Number(c.human_approval_count || gates.length || 0);
-    const needsApproval = gateCount > 0 || c.status === 'OWNER GATE';
-    const revenue = s.first_money || {}, products = s.money_products || {}, safety = s.runtime_safety || {};
+    const workers = Array.isArray(s.worker_deck) ? s.worker_deck : [];
+    const systemsHealth = Array.isArray(s.system_health) ? s.system_health : [];
+    const revenue = s.first_money || {};
+    const products = s.money_products || {};
+    const safety = s.runtime_safety || {};
+    const budget = s.budget || {};
+    const queueData = s.queue || {};
+    const gatesCount = Number(c.human_approval_count || gates.length || 0);
+    const needsApproval = gatesCount > 0 || c.status === 'OWNER GATE';
+
     const posts = Array.isArray(revenue.posts) ? revenue.posts : [];
-    const postStates = posts.map(p => String(p.state || '').toUpperCase());
     const now = Date.now();
-    const overduePending = posts.some(p => ['PENDING','SCHEDULED'].includes(String(p.state || '').toUpperCase()) && Number.isFinite(Date.parse(p.scheduled_at)) && Date.parse(p.scheduled_at) + 20*60*1000 < now);
-    const publicationFailed = postStates.some(st => ['ERROR','FAILED','REJECTED'].includes(st));
-    const publicationLive = postStates.some(st => ['PUBLISHED','POSTED','LIVE','SUCCESS'].includes(st));
-    const publicationScheduled = postStates.some(st => ['PENDING','SCHEDULED'].includes(st));
-    const nextPost = posts.filter(p => Number.isFinite(Date.parse(p.scheduled_at)) && Date.parse(p.scheduled_at) >= now).sort((a,b)=>Date.parse(a.scheduled_at)-Date.parse(b.scheduled_at))[0];
-    const ownerBox = document.querySelector('.owner-now');
-    if (ownerBox) ownerBox.classList.toggle('needs-approval', needsApproval);
-    put('owner-now', needsApproval ? 'Freigabe erforderlich' : (complete ? 'Keine Aktion erforderlich' : 'Status wird geprüft'));
-    put('owner-detail', needsApproval ? (gates[0]?.title || 'Eine Owner-Entscheidung wartet. Öffne Freigaben für Details.') : (c.owner_action || 'Jarvis benötigt aktuell keine Entscheidung von dir.'));
-    const approval = $('approval-alert');
-    approval.hidden = !needsApproval;
-    if (needsApproval) {
-      put('approval-summary', gates.length === 1 ? gates[0].title : (gateCount + ' Freigaben warten auf dich'));
-      put('approval-detail', gates[0]?.reason || 'Öffne Freigaben für Grund, Risiko, Kosten, Nutzen und den exakten GO-Token.');
+    const normalizedStates = posts.map(p => String(p.state || '').toUpperCase());
+    const publication = {
+      failed: normalizedStates.some(x => ['ERROR', 'FAILED', 'REJECTED'].includes(x)),
+      live: normalizedStates.some(x => ['PUBLISHED', 'POSTED', 'LIVE', 'SUCCESS'].includes(x)),
+      scheduled: normalizedStates.some(x => ['PENDING', 'SCHEDULED'].includes(x)),
+      overdue: posts.some(p =>
+        ['PENDING', 'SCHEDULED'].includes(String(p.state || '').toUpperCase()) &&
+        Number.isFinite(Date.parse(p.scheduled_at)) &&
+        Date.parse(p.scheduled_at) + 20 * 60 * 1000 < now
+      ),
+      stale: revenue.publication_stale === true
+    };
+    const nextPost = posts
+      .filter(p => Number.isFinite(Date.parse(p.scheduled_at)) && Date.parse(p.scheduled_at) >= now)
+      .sort((a, b) => Date.parse(a.scheduled_at) - Date.parse(b.scheduled_at))[0];
+
+    const jarvisTone = needsApproval
+      ? 'red'
+      : c.status === 'WORKING'
+        ? 'blue'
+        : c.status === 'WAITING' || c.status === 'ERROR'
+          ? 'amber'
+          : complete
+            ? 'green'
+            : 'neutral';
+    const jarvisMain = needsApproval
+      ? 'Freigabe offen'
+      : c.status === 'WORKING'
+        ? 'Arbeitet'
+        : c.status === 'WAITING'
+          ? 'Wartet'
+          : c.status === 'ERROR'
+            ? 'Prüfen'
+            : complete
+              ? 'Stabil'
+              : 'Unklar';
+    const jarvisDetail = c.status === 'WAITING'
+      ? 'Wartet auf zulässige Arbeit oder externe Evidenz.'
+      : (c.current_task || 'Supervisor-State aktuell.');
+
+    setPulse('pulse-jarvis', jarvisTone, jarvisMain, jarvisDetail);
+    setPulse(
+      'pulse-action',
+      needsApproval ? 'red' : 'green',
+      needsApproval ? 'Freigabe nötig' : 'Nichts offen',
+      needsApproval ? (gates[0]?.title || 'Owner-Entscheidung erforderlich') : 'Keine Owner-Entscheidung erforderlich.'
+    );
+    setTone('jarvis-core', jarvisTone);
+
+    let moneyTone = 'neutral';
+    let moneyMain = 'Unklar';
+    let moneyDetail = 'Noch kein belastbarer Publication-State.';
+    if (publication.failed || publication.overdue || publication.stale) {
+      moneyTone = 'amber';
+      moneyMain = 'Prüfen';
+      moneyDetail = publication.failed
+        ? 'Publication-Fehler beobachtet.'
+        : publication.overdue
+          ? 'Geplanter Post überfällig.'
+          : 'Publication-Beobachtung veraltet.';
+    } else if (publication.live) {
+      moneyTone = 'green';
+      moneyMain = 'Live';
+      moneyDetail = 'First-Money-Content ist veröffentlicht.';
+    } else if (publication.scheduled) {
+      moneyTone = 'blue';
+      moneyMain = 'Geplant';
+      moneyDetail = nextPost ? ((nextPost.platform || 'Post') + ' · ' + stamp(nextPost.scheduled_at)) : 'Auto-Publish geplant.';
     }
-    const jarvisTone = needsApproval ? 'red' : c.status === 'WORKING' ? 'blue' : c.status === 'WAITING' ? 'amber' : c.status === 'ERROR' ? 'amber' : complete ? 'green' : 'neutral';
-    const jarvisMain = needsApproval ? 'Freigabe offen' : c.status === 'WORKING' ? 'Arbeitet' : c.status === 'WAITING' ? 'Wartet' : c.status === 'ERROR' ? 'Prüfen' : complete ? 'Stabil' : 'Unklar';
-    const jarvisDetail = c.status === 'WAITING' ? 'Wartet auf zulässige Arbeit oder externe Evidenz.' : (c.current_task || 'Supervisor-State aktuell.');
-    setPulse('pulse-jarvis',jarvisTone,jarvisMain,jarvisDetail);
-    setPulse('pulse-action',needsApproval?'red':'green',needsApproval?'Freigabe nötig':'Nichts offen',needsApproval?(gates[0]?.title || 'Entscheidung erforderlich'):'Keine Owner-Entscheidung erforderlich.');
-    let moneyTone='neutral', moneyMain='Unklar', moneyDetail='Noch kein belastbarer Publication-State.';
-    if (publicationFailed || overduePending || revenue.publication_stale) { moneyTone='amber'; moneyMain='Prüfen'; moneyDetail=publicationFailed?'Publication-Fehler beobachtet.':overduePending?'Geplanter Post ist überfällig, Status noch offen.':'Publication-Beobachtung ist veraltet.'; }
-    else if (publicationLive) { moneyTone='green'; moneyMain='Live'; moneyDetail='First-Money-Content wurde als veröffentlicht beobachtet.'; }
-    else if (publicationScheduled) { moneyTone='blue'; moneyMain='Geplant'; moneyDetail=nextPost ? ((nextPost.platform || 'Post') + ' · ' + stamp(nextPost.scheduled_at)) : 'Auto-Publish geplant.'; }
-    setPulse('pulse-money',moneyTone,moneyMain,moneyDetail);
+    setPulse('pulse-money', moneyTone, moneyMain, moneyDetail);
+
     const costUnknown = safety.provider_cost_unknown === true || safety.today_new_cost_usd === null || safety.today_new_cost_usd === undefined;
-    const todayCost = Number(safety.today_new_cost_usd || 0);
-    setPulse('pulse-cost',costUnknown?'amber':todayCost===0?'green':'blue',costUnknown?'Unbekannt':('    put('current-task', c.current_task || 'Keine aktive Ausführung beobachtet');
-    put('allowed-task', c.next_allowed_task);
+    const todayCost = numeric(safety.today_new_cost_usd) || 0;
+    setPulse(
+      'pulse-cost',
+      costUnknown ? 'amber' : todayCost === 0 ? 'green' : 'blue',
+      costUnknown ? 'Unbekannt' : '$' + todayCost.toFixed(4),
+      costUnknown ? 'Kostenstatus nicht vollständig bestätigt.' : todayCost === 0 ? 'Keine neuen Jarvis-Kosten heute.' : 'Bekannte Jarvis-Kosten heute.'
+    );
+
+    const approval = $('approval-alert');
+    if (approval) approval.hidden = !needsApproval;
+    if (needsApproval) {
+      put('approval-summary', gates.length === 1 ? gates[0].title : gatesCount + ' Freigaben warten auf dich');
+      put('approval-detail', gates[0]?.reason || 'Öffne die Freigabe für Grund, Risiko, Kosten, Nutzen und GO-Token.');
+    }
+
+    const decisionPanel = $('decisions');
+    if (decisionPanel) {
+      decisionPanel.classList.toggle('has-decisions', needsApproval);
+      decisionPanel.classList.toggle('no-decisions', !needsApproval);
+    }
+    const decisions = $('decision-list');
+    if (decisions) {
+      decisions.replaceChildren();
+      for (const d of gates) {
+        const item = node('article', undefined, 'decision-item');
+        item.append(badge('WAITING HUMAN'), node('h3', d.title));
+        line(item, 'Gate', d.type);
+        line(item, 'Grund', d.reason);
+        line(item, 'Risiko', d.risk);
+        line(item, 'Kosten USD', d.cost_usd);
+        line(item, 'Nutzen', d.benefit);
+        line(item, 'Exakter GO-Token', d.go_token);
+        if (d.provider) line(item, 'Provider', d.provider);
+        decisions.append(item);
+      }
+      if (!gates.length) {
+        decisions.append(node('p', complete ? 'Keine Freigabe erforderlich. Du musst aktuell nichts entscheiden.' : 'Freigabestatus ist noch nicht vollständig bestätigt.', 'muted'));
+      }
+    }
+
+    put('priority', c.current_task || (c.status === 'WAITING'
+      ? 'Jarvis wartet auf den nächsten zulässigen oder externen Trigger.'
+      : 'Aktueller Zustand aus dem letzten verifizierten Supervisor-Loop.'));
+    put('current-task', c.current_task || 'Keine aktive Ausführung');
+    put('allowed-task', c.next_allowed_task || 'Warten auf nächsten zulässigen Trigger');
     put('stop-reason', c.stop_reason);
-    put('lease-count', s.runtime_safety?.active_leases);
-    put('loop-time', 'Loop · ' + stamp(c.last_loop_at) + ' · nächster Wake (Schätzung) ' + stamp(c.next_loop_estimate));
-    put('priority', c.current_task || (c.status === 'WAITING' ? 'Jarvis wartet auf zulässige Arbeit oder externe Nachweise.' : 'Aktueller Status aus dem letzten verifizierten Loop.'));
-    $('jarvis-state').replaceWith(Object.assign(badge(c.status), {id:'jarvis-state'}));
-    put('head', c.observed_head_sha ? c.observed_head_sha.slice(0, 10) : null);
+    put('lease-count', safety.active_leases);
+    put('loop-time', 'Loop · ' + stamp(c.last_loop_at));
+    const jarvisState = $('jarvis-state');
+    if (jarvisState) jarvisState.replaceWith(Object.assign(badge(c.status), { id: 'jarvis-state' }));
+
+    put('head', c.observed_head_sha ? String(c.observed_head_sha).slice(0, 10) : null);
     put('head-age', 'Branch-Beobachtung · ' + stamp(c.head_observed_at));
-    put('active-workers', (complete ? '' : '≥ ') + c.active_workers);
-    put('working-count', (complete ? '' : '≥ ') + c.working_tasks);
-    put('decision-count', (complete ? '' : '≥ ') + c.human_approval_count);
+    put('active-workers', (complete ? '' : '≥ ') + value(c.active_workers));
+    put('working-count', (complete ? '' : '≥ ') + value(c.working_tasks));
+    put('decision-count', (complete ? '' : '≥ ') + value(c.human_approval_count));
     put('decision-nav', c.human_approval_count);
     put('worker-summary', c.active_workers ? 'Aktive Ausführungen beobachtet' : 'Keine aktiven Worker beobachtet');
-    put('wake-time', c.last_supervisor_wake ? new Date(c.last_supervisor_wake).toLocaleTimeString('de-DE') : null);
+    put('wake-time', c.last_supervisor_wake ? shortTime(c.last_supervisor_wake) : null);
     put('next-wake', 'Wake-Schätzung · ' + stamp(c.next_supervisor_wake_estimate));
     put('last-action', c.last_completed_action);
     put('next-action', (c.checkpoint_stale ? 'STALE PLAN · ' : '') + value(c.next_safe_action));
     put('checkpoint-age', (c.checkpoint_stale ? 'STALE · ' : '') + 'Checkpoint · ' + stamp(c.checkpoint_observed_at));
-    const decisions = $('decision-list'); decisions.replaceChildren();
-    if (overviewMosaic) overviewMosaic.classList.toggle('has-owner-gate', needsApproval);
-    if (decisionPanel) { decisionPanel.classList.toggle('has-decisions', needsApproval); decisionPanel.classList.toggle('no-decisions', !needsApproval); }
-    for (const d of gates) {
-      const n = node('article', undefined, 'decision-item'); n.append(badge('WAITING HUMAN'), node('h3', d.title)); line(n, 'Gate', d.type); line(n, 'Grund', d.reason); line(n, 'Risiko', d.risk); line(n, 'Kosten USD', d.cost_usd); line(n, 'Nutzen', d.benefit); line(n, 'Exakter GO-Token', d.go_token); if (d.provider) line(n, 'Provider', d.provider); decisions.append(n);
+
+    const publications = $('publication-list');
+    if (publications) {
+      publications.replaceChildren();
+      for (const p of posts) line(publications, p.platform, stamp(p.scheduled_at) + ' · ' + value(p.state));
+      line(publications, 'Publication-Nachweis', (revenue.publication_stale ? 'STALE · ' : '') + stamp(revenue.publication_observed_at));
     }
-    if (!gates.length) decisions.append(node('p', complete ? 'Keine Freigabe erforderlich. Du musst aktuell nichts entscheiden.' : 'Freigabestatus derzeit nicht vollständig prüfbar.', 'muted'));
-    for (const key of ['cap','spend','remaining']) { const v = s.budget[{cap:'cap_usd',spend:'spent_usd',remaining:'remaining_usd'}[key]]; put('budget-' + key, v === null || v === undefined ? null : '$' + Number(v).toFixed(2)); }
-    $('paid-state').replaceWith(Object.assign(badge(s.budget.paid_model_execution), {id:'paid-state'}));
-    put('budget-details', 'Paid execution beobachtet · ' + stamp(s.budget.paid_model_execution_observed_at) + ' · Runs ' + value(s.budget.runs) + '/' + value(s.budget.max_runs) + ' · Budgetstatus ' + value(s.budget.status));
-    const deck = $('worker-deck'); deck.replaceChildren();
-    const current = s.worker_deck.filter(w => !['completed','failed_terminal'].includes(w.execution_status) && !w.completed_at);
-    for (const w of current) deck.append(workerCard(w));
-    if (!current.length) { const empty = node('div', undefined, 'empty-station'); empty.append(node('span', '⌘', 'station-icon'), node('p', complete ? 'Keine laufenden Worker-Ausführungen. Jarvis wartet auf ausführbare Arbeit.' : 'Keine laufenden Ausführungen in der unvollständigen Beobachtung.')); deck.append(empty); }
-    const history = s.worker_deck.filter(w => !current.includes(w));
-    if (history.length) { const details = node('details', undefined, 'worker-history'); details.append(node('summary', 'Letzte abgeschlossene Ausführungen · ' + history.length)); const grid = node('div', undefined, 'worker-grid'); history.forEach(w => grid.append(workerCard(w))); details.append(grid); deck.append(details); }
-    put('worker-count', current.length + ' laufende Ausführungen · ' + history.length + ' recent history');
-    const select = $('domain-filter'), selected = select.value;
-    const domains = [...new Set(Object.values(s.mission_board).flat().map(r => r.domain).filter(Boolean))].sort();
-    select.replaceChildren(new Option('All domains', '')); domains.forEach(d => select.add(new Option(d, d))); select.value = selected;
-    put('completeness', complete ? 'Operative Quellen vollständig innerhalb der Read-Grenzen. History begrenzt; Snapshot nicht atomar.' : 'Unvollständige Quellen: ' + f.incomplete_sources.join(', ') + '. Zähler sind beobachtete Untergrenzen.');
-    missions();
-    const publications = $('publication-list'); publications.replaceChildren();
-    for (const p of revenue.posts || []) line(publications, p.platform, stamp(p.scheduled_at) + ' · ' + value(p.state));
-    line(publications, 'Publication-Nachweis', (revenue.publication_stale ? 'STALE · ' : '') + stamp(revenue.publication_observed_at) + ' · gespeicherte Plattform-Beobachtung');
     put('content-identifiers', 'content_id: ' + value(revenue.content_id) + ' · experiment_id: ' + value(revenue.experiment_id));
-    const funnel = $('funnel'); funnel.replaceChildren();
-    for (const [label,key] of [['Sessions','sessions'],['Product Views','product_views'],['Offer Views','offer_views'],['Merchant Clickouts','merchant_clickouts'],['Transactions','transactions'],['Commission EUR','commission_eur']]) {
-      const cell = node('div'); cell.append(node('small', label), node('strong', (key !== 'transactions' && key !== 'commission_eur' && !revenue.analytics_complete ? '≥ ' : '') + value(revenue[key]))); funnel.append(cell);
+
+    const intelligence = renderDecisionIntelligence(revenue, publication);
+    const stageDefs = [
+      ['Content', 'publication', publication.scheduled || publication.live],
+      ['Sessions', 'sessions', (numeric(revenue.sessions) || 0) > 0],
+      ['Product Views', 'product_views', (numeric(revenue.product_views) || 0) > 0],
+      ['Clickouts', 'merchant_clickouts', (numeric(revenue.merchant_clickouts) || 0) > 0],
+      ['Transactions', 'transactions', (numeric(revenue.transactions) || 0) > 0],
+      ['Commission €', 'commission_eur', (numeric(revenue.commission_eur) || 0) > 0]
+    ];
+    const funnel = $('funnel');
+    if (funnel) {
+      funnel.replaceChildren();
+      stageDefs.forEach(([label, key, reached], index) => {
+        const cell = node('div');
+        const firstMissing = intelligence.firstMissing;
+        if (reached) cell.classList.add(index >= 4 ? 'proven' : 'reached');
+        else if (index === firstMissing) cell.classList.add('current');
+        let metric = key === 'publication'
+          ? (publication.live ? 'LIVE' : publication.scheduled ? 'READY' : '—')
+          : value(revenue[key]);
+        if (!revenue.analytics_complete && ['sessions', 'product_views', 'merchant_clickouts'].includes(key) && numeric(revenue[key]) !== null) {
+          metric = '≥ ' + metric;
+        }
+        const detail = reached ? 'Belegt' : index === firstMissing ? 'Nächster Beweis' : 'Ausstehend';
+        cell.append(node('small', label), node('strong', metric), node('span', detail));
+        funnel.append(cell);
+      });
     }
-    put('funnel-basis', 'Beobachtete Events inkl. möglicher technischer Tests. Nur diese content_id / 1 Million. ' + (revenue.analytics_complete ? '' : 'Begrenzte Daten: Untergrenzen. ') + 'Transactions und Commission: Unknown bis Affiliate-Netzwerk-Nachweis. Clickouts sind keine Verkäufe.');
-    const productList = $('money-products'); productList.replaceChildren();
-    for (const p of products.rows || []) { const st=String(p.state || ''); const cls=st.includes('live_first_money')?'product-live':st.includes('preparation')?'product-active':st.includes('next_after')?'product-watch':'product-later'; const cell = node('div',undefined,cls); cell.append(node('h4', p.product), node('p', friendlyProductState(st))); productList.append(cell); }
-    put('product-evidence', (products.stale ? 'STALE · ' : '') + 'Business-Checkpoint · ' + stamp(products.observed_at));
-    const queue = $('queue-counts'); queue.replaceChildren();
-    for (const key of ['done','active','waiting_external','blocked','cancelled']) { const cell = node('div'); cell.append(node('small', key), node('strong', s.queue?.[key])); queue.append(cell); }
-    put('queue-time', 'Loop-Beobachtung · ' + stamp(s.queue?.observed_at));
-    put('runtime-safety', 'Neue Jarvis-Kosten heute: ' + (safety.today_new_cost_usd === null || safety.today_new_cost_usd === undefined ? 'Unknown' : '$' + Number(safety.today_new_cost_usd).toFixed(4)) + ' · Stale leases: ' + value(safety.stale_leases) + ' · Open reservations: ' + value(safety.open_reservations) + ' · provider_cost_unknown: ' + value(safety.provider_cost_unknown) + ' · Tag: Europe/Berlin; offene/unklare Kosten bleiben Unknown.');
-    const overviewActivity = $('overview-activity-list'); overviewActivity?.replaceChildren();
-    const verifiedRecent = s.worker_deck.filter(w => w.completed_at && w.checkpoint?.verified === true).slice(0,4);
-    if (overviewActivity) {
-      for (const e of verifiedRecent) {
-        const n=node('article',undefined,'overview-feed-item');
-        n.append(node('time',e.completed_at ? new Date(e.completed_at).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}) : '—'));
-        const copy=node('div'); copy.append(node('strong',e.task_title || e.task_id),node('span',e.checkpoint?.step || 'Verifiziert'));
-        n.append(copy); overviewActivity.append(n);
+    put('funnel-basis', 'Nur verifizierte Messpunkte dieses First-Money-Tests. Transactions/Commission bleiben Unknown, bis Affiliate-Netzwerk-Evidence vorliegt. Clickout ≠ Sale.');
+
+    const productList = $('money-products');
+    if (productList) {
+      productList.replaceChildren();
+      for (const p of products.rows || []) {
+        const state = String(p.state || '');
+        const cls = state.includes('live_first_money')
+          ? 'product-live'
+          : state.includes('preparation')
+            ? 'product-active'
+            : state.includes('next_after')
+              ? 'product-watch'
+              : 'product-later';
+        const cell = node('div', undefined, cls);
+        cell.append(node('h4', p.product), node('p', friendlyProductState(state)));
+        productList.append(cell);
       }
-      if (!verifiedRecent.length) overviewActivity.append(node('p','Noch keine verifizierte Aktivität in diesem Snapshot.','muted'));
     }
-    const activity = $('activity-list'); activity.replaceChildren();
-    for (const e of s.worker_deck.filter(w => w.completed_at && w.checkpoint?.verified === true).slice(0, 8)) { const n = node('article', undefined, 'activity-item'); n.append(node('time', stamp(e.completed_at)), node('strong', e.task_title || e.task_id)); line(n, 'Verified checkpoint', e.checkpoint.step); activity.append(n); }
-    if (!s.live_activity.length) activity.append(node('p', 'Keine Events in der Beobachtung.', 'muted'));
-    const healthOverview=$('overview-system-health'); healthOverview?.replaceChildren();
+    put('product-evidence', (products.stale ? 'STALE · ' : '') + 'Checkpoint · ' + stamp(products.observed_at));
+
+    const queue = $('queue-counts');
+    if (queue) {
+      queue.replaceChildren();
+      for (const key of ['done', 'active', 'waiting_external', 'blocked', 'cancelled']) {
+        const cell = node('div');
+        cell.append(node('small', key), node('strong', queueData[key]));
+        queue.append(cell);
+      }
+    }
+    put('queue-time', 'Loop-Beobachtung · ' + stamp(queueData.observed_at));
+    put('runtime-safety',
+      'Neue Jarvis-Kosten heute: ' + (costUnknown ? 'Unknown' : '$' + todayCost.toFixed(4)) +
+      ' · Stale leases: ' + value(safety.stale_leases) +
+      ' · Open reservations: ' + value(safety.open_reservations) +
+      ' · provider_cost_unknown: ' + value(safety.provider_cost_unknown)
+    );
+
+    for (const key of ['cap', 'spend', 'remaining']) {
+      const field = { cap: 'cap_usd', spend: 'spent_usd', remaining: 'remaining_usd' }[key];
+      const n = numeric(budget[field]);
+      put('budget-' + key, n === null ? null : '$' + n.toFixed(2));
+    }
+    const paid = $('paid-state');
+    if (paid) paid.replaceWith(Object.assign(badge(budget.paid_model_execution), { id: 'paid-state' }));
+    put('budget-details',
+      'Paid execution · ' + stamp(budget.paid_model_execution_observed_at) +
+      ' · Runs ' + value(budget.runs) + '/' + value(budget.max_runs) +
+      ' · Status ' + value(budget.status)
+    );
+
+    const deck = $('worker-deck');
+    if (deck) {
+      deck.replaceChildren();
+      const current = workers.filter(w => !['completed', 'failed_terminal'].includes(w.execution_status) && !w.completed_at);
+      current.forEach(w => deck.append(workerCard(w)));
+      if (!current.length) {
+        const empty = node('div', undefined, 'empty-station');
+        empty.append(node('p', complete ? 'Keine laufenden Worker. Jarvis wartet auf ausführbare Arbeit.' : 'Keine laufenden Ausführungen in der aktuellen Beobachtung.'));
+        deck.append(empty);
+      }
+      const history = workers.filter(w => !current.includes(w)).slice(0, 6);
+      if (history.length) {
+        const details = node('details', undefined, 'worker-history');
+        details.append(node('summary', 'Letzte abgeschlossene Ausführungen · ' + history.length));
+        const grid = node('div', undefined, 'worker-grid');
+        history.forEach(w => grid.append(workerCard(w)));
+        details.append(grid);
+        deck.append(details);
+      }
+      put('worker-count', current.length + ' laufend · ' + history.length + ' recent');
+    }
+
+    const select = $('domain-filter');
+    if (select) {
+      const selected = select.value;
+      const domains = [...new Set(Object.values(s.mission_board || {}).flat().map(r => r.domain).filter(Boolean))].sort();
+      select.replaceChildren(new Option('All domains', ''));
+      domains.forEach(d => select.add(new Option(d, d)));
+      select.value = selected;
+    }
+    put('completeness', complete
+      ? 'Operative Quellen vollständig innerhalb der Read-Grenzen.'
+      : 'Unvollständige Quellen: ' + value((f.incomplete_sources || []).join(', ')) + '. Zähler sind beobachtete Untergrenzen.'
+    );
+    missions();
+
+    const verifiedRecent = workers.filter(w => w.completed_at && w.checkpoint?.verified === true).slice(0, 4);
+    const overviewActivity = $('overview-activity-list');
+    if (overviewActivity) {
+      overviewActivity.replaceChildren();
+      for (const e of verifiedRecent) {
+        const item = node('article', undefined, 'overview-feed-item');
+        item.append(node('time', shortTime(e.completed_at)));
+        const copy = node('div');
+        copy.append(node('strong', e.task_title || e.task_id), node('span', e.checkpoint?.step || 'Verifiziert'));
+        item.append(copy);
+        overviewActivity.append(item);
+      }
+      if (!verifiedRecent.length) overviewActivity.append(node('p', 'Noch keine verifizierte Aktivität in diesem Snapshot.', 'muted'));
+    }
+
+    const activity = $('activity-list');
+    if (activity) {
+      activity.replaceChildren();
+      for (const e of workers.filter(w => w.completed_at && w.checkpoint?.verified === true).slice(0, 8)) {
+        const item = node('article', undefined, 'activity-item');
+        item.append(node('time', stamp(e.completed_at)), node('strong', e.task_title || e.task_id));
+        line(item, 'Verified checkpoint', e.checkpoint?.step);
+        activity.append(item);
+      }
+      if (!activity.children.length) activity.append(node('p', 'Keine verifizierten Events in der Beobachtung.', 'muted'));
+    }
+
+    const healthOverview = $('overview-system-health');
     if (healthOverview) {
-      const healthRows=(s.system_health || []).slice(0,5);
-      const tone = health => {
-        const v=String(health || '').toUpperCase();
-        if (['HEALTHY','READY','SUCCESS','LIVE'].includes(v)) return 'green';
-        if (['ACTIVE','WORKING'].includes(v)) return 'blue';
-        if (['STALE','DEGRADED','INITIALIZING','WAITING','UNKNOWN'].includes(v)) return 'amber';
-        return 'red';
-      };
-      for (const h of healthRows) {
-        const t=tone(h.health);
-        const row=node('div',undefined,'health-chip health-'+t);
-        const left=node('span'); left.append(node('i'),node('span',h.name));
-        row.append(left,node('b',value(h.health).toUpperCase()));
+      healthOverview.replaceChildren();
+      const ranked = [...systemsHealth].sort((a, b) => {
+        const score = h => healthTone(h) === 'amber' ? 0 : healthTone(h) === 'blue' ? 1 : 2;
+        return score(a.health) - score(b.health);
+      }).slice(0, 5);
+      for (const h of ranked) {
+        const tone = healthTone(h.health);
+        const row = node('div', undefined, 'health-chip health-' + tone);
+        const left = node('span');
+        left.append(node('i'), node('span', h.name));
+        row.append(left, node('b', value(h.health).toUpperCase()));
         healthOverview.append(row);
       }
-      if (!healthRows.length) healthOverview.append(node('p','Keine Systemdaten im Snapshot.','muted'));
+      if (!ranked.length) healthOverview.append(node('p', 'Keine Systemdaten im Snapshot.', 'muted'));
     }
-    const systems = $('system-list'); systems.replaceChildren();
-    for (const h of s.system_health) {
-      const n = node('details', undefined, 'system-row'); const summary = node('summary'); summary.append(node('strong', h.name), badge(h.health)); n.append(summary);
-      if (h.last_success_at) line(n, 'Last success', stamp(h.last_success_at));
-      for (const o of h.observers || []) { line(n, o.observer_id, o.health); line(n, 'Last success', stamp(o.last_success_at)); line(n, 'Next retry', stamp(o.next_retry_at)); }
-      for (const cr of h.credentials || []) { line(n, 'Credential status', cr.effective_status); line(n, 'Expires', stamp(cr.expires_at)); if (cr.owner_reauthorization_required) line(n, 'Owner action', 'Reauthorization required'); }
-      systems.append(n);
+
+    const systems = $('system-list');
+    if (systems) {
+      systems.replaceChildren();
+      for (const h of systemsHealth) {
+        const item = node('details', undefined, 'system-row');
+        const summary = node('summary');
+        summary.append(node('strong', h.name), badge(h.health));
+        item.append(summary);
+        if (h.last_success_at) line(item, 'Last success', stamp(h.last_success_at));
+        for (const o of h.observers || []) {
+          line(item, o.observer_id, o.health);
+          line(item, 'Last success', stamp(o.last_success_at));
+          line(item, 'Next retry', stamp(o.next_retry_at));
+        }
+        for (const cr of h.credentials || []) {
+          line(item, 'Credential status', cr.effective_status);
+          line(item, 'Expires', stamp(cr.expires_at));
+          if (cr.owner_reauthorization_required) line(item, 'Owner action', 'Reauthorization required');
+        }
+        systems.append(item);
+      }
     }
-    put('map-state', c.status); put('map-workers', current.length + ' laufende Ausführungen');
-    const tools = $('map-tools'); tools.replaceChildren();
-    for (const name of s.system_map.systems) { const n = node('span'); n.append(node('strong', name), node('small', name === 'Supabase' ? 'Read-Layer erreichbar' : s.system_health.find(h => h.name === name)?.health || 'UNKNOWN')); tools.append(n); }
+
+    put('map-state', c.status);
+    const currentWorkerCount = workers.filter(w => !['completed', 'failed_terminal'].includes(w.execution_status) && !w.completed_at).length;
+    put('map-workers', currentWorkerCount + ' laufende Ausführungen');
+    const mapTools = $('map-tools');
+    if (mapTools) {
+      mapTools.replaceChildren();
+      for (const name of s.system_map?.systems || []) {
+        const item = node('span');
+        item.append(node('strong', name), node('small', name === 'Supabase' ? 'Read-Layer erreichbar' : systemsHealth.find(h => h.name === name)?.health || 'UNKNOWN'));
+        mapTools.append(item);
+      }
+    }
+
     put('snapshot-time', 'Snapshot · ' + stamp(s.generated_at));
-    put('sync-label', 'Live read · ' + new Date().toLocaleTimeString('de-DE'));
-    const alert = $('connection-alert'); alert.hidden = complete; alert.textContent = 'Live-Abfrage erfolgreich; operative Daten unvollständig. Details unter Mission board.';
+    put('sync-label', 'Live · ' + shortTime(new Date().toISOString()));
+    const connection = $('connection-alert');
+    if (connection) {
+      connection.hidden = complete;
+      connection.textContent = 'Live-Abfrage erfolgreich; operative Daten sind unvollständig. Details unter Aufgaben-Details.';
+    }
   }
+
   async function refresh() {
     clearTimeout(timer);
     if (busy || document.hidden) return;
-    busy = true; $('refresh').disabled = true;
-    const controller = new AbortController(), timeout = setTimeout(() => controller.abort(), 30000);
+    busy = true;
+    const refreshButton = $('refresh');
+    if (refreshButton) refreshButton.disabled = true;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30000);
+
     try {
-      const r = await fetch('/internal/jarvis/snapshot', {credentials:'same-origin', cache:'no-store', signal:controller.signal});
-      if (r.status === 401 || r.status === 403) { location.assign('/internal/login'); return; }
-      if (!r.ok) throw new Error('Unavailable');
-      const s = await r.json();
-      if (s.version !== 1 || s.read_only !== true || !s.command_center || !s.freshness || !s.mission_board || !Array.isArray(s.worker_deck) || !Array.isArray(s.system_health)) throw new Error('Invalid snapshot');
+      const response = await fetch('/internal/jarvis/snapshot', {
+        credentials: 'same-origin',
+        cache: 'no-store',
+        signal: controller.signal
+      });
+      if (response.status === 401 || response.status === 403) {
+        location.assign('/internal/login');
+        return;
+      }
+      if (!response.ok) throw new Error('Unavailable');
+      const s = await response.json();
+      if (
+        s.version !== 1 ||
+        s.read_only !== true ||
+        !s.command_center ||
+        !s.freshness ||
+        !s.mission_board ||
+        !Array.isArray(s.worker_deck) ||
+        !Array.isArray(s.system_health)
+      ) throw new Error('Invalid snapshot');
       render(s);
     } catch {
-      $('connection-alert').hidden = false;
-      put('connection-alert', snapshot ? 'LIVE READ UNAVAILABLE · Letzte Beobachtung bleibt sichtbar und ist nicht mehr als aktuell bestätigt.' : 'LIVE READ UNAVAILABLE · Kein Systemzustand bestätigt. Erneute Prüfung folgt.');
+      const connection = $('connection-alert');
+      if (connection) {
+        connection.hidden = false;
+        connection.textContent = snapshot
+          ? 'LIVE READ UNAVAILABLE · Letzte Beobachtung bleibt sichtbar, ist aber nicht mehr als aktuell bestätigt.'
+          : 'LIVE READ UNAVAILABLE · Kein Systemzustand bestätigt. Erneute Prüfung folgt.';
+      }
       put('sync-label', 'Verbindung unterbrochen');
-      put('owner-now', 'Status derzeit nicht verfügbar');
-      put('owner-detail', 'Live-Daten konnten nicht geladen werden. Bitte erneut prüfen.');
-      $('approval-alert').hidden = true;
-      setPulse('pulse-jarvis','amber','Verbindung prüfen','Live-Daten konnten nicht geladen werden.');
-      setPulse('pulse-action','amber','Unklar','Freigabestatus kann aktuell nicht bestätigt werden.');
-      setPulse('pulse-money','amber','Unklar','Publication-State kann aktuell nicht bestätigt werden.');
-      setPulse('pulse-cost','amber','Unklar','Kostenstatus kann aktuell nicht bestätigt werden.');
-      $('jarvis-state').replaceWith(Object.assign(badge('ERROR'), {id:'jarvis-state'}));
-    } finally { clearTimeout(timeout); busy = false; $('refresh').disabled = false; timer = setTimeout(refresh, 10000); }
+      setPulse('pulse-jarvis', 'amber', 'Verbindung prüfen', 'Live-Daten konnten nicht geladen werden.');
+      setPulse('pulse-action', 'amber', 'Unklar', 'Freigabestatus kann aktuell nicht bestätigt werden.');
+      setPulse('pulse-money', 'amber', 'Unklar', 'Publication-State kann aktuell nicht bestätigt werden.');
+      setPulse('pulse-cost', 'amber', 'Unklar', 'Kostenstatus kann aktuell nicht bestätigt werden.');
+      setTone('jarvis-core', 'amber');
+      const approval = $('approval-alert');
+      if (approval) approval.hidden = true;
+      const jarvisState = $('jarvis-state');
+      if (jarvisState) jarvisState.replaceWith(Object.assign(badge('ERROR'), { id: 'jarvis-state' }));
+    } finally {
+      clearTimeout(timeout);
+      busy = false;
+      if (refreshButton) refreshButton.disabled = false;
+      timer = setTimeout(refresh, 10000);
+    }
   }
-  $('refresh').addEventListener('click', refresh);
-  $('toggle-details').addEventListener('click', () => {
+
+  $('refresh')?.addEventListener('click', refresh);
+  $('toggle-details')?.addEventListener('click', () => {
     const open = document.body.classList.toggle('show-advanced');
     $('toggle-details').setAttribute('aria-expanded', String(open));
     $('toggle-details').textContent = open ? 'Technische Details ausblenden' : 'Technische Details anzeigen';
   });
-  $('domain-filter').addEventListener('change', missions);
-  $('show-done').addEventListener('change', missions);
-  document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); else clearTimeout(timer); });
-  $('logout').addEventListener('click', async () => {
-    $('logout').disabled = true;
-    try { const r = await fetch('/internal/logout', {method:'POST', credentials:'same-origin', headers:{'X-CSRF-Token':document.querySelector('meta[name="owner-csrf"]').content}}); if (r.ok || r.status === 503 || r.status === 401) location.assign('/internal/login'); else throw new Error(); }
-    catch { put('connection-alert', 'Abmelden nicht bestätigt. Bitte erneut versuchen.'); $('connection-alert').hidden = false; $('logout').disabled = false; }
+  $('domain-filter')?.addEventListener('change', missions);
+  $('show-done')?.addEventListener('change', missions);
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) refresh();
+    else clearTimeout(timer);
   });
-  document.querySelectorAll('nav a').forEach(a => a.addEventListener('click', () => { document.querySelectorAll('nav a').forEach(n => n.classList.remove('selected')); a.classList.add('selected'); }));
-  refresh();
-})();+todayCost.toFixed(4)),costUnknown?'Kostenstatus nicht vollständig bestätigt.':todayCost===0?'Keine neuen Jarvis-Kosten heute.':'Bekannte, gebuchte Jarvis-Kosten heute.');
-    put('current-task', c.current_task || 'Keine aktive Ausführung beobachtet');
-    put('allowed-task', c.next_allowed_task);
-    put('stop-reason', c.stop_reason);
-    put('lease-count', s.runtime_safety?.active_leases);
-    put('loop-time', 'Loop · ' + stamp(c.last_loop_at) + ' · nächster Wake (Schätzung) ' + stamp(c.next_loop_estimate));
-    put('priority', c.current_task || (c.status === 'WAITING' ? 'Jarvis wartet auf zulässige Arbeit oder externe Nachweise.' : 'Aktueller Status aus dem letzten verifizierten Loop.'));
-    $('jarvis-state').replaceWith(Object.assign(badge(c.status), {id:'jarvis-state'}));
-    put('head', c.observed_head_sha ? c.observed_head_sha.slice(0, 10) : null);
-    put('head-age', 'Branch-Beobachtung · ' + stamp(c.head_observed_at));
-    put('active-workers', (complete ? '' : '≥ ') + c.active_workers);
-    put('working-count', (complete ? '' : '≥ ') + c.working_tasks);
-    put('decision-count', (complete ? '' : '≥ ') + c.human_approval_count);
-    put('decision-nav', c.human_approval_count);
-    put('worker-summary', c.active_workers ? 'Aktive Ausführungen beobachtet' : 'Keine aktiven Worker beobachtet');
-    put('wake-time', c.last_supervisor_wake ? new Date(c.last_supervisor_wake).toLocaleTimeString('de-DE') : null);
-    put('next-wake', 'Wake-Schätzung · ' + stamp(c.next_supervisor_wake_estimate));
-    put('last-action', c.last_completed_action);
-    put('next-action', (c.checkpoint_stale ? 'STALE PLAN · ' : '') + value(c.next_safe_action));
-    put('checkpoint-age', (c.checkpoint_stale ? 'STALE · ' : '') + 'Checkpoint · ' + stamp(c.checkpoint_observed_at));
-    const decisions = $('decision-list'); decisions.replaceChildren();
-    for (const d of gates) {
-      const n = node('article', undefined, 'decision-item'); n.append(badge('WAITING HUMAN'), node('h3', d.title)); line(n, 'Gate', d.type); line(n, 'Grund', d.reason); line(n, 'Risiko', d.risk); line(n, 'Kosten USD', d.cost_usd); line(n, 'Nutzen', d.benefit); line(n, 'Exakter GO-Token', d.go_token); if (d.provider) line(n, 'Provider', d.provider); decisions.append(n);
-    }
-    if (!gates.length) decisions.append(node('p', complete ? 'Keine Freigabe erforderlich. Du musst aktuell nichts entscheiden.' : 'Freigabestatus derzeit nicht vollständig prüfbar.', 'muted'));
-    for (const key of ['cap','spend','remaining']) { const v = s.budget[{cap:'cap_usd',spend:'spent_usd',remaining:'remaining_usd'}[key]]; put('budget-' + key, v === null || v === undefined ? null : '$' + Number(v).toFixed(2)); }
-    $('paid-state').replaceWith(Object.assign(badge(s.budget.paid_model_execution), {id:'paid-state'}));
-    put('budget-details', 'Paid execution beobachtet · ' + stamp(s.budget.paid_model_execution_observed_at) + ' · Runs ' + value(s.budget.runs) + '/' + value(s.budget.max_runs) + ' · Budgetstatus ' + value(s.budget.status));
-    const deck = $('worker-deck'); deck.replaceChildren();
-    const current = s.worker_deck.filter(w => !['completed','failed_terminal'].includes(w.execution_status) && !w.completed_at);
-    for (const w of current) deck.append(workerCard(w));
-    if (!current.length) { const empty = node('div', undefined, 'empty-station'); empty.append(node('span', '⌘', 'station-icon'), node('p', complete ? 'Keine laufenden Worker-Ausführungen. Jarvis wartet auf ausführbare Arbeit.' : 'Keine laufenden Ausführungen in der unvollständigen Beobachtung.')); deck.append(empty); }
-    const history = s.worker_deck.filter(w => !current.includes(w));
-    if (history.length) { const details = node('details', undefined, 'worker-history'); details.append(node('summary', 'Letzte abgeschlossene Ausführungen · ' + history.length)); const grid = node('div', undefined, 'worker-grid'); history.forEach(w => grid.append(workerCard(w))); details.append(grid); deck.append(details); }
-    put('worker-count', current.length + ' laufende Ausführungen · ' + history.length + ' recent history');
-    const select = $('domain-filter'), selected = select.value;
-    const domains = [...new Set(Object.values(s.mission_board).flat().map(r => r.domain).filter(Boolean))].sort();
-    select.replaceChildren(new Option('All domains', '')); domains.forEach(d => select.add(new Option(d, d))); select.value = selected;
-    put('completeness', complete ? 'Operative Quellen vollständig innerhalb der Read-Grenzen. History begrenzt; Snapshot nicht atomar.' : 'Unvollständige Quellen: ' + f.incomplete_sources.join(', ') + '. Zähler sind beobachtete Untergrenzen.');
-    missions();
-    const revenue = s.first_money || {}, products = s.money_products || {}, safety = s.runtime_safety || {};
-    const publications = $('publication-list'); publications.replaceChildren();
-    for (const p of revenue.posts || []) line(publications, p.platform, stamp(p.scheduled_at) + ' · ' + value(p.state));
-    line(publications, 'Publication-Nachweis', (revenue.publication_stale ? 'STALE · ' : '') + stamp(revenue.publication_observed_at) + ' · gespeicherte Plattform-Beobachtung');
-    put('content-identifiers', 'content_id: ' + value(revenue.content_id) + ' · experiment_id: ' + value(revenue.experiment_id));
-    const funnel = $('funnel'); funnel.replaceChildren();
-    for (const [label,key] of [['Sessions','sessions'],['Product Views','product_views'],['Offer Views','offer_views'],['Merchant Clickouts','merchant_clickouts'],['Transactions','transactions'],['Commission EUR','commission_eur']]) {
-      const cell = node('div'); cell.append(node('small', label), node('strong', (key !== 'transactions' && key !== 'commission_eur' && !revenue.analytics_complete ? '≥ ' : '') + value(revenue[key]))); funnel.append(cell);
-    }
-    put('funnel-basis', 'Beobachtete Events inkl. möglicher technischer Tests. Nur diese content_id / 1 Million. ' + (revenue.analytics_complete ? '' : 'Begrenzte Daten: Untergrenzen. ') + 'Transactions und Commission: Unknown bis Affiliate-Netzwerk-Nachweis. Clickouts sind keine Verkäufe.');
-    const productList = $('money-products'); productList.replaceChildren();
-    for (const p of products.rows || []) { const cell = node('div'); cell.append(node('h4', p.product), node('p', p.state)); productList.append(cell); }
-    put('product-evidence', (products.stale ? 'STALE · ' : '') + 'Business-Checkpoint · ' + stamp(products.observed_at));
-    const queue = $('queue-counts'); queue.replaceChildren();
-    for (const key of ['done','active','waiting_external','blocked','cancelled']) { const cell = node('div'); cell.append(node('small', key), node('strong', s.queue?.[key])); queue.append(cell); }
-    put('queue-time', 'Loop-Beobachtung · ' + stamp(s.queue?.observed_at));
-    put('runtime-safety', 'Neue Jarvis-Kosten heute: ' + (safety.today_new_cost_usd === null || safety.today_new_cost_usd === undefined ? 'Unknown' : '$' + Number(safety.today_new_cost_usd).toFixed(4)) + ' · Stale leases: ' + value(safety.stale_leases) + ' · Open reservations: ' + value(safety.open_reservations) + ' · provider_cost_unknown: ' + value(safety.provider_cost_unknown) + ' · Tag: Europe/Berlin; offene/unklare Kosten bleiben Unknown.');
-    const activity = $('activity-list'); activity.replaceChildren();
-    for (const e of s.worker_deck.filter(w => w.completed_at && w.checkpoint?.verified === true).slice(0, 8)) { const n = node('article', undefined, 'activity-item'); n.append(node('time', stamp(e.completed_at)), node('strong', e.task_title || e.task_id)); line(n, 'Verified checkpoint', e.checkpoint.step); activity.append(n); }
-    if (!s.live_activity.length) activity.append(node('p', 'Keine Events in der Beobachtung.', 'muted'));
-    const systems = $('system-list'); systems.replaceChildren();
-    for (const h of s.system_health) {
-      const n = node('details', undefined, 'system-row'); const summary = node('summary'); summary.append(node('strong', h.name), badge(h.health)); n.append(summary);
-      if (h.last_success_at) line(n, 'Last success', stamp(h.last_success_at));
-      for (const o of h.observers || []) { line(n, o.observer_id, o.health); line(n, 'Last success', stamp(o.last_success_at)); line(n, 'Next retry', stamp(o.next_retry_at)); }
-      for (const cr of h.credentials || []) { line(n, 'Credential status', cr.effective_status); line(n, 'Expires', stamp(cr.expires_at)); if (cr.owner_reauthorization_required) line(n, 'Owner action', 'Reauthorization required'); }
-      systems.append(n);
-    }
-    put('map-state', c.status); put('map-workers', current.length + ' laufende Ausführungen');
-    const tools = $('map-tools'); tools.replaceChildren();
-    for (const name of s.system_map.systems) { const n = node('span'); n.append(node('strong', name), node('small', name === 'Supabase' ? 'Read-Layer erreichbar' : s.system_health.find(h => h.name === name)?.health || 'UNKNOWN')); tools.append(n); }
-    put('snapshot-time', 'Snapshot · ' + stamp(s.generated_at));
-    put('sync-label', 'Live read · ' + new Date().toLocaleTimeString('de-DE'));
-    const alert = $('connection-alert'); alert.hidden = complete; alert.textContent = 'Live-Abfrage erfolgreich; operative Daten unvollständig. Details unter Mission board.';
-  }
-  async function refresh() {
-    clearTimeout(timer);
-    if (busy || document.hidden) return;
-    busy = true; $('refresh').disabled = true;
-    const controller = new AbortController(), timeout = setTimeout(() => controller.abort(), 30000);
+  $('logout')?.addEventListener('click', async () => {
+    const button = $('logout');
+    button.disabled = true;
     try {
-      const r = await fetch('/internal/jarvis/snapshot', {credentials:'same-origin', cache:'no-store', signal:controller.signal});
-      if (r.status === 401 || r.status === 403) { location.assign('/internal/login'); return; }
-      if (!r.ok) throw new Error('Unavailable');
-      const s = await r.json();
-      if (s.version !== 1 || s.read_only !== true || !s.command_center || !s.freshness || !s.mission_board || !Array.isArray(s.worker_deck) || !Array.isArray(s.system_health)) throw new Error('Invalid snapshot');
-      render(s);
+      const response = await fetch('/internal/logout', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'X-CSRF-Token': document.querySelector('meta[name="owner-csrf"]').content }
+      });
+      if (response.ok || response.status === 503 || response.status === 401) {
+        location.assign('/internal/login');
+      } else {
+        throw new Error('Logout failed');
+      }
     } catch {
-      $('connection-alert').hidden = false;
-      put('connection-alert', snapshot ? 'LIVE READ UNAVAILABLE · Letzte Beobachtung bleibt sichtbar und ist nicht mehr als aktuell bestätigt.' : 'LIVE READ UNAVAILABLE · Kein Systemzustand bestätigt. Erneute Prüfung folgt.');
-      put('sync-label', 'Verbindung unterbrochen');
-      put('owner-now', 'Status derzeit nicht verfügbar');
-      put('owner-detail', 'Live-Daten konnten nicht geladen werden. Bitte erneut prüfen.');
-      $('approval-alert').hidden = true;
-      $('jarvis-state').replaceWith(Object.assign(badge('ERROR'), {id:'jarvis-state'}));
-    } finally { clearTimeout(timeout); busy = false; $('refresh').disabled = false; timer = setTimeout(refresh, 10000); }
-  }
-  $('refresh').addEventListener('click', refresh);
-  $('toggle-details').addEventListener('click', () => {
-    const open = document.body.classList.toggle('show-advanced');
-    $('toggle-details').setAttribute('aria-expanded', String(open));
-    $('toggle-details').textContent = open ? 'Technische Details ausblenden' : 'Technische Details anzeigen';
+      const connection = $('connection-alert');
+      if (connection) {
+        connection.hidden = false;
+        connection.textContent = 'Abmelden nicht bestätigt. Bitte erneut versuchen.';
+      }
+      button.disabled = false;
+    }
   });
-  $('domain-filter').addEventListener('change', missions);
-  $('show-done').addEventListener('change', missions);
-  document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); else clearTimeout(timer); });
-  $('logout').addEventListener('click', async () => {
-    $('logout').disabled = true;
-    try { const r = await fetch('/internal/logout', {method:'POST', credentials:'same-origin', headers:{'X-CSRF-Token':document.querySelector('meta[name="owner-csrf"]').content}}); if (r.ok || r.status === 503 || r.status === 401) location.assign('/internal/login'); else throw new Error(); }
-    catch { put('connection-alert', 'Abmelden nicht bestätigt. Bitte erneut versuchen.'); $('connection-alert').hidden = false; $('logout').disabled = false; }
-  });
-  document.querySelectorAll('nav a').forEach(a => a.addEventListener('click', () => { document.querySelectorAll('nav a').forEach(n => n.classList.remove('selected')); a.classList.add('selected'); }));
+  document.querySelectorAll('nav a').forEach(a => a.addEventListener('click', () => {
+    document.querySelectorAll('nav a').forEach(n => n.classList.remove('selected'));
+    a.classList.add('selected');
+  }));
+
   refresh();
 })();
