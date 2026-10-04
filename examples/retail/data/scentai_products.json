@@ -3712,6 +3712,84 @@
           "leather"
         ]
       }
+    },
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "brand": "Parfums de Marly",
+      "name": "Delina",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 75,
+      "classification": {
+        "scentai_target_groups": [
+          "women"
+        ],
+        "role": null,
+        "cluster_id": null,
+        "trend_bet": false
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 8,
+        "rating_count": 2555,
+        "longevity_10": 8.4,
+        "projection_10": 8.1,
+        "provisional": false
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "floral",
+          "fruity",
+          "sweet",
+          "fresh",
+          "creamy"
+        ],
+        "scores": {
+          "freshness": 8,
+          "sweetness": 8,
+          "woodiness": 2,
+          "spiciness": 2
+        },
+        "score_confidence": "medium"
+      },
+      "market": {
+        "market_price_eur": 285,
+        "price_per_ml_eur": 3.8,
+        "price_source_count": 1,
+        "price_checked_at": "2026-10-01"
+      },
+      "relationships": [],
+      "evidence": {
+        "overall": "promotion_verified"
+      },
+      "validation": {
+        "catalog_ready": true
+      },
+      "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/2/825869_3700578501998_051.png",
+      "visuals": [
+        {
+          "role": "primary",
+          "url": "https://www.topparfuemerie.de/media/catalog/product/8/2/825869_3700578501998_051.png",
+          "provenance": "merchant_feed",
+          "fidelity_status": "verified",
+          "variant": "75ml",
+          "reviewed_at": "2026-10-01T09:49:00+00:00",
+          "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+          "rights_checked_at": "2026-09-28",
+          "exact_variant_verified": true
+        }
+      ],
+      "notes": {
+        "key": [
+          "lychee",
+          "rhubarb",
+          "bergamot",
+          "Turkish rose",
+          "peony",
+          "musk",
+          "vanilla",
+          "cashmeran"
+        ]
+      }
     }
   ]
 }
