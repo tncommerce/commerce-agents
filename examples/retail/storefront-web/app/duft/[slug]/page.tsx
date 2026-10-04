@@ -445,6 +445,7 @@ export default async function FragrancePage({
         </nav>
 
         <section
+          data-product-id={fragrance.product_id}
           className={`dufynd-fragrance-hero dufynd-fragrance-hero--${visualTheme} relative overflow-hidden rounded-[30px] border border-(--line) bg-(--card) shadow-(--shadow)`}
         >
           <div

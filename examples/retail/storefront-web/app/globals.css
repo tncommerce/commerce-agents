@@ -4321,3 +4321,126 @@ a.dufynd-comparison-product-card > div:last-child {
     transition: none !important;
   }
 }
+
+
+/* Delina: integrate the unchanged white merchant packshot into a pearl/silver
+ * light field. Scope is the detail hero only; no image blending or colour filter. */
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] {
+  --dufynd-detail-glow-a: rgba(180, 137, 151, 0.20);
+  --dufynd-detail-glow-b: rgba(223, 228, 234, 0.16);
+  --dufynd-detail-glow-c: rgba(163, 130, 144, 0.10);
+  border-color: rgba(220, 213, 219, 0.22);
+  background: #17161b;
+  box-shadow: 0 28px 70px -34px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-fragrance-panel-section {
+  --ink: #f7f3f5;
+  --ink-soft: #beb5bd;
+  --accent-ink: #e1bbc9;
+  --accent-soft: rgba(193, 150, 167, 0.12);
+  --accent-strong: #795665;
+  background: linear-gradient(135deg, #242026, #15151a);
+  border-color: rgba(224, 208, 219, 0.12);
+}
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-fragrance-stage-shell {
+  background: #ece9ec;
+  border-right: 1px solid rgba(255, 255, 255, 0.24);
+}
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-product-stage[data-variant="hero"] {
+  background: radial-gradient(ellipse at 50% 44%, #fff 0 33%, #f9f8fa 54%, #e7e4e9 85%, #d7d1d9 100%) !important;
+}
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-fragrance-stage-shell::before,
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-product-stage[data-variant="hero"]::before {
+  inset: 5% 7%;
+  border-radius: 160px 160px 12px 12px;
+  border: 1px solid rgba(137, 119, 136, 0.16);
+  background: none;
+  box-shadow: inset 0 1px 0 #fff, 0 0 50px rgba(180, 147, 164, 0.06);
+  transform: none;
+  animation: none;
+  opacity: 1;
+}
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-fragrance-stage-shell::before {
+  display: none;
+}
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-product-stage[data-variant="hero"]::after {
+  left: 13%;
+  right: 13%;
+  bottom: 5%;
+  height: 15%;
+  background: radial-gradient(ellipse, rgba(176, 159, 173, 0.13), transparent 70%);
+  filter: blur(12px);
+  transform: none;
+}
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-product-object {
+  inset: 13% 15% 14% !important;
+  transform: none;
+}
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-product-float {
+  animation: none;
+}
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-product-image {
+  max-height: 465px;
+  filter: none;
+  transform: none !important;
+}
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-product-shadow {
+  bottom: 12%;
+  width: 38%;
+  height: 3%;
+  background: #716373;
+  filter: blur(15px);
+  opacity: 0.20;
+}
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-product-light {
+  background: radial-gradient(ellipse at 10% 25%, rgba(211, 177, 193, 0.19), transparent 48%), linear-gradient(120deg, rgba(255, 255, 255, 0.26), transparent 44%);
+  z-index: 0;
+}
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-product-sheen,
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-fragrance-stage-reflection,
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-fragrance-hero-orbit,
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-fragrance-scene-particles {
+  display: none;
+}
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-fragrance-stage-shell::after {
+  background: linear-gradient(90deg, rgba(186, 152, 171, 0.06), transparent 22%, transparent 80%, rgba(107, 104, 121, 0.06));
+}
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-fragrance-stage-kicker {
+  color: #665466;
+  opacity: 0.7;
+}
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-fragrance-ingredient {
+  color: #5e4756;
+  border-color: rgba(151, 128, 146, 0.20);
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 8px 24px -14px rgba(92, 63, 82, 0.28), inset 0 1px 0 #fff;
+}
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-fragrance-ingredient-ring,
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-fragrance-ingredient-trail {
+  display: none;
+}
+@media (max-width: 1023px) {
+  .dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-fragrance-stage-shell {
+    min-height: 370px;
+    border-right: 0;
+    border-block: 1px solid rgba(255, 255, 255, 0.18);
+  }
+  .dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-product-object {
+    inset: 9% 15% 11% !important;
+  }
+  .dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-product-image {
+    max-height: 340px;
+  }
+}
+@media (max-width: 640px) {
+  .dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-fragrance-stage-shell {
+    min-height: 330px;
+  }
+  .dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-product-image {
+    max-height: 265px;
+  }
+  .dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-product-stage[data-variant="hero"]::before {
+    inset: 5% 6%;
+    border-radius: 100px 100px 10px 10px;
+  }
+}
