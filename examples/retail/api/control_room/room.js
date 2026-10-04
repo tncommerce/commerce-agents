@@ -13,6 +13,14 @@
   let snapshot = null, busy = false, timer = null;
   const decisionPanel = document.querySelector('.decision-panel');
   if (decisionPanel && $('command')) $('command').after(decisionPanel);
+  const commandPanel = $('command'), workPanel = $('work'), revenuePanel = $('revenue');
+  const overviewMosaic = document.createElement('section');
+  overviewMosaic.className = 'overview-mosaic';
+  overviewMosaic.setAttribute('aria-label','CEO Übersicht');
+  if (commandPanel?.parentNode) {
+    commandPanel.parentNode.insertBefore(overviewMosaic, commandPanel);
+    [commandPanel, decisionPanel, workPanel, revenuePanel].filter(Boolean).forEach(el => overviewMosaic.append(el));
+  }
   function missions() {
     if (!snapshot) return;
     const board = $('mission-board'); board.replaceChildren();
@@ -105,6 +113,7 @@
     put('next-action', (c.checkpoint_stale ? 'STALE PLAN · ' : '') + value(c.next_safe_action));
     put('checkpoint-age', (c.checkpoint_stale ? 'STALE · ' : '') + 'Checkpoint · ' + stamp(c.checkpoint_observed_at));
     const decisions = $('decision-list'); decisions.replaceChildren();
+    if (overviewMosaic) overviewMosaic.classList.toggle('has-owner-gate', needsApproval);
     if (decisionPanel) { decisionPanel.classList.toggle('has-decisions', needsApproval); decisionPanel.classList.toggle('no-decisions', !needsApproval); }
     for (const d of gates) {
       const n = node('article', undefined, 'decision-item'); n.append(badge('WAITING HUMAN'), node('h3', d.title)); line(n, 'Gate', d.type); line(n, 'Grund', d.reason); line(n, 'Risiko', d.risk); line(n, 'Kosten USD', d.cost_usd); line(n, 'Nutzen', d.benefit); line(n, 'Exakter GO-Token', d.go_token); if (d.provider) line(n, 'Provider', d.provider); decisions.append(n);
@@ -141,9 +150,39 @@
     for (const key of ['done','active','waiting_external','blocked','cancelled']) { const cell = node('div'); cell.append(node('small', key), node('strong', s.queue?.[key])); queue.append(cell); }
     put('queue-time', 'Loop-Beobachtung · ' + stamp(s.queue?.observed_at));
     put('runtime-safety', 'Neue Jarvis-Kosten heute: ' + (safety.today_new_cost_usd === null || safety.today_new_cost_usd === undefined ? 'Unknown' : '$' + Number(safety.today_new_cost_usd).toFixed(4)) + ' · Stale leases: ' + value(safety.stale_leases) + ' · Open reservations: ' + value(safety.open_reservations) + ' · provider_cost_unknown: ' + value(safety.provider_cost_unknown) + ' · Tag: Europe/Berlin; offene/unklare Kosten bleiben Unknown.');
+    const overviewActivity = $('overview-activity-list'); overviewActivity?.replaceChildren();
+    const verifiedRecent = s.worker_deck.filter(w => w.completed_at && w.checkpoint?.verified === true).slice(0,4);
+    if (overviewActivity) {
+      for (const e of verifiedRecent) {
+        const n=node('article',undefined,'overview-feed-item');
+        n.append(node('time',e.completed_at ? new Date(e.completed_at).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}) : '—'));
+        const copy=node('div'); copy.append(node('strong',e.task_title || e.task_id),node('span',e.checkpoint?.step || 'Verifiziert'));
+        n.append(copy); overviewActivity.append(n);
+      }
+      if (!verifiedRecent.length) overviewActivity.append(node('p','Noch keine verifizierte Aktivität in diesem Snapshot.','muted'));
+    }
     const activity = $('activity-list'); activity.replaceChildren();
     for (const e of s.worker_deck.filter(w => w.completed_at && w.checkpoint?.verified === true).slice(0, 8)) { const n = node('article', undefined, 'activity-item'); n.append(node('time', stamp(e.completed_at)), node('strong', e.task_title || e.task_id)); line(n, 'Verified checkpoint', e.checkpoint.step); activity.append(n); }
     if (!s.live_activity.length) activity.append(node('p', 'Keine Events in der Beobachtung.', 'muted'));
+    const healthOverview=$('overview-system-health'); healthOverview?.replaceChildren();
+    if (healthOverview) {
+      const healthRows=(s.system_health || []).slice(0,5);
+      const tone = health => {
+        const v=String(health || '').toUpperCase();
+        if (['HEALTHY','READY','SUCCESS','LIVE'].includes(v)) return 'green';
+        if (['ACTIVE','WORKING'].includes(v)) return 'blue';
+        if (['STALE','DEGRADED','INITIALIZING','WAITING','UNKNOWN'].includes(v)) return 'amber';
+        return 'red';
+      };
+      for (const h of healthRows) {
+        const t=tone(h.health);
+        const row=node('div',undefined,'health-chip health-'+t);
+        const left=node('span'); left.append(node('i'),node('span',h.name));
+        row.append(left,node('b',value(h.health).toUpperCase()));
+        healthOverview.append(row);
+      }
+      if (!healthRows.length) healthOverview.append(node('p','Keine Systemdaten im Snapshot.','muted'));
+    }
     const systems = $('system-list'); systems.replaceChildren();
     for (const h of s.system_health) {
       const n = node('details', undefined, 'system-row'); const summary = node('summary'); summary.append(node('strong', h.name), badge(h.health)); n.append(summary);
