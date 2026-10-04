@@ -11,6 +11,8 @@ import pytest
 from scripts import dufynd_anthropic_counted as c
 from scripts.dufynd_bounded_provider import BudgetGate
 
+pytestmark = pytest.mark.usefixtures("counted_contract_clock")
+
 
 def response(**usage):
     return {
@@ -73,6 +75,16 @@ def test_current_official_contract_and_separate_estimate_policy():
     assert c.pricing()["rates_usd_per_million"]["input"] == "2"
     with pytest.raises(BudgetGate):
         c.pricing(datetime.now(UTC) + timedelta(days=2))
+
+
+def test_fixture_clock_preserves_real_expiry_boundaries():
+    contract = json.loads(c.PRICING.read_bytes())
+    verified = datetime.fromisoformat(contract["verified_at"])
+    expires = datetime.fromisoformat(contract["expires_at"])
+    assert c.pricing(verified)["contract_id"] == c.CONTRACT_ID
+    for instant in (verified - timedelta(microseconds=1), expires, expires + timedelta(seconds=1)):
+        with pytest.raises(BudgetGate, match="pricing_contract_unverified_or_expired"):
+            c.pricing(instant)
 
 
 @pytest.mark.parametrize(

@@ -26,6 +26,8 @@ from scripts.dufynd_worker_evidence import (
     source_text,
 )
 
+pytestmark = pytest.mark.usefixtures("counted_contract_clock")
+
 TASKS = json.loads(
     (Path(__file__).parent / "fixtures/dufynd_pre_canary_real_tasks.json").read_text()
 )

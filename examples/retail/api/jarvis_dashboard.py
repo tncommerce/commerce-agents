@@ -689,6 +689,7 @@ def build_snapshot(
         "transactions": None,
         "commission_eur": None,
         "analytics_complete": analytics_complete,
+        "analytics_provenance": "unclassified_may_include_tests",
         "basis": "Observed events for the exact content and 1 Million product; may include readiness tests. Clickouts are not sales. Transactions/commission require affiliate-network evidence, not currently ingested.",
     }
     products = first("money_products")
@@ -757,12 +758,30 @@ def build_snapshot(
         )
         if label == "Jarvis" and not rows and thin_fresh:
             state = "MONITORING" if command["status"] == "WAITING" else command["status"]
+        evidence_note = None
+        if label == "Content" and not rows and publication and not operational_incomplete:
+            post_states = {str(p["state"] or "").upper() for p in snapshot["first_money"]["posts"]}
+            state = (
+                "STALE"
+                if snapshot["first_money"]["publication_stale"]
+                else "BLOCKED"
+                if post_states & {"ERROR", "FAILED", "REJECTED"}
+                else "LIVE"
+                if post_states & {"PUBLISHED", "POSTED", "LIVE", "SUCCESS"}
+                else "SCHEDULED"
+                if post_states & {"PENDING", "SCHEDULED"}
+                else "UNKNOWN"
+            )
+            evidence_note = "Veröffentlichungsplan vorhanden · " + (
+                "Beobachtung veraltet" if state == "STALE" else "keine aktive Worker-Aufgabe"
+            )
         snapshot["workstreams"].append(
             {
                 "name": label,
                 "status": state,
                 "tasks": len(rows),
                 "next_task": rows[0] if rows else None,
+                "evidence_note": evidence_note,
             }
         )
     runtime = first("first_money_runtime")
