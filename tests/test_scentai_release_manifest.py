@@ -50,14 +50,15 @@ def test_release_batch_01_dry_run_stays_blocked_until_real_assets_exist() -> Non
     )
 
     assert plan["selected_count"] == 5
-    assert plan["ready_count"] == 3
-    assert plan["blocked_count"] == 2
+    assert plan["ready_count"] == 2
+    assert plan["blocked_count"] == 3
     ready_ids = {row["product_id"] for row in plan["rows"] if row["ready"]}
     assert ready_ids == {
-        "SC-PDM-DELINA-EDP-75",
         "SC-YSL-BLACK-OPIUM-EDP-90",
         "SC-YSL-LIBRE-EDP-90",
     }
+    delina = next(row for row in plan["rows"] if row["product_id"] == "SC-PDM-DELINA-EDP-75")
+    assert "already_live" in delina["blockers"]
 
     for row in plan["rows"]:
         if row["product_id"] == "SC-DIOR-HYPNOTIC-POISON-EDT-100":
