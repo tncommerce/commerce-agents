@@ -77,7 +77,19 @@
         INITIALIZING: "warn",
         OFF: "neutral",
       }[String(status || "").toUpperCase()] || "neutral";
-    return node("span", status, "pill " + tone);
+    const labels = {
+      MONITORING: "Überwacht",
+      "WAITING EXTERNAL": "Wartet extern",
+      BLOCKED: "Blockiert",
+      "NO DATA": "Keine Quelle",
+      SCHEDULED: "Geplant",
+      STALE: "Veraltet",
+      UNKNOWN: "Unbekannt",
+      WAITING: "Wartet",
+      WORKING: "Arbeitet",
+      READY: "Bereit",
+    };
+    return node("span", labels[status] || status, "pill " + tone);
   };
   const setTone = (id, tone) => {
     const el = $(id);
@@ -186,19 +198,20 @@
     const transactions = numeric(revenue.transactions);
     const commission = numeric(revenue.commission_eur);
 
+    // Mixed analytics counts are observations, not verified organic milestones.
     const reached = [
       publication.live,
-      (sessions || 0) > 0,
-      (productViews || 0) > 0,
-      (offerViews || 0) > 0,
-      (clickouts || 0) > 0,
+      false,
+      false,
+      false,
+      false,
       (transactions || 0) > 0,
       (commission || 0) > 0,
     ];
-    const stageCount = reached.filter(Boolean).length;
+
     const nextLabels = [
       "Content erfolgreich live",
-      "Erster qualifizierter Besuch",
+      "Erster nachweislich organischer Besuch",
       "Erster Product View",
       "Erster Blick auf Kaufoptionen",
       "Erster Merchant Clickout",
@@ -221,7 +234,7 @@
 
     if (publication.failed || publication.overdue || publication.stale) {
       tone = "amber";
-      title = "Publication prüfen";
+      title = "Veröffentlichung prüfen";
       copy = publication.failed
         ? "Ein Plattformfehler wurde beobachtet. Erst den Publish-State klären."
         : publication.overdue
@@ -237,26 +250,17 @@
       title = "Sale bestätigt";
       copy =
         "Eine Affiliate-Transaktion ist nachgewiesen. Die Provisionsbestätigung ist der nächste Beweis.";
-    } else if ((clickouts || 0) > 0) {
+    } else if (
+      [sessions, productViews, offerViews, clickouts].some(
+        (n) => n !== null && n > 0,
+      )
+    ) {
       tone = "blue";
-      title = "Kaufinteresse erreicht";
+      title = publication.live
+        ? "Messsignale beobachtet"
+        : "Messung vor Veröffentlichung";
       copy =
-        "Mindestens ein Merchant Clickout ist da. Jetzt zählt Affiliate-Netzwerk-Evidence.";
-    } else if ((offerViews || 0) > 0) {
-      tone = "blue";
-      title = "Kaufoptionen werden gesehen";
-      copy =
-        "Nutzer erreichen die Offer-Sektion. Der nächste harte Schritt ist ein Merchant Clickout.";
-    } else if ((productViews || 0) > 0) {
-      tone = "blue";
-      title = "Produktinteresse vorhanden";
-      copy =
-        "Traffic erreicht die Produktseite. Jetzt muss der Weg zu den Kaufoptionen funktionieren.";
-    } else if ((sessions || 0) > 0) {
-      tone = "blue";
-      title = "Traffic erreicht DUFYND";
-      copy =
-        "Der Content erzeugt Besuche. Jetzt prüfen wir, ob daraus Produktinteresse entsteht.";
+        "Events sind vorhanden. Vorbereitungstests und organische Besuche sind in dieser Quelle nicht getrennt; daraus folgt noch kein Geschäftserfolg.";
     } else if (publication.live) {
       tone = "blue";
       title = "Test ist live";
@@ -277,10 +281,12 @@
     put("signal-title", title);
     put("signal-copy", copy);
     put("next-milestone", nextMilestone);
-    put("pipeline-stage", stageCount + "/7");
+    put(
+      "pipeline-stage",
+      publication.live ? "LIVE" : publication.scheduled ? "PLAN" : "OFFEN",
+    );
     const ring = $("pipeline-ring");
-    if (ring)
-      ring.style.setProperty("--progress", (stageCount / 7) * 360 + "deg");
+    if (ring) ring.dataset.state = publication.live ? "live" : "pending";
 
     return { reached, firstMissing };
   }
@@ -293,6 +299,16 @@
     const gates = Array.isArray(s.decision_center) ? s.decision_center : [];
     const workers = Array.isArray(s.worker_deck) ? s.worker_deck : [];
     const systemsHealth = Array.isArray(s.system_health) ? s.system_health : [];
+    const attention = systemsHealth.filter((h) =>
+      ["STALE", "DEGRADED", "BLOCKED", "UNKNOWN"].includes(h.health),
+    );
+    put(
+      "source-summary",
+      attention.length
+        ? attention.length + " Systemquellen brauchen Prüfung →"
+        : "Systemquellen aktuell →",
+    );
+    $("source-summary").classList.toggle("needs-check", attention.length > 0);
     const revenue = s.first_money || {};
     const products = s.money_products || {};
     const safety = s.runtime_safety || {};
@@ -301,6 +317,9 @@
     const gatesCount = numeric(c.human_approval_count);
     const needsApproval = gates.length > 0 && gatesCount > 0;
     const gatesComplete = c.gates_complete === true;
+    $("decisions").hidden = gatesComplete && !needsApproval;
+    $("pulse-action").href =
+      gatesComplete && !needsApproval ? "#command" : "#decisions";
 
     const posts = Array.isArray(revenue.posts) ? revenue.posts : [];
     const now = Date.now();
@@ -367,15 +386,11 @@
     const blockedTasks = Number(queueData.blocked || 0);
     const jarvisDetail =
       c.status === "WAITING"
-        ? "Supervisor aktiv · aktuell kein sicher ausführbarer Task" +
-          (waitingExternal || blockedTasks
-            ? " · " +
-              waitingExternal +
-              " warten extern · " +
-              blockedTasks +
-              " blockiert"
-            : "") +
-          "."
+        ? "Freier Loop aktiv · " +
+          waitingExternal +
+          " extern · " +
+          blockedTasks +
+          " blockiert."
         : c.current_task || "Supervisor-State aktuell.";
 
     setPulse("pulse-jarvis", jarvisTone, jarvisMain, jarvisDetail);
@@ -612,7 +627,9 @@
               : publication.scheduled
                 ? "READY"
                 : "—"
-            : value(revenue[key]);
+            : numeric(revenue[key]) === null
+              ? "—"
+              : value(revenue[key]);
         if (
           !revenue.analytics_complete &&
           [
@@ -625,11 +642,16 @@
         ) {
           metric = "≥ " + metric;
         }
-        const detail = reached
-          ? "Belegt"
-          : index === firstMissing
-            ? "Nächster Beweis"
-            : "Ausstehend";
+        const detail =
+          key !== "publication" && numeric(revenue[key]) === null
+            ? "Kein Nachweis"
+            : reached
+              ? key === "publication" || index >= 5
+                ? "Belegt"
+                : "Signal · unklassifiziert"
+              : index === firstMissing
+                ? "Nächster Beweis"
+                : "Ausstehend";
         cell.append(
           node("small", label),
           node("strong", metric),
@@ -800,7 +822,7 @@
     );
     missions();
 
-    const verifiedRecent = (s.live_feed || []).slice(0, 6);
+    const verifiedRecent = (s.live_feed || []).slice(0, 3);
     const overviewActivity = $("overview-activity-list");
     if (overviewActivity) {
       const signature = JSON.stringify(verifiedRecent);
@@ -853,14 +875,30 @@
         .sort((a, b) => {
           const score = (h) =>
             healthTone(h) === "amber" ? 0 : healthTone(h) === "blue" ? 1 : 2;
-          return score(a.health) - score(b.health);
+          return a.name === "Jarvis free loop"
+            ? -1
+            : b.name === "Jarvis free loop"
+              ? 1
+              : score(a.health) - score(b.health);
         })
         .slice(0, 5);
       for (const h of ranked) {
         const tone = healthTone(h.health);
         const row = node("div", undefined, "health-chip health-" + tone);
         const left = node("span");
-        left.append(node("i"), node("span", h.name));
+        left.append(
+          node("i"),
+          node(
+            "span",
+            h.name === "Supervisor"
+              ? "Älterer Supervisor"
+              : h.name === "Jarvis free loop"
+                ? "Freier Jarvis-Loop"
+                : h.name,
+          ),
+        );
+        if (h.last_success_at)
+          left.append(node("small", "Beobachtet " + stamp(h.last_success_at)));
         row.append(left, node("b", value(h.health).toUpperCase()));
         healthOverview.append(row);
       }
@@ -947,7 +985,7 @@
             "Fortschritt: kein messbarer Prozentwert",
           ].join(" · ")
         : c.status === "WAITING"
-          ? "Der freie Supervisor ist aktiv. Aktuell wurde kein sicher ausführbarer Task ausgewählt. Externe Antworten und neue Messsignale können Arbeit auslösen."
+          ? "Der freie Loop prüft die Queue. Externe Antworten und neue Messsignale können die nächste Arbeit auslösen."
           : "Keine aktive Ausführung verifiziert. Systemstatus und Quellen prüfen.",
     );
     put(
@@ -964,11 +1002,17 @@
         node(
           "p",
           w.next_task?.title ||
+            w.evidence_note ||
             (w.status === "MONITORING"
               ? "Freier Supervisor überwacht Queue und Trigger."
               : "Keine zugeordnete offene Aufgabe beobachtet."),
         ),
-        node("small", w.tasks + " offene Aufgaben"),
+        node(
+          "small",
+          w.tasks
+            ? w.tasks + " offene Aufgaben"
+            : "Keine offene Worker-Aufgabe",
+        ),
       );
       if (w.next_task?.blocker)
         card.append(

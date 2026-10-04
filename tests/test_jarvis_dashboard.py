@@ -605,6 +605,29 @@ def test_first_money_runtime_projection_never_forwards_raw_rpc_payload():
     assert "hidden-marker" not in json.dumps(result)
 
 
+@pytest.mark.parametrize(
+    ("post_state", "observed_at", "expected"),
+    [
+        ("SCHEDULED", STAMP, "SCHEDULED"),
+        ("PUBLISHED", STAMP, "LIVE"),
+        ("FAILED", STAMP, "BLOCKED"),
+        ("SCHEDULED", (NOW - timedelta(hours=2)).isoformat(), "STALE"),
+    ],
+)
+def test_content_workstream_uses_publication_evidence_without_inventing_worker(
+    post_state, observed_at, expected
+):
+    data = ceo_data()
+    data["publication"] = [{"status0": post_state, "observed_at": observed_at}]
+    result = build_snapshot(data, now=NOW)
+    content = next(w for w in result["workstreams"] if w["name"] == "Content")
+    assert content["status"] == expected
+    assert content["tasks"] == 0
+    assert content["next_task"] is None
+    assert content["evidence_note"]
+    assert result["first_money"]["analytics_provenance"] == "unclassified_may_include_tests"
+
+
 def test_ceo_gate_and_external_monitoring_are_truthful():
     data = fixture_data()
     data["thin"] = [{"observed_at": STAMP, "stop_reason": "waiting_external"}]

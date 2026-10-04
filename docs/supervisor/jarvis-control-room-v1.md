@@ -248,3 +248,24 @@ pending-gate shape, working execution, missing data, unavailable reads and reduc
 motion. These fixtures never enter production. Browser replay does not certify a
 live signed-in owner session; deployment and anonymous route denial are separately
 verified against the deployed service.
+
+## CEO Control Room V0.7 (2026-10-04)
+
+The primary view groups execution, next candidates and dependencies directly below
+Jarvis. Completed gate checks with zero owner decisions collapse the empty gate
+panel; unknown gates and actual decisions remain visible. Cost and revenue source
+details expand on demand. The free-loop observation is pinned in system health,
+with a separate label for the older Supervisor and visible observation timestamps.
+The hero exposes source attention independently of execution activity.
+
+The revenue progress ring is removed. Analytics counts remain observed signals
+with unclassified test provenance, never proof of organic visitors or causal
+content performance. Missing transaction/commission counts display a dash, not
+zero. Publication and affiliate evidence remain separate from these mixed events.
+Content workstream status can use publication evidence when no task is mapped;
+this never invents an active worker or a task. Stale evidence remains stale and
+incomplete operational reads remain unknown.
+
+No scheduler, worker, budget, authentication, catalogue or publishing behavior is
+changed. The room remains read-only. Responsive and state regressions use isolated
+local browser fixtures; signed-in production owner verification is separate.

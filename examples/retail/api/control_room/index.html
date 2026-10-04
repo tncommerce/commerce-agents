@@ -15,7 +15,7 @@
         <a class="wordmark" href="#command">DUFYND<span>CONTROL ROOM</span></a>
         <div class="owner-tag">
           <span class="avatar">TN</span>
-          <div>Owner station<small>Private access</small></div>
+          <div>Dein Cockpit<small>Privater Zugang</small></div>
         </div>
         <nav aria-label="Bereiche">
           <a href="#command" class="selected">◈ <span>Übersicht</span></a>
@@ -27,8 +27,8 @@
           <a href="#advanced">••• <span>Details</span></a>
         </nav>
         <div class="sidebar-bottom">
-          <div class="read-only"><i></i> READ-ONLY V0.6</div>
-          <p>Decide with evidence.<br />Everything else stays quiet.</p>
+          <div class="read-only"><i></i> READ-ONLY V0.7</div>
+          <p>Klare Signale.<br />Belegte Entscheidungen.</p>
           <button id="logout" class="text-button">Abmelden ↗</button>
         </div>
       </aside>
@@ -63,169 +63,169 @@
           <a class="approval-link" href="#decisions">Freigabe prüfen →</a>
         </section>
 
-        <section class="overview-mosaic" aria-label="CEO Übersicht">
-          <section id="command" class="command">
-            <svg
-              class="sentinel-scene"
-              viewBox="0 0 800 460"
-              aria-hidden="true"
-              focusable="false"
+        <section id="command" class="command">
+          <svg
+            class="sentinel-scene"
+            viewBox="0 0 800 460"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <defs>
+              <linearGradient id="sentinel-light" x1="0" y1="0" x2="0" y2="1">
+                <stop stop-color="#66ffe1" stop-opacity=".35" />
+                <stop offset="1" stop-color="#153d43" stop-opacity="0" />
+              </linearGradient>
+              <radialGradient id="sentinel-halo">
+                <stop stop-color="#42e9c0" stop-opacity=".12" />
+                <stop offset="1" stop-color="#42e9c0" stop-opacity="0" />
+              </radialGradient>
+            </defs>
+            <circle cx="625" cy="140" r="185" fill="url(#sentinel-halo)" />
+            <path
+              d="M405 460V300L452 270V180L478 156L504 180V270L532 296V460M536 460V326L564 307V238L589 216L616 238V307L646 330V460M665 460V265L706 232V145L735 122L765 145V232L800 263V460"
+              fill="#0a2630"
+              opacity=".55"
+            />
+            <path
+              d="M478 157V255M589 216V295M735 122V245M449 288H509M557 324H620M687 253H782"
+              fill="none"
+              stroke="url(#sentinel-light)"
+              stroke-width="1"
+            />
+            <path
+              d="M220 460L610 264L800 460M310 460L610 264M430 460L610 264M580 460L610 264M740 460L610 264M360 385H726M470 325H670"
+              fill="none"
+              stroke="#6bffdb"
+              stroke-opacity=".075"
+            />
+            <circle
+              cx="630"
+              cy="131"
+              r="95"
+              fill="none"
+              stroke="#87ffe1"
+              stroke-opacity=".06"
+            />
+          </svg>
+          <div class="command-copy">
+            <div class="section-kicker">
+              <span class="eyebrow">AUTONOMIE · MIT KONTROLLE</span>
+              <span id="jarvis-state" class="pill neutral">UNKNOWN</span>
+            </div>
+            <h1>JARVIS<span>DEIN UNTERNEHMEN. IM BLICK.</span></h1>
+            <p id="priority" class="priority">
+              Aktuelle Priorität wird geladen.
+            </p>
+
+            <div class="pulse-grid" aria-label="CEO Status">
+              <article id="pulse-jarvis" class="pulse-card state-neutral">
+                <div class="pulse-label"><i></i><small>JARVIS</small></div>
+                <strong id="pulse-jarvis-value">Wird geprüft</strong>
+                <span id="pulse-jarvis-detail">Live-State wird geladen.</span>
+              </article>
+              <a
+                id="pulse-action"
+                class="pulse-card state-neutral"
+                href="#decisions"
+              >
+                <div class="pulse-label">
+                  <i></i><small>DEINE AKTION</small>
+                </div>
+                <strong id="pulse-action-value">Wird geprüft</strong>
+                <span id="pulse-action-detail"
+                  >Freigabestatus wird geladen.</span
+                >
+              </a>
+              <a
+                id="pulse-money"
+                class="pulse-card state-neutral"
+                href="#revenue"
+              >
+                <div class="pulse-label"><i></i><small>FIRST MONEY</small></div>
+                <strong id="pulse-money-value">Wird geprüft</strong>
+                <span id="pulse-money-detail"
+                  >Publication-State wird geladen.</span
+                >
+              </a>
+              <article id="pulse-cost" class="pulse-card state-neutral">
+                <div class="pulse-label">
+                  <i></i><small>KOSTEN HEUTE</small>
+                </div>
+                <strong id="pulse-cost-value">—</strong>
+                <span id="pulse-cost-detail">Kostenstatus wird geladen.</span>
+              </article>
+            </div>
+
+            <div class="status-legend" aria-label="Statusfarben">
+              <span class="legend-green"><i></i>Stabil</span>
+              <span class="legend-blue"><i></i>Aktiv</span>
+              <span class="legend-amber"><i></i>Wartet / prüfen</span>
+              <span class="legend-red"><i></i>Deine Freigabe</span>
+            </div>
+
+            <a id="source-summary" class="source-summary" href="#system-health"
+              >Quellen werden geprüft.</a
             >
-              <defs>
-                <linearGradient id="sentinel-light" x1="0" y1="0" x2="0" y2="1">
-                  <stop stop-color="#66ffe1" stop-opacity=".35" />
-                  <stop offset="1" stop-color="#153d43" stop-opacity="0" />
-                </linearGradient>
-                <radialGradient id="sentinel-halo">
-                  <stop stop-color="#42e9c0" stop-opacity=".12" />
-                  <stop offset="1" stop-color="#42e9c0" stop-opacity="0" />
-                </radialGradient>
-              </defs>
-              <circle cx="625" cy="140" r="185" fill="url(#sentinel-halo)" />
-              <path
-                d="M405 460V300L452 270V180L478 156L504 180V270L532 296V460M536 460V326L564 307V238L589 216L616 238V307L646 330V460M665 460V265L706 232V145L735 122L765 145V232L800 263V460"
-                fill="#0a2630"
-                opacity=".55"
-              />
-              <path
-                d="M478 157V255M589 216V295M735 122V245M449 288H509M557 324H620M687 253H782"
-                fill="none"
-                stroke="url(#sentinel-light)"
-                stroke-width="1"
-              />
-              <path
-                d="M220 460L610 264L800 460M310 460L610 264M430 460L610 264M580 460L610 264M740 460L610 264M360 385H726M470 325H670"
-                fill="none"
-                stroke="#6bffdb"
-                stroke-opacity=".075"
-              />
-              <circle
-                cx="630"
-                cy="131"
-                r="95"
-                fill="none"
-                stroke="#87ffe1"
-                stroke-opacity=".06"
-              />
-            </svg>
-            <div class="command-copy">
-              <div class="section-kicker">
-                <span class="eyebrow">LIVE OPERATING VIEW</span>
-                <span id="jarvis-state" class="pill neutral">UNKNOWN</span>
-              </div>
-              <h1>JARVIS<span>YOUR BUSINESS. IN VIEW.</span></h1>
-              <p id="priority" class="priority">
-                Aktuelle Priorität wird geladen.
-              </p>
-
-              <div class="pulse-grid" aria-label="CEO Status">
-                <article id="pulse-jarvis" class="pulse-card state-neutral">
-                  <div class="pulse-label"><i></i><small>JARVIS</small></div>
-                  <strong id="pulse-jarvis-value">Wird geprüft</strong>
-                  <span id="pulse-jarvis-detail">Live-State wird geladen.</span>
-                </article>
-                <a
-                  id="pulse-action"
-                  class="pulse-card state-neutral"
-                  href="#decisions"
-                >
-                  <div class="pulse-label">
-                    <i></i><small>DEINE AKTION</small>
-                  </div>
-                  <strong id="pulse-action-value">Wird geprüft</strong>
-                  <span id="pulse-action-detail"
-                    >Freigabestatus wird geladen.</span
-                  >
-                </a>
-                <a
-                  id="pulse-money"
-                  class="pulse-card state-neutral"
-                  href="#revenue"
-                >
-                  <div class="pulse-label">
-                    <i></i><small>FIRST MONEY</small>
-                  </div>
-                  <strong id="pulse-money-value">Wird geprüft</strong>
-                  <span id="pulse-money-detail"
-                    >Publication-State wird geladen.</span
-                  >
-                </a>
-                <article id="pulse-cost" class="pulse-card state-neutral">
-                  <div class="pulse-label">
-                    <i></i><small>KOSTEN HEUTE</small>
-                  </div>
-                  <strong id="pulse-cost-value">—</strong>
-                  <span id="pulse-cost-detail">Kostenstatus wird geladen.</span>
-                </article>
-              </div>
-
-              <div class="status-legend" aria-label="Statusfarben">
-                <span class="legend-green"><i></i>Stabil</span>
-                <span class="legend-blue"><i></i>Aktiv</span>
-                <span class="legend-amber"><i></i>Wartet / prüfen</span>
-                <span class="legend-red"><i></i>Deine Freigabe</span>
-              </div>
-
-              <div class="command-evidence">
-                <span>BRANCH <b>scentai-mvp</b></span>
-                <span>HEAD <b id="head">—</b></span>
-                <span id="head-age">Noch keine Branch-Beobachtung</span>
-              </div>
+            <div class="command-evidence">
+              <span>BRANCH <b>scentai-mvp</b></span>
+              <span>HEAD <b id="head">—</b></span>
+              <span id="head-age">Noch keine Branch-Beobachtung</span>
             </div>
+          </div>
 
-            <div id="jarvis-core" class="core state-neutral" aria-hidden="true">
-              <div class="core-signal"></div>
-              <div class="core-orbit orbit-one"></div>
-              <div class="core-orbit orbit-two"></div>
-              <div class="core-orbit orbit-three"></div>
-              <div class="core-frame">
-                <span>J</span><small>SUPERVISOR</small>
-              </div>
-              <div class="core-floor"></div>
+          <div id="jarvis-core" class="core state-neutral" aria-hidden="true">
+            <div class="core-signal"></div>
+            <div class="core-orbit orbit-one"></div>
+            <div class="core-orbit orbit-two"></div>
+            <div class="core-orbit orbit-three"></div>
+            <div class="core-frame">
+              <span>J</span><small>JARVIS CORE</small>
             </div>
+            <div class="core-floor"></div>
+          </div>
 
-            <div class="command-stats">
-              <div>
-                <small>ACTIVE WORKERS</small
-                ><strong id="active-workers">—</strong
-                ><span id="worker-summary">Status wird geprüft</span>
-              </div>
-              <div>
-                <small>WORKING MISSIONS</small
-                ><strong id="working-count">—</strong
-                ><span>Aktive Task-Zustände</span>
-              </div>
-              <div>
-                <small>OWNER DECISIONS</small
-                ><strong id="decision-count">—</strong
-                ><span>Echte offene Human-Gates</span>
-              </div>
-              <div>
-                <small>LAST SUPERVISOR WAKE</small
-                ><strong id="wake-time" class="time-stat">—</strong
-                ><span id="next-wake">Nächster Wake unbekannt</span>
-              </div>
+          <div class="command-stats">
+            <div>
+              <small>ACTIVE WORKERS</small><strong id="active-workers">—</strong
+              ><span id="worker-summary">Status wird geprüft</span>
             </div>
-          </section>
-
-          <section id="decisions" class="panel decision-panel">
-            <div class="panel-heading">
-              <div>
-                <span class="eyebrow">OWNER LAYER</span>
-                <h2>Deine Freigaben</h2>
-              </div>
-              <span class="small-label">Nur echte Owner-Gates</span>
+            <div>
+              <small>WORKING MISSIONS</small
+              ><strong id="working-count">—</strong
+              ><span>Aktive Task-Zustände</span>
             </div>
-            <div id="decision-list" class="list-placeholder">
-              Freigaben werden geprüft.
+            <div>
+              <small>OWNER DECISIONS</small
+              ><strong id="decision-count">—</strong
+              ><span>Echte offene Human-Gates</span>
             </div>
-          </section>
-
+            <div>
+              <small>LAST SUPERVISOR WAKE</small
+              ><strong id="wake-time" class="time-stat">—</strong
+              ><span id="next-wake">Nächster Wake unbekannt</span>
+            </div>
+          </div>
+        </section>
+        <section id="decisions" class="panel decision-panel">
+          <div class="panel-heading">
+            <div>
+              <span class="eyebrow">DEINE ENTSCHEIDUNG</span>
+              <h2>Deine Freigaben</h2>
+            </div>
+            <span class="small-label"
+              >Nur tatsächlich offene Entscheidungen</span
+            >
+          </div>
+          <div id="decision-list" class="list-placeholder">
+            Freigaben werden geprüft.
+          </div>
+        </section>
+        <section class="operations-grid" aria-label="Aktuelle Arbeit">
           <section id="work" class="panel current-panel">
             <div class="panel-heading">
               <div>
-                <span class="eyebrow">EXECUTION</span>
-                <h2>Jetzt & danach</h2>
+                <span class="eyebrow">AUSFÜHRUNG</span>
+                <h2>Aktuelle Arbeit</h2>
               </div>
               <span id="loop-time" class="small-label">—</span>
             </div>
@@ -234,8 +234,8 @@
                 <small>JETZT</small>
                 <strong id="current-task">—</strong>
               </article>
-              <span class="work-arrow">→</span>
-              <article>
+              <span class="work-arrow advanced-only">→</span>
+              <article class="advanced-only">
                 <small>DANACH</small>
                 <strong id="allowed-task">—</strong>
               </article>
@@ -252,141 +252,158 @@
               <p id="lease-count">—</p>
             </div>
           </section>
+          <section class="panel next-panel">
+            <div class="panel-heading">
+              <div>
+                <span class="eyebrow">NÄCHSTE AUSWAHL</span>
+                <h2>Als Nächstes</h2>
+              </div>
+            </div>
+            <div id="next-task-list"></div>
+          </section>
+          <section class="panel waiting-panel">
+            <div class="panel-heading">
+              <div>
+                <span class="eyebrow">ABHÄNGIGKEITEN</span>
+                <h2>Blockiert / wartet</h2>
+              </div>
+            </div>
+            <div id="waiting-counts" class="waiting-counts"></div>
+            <details class="meta-details">
+              <summary>Worauf wartet die Arbeit?</summary>
+              <div id="waiting-list"></div>
+            </details>
+          </section>
         </section>
+        <section class="business-grid" aria-label="Geschäft und System">
+          <section id="revenue" class="panel revenue-panel">
+            <div class="panel-heading revenue-heading">
+              <div>
+                <span class="eyebrow"
+                  >VERÖFFENTLICHUNG → INTERESSE → UMSATZ</span
+                >
+                <h2>First Money · 1 Million</h2>
+              </div>
+              <span class="small-label">Clickout ≠ Sale</span>
+            </div>
 
+            <div id="publication-list" class="publication-list"></div>
+
+            <div class="revenue-cockpit">
+              <article
+                id="business-signal"
+                class="business-signal signal-neutral"
+              >
+                <div class="signal-copy">
+                  <span id="signal-kicker" class="eyebrow">BEWEISLAGE</span>
+                  <h3 id="signal-title">Funnel wird gelesen</h3>
+                  <p id="signal-copy">Live-Daten werden ausgewertet.</p>
+                  <div class="next-milestone">
+                    <small>NÄCHSTER BEWEIS</small>
+                    <strong id="next-milestone">—</strong>
+                  </div>
+                </div>
+                <div id="pipeline-ring" class="evidence-seal">
+                  <div>
+                    <strong id="pipeline-stage">—</strong
+                    ><span>Publikation</span>
+                  </div>
+                </div>
+              </article>
+
+              <div class="funnel-wrap">
+                <div class="evidence-warning">
+                  MESSDATEN · TESTS NICHT GETRENNT<span
+                    >Beobachtete Events sind noch kein Beweis für organischen
+                    Traffic oder Umsatz.</span
+                  >
+                </div>
+                <div id="funnel" class="funnel"></div>
+              </div>
+            </div>
+
+            <details class="revenue-details meta-details">
+              <summary>Messgrundlage, Kaufziel & Produkte</summary>
+              <details class="meta-details">
+                <summary>Messgrundlage & Kaufziel</summary>
+                <p id="funnel-basis" class="muted"></p>
+                <p id="purchase-basis" class="muted"></p>
+              </details>
+              <details class="meta-details">
+                <summary>Tracking-Details</summary>
+                <p id="content-identifiers" class="muted"></p>
+              </details>
+              <details class="product-details">
+                <summary>Money Products · beobachteter Status</summary>
+                <div class="money-heading">
+                  <h3>Money Products</h3>
+                  <span id="product-evidence" class="muted"></span>
+                </div>
+                <div id="money-products" class="money-products"></div>
+              </details>
+            </details>
+          </section>
+          <div class="support-stack">
+            <section class="panel cost-panel">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">KOSTENKONTROLLE</span>
+                  <h2>Kosten heute</h2>
+                </div>
+                <span class="small-label">Europe / Berlin</span>
+              </div>
+              <strong id="cost-total" class="cost-total">UNKNOWN</strong>
+              <p id="cost-basis" class="muted">Kosten werden geprüft.</p>
+              <details class="meta-details">
+                <summary>Reservierungen & Budget</summary>
+                <div id="cost-context" class="cost-context"></div>
+              </details>
+            </section>
+            <article id="system-health" class="panel overview-health-card">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">QUELLEN & SYSTEME</span>
+                  <h2>Systemstatus</h2>
+                </div>
+                <span class="small-label">nur relevante Signale</span>
+              </div>
+              <p class="health-explainer">
+                Der freie Loop und der ältere Supervisor haben getrennte
+                Beobachtungen. Veraltet bedeutet: Nachweis prüfen, kein
+                bestätigter Ausfall.
+              </p>
+              <div id="overview-system-health" class="health-pulse">
+                <p class="muted">Systemstatus wird geladen.</p>
+              </div>
+            </article>
+          </div>
+        </section>
         <section id="workstreams" class="panel workstreams-panel">
           <div class="panel-heading">
             <div>
-              <span class="eyebrow">PROJECT ORBIT</span>
+              <span class="eyebrow">ARBEITSBEREICHE</span>
               <h2>Deine Workstreams</h2>
             </div>
             <span class="small-label"
-              >Beobachtete Arbeit · keine erfundenen Fortschritte</span
+              >Aufgaben und Veröffentlichungsnachweise</span
             >
           </div>
           <div id="workstream-list" class="workstream-grid">
             <p class="muted">Workstreams werden gelesen.</p>
           </div>
         </section>
-        <section class="panel next-panel">
+        <article class="panel overview-activity-card">
           <div class="panel-heading">
             <div>
-              <span class="eyebrow">PRIORITY QUEUE</span>
-              <h2>Als Nächstes</h2>
+              <span class="eyebrow">BEOBACHTETE AKTIVITÄT</span>
+              <h2>Letzte Signale</h2>
             </div>
+            <span class="small-label">verifizierte Schritte</span>
           </div>
-          <div id="next-task-list"></div>
-        </section>
-        <section class="panel waiting-panel">
-          <div class="panel-heading">
-            <div>
-              <span class="eyebrow">DEPENDENCIES</span>
-              <h2>Blockiert / wartet</h2>
-            </div>
+          <div id="overview-activity-list" class="overview-feed">
+            <p class="muted">Aktivität wird geladen.</p>
           </div>
-          <div id="waiting-counts" class="waiting-counts"></div>
-          <details class="meta-details">
-            <summary>Worauf wartet die Arbeit?</summary>
-            <div id="waiting-list"></div>
-          </details>
-        </section>
-        <section class="panel cost-panel">
-          <div class="panel-heading">
-            <div>
-              <span class="eyebrow">COST CONTROL</span>
-              <h2>Kosten heute</h2>
-            </div>
-            <span class="small-label">Europe / Berlin</span>
-          </div>
-          <strong id="cost-total" class="cost-total">UNKNOWN</strong>
-          <p id="cost-basis" class="muted">Kosten werden geprüft.</p>
-          <div id="cost-context" class="cost-context"></div>
-        </section>
-        <section id="revenue" class="panel revenue-panel">
-          <div class="panel-heading revenue-heading">
-            <div>
-              <span class="eyebrow">REACH → TRAFFIC → REVENUE</span>
-              <h2>First Money · 1 Million</h2>
-            </div>
-            <span class="small-label">Clickout ≠ Sale</span>
-          </div>
-
-          <div id="publication-list" class="publication-list"></div>
-
-          <div class="revenue-cockpit">
-            <article
-              id="business-signal"
-              class="business-signal signal-neutral"
-            >
-              <div class="signal-copy">
-                <span id="signal-kicker" class="eyebrow"
-                  >DECISION INTELLIGENCE</span
-                >
-                <h3 id="signal-title">Funnel wird gelesen</h3>
-                <p id="signal-copy">Live-Daten werden ausgewertet.</p>
-                <div class="next-milestone">
-                  <small>NÄCHSTER BEWEIS</small>
-                  <strong id="next-milestone">—</strong>
-                </div>
-              </div>
-              <div id="pipeline-ring" class="pipeline-ring">
-                <div>
-                  <strong id="pipeline-stage">—/7</strong
-                  ><span>Revenue Loop</span>
-                </div>
-              </div>
-            </article>
-
-            <div class="funnel-wrap">
-              <div id="funnel" class="funnel"></div>
-              <p id="funnel-basis" class="muted"></p>
-              <p id="purchase-basis" class="muted"></p>
-            </div>
-          </div>
-
-          <details class="meta-details">
-            <summary>Tracking-Details</summary>
-            <p id="content-identifiers" class="muted"></p>
-          </details>
-
-          <details class="product-details">
-            <summary>Money Products · beobachteter Status</summary>
-            <div class="money-heading">
-              <h3>Money Products</h3>
-              <span id="product-evidence" class="muted"></span>
-            </div>
-            <div id="money-products" class="money-products"></div>
-          </details>
-        </section>
-
-        <section class="insight-grid" aria-label="Live Überblick">
-          <article class="panel overview-activity-card">
-            <div class="panel-heading">
-              <div>
-                <span class="eyebrow">VERIFIED ACTIVITY</span>
-                <h2>Live Feed</h2>
-              </div>
-              <span class="small-label">verifizierte Schritte</span>
-            </div>
-            <div id="overview-activity-list" class="overview-feed">
-              <p class="muted">Aktivität wird geladen.</p>
-            </div>
-          </article>
-
-          <article class="panel overview-health-card">
-            <div class="panel-heading">
-              <div>
-                <span class="eyebrow">SYSTEM PULSE</span>
-                <h2>Systemstatus</h2>
-              </div>
-              <span class="small-label">nur relevante Signale</span>
-            </div>
-            <div id="overview-system-health" class="health-pulse">
-              <p class="muted">Systemstatus wird geladen.</p>
-            </div>
-          </article>
-        </section>
-
+        </article>
         <div id="advanced" class="advanced-toggle">
           <button
             id="toggle-details"
@@ -439,7 +456,7 @@
         <section id="workers" class="advanced-only">
           <div class="section-heading">
             <div>
-              <span class="eyebrow">EXECUTION LAYER</span>
+              <span class="eyebrow">AUSFÜHRUNG LAYER</span>
               <h2>Worker</h2>
             </div>
             <span id="worker-count" class="small-label"
@@ -516,7 +533,7 @@
         </section>
 
         <footer class="footer">
-          <span>DUFYND · CEO Control Room V0.6</span>
+          <span>DUFYND · CEO Control Room V0.7</span>
           <span id="snapshot-time">Noch kein Snapshot</span>
           <span>Read-only · Owner gates preserved</span>
         </footer>
