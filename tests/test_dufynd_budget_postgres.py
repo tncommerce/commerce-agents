@@ -2384,12 +2384,19 @@ def test_reserve_rejects_incomplete_approval():
 
 
 @pytest.fixture
-def counted_window():
+def counted_window(counted_contract_clock):
     """Ephemeral test database approval only. Never runs on production, never uses HTTP."""
     import json
 
     from scripts import dufynd_anthropic_counted as c
 
+    # This registry exists only in the disposable CI PostgreSQL database.
+    # The migration's historical expiry must not hide budget/dispatch checks.
+    query(
+        "update dufynd_provider_contracts set expires_at=now()+interval '1 hour' "
+        "where contract_id=%s returning contract_id",
+        (c.CONTRACT_ID,),
+    )
     f = fixture(cap="0.036864", maximum="0.036864")
     decision = f"decision-{uuid4()}"
     approval = {
@@ -2576,8 +2583,21 @@ def test_counted_parallel_reservation_never_exceeds_window(counted_window):
     assert sum(r["allowed"] for r in results) == 1
 
 
-def test_counted_no_new_owner_budget_after_test_cleanup():
+def test_counted_no_new_owner_budget_after_test_cleanup(counted_contract_clock):
     assert counted_resolve()["allowed"] is False
+
+
+def test_counted_expired_provider_contract_remains_denied(counted_window):
+    from scripts import dufynd_anthropic_counted as c
+
+    query(
+        "update dufynd_provider_contracts set expires_at=now()-interval '1 second' "
+        "where contract_id=%s returning contract_id",
+        (c.CONTRACT_ID,),
+    )
+    result = counted_resolve()
+    assert result["allowed"] is False
+    assert result["reason"] == "provider_contract_unverified_or_expired"
 
 
 def test_counted_unresolved_sent_request_blocks_next_even_with_remaining_budget(counted_window):
