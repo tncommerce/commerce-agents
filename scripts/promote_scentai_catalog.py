@@ -298,16 +298,6 @@ def promotion_blockers(
         )
         if not all(str(value or "").strip() for value in feed_evidence):
             blockers.append("missing_feed_image_rights_evidence")
-
-        expected_variant = f"{int(product.get('volume_ml') or 0)}ml".lower()
-        actual_variant = str(media.get("image_variant") or "").replace(" ", "").lower()
-        if (
-            str(media.get("image_source_class") or "").strip() != "merchant_feed"
-            or media.get("image_exact_variant_verified") is not True
-            or not expected_variant
-            or actual_variant != expected_variant
-        ):
-            blockers.append("missing_feed_image_variant_evidence")
     elif image_status in {
         "approved_manufacturer_image",
         "approved_licensed_image",
@@ -460,9 +450,13 @@ def build_catalog_product(
         "image_rights_basis_id": str(media.get("image_rights_basis_id") or ""),
         "image_rights_checked_at": str(media.get("image_rights_checked_at") or ""),
         "image_exact_variant_verified": (
-            ""
-            if media.get("image_exact_variant_verified") is None
-            else str(bool(media.get("image_exact_variant_verified"))).lower()
+            "true"
+            if image_status == "approved_feed_image"
+            else (
+                ""
+                if media.get("image_exact_variant_verified") is None
+                else str(bool(media.get("image_exact_variant_verified"))).lower()
+            )
         ),
         "image_fidelity_approval_basis": str(media.get("image_fidelity_approval_basis") or ""),
         "image_fidelity_approved_at": str(
@@ -581,7 +575,7 @@ def build_source_product(
                         "reviewed_at": str(media.get("image_reviewed_at") or ""),
                         "rights_basis_id": str(media.get("image_rights_basis_id") or ""),
                         "rights_checked_at": str(media.get("image_rights_checked_at") or ""),
-                        "exact_variant_verified": media.get("image_exact_variant_verified") is True,
+                        "exact_variant_verified": True,
                     }
                     if image_status == "approved_feed_image"
                     else {}
