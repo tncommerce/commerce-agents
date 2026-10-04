@@ -300,9 +300,7 @@ def promotion_blockers(
             blockers.append("missing_feed_image_rights_evidence")
 
         expected_variant = f"{int(product.get('volume_ml') or 0)}ml".lower()
-        actual_variant = (
-            str(media.get("image_variant") or "").replace(" ", "").lower()
-        )
+        actual_variant = str(media.get("image_variant") or "").replace(" ", "").lower()
         if (
             str(media.get("image_source_class") or "").strip() != "merchant_feed"
             or media.get("image_exact_variant_verified") is not True
@@ -466,9 +464,7 @@ def build_catalog_product(
             if media.get("image_exact_variant_verified") is None
             else str(bool(media.get("image_exact_variant_verified"))).lower()
         ),
-        "image_fidelity_approval_basis": str(
-            media.get("image_fidelity_approval_basis") or ""
-        ),
+        "image_fidelity_approval_basis": str(media.get("image_fidelity_approval_basis") or ""),
         "image_fidelity_approved_at": str(
             staged.get("media", {}).get("image_fidelity_approved_at") or ""
         ),
