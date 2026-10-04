@@ -87,32 +87,22 @@ def _https_url(value: str | None) -> bool:
 def offer_clickout_target(
     offer: MerchantOffer,
     *,
-    clickref: str | None = None,
-    clickref2: str | None = None,
-    clickref3: str | None = None,
-    clickref4: str | None = None,
-    clickref5: str | None = None,
-    clickref6: str | None = None,
+    clickrefs: list[str | None] | tuple[str | None, ...] | None = None,
 ) -> str | None:
     if _https_url(offer.affiliate_url):
         target = str(offer.affiliate_url).strip()
         parsed = urlparse(target)
         hostname = str(parsed.hostname or "").casefold().rstrip(".")
-        clickrefs = {
-            "clickref": clickref,
-            "clickref2": clickref2,
-            "clickref3": clickref3,
-            "clickref4": clickref4,
-            "clickref5": clickref5,
-            "clickref6": clickref6,
-        }
-        if hostname in {"awin1.com", "www.awin1.com"} and any(clickrefs.values()):
+        values = list(clickrefs or ())[:6]
+        values.extend([None] * (6 - len(values)))
+        refs = {f"clickref{index or ''}": value for index, value in enumerate(values)}
+        if hostname in {"awin1.com", "www.awin1.com"} and any(refs.values()):
             query = [
                 (key, value)
                 for key, value in parse_qsl(parsed.query, keep_blank_values=True)
-                if key.casefold() not in clickrefs
+                if key.casefold() not in refs
             ]
-            query.extend((key, value) for key, value in clickrefs.items() if value)
+            query.extend((key, value) for key, value in refs.items() if value)
             return parsed._replace(query=urlencode(query)).geturl()
         return target
     if _https_url(offer.product_url):
