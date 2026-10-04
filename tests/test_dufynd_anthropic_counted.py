@@ -261,11 +261,11 @@ def test_failed_worker_preserves_stage_and_only_proves_zero_before_paid_request(
             self.contexts.append(kwargs)
 
     class Client(c.CountedClient):
-        def count(self, prompt):
+        def count_for_packing(self, prompt):
             self.last_count = 7000
             if failure == "count":
                 raise BudgetGate("count_tokens_exceeds_input_limit")
-            return 7000 if failure == "prepare" else 100
+            return 100
 
         def execute(self, *args, **kwargs):
             if failure == "dispatched":
@@ -276,6 +276,12 @@ def test_failed_worker_preserves_stage_and_only_proves_zero_before_paid_request(
                 else "reservation_denied"
             )
 
+    if failure == "prepare":
+
+        def reject_prepare(*args):
+            raise BudgetGate("conservative_input_exceeds_reservation")
+
+        monkeypatch.setattr(c, "prepare", reject_prepare)
     monkeypatch.setenv("ANTHROPIC_API_KEY", "mock")
     monkeypatch.setattr(c, "CountedClient", Client)
     bridge = WorkerBridge()
@@ -285,6 +291,9 @@ def test_failed_worker_preserves_stage_and_only_proves_zero_before_paid_request(
     assert decision["cost_usd"] == (None if failure == "dispatched" else "0")
     assert decision["retry_allowed"] is False
     assert decision["prompt_bytes"] > 0
-    assert decision["packet_sha256"] == bridge.contexts[0]["value"]["snapshot"]["packet_sha256"]
+    assert decision["packet_sha256"]
+    snapshots = [x["value"]["snapshot"] for x in bridge.contexts if "snapshot" in x["value"]]
+    if snapshots:
+        assert decision["packet_sha256"] == snapshots[0]["packet_sha256"]
     assert len(bridge.updates) == 1
     assert not hasattr(bridge, "reservation")

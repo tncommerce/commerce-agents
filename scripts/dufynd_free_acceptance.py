@@ -394,8 +394,8 @@ def failure_fixture(task: dict, *, head: str | None = None) -> dict:
             self.updates.append((args, kwargs))
 
     class DisabledProvider(counted.CountedClient):
-        def count(self, _):
-            self.last_count = 6452  # fixture estimate; NOT a provider measurement
+        def count_for_packing(self, _):
+            self.last_count = 100  # fixture estimate; NOT a provider measurement
             return self.last_count
 
         def _post(self, *_):
@@ -404,8 +404,12 @@ def failure_fixture(task: dict, *, head: str | None = None) -> dict:
         def execute(self, *_args, **_kwargs):
             raise AssertionError("paid dispatch disabled")
 
+    original_prepare = counted.prepare
     bridge = Bridge()
     with (
+        patch.object(
+            counted, "prepare", side_effect=lambda prompt, _: original_prepare(prompt, 6452)
+        ),
         patch.object(
             counted,
             "resolve_budget",

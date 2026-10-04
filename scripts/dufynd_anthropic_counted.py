@@ -577,8 +577,12 @@ async def process_counted_task(bridge, *, task_id: str | None = None) -> int:
             "estimated_input_tokens": estimate
             if estimate is not None
             else (client.last_count if client else None),
-            "prompt_bytes": len(prompt.encode()),
-            "packet_sha256": (snapshot or {}).get("packet_sha256"),
+            "prompt_bytes": count_trace[-1]["prompt_bytes"]
+            if count_trace
+            else len(prompt.encode()),
+            "packet_sha256": count_trace[-1]["packet_sha256"]
+            if count_trace
+            else (snapshot or {}).get("packet_sha256"),
             "github_run_id": os.getenv("GITHUB_RUN_ID"),
             "github_run_attempt": os.getenv("GITHUB_RUN_ATTEMPT"),
             "head_sha": os.getenv("GITHUB_SHA"),
