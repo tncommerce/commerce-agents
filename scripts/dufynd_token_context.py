@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+from collections import Counter
 from pathlib import Path
 
 from scripts.dufynd_bounded_provider import BudgetGate
@@ -279,8 +280,17 @@ def render_prompt(packet: dict) -> str:
         "Context SHA256 (binds full original-source SHA256/line-range audit): "
         + packet["packet_sha256"],
     ]
+    parts.append(
+        "Source path aliases: D=examples/retail/data/; W=examples/retail/storefront-web/; L=docs/"
+    )
     for i, source in enumerate(packet["repository_evidence"]):
-        parts.append(f"Source {i}: {source['path']} priority={source['priority']}")
+        name = (
+            source["path"]
+            .replace("examples/retail/data/", "D:")
+            .replace("examples/retail/storefront-web/", "W:")
+            .replace("docs/", "L:")
+        )
+        parts.append(f"Source {i}: {name} priority={source['priority']}")
         if source.get("text"):
             parts.append(
                 "Anchored noncontiguous excerpts; exact line ranges and full original SHA256 in hash-bound audit."
@@ -289,8 +299,20 @@ def render_prompt(packet: dict) -> str:
     if "pilot_comparison" in packet:
         table = packet["pilot_comparison"]
         parts.append("Pilot columns (tab separated): " + "\t".join(table["columns"]))
-        for row in table["rows"]:
-            parts.append("\t".join(cell(v).replace("\t", " ").replace("\n", " ") for v in row))
+        rows = [
+            [cell(v).replace("\t", " ").replace("\n", " ") for v in row] for row in table["rows"]
+        ]
+        frequencies = Counter(v for row in rows for v in row)
+        aliases = {
+            v: f"$v{i}"
+            for i, v in enumerate(sorted(v for v, n in frequencies.items() if n > 1 and len(v) > 8))
+        }
+        parts.append(
+            "Exact repeated cell dictionary; expand $v references:\n"
+            + "\n".join(f"{alias}={value}" for value, alias in aliases.items())
+        )
+        for row in rows:
+            parts.append("\t".join(aliases.get(v, v) for v in row))
         parts.append(
             "Shared rules:\n"
             + "\n".join(f"{k}: {cell(v)}" for k, v in packet["shared_rules"].items())
