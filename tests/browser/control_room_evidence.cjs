@@ -128,6 +128,23 @@ const { chromium } = require("playwright");
       await p.locator("#execution-detail-list .execution-state").innerText(),
       "Arbeitet",
     );
+    await summary.focus();
+    const automatic = p.waitForResponse((r) => r.url().endsWith("/snapshot"));
+    await p.evaluate(() => document.querySelector("#refresh").click());
+    await automatic;
+    await p.evaluate(() => new Promise(requestAnimationFrame));
+    assert.equal(
+      await summary.evaluate((el) => el === document.activeElement),
+      true,
+    );
+    s.system_health = [];
+    s.freshness.operational_complete = false;
+    await refresh();
+    assert.match(
+      await p.locator("#source-summary").innerText(),
+      /nicht vollständig bestätigt/,
+    );
+    assert.equal(await p.locator("#execution-source-status").isVisible(), true);
     assert.equal(
       await p.evaluate(() => document.documentElement.scrollWidth > innerWidth),
       false,

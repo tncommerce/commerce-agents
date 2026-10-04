@@ -556,9 +556,14 @@
       "source-summary",
       attention.length
         ? attention.length + " Quellenhinweise · Details prüfen →"
-        : "Systemquellen aktuell →",
+        : systemsHealth.length && complete
+          ? "Systemquellen aktuell →"
+          : "Quellenstatus nicht vollständig bestätigt →",
     );
-    $("source-summary").classList.toggle("needs-check", attention.length > 0);
+    $("source-summary").classList.toggle(
+      "needs-check",
+      attention.length > 0 || !systemsHealth.length || !complete,
+    );
     const revenue = s.first_money || {};
     const products = s.money_products || {};
     const safety = s.runtime_safety || {};
@@ -1235,6 +1240,11 @@
     const current = workers.find((w) => w.status === "ACTIVE");
     const duration = current?.duration_seconds;
     const executionDetails = $("execution-detail-list");
+    const focusedEvidence = document.activeElement?.matches(
+      ".execution-metadata > summary",
+    )
+      ? document.activeElement.parentElement.parentElement.dataset.executionKey
+      : null;
     const sourceStatus = $("execution-source-status");
     sourceStatus.hidden = s.freshness?.operational_complete === true;
     sourceStatus.textContent =
@@ -1287,6 +1297,8 @@
         item.classList.add("evidence-changed");
       executionSignals.set(key, signal);
       executionDetails.append(item);
+      if (focusedEvidence === key)
+        item.querySelector("summary").focus({ preventScroll: true });
     });
     for (const key of executionSignals.keys())
       if (!currentSignals.has(key)) executionSignals.delete(key);
