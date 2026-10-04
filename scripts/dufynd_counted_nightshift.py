@@ -185,6 +185,20 @@ def main() -> int:
             "stop_reason": stop_reason,
             "head": os.getenv("GITHUB_SHA"),
         }
+        if session_started and budget_id:
+            try:
+                from scripts.dufynd_counted_reporting import report_counted_costs
+
+                costs = report_counted_costs(
+                    bridge, budget_id, started_at.isoformat(), terminal["ended_at"]
+                )
+                terminal["counted_costs"] = costs
+                terminal["paid_requests"] = costs["calls"]
+                terminal["reservations_created"] = len(costs["ledger"])
+                terminal["new_spend_usd"] = costs["actual_spend_usd"]
+            except Exception as error:
+                terminal["cost_report_complete"] = False
+                terminal["cost_report_error_type"] = type(error).__name__
         (output / "counted-terminal.json").write_text(json.dumps(terminal) + "\n")
         if args.preflight:
             report = preflight or {

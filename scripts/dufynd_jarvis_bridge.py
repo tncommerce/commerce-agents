@@ -326,6 +326,30 @@ class DufyndJarvisBridge:
             raise ValueError("DUFYND Jarvis budget status must be a JSON object")
         return payload
 
+    def load_budget_reservations(self, budget_id: str) -> list[dict[str, Any]]:
+        rows = []
+        with self._client() as client:
+            for offset in range(0, 10000, 1000):
+                response = client.get(
+                    f"{self.supabase_url}/rest/v1/dufynd_budget_reservations",
+                    headers=_headers(self.secret_key),
+                    params={
+                        "select": "budget_id,task_id,reservation_id,provider_receipt_id,status,actual_usd,reserved_usd,created_at,dispatched_at,settled_at",
+                        "budget_id": f"eq.{budget_id}",
+                        "order": "created_at.asc,reservation_id.asc",
+                        "limit": "1000",
+                        "offset": str(offset),
+                    },
+                )
+                response.raise_for_status()
+                page = response.json()
+                if not isinstance(page, list) or any(not isinstance(r, dict) for r in page):
+                    raise ValueError("Malformed reservation ledger")
+                rows.extend(page)
+                if len(page) < 1000:
+                    return rows
+        raise ValueError("Reservation ledger exceeds reporting bound")
+
     def load_budget_window(self, budget_id: str) -> dict[str, Any] | None:
         with self._client() as client:
             response = client.get(

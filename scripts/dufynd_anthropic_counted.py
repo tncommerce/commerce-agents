@@ -397,33 +397,9 @@ async def process_counted_task(bridge, *, task_id: str | None = None) -> int:
         return 0
     task_id = task["task_id"]
     try:
-        # Fixed public repository inputs, never arbitrary files, credentials or executable tools.
-        snapshot = {
-            k: task.get(k) for k in ("task_id", "title", "instruction", "domain", "dependencies")
-        }
-        paths = {
-            "research": ["examples/retail/storefront-web/lib/analytics.ts"],
-            "content": [
-                "examples/retail/data/dufynd_content_strategy.json",
-                "examples/retail/data/dufynd_high_end_launch_assets.json",
-            ],
-        }[task["domain"]]
-        snapshot["repository_evidence"] = []
-        root = Path(__file__).resolve().parents[1]
-        for name in paths:
-            raw = (root / name).read_bytes()
-            snapshot["repository_evidence"].append(
-                {
-                    "path": name,
-                    "sha256": hashlib.sha256(raw).hexdigest(),
-                    "text": raw.decode()[:6000],
-                    "truncated": len(raw.decode()) > 6000,
-                }
-            )
-        snapshot["head"] = os.getenv("GITHUB_SHA")
-        snapshot["context_scope"] = (
-            "Bounded repository snapshot; not live product, social or revenue evidence."
-        )
+        from scripts.dufynd_worker_evidence import pack_evidence
+
+        snapshot = pack_evidence(task, head=os.getenv("GITHUB_SHA"))
         prompt = canonical(snapshot).decode()
         client = CountedClient(os.getenv("ANTHROPIC_API_KEY", ""))
         estimate = await asyncio.to_thread(client.count, prompt)
@@ -452,6 +428,35 @@ async def process_counted_task(bridge, *, task_id: str | None = None) -> int:
                 }
             ],
             agent_name="jarvis",
+        )
+        from scripts.dufynd_independent_checker import make_handoff
+
+        handoff = make_handoff(
+            {
+                k: task.get(k)
+                for k in (
+                    "task_id",
+                    "title",
+                    "instruction",
+                    "domain",
+                    "dependencies",
+                    "requires_human_approval",
+                )
+            },
+            text[:11000],
+            snapshot,
+            maker="anthropic-counted-nightshift-v1",
+            runtime={
+                "budget_id": budget_id,
+                "reservation_id": result["reservation_id"],
+                "cost_usd": result["cost_usd"],
+                "head_sha": os.getenv("GITHUB_SHA"),
+            },
+        )
+        bridge.upsert_master_status(
+            key=f"jarvis.checker_handoff.{task_id}",
+            category="jarvis",
+            value=handoff,
         )
         # Maker cannot mark its own task/content done. Release the lease for independent review.
         bridge.update_worker(
