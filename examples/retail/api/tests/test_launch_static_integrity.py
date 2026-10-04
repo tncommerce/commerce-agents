@@ -64,11 +64,24 @@ def test_every_live_fragrance_has_source_data_and_local_image() -> None:
         assert verified, f"Remote launch image is not verified product truth: {product_id}"
 
         visual = verified[0]
-        assert visual.get("provenance") == "licensed", product_id
-        assert str(visual.get("license_name") or "").strip(), product_id
-        assert str(visual.get("license_url") or "").startswith("https://"), product_id
-        assert str(visual.get("attribution_text") or "").strip(), product_id
-        assert isinstance(visual.get("share_alike_required"), bool), product_id
+        provenance = visual.get("provenance")
+        if provenance == "licensed":
+            assert str(visual.get("license_name") or "").strip(), product_id
+            assert str(visual.get("license_url") or "").startswith("https://"), product_id
+            assert str(visual.get("attribution_text") or "").strip(), product_id
+            assert isinstance(visual.get("share_alike_required"), bool), product_id
+        elif provenance == "merchant_feed":
+            assert str(visual.get("reviewed_at") or "").strip(), product_id
+            assert str(visual.get("rights_basis_id") or "").strip(), product_id
+            assert str(visual.get("rights_checked_at") or "").strip(), product_id
+            assert visual.get("exact_variant_verified") is True, product_id
+            expected_variant = f"{int(source_product['volume_ml'])}ml".lower()
+            actual_variant = str(visual.get("variant") or "").replace(" ", "").lower()
+            assert actual_variant == expected_variant, product_id
+        else:
+            raise AssertionError(
+                f"Unsupported remote product-truth provenance for {product_id}: {provenance}"
+            )
 
 
 def test_live_fragrance_slugs_are_unique() -> None:
