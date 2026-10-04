@@ -8,6 +8,8 @@
   const badge = status => node('span', status, 'pill ' + ({WORKING:'good','OWNER GATE':'warn',ERROR:'bad',ACTIVE:'good',HEALTHY:'good',READY:'good',OFF:'good',BLOCKED:'bad',FAILED:'bad',DEGRADED:'warn',STALE:'warn','WAITING HUMAN':'warn',WAITING:'warn'}[status] || 'neutral'));
   const line = (parent, label, text) => { const p = node('p'); p.append(node('small', label + ' · '), node('span', text)); parent.append(p); };
   let snapshot = null, busy = false, timer = null;
+  const decisionPanel = document.querySelector('.decision-panel');
+  if (decisionPanel && $('command')) $('command').after(decisionPanel);
   function missions() {
     if (!snapshot) return;
     const board = $('mission-board'); board.replaceChildren();
@@ -46,7 +48,19 @@
     snapshot = s;
     const c = s.command_center, f = s.freshness;
     const complete = f.operational_complete === true;
-    put('owner-now', c.owner_action);
+    const gates = Array.isArray(s.decision_center) ? s.decision_center : [];
+    const gateCount = Number(c.human_approval_count || gates.length || 0);
+    const needsApproval = gateCount > 0 || c.status === 'OWNER GATE';
+    const ownerBox = document.querySelector('.owner-now');
+    if (ownerBox) ownerBox.classList.toggle('needs-approval', needsApproval);
+    put('owner-now', needsApproval ? 'Freigabe erforderlich' : (complete ? 'Keine Aktion erforderlich' : 'Status wird geprüft'));
+    put('owner-detail', needsApproval ? (gates[0]?.title || 'Eine Owner-Entscheidung wartet. Öffne Freigaben für Details.') : (c.owner_action || 'Jarvis benötigt aktuell keine Entscheidung von dir.'));
+    const approval = $('approval-alert');
+    approval.hidden = !needsApproval;
+    if (needsApproval) {
+      put('approval-summary', gates.length === 1 ? gates[0].title : (gateCount + ' Freigaben warten auf dich'));
+      put('approval-detail', gates[0]?.reason || 'Öffne Freigaben für Grund, Risiko, Kosten, Nutzen und den exakten GO-Token.');
+    }
     put('current-task', c.current_task || 'Keine aktive Ausführung beobachtet');
     put('allowed-task', c.next_allowed_task);
     put('stop-reason', c.stop_reason);
@@ -67,10 +81,10 @@
     put('next-action', (c.checkpoint_stale ? 'STALE PLAN · ' : '') + value(c.next_safe_action));
     put('checkpoint-age', (c.checkpoint_stale ? 'STALE · ' : '') + 'Checkpoint · ' + stamp(c.checkpoint_observed_at));
     const decisions = $('decision-list'); decisions.replaceChildren();
-    for (const d of s.decision_center) {
+    for (const d of gates) {
       const n = node('article', undefined, 'decision-item'); n.append(badge('WAITING HUMAN'), node('h3', d.title)); line(n, 'Gate', d.type); line(n, 'Grund', d.reason); line(n, 'Risiko', d.risk); line(n, 'Kosten USD', d.cost_usd); line(n, 'Nutzen', d.benefit); line(n, 'Exakter GO-Token', d.go_token); if (d.provider) line(n, 'Provider', d.provider); decisions.append(n);
     }
-    if (!s.decision_center.length) decisions.append(node('p', complete ? 'Keine offenen Owner-Gates beobachtet.' : 'Owner-Gates derzeit nicht vollständig prüfbar.', 'muted'));
+    if (!gates.length) decisions.append(node('p', complete ? 'Keine Freigabe erforderlich. Du musst aktuell nichts entscheiden.' : 'Freigabestatus derzeit nicht vollständig prüfbar.', 'muted'));
     for (const key of ['cap','spend','remaining']) { const v = s.budget[{cap:'cap_usd',spend:'spent_usd',remaining:'remaining_usd'}[key]]; put('budget-' + key, v === null || v === undefined ? null : '$' + Number(v).toFixed(2)); }
     $('paid-state').replaceWith(Object.assign(badge(s.budget.paid_model_execution), {id:'paid-state'}));
     put('budget-details', 'Paid execution beobachtet · ' + stamp(s.budget.paid_model_execution_observed_at) + ' · Runs ' + value(s.budget.runs) + '/' + value(s.budget.max_runs) + ' · Budgetstatus ' + value(s.budget.status));
@@ -137,11 +151,18 @@
       $('connection-alert').hidden = false;
       put('connection-alert', snapshot ? 'LIVE READ UNAVAILABLE · Letzte Beobachtung bleibt sichtbar und ist nicht mehr als aktuell bestätigt.' : 'LIVE READ UNAVAILABLE · Kein Systemzustand bestätigt. Erneute Prüfung folgt.');
       put('sync-label', 'Verbindung unterbrochen');
-      put('owner-now', 'Aktueller Entscheidungsstatus unbekannt · erneut prüfen');
+      put('owner-now', 'Status derzeit nicht verfügbar');
+      put('owner-detail', 'Live-Daten konnten nicht geladen werden. Bitte erneut prüfen.');
+      $('approval-alert').hidden = true;
       $('jarvis-state').replaceWith(Object.assign(badge('ERROR'), {id:'jarvis-state'}));
     } finally { clearTimeout(timeout); busy = false; $('refresh').disabled = false; timer = setTimeout(refresh, 10000); }
   }
   $('refresh').addEventListener('click', refresh);
+  $('toggle-details').addEventListener('click', () => {
+    const open = document.body.classList.toggle('show-advanced');
+    $('toggle-details').setAttribute('aria-expanded', String(open));
+    $('toggle-details').textContent = open ? 'Technische Details ausblenden' : 'Technische Details anzeigen';
+  });
   $('domain-filter').addEventListener('change', missions);
   $('show-done').addEventListener('change', missions);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); else clearTimeout(timer); });
