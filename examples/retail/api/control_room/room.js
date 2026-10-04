@@ -320,6 +320,7 @@
     $("decisions").hidden = gatesComplete && !needsApproval;
     $("pulse-action").href =
       gatesComplete && !needsApproval ? "#command" : "#decisions";
+    $("decision-nav").closest("a").href = $("pulse-action").href;
 
     const posts = Array.isArray(revenue.posts) ? revenue.posts : [];
     const now = Date.now();
@@ -891,7 +892,7 @@
           node(
             "span",
             h.name === "Supervisor"
-              ? "Älterer Supervisor"
+              ? "Supervisor-Prüfung"
               : h.name === "Jarvis free loop"
                 ? "Freier Jarvis-Loop"
                 : h.name,

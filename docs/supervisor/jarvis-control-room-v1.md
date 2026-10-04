@@ -255,7 +255,7 @@ The primary view groups execution, next candidates and dependencies directly bel
 Jarvis. Completed gate checks with zero owner decisions collapse the empty gate
 panel; unknown gates and actual decisions remain visible. Cost and revenue source
 details expand on demand. The free-loop observation is pinned in system health,
-with a separate label for the older Supervisor and visible observation timestamps.
+with a separate label for the separate Supervisor check and visible observation timestamps.
 The hero exposes source attention independently of execution activity.
 
 The revenue progress ring is removed. Analytics counts remain observed signals
