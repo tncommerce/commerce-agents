@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "observed_at": "2026-10-04",
+  "source": "Awin Classic publisher transaction report, owner-observed",
+  "advertiser": {
+    "name": "Perfumetrader",
+    "advertiser_id": "11672"
+  },
+  "date_range": {
+    "from": "2026-10-01",
+    "to": "2026-10-04",
+    "basis": "transaction_date",
+    "market": "Germany"
+  },
+  "checks": [
+    {
+      "scope": "clickref_filtered",
+      "clickref": "one_million_example61_01",
+      "payment_status": "all",
+      "transaction_status": "all",
+      "sales_open": 0,
+      "sales_confirmed": 0,
+      "sales_bonus": 0,
+      "sales_rejected": 0,
+      "sales_total": 0,
+      "amount_total_eur": 0,
+      "commission_total_eur": 0
+    },
+    {
+      "scope": "advertiser_unfiltered",
+      "clickref": null,
+      "payment_status": "all",
+      "transaction_status": "all",
+      "sales_open": 0,
+      "sales_confirmed": 0,
+      "sales_bonus": 0,
+      "sales_rejected": 0,
+      "sales_total": 0,
+      "amount_total_eur": 0,
+      "commission_total_eur": 0
+    }
+  ],
+  "related_product_id": "SC-RABANNE-1-MILLION-EDT-100",
+  "first_party_state": {
+    "merchant_clickouts_total": 2,
+    "tagged_content_id": "one_million_example61_01",
+    "tagged_dufynd_sessions": 4,
+    "tagged_product_detail_sessions": 4,
+    "tagged_offer_section_view_sessions": 3,
+    "tagged_merchant_clickout_sessions": 1
+  },
+  "interpretation": {
+    "confirmed_network_transactions": 0,
+    "confirmed_commission_eur": 0,
+    "statement": "No Awin transaction is present for Perfumetrader in the checked 2026-10-01 through 2026-10-04 window. Merchant clickouts are not sales."
+  },
+  "caveats": [
+    "This evidence is a point-in-time network report and may change if Awin posts or amends a transaction later.",
+    "Historical clickouts before the dynamic clickref patch used the same stored clickref and cannot be uniquely joined to an exact browser session without additional network evidence."
+  ]
+}
