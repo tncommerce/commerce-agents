@@ -228,13 +228,67 @@
       return "Wartet auf Handler-Auswahl im nächsten Loop";
     return "Kein konkreter Wartegrund gespeichert";
   };
+  // Presentation labels only: original titles and identifiers remain inspectable.
+  const taskLabels = {
+    tech_model3d_outreach_20260929:
+      "Markenantworten zu fünf 3D-Modellen prüfen",
+    tech_widian_3d_contact_form_20260930:
+      "Widian-Anfrage für ein 3D-Modell vorbereiten",
+    catalog_release_01_readiness: "Produktfreigabe für Release 01 vorbereiten",
+    jarvis_dior_hypnotic_image_rights_outreach_20261001:
+      "Bildrechte für Dior Hypnotic Poison 100 ml klären",
+    notino_original_asset_rights_path_20261001:
+      "Nutzungsrechte für Notino-Originalbilder klären",
+    notino_original_asset_visual_review_queue_20261001:
+      "Priorisierte Notino-Produktbilder prüfen",
+    perfumetrader_product_coverage: "Perfumetrader-Händlerabdeckung erweitern",
+    perfumetrader_feed_response: "Perfumetrader-Produktdatenantwort auswerten",
+    jarvis_purchase_freshness_watchlist_20261001:
+      "Aktualität der Kaufziele und Händlerabdeckung prüfen",
+    repo_current_commerce:
+      "Lizenzierte Bilder und visuelle Freigabe vorbereiten",
+    release02_brand_image_rights_outreach_20261001:
+      "Bildrechte für Release 02 klären",
+    release03_brand_image_rights_outreach_20261001:
+      "Bildrechte für Release 03 klären",
+    release04_brand_image_rights_outreach_20261001:
+      "Bildrechte für Release 04 klären",
+    release05_brand_image_rights_outreach_20261001:
+      "Bildrechte für Release 05 klären",
+    release06_armani_si_image_rights_outreach_20261001:
+      "Bildrechte für Armani Sì 100 ml klären",
+  };
+  const taskTitle = (task) =>
+    taskLabels[task?.task_id] ||
+    task?.title ||
+    task?.task_title ||
+    task?.task_id ||
+    "Aufgabe nicht zugeordnet";
+  const executionSignals = new Map();
+  let executionObserved = false;
+  const sourceHealthLabel = (health) =>
+    ({
+      HEALTHY: "Aktuell",
+      STALE: "Beobachtung veraltet",
+      DEGRADED: "Quelle meldet Einschränkung",
+      BLOCKED: "Blockiert",
+      UNKNOWN: "Nicht bestätigt",
+    })[health] ||
+    health ||
+    "Nicht bestätigt";
   function taskDetail(task) {
     const item = node("article", undefined, "dependency-task");
-    item.append(node("strong", task.title || task.task_id));
+    item.dataset.taskId = task.task_id || "";
+    item.append(node("strong", taskTitle(task)));
     line(item, "Status", detailText(task.status));
     line(item, "Grund / Voraussetzung", taskWait(task));
     line(item, "Nächster Prüfschritt", detailText(task.next_checkpoint));
     line(item, "Aktualisiert", stamp(task.updated_at));
+    const source = node("details", undefined, "task-source");
+    source.append(node("summary", "Original & Aufgabenkennung"));
+    line(source, "Original", task.title || task.task_id);
+    line(source, "Aufgabe", task.task_id);
+    item.append(source);
     return item;
   }
   function workerEvidence(w, compact = false) {
@@ -256,10 +310,64 @@
               : "Inaktiv";
     const heading = node("div", undefined, "execution-heading");
     heading.append(
-      node("strong", w.task_title || w.task_id || "Aufgabe nicht zugeordnet"),
+      node("strong", taskTitle(w)),
       node("span", state, "execution-state"),
     );
     item.append(heading);
+    if (compact) {
+      const path = node("div", undefined, "execution-path");
+      const phase = node("div", undefined, "execution-step");
+      phase.append(
+        node(
+          "small",
+          w.status === "ACTIVE" ? "01 · AKTUELLER SCHRITT" : "01 · WARTEGRUND",
+        ),
+        node(
+          "strong",
+          w.status === "ACTIVE"
+            ? detailText(w.execution_status)
+            : w.wait_reason === "external_dependency" &&
+                w.task_context?.dependencies?.length
+              ? taskWait(w.task_context)
+              : detailText(w.wait_reason),
+        ),
+      );
+      const next = node("div", undefined, "execution-step");
+      next.append(
+        node("small", "02 · NÄCHSTER DOKUMENTIERTER PRÜFSCHRITT"),
+        node("strong", detailText(w.next_checkpoint)),
+      );
+      path.append(phase, next);
+      item.append(path);
+      const proof = node("div", undefined, "execution-proof");
+      proof.append(
+        node("small", "LETZTER BESTÄTIGTER SCHRITT"),
+        node(
+          "span",
+          w.checkpoint?.verified === true
+            ? detailText(w.checkpoint.step) +
+                " · " +
+                stamp(w.checkpoint.verified_at)
+            : "Noch kein verifizierter Checkpoint vorhanden",
+        ),
+      );
+      item.append(proof);
+      line(item, "Letzter Fortschritt", stamp(w.last_progress_at));
+      const metadata = node("details", undefined, "execution-metadata");
+      metadata.append(
+        node(
+          "summary",
+          "Nachweise · " + (w.worker_id || w.worker_type || "Worker unbekannt"),
+        ),
+      );
+      line(metadata, "Aufgabe", w.task_id);
+      line(metadata, "Original", w.task_title || w.task_id);
+      line(metadata, "Gestartet", stamp(w.started_at));
+      line(metadata, "Lebenszeichen", stamp(w.heartbeat_at));
+      line(metadata, "Lease gültig bis", stamp(w.lease_expires_at));
+      item.append(metadata);
+      return item;
+    }
     line(
       item,
       "Worker",
@@ -436,6 +544,10 @@
     const complete = f.operational_complete === true;
     const gates = Array.isArray(s.decision_center) ? s.decision_center : [];
     const workers = Array.isArray(s.worker_deck) ? s.worker_deck : [];
+    const primaryWorker = workers.find((w) => w.status === "ACTIVE");
+    const primaryTitle = primaryWorker
+      ? taskTitle(primaryWorker)
+      : c.current_task;
     const systemsHealth = Array.isArray(s.system_health) ? s.system_health : [];
     const attention = systemsHealth.filter((h) =>
       ["STALE", "DEGRADED", "BLOCKED", "UNKNOWN"].includes(h.health),
@@ -443,7 +555,7 @@
     put(
       "source-summary",
       attention.length
-        ? attention.length + " Systemquellen brauchen Prüfung →"
+        ? attention.length + " Quellenhinweise · Details prüfen →"
         : "Systemquellen aktuell →",
     );
     $("source-summary").classList.toggle("needs-check", attention.length > 0);
@@ -530,7 +642,7 @@
           " extern · " +
           blockedTasks +
           " blockiert."
-        : c.current_task || "Supervisor-State aktuell.";
+        : primaryTitle || "Supervisor-State aktuell.";
 
     setPulse("pulse-jarvis", jarvisTone, jarvisMain, jarvisDetail);
     setPulse(
@@ -642,12 +754,12 @@
 
     put(
       "priority",
-      c.current_task ||
+      primaryTitle ||
         (c.status === "WAITING"
           ? "Jarvis wartet auf den nächsten zulässigen oder externen Trigger."
           : "Aktueller Zustand aus dem letzten verifizierten Supervisor-Loop."),
     );
-    put("current-task", c.current_task || "Keine aktive Ausführung");
+    put("current-task", primaryTitle || "Keine aktive Ausführung");
     put(
       "allowed-task",
       c.next_allowed_task || "Warten auf nächsten zulässigen Trigger",
@@ -974,7 +1086,10 @@
           const item = node("article", undefined, "overview-feed-item");
           item.append(node("time", shortTime(e.observed_at)));
           const copy = node("div");
-          copy.append(node("strong", e.title), node("span", e.detail));
+          copy.append(
+            node("strong", taskLabels[e.task_id] || e.title),
+            node("span", e.detail),
+          );
           item.append(copy);
           overviewActivity.append(item);
         }
@@ -993,7 +1108,12 @@
     if (activity) {
       activity.replaceChildren();
       for (const e of workers
-        .filter((w) => w.completed_at && w.checkpoint?.verified === true)
+        .filter(
+          (w) =>
+            w.completed_at &&
+            w.execution_status === "completed" &&
+            w.checkpoint?.verified === true,
+        )
         .slice(0, 8)) {
         const item = node("article", undefined, "activity-item");
         item.append(
@@ -1040,7 +1160,7 @@
         );
         if (h.last_success_at)
           left.append(node("small", "Beobachtet " + stamp(h.last_success_at)));
-        row.append(left, node("b", value(h.health).toUpperCase()));
+        row.append(left, node("b", sourceHealthLabel(h.health)));
         healthOverview.append(row);
       }
       if (!ranked.length)
@@ -1115,15 +1235,62 @@
     const current = workers.find((w) => w.status === "ACTIVE");
     const duration = current?.duration_seconds;
     const executionDetails = $("execution-detail-list");
+    const sourceStatus = $("execution-source-status");
+    sourceStatus.hidden = s.freshness?.operational_complete === true;
+    sourceStatus.textContent =
+      "Operative Daten unvollständig. Angezeigte Nachweise sind kein vollständiger Live-Überblick.";
+    const openEvidence = new Set(
+      [...executionDetails.querySelectorAll(".execution-metadata[open]")].map(
+        (el) => el.parentElement.dataset.executionKey,
+      ),
+    );
     executionDetails.replaceChildren();
     const liveWorkers = workers.filter(
       (w) =>
         !w.completed_at &&
         !["completed", "failed_terminal"].includes(w.execution_status),
     );
-    liveWorkers
-      .slice(0, 3)
-      .forEach((w) => executionDetails.append(workerEvidence(w, true)));
+    liveWorkers.sort(
+      (a, b) =>
+        (a.status === "ACTIVE" ? 0 : 1) - (b.status === "ACTIVE" ? 0 : 1),
+    );
+    const operatingMode = liveWorkers.some((w) => w.status === "ACTIVE")
+      ? "working"
+      : liveWorkers.length
+        ? "waiting"
+        : s.freshness?.operational_complete === true
+          ? "monitoring"
+          : "unknown";
+    document.body.dataset.executionMode = operatingMode;
+    $("work").classList.toggle("has-execution", liveWorkers.length > 0);
+    const currentSignals = new Set();
+    liveWorkers.slice(0, 3).forEach((w, index) => {
+      const key = w.execution_id || w.worker_id || w.task_id || String(index);
+      currentSignals.add(key);
+      const signal = JSON.stringify([
+        w.status,
+        w.execution_status,
+        w.next_checkpoint,
+        w.last_progress_at,
+        w.checkpoint?.verified === true ? w.checkpoint : null,
+      ]);
+      const item = workerEvidence(w, true);
+      item.dataset.executionKey = key;
+      item.querySelector("details").open = openEvidence.has(key);
+      if (
+        executionObserved &&
+        executionSignals.has(key) &&
+        executionSignals.get(key) !== signal
+      )
+        item.classList.add("evidence-changed");
+      else if (executionObserved && !executionSignals.has(key))
+        item.classList.add("evidence-changed");
+      executionSignals.set(key, signal);
+      executionDetails.append(item);
+    });
+    for (const key of executionSignals.keys())
+      if (!currentSignals.has(key)) executionSignals.delete(key);
+    executionObserved = true;
     if (liveWorkers.length > 3)
       executionDetails.append(
         node(
@@ -1168,12 +1335,10 @@
       "execution-context",
       current
         ? [
-            current.worker_id || current.worker_type,
-            "Start " + stamp(current.started_at),
             duration == null
-              ? "Dauer unbekannt"
-              : Math.floor(duration / 60) + " Min",
-            "Fortschritt: kein messbarer Prozentwert",
+              ? "Ausführungsdauer nicht dokumentiert"
+              : "Seit " + Math.floor(duration / 60) + " Min in Ausführung",
+            "Kein belastbarer Prozentfortschritt dokumentiert",
           ].join(" · ")
         : c.status === "WAITING"
           ? "Der freie Loop prüft die Queue. Externe Antworten und neue Messsignale können die nächste Arbeit auslösen."
@@ -1184,64 +1349,92 @@
       "Nächster Loop · " + stamp(c.next_loop_estimate) + " (Schätzung)",
     );
     const streams = $("workstream-list");
-    const expanded = new Set(
-      [...streams.querySelectorAll("details[open]")].map(
-        (el) => el.dataset.stream,
-      ),
-    );
-    streams.replaceChildren();
-    for (const w of s.workstreams || []) {
-      const card = node("article", undefined, "workstream-card");
-      card.dataset.state = w.status;
-      const focus = w.focus_task || w.next_task;
-      card.append(node("h3", w.name), badge(w.status));
-      const working = w.status === "WORKING";
-      const main = working
-        ? focus?.title
-        : focus
-          ? taskWait(focus)
-          : w.evidence_note ||
-            (w.status === "MONITORING"
-              ? "Überwacht Queue, Quellenfrische und neue externe Signale."
-              : "Keine offene Aufgabe aus dieser Quelle.");
-      card.append(node("p", main, "workstream-purpose"));
-      const details = node("details", undefined, "workstream-details");
-      details.dataset.stream = w.name;
-      details.open = expanded.has(w.name);
-      details.append(
-        node(
-          "summary",
-          w.tasks ? w.tasks + " Aufgaben · Details" : "Nachweise ansehen",
+    const streamSignature = JSON.stringify(s.workstreams || []);
+    if (streams.dataset.signature !== streamSignature) {
+      const openSources = new Set(
+        [...streams.querySelectorAll(".task-source[open]")].map(
+          (el) => el.parentElement.dataset.taskId,
         ),
       );
-      const grid = node("div", undefined, "task-evidence-grid");
-      for (const worker of w.active_workers || [])
-        grid.append(workerEvidence(worker));
-      for (const task of w.tasks_preview || (focus ? [focus] : []))
-        grid.append(taskDetail(task));
-      if (!grid.children.length) {
-        grid.append(
-          node(
-            "p",
-            w.evidence_note ||
+      const focused = document.activeElement;
+      const focusedTask = focused?.closest(".dependency-task")?.dataset.taskId;
+      const focusedStream = focused?.closest(".workstream-details")?.dataset
+        .stream;
+      const expanded = new Set(
+        [...streams.querySelectorAll("details[open]")].map(
+          (el) => el.dataset.stream,
+        ),
+      );
+      streams.replaceChildren();
+      for (const w of s.workstreams || []) {
+        const card = node("article", undefined, "workstream-card");
+        card.dataset.state = w.status;
+        const focus = w.focus_task || w.next_task;
+        card.append(node("h3", w.name), badge(w.status));
+        const working = w.status === "WORKING";
+        const main = working
+          ? taskTitle(focus)
+          : focus
+            ? taskWait(focus)
+            : w.evidence_note ||
               (w.status === "MONITORING"
-                ? "Der freie Loop ist aktiv. Kein Worker wird als arbeitend dargestellt, solange keine aktive Ausführung verifiziert ist."
-                : "Kein konkreter Task zugeordnet."),
-            "muted",
-          ),
-        );
-      }
-      if (w.tasks_preview_complete === false)
-        grid.append(
+                ? "Überwacht Queue, Quellenfrische und neue externe Signale."
+                : "Keine offene Aufgabe aus dieser Quelle.");
+        card.append(node("p", main, "workstream-purpose"));
+        const details = node("details", undefined, "workstream-details");
+        details.dataset.stream = w.name;
+        details.open = expanded.has(w.name);
+        details.append(
           node(
-            "p",
-            "Aufgabenliste begrenzt oder Quelle unvollständig. Fehlende Aufgaben werden nicht als null gewertet.",
-            "muted",
+            "summary",
+            w.tasks ? w.tasks + " Aufgaben · Details" : "Nachweise ansehen",
           ),
         );
-      details.append(grid);
-      card.append(details);
-      streams.append(card);
+        const grid = node("div", undefined, "task-evidence-grid");
+        for (const worker of w.active_workers || [])
+          grid.append(workerEvidence(worker));
+        for (const task of w.tasks_preview || (focus ? [focus] : [])) {
+          const detail = taskDetail(task);
+          detail.querySelector(".task-source").open = openSources.has(
+            task.task_id,
+          );
+          grid.append(detail);
+        }
+        if (!grid.children.length) {
+          grid.append(
+            node(
+              "p",
+              w.evidence_note ||
+                (w.status === "MONITORING"
+                  ? "Der freie Loop ist aktiv. Kein Worker wird als arbeitend dargestellt, solange keine aktive Ausführung verifiziert ist."
+                  : "Kein konkreter Task zugeordnet."),
+              "muted",
+            ),
+          );
+        }
+        if (w.tasks_preview_complete === false)
+          grid.append(
+            node(
+              "p",
+              "Aufgabenliste begrenzt oder Quelle unvollständig. Fehlende Aufgaben werden nicht als null gewertet.",
+              "muted",
+            ),
+          );
+        details.append(grid);
+        card.append(details);
+        streams.append(card);
+      }
+      streams.dataset.signature = streamSignature;
+      if (focused?.tagName === "SUMMARY") {
+        const candidates = [...streams.querySelectorAll("summary")];
+        const replacement = candidates.find((el) =>
+          focusedTask
+            ? el.closest(".dependency-task")?.dataset.taskId === focusedTask
+            : focusedStream &&
+              el.parentElement.dataset.stream === focusedStream,
+        );
+        replacement?.focus({ preventScroll: true });
+      }
     }
     const next = $("next-task-list");
     next.replaceChildren();
@@ -1249,7 +1442,7 @@
       const item = node("article", undefined, "next-task");
       item.append(
         node("span", String(i + 1).padStart(2, "0"), "task-index"),
-        node("p", t.title),
+        node("p", taskTitle(t)),
       );
       next.append(item);
     });
@@ -1428,6 +1621,18 @@
         "Kostenstatus kann aktuell nicht bestätigt werden.",
       );
       setTone("jarvis-core", "amber");
+      document.body.dataset.executionMode = "unknown";
+      $("jarvis-core").dataset.mode = "unknown";
+      const sourceStatus = $("execution-source-status");
+      sourceStatus.hidden = false;
+      sourceStatus.textContent =
+        "Verbindung unterbrochen. Angezeigte Arbeit ist der letzte bekannte Stand, nicht aktuell bestätigt.";
+      document
+        .querySelectorAll(".execution-evidence .execution-state")
+        .forEach((el) => {
+          el.textContent =
+            "Zuletzt · " + el.textContent.replace(/^Zuletzt · /, "");
+        });
       const approval = $("approval-alert");
       if (approval) approval.hidden = true;
       const jarvisState = $("jarvis-state");

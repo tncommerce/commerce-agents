@@ -292,3 +292,28 @@ Validation: 2,897 tests passed, 163 environment-dependent tests skipped. Desktop
 and mobile browser replays validated worker states and expandable details at
 390/430/768/1440 pixels. A pre-existing demo test now uses the same UTC date as its
 fixtures instead of the host timezone. Signed-in owner verification remains separate.
+
+## CEO Control Room V0.9 (2026-10-05)
+
+Execution is the dominant desktop panel when an actual worker is present. The
+compact Jarvis header uses a quiet status strip instead of four competing cards.
+Readable execution steps separate the observed phase or waiting cause, the recorded
+next checkpoint and the last verified result. Original titles, worker identifiers
+and timestamps remain available in native disclosures. Known task IDs have German
+presentation labels; unknown tasks retain their authoritative original title.
+
+Monitoring pauses core motion. An evidence highlight occurs only on a changed
+execution signal, never on an identical refresh or heartbeat alone. Reduced motion
+disables it. Source health labels distinguish stale observation from confirmed
+outage. Unavailable reads mark retained execution as last-known, not verified live.
+Unchanged workstream data retain their DOM, disclosure and keyboard state; changed
+data preserve open original-source disclosures and restore summary focus.
+
+Local validation: 2,897 Python tests passed, 163 environment-dependent skipped;
+87 dashboard/auth tests passed. Isolated browser checks at 390/430/768/1440 pixels
+cover hierarchy, waiting/stale workers, genuine progress versus heartbeat motion,
+disclosure retention, source failure/recovery, owner gates and reduced motion.
+The reusable `tests/browser/control_room_evidence.cjs` accepts an allowlisted
+snapshot file and fulfills every browser request locally. Replay does not certify
+an authenticated production session. No runtime, paid execution, budget, queue,
+authentication, publishing, catalog or source-refresh workflow is changed.

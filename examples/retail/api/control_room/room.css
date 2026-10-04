@@ -3437,3 +3437,337 @@ summary {
 .funnel > div.reached:not(.proven) {
   --stage: #6e9dac;
 }
+
+/* V0.9 — execution takes the stage; monitoring stays quiet. */
+.command {
+  min-height: 0;
+  grid-template-columns: minmax(0, 1fr) 190px;
+}
+.command-copy {
+  padding: 24px 28px 20px;
+}
+.command h1 {
+  font-size: 38px;
+  margin: 10px 0 6px;
+  letter-spacing: 5px;
+}
+.command h1 span {
+  font-size: 10px;
+  letter-spacing: 2px;
+}
+.priority {
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 720px;
+}
+.core {
+  width: 190px;
+  min-height: 190px;
+  transform: scale(0.72);
+  transform-origin: center;
+}
+.core:not([data-mode="working"]) .core-orbit,
+.core:not([data-mode="working"]) .core-signal {
+  animation: none;
+}
+.pulse-grid {
+  gap: 0;
+  border-top: 1px solid #91c9c51a;
+  padding-top: 14px;
+}
+.pulse-card {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0 16px;
+  min-height: 84px;
+  border-left: 1px solid #91c9c51a;
+}
+.pulse-card::after {
+  display: none;
+}
+.execution-source-status {
+  border-left: 2px solid #e1c18a;
+  padding-left: 12px;
+  color: #e5cca4;
+  font-size: 13px;
+  line-height: 1.65;
+}
+body[data-execution-mode="unknown"] .execution-evidence {
+  opacity: 0.7;
+}
+.health-chip b {
+  font-size: 10px;
+  max-width: 125px;
+  text-align: right;
+  line-height: 1.5;
+}
+.pulse-card:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+.pulse-card strong {
+  font-size: 21px;
+}
+.pulse-card span {
+  font-size: 12px;
+  line-height: 1.5;
+}
+.command-evidence {
+  font-size: 11px;
+  opacity: 0.85;
+}
+.source-summary {
+  font-size: 13px;
+  min-height: 32px;
+  line-height: 1.5;
+}
+.operations-grid {
+  grid-template-columns: minmax(0, 1.45fr) repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 16px;
+}
+.current-panel {
+  background: linear-gradient(140deg, #10302f, #071820 78%);
+  border-color: #71bdaa42;
+  padding: 24px;
+}
+.next-panel,
+.waiting-panel {
+  background: #07181eb3;
+  border-color: #789aab20;
+  box-shadow: none;
+}
+.current-panel h2 {
+  font-size: 24px;
+}
+.current-panel .panel-heading {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.current-panel .work-flow article strong {
+  font-size: 19px;
+  line-height: 1.5;
+}
+.execution-context {
+  font-size: 13px;
+  line-height: 1.65;
+  color: #a6c4c9;
+}
+.execution-evidence {
+  border: 0;
+  border-top: 1px solid #82cebe30;
+  background: none;
+  border-radius: 0;
+  padding: 20px 0 0;
+  margin-top: 16px;
+}
+.execution-heading strong {
+  font-size: 21px;
+  line-height: 1.45;
+  font-weight: 550;
+}
+.execution-state {
+  font-size: 12px;
+  padding: 4px 9px;
+  border-radius: 5px;
+  background: #01161c8c;
+}
+.execution-path {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin: 24px 0;
+}
+.execution-step {
+  min-width: 0;
+  padding-left: 12px;
+  border-left: 2px solid #7b9ca844;
+}
+[data-state="ACTIVE"] .execution-step:first-child {
+  border-left-color: #8edfe8;
+}
+[data-state="WAITING"] .execution-step:first-child,
+[data-state="STALE"] .execution-step:first-child {
+  border-left-color: #e1c18a;
+}
+.execution-step small,
+.execution-proof small {
+  display: block;
+  font-size: 10px;
+  line-height: 1.6;
+  letter-spacing: 0.7px;
+  color: #a7c2c8;
+}
+.execution-step strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.65;
+  color: #e2efed;
+  overflow-wrap: anywhere;
+}
+.execution-proof {
+  background: #03151e66;
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+.execution-proof span {
+  display: block;
+  font-size: 13px;
+  line-height: 1.65;
+  margin-top: 6px;
+  color: #b6d5cf;
+  overflow-wrap: anywhere;
+}
+.execution-metadata summary,
+.task-source summary {
+  min-height: 44px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #9abfc5;
+  padding: 12px 0;
+  overflow-wrap: anywhere;
+}
+.execution-evidence p small,
+.worker-evidence p small,
+.dependency-task p small {
+  font-size: 11px;
+}
+.execution-evidence p span,
+.worker-evidence p span,
+.dependency-task p span {
+  font-size: 13px;
+}
+.dependency-task > strong {
+  font-size: 15px;
+}
+.workstream-card .workstream-purpose {
+  font-size: 14px;
+  line-height: 1.65;
+}
+.workstream-details > summary {
+  font-size: 12px;
+}
+.standby-reason {
+  padding: 16px;
+  background: #05171c66;
+  border-color: #b9c8bc20;
+}
+.standby-reason > strong {
+  font-size: 17px;
+  line-height: 1.5;
+}
+.detail-link {
+  font-size: 12px;
+}
+.next-observed-trigger strong,
+.next-observed-trigger p {
+  font-size: 13px;
+  line-height: 1.6;
+}
+.evidence-changed {
+  animation: evidence-arrival 1.4s ease-out;
+}
+@keyframes evidence-arrival {
+  from {
+    box-shadow: inset 3px 0 #8edfe8;
+    background-color: #8edfe818;
+  }
+  to {
+    box-shadow: inset 0 0 transparent;
+    background-color: transparent;
+  }
+}
+@media (min-width: 1151px) {
+  body[data-execution-mode="working"] .operations-grid,
+  body[data-execution-mode="waiting"] .operations-grid {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  }
+  body[data-execution-mode="working"] .current-panel,
+  body[data-execution-mode="waiting"] .current-panel {
+    grid-row: 1 / 3;
+    grid-column: 1;
+    width: 100%;
+  }
+  body[data-execution-mode="working"] .next-panel,
+  body[data-execution-mode="waiting"] .next-panel {
+    grid-row: 1;
+    grid-column: 2;
+  }
+  body[data-execution-mode="working"] .waiting-panel,
+  body[data-execution-mode="waiting"] .waiting-panel {
+    grid-row: 2;
+    grid-column: 2;
+  }
+}
+@media (max-width: 1150px) {
+  .operations-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .current-panel {
+    grid-column: 1 / -1;
+  }
+  .command {
+    grid-template-columns: minmax(0, 1fr) 160px;
+  }
+  .core {
+    width: 160px;
+    transform: scale(0.65);
+  }
+}
+@media (max-width: 600px) {
+  .command {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .command-copy {
+    padding: 20px;
+  }
+  .command h1 {
+    font-size: 32px;
+  }
+  .core {
+    display: none;
+  }
+  .pulse-grid {
+    gap: 16px 12px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .pulse-card {
+    padding: 0 0 0 12px;
+    min-height: 0;
+  }
+  .pulse-card:nth-child(odd) {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .pulse-card strong {
+    font-size: 20px;
+  }
+  .operations-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .current-panel {
+    padding: 20px;
+  }
+  .execution-heading strong {
+    font-size: 19px;
+  }
+  .execution-path {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  .task-evidence-grid {
+    gap: 14px;
+  }
+  .command-evidence {
+    gap: 6px 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .evidence-changed {
+    animation: none !important;
+  }
+}
