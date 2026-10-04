@@ -56,10 +56,7 @@ def test_delina_refresh_changes_freshness_only_and_keeps_publication_gated() -> 
 
 
 def test_delina_refresh_keeps_dynamic_purchase_gate_clear() -> None:
-    staging = {
-        row["product_id"]: row
-        for row in load("scentai_catalog_staging.json")["products"]
-    }
+    staging = {row["product_id"]: row for row in load("scentai_catalog_staging.json")["products"]}
     offers = load("merchant_offers.json")["offers"]
     now = datetime(2026, 10, 4, 9, 45, tzinfo=UTC)
 
