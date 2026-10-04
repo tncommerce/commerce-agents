@@ -288,7 +288,7 @@ def excerpt(raw: bytes, keywords: set[str], name: str = "") -> dict:
             "line_ranges": ranges,
             "complete": False,
             "missing_anchors": missing,
-            "omission_reason": "outside fixed function windows omitted",
+            "omission_reason": "code_windows_only",
         }
     if isinstance(data, dict):
         projection = content_projection(name, data)
@@ -454,6 +454,8 @@ def pack_evidence(task: dict, *, head: str | None, root: Path = ROOT) -> dict:
         if "data" in source:
             source.pop("projection", None)
             source.pop("complete", None)
+        if source.get("missing_anchors") == []:
+            source.pop("missing_anchors")
         packet["repository_evidence"].append(source)
         # Reserve room for all remaining omission records; never truncate a serialized prompt.
         reserved = (
