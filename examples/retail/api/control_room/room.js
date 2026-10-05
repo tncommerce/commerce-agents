@@ -858,6 +858,8 @@
         "overview",
         "workers",
         "missions",
+        "first_money",
+        "systems",
         "risks",
         "recent_activity",
       ]);
@@ -946,7 +948,7 @@
       if (toolCallsThisTurn >= 2) {
         output = JSON.stringify({ ok: false, error: "bounded_tool_limit", note: "Answer from the evidence already returned in this turn." });
       } else if (call.name === "advance_dufynd_safe_work") {
-        setState("thinking", "HANDELT", "Jarvis stößt den zertifizierten sicheren Arbeitsschritt an …");
+        setState("thinking", "HANDELT", "Jarvis setzt den nächsten sicheren internen Schritt um …");
         output = await executeSafeAction();
       } else {
         setState("thinking", "ANALYSIERT", "Jarvis prüft die bestätigte Live-Evidenz …");
