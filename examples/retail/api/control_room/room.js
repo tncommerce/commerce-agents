@@ -2003,6 +2003,17 @@
           actions.append(confirm);
         }
         if (
+          d.content_candidate &&
+          d.action_token &&
+          !d.manual_action_required
+        ) {
+          const reviewApprove = node("button", "Kandidat freigeben", "owner-action primary");
+          reviewApprove.type = "button";
+          reviewApprove.addEventListener("click", () =>
+            submitOwnerAction(d, "approve_review", reviewApprove),
+          );
+          actions.append(reviewApprove);
+        } else if (
           d.approval_alone_enables_execution &&
           d.action_token
         ) {
