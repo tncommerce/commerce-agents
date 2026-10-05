@@ -26,6 +26,7 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Resp
 from starlette.concurrency import run_in_threadpool
 
 from .jarvis_dashboard import PROJECT_ORIGIN, DashboardReader, create_dashboard_router
+from .jarvis_owner_actions import OwnerActionConflict, OwnerActionUnavailable, OwnerActionWriter
 from .jarvis_voice import JarvisVoiceGateway, VoiceUnavailable
 
 ORIGIN = "https://scentai-api-kxhe.onrender.com"
@@ -254,12 +255,15 @@ def create_control_room_router(
     auth: OwnerAuth | None = None,
     reader: DashboardReader | None = None,
     voice_gateway: JarvisVoiceGateway | None = None,
+    action_writer: OwnerActionWriter | None = None,
 ) -> APIRouter:
     router = APIRouter(include_in_schema=False)
     config = config or OwnerConfig.from_env()
     auth = auth or (OwnerAuth(config) if config else None)
     if voice_gateway is None and config and auth:
         voice_gateway = JarvisVoiceGateway.from_env(config.owner_id)
+    if action_writer is None and config and auth:
+        action_writer = OwnerActionWriter(secret_key=config.read_key)
 
     def owner(request: Request) -> dict[str, Any]:
         if auth is None:
@@ -392,6 +396,52 @@ def create_control_room_router(
             media_type="application/sdp",
             status_code=201,
         )
+
+    @router.post("/internal/jarvis/owner-action")
+    async def owner_action(request: Request) -> JSONResponse:
+        data = owner(request)
+        assert auth is not None
+        auth.require_origin(request)
+        csrf = request.headers.get("x-csrf-token", "")
+        if not hmac.compare_digest(csrf, data["csrf"]):
+            raise HTTPException(403, "Forbidden", headers=PRIVATE_HEADERS)
+        if request.headers.get("content-type", "").split(";")[0] != "application/json":
+            raise HTTPException(400, "Invalid owner action", headers=PRIVATE_HEADERS)
+        body = bytearray()
+        async for chunk in request.stream():
+            body.extend(chunk)
+            if len(body) > 4096:
+                raise HTTPException(413, "Owner action too large", headers=PRIVATE_HEADERS)
+        try:
+            payload = json.loads(body)
+            if not isinstance(payload, dict) or set(payload) != {
+                "decision_id",
+                "action_token",
+                "action",
+            }:
+                raise ValueError
+        except (ValueError, TypeError, json.JSONDecodeError):
+            raise HTTPException(400, "Invalid owner action", headers=PRIVATE_HEADERS) from None
+        if action_writer is None:
+            raise HTTPException(503, "Owner actions unavailable", headers=PRIVATE_HEADERS)
+        try:
+            result = await run_in_threadpool(
+                action_writer.resolve,
+                decision_id=payload["decision_id"],
+                action_token=payload["action_token"],
+                action=payload["action"],
+            )
+        except ValueError:
+            raise HTTPException(400, "Invalid owner action", headers=PRIVATE_HEADERS) from None
+        except OwnerActionConflict:
+            raise HTTPException(
+                409,
+                "Owner action no longer matches the live gate",
+                headers=PRIVATE_HEADERS,
+            ) from None
+        except OwnerActionUnavailable:
+            raise HTTPException(503, "Owner action unavailable", headers=PRIVATE_HEADERS) from None
+        return JSONResponse(result, headers=PRIVATE_HEADERS)
 
     @router.post("/internal/logout")
     def logout(request: Request) -> JSONResponse:
