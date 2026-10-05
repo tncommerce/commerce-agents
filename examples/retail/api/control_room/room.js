@@ -200,6 +200,8 @@
         bar.style.opacity = ".45";
       });
       core.style.removeProperty("--mic-energy");
+      core.style.removeProperty("--mic-scale");
+      core.style.removeProperty("--mic-brightness");
     }
 
     function stopMedia() {
@@ -242,6 +244,8 @@
       });
       const energy = total / bars.length;
       core.style.setProperty("--mic-energy", energy.toFixed(3));
+      core.style.setProperty("--mic-scale", (1 + energy * 0.16).toFixed(3));
+      core.style.setProperty("--mic-brightness", (1 + energy * 0.24).toFixed(3));
       frame = requestAnimationFrame(drawSpectrum);
     }
 
