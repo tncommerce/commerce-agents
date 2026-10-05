@@ -33,6 +33,17 @@ class Reader:
         return {"read_only": True, "version": 1}
 
 
+class FakeVoiceGateway:
+    enabled = True
+
+    def __init__(self):
+        self.calls = []
+
+    def connect(self, sdp):
+        self.calls.append(sdp)
+        return "v=0\r\no=- 9 9 IN IP4 127.0.0.1\r\n"
+
+
 @pytest.fixture
 def setup():
     config = OwnerConfig(
@@ -79,8 +90,16 @@ def setup():
 
     auth = OwnerAuth(config, transport=httpx.MockTransport(transport))
     reader = Reader()
+    reader.voice = FakeVoiceGateway()
     app = FastAPI()
-    app.include_router(create_control_room_router(config, auth=auth, reader=reader))
+    app.include_router(
+        create_control_room_router(
+            config,
+            auth=auth,
+            reader=reader,
+            voice_gateway=reader.voice,
+        )
+    )
     client = TestClient(app, base_url=ORIGIN)
     return client, auth, reader, state, token, calls, claims
 
@@ -182,6 +201,44 @@ def test_origin_csrf_size_method_and_assets(setup):
         assert r.status_code == 200
         assert "server-only" not in r.text
     assert client.get("/internal/assets/jarvis_owner_auth.py").status_code == 404
+
+
+def test_voice_session_requires_owner_origin_csrf_and_sdp(setup):
+    client, auth, reader, _, _, _, _ = setup
+    assert client.post(
+        "/internal/jarvis/voice/session",
+        headers={"Origin": ORIGIN, "Content-Type": "application/sdp"},
+        content="v=0\r\n",
+    ).status_code == 401
+
+    assert login(client).status_code == 200
+    csrf = auth.open(client.cookies[SESSION_COOKIE], ttl=3600)["csrf"]
+
+    assert client.post(
+        "/internal/jarvis/voice/session",
+        headers={"Origin": "https://evil.example", "X-CSRF-Token": csrf, "Content-Type": "application/sdp"},
+        content="v=0\r\n",
+    ).status_code == 403
+    assert client.post(
+        "/internal/jarvis/voice/session",
+        headers={"Origin": ORIGIN, "X-CSRF-Token": "wrong", "Content-Type": "application/sdp"},
+        content="v=0\r\n",
+    ).status_code == 403
+    assert client.post(
+        "/internal/jarvis/voice/session",
+        headers={"Origin": ORIGIN, "X-CSRF-Token": csrf, "Content-Type": "text/plain"},
+        content="v=0\r\n",
+    ).status_code == 400
+
+    response = client.post(
+        "/internal/jarvis/voice/session",
+        headers={"Origin": ORIGIN, "X-CSRF-Token": csrf, "Content-Type": "application/sdp"},
+        content="v=0\r\no=- 1 1 IN IP4 127.0.0.1\r\n",
+    )
+    assert response.status_code == 201
+    assert response.headers["content-type"].startswith("application/sdp")
+    assert response.text.startswith("v=0")
+    assert reader.voice.calls == ["v=0\r\no=- 1 1 IN IP4 127.0.0.1\r\n"]
 
 
 def test_revoked_after_login_and_logout_csrf(setup):
