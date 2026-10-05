@@ -205,30 +205,46 @@ def test_origin_csrf_size_method_and_assets(setup):
 
 def test_voice_session_requires_owner_origin_csrf_and_sdp(setup):
     client, auth, reader, _, _, _, _ = setup
-    assert client.post(
-        "/internal/jarvis/voice/session",
-        headers={"Origin": ORIGIN, "Content-Type": "application/sdp"},
-        content="v=0\r\n",
-    ).status_code == 401
+    assert (
+        client.post(
+            "/internal/jarvis/voice/session",
+            headers={"Origin": ORIGIN, "Content-Type": "application/sdp"},
+            content="v=0\r\n",
+        ).status_code
+        == 401
+    )
 
     assert login(client).status_code == 200
     csrf = auth.open(client.cookies[SESSION_COOKIE], ttl=3600)["csrf"]
 
-    assert client.post(
-        "/internal/jarvis/voice/session",
-        headers={"Origin": "https://evil.example", "X-CSRF-Token": csrf, "Content-Type": "application/sdp"},
-        content="v=0\r\n",
-    ).status_code == 403
-    assert client.post(
-        "/internal/jarvis/voice/session",
-        headers={"Origin": ORIGIN, "X-CSRF-Token": "wrong", "Content-Type": "application/sdp"},
-        content="v=0\r\n",
-    ).status_code == 403
-    assert client.post(
-        "/internal/jarvis/voice/session",
-        headers={"Origin": ORIGIN, "X-CSRF-Token": csrf, "Content-Type": "text/plain"},
-        content="v=0\r\n",
-    ).status_code == 400
+    assert (
+        client.post(
+            "/internal/jarvis/voice/session",
+            headers={
+                "Origin": "https://evil.example",
+                "X-CSRF-Token": csrf,
+                "Content-Type": "application/sdp",
+            },
+            content="v=0\r\n",
+        ).status_code
+        == 403
+    )
+    assert (
+        client.post(
+            "/internal/jarvis/voice/session",
+            headers={"Origin": ORIGIN, "X-CSRF-Token": "wrong", "Content-Type": "application/sdp"},
+            content="v=0\r\n",
+        ).status_code
+        == 403
+    )
+    assert (
+        client.post(
+            "/internal/jarvis/voice/session",
+            headers={"Origin": ORIGIN, "X-CSRF-Token": csrf, "Content-Type": "text/plain"},
+            content="v=0\r\n",
+        ).status_code
+        == 400
+    )
 
     response = client.post(
         "/internal/jarvis/voice/session",
