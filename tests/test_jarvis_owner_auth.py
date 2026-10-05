@@ -44,6 +44,21 @@ class FakeVoiceGateway:
         return "v=0\r\no=- 9 9 IN IP4 127.0.0.1\r\n"
 
 
+class FakeActionWriter:
+    def __init__(self):
+        self.calls = []
+
+    def resolve(self, *, decision_id, action_token, action):
+        self.calls.append((decision_id, action_token, action))
+        return {
+            "ok": True,
+            "decision_id": decision_id,
+            "action": action,
+            "status": "pending" if action == "confirm_manual" else "approved",
+            "verification_required": action == "confirm_manual",
+        }
+
+
 @pytest.fixture
 def setup():
     config = OwnerConfig(
@@ -91,6 +106,7 @@ def setup():
     auth = OwnerAuth(config, transport=httpx.MockTransport(transport))
     reader = Reader()
     reader.voice = FakeVoiceGateway()
+    reader.actions = FakeActionWriter()
     app = FastAPI()
     app.include_router(
         create_control_room_router(
@@ -98,6 +114,7 @@ def setup():
             auth=auth,
             reader=reader,
             voice_gateway=reader.voice,
+            action_writer=reader.actions,
         )
     )
     client = TestClient(app, base_url=ORIGIN)
@@ -258,6 +275,48 @@ def test_voice_session_requires_owner_origin_csrf_and_sdp(setup):
     assert response.headers["content-type"].startswith("application/sdp")
     assert response.text.startswith("v=0")
     assert reader.voice.calls == ["v=0\r\no=- 1 1 IN IP4 127.0.0.1\r\n"]
+
+
+def test_owner_action_endpoint_is_owner_csrf_and_exact_payload_guarded(setup):
+    client, auth, reader, _, _, _, _ = setup
+    payload = {
+        "decision_id": "first-money:instagram-profile-attribution:20261005",
+        "action_token": "MANUAL-INSTAGRAM-PROFILE-ATTRIBUTION-20261005",
+        "action": "confirm_manual",
+    }
+    assert client.post(
+        "/internal/jarvis/owner-action",
+        headers={"Origin": ORIGIN},
+        json=payload,
+    ).status_code == 401
+
+    assert login(client).status_code == 200
+    csrf = auth.open(client.cookies[SESSION_COOKIE], ttl=3600)["csrf"]
+    assert client.post(
+        "/internal/jarvis/owner-action",
+        headers={"Origin": ORIGIN, "X-CSRF-Token": "wrong"},
+        json=payload,
+    ).status_code == 403
+    assert client.post(
+        "/internal/jarvis/owner-action",
+        headers={"Origin": ORIGIN, "X-CSRF-Token": csrf},
+        json={**payload, "extra": True},
+    ).status_code == 400
+
+    response = client.post(
+        "/internal/jarvis/owner-action",
+        headers={"Origin": ORIGIN, "X-CSRF-Token": csrf},
+        json=payload,
+    )
+    assert response.status_code == 200
+    assert response.json()["verification_required"] is True
+    assert reader.actions.calls == [
+        (
+            "first-money:instagram-profile-attribution:20261005",
+            "MANUAL-INSTAGRAM-PROFILE-ATTRIBUTION-20261005",
+            "confirm_manual",
+        )
+    ]
 
 
 def test_revoked_after_login_and_logout_csrf(setup):
