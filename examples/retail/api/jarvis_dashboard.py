@@ -20,6 +20,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 
 from .jarvis_clarity import task_explanation, worker_identity, workstream
+from .jarvis_crew import project_crew, project_risk
 
 PROJECT_ORIGIN = "https://bqsdxaagklpkxioaqdqa.supabase.co"
 ACTIVE = {"claimed", "working", "verifying", "in_progress", "running", "dispatched"}
@@ -776,6 +777,7 @@ def build_snapshot(
         "active_leases": _number(thin.get("active_leases")) if thin_fresh else None,
         "stale_leases": _number(thin.get("stale_leases")) if thin_fresh else None,
         "open_reservations": _number(thin.get("open_reservations")) if thin_fresh else None,
+        "ledger_open_reservations": len(open_costs) if open_complete else None,
         "provider_cost_unknown": (
             thin.get("provider_cost_unknown") is True or unknown_cost or global_unknown
         )
@@ -1047,7 +1049,11 @@ def build_snapshot(
         )
         failed = health in {"BLOCKED", "DEGRADED"} or credential_blocked
         if system["name"].startswith("CI"):
-            failed = ci.get("conclusion") in {"failure", "timed_out", "action_required"}
+            failed = (
+                bool(branch_sha)
+                and _sha(ci.get("sha")) == branch_sha
+                and ci.get("conclusion") in {"failure", "timed_out", "action_required"}
+            )
         if system["name"] == "Production Smoke":
             failed = smoke.get("status") in {"failed", "failure", "error", "unhealthy"} or (
                 _number(smoke.get("passed")) is not None
@@ -1074,6 +1080,15 @@ def build_snapshot(
         )
         system["display_status"] = label
         system["display_tone"] = tone
+        if (
+            system["name"] in {"Gmail", "Render"}
+            and failed
+            and not any(
+                c.get("owner_reauthorization_required") for c in system.get("credentials", [])
+            )
+        ):
+            system["display_status"] = "VERBINDUNG EINGESCHRÄNKT"
+            system["display_tone"] = "amber"
         system["confirmed_failure"] = failed
         system["evidence_note"] = (
             "Bestätigten Fehler prüfen." if failed else "Kein Ausfall bestätigt."
@@ -1093,6 +1108,8 @@ def build_snapshot(
         if active_workers
         else "Aktueller Ausführungsnachweis fehlt; kein Ausfall allein aus dem Alter ableitbar."
     )
+    snapshot["crew"] = project_crew(snapshot)
+    snapshot["global_risk"] = project_risk(snapshot)
     return snapshot
 
 

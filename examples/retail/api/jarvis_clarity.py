@@ -115,6 +115,7 @@ def worker_identity(worker: dict) -> dict:
     return {
         "display_name": name,
         "role": role,
+        "role_key": family if inferred else None,
         "identity_tag": sha256(instance.encode()).hexdigest()[:6].upper(),
     }
 

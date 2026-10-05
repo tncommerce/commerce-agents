@@ -59,6 +59,7 @@
       BLOCKED: "Eine konkrete Voraussetzung fehlt. Der nächste Lösungsschritt wird darunter angezeigt.",
       "OWNER GATE": "Nur hier ist eine Entscheidung von Tuan erforderlich. Ein GO allein führt keine externe Aktion aus.",
       "VERBINDUNG / SYSTEM PRÜFEN": "Eine Quelle meldet einen konkreten Fehler oder eine gesperrte Verbindung.",
+      "VERBINDUNG EINGESCHRÄNKT": "Ein nichtkritischer Kanal ist eingeschränkt. Production und Owner Gates werden separat bewertet.",
     }[status];
     if (!help) return null;
     const details = node("details", undefined, "status-help");
@@ -75,6 +76,7 @@
         ÜBERWACHT: "info",
         "NACHWEIS ÄLTER": "warn",
         "VERBINDUNG / SYSTEM PRÜFEN": "action",
+        "VERBINDUNG EINGESCHRÄNKT": "warn",
         WORKING: "info",
         MONITORING: "info",
         "JARVIS ÜBERWACHT": "info",
@@ -608,8 +610,117 @@
     return { reached, firstMissing };
   }
 
+  function renderRiskAndCrew(s) {
+    const risk = s.global_risk;
+    const riskRoot = $("global-risk");
+    const crew = s.crew;
+    const openIds = new Set([...document.querySelectorAll("#risk-panel details[open], #crew-grid details[open]")].map(el => el.id));
+    const focusId = document.activeElement?.id;
+    if (riskRoot) {
+      setTone("global-risk", risk?.tone || "amber");
+      put("risk-title", risk?.title || "LAGE NICHT BESTÄTIGT");
+      put("risk-summary", risk?.summary || "Aktuelle Risikoprojektion fehlt; keine Entwarnung bestätigt.");
+      put("risk-owner-action", risk?.owner_action || "Owner-Bedarf nicht bestätigt.");
+      put("risk-observed", "Live-Daten · " + stamp(risk?.observed_at));
+      $("risk-level").textContent = risk?.tone === "red" ? "HANDLUNG" : risk?.tone === "amber" ? "BEOBACHTEN" : risk?.tone === "green" ? "GESUND" : "UNBESTÄTIGT";
+      $("risk-level").className = "pill " + ({green: "good", blue: "info", amber: "warn", red: "action"}[risk?.tone] || "warn");
+      const panel = $("risk-panel");
+      panel.replaceChildren();
+      for (const item of risk?.panels || []) {
+        const detail = node("details", undefined, "risk-item state-" + item.tone);
+        detail.id = "risk-detail-" + item.id;
+        detail.open = openIds.has(detail.id);
+        const summary = node("summary");
+        summary.id = "risk-summary-" + item.id;
+        summary.append(node("small", item.name), node("span", {green:"●",blue:"●",amber:"●",red:"●"}[item.tone], "risk-dot " + item.tone), node("strong", item.title));
+        detail.append(summary);
+        line(detail, "Warum", item.reason);
+        if (item.since) line(detail, "Nachweis", stamp(item.since) + " · " + age(item.since));
+        line(detail, "Nächster Schritt", item.next_step);
+        line(detail, "Owner", item.owner_action);
+        panel.append(detail);
+      }
+    }
+    if ($("crew-grid")) {
+      put("crew-count", crew ? crew.roles.length + " Rollen · " + crew.active_executions + " aktive Ausführungen" : "Rollenstatus nicht bestätigt");
+      put("crew-supervisor-state", crew ? crew.supervisor_state + " · " + (s.command_center?.active_workers || 0) + " belegte aktive Ausführungen. Nächster Loop: " + shortTime(s.command_center?.next_loop_estimate) : "Aktuelle Loop-Evidence fehlt.");
+      setTone("crew-supervisor", s.global_risk?.panels?.find(p => p.id === "automation")?.tone || "amber");
+      $("crew-owner-link").hidden = !(s.decision_center?.length > 0);
+      const grid = $("crew-grid");
+      grid.replaceChildren();
+      const states = [
+        ["ACTIVE CREW", 1, c => c.state === "AKTIV"],
+        ["WAITING / BLOCKED CREW", 3, c => ["WARTET EXTERN", "BLOCKIERT", "OWNER GATE", "DEGRADED"].includes(c.state)],
+        ["OTHER ROLES", 5, c => ["BEREIT", "ÜBERWACHT"].includes(c.state)],
+      ];
+      for (const [label, order, test] of states) {
+        if (!(crew?.roles || []).some(test)) continue;
+        const stage = node("h3", label, "crew-stage");
+        stage.style.order = order;
+        grid.append(stage);
+      }
+      for (const cluster of ["BUILD", "MONEY", "GROWTH", "OPERATIONS"]) {
+        const group = node("div", undefined, "crew-cluster");
+        group.append(node("h3", cluster));
+        for (const member of (crew?.roles || []).filter(c => c.cluster === cluster)) {
+          const card = node("article", undefined, "crew-node state-" + member.tone);
+          card.dataset.role = member.role_id;
+          card.dataset.state = member.state;
+          card.dataset.active = String(member.state === "AKTIV" && member.active_count > 0 && crew.complete === true);
+          card.style.order = member.state === "AKTIV" ? 2 : ["BEREIT", "ÜBERWACHT"].includes(member.state) ? 6 : 4;
+          const head = node("div", undefined, "crew-node-top");
+          head.append(node("h4", member.alias.toUpperCase()), node("span", member.state, "pill " + ({green:"good",blue:"info",amber:"warn",red:"action"}[member.tone] || "warn")));
+          card.append(head, node("small", member.role.toUpperCase(), "crew-role"));
+          card.append(node("p", member.task || (member.state === "BEREIT" ? "Kein aktueller Task" : "Keine laufende Ausführung"), "crew-focus"));
+          if (member.state === "WARTET EXTERN") line(card, "Wartet auf", member.reason);
+          else if (["BLOCKIERT", "DEGRADED", "OWNER GATE"].includes(member.state)) line(card, "Grund", member.reason);
+          if (member.since) line(card, member.state === "AKTIV" ? "Seit" : "Aufgabe aktualisiert", age(member.since));
+          line(card, "Danach", member.next_step);
+          if (member.connections.includes("active")) card.append(node("p", "Jarvis → " + member.alias + " · " + member.active_count + " reale Ausführung(en)", "crew-live-path"));
+          if (member.connections.includes("external")) card.append(node("p", member.alias + " → Externe Antwort", "crew-dependency"));
+          if (member.connections.includes("owner")) card.append(node("p", "Jarvis → Tuan · Freigabe prüfen", "crew-owner-path"));
+          const detail = node("details", undefined, "crew-details");
+          detail.id = "crew-details-" + member.role_id;
+          detail.open = openIds.has(detail.id);
+          const summary = node("summary", member.task_count + " Aufgaben · Details öffnen");
+          summary.id = "crew-summary-" + member.role_id;
+          detail.append(summary);
+          line(detail, "Owner", member.owner_action);
+          line(detail, "Zeitbasis", member.since_basis || "Kein Aufgabenbeginn gespeichert");
+          line(detail, "Rolle", member.capability_note);
+          for (const execution of member.executions) {
+            line(detail, "worker_id", execution.worker_id);
+            line(detail, "execution_id", execution.execution_id || "Task-Lease ohne Execution-ID");
+            line(detail, "Handler", execution.handler_id || "Nicht dokumentiert");
+            line(detail, "Gestartet", stamp(execution.started_at));
+            line(detail, "Laufzeit", execution.duration_seconds == null ? "Nicht dokumentiert" : Math.floor(execution.duration_seconds / 60) + " Min");
+            line(detail, "Checkpoint", execution.next_checkpoint || "Nicht dokumentiert");
+            line(detail, "Heartbeat", stamp(execution.heartbeat_at) + " · " + age(execution.heartbeat_at));
+            line(detail, "Lease bis", stamp(execution.lease_expires_at));
+            line(detail, "Evidence", execution.checkpoint?.verified === true ? "Checkpoint verifiziert" : "Kein verifizierter Checkpoint");
+          }
+          for (const task of member.tasks) {
+            detail.append(node("p", task.title, "crew-focus"));
+            line(detail, "Abhängigkeit", task.explanation?.reason || "Nicht dokumentiert");
+            line(detail, "Danach", task.explanation?.next_step || "Nicht dokumentiert");
+            if (task.blocker) line(detail, "Blocker-Code", task.blocker);
+            line(detail, "task_id", task.task_id);
+          }
+          card.append(detail);
+          group.append(card);
+        }
+        grid.append(group);
+      }
+      const unassigned = crew?.unassigned_executions || [];
+      $("crew-unassigned").hidden = !unassigned.length;
+      $("crew-unassigned").textContent = unassigned.length + " reale Ausführung(en) ohne dokumentierte Rollenzuordnung. Technische Ausführungen unter Details prüfen.";
+    }
+    if (focusId && $(focusId) && document.activeElement?.id !== focusId) $(focusId).focus({preventScroll:true});
+  }
+
   function render(s) {
     snapshot = s;
+    renderRiskAndCrew(s);
     const c = s.command_center || {};
     const f = s.freshness || {};
     const complete = f.operational_complete === true;
@@ -621,7 +732,7 @@
       : c.current_task;
     const systemsHealth = Array.isArray(s.system_health) ? s.system_health : [];
     const attention = systemsHealth.filter((h) =>
-      ["STALE", "DEGRADED", "BLOCKED", "UNKNOWN"].includes(h.health),
+      ["STALE", "DEGRADED", "BLOCKED", "UNKNOWN"].includes(h.health) || h.confirmed_failure === true || ["amber", "red"].includes(h.display_tone),
     );
     put(
       "source-summary",
@@ -1708,6 +1819,25 @@
           : "LIVE READ UNAVAILABLE · Kein Systemzustand bestätigt. Erneute Prüfung folgt.";
       }
       put("sync-label", "Verbindung unterbrochen");
+      setTone("global-risk", "amber");
+      put("risk-title", "LIVE-LAGE NICHT BESTÄTIGT");
+      put("risk-summary", "Verbindung unterbrochen. Letzte Nachweise sind keine aktuelle Entwarnung.");
+      put("risk-owner-action", "Owner-Bedarf aktuell nicht bestätigt.");
+      put("risk-level", "UNBESTÄTIGT");
+      if ($("risk-level")) $("risk-level").className = "pill warn";
+      if ($("risk-panel")) $("risk-panel").replaceChildren();
+      if ($("crew-grid")) {
+        $("crew-grid").querySelectorAll(".crew-node").forEach(card => {
+          card.dataset.active = "false";
+          card.dataset.state = "DEGRADED";
+          card.className = "crew-node state-amber";
+          const state = card.querySelector(".pill");
+          if (state) { state.textContent = "LETZTER STAND"; state.className = "pill warn"; }
+          card.querySelectorAll(".crew-live-path").forEach(el => el.remove());
+        });
+      }
+      put("crew-supervisor-state", "Verbindung unterbrochen · kein aktueller Ausführungsnachweis.");
+      put("crew-count", "Letzter Rollenstand · aktive Ausführungen unbestätigt");
       setPulse(
         "pulse-jarvis",
         "amber",

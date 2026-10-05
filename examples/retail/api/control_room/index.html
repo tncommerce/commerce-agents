@@ -23,7 +23,7 @@
             >◇ <span>Freigaben</span><b id="decision-nav">—</b></a
           >
           <a href="#revenue">€ <span>First Money</span></a>
-          <a href="#work">↝ <span>Arbeit</span></a>
+          <a href="#crew">↝ <span>Crew</span></a>
           <a href="#advanced">••• <span>Details</span></a>
         </nav>
         <div class="sidebar-bottom">
@@ -51,6 +51,14 @@
         <div id="connection-alert" role="status" class="connection-alert">
           Live-Daten werden geladen. Noch keine Aussage zum Systemzustand.
         </div>
+
+        <section id="global-risk" class="panel global-risk state-neutral" aria-labelledby="risk-title">
+          <div class="risk-heading">
+            <div><span class="eyebrow">GESAMTLAGE</span><h2 id="risk-title">Live-Lage wird geprüft</h2><p id="risk-summary">Noch keine Entwarnung bestätigt.</p></div>
+            <div class="risk-owner"><span id="risk-level" class="pill neutral">UNBESTÄTIGT</span><strong id="risk-owner-action">Owner-Bedarf wird geprüft.</strong><small id="risk-observed">Quelle wird geladen.</small></div>
+          </div>
+          <div id="risk-panel" class="risk-grid" aria-label="Risiken und Systemzustand"></div>
+        </section>
 
         <section id="approval-alert" class="approval-alert" hidden>
           <div>
@@ -283,6 +291,15 @@
             </details>
           </section>
         </section>
+        <section id="crew" class="panel crew-panel" aria-labelledby="crew-title">
+          <div class="panel-heading"><div><span class="eyebrow">DEINE CREW</span><h2 id="crew-title">Klare Rollen. Echte Arbeit.</h2></div><span id="crew-count" class="pill neutral">Wird geprüft</span></div>
+          <p class="crew-intro">Zehn dauerhafte Rollen. Aktiv heißt: eine reale Ausführung ist durch Lease und Heartbeat bestätigt.</p>
+          <div id="crew-supervisor" class="crew-supervisor state-neutral"><span class="crew-core-mark" aria-hidden="true">J</span><div><strong>JARVIS</strong><small>SUPERVISOR / ORCHESTRATOR</small><p id="crew-supervisor-state">Loop wird geprüft.</p></div><a id="crew-owner-link" href="#decisions" hidden>Entscheidung von Tuan →</a></div>
+          <div id="crew-grid" class="crew-grid" aria-label="Jarvis Organisationsrollen"></div>
+          <p id="crew-unassigned" class="crew-note" hidden></p>
+          <p class="crew-note">Bereit beschreibt die Rolle. Eine ausführbare Aufgabe benötigt zusätzlich einen zulässigen, zertifizierten Handler. Technische Identitäten stehen in den Details.</p>
+        </section>
+
         <section class="business-grid" aria-label="Geschäft und System">
           <section id="revenue" class="panel revenue-panel">
             <div class="panel-heading revenue-heading">
