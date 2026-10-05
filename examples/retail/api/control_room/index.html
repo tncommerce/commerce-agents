@@ -27,7 +27,7 @@
           <a href="#advanced">••• <span>Details</span></a>
         </nav>
         <div class="sidebar-bottom">
-          <div class="read-only"><i></i> CONTROLLED OWNER ACTIONS</div>
+          <div class="read-only"><i></i> CONTROLLED MASTER ACTIONS</div>
           <p>Klare Signale.<br />Belegte Entscheidungen.</p>
         </div>
       </aside>
@@ -55,7 +55,7 @@
         <section id="global-risk" class="panel global-risk state-neutral" aria-labelledby="risk-title">
           <div class="risk-heading">
             <div><span class="eyebrow">GESAMTLAGE</span><h2 id="risk-title">Live-Lage wird geprüft</h2><p id="risk-summary">Noch keine Entwarnung bestätigt.</p></div>
-            <div class="risk-owner"><span id="risk-level" class="pill neutral">UNBESTÄTIGT</span><strong id="risk-owner-action">Owner-Bedarf wird geprüft.</strong><small id="risk-observed">Quelle wird geladen.</small></div>
+            <div class="risk-owner"><span id="risk-level" class="pill neutral">UNBESTÄTIGT</span><strong id="risk-owner-action">Master-Bedarf wird geprüft.</strong><small id="risk-observed">Quelle wird geladen.</small></div>
           </div>
           <div id="risk-panel" class="risk-grid" aria-label="Risiken und Systemzustand"></div>
         </section>
@@ -235,9 +235,9 @@
               ><span>Aktive Task-Zustände</span>
             </div>
             <div>
-              <small>OWNER DECISIONS</small
+              <small>MASTER DECISIONS</small
               ><strong id="decision-count">—</strong
-              ><span>Echte offene Human-Gates</span>
+              ><span>Echte offene Master-Gates</span>
             </div>
             <div>
               <small>LAST SUPERVISOR WAKE</small
@@ -246,10 +246,35 @@
             </div>
           </div>
         </section>
+        <section id="diagnosis" class="panel diagnosis-panel">
+          <div class="panel-heading">
+            <div>
+              <span class="eyebrow">ARBEITSDIAGNOSE</span>
+              <h2>Warum arbeitet DUFYND gerade – oder warum nicht?</h2>
+            </div>
+            <span id="diagnosis-state" class="pill neutral">Wird geprüft</span>
+          </div>
+          <p id="diagnosis-reason" class="diagnosis-reason">
+            Ausführbare Arbeit, Waits und echte Gates werden getrennt geprüft.
+          </p>
+          <div class="diagnosis-grid">
+            <article><small>AKTIVE WORKER</small><strong id="diagnosis-active">—</strong></article>
+            <article><small>AUSFÜHRBAR</small><strong id="diagnosis-ready">—</strong></article>
+            <article><small>GEPARKT EXTERN</small><strong id="diagnosis-external">—</strong></article>
+            <article><small>MASTER-GATES</small><strong id="diagnosis-gates">—</strong></article>
+          </div>
+          <div class="diagnosis-next">
+            <small>NÄCHSTER SINNVOLLER SCHRITT</small>
+            <strong id="diagnosis-next">Wird ermittelt.</strong>
+            <span id="diagnosis-business-focus">Business-Fokus wird geprüft.</span>
+          </div>
+          <div id="diagnosis-observers" class="diagnosis-observers"></div>
+        </section>
+
         <section id="decisions" class="panel decision-panel">
           <div class="panel-heading">
             <div>
-              <span class="eyebrow">OWNER ACTION CENTER</span>
+              <span class="eyebrow">MASTER ACTION CENTER</span>
               <h2>Was du jetzt entscheiden oder tun musst</h2>
             </div>
             <span class="small-label"
@@ -257,7 +282,7 @@
             >
           </div>
           <div id="decision-list" class="list-placeholder">
-            Owner-Aktionen werden geprüft.
+            Master-Aktionen werden geprüft.
           </div>
         </section>
         <section class="operations-grid" aria-label="Aktuelle Arbeit">
