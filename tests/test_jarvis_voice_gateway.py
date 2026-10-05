@@ -13,22 +13,39 @@ from retail.api.jarvis_voice import (
 )
 
 
-def test_voice_gateway_session_is_manual_tool_free_and_bounded():
+def test_voice_gateway_session_is_read_only_tool_enabled_and_conversational():
     gateway = JarvisVoiceGateway(owner_id=str(uuid4()), api_key="sk-test")
     config = gateway.session_config()
     assert config["type"] == "realtime"
     assert config["model"] == DEFAULT_MODEL
     assert config["output_modalities"] == ["audio"]
     assert config["max_output_tokens"] == 1024
-    assert config["tools"] == []
-    assert config["audio"]["input"]["turn_detection"] is None
+    assert config["tool_choice"] == "auto"
+    assert len(config["tools"]) == 1
+    tool = config["tools"][0]
+    assert tool["type"] == "function"
+    assert tool["name"] == "inspect_dufynd"
+    assert "Read-only" in tool["description"]
+    assert tool["parameters"]["required"] == ["area"]
+    assert tool["parameters"]["additionalProperties"] is False
+    assert "workers" in tool["parameters"]["properties"]["area"]["enum"]
+    assert "first_money" in tool["parameters"]["properties"]["area"]["enum"]
+
+    turn = config["audio"]["input"]["turn_detection"]
+    assert turn["type"] == "semantic_vad"
+    assert turn["eagerness"] == "high"
+    assert turn["create_response"] is True
+    assert turn["interrupt_response"] is False
+
     assert config["audio"]["output"]["voice"] == "ash"
-    assert config["audio"]["output"]["speed"] == 0.88
-    assert "keine externen" in config["instructions"]
-    assert "Owner-Gates" in config["instructions"]
+    assert config["audio"]["output"]["speed"] == 1.03
+    assert "kein Dashboard-Vorleser" in config["instructions"]
+    assert "inspect_dufynd" in config["instructions"]
+    assert "gesprochenes GO" in config["instructions"]
+    assert "ausschließlich lesend" in config["instructions"]
     assert "britisch/RP-geprägte Sprechmelodie" in config["instructions"]
     assert "Imitiere keine reale Person" in config["instructions"]
-    assert "brich niemals wegen Kürze mitten im Satz ab" in config["instructions"]
+    assert "Beende begonnene Sätze" in config["instructions"]
 
 
 def test_voice_gateway_keeps_standard_key_server_side_and_returns_only_sdp():
