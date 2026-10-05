@@ -180,8 +180,7 @@ def _public_dufynd_url(value: object) -> str | None:
         or parsed.fragment
         or len(params) != len({key for key, _ in params})
         or any(
-            key not in {"src", "cmp", "content"}
-            or not re.fullmatch(r"[A-Za-z0-9._:-]{1,80}", item)
+            key not in {"src", "cmp", "content"} or not re.fullmatch(r"[A-Za-z0-9._:-]{1,80}", item)
             for key, item in params
         )
     ):
