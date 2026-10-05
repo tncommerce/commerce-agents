@@ -40,6 +40,10 @@ def test_phase2_uses_same_origin_webrtc_bridge_and_manual_turn_control():
     assert "30000" in voice
     assert "startOutputAnalysis(event.streams[0])" in voice
     assert "drawOutputSpectrum" in voice
+    assert "responseGenerationDone = true" in voice
+    assert "outputSilentFrames >= 72" in voice
+    assert '"Antwort vollständig abgespielt"' in voice
+    assert "setTimeout(() => cleanupSession(), 2600)" not in voice
     assert "waitForIce" not in voice
     assert "peer.localDescription?.sdp || offer.sdp" in voice
     assert '"HÖRT ZU · jetzt sprechen · Loslassen sendet deine Frage"' in voice

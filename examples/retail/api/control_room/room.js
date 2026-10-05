@@ -206,6 +206,9 @@
     let outputAnalyser = null;
     let outputValues = null;
     let outputFrame = null;
+    let outputHadAudio = false;
+    let outputSilentFrames = 0;
+    let responseGenerationDone = false;
     let connectAbort = null;
     let turnTimer = null;
     let responseTimer = null;
@@ -270,6 +273,9 @@
       outputSource = null;
       outputAnalyser = null;
       outputValues = null;
+      outputHadAudio = false;
+      outputSilentFrames = 0;
+      responseGenerationDone = false;
       if (outputContext) {
         const closing = outputContext.close();
         if (closing?.catch) closing.catch(() => {});
@@ -296,12 +302,23 @@
         bar.style.opacity = String(0.48 + level * 0.52);
       });
       const energy = total / bars.length;
+      if (energy > 0.018) {
+        outputHadAudio = true;
+        outputSilentFrames = 0;
+      } else if (responseGenerationDone && outputHadAudio) {
+        outputSilentFrames += 1;
+      }
       core.style.setProperty("--mic-energy", energy.toFixed(3));
       core.style.setProperty("--mic-scale", (1 + energy * 0.18).toFixed(3));
       core.style.setProperty(
         "--mic-brightness",
         (1.04 + energy * 0.32).toFixed(3),
       );
+      if (responseGenerationDone && outputHadAudio && outputSilentFrames >= 72) {
+        setState("speaking", "DONE", "Antwort vollständig abgespielt");
+        cleanupTimer = setTimeout(() => cleanupSession(), 350);
+        return;
+      }
       outputFrame = requestAnimationFrame(drawOutputSpectrum);
     }
 
@@ -311,6 +328,9 @@
       outputContext = new AudioContextClass();
       const resume = outputContext.state === "suspended" ? outputContext.resume() : null;
       if (resume?.catch) resume.catch(() => {});
+      outputHadAudio = false;
+      outputSilentFrames = 0;
+      responseGenerationDone = false;
       outputSource = outputContext.createMediaStreamSource(mediaStream);
       outputAnalyser = outputContext.createAnalyser();
       outputAnalyser.fftSize = 64;
@@ -529,8 +549,15 @@
           cleanupTimer = setTimeout(() => cleanupSession(), 1800);
           return;
         }
-        setState("speaking", "SPEAKING", "Antwort wird beendet …");
-        cleanupTimer = setTimeout(() => cleanupSession(), 2600);
+        responseGenerationDone = true;
+        setState(
+          "speaking",
+          "SPEAKING",
+          "Antwort wird vollständig abgespielt …",
+        );
+        cleanupTimer = setTimeout(() => {
+          if (state === "speaking") cleanupSession();
+        }, 20000);
         return;
       }
       if (type === "error") {
@@ -573,6 +600,8 @@
       remoteAudio.hidden = true;
       remoteAudio.addEventListener("playing", () => {
         if (turnGeneration === generation) {
+          outputHadAudio = true;
+          outputSilentFrames = 0;
           setState("speaking", "SPEAKING", "Jarvis antwortet …");
         }
       });
