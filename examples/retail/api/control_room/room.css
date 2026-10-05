@@ -4570,3 +4570,58 @@ body[data-execution-mode="unknown"] .execution-evidence {
     width: 100%;
   }
 }
+
+
+/* JARVIS OPERATOR CORE V4 — explanation, not decoration */
+.operator-brief {
+  display: grid;
+  grid-template-columns: 1.15fr 1.15fr 0.7fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+.operator-brief article {
+  min-width: 0;
+  min-height: 118px;
+  padding: 13px 14px;
+  border: 1px solid #ffffff12;
+  border-radius: 10px;
+  background: #07161b9c;
+}
+.operator-brief small {
+  display: block;
+  margin-bottom: 8px;
+  color: #78939b;
+  font-size: 8px;
+  letter-spacing: 1.05px;
+}
+.operator-brief strong {
+  display: block;
+  color: #d9eee9;
+  font-size: 14px;
+  line-height: 1.28;
+}
+.operator-brief span {
+  display: block;
+  margin-top: 7px;
+  color: #93aab1;
+  font-size: 10px;
+  line-height: 1.45;
+}
+.operator-brief[data-state="IDLE_NO_RUNNABLE_WORK"] article:first-child {
+  border-color: #e7bc7748;
+}
+.operator-brief[data-state="MASTER_ACTION_REQUIRED"] article:last-child {
+  border-color: #e7bc775c;
+}
+.operator-brief[data-state="WORKING"] article:first-child {
+  border-color: #8decc04a;
+}
+
+@media (max-width: 850px) {
+  .operator-brief {
+    grid-template-columns: 1fr;
+  }
+  .operator-brief article {
+    min-height: 0;
+  }
+}
