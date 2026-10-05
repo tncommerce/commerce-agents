@@ -642,47 +642,212 @@
       }
     }
     if ($("crew-grid")) {
-      put("crew-count", crew ? crew.roles.length + " Rollen · " + crew.active_executions + " aktive Ausführungen" : "Rollenstatus nicht bestätigt");
-      put("crew-supervisor-state", crew ? crew.supervisor_state + " · " + (s.command_center?.active_workers || 0) + " belegte aktive Ausführungen. Nächster Loop: " + shortTime(s.command_center?.next_loop_estimate) : "Aktuelle Loop-Evidence fehlt.");
-      setTone("crew-supervisor", s.global_risk?.panels?.find(p => p.id === "automation")?.tone || "amber");
+      put(
+        "crew-count",
+        crew
+          ? crew.roles.length +
+              " Rollen · " +
+              crew.active_executions +
+              " aktive Ausführungen"
+          : "Rollenstatus nicht bestätigt",
+      );
+      put(
+        "crew-supervisor-state",
+        crew
+          ? crew.supervisor_state +
+              " · " +
+              (s.command_center?.active_workers || 0) +
+              " belegte aktive Ausführungen. Nächster Loop: " +
+              shortTime(s.command_center?.next_loop_estimate)
+          : "Aktuelle Loop-Evidence fehlt.",
+      );
+      setTone(
+        "crew-supervisor",
+        s.global_risk?.panels?.find((p) => p.id === "automation")?.tone || "amber",
+      );
       $("crew-owner-link").hidden = !(s.decision_center?.length > 0);
+
+      const liveBoard = $("crew-live-now");
+      liveBoard.replaceChildren();
+      const liveNow = crew?.live_now || [];
+      put(
+        "crew-live-count",
+        liveNow.length
+          ? liveNow.length + " wirklich aktiv"
+          : "0 aktiv · Jarvis überwacht",
+      );
+      if (liveNow.length) {
+        for (const live of liveNow) {
+          const item = node("article", undefined, "crew-live-card");
+          item.dataset.role = live.role_id;
+          item.append(
+            node("span", "LIVE", "crew-live-badge"),
+            node("strong", live.alias.toUpperCase()),
+            node("small", live.role),
+            node("p", live.task || "Aktuelle Aufgabe nicht dokumentiert", "crew-live-task"),
+          );
+          const meta = node("div", undefined, "crew-live-meta");
+          meta.append(
+            node("span", "Seit " + age(live.started_at)),
+            node("span", "Heartbeat " + age(live.heartbeat_at)),
+          );
+          item.append(meta);
+          if (live.next_checkpoint)
+            item.append(
+              node("p", "Nächster Checkpoint · " + live.next_checkpoint, "crew-live-next"),
+            );
+          liveBoard.append(item);
+        }
+      } else {
+        const empty = node("article", undefined, "crew-live-empty");
+        empty.append(
+          node("span", "MONITORING", "crew-monitor-badge"),
+          node("strong", "Aktuell keine Worker-Ausführung"),
+          node(
+            "p",
+            "Jarvis überwacht weiter. Neue Arbeit erscheint hier erst, wenn ein realer Task gestartet und durch Lease + Heartbeat bestätigt ist.",
+          ),
+        );
+        liveBoard.append(empty);
+      }
+
       const grid = $("crew-grid");
       grid.replaceChildren();
-      const states = [
-        ["ACTIVE CREW", 1, c => c.state === "AKTIV"],
-        ["WAITING / BLOCKED CREW", 3, c => ["WARTET EXTERN", "BLOCKIERT", "OWNER GATE", "DEGRADED"].includes(c.state)],
-        ["OTHER ROLES", 5, c => ["BEREIT", "ÜBERWACHT"].includes(c.state)],
-      ];
-      for (const [label, order, test] of states) {
-        if (!(crew?.roles || []).some(test)) continue;
-        const stage = node("h3", label, "crew-stage");
-        stage.style.order = order;
-        grid.append(stage);
-      }
+      const clusterMap = new Map(
+        (crew?.clusters || []).map((cluster) => [cluster.id, cluster]),
+      );
       for (const cluster of ["BUILD", "MONEY", "GROWTH", "OPERATIONS"]) {
-        const group = node("div", undefined, "crew-cluster");
-        group.append(node("h3", cluster));
-        for (const member of (crew?.roles || []).filter(c => c.cluster === cluster)) {
-          const card = node("article", undefined, "crew-node state-" + member.tone);
+        const info = clusterMap.get(cluster) || {
+          id: cluster,
+          label: cluster,
+          purpose: "",
+          active_count: 0,
+          waiting_count: 0,
+          blocked_count: 0,
+          state: "BEREIT",
+        };
+        const group = node("section", undefined, "crew-cluster crew-cluster-" + cluster.toLowerCase());
+        group.dataset.cluster = cluster;
+
+        const groupHead = node("header", undefined, "crew-cluster-head");
+        const copy = node("div");
+        copy.append(
+          node("span", info.label.toUpperCase(), "crew-cluster-label"),
+          node("p", info.purpose || "", "crew-cluster-purpose"),
+        );
+        const clusterState = node("div", undefined, "crew-cluster-state");
+        clusterState.append(
+          node("strong", info.state),
+          node(
+            "span",
+            info.active_count +
+              " aktiv · " +
+              info.waiting_count +
+              " wartet · " +
+              info.blocked_count +
+              " prüfen",
+          ),
+        );
+        groupHead.append(copy, clusterState);
+        group.append(groupHead);
+
+        const lane = node("div", undefined, "crew-lane-workers");
+        for (const member of (crew?.roles || []).filter((c) => c.cluster === cluster)) {
+          const card = node(
+            "article",
+            undefined,
+            "crew-node state-" + member.tone,
+          );
           card.dataset.role = member.role_id;
           card.dataset.state = member.state;
-          card.dataset.active = String(member.state === "AKTIV" && member.active_count > 0 && crew.complete === true);
-          card.style.order = member.state === "AKTIV" ? 2 : ["BEREIT", "ÜBERWACHT"].includes(member.state) ? 6 : 4;
+          card.dataset.active = String(
+            member.state === "AKTIV" &&
+              member.active_count > 0 &&
+              crew.complete === true,
+          );
+
           const head = node("div", undefined, "crew-node-top");
-          head.append(node("h4", member.alias.toUpperCase()), node("span", member.state, "pill " + ({green:"good",blue:"info",amber:"warn",red:"action"}[member.tone] || "warn")));
-          card.append(head, node("small", member.role.toUpperCase(), "crew-role"));
-          card.append(node("p", member.task || (member.state === "BEREIT" ? "Kein aktueller Task" : "Keine laufende Ausführung"), "crew-focus"));
-          if (member.state === "WARTET EXTERN") line(card, "Wartet auf", member.reason);
-          else if (["BLOCKIERT", "DEGRADED", "OWNER GATE"].includes(member.state)) line(card, "Grund", member.reason);
-          if (member.since) line(card, member.state === "AKTIV" ? "Seit" : "Aufgabe aktualisiert", age(member.since));
+          const identity = node("div", undefined, "crew-node-identity");
+          identity.append(
+            node("h4", member.alias.toUpperCase()),
+            node("small", member.role.toUpperCase(), "crew-role"),
+          );
+          head.append(
+            identity,
+            node(
+              "span",
+              member.state,
+              "pill " +
+                ({ green: "good", blue: "info", amber: "warn", red: "action" }[
+                  member.tone
+                ] || "warn"),
+            ),
+          );
+          card.append(head);
+
+          if (member.state === "AKTIV") {
+            card.append(node("small", "JETZT", "crew-now-label"));
+            card.append(
+              node(
+                "p",
+                member.task || "Aktuelle Aufgabe nicht dokumentiert",
+                "crew-focus crew-focus-live",
+              ),
+            );
+            if (member.since) line(card, "Läuft seit", age(member.since));
+          } else if (member.state === "WARTET EXTERN") {
+            card.append(node("small", "WARTET AUF", "crew-now-label"));
+            card.append(node("p", member.reason, "crew-focus"));
+          } else if (["BLOCKIERT", "DEGRADED", "OWNER GATE"].includes(member.state)) {
+            card.append(node("small", "WARUM", "crew-now-label"));
+            card.append(node("p", member.reason, "crew-focus"));
+          } else if (member.last_action) {
+            card.append(node("small", "ZULETZT", "crew-now-label"));
+            card.append(node("p", member.last_action, "crew-focus"));
+            if (member.last_action_at)
+              line(card, "Abgeschlossen", age(member.last_action_at));
+          } else {
+            card.append(node("small", "AKTUELL", "crew-now-label"));
+            card.append(
+              node(
+                "p",
+                member.state === "BEREIT"
+                  ? "Bereit für zulässige Arbeit"
+                  : "Überwacht den zugeordneten Bereich",
+                "crew-focus",
+              ),
+            );
+          }
+
           line(card, "Danach", member.next_step);
-          if (member.connections.includes("active")) card.append(node("p", "Jarvis → " + member.alias + " · " + member.active_count + " reale Ausführung(en)", "crew-live-path"));
-          if (member.connections.includes("external")) card.append(node("p", member.alias + " → Externe Antwort", "crew-dependency"));
-          if (member.connections.includes("owner")) card.append(node("p", "Jarvis → Tuan · Freigabe prüfen", "crew-owner-path"));
+          if (member.connections.includes("active"))
+            card.append(
+              node(
+                "p",
+                "Jarvis → " +
+                  member.alias +
+                  " · " +
+                  member.active_count +
+                  " reale Ausführung(en)",
+                "crew-live-path",
+              ),
+            );
+          if (member.connections.includes("external"))
+            card.append(
+              node("p", member.alias + " → Externe Antwort", "crew-dependency"),
+            );
+          if (member.connections.includes("owner"))
+            card.append(
+              node("p", "Jarvis → Tuan · Freigabe prüfen", "crew-owner-path"),
+            );
+
           const detail = node("details", undefined, "crew-details");
           detail.id = "crew-details-" + member.role_id;
           detail.open = openIds.has(detail.id);
-          const summary = node("summary", member.task_count + " Aufgaben · Details öffnen");
+          const summary = node(
+            "summary",
+            member.task_count + " Aufgaben · Details",
+          );
           summary.id = "crew-summary-" + member.role_id;
           detail.append(summary);
           line(detail, "Owner", member.owner_action);
@@ -690,30 +855,96 @@
           line(detail, "Rolle", member.capability_note);
           for (const execution of member.executions) {
             line(detail, "worker_id", execution.worker_id);
-            line(detail, "execution_id", execution.execution_id || "Task-Lease ohne Execution-ID");
+            line(
+              detail,
+              "execution_id",
+              execution.execution_id || "Task-Lease ohne Execution-ID",
+            );
             line(detail, "Handler", execution.handler_id || "Nicht dokumentiert");
             line(detail, "Gestartet", stamp(execution.started_at));
-            line(detail, "Laufzeit", execution.duration_seconds == null ? "Nicht dokumentiert" : Math.floor(execution.duration_seconds / 60) + " Min");
-            line(detail, "Checkpoint", execution.next_checkpoint || "Nicht dokumentiert");
-            line(detail, "Heartbeat", stamp(execution.heartbeat_at) + " · " + age(execution.heartbeat_at));
+            line(
+              detail,
+              "Laufzeit",
+              execution.duration_seconds == null
+                ? "Nicht dokumentiert"
+                : Math.floor(execution.duration_seconds / 60) + " Min",
+            );
+            line(
+              detail,
+              "Checkpoint",
+              execution.next_checkpoint || "Nicht dokumentiert",
+            );
+            line(
+              detail,
+              "Heartbeat",
+              stamp(execution.heartbeat_at) + " · " + age(execution.heartbeat_at),
+            );
             line(detail, "Lease bis", stamp(execution.lease_expires_at));
-            line(detail, "Evidence", execution.checkpoint?.verified === true ? "Checkpoint verifiziert" : "Kein verifizierter Checkpoint");
+            line(
+              detail,
+              "Evidence",
+              execution.checkpoint?.verified === true
+                ? "Checkpoint verifiziert"
+                : "Kein verifizierter Checkpoint",
+            );
           }
           for (const task of member.tasks) {
             detail.append(node("p", task.title, "crew-focus"));
-            line(detail, "Abhängigkeit", task.explanation?.reason || "Nicht dokumentiert");
-            line(detail, "Danach", task.explanation?.next_step || "Nicht dokumentiert");
+            line(
+              detail,
+              "Abhängigkeit",
+              task.explanation?.reason || "Nicht dokumentiert",
+            );
+            line(
+              detail,
+              "Danach",
+              task.explanation?.next_step || "Nicht dokumentiert",
+            );
             if (task.blocker) line(detail, "Blocker-Code", task.blocker);
             line(detail, "task_id", task.task_id);
           }
           card.append(detail);
-          group.append(card);
+          lane.append(card);
         }
+        group.append(lane);
         grid.append(group);
       }
+
+      const activity = $("crew-activity");
+      activity.replaceChildren();
+      const recent = crew?.recent_activity || [];
+      if (recent.length) {
+        for (const entry of recent.slice(0, 6)) {
+          const row = node("article", undefined, "crew-activity-row");
+          const time = node("time", shortTime(entry.completed_at));
+          const body = node("div");
+          body.append(
+            node("strong", entry.alias.toUpperCase() + " · " + (entry.task || "Ausführung abgeschlossen")),
+            node(
+              "span",
+              entry.checkpoint?.verified === true
+                ? "Checkpoint verifiziert"
+                : "Ausführung abgeschlossen",
+            ),
+          );
+          row.append(time, body);
+          activity.append(row);
+        }
+      } else {
+        activity.append(
+          node(
+            "p",
+            "Noch keine abgeschlossene Worker-Aktivität im aktuellen bounded Snapshot.",
+            "muted",
+          ),
+        );
+      }
+
       const unassigned = crew?.unassigned_executions || [];
       $("crew-unassigned").hidden = !unassigned.length;
-      $("crew-unassigned").textContent = unassigned.length + " reale Ausführung(en) ohne dokumentierte Rollenzuordnung. Technische Ausführungen unter Details prüfen.";
+      $("crew-unassigned").textContent =
+        unassigned.length +
+        " reale Ausführung(en) ohne dokumentierte Rollenzuordnung. Technische Ausführungen unter Details prüfen.";
     }
     if (focusId && $(focusId) && document.activeElement?.id !== focusId) $(focusId).focus({preventScroll:true});
   }
