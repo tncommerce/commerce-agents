@@ -83,7 +83,19 @@ def test_v3_live_inspector_is_rich_bounded_and_read_only():
     assert '"risks"' in voice
     assert '"recent_activity"' in voice
     assert "function_call_output" in voice
-    assert 'tool_choice: "none"' in voice
+    assert '"advance_dufynd_safe_work"' in voice
+    assert 'fetch("/internal/jarvis/truth"' in voice
+    assert "executeTruthInspection" in voice
+    assert "await executeTruthInspection(area, focus)" in voice
+    assert '"authoritative_truth_unavailable"' in voice
+    assert "Nicht spekulieren." in voice
+    assert 'fetch("/internal/jarvis/safe-action"' in voice
+    assert 'JSON.stringify({ action: "advance_next_safe_work" })' in voice
+    assert '"X-CSRF-Token": csrf' in voice
+    assert '"HANDELT"' in voice
+    assert 'tool_choice: allowAnotherTool ? "auto" : "none"' in voice
+    assert "async function handleRealtimeEvent" in voice
+    assert "await answerToolCalls(event.response)" in voice
     assert ".slice(0, 12000)" in voice
     assert "safeText" in voice
     assert "safeSha" in voice
@@ -94,6 +106,7 @@ def test_v3_live_inspector_is_rich_bounded_and_read_only():
     assert "checkpoint:" in voice
     assert "decision_token" not in voice
     assert "action_token" not in voice
+    assert "advance_next_safe_work" in voice
     assert 'type: "response.cancel"' in voice
     assert 'type: "output_audio_buffer.clear"' in voice
 

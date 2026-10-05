@@ -59,6 +59,38 @@ class FakeActionWriter:
         }
 
 
+class FakeSafeActionRunner:
+    def __init__(self):
+        self.calls = 0
+
+    def advance_next_safe_work(self):
+        self.calls += 1
+        return {
+            "ok": True,
+            "source": "dufynd_thin_v1_certified_free_orchestrator",
+            "stop_reason": "no_safe_work",
+            "paid_calls": 0,
+            "new_spend_usd": 0,
+            "completed": [],
+            "pending_owner_gates": [],
+        }
+
+
+class FakeTruthReader:
+    def __init__(self):
+        self.calls = []
+
+    def inspect(self, *, area, focus):
+        self.calls.append((area, focus))
+        return {
+            "source": "dufynd_control_plane_authoritative_truth",
+            "verified": True,
+            "area": area,
+            "focus": focus,
+            "tasks": [],
+        }
+
+
 @pytest.fixture
 def setup():
     config = OwnerConfig(
@@ -107,6 +139,8 @@ def setup():
     reader = Reader()
     reader.voice = FakeVoiceGateway()
     reader.actions = FakeActionWriter()
+    reader.safe_actions = FakeSafeActionRunner()
+    reader.truth = FakeTruthReader()
     app = FastAPI()
     app.include_router(
         create_control_room_router(
@@ -115,6 +149,8 @@ def setup():
             reader=reader,
             voice_gateway=reader.voice,
             action_writer=reader.actions,
+            safe_action_runner=reader.safe_actions,
+            truth_reader=reader.truth,
         )
     )
     client = TestClient(app, base_url=ORIGIN)
@@ -275,6 +311,90 @@ def test_voice_session_requires_owner_origin_csrf_and_sdp(setup):
     assert response.headers["content-type"].startswith("application/sdp")
     assert response.text.startswith("v=0")
     assert reader.voice.calls == ["v=0\r\no=- 1 1 IN IP4 127.0.0.1\r\n"]
+
+
+def test_truth_endpoint_is_owner_csrf_exact_and_bounded(setup):
+    client, auth, reader, _, _, _, _ = setup
+    payload = {"area": "workers", "focus": "Robin"}
+    assert (
+        client.post(
+            "/internal/jarvis/truth",
+            headers={"Origin": ORIGIN},
+            json=payload,
+        ).status_code
+        == 401
+    )
+
+    assert login(client).status_code == 200
+    csrf = auth.open(client.cookies[SESSION_COOKIE], ttl=3600)["csrf"]
+    assert (
+        client.post(
+            "/internal/jarvis/truth",
+            headers={"Origin": ORIGIN, "X-CSRF-Token": "wrong"},
+            json=payload,
+        ).status_code
+        == 403
+    )
+    assert (
+        client.post(
+            "/internal/jarvis/truth",
+            headers={"Origin": ORIGIN, "X-CSRF-Token": csrf},
+            json={"area": "forbidden"},
+        ).status_code
+        == 400
+    )
+
+    response = client.post(
+        "/internal/jarvis/truth",
+        headers={"Origin": ORIGIN, "X-CSRF-Token": csrf},
+        json=payload,
+    )
+    assert response.status_code == 200
+    assert response.json()["source"] == "dufynd_control_plane_authoritative_truth"
+    assert response.json()["verified"] is True
+    assert reader.truth.calls == [("workers", "Robin")]
+
+
+def test_safe_action_endpoint_is_owner_csrf_exact_and_bounded(setup):
+    client, auth, reader, _, _, _, _ = setup
+    payload = {"action": "advance_next_safe_work"}
+    assert (
+        client.post(
+            "/internal/jarvis/safe-action",
+            headers={"Origin": ORIGIN},
+            json=payload,
+        ).status_code
+        == 401
+    )
+
+    assert login(client).status_code == 200
+    csrf = auth.open(client.cookies[SESSION_COOKIE], ttl=3600)["csrf"]
+    assert (
+        client.post(
+            "/internal/jarvis/safe-action",
+            headers={"Origin": ORIGIN, "X-CSRF-Token": "wrong"},
+            json=payload,
+        ).status_code
+        == 403
+    )
+    assert (
+        client.post(
+            "/internal/jarvis/safe-action",
+            headers={"Origin": ORIGIN, "X-CSRF-Token": csrf},
+            json={"action": "anything_else"},
+        ).status_code
+        == 400
+    )
+
+    response = client.post(
+        "/internal/jarvis/safe-action",
+        headers={"Origin": ORIGIN, "X-CSRF-Token": csrf},
+        json=payload,
+    )
+    assert response.status_code == 200
+    assert response.json()["source"] == "dufynd_thin_v1_certified_free_orchestrator"
+    assert response.json()["paid_calls"] == 0
+    assert reader.safe_actions.calls == 1
 
 
 def test_owner_action_endpoint_is_owner_csrf_and_exact_payload_guarded(setup):

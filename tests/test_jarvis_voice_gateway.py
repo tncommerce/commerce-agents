@@ -21,7 +21,7 @@ def test_voice_gateway_session_is_read_only_tool_enabled_and_conversational():
     assert config["output_modalities"] == ["audio"]
     assert config["max_output_tokens"] == 4096
     assert config["tool_choice"] == "auto"
-    assert len(config["tools"]) == 1
+    assert len(config["tools"]) == 2
     tool = config["tools"][0]
     assert tool["type"] == "function"
     assert tool["name"] == "inspect_dufynd"
@@ -30,6 +30,13 @@ def test_voice_gateway_session_is_read_only_tool_enabled_and_conversational():
     assert tool["parameters"]["additionalProperties"] is False
     assert "workers" in tool["parameters"]["properties"]["area"]["enum"]
     assert "first_money" in tool["parameters"]["properties"]["area"]["enum"]
+
+    action_tool = config["tools"][1]
+    assert action_tool["type"] == "function"
+    assert action_tool["name"] == "advance_dufynd_safe_work"
+    assert "certified free" in action_tool["description"]
+    assert action_tool["parameters"]["properties"] == {}
+    assert action_tool["parameters"]["additionalProperties"] is False
 
     turn = config["audio"]["input"]["turn_detection"]
     assert turn["type"] == "semantic_vad"
@@ -40,9 +47,13 @@ def test_voice_gateway_session_is_read_only_tool_enabled_and_conversational():
     assert config["audio"]["output"]["voice"] == "ash"
     assert config["audio"]["output"]["speed"] == 1.03
     assert "kein Dashboard-Vorleser" in config["instructions"]
-    assert "inspect_dufynd" in config["instructions"]
+    assert "MUSST du zuerst inspect_dufynd" in config["instructions"]
+    assert "niemals 'wahrscheinlich'" in config["instructions"]
+    assert "nicht verifiziert" in config["instructions"]
+    assert "advance_dufynd_safe_work" in config["instructions"]
+    assert "trockener, intelligenter Humor" in config["instructions"]
     assert "gesprochenes GO" in config["instructions"]
-    assert "ausschließlich lesend" in config["instructions"]
+    assert "zertifizierten kostenlosen Thin-V1-Orchestrator" in config["instructions"]
     assert "britisch/RP-geprägte Sprechmelodie" in config["instructions"]
     assert "Imitiere keine reale Person" in config["instructions"]
     assert "Beende begonnene Sätze" in config["instructions"]

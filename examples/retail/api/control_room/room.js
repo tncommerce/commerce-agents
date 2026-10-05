@@ -844,48 +844,124 @@
     }
 
     function toolCalls(response) {
+      const allowed = new Set(["inspect_dufynd", "advance_dufynd_safe_work"]);
       return (Array.isArray(response?.output) ? response.output : []).filter(
         (item) =>
           item?.type === "function_call" &&
-          item?.name === "inspect_dufynd" &&
+          allowed.has(item?.name) &&
           typeof item?.call_id === "string",
       );
     }
 
-    function answerToolCalls(response) {
+    async function executeTruthInspection(area, focus) {
+      const authoritativeAreas = new Set([
+        "overview",
+        "workers",
+        "missions",
+        "risks",
+        "recent_activity",
+      ]);
+      if (!authoritativeAreas.has(area)) {
+        return inspectionPayload(area, focus);
+      }
+      try {
+        const response = await fetch("/internal/jarvis/truth", {
+          method: "POST",
+          credentials: "same-origin",
+          cache: "no-store",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-Token": csrf,
+          },
+          body: JSON.stringify({ area, focus }),
+        });
+        if (response.status === 401 || response.status === 403) {
+          location.assign("/internal/login");
+          return JSON.stringify({
+            source: "dufynd_control_plane_authoritative_truth",
+            verified: false,
+            error: "owner_session_invalid",
+          });
+        }
+        if (!response.ok) {
+          return JSON.stringify({
+            source: "dufynd_control_plane_authoritative_truth",
+            verified: false,
+            error: "authoritative_truth_unavailable",
+            missing_evidence:
+              "Control-Plane-Wahrheitsabfrage ist aktuell nicht bestätigt. Nicht spekulieren.",
+          });
+        }
+        const result = await response.json();
+        return JSON.stringify(result).slice(0, 12000);
+      } catch {
+        return JSON.stringify({
+          source: "dufynd_control_plane_authoritative_truth",
+          verified: false,
+          error: "authoritative_truth_transport_failed",
+          missing_evidence:
+            "Control-Plane-Wahrheitsabfrage ist aktuell nicht bestätigt. Nicht spekulieren.",
+        });
+      }
+    }
+
+    async function executeSafeAction() {
+      try {
+        const response = await fetch("/internal/jarvis/safe-action", {
+          method: "POST",
+          credentials: "same-origin",
+          cache: "no-store",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-Token": csrf,
+          },
+          body: JSON.stringify({ action: "advance_next_safe_work" }),
+        });
+        if (response.status === 401 || response.status === 403) {
+          location.assign("/internal/login");
+          return JSON.stringify({ ok: false, error: "owner_session_invalid" });
+        }
+        if (response.status === 409) {
+          return JSON.stringify({ ok: false, error: "safe_action_temporarily_blocked", status_code: 409 });
+        }
+        if (!response.ok) {
+          return JSON.stringify({ ok: false, error: "safe_action_unavailable", status_code: response.status });
+        }
+        const result = await response.json();
+        await refresh();
+        return JSON.stringify(result).slice(0, 12000);
+      } catch {
+        return JSON.stringify({ ok: false, error: "safe_action_transport_failed" });
+      }
+    }
+
+    async function answerToolCalls(response) {
       const calls = toolCalls(response);
       if (!calls.length) return false;
-
       clearTimeout(responseTimer);
       responseTimer = null;
-      setState("thinking", "ANALYSIERT", "Jarvis prüft den aktuellen Live-Kontext …");
-
-      calls.slice(0, 1).forEach((call) => {
+      const call = calls[0];
+      let output;
+      let allowAnotherTool = false;
+      if (toolCallsThisTurn >= 2) {
+        output = JSON.stringify({ ok: false, error: "bounded_tool_limit", note: "Answer from the evidence already returned in this turn." });
+      } else if (call.name === "advance_dufynd_safe_work") {
+        setState("thinking", "HANDELT", "Jarvis stößt den zertifizierten sicheren Arbeitsschritt an …");
+        output = await executeSafeAction();
+      } else {
+        setState("thinking", "ANALYSIERT", "Jarvis prüft die bestätigte Live-Evidenz …");
         let args = {};
-        try {
-          args = JSON.parse(call.arguments || "{}");
-        } catch {}
+        try { args = JSON.parse(call.arguments || "{}"); } catch {}
         const area = safeCode(args.area) || "overview";
         const focus = safeText(args.focus, 120);
-        const output =
-          toolCallsThisTurn >= 2
-            ? JSON.stringify({
-                source: "protected_control_room_snapshot",
-                error: "bounded_tool_limit",
-                note: "Use the data already returned and answer the owner directly.",
-              })
-            : inspectionPayload(area, focus);
-        toolCallsThisTurn += 1;
-        sendEvent({
-          type: "conversation.item.create",
-          item: {
-            type: "function_call_output",
-            call_id: call.call_id,
-            output,
-          },
-        });
+        output = await executeTruthInspection(area, focus);
+        allowAnotherTool = toolCallsThisTurn === 0;
+      }
+      toolCallsThisTurn += 1;
+      sendEvent({
+        type: "conversation.item.create",
+        item: { type: "function_call_output", call_id: call.call_id, output },
       });
-
       responseGenerationDone = false;
       playbackUiDone = false;
       lastAudibleAt = null;
@@ -894,14 +970,18 @@
         response: {
           output_modalities: ["audio"],
           max_output_tokens: MAX_RESPONSE_OUTPUT_TOKENS,
-          tool_choice: "none",
+          tool_choice: allowAnotherTool ? "auto" : "none",
         },
       });
-      armResponseStartTimeout("Jarvis konnte die Analyse nicht beginnen");
+      armResponseStartTimeout(
+        call.name === "advance_dufynd_safe_work"
+          ? "Jarvis konnte das Arbeitsergebnis nicht einordnen"
+          : "Jarvis konnte die Evidenzanalyse nicht beginnen",
+      );
       return true;
     }
 
-    function handleRealtimeEvent(raw, sessionGeneration) {
+    async function handleRealtimeEvent(raw, sessionGeneration) {
       if (sessionGeneration !== generation) return;
       let event;
       try {
@@ -1023,7 +1103,7 @@
           return;
         }
 
-        if (answerToolCalls(event.response)) return;
+        if (await answerToolCalls(event.response)) return;
 
         setState(
           "speaking",
@@ -1163,9 +1243,12 @@
 
         peer.addTrack(track, stream);
         dataChannel = peer.createDataChannel("oai-events");
-        dataChannel.addEventListener("message", (event) =>
-          handleRealtimeEvent(event.data, sessionGeneration),
-        );
+        dataChannel.addEventListener("message", (event) => {
+          void handleRealtimeEvent(event.data, sessionGeneration).catch(() => {
+            if (sessionGeneration !== generation) return;
+            setState("error", "VOICE TOOL FEHLER", "Jarvis konnte den internen Tool-Schritt nicht sauber abschließen");
+          });
+        });
         dataChannel.addEventListener("close", () => {
           if (sessionGeneration !== generation) return;
           setState("error", "VERBINDUNG GETRENNT", "Realtime-Verbindung wurde beendet");
