@@ -1,4 +1,4 @@
-"""Static safety contract for DUFYND Jarvis Live Interface V2."""
+"""Static safety contract for DUFYND Jarvis Live Interface V3."""
 
 
 def room_text(filename):
@@ -9,20 +9,29 @@ def room_text(filename):
         return handle.read()
 
 
-def test_ptt_control_is_explicit_and_bounded():
+def voice_text():
+    js = room_text("room.js")
+    start = js.index("// JARVIS LIVE INTERFACE V3")
+    end = js.index("  function missions()", start)
+    return js[start:end]
+
+
+def test_one_tap_control_is_explicit_and_bounded():
     html = room_text("index.html")
     assert 'id="jarvis-ptt"' in html
     assert 'aria-pressed="false"' in html
-    assert "Button oder V halten" in html
-    assert "PHASE 2" in html
-    assert "Audio nur während gedrückter Taste" in html
+    assert "TAP TO TALK" in html
+    assert "Einmal tippen oder V" in html
+    assert "Signalton = sprechen" in html
+    assert "JARVIS V3" in html
+    assert "Mikrofon nur beim Zuhören" in html
+    assert "Folgefragen bis 90 s" in html
+    assert "PUSH TO TALK" not in html
+    assert "Audio nur während gedrückter Taste" not in html
 
 
-def test_phase2_uses_same_origin_webrtc_bridge_and_manual_turn_control():
-    js = room_text("room.js")
-    start = js.index("// JARVIS LIVE INTERFACE V2")
-    end = js.index("  function missions()", start)
-    voice = js[start:end]
+def test_v3_uses_same_origin_webrtc_semantic_turns_and_warm_followups():
+    voice = voice_text()
 
     assert "navigator.mediaDevices.getUserMedia" in voice
     assert "new RTCPeerConnection()" in voice
@@ -31,63 +40,81 @@ def test_phase2_uses_same_origin_webrtc_bridge_and_manual_turn_control():
     assert '"Content-Type": "application/sdp"' in voice
     assert '"X-CSRF-Token": csrf' in voice
     assert 'stage.dataset.voiceEnabled === "true"' in voice
-    assert '"VOICE NICHT AKTIV"' in voice
     assert 'type: "input_audio_buffer.clear"' in voice
-    assert 'type: "input_audio_buffer.commit"' in voice
-    assert 'type: "response.create"' in voice
+    assert '"input_audio_buffer.speech_started"' in voice
+    assert '"input_audio_buffer.speech_stopped"' in voice
+    assert "playReadyTone" in voice
+    assert 'button.addEventListener("click", requestTurn)' in voice
+    assert 'event.code !== "KeyV"' in voice
+    assert "pointerdown" not in voice
+    assert "pointerup" not in voice
+    assert "setTimeout(() => cleanupSession(), 90000)" in voice
+    assert 'stage.dataset.sessionWarm = "true"' in voice
+    assert "track.enabled = false" in voice
+    assert "track.enabled = true" in voice
+    assert "25000" in voice
+    assert "30000" in voice
     assert "max_output_tokens: 1024" in voice
     assert '"VOICE LIMIT"' in voice
-    assert '"max_output_tokens"' in voice
-    assert "track.enabled = false" in voice
-    assert "setTimeout(() => stop(), 20000)" in voice
-    assert "30000" in voice
+    assert '"MIKROFON BLOCKIERT"' in voice
+    assert '"REALTIME TIMEOUT"' in voice
+    assert "peer.localDescription?.sdp || offer.sdp" in voice
+    assert "api.openai.com" not in voice
+    assert "OPENAI_API_KEY" not in voice
+
+
+def test_v3_live_inspector_is_rich_bounded_and_read_only():
+    voice = voice_text()
+
+    assert "DUFYND-LIVE-ORIENTATION" in voice
+    assert "inspect_dufynd" in voice
+    assert "inspectionPayload" in voice
+    assert '"workers"' in voice
+    assert '"missions"' in voice
+    assert '"owner_actions"' in voice
+    assert '"first_money"' in voice
+    assert '"systems"' in voice
+    assert '"risks"' in voice
+    assert '"recent_activity"' in voice
+    assert "function_call_output" in voice
+    assert 'tool_choice: "none"' in voice
+    assert ".slice(0, 12000)" in voice
+    assert "safeText" in voice
+    assert "safeSha" in voice
+    assert "safeCount" in voice
+    assert "reason:" in voice
+    assert "next_step:" in voice
+    assert "owner_action:" in voice
+    assert "checkpoint:" in voice
+    assert "decision_token" not in voice
+    assert "action_token" not in voice
+    assert 'type: "response.cancel"' in voice
+    assert 'type: "output_audio_buffer.clear"' in voice
+
+
+def test_v3_keeps_playback_drain_safe():
+    voice = voice_text()
+
     assert "startOutputAnalysis(event.streams[0])" in voice
     assert "drawOutputSpectrum" in voice
     assert "keepPlaybackAliveAfterResponse" in voice
     assert "responseGenerationDone" in voice
     assert "lastAudibleAt" in voice
     assert "response.output_audio.done" in voice
-    assert "setTimeout(() => cleanupSession(), 60000)" in voice
     assert "responseAudioDurationMs" not in voice
     assert "output_token_details?.audio_tokens" not in voice
     assert "finishAfterPlayback(event)" not in voice
     assert "outputSilentFrames >= 72" not in voice
-    assert '"Antwort vollständig abgespielt · bereit"' in voice
     assert "setTimeout(() => cleanupSession(), 2600)" not in voice
-    assert "waitForIce" not in voice
-    assert "peer.localDescription?.sdp || offer.sdp" in voice
-    assert '"HÖRT ZU · jetzt sprechen · Loslassen sendet deine Frage"' in voice
-    assert '"NOCH NICHT BEREIT"' in voice
-    assert '"MIKROFON BLOCKIERT"' in voice
-    assert '"REALTIME TIMEOUT"' in voice
-    assert "button.dataset.providerReady" in voice
-    assert '"VOICE NICHT AKTIV"' in voice
-    assert '"Server-Key fehlt · Push-to-Talk kann noch nicht antworten"' in voice
-    assert "api.openai.com" not in voice
-    assert "OPENAI_API_KEY" not in voice
 
 
-def test_voice_context_is_bounded_and_action_free():
-    js = room_text("room.js")
-    start = js.index("// JARVIS LIVE INTERFACE V2")
-    end = js.index("  function missions()", start)
-    voice = js[start:end]
-
-    assert "DUFYND-LIVE-STATUS" in voice
-    assert "safeCode" in voice
-    assert "safeSha" in voice
-    assert "safeCount" in voice
-    assert ".slice(0, 8)" in voice
-    assert "worker.task_id" in voice
-    assert "conversation.item.create" in voice
-
-
-def test_voice_animation_respects_reduced_motion():
+def test_voice_animation_respects_reduced_motion_and_warm_state():
     css = room_text("room.css")
-    assert "JARVIS LIVE INTERFACE V2" in css
+    assert "JARVIS LIVE INTERFACE V3" in css
     assert '.core[data-voice-state="listening"]' in css
     assert '.core[data-voice-state="thinking"]' in css
     assert '.core[data-voice-state="speaking"]' in css
     assert ".core-spectrum" in css
     assert '.jarvis-ptt[data-provider-ready="false"]' in css
+    assert '[data-session-warm="true"]' in css
     assert "@media (prefers-reduced-motion: reduce)" in css

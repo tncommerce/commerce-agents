@@ -4238,7 +4238,7 @@ body[data-execution-mode="unknown"] .execution-evidence {
 }
 
 
-/* JARVIS LIVE INTERFACE V2 · bounded realtime push-to-talk voice layer */
+/* JARVIS LIVE INTERFACE V3 · one-tap semantic realtime voice layer */
 .jarvis-stage {
   position: relative;
   z-index: 3;
@@ -4433,11 +4433,11 @@ body[data-execution-mode="unknown"] .execution-evidence {
   letter-spacing: 1.35px;
 }
 .ptt-copy small {
-  margin-top: 2px;
-  color: #738687;
-  font-size: 7px;
-  line-height: 1.35;
-  letter-spacing: 0.55px;
+  margin-top: 3px;
+  color: #8fa1a2;
+  font-size: 8px;
+  line-height: 1.4;
+  letter-spacing: 0.4px;
   text-transform: none;
 }
 .jarvis-ptt kbd {
@@ -4452,13 +4452,23 @@ body[data-execution-mode="unknown"] .execution-evidence {
   text-align: center;
 }
 #jarvis-voice-privacy {
-  margin: 6px 4px 0;
-  color: #526165;
-  font-size: 6px;
-  line-height: 1.45;
-  letter-spacing: 0.72px;
+  margin: 7px 4px 0;
+  color: #66787a;
+  font-size: 7px;
+  line-height: 1.5;
+  letter-spacing: 0.62px;
   text-align: center;
   text-transform: uppercase;
+}
+.jarvis-stage[data-session-warm="true"] .jarvis-ptt:not([aria-pressed="true"]) {
+  border-color: #72ffe04c;
+  box-shadow:
+    inset 0 0 22px #65ffe00a,
+    0 0 22px #65ffe00a;
+}
+.jarvis-stage[data-session-warm="true"] .jarvis-ptt:not([aria-pressed="true"]) .ptt-dot {
+  background: #68cdb9;
+  box-shadow: 0 0 10px #72ffe055, 0 0 0 4px #72ffe009;
 }
 .jarvis-stage.voice-error .jarvis-ptt {
   border-color: #f0b65d55;
