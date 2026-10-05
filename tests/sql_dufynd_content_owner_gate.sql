@@ -6,7 +6,13 @@ begin
  meta:=jsonb_build_object('quality_review','pass','visual_qa','pass','rights_review','pass','product_match_review','pass',
  'destination_review','pass','asset_sha256',repeat('a',64),'review_asset_sha256',repeat('a',64),
  'review_evidence_ref','qa_review_fixture','creator_actor_id','qa_creator','internal_reviewer_actor_id','qa_independent_checker',
- 'campaign_id','qa_delina_gate','product_id','SC-PDM-DELINA-EDP-75','owner_review_v1',jsonb_build_object(
+ 'campaign_id','qa_delina_gate','product_id','SC-PDM-DELINA-EDP-75',
+ 'publish_contract_v2',jsonb_build_object(
+   'media_kind','image','width_px',1080,'height_px',1350,'visual_score',9.7,
+   'native_preview_verified',true,'final_upload_asset_verified',true,
+   'cta_mode','profile_link','click_surface','profile_link','profile_link_verified',true,
+   'clickable_website_link_available',true),
+ 'owner_review_v1',jsonb_build_object(
  'internal_ready',true,'product','Parfums de Marly Delina EDP 75 ml','product_id','SC-PDM-DELINA-EDP-75',
  'hook','Delina: passt sie zu deinem Duftprofil?','caption','Duftprofil und Kaufoptionen auf DUFYND. Testfixture, kein Publishing.',
  'reason','Complete review fixture for a gated next candidate.','platform','instagram','requested_at',now()+interval '1 day',
@@ -29,6 +35,13 @@ begin
  if public.request_dufynd_content_owner_review('qa_delina_gate_asset')->>'ready'<>'false' then raise exception 'self review accepted'; end if;
  update public.dufynd_content_assets set metadata=jsonb_set(meta,'{owner_review_v1,internal_rating}','5') where id='qa_delina_gate_asset';
  if public.request_dufynd_content_owner_review('qa_delina_gate_asset')->>'ready'<>'false' then raise exception 'substandard asset accepted'; end if;
+
+ update public.dufynd_content_assets set metadata=jsonb_set(meta,'{publish_contract_v2,profile_link_verified}','false'::jsonb) where id='qa_delina_gate_asset';
+ r:=public.request_dufynd_content_owner_review('qa_delina_gate_asset');
+ if r->>'ready'<>'false' or r->>'reason'<>'instagram_profile_link_not_verified' then raise exception 'unverified Instagram click path accepted'; end if;
+ update public.dufynd_content_assets set metadata=jsonb_set(meta,'{owner_review_v1,caption}',to_jsonb('Mehr: https://dufynd.de/test'::text)) where id='qa_delina_gate_asset';
+ r:=public.request_dufynd_content_owner_review('qa_delina_gate_asset');
+ if r->>'ready'<>'false' or r->>'reason'<>'instagram_raw_caption_url_forbidden' then raise exception 'raw Instagram caption URL accepted'; end if;
  update public.dufynd_content_assets set metadata=meta,version=version+1 where id='qa_delina_gate_asset';
  if (select count(*) from public.dufynd_human_decisions where status='pending')<>n+1 then raise exception 'ready revision missing'; end if;
  update public.dufynd_content_assets set status='draft' where id='qa_delina_gate_asset';

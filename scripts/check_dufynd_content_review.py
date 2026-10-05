@@ -21,6 +21,8 @@ CHECKS = (
     "audio_rights",
     "factual_claims",
     "technical_quality",
+    "native_mobile_preview",
+    "platform_click_path",
     "duplicate_content",
     "dufynd_quality",
 )
@@ -90,6 +92,63 @@ def evaluate(document: dict) -> dict:
             or not _text(check.get("evidence_ref"))
         ):
             reasons.append(f"check_not_evidenced:{name}")
+    # Platform-native publish contract. This prevents a visually reviewed asset from
+    # being posted with an unusable CTA/click surface or an unverified compressed upload.
+    publish = package.get("publish_contract")
+    if not isinstance(publish, dict):
+        reasons.append("publish_contract_required")
+    else:
+        platform = str(package.get("platform") or "").strip().casefold()
+        media_kind = str(publish.get("media_kind") or "").strip().casefold()
+        width = publish.get("width_px")
+        height = publish.get("height_px")
+        score = publish.get("visual_score")
+        if type(width) is not int or type(height) is not int or width < 1080 or height < 1080:
+            reasons.append("media_resolution_below_publish_floor")
+        if (
+            not isinstance(score, (int, float))
+            or isinstance(score, bool)
+            or score < 9.5
+            or score > 10
+        ):
+            reasons.append("visual_score_below_owner_standard")
+        if publish.get("native_preview_verified") is not True:
+            reasons.append("native_preview_not_verified")
+        if publish.get("final_upload_asset_verified") is not True:
+            reasons.append("final_upload_asset_not_verified")
+
+        caption = str(package.get("caption") or "")
+        cta_mode = str(publish.get("cta_mode") or "").strip().casefold()
+        click_surface = str(publish.get("click_surface") or "").strip().casefold()
+        if platform == "instagram":
+            if media_kind not in {"image", "carousel", "reel", "story"}:
+                reasons.append("instagram_media_kind_invalid")
+            if media_kind in {"image", "carousel", "reel"} and (
+                "http://" in caption or "https://" in caption
+            ):
+                reasons.append("instagram_raw_caption_url_forbidden")
+            if cta_mode not in {"profile_link", "story_link_sticker"}:
+                reasons.append("instagram_cta_mode_invalid")
+            if cta_mode == "profile_link" and publish.get("profile_link_verified") is not True:
+                reasons.append("instagram_profile_link_not_verified")
+            if cta_mode == "story_link_sticker" and media_kind != "story":
+                reasons.append("instagram_story_link_requires_story")
+            if click_surface == "caption_url":
+                reasons.append("instagram_caption_url_not_clickable")
+        elif platform == "tiktok":
+            if media_kind not in {"image", "carousel", "video"}:
+                reasons.append("tiktok_media_kind_invalid")
+            if publish.get("clickable_website_link_available") is not True:
+                if "http://" in caption or "https://" in caption:
+                    reasons.append("tiktok_raw_url_without_clickable_surface")
+                if cta_mode not in {"comment", "profile", "engagement"}:
+                    reasons.append("tiktok_nonclickable_cta_invalid")
+        elif platform == "youtube":
+            if media_kind != "video":
+                reasons.append("youtube_video_required")
+            if cta_mode not in {"profile_link", "description_link"}:
+                reasons.append("youtube_cta_mode_invalid")
+
     # Scores, Owner permission, or an existing published state cannot bypass QA.
     hard_fails = review.get("hard_fails")
     if not isinstance(hard_fails, list) or hard_fails:
