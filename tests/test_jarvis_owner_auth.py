@@ -313,8 +313,6 @@ def test_voice_session_requires_owner_origin_csrf_and_sdp(setup):
     assert reader.voice.calls == ["v=0\r\no=- 1 1 IN IP4 127.0.0.1\r\n"]
 
 
-
-
 def test_truth_endpoint_is_owner_csrf_exact_and_bounded(setup):
     client, auth, reader, _, _, _, _ = setup
     payload = {"area": "workers", "focus": "Robin"}
@@ -356,6 +354,7 @@ def test_truth_endpoint_is_owner_csrf_exact_and_bounded(setup):
     assert response.json()["verified"] is True
     assert reader.truth.calls == [("workers", "Robin")]
 
+
 def test_safe_action_endpoint_is_owner_csrf_exact_and_bounded(setup):
     client, auth, reader, _, _, _, _ = setup
     payload = {"action": "advance_next_safe_work"}
@@ -396,6 +395,7 @@ def test_safe_action_endpoint_is_owner_csrf_exact_and_bounded(setup):
     assert response.json()["source"] == "dufynd_thin_v1_certified_free_orchestrator"
     assert response.json()["paid_calls"] == 0
     assert reader.safe_actions.calls == 1
+
 
 def test_owner_action_endpoint_is_owner_csrf_and_exact_payload_guarded(setup):
     client, auth, reader, _, _, _, _ = setup
