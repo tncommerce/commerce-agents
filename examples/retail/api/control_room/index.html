@@ -27,7 +27,7 @@
           <a href="#advanced">••• <span>Details</span></a>
         </nav>
         <div class="sidebar-bottom">
-          <div class="read-only"><i></i> READ-ONLY V0.9</div>
+          <div class="read-only"><i></i> READ-ONLY V1.0</div>
           <p>Klare Signale.<br />Belegte Entscheidungen.</p>
         </div>
       </aside>
@@ -292,12 +292,55 @@
           </section>
         </section>
         <section id="crew" class="panel crew-panel" aria-labelledby="crew-title">
-          <div class="panel-heading"><div><span class="eyebrow">DEINE CREW</span><h2 id="crew-title">Klare Rollen. Echte Arbeit.</h2></div><span id="crew-count" class="pill neutral">Wird geprüft</span></div>
-          <p class="crew-intro">Zehn dauerhafte Rollen. Aktiv heißt: eine reale Ausführung ist durch Lease und Heartbeat bestätigt.</p>
-          <div id="crew-supervisor" class="crew-supervisor state-neutral"><span class="crew-core-mark" aria-hidden="true">J</span><div><strong>JARVIS</strong><small>SUPERVISOR / ORCHESTRATOR</small><p id="crew-supervisor-state">Loop wird geprüft.</p></div><a id="crew-owner-link" href="#decisions" hidden>Entscheidung von Tuan →</a></div>
+          <div class="panel-heading">
+            <div>
+              <span class="eyebrow">JARVIS CREW · LIVE</span>
+              <h2 id="crew-title">Wer macht gerade was?</h2>
+            </div>
+            <span id="crew-count" class="pill neutral">Wird geprüft</span>
+          </div>
+          <p class="crew-intro">Jarvis führt. Die vier Sparten bleiben bewusst getrennt. Aktiv bedeutet ausschließlich: eine reale Ausführung ist durch Lease und Heartbeat bestätigt.</p>
+
+          <div id="crew-supervisor" class="crew-supervisor state-neutral">
+            <span class="crew-core-mark" aria-hidden="true">J</span>
+            <div>
+              <strong>JARVIS</strong>
+              <small>SUPERVISOR / ORCHESTRATOR</small>
+              <p id="crew-supervisor-state">Loop wird geprüft.</p>
+            </div>
+            <a id="crew-owner-link" href="#decisions" hidden>Entscheidung von Tuan →</a>
+          </div>
+
+          <section class="crew-live-board" aria-labelledby="crew-live-title">
+            <div class="crew-live-heading">
+              <div>
+                <span class="eyebrow">LIVE ACTION</span>
+                <h3 id="crew-live-title">Aktuell in Arbeit</h3>
+              </div>
+              <span id="crew-live-count" class="small-label">Wird geprüft</span>
+            </div>
+            <div id="crew-live-now" class="crew-live-now">
+              <p class="muted">Live-Ausführungen werden geprüft.</p>
+            </div>
+          </section>
+
           <div id="crew-grid" class="crew-grid" aria-label="Jarvis Organisationsrollen"></div>
+
+          <section class="crew-activity-board" aria-labelledby="crew-activity-title">
+            <div class="crew-live-heading">
+              <div>
+                <span class="eyebrow">LETZTE ARBEIT</span>
+                <h3 id="crew-activity-title">Verifizierte Worker-Aktivität</h3>
+              </div>
+              <span class="small-label">kein Fake-Live</span>
+            </div>
+            <div id="crew-activity" class="crew-activity">
+              <p class="muted">Letzte Ausführungen werden geladen.</p>
+            </div>
+          </section>
+
           <p id="crew-unassigned" class="crew-note" hidden></p>
-          <p class="crew-note">Bereit beschreibt die Rolle. Eine ausführbare Aufgabe benötigt zusätzlich einen zulässigen, zertifizierten Handler. Technische Identitäten stehen in den Details.</p>
+          <p class="crew-note">Bereit beschreibt eine Organisationsrolle, nicht eine laufende Ausführung. Technische Identitäten und Handler bleiben in den Details.</p>
         </section>
 
         <section class="business-grid" aria-label="Geschäft und System">
@@ -558,7 +601,7 @@
         </section>
 
         <footer class="footer">
-          <span>DUFYND · CEO Control Room V0.9</span>
+          <span>DUFYND · CEO Control Room V1.0</span>
           <span id="snapshot-time">Noch kein Snapshot</span>
           <span>Read-only · Owner gates preserved</span>
         </footer>

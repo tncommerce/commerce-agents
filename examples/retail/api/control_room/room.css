@@ -3872,3 +3872,367 @@ body[data-execution-mode="unknown"] .execution-evidence {
   .crew-cluster { position: relative; }
   .crew-cluster::before { content: ''; position: absolute; left: 50%; top: -16px; height: 13px; width: 1px; background: #65a9ff35; }
 }
+
+
+/* V1.0 — crew lanes: one hierarchy, four clearly separated departments, real live action. */
+.crew-panel{
+  padding:26px;
+  background:
+    radial-gradient(900px 320px at 50% -8%,#2e8c8c18,transparent 66%),
+    linear-gradient(145deg,#11181f,#0b1016);
+}
+.crew-intro{
+  max-width:900px;
+  margin:8px 0 20px;
+  font-size:13px;
+  line-height:1.65;
+}
+.crew-supervisor{
+  max-width:760px;
+  margin:24px auto 22px;
+  min-height:88px;
+  padding:18px 22px;
+  border-radius:16px;
+  box-shadow:0 16px 42px #0003,inset 0 1px #ffffff06;
+}
+.crew-supervisor::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:-20px;
+  width:1px;
+  height:20px;
+  background:linear-gradient(#65a9ff66,#65a9ff16);
+}
+.crew-live-board{
+  margin:24px 0 20px;
+  padding:16px;
+  border:1px solid #65a9ff1f;
+  border-radius:14px;
+  background:linear-gradient(145deg,#0d151d,#0a0f15);
+}
+.crew-live-heading{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:12px;
+}
+.crew-live-heading h3{
+  margin:4px 0 0;
+  font-size:17px;
+  letter-spacing:-.25px;
+}
+.crew-live-now{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:10px;
+}
+.crew-live-card,
+.crew-live-empty{
+  position:relative;
+  min-width:0;
+  padding:14px 15px;
+  border:1px solid #65a9ff2d;
+  border-radius:11px;
+  background:linear-gradient(145deg,#10202b,#0c131a);
+  overflow:hidden;
+}
+.crew-live-card::before{
+  content:"";
+  position:absolute;
+  left:0;top:0;bottom:0;width:3px;
+  background:#78dcff;
+  box-shadow:0 0 16px #78dcffaa;
+  animation:crew-live-pulse 1.8s ease-in-out infinite;
+}
+.crew-live-card strong,
+.crew-live-empty strong{
+  display:block;
+  margin-top:7px;
+  font-size:16px;
+  letter-spacing:.08em;
+}
+.crew-live-card small{
+  margin-top:2px;
+  color:#8ea9b5;
+}
+.crew-live-task{
+  margin:9px 0 0;
+  color:#e2eef0;
+  font-size:13px;
+  line-height:1.5;
+}
+.crew-live-meta{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:9px;
+  color:#7f939d;
+  font-size:10px;
+}
+.crew-live-next{
+  margin:8px 0 0;
+  padding-top:8px;
+  border-top:1px solid #ffffff0b;
+  color:#9ec4cf;
+  font-size:10px;
+}
+.crew-live-badge,
+.crew-monitor-badge{
+  display:inline-flex;
+  align-items:center;
+  min-height:24px;
+  padding:3px 7px;
+  border-radius:999px;
+  font-size:8px;
+  font-weight:750;
+  letter-spacing:1.1px;
+}
+.crew-live-badge{
+  color:#9feeff;
+  background:#65a9ff12;
+  border:1px solid #65a9ff32;
+}
+.crew-monitor-badge{
+  color:#93cde3;
+  background:#65a9ff0b;
+  border:1px solid #65a9ff20;
+}
+.crew-live-empty{
+  border-style:dashed;
+  color:#82939e;
+}
+.crew-live-empty p{
+  margin:7px 0 0;
+  font-size:11px;
+  line-height:1.55;
+}
+
+.crew-grid{
+  position:relative;
+  display:grid;
+  grid-template-columns:1fr;
+  gap:15px;
+  padding-left:26px;
+}
+.crew-grid::before{
+  content:"";
+  position:absolute;
+  left:10px;
+  top:0;
+  bottom:0;
+  width:1px;
+  background:linear-gradient(#65a9ff4a,#65a9ff18 80%,transparent);
+}
+.crew-cluster{
+  --department:#71808d;
+  position:relative;
+  display:block;
+  padding:16px;
+  border:1px solid #ffffff0e;
+  border-radius:14px;
+  background:linear-gradient(145deg,#10171f,#0c1117);
+}
+.crew-cluster::before{
+  content:"";
+  position:absolute;
+  left:-17px;
+  top:27px;
+  width:17px;
+  height:1px;
+  background:color-mix(in srgb,var(--department) 60%,transparent);
+}
+.crew-cluster::after{
+  content:"";
+  position:absolute;
+  left:-21px;
+  top:23px;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--department);
+  box-shadow:0 0 14px color-mix(in srgb,var(--department) 45%,transparent);
+}
+.crew-cluster-build{--department:#70c7dd}
+.crew-cluster-money{--department:#6dd8a0}
+.crew-cluster-growth{--department:#b896ff}
+.crew-cluster-operations{--department:#e2b86c}
+.crew-cluster-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding-bottom:12px;
+  margin-bottom:12px;
+  border-bottom:1px solid #ffffff0b;
+}
+.crew-cluster-label{
+  color:var(--department);
+  font-size:12px;
+  font-weight:750;
+  letter-spacing:.18em;
+}
+.crew-cluster-purpose{
+  margin:3px 0 0;
+  color:#7c8792;
+  font-size:10px;
+}
+.crew-cluster-state{
+  text-align:right;
+  flex:0 0 auto;
+}
+.crew-cluster-state strong{
+  display:block;
+  color:var(--department);
+  font-size:10px;
+  letter-spacing:.08em;
+}
+.crew-cluster-state span{
+  display:block;
+  margin-top:3px;
+  color:#707b86;
+  font-size:9px;
+}
+.crew-lane-workers{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:11px;
+}
+.crew-cluster-operations .crew-lane-workers{
+  grid-template-columns:minmax(260px,1fr) repeat(2,minmax(0,.01fr));
+}
+.crew-cluster-operations .crew-node{
+  grid-column:1;
+}
+.crew-node{
+  min-height:190px;
+  padding:15px;
+  border-radius:12px;
+  background:linear-gradient(145deg,#151c24,#0e131a);
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+}
+.crew-node:hover{
+  transform:translateY(-2px);
+  border-color:#ffffff20;
+  box-shadow:0 12px 30px #0003;
+}
+.crew-node[data-active="true"]{
+  background:
+    radial-gradient(circle at 92% 8%,#65a9ff14,transparent 35%),
+    linear-gradient(145deg,#13232e,#0d151c);
+  box-shadow:0 0 0 1px #65a9ff10,0 18px 35px #0003;
+}
+.crew-node[data-active="true"]::before{
+  left:-3px;
+  top:14px;
+  width:3px;
+  height:44px;
+  border-radius:4px;
+  animation:crew-handoff 2.2s ease-in-out infinite;
+}
+.crew-node-top{
+  align-items:flex-start;
+  gap:10px;
+}
+.crew-node-identity{
+  min-width:0;
+}
+.crew-node h4{
+  font-size:18px;
+  letter-spacing:.08em;
+}
+.crew-role{
+  margin:3px 0 0;
+  font-size:8px;
+}
+.crew-now-label{
+  margin-top:13px;
+  color:#6d7d87;
+  font-size:8px;
+  letter-spacing:.12em;
+}
+.crew-focus{
+  min-height:40px;
+  margin:5px 0 9px!important;
+  font-size:12px!important;
+  line-height:1.55!important;
+}
+.crew-focus-live{
+  color:#dff6fa!important;
+}
+.crew-node p{
+  line-height:1.5;
+}
+.crew-node .crew-live-path{
+  margin-top:10px;
+  color:#9feaff!important;
+}
+.crew-details{
+  margin-top:10px;
+}
+
+.crew-activity-board{
+  margin-top:19px;
+  padding-top:16px;
+  border-top:1px solid #ffffff0c;
+}
+.crew-activity{
+  display:grid;
+  gap:0;
+}
+.crew-activity-row{
+  display:grid;
+  grid-template-columns:62px minmax(0,1fr);
+  gap:12px;
+  align-items:center;
+  padding:9px 0;
+  border-top:1px solid #ffffff08;
+}
+.crew-activity-row:first-child{border-top:0}
+.crew-activity-row time{
+  color:#6f7d87;
+  font-size:9px;
+  font-variant-numeric:tabular-nums;
+}
+.crew-activity-row strong{
+  display:block;
+  color:#cfd9dd;
+  font-size:10px;
+}
+.crew-activity-row span{
+  display:block;
+  margin-top:2px;
+  color:#687680;
+  font-size:9px;
+}
+@keyframes crew-live-pulse{
+  0%,100%{opacity:.45;box-shadow:0 0 8px #78dcff55}
+  50%{opacity:1;box-shadow:0 0 18px #78dcffaa}
+}
+
+@media(max-width:1100px){
+  .crew-lane-workers{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .crew-cluster-operations .crew-lane-workers{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:700px){
+  .crew-panel{padding:16px}
+  .crew-supervisor{margin:18px 0 20px}
+  .crew-live-heading,.crew-cluster-head{align-items:flex-start}
+  .crew-grid{padding-left:15px;gap:12px}
+  .crew-grid::before{left:5px}
+  .crew-cluster{padding:13px}
+  .crew-cluster::before{left:-9px;width:9px}
+  .crew-cluster::after{left:-13px}
+  .crew-cluster-head{display:block}
+  .crew-cluster-state{text-align:left;margin-top:8px}
+  .crew-lane-workers{grid-template-columns:1fr}
+  .crew-node{min-height:0}
+  .crew-live-now{grid-template-columns:1fr}
+  .crew-activity-row{grid-template-columns:48px minmax(0,1fr)}
+}
+@media(prefers-reduced-motion:reduce){
+  .crew-live-card::before,
+  .crew-node[data-active="true"]::before{animation:none!important}
+  .crew-node{transition:none!important}
+}
