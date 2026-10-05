@@ -615,23 +615,27 @@ def project_risk(snapshot: dict) -> dict:
             instagram_removal,
         )
 
-    gates = snapshot["decision_center"]
+    gates = [
+        gate
+        for gate in snapshot["decision_center"]
+        if gate.get("owner_confirmed_manual_action") is not True
+    ]
     gate_complete = command.get("gates_complete") is True
     panel(
         "owner",
         "OWNER",
-        "red" if gates else "green" if gate_complete else "amber",
+        "amber" if gates else "green" if gate_complete else "amber",
         str(len(gates)) + " Entscheidung(en) offen"
         if gates
         else "Keine Freigabe offen"
         if gate_complete
         else "Freigabestatus unklar",
-        (gates[0].get("title") or "Konkrete Entscheidung im Freigabebereich prüfen.")
+        (gates[0].get("question") or gates[0].get("title") or "Konkrete Owner-Aktion prüfen.")
         if gates
         else "Keine aktuelle Owner-Entscheidung erforderlich."
         if gate_complete
         else "Entscheidungsquelle nicht vollständig bestätigt.",
-        "Konkrete Entscheidung und Freigabeumfang prüfen; kein automatisches Publishing."
+        "Owner Action Center öffnen und die dort angezeigte konkrete Handlung ausführen."
         if gates
         else "Neue Owner Gates weiter beobachten.",
         owner=bool(gates),
