@@ -53,7 +53,7 @@ def test_voice_gateway_keeps_standard_key_server_side_and_returns_only_sdp():
     assert len(seen["safety"]) == 64
     assert seen["safety"] != owner_id
     assert seen["content_type"].startswith("multipart/form-data;")
-    assert b"gpt-realtime-2.1" in seen["body"]
+    assert b"gpt-realtime-2.1-mini" in seen["body"]
     assert b"sk-server-only-test" not in seen["body"]
 
 
