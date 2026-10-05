@@ -234,3 +234,28 @@ def test_role_explanations_only_use_sanitized_payload():
     s = result(data)
     assert role(s, "Zoro")["task"] == "[restricted]"
     assert "must-not-leak" not in str(s)
+
+
+def test_active_role_with_another_pending_gate_does_not_deny_owner_action():
+    data = healthy_data()
+    data["tasks"] = [
+        {
+            "task_id": "analytics-running",
+            "domain": "analytics",
+            "status": "working",
+            "title": "Funnel prüfen",
+        },
+        {
+            "task_id": "analytics-gate",
+            "domain": "analytics",
+            "status": "waiting_human_input",
+            "title": "Experiment bewerten",
+        },
+    ]
+    data["active_runs"] = [
+        run_row(task_id="analytics-running", handler_id="analytics_funnel_audit")
+    ]
+    nami = role(result(data), "Nami")
+    assert nami["state"] == "AKTIV"
+    assert "owner" in nami["connections"]
+    assert nami["owner_action"] == "Freigabe prüfen: Experiment bewerten"

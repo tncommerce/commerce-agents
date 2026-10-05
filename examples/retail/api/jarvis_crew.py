@@ -187,7 +187,17 @@ def project_crew(snapshot: dict) -> dict:
                     if state == "BEREIT"
                     else "amber",
                     "task": title,
-                    "reason": explanation.get("reason")
+                    "reason": (
+                        "Gmail-Antwortkanal eingeschränkt; automatische Antwortprüfung nicht bestätigt."
+                        if key == "outreach"
+                        else "Render-Deploymentnachweis eingeschränkt oder älter; kein Ausfall allein daraus bestätigt."
+                        if key == "infrastructure"
+                        else "Production-Smoke-Nachweis nicht aktuell bestätigt; letzte Prüfung separat bewerten."
+                        if key == "qa"
+                        else "Aktueller Jarvis-Loop-Nachweis fehlt; erneute Prüfung erforderlich."
+                    )
+                    if complete and state == "DEGRADED" and monitor and not executions
+                    else explanation.get("reason")
                     or (
                         "Reale Ausführung durch Lease und Heartbeat bestätigt."
                         if current
@@ -200,8 +210,12 @@ def project_crew(snapshot: dict) -> dict:
                     "since_basis": "Ausführungsbeginn"
                     if current
                     else explanation.get("since_basis"),
-                    "owner_action": explanation.get("owner_action")
-                    or "Keine Aktion von dir erforderlich.",
+                    "owner_action": (
+                        "Freigabe prüfen: "
+                        + (gates[0].get("title") or "Konkrete Owner-Entscheidung")
+                    )
+                    if gates
+                    else explanation.get("owner_action") or "Keine Aktion von dir erforderlich.",
                     "task_count": len(tasks),
                     "active_count": len(active),
                     "tasks": tasks,
