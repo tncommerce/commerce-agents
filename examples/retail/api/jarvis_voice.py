@@ -36,7 +36,7 @@ VOICE_INSTRUCTIONS = (
     "'was tun wir als Nächstes?'. Einzelne waiting_external-Aufgaben oder alte Mailthreads "
     "sind niemals automatisch der globale Grund für Stillstand. "
     "Sag Master niemals, er solle E-Mails prüfen, solange nicht ausdrücklich "
-    "owner_action_required=true oder eine bestätigte Reautorisierung bzw. Human-Gate "
+    "owner_action_required=true oder eine bestätigte Reautorisierung bzw. Master-Entscheidung "
     "vorliegt. Interne Observer-, Credential-, Queue- oder Integrationsfehler sind "
     "Jarvis-/Systemarbeit, nicht Masters Aufgabe. "
     "Verwende bei Live-Ursachen niemals 'wahrscheinlich', 'vermutlich', 'dürfte' oder "
@@ -172,8 +172,8 @@ class JarvisVoiceGateway:
                     "type": "function",
                     "name": "advance_dufynd_safe_work",
                     "description": (
-                        "Run exactly one bounded pass of DUFYND's existing certified free "
-                        "Thin V1 orchestrator. Use proactively when verified live evidence "
+                        "Run one bounded pass of DUFYND's existing protected zero-spend worker. "
+                        "Use proactively when verified live evidence "
                         "shows useful GREEN work is ready, or when the owner asks Jarvis to "
                         "proceed. The backend itself blocks paid work, publishing, external "
                         "outreach, main merges, credentials, destructive actions and every "
