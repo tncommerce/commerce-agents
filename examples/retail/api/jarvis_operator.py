@@ -105,10 +105,7 @@ def build_operator_diagnosis(
     real_owner_action = bool(owner_tasks or pending_gates or observer_owner_issues or credential_owner_issues)
 
     active_leases = _int(thin.get("active_leases"))
-    if active_leases and not active:
-        active_count = active_leases
-    else:
-        active_count = len(active)
+    active_count = active_leases if active_leases and not active else len(active)
 
     queue_counts = thin.get("queue_counts")
     queue_counts = queue_counts if isinstance(queue_counts, dict) else {}
