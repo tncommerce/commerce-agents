@@ -223,6 +223,8 @@ const { chromium } = require("playwright");
     assert.equal(await p.locator("#global-risk.state-amber").count(), 1);
     assert.match(await p.locator("#risk-summary").innerText(), /2 Punkte/);
     assert.equal(await p.locator("#risk-panel .state-red").count(), 0);
+    assert.match(await p.locator("#source-summary").innerText(), /Quellenhinweise/);
+    assert.ok((await p.locator("#crew-summary-research").boundingBox()).height >= 32);
     assert.equal(await p.locator("#pulse-action.state-red").count(), 0);
     assert.match(await p.locator('[data-role="research"]').innerText(), /Dior/);
     assert.match(await p.locator('[data-role="affiliate"]').innerText(), /Read-only/);

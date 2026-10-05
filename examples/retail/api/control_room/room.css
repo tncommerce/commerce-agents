@@ -3864,3 +3864,11 @@ body[data-execution-mode="unknown"] .execution-evidence {
 .risk-dot.amber { color: var(--amber); }
 .risk-dot.red { color: var(--red); }
 .crew-live-path { color: #a9f6ff !important; font-size: 10px !important; border-top: 1px solid #65a9ff30; padding-top: 8px; }
+/* Static connections describe the fixed organisation; activity remains evidence-gated. */
+.crew-details summary { display: flex; align-items: center; min-height: 36px; padding: 6px 0; font-size: 11px; }
+@media (min-width: 1101px) {
+  .crew-supervisor::after { content: ''; position: absolute; bottom: -21px; left: 50%; width: 1px; height: 20px; background: #65a9ff35; }
+  .crew-grid::before { content: ''; position: absolute; left: 12.5%; right: 12.5%; top: -16px; height: 1px; background: #65a9ff35; }
+  .crew-cluster { position: relative; }
+  .crew-cluster::before { content: ''; position: absolute; left: 50%; top: -16px; height: 13px; width: 1px; background: #65a9ff35; }
+}

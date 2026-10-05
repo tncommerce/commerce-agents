@@ -732,7 +732,7 @@
       : c.current_task;
     const systemsHealth = Array.isArray(s.system_health) ? s.system_health : [];
     const attention = systemsHealth.filter((h) =>
-      ["STALE", "DEGRADED", "BLOCKED", "UNKNOWN"].includes(h.health),
+      ["STALE", "DEGRADED", "BLOCKED", "UNKNOWN"].includes(h.health) || h.confirmed_failure === true || ["amber", "red"].includes(h.display_tone),
     );
     put(
       "source-summary",
