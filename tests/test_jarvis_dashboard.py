@@ -851,7 +851,7 @@ def test_ceo_gate_and_external_monitoring_are_truthful():
         {"decision_id": "real", "title": "Owner decision", "action_type": "publish"}
     ]
     assert (
-        build_snapshot(data, now=NOW)["command_center"]["ceo_status"] == "WARTET AUF DEINE FREIGABE"
+        build_snapshot(data, now=NOW)["command_center"]["ceo_status"] == "WARTET AUF DEINE AKTION"
     )
     data["decisions"] = []
     data["active_runs"] = [run_row()]
