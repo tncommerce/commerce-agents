@@ -54,8 +54,8 @@ class FakeActionWriter:
             "ok": True,
             "decision_id": decision_id,
             "action": action,
-            "status": "pending" if action == "confirm_manual" else "approved",
-            "verification_required": action == "confirm_manual",
+            "status": "completed" if action == "confirm_manual" else "approved",
+            "verification_required": False,
         }
 
 
@@ -318,7 +318,7 @@ def test_owner_action_endpoint_is_owner_csrf_and_exact_payload_guarded(setup):
         json=payload,
     )
     assert response.status_code == 200
-    assert response.json()["verification_required"] is True
+    assert response.json()["verification_required"] is False
     assert reader.actions.calls == [
         (
             "first-money:instagram-profile-attribution:20261005",
