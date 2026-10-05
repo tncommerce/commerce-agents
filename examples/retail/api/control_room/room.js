@@ -484,6 +484,11 @@
       remoteAudio.autoplay = true;
       remoteAudio.playsInline = true;
       remoteAudio.hidden = true;
+      remoteAudio.addEventListener("playing", () => {
+        if (turnGeneration === generation) {
+          setState("speaking", "SPEAKING", "Jarvis antwortet …");
+        }
+      });
       document.body.append(remoteAudio);
       peer.addEventListener("track", (event) => {
         remoteAudio.srcObject = event.streams[0];
