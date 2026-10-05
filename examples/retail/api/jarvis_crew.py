@@ -552,6 +552,8 @@ def project_risk(snapshot: dict) -> dict:
         )
     money = snapshot["first_money"]
     runtime = money.get("runtime", {})
+    replacement = money.get("replacement", {})
+    replacement_scheduled = money.get("replacement_scheduled") is True
     tracking = (
         money.get("analytics_provenance") == "launch_attributed_excludes_prelaunch"
         and money.get("analytics_complete") is True
@@ -559,21 +561,31 @@ def project_risk(snapshot: dict) -> dict:
     panel(
         "money",
         "FIRST MONEY",
-        "blue" if tracking and not money.get("publication_stopped") else "amber",
-        "Launch gestoppt · Messhistorie erhalten"
+        "blue"
+        if replacement_scheduled or (tracking and not money.get("publication_stopped"))
+        else "amber",
+        "Ersatz geplant · Owner GO vorhanden"
+        if replacement_scheduled
+        else "Launch gestoppt · Messhistorie erhalten"
         if money.get("publication_stopped")
         else "Launch · Monitoring"
         if tracking
         else "Tracking-Nachweis prüfen",
-        "Launch-Funnel aus attribuierten Signalen. Clickout ist kein Sale; Revenue nur mit Affiliate-Network-Nachweis."
+        "Der ursprüngliche 1-Million-Post bleibt als entfernt/gestoppt historisiert. "
+        "Die freigegebene Ersatzrevision ist separat geplant; keine Sale-Aussage vor Affiliate-Netzwerkbeleg."
+        if replacement_scheduled
+        else "Launch-Funnel aus attribuierten Signalen. Clickout ist kein Sale; Revenue nur mit Affiliate-Network-Nachweis."
         if tracking
         else "Aktueller, eindeutig attribuierter Runtime-Nachweis fehlt; keine Conversion ableiten.",
-        "Neue Revision im Content-Chat prüfen; explizites Owner GO abwarten."
+        "Geplante Instagram-Veröffentlichung beobachten: "
+        + str(replacement.get("scheduled_at") or "Zeitpunkt nicht bestätigt")
+        if replacement_scheduled
+        else "Neue Revision im Content-Chat prüfen; explizites Owner GO abwarten."
         if money.get("publication_stopped")
         else "Auf erstes Signal warten."
         if runtime.get("phase") == "prelaunch"
         else "Nächstes Funnel-Signal und externen Sale-Nachweis beobachten.",
-        runtime.get("observed_at"),
+        replacement.get("observed_at") if replacement_scheduled else runtime.get("observed_at"),
     )
     if runtime.get("purchase_decision") in {"blocked", "failed", "no_go", "stop", "expired"}:
         panel(
