@@ -40,13 +40,16 @@ def test_phase2_uses_same_origin_webrtc_bridge_and_manual_turn_control():
     assert "30000" in voice
     assert "startOutputAnalysis(event.streams[0])" in voice
     assert "drawOutputSpectrum" in voice
-    assert "responseAudioDurationMs" in voice
-    assert "output_token_details?.audio_tokens" in voice
-    assert "audioTokens * 50" in voice
-    assert "outputPlaybackStartedAt" in voice
-    assert "finishAfterPlayback(event)" in voice
+    assert "keepPlaybackAliveAfterResponse" in voice
+    assert "responseGenerationDone" in voice
+    assert "lastAudibleAt" in voice
+    assert "response.output_audio.done" in voice
+    assert "setTimeout(() => cleanupSession(), 60000)" in voice
+    assert "responseAudioDurationMs" not in voice
+    assert "output_token_details?.audio_tokens" not in voice
+    assert "finishAfterPlayback(event)" not in voice
     assert "outputSilentFrames >= 72" not in voice
-    assert '"Antwort vollständig abgespielt"' in voice
+    assert '"Antwort vollständig abgespielt · bereit"' in voice
     assert "setTimeout(() => cleanupSession(), 2600)" not in voice
     assert "waitForIce" not in voice
     assert "peer.localDescription?.sdp || offer.sdp" in voice
