@@ -173,7 +173,7 @@ class JarvisVoiceGateway:
                         "properties": {},
                         "additionalProperties": False,
                     },
-                }
+                },
             ],
             "tool_choice": "auto",
             "audio": {
