@@ -1,16 +1,16 @@
 """Static safety contract for the zero-cost Jarvis Live Interface V1."""
 
-from __future__ import annotations
 
-from pathlib import Path
-
-
-ROOT = Path(__file__).resolve().parents[1]
-ROOM = ROOT / "examples" / "retail" / "api" / "control_room"
+def room_text(filename):
+    with open(
+        "examples/retail/api/control_room/" + filename,
+        encoding="utf-8",
+    ) as handle:
+        return handle.read()
 
 
 def test_ptt_control_is_explicit_and_local_only():
-    html = (ROOM / "index.html").read_text(encoding="utf-8")
+    html = room_text("index.html")
     assert 'id="jarvis-ptt"' in html
     assert 'aria-pressed="false"' in html
     assert "Button oder V halten" in html
@@ -18,7 +18,7 @@ def test_ptt_control_is_explicit_and_local_only():
 
 
 def test_phase1_microphone_reactor_has_no_realtime_transport():
-    js = (ROOM / "room.js").read_text(encoding="utf-8")
+    js = room_text("room.js")
     start = js.index("// JARVIS LIVE INTERFACE V1")
     end = js.index("  function missions()", start)
     voice = js[start:end]
@@ -41,7 +41,7 @@ def test_phase1_microphone_reactor_has_no_realtime_transport():
 
 
 def test_voice_animation_respects_reduced_motion():
-    css = (ROOM / "room.css").read_text(encoding="utf-8")
+    css = room_text("room.css")
     assert "JARVIS LIVE INTERFACE V1" in css
     assert '.core[data-voice-state="listening"]' in css
     assert ".core-spectrum" in css
