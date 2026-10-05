@@ -26,6 +26,7 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Resp
 from starlette.concurrency import run_in_threadpool
 
 from .jarvis_dashboard import PROJECT_ORIGIN, DashboardReader, create_dashboard_router
+from .jarvis_voice import JarvisVoiceGateway, VoiceUnavailable
 
 ORIGIN = "https://scentai-api-kxhe.onrender.com"
 SESSION_COOKIE = "__Host-dufynd_owner"
@@ -252,10 +253,13 @@ def create_control_room_router(
     *,
     auth: OwnerAuth | None = None,
     reader: DashboardReader | None = None,
+    voice_gateway: JarvisVoiceGateway | None = None,
 ) -> APIRouter:
     router = APIRouter(include_in_schema=False)
     config = config or OwnerConfig.from_env()
     auth = auth or (OwnerAuth(config) if config else None)
+    if voice_gateway is None and config and auth:
+        voice_gateway = JarvisVoiceGateway.from_env(config.owner_id)
 
     def owner(request: Request) -> dict[str, Any]:
         if auth is None:
@@ -341,6 +345,48 @@ def create_control_room_router(
             (ASSET_DIR / asset).read_text(),
             headers=PRIVATE_HEADERS,
             media_type="text/css" if asset.endswith(".css") else "text/javascript",
+        )
+
+    @router.post("/internal/jarvis/voice/session")
+    async def voice_session(request: Request) -> Response:
+        data = owner(request)
+        assert auth is not None
+        auth.require_origin(request)
+        csrf = request.headers.get("x-csrf-token", "")
+        if not hmac.compare_digest(csrf, data["csrf"]):
+            raise HTTPException(403, "Forbidden", headers=PRIVATE_HEADERS)
+        if request.headers.get("content-type", "").split(";")[0] != "application/sdp":
+            raise HTTPException(400, "Invalid voice request", headers=PRIVATE_HEADERS)
+        body = bytearray()
+        async for chunk in request.stream():
+            body.extend(chunk)
+            if len(body) > 65536:
+                raise HTTPException(413, "Voice offer too large", headers=PRIVATE_HEADERS)
+        try:
+            sdp = body.decode("utf-8")
+        except UnicodeDecodeError:
+            raise HTTPException(400, "Invalid voice request", headers=PRIVATE_HEADERS) from None
+        if voice_gateway is None or not voice_gateway.enabled:
+            raise HTTPException(
+                503,
+                "Voice provider not configured",
+                headers=PRIVATE_HEADERS,
+            )
+        try:
+            answer = await run_in_threadpool(voice_gateway.connect, sdp)
+        except ValueError:
+            raise HTTPException(400, "Invalid voice request", headers=PRIVATE_HEADERS) from None
+        except VoiceUnavailable:
+            raise HTTPException(
+                502,
+                "Voice provider unavailable",
+                headers=PRIVATE_HEADERS,
+            ) from None
+        return Response(
+            answer,
+            headers=PRIVATE_HEADERS,
+            media_type="application/sdp",
+            status_code=201,
         )
 
     @router.post("/internal/logout")
