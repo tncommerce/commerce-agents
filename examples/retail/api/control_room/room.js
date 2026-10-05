@@ -587,7 +587,14 @@
         merchant_clickout: "Erster Merchant Clickout", affiliate_transaction_evidence: "Affiliate-Netzwerkbeleg für eine Transaktion"};
       nextMilestone = next[revenue.runtime?.next_evidence] || nextMilestone;
     }
-    if (publication.stopped) {
+    if (publication.replacementScheduled) {
+      tone = "blue";
+      title = "Ersatz geplant · Owner GO vorhanden";
+      copy = "Der ursprüngliche Post bleibt entfernt/gestoppt historisiert. Die freigegebene Ersatzrevision ist separat für Instagram geplant.";
+      nextMilestone = publication.replacement?.scheduled_at
+        ? "Instagram-Veröffentlichung · " + stamp(publication.replacement.scheduled_at)
+        : "Geplante Ersatzveröffentlichung beobachten";
+    } else if (publication.stopped) {
       tone = "amber";
       title = "Launch gestoppt · Ersatz wartet auf Owner GO";
       copy = "Instagram wurde entfernt, TikTok vor Veröffentlichung gestoppt. Historische Messsignale bleiben erhalten; der alte Plan ist kein aktiver Launch.";
@@ -608,7 +615,7 @@
     put("next-milestone", nextMilestone);
     put(
       "pipeline-stage",
-      publication.live ? "LIVE" : publication.scheduled ? "PLAN" : "OFFEN",
+      publication.live ? "LIVE" : publication.replacementScheduled || publication.scheduled ? "PLAN" : "OFFEN",
     );
     const ring = $("pipeline-ring");
     if (ring) ring.dataset.state = publication.live ? "live" : "pending";
@@ -1009,6 +1016,8 @@
     );
     const publication = {
       stopped: revenue.publication_stopped === true,
+      replacementScheduled: revenue.replacement_scheduled === true,
+      replacement: revenue.replacement || null,
       failed: normalizedStates.some((x) =>
         ["ERROR", "FAILED", "REJECTED"].includes(x),
       ),
@@ -1124,7 +1133,13 @@
         : "Launch-Signale werden gemessen · Veröffentlichung separat bestätigen.";
       if (publication.failed) { moneyTone = "amber"; moneyDetail = "Publication-Fehler beobachtet · Messung separat prüfen."; }
     }
-    if (publication.stopped) {
+    if (publication.replacementScheduled) {
+      moneyTone = "blue";
+      moneyMain = "Geplant";
+      moneyDetail = publication.replacement?.scheduled_at
+        ? "Ersatz · Instagram · " + stamp(publication.replacement.scheduled_at)
+        : "Freigegebene Ersatzrevision ist geplant.";
+    } else if (publication.stopped) {
       moneyTone = "amber";
       moneyMain = "Gestoppt";
       moneyDetail = "Instagram entfernt · TikTok gestoppt · Ersatz im Content-Chat; Owner GO fehlt.";
