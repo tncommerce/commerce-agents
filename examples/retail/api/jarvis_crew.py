@@ -664,18 +664,6 @@ def project_risk(snapshot: dict) -> dict:
         )
 
     operator = snapshot.get("operator_diagnosis") or {}
-    if operator.get("state") == "IDLE_NO_RUNNABLE_WORK":
-        panel(
-            "autonomy",
-            "AUTONOMIE",
-            "amber",
-            "Keine ausführbare Arbeit",
-            operator.get("cause") or "Die Queue enthält aktuell keine ausführbare Arbeit.",
-            (operator.get("recommended_now") or {}).get("title")
-            or "Neue sinnvolle Arbeit aus dem aktuellen Geschäftsziel einplanen.",
-            owner=False,
-        )
-
     gates = [
         gate
         for gate in snapshot["decision_center"]
@@ -722,6 +710,8 @@ def project_risk(snapshot: dict) -> dict:
         "tone": tone,
         "title": "HANDLUNG ERFORDERLICH"
         if critical
+        else "AUTONOMIE LEER"
+        if operator.get("state") == "IDLE_NO_RUNNABLE_WORK"
         else "LAGE NICHT VOLLSTÄNDIG BESTÄTIGT"
         if not essential_known
         else "BETRIEB STABIL"
@@ -729,6 +719,8 @@ def project_risk(snapshot: dict) -> dict:
         else "ALLES IM GRÜNEN",
         "summary": str(critical) + " kritische Punkte prüfen."
         if critical
+        else operator.get("cause")
+        if operator.get("state") == "IDLE_NO_RUNNABLE_WORK"
         else str(warning) + " Punkte beobachten. Kein kritischer Fehler erkannt."
         if warning
         else "Keine kritischen Risiken erkannt.",
