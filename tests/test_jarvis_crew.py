@@ -386,3 +386,41 @@ def test_live_social_quality_incident_is_red_only_when_owner_removal_is_required
     assert risk["owner_required"] is True
     assert "Instagram-Post entfernen" in risk["title"]
     assert snapshot["social_quality"]["publishing_authorized"] is False
+
+
+def test_scheduled_replacement_is_shown_as_planned_not_waiting_for_owner_go():
+    data = healthy_data()
+    data["publication"] = [
+        {
+            "content_id": "one_million_still_hits_20261004_01",
+            "observed_at": (NOW - timedelta(hours=2)).isoformat(),
+            "platform0": "instagram",
+            "status0": "PENDING",
+            "scheduled0": (NOW - timedelta(hours=1)).isoformat(),
+            "platform1": "tiktok",
+            "status1": "PENDING",
+            "scheduled1": (NOW + timedelta(hours=2)).isoformat(),
+        }
+    ]
+    data["social_quality"] = [
+        {
+            "last_verified_at": STAMP,
+            "status": "replacement_scheduled",
+            "instagram_state": "owner_confirmed_removed",
+            "tiktok_state": "stopped_before_publish",
+            "publishing_authorized": True,
+            "replacement_content_id": "one_million_bottle_first_20261005_01",
+            "replacement_experiment_id": "fms_1m_bottle_first_20261005",
+            "instagram_scheduled_at": (NOW + timedelta(hours=2)).isoformat(),
+            "metricool_post_id": "388412768",
+            "instagram_auto_publish": True,
+            "instagram_draft": False,
+        }
+    ]
+    snapshot = result(data)
+    panel = next(p for p in snapshot["global_risk"]["panels"] if p["id"] == "money")
+    assert panel["tone"] == "blue"
+    assert panel["title"] == "Ersatz geplant · Owner GO vorhanden"
+    assert "Owner GO abwarten" not in panel["next_step"]
+    assert snapshot["first_money"]["publication_stopped"] is True
+    assert snapshot["first_money"]["replacement_scheduled"] is True

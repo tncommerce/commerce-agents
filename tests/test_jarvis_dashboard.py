@@ -58,6 +58,53 @@ def test_removed_launch_supersedes_only_older_exact_content_schedule(newer, same
     assert money["commission_eur"] is None
 
 
+def test_scheduled_replacement_is_projected_without_erasing_stopped_history():
+    data = ceo_data()
+    data["publication"] = [
+        {
+            "content_id": "one_million_still_hits_20261004_01",
+            "observed_at": (NOW - timedelta(hours=2)).isoformat(),
+            "platform0": "instagram",
+            "status0": "PENDING",
+            "scheduled0": (NOW - timedelta(hours=1)).isoformat(),
+            "platform1": "tiktok",
+            "status1": "PENDING",
+            "scheduled1": (NOW + timedelta(hours=2)).isoformat(),
+        }
+    ]
+    data["social_quality"] = [
+        {
+            "last_verified_at": STAMP,
+            "status": "replacement_scheduled",
+            "instagram_state": "owner_confirmed_removed",
+            "tiktok_state": "stopped_before_publish",
+            "publishing_authorized": True,
+            "replacement_content_id": "one_million_bottle_first_20261005_01",
+            "replacement_experiment_id": "fms_1m_bottle_first_20261005",
+            "instagram_scheduled_at": (NOW + timedelta(hours=2)).isoformat(),
+            "metricool_post_id": "388412768",
+            "instagram_auto_publish": True,
+            "instagram_draft": False,
+        }
+    ]
+    snapshot = build_snapshot(data, now=NOW)
+    money = snapshot["first_money"]
+    assert money["publication_stopped"] is True
+    assert money["replacement_scheduled"] is True
+    assert money["replacement"] == {
+        "platform": "instagram",
+        "state": "SCHEDULED",
+        "scheduled_at": (NOW + timedelta(hours=2)).isoformat(),
+        "content_id": "one_million_bottle_first_20261005_01",
+        "experiment_id": "fms_1m_bottle_first_20261005",
+        "metricool_post_id": "388412768",
+        "evidence_source": "persisted_social_quality",
+        "observed_at": STAMP,
+    }
+    assert [p["state"] for p in money["posts"]] == ["REMOVED", "STOPPED"]
+    assert snapshot["social_quality"]["publishing_authorized"] is True
+
+
 def fixture_data():
     return {
         "tasks": [
