@@ -82,6 +82,8 @@ def test_live_gmail_expiry_and_coverage_are_two_warnings_not_owner_gates():
     risk = s["global_risk"]
     assert risk["tone"] == "amber" and risk["critical_count"] == 0 and risk["warning_count"] == 2
     assert not risk["owner_required"]
+    assert role(s, "Usopp")["state"] == "DEGRADED"
+    assert next(h for h in s["system_health"] if h["name"] == "Gmail")["display_tone"] == "amber"
     assert {r["id"] for r in risk["risks"]} == {"sources", "affiliate"}
     assert role(s, "Brook")["state"] == "BLOCKIERT"
     assert "Read-only" in role(s, "Brook")["next_step"]
@@ -146,6 +148,10 @@ def test_evidence_gaps_and_reservations_warn_without_inventing_failure(case):
     s = result(data)
     assert s["global_risk"]["tone"] == "amber"
     assert s["global_risk"]["critical_count"] == 0
+    if case == "past_ci_failure":
+        assert not next(h for h in s["system_health"] if h["name"].startswith("CI"))[
+            "confirmed_failure"
+        ]
     if case == "old_smoke":
         assert (
             next(p for p in s["global_risk"]["panels"] if p["id"] == "production")["title"]

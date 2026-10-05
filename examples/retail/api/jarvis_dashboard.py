@@ -1049,7 +1049,11 @@ def build_snapshot(
         )
         failed = health in {"BLOCKED", "DEGRADED"} or credential_blocked
         if system["name"].startswith("CI"):
-            failed = ci.get("conclusion") in {"failure", "timed_out", "action_required"}
+            failed = (
+                bool(branch_sha)
+                and _sha(ci.get("sha")) == branch_sha
+                and ci.get("conclusion") in {"failure", "timed_out", "action_required"}
+            )
         if system["name"] == "Production Smoke":
             failed = smoke.get("status") in {"failed", "failure", "error", "unhealthy"} or (
                 _number(smoke.get("passed")) is not None

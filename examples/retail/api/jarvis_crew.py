@@ -112,6 +112,7 @@ def project_crew(snapshot: dict) -> dict:
                     "operations": "Jarvis free loop",
                     "qa": "Production Smoke",
                     "infrastructure": "Render",
+                    "outreach": "Gmail",
                 }.get(key)
             )
             if (
@@ -135,9 +136,16 @@ def project_crew(snapshot: dict) -> dict:
                 state, focus = "WARTET EXTERN", waiting[0]
             elif executions:
                 state, focus = "ÜBERWACHT", executions[0].get("task_context")
-            elif monitor and monitor.get("health") in {"HEALTHY", "MONITORED"}:
+            elif (
+                monitor
+                and not monitor.get("confirmed_failure")
+                and monitor.get("health") in {"HEALTHY", "MONITORED"}
+            ):
                 state, focus = "ÜBERWACHT", ready[0] if ready else None
-            elif monitor and monitor.get("health") in {"STALE", "DEGRADED", "BLOCKED", "UNKNOWN"}:
+            elif monitor and (
+                monitor.get("confirmed_failure")
+                or monitor.get("health") in {"STALE", "DEGRADED", "BLOCKED", "UNKNOWN"}
+            ):
                 state, focus = "DEGRADED", ready[0] if ready else None
             else:
                 state, focus = "BEREIT", ready[0] if ready else None
