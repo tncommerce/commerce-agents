@@ -194,6 +194,7 @@ def test_handler_owns_execution_role_and_multiple_instances_remain_one_stable_no
     b = result(data)
     assert role(a, "Nami")["active_count"] == role(b, "Nami")["active_count"] == 2
     assert role(a, "Nami")["state"] == "AKTIV"
+    assert "Funnel prüfen" in role(a, "Nami")["next_step"]
     assert role(a, "Jinbe")["state"] == "ÜBERWACHT"
     assert [(r["role_id"], r["alias"]) for r in a["crew"]["roles"]] == [
         (r["role_id"], r["alias"]) for r in b["crew"]["roles"]

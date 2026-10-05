@@ -692,6 +692,9 @@
             line(detail, "worker_id", execution.worker_id);
             line(detail, "execution_id", execution.execution_id || "Task-Lease ohne Execution-ID");
             line(detail, "Handler", execution.handler_id || "Nicht dokumentiert");
+            line(detail, "Gestartet", stamp(execution.started_at));
+            line(detail, "Laufzeit", execution.duration_seconds == null ? "Nicht dokumentiert" : Math.floor(execution.duration_seconds / 60) + " Min");
+            line(detail, "Checkpoint", execution.next_checkpoint || "Nicht dokumentiert");
             line(detail, "Heartbeat", stamp(execution.heartbeat_at) + " · " + age(execution.heartbeat_at));
             line(detail, "Lease bis", stamp(execution.lease_expires_at));
             line(detail, "Evidence", execution.checkpoint?.verified === true ? "Checkpoint verifiziert" : "Kein verifizierter Checkpoint");

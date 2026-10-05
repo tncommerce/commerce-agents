@@ -159,6 +159,19 @@ def project_crew(snapshot: dict) -> dict:
                 if state == "DEGRADED"
                 else "Belegte Signale und zulässige kostenlose Aufgaben abwarten."
             )
+            if current:
+                next_step = {
+                    "ci_pr_verifier": "Aktuellen HEAD und CI-Nachweis abgleichen.",
+                    "analytics_funnel_audit": "Attribuierten Funnel prüfen und nächste Evidence ableiten.",
+                    "first_money_evidence_audit": "First-Money-Evidence prüfen und nächsten Messschritt bestimmen.",
+                    "supervisor_state_audit": "Runtime-Gesundheit und Ausführungsnachweise read-only prüfen.",
+                    "purchase_destination_freshness_audit": "Stock-, Preis- und Affiliate-Nachweise abgleichen.",
+                    "content_candidate_preflight": "Creative, Attribution und Freigabereife prüfen.",
+                    "queue_priority_reconciler": "Aufgabenpriorität und Abhängigkeiten read-only abgleichen.",
+                }.get(
+                    current.get("handler_id"),
+                    "Nächsten dokumentierten Prüfcheckpoint abgleichen; Original in den Details.",
+                )
             crew.append(
                 {
                     "role_id": key,
