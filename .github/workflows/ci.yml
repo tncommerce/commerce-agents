@@ -180,6 +180,12 @@ jobs:
           node retail/storefront-web/scripts/dufynd-visual-qa.mjs \
             --base-url http://127.0.0.1:3000 \
             --out retail/storefront-web/.visual-qa
+      - name: Run isolated Control Room evidence and content review replay
+        working-directory: .
+        run: |
+          pip install -r requirements-dev.txt
+          PYTHONPATH=examples python tests/browser/build_control_room_fixture.py /tmp/control-room-fixture.json
+          NODE_PATH=examples/node_modules node tests/browser/control_room_evidence.cjs /tmp/control-room-fixture.json
       - name: Upload DUFYND visual QA captures
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

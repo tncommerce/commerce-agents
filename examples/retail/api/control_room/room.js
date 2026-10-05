@@ -771,6 +771,16 @@
         line(item, "Risiko", d.risk);
         line(item, "Kosten USD", d.cost_usd);
         line(item, "Nutzen", d.benefit);
+        if (d.content_candidate) {
+          const candidate = d.content_candidate;
+          for (const [label, key] of [["Produkt", "product"], ["Creative / Asset", "asset_reference"],
+            ["Hook", "hook"], ["Caption", "caption"], ["Plattform", "platform"],
+            ["content_id", "content_id"], ["experiment_id", "experiment_id"],
+            ["Internes Rating / 10", "internal_rating"], ["Empfehlungsgrund", "recommendation_reason"],
+            ["Asset-Revision", "revision_fingerprint"]]) line(item, label, candidate[key]);
+          line(item, "Gewünschte Zeit", stamp(candidate.requested_at));
+          line(item, "Status", "Wartet auf Owner · Scheduling und Publishing nicht freigegeben");
+        }
         line(item, "Exakter GO-Token", d.go_token);
         if (d.provider) line(item, "Provider", d.provider);
         decisions.append(item);
@@ -1272,477 +1282,133 @@
     const c = s.command_center || {};
     const workers = s.worker_deck || [];
     const current = workers.find((w) => w.status === "ACTIVE");
-    const duration = current?.duration_seconds;
-    const executionDetails = $("execution-detail-list");
-    const focusedEvidence = document.activeElement?.matches(
-      ".execution-metadata > summary",
-    )
-      ? document.activeElement.parentElement.parentElement.dataset.executionKey
-      : null;
-    const sourceStatus = $("execution-source-status");
-    sourceStatus.hidden = s.freshness?.operational_complete === true;
-    sourceStatus.textContent =
-      "Operative Daten unvollständig. Angezeigte Nachweise sind kein vollständiger Live-Überblick.";
-    const openEvidence = new Set(
-      [...executionDetails.querySelectorAll(".execution-metadata[open]")].map(
-        (el) => el.parentElement.dataset.executionKey,
-      ),
-    );
-    executionDetails.replaceChildren();
-    const liveWorkers = workers.filter(
-      (w) =>
-        !w.completed_at &&
-        !["completed", "failed_terminal"].includes(w.execution_status),
-    );
-    liveWorkers.sort(
-      (a, b) =>
-        (a.status === "ACTIVE" ? 0 : 1) - (b.status === "ACTIVE" ? 0 : 1),
-    );
-    const operatingMode = liveWorkers.some((w) => w.status === "ACTIVE")
-      ? "working"
-      : liveWorkers.length
-        ? "waiting"
-        : s.freshness?.operational_complete === true
-          ? "monitoring"
-          : "unknown";
-    document.body.dataset.executionMode = operatingMode;
-    $("work").classList.toggle("has-execution", liveWorkers.length > 0);
-    const currentSignals = new Set();
-    liveWorkers.slice(0, 3).forEach((w, index) => {
-      const key = w.execution_id || w.worker_id || w.task_id || String(index);
-      currentSignals.add(key);
-      const signal = JSON.stringify([
-        w.status,
-        w.execution_status,
-        w.next_checkpoint,
-        w.last_progress_at,
-        w.checkpoint?.verified === true ? w.checkpoint : null,
-      ]);
-      const item = workerEvidence(w, true);
-      item.dataset.executionKey = key;
-      item.querySelector("details").open = openEvidence.has(key);
-      if (
-        executionObserved &&
-        executionSignals.has(key) &&
-        executionSignals.get(key) !== signal
-      )
-        item.classList.add("evidence-changed");
-      else if (executionObserved && !executionSignals.has(key))
-        item.classList.add("evidence-changed");
-      executionSignals.set(key, signal);
-      executionDetails.append(item);
-      if (focusedEvidence === key)
-        item.querySelector("summary").focus({ preventScroll: true });
-    });
-    for (const key of executionSignals.keys())
-      if (!currentSignals.has(key)) executionSignals.delete(key);
-    executionObserved = true;
-    if (liveWorkers.length > 3)
-      executionDetails.append(
-        node(
-          "small",
-          liveWorkers.length -
-            3 +
-            " weitere Ausführungen in den technischen Details",
-        ),
-      );
-    if (!liveWorkers.length && s.freshness?.operational_complete === true) {
-      const focus = (s.workstreams || [])
-        .filter((w) => w.focus_task)
-        .sort(
-          (a, b) =>
-            (a.focus_task.blocker ? 0 : 1) - (b.focus_task.blocker ? 0 : 1),
-        );
-      const reason =
-        focus.find((w) => w.focus_task.blocker) ||
-        focus.find((w) => w.focus_task.dependencies?.length);
-      if (reason) {
-        const wait = node("div", undefined, "standby-reason");
-        wait.append(
-          node(
-            "small",
-            (reason.focus_task.blocker
-              ? "EIN OFFENER BLOCKER · "
-              : "BEOBACHTETE ABHÄNGIGKEIT · ") + reason.name,
-          ),
-          node("strong", taskWait(reason.focus_task)),
-          node(
-            "a",
-            "Alle Aufgaben und Voraussetzungen ansehen →",
-            "detail-link",
-          ),
-        );
-        wait.lastChild.href = "#workstreams";
-        executionDetails.append(wait);
-      }
-    }
-
-    put(
-      "execution-context",
-      current
-        ? [
-            duration == null
-              ? "Ausführungsdauer nicht dokumentiert"
-              : "Seit " + Math.floor(duration / 60) + " Min in Ausführung",
-            "Kein belastbarer Prozentfortschritt dokumentiert",
-          ].join(" · ")
-        : c.status === "WAITING"
-          ? "Der freie Loop prüft die Queue. Externe Antworten und neue Messsignale können die nächste Arbeit auslösen."
-          : "Keine aktive Ausführung verifiziert. Systemstatus und Quellen prüfen.",
-    );
-    put(
-      "next-wake",
-      "Nächster Loop · " + stamp(c.next_loop_estimate) + " (Schätzung)",
-    );
-    const streams = $("workstream-list");
-    const streamSignature = JSON.stringify(s.workstreams || []);
-    if (streams.dataset.signature !== streamSignature) {
-      const openSources = new Set(
-        [...streams.querySelectorAll(".task-source[open]")].map(
-          (el) => el.parentElement.dataset.taskId,
-        ),
-      );
-      const focused = document.activeElement;
-      const focusedTask = focused?.closest(".dependency-task")?.dataset.taskId;
-      const focusedStream = focused?.closest(".workstream-details")?.dataset
-        .stream;
-      const expanded = new Set(
-        [...streams.querySelectorAll("details[open]")].map(
-          (el) => el.dataset.stream,
-        ),
-      );
-      streams.replaceChildren();
-      for (const w of s.workstreams || []) {
-        const card = node("article", undefined, "workstream-card");
-        card.dataset.state = w.status;
-        const focus = w.focus_task || w.next_task;
-        card.append(node("h3", w.name), badge(w.status));
-        const working = w.status === "WORKING";
-        const main = working
-          ? taskTitle(focus)
-          : focus
-            ? taskWait(focus)
-            : w.evidence_note ||
-              (w.status === "MONITORING"
-                ? "Überwacht Queue, Quellenfrische und neue externe Signale."
-                : "Keine offene Aufgabe aus dieser Quelle.");
-        card.append(node("p", main, "workstream-purpose"));
-        const details = node("details", undefined, "workstream-details");
-        details.dataset.stream = w.name;
-        details.open = expanded.has(w.name);
-        details.append(
-          node(
-            "summary",
-            w.tasks ? w.tasks + " Aufgaben · Details" : "Nachweise ansehen",
-          ),
-        );
-        const grid = node("div", undefined, "task-evidence-grid");
-        for (const worker of w.active_workers || [])
-          grid.append(workerEvidence(worker));
-        for (const task of w.tasks_preview || (focus ? [focus] : [])) {
-          const detail = taskDetail(task);
-          detail.querySelector(".task-source").open = openSources.has(
-            task.task_id,
-          );
-          grid.append(detail);
-        }
-        if (!grid.children.length) {
-          grid.append(
-            node(
-              "p",
-              w.evidence_note ||
-                (w.status === "MONITORING"
-                  ? "Der freie Loop ist aktiv. Kein Worker wird als arbeitend dargestellt, solange keine aktive Ausführung verifiziert ist."
-                  : "Kein konkreter Task zugeordnet."),
-              "muted",
-            ),
-          );
-        }
-        if (w.tasks_preview_complete === false)
-          grid.append(
-            node(
-              "p",
-              "Aufgabenliste begrenzt oder Quelle unvollständig. Fehlende Aufgaben werden nicht als null gewertet.",
-              "muted",
-            ),
-          );
-        details.append(grid);
-        card.append(details);
-        streams.append(card);
-      }
-      streams.dataset.signature = streamSignature;
-      if (focused?.tagName === "SUMMARY") {
-        const candidates = [...streams.querySelectorAll("summary")];
-        const replacement = candidates.find((el) =>
-          focusedTask
-            ? el.closest(".dependency-task")?.dataset.taskId === focusedTask
-            : focusedStream &&
-              el.parentElement.dataset.stream === focusedStream,
-        );
-        replacement?.focus({ preventScroll: true });
-      }
-    }
-    const next = $("next-task-list");
-    next.replaceChildren();
-    (s.next_tasks || []).forEach((t, i) => {
-      const item = node("article", undefined, "next-task");
-      item.append(
-        node("span", String(i + 1).padStart(2, "0"), "task-index"),
-        node("p", taskTitle(t)),
-      );
-      next.append(item);
-    });
-    if (!next.children.length)
-      next.append(
-        node(
-          "p",
-          c.status === "ERROR"
-            ? "Nächste Arbeit derzeit nicht verlässlich bestimmbar."
-            : "Keine Ready-Aufgabe beobachtet. Nächste Auswahl beim Supervisor-Wake.",
-          "muted",
-        ),
-      );
-    else
-      next.append(
-        node(
-          "small",
-          "Nach Task-Priorität · Handler-Freigabe erfolgt erst im Loop",
-        ),
-      );
-    const trigger = $("next-observed-trigger");
-    trigger.replaceChildren();
-    if (!(s.next_tasks || []).length) {
-      const planned = (s.first_money?.posts || [])
-        .filter(
-          (p) =>
-            ["PENDING", "SCHEDULED"].includes(String(p.state).toUpperCase()) &&
-            Date.parse(p.scheduled_at) > Date.now(),
-        )
-        .sort(
-          (a, b) => Date.parse(a.scheduled_at) - Date.parse(b.scheduled_at),
-        )[0];
-      if (planned) {
-        trigger.append(
-          node("small", "NÄCHSTER BEOBACHTETER TERMIN"),
-          node(
-            "strong",
-            String(planned.platform).toUpperCase() +
-              " · " +
-              stamp(planned.scheduled_at),
-          ),
-          node(
-            "p",
-            s.first_money.publication_stale
-              ? "Letzter Veröffentlichungsplan; Nachweis veraltet. Keine Worker-Zuweisung."
-              : "Geplanter Veröffentlichungszeitpunkt. Keine Worker-Zuweisung.",
-          ),
-        );
-      }
-    }
-    const waiting = s.waiting || {};
-    const counts = $("waiting-counts");
-    counts.replaceChildren();
-    for (const [key, label] of [
-      ["owner", "Deine Entscheidung"],
-      ["external", "Externer Trigger"],
-      ["technical", "Technischer Blocker"],
-      ["budget", "Budget"],
-    ]) {
-      const cell = node(
-        "div",
-        undefined,
-        "waiting-row" +
-          (key === "owner" && waiting[key] > 0 ? " owner-required" : ""),
-      );
-      cell.append(node("span", label), node("strong", waiting[key]));
-      counts.append(cell);
-    }
-    const list = $("waiting-list");
-    list.replaceChildren();
-    for (const t of waiting.rows || []) list.append(taskDetail(t));
-    const safety = s.runtime_safety || {};
-    const n = numeric(safety.today_new_cost_usd);
-    put("cost-total", n == null ? "UNKNOWN" : "$" + n.toFixed(4));
-    put(
-      "cost-basis",
-      "Abgerechnete Provider-Kosten heute. Ungeklärte Kosten bleiben separat sichtbar.",
-    );
-    const cost = $("cost-context");
-    cost.replaceChildren();
-    line(cost, "Offene Reservations", safety.open_reservations);
-    line(
-      cost,
-      "Ungeklärte Provider-Kosten",
-      safety.provider_cost_unknown == null
-        ? "UNKNOWN"
-        : safety.provider_cost_unknown
-          ? "Ja · prüfen"
-          : "Keine",
-    );
-    line(
-      cost,
-      "Budgetfenster",
-      s.budget?.status || "Kein bestätigtes Budgetfenster",
-    );
-  }
-  function clock() {
-    put(
-      "clock",
-      new Date().toLocaleString("de-DE", {
-        weekday: "short",
-        day: "2-digit",
-        month: "short",
-        hour: "2-digit",
-        minute: "2-digit",
-        timeZone: "Europe/Berlin",
-      }),
-    );
-  }
-  clock();
-  setInterval(clock, 30000);
-
-  async function refresh() {
-    clearTimeout(timer);
-    if (busy || document.hidden) return;
-    busy = true;
-    const refreshButton = $("refresh");
-    if (refreshButton) refreshButton.disabled = true;
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 30000);
-
-    try {
-      const response = await fetch("/internal/jarvis/snapshot", {
-        credentials: "same-origin",
-        cache: "no-store",
-        signal: controller.signal,
+    const duration =…19317 tokens truncated…    const path = new URL(r.request().url()).pathname;
+      if (path.endsWith("/snapshot"))
+        return fail
+          ? r.fulfill({ status: 503, body: "Unavailable" })
+          : r.fulfill({
+              contentType: "application/json",
+              body: JSON.stringify(s),
+            });
+      const file =
+        path === "/internal/jarvis" ? "index.html" : path.split("/").pop();
+      return r.fulfill({
+        contentType: file.endsWith(".css")
+          ? "text/css"
+          : file.endsWith(".js")
+            ? "application/javascript"
+            : "text/html",
+        body: fs.readFileSync(dir + file),
       });
-      if (response.status === 401 || response.status === 403) {
-        location.assign("/internal/login");
-        return;
-      }
-      if (!response.ok) throw new Error("Unavailable");
-      const s = await response.json();
-      if (
-        s.version !== 1 ||
-        s.read_only !== true ||
-        !s.command_center ||
-        !s.freshness ||
-        !s.mission_board ||
-        !Array.isArray(s.worker_deck) ||
-        !Array.isArray(s.system_health)
-      )
-        throw new Error("Invalid snapshot");
-      render(s);
-    } catch {
-      const connection = $("connection-alert");
-      if (connection) {
-        connection.hidden = false;
-        connection.textContent = snapshot
-          ? "LIVE READ UNAVAILABLE · Letzte Beobachtung bleibt sichtbar, ist aber nicht mehr als aktuell bestätigt."
-          : "LIVE READ UNAVAILABLE · Kein Systemzustand bestätigt. Erneute Prüfung folgt.";
-      }
-      put("sync-label", "Verbindung unterbrochen");
-      setPulse(
-        "pulse-jarvis",
-        "amber",
-        "Verbindung prüfen",
-        "Live-Daten konnten nicht geladen werden.",
-      );
-      setPulse(
-        "pulse-action",
-        "amber",
-        "Unklar",
-        "Freigabestatus kann aktuell nicht bestätigt werden.",
-      );
-      setPulse(
-        "pulse-money",
-        "amber",
-        "Unklar",
-        "Publication-State kann aktuell nicht bestätigt werden.",
-      );
-      setPulse(
-        "pulse-cost",
-        "amber",
-        "Unklar",
-        "Kostenstatus kann aktuell nicht bestätigt werden.",
-      );
-      setTone("jarvis-core", "amber");
-      document.body.dataset.executionMode = "unknown";
-      $("jarvis-core").dataset.mode = "unknown";
-      const sourceStatus = $("execution-source-status");
-      sourceStatus.hidden = false;
-      sourceStatus.textContent =
-        "Verbindung unterbrochen. Angezeigte Arbeit ist der letzte bekannte Stand, nicht aktuell bestätigt.";
-      document
-        .querySelectorAll(".execution-evidence .execution-state")
-        .forEach((el) => {
-          el.textContent =
-            "Zuletzt · " + el.textContent.replace(/^Zuletzt · /, "");
-        });
-      const approval = $("approval-alert");
-      if (approval) approval.hidden = true;
-      const jarvisState = $("jarvis-state");
-      if (jarvisState)
-        jarvisState.replaceWith(
-          Object.assign(badge("ERROR"), { id: "jarvis-state" }),
-        );
-    } finally {
-      clearTimeout(timeout);
-      busy = false;
-      if (refreshButton) refreshButton.disabled = false;
-      timer = setTimeout(refresh, 10000);
+    });
+    await p.goto("https://dufynd-qa.local/internal/jarvis");
+    await p.waitForFunction(
+      () => document.body.dataset.executionMode === "working",
+    );
+    assert.equal(await p.locator("#work .work-flow").isVisible(), false);
+    assert.equal(await p.locator(".evidence-changed").count(), 0);
+    if (width === 1440) {
+      const a = await p.locator("#work").boundingBox();
+      const n = await p.locator(".next-panel").boundingBox();
+      assert.ok(a.width > n.width * 1.7);
     }
+
+    const summary = p.locator(".execution-metadata > summary");
+    await summary.click();
+    const refresh = async () => {
+      const response = p.waitForResponse((r) => r.url().endsWith("/snapshot"));
+      await p.locator("#refresh").click();
+      await response;
+      await p.evaluate(() => new Promise(requestAnimationFrame));
+    };
+    s.worker_deck[0].heartbeat_at = new Date(
+      Date.parse(s.generated_at) + 1000,
+    ).toISOString();
+    await refresh();
+    assert.equal(await p.locator(".evidence-changed").count(), 0);
+    assert.equal(
+      await p.locator(".execution-metadata").getAttribute("open"),
+      "",
+    );
+    s.worker_deck[0].checkpoint.step = "purchase_verified";
+    s.worker_deck[0].checkpoint.verified_at = new Date(
+      Date.parse(s.generated_at) + 2000,
+    ).toISOString();
+    await refresh();
+    assert.equal(await p.locator(".evidence-changed").count(), 1);
+    await refresh();
+    assert.equal(await p.locator(".evidence-changed").count(), 0);
+    fail = true;
+    await refresh();
+    assert.equal(
+      await p.locator("body").getAttribute("data-execution-mode"),
+      "unknown",
+    );
+    assert.equal(await p.locator("#execution-source-status").isVisible(), true);
+    assert.match(
+      await p.locator("#execution-detail-list .execution-state").innerText(),
+      /Zuletzt/,
+    );
+    fail = false;
+    await refresh();
+    assert.equal(
+      await p.locator("#execution-source-status").isVisible(),
+      false,
+    );
+    assert.equal(
+      await p.locator("#execution-detail-list .execution-state").innerText(),
+      "Arbeitet",
+    );
+    await summary.focus();
+    const automatic = p.waitForResponse((r) => r.url().endsWith("/snapshot"));
+    await p.evaluate(() => document.querySelector("#refresh").click());
+    await automatic;
+    await p.evaluate(() => new Promise(requestAnimationFrame));
+    assert.equal(
+      await summary.evaluate((el) => el === document.activeElement),
+      true,
+    );
+    s.system_health = [];
+    s.freshness.operational_complete = false;
+    await refresh();
+    assert.match(
+      await p.locator("#source-summary").innerText(),
+      /nicht vollständig bestätigt/,
+    );
+    assert.equal(await p.locator("#execution-source-status").isVisible(), true);
+    assert.equal(
+      await p.evaluate(() => document.documentElement.scrollWidth > innerWidth),
+      false,
+    );
+    // A complete candidate is visible only as a pending Owner review; there is no write control.
+    s.freshness.operational_complete = true;
+    s.command_center.gates_complete = true;
+    s.command_center.human_approval_count = 1;
+    s.decision_center = [{title: "Delina · isolated review fixture", type: "content_candidate_review",
+      reason: "Complete candidate", go_token: "GO-CONTENT-REVIEW-FIXTURE",
+      content_candidate: {product: "Delina EDP 75 ml", asset_reference: "qa_delina_asset",
+        revision_fingerprint: "a".repeat(64), hook: "Delina: passt sie zu dir?",
+        caption: "A complete safe caption for Owner review.", platform: "instagram",
+        requested_at: s.generated_at, content_id: "qa_delina_fixture", experiment_id: "qa_gate",
+        internal_rating: "9.6", recommendation_reason: "Internally ready fixture"}}];
+    await refresh();
+    assert.equal(await p.locator("#approval-alert").isVisible(), true);
+    const decisionText = await p.locator("#decision-list").innerText();
+    for (const text of ["Delina EDP 75 ml", "qa_delina_asset", "A complete safe caption", "qa_delina_fixture", "qa_gate", "9.6", "Scheduling und Publishing nicht freigegeben"])
+      assert.ok(decisionText.includes(text), text);
+    assert.equal(await p.locator("#decision-list button").count(), 0);
+    s.decision_center = [];
+    s.command_center.human_approval_count = 0;
+    await refresh();
+    assert.equal(await p.locator("#approval-alert").isVisible(), false);
+    assert.equal(await p.locator("#decisions").isVisible(), false);
+    assert.equal(await p.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+    await p.close();
+    console.log(
+      width +
+        "px hierarchy, truthful motion, failure/recovery and evidence-state PASS",
+    );
   }
-
-  $("refresh")?.addEventListener("click", refresh);
-  $("toggle-details")?.addEventListener("click", () => {
-    const open = document.body.classList.toggle("show-advanced");
-    $("toggle-details").setAttribute("aria-expanded", String(open));
-    $("toggle-details").textContent = open
-      ? "Technische Details ausblenden"
-      : "Technische Details anzeigen";
-  });
-  $("domain-filter")?.addEventListener("change", missions);
-  $("show-done")?.addEventListener("change", missions);
-  document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) refresh();
-    else clearTimeout(timer);
-  });
-  $("logout")?.addEventListener("click", async () => {
-    const button = $("logout");
-    button.disabled = true;
-    try {
-      const response = await fetch("/internal/logout", {
-        method: "POST",
-        credentials: "same-origin",
-        headers: {
-          "X-CSRF-Token": document.querySelector('meta[name="owner-csrf"]')
-            .content,
-        },
-      });
-      if (response.ok || response.status === 503 || response.status === 401) {
-        location.assign("/internal/login");
-      } else {
-        throw new Error("Logout failed");
-      }
-    } catch {
-      const connection = $("connection-alert");
-      if (connection) {
-        connection.hidden = false;
-        connection.textContent =
-          "Abmelden nicht bestätigt. Bitte erneut versuchen.";
-      }
-      button.disabled = false;
-    }
-  });
-  document.querySelectorAll("nav a").forEach((a) =>
-    a.addEventListener("click", () => {
-      document
-        .querySelectorAll("nav a")
-        .forEach((n) => n.classList.remove("selected"));
-      a.classList.add("selected");
-    }),
-  );
-
-  refresh();
+  assert.deepEqual(errors, []);
+  await b.close();
 })();
