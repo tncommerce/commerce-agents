@@ -1007,7 +1007,7 @@
       HEALTHY: "Aktuell",
       STALE: "NACHWEIS ÄLTER",
       MONITORED: "ÜBERWACHT",
-      DEGRADED: "Quelle meldet Einschränkung",
+      DEGRADED: "Nachweis eingeschränkt",
       BLOCKED: "Blockiert",
       UNKNOWN: "Nicht bestätigt",
       BLOCKED_CONFIGURATION: "Konfiguration blockiert",
@@ -1931,9 +1931,9 @@
     if (needsApproval) {
       put(
         "approval-summary",
-        gates.length === 1
-          ? gates[0].title
-          : gatesCount + " Freigaben warten auf dich",
+        actionableGates.length === 1
+          ? actionableGates[0].title
+          : gatesCount + " Aktionen warten auf dich",
       );
       put(
         "approval-detail",
@@ -2049,8 +2049,8 @@
           node(
             "p",
             gatesComplete
-              ? "Keine Freigabe erforderlich. Du musst aktuell nichts entscheiden."
-              : "Freigabestatus ist noch nicht vollständig bestätigt.",
+              ? "Keine Owner-Aktion offen."
+              : "Owner-Aktionsstatus ist noch nicht vollständig bestätigt.",
             "muted",
           ),
         );
