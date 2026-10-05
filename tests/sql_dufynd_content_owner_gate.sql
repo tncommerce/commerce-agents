@@ -29,6 +29,10 @@ begin
  if public.request_dufynd_content_owner_review('qa_delina_gate_asset')->>'ready'<>'false' then raise exception 'self review accepted'; end if;
  update public.dufynd_content_assets set metadata=jsonb_set(meta,'{owner_review_v1,internal_rating}','5') where id='qa_delina_gate_asset';
  if public.request_dufynd_content_owner_review('qa_delina_gate_asset')->>'ready'<>'false' then raise exception 'substandard asset accepted'; end if;
+ update public.dufynd_content_assets set metadata=meta,version=version+1 where id='qa_delina_gate_asset';
+ if (select count(*) from public.dufynd_human_decisions where status='pending')<>n+1 then raise exception 'ready revision missing'; end if;
+ update public.dufynd_content_assets set status='draft' where id='qa_delina_gate_asset';
+ if (select count(*) from public.dufynd_human_decisions where status='pending')<>n then raise exception 'status downgrade retained stale gate'; end if;
  if has_function_privilege('anon','public.request_dufynd_content_owner_review(text)','execute')
  or has_function_privilege('authenticated','public.request_dufynd_content_owner_review(text)','execute') then raise exception 'public write endpoint'; end if;
 end $$;

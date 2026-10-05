@@ -9,7 +9,7 @@ begin
  if octet_length(a.metadata::text)>20000 or length(a.uri)>4000 then
  update public.dufynd_human_decisions set status='superseded',updated_at=now() where action_type='content_candidate_review' and status in ('pending','approved') and context->'candidate'->>'asset_reference'=a.id;
  return jsonb_build_object('ready',false,'reason','packet_too_large'); end if;
- fingerprint:=encode(sha256(convert_to(jsonb_build_array(a.id,a.version,a.uri,a.content_id,a.metadata)::text,'UTF8')),'hex');
+ fingerprint:=encode(sha256(convert_to(jsonb_build_array(a.id,a.version,a.uri,a.content_id,a.platform,a.status,a.metadata)::text,'UTF8')),'hex');
  -- Any edit invalidates the old revision, including a change that fails preflight.
  update public.dufynd_human_decisions set status='superseded',updated_at=now()
  where action_type='content_candidate_review' and status in ('pending','approved')
