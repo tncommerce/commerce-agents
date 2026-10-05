@@ -36,6 +36,8 @@ def test_phase2_uses_same_origin_webrtc_bridge_and_manual_turn_control():
     assert "track.enabled = false" in voice
     assert "setTimeout(() => stop(), 20000)" in voice
     assert "30000" in voice
+    assert "startOutputAnalysis(event.streams[0])" in voice
+    assert "drawOutputSpectrum" in voice
     assert "api.openai.com" not in voice
     assert "OPENAI_API_KEY" not in voice
 
