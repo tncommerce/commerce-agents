@@ -119,7 +119,7 @@ class JarvisSafeActionRunner:
 
         if payload.get("paid_calls") not in {0, None}:
             raise JarvisSafeActionConflict("paid_call_detected")
-        if payload.get("new_spend_usd") not in {0, 0.0, None}:
+        if payload.get("new_spend_usd") not in {0, None}:
             raise JarvisSafeActionConflict("spend_detected")
         if payload.get("owner_gate_action_executed") not in {False, None}:
             raise JarvisSafeActionConflict("owner_gate_execution_detected")
