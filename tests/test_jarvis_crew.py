@@ -89,9 +89,7 @@ def test_live_gmail_expiry_and_coverage_are_two_warnings_not_owner_gates():
     assert "Read-only" in role(s, "Brook")["next_step"]
 
 
-@pytest.mark.parametrize(
-    "case", ["smoke", "ci", "unknown_cost", "stale_lease", "credential_owner"]
-)
+@pytest.mark.parametrize("case", ["smoke", "ci", "unknown_cost", "stale_lease", "credential_owner"])
 def test_real_critical_conditions_are_red(case):
     data = healthy_data()
     if case == "smoke":
