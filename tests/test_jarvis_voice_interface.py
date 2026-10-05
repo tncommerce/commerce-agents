@@ -31,7 +31,7 @@ def test_phase2_uses_same_origin_webrtc_bridge_and_manual_turn_control():
     assert '"Content-Type": "application/sdp"' in voice
     assert '"X-CSRF-Token": csrf' in voice
     assert 'stage.dataset.voiceEnabled === "true"' in voice
-    assert '"VOICE SETUP"' in voice
+    assert '"VOICE NICHT AKTIV"' in voice
     assert 'type: "input_audio_buffer.clear"' in voice
     assert 'type: "input_audio_buffer.commit"' in voice
     assert 'type: "response.create"' in voice
@@ -40,6 +40,15 @@ def test_phase2_uses_same_origin_webrtc_bridge_and_manual_turn_control():
     assert "30000" in voice
     assert "startOutputAnalysis(event.streams[0])" in voice
     assert "drawOutputSpectrum" in voice
+    assert "waitForIce" not in voice
+    assert "peer.localDescription?.sdp || offer.sdp" in voice
+    assert '"HÖRT ZU · jetzt sprechen · Loslassen sendet deine Frage"' in voice
+    assert '"NOCH NICHT BEREIT"' in voice
+    assert '"MIKROFON BLOCKIERT"' in voice
+    assert '"REALTIME TIMEOUT"' in voice
+    assert "button.dataset.providerReady" in voice
+    assert '"VOICE NICHT AKTIV"' in voice
+    assert '"Server-Key fehlt · Push-to-Talk kann noch nicht antworten"' in voice
     assert "api.openai.com" not in voice
     assert "OPENAI_API_KEY" not in voice
 
@@ -66,4 +75,5 @@ def test_voice_animation_respects_reduced_motion():
     assert '.core[data-voice-state="thinking"]' in css
     assert '.core[data-voice-state="speaking"]' in css
     assert ".core-spectrum" in css
+    assert '.jarvis-ptt[data-provider-ready="false"]' in css
     assert "@media (prefers-reduced-motion: reduce)" in css
