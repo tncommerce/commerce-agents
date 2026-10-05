@@ -324,6 +324,13 @@
     }
 
     function safeCount(candidate) {
+      if (
+        candidate === null ||
+        candidate === undefined ||
+        candidate === "" ||
+        typeof candidate === "boolean"
+      )
+        return null;
       const number = Number(candidate);
       return Number.isInteger(number) && number >= 0 && number <= 100000
         ? number
@@ -447,6 +454,19 @@
       if (type === "response.done") {
         clearTimeout(responseTimer);
         responseTimer = null;
+        const responseStatus = safeCode(event.response?.status);
+        if (
+          responseStatus &&
+          !["completed", "success"].includes(responseStatus)
+        ) {
+          setState(
+            "error",
+            "VOICE INCOMPLETE",
+            "Antwort nicht vollständig bestätigt · erneut versuchen",
+          );
+          cleanupTimer = setTimeout(() => cleanupSession(), 1800);
+          return;
+        }
         setState("speaking", "SPEAKING", "Antwort wird beendet …");
         cleanupTimer = setTimeout(() => cleanupSession(), 2600);
         return;
