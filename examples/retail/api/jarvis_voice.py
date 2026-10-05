@@ -103,8 +103,10 @@ class JarvisVoiceGateway:
     def connect(self, sdp: str) -> str:
         if not self.enabled:
             raise VoiceUnavailable()
-        if not isinstance(sdp, str) or not 1 <= len(sdp) <= 65536 or not sdp.lstrip().startswith(
-            "v=0"
+        if (
+            not isinstance(sdp, str)
+            or not 1 <= len(sdp) <= 65536
+            or not sdp.lstrip().startswith("v=0")
         ):
             raise ValueError("invalid_sdp")
         self.check_attempt()
