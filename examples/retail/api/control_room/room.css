@@ -4570,3 +4570,19 @@ body[data-execution-mode="unknown"] .execution-evidence {
     width: 100%;
   }
 }
+
+
+/* Operational work diagnosis */
+.diagnosis-panel { display: grid; gap: 18px; }
+.diagnosis-reason { margin: 0; max-width: 980px; line-height: 1.55; }
+.diagnosis-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; }
+.diagnosis-grid article { padding: 16px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.025); }
+.diagnosis-grid small, .diagnosis-next small { display: block; margin-bottom: 6px; opacity: .62; letter-spacing: .08em; }
+.diagnosis-grid strong { font-size: 1.5rem; }
+.diagnosis-next { display: grid; gap: 5px; padding-top: 2px; }
+.diagnosis-next strong { font-size: 1.05rem; }
+.diagnosis-next span { opacity: .7; }
+.diagnosis-observers { display: grid; gap: 8px; }
+.diagnosis-observer-item { display: flex; justify-content: space-between; gap: 18px; padding: 10px 0; border-top: 1px solid var(--line); }
+.diagnosis-observer-item span { opacity: .72; text-align: right; }
+@media (max-width: 900px) { .diagnosis-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
