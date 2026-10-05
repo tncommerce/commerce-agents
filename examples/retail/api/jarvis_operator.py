@@ -91,9 +91,7 @@ def build_operator_diagnosis(
         if _observer_health(row) in UNHEALTHY_OBSERVERS
         or _observer_error(row) in {"credential_expired", "invalid_grant"}
     ]
-    internal_observer_issues = [
-        row for row in bad_observers if not _credential_owner_action(row)
-    ]
+    internal_observer_issues = [row for row in bad_observers if not _credential_owner_action(row)]
     observer_owner_issues = [row for row in bad_observers if _credential_owner_action(row)]
 
     credential_owner_issues = [
@@ -102,7 +100,9 @@ def build_operator_diagnosis(
 
     pending_gates = thin.get("pending_owner_gates")
     pending_gates = pending_gates if isinstance(pending_gates, list) else []
-    real_owner_action = bool(owner_tasks or pending_gates or observer_owner_issues or credential_owner_issues)
+    real_owner_action = bool(
+        owner_tasks or pending_gates or observer_owner_issues or credential_owner_issues
+    )
 
     active_leases = _int(thin.get("active_leases"))
     active_count = active_leases if active_leases and not active else len(active)
@@ -121,7 +121,13 @@ def build_operator_diagnosis(
     funnel = funnel if isinstance(funnel, dict) else {}
     first_signal_count = sum(
         _int(funnel.get(key))
-        for key in ("landing_sessions", "product_views", "offer_views", "offer_opens", "merchant_clickouts")
+        for key in (
+            "landing_sessions",
+            "product_views",
+            "offer_views",
+            "offer_opens",
+            "merchant_clickouts",
+        )
     )
 
     business_checkpoint = thin.get("business_checkpoint")
@@ -156,7 +162,9 @@ def build_operator_diagnosis(
     moves: list[dict[str, Any]] = []
 
     if phase == "live_measurement_window" and (
-        publication_verified is False or decision_state == "waiting_first_signal" or first_signal_count == 0
+        publication_verified is False
+        or decision_state == "waiting_first_signal"
+        or first_signal_count == 0
     ):
         moves.append(
             {
@@ -232,14 +240,16 @@ def build_operator_diagnosis(
         )
 
     if real_owner_action:
-        owner_message = "Eine bestätigte Entscheidung oder Reautorisierung von Master ist erforderlich."
-    else:
         owner_message = (
-            "Keine Aktion von Master erforderlich. Insbesondere ist keine Mailprüfung als notwendige Master-Aktion belegt."
+            "Eine bestätigte Entscheidung oder Reautorisierung von Master ist erforderlich."
         )
+    else:
+        owner_message = "Keine Aktion von Master erforderlich. Insbesondere ist keine Mailprüfung als notwendige Master-Aktion belegt."
 
     if active_count:
-        jarvis_message = "Jarvis soll die laufende Arbeit überwachen und bei Abweichungen konkret eingreifen."
+        jarvis_message = (
+            "Jarvis soll die laufende Arbeit überwachen und bei Abweichungen konkret eingreifen."
+        )
     elif ready:
         jarvis_message = "Jarvis kann die bereitliegende sichere Arbeit anstoßen."
     else:
