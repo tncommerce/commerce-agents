@@ -9,7 +9,7 @@ from retail.api.jarvis_owner_actions import (
 )
 
 
-def test_manual_owner_confirmation_stays_pending_for_external_verification():
+def test_manual_owner_confirmation_closes_owner_action_immediately():
     calls = []
 
     def transport(request):
@@ -34,13 +34,16 @@ def test_manual_owner_confirmation_stays_pending_for_external_verification():
         if request.method == "PATCH":
             body = request.read().decode()
             assert '"owner_confirmed_manual_action":true' in body
-            assert '"status"' not in body
+            assert '"owner_action_completed":true' in body
+            assert '"verification_basis":"owner_confirmation"' in body
+            assert '"status":"completed"' in body
+            assert '"completed_at":' in body
             return httpx.Response(
                 200,
                 json=[
                     {
                         "decision_id": "first-money:instagram-profile-attribution:20261005",
-                        "status": "pending",
+                        "status": "completed",
                     }
                 ],
             )
@@ -56,8 +59,8 @@ def test_manual_owner_confirmation_stays_pending_for_external_verification():
         action="confirm_manual",
     )
     assert result["ok"] is True
-    assert result["status"] == "pending"
-    assert result["verification_required"] is True
+    assert result["status"] == "completed"
+    assert result["verification_required"] is False
     assert [call[0] for call in calls] == ["GET", "PATCH"]
 
 
