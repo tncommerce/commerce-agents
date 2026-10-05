@@ -331,8 +331,12 @@ def create_control_room_router(
             data = owner(request)
         except HTTPException:
             return RedirectResponse("/internal/login", status_code=303, headers=PRIVATE_HEADERS)
+        voice_enabled = bool(voice_gateway and voice_gateway.enabled)
         return HTMLResponse(
-            (ASSET_DIR / "index.html").read_text().replace("OWNER_CSRF", data["csrf"]),
+            (ASSET_DIR / "index.html")
+            .read_text()
+            .replace("OWNER_CSRF", data["csrf"])
+            .replace("VOICE_ENABLED", "true" if voice_enabled else "false"),
             headers=PRIVATE_HEADERS,
         )
 
