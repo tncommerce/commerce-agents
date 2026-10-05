@@ -80,8 +80,21 @@ def project_crew(snapshot: dict) -> dict:
         reverse=True,
     )
 
-    # Prefer documented handler/function over a generic executor's historical display alias.
+    # Route real executions by task purpose first, then by certified handler.
+    # Generic supervisor audits can still represent business-specific work such as
+    # First-Money evidence collection; the Owner should see that work under Nami,
+    # not as a generic QA execution.
     def execution_role(worker):
+        task_id = worker.get("task_id") or ""
+        task_title = (worker.get("task_title") or "").casefold()
+        if task_id.startswith("first-money-signal:") or task_id.startswith(
+            "jarvis_first_money"
+        ) or "first-money" in task_title:
+            return "revenue"
+        if task_id.startswith("purchase-freshness:") or "purchase evidence" in task_title:
+            return "affiliate"
+        if task_id.startswith("social_quality_remediation_") or "content" in task_title and "preflight" in task_title:
+            return "content"
         return HANDLERS.get(worker.get("handler_id")) or worker.get("role_key")
 
     crew = []
