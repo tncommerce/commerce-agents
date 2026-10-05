@@ -412,7 +412,7 @@
       item.append(metadata);
       return item;
     }
-    line(item, "Wartet auf", w.description?.reason || detailText(w.wait_reason));
+    line(item, w.status === "ACTIVE" ? "Aktuell" : "Wartet auf", w.status === "ACTIVE" ? taskTitle(w) + " · " + detailText(w.execution_status) : w.description?.reason || detailText(w.wait_reason));
     line(item, "Danach", w.description?.next_step || detailText(w.next_checkpoint));
     line(
       item,
