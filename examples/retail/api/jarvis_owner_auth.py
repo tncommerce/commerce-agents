@@ -32,6 +32,7 @@ from .jarvis_safe_actions import (
     JarvisSafeActionRunner,
     JarvisSafeActionUnavailable,
 )
+from .jarvis_truth import JarvisTruthReader, JarvisTruthUnavailable
 from .jarvis_voice import JarvisVoiceGateway, VoiceUnavailable
 
 ORIGIN = "https://scentai-api-kxhe.onrender.com"
@@ -262,6 +263,7 @@ def create_control_room_router(
     voice_gateway: JarvisVoiceGateway | None = None,
     action_writer: OwnerActionWriter | None = None,
     safe_action_runner: JarvisSafeActionRunner | None = None,
+    truth_reader: JarvisTruthReader | None = None,
 ) -> APIRouter:
     router = APIRouter(include_in_schema=False)
     config = config or OwnerConfig.from_env()
@@ -272,6 +274,8 @@ def create_control_room_router(
         action_writer = OwnerActionWriter(secret_key=config.read_key)
     if safe_action_runner is None and config and auth:
         safe_action_runner = JarvisSafeActionRunner(secret_key=config.read_key)
+    if truth_reader is None and config and auth:
+        truth_reader = JarvisTruthReader(secret_key=config.read_key)
 
     def owner(request: Request) -> dict[str, Any]:
         if auth is None:
@@ -404,6 +408,47 @@ def create_control_room_router(
             media_type="application/sdp",
             status_code=201,
         )
+
+    @router.post("/internal/jarvis/truth")
+    async def truth(request: Request) -> JSONResponse:
+        data = owner(request)
+        assert auth is not None
+        auth.require_origin(request)
+        csrf = request.headers.get("x-csrf-token", "")
+        if not hmac.compare_digest(csrf, data["csrf"]):
+            raise HTTPException(403, "Forbidden", headers=PRIVATE_HEADERS)
+        if request.headers.get("content-type", "").split(";")[0] != "application/json":
+            raise HTTPException(400, "Invalid truth request", headers=PRIVATE_HEADERS)
+        body = bytearray()
+        async for chunk in request.stream():
+            body.extend(chunk)
+            if len(body) > 2048:
+                raise HTTPException(413, "Truth request too large", headers=PRIVATE_HEADERS)
+        try:
+            payload = json.loads(body)
+            if not isinstance(payload, dict) or set(payload) - {"area", "focus"}:
+                raise ValueError
+            area = payload.get("area", "overview")
+            focus = payload.get("focus")
+            if area not in {
+                "overview",
+                "workers",
+                "missions",
+                "risks",
+                "recent_activity",
+            }:
+                raise ValueError
+            if focus is not None and not isinstance(focus, str):
+                raise ValueError
+        except (ValueError, TypeError, json.JSONDecodeError):
+            raise HTTPException(400, "Invalid truth request", headers=PRIVATE_HEADERS) from None
+        if truth_reader is None:
+            raise HTTPException(503, "Truth unavailable", headers=PRIVATE_HEADERS)
+        try:
+            result = await run_in_threadpool(truth_reader.inspect, area=area, focus=focus)
+        except JarvisTruthUnavailable:
+            raise HTTPException(503, "Truth unavailable", headers=PRIVATE_HEADERS) from None
+        return JSONResponse(result, headers=PRIVATE_HEADERS)
 
     @router.post("/internal/jarvis/safe-action")
     async def safe_action(request: Request) -> JSONResponse:
