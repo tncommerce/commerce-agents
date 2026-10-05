@@ -402,7 +402,7 @@
     return api;
   }
 
-  const jarvisVoice = createJarvisVoiceController();
+  createJarvisVoiceController();
 
   function missions() {
     if (!snapshot) return;
