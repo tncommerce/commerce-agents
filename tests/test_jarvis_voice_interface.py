@@ -30,6 +30,8 @@ def test_phase2_uses_same_origin_webrtc_bridge_and_manual_turn_control():
     assert 'fetch("/internal/jarvis/voice/session"' in voice
     assert '"Content-Type": "application/sdp"' in voice
     assert '"X-CSRF-Token": csrf' in voice
+    assert 'stage.dataset.voiceEnabled === "true"' in voice
+    assert '"VOICE SETUP"' in voice
     assert 'type: "input_audio_buffer.clear"' in voice
     assert 'type: "input_audio_buffer.commit"' in voice
     assert 'type: "response.create"' in voice
