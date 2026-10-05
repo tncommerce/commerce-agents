@@ -318,3 +318,43 @@ def test_live_now_only_contains_current_verified_active_executions():
     ]
     money = next(c for c in s["crew"]["clusters"] if c["id"] == "MONEY")
     assert money["active_count"] == 1 and money["state"] == "AKTIV"
+
+
+def test_first_money_supervisor_audit_is_shown_under_nami_by_task_purpose():
+    data = healthy_data()
+    data["active_runs"] = [
+        run_row(
+            execution_id="live-first-money",
+            task_id="first-money-signal:202610051120:abc123",
+            worker_id="supervisor_v2",
+            handler_id="supervisor_state_audit",
+        )
+    ]
+    snapshot = result(data)
+    nami = role(snapshot, "Nami")
+    chopper = role(snapshot, "Chopper")
+    assert nami["state"] == "AKTIV"
+    assert nami["active_count"] == 1
+    assert chopper["active_count"] == 0
+    assert snapshot["crew"]["live_now"][0]["alias"] == "Nami"
+
+
+def test_live_social_quality_incident_is_red_only_when_owner_removal_is_required():
+    data = healthy_data()
+    data["social_quality"] = [
+        {
+            "last_verified_at": STAMP,
+            "status": "remediation_active",
+            "instagram_state": "published_requires_removal",
+            "tiktok_state": "stopped_before_publish",
+            "owner_quality_floor": 9.5,
+            "replacement_requires_new_content_id": True,
+            "publishing_authorized": False,
+        }
+    ]
+    snapshot = result(data)
+    risk = next(p for p in snapshot["global_risk"]["panels"] if p["id"] == "content_quality")
+    assert risk["tone"] == "red"
+    assert risk["owner_required"] is True
+    assert "Instagram-Post entfernen" in risk["title"]
+    assert snapshot["social_quality"]["publishing_authorized"] is False

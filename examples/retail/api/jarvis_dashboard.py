@@ -96,6 +96,10 @@ MASTER_READS.update(
             "continuity.checkpoint.ceo_radar",
             "last_verified_at,product0:value->money_products->0->>product,state0:value->money_products->0->>state,product1:value->money_products->1->>product,state1:value->money_products->1->>state,product2:value->money_products->2->>product,state2:value->money_products->2->>state,product3:value->money_products->3->>product,state3:value->money_products->3->>state",
         ),
+        "social_quality": (
+            "first_money.social_quality_incident.20261005",
+            "last_verified_at,status:value->>status,instagram_state:value->>instagram_state,tiktok_state:value->>tiktok_state,owner_quality_floor:value->owner_quality_floor,replacement_requires_new_content_id:value->replacement_requires_new_content_id,publishing_authorized:value->publishing_authorized",
+        ),
     }
 )
 FIRST_MONEY_CONTENT = "one_million_still_hits_20261004_01"
@@ -832,6 +836,19 @@ def build_snapshot(
             }
             for i in range(4)
         ],
+    }
+    social_quality = first("social_quality")
+    snapshot["social_quality"] = {
+        "observed_at": _stamp(social_quality.get("last_verified_at")),
+        "status": enum(social_quality.get("status")),
+        "instagram_state": enum(social_quality.get("instagram_state")),
+        "tiktok_state": enum(social_quality.get("tiktok_state")),
+        "owner_quality_floor": _money(social_quality.get("owner_quality_floor")),
+        "replacement_requires_new_content_id": social_quality.get(
+            "replacement_requires_new_content_id"
+        )
+        is True,
+        "publishing_authorized": social_quality.get("publishing_authorized") is True,
     }
     # Additive CEO projections. A candidate is not a certified handler selection.
     missions = [
