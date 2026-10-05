@@ -551,6 +551,7 @@
       const revenue = s.first_money || {};
       const risk = s.global_risk || {};
       const crew = s.crew || {};
+      const operator = s.operator_diagnosis || {};
       const activeCrew = (Array.isArray(crew.live_now) ? crew.live_now : [])
         .slice(0, 5)
         .map((item) => ({
@@ -568,6 +569,16 @@
         next_safe_action: safeText(command.next_safe_action, 320),
         owner_action: safeText(command.owner_action, 260),
         system_explanation: safeText(command.system_explanation, 420),
+        operator: {
+          state: safeText(operator.state, 80),
+          headline: safeText(operator.headline, 220),
+          cause: safeText(operator.cause, 520),
+          owner_action_required: operator.owner_action_required === true,
+          owner_message: safeText(operator.owner_message, 360),
+          jarvis_message: safeText(operator.jarvis_message, 420),
+          recommended_now: safeText(operator.recommended_now?.title, 320),
+          recommended_reason: safeText(operator.recommended_now?.reason, 520),
+        },
         risk: {
           title: safeText(risk.title, 180),
           summary: safeText(risk.summary, 420),
@@ -765,6 +776,26 @@
             system_explanation: safeText(command.system_explanation, 520),
             active_workers: safeCount(command.active_workers),
             owner_decisions: safeCount(command.human_approval_count),
+          },
+          operator: {
+            state: safeText(s.operator_diagnosis?.state, 80),
+            headline: safeText(s.operator_diagnosis?.headline, 220),
+            cause: safeText(s.operator_diagnosis?.cause, 520),
+            owner_action_required: s.operator_diagnosis?.owner_action_required === true,
+            owner_message: safeText(s.operator_diagnosis?.owner_message, 360),
+            jarvis_message: safeText(s.operator_diagnosis?.jarvis_message, 420),
+            recommended_now: safeText(s.operator_diagnosis?.recommended_now?.title, 320),
+            recommended_reason: safeText(s.operator_diagnosis?.recommended_now?.reason, 520),
+            evidence: s.operator_diagnosis?.evidence || {},
+            next_moves: (Array.isArray(s.operator_diagnosis?.next_moves)
+              ? s.operator_diagnosis.next_moves
+              : []
+            ).slice(0, 6).map((move) => ({
+              title: safeText(move.title, 320),
+              reason: safeText(move.reason, 520),
+              master_required: move.master_required === true,
+              jarvis_can_execute_now: move.jarvis_can_execute_now === true,
+            })),
           },
           risk: {
             title: safeText(risk.title, 220),
@@ -2380,6 +2411,7 @@
     );
     const revenue = s.first_money || {};
     const products = s.money_products || {};
+    const operator = s.operator_diagnosis || {};
     const safety = s.runtime_safety || {};
     const budget = s.budget || {};
     const queueData = s.queue || {};
@@ -2678,17 +2710,45 @@
     put(
       "priority",
       primaryTitle ||
-        (c.status === "WAITING"
-          ? "Jarvis wartet auf den nächsten zulässigen oder externen Trigger."
-          : "Aktueller Zustand aus dem letzten verifizierten Supervisor-Loop."),
+        c.priority ||
+        operator.recommended_now?.title ||
+        "Aktuelle Priorität ist noch nicht belastbar bestimmt.",
     );
-    put("current-task", primaryTitle || "Keine aktive Ausführung");
+    put(
+      "current-task",
+      primaryTitle ||
+        (operator.state === "IDLE_NO_RUNNABLE_WORK"
+          ? "Keine ausführbare Arbeit in der Queue"
+          : "Keine aktive Ausführung"),
+    );
     put(
       "allowed-task",
-      c.next_allowed_task || "Warten auf nächsten zulässigen Trigger",
+      c.next_allowed_task ||
+        operator.recommended_now?.title ||
+        "Noch kein nächster sinnvoller Schritt bestimmt",
     );
     put("stop-reason", c.stop_reason);
     put("lease-count", safety.active_leases);
+    put("operator-headline", operator.headline || "Lage wird eingeordnet");
+    put("operator-cause", operator.cause || "Noch keine belastbare Ursache.");
+    put(
+      "operator-next",
+      operator.recommended_now?.title || "Nächster Schritt wird bestimmt",
+    );
+    put(
+      "operator-next-reason",
+      operator.recommended_now?.reason || operator.jarvis_message || "",
+    );
+    put(
+      "operator-master",
+      operator.owner_action_required === true ? "AKTION NÖTIG" : "NICHTS",
+    );
+    put(
+      "operator-master-detail",
+      operator.owner_message || "Owner-Bedarf wird geprüft.",
+    );
+    const operatorPanel = $("operator-brief");
+    if (operatorPanel) operatorPanel.dataset.state = operator.state || "UNKNOWN";
     put("loop-time", "Loop · " + stamp(c.last_loop_at));
     const jarvisState = $("jarvis-state");
     if (jarvisState)
