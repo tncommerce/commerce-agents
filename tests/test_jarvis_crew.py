@@ -90,7 +90,7 @@ def test_live_gmail_expiry_and_coverage_are_two_warnings_not_owner_gates():
 
 
 @pytest.mark.parametrize(
-    "case", ["smoke", "ci", "unknown_cost", "stale_lease", "credential_owner", "owner_gate"]
+    "case", ["smoke", "ci", "unknown_cost", "stale_lease", "credential_owner"]
 )
 def test_real_critical_conditions_are_red(case):
     data = healthy_data()
@@ -104,20 +104,29 @@ def test_real_critical_conditions_are_red(case):
         data["active_runs"] = [run_row(lease_expires_at=STAMP)]
     if case == "credential_owner":
         data["credentials"] = [{"provider": "gmail", "status": "revoked"}]
-    if case == "owner_gate":
-        data["decisions"] = [
-            {
-                "decision_id": "qa",
-                "title": "Creative prüfen",
-                "action_type": "content_candidate_review",
-            }
-        ]
     s = result(data)
     assert s["global_risk"]["tone"] == "red"
     assert s["global_risk"]["critical_count"] >= 1
-    assert s["global_risk"]["owner_required"] == (case in {"credential_owner", "owner_gate"})
+    assert s["global_risk"]["owner_required"] == (case == "credential_owner")
     if case == "stale_lease":
         assert s["crew"]["active_executions"] == 0
+
+
+def test_routine_owner_gate_is_actionable_warning_not_system_failure():
+    data = healthy_data()
+    data["decisions"] = [
+        {
+            "decision_id": "qa",
+            "title": "Creative prüfen",
+            "action_type": "content_candidate_review",
+        }
+    ]
+    snapshot = result(data)
+    owner = next(p for p in snapshot["global_risk"]["panels"] if p["id"] == "owner")
+    assert owner["tone"] == "amber"
+    assert snapshot["global_risk"]["tone"] == "amber"
+    assert snapshot["global_risk"]["critical_count"] == 0
+    assert snapshot["global_risk"]["owner_required"] is True
 
 
 @pytest.mark.parametrize(
