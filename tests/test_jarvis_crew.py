@@ -318,7 +318,7 @@ def test_live_now_only_contains_current_verified_active_executions():
         {
             "role_id": "revenue",
             "alias": "Nami",
-            "role": "Revenue / Analytics Worker",
+            "role": "Umsatz & Daten",
             "task": "work",
             "started_at": STAMP,
             "heartbeat_at": STAMP,
