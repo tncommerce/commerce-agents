@@ -844,7 +844,9 @@ def build_snapshot(
         "instagram_state": enum(social_quality.get("instagram_state")),
         "tiktok_state": enum(social_quality.get("tiktok_state")),
         "owner_quality_floor": _money(social_quality.get("owner_quality_floor")),
-        "replacement_requires_new_content_id": social_quality.get("replacement_requires_new_content_id")
+        "replacement_requires_new_content_id": social_quality.get(
+            "replacement_requires_new_content_id"
+        )
         is True,
         "publishing_authorized": social_quality.get("publishing_authorized") is True,
     }
