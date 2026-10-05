@@ -262,7 +262,9 @@ def project_crew(snapshot: dict) -> dict:
                             "operations": "Der aktuelle Jarvis-Loop-Nachweis ist nicht vollständig bestätigt.",
                             "affiliate": "Händler- oder Affiliate-Nachweis ist nicht vollständig bestätigt.",
                             "outreach": "Der automatische Antwortkanal ist nicht vollständig bestätigt.",
-                        }.get(key, "Ein notwendiger Nachweis ist aktuell nicht vollständig bestätigt.")
+                        }.get(
+                            key, "Ein notwendiger Nachweis ist aktuell nicht vollständig bestätigt."
+                        )
                     )
                     if complete and state == "DEGRADED" and monitor and not executions
                     else explanation.get("reason")
