@@ -434,6 +434,8 @@ def create_control_room_router(
                 "overview",
                 "workers",
                 "missions",
+                "first_money",
+                "systems",
                 "risks",
                 "recent_activity",
             }:
