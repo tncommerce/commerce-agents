@@ -723,10 +723,10 @@ nav b {
     linear-gradient(145deg, #101815, #0d1110);
 }
 .decision-panel.has-decisions {
-  border-color: #ff696957;
+  border-color: #f0b65d4d;
   background:
-    radial-gradient(circle at 88% 0, #ff69691b, transparent 42%),
-    linear-gradient(145deg, #211315, #120d10);
+    radial-gradient(circle at 88% 0, #f0b65d14, transparent 42%),
+    linear-gradient(145deg, #1c1710, #110f0c);
 }
 .decision-panel h2 {
   font-size: 18px;
@@ -737,9 +737,9 @@ nav b {
 .decision-item {
   margin-top: 10px;
   padding: 12px;
-  border: 1px solid #ff69692c;
+  border: 1px solid #f0b65d2f;
   border-radius: 10px;
-  background: #ff696907;
+  background: #f0b65d08;
 }
 .decision-item h3 {
   margin: 8px 0 5px;
@@ -4479,5 +4479,67 @@ body[data-execution-mode="unknown"] .execution-evidence {
   .core[data-voice-state] .core-frame {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
+  }
+}
+
+
+.owner-action-card {
+  position: relative;
+}
+.owner-action-card h3 {
+  margin-bottom: 9px;
+  font-size: 14px;
+}
+.owner-action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #ffffff0c;
+}
+.owner-action {
+  appearance: none;
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 11px;
+  border: 1px solid #ffffff18;
+  border-radius: 8px;
+  color: #dbe2e5;
+  background: #ffffff07;
+  font: 700 8px/1.1 Inter, system-ui, sans-serif;
+  letter-spacing: 0.35px;
+  text-decoration: none;
+  cursor: pointer;
+}
+.owner-action:hover {
+  border-color: #ffffff31;
+  background: #ffffff0d;
+}
+.owner-action.primary {
+  border-color: #f0b65d55;
+  color: #fff0ce;
+  background: linear-gradient(145deg, #3a2a12, #1c160d);
+  box-shadow: inset 0 1px #ffffff09;
+}
+.owner-action.primary:hover {
+  border-color: #f0b65d88;
+  background: linear-gradient(145deg, #443116, #22190d);
+}
+.owner-action.secondary {
+  color: #c1cbcf;
+}
+.owner-action:disabled {
+  opacity: 0.58;
+  cursor: progress;
+}
+@media (max-width: 620px) {
+  .owner-action-buttons {
+    display: grid;
+  }
+  .owner-action {
+    width: 100%;
   }
 }
