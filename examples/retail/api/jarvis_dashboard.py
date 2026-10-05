@@ -21,6 +21,7 @@ from fastapi.responses import JSONResponse
 
 from .jarvis_clarity import task_explanation, worker_identity, workstream
 from .jarvis_crew import project_crew, project_risk
+from .jarvis_operator import build_operator_diagnosis
 
 PROJECT_ORIGIN = "https://bqsdxaagklpkxioaqdqa.supabase.co"
 ACTIVE = {"claimed", "working", "verifying", "in_progress", "running", "dispatched"}
@@ -45,7 +46,7 @@ RUN_COLUMNS = (
 )
 OBSERVER_COLUMNS = (
     "observer_id,source_type,enabled,interval_seconds,last_attempt_at,last_success_at,"
-    "last_event_at,consecutive_failures,next_retry_at,health_status,"
+    "last_event_at,consecutive_failures,next_retry_at,health_status,last_error,"
     "observed_sha:last_snapshot->>sha,monitor_basis:last_snapshot->>monitor_basis"
 )
 CREDENTIAL_COLUMNS = (
@@ -467,6 +468,7 @@ def build_snapshot(
             "next_retry_at": _stamp(row.get("next_retry_at")),
             "failures": _number(row.get("consecutive_failures")),
             "interval_seconds": _number(row.get("interval_seconds")),
+            "last_error": _enum(row.get("last_error")),
         }
         for row in data.get("observers", [])
     ]
@@ -1249,14 +1251,42 @@ def build_snapshot(
                 if health != "HEALTHY"
                 else "Aktueller HEAD erfolgreich geprüft."
             )
-    command["system_explanation"] = (
-        "Eine Quelle meldet einen konkreten Fehler; Verbindungen prüfen."
-        if any(h["confirmed_failure"] for h in systems)
-        else "Der freie Loop überwacht. Kein ausführender Worker ist aktiv; externe Antworten und neue Signale fehlen."
-        if not active_workers and thin_fresh
-        else "Aktive Ausführungen sind durch aktuelle Lebenszeichen bestätigt."
-        if active_workers
-        else "Aktueller Ausführungsnachweis fehlt; kein Ausfall allein aus dem Alter ableitbar."
+    money_checkpoint_at = _time(products.get("last_verified_at"))
+    checkpoint_age_seconds = (
+        max(0, int((now - money_checkpoint_at).total_seconds()))
+        if money_checkpoint_at is not None
+        else None
+    )
+    operator = build_operator_diagnosis(
+        tasks=[row for row in data.get("tasks", []) if isinstance(row, dict)],
+        waits=[row for row in data.get("external_waits", []) if isinstance(row, dict)],
+        observers=observers,
+        credentials=credentials,
+        thin={
+            "active_leases": thin.get("active_leases"),
+            "queue_counts": {
+                "waiting_external": thin.get("waiting_external"),
+                "blocked": thin.get("blocked"),
+            },
+            "business_checkpoint": {"age_seconds": checkpoint_age_seconds},
+        },
+        runtime=runtime if isinstance(runtime, dict) else {},
+        now=now,
+    )
+    snapshot["operator_diagnosis"] = operator
+    command["system_explanation"] = operator["cause"]
+    if not active_workers and operator.get("recommended_now"):
+        command["priority"] = operator["recommended_now"]["title"]
+        command["next_safe_action"] = operator["jarvis_message"]
+    command["owner_action"] = operator["owner_message"]
+    command["ceo_status"] = (
+        "ARBEIT LÄUFT"
+        if operator["state"] == "WORKING"
+        else "MASTER-AKTION NÖTIG"
+        if operator["state"] == "MASTER_ACTION_REQUIRED"
+        else "ARBEIT BEREIT"
+        if operator["state"] == "READY"
+        else "AUTONOMIE LEER"
     )
     snapshot["crew"] = project_crew(snapshot)
     snapshot["global_risk"] = project_risk(snapshot)
