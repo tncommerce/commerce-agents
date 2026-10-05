@@ -57,7 +57,7 @@
       "NACHWEIS ÄLTER": "Der letzte bestätigte Nachweis ist älter. Das bedeutet nicht automatisch einen Ausfall.",
       "WAITING EXTERNAL": "Jarvis kann erst weiterarbeiten, wenn eine externe Antwort oder ein externes Ereignis eintritt.",
       BLOCKED: "Eine konkrete Voraussetzung fehlt. Der nächste Lösungsschritt wird darunter angezeigt.",
-      "OWNER GATE": "Nur hier ist eine Entscheidung von Tuan erforderlich. Ein GO allein führt keine externe Aktion aus.",
+      "OWNER GATE": "Nur hier ist eine Entscheidung von Master erforderlich. Ein GO allein führt keine externe Aktion aus.",
       "VERBINDUNG / SYSTEM PRÜFEN": "Eine Quelle meldet einen konkreten Fehler oder eine gesperrte Verbindung.",
       "VERBINDUNG EINGESCHRÄNKT": "Ein nichtkritischer Kanal ist eingeschränkt. Production und Owner Gates werden separat bewertet.",
     }[status];
@@ -1991,7 +1991,7 @@
       setTone("global-risk", risk?.tone || "amber");
       put("risk-title", risk?.title || "LAGE NICHT BESTÄTIGT");
       put("risk-summary", risk?.summary || "Aktuelle Risikoprojektion fehlt; keine Entwarnung bestätigt.");
-      put("risk-owner-action", risk?.owner_action || "Owner-Bedarf nicht bestätigt.");
+      put("risk-owner-action", risk?.owner_action || "Master-Bedarf nicht bestätigt.");
       put("risk-observed", "Live-Daten · " + stamp(risk?.observed_at));
       $("risk-level").textContent = risk?.tone === "red" ? "HANDLUNG" : risk?.tone === "amber" ? "BEOBACHTEN" : risk?.tone === "green" ? "GESUND" : "UNBESTÄTIGT";
       $("risk-level").className = "pill " + ({green: "good", blue: "info", amber: "warn", red: "action"}[risk?.tone] || "warn");
@@ -3594,7 +3594,7 @@
       setTone("global-risk", "amber");
       put("risk-title", "LIVE-LAGE NICHT BESTÄTIGT");
       put("risk-summary", "Verbindung unterbrochen. Letzte Nachweise sind keine aktuelle Entwarnung.");
-      put("risk-owner-action", "Owner-Bedarf aktuell nicht bestätigt.");
+      put("risk-owner-action", "Master-Bedarf aktuell nicht bestätigt.");
       put("risk-level", "UNBESTÄTIGT");
       if ($("risk-level")) $("risk-level").className = "pill warn";
       if ($("risk-panel")) $("risk-panel").replaceChildren();
@@ -3620,7 +3620,7 @@
         "pulse-action",
         "amber",
         "Unklar",
-        "Owner-Aktionsstatus kann aktuell nicht bestätigt werden.",
+        "Master-Aktionsstatus kann aktuell nicht bestätigt werden.",
       );
       setPulse(
         "pulse-money",
