@@ -192,12 +192,25 @@ class JarvisTruthReader:
         thin_value = thin.get("value") if isinstance(thin.get("value"), dict) else {}
         config = statuses.get("jarvis.thin_v1.config", {})
         config_value = config.get("value") if isinstance(config.get("value"), dict) else {}
+        checkpoint = statuses.get("continuity.checkpoint.ceo_radar", {})
+        checkpoint_value = (
+            checkpoint.get("value") if isinstance(checkpoint.get("value"), dict) else {}
+        )
 
         highest = normalized[0] if normalized else None
         safe_ready = [
             task
             for task in normalized
             if task.get("status") == "ready" and task.get("certified_free_handler") is True
+        ]
+        active_tasks = [
+            task
+            for task in normalized
+            if task.get("status") in {"claimed", "working", "verifying"}
+        ]
+        ready_tasks = [task for task in normalized if task.get("status") == "ready"]
+        parked_external = [
+            task for task in normalized if task.get("status") == "waiting_external"
         ]
         pending_gates = thin_value.get("pending_owner_gates")
         sanitized_gates = [
@@ -208,6 +221,66 @@ class JarvisTruthReader:
             for gate in (pending_gates if isinstance(pending_gates, list) else [])
             if isinstance(gate, dict)
         ][:12]
+
+        raw_observers = thin_value.get("observer_health")
+        observer_issues = []
+        for observer in raw_observers if isinstance(raw_observers, list) else []:
+            if not isinstance(observer, dict):
+                continue
+            health = observer.get("health_status")
+            last_error = observer.get("last_error")
+            credential = (
+                observer.get("credential_health")
+                if isinstance(observer.get("credential_health"), dict)
+                else {}
+            )
+            if health in {"healthy", None} and not last_error:
+                continue
+            observer_issues.append(
+                {
+                    "source_type": observer.get("source_type"),
+                    "health_status": health,
+                    "last_error": last_error,
+                    "owner_reauthorization_required": credential.get(
+                        "owner_reauthorization_required"
+                    )
+                    is True,
+                }
+            )
+
+        if active_tasks:
+            work_state = "working"
+            why_idle = None
+        elif ready_tasks:
+            work_state = "ready_not_running"
+            why_idle = (
+                "Ausführbare Arbeit liegt bereit, aber aktuell ist kein Worker mit einer "
+                "aktiven Lease daran gebunden."
+            )
+        elif sanitized_gates:
+            work_state = "owner_gate"
+            why_idle = (
+                "Aktuell läuft keine Arbeit, weil die nächste ausführbare Arbeit ein "
+                "echtes Owner-Gate benötigt."
+            )
+        else:
+            work_state = "no_executable_work"
+            why_idle = (
+                "Aktuell läuft kein Worker, weil die Queue keine ausführbaren Tasks in "
+                "ready/claimed/working/verifying enthält. waiting_external-Einträge sind "
+                "geparkte Abhängigkeiten und kein Beleg für einen globalen Arbeitsstopp."
+            )
+
+        owner_reauth_issues = [
+            issue for issue in observer_issues if issue["owner_reauthorization_required"]
+        ]
+        first_money = (
+            thin_value.get("first_money_runtime")
+            if isinstance(thin_value.get("first_money_runtime"), dict)
+            else {}
+        )
+        money_products = checkpoint_value.get("money_products")
+        do_not_prioritize = checkpoint_value.get("do_not_prioritize")
 
         return {
             "source": "dufynd_control_plane_authoritative_truth",
@@ -227,13 +300,60 @@ class JarvisTruthReader:
                 "pending_owner_gates": sanitized_gates,
                 "ci": thin_value.get("ci") or thin_value.get("loop_ci"),
             },
+            "operational_diagnosis": {
+                "work_state": work_state,
+                "why_idle": why_idle,
+                "active_task_count": len(active_tasks),
+                "ready_task_count": len(ready_tasks),
+                "parked_external_count": len(parked_external),
+                "owner_gate_count": len(sanitized_gates),
+                "owner_action_required": bool(sanitized_gates or owner_reauth_issues),
+                "mail_wait_is_global_blocker": False,
+                "planner_gap": (
+                    not active_tasks and not ready_tasks and not sanitized_gates
+                ),
+                "observer_issues": observer_issues[:12],
+                "interpretation": (
+                    "Parked external waits must never be presented as the reason all DUFYND "
+                    "work stopped unless an executable task is directly blocked by that exact "
+                    "dependency. Empty runnable queue means the orchestration needs new work, "
+                    "not that Master must inspect email."
+                ),
+            },
+            "business_context": {
+                "north_star": checkpoint_value.get("north_star"),
+                "owner_time_policy": checkpoint_value.get("owner_time_policy"),
+                "do_not_prioritize": (
+                    do_not_prioritize[:12] if isinstance(do_not_prioritize, list) else []
+                ),
+                "money_products": (
+                    money_products[:8] if isinstance(money_products, list) else []
+                ),
+                "first_money": {
+                    "phase": first_money.get("phase"),
+                    "decision_state": first_money.get("decision_state"),
+                    "next_evidence": first_money.get("next_evidence"),
+                    "publication_verified": first_money.get("publication_verified"),
+                    "funnel": first_money.get("funnel")
+                    if isinstance(first_money.get("funnel"), dict)
+                    else {},
+                    "sales_truth": first_money.get("sales_truth")
+                    if isinstance(first_money.get("sales_truth"), dict)
+                    else {},
+                },
+            },
             "priority": {
-                "highest_priority_task": highest,
+                "highest_stored_priority_task": highest,
                 "certified_safe_ready": safe_ready[:5],
+                "guidance": (
+                    "Stored task priority is not automatically the current business priority. "
+                    "Use operational_diagnosis plus business_context to recommend the next move."
+                ),
             },
             "tasks": visible_tasks[:20],
             "truth_rule": (
-                "waiting_external without an unsatisfied external-wait row is not a "
-                "verified causal explanation; report the missing wait evidence instead of guessing."
+                "Do not infer the global blocker from the highest stored waiting task. "
+                "Explain the actual runnable-queue state first. waiting_external without an "
+                "unsatisfied external-wait row is not even a verified task-level cause."
             ),
         }
