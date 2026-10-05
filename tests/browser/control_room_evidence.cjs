@@ -172,7 +172,7 @@ const { chromium } = require("playwright");
     const healthText = await p.locator("#overview-system-health").innerText();
     assert.ok(healthText.includes("AKTUELL") && healthText.includes("LETZTER TEST BESTANDEN") && healthText.includes("18 / 18") && healthText.includes("NACHWEIS ÄLTER"));
     assert.equal(await p.locator("#overview-system-health .health-red").count(), 0);
-    const help = p.locator("#overview-system-health .status-help summary").filter({hasText: "ⓘ"}).last();
+    const help = p.locator("#overview-system-health .status-help summary[aria-label=\"Erklärung: NACHWEIS ÄLTER\"]");
     await help.click();
     assert.ok((await p.locator("#overview-system-health").innerText()).includes("nicht automatisch einen Ausfall"));
     const aliases = await p.locator("#worker-deck .worker-card h3").allTextContents();
