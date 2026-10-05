@@ -318,3 +318,22 @@ def test_live_now_only_contains_current_verified_active_executions():
     ]
     money = next(c for c in s["crew"]["clusters"] if c["id"] == "MONEY")
     assert money["active_count"] == 1 and money["state"] == "AKTIV"
+
+
+def test_first_money_supervisor_audit_is_shown_under_nami_by_task_purpose():
+    data = healthy_data()
+    data["active_runs"] = [
+        run_row(
+            execution_id="live-first-money",
+            task_id="first-money-signal:202610051120:abc123",
+            worker_id="supervisor_v2",
+            handler_id="supervisor_state_audit",
+        )
+    ]
+    snapshot = result(data)
+    nami = role(snapshot, "Nami")
+    chopper = role(snapshot, "Chopper")
+    assert nami["state"] == "AKTIV"
+    assert nami["active_count"] == 1
+    assert chopper["active_count"] == 0
+    assert snapshot["crew"]["live_now"][0]["alias"] == "Nami"
