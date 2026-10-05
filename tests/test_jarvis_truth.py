@@ -135,5 +135,15 @@ def test_truth_reader_reports_exact_waits_priorities_and_sanitized_gates():
     assert tasks["task_external_confirmed"]["external_waits"][0]["observer_id"] == "gmail:abc"
     assert tasks["task_external_unproven"]["evidence_state"] == "external_wait_reason_not_verified"
     assert tasks["task_safe_ready"]["certified_free_handler"] is True
-    assert result["priority"]["highest_priority_task"]["task_id"] == "task_external_confirmed"
+    assert (
+        result["priority"]["highest_stored_priority_task"]["task_id"]
+        == "task_external_confirmed"
+    )
     assert result["priority"]["certified_safe_ready"][0]["task_id"] == "task_safe_ready"
+    diagnosis = result["operational_diagnosis"]
+    assert diagnosis["work_state"] == "ready_not_running"
+    assert diagnosis["mail_wait_is_global_blocker"] is False
+    assert diagnosis["ready_task_count"] == 1
+    assert diagnosis["parked_external_count"] == 2
+    assert diagnosis["planner_gap"] is False
+    assert "highest stored" in result["priority"]["guidance"]
