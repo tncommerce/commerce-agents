@@ -856,9 +856,7 @@ def test_ceo_gate_and_external_monitoring_are_truthful():
     data["decisions"] = [
         {"decision_id": "real", "title": "Owner decision", "action_type": "publish"}
     ]
-    assert (
-        build_snapshot(data, now=NOW)["command_center"]["ceo_status"] == "MASTER-AKTION NÖTIG"
-    )
+    assert build_snapshot(data, now=NOW)["command_center"]["ceo_status"] == "MASTER-AKTION NÖTIG"
     data["decisions"] = []
     data["active_runs"] = [run_row()]
     assert build_snapshot(data, now=NOW)["command_center"]["ceo_status"] == "ARBEIT LÄUFT"
