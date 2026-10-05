@@ -20,14 +20,14 @@
         <nav aria-label="Bereiche">
           <a href="#command" class="selected">◈ <span>Übersicht</span></a>
           <a href="#decisions"
-            >◇ <span>Freigaben</span><b id="decision-nav">—</b></a
+            >◇ <span>Deine Aktionen</span><b id="decision-nav">—</b></a
           >
           <a href="#revenue">€ <span>First Money</span></a>
           <a href="#crew">↝ <span>Crew</span></a>
           <a href="#advanced">••• <span>Details</span></a>
         </nav>
         <div class="sidebar-bottom">
-          <div class="read-only"><i></i> READ-ONLY V1.0</div>
+          <div class="read-only"><i></i> CONTROLLED OWNER ACTIONS</div>
           <p>Klare Signale.<br />Belegte Entscheidungen.</p>
         </div>
       </aside>
@@ -62,13 +62,13 @@
 
         <section id="approval-alert" class="approval-alert" hidden>
           <div>
-            <small>FREIGABE ERFORDERLICH</small>
+            <small>DEINE AKTION ERFORDERLICH</small>
             <strong id="approval-summary"
               >Eine Entscheidung wartet auf dich.</strong
             >
             <p id="approval-detail">Details werden geladen.</p>
           </div>
-          <a class="approval-link" href="#decisions">Freigabe prüfen →</a>
+          <a class="approval-link" href="#decisions">Jetzt handeln →</a>
         </section>
 
         <section id="command" class="command">
@@ -168,7 +168,7 @@
               <span class="legend-green"><i></i>Stabil</span>
               <span class="legend-blue"><i></i>Aktiv</span>
               <span class="legend-amber"><i></i>Wartet / prüfen</span>
-              <span class="legend-red"><i></i>Deine Freigabe</span>
+              <span class="legend-red"><i></i>Kritischer Fehler</span>
             </div>
 
             <a id="source-summary" class="source-summary" href="#system-health"
@@ -249,15 +249,15 @@
         <section id="decisions" class="panel decision-panel">
           <div class="panel-heading">
             <div>
-              <span class="eyebrow">DEINE ENTSCHEIDUNG</span>
-              <h2>Deine Freigaben</h2>
+              <span class="eyebrow">OWNER ACTION CENTER</span>
+              <h2>Was du jetzt entscheiden oder tun musst</h2>
             </div>
             <span class="small-label"
-              >Nur tatsächlich offene Entscheidungen</span
+              >Direkt verständlich · direkt handelbar</span
             >
           </div>
           <div id="decision-list" class="list-placeholder">
-            Freigaben werden geprüft.
+            Owner-Aktionen werden geprüft.
           </div>
         </section>
         <section class="operations-grid" aria-label="Aktuelle Arbeit">
@@ -340,7 +340,7 @@
               <small>SUPERVISOR / ORCHESTRATOR</small>
               <p id="crew-supervisor-state">Loop wird geprüft.</p>
             </div>
-            <a id="crew-owner-link" href="#decisions" hidden>Entscheidung von Tuan →</a>
+            <a id="crew-owner-link" href="#decisions" hidden>Deine Aktion öffnen →</a>
           </div>
 
           <section class="crew-live-board" aria-labelledby="crew-live-title">
