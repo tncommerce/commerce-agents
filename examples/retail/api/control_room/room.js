@@ -444,20 +444,21 @@
     const transactions = numeric(revenue.transactions);
     const commission = numeric(revenue.commission_eur);
 
-    // Mixed analytics counts are observations, not verified organic milestones.
+    const launchEvidence = revenue.analytics_provenance === "launch_attributed_excludes_prelaunch" && revenue.analytics_complete === true;
+    // Attributed launch events are signals; they do not prove organic reach or sales.
     const reached = [
       publication.live,
-      false,
-      false,
-      false,
-      false,
+      launchEvidence && (sessions || 0) > 0,
+      launchEvidence && (productViews || 0) > 0,
+      launchEvidence && ((offerViews || 0) + (numeric(revenue.offer_opens) || 0)) > 0,
+      launchEvidence && (clickouts || 0) > 0,
       (transactions || 0) > 0,
       (commission || 0) > 0,
     ];
 
     const nextLabels = [
       "Content erfolgreich live",
-      "Erster nachweislich organischer Besuch",
+      "Erste attributierte Launch-Session",
       "Erster Product View",
       "Erster Blick auf Kaufoptionen",
       "Erster Merchant Clickout",
@@ -465,7 +466,7 @@
       "Erste bestätigte Provision",
     ];
     const firstMissing = reached.findIndex((v) => !v);
-    const nextMilestone =
+    let nextMilestone =
       firstMissing === -1
         ? "Revenue Loop vollständig bewiesen"
         : nextLabels[firstMissing];
@@ -514,6 +515,28 @@
         "Der Content ist veröffentlicht. Die ersten qualifizierten Sessions sind der nächste Beweis.";
     }
 
+    if (launchEvidence) {
+      const states = {
+        waiting_first_signal: ["Wartet auf erstes Signal", "Noch keine attributierte Launch-Session."],
+        traffic_reached_dufynd: ["Traffic erreicht DUFYND", "Die erste attributierte Launch-Session ist angekommen."],
+        product_interest: ["Produktinteresse", "Die Produktseite wird angesehen."],
+        purchase_options_viewed: ["Kaufoptionen werden angesehen", "Offer View oder Offer Open wurde gemessen."],
+        purchase_interest_reached: ["Kaufinteresse erreicht", "Merchant Clickout gemessen. Das ist kein Sale; Affiliate-Netzwerkbeleg fehlt."],
+      };
+      const state = states[revenue.runtime?.decision_state];
+      if (state) { tone = "blue"; [title, copy] = state; }
+      if (revenue.runtime?.phase === "prelaunch") {
+        title = "PRELAUNCH · Test bereit";
+        copy = "Launch-Zählung beginnt je Plattform zur geplanten Zeit. Vorbereitungsdaten sind ausgeschlossen.";
+      }
+      if (!publication.live) copy += " Veröffentlichung noch nicht frisch bestätigt.";
+    }
+    if (launchEvidence) {
+      const next = {publication_evidence: "Veröffentlichungsnachweis", qualified_session: "Erste attributierte Launch-Session",
+        product_view: "Erster Product View", offer_view: "Erster Blick auf Kaufoptionen",
+        merchant_clickout: "Erster Merchant Clickout", affiliate_transaction_evidence: "Affiliate-Netzwerkbeleg für eine Transaktion"};
+      nextMilestone = next[revenue.runtime?.next_evidence] || nextMilestone;
+    }
     const signal = $("business-signal");
     if (signal) {
       signal.classList.remove(
@@ -690,6 +713,14 @@
         ? (nextPost.platform || "Post") + " · " + stamp(nextPost.scheduled_at)
         : "Auto-Publish geplant.";
     }
+    if (revenue.analytics_provenance === "launch_attributed_excludes_prelaunch" && revenue.analytics_complete === true) {
+      moneyTone = "blue";
+      moneyMain = revenue.runtime?.phase === "prelaunch" ? "PRELAUNCH" : "Messfenster";
+      moneyDetail = revenue.runtime?.phase === "prelaunch"
+        ? "Geplant: " + (nextPost ? stamp(nextPost.scheduled_at) : "Auto-Publish")
+        : "Launch-Signale werden gemessen · Veröffentlichung separat bestätigen.";
+      if (publication.failed) { moneyTone = "amber"; moneyDetail = "Publication-Fehler beobachtet · Messung separat prüfen."; }
+    }
     setPulse("pulse-money", moneyTone, moneyMain, moneyDetail);
 
     const costUnknown =
@@ -849,7 +880,7 @@
         "product_views",
         (numeric(revenue.product_views) || 0) > 0,
       ],
-      ["Offer Views", "offer_views", (numeric(revenue.offer_views) || 0) > 0],
+      ["Offer Views / Opens", "offer_views", ((numeric(revenue.offer_views) || 0) + (numeric(revenue.offer_opens) || 0)) > 0],
       [
         "Clickouts",
         "merchant_clickouts",
@@ -898,13 +929,14 @@
         ) {
           metric = "≥ " + metric;
         }
+        if (key === "offer_views" && numeric(revenue.offer_opens) !== null) metric += " / " + value(revenue.offer_opens);
         const detail =
           key !== "publication" && numeric(revenue[key]) === null
             ? "Kein Nachweis"
             : reached
               ? key === "publication" || index >= 5
                 ? "Belegt"
-                : "Signal · unklassifiziert"
+                : revenue.analytics_provenance === "launch_attributed_excludes_prelaunch" ? "Launch-Signal" : "Signal · unklassifiziert"
               : index === firstMissing
                 ? "Nächster Beweis"
                 : "Ausstehend";
@@ -918,7 +950,9 @@
     }
     put(
       "funnel-basis",
-      "Beobachtete Events für diesen Content und 1 Million; kann Vorbereitungstests enthalten. Clickouts sind keine Sales. Transaktionen und Provision benötigen Affiliate-Netzwerknachweise.",
+      revenue.analytics_provenance === "launch_attributed_excludes_prelaunch"
+        ? "Launch-Attribution nach Plattform-Zeitpunkt · Vorbereitung und fremder Traffic ausgeschlossen. Attribution beweist keine organische Reichweite. Clickouts sind keine Sales. Quelle: Analytics · " + stamp(revenue.runtime?.observed_at)
+        : "Beobachtete Events für diesen Content und 1 Million; kann Vorbereitungstests enthalten. Clickouts sind keine Sales. Transaktionen und Provision benötigen Affiliate-Netzwerknachweise.",
     );
     put(
       "purchase-basis",

@@ -867,6 +867,40 @@ def build_snapshot(
         "purchase_expires_at": _stamp(purchase.get("expires_at")),
         "purchase_decision": enum(purchase.get("decision")),
     }
+    # Versioned STABLE runtime is authoritative; old/missing RPC stays explicitly unclassified.
+    launch_fresh = (
+        runtime.get("version") == 2
+        and runtime.get("content_id") == FIRST_MONEY_CONTENT
+        and runtime.get("experiment_id") == "fms_1m_still_hits_20261004"
+        and runtime.get("analytics_provenance") == "launch_attributed_excludes_prelaunch"
+        and _fresh(runtime.get("observed_at"), now, 300)
+    )
+    if launch_fresh:
+        money = snapshot["first_money"]
+        for output, field in (
+            ("sessions", "landing_sessions"),
+            ("product_views", "product_views"),
+            ("offer_views", "offer_views"),
+            ("offer_opens", "offer_opens"),
+            ("merchant_clickouts", "merchant_clickouts"),
+        ):
+            money[output] = _number(funnel_runtime.get(field))
+        money["analytics_complete"] = all(
+            money[k] is not None
+            for k in (
+                "sessions",
+                "product_views",
+                "offer_views",
+                "offer_opens",
+                "merchant_clickouts",
+            )
+        )
+        money["analytics_provenance"] = "launch_attributed_excludes_prelaunch"
+        money["basis"] = (
+            "Exact launch content/campaign/source/product after each platform launch. Prelaunch and unrelated traffic excluded. Attribution does not prove organic reach. Clickouts are not sales; network evidence required."
+        )
+        money["runtime"]["decision_state"] = enum(runtime.get("decision_state"))
+        money["runtime"]["source"] = "scentai_analytics_events"
     command["gates_complete"] = gate_complete and not operational_incomplete
     command["ceo_status"] = (
         "PRÜFEN"
@@ -902,6 +936,25 @@ def build_snapshot(
                     "observed_at": system["last_success_at"],
                 }
             )
+    if launch_fresh:
+        for row in runtime.get("recent_signals", [])[:8]:
+            when = _stamp(row.get("occurred_at"))
+            kind = row.get("event")
+            if when and kind in {
+                "page_view",
+                "fragrance_detail_view",
+                "offer_section_view",
+                "offer_section_open",
+                "merchant_clickout",
+            }:
+                feed.append(
+                    {
+                        "id": clean(row.get("event_id")),
+                        "title": "First Money · " + kind,
+                        "detail": "Attributiertes Analytics-Signal · kein Sale-Nachweis",
+                        "observed_at": when,
+                    }
+                )
     snapshot["live_feed"] = sorted(feed, key=lambda e: e["observed_at"] or "", reverse=True)[:8]
     return snapshot
 
@@ -991,12 +1044,15 @@ class DashboardReader:
                 ),
                 "first_money_events": (
                     "scentai_analytics_events",
-                    "event_id,session_key,event",
+                    "event_id,session_key,event,occurred_at",
                     10000,
                     {
                         "content_id": "eq." + FIRST_MONEY_CONTENT,
-                        "product_id": "eq.SC-RABANNE-1-MILLION-EDT-100",
-                        "order": "id.asc",
+                        "campaign_id": "eq.fms_1m_still_hits_20261004",
+                        "acquisition_source": "in.(instagram,tiktok)",
+                        "occurred_at": "gte.2026-10-05T08:00:00Z",
+                        "or": "(product_id.is.null,product_id.eq.SC-RABANNE-1-MILLION-EDT-100)",
+                        "order": "id.desc",
                     },
                 ),
                 "open_costs": (
