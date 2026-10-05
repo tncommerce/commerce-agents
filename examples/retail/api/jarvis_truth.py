@@ -95,9 +95,11 @@ class JarvisTruthReader:
                 "select": "key,value,last_verified_at",
                 "key": (
                     "in.(jarvis.thin_v1.config,jarvis.thin_v1.status,"
-                    "continuity.checkpoint.ceo_radar)"
+                    "continuity.checkpoint.ceo_radar,"
+                    "jarvis.thin_v1.first_money_schedule_observation,"
+                    "first_money.social_quality_incident.20261005)"
                 ),
-                "limit": "3",
+                "limit": "5",
             },
         )
 
@@ -215,6 +217,46 @@ class JarvisTruthReader:
             ),
         )
 
+        schedule_row = statuses.get("jarvis.thin_v1.first_money_schedule_observation", {})
+        schedule_value = (
+            schedule_row.get("value") if isinstance(schedule_row.get("value"), dict) else {}
+        )
+        quality_row = statuses.get("first_money.social_quality_incident.20261005", {})
+        quality_value = (
+            quality_row.get("value") if isinstance(quality_row.get("value"), dict) else {}
+        )
+        schedule_posts = schedule_value.get("posts")
+        schedule_posts = schedule_posts if isinstance(schedule_posts, list) else []
+        safe_schedule_posts = []
+        for post in schedule_posts[:4]:
+            if not isinstance(post, dict):
+                continue
+            safe_schedule_posts.append(
+                {
+                    "platform": post.get("platform"),
+                    "status": post.get("status"),
+                    "scheduled_at": post.get("scheduled_at"),
+                    "auto_publish": post.get("auto_publish") is True,
+                }
+            )
+        publication_truth = {
+            "schedule_observed_at": schedule_value.get("observed_at"),
+            "schedule_posts": safe_schedule_posts,
+            "quality_observed_at": quality_row.get("last_verified_at"),
+            "instagram_state": quality_value.get("instagram_state"),
+            "tiktok_state": quality_value.get("tiktok_state"),
+            "tiktok_draft": quality_value.get("tiktok_draft") is True,
+            "tiktok_auto_publish": quality_value.get("tiktok_autopublish") is True,
+            "instagram_draft": quality_value.get("instagram_draft") is True,
+            "instagram_auto_publish": quality_value.get("instagram_auto_publish") is True,
+            "publishing_authorized": quality_value.get("publishing_authorized") is True,
+            "truth_rule": (
+                "Newer persisted publication/remediation evidence overrides an older schedule snapshot. "
+                "A stopped_before_publish TikTok state means TikTok was not published even if an older "
+                "schedule row still says PENDING or auto_publish."
+            ),
+        }
+
         pending_gates = thin_value.get("pending_owner_gates")
         sanitized_gates = [
             {
@@ -248,6 +290,7 @@ class JarvisTruthReader:
                 "certified_safe_ready": safe_ready[:5],
             },
             "operator_diagnosis": operator,
+            "publication_truth": publication_truth,
             "tasks": visible_tasks[:20],
             "truth_rule": (
                 "waiting_external without an unsatisfied external-wait row is not a "
