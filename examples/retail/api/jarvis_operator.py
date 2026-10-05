@@ -9,10 +9,23 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import Any
 
-ACTIVE_STATES = {"claimed", "working", "verifying", "in_progress", "running", "dispatched"}
+ACTIVE_STATES = {
+    "claimed",
+    "working",
+    "verifying",
+    "in_progress",
+    "running",
+    "dispatched",
+}
 OWNER_STATES = {"approval_required", "waiting_human_input", "waiting_human"}
 READY_STATES = {"ready", "queued"}
-UNHEALTHY_OBSERVERS = {"blocked_configuration", "blocked", "degraded", "stale", "unknown"}
+UNHEALTHY_OBSERVERS = {
+    "blocked_configuration",
+    "blocked",
+    "degraded",
+    "stale",
+    "unknown",
+}
 
 
 def _int(value: object) -> int:
@@ -79,7 +92,9 @@ def build_operator_diagnosis(
         if isinstance(row, dict) and row.get("satisfied") is not True and row.get("task_id")
     ]
     wait_task_ids = {str(row.get("task_id")) for row in unsatisfied_waits}
-    external_with_binding = [task for task in external if str(task.get("task_id")) in wait_task_ids]
+    external_with_binding = [
+        task for task in external if str(task.get("task_id")) in wait_task_ids
+    ]
     external_without_binding = [
         task for task in external if str(task.get("task_id")) not in wait_task_ids
     ]
@@ -91,8 +106,12 @@ def build_operator_diagnosis(
         if _observer_health(row) in UNHEALTHY_OBSERVERS
         or _observer_error(row) in {"credential_expired", "invalid_grant"}
     ]
-    internal_observer_issues = [row for row in bad_observers if not _credential_owner_action(row)]
-    observer_owner_issues = [row for row in bad_observers if _credential_owner_action(row)]
+    internal_observer_issues = [
+        row for row in bad_observers if not _credential_owner_action(row)
+    ]
+    observer_owner_issues = [
+        row for row in bad_observers if _credential_owner_action(row)
+    ]
 
     credential_owner_issues = [
         row for row in credentials if isinstance(row, dict) and _credential_owner_action(row)
@@ -142,8 +161,14 @@ def build_operator_diagnosis(
     elif real_owner_action:
         state = "MASTER_ACTION_REQUIRED"
         headline = "Eine echte Master-Entscheidung fehlt"
-        cause = "Eine bestätigte Entscheidung oder Reautorisierung blockiert einen konkreten nächsten Schritt."
-    elif ready and str(thin.get("stop_reason") or "") not in {"waiting_external", "no_safe_work"}:
+        cause = (
+            "Eine bestätigte Entscheidung oder Reautorisierung blockiert einen "
+            "konkreten nächsten Schritt."
+        )
+    elif ready and str(thin.get("stop_reason") or "") not in {
+        "waiting_external",
+        "no_safe_work",
+    }:
         state = "READY"
         headline = "Arbeit liegt bereit"
         cause = f"{len(ready)} Aufgabe(n) sind bereit, aber aktuell noch nicht in Ausführung."
@@ -219,7 +244,10 @@ def build_operator_diagnosis(
             {
                 "id": "refresh_business_checkpoint",
                 "title": "Geschäftslage neu berechnen",
-                "reason": "Der letzte Business-Checkpoint ist älter als eine Stunde und taugt nicht als aktuelle Priorität.",
+                "reason": (
+                    "Der letzte Business-Checkpoint ist älter als eine Stunde und taugt "
+                    "nicht als aktuelle Priorität."
+                ),
                 "master_required": False,
                 "jarvis_can_execute_now": False,
             }
@@ -244,7 +272,10 @@ def build_operator_diagnosis(
             "Eine bestätigte Entscheidung oder Reautorisierung von Master ist erforderlich."
         )
     else:
-        owner_message = "Keine Aktion von Master erforderlich. Insbesondere ist keine Mailprüfung als notwendige Master-Aktion belegt."
+        owner_message = (
+            "Keine Aktion von Master erforderlich. Insbesondere ist keine Mailprüfung "
+            "als notwendige Master-Aktion belegt."
+        )
 
     if active_count:
         jarvis_message = (
