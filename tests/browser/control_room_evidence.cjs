@@ -149,6 +149,29 @@ const { chromium } = require("playwright");
       await p.evaluate(() => document.documentElement.scrollWidth > innerWidth),
       false,
     );
+    // A complete candidate is visible only as a pending Owner review; there is no write control.
+    s.freshness.operational_complete = true;
+    s.command_center.gates_complete = true;
+    s.command_center.human_approval_count = 1;
+    s.decision_center = [{title: "Delina · isolated review fixture", type: "content_candidate_review",
+      reason: "Complete candidate", go_token: "GO-CONTENT-REVIEW-FIXTURE",
+      content_candidate: {product: "Delina EDP 75 ml", asset_reference: "qa_delina_asset",
+        revision_fingerprint: "a".repeat(64), hook: "Delina: passt sie zu dir?",
+        caption: "A complete safe caption for Owner review.", platform: "instagram",
+        requested_at: s.generated_at, content_id: "qa_delina_fixture", experiment_id: "qa_gate",
+        internal_rating: "9.6", recommendation_reason: "Internally ready fixture"}}];
+    await refresh();
+    assert.equal(await p.locator("#approval-alert").isVisible(), true);
+    const decisionText = await p.locator("#decision-list").innerText();
+    for (const text of ["Delina EDP 75 ml", "qa_delina_asset", "A complete safe caption", "qa_delina_fixture", "qa_gate", "9.6", "Scheduling und Publishing nicht freigegeben"])
+      assert.ok(decisionText.includes(text), text);
+    assert.equal(await p.locator("#decision-list button").count(), 0);
+    s.decision_center = [];
+    s.command_center.human_approval_count = 0;
+    await refresh();
+    assert.equal(await p.locator("#approval-alert").isVisible(), false);
+    assert.equal(await p.locator("#decisions").isVisible(), false);
+    assert.equal(await p.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
     await p.close();
     console.log(
       width +

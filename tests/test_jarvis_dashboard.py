@@ -802,3 +802,50 @@ def test_launch_runtime_excludes_old_raw_counts_and_keeps_network_revenue_unknow
         build_snapshot(data, now=NOW)["first_money"]["analytics_provenance"]
         == "unclassified_may_include_tests"
     )
+
+
+def test_content_candidate_gate_projects_complete_review_without_publish_controls():
+    data = ceo_data()
+    caption = (
+        "Review this candidate. " * 25
+        + "https://dufynd.de/duft/parfums-de-marly-delina?src=instagram&cmp=qa_gate&content=qa_gate"
+    )
+    data["decisions"] = [
+        {
+            "decision_id": "candidate",
+            "action_type": "content_candidate_review",
+            "title": "Delina fixture",
+            "candidate_product": "Delina EDP 75 ml",
+            "candidate_product_id": "SC-PDM-DELINA-EDP-75",
+            "candidate_asset_reference": "qa_delina_asset",
+            "candidate_revision_fingerprint": "a" * 64,
+            "candidate_hook": "Delina: passt sie zu dir?",
+            "candidate_caption": caption,
+            "candidate_platform": "instagram",
+            "candidate_requested_at": STAMP,
+            "candidate_content_id": "qa_delina",
+            "candidate_experiment_id": "qa_gate",
+            "candidate_internal_rating": 9.6,
+            "candidate_reason": "Complete fixture",
+            "decision_token": "GO-CONTENT-REVIEW-FIXTURE",
+            "raw_payload": "must-not-leak",
+        }
+    ]
+    result = build_snapshot(data, now=NOW)
+    gate = result["decision_center"][0]["content_candidate"]
+    assert gate["caption"] == caption
+    assert gate["internal_rating"] == "9.6"
+    assert gate["asset_reference"] == "qa_delina_asset"
+    assert not gate["publishing_authorized"] and not gate["scheduling_authorized"]
+    assert "must-not-leak" not in json.dumps(result)
+    for unsafe in [
+        "https://example.com/signed?token=abc",
+        "https://dufynd.de/?sid=private-session",
+        "Bearer secret",
+        "https://dufynd.de/?content=ghp_secret",
+    ]:
+        data["decisions"][0]["candidate_caption"] = unsafe
+        assert (
+            build_snapshot(data, now=NOW)["decision_center"][0]["content_candidate"]["caption"]
+            == "[restricted]"
+        )

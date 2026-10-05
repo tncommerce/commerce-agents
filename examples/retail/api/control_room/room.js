@@ -771,6 +771,16 @@
         line(item, "Risiko", d.risk);
         line(item, "Kosten USD", d.cost_usd);
         line(item, "Nutzen", d.benefit);
+        if (d.content_candidate) {
+          const candidate = d.content_candidate;
+          for (const [label, key] of [["Produkt", "product"], ["Creative / Asset", "asset_reference"],
+            ["Hook", "hook"], ["Caption", "caption"], ["Plattform", "platform"],
+            ["content_id", "content_id"], ["experiment_id", "experiment_id"],
+            ["Internes Rating / 10", "internal_rating"], ["Empfehlungsgrund", "recommendation_reason"],
+            ["Asset-Revision", "revision_fingerprint"]]) line(item, label, candidate[key]);
+          line(item, "Gewünschte Zeit", stamp(candidate.requested_at));
+          line(item, "Status", "Wartet auf Owner · Scheduling und Publishing nicht freigegeben");
+        }
         line(item, "Exakter GO-Token", d.go_token);
         if (d.provider) line(item, "Provider", d.provider);
         decisions.append(item);

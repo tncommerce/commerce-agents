@@ -37,5 +37,13 @@ begin
  if public.read_dufynd_first_money_runtime()->'funnel' is distinct from r->'funnel' then raise exception 'unrelated traffic polluted funnel'; end if;
  if public.read_dufynd_supervisor_audit()->'first_money_runtime'->'funnel' is distinct from r->'funnel' then raise exception 'audit missing revenue evidence'; end if;
  if has_function_privilege('anon','public.read_dufynd_first_money_runtime()','execute') then raise exception 'public runtime exposure'; end if;
+
+ update public.dufynd_master_status set value='{"status":"released"}' where key='continuity.tech_lease';
+ update public.dufynd_master_status set value='{"enabled":true}' where key='jarvis.thin_v1.config';
+ update public.dufynd_external_observers set enabled=true,health_status='healthy',last_success_at=now(),last_snapshot='{"sha":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}' where observer_id='github_branch:scentai-mvp';
+ update public.dufynd_master_status set value=jsonb_build_object('sha',repeat('a',40),'ready',true,'checked_at',now(),'next_poll_at',now()+interval '10 minutes','run_id','123') where key='jarvis.thin_v1.ci';
+ perform public.run_dufynd_thin_v1();
+ if not exists(select 1 from public.dufynd_autonomy_tasks t join public.dufynd_execution_runs e using(task_id) where t.task_id like 'first-money-signal:%' and t.created_at=now() and t.status='done' and e.status='completed' and e.last_checkpoint->'audit'->'first_money_runtime'->>'content_id'='launch_fixture') then raise exception 'signal task did not execute and verify funnel'; end if;
+
 end $$;
 rollback;
