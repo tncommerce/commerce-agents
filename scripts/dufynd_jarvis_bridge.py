@@ -909,6 +909,25 @@ class DufyndJarvisBridge:
         )
         return resolved_id
 
+    def advance_content_workflow(
+        self,
+        *,
+        asset_id: str,
+        expected_state: str | None,
+        next_state: str,
+        evidence: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        """Record verified internal progress; this RPC never dispatches a publisher."""
+        return self._rpc(
+            "advance_dufynd_content_workflow",
+            {
+                "p_asset_id": asset_id,
+                "p_expected_state": expected_state,
+                "p_next_state": next_state,
+                "p_evidence": evidence or {},
+            },
+        )
+
     def record_content_asset(
         self,
         *,
