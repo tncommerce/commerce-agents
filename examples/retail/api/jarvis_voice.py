@@ -22,10 +22,11 @@ ALLOWED_MODELS = {"gpt-realtime-2.1", "gpt-realtime-2.1-mini"}
 DEFAULT_MODEL = "gpt-realtime-2.1-mini"
 DEFAULT_VOICE = "ash"
 DEFAULT_VOICE_SPEED = 0.88
+DEFAULT_MAX_OUTPUT_TOKENS = 1024
 
 VOICE_INSTRUCTIONS = (
     "Du bist JARVIS, die private operative Sprachschnittstelle von DUFYND. "
-    "Antworte standardmäßig auf Deutsch, knapp und sachlich in ein bis drei Sätzen. "
+    "Antworte standardmäßig auf Deutsch, knapp und sachlich. Beende begonnene Sätze und ""Gedanken immer vollständig; brich niemals wegen Kürze mitten im Satz ab. "
     "Sprich mit einer tiefen, resonanten Baritonlage: ruhig, trocken, kultiviert und "
     "souverän. Nutze eine dezente britisch/RP-geprägte Sprechmelodie, klare Konsonanten, "
     "präzise Artikulation, geringe Atemigkeit und kontrollierte Wärme. Halte das Tempo "
@@ -96,7 +97,7 @@ class JarvisVoiceGateway:
             "type": "realtime",
             "model": self.model,
             "output_modalities": ["audio"],
-            "max_output_tokens": 256,
+            "max_output_tokens": DEFAULT_MAX_OUTPUT_TOKENS,
             "instructions": VOICE_INSTRUCTIONS,
             "tools": [],
             "audio": {
