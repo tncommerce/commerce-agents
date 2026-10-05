@@ -12,6 +12,7 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal, InvalidOperation
 from typing import Any
+from urllib.parse import parse_qsl, urlparse
 from zoneinfo import ZoneInfo
 
 import httpx
@@ -122,6 +123,39 @@ def _text(value: object, secrets: tuple[str, ...] = ()) -> str | None:
     if SENSITIVE.search(value) or any(secret and secret in value for secret in secrets):
         return "[restricted]"
     return " ".join(value.split())[:300]
+
+
+def _candidate_caption(value: object, secrets: tuple[str, ...] = ()) -> str | None:
+    """Text only; allow canonical public DUFYND acquisition links, never asset/signed URLs."""
+    if not isinstance(value, str):
+        return None
+    if len(value) > 2000 or any(secret and secret in value for secret in secrets):
+        return "[restricted]"
+    remainder = value
+    for url in re.findall(r"https?://[^\s]+", value):
+        try:
+            parsed = urlparse(url)
+        except ValueError:
+            return "[restricted]"
+        params = parse_qsl(parsed.query, keep_blank_values=True)
+        if (
+            parsed.scheme != "https"
+            or parsed.netloc != "dufynd.de"
+            or not re.fullmatch(r"/(?:start|duft/[a-z0-9-]{1,80})?/?", parsed.path)
+            or parsed.fragment
+            or len(params) != len({key for key, _ in params})
+            or any(
+                key not in {"src", "cmp", "content"}
+                or not re.fullmatch(r"[A-Za-z0-9._:-]{1,80}", item)
+                or SENSITIVE.search(item)
+                for key, item in params
+            )
+        ):
+            return "[restricted]"
+        remainder = remainder.replace(url, "")
+    if SENSITIVE.search(remainder):
+        return "[restricted]"
+    return value
 
 
 def _enum(value: object) -> str | None:
@@ -574,6 +608,24 @@ def build_snapshot(
             "risk": clean(r.get("risk")),
             "cost_usd": _money(r.get("cost_usd")),
             "benefit": clean(r.get("benefit")),
+            "content_candidate": {
+                "product": clean(r.get("candidate_product")),
+                "product_id": clean(r.get("candidate_product_id")),
+                "asset_reference": clean(r.get("candidate_asset_reference")),
+                "revision_fingerprint": clean(r.get("candidate_revision_fingerprint")),
+                "hook": clean(r.get("candidate_hook")),
+                "caption": _candidate_caption(r.get("candidate_caption"), secrets),
+                "platform": enum(r.get("candidate_platform")),
+                "requested_at": _stamp(r.get("candidate_requested_at")),
+                "content_id": clean(r.get("candidate_content_id")),
+                "experiment_id": clean(r.get("candidate_experiment_id")),
+                "internal_rating": _money(r.get("candidate_internal_rating")),
+                "recommendation_reason": clean(r.get("candidate_reason")),
+                "publishing_authorized": False,
+                "scheduling_authorized": False,
+            }
+            if r.get("action_type") == "content_candidate_review"
+            else None,
             "go_token": r.get("decision_token")
             if isinstance(r.get("decision_token"), str)
             and re.fullmatch(r"GO-[A-Z0-9_-]{1,150}", r["decision_token"])
@@ -1038,7 +1090,7 @@ class DashboardReader:
             {
                 "decisions": (
                     "dufynd_human_decisions",
-                    "decision_id,task_id:context->>task_id,action_type,title,decision_token,reason:context->>reason,risk:context->>risk,cost_usd:context->cost_usd,benefit:context->>benefit",
+                    "decision_id,task_id:context->>task_id,action_type,title,decision_token,reason:context->>reason,risk:context->>risk,cost_usd:context->cost_usd,benefit:context->>benefit,candidate_product:context->candidate->>product,candidate_product_id:context->candidate->>product_id,candidate_asset_reference:context->candidate->>asset_reference,candidate_revision_fingerprint:context->candidate->>revision_fingerprint,candidate_hook:context->candidate->>hook,candidate_caption:context->candidate->>caption,candidate_platform:context->candidate->>platform,candidate_requested_at:context->candidate->>requested_at,candidate_content_id:context->candidate->>content_id,candidate_experiment_id:context->candidate->>experiment_id,candidate_internal_rating:context->candidate->internal_rating,candidate_reason:context->candidate->>recommendation_reason",
                     200,
                     {"status": "eq.pending", "order": "created_at.asc,decision_id.asc"},
                 ),
