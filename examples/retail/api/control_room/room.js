@@ -881,7 +881,7 @@
         line(card, "Owner", m.owner);
         line(card, "Warum", taskWait(m));
         line(card, "Danach", m.explanation?.next_step || detailText(m.next_checkpoint));
-        line(card, "Owner", m.explanation?.owner_action || "Freigabestatus unter Entscheidungen prüfen.");
+        line(card, "Owner", m.explanation?.owner_action || "Owner Action Center prüfen.");
         if (m.human_gate) card.append(badge("WAITING HUMAN"));
         column.append(card);
       }
@@ -1033,7 +1033,7 @@
     line(item, "Zeitbasis", task.explanation?.since_basis || "Letzte Aufgabenaktualisierung; Statusbeginn nicht dokumentiert");
     line(item, "Was passiert danach", task.explanation?.next_step || detailText(task.next_checkpoint));
     line(item, "Wer kann es lösen", task.explanation?.resolver || "Zuständigkeit noch nicht dokumentiert");
-    line(item, "Owner", task.explanation?.owner_action || "Freigabestatus unter Entscheidungen prüfen.");
+    line(item, "Owner", task.explanation?.owner_action || "Owner Action Center prüfen.");
     const source = node("details", undefined, "task-source");
     source.append(node("summary", "Original & Aufgabenkennung"));
     line(source, "Original", task.title || task.task_id);
@@ -1821,7 +1821,7 @@
                 ? "green"
                 : "neutral";
     const jarvisMain = needsApproval
-      ? "Freigabe offen"
+      ? "Aktion offen"
       : c.ceo_status === "BLOCKIERT"
         ? "Blockiert"
         : c.status === "WORKING"
@@ -1849,12 +1849,12 @@
       "pulse-action",
       needsApproval ? "amber" : gatesComplete ? "green" : "amber",
       needsApproval
-        ? "Freigabe nötig"
+        ? "Aktion nötig"
         : gatesComplete
           ? "Nichts offen"
           : "Unklar",
       needsApproval
-        ? gates[0]?.title || "Owner-Entscheidung erforderlich"
+        ? gates[0]?.title || "Owner-Aktion erforderlich"
         : gatesComplete
           ? "Keine Owner-Entscheidung erforderlich."
           : "Freigabequellen sind unvollständig.",
@@ -1934,7 +1934,7 @@
       put(
         "approval-detail",
         gates[0]?.reason ||
-          "Öffne die Freigabe für Grund, Risiko, Kosten, Nutzen und GO-Token.",
+          "Öffne den Owner Action Center: Dort siehst du Aufgabe, Grund, Risiko, Kosten und die konkrete Handlung.",
       );
     }
 
@@ -2698,7 +2698,7 @@
         if (focus) {
           line(card, "Warum", taskWait(focus));
           line(card, "Nächster Schritt", focus.explanation?.next_step || detailText(focus.next_checkpoint));
-          line(card, "Owner", focus.explanation?.owner_action || "Freigabestatus unter Entscheidungen prüfen.");
+          line(card, "Owner", focus.explanation?.owner_action || "Owner Action Center prüfen.");
         }
         const details = node("details", undefined, "workstream-details");
         details.dataset.stream = w.name;
@@ -2944,7 +2944,7 @@
         "pulse-action",
         "amber",
         "Unklar",
-        "Freigabestatus kann aktuell nicht bestätigt werden.",
+        "Owner-Aktionsstatus kann aktuell nicht bestätigt werden.",
       );
       setPulse(
         "pulse-money",
