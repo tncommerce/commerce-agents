@@ -1,4 +1,4 @@
-"""Static safety contract for the zero-cost Jarvis Live Interface V1."""
+"""Static safety contract for DUFYND Jarvis Live Interface V2."""
 
 
 def room_text(filename):
@@ -9,40 +9,57 @@ def room_text(filename):
         return handle.read()
 
 
-def test_ptt_control_is_explicit_and_local_only():
+def test_ptt_control_is_explicit_and_bounded():
     html = room_text("index.html")
     assert 'id="jarvis-ptt"' in html
     assert 'aria-pressed="false"' in html
     assert "Button oder V halten" in html
-    assert "keine" in html and "Audio-Übertragung" in html
+    assert "PHASE 2" in html
+    assert "Audio nur während gedrückter Taste" in html
 
 
-def test_phase1_microphone_reactor_has_no_realtime_transport():
+def test_phase2_uses_same_origin_webrtc_bridge_and_manual_turn_control():
     js = room_text("room.js")
-    start = js.index("// JARVIS LIVE INTERFACE V1")
+    start = js.index("// JARVIS LIVE INTERFACE V2")
     end = js.index("  function missions()", start)
     voice = js[start:end]
 
     assert "navigator.mediaDevices.getUserMedia" in voice
-    assert "echoCancellation: true" in voice
-    assert "noiseSuppression: true" in voice
-    assert "dufynd:jarvis-ptt-start" in voice
-    assert "dufynd:jarvis-ptt-stop" in voice
-    assert "window.DUFYNDJarvisVoice" in voice
-    assert "getTracks().forEach((track) => track.stop())" in voice
-    assert "context.close()" in voice
-
-    # Phase 1 is visualization only. Voice transport/API wiring is a separate,
-    # explicitly approved phase so holding PTT cannot create provider spend.
-    assert "RTCPeerConnection" not in voice
-    assert "WebSocket" not in voice
-    assert "/realtime" not in voice
+    assert "new RTCPeerConnection()" in voice
+    assert 'createDataChannel("oai-events")' in voice
+    assert 'fetch("/internal/jarvis/voice/session"' in voice
+    assert '"Content-Type": "application/sdp"' in voice
+    assert '"X-CSRF-Token": csrf' in voice
+    assert 'type: "input_audio_buffer.clear"' in voice
+    assert 'type: "input_audio_buffer.commit"' in voice
+    assert 'type: "response.create"' in voice
+    assert "track.enabled = false" in voice
+    assert "setTimeout(() => stop(), 20000)" in voice
+    assert "30000" in voice
     assert "api.openai.com" not in voice
+    assert "OPENAI_API_KEY" not in voice
+
+
+def test_voice_context_is_bounded_and_action_free():
+    js = room_text("room.js")
+    start = js.index("// JARVIS LIVE INTERFACE V2")
+    end = js.index("  function missions()", start)
+    voice = js[start:end]
+
+    assert "DUFYND-LIVE-STATUS" in voice
+    assert "safeCode" in voice
+    assert "safeSha" in voice
+    assert "safeCount" in voice
+    assert ".slice(0, 8)" in voice
+    assert "worker.task_id" in voice
+    assert "conversation.item.create" in voice
 
 
 def test_voice_animation_respects_reduced_motion():
     css = room_text("room.css")
-    assert "JARVIS LIVE INTERFACE V1" in css
+    assert "JARVIS LIVE INTERFACE V2" in css
     assert '.core[data-voice-state="listening"]' in css
+    assert '.core[data-voice-state="thinking"]' in css
+    assert '.core[data-voice-state="speaking"]' in css
     assert ".core-spectrum" in css
     assert "@media (prefers-reduced-motion: reduce)" in css
