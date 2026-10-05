@@ -50,6 +50,8 @@ def test_voice_gateway_session_is_read_only_tool_enabled_and_conversational():
     assert "immer als 'Master'" in config["instructions"]
     assert "MUSST du zuerst inspect_dufynd" in config["instructions"]
     assert "operator_diagnosis" in config["instructions"]
+    assert "publication_truth" in config["instructions"]
+    assert "stopped_before_publish" in config["instructions"]
     assert "niemals automatisch der globale Grund" in config["instructions"]
     assert "Sag Master niemals, er solle E-Mails prüfen" in config["instructions"]
     assert "niemals 'wahrscheinlich'" in config["instructions"]
