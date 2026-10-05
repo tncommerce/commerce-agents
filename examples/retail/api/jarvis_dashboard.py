@@ -710,8 +710,13 @@ def build_snapshot(
         if d.get("provider") or d.get("task_id") not in {g["task_id"] for g in gates}
     ]
     gate_complete = "decisions" in data and "decisions" not in incomplete
+    actionable_gates = [
+        gate
+        for gate in snapshot["decision_center"]
+        if gate.get("owner_confirmed_manual_action") is not True
+    ]
     command = snapshot["command_center"]
-    command["human_approval_count"] = len(snapshot["decision_center"])
+    command["human_approval_count"] = len(actionable_gates)
     command["status"] = (
         "ERROR"
         if not thin_fresh
@@ -720,13 +725,13 @@ def build_snapshot(
         else "WORKING"
         if active_workers
         else "OWNER GATE"
-        if snapshot["decision_center"]
+        if actionable_gates
         else "WAITING"
     )
     command["owner_action"] = (
-        "Owner-Gates prüfen: " + (gates[0]["title"] or "Entscheidung")
-        if gates
-        else "Owner-Gate prüfen"
+        "Owner Action Center: " + (actionable_gates[0].get("title") or "Entscheidung")
+        if actionable_gates
+        else "NICHTS"
         if snapshot["decision_center"]
         else "NICHTS"
         if gate_complete
@@ -964,7 +969,7 @@ def build_snapshot(
     ranked = sorted(board["READY"], key=lambda m: (-(m["priority"] or 0), m["task_id"] or ""))
     snapshot["next_tasks"] = ranked[:5]
     snapshot["waiting"] = {
-        "owner": len(snapshot["decision_center"]) if gate_complete else None,
+        "owner": len(actionable_gates) if gate_complete else None,
         "external": len(board["WAITING EXTERNAL"]) if not operational_incomplete else None,
         "technical": sum("budget" not in (m["blocker"] or "") for m in board["BLOCKED"])
         if not operational_incomplete
@@ -1126,8 +1131,8 @@ def build_snapshot(
     command["ceo_status"] = (
         "PRÜFEN"
         if command["status"] == "ERROR"
-        else "WARTET AUF DEINE FREIGABE"
-        if snapshot["decision_center"]
+        else "WARTET AUF DEINE AKTION"
+        if actionable_gates
         else "JARVIS AKTIV"
         if active_workers
         else "BLOCKIERT"
