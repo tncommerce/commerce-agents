@@ -122,8 +122,10 @@ class OwnerActionWriter:
             "action": action,
             "confirmed_at": now,
             "owner_confirmed_manual_action": action == "confirm_manual",
-            "verification_required": action == "confirm_manual",
+            "verification_required": False,
             "review_only": action == "approve_review",
+            "owner_action_completed": action == "confirm_manual",
+            "verification_basis": "owner_confirmation" if action == "confirm_manual" else None,
         }
         patch = {
             "decision": decision,
@@ -131,6 +133,9 @@ class OwnerActionWriter:
         }
         if action in {"approve", "approve_review"}:
             patch["status"] = "approved"
+        elif action == "confirm_manual":
+            patch["status"] = "completed"
+            patch["completed_at"] = now
 
         try:
             with httpx.Client(
@@ -165,5 +170,5 @@ class OwnerActionWriter:
             "decision_id": decision_id,
             "action": action,
             "status": saved.get("status"),
-            "verification_required": action == "confirm_manual",
+            "verification_required": False,
         }
