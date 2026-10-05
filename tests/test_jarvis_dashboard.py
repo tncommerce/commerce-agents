@@ -692,9 +692,42 @@ def test_ceo_real_decision_even_without_task_contains_exact_go_and_safe_scalars(
     ]
     result = build_snapshot(data, now=NOW)
     assert result["command_center"]["status"] == "OWNER GATE"
-    assert result["decision_center"][0]["go_token"] == "GO-JARVIS-THIN-ABC"
+    assert result["decision_center"][0]["action_token"] == "GO-JARVIS-THIN-ABC"
     assert result["decision_center"][0]["risk"] == "[restricted]"
     assert "never-forward" not in json.dumps(result)
+
+
+def test_owner_action_gate_projects_exact_manual_path_without_leaking_arbitrary_urls():
+    data = ceo_data()
+    data["decisions"] = [
+        {
+            "decision_id": "first-money:instagram-profile-attribution:20261005",
+            "action_type": "instagram_profile_link_update",
+            "title": "Instagram-Profil-Link: Kampagnenzuordnung fehlt",
+            "question": "Bitte den Instagram-Profil-Link aktualisieren.",
+            "decision_token": "MANUAL-INSTAGRAM-PROFILE-ATTRIBUTION-20261005",
+            "reason": "Attribution fehlt.",
+            "risk": "Public profile modification requires Owner action.",
+            "benefit": "Saubere Kampagnenmessung.",
+            "cost_usd": 0,
+            "current_url": "https://dufynd.de/duft/rabanne-1-million",
+            "required_url": "https://dufynd.de/duft/rabanne-1-million?src=instagram&cmp=fms_1m_bottle_first_20261005&content=one_million_bottle_first_20261005_01",
+            "manual_action_required": True,
+            "approval_alone_enables_execution": False,
+            "gate_action_executed": False,
+            "owner_confirmed_manual_action": False,
+        }
+    ]
+    gate = build_snapshot(data, now=NOW)["decision_center"][0]
+    assert gate["question"] == "Bitte den Instagram-Profil-Link aktualisieren."
+    assert gate["manual_action_required"] is True
+    assert gate["approval_alone_enables_execution"] is False
+    assert gate["current_url"].startswith("https://dufynd.de/")
+    assert gate["required_url"].endswith("one_million_bottle_first_20261005_01")
+    assert gate["action_token"] == "MANUAL-INSTAGRAM-PROFILE-ATTRIBUTION-20261005"
+
+    data["decisions"][0]["required_url"] = "https://evil.example/?token=secret"
+    assert build_snapshot(data, now=NOW)["decision_center"][0]["required_url"] is None
 
 
 def test_ceo_deduplicates_analytics_and_does_not_leak_identifiers_or_invent_sales():
