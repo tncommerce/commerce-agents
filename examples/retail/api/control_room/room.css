@@ -4236,3 +4236,237 @@ body[data-execution-mode="unknown"] .execution-evidence {
   .crew-node[data-active="true"]::before{animation:none!important}
   .crew-node{transition:none!important}
 }
+
+
+/* JARVIS LIVE INTERFACE V1 · local-only push-to-talk visual layer */
+.jarvis-stage {
+  position: relative;
+  z-index: 3;
+  width: 310px;
+  min-height: 390px;
+  align-self: center;
+  justify-self: end;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 4px;
+  padding: 8px 12px 16px;
+}
+.jarvis-stage .core {
+  --mic-scale: 1;
+  --mic-brightness: 1;
+  width: 286px;
+  min-height: 286px;
+  pointer-events: none;
+}
+.jarvis-stage .core-signal {
+  transform: translate(-50%, -50%) scale(var(--mic-scale));
+}
+.jarvis-stage .core-frame {
+  filter: brightness(var(--mic-brightness));
+}
+.jarvis-stage .core::after {
+  bottom: 40px;
+  content: "AUTONOMOUS SYSTEM / JARVIS";
+}
+.core-spectrum {
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  bottom: 66px;
+  width: 178px;
+  height: 34px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  opacity: 0.42;
+  pointer-events: none;
+}
+.core-spectrum i {
+  display: block;
+  width: 3px;
+  height: 7px;
+  border-radius: 4px;
+  transform: scaleY(0.34);
+  transform-origin: center;
+  background: color-mix(in srgb, var(--state) 82%, white 18%);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--state) 45%, transparent);
+  transition: transform 70ms linear, opacity 120ms ease;
+}
+.core-voice-mode {
+  position: absolute;
+  z-index: 6;
+  top: 27px;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 88px;
+  text-align: center;
+  color: #8da3a4;
+  font-size: 7px;
+  font-weight: 750;
+  letter-spacing: 2.1px;
+  text-shadow: 0 0 14px #6bffdb33;
+}
+.core[data-voice-state="listening"] .core-voice-mode {
+  color: #d8fff5;
+  text-shadow: 0 0 18px #72ffe0aa;
+}
+.core[data-voice-state="listening"] .core-signal {
+  opacity: 0.34;
+  animation-duration: 1.15s;
+}
+.core[data-voice-state="listening"] .orbit-one {
+  animation-duration: 5.2s;
+}
+.core[data-voice-state="listening"] .orbit-two {
+  animation-duration: 7.4s;
+}
+.core[data-voice-state="listening"] .core-frame {
+  box-shadow:
+    inset 0 0 34px #adffe33f,
+    0 0 42px color-mix(in srgb, var(--state) 24%, transparent);
+}
+.core[data-voice-state="listening"] .core-spectrum {
+  opacity: 0.92;
+}
+.core[data-voice-state="thinking"] .orbit-one,
+.core[data-voice-state="thinking"] .orbit-two {
+  animation-duration: 3.4s;
+}
+.core[data-voice-state="speaking"] .core-frame {
+  animation: jarvis-speaking-pulse 0.7s ease-in-out infinite alternate;
+}
+.core[data-voice-state="error"] .core-voice-mode {
+  color: var(--amber);
+}
+@keyframes jarvis-speaking-pulse {
+  from { filter: brightness(1); }
+  to { filter: brightness(1.28); }
+}
+.jarvis-voice-console {
+  width: min(100%, 276px);
+  pointer-events: auto;
+}
+.jarvis-ptt {
+  width: 100%;
+  min-height: 52px;
+  display: grid;
+  grid-template-columns: 12px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 11px;
+  border: 1px solid #72ffe023;
+  border-radius: 13px;
+  color: #d6e5e5;
+  background:
+    radial-gradient(circle at 16% 0%, #65ffe013, transparent 48%),
+    linear-gradient(145deg, #11181d, #0b1015);
+  box-shadow:
+    inset 0 1px #ffffff08,
+    0 12px 34px #0005;
+  text-align: left;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+.jarvis-ptt:hover {
+  border-color: #72ffe04c;
+  background:
+    radial-gradient(circle at 16% 0%, #65ffe020, transparent 48%),
+    linear-gradient(145deg, #121b20, #0b1015);
+}
+.jarvis-ptt:active,
+.jarvis-ptt[aria-pressed="true"] {
+  border-color: #72ffe088;
+  box-shadow:
+    inset 0 0 26px #65ffe014,
+    0 0 26px #65ffe012;
+}
+.ptt-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #66817d;
+  box-shadow: 0 0 0 4px #ffffff04;
+}
+.jarvis-ptt[aria-pressed="true"] .ptt-dot {
+  background: #72ffe0;
+  box-shadow: 0 0 14px #72ffe099, 0 0 0 4px #72ffe011;
+}
+.ptt-copy {
+  min-width: 0;
+}
+.ptt-copy strong {
+  display: block;
+  color: #dffbf4;
+  font-size: 10px;
+  letter-spacing: 1.35px;
+}
+.ptt-copy small {
+  margin-top: 2px;
+  color: #738687;
+  font-size: 7px;
+  line-height: 1.35;
+  letter-spacing: 0.55px;
+  text-transform: none;
+}
+.jarvis-ptt kbd {
+  min-width: 26px;
+  padding: 4px 6px;
+  border: 1px solid #ffffff18;
+  border-bottom-color: #ffffff2c;
+  border-radius: 6px;
+  color: #9aa9aa;
+  background: #ffffff05;
+  font: 700 9px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  text-align: center;
+}
+#jarvis-voice-privacy {
+  margin: 6px 4px 0;
+  color: #526165;
+  font-size: 6px;
+  line-height: 1.45;
+  letter-spacing: 0.72px;
+  text-align: center;
+  text-transform: uppercase;
+}
+.jarvis-stage.voice-error .jarvis-ptt {
+  border-color: #f0b65d55;
+}
+.jarvis-stage.voice-error .ptt-dot {
+  background: var(--amber);
+}
+@media (max-width: 1100px) {
+  .jarvis-stage {
+    width: 260px;
+    padding-inline: 6px;
+  }
+  .jarvis-stage .core {
+    width: 250px;
+  }
+}
+@media (max-width: 820px) {
+  .jarvis-stage {
+    grid-column: 1 / -1;
+    width: min(100%, 420px);
+    min-height: 340px;
+    justify-self: center;
+  }
+  .jarvis-stage .core {
+    width: 290px;
+    min-height: 270px;
+  }
+  .jarvis-voice-console {
+    width: min(100%, 320px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .core[data-voice-state] .core-signal,
+  .core[data-voice-state] .core-orbit,
+  .core[data-voice-state] .core-frame {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
