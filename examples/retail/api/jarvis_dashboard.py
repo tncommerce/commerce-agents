@@ -1269,6 +1269,9 @@ def build_snapshot(
                 "blocked": thin.get("blocked"),
             },
             "business_checkpoint": {"age_seconds": checkpoint_age_seconds},
+            "pending_owner_gates": [
+                {"action_type": gate.get("type")} for gate in actionable_gates
+            ],
         },
         runtime=runtime if isinstance(runtime, dict) else {},
         now=now,
