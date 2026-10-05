@@ -187,7 +187,18 @@ def project_crew(snapshot: dict) -> dict:
             next_step = explanation.get("next_step") or (
                 "Aktuelle Ausführung und nächsten verifizierten Checkpoint prüfen."
                 if current
-                else "Datenquelle erneut prüfen; keine aktuelle Arbeit bestätigt."
+                else {
+                    "tech": "Code-/CI-Nachweis erneuern.",
+                    "revenue": "Funnel-/Messdaten erneut prüfen.",
+                    "research": "Bild-/Rechtenachweis aktualisieren; bis dahin keine Freigabe ableiten.",
+                    "infrastructure": "Deployment-Nachweis erneut prüfen.",
+                    "content": "Creative-/Qualitätsnachweis erneut prüfen.",
+                    "qa": "Systemcheck erneut ausführen.",
+                    "attribution": "Tracking-Signal erneut prüfen.",
+                    "operations": "Jarvis-Loop erneut prüfen.",
+                    "affiliate": "Händler-/Affiliate-Nachweis erneut prüfen.",
+                    "outreach": "Antwortkanal erneut prüfen.",
+                }.get(key, "Fehlenden Nachweis erneut prüfen.")
                 if state == "DEGRADED"
                 else "Belegte Signale und zulässige kostenlose Aufgaben abwarten."
             )
@@ -204,6 +215,25 @@ def project_crew(snapshot: dict) -> dict:
                     current.get("handler_id"),
                     "Nächsten dokumentierten Prüfcheckpoint abgleichen; Original in den Details.",
                 )
+            display_state = state
+            if state == "DEGRADED":
+                if not complete:
+                    display_state = "LIVE-DATEN FEHLEN"
+                else:
+                    display_state = {
+                        "tech": "TECH-CHECK OFFEN",
+                        "revenue": "DATEN-CHECK OFFEN",
+                        "research": "NACHWEIS OFFEN",
+                        "infrastructure": "DEPLOY-CHECK OFFEN",
+                        "content": "QUALITÄT PRÜFEN",
+                        "qa": "SYSTEMCHECK OFFEN",
+                        "attribution": "TRACKING PRÜFEN",
+                        "operations": "LOOP-CHECK OFFEN",
+                        "affiliate": "HÄNDLER-CHECK OFFEN",
+                        "outreach": "KANAL PRÜFEN",
+                    }.get(key, "PRÜFUNG NÖTIG")
+            elif state == "OWNER GATE":
+                display_state = "DEINE AKTION"
             crew.append(
                 {
                     "role_id": key,
@@ -211,6 +241,7 @@ def project_crew(snapshot: dict) -> dict:
                     "role": role,
                     "cluster": cluster,
                     "state": state,
+                    "display_state": display_state,
                     "tone": "red"
                     if state == "OWNER GATE"
                     else "blue"
@@ -220,13 +251,20 @@ def project_crew(snapshot: dict) -> dict:
                     else "amber",
                     "task": title,
                     "reason": (
-                        "Gmail-Antwortkanal eingeschränkt; automatische Antwortprüfung nicht bestätigt."
-                        if key == "outreach"
-                        else "Render-Deploymentnachweis eingeschränkt oder älter; kein Ausfall allein daraus bestätigt."
-                        if key == "infrastructure"
-                        else "Production-Smoke-Nachweis nicht aktuell bestätigt; letzte Prüfung separat bewerten."
-                        if key == "qa"
-                        else "Aktueller Jarvis-Loop-Nachweis fehlt; erneute Prüfung erforderlich."
+                        {
+                            "tech": "Aktueller Code-/CI-Nachweis ist nicht vollständig bestätigt.",
+                            "revenue": "Aktuelle Umsatz-/Funnel-Daten sind nicht vollständig bestätigt.",
+                            "research": "Für Bilder oder Rechte fehlt ein aktueller belastbarer Nachweis.",
+                            "infrastructure": "Der aktuelle Deployment-Nachweis ist eingeschränkt oder älter; ein Ausfall ist damit nicht bestätigt.",
+                            "content": "Creative- oder Qualitätsnachweis ist nicht vollständig bestätigt.",
+                            "qa": "Der aktuelle Systemcheck ist nicht vollständig bestätigt.",
+                            "attribution": "Der aktuelle Tracking-/Attributionsnachweis ist nicht vollständig bestätigt.",
+                            "operations": "Der aktuelle Jarvis-Loop-Nachweis ist nicht vollständig bestätigt.",
+                            "affiliate": "Händler- oder Affiliate-Nachweis ist nicht vollständig bestätigt.",
+                            "outreach": "Der automatische Antwortkanal ist nicht vollständig bestätigt.",
+                        }.get(
+                            key, "Ein notwendiger Nachweis ist aktuell nicht vollständig bestätigt."
+                        )
                     )
                     if complete and state == "DEGRADED" and monitor and not executions
                     else explanation.get("reason")
