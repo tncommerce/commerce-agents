@@ -1764,7 +1764,7 @@
     const gatesCount = numeric(c.human_approval_count);
     const needsApproval = gates.length > 0 && gatesCount > 0;
     const gatesComplete = c.gates_complete === true;
-    $("decisions").hidden = gatesComplete && !needsApproval;
+    $("decisions").hidden = gatesComplete && !gates.length;
     $("pulse-action").href =
       gatesComplete && !needsApproval ? "#command" : "#decisions";
     $("decision-nav").closest("a").href = $("pulse-action").href;
@@ -1940,8 +1940,8 @@
 
     const decisionPanel = $("decisions");
     if (decisionPanel) {
-      decisionPanel.classList.toggle("has-decisions", needsApproval);
-      decisionPanel.classList.toggle("no-decisions", !needsApproval);
+      decisionPanel.classList.toggle("has-decisions", gates.length > 0);
+      decisionPanel.classList.toggle("no-decisions", gates.length === 0);
     }
     const decisions = $("decision-list");
     if (decisions) {
