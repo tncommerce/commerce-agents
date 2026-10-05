@@ -17,9 +17,7 @@ class JarvisTruthUnavailable(RuntimeError):
 class JarvisTruthReader:
     """Read exact queue/wait/orchestrator evidence with the server-only key."""
 
-    _ACTIVE_STATUSES = (
-        "ready,approval_required,waiting_human_input,waiting_external,claimed,working,verifying,blocked"
-    )
+    _ACTIVE_STATUSES = "ready,approval_required,waiting_human_input,waiting_external,claimed,working,verifying,blocked"
 
     def __init__(self, *, secret_key: str, transport: httpx.BaseTransport | None = None) -> None:
         if not secret_key:
