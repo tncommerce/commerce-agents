@@ -22,6 +22,7 @@ def test_owner_action_center_explains_and_executes_only_guarded_actions():
     assert '"Instagram-Profil bearbeiten"' in js
     assert '"Erledigt · Jarvis prüfen"' in js
     assert '"Jetzt freigeben"' in js
+    assert '"Kandidat freigeben"' in js
     assert 'fetch("/internal/jarvis/owner-action"' in js
     assert '"X-CSRF-Token": csrf' in js
     assert "d.approval_alone_enables_execution" in js
