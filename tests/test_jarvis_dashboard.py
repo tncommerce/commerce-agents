@@ -756,3 +756,49 @@ def test_failed_execution_with_verified_partial_checkpoint_is_not_a_verified_com
     ]
     result = build_snapshot(data, now=NOW)
     assert not any(event["id"] == "failed-partial" for event in result["live_feed"])
+
+
+def test_launch_runtime_excludes_old_raw_counts_and_keeps_network_revenue_unknown():
+    data = ceo_data()
+    data["first_money_events"] = [
+        {"event_id": "old", "session_key": "old", "event": "merchant_clickout"}
+    ]
+    data["first_money_runtime"] = [
+        {
+            "version": 2,
+            "content_id": "one_million_still_hits_20261004_01",
+            "experiment_id": "fms_1m_still_hits_20261004",
+            "observed_at": STAMP,
+            "analytics_provenance": "launch_attributed_excludes_prelaunch",
+            "phase": "prelaunch",
+            "decision_state": "waiting_first_signal",
+            "next_evidence": "publication_evidence",
+            "funnel": {
+                "landing_sessions": 0,
+                "product_views": 0,
+                "offer_views": 0,
+                "offer_opens": 0,
+                "merchant_clickouts": 0,
+            },
+            "transactions": 999,
+            "commission_eur": 999,
+            "recent_signals": [
+                {"event_id": "signal", "event": "offer_section_open", "occurred_at": STAMP}
+            ],
+        }
+    ]
+    result = build_snapshot(data, now=NOW)
+    money = result["first_money"]
+    assert money["sessions"] == money["merchant_clickouts"] == 0
+    assert money["offer_opens"] == 0
+    assert money["analytics_complete"]
+    assert money["analytics_provenance"] == "launch_attributed_excludes_prelaunch"
+    assert money["runtime"]["decision_state"] == "waiting_first_signal"
+    assert money["transactions"] is None and money["commission_eur"] is None
+    assert any(e["title"] == "First Money · offer_section_open" for e in result["live_feed"])
+    assert not any(e["id"] == "old" for e in result["live_feed"])
+    data["first_money_runtime"][0]["observed_at"] = (NOW - timedelta(minutes=6)).isoformat()
+    assert (
+        build_snapshot(data, now=NOW)["first_money"]["analytics_provenance"]
+        == "unclassified_may_include_tests"
+    )

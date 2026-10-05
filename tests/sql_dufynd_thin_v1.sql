@@ -59,11 +59,12 @@ begin
  or report->'sales_truth'->>'clickout_is_sale' is distinct from 'false' then raise exception 'first money runtime contract invalid'; end if;
  if public.read_dufynd_thin_state()->'first_money_runtime' is null then raise exception 'thin state missing first money runtime'; end if;
  -- A real matching analytics signal queues one bounded free audit, unrelated traffic does not.
+ update public.dufynd_master_status set value=jsonb_set(jsonb_set(value,'{first_money_schedule,instagram}',to_jsonb((now()-interval '1 hour')::text)),'{first_money_schedule,tiktok}',to_jsonb((now()-interval '1 hour')::text)) where key='continuity.checkpoint.ceo_radar';
  select count(*) into n from public.dufynd_autonomy_tasks where task_id like 'first-money-signal:%';
  insert into public.scentai_analytics_events(id,event_id,occurred_at,session_key,event,product_id,acquisition_source,campaign_id,content_id)
  values(
    (select coalesce(max(id),0)+1 from public.scentai_analytics_events),
-   gen_random_uuid(),now()+interval '1 day','thin-v1-signal-test','merchant_clickout',
+   gen_random_uuid(),now(),'thin-v1-signal-test','merchant_clickout',
    'SC-RABANNE-1-MILLION-EDT-100','instagram','fms_1m_still_hits_20261004',
    (select value->'first_money_schedule'->>'content_id' from public.dufynd_master_status where key='continuity.checkpoint.ceo_radar')
  );
@@ -72,7 +73,7 @@ begin
    and durable_payload->>'kind'='supervisor_state_audit' and forbidden_actions ? 'social.publish' and forbidden_actions ? 'budget.spend') then
    raise exception 'first money signal audit missing safety fences'; end if;
  insert into public.scentai_analytics_events(id,event_id,occurred_at,session_key,event,product_id,content_id)
- values((select coalesce(max(id),0)+1 from public.scentai_analytics_events),gen_random_uuid(),now()+interval '1 day','thin-v1-unrelated-test','page_view','SC-RABANNE-1-MILLION-EDT-100','unrelated-content');
+ values((select coalesce(max(id),0)+1 from public.scentai_analytics_events),gen_random_uuid(),now(),'thin-v1-unrelated-test','page_view','SC-RABANNE-1-MILLION-EDT-100','unrelated-content');
  if (select count(*) from public.dufynd_autonomy_tasks where task_id like 'first-money-signal:%')<>n+1 then raise exception 'unrelated analytics queued work'; end if;
  if has_function_privilege('anon','public.run_dufynd_thin_v1()','execute') or has_function_privilege('authenticated','public.poll_dufynd_thin_ci()','execute') then raise exception 'public orchestration exposed'; end if;
 end $$;
