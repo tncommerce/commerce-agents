@@ -45,7 +45,7 @@ RUN_COLUMNS = (
 )
 OBSERVER_COLUMNS = (
     "observer_id,source_type,enabled,interval_seconds,last_attempt_at,last_success_at,"
-    "last_event_at,consecutive_failures,next_retry_at,health_status,"
+    "last_event_at,consecutive_failures,next_retry_at,health_status,last_error,"
     "observed_sha:last_snapshot->>sha,monitor_basis:last_snapshot->>monitor_basis"
 )
 CREDENTIAL_COLUMNS = (
@@ -466,6 +466,7 @@ def build_snapshot(
             "last_attempt_at": _stamp(row.get("last_attempt_at")),
             "next_retry_at": _stamp(row.get("next_retry_at")),
             "failures": _number(row.get("consecutive_failures")),
+            "last_error": enum(row.get("last_error")),
             "interval_seconds": _number(row.get("interval_seconds")),
         }
         for row in data.get("observers", [])
@@ -1127,6 +1128,97 @@ def build_snapshot(
         )
         money["runtime"]["decision_state"] = enum(runtime.get("decision_state"))
         money["runtime"]["source"] = "scentai_analytics_events"
+    runnable_tasks = [
+        mission
+        for mission in board["READY"]
+        if not mission.get("human_gate") and not mission.get("blocker")
+    ]
+    parked_external = board["WAITING EXTERNAL"]
+    observer_issues = [
+        {
+            "source": observer.get("source_type"),
+            "health": observer.get("health"),
+            "state": observer.get("observer_state"),
+            "last_error": observer.get("last_error"),
+        }
+        for observer in observers
+        if observer.get("health") not in {"HEALTHY", "MONITORED"}
+    ]
+    owner_reauth = [
+        credential
+        for credential in credentials
+        if credential.get("owner_reauthorization_required")
+    ]
+    planner_gap = (
+        active_workers == 0
+        and not runnable_tasks
+        and not actionable_gates
+    )
+    if active_workers:
+        work_state = "working"
+        diagnosis_title = "Arbeit läuft"
+        diagnosis_reason = (
+            f"{active_workers} aktive Worker-Ausführung(en) sind durch Lease und Heartbeat belegt."
+        )
+        next_move = primary_title if (primary_title := command.get("current_task")) else None
+    elif runnable_tasks:
+        work_state = "ready_not_running"
+        diagnosis_title = "Arbeit liegt bereit, ist aber noch nicht gestartet"
+        diagnosis_reason = (
+            f"{len(runnable_tasks)} ausführbare Task(s) stehen bereit; aktuell ist keine aktive "
+            "Worker-Lease gebunden."
+        )
+        next_move = runnable_tasks[0].get("title")
+    elif actionable_gates:
+        work_state = "master_gate"
+        diagnosis_title = "Eine echte Master-Entscheidung hält die nächste Arbeit an"
+        diagnosis_reason = actionable_gates[0].get("reason") or actionable_gates[0].get("title")
+        next_move = actionable_gates[0].get("title")
+    else:
+        work_state = "no_executable_work"
+        diagnosis_title = "Keine ausführbare Arbeit eingeplant"
+        diagnosis_reason = (
+            "Es läuft kein Worker, weil aktuell kein Task in READY/WORKING/CLAIMED/VERIFYING "
+            "vorliegt. Externe Waits sind geparkte Abhängigkeiten und nicht der globale Grund "
+            "für den Stillstand."
+        )
+        next_move = (
+            "Neue Arbeit aus dem Business-Ziel priorisieren und in die ausführbare Queue überführen."
+        )
+
+    if launch_fresh:
+        next_evidence = enum(runtime.get("next_evidence"))
+        decision_state = enum(runtime.get("decision_state"))
+    else:
+        next_evidence = None
+        decision_state = None
+
+    snapshot["operational_diagnosis"] = {
+        "work_state": work_state,
+        "title": diagnosis_title,
+        "reason": diagnosis_reason,
+        "active_workers": active_workers,
+        "runnable_tasks": len(runnable_tasks),
+        "parked_external": len(parked_external),
+        "master_gate_count": len(actionable_gates),
+        "master_action_required": bool(actionable_gates or owner_reauth),
+        "planner_gap": planner_gap,
+        "mail_wait_is_global_blocker": False,
+        "observer_issue_count": len(observer_issues),
+        "observer_issues": observer_issues[:8],
+        "next_move": next_move,
+        "business_focus": (
+            "First Money · " + next_evidence.replace("_", " ")
+            if next_evidence
+            else "First Money / qualifizierter Traffic"
+        ),
+        "first_money_decision_state": decision_state,
+        "explanation": (
+            "WAITING EXTERNAL beschreibt geparkte Einzelaufgaben. Es darf im CEO-Dashboard "
+            "nicht als globaler Arbeitsblocker dargestellt werden, wenn die ausführbare Queue leer ist."
+        ),
+    }
+
     command["gates_complete"] = gate_complete and not operational_incomplete
     command["ceo_status"] = (
         "PRÜFEN"
@@ -1138,6 +1230,8 @@ def build_snapshot(
         else "BLOCKIERT"
         if thin.get("stop_reason") not in {"waiting_external", "no_safe_work", "owner_gate"}
         and board["BLOCKED"]
+        else "ARBEIT FEHLT"
+        if planner_gap
         else "JARVIS ÜBERWACHT"
     )
     feed = [
