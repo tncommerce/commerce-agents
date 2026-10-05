@@ -181,15 +181,47 @@
             </div>
           </div>
 
-          <div id="jarvis-core" class="core state-neutral" aria-hidden="true">
-            <div class="core-signal"></div>
-            <div class="core-orbit orbit-one"></div>
-            <div class="core-orbit orbit-two"></div>
-            <div class="core-orbit orbit-three"></div>
-            <div class="core-frame">
-              <span>J</span><small>JARVIS CORE</small>
+          <div class="jarvis-stage">
+            <div
+              id="jarvis-core"
+              class="core state-neutral"
+              data-voice-state="idle"
+              aria-hidden="true"
+            >
+              <div class="core-signal"></div>
+              <div class="core-orbit orbit-one"></div>
+              <div class="core-orbit orbit-two"></div>
+              <div class="core-orbit orbit-three"></div>
+              <div class="core-frame">
+                <span>J</span><small>JARVIS CORE</small>
+              </div>
+              <div id="jarvis-spectrum" class="core-spectrum"></div>
+              <div id="jarvis-voice-mode" class="core-voice-mode">STANDBY</div>
+              <div class="core-floor"></div>
             </div>
-            <div class="core-floor"></div>
+
+            <div class="jarvis-voice-console" aria-label="Jarvis Push-to-Talk">
+              <button
+                id="jarvis-ptt"
+                class="jarvis-ptt"
+                type="button"
+                aria-pressed="false"
+                aria-describedby="jarvis-voice-privacy"
+              >
+                <span class="ptt-dot" aria-hidden="true"></span>
+                <span class="ptt-copy">
+                  <strong>PUSH TO TALK</strong>
+                  <small id="jarvis-voice-status"
+                    >Headset bereit · Button oder V halten</small
+                  >
+                </span>
+                <kbd>V</kbd>
+              </button>
+              <p id="jarvis-voice-privacy">
+                PHASE 1 · Mikrofonreaktion lokal im Browser · keine
+                Audio-Übertragung
+              </p>
+            </div>
           </div>
 
           <div class="command-stats">
