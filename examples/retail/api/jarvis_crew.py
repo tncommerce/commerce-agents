@@ -325,8 +325,7 @@ def project_crew(snapshot: dict) -> dict:
         active_count = sum(r["active_count"] for r in roles)
         waiting_count = sum(r["state"] == "WARTET EXTERN" for r in roles)
         blocked_count = sum(
-            r["state"] in {"BLOCKIERT", "DEGRADED", "OWNER GATE", "AUTONOMIE LEER"}
-            for r in roles
+            r["state"] in {"BLOCKIERT", "DEGRADED", "OWNER GATE", "AUTONOMIE LEER"} for r in roles
         )
         label, purpose = cluster_meta[cluster]
         clusters.append(
