@@ -190,6 +190,11 @@
     let peer = null;
     let dataChannel = null;
     let remoteAudio = null;
+    let outputContext = null;
+    let outputSource = null;
+    let outputAnalyser = null;
+    let outputValues = null;
+    let outputFrame = null;
     let connectAbort = null;
     let turnTimer = null;
     let responseTimer = null;
@@ -243,6 +248,67 @@
       resetBars();
     }
 
+    function stopOutputAnalysis() {
+      if (outputFrame !== null) cancelAnimationFrame(outputFrame);
+      outputFrame = null;
+      if (outputSource) {
+        try {
+          outputSource.disconnect();
+        } catch {}
+      }
+      outputSource = null;
+      outputAnalyser = null;
+      outputValues = null;
+      if (outputContext) {
+        const closing = outputContext.close();
+        if (closing?.catch) closing.catch(() => {});
+      }
+      outputContext = null;
+      resetBars();
+    }
+
+    function drawOutputSpectrum() {
+      if (!outputAnalyser || !outputValues || !remoteAudio) return;
+      outputAnalyser.getByteFrequencyData(outputValues);
+      let total = 0;
+      bars.forEach((bar, index) => {
+        const mirrored =
+          index < bars.length / 2 ? index : bars.length - 1 - index;
+        const sourceIndex = Math.min(
+          outputValues.length - 1,
+          Math.floor((mirrored / (bars.length / 2)) * outputValues.length),
+        );
+        const level = outputValues[sourceIndex] / 255;
+        total += level;
+        bar.style.transform =
+          "scaleY(" + (0.34 + level * 3.45).toFixed(2) + ")";
+        bar.style.opacity = String(0.48 + level * 0.52);
+      });
+      const energy = total / bars.length;
+      core.style.setProperty("--mic-energy", energy.toFixed(3));
+      core.style.setProperty("--mic-scale", (1 + energy * 0.18).toFixed(3));
+      core.style.setProperty(
+        "--mic-brightness",
+        (1.04 + energy * 0.32).toFixed(3),
+      );
+      outputFrame = requestAnimationFrame(drawOutputSpectrum);
+    }
+
+    function startOutputAnalysis(mediaStream) {
+      stopOutputAnalysis();
+      if (!mediaStream || !AudioContextClass) return;
+      outputContext = new AudioContextClass();
+      const resume = outputContext.state === "suspended" ? outputContext.resume() : null;
+      if (resume?.catch) resume.catch(() => {});
+      outputSource = outputContext.createMediaStreamSource(mediaStream);
+      outputAnalyser = outputContext.createAnalyser();
+      outputAnalyser.fftSize = 64;
+      outputAnalyser.smoothingTimeConstant = 0.78;
+      outputSource.connect(outputAnalyser);
+      outputValues = new Uint8Array(outputAnalyser.frequencyBinCount);
+      drawOutputSpectrum();
+    }
+
     function clearTimers() {
       clearTimeout(turnTimer);
       clearTimeout(responseTimer);
@@ -258,6 +324,7 @@
       if (connectAbort) connectAbort.abort();
       connectAbort = null;
       stopAnalysis({ stopTracks: true });
+      stopOutputAnalysis();
       if (dataChannel) {
         try {
           dataChannel.close();
@@ -512,6 +579,7 @@
       document.body.append(remoteAudio);
       peer.addEventListener("track", (event) => {
         remoteAudio.srcObject = event.streams[0];
+        startOutputAnalysis(event.streams[0]);
         const playing = remoteAudio.play();
         if (playing?.catch) playing.catch(() => {});
       });
