@@ -626,12 +626,12 @@ def project_risk(snapshot: dict) -> dict:
         else "Keine Freigabe offen"
         if gate_complete
         else "Freigabestatus unklar",
-        (gates[0].get("title") or "Konkrete Entscheidung im Freigabebereich prüfen.")
+        (gates[0].get("question") or gates[0].get("title") or "Konkrete Owner-Aktion prüfen.")
         if gates
         else "Keine aktuelle Owner-Entscheidung erforderlich."
         if gate_complete
         else "Entscheidungsquelle nicht vollständig bestätigt.",
-        "Konkrete Entscheidung und Freigabeumfang prüfen; kein automatisches Publishing."
+        "Owner Action Center öffnen und die dort angezeigte konkrete Handlung ausführen."
         if gates
         else "Neue Owner Gates weiter beobachten.",
         owner=bool(gates),
