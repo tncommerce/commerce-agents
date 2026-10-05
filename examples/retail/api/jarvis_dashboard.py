@@ -98,7 +98,7 @@ MASTER_READS.update(
         ),
         "social_quality": (
             "first_money.social_quality_incident.20261005",
-            "last_verified_at,status:value->>status,instagram_state:value->>instagram_state,tiktok_state:value->>tiktok_state,owner_quality_floor:value->owner_quality_floor,replacement_requires_new_content_id:value->replacement_requires_new_content_id,publishing_authorized:value->publishing_authorized",
+            "last_verified_at,status:value->>status,instagram_state:value->>instagram_state,tiktok_state:value->>tiktok_state,owner_quality_floor:value->owner_quality_floor,replacement_requires_new_content_id:value->replacement_requires_new_content_id,publishing_authorized:value->publishing_authorized,replacement_content_id:value->>replacement_content_id,replacement_experiment_id:value->>replacement_experiment_id,instagram_scheduled_at:value->>instagram_scheduled_at,metricool_post_id:value->>metricool_post_id,instagram_auto_publish:value->instagram_auto_publish,instagram_draft:value->instagram_draft",
         ),
     }
 )
@@ -849,7 +849,21 @@ def build_snapshot(
         )
         is True,
         "publishing_authorized": social_quality.get("publishing_authorized") is True,
+        "replacement_content_id": clean(social_quality.get("replacement_content_id")),
+        "replacement_experiment_id": clean(social_quality.get("replacement_experiment_id")),
+        "instagram_scheduled_at": _stamp(social_quality.get("instagram_scheduled_at")),
+        "metricool_post_id": clean(social_quality.get("metricool_post_id")),
+        "instagram_auto_publish": social_quality.get("instagram_auto_publish") is True,
+        "instagram_draft": social_quality.get("instagram_draft") is True,
     }
+    replacement_scheduled = (
+        snapshot["social_quality"]["publishing_authorized"]
+        and snapshot["social_quality"]["instagram_auto_publish"]
+        and not snapshot["social_quality"]["instagram_draft"]
+        and bool(snapshot["social_quality"]["replacement_content_id"])
+        and bool(snapshot["social_quality"]["instagram_scheduled_at"])
+    )
+    snapshot["social_quality"]["replacement_scheduled"] = replacement_scheduled
     # Later persisted stop/removal evidence supersedes a historical schedule.
     # This is a read-only projection; retain the original states for history.
     money = snapshot["first_money"]
@@ -880,6 +894,18 @@ def build_snapshot(
         if money["publication_stopped"]:
             money["publication_observed_at"] = quality_at.isoformat()
             money["publication_stale"] = False
+    if replacement_scheduled:
+        money["replacement_scheduled"] = True
+        money["replacement"] = {
+            "platform": "instagram",
+            "state": "SCHEDULED",
+            "scheduled_at": snapshot["social_quality"]["instagram_scheduled_at"],
+            "content_id": snapshot["social_quality"]["replacement_content_id"],
+            "experiment_id": snapshot["social_quality"]["replacement_experiment_id"],
+            "metricool_post_id": snapshot["social_quality"]["metricool_post_id"],
+            "evidence_source": "persisted_social_quality",
+            "observed_at": snapshot["social_quality"]["observed_at"],
+        }
     # Additive CEO projections. A candidate is not a certified handler selection.
     missions = [
         m for lane, rows in board.items() if lane not in {"DONE", "CANCELLED"} for m in rows
