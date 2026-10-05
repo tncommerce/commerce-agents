@@ -105,7 +105,12 @@ def evaluate(document: dict) -> dict:
         score = publish.get("visual_score")
         if type(width) is not int or type(height) is not int or width < 1080 or height < 1080:
             reasons.append("media_resolution_below_publish_floor")
-        if not isinstance(score, (int, float)) or isinstance(score, bool) or score < 9.5 or score > 10:
+        if (
+            not isinstance(score, (int, float))
+            or isinstance(score, bool)
+            or score < 9.5
+            or score > 10
+        ):
             reasons.append("visual_score_below_owner_standard")
         if publish.get("native_preview_verified") is not True:
             reasons.append("native_preview_not_verified")
@@ -118,7 +123,9 @@ def evaluate(document: dict) -> dict:
         if platform == "instagram":
             if media_kind not in {"image", "carousel", "reel", "story"}:
                 reasons.append("instagram_media_kind_invalid")
-            if media_kind in {"image", "carousel", "reel"} and ("http://" in caption or "https://" in caption):
+            if media_kind in {"image", "carousel", "reel"} and (
+                "http://" in caption or "https://" in caption
+            ):
                 reasons.append("instagram_raw_caption_url_forbidden")
             if cta_mode not in {"profile_link", "story_link_sticker"}:
                 reasons.append("instagram_cta_mode_invalid")
