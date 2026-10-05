@@ -85,6 +85,8 @@ def test_v3_live_inspector_is_rich_bounded_and_read_only():
     assert "function_call_output" in voice
     assert '"advance_dufynd_safe_work"' in voice
     assert 'fetch("/internal/jarvis/truth"' in voice
+    assert '"first_money"' in voice
+    assert '"systems"' in voice
     assert "executeTruthInspection" in voice
     assert "await executeTruthInspection(area, focus)" in voice
     assert '"authoritative_truth_unavailable"' in voice
@@ -137,3 +139,15 @@ def test_voice_animation_respects_reduced_motion_and_warm_state():
     assert '.jarvis-ptt[data-provider-ready="false"]' in css
     assert '[data-session-warm="true"]' in css
     assert "@media (prefers-reduced-motion: reduce)" in css
+
+
+def test_v33_dashboard_exposes_operational_diagnosis_and_master_labels():
+    html = room_text("index.html")
+    js = room_text("room.js")
+    assert 'id="diagnosis"' in html
+    assert "Warum arbeitet DUFYND gerade" in html
+    assert "MASTER ACTION CENTER" in html
+    assert "MASTER DECISIONS" in html
+    assert "diagnosis-reason" in js
+    assert "diagnosis-next" in js
+    assert "geparkt, nicht global blockierend" in js
