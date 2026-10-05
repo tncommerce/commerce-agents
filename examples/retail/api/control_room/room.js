@@ -206,7 +206,9 @@
     let outputAnalyser = null;
     let outputValues = null;
     let outputFrame = null;
-    let outputPlaybackStartedAt = null;
+    let responseGenerationDone = false;
+    let playbackUiDone = false;
+    let lastAudibleAt = null;
     let connectAbort = null;
     let turnTimer = null;
     let responseTimer = null;
@@ -271,7 +273,9 @@
       outputSource = null;
       outputAnalyser = null;
       outputValues = null;
-      outputPlaybackStartedAt = null;
+      responseGenerationDone = false;
+      playbackUiDone = false;
+      lastAudibleAt = null;
       if (outputContext) {
         const closing = outputContext.close();
         if (closing?.catch) closing.catch(() => {});
@@ -298,6 +302,17 @@
         bar.style.opacity = String(0.48 + level * 0.52);
       });
       const energy = total / bars.length;
+      const now = performance.now();
+      if (energy >= 0.018) lastAudibleAt = now;
+      if (
+        responseGenerationDone &&
+        !playbackUiDone &&
+        lastAudibleAt !== null &&
+        now - lastAudibleAt >= 1800
+      ) {
+        playbackUiDone = true;
+        setState("idle", "DONE", "Antwort vollständig abgespielt · bereit");
+      }
       core.style.setProperty("--mic-energy", energy.toFixed(3));
       core.style.setProperty("--mic-scale", (1 + energy * 0.18).toFixed(3));
       core.style.setProperty(
@@ -313,7 +328,9 @@
       outputContext = new AudioContextClass();
       const resume = outputContext.state === "suspended" ? outputContext.resume() : null;
       if (resume?.catch) resume.catch(() => {});
-      outputPlaybackStartedAt = null;
+      responseGenerationDone = false;
+      playbackUiDone = false;
+      lastAudibleAt = null;
       outputSource = outputContext.createMediaStreamSource(mediaStream);
       outputAnalyser = outputContext.createAnalyser();
       outputAnalyser.fftSize = 64;
@@ -494,38 +511,14 @@
       });
     }
 
-    function responseAudioDurationMs(event) {
-      const audioTokens = Number(
-        event.response?.usage?.output_token_details?.audio_tokens,
-      );
-      if (
-        !Number.isInteger(audioTokens) ||
-        audioTokens < 0 ||
-        audioTokens > 4096
-      ) {
-        return null;
-      }
-      return audioTokens * 50;
-    }
-
-    function finishAfterPlayback(event) {
-      const expectedMs = responseAudioDurationMs(event);
-      const elapsedMs =
-        outputPlaybackStartedAt === null
-          ? 0
-          : Math.max(0, performance.now() - outputPlaybackStartedAt);
-      const remainingMs =
-        expectedMs === null ? null : Math.max(0, expectedMs - elapsedMs);
-      const waitMs =
-        remainingMs === null
-          ? 20000
-          : Math.min(20000, Math.max(1200, remainingMs + 1400));
+    function keepPlaybackAliveAfterResponse() {
+      responseGenerationDone = true;
       clearTimeout(cleanupTimer);
-      cleanupTimer = setTimeout(() => {
-        if (state !== "speaking") return;
-        setState("speaking", "DONE", "Antwort vollständig abgespielt");
-        cleanupTimer = setTimeout(() => cleanupSession(), 350);
-      }, waitMs);
+      // response.done means generation/transfer is finished, not that the browser
+      // has drained WebRTC's remote audio buffer. Never tear down the peer here.
+      // A long idle cleanup only releases resources after playback has had ample
+      // time to finish; the analyser may update the UI to DONE but never closes audio.
+      cleanupTimer = setTimeout(() => cleanupSession(), 60000);
     }
 
     function handleRealtimeEvent(raw, turnGeneration) {
@@ -550,6 +543,10 @@
         setState("speaking", "SPEAKING", "Jarvis antwortet …");
         return;
       }
+      if (type === "response.output_audio.done" || type === "response.audio.done") {
+        responseGenerationDone = true;
+        return;
+      }
       if (type === "response.done") {
         clearTimeout(responseTimer);
         responseTimer = null;
@@ -569,9 +566,9 @@
         setState(
           "speaking",
           "SPEAKING",
-          "Antwort wird vollständig abgespielt …",
+          "Antwort ist vollständig übertragen · Wiedergabe läuft aus …",
         );
-        finishAfterPlayback(event);
+        keepPlaybackAliveAfterResponse();
         return;
       }
       if (type === "error") {
@@ -614,9 +611,7 @@
       remoteAudio.hidden = true;
       remoteAudio.addEventListener("playing", () => {
         if (turnGeneration === generation) {
-          if (outputPlaybackStartedAt === null) {
-            outputPlaybackStartedAt = performance.now();
-          }
+          lastAudibleAt = performance.now();
           setState("speaking", "SPEAKING", "Jarvis antwortet …");
         }
       });
