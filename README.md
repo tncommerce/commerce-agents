@@ -191,3 +191,5 @@ provenance gates stay in front of every write.
 
 Copyright 2026 Anthropic PBC. Licensed under the [Apache License 2.0](./LICENSE).
 This is a reference implementation; it is not maintained and does not accept contributions.
+
+The DUFYND Control Room uses `examples/retail/api/jarvis_crew.py` for read-only role and risk projections. See [Crew and risk semantics](docs/tech/control-room-crew-risk-v1.md).
