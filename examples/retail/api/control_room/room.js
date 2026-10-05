@@ -889,6 +889,8 @@
         "overview",
         "workers",
         "missions",
+        "first_money",
+        "systems",
         "risks",
         "recent_activity",
       ]);
