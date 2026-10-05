@@ -83,6 +83,8 @@ def test_live_gmail_expiry_and_coverage_are_two_warnings_not_owner_gates():
     assert risk["tone"] == "amber" and risk["critical_count"] == 0 and risk["warning_count"] == 2
     assert not risk["owner_required"]
     assert role(s, "Usopp")["state"] == "DEGRADED"
+    assert role(s, "Usopp")["display_state"] == "KANAL PRÜFEN"
+    assert role(s, "Robin")["role"] == "Bilder & Rechte"
     assert next(h for h in s["system_health"] if h["name"] == "Gmail")["display_tone"] == "amber"
     assert {r["id"] for r in risk["risks"]} == {"sources", "affiliate"}
     assert role(s, "Brook")["state"] == "BLOCKIERT"
@@ -224,6 +226,7 @@ def test_incomplete_bounded_read_cannot_be_green_or_show_active_crew():
     s = build_snapshot(data, now=NOW, source_counts=counts)
     assert s["global_risk"]["tone"] == "amber"
     assert all(r["state"] == "DEGRADED" for r in s["crew"]["roles"])
+    assert all(r["display_state"] == "LIVE-DATEN FEHLEN" for r in s["crew"]["roles"])
     assert not s["crew"]["active_executions"]
 
 
