@@ -259,3 +259,62 @@ def test_active_role_with_another_pending_gate_does_not_deny_owner_action():
     assert nami["state"] == "AKTIV"
     assert "owner" in nami["connections"]
     assert nami["owner_action"] == "Freigabe prüfen: Experiment bewerten"
+
+
+def test_crew_projects_distinct_departments_and_recent_execution_history():
+    data = healthy_data()
+    data["recent_runs"] = [
+        run_row(
+            execution_id="recent-analytics",
+            worker_id="supervisor_v2",
+            handler_id="analytics_funnel_audit",
+            completed_at=STAMP,
+        ),
+        run_row(
+            execution_id="recent-tech",
+            worker_id="tech-worker",
+            handler_id="ci_pr_verifier",
+            completed_at=(NOW - timedelta(minutes=2)).isoformat(),
+        ),
+    ]
+    s = result(data)
+    assert [c["id"] for c in s["crew"]["clusters"]] == [
+        "BUILD",
+        "MONEY",
+        "GROWTH",
+        "OPERATIONS",
+    ]
+    assert all(c["purpose"] for c in s["crew"]["clusters"])
+    nami = role(s, "Nami")
+    assert nami["last_action_at"] == STAMP
+    assert nami["recent_executions"][0]["handler_id"] == "analytics_funnel_audit"
+    assert s["crew"]["recent_activity"][0]["alias"] == "Nami"
+    assert s["crew"]["recent_activity"][0]["completed_at"] == STAMP
+    assert s["crew"]["live_now"] == []
+
+
+def test_live_now_only_contains_current_verified_active_executions():
+    data = healthy_data()
+    data["active_runs"] = [
+        run_row(
+            execution_id="live-analytics",
+            worker_id="supervisor_v2",
+            handler_id="analytics_funnel_audit",
+        )
+    ]
+    s = result(data)
+    assert s["crew"]["active_executions"] == 1
+    assert s["crew"]["live_now"] == [
+        {
+            "role_id": "revenue",
+            "alias": "Nami",
+            "role": "Revenue / Analytics Worker",
+            "task": "work",
+            "started_at": STAMP,
+            "heartbeat_at": STAMP,
+            "next_checkpoint": None,
+            "handler_id": "analytics_funnel_audit",
+        }
+    ]
+    money = next(c for c in s["crew"]["clusters"] if c["id"] == "MONEY")
+    assert money["active_count"] == 1 and money["state"] == "AKTIV"
