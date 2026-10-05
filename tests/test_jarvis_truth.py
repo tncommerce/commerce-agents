@@ -132,9 +132,7 @@ def test_truth_reader_reports_exact_waits_priorities_and_sanitized_gates():
                                     "source_type": "gmail",
                                     "health_status": "blocked_configuration",
                                     "last_error": "credential_expired",
-                                    "credential_health": {
-                                        "owner_reauthorization_required": False
-                                    },
+                                    "credential_health": {"owner_reauthorization_required": False},
                                 }
                             ],
                             "business_checkpoint": {"age_seconds": 7200},
