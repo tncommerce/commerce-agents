@@ -1257,13 +1257,25 @@ def build_snapshot(
         if money_checkpoint_at is not None
         else None
     )
+    operator_tasks = [
+        {
+            "task_id": clean(row.get("task_id")),
+            "domain": enum(row.get("domain")),
+            "title": clean(row.get("title")),
+            "status": enum(row.get("status")),
+            "requires_human_approval": row.get("requires_human_approval") is True,
+            "provider_cost_unknown": row.get("provider_cost_unknown") is True,
+        }
+        for row in data.get("tasks", [])
+        if isinstance(row, dict)
+    ]
     operator = build_operator_diagnosis(
-        tasks=[row for row in data.get("tasks", []) if isinstance(row, dict)],
+        tasks=operator_tasks,
         waits=[row for row in data.get("external_waits", []) if isinstance(row, dict)],
         observers=observers,
         credentials=credentials,
         thin={
-            "active_leases": thin.get("active_leases"),
+            "active_leases": max(_number(thin.get("active_leases")) or 0, active_workers),
             "queue_counts": {
                 "waiting_external": thin.get("waiting_external"),
                 "blocked": thin.get("blocked"),
