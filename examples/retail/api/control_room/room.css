@@ -4238,7 +4238,7 @@ body[data-execution-mode="unknown"] .execution-evidence {
 }
 
 
-/* JARVIS LIVE INTERFACE V1 · local-only push-to-talk visual layer */
+/* JARVIS LIVE INTERFACE V2 · bounded realtime push-to-talk voice layer */
 .jarvis-stage {
   position: relative;
   z-index: 3;
@@ -4334,6 +4334,17 @@ body[data-execution-mode="unknown"] .execution-evidence {
 .core[data-voice-state="thinking"] .orbit-one,
 .core[data-voice-state="thinking"] .orbit-two {
   animation-duration: 3.4s;
+}
+.core[data-voice-state="thinking"] .core-voice-mode {
+  color: #b8d6ff;
+  text-shadow: 0 0 18px #65a9ff88;
+}
+.core[data-voice-state="speaking"] .core-voice-mode {
+  color: #e8fff7;
+  text-shadow: 0 0 20px #72ffe0aa;
+}
+.core[data-voice-state="speaking"] .core-signal {
+  opacity: 0.3;
 }
 .core[data-voice-state="speaking"] .core-frame {
   animation: jarvis-speaking-pulse 0.7s ease-in-out infinite alternate;
