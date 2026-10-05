@@ -688,16 +688,22 @@
           item.dataset.role = live.role_id;
           item.append(
             node("span", "LIVE", "crew-live-badge"),
-            node("strong", live.alias.toUpperCase()),
-            node("small", live.role),
+            node("strong", live.role),
+            node("small", live.alias.toUpperCase()),
             node("p", live.task || "Aktuelle Aufgabe nicht dokumentiert", "crew-live-task"),
           );
           const meta = node("div", undefined, "crew-live-meta");
           meta.append(
             node("span", "Seit " + age(live.started_at)),
             node("span", "Heartbeat " + age(live.heartbeat_at)),
+            node("span", "Echter Fortschritt " + age(live.last_progress_at)),
           );
           item.append(meta);
+          item.append(
+            node("p", live.checkpoint?.verified === true
+              ? "Letzter bestätigter Schritt · " + detailText(live.checkpoint.step) + " · " + stamp(live.checkpoint.verified_at)
+              : "Letzter bestätigter Schritt · Unbekannt", "crew-live-next"),
+          );
           if (live.next_checkpoint)
             item.append(
               node("p", "Nächster Checkpoint · " + live.next_checkpoint, "crew-live-next"),

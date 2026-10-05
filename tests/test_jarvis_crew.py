@@ -312,12 +312,40 @@ def test_live_now_only_contains_current_verified_active_executions():
             "task": "work",
             "started_at": STAMP,
             "heartbeat_at": STAMP,
+            "last_progress_at": STAMP,
+            "checkpoint": None,
             "next_checkpoint": None,
             "handler_id": "analytics_funnel_audit",
         }
     ]
     money = next(c for c in s["crew"]["clusters"] if c["id"] == "MONEY")
     assert money["active_count"] == 1 and money["state"] == "AKTIV"
+
+
+@pytest.mark.parametrize("verified", [True, False, None])
+def test_live_card_exposes_progress_and_only_verified_checkpoint(verified):
+    data = healthy_data()
+    data["active_runs"] = [
+        run_row(
+            execution_id="live-progress",
+            worker_id="supervisor_v2",
+            handler_id="analytics_funnel_audit",
+            last_progress_at=(NOW - timedelta(minutes=2)).isoformat(),
+            checkpoint_step="funnel_verified",
+            checkpoint_verified=verified,
+            checkpoint_verified_at=STAMP,
+        )
+    ]
+    live = result(data)["crew"]["live_now"][0]
+    assert live["last_progress_at"] == (NOW - timedelta(minutes=2)).isoformat()
+    if verified:
+        assert live["checkpoint"] == {
+            "step": "funnel_verified",
+            "verified": True,
+            "verified_at": STAMP,
+        }
+    else:
+        assert live["checkpoint"] is None
 
 
 def test_first_money_supervisor_audit_is_shown_under_nami_by_task_purpose():
