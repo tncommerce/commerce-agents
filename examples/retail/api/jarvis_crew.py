@@ -309,6 +309,10 @@ def project_crew(snapshot: dict) -> dict:
                         "task": execution.get("task_title") or execution.get("task_id"),
                         "started_at": execution.get("started_at"),
                         "heartbeat_at": execution.get("heartbeat_at"),
+                        "last_progress_at": execution.get("last_progress_at"),
+                        "checkpoint": execution.get("checkpoint")
+                        if execution.get("checkpoint", {}).get("verified") is True
+                        else None,
                         "next_checkpoint": execution.get("next_checkpoint"),
                         "handler_id": execution.get("handler_id"),
                     }
