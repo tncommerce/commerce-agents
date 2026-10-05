@@ -22,10 +22,12 @@ def test_voice_gateway_session_is_manual_tool_free_and_bounded():
     assert config["max_output_tokens"] == 256
     assert config["tools"] == []
     assert config["audio"]["input"]["turn_detection"] is None
-    assert config["audio"]["output"]["voice"] == "cedar"
+    assert config["audio"]["output"]["voice"] == "echo"
+    assert config["audio"]["output"]["speed"] == 0.92
     assert "keine externen" in config["instructions"]
     assert "Owner-Gates" in config["instructions"]
-    assert "britischer Färbung" in config["instructions"]
+    assert "britischer Prosodie" in config["instructions"]
+    assert "ohne eine reale Person" in config["instructions"]
 
 
 def test_voice_gateway_keeps_standard_key_server_side_and_returns_only_sdp():
