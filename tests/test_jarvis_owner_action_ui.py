@@ -20,7 +20,8 @@ def test_owner_action_center_explains_and_executes_only_guarded_actions():
     assert '"Soll"' in js
     assert '"Ziel-URL kopieren"' in js
     assert '"Instagram-Profil bearbeiten"' in js
-    assert '"Erledigt · Jarvis prüfen"' in js
+    assert '"Erledigt"' in js
+    assert "owner_confirmed_manual_action !== true" in js
     assert '"Jetzt freigeben"' in js
     assert '"Kandidat freigeben"' in js
     assert 'fetch("/internal/jarvis/owner-action"' in js
