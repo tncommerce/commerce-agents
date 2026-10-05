@@ -110,7 +110,8 @@ class OwnerActionWriter:
         if action == "approve" and not direct:
             raise OwnerActionConflict()
         if action == "approve_review" and (
-            manual or row.get("action_type") not in {"content_candidate_review", "image_visual_review"}
+            manual
+            or row.get("action_type") not in {"content_candidate_review", "image_visual_review"}
         ):
             raise OwnerActionConflict()
 
