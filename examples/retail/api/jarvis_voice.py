@@ -1,9 +1,8 @@
 """Bounded OpenAI Realtime WebRTC gateway for the private DUFYND owner interface.
 
-The browser never receives the standard OpenAI API key. Session creation is owner-only,
-push-to-talk, rate-limited and intentionally tool-free in V2.1. The model can speak about
-the bounded Control Room context supplied by the browser, but it cannot execute DUFYND
-actions.
+The browser never receives the standard OpenAI API key. Session creation is owner-only
+and rate-limited. Jarvis may use one read-only Control Room inspector for richer live
+answers, but it cannot execute DUFYND actions or satisfy Owner gates.
 """
 
 from __future__ import annotations
@@ -22,7 +21,7 @@ ALLOWED_MODELS = {"gpt-realtime-2.1", "gpt-realtime-2.1-mini"}
 DEFAULT_MODEL = "gpt-realtime-2.1-mini"
 DEFAULT_VOICE = "ash"
 DEFAULT_VOICE_SPEED = 1.03
-DEFAULT_MAX_OUTPUT_TOKENS = 1024
+DEFAULT_MAX_OUTPUT_TOKENS = 4096
 
 VOICE_INSTRUCTIONS = (
     "Du bist JARVIS, Tuans privater operativer CEO-Assistent für DUFYND. "
