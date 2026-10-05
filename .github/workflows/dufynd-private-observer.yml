@@ -2,14 +2,33 @@ name: DUFYND Private Observer Read
 
 on:
   workflow_dispatch:
+  push:
+    branches: [scentai-mvp]
+    paths:
+      - '.github/workflows/dufynd-private-observer.yml'
+      - 'private_broker/**'
+      - 'scripts/dufynd*observer*.py'
 
 concurrency:
   group: dufynd-private-observer
   cancel-in-progress: false
 
 jobs:
+  refresh-after-change:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/scentai-mvp' && vars.DUFYND_PRIVATE_BROKER_ENABLED == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    permissions:
+      contents: read
+      actions: write
+    steps:
+      - name: Dispatch the existing trusted read path after observer changes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run dufynd-private-observer.yml --repo "$GITHUB_REPOSITORY" --ref scentai-mvp
+
   read:
-    if: github.ref == 'refs/heads/scentai-mvp' && vars.DUFYND_PRIVATE_BROKER_ENABLED == '1'
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/scentai-mvp' && vars.DUFYND_PRIVATE_BROKER_ENABLED == '1'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:

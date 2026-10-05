@@ -305,6 +305,10 @@
       DEGRADED: "Quelle meldet Einschränkung",
       BLOCKED: "Blockiert",
       UNKNOWN: "Nicht bestätigt",
+      BLOCKED_CONFIGURATION: "Konfiguration blockiert",
+      INITIALIZING_STUCK: "Initialisierung überfällig",
+      INITIALIZING: "Initialisierung läuft",
+      FAILED: "Lesen fehlgeschlagen",
     })[health] ||
     health ||
     "Nicht bestätigt";
@@ -1655,7 +1659,7 @@
           line(item, "Zuletzt erfolgreich geprüft", stamp(h.last_success_at));
         line(item, "Einordnung", h.evidence_note || "Nicht dokumentiert");
         for (const o of h.observers || []) {
-          line(item, o.observer_id, sourceHealthLabel(o.health));
+          line(item, o.observer_id, sourceHealthLabel((o.observer_state || o.health).toUpperCase()));
           line(item, "Letzte erfolgreiche Beobachtung", stamp(o.last_success_at));
           line(item, "Next retry", stamp(o.next_retry_at));
         }

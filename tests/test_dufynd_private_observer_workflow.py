@@ -38,3 +38,15 @@ def test_private_observer_workflow_keeps_provider_keys_out_of_actions():
     )
     for fragment in forbidden:
         assert fragment not in workflow
+
+
+def test_observer_change_dispatch_preserves_existing_broker_event_boundary():
+    workflow = workflow_source()
+    bridge = workflow.split("  refresh-after-change:")[1].split("  read:")[0]
+    assert "github.event_name == 'push'" in bridge
+    assert "github.ref == 'refs/heads/scentai-mvp'" in bridge
+    assert "--ref scentai-mvp" in bridge
+    assert "id-token: write" not in bridge
+    read = workflow.split("  read:")[1].split("  ingest:")[0]
+    assert "github.event_name == 'workflow_dispatch'" in read
+    assert "branches: [scentai-mvp]" in workflow

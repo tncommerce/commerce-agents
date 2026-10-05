@@ -94,6 +94,11 @@ def database():
                 (ROOT / "supabase/migrations").glob("*private_observer_recurring_capture.sql")
             ).read_text()
         )
+        connection.execute(
+            next(
+                (ROOT / "supabase/migrations").glob("*dependency_observer_reliability.sql")
+            ).read_text()
+        )
     yield
 
 
@@ -1594,6 +1599,59 @@ def test_purchase_fresh_offer_no_wake(purchase_net):
             "update dufynd_purchase_verification_targets set enabled=true,certification_due=false,last_result=null,last_verified_at=now()"
         )
     assert query("select wake_dufynd_purchase_freshness()") == {"wake_events": 0}
+
+
+def test_purchase_scheduler_observation_preserves_verification_truth(purchase_net):
+    import psycopg
+
+    offer = "perfumetrader-rabanne-1-million-edt-100"
+    with psycopg.connect(DSN, autocommit=True) as c:
+        oid = c.execute(
+            "select register_dufynd_observer('internal_dependency',%s)",
+            ("purchase-freshness:" + offer,),
+        ).fetchone()[0]
+        c.execute(
+            "update dufynd_external_observers set health_status='initializing',"
+            "last_attempt_at=null,last_success_at=null,next_retry_at=now()-interval '1 hour'"
+            " where observer_id=%s",
+            (oid,),
+        )
+        c.execute(
+            "update dufynd_purchase_verification_targets set enabled=true,"
+            "certification_due=false,last_verified_at=now(),last_result=null where offer_id=%s",
+            (offer,),
+        )
+        before = c.execute(
+            "select last_verified_at,offer_contract from dufynd_purchase_verification_targets"
+            " where offer_id=%s",
+            (offer,),
+        ).fetchone()
+    assert query("select wake_dufynd_purchase_freshness()") == {"wake_events": 0}
+    assert query(
+        "select health_status='healthy' and last_attempt_at is not null and last_success_at is not null"
+        " and next_retry_at>now() and last_snapshot->>'monitor_basis'='purchase_target_scheduler'"
+        " from dufynd_external_observers where observer_id=%s",
+        (oid,),
+    )
+    with psycopg.connect(DSN, autocommit=True) as c:
+        assert (
+            c.execute(
+                "select last_verified_at,offer_contract from dufynd_purchase_verification_targets"
+                " where offer_id=%s",
+                (offer,),
+            ).fetchone()
+            == before
+        )
+        c.execute(
+            "update dufynd_purchase_verification_targets set enabled=false where offer_id=%s",
+            (offer,),
+        )
+    query("select wake_dufynd_purchase_freshness()")
+    assert query(
+        "select health_status='blocked_configuration' and last_error='purchase_target_disabled'"
+        " from dufynd_external_observers where observer_id=%s",
+        (oid,),
+    )
 
 
 def test_purchase_pre_expiry_before_today_regression(purchase_net):

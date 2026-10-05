@@ -46,7 +46,7 @@ RUN_COLUMNS = (
 OBSERVER_COLUMNS = (
     "observer_id,source_type,enabled,interval_seconds,last_attempt_at,last_success_at,"
     "last_event_at,consecutive_failures,next_retry_at,health_status,"
-    "observed_sha:last_snapshot->>sha"
+    "observed_sha:last_snapshot->>sha,monitor_basis:last_snapshot->>monitor_basis"
 )
 CREDENTIAL_COLUMNS = (
     "provider,status,expires_at,refreshed_at,last_health_check,rotation_due_at,"
@@ -211,10 +211,29 @@ def _health(row: dict[str, Any], now: datetime) -> str:
     if status == "stale":
         return "STALE"
     if status == "healthy" and _fresh(row.get("last_success_at"), now, window):
+        if row.get("monitor_basis") == "purchase_target_scheduler":
+            return "MONITORED"
         return "HEALTHY"
     if status == "healthy" and _fresh(row.get("last_success_at"), now, window * 2 - 1):
         return "MONITORED"
     return "STALE" if status == "healthy" else "UNKNOWN"
+
+
+def _observer_state(row: dict[str, Any], now: datetime) -> str:
+    """Detailed source condition; never infer a successful read from a retry date."""
+    if row.get("health_status") == "blocked_configuration":
+        return "blocked_configuration"
+    if row.get("health_status") in {"failed", "error", "degraded"} or (
+        row.get("consecutive_failures") or 0
+    ):
+        return "failed"
+    retry = _time(row.get("next_retry_at"))
+    grace = max(360, (_number(row.get("interval_seconds")) or 120) * 3)
+    if row.get("health_status") == "initializing" and not row.get("last_success_at"):
+        if retry is not None and (now - retry).total_seconds() > grace:
+            return "initializing_stuck"
+        return "initializing"
+    return _health(row, now).lower()
 
 
 def _worker_health(row: dict[str, Any], now: datetime) -> str:
@@ -419,6 +438,7 @@ def build_snapshot(
             "source_type": enum(row.get("source_type")),
             "enabled": row.get("enabled") is True,
             "health": _health(row, now),
+            "observer_state": _observer_state(row, now),
             "last_success_at": _stamp(row.get("last_success_at")),
             "last_attempt_at": _stamp(row.get("last_attempt_at")),
             "next_retry_at": _stamp(row.get("next_retry_at")),
