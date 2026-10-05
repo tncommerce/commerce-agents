@@ -101,13 +101,31 @@ def test_truth_reader_reports_exact_waits_priorities_and_sanitized_gates():
                             "active_leases": 0,
                             "stale_leases": 0,
                             "provider_cost_unknown": False,
-                            "pending_owner_gates": [
+                            "pending_owner_gates": [],
+                            "observer_health": [
                                 {
-                                    "decision_id": "gate:abc",
-                                    "decision_token": "GO-NOT-FOR-VOICE",
-                                    "action_type": "publication_approval",
+                                    "observer_id": "gmail:abc",
+                                    "source_type": "gmail",
+                                    "health_status": "blocked_configuration",
+                                    "last_error": "credential_expired",
+                                    "credential_health": {
+                                        "owner_reauthorization_required": False
+                                    },
                                 }
                             ],
+                            "business_checkpoint": {"age_seconds": 7200},
+                            "first_money_runtime": {
+                                "phase": "live_measurement_window",
+                                "decision_state": "waiting_first_signal",
+                                "publication_verified": False,
+                                "funnel": {
+                                    "landing_sessions": 0,
+                                    "product_views": 0,
+                                    "offer_views": 0,
+                                    "offer_opens": 0,
+                                    "merchant_clickouts": 0,
+                                },
+                            },
                             "ci": {"ready": True, "reason": "ci_observed"},
                         },
                         "last_verified_at": "2026-10-05T18:11:00Z",
@@ -125,10 +143,12 @@ def test_truth_reader_reports_exact_waits_priorities_and_sanitized_gates():
     assert result["verified"] is True
     assert result["focus_match"] is False
     assert result["thin_v1"]["stop_reason"] == "waiting_external"
-    assert result["thin_v1"]["pending_owner_gates"] == [
-        {"decision_id": "gate:abc", "action_type": "publication_approval"}
-    ]
+    assert result["thin_v1"]["pending_owner_gates"] == []
     assert "decision_token" not in str(result)
+    assert result["operator_diagnosis"]["state"] == "IDLE_NO_RUNNABLE_WORK"
+    assert result["operator_diagnosis"]["owner_action_required"] is False
+    assert "keine ausführbare Aufgabe" in result["operator_diagnosis"]["cause"]
+    assert result["operator_diagnosis"]["recommended_now"]["id"] == "first_money_truth"
 
     tasks = {task["task_id"]: task for task in result["tasks"]}
     assert tasks["task_external_confirmed"]["evidence_state"] == "confirmed_external_wait"
