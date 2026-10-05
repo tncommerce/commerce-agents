@@ -19,7 +19,7 @@ def test_voice_gateway_session_is_manual_tool_free_and_bounded():
     assert config["type"] == "realtime"
     assert config["model"] == DEFAULT_MODEL
     assert config["output_modalities"] == ["audio"]
-    assert config["max_output_tokens"] == 256
+    assert config["max_output_tokens"] == 1024
     assert config["tools"] == []
     assert config["audio"]["input"]["turn_detection"] is None
     assert config["audio"]["output"]["voice"] == "ash"
@@ -28,6 +28,7 @@ def test_voice_gateway_session_is_manual_tool_free_and_bounded():
     assert "Owner-Gates" in config["instructions"]
     assert "britisch/RP-geprägte Sprechmelodie" in config["instructions"]
     assert "Imitiere keine reale Person" in config["instructions"]
+    assert "brich niemals wegen Kürze mitten im Satz ab" in config["instructions"]
 
 
 def test_voice_gateway_keeps_standard_key_server_side_and_returns_only_sdp():
