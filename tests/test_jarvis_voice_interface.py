@@ -54,8 +54,14 @@ def test_v3_uses_same_origin_webrtc_semantic_turns_and_warm_followups():
     assert "track.enabled = true" in voice
     assert "25000" in voice
     assert "30000" in voice
-    assert "max_output_tokens: 1024" in voice
+    assert "MAX_RESPONSE_OUTPUT_TOKENS = 4096" in voice
+    assert "RECOVERY_OUTPUT_TOKENS = 1024" in voice
+    assert "max_output_tokens: MAX_RESPONSE_OUTPUT_TOKENS" in voice
     assert '"VOICE LIMIT"' in voice
+    assert '"SCHLIESST AB"' in voice
+    assert '"TECHNISCHE FORTSETZUNG' in voice
+    assert "limitRecoveriesThisTurn < 1" in voice
+    assert "armResponseStartTimeout" in voice
     assert '"MIKROFON BLOCKIERT"' in voice
     assert '"REALTIME TIMEOUT"' in voice
     assert "peer.localDescription?.sdp || offer.sdp" in voice
