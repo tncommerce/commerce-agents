@@ -54,6 +54,12 @@ def task_role(task: dict) -> str | None:
 
 
 def project_crew(snapshot: dict) -> dict:
+    """Project the fixed organisation plus real live/recent execution evidence.
+
+    Roles are organisational identities. Only a current lease/heartbeat may mark a
+    role active. Recent executions are history and never imply that a worker is
+    still running.
+    """
     complete = snapshot["freshness"]["operational_complete"]
     command = snapshot["command_center"]
     systems = {s["name"]: s for s in snapshot["system_health"]}
@@ -68,6 +74,11 @@ def project_crew(snapshot: dict) -> dict:
         for w in snapshot["worker_deck"]
         if not w.get("completed_at") and w.get("status") != "IDLE"
     ]
+    recent_completed = sorted(
+        [w for w in snapshot["worker_deck"] if w.get("completed_at")],
+        key=lambda w: w.get("completed_at") or "",
+        reverse=True,
+    )
 
     # Prefer documented handler/function over a generic executor's historical display alias.
     def execution_role(worker):
@@ -79,6 +90,7 @@ def project_crew(snapshot: dict) -> dict:
         for key in keys:
             alias, role = ROSTER[key]
             executions = [w for w in live if execution_role(w) == key]
+            recent = [w for w in recent_completed if execution_role(w) == key][:3]
             tasks = sorted(
                 [m for m in missions if task_role(m) == key],
                 key=lambda m: (-(m.get("priority") or 0), m.get("task_id") or ""),
@@ -151,6 +163,7 @@ def project_crew(snapshot: dict) -> dict:
                 state, focus = "BEREIT", ready[0] if ready else None
             explanation = (focus or {}).get("explanation") or {}
             current = active[0] if active else None
+            last_activity = recent[0] if recent else None
             title = (focus or {}).get("title") or (current or {}).get("task_title")
             next_step = explanation.get("next_step") or (
                 "Aktuelle Ausführung und nächsten verifizierten Checkpoint prüfen."
@@ -221,14 +234,90 @@ def project_crew(snapshot: dict) -> dict:
                     "tasks": tasks,
                     "owner_gates": linked_gates,
                     "executions": executions,
+                    "recent_executions": recent,
+                    "last_action": (last_activity or {}).get("task_title")
+                    or (last_activity or {}).get("task_id"),
+                    "last_action_at": (last_activity or {}).get("completed_at"),
+                    "last_checkpoint": (last_activity or {}).get("checkpoint"),
                     "connections": (["active"] if active else [])
                     + (["owner"] if gates else [])
                     + (["external"] if waiting else []),
                     "capability_note": "Organisationsrolle; kein Nachweis eines zertifizierten Dispatch-Handlers.",
                 }
             )
+
+    cluster_meta = {
+        "BUILD": ("Build", "Code, Infrastruktur und Qualität"),
+        "MONEY": ("Money", "Revenue, Attribution und Affiliate"),
+        "GROWTH": ("Growth", "Content, Research und externe Rückmeldungen"),
+        "OPERATIONS": ("Operations", "Queue, Prioritäten und Abhängigkeiten"),
+    }
+    clusters = []
+    for cluster, keys in CLUSTERS.items():
+        roles = [r for r in crew if r["cluster"] == cluster]
+        active_count = sum(r["active_count"] for r in roles)
+        waiting_count = sum(r["state"] == "WARTET EXTERN" for r in roles)
+        blocked_count = sum(r["state"] in {"BLOCKIERT", "DEGRADED", "OWNER GATE"} for r in roles)
+        label, purpose = cluster_meta[cluster]
+        clusters.append(
+            {
+                "id": cluster,
+                "label": label,
+                "purpose": purpose,
+                "role_ids": list(keys),
+                "active_count": active_count,
+                "waiting_count": waiting_count,
+                "blocked_count": blocked_count,
+                "state": "AKTIV"
+                if active_count
+                else "AUFMERKSAMKEIT"
+                if blocked_count
+                else "WARTET"
+                if waiting_count
+                else "BEREIT",
+            }
+        )
+
+    live_now = []
+    for member in crew:
+        for execution in member["executions"]:
+            if execution.get("status") == "ACTIVE" and complete:
+                live_now.append(
+                    {
+                        "role_id": member["role_id"],
+                        "alias": member["alias"],
+                        "role": member["role"],
+                        "task": execution.get("task_title") or execution.get("task_id"),
+                        "started_at": execution.get("started_at"),
+                        "heartbeat_at": execution.get("heartbeat_at"),
+                        "next_checkpoint": execution.get("next_checkpoint"),
+                        "handler_id": execution.get("handler_id"),
+                    }
+                )
+
+    recent_activity = []
+    for member in crew:
+        for execution in member["recent_executions"]:
+            recent_activity.append(
+                {
+                    "role_id": member["role_id"],
+                    "alias": member["alias"],
+                    "role": member["role"],
+                    "task": execution.get("task_title") or execution.get("task_id"),
+                    "completed_at": execution.get("completed_at"),
+                    "checkpoint": execution.get("checkpoint"),
+                    "handler_id": execution.get("handler_id"),
+                }
+            )
+    recent_activity = sorted(
+        recent_activity, key=lambda row: row.get("completed_at") or "", reverse=True
+    )[:8]
+
     return {
         "roles": crew,
+        "clusters": clusters,
+        "live_now": live_now,
+        "recent_activity": recent_activity,
         "active_executions": sum(c["active_count"] for c in crew),
         "unassigned_executions": [w for w in live if execution_role(w) not in ROSTER],
         "complete": complete,
