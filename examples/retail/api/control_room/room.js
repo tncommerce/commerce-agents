@@ -109,8 +109,9 @@
       SCHEDULED: "Geplant",
       STALE: "Nachweis älter",
       ACTIVE: "Aktiv",
-      "WAITING HUMAN": "Owner Gate",
-      UNKNOWN: "Unbekannt",
+      "WAITING HUMAN": "Deine Aktion",
+      DEGRADED: "Prüfung nötig",
+      UNKNOWN: "Nicht bestätigt",
       WAITING: "Wartet",
       WORKING: "Arbeitet",
       READY: "Bereit",
@@ -1503,7 +1504,7 @@
             identity,
             node(
               "span",
-              member.state,
+              member.display_state || member.state,
               "pill " +
                 ({ green: "good", blue: "info", amber: "warn", red: "action" }[
                   member.tone
@@ -1565,7 +1566,7 @@
             );
           if (member.connections.includes("owner"))
             card.append(
-              node("p", "Jarvis → Tuan · Freigabe prüfen", "crew-owner-path"),
+              node("p", "Jarvis → Owner · Aktion erforderlich", "crew-owner-path"),
             );
 
           const detail = node("details", undefined, "crew-details");
@@ -1735,6 +1736,9 @@
     const f = s.freshness || {};
     const complete = f.operational_complete === true;
     const gates = Array.isArray(s.decision_center) ? s.decision_center : [];
+    const actionableGates = gates.filter(
+      (gate) => gate?.owner_confirmed_manual_action !== true,
+    );
     const workers = Array.isArray(s.worker_deck) ? s.worker_deck : [];
     const primaryWorker = workers.find((w) => w.status === "ACTIVE");
     const primaryTitle = primaryWorker
@@ -1762,9 +1766,9 @@
     const budget = s.budget || {};
     const queueData = s.queue || {};
     const gatesCount = numeric(c.human_approval_count);
-    const needsApproval = gates.length > 0 && gatesCount > 0;
+    const needsApproval = actionableGates.length > 0 && gatesCount > 0;
     const gatesComplete = c.gates_complete === true;
-    $("decisions").hidden = gatesComplete && !gates.length;
+    $("decisions").hidden = gatesComplete && !actionableGates.length;
     $("pulse-action").href =
       gatesComplete && !needsApproval ? "#command" : "#decisions";
     $("decision-nav").closest("a").href = $("pulse-action").href;
@@ -1854,7 +1858,7 @@
           ? "Nichts offen"
           : "Unklar",
       needsApproval
-        ? gates[0]?.title || "Owner-Aktion erforderlich"
+        ? actionableGates[0]?.title || "Owner-Aktion erforderlich"
         : gatesComplete
           ? "Keine Owner-Entscheidung erforderlich."
           : "Freigabequellen sind unvollständig.",
@@ -1933,20 +1937,20 @@
       );
       put(
         "approval-detail",
-        gates[0]?.reason ||
+        actionableGates[0]?.reason ||
           "Öffne den Owner Action Center: Dort siehst du Aufgabe, Grund, Risiko, Kosten und die konkrete Handlung.",
       );
     }
 
     const decisionPanel = $("decisions");
     if (decisionPanel) {
-      decisionPanel.classList.toggle("has-decisions", gates.length > 0);
-      decisionPanel.classList.toggle("no-decisions", gates.length === 0);
+      decisionPanel.classList.toggle("has-decisions", actionableGates.length > 0);
+      decisionPanel.classList.toggle("no-decisions", actionableGates.length === 0);
     }
     const decisions = $("decision-list");
     if (decisions) {
       decisions.replaceChildren();
-      for (const d of gates) {
+      for (const d of actionableGates) {
         const item = node("article", undefined, "decision-item owner-action-card");
         const manualConfirmed = d.owner_confirmed_manual_action === true;
         const actionMode = d.manual_action_required
@@ -1977,13 +1981,13 @@
         if (d.provider) line(item, "Provider", d.provider);
 
         const actions = node("div", undefined, "owner-action-buttons");
-        if (d.required_url) {
+        if (d.required_url && !manualConfirmed) {
           const copy = node("button", "Ziel-URL kopieren", "owner-action secondary");
           copy.type = "button";
           copy.addEventListener("click", () => copyText(d.required_url, copy));
           actions.append(copy);
         }
-        if (d.type === "instagram_profile_link_update") {
+        if (d.type === "instagram_profile_link_update" && !manualConfirmed) {
           const open = node("a", "Instagram-Profil bearbeiten", "owner-action secondary");
           open.href = "https://www.instagram.com/accounts/edit/";
           open.target = "_blank";
@@ -1995,7 +1999,7 @@
           d.action_token &&
           !manualConfirmed
         ) {
-          const confirm = node("button", "Erledigt · Jarvis prüfen", "owner-action primary");
+          const confirm = node("button", "Erledigt", "owner-action primary");
           confirm.type = "button";
           confirm.addEventListener("click", () =>
             submitOwnerAction(d, "confirm_manual", confirm),
@@ -2040,7 +2044,7 @@
         }
         decisions.append(item);
       }
-      if (!gates.length) {
+      if (!actionableGates.length) {
         decisions.append(
           node(
             "p",
