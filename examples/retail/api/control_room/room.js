@@ -150,6 +150,260 @@
   let busy = false;
   let timer = null;
 
+  // JARVIS LIVE INTERFACE V1
+  // Phase 1 is intentionally local-only: microphone samples feed only the
+  // on-screen reactor. No audio leaves the browser and no paid voice API runs.
+  function createJarvisVoiceController() {
+    const stage = document.querySelector(".jarvis-stage");
+    const core = $("jarvis-core");
+    const button = $("jarvis-ptt");
+    const spectrum = $("jarvis-spectrum");
+    const mode = $("jarvis-voice-mode");
+    const status = $("jarvis-voice-status");
+    if (!stage || !core || !button || !spectrum || !mode || !status) return null;
+
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    const micSupported =
+      Boolean(navigator.mediaDevices?.getUserMedia) && Boolean(AudioContextClass);
+    const bars = Array.from({ length: 24 }, () => {
+      const bar = document.createElement("i");
+      spectrum.append(bar);
+      return bar;
+    });
+
+    let held = false;
+    let active = false;
+    let stream = null;
+    let context = null;
+    let source = null;
+    let analyser = null;
+    let frame = null;
+    let values = null;
+    let startedAt = 0;
+    let state = "idle";
+
+    function systemLabel() {
+      return core.dataset.mode === "working" ? "WORKING" : "STANDBY";
+    }
+
+    function setState(next, label, detail) {
+      state = next;
+      core.dataset.voiceState = next;
+      mode.textContent = label || (next === "idle" ? systemLabel() : next.toUpperCase());
+      if (detail) status.textContent = detail;
+      stage.classList.toggle("voice-error", next === "error");
+    }
+
+    function resetBars() {
+      bars.forEach((bar) => {
+        bar.style.transform = "scaleY(.34)";
+        bar.style.opacity = ".45";
+      });
+      core.style.removeProperty("--mic-energy");
+    }
+
+    function stopMedia() {
+      if (frame !== null) cancelAnimationFrame(frame);
+      frame = null;
+      if (source) {
+        try {
+          source.disconnect();
+        } catch {}
+      }
+      source = null;
+      analyser = null;
+      values = null;
+      if (stream) stream.getTracks().forEach((track) => track.stop());
+      stream = null;
+      if (context) {
+        const closing = context.close();
+        if (closing?.catch) closing.catch(() => {});
+      }
+      context = null;
+      active = false;
+      button.setAttribute("aria-pressed", "false");
+      resetBars();
+    }
+
+    function drawSpectrum() {
+      if (!active || !analyser || !values) return;
+      analyser.getByteFrequencyData(values);
+      let total = 0;
+      bars.forEach((bar, index) => {
+        const mirrored = index < bars.length / 2 ? index : bars.length - 1 - index;
+        const sourceIndex = Math.min(
+          values.length - 1,
+          Math.floor((mirrored / (bars.length / 2)) * values.length),
+        );
+        const level = values[sourceIndex] / 255;
+        total += level;
+        bar.style.transform = "scaleY(" + (0.34 + level * 3.25).toFixed(2) + ")";
+        bar.style.opacity = String(0.45 + level * 0.55);
+      });
+      const energy = total / bars.length;
+      core.style.setProperty("--mic-energy", energy.toFixed(3));
+      frame = requestAnimationFrame(drawSpectrum);
+    }
+
+    async function start() {
+      if (!held || active) return;
+      if (!micSupported) {
+        setState(
+          "error",
+          "MIC UNAVAILABLE",
+          "Browser-Mikrofon nicht verfügbar · HTTPS und Browser prüfen",
+        );
+        return;
+      }
+
+      button.setAttribute("aria-pressed", "true");
+      setState("listening", "CONNECTING", "Mikrofon wird lokal geöffnet …");
+      try {
+        const requested = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+          },
+          video: false,
+        });
+        if (!held) {
+          requested.getTracks().forEach((track) => track.stop());
+          button.setAttribute("aria-pressed", "false");
+          setState("idle", systemLabel(), "Bereit · Button oder V halten");
+          return;
+        }
+
+        stream = requested;
+        context = new AudioContextClass();
+        if (context.state === "suspended") await context.resume();
+        source = context.createMediaStreamSource(stream);
+        analyser = context.createAnalyser();
+        analyser.fftSize = 64;
+        analyser.smoothingTimeConstant = 0.72;
+        source.connect(analyser);
+        values = new Uint8Array(analyser.frequencyBinCount);
+        active = true;
+        startedAt = performance.now();
+        setState(
+          "listening",
+          "LISTENING",
+          "Hört lokal zu · Audio wird nicht übertragen",
+        );
+        drawSpectrum();
+        document.dispatchEvent(
+          new CustomEvent("dufynd:jarvis-ptt-start", {
+            detail: { localOnly: true, startedAt: Date.now() },
+          }),
+        );
+      } catch (error) {
+        stopMedia();
+        const denied =
+          error?.name === "NotAllowedError" || error?.name === "SecurityError";
+        setState(
+          "error",
+          denied ? "MIC BLOCKED" : "MIC ERROR",
+          denied
+            ? "Mikrofon im Browser freigeben · danach erneut halten"
+            : "Mikrofon konnte nicht geöffnet werden",
+        );
+      }
+    }
+
+    function stop() {
+      held = false;
+      const durationMs = active ? Math.round(performance.now() - startedAt) : 0;
+      const wasActive = active;
+      stopMedia();
+      if (state !== "error") {
+        setState("idle", systemLabel(), "Bereit · Button oder V halten");
+      }
+      if (wasActive) {
+        document.dispatchEvent(
+          new CustomEvent("dufynd:jarvis-ptt-stop", {
+            detail: { localOnly: true, durationMs },
+          }),
+        );
+      }
+    }
+
+    function beginHold(event) {
+      if (event?.button !== undefined && event.button !== 0) return;
+      held = true;
+      if (event?.pointerId !== undefined && button.setPointerCapture) {
+        try {
+          button.setPointerCapture(event.pointerId);
+        } catch {}
+      }
+      event?.preventDefault();
+      start();
+    }
+
+    button.addEventListener("pointerdown", beginHold);
+    button.addEventListener("pointerup", stop);
+    button.addEventListener("pointercancel", stop);
+    button.addEventListener("lostpointercapture", () => {
+      if (held) stop();
+    });
+
+    const typingTarget = (target) =>
+      target instanceof HTMLElement &&
+      Boolean(target.closest("input, textarea, select, [contenteditable='true']"));
+
+    document.addEventListener("keydown", (event) => {
+      if (
+        event.code !== "KeyV" ||
+        event.repeat ||
+        event.altKey ||
+        event.ctrlKey ||
+        event.metaKey ||
+        typingTarget(event.target)
+      )
+        return;
+      held = true;
+      event.preventDefault();
+      start();
+    });
+    document.addEventListener("keyup", (event) => {
+      if (event.code !== "KeyV") return;
+      event.preventDefault();
+      stop();
+    });
+    window.addEventListener("blur", stop);
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) stop();
+    });
+
+    new MutationObserver(() => {
+      if (!active && state === "idle") mode.textContent = systemLabel();
+    }).observe(core, { attributes: true, attributeFilter: ["data-mode"] });
+
+    resetBars();
+    if (!micSupported) {
+      setState(
+        "error",
+        "MIC UNAVAILABLE",
+        "Browser unterstützt den lokalen Mikrofonmodus nicht",
+      );
+    } else {
+      setState("idle", systemLabel(), "Bereit · Button oder V halten");
+    }
+
+    const api = {
+      getState: () => ({ state, active, localOnly: true }),
+      setState(next, label) {
+        if (active || !["idle", "thinking", "speaking"].includes(next)) return false;
+        setState(next, label);
+        return true;
+      },
+      stop,
+    };
+    window.DUFYNDJarvisVoice = Object.freeze(api);
+    return api;
+  }
+
+  const jarvisVoice = createJarvisVoiceController();
+
   function missions() {
     if (!snapshot) return;
     const board = $("mission-board");
