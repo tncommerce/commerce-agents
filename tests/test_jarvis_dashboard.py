@@ -20,6 +20,44 @@ NOW = datetime(2026, 10, 3, 16, 0, tzinfo=UTC)
 STAMP = NOW.isoformat()
 
 
+@pytest.mark.parametrize("newer, same_content", [(True, True), (False, True), (True, False)])
+def test_removed_launch_supersedes_only_older_exact_content_schedule(newer, same_content):
+    data = ceo_data()
+    data["publication"] = [
+        {
+            "content_id": "one_million_still_hits_20261004_01" if same_content else "replacement",
+            "observed_at": (NOW - timedelta(hours=2)).isoformat(),
+            "platform0": "instagram",
+            "status0": "PENDING",
+            "scheduled0": STAMP,
+            "platform1": "tiktok",
+            "status1": "PENDING",
+            "scheduled1": STAMP,
+        }
+    ]
+    data["social_quality"] = [
+        {
+            "last_verified_at": STAMP if newer else (NOW - timedelta(hours=3)).isoformat(),
+            "status": "remediation_active",
+            "instagram_state": "owner_confirmed_removed",
+            "tiktok_state": "stopped_before_publish",
+        }
+    ]
+    money = build_snapshot(data, now=NOW)["first_money"]
+    if newer and same_content:
+        assert money["publication_stopped"] is True
+        assert [p["state"] for p in money["posts"]] == ["REMOVED", "STOPPED"]
+        assert all(p["scheduled_at"] is None for p in money["posts"])
+        assert all(p["historical_state"] == "PENDING" for p in money["posts"])
+        assert money["publication_stale"] is False
+        assert money["publication_observed_at"] == STAMP
+    else:
+        assert not money.get("publication_stopped")
+        assert all(p["state"] == "PENDING" for p in money["posts"])
+    assert money["transactions"] is None
+    assert money["commission_eur"] is None
+
+
 def fixture_data():
     return {
         "tasks": [

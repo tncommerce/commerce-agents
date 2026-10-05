@@ -555,12 +555,18 @@ def project_risk(snapshot: dict) -> dict:
     panel(
         "money",
         "FIRST MONEY",
-        "blue" if tracking else "amber",
-        "Launch · Monitoring" if tracking else "Tracking-Nachweis prüfen",
+        "blue" if tracking and not money.get("publication_stopped") else "amber",
+        "Launch gestoppt · Messhistorie erhalten"
+        if money.get("publication_stopped")
+        else "Launch · Monitoring"
+        if tracking
+        else "Tracking-Nachweis prüfen",
         "Launch-Funnel aus attribuierten Signalen. Clickout ist kein Sale; Revenue nur mit Affiliate-Network-Nachweis."
         if tracking
         else "Aktueller, eindeutig attribuierter Runtime-Nachweis fehlt; keine Conversion ableiten.",
-        "Auf erstes Signal warten."
+        "Neue Revision im Content-Chat prüfen; explizites Owner GO abwarten."
+        if money.get("publication_stopped")
+        else "Auf erstes Signal warten."
         if runtime.get("phase") == "prelaunch"
         else "Nächstes Funnel-Signal und externen Sale-Nachweis beobachten.",
         runtime.get("observed_at"),

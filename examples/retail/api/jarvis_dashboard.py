@@ -850,6 +850,36 @@ def build_snapshot(
         is True,
         "publishing_authorized": social_quality.get("publishing_authorized") is True,
     }
+    # Later persisted stop/removal evidence supersedes a historical schedule.
+    # This is a read-only projection; retain the original states for history.
+    money = snapshot["first_money"]
+    quality_at = _time(social_quality.get("last_verified_at"))
+    publication_at = _time(publication.get("observed_at"))
+    if (
+        publication.get("content_id") == FIRST_MONEY_CONTENT
+        and quality_at
+        and (not publication_at or quality_at > publication_at)
+    ):
+        overrides = {
+            "instagram": ("owner_confirmed_removed", "REMOVED"),
+            "tiktok": ("stopped_before_publish", "STOPPED"),
+        }
+        for post in money["posts"]:
+            platform = post["platform"]
+            expected, state = overrides.get(platform, (None, None))
+            if expected and social_quality.get(f"{platform}_state") == expected:
+                post["historical_state"] = post["state"]
+                post["historical_scheduled_at"] = post["scheduled_at"]
+                post["state"] = state
+                post["scheduled_at"] = None
+                post["evidence_source"] = "persisted_social_quality"
+                post["observed_at"] = quality_at.isoformat()
+        money["publication_stopped"] = bool(money["posts"]) and all(
+            p["state"] in {"REMOVED", "STOPPED"} for p in money["posts"]
+        )
+        if money["publication_stopped"]:
+            money["publication_observed_at"] = quality_at.isoformat()
+            money["publication_stale"] = False
     # Additive CEO projections. A candidate is not a certified handler selection.
     missions = [
         m for lane, rows in board.items() if lane not in {"DONE", "CANCELLED"} for m in rows
