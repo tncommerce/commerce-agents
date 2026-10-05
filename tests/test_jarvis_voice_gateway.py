@@ -19,7 +19,7 @@ def test_voice_gateway_session_is_read_only_tool_enabled_and_conversational():
     assert config["type"] == "realtime"
     assert config["model"] == DEFAULT_MODEL
     assert config["output_modalities"] == ["audio"]
-    assert config["max_output_tokens"] == 1024
+    assert config["max_output_tokens"] == 4096
     assert config["tool_choice"] == "auto"
     assert len(config["tools"]) == 1
     tool = config["tools"][0]
@@ -75,6 +75,7 @@ def test_voice_gateway_keeps_standard_key_server_side_and_returns_only_sdp():
     assert seen["safety"] != owner_id
     assert seen["content_type"].startswith("multipart/form-data;")
     assert b"gpt-realtime-2.1-mini" in seen["body"]
+    assert b"4096" in seen["body"]
     assert b"sk-server-only-test" not in seen["body"]
 
 
