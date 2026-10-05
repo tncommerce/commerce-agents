@@ -672,6 +672,14 @@ def test_ceo_waits_with_nothing_for_owner_despite_degraded_observer():
     result = build_snapshot(ceo_data(), now=NOW)
     assert result["command_center"]["status"] == "WAITING"
     assert result["command_center"]["owner_action"] == "NICHTS"
+    assert result["command_center"]["ceo_status"] == "ARBEIT FEHLT"
+    diagnosis = result["operational_diagnosis"]
+    assert diagnosis["work_state"] == "no_executable_work"
+    assert diagnosis["planner_gap"] is True
+    assert diagnosis["master_action_required"] is False
+    assert diagnosis["mail_wait_is_global_blocker"] is False
+    assert diagnosis["runnable_tasks"] == 0
+    assert "keine ausführbaren Tasks" in diagnosis["reason"]
     assert result["runtime_safety"]["today_new_cost_usd"] == "0"
     assert result["queue"]["done"] == 78
     assert result["first_money"]["transactions"] is None
@@ -844,7 +852,9 @@ def test_ceo_gate_and_external_monitoring_are_truthful():
         }
     ]
     result = build_snapshot(data, now=NOW)
-    assert result["command_center"]["ceo_status"] == "JARVIS ÜBERWACHT"
+    assert result["command_center"]["ceo_status"] == "ARBEIT FEHLT"
+    assert result["operational_diagnosis"]["parked_external"] == 1
+    assert result["operational_diagnosis"]["mail_wait_is_global_blocker"] is False
     assert result["command_center"]["human_approval_count"] == 0
     assert result["command_center"]["gates_complete"] is True
     data["decisions"] = [
