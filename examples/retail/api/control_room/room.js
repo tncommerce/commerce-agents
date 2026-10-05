@@ -163,6 +163,7 @@
     const status = $("jarvis-voice-status");
     const csrf = document.querySelector('meta[name="owner-csrf"]')?.content || "";
     if (!stage || !core || !button || !spectrum || !mode || !status) return null;
+    const providerEnabled = stage.dataset.voiceEnabled === "true";
 
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     const micSupported =
@@ -670,6 +671,16 @@
 
     async function start() {
       if (!held || connecting || listening) return;
+      if (!providerEnabled) {
+        held = false;
+        button.setAttribute("aria-pressed", "false");
+        setState(
+          "error",
+          "VOICE SETUP",
+          "OpenAI Voice ist serverseitig noch nicht konfiguriert",
+        );
+        return;
+      }
       if (!micSupported) {
         setState(
           "error",
@@ -810,7 +821,13 @@
     }).observe(core, { attributes: true, attributeFilter: ["data-mode"] });
 
     resetBars();
-    if (!micSupported) {
+    if (!providerEnabled) {
+      setState(
+        "error",
+        "VOICE SETUP",
+        "OpenAI Voice ist serverseitig noch nicht konfiguriert",
+      );
+    } else if (!micSupported) {
       setState(
         "error",
         "VOICE UNAVAILABLE",
