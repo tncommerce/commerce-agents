@@ -2693,8 +2693,8 @@
           node(
             "p",
             gatesComplete
-              ? "Keine Owner-Aktion offen."
-              : "Owner-Aktionsstatus ist noch nicht vollständig bestätigt.",
+              ? "Keine Master-Aktion offen."
+              : "Master-Aktionsstatus ist noch nicht vollständig bestätigt.",
             "muted",
           ),
         );
@@ -2712,7 +2712,7 @@
       "current-task",
       primaryTitle ||
         (operator.state === "IDLE_NO_RUNNABLE_WORK"
-          ? "Keine ausführbare Arbeit in der Queue"
+          ? "Keine ausführbare Arbeit in der Arbeitsliste"
           : "Keine aktive Ausführung"),
     );
     put(
@@ -2739,7 +2739,7 @@
     );
     put(
       "operator-master-detail",
-      operator.owner_message || "Owner-Bedarf wird geprüft.",
+      operator.owner_message || "Master-Bedarf wird geprüft.",
     );
     const operatorPanel = $("operator-brief");
     if (operatorPanel) operatorPanel.dataset.state = operator.state || "UNKNOWN";
