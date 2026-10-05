@@ -5,16 +5,16 @@ from __future__ import annotations
 from hashlib import sha256
 
 ROSTER = {
-    "tech": ("Zoro", "Tech Worker"),
-    "revenue": ("Nami", "Revenue / Analytics Worker"),
-    "research": ("Robin", "Research / Rights Worker"),
-    "infrastructure": ("Franky", "Infrastructure Worker"),
-    "content": ("Sanji", "Content Worker"),
-    "qa": ("Chopper", "QA / Health Worker"),
-    "attribution": ("Law", "Attribution / Diagnostics Worker"),
-    "operations": ("Jinbe", "Queue / Operations Worker"),
-    "affiliate": ("Brook", "Affiliate / Network Worker"),
-    "outreach": ("Usopp", "External Response Worker"),
+    "tech": ("Zoro", "Technik & Umsetzung"),
+    "revenue": ("Nami", "Umsatz & Daten"),
+    "research": ("Robin", "Bilder & Rechte"),
+    "infrastructure": ("Franky", "Hosting & Deployments"),
+    "content": ("Sanji", "Content & Creatives"),
+    "qa": ("Chopper", "Qualität & Systemchecks"),
+    "attribution": ("Law", "Tracking & Diagnose"),
+    "operations": ("Jinbe", "Aufgabensteuerung"),
+    "affiliate": ("Brook", "Händler & Affiliate"),
+    "outreach": ("Usopp", "Externe Antworten"),
 }
 
 # Verified task purposes; historical executor/domain labels are deliberately not authoritative.
