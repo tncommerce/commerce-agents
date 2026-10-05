@@ -211,6 +211,10 @@
     let cleanupTimer = null;
     let generation = 0;
     let toolCallsThisTurn = 0;
+    let limitRecoveriesThisTurn = 0;
+    const MAX_RESPONSE_OUTPUT_TOKENS = 4096;
+    const RECOVERY_OUTPUT_TOKENS = 1024;
+    const RESPONSE_START_TIMEOUT_MS = 30000;
 
     function systemLabel() {
       return core.dataset.mode === "working" ? "WORKING" : "STANDBY";
@@ -380,6 +384,23 @@
       cleanupTimer = null;
     }
 
+    function armResponseStartTimeout(detail) {
+      clearTimeout(responseTimer);
+      responseTimer = setTimeout(() => {
+        setState(
+          "error",
+          "VOICE TIMEOUT",
+          detail || "Jarvis hat keine Antwort begonnen · Session beendet",
+        );
+        cleanupTimer = setTimeout(() => cleanupSession(), 1000);
+      }, RESPONSE_START_TIMEOUT_MS);
+    }
+
+    function responseStarted() {
+      clearTimeout(responseTimer);
+      responseTimer = null;
+    }
+
     function cleanupSession({ preserveState = false } = {}) {
       generation += 1;
       clearTimers();
@@ -409,6 +430,7 @@
       remoteAudio = null;
       connecting = false;
       toolCallsThisTurn = 0;
+      limitRecoveriesThisTurn = 0;
       stage.dataset.sessionWarm = "false";
       button.setAttribute("aria-pressed", "false");
       if (!preserveState) {
@@ -871,14 +893,11 @@
         type: "response.create",
         response: {
           output_modalities: ["audio"],
-          max_output_tokens: 1024,
+          max_output_tokens: MAX_RESPONSE_OUTPUT_TOKENS,
           tool_choice: "none",
         },
       });
-      responseTimer = setTimeout(() => {
-        setState("error", "VOICE TIMEOUT", "Jarvis konnte die Analyse nicht abschließen");
-        cleanupTimer = setTimeout(() => cleanupSession(), 1800);
-      }, 30000);
+      armResponseStartTimeout("Jarvis konnte die Analyse nicht beginnen");
       return true;
     }
 
@@ -905,15 +924,15 @@
         if (track) track.enabled = false;
         stopAnalysis({ stopTracks: false });
         setState("thinking", "THINKING", "Jarvis verarbeitet und ordnet ein …");
-        responseTimer = setTimeout(() => {
-          setState("error", "VOICE TIMEOUT", "Keine Antwort bestätigt · Session beendet");
-          cleanupTimer = setTimeout(() => cleanupSession(), 1000);
-        }, 30000);
+        armResponseStartTimeout("Jarvis hat die Antwort nicht rechtzeitig begonnen");
         return;
       }
 
       if (type === "input_audio_buffer.committed" || type === "response.created") {
         setState("thinking", "THINKING", "Jarvis verarbeitet und ordnet ein …");
+        if (type === "response.created") {
+          armResponseStartTimeout("Jarvis hat die Antwort nicht rechtzeitig begonnen");
+        }
         return;
       }
 
@@ -923,6 +942,7 @@
         type === "response.output_audio_transcript.delta" ||
         type === "response.audio.transcript.delta"
       ) {
+        responseStarted();
         setState("speaking", "SPEAKING", "Jarvis antwortet …");
         return;
       }
@@ -944,13 +964,57 @@
           responseStatus &&
           !["completed", "success"].includes(responseStatus)
         ) {
+          if (
+            responseReason === "max_output_tokens" &&
+            limitRecoveriesThisTurn < 1
+          ) {
+            limitRecoveriesThisTurn += 1;
+            responseGenerationDone = false;
+            playbackUiDone = false;
+            lastAudibleAt = null;
+            setState(
+              "thinking",
+              "SCHLIESST AB",
+              "Jarvis vervollständigt den begonnenen Gedanken …",
+            );
+            sendEvent({
+              type: "conversation.item.create",
+              item: {
+                type: "message",
+                role: "system",
+                content: [
+                  {
+                    type: "input_text",
+                    text:
+                      "TECHNISCHE FORTSETZUNG: Die vorige Antwort wurde durch das " +
+                      "Output-Limit abgeschnitten. Fahre exakt an der abgebrochenen " +
+                      "Stelle fort, wiederhole nichts und beende den begonnenen Gedanken " +
+                      "in höchstens zwei klaren Sätzen. Verwende keine Tools.",
+                  },
+                ],
+              },
+            });
+            sendEvent({
+              type: "response.create",
+              response: {
+                output_modalities: ["audio"],
+                max_output_tokens: RECOVERY_OUTPUT_TOKENS,
+                tool_choice: "none",
+              },
+            });
+            armResponseStartTimeout(
+              "Jarvis konnte die technische Fortsetzung nicht beginnen",
+            );
+            return;
+          }
+
           setState(
             "error",
             responseReason === "max_output_tokens"
               ? "VOICE LIMIT"
               : "VOICE INCOMPLETE",
             responseReason === "max_output_tokens"
-              ? "Antwortlimit erreicht · bitte erneut versuchen"
+              ? "Antwort konnte selbst nach der Abschluss-Rettung nicht vollständig beendet werden"
               : "Antwort nicht vollständig bestätigt" +
                   (responseReason ? " · " + responseReason : "") +
                   " · erneut versuchen",
@@ -1009,6 +1073,7 @@
       playbackUiDone = false;
       lastAudibleAt = null;
       toolCallsThisTurn = 0;
+      limitRecoveriesThisTurn = 0;
 
       const track = stream?.getAudioTracks()[0];
       if (!track) throw new Error("microphone_track_missing");
