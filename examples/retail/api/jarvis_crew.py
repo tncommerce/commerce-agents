@@ -615,7 +615,11 @@ def project_risk(snapshot: dict) -> dict:
             instagram_removal,
         )
 
-    gates = snapshot["decision_center"]
+    gates = [
+        gate
+        for gate in snapshot["decision_center"]
+        if gate.get("owner_confirmed_manual_action") is not True
+    ]
     gate_complete = command.get("gates_complete") is True
     panel(
         "owner",
