@@ -2461,42 +2461,36 @@
         (a, b) => Date.parse(a.scheduled_at) - Date.parse(b.scheduled_at),
       )[0];
 
-    const jarvisTone = needsApproval
-      ? "amber"
-      : c.ceo_status === "BLOCKIERT"
-        ? "amber"
-        : c.status === "WORKING"
-          ? "blue"
-          : c.status === "WAITING"
-            ? "blue"
-            : c.status === "ERROR"
-              ? "amber"
-              : complete
-                ? "green"
-                : "neutral";
-    const jarvisMain = needsApproval
-      ? "Aktion offen"
-      : c.ceo_status === "BLOCKIERT"
-        ? "Blockiert"
-        : c.status === "WORKING"
-          ? "Arbeitet"
-          : c.status === "WAITING"
-            ? "Überwacht"
-            : c.status === "ERROR"
-              ? "Prüfen"
-              : complete
-                ? "Stabil"
-                : "Unklar";
-    const waitingExternal = Number(queueData.waiting_external || 0);
-    const blockedTasks = Number(queueData.blocked || 0);
+    const jarvisTone =
+      operator.state === "WORKING"
+        ? "blue"
+        : operator.state === "MASTER_ACTION_REQUIRED"
+          ? "amber"
+          : operator.state === "IDLE_NO_RUNNABLE_WORK"
+            ? "amber"
+            : operator.state === "READY"
+              ? "blue"
+              : c.status === "ERROR"
+                ? "amber"
+                : complete
+                  ? "green"
+                  : "neutral";
+    const jarvisMain =
+      operator.state === "WORKING"
+        ? "Arbeitet"
+        : operator.state === "MASTER_ACTION_REQUIRED"
+          ? "Master-Aktion"
+          : operator.state === "IDLE_NO_RUNNABLE_WORK"
+            ? "Autonomie leer"
+            : operator.state === "READY"
+              ? "Arbeit bereit"
+              : c.status === "ERROR"
+                ? "Prüfen"
+                : complete
+                  ? "Stabil"
+                  : "Unklar";
     const jarvisDetail =
-      c.status === "WAITING"
-        ? "Freier Loop aktiv · " +
-          waitingExternal +
-          " extern · " +
-          blockedTasks +
-          " blockiert."
-        : primaryTitle || "Supervisor-State aktuell.";
+      operator.cause || primaryTitle || "Aktuelle Lage wird eingeordnet.";
 
     setPulse("pulse-jarvis", jarvisTone, jarvisMain, jarvisDetail);
     setPulse(
@@ -2508,9 +2502,9 @@
           ? "Nichts offen"
           : "Unklar",
       needsApproval
-        ? actionableGates[0]?.title || "Owner-Aktion erforderlich"
+        ? actionableGates[0]?.title || "Master-Aktion erforderlich"
         : gatesComplete
-          ? "Keine Owner-Entscheidung erforderlich."
+          ? "Keine Master-Entscheidung erforderlich."
           : "Freigabequellen sind unvollständig.",
     );
     setTone("jarvis-core", jarvisTone);
