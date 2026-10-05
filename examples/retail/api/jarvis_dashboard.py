@@ -46,7 +46,7 @@ RUN_COLUMNS = (
 )
 OBSERVER_COLUMNS = (
     "observer_id,source_type,enabled,interval_seconds,last_attempt_at,last_success_at,"
-    "last_event_at,consecutive_failures,next_retry_at,health_status,last_error,"
+    "last_event_at,consecutive_failures,next_retry_at,health_status,"
     "observed_sha:last_snapshot->>sha,monitor_basis:last_snapshot->>monitor_basis"
 )
 CREDENTIAL_COLUMNS = (
