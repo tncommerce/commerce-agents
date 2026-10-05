@@ -19,7 +19,7 @@ from fastapi import HTTPException
 
 OPENAI_REALTIME_CALLS = "https://api.openai.com/v1/realtime/calls"
 ALLOWED_MODELS = {"gpt-realtime-2.1", "gpt-realtime-2.1-mini"}
-DEFAULT_MODEL = "gpt-realtime-2.1"
+DEFAULT_MODEL = "gpt-realtime-2.1-mini"
 DEFAULT_VOICE = "marin"
 
 VOICE_INSTRUCTIONS = (
