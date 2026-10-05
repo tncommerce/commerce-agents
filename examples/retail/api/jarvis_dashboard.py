@@ -19,6 +19,8 @@ import httpx
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 
+from .jarvis_clarity import task_explanation, worker_identity, workstream
+
 PROJECT_ORIGIN = "https://bqsdxaagklpkxioaqdqa.supabase.co"
 ACTIVE = {"claimed", "working", "verifying", "in_progress", "running", "dispatched"}
 LANES = ("READY", "WORKING", "WAITING EXTERNAL", "WAITING HUMAN", "BLOCKED", "DONE", "CANCELLED")
@@ -32,7 +34,7 @@ TASK_COLUMNS = (
     "task_id,domain,title,status,priority,requires_human_approval,approval_action_type,owner,"
     "worker_state,worker_owner,started_at,heartbeat_at,last_progress_at,lease_expires_at,"
     "expected_next_checkpoint,retry_count,blocked_reason,budget_class,provider_cost_unknown,"
-    "durability_policy,updated_at,released_at,dependencies"
+    "durability_policy,created_at,updated_at,released_at,dependencies"
 )
 RUN_COLUMNS = (
     "execution_id,task_id,worker_type,worker_id,external_run_id,status,attempt,scope,"
@@ -198,9 +200,16 @@ def _health(row: dict[str, Any], now: datetime) -> str:
     if not row.get("last_success_at"):
         return "UNKNOWN"
     interval = _number(row.get("interval_seconds")) or 120
-    if status == "stale" or not _fresh(row.get("last_success_at"), now, max(180, interval * 3)):
+    window = max(
+        600 if str(row.get("source_type", "")).startswith("github") else 1800, interval * 3
+    )
+    if status == "stale":
         return "STALE"
-    return "HEALTHY" if status == "healthy" else "UNKNOWN"
+    if status == "healthy" and _fresh(row.get("last_success_at"), now, window):
+        return "HEALTHY"
+    if status == "healthy" and _fresh(row.get("last_success_at"), now, window * 2 - 1):
+        return "MONITORED"
+    return "STALE" if status == "healthy" else "UNKNOWN"
 
 
 def _worker_health(row: dict[str, Any], now: datetime) -> str:
@@ -295,6 +304,7 @@ def build_snapshot(
             "provider_cost_unknown": row.get("provider_cost_unknown") is True,
             "lease_health": _worker_health({**row, "status": row.get("worker_state")}, now),
             "updated_at": _stamp(row.get("updated_at")),
+            "created_at": _stamp(row.get("created_at")),
             "budget_class": enum(row.get("budget_class")),
             "durability_policy": enum(row.get("durability_policy")),
             "retry_count": _number(row.get("retry_count")),
@@ -430,9 +440,13 @@ def build_snapshot(
         for row in data.get("credentials", [])
     ]
     systems = []
-    precedence = ["BLOCKED", "DEGRADED", "STALE", "UNKNOWN", "HEALTHY"]
+    precedence = ["BLOCKED", "DEGRADED", "STALE", "UNKNOWN", "MONITORED", "HEALTHY"]
     for name, prefix in (("GitHub", "github"), ("Render", "render"), ("Gmail", "gmail")):
-        matching = [row for row in observers if (row["source_type"] or "").startswith(prefix)]
+        matching = [
+            row
+            for row in observers
+            if row["enabled"] and (row["source_type"] or "").startswith(prefix)
+        ]
         health = min((row["health"] for row in matching), key=precedence.index, default="UNKNOWN")
         systems.append(
             {
@@ -520,6 +534,7 @@ def build_snapshot(
             "thin",
             "thin_config",
             "ci",
+            "external_waits",
         }
     ]
     if operational_incomplete:
@@ -712,6 +727,11 @@ def build_snapshot(
                 "health": smoke_health,
                 "last_success_at": _stamp(smoke.get("observed_at")),
                 "sha": _sha(smoke.get("sha")),
+                "passed": _number(smoke.get("passed")),
+                "total": _number(smoke.get("total")),
+                "test_passed": smoke.get("status") == "healthy"
+                and (_number(smoke.get("total")) or 0) > 0
+                and _number(smoke.get("passed")) == _number(smoke.get("total")),
             },
             {
                 "name": "Jarvis free loop",
@@ -831,7 +851,7 @@ def build_snapshot(
         )[:5],
     }
     snapshot["workstreams"] = []
-    for label, domains in (
+    for label, _domains in (
         ("Content", {"content"}),
         ("Tech / Workmode", {"tech", "platform"}),
         ("Jarvis", {"jarvis", "supervisor", "automation"}),
@@ -839,7 +859,7 @@ def build_snapshot(
         ("Affiliate", {"affiliate", "commerce"}),
     ):
         rows = sorted(
-            (m for m in missions if m["domain"] in domains), key=lambda m: -(m["priority"] or 0)
+            (m for m in missions if workstream(m) == label), key=lambda m: -(m["priority"] or 0)
         )
         active = [
             w
@@ -880,7 +900,9 @@ def build_snapshot(
                 else "UNKNOWN"
             )
             evidence_note = "Veröffentlichungsplan vorhanden · " + (
-                "Beobachtung veraltet" if state == "STALE" else "keine aktive Worker-Aufgabe"
+                "Nachweis älter; kein Publikationsfehler bestätigt"
+                if state == "STALE"
+                else "keine aktive Worker-Aufgabe"
             )
         snapshot["workstreams"].append(
             {
@@ -1008,6 +1030,69 @@ def build_snapshot(
                     }
                 )
     snapshot["live_feed"] = sorted(feed, key=lambda e: e["observed_at"] or "", reverse=True)[:8]
+    # Presentation semantics are separate from execution eligibility and freshness guards.
+    for mission in task_context.values():
+        mission["workstream"] = workstream(mission)
+        mission["explanation"] = task_explanation(
+            mission, data.get("external_waits", []), observers
+        )
+    for worker in workers:
+        worker.update(worker_identity(worker))
+        worker["description"] = (worker.get("task_context") or {}).get("explanation")
+    for system in systems:
+        health = system["health"]
+        credential_blocked = any(
+            c.get("effective_status") in {"expired", "revoked", "blocked", "account_mismatch"}
+            for c in system.get("credentials", [])
+        )
+        failed = health in {"BLOCKED", "DEGRADED"} or credential_blocked
+        if system["name"].startswith("CI"):
+            failed = ci.get("conclusion") in {"failure", "timed_out", "action_required"}
+        if system["name"] == "Production Smoke":
+            failed = smoke.get("status") in {"failed", "failure", "error", "unhealthy"} or (
+                _number(smoke.get("passed")) is not None
+                and _number(smoke.get("total")) is not None
+                and smoke["passed"] < smoke["total"]
+            )
+        source_times = [_time(o.get("last_success_at")) for o in system.get("observers", [])]
+        source_times = [t for t in source_times if t]
+        if source_times:
+            # Conservative: show the oldest monitored source, never hide a lagging observer.
+            system["last_success_at"] = min(source_times).isoformat()
+        label, tone = (
+            ("VERBINDUNG / SYSTEM PRÜFEN", "red")
+            if failed
+            else (
+                ("AKTUELL", "green")
+                if health == "HEALTHY"
+                else ("ÜBERWACHT", "blue")
+                if health == "MONITORED"
+                else ("NACHWEIS ÄLTER", "amber")
+                if health == "STALE"
+                else ("NICHT BESTÄTIGT", "amber")
+            )
+        )
+        system["display_status"] = label
+        system["display_tone"] = tone
+        system["confirmed_failure"] = failed
+        system["evidence_note"] = (
+            "Bestätigten Fehler prüfen." if failed else "Kein Ausfall bestätigt."
+        )
+        if system["name"] == "Production Smoke" and system.get("test_passed"):
+            system["evidence_note"] = "Letzter Test bestanden. " + (
+                "Nachweis älter oder von einem früheren HEAD; kein Ausfall bestätigt."
+                if health != "HEALTHY"
+                else "Aktueller HEAD erfolgreich geprüft."
+            )
+    command["system_explanation"] = (
+        "Eine Quelle meldet einen konkreten Fehler; Verbindungen prüfen."
+        if any(h["confirmed_failure"] for h in systems)
+        else "Der freie Loop überwacht. Kein ausführender Worker ist aktiv; externe Antworten und neue Signale fehlen."
+        if not active_workers and thin_fresh
+        else "Aktive Ausführungen sind durch aktuelle Lebenszeichen bestätigt."
+        if active_workers
+        else "Aktueller Ausführungsnachweis fehlt; kein Ausfall allein aus dem Alter ableitbar."
+    )
     return snapshot
 
 
@@ -1072,6 +1157,12 @@ class DashboardReader:
                 CREDENTIAL_COLUMNS,
                 50,
                 {"order": "provider.asc"},
+            ),
+            "external_waits": (
+                "dufynd_task_external_waits",
+                "task_id,observer_id,satisfied,policy",
+                500,
+                {"order": "task_id.asc,observer_id.asc"},
             ),
             "inbox": (
                 "dufynd_jarvis_inbox",

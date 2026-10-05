@@ -149,6 +149,43 @@ const { chromium } = require("playwright");
       await p.evaluate(() => document.documentElement.scrollWidth > innerWidth),
       false,
     );
+    // Clarity fixtures are isolated replay only: never create real workers or gates.
+    s.system_health = [
+      {name: "GitHub", health: "HEALTHY", display_status: "AKTUELL", display_tone: "green", last_success_at: s.generated_at, evidence_note: "Kein Ausfall bestätigt."},
+      {name: "Production Smoke", health: "STALE", display_status: "NACHWEIS ÄLTER", display_tone: "amber", test_passed: true, passed: 18, total: 18,
+        last_success_at: new Date(Date.parse(s.generated_at) - 12 * 3600000).toISOString(), evidence_note: "Letzter Test bestanden; kein Ausfall bestätigt."},
+    ];
+    s.worker_deck[0].display_name = "Zoro";
+    s.worker_deck[0].role = "Tech Worker";
+    s.worker_deck[0].identity_tag = "ABC123";
+    s.worker_deck.push({...s.worker_deck[0], execution_id: "qa-second", worker_id: "qa-revenue", display_name: "Nami", role: "Revenue / Analytics Worker", identity_tag: "DEF456"});
+    s.command_center.active_workers = 2;
+    const task = {task_id: "qa-dior", title: "Dior Bildrechte", status: "waiting_external", updated_at: s.generated_at,
+      explanation: {reason: "Wartet auf Antwort von Dior. Anfrage bereits versendet; nicht erneut senden.", since: s.generated_at,
+        since_basis: "Letzte Aufgabenaktualisierung", next_step: "Nach Antwort: Rechte prüfen.", resolver: "Extern, danach Jarvis", owner_action: "Keine Aktion von dir erforderlich."}};
+    const blocker = {task_id: "qa-coverage", title: "Automatischer Händler-Freshness-Check", status: "blocked", blocker: "deterministic_merchant_coverage_required",
+      explanation: {reason: "Automatischer Händler-Check kann noch nicht vollständig laufen.", next_step: "Read-only Händlerabdeckung vervollständigen.", resolver: "TECH / Jarvis-Prüfung", owner_action: "Keine Aktion von dir erforderlich."}};
+    s.workstreams = [{name: "Content", status: "WAITING EXTERNAL", tasks: 1, focus_task: task, tasks_preview: [task]},
+      {name: "Affiliate", status: "BLOCKED", tasks: 1, focus_task: blocker, tasks_preview: [blocker]}];
+    s.waiting = {owner: 0, external: 1, technical: 1, budget: 0, rows: [task, blocker]};
+    await refresh();
+    const healthText = await p.locator("#overview-system-health").innerText();
+    assert.ok(healthText.includes("AKTUELL") && healthText.includes("LETZTER TEST BESTANDEN") && healthText.includes("18 / 18") && healthText.includes("NACHWEIS ÄLTER"));
+    assert.equal(await p.locator("#overview-system-health .health-red").count(), 0);
+    const help = p.locator("#overview-system-health .status-help summary[aria-label=\"Erklärung: NACHWEIS ÄLTER\"]");
+    await help.click();
+    assert.ok((await p.locator("#overview-system-health").innerText()).includes("nicht automatisch einen Ausfall"));
+    const aliases = await p.locator("#worker-deck .worker-card h3").allTextContents();
+    assert.ok(aliases.includes("ZORO · ABC123") && aliases.includes("NAMI · DEF456"));
+    await refresh();
+    assert.deepEqual(await p.locator("#worker-deck .worker-card h3").allTextContents(), aliases);
+    const streamText = await p.locator("#workstream-list").innerText();
+    for (const text of ["Dior", "Read-only Händlerabdeckung", "Keine Aktion von dir erforderlich."]) assert.ok(streamText.includes(text));
+    assert.equal(await p.locator("#pulse-action.state-red").count(), 0);
+    assert.equal(await p.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+    s.system_health[0] = {...s.system_health[0], health: "BLOCKED", display_status: "VERBINDUNG / SYSTEM PRÜFEN", display_tone: "red", evidence_note: "Bestätigten Verbindungsfehler prüfen."};
+    await refresh();
+    assert.equal(await p.locator("#overview-system-health .health-red").count(), 1);
     // A complete candidate is visible only as a pending Owner review; there is no write control.
     s.freshness.operational_complete = true;
     s.command_center.gates_complete = true;
@@ -162,6 +199,7 @@ const { chromium } = require("playwright");
         internal_rating: "9.6", recommendation_reason: "Internally ready fixture"}}];
     await refresh();
     assert.equal(await p.locator("#approval-alert").isVisible(), true);
+    assert.equal(await p.locator("#pulse-action.state-red").count(), 1);
     const decisionText = await p.locator("#decision-list").innerText();
     for (const text of ["Delina EDP 75 ml", "qa_delina_asset", "A complete safe caption", "qa_delina_fixture", "qa_gate", "9.6", "Scheduling und Publishing nicht freigegeben"])
       assert.ok(decisionText.includes(text), text);
@@ -172,6 +210,9 @@ const { chromium } = require("playwright");
     assert.equal(await p.locator("#approval-alert").isVisible(), false);
     assert.equal(await p.locator("#decisions").isVisible(), false);
     assert.equal(await p.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+    const out = path.resolve(__dirname, "../../examples/retail/storefront-web/.visual-qa");
+    fs.mkdirSync(out, {recursive: true});
+    await p.screenshot({path: path.join(out, "control-room-clarity-" + width + ".png"), fullPage: true});
     await p.close();
     console.log(
       width +

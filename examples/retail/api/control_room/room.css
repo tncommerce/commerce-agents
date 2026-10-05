@@ -3771,3 +3771,16 @@ body[data-execution-mode="unknown"] .execution-evidence {
     animation: none !important;
   }
 }
+
+/* Text-only identities and tap/hover explanations; no character artwork. */
+.status-help { display: inline-block; margin-left: 6px; white-space: normal; }
+.status-help summary { cursor: pointer; list-style: none; min-width: 24px; min-height: 24px; display: inline-grid; place-items: center; }
+.status-help p { max-width: 280px; margin: 8px 0; font: 12px/1.5 var(--font-body, sans-serif); text-transform: none; letter-spacing: normal; }
+.health-red { border-color: #ef6678; }
+.health-red i { background: #ef6678; }
+.health-chip { align-items: start; }
+.health-chip small { display: block; white-space: normal; }
+.health-chip .pill { white-space: normal; text-align: left; }
+.worker-identity { margin: 12px 0; }
+.worker-identity summary { cursor: pointer; color: var(--muted); }
+.worker-card, .workstream-card, .dependency-task, .health-chip { overflow-wrap: anywhere; }

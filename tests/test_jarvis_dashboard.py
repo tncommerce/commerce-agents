@@ -264,6 +264,7 @@ def make_transport(data, calls, *, failure=None):
         else:
             name = {
                 "dufynd_external_observers": "observers",
+                "dufynd_task_external_waits": "external_waits",
                 "dufynd_observer_credentials": "credentials",
                 "dufynd_jarvis_inbox": "inbox",
                 "dufynd_human_decisions": "decisions",
@@ -287,7 +288,7 @@ def test_reader_requests_fixed_allowlisted_columns_no_generic_queries_or_provide
     )
     result = reader.snapshot(now=NOW)
     assert result["command_center"]["observed_head_sha"] == "a" * 40
-    assert len(calls) == 22
+    assert len(calls) == 23
     for call in calls:
         selected = call.url.params.get("select", "")
         assert "*" not in selected
@@ -849,3 +850,94 @@ def test_content_candidate_gate_projects_complete_review_without_publish_control
             build_snapshot(data, now=NOW)["decision_center"][0]["content_candidate"]["caption"]
             == "[restricted]"
         )
+
+
+def test_current_sources_and_old_passed_smoke_have_separate_owner_semantics():
+    data = ceo_data()
+    data["observers"][0]["last_success_at"] = (NOW - timedelta(minutes=8)).isoformat()
+    data["smoke"] = [
+        {
+            "status": "healthy",
+            "passed": 18,
+            "total": 18,
+            "sha": "b" * 40,
+            "observed_at": (NOW - timedelta(hours=12)).isoformat(),
+        }
+    ]
+    result = build_snapshot(data, now=NOW)
+    github = next(h for h in result["system_health"] if h["name"] == "GitHub")
+    smoke = next(h for h in result["system_health"] if h["name"] == "Production Smoke")
+    assert github["display_status"] == "AKTUELL"
+    assert smoke["display_status"] == "NACHWEIS ÄLTER"
+    assert smoke["test_passed"] and smoke["passed"] == 18
+    assert smoke["confirmed_failure"] is False
+    assert "kein Ausfall" in smoke["evidence_note"]
+    data["smoke"][0].update(status="failed", passed=17)
+    smoke = next(
+        h for h in build_snapshot(data, now=NOW)["system_health"] if h["name"] == "Production Smoke"
+    )
+    assert smoke["display_tone"] == "red" and smoke["confirmed_failure"]
+
+
+def test_live_wait_profiles_follow_business_purpose_and_require_actual_observer_binding():
+    data = ceo_data()
+    tid = "jarvis_dior_hypnotic_image_rights_outreach_20261001"
+    data["tasks"] = [
+        {
+            "task_id": tid,
+            "title": "Dior image rights",
+            "domain": "platform",
+            "status": "waiting_external",
+            "updated_at": STAMP,
+        },
+        {
+            "task_id": "jarvis_purchase_freshness_watchlist_20261001",
+            "domain": "commerce",
+            "status": "blocked",
+            "blocked_reason": "deterministic_merchant_coverage_required",
+        },
+    ]
+    data["external_waits"] = [{"task_id": tid, "observer_id": "gmail:thread", "satisfied": False}]
+    data["observers"].append(
+        {
+            "observer_id": "gmail:thread",
+            "source_type": "gmail",
+            "enabled": True,
+            "health_status": "healthy",
+            "last_success_at": STAMP,
+        }
+    )
+    result = build_snapshot(data, now=NOW)
+    content = next(w for w in result["workstreams"] if w["name"] == "Content")
+    affiliate = next(w for w in result["workstreams"] if w["name"] == "Affiliate")
+    assert content["focus_task"]["task_id"] == tid
+    explanation = content["focus_task"]["explanation"]
+    assert "Dior" in explanation["reason"] and "nicht erneut senden" in explanation["reason"]
+    assert explanation["automatic_monitoring_confirmed"]
+    assert explanation["since"] == STAMP and "Statusbeginn" in explanation["since_basis"]
+    assert "Keine Aktion" in explanation["owner_action"]
+    assert "Read-only" in affiliate["focus_task"]["explanation"]["next_step"]
+    assert not affiliate["focus_task"]["explanation"]["jarvis_can_resolve_alone"]
+    assert result["worker_deck"] == []
+    data["external_waits"] = []
+    assert not build_snapshot(data, now=NOW)["mission_board"]["WAITING EXTERNAL"][0]["explanation"][
+        "automatic_monitoring_confirmed"
+    ]
+
+
+def test_worker_aliases_stay_stable_distinct_and_keep_technical_identity():
+    data = ceo_data()
+    data["active_runs"] = [
+        run_row(execution_id="a", worker_id="tech-worker"),
+        run_row(execution_id="b", worker_id="analytics-worker"),
+        run_row(execution_id="c", worker_id="tech-worker-2"),
+    ]
+    first = build_snapshot(data, now=NOW)["worker_deck"]
+    assert [w["display_name"] for w in first] == ["Zoro", "Nami", "Zoro"]
+    assert len({(w["display_name"], w["identity_tag"]) for w in first}) == 3
+    data["active_runs"].reverse()
+    later = build_snapshot(data, now=NOW + timedelta(seconds=30))["worker_deck"]
+    assert {w["execution_id"]: (w["display_name"], w["identity_tag"]) for w in first} == {
+        w["execution_id"]: (w["display_name"], w["identity_tag"]) for w in later
+    }
+    assert first[0]["worker_id"] == "tech-worker"

@@ -50,9 +50,31 @@
     p.append(node("small", label + " · "), node("span", text));
     parent.append(p);
   };
+  const statusHelp = (status) => {
+    const help = {
+      AKTUELL: "Diese Quelle wurde innerhalb des erwarteten Zeitfensters erfolgreich geprüft.",
+      ÜBERWACHT: "Die Quelle meldet sich gesund und wird regelmäßig beobachtet; das ist keine aktive Worker-Ausführung.",
+      "NACHWEIS ÄLTER": "Der letzte bestätigte Nachweis ist älter. Das bedeutet nicht automatisch einen Ausfall.",
+      "WAITING EXTERNAL": "Jarvis kann erst weiterarbeiten, wenn eine externe Antwort oder ein externes Ereignis eintritt.",
+      BLOCKED: "Eine konkrete Voraussetzung fehlt. Der nächste Lösungsschritt wird darunter angezeigt.",
+      "OWNER GATE": "Nur hier ist eine Entscheidung von Tuan erforderlich. Ein GO allein führt keine externe Aktion aus.",
+      "VERBINDUNG / SYSTEM PRÜFEN": "Eine Quelle meldet einen konkreten Fehler oder eine gesperrte Verbindung.",
+    }[status];
+    if (!help) return null;
+    const details = node("details", undefined, "status-help");
+    const summary = node("summary", "ⓘ");
+    summary.title = help;
+    summary.setAttribute("aria-label", "Erklärung: " + status);
+    details.append(summary, node("p", help));
+    return details;
+  };
   const badge = (status) => {
     const tone =
       {
+        AKTUELL: "good",
+        ÜBERWACHT: "info",
+        "NACHWEIS ÄLTER": "warn",
+        "VERBINDUNG / SYSTEM PRÜFEN": "action",
         WORKING: "info",
         MONITORING: "info",
         "JARVIS ÜBERWACHT": "info",
@@ -83,13 +105,18 @@
       BLOCKED: "Blockiert",
       "NO DATA": "Keine Quelle",
       SCHEDULED: "Geplant",
-      STALE: "Veraltet",
+      STALE: "Nachweis älter",
+      ACTIVE: "Aktiv",
+      "WAITING HUMAN": "Owner Gate",
       UNKNOWN: "Unbekannt",
       WAITING: "Wartet",
       WORKING: "Arbeitet",
       READY: "Bereit",
     };
-    return node("span", labels[status] || status, "pill " + tone);
+    const result = node("span", labels[status] || status, "pill " + tone);
+    const help = statusHelp(status === "WAITING HUMAN" ? "OWNER GATE" : status === "STALE" ? "NACHWEIS ÄLTER" : status);
+    if (help) result.append(help);
+    return result;
   };
   const setTone = (id, tone) => {
     const el = $(id);
@@ -146,8 +173,9 @@
           node("h4", m.title),
         );
         line(card, "Owner", m.owner);
-        if (m.blocker) line(card, "Blocker", m.blocker);
-        if (m.next_checkpoint) line(card, "Next checkpoint", m.next_checkpoint);
+        line(card, "Warum", taskWait(m));
+        line(card, "Danach", m.explanation?.next_step || detailText(m.next_checkpoint));
+        line(card, "Owner", m.explanation?.owner_action || "Freigabestatus unter Entscheidungen prüfen.");
         if (m.human_gate) card.append(badge("WAITING HUMAN"));
         column.append(card);
       }
@@ -215,15 +243,16 @@
   };
   const detailText = (code) =>
     detailLabels[code] ||
-    (code ? String(code).replaceAll("_", " ") : "Nicht dokumentiert");
+    (code ? "Schritt noch nicht in Klartext dokumentiert" : "Nicht dokumentiert");
   const taskWait = (task) => {
     if (!task) return "Keine konkrete Aufgabe zugeordnet";
+    if (task.explanation?.reason) return task.explanation.reason;
     if (task.blocker) return detailText(task.blocker);
     if (task.human_gate) return "Eine echte Owner-Entscheidung ist offen";
     if (task.dependencies?.length)
       return task.dependencies.map(detailText).join(" · ");
     if (task.status === "waiting_external")
-      return "Externe Abhängigkeit; genauer Auslöser nicht dokumentiert";
+      return "Externe Antwort oder Nachweis fehlt; genauer Auslöser noch nicht dokumentiert.";
     if (["ready", "queued"].includes(task.status))
       return "Wartet auf Handler-Auswahl im nächsten Loop";
     return "Kein konkreter Wartegrund gespeichert";
@@ -269,25 +298,38 @@
   const sourceHealthLabel = (health) =>
     ({
       HEALTHY: "Aktuell",
-      STALE: "Beobachtung veraltet",
+      STALE: "NACHWEIS ÄLTER",
+      MONITORED: "ÜBERWACHT",
       DEGRADED: "Quelle meldet Einschränkung",
       BLOCKED: "Blockiert",
       UNKNOWN: "Nicht bestätigt",
     })[health] ||
     health ||
     "Nicht bestätigt";
+  const age = (stampValue) => {
+    if (!stampValue || !Number.isFinite(Date.parse(stampValue))) return "Zeitpunkt nicht dokumentiert";
+    const seconds = Math.max(0, Math.floor((Date.now() - Date.parse(stampValue)) / 1000));
+    if (seconds < 60) return "vor " + seconds + " Sek.";
+    if (seconds < 3600) return "vor " + Math.floor(seconds / 60) + " Min";
+    return "vor " + Math.floor(seconds / 3600) + "h " + Math.floor(seconds % 3600 / 60) + "min";
+  };
   function taskDetail(task) {
     const item = node("article", undefined, "dependency-task");
     item.dataset.taskId = task.task_id || "";
     item.append(node("strong", taskTitle(task)));
     line(item, "Status", detailText(task.status));
     line(item, "Grund / Voraussetzung", taskWait(task));
-    line(item, "Nächster Prüfschritt", detailText(task.next_checkpoint));
-    line(item, "Aktualisiert", stamp(task.updated_at));
+    line(item, "Seit", age(task.explanation?.since || task.updated_at) + " · " + stamp(task.explanation?.since || task.updated_at));
+    line(item, "Zeitbasis", task.explanation?.since_basis || "Letzte Aufgabenaktualisierung; Statusbeginn nicht dokumentiert");
+    line(item, "Was passiert danach", task.explanation?.next_step || detailText(task.next_checkpoint));
+    line(item, "Wer kann es lösen", task.explanation?.resolver || "Zuständigkeit noch nicht dokumentiert");
+    line(item, "Owner", task.explanation?.owner_action || "Freigabestatus unter Entscheidungen prüfen.");
     const source = node("details", undefined, "task-source");
     source.append(node("summary", "Original & Aufgabenkennung"));
     line(source, "Original", task.title || task.task_id);
     line(source, "Aufgabe", task.task_id);
+    line(source, "Technischer Blocker", task.blocker);
+    line(source, "Technischer Checkpoint", task.next_checkpoint);
     item.append(source);
     return item;
   }
@@ -313,7 +355,7 @@
       node("strong", taskTitle(w)),
       node("span", state, "execution-state"),
     );
-    item.append(heading);
+    item.append(node("small", (w.display_name || "Identität nicht dokumentiert").toUpperCase() + (w.identity_tag ? " · " + w.identity_tag : "")), node("small", w.role || "Worker"), heading);
     if (compact) {
       const path = node("div", undefined, "execution-path");
       const phase = node("div", undefined, "execution-step");
@@ -335,7 +377,7 @@
       const next = node("div", undefined, "execution-step");
       next.append(
         node("small", "02 · NÄCHSTER DOKUMENTIERTER PRÜFSCHRITT"),
-        node("strong", detailText(w.next_checkpoint)),
+        node("strong", w.description?.next_step || detailText(w.next_checkpoint)),
       );
       path.append(phase, next);
       item.append(path);
@@ -357,9 +399,11 @@
       metadata.append(
         node(
           "summary",
-          "Nachweise · " + (w.worker_id || w.worker_type || "Worker unbekannt"),
+          "Technische Identität & Nachweise",
         ),
       );
+      line(metadata, "worker_id", w.worker_id);
+      line(metadata, "execution_id", w.execution_id);
       line(metadata, "Aufgabe", w.task_id);
       line(metadata, "Original", w.task_title || w.task_id);
       line(metadata, "Gestartet", stamp(w.started_at));
@@ -368,11 +412,8 @@
       item.append(metadata);
       return item;
     }
-    line(
-      item,
-      "Worker",
-      w.worker_id || w.worker_type || "Identität nicht dokumentiert",
-    );
+    line(item, w.status === "ACTIVE" ? "Aktuell" : "Wartet auf", w.status === "ACTIVE" ? taskTitle(w) + " · " + detailText(w.execution_status) : w.description?.reason || detailText(w.wait_reason));
+    line(item, "Danach", w.description?.next_step || detailText(w.next_checkpoint));
     line(
       item,
       w.status === "ACTIVE" ? "Phase" : "Wartegrund",
@@ -417,22 +458,29 @@
     );
     card.append(top);
     card.append(
-      node("small", w.worker_type || "Worker"),
-      node("h3", w.worker_id || w.execution_id || "Worker"),
+      node("small", w.role || "Worker"),
+      node("h3", (w.display_name || "Identität nicht dokumentiert").toUpperCase() + (w.identity_tag ? " · " + w.identity_tag : "")),
       node("p", w.task_title || w.task_id || "Task"),
     );
-    line(card, "Execution", w.execution_status);
-    line(card, "Heartbeat", stamp(w.heartbeat_at));
-    line(card, "Lease", stamp(w.lease_expires_at));
-    line(card, "Handler", w.handler_id);
+    line(card, "Startzeit", shortTime(w.started_at));
+    line(card, "Laufzeit", w.duration_seconds == null ? "Nicht dokumentiert" : Math.floor(w.duration_seconds / 60) + " Min");
+    line(card, "Heartbeat", age(w.heartbeat_at));
+    const identity = node("details", undefined, "worker-identity");
+    identity.append(node("summary", "Technische Identität"));
+    line(identity, "worker_id", w.worker_id);
+    line(identity, "execution_id", w.execution_id);
+    line(identity, "Handler", w.handler_id);
+    line(identity, "Lease", stamp(w.lease_expires_at));
+    card.append(identity);
     card.append(workerEvidence(w));
     return card;
   }
 
   function healthTone(health) {
+    if (health && typeof health === "object") return health.display_tone || healthTone(health.health);
     const v = String(health || "").toUpperCase();
     if (["HEALTHY", "READY", "SUCCESS", "LIVE"].includes(v)) return "green";
-    if (["ACTIVE", "WORKING"].includes(v)) return "blue";
+    if (["ACTIVE", "WORKING", "MONITORED"].includes(v)) return "blue";
     return "amber";
   }
 
@@ -701,7 +749,7 @@
         ? "Publication-Fehler beobachtet."
         : publication.overdue
           ? "Geplanter Post überfällig."
-          : "Publication-Beobachtung veraltet.";
+          : "Publikationsnachweis älter; kein Fehler bestätigt.";
     } else if (publication.live) {
       moneyTone = "green";
       moneyMain = "Live";
@@ -1184,16 +1232,16 @@
       const ranked = [...systemsHealth]
         .sort((a, b) => {
           const score = (h) =>
-            healthTone(h) === "amber" ? 0 : healthTone(h) === "blue" ? 1 : 2;
+            healthTone(h) === "red" ? 0 : healthTone(h) === "amber" ? 1 : healthTone(h) === "blue" ? 2 : 3;
           return a.name === "Jarvis free loop"
             ? -1
             : b.name === "Jarvis free loop"
               ? 1
-              : score(a.health) - score(b.health);
+              : score(a) - score(b);
         })
-        .slice(0, 5);
+        .slice(0, 8);
       for (const h of ranked) {
-        const tone = healthTone(h.health);
+        const tone = healthTone(h);
         const row = node("div", undefined, "health-chip health-" + tone);
         const left = node("span");
         left.append(
@@ -1208,8 +1256,10 @@
           ),
         );
         if (h.last_success_at)
-          left.append(node("small", "Beobachtet " + stamp(h.last_success_at)));
-        row.append(left, node("b", sourceHealthLabel(h.health)));
+          left.append(node("small", "Zuletzt erfolgreich geprüft: " + stamp(h.last_success_at) + " · " + age(h.last_success_at)));
+        if (h.name === "Production Smoke" && h.test_passed) left.append(node("small", "LETZTER TEST BESTANDEN · " + value(h.passed) + " / " + value(h.total)));
+        left.append(node("small", h.evidence_note || "Nachweisstatus prüfen."));
+        row.append(left, badge(h.display_status || sourceHealthLabel(h.health)));
         healthOverview.append(row);
       }
       if (!ranked.length)
@@ -1224,13 +1274,14 @@
       for (const h of systemsHealth) {
         const item = node("details", undefined, "system-row");
         const summary = node("summary");
-        summary.append(node("strong", h.name), badge(h.health));
+        summary.append(node("strong", h.name), badge(h.display_status || sourceHealthLabel(h.health)));
         item.append(summary);
         if (h.last_success_at)
-          line(item, "Last success", stamp(h.last_success_at));
+          line(item, "Zuletzt erfolgreich geprüft", stamp(h.last_success_at));
+        line(item, "Einordnung", h.evidence_note || "Nicht dokumentiert");
         for (const o of h.observers || []) {
-          line(item, o.observer_id, o.health);
-          line(item, "Last success", stamp(o.last_success_at));
+          line(item, o.observer_id, sourceHealthLabel(o.health));
+          line(item, "Letzte erfolgreiche Beobachtung", stamp(o.last_success_at));
           line(item, "Next retry", stamp(o.next_retry_at));
         }
         for (const cr of h.credentials || []) {
@@ -1397,7 +1448,7 @@
             "Kein belastbarer Prozentfortschritt dokumentiert",
           ].join(" · ")
         : c.status === "WAITING"
-          ? "Der freie Loop prüft die Queue. Externe Antworten und neue Messsignale können die nächste Arbeit auslösen."
+          ? c.system_explanation || "Der freie Loop prüft die Queue. Externe Antworten und neue Messsignale können die nächste Arbeit auslösen."
           : "Keine aktive Ausführung verifiziert. Systemstatus und Quellen prüfen.",
     );
     put(
@@ -1436,7 +1487,12 @@
               (w.status === "MONITORING"
                 ? "Überwacht Queue, Quellenfrische und neue externe Signale."
                 : "Keine offene Aufgabe aus dieser Quelle.");
-        card.append(node("p", main, "workstream-purpose"));
+                card.append(node("p", focus ? taskTitle(focus) : main, "workstream-purpose"));
+        if (focus) {
+          line(card, "Warum", taskWait(focus));
+          line(card, "Nächster Schritt", focus.explanation?.next_step || detailText(focus.next_checkpoint));
+          line(card, "Owner", focus.explanation?.owner_action || "Freigabestatus unter Entscheidungen prüfen.");
+        }
         const details = node("details", undefined, "workstream-details");
         details.dataset.stream = w.name;
         details.open = expanded.has(w.name);
