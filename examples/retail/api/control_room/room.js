@@ -1561,9 +1561,9 @@
     put(
       "content-identifiers",
       "content_id: " +
-        value(revenue.content_id) +
+        value(revenue.measurement_content_id || revenue.content_id) +
         " · experiment_id: " +
-        value(revenue.experiment_id),
+        value(revenue.measurement_experiment_id || revenue.experiment_id),
     );
 
     const intelligence = renderDecisionIntelligence(revenue, publication);

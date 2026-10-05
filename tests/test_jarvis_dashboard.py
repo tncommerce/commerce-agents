@@ -105,6 +105,50 @@ def test_scheduled_replacement_is_projected_without_erasing_stopped_history():
     assert snapshot["social_quality"]["publishing_authorized"] is True
 
 
+def test_replacement_measurement_rejects_old_runtime_and_keeps_verified_zero():
+    data = ceo_data()
+    data["social_quality"] = [
+        {
+            "publishing_authorized": True,
+            "instagram_auto_publish": True,
+            "instagram_draft": False,
+            "replacement_content_id": "replacement_fixture",
+            "replacement_experiment_id": "replacement_experiment",
+            "instagram_scheduled_at": (NOW + timedelta(hours=2)).isoformat(),
+        }
+    ]
+    runtime = {
+        "version": 2,
+        "content_id": "one_million_still_hits_20261004_01",
+        "experiment_id": "fms_1m_still_hits_20261004",
+        "observed_at": STAMP,
+        "analytics_provenance": "launch_attributed_excludes_prelaunch",
+        "funnel": {"landing_sessions": 999},
+    }
+    data["first_money_runtime"] = [runtime]
+    assert build_snapshot(data, now=NOW)["first_money"]["sessions"] is None
+    runtime.update(
+        version=3,
+        content_id="replacement_fixture",
+        experiment_id="replacement_experiment",
+        funnel={
+            k: 0
+            for k in (
+                "landing_sessions",
+                "product_views",
+                "offer_views",
+                "offer_opens",
+                "merchant_clickouts",
+            )
+        },
+    )
+    money = build_snapshot(data, now=NOW)["first_money"]
+    assert money["sessions"] == money["merchant_clickouts"] == 0
+    assert money["analytics_complete"] is True
+    assert money["measurement_content_id"] == "replacement_fixture"
+    assert money["transactions"] is None and money["commission_eur"] is None
+
+
 def fixture_data():
     return {
         "tasks": [

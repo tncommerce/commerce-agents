@@ -1037,15 +1037,36 @@ def build_snapshot(
         "purchase_decision": enum(purchase.get("decision")),
     }
     # Versioned STABLE runtime is authoritative; old/missing RPC stays explicitly unclassified.
-    launch_fresh = (
-        runtime.get("version") == 2
+    target_matches = (
+        runtime.get("version") == 3
+        and replacement_scheduled
+        and runtime.get("content_id") == social_quality.get("replacement_content_id")
+        and runtime.get("experiment_id") == social_quality.get("replacement_experiment_id")
+    ) or (
+        runtime.get("version") in {2, 3}
+        and not replacement_scheduled
         and runtime.get("content_id") == FIRST_MONEY_CONTENT
         and runtime.get("experiment_id") == "fms_1m_still_hits_20261004"
+    )
+    if replacement_scheduled:
+        for field in (
+            "sessions",
+            "product_views",
+            "offer_views",
+            "offer_opens",
+            "merchant_clickouts",
+        ):
+            snapshot["first_money"][field] = None
+        snapshot["first_money"]["analytics_complete"] = False
+    launch_fresh = (
+        target_matches
         and runtime.get("analytics_provenance") == "launch_attributed_excludes_prelaunch"
         and _fresh(runtime.get("observed_at"), now, 300)
     )
     if launch_fresh:
         money = snapshot["first_money"]
+        money["measurement_content_id"] = clean(runtime.get("content_id"))
+        money["measurement_experiment_id"] = clean(runtime.get("experiment_id"))
         for output, field in (
             ("sessions", "landing_sessions"),
             ("product_views", "product_views"),
