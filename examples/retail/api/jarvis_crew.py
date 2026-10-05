@@ -204,6 +204,25 @@ def project_crew(snapshot: dict) -> dict:
                     current.get("handler_id"),
                     "Nächsten dokumentierten Prüfcheckpoint abgleichen; Original in den Details.",
                 )
+            display_state = state
+            if state == "DEGRADED":
+                if not complete:
+                    display_state = "LIVE-DATEN FEHLEN"
+                else:
+                    display_state = {
+                        "tech": "TECH-CHECK OFFEN",
+                        "revenue": "DATEN-CHECK OFFEN",
+                        "research": "NACHWEIS OFFEN",
+                        "infrastructure": "DEPLOY-CHECK OFFEN",
+                        "content": "QUALITÄT PRÜFEN",
+                        "qa": "SYSTEMCHECK OFFEN",
+                        "attribution": "TRACKING PRÜFEN",
+                        "operations": "LOOP-CHECK OFFEN",
+                        "affiliate": "HÄNDLER-CHECK OFFEN",
+                        "outreach": "KANAL PRÜFEN",
+                    }.get(key, "PRÜFUNG NÖTIG")
+            elif state == "OWNER GATE":
+                display_state = "DEINE AKTION"
             crew.append(
                 {
                     "role_id": key,
@@ -211,6 +230,7 @@ def project_crew(snapshot: dict) -> dict:
                     "role": role,
                     "cluster": cluster,
                     "state": state,
+                    "display_state": display_state,
                     "tone": "red"
                     if state == "OWNER GATE"
                     else "blue"
