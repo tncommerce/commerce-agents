@@ -136,7 +136,7 @@ def build_operator_diagnosis(
     elif real_owner_action:
         state = "MASTER_ACTION_REQUIRED"
         headline = "Eine echte Master-Entscheidung fehlt"
-        cause = "Mindestens ein bestätigter Human-Gate blockiert einen konkreten nächsten Schritt."
+        cause = "Eine bestätigte Entscheidung oder Reautorisierung blockiert einen konkreten nächsten Schritt."
     elif ready:
         state = "READY"
         headline = "Arbeit liegt bereit"
@@ -147,7 +147,7 @@ def build_operator_diagnosis(
         if waiting_count or blocked_count:
             cause = (
                 "Es gibt aktuell keine ausführbare Aufgabe. "
-                f"Die Queue enthält {waiting_count} extern wartende und {blocked_count} blockierte Aufgabe(n). "
+                f"Die Arbeitsliste enthält {waiting_count} extern wartende und {blocked_count} blockierte Aufgabe(n). "
                 "Eine einzelne Mail ist deshalb nicht der globale Grund für den Stillstand."
             )
         else:
@@ -223,7 +223,7 @@ def build_operator_diagnosis(
                 "id": "restore_autonomy",
                 "title": "Neue sinnvolle Arbeit aus dem aktuellen Geschäftsziel einplanen",
                 "reason": (
-                    "Der Executor kann nur bereits vorhandene Arbeit ausführen. Wenn keine passende Aufgabe "
+                    "Jarvis kann heute nur bereits eingeplante sichere Arbeit ausführen. Wenn keine passende Aufgabe "
                     "bereitsteht, muss Jarvis einen neuen internen Arbeitsplan erzeugen statt auf alte Waits zu zeigen."
                 ),
                 "master_required": False,
@@ -235,7 +235,7 @@ def build_operator_diagnosis(
         owner_message = "Eine bestätigte Entscheidung oder Reautorisierung von Master ist erforderlich."
     else:
         owner_message = (
-            "Keine Aktion von Master erforderlich. Insbesondere ist keine Mailprüfung als Owner-Schritt belegt."
+            "Keine Aktion von Master erforderlich. Insbesondere ist keine Mailprüfung als notwendige Master-Aktion belegt."
         )
 
     if active_count:
@@ -244,7 +244,7 @@ def build_operator_diagnosis(
         jarvis_message = "Jarvis kann die bereitliegende sichere Arbeit anstoßen."
     else:
         jarvis_message = (
-            "Jarvis muss die Queue und Prioritäten neu aufbauen; der heutige Executor kann aus einer leergelaufenen "
+            "Jarvis muss Arbeitsliste und Prioritäten neu aufbauen; die heutige Automatik kann aus einer leergelaufenen "
             "Queue noch keine neue Geschäftstätigkeit erzeugen."
         )
 
