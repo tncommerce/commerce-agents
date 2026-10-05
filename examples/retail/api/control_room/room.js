@@ -159,6 +159,7 @@
     const stage = document.querySelector(".jarvis-stage");
     const core = $("jarvis-core");
     const button = $("jarvis-ptt");
+    const buttonLabel = button?.querySelector(".ptt-copy strong");
     const spectrum = $("jarvis-spectrum");
     const mode = $("jarvis-voice-mode");
     const status = $("jarvis-voice-status");
@@ -170,6 +171,9 @@
     button.title = providerEnabled
       ? "Jarvis Voice bereit"
       : "Jarvis Voice noch nicht serverseitig aktiviert";
+    if (buttonLabel) {
+      buttonLabel.textContent = providerEnabled ? "PUSH TO TALK" : "VOICE NICHT AKTIV";
+    }
 
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     const micSupported =
