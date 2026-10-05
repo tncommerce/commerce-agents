@@ -941,3 +941,31 @@ def test_bridge_refreshes_rnd_gate() -> None:
 
     assert gate["state"] == "not_ready"
     assert gate["total"] == 9
+
+
+def test_content_workflow_bridge_records_progress_without_provider_dispatch():
+    calls = []
+
+    def handler(request):
+        calls.append(request)
+        assert request.url.path == "/rest/v1/rpc/advance_dufynd_content_workflow"
+        assert json.loads(request.content) == {
+            "p_asset_id": "qa_future_candidate",
+            "p_expected_state": "rights_verified",
+            "p_next_state": "creative_requested",
+            "p_evidence": {},
+        }
+        return httpx.Response(200, json={"advanced": True, "generator_dispatched": False})
+
+    bridge = DufyndJarvisBridge(
+        supabase_url="https://fixture.invalid",
+        secret_key="test-secret",
+        transport=httpx.MockTransport(handler),
+    )
+    result = bridge.advance_content_workflow(
+        asset_id="qa_future_candidate",
+        expected_state="rights_verified",
+        next_state="creative_requested",
+    )
+    assert result["generator_dispatched"] is False
+    assert len(calls) == 1
