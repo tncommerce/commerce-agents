@@ -569,6 +569,26 @@ def project_risk(snapshot: dict) -> dict:
             "Aktuelle Stock-/Preis-/Affiliate-Evidence read-only prüfen.",
             runtime.get("purchase_verified_at"),
         )
+    social_quality = snapshot.get("social_quality", {})
+    remediation = social_quality.get("status") == "remediation_active"
+    instagram_removal = social_quality.get("instagram_state") == "published_requires_removal"
+    if remediation:
+        panel(
+            "content_quality",
+            "CONTENT QUALITY",
+            "red" if instagram_removal else "amber",
+            "Instagram-Post entfernen"
+            if instagram_removal
+            else "Social-Qualität wird korrigiert",
+            "Der heutige 1-Million-Post wurde nach Live-Prüfung als Qualitätsfehler markiert. "
+            "TikTok Auto-Publish ist gestoppt; der Ersatz benötigt eine neue Revision und frische Prüfung.",
+            "Instagram-Post entfernen; Ersatz-Creative erst nach 9,5/10-, Mobile-Preview- und Click-Path-PASS erneut freigeben."
+            if instagram_removal
+            else "Ersatz-Creative durch den neuen Publish-Quality-Gate führen.",
+            social_quality.get("observed_at"),
+            instagram_removal,
+        )
+
     gates = snapshot["decision_center"]
     gate_complete = command.get("gates_complete") is True
     panel(
