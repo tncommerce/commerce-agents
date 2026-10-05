@@ -69,11 +69,7 @@ def build_operator_diagnosis(
 
     active = [task for task in tasks if _status(task) in ACTIVE_STATES]
     ready = [task for task in tasks if _status(task) in READY_STATES]
-    owner_tasks = [
-        task
-        for task in tasks
-        if _status(task) in OWNER_STATES or task.get("requires_human_approval") is True
-    ]
+    owner_tasks = [task for task in tasks if _status(task) in OWNER_STATES]
     external = [task for task in tasks if _status(task) == "waiting_external"]
     blocked = [task for task in tasks if _status(task) == "blocked"]
 
