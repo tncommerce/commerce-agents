@@ -88,6 +88,8 @@ def test_v3_live_inspector_is_rich_bounded_and_read_only():
     assert "owner_action_required" in voice
     assert '"advance_dufynd_safe_work"' in voice
     assert 'fetch("/internal/jarvis/truth"' in voice
+    assert '"first_money"' in voice
+    assert '"systems"' in voice
     assert "executeTruthInspection" in voice
     assert "await executeTruthInspection(area, focus)" in voice
     assert '"authoritative_truth_unavailable"' in voice
