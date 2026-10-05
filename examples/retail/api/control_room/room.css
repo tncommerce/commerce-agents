@@ -4382,6 +4382,23 @@ body[data-execution-mode="unknown"] .execution-evidence {
   -webkit-user-select: none;
   touch-action: none;
 }
+.jarvis-ptt[data-provider-ready="false"] {
+  border-color: #f0b65d55;
+  cursor: not-allowed;
+  background:
+    radial-gradient(circle at 16% 0%, #f0b65d10, transparent 48%),
+    linear-gradient(145deg, #171511, #0f0f0d);
+}
+.jarvis-ptt[data-provider-ready="false"] .ptt-copy strong {
+  color: #f5cb85;
+}
+.jarvis-ptt[data-provider-ready="false"] kbd {
+  opacity: 0.45;
+}
+.jarvis-ptt[data-provider-ready="false"]:hover {
+  border-color: #f0b65d70;
+}
+
 .jarvis-ptt:hover {
   border-color: #72ffe04c;
   background:
