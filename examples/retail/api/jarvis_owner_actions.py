@@ -91,7 +91,7 @@ class OwnerActionWriter:
         action: object,
     ) -> dict[str, Any]:
         decision_id, action_token = self._validate_identity(decision_id, action_token)
-        if action not in {"approve", "confirm_manual"}:
+        if action not in {"approve", "approve_review", "confirm_manual"}:
             raise ValueError("invalid_owner_action")
 
         row = self._load_pending(decision_id)
@@ -109,6 +109,10 @@ class OwnerActionWriter:
             raise OwnerActionConflict()
         if action == "approve" and not direct:
             raise OwnerActionConflict()
+        if action == "approve_review" and (
+            manual or row.get("action_type") not in {"content_candidate_review", "image_visual_review"}
+        ):
+            raise OwnerActionConflict()
 
         now = datetime.now(UTC).isoformat()
         decision = {
@@ -118,12 +122,13 @@ class OwnerActionWriter:
             "confirmed_at": now,
             "owner_confirmed_manual_action": action == "confirm_manual",
             "verification_required": action == "confirm_manual",
+            "review_only": action == "approve_review",
         }
         patch = {
             "decision": decision,
             "decided_at": now,
         }
-        if action == "approve":
+        if action in {"approve", "approve_review"}:
             patch["status"] = "approved"
 
         try:
