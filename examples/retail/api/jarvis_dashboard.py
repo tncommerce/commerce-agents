@@ -165,6 +165,30 @@ def _candidate_caption(value: object, secrets: tuple[str, ...] = ()) -> str | No
     return value
 
 
+def _public_dufynd_url(value: object) -> str | None:
+    if not isinstance(value, str) or len(value) > 1000:
+        return None
+    try:
+        parsed = urlparse(value)
+    except ValueError:
+        return None
+    params = parse_qsl(parsed.query, keep_blank_values=True)
+    if (
+        parsed.scheme != "https"
+        or parsed.netloc != "dufynd.de"
+        or not re.fullmatch(r"/(?:start|duft/[a-z0-9-]{1,80})?/?", parsed.path)
+        or parsed.fragment
+        or len(params) != len({key for key, _ in params})
+        or any(
+            key not in {"src", "cmp", "content"}
+            or not re.fullmatch(r"[A-Za-z0-9._:-]{1,80}", item)
+            for key, item in params
+        )
+    ):
+        return None
+    return value
+
+
 def _enum(value: object) -> str | None:
     if isinstance(value, str) and re.fullmatch(r"[a-z][a-z0-9_.:-]{0,79}", value):
         return _text(value)
@@ -643,11 +667,19 @@ def build_snapshot(
             "task_id": clean(r.get("task_id")),
             "decision_id": clean(r.get("decision_id")),
             "title": clean(r.get("title")),
+            "question": clean(r.get("question")),
             "type": enum(r.get("action_type")),
             "reason": clean(r.get("reason")),
             "risk": clean(r.get("risk")),
             "cost_usd": _money(r.get("cost_usd")),
             "benefit": clean(r.get("benefit")),
+            "current_url": _public_dufynd_url(r.get("current_url")),
+            "required_url": _public_dufynd_url(r.get("required_url")),
+            "manual_action_required": r.get("manual_action_required") is True,
+            "approval_alone_enables_execution": r.get("approval_alone_enables_execution") is True,
+            "gate_action_executed": r.get("gate_action_executed") is True,
+            "owner_confirmed_manual_action": r.get("owner_confirmed_manual_action") is True,
+            "owner_confirmed_at": _stamp(r.get("owner_confirmed_at")),
             "content_candidate": {
                 "product": clean(r.get("candidate_product")),
                 "product_id": clean(r.get("candidate_product_id")),
@@ -666,9 +698,9 @@ def build_snapshot(
             }
             if r.get("action_type") == "content_candidate_review"
             else None,
-            "go_token": r.get("decision_token")
+            "action_token": r.get("decision_token")
             if isinstance(r.get("decision_token"), str)
-            and re.fullmatch(r"GO-[A-Z0-9_-]{1,150}", r["decision_token"])
+            and re.fullmatch(r"[A-Z][A-Z0-9_-]{2,180}", r["decision_token"])
             else None,
         }
         for r in data.get("decisions", [])
@@ -1312,7 +1344,7 @@ class DashboardReader:
             {
                 "decisions": (
                     "dufynd_human_decisions",
-                    "decision_id,task_id:context->>task_id,action_type,title,decision_token,reason:context->>reason,risk:context->>risk,cost_usd:context->cost_usd,benefit:context->>benefit,candidate_product:context->candidate->>product,candidate_product_id:context->candidate->>product_id,candidate_asset_reference:context->candidate->>asset_reference,candidate_revision_fingerprint:context->candidate->>revision_fingerprint,candidate_hook:context->candidate->>hook,candidate_caption:context->candidate->>caption,candidate_platform:context->candidate->>platform,candidate_requested_at:context->candidate->>requested_at,candidate_content_id:context->candidate->>content_id,candidate_experiment_id:context->candidate->>experiment_id,candidate_internal_rating:context->candidate->internal_rating,candidate_reason:context->candidate->>recommendation_reason",
+                    "decision_id,task_id:context->>task_id,action_type,title,question,decision_token,reason:context->>reason,risk:context->>risk,cost_usd:context->cost_usd,benefit:context->>benefit,current_url:context->>current_url,required_url:context->>required_url,manual_action_required:context->manual_action_required,approval_alone_enables_execution:context->approval_alone_enables_execution,gate_action_executed:context->gate_action_executed,owner_confirmed_manual_action:decision->owner_confirmed_manual_action,owner_confirmed_at:decision->>confirmed_at,candidate_product:context->candidate->>product,candidate_product_id:context->candidate->>product_id,candidate_asset_reference:context->candidate->>asset_reference,candidate_revision_fingerprint:context->candidate->>revision_fingerprint,candidate_hook:context->candidate->>hook,candidate_caption:context->candidate->>caption,candidate_platform:context->candidate->>platform,candidate_requested_at:context->candidate->>requested_at,candidate_content_id:context->candidate->>content_id,candidate_experiment_id:context->candidate->>experiment_id,candidate_internal_rating:context->candidate->internal_rating,candidate_reason:context->candidate->>recommendation_reason",
                     200,
                     {"status": "eq.pending", "order": "created_at.asc,decision_id.asc"},
                 ),
