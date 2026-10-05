@@ -133,9 +133,7 @@ def test_truth_reader_reports_exact_waits_priorities_and_sanitized_gates():
     tasks = {task["task_id"]: task for task in result["tasks"]}
     assert tasks["task_external_confirmed"]["evidence_state"] == "confirmed_external_wait"
     assert tasks["task_external_confirmed"]["external_waits"][0]["observer_id"] == "gmail:abc"
-    assert (
-        tasks["task_external_unproven"]["evidence_state"] == "external_wait_reason_not_verified"
-    )
+    assert tasks["task_external_unproven"]["evidence_state"] == "external_wait_reason_not_verified"
     assert tasks["task_safe_ready"]["certified_free_handler"] is True
     assert result["priority"]["highest_priority_task"]["task_id"] == "task_external_confirmed"
     assert result["priority"]["certified_safe_ready"][0]["task_id"] == "task_safe_ready"
