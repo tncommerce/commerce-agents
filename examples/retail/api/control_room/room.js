@@ -2385,6 +2385,7 @@
     const safety = s.runtime_safety || {};
     const budget = s.budget || {};
     const queueData = s.queue || {};
+    const diagnosis = s.operational_diagnosis || {};
     const gatesCount = numeric(c.human_approval_count);
     const needsApproval = actionableGates.length > 0 && gatesCount > 0;
     const gatesComplete = c.gates_complete === true;
@@ -2460,13 +2461,12 @@
     const waitingExternal = Number(queueData.waiting_external || 0);
     const blockedTasks = Number(queueData.blocked || 0);
     const jarvisDetail =
-      c.status === "WAITING"
-        ? "Freier Loop aktiv · " +
+      diagnosis.reason ||
+      (c.status === "WAITING"
+        ? "Aktuell keine ausführbare Arbeit · " +
           waitingExternal +
-          " extern · " +
-          blockedTasks +
-          " blockiert."
-        : primaryTitle || "Supervisor-State aktuell.";
+          " externe Tasks sind geparkt, nicht global blockierend."
+        : primaryTitle || "Supervisor-State aktuell.");
 
     setPulse("pulse-jarvis", jarvisTone, jarvisMain, jarvisDetail);
     setPulse(
@@ -2680,14 +2680,54 @@
     put(
       "priority",
       primaryTitle ||
+        diagnosis.next_move ||
         (c.status === "WAITING"
-          ? "Jarvis wartet auf den nächsten zulässigen oder externen Trigger."
+          ? "Es fehlt aktuell ausführbare Arbeit; geparkte External-Waits sind nicht der globale Blocker."
           : "Aktueller Zustand aus dem letzten verifizierten Supervisor-Loop."),
     );
+    put("diagnosis-state", diagnosis.title || diagnosis.work_state || "Unbestätigt");
+    put("diagnosis-reason", diagnosis.reason || "Arbeitsursache ist noch nicht bestätigt.");
+    put("diagnosis-active", diagnosis.active_workers);
+    put("diagnosis-ready", diagnosis.runnable_tasks);
+    put("diagnosis-external", diagnosis.parked_external);
+    put("diagnosis-gates", diagnosis.master_gate_count);
+    put("diagnosis-next", diagnosis.next_move || "Noch kein nächster Schritt bestätigt.");
+    put(
+      "diagnosis-business-focus",
+      diagnosis.business_focus
+        ? "Business-Fokus · " + diagnosis.business_focus
+        : "Business-Fokus noch nicht bestätigt.",
+    );
+    const diagnosisObservers = $("diagnosis-observers");
+    if (diagnosisObservers) {
+      diagnosisObservers.replaceChildren();
+      const issues = Array.isArray(diagnosis.observer_issues)
+        ? diagnosis.observer_issues
+        : [];
+      if (!issues.length) {
+        diagnosisObservers.append(
+          node("p", "Keine relevante Observer-Störung bestätigt.", "muted"),
+        );
+      } else {
+        for (const issue of issues.slice(0, 6)) {
+          const item = node("div", undefined, "diagnosis-observer-item");
+          item.append(
+            node("strong", issue.source || "System"),
+            node(
+              "span",
+              [issue.health, issue.last_error].filter(Boolean).join(" · ") ||
+                "Störung bestätigt",
+            ),
+          );
+          diagnosisObservers.append(item);
+        }
+      }
+    }
+
     put("current-task", primaryTitle || "Keine aktive Ausführung");
     put(
       "allowed-task",
-      c.next_allowed_task || "Warten auf nächsten zulässigen Trigger",
+      diagnosis.next_move || c.next_allowed_task || "Neue ausführbare Arbeit priorisieren",
     );
     put("stop-reason", c.stop_reason);
     put("lease-count", safety.active_leases);
