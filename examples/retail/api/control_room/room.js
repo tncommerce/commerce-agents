@@ -1676,6 +1676,58 @@
     if (focusId && $(focusId) && document.activeElement?.id !== focusId) $(focusId).focus({preventScroll:true});
   }
 
+  async function submitOwnerAction(decision, action, button) {
+    if (!decision?.decision_id || !decision?.action_token || !action) return;
+    const csrf = document.querySelector('meta[name="owner-csrf"]')?.content || "";
+    const original = button?.textContent || "";
+    if (button) {
+      button.disabled = true;
+      button.textContent = "Wird gespeichert …";
+    }
+    try {
+      const response = await fetch("/internal/jarvis/owner-action", {
+        method: "POST",
+        credentials: "same-origin",
+        cache: "no-store",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": csrf,
+        },
+        body: JSON.stringify({
+          decision_id: decision.decision_id,
+          action_token: decision.action_token,
+          action,
+        }),
+      });
+      if (response.status === 401 || response.status === 403) {
+        location.assign("/internal/login");
+        return;
+      }
+      if (!response.ok) throw new Error("owner_action_failed");
+      if (button) button.textContent = action === "approve" ? "Freigegeben" : "Bestätigt";
+      await refresh();
+    } catch {
+      if (button) {
+        button.disabled = false;
+        button.textContent = original || "Erneut versuchen";
+      }
+    }
+  }
+
+  async function copyText(value, button) {
+    if (!value) return;
+    const original = button?.textContent || "";
+    try {
+      await navigator.clipboard.writeText(value);
+      if (button) button.textContent = "Kopiert";
+      setTimeout(() => {
+        if (button) button.textContent = original;
+      }, 1400);
+    } catch {
+      if (button) button.textContent = "Kopieren fehlgeschlagen";
+    }
+  }
+
   function render(s) {
     snapshot = s;
     renderRiskAndCrew(s);
@@ -1895,13 +1947,24 @@
     if (decisions) {
       decisions.replaceChildren();
       for (const d of gates) {
-        const item = node("article", undefined, "decision-item");
-        item.append(badge("WAITING HUMAN"), node("h3", d.title));
-        line(item, "Gate", d.type);
-        line(item, "Grund", d.reason);
-        line(item, "Risiko", d.risk);
-        line(item, "Kosten USD", d.cost_usd);
+        const item = node("article", undefined, "decision-item owner-action-card");
+        const manualConfirmed = d.owner_confirmed_manual_action === true;
+        const actionMode = d.manual_action_required
+          ? "MANUELLE HANDLUNG"
+          : d.approval_alone_enables_execution
+            ? "DIREKTE FREIGABE"
+            : "OWNER REVIEW";
+        item.append(
+          badge(manualConfirmed ? "BESTÄTIGT · PRÜFUNG OFFEN" : actionMode),
+          node("h3", d.title || "Owner-Entscheidung"),
+        );
+        if (d.question) line(item, "Was ist zu tun?", d.question);
+        line(item, "Warum", d.reason);
         line(item, "Nutzen", d.benefit);
+        line(item, "Risiko", d.risk);
+        line(item, "Kosten USD", d.cost_usd ?? "0");
+        if (d.current_url) line(item, "Aktuell", d.current_url);
+        if (d.required_url) line(item, "Soll", d.required_url);
         if (d.content_candidate) {
           const candidate = d.content_candidate;
           for (const [label, key] of [["Produkt", "product"], ["Creative / Asset", "asset_reference"],
@@ -1910,10 +1973,60 @@
             ["Internes Rating / 10", "internal_rating"], ["Empfehlungsgrund", "recommendation_reason"],
             ["Asset-Revision", "revision_fingerprint"]]) line(item, label, candidate[key]);
           line(item, "Gewünschte Zeit", stamp(candidate.requested_at));
-          line(item, "Status", "Wartet auf Owner · Scheduling und Publishing nicht freigegeben");
         }
-        line(item, "Exakter GO-Token", d.go_token);
         if (d.provider) line(item, "Provider", d.provider);
+
+        const actions = node("div", undefined, "owner-action-buttons");
+        if (d.required_url) {
+          const copy = node("button", "Ziel-URL kopieren", "owner-action secondary");
+          copy.type = "button";
+          copy.addEventListener("click", () => copyText(d.required_url, copy));
+          actions.append(copy);
+        }
+        if (d.type === "instagram_profile_link_update") {
+          const open = node("a", "Instagram-Profil bearbeiten", "owner-action secondary");
+          open.href = "https://www.instagram.com/accounts/edit/";
+          open.target = "_blank";
+          open.rel = "noopener noreferrer";
+          actions.append(open);
+        }
+        if (
+          d.manual_action_required &&
+          d.action_token &&
+          !manualConfirmed
+        ) {
+          const confirm = node("button", "Erledigt · Jarvis prüfen", "owner-action primary");
+          confirm.type = "button";
+          confirm.addEventListener("click", () =>
+            submitOwnerAction(d, "confirm_manual", confirm),
+          );
+          actions.append(confirm);
+        }
+        if (
+          d.approval_alone_enables_execution &&
+          d.action_token
+        ) {
+          const approve = node("button", "Jetzt freigeben", "owner-action primary");
+          approve.type = "button";
+          approve.addEventListener("click", () =>
+            submitOwnerAction(d, "approve", approve),
+          );
+          actions.append(approve);
+        }
+        if (actions.childElementCount) item.append(actions);
+        if (manualConfirmed) {
+          line(
+            item,
+            "Status",
+            "Deine Handlung ist bestätigt. Jarvis hält den Gate offen, bis der externe Zustand verifiziert ist.",
+          );
+        } else if (!d.manual_action_required && !d.approval_alone_enables_execution) {
+          line(
+            item,
+            "Status",
+            "Review-Gate erkannt. Keine automatische Aktion ohne explizit freigegebenen Handler.",
+          );
+        }
         decisions.append(item);
       }
       if (!gates.length) {
