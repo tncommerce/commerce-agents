@@ -1808,7 +1808,7 @@
       )[0];
 
     const jarvisTone = needsApproval
-      ? "red"
+      ? "amber"
       : c.ceo_status === "BLOCKIERT"
         ? "amber"
         : c.status === "WORKING"
@@ -1847,7 +1847,7 @@
     setPulse("pulse-jarvis", jarvisTone, jarvisMain, jarvisDetail);
     setPulse(
       "pulse-action",
-      needsApproval ? "red" : gatesComplete ? "green" : "amber",
+      needsApproval ? "amber" : gatesComplete ? "green" : "amber",
       needsApproval
         ? "Freigabe nötig"
         : gatesComplete
