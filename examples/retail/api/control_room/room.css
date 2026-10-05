@@ -4253,9 +4253,17 @@ body[data-execution-mode="unknown"] .execution-evidence {
   padding: 8px 12px 16px;
 }
 .jarvis-stage .core {
+  --mic-scale: 1;
+  --mic-brightness: 1;
   width: 286px;
   min-height: 286px;
   pointer-events: none;
+}
+.jarvis-stage .core-signal {
+  transform: translate(-50%, -50%) scale(var(--mic-scale));
+}
+.jarvis-stage .core-frame {
+  filter: brightness(var(--mic-brightness));
 }
 .jarvis-stage .core::after {
   bottom: 40px;
