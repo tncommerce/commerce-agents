@@ -166,6 +166,11 @@
     if (!stage || !core || !button || !spectrum || !mode || !status) return null;
     const providerEnabled = stage.dataset.voiceEnabled === "true";
 
+    button.dataset.providerReady = String(providerEnabled);
+    button.title = providerEnabled
+      ? "Jarvis Voice bereit"
+      : "Jarvis Voice noch nicht serverseitig aktiviert";
+
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     const micSupported =
       Boolean(navigator.mediaDevices?.getUserMedia) &&
@@ -482,22 +487,6 @@
       });
     }
 
-    async function waitForIce(connection, timeoutMs = 6000) {
-      if (connection.iceGatheringState === "complete") return;
-      await new Promise((resolve) => {
-        const timeout = setTimeout(done, timeoutMs);
-        function done() {
-          clearTimeout(timeout);
-          connection.removeEventListener("icegatheringstatechange", onState);
-          resolve();
-        }
-        function onState() {
-          if (connection.iceGatheringState === "complete") done();
-        }
-        connection.addEventListener("icegatheringstatechange", onState);
-      });
-    }
-
     function handleRealtimeEvent(raw, turnGeneration) {
       if (turnGeneration !== generation) return;
       let event;
@@ -550,6 +539,11 @@
     }
 
     async function connectTurn(turnGeneration) {
+      setState(
+        "thinking",
+        "MIC CHECK",
+        "Mikrofon wird geöffnet · Taste weiter gedrückt halten",
+      );
       stream = await navigator.mediaDevices.getUserMedia({
         audio: {
           echoCancellation: true,
@@ -594,18 +588,36 @@
       dataChannel.addEventListener("close", () => {
         if (turnGeneration !== generation || state === "idle") return;
         if (!cleanupTimer) {
-          setState("error", "DISCONNECTED", "Voice-Verbindung beendet");
-          cleanupTimer = setTimeout(() => cleanupSession(), 1200);
+          setState("error", "VERBINDUNG GETRENNT", "Realtime-Verbindung wurde beendet");
+          cleanupTimer = setTimeout(() => cleanupSession(), 1800);
+        }
+      });
+      dataChannel.addEventListener("error", () => {
+        if (turnGeneration !== generation) return;
+        setState("error", "VOICE KANAL FEHLER", "Realtime-Datenkanal konnte nicht stabil geöffnet werden");
+      });
+      peer.addEventListener("connectionstatechange", () => {
+        if (turnGeneration !== generation || !peer) return;
+        if (["failed", "disconnected"].includes(peer.connectionState)) {
+          setState(
+            "error",
+            "VOICE VERBINDUNG FEHLER",
+            "WebRTC-Verbindung konnte nicht gehalten werden",
+          );
         }
       });
 
       const offer = await peer.createOffer();
       await peer.setLocalDescription(offer);
-      await waitForIce(peer);
       if (turnGeneration !== generation || !held) return false;
-      const sdp = peer.localDescription?.sdp;
+      const sdp = peer.localDescription?.sdp || offer.sdp;
       if (!sdp) throw new Error("sdp_missing");
 
+      setState(
+        "thinking",
+        "CONNECTING",
+        "Jarvis verbindet sich · weiter gedrückt halten · noch nicht sprechen",
+      );
       connectAbort = new AbortController();
       const requestTimeout = setTimeout(() => connectAbort?.abort(), 12000);
       let response;
@@ -663,7 +675,7 @@
       setState(
         "listening",
         "LISTENING",
-        "Sprich jetzt · Loslassen sendet genau diesen Turn",
+        "HÖRT ZU · jetzt sprechen · Loslassen sendet deine Frage",
       );
       drawSpectrum();
       turnTimer = setTimeout(() => stop(), 20000);
@@ -704,19 +716,37 @@
       } catch (error) {
         if (turnGeneration !== generation) return;
         const code = String(error?.message || "");
+        const name = String(error?.name || "");
         cleanupSession({ preserveState: true });
+        const micDenied =
+          name === "NotAllowedError" ||
+          name === "SecurityError" ||
+          code.includes("Permission denied");
+        const micMissing = name === "NotFoundError" || code === "microphone_track_missing";
         setState(
           "error",
           code === "voice_not_configured"
-            ? "VOICE SETUP"
+            ? "VOICE NICHT AKTIV"
             : code === "voice_rate_limit"
               ? "VOICE LIMIT"
-              : "VOICE ERROR",
+              : micDenied
+                ? "MIKROFON BLOCKIERT"
+                : micMissing
+                  ? "KEIN MIKROFON"
+                  : code === "voice_channel_timeout"
+                    ? "REALTIME TIMEOUT"
+                    : "VOICE FEHLER",
           code === "voice_not_configured"
-            ? "OpenAI Voice ist serverseitig noch nicht konfiguriert"
+            ? "Server-Key fehlt · Jarvis kann noch keine Voice-Session starten"
             : code === "voice_rate_limit"
               ? "Session-Limit schützt vor unbeabsichtigten Kosten · kurz warten"
-              : "Voice-Verbindung nicht verfügbar · erneut versuchen",
+              : micDenied
+                ? "Browser-Zugriff auf das Mikrofon erlauben und erneut drücken"
+                : micMissing
+                  ? "Kein verwendbares Mikrofon gefunden · Headset-Eingang prüfen"
+                  : code === "voice_channel_timeout"
+                    ? "OpenAI-Realtime-Kanal öffnete nicht rechtzeitig"
+                    : "Voice-Session konnte nicht aufgebaut werden",
         );
       }
     }
@@ -729,7 +759,13 @@
 
       if (connecting && !listening) {
         if (connectAbort) connectAbort.abort();
-        cleanupSession();
+        cleanupSession({ preserveState: true });
+        setState(
+          "error",
+          "NOCH NICHT BEREIT",
+          "Zu früh losgelassen · gedrückt halten bis HÖRT ZU erscheint",
+        );
+        cleanupTimer = setTimeout(() => cleanupSession(), 2400);
         return;
       }
       if (!listening) return;
@@ -739,12 +775,16 @@
       if (track) track.enabled = false;
       stopAnalysis({ stopTracks: true });
 
-      if (
-        durationMs < 300 ||
-        !dataChannel ||
-        dataChannel.readyState !== "open"
-      ) {
-        cleanupSession();
+      if (durationMs < 300) {
+        cleanupSession({ preserveState: true });
+        setState("error", "ZU KURZ", "Mindestens kurz sprechen und dann loslassen");
+        cleanupTimer = setTimeout(() => cleanupSession(), 1800);
+        return;
+      }
+      if (!dataChannel || dataChannel.readyState !== "open") {
+        cleanupSession({ preserveState: true });
+        setState("error", "VOICE KANAL FEHLT", "Realtime-Verbindung ist nicht sendebereit");
+        cleanupTimer = setTimeout(() => cleanupSession(), 1800);
         return;
       }
 
@@ -825,8 +865,8 @@
     if (!providerEnabled) {
       setState(
         "error",
-        "VOICE SETUP",
-        "OpenAI Voice ist serverseitig noch nicht konfiguriert",
+        "VOICE NICHT AKTIV",
+        "Server-Key fehlt · Push-to-Talk kann noch nicht antworten",
       );
     } else if (!micSupported) {
       setState(
