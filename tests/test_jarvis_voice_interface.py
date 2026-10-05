@@ -35,6 +35,9 @@ def test_phase2_uses_same_origin_webrtc_bridge_and_manual_turn_control():
     assert 'type: "input_audio_buffer.clear"' in voice
     assert 'type: "input_audio_buffer.commit"' in voice
     assert 'type: "response.create"' in voice
+    assert "max_output_tokens: 1024" in voice
+    assert '"VOICE LIMIT"' in voice
+    assert '"max_output_tokens"' in voice
     assert "track.enabled = false" in voice
     assert "setTimeout(() => stop(), 20000)" in voice
     assert "30000" in voice
