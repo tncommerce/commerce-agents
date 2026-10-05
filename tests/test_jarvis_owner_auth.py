@@ -284,24 +284,33 @@ def test_owner_action_endpoint_is_owner_csrf_and_exact_payload_guarded(setup):
         "action_token": "MANUAL-INSTAGRAM-PROFILE-ATTRIBUTION-20261005",
         "action": "confirm_manual",
     }
-    assert client.post(
-        "/internal/jarvis/owner-action",
-        headers={"Origin": ORIGIN},
-        json=payload,
-    ).status_code == 401
+    assert (
+        client.post(
+            "/internal/jarvis/owner-action",
+            headers={"Origin": ORIGIN},
+            json=payload,
+        ).status_code
+        == 401
+    )
 
     assert login(client).status_code == 200
     csrf = auth.open(client.cookies[SESSION_COOKIE], ttl=3600)["csrf"]
-    assert client.post(
-        "/internal/jarvis/owner-action",
-        headers={"Origin": ORIGIN, "X-CSRF-Token": "wrong"},
-        json=payload,
-    ).status_code == 403
-    assert client.post(
-        "/internal/jarvis/owner-action",
-        headers={"Origin": ORIGIN, "X-CSRF-Token": csrf},
-        json={**payload, "extra": True},
-    ).status_code == 400
+    assert (
+        client.post(
+            "/internal/jarvis/owner-action",
+            headers={"Origin": ORIGIN, "X-CSRF-Token": "wrong"},
+            json=payload,
+        ).status_code
+        == 403
+    )
+    assert (
+        client.post(
+            "/internal/jarvis/owner-action",
+            headers={"Origin": ORIGIN, "X-CSRF-Token": csrf},
+            json={**payload, "extra": True},
+        ).status_code
+        == 400
+    )
 
     response = client.post(
         "/internal/jarvis/owner-action",
