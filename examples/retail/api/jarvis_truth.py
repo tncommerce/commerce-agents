@@ -7,6 +7,7 @@ from typing import Any
 import httpx
 
 from .jarvis_dashboard import PROJECT_ORIGIN
+from .jarvis_operator import build_operator_diagnosis
 
 
 class JarvisTruthUnavailable(RuntimeError):
@@ -17,7 +18,7 @@ class JarvisTruthReader:
     """Read exact queue/wait/orchestrator evidence with the server-only key."""
 
     _ACTIVE_STATUSES = (
-        "ready,approval_required,waiting_human_input,waiting_external,claimed,working,verifying"
+        "ready,approval_required,waiting_human_input,waiting_external,claimed,working,verifying,blocked"
     )
 
     def __init__(self, *, secret_key: str, transport: httpx.BaseTransport | None = None) -> None:
@@ -69,9 +70,9 @@ class JarvisTruthReader:
                 "select": (
                     "task_id,domain,title,status,priority,budget_class,"
                     "requires_human_approval,approval_action_type,worker_state,"
-                    "last_progress_at,lease_expires_at,dependencies,"
+                    "last_progress_at,lease_expires_at,dependencies,blocked_reason,"
                     "external_review_required,needs_freshness_recheck,"
-                    "provider_cost_unknown,durable_payload"
+                    "provider_cost_unknown,durable_payload,created_at,updated_at"
                 ),
                 "status": f"in.({self._ACTIVE_STATUSES})",
                 "order": "priority.desc,created_at.asc",
@@ -199,6 +200,21 @@ class JarvisTruthReader:
             for task in normalized
             if task.get("status") == "ready" and task.get("certified_free_handler") is True
         ]
+        thin_observers = thin_value.get("observer_health")
+        thin_observers = thin_observers if isinstance(thin_observers, list) else []
+        operator = build_operator_diagnosis(
+            tasks=normalized,
+            waits=waits,
+            observers=[row for row in thin_observers if isinstance(row, dict)],
+            credentials=[],
+            thin=thin_value,
+            runtime=(
+                thin_value.get("first_money_runtime")
+                if isinstance(thin_value.get("first_money_runtime"), dict)
+                else {}
+            ),
+        )
+
         pending_gates = thin_value.get("pending_owner_gates")
         sanitized_gates = [
             {
@@ -231,6 +247,7 @@ class JarvisTruthReader:
                 "highest_priority_task": highest,
                 "certified_safe_ready": safe_ready[:5],
             },
+            "operator_diagnosis": operator,
             "tasks": visible_tasks[:20],
             "truth_rule": (
                 "waiting_external without an unsatisfied external-wait row is not a "
