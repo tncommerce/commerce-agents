@@ -124,7 +124,10 @@ def test_owner_login_cookie_and_protected_shell(setup):
     assert "discard-me" not in cookie and "never-store" not in cookie
     data = auth.open(client.cookies[SESSION_COOKIE], ttl=3600)
     assert set(data) == {"csrf", "access_token"}
-    assert client.get("/internal/jarvis").status_code == 200
+    room = client.get("/internal/jarvis")
+    assert room.status_code == 200
+    assert 'data-voice-enabled="true"' in room.text
+    assert "VOICE_ENABLED" not in room.text
     assert client.get("/internal/jarvis/snapshot").status_code == 200
     assert reader.calls == 1
     assert calls.count(("GET", "/auth/v1/user")) == 3
