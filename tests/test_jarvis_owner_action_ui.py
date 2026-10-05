@@ -35,3 +35,9 @@ def test_owner_action_center_uses_amber_for_routine_human_gate():
     assert ".owner-action-buttons" in css
     assert ".owner-action.primary" in css
     assert "#f0b65d" in css
+
+
+def test_crew_uses_business_display_state_instead_of_raw_degraded_label():
+    js = room_text("room.js")
+    assert "member.display_state || member.state" in js
+    assert 'DEGRADED: "Prüfung nötig"' in js
