@@ -251,6 +251,44 @@ def test_observer_health_uses_own_freshness_and_blockers(health, last_success, e
     )  # Missing live loop evidence is an error; observer warning is separate.
 
 
+@pytest.mark.parametrize(
+    "extra,expected",
+    [
+        (
+            {"health_status": "blocked_configuration", "last_error": "credential_expired"},
+            "blocked_configuration",
+        ),
+        ({"health_status": "failed"}, "failed"),
+        (
+            {
+                "health_status": "initializing",
+                "next_retry_at": (NOW - timedelta(hours=1)).isoformat(),
+            },
+            "initializing_stuck",
+        ),
+        ({"health_status": "initializing", "next_retry_at": STAMP}, "initializing"),
+        (
+            {"health_status": "healthy", "last_success_at": (NOW - timedelta(hours=2)).isoformat()},
+            "stale",
+        ),
+        (
+            {
+                "health_status": "healthy",
+                "last_success_at": STAMP,
+                "monitor_basis": "purchase_target_scheduler",
+            },
+            "monitored",
+        ),
+        ({"health_status": "healthy", "last_success_at": STAMP}, "healthy"),
+    ],
+)
+def test_observer_detailed_state_requires_fresh_evidence(extra, expected):
+    from retail.api.jarvis_dashboard import _observer_state
+
+    row = {"enabled": True, "source_type": "internal_dependency", **extra}
+    assert _observer_state(row, NOW) == expected
+
+
 def test_stale_checkpoint_and_supervisor_are_explicit():
     data = fixture_data()
     data["checkpoint"][0]["observed_at"] = (NOW - timedelta(days=1)).isoformat()
