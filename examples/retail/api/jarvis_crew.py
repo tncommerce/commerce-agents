@@ -620,7 +620,7 @@ def project_risk(snapshot: dict) -> dict:
     panel(
         "owner",
         "OWNER",
-        "red" if gates else "green" if gate_complete else "amber",
+        "amber" if gates else "green" if gate_complete else "amber",
         str(len(gates)) + " Entscheidung(en) offen"
         if gates
         else "Keine Freigabe offen"
