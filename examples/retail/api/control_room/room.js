@@ -587,6 +587,12 @@
         merchant_clickout: "Erster Merchant Clickout", affiliate_transaction_evidence: "Affiliate-Netzwerkbeleg für eine Transaktion"};
       nextMilestone = next[revenue.runtime?.next_evidence] || nextMilestone;
     }
+    if (publication.stopped) {
+      tone = "amber";
+      title = "Launch gestoppt · Ersatz wartet auf Owner GO";
+      copy = "Instagram wurde entfernt, TikTok vor Veröffentlichung gestoppt. Historische Messsignale bleiben erhalten; der alte Plan ist kein aktiver Launch.";
+      nextMilestone = "Content-Chat: neue Revision prüfen und explizites Owner GO abwarten";
+    }
     const signal = $("business-signal");
     if (signal) {
       signal.classList.remove(
@@ -996,6 +1002,7 @@
       String(p.state || "").toUpperCase(),
     );
     const publication = {
+      stopped: revenue.publication_stopped === true,
       failed: normalizedStates.some((x) =>
         ["ERROR", "FAILED", "REJECTED"].includes(x),
       ),
@@ -1110,6 +1117,11 @@
         ? "Geplant: " + (nextPost ? stamp(nextPost.scheduled_at) : "Auto-Publish")
         : "Launch-Signale werden gemessen · Veröffentlichung separat bestätigen.";
       if (publication.failed) { moneyTone = "amber"; moneyDetail = "Publication-Fehler beobachtet · Messung separat prüfen."; }
+    }
+    if (publication.stopped) {
+      moneyTone = "amber";
+      moneyMain = "Gestoppt";
+      moneyDetail = "Instagram entfernt · TikTok gestoppt · Ersatz im Content-Chat; Owner GO fehlt.";
     }
     setPulse("pulse-money", moneyTone, moneyMain, moneyDetail);
 
