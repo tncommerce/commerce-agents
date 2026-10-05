@@ -1275,6 +1275,7 @@ def build_snapshot(
         observers=observers,
         credentials=credentials,
         thin={
+            "stop_reason": thin.get("stop_reason"),
             "active_leases": max(_number(thin.get("active_leases")) or 0, active_workers),
             "queue_counts": {
                 "waiting_external": thin.get("waiting_external"),

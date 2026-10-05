@@ -143,7 +143,7 @@ def build_operator_diagnosis(
         state = "MASTER_ACTION_REQUIRED"
         headline = "Eine echte Master-Entscheidung fehlt"
         cause = "Eine bestätigte Entscheidung oder Reautorisierung blockiert einen konkreten nächsten Schritt."
-    elif ready:
+    elif ready and str(thin.get("stop_reason") or "") not in {"waiting_external", "no_safe_work"}:
         state = "READY"
         headline = "Arbeit liegt bereit"
         cause = f"{len(ready)} Aufgabe(n) sind bereit, aber aktuell noch nicht in Ausführung."
@@ -250,7 +250,7 @@ def build_operator_diagnosis(
         jarvis_message = (
             "Jarvis soll die laufende Arbeit überwachen und bei Abweichungen konkret eingreifen."
         )
-    elif ready:
+    elif state == "READY":
         jarvis_message = "Jarvis kann die bereitliegende sichere Arbeit anstoßen."
     else:
         jarvis_message = (

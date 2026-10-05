@@ -2735,10 +2735,7 @@
       "operator-next-reason",
       operator.recommended_now?.reason || operator.jarvis_message || "",
     );
-    put(
-      "operator-master",
-      operator.owner_action_required === true ? "AKTION NÖTIG" : "NICHTS",
-    );
+    put("operator-master", operator.owner_action_required === true ? "AKTION NÖTIG" : "NICHTS");
     put(
       "operator-master-detail",
       operator.owner_message || "Master-Bedarf wird geprüft.",

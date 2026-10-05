@@ -139,7 +139,7 @@ class JarvisVoiceGateway:
                     "type": "function",
                     "name": "inspect_dufynd",
                     "description": (
-                        "Read the current protected DUFYND operating truth, including the CEO-level "
+                        "Read-only access to the current protected DUFYND operating truth, including the CEO-level "
                         "operator diagnosis that explains why work is or is not running, whether Master "
                         "must act, relevant system faults, First-Money state and prioritized next moves. "
                         "Use it for every current-state, blocker, priority or optimization question. "
