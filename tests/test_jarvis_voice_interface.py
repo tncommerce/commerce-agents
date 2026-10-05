@@ -1,5 +1,7 @@
 """Static safety contract for the zero-cost Jarvis Live Interface V1."""
 
+from __future__ import annotations
+
 from pathlib import Path
 
 
