@@ -94,6 +94,30 @@ def test_truth_reader_reports_exact_waits_priorities_and_sanitized_gates():
                         "last_verified_at": "2026-10-05T18:10:00Z",
                     },
                     {
+                        "key": "jarvis.thin_v1.first_money_schedule_observation",
+                        "value": {
+                            "observed_at": "2026-10-05T05:31:41Z",
+                            "posts": [
+                                {
+                                    "platform": "tiktok",
+                                    "status": "PENDING",
+                                    "scheduled_at": "2026-10-05T18:00:00+02:00",
+                                    "auto_publish": True,
+                                }
+                            ],
+                        },
+                        "last_verified_at": "2026-10-05T05:31:41Z",
+                    },
+                    {
+                        "key": "first_money.social_quality_incident.20261005",
+                        "value": {
+                            "tiktok_state": "stopped_before_publish",
+                            "tiktok_draft": True,
+                            "tiktok_autopublish": False,
+                        },
+                        "last_verified_at": "2026-10-05T10:40:31Z",
+                    },
+                    {
                         "key": "jarvis.thin_v1.status",
                         "value": {
                             "stop_reason": "waiting_external",
