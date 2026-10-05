@@ -551,16 +551,26 @@
         clearTimeout(responseTimer);
         responseTimer = null;
         const responseStatus = safeCode(event.response?.status);
+        const responseReason = safeCode(
+          event.response?.status_details?.reason ||
+            event.response?.incomplete_details?.reason,
+        );
         if (
           responseStatus &&
           !["completed", "success"].includes(responseStatus)
         ) {
           setState(
             "error",
-            "VOICE INCOMPLETE",
-            "Antwort nicht vollständig bestätigt · erneut versuchen",
+            responseReason === "max_output_tokens"
+              ? "VOICE LIMIT"
+              : "VOICE INCOMPLETE",
+            responseReason === "max_output_tokens"
+              ? "Antwortlimit erreicht · bitte erneut versuchen"
+              : "Antwort nicht vollständig bestätigt" +
+                  (responseReason ? " · " + responseReason : "") +
+                  " · erneut versuchen",
           );
-          cleanupTimer = setTimeout(() => cleanupSession(), 1800);
+          cleanupTimer = setTimeout(() => cleanupSession(), 3000);
           return;
         }
         setState(
@@ -837,6 +847,7 @@
         type: "response.create",
         response: {
           output_modalities: ["audio"],
+          max_output_tokens: 1024,
         },
       });
       responseTimer = setTimeout(() => {
