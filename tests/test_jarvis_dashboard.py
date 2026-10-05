@@ -858,6 +858,22 @@ def test_ceo_gate_and_external_monitoring_are_truthful():
     assert build_snapshot(data, now=NOW)["command_center"]["ceo_status"] == "JARVIS AKTIV"
 
 
+def test_owner_confirmed_manual_gate_no_longer_counts_as_owner_action():
+    data = ceo_data()
+    data["decisions"] = [
+        {
+            "decision_id": "manual-done",
+            "title": "Instagram-Profil-Link aktualisieren",
+            "action_type": "instagram_profile_link_update",
+            "owner_confirmed_manual_action": True,
+        }
+    ]
+    result = build_snapshot(data, now=NOW)
+    assert result["command_center"]["human_approval_count"] == 0
+    assert result["command_center"]["ceo_status"] == "JARVIS ÜBERWACHT"
+    assert result["command_center"]["owner_action"] == "NICHTS"
+
+
 def test_worker_context_joins_only_sanitized_task_evidence():
     data = ceo_data()
     data["tasks"] = [
