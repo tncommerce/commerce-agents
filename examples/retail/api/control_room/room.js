@@ -713,6 +713,14 @@
         ? (nextPost.platform || "Post") + " · " + stamp(nextPost.scheduled_at)
         : "Auto-Publish geplant.";
     }
+    if (revenue.analytics_provenance === "launch_attributed_excludes_prelaunch" && revenue.analytics_complete === true) {
+      moneyTone = "blue";
+      moneyMain = revenue.runtime?.phase === "prelaunch" ? "PRELAUNCH" : "Messfenster";
+      moneyDetail = revenue.runtime?.phase === "prelaunch"
+        ? "Geplant: " + (nextPost ? stamp(nextPost.scheduled_at) : "Auto-Publish")
+        : "Launch-Signale werden gemessen · Veröffentlichung separat bestätigen.";
+      if (publication.failed) { moneyTone = "amber"; moneyDetail = "Publication-Fehler beobachtet · Messung separat prüfen."; }
+    }
     setPulse("pulse-money", moneyTone, moneyMain, moneyDetail);
 
     const costUnknown =
@@ -872,7 +880,7 @@
         "product_views",
         (numeric(revenue.product_views) || 0) > 0,
       ],
-      ["Offer Views", "offer_views", (numeric(revenue.offer_views) || 0) > 0],
+      ["Offer Views / Opens", "offer_views", ((numeric(revenue.offer_views) || 0) + (numeric(revenue.offer_opens) || 0)) > 0],
       [
         "Clickouts",
         "merchant_clickouts",
@@ -921,6 +929,7 @@
         ) {
           metric = "≥ " + metric;
         }
+        if (key === "offer_views" && numeric(revenue.offer_opens) !== null) metric += " / " + value(revenue.offer_opens);
         const detail =
           key !== "publication" && numeric(revenue[key]) === null
             ? "Kein Nachweis"
