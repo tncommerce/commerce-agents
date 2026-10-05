@@ -853,6 +853,58 @@
       );
     }
 
+    async function executeTruthInspection(area, focus) {
+      const authoritativeAreas = new Set([
+        "overview",
+        "workers",
+        "missions",
+        "risks",
+        "recent_activity",
+      ]);
+      if (!authoritativeAreas.has(area)) {
+        return inspectionPayload(area, focus);
+      }
+      try {
+        const response = await fetch("/internal/jarvis/truth", {
+          method: "POST",
+          credentials: "same-origin",
+          cache: "no-store",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-Token": csrf,
+          },
+          body: JSON.stringify({ area, focus }),
+        });
+        if (response.status === 401 || response.status === 403) {
+          location.assign("/internal/login");
+          return JSON.stringify({
+            source: "dufynd_control_plane_authoritative_truth",
+            verified: false,
+            error: "owner_session_invalid",
+          });
+        }
+        if (!response.ok) {
+          return JSON.stringify({
+            source: "dufynd_control_plane_authoritative_truth",
+            verified: false,
+            error: "authoritative_truth_unavailable",
+            missing_evidence:
+              "Control-Plane-Wahrheitsabfrage ist aktuell nicht bestätigt. Nicht spekulieren.",
+          });
+        }
+        const result = await response.json();
+        return JSON.stringify(result).slice(0, 12000);
+      } catch {
+        return JSON.stringify({
+          source: "dufynd_control_plane_authoritative_truth",
+          verified: false,
+          error: "authoritative_truth_transport_failed",
+          missing_evidence:
+            "Control-Plane-Wahrheitsabfrage ist aktuell nicht bestätigt. Nicht spekulieren.",
+        });
+      }
+    }
+
     async function executeSafeAction() {
       try {
         const response = await fetch("/internal/jarvis/safe-action", {
@@ -902,7 +954,7 @@
         try { args = JSON.parse(call.arguments || "{}"); } catch {}
         const area = safeCode(args.area) || "overview";
         const focus = safeText(args.focus, 120);
-        output = inspectionPayload(area, focus);
+        output = await executeTruthInspection(area, focus);
         allowAnotherTool = toolCallsThisTurn === 0;
       }
       toolCallsThisTurn += 1;
