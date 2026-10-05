@@ -238,7 +238,7 @@ def project_crew(snapshot: dict) -> dict:
                     "last_action": (last_activity or {}).get("task_title")
                     or (last_activity or {}).get("task_id"),
                     "last_action_at": (last_activity or {}).get("completed_at"),
-                    "last_checkpoint": (last_activity or {}).get("checkpoint"),
+                    "recent_checkpoint": (last_activity or {}).get("checkpoint"),
                     "connections": (["active"] if active else [])
                     + (["owner"] if gates else [])
                     + (["external"] if waiting else []),
