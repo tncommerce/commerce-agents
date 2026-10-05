@@ -179,3 +179,11 @@ def test_truth_reader_reports_exact_waits_priorities_and_sanitized_gates():
     assert tasks["task_safe_ready"]["certified_free_handler"] is True
     assert result["priority"]["highest_priority_task"]["task_id"] == "task_external_confirmed"
     assert result["priority"]["certified_safe_ready"][0]["task_id"] == "task_safe_ready"
+
+    publication = result["publication_truth"]
+    assert publication["tiktok_state"] == "stopped_before_publish"
+    assert publication["tiktok_draft"] is True
+    assert publication["tiktok_auto_publish"] is False
+    assert publication["schedule_posts"][0]["status"] == "PENDING"
+    assert publication["schedule_posts"][0]["auto_publish"] is True
+    assert "overrides an older schedule" in publication["truth_rule"]
