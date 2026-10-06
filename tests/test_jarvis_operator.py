@@ -131,3 +131,45 @@ def test_active_work_wins_over_waiting_external_noise():
     assert result["state"] == "WORKING"
     assert result["evidence"]["active_executions"] == 1
     assert result["owner_action_required"] is False
+
+def test_scheduled_safe_work_is_not_reported_as_empty_autonomy():
+    result = build_operator_diagnosis(
+        tasks=[
+            {
+                "task_id": "old-wait",
+                "status": "waiting_external",
+                "priority": 90,
+            }
+        ],
+        waits=[],
+        observers=[],
+        credentials=[],
+        thin={
+            "active_leases": 0,
+            "stop_reason": "no_safe_work",
+            "queue_counts": {"waiting_external": 15},
+            "planner": {
+                "state": "scheduled_safe_work",
+                "next_safe_work_at": "2026-10-06T13:40:00+00:00",
+                "ready_certified_free_tasks": 0,
+                "external_waits_are_global_blocker": False,
+            },
+        },
+        runtime={
+            "phase": "live_measurement_window",
+            "decision_state": "waiting_first_signal",
+            "next_evidence": "qualified_session",
+            "funnel": {},
+        },
+        now=NOW,
+    )
+
+    assert result["state"] == "SCHEDULED_SAFE_WORK"
+    assert result["headline"] == "Nächste sichere Arbeit ist geplant"
+    assert "2026-10-06T13:40:00+00:00" in result["cause"]
+    assert result["owner_action_required"] is False
+    assert "geplanten Fälligkeitspunkt" in result["jarvis_message"]
+    assert result["evidence"]["planner_state"] == "scheduled_safe_work"
+    assert result["rules"]["external_waits_are_global_blocker"] is False
+    assert "restore_autonomy" not in [move["id"] for move in result["next_moves"]]
+
