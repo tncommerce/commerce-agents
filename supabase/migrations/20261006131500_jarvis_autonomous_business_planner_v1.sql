@@ -37,7 +37,7 @@ begin
     ) values(
       tid,'supervisor','Verify social publication readiness truth',
       'Persist current First-Money publication, funnel and supervisor evidence only. Never publish or schedule content.',
-      'ready',120,'free','["db:jarvis.supervisor_v2.health"]'::jsonb,'durable',
+      'ready',100,'free','["db:jarvis.supervisor_v2.health"]'::jsonb,'durable',
       '{"kind":"supervisor_state_audit","steps":1,"interval_seconds":2}'::jsonb,
       '["social.publish","external.outreach","gmail.send","budget.spend","main.merge","commerce.activate","credentials","model.call","paid_model_call"]'::jsonb
     ) on conflict(task_id) do nothing;
@@ -52,7 +52,7 @@ begin
     ) values(
       tid,'content','Recover and rank frozen social masters',
       'Locate persisted FROZEN >=9.5 short-form masters and produce evidence for QA. Do not generate paid media, schedule, publish or modify approved assets.',
-      'blocked',115,'free','["repo:scentai-mvp:read","social:creative-registry:read"]'::jsonb,'durable',
+      'blocked',95,'free','["repo:scentai-mvp:read","db:dufynd.creative_registry"]'::jsonb,'durable',
       '{"kind":"creative_asset_recovery","quality_floor":9.5,"read_only":true,"requires_certified_handler":true}'::jsonb,
       '["social.publish","external.outreach","gmail.send","budget.spend","main.merge","commerce.activate","credentials","model.call","paid_model_call"]'::jsonb
     ) on conflict(task_id) do nothing;
@@ -67,7 +67,7 @@ begin
     ) values(
       tid,'growth','Audit qualified-traffic readiness',
       'Persist bounded funnel and supervisor evidence; identify missing internal prerequisites only. Do not create traffic, publish, message or spend.',
-      'ready',110,'free','["db:jarvis.supervisor_v2.health"]'::jsonb,'durable',
+      'ready',90,'free','["db:jarvis.supervisor_v2.health"]'::jsonb,'durable',
       '{"kind":"supervisor_state_audit","steps":1,"interval_seconds":2}'::jsonb,
       '["social.publish","external.outreach","gmail.send","budget.spend","main.merge","commerce.activate","credentials","model.call","paid_model_call"]'::jsonb
     ) on conflict(task_id) do nothing;
