@@ -195,6 +195,17 @@ def _enum(value: object) -> str | None:
     return None
 
 
+def _observer_error(value: object) -> str | None:
+    if value in {
+        "credential_expired",
+        "invalid_grant",
+        "purchase_target_disabled",
+        "purchase_target_missing",
+    }:
+        return str(value)
+    return None
+
+
 def _number(value: object) -> int | None:
     return value if type(value) is int and 0 <= value <= 10**9 else None
 
@@ -468,7 +479,7 @@ def build_snapshot(
             "next_retry_at": _stamp(row.get("next_retry_at")),
             "failures": _number(row.get("consecutive_failures")),
             "interval_seconds": _number(row.get("interval_seconds")),
-            "last_error": _enum(row.get("last_error")),
+            "last_error": _observer_error(row.get("last_error")),
         }
         for row in data.get("observers", [])
     ]
