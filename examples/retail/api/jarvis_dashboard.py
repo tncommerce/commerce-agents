@@ -1343,9 +1343,7 @@ def build_snapshot(
             command["priority"] = planner["business_next_move"]
         if planner["capability_gap"]:
             command["next_safe_action"] = planner["capability_gap"]
-            command["system_explanation"] = (
-                operator["cause"] + " " + planner["capability_gap"]
-            )
+            command["system_explanation"] = operator["cause"] + " " + planner["capability_gap"]
     if not active_workers and operator.get("recommended_now"):
         command["priority"] = operator["recommended_now"]["title"]
         command["next_safe_action"] = operator["jarvis_message"]
