@@ -181,7 +181,12 @@ def project_crew(snapshot: dict) -> dict:
             else:
                 state, focus = "BEREIT", ready[0] if ready else None
             operator = snapshot.get("operator_diagnosis") or {}
-            if (key == "operations" and operator.get("state") == "IDLE_NO_RUNNABLE_WORK" and complete and not live):
+            if (
+                key == "operations"
+                and operator.get("state") == "IDLE_NO_RUNNABLE_WORK"
+                and complete
+                and not live
+            ):
                 state, focus = "AUTONOMIE LEER", None
             explanation = (focus or {}).get("explanation") or {}
             current = active[0] if active else None
