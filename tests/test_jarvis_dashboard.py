@@ -1186,8 +1186,5 @@ def test_ceo_dashboard_projects_scheduled_safe_work_from_live_planner():
     assert result["command_center"]["next_safe_work_at"] == next_safe
     assert next_safe in result["command_center"]["next_allowed_task"]
     assert result["operator_diagnosis"]["state"] == "SCHEDULED_SAFE_WORK"
-    assert (
-        result["operator_diagnosis"]["rules"]["external_waits_are_global_blocker"]
-        is False
-    )
+    assert result["operator_diagnosis"]["rules"]["external_waits_are_global_blocker"] is False
 
