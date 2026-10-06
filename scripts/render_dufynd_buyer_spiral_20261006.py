@@ -10,8 +10,7 @@ from PIL import Image, ImageDraw, ImageFont
 ROOT = Path(__file__).resolve().parents[1]
 SPEC_PATH = ROOT / "examples/retail/data/dufynd_buyer_spiral_20261006.json"
 OUT = ROOT / (
-    "examples/retail/storefront-web/public/social/organic/"
-    "fragrance_buyer_spiral_20261006_01"
+    "examples/retail/storefront-web/public/social/organic/fragrance_buyer_spiral_20261006_01"
 )
 IG = (1080, 1350)
 TT = (1080, 1920)
@@ -48,9 +47,7 @@ def fit(draw, text, path, max_size, min_size, width, height):
     for size in range(max_size, min_size - 1, -2):
         fnt = font(path, size)
         value = wrap(draw, text, fnt, width)
-        box = draw.multiline_textbbox(
-            (0, 0), value, font=fnt, spacing=max(8, size // 10)
-        )
+        box = draw.multiline_textbbox((0, 0), value, font=fnt, spacing=max(8, size // 10))
         if box[2] - box[0] <= width and box[3] - box[1] <= height:
             return fnt, value
     fnt = font(path, min_size)
@@ -107,26 +104,25 @@ def render(slide, size, platform):
         passed = idx <= active
         r = 11 if idx == active else 7
         fill = orange if idx == active else violet if passed else muted + (130,)
-        draw.ellipse((x-r, rail_y-r, x+r, rail_y+r), fill=fill)
-        draw.text((x-17, rail_y+20), label, font=font(BOLD, 17), fill=muted)
+        draw.ellipse((x - r, rail_y - r, x + r, rail_y + r), fill=fill)
+        draw.text((x - 17, rail_y + 20), label, font=font(BOLD, 17), fill=muted)
 
     top = 260 if platform == "tiktok" else 215
     draw.text((70, top), slide["kicker"], font=font(BOLD, 24), fill=orange)
 
     title_y = top + 60
     title_font, title = fit(
-        draw, slide["title"], COND,
+        draw,
+        slide["title"],
+        COND,
         102 if platform == "tiktok" else 84,
-        54, w - 140,
-        420 if platform == "tiktok" else 330
+        54,
+        w - 140,
+        420 if platform == "tiktok" else 330,
     )
     spacing = max(8, title_font.size // 10)
-    draw.multiline_text(
-        (70, title_y), title, font=title_font, fill=ink, spacing=spacing
-    )
-    title_box = draw.multiline_textbbox(
-        (70, title_y), title, font=title_font, spacing=spacing
-    )
+    draw.multiline_text((70, title_y), title, font=title_font, fill=ink, spacing=spacing)
+    title_box = draw.multiline_textbbox((70, title_y), title, font=title_font, spacing=spacing)
 
     body_y = title_box[3] + 32
     body_font, body = fit(draw, slide["body"], SANS, 36, 27, w - 190, 135)
@@ -153,10 +149,10 @@ def render(slide, size, platform):
             fill=color,
             width=4,
         )
-    for idx, (dx, dy) in enumerate(((-280,-70),(-185,118),(-15,145),(75,-70))):
+    for idx, (dx, dy) in enumerate(((-280, -70), (-185, 118), (-15, 145), (75, -70))):
         x, y = cx + dx, cy + dy
-        rr = 12 if idx == min(max(active,0),3) else 7
-        draw.ellipse((x-rr,y-rr,x+rr,y+rr), fill=orange if rr == 12 else violet)
+        rr = 12 if idx == min(max(active, 0), 3) else 7
+        draw.ellipse((x - rr, y - rr, x + rr, y + rr), fill=orange if rr == 12 else violet)
 
     note = slide["note"]
     note_font, note_text = fit(draw, note, BOLD, 27, 20, w - 210, 78)
@@ -220,11 +216,30 @@ def main():
     concat.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
     video = tt_dir / f"{spec['content_id']}.mp4"
-    subprocess.run([
-        "ffmpeg","-y","-f","concat","-safe","0","-i",str(concat),
-        "-vf","fps=30,format=yuv420p","-c:v","libx264","-preset","medium",
-        "-crf","19","-movflags","+faststart",str(video)
-    ], check=True)
+    subprocess.run(
+        [
+            "ffmpeg",
+            "-y",
+            "-f",
+            "concat",
+            "-safe",
+            "0",
+            "-i",
+            str(concat),
+            "-vf",
+            "fps=30,format=yuv420p",
+            "-c:v",
+            "libx264",
+            "-preset",
+            "medium",
+            "-crf",
+            "19",
+            "-movflags",
+            "+faststart",
+            str(video),
+        ],
+        check=True,
+    )
 
     manifest = {
         "content_id": spec["content_id"],
