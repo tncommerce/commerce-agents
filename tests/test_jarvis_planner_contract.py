@@ -7,7 +7,9 @@ def test_planner_migration_does_not_treat_external_waits_as_global_blocker():
     sql = MIGRATION.read_text()
     assert "external_waits_are_global_blocker',false" in sql
     assert "'state','planner_gap'" in sql
-    assert "'stop_reason','no_executable_work'" not in sql  # state function uses CASE, not a hardcoded lie
+    assert (
+        "'stop_reason','no_executable_work'" not in sql
+    )  # state function uses CASE, not a hardcoded lie
     assert "waiting_external tasks are parked dependencies" in sql
 
 
