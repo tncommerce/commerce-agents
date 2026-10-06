@@ -97,6 +97,10 @@ MASTER_READS.update(
             "continuity.checkpoint.ceo_radar",
             "last_verified_at,product0:value->money_products->0->>product,state0:value->money_products->0->>state,product1:value->money_products->1->>product,state1:value->money_products->1->>state,product2:value->money_products->2->>product,state2:value->money_products->2->>state,product3:value->money_products->3->>product,state3:value->money_products->3->>state",
         ),
+        "planner": (
+            "jarvis.planner_v1",
+            "last_verified_at,state:value->>state,business_next_move:value->>business_next_move,capability_gap:value->>capability_gap,master_action_required:value->master_action_required,waiting_external_is_global_blocker:value->waiting_external_is_global_blocker",
+        ),
         "social_quality": (
             "first_money.social_quality_incident.20261005",
             "last_verified_at,status:value->>status,instagram_state:value->>instagram_state,tiktok_state:value->>tiktok_state,owner_quality_floor:value->owner_quality_floor,replacement_requires_new_content_id:value->replacement_requires_new_content_id,publishing_authorized:value->publishing_authorized,replacement_content_id:value->>replacement_content_id,replacement_experiment_id:value->>replacement_experiment_id,instagram_scheduled_at:value->>instagram_scheduled_at,metricool_post_id:value->>metricool_post_id,instagram_auto_publish:value->instagram_auto_publish,instagram_draft:value->instagram_draft",
@@ -1298,8 +1302,50 @@ def build_snapshot(
         runtime=runtime if isinstance(runtime, dict) else {},
         now=now,
     )
+    planner_raw = first("planner")
+    planner_move = enum(planner_raw.get("business_next_move"))
+    planner_gap = enum(planner_raw.get("capability_gap"))
+    planner_titles = {
+        "social_publication_readiness": "Social-Publishing heute absichern",
+        "qualified_traffic_generation": "Qualifizierten Traffic erzeugen",
+        "funnel_conversion_readiness": "Funnel-Conversion absichern",
+        "business_reprioritization": "Nächsten Revenue-Hebel neu priorisieren",
+    }
+    planner_gaps = {
+        "no_autonomous_metricool_media_or_publish_readiness_handler": (
+            "Sicherer Metricool-Medien-/Publish-Readiness-Handler fehlt."
+        ),
+        "no_zero_spend_autonomous_traffic_generation_handler": (
+            "Sicherer Zero-Spend-Traffic-Worker fehlt."
+        ),
+        "no_certified_conversion_experiment_handler": (
+            "Sicherer Conversion-Experiment-Handler fehlt."
+        ),
+        "no_certified_handler_for_current_business_next_move": (
+            "Für den nächsten Business-Schritt fehlt noch ein sicherer Worker."
+        ),
+    }
+    planner = {
+        "state": enum(planner_raw.get("state")),
+        "business_next_move": planner_titles.get(planner_move, planner_move),
+        "capability_gap": planner_gaps.get(planner_gap, planner_gap),
+        "master_action_required": planner_raw.get("master_action_required") is True,
+        "waiting_external_is_global_blocker": (
+            planner_raw.get("waiting_external_is_global_blocker") is True
+        ),
+        "last_verified_at": _stamp(planner_raw.get("last_verified_at")),
+    }
+    snapshot["planner"] = planner
     snapshot["operator_diagnosis"] = operator
     command["system_explanation"] = operator["cause"]
+    if operator["state"] == "IDLE_NO_RUNNABLE_WORK" and planner["state"] == "PLANNER_GAP":
+        if planner["business_next_move"]:
+            command["priority"] = planner["business_next_move"]
+        if planner["capability_gap"]:
+            command["next_safe_action"] = planner["capability_gap"]
+            command["system_explanation"] = (
+                operator["cause"] + " " + planner["capability_gap"]
+            )
     if not active_workers and operator.get("recommended_now"):
         command["priority"] = operator["recommended_now"]["title"]
         command["next_safe_action"] = operator["jarvis_message"]
