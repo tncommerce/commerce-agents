@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "generated_at": "2026-10-06",
+  "content_id": "fragrance_buyer_spiral_20261006_01",
+  "experiment_id": "organic_buyer_spiral_20261006",
+  "state": "PREPARED_NOT_PUBLISHED",
+  "objective": "Reach, shares, comments and profile visits from a product-free relatable fragrance meme.",
+  "constraints": {
+    "paid_tools": false,
+    "higgsfield": false,
+    "new_credits": false,
+    "product_assets": false,
+    "external_images": false,
+    "publishing_authorized": false,
+    "visual_quality_floor": 9.5,
+    "native_preview_required": true
+  },
+  "format": {
+    "instagram": "5-slide 1080x1350 carousel",
+    "tiktok": "5-slide 1080x1920 slideshow plus 17-second MP4",
+    "audio": "silent master; native audio optional only at publish time"
+  },
+  "hook": "ICH SCHAU NUR KURZ.",
+  "slides": [
+    {
+      "n": 1,
+      "kicker": "DIE DUFT-KÄUFER-SPIRALE",
+      "title": "ICH SCHAU\nNUR KURZ.",
+      "body": "Jeder kennt den Anfang. Keiner kennt das Ende.",
+      "step": "START",
+      "note": "0 Kaufabsicht",
+      "duration": 2.6
+    },
+    {
+      "n": 2,
+      "kicker": "STUFE 01",
+      "title": "„NUR EINER\nFÜR JEDEN TAG.“",
+      "body": "Vernünftig. Praktisch. Komplett unter Kontrolle.",
+      "step": "01",
+      "note": "noch glaubwürdig",
+      "duration": 3.3
+    },
+    {
+      "n": 3,
+      "kicker": "STUFE 02",
+      "title": "„OKAY. EINER\nFÜR WINTER.“",
+      "body": "Man braucht schließlich Kategorien.",
+      "step": "02",
+      "note": "erste Rechtfertigung",
+      "duration": 3.3
+    },
+    {
+      "n": 4,
+      "kicker": "STUFE 03",
+      "title": "„UND EINER FÜR\nBESONDERE ANLÄSSE.“",
+      "body": "Plötzlich hat jeder Duft einen Job.",
+      "step": "03",
+      "note": "Sammlung eröffnet",
+      "duration": 3.5
+    },
+    {
+      "n": 5,
+      "kicker": "DUFYND REALITY CHECK",
+      "title": "14 TABS\nSPÄTER.",
+      "body": "Welche Stufe bist du gerade?",
+      "step": "14",
+      "note": "Schick das der Person, die „nur gucken“ sagt.",
+      "footer": "1 · 2 · 3 · 14 TABS?",
+      "duration": 4.3
+    }
+  ],
+  "caption": {
+    "tiktok": "„Ich schau nur kurz.“\n\n14 Tabs später: 👀\n\nWelche Stufe bist du — 1, 2, 3 oder schon 14 Tabs? 👇\n\n#DUFYND #Parfum #FragranceTok #ParfumTok #Duftsammlung",
+    "instagram": "„Ich schau nur kurz.“\n\n14 Tabs später: 👀\n\nWelche Stufe bist du gerade — 1, 2, 3 oder schon 14 Tabs?\n\nSchick das der Person, die bei Parfum immer „nur gucken“ sagt.\n\n#DUFYND #Parfum #Duftsammlung #Fragrance #ParfumCommunity"
+  },
+  "qa": [
+    "first frame readable in under one second",
+    "TikTok-safe typography",
+    "no product or image-rights dependency",
+    "no health/mood/energy/performance claim",
+    "no raw URL or fake clickable CTA",
+    "no price claim",
+    "owner publish gate remains closed"
+  ]
+}

@@ -7,6 +7,8 @@ on:
       - "examples/retail/data/dufynd_first_money_publish_packets_20261004.json"
       - "examples/retail/data/scentai_products.json"
       - "scripts/render_dufynd_first_money_publish_packets.py"
+      - "examples/retail/data/dufynd_buyer_spiral_20261006.json"
+      - "scripts/render_dufynd_buyer_spiral_20261006.py"
       - ".github/workflows/dufynd-first-money-publish-render.yml"
   workflow_dispatch:
 
@@ -39,10 +41,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ffmpeg fonts-dejavu-core
 
-      - name: Render First Money pieces 2 and 3
+      - name: Render no-spend social packets
         run: |
           python scripts/render_dufynd_first_money_publish_packets.py
           python scripts/render_dufynd_first_money_publish_packets.py --check-only
+          python scripts/render_dufynd_buyer_spiral_20261006.py
 
       - name: Commit publish-ready media only
         shell: bash
@@ -52,12 +55,13 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add examples/retail/storefront-web/public/social/first-money
+          git add examples/retail/storefront-web/public/social/organic/fragrance_buyer_spiral_20261006_01
 
           if git diff --cached --quiet; then
             echo "No First Money media changes to commit."
             exit 0
           fi
 
-          git commit -m "Render First Money pieces 2 and 3 [skip ci]"
+          git commit -m "Render no-spend DUFYND social packets [skip ci]"
           git pull --rebase origin scentai-mvp
           git push origin HEAD:scentai-mvp
