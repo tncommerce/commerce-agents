@@ -1164,3 +1164,30 @@ def test_worker_aliases_stay_stable_distinct_and_keep_technical_identity():
         w["execution_id"]: (w["display_name"], w["identity_tag"]) for w in later
     }
     assert first[0]["worker_id"] == "tech-worker"
+
+def test_ceo_dashboard_projects_scheduled_safe_work_from_live_planner():
+    data = ceo_data()
+    next_safe = (NOW + timedelta(hours=9)).isoformat()
+    data["thin"][0].update(
+        {
+            "stop_reason": "no_safe_work",
+            "planner_state": "scheduled_safe_work",
+            "planner_next_safe_work_at": next_safe,
+            "planner_ready_free": 0,
+            "planner_external_waits_global_blocker": False,
+            "planner_first_money_next_evidence": "qualified_session",
+        }
+    )
+
+    result = build_snapshot(data, now=NOW)
+
+    assert result["command_center"]["ceo_status"] == "ARBEIT GEPLANT"
+    assert result["command_center"]["planner_state"] == "scheduled_safe_work"
+    assert result["command_center"]["next_safe_work_at"] == next_safe
+    assert next_safe in result["command_center"]["next_allowed_task"]
+    assert result["operator_diagnosis"]["state"] == "SCHEDULED_SAFE_WORK"
+    assert (
+        result["operator_diagnosis"]["rules"]["external_waits_are_global_blocker"]
+        is False
+    )
+
