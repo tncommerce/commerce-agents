@@ -1338,15 +1338,15 @@ def build_snapshot(
     snapshot["planner"] = planner
     snapshot["operator_diagnosis"] = operator
     command["system_explanation"] = operator["cause"]
+    if not active_workers and operator.get("recommended_now"):
+        command["priority"] = operator["recommended_now"]["title"]
+        command["next_safe_action"] = operator["jarvis_message"]
     if operator["state"] == "IDLE_NO_RUNNABLE_WORK" and planner["state"] == "planner_gap":
         if planner["business_next_move"]:
             command["priority"] = planner["business_next_move"]
         if planner["capability_gap"]:
             command["next_safe_action"] = planner["capability_gap"]
             command["system_explanation"] = operator["cause"] + " " + planner["capability_gap"]
-    if not active_workers and operator.get("recommended_now"):
-        command["priority"] = operator["recommended_now"]["title"]
-        command["next_safe_action"] = operator["jarvis_message"]
     command["owner_action"] = operator["owner_message"]
     command["ceo_status"] = (
         "ARBEIT LÄUFT"
