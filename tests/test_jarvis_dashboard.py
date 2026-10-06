@@ -1166,7 +1166,6 @@ def test_worker_aliases_stay_stable_distinct_and_keep_technical_identity():
     assert first[0]["worker_id"] == "tech-worker"
 
 
-
 def test_v41_planner_gap_overrides_stale_wait_explanation_with_business_next_move():
     data = ceo_data()
     data["planner"] = [
