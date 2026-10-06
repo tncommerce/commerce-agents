@@ -174,9 +174,7 @@ def build_operator_diagnosis(
             "konkreten nächsten Schritt."
         )
     elif planner_state == "work_ready" or (
-        ready
-        and str(thin.get("stop_reason") or "")
-        not in {"waiting_external", "no_safe_work"}
+        ready and str(thin.get("stop_reason") or "") not in {"waiting_external", "no_safe_work"}
     ):
         state = "READY"
         headline = "Arbeit liegt bereit"
