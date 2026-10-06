@@ -62,7 +62,9 @@ def test_all_green_requires_complete_verified_evidence_and_roles_are_not_executi
     assert {r["cluster"] for r in s["crew"]["roles"]} == {"BUILD", "MONEY", "GROWTH", "OPERATIONS"}
     assert s["crew"]["active_executions"] == 0
     assert all(r["state"] != "AKTIV" and not r["executions"] for r in s["crew"]["roles"])
-    assert role(s, "Jinbe")["state"] == "ÜBERWACHT"
+    assert role(s, "Jinbe")["state"] == "AUTONOMIE LEER"
+    assert role(s, "Jinbe")["display_state"] == "KEINE ARBEIT BEREIT"
+    assert s["global_risk"]["title"] == "AUTONOMIE LEER"
     assert role(s, "Zoro")["state"] == "BEREIT"
 
 
@@ -180,6 +182,13 @@ def test_dior_is_robin_by_purpose_not_old_tech_domain_and_normal_wait_is_info():
             "title": "Dior Bildrechte",
             "status": "waiting_external",
             "updated_at": STAMP,
+        }
+    ]
+    data["external_waits"] = [
+        {
+            "task_id": "jarvis_dior_hypnotic_image_rights_outreach_20261001",
+            "observer_id": "gmail:qa",
+            "satisfied": False,
         }
     ]
     s = result(data)

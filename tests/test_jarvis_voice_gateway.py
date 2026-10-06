@@ -34,7 +34,7 @@ def test_voice_gateway_session_is_read_only_tool_enabled_and_conversational():
     action_tool = config["tools"][1]
     assert action_tool["type"] == "function"
     assert action_tool["name"] == "advance_dufynd_safe_work"
-    assert "certified free" in action_tool["description"]
+    assert "protected zero-spend worker" in action_tool["description"]
     assert action_tool["parameters"]["properties"] == {}
     assert action_tool["parameters"]["additionalProperties"] is False
 
@@ -46,17 +46,23 @@ def test_voice_gateway_session_is_read_only_tool_enabled_and_conversational():
 
     assert config["audio"]["output"]["voice"] == "ash"
     assert config["audio"]["output"]["speed"] == 1.03
-    assert "kein Dashboard-Vorleser" in config["instructions"]
+    assert "operative CEO-Assistent von Master" in config["instructions"]
+    assert "immer als 'Master'" in config["instructions"]
     assert "MUSST du zuerst inspect_dufynd" in config["instructions"]
+    assert "operator_diagnosis" in config["instructions"]
+    assert "publication_truth" in config["instructions"]
+    assert "stopped_before_publish" in config["instructions"]
+    assert "niemals automatisch der globale Grund" in config["instructions"]
+    assert "Sag Master niemals, er solle E-Mails prüfen" in config["instructions"]
     assert "niemals 'wahrscheinlich'" in config["instructions"]
     assert "nicht verifiziert" in config["instructions"]
+    assert "Übersetze interne Implementierungsbegriffe" in config["instructions"]
+    assert "zwei bis vier konkrete, priorisierte Lösungsvorschläge" in config["instructions"]
     assert "advance_dufynd_safe_work" in config["instructions"]
     assert "trockener, intelligenter Humor" in config["instructions"]
-    assert "gesprochenes GO" in config["instructions"]
-    assert "zertifizierten kostenlosen Thin-V1-Orchestrator" in config["instructions"]
     assert "britisch/RP-geprägte Sprechmelodie" in config["instructions"]
-    assert "Imitiere keine reale Person" in config["instructions"]
     assert "Beende begonnene Sätze" in config["instructions"]
+    assert "Tuan" not in config["instructions"]
 
 
 def test_voice_gateway_keeps_standard_key_server_side_and_returns_only_sdp():

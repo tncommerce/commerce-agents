@@ -129,8 +129,8 @@ def project_crew(snapshot: dict) -> dict:
                         "title": linked_gates[0].get("title"),
                         "explanation": {
                             "reason": linked_gates[0].get("reason")
-                            or "Eine konkrete Owner-Entscheidung ist offen.",
-                            "next_step": "Freigabeumfang im Owner Gate prüfen; kein automatisches Publishing.",
+                            or "Eine konkrete Master-Entscheidung ist offen.",
+                            "next_step": "Freigabeumfang im Master-Gate prüfen; kein automatisches Publishing.",
                             "owner_action": "Konkrete Freigabe prüfen.",
                         },
                     }
@@ -180,6 +180,14 @@ def project_crew(snapshot: dict) -> dict:
                 state, focus = "DEGRADED", ready[0] if ready else None
             else:
                 state, focus = "BEREIT", ready[0] if ready else None
+            operator = snapshot.get("operator_diagnosis") or {}
+            if (
+                key == "operations"
+                and operator.get("state") == "IDLE_NO_RUNNABLE_WORK"
+                and complete
+                and not live
+            ):
+                state, focus = "AUTONOMIE LEER", None
             explanation = (focus or {}).get("explanation") or {}
             current = active[0] if active else None
             last_activity = recent[0] if recent else None
@@ -216,7 +224,12 @@ def project_crew(snapshot: dict) -> dict:
                     "Nächsten dokumentierten Prüfcheckpoint abgleichen; Original in den Details.",
                 )
             display_state = state
-            if state == "DEGRADED":
+            if state == "AUTONOMIE LEER":
+                display_state = "KEINE ARBEIT BEREIT"
+                next_step = (snapshot.get("operator_diagnosis") or {}).get(
+                    "jarvis_message"
+                ) or "Neue sinnvolle Arbeit aus dem aktuellen Geschäftsziel einplanen."
+            elif state == "DEGRADED":
                 if not complete:
                     display_state = "LIVE-DATEN FEHLEN"
                 else:
@@ -233,7 +246,7 @@ def project_crew(snapshot: dict) -> dict:
                         "outreach": "KANAL PRÜFEN",
                     }.get(key, "PRÜFUNG NÖTIG")
             elif state == "OWNER GATE":
-                display_state = "DEINE AKTION"
+                display_state = "MASTER-AKTION"
             crew.append(
                 {
                     "role_id": key,
@@ -271,6 +284,8 @@ def project_crew(snapshot: dict) -> dict:
                     or (
                         "Reale Ausführung durch Lease und Heartbeat bestätigt."
                         if current
+                        else (snapshot.get("operator_diagnosis") or {}).get("cause")
+                        if state == "AUTONOMIE LEER"
                         else "Datenquelle oder Ausführungsnachweis eingeschränkt."
                         if state == "DEGRADED"
                         else "Keine laufende Ausführung; dauerhafte Rolle im Organisationsmodell."
@@ -282,10 +297,10 @@ def project_crew(snapshot: dict) -> dict:
                     else explanation.get("since_basis"),
                     "owner_action": (
                         "Freigabe prüfen: "
-                        + (gates[0].get("title") or "Konkrete Owner-Entscheidung")
+                        + (gates[0].get("title") or "Konkrete Master-Entscheidung")
                     )
                     if gates
-                    else explanation.get("owner_action") or "Keine Aktion von dir erforderlich.",
+                    else explanation.get("owner_action") or "Keine Aktion von Master erforderlich.",
                     "task_count": len(tasks),
                     "active_count": len(active),
                     "tasks": tasks,
@@ -314,7 +329,9 @@ def project_crew(snapshot: dict) -> dict:
         roles = [r for r in crew if r["cluster"] == cluster]
         active_count = sum(r["active_count"] for r in roles)
         waiting_count = sum(r["state"] == "WARTET EXTERN" for r in roles)
-        blocked_count = sum(r["state"] in {"BLOCKIERT", "DEGRADED", "OWNER GATE"} for r in roles)
+        blocked_count = sum(
+            r["state"] in {"BLOCKIERT", "DEGRADED", "OWNER GATE", "AUTONOMIE LEER"} for r in roles
+        )
         label, purpose = cluster_meta[cluster]
         clusters.append(
             {
@@ -406,7 +423,7 @@ def project_risk(snapshot: dict) -> dict:
             "owner_required": owner,
             "owner_action": "Konkrete Freigabe prüfen."
             if owner
-            else "Keine Aktion von dir erforderlich.",
+            else "Keine Aktion von Master erforderlich.",
         }
         panels.append(row)
         if tone in {"red", "amber"}:
@@ -653,6 +670,7 @@ def project_risk(snapshot: dict) -> dict:
             instagram_removal,
         )
 
+    operator = snapshot.get("operator_diagnosis") or {}
     gates = [
         gate
         for gate in snapshot["decision_center"]
@@ -661,21 +679,21 @@ def project_risk(snapshot: dict) -> dict:
     gate_complete = command.get("gates_complete") is True
     panel(
         "owner",
-        "OWNER",
+        "MASTER",
         "amber" if gates else "green" if gate_complete else "amber",
         str(len(gates)) + " Entscheidung(en) offen"
         if gates
         else "Keine Freigabe offen"
         if gate_complete
         else "Freigabestatus unklar",
-        (gates[0].get("question") or gates[0].get("title") or "Konkrete Owner-Aktion prüfen.")
+        (gates[0].get("question") or gates[0].get("title") or "Konkrete Master-Aktion prüfen.")
         if gates
-        else "Keine aktuelle Owner-Entscheidung erforderlich."
+        else "Keine aktuelle Master-Entscheidung erforderlich."
         if gate_complete
         else "Entscheidungsquelle nicht vollständig bestätigt.",
-        "Owner Action Center öffnen und die dort angezeigte konkrete Handlung ausführen."
+        "Master Action Center öffnen und die dort angezeigte konkrete Handlung ausführen."
         if gates
-        else "Neue Owner Gates weiter beobachten.",
+        else "Neue Master-Gates weiter beobachten.",
         owner=bool(gates),
     )
     if not snapshot["freshness"]["operational_complete"]:
@@ -699,6 +717,8 @@ def project_risk(snapshot: dict) -> dict:
         "tone": tone,
         "title": "HANDLUNG ERFORDERLICH"
         if critical
+        else "AUTONOMIE LEER"
+        if operator.get("state") == "IDLE_NO_RUNNABLE_WORK"
         else "LAGE NICHT VOLLSTÄNDIG BESTÄTIGT"
         if not essential_known
         else "BETRIEB STABIL"
@@ -706,15 +726,17 @@ def project_risk(snapshot: dict) -> dict:
         else "ALLES IM GRÜNEN",
         "summary": str(critical) + " kritische Punkte prüfen."
         if critical
+        else operator.get("cause")
+        if operator.get("state") == "IDLE_NO_RUNNABLE_WORK"
         else str(warning) + " Punkte beobachten. Kein kritischer Fehler erkannt."
         if warning
         else "Keine kritischen Risiken erkannt.",
         "owner_required": any(r["owner_required"] for r in panels),
         "owner_action": "Konkrete Freigabe prüfen."
         if any(r["owner_required"] for r in panels)
-        else "Keine Aktion von dir erforderlich."
+        else "Keine Aktion von Master erforderlich."
         if gate_complete
-        else "Owner-Bedarf nicht vollständig bestätigt.",
+        else "Master-Bedarf nicht vollständig bestätigt.",
         "critical_count": critical,
         "warning_count": warning,
         "risks": risks,

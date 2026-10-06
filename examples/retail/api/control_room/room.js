@@ -57,7 +57,7 @@
       "NACHWEIS ÄLTER": "Der letzte bestätigte Nachweis ist älter. Das bedeutet nicht automatisch einen Ausfall.",
       "WAITING EXTERNAL": "Jarvis kann erst weiterarbeiten, wenn eine externe Antwort oder ein externes Ereignis eintritt.",
       BLOCKED: "Eine konkrete Voraussetzung fehlt. Der nächste Lösungsschritt wird darunter angezeigt.",
-      "OWNER GATE": "Nur hier ist eine Entscheidung von Tuan erforderlich. Ein GO allein führt keine externe Aktion aus.",
+      "OWNER GATE": "Nur hier ist eine Entscheidung von Master erforderlich. Ein GO allein führt keine externe Aktion aus.",
       "VERBINDUNG / SYSTEM PRÜFEN": "Eine Quelle meldet einen konkreten Fehler oder eine gesperrte Verbindung.",
       "VERBINDUNG EINGESCHRÄNKT": "Ein nichtkritischer Kanal ist eingeschränkt. Production und Owner Gates werden separat bewertet.",
     }[status];
@@ -551,6 +551,7 @@
       const revenue = s.first_money || {};
       const risk = s.global_risk || {};
       const crew = s.crew || {};
+      const operator = s.operator_diagnosis || {};
       const activeCrew = (Array.isArray(crew.live_now) ? crew.live_now : [])
         .slice(0, 5)
         .map((item) => ({
@@ -568,6 +569,16 @@
         next_safe_action: safeText(command.next_safe_action, 320),
         owner_action: safeText(command.owner_action, 260),
         system_explanation: safeText(command.system_explanation, 420),
+        operator: {
+          state: safeText(operator.state, 80),
+          headline: safeText(operator.headline, 220),
+          cause: safeText(operator.cause, 520),
+          owner_action_required: operator.owner_action_required === true,
+          owner_message: safeText(operator.owner_message, 360),
+          jarvis_message: safeText(operator.jarvis_message, 420),
+          recommended_now: safeText(operator.recommended_now?.title, 320),
+          recommended_reason: safeText(operator.recommended_now?.reason, 520),
+        },
         risk: {
           title: safeText(risk.title, 180),
           summary: safeText(risk.summary, 420),
@@ -766,6 +777,26 @@
             active_workers: safeCount(command.active_workers),
             owner_decisions: safeCount(command.human_approval_count),
           },
+          operator: {
+            state: safeText(s.operator_diagnosis?.state, 80),
+            headline: safeText(s.operator_diagnosis?.headline, 220),
+            cause: safeText(s.operator_diagnosis?.cause, 520),
+            owner_action_required: s.operator_diagnosis?.owner_action_required === true,
+            owner_message: safeText(s.operator_diagnosis?.owner_message, 360),
+            jarvis_message: safeText(s.operator_diagnosis?.jarvis_message, 420),
+            recommended_now: safeText(s.operator_diagnosis?.recommended_now?.title, 320),
+            recommended_reason: safeText(s.operator_diagnosis?.recommended_now?.reason, 520),
+            evidence: s.operator_diagnosis?.evidence || {},
+            next_moves: (Array.isArray(s.operator_diagnosis?.next_moves)
+              ? s.operator_diagnosis.next_moves
+              : []
+            ).slice(0, 6).map((move) => ({
+              title: safeText(move.title, 320),
+              reason: safeText(move.reason, 520),
+              master_required: move.master_required === true,
+              jarvis_can_execute_now: move.jarvis_can_execute_now === true,
+            })),
+          },
           risk: {
             title: safeText(risk.title, 220),
             summary: safeText(risk.summary, 520),
@@ -858,6 +889,8 @@
         "overview",
         "workers",
         "missions",
+        "first_money",
+        "systems",
         "risks",
         "recent_activity",
       ]);
@@ -1960,7 +1993,7 @@
       setTone("global-risk", risk?.tone || "amber");
       put("risk-title", risk?.title || "LAGE NICHT BESTÄTIGT");
       put("risk-summary", risk?.summary || "Aktuelle Risikoprojektion fehlt; keine Entwarnung bestätigt.");
-      put("risk-owner-action", risk?.owner_action || "Owner-Bedarf nicht bestätigt.");
+      put("risk-owner-action", risk?.owner_action || "Master-Bedarf nicht bestätigt.");
       put("risk-observed", "Live-Daten · " + stamp(risk?.observed_at));
       $("risk-level").textContent = risk?.tone === "red" ? "HANDLUNG" : risk?.tone === "amber" ? "BEOBACHTEN" : risk?.tone === "green" ? "GESUND" : "UNBESTÄTIGT";
       $("risk-level").className = "pill " + ({green: "good", blue: "info", amber: "warn", red: "action"}[risk?.tone] || "warn");
@@ -2380,6 +2413,7 @@
     );
     const revenue = s.first_money || {};
     const products = s.money_products || {};
+    const operator = s.operator_diagnosis || {};
     const safety = s.runtime_safety || {};
     const budget = s.budget || {};
     const queueData = s.queue || {};
@@ -2429,42 +2463,36 @@
         (a, b) => Date.parse(a.scheduled_at) - Date.parse(b.scheduled_at),
       )[0];
 
-    const jarvisTone = needsApproval
-      ? "amber"
-      : c.ceo_status === "BLOCKIERT"
-        ? "amber"
-        : c.status === "WORKING"
-          ? "blue"
-          : c.status === "WAITING"
-            ? "blue"
-            : c.status === "ERROR"
-              ? "amber"
-              : complete
-                ? "green"
-                : "neutral";
-    const jarvisMain = needsApproval
-      ? "Aktion offen"
-      : c.ceo_status === "BLOCKIERT"
-        ? "Blockiert"
-        : c.status === "WORKING"
-          ? "Arbeitet"
-          : c.status === "WAITING"
-            ? "Überwacht"
-            : c.status === "ERROR"
-              ? "Prüfen"
-              : complete
-                ? "Stabil"
-                : "Unklar";
-    const waitingExternal = Number(queueData.waiting_external || 0);
-    const blockedTasks = Number(queueData.blocked || 0);
+    const jarvisTone =
+      operator.state === "WORKING"
+        ? "blue"
+        : operator.state === "MASTER_ACTION_REQUIRED"
+          ? "amber"
+          : operator.state === "IDLE_NO_RUNNABLE_WORK"
+            ? "amber"
+            : operator.state === "READY"
+              ? "blue"
+              : c.status === "ERROR"
+                ? "amber"
+                : complete
+                  ? "green"
+                  : "neutral";
+    const jarvisMain =
+      operator.state === "WORKING"
+        ? "Arbeitet"
+        : operator.state === "MASTER_ACTION_REQUIRED"
+          ? "Master-Aktion"
+          : operator.state === "IDLE_NO_RUNNABLE_WORK"
+            ? "Autonomie leer"
+            : operator.state === "READY"
+              ? "Arbeit bereit"
+              : c.status === "ERROR"
+                ? "Prüfen"
+                : complete
+                  ? "Stabil"
+                  : "Unklar";
     const jarvisDetail =
-      c.status === "WAITING"
-        ? "Freier Loop aktiv · " +
-          waitingExternal +
-          " extern · " +
-          blockedTasks +
-          " blockiert."
-        : primaryTitle || "Supervisor-State aktuell.";
+      operator.cause || primaryTitle || "Aktuelle Lage wird eingeordnet.";
 
     setPulse("pulse-jarvis", jarvisTone, jarvisMain, jarvisDetail);
     setPulse(
@@ -2476,9 +2504,9 @@
           ? "Nichts offen"
           : "Unklar",
       needsApproval
-        ? actionableGates[0]?.title || "Owner-Aktion erforderlich"
+        ? actionableGates[0]?.title || "Master-Aktion erforderlich"
         : gatesComplete
-          ? "Keine Owner-Entscheidung erforderlich."
+          ? "Keine Master-Entscheidung erforderlich."
           : "Freigabequellen sind unvollständig.",
     );
     setTone("jarvis-core", jarvisTone);
@@ -2667,8 +2695,8 @@
           node(
             "p",
             gatesComplete
-              ? "Keine Owner-Aktion offen."
-              : "Owner-Aktionsstatus ist noch nicht vollständig bestätigt.",
+              ? "Keine Master-Aktion offen."
+              : "Master-Aktionsstatus ist noch nicht vollständig bestätigt.",
             "muted",
           ),
         );
@@ -2678,17 +2706,42 @@
     put(
       "priority",
       primaryTitle ||
-        (c.status === "WAITING"
-          ? "Jarvis wartet auf den nächsten zulässigen oder externen Trigger."
-          : "Aktueller Zustand aus dem letzten verifizierten Supervisor-Loop."),
+        c.priority ||
+        operator.recommended_now?.title ||
+        "Aktuelle Priorität ist noch nicht belastbar bestimmt.",
     );
-    put("current-task", primaryTitle || "Keine aktive Ausführung");
+    put(
+      "current-task",
+      primaryTitle ||
+        (operator.state === "IDLE_NO_RUNNABLE_WORK"
+          ? "Keine ausführbare Arbeit in der Arbeitsliste"
+          : "Keine aktive Ausführung"),
+    );
     put(
       "allowed-task",
-      c.next_allowed_task || "Warten auf nächsten zulässigen Trigger",
+      c.next_allowed_task ||
+        operator.recommended_now?.title ||
+        "Noch kein nächster sinnvoller Schritt bestimmt",
     );
     put("stop-reason", c.stop_reason);
     put("lease-count", safety.active_leases);
+    put("operator-headline", operator.headline || "Lage wird eingeordnet");
+    put("operator-cause", operator.cause || "Noch keine belastbare Ursache.");
+    put(
+      "operator-next",
+      operator.recommended_now?.title || "Nächster Schritt wird bestimmt",
+    );
+    put(
+      "operator-next-reason",
+      operator.recommended_now?.reason || operator.jarvis_message || "",
+    );
+    put("operator-master", operator.owner_action_required === true ? "AKTION NÖTIG" : "NICHTS");
+    put(
+      "operator-master-detail",
+      operator.owner_message || "Master-Bedarf wird geprüft.",
+    );
+    const operatorPanel = $("operator-brief");
+    if (operatorPanel) operatorPanel.dataset.state = operator.state || "UNKNOWN";
     put("loop-time", "Loop · " + stamp(c.last_loop_at));
     const jarvisState = $("jarvis-state");
     if (jarvisState)
@@ -3540,7 +3593,7 @@
       setTone("global-risk", "amber");
       put("risk-title", "LIVE-LAGE NICHT BESTÄTIGT");
       put("risk-summary", "Verbindung unterbrochen. Letzte Nachweise sind keine aktuelle Entwarnung.");
-      put("risk-owner-action", "Owner-Bedarf aktuell nicht bestätigt.");
+      put("risk-owner-action", "Master-Bedarf aktuell nicht bestätigt.");
       put("risk-level", "UNBESTÄTIGT");
       if ($("risk-level")) $("risk-level").className = "pill warn";
       if ($("risk-panel")) $("risk-panel").replaceChildren();
@@ -3566,7 +3619,7 @@
         "pulse-action",
         "amber",
         "Unklar",
-        "Owner-Aktionsstatus kann aktuell nicht bestätigt werden.",
+        "Master-Aktionsstatus kann aktuell nicht bestätigt werden.",
       );
       setPulse(
         "pulse-money",

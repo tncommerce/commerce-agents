@@ -135,6 +135,7 @@ def task_explanation(task: dict, waits: list[dict], observers: list[dict]) -> di
     automatic = bool(attached) and all(
         o.get("health") in {"HEALTHY", "MONITORED"} for o in attached
     )
+    observer_issue = bool(attached) and not automatic
     reason = "Die genaue Voraussetzung ist noch nicht dokumentiert."
     next_step = "Jarvis muss den fehlenden Nachweis konkret zuordnen."
     resolver = "Jarvis"
@@ -150,6 +151,23 @@ def task_explanation(task: dict, waits: list[dict], observers: list[dict]) -> di
         resolver = "Owner"
     elif status == "waiting_external":
         resolver = "Extern, danach Jarvis"
+        if not observer_ids:
+            return {
+                "reason": (
+                    "Die Aufgabe ist als extern wartend gespeichert, aber es gibt keinen "
+                    "konkreten ungelösten Observer-Nachweis. Der Wartegrund ist nicht verifiziert."
+                ),
+                "next_step": (
+                    "Jarvis muss den Eintrag neu klassifizieren und aus dem aktuellen Geschäftsziel "
+                    "einen belastbaren nächsten Schritt ableiten."
+                ),
+                "resolver": "Jarvis / Control Plane",
+                "owner_action": "Keine Aktion von Master erforderlich.",
+                "jarvis_can_resolve_alone": True,
+                "automatic_monitoring_confirmed": False,
+                "since": task.get("updated_at"),
+                "since_basis": "Letzte Aufgabenaktualisierung; Wartegrund nicht belegt",
+            }
         if tid == "jarvis_dior_hypnotic_image_rights_outreach_20261001":
             reason = "Wartet auf Antwort von Dior zu den Bildrechten. Die Anfrage wurde bereits versendet; nicht erneut senden."
             next_step = "Nach der Antwort: Nutzungsrechte und genaue Produktidentität prüfen."
@@ -174,7 +192,12 @@ def task_explanation(task: dict, waits: list[dict], observers: list[dict]) -> di
         next_step += " " + (
             "Jarvis beobachtet den zugeordneten Antwortkanal automatisch."
             if automatic
-            else "Eine automatische Prüfung dieses konkreten Antwortkanals ist derzeit nicht bestätigt."
+            else (
+                "Der zugeordnete Beobachter ist technisch nicht gesund; Jarvis muss die "
+                "Integration intern reparieren. Master muss dafür keine Mail prüfen."
+                if observer_issue
+                else "Eine automatische Prüfung dieses konkreten Antwortkanals ist derzeit nicht bestätigt."
+            )
         )
     elif blocker:
         reason = "Eine interne Voraussetzung fehlt; der gespeicherte Blocker muss konkret geprüft werden."
@@ -191,7 +214,7 @@ def task_explanation(task: dict, waits: list[dict], observers: list[dict]) -> di
         "resolver": resolver,
         "owner_action": "Konkrete Freigabe prüfen."
         if task.get("human_gate")
-        else "Keine Aktion von dir erforderlich.",
+        else "Keine Aktion von Master erforderlich.",
         "jarvis_can_resolve_alone": False,
         "automatic_monitoring_confirmed": automatic,
         "since": task.get("updated_at"),

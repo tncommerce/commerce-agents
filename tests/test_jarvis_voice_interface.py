@@ -83,8 +83,13 @@ def test_v3_live_inspector_is_rich_bounded_and_read_only():
     assert '"risks"' in voice
     assert '"recent_activity"' in voice
     assert "function_call_output" in voice
+    assert "operator_diagnosis" in voice
+    assert "recommended_now" in voice
+    assert "owner_action_required" in voice
     assert '"advance_dufynd_safe_work"' in voice
     assert 'fetch("/internal/jarvis/truth"' in voice
+    assert '"first_money"' in voice
+    assert '"systems"' in voice
     assert "executeTruthInspection" in voice
     assert "await executeTruthInspection(area, focus)" in voice
     assert '"authoritative_truth_unavailable"' in voice
@@ -137,3 +142,25 @@ def test_voice_animation_respects_reduced_motion_and_warm_state():
     assert '.jarvis-ptt[data-provider-ready="false"]' in css
     assert '[data-session-warm="true"]' in css
     assert "@media (prefers-reduced-motion: reduce)" in css
+
+
+def test_v4_dashboard_exposes_operator_briefing():
+    html = room_text("index.html")
+    js = room_text("room.js")
+    css = room_text("room.css")
+
+    for element_id in (
+        "operator-brief",
+        "operator-headline",
+        "operator-cause",
+        "operator-next",
+        "operator-next-reason",
+        "operator-master",
+        "operator-master-detail",
+    ):
+        assert f'id="{element_id}"' in html
+    assert 'put("operator-headline"' in js
+    assert 'put("operator-cause"' in js
+    assert 'put("operator-master"' in js
+    assert ".operator-brief" in css
+    assert "JARVIS OPERATOR CORE V4" in css

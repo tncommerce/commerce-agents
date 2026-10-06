@@ -671,7 +671,10 @@ def ceo_data():
 def test_ceo_waits_with_nothing_for_owner_despite_degraded_observer():
     result = build_snapshot(ceo_data(), now=NOW)
     assert result["command_center"]["status"] == "WAITING"
-    assert result["command_center"]["owner_action"] == "NICHTS"
+    assert result["command_center"]["ceo_status"] == "AUTONOMIE LEER"
+    assert result["operator_diagnosis"]["state"] == "IDLE_NO_RUNNABLE_WORK"
+    assert result["operator_diagnosis"]["owner_action_required"] is False
+    assert "Keine Aktion von Master" in result["command_center"]["owner_action"]
     assert result["runtime_safety"]["today_new_cost_usd"] == "0"
     assert result["queue"]["done"] == 78
     assert result["first_money"]["transactions"] is None
@@ -692,6 +695,8 @@ def test_ceo_real_decision_even_without_task_contains_exact_go_and_safe_scalars(
     ]
     result = build_snapshot(data, now=NOW)
     assert result["command_center"]["status"] == "OWNER GATE"
+    assert result["command_center"]["ceo_status"] == "MASTER-AKTION NÖTIG"
+    assert result["operator_diagnosis"]["owner_action_required"] is True
     assert result["decision_center"][0]["action_token"] == "GO-JARVIS-THIN-ABC"
     assert result["decision_center"][0]["risk"] == "[restricted]"
     assert "never-forward" not in json.dumps(result)
@@ -844,18 +849,17 @@ def test_ceo_gate_and_external_monitoring_are_truthful():
         }
     ]
     result = build_snapshot(data, now=NOW)
-    assert result["command_center"]["ceo_status"] == "JARVIS ÜBERWACHT"
+    assert result["command_center"]["ceo_status"] == "AUTONOMIE LEER"
+    assert result["operator_diagnosis"]["owner_action_required"] is False
     assert result["command_center"]["human_approval_count"] == 0
     assert result["command_center"]["gates_complete"] is True
     data["decisions"] = [
         {"decision_id": "real", "title": "Owner decision", "action_type": "publish"}
     ]
-    assert (
-        build_snapshot(data, now=NOW)["command_center"]["ceo_status"] == "WARTET AUF DEINE AKTION"
-    )
+    assert build_snapshot(data, now=NOW)["command_center"]["ceo_status"] == "MASTER-AKTION NÖTIG"
     data["decisions"] = []
     data["active_runs"] = [run_row()]
-    assert build_snapshot(data, now=NOW)["command_center"]["ceo_status"] == "JARVIS AKTIV"
+    assert build_snapshot(data, now=NOW)["command_center"]["ceo_status"] == "ARBEIT LÄUFT"
 
 
 def test_owner_confirmed_manual_gate_no_longer_counts_as_owner_action():
@@ -870,8 +874,9 @@ def test_owner_confirmed_manual_gate_no_longer_counts_as_owner_action():
     ]
     result = build_snapshot(data, now=NOW)
     assert result["command_center"]["human_approval_count"] == 0
-    assert result["command_center"]["ceo_status"] == "JARVIS ÜBERWACHT"
-    assert result["command_center"]["owner_action"] == "NICHTS"
+    assert result["command_center"]["ceo_status"] == "AUTONOMIE LEER"
+    assert result["operator_diagnosis"]["owner_action_required"] is False
+    assert "Keine Aktion von Master" in result["command_center"]["owner_action"]
 
 
 def test_worker_context_joins_only_sanitized_task_evidence():
@@ -1136,9 +1141,11 @@ def test_live_wait_profiles_follow_business_purpose_and_require_actual_observer_
     assert not affiliate["focus_task"]["explanation"]["jarvis_can_resolve_alone"]
     assert result["worker_deck"] == []
     data["external_waits"] = []
-    assert not build_snapshot(data, now=NOW)["mission_board"]["WAITING EXTERNAL"][0]["explanation"][
-        "automatic_monitoring_confirmed"
-    ]
+    unbound = build_snapshot(data, now=NOW)["mission_board"]["WAITING EXTERNAL"][0]["explanation"]
+    assert not unbound["automatic_monitoring_confirmed"]
+    assert "nicht verifiziert" in unbound["reason"]
+    assert unbound["jarvis_can_resolve_alone"] is True
+    assert "Master" in unbound["owner_action"]
 
 
 def test_worker_aliases_stay_stable_distinct_and_keep_technical_identity():
