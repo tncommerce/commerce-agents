@@ -9,7 +9,10 @@ from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC_PATH = ROOT / "examples/retail/data/dufynd_buyer_spiral_20261006.json"
-OUT = ROOT / "examples/retail/storefront-web/public/social/organic/fragrance_buyer_spiral_20261006_01"
+OUT = (
+    ROOT
+    / "examples/retail/storefront-web/public/social/organic/fragrance_buyer_spiral_20261006_01"
+)
 IG = (1080, 1350)
 TT = (1080, 1920)
 SANS = Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")
@@ -45,7 +48,9 @@ def fit(draw, text, path, max_size, min_size, width, height):
     for size in range(max_size, min_size - 1, -2):
         fnt = font(path, size)
         value = wrap(draw, text, fnt, width)
-        box = draw.multiline_textbbox((0, 0), value, font=fnt, spacing=max(8, size // 10))
+        box = draw.multiline_textbbox(
+            (0, 0), value, font=fnt, spacing=max(8, size // 10)
+        )
         if box[2] - box[0] <= width and box[3] - box[1] <= height:
             return fnt, value
     fnt = font(path, min_size)
@@ -116,8 +121,12 @@ def render(slide, size, platform):
         420 if platform == "tiktok" else 330
     )
     spacing = max(8, title_font.size // 10)
-    draw.multiline_text((70, title_y), title, font=title_font, fill=ink, spacing=spacing)
-    title_box = draw.multiline_textbbox((70, title_y), title, font=title_font, spacing=spacing)
+    draw.multiline_text(
+        (70, title_y), title, font=title_font, fill=ink, spacing=spacing
+    )
+    title_box = draw.multiline_textbbox(
+        (70, title_y), title, font=title_font, spacing=spacing
+    )
 
     body_y = title_box[3] + 32
     body_font, body = fit(draw, slide["body"], SANS, 36, 27, w - 190, 135)
@@ -132,8 +141,18 @@ def render(slide, size, platform):
     draw.text((gx, gy), step, font=ghost_font, fill=ghost)
 
     cx, cy = w - 110, h - (610 if platform == "tiktok" else 430)
-    for radius, start, color in ((320, 210, rail), (235, 175, rail), (150, 145, violet)):
-        draw.arc((cx-radius, cy-radius, cx+radius, cy+radius), start=start, end=start+240, fill=color, width=4)
+    for radius, start, color in (
+        (320, 210, rail),
+        (235, 175, rail),
+        (150, 145, violet),
+    ):
+        draw.arc(
+            (cx - radius, cy - radius, cx + radius, cy + radius),
+            start=start,
+            end=start + 240,
+            fill=color,
+            width=4,
+        )
     for idx, (dx, dy) in enumerate(((-280,-70),(-185,118),(-15,145),(75,-70))):
         x, y = cx + dx, cy + dy
         rr = 12 if idx == min(max(active,0),3) else 7
@@ -152,7 +171,12 @@ def render(slide, size, platform):
     footer = slide.get("footer")
     if footer:
         fy = h - (292 if platform == "tiktok" else 158)
-        draw.text((70, fy), footer, font=font(COND, 44 if platform == "tiktok" else 35), fill=orange)
+        draw.text(
+            (70, fy),
+            footer,
+            font=font(COND, 44 if platform == "tiktok" else 35),
+            fill=orange,
+        )
 
     by = h - (205 if platform == "tiktok" else 70)
     draw.text((70, by), "SCENT CULTURE  /  DUFYND", font=font(BOLD, 18), fill=muted)
@@ -208,12 +232,31 @@ def main():
         "state": "READY_FOR_OWNER_REVIEW",
         "publish_action_taken": False,
         "visual_quality_floor": 9.5,
-        "instagram": [{"path":str(p.relative_to(ROOT)),"sha256":sha(p),"size":list(IG)} for p in sorted(ig_dir.glob("slide-*.jpg"))],
-        "tiktok": [{"path":str(p.relative_to(ROOT)),"sha256":sha(p),"size":list(TT)} for p in sorted(tt_dir.glob("slide-*.jpg"))],
-        "video": {"path":str(video.relative_to(ROOT)),"sha256":sha(video),"duration_seconds":sum(durations),"audio":False},
-        "hard_gates": {"product_rights_dependency":False,"raw_tiktok_url":False,"owner_publish_approval":False,"native_preview_pending":True}
+        "instagram": [
+            {"path": str(p.relative_to(ROOT)), "sha256": sha(p), "size": list(IG)}
+            for p in sorted(ig_dir.glob("slide-*.jpg"))
+        ],
+        "tiktok": [
+            {"path": str(p.relative_to(ROOT)), "sha256": sha(p), "size": list(TT)}
+            for p in sorted(tt_dir.glob("slide-*.jpg"))
+        ],
+        "video": {
+            "path": str(video.relative_to(ROOT)),
+            "sha256": sha(video),
+            "duration_seconds": sum(durations),
+            "audio": False,
+        },
+        "hard_gates": {
+            "product_rights_dependency": False,
+            "raw_tiktok_url": False,
+            "owner_publish_approval": False,
+            "native_preview_pending": True,
+        },
     }
-    (OUT / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    (OUT / "manifest.json").write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
     print("Rendered buyer spiral; publishing not performed")
 
 
