@@ -166,7 +166,6 @@ def test_v4_dashboard_exposes_operator_briefing():
     assert "JARVIS OPERATOR CORE V4" in css
 
 
-
 def test_v41_voice_context_contains_sanitized_planner_truth():
     voice = room_text("room.js")
     assert "business_next_move: safeText(planner.business_next_move" in voice
