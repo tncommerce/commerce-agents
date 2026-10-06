@@ -456,7 +456,7 @@ def test_reader_requests_fixed_allowlisted_columns_no_generic_queries_or_provide
     )
     result = reader.snapshot(now=NOW)
     assert result["command_center"]["observed_head_sha"] == "a" * 40
-    assert len(calls) == 24
+    assert len(calls) == 25
     for call in calls:
         selected = call.url.params.get("select", "")
         assert "*" not in selected
