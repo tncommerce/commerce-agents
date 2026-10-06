@@ -1164,3 +1164,29 @@ def test_worker_aliases_stay_stable_distinct_and_keep_technical_identity():
         w["execution_id"]: (w["display_name"], w["identity_tag"]) for w in later
     }
     assert first[0]["worker_id"] == "tech-worker"
+
+
+
+def test_v41_planner_gap_overrides_stale_wait_explanation_with_business_next_move():
+    data = ceo_data()
+    data["planner"] = [
+        {
+            "last_verified_at": NOW.isoformat(),
+            "state": "planner_gap",
+            "business_next_move": "social_publication_readiness",
+            "capability_gap": "no_autonomous_metricool_media_or_publish_readiness_handler",
+            "master_action_required": False,
+            "waiting_external_is_global_blocker": False,
+        }
+    ]
+    result = build_snapshot(data, now=NOW)
+    assert result["planner"]["state"] == "planner_gap"
+    assert result["planner"]["business_next_move"] == "Social-Publishing heute absichern"
+    assert (
+        result["planner"]["capability_gap"]
+        == "Sicherer Metricool-Medien-/Publish-Readiness-Handler fehlt."
+    )
+    assert result["planner"]["master_action_required"] is False
+    assert result["planner"]["waiting_external_is_global_blocker"] is False
+    assert result["command_center"]["priority"] == "Social-Publishing heute absichern"
+    assert "Metricool" in result["command_center"]["next_safe_action"]
