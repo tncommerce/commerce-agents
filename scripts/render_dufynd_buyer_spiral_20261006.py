@@ -9,9 +9,9 @@ from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC_PATH = ROOT / "examples/retail/data/dufynd_buyer_spiral_20261006.json"
-OUT = (
-    ROOT
-    / "examples/retail/storefront-web/public/social/organic/fragrance_buyer_spiral_20261006_01"
+OUT = ROOT / (
+    "examples/retail/storefront-web/public/social/organic/"
+    "fragrance_buyer_spiral_20261006_01"
 )
 IG = (1080, 1350)
 TT = (1080, 1920)
