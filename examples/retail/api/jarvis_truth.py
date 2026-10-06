@@ -95,9 +95,10 @@ class JarvisTruthReader:
                     "in.(jarvis.thin_v1.config,jarvis.thin_v1.status,"
                     "continuity.checkpoint.ceo_radar,"
                     "jarvis.thin_v1.first_money_schedule_observation,"
-                    "first_money.social_quality_incident.20261005)"
+                    "first_money.social_quality_incident.20261005,"
+                    "jarvis.planner_v1)"
                 ),
-                "limit": "5",
+                "limit": "6",
             },
         )
 
@@ -219,6 +220,21 @@ class JarvisTruthReader:
         schedule_value = (
             schedule_row.get("value") if isinstance(schedule_row.get("value"), dict) else {}
         )
+        planner_row = statuses.get("jarvis.planner_v1", {})
+        planner_value = (
+            planner_row.get("value") if isinstance(planner_row.get("value"), dict) else {}
+        )
+        planner_truth = {
+            "state": planner_value.get("state"),
+            "business_next_move": planner_value.get("business_next_move"),
+            "capability_gap": planner_value.get("capability_gap"),
+            "master_action_required": planner_value.get("master_action_required") is True,
+            "waiting_external_is_global_blocker": (
+                planner_value.get("waiting_external_is_global_blocker") is True
+            ),
+            "last_verified_at": planner_row.get("last_verified_at"),
+        }
+
         quality_row = statuses.get("first_money.social_quality_incident.20261005", {})
         quality_value = (
             quality_row.get("value") if isinstance(quality_row.get("value"), dict) else {}
@@ -288,6 +304,7 @@ class JarvisTruthReader:
                 "certified_safe_ready": safe_ready[:5],
             },
             "operator_diagnosis": operator,
+            "planner": planner_truth,
             "publication_truth": publication_truth,
             "tasks": visible_tasks[:20],
             "truth_rule": (
