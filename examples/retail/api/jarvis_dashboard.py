@@ -1338,7 +1338,7 @@ def build_snapshot(
     snapshot["planner"] = planner
     snapshot["operator_diagnosis"] = operator
     command["system_explanation"] = operator["cause"]
-    if operator["state"] == "IDLE_NO_RUNNABLE_WORK" and planner["state"] == "PLANNER_GAP":
+    if operator["state"] == "IDLE_NO_RUNNABLE_WORK" and planner["state"] == "planner_gap":
         if planner["business_next_move"]:
             command["priority"] = planner["business_next_move"]
         if planner["capability_gap"]:
