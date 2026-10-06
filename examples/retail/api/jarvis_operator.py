@@ -162,6 +162,19 @@ def build_operator_diagnosis(
     planner_ready_free = _int(planner.get("ready_certified_free_tasks"))
     planner_external_waits_block = planner.get("external_waits_are_global_blocker") is True
 
+    business_planner = thin.get("business_planner")
+    business_planner = business_planner if isinstance(business_planner, dict) else {}
+    business_planner_state = str(business_planner.get("state") or "")
+    business_next_move = str(business_planner.get("business_next_move") or "")
+    business_planner_requires_master = business_planner.get("master_action_required") is True
+    planner_gap = business_planner_state == "planner_gap" and not business_planner_requires_master
+    business_move_label = {
+        "social_publication_readiness": "die heutige Social-Publishing-Bereitschaft",
+        "qualified_traffic_generation": "die Erzeugung qualifizierten Traffics",
+        "funnel_conversion_readiness": "die nächste Funnel-Optimierung",
+        "business_reprioritization": "die nächste Geschäftspriorität",
+    }.get(business_next_move, "den nächsten Geschäftsschritt")
+
     if active_count:
         state = "WORKING"
         headline = "Arbeit läuft"
@@ -182,6 +195,14 @@ def build_operator_diagnosis(
         cause = (
             f"{ready_count} zertifizierte kostenlose Aufgabe(n) sind bereit, "
             "aber aktuell noch nicht in Ausführung."
+        )
+    elif planner_gap:
+        state = "PLANNING_REQUIRED"
+        headline = "Neue sichere Arbeit muss geplant werden"
+        cause = (
+            f"Der Business-Planner hat {business_move_label} als nächsten Schritt erkannt, "
+            "aber dafür existiert noch kein zertifizierter kostenloser interner Ausführungspfad. "
+            "Ein späterer Wartungscheck ersetzt diese Planung nicht."
         )
     elif planner_state == "scheduled_safe_work":
         state = "SCHEDULED_SAFE_WORK"
@@ -211,6 +232,20 @@ def build_operator_diagnosis(
             cause = "Es gibt aktuell weder aktive noch ausführbare Arbeit in der Queue."
 
     moves: list[dict[str, Any]] = []
+
+    if planner_gap:
+        moves.append(
+            {
+                "id": "plan_business_priority",
+                "title": "Sichere Arbeit aus der aktuellen Geschäftspriorität erzeugen",
+                "reason": (
+                    f"Jarvis hat {business_move_label} als nächsten Geschäftsschritt erkannt, "
+                    "aber noch keinen zertifizierten kostenlosen internen Ausführungspfad dafür."
+                ),
+                "master_required": False,
+                "jarvis_can_execute_now": False,
+            }
+        )
 
     if phase == "live_measurement_window" and (
         publication_verified is False
@@ -282,6 +317,7 @@ def build_operator_diagnosis(
     if (
         not active_count
         and not ready
+        and not planner_gap
         and planner_state not in {"scheduled_safe_work", "waiting_for_business_signal"}
     ):
         moves.append(
@@ -313,6 +349,11 @@ def build_operator_diagnosis(
         )
     elif state == "READY":
         jarvis_message = "Jarvis kann die bereitliegende sichere Arbeit anstoßen."
+    elif state == "PLANNING_REQUIRED":
+        jarvis_message = (
+            "Jarvis muss aus der aktuellen Geschäftspriorität sichere interne Arbeit erzeugen; "
+            "der spätere Wartungscheck ist zusätzlich sinnvoll, aber kein Ersatz dafür."
+        )
     elif state == "SCHEDULED_SAFE_WORK":
         jarvis_message = (
             "Jarvis überwacht die First-Money-Signale und führt den nächsten zertifizierten "
@@ -356,6 +397,8 @@ def build_operator_diagnosis(
             "planner_state": planner_state or None,
             "planner_next_safe_work_at": planner_next_safe_work_at,
             "planner_ready_certified_free_tasks": planner_ready_free,
+            "business_planner_state": business_planner_state or None,
+            "business_planner_next_move": business_next_move or None,
         },
         "rules": {
             "external_email_is_global_blocker": False,

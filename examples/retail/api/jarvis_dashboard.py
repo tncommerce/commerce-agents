@@ -84,6 +84,15 @@ MASTER_READS.update(
             "jarvis.thin_v1.status",
             "observed_at:value->>observed_at,stop_reason:value->>stop_reason,active_leases:value->active_leases,stale_leases:value->stale_leases,open_reservations:value->open_reservations,provider_cost_unknown:value->provider_cost_unknown,done:value->queue_counts->done,active:value->queue_counts->in_progress,working:value->queue_counts->working,waiting_external:value->queue_counts->waiting_external,blocked:value->queue_counts->blocked,cancelled:value->queue_counts->cancelled,last_task:value->completed->0->>task_id,planner_state:value->planner->>state,planner_next_safe_work_at:value->planner->>next_safe_work_at,planner_ready_free:value->planner->ready_certified_free_tasks,planner_external_waits_global_blocker:value->planner->external_waits_are_global_blocker,planner_first_money_next_evidence:value->planner->>first_money_next_evidence",
         ),
+        "business_planner": (
+            "jarvis.planner_v1",
+            "observed_at:value->>observed_at,state:value->>state,"
+            "business_next_move:value->>business_next_move,"
+            "capability_gap:value->>capability_gap,"
+            "master_action_required:value->master_action_required,"
+            "queue_state:value->queue->>state,"
+            "queue_stop_reason:value->queue->>stop_reason",
+        ),
         "thin_config": ("jarvis.thin_v1.config", "enabled:value->enabled"),
         "ci": (
             "jarvis.thin_v1.ci",
@@ -131,6 +140,28 @@ def _text(value: object, secrets: tuple[str, ...] = ()) -> str | None:
     if SENSITIVE.search(value) or any(secret and secret in value for secret in secrets):
         return "[restricted]"
     return " ".join(value.split())[:300]
+
+
+def _scrub_output(value: Any, secrets: tuple[str, ...]) -> Any:
+    """Defense-in-depth scrub for every owner-facing DTO path.
+
+    Canonical public DUFYND URLs are intentionally allowed by the existing
+    caption/URL validators; arbitrary URLs, emails, tokens and known secrets
+    remain restricted.
+    """
+    if isinstance(value, dict):
+        return {key: _scrub_output(item, secrets) for key, item in value.items()}
+    if isinstance(value, list):
+        return [_scrub_output(item, secrets) for item in value]
+    if isinstance(value, tuple):
+        return tuple(_scrub_output(item, secrets) for item in value)
+    if isinstance(value, str) and (
+        any(secret and secret in value for secret in secrets) or SENSITIVE.search(value)
+    ):
+        if _candidate_caption(value, secrets) == value:
+            return value
+        return "[restricted]"
+    return value
 
 
 def _candidate_caption(value: object, secrets: tuple[str, ...] = ()) -> str | None:
@@ -1278,6 +1309,7 @@ def build_snapshot(
         if money_checkpoint_at is not None
         else None
     )
+    business_planner = first("business_planner")
     operator_tasks = [
         {
             "task_id": clean(row.get("task_id")),
@@ -1313,6 +1345,14 @@ def build_snapshot(
                 ),
                 "first_money_next_evidence": thin.get("planner_first_money_next_evidence"),
             },
+            "business_planner": {
+                "state": business_planner.get("state"),
+                "business_next_move": business_planner.get("business_next_move"),
+                "capability_gap": business_planner.get("capability_gap"),
+                "master_action_required": business_planner.get("master_action_required"),
+                "queue_state": business_planner.get("queue_state"),
+                "queue_stop_reason": business_planner.get("queue_stop_reason"),
+            },
         },
         runtime=runtime if isinstance(runtime, dict) else {},
         now=now,
@@ -1330,6 +1370,8 @@ def build_snapshot(
         if operator["state"] == "MASTER_ACTION_REQUIRED"
         else "ARBEIT BEREIT"
         if operator["state"] == "READY"
+        else "PLANUNG NÖTIG"
+        if operator["state"] == "PLANNING_REQUIRED"
         else "ARBEIT GEPLANT"
         if operator["state"] == "SCHEDULED_SAFE_WORK"
         else "SIGNAL WIRD ÜBERWACHT"
@@ -1338,7 +1380,7 @@ def build_snapshot(
     )
     snapshot["crew"] = project_crew(snapshot)
     snapshot["global_risk"] = project_risk(snapshot)
-    return snapshot
+    return _scrub_output(snapshot, secrets)
 
 
 class DashboardReader:
