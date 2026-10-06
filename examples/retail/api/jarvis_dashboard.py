@@ -82,7 +82,7 @@ MASTER_READS.update(
     {
         "thin": (
             "jarvis.thin_v1.status",
-            "observed_at:value->>observed_at,stop_reason:value->>stop_reason,active_leases:value->active_leases,stale_leases:value->stale_leases,open_reservations:value->open_reservations,provider_cost_unknown:value->provider_cost_unknown,done:value->queue_counts->done,active:value->queue_counts->in_progress,working:value->queue_counts->working,waiting_external:value->queue_counts->waiting_external,blocked:value->queue_counts->blocked,cancelled:value->queue_counts->cancelled,last_task:value->completed->0->>task_id",
+            "observed_at:value->>observed_at,stop_reason:value->>stop_reason,active_leases:value->active_leases,stale_leases:value->stale_leases,open_reservations:value->open_reservations,provider_cost_unknown:value->provider_cost_unknown,done:value->queue_counts->done,active:value->queue_counts->in_progress,working:value->queue_counts->working,waiting_external:value->queue_counts->waiting_external,blocked:value->queue_counts->blocked,cancelled:value->queue_counts->cancelled,last_task:value->completed->0->>task_id,planner_state:value->planner->>state,planner_next_safe_work_at:value->planner->>next_safe_work_at,planner_ready_free:value->planner->ready_certified_free_tasks,planner_external_waits_global_blocker:value->planner->external_waits_are_global_blocker,planner_first_money_next_evidence:value->planner->>first_money_next_evidence",
         ),
         "thin_config": ("jarvis.thin_v1.config", "enabled:value->enabled"),
         "ci": (
@@ -756,8 +756,18 @@ def build_snapshot(
     command["stop_reason"] = (
         enum(thin.get("stop_reason")) if thin_fresh else "stale_loop_observation"
     )
+    planner_state = enum(thin.get("planner_state")) if thin_fresh else None
+    planner_next_safe_work_at = _stamp(thin.get("planner_next_safe_work_at"))
+    command["planner_state"] = planner_state
+    command["next_safe_work_at"] = planner_next_safe_work_at
     command["next_allowed_task"] = (
-        "Kein zulässiger Task im letzten Loop ausgewählt; nächste Auswahl beim Wake-up"
+        f"Nächster zertifizierter kostenloser Check: {planner_next_safe_work_at}"
+        if planner_state == "scheduled_safe_work" and planner_next_safe_work_at
+        else "Nächstes belastbares Geschäftssignal beobachten"
+        if planner_state == "waiting_for_business_signal"
+        else "Zertifizierte kostenlose Arbeit liegt bereit"
+        if planner_state == "work_ready"
+        else "Kein zulässiger Task im letzten Loop ausgewählt; nächste Auswahl beim Wake-up"
         if thin_fresh
         and thin.get("stop_reason") in {"no_safe_work", "waiting_external", "owner_gate"}
         else None
@@ -1294,6 +1304,15 @@ def build_snapshot(
             },
             "business_checkpoint": {"age_seconds": checkpoint_age_seconds},
             "pending_owner_gates": [{"action_type": gate.get("type")} for gate in actionable_gates],
+            "planner": {
+                "state": thin.get("planner_state"),
+                "next_safe_work_at": thin.get("planner_next_safe_work_at"),
+                "ready_certified_free_tasks": thin.get("planner_ready_free"),
+                "external_waits_are_global_blocker": thin.get(
+                    "planner_external_waits_global_blocker"
+                ),
+                "first_money_next_evidence": thin.get("planner_first_money_next_evidence"),
+            },
         },
         runtime=runtime if isinstance(runtime, dict) else {},
         now=now,
@@ -1311,6 +1330,10 @@ def build_snapshot(
         if operator["state"] == "MASTER_ACTION_REQUIRED"
         else "ARBEIT BEREIT"
         if operator["state"] == "READY"
+        else "ARBEIT GEPLANT"
+        if operator["state"] == "SCHEDULED_SAFE_WORK"
+        else "SIGNAL WIRD ÜBERWACHT"
+        if operator["state"] == "WAITING_FOR_BUSINESS_SIGNAL"
         else "AUTONOMIE LEER"
     )
     snapshot["crew"] = project_crew(snapshot)
