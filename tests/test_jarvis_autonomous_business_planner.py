@@ -1,6 +1,8 @@
 from pathlib import Path
 
-SQL = Path("supabase/migrations/20261006131500_jarvis_autonomous_business_planner_v1.sql").read_text()
+SQL = Path(
+    "supabase/migrations/20261006131500_jarvis_autonomous_business_planner_v1.sql"
+).read_text()
 
 
 def test_business_planner_creates_certified_free_work():
