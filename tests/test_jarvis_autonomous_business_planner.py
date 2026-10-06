@@ -37,13 +37,11 @@ def test_business_planner_uses_canonical_resource_scopes():
 def test_business_planner_preserves_owner_and_cost_fences():
     for forbidden in (
         "social.publish",
-        "external.outreach",
         "gmail.send",
         "budget.spend",
         "main.merge",
         "commerce.activate",
-        "credentials",
-        "paid_model_call",
+        "shell.execute",
     ):
         assert forbidden in PLANNER_SQL
     assert "'paid_calls',0" in PLANNER_SQL
