@@ -1,5 +1,5 @@
-from pathlib import Path
 import re
+from pathlib import Path
 
 PLANNER_SQL = Path(
     "supabase/migrations/20261006131500_jarvis_autonomous_business_planner_v1.sql"
