@@ -155,6 +155,13 @@ def build_operator_diagnosis(
     checkpoint_age = business_checkpoint.get("age_seconds")
     checkpoint_stale = isinstance(checkpoint_age, (int, float)) and checkpoint_age > 3600
 
+    planner = thin.get("planner")
+    planner = planner if isinstance(planner, dict) else {}
+    planner_state = str(planner.get("state") or "")
+    planner_next_safe_work_at = planner.get("next_safe_work_at")
+    planner_ready_free = _int(planner.get("ready_certified_free_tasks"))
+    planner_external_waits_block = planner.get("external_waits_are_global_blocker") is True
+
     if active_count:
         state = "WORKING"
         headline = "Arbeit läuft"
@@ -166,21 +173,39 @@ def build_operator_diagnosis(
             "Eine bestätigte Entscheidung oder Reautorisierung blockiert einen "
             "konkreten nächsten Schritt."
         )
-    elif ready and str(thin.get("stop_reason") or "") not in {
-        "waiting_external",
-        "no_safe_work",
-    }:
+    elif planner_state == "work_ready" or (
+        ready and str(thin.get("stop_reason") or "") not in {"waiting_external", "no_safe_work"}
+    ):
         state = "READY"
         headline = "Arbeit liegt bereit"
-        cause = f"{len(ready)} Aufgabe(n) sind bereit, aber aktuell noch nicht in Ausführung."
+        ready_count = max(len(ready), planner_ready_free)
+        cause = (
+            f"{ready_count} zertifizierte kostenlose Aufgabe(n) sind bereit, "
+            "aber aktuell noch nicht in Ausführung."
+        )
+    elif planner_state == "scheduled_safe_work":
+        state = "SCHEDULED_SAFE_WORK"
+        headline = "Nächste sichere Arbeit ist geplant"
+        cause = (
+            "Aktuell ist kein zertifizierter kostenloser Task fällig. "
+            f"Der nächste sichere Check ist für {planner_next_safe_work_at or 'den nächsten Fälligkeitspunkt'} geplant. "
+            "Alte externe Wartezustände blockieren diesen Plan nicht."
+        )
+    elif planner_state == "waiting_for_business_signal":
+        state = "WAITING_FOR_BUSINESS_SIGNAL"
+        headline = "Jarvis überwacht das nächste Geschäftssignal"
+        cause = (
+            "Aktuell ist keine sichere Ausführung fällig. Jarvis wartet nicht auf Master, "
+            "sondern auf das nächste belastbare First-Money-Signal."
+        )
     else:
         state = "IDLE_NO_RUNNABLE_WORK"
-        headline = "Autonomie ist leer gelaufen"
+        headline = "Aktuell keine sichere Arbeit fällig"
         if waiting_count or blocked_count:
             cause = (
                 "Es gibt aktuell keine ausführbare Aufgabe. "
                 f"Die Arbeitsliste enthält {waiting_count} extern wartende und {blocked_count} blockierte Aufgabe(n). "
-                "Eine einzelne Mail ist deshalb nicht der globale Grund für den Stillstand."
+                "Diese Einträge sind kein globaler Blocker."
             )
         else:
             cause = "Es gibt aktuell weder aktive noch ausführbare Arbeit in der Queue."
@@ -254,14 +279,18 @@ def build_operator_diagnosis(
             }
         )
 
-    if not active_count and not ready:
+    if (
+        not active_count
+        and not ready
+        and planner_state not in {"scheduled_safe_work", "waiting_for_business_signal"}
+    ):
         moves.append(
             {
                 "id": "restore_autonomy",
                 "title": "Neue sinnvolle Arbeit aus dem aktuellen Geschäftsziel einplanen",
                 "reason": (
-                    "Jarvis kann heute nur bereits eingeplante sichere Arbeit ausführen. Wenn keine passende Aufgabe "
-                    "bereitsteht, muss Jarvis einen neuen internen Arbeitsplan erzeugen statt auf alte Waits zu zeigen."
+                    "Es ist weder aktuelle noch bereits terminierte sichere Arbeit vorhanden. "
+                    "Jarvis muss aus dem Geschäftsziel einen neuen internen Arbeitsplan erzeugen."
                 ),
                 "master_required": False,
                 "jarvis_can_execute_now": False,
@@ -284,10 +313,19 @@ def build_operator_diagnosis(
         )
     elif state == "READY":
         jarvis_message = "Jarvis kann die bereitliegende sichere Arbeit anstoßen."
+    elif state == "SCHEDULED_SAFE_WORK":
+        jarvis_message = (
+            "Jarvis überwacht die First-Money-Signale und führt den nächsten zertifizierten "
+            "kostenlosen Check zum geplanten Fälligkeitspunkt aus."
+        )
+    elif state == "WAITING_FOR_BUSINESS_SIGNAL":
+        jarvis_message = (
+            "Jarvis überwacht das nächste belastbare Geschäftssignal; Master muss dafür nichts tun."
+        )
     else:
         jarvis_message = (
-            "Jarvis muss Arbeitsliste und Prioritäten neu aufbauen; die heutige Automatik kann aus einer leergelaufenen "
-            "Queue noch keine neue Geschäftstätigkeit erzeugen."
+            "Jarvis muss Arbeitsliste und Prioritäten neu aufbauen, weil weder aktuelle "
+            "noch terminierte sichere Arbeit vorhanden ist."
         )
 
     return {
@@ -315,9 +353,13 @@ def build_operator_diagnosis(
             "first_money_signal_count": first_signal_count,
             "business_checkpoint_age_seconds": checkpoint_age,
             "business_checkpoint_stale": checkpoint_stale,
+            "planner_state": planner_state or None,
+            "planner_next_safe_work_at": planner_next_safe_work_at,
+            "planner_ready_certified_free_tasks": planner_ready_free,
         },
         "rules": {
             "external_email_is_global_blocker": False,
+            "external_waits_are_global_blocker": planner_external_waits_block,
             "tell_master_to_check_mail_without_owner_gate": False,
             "implementation_jargon_for_owner": False,
         },
