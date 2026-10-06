@@ -118,6 +118,17 @@ def test_truth_reader_reports_exact_waits_priorities_and_sanitized_gates():
                         "last_verified_at": "2026-10-05T10:40:31Z",
                     },
                     {
+                        "key": "jarvis.planner_v1",
+                        "value": {
+                            "state": "planner_gap",
+                            "business_next_move": "social_publication_readiness",
+                            "capability_gap": "no_autonomous_metricool_media_or_publish_readiness_handler",
+                            "master_action_required": False,
+                            "waiting_external_is_global_blocker": False,
+                        },
+                        "last_verified_at": "2026-10-05T18:10:30Z",
+                    },
+                    {
                         "key": "jarvis.thin_v1.status",
                         "value": {
                             "stop_reason": "waiting_external",
@@ -171,6 +182,14 @@ def test_truth_reader_reports_exact_waits_priorities_and_sanitized_gates():
     assert result["operator_diagnosis"]["owner_action_required"] is False
     assert "keine ausführbare Aufgabe" in result["operator_diagnosis"]["cause"]
     assert result["operator_diagnosis"]["recommended_now"]["id"] == "first_money_truth"
+    assert result["planner"]["state"] == "planner_gap"
+    assert result["planner"]["business_next_move"] == "social_publication_readiness"
+    assert (
+        result["planner"]["capability_gap"]
+        == "no_autonomous_metricool_media_or_publish_readiness_handler"
+    )
+    assert result["planner"]["master_action_required"] is False
+    assert result["planner"]["waiting_external_is_global_blocker"] is False
 
     tasks = {task["task_id"]: task for task in result["tasks"]}
     assert tasks["task_external_confirmed"]["evidence_state"] == "confirmed_external_wait"
