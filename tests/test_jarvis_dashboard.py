@@ -12,6 +12,7 @@ from retail.api.jarvis_dashboard import (
     MASTER_READS,
     DashboardReader,
     DashboardUnavailable,
+    _scrub_output,
     build_snapshot,
     create_dashboard_router,
 )
@@ -1188,3 +1189,56 @@ def test_ceo_dashboard_projects_scheduled_safe_work_from_live_planner():
     assert next_safe in result["command_center"]["next_allowed_task"]
     assert result["operator_diagnosis"]["state"] == "SCHEDULED_SAFE_WORK"
     assert result["operator_diagnosis"]["rules"]["external_waits_are_global_blocker"] is False
+
+
+def test_defense_in_depth_output_scrubber_blocks_future_nested_secret_paths():
+    marker = "future-sensitive-marker"
+    value = {
+        "safe": "okay",
+        "future": {
+            "tokenish": "Bearer " + marker,
+            "contact": "person@example.org",
+            "public_dufynd": "https://dufynd.de/start?src=tiktok&cmp=organic&content=buyer_spiral",
+        },
+    }
+
+    result = _scrub_output(value, (marker,))
+
+    assert result["safe"] == "okay"
+    assert result["future"]["tokenish"] == "[restricted]"
+    assert result["future"]["contact"] == "[restricted]"
+    assert result["future"]["public_dufynd"].startswith("https://dufynd.de/start?")
+    encoded = json.dumps(result)
+    assert marker not in encoded
+    assert "person@example.org" not in encoded
+
+
+def test_ceo_dashboard_surfaces_business_planning_gap_before_future_maintenance():
+    data = ceo_data()
+    next_safe = (NOW + timedelta(hours=9)).isoformat()
+    data["thin"][0].update(
+        {
+            "stop_reason": "no_safe_work",
+            "planner_state": "scheduled_safe_work",
+            "planner_next_safe_work_at": next_safe,
+            "planner_ready_free": 0,
+            "planner_external_waits_global_blocker": False,
+        }
+    )
+    data["business_planner"] = [
+        {
+            "state": "planner_gap",
+            "business_next_move": "social_publication_readiness",
+            "capability_gap": "no_autonomous_metricool_media_or_publish_readiness_handler",
+            "master_action_required": False,
+            "queue_state": "planner_gap",
+            "queue_stop_reason": "no_executable_work",
+        }
+    ]
+
+    result = build_snapshot(data, now=NOW)
+
+    assert result["command_center"]["ceo_status"] == "PLANUNG NÖTIG"
+    assert result["operator_diagnosis"]["state"] == "PLANNING_REQUIRED"
+    assert result["operator_diagnosis"]["recommended_now"]["id"] == "plan_business_priority"
+    assert result["operator_diagnosis"]["owner_action_required"] is False
