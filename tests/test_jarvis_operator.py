@@ -73,7 +73,7 @@ def test_idle_queue_is_not_misdiagnosed_as_one_email_blocker():
 
     assert result["state"] == "IDLE_NO_RUNNABLE_WORK"
     assert "keine ausführbare Aufgabe" in result["cause"]
-    assert "Eine einzelne Mail ist deshalb nicht der globale Grund" in result["cause"]
+    assert "kein globaler Blocker" in result["cause"]
     assert result["owner_action_required"] is False
     assert "keine Mailprüfung" in result["owner_message"]
     assert result["evidence"]["waiting_external_tasks"] == 15
