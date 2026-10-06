@@ -92,9 +92,7 @@ def build_operator_diagnosis(
         if isinstance(row, dict) and row.get("satisfied") is not True and row.get("task_id")
     ]
     wait_task_ids = {str(row.get("task_id")) for row in unsatisfied_waits}
-    external_with_binding = [
-        task for task in external if str(task.get("task_id")) in wait_task_ids
-    ]
+    external_with_binding = [task for task in external if str(task.get("task_id")) in wait_task_ids]
     external_without_binding = [
         task for task in external if str(task.get("task_id")) not in wait_task_ids
     ]
