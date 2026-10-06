@@ -104,12 +104,8 @@ def build_operator_diagnosis(
         if _observer_health(row) in UNHEALTHY_OBSERVERS
         or _observer_error(row) in {"credential_expired", "invalid_grant"}
     ]
-    internal_observer_issues = [
-        row for row in bad_observers if not _credential_owner_action(row)
-    ]
-    observer_owner_issues = [
-        row for row in bad_observers if _credential_owner_action(row)
-    ]
+    internal_observer_issues = [row for row in bad_observers if not _credential_owner_action(row)]
+    observer_owner_issues = [row for row in bad_observers if _credential_owner_action(row)]
 
     credential_owner_issues = [
         row for row in credentials if isinstance(row, dict) and _credential_owner_action(row)
