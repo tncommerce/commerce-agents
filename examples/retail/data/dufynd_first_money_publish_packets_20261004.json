@@ -1,6 +1,6 @@
 {
-  "version": 2,
-  "generated_at": "2026-10-06",
+  "version": 1,
+  "generated_at": "2026-10-04",
   "sprint": "FIRST_MONEY_SPRINT",
   "state": "READY_FOR_OWNER_PUBLISH_GO",
   "constraints": {
@@ -10,9 +10,7 @@
     "new_generated_visual_assets": false,
     "existing_repo_assets_only": true,
     "publishing_authorized": false,
-    "tiktok_clickable_link_available": false,
-    "visual_quality_floor": 9.5,
-    "deterministic_local_render_allowed": true
+    "tiktok_clickable_link_available": false
   },
   "protected_content_ids": [
     "one_million_still_hits_20261004_01"
@@ -273,116 +271,6 @@
           "TikTok contains no fake link CTA",
           "no price claim",
           "no publish action"
-        ]
-      }
-    },
-    {
-      "order": 4,
-      "content_id": "fragrance_buyer_spiral_20261006_01",
-      "experiment_id": "organic_buyer_spiral_20261006",
-      "state": "READY_FOR_OWNER_PUBLISH_GO",
-      "hypothesis": "A product-free, instantly relatable fragrance-buyer spiral should earn more shares, sends and comments than another product ranking because the joke is readable in under one second and invites self-identification without requiring product knowledge.",
-      "theme": "buyer_spiral_editorial",
-      "landing_path": null,
-      "source_product_ids": [],
-      "format": {
-        "instagram": "5-slide 4:5 graphic carousel",
-        "tiktok": "17-second 9:16 graphic slideshow video; same copy can also run as photo mode"
-      },
-      "hook": "ICH SCHAU NUR KURZ.",
-      "slides": [
-        {
-          "n": 1,
-          "kicker": "DIE DUFT-KÄUFER-SPIRALE",
-          "title": "ICH SCHAU\nNUR KURZ.",
-          "body": "Jeder kennt den Anfang. Keiner kennt das Ende.",
-          "spiral_step": "START",
-          "spiral_note": "0 Kaufabsicht",
-          "duration_seconds_tiktok": 2.6
-        },
-        {
-          "n": 2,
-          "kicker": "STUFE 01",
-          "title": "„NUR EINER\nFÜR JEDEN TAG.“",
-          "body": "Vernünftig. Praktisch. Komplett unter Kontrolle.",
-          "spiral_step": "01",
-          "spiral_note": "noch glaubwürdig",
-          "duration_seconds_tiktok": 3.3
-        },
-        {
-          "n": 3,
-          "kicker": "STUFE 02",
-          "title": "„OKAY. EINER\nFÜR WINTER.“",
-          "body": "Man braucht schließlich Kategorien.",
-          "spiral_step": "02",
-          "spiral_note": "erste Rechtfertigung",
-          "duration_seconds_tiktok": 3.3
-        },
-        {
-          "n": 4,
-          "kicker": "STUFE 03",
-          "title": "„UND EINER FÜR\nBESONDERE ANLÄSSE.“",
-          "body": "Plötzlich hat jeder Duft einen Job.",
-          "spiral_step": "03",
-          "spiral_note": "Sammlung eröffnet",
-          "duration_seconds_tiktok": 3.5
-        },
-        {
-          "n": 5,
-          "kicker": "DUFYND REALITY CHECK",
-          "title": "14 TABS\nSPÄTER.",
-          "body": "Welche Stufe bist du gerade?",
-          "spiral_step": "14",
-          "spiral_note": "Schick das der Person, die „nur gucken“ sagt.",
-          "tiktok_footer": "1 · 2 · 3 · 14 TABS?",
-          "instagram_footer": "1 · 2 · 3 · 14 TABS?",
-          "duration_seconds_tiktok": 4.3
-        }
-      ],
-      "caption": {
-        "instagram": "„Ich schau nur kurz.“\n\n14 Tabs später: 👀\n\nWelche Stufe bist du gerade — 1, 2, 3 oder schon 14 Tabs?\n\nSchick das der Person, die bei Parfum immer „nur gucken“ sagt.\n\n#DUFYND #Parfum #Duftsammlung #Fragrance #ParfumCommunity",
-        "tiktok": "„Ich schau nur kurz.“\n\n14 Tabs später: 👀\n\nWelche Stufe bist du — 1, 2, 3 oder schon 14 Tabs? 👇\n\n#DUFYND #Parfum #FragranceTok #ParfumTok #Duftsammlung"
-      },
-      "cta": {
-        "instagram": "Welche Stufe bist du? Kommentiere 1 / 2 / 3 / 14.",
-        "tiktok": "Welche Stufe bist du? Kommentiere 1 / 2 / 3 / 14."
-      },
-      "tracking": {
-        "instagram": null,
-        "tiktok": null,
-        "tiktok_reason": "Reach/share/comment post; no fake clickable CTA and no raw URL."
-      },
-      "measurement": {
-        "instagram_primary": [
-          "shares_or_sends",
-          "comments",
-          "profile_visits"
-        ],
-        "tiktok_primary": [
-          "views",
-          "three_second_retention",
-          "completion_rate",
-          "comments",
-          "shares",
-          "profile_visits"
-        ],
-        "keep": "KEEP if TikTok 3s retention >= 70% and completion >= 30%, or engagement clearly beats the recent account baseline; on Instagram prioritize shares/sends and comments.",
-        "iterate": "ITERATE only the opening frame or pacing if the joke is understood but retention is weak.",
-        "kill": "KILL only after two hook variants if 3s retention < 55%, completion < 20%, and engagement remains below baseline."
-      },
-      "quality_gate": {
-        "minimum_score": 9.5,
-        "required": [
-          "product-free visual: no product truth or image-rights dependency",
-          "first frame understandable in under 1 second",
-          "large TikTok-safe-zone typography",
-          "visual system must not resemble the prior generic product-card template",
-          "no health, mood, energy or performance claim",
-          "no raw TikTok URL or fake link CTA",
-          "no price claim",
-          "final 1080x1920 TikTok and 1080x1350 Instagram outputs",
-          "native preview still required before publish",
-          "explicit owner publish approval required"
         ]
       }
     }
