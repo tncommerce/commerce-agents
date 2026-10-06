@@ -164,3 +164,12 @@ def test_v4_dashboard_exposes_operator_briefing():
     assert 'put("operator-master"' in js
     assert ".operator-brief" in css
     assert "JARVIS OPERATOR CORE V4" in css
+
+
+
+def test_v41_voice_context_contains_sanitized_planner_truth():
+    voice = room_text("room.js")
+    assert "business_next_move: safeText(planner.business_next_move" in voice
+    assert "capability_gap: safeText(planner.capability_gap" in voice
+    assert "waiting_external_is_global_blocker" in voice
+    assert "master_action_required: planner.master_action_required === true" in voice
