@@ -46,7 +46,14 @@ def _observer_health(row: dict[str, Any]) -> str:
 
 def _observer_error(row: dict[str, Any]) -> str | None:
     value = row.get("last_error")
-    return str(value)[:120] if value else None
+    if value in {
+        "credential_expired",
+        "invalid_grant",
+        "purchase_target_disabled",
+        "purchase_target_missing",
+    }:
+        return str(value)
+    return None
 
 
 def _credential_owner_action(row: dict[str, Any]) -> bool:
