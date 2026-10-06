@@ -1,0 +1,11 @@
+file '/home/runner/work/commerce-agents/commerce-agents/examples/retail/storefront-web/public/social/organic/fragrance_buyer_spiral_20261006_01/tiktok/slide-01.jpg'
+duration 2.600
+file '/home/runner/work/commerce-agents/commerce-agents/examples/retail/storefront-web/public/social/organic/fragrance_buyer_spiral_20261006_01/tiktok/slide-02.jpg'
+duration 3.300
+file '/home/runner/work/commerce-agents/commerce-agents/examples/retail/storefront-web/public/social/organic/fragrance_buyer_spiral_20261006_01/tiktok/slide-03.jpg'
+duration 3.300
+file '/home/runner/work/commerce-agents/commerce-agents/examples/retail/storefront-web/public/social/organic/fragrance_buyer_spiral_20261006_01/tiktok/slide-04.jpg'
+duration 3.500
+file '/home/runner/work/commerce-agents/commerce-agents/examples/retail/storefront-web/public/social/organic/fragrance_buyer_spiral_20261006_01/tiktok/slide-05.jpg'
+duration 4.300
+file '/home/runner/work/commerce-agents/commerce-agents/examples/retail/storefront-web/public/social/organic/fragrance_buyer_spiral_20261006_01/tiktok/slide-05.jpg'

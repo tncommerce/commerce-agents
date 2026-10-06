@@ -1,0 +1,103 @@
+{
+  "content_id": "fragrance_buyer_spiral_20261006_01",
+  "experiment_id": "organic_buyer_spiral_20261006",
+  "state": "READY_FOR_OWNER_REVIEW",
+  "publish_action_taken": false,
+  "visual_quality_floor": 9.5,
+  "instagram": [
+    {
+      "path": "examples/retail/storefront-web/public/social/organic/fragrance_buyer_spiral_20261006_01/instagram/slide-01.jpg",
+      "sha256": "40ad57e6f5f4d7d6ac6efeb85ec21861619f3e6799ea399282efbc7b5d1538e3",
+      "size": [
+        1080,
+        1350
+      ]
+    },
+    {
+      "path": "examples/retail/storefront-web/public/social/organic/fragrance_buyer_spiral_20261006_01/instagram/slide-02.jpg",
+      "sha256": "d08aa57f6e74de29da0489679b213d9b74d7cad7c4c1fd5071bd8914eb851780",
+      "size": [
+        1080,
+        1350
+      ]
+    },
+    {
+      "path": "examples/retail/storefront-web/public/social/organic/fragrance_buyer_spiral_20261006_01/instagram/slide-03.jpg",
+      "sha256": "36884704d34a3dd271317dd31582403e3d8ce9a349fd829f6a4799438c943fd9",
+      "size": [
+        1080,
+        1350
+      ]
+    },
+    {
+      "path": "examples/retail/storefront-web/public/social/organic/fragrance_buyer_spiral_20261006_01/instagram/slide-04.jpg",
+      "sha256": "cf633c39232942d3affdb3afb4999dfc15b10412c449066f71fb85ca103ea2a8",
+      "size": [
+        1080,
+        1350
+      ]
+    },
+    {
+      "path": "examples/retail/storefront-web/public/social/organic/fragrance_buyer_spiral_20261006_01/instagram/slide-05.jpg",
+      "sha256": "3d297d2dcf43a8f8dbd48804285ddc8b44d28849f818f0b2ec0f24a3a72380c3",
+      "size": [
+        1080,
+        1350
+      ]
+    }
+  ],
+  "tiktok": [
+    {
+      "path": "examples/retail/storefront-web/public/social/organic/fragrance_buyer_spiral_20261006_01/tiktok/slide-01.jpg",
+      "sha256": "f3e214b4a3e592b522e5587853dba16ad41f23fcb720b436c9b31204126d86fa",
+      "size": [
+        1080,
+        1920
+      ]
+    },
+    {
+      "path": "examples/retail/storefront-web/public/social/organic/fragrance_buyer_spiral_20261006_01/tiktok/slide-02.jpg",
+      "sha256": "906aa8ecb9bd885e03fefdeecba4cb2c9cc916bac6cf8396ff95a6d9ebd40917",
+      "size": [
+        1080,
+        1920
+      ]
+    },
+    {
+      "path": "examples/retail/storefront-web/public/social/organic/fragrance_buyer_spiral_20261006_01/tiktok/slide-03.jpg",
+      "sha256": "1cdd5f5653e47d496022853c2a07df436f560c3f60235dc37c4217ba29a39ec9",
+      "size": [
+        1080,
+        1920
+      ]
+    },
+    {
+      "path": "examples/retail/storefront-web/public/social/organic/fragrance_buyer_spiral_20261006_01/tiktok/slide-04.jpg",
+      "sha256": "98da0992a496ef280a19b27abf88d32223ff499cc4479705b0302d05f2ef9028",
+      "size": [
+        1080,
+        1920
+      ]
+    },
+    {
+      "path": "examples/retail/storefront-web/public/social/organic/fragrance_buyer_spiral_20261006_01/tiktok/slide-05.jpg",
+      "sha256": "17b50de669caf2dd763fb37597626c428599aff632dac7ae97bf94cb649ceb9e",
+      "size": [
+        1080,
+        1920
+      ]
+    }
+  ],
+  "video": {
+    "path": "examples/retail/storefront-web/public/social/organic/fragrance_buyer_spiral_20261006_01/tiktok/fragrance_buyer_spiral_20261006_01.mp4",
+    "sha256": "61ba75b0ba0c9530ba48b39eff204357e43e0c4e96920e73857724dce317f2d2",
+    "duration_seconds": 17.0,
+    "audio": false
+  },
+  "hard_gates": {
+    "product_rights_dependency": false,
+    "raw_tiktok_url": false,
+    "owner_publish_approval": false,
+    "native_preview_pending": true
+  }
+}
