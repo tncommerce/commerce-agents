@@ -552,6 +552,7 @@
       const risk = s.global_risk || {};
       const crew = s.crew || {};
       const operator = s.operator_diagnosis || {};
+      const planner = s.planner || {};
       const activeCrew = (Array.isArray(crew.live_now) ? crew.live_now : [])
         .slice(0, 5)
         .map((item) => ({
@@ -578,6 +579,15 @@
           jarvis_message: safeText(operator.jarvis_message, 420),
           recommended_now: safeText(operator.recommended_now?.title, 320),
           recommended_reason: safeText(operator.recommended_now?.reason, 520),
+        },
+        planner: {
+          state: safeText(planner.state, 80),
+          business_next_move: safeText(planner.business_next_move, 320),
+          capability_gap: safeText(planner.capability_gap, 320),
+          master_action_required: planner.master_action_required === true,
+          waiting_external_is_global_blocker:
+            planner.waiting_external_is_global_blocker === true,
+          last_verified_at: safeText(planner.last_verified_at, 80),
         },
         risk: {
           title: safeText(risk.title, 180),
@@ -796,6 +806,15 @@
               master_required: move.master_required === true,
               jarvis_can_execute_now: move.jarvis_can_execute_now === true,
             })),
+          },
+          planner: {
+            state: safeText(s.planner?.state, 80),
+            business_next_move: safeText(s.planner?.business_next_move, 320),
+            capability_gap: safeText(s.planner?.capability_gap, 320),
+            master_action_required: s.planner?.master_action_required === true,
+            waiting_external_is_global_blocker:
+              s.planner?.waiting_external_is_global_blocker === true,
+            last_verified_at: safeText(s.planner?.last_verified_at, 80),
           },
           risk: {
             title: safeText(risk.title, 220),
