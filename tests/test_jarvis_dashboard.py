@@ -1165,6 +1165,7 @@ def test_worker_aliases_stay_stable_distinct_and_keep_technical_identity():
     }
     assert first[0]["worker_id"] == "tech-worker"
 
+
 def test_ceo_dashboard_projects_scheduled_safe_work_from_live_planner():
     data = ceo_data()
     next_safe = (NOW + timedelta(hours=9)).isoformat()
@@ -1187,4 +1188,3 @@ def test_ceo_dashboard_projects_scheduled_safe_work_from_live_planner():
     assert next_safe in result["command_center"]["next_allowed_task"]
     assert result["operator_diagnosis"]["state"] == "SCHEDULED_SAFE_WORK"
     assert result["operator_diagnosis"]["rules"]["external_waits_are_global_blocker"] is False
-
