@@ -133,6 +133,21 @@ def _text(value: object, secrets: tuple[str, ...] = ()) -> str | None:
     return " ".join(value.split())[:300]
 
 
+def _scrub_output(value: Any, secrets: tuple[str, ...]) -> Any:
+    """Defense-in-depth: no arbitrary secret-like string may leave the owner DTO."""
+    if isinstance(value, dict):
+        return {key: _scrub_output(item, secrets) for key, item in value.items()}
+    if isinstance(value, list):
+        return [_scrub_output(item, secrets) for item in value]
+    if isinstance(value, tuple):
+        return tuple(_scrub_output(item, secrets) for item in value)
+    if isinstance(value, str) and (
+        SENSITIVE.search(value) or any(secret and secret in value for secret in secrets)
+    ):
+        return "[restricted]"
+    return value
+
+
 def _candidate_caption(value: object, secrets: tuple[str, ...] = ()) -> str | None:
     """Text only; allow canonical public DUFYND acquisition links, never asset/signed URLs."""
     if not isinstance(value, str):
@@ -1315,7 +1330,7 @@ def build_snapshot(
     )
     snapshot["crew"] = project_crew(snapshot)
     snapshot["global_risk"] = project_risk(snapshot)
-    return snapshot
+    return _scrub_output(snapshot, secrets)
 
 
 class DashboardReader:
