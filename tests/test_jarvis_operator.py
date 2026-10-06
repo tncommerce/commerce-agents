@@ -173,3 +173,53 @@ def test_scheduled_safe_work_is_not_reported_as_empty_autonomy():
     assert result["evidence"]["planner_state"] == "scheduled_safe_work"
     assert result["rules"]["external_waits_are_global_blocker"] is False
     assert "restore_autonomy" not in [move["id"] for move in result["next_moves"]]
+
+
+def test_business_planner_gap_wins_over_later_scheduled_maintenance():
+    result = build_operator_diagnosis(
+        tasks=[
+            {
+                "task_id": "old-wait",
+                "status": "waiting_external",
+                "priority": 90,
+            }
+        ],
+        waits=[],
+        observers=[],
+        credentials=[],
+        thin={
+            "active_leases": 0,
+            "stop_reason": "no_safe_work",
+            "queue_counts": {"waiting_external": 15},
+            "planner": {
+                "state": "scheduled_safe_work",
+                "next_safe_work_at": "2026-10-06T13:40:00+00:00",
+                "ready_certified_free_tasks": 0,
+                "external_waits_are_global_blocker": False,
+            },
+            "business_planner": {
+                "state": "planner_gap",
+                "business_next_move": "social_publication_readiness",
+                "capability_gap": "no_autonomous_metricool_media_or_publish_readiness_handler",
+                "master_action_required": False,
+            },
+        },
+        runtime={
+            "phase": "live_measurement_window",
+            "decision_state": "waiting_first_signal",
+            "publication_verified": False,
+            "next_evidence": "qualified_session",
+            "funnel": {},
+        },
+        now=NOW,
+    )
+
+    assert result["state"] == "PLANNING_REQUIRED"
+    assert result["headline"] == "Neue sichere Arbeit muss geplant werden"
+    assert "Social-Publishing-Bereitschaft" in result["cause"]
+    assert "Wartungscheck" in result["cause"]
+    assert result["owner_action_required"] is False
+    assert result["recommended_now"]["id"] == "plan_business_priority"
+    assert result["evidence"]["business_planner_state"] == "planner_gap"
+    assert result["evidence"]["planner_state"] == "scheduled_safe_work"
+    assert "spätere Wartungscheck" in result["jarvis_message"]
