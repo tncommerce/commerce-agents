@@ -173,3 +173,4 @@ def test_scheduled_safe_work_is_not_reported_as_empty_autonomy():
     assert result["rules"]["external_waits_are_global_blocker"] is False
     assert "restore_autonomy" not in [move["id"] for move in result["next_moves"]]
 
+
