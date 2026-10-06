@@ -39,7 +39,7 @@ begin
       'Persist current First-Money publication, funnel and supervisor evidence only. Never publish or schedule content.',
       'ready',100,'free','["db:jarvis.supervisor_v2.health"]'::jsonb,'durable',
       '{"kind":"supervisor_state_audit","steps":1,"interval_seconds":2}'::jsonb,
-      '["social.publish","external.outreach","gmail.send","budget.spend","main.merge","commerce.activate","credentials","model.call","paid_model_call"]'::jsonb
+      '["social.publish","gmail.send","budget.spend","main.merge","commerce.activate","shell.execute"]'::jsonb
     ) on conflict(task_id) do nothing;
     if found then created := created || jsonb_build_array(tid); end if;
 
@@ -54,7 +54,7 @@ begin
       'Locate persisted FROZEN >=9.5 short-form masters and produce evidence for QA. Do not generate paid media, schedule, publish or modify approved assets.',
       'blocked',95,'free','["repo:scentai-mvp:read","db:dufynd.creative_registry"]'::jsonb,'durable',
       '{"kind":"creative_asset_recovery","quality_floor":9.5,"read_only":true,"requires_certified_handler":true}'::jsonb,
-      '["social.publish","external.outreach","gmail.send","budget.spend","main.merge","commerce.activate","credentials","model.call","paid_model_call"]'::jsonb
+      '["social.publish","gmail.send","budget.spend","main.merge","commerce.activate","shell.execute"]'::jsonb
     ) on conflict(task_id) do nothing;
     if found then created := created || jsonb_build_array(tid); end if;
 
@@ -69,7 +69,7 @@ begin
       'Persist bounded funnel and supervisor evidence; identify missing internal prerequisites only. Do not create traffic, publish, message or spend.',
       'ready',90,'free','["db:jarvis.supervisor_v2.health"]'::jsonb,'durable',
       '{"kind":"supervisor_state_audit","steps":1,"interval_seconds":2}'::jsonb,
-      '["social.publish","external.outreach","gmail.send","budget.spend","main.merge","commerce.activate","credentials","model.call","paid_model_call"]'::jsonb
+      '["social.publish","gmail.send","budget.spend","main.merge","commerce.activate","shell.execute"]'::jsonb
     ) on conflict(task_id) do nothing;
     if found then created := created || jsonb_build_array(tid); end if;
   else
