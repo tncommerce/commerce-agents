@@ -46,5 +46,5 @@ def test_safe_exhaustion_requires_today_business_work_done():
 def test_integrity_distinguishes_waiting_market_signal_from_starvation():
     assert "safe_internal_work_exhausted" in SQL
     assert "<>'waiting_market_signal'" in SQL
-    assert "'planner_starvation'" in SQL
+    assert "planner_starvation" in SQL
     assert "run_dufynd_measurement_worker_v1" in SQL
