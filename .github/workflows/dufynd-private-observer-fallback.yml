@@ -1,0 +1,32 @@
+name: DUFYND Private Observer Fallback Wake
+
+on:
+  workflow_dispatch:
+  # Independent scheduler path. This does not read private data itself.
+  # It only dispatches the already provenance-bound observer workflow on scentai-mvp.
+  # Offset from the primary workflow so one delayed scheduler path does not leave
+  # the private observer stale for long.
+  schedule:
+    - cron: "1,11,21,31,41,51 * * * *"
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: dufynd-private-observer-fallback-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  dispatch:
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Dispatch accepted observer workflow on scentai-mvp
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh workflow run dufynd-private-observer.yml
+          --repo "${GITHUB_REPOSITORY}"
+          --ref scentai-mvp
