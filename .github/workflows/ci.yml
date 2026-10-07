@@ -86,3 +86,20 @@ jobs:
         run: npm ci
       - name: Build every app
         run: npm run build
+
+
+  private-observer-schedule-reactivation:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    permissions:
+      contents: read
+      actions: write
+    steps:
+      - name: Keep Private Observer schedulers enabled on the public fork
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh workflow enable dufynd-private-observer.yml --repo "${GITHUB_REPOSITORY}"
+          gh workflow enable dufynd-private-observer-watchdog.yml --repo "${GITHUB_REPOSITORY}"
