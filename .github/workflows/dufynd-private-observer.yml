@@ -2,12 +2,11 @@ name: DUFYND Private Observer Read
 
 on:
   workflow_dispatch:
+  # Activity fallback: every scentai-mvp push refreshes the trusted observer path.
+  # This does not replace the default-branch scheduler; it bounds observer staleness
+  # while DUFYND is actively changing, without provider credentials or spend.
   push:
     branches: [scentai-mvp]
-    paths:
-      - '.github/workflows/dufynd-private-observer.yml'
-      - 'private_broker/**'
-      - 'scripts/dufynd*observer*.py'
 
 concurrency:
   group: dufynd-private-observer
@@ -22,7 +21,7 @@ jobs:
       contents: read
       actions: write
     steps:
-      - name: Dispatch the existing trusted read path after observer changes
+      - name: Dispatch the existing trusted read path after scentai-mvp changes
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run dufynd-private-observer.yml --repo "$GITHUB_REPOSITORY" --ref scentai-mvp

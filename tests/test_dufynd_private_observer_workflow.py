@@ -50,3 +50,13 @@ def test_observer_change_dispatch_preserves_existing_broker_event_boundary():
     read = workflow.split("  read:")[1].split("  ingest:")[0]
     assert "github.event_name == 'workflow_dispatch'" in read
     assert "branches: [scentai-mvp]" in workflow
+
+
+def test_private_observer_activity_fallback_covers_every_scentai_mvp_push():
+    workflow = workflow_source()
+    trigger = workflow.split("concurrency:")[0]
+    assert "push:\n    branches: [scentai-mvp]" in trigger
+    assert "\n    paths:" not in trigger
+    bridge = workflow.split("  refresh-after-change:")[1].split("  read:")[0]
+    assert "after scentai-mvp changes" in bridge
+    assert "--ref scentai-mvp" in bridge
