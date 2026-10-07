@@ -1,8 +1,13 @@
 name: DUFYND Private Observer Read
 on:
   workflow_dispatch:
+  # GitHub scheduled workflows are best-effort and the single */10 wake has
+  # shown multi-hour gaps in production. Use two staggered schedules so a
+  # delayed/missed slot has another independent wake opportunity five minutes
+  # later. The scentai-mvp observer remains idempotent and provenance-bound.
   schedule:
-    - cron: "*/10 * * * *"
+    - cron: "3,13,23,33,43,53 * * * *"
+    - cron: "8,18,28,38,48,58 * * * *"
 
 permissions:
   contents: read
