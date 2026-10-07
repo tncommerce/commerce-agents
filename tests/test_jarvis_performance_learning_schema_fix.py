@@ -1,6 +1,8 @@
 from pathlib import Path
 
-SQL = Path(\n    "supabase/migrations/20261007075500_jarvis_performance_learning_schema_fix_v1.sql"\n).read_text()
+SQL = Path(
+    "supabase/migrations/20261007075500_jarvis_performance_learning_schema_fix_v1.sql"
+).read_text()
 
 
 def test_trigger_does_not_reference_nonexistent_performance_column():
