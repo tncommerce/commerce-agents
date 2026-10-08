@@ -20,6 +20,10 @@ export async function verifyOfferRecovery(browser, baseUrl) {
             }] : [],
           } }));
         await page.goto(`${baseUrl}/duft/xerjoff-naxos?src=instagram&cmp=qa_recovery&content=qa_final`);
+        if (width < 640) {
+          const stage = await page.locator(".dufynd-fragrance-stage-shell").boundingBox();
+          assert.ok(stage.height <= Math.max(220, Math.min(width * 0.62, 258)) + 1, "later CSS overrides must not undo the compact mobile stage");
+        }
         const recovery = page.getByRole("navigation", { name: "Weitere Wege zum passenden Duft" });
         if (mode === "available") {
           await page.locator("[data-merchant-offers]").waitFor();

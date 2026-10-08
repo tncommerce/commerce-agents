@@ -13,7 +13,7 @@
 
 Empty and failed offer states now offer an attributed catalog route. Product detail exposes the existing alternatives anchor only when related products exist. Manufacturer fallback, retries, price freshness and affiliate gates remain intact. Normal available-offer rendering is unchanged. Recovery actions have 44px minimum tap height.
 
-Mobile product staging now uses a 220–304px responsive minimum rather than a fixed 304px minimum, preserving existing bottle assets and atmosphere while moving purchase actions earlier on small screens. No bottle geometry or image approval is changed.
+The shared mobile product stage now uses a 220–258px responsive minimum rather than its final fixed 258px override, preserving existing bottle assets and atmosphere while moving purchase actions earlier on small screens. Existing product-specific art direction is retained. No bottle geometry or image approval is changed.
 
 ## Prioritized remaining work
 
