@@ -34,7 +34,9 @@ def test_voice_gateway_session_is_read_only_tool_enabled_and_conversational():
     action_tool = config["tools"][1]
     assert action_tool["type"] == "function"
     assert action_tool["name"] == "advance_dufynd_safe_work"
-    assert "protected zero-spend worker" in action_tool["description"]
+    assert "bounded CEO planning" in action_tool["description"]
+    assert "certified zero-spend worker" in action_tool["description"]
+    assert "It cannot force external answers" in action_tool["description"]
     assert action_tool["parameters"]["properties"] == {}
     assert action_tool["parameters"]["additionalProperties"] is False
 
