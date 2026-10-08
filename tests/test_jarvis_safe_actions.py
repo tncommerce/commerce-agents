@@ -89,6 +89,7 @@ def test_safe_action_runner_fails_closed_on_forbidden_execution_evidence(payload
     with pytest.raises(JarvisSafeActionConflict):
         runner.advance_next_safe_work()
 
+
 def test_safe_action_runner_returns_actual_completed_growth_work_not_just_no_work():
     def transport(_request):
         return httpx.Response(
