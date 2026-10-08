@@ -48,7 +48,9 @@ def test_orchestration_is_bounded_certified_and_durable():
 
 
 def test_no_authenticated_browser_can_call_internal_worker_rpc_directly():
-    assert "revoke execute on function public.run_dufynd_ceo_distribution_preflight_v2()" in PRIORITY
+    assert (
+        "revoke execute on function public.run_dufynd_ceo_distribution_preflight_v2()" in PRIORITY
+    )
     assert "revoke execute on function public.run_dufynd_ceo_blocker_triage_v2()" in PRIORITY
     assert "to service_role,postgres" in PRIORITY
     assert "from public,anon,authenticated" in PRIORITY
