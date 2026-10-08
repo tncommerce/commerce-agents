@@ -45,7 +45,7 @@ def test_voice_gateway_session_is_read_only_tool_enabled_and_conversational():
     assert turn["interrupt_response"] is False
 
     assert config["audio"]["output"]["voice"] == "ash"
-    assert config["audio"]["output"]["speed"] == 1.03
+    assert config["audio"]["output"]["speed"] == 0.97
     assert "operative CEO-Assistent von Master" in config["instructions"]
     assert "immer als 'Master'" in config["instructions"]
     assert "MUSST du zuerst inspect_dufynd" in config["instructions"]
@@ -60,7 +60,8 @@ def test_voice_gateway_session_is_read_only_tool_enabled_and_conversational():
     assert "zwei bis vier konkrete, priorisierte Lösungsvorschläge" in config["instructions"]
     assert "advance_dufynd_safe_work" in config["instructions"]
     assert "trockener, intelligenter Humor" in config["instructions"]
-    assert "britisch/RP-geprägte Sprechmelodie" in config["instructions"]
+    assert "neutrale hochdeutsche Sprechmelodie" in config["instructions"]
+    assert "ohne hörbaren englischen, amerikanischen oder britischen Akzent" in config["instructions"]
     assert "Beende begonnene Sätze" in config["instructions"]
     assert "Tuan" not in config["instructions"]
 
