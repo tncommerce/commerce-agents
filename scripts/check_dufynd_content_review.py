@@ -25,6 +25,9 @@ CHECKS = (
     "platform_click_path",
     "duplicate_content",
     "dufynd_quality",
+    "safe_zones",
+    "sharpness_compression",
+    "sound_timing",
 )
 
 
@@ -112,6 +115,12 @@ def _audio_publish_reasons(
                     reasons.append("instagram_reel_music_delivery_invalid")
                 if audio.get("facebook_connection_verified") is not True:
                     reasons.append("instagram_reel_facebook_connection_unverified")
+                if audio.get("instagram_business_verified") is not True or not _text(
+                    audio.get("connection_evidence_ref")
+                ):
+                    reasons.append("instagram_reel_connection_unverified")
+                if audio.get("native_track_selected_and_preheard") is not True:
+                    reasons.append("instagram_native_audio_not_preheard")
                 if not _text(audio.get("audio_id")):
                     reasons.append("instagram_reel_audio_id_required")
             elif mode == "embedded_video":
@@ -161,6 +170,19 @@ def _audio_publish_reasons(
                 reasons.append("tiktok_native_video_requires_audio_handoff")
         else:
             reasons.append("tiktok_video_audio_mode_invalid")
+    if mode == "embedded_video":
+        if delivery not in {
+            "metricool_auto",
+            "instagram_native_app",
+            "tiktok_native_app",
+            "metricool_notification",
+        }:
+            reasons.append("embedded_audio_delivery_invalid")
+        if any(
+            audio.get(k) is not True
+            for k in ("full_playback_verified", "timing_verified", "loudness_verified")
+        ):
+            reasons.append("embedded_audio_full_playback_timing_loudness_required")
     return reasons
 
 
@@ -219,6 +241,19 @@ def evaluate(document: dict) -> dict:
         width = publish.get("width_px")
         height = publish.get("height_px")
         score = publish.get("visual_score")
+        if (platform == "instagram" and media_kind == "reel") or (
+            platform == "tiktok" and media_kind == "video"
+        ):
+            if (
+                type(width) is not int
+                or type(height) is not int
+                or width < 1080
+                or height < 1920
+                or width * 16 != height * 9
+            ):
+                reasons.append("video_requires_1080x1920_9_16")
+            if publish.get("genuine_motion_verified") is not True:
+                reasons.append("genuine_video_motion_not_verified")
         if type(width) is not int or type(height) is not int or width < 1080 or height < 1080:
             reasons.append("media_resolution_below_publish_floor")
         if (

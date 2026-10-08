@@ -202,6 +202,7 @@ def audio_ready(platform="instagram", media_kind="reel", kind="meme"):
     doc["package"]["content_kind"] = kind
     doc["package"]["publish_contract"].update(
         media_kind=media_kind,
+        genuine_motion_verified=True,
         audio_contract={
             "mode": "embedded_video",
             "delivery": "metricool_auto",
@@ -213,6 +214,9 @@ def audio_ready(platform="instagram", media_kind="reel", kind="meme"):
             "final_video_sha256": "a" * 64,
             "audio_codec": "aac",
             "audio_stream_evidence_ref": "internal://ffprobe/aac-and-listening-audit",
+            "full_playback_verified": True,
+            "timing_verified": True,
+            "loudness_verified": True,
         },
     )
     if platform == "tiktok":
@@ -264,7 +268,11 @@ def test_metricool_instagram_reel_requires_proven_facebook_connection_and_audio_
     assert "instagram_reel_facebook_connection_unverified" in reasons
     assert "instagram_reel_audio_id_required" in reasons
     doc["package"]["publish_contract"]["audio_contract"].update(
-        facebook_connection_verified=True, audio_id="123456789"
+        facebook_connection_verified=True,
+        audio_id="123456789",
+        instagram_business_verified=True,
+        connection_evidence_ref="qa:connection",
+        native_track_selected_and_preheard=True,
     )
     doc["review"]["revision_hash"] = revision_hash(doc["package"])
     assert evaluate(doc)["stage"] == "READY_FOR_OWNER_APPROVAL"
@@ -334,3 +342,18 @@ def test_tiktok_embedded_audio_video_with_proven_aac_is_reviewable():
     doc = audio_ready("tiktok", "video")
     assert evaluate(doc)["stage"] == "READY_FOR_OWNER_APPROVAL"
     assert evaluate(doc)["publication_authorized"] is False
+
+
+@pytest.mark.parametrize("width,height", [(1080, 1080), (1080, 1350), (720, 1280), (1920, 1080)])
+def test_social_video_requires_real_vertical_resolution(width, height):
+    doc = audio_ready()
+    doc["package"]["publish_contract"].update(width_px=width, height_px=height)
+    doc["review"]["revision_hash"] = revision_hash(doc["package"])
+    assert "video_requires_1080x1920_9_16" in evaluate(doc)["reasons"]
+
+
+def test_still_image_wrapped_as_video_does_not_pass():
+    doc = audio_ready()
+    doc["package"]["publish_contract"]["genuine_motion_verified"] = False
+    doc["review"]["revision_hash"] = revision_hash(doc["package"])
+    assert "genuine_video_motion_not_verified" in evaluate(doc)["reasons"]

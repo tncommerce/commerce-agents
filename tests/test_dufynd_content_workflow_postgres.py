@@ -35,6 +35,7 @@ def schema():
             "*content_candidate_owner_gate_v1.sql",
             "*content_publish_quality_gate_v2.sql",
             "*content_workflow_control_plane.sql",
+            "*_dufynd_production_audio_gate.sql",
         ):
             c.execute(next((ROOT / "supabase/migrations").glob(pattern)).read_text())
     yield
@@ -238,6 +239,17 @@ def test_complete_candidate_stops_at_real_owner_then_observes_external_evidence(
         "internal_reviewer_actor_id": "qa_checker",
         "campaign_id": "qa_exp",
         "product_id": "SC-TEST-100",
+        "content_kind": "meme",
+        "publication_checks_v3": {
+            k: {"passed": True, "asset_sha256": "a" * 64, "evidence_ref": "qa:quality"}
+            for k in (
+                "duplicate_content",
+                "safe_zones",
+                "sharpness_compression",
+                "platform_caption",
+                "sound_timing",
+            )
+        },
         "publish_contract_v2": {
             "media_kind": "image",
             "width_px": 1080,
@@ -247,6 +259,16 @@ def test_complete_candidate_stops_at_real_owner_then_observes_external_evidence(
             "final_upload_asset_verified": True,
             "cta_mode": "profile_link",
             "profile_link_verified": True,
+            "audio_contract": {
+                "mode": "instagram_native_music",
+                "delivery": "instagram_native_app",
+                "commercial_rights_evidence_ref": "qa:rights",
+                "audible_preview_evidence_ref": "qa:listen",
+                "audible_preview_verified": True,
+                "commercial_music_rights_verified": True,
+                "audio_score": 9.7,
+                "native_track_selected_and_preheard": True,
+            },
         },
         "owner_review_v1": {
             "internal_ready": True,
@@ -354,4 +376,18 @@ def test_auto_revision_is_bounded_and_does_not_dispatch_generator(db):
     assert (
         advance(db, aid, "self_review_failed", "auto_revision_requested")["reason"]
         == "revision_limit_reached"
+    )
+
+
+def test_production_audio_contract_matrix(db):
+    db.execute((ROOT / "tests/sql_dufynd_audio_gate.sql").read_text())
+
+
+def test_post_publication_requires_verified_public_sound(db):
+    aid = asset(db)
+    advance(db, aid, None, "brief_ready")
+    db.execute("update dufynd_content_workflows set state='published' where asset_id=%s", (aid,))
+    evidence = {"publication_verification": proof(db, aid)}
+    assert advance(db, aid, "published", "publication_verified", evidence)["reason"] == (
+        "public_audio_playback_evidence_required"
     )
