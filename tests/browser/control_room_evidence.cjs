@@ -199,9 +199,11 @@ const { chromium } = require("playwright");
         internal_rating: "9.6", recommendation_reason: "Internally ready fixture"}}];
     await refresh();
     assert.equal(await p.locator("#approval-alert").isVisible(), true);
-    assert.equal(await p.locator("#pulse-action.state-red").count(), 1);
+    assert.equal(await p.locator("#pulse-action.state-amber").count(), 1);
+    assert.match(await p.locator("#pulse-action").innerText(), /Aktion nötig/);
+    assert.equal(await p.locator("#pulse-action.state-red").count(), 0);
     const decisionText = await p.locator("#decision-list").innerText();
-    for (const text of ["Delina EDP 75 ml", "qa_delina_asset", "A complete safe caption", "qa_delina_fixture", "qa_gate", "9.6", "Scheduling und Publishing nicht freigegeben"])
+    for (const text of ["Delina EDP 75 ml", "qa_delina_asset", "A complete safe caption", "qa_delina_fixture", "qa_gate", "9.6", "Review-Gate erkannt. Keine automatische Aktion ohne explizit freigegebenen Handler."])
       assert.ok(decisionText.includes(text), text);
     assert.equal(await p.locator("#decision-list button").count(), 0);
     s.decision_center = [];
