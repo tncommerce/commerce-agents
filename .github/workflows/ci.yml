@@ -132,7 +132,7 @@ jobs:
         run: npm run launch:check --workspace acme-retail-storefront-web
 
   dufynd-visual-qa:
-    if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'dufynd-')
+    if: github.event_name == 'pull_request' && (startsWith(github.head_ref, 'dufynd-') || startsWith(github.head_ref, 'fix/dufynd-'))
     runs-on: ubuntu-latest
     defaults:
       run:
