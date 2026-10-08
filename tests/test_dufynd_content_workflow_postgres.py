@@ -36,6 +36,7 @@ def schema():
             "*content_publish_quality_gate_v2.sql",
             "*content_workflow_control_plane.sql",
             "*_dufynd_production_audio_gate.sql",
+            "*_dufynd_audio_review_invalidation.sql",
         ):
             c.execute(next((ROOT / "supabase/migrations").glob(pattern)).read_text())
     yield
