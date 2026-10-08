@@ -173,6 +173,7 @@ def test_tiktok_raw_url_is_rejected_when_no_clickable_website_surface_exists():
 def test_instagram_profile_link_path_can_pass_when_native_asset_is_verified():
     doc = reviewed()
     doc["package"]["platform"] = "instagram"
+    doc["package"]["content_kind"] = "education"
     doc["package"]["caption"] = "Duftprofil + Kaufoptionen → Link im Profil."
     doc["package"]["publish_contract"].update(
         media_kind="carousel",
@@ -180,6 +181,156 @@ def test_instagram_profile_link_path_can_pass_when_native_asset_is_verified():
         click_surface="profile_link",
         profile_link_verified=True,
         clickable_website_link_available=True,
+        audio_contract={
+            "mode": "instagram_native_music",
+            "delivery": "instagram_native_app",
+            "commercial_rights_evidence_ref": "internal://evidence/cleared-track",
+            "audible_preview_evidence_ref": "internal://qa/ig-native-prelisten",
+            "audible_preview_verified": True,
+            "audio_score": 9.6,
+            "commercial_music_rights_verified": True,
+            "native_track_selected_and_preheard": True,
+        },
     )
     doc["review"]["revision_hash"] = revision_hash(doc["package"])
     assert evaluate(doc)["stage"] == "READY_FOR_OWNER_APPROVAL"
+
+
+def audio_ready(platform="instagram", media_kind="reel", kind="meme"):
+    doc = reviewed()
+    doc["package"]["platform"] = platform
+    doc["package"]["content_kind"] = kind
+    doc["package"]["publish_contract"].update(
+        media_kind=media_kind,
+        audio_contract={
+            "mode": "embedded_video",
+            "delivery": "metricool_auto",
+            "commercial_rights_evidence_ref": "internal://rights/original-score-commercial",
+            "audible_preview_evidence_ref": "internal://qa/full-playback-device",
+            "audible_preview_verified": True,
+            "audio_score": 9.7,
+            "commercial_music_rights_verified": True,
+            "final_video_sha256": "a" * 64,
+            "audio_codec": "aac",
+            "audio_stream_evidence_ref": "internal://ffprobe/aac-and-listening-audit",
+        },
+    )
+    if platform == "tiktok":
+        doc["package"]["publish_contract"]["cta_mode"] = "engagement"
+        doc["package"]["publish_contract"]["clickable_website_link_available"] = False
+    doc["review"]["revision_hash"] = revision_hash(doc["package"])
+    return doc
+
+
+def test_silent_instagram_and_tiktok_memes_are_never_ready_by_default():
+    for platform, kind in (("instagram", "image"), ("instagram", "reel"), ("tiktok", "image")):
+        doc = audio_ready(platform, kind)
+        del doc["package"]["publish_contract"]["audio_contract"]
+        doc["review"]["revision_hash"] = revision_hash(doc["package"])
+        assert "audio_contract_required" in evaluate(doc)["reasons"]
+
+
+def test_instagram_metricool_image_cannot_claim_music_via_reel_configuration():
+    doc = audio_ready("instagram", "image")
+    doc["package"]["publish_contract"]["audio_contract"].update(
+        mode="metricool_reel_library",
+        audio_id="123456789",
+        facebook_connection_verified=True,
+    )
+    doc["review"]["revision_hash"] = revision_hash(doc["package"])
+    assert "instagram_photo_audio_requires_native_handoff" in evaluate(doc)["reasons"]
+
+
+def test_instagram_native_image_is_reviewable_only_after_manual_audio_prelistening():
+    doc = audio_ready("instagram", "image")
+    doc["package"]["publish_contract"]["audio_contract"].update(
+        mode="instagram_native_music",
+        delivery="instagram_native_app",
+        native_track_selected_and_preheard=True,
+    )
+    doc["review"]["revision_hash"] = revision_hash(doc["package"])
+    assert evaluate(doc)["stage"] == "READY_FOR_OWNER_APPROVAL"
+    assert evaluate(doc)["publication_authorized"] is False
+
+
+def test_metricool_instagram_reel_requires_proven_facebook_connection_and_audio_id():
+    doc = audio_ready("instagram", "reel")
+    doc["package"]["publish_contract"]["audio_contract"].update(
+        mode="metricool_reel_library",
+        delivery="metricool_auto",
+    )
+    doc["review"]["revision_hash"] = revision_hash(doc["package"])
+    reasons = evaluate(doc)["reasons"]
+    assert "instagram_reel_facebook_connection_unverified" in reasons
+    assert "instagram_reel_audio_id_required" in reasons
+    doc["package"]["publish_contract"]["audio_contract"].update(
+        facebook_connection_verified=True, audio_id="123456789"
+    )
+    doc["review"]["revision_hash"] = revision_hash(doc["package"])
+    assert evaluate(doc)["stage"] == "READY_FOR_OWNER_APPROVAL"
+
+
+def test_reel_audio_stream_must_be_evidenced_and_bound_to_exact_frozen_video():
+    doc = audio_ready("instagram", "reel")
+    audio = doc["package"]["publish_contract"]["audio_contract"]
+    audio["final_video_sha256"] = "b" * 64
+    audio["audio_codec"] = None
+    doc["review"]["revision_hash"] = revision_hash(doc["package"])
+    assert "embedded_audio_video_digest_mismatch" in evaluate(doc)["reasons"]
+    assert "embedded_audio_stream_unverified" in evaluate(doc)["reasons"]
+
+
+def test_tiktok_photos_need_selected_native_music_not_random_autoadd():
+    doc = audio_ready("tiktok", "image")
+    doc["package"]["publish_contract"]["audio_contract"].update(auto_add_music=True)
+    doc["review"]["revision_hash"] = revision_hash(doc["package"])
+    assert "tiktok_photo_requires_preheard_native_audio" in evaluate(doc)["reasons"]
+    audio = doc["package"]["publish_contract"]["audio_contract"]
+    audio.update(
+        mode="tiktok_native_music",
+        delivery="metricool_notification",
+        native_track_selected_and_preheard=True,
+    )
+    doc["review"]["revision_hash"] = revision_hash(doc["package"])
+    assert evaluate(doc)["stage"] == "READY_FOR_OWNER_APPROVAL"
+
+
+def test_meme_cannot_use_owner_exception_to_publish_silent():
+    doc = audio_ready("instagram", "image")
+    doc["package"]["publish_contract"]["audio_contract"] = {
+        "mode": "intentional_silence",
+        "owner_silence_exception_ref": "owner://approve-silence",
+        "silence_editorial_reason": "minimal photography",
+    }
+    doc["review"]["revision_hash"] = revision_hash(doc["package"])
+    assert "silent_meme_forbidden" in evaluate(doc)["reasons"]
+
+
+def test_editorial_silence_needs_explicit_owner_exception_and_reason():
+    doc = audio_ready("instagram", "carousel", kind="education")
+    doc["package"]["publish_contract"]["audio_contract"] = {
+        "mode": "intentional_silence",
+        "silence_editorial_reason": "reader-controlled educational slides",
+    }
+    doc["review"]["revision_hash"] = revision_hash(doc["package"])
+    assert "intentional_silence_owner_exception_missing" in evaluate(doc)["reasons"]
+    doc["package"]["publish_contract"]["audio_contract"]["owner_silence_exception_ref"] = (
+        "owner://educational-silence"
+    )
+    doc["review"]["revision_hash"] = revision_hash(doc["package"])
+    assert evaluate(doc)["stage"] == "READY_FOR_OWNER_APPROVAL"
+
+
+def test_change_in_audio_track_invalidates_prior_review_hash():
+    doc = audio_ready("instagram", "reel")
+    assert evaluate(doc)["stage"] == "READY_FOR_OWNER_APPROVAL"
+    doc["package"]["publish_contract"]["audio_contract"]["audio_score"] = 9.3
+    reasons = evaluate(doc)["reasons"]
+    assert "review_revision_mismatch" in reasons
+    assert "audio_quality_below_owner_standard" in reasons
+
+
+def test_tiktok_embedded_audio_video_with_proven_aac_is_reviewable():
+    doc = audio_ready("tiktok", "video")
+    assert evaluate(doc)["stage"] == "READY_FOR_OWNER_APPROVAL"
+    assert evaluate(doc)["publication_authorized"] is False
