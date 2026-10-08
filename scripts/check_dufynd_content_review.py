@@ -48,6 +48,124 @@ def _digest(value: object) -> bool:
     )
 
 
+def _audio_publish_reasons(package: dict, publish: dict, *, platform: str, media_kind: str) -> list[str]:
+    """Fail closed on silent social memes and unsupported automatic music flows.
+
+    This validates submitted review evidence, not the audio file itself. A separate
+    independent listening/rights check and post-publication verification remain
+    required; nothing here grants permission to schedule or publish.
+    """
+    if platform not in {"instagram", "tiktok"}:
+        return []
+
+    reasons: list[str] = []
+    kind = str(package.get("content_kind") or "").strip().casefold()
+    if kind not in {"meme", "editorial", "education", "product"}:
+        reasons.append("social_content_kind_required")
+    audio = publish.get("audio_contract")
+    if not isinstance(audio, dict):
+        return reasons + ["audio_contract_required"]
+
+    mode = str(audio.get("mode") or "").strip().casefold()
+    delivery = str(audio.get("delivery") or "").strip().casefold()
+    if mode == "intentional_silence":
+        if kind == "meme":
+            reasons.append("silent_meme_forbidden")
+        if kind not in {"editorial", "education"}:
+            reasons.append("silent_exception_content_kind_invalid")
+        if not _text(audio.get("owner_silence_exception_ref")) or not _text(
+            audio.get("silence_editorial_reason")
+        ):
+            reasons.append("intentional_silence_owner_exception_missing")
+        return reasons
+
+    # Every audible post needs specific independently reviewable evidence.
+    for field in ("commercial_rights_evidence_ref", "audible_preview_evidence_ref"):
+        if not _text(audio.get(field)):
+            reasons.append(f"audio_{field}_required")
+    if audio.get("audible_preview_verified") is not True:
+        reasons.append("audio_playback_not_verified")
+    score = audio.get("audio_score")
+    if (
+        not isinstance(score, (int, float))
+        or isinstance(score, bool)
+        or not 9.5 <= score <= 10
+    ):
+        reasons.append("audio_quality_below_owner_standard")
+    if audio.get("commercial_music_rights_verified") is not True:
+        reasons.append("audio_commercial_rights_not_verified")
+
+    if platform == "instagram":
+        if media_kind in {"image", "carousel", "story"}:
+            # Third-party Instagram image/carousel auto-posting carries no
+            # selectable music track; a native Instagram handoff is mandatory.
+            if mode != "instagram_native_music" or delivery not in {
+                "instagram_native_app", "metricool_notification"
+            }:
+                reasons.append("instagram_photo_audio_requires_native_handoff")
+            if audio.get("native_track_selected_and_preheard") is not True:
+                reasons.append("instagram_native_audio_not_preheard")
+        elif media_kind == "reel":
+            if mode == "metricool_reel_library":
+                # Metricool supports audioConfiguration.audioId on REEL only
+                # when the business Instagram account uses Facebook Login.
+                if delivery != "metricool_auto":
+                    reasons.append("instagram_reel_music_delivery_invalid")
+                if audio.get("facebook_connection_verified") is not True:
+                    reasons.append("instagram_reel_facebook_connection_unverified")
+                if not _text(audio.get("audio_id")):
+                    reasons.append("instagram_reel_audio_id_required")
+            elif mode == "embedded_video":
+                if not _text(audio.get("final_video_sha256")) or not _digest(
+                    audio.get("final_video_sha256")
+                ):
+                    reasons.append("embedded_audio_final_video_digest_required")
+                elif audio["final_video_sha256"] not in {
+                    a.get("sha256") for a in package.get("assets", []) if isinstance(a, dict)
+                }:
+                    reasons.append("embedded_audio_video_digest_mismatch")
+                if audio.get("audio_codec") != "aac" or not _text(
+                    audio.get("audio_stream_evidence_ref")
+                ):
+                    reasons.append("embedded_audio_stream_unverified")
+            elif mode == "instagram_native_music":
+                if delivery not in {"instagram_native_app", "metricool_notification"}:
+                    reasons.append("instagram_native_reel_requires_manual_handoff")
+                if audio.get("native_track_selected_and_preheard") is not True:
+                    reasons.append("instagram_native_audio_not_preheard")
+            else:
+                reasons.append("instagram_reel_audio_mode_invalid")
+    elif media_kind in {"image", "carousel"}:
+        # TikTok autoAddMusic picks an unpredictable track; it is not a
+        # quality-assured replacement for selecting and auditioning a sound.
+        if mode != "tiktok_native_music" or delivery not in {
+            "tiktok_native_app", "metricool_notification"
+        }:
+            reasons.append("tiktok_photo_requires_preheard_native_audio")
+        if audio.get("native_track_selected_and_preheard") is not True:
+            reasons.append("tiktok_native_audio_not_preheard")
+    elif media_kind == "video":
+        if mode == "embedded_video":
+            if not _digest(audio.get("final_video_sha256")) or audio[
+                "final_video_sha256"
+            ] not in {
+                a.get("sha256") for a in package.get("assets", []) if isinstance(a, dict)
+            }:
+                reasons.append("embedded_audio_video_digest_mismatch")
+            if audio.get("audio_codec") != "aac" or not _text(
+                audio.get("audio_stream_evidence_ref")
+            ):
+                reasons.append("embedded_audio_stream_unverified")
+        elif mode == "tiktok_native_music":
+            if delivery not in {"tiktok_native_app", "metricool_notification"} or (
+                audio.get("native_track_selected_and_preheard") is not True
+            ):
+                reasons.append("tiktok_native_video_requires_audio_handoff")
+        else:
+            reasons.append("tiktok_video_audio_mode_invalid")
+    return reasons
+
+
 def evaluate(document: dict) -> dict:
     reasons = []
     package = document.get("package")
@@ -116,6 +234,10 @@ def evaluate(document: dict) -> dict:
             reasons.append("native_preview_not_verified")
         if publish.get("final_upload_asset_verified") is not True:
             reasons.append("final_upload_asset_not_verified")
+
+        reasons.extend(
+            _audio_publish_reasons(package, publish, platform=platform, media_kind=media_kind)
+        )
 
         caption = str(package.get("caption") or "")
         cta_mode = str(publish.get("cta_mode") or "").strip().casefold()
