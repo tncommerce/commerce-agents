@@ -116,7 +116,9 @@ def test_safe_action_runner_returns_actual_completed_growth_work_not_just_no_wor
             },
         )
 
-    runner = JarvisSafeActionRunner(secret_key="server-secret", transport=httpx.MockTransport(transport))
+    runner = JarvisSafeActionRunner(
+        secret_key="server-secret", transport=httpx.MockTransport(transport)
+    )
     result = runner.advance_next_safe_work()
     assert result["state"] == "completed"
     assert result["handler"] == "ceo_distribution_preflight_v2"
