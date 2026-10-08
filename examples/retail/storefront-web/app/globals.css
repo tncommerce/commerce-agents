@@ -2205,7 +2205,7 @@ body {
   }
 
   .dufynd-fragrance-stage-shell {
-    min-height: 258px;
+    min-height: clamp(220px, 62vw, 258px);
   }
 
   .dufynd-fragrance-stage-shell

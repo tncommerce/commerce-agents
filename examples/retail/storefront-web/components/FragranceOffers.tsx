@@ -14,6 +14,22 @@ import {
 } from "@/lib/analytics";
 import type { MerchantOffersPayload } from "@/lib/types";
 import { OFFICIAL_PRODUCT_PAGES } from "@/lib/officialProductPages";
+import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
+
+function OfferRecoveryLinks({ alternativesHref }: { alternativesHref?: string }) {
+  return (
+    <nav aria-label="Weitere Wege zum passenden Duft" className="mt-4 flex flex-wrap gap-2">
+      {alternativesHref ? (
+        <a href={alternativesHref} className="inline-flex min-h-11 items-center rounded-xl bg-(--accent-strong) px-4 py-2 text-[12px] font-semibold text-white">
+          Ähnliche Düfte entdecken
+        </a>
+      ) : null}
+      <AcquisitionInternalLink href="/duft" className="inline-flex min-h-11 items-center rounded-xl border border-(--line-strong) px-4 py-2 text-[12px] font-semibold text-(--accent-ink)">
+        Weitere Düfte & Angebote entdecken
+      </AcquisitionInternalLink>
+    </nav>
+  );
+}
 
 function OfficialProductLink({ productId }: { productId: string }) {
   const page = OFFICIAL_PRODUCT_PAGES[productId];
@@ -59,12 +75,14 @@ export default function FragranceOffers({
   trackProductOpen = true,
   compact = false,
   analyticsSurface = "fragrance_detail",
+  alternativesHref,
 }: {
   productId: string;
   heading?: string;
   trackProductOpen?: boolean;
   compact?: boolean;
   analyticsSurface?: string;
+  alternativesHref?: string;
 }) {
   const [payload, setPayload] = useState<
     MerchantOffersPayload | null | undefined
@@ -201,6 +219,7 @@ export default function FragranceOffers({
           Angebote erneut prüfen
         </button>
         <OfficialProductLink productId={productId} />
+        <OfferRecoveryLinks alternativesHref={alternativesHref} />
       </section>
     );
   }
@@ -218,6 +237,7 @@ export default function FragranceOffers({
           Aktualitätsprüfung bestehen.
         </p>
         <OfficialProductLink productId={productId} />
+        <OfferRecoveryLinks alternativesHref={alternativesHref} />
       </section>
     );
   }
