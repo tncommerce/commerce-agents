@@ -24,13 +24,11 @@ begin
 
   -- The existing idempotent business planner may propose only allowlisted, free work.
   -- Do not generate repeated health-check tasks if useful tasks already exist.
-  if current_ready=0 then
-    growth_plan := public.plan_dufynd_ceo_priority_work_v2();
-    if growth_plan->>'state' in ('work_planned','work_already_queued') then
-      plan_result := growth_plan;
-    else
-      plan_result := public.plan_dufynd_free_work_v1();
-    end if;
+  growth_plan := public.plan_dufynd_ceo_priority_work_v2();
+  if growth_plan->>'state'='work_planned' then
+    plan_result := growth_plan;
+  elsif current_ready=0 then
+    plan_result := public.plan_dufynd_free_work_v1();
   else
     plan_result := jsonb_build_object(
       'state','work_already_queued','created_tasks','[]'::jsonb,'new_spend_usd',0
@@ -90,7 +88,16 @@ begin
         and h.contract->>'cost_class'='free'
         and h.contract->>'certification_status'='certified'
     )
-  order by q.priority desc,q.created_at,q.task_id
+  order by
+    case when q.durable_payload->>'kind' in (
+      'ceo_distribution_preflight_v2','ceo_blocker_triage_v2'
+    ) then 0
+    when q.durable_payload->>'kind' in (
+      'content_backlog_prioritize','content_production_packet','content_reuse_shortlist',
+      'content_performance_learning','first_money_measurement_diagnostic',
+      'affiliate_evidence_reconcile'
+    ) then 1 else 2 end,
+    q.priority desc,q.created_at,q.task_id
   limit 1;
 
   if selected.task_id is null then
