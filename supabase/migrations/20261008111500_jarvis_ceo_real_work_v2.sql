@@ -19,6 +19,9 @@ begin
     select 1 from public.dufynd_autonomy_tasks
     where status='ready' and budget_class='free'
       and provider_cost_unknown=false and requires_human_approval=false
+      and durable_payload->>'kind' not in (
+        'supervisor_state_audit','purchase_destination_freshness_audit'
+      )
   ) then
     return jsonb_build_object('state','work_already_queued','new_spend_usd',0);
   end if;
