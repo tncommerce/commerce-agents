@@ -31,13 +31,17 @@ def reconcile_approved_image_gates(product: dict) -> None:
     """
     media = product.get("media") or {}
     if media.get("image_status") not in {
-        "approved_feed_image", "approved_licensed_image", "approved_manufacturer_image",
+        "approved_feed_image",
+        "approved_licensed_image",
+        "approved_manufacturer_image",
     }:
         return
     if not all(
         media.get(field)
         for field in (
-            "image_url", "image_reviewed_at", "image_rights_basis_id",
+            "image_url",
+            "image_reviewed_at",
+            "image_rights_basis_id",
             "image_rights_checked_at",
         )
     ):
