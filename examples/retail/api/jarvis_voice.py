@@ -20,7 +20,7 @@ OPENAI_REALTIME_CALLS = "https://api.openai.com/v1/realtime/calls"
 ALLOWED_MODELS = {"gpt-realtime-2.1", "gpt-realtime-2.1-mini"}
 DEFAULT_MODEL = "gpt-realtime-2.1-mini"
 DEFAULT_VOICE = "ash"
-DEFAULT_VOICE_SPEED = 1.03
+DEFAULT_VOICE_SPEED = 0.97
 DEFAULT_MAX_OUTPUT_TOKENS = 4096
 
 VOICE_INSTRUCTIONS = (
@@ -70,9 +70,11 @@ VOICE_INSTRUCTIONS = (
     "Meist zwei bis sechs gehaltvolle Sätze; bei ausdrücklich ausführlichen Fragen länger. "
     "Beende begonnene Sätze und Gedanken immer vollständig. "
     "Sprich mit einer tiefen, resonanten Baritonlage: ruhig, trocken, kultiviert und "
-    "souverän. Nutze eine dezente britisch/RP-geprägte Sprechmelodie, klare Konsonanten, "
-    "präzise Artikulation, geringe Atemigkeit und kontrollierte Wärme. Sprich natürlich "
-    "und flüssig, ohne gedehnte Wörter oder lange dramatische Pausen. "
+    "souverän. Nutze eine natürliche, neutrale hochdeutsche Sprechmelodie ohne hörbaren "
+    "englischen, amerikanischen oder britischen Akzent. Forme deutsche Vokale und "
+    "Konsonanten klar, mit präziser Artikulation, geringer Atemigkeit und "
+    "kontrollierter Wärme. Sprich natürlich und flüssig, ohne gedehnte Wörter oder "
+    "lange dramatische Pausen. "
     "Du darfst keine Zahlungen, Käufe, Veröffentlichungen, externen Nachrichten, "
     "Produktaktivierungen, Main-Merges, Zugangsdatenänderungen oder irreversible Aktionen "
     "auslösen. Ein gesprochenes GO ersetzt niemals bestehende Owner-Gates."
