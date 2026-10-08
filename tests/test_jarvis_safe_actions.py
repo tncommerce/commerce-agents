@@ -88,3 +88,40 @@ def test_safe_action_runner_fails_closed_on_forbidden_execution_evidence(payload
     )
     with pytest.raises(JarvisSafeActionConflict):
         runner.advance_next_safe_work()
+
+def test_safe_action_runner_returns_actual_completed_growth_work_not_just_no_work():
+    def transport(_request):
+        return httpx.Response(
+            200,
+            json={
+                "state": "completed",
+                "stop_reason": "one_safe_task_completed",
+                "task_id": "ceo:distribution-preflight:known",
+                "handler": "ceo_distribution_preflight_v2",
+                "worker_status": "completed",
+                "action": "distribution_packet_prepared",
+                "selected_asset_id": "asset_one_night_fourteen_perfumes_20261008_v1",
+                "next_step": "Transfer and QA media, then get an explicit publishing GO.",
+                "owner_action_required": True,
+                "paid_calls": 0,
+                "new_spend_usd": 0,
+                "owner_gate_action_executed": False,
+                "completed": [
+                    {
+                        "task_id": "ceo:distribution-preflight:known",
+                        "status": "completed",
+                        "handler": "ceo_distribution_preflight_v2",
+                    }
+                ],
+            },
+        )
+
+    runner = JarvisSafeActionRunner(secret_key="server-secret", transport=httpx.MockTransport(transport))
+    result = runner.advance_next_safe_work()
+    assert result["state"] == "completed"
+    assert result["handler"] == "ceo_distribution_preflight_v2"
+    assert result["action"] == "distribution_packet_prepared"
+    assert result["selected_asset_id"] == "asset_one_night_fourteen_perfumes_20261008_v1"
+    assert result["owner_action_required"] is True
+    assert "explicit publishing GO" in result["next_step"]
+    assert result["new_spend_usd"] == 0
