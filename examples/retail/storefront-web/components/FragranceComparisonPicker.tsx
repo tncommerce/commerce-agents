@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import FragranceComparisonEvidence from "@/components/FragranceComparisonEvidence";
 import FragranceOffers from "@/components/FragranceOffers";
 import FragranceModel3D from "@/components/FragranceModel3D";
 import FragranceVisual from "@/components/FragranceVisual";
@@ -500,6 +501,8 @@ export default function FragranceComparisonPicker({
             Historische Marktbeobachtung zum angegebenen Stand, kein aktuelles Kaufangebot.
             Verfügbare Händlerangebote werden auf den Duftseiten separat geprüft.
           </p>
+
+          <FragranceComparisonEvidence left={left} right={right} />
 
           <section className="dufynd-comparison-dna-stage relative mt-4 overflow-hidden rounded-2xl border border-[#d9bd82]/20 bg-[#15120f] p-4 text-white shadow-[0_18px_55px_-34px_rgba(36,24,8,0.9)] sm:p-5">
             <div
