@@ -357,7 +357,7 @@ values
   'durability_class','durable','supports_retry',true,'supports_parallel_execution',false,
   'verification_policy',jsonb_build_object('kind','ceo_blocker_triage_v2','version',2)
  ),true)
-on conflict(handler_id) do update set contract=excluded.contract,enabled=excluded.enabled,handler_version=excluded.handler_version;
+on conflict(handler_id,handler_version) do update set contract=excluded.contract,enabled=excluded.enabled;
 
 revoke execute on function public.plan_dufynd_ceo_priority_work_v2() from public,anon,authenticated;
 revoke execute on function public.run_dufynd_ceo_distribution_preflight_v2() from public,anon,authenticated;
