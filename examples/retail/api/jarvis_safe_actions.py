@@ -1,6 +1,6 @@
 """Narrow safe-action bridge for the private DUFYND Jarvis voice interface.
 
-Only the existing certified Thin V1 free orchestrator can be invoked. The backend
+Only the certified CEO safe cycle may plan and execute one bounded, free worker. The backend
 cannot publish, spend, merge main, send outbound messages, or bypass owner gates.
 """
 
@@ -24,7 +24,7 @@ class JarvisSafeActionConflict(RuntimeError):
 
 
 class JarvisSafeActionRunner:
-    """Invoke only the certified zero-spend Thin V1 orchestration RPC."""
+    """Invoke the deterministic CEO planner and one certified zero-spend worker."""
 
     def __init__(self, *, secret_key: str, transport: httpx.BaseTransport | None = None) -> None:
         if not secret_key:
@@ -67,7 +67,15 @@ class JarvisSafeActionRunner:
         gates = payload.get("pending_owner_gates")
         result = {
             "ok": True,
-            "source": "dufynd_thin_v1_certified_free_orchestrator",
+            "source": "dufynd_ceo_certified_free_orchestrator",
+            "state": payload.get("state"),
+            "plan_state": payload.get("plan_state"),
+            "next_evidence": payload.get("next_evidence"),
+            "task_id": payload.get("task_id"),
+            "handler": payload.get("handler"),
+            "worker_status": payload.get("worker_status"),
+            "ready_certified_free_tasks": payload.get("ready_certified_free_tasks"),
+            "waiting_external_total": payload.get("waiting_external_total"),
             "stop_reason": payload.get("stop_reason"),
             "paid_calls": payload.get("paid_calls"),
             "new_spend_usd": payload.get("new_spend_usd"),
@@ -99,11 +107,11 @@ class JarvisSafeActionRunner:
         try:
             with httpx.Client(
                 transport=self._transport,
-                timeout=10,
+                timeout=18,
                 follow_redirects=False,
             ) as client:
                 response = client.post(
-                    PROJECT_ORIGIN + "/rest/v1/rpc/run_dufynd_thin_v1",
+                    PROJECT_ORIGIN + "/rest/v1/rpc/run_dufynd_ceo_safe_cycle_v1",
                     headers=self._headers(),
                     json={},
                 )

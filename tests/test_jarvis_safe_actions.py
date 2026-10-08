@@ -9,7 +9,7 @@ from retail.api.jarvis_safe_actions import (
 )
 
 
-def test_safe_action_runner_calls_only_certified_thin_v1_and_sanitizes_gate_tokens():
+def test_safe_action_runner_calls_certified_ceo_cycle_and_sanitizes_gate_tokens():
     seen = {}
 
     def transport(request):
@@ -20,6 +20,10 @@ def test_safe_action_runner_calls_only_certified_thin_v1_and_sanitizes_gate_toke
             200,
             json={
                 "stop_reason": "owner_gate",
+                "state": "no_certified_work",
+                "plan_state": "owner_gate",
+                "waiting_external_total": 14,
+                "next_evidence": "qualified_session",
                 "paid_calls": 0,
                 "new_spend_usd": 0,
                 "owner_gate_action_executed": False,
@@ -46,10 +50,15 @@ def test_safe_action_runner_calls_only_certified_thin_v1_and_sanitizes_gate_toke
 
     assert seen == {
         "method": "POST",
-        "path": "/rest/v1/rpc/run_dufynd_thin_v1",
+        "path": "/rest/v1/rpc/run_dufynd_ceo_safe_cycle_v1",
         "body": "{}",
     }
     assert result["stop_reason"] == "owner_gate"
+    assert result["state"] == "no_certified_work"
+    assert result["plan_state"] == "owner_gate"
+    assert result["source"] == "dufynd_ceo_certified_free_orchestrator"
+    assert result["waiting_external_total"] == 14
+    assert result["next_evidence"] == "qualified_session"
     assert result["paid_calls"] == 0
     assert result["new_spend_usd"] == 0
     assert result["pending_owner_gates"] == [
