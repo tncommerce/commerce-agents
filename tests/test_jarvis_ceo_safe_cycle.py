@@ -1,8 +1,6 @@
 from pathlib import Path
 
-SQL = Path(
-    "supabase/migrations/20261008101500_jarvis_ceo_safe_cycle_v1.sql"
-).read_text()
+SQL = Path("supabase/migrations/20261008101500_jarvis_ceo_safe_cycle_v1.sql").read_text()
 
 
 def test_ceo_cycle_plans_and_routes_existing_certified_zero_spend_work():
