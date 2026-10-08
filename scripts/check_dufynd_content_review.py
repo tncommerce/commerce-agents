@@ -48,7 +48,9 @@ def _digest(value: object) -> bool:
     )
 
 
-def _audio_publish_reasons(package: dict, publish: dict, *, platform: str, media_kind: str) -> list[str]:
+def _audio_publish_reasons(
+    package: dict, publish: dict, *, platform: str, media_kind: str
+) -> list[str]:
     """Fail closed on silent social memes and unsupported automatic music flows.
 
     This validates submitted review evidence, not the audio file itself. A separate
@@ -86,11 +88,7 @@ def _audio_publish_reasons(package: dict, publish: dict, *, platform: str, media
     if audio.get("audible_preview_verified") is not True:
         reasons.append("audio_playback_not_verified")
     score = audio.get("audio_score")
-    if (
-        not isinstance(score, (int, float))
-        or isinstance(score, bool)
-        or not 9.5 <= score <= 10
-    ):
+    if not isinstance(score, (int, float)) or isinstance(score, bool) or not 9.5 <= score <= 10:
         reasons.append("audio_quality_below_owner_standard")
     if audio.get("commercial_music_rights_verified") is not True:
         reasons.append("audio_commercial_rights_not_verified")
@@ -100,7 +98,8 @@ def _audio_publish_reasons(package: dict, publish: dict, *, platform: str, media
             # Third-party Instagram image/carousel auto-posting carries no
             # selectable music track; a native Instagram handoff is mandatory.
             if mode != "instagram_native_music" or delivery not in {
-                "instagram_native_app", "metricool_notification"
+                "instagram_native_app",
+                "metricool_notification",
             }:
                 reasons.append("instagram_photo_audio_requires_native_handoff")
             if audio.get("native_track_selected_and_preheard") is not True:
@@ -139,16 +138,15 @@ def _audio_publish_reasons(package: dict, publish: dict, *, platform: str, media
         # TikTok autoAddMusic picks an unpredictable track; it is not a
         # quality-assured replacement for selecting and auditioning a sound.
         if mode != "tiktok_native_music" or delivery not in {
-            "tiktok_native_app", "metricool_notification"
+            "tiktok_native_app",
+            "metricool_notification",
         }:
             reasons.append("tiktok_photo_requires_preheard_native_audio")
         if audio.get("native_track_selected_and_preheard") is not True:
             reasons.append("tiktok_native_audio_not_preheard")
     elif media_kind == "video":
         if mode == "embedded_video":
-            if not _digest(audio.get("final_video_sha256")) or audio[
-                "final_video_sha256"
-            ] not in {
+            if not _digest(audio.get("final_video_sha256")) or audio["final_video_sha256"] not in {
                 a.get("sha256") for a in package.get("assets", []) if isinstance(a, dict)
             }:
                 reasons.append("embedded_audio_video_digest_mismatch")

@@ -314,9 +314,9 @@ def test_editorial_silence_needs_explicit_owner_exception_and_reason():
     }
     doc["review"]["revision_hash"] = revision_hash(doc["package"])
     assert "intentional_silence_owner_exception_missing" in evaluate(doc)["reasons"]
-    doc["package"]["publish_contract"]["audio_contract"][
-        "owner_silence_exception_ref"
-    ] = "owner://educational-silence"
+    doc["package"]["publish_contract"]["audio_contract"]["owner_silence_exception_ref"] = (
+        "owner://educational-silence"
+    )
     doc["review"]["revision_hash"] = revision_hash(doc["package"])
     assert evaluate(doc)["stage"] == "READY_FOR_OWNER_APPROVAL"
 
