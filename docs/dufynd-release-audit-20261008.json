@@ -1,0 +1,678 @@
+{
+  "checked_at": "2026-10-08",
+  "source": "repository fields; no image rights or purchase destination inferred",
+  "catalog_rows": 123,
+  "public_fragrances": 35,
+  "staging_rows": 50,
+  "staging_without_image_url": 45,
+  "activation_performed": false,
+  "candidates": [
+    {
+      "product_id": "SC-BURBERRY-GODDESS-EDP-100",
+      "brand": "Burberry",
+      "name": "Goddess",
+      "already_public": false,
+      "image_url": null,
+      "image_status": "pending_approved_feed_or_manufacturer_image",
+      "purchase_destination_status": "pending_current_purchase_destination",
+      "merchant_coverage_count": 2,
+      "community_provisional": false,
+      "recommendation_customer_facing": false,
+      "stored_blockers": [
+        "approved_product_image_pending"
+      ],
+      "disposition": "owner_evidence_required_no_activation"
+    },
+    {
+      "product_id": "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100",
+      "brand": "Narciso Rodriguez",
+      "name": "for her PURE MUSC",
+      "already_public": false,
+      "image_url": null,
+      "image_status": "pending_approved_feed_or_manufacturer_image",
+      "purchase_destination_status": "pending_current_purchase_destination",
+      "merchant_coverage_count": 2,
+      "community_provisional": false,
+      "recommendation_customer_facing": false,
+      "stored_blockers": [
+        "verified_purchase_destination_pending",
+        "approved_product_image_pending"
+      ],
+      "disposition": "owner_evidence_required_no_activation"
+    },
+    {
+      "product_id": "SC-PRADA-PARADOXE-EDP-90",
+      "brand": "Prada",
+      "name": "Paradoxe",
+      "already_public": false,
+      "image_url": null,
+      "image_status": "pending_approved_feed_or_manufacturer_image",
+      "purchase_destination_status": "pending_current_purchase_destination",
+      "merchant_coverage_count": 2,
+      "community_provisional": false,
+      "recommendation_customer_facing": false,
+      "stored_blockers": [
+        "approved_product_image_pending"
+      ],
+      "disposition": "owner_evidence_required_no_activation"
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "brand": "Yves Saint Laurent",
+      "name": "Libre",
+      "already_public": false,
+      "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png",
+      "image_status": "approved_feed_image",
+      "purchase_destination_status": "pending_current_purchase_destination",
+      "merchant_coverage_count": 2,
+      "community_provisional": false,
+      "recommendation_customer_facing": false,
+      "stored_blockers": [
+        "approved_product_image_pending"
+      ],
+      "disposition": "owner_evidence_required_no_activation"
+    },
+    {
+      "product_id": "SC-CHLOE-CHLOE-EDP-100",
+      "brand": "Chloé",
+      "name": "Chloé",
+      "already_public": false,
+      "image_url": null,
+      "image_status": "pending_approved_feed_or_manufacturer_image",
+      "purchase_destination_status": "pending_current_purchase_destination",
+      "merchant_coverage_count": 2,
+      "community_provisional": false,
+      "recommendation_customer_facing": false,
+      "stored_blockers": [
+        "verified_purchase_destination_pending",
+        "approved_product_image_pending"
+      ],
+      "disposition": "owner_evidence_required_no_activation"
+    },
+    {
+      "product_id": "SC-KAYALI-YUM-BOUJEE-MARSHMALLOW-81-EDPI-100",
+      "brand": "Kayali",
+      "name": "Yum Boujee Marshmallow | 81",
+      "already_public": false,
+      "image_url": null,
+      "image_status": "pending_approved_feed_or_manufacturer_image",
+      "purchase_destination_status": "pending_current_purchase_destination",
+      "merchant_coverage_count": 2,
+      "community_provisional": false,
+      "recommendation_customer_facing": false,
+      "stored_blockers": [
+        "verified_purchase_destination_pending",
+        "approved_product_image_pending"
+      ],
+      "disposition": "owner_evidence_required_no_activation"
+    },
+    {
+      "product_id": "SC-LATTAFA-ANGHAM-EDP-100",
+      "brand": "Lattafa",
+      "name": "Angham",
+      "already_public": false,
+      "image_url": null,
+      "image_status": "pending_approved_feed_or_manufacturer_image",
+      "purchase_destination_status": "pending_current_purchase_destination",
+      "merchant_coverage_count": 3,
+      "community_provisional": false,
+      "recommendation_customer_facing": false,
+      "stored_blockers": [
+        "verified_purchase_destination_pending",
+        "approved_product_image_pending"
+      ],
+      "disposition": "owner_evidence_required_no_activation"
+    },
+    {
+      "product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
+      "brand": "Lattafa",
+      "name": "Eclaire",
+      "already_public": false,
+      "image_url": null,
+      "image_status": "pending_approved_feed_or_manufacturer_image",
+      "purchase_destination_status": "pending_current_purchase_destination",
+      "merchant_coverage_count": 2,
+      "community_provisional": false,
+      "recommendation_customer_facing": false,
+      "stored_blockers": [
+        "approved_product_image_pending"
+      ],
+      "disposition": "owner_evidence_required_no_activation"
+    },
+    {
+      "product_id": "SC-PDM-VALAYA-EXCLUSIF-EDP-75",
+      "brand": "Parfums de Marly",
+      "name": "Valaya Exclusif",
+      "already_public": false,
+      "image_url": null,
+      "image_status": "pending_approved_feed_or_manufacturer_image",
+      "purchase_destination_status": "pending_current_purchase_destination",
+      "merchant_coverage_count": 2,
+      "community_provisional": false,
+      "recommendation_customer_facing": false,
+      "stored_blockers": [
+        "verified_purchase_destination_pending",
+        "approved_product_image_pending"
+      ],
+      "disposition": "owner_evidence_required_no_activation"
+    },
+    {
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "brand": "Yves Saint Laurent",
+      "name": "Black Opium",
+      "already_public": false,
+      "image_url": "https://www.topparfuemerie.de/media/catalog/product/7/8/787670_3365440787971_051.png",
+      "image_status": "approved_feed_image",
+      "purchase_destination_status": "pending_current_purchase_destination",
+      "merchant_coverage_count": 2,
+      "community_provisional": false,
+      "recommendation_customer_facing": false,
+      "stored_blockers": [
+        "verified_purchase_destination_pending",
+        "approved_product_image_pending"
+      ],
+      "disposition": "owner_evidence_required_no_activation"
+    }
+  ],
+  "manifests": [
+    {
+      "release_id": "SCENTAI-RELEASE-01",
+      "required_gates": [
+        "non_provisional_community_data",
+        "resolved_merchant_product_mapping",
+        "approved_product_image",
+        "current_purchase_destination",
+        "staging_recommendation_qa",
+        "not_already_live",
+        "all_selected_products_ready_no_partial_release"
+      ],
+      "products": [
+        {
+          "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+          "brand": "Lancôme",
+          "name": "La Vie est Belle",
+          "already_public": true,
+          "image_url": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+          "image_status": "approved_licensed_image",
+          "purchase_destination_status": "pending_current_purchase_destination",
+          "merchant_coverage_count": 3,
+          "community_provisional": false,
+          "recommendation_customer_facing": false,
+          "stored_blockers": [
+            "verified_purchase_destination_pending",
+            "approved_product_image_pending"
+          ],
+          "disposition": "already_public_do_not_reactivate"
+        },
+        {
+          "product_id": "SC-PDM-DELINA-EDP-75",
+          "brand": "Parfums de Marly",
+          "name": "Delina",
+          "already_public": true,
+          "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/2/825869_3700578501998_051.png",
+          "image_status": "approved_feed_image",
+          "purchase_destination_status": "pending_current_purchase_destination",
+          "merchant_coverage_count": 2,
+          "community_provisional": false,
+          "recommendation_customer_facing": false,
+          "stored_blockers": [
+            "approved_product_image_pending"
+          ],
+          "disposition": "already_public_do_not_reactivate"
+        },
+        {
+          "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+          "brand": "Dior",
+          "name": "Hypnotic Poison",
+          "already_public": false,
+          "image_url": null,
+          "image_status": "pending_approved_feed_or_manufacturer_image",
+          "purchase_destination_status": "pending_current_purchase_destination",
+          "merchant_coverage_count": 2,
+          "community_provisional": false,
+          "recommendation_customer_facing": false,
+          "stored_blockers": [
+            "verified_purchase_destination_pending",
+            "approved_product_image_pending"
+          ],
+          "disposition": "owner_evidence_required_no_activation"
+        },
+        {
+          "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+          "brand": "Yves Saint Laurent",
+          "name": "Black Opium",
+          "already_public": false,
+          "image_url": "https://www.topparfuemerie.de/media/catalog/product/7/8/787670_3365440787971_051.png",
+          "image_status": "approved_feed_image",
+          "purchase_destination_status": "pending_current_purchase_destination",
+          "merchant_coverage_count": 2,
+          "community_provisional": false,
+          "recommendation_customer_facing": false,
+          "stored_blockers": [
+            "verified_purchase_destination_pending",
+            "approved_product_image_pending"
+          ],
+          "disposition": "owner_evidence_required_no_activation"
+        },
+        {
+          "product_id": "SC-YSL-LIBRE-EDP-90",
+          "brand": "Yves Saint Laurent",
+          "name": "Libre",
+          "already_public": false,
+          "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png",
+          "image_status": "approved_feed_image",
+          "purchase_destination_status": "pending_current_purchase_destination",
+          "merchant_coverage_count": 2,
+          "community_provisional": false,
+          "recommendation_customer_facing": false,
+          "stored_blockers": [
+            "approved_product_image_pending"
+          ],
+          "disposition": "owner_evidence_required_no_activation"
+        }
+      ],
+      "release_allowed": false
+    },
+    {
+      "release_id": "SCENTAI-RELEASE-02",
+      "required_gates": [
+        "release_01_feed_and_image_workflow_validated",
+        "non_provisional_community_data",
+        "resolved_merchant_product_mapping",
+        "approved_product_image",
+        "current_purchase_destination",
+        "staging_recommendation_qa",
+        "not_already_live",
+        "all_selected_products_ready_no_partial_release"
+      ],
+      "products": [
+        {
+          "product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+          "brand": "Guerlain",
+          "name": "Mon Guerlain",
+          "already_public": false,
+          "image_url": null,
+          "image_status": "pending_approved_feed_or_manufacturer_image",
+          "purchase_destination_status": "pending_current_purchase_destination",
+          "merchant_coverage_count": 2,
+          "community_provisional": false,
+          "recommendation_customer_facing": false,
+          "stored_blockers": [
+            "approved_product_image_pending"
+          ],
+          "disposition": "owner_evidence_required_no_activation"
+        },
+        {
+          "product_id": "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100",
+          "brand": "Narciso Rodriguez",
+          "name": "for her PURE MUSC",
+          "already_public": false,
+          "image_url": null,
+          "image_status": "pending_approved_feed_or_manufacturer_image",
+          "purchase_destination_status": "pending_current_purchase_destination",
+          "merchant_coverage_count": 2,
+          "community_provisional": false,
+          "recommendation_customer_facing": false,
+          "stored_blockers": [
+            "verified_purchase_destination_pending",
+            "approved_product_image_pending"
+          ],
+          "disposition": "owner_evidence_required_no_activation"
+        },
+        {
+          "product_id": "SC-CHLOE-CHLOE-EDP-100",
+          "brand": "Chloé",
+          "name": "Chloé",
+          "already_public": false,
+          "image_url": null,
+          "image_status": "pending_approved_feed_or_manufacturer_image",
+          "purchase_destination_status": "pending_current_purchase_destination",
+          "merchant_coverage_count": 2,
+          "community_provisional": false,
+          "recommendation_customer_facing": false,
+          "stored_blockers": [
+            "verified_purchase_destination_pending",
+            "approved_product_image_pending"
+          ],
+          "disposition": "owner_evidence_required_no_activation"
+        },
+        {
+          "product_id": "SC-BURBERRY-GODDESS-EDP-100",
+          "brand": "Burberry",
+          "name": "Goddess",
+          "already_public": false,
+          "image_url": null,
+          "image_status": "pending_approved_feed_or_manufacturer_image",
+          "purchase_destination_status": "pending_current_purchase_destination",
+          "merchant_coverage_count": 2,
+          "community_provisional": false,
+          "recommendation_customer_facing": false,
+          "stored_blockers": [
+            "approved_product_image_pending"
+          ],
+          "disposition": "owner_evidence_required_no_activation"
+        },
+        {
+          "product_id": "SC-PRADA-PARADOXE-EDP-90",
+          "brand": "Prada",
+          "name": "Paradoxe",
+          "already_public": false,
+          "image_url": null,
+          "image_status": "pending_approved_feed_or_manufacturer_image",
+          "purchase_destination_status": "pending_current_purchase_destination",
+          "merchant_coverage_count": 2,
+          "community_provisional": false,
+          "recommendation_customer_facing": false,
+          "stored_blockers": [
+            "approved_product_image_pending"
+          ],
+          "disposition": "owner_evidence_required_no_activation"
+        }
+      ],
+      "release_allowed": false
+    },
+    {
+      "release_id": "SCENTAI-RELEASE-03",
+      "required_gates": [
+        "release_01_and_02_operational_validation",
+        "non_provisional_community_data",
+        "resolved_merchant_product_mapping",
+        "approved_product_image",
+        "current_purchase_destination",
+        "staging_recommendation_qa",
+        "not_already_live",
+        "all_selected_products_ready_no_partial_release"
+      ],
+      "products": [
+        {
+          "product_id": "SC-PDM-VALAYA-EXCLUSIF-EDP-75",
+          "brand": "Parfums de Marly",
+          "name": "Valaya Exclusif",
+          "already_public": false,
+          "image_url": null,
+          "image_status": "pending_approved_feed_or_manufacturer_image",
+          "purchase_destination_status": "pending_current_purchase_destination",
+          "merchant_coverage_count": 2,
+          "community_provisional": false,
+          "recommendation_customer_facing": false,
+          "stored_blockers": [
+            "verified_purchase_destination_pending",
+            "approved_product_image_pending"
+          ],
+          "disposition": "owner_evidence_required_no_activation"
+        },
+        {
+          "product_id": "SC-AMOUAGE-GUIDANCE-46-EXTRAIT-100",
+          "brand": "Amouage",
+          "name": "Guidance 46",
+          "already_public": false,
+          "image_url": null,
+          "image_status": "pending_approved_feed_or_manufacturer_image",
+          "purchase_destination_status": "pending_current_purchase_destination",
+          "merchant_coverage_count": 2,
+          "community_provisional": false,
+          "recommendation_customer_facing": false,
+          "stored_blockers": [
+            "verified_purchase_destination_pending",
+            "approved_product_image_pending"
+          ],
+          "disposition": "owner_evidence_required_no_activation"
+        },
+        {
+          "product_id": "SC-TOM-FORD-OMBRE-LEATHER-EDP-100",
+          "brand": "Tom Ford",
+          "name": "Ombré Leather",
+          "already_public": false,
+          "image_url": null,
+          "image_status": "pending_approved_feed_or_manufacturer_image",
+          "purchase_destination_status": "pending_current_purchase_destination",
+          "merchant_coverage_count": 3,
+          "community_provisional": false,
+          "recommendation_customer_facing": false,
+          "stored_blockers": [
+            "verified_purchase_destination_pending",
+            "approved_product_image_pending"
+          ],
+          "disposition": "owner_evidence_required_no_activation"
+        },
+        {
+          "product_id": "SC-PDM-HEROD-EDP-125",
+          "brand": "Parfums de Marly",
+          "name": "Herod",
+          "already_public": false,
+          "image_url": null,
+          "image_status": "pending_approved_feed_or_manufacturer_image",
+          "purchase_destination_status": "pending_current_purchase_destination",
+          "merchant_coverage_count": 2,
+          "community_provisional": false,
+          "recommendation_customer_facing": false,
+          "stored_blockers": [
+            "verified_purchase_destination_pending",
+            "approved_product_image_pending"
+          ],
+          "disposition": "owner_evidence_required_no_activation"
+        },
+        {
+          "product_id": "SC-NISHANE-ANI-EXTRAIT-100",
+          "brand": "Nishane",
+          "name": "Ani",
+          "already_public": false,
+          "image_url": null,
+          "image_status": "pending_approved_feed_or_manufacturer_image",
+          "purchase_destination_status": "pending_current_purchase_destination",
+          "merchant_coverage_count": 2,
+          "community_provisional": false,
+          "recommendation_customer_facing": false,
+          "stored_blockers": [
+            "verified_purchase_destination_pending",
+            "approved_product_image_pending"
+          ],
+          "disposition": "owner_evidence_required_no_activation"
+        }
+      ],
+      "release_allowed": false
+    },
+    {
+      "release_id": "SCENTAI-RELEASE-04",
+      "required_gates": [
+        "release_01_through_03_operational_validation",
+        "non_provisional_community_data",
+        "resolved_merchant_product_mapping",
+        "approved_product_image",
+        "current_purchase_destination",
+        "staging_recommendation_qa",
+        "not_already_live",
+        "all_selected_products_ready_no_partial_release"
+      ],
+      "products": [
+        {
+          "product_id": "SC-JPG-LE-MALE-LE-PARFUM-125",
+          "brand": "Jean Paul Gaultier",
+          "name": "Le Male Le Parfum",
+          "already_public": false,
+          "image_url": null,
+          "image_status": "pending_approved_feed_or_manufacturer_image",
+          "purchase_destination_status": "pending_current_purchase_destination",
+          "merchant_coverage_count": 3,
+          "community_provisional": false,
+          "recommendation_customer_facing": false,
+          "stored_blockers": [
+            "verified_purchase_destination_pending",
+            "approved_product_image_pending"
+          ],
+          "disposition": "owner_evidence_required_no_activation"
+        },
+        {
+          "product_id": "SC-VIKTOR-ROLF-SPICEBOMB-EXTREME-EDP-90",
+          "brand": "Viktor & Rolf",
+          "name": "Spicebomb Extreme",
+          "already_public": false,
+          "image_url": null,
+          "image_status": "pending_approved_feed_or_manufacturer_image",
+          "purchase_destination_status": "pending_current_purchase_destination",
+          "merchant_coverage_count": 3,
+          "community_provisional": false,
+          "recommendation_customer_facing": false,
+          "stored_blockers": [
+            "verified_purchase_destination_pending",
+            "approved_product_image_pending"
+          ],
+          "disposition": "owner_evidence_required_no_activation"
+        },
+        {
+          "product_id": "SC-HUGO-BOSS-BOTTLED-ABSOLU-100",
+          "brand": "Hugo Boss",
+          "name": "BOSS Bottled Absolu",
+          "already_public": false,
+          "image_url": null,
+          "image_status": "pending_approved_feed_or_manufacturer_image",
+          "purchase_destination_status": "pending_current_purchase_destination",
+          "merchant_coverage_count": 3,
+          "community_provisional": false,
+          "recommendation_customer_facing": false,
+          "stored_blockers": [
+            "verified_purchase_destination_pending",
+            "approved_product_image_pending"
+          ],
+          "disposition": "owner_evidence_required_no_activation"
+        },
+        {
+          "product_id": "SC-YSL-MYSLF-LE-PARFUM-100",
+          "brand": "Yves Saint Laurent",
+          "name": "MYSLF Le Parfum",
+          "already_public": false,
+          "image_url": null,
+          "image_status": "pending_approved_feed_or_manufacturer_image",
+          "purchase_destination_status": "pending_current_purchase_destination",
+          "merchant_coverage_count": 2,
+          "community_provisional": false,
+          "recommendation_customer_facing": false,
+          "stored_blockers": [
+            "verified_purchase_destination_pending",
+            "approved_product_image_pending"
+          ],
+          "disposition": "owner_evidence_required_no_activation"
+        },
+        {
+          "product_id": "SC-DIOR-SAUVAGE-ELIXIR-100",
+          "brand": "Dior",
+          "name": "Sauvage Elixir",
+          "already_public": false,
+          "image_url": null,
+          "image_status": "pending_approved_feed_or_manufacturer_image",
+          "purchase_destination_status": "pending_current_purchase_destination",
+          "merchant_coverage_count": 2,
+          "community_provisional": false,
+          "recommendation_customer_facing": false,
+          "stored_blockers": [
+            "verified_purchase_destination_pending",
+            "approved_product_image_pending"
+          ],
+          "disposition": "owner_evidence_required_no_activation"
+        }
+      ],
+      "release_allowed": false
+    },
+    {
+      "release_id": "SCENTAI-RELEASE-05",
+      "required_gates": [
+        "release_01_through_04_operational_validation",
+        "non_provisional_community_data",
+        "resolved_merchant_product_mapping",
+        "approved_product_image",
+        "current_purchase_destination",
+        "staging_recommendation_qa",
+        "not_already_live",
+        "all_selected_products_ready_no_partial_release"
+      ],
+      "products": [
+        {
+          "product_id": "SC-HUGO-BOSS-BOTTLED-EDT-100",
+          "brand": "Hugo Boss",
+          "name": "BOSS Bottled",
+          "already_public": false,
+          "image_url": null,
+          "image_status": "pending_approved_feed_or_manufacturer_image",
+          "purchase_destination_status": "pending_current_purchase_destination",
+          "merchant_coverage_count": 2,
+          "community_provisional": false,
+          "recommendation_customer_facing": false,
+          "stored_blockers": [
+            "verified_purchase_destination_pending",
+            "approved_product_image_pending"
+          ],
+          "disposition": "owner_evidence_required_no_activation"
+        },
+        {
+          "product_id": "SC-PRADA-LHOMME-INTENSE-EDP-100",
+          "brand": "Prada",
+          "name": "L'Homme Intense",
+          "already_public": false,
+          "image_url": null,
+          "image_status": "pending_approved_feed_or_manufacturer_image",
+          "purchase_destination_status": "pending_current_purchase_destination",
+          "merchant_coverage_count": 2,
+          "community_provisional": false,
+          "recommendation_customer_facing": false,
+          "stored_blockers": [
+            "verified_purchase_destination_pending",
+            "approved_product_image_pending"
+          ],
+          "disposition": "owner_evidence_required_no_activation"
+        },
+        {
+          "product_id": "SC-AMOUAGE-REFLECTION-MAN-EDP-100",
+          "brand": "Amouage",
+          "name": "Reflection Man",
+          "already_public": false,
+          "image_url": null,
+          "image_status": "pending_approved_feed_or_manufacturer_image",
+          "purchase_destination_status": "pending_current_purchase_destination",
+          "merchant_coverage_count": 2,
+          "community_provisional": false,
+          "recommendation_customer_facing": false,
+          "stored_blockers": [
+            "verified_purchase_destination_pending",
+            "approved_product_image_pending"
+          ],
+          "disposition": "owner_evidence_required_no_activation"
+        },
+        {
+          "product_id": "SC-INITIO-SIDE-EFFECT-EDP-90",
+          "brand": "Initio Parfums Privés",
+          "name": "Side Effect",
+          "already_public": false,
+          "image_url": null,
+          "image_status": "pending_approved_feed_or_manufacturer_image",
+          "purchase_destination_status": "pending_current_purchase_destination",
+          "merchant_coverage_count": 2,
+          "community_provisional": false,
+          "recommendation_customer_facing": false,
+          "stored_blockers": [
+            "verified_purchase_destination_pending",
+            "approved_product_image_pending"
+          ],
+          "disposition": "owner_evidence_required_no_activation"
+        },
+        {
+          "product_id": "SC-YSL-LA-NUIT-DE-LHOMME-EDT-100",
+          "brand": "Yves Saint Laurent",
+          "name": "La Nuit de L'Homme",
+          "already_public": false,
+          "image_url": null,
+          "image_status": "pending_approved_feed_or_manufacturer_image",
+          "purchase_destination_status": "pending_current_purchase_destination",
+          "merchant_coverage_count": 2,
+          "community_provisional": false,
+          "recommendation_customer_facing": false,
+          "stored_blockers": [
+            "verified_purchase_destination_pending",
+            "approved_product_image_pending"
+          ],
+          "disposition": "owner_evidence_required_no_activation"
+        }
+      ],
+      "release_allowed": false
+    }
+  ]
+}

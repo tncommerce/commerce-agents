@@ -3,6 +3,7 @@ import path from "node:path";
 import process from "node:process";
 
 import { chromium } from "playwright";
+import { verifyCatalogRecovery } from "./catalog-recovery-qa.mjs";
 import { verifyFirstMoneyFunnel } from "./first-money-funnel-qa.mjs";
 import { verifyPublicShareLinks } from "./public-share-qa.mjs";
 import { verifyLibraryClearRecovery } from "./library-clear-qa.mjs";
@@ -262,6 +263,12 @@ const report = {
 };
 
 try {
+  try {
+    const cases = await verifyCatalogRecovery(browser, baseUrl);
+    report.checks.push({ label: "catalog-recovery", status: "passed", cases });
+  } catch (error) {
+    report.failures.push({ label: "catalog-recovery", message: String(error) });
+  }
   try {
     const cases = await verifyFirstMoneyFunnel(browser, baseUrl);
     report.checks.push({ label: "first-money-funnel-attribution", status: "passed", cases });
