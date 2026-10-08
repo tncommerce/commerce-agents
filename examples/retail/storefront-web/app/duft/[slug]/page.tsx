@@ -773,7 +773,10 @@ export default async function FragrancePage({
             >
               01
             </span>
-            <FragranceOffers productId={fragrance.product_id} />
+            <FragranceOffers
+              productId={fragrance.product_id}
+              alternativesHref={related.length ? "#alternativen" : undefined}
+            />
           </div>
 
         {productTruthIsVerified && productTruthVisual?.url ? (

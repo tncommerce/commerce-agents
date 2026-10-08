@@ -3,6 +3,7 @@ import path from "node:path";
 import process from "node:process";
 
 import { chromium } from "playwright";
+import { verifyOfferRecovery } from "./offer-recovery-qa.mjs";
 import { verifyFirstMoneyFunnel } from "./first-money-funnel-qa.mjs";
 import { verifyPublicShareLinks } from "./public-share-qa.mjs";
 import { verifyLibraryClearRecovery } from "./library-clear-qa.mjs";
@@ -429,6 +430,8 @@ try {
     report.failures.push({ label: "public-share-session-isolation-390", message });
   }
   try {
+    const recoveryCases = await verifyOfferRecovery(browser, baseUrl);
+    report.checks.push({ label: `offer-recovery-${recoveryCases}-cases`, status: "passed" });
     await verifyProductDetailRecovery(browser, baseUrl);
     await verifySingleResponsiveProductDetail(browser, baseUrl);
     await verifyClosedProductDetailFocus(browser, baseUrl);

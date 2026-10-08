@@ -1477,7 +1477,7 @@ body {
 
   .dufynd-fragrance-stage-shell {
     order: 1;
-    min-height: 304px;
+    min-height: clamp(220px, 62vw, 304px);
   }
 
   .dufynd-fragrance-identity {
