@@ -81,7 +81,13 @@ def test_staged_candidates_have_no_public_copy_or_catalog_activation() -> None:
         else:
             assert product["media"]["image_url"] is None
         assert product["validation"]["catalog_ready"] is False
-        assert "approved_product_image_pending" in product["validation"]["blockers"]
+        if item["product_id"] == "SC-YSL-LIBRE-EDP-90":
+            # The merchant-feed image was separately approved on 2026-10-01;
+            # approval of an internal generated candidate is still prohibited.
+            assert "approved_product_image_pending" not in product["validation"]["blockers"]
+            assert product["validation"]["blockers"] == ["verified_purchase_destination_pending"]
+        else:
+            assert "approved_product_image_pending" in product["validation"]["blockers"]
 
     libre = next(item for item in packet["items"] if item["product_id"] == "SC-YSL-LIBRE-EDP-90")
     assert libre["approval_basis"] == "explicit_user_visual_approval_2026-09-30"
