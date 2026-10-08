@@ -1,8 +1,8 @@
 """Bounded OpenAI Realtime WebRTC gateway for the private DUFYND owner interface.
 
 The browser never receives the standard OpenAI API key. Session creation is owner-only
-and rate-limited. Jarvis may use one read-only Control Room inspector for richer live
-answers, but it cannot execute DUFYND actions or satisfy Owner gates.
+and rate-limited. Jarvis may inspect the live Control Room and invoke one certified
+zero-spend business worker per safe-cycle call; Owner gates remain immutable.
 """
 
 from __future__ import annotations
@@ -58,11 +58,17 @@ VOICE_INSTRUCTIONS = (
     "Reach -> qualifizierter Traffic -> Produktaufrufe -> Händlerklicks -> Transaktionen "
     "-> Provision -> Lernen -> Skalieren -> Profit einzahlen. Diese Vorschläge sind deine "
     "Einordnung und müssen als Empfehlung erkennbar sein; vermische sie nicht mit Live-Fakten. "
-    "Wenn eine nützliche interne, reversible und kostenlose Arbeit bereits ausführbar "
-    "bereitsteht, darfst du advance_dufynd_safe_work proaktiv verwenden. Behaupte nie, "
-    "etwas ausgeführt zu haben, bevor das Tool Erfolg bestätigt. Wenn keine ausführbare "
-    "Arbeit existiert, sage das offen und schlage die fehlende Arbeit vor, statt künstliche "
-    "Aktivität vorzutäuschen. "
+    "Wenn Master sagt, du sollst arbeiten, Worker anstoßen oder interne Blocker beheben, "
+    "verwende nach der Live-Inspektion advance_dufynd_safe_work für eine begrenzte Runde "
+    "Planung, zertifizierten kostenlosen Worker-Dispatch und Ergebnisprüfung. "
+    "Das Werkzeug kann neue zulässige interne Arbeit planen, falls echte Arbeit fällig ist, "
+    "und höchstens einen zertifizierten Worker pro Aufruf ausführen. Es kann keine "
+    "externen Antworten herbeiführen, Bildrechte erteilen, Veröffentlichungen auslösen "
+    "oder eigenmächtig technische GitHub-Probleme beheben. Erkläre offene Abhängigkeiten "
+    "mit Zuständigkeit und überprüfbarem nächsten Schritt. Behaupte nie, "
+    "Arbeit sei erledigt, wenn state nicht completed lautet. Bei waiting_market_signal "
+    "fehlt ein reales Distributions-/Trafficsignal, kein künstlicher Healthcheck. "
+    "Wenn keine ausführbare Arbeit existiert, sage das offen, statt Aktivität vorzutäuschen. "
     "Antworte standardmäßig auf Deutsch, direkt, locker und souverän wie ein sehr guter "
     "Chief of Staff. Ein wenig trockener, intelligenter Humor ist willkommen, wenn er "
     "natürlich passt; höchstens eine kurze Bemerkung pro Antwort und niemals bei Geld-, "
@@ -178,12 +184,14 @@ class JarvisVoiceGateway:
                     "type": "function",
                     "name": "advance_dufynd_safe_work",
                     "description": (
-                        "Run one bounded pass of DUFYND's existing protected zero-spend worker. "
-                        "Use proactively when verified live evidence "
-                        "shows useful GREEN work is ready, or when the owner asks Jarvis to "
-                        "proceed. The backend itself blocks paid work, publishing, external "
-                        "outreach, main merges, credentials, destructive actions and every "
-                        "Owner gate. It accepts no arbitrary task instructions."
+                        "Run one bounded CEO planning and certified zero-spend worker cycle. "
+                        "If genuine safe internal work is due, the backend may plan and "
+                        "execute at most one pre-approved worker, then verify durable completion. "
+                        "Use when Master asks to restart workers, remove safe internal blockers "
+                        "or proceed. It cannot force external answers, override pending "
+                        "dependencies, publish, spend, contact others, merge main, change "
+                        "credentials or bypass an Owner gate. If no certified work is ready, "
+                        "it returns the reason instead of inventing work."
                     ),
                     "parameters": {
                         "type": "object",
