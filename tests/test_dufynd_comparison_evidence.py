@@ -12,7 +12,10 @@ PRODUCTS = Path("examples/retail/data/scentai_products.json")
 def test_free_comparison_renders_evidence_next_to_side_by_side_values():
     source = PICKER.read_text(encoding="utf-8")
     evidence = COMPONENT.read_text(encoding="utf-8")
-    assert 'import FragranceComparisonEvidence from "@/components/FragranceComparisonEvidence"' in source
+    assert (
+        'import FragranceComparisonEvidence from "@/components/FragranceComparisonEvidence"'
+        in source
+    )
     assert "<FragranceComparisonEvidence left={left} right={right} />" in source
     assert "Was verbindet diese beiden Düfte?" in evidence
     assert "Gemeinsame Duftakkorde" in evidence
@@ -53,4 +56,4 @@ def test_missing_notes_are_not_explained_as_a_verified_mismatch():
     evidence = COMPONENT.read_text(encoding="utf-8")
     assert "Keine übereinstimmende Note in den vorhandenen Notenlisten" in evidence
     assert "Die Notenlisten können unterschiedlich vollständig sein" in evidence
-    assert 'data-dufynd-comparison-evidence' in evidence
+    assert "data-dufynd-comparison-evidence" in evidence
