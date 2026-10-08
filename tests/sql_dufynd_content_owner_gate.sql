@@ -58,8 +58,8 @@ begin
  or has_function_privilege('authenticated','public.request_dufynd_content_owner_review(text)','execute') then raise exception 'public write endpoint'; end if;
  -- Simulate a pre-policy decision at the SAME fingerprint, entirely inside this rollback.
  update public.dufynd_content_assets set status='internally_ready',metadata=meta#-'{publish_contract_v2,audio_contract}' where id='qa_delina_gate_asset';
- insert into public.dufynd_human_decisions(decision_id,action_type,status,context)
- values('qa_old_audio_policy','content_candidate_review','pending',jsonb_build_object('candidate',
+ insert into public.dufynd_human_decisions(decision_id,action_type,title,question,decision_token,status,context)
+ values('qa_old_audio_policy','content_candidate_review','Disposable audio policy fixture','No publication','QA-OLD-AUDIO-POLICY','pending',jsonb_build_object('candidate',
  jsonb_build_object('asset_reference','qa_delina_gate_asset','revision_fingerprint',public.dufynd_content_revision('qa_delina_gate_asset'))));
  r:=public.request_dufynd_content_owner_review('qa_delina_gate_asset');
  if r->>'reason' is distinct from 'audio_contract_required' or (select status from public.dufynd_human_decisions where decision_id='qa_old_audio_policy') is distinct from 'superseded' then raise exception 'same-revision stale review retained'; end if;
