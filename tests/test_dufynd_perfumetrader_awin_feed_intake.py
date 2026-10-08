@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import UTC, datetime
+
 from scripts.check_dufynd_perfumetrader_awin_feed import (
     build_perfumetrader_intake_report,
 )
@@ -77,7 +79,7 @@ def exact_hypnotic_row() -> dict:
         "product_name": "Dior Hypnotic Poison Eau de Toilette 100 ml",
         "merchant_deep_link": "https://www.perfumetrader.de/product/33204791",
         "aw_deep_link": "https://www.awin1.com/cread.php?example=1",
-        "last_updated": "2026-09-22T07:00:00Z",
+        "last_updated": datetime.now(UTC).isoformat(),
         "merchant_image_url": "https://cdn.example.com/hypnotic-poison.jpg",
     }
 
