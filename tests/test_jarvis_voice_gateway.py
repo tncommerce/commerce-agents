@@ -61,7 +61,10 @@ def test_voice_gateway_session_is_read_only_tool_enabled_and_conversational():
     assert "advance_dufynd_safe_work" in config["instructions"]
     assert "trockener, intelligenter Humor" in config["instructions"]
     assert "neutrale hochdeutsche Sprechmelodie" in config["instructions"]
-    assert "ohne hörbaren englischen, amerikanischen oder britischen Akzent" in config["instructions"]
+    assert (
+        "ohne hörbaren englischen, amerikanischen oder britischen Akzent"
+        in config["instructions"]
+    )
     assert "Beende begonnene Sätze" in config["instructions"]
     assert "Tuan" not in config["instructions"]
 
