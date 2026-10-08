@@ -66,7 +66,7 @@ def test_voice_gateway_session_is_read_only_tool_enabled_and_conversational():
         "owner_publish_approval" not in config["instructions"]
         or "Postingfreigabe" in config["instructions"]
     )
-    assert "nicht als gesicherte externe Blockade" in config["instructions"]
+    assert "ist keine gesicherte externe Blockade" in config["instructions"]
     assert "prepared_distribution_asset_id" in config["instructions"]
     assert "trockener, intelligenter Humor" in config["instructions"]
     assert "neutrale hochdeutsche Sprechmelodie" in config["instructions"]
