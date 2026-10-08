@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from collections import defaultdict
+from datetime import UTC, datetime
 from typing import Any
-from urllib.parse import urlparse
 
 from .merchant_feed_assets import extract_feed_image_candidates
 from .merchant_feed_preflight import build_feed_preflight
@@ -11,22 +11,19 @@ from .merchant_import import (
     import_feed_rows,
     resolve_product_id,
 )
+from .merchant_offers import rank_offers
+from .merchant_partners import _valid_https_url
 from .merchant_provider_contract import validate_provider_contract_rows
-
-
-def _valid_http_url(value: object) -> bool:
-    if not isinstance(value, str) or not value.strip():
-        return False
-
-    parsed = urlparse(value.strip())
-    return parsed.scheme in {"http", "https"} and bool(parsed.netloc)
 
 
 def build_release_feed_readiness(
     release_product_ids: list[str],
     rows: list[dict],
     mappings: list[MerchantProductMapping],
+    *,
+    now: datetime | None = None,
 ) -> dict[str, Any]:
+    checked_at = now or datetime.now(UTC)
     release_ids = list(dict.fromkeys(release_product_ids))
     release_set = set(release_ids)
 
@@ -73,7 +70,9 @@ def build_release_feed_readiness(
     for product_id in release_ids:
         offers = offers_by_product.get(product_id, [])
         trackable = [
-            offer for offer in offers if offer.in_stock and _valid_http_url(offer.affiliate_url)
+            offer
+            for offer in rank_offers(offers, now=checked_at)
+            if _valid_https_url(offer.affiliate_url)
         ]
         image_candidates = images_by_product.get(product_id, [])
 
@@ -82,6 +81,7 @@ def build_release_feed_readiness(
                 "product_id": product_id,
                 "mapped_offer_count": len(offers),
                 "trackable_in_stock_offer_count": len(trackable),
+                "ineligible_offer_count": len(offers) - len(trackable),
                 "feed_image_candidate_count": len(image_candidates),
                 "mapped": bool(offers),
                 "trackable_offer_ready": bool(trackable),
@@ -111,6 +111,10 @@ def build_release_feed_readiness(
 
     return {
         "status": status,
+        "checked_at": checked_at.isoformat(),
+        "max_offer_age_hours": 72,
+        "tracking_verified": False,
+        "activation_allowed": False,
         "release_size": len(release_ids),
         "feed_row_count": len(rows),
         "feed_import_ready": preflight["ready_for_offer_import"],
@@ -130,7 +134,8 @@ def build_release_feed_readiness(
         "products": product_rows,
         "note": (
             "A ready result means the feed can cover the release with mapped "
-            "trackable offers and reviewable feed images. Product images still "
-            "require manual approval before live promotion."
+            "current eligible affiliate URL candidates and reviewable feed images. "
+            "This static check does not verify redirects, network attribution, "
+            "exact landing-page variants, image rights or owner release approval."
         ),
     }

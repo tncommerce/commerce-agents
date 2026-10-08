@@ -37,21 +37,33 @@ def resolve_product_id(
     gtin: str | None = None,
 ) -> str | None:
     merchant_key = merchant.strip().casefold()
-
+    candidates: set[str] = set()
     for mapping in mappings:
         if mapping.merchant.strip().casefold() != merchant_key:
             continue
+        identifiers = (
+            (mapping.merchant_product_id, merchant_product_id),
+            (mapping.ean, ean),
+            (mapping.gtin, gtin),
+        )
+        if not any(_same_identifier(known, supplied) for known, supplied in identifiers):
+            continue
+        # One matching identifier must never hide a contradictory exact variant.
+        # Missing fields remain eligible for the existing single-ID fallback.
+        if any(
+            known
+            and supplied
+            and known.strip()
+            and supplied.strip()
+            and not _same_identifier(known, supplied)
+            for known, supplied in identifiers
+        ):
+            return None
+        candidates.add(mapping.product_id)
 
-        if _same_identifier(mapping.merchant_product_id, merchant_product_id):
-            return mapping.product_id
-
-        if _same_identifier(mapping.ean, ean):
-            return mapping.product_id
-
-        if _same_identifier(mapping.gtin, gtin):
-            return mapping.product_id
-
-    return None
+    # Duplicate mappings for the same product are harmless; cross-product matches
+    # are ambiguous regardless of input ordering.
+    return next(iter(candidates)) if len(candidates) == 1 else None
 
 
 def validate_offer_payload(payload: dict) -> MerchantOffer:

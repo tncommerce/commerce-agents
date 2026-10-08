@@ -1,5 +1,7 @@
 import json
 
+import pytest
+
 from retail.api.merchant_import import (
     MerchantProductMapping,
     import_feed_rows,
@@ -11,6 +13,38 @@ from retail.api.merchant_import import (
 )
 
 PRODUCT_ID = "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100"
+
+
+@pytest.mark.parametrize(
+    "identifiers",
+    [
+        {"merchant_product_id": "SKU-90", "gtin": "GTIN-30"},
+        {"merchant_product_id": "SKU-30", "gtin": "GTIN-90"},
+        {"merchant_product_id": "SKU-90", "ean": "EAN-30"},
+        {"ean": "EAN-90", "gtin": "GTIN-30"},
+    ],
+)
+def test_conflicting_variant_identifiers_fail_closed(identifiers) -> None:
+    mapping = MerchantProductMapping(
+        product_id="SC-FIXTURE-EDP-90",
+        merchant="top-parfuemerie",
+        merchant_product_id="SKU-90",
+        ean="EAN-90",
+        gtin="GTIN-90",
+    )
+    assert resolve_product_id([mapping], merchant="top-parfuemerie", **identifiers) is None
+
+
+def test_ambiguous_mapping_never_depends_on_row_order() -> None:
+    mappings = [
+        MerchantProductMapping(product_id=product, merchant="shop", merchant_product_id="SKU")
+        for product in ("SC-FIXTURE-30", "SC-FIXTURE-90")
+    ]
+    for ordered in (mappings, mappings[::-1]):
+        assert resolve_product_id(ordered, merchant="shop", merchant_product_id="SKU") is None
+    assert resolve_product_id(mappings[:1] * 2, merchant="shop", merchant_product_id="SKU") == (
+        "SC-FIXTURE-30"
+    )
 
 
 def test_load_product_mappings_accepts_utf8_bom(tmp_path) -> None:

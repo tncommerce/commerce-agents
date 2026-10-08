@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import sys
+from datetime import UTC, datetime
 
 from scripts.check_scentai_release_feed import main
 
@@ -58,7 +59,7 @@ def test_release_feed_command_reports_complete_fixture_ready(
                         "in_stock": True,
                         "product_url": (f"https://shop.example/product/{index}"),
                         "affiliate_url": (f"https://network.example/click/{index}"),
-                        "last_updated_at": ("2026-09-19T08:00:00Z"),
+                        "last_updated_at": (datetime.now(UTC).isoformat()),
                         "data_source": "fixture-feed",
                         "network": "Awin",
                         "image_url": (f"https://cdn.example/product-{index}.jpg"),
