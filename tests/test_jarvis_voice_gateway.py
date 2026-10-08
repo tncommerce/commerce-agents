@@ -61,6 +61,13 @@ def test_voice_gateway_session_is_read_only_tool_enabled_and_conversational():
     assert "Übersetze interne Implementierungsbegriffe" in config["instructions"]
     assert "zwei bis vier konkrete, priorisierte Lösungsvorschläge" in config["instructions"]
     assert "advance_dufynd_safe_work" in config["instructions"]
+    assert "BEVOR du Gründe aufzählst" in config["instructions"]
+    assert (
+        "owner_publish_approval" not in config["instructions"]
+        or "Postingfreigabe" in config["instructions"]
+    )
+    assert "ist keine gesicherte externe Blockade" in config["instructions"]
+    assert "prepared_distribution_asset_id" in config["instructions"]
     assert "trockener, intelligenter Humor" in config["instructions"]
     assert "neutrale hochdeutsche Sprechmelodie" in config["instructions"]
     assert "englischen" in config["instructions"]
