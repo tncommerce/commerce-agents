@@ -304,14 +304,6 @@ function matchesSearch(
   return searchScore(fragrance, search) >= 0;
 }
 
-function relaxedSearchQuery(search: string): string | null {
-  const tokens = search.trim().split(/\s+/).filter(Boolean);
-
-  if (tokens.length <= 1) return null;
-
-  return tokens.slice(0, -1).join(" ");
-}
-
 function matchesProfile(
   fragrance: StaticFragrance,
   profile: ProfileFilter,
@@ -733,7 +725,23 @@ export default function FragranceCatalogBrowser({
   );
   const remainingCount =
     filtered.length - visibleFragrances.length;
-  const relaxedSearch = relaxedSearchQuery(search);
+  // Recovery counts use the same public catalog and matching rules as results.
+  // Offers and staging records never determine discovery visibility.
+  const searchMatches = fragrances.filter((item) => matchesSearch(item, search));
+  const recoveryQueries = Array.from(new Set(
+    search.trim().split(/\s+/).map((_, index, words) =>
+      words.filter((__, wordIndex) => wordIndex !== index).join(" "),
+    ).filter(Boolean),
+  )).map((query) => ({
+    query,
+    count: fragrances.filter((item) =>
+      matchesSearch(item, query) &&
+      (audience === "all" || fragranceMatchesAudience(item, audience)) &&
+      (brand === "all" || item.brand === brand) &&
+      matchesProfile(item, profile) &&
+      (!Number(minimumRating) || (item.community.rating_10 ?? 0) >= Number(minimumRating)),
+    ).length,
+  })).filter((item) => item.count > 0).sort((a, b) => b.count - a.count).slice(0, 3);
   const nonSearchFilterCount =
     Number(audience !== "all") +
     Number(profile !== "all") +
@@ -1541,15 +1549,30 @@ export default function FragranceCatalogBrowser({
           </p>
 
           <div className="mx-auto mt-5 flex max-w-xl flex-wrap justify-center gap-2">
-            {relaxedSearch ? (
+            {search.trim() && nonSearchFilterCount > 0 && searchMatches.length > 0 ? (
               <button
                 type="button"
-                onClick={() => setSearch(relaxedSearch)}
+                onClick={() => {
+                  setAudience("all");
+                  setProfile("all");
+                  setBrand("all");
+                  setMinimumRating("0");
+                }}
                 className="rounded-xl bg-(--ink) px-4 py-2 text-[12px] font-semibold text-(--surface)"
               >
-                Suche lockern: „{relaxedSearch}“
+                Filter lösen · {searchMatches.length} Treffer für „{search.trim()}“
               </button>
             ) : null}
+            {recoveryQueries.map(({ query, count }) => (
+              <button
+                key={query}
+                type="button"
+                onClick={() => setSearch(query)}
+                className="max-w-full break-words rounded-xl border border-(--line) bg-(--surface) px-4 py-2 text-[12px] font-semibold text-(--ink)"
+              >
+                Suche lockern: „{query}“ · {count} Treffer
+              </button>
+            ))}
 
             {search.trim() ? (
               <button
@@ -1572,6 +1595,25 @@ export default function FragranceCatalogBrowser({
             ) : null}
           </div>
 
+          {search.trim() && searchMatches.length > 0 ? (
+            <div className="mt-6 border-t border-(--line) pt-5 text-left">
+              <h3 className="text-[13px] font-semibold">Passend zur Suche · außerhalb deiner Filter</h3>
+              <p className="mt-1 text-[12px] text-(--ink-soft)">Diese Duftprofile sind bereits im Katalog. Ein Händlerangebot ist zum Entdecken nicht erforderlich.</p>
+              <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                {searchMatches.slice(0, 3).map((item) => (
+                  <AcquisitionInternalLink
+                    key={item.product_id}
+                    href={`/duft/${item.slug}`}
+                    className="min-w-0 rounded-xl border border-(--line) bg-(--surface) p-3"
+                  >
+                    <span className="block text-[10px] uppercase tracking-wider text-(--ink-soft)">{item.brand}</span>
+                    <span className="mt-1 block break-words text-[14px] font-semibold">{item.name} →</span>
+                    <span className="mt-2 block text-[11px] text-(--ink-soft)">{item.accords.slice(0, 3).map(accordLabel).join(" · ")}</span>
+                  </AcquisitionInternalLink>
+                ))}
+              </div>
+            </div>
+          ) : null}
           <div className="mt-5 border-t border-(--line) pt-5">
             <p className="text-[12px] text-(--ink-soft)">
               Du suchst nach mehreren Eigenschaften gleichzeitig?
