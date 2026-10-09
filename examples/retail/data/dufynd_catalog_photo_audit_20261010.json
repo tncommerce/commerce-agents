@@ -15,7 +15,9 @@
       "previous_sources": [
         "/products/pilot/louis-vuitton-imagination-editorial.webp"
       ],
-      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph.",
+      "live_source": "/products/pilot/louis-vuitton-imagination-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-ARABIYAT-MARWA-EDP-100",
@@ -28,7 +30,9 @@
       "previous_sources": [
         "/products/pilot/arabiyat-marwa-edp-editorial.webp"
       ],
-      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph.",
+      "live_source": "/products/pilot/arabiyat-marwa-edp-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-ARABIYAT-MARWA-EXTRAIT-60",
@@ -41,7 +45,9 @@
       "previous_sources": [
         "/products/pilot/arabiyat-prestige-marwa-extrait-editorial.webp"
       ],
-      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph.",
+      "live_source": "/products/pilot/arabiyat-prestige-marwa-extrait-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-BUJAIRAMI-HECTIC-100",
@@ -54,7 +60,9 @@
       "previous_sources": [
         "/products/pilot/bujairami-hectic-editorial.webp"
       ],
-      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph.",
+      "live_source": "/products/pilot/bujairami-hectic-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-CREED-AVENTUS-100",
@@ -67,7 +75,9 @@
       "previous_sources": [
         "/products/pilot/creed-aventus-editorial.webp"
       ],
-      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph.",
+      "live_source": "/products/pilot/creed-aventus-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-CREED-ABSOLU-AVENTUS-100",
@@ -80,7 +90,9 @@
       "previous_sources": [
         "/products/pilot/creed-absolu-aventus-editorial.webp"
       ],
-      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph.",
+      "live_source": "/products/pilot/creed-absolu-aventus-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-AFNAN-SUPREMACY-COLLECTORS-100",
@@ -93,7 +105,9 @@
       "previous_sources": [
         "/products/pilot/afnan-supremacy-collectors-edition-editorial.webp"
       ],
-      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph.",
+      "live_source": "/products/pilot/afnan-supremacy-collectors-edition-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-MAISON-ASRAR-VANGUARD-100",
@@ -106,7 +120,9 @@
       "previous_sources": [
         "/products/pilot/maison-asrar-vanguard-editorial.webp"
       ],
-      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph.",
+      "live_source": "/products/pilot/maison-asrar-vanguard-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-ARMAF-CDNIM-EDP-200",
@@ -119,7 +135,9 @@
       "previous_sources": [
         "/products/pilot/armaf-club-de-nuit-intense-man-editorial.webp"
       ],
-      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph.",
+      "live_source": "/products/pilot/armaf-club-de-nuit-intense-man-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-MONTBLANC-EXPLORER-100",
@@ -132,7 +150,9 @@
       "previous_sources": [
         "/products/pilot/montblanc-explorer-editorial.webp"
       ],
-      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph.",
+      "live_source": "/products/pilot/montblanc-explorer-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-PDM-LAYTON-125",
@@ -145,7 +165,9 @@
       "previous_sources": [
         "/products/pilot/pdm-layton-editorial.webp"
       ],
-      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph.",
+      "live_source": "/products/pilot/pdm-layton-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-AL-HARAMAIN-DETOUR-NOIR-100",
@@ -158,7 +180,9 @@
       "previous_sources": [
         "/products/pilot/al-haramain-detour-noir-editorial.webp"
       ],
-      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph.",
+      "live_source": "/products/pilot/al-haramain-detour-noir-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-ORIENTICA-ROYAL-BLEU-80",
@@ -171,7 +195,9 @@
       "previous_sources": [
         "/products/pilot/orientica-royal-bleu-editorial.webp"
       ],
-      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph.",
+      "live_source": "/products/pilot/orientica-royal-bleu-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-PDM-ALTHAIR-125",
@@ -184,7 +210,9 @@
       "previous_sources": [
         "/products/pilot/pdm-althair-editorial.webp"
       ],
-      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph.",
+      "live_source": "/products/pilot/pdm-althair-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-FRENCH-AVENUE-LIQUID-BRUN-100",
@@ -197,7 +225,9 @@
       "previous_sources": [
         "/products/pilot/liquid-brun-editorial.webp"
       ],
-      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph.",
+      "live_source": "/products/pilot/liquid-brun-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-BVLGARI-TYGAR-125",
@@ -210,7 +240,9 @@
       "previous_sources": [
         "/products/pilot/bvlgari-tygar-editorial.webp"
       ],
-      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph.",
+      "live_source": "/products/pilot/bvlgari-tygar-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-SOSPIRO-VIBRATO-100",
@@ -224,7 +256,9 @@
         "/products/sospiro-vibrato-100-cutout-production.webp",
         "/products/pilot/sospiro-vibrato-editorial.webp"
       ],
-      "blocker": "Only generated cutout/editorial artwork documented; no approved exact-variant original photograph."
+      "blocker": "Only generated cutout/editorial artwork documented; no approved exact-variant original photograph.",
+      "live_source": "/products/pilot/sospiro-vibrato-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-AFNAN-TURATHI-BLUE-90",
@@ -237,7 +271,9 @@
       "previous_sources": [
         "/products/pilot/afnan-turathi-blue-editorial.webp"
       ],
-      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph.",
+      "live_source": "/products/pilot/afnan-turathi-blue-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-MAISON-ASRAR-REGENT-100",
@@ -250,7 +286,9 @@
       "previous_sources": [
         "/products/pilot/maison-asrar-regent-editorial.webp"
       ],
-      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph.",
+      "live_source": "/products/pilot/maison-asrar-regent-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-ARMANI-SWY-INTENSELY-100",
@@ -264,7 +302,9 @@
         "/products/armani-swy-intensely-100-cutout-production.webp",
         "/products/pilot/armani-swy-intensely-editorial.webp"
       ],
-      "blocker": "Only generated cutout/editorial artwork documented; no approved exact-variant original photograph."
+      "blocker": "Only generated cutout/editorial artwork documented; no approved exact-variant original photograph.",
+      "live_source": "/products/pilot/armani-swy-intensely-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-XERJOFF-NAXOS-100",
@@ -278,7 +318,9 @@
         "/products/naxos-cutout-production.webp",
         "/products/naxos-bottle-free-backdrop.webp"
       ],
-      "blocker": "Only generated cutout/editorial artwork documented; no approved exact-variant original photograph."
+      "blocker": "Only generated cutout/editorial artwork documented; no approved exact-variant original photograph.",
+      "live_source": "/products/naxos-cutout-production.webp",
+      "live_render_kind": "cutout"
     },
     {
       "product_id": "SC-NUSUK-ATEEQ-100",
@@ -291,7 +333,9 @@
       "previous_sources": [
         "/products/pilot/nusuk-ateeq-editorial.webp"
       ],
-      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph.",
+      "live_source": "/products/pilot/nusuk-ateeq-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-RAYHAAN-ITALIA-100",
@@ -304,7 +348,9 @@
       "previous_sources": [
         "/products/pilot/rayhaan-italia-editorial.webp"
       ],
-      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph.",
+      "live_source": "/products/pilot/rayhaan-italia-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-DIOR-HOMME-INTENSE-100",
@@ -317,7 +363,9 @@
       "previous_sources": [
         "/products/pilot/dior-homme-intense-editorial.webp"
       ],
-      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph.",
+      "live_source": "/products/pilot/dior-homme-intense-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-AL-WATANIAH-KAYAAN-CLASSIC-100",
@@ -330,7 +378,9 @@
       "previous_sources": [
         "/products/pilot/kayaan-classic-editorial.webp"
       ],
-      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph.",
+      "live_source": "/products/pilot/kayaan-classic-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
@@ -343,7 +393,9 @@
       "previous_sources": [
         "/products/pilot/valentino-born-in-roma-intense-editorial.webp"
       ],
-      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph.",
+      "live_source": "/products/pilot/valentino-born-in-roma-intense-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-CLIVE-CHRISTIAN-HEDONISTIC-50",
@@ -356,7 +408,9 @@
       "previous_sources": [
         "/products/pilot/clive-christian-hedonistic-editorial.webp"
       ],
-      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph.",
+      "live_source": "/products/pilot/clive-christian-hedonistic-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-CHANEL-BLEU-DE-CHANEL-EDP-100",
@@ -369,7 +423,9 @@
       "previous_sources": [
         "/products/pilot/bleu-de-chanel-edp-editorial.webp"
       ],
-      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph.",
+      "live_source": "/products/pilot/bleu-de-chanel-edp-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-DIOR-SAUVAGE-EDP-100",
@@ -382,7 +438,9 @@
       "previous_sources": [
         "/products/pilot/dior-sauvage-edp-editorial.webp"
       ],
-      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph.",
+      "live_source": "/products/pilot/dior-sauvage-edp-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-PRADA-LHOMME-100",
@@ -396,7 +454,9 @@
         "/products/prada-lhomme-100-cutout-production.webp",
         "/products/pilot/prada-lhomme-editorial.webp"
       ],
-      "blocker": "Only generated cutout/editorial artwork documented; no approved exact-variant original photograph."
+      "blocker": "Only generated cutout/editorial artwork documented; no approved exact-variant original photograph.",
+      "live_source": "/products/pilot/prada-lhomme-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
@@ -409,7 +469,9 @@
       "previous_sources": [
         "/products/pilot/bois-imperial-editorial.webp"
       ],
-      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph.",
+      "live_source": "/products/pilot/bois-imperial-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-AL-AMBRA-DUBAI-MUSK-50",
@@ -422,7 +484,9 @@
       "previous_sources": [
         "/products/pilot/al-ambra-dubai-musk-editorial.webp"
       ],
-      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph.",
+      "live_source": "/products/pilot/al-ambra-dubai-musk-editorial.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
@@ -435,7 +499,9 @@
       "previous_sources": [
         "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp"
       ],
-      "blocker": null
+      "blocker": null,
+      "live_source": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+      "live_render_kind": "photograph"
     },
     {
       "product_id": "SC-RABANNE-1-MILLION-EDT-100",
@@ -448,7 +514,9 @@
       "previous_sources": [
         "/products/rabanne-1-million-edt-100-user-contentmaster.webp"
       ],
-      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph.",
+      "live_source": "/products/rabanne-1-million-edt-100-user-contentmaster.webp",
+      "live_render_kind": "editorial"
     },
     {
       "product_id": "SC-PDM-DELINA-EDP-75",
@@ -461,7 +529,9 @@
       "previous_sources": [
         "https://www.topparfuemerie.de/media/catalog/product/8/2/825869_3700578501998_051.png"
       ],
-      "blocker": null
+      "blocker": null,
+      "live_source": "https://www.topparfuemerie.de/media/catalog/product/8/2/825869_3700578501998_051.png",
+      "live_render_kind": "photograph"
     },
     {
       "product_id": "SC-YSL-LIBRE-EDP-90",
@@ -474,7 +544,9 @@
       "previous_sources": [
         "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png"
       ],
-      "blocker": null
+      "blocker": null,
+      "live_source": "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png",
+      "live_render_kind": "cutout"
     },
     {
       "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
@@ -487,7 +559,12 @@
       "previous_sources": [
         "https://www.topparfuemerie.de/media/catalog/product/7/8/787670_3365440787971_051.png"
       ],
-      "blocker": null
+      "blocker": null,
+      "live_source": "https://www.topparfuemerie.de/media/catalog/product/7/8/787670_3365440787971_051.png",
+      "live_render_kind": "cutout"
     }
-  ]
+  ],
+  "live_source_captured_at": "2026-10-09T22:41:46.277573+00:00",
+  "live_source_page": "https://dufynd.de/duft",
+  "status_scope": "Source eligibility and correct render; not overall 9.5/10 catalog acceptance."
 }
