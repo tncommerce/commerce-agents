@@ -6,6 +6,7 @@ import { readFile } from "node:fs/promises";
 export async function verifyHomeCatalogHydration(browser, baseUrl) {
   const catalog = JSON.parse(await readFile(new URL("../../data/catalog.json", import.meta.url), "utf8"));
   const source = JSON.parse(await readFile(new URL("../../data/scentai_products.json", import.meta.url), "utf8"));
+  const photos = JSON.parse(await readFile(new URL("../../data/dufynd_catalog_packshots.json", import.meta.url), "utf8"));
   const blocked = new Set(source.products.filter((row) =>
     row.validation?.blockers?.some((blocker) => String(blocker || "").trim())
   ).map((row) => row.product_id));
@@ -56,7 +57,22 @@ export async function verifyHomeCatalogHydration(browser, baseUrl) {
           const card = document.querySelector(`a[data-dufynd-home-audience-card][href*="zielgruppe=${audience}"]`);
           return card?.innerText.includes(text);
         }, { audience, text });
-        if (count) await card.locator("img").first().waitFor({ state: "attached" });
+        if (count) {
+          const visual = card.locator("[data-dufynd-product-id]").first();
+          await visual.waitFor({ state: "attached" });
+          const id = await visual.getAttribute("data-dufynd-product-id");
+          assert.ok(fragrances.some((row) => row.product_id === id), "audience visual must retain a visible product identity after hydration");
+          const photo = photos.entries.find((row) => row.product_id === id);
+          assert.equal(await visual.getAttribute("data-dufynd-photo-status"), photo ? "approved" : "hold");
+          if (photo) {
+            const image = visual.locator("img");
+            await image.waitFor({ state: "attached" });
+            assert.equal(await image.getAttribute("src"), photo.image_url, "hydration must retain the approved original photo");
+          } else {
+            assert.equal(await visual.locator("img").count(), 0, "HOLD must not inherit an editorial or generated bottle");
+            assert.match(await visual.innerText(), /Produktfoto nicht verfügbar/);
+          }
+        }
       }
       cases++;
     } finally {
