@@ -65,7 +65,7 @@ def test_clickout_waits_for_first_party_analytics_session() -> None:
 
     assert 'label: "merchant-clickout-session-correlation"' in source
     assert '"**/api/session"' in source
-    assert "qa-clickout-session-1234567890" in source
+    assert "qa-clickout_session-1234567890" in source
     assert "setTimeout(resolve, 1200)" in source
     assert 'clickoutUrl.searchParams.get("sid") !== expectedSessionId' in source
     assert "merchant clickout did not correlate acquisition and analytics session context" in source

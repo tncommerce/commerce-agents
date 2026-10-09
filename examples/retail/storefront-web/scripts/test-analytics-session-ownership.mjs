@@ -125,13 +125,15 @@ console.log("DUFYND analytics session ownership: late initialization, advisor ta
 
 // A full document navigation establishes a new transport session but retains
 // the tab's first-party funnel identity and acquisition fields.
-{
+for (const original of [
+  "11111111-1111-4111-8111-111111111111",
+  "qa_URLsafe-session_1234567890-abcd",
+]) {
   const storage = new Map();
   const window = {
     location: { origin: "https://dufynd.test" },
     sessionStorage: { getItem: (key) => storage.get(key) ?? null, setItem: (key, value) => storage.set(key, value) },
   };
-  const original = "11111111-1111-4111-8111-111111111111";
   const replacement = "22222222-2222-4222-8222-222222222222";
   const first = client(async () => original, undefined, window);
   first.rememberAcquisitionAttribution({ source: "instagram", campaignId: "fm_campaign", contentId: "fm_content" });

@@ -3,6 +3,9 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from pathlib import Path
 
+import pytest
+from pydantic import ValidationError
+
 from retail.api.analytics import (
     AnalyticsEventRequest,
     FirstPartyAnalyticsTracker,
@@ -146,14 +149,26 @@ def test_funnel_item_position_is_bounded() -> None:
         raise AssertionError("item_position above 100 must be rejected")
 
 
-def test_anonymous_analytics_session_id_is_accepted() -> None:
+@pytest.mark.parametrize(
+    "session_id",
+    ["7c2587c3-6c03-4bdf-ae87-154b93f3ad31", "qa_URLsafe-session_1234567890-abcd"],
+)
+def test_anonymous_analytics_session_id_is_accepted(session_id: str) -> None:
     request = AnalyticsEventRequest(
         event="advisor_recommendation_view",
         product_id="SC-TEST-100",
-        analytics_session_id="7c2587c3-6c03-4bdf-ae87-154b93f3ad31",
+        analytics_session_id=session_id,
     )
 
-    assert request.analytics_session_id == "7c2587c3-6c03-4bdf-ae87-154b93f3ad31"
+    assert request.analytics_session_id == session_id
+
+
+@pytest.mark.parametrize(
+    "invalid", ["qa/session-1234567890", "qa session-1234567890", "qa\n_session-1234567890"]
+)
+def test_anonymous_analytics_session_id_rejects_non_urlsafe_values(invalid: str) -> None:
+    with pytest.raises(ValidationError):
+        AnalyticsEventRequest(event="page_view", analytics_session_id=invalid)
 
 
 def test_anonymous_analytics_session_id_rejects_short_values() -> None:

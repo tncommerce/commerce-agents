@@ -8,6 +8,8 @@ let acquisitionAttributionMemory: AcquisitionAttribution | null = null;
 const ACQUISITION_STORAGE_KEY = "dufynd_acquisition_attribution_v1";
 const ANALYTICS_EVENT_TIMEOUT_MS = 8_000;
 const ANALYTICS_SESSION_STORAGE_KEY = "dufynd_analytics_session_v1";
+// Match the URL-safe alphabet used by the server's secrets.token_urlsafe(24).
+const ANALYTICS_SESSION_PATTERN = /^[A-Za-z0-9_-]{16,80}$/;
 let analyticsSessionMemory: string | null = null;
 
 // Keep the funnel identity across document navigation and API-session recovery.
@@ -17,7 +19,7 @@ function currentAnalyticsSessionId(): string | null {
   if (analyticsSessionMemory) return analyticsSessionMemory;
   try {
     const stored = window.sessionStorage.getItem(ANALYTICS_SESSION_STORAGE_KEY);
-    if (stored && /^[A-Za-z0-9-]{16,80}$/.test(stored)) {
+    if (stored && ANALYTICS_SESSION_PATTERN.test(stored)) {
       analyticsSessionMemory = stored;
       return stored;
     }
@@ -25,7 +27,7 @@ function currentAnalyticsSessionId(): string | null {
     // Blocked browser storage cannot block analytics or shopping.
   }
   const session = api.session;
-  if (!session || !/^[A-Za-z0-9-]{16,80}$/.test(session)) return null;
+  if (!session || !ANALYTICS_SESSION_PATTERN.test(session)) return null;
   analyticsSessionMemory = session;
   try {
     window.sessionStorage.setItem(ANALYTICS_SESSION_STORAGE_KEY, session);

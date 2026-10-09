@@ -2323,7 +2323,7 @@ try {
   });
   try {
     const clickoutSessionPage = await clickoutSessionContext.newPage();
-    const expectedSessionId = "qa-clickout-session-1234567890";
+    const expectedSessionId = "qa-clickout_session-1234567890";
 
     await clickoutSessionPage.route("**/api/session", async (route) => {
       await new Promise((resolve) => setTimeout(resolve, 1200));
