@@ -24,12 +24,12 @@ def test_same_card_treatment_covers_three_source_states():
     assert code.count("${catalogClass}") == 3
     assert 'data-dufynd-image-kind="editorial"' in code
     assert 'data-dufynd-image-kind="missing"' in code
-    assert 'data-dufynd-image-kind={cutoutUrl && !whiteMatte ? "cutout" : "photograph"}' in code
+    assert 'data-dufynd-image-kind={!catalogPhotoPolicy && cutoutUrl && !whiteMatte ? "cutout" : "photograph"}' in code
 
 
 def test_frozen_image_sources_and_fallbacks_are_preserved():
     code = source()
-    assert "const resolvedImageUrl = cutoutUrl || imageUrl;" in code
+    assert "catalogPhotoPolicy ? catalogPhoto?.image_url : cutoutUrl || imageUrl" in code
     assert "src={resolvedImageUrl}" in code
     assert "src={imageUrl}" in code
     assert "setFailedImageUrl(resolvedImageUrl)" in code

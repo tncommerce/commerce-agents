@@ -1,0 +1,493 @@
+{
+  "date": "2026-10-10",
+  "owner_evidence_key": "catalog.visual_photo_uniformity_issue_20261010",
+  "scope": "Catalog image-source eligibility. PASS is source/identity eligibility, not an overall 9.5 visual acceptance.",
+  "quality_target_met": false,
+  "entries": [
+    {
+      "product_id": "SC-LV-IMAGINATION-100",
+      "name": "Louis Vuitton Imagination",
+      "variant": "100 ml Eau de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/pilot/louis-vuitton-imagination-editorial.webp"
+      ],
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-ARABIYAT-MARWA-EDP-100",
+      "name": "Arabiyat Prestige Marwa",
+      "variant": "100 ml Eau de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/pilot/arabiyat-marwa-edp-editorial.webp"
+      ],
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-ARABIYAT-MARWA-EXTRAIT-60",
+      "name": "Arabiyat Prestige Marwa Extrait",
+      "variant": "60 ml Extrait de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/pilot/arabiyat-prestige-marwa-extrait-editorial.webp"
+      ],
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-BUJAIRAMI-HECTIC-100",
+      "name": "Bujairami Hectic",
+      "variant": "100 ml Extrait de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/pilot/bujairami-hectic-editorial.webp"
+      ],
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-CREED-AVENTUS-100",
+      "name": "Creed Aventus",
+      "variant": "100 ml Eau de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/pilot/creed-aventus-editorial.webp"
+      ],
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-CREED-ABSOLU-AVENTUS-100",
+      "name": "Creed Absolu Aventus",
+      "variant": "100 ml Eau de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/pilot/creed-absolu-aventus-editorial.webp"
+      ],
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-AFNAN-SUPREMACY-COLLECTORS-100",
+      "name": "Afnan Perfumes Supremacy Collector's Edition",
+      "variant": "100 ml Eau de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/pilot/afnan-supremacy-collectors-edition-editorial.webp"
+      ],
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-MAISON-ASRAR-VANGUARD-100",
+      "name": "Maison Asrar Vanguard",
+      "variant": "100 ml Eau de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/pilot/maison-asrar-vanguard-editorial.webp"
+      ],
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-ARMAF-CDNIM-EDP-200",
+      "name": "Armaf Club de Nuit Intense Man",
+      "variant": "200 ml Eau de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/pilot/armaf-club-de-nuit-intense-man-editorial.webp"
+      ],
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-MONTBLANC-EXPLORER-100",
+      "name": "Montblanc Explorer",
+      "variant": "100 ml Eau de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/pilot/montblanc-explorer-editorial.webp"
+      ],
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-PDM-LAYTON-125",
+      "name": "Parfums de Marly Layton",
+      "variant": "125 ml Eau de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/pilot/pdm-layton-editorial.webp"
+      ],
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-AL-HARAMAIN-DETOUR-NOIR-100",
+      "name": "Al Haramain Détour Noir",
+      "variant": "100 ml Eau de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/pilot/al-haramain-detour-noir-editorial.webp"
+      ],
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-ORIENTICA-ROYAL-BLEU-80",
+      "name": "Orientica Royal Bleu",
+      "variant": "80 ml Eau de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/pilot/orientica-royal-bleu-editorial.webp"
+      ],
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-PDM-ALTHAIR-125",
+      "name": "Parfums de Marly Althaïr",
+      "variant": "125 ml Eau de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/pilot/pdm-althair-editorial.webp"
+      ],
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-FRENCH-AVENUE-LIQUID-BRUN-100",
+      "name": "French Avenue Liquid Brun",
+      "variant": "100 ml Eau de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/pilot/liquid-brun-editorial.webp"
+      ],
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-BVLGARI-TYGAR-125",
+      "name": "Bvlgari Le Gemme Tygar",
+      "variant": "125 ml Eau de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/pilot/bvlgari-tygar-editorial.webp"
+      ],
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-SOSPIRO-VIBRATO-100",
+      "name": "Sospiro Vibrato",
+      "variant": "100 ml Eau de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/sospiro-vibrato-100-cutout-production.webp",
+        "/products/pilot/sospiro-vibrato-editorial.webp"
+      ],
+      "blocker": "Only generated cutout/editorial artwork documented; no approved exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-AFNAN-TURATHI-BLUE-90",
+      "name": "Afnan Perfumes Turathi Blue",
+      "variant": "90 ml Eau de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/pilot/afnan-turathi-blue-editorial.webp"
+      ],
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-MAISON-ASRAR-REGENT-100",
+      "name": "Maison Asrar Regent",
+      "variant": "100 ml Eau de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/pilot/maison-asrar-regent-editorial.webp"
+      ],
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-ARMANI-SWY-INTENSELY-100",
+      "name": "Giorgio Armani Stronger With You Intensely",
+      "variant": "100 ml Eau de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/armani-swy-intensely-100-cutout-production.webp",
+        "/products/pilot/armani-swy-intensely-editorial.webp"
+      ],
+      "blocker": "Only generated cutout/editorial artwork documented; no approved exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-XERJOFF-NAXOS-100",
+      "name": "Xerjoff Naxos",
+      "variant": "100 ml Eau de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/naxos-cutout-production.webp",
+        "/products/naxos-bottle-free-backdrop.webp"
+      ],
+      "blocker": "Only generated cutout/editorial artwork documented; no approved exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-NUSUK-ATEEQ-100",
+      "name": "Nusuk Ateeq",
+      "variant": "100 ml Extrait de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/pilot/nusuk-ateeq-editorial.webp"
+      ],
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-RAYHAAN-ITALIA-100",
+      "name": "Rayhaan Italia",
+      "variant": "100 ml Eau de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/pilot/rayhaan-italia-editorial.webp"
+      ],
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-DIOR-HOMME-INTENSE-100",
+      "name": "Dior Dior Homme Intense",
+      "variant": "100 ml Eau de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/pilot/dior-homme-intense-editorial.webp"
+      ],
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-AL-WATANIAH-KAYAAN-CLASSIC-100",
+      "name": "Al Wataniah Kayaan Classic",
+      "variant": "100 ml Eau de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/pilot/kayaan-classic-editorial.webp"
+      ],
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
+      "name": "Valentino Uomo Born In Roma Intense",
+      "variant": "100 ml Eau de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/pilot/valentino-born-in-roma-intense-editorial.webp"
+      ],
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-CLIVE-CHRISTIAN-HEDONISTIC-50",
+      "name": "Clive Christian Jump Up and Kiss Me Hedonistic",
+      "variant": "50 ml Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/pilot/clive-christian-hedonistic-editorial.webp"
+      ],
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-CHANEL-BLEU-DE-CHANEL-EDP-100",
+      "name": "Chanel Bleu de Chanel",
+      "variant": "100 ml Eau de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/pilot/bleu-de-chanel-edp-editorial.webp"
+      ],
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-DIOR-SAUVAGE-EDP-100",
+      "name": "Dior Sauvage",
+      "variant": "100 ml Eau de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/pilot/dior-sauvage-edp-editorial.webp"
+      ],
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-PRADA-LHOMME-100",
+      "name": "Prada L'Homme",
+      "variant": "100 ml Eau de Toilette",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/prada-lhomme-100-cutout-production.webp",
+        "/products/pilot/prada-lhomme-editorial.webp"
+      ],
+      "blocker": "Only generated cutout/editorial artwork documented; no approved exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "name": "Essential Parfums Bois Impérial",
+      "variant": "100 ml Eau de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/pilot/bois-imperial-editorial.webp"
+      ],
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-AL-AMBRA-DUBAI-MUSK-50",
+      "name": "Al Ambra Dubai Musk",
+      "variant": "50 ml Extrait de Parfum",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/pilot/al-ambra-dubai-musk-editorial.webp"
+      ],
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "name": "Lancôme La Vie est Belle",
+      "variant": "100 ml Eau de Parfum",
+      "status": "PASS",
+      "source": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+      "rights_evidence": "dufynd_rights_cleared_image_candidates.json",
+      "rights_basis_id": "open-beauty-facts-3605533286555-cc-by-sa-3.0",
+      "previous_sources": [
+        "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp"
+      ],
+      "blocker": null
+    },
+    {
+      "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+      "name": "Rabanne 1 Million",
+      "variant": "100 ml Eau de Toilette",
+      "status": "HOLD",
+      "source": null,
+      "rights_evidence": null,
+      "rights_basis_id": null,
+      "previous_sources": [
+        "/products/rabanne-1-million-edt-100-user-contentmaster.webp"
+      ],
+      "blocker": "Only editorial artwork documented; no rights-cleared exact-variant original photograph."
+    },
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "name": "Parfums de Marly Delina",
+      "variant": "75 ml Eau de Parfum",
+      "status": "PASS",
+      "source": "https://www.topparfuemerie.de/media/catalog/product/8/2/825869_3700578501998_051.png",
+      "rights_evidence": "dufynd_approved_feed_image_candidates.json",
+      "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+      "previous_sources": [
+        "https://www.topparfuemerie.de/media/catalog/product/8/2/825869_3700578501998_051.png"
+      ],
+      "blocker": null
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "name": "Yves Saint Laurent Libre",
+      "variant": "90 ml Eau de Parfum",
+      "status": "PASS",
+      "source": "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png",
+      "rights_evidence": "dufynd_approved_feed_image_candidates.json",
+      "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+      "previous_sources": [
+        "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png"
+      ],
+      "blocker": null
+    },
+    {
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "name": "Yves Saint Laurent Black Opium",
+      "variant": "90 ml Eau de Parfum",
+      "status": "PASS",
+      "source": "https://www.topparfuemerie.de/media/catalog/product/7/8/787670_3365440787971_051.png",
+      "rights_evidence": "dufynd_approved_feed_image_candidates.json",
+      "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+      "previous_sources": [
+        "https://www.topparfuemerie.de/media/catalog/product/7/8/787670_3365440787971_051.png"
+      ],
+      "blocker": null
+    }
+  ]
+}

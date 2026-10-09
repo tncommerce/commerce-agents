@@ -177,6 +177,10 @@ jobs:
             fi
             sleep 1
           done
+          node retail/storefront-web/scripts/catalog-photo-qa.mjs \
+            --base-url http://127.0.0.1:3000 \
+            --before-url https://dufynd.de \
+            --out retail/storefront-web/.visual-qa/catalog-photos
           node retail/storefront-web/scripts/dufynd-visual-qa.mjs \
             --base-url http://127.0.0.1:3000 \
             --out retail/storefront-web/.visual-qa

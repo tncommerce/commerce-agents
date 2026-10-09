@@ -3,6 +3,7 @@
 import { useState, type CSSProperties, type PointerEvent } from "react";
 import type { FragranceVisualWorld } from "@/lib/fragranceCatalog";
 import styles from "./FragranceVisual.module.css";
+import catalogPackshots from "../../data/dufynd_catalog_packshots.json";
 
 type VisualVariant = "card" | "hero";
 type VisualMode = "auto" | "editorial" | "cutout";
@@ -87,6 +88,7 @@ function resetPointer(event: PointerEvent<HTMLDivElement>) {
 }
 
 export default function FragranceVisual({
+  catalogProductId,
   imageUrl,
   cutoutUrl,
   backdropUrl,
@@ -97,6 +99,8 @@ export default function FragranceVisual({
   mode = "auto",
   world = "amber",
 }: {
+  /** Opt catalog surfaces into exact, rights-cleared original photographs. */
+  catalogProductId?: string;
   imageUrl?: string | null;
   cutoutUrl?: string | null;
   backdropUrl?: string | null;
@@ -107,7 +111,11 @@ export default function FragranceVisual({
   mode?: VisualMode;
   world?: FragranceVisualWorld;
 }) {
-  const resolvedImageUrl = cutoutUrl || imageUrl;
+  const catalogPhoto = variant === "card" && catalogProductId
+    ? catalogPackshots.entries.find((entry) => entry.product_id === catalogProductId)
+    : undefined;
+  const catalogPhotoPolicy = variant === "card" && Boolean(catalogProductId);
+  const resolvedImageUrl = catalogPhotoPolicy ? catalogPhoto?.image_url : cutoutUrl || imageUrl;
   const whiteMatte = WHITE_MATTE_PHOTOGRAPHS.has(resolvedImageUrl || "");
   const catalogClass = variant === "card" ? styles.catalog : "";
   const [failedImageUrl, setFailedImageUrl] = useState<string | null>(null);
@@ -115,7 +123,7 @@ export default function FragranceVisual({
   const imageUnavailable = Boolean(
     resolvedImageUrl && failedImageUrl === resolvedImageUrl,
   );
-  const resolvedMode =
+  const resolvedMode = catalogPhotoPolicy ? "cutout" :
     mode === "auto"
       ? cutoutUrl
         ? "cutout"
@@ -132,13 +140,15 @@ export default function FragranceVisual({
   if (!resolvedImageUrl || imageUnavailable) {
     const fallbackCopy = imageUnavailable
       ? "Produktbild derzeit nicht verfügbar"
-      : "Kein freigegebenes Produktbild";
+      : catalogPhotoPolicy ? "Produktfoto nicht verfügbar" : "Kein freigegebenes Produktbild";
     return (
       <div
         data-variant={variant}
         data-dufynd-visual-state={imageUnavailable ? "unavailable" : "missing"}
         data-dufynd-visual-world={world}
         data-dufynd-image-kind="missing"
+        data-dufynd-photo-status={catalogPhotoPolicy ? "hold" : undefined}
+        data-dufynd-product-id={catalogProductId}
         className={`dufynd-neutral-visual-stage ${catalogClass} ${className}`}
         role="img"
         aria-label={`${alt} – ${fallbackCopy}`}
@@ -208,12 +218,14 @@ export default function FragranceVisual({
     <div
       data-variant={variant}
       data-dufynd-visual-world={world}
-      data-dufynd-image-kind={cutoutUrl && !whiteMatte ? "cutout" : "photograph"}
+      data-dufynd-image-kind={!catalogPhotoPolicy && cutoutUrl && !whiteMatte ? "cutout" : "photograph"}
+      data-dufynd-photo-status={catalogPhotoPolicy ? "approved" : undefined}
+      data-dufynd-product-id={catalogProductId}
       data-dufynd-image-matte={whiteMatte ? "white" : undefined}
       className={`dufynd-product-stage ${catalogClass} ${className}`}
       style={{
         ...stageStyle(world, variant),
-        ...(variant === "card" && whiteMatte ? { background: "#fff" } : {}),
+        ...(variant === "card" && (whiteMatte || catalogPhotoPolicy) ? { background: "#fff" } : {}),
       }}
       onPointerMove={variant === "hero" ? updatePointer : undefined}
       onPointerLeave={variant === "hero" ? resetPointer : undefined}

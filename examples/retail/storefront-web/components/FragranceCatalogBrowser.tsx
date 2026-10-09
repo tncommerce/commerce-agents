@@ -1366,6 +1366,7 @@ export default function FragranceCatalogBrowser({
                     />
                     {visual ? (
                       <FragranceVisual
+                        catalogProductId={fragrance.product_id}
                         imageUrl={visual.url}
                         cutoutUrl={isProductTruth ? visual.url : undefined}
                         backdropUrl={

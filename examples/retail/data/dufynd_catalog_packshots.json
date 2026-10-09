@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "policy": "Original, exact-variant photographs only. Editorial scenes and generated cutouts cannot serve as catalog packshots. A missing registry entry renders a neutral textual fallback. Original image bytes are never cropped or recoloured.",
+  "entries": [
+    {
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "image_url": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+      "volume_ml": 100,
+      "concentration": "Eau de Parfum",
+      "source_kind": "original_product_photograph",
+      "rights_basis_id": "open-beauty-facts-3605533286555-cc-by-sa-3.0",
+      "rights_evidence_file": "dufynd_rights_cleared_image_candidates.json",
+      "rights_checked_at": "2026-09-27",
+      "identity_approved_at": "2026-09-27T16:37:11.374941+00:00",
+      "license_name": "CC BY-SA 3.0",
+      "attribution_text": "Open Beauty Facts contributors"
+    },
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/2/825869_3700578501998_051.png",
+      "volume_ml": 75,
+      "concentration": "Eau de Parfum",
+      "source_kind": "original_product_photograph",
+      "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+      "rights_evidence_file": "dufynd_approved_feed_image_candidates.json",
+      "rights_checked_at": "2026-09-28",
+      "identity_approved_at": "2026-10-01T09:49:00+00:00",
+      "license_name": null,
+      "attribution_text": null
+    },
+    {
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "image_url": "https://www.topparfuemerie.de/media/catalog/product/7/8/787670_3365440787971_051.png",
+      "volume_ml": 90,
+      "concentration": "Eau de Parfum",
+      "source_kind": "original_product_photograph",
+      "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+      "rights_evidence_file": "dufynd_approved_feed_image_candidates.json",
+      "rights_checked_at": "2026-09-28",
+      "identity_approved_at": "2026-10-01T09:49:00+00:00",
+      "license_name": null,
+      "attribution_text": null
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png",
+      "volume_ml": 90,
+      "concentration": "Eau de Parfum",
+      "source_kind": "original_product_photograph",
+      "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+      "rights_evidence_file": "dufynd_approved_feed_image_candidates.json",
+      "rights_checked_at": "2026-09-28",
+      "identity_approved_at": "2026-10-01T09:49:00+00:00",
+      "license_name": null,
+      "attribution_text": null
+    }
+  ]
+}

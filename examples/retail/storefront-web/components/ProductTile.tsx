@@ -72,6 +72,7 @@ export function ProductImage({ product, className = "" }: { product: Product; cl
       return (
         <div className={`relative overflow-hidden ${className}`}>
           <FragranceVisual
+            catalogProductId={String(product.product_id)}
             imageUrl={imageUrl}
             cutoutUrl={isProductTruth ? imageUrl : undefined}
             backdropUrl={backdropUrl}
@@ -88,6 +89,7 @@ export function ProductImage({ product, className = "" }: { product: Product; cl
 
     return (
       <FragranceVisual
+        catalogProductId={String(product.product_id)}
         alt={product.title}
         variant="card"
         world={fragrance ? visualWorldFor(fragrance) : undefined}

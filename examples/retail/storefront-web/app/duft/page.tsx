@@ -179,6 +179,7 @@ export default function FragranceIndexPage() {
                   <div className="dufynd-catalog-discovery-bottle-stage">
                     {visual ? (
                       <FragranceVisual
+                        catalogProductId={fragrance.product_id}
                         imageUrl={visual.url}
                         cutoutUrl={
                           isProductTruth ? visual.url : undefined

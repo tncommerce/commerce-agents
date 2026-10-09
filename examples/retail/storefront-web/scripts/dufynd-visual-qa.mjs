@@ -1122,11 +1122,11 @@ try {
           }
 
           const naxosCardTruth = page.locator(
-            'a[href*="/duft/xerjoff-naxos"] img[src="/products/naxos-cutout-production.webp"]',
+            'article a[href*="/duft/xerjoff-naxos"] [data-dufynd-photo-status="hold"]',
           );
           if ((await naxosCardTruth.count()) < 1) {
             throw new Error(
-              "catalog does not prioritize the Naxos verified cutout",
+              "catalog must hold the generated Naxos cutout until an original photograph is cleared",
             );
           }
         }

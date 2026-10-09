@@ -74,3 +74,25 @@
   line-height: 1.4;
   pointer-events: none;
 }
+
+/* A blocked photo is an explicit text state, never another bottle likeness. */
+.catalog[data-dufynd-photo-status="hold"] {
+  background: #fff;
+}
+
+.catalog[data-dufynd-photo-status="hold"] :global(.dufynd-neutral-visual-copy) {
+  max-width: 100%;
+  padding: 1.25rem;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.catalog[data-dufynd-photo-status="hold"] :global(.dufynd-neutral-visual-copy) strong {
+  font-size: clamp(0.75rem, 2.8vw, 1rem);
+  line-height: 1.45;
+}
+
+.catalog[data-dufynd-photo-status="approved"] :global(.dufynd-product-float) {
+  animation: none;
+  transform: none;
+}
