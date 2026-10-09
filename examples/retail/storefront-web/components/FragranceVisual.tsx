@@ -277,6 +277,11 @@ export default function FragranceVisual({
       </div>
 
       <div className="dufynd-product-sheen" aria-hidden />
+      {catalogPhoto?.attribution_text && catalogPhoto.license_name ? (
+        <span className={styles.photoAttribution} data-dufynd-image-attribution>
+          Bild: {catalogPhoto.attribution_text} · {catalogPhoto.license_name}
+        </span>
+      ) : null}
     </div>
   );
 }

@@ -24,8 +24,18 @@ async function settle(page) {
     await Promise.all(Array.from(document.images, (image) => Promise.race([
       image.decode().catch(() => {}), new Promise((resolve) => setTimeout(resolve, 10000)),
     ])));
-    await document.fonts.ready;
+    await Promise.race([document.fonts.ready, new Promise((resolve) => setTimeout(resolve, 8000))]);
   });
+}
+
+async function showAll(page) {
+  const more = page.getByRole("button", { name: /Weitere.*Düfte anzeigen/ });
+  for (let attempt = 0; attempt < 4 && await more.count(); attempt++) {
+    const count = await page.locator("article.dufynd-catalog-card").count();
+    await more.click();
+    await page.waitForFunction((previous) => document.querySelectorAll("article.dufynd-catalog-card").length > previous, count, { timeout: 5000 });
+  }
+  if (await more.count()) throw new Error("Catalog expansion did not finish within four actions");
 }
 
 try {
@@ -37,14 +47,13 @@ try {
     const phases = before ? [["before", before], ["after", base]] : [["after", base]];
     for (const [phase, origin] of phases) {
       const page = await context.newPage();
+      page.setDefaultTimeout(15000);
       try {
-        await page.goto(`${origin}/duft?src=qa&cmp=qa-catalog-photos-20261010&content=${phase}`, { waitUntil: "networkidle", timeout: 60000 });
+        await page.goto(`${origin}/duft?src=qa&cmp=qa-catalog-photos-20261010&content=${phase}`, { waitUntil: "domcontentloaded", timeout: 45000 });
         await settle(page);
         await page.locator('section[aria-label="Passende Düfte"]').screenshot({ path: `${out}/${phase}-${width}.png` });
         if (phase === "after") {
-          while (await page.getByRole("button", { name: /Weitere.*Düfte anzeigen/ }).count()) {
-            await page.getByRole("button", { name: /Weitere.*Düfte anzeigen/ }).click();
-          }
+          await showAll(page);
           await settle(page);
           const cards = page.locator("article.dufynd-catalog-card");
           if (await cards.count() !== audit.entries.length) throw new Error("Missing product cards");
@@ -70,8 +79,9 @@ try {
             await link.click();
             await page.waitForURL((url) => url.pathname === new URL(href, base).pathname);
             if (!await page.getByRole("heading", { level: 1 }).isVisible()) throw new Error("Missing product heading after card click");
-            await page.goBack({ waitUntil: "networkidle" });
-            while (await page.getByRole("button", { name: /Weitere.*Düfte anzeigen/ }).count()) await page.getByRole("button", { name: /Weitere.*Düfte anzeigen/ }).click();
+            await page.goBack({ waitUntil: "domcontentloaded" });
+            await settle(page);
+            await showAll(page);
           }
         }
         report.checks.push({ phase, width, status: "PASS" });

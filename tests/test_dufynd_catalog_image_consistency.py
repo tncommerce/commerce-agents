@@ -24,7 +24,10 @@ def test_same_card_treatment_covers_three_source_states():
     assert code.count("${catalogClass}") == 3
     assert 'data-dufynd-image-kind="editorial"' in code
     assert 'data-dufynd-image-kind="missing"' in code
-    assert 'data-dufynd-image-kind={!catalogPhotoPolicy && cutoutUrl && !whiteMatte ? "cutout" : "photograph"}' in code
+    assert (
+        'data-dufynd-image-kind={!catalogPhotoPolicy && cutoutUrl && !whiteMatte ? "cutout" : "photograph"}'
+        in code
+    )
 
 
 def test_frozen_image_sources_and_fallbacks_are_preserved():

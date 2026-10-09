@@ -80,6 +80,17 @@
   background: #fff;
 }
 
+.photoAttribution {
+  position: absolute;
+  inset-inline: 0.5rem;
+  bottom: 0.25rem;
+  color: #3d3932;
+  background: #fff;
+  font-size: 0.625rem;
+  line-height: 1.4;
+  text-align: center;
+}
+
 .catalog[data-dufynd-photo-status="hold"] :global(.dufynd-neutral-visual-copy) {
   max-width: 100%;
   padding: 1.25rem;
