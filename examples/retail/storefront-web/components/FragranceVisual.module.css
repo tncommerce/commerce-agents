@@ -5,7 +5,8 @@
   box-shadow: inset 0 0 0 1px rgb(34 34 31 / 0.04);
 }
 
-.catalog[data-variant="card"]::before {
+.catalog[data-variant="card"]::before,
+.catalog[data-variant="card"]::after {
   display: none;
 }
 
