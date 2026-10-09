@@ -9,6 +9,12 @@
   display: none;
 }
 
+/* Parent card decorations must not tint the neutral frame or source image. */
+:global(.dufynd-catalog-card-stage):has(.catalog[data-variant="card"])::after,
+:global(.dufynd-library-card-stage):has(.catalog[data-variant="card"])::after {
+  display: none;
+}
+
 /* The same frame for photographs, transparent cutouts and editorial images.
    The source's internal whitespace still requires a separate per-asset audit. */
 .catalog[data-variant="card"][data-dufynd-image-kind] :global(.dufynd-product-object),
