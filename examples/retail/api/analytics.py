@@ -109,7 +109,7 @@ class AnalyticsEventRequest(BaseModel):
         default=None,
         min_length=16,
         max_length=80,
-        pattern=r"^[A-Za-z0-9-]+$",
+        pattern=r"^[A-Za-z0-9_-]+$",
     )
 
 
