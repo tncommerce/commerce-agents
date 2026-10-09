@@ -94,7 +94,7 @@ providers, infrastructure, migrations, worker dispatches or changes to `main`.
 
 ### Verification and limits
 
-Full local Python suite: **3,165 passed, 185 skipped**. The skips are existing
+Full local Python suite: **3,167 passed, 185 skipped**. The skips are existing
 integration/environment gates. Added regression coverage for future/elapsed
 replacement schedules, preserving authorization and unknown sale/commission.
 Existing auth, CSRF, logout, Owner-action and voice contract tests remain intact.
@@ -121,3 +121,10 @@ captured live data, **not an authenticated production browser session**. Voice
 configuration in the captured template is disabled; no paid voice or real business
 approval/publication was invoked. Green CI and deployed byte verification are
 recorded separately after pushing the development branch.
+
+The final live audit also found useful checkpoint results hidden by the old
+three-field projection. Two fixed integer fields (stalled execution count and paid
+provider call count), plus the audit timestamp, now cross the read boundary for
+verified `supervisor_state_audit` checkpoints only. Raw audit JSON is never fetched
+or rendered. The activity feed can state the actual historical check result rather
+than only “step 1”; it does not treat a completed audit as current worker activity.

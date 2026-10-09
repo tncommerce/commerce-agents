@@ -42,7 +42,10 @@ RUN_COLUMNS = (
     "execution_id,task_id,worker_type,worker_id,external_run_id,status,attempt,scope,"
     "lease_expires_at,durability_policy,started_at,heartbeat_at,last_progress_at,completed_at,"
     "recovery_count,handler_id,handler_version,created_at,checkpoint_step:last_checkpoint->>step,"
-    "checkpoint_verified:last_checkpoint->verified,checkpoint_verified_at:last_checkpoint->>verified_at"
+    "checkpoint_verified:last_checkpoint->verified,checkpoint_verified_at:last_checkpoint->>verified_at,"
+    "audit_observed_at:last_checkpoint->audit->>observed_at,"
+    "audit_stalled:last_checkpoint->audit->stalled_executions,"
+    "audit_paid_calls:last_checkpoint->audit->paid_provider_calls"
 )
 OBSERVER_COLUMNS = (
     "observer_id,source_type,enabled,interval_seconds,last_attempt_at,last_success_at,"
@@ -457,6 +460,21 @@ def build_snapshot(
                 },
             }
         )
+        # Only fixed scalar audit results cross the read boundary; never the raw audit JSON.
+        if (
+            row.get("handler_id") == "supervisor_state_audit"
+            and row.get("checkpoint_verified") is True
+            and _stamp(row.get("audit_observed_at"))
+        ):
+            result = {
+                "stalled_executions": _number(row.get("audit_stalled")),
+                "paid_provider_calls": _number(row.get("audit_paid_calls")),
+            }
+            if any(value is not None for value in result.values()):
+                workers[-1]["checkpoint"]["audit_result"] = {
+                    **result,
+                    "observed_at": _stamp(row.get("audit_observed_at")),
+                }
     # Tasks may be claimed without a durable execution record; never hide those workers.
     run_tasks = {worker["task_id"] for worker in workers if not worker["completed_at"]}
     for row in data.get("tasks", []):

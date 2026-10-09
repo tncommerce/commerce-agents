@@ -1306,3 +1306,31 @@ def test_elapsed_replacement_schedule_is_not_current_publication_evidence(minute
         assert money["replacement"]["state"] == "SCHEDULED"
     assert money["transactions"] is None
     assert money["commission_eur"] is None
+
+
+@pytest.mark.parametrize("valid", [True, False])
+def test_worker_audit_results_are_verified_bounded_scalars_only(valid):
+    data = fixture_data()
+    data["active_runs"] = [
+        run_row(
+            handler_id="supervisor_state_audit",
+            checkpoint_verified=valid,
+            audit_observed_at=STAMP,
+            audit_stalled=0,
+            audit_paid_calls=2,
+            last_checkpoint={"audit": {"secret": "must-not-leak"}},
+        )
+    ]
+    result = build_snapshot(data, now=NOW)
+    checkpoint = result["worker_deck"][0]["checkpoint"]
+    if valid:
+        assert checkpoint["audit_result"] == {
+            "stalled_executions": 0,
+            "paid_provider_calls": 2,
+            "observed_at": STAMP,
+        }
+    else:
+        assert "audit_result" not in checkpoint
+    assert "must-not-leak" not in json.dumps(result)
+    data["active_runs"][0].update(checkpoint_verified=True, audit_stalled=True, audit_paid_calls=-1)
+    assert "audit_result" not in build_snapshot(data, now=NOW)["worker_deck"][0]["checkpoint"]

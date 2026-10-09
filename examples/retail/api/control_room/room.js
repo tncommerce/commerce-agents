@@ -1652,6 +1652,13 @@
   })[title] || title;
   const checkpointText = (checkpoint) => {
     if (checkpoint?.verified !== true) return "Noch kein bestätigter Schritt";
+    const audit = checkpoint.audit_result;
+    if (audit) {
+      const parts = [];
+      if (Number.isInteger(audit.stalled_executions)) parts.push(audit.stalled_executions + " festhängende Ausführungen");
+      if (Number.isInteger(audit.paid_provider_calls)) parts.push(audit.paid_provider_calls + " kostenpflichtige Aufrufe");
+      if (parts.length) return parts.join(" · ");
+    }
     const step = checkpoint.step;
     return typeof step === "number" || /^\d+$/.test(String(step || ""))
       ? "Prüfschritt " + step + " bestätigt · Ergebnistext nicht hinterlegt"
