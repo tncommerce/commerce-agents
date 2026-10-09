@@ -2569,7 +2569,6 @@ body {
 .dufynd-catalog-card-visual {
   position: relative;
   z-index: 1;
-  background: transparent !important;
 }
 
 .dufynd-catalog-card-stage .dufynd-product-stage {
@@ -3480,7 +3479,6 @@ a.dufynd-comparison-product-card > div:last-child {
   position: relative;
   z-index: 1;
   height: 100% !important;
-  background: transparent !important;
 }
 
 .dufynd-library-card-stage .dufynd-product-stage,
