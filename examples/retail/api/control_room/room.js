@@ -2624,6 +2624,20 @@
             ["Asset-Revision", "revision_fingerprint"]]) line(item, label, candidate[key]);
           line(item, "Gewünschte Zeit", stamp(candidate.requested_at));
         }
+        if (d.publish_candidate) {
+          const candidate = d.publish_candidate;
+          line(item, "Öffentliche Veröffentlichung", candidate.platform);
+          line(item, "Caption", candidate.caption);
+          line(item, "Finale Datei SHA-256", candidate.asset_sha256);
+          line(item, "Veröffentlichungszeit", stamp(candidate.requested_at));
+          if (candidate.media_url) {
+            const preview = node("a", "Finales Reel mit Ton prüfen", "owner-action secondary");
+            preview.href = candidate.media_url;
+            preview.target = "_blank";
+            preview.rel = "noopener noreferrer";
+            item.append(preview);
+          }
+        }
         if (d.provider) line(item, "Provider", d.provider);
 
         const actions = node("div", undefined, "owner-action-buttons");
@@ -2665,9 +2679,10 @@
           actions.append(reviewApprove);
         } else if (
           d.approval_alone_enables_execution &&
-          d.action_token
+          d.action_token &&
+          (!d.publish_candidate || (d.publish_candidate.media_url && d.publish_candidate.caption && d.publish_candidate.asset_sha256 && d.publish_candidate.requested_at))
         ) {
-          const approve = node("button", "Jetzt freigeben", "owner-action primary");
+          const approve = node("button", d.publish_candidate ? "Öffentlich veröffentlichen" : "Jetzt freigeben", "owner-action primary");
           approve.type = "button";
           approve.addEventListener("click", () =>
             submitOwnerAction(d, "approve", approve),

@@ -1074,6 +1074,36 @@ def test_content_candidate_gate_projects_complete_review_without_publish_control
         )
 
 
+def test_publish_go_exposes_exact_frozen_video_caption_platform_time_and_scope():
+    data = ceo_data()
+    media_url = "https://dufynd.de/social/frozen/" + "a" * 64 + ".mp4"
+    data["decisions"] = [
+        {
+            "decision_id": "publish-fixture",
+            "action_type": "content_publish_go",
+            "candidate_publish_asset_id": "fixture",
+            "candidate_publish_sha256": "a" * 64,
+            "candidate_publish_uri": media_url,
+            "candidate_caption": "Exact caption",
+            "candidate_platform": "instagram",
+            "candidate_requested_at": STAMP,
+            "approval_alone_enables_execution": True,
+            "decision_token": "GO-PUBLISH-FIXTURE",
+        }
+    ]
+    gate = build_snapshot(data, now=NOW)["decision_center"][0]
+    assert gate["content_candidate"] is None
+    assert gate["publish_candidate"]["media_url"] == media_url
+    assert gate["publish_candidate"]["caption"] == "Exact caption"
+    assert gate["publish_candidate"]["scope"] == "schedule_and_publish"
+    assert gate["approval_alone_enables_execution"] is True
+    data["decisions"][0]["candidate_publish_uri"] = media_url + "?token=private"
+    assert (
+        build_snapshot(data, now=NOW)["decision_center"][0]["publish_candidate"]["media_url"]
+        is None
+    )
+
+
 def test_current_sources_and_old_passed_smoke_have_separate_owner_semantics():
     data = ceo_data()
     data["observers"][0]["last_success_at"] = (NOW - timedelta(minutes=8)).isoformat()

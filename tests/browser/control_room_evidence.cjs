@@ -206,6 +206,20 @@ const { chromium } = require("playwright");
     for (const text of ["Delina EDP 75 ml", "qa_delina_asset", "A complete safe caption", "qa_delina_fixture", "qa_gate", "9.6", "Review-Gate erkannt. Keine automatische Aktion ohne explizit freigegebenen Handler."])
       assert.ok(decisionText.includes(text), text);
     assert.equal(await p.locator("#decision-list button").count(), 0);
+    // Public GO is visibly distinct and binds the exact media/caption/time.
+    s.decision_center = [{title: "Public Reel fixture", type: "content_publish_go",
+      action_token: "GO-PUBLISH-FIXTURE", approval_alone_enables_execution: true,
+      publish_candidate: {asset_id: "qa_fixture", asset_sha256: "b".repeat(64),
+        media_url: "https://dufynd.de/media/" + "b".repeat(64) + ".mp4",
+        caption: "Exact public caption", platform: "instagram", requested_at: s.generated_at}}];
+    await refresh();
+    assert.equal(await p.getByRole("button", {name: "Öffentlich veröffentlichen", exact: true}).count(), 1);
+    assert.equal(await p.getByRole("button", {name: "Kandidat freigeben", exact: true}).count(), 0);
+    assert.equal(await p.getByRole("link", {name: "Finales Reel mit Ton prüfen"}).getAttribute("href"), s.decision_center[0].publish_candidate.media_url);
+    assert.match(await p.locator("#decision-list").innerText(), /Exact public caption/);
+    s.decision_center[0].publish_candidate.media_url = null;
+    await refresh();
+    assert.equal(await p.locator("#decision-list button").count(), 0);
     s.decision_center = [];
     s.command_center.human_approval_count = 0;
     await refresh();

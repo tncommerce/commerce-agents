@@ -28,7 +28,7 @@ def schema():
            add column decision_token text, add column context jsonb,
            add column updated_at timestamptz default now();
           create table public.dufynd_content_assets(
-            id text primary key, version int default 1, uri text, content_id text,
+            id text primary key, asset_type text, version int default 1, uri text, content_id text,
             platform text, status text, metadata jsonb default '{}');
         """)
         for pattern in (
@@ -37,6 +37,7 @@ def schema():
             "*content_workflow_control_plane.sql",
             "*_dufynd_production_audio_gate.sql",
             "*_dufynd_audio_review_invalidation.sql",
+            "*_dufynd_publish_dispatch.sql",
         ):
             c.execute(next((ROOT / "supabase/migrations").glob(pattern)).read_text())
     yield
@@ -49,6 +50,10 @@ def db():
     with psycopg.connect(DSN) as c:
         yield c
         c.rollback()
+
+
+def test_publish_dispatch_specific_go_duplicate_uncertainty_and_revision_matrix(db):
+    db.execute((ROOT / "tests/sql_dufynd_publish_dispatch.sql").read_text())
 
 
 def asset(c):

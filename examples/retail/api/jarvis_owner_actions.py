@@ -109,6 +109,19 @@ class OwnerActionWriter:
             raise OwnerActionConflict()
         if action == "approve" and not direct:
             raise OwnerActionConflict()
+        if row.get("action_type") == "content_publish_go":
+            candidate = context.get("candidate", {})
+            if (
+                action != "approve"
+                or context.get("scope") != "schedule_and_publish"
+                or not isinstance(candidate, dict)
+                or not re.fullmatch(r"[a-f0-9]{64}", str(candidate.get("asset_sha256", "")))
+                or candidate.get("platform") not in {"instagram", "tiktok"}
+                or not candidate.get("caption")
+                or not candidate.get("uri")
+                or not candidate.get("requested_at")
+            ):
+                raise OwnerActionConflict()
         if action == "approve_review" and (
             manual
             or row.get("action_type") not in {"content_candidate_review", "image_visual_review"}
