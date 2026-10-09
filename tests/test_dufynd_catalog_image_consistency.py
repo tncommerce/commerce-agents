@@ -7,11 +7,11 @@ COMPONENTS = ROOT / "examples/retail/storefront-web/components"
 
 
 def source() -> str:
-    return (COMPONENTS / "FragranceVisual.tsx").read_text()
+    return (COMPONENTS / "FragranceVisual.tsx").read_text(encoding="utf-8")
 
 
 def stylesheet() -> str:
-    return (COMPONENTS / "FragranceVisual.module.css").read_text()
+    return (COMPONENTS / "FragranceVisual.module.css").read_text(encoding="utf-8")
 
 
 def test_catalog_uses_one_surface_while_hero_keeps_world():
