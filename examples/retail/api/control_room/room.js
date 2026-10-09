@@ -63,7 +63,7 @@
     }[status];
     if (!help) return null;
     const details = node("details", undefined, "status-help");
-    const summary = node("summary", "ⓘ");
+    const summary = node("summary", "i");
     summary.title = help;
     summary.setAttribute("aria-label", "Erklärung: " + status);
     details.append(summary, node("p", help));
@@ -1475,7 +1475,7 @@
       setState(
         "error",
         "VOICE NICHT AKTIV",
-        "Server-Key fehlt · Jarvis Voice ist noch nicht verfügbar",
+        "Sprachsteuerung derzeit nicht verfügbar",
       );
     } else if (!micSupported) {
       setState(
@@ -1645,10 +1645,21 @@
     release06_armani_si_image_rights_outreach_20261001:
       "Bildrechte für Armani Sì 100 ml klären",
   };
+  const readableTask = (title) => ({
+    "Verify social publication readiness truth": "Veröffentlichungsbereitschaft prüfen",
+    "Free First-Money and supervisor health audit": "First Money und Supervisor prüfen",
+    "Verify First-Money purchase evidence freshness": "Kaufziel-Nachweise auf Aktualität prüfen",
+  })[title] || title;
+  const checkpointText = (checkpoint) => {
+    if (checkpoint?.verified !== true) return "Noch kein bestätigter Schritt";
+    const step = checkpoint.step;
+    return typeof step === "number" || /^\d+$/.test(String(step || ""))
+      ? "Prüfschritt " + step + " bestätigt · Ergebnistext nicht hinterlegt"
+      : detailText(step);
+  };
   const taskTitle = (task) =>
     taskLabels[task?.task_id] ||
-    task?.title ||
-    task?.task_title ||
+    readableTask(task?.title || task?.task_title) ||
     task?.task_id ||
     "Aufgabe nicht zugeordnet";
   const executionSignals = new Map();
@@ -1724,12 +1735,12 @@
       phase.append(
         node(
           "small",
-          w.status === "ACTIVE" ? "01 · AKTUELLER SCHRITT" : "01 · WARTEGRUND",
+          w.status === "ACTIVE" ? "LETZTER BESTÄTIGTER SCHRITT" : "WARTEGRUND",
         ),
         node(
           "strong",
           w.status === "ACTIVE"
-            ? detailText(w.execution_status)
+            ? checkpointText(w.checkpoint)
             : w.wait_reason === "external_dependency" &&
                 w.task_context?.dependencies?.length
               ? taskWait(w.task_context)
@@ -1738,8 +1749,8 @@
       );
       const next = node("div", undefined, "execution-step");
       next.append(
-        node("small", "02 · NÄCHSTER DOKUMENTIERTER PRÜFSCHRITT"),
-        node("strong", w.description?.next_step || detailText(w.next_checkpoint)),
+        node("small", "NÄCHSTER SCHRITT"),
+        node("strong", w.next_checkpoint ? detailText(w.next_checkpoint) : "Nächster Prüfschritt nicht dokumentiert"),
       );
       path.append(phase, next);
       item.append(path);
@@ -1749,7 +1760,7 @@
         node(
           "span",
           w.checkpoint?.verified === true
-            ? detailText(w.checkpoint.step) +
+            ? checkpointText(w.checkpoint) +
                 " · " +
                 stamp(w.checkpoint.verified_at)
             : "Noch kein verifizierter Checkpoint vorhanden",
@@ -1776,7 +1787,7 @@
       return item;
     }
     line(item, w.status === "ACTIVE" ? "Aktuell" : "Wartet auf", w.status === "ACTIVE" ? taskTitle(w) + " · " + detailText(w.execution_status) : w.description?.reason || detailText(w.wait_reason));
-    line(item, "Danach", w.description?.next_step || detailText(w.next_checkpoint));
+    line(item, "Danach", w.next_checkpoint ? detailText(w.next_checkpoint) : "Nächster Prüfschritt nicht dokumentiert");
     line(
       item,
       w.status === "ACTIVE" ? "Phase" : "Wartegrund",
@@ -1789,7 +1800,7 @@
       line(
         item,
         "Letzter bestätigter Schritt",
-        detailText(w.checkpoint.step) + " · " + stamp(w.checkpoint.verified_at),
+        checkpointText(w.checkpoint) + " · " + stamp(w.checkpoint.verified_at),
       );
     else
       line(
@@ -1948,7 +1959,12 @@
         merchant_clickout: "Erster Merchant Clickout", affiliate_transaction_evidence: "Affiliate-Netzwerkbeleg für eine Transaktion"};
       nextMilestone = next[revenue.runtime?.next_evidence] || nextMilestone;
     }
-    if (publication.replacementScheduled) {
+    if (publication.replacementUnconfirmed) {
+      tone = "amber";
+      title = "Veröffentlichung nicht bestätigt";
+      copy = "Der gespeicherte Ersatztermin ist verstrichen. Owner GO liegt vor; ein Termin belegt keine Veröffentlichung.";
+      nextMilestone = "Aktuellen Veröffentlichungsnachweis prüfen · keine automatische Wiederveröffentlichung";
+    } else if (publication.replacementScheduled) {
       tone = "blue";
       title = "Ersatz geplant · Owner GO vorhanden";
       copy = "Der ursprüngliche Post bleibt entfernt/gestoppt historisiert. Die freigegebene Ersatzrevision ist separat für Instagram geplant.";
@@ -1976,7 +1992,7 @@
     put("next-milestone", nextMilestone);
     put(
       "pipeline-stage",
-      publication.live ? "LIVE" : publication.replacementScheduled || publication.scheduled ? "PLAN" : "OFFEN",
+      publication.replacementUnconfirmed ? "PRÜFEN" : publication.live ? "LIVE" : publication.replacementScheduled || publication.scheduled ? "PLAN" : "OFFEN",
     );
     const ring = $("pipeline-ring");
     if (ring) ring.dataset.state = publication.live ? "live" : "pending";
@@ -2027,7 +2043,7 @@
       );
       put(
         "crew-supervisor-state",
-        crew
+        crew?.complete === true
           ? crew.supervisor_state +
               " · " +
               (s.command_center?.active_workers || 0) +
@@ -2048,7 +2064,7 @@
         "crew-live-count",
         liveNow.length
           ? liveNow.length + " wirklich aktiv"
-          : "0 aktiv · Jarvis überwacht",
+          : crew?.complete === true ? "0 aktive Ausführungen" : "Ausführungsstatus unbestätigt",
       );
       if (liveNow.length) {
         for (const live of liveNow) {
@@ -2058,7 +2074,7 @@
             node("span", "LIVE", "crew-live-badge"),
             node("strong", live.role),
             node("small", live.alias.toUpperCase()),
-            node("p", live.task || "Aktuelle Aufgabe nicht dokumentiert", "crew-live-task"),
+            node("p", readableTask(live.task) || "Aktuelle Aufgabe nicht dokumentiert", "crew-live-task"),
           );
           const meta = node("div", undefined, "crew-live-meta");
           meta.append(
@@ -2069,23 +2085,20 @@
           item.append(meta);
           item.append(
             node("p", live.checkpoint?.verified === true
-              ? "Letzter bestätigter Schritt · " + detailText(live.checkpoint.step) + " · " + stamp(live.checkpoint.verified_at)
+              ? "Letzter bestätigter Schritt · " + checkpointText(live.checkpoint) + " · " + stamp(live.checkpoint.verified_at)
               : "Letzter bestätigter Schritt · Unbekannt", "crew-live-next"),
           );
-          if (live.next_checkpoint)
-            item.append(
-              node("p", "Nächster Checkpoint · " + live.next_checkpoint, "crew-live-next"),
-            );
+          item.append(node("p", "Nächster Schritt · " + (live.next_checkpoint ? detailText(live.next_checkpoint) : "Nicht dokumentiert"), "crew-live-next"));
           liveBoard.append(item);
         }
       } else {
         const empty = node("article", undefined, "crew-live-empty");
         empty.append(
-          node("span", "MONITORING", "crew-monitor-badge"),
-          node("strong", "Aktuell keine Worker-Ausführung"),
+          node("span", crew?.complete === true ? "KEINE AKTIVE AUSFÜHRUNG" : "UNBESTÄTIGT", "crew-monitor-badge"),
+          node("strong", crew?.complete === true ? "Kein Worker arbeitet gerade" : "Aktuelle Arbeit nicht bestätigt"),
           node(
             "p",
-            "Jarvis überwacht weiter. Neue Arbeit erscheint hier erst, wenn ein realer Task gestartet und durch Lease + Heartbeat bestätigt ist.",
+            crew?.complete === true ? "Ein erfolgreicher Kontroll-Loop ist keine Worker-Arbeit. Der nächste belegte Start erscheint hier automatisch." : "Die Ausführungsquelle ist unvollständig. Daraus lässt sich keine Null-Aktivität ableiten.",
           ),
         );
         liveBoard.append(empty);
@@ -2292,19 +2305,17 @@
 
       const activity = $("crew-activity");
       activity.replaceChildren();
-      const recent = crew?.recent_activity || [];
+      const recent = (crew?.recent_activity || []).filter(entry => entry.checkpoint?.verified === true);
       if (recent.length) {
         for (const entry of recent.slice(0, 6)) {
           const row = node("article", undefined, "crew-activity-row");
           const time = node("time", shortTime(entry.completed_at));
           const body = node("div");
           body.append(
-            node("strong", entry.alias.toUpperCase() + " · " + (entry.task || "Ausführung abgeschlossen")),
+            node("strong", readableTask(entry.task) || "Ausführung abgeschlossen"),
             node(
               "span",
-              entry.checkpoint?.verified === true
-                ? "Checkpoint verifiziert"
-                : "Ausführung abgeschlossen",
+              entry.alias + " · " + checkpointText(entry.checkpoint) + " · " + stamp(entry.completed_at),
             ),
           );
           row.append(time, body);
@@ -2314,7 +2325,7 @@
         activity.append(
           node(
             "p",
-            "Noch keine abgeschlossene Worker-Aktivität im aktuellen bounded Snapshot.",
+            "Kein verifizierter Worker-Abschluss in den zuletzt gelesenen Ausführungen.",
             "muted",
           ),
         );
@@ -2326,6 +2337,19 @@
         unassigned.length +
         " reale Ausführung(en) ohne dokumentierte Rollenzuordnung. Technische Ausführungen unter Details prüfen.";
     }
+    const risks = $("v21-risks");
+    risks.replaceChildren();
+    const relevant = (risk?.panels || []).filter(p => ["red", "amber"].includes(p.tone) && !["owner", "money"].includes(p.id));
+    if (!risk) risks.append(node("p", "Systemlage nicht bestätigt."));
+    else if (!relevant.length) risks.append(node("p", "Keine weiteren Systemrisiken im aktuellen Snapshot."));
+    for (const entry of relevant.slice(0, 3)) {
+      const row = node("article", undefined, "v21-risk-row");
+      const label = {production:"Systemcheck",render:"Deployment",sources:"Antwortkanal"}[entry.id] || entry.name;
+      row.append(node("strong", label + " · " + entry.title));
+      if (entry.since) row.append(node("time", "Nachweis · " + stamp(entry.since)));
+      risks.append(row);
+    }
+    if (relevant.length > 3) risks.append(node("p", (relevant.length - 3) + " weitere Hinweise unter Systeme."));
     if (focusId && $(focusId) && document.activeElement?.id !== focusId) $(focusId).focus({preventScroll:true});
   }
 
@@ -2390,9 +2414,9 @@
     ).sort((a, b) => Date.parse(b.completed_at) - Date.parse(a.completed_at));
     const lastOutput = outputs[0];
     put("v2-last-output", lastOutput
-      ? taskTitle(lastOutput) + " · " + detailText(lastOutput.checkpoint.step)
+      ? taskTitle(lastOutput)
       : "Kein verifizierter Worker-Abschluss im Snapshot");
-    put("v2-output-time", lastOutput ? stamp(lastOutput.completed_at) : "Systemsignale sind separat aufgeführt.");
+    put("v2-output-time", lastOutput ? checkpointText(lastOutput.checkpoint) + " · " + stamp(lastOutput.completed_at) : "Systemsignale sind separat aufgeführt.");
     const c = s.command_center || {};
     const f = s.freshness || {};
     const complete = f.operational_complete === true;
@@ -2430,7 +2454,7 @@
     const gatesCount = numeric(c.human_approval_count);
     const needsApproval = actionableGates.length > 0 && gatesCount > 0;
     const gatesComplete = c.gates_complete === true;
-    $("decisions").hidden = gatesComplete && !actionableGates.length;
+    $("decisions").hidden = false;
     $("pulse-action").href =
       gatesComplete && !needsApproval ? "#command" : "#decisions";
     // V2 keeps the Blocker destination stable even when no Owner action is open.
@@ -2443,6 +2467,7 @@
     const publication = {
       stopped: revenue.publication_stopped === true,
       replacementScheduled: revenue.replacement_scheduled === true,
+      replacementUnconfirmed: revenue.replacement_publication_unconfirmed === true,
       replacement: revenue.replacement || null,
       failed: normalizedStates.some((x) =>
         ["ERROR", "FAILED", "REJECTED"].includes(x),
@@ -2553,7 +2578,15 @@
         : "Launch-Signale werden gemessen · Veröffentlichung separat bestätigen.";
       if (publication.failed) { moneyTone = "amber"; moneyDetail = "Publication-Fehler beobachtet · Messung separat prüfen."; }
     }
-    if (publication.replacementScheduled) {
+    if (publication.replacementUnconfirmed) {
+      moneyTone = "amber";
+      moneyMain = "Nachweis offen";
+      moneyDetail = "Termin verstrichen · Veröffentlichung unbestätigt. Owner GO liegt vor.";
+      if (revenue.analytics_complete === true) {
+        moneyMain = revenue.sessions + " Sessions";
+        moneyDetail = "Veröffentlichung unbestätigt · kein Sale-Nachweis.";
+      }
+    } else if (publication.replacementScheduled) {
       moneyTone = "blue";
       moneyMain = "Geplant";
       moneyDetail = publication.replacement?.scheduled_at
@@ -2738,9 +2771,10 @@
     put(
       "current-task",
       primaryTitle ||
-        (operator.state === "IDLE_NO_RUNNABLE_WORK"
-          ? "Keine ausführbare Arbeit in der Arbeitsliste"
-          : "Keine aktive Ausführung"),
+        (!complete ? "Aktuelle Arbeit nicht bestätigt"
+          : operator.state === "IDLE_NO_RUNNABLE_WORK"
+            ? "Keine ausführbare Arbeit in der Arbeitsliste"
+            : "Keine aktive Ausführung"),
     );
     put(
       "allowed-task",
@@ -2767,7 +2801,7 @@
     );
     const operatorPanel = $("operator-brief");
     if (operatorPanel) operatorPanel.dataset.state = operator.state || "UNKNOWN";
-    put("loop-time", "Loop · " + stamp(c.last_loop_at));
+    put("loop-time", "Freier Loop · " + shortTime(c.last_loop_at));
     const jarvisState = $("jarvis-state");
     if (jarvisState)
       jarvisState.replaceWith(
@@ -3142,11 +3176,7 @@
         .sort((a, b) => {
           const score = (h) =>
             healthTone(h) === "red" ? 0 : healthTone(h) === "amber" ? 1 : healthTone(h) === "blue" ? 2 : 3;
-          return a.name === "Jarvis free loop"
-            ? -1
-            : b.name === "Jarvis free loop"
-              ? 1
-              : score(a) - score(b);
+          return score(a) - score(b);
         })
         .slice(0, 8);
       for (const h of ranked) {
@@ -3167,7 +3197,7 @@
         const proof = node("details", undefined, "health-evidence");
         proof.dataset.source = h.name;
         proof.open = healthOpen.has(h.name);
-        proof.append(node("summary", "Nachweis · " + (h.last_success_at ? shortTime(h.last_success_at) : "Zeit unbestätigt")));
+        proof.append(node("summary", "Nachweis · " + (h.last_success_at ? new Date(h.last_success_at).toLocaleString("de-DE", {day:"numeric", month:"numeric", hour:"2-digit", minute:"2-digit", timeZone:"Europe/Berlin"}) : "Zeit unbestätigt")));
         if (h.last_success_at)
           proof.append(node("small", "Zuletzt erfolgreich geprüft: " + stamp(h.last_success_at) + " · " + age(h.last_success_at)));
         if (h.name === "Production Smoke" && h.test_passed)
@@ -3235,7 +3265,7 @@
     }
 
     put("snapshot-time", "Snapshot · " + stamp(s.generated_at));
-    put("sync-label", "Live · " + shortTime(new Date().toISOString()));
+    put("sync-label", "Stand · " + shortTime(s.generated_at));
     const connection = $("connection-alert");
     if (connection) {
       connection.hidden = complete;
@@ -3284,7 +3314,7 @@
     document.body.dataset.executionMode = operatingMode;
     $("work").classList.toggle("has-execution", liveWorkers.length > 0);
     const currentSignals = new Set();
-    liveWorkers.slice(0, 3).forEach((w, index) => {
+    liveWorkers.slice(0, 1).forEach((w, index) => {
       const key = w.execution_id || w.worker_id || w.task_id || String(index);
       currentSignals.add(key);
       const signal = JSON.stringify([
@@ -3313,16 +3343,12 @@
     for (const key of executionSignals.keys())
       if (!currentSignals.has(key)) executionSignals.delete(key);
     executionObserved = true;
-    if (liveWorkers.length > 3)
-      executionDetails.append(
-        node(
-          "small",
-          liveWorkers.length -
-            3 +
-            " weitere Ausführungen in den technischen Details",
-        ),
-      );
-    if (!liveWorkers.length && s.freshness?.operational_complete === true) {
+    if (liveWorkers.length > 1) {
+      const more = node("a", (liveWorkers.length - 1) + " weitere Ausführung(en): " + taskTitle(liveWorkers[1]) + " →", "detail-link");
+      more.href = "#crew";
+      executionDetails.append(more);
+    }
+    if (!liveWorkers.length && s.freshness?.operational_complete === true && c.planner_state !== "scheduled_safe_work") {
       const focus = (s.workstreams || [])
         .filter((w) => w.focus_task)
         .sort(
@@ -3363,7 +3389,7 @@
             "Kein belastbarer Prozentfortschritt dokumentiert",
           ].join(" · ")
         : c.status === "WAITING"
-          ? c.system_explanation || "Der freie Loop prüft die Queue. Externe Antworten und neue Messsignale können die nächste Arbeit auslösen."
+          ? c.planner_state === "scheduled_safe_work" ? "Kein kostenloser Task ist jetzt fällig. Jarvis wartet auf neue Signale oder den geplanten Check." : c.system_explanation || "Der freie Loop prüft die Queue. Neue Signale können Arbeit auslösen."
           : "Keine aktive Ausführung verifiziert. Systemstatus und Quellen prüfen.",
     );
     put(
@@ -3475,13 +3501,11 @@
     });
     if (!next.children.length)
       next.append(
-        node(
-          "p",
-          c.status === "ERROR"
-            ? "Nächste Arbeit derzeit nicht verlässlich bestimmbar."
-            : "Keine Ready-Aufgabe beobachtet. Nächste Auswahl beim Supervisor-Wake.",
-          "muted",
-        ),
+        node("strong", c.status === "ERROR" ? "Plan nicht bestätigt"
+          : c.next_safe_work_at ? "Kostenloser Check geplant" : "Keine startbereite Aufgabe"),
+        node("p", c.next_safe_work_at ? stamp(c.next_safe_work_at)
+          : "Nächste Auswahl beim bestätigten Supervisor-Loop.", "muted"),
+        node("small", "Planung ist keine laufende Ausführung."),
       );
     else
       next.append(
@@ -3624,11 +3648,14 @@
       }
       put("sync-label", "Verbindung unterbrochen");
       put("active-workers", "—");
+      $("v21-risks").replaceChildren(node("p", "Live-Abfrage fehlgeschlagen. Letzte Nachweise unter Systeme prüfen."));
       put("working-count", "—");
       put("decision-count", "—");
       put("decision-nav", "—");
       put("worker-summary", "Aktivität aktuell unbestätigt");
       put("v2-output-time", "Letzter geladener Stand · Verbindung unterbrochen");
+      $("crew-live-now").querySelectorAll(".crew-live-empty strong").forEach(el => { el.textContent = "Aktuelle Arbeit nicht bestätigt"; });
+      $("crew-live-now").querySelectorAll(".crew-live-empty p").forEach(el => { el.textContent = "Verbindung unterbrochen. Der letzte geladene Stand ist kein aktueller Nachweis."; });
       $("crew-live-now").querySelectorAll(".crew-live-badge").forEach(el => { el.textContent = "LETZTER STAND"; });
       $("crew-live-now").querySelectorAll(".crew-live-card").forEach(el => { el.dataset.stale = "true"; });
       put("crew-live-count", "Aktive Ausführungen unbestätigt");
@@ -3752,7 +3779,7 @@
   // Route existing panels without duplicating IDs, controls, requests or state.
   // Hash links stay shareable; refresh never resets the selected view or focus.
   const viewLabels = {
-    now: "Jetzt", workers: "Worker", blockers: "Blocker",
+    now: "Jetzt", workers: "Worker", blockers: "Freigaben",
     systems: "Systeme", revenue: "First Money", details: "Details",
   };
   const viewTargets = {
@@ -3796,6 +3823,11 @@
       $("toggle-details").textContent = "Technische Details ausblenden";
     }
     if (moveFocus) {
+      let ancestor = target?.parentElement;
+      while (ancestor) {
+        if (ancestor.tagName === "DETAILS") ancestor.open = true;
+        ancestor = ancestor.parentElement;
+      }
       const focus = target && target.getClientRects().length ? target : $("cockpit-content");
       focus.setAttribute("tabindex", "-1");
       focus.focus({ preventScroll: true });

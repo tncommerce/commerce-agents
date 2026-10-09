@@ -145,7 +145,7 @@ const { chromium } = require("playwright");
     s.freshness.operational_complete = false;
     await refresh();
     assert.match(
-      await p.locator("#source-summary").innerText(),
+      await p.locator("#source-summary").textContent(),
       /nicht vollständig bestätigt/,
     );
     assert.equal(await p.locator("#execution-source-status").isVisible(), true);
@@ -209,7 +209,7 @@ const { chromium } = require("playwright");
     assert.equal(await p.locator("#approval-alert").isVisible(), true);
     assert.equal(await p.locator("#pulse-action.state-amber").count(), 1);
     await p.locator(".v2-explain").evaluate(el => { el.open = true; });
-    assert.match(await p.locator("#pulse-action").innerText(), /Aktion nötig/);
+    assert.match(await p.locator("#pulse-action").textContent(), /Aktion nötig/);
     assert.equal(await p.locator("#pulse-action.state-red").count(), 0);
     const decisionText = await p.locator("#decision-list").innerText();
     for (const text of ["Delina EDP 75 ml", "qa_delina_asset", "A complete safe caption", "qa_delina_fixture", "qa_gate", "9.6", "Review-Gate erkannt. Keine automatische Aktion ohne explizit freigegebenen Handler."])
@@ -234,20 +234,23 @@ const { chromium } = require("playwright");
     s.command_center.human_approval_count = 0;
     await refresh();
     assert.equal(await p.locator("#approval-alert").isVisible(), false);
-    assert.equal(await p.locator("#decisions").isVisible(), false);
+    assert.equal(await p.locator("#decisions").isVisible(), true);
+    assert.match(await p.locator("#decision-list").innerText(), /Keine/);
     assert.equal(await p.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
     // Server-built Crew/Risk scenarios. Fixed roles never manufacture executions.
     const applyScenario = async (name) => { Object.assign(s, structuredClone(base._qa_scenarios[name])); await refresh(); };
     await applyScenario("healthy");
     await go("crew", "workers");
     await p.locator(".v2-crew-details > summary").click();
+    await go("system-health", "systems");
     await p.locator(".v2-risk-details > summary").click();
+    await go("crew", "workers");
     assert.equal(await p.locator("#global-risk.state-green").count(), 1);
     assert.equal(await p.locator(".crew-node").count(), 10);
     assert.equal(await p.locator(".crew-cluster").count(), 4);
     assert.equal(await p.locator('.crew-node[data-active="true"]').count(), 0);
     assert.equal(await p.locator("#crew").isVisible(), true);
-    assert.match(await p.locator("#crew-live-now").innerText(), /keine Worker-Ausführung/i);
+    assert.match(await p.locator("#crew-live-now").innerText(), /Kein Worker arbeitet/i);
     const rosterBefore = await p.locator(".crew-node h4").allTextContents();
     assert.equal(new Set(rosterBefore).size, 10);
     await applyScenario("warning");
@@ -258,7 +261,7 @@ const { chromium } = require("playwright");
     assert.equal(await p.locator("#risk-detail-sources.state-amber").count(), 1);
     assert.equal(await p.locator("#risk-detail-affiliate.state-amber").count(), 1);
     assert.equal(await p.locator("#risk-panel .state-red").count(), 0);
-    assert.match(await p.locator("#source-summary").innerText(), /Quellenhinweise/);
+    assert.match(await p.locator("#source-summary").textContent(), /Quellenhinweise/);
     assert.ok((await p.locator("#crew-summary-research").boundingBox()).height >= 32);
     assert.equal(await p.locator("#pulse-action.state-red").count(), 0);
     if ((await p.locator("#crew-details-research").getAttribute("open")) === null)
@@ -266,8 +269,10 @@ const { chromium } = require("playwright");
     assert.match(await p.locator('[data-role="research"]').innerText(), /Dior/);
     assert.match(await p.locator('[data-role="research"]').innerText(), /Wartegrund ist nicht verifiziert/);
     assert.match(await p.locator('[data-role="affiliate"]').innerText(), /Read-only/);
+    await go("system-health", "systems");
     await p.locator("#risk-summary-sources").click();
     assert.match(await p.locator("#risk-detail-sources").innerText(), /Gmail-Zugang abgelaufen/);
+    await go("crew", "workers");
     await p.locator("#crew-summary-research").focus();
     const crewAutomatic = p.waitForResponse(r => r.url().endsWith("/snapshot"));
     await p.evaluate(() => document.querySelector("#refresh").click());
@@ -302,12 +307,12 @@ const { chromium } = require("playwright");
     assert.equal(await p.locator("#risk-detail-production.state-red").count(), 1);
     await applyScenario("old");
     assert.equal(await p.locator("#global-risk.state-amber").count(), 1);
-    assert.match(await p.locator("#risk-detail-production").innerText(), /Letzter Test bestanden/);
+    assert.match(await p.locator("#risk-detail-production").textContent(), /Letzter Test bestanden/);
     await applyScenario("gate");
     assert.equal(await p.locator("#global-risk.state-amber").count(), 1);
     assert.equal(await p.locator("#risk-detail-owner.state-amber").count(), 1);
     await p.locator(".v2-explain").evaluate(el => { el.open = true; });
-    assert.match(await p.locator("#pulse-action").innerText(), /Aktion nötig/);
+    assert.match(await p.locator("#pulse-action").textContent(), /Aktion nötig/);
     assert.equal(await p.locator('[data-role="content"]').getAttribute("data-state"), "OWNER GATE");
     assert.equal(await p.locator("#crew-owner-link").isVisible(), true);
     await applyScenario("warning");

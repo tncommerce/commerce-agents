@@ -6,7 +6,7 @@
     <meta content="width=device-width,initial-scale=1" name="viewport" />
     <meta content="OWNER_CSRF" name="owner-csrf" />
     <meta content="noindex,nofollow" name="robots" />
-    <title>DUFYND · Jarvis Cockpit V2</title>
+    <title>DUFYND · Jarvis Cockpit V2.1</title>
     <link href="/internal/assets/room.css" rel="stylesheet" />
     <script defer="" src="/internal/assets/room.js"></script>
   </head>
@@ -31,7 +31,7 @@
             ><span class="nav-icon">↝</span><span>Worker</span></a
           >
           <a data-view="blockers" href="#decisions"
-            ><span class="nav-icon">◇</span><span>Blocker</span
+            ><span class="nav-icon">◇</span><span>Freigaben</span
             ><b id="decision-nav">—</b></a
           >
           <a data-view="systems" href="#system-health"
@@ -107,7 +107,7 @@
             <section class="command" data-views="now" id="command">
               <div class="command-copy">
                 <div class="section-kicker">
-                  <span class="eyebrow">PRIORITÄT · JETZT</span>
+                  <span class="eyebrow">P0 · NÄCHSTE PRIORITÄT</span>
                   <span class="pill neutral" id="jarvis-state">UNKNOWN</span>
                 </div>
                 <h1 class="priority" id="priority">
@@ -131,65 +131,14 @@
                     ><strong class="time-stat" id="wake-time">—</strong>
                   </div>
                 </div>
-                <a
-                  class="source-summary"
-                  href="#system-health"
-                  id="source-summary"
-                  >Quellen werden geprüft.</a
-                >
-                <div class="v2-last-output">
-                  <small>LETZTER WORKER-OUTPUT</small
-                  ><strong id="v2-last-output">Wird geprüft</strong
-                  ><span id="v2-output-time">Noch kein Nachweis</span>
-                </div>
                 <details class="v2-explain">
                   <summary>Einordnung &amp; nächste Schritte</summary>
-                  <div aria-label="CEO Status" class="pulse-grid">
-                    <article class="pulse-card state-neutral" id="pulse-jarvis">
-                      <div class="pulse-label">
-                        <i></i><small>JARVIS</small>
-                      </div>
-                      <strong id="pulse-jarvis-value">Wird geprüft</strong>
-                      <span id="pulse-jarvis-detail"
-                        >Live-State wird geladen.</span
-                      >
-                    </article>
-                    <a
-                      class="pulse-card state-neutral"
-                      href="#decisions"
-                      id="pulse-action"
-                    >
-                      <div class="pulse-label">
-                        <i></i><small>DEINE AKTION</small>
-                      </div>
-                      <strong id="pulse-action-value">Wird geprüft</strong>
-                      <span id="pulse-action-detail"
-                        >Freigabestatus wird geladen.</span
-                      >
-                    </a>
-                    <a
-                      class="pulse-card state-neutral"
-                      href="#revenue"
-                      id="pulse-money"
-                    >
-                      <div class="pulse-label">
-                        <i></i><small>FIRST MONEY</small>
-                      </div>
-                      <strong id="pulse-money-value">Wird geprüft</strong>
-                      <span id="pulse-money-detail"
-                        >Publication-State wird geladen.</span
-                      >
-                    </a>
-                    <article class="pulse-card state-neutral" id="pulse-cost">
-                      <div class="pulse-label">
-                        <i></i><small>KOSTEN HEUTE</small>
-                      </div>
-                      <strong id="pulse-cost-value">—</strong>
-                      <span id="pulse-cost-detail"
-                        >Kostenstatus wird geladen.</span
-                      >
-                    </article>
-                  </div>
+                  <a
+                    class="source-summary"
+                    href="#system-health"
+                    id="source-summary"
+                    >Quellen werden geprüft.</a
+                  >
                   <section
                     aria-label="Jarvis Operator Briefing"
                     class="operator-brief"
@@ -234,12 +183,60 @@
                     <span id="worker-summary">Status wird geprüft</span
                     ><span id="next-wake">Nächster Wake unbekannt</span>
                   </div>
+                  <article class="pulse-card state-neutral" id="pulse-jarvis">
+                    <div class="pulse-label"><i></i><small>JARVIS</small></div>
+                    <strong id="pulse-jarvis-value">Wird geprüft</strong>
+                    <span id="pulse-jarvis-detail"
+                      >Live-State wird geladen.</span
+                    >
+                  </article>
                 </details>
               </div>
             </section>
+            <div
+              aria-label="CEO Status"
+              class="pulse-grid v21-summary"
+              data-views="now"
+            >
+              <a
+                class="pulse-card state-neutral"
+                href="#decisions"
+                id="pulse-action"
+              >
+                <div class="pulse-label">
+                  <i></i><small>DEINE FREIGABEN</small>
+                </div>
+                <strong id="pulse-action-value">Wird geprüft</strong>
+                <span id="pulse-action-detail"
+                  >Freigabestatus wird geladen.</span
+                >
+              </a>
+              <a
+                class="pulse-card state-neutral"
+                href="#revenue"
+                id="pulse-money"
+              >
+                <div class="pulse-label"><i></i><small>FIRST MONEY</small></div>
+                <strong id="pulse-money-value">Wird geprüft</strong>
+                <span id="pulse-money-detail"
+                  >Publication-State wird geladen.</span
+                >
+              </a>
+              <a
+                class="pulse-card state-neutral"
+                href="#system-health"
+                id="pulse-cost"
+              >
+                <div class="pulse-label">
+                  <i></i><small>KOSTEN HEUTE</small>
+                </div>
+                <strong id="pulse-cost-value">—</strong>
+                <span id="pulse-cost-detail">Kostenstatus wird geladen.</span>
+              </a>
+            </div>
             <section
               class="approval-alert"
-              data-views="now blockers"
+              data-views="now"
               hidden=""
               id="approval-alert"
             >
@@ -261,7 +258,7 @@
                 <div class="panel-heading">
                   <div>
                     <span class="eyebrow">AUSFÜHRUNG</span>
-                    <h2>Im Fokus</h2>
+                    <h2>Was gerade passiert</h2>
                   </div>
                   <span class="small-label" id="loop-time">—</span>
                 </div>
@@ -286,6 +283,11 @@
                   id="execution-source-status"
                   role="status"
                 ></p>
+                <div class="v2-last-output">
+                  <small>LETZTER WORKER-OUTPUT</small
+                  ><strong id="v2-last-output">Wird geprüft</strong
+                  ><span id="v2-output-time">Noch kein Nachweis</span>
+                </div>
                 <p class="execution-context" id="execution-context">
                   Ausführungsnachweis wird geprüft.
                 </p>
@@ -301,8 +303,8 @@
               <section class="panel next-panel">
                 <div class="panel-heading">
                   <div>
-                    <span class="eyebrow">NÄCHSTE AUSWAHL</span>
-                    <h2>Als Nächstes</h2>
+                    <span class="eyebrow">PLAN &amp; CHECKPOINT</span>
+                    <h2>Nächster Schritt</h2>
                   </div>
                 </div>
                 <div id="next-task-list"></div>
@@ -311,6 +313,40 @@
                   id="next-observed-trigger"
                 ></div>
               </section>
+            </section>
+            <section
+              aria-labelledby="crew-activity-title"
+              class="panel crew-activity-board"
+              data-views="now workers"
+            >
+              <div class="crew-live-heading">
+                <div>
+                  <span class="eyebrow">WORKER-PROTOKOLL</span>
+                  <h3 id="crew-activity-title">Zuletzt erledigt</h3>
+                </div>
+                <span class="small-label">Abschlüsse mit Nachweis</span>
+              </div>
+              <div class="crew-activity" id="crew-activity">
+                <p class="muted">Letzte Ausführungen werden geladen.</p>
+              </div>
+            </section>
+            <section
+              class="panel decision-panel"
+              data-views="blockers"
+              id="decisions"
+            >
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">MASTER ACTION CENTER</span>
+                  <h2>Deine Freigaben</h2>
+                </div>
+                <span class="small-label"
+                  >Entscheidung, Grund und nächste Handlung</span
+                >
+              </div>
+              <div class="list-placeholder" id="decision-list">
+                Master-Aktionen werden geprüft.
+              </div>
             </section>
             <section
               class="panel waiting-panel"
@@ -329,54 +365,23 @@
                 <div id="waiting-list"></div>
               </details>
             </section>
-            <article class="panel overview-activity-card" data-views="now">
-              <div class="panel-heading">
-                <div>
-                  <span class="eyebrow">BEOBACHTETE AKTIVITÄT</span>
-                  <h2>Letzte Signale</h2>
+            <details class="v21-dependencies" data-views="blockers">
+              <summary>Arbeitsbereiche &amp; offene Abhängigkeiten</summary>
+              <section class="panel workstreams-panel" id="workstreams">
+                <div class="panel-heading">
+                  <div>
+                    <span class="eyebrow">ARBEITSBEREICHE</span>
+                    <h2>Was läuft · was wartet</h2>
+                  </div>
+                  <span class="small-label"
+                    >Aufgabe · Wartegrund · nächster Nachweis</span
+                  >
                 </div>
-                <span class="small-label">verifizierte Schritte</span>
-              </div>
-              <div class="overview-feed" id="overview-activity-list">
-                <p class="muted">Aktivität wird geladen.</p>
-              </div>
-            </article>
-            <section
-              class="panel decision-panel"
-              data-views="blockers"
-              id="decisions"
-            >
-              <div class="panel-heading">
-                <div>
-                  <span class="eyebrow">MASTER ACTION CENTER</span>
-                  <h2>Was du jetzt entscheiden oder tun musst</h2>
+                <div class="workstream-grid" id="workstream-list">
+                  <p class="muted">Workstreams werden gelesen.</p>
                 </div>
-                <span class="small-label"
-                  >Direkt verständlich · direkt handelbar</span
-                >
-              </div>
-              <div class="list-placeholder" id="decision-list">
-                Master-Aktionen werden geprüft.
-              </div>
-            </section>
-            <section
-              class="panel workstreams-panel"
-              data-views="blockers"
-              id="workstreams"
-            >
-              <div class="panel-heading">
-                <div>
-                  <span class="eyebrow">ARBEITSBEREICHE</span>
-                  <h2>Was läuft · was wartet</h2>
-                </div>
-                <span class="small-label"
-                  >Aufgabe · Wartegrund · nächster Nachweis</span
-                >
-              </div>
-              <div class="workstream-grid" id="workstream-list">
-                <p class="muted">Workstreams werden gelesen.</p>
-              </div>
-            </section>
+              </section>
+            </details>
             <section
               aria-labelledby="crew-title"
               class="panel crew-panel"
@@ -385,13 +390,13 @@
             >
               <div class="panel-heading">
                 <div>
-                  <span class="eyebrow">JARVIS CREW · LIVE</span>
+                  <span class="eyebrow">WORKER · BELEGTE AUSFÜHRUNGEN</span>
                   <h2 id="crew-title">Wer macht gerade was?</h2>
                 </div>
                 <span class="pill neutral" id="crew-count">Wird geprüft</span>
               </div>
               <p class="crew-intro">
-                Aktiv heißt: echte Ausführung mit gültiger Lease und Heartbeat.
+                Aktiv nur mit gültiger Lease und aktuellem Heartbeat.
               </p>
               <div class="crew-supervisor state-neutral" id="crew-supervisor">
                 <span aria-hidden="true" class="crew-core-mark">J</span>
@@ -410,7 +415,7 @@
               >
                 <div class="crew-live-heading">
                   <div>
-                    <span class="eyebrow">LIVE ACTION</span>
+                    <span class="eyebrow">JETZT</span>
                     <h3 id="crew-live-title">Aktuell in Arbeit</h3>
                   </div>
                   <span class="small-label" id="crew-live-count"
@@ -419,23 +424,6 @@
                 </div>
                 <div class="crew-live-now" id="crew-live-now">
                   <p class="muted">Live-Ausführungen werden geprüft.</p>
-                </div>
-              </section>
-              <section
-                aria-labelledby="crew-activity-title"
-                class="crew-activity-board"
-              >
-                <div class="crew-live-heading">
-                  <div>
-                    <span class="eyebrow">LETZTE ARBEIT</span>
-                    <h3 id="crew-activity-title">
-                      Verifizierte Worker-Aktivität
-                    </h3>
-                  </div>
-                  <span class="small-label">kein Fake-Live</span>
-                </div>
-                <div class="crew-activity" id="crew-activity">
-                  <p class="muted">Letzte Ausführungen werden geladen.</p>
                 </div>
               </section>
               <p class="crew-note" hidden="" id="crew-unassigned"></p>
@@ -656,12 +644,29 @@
                 <div id="map-tools"></div>
               </div>
             </section>
+            <details class="v21-signals" data-views="now systems">
+              <summary>Systemsignale &amp; Beobachtungen</summary>
+              <article class="panel overview-activity-card">
+                <div class="panel-heading">
+                  <div>
+                    <span class="eyebrow">BEOBACHTETE AKTIVITÄT</span>
+                    <h2>Letzte Signale</h2>
+                  </div>
+                  <span class="small-label"
+                    >Beobachtungen · keine Worker-Arbeit</span
+                  >
+                </div>
+                <div class="overview-feed" id="overview-activity-list">
+                  <p class="muted">Aktivität wird geladen.</p>
+                </div>
+              </article>
+            </details>
           </div>
           <aside aria-label="Jarvis und Live-Status" class="cockpit-rail">
             <section
               aria-label="Jarvis Live"
               class="panel v2-jarvis"
-              data-mobile-views="now workers blockers systems revenue details"
+              data-mobile-views="now systems"
             >
               <div class="panel-heading">
                 <div>
@@ -713,9 +718,27 @@
                 </div>
               </div>
             </section>
+            <section
+              aria-labelledby="v21-risk-title"
+              class="panel v21-risk-card"
+              data-mobile-views="now"
+              data-views="now workers blockers revenue details"
+            >
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">NACHWEISE &amp; RISIKEN</span>
+                  <h2 id="v21-risk-title">Im Blick behalten</h2>
+                </div>
+              </div>
+              <div id="v21-risks"><p>Quellen werden geprüft.</p></div>
+              <a class="detail-link" href="#system-health"
+                >Alle Systeme prüfen →</a
+              >
+            </section>
             <article
               class="panel overview-health-card"
               data-mobile-views="systems"
+              data-views="systems"
               id="system-health"
             >
               <div class="panel-heading">
@@ -734,7 +757,11 @@
                 <p class="muted">Systemstatus wird geladen.</p>
               </div>
             </article>
-            <section class="panel cost-panel" data-mobile-views="systems">
+            <section
+              class="panel cost-panel"
+              data-mobile-views="systems"
+              data-views="systems"
+            >
               <div class="panel-heading">
                 <div>
                   <span class="eyebrow">KOSTENKONTROLLE</span>
@@ -760,7 +787,7 @@
           </aside>
         </div>
         <footer class="footer">
-          <span>DUFYND · Jarvis Cockpit V2</span>
+          <span>DUFYND · Jarvis Cockpit V2.1</span>
           <span id="snapshot-time">Noch kein Snapshot</span>
           <span>Bestehende Freigabegrenzen aktiv</span>
         </footer>
@@ -770,7 +797,7 @@
       <a aria-current="page" data-view="now" href="#command"
         ><span>◈</span>Jetzt</a
       ><a data-view="workers" href="#crew"><span>↝</span>Worker</a
-      ><a data-view="blockers" href="#decisions"><span>◇</span>Blocker</a
+      ><a data-view="blockers" href="#decisions"><span>◇</span>Freigaben</a
       ><a data-view="systems" href="#system-health"><span>◎</span>Systeme</a>
     </nav>
   </body>

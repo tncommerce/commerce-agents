@@ -62,3 +62,62 @@ node tests/browser/control_room_v2.cjs /tmp/room-v2.json
 Both browser scripts accept `CONTROL_ROOM_QA_CHROMIUM` for an existing Chromium
 binary and `CONTROL_ROOM_QA_OUTPUT` for screenshots; defaults use temporary folders.
 No generated fixture or screenshot enters production assets.
+
+
+## V2.1 — Owner feedback, 2026-10-09
+
+Updated the existing dashboard from branch head `4c029f1`, using both original
+references in `/DUFYND/Jarvis/References/2026-10-09`. No alternate mock, dependencies,
+providers, infrastructure, migrations, worker dispatches or changes to `main`.
+
+- One consolidated V2.1 CSS layer replaces the accumulated V2 tail overrides.
+  Descriptions use 12–14 px, major values 18–22 px. Jarvis voice is compact.
+- Priority, Owner gates, First Money, costs, current execution, last verified output
+  and next checkpoint/plan are visible in the first 1440×900 desktop viewport.
+- Mobile uses independent Jetzt, Worker, Freigaben, Systeme destinations. The
+  start view places work before a concise business summary. Technical dependencies,
+  the full role roster and observer signals are native disclosures.
+- The first execution shows its actual verified checkpoint and documented next
+  step. Missing checkpoints/results remain explicitly missing. Additional executions
+  link to the Worker view; roles never count as executions. Common stored audit
+  titles have German display labels, with original identifiers preserved in evidence.
+- Verified completions are separate from observer heartbeats. The receipt time
+  no longer substitutes for snapshot time. Source timestamps include dates and
+  degraded sources sort before healthy sources.
+- Freigaben stays useful with zero gates. Owner review does not float over the
+  decision controls. Deep links expand enclosing dependency disclosures.
+- Live data inspection found a persisted replacement publication schedule from
+  October 5 still displayed as planned on October 9. After the existing 20-minute
+  schedule grace period, the read-only projection now marks publication unconfirmed.
+  It preserves Owner GO, replacement identity, attribution and stopped original
+  history; it never publishes again or invents an additional Owner gate.
+
+### Verification and limits
+
+Full local Python suite: **3,165 passed, 185 skipped**. The skips are existing
+integration/environment gates. Added regression coverage for future/elapsed
+replacement schedules, preserving authorization and unknown sale/commission.
+Existing auth, CSRF, logout, Owner-action and voice contract tests remain intact.
+Browser replays cover failure/recovery, active/wait/idle/Owner states, keyboard,
+focus retention, disclosures, deep links, reduced motion and horizontal overflow.
+The acceptance replay now includes 1920 px as well as 320/390/430/768/1280/1440.
+
+`tests/browser/control_room_capture.cjs` captures seven widths and all four primary
+views from an externally supplied sanitized snapshot, including viewport/full-page
+images, source and image hashes, and measured content positions. It intercepts
+all requests, requires GET, and rejects external origins. Important live-data
+summary elements must fit one desktop or two mobile viewports. No capture data,
+Owner credentials, tokens or screenshots are committed to this public repository.
+
+The live-data replay uses the production `DashboardReader` projection and the
+same allowlisted database columns, exact count bounds and read-only First Money
+runtime. Decision tokens are omitted, no budget identity is guessed, and missing
+budget-window data remains unknown. Reads are non-atomic as in production.
+
+Production anonymous access was checked: health succeeds, the dashboard redirects
+to Owner login, snapshot returns 401. This environment has no authenticated Owner
+session. Screenshots therefore represent the actual application rendered with
+captured live data, **not an authenticated production browser session**. Voice
+configuration in the captured template is disabled; no paid voice or real business
+approval/publication was invoked. Green CI and deployed byte verification are
+recorded separately after pushing the development branch.

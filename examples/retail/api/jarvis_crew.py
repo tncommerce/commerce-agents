@@ -609,6 +609,7 @@ def project_risk(snapshot: dict) -> dict:
     runtime = money.get("runtime", {})
     replacement = money.get("replacement", {})
     replacement_scheduled = money.get("replacement_scheduled") is True
+    replacement_unconfirmed = money.get("replacement_publication_unconfirmed") is True
     tracking = (
         money.get("analytics_provenance") == "launch_attributed_excludes_prelaunch"
         and money.get("analytics_complete") is True
@@ -616,23 +617,31 @@ def project_risk(snapshot: dict) -> dict:
     panel(
         "money",
         "FIRST MONEY",
-        "blue"
+        "amber"
+        if replacement_unconfirmed
+        else "blue"
         if replacement_scheduled or (tracking and not money.get("publication_stopped"))
         else "amber",
-        "Ersatz geplant · Owner GO vorhanden"
+        "Veröffentlichung nicht bestätigt"
+        if replacement_unconfirmed
+        else "Ersatz geplant · Owner GO vorhanden"
         if replacement_scheduled
         else "Launch gestoppt · Messhistorie erhalten"
         if money.get("publication_stopped")
         else "Launch · Monitoring"
         if tracking
         else "Tracking-Nachweis prüfen",
-        "Der ursprüngliche 1-Million-Post bleibt als entfernt/gestoppt historisiert. "
+        "Der gespeicherte Ersatztermin ist verstrichen. Owner GO liegt vor; ein Termin ist kein Veröffentlichungsnachweis."
+        if replacement_unconfirmed
+        else "Der ursprüngliche 1-Million-Post bleibt als entfernt/gestoppt historisiert. "
         "Die freigegebene Ersatzrevision ist separat geplant; keine Sale-Aussage vor Affiliate-Netzwerkbeleg."
         if replacement_scheduled
         else "Launch-Funnel aus attribuierten Signalen. Clickout ist kein Sale; Revenue nur mit Affiliate-Network-Nachweis."
         if tracking
         else "Aktueller, eindeutig attribuierter Runtime-Nachweis fehlt; keine Conversion ableiten.",
-        "Geplante Instagram-Veröffentlichung beobachten: "
+        "Aktuellen Veröffentlichungsnachweis read-only prüfen; nicht automatisch erneut veröffentlichen."
+        if replacement_unconfirmed
+        else "Geplante Instagram-Veröffentlichung beobachten: "
         + str(replacement.get("scheduled_at") or "Zeitpunkt nicht bestätigt")
         if replacement_scheduled
         else "Neue Revision im Content-Chat prüfen; explizites Owner GO abwarten."
@@ -721,7 +730,7 @@ def project_risk(snapshot: dict) -> dict:
         if operator.get("state") == "IDLE_NO_RUNNABLE_WORK"
         else "LAGE NICHT VOLLSTÄNDIG BESTÄTIGT"
         if not essential_known
-        else "BETRIEB STABIL"
+        else "HINWEISE PRÜFEN"
         if warning
         else "ALLES IM GRÜNEN",
         "summary": str(critical) + " kritische Punkte prüfen."

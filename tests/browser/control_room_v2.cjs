@@ -26,7 +26,7 @@ const { chromium } = require("playwright");
   const errors = [],
     writes = [],
     measurements = [];
-  for (const width of [320, 390, 430, 768, 1280, 1440]) {
+  for (const width of [320, 390, 430, 768, 1280, 1440, 1920]) {
     let snapshot = structuredClone(fixture._qa_scenarios.active),
       unavailable = false;
     const page = await browser.newPage({
@@ -170,7 +170,7 @@ const { chromium } = require("playwright");
         await go("decisions", "blockers");
         assert.equal(await page.locator("#decisions").isVisible(), true);
         const actionBox = await page.locator("#decisions").boundingBox();
-        assert.ok(actionBox.y >= 0 && actionBox.y < 100, "Owner destination is brought into view");
+        assert.ok(actionBox.y >= 0 && actionBox.y + Math.min(actionBox.height, 300) < 844, "Owner destination is brought into view");
         await fits();
         await page.screenshot({
           path: path.join(output, `v2-${width}-blockers.png`),

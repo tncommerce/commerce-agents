@@ -1043,6 +1043,13 @@ def build_snapshot(
             "evidence_source": "persisted_social_quality",
             "observed_at": snapshot["social_quality"]["observed_at"],
         }
+    # A persisted schedule is history after its deadline, never proof of publication.
+    # Keep replacement identity/authorization for attribution and never invent a new gate.
+    if replacement_scheduled:
+        scheduled_at = _time(snapshot["social_quality"]["instagram_scheduled_at"])
+        if scheduled_at and scheduled_at + timedelta(minutes=20) < now:
+            money["replacement_publication_unconfirmed"] = True
+            money["replacement"]["state"] = "PUBLICATION_UNCONFIRMED"
     # Additive CEO projections. A candidate is not a certified handler selection.
     missions = [
         m for lane, rows in board.items() if lane not in {"DONE", "CANCELLED"} for m in rows

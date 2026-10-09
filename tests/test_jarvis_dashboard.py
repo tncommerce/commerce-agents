@@ -1272,3 +1272,37 @@ def test_ceo_dashboard_surfaces_business_planning_gap_before_future_maintenance(
     assert result["operator_diagnosis"]["state"] == "PLANNING_REQUIRED"
     assert result["operator_diagnosis"]["recommended_now"]["id"] == "plan_business_priority"
     assert result["operator_diagnosis"]["owner_action_required"] is False
+
+
+@pytest.mark.parametrize("minutes_after", [19, 21, 4 * 24 * 60])
+def test_elapsed_replacement_schedule_is_not_current_publication_evidence(minutes_after):
+    data = ceo_data()
+    scheduled = NOW - timedelta(minutes=minutes_after)
+    data["social_quality"] = [
+        {
+            "last_verified_at": (scheduled - timedelta(hours=1)).isoformat(),
+            "publishing_authorized": True,
+            "instagram_auto_publish": True,
+            "instagram_draft": False,
+            "replacement_content_id": "replacement_fixture",
+            "replacement_experiment_id": "replacement_experiment",
+            "instagram_scheduled_at": scheduled.isoformat(),
+        }
+    ]
+    snapshot = build_snapshot(data, now=NOW)
+    money = snapshot["first_money"]
+    # Authorization and attribution identity survive; a past plan is not a live post.
+    assert money["replacement_scheduled"] is True
+    assert snapshot["social_quality"]["publishing_authorized"] is True
+    risk = next(p for p in snapshot["global_risk"]["panels"] if p["id"] == "money")
+    if minutes_after > 20:
+        assert money["replacement_publication_unconfirmed"] is True
+        assert money["replacement"]["state"] == "PUBLICATION_UNCONFIRMED"
+        assert risk["tone"] == "amber"
+        assert risk["title"] == "Veröffentlichung nicht bestätigt"
+        assert "erneut veröffentlichen" in risk["next_step"]
+    else:
+        assert not money.get("replacement_publication_unconfirmed")
+        assert money["replacement"]["state"] == "SCHEDULED"
+    assert money["transactions"] is None
+    assert money["commission_eur"] is None
