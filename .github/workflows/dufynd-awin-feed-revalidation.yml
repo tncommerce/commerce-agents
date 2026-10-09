@@ -2,6 +2,8 @@ name: DUFYND Awin Feed Revalidation
 
 on:
   workflow_dispatch:
+  push:
+    branches: [dufynd-awin-refresh-20261009]
 
 permissions:
   contents: read
