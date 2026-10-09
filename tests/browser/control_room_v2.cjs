@@ -169,6 +169,8 @@ const { chromium } = require("playwright");
         assert.equal(await page.locator("#approval-alert").isVisible(), true);
         await go("decisions", "blockers");
         assert.equal(await page.locator("#decisions").isVisible(), true);
+        const actionBox = await page.locator("#decisions").boundingBox();
+        assert.ok(actionBox.y >= 0 && actionBox.y < 100, "Owner destination is brought into view");
         await fits();
         await page.screenshot({
           path: path.join(output, `v2-${width}-blockers.png`),

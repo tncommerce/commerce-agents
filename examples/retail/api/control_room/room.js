@@ -3626,6 +3626,7 @@
       put("active-workers", "—");
       put("working-count", "—");
       put("decision-count", "—");
+      put("decision-nav", "—");
       put("worker-summary", "Aktivität aktuell unbestätigt");
       put("v2-output-time", "Letzter geladener Stand · Verbindung unterbrochen");
       $("crew-live-now").querySelectorAll(".crew-live-badge").forEach(el => { el.textContent = "LETZTER STAND"; });
@@ -3798,7 +3799,7 @@
       const focus = target && target.getClientRects().length ? target : $("cockpit-content");
       focus.setAttribute("tabindex", "-1");
       focus.focus({ preventScroll: true });
-      if (["work", "workstreams", "workers", "missions", "systems", "activity", "map"].includes(id))
+      if (["work", "decisions", "blocker-waits", "workstreams", "workers", "missions", "systems", "activity", "map"].includes(id))
         focus.scrollIntoView({ block: "start", behavior: "instant" });
       else window.scrollTo({ top: 0, behavior: "instant" });
     }

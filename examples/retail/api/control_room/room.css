@@ -4911,3 +4911,9 @@ body.cockpit-v2 {
 .cockpit-v2 .budget-values { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 6px; }
 .cockpit-v2 .budget-values > div { min-width: 0; padding: 8px; }
 .cockpit-v2 .budget-values strong { font-size: clamp(14px,2vw,24px); overflow-wrap: anywhere; }
+
+/* An Owner review is an amber action request, not a confirmed system failure. */
+.cockpit-v2 .approval-alert { border-color: #f0b65d45; border-left-color: #f0b65d; background: #2a241b; box-shadow: none; }
+.cockpit-v2 .approval-alert small, .cockpit-v2 .approval-alert strong { color: #f0c982; }
+.cockpit-v2 .approval-alert p { color: #cdbb9b; }
+.cockpit-v2 .approval-link { border-color: #f0b65d45; background: #f0b65d0a; color: #f0cf98; }
