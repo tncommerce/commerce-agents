@@ -1,0 +1,69 @@
+/* Catalogue presentation only. Never recolour, crop or regenerate source media. */
+.catalog[data-variant="card"] {
+  background: #f5f3ee;
+  perspective: none;
+  box-shadow: inset 0 0 0 1px rgb(34 34 31 / 0.04);
+}
+
+.catalog[data-variant="card"]::before {
+  display: none;
+}
+
+/* The same frame for photographs, transparent cutouts and editorial images.
+   The source's internal whitespace still requires a separate per-asset audit. */
+.catalog[data-variant="card"][data-dufynd-image-kind] :global(.dufynd-product-object),
+.catalog[data-variant="card"][data-dufynd-image-kind] :global(.dufynd-editorial-depth-object) {
+  inset: 10% 12% 12%;
+  transform: none;
+  transition: none;
+  will-change: auto;
+}
+
+.catalog[data-variant="card"][data-dufynd-image-kind] :global(.dufynd-product-image),
+.catalog[data-variant="card"][data-dufynd-image-kind] :global(.dufynd-editorial-depth-image) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  transform: none;
+  filter: none;
+  transition: none;
+  will-change: auto;
+}
+
+/* Apply a restrained shadow only to a supplied cutout, not a photo rectangle. */
+.catalog[data-variant="card"][data-dufynd-image-kind="cutout"] :global(.dufynd-product-image) {
+  filter: drop-shadow(0 9px 10px rgb(34 34 31 / 0.13));
+}
+
+.catalog[data-variant="card"] :global(.dufynd-product-light),
+.catalog[data-variant="card"] :global(.dufynd-product-shadow),
+.catalog[data-variant="card"] :global(.dufynd-product-sheen),
+.catalog[data-variant="card"] :global(.dufynd-editorial-depth-vignette),
+.catalog[data-variant="card"] :global(.dufynd-editorial-depth-glint),
+.catalog[data-variant="card"] :global(.dufynd-neutral-visual-atmosphere) {
+  display: none;
+}
+
+.catalog[data-variant="card"] :global(.dufynd-neutral-visual-copy),
+.catalog[data-variant="card"] :global(.dufynd-neutral-visual-copy) strong,
+.catalog[data-variant="card"] :global(.dufynd-neutral-visual-copy) em,
+.catalog[data-variant="card"] :global(.dufynd-neutral-visual-brand) {
+  color: #3d3932;
+}
+
+.editorialLabel {
+  position: absolute;
+  inset-inline-start: 0.5rem;
+  inset-block-end: 0.5rem;
+  max-width: calc(100% - 1rem);
+  border: 1px solid rgb(34 34 31 / 0.12);
+  border-radius: 0.35rem;
+  padding: 0.2rem 0.4rem;
+  background: #fffdf8;
+  color: #514a40;
+  font-size: 0.625rem;
+  line-height: 1.4;
+  pointer-events: none;
+}
