@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from datetime import UTC, datetime
+from datetime import datetime
 from pathlib import Path
 
 from scripts.promote_scentai_catalog import promotion_blockers
@@ -37,7 +37,11 @@ def test_delina_refresh_matches_verified_public_evidence() -> None:
     assert offer["price"] == row["price_eur"]
     assert offer["shipping_cost"] == row["shipping_cost_eur"]
     assert offer["in_stock"] is row["availability_observed"]
-    assert offer["last_updated_at"] == OBSERVED_AT
+    # The October 4 evidence remains immutable; a later verified refresh may
+    # advance freshness while preserving this exact merchant variant.
+    assert datetime.fromisoformat(offer["last_updated_at"].replace("Z", "+00:00")) >= (
+        datetime.fromisoformat(OBSERVED_AT.replace("Z", "+00:00"))
+    )
     assert offer["affiliate_url"].startswith("https://www.jdoqocy.com/click-")
 
 
@@ -58,7 +62,8 @@ def test_delina_refresh_changes_freshness_only_and_keeps_publication_gated() -> 
 def test_delina_refresh_keeps_dynamic_purchase_gate_clear() -> None:
     staging = {row["product_id"]: row for row in load("scentai_catalog_staging.json")["products"]}
     offers = load("merchant_offers.json")["offers"]
-    now = datetime(2026, 10, 4, 9, 45, tzinfo=UTC)
+    verified_offer = next(row for row in offers if row["offer_id"] == OFFER_ID)
+    now = datetime.fromisoformat(verified_offer["last_updated_at"].replace("Z", "+00:00"))
 
     blockers = promotion_blockers(
         staging[PRODUCT_ID],

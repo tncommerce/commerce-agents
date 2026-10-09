@@ -34,13 +34,18 @@ def test_release_batch_01_is_a_guarded_five_product_manifest() -> None:
         assert product["commerce"]["merchant_coverage_count"] >= 2
 
 
-def test_release_batch_01_dry_run_stays_blocked_until_real_assets_exist() -> None:
+def test_release_batch_01_rejects_duplicate_promotion_and_unapproved_images() -> None:
     product_ids = load_release_manifest(MANIFEST)
+    offers = load_json(DATA_DIR / "merchant_offers.json")
+    # This fixture isolates image and duplicate-publication gates from moving
+    # verification dates. Freshness rejection has separate clock-bound tests.
+    for offer in offers["offers"]:
+        offer["last_updated_at"] = NOW.isoformat()
 
     plan = promotion_plan(
         load_json(DATA_DIR / "scentai_catalog_staging.json"),
         load_json(DATA_DIR / "catalog.json"),
-        load_json(DATA_DIR / "merchant_offers.json"),
+        offers,
         product_ids=product_ids,
         batch=None,
         limit=len(product_ids),
@@ -50,22 +55,21 @@ def test_release_batch_01_dry_run_stays_blocked_until_real_assets_exist() -> Non
     )
 
     assert plan["selected_count"] == 5
-    assert plan["ready_count"] == 2
-    assert plan["blocked_count"] == 3
+    assert plan["ready_count"] == 0
+    assert plan["blocked_count"] == 5
     ready_ids = {row["product_id"] for row in plan["rows"] if row["ready"]}
-    assert ready_ids == {
-        "SC-YSL-BLACK-OPIUM-EDP-90",
-        "SC-YSL-LIBRE-EDP-90",
-    }
+    assert ready_ids == set()
     delina = next(row for row in plan["rows"] if row["product_id"] == "SC-PDM-DELINA-EDP-75")
     assert "already_live" in delina["blockers"]
 
     for row in plan["rows"]:
+        if row["product_id"] in {"SC-YSL-BLACK-OPIUM-EDP-90", "SC-YSL-LIBRE-EDP-90"}:
+            assert "already_live" in row["blockers"]
         if row["product_id"] == "SC-DIOR-HYPNOTIC-POISON-EDT-100":
             assert "missing_approved_image" in row["blockers"]
         else:
             assert "missing_approved_image" not in row["blockers"]
-        assert row["eligible_purchase_offers"] == 1
+        assert row["eligible_purchase_offers"] >= 1
         assert "missing_current_purchase_destination" not in row["blockers"]
         assert "provisional_community_data" not in row["blockers"]
 

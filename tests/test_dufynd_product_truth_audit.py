@@ -28,6 +28,8 @@ def test_current_dufynd_product_truth_coverage_is_consistent() -> None:
         "SC-PRADA-LHOMME-100",
         "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
         "SC-PDM-DELINA-EDP-75",
+        "SC-YSL-LIBRE-EDP-90",
+        "SC-YSL-BLACK-OPIUM-EDP-90",
     }
     assert report["verified_model_3d_product_ids"] == []
     assert set(report["review_queue_product_ids"]) == {

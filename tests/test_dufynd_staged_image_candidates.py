@@ -68,9 +68,17 @@ def test_staged_candidates_have_no_public_copy_or_catalog_activation() -> None:
         assert item["sha256"] not in public_hashes
         assert Path(item["candidate_asset"]).name not in public_names
         for catalog in catalogs:
-            assert item["product_id"] not in {
-                product["product_id"] for product in catalog["products"]
-            }
+            live = next(
+                (row for row in catalog["products"] if row["product_id"] == item["product_id"]),
+                None,
+            )
+            if item["product_id"] == "SC-YSL-LIBRE-EDP-90":
+                # Only the independently approved merchant photograph is live.
+                assert live is not None
+                assert live["image_url"] == staged[item["product_id"]]["media"]["image_url"]
+                assert Path(item["candidate_asset"]).name not in json.dumps(live)
+            else:
+                assert live is None
         product = staged[item["product_id"]]
         if item["product_id"] == "SC-YSL-LIBRE-EDP-90":
             assert product["media"]["image_url"] == (

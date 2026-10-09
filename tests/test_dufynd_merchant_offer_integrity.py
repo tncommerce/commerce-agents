@@ -517,12 +517,18 @@ def test_notino_delina_black_opium_live_pilot_is_exact_scoped() -> None:
     }
     assert set(tracked) == live_scope
 
+    refreshed = json.loads(
+        Path("examples/retail/data/dufynd_priority_purchase_evidence_20261009.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    current_by_id = {row["product_id"]: row for row in refreshed["products"]}
     for product_id, row in evidence["approved_products"].items():
         offer = tracked[product_id]
         identity = row["identity"]
         assert offer["merchant_product_id"] == identity["merchant_product_id"]
-        assert offer["product_url"] == row["current_offer"]["product_url"]
-        assert offer["affiliate_url"] == row["affiliate"]["tracked_url"]
+        assert offer["product_url"] == current_by_id[product_id]["product_url"]
+        assert offer["affiliate_url"] == current_by_id[product_id]["affiliate_url"]
         assert offer["network"] == "CJ Affiliate"
         assert offer["in_stock"] is True
         assert any(
