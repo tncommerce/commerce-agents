@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from datetime import UTC, datetime
+import json
+from datetime import UTC, datetime, timedelta
 
 import pytest
 
@@ -199,3 +200,55 @@ def test_fresh_feed_check_never_grants_tracking_or_release_approval() -> None:
     assert report["status"] == "ready_for_manual_asset_review"
     assert report["tracking_verified"] is False
     assert report["activation_allowed"] is False
+
+
+def test_evidence_explains_all_normalized_blockers_without_exposing_urls() -> None:
+    now = datetime(2026, 10, 9, 7, tzinfo=UTC)
+    rows = complete_rows()
+    rows[0].update(
+        in_stock=False,
+        currency="USD",
+        last_updated_at="2026-09-22T08:00:00Z",
+        affiliate_url="https://network.example/click?api_key=PRIVATE_TOKEN",
+        variant_label="Example EDP 90 ml",
+    )
+    report = build_release_feed_readiness(PRODUCT_IDS, rows, mappings(), now=now)
+    evidence = report["products"][0]["offer_evidence"][0]
+    assert evidence["merchant_product_id"] == "SKU-1"
+    assert evidence["feed_price"] == rows[0]["price"]
+    assert evidence["variant_label"] == "Example EDP 90 ml"
+    assert set(evidence["eligibility_blockers"]) == {
+        "normalized_stock_not_confirmed",
+        "offer_older_than_72_hours",
+        "currency_not_eur",
+        "affiliate_url_missing_or_unsafe",
+    }
+    assert evidence["statically_eligible"] is False
+    assert "PRIVATE_TOKEN" not in json.dumps(report)
+    assert "https://" not in json.dumps(report)
+
+
+@pytest.mark.parametrize("delta_hours", [-1, -0.01, 72, 72.01])
+def test_evidence_eligibility_agrees_with_storefront_boundaries(delta_hours) -> None:
+    now = datetime(2026, 10, 9, 7, tzinfo=UTC)
+    rows = complete_rows()
+    rows[0]["last_updated_at"] = (now - timedelta(hours=delta_hours)).isoformat()
+    report = build_release_feed_readiness(PRODUCT_IDS, rows, mappings(), now=now)
+    product = report["products"][0]
+    evidence = product["offer_evidence"][0]
+    assert evidence["statically_eligible"] == product["trackable_offer_ready"]
+    assert evidence["tracking_verified"] is False
+    assert evidence["landing_variant_verified"] is False
+    assert evidence["activation_allowed"] is False
+
+
+def test_evidence_is_bounded_and_missing_products_have_no_invented_offer() -> None:
+    rows = complete_rows()
+    rows = [dict(rows[0], offer_id=f"duplicate-{index:02}") for index in range(11)]
+    report = build_release_feed_readiness(PRODUCT_IDS, rows, mappings())
+    first, missing = report["products"][:2]
+    assert len(first["offer_evidence"]) == 10
+    assert first["mapped_offer_count"] == 11
+    assert first["offer_evidence_truncated"] is True
+    assert missing["offer_evidence"] == []
+    assert missing["offer_evidence_truncated"] is False

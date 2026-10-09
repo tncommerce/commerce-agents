@@ -11,9 +11,49 @@ from .merchant_import import (
     import_feed_rows,
     resolve_product_id,
 )
-from .merchant_offers import rank_offers
+from .merchant_offers import (
+    MAX_FUTURE_CLOCK_SKEW_HOURS,
+    MerchantOffer,
+    offer_age_hours,
+    offer_clickout_target,
+    rank_offers,
+)
 from .merchant_partners import _valid_https_url
 from .merchant_provider_contract import validate_provider_contract_rows
+
+
+def _offer_evidence(offer: MerchantOffer, *, now: datetime) -> dict[str, Any]:
+    """Explain normalized feed eligibility without publishing raw tracking URLs."""
+    age = offer_age_hours(offer, now=now)
+    reasons = []
+    if not offer.in_stock:
+        reasons.append("normalized_stock_not_confirmed")
+    if age > 72:
+        reasons.append("offer_older_than_72_hours")
+    if age < -MAX_FUTURE_CLOCK_SKEW_HOURS:
+        reasons.append("offer_timestamp_in_future")
+    if offer.currency.strip().upper() != "EUR":
+        reasons.append("currency_not_eur")
+    if offer_clickout_target(offer) is None:
+        reasons.append("no_safe_clickout_target")
+    if not _valid_https_url(offer.affiliate_url):
+        reasons.append("affiliate_url_missing_or_unsafe")
+    return {
+        "offer_id": offer.offer_id,
+        "merchant_id": offer.merchant_id,
+        "merchant_product_id": offer.merchant_product_id,
+        "variant_label": offer.variant_label,
+        "feed_price": offer.price,
+        "currency": offer.currency,
+        "normalized_in_stock": offer.in_stock,
+        "last_updated_at": offer.last_updated_at.isoformat(),
+        "age_hours": round(age, 3),
+        "eligibility_blockers": reasons,
+        "statically_eligible": not reasons,
+        "landing_variant_verified": False,
+        "tracking_verified": False,
+        "activation_allowed": False,
+    }
 
 
 def build_release_feed_readiness(
@@ -86,6 +126,11 @@ def build_release_feed_readiness(
                 "mapped": bool(offers),
                 "trackable_offer_ready": bool(trackable),
                 "feed_image_candidate_ready": bool(image_candidates),
+                "offer_evidence": [
+                    _offer_evidence(offer, now=checked_at)
+                    for offer in sorted(offers, key=lambda item: item.offer_id)[:10]
+                ],
+                "offer_evidence_truncated": len(offers) > 10,
             }
         )
 
@@ -137,5 +182,7 @@ def build_release_feed_readiness(
             "current eligible affiliate URL candidates and reviewable feed images. "
             "This static check does not verify redirects, network attribution, "
             "exact landing-page variants, image rights or owner release approval."
+            " Evidence describes normalized feed values, not independent stock confirmation;"
+            " false stock may be a fail-closed adapter default. Raw URLs are omitted."
         ),
     }
