@@ -2,6 +2,7 @@
 
 import { useState, type CSSProperties, type PointerEvent } from "react";
 import type { FragranceVisualWorld } from "@/lib/fragranceCatalog";
+import styles from "./FragranceVisual.module.css";
 
 type VisualVariant = "card" | "hero";
 type VisualMode = "auto" | "editorial" | "cutout";
@@ -33,10 +34,14 @@ const WORLD_BACKGROUNDS: Record<FragranceVisualWorld, string> = {
     "radial-gradient(circle at 50% 34%, rgba(154,111,72,0.15), transparent 32%), linear-gradient(145deg, #111214 0%, #07080a 100%)",
 };
 
-function stageStyle(world: FragranceVisualWorld): StageStyle {
+function stageStyle(
+  world: FragranceVisualWorld,
+  variant: VisualVariant,
+): StageStyle {
   return {
     ...BASE_STYLE,
-    background: WORLD_BACKGROUNDS[world],
+    // Comparable catalogue cards share a neutral surface. Hero art is unchanged.
+    background: variant === "card" ? "#f5f3ee" : WORLD_BACKGROUNDS[world],
   };
 }
 
@@ -95,6 +100,7 @@ export default function FragranceVisual({
   world?: FragranceVisualWorld;
 }) {
   const resolvedImageUrl = cutoutUrl || imageUrl;
+  const catalogClass = variant === "card" ? styles.catalog : "";
   const [failedImageUrl, setFailedImageUrl] = useState<string | null>(null);
   const [failedBackdropUrl, setFailedBackdropUrl] = useState<string | null>(null);
   const imageUnavailable = Boolean(
@@ -123,7 +129,8 @@ export default function FragranceVisual({
         data-variant={variant}
         data-dufynd-visual-state={imageUnavailable ? "unavailable" : "missing"}
         data-dufynd-visual-world={world}
-        className={`dufynd-neutral-visual-stage ${className}`}
+        data-dufynd-image-kind="missing"
+        className={`dufynd-neutral-visual-stage ${catalogClass} ${className}`}
         role="img"
         aria-label={`${alt} – ${fallbackCopy}`}
       >
@@ -146,17 +153,18 @@ export default function FragranceVisual({
     );
   }
 
-    if (resolvedMode === "editorial" && imageUrl) {
+  if (resolvedMode === "editorial" && imageUrl) {
     return (
       <div
         data-variant={variant}
         data-dufynd-visual-world={world}
-        className={`dufynd-editorial-depth-stage ${className}`}
-        style={stageStyle(world)}
-        onPointerMove={updatePointer}
-        onPointerLeave={resetPointer}
+        data-dufynd-image-kind="editorial"
+        className={`dufynd-editorial-depth-stage ${catalogClass} ${className}`}
+        style={stageStyle(world, variant)}
+        onPointerMove={variant === "hero" ? updatePointer : undefined}
+        onPointerLeave={variant === "hero" ? resetPointer : undefined}
       >
-        {imageUrl ? (
+        {variant === "hero" && imageUrl ? (
           // Decorative fill preserves the editorial palette around the uncropped artwork.
           // eslint-disable-next-line @next/next/no-img-element
           <img src={imageUrl} alt="" aria-hidden loading={priority ? "eager" : "lazy"} decoding="async" className="dufynd-editorial-depth-fill" />
@@ -178,6 +186,9 @@ export default function FragranceVisual({
             className="dufynd-editorial-depth-image"
           />
         </div>
+        {variant === "card" ? (
+          <span className={styles.editorialLabel}>Inszenierung</span>
+        ) : null}
         <div className="dufynd-editorial-depth-vignette" aria-hidden />
         <div className="dufynd-editorial-depth-glint" aria-hidden />
       </div>
@@ -188,12 +199,13 @@ export default function FragranceVisual({
     <div
       data-variant={variant}
       data-dufynd-visual-world={world}
-      className={`dufynd-product-stage ${className}`}
-      style={stageStyle(world)}
-      onPointerMove={updatePointer}
-      onPointerLeave={resetPointer}
+      data-dufynd-image-kind={cutoutUrl ? "cutout" : "photograph"}
+      className={`dufynd-product-stage ${catalogClass} ${className}`}
+      style={stageStyle(world, variant)}
+      onPointerMove={variant === "hero" ? updatePointer : undefined}
+      onPointerLeave={variant === "hero" ? resetPointer : undefined}
     >
-      {backdropUrl && failedBackdropUrl !== backdropUrl ? (
+      {variant === "hero" && backdropUrl && failedBackdropUrl !== backdropUrl ? (
         <>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
