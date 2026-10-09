@@ -79,7 +79,9 @@ try {
             await link.click();
             await page.waitForURL((url) => url.pathname === new URL(href, base).pathname);
             if (!await page.getByRole("heading", { level: 1 }).isVisible()) throw new Error("Missing product heading after card click");
-            await page.goBack({ waitUntil: "domcontentloaded" });
+            // A fresh document avoids racing React's restored pagination state
+            // after Back. The link click and destination remain real assertions.
+            await page.goto(`${base}/duft?src=qa&cmp=qa-catalog-photos-20261010&content=after`, { waitUntil: "domcontentloaded" });
             await settle(page);
             await showAll(page);
           }
