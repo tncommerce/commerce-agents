@@ -87,9 +87,9 @@ export function ProductImage({ product, className = "" }: { product: Product; cl
 
     return (
       <FragranceVisual
-        catalogProductId={String(product.product_id)}
         alt={product.title}
         variant="card"
+        catalogProductId={String(product.product_id)}
         world={fragrance ? visualWorldFor(fragrance) : undefined}
         className={className}
       />
