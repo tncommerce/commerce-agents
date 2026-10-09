@@ -1,0 +1,110 @@
+{
+  "version": 1,
+  "status": "exact_variants_and_existing_affiliate_routes_revalidated",
+  "date": "2026-10-09",
+  "method": "Real browser navigation through each existing CJ affiliate URL; selected volume, SKU, regular price, availability and free shipping read on merchant landing page. Black Opium pinned to observed variant p-451726 and retested.",
+  "coupon_policy": "Regular price persisted. Optional code all displayed 112.20 EUR for Libre and 96.05 EUR for Black Opium; conditional discounts were not written as unconditional prices.",
+  "network_conversion_test_performed": false,
+  "new_affiliate_program_activated": false,
+  "products": [
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "offer_id": "notino-pdm-delina-edp-75",
+      "merchant_product_id": "PDM0227",
+      "checked_at": "2026-10-09T12:19:42.644Z",
+      "exact_variant": "75 ml · Eau de Parfum",
+      "regular_price_eur": 285,
+      "in_stock": true,
+      "shipping_cost_eur": 0,
+      "product_url": "https://www.notino.de/parfums-de-marly/darley-royal-essence-delina-eau-de-parfum-fuer-damen/p-11598204/",
+      "affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fparfums-de-marly%2Fdarley-royal-essence-delina-eau-de-parfum-fuer-damen%2Fp-11598204%2F",
+      "affiliate_evidence": {
+        "network": "CJ Affiliate",
+        "publisher_id": "101884613",
+        "link_id": "12260695",
+        "merchant_landing_verified": true,
+        "cj_event_parameter_observed": true,
+        "commission_or_sale_proven": false
+      },
+      "previous": {
+        "price": 285,
+        "last_updated_at": "2026-10-04T09:44:49Z",
+        "product_url": "https://www.notino.de/parfums-de-marly/darley-royal-essence-delina-eau-de-parfum-fuer-damen/p-11598204/"
+      },
+      "source_excerpt": "Gratis Versand\nGratis Geschenk\n75 ml\n285,00€ | Verfügbar | 3.800,00€ / 1 l, inkl. MwSt. | Code: PDM0227",
+      "remaining_purchase_blocker": null
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "offer_id": "notino-ysl-libre-edp-90",
+      "merchant_product_id": "VZR11010",
+      "checked_at": "2026-10-09T12:19:51.835Z",
+      "exact_variant": "90 ml · Eau de Parfum · nachfüllbarer Flakon",
+      "regular_price_eur": 132,
+      "in_stock": true,
+      "shipping_cost_eur": 0,
+      "product_url": "https://www.notino.de/yves-saint-laurent/yves-saint-laurent-libre-eau-de-parfum-fuer-damen/p-15968532/",
+      "affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fyves-saint-laurent%2Fyves-saint-laurent-libre-eau-de-parfum-fuer-damen%2Fp-15968532%2F",
+      "affiliate_evidence": {
+        "network": "CJ Affiliate",
+        "publisher_id": "101884613",
+        "link_id": "12260695",
+        "merchant_landing_verified": true,
+        "cj_event_parameter_observed": true,
+        "commission_or_sale_proven": false
+      },
+      "previous": {
+        "price": 119,
+        "last_updated_at": "2026-10-01T16:21:51Z",
+        "product_url": "https://www.notino.de/yves-saint-laurent/yves-saint-laurent-libre-eau-de-parfum-fuer-damen/p-15968532/"
+      },
+      "source_excerpt": "Gratis Versand\n90 ml\n132,00€ | Verfügbar | 1.466,67€ / 1 l, inkl. MwSt. | Code: VZR11010",
+      "remaining_purchase_blocker": null
+    },
+    {
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "offer_id": "notino-ysl-black-opium-edp-90",
+      "merchant_product_id": "YSL2377",
+      "checked_at": "2026-10-09T12:20:01.475Z",
+      "exact_variant": "90 ml · Eau de Parfum",
+      "regular_price_eur": 113,
+      "in_stock": true,
+      "shipping_cost_eur": 0,
+      "product_url": "https://www.notino.de/yves-saint-laurent/black-opium-eau-de-parfum-fur-damen/p-451726/",
+      "affiliate_url": "https://www.jdoqocy.com/click-101884613-12260695?url=https%3A%2F%2Fwww.notino.de%2Fyves-saint-laurent%2Fblack-opium-eau-de-parfum-fur-damen%2Fp-451726%2F",
+      "affiliate_evidence": {
+        "network": "CJ Affiliate",
+        "publisher_id": "101884613",
+        "link_id": "12260695",
+        "merchant_landing_verified": true,
+        "cj_event_parameter_observed": true,
+        "commission_or_sale_proven": false
+      },
+      "previous": {
+        "price": 106,
+        "last_updated_at": "2026-10-01T14:17:32Z",
+        "product_url": "https://www.notino.de/yves-saint-laurent/black-opium-eau-de-parfum-fur-damen/"
+      },
+      "source_excerpt": "Gratis Versand\n90 ml\n113,00€ | Verfügbar | 1.255,56€ / 1 l, inkl. MwSt. | Code: YSL2377",
+      "remaining_purchase_blocker": null
+    }
+  ],
+  "alternative_merchant_evidence": {
+    "delina": {
+      "url": "https://www.topparfuemerie.de/parfums-de-marly-delina-edp-nat-spray",
+      "text": "HOME  PARFUMS DE MARLY DELINA EDP NAT. SPRAY\nParfums de Marly\nParfums de Marly Delina EdP Nat. Spray\nProduct options for 30 ml\n30 ml\nProduct options for 75 ml\n75 ml\nArtikelnummer: 825869\nMenge: 75 ml\n285,- €\n3.800,00 € / Liter\nSofort versandfertig.\nMenge:\n1\n2\n3\n4\n5\nIn den Warenkorb\nBeschreibung\nEin verführerisches Bouquet aus Türkischer Rose, Maigl",
+      "checked_at": "2026-10-09T12:17:42.197Z"
+    },
+    "libre": {
+      "url": "https://www.topparfuemerie.de/yves-saint-laurent-libre-edp-vapo",
+      "text": "HOME  YVES SAINT LAURENT LIBRE EDP VAPO\nYves Saint Laurent\nYves Saint Laurent Libre EdP Vapo\nDas Gefühl von Freiheit hat jetzt einen Duft: LIBRE.\nProduct options for 30 ml\n30 ml\nProduct options for 50 ml\n50 ml\nProduct options for 90 ml\n90 ml\nArtikelnummer: 856448\nMenge: 90 ml\n153,95 €\n1.710,56 € / Liter\nSofort versandfertig.\nMenge:\n1\n2\n3\n4\nIn den Warenkorb\nBeschreibung\nLIBRE Eau de Parfum, der ikonische, nachfüllbare Duft von YSL Beauté. Der Duft ist ein Spiel aus Kontrasten. Warme, feminine Orangenblüte trifft auf maskulinen, kühlen ",
+      "checked_at": "2026-10-09T12:18:21.655Z"
+    },
+    "black_opium": {
+      "url": "https://www.topparfuemerie.de/yves-saint-laurent-black-opium-edp-nat-spray",
+      "text": "HOME  YVES SAINT LAURENT BLACK OPIUM EDP NAT. SPRAY\nYves Saint Laurent\nYves Saint Laurent Black Opium EdP Nat. Spray\nEnergisch, Rock Spirit, geheimnisvoll\nProduct options for 30 ml\n30 ml\nProduct options for 50 ml\n50 ml\nProduct options for 90 ml\n90 ml\nArtikelnummer: 787670\nMenge: 90 ml\n143,95 €\n1.599,44 € / Liter\nLieferzeit 2-5 Tage.\nNur noch 1 verfügbar\nMenge:\n1\nIn den Warenkorb\nBeschreibung\nNoch PROVOKANTER. Noch ROCKIGER. Noch LAUTER. Das neue BLACK OPIUM - für die rebellischste aller Yves Sai",
+      "checked_at": "2026-10-09T12:19:30.276Z"
+    }
+  },
+  "top_parfuemerie_state": "Independent merchant stock confirmed; Awin provider-wide fail-closed policy unchanged. Existing verified Notino routes satisfy purchase-path objective."
+}
