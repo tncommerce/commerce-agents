@@ -1755,8 +1755,7 @@
             : "Noch kein verifizierter Checkpoint vorhanden",
         ),
       );
-      item.append(proof);
-      line(item, "Letzter Fortschritt", stamp(w.last_progress_at));
+
       const metadata = node("details", undefined, "execution-metadata");
       metadata.append(
         node(
@@ -1764,6 +1763,8 @@
           "Technische Identität & Nachweise",
         ),
       );
+      metadata.append(proof);
+      line(metadata, "Letzter Fortschritt", stamp(w.last_progress_at));
       line(metadata, "worker_id", w.worker_id);
       line(metadata, "execution_id", w.execution_id);
       line(metadata, "Aufgabe", w.task_id);
@@ -2383,6 +2384,15 @@
   function render(s) {
     snapshot = s;
     renderRiskAndCrew(s);
+    const outputs = (s.worker_deck || []).filter(w =>
+      w.execution_status === "completed" && w.checkpoint?.verified === true &&
+      Number.isFinite(Date.parse(w.completed_at))
+    ).sort((a, b) => Date.parse(b.completed_at) - Date.parse(a.completed_at));
+    const lastOutput = outputs[0];
+    put("v2-last-output", lastOutput
+      ? taskTitle(lastOutput) + " · " + detailText(lastOutput.checkpoint.step)
+      : "Kein verifizierter Worker-Abschluss im Snapshot");
+    put("v2-output-time", lastOutput ? stamp(lastOutput.completed_at) : "Systemsignale sind separat aufgeführt.");
     const c = s.command_center || {};
     const f = s.freshness || {};
     const complete = f.operational_complete === true;
@@ -2423,7 +2433,7 @@
     $("decisions").hidden = gatesComplete && !actionableGates.length;
     $("pulse-action").href =
       gatesComplete && !needsApproval ? "#command" : "#decisions";
-    $("decision-nav").closest("a").href = $("pulse-action").href;
+    // V2 keeps the Blocker destination stable even when no Owner action is open.
 
     const posts = Array.isArray(revenue.posts) ? revenue.posts : [];
     const now = Date.now();
@@ -3125,6 +3135,8 @@
 
     const healthOverview = $("overview-system-health");
     if (healthOverview) {
+      const healthOpen = new Set([...healthOverview.querySelectorAll("details.health-evidence[open]")].map(el => el.dataset.source));
+      const healthFocus = document.activeElement?.closest("details.health-evidence")?.dataset.source;
       healthOverview.replaceChildren();
       const ranked = [...systemsHealth]
         .sort((a, b) => {
@@ -3152,12 +3164,18 @@
                 : h.name,
           ),
         );
+        const proof = node("details", undefined, "health-evidence");
+        proof.dataset.source = h.name;
+        proof.open = healthOpen.has(h.name);
+        proof.append(node("summary", "Nachweis · " + (h.last_success_at ? shortTime(h.last_success_at) : "Zeit unbestätigt")));
         if (h.last_success_at)
-          left.append(node("small", "Zuletzt erfolgreich geprüft: " + stamp(h.last_success_at) + " · " + age(h.last_success_at)));
-        if (h.name === "Production Smoke" && h.test_passed) left.append(node("small", "LETZTER TEST BESTANDEN · " + value(h.passed) + " / " + value(h.total)));
-        left.append(node("small", h.evidence_note || "Nachweisstatus prüfen."));
-        row.append(left, badge(h.display_status || sourceHealthLabel(h.health)));
+          proof.append(node("small", "Zuletzt erfolgreich geprüft: " + stamp(h.last_success_at) + " · " + age(h.last_success_at)));
+        if (h.name === "Production Smoke" && h.test_passed)
+          proof.append(node("small", "LETZTER TEST BESTANDEN · " + value(h.passed) + " / " + value(h.total)));
+        proof.append(node("small", h.evidence_note || "Nachweisstatus prüfen."));
+        row.append(left, badge(h.display_status || sourceHealthLabel(h.health)), proof);
         healthOverview.append(row);
+        if (healthFocus === h.name) proof.querySelector("summary").focus({ preventScroll: true });
       }
       if (!ranked.length)
         healthOverview.append(
@@ -3605,6 +3623,19 @@
           : "LIVE READ UNAVAILABLE · Kein Systemzustand bestätigt. Erneute Prüfung folgt.";
       }
       put("sync-label", "Verbindung unterbrochen");
+      put("active-workers", "—");
+      put("working-count", "—");
+      put("decision-count", "—");
+      put("worker-summary", "Aktivität aktuell unbestätigt");
+      put("v2-output-time", "Letzter geladener Stand · Verbindung unterbrochen");
+      $("crew-live-now").querySelectorAll(".crew-live-badge").forEach(el => { el.textContent = "LETZTER STAND"; });
+      $("crew-live-now").querySelectorAll(".crew-live-card").forEach(el => { el.dataset.stale = "true"; });
+      put("crew-live-count", "Aktive Ausführungen unbestätigt");
+      $("overview-system-health").querySelectorAll(".health-chip").forEach(el => {
+        el.className = "health-chip health-amber";
+        const label = el.querySelector(":scope > .pill");
+        if (label) { label.className = "pill warn"; label.textContent = "LETZTER STAND"; }
+      });
       setTone("global-risk", "amber");
       put("risk-title", "LIVE-LAGE NICHT BESTÄTIGT");
       put("risk-summary", "Verbindung unterbrochen. Letzte Nachweise sind keine aktuelle Entwarnung.");
@@ -3717,14 +3748,72 @@
       button.disabled = false;
     }
   });
-  document.querySelectorAll("nav a").forEach((a) =>
-    a.addEventListener("click", () => {
-      document
-        .querySelectorAll("nav a")
-        .forEach((n) => n.classList.remove("selected"));
-      a.classList.add("selected");
-    }),
-  );
+  // Route existing panels without duplicating IDs, controls, requests or state.
+  // Hash links stay shareable; refresh never resets the selected view or focus.
+  const viewLabels = {
+    now: "Jetzt", workers: "Worker", blockers: "Blocker",
+    systems: "Systeme", revenue: "First Money", details: "Details",
+  };
+  const viewTargets = {
+    command: "now", work: "now", crew: "workers",
+    decisions: "blockers", "blocker-waits": "blockers", workstreams: "blockers",
+    "system-health": "systems", revenue: "revenue", advanced: "details",
+    workers: "details", missions: "details", systems: "details",
+    activity: "details", map: "details",
+  };
+  function navigateCockpit(moveFocus = false) {
+    const id = location.hash.slice(1) || "command";
+    const target = $(id);
+    const view = viewTargets[id] || target?.closest("[data-views]")?.dataset.views.split(" ")[0] || "now";
+    document.body.dataset.cockpitView = view;
+    const health = $("system-health");
+    const healthParent = document.querySelector(view === "systems" ? ".cockpit-center" : ".cockpit-rail");
+    if (health.parentElement !== healthParent) {
+      if (view === "systems") healthParent.append(health);
+      else document.querySelector(".v2-jarvis").after(health);
+    }
+    health.classList.toggle("systems-expanded", view === "systems");
+    document.querySelectorAll("[data-views]").forEach((panel) => {
+      panel.classList.toggle("v2-view-hidden", !panel.dataset.views.split(" ").includes(view));
+    });
+    document.querySelectorAll("[data-mobile-views]").forEach((panel) => {
+      panel.classList.toggle("v2-mobile-hidden", !panel.dataset.mobileViews.split(" ").includes(view));
+    });
+    document.querySelectorAll("nav [data-view]").forEach((link) => {
+      const selected = link.dataset.view === view || (
+        link.closest(".mobile-nav") && link.dataset.view === "systems" &&
+        ["revenue", "details"].includes(view)
+      );
+      link.classList.toggle("selected", selected);
+      if (selected) link.setAttribute("aria-current", "page");
+      else link.removeAttribute("aria-current");
+    });
+    put("view-label", viewLabels[view]);
+    if (target?.closest(".advanced-only")) {
+      document.body.classList.add("show-advanced");
+      $("toggle-details").setAttribute("aria-expanded", "true");
+      $("toggle-details").textContent = "Technische Details ausblenden";
+    }
+    if (moveFocus) {
+      const focus = target && target.getClientRects().length ? target : $("cockpit-content");
+      focus.setAttribute("tabindex", "-1");
+      focus.focus({ preventScroll: true });
+      if (["work", "workstreams", "workers", "missions", "systems", "activity", "map"].includes(id))
+        focus.scrollIntoView({ block: "start", behavior: "instant" });
+      else window.scrollTo({ top: 0, behavior: "instant" });
+    }
+  }
+  window.addEventListener("hashchange", () => navigateCockpit(true));
+  document.querySelectorAll('nav a[href^="#"]').forEach((link) => {
+    link.addEventListener("click", (event) => {
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      if (link.hash === location.hash) {
+        event.preventDefault();
+        navigateCockpit(true);
+      }
+    });
+  });
+  navigateCockpit();
 
   refresh();
 })();

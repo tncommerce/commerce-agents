@@ -22,7 +22,7 @@ const { chromium } = require("playwright");
   const dir =
     path.resolve(__dirname, "../../examples/retail/api/control_room") + "/";
   const errors = [];
-  for (const width of [390, 430, 768, 1440]) {
+  for (const width of [320, 390, 430, 768, 1280, 1440]) {
     const s = structuredClone(base);
     s.worker_deck = [
       {
@@ -71,6 +71,10 @@ const { chromium } = require("playwright");
       });
     });
     await p.goto("https://dufynd-qa.local/internal/jarvis");
+    const go = async (hash, view) => {
+      await p.evaluate(hash => { location.hash = hash; }, hash);
+      await p.waitForFunction(view => document.body.dataset.cockpitView === view, view);
+    };
     await p.waitForFunction(
       () => document.body.dataset.executionMode === "working",
     );
@@ -169,6 +173,8 @@ const { chromium } = require("playwright");
       {name: "Affiliate", status: "BLOCKED", tasks: 1, focus_task: blocker, tasks_preview: [blocker]}];
     s.waiting = {owner: 0, external: 1, technical: 1, budget: 0, rows: [task, blocker]};
     await refresh();
+    await go("system-health", "systems");
+    await p.locator(".health-evidence").evaluateAll(rows => rows.forEach(r => { r.open = true; }));
     const healthText = await p.locator("#overview-system-health").innerText();
     assert.ok(healthText.includes("AKTUELL") && healthText.includes("LETZTER TEST BESTANDEN") && healthText.includes("18 / 18") && healthText.includes("NACHWEIS ÄLTER"));
     assert.equal(await p.locator("#overview-system-health .health-red").count(), 0);
@@ -179,6 +185,7 @@ const { chromium } = require("playwright");
     assert.ok(aliases.includes("ZORO · ABC123") && aliases.includes("NAMI · DEF456"));
     await refresh();
     assert.deepEqual(await p.locator("#worker-deck .worker-card h3").allTextContents(), aliases);
+    await go("workstreams", "blockers");
     const streamText = await p.locator("#workstream-list").innerText();
     for (const text of ["Dior", "Read-only Händlerabdeckung", "Keine Aktion von dir erforderlich."]) assert.ok(streamText.includes(text));
     assert.equal(await p.locator("#pulse-action.state-red").count(), 0);
@@ -198,14 +205,17 @@ const { chromium } = require("playwright");
         requested_at: s.generated_at, content_id: "qa_delina_fixture", experiment_id: "qa_gate",
         internal_rating: "9.6", recommendation_reason: "Internally ready fixture"}}];
     await refresh();
+    await go("command", "now");
     assert.equal(await p.locator("#approval-alert").isVisible(), true);
     assert.equal(await p.locator("#pulse-action.state-amber").count(), 1);
+    await p.locator(".v2-explain").evaluate(el => { el.open = true; });
     assert.match(await p.locator("#pulse-action").innerText(), /Aktion nötig/);
     assert.equal(await p.locator("#pulse-action.state-red").count(), 0);
     const decisionText = await p.locator("#decision-list").innerText();
     for (const text of ["Delina EDP 75 ml", "qa_delina_asset", "A complete safe caption", "qa_delina_fixture", "qa_gate", "9.6", "Review-Gate erkannt. Keine automatische Aktion ohne explizit freigegebenen Handler."])
       assert.ok(decisionText.includes(text), text);
     assert.equal(await p.locator("#decision-list button").count(), 0);
+    await go("decisions", "blockers");
     // Public GO is visibly distinct and binds the exact media/caption/time.
     s.decision_center = [{title: "Public Reel fixture", type: "content_publish_go",
       action_token: "GO-PUBLISH-FIXTURE", approval_alone_enables_execution: true,
@@ -229,6 +239,9 @@ const { chromium } = require("playwright");
     // Server-built Crew/Risk scenarios. Fixed roles never manufacture executions.
     const applyScenario = async (name) => { Object.assign(s, structuredClone(base._qa_scenarios[name])); await refresh(); };
     await applyScenario("healthy");
+    await go("crew", "workers");
+    await p.locator(".v2-crew-details > summary").click();
+    await p.locator(".v2-risk-details > summary").click();
     assert.equal(await p.locator("#global-risk.state-green").count(), 1);
     assert.equal(await p.locator(".crew-node").count(), 10);
     assert.equal(await p.locator(".crew-cluster").count(), 4);
@@ -293,16 +306,18 @@ const { chromium } = require("playwright");
     await applyScenario("gate");
     assert.equal(await p.locator("#global-risk.state-amber").count(), 1);
     assert.equal(await p.locator("#risk-detail-owner.state-amber").count(), 1);
+    await p.locator(".v2-explain").evaluate(el => { el.open = true; });
     assert.match(await p.locator("#pulse-action").innerText(), /Aktion nötig/);
     assert.equal(await p.locator('[data-role="content"]').getAttribute("data-state"), "OWNER GATE");
     assert.equal(await p.locator("#crew-owner-link").isVisible(), true);
     await applyScenario("warning");
     assert.equal(await p.locator("#crew-owner-link").isVisible(), false);
     assert.equal(await p.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+    await go("command", "now");
     const riskBox = await p.locator("#global-risk").boundingBox();
     const commandBox = await p.locator("#command").boundingBox();
     assert.ok(riskBox.y < commandBox.y);
-    const out = path.resolve(__dirname, "../../examples/retail/storefront-web/.visual-qa");
+    const out = process.env.CONTROL_ROOM_QA_OUTPUT || path.join(require("os").tmpdir(), "dufynd-control-room-qa");
     fs.mkdirSync(out, {recursive: true});
     await p.screenshot({path: path.join(out, "control-room-crew-risk-" + width + ".png"), fullPage: true});
     await p.close();

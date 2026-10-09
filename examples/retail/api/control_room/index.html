@@ -1,15 +1,17 @@
 <!doctype html>
+
 <html lang="de">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="owner-csrf" content="OWNER_CSRF" />
-    <meta name="robots" content="noindex,nofollow" />
-    <title>DUFYND · CEO Control Room</title>
-    <link rel="stylesheet" href="/internal/assets/room.css" />
-    <script src="/internal/assets/room.js" defer></script>
+    <meta content="width=device-width,initial-scale=1" name="viewport" />
+    <meta content="OWNER_CSRF" name="owner-csrf" />
+    <meta content="noindex,nofollow" name="robots" />
+    <title>DUFYND · Jarvis Cockpit V2</title>
+    <link href="/internal/assets/room.css" rel="stylesheet" />
+    <script defer="" src="/internal/assets/room.js"></script>
   </head>
-  <body>
+  <body class="cockpit-v2">
+    <a class="skip-link" href="#cockpit-content">Zum Inhalt</a>
     <div class="shell">
       <aside class="sidebar">
         <a class="wordmark" href="#command">DUFYND<span>CONTROL ROOM</span></a>
@@ -18,469 +20,707 @@
           <div>Dein Cockpit<small>Privater Zugang</small></div>
         </div>
         <nav aria-label="Bereiche">
-          <a href="#command" class="selected">◈ <span>Übersicht</span></a>
-          <a href="#decisions"
-            >◇ <span>Deine Aktionen</span><b id="decision-nav">—</b></a
+          <a
+            aria-current="page"
+            class="selected"
+            data-view="now"
+            href="#command"
+            ><span class="nav-icon">◈</span><span>Jetzt</span></a
           >
-          <a href="#revenue">€ <span>First Money</span></a>
-          <a href="#crew">↝ <span>Crew</span></a>
-          <a href="#advanced">••• <span>Details</span></a>
+          <a data-view="workers" href="#crew"
+            ><span class="nav-icon">↝</span><span>Worker</span></a
+          >
+          <a data-view="blockers" href="#decisions"
+            ><span class="nav-icon">◇</span><span>Blocker</span
+            ><b id="decision-nav">—</b></a
+          >
+          <a data-view="systems" href="#system-health"
+            ><span class="nav-icon">◎</span><span>Systeme</span></a
+          >
+          <a data-view="revenue" href="#revenue"
+            ><span class="nav-icon">€</span><span>First Money</span></a
+          >
+          <a data-view="details" href="#advanced"
+            ><span class="nav-icon">≡</span><span>Details</span></a
+          >
         </nav>
         <div class="sidebar-bottom">
-          <div class="read-only"><i></i> CONTROLLED MASTER ACTIONS</div>
-          <p>Klare Signale.<br />Belegte Entscheidungen.</p>
+          <span class="eyebrow">ENTWICKLUNGSBRANCH</span
+          ><strong>scentai-mvp</strong>
+          <p>Eine klare Sicht.<br />Der nächste Schritt.</p>
         </div>
       </aside>
-
-      <main class="workspace">
+      <main class="workspace" id="cockpit-content" tabindex="-1">
         <header class="topbar">
           <div>
             <span class="eyebrow">DUFYND OPERATING SYSTEM</span>
-            <div class="breadcrumb">CEO Control Room <span>/</span> Live</div>
+            <div class="breadcrumb">
+              Jarvis Cockpit <span>/</span> <b id="view-label">Jetzt</b>
+            </div>
           </div>
           <div class="top-right">
-            <time id="clock" class="clock"></time
-            ><span id="sync-label" class="sync">Verbindung wird geprüft</span>
-            <button id="refresh" class="quiet-button">
+            <time class="clock" id="clock"></time
+            ><span class="sync" id="sync-label">Verbindung wird geprüft</span>
+            <button
+              aria-label="Live-Daten aktualisieren"
+              class="quiet-button"
+              id="refresh"
+            >
               ↻ <span>Aktualisieren</span>
             </button>
-            <button id="logout" class="text-button">Abmelden</button>
+            <button class="text-button" id="logout">Abmelden</button>
           </div>
         </header>
-
-        <div id="connection-alert" role="status" class="connection-alert">
+        <div class="connection-alert" id="connection-alert" role="status">
           Live-Daten werden geladen. Noch keine Aussage zum Systemzustand.
         </div>
-
-        <section id="global-risk" class="panel global-risk state-neutral" aria-labelledby="risk-title">
+        <section
+          aria-labelledby="risk-title"
+          class="panel global-risk state-neutral"
+          id="global-risk"
+        >
           <div class="risk-heading">
-            <div><span class="eyebrow">GESAMTLAGE</span><h2 id="risk-title">Live-Lage wird geprüft</h2><p id="risk-summary">Noch keine Entwarnung bestätigt.</p></div>
-            <div class="risk-owner"><span id="risk-level" class="pill neutral">UNBESTÄTIGT</span><strong id="risk-owner-action">Master-Bedarf wird geprüft.</strong><small id="risk-observed">Quelle wird geladen.</small></div>
-          </div>
-          <div id="risk-panel" class="risk-grid" aria-label="Risiken und Systemzustand"></div>
-        </section>
-
-        <section id="approval-alert" class="approval-alert" hidden>
-          <div>
-            <small>DEINE AKTION ERFORDERLICH</small>
-            <strong id="approval-summary"
-              >Eine Entscheidung wartet auf dich.</strong
-            >
-            <p id="approval-detail">Details werden geladen.</p>
-          </div>
-          <a class="approval-link" href="#decisions">Jetzt handeln →</a>
-        </section>
-
-        <section id="command" class="command">
-          <svg
-            class="sentinel-scene"
-            viewBox="0 0 800 460"
-            aria-hidden="true"
-            focusable="false"
-          >
-            <defs>
-              <linearGradient id="sentinel-light" x1="0" y1="0" x2="0" y2="1">
-                <stop stop-color="#66ffe1" stop-opacity=".35" />
-                <stop offset="1" stop-color="#153d43" stop-opacity="0" />
-              </linearGradient>
-              <radialGradient id="sentinel-halo">
-                <stop stop-color="#42e9c0" stop-opacity=".12" />
-                <stop offset="1" stop-color="#42e9c0" stop-opacity="0" />
-              </radialGradient>
-            </defs>
-            <circle cx="625" cy="140" r="185" fill="url(#sentinel-halo)" />
-            <path
-              d="M405 460V300L452 270V180L478 156L504 180V270L532 296V460M536 460V326L564 307V238L589 216L616 238V307L646 330V460M665 460V265L706 232V145L735 122L765 145V232L800 263V460"
-              fill="#0a2630"
-              opacity=".55"
-            />
-            <path
-              d="M478 157V255M589 216V295M735 122V245M449 288H509M557 324H620M687 253H782"
-              fill="none"
-              stroke="url(#sentinel-light)"
-              stroke-width="1"
-            />
-            <path
-              d="M220 460L610 264L800 460M310 460L610 264M430 460L610 264M580 460L610 264M740 460L610 264M360 385H726M470 325H670"
-              fill="none"
-              stroke="#6bffdb"
-              stroke-opacity=".075"
-            />
-            <circle
-              cx="630"
-              cy="131"
-              r="95"
-              fill="none"
-              stroke="#87ffe1"
-              stroke-opacity=".06"
-            />
-          </svg>
-          <div class="command-copy">
-            <div class="section-kicker">
-              <span class="eyebrow">AUTONOMIE · MIT KONTROLLE</span>
-              <span id="jarvis-state" class="pill neutral">UNKNOWN</span>
+            <div>
+              <span class="eyebrow">GESAMTLAGE</span>
+              <h2 id="risk-title">Live-Lage wird geprüft</h2>
+              <p id="risk-summary">Noch keine Entwarnung bestätigt.</p>
             </div>
-            <h1>JARVIS<span>DEIN UNTERNEHMEN. IM BLICK.</span></h1>
-            <p id="priority" class="priority">
-              Aktuelle Priorität wird geladen.
-            </p>
-
-            <div class="pulse-grid" aria-label="CEO Status">
-              <article id="pulse-jarvis" class="pulse-card state-neutral">
-                <div class="pulse-label"><i></i><small>JARVIS</small></div>
-                <strong id="pulse-jarvis-value">Wird geprüft</strong>
-                <span id="pulse-jarvis-detail">Live-State wird geladen.</span>
-              </article>
-              <a
-                id="pulse-action"
-                class="pulse-card state-neutral"
-                href="#decisions"
+            <div class="risk-owner">
+              <span class="pill neutral" id="risk-level">UNBESTÄTIGT</span
+              ><strong id="risk-owner-action"
+                >Master-Bedarf wird geprüft.</strong
               >
-                <div class="pulse-label">
-                  <i></i><small>DEINE AKTION</small>
-                </div>
-                <strong id="pulse-action-value">Wird geprüft</strong>
-                <span id="pulse-action-detail"
-                  >Freigabestatus wird geladen.</span
-                >
-              </a>
-              <a
-                id="pulse-money"
-                class="pulse-card state-neutral"
-                href="#revenue"
-              >
-                <div class="pulse-label"><i></i><small>FIRST MONEY</small></div>
-                <strong id="pulse-money-value">Wird geprüft</strong>
-                <span id="pulse-money-detail"
-                  >Publication-State wird geladen.</span
-                >
-              </a>
-              <article id="pulse-cost" class="pulse-card state-neutral">
-                <div class="pulse-label">
-                  <i></i><small>KOSTEN HEUTE</small>
-                </div>
-                <strong id="pulse-cost-value">—</strong>
-                <span id="pulse-cost-detail">Kostenstatus wird geladen.</span>
-              </article>
-            </div>
-
-            <section id="operator-brief" class="operator-brief" aria-label="Jarvis Operator Briefing">
-              <article>
-                <small>WARUM STEHT ES?</small>
-                <strong id="operator-headline">Lage wird eingeordnet</strong>
-                <span id="operator-cause">Noch keine belastbare Ursache.</span>
-              </article>
-              <article>
-                <small>NÄCHSTER SINNVOLLER SCHRITT</small>
-                <strong id="operator-next">Wird bestimmt</strong>
-                <span id="operator-next-reason">Priorität wird aus der Live-Lage abgeleitet.</span>
-              </article>
-              <article>
-                <small>MASTER</small>
-                <strong id="operator-master">WIRD GEPRÜFT</strong>
-                <span id="operator-master-detail">Master-Bedarf wird geprüft.</span>
-              </article>
-            </section>
-
-            <div class="status-legend" aria-label="Statusfarben">
-              <span class="legend-green"><i></i>Stabil</span>
-              <span class="legend-blue"><i></i>Aktiv</span>
-              <span class="legend-amber"><i></i>Wartet / prüfen</span>
-              <span class="legend-red"><i></i>Kritischer Fehler</span>
-            </div>
-
-            <a id="source-summary" class="source-summary" href="#system-health"
-              >Quellen werden geprüft.</a
-            >
-            <div class="command-evidence">
-              <span>BRANCH <b>scentai-mvp</b></span>
-              <span>HEAD <b id="head">—</b></span>
-              <span id="head-age">Noch keine Branch-Beobachtung</span>
             </div>
           </div>
-
-          <div class="jarvis-stage" data-voice-enabled="VOICE_ENABLED">
+          <details class="v2-risk-details">
+            <summary>Risiken &amp; Quellen prüfen</summary>
             <div
-              id="jarvis-core"
-              class="core state-neutral"
-              data-voice-state="idle"
-              aria-hidden="true"
-            >
-              <div class="core-signal"></div>
-              <div class="core-orbit orbit-one"></div>
-              <div class="core-orbit orbit-two"></div>
-              <div class="core-orbit orbit-three"></div>
-              <div class="core-frame">
-                <span>J</span><small>JARVIS CORE</small>
-              </div>
-              <div id="jarvis-spectrum" class="core-spectrum"></div>
-              <div id="jarvis-voice-mode" class="core-voice-mode">STANDBY</div>
-              <div class="core-floor"></div>
-            </div>
-
-            <div class="jarvis-voice-console" aria-label="Jarvis Voice">
-              <button
-                id="jarvis-ptt"
-                class="jarvis-ptt"
-                type="button"
-                aria-pressed="false"
-                aria-describedby="jarvis-voice-privacy"
-              >
-                <span class="ptt-dot" aria-hidden="true"></span>
-                <span class="ptt-copy">
-                  <strong>TAP TO TALK</strong>
-                  <small id="jarvis-voice-status"
-                    >Einmal tippen oder V · Signalton = sprechen</small
-                  >
-                </span>
-                <kbd>V</kbd>
-              </button>
-              <p id="jarvis-voice-privacy">
-                JARVIS V3 · ONE TAP · Mikrofon nur beim Zuhören ·
-                Folgefragen bis 90 s ohne Neuaufbau
-              </p>
-            </div>
-          </div>
-
-          <div class="command-stats">
-            <div>
-              <small>ACTIVE WORKERS</small><strong id="active-workers">—</strong
-              ><span id="worker-summary">Status wird geprüft</span>
-            </div>
-            <div>
-              <small>WORKING MISSIONS</small
-              ><strong id="working-count">—</strong
-              ><span>Aktive Task-Zustände</span>
-            </div>
-            <div>
-              <small>MASTER DECISIONS</small
-              ><strong id="decision-count">—</strong
-              ><span>Echte offene Master-Entscheidungen</span>
-            </div>
-            <div>
-              <small>LAST SUPERVISOR WAKE</small
-              ><strong id="wake-time" class="time-stat">—</strong
-              ><span id="next-wake">Nächster Wake unbekannt</span>
-            </div>
-          </div>
+              aria-label="Risiken und Systemzustand"
+              class="risk-grid"
+              id="risk-panel"
+            ></div>
+            <small id="risk-observed">Quelle wird geladen.</small>
+          </details>
         </section>
-        <section id="decisions" class="panel decision-panel">
-          <div class="panel-heading">
-            <div>
-              <span class="eyebrow">MASTER ACTION CENTER</span>
-              <h2>Was du jetzt entscheiden oder tun musst</h2>
-            </div>
-            <span class="small-label"
-              >Direkt verständlich · direkt handelbar</span
-            >
-          </div>
-          <div id="decision-list" class="list-placeholder">
-            Master-Aktionen werden geprüft.
-          </div>
-        </section>
-        <section class="operations-grid" aria-label="Aktuelle Arbeit">
-          <section id="work" class="panel current-panel">
-            <div class="panel-heading">
-              <div>
-                <span class="eyebrow">AUSFÜHRUNG</span>
-                <h2>Im Fokus</h2>
-              </div>
-              <span id="loop-time" class="small-label">—</span>
-            </div>
-            <div class="work-flow">
-              <article>
-                <small>JETZT</small>
-                <strong id="current-task">—</strong>
-              </article>
-              <span class="work-arrow advanced-only">→</span>
-              <article class="advanced-only">
-                <small>DANACH</small>
-                <strong id="allowed-task">—</strong>
-              </article>
-            </div>
-            <div id="execution-detail-list" class="execution-detail-list"></div>
-            <p
-              id="execution-source-status"
-              class="execution-source-status"
-              role="status"
-              hidden
-            ></p>
-            <p id="execution-context" class="execution-context">
-              Ausführungsnachweis wird geprüft.
-            </p>
-            <div class="work-technical advanced-only">
-              <small>STOP REASON</small>
-              <p id="stop-reason">—</p>
-            </div>
-            <div class="work-technical advanced-only">
-              <small>AKTIVE LEASES</small>
-              <p id="lease-count">—</p>
-            </div>
-          </section>
-          <section class="panel next-panel">
-            <div class="panel-heading">
-              <div>
-                <span class="eyebrow">NÄCHSTE AUSWAHL</span>
-                <h2>Als Nächstes</h2>
-              </div>
-            </div>
-            <div id="next-task-list"></div>
-            <div id="next-observed-trigger" class="next-observed-trigger"></div>
-          </section>
-          <section class="panel waiting-panel">
-            <div class="panel-heading">
-              <div>
-                <span class="eyebrow">ABHÄNGIGKEITEN</span>
-                <h2>Blockiert / wartet</h2>
-              </div>
-            </div>
-            <div id="waiting-counts" class="waiting-counts"></div>
-            <details class="meta-details">
-              <summary>Worauf wartet die Arbeit?</summary>
-              <div id="waiting-list"></div>
-            </details>
-          </section>
-        </section>
-        <section id="crew" class="panel crew-panel" aria-labelledby="crew-title">
-          <div class="panel-heading">
-            <div>
-              <span class="eyebrow">JARVIS CREW · LIVE</span>
-              <h2 id="crew-title">Wer macht gerade was?</h2>
-            </div>
-            <span id="crew-count" class="pill neutral">Wird geprüft</span>
-          </div>
-          <p class="crew-intro">Jarvis führt. Die vier Sparten bleiben bewusst getrennt. Aktiv bedeutet ausschließlich: eine reale Ausführung ist durch Lease und Heartbeat bestätigt.</p>
-
-          <div id="crew-supervisor" class="crew-supervisor state-neutral">
-            <span class="crew-core-mark" aria-hidden="true">J</span>
-            <div>
-              <strong>JARVIS</strong>
-              <small>SUPERVISOR / ORCHESTRATOR</small>
-              <p id="crew-supervisor-state">Loop wird geprüft.</p>
-            </div>
-            <a id="crew-owner-link" href="#decisions" hidden>Deine Aktion öffnen →</a>
-          </div>
-
-          <section class="crew-live-board" aria-labelledby="crew-live-title">
-            <div class="crew-live-heading">
-              <div>
-                <span class="eyebrow">LIVE ACTION</span>
-                <h3 id="crew-live-title">Aktuell in Arbeit</h3>
-              </div>
-              <span id="crew-live-count" class="small-label">Wird geprüft</span>
-            </div>
-            <div id="crew-live-now" class="crew-live-now">
-              <p class="muted">Live-Ausführungen werden geprüft.</p>
-            </div>
-          </section>
-
-          <div id="crew-grid" class="crew-grid" aria-label="Jarvis Organisationsrollen"></div>
-
-          <section class="crew-activity-board" aria-labelledby="crew-activity-title">
-            <div class="crew-live-heading">
-              <div>
-                <span class="eyebrow">LETZTE ARBEIT</span>
-                <h3 id="crew-activity-title">Verifizierte Worker-Aktivität</h3>
-              </div>
-              <span class="small-label">kein Fake-Live</span>
-            </div>
-            <div id="crew-activity" class="crew-activity">
-              <p class="muted">Letzte Ausführungen werden geladen.</p>
-            </div>
-          </section>
-
-          <p id="crew-unassigned" class="crew-note" hidden></p>
-          <p class="crew-note">Bereit beschreibt eine Organisationsrolle, nicht eine laufende Ausführung. Technische Identitäten und Handler bleiben in den Details.</p>
-        </section>
-
-        <section class="business-grid" aria-label="Geschäft und System">
-          <section id="revenue" class="panel revenue-panel">
-            <div class="panel-heading revenue-heading">
-              <div>
-                <span class="eyebrow"
-                  >VERÖFFENTLICHUNG → INTERESSE → UMSATZ</span
-                >
-                <h2>First Money · 1 Million</h2>
-              </div>
-              <span class="small-label">Clickout ≠ Sale</span>
-            </div>
-
-            <div id="publication-list" class="publication-list"></div>
-
-            <div class="revenue-cockpit">
-              <article
-                id="business-signal"
-                class="business-signal signal-neutral"
-              >
-                <div class="signal-copy">
-                  <span id="signal-kicker" class="eyebrow">BEWEISLAGE</span>
-                  <h3 id="signal-title">Funnel wird gelesen</h3>
-                  <p id="signal-copy">Live-Daten werden ausgewertet.</p>
-                  <div class="next-milestone">
-                    <small>NÄCHSTER BEWEIS</small>
-                    <strong id="next-milestone">—</strong>
-                  </div>
+        <div class="cockpit-layout">
+          <div class="cockpit-center">
+            <section class="command" data-views="now" id="command">
+              <div class="command-copy">
+                <div class="section-kicker">
+                  <span class="eyebrow">PRIORITÄT · JETZT</span>
+                  <span class="pill neutral" id="jarvis-state">UNKNOWN</span>
                 </div>
-                <div id="pipeline-ring" class="evidence-seal">
+                <h1 class="priority" id="priority">
+                  Aktuelle Priorität wird geladen.
+                </h1>
+                <div class="command-stats">
                   <div>
-                    <strong id="pipeline-stage">—</strong
-                    ><span>Publikation</span>
+                    <small>WORKER AKTIV</small
+                    ><strong id="active-workers">—</strong>
+                  </div>
+                  <div>
+                    <small>IN ARBEIT</small
+                    ><strong id="working-count">—</strong>
+                  </div>
+                  <div>
+                    <small>AKTIONEN</small
+                    ><strong id="decision-count">—</strong>
+                  </div>
+                  <div>
+                    <small>LETZTER LOOP</small
+                    ><strong class="time-stat" id="wake-time">—</strong>
                   </div>
                 </div>
-              </article>
-
-              <div class="funnel-wrap">
-                <div class="evidence-warning">
-                  MESSDATEN · TESTS NICHT GETRENNT<span
-                    >Beobachtete Events sind noch kein Beweis für organischen
-                    Traffic oder Umsatz.</span
+                <a
+                  class="source-summary"
+                  href="#system-health"
+                  id="source-summary"
+                  >Quellen werden geprüft.</a
+                >
+                <div class="v2-last-output">
+                  <small>LETZTER WORKER-OUTPUT</small
+                  ><strong id="v2-last-output">Wird geprüft</strong
+                  ><span id="v2-output-time">Noch kein Nachweis</span>
+                </div>
+                <details class="v2-explain">
+                  <summary>Einordnung &amp; nächste Schritte</summary>
+                  <div aria-label="CEO Status" class="pulse-grid">
+                    <article class="pulse-card state-neutral" id="pulse-jarvis">
+                      <div class="pulse-label">
+                        <i></i><small>JARVIS</small>
+                      </div>
+                      <strong id="pulse-jarvis-value">Wird geprüft</strong>
+                      <span id="pulse-jarvis-detail"
+                        >Live-State wird geladen.</span
+                      >
+                    </article>
+                    <a
+                      class="pulse-card state-neutral"
+                      href="#decisions"
+                      id="pulse-action"
+                    >
+                      <div class="pulse-label">
+                        <i></i><small>DEINE AKTION</small>
+                      </div>
+                      <strong id="pulse-action-value">Wird geprüft</strong>
+                      <span id="pulse-action-detail"
+                        >Freigabestatus wird geladen.</span
+                      >
+                    </a>
+                    <a
+                      class="pulse-card state-neutral"
+                      href="#revenue"
+                      id="pulse-money"
+                    >
+                      <div class="pulse-label">
+                        <i></i><small>FIRST MONEY</small>
+                      </div>
+                      <strong id="pulse-money-value">Wird geprüft</strong>
+                      <span id="pulse-money-detail"
+                        >Publication-State wird geladen.</span
+                      >
+                    </a>
+                    <article class="pulse-card state-neutral" id="pulse-cost">
+                      <div class="pulse-label">
+                        <i></i><small>KOSTEN HEUTE</small>
+                      </div>
+                      <strong id="pulse-cost-value">—</strong>
+                      <span id="pulse-cost-detail"
+                        >Kostenstatus wird geladen.</span
+                      >
+                    </article>
+                  </div>
+                  <section
+                    aria-label="Jarvis Operator Briefing"
+                    class="operator-brief"
+                    id="operator-brief"
                   >
-                </div>
-                <div id="funnel" class="funnel"></div>
+                    <article>
+                      <small>WARUM STEHT ES?</small>
+                      <strong id="operator-headline"
+                        >Lage wird eingeordnet</strong
+                      >
+                      <span id="operator-cause"
+                        >Noch keine belastbare Ursache.</span
+                      >
+                    </article>
+                    <article>
+                      <small>NÄCHSTER SINNVOLLER SCHRITT</small>
+                      <strong id="operator-next">Wird bestimmt</strong>
+                      <span id="operator-next-reason"
+                        >Priorität wird aus der Live-Lage abgeleitet.</span
+                      >
+                    </article>
+                    <article>
+                      <small>MASTER</small>
+                      <strong id="operator-master">WIRD GEPRÜFT</strong>
+                      <span id="operator-master-detail"
+                        >Master-Bedarf wird geprüft.</span
+                      >
+                    </article>
+                  </section>
+                  <div aria-label="Statusfarben" class="status-legend">
+                    <span class="legend-green"><i></i>Stabil</span>
+                    <span class="legend-blue"><i></i>Aktiv</span>
+                    <span class="legend-amber"><i></i>Wartet / prüfen</span>
+                    <span class="legend-red"><i></i>Kritischer Fehler</span>
+                  </div>
+                  <div class="command-evidence">
+                    <span>BRANCH <b>scentai-mvp</b></span>
+                    <span>HEAD <b id="head">—</b></span>
+                    <span id="head-age">Noch keine Branch-Beobachtung</span>
+                  </div>
+                  <div class="v2-state-detail">
+                    <span id="worker-summary">Status wird geprüft</span
+                    ><span id="next-wake">Nächster Wake unbekannt</span>
+                  </div>
+                </details>
               </div>
-            </div>
-
-            <details class="revenue-details meta-details">
-              <summary>Messgrundlage, Kaufziel & Produkte</summary>
-              <details class="meta-details">
-                <summary>Messgrundlage & Kaufziel</summary>
-                <p id="funnel-basis" class="muted"></p>
-                <p id="purchase-basis" class="muted"></p>
-              </details>
-              <details class="meta-details">
-                <summary>Tracking-Details</summary>
-                <p id="content-identifiers" class="muted"></p>
-              </details>
-              <details class="product-details">
-                <summary>Money Products · beobachteter Status</summary>
-                <div class="money-heading">
-                  <h3>Money Products</h3>
-                  <span id="product-evidence" class="muted"></span>
+            </section>
+            <section
+              class="approval-alert"
+              data-views="now blockers"
+              hidden=""
+              id="approval-alert"
+            >
+              <div>
+                <small>DEINE AKTION ERFORDERLICH</small>
+                <strong id="approval-summary"
+                  >Eine Entscheidung wartet auf dich.</strong
+                >
+                <p id="approval-detail">Details werden geladen.</p>
+              </div>
+              <a class="approval-link" href="#decisions">Jetzt handeln →</a>
+            </section>
+            <section
+              aria-label="Aktuelle Arbeit"
+              class="operations-grid"
+              data-views="now"
+            >
+              <section class="panel current-panel" id="work">
+                <div class="panel-heading">
+                  <div>
+                    <span class="eyebrow">AUSFÜHRUNG</span>
+                    <h2>Im Fokus</h2>
+                  </div>
+                  <span class="small-label" id="loop-time">—</span>
                 </div>
-                <div id="money-products" class="money-products"></div>
-              </details>
-            </details>
-          </section>
-          <div class="support-stack">
-            <section class="panel cost-panel">
+                <div class="work-flow">
+                  <article>
+                    <small>JETZT</small>
+                    <strong id="current-task">—</strong>
+                  </article>
+                  <span class="work-arrow advanced-only">→</span>
+                  <article class="advanced-only">
+                    <small>DANACH</small>
+                    <strong id="allowed-task">—</strong>
+                  </article>
+                </div>
+                <div
+                  class="execution-detail-list"
+                  id="execution-detail-list"
+                ></div>
+                <p
+                  class="execution-source-status"
+                  hidden=""
+                  id="execution-source-status"
+                  role="status"
+                ></p>
+                <p class="execution-context" id="execution-context">
+                  Ausführungsnachweis wird geprüft.
+                </p>
+                <div class="work-technical advanced-only">
+                  <small>STOP REASON</small>
+                  <p id="stop-reason">—</p>
+                </div>
+                <div class="work-technical advanced-only">
+                  <small>AKTIVE LEASES</small>
+                  <p id="lease-count">—</p>
+                </div>
+              </section>
+              <section class="panel next-panel">
+                <div class="panel-heading">
+                  <div>
+                    <span class="eyebrow">NÄCHSTE AUSWAHL</span>
+                    <h2>Als Nächstes</h2>
+                  </div>
+                </div>
+                <div id="next-task-list"></div>
+                <div
+                  class="next-observed-trigger"
+                  id="next-observed-trigger"
+                ></div>
+              </section>
+            </section>
+            <section
+              class="panel waiting-panel"
+              data-views="blockers"
+              id="blocker-waits"
+            >
               <div class="panel-heading">
                 <div>
-                  <span class="eyebrow">KOSTENKONTROLLE</span>
-                  <h2>Kosten heute</h2>
+                  <span class="eyebrow">ABHÄNGIGKEITEN</span>
+                  <h2>Blockiert / wartet</h2>
                 </div>
-                <span class="small-label">Europe / Berlin</span>
               </div>
-              <strong id="cost-total" class="cost-total">UNKNOWN</strong>
-              <p id="cost-basis" class="muted">Kosten werden geprüft.</p>
+              <div class="waiting-counts" id="waiting-counts"></div>
               <details class="meta-details">
-                <summary>Reservierungen & Budget</summary>
-                <div id="cost-context" class="cost-context"></div>
+                <summary>Worauf wartet die Arbeit?</summary>
+                <div id="waiting-list"></div>
               </details>
             </section>
-            <article id="system-health" class="panel overview-health-card">
+            <article class="panel overview-activity-card" data-views="now">
               <div class="panel-heading">
                 <div>
-                  <span class="eyebrow">QUELLEN & SYSTEME</span>
+                  <span class="eyebrow">BEOBACHTETE AKTIVITÄT</span>
+                  <h2>Letzte Signale</h2>
+                </div>
+                <span class="small-label">verifizierte Schritte</span>
+              </div>
+              <div class="overview-feed" id="overview-activity-list">
+                <p class="muted">Aktivität wird geladen.</p>
+              </div>
+            </article>
+            <section
+              class="panel decision-panel"
+              data-views="blockers"
+              id="decisions"
+            >
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">MASTER ACTION CENTER</span>
+                  <h2>Was du jetzt entscheiden oder tun musst</h2>
+                </div>
+                <span class="small-label"
+                  >Direkt verständlich · direkt handelbar</span
+                >
+              </div>
+              <div class="list-placeholder" id="decision-list">
+                Master-Aktionen werden geprüft.
+              </div>
+            </section>
+            <section
+              class="panel workstreams-panel"
+              data-views="blockers"
+              id="workstreams"
+            >
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">ARBEITSBEREICHE</span>
+                  <h2>Was läuft · was wartet</h2>
+                </div>
+                <span class="small-label"
+                  >Aufgabe · Wartegrund · nächster Nachweis</span
+                >
+              </div>
+              <div class="workstream-grid" id="workstream-list">
+                <p class="muted">Workstreams werden gelesen.</p>
+              </div>
+            </section>
+            <section
+              aria-labelledby="crew-title"
+              class="panel crew-panel"
+              data-views="workers"
+              id="crew"
+            >
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">JARVIS CREW · LIVE</span>
+                  <h2 id="crew-title">Wer macht gerade was?</h2>
+                </div>
+                <span class="pill neutral" id="crew-count">Wird geprüft</span>
+              </div>
+              <p class="crew-intro">
+                Aktiv heißt: echte Ausführung mit gültiger Lease und Heartbeat.
+              </p>
+              <div class="crew-supervisor state-neutral" id="crew-supervisor">
+                <span aria-hidden="true" class="crew-core-mark">J</span>
+                <div>
+                  <strong>JARVIS</strong>
+                  <small>SUPERVISOR / ORCHESTRATOR</small>
+                  <p id="crew-supervisor-state">Loop wird geprüft.</p>
+                </div>
+                <a hidden="" href="#decisions" id="crew-owner-link"
+                  >Deine Aktion öffnen →</a
+                >
+              </div>
+              <section
+                aria-labelledby="crew-live-title"
+                class="crew-live-board"
+              >
+                <div class="crew-live-heading">
+                  <div>
+                    <span class="eyebrow">LIVE ACTION</span>
+                    <h3 id="crew-live-title">Aktuell in Arbeit</h3>
+                  </div>
+                  <span class="small-label" id="crew-live-count"
+                    >Wird geprüft</span
+                  >
+                </div>
+                <div class="crew-live-now" id="crew-live-now">
+                  <p class="muted">Live-Ausführungen werden geprüft.</p>
+                </div>
+              </section>
+              <section
+                aria-labelledby="crew-activity-title"
+                class="crew-activity-board"
+              >
+                <div class="crew-live-heading">
+                  <div>
+                    <span class="eyebrow">LETZTE ARBEIT</span>
+                    <h3 id="crew-activity-title">
+                      Verifizierte Worker-Aktivität
+                    </h3>
+                  </div>
+                  <span class="small-label">kein Fake-Live</span>
+                </div>
+                <div class="crew-activity" id="crew-activity">
+                  <p class="muted">Letzte Ausführungen werden geladen.</p>
+                </div>
+              </section>
+              <p class="crew-note" hidden="" id="crew-unassigned"></p>
+              <p class="crew-note">
+                Bereit beschreibt eine Organisationsrolle, nicht eine laufende
+                Ausführung. Technische Identitäten und Handler bleiben in den
+                Details.
+              </p>
+              <details class="v2-crew-details">
+                <summary>Alle Rollen &amp; Zuständigkeiten</summary>
+                <div
+                  aria-label="Jarvis Organisationsrollen"
+                  class="crew-grid"
+                  id="crew-grid"
+                ></div>
+              </details>
+            </section>
+            <section
+              class="panel revenue-panel"
+              data-views="revenue"
+              id="revenue"
+            >
+              <div class="panel-heading revenue-heading">
+                <div>
+                  <span class="eyebrow"
+                    >VERÖFFENTLICHUNG → INTERESSE → UMSATZ</span
+                  >
+                  <h2>First Money · 1 Million</h2>
+                </div>
+                <span class="small-label">Clickout ≠ Sale</span>
+              </div>
+              <div class="publication-list" id="publication-list"></div>
+              <div class="revenue-cockpit">
+                <article
+                  class="business-signal signal-neutral"
+                  id="business-signal"
+                >
+                  <div class="signal-copy">
+                    <span class="eyebrow" id="signal-kicker">BEWEISLAGE</span>
+                    <h3 id="signal-title">Funnel wird gelesen</h3>
+                    <p id="signal-copy">Live-Daten werden ausgewertet.</p>
+                    <div class="next-milestone">
+                      <small>NÄCHSTER BEWEIS</small>
+                      <strong id="next-milestone">—</strong>
+                    </div>
+                  </div>
+                  <div class="evidence-seal" id="pipeline-ring">
+                    <div>
+                      <strong id="pipeline-stage">—</strong
+                      ><span>Publikation</span>
+                    </div>
+                  </div>
+                </article>
+                <div class="funnel-wrap">
+                  <div class="evidence-warning">
+                    MESSDATEN · TESTS NICHT GETRENNT<span
+                      >Beobachtete Events sind noch kein Beweis für organischen
+                      Traffic oder Umsatz.</span
+                    >
+                  </div>
+                  <div class="funnel" id="funnel"></div>
+                </div>
+              </div>
+              <details class="revenue-details meta-details">
+                <summary>Messgrundlage, Kaufziel &amp; Produkte</summary>
+                <details class="meta-details">
+                  <summary>Messgrundlage &amp; Kaufziel</summary>
+                  <p class="muted" id="funnel-basis"></p>
+                  <p class="muted" id="purchase-basis"></p>
+                </details>
+                <details class="meta-details">
+                  <summary>Tracking-Details</summary>
+                  <p class="muted" id="content-identifiers"></p>
+                </details>
+                <details class="product-details">
+                  <summary>Money Products · beobachteter Status</summary>
+                  <div class="money-heading">
+                    <h3>Money Products</h3>
+                    <span class="muted" id="product-evidence"></span>
+                  </div>
+                  <div class="money-products" id="money-products"></div>
+                </details>
+              </details>
+            </section>
+            <div class="advanced-toggle" data-views="details" id="advanced">
+              <button
+                aria-expanded="false"
+                class="quiet-button"
+                id="toggle-details"
+                type="button"
+              >
+                Technische Details anzeigen
+              </button>
+              <span
+                >Queue · Budget · Worker · Missionen · vollständiger
+                Systemstatus</span
+              >
+            </div>
+            <section
+              class="panel queue-panel advanced-only"
+              data-views="details"
+            >
+              <div class="panel-heading">
+                <h2>Technische Queue &amp; Kosten</h2>
+                <span class="small-label" id="queue-time">—</span>
+              </div>
+              <div class="funnel" id="queue-counts"></div>
+              <p id="runtime-safety"></p>
+            </section>
+            <section
+              class="panel budget-panel advanced-only"
+              data-views="details"
+            >
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">GUARDRAILS</span>
+                  <h2>Budget &amp; safety</h2>
+                </div>
+                <span class="pill neutral" id="paid-state">UNKNOWN</span>
+              </div>
+              <div class="budget-values">
+                <div><small>CAP</small><strong id="budget-cap">—</strong></div>
+                <div>
+                  <small>SPEND</small><strong id="budget-spend">—</strong>
+                </div>
+                <div>
+                  <small>REMAINING</small
+                  ><strong id="budget-remaining">—</strong>
+                </div>
+              </div>
+              <div class="budget-detail" id="budget-details">
+                Budgetquelle wird geprüft.
+              </div>
+              <div class="safety-gates">
+                <span>MAIN <b>MASTER GATE</b></span
+                ><span>PUBLISH <b>MASTER GATE</b></span
+                ><span>OUTBOUND <b>MASTER GATE</b></span>
+              </div>
+            </section>
+            <section class="advanced-only" data-views="details" id="workers">
+              <div class="section-heading">
+                <div>
+                  <span class="eyebrow">AUSFÜHRUNG LAYER</span>
+                  <h2>Worker</h2>
+                </div>
+                <span class="small-label" id="worker-count"
+                  >Beobachtung wird geladen</span
+                >
+              </div>
+              <div class="worker-grid" id="worker-deck"></div>
+            </section>
+            <section class="advanced-only" data-views="details" id="missions">
+              <div class="section-heading">
+                <div>
+                  <span class="eyebrow">MISSION CONTROL</span>
+                  <h2>Aufgaben-Details</h2>
+                </div>
+                <div class="filters">
+                  <label class="sr-only" for="domain-filter"
+                    >Domain filtern</label
+                  >
+                  <select id="domain-filter">
+                    <option value="">All domains</option>
+                  </select>
+                  <label class="check-label"
+                    ><input id="show-done" type="checkbox" /> Recent done</label
+                  >
+                </div>
+              </div>
+              <p class="muted compact" id="completeness"></p>
+              <div class="mission-board" id="mission-board"></div>
+            </section>
+            <div class="lower-grid advanced-only" data-views="details">
+              <section class="panel activity-panel" id="activity">
+                <div class="panel-heading">
+                  <div>
+                    <span class="eyebrow">EVIDENCE STREAM</span>
+                    <h2>Aktivität</h2>
+                  </div>
+                  <span class="small-label">letzte 8</span>
+                </div>
+                <div class="activity-list list-placeholder" id="activity-list">
+                  Event-Beobachtungen werden geladen.
+                </div>
+              </section>
+              <div class="right-stack">
+                <section class="panel" id="systems">
+                  <div class="panel-heading">
+                    <div>
+                      <span class="eyebrow">OBSERVATION LAYER</span>
+                      <h2>Systemstatus</h2>
+                    </div>
+                  </div>
+                  <div class="system-list list-placeholder" id="system-list">
+                    Health wird geprüft.
+                  </div>
+                </section>
+                <section class="panel evidence-panel">
+                  <span class="eyebrow">OBSERVED CONTROL STATE</span>
+                  <h2>Last action · Next step</h2>
+                  <small>LAST COMPLETED ACTION</small>
+                  <p id="last-action">—</p>
+                  <small>NEXT SAFE ACTION</small>
+                  <p id="next-action">—</p>
+                  <span class="small-label" id="checkpoint-age"
+                    >Checkpoint-Zeit unbekannt</span
+                  >
+                </section>
+              </div>
+            </div>
+            <section
+              class="panel map-panel advanced-only"
+              data-views="details"
+              id="map"
+            >
+              <div class="system-map">
+                <span id="map-state">—</span><span id="map-workers">—</span>
+                <div id="map-tools"></div>
+              </div>
+            </section>
+          </div>
+          <aside aria-label="Jarvis und Live-Status" class="cockpit-rail">
+            <section
+              aria-label="Jarvis Live"
+              class="panel v2-jarvis"
+              data-mobile-views="now workers blockers systems revenue details"
+            >
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">DEIN OPERATOR</span>
+                  <h2>Jarvis</h2>
+                </div>
+                <span class="small-label">Live Interface</span>
+              </div>
+              <div class="jarvis-stage" data-voice-enabled="VOICE_ENABLED">
+                <div
+                  aria-hidden="true"
+                  class="core state-neutral"
+                  data-voice-state="idle"
+                  id="jarvis-core"
+                >
+                  <div class="core-signal"></div>
+                  <div class="core-orbit orbit-one"></div>
+                  <div class="core-orbit orbit-two"></div>
+                  <div class="core-orbit orbit-three"></div>
+                  <div class="core-frame">
+                    <span>J</span><small>JARVIS CORE</small>
+                  </div>
+                  <div class="core-spectrum" id="jarvis-spectrum"></div>
+                  <div class="core-voice-mode" id="jarvis-voice-mode">
+                    STANDBY
+                  </div>
+                  <div class="core-floor"></div>
+                </div>
+                <div aria-label="Jarvis Voice" class="jarvis-voice-console">
+                  <button
+                    aria-describedby="jarvis-voice-privacy"
+                    aria-pressed="false"
+                    class="jarvis-ptt"
+                    id="jarvis-ptt"
+                    type="button"
+                  >
+                    <span aria-hidden="true" class="ptt-dot"></span>
+                    <span class="ptt-copy">
+                      <strong>TAP TO TALK</strong>
+                      <small id="jarvis-voice-status"
+                        >Einmal tippen oder V · Signalton = sprechen</small
+                      >
+                    </span>
+                    <kbd>V</kbd>
+                  </button>
+                  <p id="jarvis-voice-privacy">
+                    JARVIS V3 · Mikrofon nur beim Zuhören · Folgefragen bis 90 s
+                  </p>
+                </div>
+              </div>
+            </section>
+            <article
+              class="panel overview-health-card"
+              data-mobile-views="systems"
+              id="system-health"
+            >
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">QUELLEN &amp; SYSTEME</span>
                   <h2>Systemstatus</h2>
                 </div>
                 <span class="small-label">nur relevante Signale</span>
@@ -490,172 +730,48 @@
                 Beobachtungen. Veraltet bedeutet: Nachweis prüfen, kein
                 bestätigter Ausfall.
               </p>
-              <div id="overview-system-health" class="health-pulse">
+              <div class="health-pulse" id="overview-system-health">
                 <p class="muted">Systemstatus wird geladen.</p>
               </div>
             </article>
-          </div>
-        </section>
-        <section id="workstreams" class="panel workstreams-panel">
-          <div class="panel-heading">
-            <div>
-              <span class="eyebrow">ARBEITSBEREICHE</span>
-              <h2>Was läuft · was wartet</h2>
-            </div>
-            <span class="small-label"
-              >Aufgabe · Wartegrund · nächster Nachweis</span
-            >
-          </div>
-          <div id="workstream-list" class="workstream-grid">
-            <p class="muted">Workstreams werden gelesen.</p>
-          </div>
-        </section>
-        <article class="panel overview-activity-card">
-          <div class="panel-heading">
-            <div>
-              <span class="eyebrow">BEOBACHTETE AKTIVITÄT</span>
-              <h2>Letzte Signale</h2>
-            </div>
-            <span class="small-label">verifizierte Schritte</span>
-          </div>
-          <div id="overview-activity-list" class="overview-feed">
-            <p class="muted">Aktivität wird geladen.</p>
-          </div>
-        </article>
-        <div id="advanced" class="advanced-toggle">
-          <button
-            id="toggle-details"
-            class="quiet-button"
-            type="button"
-            aria-expanded="false"
-          >
-            Technische Details anzeigen
-          </button>
-          <span
-            >Queue · Budget · Worker · Missionen · vollständiger
-            Systemstatus</span
-          >
-        </div>
-
-        <section class="panel queue-panel advanced-only">
-          <div class="panel-heading">
-            <h2>Technische Queue & Kosten</h2>
-            <span id="queue-time" class="small-label">—</span>
-          </div>
-          <div id="queue-counts" class="funnel"></div>
-          <p id="runtime-safety"></p>
-        </section>
-
-        <section class="panel budget-panel advanced-only">
-          <div class="panel-heading">
-            <div>
-              <span class="eyebrow">GUARDRAILS</span>
-              <h2>Budget & safety</h2>
-            </div>
-            <span id="paid-state" class="pill neutral">UNKNOWN</span>
-          </div>
-          <div class="budget-values">
-            <div><small>CAP</small><strong id="budget-cap">—</strong></div>
-            <div><small>SPEND</small><strong id="budget-spend">—</strong></div>
-            <div>
-              <small>REMAINING</small><strong id="budget-remaining">—</strong>
-            </div>
-          </div>
-          <div id="budget-details" class="budget-detail">
-            Budgetquelle wird geprüft.
-          </div>
-          <div class="safety-gates">
-            <span>MAIN <b>MASTER GATE</b></span
-            ><span>PUBLISH <b>MASTER GATE</b></span
-            ><span>OUTBOUND <b>MASTER GATE</b></span>
-          </div>
-        </section>
-
-        <section id="workers" class="advanced-only">
-          <div class="section-heading">
-            <div>
-              <span class="eyebrow">AUSFÜHRUNG LAYER</span>
-              <h2>Worker</h2>
-            </div>
-            <span id="worker-count" class="small-label"
-              >Beobachtung wird geladen</span
-            >
-          </div>
-          <div id="worker-deck" class="worker-grid"></div>
-        </section>
-
-        <section id="missions" class="advanced-only">
-          <div class="section-heading">
-            <div>
-              <span class="eyebrow">MISSION CONTROL</span>
-              <h2>Aufgaben-Details</h2>
-            </div>
-            <div class="filters">
-              <label class="sr-only" for="domain-filter">Domain filtern</label>
-              <select id="domain-filter">
-                <option value="">All domains</option>
-              </select>
-              <label class="check-label"
-                ><input id="show-done" type="checkbox" /> Recent done</label
-              >
-            </div>
-          </div>
-          <p id="completeness" class="muted compact"></p>
-          <div id="mission-board" class="mission-board"></div>
-        </section>
-
-        <div class="lower-grid advanced-only">
-          <section id="activity" class="panel activity-panel">
-            <div class="panel-heading">
-              <div>
-                <span class="eyebrow">EVIDENCE STREAM</span>
-                <h2>Aktivität</h2>
-              </div>
-              <span class="small-label">letzte 8</span>
-            </div>
-            <div id="activity-list" class="activity-list list-placeholder">
-              Event-Beobachtungen werden geladen.
-            </div>
-          </section>
-          <div class="right-stack">
-            <section id="systems" class="panel">
+            <section class="panel cost-panel" data-mobile-views="systems">
               <div class="panel-heading">
                 <div>
-                  <span class="eyebrow">OBSERVATION LAYER</span>
-                  <h2>Systemstatus</h2>
+                  <span class="eyebrow">KOSTENKONTROLLE</span>
+                  <h2>Kosten heute</h2>
                 </div>
+                <span class="small-label">Europe / Berlin</span>
               </div>
-              <div id="system-list" class="system-list list-placeholder">
-                Health wird geprüft.
-              </div>
+              <strong class="cost-total" id="cost-total">UNKNOWN</strong>
+              <p class="muted" id="cost-basis">Kosten werden geprüft.</p>
+              <details class="meta-details">
+                <summary>Reservierungen &amp; Budget</summary>
+                <div class="cost-context" id="cost-context"></div>
+              </details>
             </section>
-            <section class="panel evidence-panel">
-              <span class="eyebrow">OBSERVED CONTROL STATE</span>
-              <h2>Last action · Next step</h2>
-              <small>LAST COMPLETED ACTION</small>
-              <p id="last-action">—</p>
-              <small>NEXT SAFE ACTION</small>
-              <p id="next-action">—</p>
-              <span id="checkpoint-age" class="small-label"
-                >Checkpoint-Zeit unbekannt</span
-              >
-            </section>
-          </div>
+            <nav
+              aria-label="Weitere Bereiche"
+              class="v2-more"
+              data-mobile-views="systems"
+            >
+              <a href="#revenue">First Money →</a
+              ><a href="#advanced">Technische Details →</a>
+            </nav>
+          </aside>
         </div>
-
-        <section id="map" class="panel map-panel advanced-only">
-          <div class="system-map">
-            <span id="map-state">—</span><span id="map-workers">—</span>
-            <div id="map-tools"></div>
-          </div>
-        </section>
-
         <footer class="footer">
-          <span>DUFYND · CEO Control Room V1.0</span>
+          <span>DUFYND · Jarvis Cockpit V2</span>
           <span id="snapshot-time">Noch kein Snapshot</span>
-          <span>Read-only · Master gates preserved</span>
+          <span>Bestehende Freigabegrenzen aktiv</span>
         </footer>
       </main>
     </div>
+    <nav aria-label="Mobile Bereiche" class="mobile-nav">
+      <a aria-current="page" data-view="now" href="#command"
+        ><span>◈</span>Jetzt</a
+      ><a data-view="workers" href="#crew"><span>↝</span>Worker</a
+      ><a data-view="blockers" href="#decisions"><span>◇</span>Blocker</a
+      ><a data-view="systems" href="#system-health"><span>◎</span>Systeme</a>
+    </nav>
   </body>
 </html>
