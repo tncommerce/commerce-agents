@@ -21,6 +21,14 @@ const BASE_STYLE: StageStyle = {
   "--dufynd-my": "34%",
 };
 
+// These reviewed studio photographs have an opaque white matte, even when a
+// caller supplies them through the legacy cutout slot. Do not shadow the bitmap
+// rectangle or alter the licensed pixels to make it look transparent.
+const WHITE_MATTE_PHOTOGRAPHS = new Set([
+  "https://www.topparfuemerie.de/media/catalog/product/8/2/825869_3700578501998_051.png",
+  "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+]);
+
 const WORLD_BACKGROUNDS: Record<FragranceVisualWorld, string> = {
   amber:
     "radial-gradient(circle at 50% 34%, rgba(211,151,54,0.18), transparent 34%), linear-gradient(145deg, #171310 0%, #0b0c0e 100%)",
@@ -100,6 +108,7 @@ export default function FragranceVisual({
   world?: FragranceVisualWorld;
 }) {
   const resolvedImageUrl = cutoutUrl || imageUrl;
+  const whiteMatte = WHITE_MATTE_PHOTOGRAPHS.has(resolvedImageUrl || "");
   const catalogClass = variant === "card" ? styles.catalog : "";
   const [failedImageUrl, setFailedImageUrl] = useState<string | null>(null);
   const [failedBackdropUrl, setFailedBackdropUrl] = useState<string | null>(null);
@@ -199,9 +208,13 @@ export default function FragranceVisual({
     <div
       data-variant={variant}
       data-dufynd-visual-world={world}
-      data-dufynd-image-kind={cutoutUrl ? "cutout" : "photograph"}
+      data-dufynd-image-kind={cutoutUrl && !whiteMatte ? "cutout" : "photograph"}
+      data-dufynd-image-matte={whiteMatte ? "white" : undefined}
       className={`dufynd-product-stage ${catalogClass} ${className}`}
-      style={stageStyle(world, variant)}
+      style={{
+        ...stageStyle(world, variant),
+        ...(variant === "card" && whiteMatte ? { background: "#fff" } : {}),
+      }}
       onPointerMove={variant === "hero" ? updatePointer : undefined}
       onPointerLeave={variant === "hero" ? resetPointer : undefined}
     >

@@ -1,5 +1,13 @@
 /** Verified product pages, independent of time-limited merchant prices and stock. */
 export const OFFICIAL_PRODUCT_PAGES: Record<string, { merchant: string; url: string }> = {
+  "SC-YSL-LIBRE-EDP-90": {
+    merchant: "Yves Saint Laurent",
+    url: "https://www.yslbeauty.de/dufte/dufte-fur-sie/libre/libre-eau-de-parfum/WW-50424YSL.html",
+  },
+  "SC-YSL-BLACK-OPIUM-EDP-90": {
+    merchant: "Yves Saint Laurent",
+    url: "https://www.yslbeauty.de/dufte/dufte-fur-sie/black-opium/black-opium-eau-de-parfum/WW-40701YSL.html?dwvar_WW-40701YSL_size=3.0+oz.",
+  },
   "SC-PDM-DELINA-EDP-75": {
     merchant: "Parfums de Marly",
     url: "https://parfums-de-marly.com/de/products/delina",

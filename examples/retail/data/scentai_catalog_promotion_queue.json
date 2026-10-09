@@ -2,7 +2,7 @@
   "version": 2,
   "updated_at": "2026-09-29T14:30:00Z",
   "status": "promotion_queue_active",
-  "live_catalog_count": 36,
+  "live_catalog_count": 38,
   "verified_queue_count": 30,
   "purpose": "Single source of truth for promoting verified SCENTAI fragrance candidates into the live catalog.",
   "hard_gates": [

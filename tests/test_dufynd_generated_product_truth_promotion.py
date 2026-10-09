@@ -28,12 +28,29 @@ def _load(path: Path) -> dict:
 
 
 def _payloads() -> tuple[dict, dict, dict, dict]:
+    # Exercise the historical staging flow independently of later feed-image
+    # catalog publication. These tests never replace the approved live image.
+    live = _load(LIVE_CATALOG)
+    live["products"] = [row for row in live["products"] if row["product_id"] != LIBRE_ID]
     return (
         _load(QUEUE),
         _load(STAGED_CANDIDATES),
-        _load(LIVE_CATALOG),
+        live,
         _load(STAGING_CATALOG),
     )
+
+
+def test_live_libre_feed_image_cannot_be_replaced_by_staged_generated_candidate(tmp_path):
+    with pytest.raises(ValueError, match="canonical_product_already_has_verified_product_truth"):
+        promotion_plan(
+            _load(QUEUE),
+            _load(STAGED_CANDIDATES),
+            _load(LIVE_CATALOG),
+            _load(STAGING_CATALOG),
+            product_id=LIBRE_ID,
+            public_asset="/products/ysl-libre-edp-90-generated.png",
+            public_root=tmp_path,
+        )
 
 
 def _staged_row(payload: dict, product_id: str) -> dict:

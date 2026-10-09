@@ -185,6 +185,8 @@ def test_exploded_notes_support_catalog_fallback_note_sets() -> None:
         "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
         "SC-PDM-DELINA-EDP-75",
         "SC-RABANNE-1-MILLION-EDT-100",
+        "SC-YSL-LIBRE-EDP-90",
+        "SC-YSL-BLACK-OPIUM-EDP-90",
     }
     assert "keyNotes={fragrance.notes.key}" in page
     assert "supporting={fragrance.notes.supporting}" in page

@@ -41,6 +41,7 @@ OFFICIAL_HOSTS = {
     "Lancôme": "www.lancome.de",
     "Rabanne": "www.rabanne.com",
     "Widian": "widian.com",
+    "Yves Saint Laurent": "www.yslbeauty.de",
 }
 
 ENTRY = re.compile(

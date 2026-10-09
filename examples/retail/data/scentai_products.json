@@ -3790,6 +3790,156 @@
           "cashmeran"
         ]
       }
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "brand": "Yves Saint Laurent",
+      "name": "Libre",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "classification": {
+        "scentai_target_groups": [
+          "women"
+        ],
+        "role": null,
+        "cluster_id": null,
+        "trend_bet": false
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7.5,
+        "rating_count": 2203,
+        "longevity_10": 7.8,
+        "projection_10": 7.6,
+        "provisional": false
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "floral",
+          "sweet",
+          "fresh",
+          "creamy",
+          "citrus"
+        ],
+        "scores": {
+          "freshness": 9,
+          "sweetness": 7,
+          "woodiness": 2,
+          "spiciness": 2
+        },
+        "score_confidence": "medium"
+      },
+      "market": {
+        "market_price_eur": 132.0,
+        "price_per_ml_eur": 1.4667,
+        "price_source_count": 1,
+        "price_checked_at": "2026-10-09"
+      },
+      "relationships": [],
+      "evidence": {
+        "overall": "promotion_verified"
+      },
+      "validation": {
+        "catalog_ready": true
+      },
+      "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png",
+      "visuals": [
+        {
+          "role": "primary",
+          "url": "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png",
+          "provenance": "merchant_feed",
+          "fidelity_status": "verified",
+          "variant": "90ml",
+          "reviewed_at": "2026-10-01T09:49:00+00:00",
+          "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+          "rights_checked_at": "2026-09-28",
+          "exact_variant_verified": true
+        }
+      ],
+      "notes": {
+        "key": [
+          "French lavender",
+          "Moroccan orange blossom",
+          "vanilla"
+        ]
+      }
+    },
+    {
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "brand": "Yves Saint Laurent",
+      "name": "Black Opium",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "classification": {
+        "scentai_target_groups": [
+          "women"
+        ],
+        "role": null,
+        "cluster_id": null,
+        "trend_bet": false
+      },
+      "community": {
+        "source": "Parfumo",
+        "rating_10": 7.2,
+        "rating_count": 2222,
+        "longevity_10": 7.5,
+        "projection_10": 7.3,
+        "provisional": false
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "sweet",
+          "gourmand",
+          "floral",
+          "oriental",
+          "spicy"
+        ],
+        "scores": {
+          "freshness": 3,
+          "sweetness": 9,
+          "woodiness": 4,
+          "spiciness": 6
+        },
+        "score_confidence": "medium"
+      },
+      "market": {
+        "market_price_eur": 113.0,
+        "price_per_ml_eur": 1.2556,
+        "price_source_count": 1,
+        "price_checked_at": "2026-10-09"
+      },
+      "relationships": [],
+      "evidence": {
+        "overall": "promotion_verified"
+      },
+      "validation": {
+        "catalog_ready": true
+      },
+      "image_url": "https://www.topparfuemerie.de/media/catalog/product/7/8/787670_3365440787971_051.png",
+      "visuals": [
+        {
+          "role": "primary",
+          "url": "https://www.topparfuemerie.de/media/catalog/product/7/8/787670_3365440787971_051.png",
+          "provenance": "merchant_feed",
+          "fidelity_status": "verified",
+          "variant": "90ml",
+          "reviewed_at": "2026-10-01T09:49:00+00:00",
+          "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+          "rights_checked_at": "2026-09-28",
+          "exact_variant_verified": true
+        }
+      ],
+      "notes": {
+        "key": [
+          "orange blossom",
+          "pink pepper",
+          "coffee",
+          "jasmine",
+          "vanilla",
+          "patchouli",
+          "cedar"
+        ]
+      }
     }
   ]
 }
