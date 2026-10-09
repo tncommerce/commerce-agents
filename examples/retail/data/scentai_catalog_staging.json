@@ -276,8 +276,7 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "verified_purchase_destination_pending",
-          "approved_product_image_pending"
+          "verified_purchase_destination_pending"
         ]
       }
     },
@@ -419,7 +418,7 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "approved_product_image_pending"
+          "verified_purchase_destination_pending"
         ]
       }
     },
@@ -689,7 +688,7 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "approved_product_image_pending"
+          "verified_purchase_destination_pending"
         ]
       }
     },
@@ -1347,8 +1346,7 @@
       "validation": {
         "catalog_ready": false,
         "blockers": [
-          "verified_purchase_destination_pending",
-          "approved_product_image_pending"
+          "verified_purchase_destination_pending"
         ]
       }
     },

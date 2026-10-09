@@ -67,6 +67,41 @@ async def test_all_staged_products_pass_pre_live_recommendation_qa() -> None:
     assert result["passed"] is True
 
 
+def test_preapproved_images_clear_only_the_image_gate_not_purchase_or_release() -> None:
+    staging = load_staging()
+    products = {row["product_id"]: row for row in staging["products"]}
+    approved = {
+        "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100": "approved_licensed_image",
+        "SC-PDM-DELINA-EDP-75": "approved_feed_image",
+        "SC-YSL-LIBRE-EDP-90": "approved_feed_image",
+        "SC-YSL-BLACK-OPIUM-EDP-90": "approved_feed_image",
+    }
+    for product_id, status in approved.items():
+        row = products[product_id]
+        assert row["media"]["image_status"] == status
+        assert row["media"]["image_reviewed_at"]
+        assert row["media"]["image_rights_basis_id"]
+        assert row["validation"]["blockers"] == ["verified_purchase_destination_pending"]
+        assert row["commerce"]["live_offer_status"] == "pending_current_purchase_destination"
+        assert row["validation"]["catalog_ready"] is False
+    goddess = products["SC-BURBERRY-GODDESS-EDP-100"]
+    assert "approved_product_image_pending" in goddess["validation"]["blockers"]
+    assert goddess["validation"]["catalog_ready"] is False
+
+
+def test_missing_approval_evidence_does_not_clear_image_gate() -> None:
+    from scripts.build_scentai_catalog_staging import reconcile_approved_image_gates
+
+    row = {
+        "media": {"image_url": "https://example.com/a.jpg", "image_status": "approved_feed_image"},
+        "commerce": {"live_offer_status": "pending_current_purchase_destination"},
+        "validation": {"catalog_ready": False, "blockers": ["approved_product_image_pending"]},
+    }
+    reconcile_approved_image_gates(row)
+    assert row["validation"]["blockers"] == ["approved_product_image_pending"]
+    assert row["validation"]["catalog_ready"] is False
+
+
 def test_short_fragrance_names_use_brand_context() -> None:
     assert exact_name_query({"brand": "Yves Saint Laurent", "name": "Y"}) == (
         "Yves Saint Laurent Y"

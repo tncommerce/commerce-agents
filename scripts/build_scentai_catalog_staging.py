@@ -24,6 +24,44 @@ def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8-sig"))
 
 
+def reconcile_approved_image_gates(product: dict) -> None:
+    """An evidenced image approval clears only its image blocker.
+
+    Purchase, tracking, and public-release gates remain independent.
+    """
+    media = product.get("media") or {}
+    if media.get("image_status") not in {
+        "approved_feed_image",
+        "approved_licensed_image",
+        "approved_manufacturer_image",
+    }:
+        return
+    if not all(
+        media.get(field)
+        for field in (
+            "image_url",
+            "image_reviewed_at",
+            "image_rights_basis_id",
+            "image_rights_checked_at",
+        )
+    ):
+        return
+    validation = product.get("validation") or {}
+    blockers = list(validation.get("blockers") or [])
+    if "approved_product_image_pending" not in blockers:
+        return
+    blockers = [b for b in blockers if b != "approved_product_image_pending"]
+    if (
+        product.get("commerce", {}).get("live_offer_status")
+        != "verified_current_purchase_destination"
+        and "verified_purchase_destination_pending" not in blockers
+    ):
+        blockers.append("verified_purchase_destination_pending")
+    validation["blockers"] = blockers
+    # Never set catalog_ready or publish from a visual approval.
+    product["validation"] = validation
+
+
 def target_groups(value: str | None) -> list[str]:
     return [part.strip() for part in str(value or "").split(",") if part.strip()]
 
@@ -467,6 +505,9 @@ def build_staging_payload() -> dict:
             rights_basis_id=plan["rights_basis_id"],
             rights_checked_at=plan["rights_checked_at"],
         )
+
+    for product in products:
+        reconcile_approved_image_gates(product)
 
     return payload
 

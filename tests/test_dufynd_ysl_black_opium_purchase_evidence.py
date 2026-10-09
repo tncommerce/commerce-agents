@@ -66,4 +66,5 @@ def test_black_opium_current_offer_clears_purchase_gate_only() -> None:
     assert product["media"]["image_status"] == "approved_feed_image"
     assert product["validation"]["catalog_ready"] is False
     assert "verified_purchase_destination_pending" in product["validation"]["blockers"]
-    assert "approved_product_image_pending" in product["validation"]["blockers"]
+    # Approved Awin image predates this offer audit; only the purchase gate stays.
+    assert "approved_product_image_pending" not in product["validation"]["blockers"]
