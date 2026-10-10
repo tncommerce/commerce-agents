@@ -229,12 +229,22 @@ class MerchantOfferStore:
     def __init__(self, path: Path) -> None:
         self.path = path
 
-    def _load(self) -> list[MerchantOffer]:
+    def _load(
+        self, *, product_id: str | None = None, offer_id: str | None = None
+    ) -> list[MerchantOffer]:
         if not self.path.exists():
             return []
 
         raw = json.loads(self.path.read_text(encoding="utf-8"))
         rows = raw.get("offers", raw if isinstance(raw, list) else [])
+        # Select before certified evidence reads: an unrelated merchant's cold
+        # cache or outage must not delay this product or clickout eligibility.
+        rows = [
+            row
+            for row in rows
+            if (product_id is None or row["product_id"] == product_id)
+            and (offer_id is None or row["offer_id"] == offer_id)
+        ]
         from .purchase_freshness import apply_evidence, evidence_for
 
         return [
@@ -250,7 +260,7 @@ class MerchantOfferStore:
         now: datetime | None = None,
         max_age_hours: float = 72.0,
     ) -> list[MerchantOffer]:
-        matches = [offer for offer in self._load() if offer.product_id == product_id]
+        matches = self._load(product_id=product_id)
         return rank_offers(
             matches,
             now=now,
@@ -265,7 +275,7 @@ class MerchantOfferStore:
         max_age_hours: float = 72.0,
     ) -> MerchantOffer | None:
         candidate = next(
-            (offer for offer in self._load() if offer.offer_id == offer_id),
+            iter(self._load(offer_id=offer_id)),
             None,
         )
         if candidate is None:
