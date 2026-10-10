@@ -35,6 +35,7 @@ from .analytics import (
     FirstPartyAnalyticsTracker,
     sanitize_attribution_identifier,
 )
+from .clickout_recovery import clickout_exception_handler
 from .jarvis_owner_auth import create_control_room_router
 from .merchant import create_merchant_router
 from .merchant_offers import (
@@ -105,6 +106,7 @@ host = build_storefront_host(
     product_detail=product_detail,
 )
 app = host.app
+app.add_exception_handler(HTTPException, clickout_exception_handler)
 app.include_router(create_merchant_router(backend, InMemoryMemoryStore()), prefix="/api/merchant")
 app.include_router(create_control_room_router())
 # The merchant portal shows the storefront's listing photos, so the API serves them to both apps.

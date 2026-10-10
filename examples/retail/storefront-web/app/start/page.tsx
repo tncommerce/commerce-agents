@@ -64,6 +64,8 @@ export default function SocialStartPage() {
     slug: fragrance.slug,
     brand: fragrance.brand,
     name: fragrance.name,
+    concentration: fragrance.concentration,
+    volume_ml: fragrance.volume_ml,
   }));
 
   return (

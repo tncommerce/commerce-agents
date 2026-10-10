@@ -1,5 +1,11 @@
 "use client";
 
+import {
+  fragranceSearchIdentity,
+  matchesRequestedVariant,
+  normalizeFragranceSearch as normalize,
+} from "@/lib/fragranceSearchIdentity";
+
 import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
 
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -150,16 +156,6 @@ function performanceScore(
   );
 }
 
-function normalize(value: string): string {
-  return value
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/ß/g, "ss")
-    .replace(/[^a-z0-9]+/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
 
 const TARGET_SEARCH_TERMS: Record<string, string[]> = {
   men: ["men", "male", "mann", "maenner", "herren"],
@@ -213,6 +209,7 @@ function searchDocument(
 
   return normalize(
     [
+      fragranceSearchIdentity(fragrance),
       fragrance.brand,
       fragrance.name,
       fragrance.title,
@@ -240,6 +237,7 @@ function searchScore(
   fragrance: StaticFragrance,
   search: string,
 ): number {
+  if (!matchesRequestedVariant(fragrance, search)) return -1;
   const tokens = searchTokens(search);
 
   if (!tokens.length) return 0;

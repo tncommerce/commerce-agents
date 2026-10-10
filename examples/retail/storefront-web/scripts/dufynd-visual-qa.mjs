@@ -1,3 +1,4 @@
+import { verifyConversionSearch } from "./conversion-search-qa.mjs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
@@ -264,6 +265,12 @@ const report = {
 };
 
 try {
+  try {
+    const cases = await verifyConversionSearch(browser, baseUrl, outputDir);
+    report.checks.push({ label: "conversion-search", status: "passed", cases });
+  } catch (error) {
+    report.failures.push({ label: "conversion-search", message: String(error) });
+  }
   try {
     const cases = await verifyCatalogRecovery(browser, baseUrl);
     report.checks.push({ label: "catalog-recovery", status: "passed", cases });
