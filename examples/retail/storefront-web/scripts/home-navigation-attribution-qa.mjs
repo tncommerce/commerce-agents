@@ -50,7 +50,7 @@ export async function verifyHomeNavigationAttribution(browser, baseUrl) {
           } else {
             const selectors = {
               finder: "a.dufynd-hero-primary",
-              spotlight: "a.dufynd-hero-product",
+              spotlight: "a[data-dufynd-original-card]",
               audience: "a[data-dufynd-home-audience-card]",
               profile: "nav[aria-label='Duftwelten im Katalog'] a",
               comparison: "a[href*='/vergleich']",

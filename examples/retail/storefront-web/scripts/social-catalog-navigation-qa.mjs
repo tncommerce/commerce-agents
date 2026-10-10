@@ -42,11 +42,11 @@ export async function verifySocialCatalogNavigation(browser, baseUrl) {
             assert.equal(comparisonUrl.searchParams.get("cmp"), "nav_qa", "comparison link must preserve attribution");
             await page.getByRole("searchbox").fill("Naxos");
           }
-          const product = page.locator(surface === "grid" ? "article.dufynd-catalog-card a" : ".dufynd-catalog-discovery-bottle").first();
+          const product = page.locator(surface === "grid" ? "article.dufynd-catalog-card a" : "[data-dufynd-original-card]").first();
           await page.waitForFunction((selector) => {
             const link = document.querySelector(selector);
             return link && new URL(link.href).searchParams.get("cmp") === "nav_qa";
-          }, surface === "grid" ? "article.dufynd-catalog-card a" : ".dufynd-catalog-discovery-bottle");
+          }, surface === "grid" ? "article.dufynd-catalog-card a" : "[data-dufynd-original-card]");
           const destination = new URL(await product.getAttribute("href"), baseUrl);
           await product.click();
           await page.waitForURL((url) => url.pathname === destination.pathname);

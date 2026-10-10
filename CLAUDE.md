@@ -30,6 +30,8 @@ adds pytest and ruff); `scripts/install.sh` runs it.
 - Do not mass-rename legacy identifiers without a coordinated data, deployment, analytics, and affiliate-routing migration. New user-facing identifiers should use DUFYND; compatibility code may continue to read legacy names.
 - For internal DUFYND business/creative/affiliate operations, load the durable Jarvis context through `scripts/dufynd_jarvis_bridge.py` and follow `examples/retail/data/dufynd_jarvis_runbook.md`. Do not inject this internal context into the customer-facing shopping advisor.
 
+- DUFYND storefront discovery uses `DiscoveryIntro` for approved original-photo entry points and `FragranceNoteSculpture` / `noteSculptureRenderer` for opt-in abstract note interaction. Staging discovery facts live in `dufynd_discovery_qualification.json`; they never authorize publication or merchant offers.
+
 ## Design rules
 
 - One model owns the conversation; a rule goes in a tool description, the prompt, or a skill by how often it applies.

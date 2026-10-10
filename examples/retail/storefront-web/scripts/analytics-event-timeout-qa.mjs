@@ -39,7 +39,7 @@ export async function verifyAnalyticsEventTimeout(browser, baseUrl) {
         await page.evaluate(() => document.addEventListener("click", (event) => {
           if (event.target instanceof Element && event.target.closest("a")) event.preventDefault();
         }));
-        await page.getByRole("link", { name: /entdecken$/ }).first().click();
+        await page.locator("[data-dufynd-original-card]").first().click();
       } else {
         await page.getByRole("button", { name: "♡ Merken", exact: true }).click();
         assert.equal(await page.getByRole("button", { name: "✓ Gemerkt", exact: true }).getAttribute("aria-pressed"), "true",

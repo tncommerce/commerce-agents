@@ -1,3 +1,4 @@
+import { verifyNoteSculpture } from "./note-sculpture-qa.mjs";
 import { verifyConversionSearch } from "./conversion-search-qa.mjs";
 import { verifyAcquisitionEntry } from "./acquisition-entry-qa.mjs";
 import { verifyFontLayout } from "./font-layout-qa.mjs";
@@ -169,7 +170,7 @@ const viewports = [
 ];
 
 const coreRoutes = [
-  { name: "home", route: "/", marker: "Finde den Duft, der wirklich zu dir passt." },
+  { name: "home", route: "/", marker: "Finde den Duft," },
   {
     name: "social-start",
     route: "/start",
@@ -258,7 +259,8 @@ const naxosPremiumMotifs = {
 
 await mkdir(outputDir, { recursive: true });
 
-const browser = await chromium.launch({ headless: true });
+// Exercise the opt-in shader on CI software GPUs; production keeps its performance gate.
+const browser = await chromium.launch({ headless: true, args: ["--enable-unsafe-swiftshader"] });
 const report = {
   generated_at: new Date().toISOString(),
   base_url: baseUrl,
@@ -267,6 +269,10 @@ const report = {
 };
 
 try {
+  try {
+    const cases = await verifyNoteSculpture(browser, baseUrl, outputDir);
+    report.checks.push({ label: "note-sculpture", status: "passed", cases });
+  } catch (error) { report.failures.push({ label: "note-sculpture", message: String(error) }); }
   try {
     const cases = await verifyFontLayout(browser, baseUrl);
     report.checks.push({ label: "font-layout", status: "passed", cases });
@@ -633,11 +639,11 @@ try {
             (
               layout.stage_top == null ||
               layout.title_top == null ||
-              layout.stage_top >= layout.title_top
+              layout.title_top >= layout.stage_top
             )
           ) {
             throw new Error(
-              "mobile fragrance detail no longer presents the product stage before identity copy",
+              "mobile fragrance detail must show identity before the product stage",
             );
           }
           if (
@@ -1095,7 +1101,7 @@ try {
             );
           }
           const discoveryBottles = page.locator(
-            ".dufynd-catalog-discovery-bottle",
+            "[data-dufynd-original-card]",
           );
           if ((await discoveryBottles.count()) !== 3) {
             throw new Error(
@@ -1333,16 +1339,16 @@ try {
           }
 
           const spotlightTruth = page.locator(
-            'a.dufynd-hero-product img[src="/products/naxos-cutout-production.webp"]',
+            'a[data-dufynd-original-card] img[src="https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png"]',
           );
           if ((await spotlightTruth.count()) < 1) {
             throw new Error(
-              "homepage spotlight does not prioritize the Naxos verified cutout",
+              "homepage spotlight must use the approved original Libre 90 ml photo",
             );
           }
           const spotlightHref = await spotlightTruth.first().evaluate((image) => image.closest("a")?.href);
-          if (!spotlightHref || new URL(spotlightHref, baseUrl).pathname !== "/duft/xerjoff-naxos") {
-            throw new Error("homepage spotlight does not open Naxos");
+          if (!spotlightHref || new URL(spotlightHref, baseUrl).pathname !== "/duft/yves-saint-laurent-libre") {
+            throw new Error("homepage spotlight does not open Libre");
           }
 
           if ([390, 1440].includes(viewport.width)) {
