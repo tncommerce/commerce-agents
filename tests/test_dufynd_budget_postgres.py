@@ -2833,7 +2833,7 @@ def test_gmail_expiry_dedup_and_real_recovery():
             "update dufynd_external_observers set last_success_at=null where source_type='gmail'"
         )
         connection.execute(
-            "update dufynd_observer_credentials set status='healthy',health_reason='healthy',revoked_at=null,expires_at=now()-interval '1 hour' where provider='gmail'"
+            "update dufynd_observer_credentials set activation_enabled=true,status='healthy',health_reason='healthy',revoked_at=null,expires_at=now()-interval '1 hour' where provider='gmail'"
         )
         first = connection.execute("select reconcile_dufynd_gmail_health_v1()").fetchone()[0]
         second = connection.execute("select reconcile_dufynd_gmail_health_v1()").fetchone()[0]

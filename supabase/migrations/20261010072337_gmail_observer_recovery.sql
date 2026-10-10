@@ -18,10 +18,13 @@ begin
  where key='ops.gmail_observer_expiration_incident_20261010';
  select count(*) into successes from public.dufynd_external_observers
  where source_type='gmail' and enabled and health_status='healthy'
+ and observer_id in ('gmail:1a0f385ed98c6af8','gmail:1a0f69c169fb928f','gmail:1a0f6a90772a743d')
  and last_success_at>now()-interval '20 minutes'
  and last_success_at>=coalesce((h->>'refreshed_at')::timestamptz,'infinity');
  if h->>'status' not in ('healthy','expiring') then
   issue := 'credential_'||coalesce(h->>'status','missing_configuration');
+ elsif not coalesce((h->>'activation_enabled')::boolean,false) then
+  issue := 'broker_activation_required';
  elsif successes<>3 then issue := 'gmail_observer_stale';
  else issue := 'recovered'; end if;
  -- A expired access token alone does NOT prove re-consent is needed.
