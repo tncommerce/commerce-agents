@@ -101,6 +101,9 @@ def database():
         )
         connection.execute(
             next((ROOT / "supabase/migrations").glob("*gmail_observer_recovery.sql")).read_text()
+            + next(
+                (ROOT / "supabase/migrations").glob("*gmail_owner_gate_persistence.sql")
+            ).read_text()
         )
     yield
 
@@ -2849,7 +2852,22 @@ def test_gmail_expiry_dedup_and_real_recovery():
             == "expired"
         )
         connection.execute(
+            "update dufynd_observer_credentials set refreshed_at=now()-interval '3 hours' where provider='gmail'"
+        )
+        connection.execute("""insert into dufynd_master_status(key,category,value,last_verified_at)
+          values('ops.private_observer.last_failure','ops','{"stage":"gmail_1","reason":"invalid_grant"}',now()-interval '2 hours')
+          on conflict(key) do update set value=excluded.value,last_verified_at=excluded.last_verified_at""")
+        owner_gate = connection.execute("select reconcile_dufynd_gmail_health_v1()").fetchone()[0]
+        assert owner_gate["owner_action_required"] is True
+        assert owner_gate["dedup_key"] == first["dedup_key"]
+        connection.execute(
             "update dufynd_observer_credentials set status='healthy',health_reason='healthy',expires_at=now()+interval '1 hour',refreshed_at=now()-interval '1 minute' where provider='gmail'"
+        )
+        assert (
+            connection.execute(
+                "select reconcile_dufynd_gmail_health_v1()->'owner_action_required'"
+            ).fetchone()[0]
+            is False
         )
         assert (
             connection.execute("select reconcile_dufynd_gmail_health_v1()->>'state'").fetchone()[0]

@@ -90,7 +90,7 @@ begin
     idea := first_result#>>'{next_content_move,idea_id}';
     if idea is null or not exists(select 1 from public.dufynd_autonomy_tasks
      where task_id='mission:v1:'||(m->>'mission_id')||':1' and status='done') then
-     raise exception using errcode='P0002',message='missing verified predecessor';
+     raise exception using errcode='P1002',message='missing verified predecessor';
     end if;
     packet := packet||jsonb_build_object('idea_id',idea);
    end if;
@@ -109,13 +109,13 @@ begin
    if t.durable_payload is distinct from packet or t.resource_scope is distinct from resources
     or t.budget_class<>'free' or t.provider_cost_unknown or t.requires_human_approval
     or t.external_review_required or t.needs_freshness_recheck then
-    raise exception using errcode='P0003',message='mission task contract changed';
+    raise exception using errcode='P1003',message='mission task contract changed';
    end if;
    if t.status<>'done' then
     if step=1 then outcome:=public.run_dufynd_content_backlog_worker_v1();
     else outcome:=public.run_dufynd_content_packet_worker_v1(); end if;
     if outcome->>'task_id' is distinct from tid or outcome->>'status' is distinct from 'completed' then
-     raise exception using errcode='P0004',message='worker did not complete exact mission task';
+     raise exception using errcode='P1004',message='worker did not complete exact mission task';
     end if;
    end if;
    select * into t from public.dufynd_autonomy_tasks where task_id=tid;
@@ -123,26 +123,26 @@ begin
    if t.status<>'done' or t.worker_state<>'done' or t.worker_owner is distinct from worker
     or t.lease_token is null or t.released_at is null or t.lease_expires_at>now()
     or not starts_with(coalesce(t.evidence,''),prefix) then
-    raise exception using errcode='P0005',message='durable result or released lease missing';
+    raise exception using errcode='P1005',message='durable result or released lease missing';
    end if;
    artifact:=substring(t.evidence from length(prefix)+1)::jsonb;
    if artifact->'publishing_allowed' is distinct from 'false'::jsonb
     or artifact->'new_spend_usd' is distinct from '0'::jsonb
     or public.dufynd_parse_timestamp(artifact->>'observed_at') is null
     or public.dufynd_parse_timestamp(artifact->>'observed_at')<(m->>'created_at')::timestamptz then
-    raise exception using errcode='P0005',message='artifact safety or freshness failed';
+    raise exception using errcode='P1005',message='artifact safety or freshness failed';
    end if;
    if step=1 and (jsonb_typeof(artifact->'now') is distinct from 'array'
     or coalesce(jsonb_array_length(artifact->'now'),0)=0
     or artifact#>>'{next_content_move,idea_id}' is null) then
-    raise exception using errcode='P0002',message='no eligible source candidate';
+    raise exception using errcode='P1002',message='no eligible source candidate';
    end if;
    if step=2 and (artifact->>'idea_id' is distinct from idea
     or artifact->'paid_generation_allowed' is distinct from 'false'::jsonb
     or artifact#>'{qa,target_score}' is distinct from '9.5'::jsonb
     or nullif(artifact->>'concept','') is null
     or jsonb_typeof(artifact->'hard_gates') is distinct from 'array') then
-    raise exception using errcode='P0005',message='idea-bound production brief QC failed';
+    raise exception using errcode='P1005',message='idea-bound production brief QC failed';
    end if;
    result_hash:=md5(artifact::text);
    result:=jsonb_build_object('mission_id',m->>'mission_id','step',step,'task_id',tid,
@@ -152,7 +152,7 @@ begin
    values(result_key,'jarvis',result,100,now()) on conflict(key) do nothing;
    if not exists(select 1 from public.dufynd_master_status where key=result_key
     and value->>'artifact_md5'=result_hash and value->>'task_id'=tid) then
-    raise exception using errcode='P0005',message='immutable result conflict';
+    raise exception using errcode='P1005',message='immutable result conflict';
    end if;
    m := (m-array['next_retry_at','last_error'])||jsonb_build_object(
     'state',case step when 2 then 'completed' else 'ready' end,'step',step+1,'attempts',0,
@@ -161,7 +161,7 @@ begin
      else 'Internal preparation complete. Select or create the visual and perform fresh 9.5 QA; publication remains gated.' end);
   exception when others then
    attempts:=coalesce((m->>'attempts')::integer,0)+1;
-   m:=m||jsonb_build_object('state',case when attempts>=3 or sqlstate in ('P0002','P0003','P0005')
+   m:=m||jsonb_build_object('state',case when attempts>=3 or sqlstate in ('P1002','P1003','P1005')
       then 'blocked' else 'retry_wait' end,
     'attempts',attempts,'last_error','step_failed_'||sqlstate,'updated_at',now(),
     'next_retry_at',now()+make_interval(secs=>120*attempts),
