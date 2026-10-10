@@ -7,7 +7,6 @@ import { useState, type KeyboardEvent } from "react";
 import { hasOptions, optionSummary, optionValuesLabel, priceLabel, useStoreFrame } from "web-shared";
 import type { Product } from "@/lib/types";
 import FragranceVisual from "@/components/FragranceVisual";
-import ImageAttribution from "@/components/ImageAttribution";
 import { trackAnalyticsEvent } from "@/lib/analytics";
 import { flyToCart } from "@/lib/flight";
 import { attributeChips, productGlyph, productTileClass } from "@/lib/format";
@@ -72,6 +71,7 @@ export function ProductImage({ product, className = "" }: { product: Product; cl
       return (
         <div className={`relative overflow-hidden ${className}`}>
           <FragranceVisual
+            catalogProductId={String(product.product_id)}
             imageUrl={imageUrl}
             cutoutUrl={isProductTruth ? imageUrl : undefined}
             backdropUrl={backdropUrl}
@@ -81,7 +81,6 @@ export function ProductImage({ product, className = "" }: { product: Product; cl
             world={fragrance ? visualWorldFor(fragrance) : undefined}
             className="h-full w-full"
           />
-          <ImageAttribution visual={visual} compact />
         </div>
       );
     }
@@ -90,6 +89,7 @@ export function ProductImage({ product, className = "" }: { product: Product; cl
       <FragranceVisual
         alt={product.title}
         variant="card"
+        catalogProductId={String(product.product_id)}
         world={fragrance ? visualWorldFor(fragrance) : undefined}
         className={className}
       />
