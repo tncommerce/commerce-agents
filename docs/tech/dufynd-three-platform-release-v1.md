@@ -1,6 +1,8 @@
 # DUFYND release contract V1
 
-Every short is registered as one content ID with exactly three asset rows:
+Every short has one release content ID and three platform-specific asset content
+IDs. The existing unique content-ID index remains intact; the revision-bound
+`metadata.release_content_id` groups exactly three asset rows:
 `instagram` (reel), `tiktok` (video), `youtube` (video/short). Photo releases
 contain Instagram and TikTok only and stay in their native handoff workflow.
 Registration and preparation never approve or schedule anything.

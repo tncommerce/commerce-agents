@@ -406,6 +406,15 @@ def release_db(db):
             (ROOT / "supabase/migrations").glob("*three_platform_release_contract.sql")
         ).read_text()
     )
+    # Match the additional production index, absent from the original test schema.
+    db.execute(
+        "create unique index qa_content_id_unique on dufynd_content_assets(content_id) where content_id is not null"
+    )
+    db.execute(
+        next(
+            (ROOT / "supabase/migrations").glob("*release_platform_content_identity.sql")
+        ).read_text()
+    )
     return db
 
 
@@ -423,7 +432,7 @@ def release_fixture(c):
         )
         sql = sql.replace(
             "cid text:='qa_content_'||replace(gen_random_uuid()::text,'-','')",
-            "cid text:='" + rid + "'",
+            "cid text:='" + aid + "'",
         )
         sql = sql.replace(
             " insert into dufynd_content_assets",
@@ -440,6 +449,12 @@ def release_fixture(c):
             + ("engagement" if platform == "tiktok" else "profile_link")
             + """'::text));
  insert into dufynd_content_assets""",
+        )
+        sql = sql.replace(
+            "meta:=meta||jsonb_build_object('release_contract_v1'",
+            "meta:=meta||jsonb_build_object('release_content_id','"
+            + rid
+            + "','release_contract_v1'",
         )
         sql = sql.replace(
             ",cid,'instagram','internally_ready'", ",cid,'" + platform + "','internally_ready'"
@@ -570,8 +585,15 @@ def test_photo_release_never_requires_or_creates_a_youtube_short(release_db):
     for platform in ("instagram", "tiktok"):
         aid = rid + platform
         c.execute(
-            "insert into dufynd_content_assets(id,uri,content_id,platform,status,metadata) values(%s,'fixture://photo',%s,%s,'draft','{\"publish_contract_v2\":{\"media_kind\":\"image\"}}')",
-            (aid, rid, platform),
+            "insert into dufynd_content_assets(id,uri,content_id,platform,status,metadata) values(%s,'fixture://photo',%s,%s,'draft',%s::jsonb)",
+            (
+                aid,
+                aid,
+                platform,
+                json.dumps(
+                    {"release_content_id": rid, "publish_contract_v2": {"media_kind": "image"}}
+                ),
+            ),
         )
         assets[platform] = aid
     result = c.execute(
@@ -582,3 +604,15 @@ def test_photo_release_never_requires_or_creates_a_youtube_short(release_db):
     assert set(pre["platforms"]) == {"instagram", "tiktok"}
     assert all(v["reason"] == "photo_native_handoff_required" for v in pre["platforms"].values())
     assert not pre["ready"]
+
+
+def test_release_preserves_distinct_production_content_ids(release_db):
+    c = release_db
+    rid, assets, decisions = release_fixture(c)
+    rows = c.execute(
+        "select a.content_id,a.metadata->>'release_content_id' from dufynd_content_assets a join dufynd_release_platforms p on p.asset_id=a.id where p.release_id=%s",
+        (rid,),
+    ).fetchall()
+    assert len({r[0] for r in rows}) == 3
+    assert {r[1] for r in rows} == {rid}
+    assert reserve_release(c, rid, decisions)["reserved"]
