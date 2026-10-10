@@ -1167,7 +1167,7 @@ try {
           }
         }
 
-        if (target.name === "social-start") {
+        if (target.name === "social-start" || target.route === "/duft") {
           const directVariants = page.getByRole("navigation", { name: "Direkt zu diesen Duftvarianten" });
           const expectedDirectVariants = [
             ["/duft/rabanne-1-million", "Eau de Toilette", "100 ml"],
@@ -1186,6 +1186,8 @@ try {
               throw new Error(`Direct variant link lacks exact identity or mobile tap area: ${href}`);
             }
           }
+        }
+        if (target.name === "social-start") {
           const socialSearch = page.getByRole("searchbox", {
             name: "Duft oder Marke suchen",
           });
