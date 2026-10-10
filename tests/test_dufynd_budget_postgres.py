@@ -2862,3 +2862,224 @@ def test_gmail_expiry_dedup_and_real_recovery():
         assert recovered["state"] == "recovered"
         assert recovered["fresh_successes"] == 3
         connection.rollback()
+
+
+@pytest.fixture
+def mission_db():
+    import psycopg
+
+    with psycopg.connect(DSN) as c:
+        # Disposable CI database only. Isolate from leases left by other tests.
+        c.execute("select set_config('dufynd.worker_write','supervisor',true)")
+        c.execute(
+            "update dufynd_autonomy_tasks set released_at=now(),lease_expires_at=now() where released_at is null"
+        )
+        c.execute("select set_config('dufynd.worker_write','',true)")
+        c.execute(
+            "alter table dufynd_autonomy_tasks add column if not exists created_at timestamptz default now()"
+        )
+        c.execute("""create table if not exists dufynd_content_ideas(
+          id text primary key,title text,format_id text,fragrance text,hook text,
+          objective text,affiliate_role text,priority int,status text,source text,
+          concept text,risk_notes jsonb default '[]');""")
+        for pattern in ("*zero_budget_content_queue_v1.sql", "*content_production_packet_v1.sql"):
+            c.execute(
+                next((ROOT / "supabase/migrations").glob(pattern)).read_text().split("\ndo $$")[0]
+            )
+        c.execute(
+            next(
+                (ROOT / "supabase/migrations").glob("*photo_first_content_binding_fix.sql")
+            ).read_text()
+        )
+        c.execute(
+            next((ROOT / "supabase/migrations").glob("*jarvis_bounded_missions.sql")).read_text()
+        )
+        c.execute("""insert into dufynd_content_ideas(id,title,format_id,hook,objective,priority,status,concept)
+          values('mission_test_idea','Fixture idea','static_text_hook','Fixture hook','engagement',99,'planned','Concrete fixture concept')""")
+        yield c
+        c.rollback()
+
+
+def mission_start(c, mid="acceptance"):
+    return c.execute(
+        "select start_dufynd_mission_v1(%s,'zero_budget_content_preparation')", (mid,)
+    ).fetchone()[0]
+
+
+def mission_tick(c):
+    return c.execute("select tick_dufynd_mission_v1()").fetchone()[0]
+
+
+def mission_due(c):
+    c.execute(
+        "update dufynd_master_status set value=value||jsonb_build_object('next_retry_at',now()-interval '1 minute') where key like 'jarvis.mission.v1:%'"
+    )
+
+
+def test_mission_two_real_workers_and_immutable_results(mission_db):
+    c = mission_db
+    initial = mission_start(c)
+    assert mission_start(c) == initial
+    assert mission_start(c, "duplicate")["mission_id"] == "acceptance"
+    first = mission_tick(c)
+    assert first["state"] == "ready" and first["step"] == 2
+    assert len(first["checkpoints"]) == 1
+    artifact1 = c.execute(
+        "select value from dufynd_master_status where key='jarvis.mission_result.v1:acceptance:1'"
+    ).fetchone()[0]
+    assert artifact1["artifact"]["next_content_move"]["idea_id"] == "mission_test_idea"
+    done = mission_tick(c)
+    assert done["state"] == "completed" and len(done["checkpoints"]) == 2
+    assert {x["worker"] for x in done["checkpoints"]} == {
+        "content_backlog_worker_v1",
+        "content_packet_worker_v1",
+    }
+    artifact2 = c.execute(
+        "select value from dufynd_master_status where key='jarvis.mission_result.v1:acceptance:2'"
+    ).fetchone()[0]
+    assert artifact2["artifact"]["concept"] == "Concrete fixture concept"
+    assert artifact2["artifact"]["idea_id"] == "mission_test_idea"
+    assert artifact2["artifact"]["publishing_allowed"] is False
+    assert artifact2["quality_verified"] is True
+    assert (
+        c.execute(
+            "select count(*) from dufynd_autonomy_tasks where task_id like 'mission:v1:acceptance:%' and status='done' and worker_state='done' and released_at is not null and lease_expires_at<=now()"
+        ).fetchone()[0]
+        == 2
+    )
+    assert mission_tick(c)["state"] == "idle"
+    assert mission_start(c) == done
+    assert (
+        c.execute(
+            "select value from dufynd_master_status where key='jarvis.mission_result.v1:acceptance:1'"
+        ).fetchone()[0]
+        == artifact1
+    )
+
+
+def test_mission_respects_live_lease_and_recovers_expired_lease(mission_db):
+    c = mission_db
+    token = str(uuid4())
+    c.execute(
+        """insert into dufynd_autonomy_tasks(task_id,domain,title,instruction,status,worker_state,worker_owner,
+      lease_token,lease_expires_at,heartbeat_at,last_progress_at,budget_class,resource_scope)
+      values('mission-conflict','content','fixture','fixture','in_progress','working','fixture',%s,
+      now()+interval '1 hour',now(),now(),'free','["db:dufynd.content_ideas"]')""",
+        (token,),
+    )
+    mission_start(c)
+    assert mission_tick(c)["state"] == "waiting_lease"
+    assert (
+        c.execute(
+            "select count(*) from dufynd_autonomy_tasks where task_id like 'mission:v1:%'"
+        ).fetchone()[0]
+        == 0
+    )
+    c.execute("select set_config('dufynd.worker_write','supervisor',true)")
+    c.execute(
+        "update dufynd_autonomy_tasks set lease_expires_at=now()-interval '1 minute' where task_id='mission-conflict'"
+    )
+    c.execute("select set_config('dufynd.worker_write','',true)")
+    mission_due(c)
+    assert mission_tick(c)["step"] == 2
+    assert (
+        c.execute(
+            "select update_dufynd_worker_v2('mission-conflict',%s,'working','stale lease',null)",
+            (token,),
+        ).fetchone()[0]
+        is False
+    )
+
+
+def inject_mission_failure(c):
+    c.execute("""create or replace function read_dufynd_zero_budget_content_queue_v1() returns jsonb
+      language plpgsql stable set search_path=public as $$ begin raise exception 'injected failure'; end $$""")
+
+
+def test_mission_retry_backoff_rollback_dedup_and_resume(mission_db):
+    c = mission_db
+    mission_start(c)
+    inject_mission_failure(c)
+    failed = mission_tick(c)
+    assert failed["state"] == "retry_wait" and failed["attempts"] == 1
+    assert mission_tick(c)["attempts"] == 1
+    assert (
+        c.execute(
+            "select count(*) from dufynd_autonomy_tasks where task_id like 'mission:v1:%'"
+        ).fetchone()[0]
+        == 0
+    )
+    mission_due(c)
+    assert mission_tick(c)["attempts"] == 2
+    assert (
+        c.execute(
+            "select count(*) from dufynd_master_status where key='jarvis.mission_alert.v1:acceptance'"
+        ).fetchone()[0]
+        == 1
+    )
+    c.execute(
+        next(
+            (ROOT / "supabase/migrations").glob("*photo_first_content_binding_fix.sql")
+        ).read_text()
+    )
+    mission_due(c)
+    assert mission_tick(c)["step"] == 2
+    assert mission_tick(c)["state"] == "completed"
+    assert (
+        c.execute(
+            "select value->>'state' from dufynd_master_status where key='jarvis.mission_alert.v1:acceptance'"
+        ).fetchone()[0]
+        == "resolved"
+    )
+
+
+def test_mission_bounded_terminal_failure_and_gate(mission_db):
+    c = mission_db
+    mission_start(c)
+    inject_mission_failure(c)
+    for _ in range(3):
+        mission_due(c)
+        state = mission_tick(c)
+    assert state["state"] == "blocked" and state["attempts"] == 3
+    assert state["checkpoints"] == []
+    assert mission_tick(c)["state"] == "idle"
+    assert mission_start(c)["state"] == "blocked"
+
+
+def test_mission_idea_drift_retains_checkpoint(mission_db):
+    c = mission_db
+    mission_start(c)
+    first = mission_tick(c)
+    c.execute("update dufynd_content_ideas set status='draft' where id='mission_test_idea'")
+    state = mission_tick(c)
+    assert state["state"] == "retry_wait"
+    assert state["checkpoints"] == first["checkpoints"]
+    assert state["step"] == 2
+    assert (
+        c.execute(
+            "select count(*) from dufynd_master_status where key='jarvis.mission_result.v1:acceptance:2'"
+        ).fetchone()[0]
+        == 0
+    )
+
+
+def test_mission_disabled_handler_and_public_access_fail_closed(mission_db):
+    import psycopg
+
+    c = mission_db
+    mission_start(c)
+    c.execute(
+        "update dufynd_handler_contracts set enabled=false where handler_id='content_backlog_prioritize'"
+    )
+    assert mission_tick(c)["state"] == "blocked"
+    assert (
+        c.execute(
+            "select count(*) from dufynd_autonomy_tasks where task_id like 'mission:v1:%'"
+        ).fetchone()[0]
+        == 0
+    )
+    with pytest.raises(psycopg.errors.InsufficientPrivilege), c.transaction():
+        c.execute("set local role anon")
+        c.execute("select tick_dufynd_mission_v1()")
+    with pytest.raises(psycopg.errors.RaiseException), c.transaction():
+        c.execute("select start_dufynd_mission_v1('unsafe','social_publish')")
