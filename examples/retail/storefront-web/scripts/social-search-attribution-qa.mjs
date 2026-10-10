@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 export async function verifySocialSearchAttribution(browser, baseUrl) {
   for (const width of [390, 1440]) {
     for (const storage of ["available", "denied"]) {
-      for (const action of ["click", "enter", "catalog"]) {
+      for (const action of ["click", "enter", "catalog", "direct"]) {
         const context = await browser.newContext({ viewport: { width, height: 900 } });
         const page = await context.newPage();
         const events = [];
@@ -31,14 +31,18 @@ export async function verifySocialSearchAttribution(browser, baseUrl) {
           const input = page.getByRole("searchbox", { name: "Duft oder Marke suchen", exact: true });
           const query = action === "catalog" ? "zzzz-test & parfum" : "Naxos";
           await input.fill(query);
-          if (action === "click") {
+          if (action === "direct") {
+            const link = page.getByRole("navigation", { name: "Direkt zu diesen Duftvarianten" }).locator('a[href^="/duft/rabanne-1-million"]');
+            await page.waitForFunction(() => document.querySelector('nav[aria-label="Direkt zu diesen Duftvarianten"] a')?.href.includes("cmp=carousel_qa"));
+            await link.click();
+          } else if (action === "click") {
             const link = page.locator("[data-dufynd-social-live-results]").getByRole("link").first();
             await page.waitForFunction(() => document.querySelector("[data-dufynd-social-live-results] a")?.href.includes("cmp=carousel_qa"));
             await link.click();
           } else {
             await input.press("Enter");
           }
-          const path = action === "catalog" ? "/duft" : "/duft/xerjoff-naxos";
+          const path = action === "catalog" ? "/duft" : action === "direct" ? "/duft/rabanne-1-million" : "/duft/xerjoff-naxos";
           await page.waitForURL((url) => url.pathname === path);
           const target = new URL(page.url());
           assert.equal(target.searchParams.get("src"), "instagram", `${action}/${storage}/${width}: source must survive navigation`);
