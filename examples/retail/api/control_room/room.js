@@ -2677,6 +2677,10 @@
         if (d.publish_candidate) {
           const candidate = d.publish_candidate;
           line(item, "Öffentliche Veröffentlichung", candidate.platform);
+          line(item, "Titel", candidate.title);
+          line(item, "KI-Kennzeichnung", typeof candidate.ai_generated === "boolean" ? (candidate.ai_generated ? "Ja" : "Nein") : "Ungeprüft");
+          line(item, "Tonquelle", candidate.audio_source);
+          line(item, "Musikrechte-Nachweis", candidate.audio_rights_evidence_ref);
           line(item, "Caption", candidate.caption);
           line(item, "Finale Datei SHA-256", candidate.asset_sha256);
           line(item, "Veröffentlichungszeit", stamp(candidate.requested_at));
@@ -2730,7 +2734,7 @@
         } else if (
           d.approval_alone_enables_execution &&
           d.action_token &&
-          (!d.publish_candidate || (d.publish_candidate.media_url && d.publish_candidate.caption && d.publish_candidate.asset_sha256 && d.publish_candidate.requested_at))
+          (!d.publish_candidate || (d.publish_candidate.title && typeof d.publish_candidate.ai_generated === "boolean" && d.publish_candidate.audio_source && d.publish_candidate.audio_rights_evidence_ref && d.publish_candidate.media_url && d.publish_candidate.caption && d.publish_candidate.asset_sha256 && d.publish_candidate.requested_at))
         ) {
           const approve = node("button", d.publish_candidate ? "Öffentlich veröffentlichen" : "Jetzt freigeben", "owner-action primary");
           approve.type = "button";

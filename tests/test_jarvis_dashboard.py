@@ -1082,6 +1082,10 @@ def test_publish_go_exposes_exact_frozen_video_caption_platform_time_and_scope()
             "decision_id": "publish-fixture",
             "action_type": "content_publish_go",
             "candidate_publish_asset_id": "fixture",
+            "candidate_publish_title": "Exact title",
+            "candidate_publish_ai_generated": True,
+            "candidate_publish_audio_source": "Fixture track",
+            "candidate_publish_audio_rights": "qa:licence",
             "candidate_publish_sha256": "a" * 64,
             "candidate_publish_uri": media_url,
             "candidate_caption": "Exact caption",
@@ -1095,6 +1099,10 @@ def test_publish_go_exposes_exact_frozen_video_caption_platform_time_and_scope()
     assert gate["content_candidate"] is None
     assert gate["publish_candidate"]["media_url"] == media_url
     assert gate["publish_candidate"]["caption"] == "Exact caption"
+    assert gate["publish_candidate"]["title"] == "Exact title"
+    assert gate["publish_candidate"]["ai_generated"] is True
+    assert gate["publish_candidate"]["audio_source"] == "Fixture track"
+    assert gate["publish_candidate"]["audio_rights_evidence_ref"] == "qa:licence"
     assert gate["publish_candidate"]["scope"] == "schedule_and_publish"
     assert gate["approval_alone_enables_execution"] is True
     data["decisions"][0]["candidate_publish_uri"] = media_url + "?token=private"
