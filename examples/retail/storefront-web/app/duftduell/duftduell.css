@@ -1,0 +1,174 @@
+/* DUFYND Duft-Duell: an isolated, motion-conscious interactive editorial microsite.
+ * Abstract CSS artwork only: no unlicensed bottle shots, fake brands or pricing.
+ */
+.duel-shell {
+  --duel-ink: #242235;
+  --duel-muted: #6e6b74;
+  --duel-paper: #f8f5ee;
+  --duel-coral: #ff775e;
+  --duel-violet: #5950db;
+  --duel-line: rgba(36, 34, 53, 0.14);
+  --duel-shadow: 0 24px 70px -33px rgba(32, 24, 65, 0.28);
+  min-height: 100svh;
+  background: var(--duel-paper);
+  color: var(--duel-ink);
+  overflow-x: clip;
+  font-family: var(--font-body), "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+}
+.duel-shell *, .duel-shell *::before, .duel-shell *::after { box-sizing: border-box; }
+.duel-topbar {
+  width: min(1250px, 100%);
+  margin-inline: auto;
+  min-height: 92px;
+  padding: 22px clamp(18px, 4vw, 54px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+}
+.duel-brand { display: inline-flex; align-items: center; gap: 12px; color: var(--duel-ink); font-weight: 900; font-size: 19px; letter-spacing: -.055em; white-space: nowrap; }
+.duel-brand img { border-radius: 11px; }
+.duel-top-right { display:flex; align-items:center; gap: 9px; font-size: 9px; letter-spacing:.18em; font-weight: 800; color: #77727d; }
+.duel-live-dot { width: 7px; height: 7px; border-radius: 50%; background: #48c49c; box-shadow: 0 0 0 4px rgba(72,196,156,.15); }
+.duel-exit { display:inline-flex; gap: 7px; padding: 10px 16px; border:1px solid var(--duel-line); border-radius:100px; font-size: 12px; font-weight: 700; white-space: nowrap; transition: background .2s; }
+.duel-exit:hover { background: #ebe6dc; }
+.duel-intro { display: grid; grid-template-columns: minmax(0, 1.06fr) minmax(0, .94fr); width:min(1180px, calc(100% - 56px)); min-height: 615px; margin: 5px auto 0; border: 1px solid rgba(36,34,53,.09); border-radius: 34px; overflow: hidden; box-shadow: var(--duel-shadow); }
+.duel-intro-text { position: relative; z-index: 1; background: #eeebe4; padding: clamp(36px, 5vw, 80px) clamp(28px, 5vw, 72px); display:flex; flex-direction:column; align-items:flex-start; justify-content:center; }
+.duel-kicker { display:inline-flex; gap: 9px; align-items:center; letter-spacing:.18em; font-size: 9px; font-weight: 900; color: #625c76; }
+.duel-kicker-line { width: 25px; height: 2px; background: var(--duel-coral); }
+.duel-display { font-size: clamp(82px, 9vw, 134px); letter-spacing: -.10em; line-height: .79; font-weight: 950; margin: 37px 0 27px -8px; }
+.duel-display em { font-style: normal; color: var(--duel-violet); }
+.duel-display-dot { color: var(--duel-coral); }
+.duel-intro-description { max-width: 410px; margin: 0; font-size: clamp(15px, 1.6vw, 18px); line-height: 1.65; letter-spacing:-.012em; color: #514c59; }
+.duel-start { border: 0; margin-top: 34px; min-height: 62px; border-radius: 15px; padding: 16px 22px; background: var(--duel-ink); color: white; font-size: 12px; font-weight: 900; letter-spacing:.11em; display:inline-flex; align-items:center; justify-content:space-between; gap: 33px; box-shadow: 0 12px 30px rgba(36,34,53,.21); transition: transform .2s,background .2s; cursor:pointer; }
+.duel-start:hover { transform: translateY(-3px); background: #43405e; }
+.duel-start span { font-size:19px; line-height:1; font-weight: 500; }
+.duel-facts { display: flex; flex-wrap:wrap; gap: 9px 17px; margin-top: 36px; color:#706c75; font-size: 9px; font-weight:800; letter-spacing:.12em; }
+.duel-facts span:not(:last-child)::after { content: "·"; margin-left: 16px; }
+.duel-intro-stage { isolation:isolate; min-width:0; position: relative; overflow:hidden; background: #e5ccff; background-image: radial-gradient(circle at 35% 15%, #fbe1f6, transparent 34%), linear-gradient(143deg,#e8d3ff 0%,#cbc6ff 55%,#bcb1f7 100%); display:flex; justify-content:center; align-items:center; }
+.duel-stage-grid { position:absolute; inset:0; opacity:.21; background-image: linear-gradient(#8575b6 1px,transparent 1px),linear-gradient(90deg,#8575b6 1px,transparent 1px); background-size:38px 38px; mask-image: linear-gradient(to bottom, transparent 0%,black 14%,black 82%,transparent 100%); }
+.duel-stage-orbit { position:absolute; border:2px solid rgba(78,57,150,.2); border-radius:50%; width:470px; height:470px; transform:rotate(-22deg) scaleY(.6); }
+.duel-stage-orbit-a { top: 3%; right:-25%; }
+.duel-stage-orbit-b { bottom: -14%; left:-29%; width:580px; height:580px; transform:rotate(30deg) scaleY(.8); }
+.duel-stage-disc { position:relative; width: min(380px,74%); aspect-ratio:1; border-radius:50%; display:flex; justify-content:center; align-items:center; gap:9px; background:radial-gradient(circle at 26% 18%,#fff9f1 0%,#f7edfc 34%,#8e7cfa 75%,#6150d7 100%); box-shadow: inset -35px -35px 60px rgba(43,33,149,.25), inset 16px 18px 50px rgba(255,255,255,.85), 0 37px 40px rgba(66,55,130,.23); font-size: clamp(90px, 10vw, 159px); font-weight: 950; color:#25223b; letter-spacing:-.12em; transform: rotate(-8deg); }
+.duel-stage-disc::before { content:""; position:absolute; inset:5%; border:2px solid rgba(255,255,255,.7); border-radius:50%; }
+.duel-stage-disc span { font-size: clamp(19px,2vw,30px); font-weight:900; letter-spacing:-.1em; color:#fff; transform: rotate(12deg); text-shadow: 0 2px 8px #7264ba; }
+.duel-stage-sticker { z-index:1; position:absolute; right:6%; top:16%; width:135px; height:135px; display:grid; place-items:center; text-align:center; border-radius:50%; background:var(--duel-coral); color:#271f38; font-size:13px; line-height:1.35; font-weight:950; letter-spacing:-.035em; transform: rotate(15deg); box-shadow:0 14px 32px rgba(244,110,95,.25); }
+.duel-stage-issue {position:absolute; bottom:27px; right:31px; color:#4e428a; font-size:10px; font-weight:900; letter-spacing:.14em;}
+.duel-play { width:min(980px, calc(100% - 48px)); min-height:calc(100svh - 160px); margin: clamp(0px, 3vw, 24px) auto 40px; }
+.duel-play-header { display:flex; align-items:center; justify-content:space-between; gap:20px; }
+.duel-counter { font-size: 12px; font-weight:900; letter-spacing:.15em; }
+.duel-counter span { color:#aaa4ae; }
+.duel-restart-mini, .duel-back, .duel-result-repeat { border:0; padding:10px 0; background:transparent; color: #645f70; font-size:12px; cursor:pointer; font-weight:700; }
+.duel-restart-mini:hover,.duel-back:hover,.duel-result-repeat:hover { text-decoration:underline; }
+.duel-progress { display:grid; grid-template-columns:repeat(4,1fr); gap:7px; margin-top: 16px; }
+.duel-progress span { height:4px; background:#ded8df; border-radius:99px; }
+.duel-progress span.current { background:var(--duel-coral); }
+.duel-progress span.done { background:var(--duel-violet); }
+.duel-round-title { text-align:center; margin: 40px auto 30px; max-width:750px; }
+.duel-round-eyebrow { font-size:11px; letter-spacing:.16em; font-weight:900; text-transform:uppercase; color: #8a7eb8; }
+.duel-round-title h1 { margin:15px auto 8px; font-size:clamp(31px,4.9vw,58px); line-height:1.03; letter-spacing:-.07em; font-weight:930; }
+.duel-round-title > p:last-child { color:var(--duel-muted); font-size:14px; line-height:1.5; }
+.duel-choice-grid {display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap: 16px;}
+.duel-choice { position:relative; text-align:left; display:flex; flex-direction:column; padding: clamp(18px,2.5vw,28px); min-width:0; overflow:hidden; border-radius:26px; border:1px solid rgba(36,34,53,.11); cursor:pointer; min-height:430px; transition: transform .24s, box-shadow .24s; box-shadow: 0 8px 24px rgba(57,44,106,.075); }
+.duel-choice:hover { transform:translateY(-5px); box-shadow:var(--duel-shadow); }
+.duel-choice:active { transform:translateY(-1px) scale(.992); }
+.duel-choice-a { background:#d5f1e5; color:#1c443f; }
+.duel-choice-b { background:#f7cbc2; color:#70342e; }
+.duel-choice-top { display:flex; justify-content:space-between; font-size:10px; font-weight:950; letter-spacing:.15em; }
+.duel-choice-top span:last-child {font-size:20px; font-weight:400; line-height:.7;}
+.duel-choice-art { position:relative; height:clamp(135px,22vw,207px); margin:13px auto 4px; display:block; align-self:center; width:100%; }
+.duel-choice-art-main {position:absolute; top:9%; left:calc(50% - 80px); width:160px; height:160px; border-radius:38% 62% 59% 41% / 45% 44% 56% 55%; background: linear-gradient(145deg,#f6ffe8 0%,#83e2c9 55%,#2a928d 100%); transform:rotate(-27deg); box-shadow:inset 10px 12px 24px #fff9, inset -14px -11px 24px #18766855, 0 22px 24px #2b8a7655; }
+.duel-choice-b .duel-choice-art-main { border-radius:50% 40% 48% 40%; transform:rotate(25deg); background:linear-gradient(145deg,#fff7d6 0%,#ff9b92 48%,#f04e76 100%); box-shadow: inset 15px 15px 24px #fff9, inset -16px -12px 30px #c32f6655, 0 22px 25px #ad42664a; }
+.duel-choice-art-ring { position:absolute; top:3%; left:calc(50% - 105px); width:210px; height:188px; border-radius:50%; border:2px solid #217b6a66; transform:rotate(-26deg) scaleY(.64); }
+.duel-choice-b .duel-choice-art-ring {border-color:#9f3b6070;transform:rotate(29deg) scaleY(.66);}
+.duel-choice-art-glint {position:absolute; top:15%; left:calc(50% - 58px); height:42px;width:42px; border-radius:50%; background:#fff7; filter:blur(11px);}
+.duel-choice-vibe { font-size:9px; letter-spacing:.2em; font-weight:900; opacity:.68; }
+.duel-choice-label { margin-top:8px; font-size:clamp(24px, 3.3vw, 39px); font-weight:950; line-height:1.03; letter-spacing:-.07em; }
+.duel-choice-detail { font-size:12px; margin-top:8px; line-height:1.5; opacity:.8; }
+.duel-choice-select { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:auto; padding-top:23px; font-size:10px; letter-spacing:.12em; font-weight:950; }
+.duel-choice-select span {font-size:21px; letter-spacing:0;}
+.duel-round-bottom { display:flex; justify-content:space-between; align-items:center; margin-top:14px; font-size:10px; letter-spacing:.13em; color:#817b87; }
+.duel-result { --result-tone:#5950db; position:relative; display:grid; grid-template-columns:1.1fr .9fr; background:#e7e1f4; border-radius:30px; overflow:hidden; margin-top:25px; box-shadow:var(--duel-shadow); }
+.duel-result-sunset {--result-tone:#ea824e;background:#f4e3cc;}
+.duel-result-electric {--result-tone:#268e8b;background:#cdece8;}
+.duel-result-afterdark {--result-tone:#cc527f;background:#ecd4de;}
+.duel-result-copy {padding:clamp(25px,5vw,60px);position:relative; z-index:1;}
+.duel-result-eyebrow {font-size:10px;letter-spacing:.12em;font-weight:900;color:var(--result-tone);}
+.duel-result-copy h1 {margin:23px 0 14px;font-size:clamp(45px,6vw,76px);line-height:.9;letter-spacing:-.082em;font-weight:950;max-width:500px;}
+.duel-result-copy h1 span {color:var(--result-tone);}
+.duel-result-copy strong {display:block;font-size:19px;letter-spacing:-.04em;}
+.duel-result-copy > p {max-width:440px;font-size:15px;line-height:1.7;color:#514c59;margin:17px 0 0;}
+.duel-tags {display:flex;flex-wrap:wrap;gap:7px;margin-top:25px;}
+.duel-tags span {border-radius:99px;border:1px solid #34304833;padding:7px 11px;font-size:11px;font-weight:750;}
+.duel-result-actions {display:flex;flex-wrap:wrap;gap:10px;margin-top:36px;}
+.duel-cta-primary {display:inline-flex;align-items:center;gap:20px;padding:15px 20px;min-height:53px;border:1px solid var(--duel-ink);border-radius:13px;background:var(--duel-ink);color:#fff;font-size:12px;font-weight:850;}
+.duel-cta-primary:hover {background:#464158;}
+.duel-cta-secondary {cursor:pointer;padding:15px 17px;min-height:53px;border:1px solid #49435a55;border-radius:13px;background:transparent;color:var(--duel-ink);font-weight:780;font-size:12px;}
+.duel-cta-secondary:hover {background:#ffffff77;}
+.duel-copy-error {font-size:11px!important;margin:9px 0!important;}
+.duel-result-repeat {display:block;margin-top:18px;}
+.duel-result-art {overflow:hidden;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;background:radial-gradient(circle at 30% 30%,#ffffffaa,transparent 40%),linear-gradient(140deg,#ffffff80,var(--result-tone));min-height:460px;}
+.duel-result-art::before,.duel-result-art::after {content:"";position:absolute;width:90%;aspect-ratio:1;border:2px solid #ffffff88;border-radius:50%;transform:scaleY(.6) rotate(-22deg);}
+.duel-result-art::after {width:70%;transform:scaleY(.9) rotate(39deg);}
+.duel-result-art > span {font-size:clamp(130px,17vw,245px);font-weight:950;letter-spacing:-.14em;color:#fff9;text-shadow:0 12px 40px #4442;transform:rotate(-12deg);line-height:.9;}
+.duel-result-art i {position:absolute;bottom:12%;right:15%;font-size:15px;line-height:1.05;font-weight:950;font-style:normal;letter-spacing:.08em;transform:rotate(-8deg);}
+.duel-result-disclaimer {grid-column:1/-1;padding:15px clamp(25px,5vw,60px) 21px;border-top:1px solid #322d4422;color:#625b67;font-size:11px;line-height:1.65;}
+.duel-footer {display:flex;justify-content:space-between;gap:20px;align-items:center;flex-wrap:wrap;width:min(1180px,calc(100% - 56px));margin:0 auto;padding:31px 0 40px;color:#77727d;font-size:10px;letter-spacing:.075em;font-weight:750;}
+.duel-footer nav {display:flex;flex-wrap:wrap;gap:11px 19px;letter-spacing:0;}
+.duel-footer a:hover {text-decoration:underline;}
+@media(max-width:800px) {
+  .duel-topbar {min-height:76px;}
+  .duel-top-right {display:none;}
+  .duel-intro {grid-template-columns:1fr;min-height:0;}
+  .duel-intro-text {padding:54px 36px 40px;}
+  .duel-display {font-size:clamp(75px,12vw,113px);}
+  .duel-intro-stage {min-height:340px;}
+  .duel-stage-disc {max-width:270px;font-size:110px;}
+  .duel-stage-sticker {height:94px;width:94px;top:11%;right:13%;font-size:10px;}
+  .duel-stage-orbit {width:320px;height:320px;}
+  .duel-result {grid-template-columns:1fr;}
+  .duel-result-art {min-height:230px;grid-row:1;}
+  .duel-result-art > span {font-size:160px;}
+  .duel-result-copy {grid-row:2;}
+  .duel-result-disclaimer {grid-row:3;}
+}
+@media(max-width:490px) {
+  .duel-topbar {padding:16px 18px;}
+  .duel-exit {font-size:11px;padding:8px 11px;}
+  .duel-intro {width:calc(100% - 26px);border-radius:22px;}
+  .duel-intro-text {padding:45px 24px 34px;}
+  .duel-display {font-size:clamp(67px,19vw,95px);margin-left:-5px;margin-top:28px;}
+  .duel-intro-description {font-size:14px;}
+  .duel-start {margin-top:27px;width:100%;justify-content:space-between;}
+  .duel-facts {font-size:8px;line-height:1.3;gap:5px 10px;margin-top:26px;}
+  .duel-facts span:not(:last-child)::after {margin-left:10px;}
+  .duel-intro-stage {min-height:270px;}
+  .duel-stage-disc {width:210px;font-size:91px;}
+  .duel-stage-sticker {top:6%;right:8%;height:75px;width:75px;font-size:8.5px;}
+  .duel-stage-issue {right:20px;bottom:18px;font-size:8px;}
+  .duel-play {width:calc(100% - 28px);}
+  .duel-round-title {margin:33px 0 24px;}
+  .duel-round-title h1 {font-size:clamp(30px,8.4vw,42px);}
+  .duel-choice-grid {gap:10px;}
+  .duel-choice {padding:14px 12px 12px;border-radius:18px;min-height:317px;}
+  .duel-choice-top {font-size:8px;}
+  .duel-choice-art {height:110px;margin:15px auto 3px;}
+  .duel-choice-art-main {height:99px;width:99px;left:calc(50% - 49px);}
+  .duel-choice-art-ring {height:122px;width:123px;left:calc(50% - 61px);}
+  .duel-choice-art-glint {height:27px;width:27px;left:calc(50% - 35px);}
+  .duel-choice-label {font-size:clamp(20px,5.75vw,27px);overflow-wrap:anywhere;}
+  .duel-choice-vibe {font-size:8px;}
+  .duel-choice-detail {font-size:11px;}
+  .duel-choice-select {font-size:8px;}
+  .duel-round-bottom {font-size:8px;}
+  .duel-result {border-radius:22px;}
+  .duel-result-copy {padding:28px 21px;}
+  .duel-result-copy h1 {font-size:53px;}
+  .duel-result-copy > p {font-size:14px;}
+  .duel-result-disclaimer {padding:16px 21px;}
+  .duel-footer {width:calc(100% - 32px);padding:24px 0 32px;font-size:9px;}
+}
+@media (prefers-reduced-motion:reduce) {
+  .duel-shell *, .duel-shell *::before, .duel-shell *::after {transition:none!important;animation:none!important;}
+}
