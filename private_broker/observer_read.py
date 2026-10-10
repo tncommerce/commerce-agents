@@ -9,6 +9,22 @@ import httpx
 
 from private_broker.observer_contract import ProvenanceError, source_from_env
 
+SAFE_REASONS = frozenset(
+    {
+        "invalid_grant",
+        "revoked",
+        "missing_configuration",
+        "scope_mismatch",
+        "account_mismatch",
+        "refresh_failed",
+        "rate_limited",
+        "provider_outage",
+        "refresh_race",
+        "invalid_response",
+        "broker_activation_required",
+    }
+)
+
 
 class ReadFailure(Exception):
     """Non-secret, bounded diagnostic for a fixed observer stage."""
@@ -21,7 +37,19 @@ class ReadFailure(Exception):
 
 def _json(response, stage: str, expected_type=dict):
     if not 200 <= response.status_code < 300:
-        raise ReadFailure(stage, f"http_{response.status_code}")
+        reason = f"http_{response.status_code}"
+        # Only the broker's fixed error vocabulary may cross this boundary.
+        try:
+            body = response.json()
+            if (
+                stage != "oidc_identity"
+                and isinstance(body, dict)
+                and body.get("error") in SAFE_REASONS
+            ):
+                reason = body["error"]
+        except Exception:
+            pass
+        raise ReadFailure(stage, reason)
     try:
         result = response.json()
     except Exception:
@@ -70,8 +98,24 @@ def main():
             results = {"_meta": source}
             gmail_reads = []
             for stage, path in reads:
-                response = client.get(origin + path, headers=headers)
-                result = _json(response, stage, list if stage == "render" else dict)
+                try:
+                    response = client.get(origin + path, headers=headers)
+                    result = _json(response, stage, list if stage == "render" else dict)
+                except ReadFailure as exc:
+                    # Failure receipts contain no provider payload or credentials.
+                    # Never acknowledge partial reads. Ingestion remains a separate job.
+                    Path("broker-failure.json").write_text(
+                        json.dumps(
+                            {
+                                "_meta": source,
+                                "stage": exc.stage,
+                                "reason": exc.reason,
+                            },
+                            sort_keys=True,
+                        ),
+                        encoding="utf-8",
+                    )
+                    raise
                 results[path] = result
                 if stage.startswith("gmail_"):
                     gmail_reads.append((stage, path, result))
