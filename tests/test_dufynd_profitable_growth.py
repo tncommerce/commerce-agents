@@ -19,6 +19,7 @@ def event(kind, minute, **updates):
         "acquisition_source": "tiktok",
         "campaign_id": "growth01",
         "content_id": "one_million_01",
+        "traffic_class": "visitor",
         **updates,
     }
 
@@ -82,7 +83,7 @@ def test_same_time_does_not_prove_order_or_quality():
 def test_untagged_qa_invalid_and_window_boundaries_are_explicit():
     rows = [
         event("page_view", 0, content_id=None),
-        event("page_view", 1, campaign_id="qa_growth"),
+        event("page_view", 1, campaign_id="qa_growth", session_key="different-qa-session"),
         event("page_view", 2, content_id="bad?identifier"),
         event("page_view", -1),
         event("page_view", 3, occurred_at=END.isoformat()),
@@ -114,6 +115,7 @@ def test_bounded_get_projection_truncation_and_unknown_count(monkeypatch):
         calls.append(request)
         assert request.method == "GET"
         assert request.url.host == "bqsdxaagklpkxioaqdqa.supabase.co"
+        assert request.url.path == "/rest/v1/dufynd_visitor_analytics"
         assert request.url.params["select"] != "*"
         assert "search_term" not in request.url.params["select"]
         return httpx.Response(206, headers={"content-range": "0-1/20"}, json=rows)
@@ -142,3 +144,25 @@ def test_redirect_and_upstream_error_never_become_zero_metrics(monkeypatch):
     )
     with pytest.raises(ValueError, match="Growth source unavailable"):
         fetch_events(key="secret", start=START, end=END, max_events=2)
+
+
+@pytest.mark.parametrize("traffic_class", [None, "unclassified", "unknown"])
+def test_unproven_history_is_not_counted_as_visitors(traffic_class):
+    result = report([event("page_view", 0, traffic_class=traffic_class)])
+    assert result["summary"]["observed_landing_sessions"] == 0
+    assert result["summary"]["unclassified_events_excluded"] == 1
+    assert result["content"] == []
+
+
+@pytest.mark.parametrize(
+    "qa_marker",
+    [{"traffic_class": "internal_qa"}, {"source": "release.preview"}, {"surface": "test:checkout"}],
+)
+def test_a_qa_marker_excludes_the_whole_session_even_outside_window(qa_marker):
+    rows = [event("page_view", 0), event("product_open", 1), event("merchant_clickout", 2)]
+    rows.append(event("page_view", -1, **qa_marker))
+    result = report(rows, complete=True)
+    assert result["summary"]["observed_landing_sessions"] == 0
+    assert result["summary"]["events_by_type"] == {}
+    assert result["summary"]["test_events_excluded"] == 3
+    assert result["content"] == []

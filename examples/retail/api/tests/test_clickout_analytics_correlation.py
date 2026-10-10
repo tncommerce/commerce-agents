@@ -221,7 +221,9 @@ async def test_offer_clickout_forwards_attribution_into_awin_clickrefs(
     assert query["clickref"] == ["content_01"]
     assert query["clickref2"] == ["campaign_01"]
     assert query["clickref3"] == ["youtube"]
-    assert query["clickref4"] == ["session-1234567890"]
+    assert query["clickref4"] == ["12345678123442348234123456789abc"]
+    assert tasks.calls[0][2]["event_id"].replace("-", "") == query["clickref4"][0]
+    assert tasks.calls[0][2]["session_id"] == "session-1234567890"
     assert query["clickref5"] == ["SC-QA-100"]
     assert query["clickref6"] == ["awin-offer"]
 
