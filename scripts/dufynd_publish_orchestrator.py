@@ -226,7 +226,7 @@ def compare_audio(source: Path, platform_output: Path, *, ffmpeg: str) -> dict:
 def connector_arguments(packet: dict) -> dict:
     """Use the live Swagger media ARRAY; no guessed mediaId-only payload."""
     platform = packet["platform"]
-    if platform not in {"instagram", "tiktok"} or packet["brand_id"] != "7182186":
+    if platform not in {"instagram", "tiktok", "youtube"} or packet["brand_id"] != "7182186":
         raise PublishBlocked("wrong_platform_or_brand")
     parsed = urlsplit(packet["uri"])
     if parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password:
@@ -251,9 +251,25 @@ def connector_arguments(packet: dict) -> dict:
     }
     if platform == "instagram":
         info["instagramData"] = {"type": "REEL", "autoPublish": True, "showReelOnFeed": True}
+        if "ai_generated" in packet:
+            info["instagramData"]["isAiGenerated"] = packet["ai_generated"]
+    elif platform == "youtube":
+        if not isinstance(packet.get("title"), str) or not 1 <= len(packet["title"]) <= 100:
+            raise PublishBlocked("youtube_title_required")
+        info["youtubeData"] = {
+            "title": packet["title"],
+            "type": "short",
+            "privacy": "public",
+            "madeForKids": False,
+            "isAiGeneratedContent": packet.get("ai_generated", False),
+            "category": "ENTERTAINMENT",
+            "tags": [],
+        }
     else:
         # Deliberately no music/autoAddMusic that could replace the frozen soundtrack.
         info["tiktokData"] = {"autoAddMusic": False, "commercialContentOwnBrand": True}
+        if "ai_generated" in packet:
+            info["tiktokData"]["isAigc"] = packet["ai_generated"]
     return {
         "blogId": "7182186",
         "date": desired.isoformat(),
@@ -286,10 +302,21 @@ def schedule_receipt(response: dict, packet: dict) -> dict:
             or ig.get("audioConfiguration")
         ):
             raise PublishBlocked("provider_audio_or_reel_configuration_changed")
+    elif packet["platform"] == "youtube":
+        if data.get("youtubeData") != expected["youtubeData"]:
+            raise PublishBlocked("provider_youtube_configuration_changed")
     elif data.get("tiktokData", {}).get("autoAddMusic") is not False or data.get(
         "tiktokData", {}
     ).get("music"):
         raise PublishBlocked("provider_audio_configuration_changed")
+    if "ai_generated" in packet:
+        config, flag = {
+            "instagram": ("instagramData", "isAiGenerated"),
+            "tiktok": ("tiktokData", "isAigc"),
+            "youtube": ("youtubeData", "isAiGeneratedContent"),
+        }[packet["platform"]]
+        if data.get(config, {}).get(flag) is not packet["ai_generated"]:
+            raise PublishBlocked("provider_ai_disclosure_not_confirmed")
     return {
         "provider_post_id": str(data["id"]),
         "asset_sha256": packet["asset_sha256"],
@@ -391,6 +418,7 @@ def verify_publication(packet: dict, provider: dict, playback: dict) -> dict:
     hosts = {
         "instagram": {"www.instagram.com", "instagram.com"},
         "tiktok": {"www.tiktok.com", "tiktok.com"},
+        "youtube": {"www.youtube.com"},
     }
     expected = packet["platform"]
     if (
@@ -446,3 +474,142 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+
+class ReleaseOrchestrator(PublishOrchestrator):
+    """All-platform preflight, one atomic reservation, one attempt per platform.
+
+    A host uses the existing connected-tool adapter. No background provider
+    credentials, retry queue or publication permission is introduced here.
+    """
+
+    def dispatch_release(self, release_id, paths, decisions, *, verify_hosted_media):
+        if self.metricool_schedule is None:
+            raise PublishBlocked("connected_metricool_adapter_required")
+        pre = self.bridge._rpc(
+            "preflight_dufynd_release_v1",
+            {
+                "p_release_id": release_id,
+                "p_decisions": decisions,
+            },
+        )
+        platforms = pre.get("platforms", {})
+        expected = {"instagram", "tiktok", "youtube"}
+        if set(platforms) != expected or set(paths) != expected or set(decisions) != expected:
+            raise PublishBlocked("all_three_platforms_required")
+        if pre.get("ready") is not True:
+            raise PublishBlocked(json.dumps({p: v.get("reason") for p, v in platforms.items()}))
+        packets, args, errors = {}, {}, {}
+        # Inspect EVERY platform before any reservation or provider call.
+        for platform in sorted(expected):
+            try:
+                packet = platforms[platform]["packet"]
+                if packet.get("platform") != platform:
+                    raise PublishBlocked("platform_binding_invalid")
+                report = audit_media(paths[platform], ffmpeg=self.ffmpeg)
+                if report["asset_sha256"] != packet["asset_sha256"]:
+                    raise PublishBlocked("local_asset_bytes_changed")
+                if verify_hosted_media(packet["uri"], report["asset_sha256"]) is not True:
+                    raise PublishBlocked("hosted_asset_bytes_changed")
+                args[platform] = connector_arguments(packet)
+                packets[platform] = packet
+            except Exception as exc:
+                errors[platform] = type(exc).__name__ + ":" + str(exc)[:200]
+        if errors:
+            raise PublishBlocked(json.dumps(errors))
+        reservation = self.bridge._rpc(
+            "reserve_dufynd_release_v1",
+            {
+                "p_release_id": release_id,
+                "p_decisions": decisions,
+                "p_packets": packets,
+            },
+        )
+        if reservation.get("reserved") is not True:
+            raise PublishBlocked(reservation.get("reason") or "release_reservation_denied")
+        receipts = {}
+        for platform in sorted(expected):
+            dispatch = reservation["platforms"][platform]
+            did = dispatch["dispatch_id"]
+            try:
+                if dispatch["packet"] != packets[platform]:
+                    raise PublishBlocked("reserved_packet_changed")
+                if (
+                    self.bridge._rpc("claim_dufynd_release_dispatch_v1", {"p_dispatch_id": did})
+                    is not True
+                ):
+                    raise PublishBlocked("release_claim_denied")
+                receipt = schedule_receipt(
+                    self.metricool_schedule(args[platform]), packets[platform]
+                )
+                saved = self.bridge._rpc(
+                    "record_dufynd_publish_receipt_v1",
+                    {
+                        "p_dispatch_id": did,
+                        "p_state": "scheduled",
+                        "p_receipt": receipt,
+                    },
+                )
+                if saved is not True:
+                    raise PublishBlocked("receipt_not_saved")
+                receipts[platform] = receipt
+            except Exception:
+                # A failed database write itself can be uncertain: reservations
+                # still prevent another invocation after restart. Never retry.
+                try:
+                    self.bridge._rpc(
+                        "record_dufynd_publish_receipt_v1",
+                        {
+                            "p_dispatch_id": did,
+                            "p_state": "outcome_unknown",
+                            "p_receipt": {"reason": "reconcile_provider_before_any_retry"},
+                        },
+                    )
+                finally:
+                    raise PublishBlocked("release_halted_no_retry:" + platform) from None
+        return {
+            "release_id": release_id,
+            "status": "SCHEDULED",
+            "platforms": receipts,
+            "publication_verified": False,
+            "audio_verified": False,
+        }
+
+
+def verify_platform_media(packet: dict, provider: dict, media: dict) -> dict:
+    """Validate native publication and source/output identity; no audio inference."""
+    platform, native, url = (
+        packet["platform"],
+        str(provider.get("id", "")),
+        provider.get("publicUrl", ""),
+    )
+    valid = {
+        "youtube": bool(re.fullmatch(r"[A-Za-z0-9_-]{11}", native))
+        and url == "https://www.youtube.com/shorts/" + native,
+        "tiktok": bool(re.fullmatch(r"[0-9]{5,30}", native))
+        and bool(
+            re.fullmatch(
+                r"https://www\.tiktok\.com/@[A-Za-z0-9._]+/video/" + re.escape(native) + r"/?", url
+            )
+        ),
+        "instagram": bool(re.fullmatch(r"[0-9]{5,30}", native))
+        and bool(re.fullmatch(r"https://www\.instagram\.com/(p|reel)/[A-Za-z0-9_-]+/?", url)),
+    }
+    if (
+        provider.get("status") != "PUBLISHED"
+        or provider.get("network") != platform
+        or not valid.get(platform)
+    ):
+        raise PublishBlocked("native_platform_id_and_url_required")
+    if (
+        media.get("source_sha256") != packet["asset_sha256"]
+        or media.get("platform_post_id") != native
+        or media.get("public_url") != url
+        or media.get("media_identity_verified") is not True
+        or not re.fullmatch(r"[a-f0-9]{64}", str(media.get("platform_output_sha256", "")))
+        or not media.get("evidence_ref")
+        or not media.get("checker_id")
+        or media["checker_id"] == packet.get("maker_id")
+    ):
+        raise PublishBlocked("independent_platform_media_identity_required")
+    return {**media, "publication_verified": True, "audible_playback_verified": False}

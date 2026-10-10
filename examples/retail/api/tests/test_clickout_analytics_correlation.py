@@ -87,6 +87,7 @@ async def test_partner_clickout_correlates_session_and_acquisition(
     assert kwargs == {
         "session_id": "session-partner-123456",
         "event": "merchant_clickout",
+        "internal_qa": False,
         "source": "qa-partner",
         "acquisition_source": "tiktok",
         "campaign_id": "launch_01",
@@ -150,6 +151,7 @@ async def test_offer_clickout_correlates_session_and_acquisition(
                 "campaign_id": "launch_02",
                 "content_id": "offer_card_02",
                 "session_id": "session-offer-123456",
+                "internal_qa": False,
             },
         )
     ]
@@ -161,6 +163,7 @@ async def test_offer_clickout_correlates_session_and_acquisition(
     assert kwargs == {
         "session_id": "session-offer-123456",
         "event": "merchant_clickout",
+        "internal_qa": False,
         "product_id": "SC-QA-100",
         "source": "qa-merchant",
         "acquisition_source": "instagram",

@@ -115,6 +115,7 @@ CODE_WINDOWS = {
     ],
     "examples/retail/api/main.py": [
         ("async def merchant_clickout(", 1, 44),
+        ("return RedirectResponse(url=target", 0, 0),
         ("async def analytics_event(", 1, 17),
         ("target = partner_clickout_url(", 0, 11),
     ],

@@ -167,3 +167,45 @@ def verify_private_draft(result: dict) -> dict:
         "draft": True,
         "publication_verified": False,
     }
+
+
+def dispatch_connected_release(
+    bridge, *, call_tool, ffmpeg, release_id, paths, decisions, verify_hosted_media
+):
+    """Production three-platform entry point; requires concrete SQL Owner GO."""
+    from scripts.dufynd_publish_orchestrator import ReleaseOrchestrator
+
+    def schedule(args):
+        args = {k: v for k, v in args.items() if k != "mediaFiles"}
+        return unwrap_tool_result(call_tool(TOOL, args))
+
+    return ReleaseOrchestrator(bridge, ffmpeg=ffmpeg, metricool_schedule=schedule).dispatch_release(
+        release_id,
+        paths,
+        decisions,
+        verify_hosted_media=verify_hosted_media,
+    )
+
+
+def record_release_verification(bridge, *, release_id, packet, provider, media, playback=None):
+    """Persist PUBLISHED separately; AUDIO_VERIFIED needs independent listening."""
+    from scripts.dufynd_publish_orchestrator import verify_platform_media, verify_publication
+
+    evidence = verify_platform_media(packet, provider, media)
+    args = {
+        "p_release_id": release_id,
+        "p_platform": packet["platform"],
+        "p_state": "PUBLISHED",
+        "p_evidence": evidence,
+    }
+    if bridge._rpc("record_dufynd_release_publication_v1", args) is not True:
+        raise PublishBlocked("publication_evidence_not_saved")
+    if playback is None:
+        return {"state": "PUBLISHED", "audio_verified": False}
+    verify_publication(packet, provider, playback)
+    if playback.get("platform_output_sha256") != media["platform_output_sha256"]:
+        raise PublishBlocked("audio_output_identity_changed")
+    args.update(p_state="AUDIO_VERIFIED", p_evidence={**evidence, **playback})
+    if bridge._rpc("record_dufynd_release_publication_v1", args) is not True:
+        raise PublishBlocked("audio_evidence_not_saved")
+    return {"state": "AUDIO_VERIFIED", "audio_verified": True}

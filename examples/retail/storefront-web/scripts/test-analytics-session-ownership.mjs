@@ -169,3 +169,20 @@ for (const blocked of [false, true]) {
   assert.equal(env.api.session, "qa-transport-session-2-1234567890");
 }
 console.log("DUFYND analytics funnel identity: document navigation, transport recovery, invalid and blocked storage passed.");
+
+// Explicit internal QA persists across navigation and un-attributed clickouts.
+{
+  const storage = new Map();
+  const browserWindow = {
+    location: { origin: "https://dufynd.test", search: "?qa=1" },
+    sessionStorage: { getItem: (key) => storage.get(key) ?? null, setItem: (key, value) => storage.set(key, value) },
+  };
+  const env = client(async () => "valid_analytics_session_123", undefined, browserWindow);
+  await env.trackAnalyticsEvent("page_view");
+  assert.equal(env.requests[0].payload.internal_qa, true);
+  browserWindow.location.search = "";
+  const nextPage = client(async () => "valid_analytics_session_123", undefined, browserWindow);
+  await nextPage.trackAnalyticsEvent("fragrance_detail_view");
+  assert.equal(nextPage.requests[0].payload.internal_qa, true);
+  assert.equal(new URL(nextPage.appendAcquisitionAttribution("/api/clickout/fixture")).searchParams.get("qa"), "1");
+}

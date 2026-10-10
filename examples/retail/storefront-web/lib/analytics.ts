@@ -12,6 +12,19 @@ const ANALYTICS_SESSION_STORAGE_KEY = "dufynd_analytics_session_v1";
 const ANALYTICS_SESSION_PATTERN = /^[A-Za-z0-9_-]{16,80}$/;
 let analyticsSessionMemory: string | null = null;
 
+let internalQaMemory = false;
+const QA_STORAGE_KEY = "dufynd_internal_qa_v1";
+
+export function isInternalQa(): boolean {
+  if (typeof window === "undefined") return false;
+  if (new URLSearchParams(window.location?.search || "").get("qa") === "1") internalQaMemory = true;
+  try {
+    internalQaMemory ||= window.sessionStorage.getItem(QA_STORAGE_KEY) === "1";
+    if (internalQaMemory) window.sessionStorage.setItem(QA_STORAGE_KEY, "1");
+  } catch { /* Keep the in-memory marker when storage is unavailable. */ }
+  return internalQaMemory;
+}
+
 // Keep the funnel identity across document navigation and API-session recovery.
 // API/advisor session ownership remains independent and is never restored here.
 function currentAnalyticsSessionId(): string | null {
@@ -134,7 +147,8 @@ export function appendAcquisitionAttribution(
   url: string,
 ): string {
   const attribution = storedAcquisitionAttribution();
-  if (!attribution) return url;
+  const internalQa = isInternalQa();
+  if (!attribution && !internalQa) return url;
 
   const target = new URL(
     url,
@@ -143,14 +157,15 @@ export function appendAcquisitionAttribution(
       : "http://localhost",
   );
 
-  target.searchParams.set("src", attribution.source);
-  if (attribution.campaign_id) {
+  if (internalQa) target.searchParams.set("qa", "1");
+  if (attribution) target.searchParams.set("src", attribution.source);
+  if (attribution?.campaign_id) {
     target.searchParams.set(
       "cmp",
       attribution.campaign_id,
     );
   }
-  if (attribution.content_id) {
+  if (attribution?.content_id) {
     target.searchParams.set(
       "content",
       attribution.content_id,
@@ -266,6 +281,7 @@ async function sendAnalyticsEvent(
 
   const payload = {
     event,
+    internal_qa: isInternalQa(),
     product_id: context.product_id,
     source: context.source,
     acquisition_source: attribution?.source,

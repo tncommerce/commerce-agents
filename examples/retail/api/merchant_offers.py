@@ -293,15 +293,19 @@ class MerchantClickoutTracker:
         campaign_id: str | None = None,
         content_id: str | None = None,
         session_id: str | None = None,
+        internal_qa: bool = False,
     ) -> str:
         click_id = str(uuid4())
-        from .analytics import FirstPartyAnalyticsTracker
+        from .analytics import FirstPartyAnalyticsTracker, analytics_traffic_class
 
         session_key = FirstPartyAnalyticsTracker.session_key(
             session_id or f"offer-clickout-{click_id}"
         )
         occurred_at = _as_utc(now or datetime.now(UTC))
         event = {
+            "traffic_class": analytics_traffic_class(
+                internal_qa, session_id, acquisition_source, campaign_id, content_id
+            ),
             "click_id": click_id,
             "session_key": session_key,
             "occurred_at": occurred_at.isoformat(),

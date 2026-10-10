@@ -143,3 +143,34 @@ def test_prelaunch_zero_is_measured_and_unapproved_replacement_has_no_old_fallba
     assert db.execute("select dufynd_first_money_measurement_target()").fetchone()[0] == {}
     assert runtime(db)["content_id"] is None
     assert runtime(db)["phase"] == "schedule_unknown"
+
+
+def test_qa_provenance_excludes_hashed_sessions_and_unknown_history(db):
+    db.execute("alter table scentai_analytics_events add column surface text")
+    db.execute(
+        next((ROOT / "supabase/migrations").glob("*first_money_qa_provenance.sql")).read_text()
+    )
+    replacement(db)
+    for session, traffic, source in [
+        ("a" * 24, "visitor", "catalog"),
+        ("b" * 24, "internal_qa", "catalog"),
+        ("c" * 24, "unclassified", "catalog"),
+        ("d" * 24, "visitor", "qa_browser"),
+    ]:
+        db.execute(
+            "insert into scentai_analytics_events(session_key,event,source,traffic_class,campaign_id,content_id,acquisition_source,surface) values(%s,'page_view',%s,%s,'replacement_experiment','replacement_fixture','instagram','acquisition_landing')",
+            (session, source, traffic),
+        )
+    # A late QA marker excludes previous visitor rows for that same hashed session.
+    db.execute(
+        "insert into scentai_analytics_events(session_key,event,traffic_class) values(%s,'page_view','internal_qa')",
+        ("a" * 24,),
+    )
+    assert db.execute("select count(*) from dufynd_visitor_analytics").fetchone()[0] == 0
+    result = db.execute("select read_dufynd_first_money_runtime()").fetchone()[0]
+    assert result["funnel"]["landing_sessions"] == 0
+    audit = db.execute("select read_dufynd_first_money_measurement_audit_v1()").fetchone()[0]
+    assert audit["internal_qa_events"] == 2
+    assert audit["unclassified_events"] == 1
+    assert "unattributed_organic_clickouts_since_launch" not in audit
+    assert audit["clickout_is_sale"] is False
