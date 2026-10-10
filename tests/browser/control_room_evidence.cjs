@@ -227,7 +227,9 @@ const { chromium } = require("playwright");
     assert.equal(await p.getByRole("button", {name: "Kandidat freigeben", exact: true}).count(), 0);
     assert.equal(await p.getByRole("link", {name: "Finales Reel mit Ton prüfen"}).getAttribute("href"), s.decision_center[0].publish_candidate.media_url);
     assert.match(await p.locator("#decision-list").innerText(), /Exact public caption/);
-    for (const value of ["Exact Short title", "Fixture soundtrack", "qa:licence", "KI-Kennzeichnung"]) assert.ok((await p.locator("#decision-list").innerText()).includes(value));
+    for (const value of ["Exact Short title", "Fixture soundtrack", "qa:licence"]) assert.ok((await p.locator("#decision-list").innerText()).includes(value), value);
+    // Labels use the existing uppercase CSS; values must remain exact.
+    assert.match(await p.locator("#decision-list").innerText(), /KI-KENNZEICHNUNG/);
     s.decision_center[0].publish_candidate.media_url = null;
     await refresh();
     assert.equal(await p.locator("#decision-list button").count(), 0);
