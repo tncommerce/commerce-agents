@@ -228,6 +228,17 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh workflow enable dufynd-private-observer.yml --repo "$GITHUB_REPOSITORY"
-          gh workflow enable dufynd-private-observer-watchdog.yml --repo "$GITHUB_REPOSITORY"
-          gh workflow run dufynd-private-observer.yml --repo "$GITHUB_REPOSITORY" --ref scentai-mvp
+          recovered=0
+          for workflow in dufynd-private-observer.yml dufynd-private-observer-watchdog.yml; do
+            state=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/$workflow" --jq '.state')
+            if [[ "$state" == disabled_* ]]; then
+              gh workflow enable "$workflow" --repo "$GITHUB_REPOSITORY"
+              recovered=1
+            elif [[ "$state" != active ]]; then
+              echo "Unexpected observer workflow state; recovery stopped"
+              exit 1
+            fi
+          done
+          if [[ "$recovered" == 1 ]]; then
+            gh workflow run dufynd-private-observer.yml --repo "$GITHUB_REPOSITORY" --ref scentai-mvp
+          fi
