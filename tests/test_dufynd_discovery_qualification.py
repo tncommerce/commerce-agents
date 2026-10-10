@@ -24,7 +24,8 @@ def test_qualified_discovery_preserves_every_publication_and_offer_gate():
     before = deepcopy(staged)
     attach_discovery_qualifications(staged, evidence)
     qualified = [row for row in staged if "discovery" in row]
-    assert len(qualified) == 5
+    assert len(qualified) == len(evidence["products"])
+    assert len(qualified) >= 17
     for row, old in zip(staged, before, strict=True):
         assert row["validation"] == old["validation"]
         assert row["commerce"] == old["commerce"]
