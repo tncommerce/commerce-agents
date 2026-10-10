@@ -19,6 +19,7 @@ ATTRIBUTION = (
     "examples/retail/storefront-web/app/vergleich/[pair]/page.tsx",
     "examples/retail/api/merchant_partners.py",
     "examples/retail/storefront-web/components/AcquisitionAnalytics.tsx",
+    "examples/retail/storefront-web/lib/acquisitionEntry.ts",
     "examples/retail/storefront-web/components/AcquisitionInternalLink.tsx",
     "examples/retail/storefront-web/components/ComparisonAnalytics.tsx",
     "examples/retail/storefront-web/components/FragranceOffers.tsx",
@@ -79,13 +80,17 @@ CODE_WINDOWS = {
         ('"session_id": "session-offer', 2, 9),
     ],
     ATTRIBUTION[0]: [
+        ("export function captureAcquisitionEntry", 0, 12),
         ("export function rememberAcquisitionAttribution", 0, 33),
         ("export function appendAcquisitionAttribution", 0, 36),
         ("export async function ensureAnalyticsSession", 0, 34),
         ("window.sessionStorage.getItem", 2, 8),
     ],
     "examples/retail/storefront-web/components/AcquisitionAnalytics.tsx": [
-        ("const params = new URLSearchParams", 0, 35)
+        ("const attribution = captureAcquisitionEntry", 0, 13)
+    ],
+    "examples/retail/storefront-web/lib/acquisitionEntry.ts": [
+        ("export function resolveAcquisitionEntry", 0, 30)
     ],
     "examples/retail/storefront-web/components/AcquisitionInternalLink.tsx": [
         ("useEffect(() =>", 0, 17)

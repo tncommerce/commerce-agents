@@ -183,7 +183,11 @@ def test_comparison_internal_links_preserve_acquisition_attribution() -> None:
     assert '["documented comparison pair", comparisonPairHref]' in source
     assert "navigation lost acquisition attribution" in source
     assert "appendAcquisitionAttribution(href)" in link_source
-    assert "rememberAcquisitionAttribution({" in link_source
+    analytics_source = Path("examples/retail/storefront-web/lib/analytics.ts").read_text(
+        encoding="utf-8"
+    )
+    assert "const attribution = captureAcquisitionEntry();" in analytics_source
+    assert "rememberAcquisitionAttribution({" in analytics_source
     assert "AcquisitionInternalLink" in comparison_page_source
 
 
