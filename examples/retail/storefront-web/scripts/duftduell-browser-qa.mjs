@@ -18,9 +18,9 @@ export async function verifyDuftduell(browser, baseUrl, outputDir) {
     const errors = [];
     page.on("pageerror", (error) => errors.push(String(error)));
     try {
-      const url = `${baseUrl}/duftduell/?qa=1&src=instagram&cmp=duftduell_qa&content=profile`;
+      const url = `${baseUrl}/duftduell?qa=1&src=instagram&cmp=duftduell_qa&content=profile`;
       const response = await page.goto(url, { waitUntil: "domcontentloaded" });
-      assert.ok(response?.ok(), `Duft-Duell page reachable at ${viewport.width}`);
+      assert.ok(response?.ok(), `Duft-Duell page reachable at ${viewport.width}: HTTP ${response?.status() ?? "no-response"} ${response?.url() ?? url}`);
       await page.getByRole("heading", { name: /DUFT.*DUELL/i }).waitFor();
       await page.screenshot({ path: path.join(outputDir, `duftduell-${viewport.width}-intro.png`), fullPage: true });
       assert.equal(await page.locator(".duel-choice").count(), 0, "No premature choices before start");
