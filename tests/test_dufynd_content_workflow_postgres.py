@@ -397,3 +397,188 @@ def test_post_publication_requires_verified_public_sound(db):
     assert advance(db, aid, "published", "publication_verified", evidence)["reason"] == (
         "public_audio_playback_evidence_required"
     )
+
+
+@pytest.fixture
+def release_db(db):
+    db.execute(
+        next(
+            (ROOT / "supabase/migrations").glob("*three_platform_release_contract.sql")
+        ).read_text()
+    )
+    return db
+
+
+def release_fixture(c):
+    """Reuse existing production-gate fixture; never insert into a live database."""
+    rid = "qa_release_" + uuid4().hex
+    assets, decisions = {}, {}
+    original = (ROOT / "tests/sql_dufynd_publish_dispatch.sql").read_text()
+    for platform in ("instagram", "tiktok", "youtube"):
+        aid = rid + "_" + platform
+        sql = original[: original.index(" packet:=read_dufynd_publish_packet_v1(aid);")]
+        sql = sql.replace(
+            "aid text:='qa_publish_'||replace(gen_random_uuid()::text,'-','')",
+            "aid text:='" + aid + "'",
+        )
+        sql = sql.replace(
+            "cid text:='qa_content_'||replace(gen_random_uuid()::text,'-','')",
+            "cid text:='" + rid + "'",
+        )
+        sql = sql.replace(
+            " insert into dufynd_content_assets",
+            """
+ meta:=meta||jsonb_build_object('release_contract_v1',jsonb_build_object('title','Fixture Short','ai_generated',true,'audio_source','fixture','visual_rights_evidence_ref','qa:visual','commercial_visual_rights_verified',true));
+ meta:=jsonb_set(meta,'{owner_review_v1,caption}','"KI-gestützte Fixture"');
+ meta:=jsonb_set(meta,'{owner_review_v1,platform}',to_jsonb('"""
+            + platform
+            + """'::text));
+ meta:=jsonb_set(meta,'{publish_contract_v2,media_kind}',to_jsonb('"""
+            + ("reel" if platform == "instagram" else "video")
+            + """'::text));
+ meta:=jsonb_set(meta,'{publish_contract_v2,cta_mode}',to_jsonb('"""
+            + ("engagement" if platform == "tiktok" else "profile_link")
+            + """'::text));
+ insert into dufynd_content_assets""",
+        )
+        sql = sql.replace(
+            ",cid,'instagram','internally_ready'", ",cid,'" + platform + "','internally_ready'"
+        )
+        c.execute(sql + " end $$;")
+        decision = c.execute("select request_dufynd_publish_go_v1(%s)", (aid,)).fetchone()[0]
+        assert decision.get("ready"), decision
+        did = decision["decision_id"]
+        c.execute(
+            "update dufynd_human_decisions set status='approved',decision=%s::jsonb where decision_id=%s",
+            (
+                json.dumps(
+                    dict(
+                        owner_confirmed=True,
+                        action="approve",
+                        review_only=False,
+                        source="private_control_room",
+                    )
+                ),
+                did,
+            ),
+        )
+        assets[platform], decisions[platform] = aid, did
+    c.execute(
+        "select register_dufynd_release_v1(%s,%s,'short',%s::jsonb)", (rid, rid, json.dumps(assets))
+    )
+    return rid, assets, decisions
+
+
+def reserve_release(c, rid, decisions):
+    pre = c.execute(
+        "select preflight_dufynd_release_v1(%s,%s::jsonb)", (rid, json.dumps(decisions))
+    ).fetchone()[0]
+    packets = {p: x["packet"] for p, x in pre["platforms"].items()}
+    return c.execute(
+        "select reserve_dufynd_release_v1(%s,%s::jsonb,%s::jsonb)",
+        (rid, json.dumps(decisions), json.dumps(packets)),
+    ).fetchone()[0]
+
+
+def test_release_real_go_reservation_claim_partial_failure_no_retry(release_db):
+    c = release_db
+    rid, assets, decisions = release_fixture(c)
+    pending = decisions["youtube"]
+    c.execute("update dufynd_human_decisions set status='pending' where decision_id=%s", (pending,))
+    assert not reserve_release(c, rid, decisions)["reserved"]
+    assert c.execute("select count(*) from dufynd_publish_dispatches").fetchone()[0] == 0
+    c.execute(
+        "update dufynd_human_decisions set status='approved' where decision_id=%s", (pending,)
+    )
+    result = reserve_release(c, rid, decisions)
+    assert result["reserved"], result
+    assert len(result["platforms"]) == 3
+    assert not reserve_release(c, rid, decisions)["reserved"]
+    did = result["platforms"]["instagram"]["dispatch_id"]
+    assert c.execute("select claim_dufynd_release_dispatch_v1(%s)", (did,)).fetchone()[0]
+    assert not c.execute("select claim_dufynd_release_dispatch_v1(%s)", (did,)).fetchone()[0]
+    receipt = json.dumps(dict(provider_post_id="planner123", exact_media_uri_echoed=True))
+    assert c.execute(
+        "select record_dufynd_publish_receipt_v1(%s,'scheduled',%s::jsonb)", (did, receipt)
+    ).fetchone()[0]
+    fail = result["platforms"]["tiktok"]["dispatch_id"]
+    assert c.execute(
+        "select record_dufynd_publish_receipt_v1(%s,'outcome_unknown','{}')", (fail,)
+    ).fetchone()[0]
+    remaining = result["platforms"]["youtube"]["dispatch_id"]
+    assert not c.execute("select claim_dufynd_release_dispatch_v1(%s)", (remaining,)).fetchone()[0]
+    assert dict(
+        c.execute(
+            "select platform,status from dufynd_release_platforms where release_id=%s", (rid,)
+        ).fetchall()
+    ) == dict(instagram="SCHEDULED", tiktok="FAILED", youtube="BLOCKED")
+    assert not c.execute(
+        "select has_function_privilege('anon','reserve_dufynd_release_v1(text,jsonb,jsonb)','execute')"
+    ).fetchone()[0]
+    assert (
+        c.execute("select reserve_dufynd_publish_v1('x','x','x','x')").fetchone()[0]["reason"]
+        == "release_dispatch_required"
+    )
+
+
+def test_release_publication_is_not_audio_proof_and_changed_revision_blocks(release_db):
+    c = release_db
+    rid, assets, decisions = release_fixture(c)
+    result = reserve_release(c, rid, decisions)
+    did = result["platforms"]["youtube"]["dispatch_id"]
+    assert c.execute(
+        'select record_dufynd_publish_receipt_v1(%s,\'scheduled\',\'{"provider_post_id":"planner456","exact_media_uri_echoed":true}\')',
+        (did,),
+    ).fetchone()[0]
+    proof = dict(
+        source_sha256=result["platforms"]["youtube"]["packet"]["asset_sha256"],
+        platform_output_sha256="b" * 64,
+        media_identity_verified=True,
+        checker_id="fixture-listener",
+        evidence_ref="qa:platform",
+        platform_post_id="aBcd_123456",
+        public_url="https://www.youtube.com/shorts/aBcd_123456",
+    )
+
+    def record(state):
+        return c.execute(
+            "select record_dufynd_release_publication_v1(%s,'youtube',%s,%s::jsonb)",
+            (rid, state, json.dumps(proof)),
+        ).fetchone()[0]
+
+    assert not record("AUDIO_VERIFIED")
+    assert record("PUBLISHED")
+    assert not record("AUDIO_VERIFIED")
+    proof.update(
+        audible_playback_verified=True,
+        full_decode_passed=True,
+        timing_verified=True,
+        audio_match_verified=True,
+    )
+    assert record("AUDIO_VERIFIED")
+    c.execute("update dufynd_content_assets set version=2 where id=%s", (assets["instagram"],))
+    assert not c.execute(
+        "select claim_dufynd_release_dispatch_v1(%s)",
+        (result["platforms"]["instagram"]["dispatch_id"],),
+    ).fetchone()[0]
+
+
+def test_photo_release_never_requires_or_creates_a_youtube_short(release_db):
+    c = release_db
+    rid = "qa_photo_" + uuid4().hex
+    assets = {}
+    for platform in ("instagram", "tiktok"):
+        aid = rid + platform
+        c.execute(
+            "insert into dufynd_content_assets(id,uri,content_id,platform,status,metadata) values(%s,'fixture://photo',%s,%s,'draft','{\"publish_contract_v2\":{\"media_kind\":\"image\"}}')",
+            (aid, rid, platform),
+        )
+        assets[platform] = aid
+    result = c.execute(
+        "select register_dufynd_release_v1(%s,%s,'photo',%s::jsonb)", (rid, rid, json.dumps(assets))
+    ).fetchone()[0]
+    assert result["registered"] and not result["publishing_authorized"]
+    pre = c.execute("select preflight_dufynd_release_v1(%s)", (rid,)).fetchone()[0]
+    assert set(pre["platforms"]) == {"instagram", "tiktok"}
+    assert all(v["reason"] == "photo_native_handoff_required" for v in pre["platforms"].values())
+    assert not pre["ready"]

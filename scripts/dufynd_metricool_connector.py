@@ -167,3 +167,79 @@ def verify_private_draft(result: dict) -> dict:
         "draft": True,
         "publication_verified": False,
     }
+
+
+def dispatch_connected_release(
+    bridge, *, call_tool, ffmpeg, release_id, paths, decisions, verify_hosted_media
+):
+    """Production three-platform entry point; requires concrete SQL Owner GO."""
+    from scripts.dufynd_publish_orchestrator import ReleaseOrchestrator
+
+    try:
+        verify_release_connections(call_tool("mcp__codex_apps__metricool_getbrandsettings", {}))
+    except Exception:
+        bridge._rpc(
+            "block_dufynd_release_preflight_v1",
+            {
+                "p_release_id": release_id,
+                "p_errors": {
+                    p: "metricool_brand_or_connection_unverified"
+                    for p in ("youtube", "instagram", "tiktok")
+                },
+            },
+        )
+        raise PublishBlocked("all_three_metricool_connections_required") from None
+
+    def schedule(args):
+        args = {k: v for k, v in args.items() if k != "mediaFiles"}
+        return unwrap_tool_result(call_tool(TOOL, args))
+
+    return ReleaseOrchestrator(bridge, ffmpeg=ffmpeg, metricool_schedule=schedule).dispatch_release(
+        release_id,
+        paths,
+        decisions,
+        verify_hosted_media=verify_hosted_media,
+    )
+
+
+def record_release_verification(bridge, *, release_id, packet, provider, media, playback=None):
+    """Persist PUBLISHED separately; AUDIO_VERIFIED needs independent listening."""
+    from scripts.dufynd_publish_orchestrator import verify_platform_media, verify_publication
+
+    evidence = verify_platform_media(packet, provider, media)
+    args = {
+        "p_release_id": release_id,
+        "p_platform": packet["platform"],
+        "p_state": "PUBLISHED",
+        "p_evidence": evidence,
+    }
+    if bridge._rpc("record_dufynd_release_publication_v1", args) is not True:
+        raise PublishBlocked("publication_evidence_not_saved")
+    if playback is None:
+        return {"state": "PUBLISHED", "audio_verified": False}
+    verify_publication(packet, provider, playback)
+    if playback.get("platform_output_sha256") != media["platform_output_sha256"]:
+        raise PublishBlocked("audio_output_identity_changed")
+    args.update(p_state="AUDIO_VERIFIED", p_evidence={**evidence, **playback})
+    if bridge._rpc("record_dufynd_release_publication_v1", args) is not True:
+        raise PublishBlocked("audio_evidence_not_saved")
+    return {"state": "AUDIO_VERIFIED", "audio_verified": True}
+
+
+def verify_release_connections(response):
+    """Read current brand connections without creating or changing any post."""
+    data = unwrap_tool_result(response).get("data")
+    if not isinstance(data, list):
+        raise PublishBlocked("metricool_brands_unverified")
+    brand = next((b for b in data if str(b.get("id")) == "7182186"), {})
+    connected = brand.get("networksData", {})
+    expected = {
+        "instagramData": "dufynd",
+        "tiktokData": "dufynd",
+        "youtubeData": "UCQooXN4sOeMsEG-43qaH0aA",
+    }
+    if brand.get("timezone") != "Europe/Berlin" or any(
+        connected.get(k) != v for k, v in expected.items()
+    ):
+        raise PublishBlocked("metricool_connection_missing_or_target_changed")
+    return True

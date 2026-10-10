@@ -219,7 +219,7 @@ const { chromium } = require("playwright");
     // Public GO is visibly distinct and binds the exact media/caption/time.
     s.decision_center = [{title: "Public Reel fixture", type: "content_publish_go",
       action_token: "GO-PUBLISH-FIXTURE", approval_alone_enables_execution: true,
-      publish_candidate: {asset_id: "qa_fixture", asset_sha256: "b".repeat(64),
+      publish_candidate: {asset_id: "qa_fixture", title: "Exact Short title", ai_generated: true, audio_source: "Fixture soundtrack", audio_rights_evidence_ref: "qa:licence", asset_sha256: "b".repeat(64),
         media_url: "https://dufynd.de/media/" + "b".repeat(64) + ".mp4",
         caption: "Exact public caption", platform: "instagram", requested_at: s.generated_at}}];
     await refresh();
@@ -227,6 +227,9 @@ const { chromium } = require("playwright");
     assert.equal(await p.getByRole("button", {name: "Kandidat freigeben", exact: true}).count(), 0);
     assert.equal(await p.getByRole("link", {name: "Finales Reel mit Ton prüfen"}).getAttribute("href"), s.decision_center[0].publish_candidate.media_url);
     assert.match(await p.locator("#decision-list").innerText(), /Exact public caption/);
+    for (const value of ["Exact Short title", "Fixture soundtrack", "qa:licence"]) assert.ok((await p.locator("#decision-list").innerText()).includes(value), value);
+    // Labels use the existing uppercase CSS; values must remain exact.
+    assert.match(await p.locator("#decision-list").innerText(), /KI-KENNZEICHNUNG/);
     s.decision_center[0].publish_candidate.media_url = null;
     await refresh();
     assert.equal(await p.locator("#decision-list button").count(), 0);

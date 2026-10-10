@@ -46,6 +46,16 @@ def sanitize_attribution_identifier(value: str | None) -> str | None:
     return normalized
 
 
+def analytics_traffic_class(internal_qa: bool = False, *identifiers: str | None) -> str:
+    """Classify before hashing; QA markers never become visitor evidence."""
+    marker = r"(^|[._:\-])(qa|test|smoke|preview)([._:\-]|$)"
+    return (
+        "internal_qa"
+        if internal_qa or any(re.search(marker, value or "", re.I) for value in identifiers)
+        else "visitor"
+    )
+
+
 def sanitize_catalog_search_term(value: str | None) -> str | None:
     if value is None:
         return None
@@ -67,6 +77,7 @@ def sanitize_catalog_search_term(value: str | None) -> str | None:
 
 class AnalyticsEventRequest(BaseModel):
     event: AnalyticsEventName
+    internal_qa: bool = False
     product_id: str | None = Field(
         default=None,
         max_length=80,
@@ -161,10 +172,20 @@ class FirstPartyAnalyticsTracker:
         item_position: int | None = None,
         event_id: str | None = None,
         offer_id: str | None = None,
+        internal_qa: bool = False,
         now: datetime | None = None,
     ) -> dict:
         occurred_at = (now or datetime.now(UTC)).astimezone(UTC)
         return {
+            "traffic_class": analytics_traffic_class(
+                internal_qa,
+                session_id,
+                source,
+                acquisition_source,
+                campaign_id,
+                content_id,
+                surface,
+            ),
             "event_id": event_id or str(uuid4()),
             "occurred_at": occurred_at.isoformat(),
             "session_key": self.session_key(session_id),
@@ -204,6 +225,7 @@ class FirstPartyAnalyticsTracker:
         item_position: int | None = None,
         event_id: str | None = None,
         offer_id: str | None = None,
+        internal_qa: bool = False,
         now: datetime | None = None,
     ) -> tuple[str, str]:
         row = self._row(
@@ -221,6 +243,7 @@ class FirstPartyAnalyticsTracker:
             item_position=item_position,
             event_id=event_id,
             offer_id=offer_id,
+            internal_qa=internal_qa,
             now=now,
         )
 

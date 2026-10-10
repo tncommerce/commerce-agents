@@ -6,6 +6,7 @@ import pytest
 from retail.api.jarvis_owner_actions import OwnerActionConflict, OwnerActionWriter
 
 
+@pytest.mark.parametrize("platform", ["instagram", "tiktok", "youtube"])
 @pytest.mark.parametrize(
     "action,scope,expected",
     [
@@ -15,7 +16,7 @@ from retail.api.jarvis_owner_actions import OwnerActionConflict, OwnerActionWrit
     ],
 )
 def test_specific_publish_go_uses_authenticated_writer_but_never_review_action(
-    action, scope, expected
+    action, scope, expected, platform
 ):
     patches = []
 
@@ -34,7 +35,11 @@ def test_specific_publish_go_uses_authenticated_writer_but_never_review_action(
                             "scope": scope,
                             "candidate": {
                                 "asset_sha256": "a" * 64,
-                                "platform": "instagram",
+                                "platform": platform,
+                                "title": "Fixture Short",
+                                "ai_generated": True,
+                                "audio_source": "Fixture track",
+                                "audio_rights_evidence_ref": "qa:licence",
                                 "caption": "Fixture",
                                 "uri": "https://dufynd.de/social/" + "a" * 64 + ".mp4",
                                 "requested_at": "2099-01-01T00:00:00Z",

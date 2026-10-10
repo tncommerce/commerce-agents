@@ -132,6 +132,7 @@ async def merchant_partner_clickout(
     cmp: str | None = None,
     content: str | None = None,
     sid: str | None = None,
+    qa: bool = False,
 ) -> RedirectResponse:
     partner = partner_store.eligible(partner_key)
     if partner is None or partner.affiliate_url is None:
@@ -148,6 +149,7 @@ async def merchant_partner_clickout(
         analytics_tracker.record,
         session_id=analytics_session_id,
         event="merchant_clickout",
+        internal_qa=qa,
         source=partner.merchant_id,
         acquisition_source=acquisition_source,
         campaign_id=campaign_id,
@@ -157,7 +159,7 @@ async def merchant_partner_clickout(
 
     target = partner_clickout_url(
         partner,
-        clickref=content_id or campaign_id or acquisition_source,
+        clickref="qa_internal" if qa else content_id or campaign_id or acquisition_source,
     )
     return RedirectResponse(
         url=target or partner.affiliate_url,
@@ -191,6 +193,7 @@ async def analytics_event(
     event_id, storage = await analytics_tracker.record(
         session_id=request.analytics_session_id or record.session_id,
         event=request.event,
+        internal_qa=request.internal_qa,
         product_id=request.product_id,
         source=request.source,
         acquisition_source=request.acquisition_source,
@@ -213,6 +216,7 @@ async def merchant_clickout(
     cmp: str | None = None,
     content: str | None = None,
     sid: str | None = None,
+    qa: bool = False,
 ) -> RedirectResponse:
     offer = offer_store.eligible_offer(offer_id)
     if offer is None or not _live_dufynd_offer_product(offer.product_id):
@@ -233,14 +237,21 @@ async def merchant_clickout(
         campaign_id=campaign_id,
         content_id=content_id,
         session_id=analytics_session_id,
+        internal_qa=qa,
     )
     analytics_session_id = analytics_session_id or f"offer-clickout-{click_id}"
-    network_refs = [content_id, campaign_id, acquisition_source, analytics_session_id]
+    network_refs = [
+        "qa_internal" if qa else content_id,
+        campaign_id,
+        acquisition_source,
+        analytics_session_id,
+    ]
     target = offer_clickout_target(offer, clickrefs=network_refs, click_id=click_id) or target
     background_tasks.add_task(
         analytics_tracker.record,
         session_id=analytics_session_id,
         event="merchant_clickout",
+        internal_qa=qa,
         product_id=offer.product_id,
         source=offer.merchant_id,
         acquisition_source=acquisition_source,

@@ -777,6 +777,14 @@ def build_snapshot(
             else None,
             "publish_candidate": {
                 "asset_id": clean(r.get("candidate_publish_asset_id")),
+                "title": _candidate_caption(r.get("candidate_publish_title"), secrets),
+                "ai_generated": r.get("candidate_publish_ai_generated")
+                if isinstance(r.get("candidate_publish_ai_generated"), bool)
+                else None,
+                "audio_source": _candidate_caption(
+                    r.get("candidate_publish_audio_source"), secrets
+                ),
+                "audio_rights_evidence_ref": clean(r.get("candidate_publish_audio_rights")),
                 "asset_sha256": clean(r.get("candidate_publish_sha256")),
                 "media_url": _public_frozen_media_url(r.get("candidate_publish_uri")),
                 "caption": _candidate_caption(r.get("candidate_caption"), secrets),
@@ -1520,7 +1528,7 @@ class DashboardReader:
             {
                 "decisions": (
                     "dufynd_human_decisions",
-                    "decision_id,task_id:context->>task_id,action_type,title,question,decision_token,reason:context->>reason,risk:context->>risk,cost_usd:context->cost_usd,benefit:context->>benefit,current_url:context->>current_url,required_url:context->>required_url,manual_action_required:context->manual_action_required,approval_alone_enables_execution:context->approval_alone_enables_execution,gate_action_executed:context->gate_action_executed,owner_confirmed_manual_action:decision->owner_confirmed_manual_action,owner_confirmed_at:decision->>confirmed_at,candidate_publish_asset_id:context->candidate->>asset_id,candidate_publish_sha256:context->candidate->>asset_sha256,candidate_publish_uri:context->candidate->>uri,candidate_product:context->candidate->>product,candidate_product_id:context->candidate->>product_id,candidate_asset_reference:context->candidate->>asset_reference,candidate_revision_fingerprint:context->candidate->>revision_fingerprint,candidate_hook:context->candidate->>hook,candidate_caption:context->candidate->>caption,candidate_platform:context->candidate->>platform,candidate_requested_at:context->candidate->>requested_at,candidate_content_id:context->candidate->>content_id,candidate_experiment_id:context->candidate->>experiment_id,candidate_internal_rating:context->candidate->internal_rating,candidate_reason:context->candidate->>recommendation_reason",
+                    "decision_id,task_id:context->>task_id,action_type,title,question,decision_token,reason:context->>reason,risk:context->>risk,cost_usd:context->cost_usd,benefit:context->>benefit,current_url:context->>current_url,required_url:context->>required_url,manual_action_required:context->manual_action_required,approval_alone_enables_execution:context->approval_alone_enables_execution,gate_action_executed:context->gate_action_executed,owner_confirmed_manual_action:decision->owner_confirmed_manual_action,owner_confirmed_at:decision->>confirmed_at,candidate_publish_title:context->candidate->>title,candidate_publish_ai_generated:context->candidate->ai_generated,candidate_publish_audio_source:context->candidate->>audio_source,candidate_publish_audio_rights:context->candidate->>audio_rights_evidence_ref,candidate_publish_asset_id:context->candidate->>asset_id,candidate_publish_sha256:context->candidate->>asset_sha256,candidate_publish_uri:context->candidate->>uri,candidate_product:context->candidate->>product,candidate_product_id:context->candidate->>product_id,candidate_asset_reference:context->candidate->>asset_reference,candidate_revision_fingerprint:context->candidate->>revision_fingerprint,candidate_hook:context->candidate->>hook,candidate_caption:context->candidate->>caption,candidate_platform:context->candidate->>platform,candidate_requested_at:context->candidate->>requested_at,candidate_content_id:context->candidate->>content_id,candidate_experiment_id:context->candidate->>experiment_id,candidate_internal_rating:context->candidate->internal_rating,candidate_reason:context->candidate->>recommendation_reason",
                     200,
                     {"status": "eq.pending", "order": "created_at.asc,decision_id.asc"},
                 ),

@@ -116,7 +116,11 @@ class OwnerActionWriter:
                 or context.get("scope") != "schedule_and_publish"
                 or not isinstance(candidate, dict)
                 or not re.fullmatch(r"[a-f0-9]{64}", str(candidate.get("asset_sha256", "")))
-                or candidate.get("platform") not in {"instagram", "tiktok"}
+                or candidate.get("platform") not in {"instagram", "tiktok", "youtube"}
+                or not candidate.get("title")
+                or not isinstance(candidate.get("ai_generated"), bool)
+                or not candidate.get("audio_source")
+                or not candidate.get("audio_rights_evidence_ref")
                 or not candidate.get("caption")
                 or not candidate.get("uri")
                 or not candidate.get("requested_at")

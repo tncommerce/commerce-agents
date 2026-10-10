@@ -20,6 +20,7 @@ export async function verifyFirstMoneyFunnel(browser, baseUrl) {
           return route.fulfill({ json: { session_id: `${session}-${sessionRequests}` } });
         });
         await page.route("**/api/analytics/events", (route) => {
+          assert.equal(route.request().postDataJSON().internal_qa, true);
           events.push({ ...route.request().postDataJSON(), session: route.request().headers()["x-session-id"] });
           return route.fulfill({ json: { ok: true } });
         });
@@ -35,8 +36,9 @@ export async function verifyFirstMoneyFunnel(browser, baseUrl) {
           },
         }));
         // First-party navigation only: no network redirect, click or sale is created.
-        const response = await page.goto(`${baseUrl}/start?src=${source}&cmp=${campaign}&content=${content}`);
+        const response = await page.goto(`${baseUrl}/start?qa=1&src=${source}&cmp=${campaign}&content=${content}`);
         assert.ok(response?.ok());
+        await page.waitForFunction(() => sessionStorage.getItem("dufynd_internal_qa_v1") === "1");
         const catalogLink = page.getByRole("link", { name: "Katalog entdecken", exact: true });
         await catalogLink.waitFor();
         const landingHref = new URL(await catalogLink.getAttribute("href"), baseUrl);
