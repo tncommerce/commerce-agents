@@ -516,6 +516,10 @@ class ReleaseOrchestrator(PublishOrchestrator):
             except Exception as exc:
                 errors[platform] = type(exc).__name__ + ":" + str(exc)[:200]
         if errors:
+            self.bridge._rpc(
+                "block_dufynd_release_preflight_v1",
+                {"p_release_id": release_id, "p_errors": errors},
+            )
             raise PublishBlocked(json.dumps(errors))
         reservation = self.bridge._rpc(
             "reserve_dufynd_release_v1",

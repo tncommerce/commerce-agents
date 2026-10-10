@@ -561,3 +561,24 @@ def test_release_publication_is_not_audio_proof_and_changed_revision_blocks(rele
         "select claim_dufynd_release_dispatch_v1(%s)",
         (result["platforms"]["instagram"]["dispatch_id"],),
     ).fetchone()[0]
+
+
+def test_photo_release_never_requires_or_creates_a_youtube_short(release_db):
+    c = release_db
+    rid = "qa_photo_" + uuid4().hex
+    assets = {}
+    for platform in ("instagram", "tiktok"):
+        aid = rid + platform
+        c.execute(
+            "insert into dufynd_content_assets(id,uri,content_id,platform,status,metadata) values(%s,'fixture://photo',%s,%s,'draft','{\"publish_contract_v2\":{\"media_kind\":\"image\"}}')",
+            (aid, rid, platform),
+        )
+        assets[platform] = aid
+    result = c.execute(
+        "select register_dufynd_release_v1(%s,%s,'photo',%s::jsonb)", (rid, rid, json.dumps(assets))
+    ).fetchone()[0]
+    assert result["registered"] and not result["publishing_authorized"]
+    pre = c.execute("select preflight_dufynd_release_v1(%s)", (rid,)).fetchone()[0]
+    assert set(pre["platforms"]) == {"instagram", "tiktok"}
+    assert all(v["reason"] == "photo_native_handoff_required" for v in pre["platforms"].values())
+    assert not pre["ready"]

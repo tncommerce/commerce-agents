@@ -296,3 +296,16 @@ begin
 end $$;
 revoke all on function public.claim_dufynd_release_dispatch_v1(uuid) from public,anon,authenticated;
 grant execute on function public.claim_dufynd_release_dispatch_v1(uuid) to service_role;
+
+create function public.block_dufynd_release_preflight_v1(p_release_id text,p_errors jsonb) returns boolean
+language plpgsql security invoker set search_path=public as $$
+begin
+ if jsonb_typeof(p_errors) is distinct from 'object' or octet_length(p_errors::text)>6000 then return false; end if;
+ perform 1 from public.dufynd_content_releases where release_id=p_release_id for update;
+ if not found or exists(select 1 from public.dufynd_release_platforms where release_id=p_release_id and dispatch_id is not null) then return false; end if;
+ update public.dufynd_release_platforms set status='BLOCKED',blocker=left(p_errors->>platform,500),updated_at=now()
+  where release_id=p_release_id and p_errors ? platform;
+ return found;
+end $$;
+revoke all on function public.block_dufynd_release_preflight_v1(text,jsonb) from public,anon,authenticated;
+grant execute on function public.block_dufynd_release_preflight_v1(text,jsonb) to service_role;

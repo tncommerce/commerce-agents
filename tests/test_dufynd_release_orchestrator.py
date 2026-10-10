@@ -49,6 +49,9 @@ def setup(monkeypatch):
         if name == "record_dufynd_publish_receipt_v1":
             state["receipts"].append(args)
             return True
+        if name == "block_dufynd_release_preflight_v1":
+            state["blocked"] = args["p_errors"]
+            return True
         raise AssertionError(name)
 
     bridge._rpc.side_effect = rpc
@@ -137,3 +140,26 @@ def test_youtube_ai_title_echo_required(setup):
     data["youtubeData"]["isAiGeneratedContent"] = False
     with pytest.raises(mod.PublishBlocked, match="youtube_configuration"):
         mod.schedule_receipt({"data": data}, packet)
+
+
+@pytest.mark.parametrize("missing", [None, "instagramData", "tiktokData", "youtubeData"])
+def test_connected_adapter_requires_all_current_dufynd_accounts(missing):
+    from scripts.dufynd_metricool_connector import verify_release_connections
+
+    networks = {
+        "instagramData": "dufynd",
+        "tiktokData": "dufynd",
+        "youtubeData": "UCQooXN4sOeMsEG-43qaH0aA",
+    }
+    if missing:
+        del networks[missing]
+    response = {
+        "structuredContent": {
+            "data": [{"id": 7182186, "timezone": "Europe/Berlin", "networksData": networks}]
+        }
+    }
+    if missing:
+        with pytest.raises(mod.PublishBlocked, match="connection_missing"):
+            verify_release_connections(response)
+    else:
+        assert verify_release_connections(response)

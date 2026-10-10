@@ -175,6 +175,21 @@ def dispatch_connected_release(
     """Production three-platform entry point; requires concrete SQL Owner GO."""
     from scripts.dufynd_publish_orchestrator import ReleaseOrchestrator
 
+    try:
+        verify_release_connections(call_tool("mcp__codex_apps__metricool_getbrandsettings", {}))
+    except Exception:
+        bridge._rpc(
+            "block_dufynd_release_preflight_v1",
+            {
+                "p_release_id": release_id,
+                "p_errors": {
+                    p: "metricool_brand_or_connection_unverified"
+                    for p in ("youtube", "instagram", "tiktok")
+                },
+            },
+        )
+        raise PublishBlocked("all_three_metricool_connections_required") from None
+
     def schedule(args):
         args = {k: v for k, v in args.items() if k != "mediaFiles"}
         return unwrap_tool_result(call_tool(TOOL, args))
@@ -209,3 +224,22 @@ def record_release_verification(bridge, *, release_id, packet, provider, media, 
     if bridge._rpc("record_dufynd_release_publication_v1", args) is not True:
         raise PublishBlocked("audio_evidence_not_saved")
     return {"state": "AUDIO_VERIFIED", "audio_verified": True}
+
+
+def verify_release_connections(response):
+    """Read current brand connections without creating or changing any post."""
+    data = unwrap_tool_result(response).get("data")
+    if not isinstance(data, list):
+        raise PublishBlocked("metricool_brands_unverified")
+    brand = next((b for b in data if str(b.get("id")) == "7182186"), {})
+    connected = brand.get("networksData", {})
+    expected = {
+        "instagramData": "dufynd",
+        "tiktokData": "dufynd",
+        "youtubeData": "UCQooXN4sOeMsEG-43qaH0aA",
+    }
+    if brand.get("timezone") != "Europe/Berlin" or any(
+        connected.get(k) != v for k, v in expected.items()
+    ):
+        raise PublishBlocked("metricool_connection_missing_or_target_changed")
+    return True
