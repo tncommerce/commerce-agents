@@ -2,6 +2,11 @@ name: DUFYND Awin Feed Revalidation
 
 on:
   workflow_dispatch:
+  # A reviewed recipient rotation runs this same workflow once on the development
+  # branch. No default-branch bootstrap or credential changes are needed.
+  push:
+    branches: [scentai-mvp]
+    paths: [.github/dufynd-awin-evidence-recipient.pub]
 
 permissions:
   contents: read
@@ -38,6 +43,25 @@ jobs:
             --feed-id 91379 \
             --output "${RUNNER_TEMP}/top-parfuemerie.csv" \
             --report "${RUNNER_TEMP}/awin-feed-metadata.json"
+
+      - name: Encrypt bounded four-row evidence
+        if: ${{ github.ref == 'refs/heads/scentai-mvp' }}
+        env:
+          AWIN_DATA_FEED_API_KEY: ${{ secrets.AWIN_DATA_FEED_API_KEY }}
+        run: |
+          python scripts/export_dufynd_awin_four_rows.py \
+            --feed "${RUNNER_TEMP}/top-parfuemerie.csv" \
+            --recipient .github/dufynd-awin-evidence-recipient.pub \
+            --output "${RUNNER_TEMP}/four-row-evidence.encrypted.json"
+
+      - name: Upload recipient-encrypted evidence only
+        if: ${{ github.ref == 'refs/heads/scentai-mvp' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: dufynd-awin-four-row-encrypted-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/four-row-evidence.encrypted.json
+          if-no-files-found: error
+          retention-days: 1
 
       - name: Check Release 01 against current feed
         id: release_check
