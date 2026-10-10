@@ -676,6 +676,16 @@ try {
           if (!String(productSchema.name || "").trim()) {
             throw new Error("Product JSON-LD has no usable product name");
           }
+          const sourceProduct = sourceCatalog.products.find((product) => product.product_id === productSchema.sku);
+          if (!sourceProduct) throw new Error("Product JSON-LD has an unknown SKU");
+          const exactVariant = `${sourceProduct.concentration} ${sourceProduct.volume_ml} ml`;
+          const description = await page.locator('meta[name="description"]').getAttribute("content");
+          if (![await page.title(), description, productSchema.name].every((value) => String(value).includes(exactVariant))) {
+            throw new Error(`Search metadata must identify the exact variant: ${exactVariant}`);
+          }
+          if (productSchema.offers || productSchema.aggregateRating || productSchema.review) {
+            throw new Error("Static product metadata must not claim live prices, stock or ratings");
+          }
 
           const schemaImages = Array.isArray(productSchema.image)
             ? productSchema.image
@@ -1157,6 +1167,27 @@ try {
           }
         }
 
+        if (target.name === "social-start" || target.route === "/duft") {
+          const directVariants = page.getByRole("navigation", { name: "Direkt zu diesen Duftvarianten" });
+          const expectedDirectVariants = [
+            ["/duft/rabanne-1-million", "Eau de Toilette", "100 ml"],
+            ["/duft/yves-saint-laurent-libre", "Eau de Parfum", "90 ml"],
+            ["/duft/yves-saint-laurent-black-opium", "Eau de Parfum", "90 ml"],
+            ["/duft/parfums-de-marly-delina", "Eau de Parfum", "75 ml"],
+          ];
+          if (await directVariants.locator("a").count() !== 4) {
+            throw new Error("Social start must expose all four direct variant links without a search");
+          }
+          for (const [href, concentration, volume] of expectedDirectVariants) {
+            const link = directVariants.locator(`a[href*="${href}"]`);
+            const text = await link.innerText();
+            const bounds = await link.boundingBox();
+            const destination = new URL(await link.getAttribute("href"), baseUrl);
+            if (destination.pathname !== href || !text.includes(concentration) || !text.includes(volume) || !bounds || bounds.height < 44) {
+              throw new Error(`Direct variant link lacks exact identity or mobile tap area: ${href}`);
+            }
+          }
+        }
         if (target.name === "social-start") {
           const socialSearch = page.getByRole("searchbox", {
             name: "Duft oder Marke suchen",

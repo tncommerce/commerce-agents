@@ -4,7 +4,9 @@ import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
 import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
 import LegalFooter from "@/components/LegalFooter";
 import SocialFragranceSearch from "@/components/SocialFragranceSearch";
+import FragranceVariantLinks from "@/components/FragranceVariantLinks";
 import { LIVE_FRAGRANCES } from "@/lib/fragranceCatalog";
+import { SITE_INDEXABLE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "DUFYND – Duftfinder, Katalog, Alternativen & Geschenkberatung",
@@ -15,7 +17,7 @@ export const metadata: Metadata = {
   },
   robots: {
     index: false,
-    follow: false,
+    follow: SITE_INDEXABLE,
     nocache: true,
   },
 };
@@ -177,6 +179,7 @@ export default function SocialStartPage() {
 
             <SocialFragranceSearch fragrances={searchableFragrances} />
           </div>
+          <FragranceVariantLinks />
         </section>
 
         <section

@@ -192,17 +192,9 @@ function descriptionFor(
 
   return [
     `${fragrance.brand} ${fragrance.name}`,
-    fragrance.concentration,
+    `${fragrance.concentration} ${fragrance.volume_ml} ml`,
     accords ? `Duftprofil: ${accords}` : null,
-    formatCommunityRating(
-      fragrance.community.rating_10,
-      fragrance.community.provisional,
-    )
-      ? `${formatCommunityRating(
-          fragrance.community.rating_10,
-          fragrance.community.provisional,
-        )} Community-Bewertung`
-      : null,
+    "Duftprofil und Händlerangebote vergleichen",
   ]
     .filter(Boolean)
     .join(" · ");
@@ -227,7 +219,7 @@ export async function generateMetadata({
   }
 
   const title =
-    `${fragrance.brand} ${fragrance.name} – Duftprofil & Angebote`;
+    `${fragrance.brand} ${fragrance.name} – ${fragrance.concentration} ${fragrance.volume_ml} ml`;
   const description = descriptionFor(fragrance);
   const canonical = `/duft/${fragrance.slug}`;
   const shareImage = isVerifiedProductTruthVisual(fragrance.preferred_visual)
@@ -350,7 +342,7 @@ export default async function FragrancePage({
   const productStructuredData = {
     "@context": "https://schema.org",
     "@type": "Product",
-    name: `${fragrance.brand} ${fragrance.name}`,
+    name: `${fragrance.brand} ${fragrance.name} ${fragrance.concentration} ${fragrance.volume_ml} ml`,
     sku: fragrance.product_id,
     category: "Parfum",
     url: canonicalUrl,

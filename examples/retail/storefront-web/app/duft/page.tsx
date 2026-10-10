@@ -4,6 +4,7 @@ import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
 
 import FragranceCatalogBrowser from "@/components/FragranceCatalogBrowser";
 import FragranceVisual from "@/components/FragranceVisual";
+import FragranceVariantLinks from "@/components/FragranceVariantLinks";
 import {
   isVerifiedProductTruthVisual,
   LIVE_FRAGRANCES,
@@ -236,6 +237,8 @@ export default function FragranceIndexPage() {
         <FragranceCatalogBrowser
           fragrances={fragrances}
         />
+
+        <FragranceVariantLinks />
 
         <footer className="mt-8 flex flex-wrap gap-x-4 gap-y-2 border-t border-(--line) py-6 text-[11px] text-(--ink-soft)">
           <AcquisitionInternalLink href="/transparenz" className="hover:underline">
