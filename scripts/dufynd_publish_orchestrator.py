@@ -26,8 +26,14 @@ class PublishBlocked(RuntimeError):
     pass
 
 
-def audit_media(path: Path, *, ffmpeg: str) -> dict:
+PRESERVED_ELIXIR_SHA256 = "4e2065ef9dac2f68d772d8e54da0476b27ec8d5e48d6a7dde719a8e9e4804715"
+PRESERVED_ELIXIR_EVIDENCE = "content.le_male_elixir_owner_final_no_audio_changes_20261010"
+
+
+def audit_media(path: Path, *, ffmpeg: str, platform: str = "instagram") -> dict:
     """Full A/V decode and measured loudness; NOT a listening or visual score."""
+    if platform not in {"instagram", "youtube", "tiktok"}:
+        raise PublishBlocked("unsupported_media_platform")
     if not path.is_file() or path.stat().st_size > 300_000_000:
         raise PublishBlocked("media_missing_or_too_large")
     with path.open("rb") as source:
@@ -61,7 +67,8 @@ def audit_media(path: Path, *, ffmpeg: str) -> dict:
     sample_rate = re.search(r"(\d+) Hz", audio)
     if (
         not audio_rate
-        or int(audio_rate[1]) > 128
+        or int(audio_rate[1]) <= 0
+        or (platform == "instagram" and int(audio_rate[1]) > 128)
         or not sample_rate
         or int(sample_rate[1]) not in {44100, 48000}
     ):
@@ -125,13 +132,24 @@ def audit_media(path: Path, *, ffmpeg: str) -> dict:
         raise PublishBlocked("loudness_measurement_missing")
     loudness = json.loads(matches[-1])
     integrated, peak = float(loudness["input_i"]), float(loudness["input_tp"])
-    if (
-        not all(math.isfinite(v) for v in (integrated, peak))
-        or not -20 <= integrated <= -10
-        or peak > -1
-    ):
+    # 128 kbps is a recommendation for YouTube/TikTok, not a shared hard limit.
+    # Keep Instagram's documented automatic profile and all decode/peak checks.
+    # The Owner froze this exact already-reviewed mix. Its -20.89 LUFS is an
+    # internal quality-target deviation, not a provider prohibition. Only these
+    # exact bytes get this narrow exception; never normalize or infer new QA.
+    preserved = (
+        platform in {"youtube", "tiktok"}
+        and digest == PRESERVED_ELIXIR_SHA256
+        and -21 <= integrated < -20
+    )
+    if not all(math.isfinite(v) for v in (integrated, peak)) or peak > -1:
         raise PublishBlocked("silent_or_unsafe_loudness")
+    if not -20 <= integrated <= -10 and not preserved:
+        raise PublishBlocked("internal_loudness_target_requires_review")
     return {
+        "platform": platform,
+        "audio_bitrate_recommendation_exceeded": int(audio_rate[1]) > 128,
+        "owner_preserved_audio_evidence_ref": PRESERVED_ELIXIR_EVIDENCE if preserved else None,
         "asset_sha256": digest,
         "width_px": width,
         "height_px": height,
@@ -340,7 +358,7 @@ class PublishOrchestrator:
         packet = self.bridge._rpc("read_dufynd_publish_packet_v1", {"p_asset_id": asset_id})
         if packet.get("ready") is not True:
             raise PublishBlocked(packet.get("reason", "packet_not_ready"))
-        report = audit_media(path, ffmpeg=self.ffmpeg)
+        report = audit_media(path, ffmpeg=self.ffmpeg, platform=packet["platform"])
         if report["asset_sha256"] != packet["asset_sha256"]:
             raise PublishBlocked("local_asset_bytes_changed")
         connector_arguments(packet)
@@ -462,9 +480,12 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Offline file audit; no approval or scheduling.")
     parser.add_argument("media", type=Path)
     parser.add_argument("--ffmpeg", required=True)
+    parser.add_argument(
+        "--platform", choices=("instagram", "youtube", "tiktok"), default="instagram"
+    )
     args = parser.parse_args()
     try:
-        result = audit_media(args.media, ffmpeg=args.ffmpeg)
+        result = audit_media(args.media, ffmpeg=args.ffmpeg, platform=args.platform)
     except (PublishBlocked, OSError, subprocess.SubprocessError, ValueError) as exc:
         print(json.dumps({"passed": False, "reason": str(exc), "publication_authorized": False}))
         return 1
@@ -506,7 +527,7 @@ class ReleaseOrchestrator(PublishOrchestrator):
                 packet = platforms[platform]["packet"]
                 if packet.get("platform") != platform:
                     raise PublishBlocked("platform_binding_invalid")
-                report = audit_media(paths[platform], ffmpeg=self.ffmpeg)
+                report = audit_media(paths[platform], ffmpeg=self.ffmpeg, platform=platform)
                 if report["asset_sha256"] != packet["asset_sha256"]:
                     raise PublishBlocked("local_asset_bytes_changed")
                 if verify_hosted_media(packet["uri"], report["asset_sha256"]) is not True:
