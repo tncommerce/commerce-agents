@@ -1,4 +1,5 @@
 import { api, initializeAnalyticsSession } from "./api";
+import { resolveAcquisitionEntry } from "./acquisitionEntry";
 
 const ACQUISITION_IDENTIFIER_PATTERN = /^[A-Za-z0-9._:-]{1,80}$/;
 let apiSessionPromise: Promise<string | null> | null = null;
@@ -13,6 +14,7 @@ const ANALYTICS_SESSION_PATTERN = /^[A-Za-z0-9_-]{16,80}$/;
 let analyticsSessionMemory: string | null = null;
 
 let internalQaMemory = false;
+let entryReferrerConsumed = false;
 const QA_STORAGE_KEY = "dufynd_internal_qa_v1";
 
 export function isInternalQa(): boolean {
@@ -143,10 +145,23 @@ export function currentAcquisitionAttribution():
   return storedAcquisitionAttribution();
 }
 
+export function captureAcquisitionEntry(): AcquisitionAttribution | null {
+  if (typeof window === "undefined") return storedAcquisitionAttribution();
+  const entry = resolveAcquisitionEntry(
+    window.location?.search || "",
+    !entryReferrerConsumed && typeof document !== "undefined" ? document.referrer : "",
+    window.location?.origin || "",
+    storedAcquisitionAttribution(),
+  );
+  entryReferrerConsumed = true;
+  rememberAcquisitionAttribution({ source: entry.source, campaignId: entry.campaign_id, contentId: entry.content_id });
+  return entry;
+}
+
 export function appendAcquisitionAttribution(
   url: string,
 ): string {
-  const attribution = storedAcquisitionAttribution();
+  const attribution = captureAcquisitionEntry();
   const internalQa = isInternalQa();
   if (!attribution && !internalQa) return url;
 
@@ -277,7 +292,7 @@ async function sendAnalyticsEvent(
   const apiSessionId = await ensureAnalyticsSession();
   if (!apiSessionId) return;
 
-  const attribution = storedAcquisitionAttribution();
+  const attribution = captureAcquisitionEntry();
 
   const payload = {
     // Generate once per action, outside the bounded transport retry.

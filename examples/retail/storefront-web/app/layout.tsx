@@ -9,7 +9,8 @@ import { SITE_INDEXABLE, SITE_URL } from "@/lib/site";
 const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
   variable: "--font-body",
-  display: "swap",
+  // Keep the first rendered layout stable when the font arrives late.
+  display: "optional",
 });
 
 export const metadata: Metadata = {

@@ -40,7 +40,7 @@ STAGES = {
         ("<AcquisitionAnalytics", "<AcquisitionInternalLink"),
     ),
     "landing_parameters": (
-        PREFIX + "components/AcquisitionAnalytics.tsx",
+        PREFIX + "lib/acquisitionEntry.ts",
         ('params.get("src")', 'params.get("cmp")', 'params.get("content")'),
     ),
     "persistence": (

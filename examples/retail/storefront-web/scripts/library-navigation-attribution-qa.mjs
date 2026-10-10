@@ -89,7 +89,7 @@ export async function verifyLibraryNavigationAttribution(browser, baseUrl) {
   }
   for (const width of [390, 1440]) {
     for (const mode of ["sammlung", "merkliste"]) {
-      for (const invalid of ["src=unknown&cmp=untrusted", "src=instagram&cmp=%3Cunsafe%3E"]) {
+      for (const invalid of ["src=unsupported&cmp=untrusted", "src=instagram&cmp=%3Cunsafe%3E"]) {
         const context = await browser.newContext({ viewport: { width, height: 900 } });
         const page = await context.newPage();
         const events = [];
@@ -103,7 +103,7 @@ export async function verifyLibraryNavigationAttribution(browser, baseUrl) {
           for (let n = 0; n < 100 && !events.some((e) => e.event === "page_view"); n++) await page.waitForTimeout(50);
           const event = events.find((e) => e.event === "page_view");
           assert.ok(event);
-          assert.equal(event.acquisition_source, invalid.startsWith("src=unknown") ? "organic" : "instagram");
+          assert.equal(event.acquisition_source, invalid.startsWith("src=unsupported") ? "unknown" : "instagram");
           assert.equal(event.campaign_id, undefined, "untrusted campaign IDs must not be recorded");
           assert.equal(events.filter((e) => e.event === "page_view").length, 1, "library page view must not duplicate");
           cases++;

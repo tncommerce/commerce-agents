@@ -1,4 +1,6 @@
 import { verifyConversionSearch } from "./conversion-search-qa.mjs";
+import { verifyAcquisitionEntry } from "./acquisition-entry-qa.mjs";
+import { verifyFontLayout } from "./font-layout-qa.mjs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
@@ -265,6 +267,18 @@ const report = {
 };
 
 try {
+  try {
+    const cases = await verifyFontLayout(browser, baseUrl);
+    report.checks.push({ label: "font-layout", status: "passed", cases });
+  } catch (error) {
+    report.failures.push({ label: "font-layout", message: String(error) });
+  }
+  try {
+    const cases = await verifyAcquisitionEntry(browser, baseUrl);
+    report.checks.push({ label: "acquisition-entry", status: "passed", cases });
+  } catch (error) {
+    report.failures.push({ label: "acquisition-entry", message: String(error) });
+  }
   try {
     const cases = await verifyConversionSearch(browser, baseUrl, outputDir);
     report.checks.push({ label: "conversion-search", status: "passed", cases });
