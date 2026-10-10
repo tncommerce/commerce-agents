@@ -211,3 +211,34 @@ jobs:
             echo 'Broker unexpectedly started without owner configuration'
             exit 1
           fi
+
+  private-observer-recovery:
+    # Owner-authorized incident recovery, gated by the existing broker opt-in.
+    # This uses the already reviewed fixed OIDC path; no Google/admin credentials.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/scentai-mvp' && vars.DUFYND_PRIVATE_BROKER_ENABLED == '1'
+    needs: [python, budget-postgres, web, private-broker-container]
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    permissions:
+      actions: write
+      contents: read
+    steps:
+      - name: Restore existing observer workflows and dispatch one trusted recovery
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          recovered=0
+          for workflow in dufynd-private-observer.yml dufynd-private-observer-watchdog.yml; do
+            state=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/$workflow" --jq '.state')
+            if [[ "$state" == disabled_* ]]; then
+              gh workflow enable "$workflow" --repo "$GITHUB_REPOSITORY"
+              recovered=1
+            elif [[ "$state" != active ]]; then
+              echo "Unexpected observer workflow state; recovery stopped"
+              exit 1
+            fi
+          done
+          if [[ "$recovered" == 1 ]]; then
+            gh workflow run dufynd-private-observer.yml --repo "$GITHUB_REPOSITORY" --ref scentai-mvp
+          fi

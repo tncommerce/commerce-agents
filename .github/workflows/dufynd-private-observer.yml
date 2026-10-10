@@ -45,6 +45,14 @@ jobs:
         env:
           BROKER_ORIGIN: ${{ vars.DUFYND_PRIVATE_BROKER_ORIGIN }}
         run: python -m private_broker.observer_read
+      - name: Preserve sanitized failure evidence
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: private-observer-failure-${{ github.run_id }}
+          path: broker-failure.json
+          if-no-files-found: ignore
+          retention-days: 7
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: private-observer-filtered-${{ github.run_id }}
@@ -163,3 +171,29 @@ jobs:
           --expected-sha "${GITHUB_SHA}"
       - name: Final public production smoke
         run: python -m scripts.dufynd_production_smoke --machine-readable
+
+  failure-receipt:
+    needs: read
+    if: failure() && needs.read.result == 'failure'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - run: pip install httpx==0.28.1
+      - name: Download same-run sanitized diagnostic
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "private-observer-failure-${GITHUB_RUN_ID}" --dir failure-artifact
+      - name: Persist failure without acknowledging observations
+        env:
+          SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: python -m scripts.dufynd_private_observer_failure

@@ -176,3 +176,41 @@ def test_rejects_wrong_workflow_provenance_before_oidc(monkeypatch):
         "no cursor acknowledged"
     )
     assert client.calls == []
+
+
+def test_failure_receipt_preserves_only_allowlisted_reason(monkeypatch, tmp_path):
+    client = FakeClient(
+        [
+            FakeResponse(200, {"value": "secret-oidc"}),
+            FakeResponse(200, []),
+            FakeResponse(403, {"error": "invalid_grant", "token": "secret-provider"}),
+        ]
+    )
+    configure(monkeypatch, client)
+    monkeypatch.chdir(tmp_path)
+    with pytest.raises(SystemExit, match="gmail_1:invalid_grant"):
+        observer_read.main()
+    receipt = json.loads((tmp_path / "broker-failure.json").read_text())
+    assert receipt["stage"] == "gmail_1"
+    assert receipt["reason"] == "invalid_grant"
+    assert "secret-" not in json.dumps(receipt)
+    assert not (tmp_path / "broker-observations.json").exists()
+    assert len(client.calls) == 3
+
+
+def test_failure_ingestion_rejects_wrong_run_and_unbounded_reason(monkeypatch):
+    from scripts.dufynd_private_observer_failure import validate_failure
+
+    configure(monkeypatch, FakeClient([]))
+    payload = {
+        "_meta": observer_read.source_from_env(),
+        "stage": "gmail_1",
+        "reason": "invalid_grant",
+    }
+    assert validate_failure(payload, run_id="123456789", sha="a" * 40) == payload
+    with pytest.raises(ValueError, match="invalid failure reason"):
+        validate_failure(
+            {**payload, "reason": "sensitive provider detail"}, run_id="123456789", sha="a" * 40
+        )
+    with pytest.raises(observer_read.ProvenanceError, match="source_run_mismatch"):
+        validate_failure(payload, run_id="999", sha="a" * 40)

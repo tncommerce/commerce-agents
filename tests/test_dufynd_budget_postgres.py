@@ -99,6 +99,9 @@ def database():
                 (ROOT / "supabase/migrations").glob("*dependency_observer_reliability.sql")
             ).read_text()
         )
+        connection.execute(
+            next((ROOT / "supabase/migrations").glob("*gmail_observer_recovery.sql")).read_text()
+        )
     yield
 
 
@@ -2820,3 +2823,42 @@ def test_observer_partial_activation_and_initial_schedule_fail_closed():
             query("select begin_dufynd_broker_acceptance(%s::jsonb)", (json.dumps(origin),))
     finally:
         query("update dufynd_observer_credentials set activation_enabled=false returning true")
+
+
+def test_gmail_expiry_dedup_and_real_recovery():
+    import psycopg
+
+    with psycopg.connect(DSN) as connection:
+        connection.execute(
+            "update dufynd_external_observers set last_success_at=null where source_type='gmail'"
+        )
+        connection.execute(
+            "update dufynd_observer_credentials set activation_enabled=true,status='healthy',health_reason='healthy',revoked_at=null,expires_at=now()-interval '1 hour' where provider='gmail'"
+        )
+        first = connection.execute("select reconcile_dufynd_gmail_health_v1()").fetchone()[0]
+        second = connection.execute("select reconcile_dufynd_gmail_health_v1()").fetchone()[0]
+        assert first["state"] == "credential_expired"
+        assert second["dedup_key"] == first["dedup_key"]
+        assert second["first_seen_at"] == first["first_seen_at"]
+        assert second["owner_action_required"] is False
+        assert second["email_sent"] is False
+        assert (
+            connection.execute(
+                "select status from dufynd_observer_credentials where provider='gmail'"
+            ).fetchone()[0]
+            == "expired"
+        )
+        connection.execute(
+            "update dufynd_observer_credentials set status='healthy',health_reason='healthy',expires_at=now()+interval '1 hour',refreshed_at=now()-interval '1 minute' where provider='gmail'"
+        )
+        assert (
+            connection.execute("select reconcile_dufynd_gmail_health_v1()->>'state'").fetchone()[0]
+            != "recovered"
+        )
+        connection.execute(
+            "update dufynd_external_observers set enabled=true,health_status='healthy',last_success_at=now() where source_type='gmail'"
+        )
+        recovered = connection.execute("select reconcile_dufynd_gmail_health_v1()").fetchone()[0]
+        assert recovered["state"] == "recovered"
+        assert recovered["fresh_successes"] == 3
+        connection.rollback()
