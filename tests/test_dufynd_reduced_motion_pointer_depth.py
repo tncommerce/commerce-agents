@@ -22,11 +22,14 @@ def test_css_still_disables_product_and_editorial_motion() -> None:
     assert ".dufynd-editorial-depth-object" in source
 
 
-def test_homepage_pointer_light_stops_when_reduced_motion_is_requested() -> None:
+def test_homepage_photo_entry_has_no_pointer_light_motion() -> None:
     source = HOME.read_text(encoding="utf-8")
-    handler = source.split("function updateHeroLight", 1)[1].split("function resetHeroLight", 1)[0]
-
-    assert 'window.matchMedia("(prefers-reduced-motion: reduce)").matches' in handler
-    assert handler.index("prefers-reduced-motion: reduce") < handler.index(
-        "getBoundingClientRect()"
+    intro = Path("examples/retail/storefront-web/components/DiscoveryIntro.tsx").read_text(
+        encoding="utf-8"
     )
+    assert "<DiscoveryIntro />" in source
+    assert "onPointerMove" not in intro
+    assert 'variant="card"' in intro
+    # Shared card rendering never installs the pointer-depth handler.
+    visual = VISUAL.read_text(encoding="utf-8")
+    assert 'onPointerMove={variant === "hero" ? updatePointer : undefined}' in visual

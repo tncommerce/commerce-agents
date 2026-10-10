@@ -21,10 +21,13 @@ def test_non_3d_hero_keeps_product_truth_visual_mode() -> None:
     assert 'mode={heroIsProductTruth ? "cutout" : "editorial"}' in source
 
 
-def test_homepage_only_renders_model_viewer_for_real_model_asset() -> None:
-    source = HOME.read_text(encoding="utf-8")
-
-    assert "{spotlightModelUrl ? (" in source
-    assert "{spotlightModelUrl || spotlightIsProductTruth ? (" not in source
-    assert "spotlightIsProductTruth ? (" in source
-    assert 'mode="cutout"' in source
+def test_homepage_photo_entry_does_not_instantiate_a_bottle_model() -> None:
+    home = HOME.read_text(encoding="utf-8")
+    intro = Path("examples/retail/storefront-web/components/DiscoveryIntro.tsx").read_text(
+        encoding="utf-8"
+    )
+    assert "<DiscoveryIntro />" in home
+    assert "FragranceModel3D" not in home + intro
+    assert "model-viewer" not in intro
+    assert "isVerifiedProductTruthVisual(visual)" in intro
+    assert 'mode="cutout"' in intro
