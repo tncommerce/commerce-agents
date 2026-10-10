@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import vm from "node:vm";
 import ts from "typescript";
+import { webcrypto } from "node:crypto";
 
 const code = ts.transpileModule(fs.readFileSync(new URL("../lib/analytics.ts", import.meta.url), "utf8"), {
   compilerOptions: { module: ts.ModuleKind.CommonJS },
@@ -25,7 +26,7 @@ function client(initialize, post = async () => ({ ok: true }), browserWindow) {
   };
   const module = { exports: {} };
   vm.runInNewContext(code, {
-    module, exports: module.exports, AbortController, URL, URLSearchParams,
+    module, exports: module.exports, AbortController, URL, URLSearchParams, crypto: webcrypto,
     ...(browserWindow ? { window: browserWindow } : {}),
     require: (name) => {
       assert.equal(name, "./api");
@@ -109,6 +110,8 @@ for (const retryOk of [true, false]) {
   assert.equal(env.requests[0].init.headers["X-Session-Id"], "analytics-1");
   assert.equal(env.requests[1].init.headers["X-Session-Id"], "analytics-2");
   assert.equal(env.requests[1].payload.campaign_id, "session_qa");
+  assert.match(env.requests[0].payload.event_id, /^[a-f0-9-]{36}$/);
+  assert.equal(env.requests[0].payload.event_id, env.requests[1].payload.event_id);
   assert.equal(env.api.session, "analytics-2");
   assert.equal(env.timers.size, 0);
 }

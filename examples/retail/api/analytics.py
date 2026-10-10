@@ -7,7 +7,7 @@ import re
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Literal
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 import httpx
 from pydantic import BaseModel, Field
@@ -77,6 +77,7 @@ def sanitize_catalog_search_term(value: str | None) -> str | None:
 
 class AnalyticsEventRequest(BaseModel):
     event: AnalyticsEventName
+    event_id: UUID | None = None
     internal_qa: bool = False
     product_id: str | None = Field(
         default=None,
@@ -251,7 +252,7 @@ class FirstPartyAnalyticsTracker:
             try:
                 async with httpx.AsyncClient(timeout=5.0) as client:
                     response = await client.post(
-                        f"{self.supabase_url}/rest/v1/{self.TABLE}",
+                        f"{self.supabase_url}/rest/v1/{self.TABLE}?on_conflict=event_id",
                         headers={
                             "apikey": self.supabase_service_role_key,
                             **(
@@ -262,7 +263,7 @@ class FirstPartyAnalyticsTracker:
                                 else {}
                             ),
                             "Content-Type": "application/json",
-                            "Prefer": "return=minimal",
+                            "Prefer": "return=minimal,resolution=ignore-duplicates",
                         },
                         json=row,
                     )

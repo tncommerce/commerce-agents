@@ -280,6 +280,8 @@ async function sendAnalyticsEvent(
   const attribution = storedAcquisitionAttribution();
 
   const payload = {
+    // Generate once per action, outside the bounded transport retry.
+    event_id: globalThis.crypto?.randomUUID?.(),
     event,
     internal_qa: isInternalQa(),
     product_id: context.product_id,

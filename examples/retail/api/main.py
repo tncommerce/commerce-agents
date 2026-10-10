@@ -190,8 +190,18 @@ async def analytics_event(
     request: AnalyticsEventRequest,
     record: host.CurrentSession,
 ) -> dict:
+    # Scope the client retry key to its stable funnel identity. A renewed API
+    # transport session must not turn a lost response into a second event.
+    from uuid import NAMESPACE_URL, uuid5
+
+    session_id = request.analytics_session_id or record.session_id
     event_id, storage = await analytics_tracker.record(
-        session_id=request.analytics_session_id or record.session_id,
+        session_id=session_id,
+        event_id=(
+            str(uuid5(NAMESPACE_URL, f"dufynd-analytics:{session_id}:{request.event_id}"))
+            if request.event_id
+            else None
+        ),
         event=request.event,
         internal_qa=request.internal_qa,
         product_id=request.product_id,
