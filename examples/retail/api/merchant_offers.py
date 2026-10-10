@@ -102,6 +102,11 @@ def offer_clickout_target(
         names = ("clickref", "clickref2", "clickref3", "clickref4", "clickref5", "clickref6")
         refs = dict(zip(names, values, strict=True))
         if hostname in {"awin1.com", "www.awin1.com"} and any(refs.values()):
+            if click_id:
+                # Join network clickRef4 to the durable analytics event_id, as
+                # with CJ SID. A browser session can contain multiple clicks.
+                # Calls without a click ID retain the legacy reference format.
+                refs["clickref4"] = UUID(click_id).hex
             query = [
                 (key, value)
                 for key, value in parse_qsl(parsed.query, keep_blank_values=True)

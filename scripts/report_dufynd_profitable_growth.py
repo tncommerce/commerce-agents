@@ -15,7 +15,8 @@ import httpx
 
 ORIGIN = "https://bqsdxaagklpkxioaqdqa.supabase.co"
 COLUMNS = (
-    "event_id,occurred_at,session_key,event,product_id,acquisition_source,campaign_id,content_id"
+    "event_id,occurred_at,session_key,event,product_id,acquisition_source,campaign_id,content_id,"
+    "traffic_class,source,surface"
 )
 PRODUCT_EVENTS = {"product_open", "fragrance_detail_view", "advisor_product_open"}
 PLATFORMS = {"tiktok", "instagram", "youtube"}
@@ -35,7 +36,23 @@ def timestamp(v: object) -> datetime | None:
 
 
 def is_test(v: object) -> bool:
-    return isinstance(v, str) and v.lower().startswith(("qa_", "qa-", "test_", "test-"))
+    return isinstance(v, str) and bool(
+        re.search(r"(^|[._:\-])(qa|test|smoke|preview)([._:\-]|$)", v, re.I)
+    )
+
+
+def marked_qa(row: dict) -> bool:
+    return row.get("traffic_class") == "internal_qa" or any(
+        is_test(row.get(key))
+        for key in (
+            "session_key",
+            "source",
+            "surface",
+            "acquisition_source",
+            "campaign_id",
+            "content_id",
+        )
+    )
 
 
 def build_report(
@@ -59,7 +76,10 @@ def build_report(
     seen = set()
     counts = Counter()
     groups: dict[tuple, list[dict]] = defaultdict(list)
-    untagged = qa = invalid = duplicate = 0
+    untagged = qa = unclassified = invalid = duplicate = 0
+    # Defense for offline extracts; the live view also excludes QA markers
+    # anywhere in a session, including rows outside this reporting window.
+    qa_sessions = {r.get("session_key") for r in events if marked_qa(r)}
     landing_sessions = set()
     for row in events:
         at = timestamp(row.get("occurred_at"))
@@ -77,8 +97,11 @@ def build_report(
         content = identifier(row.get("content_id"))
         campaign = identifier(row.get("campaign_id"))
         platform = identifier(row.get("acquisition_source"))
-        if is_test(content) or is_test(campaign):
+        if marked_qa(row) or session in qa_sessions:
             qa += 1
+            continue
+        if row.get("traffic_class") != "visitor":
+            unclassified += 1
             continue
         event = row.get("event")
         if event not in PRODUCT_EVENTS | {"page_view", "merchant_clickout"}:
@@ -161,13 +184,15 @@ def build_report(
             }
         )
     return {
-        "version": 1,
+        "version": 2,
         "read_only": True,
         "window": {"start": start.isoformat(), "end_exclusive": end.isoformat()},
         "coverage": {
             "event_extract_complete": complete,
             "ingestion_completeness": "UNKNOWN",
-            "test_prefixes_excluded": ["qa_", "qa-", "test_", "test-"],
+            "source_view": "dufynd_visitor_analytics",
+            "traffic_provenance": "explicit_visitor_only_excludes_qa_sessions_and_unclassified",
+            "offline_session_coverage": "limited_to_supplied_rows",
             "bot_owner_and_unmarked_qa_exclusion": "NOT_ESTABLISHED",
             "qualification": "tagged_social_landing_then_product_interest_same_session_and_cohort",
             "minimum_sample": minimum_sample,
@@ -181,6 +206,7 @@ def build_report(
             "events_by_type": dict(counts),
             "unattributed_funnel_events": untagged,
             "test_events_excluded": qa,
+            "unclassified_events_excluded": unclassified,
             "invalid_events_skipped": invalid,
             "duplicate_events_skipped": duplicate,
         },
@@ -202,7 +228,7 @@ def fetch_events(
         while len(rows) < max_events:
             limit = min(1000, max_events - len(rows))
             r = client.get(
-                ORIGIN + "/rest/v1/scentai_analytics_events",
+                ORIGIN + "/rest/v1/dufynd_visitor_analytics",
                 headers=headers,
                 params={
                     "select": COLUMNS,

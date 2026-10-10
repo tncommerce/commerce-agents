@@ -17,6 +17,41 @@ from retail.api.mock_retail import MockRetail
 NOW = datetime(2026, 9, 15, 12, 0, tzinfo=UTC)
 
 
+def test_awin_clicks_from_same_session_have_distinct_join_keys():
+    candidate = MerchantOffer(
+        offer_id="perfumetrader-test",
+        product_id="SC-TEST-100",
+        merchant_id="perfumetrader",
+        merchant_name="Perfumetrader",
+        price=71.9,
+        shipping_cost=4.99,
+        in_stock=True,
+        product_url="https://www.perfumetrader.de/exact-100ml",
+        affiliate_url="https://www.awin1.com/cread.php?awinmid=11672&awinaffid=3099222&clickref4=old&ued=https%3A%2F%2Fwww.perfumetrader.de%2Fexact-100ml",
+        network="Awin",
+        last_updated_at=NOW,
+    )
+    keys = []
+    for click_id in (
+        "12345678-1234-4234-8234-123456789abc",
+        "12345678-1234-4234-8234-123456789def",
+    ):
+        url = offer_clickout_target(
+            candidate,
+            clickrefs=["qa_internal", "campaign", "youtube", "same-session"],
+            click_id=click_id,
+        )
+        query = parse_qs(urlparse(url).query)
+        assert query["clickref4"] == [click_id.replace("-", "")]
+        assert query["clickref"] == ["qa_internal"]
+        assert query["ued"] == [candidate.product_url]
+        assert query["awinmid"] == ["11672"]
+        assert query["awinaffid"] == ["3099222"]
+        assert "same-session" not in url
+        keys.append(query["clickref4"][0])
+    assert len(set(keys)) == 2
+
+
 def offer(
     offer_id: str,
     *,
