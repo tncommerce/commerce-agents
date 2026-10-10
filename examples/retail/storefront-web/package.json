@@ -6,14 +6,15 @@
     "dev": "next dev -p 3000",
     "build": "next build",
     "start": "next start -p 3000",
-    "prebuild": "npm run test:fragrance-search && npm run test:model-viewer && npm run test:catalog-request && npm run test:analytics-session-ownership && node scripts/generate-launch-seo.mjs",
+    "prebuild": "npm run test:acquisition-entry && npm run test:fragrance-search && npm run test:model-viewer && npm run test:catalog-request && npm run test:analytics-session-ownership && node scripts/generate-launch-seo.mjs",
     "launch:check": "node scripts/check-launch-readiness.mjs",
     "launch:check:strict": "node scripts/check-launch-readiness.mjs --strict",
     "seo:generate": "node scripts/generate-launch-seo.mjs",
     "test:model-viewer": "node scripts/test-model-viewer-loader.mjs",
     "test:catalog-request": "node scripts/test-catalog-request.mjs",
     "test:analytics-session-ownership": "node scripts/test-analytics-session-ownership.mjs",
-    "test:fragrance-search": "node scripts/test-fragrance-search-identity.mjs"
+    "test:fragrance-search": "node scripts/test-fragrance-search-identity.mjs",
+    "test:acquisition-entry": "node scripts/test-acquisition-entry.mjs"
   },
   "dependencies": {
     "next": "16.3.6",

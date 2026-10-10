@@ -8,6 +8,9 @@ const code = ts.transpileModule(fs.readFileSync(new URL("../lib/analytics.ts", i
   compilerOptions: { module: ts.ModuleKind.CommonJS },
 }).outputText;
 
+const entryModule = {exports: {}};
+vm.runInNewContext(ts.transpileModule(fs.readFileSync(new URL("../lib/acquisitionEntry.ts", import.meta.url), "utf8"), {compilerOptions: {module: ts.ModuleKind.CommonJS}}).outputText, {module: entryModule, exports: entryModule.exports, URL, URLSearchParams});
+
 function deferred() {
   let resolve;
   const promise = new Promise((done) => { resolve = done; });
@@ -29,6 +32,7 @@ function client(initialize, post = async () => ({ ok: true }), browserWindow) {
     module, exports: module.exports, AbortController, URL, URLSearchParams, crypto: webcrypto,
     ...(browserWindow ? { window: browserWindow } : {}),
     require: (name) => {
+      if (name === "./acquisitionEntry") return entryModule.exports;
       assert.equal(name, "./api");
       return { api, initializeAnalyticsSession: () => initialize(++initializations) };
     },

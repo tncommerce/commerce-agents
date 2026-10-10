@@ -46,7 +46,7 @@ export async function verifyFooterNavigationAttribution(browser, baseUrl) {
     }
   }
   for(const width of [390,1440]) {
-    for(const query of ['src=unknown&cmp=untrusted','src=newsletter&cmp=%3Cunsafe%3E']) {
+    for(const query of ['src=unsupported&cmp=untrusted','src=newsletter&cmp=%3Cunsafe%3E']) {
       const context=await browser.newContext({viewport:{width,height:900}}),page=await context.newPage();
       try {
         await page.route('**/api/session',r=>r.fulfill({json:{session_id:'qa-footer-invalid',name:'QA'}}));
@@ -57,7 +57,7 @@ export async function verifyFooterNavigationAttribution(browser, baseUrl) {
         await page.waitForURL(u=>u.pathname==='/duftfinder');
         const url=new URL(page.url());
         assert.equal(url.searchParams.get('cmp'),null,'untrusted campaign must not propagate');
-        assert.equal(url.searchParams.get('src'),query.startsWith('src=unknown')?'organic':'newsletter');
+        assert.equal(url.searchParams.get('src'),query.startsWith('src=unsupported')?'unknown':'newsletter');
         cases++;
       } finally {await context.close()}
     }
