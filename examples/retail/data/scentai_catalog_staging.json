@@ -2198,6 +2198,42 @@
         "evidence_urls": [
           "https://www.notino.de/calvin-klein/euphoria-eau-de-parfum-fur-damen/"
         ]
+      },
+      "discovery": {
+        "status": "facts_qualified_publication_hold",
+        "identity": {
+          "kind": "gtin",
+          "value": "0088300162505",
+          "source_url": "https://www.news-parfums.com/en/calvin-klein/390-calvin-klein-euphoria-eau-de-parfum-0088300162512.html",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "pomegranate"
+          ],
+          "heart": [
+            "lotus",
+            "orchid"
+          ],
+          "base": [
+            "violet",
+            "amber",
+            "mahogany",
+            "musk"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.notino.de/calvin-klein/euphoria-eau-de-parfum-fur-damen/",
+          "kind": "retailer_product_facts"
+        },
+        "summary_de": "Granatapfel im Auftakt, Lotos und Orchidee im Herzen; die Basis umfasst Veilchen, Amber, Mahagoni und Moschus.",
+        "checked_at": "2026-10-10",
+        "community_data_included": false,
+        "publication_authorized": false,
+        "remaining_gates": [
+          "approved_original_image",
+          "public_release_review"
+        ]
       }
     },
     {
@@ -2275,6 +2311,37 @@
         "evidence_urls": [
           "https://www.douglas.de/de/p/3001044085"
         ]
+      },
+      "discovery": {
+        "status": "facts_qualified_publication_hold",
+        "identity": {
+          "kind": "gtin",
+          "value": "8411061026342",
+          "source_url": "https://www.perfumetrader.de/de/carolina-herrera-good-girl-eau-de-parfum-80-ml",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "jasmine",
+            "tuberose",
+            "almond",
+            "tonka bean",
+            "coffee",
+            "cocoa"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.carolinaherrera.com/ww/en/p-fragrance/good-girl-eau-de-parfum?sku=000000000065176159",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Jasmin und Tuberose verbinden sich mit Tonkabohne und Kakao. Mandel und Kaffee ergänzen das Profil.",
+        "checked_at": "2026-10-10",
+        "community_data_included": false,
+        "publication_authorized": false,
+        "remaining_gates": [
+          "approved_original_image",
+          "public_release_review"
+        ]
       }
     },
     {
@@ -2350,6 +2417,40 @@
         "research_state": "official_profile_verified_merchant_evidence_added",
         "evidence_urls": [
           "https://www.douglas.de/de/p/1000722295"
+        ]
+      },
+      "discovery": {
+        "status": "facts_qualified_publication_hold",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "116520",
+          "source_url": "https://www.chanel.com/de/parfum/p/116520/coco-mademoiselle-eau-de-parfum-zerstaeuber/",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "orange"
+          ],
+          "heart": [
+            "jasmine",
+            "rose"
+          ],
+          "base": [
+            "patchouli",
+            "vetiver"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.chanel.com/de/parfum/p/116520/coco-mademoiselle-eau-de-parfum-zerstaeuber/",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Orange eröffnet die Komposition; Jasmin und Rose führen zu Patschuli und Vetiver.",
+        "checked_at": "2026-10-10",
+        "community_data_included": false,
+        "publication_authorized": false,
+        "remaining_gates": [
+          "approved_original_image",
+          "public_release_review"
         ]
       }
     },
@@ -2505,6 +2606,35 @@
         "research_state": "official_profile_verified_merchant_evidence_added",
         "evidence_urls": [
           "https://www.douglas.de/de/p/3001047078"
+        ]
+      },
+      "discovery": {
+        "status": "facts_qualified_publication_hold",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "3614272050358",
+          "source_url": "https://www.yslbeauty.de/dufte/dufte-fur-ihn/y/y-eau-de-parfum/3614272050358.html",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "sage essence",
+            "geranium absolute",
+            "woody accord",
+            "tonka bean"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.yslbeauty.de/dufte/dufte-fur-ihn/y/y-eau-de-parfum/3614272050358.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Salbei und Geranium treffen auf einen Holzakkord und Tonkabohne.",
+        "checked_at": "2026-10-10",
+        "community_data_included": false,
+        "publication_authorized": false,
+        "remaining_gates": [
+          "approved_original_image",
+          "public_release_review"
         ]
       }
     },
@@ -2902,6 +3032,48 @@
         "evidence_urls": [
           "https://www.versace.com/de/de/herren/accessoires/dufte/eros/eros-edp-100-ml/R740110-R100MLS_RNUL.html",
           "https://www.douglas.de/de/b/versace/eros/b012993"
+        ]
+      },
+      "discovery": {
+        "status": "facts_qualified_publication_hold",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "R740110-R100MLS",
+          "source_url": "https://www.versace.com/gb/en/eros-edp-100-ml/R740110-R100MLS.html",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "Italian lemon",
+            "mandarin",
+            "mint oil",
+            "candied apple"
+          ],
+          "heart": [
+            "geranium",
+            "clary sage",
+            "AmberMax"
+          ],
+          "base": [
+            "Atlas cedar",
+            "Virginia cedar",
+            "vetiver",
+            "patchouli",
+            "sandalwood",
+            "vanilla"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.versace.com/gb/en/eros-edp-100-ml/R740110-R100MLS.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Zitrus, Minze und kandierter Apfel eröffnen den Duft. Geranium und Salbei treffen auf eine holzige Basis mit Vanille.",
+        "checked_at": "2026-10-10",
+        "community_data_included": false,
+        "publication_authorized": false,
+        "remaining_gates": [
+          "approved_original_image",
+          "public_release_review"
         ]
       }
     },
