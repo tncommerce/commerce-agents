@@ -2,6 +2,12 @@
 
 import { FormEvent, useMemo, useRef, useState } from "react";
 
+import {
+  fragranceSearchIdentity,
+  matchesRequestedVariant,
+  normalizeFragranceSearch as normalize,
+} from "@/lib/fragranceSearchIdentity";
+
 import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
 import {
   appendAcquisitionAttribution,
@@ -14,18 +20,9 @@ type SearchableFragrance = {
   slug: string;
   brand: string;
   name: string;
+  concentration: string;
+  volume_ml: number;
 };
-
-function normalize(value: string): string {
-  return value
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLocaleLowerCase("de-DE")
-    .replace(/ß/g, "ss")
-    .replace(/[^a-z0-9]+/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
 
 export default function SocialFragranceSearch({
   fragrances,
@@ -42,20 +39,19 @@ export default function SocialFragranceSearch({
 
     return fragrances
       .filter((fragrance) =>
-        normalize(`${fragrance.brand} ${fragrance.name}`).includes(
-          normalizedQuery,
-        ),
+        matchesRequestedVariant(fragrance, query) &&
+        normalizedQuery.split(" ").every((token) => fragranceSearchIdentity(fragrance).includes(token)),
       )
       .slice(0, 5);
-  }, [fragrances, normalizedQuery]);
+  }, [fragrances, normalizedQuery, query]);
 
   function recordSearch() {
-    void trackCatalogSearch(query, matches.length);
+    return trackCatalogSearch(query, matches.length);
   }
 
   function openFragrance(fragrance: SearchableFragrance, position: number) {
     recordSearch();
-    void trackAnalyticsEvent("product_open", {
+    return trackAnalyticsEvent("product_open", {
       product_id: fragrance.product_id,
       source: "social_start_direct_search",
       surface: "social_start_search",
@@ -63,18 +59,37 @@ export default function SocialFragranceSearch({
     });
   }
 
+  const navigatingRef = useRef(false);
+
+  async function navigate(href: string, tracking: Promise<void>) {
+    if (navigatingRef.current) return;
+    navigatingRef.current = true;
+    let timeout: ReturnType<typeof setTimeout> | undefined;
+    try {
+      // A static-host document navigation otherwise discards queued events.
+      // Analytics outages must never trap the visitor on the search page.
+      await Promise.race([
+        tracking.catch(() => {}),
+        new Promise<void>((resolve) => { timeout = setTimeout(resolve, 500); }),
+      ]);
+    } finally {
+      clearTimeout(timeout);
+      navigatingRef.current = false;
+      window.location.assign(href);
+    }
+  }
+
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!matches[0]) {
-      recordSearch();
+      const tracking = recordSearch();
       const target = new URL(appendAcquisitionAttribution("/duft"), window.location.origin);
       target.searchParams.set("q", query);
-      window.location.assign(target.toString());
+      void navigate(target.toString(), tracking);
       return;
     }
 
-    openFragrance(matches[0], 1);
-    window.location.assign(appendAcquisitionAttribution(`/duft/${matches[0].slug}`));
+    void navigate(appendAcquisitionAttribution(`/duft/${matches[0].slug}`), openFragrance(matches[0], 1));
   }
 
   return (
@@ -135,7 +150,13 @@ export default function SocialFragranceSearch({
               <AcquisitionInternalLink
                 key={fragrance.product_id}
                 href={`/duft/${fragrance.slug}`}
-                onClick={() => openFragrance(fragrance, index + 1)}
+                onClick={(event) => {
+                  const tracking = openFragrance(fragrance, index + 1);
+                  if (event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+                    event.preventDefault();
+                    void navigate(appendAcquisitionAttribution(`/duft/${fragrance.slug}`), tracking);
+                  }
+                }}
                 className="flex items-center justify-between gap-3 rounded-xl px-3 py-2.5 transition hover:bg-(--well)"
               >
                 <span className="min-w-0">
@@ -145,6 +166,9 @@ export default function SocialFragranceSearch({
                   <strong className="mt-0.5 block truncate text-[12px] font-semibold text-(--ink)">
                     {fragrance.name}
                   </strong>
+                  <span className="block text-[10px] text-(--ink-soft)">
+                    {fragrance.concentration} · {fragrance.volume_ml} ml
+                  </span>
                 </span>
                 <span
                   aria-hidden
