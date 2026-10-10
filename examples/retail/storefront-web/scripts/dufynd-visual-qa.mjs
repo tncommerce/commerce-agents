@@ -1179,10 +1179,11 @@ try {
             throw new Error("Social start must expose all four direct variant links without a search");
           }
           for (const [href, concentration, volume] of expectedDirectVariants) {
-            const link = directVariants.locator(`a[href^="${href}"]`);
+            const link = directVariants.locator(`a[href*="${href}"]`);
             const text = await link.innerText();
             const bounds = await link.boundingBox();
-            if (!text.includes(concentration) || !text.includes(volume) || !bounds || bounds.height < 44) {
+            const destination = new URL(await link.getAttribute("href"), baseUrl);
+            if (destination.pathname !== href || !text.includes(concentration) || !text.includes(volume) || !bounds || bounds.height < 44) {
               throw new Error(`Direct variant link lacks exact identity or mobile tap area: ${href}`);
             }
           }

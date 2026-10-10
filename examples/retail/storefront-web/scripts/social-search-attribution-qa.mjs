@@ -30,9 +30,9 @@ export async function verifySocialSearchAttribution(browser, baseUrl) {
           assert.ok(events.some((event) => event.event === "page_view"), "wait for landing attribution initialization");
           const input = page.getByRole("searchbox", { name: "Duft oder Marke suchen", exact: true });
           const query = action === "catalog" ? "zzzz-test & parfum" : "Naxos";
-          await input.fill(query);
+          if (action !== "direct") await input.fill(query);
           if (action === "direct") {
-            const link = page.getByRole("navigation", { name: "Direkt zu diesen Duftvarianten" }).locator('a[href^="/duft/rabanne-1-million"]');
+            const link = page.getByRole("navigation", { name: "Direkt zu diesen Duftvarianten" }).locator('a[href*="/duft/rabanne-1-million"]');
             await page.waitForFunction(() => document.querySelector('nav[aria-label="Direkt zu diesen Duftvarianten"] a')?.href.includes("cmp=carousel_qa"));
             await link.click();
           } else if (action === "click") {
