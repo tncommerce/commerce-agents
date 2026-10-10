@@ -131,7 +131,7 @@ def consume(
             results.append(run_execution(bridge, execution, sleep=sleep, monotonic=monotonic))
         except Exception as error:
             # Secrets/provider output never enter the durable error string.
-            bridge._rpc(
+            recorded = bridge._rpc(
                 "fail_dufynd_execution",
                 {
                     "p_execution_id": execution["execution_id"],
@@ -140,7 +140,19 @@ def consume(
                     "p_error": type(error).__name__,
                 },
             )
-            raise
+            if recorded is not True:
+                # Lost fencing or unknown finalization remains fail-closed.
+                raise
+            results.append(
+                {
+                    "execution_id": execution["execution_id"],
+                    "status": "deferred_recovery",
+                    "error_type": type(error).__name__,
+                    "real_provider_calls": 0,
+                }
+            )
+            # The failed execution is durably stale; the supervisor owns its
+            # recovery. Continue only to another independently claimed task.
     return results
 
 
@@ -175,18 +187,15 @@ def main() -> int:
     ):
         raise RuntimeError("durable worker must run in the authorized scentai-mvp Actions runner")
     worker = f"github_actions:{os.environ['GITHUB_RUN_ID']}:{os.getenv('GITHUB_JOB')}:{os.getenv('GITHUB_RUN_ATTEMPT')}"
-    print(
-        json.dumps(
-            consume(
-                bridge,
-                external_run_id=os.environ["GITHUB_RUN_ID"],
-                worker_id=worker,
-                execution_id=args.execution_id,
-                wait_seconds=args.wait_seconds,
-            )
-        )
+    results = consume(
+        bridge,
+        external_run_id=os.environ["GITHUB_RUN_ID"],
+        worker_id=worker,
+        execution_id=args.execution_id,
+        wait_seconds=args.wait_seconds,
     )
-    return 0
+    print(json.dumps(results))
+    return 1 if any(row["status"] != "completed" for row in results) else 0
 
 
 if __name__ == "__main__":

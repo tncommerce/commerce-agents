@@ -51,7 +51,13 @@ export async function verifyAnalyticsEventTimeout(browser, baseUrl) {
       assert.equal(sessions, advisor ? 1 : 2,
         "only an analytics-owned session may be renewed by the existing retry policy");
       assert.equal(posts.filter((post) => post.payload.event === "page_view").length, advisor ? 1 : 2);
+      const pageViews = posts.filter((post) => post.payload.event === "page_view");
+      assert.match(pageViews[0].payload.event_id, /^[a-f0-9-]{36}$/);
+      assert.equal(new Set(pageViews.map((post) => post.payload.event_id)).size, 1,
+        "lost-response retry must retain the original idempotency key");
       const queued = posts.find((post) => post.payload.event === queuedEvent);
+      assert.notEqual(queued.payload.event_id, pageViews[0].payload.event_id,
+        "a distinct user action must receive its own key");
       assert.equal(queued.session, `qa-event-${advisor ? "advisor-1" : "analytics-2"}`);
       assert.equal(queued.payload.acquisition_source, "tiktok");
       assert.equal(queued.payload.campaign_id, "event_qa");

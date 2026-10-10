@@ -64,7 +64,7 @@ class Store:
             self.taken = True
             return self.execution.copy()
         if name == "fail_dufynd_execution":
-            return True
+            return self.execution["status"] in {"dispatched", "running"}
         assert (
             p["p_execution_id"] == "eid"
             and p["p_token"] == "fence"
@@ -120,6 +120,45 @@ def test_duplicate_dispatch_is_not_consumed_twice():
     }
     assert len(consume(store, **kwargs)) == 1
     assert consume(store, **kwargs) == []
+
+
+@pytest.mark.parametrize("failure_saved", [True, False])
+def test_failed_task_does_not_starve_independent_claim_after_durable_ack(
+    monkeypatch, failure_saved
+):
+    from scripts import dufynd_durable_execution as worker
+
+    calls = []
+    queued = iter(
+        [
+            {"execution_id": "first", "lease_token": "one", "worker_id": "worker"},
+            {"execution_id": "second", "lease_token": "two", "worker_id": "worker"},
+        ]
+    )
+
+    class Queue:
+        def _rpc(self, name, params):
+            calls.append((name, params))
+            if name == "take_dufynd_execution":
+                return next(queued, None)
+            assert name == "fail_dufynd_execution"
+            return failure_saved
+
+    def execute(bridge, execution, **kwargs):
+        if execution["execution_id"] == "first":
+            raise TimeoutError("sensitive provider detail must not be stored")
+        return {"execution_id": "second", "status": "completed"}
+
+    monkeypatch.setattr(worker, "run_execution", execute)
+    if failure_saved:
+        results = consume(Queue(), external_run_id="123", worker_id="worker")
+        assert [r["status"] for r in results] == ["deferred_recovery", "completed"]
+        assert results[0]["error_type"] == "TimeoutError"
+    else:
+        with pytest.raises(TimeoutError):
+            consume(Queue(), external_run_id="123", worker_id="worker")
+        assert sum(name == "take_dufynd_execution" for name, _ in calls) == 1
+    assert calls[1][1]["p_error"] == "TimeoutError"
 
 
 def test_stale_fence_prevents_progress_and_finalization():
