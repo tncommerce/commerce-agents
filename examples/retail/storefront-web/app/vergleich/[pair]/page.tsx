@@ -11,7 +11,7 @@ import FragranceVisual from "@/components/FragranceVisual";
 import {
   EXPLICIT_COMPARISON_PAIRS,
   getComparisonPair,
-  isVerifiedProductTruthVisual,
+  originalPhotoFor,
   visualWorldFor,
   type ExplicitComparisonPair,
   type StaticFragrance,
@@ -76,13 +76,11 @@ function ProductHeader({
   fragrance: StaticFragrance;
   side: "left" | "right";
 }) {
-  const productTruthVisual = fragrance.preferred_visual;
-  const productTruthIsVerified =
-    isVerifiedProductTruthVisual(productTruthVisual);
-  const presentationVisual =
-    fragrance.presentation_visual || productTruthVisual;
-  const presentationIsProductTruth =
-    isVerifiedProductTruthVisual(presentationVisual);
+  // Product headers share the approved-original-only policy of the catalog.
+  const productTruthVisual = originalPhotoFor(fragrance);
+  const productTruthIsVerified = Boolean(productTruthVisual);
+  const presentationVisual = productTruthVisual;
+  const presentationIsProductTruth = Boolean(presentationVisual);
 
   return (
     <div
@@ -126,11 +124,7 @@ function ProductHeader({
             }
             alt={`${fragrance.brand} ${fragrance.name}`}
             variant="card"
-            mode={
-              presentationIsProductTruth
-                ? "cutout"
-                : "editorial"
-            }
+            mode="cutout"
             world={visualWorldFor(fragrance)}
             className="dufynd-comparison-product-visual h-56 w-full"
           />
