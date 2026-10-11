@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 export async function verifySocialCatalogNavigation(browser, baseUrl) {
   for (const width of [390, 1440]) {
     for (const denied of [false, true]) {
-      for (const surface of ["grid", "spotlight"]) {
+      for (const surface of ["grid", "brand"]) {
         const context = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: "reduce" });
         const page = await context.newPage();
         const events = [];
@@ -41,12 +41,21 @@ export async function verifySocialCatalogNavigation(browser, baseUrl) {
             const comparisonUrl = new URL(await compare.getAttribute("href"), baseUrl);
             assert.equal(comparisonUrl.searchParams.get("cmp"), "nav_qa", "comparison link must preserve attribution");
             await page.getByRole("searchbox").fill("Naxos");
+          } else {
+            await page.locator(".dufynd-brand-directory summary").click();
+            const brand = page.getByRole("navigation", { name: "Marken A–Z" }).getByRole("button", { name: /^Yves Saint Laurent/ });
+            await brand.click();
+            await page.waitForURL((url) => url.searchParams.get("marke") === "Yves Saint Laurent");
+            assert.equal(await brand.getAttribute("aria-pressed"), "true");
+            const names = await page.locator("article.dufynd-catalog-card").allTextContents();
+            assert.ok(names.length > 0 && names.every((text) => text.includes("Yves Saint Laurent")), "A–Z must filter actual products");
+            assert.equal(new URL(page.url()).searchParams.get("cmp"), "nav_qa", "brand selection must retain attribution");
           }
-          const product = page.locator(surface === "grid" ? "article.dufynd-catalog-card a" : ".dufynd-catalog-discovery-bottle").first();
+          const product = page.locator("article.dufynd-catalog-card a").first();
           await page.waitForFunction((selector) => {
             const link = document.querySelector(selector);
             return link && new URL(link.href).searchParams.get("cmp") === "nav_qa";
-          }, surface === "grid" ? "article.dufynd-catalog-card a" : ".dufynd-catalog-discovery-bottle");
+          }, "article.dufynd-catalog-card a");
           const destination = new URL(await product.getAttribute("href"), baseUrl);
           await product.click();
           await page.waitForURL((url) => url.pathname === destination.pathname);

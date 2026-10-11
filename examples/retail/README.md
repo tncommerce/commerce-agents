@@ -81,3 +81,24 @@ Product photos in `storefront-web/public/products/` are CC0 category images list
 
 Sessions and identity are the shared host code in [`../demo_common/`](../demo_common/): a
 session id stands for a demo profile or the one merchant.
+
+## DUFYND discovery surfaces
+
+`storefront-web/components/DiscoveryIntro.tsx` shares the catalogue and home entry,
+using only the existing approved original-photo selections. Catalogue card styling
+and mobile product identity use `app/premium-discovery.css`. No source image pixels
+are modified by the presentation layer.
+
+`FragranceNoteSculpture` presents documented note groups with an always-available
+static view. The original `noteSculptureRenderer` loads only after explicit activation,
+draws WebGL geometry on demand and releases its resources on exit. Reduced motion,
+low hardware hints, data saving and unavailable WebGL keep the static view. The
+geometry is abstract: it does not represent a bottle, molecule or ingredient quantity.
+`note-sculpture-qa.mjs` covers note selection, fallback, rotation, no idle loop and
+reduced-motion changes inside the existing visual QA job.
+
+`data/dufynd_discovery_qualification.json` stores independently sourced manufacturer
+or retailer product facts for existing staging rows. `build_scentai_catalog_staging`
+validates exact variants and attaches a separate discovery projection without changing
+commerce, image or publication gates. `tests/test_dufynd_discovery_qualification.py`
+checks variant rejection, atomicity and gate preservation.

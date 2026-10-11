@@ -23,7 +23,10 @@ def test_discovery_surfaces_use_presentation_visual() -> None:
     assert 'composition === "product_scene"' in catalog_lib
     assert "fragrance?.presentation_visual" in product_tile
     assert "fragrance.presentation_visual" in catalog_browser
-    assert "fragrance.presentation_visual" in discovery_page
+    assert "<DiscoveryIntro catalog />" in discovery_page
+    intro = _read("components/DiscoveryIntro.tsx")
+    assert "fragrance?.presentation_visual || fragrance?.preferred_visual" in intro
+    assert "isVerifiedProductTruthVisual(visual)" in intro
     assert "item.fragrance.presentation_visual" in detail_page
     assert "fragrance.presentation_visual" in acquisition
     assert "fragrance.presentation_visual" in library_hub
@@ -38,7 +41,10 @@ def test_detail_hero_uses_presentation_but_truth_features_stay_verified() -> Non
     assert "productTruthIsVerified && productTruthVisual?.url" in detail_page
     assert "? productTruthVisual.url.startsWith" in detail_page
     assert "${SITE_URL}${productTruthVisual.url}" in detail_page
-    assert "cutoutUrl={productTruthVisual.url}" in detail_page
+    assert "cutoutUrl={heroIsProductTruth ? heroVisual?.url : undefined}" in detail_page
+    notes = _read("components/FragranceExplodedNotes.tsx")
+    assert "FragranceVisual" not in notes
+    assert "data-dufynd-exploded-note" in notes
     assert "verifiedProductImage" in detail_page
 
 

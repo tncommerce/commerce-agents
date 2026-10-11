@@ -33,9 +33,15 @@ def test_discovery_surfaces_pass_shared_world_context() -> None:
     assert "visualWorldFor(fragrance)" in PRODUCT_TILE.read_text(encoding="utf-8")
     assert "visualWorldFor(fragrance)" in ACQUISITION.read_text(encoding="utf-8")
     assert "visualWorldFor(fragrance)" in LIBRARY.read_text(encoding="utf-8")
-    assert "visualWorldFor(fragrance)" in DUFT_PAGE.read_text(encoding="utf-8")
+    assert "<DiscoveryIntro catalog />" in DUFT_PAGE.read_text(encoding="utf-8")
+    intro = Path("examples/retail/storefront-web/components/DiscoveryIntro.tsx").read_text(
+        encoding="utf-8"
+    )
+    # The original-photo entry deliberately uses the neutral shared card surface.
+    assert 'variant="card"' in intro
+    assert "world=" not in intro
     assert "visualWorldFor(fragrance)" in CATALOG_BROWSER.read_text(encoding="utf-8")
-    assert "visualWorldFor(spotlightFragrance)" in HOME.read_text(encoding="utf-8")
+    assert "return fragrance ? visualWorldFor(fragrance)" in HOME.read_text(encoding="utf-8")
 
 
 def test_visual_standard_keeps_worlds_atmospheric_only() -> None:

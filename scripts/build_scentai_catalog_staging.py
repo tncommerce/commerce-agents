@@ -24,6 +24,74 @@ def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8-sig"))
 
 
+def attach_discovery_qualifications(products: list[dict], evidence: dict) -> None:
+    """Prepare factual discovery independently; never loosen a release gate."""
+    by_id = {row["product_id"]: row for row in products}
+    seen: set[str] = set()
+    prepared: list[tuple[dict, dict]] = []
+    for record in evidence.get("products", []):
+        product_id = record.get("product_id")
+        if product_id in seen or product_id not in by_id:
+            raise ValueError("discovery_duplicate_or_unknown_product")
+        seen.add(product_id)
+        row = by_id[product_id]
+        if any(
+            record.get(key) != row[key] for key in ("brand", "name", "concentration", "volume_ml")
+        ):
+            raise ValueError("discovery_variant_mismatch")
+        identity = record.get("identity", {})
+        if (
+            identity.get("verified") is not True
+            or identity.get("kind") not in {"gtin", "manufacturer_reference"}
+            or not identity.get("value")
+        ):
+            raise ValueError("discovery_identity_not_verified")
+        if identity["kind"] == "gtin":
+            gtin = str(identity["value"])
+            if not gtin.isascii() or not gtin.isdigit() or len(gtin) not in (8, 12, 13, 14):
+                raise ValueError("discovery_invalid_gtin")
+            checksum = sum(
+                int(n) * (3 if i % 2 == 0 else 1) for i, n in enumerate(reversed(gtin[:-1]))
+            )
+            if (checksum + int(gtin[-1])) % 10:
+                raise ValueError("discovery_invalid_gtin")
+        source = record.get("notes_source", {})
+        if not all(
+            str(url or "").startswith("https://")
+            for url in (identity.get("source_url"), source.get("url"))
+        ) or source.get("kind") not in {"manufacturer_product_facts", "retailer_product_facts"}:
+            raise ValueError("discovery_missing_fact_source")
+        if (
+            record.get("facts_only") is not True
+            or record.get("community_data_included") is not False
+            or record.get("publication_authorized") is not False
+            or record.get("image_rights_status") != "HOLD"
+            or not record.get("checked_at")
+            or not record.get("summary_de")
+            or not any(record.get("notes", {}).values())
+        ):
+            raise ValueError("discovery_scope_or_evidence_incomplete")
+        prepared.append(
+            (
+                row,
+                {
+                    "status": "facts_qualified_publication_hold",
+                    "identity": identity,
+                    "notes": record["notes"],
+                    "notes_source": source,
+                    "summary_de": record["summary_de"],
+                    "checked_at": record["checked_at"],
+                    "community_data_included": False,
+                    "publication_authorized": False,
+                    "remaining_gates": ["approved_original_image", "public_release_review"],
+                },
+            )
+        )
+    # Validation is atomic: a malformed record cannot partially qualify the wave.
+    for row, qualification in prepared:
+        row["discovery"] = qualification
+
+
 def reconcile_approved_image_gates(product: dict) -> None:
     """An evidenced image approval clears only its image blocker.
 
@@ -508,6 +576,10 @@ def build_staging_payload() -> dict:
 
     for product in products:
         reconcile_approved_image_gates(product)
+
+    attach_discovery_qualifications(
+        products, load_json(DATA_DIR / "dufynd_discovery_qualification.json")
+    )
 
     return payload
 

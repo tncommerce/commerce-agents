@@ -3,7 +3,6 @@
 
 "use client";
 
-import type { PointerEvent } from "react";
 
 import staticCatalog from "../../../data/catalog.json";
 
@@ -21,16 +20,13 @@ import {
   catalogAudienceFor,
   fragranceMatchesAudience,
   getLiveFragranceByProductId,
-  isVerifiedProductTruthVisual,
   visualWorldFor,
 } from "@/lib/fragranceCatalog";
 import type { Product } from "@/lib/types";
 import AcquisitionInternalLink from "../AcquisitionInternalLink";
-import FragranceVisual from "../FragranceVisual";
-import FragranceModel3D from "../FragranceModel3D";
+import DiscoveryIntro from "../DiscoveryIntro";
 import ProductTile, {
   ProductImage,
-  ProductRating,
   ProductRow,
 } from "../ProductTile";
 import LegalFooter from "../LegalFooter";
@@ -70,21 +66,6 @@ const STARTERS: Starter[] = [
     prompt: ADVISOR_STARTS.signature,
   },
 ];
-
-function updateHeroLight(event: PointerEvent<HTMLElement>) {
-  if (event.pointerType === "touch") return;
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const bounds = event.currentTarget.getBoundingClientRect();
-  const x = Math.min(1, Math.max(0, (event.clientX - bounds.left) / bounds.width));
-  const y = Math.min(1, Math.max(0, (event.clientY - bounds.top) / bounds.height));
-  event.currentTarget.style.setProperty("--dufynd-hero-x", `${(x * 100).toFixed(1)}%`);
-  event.currentTarget.style.setProperty("--dufynd-hero-y", `${(y * 100).toFixed(1)}%`);
-}
-
-function resetHeroLight(event: PointerEvent<HTMLElement>) {
-  event.currentTarget.style.setProperty("--dufynd-hero-x", "68%");
-  event.currentTarget.style.setProperty("--dufynd-hero-y", "34%");
-}
 
 /** Keep the homepage preview short and represent the available audiences. */
 function featured(catalog: Record<string, Product>): Product[] {
@@ -235,26 +216,6 @@ export default function HomeView({
   );
   const picks = featured(catalog);
   const audiencePreviews = audiencePreviewProducts(catalog);
-  const spotlight =
-    catalog["SC-XERJOFF-NAXOS-100"] || picks[0];
-  const spotlightFragrance = spotlight
-    ? getLiveFragranceByProductId(String(spotlight.product_id))
-    : null;
-  const spotlightVisual =
-    spotlightFragrance?.presentation_visual ||
-    spotlightFragrance?.preferred_visual;
-  const spotlightModelUrl = spotlightFragrance?.model_3d_url;
-  const spotlightBackdropUrl =
-    spotlightFragrance?.backdrop_visual?.url;
-  const spotlightIsProductTruth =
-    isVerifiedProductTruthVisual(spotlightVisual);
-  const spotlightName = spotlight
-    ? String(
-        spotlight.attributes?.canonical_name ||
-          spotlight.title ||
-          "Duft",
-      ).replace(/\s+(Eau de Parfum|Eau de Toilette|Parfum|Extrait).*$/i, "")
-    : "Duft";
   const scentCount = Object.values(catalog).filter(
     (product) =>
       String(product.product_id).startsWith("SC-") &&
@@ -291,140 +252,7 @@ export default function HomeView({
   );
   return (
     <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-4 px-4 sm:gap-6 sm:px-6">
-      {spotlight ? (
-        <section
-          aria-label="DUFYND Edit"
-          className="dufynd-immersive-hero relative overflow-hidden rounded-[30px] border border-white/10 text-[#fffdf8]"
-          onPointerMove={updateHeroLight}
-          onPointerLeave={resetHeroLight}
-        >
-          <div aria-hidden className="dufynd-hero-atmosphere pointer-events-none absolute inset-0" />
-          <div aria-hidden className="dufynd-hero-aurora pointer-events-none absolute" />
-          <div aria-hidden className="dufynd-hero-orbit pointer-events-none absolute" />
-          <div aria-hidden className="dufynd-hero-particles pointer-events-none absolute inset-0" />
-          <div aria-hidden className="dufynd-hero-vignette pointer-events-none absolute inset-0" />
-          <div className="relative z-10 grid gap-0 md:grid-cols-[1.02fr_0.98fr]">
-            <div className="flex flex-col justify-center p-5 sm:p-8 md:p-10 lg:p-12">
-              <div className="mb-4 inline-flex w-fit items-center gap-2 rounded-full border border-white/12 bg-white/[0.055] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.19em] text-[#e5c782] backdrop-blur-md">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#d8ad55] shadow-[0_0_14px_rgba(216,173,85,0.9)]" />
-                DUFYND · Persönliche Duftberatung
-              </div>
-              <div className="mt-2 text-[11px] font-medium uppercase tracking-[0.14em] text-white/48">
-                Duft entdecken. Vergleichen. Sicherer entscheiden.
-              </div>
-              <h1 className="mt-2 max-w-2xl text-[31px] font-semibold leading-[0.98] tracking-[-0.045em] sm:text-[44px] lg:text-[54px]">
-                Finde den Duft, der wirklich zu dir passt.
-              </h1>
-              <p className="mt-3 max-w-xl text-[13px] leading-5 text-white/72 sm:mt-5 sm:text-[14px] sm:leading-6">
-                Beschreibe Duftprofil, Anlass oder Budget. DUFYND verbindet
-                Duftberatung, Community-Daten, Alternativen und aktuelle
-                Händlerangebote in einem klaren Erlebnis.
-              </p>
-              <div className="mt-4 hidden flex-wrap gap-2 text-[10.5px] font-medium text-white/58 sm:flex">
-                <span className="rounded-full border border-white/10 bg-black/15 px-2.5 py-1 backdrop-blur-sm">Duftprofil</span>
-                <span className="rounded-full border border-white/10 bg-black/15 px-2.5 py-1 backdrop-blur-sm">Alternativen</span>
-                <span className="rounded-full border border-white/10 bg-black/15 px-2.5 py-1 backdrop-blur-sm">Preisvergleich</span>
-              </div>
-
-              <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-3 sm:mt-6">
-                <AcquisitionInternalLink
-                  href="/duftfinder"
-                  className="dufynd-hero-primary rounded-xl bg-[#fffdf8] px-4 py-2.5 text-[12.5px] font-semibold text-[#171513] transition hover:-translate-y-0.5"
-                >
-                  Meinen Duft finden
-                </AcquisitionInternalLink>
-                <AcquisitionInternalLink
-                  href={fragrancePathForProduct(spotlight)}
-                  onClick={() =>
-                    void trackAnalyticsEvent("product_open", {
-                      product_id: spotlight.product_id,
-                      source: "homepage_spotlight",
-                    })
-                  }
-                  className="rounded-xl border border-white/14 bg-white/[0.055] px-4 py-2.5 text-[12.5px] font-semibold text-white/88 backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white/[0.09]"
-                >
-                  {spotlightName} entdecken
-                </AcquisitionInternalLink>
-                <span className="[&_*]:!text-white/65 [&_span.font-semibold]:!text-white">
-                  <ProductRating product={spotlight} compact />
-                </span>
-              </div>
-            </div>
-
-            <AcquisitionInternalLink
-              href={fragrancePathForProduct(spotlight)}
-              aria-label={`${spotlight.brand || ""} ${spotlightName} entdecken`.trim()}
-              className="dufynd-hero-product group relative min-h-[260px] sm:min-h-[320px] overflow-hidden border-t border-white/10 md:min-h-[430px] md:border-l md:border-t-0"
-            >
-              {spotlightModelUrl ? (
-                <FragranceModel3D
-                  modelUrl={spotlightModelUrl}
-                  imageUrl={
-                    spotlightIsProductTruth
-                      ? undefined
-                      : spotlightVisual?.url || spotlight.image_url
-                  }
-                  cutoutUrl={
-                    spotlightIsProductTruth
-                      ? spotlightVisual?.url
-                      : undefined
-                  }
-                  backdropUrl={
-                    spotlightIsProductTruth
-                      ? spotlightBackdropUrl
-                      : undefined
-                  }
-                  alt={spotlight.title}
-                  className="h-full min-h-[260px] sm:min-h-[320px] w-full md:min-h-[430px]"
-                  priority
-                />
-              ) : spotlightIsProductTruth ? (
-                <FragranceVisual
-                  imageUrl={undefined}
-                  cutoutUrl={spotlightVisual?.url}
-                  backdropUrl={spotlightBackdropUrl}
-                  alt={spotlight.title}
-                  variant="hero"
-                  mode="cutout"
-                  world={spotlightFragrance ? visualWorldFor(spotlightFragrance) : undefined}
-                  className="h-full min-h-[260px] sm:min-h-[320px] w-full md:min-h-[430px]"
-                  priority
-                />
-              ) : (
-                <div className="dufynd-editorial-media relative h-full min-h-[260px] sm:min-h-[320px] w-full md:min-h-[430px]">
-                  {spotlightVisual?.url || spotlight.image_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={spotlightVisual?.url || spotlight.image_url || undefined}
-                      alt={`${spotlight.title} – stilisierte DUFYND-Inszenierung`}
-                      fetchPriority="high"
-                      decoding="async"
-                      className="h-full min-h-[260px] sm:min-h-[320px] w-full object-cover md:min-h-[430px]"
-                    />
-                  ) : null}
-                  <span
-                    aria-hidden
-                    className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(23,21,19,0.24),transparent_28%),linear-gradient(0deg,rgba(23,21,19,0.12),transparent_30%)] md:bg-[linear-gradient(90deg,rgba(23,21,19,0.32),transparent_36%)]"
-                  />
-                </div>
-              )}
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex items-end justify-between bg-gradient-to-t from-black/55 via-black/10 to-transparent px-5 pb-4 pt-14 sm:px-6">
-                <div>
-                  <div className="text-[9.5px] font-semibold uppercase tracking-[0.18em] text-[#e3c47f]">
-                    DUFYND Spotlight
-                  </div>
-                  <div className="mt-0.5 text-[12px] font-semibold text-white/90">
-                    {spotlight.brand} · {spotlightName}
-                  </div>
-                </div>
-                <span className="rounded-full border border-white/12 bg-black/20 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.12em] text-white/64 backdrop-blur-md">
-                  {spotlightModelUrl ? "3D-Ansicht" : "Immersive Ansicht"}
-                </span>
-              </div>
-            </AcquisitionInternalLink>
-          </div>
-        </section>
-      ) : null}
+      <DiscoveryIntro />
 
       <section
         aria-labelledby="dufynd-home-search-heading"

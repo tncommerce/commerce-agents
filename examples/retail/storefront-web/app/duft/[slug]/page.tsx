@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
 import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
 import { accordLabel } from "@/lib/accordLabels";
+import FragranceNoteSculpture from "@/components/FragranceNoteSculpture";
 import FragranceExplodedNotes from "@/components/FragranceExplodedNotes";
 import FragranceIngredientOrbit from "@/components/FragranceIngredientOrbit";
 import FragranceOffers from "@/components/FragranceOffers";
@@ -438,6 +439,7 @@ export default async function FragrancePage({
 
         <section
           data-product-id={fragrance.product_id}
+          data-dufynd-studio-photo={heroIsProductTruth && ["merchant_feed", "licensed"].includes(heroVisual?.provenance || "") ? true : undefined}
           className={`dufynd-fragrance-hero dufynd-fragrance-hero--${visualTheme} relative overflow-hidden rounded-[30px] border border-(--line) bg-(--card) shadow-(--shadow)`}
         >
           <div
@@ -783,8 +785,6 @@ export default async function FragrancePage({
               02
             </span>
             <FragranceExplodedNotes
-              cutoutUrl={productTruthVisual.url}
-              alt={`${fragrance.brand} ${fragrance.name}`}
               top={fragrance.notes.top}
               heart={fragrance.notes.heart}
               base={fragrance.notes.base}
@@ -793,6 +793,8 @@ export default async function FragrancePage({
             />
           </div>
         ) : null}
+
+        <FragranceNoteSculpture key={fragrance.product_id} notes={fragrance.notes} />
 
         {hasVisualGallery ? (
           <div

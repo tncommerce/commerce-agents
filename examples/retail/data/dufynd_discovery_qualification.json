@@ -1,0 +1,796 @@
+{
+  "schema_version": 1,
+  "purpose": "Independent, source-attributed product facts for existing staging. Does not authorize images, offers or publication.",
+  "products": [
+    {
+      "product_id": "SC-CAROLINA-HERRERA-GOOD-GIRL-EDP-80",
+      "brand": "Carolina Herrera",
+      "name": "Good Girl",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 80,
+      "checked_at": "2026-10-10",
+      "identity": {
+        "kind": "gtin",
+        "value": "8411061026342",
+        "source_url": "https://www.perfumetrader.de/de/carolina-herrera-good-girl-eau-de-parfum-80-ml",
+        "verified": true
+      },
+      "notes": {
+        "key": [
+          "jasmine",
+          "tuberose",
+          "almond",
+          "tonka bean",
+          "coffee",
+          "cocoa"
+        ]
+      },
+      "notes_source": {
+        "url": "https://www.carolinaherrera.com/ww/en/p-fragrance/good-girl-eau-de-parfum?sku=000000000065176159",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Jasmin und Tuberose verbinden sich mit Tonkabohne und Kakao. Mandel und Kaffee ergänzen das Profil.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false
+    },
+    {
+      "product_id": "SC-YSL-Y-EDP-100",
+      "brand": "Yves Saint Laurent",
+      "name": "Y",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "checked_at": "2026-10-10",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "3614272050358",
+        "source_url": "https://www.yslbeauty.de/dufte/dufte-fur-ihn/y/y-eau-de-parfum/3614272050358.html",
+        "verified": true
+      },
+      "notes": {
+        "key": [
+          "sage essence",
+          "geranium absolute",
+          "woody accord",
+          "tonka bean"
+        ]
+      },
+      "notes_source": {
+        "url": "https://www.yslbeauty.de/dufte/dufte-fur-ihn/y/y-eau-de-parfum/3614272050358.html",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Salbei und Geranium treffen auf einen Holzakkord und Tonkabohne.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false
+    },
+    {
+      "product_id": "SC-CHANEL-COCO-MADEMOISELLE-EDP-100",
+      "brand": "CHANEL",
+      "name": "COCO MADEMOISELLE",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "checked_at": "2026-10-10",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "116520",
+        "source_url": "https://www.chanel.com/de/parfum/p/116520/coco-mademoiselle-eau-de-parfum-zerstaeuber/",
+        "verified": true
+      },
+      "notes": {
+        "top": [
+          "orange"
+        ],
+        "heart": [
+          "jasmine",
+          "rose"
+        ],
+        "base": [
+          "patchouli",
+          "vetiver"
+        ]
+      },
+      "notes_source": {
+        "url": "https://www.chanel.com/de/parfum/p/116520/coco-mademoiselle-eau-de-parfum-zerstaeuber/",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Orange eröffnet die Komposition; Jasmin und Rose führen zu Patschuli und Vetiver.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false
+    },
+    {
+      "product_id": "SC-CALVIN-KLEIN-EUPHORIA-EDP-100",
+      "brand": "Calvin Klein",
+      "name": "Euphoria",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "checked_at": "2026-10-10",
+      "identity": {
+        "kind": "gtin",
+        "value": "0088300162505",
+        "source_url": "https://www.news-parfums.com/en/calvin-klein/390-calvin-klein-euphoria-eau-de-parfum-0088300162512.html",
+        "verified": true
+      },
+      "notes": {
+        "top": [
+          "pomegranate"
+        ],
+        "heart": [
+          "lotus",
+          "orchid"
+        ],
+        "base": [
+          "violet",
+          "amber",
+          "mahogany",
+          "musk"
+        ]
+      },
+      "notes_source": {
+        "url": "https://www.notino.de/calvin-klein/euphoria-eau-de-parfum-fur-damen/",
+        "kind": "retailer_product_facts"
+      },
+      "summary_de": "Granatapfel im Auftakt, Lotos und Orchidee im Herzen; die Basis umfasst Veilchen, Amber, Mahagoni und Moschus.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false
+    },
+    {
+      "product_id": "SC-VERSACE-EROS-EDP-100",
+      "brand": "Versace",
+      "name": "Eros Pour Homme",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "checked_at": "2026-10-10",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "R740110-R100MLS",
+        "source_url": "https://www.versace.com/gb/en/eros-edp-100-ml/R740110-R100MLS.html",
+        "verified": true
+      },
+      "notes": {
+        "top": [
+          "Italian lemon",
+          "mandarin",
+          "mint oil",
+          "candied apple"
+        ],
+        "heart": [
+          "geranium",
+          "clary sage",
+          "AmberMax"
+        ],
+        "base": [
+          "Atlas cedar",
+          "Virginia cedar",
+          "vetiver",
+          "patchouli",
+          "sandalwood",
+          "vanilla"
+        ]
+      },
+      "notes_source": {
+        "url": "https://www.versace.com/gb/en/eros-edp-100-ml/R740110-R100MLS.html",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Zitrus, Minze und kandierter Apfel eröffnen den Duft. Geranium und Salbei treffen auf eine holzige Basis mit Vanille.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false
+    },
+    {
+      "product_id": "SC-CHLOE-NOMADE-EDP-75",
+      "brand": "Chloé",
+      "name": "Nomade",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 75,
+      "checked_at": "2026-10-11",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "CHCA64994090",
+        "source_url": "https://www.chloe.com/de-de/p/fragrances/eau-de-parfum/CHCA64994090.html",
+        "verified": true
+      },
+      "notes": {
+        "top": [
+          "mirabelle"
+        ],
+        "heart": [
+          "freesia"
+        ],
+        "base": [
+          "oakmoss"
+        ]
+      },
+      "notes_source": {
+        "url": "https://www.chloe.com/de-de/p/fragrances/eau-de-parfum/CHCA64994090.html",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Mirabelle eröffnet den Duft, gefolgt von Freesie und Eichenmoos.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false
+    },
+    {
+      "product_id": "SC-GUCCI-FLORA-GORGEOUS-GARDENIA-EDP-100",
+      "brand": "Gucci",
+      "name": "Flora Gorgeous Gardenia",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "checked_at": "2026-10-11",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "667343 99999 0099",
+        "source_url": "https://www.gucci.com/de/de/pr/beauty/fragrances/fragrances-for-women/gucci-flora-gorgeous-gardenia-100ml-eau-de-parfum-p-667343999990099",
+        "verified": true
+      },
+      "notes": {
+        "top": [
+          "floral accord",
+          "Italian mandarin",
+          "red berries"
+        ],
+        "heart": [
+          "white gardenia",
+          "jasmine absolute",
+          "frangipani"
+        ],
+        "base": [
+          "patchouli",
+          "brown sugar"
+        ]
+      },
+      "notes_source": {
+        "url": "https://www.gucci.com/de/de/pr/beauty/fragrances/fragrances-for-women/gucci-flora-gorgeous-gardenia-100ml-eau-de-parfum-p-667343999990099",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Gardenie, Jasmin und Frangipani bilden das florale Herz; Patschuli und brauner Zucker ergänzen die Basis.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false
+    },
+    {
+      "product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+      "brand": "Guerlain",
+      "name": "Mon Guerlain",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "checked_at": "2026-10-11",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "G013140",
+        "source_url": "https://www.guerlain.com/de/de-de/p/mon-guerlain-eau-de-parfum-G013140.html",
+        "verified": true
+      },
+      "notes": {
+        "key": [
+          "lavender",
+          "jasmine sambac",
+          "sandalwood",
+          "Tahitian vanilla"
+        ]
+      },
+      "notes_source": {
+        "url": "https://www.guerlain.com/de/de-de/p/mon-guerlain-eau-de-parfum-G013140.html",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Lavendel und Jasmin verbinden sich mit Sandelholz und Tahiti-Vanille.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false,
+      "variant_evidence_note": "Manufacturer page selects 100 ml spray; not the 30 ml G013139 reference."
+    },
+    {
+      "product_id": "SC-MFK-BACCARAT-ROUGE-540-EDP-70",
+      "brand": "Maison Francis Kurkdjian",
+      "name": "Baccarat Rouge 540",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 70,
+      "checked_at": "2026-10-11",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "10223021",
+        "source_url": "https://www.franciskurkdjian.com/eu-de/p/baccarat-rouge-540-eau-de-parfum-10223021.html",
+        "verified": true
+      },
+      "notes": {
+        "key": [
+          "jasmine flowers",
+          "saffron",
+          "ambergris accord",
+          "dry woody notes",
+          "ethyl maltol"
+        ]
+      },
+      "notes_source": {
+        "url": "https://www.franciskurkdjian.com/eu-de/p/baccarat-rouge-540-eau-de-parfum-10223021.html",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Jasmin und Safran treffen auf einen Ambra-Akkord, trockene Holznoten und süße Ethylmaltol-Facetten.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false,
+      "variant_evidence_note": "70 ml Eau de parfum; not Extrait de parfum."
+    },
+    {
+      "product_id": "SC-VALENTINO-DONNA-BORN-IN-ROMA-EDP-100",
+      "brand": "Valentino",
+      "name": "Born In Roma Donna",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "checked_at": "2026-10-11",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "MPL00468",
+        "source_url": "https://www.valentino-beauty.de/de_DE/dufte/damendufte/born-in-roma-donna/born-in-roma-donna/MPL00468.html?dwvar_MPL00468_size=100",
+        "verified": true
+      },
+      "notes": {
+        "top": [
+          "Italian bergamot"
+        ],
+        "heart": [
+          "jasmine grandiflorum",
+          "jasmine sambac",
+          "jasmine tea"
+        ],
+        "base": [
+          "bourbon vanilla"
+        ]
+      },
+      "notes_source": {
+        "url": "https://www.valentino-beauty.de/de_DE/dufte/damendufte/born-in-roma-donna/born-in-roma-donna/MPL00468.html?dwvar_MPL00468_size=100",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Bergamotte führt zu einer Jasmin-Trilogie; Bourbon-Vanille prägt die Basis.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false,
+      "variant_evidence_note": "Manufacturer family reference with explicit 100 ml variant selector; no GTIN inferred."
+    },
+    {
+      "product_id": "SC-MUGLER-ALIEN-EDP-90",
+      "brand": "Mugler",
+      "name": "Alien",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "checked_at": "2026-10-11",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "M010401002",
+        "source_url": "https://de.mugler.com/de/duft/damendufte/alien/alien-eau-de-parfum/M010401002.html?dwvar_M010401002_size=90ml+refillable",
+        "verified": true
+      },
+      "notes": {
+        "key": [
+          "jasmine sambac",
+          "cashmeran",
+          "white amber"
+        ]
+      },
+      "notes_source": {
+        "url": "https://de.mugler.com/de/duft/damendufte/alien/alien-eau-de-parfum/M010401002.html?dwvar_M010401002_size=90ml+refillable",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Jasmin, Cashmeran und weißer Amber prägen das Duftprofil.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false,
+      "variant_evidence_note": "Explicit 90 ml refillable bottle selector, not 100 ml refill. Prior merchant GTIN observations remain unpromoted."
+    },
+    {
+      "product_id": "SC-JPG-LE-MALE-ELIXIR-PARFUM-125",
+      "brand": "Jean Paul Gaultier",
+      "name": "Le Male Elixir",
+      "concentration": "Parfum",
+      "volume_ml": 125,
+      "checked_at": "2026-10-11",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "000000000065189084",
+        "source_url": "https://www.jeanpaulgaultier.com/de/de/p/linie-le-male/le-male-elixir-parfum-000000000065189084",
+        "verified": true
+      },
+      "notes": {
+        "key": [
+          "mint",
+          "lavender",
+          "tonka bean",
+          "benzoin"
+        ]
+      },
+      "notes_source": {
+        "url": "https://www.jeanpaulgaultier.com/de/de/p/linie-le-male/le-male-elixir-parfum-000000000065189084",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Minze und Lavendel verbinden sich mit Tonkabohne und Benzoeharz.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false,
+      "variant_evidence_note": "Manufacturer lists Parfum in 125 ml; distinct from Le Male Le Parfum and Elixir Absolu. Reference is product-family reference, not asserted GTIN."
+    },
+    {
+      "product_id": "SC-PRADA-LHOMME-INTENSE-EDP-100",
+      "brand": "Prada",
+      "name": "L'Homme Intense",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "checked_at": "2026-10-11",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "2A1252_2HC1_F0Z99_P_ML100",
+        "source_url": "https://www.prada.com/de/de/p/lhomme-prada-intense-edp-100-ml/2A1252_2HC1_F0Z99_P_ML100",
+        "verified": true
+      },
+      "notes": {
+        "key": [
+          "amber",
+          "patchouli",
+          "iris",
+          "sandalwood",
+          "roasted tonka bean"
+        ]
+      },
+      "notes_source": {
+        "url": "https://www.prada.com/de/de/p/lhomme-prada-intense-edp-100-ml/2A1252_2HC1_F0Z99_P_ML100",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Iris und Amber verbinden sich mit Patschuli, Sandelholz und gerösteter Tonkabohne.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false
+    },
+    {
+      "product_id": "SC-BURBERRY-GODDESS-EDP-100",
+      "brand": "Burberry",
+      "name": "Goddess",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "checked_at": "2026-10-11",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "40835981",
+        "source_url": "https://de.burberry.com/burberry-goddess-eau-de-parfum-for-women-100-ml-p40835981",
+        "verified": true
+      },
+      "notes": {
+        "key": [
+          "vanilla trio",
+          "lavender"
+        ]
+      },
+      "notes_source": {
+        "url": "https://de.burberry.com/burberry-goddess-eau-de-parfum-for-women-100-ml-p40835981",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Drei Vanille-Komponenten werden von aromatischem Lavendel ergänzt.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false,
+      "variant_evidence_note": "Original 100 ml Eau de Parfum, not Goddess Parfum or EDP Intense."
+    },
+    {
+      "product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
+      "brand": "Lattafa",
+      "name": "Eclaire",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "checked_at": "2026-10-11",
+      "identity": {
+        "kind": "gtin",
+        "value": "6290362340638",
+        "source_url": "https://www.dm.de/p/d/3061570/lattafa-eclaire-eau-de-parfum",
+        "verified": true
+      },
+      "notes": {
+        "top": [
+          "caramel",
+          "milk",
+          "sugar"
+        ],
+        "heart": [
+          "white flowers",
+          "honey"
+        ],
+        "base": [
+          "vanilla",
+          "praline",
+          "musk"
+        ]
+      },
+      "notes_source": {
+        "url": "https://lattafa.com/product/eclaire/",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Karamell, Milch und Zucker führen zu weißen Blüten und Honig. Vanille, Praline und Moschus bilden die Basis.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false
+    },
+    {
+      "product_id": "SC-LATTAFA-KHAMRAH-EDP-100",
+      "brand": "Lattafa",
+      "name": "Khamrah",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "checked_at": "2026-10-11",
+      "identity": {
+        "kind": "gtin",
+        "value": "6291108737194",
+        "source_url": "https://www.dm.de/p/d/2970208/lattafa-khamrah-eau-de-parfum",
+        "verified": true
+      },
+      "notes": {
+        "key": [
+          "cinnamon",
+          "nutmeg",
+          "bergamot",
+          "dates",
+          "praline",
+          "tuberose",
+          "vanilla",
+          "tonka bean",
+          "benzoin",
+          "myrrh",
+          "Akigalawood",
+          "amber wood"
+        ]
+      },
+      "notes_source": {
+        "url": "https://lattafa.com/product/khamrah/",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Gewürze und Bergamotte treffen auf Dattel- und Pralinenfacetten. Vanille, Tonkabohne und Holznoten ergänzen das Profil.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false,
+      "variant_evidence_note": "Only manufacturer notes shared by its two descriptions retained; lily-of-the-valley versus Mahonial terminology is not silently reconciled. Original Khamrah, not Qahwa or Dukhan."
+    },
+    {
+      "product_id": "SC-HUGO-BOSS-BOTTLED-EDT-100",
+      "brand": "Hugo Boss",
+      "name": "BOSS Bottled",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "checked_at": "2026-10-11",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "58000026",
+        "source_url": "https://www.hugoboss.com/boss-bottled-eau-de-toilette-100ml/hbeu58000026_999.html",
+        "verified": true
+      },
+      "notes": {
+        "key": [
+          "geranium",
+          "clove",
+          "sandalwood",
+          "cedar",
+          "vetiver"
+        ]
+      },
+      "notes_source": {
+        "url": "https://www.hugoboss.com/de/boss-bottled-eau-de-toilette-gift-set/hbeu58130252_999.html",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Geranium und Gewürznelke treffen auf Sandelholz, Zeder und Vetiver.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false,
+      "variant_evidence_note": "100 ml Eau de Toilette, not the Bottled Eau de Parfum or Absolu. Official EDT gift-set description corroborates the same fragrance notes; the identity source separately establishes the 100 ml single bottle."
+    },
+    {
+      "product_id": "SC-HUGO-BOSS-BOTTLED-ABSOLU-100",
+      "brand": "Hugo Boss",
+      "name": "BOSS Bottled Absolu",
+      "concentration": "Parfum Intense",
+      "volume_ml": 100,
+      "checked_at": "2026-10-11",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "58139181",
+        "source_url": "https://www.hugoboss.com/de/boss-bottled-absolu-parfum-intense-100-ml/hbeu58139181_999.html",
+        "verified": true
+      },
+      "notes": {
+        "key": [
+          "leather accord",
+          "patchouli",
+          "myrrh",
+          "cedar",
+          "amber",
+          "davana"
+        ]
+      },
+      "notes_source": {
+        "url": "https://www.hugoboss.com/de/boss-bottled-absolu-parfum-intense-100-ml/hbeu58139181_999.html",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Lederakkord, Patschuli und Myrrhe treffen auf Zedernholz, Amber und Davana.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false,
+      "variant_evidence_note": "100 ml and Parfum Intense stated in manufacturer title and style 58139181; generic bullet also says Eau de Parfum. Product-specific title retained; no concentration percentage or GTIN inferred."
+    },
+    {
+      "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+      "brand": "Dior",
+      "name": "Hypnotic Poison",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "checked_at": "2026-10-11",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "Y0063401",
+        "source_url": "https://www.dior.com/de_de/beauty/products/hypnotic-poison-eau-de-toilette-Y0063401.html",
+        "verified": true
+      },
+      "notes": {
+        "key": [
+          "bitter almond",
+          "jasmine sambac",
+          "vanilla"
+        ]
+      },
+      "notes_source": {
+        "url": "https://www.dior.com/de_de/beauty/products/hypnotic-poison-eau-de-toilette-Y0063401.html",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Bittermandel, arabischer Jasmin und Vanille prägen das Duftprofil.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false,
+      "variant_evidence_note": "Manufacturer family reference; selected product explicitly states Inhalt: 100 ml. Eau de Toilette, not Eau de Parfum; no GTIN inferred."
+    },
+    {
+      "product_id": "SC-PDM-HEROD-EDP-125",
+      "brand": "Parfums de Marly",
+      "name": "Herod",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 125,
+      "checked_at": "2026-10-11",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "herod",
+        "source_url": "https://us.parfums-de-marly.com/products/herod",
+        "verified": true
+      },
+      "notes": {
+        "top": [
+          "cinnamon",
+          "pepper"
+        ],
+        "heart": [
+          "tobacco leaf",
+          "incense",
+          "cistus",
+          "osmanthus"
+        ],
+        "base": [
+          "vanilla",
+          "musk",
+          "cedarwood"
+        ]
+      },
+      "notes_source": {
+        "url": "https://us.parfums-de-marly.com/products/herod",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Zimt und Pfeffer eröffnen das Profil; Tabak, Weihrauch und Osmanthus treffen auf Vanille und Zedernholz.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false,
+      "variant_evidence_note": "Manufacturer product handle; page title specifies Eau de Parfum and size selector lists 125 ml. Not a GTIN; no merchant availability inferred."
+    },
+    {
+      "product_id": "SC-NISHANE-ANI-EXTRAIT-100",
+      "brand": "Nishane",
+      "name": "Ani",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 100,
+      "checked_at": "2026-10-11",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "ani",
+        "source_url": "https://nishane.com/product/ani/",
+        "verified": true
+      },
+      "notes": {
+        "top": [
+          "bergamot",
+          "green notes",
+          "blue ginger",
+          "pink pepper"
+        ],
+        "heart": [
+          "blackcurrant",
+          "Turkish rose",
+          "cardamom"
+        ],
+        "base": [
+          "patchouli",
+          "cedarwood",
+          "vanilla",
+          "benzoin",
+          "ambergris",
+          "musk",
+          "sandalwood"
+        ]
+      },
+      "notes_source": {
+        "url": "https://nishane.com/product/ani/",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Ingwer und Bergamotte führen zu Kardamom und Rose; Vanille, Benzoe und Hölzer bilden die Basis.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false,
+      "variant_evidence_note": "Manufacturer product handle; Extrait de Parfum and 100 ml explicitly listed. ANI, not ANI X. No GTIN inferred."
+    },
+    {
+      "product_id": "SC-AMOUAGE-REFLECTION-MAN-EDP-100",
+      "brand": "Amouage",
+      "name": "Reflection Man",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "checked_at": "2026-10-11",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "reflection-man-100ml",
+        "source_url": "https://amouage.com/products/reflection-man-100ml",
+        "verified": true
+      },
+      "notes": {
+        "top": [
+          "rosemary",
+          "red pepper berries",
+          "bitter orange leaves"
+        ],
+        "heart": [
+          "neroli",
+          "orris",
+          "jasmine",
+          "ylang-ylang"
+        ],
+        "base": [
+          "vetiver",
+          "patchouli",
+          "sandalwood",
+          "cedarwood"
+        ]
+      },
+      "notes_source": {
+        "url": "https://amouage.com/products/reflection-man-100ml",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Rosmarin und Bitterorangenblätter treffen auf Neroli, Iris und Jasmin; Sandelholz und Vetiver bilden die Basis.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false,
+      "variant_evidence_note": "Manufacturer handle identifies the 100 ml single bottle. Official gift-set contents separately confirm 100 ml Reflection Man Eau de Parfum. Not Reflection 45; gift-set SKU, price and photos are not imported.",
+      "concentration_source_url": "https://amouage.com/en-ch/products/reflection-man-gift-set"
+    }
+  ]
+}

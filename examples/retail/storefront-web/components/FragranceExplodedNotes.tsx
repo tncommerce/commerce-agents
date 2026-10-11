@@ -118,16 +118,12 @@ function explodedNotes(
 }
 
 export default function FragranceExplodedNotes({
-  cutoutUrl,
-  alt,
   top,
   heart,
   base,
   keyNotes,
   supporting,
 }: {
-  cutoutUrl: string;
-  alt: string;
   top: string[];
   heart: string[];
   base: string[];
@@ -153,18 +149,18 @@ export default function FragranceExplodedNotes({
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-(--line) px-4 py-4 sm:px-5">
         <div>
           <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-(--accent-ink)">
-            Verifizierte Produktdarstellung
+            Duftprofil verstehen
           </div>
           <h2
             id="dufynd-exploded-heading"
             className="mt-1 text-[18px] font-semibold tracking-[-0.02em] text-(--ink)"
           >
-            Duftaufbau in Bewegung
+            Die Komposition entdecken
           </h2>
           <p className="mt-1 max-w-2xl text-[11.5px] leading-5 text-(--ink-soft)">
             {usesPyramid
-              ? "Duftnoten lösen sich visuell in Kopf, Herz und Basis vom verifizierten Flakon. Die Darstellung erklärt das Duftprofil – nicht den physischen Flascheninhalt."
-              : "Ausgewählte Duftnoten lösen sich visuell vom verifizierten Flakon. Die Darstellung erklärt das Duftprofil – nicht den physischen Flascheninhalt."}
+              ? "Entdecke die dokumentierten Noten in Kopf, Herz und Basis."
+              : "Entdecke die dokumentierten Schlüsselnoten. Eine zeitliche Duftpyramide ist für dieses Profil nicht belegt."}
           </p>
         </div>
 
@@ -195,26 +191,6 @@ export default function FragranceExplodedNotes({
         }
         className="dufynd-exploded-stage"
       >
-        <div className="dufynd-exploded-halo" aria-hidden />
-        <div
-          className="dufynd-exploded-orbit dufynd-exploded-orbit--outer"
-          aria-hidden
-        />
-        <div
-          className="dufynd-exploded-orbit dufynd-exploded-orbit--inner"
-          aria-hidden
-        />
-
-        <div className="dufynd-exploded-bottle">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={cutoutUrl}
-            alt={alt}
-            loading="lazy"
-            decoding="async"
-          />
-        </div>
-
         {notes.map(({ note, stage, index, x, y }, noteIndex) => {
           const style: NoteStyle = {
             "--dufynd-note-x": x,
