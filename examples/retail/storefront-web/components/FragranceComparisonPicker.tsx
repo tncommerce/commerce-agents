@@ -9,7 +9,7 @@ import FragranceVisual from "@/components/FragranceVisual";
 import { appendAcquisitionAttribution, trackAnalyticsEvent } from "@/lib/analytics";
 import { accordLabel } from "@/lib/accordLabels";
 import {
-  isVerifiedProductTruthVisual,
+  originalPhotoFor,
   visualWorldFor,
   type StaticFragrance,
 } from "@/lib/fragranceCatalog";
@@ -123,13 +123,11 @@ function ProductMiniHeader({
   fragrance: StaticFragrance;
   side: "left" | "right";
 }) {
-  const productTruthVisual = fragrance.preferred_visual;
-  const productTruthIsVerified =
-    isVerifiedProductTruthVisual(productTruthVisual);
-  const presentationVisual =
-    fragrance.presentation_visual || productTruthVisual;
-  const presentationIsProductTruth =
-    isVerifiedProductTruthVisual(presentationVisual);
+  // Product comparison photos have the same exact-source rights gate as the catalog.
+  const productTruthVisual = originalPhotoFor(fragrance);
+  const productTruthIsVerified = Boolean(productTruthVisual);
+  const presentationVisual = productTruthVisual;
+  const presentationIsProductTruth = Boolean(presentationVisual);
 
   return (
     <a
@@ -173,11 +171,7 @@ function ProductMiniHeader({
           }
           alt={`${fragrance.brand} ${fragrance.name}`}
           variant="card"
-          mode={
-            presentationIsProductTruth
-              ? "cutout"
-              : "editorial"
-          }
+          mode="cutout"
           world={visualWorldFor(fragrance)}
           className="dufynd-comparison-product-visual h-40 w-full"
         />
