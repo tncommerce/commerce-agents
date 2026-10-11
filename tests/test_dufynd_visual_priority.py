@@ -6,7 +6,6 @@ CATALOG_ADAPTER = Path("examples/retail/storefront-web/lib/fragranceCatalog.ts")
 
 SURFACES = [
     Path("examples/retail/storefront-web/app/duft/[slug]/page.tsx"),
-    Path("examples/retail/storefront-web/components/FragranceCatalogBrowser.tsx"),
     Path("examples/retail/storefront-web/components/FragranceComparisonPicker.tsx"),
     Path("examples/retail/storefront-web/components/FragranceLibraryHub.tsx"),
     Path("examples/retail/storefront-web/components/ProductTile.tsx"),
@@ -36,6 +35,19 @@ def test_customer_facing_product_surfaces_use_preferred_visual() -> None:
     assert not missing, "DUFYND surfaces bypassed the structured preferred visual: " + ", ".join(
         missing
     )
+
+
+def test_catalog_requires_original_photo_or_labelled_illustration() -> None:
+    source = Path(
+        "examples/retail/storefront-web/components/FragranceCatalogBrowser.tsx"
+    ).read_text(encoding="utf-8")
+
+    # The catalogue deliberately excludes editorial bottle scenes, even where
+    # the legacy preferred-visual resolver would have accepted them.
+    assert "originalPhotoFor(fragrance)" in source
+    assert "<ScentArtwork" in source
+    assert "fragrance.preferred_visual" not in source
+    assert "fragrance.presentation_visual" not in source
 
 
 def test_only_verified_primary_or_cutout_count_as_product_truth() -> None:
