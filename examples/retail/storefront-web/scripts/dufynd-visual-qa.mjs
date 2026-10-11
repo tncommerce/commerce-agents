@@ -1025,7 +1025,12 @@ try {
             throw new Error("catalog must use registered originals or honest neutral studio source holds");
           }
           for (const hold of await sourceHolds.all()) {
-            if (!(await hold.innerText()).includes("Originalfoto in Prüfung")) {
+            // innerText omits labels in progressively collapsed/offscreen cards.
+            // Check the actual caption node's text independently of visibility,
+            // while responsive visibility and image provenance are tested above.
+            const caption = hold.locator(".dufynd-catalog-photo-pending-caption");
+            const copy = (await caption.textContent())?.trim() || "";
+            if ((await caption.count()) !== 1 || copy !== "Originalfoto in Prüfung") {
               throw new Error("neutral studio image hold is missing its source-review disclosure");
             }
           }
