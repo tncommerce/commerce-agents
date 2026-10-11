@@ -101,6 +101,14 @@ jobs:
             --candidates "${RUNNER_TEMP}/release01-feed-image-review-candidates.json" \
             --output "${RUNNER_TEMP}/release01-feed-image-review.html"
 
+      # Source-bounded lead discovery; never mutates approvals or offers.
+      - name: Prepare 33 public missing-photo review leads
+        run: |
+          python scripts/report_dufynd_public_photo_feed_leads.py \
+            --feed "${RUNNER_TEMP}/top-parfuemerie.csv" \
+            --feed-metadata "${RUNNER_TEMP}/awin-feed-metadata.json" \
+            --gap docs/dufynd-catalog-photo-gap-20261011.json \
+            --output "${RUNNER_TEMP}/public-photo-gap-review.json"
       - name: Upload sanitized review packet
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -110,6 +118,7 @@ jobs:
             ${{ runner.temp }}/release-readiness.json
             ${{ runner.temp }}/release01-feed-image-review-candidates.json
             ${{ runner.temp }}/release01-feed-image-review.html
+            ${{ runner.temp }}/public-photo-gap-review.json
           if-no-files-found: error
           retention-days: 7
 
