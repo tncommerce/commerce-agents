@@ -11,21 +11,24 @@ STANDARD = Path("docs/dufynd-storefront-visual-standard-20260929.md")
 PRODUCTS = Path("examples/retail/data/scentai_products.json")
 
 
-def test_comparison_surfaces_prefer_storefront_presentation() -> None:
+def test_comparison_photo_cards_use_registry_bound_originals() -> None:
     for path in (FREE_COMPARISON, EXPLICIT_COMPARISON):
         source = path.read_text(encoding="utf-8")
-        assert "fragrance.presentation_visual || productTruthVisual" in source
+        assert "productTruthVisual = originalPhotoFor(fragrance)" in source
+        assert "const presentationVisual = productTruthVisual" in source
+        assert "fragrance.presentation_visual || productTruthVisual" not in source
         assert "visualWorldFor(fragrance)" in source
         assert "presentationIsProductTruth" in source
-        assert "productTruthIsVerified" in source
+        assert 'mode="cutout"' in source
 
 
 def test_comparison_3d_fallback_keeps_product_truth_separate() -> None:
     for path in (FREE_COMPARISON, EXPLICIT_COMPARISON):
         source = path.read_text(encoding="utf-8")
-        assert "productTruthVisual = fragrance.preferred_visual" in source
+        assert "productTruthVisual = originalPhotoFor(fragrance)" in source
         assert "cutoutUrl={" in source
         assert "productTruthVisual?.url" in source
+        assert "productTruthIsVerified" in source
 
 
 def test_detail_gallery_and_related_cards_share_fragrance_world() -> None:
