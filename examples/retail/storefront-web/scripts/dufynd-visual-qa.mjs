@@ -146,18 +146,31 @@ function verifiedProductTruthVisual(product) {
   });
 }
 
+const approvedOriginalPhotos = JSON.parse(
+  await readFile(
+    new URL("../lib/generated/original-photos.json", import.meta.url),
+    "utf-8",
+  ),
+);
+const approvedImages = new Map(
+  approvedOriginalPhotos.map((image) => [image.product_id, image]),
+);
 const verifiedTruthByRoute = new Map(
   sourceCatalog.products
-    .filter(
-      (product) =>
-        String(product?.product_id || "").startsWith("SC-") &&
-        !hasValidationBlockers(product),
+    .filter((product) =>
+      String(product?.product_id || "").startsWith("SC-") &&
+      !hasValidationBlockers(product)
     )
     .map((product) => {
       const route = `/duft/${slugifyFragrance(
         `${String(product?.brand || "").trim()} ${String(product?.name || "").trim()}`,
       )}`;
-      return [route, verifiedProductTruthVisual(product)];
+      const asset = verifiedProductTruthVisual(product);
+      const licensed = approvedImages.get(product.product_id);
+      const valid = asset && licensed &&
+        asset.url === licensed.url &&
+        Number(product.volume_ml) === Number(licensed.volume_ml);
+      return [route, valid ? asset : null];
     })
     .filter(([, visual]) => Boolean(visual)),
 );
@@ -655,6 +668,21 @@ try {
           if (layout.cutout_clipped) {
             throw new Error("verified bottle cutout extends beyond its hero stage");
           }
+          const overview = page.locator("#duftnoten.dufynd-notes-overview");
+          if ((await overview.count()) !== 1) {
+            throw new Error("every fragrance requires one consistent visible notes overview");
+          }
+          if ((await page.locator(".dufynd-fragrance-notes-card").count()) !== 0) {
+            throw new Error("duplicated legacy mobile/desktop notes disclosure survived");
+          }
+          const noteFormat = await overview.getAttribute("data-dufynd-note-layout");
+          if (!["pyramid", "key-notes"].includes(noteFormat)) {
+            throw new Error("notes were not classified into a source-accurate display");
+          }
+          const advanced = page.locator("details.dufynd-fragrance-advanced");
+          if ((await advanced.count()) !== 1 || await advanced.getAttribute("open") !== null) {
+            throw new Error("advanced note visualization must not interrupt the main page");
+          }
           const journey = await page.locator(".dufynd-fragrance-journey").count();
           if (journey !== 1) {
             throw new Error(`fragrance detail is missing its scroll journey: ${journey}`);
@@ -834,221 +862,59 @@ try {
         }
 
         if (target.name === "naxos") {
-          if (viewport.width < 1024) {
-            const notesDetails = page
-              .locator("details")
-              .filter({ hasText: "Duftnoten" })
-              .first();
-            if (await notesDetails.isVisible()) {
-              const isOpen = await notesDetails.evaluate(
-                (element) => element.hasAttribute("open"),
-              );
-              if (!isOpen) {
-                await notesDetails.locator("summary").click();
-              }
-            }
+          // The identity record is not a commercial image licence. A truthful
+          // blank studio stage is required until an exact asset is approved.
+          const hero = page.locator(".dufynd-fragrance-hero");
+          if ((await hero.locator('[data-dufynd-visual-state="missing"]').count()) !== 1) {
+            throw new Error("unlicensed Naxos hero did not use an honest image hold");
           }
-
-          const verifiedCutout = page.locator(
-            'img[src="/products/naxos-cutout-production.webp"]',
-          );
-          if ((await verifiedCutout.count()) < 1) {
-            throw new Error("Naxos verified cutout is missing");
+          if ((await hero.locator('img.dufynd-product-image, .dufynd-editorial-depth-stage').count()) !== 0) {
+            throw new Error("Naxos hero exposed an unlicensed original or editorial bottle");
           }
-
-          const text = await page.locator("body").innerText();
-          const missingNotes = naxosGermanNotes.filter(
-            (note) => !text.includes(note),
-          );
+          const overview = page.locator("#duftnoten.dufynd-notes-overview");
+          if ((await overview.count()) !== 1) {
+            throw new Error("Naxos must render exactly one canonical notes overview");
+          }
+          const text = await overview.innerText();
+          const missingNotes = naxosGermanNotes.filter((note) => !text.includes(note));
           if (missingNotes.length) {
-            throw new Error(
-              `Naxos German note labels missing: ${missingNotes.join(", ")}`,
-            );
+            throw new Error(`Naxos note labels missing: ${missingNotes.join(", ")}`);
           }
-
-          const notesMissingIcons = await page.evaluate((expectedNotes) => {
-            const noteChips = Array.from(
-              document.querySelectorAll("span, a"),
-            );
-            return expectedNotes.filter(
-              (note) =>
-                !noteChips.some(
-                  (chip) =>
-                    chip.textContent?.replace("→", "").trim() === note &&
-                    Boolean(chip.querySelector("svg")),
-                ),
-            );
-          }, naxosGermanNotes);
-          if (notesMissingIcons.length) {
-            throw new Error(
-              `Naxos note icons missing in rendered layout: ${notesMissingIcons.join(", ")}`,
-            );
-          }
-
-          const missingPremiumMotifs = await page.evaluate(
-            (expectedMotifs) =>
-              Object.values(expectedMotifs).filter(
-                (motif) =>
-                  !document.querySelector(
-                    `svg[data-dufynd-note-motif="${motif}"]`,
-                  ),
-              ),
+          const missingMotifs = await page.evaluate(
+            (expected) => Object.values(expected).filter((motif) =>
+              !document.querySelector(`svg[data-dufynd-note-motif="${motif}"]`),
+            ),
             naxosPremiumMotifs,
           );
-          if (missingPremiumMotifs.length) {
-            throw new Error(
-              `Naxos premium note motifs missing: ${missingPremiumMotifs.join(", ")}`,
-            );
+          if (missingMotifs.length) {
+            throw new Error(`Naxos note icons missing: ${missingMotifs.join(", ")}`);
           }
-
-          if ((await page.locator("model-viewer").count()) > 0) {
-            throw new Error(
-              "Naxos exposed a true 3D viewer without a verified model_3d asset",
-            );
+          if ((await page.locator(".dufynd-journey-gallery").count()) !== 0) {
+            throw new Error("unlicensed Naxos extra bottle gallery should be hidden");
           }
-
-          const disclosure = text.includes(
-            "Bild: stilisierte DUFYND-Inszenierung",
-          );
-          if (disclosure) {
-            throw new Error(
-              "Naxos verified truth hero is incorrectly disclosed as editorial",
-            );
+          if ((await page.locator('[aria-labelledby="dufynd-exploded-heading"]').count()) !== 0) {
+            throw new Error("unlicensed Naxos should not expose advanced verified-only visual claims");
           }
-
-          const expectedGalleryText = [
-            "Weitere Ansichten",
-            "Freisteller",
-            "DUFYND Inszenierung",
-            "Verifiziert",
-            "Redaktionell",
-          ];
-          const normalizedGalleryText = text.toLocaleLowerCase("de-DE");
-          const missingGalleryText = expectedGalleryText.filter(
-            (label) =>
-              !normalizedGalleryText.includes(
-                label.toLocaleLowerCase("de-DE"),
-              ),
-          );
-          if (missingGalleryText.length) {
-            throw new Error(
-              `Naxos multi-visual gallery is incomplete: ${missingGalleryText.join(", ")}`,
-            );
-          }
-
-          const backdropAsset = page.locator(
-            'img[src="/products/naxos-bottle-free-backdrop.webp"]',
-          );
-          if ((await backdropAsset.count()) < 1) {
-            throw new Error("Naxos bottle-free editorial backdrop is missing");
-          }
-
-          const legacyEditorial = page.locator(
-            'img[src="/products/pilot/xerjoff-naxos-editorial.png"]',
-          );
-          if ((await legacyEditorial.count()) > 0) {
-            throw new Error(
-              "Naxos legacy bottle-containing editorial is still rendered",
-            );
-          }
-
-          const explodedSection = page.locator(
-            '[aria-labelledby="dufynd-exploded-heading"]',
-          );
-          if ((await explodedSection.count()) !== 1) {
-            throw new Error(
-              "Naxos verified product is missing the exploded-notes view",
-            );
-          }
-
-          const explodedStageCollapsed = explodedSection.locator(
-            '#dufynd-exploded-stage[data-expanded="false"][aria-hidden="true"]',
-          );
-          if ((await explodedStageCollapsed.count()) !== 1) {
-            throw new Error(
-              "Naxos collapsed exploded-notes stage is not hidden from assistive technology",
-            );
-          }
-          if (viewport.width <= 480) {
-            const collapsedHeight = await explodedStageCollapsed.evaluate(
-              (element) => element.getBoundingClientRect().height,
-            );
-            if (collapsedHeight > 330) {
-              throw new Error(
-                `Naxos collapsed exploded-notes stage is too tall on mobile: ${collapsedHeight}px`,
-              );
-            }
-          }
-
-          const explodedButton = explodedSection.locator(
-            'button[aria-controls="dufynd-exploded-stage"]',
-          );
-          if ((await explodedButton.innerText()).trim() !== "Duftaufbau entfalten") {
-            throw new Error("Naxos exploded-notes toggle has an unexpected collapsed label");
-          }
-          if ((await explodedButton.getAttribute("aria-expanded")) !== "false") {
-            throw new Error(
-              "Naxos exploded-notes toggle does not expose collapsed state",
-            );
-          }
-          await explodedButton.click();
-          if ((await explodedButton.getAttribute("aria-expanded")) !== "true") {
-            throw new Error(
-              "Naxos exploded-notes toggle does not expose expanded state",
-            );
-          }
-
-          const explodedStage = explodedSection.locator(
-            '#dufynd-exploded-stage[data-expanded="true"]:not([aria-hidden="true"])',
-          );
-          if ((await explodedStage.count()) !== 1) {
-            throw new Error(
-              "Naxos exploded-notes interaction did not enter expanded state",
-            );
-          }
-          if (await explodedSection.locator("img").count()) {
-            throw new Error("note explanation duplicates the hero bottle");
-          }
-          const noteBounds = await explodedStage.locator("[data-dufynd-exploded-note]").evaluateAll(
-            (items) => items.map((item) => { const r = item.getBoundingClientRect(); return {x:r.x,y:r.y,right:r.right,bottom:r.bottom}; }),
-          );
-          for (let i = 0; i < noteBounds.length; i++) for (let j = i + 1; j < noteBounds.length; j++) {
-            const a = noteBounds[i], b = noteBounds[j];
-            if (a.x < b.right && a.right > b.x && a.y < b.bottom && a.bottom > b.y)
-              throw new Error("documented note cards overlap");
-          }
-
-          const explodedNotes = explodedSection.locator(
-            "[data-dufynd-exploded-note]",
-          );
-          if ((await explodedNotes.count()) < 6) {
-            throw new Error(
-              "Naxos exploded-notes view has insufficient note layers",
-            );
+          const advanced = page.locator("details.dufynd-fragrance-advanced");
+          if ((await advanced.count()) !== 1 || await advanced.getAttribute("open") !== null) {
+            throw new Error("optional Naxos 3D notes studio is not collapsed by default");
           }
         }
 
-        if (
-          [
-            "absolu-aventus",
-            "bois-imperial",
-          ].includes(target.name)
-        ) {
-          const text = await page.locator("body").innerText();
-          if (!text.includes("Bild: stilisierte DUFYND-Inszenierung")) {
-            throw new Error(
-              "unverified P0 visual is missing editorial disclosure",
-            );
+        if (["absolu-aventus", "bois-imperial"].includes(target.name)) {
+          const hero = page.locator(".dufynd-fragrance-hero");
+          if ((await hero.locator('[data-dufynd-visual-state="missing"]').count()) !== 1) {
+            throw new Error("unapproved product hero failed the source-honest studio fallback");
           }
-
-          if (
-            (await page.locator(
-              '[aria-labelledby="dufynd-exploded-heading"]',
-            ).count()) > 0
-          ) {
-            throw new Error(
-              "unverified product exposed the verified-only exploded-notes view",
-            );
+          const text = await hero.innerText();
+          if (!text.includes("Originalfoto in Prüfung")) {
+            throw new Error("unapproved detail hero omitted exact-original rights hold");
+          }
+          if (text.includes("Bild: stilisierte DUFYND-Inszenierung")) {
+            throw new Error("unapproved detail still presents an editorial bottle scene");
+          }
+          if ((await page.locator('[aria-labelledby="dufynd-exploded-heading"]').count()) > 0) {
+            throw new Error("unapproved bottle claims were exposed through the advanced 3D notes");
           }
         }
 
