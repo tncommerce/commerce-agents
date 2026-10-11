@@ -1,0 +1,1602 @@
+{
+  "schema_version": 1,
+  "status": "OWNER_REVIEW_NO_PUBLICATION",
+  "review_pages": 28,
+  "public_before": 37,
+  "new_public": 0,
+  "new_original_photos": 0,
+  "existing_approved_originals": 4,
+  "wave": {
+    "id": "core-scale-wave-27",
+    "product_ids": [
+      "SC-PRADA-PARADOXE-EDP-90",
+      "SC-PRADA-PARADIGME-EDP-100",
+      "SC-MAISON-MARGIELA-BY-THE-FIREPLACE-EDT-100",
+      "SC-CAROLINA-HERRERA-GOOD-GIRL-EDP-80",
+      "SC-CHANEL-COCO-MADEMOISELLE-EDP-100",
+      "SC-VERSACE-EROS-EDP-100",
+      "SC-CHLOE-NOMADE-EDP-75",
+      "SC-GUCCI-FLORA-GORGEOUS-GARDENIA-EDP-100",
+      "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+      "SC-MFK-BACCARAT-ROUGE-540-EDP-70",
+      "SC-VALENTINO-DONNA-BORN-IN-ROMA-EDP-100",
+      "SC-MUGLER-ALIEN-EDP-90",
+      "SC-BURBERRY-GODDESS-EDP-100",
+      "SC-YSL-Y-EDP-100",
+      "SC-CALVIN-KLEIN-EUPHORIA-EDP-100",
+      "SC-JPG-LE-MALE-ELIXIR-PARFUM-125",
+      "SC-PRADA-LHOMME-INTENSE-EDP-100",
+      "SC-LATTAFA-ECLAIRE-EDP-100",
+      "SC-LATTAFA-KHAMRAH-EDP-100",
+      "SC-HUGO-BOSS-BOTTLED-EDT-100",
+      "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+      "SC-PDM-HEROD-EDP-125",
+      "SC-NISHANE-ANI-EXTRAIT-100",
+      "SC-AMOUAGE-REFLECTION-MAN-EDP-100",
+      "SC-TOM-FORD-OMBRE-LEATHER-EDP-100",
+      "SC-TOM-FORD-OUD-WOOD-EDP-100",
+      "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100"
+    ],
+    "public_total_after_owner_approval": 64,
+    "affiliate_required": false
+  },
+  "product_holds": [
+    {
+      "product_id": "SC-HUGO-BOSS-BOTTLED-ABSOLU-100",
+      "reason": "Manufacturer title says Parfum Intense while generic bullet says Eau de Parfum; clarify before public variant acceptance."
+    }
+  ],
+  "photo_holds": [
+    {
+      "product_id": "SC-LV-IMAGINATION-100",
+      "scope": "existing_public",
+      "priority": "remaining_public",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-ARABIYAT-MARWA-EDP-100",
+      "scope": "existing_public",
+      "priority": "first_two_desktop_rows",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-ARABIYAT-MARWA-EXTRAIT-60",
+      "scope": "existing_public",
+      "priority": "remaining_public",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-BUJAIRAMI-HECTIC-100",
+      "scope": "existing_public",
+      "priority": "remaining_public",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-CREED-AVENTUS-100",
+      "scope": "existing_public",
+      "priority": "remaining_public",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-CREED-ABSOLU-AVENTUS-100",
+      "scope": "existing_public",
+      "priority": "remaining_public",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-AFNAN-SUPREMACY-COLLECTORS-100",
+      "scope": "existing_public",
+      "priority": "first_two_desktop_rows",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-MAISON-ASRAR-VANGUARD-100",
+      "scope": "existing_public",
+      "priority": "remaining_public",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-ARMAF-CDNIM-EDP-200",
+      "scope": "existing_public",
+      "priority": "remaining_public",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-MONTBLANC-EXPLORER-100",
+      "scope": "existing_public",
+      "priority": "remaining_public",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-PDM-LAYTON-125",
+      "scope": "existing_public",
+      "priority": "remaining_public",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-AL-HARAMAIN-DETOUR-NOIR-100",
+      "scope": "existing_public",
+      "priority": "first_two_desktop_rows",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-ORIENTICA-ROYAL-BLEU-80",
+      "scope": "existing_public",
+      "priority": "remaining_public",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-PDM-ALTHAIR-125",
+      "scope": "existing_public",
+      "priority": "remaining_public",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-FRENCH-AVENUE-LIQUID-BRUN-100",
+      "scope": "existing_public",
+      "priority": "remaining_public",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-BVLGARI-TYGAR-125",
+      "scope": "existing_public",
+      "priority": "remaining_public",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-SOSPIRO-VIBRATO-100",
+      "scope": "existing_public",
+      "priority": "remaining_public",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-AFNAN-TURATHI-BLUE-90",
+      "scope": "existing_public",
+      "priority": "first_two_desktop_rows",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-MAISON-ASRAR-REGENT-100",
+      "scope": "existing_public",
+      "priority": "remaining_public",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-ARMANI-SWY-INTENSELY-100",
+      "scope": "existing_public",
+      "priority": "remaining_public",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-XERJOFF-NAXOS-100",
+      "scope": "existing_public",
+      "priority": "remaining_public",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-NUSUK-ATEEQ-100",
+      "scope": "existing_public",
+      "priority": "remaining_public",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-RAYHAAN-ITALIA-100",
+      "scope": "existing_public",
+      "priority": "remaining_public",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-DIOR-HOMME-INTENSE-100",
+      "scope": "existing_public",
+      "priority": "remaining_public",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-AL-WATANIAH-KAYAAN-CLASSIC-100",
+      "scope": "existing_public",
+      "priority": "first_two_desktop_rows",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
+      "scope": "existing_public",
+      "priority": "remaining_public",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-CLIVE-CHRISTIAN-HEDONISTIC-50",
+      "scope": "existing_public",
+      "priority": "remaining_public",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-CHANEL-BLEU-DE-CHANEL-EDP-100",
+      "scope": "existing_public",
+      "priority": "remaining_public",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-DIOR-SAUVAGE-EDP-100",
+      "scope": "existing_public",
+      "priority": "remaining_public",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-PRADA-LHOMME-100",
+      "scope": "existing_public",
+      "priority": "remaining_public",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "scope": "existing_public",
+      "priority": "remaining_public",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-AL-AMBRA-DUBAI-MUSK-50",
+      "scope": "existing_public",
+      "priority": "first_two_desktop_rows",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+      "scope": "existing_public",
+      "priority": "remaining_public",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-PRADA-PARADOXE-EDP-90",
+      "scope": "review",
+      "priority": "review_wave",
+      "reason": "licensed_commons_photo_exact_90ml_unproven",
+      "next_evidence": "Independent evidence that this photographed bottle is 90 ml; then image approval."
+    },
+    {
+      "product_id": "SC-PRADA-PARADIGME-EDP-100",
+      "scope": "review",
+      "priority": "review_wave",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-MAISON-MARGIELA-BY-THE-FIREPLACE-EDT-100",
+      "scope": "review",
+      "priority": "review_wave",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-CAROLINA-HERRERA-GOOD-GIRL-EDP-80",
+      "scope": "review",
+      "priority": "review_wave",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-CHANEL-COCO-MADEMOISELLE-EDP-100",
+      "scope": "review",
+      "priority": "review_wave",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-VERSACE-EROS-EDP-100",
+      "scope": "review",
+      "priority": "review_wave",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-CHLOE-NOMADE-EDP-75",
+      "scope": "review",
+      "priority": "review_wave",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-GUCCI-FLORA-GORGEOUS-GARDENIA-EDP-100",
+      "scope": "review",
+      "priority": "review_wave",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+      "scope": "review",
+      "priority": "review_wave",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-MFK-BACCARAT-ROUGE-540-EDP-70",
+      "scope": "review",
+      "priority": "review_wave",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-VALENTINO-DONNA-BORN-IN-ROMA-EDP-100",
+      "scope": "review",
+      "priority": "review_wave",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-MUGLER-ALIEN-EDP-90",
+      "scope": "review",
+      "priority": "review_wave",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-BURBERRY-GODDESS-EDP-100",
+      "scope": "review",
+      "priority": "review_wave",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-YSL-Y-EDP-100",
+      "scope": "review",
+      "priority": "review_wave",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-CALVIN-KLEIN-EUPHORIA-EDP-100",
+      "scope": "review",
+      "priority": "review_wave",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-JPG-LE-MALE-ELIXIR-PARFUM-125",
+      "scope": "review",
+      "priority": "review_wave",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-PRADA-LHOMME-INTENSE-EDP-100",
+      "scope": "review",
+      "priority": "review_wave",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
+      "scope": "review",
+      "priority": "review_wave",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-LATTAFA-KHAMRAH-EDP-100",
+      "scope": "review",
+      "priority": "review_wave",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-HUGO-BOSS-BOTTLED-EDT-100",
+      "scope": "review",
+      "priority": "review_wave",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-HUGO-BOSS-BOTTLED-ABSOLU-100",
+      "scope": "review",
+      "priority": "review_wave",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+      "scope": "review",
+      "priority": "review_wave",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-PDM-HEROD-EDP-125",
+      "scope": "review",
+      "priority": "review_wave",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-NISHANE-ANI-EXTRAIT-100",
+      "scope": "review",
+      "priority": "review_wave",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-AMOUAGE-REFLECTION-MAN-EDP-100",
+      "scope": "review",
+      "priority": "review_wave",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-TOM-FORD-OMBRE-LEATHER-EDP-100",
+      "scope": "review",
+      "priority": "review_wave",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-TOM-FORD-OUD-WOOD-EDP-100",
+      "scope": "review",
+      "priority": "review_wave",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    },
+    {
+      "product_id": "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100",
+      "scope": "review",
+      "priority": "review_wave",
+      "reason": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "next_evidence": "Exact official feed asset row plus current eligible program rights and volume/concentration match; or explicit commercial asset licence. Public image URL alone is insufficient."
+    }
+  ],
+  "profiles": [
+    {
+      "product_id": "SC-PRADA-PARADOXE-EDP-90",
+      "public_path": "/duft/prada-paradoxe-edp-90",
+      "stages": [
+        {
+          "name": "FACTS_QUALIFIED",
+          "complete": true
+        },
+        {
+          "name": "VARIANT_CHECKED",
+          "complete": true
+        },
+        {
+          "name": "VISUAL_READY",
+          "complete": true
+        },
+        {
+          "name": "FUNCTIONAL_QA",
+          "complete": true
+        },
+        {
+          "name": "OWNER_REVIEW",
+          "complete": false
+        },
+        {
+          "name": "PUBLIC_RELEASE",
+          "complete": false
+        }
+      ],
+      "blockers": [
+        "OWNER_REVIEW"
+      ],
+      "eligible": false,
+      "evidence_sha256": "6d8c1ace427974ef975643cd63050e60d92a1e6e67cf35a9cfc739261db63e4b",
+      "render_sha256": "95a8f2fbea03a8b1e6b776eecd3f789641370efa64619985f97a94e05ae40fb3",
+      "qa_sha256": "4e9baaa23f6c3941a3e358c62e3218004081937b40a069b40c0c713957068773",
+      "original_photo_status": "licensed_source_exact_volume_unproven",
+      "affiliate_required": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-PRADA-PARADIGME-EDP-100",
+      "public_path": "/duft/prada-paradigme-edp-100",
+      "stages": [
+        {
+          "name": "FACTS_QUALIFIED",
+          "complete": true
+        },
+        {
+          "name": "VARIANT_CHECKED",
+          "complete": true
+        },
+        {
+          "name": "VISUAL_READY",
+          "complete": true
+        },
+        {
+          "name": "FUNCTIONAL_QA",
+          "complete": true
+        },
+        {
+          "name": "OWNER_REVIEW",
+          "complete": false
+        },
+        {
+          "name": "PUBLIC_RELEASE",
+          "complete": false
+        }
+      ],
+      "blockers": [
+        "OWNER_REVIEW"
+      ],
+      "eligible": false,
+      "evidence_sha256": "670371ecdd97f2bfb26724ee6bc880315258ed4486226a09fea30c35853621e5",
+      "render_sha256": "965a7e13c7f692e403219aa99b4245ee3697c1f5caf64b65e1a278abaa5561b4",
+      "qa_sha256": "fec8178d0f5269385907eac30b270fb052b76d4f3a1bbf99a8226034f870ce99",
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "affiliate_required": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-MAISON-MARGIELA-BY-THE-FIREPLACE-EDT-100",
+      "public_path": "/duft/maison-margiela-by-the-fireplace-edt-100",
+      "stages": [
+        {
+          "name": "FACTS_QUALIFIED",
+          "complete": true
+        },
+        {
+          "name": "VARIANT_CHECKED",
+          "complete": true
+        },
+        {
+          "name": "VISUAL_READY",
+          "complete": true
+        },
+        {
+          "name": "FUNCTIONAL_QA",
+          "complete": true
+        },
+        {
+          "name": "OWNER_REVIEW",
+          "complete": false
+        },
+        {
+          "name": "PUBLIC_RELEASE",
+          "complete": false
+        }
+      ],
+      "blockers": [
+        "OWNER_REVIEW"
+      ],
+      "eligible": false,
+      "evidence_sha256": "9bb113f85e93e969a2ff807ecddaf907c8f47ac44d67f73cce6efed4914dfac9",
+      "render_sha256": "19c729a8ccdde7f210fd85a1cabd145233758ad93d491f5962fb358c5598e05d",
+      "qa_sha256": "5ea510c6e34dfa260be796ffc7364658c51074f88d7691d60b68c02a4f2aa9c0",
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "affiliate_required": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-CAROLINA-HERRERA-GOOD-GIRL-EDP-80",
+      "public_path": "/duft/carolina-herrera-good-girl-edp-80",
+      "stages": [
+        {
+          "name": "FACTS_QUALIFIED",
+          "complete": true
+        },
+        {
+          "name": "VARIANT_CHECKED",
+          "complete": true
+        },
+        {
+          "name": "VISUAL_READY",
+          "complete": true
+        },
+        {
+          "name": "FUNCTIONAL_QA",
+          "complete": true
+        },
+        {
+          "name": "OWNER_REVIEW",
+          "complete": false
+        },
+        {
+          "name": "PUBLIC_RELEASE",
+          "complete": false
+        }
+      ],
+      "blockers": [
+        "OWNER_REVIEW"
+      ],
+      "eligible": false,
+      "evidence_sha256": "9f87be56ae2fb198b57562094a0e0568fa6788f1e0fa58924329dbdcabe15bd6",
+      "render_sha256": "e857772f904e962eec953fd5177cf3d18f0fcc5573c98b8a0f1779e444c0bef0",
+      "qa_sha256": "79462f62b58be4b1e14fbe9e0449aebd6937361913d8cbac4d0c7134eb9b1b3e",
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "affiliate_required": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-CHANEL-COCO-MADEMOISELLE-EDP-100",
+      "public_path": "/duft/chanel-coco-mademoiselle-edp-100",
+      "stages": [
+        {
+          "name": "FACTS_QUALIFIED",
+          "complete": true
+        },
+        {
+          "name": "VARIANT_CHECKED",
+          "complete": true
+        },
+        {
+          "name": "VISUAL_READY",
+          "complete": true
+        },
+        {
+          "name": "FUNCTIONAL_QA",
+          "complete": true
+        },
+        {
+          "name": "OWNER_REVIEW",
+          "complete": false
+        },
+        {
+          "name": "PUBLIC_RELEASE",
+          "complete": false
+        }
+      ],
+      "blockers": [
+        "OWNER_REVIEW"
+      ],
+      "eligible": false,
+      "evidence_sha256": "8e4a0c95df4afef578dd51a6cd8edf4c0d7325bb268d8b1d9265ec793b2d9b65",
+      "render_sha256": "aba5a23980e9d1d7bc943b2f503e3fb8c70bb24e18c68a647520e38b02323cdb",
+      "qa_sha256": "ae8ee2d07ebfd46ac73281538c5e007c6f88d22530f5aafbd8f4f179f8899f5a",
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "affiliate_required": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-VERSACE-EROS-EDP-100",
+      "public_path": "/duft/versace-eros-edp-100",
+      "stages": [
+        {
+          "name": "FACTS_QUALIFIED",
+          "complete": true
+        },
+        {
+          "name": "VARIANT_CHECKED",
+          "complete": true
+        },
+        {
+          "name": "VISUAL_READY",
+          "complete": true
+        },
+        {
+          "name": "FUNCTIONAL_QA",
+          "complete": true
+        },
+        {
+          "name": "OWNER_REVIEW",
+          "complete": false
+        },
+        {
+          "name": "PUBLIC_RELEASE",
+          "complete": false
+        }
+      ],
+      "blockers": [
+        "OWNER_REVIEW"
+      ],
+      "eligible": false,
+      "evidence_sha256": "f2b12798090809b1ba69e55ef92c5452cdfb42eb67c1ec41a48fd58a070ff892",
+      "render_sha256": "4d27594c01c1e57fdad6df160ac1e1759247648af44c062dab21494621137e01",
+      "qa_sha256": "d48956cb82d47e0513bf06035b632aad4683b9219fd87d82c749fc9ed25349c9",
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "affiliate_required": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-CHLOE-NOMADE-EDP-75",
+      "public_path": "/duft/chloe-nomade-edp-75",
+      "stages": [
+        {
+          "name": "FACTS_QUALIFIED",
+          "complete": true
+        },
+        {
+          "name": "VARIANT_CHECKED",
+          "complete": true
+        },
+        {
+          "name": "VISUAL_READY",
+          "complete": true
+        },
+        {
+          "name": "FUNCTIONAL_QA",
+          "complete": true
+        },
+        {
+          "name": "OWNER_REVIEW",
+          "complete": false
+        },
+        {
+          "name": "PUBLIC_RELEASE",
+          "complete": false
+        }
+      ],
+      "blockers": [
+        "OWNER_REVIEW"
+      ],
+      "eligible": false,
+      "evidence_sha256": "6b5246a7e23bcde16bc2897a4e88b533b05e169b1310b971466cf31e795f8816",
+      "render_sha256": "1b0819d51f7fa42d922ca2e2160ecc212c3c3f982887126f9bf1cf3cc5c452da",
+      "qa_sha256": "b738e88a7d0206103378e820bcbfa9f901a0887460ea03295a152c8ecd472b77",
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "affiliate_required": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-GUCCI-FLORA-GORGEOUS-GARDENIA-EDP-100",
+      "public_path": "/duft/gucci-flora-gorgeous-gardenia-edp-100",
+      "stages": [
+        {
+          "name": "FACTS_QUALIFIED",
+          "complete": true
+        },
+        {
+          "name": "VARIANT_CHECKED",
+          "complete": true
+        },
+        {
+          "name": "VISUAL_READY",
+          "complete": true
+        },
+        {
+          "name": "FUNCTIONAL_QA",
+          "complete": true
+        },
+        {
+          "name": "OWNER_REVIEW",
+          "complete": false
+        },
+        {
+          "name": "PUBLIC_RELEASE",
+          "complete": false
+        }
+      ],
+      "blockers": [
+        "OWNER_REVIEW"
+      ],
+      "eligible": false,
+      "evidence_sha256": "d0c025d2e2a5cec04cfaa66439bf307b6a8f380c8ace1a85337684179ff1d09c",
+      "render_sha256": "f7def266e65cc9b1dd879706eec3ed36c06a5bebd37eedd6ab8c12d39ce63430",
+      "qa_sha256": "f2771ecdc215693d27d3a322f02d95bafbbc8524fedfd418835146afa52a07a0",
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "affiliate_required": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+      "public_path": "/duft/guerlain-mon-guerlain-edp-100",
+      "stages": [
+        {
+          "name": "FACTS_QUALIFIED",
+          "complete": true
+        },
+        {
+          "name": "VARIANT_CHECKED",
+          "complete": true
+        },
+        {
+          "name": "VISUAL_READY",
+          "complete": true
+        },
+        {
+          "name": "FUNCTIONAL_QA",
+          "complete": true
+        },
+        {
+          "name": "OWNER_REVIEW",
+          "complete": false
+        },
+        {
+          "name": "PUBLIC_RELEASE",
+          "complete": false
+        }
+      ],
+      "blockers": [
+        "OWNER_REVIEW"
+      ],
+      "eligible": false,
+      "evidence_sha256": "df9bf85e4c6bac4d2ec73c986921a7b7a690724a2685d328e94336b46f29bba1",
+      "render_sha256": "1d90aec77bd6c713e7becb90b6fd5a6757f4bbbd5268ee51ac58d854be895740",
+      "qa_sha256": "1e6ea025d3e84b3bd9d1127aa9ab048462dfc41c5c2420bd2b9beb926fb618ee",
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "affiliate_required": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-MFK-BACCARAT-ROUGE-540-EDP-70",
+      "public_path": "/duft/mfk-baccarat-rouge-540-edp-70",
+      "stages": [
+        {
+          "name": "FACTS_QUALIFIED",
+          "complete": true
+        },
+        {
+          "name": "VARIANT_CHECKED",
+          "complete": true
+        },
+        {
+          "name": "VISUAL_READY",
+          "complete": true
+        },
+        {
+          "name": "FUNCTIONAL_QA",
+          "complete": true
+        },
+        {
+          "name": "OWNER_REVIEW",
+          "complete": false
+        },
+        {
+          "name": "PUBLIC_RELEASE",
+          "complete": false
+        }
+      ],
+      "blockers": [
+        "OWNER_REVIEW"
+      ],
+      "eligible": false,
+      "evidence_sha256": "cac3d82f181dfd5ba5fcead4b1fcc8a00b6bfec9ff5cade70fb6b5dcb7af3332",
+      "render_sha256": "11b563b839d058cdee74be1fc5812b435679aad0cc959c71774b34a8bac96e96",
+      "qa_sha256": "21576bb3f43bf3a8bbb852718b66e042fa45a97713eae2676e2bb494bde132ef",
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "affiliate_required": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-VALENTINO-DONNA-BORN-IN-ROMA-EDP-100",
+      "public_path": "/duft/valentino-donna-born-in-roma-edp-100",
+      "stages": [
+        {
+          "name": "FACTS_QUALIFIED",
+          "complete": true
+        },
+        {
+          "name": "VARIANT_CHECKED",
+          "complete": true
+        },
+        {
+          "name": "VISUAL_READY",
+          "complete": true
+        },
+        {
+          "name": "FUNCTIONAL_QA",
+          "complete": true
+        },
+        {
+          "name": "OWNER_REVIEW",
+          "complete": false
+        },
+        {
+          "name": "PUBLIC_RELEASE",
+          "complete": false
+        }
+      ],
+      "blockers": [
+        "OWNER_REVIEW"
+      ],
+      "eligible": false,
+      "evidence_sha256": "81e0a9227afec539f747882def6b588ae4dbd286dc77b2bdf71e931c2ad5a9f6",
+      "render_sha256": "0aaab59472ce2e3d078d1e1371961658433d1674af0714aeb7e5af3c1635800d",
+      "qa_sha256": "a7bd32b79fbc2ceca2572e89dd8da5bf3fe6269de50f41e000887951b2aac695",
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "affiliate_required": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-MUGLER-ALIEN-EDP-90",
+      "public_path": "/duft/mugler-alien-edp-90",
+      "stages": [
+        {
+          "name": "FACTS_QUALIFIED",
+          "complete": true
+        },
+        {
+          "name": "VARIANT_CHECKED",
+          "complete": true
+        },
+        {
+          "name": "VISUAL_READY",
+          "complete": true
+        },
+        {
+          "name": "FUNCTIONAL_QA",
+          "complete": true
+        },
+        {
+          "name": "OWNER_REVIEW",
+          "complete": false
+        },
+        {
+          "name": "PUBLIC_RELEASE",
+          "complete": false
+        }
+      ],
+      "blockers": [
+        "OWNER_REVIEW"
+      ],
+      "eligible": false,
+      "evidence_sha256": "39887bdfabd8dad4869272d8201dd2bbcef44001a71465795d917980f029802f",
+      "render_sha256": "95041087024cbd8c79da9563738401e60f21e09a8527a0880fd952ed4327030d",
+      "qa_sha256": "8f07b8cc3c6b653e432902827e79e89d6ca24bdc596fc91782d1ad12678fb158",
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "affiliate_required": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-BURBERRY-GODDESS-EDP-100",
+      "public_path": "/duft/burberry-goddess-edp-100",
+      "stages": [
+        {
+          "name": "FACTS_QUALIFIED",
+          "complete": true
+        },
+        {
+          "name": "VARIANT_CHECKED",
+          "complete": true
+        },
+        {
+          "name": "VISUAL_READY",
+          "complete": true
+        },
+        {
+          "name": "FUNCTIONAL_QA",
+          "complete": true
+        },
+        {
+          "name": "OWNER_REVIEW",
+          "complete": false
+        },
+        {
+          "name": "PUBLIC_RELEASE",
+          "complete": false
+        }
+      ],
+      "blockers": [
+        "OWNER_REVIEW"
+      ],
+      "eligible": false,
+      "evidence_sha256": "58227bd1036dea95c02c705eb3a59bc635f1ff5953f280e34ad831777dc7c428",
+      "render_sha256": "5a387760d54f116f8c54be9a5dc7441efe5aa38784c99ef252b15f3fd008d651",
+      "qa_sha256": "9902a0c6f6f6e2f6a4e15a5b2df883a9656752c0d5af9de65d08647acf10fae8",
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "affiliate_required": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-YSL-Y-EDP-100",
+      "public_path": "/duft/ysl-y-edp-100",
+      "stages": [
+        {
+          "name": "FACTS_QUALIFIED",
+          "complete": true
+        },
+        {
+          "name": "VARIANT_CHECKED",
+          "complete": true
+        },
+        {
+          "name": "VISUAL_READY",
+          "complete": true
+        },
+        {
+          "name": "FUNCTIONAL_QA",
+          "complete": true
+        },
+        {
+          "name": "OWNER_REVIEW",
+          "complete": false
+        },
+        {
+          "name": "PUBLIC_RELEASE",
+          "complete": false
+        }
+      ],
+      "blockers": [
+        "OWNER_REVIEW"
+      ],
+      "eligible": false,
+      "evidence_sha256": "876ebbf15cadd472d596a9042feb262f57b8fe6bfbb6353c93520dce17a6d8bc",
+      "render_sha256": "9078c377d9baed3934b0ebeaac349d7f7bebc1c511c2ca2ac9e3db2b29cebed6",
+      "qa_sha256": "3be68eabd469661c88e3f46ec2d96e37f36708a0a129c87163cfe240a6fb8ea4",
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "affiliate_required": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-CALVIN-KLEIN-EUPHORIA-EDP-100",
+      "public_path": "/duft/calvin-klein-euphoria-edp-100",
+      "stages": [
+        {
+          "name": "FACTS_QUALIFIED",
+          "complete": true
+        },
+        {
+          "name": "VARIANT_CHECKED",
+          "complete": true
+        },
+        {
+          "name": "VISUAL_READY",
+          "complete": true
+        },
+        {
+          "name": "FUNCTIONAL_QA",
+          "complete": true
+        },
+        {
+          "name": "OWNER_REVIEW",
+          "complete": false
+        },
+        {
+          "name": "PUBLIC_RELEASE",
+          "complete": false
+        }
+      ],
+      "blockers": [
+        "OWNER_REVIEW"
+      ],
+      "eligible": false,
+      "evidence_sha256": "6e3e533bf1f51d1ab43c431a1f11fc89f077d09d3472cac3cd64dfa78865316c",
+      "render_sha256": "c18cf4d91071b81e580d0efc12a6eb60eb495075ca4d8400acc7493ab8caae0e",
+      "qa_sha256": "d1903b9b23315a201fcf9092b38b78371839fcad32c2cd1b5d981d0c5c9be1fc",
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "affiliate_required": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-JPG-LE-MALE-ELIXIR-PARFUM-125",
+      "public_path": "/duft/jpg-le-male-elixir-parfum-125",
+      "stages": [
+        {
+          "name": "FACTS_QUALIFIED",
+          "complete": true
+        },
+        {
+          "name": "VARIANT_CHECKED",
+          "complete": true
+        },
+        {
+          "name": "VISUAL_READY",
+          "complete": true
+        },
+        {
+          "name": "FUNCTIONAL_QA",
+          "complete": true
+        },
+        {
+          "name": "OWNER_REVIEW",
+          "complete": false
+        },
+        {
+          "name": "PUBLIC_RELEASE",
+          "complete": false
+        }
+      ],
+      "blockers": [
+        "OWNER_REVIEW"
+      ],
+      "eligible": false,
+      "evidence_sha256": "f5a220c33de8642258230981c27319a7ec19cdcb088e7e8457dd0d172deea6f8",
+      "render_sha256": "81c4a7c8d672a589912574a30cde63a8328b07aa3c070187f2e0cbe9dbe13b09",
+      "qa_sha256": "4445a037462d8ee79c7262f7c91e52c19f236984e4450cc353af6ebdcf0e15f1",
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "affiliate_required": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-PRADA-LHOMME-INTENSE-EDP-100",
+      "public_path": "/duft/prada-lhomme-intense-edp-100",
+      "stages": [
+        {
+          "name": "FACTS_QUALIFIED",
+          "complete": true
+        },
+        {
+          "name": "VARIANT_CHECKED",
+          "complete": true
+        },
+        {
+          "name": "VISUAL_READY",
+          "complete": true
+        },
+        {
+          "name": "FUNCTIONAL_QA",
+          "complete": true
+        },
+        {
+          "name": "OWNER_REVIEW",
+          "complete": false
+        },
+        {
+          "name": "PUBLIC_RELEASE",
+          "complete": false
+        }
+      ],
+      "blockers": [
+        "OWNER_REVIEW"
+      ],
+      "eligible": false,
+      "evidence_sha256": "2e7342c46c56922ad8a720ffcc3733bd509c21e5997a8b964df5dca89f7990aa",
+      "render_sha256": "f48181fb26f037b607c13ed151533dd58a8535f6485750213c53a0111d0fcddc",
+      "qa_sha256": "bb8975679b67e98c0703eaf90c8df0348f4b2cab8e8c9d3a7a1ee8251e07f22b",
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "affiliate_required": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
+      "public_path": "/duft/lattafa-eclaire-edp-100",
+      "stages": [
+        {
+          "name": "FACTS_QUALIFIED",
+          "complete": true
+        },
+        {
+          "name": "VARIANT_CHECKED",
+          "complete": true
+        },
+        {
+          "name": "VISUAL_READY",
+          "complete": true
+        },
+        {
+          "name": "FUNCTIONAL_QA",
+          "complete": true
+        },
+        {
+          "name": "OWNER_REVIEW",
+          "complete": false
+        },
+        {
+          "name": "PUBLIC_RELEASE",
+          "complete": false
+        }
+      ],
+      "blockers": [
+        "OWNER_REVIEW"
+      ],
+      "eligible": false,
+      "evidence_sha256": "2260d92bd4fa39f3180047b5805dc7551f16befa70ec3bdd1c184da280c9b301",
+      "render_sha256": "0b37b8d69fde37d8c076a45ab226631e82a3edddb141b0cbc55db7cbe1b0e7ee",
+      "qa_sha256": "aeb79ef0b1712bfb90eb93504d64588879e00372ae3e9ce3fb832fdb60ebfaec",
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "affiliate_required": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-LATTAFA-KHAMRAH-EDP-100",
+      "public_path": "/duft/lattafa-khamrah-edp-100",
+      "stages": [
+        {
+          "name": "FACTS_QUALIFIED",
+          "complete": true
+        },
+        {
+          "name": "VARIANT_CHECKED",
+          "complete": true
+        },
+        {
+          "name": "VISUAL_READY",
+          "complete": true
+        },
+        {
+          "name": "FUNCTIONAL_QA",
+          "complete": true
+        },
+        {
+          "name": "OWNER_REVIEW",
+          "complete": false
+        },
+        {
+          "name": "PUBLIC_RELEASE",
+          "complete": false
+        }
+      ],
+      "blockers": [
+        "OWNER_REVIEW"
+      ],
+      "eligible": false,
+      "evidence_sha256": "e241274ea36967d2dd5c657be9f41a335d55d17659339b13fb1e7b22c96b644f",
+      "render_sha256": "9249b4da9c95af0a4c9abbc2289fa6fe9df567d8084c3518544ec0e413ac3e8d",
+      "qa_sha256": "29fb68f1c56d52b6c2645defcbab72224cdad2d759f90760b40c4ab411986b1f",
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "affiliate_required": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-HUGO-BOSS-BOTTLED-EDT-100",
+      "public_path": "/duft/hugo-boss-bottled-edt-100",
+      "stages": [
+        {
+          "name": "FACTS_QUALIFIED",
+          "complete": true
+        },
+        {
+          "name": "VARIANT_CHECKED",
+          "complete": true
+        },
+        {
+          "name": "VISUAL_READY",
+          "complete": true
+        },
+        {
+          "name": "FUNCTIONAL_QA",
+          "complete": true
+        },
+        {
+          "name": "OWNER_REVIEW",
+          "complete": false
+        },
+        {
+          "name": "PUBLIC_RELEASE",
+          "complete": false
+        }
+      ],
+      "blockers": [
+        "OWNER_REVIEW"
+      ],
+      "eligible": false,
+      "evidence_sha256": "76772d55038fb05aed57c5b2497c796484f3a67e0d1d55c6b66b981b0d6cab59",
+      "render_sha256": "55ccad314b71f436a97016e180929bc07fb9995c90f5bf4929be2e9108324f30",
+      "qa_sha256": "4e95d59e479f7f39aa96f6602ab218b47979f13bb74f46a4964f2e1d69bd3ad9",
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "affiliate_required": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-HUGO-BOSS-BOTTLED-ABSOLU-100",
+      "public_path": "/duft/hugo-boss-bottled-absolu-100",
+      "stages": [
+        {
+          "name": "FACTS_QUALIFIED",
+          "complete": true
+        },
+        {
+          "name": "VARIANT_CHECKED",
+          "complete": false
+        },
+        {
+          "name": "VISUAL_READY",
+          "complete": false
+        },
+        {
+          "name": "FUNCTIONAL_QA",
+          "complete": false
+        },
+        {
+          "name": "OWNER_REVIEW",
+          "complete": false
+        },
+        {
+          "name": "PUBLIC_RELEASE",
+          "complete": false
+        }
+      ],
+      "blockers": [
+        "VARIANT_SOURCE_CONFLICT",
+        "OWNER_REVIEW"
+      ],
+      "eligible": false,
+      "evidence_sha256": "47301483597574ef759b4cb5bcee467fab64d5f24a9eb7b8290f0cd42f410985",
+      "render_sha256": "ead6027541d6d89d53512a7e419416720bd3422b4e529a0af8f9883a3b446aa1",
+      "qa_sha256": "6bf0f00e9a1a6842cd23b978d2b25ec784fed4e9fc189611a4e55a23f6450193",
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "affiliate_required": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+      "public_path": "/duft/dior-hypnotic-poison-edt-100",
+      "stages": [
+        {
+          "name": "FACTS_QUALIFIED",
+          "complete": true
+        },
+        {
+          "name": "VARIANT_CHECKED",
+          "complete": true
+        },
+        {
+          "name": "VISUAL_READY",
+          "complete": true
+        },
+        {
+          "name": "FUNCTIONAL_QA",
+          "complete": true
+        },
+        {
+          "name": "OWNER_REVIEW",
+          "complete": false
+        },
+        {
+          "name": "PUBLIC_RELEASE",
+          "complete": false
+        }
+      ],
+      "blockers": [
+        "OWNER_REVIEW"
+      ],
+      "eligible": false,
+      "evidence_sha256": "59df6761bf5ee80466662ced76093140dc8ce49be9a9406d39c701ccf8ebe3e2",
+      "render_sha256": "ea3f78a09e91b03fce39500895405929d7aab0abee6eafa3de102a3cbbde11fb",
+      "qa_sha256": "652bc70466eacc0397605e4e796b9fc20992138c1561d62b9caaaf3f204095fa",
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "affiliate_required": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-PDM-HEROD-EDP-125",
+      "public_path": "/duft/pdm-herod-edp-125",
+      "stages": [
+        {
+          "name": "FACTS_QUALIFIED",
+          "complete": true
+        },
+        {
+          "name": "VARIANT_CHECKED",
+          "complete": true
+        },
+        {
+          "name": "VISUAL_READY",
+          "complete": true
+        },
+        {
+          "name": "FUNCTIONAL_QA",
+          "complete": true
+        },
+        {
+          "name": "OWNER_REVIEW",
+          "complete": false
+        },
+        {
+          "name": "PUBLIC_RELEASE",
+          "complete": false
+        }
+      ],
+      "blockers": [
+        "OWNER_REVIEW"
+      ],
+      "eligible": false,
+      "evidence_sha256": "d6f3a528a62d13d07c2f3f3625b3029e0697a181d212e2aecb222ca4814d1611",
+      "render_sha256": "67fc4c89a1a10a9086afff8ecad1ecbcc2c1e513104390a0baeb59c0977f4845",
+      "qa_sha256": "323f86ec34f745bfd6b14026231df6a38243cefb3dd5e52384908b2170463993",
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "affiliate_required": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-NISHANE-ANI-EXTRAIT-100",
+      "public_path": "/duft/nishane-ani-extrait-100",
+      "stages": [
+        {
+          "name": "FACTS_QUALIFIED",
+          "complete": true
+        },
+        {
+          "name": "VARIANT_CHECKED",
+          "complete": true
+        },
+        {
+          "name": "VISUAL_READY",
+          "complete": true
+        },
+        {
+          "name": "FUNCTIONAL_QA",
+          "complete": true
+        },
+        {
+          "name": "OWNER_REVIEW",
+          "complete": false
+        },
+        {
+          "name": "PUBLIC_RELEASE",
+          "complete": false
+        }
+      ],
+      "blockers": [
+        "OWNER_REVIEW"
+      ],
+      "eligible": false,
+      "evidence_sha256": "048fe9660669d5ce36a08633a22a69cae99db688732b4a6aa62c7c98fb943368",
+      "render_sha256": "33772e03ceb520ac0bb27c26ae806130f667fda3d22622f24da031dc533b9b38",
+      "qa_sha256": "160085af28dd9b812407d4b688f7fdefeb4de89b38210df34c4c30ea3c101ac6",
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "affiliate_required": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-AMOUAGE-REFLECTION-MAN-EDP-100",
+      "public_path": "/duft/amouage-reflection-man-edp-100",
+      "stages": [
+        {
+          "name": "FACTS_QUALIFIED",
+          "complete": true
+        },
+        {
+          "name": "VARIANT_CHECKED",
+          "complete": true
+        },
+        {
+          "name": "VISUAL_READY",
+          "complete": true
+        },
+        {
+          "name": "FUNCTIONAL_QA",
+          "complete": true
+        },
+        {
+          "name": "OWNER_REVIEW",
+          "complete": false
+        },
+        {
+          "name": "PUBLIC_RELEASE",
+          "complete": false
+        }
+      ],
+      "blockers": [
+        "OWNER_REVIEW"
+      ],
+      "eligible": false,
+      "evidence_sha256": "431f23df1a7ab51adf9b0e40c970a36ec9962740bac04ed2ddf3c364fb09a2ae",
+      "render_sha256": "aca715bbecd46a63be2490e67a6e0eecd4ee9aa549d67d821ca22471b9514420",
+      "qa_sha256": "b3ae8327fd0d6748252a58cd2269145187ea8922e667433a213a5de0e9bc4518",
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "affiliate_required": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-TOM-FORD-OMBRE-LEATHER-EDP-100",
+      "public_path": "/duft/tom-ford-ombre-leather-edp-100",
+      "stages": [
+        {
+          "name": "FACTS_QUALIFIED",
+          "complete": true
+        },
+        {
+          "name": "VARIANT_CHECKED",
+          "complete": true
+        },
+        {
+          "name": "VISUAL_READY",
+          "complete": true
+        },
+        {
+          "name": "FUNCTIONAL_QA",
+          "complete": true
+        },
+        {
+          "name": "OWNER_REVIEW",
+          "complete": false
+        },
+        {
+          "name": "PUBLIC_RELEASE",
+          "complete": false
+        }
+      ],
+      "blockers": [
+        "OWNER_REVIEW"
+      ],
+      "eligible": false,
+      "evidence_sha256": "df706e0457fa730922224568ea3fef62d05a4cbc7943a143c43e411a85e493bb",
+      "render_sha256": "133aeb792e1e3e83cff6b82b5bc1bdd70c6fb8f9163fc29b59f229efba688bac",
+      "qa_sha256": "946adbd2e0f803a0929aa745eab871d4f48f3c7d4c5efd23826b0ba0dc2d5c80",
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "affiliate_required": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-TOM-FORD-OUD-WOOD-EDP-100",
+      "public_path": "/duft/tom-ford-oud-wood-edp-100",
+      "stages": [
+        {
+          "name": "FACTS_QUALIFIED",
+          "complete": true
+        },
+        {
+          "name": "VARIANT_CHECKED",
+          "complete": true
+        },
+        {
+          "name": "VISUAL_READY",
+          "complete": true
+        },
+        {
+          "name": "FUNCTIONAL_QA",
+          "complete": true
+        },
+        {
+          "name": "OWNER_REVIEW",
+          "complete": false
+        },
+        {
+          "name": "PUBLIC_RELEASE",
+          "complete": false
+        }
+      ],
+      "blockers": [
+        "OWNER_REVIEW"
+      ],
+      "eligible": false,
+      "evidence_sha256": "0c66adf8eeac28d63b6b7f2324f5c8de234b7e7abd8be151d58bcfa01dca8e5b",
+      "render_sha256": "1caac1c0bbf2144162b6b0079ea883fb023f6066df751bfdf87c7beb9b3d5882",
+      "qa_sha256": "928c813344bd008f4d21e81414d583e0ebbdf31b09e4e7ee83038100df3fe0f7",
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "affiliate_required": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100",
+      "public_path": "/duft/narciso-rodriguez-pure-musc-edp-100",
+      "stages": [
+        {
+          "name": "FACTS_QUALIFIED",
+          "complete": true
+        },
+        {
+          "name": "VARIANT_CHECKED",
+          "complete": true
+        },
+        {
+          "name": "VISUAL_READY",
+          "complete": true
+        },
+        {
+          "name": "FUNCTIONAL_QA",
+          "complete": true
+        },
+        {
+          "name": "OWNER_REVIEW",
+          "complete": false
+        },
+        {
+          "name": "PUBLIC_RELEASE",
+          "complete": false
+        }
+      ],
+      "blockers": [
+        "OWNER_REVIEW"
+      ],
+      "eligible": false,
+      "evidence_sha256": "dc09c85763739fb577c1f52e954560d7b240dae1529bd0229b416e14aacb6ca8",
+      "render_sha256": "c3b37c3045892f85a81996347b5f010722307dc1b0b09eac976e2bea47ffbc2d",
+      "qa_sha256": "58306241193ce330650e13f5729a9d4bbe3b385c85333380173f4a6445d2fd5d",
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "affiliate_required": false,
+      "indexing_approved": false
+    }
+  ],
+  "approval_instructions": "Owner accepts exact IDs, bound evidence/render/QA hashes, variant and illustration standard; record approvals with identity, date and reference. Rebuild uses existing public routes and catalogue integration. Indexing and deployment require separate GO. No approval is generated by this report."
+}

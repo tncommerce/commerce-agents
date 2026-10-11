@@ -3,12 +3,12 @@ import {readFileSync} from 'node:fs';
 export const canonical=value=>Array.isArray(value)?`[${value.map(canonical).join(', ')}]`:value&&typeof value==='object'?`{${Object.entries(value).sort(([a],[b])=>a<b?-1:a>b?1:0).map(([k,v])=>`${JSON.stringify(k)}: ${canonical(v)}`).join(', ')}}`:JSON.stringify(value);
 export const digest=value=>createHash('sha256').update(typeof value==='string'?value:canonical(value)).digest('hex');
 export const readData=name=>JSON.parse(readFileSync(new URL(`../../data/${name}`,import.meta.url),'utf8'));
-const renderFiles=['components/QualifiedProductPage.tsx','components/ScentArtwork.tsx','components/ScentStudy.tsx','components/ScentStudy.module.css','components/ScentScene.tsx','app/review/duft/[slug]/review.module.css','lib/noteLabels.ts','lib/brandIdentity.ts','../data/dufynd_release_pilots.json','../data/dufynd_discovery_qualification.json'];
+const renderFiles=['components/QualifiedProductPage.tsx','components/ScentArtwork.tsx','components/ScentStudy.tsx','components/ScentStudy.module.css','components/ScentScene.tsx','app/review/duft/[slug]/review.module.css','app/globals.css','app/layout.tsx','lib/noteLabels.ts','lib/brandIdentity.ts','../data/dufynd_release_pilots.json','../data/dufynd_discovery_qualification.json'];
 export const rendererDigest=()=>digest(renderFiles.map(p=>[p,readFileSync(new URL(`../${p}`,import.meta.url),'utf8')]));
 export const renderDigest=(p,renderer)=>digest({renderer,presentation:{slug:p.slug,motif:p.motif,tone:p.tone,headline:p.headline,art_notes:p.art_notes,visual:p.visual,seo:p.seo}});
 export function evaluateRelease(f,p,qa,approval,holds,renderer){
  const blockers=[];
- const facts=Boolean(f?.identity?.verified&&f.facts_only&&f.community_data_included===false&&Object.values(f.notes||{}).some(n=>n.length)&&f.notes_source?.url);
+ const facts=Boolean(f?.identity?.verified&&['gtin','manufacturer_reference'].includes(f.identity.kind)&&f.facts_only&&f.community_data_included===false&&Object.values(f.notes||{}).some(n=>n.length)&&f.notes_source?.url);
  if(!facts||p.evidence_sha256!==digest(f))blockers.push('FACTS_EVIDENCE');
  if(['product_id','brand','name','concentration','volume_ml'].some(k=>p.expected_variant[k]!==f[k]))blockers.push('VARIANT_MISMATCH');
  if(holds.some(h=>h.product_id===p.product_id))blockers.push('VARIANT_SOURCE_CONFLICT');
@@ -26,5 +26,7 @@ export function evaluateRelease(f,p,qa,approval,holds,renderer){
 export function releaseState(){
  const facts=readData('dufynd_discovery_qualification.json').products, pilots=readData('dufynd_release_pilots.json').pilots, auth=readData('dufynd_release_authorizations.json'), qa=readData('dufynd_release_qa.json').profiles, renderer=rendererDigest();
  for(const [label,rows,key] of [['product',pilots,'product_id'],['slug',pilots,'slug'],['approval',auth.approvals,'product_id'],['qa',qa,'product_id']])if(new Set(rows.map(p=>p[key])).size!==rows.length)throw Error(`Duplicate ${label}`);
+ for(const p of pilots)if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(p.slug)||p.seo.public_path!==`/duft/${p.slug}`)throw Error(`Invalid release path: ${p.product_id}`);
+ for(const a of auth.approvals)if(!pilots.some(p=>p.product_id===a.product_id))throw Error(`Unknown approved product: ${a.product_id}`);
  return pilots.map(p=>{const f=facts.find(f=>f.product_id===p.product_id);if(!f)throw Error(`Missing fact ${p.product_id}`);const a=auth.approvals.find(a=>a.product_id===p.product_id);const state=evaluateRelease(f,p,qa.find(q=>q.product_id===p.product_id),a,auth.product_holds,renderer);if(a?.publication_approved&&!state.eligible)throw Error(`Stale or invalid release approval: ${p.product_id}: ${state.blockers.join(', ')}`);return {p,f,state};});
 }

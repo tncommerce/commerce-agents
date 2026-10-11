@@ -4472,3 +4472,12 @@ nav[aria-label="Breadcrumb"]:has(+ .dufynd-fragrance-hero[data-product-id="SC-PD
     filter: blur(2px);
   }
 }
+/* Editorial studies carry their own light. Legacy cinematic overlays must not
+   darken the explicit non-photo label or mix visual styles across card rows. */
+.dufynd-catalog-card-stage:has([data-scent-artwork])::before,
+.dufynd-catalog-card-stage:has([data-scent-artwork])::after {
+  display: none;
+}
+.dufynd-catalog-card { display: flex; flex-direction: column; }
+.dufynd-catalog-card > a { display: flex; flex-direction: column; flex: 1; }
+.dufynd-catalog-card-body { flex: 1; }

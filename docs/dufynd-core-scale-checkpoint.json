@@ -1,7 +1,10 @@
 {
   "schema_version": 1,
   "baseline_remote_head": "667d8f541a262a4983352c0cbb66c62fd8fabc00",
-  "baseline_ci": {"run": 38126882371, "status": "SUCCESS"},
+  "baseline_ci": {
+    "run": 38126882371,
+    "status": "SUCCESS"
+  },
   "branch": "dufynd-core-product-nightshift-20261010",
   "pr": 774,
   "draft_required": true,
@@ -10,12 +13,21 @@
   "public_before": 37,
   "public_added": 0,
   "original_photos_added": 0,
-  "milestone": "28_pages_shared_renderer_release_gate_and_brand_routes_implemented",
+  "milestone": "final_local_qa_complete_27_profile_release_wave_ready_for_owner",
   "initial_review_browser_checks": 112,
   "targeted_python_tests": 23,
-  "final_visual_and_brand_qa": "in_progress",
+  "final_visual_and_brand_qa": "passed",
   "owner_approvals": 0,
   "product_hold": "SC-HUGO-BOSS-BOTTLED-ABSOLU-100 concentration conflict",
   "no_sql_no_paid_actions_no_merge_no_deploy": true,
-  "resume": "Finish final browser checks, bind du f ynd_release_qa.json from successful output, generate release decision, test isolated promotion fixture, commit/push exact tree, confirm CI and replace existing review artifact. Never populate real approvals from a test fixture."
+  "resume": "Confirm final pushed HEAD CI and update PR/artifact with result. Owner decision can authorize 27 exact IDs using existing evidence/render/QA-bound pipeline. Original photos remain HOLD; BOSS Absolu requires concentration clarification. No deployment or merge without separate GO.",
+  "review_browser_checks": 112,
+  "brand_page_viewport_checks": 116,
+  "public_brands": 29,
+  "photo_holds": 61,
+  "owner_candidate_wave": 27,
+  "potential_public_total": 64,
+  "review_artifact_library_id": "libfile_b99aacdc7e8481918f3fbd923d3fbb71",
+  "screenshot_deliverables": 92,
+  "design_acceptance": "Owner review pending; 9.5/10 not asserted"
 }

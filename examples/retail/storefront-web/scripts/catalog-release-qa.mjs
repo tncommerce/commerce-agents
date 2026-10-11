@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {publicCount} from './public-catalog-summary.mjs';
 import {rendererDigest,renderDigest} from './release-gate.mjs';
 import {chromium} from 'playwright';
 import {readFileSync,mkdirSync,writeFileSync,existsSync} from 'node:fs';
@@ -33,7 +34,7 @@ for(const width of [320,390,768,1440]) {
   const n=Number(await button.locator('span').innerText());sum+=n;names.push((await button.innerText()).replace(/\s*\d+$/,''));
   if(width===1440){await button.click();await page.waitForTimeout(40);assert.equal(await cards.count(),Math.min(n,12));await button.click();}
  }
- assert.equal(sum,37);assert.equal(new Set(names.map(x=>x.toLowerCase())).size,names.length);
+ assert.equal(sum,publicCount);assert.equal(new Set(names.map(x=>x.toLowerCase())).size,names.length);
  await page.goto(base);await page.locator('#dufynd-home-search').waitFor();
  const searchBounds=await page.locator('#dufynd-home-search').boundingBox();assert.ok(searchBounds.y<400,'Mobile search visible early');
  if(width<768){await page.getByRole('button',{name:'Weitere Düfte',exact:true}).click();await page.waitForTimeout(400);assert.ok(await page.locator('#dufynd-original-strip').evaluate(x=>x.scrollLeft>0),'Swipe navigation works');}
