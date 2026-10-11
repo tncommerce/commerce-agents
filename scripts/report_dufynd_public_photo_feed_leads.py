@@ -76,11 +76,10 @@ def feed_name_matches(item: dict, row: dict) -> bool:
         "edt" in tokens or "toilette" in tokens
     ):
         return False
-    if concentration == "eau de toilette" and (
-        "edp" in tokens or "extrait" in tokens
-    ):
-        return False
-    return True
+    return not (
+        concentration == "eau de toilette"
+        and ("edp" in tokens or "extrait" in tokens)
+    )
 
 
 def verify_context(metadata: dict, rights: dict) -> None:
@@ -161,7 +160,7 @@ def create_review(
         hits = list(distinct.values())
         hits.sort(key=lambda x: (x[0], x[1], x[3]))
         candidates = []
-        for rank, sku, row, img, match_type in hits[:MAX_CANDIDATES]:
+        for _rank, sku, row, img, match_type in hits[:MAX_CANDIDATES]:
             title = str(row.get("product_name") or "")
             title = re.sub(r"[\x00-\x1f\x7f]", " ", title)[:130].strip()
             quantities = [int(v) for v in VOLUME.findall(title)]
@@ -228,8 +227,11 @@ def main() -> int:
         )
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-        print("DUFYND photo gap review: products=%d leads=%d, zero approvals or merchant activation" % (
-            result["products_reviewed"], result["total_review_candidates"]))
+        print(
+            f"DUFYND photo gap review: products={result['products_reviewed']} "
+            f"leads={result['total_review_candidates']}, "
+            "zero approvals or merchant activation"
+        )
     except (ValueError, OSError, KeyError, json.JSONDecodeError) as exc:
         p.error(str(exc))
     return 0
