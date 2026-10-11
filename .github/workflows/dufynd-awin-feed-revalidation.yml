@@ -101,6 +101,13 @@ jobs:
             --candidates "${RUNNER_TEMP}/release01-feed-image-review-candidates.json" \
             --output "${RUNNER_TEMP}/release01-feed-image-review.html"
 
+      # High-confidence path: only prior independently mapped exact merchant SKU.
+      - name: Review exact mapped public photo gaps (no approval)
+        run: |
+          python scripts/prepare_dufynd_catalog_photo_wave.py \
+            --extracted-candidates "${RUNNER_TEMP}/merchant-feed-image-candidates.json" \
+            --feed-metadata "${RUNNER_TEMP}/awin-feed-metadata.json" \
+            --output "${RUNNER_TEMP}/public-photo-exact-sku-review.json"
       # Source-bounded lead discovery; never mutates approvals or offers.
       - name: Prepare 33 public missing-photo review leads
         run: |
@@ -127,6 +134,7 @@ jobs:
             ${{ runner.temp }}/release-readiness.json
             ${{ runner.temp }}/release01-feed-image-review-candidates.json
             ${{ runner.temp }}/release01-feed-image-review.html
+            ${{ runner.temp }}/public-photo-exact-sku-review.json
             ${{ runner.temp }}/public-photo-gap-review.json
             ${{ runner.temp }}/public-photo-strict-variant-review.json
           if-no-files-found: error
