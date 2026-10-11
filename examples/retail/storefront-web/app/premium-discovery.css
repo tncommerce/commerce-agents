@@ -467,3 +467,59 @@
     min-height: 286px;
   }
 }
+
+
+/* Loading phase for exact source photographs, never a simulated bottle. */
+.dufynd-product-stage[data-variant="card"][data-dufynd-photo-state="loading"] {
+  background: #f4f3ee !important;
+}
+.dufynd-photo-loading-indicator {
+  position: absolute;
+  z-index: 5;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  padding: 20px;
+  color: #657268;
+  background:
+    radial-gradient(ellipse at 50% 39%, #fff 0%, #f6f6f1 56%, #e9eee7 100%);
+}
+.dufynd-photo-loading-indicator span {
+  color: #7c8477;
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: .16em;
+}
+.dufynd-photo-loading-indicator strong {
+  max-width: 220px;
+  font-size: 13px;
+  line-height: 1.6;
+  font-weight: 550;
+}
+.dufynd-photo-loading-indicator i {
+  display: block;
+  width: 64px;
+  height: 3px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #d8dfd5, #789a83, #d8dfd5);
+  background-size: 200% 100%;
+  animation: dufynd-original-loading 1.6s ease-in-out infinite;
+}
+.dufynd-product-stage[data-dufynd-photo-state="loading"] .dufynd-product-object {
+  opacity: 0;
+}
+.dufynd-catalog-card-stage:has([data-dufynd-photo-state="loading"])
+  .dufynd-catalog-original-photo-badge {
+  display: none;
+}
+@keyframes dufynd-original-loading {
+  from { background-position: 100% 0; }
+  to { background-position: -100% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dufynd-photo-loading-indicator i { animation: none; }
+}
