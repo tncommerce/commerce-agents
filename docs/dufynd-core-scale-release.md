@@ -2,7 +2,7 @@
 
 ## Growth checkpoint: 41 reviews, 40 candidate variants
 
-After the new staging facts, CI38134150576 reproduced a stale master source fingerprint. Rebuilding in memory at the stored timestamp showed exactly one differing master field: `source_fingerprint_sha256`. Only that derived field was refreshed. No content asset, schedule, social status, safety gate or timestamp changed. When future batches update staging, run `tests/test_dufynd_content_state_reconciliation.py` before pushing and compare the in-memory master result; never blindly rewrite all content outputs.
+After the new staging facts, CI38134150576 reproduced a stale master source fingerprint. CI38134275498 then passed all 3273 unit tests but identified five downstream source fingerprints in the repository graph check. The complete graph was reproduced locally: mapping, image queue, release gate, release pipeline and operations. An in-memory comparison at the stored timestamp asserted that ONLY `source_fingerprint_sha256` differed in each affected node. Those six fingerprints were refreshed; no content asset, schedule, social status, safety gate or timestamp changed. Both the master test and `python3 -m scripts.validate_scentai_jarvis_state_graph --machine-readable` now pass. Future staging batches must run both checks before pushing; never blindly rewrite all content outputs.
 
 The new source-bound batch adds 13 manufacturer-reference profiles, not GTINs: 37 manufacturer references + 4 verified GTINs overall. All 41 reviews passed four-width QA; the conflicting BOSS Absolu variant is excluded from the 40-product owner wave. An isolated build exercised 40 regular routes and 77 public profiles, without changing actual approvals, indexing or deployment.
 

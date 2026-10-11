@@ -241,5 +241,41 @@
   "baseline": "cdaf2244a8f13fa84a464073b2c37667a1c09931",
   "screenshot_evidence": "DUFYND-Katalog-Release-Review.html, same library identity libfile_b99aacdc7e8481918f3fbd923d3fbb71; V4 with 118 actual captures",
   "qa_guard": "Source/build renderer fingerprint matched before and after 164 checks",
-  "design_iteration": "13 additional original vector compositions; 41 distinct. Aesthetic 9.5 acceptance not asserted."
+  "design_iteration": "13 additional original vector compositions; 41 distinct. Aesthetic 9.5 acceptance not asserted.",
+  "catalog_first_two_rows": [
+    {
+      "width": 320,
+      "rows": 2,
+      "cards": 2,
+      "status": "passed",
+      "height": 1796
+    },
+    {
+      "width": 390,
+      "rows": 2,
+      "cards": 2,
+      "status": "passed",
+      "height": 1667
+    },
+    {
+      "width": 768,
+      "rows": 2,
+      "cards": 4,
+      "status": "passed",
+      "height": 1838
+    },
+    {
+      "width": 1440,
+      "rows": 2,
+      "cards": 6,
+      "status": "passed",
+      "height": 1874
+    }
+  ],
+  "offline_review": {
+    "rows": 41,
+    "selectors": 43,
+    "image_selector_cases": 172,
+    "status": "passed"
+  }
 }

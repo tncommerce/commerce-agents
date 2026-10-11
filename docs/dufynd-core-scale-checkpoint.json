@@ -16,7 +16,7 @@
   "original_photos_added": 0,
   "milestone": "growth_41_review_40_candidate_77_fixture",
   "initial_review_browser_checks": 112,
-  "targeted_python_tests": 16,
+  "targeted_python_tests": 20,
   "final_visual_and_brand_qa": "passed",
   "owner_approvals": 0,
   "product_hold": "SC-HUGO-BOSS-BOTTLED-ABSOLU-100 concentration conflict",
@@ -36,5 +36,6 @@
   "source_holds": 4,
   "render_live_check": "BLOCKED: no selected workspace; connector explicitly requires owner confirmation before selecting TNCommerce",
   "supabase_live_check": "ACTIVE_HEALTHY; six exact masterkeys read, active task/execution leases empty; SELECT only",
-  "ci_final": "Pending on next pushed checkpoint; PR body/artifact will record final result"
+  "ci_final": "Final push CI pending. 38134275498 passed 3273 unit tests; reproduced graph check found five downstream fingerprints. Fixed only those hashes after asserting all other fields unchanged. Full graph validator and 20 targeted tests pass; final PR/artifact records latest CI.",
+  "final_polish": "Passed: mobile A–Z in navigation row, complete German review note labels with prebuild coverage guard, fresh renderer-bound 164 viewport checks and 12 attribution cases."
 }

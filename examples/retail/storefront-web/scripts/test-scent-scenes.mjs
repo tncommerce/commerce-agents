@@ -12,4 +12,10 @@ const pilots=JSON.parse(readFileSync(new URL('../../data/dufynd_release_pilots.j
 const scenes=pilots.map(p=>{const f=facts.find(f=>f.product_id===p.product_id);const scene=context.exports.sceneFor(f.name);assert.ok(scene,`Missing curated scene: ${f.name}`);return scene;});
 assert.equal(new Set(scenes.map(s=>s.kind)).size,scenes.length,'Each review product has a distinct composition, not a palette-only variant');
 assert.ok(!/<img|<image|https?:\/\//.test(source),'Original vector scenes have no external image asset');
+const labelSource=readFileSync(new URL('../lib/noteLabels.ts',import.meta.url),'utf8');
+const labelContext={exports:{}};
+vm.runInNewContext(ts.transpileModule(labelSource,{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText,labelContext);
+for(const f of facts) for(const note of Object.values(f.notes).flat()) {
+ assert.ok(labelContext.exports.NOTE_LABELS_DE[note.trim().toLocaleLowerCase('en-US')],`Missing German review note label: ${note}`);
+}
 console.log(`${scenes.length} explicitly mapped, distinct review compositions; no external images or bottle replica.`);
