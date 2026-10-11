@@ -10,6 +10,8 @@ const pilots=JSON.parse(readFileSync(new URL('../../data/dufynd_release_pilots.j
 const facts=JSON.parse(readFileSync(new URL('../../data/dufynd_discovery_qualification.json',import.meta.url),'utf8')).products;
 const photos=JSON.parse(readFileSync(new URL('../lib/generated/original-photos.json',import.meta.url),'utf8'));
 const report=[];
+const builtRenderer=JSON.parse(readFileSync(new URL('../lib/generated/review-build-fingerprint.json',import.meta.url),'utf8')).renderer_sha256;
+assert.equal(rendererDigest(),builtRenderer,'Source changed after build: rebuild before certifying screenshots');
 const browser=await chromium.launch({headless:true});
 try {
 for(const width of [320,390,768,1440]) {
@@ -77,6 +79,7 @@ for(const width of [320,390,768,1440]) {
  assert.deepEqual(errors,[]);report.push({width,status:'passed',review_pages:pilots.length,checks:['public_metrics','honest_catalog_visuals','brand_counts','mobile_search','swipe_controls','exact_review_pages','early_art','metadata','review_navigation','no_offers','noindex','no_overflow','no_page_errors']});await page.close();
 }
 }finally{await browser.close();}
+assert.equal(rendererDigest(),builtRenderer,'Source changed during browser QA: do not certify mixed revisions');
 writeFileSync(`${out}/report.json`,JSON.stringify(report,null,2));
-writeFileSync(`${out}/release-qa.json`,JSON.stringify({schema_version:1,profiles:pilots.map(p=>({product_id:p.product_id,passed:true,evidence_sha256:p.evidence_sha256,render_sha256:renderDigest(p,rendererDigest()),widths:report.map(r=>r.width)}))},null,2)+'\n');
+writeFileSync(`${out}/release-qa.json`,JSON.stringify({schema_version:1,profiles:pilots.map(p=>({product_id:p.product_id,passed:true,evidence_sha256:p.evidence_sha256,render_sha256:renderDigest(p,builtRenderer),widths:report.map(r=>r.width)}))},null,2)+'\n');
 console.log(JSON.stringify(report));

@@ -10,6 +10,8 @@ The same `QualifiedProductPage` renders private review routes and authorized pub
 
 An illustration can be technically ready without its design being owner-approved. Original-photo rights remain a separate HOLD even after illustration acceptance. Merchant availability is not a gate. BOSS Bottled Absolu is excluded from the candidate wave because its manufacturer's concentration statements conflict.
 
+The build records its renderer fingerprint before compilation. Export verification rejects a changed renderer; browser QA checks the same fingerprint both before and after capture. A running check cannot certify screenshots from an older build against newly edited source. The curated-scene test also requires explicit distinct compositions for this 28-profile review wave, preventing a silent return to palette-only variants.
+
 ## Owner decision and integration
 
 The exact candidate IDs and evidence hashes are in `examples/retail/data/dufynd_core_scale_release_decision.json`. Approve individual IDs or the named wave; do not infer approval from silence. For each accepted ID, append to `dufynd_release_authorizations.json` an approval with:

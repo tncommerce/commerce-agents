@@ -1,7 +1,10 @@
 import {readdirSync,readFileSync,existsSync} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {rendererDigest} from './release-gate.mjs';
 const root=fileURLToPath(new URL('../out',import.meta.url));
+const built=JSON.parse(readFileSync(new URL('../lib/generated/review-build-fingerprint.json',import.meta.url),'utf8'));
+if(built.renderer_sha256!==rendererDigest())throw new Error('Render sources changed during build');
 function walk(dir){return readdirSync(dir,{withFileTypes:true}).flatMap(d=>d.isDirectory()?walk(path.join(dir,d.name)):[path.join(dir,d.name)]);}
 for(const file of walk(root).filter(f=>/\.(js|html|txt)$/.test(f))) {
  const text=readFileSync(file,'utf8').replaceAll('\\"','"');

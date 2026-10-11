@@ -146,5 +146,69 @@
     "actual_authorizations_changed": false
   },
   "baseline": "667d8f541a262a4983352c0cbb66c62fd8fabc00",
-  "screenshot_evidence": "DUFYND-Katalog-Release-Review.html, same library identity libfile_b99aacdc7e8481918f3fbd923d3fbb71"
+  "screenshot_evidence": "DUFYND-Katalog-Release-Review.html, same library identity libfile_b99aacdc7e8481918f3fbd923d3fbb71",
+  "design_iteration": "Removed remaining shared citrus, aromatic twig, fold and ribbon compositions; 28 explicitly distinct review scenes.",
+  "qa_guard": "Build fingerprint must equal renderer source before and after browser capture.",
+  "navigation_and_performance": {
+    "navigation": [
+      {
+        "width": 390,
+        "actual_next_link_clicks": 28,
+        "cycle_returns_to_first": true
+      },
+      {
+        "width": 1440,
+        "actual_next_link_clicks": 28,
+        "cycle_returns_to_first": true
+      }
+    ],
+    "performance": [
+      {
+        "product_id": "SC-PRADA-PARADOXE-EDP-90",
+        "dom_content_loaded_ms": 62,
+        "load_event_ms": 347,
+        "images": 0,
+        "active_animations": 0,
+        "overflow": false,
+        "external_requests": 0
+      },
+      {
+        "product_id": "SC-PRADA-PARADIGME-EDP-100",
+        "dom_content_loaded_ms": 59,
+        "load_event_ms": 351,
+        "images": 0,
+        "active_animations": 0,
+        "overflow": false,
+        "external_requests": 0
+      },
+      {
+        "product_id": "SC-MAISON-MARGIELA-BY-THE-FIREPLACE-EDT-100",
+        "dom_content_loaded_ms": 142,
+        "load_event_ms": 328,
+        "images": 0,
+        "active_animations": 0,
+        "overflow": false,
+        "external_requests": 0
+      },
+      {
+        "product_id": "SC-CHANEL-COCO-MADEMOISELLE-EDP-100",
+        "dom_content_loaded_ms": 64,
+        "load_event_ms": 338,
+        "images": 0,
+        "active_animations": 0,
+        "overflow": false,
+        "external_requests": 0
+      },
+      {
+        "product_id": "SC-MFK-BACCARAT-ROUGE-540-EDP-70",
+        "dom_content_loaded_ms": 52,
+        "load_event_ms": 327,
+        "images": 0,
+        "active_animations": 0,
+        "overflow": false,
+        "external_requests": 0
+      }
+    ],
+    "measurement": "Local static export, 4x CPU slowdown, no network throttling, not field Core Web Vitals or Lighthouse score"
+  }
 }

@@ -13,14 +13,14 @@
   "public_before": 37,
   "public_added": 0,
   "original_photos_added": 0,
-  "milestone": "final_local_qa_complete_27_profile_release_wave_ready_for_owner",
+  "milestone": "distinct_28_scene_revision_final_qa_complete",
   "initial_review_browser_checks": 112,
   "targeted_python_tests": 23,
   "final_visual_and_brand_qa": "passed",
   "owner_approvals": 0,
   "product_hold": "SC-HUGO-BOSS-BOTTLED-ABSOLU-100 concentration conflict",
   "no_sql_no_paid_actions_no_merge_no_deploy": true,
-  "resume": "Confirm final pushed HEAD CI and update PR/artifact with result. Owner decision can authorize 27 exact IDs using existing evidence/render/QA-bound pipeline. Original photos remain HOLD; BOSS Absolu requires concentration clarification. No deployment or merge without separate GO.",
+  "resume": "Confirm newest pushed HEAD CI and update PR/artifact. 28 distinct curated compositions and source-stable browser QA. 27 products can be owner-authorized through existing pipeline; no real approvals, indexing, merge or deploy.",
   "review_browser_checks": 112,
   "brand_page_viewport_checks": 116,
   "public_brands": 29,
@@ -29,5 +29,7 @@
   "potential_public_total": 64,
   "review_artifact_library_id": "libfile_b99aacdc7e8481918f3fbd923d3fbb71",
   "screenshot_deliverables": 92,
-  "design_acceptance": "Owner review pending; 9.5/10 not asserted"
+  "design_acceptance": "Owner review pending; 9.5/10 not asserted",
+  "distinct_review_compositions": 28,
+  "qa_build_fingerprint_guard": true
 }

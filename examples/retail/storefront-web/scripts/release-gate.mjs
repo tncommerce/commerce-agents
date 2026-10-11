@@ -3,7 +3,7 @@ import {readFileSync} from 'node:fs';
 export const canonical=value=>Array.isArray(value)?`[${value.map(canonical).join(', ')}]`:value&&typeof value==='object'?`{${Object.entries(value).sort(([a],[b])=>a<b?-1:a>b?1:0).map(([k,v])=>`${JSON.stringify(k)}: ${canonical(v)}`).join(', ')}}`:JSON.stringify(value);
 export const digest=value=>createHash('sha256').update(typeof value==='string'?value:canonical(value)).digest('hex');
 export const readData=name=>JSON.parse(readFileSync(new URL(`../../data/${name}`,import.meta.url),'utf8'));
-const renderFiles=['components/QualifiedProductPage.tsx','components/ScentArtwork.tsx','components/ScentStudy.tsx','components/ScentStudy.module.css','components/ScentScene.tsx','app/review/duft/[slug]/review.module.css','app/globals.css','app/layout.tsx','lib/noteLabels.ts','lib/brandIdentity.ts','../data/dufynd_release_pilots.json','../data/dufynd_discovery_qualification.json'];
+const renderFiles=['components/QualifiedProductPage.tsx','components/ScentArtwork.tsx','components/ScentStudy.tsx','components/ScentStudy.module.css','components/ScentScene.tsx','app/review/duft/[slug]/review.module.css','app/globals.css','app/premium-discovery.css','app/layout.tsx','lib/noteLabels.ts','lib/brandIdentity.ts','../data/dufynd_release_pilots.json','../data/dufynd_discovery_qualification.json'];
 export const rendererDigest=()=>digest(renderFiles.map(p=>[p,readFileSync(new URL(`../${p}`,import.meta.url),'utf8')]));
 export const renderDigest=(p,renderer)=>digest({renderer,presentation:{slug:p.slug,motif:p.motif,tone:p.tone,headline:p.headline,art_notes:p.art_notes,visual:p.visual,seo:p.seo}});
 export function evaluateRelease(f,p,qa,approval,holds,renderer){
