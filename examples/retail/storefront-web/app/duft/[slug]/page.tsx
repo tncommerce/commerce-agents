@@ -22,7 +22,6 @@ import {
   comparisonPath,
   getLiveFragranceBySlug,
   getRelatedFragrances,
-  isVerifiedProductTruthVisual,
   originalPhotoFor,
   visualWorldFor,
   type RelatedFragranceKind,
@@ -181,9 +180,7 @@ export async function generateMetadata({
     `${fragrance.brand} ${fragrance.name} – ${fragrance.concentration} ${fragrance.volume_ml} ml`;
   const description = descriptionFor(fragrance);
   const canonical = `/duft/${fragrance.slug}`;
-  const shareImage = isVerifiedProductTruthVisual(fragrance.preferred_visual)
-    ? fragrance.preferred_visual?.url
-    : null;
+  const shareImage = originalPhotoFor(fragrance)?.url || null;
 
   return {
     title,
