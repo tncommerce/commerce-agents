@@ -260,6 +260,7 @@ def thirty_day_calendar(section: dict, _prior: dict, existing: dict) -> dict:
         return packet("BLOCKED", {}, ["thirty_daily_editorial_slots_missing"])
     unique = set()
     output = []
+    incomplete_hook_dates: list[str] = []
     reservations = existing.get("reserved", {})
     if not isinstance(reservations, dict):
         return packet("BLOCKED", {}, ["invalid_existing_reservation_map"])
@@ -278,6 +279,11 @@ def thirty_day_calendar(section: dict, _prior: dict, existing: dict) -> dict:
         hook = str(item.get("hook") or "").strip()
         if not title or not hook:
             return packet("BLOCKED", {}, ["empty_calendar_idea_or_hook"])
+        if (
+            "preserve frozen original text" in normalized(hook)
+            or "draft a distinct hook" in normalized(hook)
+        ):
+            incomplete_hook_dates.append(key)
         if key in reservations and normalized(str(reservations[key])) not in normalized(title):
             return packet("BLOCKED", {}, ["reserved_owner_final_cannot_be_replaced:" + key])
         output.append(
@@ -299,6 +305,12 @@ def thirty_day_calendar(section: dict, _prior: dict, existing: dict) -> dict:
         for i in range(29)
     ):
         return packet("BLOCKED", {}, ["calendar_not_contiguous"])
+    if incomplete_hook_dates:
+        return packet(
+            "BLOCKED",
+            {"slots": output, "incomplete_hook_dates": incomplete_hook_dates},
+            ["calendar_has_non_concrete_hook_placeholders"],
+        )
     return packet(
         "DONE_WITH_HOLDS",
         {"slots": output, "auto_schedule": False, "test_mix_is_nonbinding": True},
