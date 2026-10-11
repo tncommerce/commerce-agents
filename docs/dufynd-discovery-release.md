@@ -11,7 +11,7 @@ records; manufacturer references are not GTINs. No new canonical rows are added.
 2. Add a pilot to `dufynd_release_pilots.json`, including `expected_variant` and the
    SHA256 from `evidence_digest`. Changed facts require a fresh review.
 3. Select an approved, exact-variant photo from the existing rights registries or
-   the original `ScentArtwork` CSS composition. The latter carries the visible
+   the original `ScentArtwork` vector composition. The latter carries the visible
    label “Duftillustration · kein Produktfoto”, uses no external asset and contains
    no reconstructed bottle. A photo's fidelity metadata alone is not a licence.
 4. Run `python scripts/report_dufynd_discovery_release.py`. This read-only command

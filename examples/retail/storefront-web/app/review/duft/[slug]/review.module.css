@@ -3,3 +3,5 @@
 @media(prefers-reduced-motion:reduce){.page{scroll-behavior:auto}.page *{animation:none!important;transition:none!important}}
 .footer nav{grid-template-columns:repeat(2,minmax(0,1fr))}.footer a{overflow-wrap:anywhere;min-width:0}.directory{grid-template-columns:repeat(3,minmax(0,1fr))}
 @media(max-width:767px){.directory{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.identity h1[data-long-word=true]{font-size:clamp(32px,4vw,60px)}
+@media(max-width:767px){.identity h1[data-long-word=true]{font-size:clamp(32px,10vw,39px)}}

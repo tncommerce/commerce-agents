@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "milestone": "catalog_release_v2_review_wave",
+  "milestone": "catalog_release_v2_review_wave_visual_qa_complete",
   "baseline_head": "83ffa5a3f3555db16b7cf317b09454265f3f9fe6",
   "review_profiles_total": 13,
   "additional_review_profiles": 10,
@@ -13,7 +13,11 @@
     "targeted_python_tests": 23,
     "responsive_widths": [320, 390, 768, 1440],
     "review_route_checks": 52,
-    "brand_directory": {"brands": 29, "public_products": 37}
+    "brand_directory": {"brands": 29, "public_products": 37},
+    "whole_word_title_wrap": "pass_at_all_four_widths",
+    "illustration_label_contrast": 8.95,
+    "reduced_motion_running_animations": 0,
+    "pilot_image_requests": 0
   },
   "remaining_gates": ["owner_design_acceptance", "owner_exact_variant_publication", "original_photo_asset_rights", "independent_verified_affiliate_mapping"],
   "next_safe_action": "Finish screenshot review package and confirm automatically triggered CI on the new PR head.",

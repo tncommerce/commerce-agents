@@ -15,6 +15,7 @@ export default async function ReviewProductPage({params}:{params:Promise<{slug:s
  const {slug}=await params;const pilot=RELEASE_PILOTS.find(p=>p.slug===slug);
  if(!PILOT_REVIEW_ENABLED||!pilot) notFound();
  const {fact}=pilot;const brand=canonicalBrand(fact.brand);
+ const displayName=fact.name===fact.name.toUpperCase()?fact.name.toLowerCase().replace(/(^|\s)\S/g,c=>c.toUpperCase()):fact.name;
  const stages=[['top','Auftakt'],['heart','Herz'],['base','Nachklang'],['key','Charakteristische Noten']] as const;
  const notes=fact.notes as Partial<Record<string,string[]>>;
  const index=RELEASE_PILOTS.indexOf(pilot);
@@ -25,7 +26,7 @@ export default async function ReviewProductPage({params}:{params:Promise<{slug:s
   <header className={styles.header}><a href="/">DUFYND<span>ENTDECKE DEINEN DUFT.</span></a><a href="/duft">Zum Duftkatalog ↗</a></header>
   <nav className={styles.breadcrumb} aria-label="Brotkrumennavigation"><a href="/duft">Düfte</a><span>/</span><span>{brand}</span></nav>
   <section className={styles.hero}>
-   <div className={styles.identity}><p className={styles.eyebrow}>{brand}</p><h1>{fact.name.replace('REPLICA ','')}</h1><p className={styles.variant}>{fact.concentration}<span>·</span>{fact.volume_ml} ml</p></div>
+   <div className={styles.identity}><p className={styles.eyebrow}>{brand}</p><h1 data-long-word={displayName.split(/\s+/).some(word=>word.length>11)?'true':undefined}>{displayName.replace('REPLICA ','')}</h1><p className={styles.variant}>{fact.concentration}<span>·</span>{fact.volume_ml} ml</p></div>
    <div className={styles.art}><ScentArtwork name={fact.name} tone={pilot.tone as 'rose'|'sage'|'amber'} motif={pilot.motif as ScentMotif} notes={pilot.art_notes}/></div>
    <div className={styles.intro}><p className={styles.chapter}>DAS DUFTPORTRÄT <span>01 — 03</span></p><h2>{pilot.headline}</h2><p className={styles.summary}>{fact.summary_de}</p><a className={styles.cta} href="#duftverlauf">Die Komposition entdecken <span>↓</span></a><p className={styles.footnote}>Eigenständige Duftillustration, kein Markenflakon.<br/>Produktinformationen unabhängig von Händlerangeboten.</p></div>
   </section>

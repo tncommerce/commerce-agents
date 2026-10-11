@@ -39,8 +39,17 @@ for(const width of [320,390,768,1440]) {
  for(const p of pilots){
   const response=await page.goto(`${base}/review/duft/${p.slug}`);assert.equal(response.status(),200);
   assert.ok((await page.locator('meta[name=robots]').getAttribute('content')).includes('noindex'));
-  assert.ok((await page.locator('h1').innerText()).includes(p.expected_variant.name.replace('REPLICA ','')));
+  assert.ok((await page.locator('h1').innerText()).toLowerCase().includes(p.expected_variant.name.replace('REPLICA ','').toLowerCase()));
+  assert.ok(await page.locator('h1').evaluate(el=>{
+    const node=el.firstChild;const text=node.textContent;
+    return [...text.matchAll(/\S+/g)].every(m=>{const r=document.createRange();r.setStart(node,m.index);r.setEnd(node,m.index+m[0].length);return r.getClientRects().length===1;});
+  }),'Product name wraps between words, never isolated trailing letters');
   assert.equal(await page.locator('[data-scent-artwork]').count(),1);
+  const contrast=await page.locator('[data-scent-artwork] figcaption').evaluate(el=>{
+    const style=getComputedStyle(el);const luminance=value=>value.match(/[\d.]+/g).slice(0,3).map(Number).map(c=>c/255).map(c=>c<=.04045?c/12.92:((c+.055)/1.055)**2.4).reduce((sum,c,i)=>sum+c*[.2126,.7152,.0722][i],0);
+    const a=luminance(style.color),b=luminance(style.backgroundColor);return (Math.max(a,b)+.05)/(Math.min(a,b)+.05);
+  });assert.ok(contrast>=4.5,'Non-photo label has accessible text contrast');
+  assert.equal(await page.evaluate(()=>document.getAnimations().length),0,'Reduced-motion page has no running animation');
   assert.equal(await page.locator('img').count(),0,'No invented bottle');
   assert.equal(await page.locator('a[href*="awin"],a[href*="clickout"]').count(),0);
   const schemas=await page.locator('script[type="application/ld+json"]').allTextContents();
