@@ -46,7 +46,10 @@ export async function verifyFirstMoneyFunnel(browser, baseUrl) {
           assert.equal(landingHref.searchParams.get(key), value);
         }
         await catalogLink.click();
-        await page.waitForURL((url) => url.pathname === "/duft");
+        // Navigation is ready at DOMContentLoaded; a slow decorative image must
+        // not block this functional funnel. The visible controls, offer and
+        // analytics assertions below still prove the interactive page is ready.
+        await page.waitForURL((url) => url.pathname === "/duft", { waitUntil: "domcontentloaded" });
         const productLink = page.locator(`a[href*="/duft/${slug}"]`);
         for (let attempt = 0; attempt < 6 && (await productLink.count()) === 0; attempt += 1) {
           const more = page.getByRole("button", { name: /Weitere \d+ Düfte anzeigen/ });
@@ -55,7 +58,7 @@ export async function verifyFirstMoneyFunnel(browser, baseUrl) {
         }
         assert.ok((await productLink.count()) > 0, `${slug} missing from live catalog`);
         await productLink.first().click();
-        await page.waitForURL((url) => url.pathname === `/duft/${slug}`);
+        await page.waitForURL((url) => url.pathname === `/duft/${slug}`, { waitUntil: "domcontentloaded" });
         const offers = page.locator("[data-merchant-offers]");
         await offers.waitFor({ state: "visible" });
         await offers.scrollIntoViewIfNeeded();
@@ -82,6 +85,8 @@ export async function verifyFirstMoneyFunnel(browser, baseUrl) {
         // Distinct transport sessions are allowed; the analytics identity must remain stable.
         assert.ok(sessionRequests >= 1);
         cases += 1;
+      } catch (error) {
+        throw new Error(`First-money funnel ${slug}/${source} at ${context.pages()[0]?.url()}: ${error.stack || error}`, { cause: error });
       } finally {
         await context.close();
       }

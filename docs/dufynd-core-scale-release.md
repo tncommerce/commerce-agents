@@ -2,6 +2,8 @@
 
 ## Growth checkpoint: 41 reviews, 40 candidate variants
 
+CI38134535708 passed both Python versions (3273 tests), the source graph, all web builds and the non-browser required jobs. Its first-money funnel timed out in `waitForURL` after DOMContentLoaded. Four ordinary local cases and twelve CPU-throttled cases passed; injecting one indefinitely pending local image reproduced the identical timeout at the catalog navigation. Waiting for DOMContentLoaded resolves that reproduced failure mode while retaining every visible offer and attribution assertion. The four-case pending-image regression passes with zero merchant clicks and now runs in CI. The original CI log does not identify the stalled resource; its exact request is not claimed as known. Funnel errors now include the case, current URL and stack. See the PR for the latest post-fix run.
+
 After the new staging facts, CI38134150576 reproduced a stale master source fingerprint. CI38134275498 then passed all 3273 unit tests but identified five downstream source fingerprints in the repository graph check. The complete graph was reproduced locally: mapping, image queue, release gate, release pipeline and operations. An in-memory comparison at the stored timestamp asserted that ONLY `source_fingerprint_sha256` differed in each affected node. Those six fingerprints were refreshed; no content asset, schedule, social status, safety gate or timestamp changed. Both the master test and `python3 -m scripts.validate_scentai_jarvis_state_graph --machine-readable` now pass. Future staging batches must run both checks before pushing; never blindly rewrite all content outputs.
 
 The new source-bound batch adds 13 manufacturer-reference profiles, not GTINs: 37 manufacturer references + 4 verified GTINs overall. All 41 reviews passed four-width QA; the conflicting BOSS Absolu variant is excluded from the 40-product owner wave. An isolated build exercised 40 regular routes and 77 public profiles, without changing actual approvals, indexing or deployment.
@@ -24,7 +26,7 @@ The same `QualifiedProductPage` renders private review routes and authorized pub
 
 An illustration can be technically ready without its design being owner-approved. Original-photo rights remain a separate HOLD even after illustration acceptance. Merchant availability is not a gate. BOSS Bottled Absolu is excluded from the candidate wave because its manufacturer's concentration statements conflict.
 
-The build records its renderer fingerprint before compilation. Export verification rejects a changed renderer; browser QA checks the same fingerprint both before and after capture. A running check cannot certify screenshots from an older build against newly edited source. The curated-scene test also requires explicit distinct compositions for this 28-profile review wave, preventing a silent return to palette-only variants.
+The build records its renderer fingerprint before compilation. Export verification rejects a changed renderer; browser QA checks the same fingerprint both before and after capture. A running check cannot certify screenshots from an older build against newly edited source. The curated-scene test also requires explicit distinct compositions for this 41-profile review wave, preventing a silent return to palette-only variants.
 
 ## Owner decision and integration
 
