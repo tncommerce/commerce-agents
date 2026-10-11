@@ -272,16 +272,16 @@
 
 
 /* Mobile polish: keep filtering accessible without covering a product card. */
-.dufynd-catalog-filter-return {
+.dufynd-catalog-page .sticky.bottom-3.z-20.mt-4 {
   position: static;
   isolation: isolate;
 }
-.dufynd-catalog-filter-return > div {
+.dufynd-catalog-page .sticky.bottom-3.z-20.mt-4 > div {
   border-color: #d5d3ca;
   background: #fdfbf5;
   box-shadow: 0 12px 28px -24px rgba(33, 38, 30, 0.5);
 }
-.dufynd-catalog-filter-return button {
+.dufynd-catalog-page .sticky.bottom-3.z-20.mt-4 button {
   min-height: 44px;
 }
 @media (max-width: 767px) {
