@@ -47,6 +47,8 @@ export async function verifyNoteSculpture(browser, baseUrl, outputDir) {
     const page = await context.newPage();
     try {
       await page.goto(`${baseUrl}/duft/xerjoff-naxos?qa=1`);
+      const advanced = page.locator("details.dufynd-fragrance-advanced");
+      await advanced.locator("summary").click();
       const studio = page.locator("[data-note-sculpture]");
       const heart = studio.getByRole("button", { name: "Herz", exact: true });
       await heart.click();
@@ -115,6 +117,7 @@ export async function verifyNoteSculpture(browser, baseUrl, outputDir) {
             "context loss keeps the notes usable",
           );
           await page.reload();
+          await advanced.locator("summary").click();
           await studio
             .getByRole("button", { name: "Raumansicht öffnen" })
             .click();
@@ -136,6 +139,7 @@ export async function verifyNoteSculpture(browser, baseUrl, outputDir) {
       );
       if (scenario === "reduced-motion") {
         await page.goto(`${baseUrl}/duft/yves-saint-laurent-libre?qa=1`);
+        await page.locator("details.dufynd-fragrance-advanced summary").click();
         await page
           .locator("[data-note-sculpture]")
           .getByRole("button", { name: "Schlüsselnoten", exact: true })
