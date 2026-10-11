@@ -56,7 +56,8 @@ export async function verifyHomeCatalogHydration(browser, baseUrl) {
           const card = document.querySelector(`a[data-dufynd-home-audience-card][href*="zielgruppe=${audience}"]`);
           return card?.innerText.includes(text);
         }, { audience, text });
-        if (count) await card.locator("img").first().waitFor({ state: "attached" });
+        // Unlicensed product variants intentionally show a transparent source hold.
+        if (count) await card.locator('img, [data-dufynd-visual-state="missing"]').first().waitFor({ state: "attached" });
       }
       cases++;
     } finally {
