@@ -4,6 +4,7 @@ This file must never approve imagery, store prices, expose affiliate links, or
 enable a storefront/merchant offer. The source is the CURRENT official feed
 downloaded by the existing revalidation workflow, not scraped merchant pages.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -30,20 +31,49 @@ PHOTO_PATH = re.compile(
 )
 VOLUME = re.compile(r"(?<!\d)(\d{2,3})\s*(?:ml|milliliter)(?!\w)", re.I)
 STOP = {
-    "de", "der", "das", "die", "und", "the", "by", "for", "pour",
-    "eau", "parfum", "perfume", "parfums", "edp", "edt", "elixir",
-    "intense", "extrait", "spray", "nat", "vapo", "flacon", "flasche",
-    "ml", "100", "90", "75", "125", "50", "edition",
+    "de",
+    "der",
+    "das",
+    "die",
+    "und",
+    "the",
+    "by",
+    "for",
+    "pour",
+    "eau",
+    "parfum",
+    "perfume",
+    "parfums",
+    "edp",
+    "edt",
+    "elixir",
+    "intense",
+    "extrait",
+    "spray",
+    "nat",
+    "vapo",
+    "flacon",
+    "flasche",
+    "ml",
+    "100",
+    "90",
+    "75",
+    "125",
+    "50",
+    "edition",
 }
 MAX_CANDIDATES = 3
 
 
 def norm(value: object) -> str:
     text = unicodedata.normalize("NFKD", str(value or ""))
-    return re.sub(r"\s+", " ", "".join(
-        ch.lower() if ch.isalnum() else " "
-        for ch in text if not unicodedata.combining(ch)
-    )).strip()
+    return re.sub(
+        r"\s+",
+        " ",
+        "".join(
+            ch.lower() if ch.isalnum() else " " for ch in text if not unicodedata.combining(ch)
+        ),
+    ).strip()
 
 
 def safe_feed_image(value: object) -> str | None:
@@ -53,8 +83,11 @@ def safe_feed_image(value: object) -> str | None:
         safe = (
             p.scheme == "https"
             and p.hostname in {"topparfuemerie.de", "www.topparfuemerie.de"}
-            and p.port is None and p.username is None and p.password is None
-            and not p.query and not p.fragment
+            and p.port is None
+            and p.username is None
+            and p.password is None
+            and not p.query
+            and not p.fragment
             and PHOTO_PATH.fullmatch(p.path) is not None
         )
     except ValueError:
@@ -74,18 +107,16 @@ def feed_name_matches(item: dict, row: dict) -> bool:
     if quantities and expected not in quantities:
         return False
     concentration = norm(item.get("concentration"))
-    if concentration == "eau de parfum" and (
-        "edt" in tokens or "toilette" in tokens
-    ):
+    if concentration == "eau de parfum" and ("edt" in tokens or "toilette" in tokens):
         return False
-    return not (
-        concentration == "eau de toilette"
-        and ("edp" in tokens or "extrait" in tokens)
-    )
+    return not (concentration == "eau de toilette" and ("edp" in tokens or "extrait" in tokens))
 
 
 def verify_context(
-    metadata: dict, rights: dict, *, now: datetime | None = None,
+    metadata: dict,
+    rights: dict,
+    *,
+    now: datetime | None = None,
 ) -> None:
     if (
         metadata.get("source") != "awin_product_feed_list"
@@ -96,18 +127,17 @@ def verify_context(
         or not metadata.get("checked_at")
     ):
         raise ValueError("current_official_awin_feed_evidence_required")
-    checked = datetime.fromisoformat(
-        str(metadata["checked_at"]).replace("Z", "+00:00")
-    )
+    checked = datetime.fromisoformat(str(metadata["checked_at"]).replace("Z", "+00:00"))
     clock = now or datetime.now(UTC)
     if (
-        checked.tzinfo is None or clock.tzinfo is None
-        or not timedelta(0) <= clock.astimezone(UTC) - checked.astimezone(UTC)
-        <= timedelta(days=7)
+        checked.tzinfo is None
+        or clock.tzinfo is None
+        or not timedelta(0) <= clock.astimezone(UTC) - checked.astimezone(UTC) <= timedelta(days=7)
     ):
         raise ValueError("current_awin_feed_timestamp_required")
     eligible = [
-        x for x in rights.get("entries", [])
+        x
+        for x in rights.get("entries", [])
         if x.get("merchant_id") == MERCHANT
         and str(x.get("advertiser_id")) == ADVERTISER
         and x.get("rights_basis_id") == RIGHTS_BASIS
@@ -120,8 +150,13 @@ def verify_context(
 
 
 def create_review(
-    gap: dict, mappings: dict, rows: list[dict],
-    metadata: dict, rights: dict, *, now: datetime | None = None,
+    gap: dict,
+    mappings: dict,
+    rows: list[dict],
+    metadata: dict,
+    rights: dict,
+    *,
+    now: datetime | None = None,
 ) -> dict:
     verify_context(metadata, rights, now=now)
     if gap.get("status") != "RIGHTS_SOURCE_ACQUISITION_PENDING_NO_AUTO_APPROVAL":
@@ -178,35 +213,43 @@ def create_review(
             title = str(row.get("product_name") or "")
             title = re.sub(r"[\x00-\x1f\x7f]", " ", title)[:130].strip()
             quantities = [int(v) for v in VOLUME.findall(title)]
-            candidates.append({
-                "merchant_product_id": sku,
-                "merchant_product_name": title,
-                "feed_image_url": img,
-                "match_type": match_type,
-                "feed_explicit_size_match": int(item.get("volume_ml") or 0) in quantities,
-                "status": "HUMAN_SOURCE_VARIANT_IMAGE_REVIEW_REQUIRED",
-                "registered": False, "published": False,
-            })
-        report.append({
-            "product_id": product_id,
-            "brand": item.get("brand"),
-            "name": item.get("name"),
-            "concentration": item.get("concentration"),
-            "volume_ml": item.get("volume_ml"),
-            "pinned_merchant_skus": sorted(approved_skus),
-            "total_possible_feed_rows": len(hits),
-            "duplicate_pinned_feed_sku_hold": ambiguous,
-            "more_matches_truncated": len(hits) > MAX_CANDIDATES,
-            "candidates": candidates,
-            "status": ("REVIEW_LEADS_FOUND" if candidates
-                       else "NO_REGISTERABLE_FEED_IMAGE_SOURCE"),
-        })
+            candidates.append(
+                {
+                    "merchant_product_id": sku,
+                    "merchant_product_name": title,
+                    "feed_image_url": img,
+                    "match_type": match_type,
+                    "feed_explicit_size_match": int(item.get("volume_ml") or 0) in quantities,
+                    "status": "HUMAN_SOURCE_VARIANT_IMAGE_REVIEW_REQUIRED",
+                    "registered": False,
+                    "published": False,
+                }
+            )
+        report.append(
+            {
+                "product_id": product_id,
+                "brand": item.get("brand"),
+                "name": item.get("name"),
+                "concentration": item.get("concentration"),
+                "volume_ml": item.get("volume_ml"),
+                "pinned_merchant_skus": sorted(approved_skus),
+                "total_possible_feed_rows": len(hits),
+                "duplicate_pinned_feed_sku_hold": ambiguous,
+                "more_matches_truncated": len(hits) > MAX_CANDIDATES,
+                "candidates": candidates,
+                "status": (
+                    "REVIEW_LEADS_FOUND" if candidates else "NO_REGISTERABLE_FEED_IMAGE_SOURCE"
+                ),
+            }
+        )
     return {
         "schema": "dufynd_licensed_feed_photo_review_v1",
         "status": "REVIEW_ONLY_NOT_LIVE",
         "feed_provenance": {
-            "source": "awin_product_feed_list", "advertiser_id": ADVERTISER,
-            "feed_id": FEED, "checked_at": metadata["checked_at"],
+            "source": "awin_product_feed_list",
+            "advertiser_id": ADVERTISER,
+            "feed_id": FEED,
+            "checked_at": metadata["checked_at"],
             "last_imported": metadata.get("last_imported"),
         },
         "source_rights_basis_id": RIGHTS_BASIS,
@@ -226,8 +269,14 @@ def main() -> int:
     p.add_argument("--feed", type=Path, required=True)
     p.add_argument("--feed-metadata", type=Path, required=True)
     p.add_argument("--gap", type=Path, default=Path("docs/dufynd-catalog-photo-gap-20261011.json"))
-    p.add_argument("--mappings", type=Path, default=Path("examples/retail/data/merchant_product_mappings.json"))
-    p.add_argument("--rights", type=Path, default=Path("examples/retail/data/dufynd_affiliate_feed_image_rights.json"))
+    p.add_argument(
+        "--mappings", type=Path, default=Path("examples/retail/data/merchant_product_mappings.json")
+    )
+    p.add_argument(
+        "--rights",
+        type=Path,
+        default=Path("examples/retail/data/dufynd_affiliate_feed_image_rights.json"),
+    )
     p.add_argument("--output", type=Path, required=True)
     args = p.parse_args()
     try:
@@ -240,7 +289,9 @@ def main() -> int:
             json.loads(args.rights.read_text(encoding="utf-8")),
         )
         args.output.parent.mkdir(parents=True, exist_ok=True)
-        args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        args.output.write_text(
+            json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+        )
         print(
             f"DUFYND photo gap review: products={result['products_reviewed']} "
             f"leads={result['total_review_candidates']}, "
