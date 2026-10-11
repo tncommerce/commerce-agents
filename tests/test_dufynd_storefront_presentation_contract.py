@@ -44,7 +44,7 @@ def test_detail_hero_uses_presentation_but_truth_features_stay_verified() -> Non
     assert "cutoutUrl={heroIsProductTruth ? heroVisual?.url : undefined}" in detail_page
     notes = _read("components/FragranceExplodedNotes.tsx")
     assert "FragranceVisual" not in notes
-    assert 'data-dufynd-exploded-note' in notes
+    assert "data-dufynd-exploded-note" in notes
     assert "verifiedProductImage" in detail_page
 
 
