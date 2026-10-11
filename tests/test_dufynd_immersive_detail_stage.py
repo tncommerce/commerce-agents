@@ -19,10 +19,10 @@ def test_verified_detail_fallback_uses_immersive_hero_stage() -> None:
 def test_detail_page_keeps_true_model_and_verified_cutout_paths_separate() -> None:
     source = DETAIL.read_text(encoding="utf-8")
 
-    assert "{fragrance.model_3d_url ? (" in source
-    assert "<FragranceModel3D" in source
+    assert "<FragranceModel3D" not in source
     assert "<FragranceVisual" in source
-    assert 'mode={heroIsProductTruth ? "cutout" : "editorial"}' in source
+    assert 'mode="cutout"' in source
+    assert "const productTruthVisual = originalPhotoFor(fragrance);" in source
 
 
 def test_immersive_fallback_does_not_generate_or_transform_bottle_geometry() -> None:
@@ -31,5 +31,6 @@ def test_immersive_fallback_does_not_generate_or_transform_bottle_geometry() -> 
 
     assert "depth staging, not simulated" in css
     assert "bottle geometry" in css
-    assert "model_3d_url" in source
+    assert "<FragranceModel3D" not in source
+    assert "Originalfoto in Prüfung" in source
     assert "dufynd-product-image" in css
