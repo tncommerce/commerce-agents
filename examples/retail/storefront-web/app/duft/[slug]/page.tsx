@@ -9,14 +9,11 @@ import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
 import { accordLabel } from "@/lib/accordLabels";
 import FragranceNoteSculpture from "@/components/FragranceNoteSculpture";
 import FragranceExplodedNotes from "@/components/FragranceExplodedNotes";
-import FragranceIngredientOrbit from "@/components/FragranceIngredientOrbit";
 import FragranceOffers from "@/components/FragranceOffers";
 import MobileOfferBar from "@/components/MobileOfferBar";
 import OfferSectionLink from "@/components/OfferSectionLink";
 import FragranceVisual from "@/components/FragranceVisual";
 import ImageAttribution from "@/components/ImageAttribution";
-import FragranceVisualGallery from "@/components/FragranceVisualGallery";
-import FragranceModel3D from "@/components/FragranceModel3D";
 import FragranceSaveControls from "@/components/FragranceSaveControls";
 import FragranceShareButton from "@/components/FragranceShareButton";
 import NoteIcon from "@/components/NoteIcon";
@@ -26,6 +23,7 @@ import {
   getLiveFragranceBySlug,
   getRelatedFragrances,
   isVerifiedProductTruthVisual,
+  originalPhotoFor,
   visualWorldFor,
   type RelatedFragranceKind,
   type StaticFragrance,
@@ -267,13 +265,12 @@ export default async function FragrancePage({
   const checkedAt = formatCheckedAt(
     fragrance.market.checked_at,
   );
-  const productTruthVisual = fragrance.preferred_visual;
-  const productTruthIsVerified =
-    isVerifiedProductTruthVisual(productTruthVisual);
-  const heroVisual =
-    fragrance.presentation_visual || productTruthVisual;
-  const heroIsProductTruth =
-    isVerifiedProductTruthVisual(heroVisual);
+  // A fragrance profile must never substitute an editorial bottle for a
+  // registered, commercial-use-approved original photograph.
+  const productTruthVisual = originalPhotoFor(fragrance);
+  const productTruthIsVerified = Boolean(productTruthVisual);
+  const heroVisual = productTruthVisual;
+  const heroIsProductTruth = Boolean(heroVisual);
   const visualTheme = visualWorldFor(fragrance);
   const related = getRelatedFragrances(
     fragrance,
@@ -286,32 +283,6 @@ export default async function FragrancePage({
     ...fragrance.notes.key,
     ...fragrance.notes.supporting,
   ];
-  const notePreview = allNotes.slice(0, 3);
-  const sceneNotes = Array.from(
-    new Set(
-      [
-        fragrance.notes.top[0],
-        fragrance.notes.heart[0],
-        fragrance.notes.base[0],
-        fragrance.notes.key[0],
-        fragrance.notes.supporting[0],
-      ].filter((note): note is string => Boolean(note)),
-    ),
-  ).slice(0, 4);
-  const phaseNotes = [
-    { stage: "01", label: "Kopf", note: fragrance.notes.top[0] },
-    { stage: "02", label: "Herz", note: fragrance.notes.heart[0] },
-    { stage: "03", label: "Basis", note: fragrance.notes.base[0] },
-  ].filter(
-    (item): item is { stage: string; label: string; note: string } =>
-      Boolean(item.note),
-  );
-  const visualGalleryAssetCount = new Set(
-    fragrance.visuals
-      .filter((asset) => asset.role !== "model_3d")
-      .map((asset) => asset.url),
-  ).size;
-  const hasVisualGallery = visualGalleryAssetCount >= 2;
   const noteCount = new Set(allNotes).size;
   const canonicalUrl = `${SITE_URL}/duft/${fragrance.slug}`;
   const breadcrumbStructuredData = {
@@ -520,76 +491,22 @@ export default async function FragrancePage({
                 </div>
               ) : null}
             </div>
-            <div className="dufynd-fragrance-stage-shell relative min-h-[304px] overflow-hidden sm:min-h-[380px] lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:min-h-[560px]">
-              {fragrance.model_3d_url ? (
-                <FragranceModel3D
-                  modelUrl={fragrance.model_3d_url}
-                  imageUrl={heroIsProductTruth ? undefined : heroVisual?.url}
-                  cutoutUrl={heroIsProductTruth ? heroVisual?.url : undefined}
-                  backdropUrl={
-                    heroIsProductTruth
-                      ? fragrance.backdrop_visual?.url
-                      : undefined
-                  }
-                  alt={`${fragrance.brand} ${fragrance.name}`}
-                  className="dufynd-fragrance-stage-visual absolute inset-0 h-full w-full"
-                  priority
-                />
-              ) : (
-                <FragranceVisual
-                  imageUrl={heroVisual?.url}
-                  cutoutUrl={heroIsProductTruth ? heroVisual?.url : undefined}
-                  backdropUrl={
-                    heroIsProductTruth
-                      ? fragrance.backdrop_visual?.url
-                      : undefined
-                  }
-                  alt={`${fragrance.brand} ${fragrance.name}`}
-                  variant="hero"
-                  mode={heroIsProductTruth ? "cutout" : "editorial"}
-                  world={visualTheme}
-                  className="dufynd-fragrance-stage-visual absolute inset-0 h-full w-full"
-                  priority
-                />
-              )}
-
-              <div
-                aria-hidden
-                className="dufynd-fragrance-stage-reflection"
+            <div className="dufynd-fragrance-stage-shell relative min-h-[270px] overflow-hidden sm:min-h-[380px] lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:min-h-[560px]">
+              <FragranceVisual
+                imageUrl={heroVisual?.url}
+                cutoutUrl={heroVisual?.url}
+                alt={`${fragrance.brand} ${fragrance.name}`}
+                variant="hero"
+                mode="cutout"
+                world={visualTheme}
+                className="dufynd-fragrance-stage-visual absolute inset-0 h-full w-full"
+                priority
               />
-
-              {phaseNotes.length ? (
-                <div
-                  aria-hidden
-                  className="dufynd-fragrance-phase-rail"
-                >
-                  {phaseNotes.map((phase) => (
-                    <div
-                      key={phase.stage}
-                      className="dufynd-fragrance-phase"
-                      data-dufynd-phase={phase.stage}
-                    >
-                      <span className="dufynd-fragrance-phase-index">
-                        {phase.stage}
-                      </span>
-                      <span className="dufynd-fragrance-phase-copy">
-                        <strong>{phase.label}</strong>
-                        <em>{noteLabel(phase.note)}</em>
-                      </span>
-                    </div>
-                  ))}
-                </div>
+              {!heroIsProductTruth ? (
+                <p className="dufynd-detail-source-hold">
+                  Originalfoto in Prüfung · Duftprofil bleibt verfügbar
+                </p>
               ) : null}
-
-              <FragranceIngredientOrbit notes={sceneNotes} />
-
-              <div
-                aria-hidden
-                className="dufynd-fragrance-stage-kicker"
-              >
-                <span>{fragrance.brand}</span>
-                <strong>{fragrance.name}</strong>
-              </div>
             </div>
 
             <div className="dufynd-fragrance-hero-copy dufynd-fragrance-panel-section dufynd-fragrance-panel-section--copy flex flex-col justify-center p-5 pt-4 sm:p-7 sm:pt-5 lg:col-start-2 lg:row-start-2 lg:p-9 lg:pt-3">
@@ -716,11 +633,6 @@ export default async function FragrancePage({
               <p className="mt-4 text-[10.5px] leading-4 text-(--ink-soft)">
                 DUFYND verkauft nicht selbst. Kauf und Versand erfolgen beim jeweiligen Händler.
               </p>
-              {heroVisual && !heroIsProductTruth ? (
-                <p className="mt-2 text-[10.5px] leading-4 text-(--ink-soft)">
-                  Bild: stilisierte DUFYND-Inszenierung. Details des Flakons können vom Original abweichen.
-                </p>
-              ) : null}
             </div>
           </div>
         </section>
@@ -995,11 +907,8 @@ export default async function FragrancePage({
                 const hasComparison = comparisonHref.startsWith(
                   "/vergleich/",
                 );
-                const relatedVisual =
-                  item.fragrance.presentation_visual ||
-                  item.fragrance.preferred_visual;
-                const relatedIsProductTruth =
-                  isVerifiedProductTruthVisual(relatedVisual);
+                const relatedVisual = originalPhotoFor(item.fragrance);
+                const relatedIsProductTruth = Boolean(relatedVisual);
                 const sharedAccords = sharedAccordLabels(
                   fragrance,
                   item.fragrance,
@@ -1021,18 +930,9 @@ export default async function FragrancePage({
                             ? relatedVisual?.url
                             : undefined
                         }
-                        backdropUrl={
-                          relatedIsProductTruth
-                            ? item.fragrance.backdrop_visual?.url
-                            : undefined
-                        }
                         alt={`${item.fragrance.brand} ${item.fragrance.name}`}
                         variant="card"
-                        mode={
-                          relatedIsProductTruth
-                            ? "cutout"
-                            : "editorial"
-                        }
+                        mode="cutout"
                         world={visualWorldFor(item.fragrance)}
                         className="h-36 w-full"
                       />
