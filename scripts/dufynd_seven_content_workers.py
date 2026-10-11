@@ -279,10 +279,9 @@ def thirty_day_calendar(section: dict, _prior: dict, existing: dict) -> dict:
         hook = str(item.get("hook") or "").strip()
         if not title or not hook:
             return packet("BLOCKED", {}, ["empty_calendar_idea_or_hook"])
-        if (
-            "preserve frozen original text" in normalized(hook)
-            or "draft a distinct hook" in normalized(hook)
-        ):
+        if "preserve frozen original text" in normalized(
+            hook
+        ) or "draft a distinct hook" in normalized(hook):
             incomplete_hook_dates.append(key)
         if key in reservations and normalized(str(reservations[key])) not in normalized(title):
             return packet("BLOCKED", {}, ["reserved_owner_final_cannot_be_replaced:" + key])
