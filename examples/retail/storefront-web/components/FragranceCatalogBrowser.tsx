@@ -1243,7 +1243,7 @@ export default function FragranceCatalogBrowser({
               <article
                 key={fragrance.product_id}
                 className="dufynd-catalog-card overflow-hidden rounded-2xl border border-(--line) bg-(--card) shadow-(--shadow-sm)"
-                data-original-photo={isProductTruth && ["merchant_feed", "licensed"].includes(visual?.provenance || "") ? "true" : undefined}
+                data-original-photo={isProductTruth ? "true" : undefined}
                 data-dufynd-catalog-theme={
                   dominantProfile?.key || "balanced"
                 }
