@@ -271,6 +271,24 @@ class SevenWorkerRuntimeTests(unittest.TestCase):
         self.assertEqual(state["role_packets"]["W4"]["state"], "DONE_WITH_HOLDS")
         self.assertEqual(state["role_packets"]["W5"]["state"], "BLOCKED")
 
+    def test_tampered_checkpoint_packet_and_spend_are_refused(self):
+        self.runner().run()
+        original = json.loads(self.file.read_text())
+        for kind in ("altered_output", "altered_spend"):
+            with self.subTest(kind=kind):
+                changed = copy.deepcopy(original)
+                if kind == "altered_output":
+                    changed["role_packets"]["W1"]["output"]["voice"] = "modified after approval"
+                    expected = "checkpoint_output_integrity_failed"
+                else:
+                    changed["spend_eur"] = 1
+                    expected = "checkpoint_safety_marker_modified"
+                self.file.write_text(json.dumps(changed), encoding="utf-8")
+                with self.assertRaisesRegex(WorkerInputError, expected):
+                    self.runner().run()
+        self.file.write_text(json.dumps(original), encoding="utf-8")
+        self.assertTrue(self.runner().run()["ready_for_owner_creative_review"])
+
     def test_deterministic_source_bound_hashes_and_no_provider(self):
         one = self.runner().run()
         other_file = Path(self.temp.name) / "elsewhere.json"
