@@ -1,0 +1,6 @@
+DUFYND photo source discovery — one-shot feature-branch trigger
+Date: 2026-10-11 (Europe/Berlin)
+Purpose: Run the EXISTING zero-publish Awin feed 91379 review on the development branch
+Advertiser 31081; output review-only, no image registration or merchant activation.
+This marker contains no credentials, no public release authorization, and no price data.
+Remove the temporary push trigger after the evidence artifact is secured.
