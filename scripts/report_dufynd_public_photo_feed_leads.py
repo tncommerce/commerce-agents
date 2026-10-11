@@ -175,19 +175,22 @@ def create_review(
         if sku and sku.isdigit() and len(sku) <= 16 and image:
             clean_rows.append((sku, row, image))
             by_sku[sku].append((row, image))
-    mapped: dict[str, set[str]] = defaultdict(set)
+    # Existing mappings provide a search key, never an image or variant approval.
+    # A reused/stale merchant SKU must not surface a different current bottle.
+    mapped: dict[str, dict[str, str]] = defaultdict(dict)
     for m in mappings.get("mappings", []):
         pid = str(m.get("product_id") or "")
         if pid not in targets or m.get("merchant") != MERCHANT:
             continue
         sku = str(m.get("merchant_product_id") or "")
         if sku.isdigit() and len(sku) <= 16:
-            mapped[pid].add(sku)
+            mapped[pid][sku] = str(m.get("gtin") or m.get("ean") or "").strip()
     report = []
     for product_id, item in sorted(targets.items()):
-        approved_skus = mapped.get(product_id, set())
+        approved_skus = set(mapped.get(product_id, {}))
         leads = []
         ambiguous = False
+        identity_conflict = False
         for sku in sorted(approved_skus):
             matches = by_sku.get(sku, [])
             if len(matches) > 1:
@@ -195,6 +198,18 @@ def create_review(
                 continue
             if len(matches) == 1:
                 row, img = matches[0]
+                expected_gtin = mapped[product_id][sku]
+                feed_gtins = {
+                    str(row[field]).strip()
+                    for field in ("gtin", "ean")
+                    if row.get(field)
+                }
+                if (
+                    not feed_name_matches(item, row)
+                    or (expected_gtin and feed_gtins and feed_gtins != {expected_gtin})
+                ):
+                    identity_conflict = True
+                    continue
                 leads.append((0, sku, row, img, "mapped_sku_needs_feed_variant_review"))
         # Research leads use a strict brand+product-name intersection,
         # never infer exact 100ml variant from a similar 50ml name.
@@ -235,6 +250,7 @@ def create_review(
                 "pinned_merchant_skus": sorted(approved_skus),
                 "total_possible_feed_rows": len(hits),
                 "duplicate_pinned_feed_sku_hold": ambiguous,
+                "pinned_feed_identity_conflict_hold": identity_conflict,
                 "more_matches_truncated": len(hits) > MAX_CANDIDATES,
                 "candidates": candidates,
                 "status": (
