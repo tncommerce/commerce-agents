@@ -20,7 +20,7 @@ from scripts.dufynd_seven_content_dispatch import (
     task_manifest,
 )
 from scripts.dufynd_seven_content_workers import ROLE_ORDER, WorkerInputError
-from tests.test_dufynd_seven_content_workers import editorial_fixture
+from test_dufynd_seven_content_workers import editorial_fixture
 
 
 class FakeBridge:
