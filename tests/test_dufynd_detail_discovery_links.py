@@ -18,7 +18,9 @@ def test_detail_accords_and_notes_link_back_to_discovery() -> None:
     source = DETAIL_PAGE.read_text(encoding="utf-8")
 
     assert "/duft?q=" in source
-    notes = Path("examples/retail/storefront-web/components/FragranceNotesOverview.tsx").read_text(encoding="utf-8")
+    notes = Path("examples/retail/storefront-web/components/FragranceNotesOverview.tsx").read_text(
+        encoding="utf-8"
+    )
     assert "encodeURIComponent(noteLabel(note))" in notes
     assert "encodeURIComponent(accordLabel(accord))" in source
     assert "Weitere Düfte mit" in notes
