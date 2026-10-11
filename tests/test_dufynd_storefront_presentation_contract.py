@@ -23,14 +23,17 @@ def test_discovery_surfaces_use_presentation_visual() -> None:
     assert 'composition === "product_scene"' in catalog_lib
     assert "fragrance?.presentation_visual" in product_tile
     assert "originalPhotoFor(fragrance)" in catalog_browser
-    assert "<ScentArtwork" in catalog_browser
+    assert "dufynd-catalog-photo-pending" in catalog_browser
+    assert "<ScentArtwork" not in catalog_browser
+    assert "Originalfoto in Prüfung" in catalog_browser
     assert "<DiscoveryIntro catalog />" in discovery_page
     intro = _read("components/DiscoveryIntro.tsx")
     assert "fragrance?.presentation_visual || fragrance?.preferred_visual" in intro
     assert "isVerifiedProductTruthVisual(visual)" in intro
     assert "item.fragrance.presentation_visual" in detail_page
     assert "fragrance.presentation_visual" in acquisition
-    assert "fragrance.presentation_visual" in library_hub
+    assert "originalPhotoFor(fragrance)" in library_hub
+    assert "fragrance.presentation_visual" not in library_hub
     assert "fragrance?.presentation_visual?.url" in home_view
 
 
