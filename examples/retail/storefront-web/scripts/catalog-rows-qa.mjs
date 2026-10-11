@@ -19,6 +19,12 @@ try{for(const width of [320,390,768,1440]){
    'verified originals must precede the editorial-only study cards');
  assert.ok(await page.locator('.dufynd-catalog-originals-intro a[href*="bildnachweise"]').count(),
    'license/source evidence must be accessible from the catalog');
+ const prematurePhotoBadges=await cards.evaluateAll(xs=>xs.filter(card=>{
+   const loading=card.querySelector('[data-dufynd-photo-state="loading"]');
+   const badge=card.querySelector('.dufynd-catalog-original-photo-badge');
+   return loading && badge && getComputedStyle(badge).display!=='none';
+ }).length);
+ assert.equal(prematurePhotoBadges,0,'image-loading placeholders must not claim a visible original photo');
  const boxes=await cards.evaluateAll(xs=>xs.map(x=>{const r=x.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}}));
  const tops=[...new Set(boxes.map(b=>Math.round(b.y)))].sort((a,b)=>a-b).slice(0,2);
  const first=boxes.filter(b=>tops.includes(Math.round(b.y)));
