@@ -313,6 +313,22 @@ def thirty_day_calendar(section: dict, _prior: dict, existing: dict) -> dict:
         unique.add(key)
         title = str(item.get("idea") or "").strip()
         hook = str(item.get("hook") or "").strip()
+        writer_id = item.get("writer_idea_id")
+        if writer_id is not None:
+            linked = next(
+                (
+                    p
+                    for p in _prior.get("W2", {}).get("output", {}).get("ideas", [])
+                    if p.get("id") == writer_id
+                ),
+                None,
+            )
+            if not linked or (title, hook, item.get("format")) != (
+                linked["title"],
+                linked["hook"],
+                linked["format"],
+            ):
+                return packet("BLOCKED", {}, ["calendar_writer_crosslink_mismatch:" + key])
         reference = item.get("frozen_ref")
         frozen = (
             (existing.get("frozen_refs") or {}).get(reference)
@@ -342,6 +358,7 @@ def thirty_day_calendar(section: dict, _prior: dict, existing: dict) -> dict:
                 "idea": title,
                 "hook": hook,
                 "format": str(item.get("format") or ""),
+                "writer_idea_id": writer_id,
                 "gate_from_prior_editorial_source": str(item.get("gate") or "UNKNOWN"),
                 "slot_state": "FROZEN_REFERENCE_ONLY"
                 if reference_only

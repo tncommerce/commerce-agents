@@ -842,6 +842,20 @@ async def run_nightshift(
         processed_this_run = 0
         tech_lease_waited_seconds = 0
 
+        # Bounded deterministic roles on the SAME queue/leases. This adapter has
+        # no provider path and does not open or consume a paid model budget.
+        from scripts.dufynd_content7_activation import run_free_content_tick
+
+        if os.getenv("DUFYND_SEVEN_WORKER_ACTIVATION_GO") == "1" and (
+            deadline_at is None or datetime.now(UTC) < deadline_at
+        ):
+            session["free_content"] = await asyncio.to_thread(
+                run_free_content_tick, bridge, max_tasks=task_limit, deadline_at=deadline_at
+            )
+            if session["free_content"]["results"]:
+                stop_reason = "free_content_complete"
+            _persist_session(bridge, session)
+
         # Consume event-first backlog before repo-current work. Deterministic,
         # no-cost status events do not consume the paid/model event allowance.
         # If model budget is exhausted, deterministic housekeeping may still run,

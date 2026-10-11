@@ -77,9 +77,12 @@ begin
  select coalesce(jsonb_agg('content7:'||rid||':'||value),'[]') into expected_deps
  from jsonb_array_elements_text(public.dufynd_content7_dependencies_v1(r));
  if t.dependencies is distinct from expected_deps then return false; end if;
+ if not public.dufynd_content7_activation_allowed_v1(rid) then return false; end if;
+ select value into context from public.dufynd_master_status
+ where key='content.seven_workers.runtime.source.'||rid for share;
  if t.durable_payload is distinct from jsonb_build_object(
   'kind','seven_content_role_v1','version',1,'role',r,'round_id',rid,
-  'source_key','content.seven_worker_editorial_pilot_20261011_v1',
+  'source_key',coalesce(context#>>'{pilot,source_key}','content.seven_worker_editorial_pilot_20261011_v1'),
   'source_sha256',p_value->>'source_sha256',
   'context_key','content.seven_workers.runtime.source.'||rid,
   'handler_id','seven_content_'||lower(r)||'_v1','provider_execution',false)
@@ -139,8 +142,18 @@ begin
   or exists(select 1 from jsonb_array_elements(result#>'{output,slots}') with ordinality o(slot,n)
    where slot->>'date' is distinct from context#>>array['pilot','W7','calendar',(o.n-1)::text,'date']
    or slot->>'idea' is distinct from context#>>array['pilot','W7','calendar',(o.n-1)::text,'idea']
+   or slot->>'format' is distinct from context#>>array['pilot','W7','calendar',(o.n-1)::text,'format']
+   or slot->>'writer_idea_id' is distinct from context#>>array['pilot','W7','calendar',(o.n-1)::text,'writer_idea_id']
    or slot->>'hook' is distinct from context#>>array['pilot','W7','calendar',(o.n-1)::text,'hook'])
   then raise exception 'calendar_source_mismatch'; end if;
+  if exists(select 1 from jsonb_array_elements(result#>'{output,slots}') slot
+    where slot->>'writer_idea_id' is not null and not exists(
+      select 1 from public.dufynd_master_status m,
+        jsonb_array_elements(m.value#>'{packet,output,ideas}') idea
+      where m.key='content.seven_workers.runtime.'||rid||'.W2'
+        and idea->>'id'=slot->>'writer_idea_id' and idea->>'title'=slot->>'idea'
+        and idea->>'hook'=slot->>'hook' and idea->>'format'=slot->>'format'))
+  then raise exception 'calendar_writer_crosslink_mismatch'; end if;
   if exists(select 1 from jsonb_array_elements(result#>'{output,slots}') slot
    where slot->'scheduled' is distinct from 'false'::jsonb
    or slot->'published' is distinct from 'false'::jsonb

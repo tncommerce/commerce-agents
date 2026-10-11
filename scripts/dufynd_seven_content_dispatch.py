@@ -85,7 +85,7 @@ def task_manifest(round_id: str, source: dict[str, Any], existing: dict) -> list
                 "version": 1,
                 "role": role,
                 "round_id": round_id,
-                "source_key": SOURCE_KEY,
+                "source_key": source.get("source_key", SOURCE_KEY),
                 "source_sha256": source_sha,
                 "context_key": f"{ROUND_KEY_PREFIX}.source.{round_id}",
                 "handler_id": f"seven_content_{role.lower()}_v1",

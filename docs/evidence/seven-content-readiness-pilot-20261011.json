@@ -1,0 +1,100 @@
+{
+  "mode": "ISOLATED_PGLITE_ACTUAL_SQL_NEW_INPUT",
+  "started_utc": "2026-10-11T13:24:57.417277+00:00",
+  "finished_utc": "2026-10-11T13:24:57.836911+00:00",
+  "round_id": "dufynd_editorial_readiness_20261011_v2",
+  "plan_sha256": "0c6d9fc0e1f67072992a9709dafee218fb40a4bf7eddcccf96b605237d2859e2",
+  "source_sha256": "55914dd3e82315f634935b9e8aaee9382ad7110e2e52cac502b7c8f200fdb614",
+  "synthetic_approval_not_owner_go": true,
+  "provider_requests": 0,
+  "additional_cost_eur": 0,
+  "production_writes": 0,
+  "published": 0,
+  "autonomous_creative_generation": false,
+  "owner_visual_candidates": 0,
+  "worker_evidence": [
+    {
+      "role": "W1",
+      "state": "DONE",
+      "packet_sha256": "52049767446daa25a9910068b488f017df54670dbf9a0476445cf452324427e9",
+      "predecessor_sha256": {},
+      "released_at": "2026-10-11T13:24:57.519Z",
+      "retry_count": 1
+    },
+    {
+      "role": "W3",
+      "state": "DONE_WITH_HOLDS",
+      "packet_sha256": "d3bea84d7d063fb88f7feac8286028e18197efac4988a71e0d38312e2c23ff3d",
+      "predecessor_sha256": {
+        "W1": "52049767446daa25a9910068b488f017df54670dbf9a0476445cf452324427e9"
+      },
+      "released_at": "2026-10-11T13:24:57.560Z",
+      "retry_count": 0
+    },
+    {
+      "role": "W4",
+      "state": "DONE_WITH_HOLDS",
+      "packet_sha256": "616137cb567f009293e6507b587ff16c492e08b194c582d1f806e0ea87eaa3ae",
+      "predecessor_sha256": {
+        "W1": "52049767446daa25a9910068b488f017df54670dbf9a0476445cf452324427e9"
+      },
+      "released_at": "2026-10-11T13:24:57.598Z",
+      "retry_count": 0
+    },
+    {
+      "role": "W5",
+      "state": "DONE",
+      "packet_sha256": "6f45d1862c1207c9a73088522cd71ab2b223efb75d5b2e1d96a1f76425fdddc1",
+      "predecessor_sha256": {
+        "W1": "52049767446daa25a9910068b488f017df54670dbf9a0476445cf452324427e9",
+        "W3": "d3bea84d7d063fb88f7feac8286028e18197efac4988a71e0d38312e2c23ff3d"
+      },
+      "released_at": "2026-10-11T13:24:57.633Z",
+      "retry_count": 0
+    },
+    {
+      "role": "W6",
+      "state": "DONE",
+      "packet_sha256": "d5d0fb8500fc1a21f66b7c81cf6241d9685e2ba29a3a90a9ab2bc32ef2f2ac36",
+      "predecessor_sha256": {
+        "W1": "52049767446daa25a9910068b488f017df54670dbf9a0476445cf452324427e9",
+        "W3": "d3bea84d7d063fb88f7feac8286028e18197efac4988a71e0d38312e2c23ff3d",
+        "W5": "6f45d1862c1207c9a73088522cd71ab2b223efb75d5b2e1d96a1f76425fdddc1"
+      },
+      "released_at": "2026-10-11T13:24:57.678Z",
+      "retry_count": 0
+    },
+    {
+      "role": "W2",
+      "state": "DONE_WITH_HOLDS",
+      "packet_sha256": "0e368eba7fc01a967f76dec6d46fbbb7f53ca64c79c063aea9c13bb9a6ad1a2b",
+      "predecessor_sha256": {
+        "W1": "52049767446daa25a9910068b488f017df54670dbf9a0476445cf452324427e9",
+        "W3": "d3bea84d7d063fb88f7feac8286028e18197efac4988a71e0d38312e2c23ff3d",
+        "W4": "616137cb567f009293e6507b587ff16c492e08b194c582d1f806e0ea87eaa3ae",
+        "W5": "6f45d1862c1207c9a73088522cd71ab2b223efb75d5b2e1d96a1f76425fdddc1",
+        "W6": "d5d0fb8500fc1a21f66b7c81cf6241d9685e2ba29a3a90a9ab2bc32ef2f2ac36"
+      },
+      "released_at": "2026-10-11T13:24:57.723Z",
+      "retry_count": 0
+    },
+    {
+      "role": "W7",
+      "state": "DONE_WITH_HOLDS",
+      "packet_sha256": "b8c7a1cf3e19a2da9c9436d5f2cda852459e66715df3bdc151b294eff34526f9",
+      "predecessor_sha256": {
+        "W1": "52049767446daa25a9910068b488f017df54670dbf9a0476445cf452324427e9",
+        "W2": "0e368eba7fc01a967f76dec6d46fbbb7f53ca64c79c063aea9c13bb9a6ad1a2b",
+        "W3": "d3bea84d7d063fb88f7feac8286028e18197efac4988a71e0d38312e2c23ff3d",
+        "W4": "616137cb567f009293e6507b587ff16c492e08b194c582d1f806e0ea87eaa3ae",
+        "W5": "6f45d1862c1207c9a73088522cd71ab2b223efb75d5b2e1d96a1f76425fdddc1",
+        "W6": "d5d0fb8500fc1a21f66b7c81cf6241d9685e2ba29a3a90a9ab2bc32ef2f2ac36"
+      },
+      "released_at": "2026-10-11T13:24:57.770Z",
+      "retry_count": 0
+    }
+  ],
+  "chief_editor_text_candidates": 3,
+  "interruption_resume_passed": true,
+  "duplicate_tick_writes": 0
+}

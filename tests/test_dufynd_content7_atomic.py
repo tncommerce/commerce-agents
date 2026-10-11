@@ -63,6 +63,23 @@ def prepare(database, source=None, existing=None):
         'contract=contract||\'{"certification_status":"certified"}\'::jsonb '
         "where handler_id like 'seven_content_%'"
     )
+    rid = source["round_id"]
+    decision_context = {
+        "round_id": rid,
+        "plan_sha256": digest(context),
+        "source_sha256": digest(context),
+    }
+    database.query(
+        "insert into public.dufynd_human_decisions(decision_id,status,action_type,context) values($1,'approved','content7_atomic_activation',$2::jsonb)",
+        [rid, json.dumps(decision_context)],
+    )
+    database.query(
+        "insert into public.dufynd_master_status(key,value) values($1,$2::jsonb)",
+        [
+            "content.seven_workers.activation." + rid,
+            json.dumps({**decision_context, "decision_id": rid, "active": True}),
+        ],
+    )
     bridge = SqlBridge(database)
     return bridge, SupabaseSevenWorkerDispatch(bridge, source=source, existing=existing)
 

@@ -82,7 +82,7 @@ jobs:
           cache: pip
       - run: pip install -r requirements-dev.txt psycopg[binary]==3.3.6
       - name: Atomic seven-worker results and concurrent receipt replay
-        run: pytest -q tests/test_dufynd_content7_atomic.py
+        run: pytest -q tests/test_dufynd_content7_atomic.py tests/test_dufynd_content7_activation.py
 
   no-pypi-fallback:
     runs-on: ubuntu-latest

@@ -56,6 +56,11 @@ class Database:
             "alter table public.dufynd_autonomy_tasks add column approval_action_type text default 'auto_allowed'",
             script=True,
         )
+        self.query(
+            "alter table public.dufynd_human_decisions add column action_type text, add column context jsonb; "
+            "create table public.dufynd_content_ideas(id text primary key,title text,status text);",
+            script=True,
+        )
         migrations = ROOT / "supabase/migrations"
         for suffix, boundary in (
             ("supervisor_v2_phase1.sql", "-- No model and no paid runner:"),
@@ -63,6 +68,7 @@ class Database:
             ("external_events.sql", None),
             ("capability_packets.sql", None),
             ("seven_content_atomic_result.sql", None),
+            ("seven_content_activation.sql", None),
         ):
             sql = next(migrations.glob("*" + suffix)).read_text()
             self.query(sql.split(boundary)[0] if boundary else sql, script=True)
@@ -92,6 +98,9 @@ class SqlBridge(DufyndJarvisBridge):
             "update_dufynd_worker_v2",
             "reconcile_dufynd_supervisor_v2",
             "get_dufynd_autonomy_queue",
+            "dufynd_content7_activation_allowed_v1",
+            "activate_dufynd_content7_v1",
+            "pause_dufynd_content7_v1",
         }
         if name not in allow:
             raise ValueError("test RPC outside fixed allowlist")

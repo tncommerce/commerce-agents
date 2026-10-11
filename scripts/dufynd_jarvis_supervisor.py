@@ -10,6 +10,7 @@ from datetime import UTC, datetime, timedelta
 from typing import Any
 from uuid import uuid4
 
+from scripts.dufynd_content7_activation import ready_content_tasks
 from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
 from scripts.dufynd_jarvis_control_plane import health_loop
 from scripts.dufynd_jarvis_nightshift import (
@@ -34,6 +35,7 @@ DEFAULT_MAX_IDLE_CYCLES = 60
 HARD_MAX_IDLE_CYCLES = 72
 
 IMMEDIATE_CONTINUE_REASONS = {
+    "free_content_complete",
     "event_backlog_remaining",
     "task_limit_reached",
 }
@@ -87,6 +89,7 @@ def _session_summary(session: dict[str, Any]) -> dict[str, Any]:
         "events_processed_estimate": int(session.get("events_processed_estimate") or 0),
         "branch_worker_used": bool(session.get("branch_worker_used")),
         "result_states": [str(item.get("final_status") or "unknown") for item in results],
+        "free_content": session.get("free_content"),
         "task_results": compact_results,
     }
 
@@ -99,6 +102,7 @@ def _preflight(bridge: DufyndJarvisBridge) -> dict[str, Any]:
         task for task in (queue.get("safe_to_execute") or []) if isinstance(task, dict)
     ]
     safe_tasks = _safe_candidates(queue)
+    content_tasks = ready_content_tasks(queue)
     lease = _tech_lease_state(bridge)
     inbox = dict(health.get("inbox") or {})
     pending_events = int(inbox.get("pending") or 0)
@@ -116,10 +120,11 @@ def _preflight(bridge: DufyndJarvisBridge) -> dict[str, Any]:
         "raw_safe_task_count": len(raw_safe_tasks),
         "safe_task_count": len(safe_tasks),
         "unselectable_safe_task_count": max(0, len(raw_safe_tasks) - len(safe_tasks)),
-        "non_engineering_safe_count": len(non_engineering),
+        "non_engineering_safe_count": len(non_engineering) + len(content_tasks),
+        "free_content_task_count": len(content_tasks),
         "engineering_safe_count": len(engineering),
         "tech_lease": lease,
-        "potential_work": bool(pending_events or safe_tasks),
+        "potential_work": bool(pending_events or safe_tasks or content_tasks),
         "control_plane_health": reconciliation,
         "model_execution_available": _model_execution_available(),
         "model_pause_reason": "unbounded_provider_cost",
@@ -241,6 +246,7 @@ async def supervise_nightshift(
             paid_work_parked = (
                 not preflight.get("model_execution_available", True)
                 and int(preflight["pending_events"]) == 0
+                and int(preflight.get("free_content_task_count", 0)) == 0
             )
             if not preflight["potential_work"] or lease_blocks_only_work or paid_work_parked:
                 if not lease_blocks_only_work and int(state["idle_cycles"]) >= idle_limit:
