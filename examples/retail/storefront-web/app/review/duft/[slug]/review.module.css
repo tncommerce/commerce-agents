@@ -6,3 +6,84 @@
 .identity h1[data-long-word=true]{font-size:clamp(32px,4vw,60px)}
 @media(max-width:767px){.identity h1[data-long-word=true]{font-size:clamp(32px,10vw,39px)}}
 .related{padding:32px 0 48px;border-top:1px solid #d4d8ce}.related h2{font:32px Georgia,serif;margin:12px 0}.related>p:not(.eyebrow){font-size:12px;color:#596653}.related>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-top:24px}.related a{border-bottom:1px solid #b6c1ae;padding:16px 0;font-size:13px;line-height:1.6}.related strong{font-weight:500}.related span{display:block;font-size:11px;color:#596653;margin-top:9px}@media(max-width:767px){.related>div{grid-template-columns:1fr;gap:0}.related h2{font-size:27px}}
+
+
+/* Keep staged 41-profile review routes consistent with the public photo-first UI. */
+.hero {
+  grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+  column-gap: 0;
+  min-height: 0;
+  padding: 0;
+  border: 1px solid #dddcd4;
+  border-radius: 24px;
+  overflow: hidden;
+  background: #fffefa;
+  box-shadow: 0 22px 48px -40px #35483d70;
+}
+.identity {padding: 32px 36px 0;}
+.intro {padding: 26px 36px 30px;}
+.art {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  justify-items: center;
+  align-items: stretch;
+  min-height: 510px;
+  height: 100%;
+  padding: 27px;
+  border-left: 1px solid #e8e6df;
+  background: radial-gradient(ellipse at 50% 41%, #fff 0, #fcfaf6 64%, #f0efe9 100%);
+  box-shadow: none;
+  color: #354a3b;
+}
+.photoEyebrow {
+  justify-self: start;
+  color: #648071;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: .17em;
+}
+.photoIdentity {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 11px;
+  text-align: center;
+  padding: 25px;
+}
+.photoIdentity > span {
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: #5d7463;
+}
+.photoIdentity strong {
+  max-width: 100%;
+  color: #294734;
+  font: 400 clamp(31px, 4vw, 54px)/1.08 Georgia, serif;
+  letter-spacing: -.035em;
+  overflow-wrap: anywhere;
+}
+.photoIdentity small {font-size: 12px;color: #738174;}
+.photoHold {
+  justify-self: end;
+  color: #5c7563;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.notes {padding: 32px 0;scroll-margin-top: 35px;}
+.notes :global(.dufynd-notes-overview) {width: 100%;}
+@media (max-width: 767px) {
+  .hero {display:flex;flex-direction:column;border-radius:20px;gap:0;}
+  .identity {padding:22px 21px 0;}
+  .intro {padding:18px 21px 23px;}
+  .art {min-height:270px;max-height:270px;height:270px;padding:15px 19px;border-left:0;border-block:1px solid #e8e6df;order:0;}
+  .photoIdentity {padding:14px 8px;gap:6px;}
+  .photoIdentity strong {font-size:29px;}
+  .photoEyebrow,.photoHold {font-size:9px;}
+  .notes {padding:20px 0;}
+}
