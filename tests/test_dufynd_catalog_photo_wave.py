@@ -13,9 +13,7 @@ PID = "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100"
 SKU = "924719"
 GTIN = "3770010614630"
 # This address is a synthetic test fixture, NOT an observed Awin feed URL.
-FIXTURE_PHOTO = (
-    "https://www.topparfuemerie.de/media/catalog/product/test-fixture.jpg"
-)
+FIXTURE_PHOTO = "https://www.topparfuemerie.de/media/catalog/product/test-fixture.jpg"
 
 
 def gaps() -> dict:
@@ -136,9 +134,7 @@ def test_exact_current_feed_source_only_enters_human_review() -> None:
     assert row["publish_go"] is False
     assert row["offer_activation_go"] is False
     assert "human_exact_variant_visual_match" in row["remaining_gates"]
-    assert packet["items"][1]["blockers"] == [
-        "current_exact_merchant_sku_mapping_missing"
-    ]
+    assert packet["items"][1]["blockers"] == ["current_exact_merchant_sku_mapping_missing"]
 
 
 @pytest.mark.parametrize(
