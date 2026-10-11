@@ -134,7 +134,8 @@ class SevenWorkerRuntimeTests(unittest.TestCase):
     def test_full_true_offline_assembly_no_creative_or_public_approval(self):
         state = self.runner().run()
         self.assertEqual(set(state["role_packets"]), set(ROLE_ORDER))
-        self.assertTrue(state["ready_for_owner_creative_review"])
+        self.assertTrue(state["ready_for_editorial_text_review"])
+        self.assertFalse(state["ready_for_owner_creative_review"])
         self.assertFalse(state["ready_for_publication"])
         self.assertEqual(state["model_requests"], 0)
         self.assertEqual(state["external_requests"], 0)
@@ -183,7 +184,8 @@ class SevenWorkerRuntimeTests(unittest.TestCase):
         for role in ROLE_ORDER:
             runner.run(role)
         done = runner.run()
-        self.assertTrue(done["ready_for_owner_creative_review"])
+        self.assertTrue(done["ready_for_editorial_text_review"])
+        self.assertFalse(done["ready_for_owner_creative_review"])
         before = self.file.read_bytes()
         runner.run()
         self.assertEqual(before, self.file.read_bytes())
@@ -287,7 +289,7 @@ class SevenWorkerRuntimeTests(unittest.TestCase):
                 with self.assertRaisesRegex(WorkerInputError, expected):
                     self.runner().run()
         self.file.write_text(json.dumps(original), encoding="utf-8")
-        self.assertTrue(self.runner().run()["ready_for_owner_creative_review"])
+        self.assertTrue(self.runner().run()["ready_for_editorial_text_review"])
 
     def test_deterministic_source_bound_hashes_and_no_provider(self):
         one = self.runner().run()

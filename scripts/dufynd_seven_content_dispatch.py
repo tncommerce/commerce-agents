@@ -87,6 +87,8 @@ def task_manifest(round_id: str, source: dict[str, Any], existing: dict) -> list
                 "round_id": round_id,
                 "source_key": SOURCE_KEY,
                 "source_sha256": source_sha,
+                "context_key": f"{ROUND_KEY_PREFIX}.source.{round_id}",
+                "handler_id": f"seven_content_{role.lower()}_v1",
                 "provider_execution": False,
             },
         }
@@ -159,12 +161,7 @@ class SupabaseSevenWorkerDispatch:
         return row
 
     def _assert_current_lease(self, worker_task_id: str) -> None:
-        """Recheck the existing DB lease immediately before a result write.
-
-        The Result REST upsert and Worker RPC are separate transactions;
-        this reduces stale-result exposure but is not an atomic SQL result
-        fence. A future owner-approved DB RPC is required for that property.
-        """
+        """Early diagnostic; the atomic RPC independently enforces the DB fence."""
         row = self.bridge.load_autonomy_task(worker_task_id)
         token = getattr(self.bridge, "worker_tokens", {}).get(worker_task_id)
         if (
@@ -208,8 +205,7 @@ class SupabaseSevenWorkerDispatch:
             "working",
             evidence="Seven editorial worker claimed; zero model/provider calls.",
         )
-        # A crash after the result is stored can resume without rerunning
-        # the producer, but completion still requires a valid fenced lease.
+        # Only the atomic RPC may write a result. No REST-upsert fallback exists.
         saved = self._read_saved(role)
         if saved is not None:
             result = saved
@@ -219,23 +215,31 @@ class SupabaseSevenWorkerDispatch:
                 self.bridge.update_worker(task["task_id"], "heartbeat")
                 self._assert_current_lease(task["task_id"])
                 saved_value = {
+                    "schema_version": 1,
+                    "role_version": 1,
                     "round_id": self.round_id,
                     "role": role,
                     "task_id": task["task_id"],
                     "source_sha256": self.source_sha,
                     "packet_sha256": digest(result),
                     "packet": result,
+                    "predecessor_sha256": {dep: digest(prior[dep]) for dep in DEPENDENCIES[role]},
                     "cost_eur": 0,
                     "approved_for_publication": False,
                     "visual_quality_verified": False,
                 }
-                self.bridge.upsert_master_status(
-                    key=result_key(self.round_id, role),
-                    category="content",
-                    value=saved_value,
-                    priority=80,
-                    last_verified_at=datetime.now(UTC).isoformat(),
+                accepted = self.bridge._rpc(
+                    "commit_dufynd_content7_result_v1",
+                    {
+                        "p_task_id": task["task_id"],
+                        "p_token": self.bridge.worker_tokens[task["task_id"]],
+                        "p_value": saved_value,
+                    },
                 )
+                if accepted is not True:
+                    raise WorkerInputError("atomic_result_commit_rejected")
+                self.bridge.worker_tokens.pop(task["task_id"], None)
+                return {"role": role, "state": result["state"], "spend_eur": 0}
         state = result.get("state")
         evidence = json.dumps(
             {
@@ -255,9 +259,9 @@ class SupabaseSevenWorkerDispatch:
                 task["task_id"], "blocked", evidence=evidence, reason="verification_pending"
             )
             return {"role": role, "state": "BLOCKED", "spend_eur": 0}
-        self.bridge.update_worker(task["task_id"], "verifying", evidence=evidence)
-        self.bridge.update_worker(task["task_id"], "done", evidence=evidence)
-        return {"role": role, "state": state, "spend_eur": 0}
+        # A saved result with a nonterminal task is legacy/inconsistent evidence.
+        # Never promote it via the old two-write path.
+        raise WorkerInputError("non_atomic_legacy_result_requires_review")
 
     def build_editor_review_bundle(self) -> dict:
         """Read-only owner-review handoff. Never confers 9.5 or publish approval."""
@@ -295,6 +299,7 @@ class SupabaseSevenWorkerDispatch:
                     "hook": item["hook"],
                     "question": item["community_question"],
                     "format": item["format"],
+                    "concept": item["concept"],
                     "holds": [
                         *item["review_holds"],
                         "no_visual_or_mobile_9_5_qa",
@@ -306,6 +311,8 @@ class SupabaseSevenWorkerDispatch:
             ],
             "source_verification_holds": list(packets["W3"]["holds"])
             + list(packets["W4"]["holds"]),
+            "source_evidence": packets["W3"]["output"],
+            "fact_evidence": packets["W4"]["output"],
             "visual_score": None,
             "creative_go": False,
             "publish_go": False,
@@ -317,12 +324,26 @@ class SupabaseSevenWorkerDispatch:
         for role in ROLE_ORDER:
             result = self.run_role(role)
             results.append(result)
-            if result["state"] not in SUCCESS_STATES | {"ALREADY_DONE"}:
-                break  # Dependency not complete; no fake autonomous result.
+            # W3/W4 are independent. A blocked sibling must not prevent the other
+            # from recording its result; dependent roles report WAITING_DEPENDENCIES.
         return results
 
 
-def load_private_inputs(bridge: Any) -> tuple[dict, dict]:
+def load_private_inputs(bridge: Any, round_id: str | None = None) -> tuple[dict, dict]:
+    if round_id is not None:
+        import re
+
+        if not re.fullmatch(r"dufynd_editorial_[a-z0-9_]{6,100}", round_id):
+            raise WorkerInputError("invalid_pinned_round")
+        record = bridge.load_master_status_entry(f"{ROUND_KEY_PREFIX}.source.{round_id}")
+        context = (record or {}).get("value")
+        if not isinstance(context, dict) or context.get("round") != round_id:
+            raise WorkerInputError("approved_pinned_source_missing")
+        source, existing = context.get("pilot"), context.get("existing")
+        if not isinstance(source, dict) or not isinstance(existing, dict):
+            raise WorkerInputError("invalid_pinned_source")
+        guard_context(round_id, source, existing)
+        return source, existing
     row = bridge.load_master_status_entry(SOURCE_KEY)
     value = (row or {}).get("value")
     if not isinstance(value, dict):
@@ -339,11 +360,13 @@ def load_private_inputs(bridge: Any) -> tuple[dict, dict]:
         "content.thursday_goalkeeper_perfume_20261015",
     )
     frozen = []
+    frozen_refs = {}
     for key in final_keys:
         record = bridge.load_master_status_entry(key)
         data = (record or {}).get("value")
         if not isinstance(data, dict):
             raise WorkerInputError("missing_current_owner_freeze_snapshot:" + key)
+        frozen_refs[key] = {"record_sha256": digest(data), "media_bytes_verified": False}
         freeze = data.get("owner_freeze")
         for candidate in (
             data.get("title"),
@@ -371,6 +394,8 @@ def load_private_inputs(bridge: Any) -> tuple[dict, dict]:
         ideas = response.json()
     if not isinstance(ideas, list):
         raise WorkerInputError("content_ideas_snapshot_invalid")
+    if len(ideas) >= 200:
+        raise WorkerInputError("content_ideas_snapshot_may_be_truncated")
     published = []
     for item in ideas:
         if not isinstance(item, dict):
@@ -387,6 +412,7 @@ def load_private_inputs(bridge: Any) -> tuple[dict, dict]:
         "reserved": {"2026-10-12": "Torwart"},
         "published_titles": sorted(set(published)),
         "frozen_titles": sorted(set(frozen)),
+        "frozen_refs": frozen_refs,
         "snapshot_verified": True,
     }
     return value, existing
@@ -398,6 +424,9 @@ def main() -> int:
     parser.add_argument("--execute", action="store_true")
     parser.add_argument("--review-bundle", action="store_true")
     parser.add_argument("--role", choices=ROLE_ORDER)
+    parser.add_argument(
+        "--round", help="Use an explicitly pinned, separately approved private snapshot"
+    )
     args = parser.parse_args()
     if not (args.output_manifest or args.execute or args.review_bundle):
         parser.error("choose --output-manifest or --execute")
@@ -405,11 +434,13 @@ def main() -> int:
         parser.error("cannot generate manifest and claim task in one run")
     if args.execute and os.getenv("DUFYND_SEVEN_WORKER_ACTIVATION_GO") != "1":
         raise WorkerInputError("live_worker_activation_requires_separate_owner_gate")
+    if args.execute and not args.round:
+        raise WorkerInputError("execution_requires_approved_pinned_round")
 
     from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
 
     bridge = DufyndJarvisBridge()
-    source, existing = load_private_inputs(bridge)
+    source, existing = load_private_inputs(bridge, args.round)
     if args.output_manifest:
         print(json.dumps(task_manifest(source["round_id"], source, existing), ensure_ascii=False))
         return 0

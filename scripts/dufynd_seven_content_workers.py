@@ -203,8 +203,8 @@ def emotional_hooks(section: dict, _prior: dict, _existing: dict) -> dict:
 
 
 def viral_writer(section: dict, prior: dict, existing: dict) -> dict:
-    hooks = {normalized(s) for s in prior["W6"]["output"]["hooks"]}
-    questions = {normalized(s) for s in prior["W5"]["output"]["questions"]}
+    hooks = set(prior["W6"]["output"]["hooks"])
+    questions = set(prior["W5"]["output"]["questions"])
     frozen = {normalized(s) for s in existing.get("frozen_titles", [])}
     published = {normalized(s) for s in existing.get("published_titles", [])}
     proposals: list[dict] = []
@@ -221,9 +221,9 @@ def viral_writer(section: dict, prior: dict, existing: dict) -> dict:
         warnings = []
         if normalized(title) in frozen | published:
             warnings.append("existing_frozen_or_published_creative")
-        if normalized(hook) not in hooks:
+        if hook not in hooks:
             warnings.append("hook_not_matched_to_W6")
-        if normalized(item.get("question")) not in questions:
+        if item.get("question") not in questions:
             warnings.append("question_not_matched_to_W5")
         overlap = str(item.get("overlap") or "")
         if "hold" in overlap or "facts_gated" in overlap:
@@ -246,11 +246,46 @@ def viral_writer(section: dict, prior: dict, existing: dict) -> dict:
         )
     if len(proposals) < 10:
         return packet("BLOCKED", {"ideas": proposals}, ["ten_distinct_idea_inputs_missing"])
+    broken = [
+        p["id"]
+        for p in proposals
+        if any(
+            h in p["review_holds"] for h in ("hook_not_matched_to_W6", "question_not_matched_to_W5")
+        )
+    ]
+    if broken:
+        return packet(
+            "BLOCKED",
+            {"ideas": proposals, "broken_crosslink_ids": broken},
+            ["exact_W5_W6_crosslinks_required"],
+        )
     holds = ["visual_and_owner_creative_qa_pending", "worker_is_not_an_inference_provider"]
     return packet(
         "DONE_WITH_HOLDS",
-        {"ideas": proposals[:10], "editorial_shortlist": proposals[:3]},
+        {
+            "ideas": proposals[:10],
+            "editorial_shortlist": [p for p in proposals if not p["review_holds"]][:3],
+        },
         holds,
+    )
+
+
+def is_placeholder_hook(value: str) -> bool:
+    text = normalized(value)
+    return (
+        not text
+        or text in {"tbd", "todo", "pending", "placeholder", "platzhalter"}
+        or any(
+            fragment in text
+            for fragment in (
+                "preserve frozen original text",
+                "draft a distinct hook",
+                "hook folgt",
+                "hook später",
+                "insert hook",
+                "lorem ipsum",
+            )
+        )
     )
 
 
@@ -261,6 +296,7 @@ def thirty_day_calendar(section: dict, _prior: dict, existing: dict) -> dict:
     unique = set()
     output = []
     incomplete_hook_dates: list[str] = []
+    frozen_reference_holds: list[str] = []
     reservations = existing.get("reserved", {})
     if not isinstance(reservations, dict):
         return packet("BLOCKED", {}, ["invalid_existing_reservation_map"])
@@ -277,11 +313,26 @@ def thirty_day_calendar(section: dict, _prior: dict, existing: dict) -> dict:
         unique.add(key)
         title = str(item.get("idea") or "").strip()
         hook = str(item.get("hook") or "").strip()
-        if not title or not hook:
+        reference = item.get("frozen_ref")
+        frozen = (
+            (existing.get("frozen_refs") or {}).get(reference)
+            if isinstance(reference, str)
+            else None
+        )
+        reference_only = bool(item.get("reference_only"))
+        if reference_only:
+            if (
+                not isinstance(frozen, dict)
+                or not re.fullmatch(r"[a-f0-9]{64}", str(item.get("frozen_sha256") or ""))
+                or frozen.get("record_sha256") != item.get("frozen_sha256")
+            ):
+                return packet("BLOCKED", {}, ["invalid_frozen_reference:" + key])
+            if hook:
+                return packet("BLOCKED", {}, ["reference_only_must_not_rewrite_frozen_hook:" + key])
+            frozen_reference_holds.append(key)
+        if not title or (not hook and not reference_only):
             return packet("BLOCKED", {}, ["empty_calendar_idea_or_hook"])
-        if "preserve frozen original text" in normalized(
-            hook
-        ) or "draft a distinct hook" in normalized(hook):
+        if not reference_only and is_placeholder_hook(hook):
             incomplete_hook_dates.append(key)
         if key in reservations and normalized(str(reservations[key])) not in normalized(title):
             return packet("BLOCKED", {}, ["reserved_owner_final_cannot_be_replaced:" + key])
@@ -292,7 +343,14 @@ def thirty_day_calendar(section: dict, _prior: dict, existing: dict) -> dict:
                 "hook": hook,
                 "format": str(item.get("format") or ""),
                 "gate_from_prior_editorial_source": str(item.get("gate") or "UNKNOWN"),
-                "slot_state": "EDITORIAL_PROPOSAL_ONLY",
+                "slot_state": "FROZEN_REFERENCE_ONLY"
+                if reference_only
+                else "EDITORIAL_PROPOSAL_ONLY",
+                "frozen_ref": reference if reference_only else None,
+                "frozen_sha256": item.get("frozen_sha256") if reference_only else None,
+                "hook_state": "EXACT_SOURCE_RETRIEVAL_REQUIRED"
+                if reference_only
+                else "DRAFT_NOT_APPROVED",
                 "scheduled": False,
                 "published": False,
                 "owner_publication_go": False,
@@ -312,8 +370,14 @@ def thirty_day_calendar(section: dict, _prior: dict, existing: dict) -> dict:
         )
     return packet(
         "DONE_WITH_HOLDS",
-        {"slots": output, "auto_schedule": False, "test_mix_is_nonbinding": True},
-        ["per_asset_rights_audio_ai_and_separate_owner_publish_go_required"],
+        {
+            "slots": output,
+            "auto_schedule": False,
+            "test_mix_is_nonbinding": True,
+            "frozen_reference_dates": frozen_reference_holds,
+        },
+        ["per_asset_rights_audio_ai_and_separate_owner_publish_go_required"]
+        + (["frozen_references_are_not_completed_post_copy"] if frozen_reference_holds else []),
     )
 
 
@@ -462,10 +526,11 @@ class EditorialRunner:
                     **result,
                 }
                 self._write(state)
-            state["ready_for_owner_creative_review"] = all(
+            state["ready_for_editorial_text_review"] = all(
                 state["role_packets"].get(key, {}).get("state") in SUCCESS_STATES
                 for key in ROLE_ORDER
             )
+            state["ready_for_owner_creative_review"] = False
             state["ready_for_publication"] = False
             state["chief_editor_gate"] = "TEXT_ONLY_NO_VISUAL_QA_NO_OWNER_APPROVAL"
             self._write(state)

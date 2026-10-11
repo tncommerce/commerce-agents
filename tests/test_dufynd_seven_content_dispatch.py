@@ -143,12 +143,20 @@ class FakeBridge:
             task["status"] = state
         self.writes.append(("worker", task_id_value, state, evidence))
 
-    def upsert_master_status(self, *, key, category, value, priority, last_verified_at):
-        assert category == "content" and priority == 80
+    def _rpc(self, name, payload):
+        # Adapter-contract simulation only. Real transaction proof is in SQL tests.
+        assert name == "commit_dufynd_content7_result_v1"
+        task = self.tasks[payload["p_task_id"]]
+        assert task["lease_token"] == payload["p_token"]
+        value = payload["p_value"]
+        key = result_key(value["round_id"], value["role"])
         assert value["approved_for_publication"] is False
         assert value["visual_quality_verified"] is False
         self.master[key] = {"value": copy.deepcopy(value)}
         self.writes.append(("result", key, value["packet_sha256"]))
+        self.update_worker(payload["p_task_id"], "verifying")
+        self.update_worker(payload["p_task_id"], "done")
+        return True
 
 
 class SupabaseContentDispatchTests(unittest.TestCase):
@@ -253,8 +261,9 @@ class SupabaseContentDispatchTests(unittest.TestCase):
         bridge = FakeBridge(source, self.existing)
         dispatch = SupabaseSevenWorkerDispatch(bridge, source=source, existing=self.existing)
         result = dispatch.run_all()
-        self.assertEqual([r["role"] for r in result], ["W1", "W3", "W4", "W5"])
-        self.assertEqual(result[-1]["state"], "BLOCKED")
+        self.assertEqual([r["role"] for r in result], list(ROLE_ORDER))
+        self.assertEqual(result[3]["state"], "BLOCKED")
+        self.assertTrue(all(r["state"] == "WAITING_DEPENDENCIES" for r in result[4:]))
         self.assertEqual(bridge.tasks[task_id(dispatch.round_id, "W5")]["status"], "blocked")
         self.assertNotIn(result_key(dispatch.round_id, "W5"), bridge.master)
         self.assertEqual(len(bridge.claims), 4)

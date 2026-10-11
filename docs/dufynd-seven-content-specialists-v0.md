@@ -1,5 +1,7 @@
 # DUFYND Seven Content Specialists — DEV-only V0
 
+**Follow-up implementation:** [Atomic result commit and activation review](dufynd-seven-content-atomic-v1.md) supersedes the historical dispatch/atomicity sections below. Production remains inactive.
+
 **Status:** zero-provider-cost executable editorial packet validator, **not yet seven permanently
 scheduled Jarvis agents**. This document explicitly separates code-complete offline stages,
 licensed inference, private data, and operational release gates. Public posting is prohibited.
@@ -159,7 +161,7 @@ that exact source version, the existing free worker path can be entered by:
 
 \`\`\`bash
 DUFYND_SEVEN_WORKER_ACTIVATION_GO=1 \
-python -m scripts.dufynd_seven_content_dispatch --execute
+python -m scripts.dufynd_seven_content_dispatch --execute --round APPROVED_PINNED_ROUND
 \`\`\`
 
 The environment flag alone **does not create missing task records or
@@ -178,20 +180,17 @@ It returns up to three ranked text concepts, per-role hashes and all source,
 rights, visual, owner and native platform holds. It cannot set a numeric
 quality grade, creative approval, a calendar schedule or publication.
 
-**Atomicity caveat:** the existing Worker lease RPC and
-\`dufynd_master_status\` result upsert are separate DB transactions. The
-implementation checks the lease again before a result write, but cannot
-prove an atomic fenced write across both tables. An owner-reviewed, additive
-transactional result-commit RPC (versioned Supabase migration) is required
-before activating unattended production dispatch. Do not deploy the
-incomplete path as 24/7 autonomously certified.
+**Historical V0 limitation, now repaired in development:** result upsert and task
+completion previously used separate transactions. The adapter now requires
+`commit_dufynd_content7_result_v1` with no upsert fallback. See the follow-up
+migration, real SQL tests and activation gates. Production application is pending.
 
 Synthetic-only regression cases in
 \`tests/test_dufynd_seven_content_dispatch.py\` exercise actual role claims,
 DAG ordering, duplicate prevention, idempotent already-done results, fresh
 source hashes, fail-closed revoked leases and the chief-editor boundary.
 
-## Remaining engineering to reach *fully autonomous seven-worker dispatch*
+## Historical V0 remaining work (current disposition in follow-up)
 
 This is deliberately outside V0 until individually reviewed and proven safe:
 
