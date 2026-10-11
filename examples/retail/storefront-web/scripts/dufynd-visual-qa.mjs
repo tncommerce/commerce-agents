@@ -1020,12 +1020,13 @@ try {
             '.dufynd-catalog-card img[src="/products/naxos-cutout-production.webp"]',
           );
           const illustrations = page.locator('.dufynd-catalog-card [data-scent-artwork]');
-          if ((await heldCutout.count()) !== 0 || (await illustrations.count()) < 1) {
-            throw new Error("catalog must replace unlicensed product imagery with a labelled scent illustration");
+          const sourceHolds = page.locator('.dufynd-catalog-card .dufynd-catalog-photo-pending');
+          if ((await heldCutout.count()) !== 0 || (await illustrations.count()) !== 0 || (await sourceHolds.count()) < 1) {
+            throw new Error("catalog must use registered originals or honest neutral studio source holds");
           }
-          for (const illustration of await illustrations.all()) {
-            if (!(await illustration.innerText()).includes("Duftillustration · kein Produktfoto")) {
-              throw new Error("catalog illustration lacks its non-product-photo label");
+          for (const hold of await sourceHolds.all()) {
+            if (!(await hold.innerText()).includes("Originalfoto in Prüfung")) {
+              throw new Error("neutral studio image hold is missing its source-review disclosure");
             }
           }
         }
