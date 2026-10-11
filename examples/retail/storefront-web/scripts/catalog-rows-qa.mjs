@@ -10,6 +10,15 @@ try{for(const width of [320,390,768,1440]){
  await page.route('**/api/**',r=>r.fulfill({json:{ok:true,session_id:'local-qa'}}));
  await page.goto(base+'/duft');await page.evaluate(()=>document.fonts.ready);
  const cards=page.locator('.dufynd-catalog-card');await cards.first().waitFor();
+ // The default discovery order must lead with licensed exact-variant photos;
+ // editorial-only studies remain accessible without impersonating product shots.
+ const originalPositions=await cards.evaluateAll(xs=>xs.flatMap((node,index)=>
+   node.getAttribute('data-original-photo')==='true'?[index]:[]));
+ assert.ok(originalPositions.length>=3,'default discovery needs its verified original-photo lead');
+ assert.deepEqual(originalPositions,originalPositions.map((_,index)=>index),
+   'verified originals must precede the editorial-only study cards');
+ assert.ok(await page.locator('.dufynd-catalog-originals-intro a[href*="bildnachweise"]').count(),
+   'license/source evidence must be accessible from the catalog');
  const boxes=await cards.evaluateAll(xs=>xs.map(x=>{const r=x.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}}));
  const tops=[...new Set(boxes.map(b=>Math.round(b.y)))].sort((a,b)=>a-b).slice(0,2);
  const first=boxes.filter(b=>tops.includes(Math.round(b.y)));
