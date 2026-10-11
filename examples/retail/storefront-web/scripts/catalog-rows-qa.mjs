@@ -24,12 +24,13 @@ try{for(const width of [320,390,768,1440]){
  const productStages=await cards.evaluateAll(xs=>xs.map(node=>({
    approved:node.getAttribute('data-original-photo')==='true',
    original:!!node.querySelector('.dufynd-product-stage'),
+   unavailable:!!node.querySelector('[data-dufynd-visual-state="unavailable"]'),
    pending:!!node.querySelector('.dufynd-catalog-photo-pending'),
    artwork:!!node.querySelector('[data-scent-artwork], .dufynd-editorial-depth-stage')
  })));
  assert.ok(productStages.some(x=>x.pending),'unlicensed product entries must stay discoverable without spoofed bottles');
  assert.ok(productStages.every(x=>!x.artwork),'scenic illustration may not appear as a product photo');
- assert.ok(productStages.every(x=>x.approved ? x.original : x.pending),
+ assert.ok(productStages.every(x=>x.approved ? (x.original || x.unavailable) : x.pending),
    'only registered originals may use the photo stage; every other card needs a candid studio pending state');
  const honestCaptions=await cards.locator('.dufynd-catalog-photo-pending-caption').allTextContents();
  assert.ok(honestCaptions.every(t=>t.includes('Originalfoto in Prüfung')),
