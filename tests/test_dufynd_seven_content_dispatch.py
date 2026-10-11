@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import copy
 import unittest
+from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
 from scripts.dufynd_jarvis_runtime import _is_green_autonomy_task
@@ -56,6 +57,9 @@ class FakeBridge:
             return None
         token = str(uuid4())
         self.worker_tokens[task_id_value] = token
+        task["lease_token"] = token
+        task["lease_expires_at"] = (datetime.now(UTC) + timedelta(minutes=3)).isoformat()
+        task["released_at"] = None
         task["status"] = "in_progress"
         task["worker_state"] = "claimed"
         self.claims.append((task_id_value, owner))
@@ -67,6 +71,10 @@ class FakeBridge:
             raise RuntimeError("fence_lost")
         if state == "done" and task["worker_state"] != "verifying":
             raise RuntimeError("no_verified_completion")
+        if state == "heartbeat":
+            task["lease_expires_at"] = (datetime.now(UTC) + timedelta(minutes=3)).isoformat()
+            self.writes.append(("worker", task_id_value, state, evidence))
+            return
         task["worker_state"] = state
         if state in {"done", "blocked"}:
             task["status"] = state
@@ -141,6 +149,22 @@ class SupabaseContentDispatchTests(unittest.TestCase):
         self.assertEqual(dispatch.run_role("W5")["state"], "WAITING_DEPENDENCIES")
         self.assertEqual(dispatch.run_role("W3")["state"], "DONE_WITH_HOLDS")
         self.assertEqual(dispatch.run_role("W5")["state"], "DONE")
+
+    def test_lost_fence_prevents_untrusted_result_write(self):
+        bridge, dispatch = self.make_dispatch()
+        original = bridge.load_autonomy_task
+
+        def changed_lease(task_id_value):
+            row = original(task_id_value)
+            if row is not None and row.get("status") == "in_progress":
+                row["lease_token"] = str(uuid4())
+            return row
+
+        bridge.load_autonomy_task = changed_lease
+        with self.assertRaisesRegex(WorkerInputError, "lease_lost"):
+            dispatch.run_role("W1")
+        self.assertNotIn(result_key(dispatch.round_id, "W1"), bridge.master)
+        self.assertFalse(any(w[0] == "result" for w in bridge.writes))
 
     def test_invalid_contract_is_rejected_before_claim(self):
         bridge, dispatch = self.make_dispatch()
