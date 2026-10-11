@@ -269,3 +269,69 @@
  .dufynd-catalog-page section[aria-label="Duftkatalog filtern"] > div:first-child {grid-template-columns:minmax(0,1fr) auto;align-items:end}
  .dufynd-catalog-page section[aria-label="Duftkatalog filtern"] > div:first-child > button {min-width:78px;gap:14px}
 }
+
+
+/* Mobile polish: keep filtering accessible without covering a product card. */
+.dufynd-catalog-filter-return {
+  position: static;
+  isolation: isolate;
+}
+.dufynd-catalog-filter-return > div {
+  border-color: #d5d3ca;
+  background: #fdfbf5;
+  box-shadow: 0 12px 28px -24px rgba(33, 38, 30, 0.5);
+}
+.dufynd-catalog-filter-return button {
+  min-height: 44px;
+}
+@media (max-width: 767px) {
+  .dufynd-catalog-card:not([data-original-photo="true"]) .dufynd-catalog-card-stage {
+    height: 216px;
+  }
+  .dufynd-catalog-card[data-original-photo="true"] .dufynd-catalog-card-stage {
+    height: 258px;
+  }
+  .dufynd-catalog-card-cta {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 13px;
+  }
+  .dufynd-catalog-card-actions button {
+    min-height: 44px;
+  }
+}
+
+/* Correct contrast on pale breadcrumb and the dark Delina hero. */
+.dufynd-detail-page nav[aria-label="Breadcrumb"] {
+  color: #4e534f !important;
+}
+.dufynd-detail-page nav[aria-label="Breadcrumb"] > span:last-child {
+  color: #222b24 !important;
+}
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-fragrance-identity .rounded-full {
+  color: #44323d;
+  background: #f8f2f5;
+  border-color: #c3afb9;
+  font-weight: 600;
+}
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-fragrance-hero-copy :is(button, a[href^="/vergleich"], a[href="#alternativen"]) {
+  min-height: 44px;
+  color: #33232e !important;
+  background: #fff8fb !important;
+  border: 1px solid #c9b7c2 !important;
+}
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-fragrance-hero-copy button[aria-pressed="true"] {
+  background: #e7d5de !important;
+  border-color: #94687f !important;
+}
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-fragrance-hero-copy :is(button, a):focus-visible {
+  outline: 3px solid #d9b6c7;
+  outline-offset: 2px;
+}
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] #dufynd-hero-offer-cta {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 46px;
+}
