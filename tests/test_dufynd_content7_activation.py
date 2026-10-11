@@ -287,6 +287,19 @@ def test_revocation_blocks_commit_even_after_claim(database):
 
 
 @SQL
+def test_direct_dispatch_refuses_revoked_round_before_claim(database):
+    bridge, source, existing, _, receipt = activate(database)
+    database.query(
+        "update public.dufynd_human_decisions set status='revoked' where decision_id=$1",
+        [receipt["decision_id"]],
+    )
+    dispatch = SupabaseSevenWorkerDispatch(bridge, source=source, existing=existing)
+    with pytest.raises(WorkerInputError, match="activation_required"):
+        dispatch.run_role("W1")
+    assert bridge.load_autonomy_task(task_id(source["round_id"], "W1"))["lease_token"] is None
+
+
+@SQL
 def test_crash_before_commit_recovers_existing_expired_lease(database, monkeypatch):
     monkeypatch.setenv("DUFYND_SEVEN_WORKER_ACTIVATION_GO", "1")
     bridge, source, existing, _, _ = activate(database)

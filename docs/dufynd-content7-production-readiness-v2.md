@@ -24,7 +24,8 @@ CI `38140109644`. This increment adds the missing integration and activation pat
   bytes fail. No changes to content finals, assets or publishing tables.
 - Result commits re-check the activation receipt and the current Owner decision
   while holding locks. Revocation/pause therefore also blocks an already claimed
-  worker from committing. Queue readiness alone is not authorization.
+  worker from committing. Direct dispatch additionally checks before claiming a
+  lease, not just through the Supervisor adapter. Queue readiness alone is not authorization.
 - W7 can reference an exact W2 idea ID. Title, hook and format must match the W2
   output in both Python and SQL. Standalone calendar suggestions remain proposals.
 - Chief Editor receives at most three **text** candidates. None is automatically
@@ -80,6 +81,12 @@ Public redacted hashes, timestamps, role results and predecessor edges:
 Private creative text, live-source snapshots and full SQL receipts stay out of
 this repository. PGlite is real isolated SQL, not a productive Supabase run;
 parallel-connection contention remains covered by the PostgreSQL CI job.
+
+The first new CI reproduced a test-harness collision (`role anon already exists`)
+when both SQL modules reused the native PostgreSQL service. The fixture now resets
+only its explicitly named disposable **localhost `content7_test`** schema and
+reuses roles. Remote or differently named database resets are refused. This is
+test-only setup, not a production migration or a production cleanup operation.
 
 ## Repeatable activation runbook — NOT authorization
 

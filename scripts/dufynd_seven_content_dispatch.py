@@ -158,6 +158,14 @@ class SupabaseSevenWorkerDispatch:
             raise WorkerInputError("worker_contract_or_fingerprint_mismatch:" + role)
         if row.get("status") not in {"ready", "done"}:
             raise WorkerInputError("worker_not_explicitly_activated:" + role)
+        if (
+            row["status"] == "ready"
+            and self.bridge._rpc(
+                "dufynd_content7_activation_allowed_v1", {"p_round": self.round_id}
+            )
+            is not True
+        ):
+            raise WorkerInputError("owner_bound_activation_required:" + role)
         return row
 
     def _assert_current_lease(self, worker_task_id: str) -> None:

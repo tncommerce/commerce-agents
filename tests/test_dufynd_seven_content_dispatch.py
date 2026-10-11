@@ -145,6 +145,8 @@ class FakeBridge:
 
     def _rpc(self, name, payload):
         # Adapter-contract simulation only. Real transaction proof is in SQL tests.
+        if name == "dufynd_content7_activation_allowed_v1":
+            return payload["p_round"] == self.round_id
         assert name == "commit_dufynd_content7_result_v1"
         task = self.tasks[payload["p_task_id"]]
         assert task["lease_token"] == payload["p_token"]

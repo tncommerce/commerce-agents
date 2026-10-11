@@ -1,7 +1,7 @@
 {
   "mode": "ISOLATED_PGLITE_ACTUAL_SQL_NEW_INPUT",
-  "started_utc": "2026-10-11T13:24:57.417277+00:00",
-  "finished_utc": "2026-10-11T13:24:57.836911+00:00",
+  "started_utc": "2026-10-11T13:30:51.751343+00:00",
+  "finished_utc": "2026-10-11T13:30:52.159815+00:00",
   "round_id": "dufynd_editorial_readiness_20261011_v2",
   "plan_sha256": "0c6d9fc0e1f67072992a9709dafee218fb40a4bf7eddcccf96b605237d2859e2",
   "source_sha256": "55914dd3e82315f634935b9e8aaee9382ad7110e2e52cac502b7c8f200fdb614",
@@ -18,7 +18,7 @@
       "state": "DONE",
       "packet_sha256": "52049767446daa25a9910068b488f017df54670dbf9a0476445cf452324427e9",
       "predecessor_sha256": {},
-      "released_at": "2026-10-11T13:24:57.519Z",
+      "released_at": "2026-10-11T13:30:51.852Z",
       "retry_count": 1
     },
     {
@@ -28,7 +28,7 @@
       "predecessor_sha256": {
         "W1": "52049767446daa25a9910068b488f017df54670dbf9a0476445cf452324427e9"
       },
-      "released_at": "2026-10-11T13:24:57.560Z",
+      "released_at": "2026-10-11T13:30:51.895Z",
       "retry_count": 0
     },
     {
@@ -38,7 +38,7 @@
       "predecessor_sha256": {
         "W1": "52049767446daa25a9910068b488f017df54670dbf9a0476445cf452324427e9"
       },
-      "released_at": "2026-10-11T13:24:57.598Z",
+      "released_at": "2026-10-11T13:30:51.931Z",
       "retry_count": 0
     },
     {
@@ -49,7 +49,7 @@
         "W1": "52049767446daa25a9910068b488f017df54670dbf9a0476445cf452324427e9",
         "W3": "d3bea84d7d063fb88f7feac8286028e18197efac4988a71e0d38312e2c23ff3d"
       },
-      "released_at": "2026-10-11T13:24:57.633Z",
+      "released_at": "2026-10-11T13:30:51.970Z",
       "retry_count": 0
     },
     {
@@ -61,7 +61,7 @@
         "W3": "d3bea84d7d063fb88f7feac8286028e18197efac4988a71e0d38312e2c23ff3d",
         "W5": "6f45d1862c1207c9a73088522cd71ab2b223efb75d5b2e1d96a1f76425fdddc1"
       },
-      "released_at": "2026-10-11T13:24:57.678Z",
+      "released_at": "2026-10-11T13:30:52.007Z",
       "retry_count": 0
     },
     {
@@ -75,7 +75,7 @@
         "W5": "6f45d1862c1207c9a73088522cd71ab2b223efb75d5b2e1d96a1f76425fdddc1",
         "W6": "d5d0fb8500fc1a21f66b7c81cf6241d9685e2ba29a3a90a9ab2bc32ef2f2ac36"
       },
-      "released_at": "2026-10-11T13:24:57.723Z",
+      "released_at": "2026-10-11T13:30:52.049Z",
       "retry_count": 0
     },
     {
@@ -90,7 +90,7 @@
         "W5": "6f45d1862c1207c9a73088522cd71ab2b223efb75d5b2e1d96a1f76425fdddc1",
         "W6": "d5d0fb8500fc1a21f66b7c81cf6241d9685e2ba29a3a90a9ab2bc32ef2f2ac36"
       },
-      "released_at": "2026-10-11T13:24:57.770Z",
+      "released_at": "2026-10-11T13:30:52.099Z",
       "retry_count": 0
     }
   ],
