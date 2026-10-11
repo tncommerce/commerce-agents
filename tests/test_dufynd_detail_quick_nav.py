@@ -26,8 +26,10 @@ def test_detail_quick_nav_targets_real_scroll_anchors() -> None:
 
     assert 'id="angebote"' in source
     assert 'id="duftprofil"' in source
-    assert '<FragranceNotesOverview notes={fragrance.notes} />' in source
-    overview = Path("examples/retail/storefront-web/components/FragranceNotesOverview.tsx").read_text(encoding="utf-8")
+    assert "<FragranceNotesOverview notes={fragrance.notes} />" in source
+    overview = Path(
+        "examples/retail/storefront-web/components/FragranceNotesOverview.tsx"
+    ).read_text(encoding="utf-8")
     assert 'id="duftnoten"' in overview
     assert 'id="alternativen"' in source
     assert "const noteCount = new Set(allNotes).size" in source
