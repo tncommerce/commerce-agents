@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from datetime import UTC, datetime
 
 import pytest
 from scripts.report_dufynd_public_photo_feed_leads import create_review, safe_feed_image
@@ -52,8 +53,11 @@ def row(sku: str, name: str, url: str, **kwargs) -> dict:
 
 
 def run(rows: list[dict], **kwargs) -> dict:
-    return create_review(kwargs.get("gap", GAP), kwargs.get("mappings", MAPPINGS),
-                         rows, kwargs.get("metadata", META), kwargs.get("rights", RIGHTS))
+    return create_review(
+        kwargs.get("gap", GAP), kwargs.get("mappings", MAPPINGS),
+        rows, kwargs.get("metadata", META), kwargs.get("rights", RIGHTS),
+        now=kwargs.get("now", datetime(2026, 10, 11, 19, 0, tzinfo=UTC)),
+    )
 
 
 def test_mapped_sku_and_name_only_leads_are_both_manual_holds() -> None:
@@ -88,6 +92,7 @@ def test_mapped_sku_and_name_only_leads_are_both_manual_holds() -> None:
     "https://www.topparfuemerie.de/media/catalog/product/a/1/123.png#fragment",
     "https://admin@www.topparfuemerie.de/media/catalog/product/a/1/123.png",
     "https://www.topparfuemerie.de:8080/media/catalog/product/a/1/123.png",
+    "https://www.topparfuemerie.de:broken/media/catalog/product/a/1/123.png",
     "",
 ])
 def test_only_public_merchant_image_url_allowed(bad_url: str) -> None:
@@ -103,6 +108,10 @@ def test_invalid_source_or_rights_fail_closed() -> None:
     rights["entries"][0]["program_status"] = "pending"
     with pytest.raises(ValueError, match="rights"):
         run([], rights=rights)
+    with pytest.raises(ValueError, match="current_awin_feed_timestamp_required"):
+        run([], now=datetime(2026, 10, 19, tzinfo=UTC))
+    with pytest.raises(ValueError, match="current_awin_feed_timestamp_required"):
+        run([], now=datetime(2026, 10, 10, tzinfo=UTC))
     gap = deepcopy(GAP)
     gap["status"] = "approved_for_release"
     with pytest.raises(ValueError, match="unapproved"):
