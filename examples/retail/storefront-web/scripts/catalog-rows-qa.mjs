@@ -19,6 +19,21 @@ try{for(const width of [320,390,768,1440]){
    'verified originals must precede the editorial-only study cards');
  assert.ok(await page.locator('.dufynd-catalog-originals-intro a[href*="bildnachweise"]').count(),
    'license/source evidence must be accessible from the catalog');
+ // All catalog cards, including future pagination/filter states using this
+ // renderer, must never show unlicensed product-scene artwork.
+ const productStages=await cards.evaluateAll(xs=>xs.map(node=>({
+   approved:node.getAttribute('data-original-photo')==='true',
+   original:!!node.querySelector('.dufynd-product-stage'),
+   pending:!!node.querySelector('.dufynd-catalog-photo-pending'),
+   artwork:!!node.querySelector('[data-scent-artwork], .dufynd-editorial-depth-stage')
+ })));
+ assert.ok(productStages.some(x=>x.pending),'unlicensed product entries must stay discoverable without spoofed bottles');
+ assert.ok(productStages.every(x=>!x.artwork),'scenic illustration may not appear as a product photo');
+ assert.ok(productStages.every(x=>x.approved ? x.original : x.pending),
+   'only registered originals may use the photo stage; every other card needs a candid studio pending state');
+ const honestCaptions=await cards.locator('.dufynd-catalog-photo-pending-caption').allTextContents();
+ assert.ok(honestCaptions.every(t=>t.includes('Originalfoto in Prüfung')),
+   'photo holds must be clearly labeled');
  const prematurePhotoBadges=await cards.evaluateAll(xs=>xs.filter(card=>{
    const loading=card.querySelector('[data-dufynd-photo-state="loading"]');
    const badge=card.querySelector('.dufynd-catalog-original-photo-badge');
