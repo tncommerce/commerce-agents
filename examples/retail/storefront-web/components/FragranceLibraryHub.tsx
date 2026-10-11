@@ -17,7 +17,7 @@ import {
   type FragranceLibraryState,
 } from "@/lib/fragranceLibrary";
 import {
-  isVerifiedProductTruthVisual,
+  originalPhotoFor,
   visualWorldFor,
   type StaticFragrance,
 } from "@/lib/fragranceCatalog";
@@ -231,10 +231,9 @@ function FragranceCard({
   fragrance: StaticFragrance;
   source: string;
 }) {
-  const visual =
-    fragrance.presentation_visual ||
-    fragrance.preferred_visual;
-  const isProductTruth = isVerifiedProductTruthVisual(visual);
+  // Reuse the exact approved image registry, never catalog editorial scenery.
+  const visual = originalPhotoFor(fragrance);
+  const isProductTruth = Boolean(visual);
   const dominantProfile = dominantLibraryProfile(fragrance);
 
   return (
@@ -264,7 +263,7 @@ function FragranceCard({
             }
             alt={`${fragrance.brand} ${fragrance.name}`}
             variant="card"
-            mode={isProductTruth ? "cutout" : "editorial"}
+            mode="cutout"
             world={visualWorldFor(fragrance)}
             className="dufynd-library-card-visual h-48 w-full"
           />
