@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import copy
 import unittest
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 from uuid import uuid4
 
 from scripts.dufynd_jarvis_runtime import _is_green_autonomy_task
@@ -21,7 +21,71 @@ from scripts.dufynd_seven_content_dispatch import (
     task_manifest,
 )
 from scripts.dufynd_seven_content_workers import ROLE_ORDER, WorkerInputError
-from test_dufynd_seven_content_workers import editorial_fixture
+
+
+
+def editorial_fixture() -> dict:
+    """Self-contained synthetic input: no owner data or cross-test imports."""
+    hooks = [f"Konkrete Parfum-Situation {i}: der unerwartete Moment" for i in range(20)]
+    questions = [f"An welchen ähnlichen Moment Nummer {i} erinnerst du dich?" for i in range(10)]
+    first_day = date(2026, 10, 12)
+    return {
+        "W1": {
+            "audience": "newcomers and interested fragrance enthusiasts",
+            "voice": "warm, precise and amusing",
+            "channels": "TikTok photography, Instagram feed and genuine Shorts",
+            "goals": ["shares", "comments", "site visits"],
+            "cadence_test_mix": {"meme": 12, "carousel": 9, "reel": 6, "slideshow": 3},
+        },
+        "W3": {
+            "patterns": [
+                {
+                    "url": "https://example.org/discussion/test-mechanic",
+                    "date": "2026-10-08",
+                    "mechanic": "Real-life comedy with a specific decision question",
+                }
+            ]
+        },
+        "W4": {
+            "insights": [
+                {
+                    "id": f"offline_{i}",
+                    "theme": f"Educational note theme {i}",
+                    "claim": f"Potential fact requires verifying actual source {i}",
+                    "source_url": f"https://example.org/education/insight-{i}",
+                }
+                for i in range(5)
+            ]
+        },
+        "W5": {"questions": questions},
+        "W6": {"hooks": hooks},
+        "W2": {
+            "ideas": [
+                {
+                    "id": f"idea_{i}",
+                    "title": "Already published scent" if i == 2 else f"New scenario {i}",
+                    "hook": hooks[i],
+                    "question": questions[i],
+                    "format": "meme",
+                    "concept": f"A fresh candid scene with a concrete emotional turn {i}",
+                    "overlap": "distinct",
+                }
+                for i in range(10)
+            ]
+        },
+        "W7": {
+            "calendar": [
+                {
+                    "date": (first_day + timedelta(days=i)).isoformat(),
+                    "idea": "Torwart owner-frozen original" if i == 0 else f"New topic {i}",
+                    "hook": f"Approved source hook or new editorial brief {i}",
+                    "format": "meme",
+                    "gate": "IDEA_ONLY",
+                }
+                for i in range(30)
+            ]
+        },
+    }
 
 
 class FakeBridge:
