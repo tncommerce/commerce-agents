@@ -128,15 +128,78 @@ unconditionally false.
 - No recurring new automation. Existing Night Creative and First-Money
   workflows remain the only scheduled editorial/analytics procedures.
 
+## Existing Jarvis Control Plane adapter (DEV; activation still blocked)
+
+\`scripts/dufynd_seven_content_dispatch.py\` now prepares seven distinct
+**inert** task manifests for the existing \`public.dufynd_autonomy_tasks\` table,
+using the real role dependency IDs, scoped resources, explicit free budget and
+a source fingerprint. Task proposals start in \`queued\`, never \`ready\`.
+The dispatcher can consume a separately registered/activated round through
+\`DufyndJarvisBridge.claim_worker\` and \`update_worker\`, which use the
+existing \`claim_dufynd_worker_v2\` and \`update_dufynd_worker_v2\` token/lease
+RPCs. Role result packets can be privately checkpointed in the existing
+\`dufynd_master_status\`. The engine rechecks the active lease before each
+result write; it never claims approval or publisher readiness.
+
+The general-model Jarvis eligibility gate now explicitly EXCLUDES
+\`durable_payload.kind=seven_content_role_v1\`. This prevents specialist tasks
+from entering the Claude/paid-counted generic worker queue by accident.
+All seven tasks still need separate registration and activation; **no
+production database rows were seeded by this PR**.
+
+Read-only manifest (the connected operator runtime must already hold its
+own approved server-side Supabase credentials):
+
+\`\`\`bash
+python -m scripts.dufynd_seven_content_dispatch --output-manifest
+\`\`\`
+
+After a *separately authorized* controlled registration and activation of
+that exact source version, the existing free worker path can be entered by:
+
+\`\`\`bash
+DUFYND_SEVEN_WORKER_ACTIVATION_GO=1 \
+python -m scripts.dufynd_seven_content_dispatch --execute
+\`\`\`
+
+The environment flag alone **does not create missing task records or
+constitute Owner authorization**; task status and source-bound contracts
+must already be pre-registered and ready. Without both, the runtime fails
+closed. This run cannot produce a new creative from zero source input.
+
+After the seven roles finish, only the read-only chief-editor handoff is
+possible:
+
+\`\`\`bash
+python -m scripts.dufynd_seven_content_dispatch --review-bundle
+\`\`\`
+
+It returns up to three ranked text concepts, per-role hashes and all source,
+rights, visual, owner and native platform holds. It cannot set a numeric
+quality grade, creative approval, a calendar schedule or publication.
+
+**Atomicity caveat:** the existing Worker lease RPC and
+\`dufynd_master_status\` result upsert are separate DB transactions. The
+implementation checks the lease again before a result write, but cannot
+prove an atomic fenced write across both tables. An owner-reviewed, additive
+transactional result-commit RPC (versioned Supabase migration) is required
+before activating unattended production dispatch. Do not deploy the
+incomplete path as 24/7 autonomously certified.
+
+Synthetic-only regression cases in
+\`tests/test_dufynd_seven_content_dispatch.py\` exercise actual role claims,
+DAG ordering, duplicate prevention, idempotent already-done results, fresh
+source hashes, fail-closed revoked leases and the chief-editor boundary.
+
 ## Remaining engineering to reach *fully autonomous seven-worker dispatch*
 
 This is deliberately outside V0 until individually reviewed and proven safe:
 
-1. Add the seven contracts to the existing **certified** Supabase worker
-   allowlist and task-claim lease/fencing RPC paths via a reviewed, *additive*
-   migration, committed and CI-tested before any separate production-migration GO.
-   Never create fake production `done` rows or bypass current `dufynd_task_packet.py`
-   strict handlers.
+1. Finalize and independently certify the seven existing Worker RPC adapter
+   contracts and an atomic database result-commit function, via a reviewed,
+   *additive* migration before any separate production-migration GO. The
+   role-specific claim/update code is already staged in this PR; do not
+   create fake production `done` rows or bypass the durable worker guards.
 2. Provide a bounded producer of **new** copy that costs exactly zero under
    a verified free provider contract, or accept externally/human-prepared
    content packets. Do not substitute paid Claude SDK/Nightshift inference.
