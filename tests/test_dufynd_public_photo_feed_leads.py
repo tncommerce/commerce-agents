@@ -185,3 +185,56 @@ def test_secret_bearing_non_feed_urls_and_wrong_concentration_are_excluded() -> 
     ]
     result = run(rows)
     assert result["total_review_candidates"] == 0
+
+
+def test_mapped_sku_different_fragrance_name_is_a_hard_hold() -> None:
+    output = run(
+        [row("924719", "Essential Parfums Fig Infusion EDP 100 ml", PHOTO_BOIS)]
+    )
+    record = next(x for x in output["items"] if x["product_id"].endswith("IMPERIAL-100"))
+    assert record["pinned_feed_identity_conflict_hold"] is True
+    assert record["candidates"] == []
+    assert output["approved_new_images"] == 0
+
+
+def test_mapped_sku_conflicting_official_gtin_is_a_hard_hold() -> None:
+    output = run(
+        [
+            row(
+                "924719",
+                "Essential Parfums Bois Imperial EDP 100 ml",
+                PHOTO_BOIS,
+                gtin="0000000000000",
+            )
+        ]
+    )
+    record = next(x for x in output["items"] if x["product_id"].endswith("IMPERIAL-100"))
+    assert record["pinned_feed_identity_conflict_hold"] is True
+    assert record["candidates"] == []
+
+
+def test_mapped_sku_matching_gtin_only_enters_manual_review() -> None:
+    output = run(
+        [
+            row(
+                "924719",
+                "Essential Parfums Bois Imperial EDP 100 ml",
+                PHOTO_BOIS,
+                gtin="3770010614630",
+            )
+        ]
+    )
+    record = next(x for x in output["items"] if x["product_id"].endswith("IMPERIAL-100"))
+    assert record["pinned_feed_identity_conflict_hold"] is False
+    assert record["candidates"][0]["status"] == "HUMAN_SOURCE_VARIANT_IMAGE_REVIEW_REQUIRED"
+    assert record["candidates"][0]["registered"] is False
+    assert record["candidates"][0]["published"] is False
+
+
+def test_missing_volume_in_mapped_feed_title_cannot_claim_verified_size() -> None:
+    output = run(
+        [row("924719", "Essential Parfums Bois Imperial EDP", PHOTO_BOIS)]
+    )
+    record = next(x for x in output["items"] if x["product_id"].endswith("IMPERIAL-100"))
+    assert record["candidates"][0]["feed_explicit_size_match"] is False
+    assert record["candidates"][0]["status"] == "HUMAN_SOURCE_VARIANT_IMAGE_REVIEW_REQUIRED"
