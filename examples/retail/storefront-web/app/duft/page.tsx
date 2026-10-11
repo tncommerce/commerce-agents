@@ -100,9 +100,9 @@ export default function FragranceIndexPage() {
 
         <div
           id="dufynd-katalog"
-          className="dufynd-catalog-intro scroll-mt-5 pt-7 sm:pt-9"
+          className="dufynd-catalog-intro scroll-mt-5"
         >
-          <h2 className="text-[24px] font-semibold tracking-[-0.025em]">Der Duftkatalog</h2>
+          <h2 className="sr-only">Der Duftkatalog</h2>
         </div>
 
         <FragranceCatalogBrowser

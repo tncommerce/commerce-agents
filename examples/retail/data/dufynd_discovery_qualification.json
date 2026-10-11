@@ -595,6 +595,202 @@
       "image_rights_status": "HOLD",
       "publication_authorized": false,
       "variant_evidence_note": "100 ml Eau de Toilette, not the Bottled Eau de Parfum or Absolu. Official EDT gift-set description corroborates the same fragrance notes; the identity source separately establishes the 100 ml single bottle."
+    },
+    {
+      "product_id": "SC-HUGO-BOSS-BOTTLED-ABSOLU-100",
+      "brand": "Hugo Boss",
+      "name": "BOSS Bottled Absolu",
+      "concentration": "Parfum Intense",
+      "volume_ml": 100,
+      "checked_at": "2026-10-11",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "58139181",
+        "source_url": "https://www.hugoboss.com/de/boss-bottled-absolu-parfum-intense-100-ml/hbeu58139181_999.html",
+        "verified": true
+      },
+      "notes": {
+        "key": [
+          "leather accord",
+          "patchouli",
+          "myrrh",
+          "cedar",
+          "amber",
+          "davana"
+        ]
+      },
+      "notes_source": {
+        "url": "https://www.hugoboss.com/de/boss-bottled-absolu-parfum-intense-100-ml/hbeu58139181_999.html",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Lederakkord, Patschuli und Myrrhe treffen auf Zedernholz, Amber und Davana.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false,
+      "variant_evidence_note": "100 ml and Parfum Intense stated in manufacturer title and style 58139181; generic bullet also says Eau de Parfum. Product-specific title retained; no concentration percentage or GTIN inferred."
+    },
+    {
+      "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+      "brand": "Dior",
+      "name": "Hypnotic Poison",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "checked_at": "2026-10-11",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "Y0063401",
+        "source_url": "https://www.dior.com/de_de/beauty/products/hypnotic-poison-eau-de-toilette-Y0063401.html",
+        "verified": true
+      },
+      "notes": {
+        "key": [
+          "bitter almond",
+          "jasmine sambac",
+          "vanilla"
+        ]
+      },
+      "notes_source": {
+        "url": "https://www.dior.com/de_de/beauty/products/hypnotic-poison-eau-de-toilette-Y0063401.html",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Bittermandel, arabischer Jasmin und Vanille prägen das Duftprofil.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false,
+      "variant_evidence_note": "Manufacturer family reference; selected product explicitly states Inhalt: 100 ml. Eau de Toilette, not Eau de Parfum; no GTIN inferred."
+    },
+    {
+      "product_id": "SC-PDM-HEROD-EDP-125",
+      "brand": "Parfums de Marly",
+      "name": "Herod",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 125,
+      "checked_at": "2026-10-11",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "herod",
+        "source_url": "https://us.parfums-de-marly.com/products/herod",
+        "verified": true
+      },
+      "notes": {
+        "top": [
+          "cinnamon",
+          "pepper"
+        ],
+        "heart": [
+          "tobacco leaf",
+          "incense",
+          "cistus",
+          "osmanthus"
+        ],
+        "base": [
+          "vanilla",
+          "musk",
+          "cedarwood"
+        ]
+      },
+      "notes_source": {
+        "url": "https://us.parfums-de-marly.com/products/herod",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Zimt und Pfeffer eröffnen das Profil; Tabak, Weihrauch und Osmanthus treffen auf Vanille und Zedernholz.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false,
+      "variant_evidence_note": "Manufacturer product handle; page title specifies Eau de Parfum and size selector lists 125 ml. Not a GTIN; no merchant availability inferred."
+    },
+    {
+      "product_id": "SC-NISHANE-ANI-EXTRAIT-100",
+      "brand": "Nishane",
+      "name": "Ani",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 100,
+      "checked_at": "2026-10-11",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "ani",
+        "source_url": "https://nishane.com/product/ani/",
+        "verified": true
+      },
+      "notes": {
+        "top": [
+          "bergamot",
+          "green notes",
+          "blue ginger",
+          "pink pepper"
+        ],
+        "heart": [
+          "blackcurrant",
+          "Turkish rose",
+          "cardamom"
+        ],
+        "base": [
+          "patchouli",
+          "cedarwood",
+          "vanilla",
+          "benzoin",
+          "ambergris",
+          "musk",
+          "sandalwood"
+        ]
+      },
+      "notes_source": {
+        "url": "https://nishane.com/product/ani/",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Ingwer und Bergamotte führen zu Kardamom und Rose; Vanille, Benzoe und Hölzer bilden die Basis.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false,
+      "variant_evidence_note": "Manufacturer product handle; Extrait de Parfum and 100 ml explicitly listed. ANI, not ANI X. No GTIN inferred."
+    },
+    {
+      "product_id": "SC-AMOUAGE-REFLECTION-MAN-EDP-100",
+      "brand": "Amouage",
+      "name": "Reflection Man",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "checked_at": "2026-10-11",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "reflection-man-100ml",
+        "source_url": "https://amouage.com/products/reflection-man-100ml",
+        "verified": true
+      },
+      "notes": {
+        "top": [
+          "rosemary",
+          "red pepper berries",
+          "bitter orange leaves"
+        ],
+        "heart": [
+          "neroli",
+          "orris",
+          "jasmine",
+          "ylang-ylang"
+        ],
+        "base": [
+          "vetiver",
+          "patchouli",
+          "sandalwood",
+          "cedarwood"
+        ]
+      },
+      "notes_source": {
+        "url": "https://amouage.com/products/reflection-man-100ml",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Rosmarin und Bitterorangenblätter treffen auf Neroli, Iris und Jasmin; Sandelholz und Vetiver bilden die Basis.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false,
+      "variant_evidence_note": "Manufacturer handle identifies the 100 ml single bottle. Official gift-set contents separately confirm 100 ml Reflection Man Eau de Parfum. Not Reflection 45; gift-set SKU, price and photos are not imported.",
+      "concentration_source_url": "https://amouage.com/en-ch/products/reflection-man-gift-set"
     }
   ]
 }

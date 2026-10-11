@@ -993,6 +993,37 @@
           "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
+      },
+      "discovery": {
+        "status": "facts_qualified_publication_hold",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "58139181",
+          "source_url": "https://www.hugoboss.com/de/boss-bottled-absolu-parfum-intense-100-ml/hbeu58139181_999.html",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "leather accord",
+            "patchouli",
+            "myrrh",
+            "cedar",
+            "amber",
+            "davana"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.hugoboss.com/de/boss-bottled-absolu-parfum-intense-100-ml/hbeu58139181_999.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Lederakkord, Patschuli und Myrrhe treffen auf Zedernholz, Amber und Davana.",
+        "checked_at": "2026-10-11",
+        "community_data_included": false,
+        "publication_authorized": false,
+        "remaining_gates": [
+          "approved_original_image",
+          "public_release_review"
+        ]
       }
     },
     {
@@ -1613,6 +1644,46 @@
           "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
+      },
+      "discovery": {
+        "status": "facts_qualified_publication_hold",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "reflection-man-100ml",
+          "source_url": "https://amouage.com/products/reflection-man-100ml",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "rosemary",
+            "red pepper berries",
+            "bitter orange leaves"
+          ],
+          "heart": [
+            "neroli",
+            "orris",
+            "jasmine",
+            "ylang-ylang"
+          ],
+          "base": [
+            "vetiver",
+            "patchouli",
+            "sandalwood",
+            "cedarwood"
+          ]
+        },
+        "notes_source": {
+          "url": "https://amouage.com/products/reflection-man-100ml",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Rosmarin und Bitterorangenblätter treffen auf Neroli, Iris und Jasmin; Sandelholz und Vetiver bilden die Basis.",
+        "checked_at": "2026-10-11",
+        "community_data_included": false,
+        "publication_authorized": false,
+        "remaining_gates": [
+          "approved_original_image",
+          "public_release_review"
+        ]
       }
     },
     {
@@ -1678,6 +1749,34 @@
         "blockers": [
           "verified_purchase_destination_pending",
           "approved_product_image_pending"
+        ]
+      },
+      "discovery": {
+        "status": "facts_qualified_publication_hold",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "Y0063401",
+          "source_url": "https://www.dior.com/de_de/beauty/products/hypnotic-poison-eau-de-toilette-Y0063401.html",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "bitter almond",
+            "jasmine sambac",
+            "vanilla"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.dior.com/de_de/beauty/products/hypnotic-poison-eau-de-toilette-Y0063401.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Bittermandel, arabischer Jasmin und Vanille prägen das Duftprofil.",
+        "checked_at": "2026-10-11",
+        "community_data_included": false,
+        "publication_authorized": false,
+        "remaining_gates": [
+          "approved_original_image",
+          "public_release_review"
         ]
       }
     },
@@ -2064,6 +2163,49 @@
           "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
+      },
+      "discovery": {
+        "status": "facts_qualified_publication_hold",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "ani",
+          "source_url": "https://nishane.com/product/ani/",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "bergamot",
+            "green notes",
+            "blue ginger",
+            "pink pepper"
+          ],
+          "heart": [
+            "blackcurrant",
+            "Turkish rose",
+            "cardamom"
+          ],
+          "base": [
+            "patchouli",
+            "cedarwood",
+            "vanilla",
+            "benzoin",
+            "ambergris",
+            "musk",
+            "sandalwood"
+          ]
+        },
+        "notes_source": {
+          "url": "https://nishane.com/product/ani/",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Ingwer und Bergamotte führen zu Kardamom und Rose; Vanille, Benzoe und Hölzer bilden die Basis.",
+        "checked_at": "2026-10-11",
+        "community_data_included": false,
+        "publication_authorized": false,
+        "remaining_gates": [
+          "approved_original_image",
+          "public_release_review"
+        ]
       }
     },
     {
@@ -2136,6 +2278,44 @@
         "blockers": [
           "verified_purchase_destination_pending",
           "approved_product_image_pending"
+        ]
+      },
+      "discovery": {
+        "status": "facts_qualified_publication_hold",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "herod",
+          "source_url": "https://us.parfums-de-marly.com/products/herod",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "cinnamon",
+            "pepper"
+          ],
+          "heart": [
+            "tobacco leaf",
+            "incense",
+            "cistus",
+            "osmanthus"
+          ],
+          "base": [
+            "vanilla",
+            "musk",
+            "cedarwood"
+          ]
+        },
+        "notes_source": {
+          "url": "https://us.parfums-de-marly.com/products/herod",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Zimt und Pfeffer eröffnen das Profil; Tabak, Weihrauch und Osmanthus treffen auf Vanille und Zedernholz.",
+        "checked_at": "2026-10-11",
+        "community_data_included": false,
+        "publication_authorized": false,
+        "remaining_gates": [
+          "approved_original_image",
+          "public_release_review"
         ]
       }
     },

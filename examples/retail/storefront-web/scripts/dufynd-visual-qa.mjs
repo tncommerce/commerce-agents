@@ -1006,24 +1006,16 @@ try {
               "Naxos exploded-notes interaction did not enter expanded state",
             );
           }
-          if (viewport.width <= 480) {
-            // The mobile min-height expands over 420 ms. Wait for the rendered
-            // state rather than sampling two frames into the transition.
-            await page.waitForFunction(
-              () =>
-                (document.querySelector("#dufynd-exploded-stage")?.getBoundingClientRect()
-                  .height ?? 0) >= 430,
-              null,
-              { timeout: 2000 },
-            );
-            const expandedHeight = await explodedStage.evaluate(
-              (element) => element.getBoundingClientRect().height,
-            );
-            if (expandedHeight < 430) {
-              throw new Error(
-                `Naxos expanded exploded-notes stage is too short on mobile: ${expandedHeight}px`,
-              );
-            }
+          if (await explodedSection.locator("img").count()) {
+            throw new Error("note explanation duplicates the hero bottle");
+          }
+          const noteBounds = await explodedStage.locator("[data-dufynd-exploded-note]").evaluateAll(
+            (items) => items.map((item) => { const r = item.getBoundingClientRect(); return {x:r.x,y:r.y,right:r.right,bottom:r.bottom}; }),
+          );
+          for (let i = 0; i < noteBounds.length; i++) for (let j = i + 1; j < noteBounds.length; j++) {
+            const a = noteBounds[i], b = noteBounds[j];
+            if (a.x < b.right && a.right > b.x && a.y < b.bottom && a.bottom > b.y)
+              throw new Error("documented note cards overlap");
           }
 
           const explodedNotes = explodedSection.locator(
@@ -1100,13 +1092,13 @@ try {
               "catalog is missing the immersive discovery hero",
             );
           }
-          const discoveryBottles = page.locator(
-            "[data-dufynd-original-card]",
-          );
-          if ((await discoveryBottles.count()) !== 3) {
-            throw new Error(
-              `catalog discovery hero expected 3 fragrance spotlights, got ${await discoveryBottles.count()}`,
-            );
+          const heroBounds = await discoveryHero.boundingBox();
+          const searchBounds = await page.getByRole("searchbox").boundingBox();
+          if (!heroBounds || heroBounds.height > 350 || !searchBounds || searchBounds.y > 800) {
+            throw new Error("catalog search must remain accessible without an oversized photo hero");
+          }
+          if ((await page.locator(".dufynd-brand-directory summary").count()) !== 1) {
+            throw new Error("catalog is missing its accessible brand directory");
           }
           if (
             (await page.locator('a[href="#dufynd-katalog"]').count()) !== 1

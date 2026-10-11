@@ -86,7 +86,7 @@ export default function DiscoveryIntro({
           Duftprofile entdecken · Händlerangebote separat prüfen
         </p>
       </div>
-      <div
+      {!catalog ? <div
         className={styles.selection}
         aria-label="Auswahl mit freigegebenen Originalaufnahmen"
       >
@@ -129,7 +129,7 @@ export default function DiscoveryIntro({
             </AcquisitionInternalLink>
           ))}
         </div>
-      </div>
+      </div> : null}
     </section>
   );
 }

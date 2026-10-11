@@ -785,8 +785,6 @@ export default async function FragrancePage({
               02
             </span>
             <FragranceExplodedNotes
-              cutoutUrl={productTruthVisual.url}
-              alt={`${fragrance.brand} ${fragrance.name}`}
               top={fragrance.notes.top}
               heart={fragrance.notes.heart}
               base={fragrance.notes.base}

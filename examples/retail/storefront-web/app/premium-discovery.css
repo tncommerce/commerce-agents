@@ -232,3 +232,40 @@
 .dufynd-fragrance-hero[data-dufynd-studio-photo] .dufynd-product-shadow {
   opacity: 0.16;
 }
+
+/* Recovery: warmer paper, stronger hierarchy, intact source photographs. */
+.dufynd-catalog-page,.dufynd-detail-page {background:#f6f4ee}
+.dufynd-catalog-card {border-color:#dedbd2;border-radius:18px;background:#fffefa;box-shadow:0 10px 25px -22px #344033}
+.dufynd-catalog-card-stage {height:260px;border-bottom:1px solid #e3e0d8}
+.dufynd-catalog-card[data-original-photo] .dufynd-product-stage {background:#fff!important}
+.dufynd-catalog-card[data-original-photo] .dufynd-product-object {inset:6% 8% 8%!important}
+.dufynd-catalog-card-body {padding:20px 20px 12px}
+.dufynd-catalog-card-body h2 {font-family:Georgia,serif;font-size:24px;font-weight:400;letter-spacing:-.03em}
+.dufynd-catalog-card-stage .dufynd-catalog-card-signature {background:#fffef9ed;color:#344536;border:1px solid #d7ddcf;backdrop-filter:none}
+.dufynd-profile-discovery {background:#e9ede5!important;border-color:#d2d9cc}
+.dufynd-detail-page .dufynd-fragrance-hero {background:#f5f1e8;border-color:#dcd8ce}
+.dufynd-detail-page .dufynd-exploded-stage {height:auto;min-height:0;padding:0;display:none;transition:none}
+.dufynd-detail-page .dufynd-exploded-stage[data-expanded="true"] {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:20px;min-height:0;height:auto}
+.dufynd-detail-page .dufynd-exploded-note {position:static;width:auto;max-width:none;opacity:1;transform:none;transition:none;min-height:70px;padding:14px;box-shadow:none}
+.dufynd-detail-page .dufynd-exploded-note span {font-size:12px;line-height:1.5;white-space:normal}
+.dufynd-brand-directory {margin:18px 0;border-block:1px solid #d8dcd1;padding:4px 0;color:#344439}
+.dufynd-brand-directory summary {padding:15px 4px;cursor:pointer;font-size:14px;font-weight:600}
+.dufynd-brand-directory nav {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:4px 0 18px}
+.dufynd-brand-directory button {display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;min-height:46px;border:1px solid #dadfd4;border-radius:8px;background:#fffefa;padding:10px 12px;font-size:13px}
+.dufynd-brand-directory button span {color:#64705e;font-size:12px}
+.dufynd-brand-directory button[aria-pressed="true"] {background:#e0e8dc;border-color:#5b7254}
+.dufynd-brand-directory button:focus-visible {outline:3px solid #755048;outline-offset:2px}
+@media(max-width:767px){
+ .dufynd-catalog-card-stage {height:260px}
+ .dufynd-catalog-card-body h2 {font-size:25px}
+ .dufynd-brand-directory nav {grid-template-columns:repeat(2,minmax(0,1fr))}
+ .dufynd-detail-page .dufynd-exploded-stage[data-expanded="true"] {grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:14px}
+ .dufynd-detail-page .dufynd-exploded-note {padding:10px;min-height:68px}
+}
+
+.dufynd-brand-directory {margin:12px 0}
+.dufynd-brand-directory summary {padding:10px 4px;min-height:44px}
+@media(max-width:767px){
+ .dufynd-catalog-page section[aria-label="Duftkatalog filtern"] > div:first-child {grid-template-columns:minmax(0,1fr) auto;align-items:end}
+ .dufynd-catalog-page section[aria-label="Duftkatalog filtern"] > div:first-child > button {min-width:78px;gap:14px}
+}
