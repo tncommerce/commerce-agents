@@ -158,6 +158,32 @@ class SupabaseSevenWorkerDispatch:
             raise WorkerInputError("worker_not_explicitly_activated:" + role)
         return row
 
+    def _assert_current_lease(self, worker_task_id: str) -> None:
+        """Recheck the existing DB lease immediately before a result write.
+
+        The Result REST upsert and Worker RPC are separate transactions;
+        this reduces stale-result exposure but is not an atomic SQL result
+        fence. A future owner-approved DB RPC is required for that property.
+        """
+        row = self.bridge.load_autonomy_task(worker_task_id)
+        token = getattr(self.bridge, "worker_tokens", {}).get(worker_task_id)
+        if (
+            not isinstance(row, dict)
+            or not token
+            or row.get("lease_token") != token
+            or row.get("status") != "in_progress"
+            or row.get("worker_state") not in {"claimed", "working", "verifying"}
+            or row.get("released_at") is not None
+        ):
+            raise WorkerInputError("worker_lease_lost_before_result_write")
+        expires = row.get("lease_expires_at")
+        try:
+            expiry = datetime.fromisoformat(str(expires).replace("Z", "+00:00"))
+            if expiry.tzinfo is None or expiry <= datetime.now(UTC):
+                raise WorkerInputError("worker_lease_expired_before_result_write")
+        except ValueError as error:
+            raise WorkerInputError("worker_lease_expiry_invalid") from error
+
     def run_role(self, role: str) -> dict:
         if role not in ROLE_ORDER:
             raise WorkerInputError("unknown_content_role")
@@ -190,6 +216,8 @@ class SupabaseSevenWorkerDispatch:
         else:
             result = HANDLERS[role](self.source[role], prior, self.existing)
             if result.get("state") in SUCCESS_STATES:
+                self.bridge.update_worker(task["task_id"], "heartbeat")
+                self._assert_current_lease(task["task_id"])
                 saved_value = {
                     "round_id": self.round_id,
                     "role": role,
