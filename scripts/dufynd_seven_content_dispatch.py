@@ -287,9 +287,7 @@ class SupabaseSevenWorkerDispatch:
             "round_id": self.round_id,
             "state": "EDITOR_REVIEW_ONLY",
             "source_sha256": self.source_sha,
-            "worker_output_hashes": {
-                role: digest(packets[role]) for role in ROLE_ORDER
-            },
+            "worker_output_hashes": {role: digest(packets[role]) for role in ROLE_ORDER},
             "candidates": [
                 {
                     "id": item["id"],
@@ -297,7 +295,8 @@ class SupabaseSevenWorkerDispatch:
                     "hook": item["hook"],
                     "question": item["community_question"],
                     "format": item["format"],
-                    "holds": list(item["review_holds"]) + [
+                    "holds": [
+                        *item["review_holds"],
                         "no_visual_or_mobile_9_5_qa",
                         "owner_creative_decision_pending",
                         "separate_publication_audio_ai_rights_go_pending",
