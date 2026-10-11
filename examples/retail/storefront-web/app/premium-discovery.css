@@ -523,3 +523,102 @@
 @media (prefers-reduced-motion: reduce) {
   .dufynd-photo-loading-indicator i { animation: none; }
 }
+
+
+/* Owner requirement 2026-10-11: product cards share the studio-photo language.
+   Unlicensed scenes are NOT used as fake product shots; unresolved SKUs get a
+   source-honest studio identity plate, never a generated bottle. */
+.dufynd-catalog-card-stage,
+.dufynd-library-card-stage,
+.dufynd-comparison-product-card {
+  background: #fffefa;
+}
+.dufynd-catalog-card[data-original-photo="true"] .dufynd-catalog-card-stage {
+  background: #fff !important;
+}
+.dufynd-catalog-photo-pending {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: 18px 20px 14px;
+  background: radial-gradient(ellipse at 50% 40%, #ffffff 0%, #fdfcf9 65%, #f4f2ec 100%);
+  border: 1px solid #eeece5;
+  color: #333e36;
+}
+.dufynd-catalog-photo-pending::after {
+  content: "";
+  position: absolute;
+  inset-inline: 17%;
+  bottom: 12%;
+  border-bottom: 1px solid #e5e2d9;
+  z-index: -1;
+}
+.dufynd-catalog-photo-pending-eyebrow,
+.dufynd-catalog-photo-pending-caption {
+  font-size: 9px;
+  letter-spacing: .15em;
+  font-weight: 700;
+  color: #66756a;
+  text-transform: uppercase;
+}
+.dufynd-catalog-photo-pending-identity {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 16px 8px;
+  text-align: center;
+}
+.dufynd-catalog-photo-pending-identity span {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .11em;
+  color: #63766b;
+  text-transform: uppercase;
+}
+.dufynd-catalog-photo-pending-identity strong {
+  max-width: 100%;
+  font: 400 clamp(21px, 2vw, 29px)/1.12 Georgia, serif;
+  letter-spacing: -.025em;
+  color: #24392f;
+  overflow-wrap: anywhere;
+}
+.dufynd-catalog-photo-pending-identity small {
+  font-size: 10px;
+  color: #697269;
+  line-height: 1.45;
+}
+.dufynd-catalog-photo-pending-caption {
+  align-self: end;
+  font-size: 9px;
+  color: #637368;
+  letter-spacing: .075em;
+}
+.dufynd-library-card-visual[data-dufynd-visual-state="missing"],
+.dufynd-comparison-product-visual[data-dufynd-visual-state="missing"] {
+  background: #fbfaf6 !important;
+  color: #334a3c;
+  border: 1px solid #e7e5df;
+}
+.dufynd-library-card-visual[data-dufynd-visual-state="missing"] .dufynd-neutral-visual-atmosphere,
+.dufynd-comparison-product-visual[data-dufynd-visual-state="missing"] .dufynd-neutral-visual-atmosphere {
+  display: none;
+}
+.dufynd-library-card-visual[data-dufynd-visual-state="missing"] .dufynd-neutral-visual-copy,
+.dufynd-comparison-product-visual[data-dufynd-visual-state="missing"] .dufynd-neutral-visual-copy {
+  padding: 18px;
+  text-align: center;
+}
+.dufynd-library-card-visual[data-dufynd-visual-state="missing"] .dufynd-neutral-visual-copy strong,
+.dufynd-comparison-product-visual[data-dufynd-visual-state="missing"] .dufynd-neutral-visual-copy strong {
+  font: 400 20px/1.2 Georgia, serif;
+  color: #344b3e;
+}
+@media (max-width: 767px) {
+  .dufynd-catalog-photo-pending { padding: 13px 14px 11px; }
+  .dufynd-catalog-photo-pending-identity { padding: 12px 6px; }
+  .dufynd-catalog-photo-pending-identity strong { font-size: 23px; }
+}
