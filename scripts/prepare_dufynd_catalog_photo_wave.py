@@ -16,11 +16,15 @@ from urllib.parse import urlsplit
 
 if __package__:
     from .prepare_scentai_feed_image_review import (
-        _feed_provenance, _public_image_url, _rights_entry,
+        _feed_provenance,
+        _public_image_url,
+        _rights_entry,
     )
 else:
     from prepare_scentai_feed_image_review import (
-        _feed_provenance, _public_image_url, _rights_entry,
+        _feed_provenance,
+        _public_image_url,
+        _rights_entry,
     )
 
 DEFAULT_GAPS = Path("docs/dufynd-catalog-photo-gap-20261011.json")
