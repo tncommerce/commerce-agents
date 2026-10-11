@@ -339,6 +339,9 @@ class EditorialRunner:
             raise WorkerInputError("invalid_editorial_inputs")
         self.round_id, self.pilot, self.existing = round_id, pilot, existing
         self.checkpoint = checkpoint
+        repository = Path(__file__).resolve().parents[1]
+        if repository == checkpoint.resolve() or repository in checkpoint.resolve().parents:
+            raise WorkerInputError("private_checkpoint_cannot_write_into_public_repo")
         self.input_hash = digest({"round": round_id, "pilot": pilot, "existing": existing})
 
     def _read(self) -> dict:
@@ -350,6 +353,39 @@ class EditorialRunner:
                 or state.get("input_sha256") != self.input_hash
             ):
                 raise WorkerInputError("checkpoint_input_fingerprint_mismatch")
+            if not isinstance(state.get("role_packets"), dict):
+                raise WorkerInputError("malformed_checkpoint_role_packets")
+            for field in ("media_created", "published", "scheduled"):
+                if state.get(field) is not False:
+                    raise WorkerInputError("checkpoint_safety_marker_modified")
+            for field in ("model_requests", "external_requests", "spend_eur"):
+                if type(state.get(field)) is not int or state[field] != 0:
+                    raise WorkerInputError("checkpoint_safety_marker_modified")
+            for role, saved in state["role_packets"].items():
+                if role not in ROLE_ORDER or not isinstance(saved, dict):
+                    raise WorkerInputError("unrecognized_checkpoint_role")
+                if "role" not in saved:
+                    if saved.get("state") != "BLOCKED":
+                        raise WorkerInputError("invalid_dependency_block_state")
+                    continue
+                dependencies = DEPENDENCIES[role]
+                if saved.get("role") != role or saved.get("depends_on") != list(dependencies):
+                    raise WorkerInputError("checkpoint_role_contract_mismatch")
+                if saved.get("output_sha256") != digest(saved.get("output")):
+                    raise WorkerInputError("checkpoint_output_integrity_failed")
+                if any(dependency not in state["role_packets"] for dependency in dependencies):
+                    raise WorkerInputError("checkpoint_dependency_missing")
+                source_hash = digest(
+                    {
+                        "source": self.pilot.get(role),
+                        "upstream": [
+                            state["role_packets"][dependency]["output"]
+                            for dependency in dependencies
+                        ],
+                    }
+                )
+                if saved.get("input_sha256") != source_hash:
+                    raise WorkerInputError("checkpoint_input_integrity_failed")
             return state
         return {
             "schema_version": SCHEMA_VERSION,
