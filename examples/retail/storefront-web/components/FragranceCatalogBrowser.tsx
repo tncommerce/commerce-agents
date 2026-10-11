@@ -1288,6 +1288,11 @@ export default function FragranceCatalogBrowser({
                     ) : (
                       <ScentArtwork name={fragrance.name} notes={[...fragrance.notes.top, ...fragrance.notes.key, ...fragrance.notes.heart].slice(0,2).map(noteLabel)} tone={visualWorldFor(fragrance) === "silk" ? "rose" : visualWorldFor(fragrance) === "mineral" ? "sage" : "amber"} compact />
                     )}
+                    {isProductTruth ? (
+                      <span className="dufynd-catalog-original-photo-badge">
+                        Originalfoto
+                      </span>
+                    ) : null}
 
                   </div>
 
