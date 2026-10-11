@@ -60,8 +60,7 @@ def render_review_html(packet: dict) -> str:
         or str(source.get("feed_id")) != "91379"
         or source.get("source") != "awin_product_feed_list"
         or not source.get("checked_at")
-        or packet.get("source_rights_basis_id")
-        != "awin_top_parfuemerie_feed_materials_20260928"
+        or packet.get("source_rights_basis_id") != "awin_top_parfuemerie_feed_materials_20260928"
     ):
         raise ValueError("official_feed_rights_provenance_required")
 
@@ -117,17 +116,17 @@ def render_review_html(packet: dict) -> str:
                 f'referrerpolicy="no-referrer" src="{safe_url}" '
                 f'alt="Ungeprüfter Händlerfoto-Kandidat für {name}"></div>'
                 f'<div class="meta"><p><strong>{_text(label)}</strong></p>'
-                f'<p>{_text(size)} · SKU {_text(candidate.get("merchant_product_id"))}</p>'
-                f'<p>{_text(candidate.get("merchant_product_name"))}</p>'
+                f"<p>{_text(size)} · SKU {_text(candidate.get('merchant_product_id'))}</p>"
+                f"<p>{_text(candidate.get('merchant_product_name'))}</p>"
                 f'<p><a href="{safe_url}" rel="noopener noreferrer" target="_blank">'
-                f'Originale Händlerbilddatei ansehen</a></p>'
+                f"Originale Händlerbilddatei ansehen</a></p>"
                 f'<p class="hold">HOLD: Keine Bild-, Varianten- oder Publikationsfreigabe</p>'
-                f'</div></div>'
+                f"</div></div>"
             )
             found += 1
         cards.append(
             f'<article class="card"><h2>{name}</h2><p>{variant}</p>'
-            f'<code>{_text(pid)}</code>{"".join(blocks)}</article>'
+            f"<code>{_text(pid)}</code>{''.join(blocks)}</article>"
         )
 
     if found != packet.get("total_review_candidates"):
