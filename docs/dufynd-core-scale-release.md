@@ -2,6 +2,8 @@
 
 ## Growth checkpoint: 41 reviews, 40 candidate variants
 
+After the new staging facts, CI38134150576 reproduced a stale master source fingerprint. Rebuilding in memory at the stored timestamp showed exactly one differing master field: `source_fingerprint_sha256`. Only that derived field was refreshed. No content asset, schedule, social status, safety gate or timestamp changed. When future batches update staging, run `tests/test_dufynd_content_state_reconciliation.py` before pushing and compare the in-memory master result; never blindly rewrite all content outputs.
+
 The new source-bound batch adds 13 manufacturer-reference profiles, not GTINs: 37 manufacturer references + 4 verified GTINs overall. All 41 reviews passed four-width QA; the conflicting BOSS Absolu variant is excluded from the 40-product owner wave. An isolated build exercised 40 regular routes and 77 public profiles, without changing actual approvals, indexing or deployment.
 
 `dufynd_growth_evidence.json` holds the 13 original-source records and four precise source HOLDs (Angham concentration/notes, Fleur du Mâle 2026 identity, Kayali original source, The One 2025 edition). `catalog-growth.mjs --write` reproduces the identity/stage matrix: canonical 38 + staging 50 − overlap 5 = 83 exact IDs. The 17 unmatched legacy research names have no verified volume and are NOT 17 extra SKUs. One legacy The One name may overlap a differently named edition. Existing hidden Widian remains a separate pre-existing research/blocker case.
