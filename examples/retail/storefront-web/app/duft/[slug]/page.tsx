@@ -8,6 +8,7 @@ import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
 import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
 import { accordLabel } from "@/lib/accordLabels";
 import FragranceNoteSculpture from "@/components/FragranceNoteSculpture";
+import FragranceNotesOverview from "@/components/FragranceNotesOverview";
 import FragranceExplodedNotes from "@/components/FragranceExplodedNotes";
 import FragranceOffers from "@/components/FragranceOffers";
 import MobileOfferBar from "@/components/MobileOfferBar";
@@ -16,7 +17,6 @@ import FragranceVisual from "@/components/FragranceVisual";
 import ImageAttribution from "@/components/ImageAttribution";
 import FragranceSaveControls from "@/components/FragranceSaveControls";
 import FragranceShareButton from "@/components/FragranceShareButton";
-import NoteIcon from "@/components/NoteIcon";
 import {
   LIVE_FRAGRANCES,
   comparisonPath,
@@ -108,51 +108,6 @@ function formatCommunityRating(
   })}/10`;
 
   return provisional ? `${rating} (vorläufig)` : rating;
-}
-
-function noteSection(
-  title: string,
-  notes: string[],
-) {
-  if (!notes.length) return null;
-  const stage =
-    title === "Kopfnoten"
-      ? "01"
-      : title === "Herznoten"
-        ? "02"
-        : title === "Basisnoten"
-          ? "03"
-          : null;
-
-  return (
-    <div>
-      <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-(--ink-soft)">
-        {stage ? (
-          <span
-            aria-hidden
-            className="grid h-6 w-6 place-items-center rounded-lg bg-(--accent-soft) text-[10px] tabular-nums text-(--accent-ink)"
-          >
-            {stage}
-          </span>
-        ) : null}
-        {title}
-      </div>
-      <div className="mt-2 flex flex-wrap gap-2">
-        {notes.map((note) => (
-          <a
-            key={note}
-            href={`/duft?q=${encodeURIComponent(noteLabel(note))}`}
-            className="inline-flex items-center gap-2 rounded-full border border-(--line) bg-(--well)/60 px-3 py-1.5 text-[12px] text-(--ink) transition hover:border-(--accent) hover:bg-(--accent-soft)/45"
-            aria-label={`Weitere Düfte mit ${noteLabel(note)} entdecken`}
-          >
-            <NoteIcon note={note} className="h-4 w-4 shrink-0 text-(--accent-ink)" />
-            {noteLabel(note)}
-            <span aria-hidden className="text-(--ink-soft)">→</span>
-          </a>
-        ))}
-      </div>
-    </div>
-  );
 }
 
 function ProfileRow({
@@ -695,52 +650,16 @@ export default async function FragrancePage({
             />
           </div>
 
-        {productTruthIsVerified && productTruthVisual?.url ? (
-          <div
-            className="dufynd-fragrance-chapter dufynd-fragrance-chapter--experience"
-            data-dufynd-chapter="erleben"
-          >
-            <span
-              aria-hidden
-              className="dufynd-fragrance-chapter-index"
-            >
-              02
-            </span>
-            <FragranceExplodedNotes
-              top={fragrance.notes.top}
-              heart={fragrance.notes.heart}
-              base={fragrance.notes.base}
-              keyNotes={fragrance.notes.key}
-              supporting={fragrance.notes.supporting}
-            />
-          </div>
-        ) : null}
-
-        <FragranceNoteSculpture key={fragrance.product_id} notes={fragrance.notes} />
-
-        {hasVisualGallery ? (
-          <div
-            className="dufynd-fragrance-chapter dufynd-fragrance-chapter--gallery"
-            data-dufynd-chapter="ansichten"
-          >
-            <FragranceVisualGallery
-              assets={fragrance.visuals}
-              alt={`${fragrance.brand} ${fragrance.name}`}
-              world={visualTheme}
-            />
-          </div>
-        ) : null}
-
         <div
-          className="dufynd-fragrance-chapter dufynd-fragrance-chapter--profile mt-5 grid gap-4 lg:mt-7 lg:grid-cols-[1.05fr_0.95fr]"
+          className="dufynd-fragrance-chapter dufynd-fragrance-chapter--notes mt-5"
+          data-dufynd-chapter="duftnoten"
+        >
+          <FragranceNotesOverview notes={fragrance.notes} />
+        </div>
+        <div
+          className="dufynd-fragrance-chapter dufynd-fragrance-chapter--profile mt-5"
           data-dufynd-chapter="verstehen"
         >
-          <span
-            aria-hidden
-            className="dufynd-fragrance-chapter-index"
-          >
-            03
-          </span>
           <section
             id="duftprofil"
             className="dufynd-fragrance-profile-card scroll-mt-24 rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) sm:p-5"
@@ -787,90 +706,28 @@ export default async function FragrancePage({
               Laborwerte.
             </p>
           </section>
-
-          <div id="duftnoten" className="dufynd-fragrance-notes-card scroll-mt-24">
-          <details className="group rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) lg:hidden">
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-3">
-              <span className="min-w-0">
-                <span className="block text-[17px] font-semibold">
-                  Duftnoten
-                </span>
-                {notePreview.length ? (
-                  <span className="mt-1.5 flex flex-wrap gap-1.5 text-[10.5px] font-medium text-(--ink-soft)">
-                    {notePreview.map((note) => (
-                      <span
-                        key={note}
-                        className="inline-flex items-center gap-1 rounded-full bg-(--well) px-2 py-1"
-                      >
-                        <NoteIcon note={note} className="h-3.5 w-3.5" />
-                        {noteLabel(note)}
-                      </span>
-                    ))}
-                  </span>
-                ) : null}
-              </span>
-              <span
-                aria-hidden
-                className="shrink-0 text-[18px] text-(--accent-ink) transition group-open:rotate-45"
-              >
-                +
-              </span>
-            </summary>
-            <div className="mt-4 space-y-4">
-              {fragrance.notes.top.length ||
-              fragrance.notes.heart.length ||
-              fragrance.notes.base.length ? (
-                <>
-                  {noteSection("Kopfnoten", fragrance.notes.top)}
-                  {noteSection("Herznoten", fragrance.notes.heart)}
-                  {noteSection("Basisnoten", fragrance.notes.base)}
-                </>
-              ) : (
-                <>
-                  {noteSection("Schlüsselnoten", fragrance.notes.key)}
-                  {noteSection("Weitere Noten", fragrance.notes.supporting)}
-                  {!fragrance.notes.key.length &&
-                  !fragrance.notes.supporting.length ? (
-                    <p className="text-[13px] leading-5 text-(--ink-soft)">
-                      Für diesen Duft sind aktuell keine verifizierten
-                      Duftnoten im DUFYND-Katalog hinterlegt.
-                    </p>
-                  ) : null}
-                </>
-              )}
-            </div>
-          </details>
-
-          <section className="hidden rounded-2xl border border-(--line) bg-(--card) p-5 shadow-(--shadow-sm) lg:block">
-            <h2 className="text-[17px] font-semibold">
-              Duftnoten
-            </h2>
-            <div className="mt-4 space-y-4">
-              {fragrance.notes.top.length ||
-              fragrance.notes.heart.length ||
-              fragrance.notes.base.length ? (
-                <>
-                  {noteSection("Kopfnoten", fragrance.notes.top)}
-                  {noteSection("Herznoten", fragrance.notes.heart)}
-                  {noteSection("Basisnoten", fragrance.notes.base)}
-                </>
-              ) : (
-                <>
-                  {noteSection("Schlüsselnoten", fragrance.notes.key)}
-                  {noteSection("Weitere Noten", fragrance.notes.supporting)}
-                  {!fragrance.notes.key.length &&
-                  !fragrance.notes.supporting.length ? (
-                    <p className="text-[13px] leading-5 text-(--ink-soft)">
-                      Für diesen Duft sind aktuell keine verifizierten
-                      Duftnoten im DUFYND-Katalog hinterlegt.
-                    </p>
-                  ) : null}
-                </>
-              )}
-            </div>
-          </section>
-          </div>
         </div>
+        <details className="dufynd-fragrance-advanced mt-5">
+          <summary>
+            <span>
+              <strong>Optional: Duftstudio entdecken</strong>
+              <small>Zusätzliche interaktive Ansicht der dokumentierten Noten</small>
+            </span>
+            <span aria-hidden>+</span>
+          </summary>
+          <div className="dufynd-fragrance-advanced-body">
+            <FragranceNoteSculpture key={fragrance.product_id} notes={fragrance.notes} />
+            {productTruthIsVerified && productTruthVisual?.url ? (
+              <FragranceExplodedNotes
+                top={fragrance.notes.top}
+                heart={fragrance.notes.heart}
+                base={fragrance.notes.base}
+                keyNotes={fragrance.notes.key}
+                supporting={fragrance.notes.supporting}
+              />
+            ) : null}
+          </div>
+        </details>
         </div>
 
         {related.length ? (
