@@ -111,7 +111,9 @@ class SupabaseContentDispatchTests(unittest.TestCase):
         self.assertTrue(all(task["status"] == "queued" for task in manifest))
         self.assertTrue(all(task["budget_class"] == "free" for task in manifest))
         self.assertTrue(all(task["provider_cost_unknown"] is False for task in manifest))
-        self.assertTrue(all(task["durable_payload"]["provider_execution"] is False for task in manifest))
+        self.assertTrue(
+            all(task["durable_payload"]["provider_execution"] is False for task in manifest)
+        )
         self.assertTrue(all("social.publish" in task["forbidden_actions"] for task in manifest))
         bridge, dispatch = self.make_dispatch(activated=False)
         with self.assertRaisesRegex(WorkerInputError, "not_explicitly_activated"):
@@ -177,9 +179,7 @@ class SupabaseContentDispatchTests(unittest.TestCase):
         bridge, _dispatch = self.make_dispatch()
         changed = copy.deepcopy(self.source)
         changed["W1"]["voice"] = "unauthorized changed source"
-        dispatch = SupabaseSevenWorkerDispatch(
-            bridge, source=changed, existing=self.existing
-        )
+        dispatch = SupabaseSevenWorkerDispatch(bridge, source=changed, existing=self.existing)
         with self.assertRaisesRegex(WorkerInputError, "fingerprint_mismatch"):
             dispatch.run_role("W1")
         self.assertEqual(bridge.claims, [])
@@ -188,9 +188,7 @@ class SupabaseContentDispatchTests(unittest.TestCase):
         source = copy.deepcopy(self.source)
         source["W5"]["questions"] = source["W5"]["questions"][:9]
         bridge = FakeBridge(source, self.existing)
-        dispatch = SupabaseSevenWorkerDispatch(
-            bridge, source=source, existing=self.existing
-        )
+        dispatch = SupabaseSevenWorkerDispatch(bridge, source=source, existing=self.existing)
         result = dispatch.run_all()
         self.assertEqual([r["role"] for r in result], ["W1", "W3", "W4", "W5"])
         self.assertEqual(result[-1]["state"], "BLOCKED")
@@ -212,9 +210,7 @@ class SupabaseContentDispatchTests(unittest.TestCase):
         }
         with self.assertRaisesRegex(WorkerInputError, "stale_or_corrupt"):
             dispatch.run_role("W1")
-        self.assertNotEqual(
-            bridge.tasks[task_id(dispatch.round_id, "W1")]["status"], "done"
-        )
+        self.assertNotEqual(bridge.tasks[task_id(dispatch.round_id, "W1")]["status"], "done")
 
     def test_chief_editor_receives_only_three_candidates_without_go(self):
         bridge, dispatch = self.make_dispatch()
@@ -229,7 +225,9 @@ class SupabaseContentDispatchTests(unittest.TestCase):
         self.assertFalse(after["publish_go"])
         self.assertFalse(after["creative_go"])
         self.assertIsNone(after["visual_score"])
-        self.assertTrue(all("no_visual_or_mobile_9_5_qa" in item["holds"] for item in after["candidates"]))
+        self.assertTrue(
+            all("no_visual_or_mobile_9_5_qa" in item["holds"] for item in after["candidates"])
+        )
         self.assertEqual(len(after["worker_output_hashes"]), 7)
         self.assertTrue(after["source_verification_holds"])
         self.assertEqual(after["spend_eur"], 0)
