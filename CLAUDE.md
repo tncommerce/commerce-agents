@@ -32,6 +32,8 @@ adds pytest and ruff); `scripts/install.sh` runs it.
 
 - DUFYND storefront discovery uses `DiscoveryIntro` for approved original-photo entry points and `FragranceNoteSculpture` / `noteSculptureRenderer` for opt-in abstract note interaction. Publication pilots use `releasePilots` and `ScentArtwork`; see `docs/dufynd-discovery-release.md`. Public bundled catalogue data is generated without third-party community metrics before each build. Staging discovery facts live in `dufynd_discovery_qualification.json`; they never authorize publication or merchant offers.
 
+- Review waves use `ScentStudy` for original vector scent worlds and `brandIdentity` for stable display aliases. `prepare_dufynd_review_wave` binds only new manifest entries to evidence; changed evidence requires a fresh review. Responsive wave QA iterates every manifest entry, independently of affiliate availability.
+
 ## Design rules
 
 - One model owns the conversation; a rule goes in a tool description, the prompt, or a skill by how often it applies.

@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "purpose": "Local owner review only. Product facts do not authorize photos, merchant offers or public release.",
   "reviewed_at": "2026-10-11",
   "pilots": [
@@ -14,8 +14,8 @@
       ],
       "original_photo_status": "licensed_source_exact_volume_unproven",
       "visual": {
-        "kind": "dufynd_original_css_illustration",
-        "source": "components/ScentArtwork.tsx",
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentStudy.tsx",
         "contains_product_replica": false,
         "third_party_asset_used": false,
         "label": "Duftillustration · kein Produktfoto"
@@ -29,7 +29,13 @@
         "concentration": "Eau de Parfum",
         "volume_ml": 90
       },
-      "evidence_sha256": "6d8c1ace427974ef975643cd63050e60d92a1e6e67cf35a9cfc739261db63e4b"
+      "evidence_sha256": "6d8c1ace427974ef975643cd63050e60d92a1e6e67cf35a9cfc739261db63e4b",
+      "motif": "blossom",
+      "seo": {
+        "public_path": "/duft/prada-paradoxe-edp-90",
+        "title": "Prada Paradoxe – Eau de Parfum 90 ml",
+        "description": "Bergamotte, Mandarine und Birne treffen auf Neroli und weiße Blüten. Amber, Benzoe, Vanille und Moschus bilden die Basis."
+      }
     },
     {
       "product_id": "SC-PRADA-PARADIGME-EDP-100",
@@ -42,8 +48,8 @@
       ],
       "original_photo_status": "no_asset_specific_reuse_grant",
       "visual": {
-        "kind": "dufynd_original_css_illustration",
-        "source": "components/ScentArtwork.tsx",
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentStudy.tsx",
         "contains_product_replica": false,
         "third_party_asset_used": false,
         "label": "Duftillustration · kein Produktfoto"
@@ -57,7 +63,13 @@
         "concentration": "Eau de Parfum",
         "volume_ml": 100
       },
-      "evidence_sha256": "670371ecdd97f2bfb26724ee6bc880315258ed4486226a09fea30c35853621e5"
+      "evidence_sha256": "670371ecdd97f2bfb26724ee6bc880315258ed4486226a09fea30c35853621e5",
+      "motif": "architecture",
+      "seo": {
+        "public_path": "/duft/prada-paradigme-edp-100",
+        "title": "Prada Paradigme – Eau de Parfum 100 ml",
+        "description": "Kalabrische Bergamotte eröffnet den Duft. Bourbon-Geranie verbindet sich mit Amberhölzern."
+      }
     },
     {
       "product_id": "SC-MAISON-MARGIELA-BY-THE-FIREPLACE-EDT-100",
@@ -70,8 +82,8 @@
       ],
       "original_photo_status": "no_asset_specific_reuse_grant",
       "visual": {
-        "kind": "dufynd_original_css_illustration",
-        "source": "components/ScentArtwork.tsx",
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentStudy.tsx",
         "contains_product_replica": false,
         "third_party_asset_used": false,
         "label": "Duftillustration · kein Produktfoto"
@@ -85,7 +97,353 @@
         "concentration": "Eau de Toilette",
         "volume_ml": 100
       },
-      "evidence_sha256": "9bb113f85e93e969a2ff807ecddaf907c8f47ac44d67f73cce6efed4914dfac9"
+      "evidence_sha256": "9bb113f85e93e969a2ff807ecddaf907c8f47ac44d67f73cce6efed4914dfac9",
+      "motif": "embers",
+      "seo": {
+        "public_path": "/duft/maison-margiela-by-the-fireplace-edt-100",
+        "title": "Maison Margiela REPLICA By the Fireplace – Eau de Toilette 100 ml",
+        "description": "Pfeffer und Gewürznelke führen zu Kastanie und rauchigen Hölzern. Vanille, Perubalsam und Cashmeran ergänzen die Basis."
+      }
+    },
+    {
+      "product_id": "SC-CAROLINA-HERRERA-GOOD-GIRL-EDP-80",
+      "slug": "carolina-herrera-good-girl-edp-80",
+      "motif": "blossom",
+      "tone": "amber",
+      "headline": "Weiße Blüten. Dunkler Kakao.",
+      "art_notes": [
+        "Jasmin",
+        "Kakao"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentStudy.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-CAROLINA-HERRERA-GOOD-GIRL-EDP-80",
+        "brand": "Carolina Herrera",
+        "name": "Good Girl",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 80
+      },
+      "evidence_sha256": "9f87be56ae2fb198b57562094a0e0568fa6788f1e0fa58924329dbdcabe15bd6",
+      "seo": {
+        "public_path": "/duft/carolina-herrera-good-girl-edp-80",
+        "title": "Carolina Herrera Good Girl – Eau de Parfum 80 ml",
+        "description": "Jasmin und Tuberose verbinden sich mit Tonkabohne und Kakao. Mandel und Kaffee ergänzen das Profil."
+      }
+    },
+    {
+      "product_id": "SC-CHANEL-COCO-MADEMOISELLE-EDP-100",
+      "slug": "chanel-coco-mademoiselle-edp-100",
+      "motif": "citrus",
+      "tone": "rose",
+      "headline": "Orange. Rose. Patschuli.",
+      "art_notes": [
+        "Orange",
+        "Rose"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentStudy.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-CHANEL-COCO-MADEMOISELLE-EDP-100",
+        "brand": "CHANEL",
+        "name": "COCO MADEMOISELLE",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "8e4a0c95df4afef578dd51a6cd8edf4c0d7325bb268d8b1d9265ec793b2d9b65",
+      "seo": {
+        "public_path": "/duft/chanel-coco-mademoiselle-edp-100",
+        "title": "CHANEL COCO MADEMOISELLE – Eau de Parfum 100 ml",
+        "description": "Orange eröffnet die Komposition; Jasmin und Rose führen zu Patschuli und Vetiver."
+      }
+    },
+    {
+      "product_id": "SC-VERSACE-EROS-EDP-100",
+      "slug": "versace-eros-edp-100",
+      "motif": "citrus",
+      "tone": "sage",
+      "headline": "Zitrusfrische trifft auf Hölzer.",
+      "art_notes": [
+        "Minze",
+        "Zedernholz"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentStudy.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-VERSACE-EROS-EDP-100",
+        "brand": "Versace",
+        "name": "Eros Pour Homme",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "f2b12798090809b1ba69e55ef92c5452cdfb42eb67c1ec41a48fd58a070ff892",
+      "seo": {
+        "public_path": "/duft/versace-eros-edp-100",
+        "title": "Versace Eros Pour Homme – Eau de Parfum 100 ml",
+        "description": "Zitrus, Minze und kandierter Apfel eröffnen den Duft. Geranium und Salbei treffen auf eine holzige Basis mit Vanille."
+      }
+    },
+    {
+      "product_id": "SC-CHLOE-NOMADE-EDP-75",
+      "slug": "chloe-nomade-edp-75",
+      "motif": "botanical",
+      "tone": "amber",
+      "headline": "Mirabelle. Freesie. Eichenmoos.",
+      "art_notes": [
+        "Freesie",
+        "Eichenmoos"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentStudy.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-CHLOE-NOMADE-EDP-75",
+        "brand": "Chloé",
+        "name": "Nomade",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 75
+      },
+      "evidence_sha256": "6b5246a7e23bcde16bc2897a4e88b533b05e169b1310b971466cf31e795f8816",
+      "seo": {
+        "public_path": "/duft/chloe-nomade-edp-75",
+        "title": "Chloé Nomade – Eau de Parfum 75 ml",
+        "description": "Mirabelle eröffnet den Duft, gefolgt von Freesie und Eichenmoos."
+      }
+    },
+    {
+      "product_id": "SC-GUCCI-FLORA-GORGEOUS-GARDENIA-EDP-100",
+      "slug": "gucci-flora-gorgeous-gardenia-edp-100",
+      "motif": "blossom",
+      "tone": "rose",
+      "headline": "Ein Herz aus weißen Blüten.",
+      "art_notes": [
+        "Gardenie",
+        "Frangipani"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentStudy.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-GUCCI-FLORA-GORGEOUS-GARDENIA-EDP-100",
+        "brand": "Gucci",
+        "name": "Flora Gorgeous Gardenia",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "d0c025d2e2a5cec04cfaa66439bf307b6a8f380c8ace1a85337684179ff1d09c",
+      "seo": {
+        "public_path": "/duft/gucci-flora-gorgeous-gardenia-edp-100",
+        "title": "Gucci Flora Gorgeous Gardenia – Eau de Parfum 100 ml",
+        "description": "Gardenie, Jasmin und Frangipani bilden das florale Herz; Patschuli und brauner Zucker ergänzen die Basis."
+      }
+    },
+    {
+      "product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+      "slug": "guerlain-mon-guerlain-edp-100",
+      "motif": "botanical",
+      "tone": "rose",
+      "headline": "Lavendel und sanfte Vanille.",
+      "art_notes": [
+        "Lavendel",
+        "Vanille"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentStudy.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+        "brand": "Guerlain",
+        "name": "Mon Guerlain",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "df9bf85e4c6bac4d2ec73c986921a7b7a690724a2685d328e94336b46f29bba1",
+      "seo": {
+        "public_path": "/duft/guerlain-mon-guerlain-edp-100",
+        "title": "Guerlain Mon Guerlain – Eau de Parfum 100 ml",
+        "description": "Lavendel und Jasmin verbinden sich mit Sandelholz und Tahiti-Vanille."
+      }
+    },
+    {
+      "product_id": "SC-MFK-BACCARAT-ROUGE-540-EDP-70",
+      "slug": "mfk-baccarat-rouge-540-edp-70",
+      "motif": "prism",
+      "tone": "amber",
+      "headline": "Safran, Jasmin und trockene Hölzer.",
+      "art_notes": [
+        "Safran",
+        "Jasmin"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentStudy.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-MFK-BACCARAT-ROUGE-540-EDP-70",
+        "brand": "Maison Francis Kurkdjian",
+        "name": "Baccarat Rouge 540",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 70
+      },
+      "evidence_sha256": "cac3d82f181dfd5ba5fcead4b1fcc8a00b6bfec9ff5cade70fb6b5dcb7af3332",
+      "seo": {
+        "public_path": "/duft/mfk-baccarat-rouge-540-edp-70",
+        "title": "Maison Francis Kurkdjian Baccarat Rouge 540 – Eau de Parfum 70 ml",
+        "description": "Jasmin und Safran treffen auf einen Ambra-Akkord, trockene Holznoten und süße Ethylmaltol-Facetten."
+      }
+    },
+    {
+      "product_id": "SC-VALENTINO-DONNA-BORN-IN-ROMA-EDP-100",
+      "slug": "valentino-donna-born-in-roma-edp-100",
+      "motif": "prism",
+      "tone": "rose",
+      "headline": "Drei Facetten von Jasmin.",
+      "art_notes": [
+        "Jasmin",
+        "Bourbon-Vanille"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentStudy.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-VALENTINO-DONNA-BORN-IN-ROMA-EDP-100",
+        "brand": "Valentino",
+        "name": "Born In Roma Donna",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "81e0a9227afec539f747882def6b588ae4dbd286dc77b2bdf71e931c2ad5a9f6",
+      "seo": {
+        "public_path": "/duft/valentino-donna-born-in-roma-edp-100",
+        "title": "Valentino Born In Roma Donna – Eau de Parfum 100 ml",
+        "description": "Bergamotte führt zu einer Jasmin-Trilogie; Bourbon-Vanille prägt die Basis."
+      }
+    },
+    {
+      "product_id": "SC-MUGLER-ALIEN-EDP-90",
+      "slug": "mugler-alien-edp-90",
+      "motif": "prism",
+      "tone": "sage",
+      "headline": "Jasmin. Cashmeran. Weißer Amber.",
+      "art_notes": [
+        "Jasmin",
+        "Weißer Amber"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentStudy.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-MUGLER-ALIEN-EDP-90",
+        "brand": "Mugler",
+        "name": "Alien",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 90
+      },
+      "evidence_sha256": "39887bdfabd8dad4869272d8201dd2bbcef44001a71465795d917980f029802f",
+      "seo": {
+        "public_path": "/duft/mugler-alien-edp-90",
+        "title": "Mugler Alien – Eau de Parfum 90 ml",
+        "description": "Jasmin, Cashmeran und weißer Amber prägen das Duftprofil."
+      }
+    },
+    {
+      "product_id": "SC-BURBERRY-GODDESS-EDP-100",
+      "slug": "burberry-goddess-edp-100",
+      "motif": "botanical",
+      "tone": "amber",
+      "headline": "Vanille in drei Facetten.",
+      "art_notes": [
+        "Vanille",
+        "Lavendel"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentStudy.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-BURBERRY-GODDESS-EDP-100",
+        "brand": "Burberry",
+        "name": "Goddess",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "58227bd1036dea95c02c705eb3a59bc635f1ff5953f280e34ad831777dc7c428",
+      "seo": {
+        "public_path": "/duft/burberry-goddess-edp-100",
+        "title": "Burberry Goddess – Eau de Parfum 100 ml",
+        "description": "Drei Vanille-Komponenten werden von aromatischem Lavendel ergänzt."
+      }
     }
   ]
 }

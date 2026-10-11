@@ -35,7 +35,7 @@ def evaluate(fact: dict, pilot: dict) -> dict:
         blockers.append("evidence_changed_requires_review")
     visual = pilot.get("visual", {})
     if not (
-        visual.get("kind") == "dufynd_original_css_illustration"
+        visual.get("kind") == "dufynd_original_vector_illustration"
         and visual.get("contains_product_replica") is False
         and visual.get("third_party_asset_used") is False
         and visual.get("label")
@@ -63,6 +63,9 @@ def report() -> dict:
         for r in json.loads((DATA / "dufynd_discovery_qualification.json").read_text())["products"]
     }
     pilots = json.loads((DATA / "dufynd_release_pilots.json").read_text())["pilots"]
+    for key in ("product_id", "slug"):
+        if len({p[key] for p in pilots}) != len(pilots):
+            raise ValueError(f"Duplicate review {key}")
     return {
         "mode": "read_only_no_publication",
         "profiles": [evaluate(facts[p["product_id"]], p) for p in pilots],

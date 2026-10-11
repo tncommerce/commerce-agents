@@ -5,6 +5,7 @@ const base=process.env.QA_BASE_URL || 'http://127.0.0.1:3013';
 const out=process.env.QA_OUTPUT || '/tmp/dufynd-release-qa';
 mkdirSync(out,{recursive:true});
 const pilots=JSON.parse(readFileSync(new URL('../../data/dufynd_release_pilots.json',import.meta.url),'utf8')).pilots;
+const facts=JSON.parse(readFileSync(new URL('../../data/dufynd_discovery_qualification.json',import.meta.url),'utf8')).products;
 const photos=JSON.parse(readFileSync(new URL('../lib/generated/original-photos.json',import.meta.url),'utf8'));
 const report=[];
 const browser=await chromium.launch({headless:true});
@@ -44,11 +45,25 @@ for(const width of [320,390,768,1440]) {
   assert.equal(await page.locator('a[href*="awin"],a[href*="clickout"]').count(),0);
   const schemas=await page.locator('script[type="application/ld+json"]').allTextContents();
   assert.ok(schemas.every(s=>!s.includes('aggregateRating')&&!s.includes('"offers"')),'No invented structured offers or ratings');
-  await page.locator('details summary').click();assert.ok((await page.locator('details').innerText()).includes('Herstellerreferenz (keine GTIN)'));
+  const art=await page.locator('[data-scent-artwork]').boundingBox();
+  if(width<768) assert.ok(art.y<470,'Scent visual appears before description on mobile');
+  assert.equal(await page.locator('link[rel=canonical]').count(),0,'Private pages have no public canonical');
+  assert.ok((await page.title()).includes(p.expected_variant.name));
+  assert.equal(await page.locator('meta[name=description]').getAttribute('content'),p.seo.description);
+  if([390,1440].includes(width)) {
+    await page.screenshot({path:`${out}/${p.slug}-${width}-viewport.png`});
+    await page.screenshot({path:`${out}/${p.slug}-${width}.png`,fullPage:true});
+  }
+  await page.getByRole('link',{name:'Die Komposition entdecken'}).click();
+  assert.equal(new URL(page.url()).hash,'#duftverlauf');
+  await page.locator('#quellen summary').click();
+  assert.ok((await page.locator('#quellen').innerText()).includes(facts.find(f=>f.product_id===p.product_id).identity.kind==='gtin'?'Geprüfte GTIN':'Herstellerreferenz (keine GTIN)'));
+  assert.equal(await page.locator('nav[aria-label="Review-Produktnavigation"] a').count(),2);
+  const links=await page.locator('nav[aria-label="Review-Produktnavigation"] a').evaluateAll(xs=>xs.map(x=>x.getAttribute('href')));
+  assert.ok(links.every(h=>pilots.some(p=>h===`/review/duft/${p.slug}`)),'Previous/next links are real wave routes');
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'No horizontal overflow');
-  if([390,1440].includes(width))await page.screenshot({path:`${out}/${p.slug}-${width}-sources.png`,fullPage:true});
  }
- assert.deepEqual(errors,[]);report.push({width,status:'passed',checks:['public_metrics','honest_catalog_visuals','brand_counts','mobile_search','swipe_controls','three_exact_review_pages','no_offers','noindex','no_overflow','no_page_errors']});await page.close();
+ assert.deepEqual(errors,[]);report.push({width,status:'passed',review_pages:pilots.length,checks:['public_metrics','honest_catalog_visuals','brand_counts','mobile_search','swipe_controls','exact_review_pages','early_art','metadata','review_navigation','no_offers','noindex','no_overflow','no_page_errors']});await page.close();
 }
 }finally{await browser.close();}
 writeFileSync(`${out}/report.json`,JSON.stringify(report,null,2));console.log(JSON.stringify(report));

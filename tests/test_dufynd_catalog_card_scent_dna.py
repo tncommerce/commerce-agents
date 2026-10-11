@@ -13,7 +13,7 @@ def test_cards_preserve_qualitative_discovery_without_numeric_dna():
 
 
 def test_illustrations_are_explicitly_separate_from_original_photography():
-    source = (ROOT / "components/ScentArtwork.tsx").read_text()
+    source = (ROOT / "components/ScentStudy.tsx").read_text()
     assert "Duftillustration · kein Produktfoto" in source
     assert "<img" not in source
     model = (ROOT / "lib/fragranceCatalog.ts").read_text()

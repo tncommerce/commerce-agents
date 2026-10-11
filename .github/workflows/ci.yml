@@ -180,6 +180,19 @@ jobs:
           node retail/storefront-web/scripts/dufynd-visual-qa.mjs \
             --base-url http://127.0.0.1:3000 \
             --out retail/storefront-web/.visual-qa
+      - name: Build gated review product wave
+        run: DUFYND_CATALOG_REVIEW=1 npm run build --workspace acme-retail-storefront-web
+      - name: Check every review variant at four responsive widths
+        shell: bash
+        run: |
+          set -euo pipefail
+          node retail/storefront-web/scripts/serve-static-export.mjs \
+            --root retail/storefront-web/out --port 3013 > /tmp/dufynd-review.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          QA_BASE_URL=http://127.0.0.1:3013 \
+          QA_OUTPUT=retail/storefront-web/.visual-qa/review-wave \
+            node retail/storefront-web/scripts/catalog-release-qa.mjs
       - name: Run isolated Control Room evidence and content review replay
         working-directory: .
         run: |

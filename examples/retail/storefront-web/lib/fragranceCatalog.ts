@@ -1,4 +1,5 @@
 import approvedOriginals from "./generated/original-photos.json";
+import { canonicalBrand } from './brandIdentity';
 import catalog from "./generated/public-catalog.json";
 import scentaiProducts from "./generated/public-fragrances.json";
 
@@ -428,7 +429,7 @@ function catalogToFragrance(
     preferredVisual,
     backdropVisual,
   );
-  const brand = String(row.brand || source?.brand || "").trim();
+  const brand = canonicalBrand(String(row.brand || source?.brand || ""));
   const name = String(
     attributes.canonical_name ||
       source?.name ||

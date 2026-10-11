@@ -15,13 +15,13 @@ def inputs():
     return fact, pilot
 
 
-def test_three_fact_only_pages_are_reviewable_but_not_released():
+def test_curated_wave_is_reviewable_but_not_released():
     rows = report()["profiles"]
-    assert len(rows) == 3
+    assert len(rows) >= 10
     assert all(r["ready_for_owner_review"] for r in rows)
     assert all(r["blockers"] == ["owner_release_approval"] for r in rows)
     assert all(not r["affiliate_offer_included"] for r in rows)
-    assert all(r["identity_kind"] == "manufacturer_reference" for r in rows)
+    assert {r["identity_kind"] for r in rows} == {"manufacturer_reference", "gtin"}
 
 
 @pytest.mark.parametrize(

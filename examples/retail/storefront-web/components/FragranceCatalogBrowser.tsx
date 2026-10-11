@@ -1,5 +1,6 @@
 "use client";
 import ScentArtwork from "@/components/ScentArtwork";
+import { canonicalBrand } from '@/lib/brandIdentity';
 
 import {
   fragranceSearchIdentity,
@@ -449,7 +450,7 @@ export default function FragranceCatalogBrowser({
     const initialAudience = AUDIENCE_OPTIONS.find(
       (option) => option.value === params.get("zielgruppe") && option.value !== "all",
     );
-    const initialBrand = params.get("marke");
+    const initialBrand = canonicalBrand(params.get("marke") || '');
     const initialRating = params.get("bewertung");
     const initialSort = SORT_OPTIONS.find(
       (option) => option.value === params.get("sort"),

@@ -12,5 +12,5 @@ if (process.env.DUFYND_CATALOG_REVIEW === '1') {
     if (!html.includes('Designprüfung') || !html.includes('noindex')) throw new Error('Invalid review page');
     copyFileSync(source,new URL(`duft/${p.slug}.html`,destination.href+'/'));
   }
-  console.log('Three noindex review pages exported for local owner QA only.');
+  console.log(`${pilots.length} noindex review pages exported for local owner QA only.`);
 }

@@ -60,5 +60,45 @@ volume against the existing candidate registries. Other catalogue cards use the
 labelled illustration in this draft, not blank cards or artificial product scenes.
 
 The existing 28 records remain 24 manufacturer references and four verified GTINs.
-Three pages are prepared for owner review, zero additional pages are publicly
+Thirteen pages are prepared for owner review, zero additional pages are publicly
 released. PR #774 remains draft; PR #759/#773 and all deployment gates remain HOLD.
+
+## Scalable review waves
+
+The manifest contains 13 complete variants: the three original pilots plus Good
+Girl EDP 80 ml, Coco Mademoiselle EDP 100 ml, Eros Pour Homme EDP 100 ml, Nomade EDP
+75 ml, Flora Gorgeous Gardenia EDP 100 ml, Mon Guerlain EDP 100 ml, Baccarat Rouge
+540 EDP 70 ml, Born In Roma Donna EDP 100 ml, Alien EDP 90 ml and Goddess EDP 100 ml.
+Twelve use manufacturer references; Good Girl uses its previously verified GTIN.
+They do not overlap the public catalogue. The other 15 qualified facts are not
+silently promoted. Image HOLDs and existing fact-check dates remain unchanged.
+
+`ScentStudy` replaces the three identical folds with six original vector
+composition families. The lead pilots explicitly select blossom, architecture
+and embers. Card selection uses note labels before a deterministic fallback.
+The implementation loads no external artwork, WebGL or motion library. It uses
+no continuous animation, and the page respects reduced-motion preferences.
+
+Each entry declares an exact variant, source digest, motif and future SEO path.
+Run `python -m scripts.prepare_dufynd_review_wave` only to bind new empty digests;
+the command never changes an existing digest or an owner gate. The server build
+rejects changed evidence, duplicate IDs/slugs, public-product collisions and
+invalid visual provenance. The readiness report remains read-only.
+
+Future canonical paths include concentration and volume. They are plans, not
+current public URLs. Review metadata has a unique factual title/description but
+no public canonical and noindex/nofollow. Promotion must explicitly wire the
+approved path into the public route/catalogue/sitemap generators; this review
+wave changes none of those inventories. Public structured offers or ratings
+must never be inferred from page availability.
+
+The shared page preserves key-note lists instead of inventing a pyramid, labels
+manufacturer and merchant identity sources separately, and exposes prior/next
+navigation plus a full wave directory. Brand aliases normalize presentation
+without changing product identity evidence. Public counts exclude validation
+HOLDs and count only currently public entries, never staging/review entries.
+
+CI first validates the normal public export and the existing browser regression,
+then builds the opt-in review wave and checks every manifest route at four widths.
+Local captures provide first-two-row catalogue views and real before/after pilot
+comparisons. Adding a manifest entry expands browser coverage automatically.
