@@ -1,4 +1,5 @@
 import approvedOriginals from "./generated/original-photos.json";
+import {RELEASED_FRAGRANCES} from './releasedProfileCatalog';
 import { canonicalBrand } from './brandIdentity';
 import catalog from "./generated/public-catalog.json";
 import scentaiProducts from "./generated/public-fragrances.json";
@@ -570,7 +571,9 @@ export const LIVE_FRAGRANCES: StaticFragrance[] = (
       product.in_stock !== false &&
       !hasSourceValidationBlockers(product.product_id),
   )
-  .map(catalogToFragrance);
+  .map(catalogToFragrance).concat(RELEASED_FRAGRANCES);
+
+if(new Set(LIVE_FRAGRANCES.map(f=>f.product_id)).size!==LIVE_FRAGRANCES.length) throw new Error('Duplicate public product ID');
 
 const slugCounts = new Map<string, number>();
 

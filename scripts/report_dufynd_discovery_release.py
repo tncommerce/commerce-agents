@@ -44,6 +44,9 @@ def evaluate(fact: dict, pilot: dict) -> dict:
     ready_for_review = not blockers
     if pilot.get("owner_release_approved") is not True:
         blockers.append("owner_release_approval")
+    else:
+        # A historical boolean is not a source/design/QA-bound authorization.
+        blockers.append("use_bound_release_authorization_pipeline")
     return {
         "product_id": fact["product_id"],
         "variant": expected,

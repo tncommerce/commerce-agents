@@ -1,4 +1,5 @@
 import { useId } from 'react';
+import ScentScene, {sceneFor} from './ScentScene';
 import styles from './ScentStudy.module.css';
 export type ScentMotif = 'blossom' | 'architecture' | 'embers' | 'citrus' | 'botanical' | 'prism';
 const motifs: ScentMotif[] = ['blossom','architecture','embers','citrus','botanical','prism'];
@@ -12,10 +13,10 @@ export function motifForName(name:string,notes:string[]=[]):ScentMotif {
 }
 /** Original editorial vectors, never a product photograph or bottle replica. */
 export default function ScentStudy({name,notes=[],tone='sage',compact=false,motif}:{name:string;notes?:string[];tone?:'sage'|'rose'|'amber';compact?:boolean;motif?:ScentMotif}) {
- const id=useId().replace(/:/g,'');const world=motif||motifForName(name,notes);const url=(k:string)=>`url(#${id}-${k})`;
- return <figure className={`${styles.art} ${styles[tone]} ${styles[world]} ${compact?styles.compact:''}`} data-scent-artwork data-motif={world}>
+ const id=useId().replace(/:/g,'');const world=motif||motifForName(name,notes);const url=(k:string)=>`url(#${id}-${k})`;const scene=sceneFor(name);
+ return <figure style={scene?{color:scene.ink}:undefined} className={`${styles.art} ${styles[tone]} ${styles[world]} ${compact?styles.compact:''}`} data-scent-artwork data-motif={world}>
  <span className={styles.edition}>DUFYND <span>OLFAKTIVE STUDIEN</span></span>
- <svg className={styles.canvas} viewBox="0 0 640 720" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+ {scene?<ScentScene scene={scene} id={id}/>:<svg className={styles.canvas} viewBox="0 0 640 720" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
  <defs>
  <radialGradient id={`${id}-light`} cx=".7" cy=".25" r=".9"><stop stopColor="var(--light)"/><stop offset="1" stopColor="var(--ground)"/></radialGradient>
  <linearGradient id={`${id}-petal`} x1="0" y1="0" x2="1" y2="1"><stop stopColor="#fffef8"/><stop offset=".38" stopColor="#fff1df"/><stop offset=".7" stopColor="var(--soft)"/><stop offset="1" stopColor="var(--ink)"/></linearGradient>
@@ -33,5 +34,5 @@ export default function ScentStudy({name,notes=[],tone='sage',compact=false,moti
  {world==='botanical'&&<g fill={url('petal')} stroke="var(--ink)" strokeWidth=".8"><path d="M298 635Q289 416 378 118M303 518Q166 353 170 255M324 352Q474 330 493 218" fill="none" strokeWidth="2"/>{[0,1,2,3,4,5].map(i=><g key={i} transform={`translate(${299+i*11} ${532-i*66}) rotate(${i%2?-35:25})`}><path d="M0 0Q-128-18-105-93Q-21-98 0 0Z"/><path d="M2-7Q97-126 140-65Q118-4 2-7Z"/><path d="M-3-3L-91-80M6-10L125-63" fill="none" opacity=".2"/></g>)}</g>}
  {world==='prism'&&<g transform="translate(320 360) rotate(24)" filter={url('shadow')}><circle r="238" fill="var(--soft)" opacity=".22"/>{[-2,-1,0,1,2].map(i=><g key={i} transform={`translate(${i*69} ${Math.abs(i)*30})`}><path d="M-30-185L26-217L26 168L-30 202Z" fill={url('petal')}/><path d="M26-217L50-182V193L26 168Z" fill={url('edge')}/><path d="M-30 202L26 168L50 193L-5 228Z" fill="var(--ink)"/></g>)}</g>}
  <text x="45" y="622" fill="var(--ink)" opacity=".16" fontSize="76" fontFamily="Georgia,serif" fontStyle="italic">{world==='blossom'?'florale':world==='architecture'?'structure':world==='embers'?'boisé':world==='citrus'?'agrume':world==='botanical'?'herbier':'matière'}</text>
- </svg><div className={styles.annotation}><span>{notes[0]||name}</span><span>{notes[1]||'Duftkomposition'}</span></div><figcaption>Duftillustration · kein Produktfoto</figcaption></figure>;
+ </svg>}<div className={styles.annotation}><span>{notes[0]||name}</span><span>{notes[1]||'Duftkomposition'}</span></div><figcaption>Duftillustration · kein Produktfoto</figcaption></figure>;
 }

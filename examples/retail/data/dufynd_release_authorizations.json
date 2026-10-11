@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "approvals": [],
+  "brand_indexing_approved": false,
+  "product_holds": [
+    {"product_id": "SC-HUGO-BOSS-BOTTLED-ABSOLU-100", "reason": "Manufacturer title says Parfum Intense while generic bullet says Eau de Parfum; clarify before public variant acceptance."}
+  ]
+}

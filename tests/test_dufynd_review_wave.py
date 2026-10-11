@@ -33,6 +33,7 @@ def test_noindex_review_metadata_and_dynamic_navigation():
     assert "index:false,follow:false" in page
     assert "canonical:null" in page
     assert "generateMetadata" in page
-    assert "fact.checked_at" in page
-    assert "fact.identity.kind==='gtin'" in page
-    assert "Keine erfundene Duftpyramide" in page
+    component = (WEB / "components/QualifiedProductPage.tsx").read_text()
+    assert "fact.checked_at" in component
+    assert "fact.identity.kind==='gtin'" in component
+    assert "Keine erfundene Duftpyramide" in component

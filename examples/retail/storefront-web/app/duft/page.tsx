@@ -12,7 +12,7 @@ import {
 export const metadata: Metadata = {
   title: "Parfums entdecken",
   description:
-    "Entdecke das DUFYND Duftsortiment mit Duftprofil, Community-Bewertungen, Haltbarkeit und aktuellen Händlerangeboten.",
+    "Entdecke den unabhängigen DUFYND Duftkatalog mit exakten Varianten, dokumentierten Duftnoten und separat geprüften Händlerangeboten.",
   alternates: {
     canonical: "/duft",
   },
@@ -49,6 +49,7 @@ export default function FragranceIndexPage() {
             </span>
           </AcquisitionInternalLink>
           <div className="flex items-center gap-2">
+            <a href="/marken" className="px-3 py-2 text-[12px] font-semibold">Marken A–Z</a>
             <AcquisitionInternalLink
               href="/sammlung"
               className="hidden rounded-xl border border-(--line) px-3 py-2 text-[12px] font-semibold text-(--ink) transition hover:border-(--ink) md:inline-flex"

@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import {RELEASED_PROFILES} from '@/lib/releasedProfileCatalog';
+import {RELEASE_PILOTS} from '@/lib/releasePilots';
+import QualifiedProductPage from '@/components/QualifiedProductPage';
 import { notFound } from "next/navigation";
 
 import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
@@ -211,6 +214,8 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
+  const released=RELEASED_PROFILES.find(p=>p.slug===slug);
+  if(released) return {title:released.seo.title,description:released.seo.description,alternates:{canonical:released.seo.public_path},robots:{index:released.indexing_approved,follow:true}};
   const fragrance = getLiveFragranceBySlug(slug);
 
   if (!fragrance) {
@@ -253,6 +258,8 @@ export default async function FragrancePage({
   params,
 }: PageProps) {
   const { slug } = await params;
+  const released=RELEASED_PROFILES.find(p=>p.slug===slug);
+  if(released){const profiles=RELEASE_PILOTS.filter(p=>RELEASED_PROFILES.some(r=>r.product_id===p.product_id));const pilot=profiles.find(p=>p.slug===slug);if(!pilot)notFound();return <QualifiedProductPage pilot={pilot} profiles={profiles} publicMode/>;}
   const fragrance = getLiveFragranceBySlug(slug);
 
   if (!fragrance) notFound();

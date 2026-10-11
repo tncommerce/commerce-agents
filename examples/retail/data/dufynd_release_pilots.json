@@ -444,6 +444,516 @@
         "title": "Burberry Goddess – Eau de Parfum 100 ml",
         "description": "Drei Vanille-Komponenten werden von aromatischem Lavendel ergänzt."
       }
+    },
+    {
+      "product_id": "SC-YSL-Y-EDP-100",
+      "slug": "ysl-y-edp-100",
+      "motif": "botanical",
+      "tone": "sage",
+      "headline": "Salbei. Geranium. Hölzer.",
+      "art_notes": [
+        "Salbei",
+        "Tonkabohne"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentStudy.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-YSL-Y-EDP-100",
+        "brand": "Yves Saint Laurent",
+        "name": "Y",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "876ebbf15cadd472d596a9042feb262f57b8fe6bfbb6353c93520dce17a6d8bc",
+      "seo": {
+        "public_path": "/duft/ysl-y-edp-100",
+        "title": "Yves Saint Laurent Y – Eau de Parfum 100 ml",
+        "description": "Salbei und Geranium treffen auf einen Holzakkord und Tonkabohne."
+      }
+    },
+    {
+      "product_id": "SC-CALVIN-KLEIN-EUPHORIA-EDP-100",
+      "slug": "calvin-klein-euphoria-edp-100",
+      "motif": "blossom",
+      "tone": "rose",
+      "headline": "Lotos und Orchidee im Herzen.",
+      "art_notes": [
+        "Lotos",
+        "Granatapfel"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentStudy.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-CALVIN-KLEIN-EUPHORIA-EDP-100",
+        "brand": "Calvin Klein",
+        "name": "Euphoria",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "6e3e533bf1f51d1ab43c431a1f11fc89f077d09d3472cac3cd64dfa78865316c",
+      "seo": {
+        "public_path": "/duft/calvin-klein-euphoria-edp-100",
+        "title": "Calvin Klein Euphoria – Eau de Parfum 100 ml",
+        "description": "Granatapfel im Auftakt, Lotos und Orchidee im Herzen; die Basis umfasst Veilchen, Amber, Mahagoni und Moschus."
+      }
+    },
+    {
+      "product_id": "SC-JPG-LE-MALE-ELIXIR-PARFUM-125",
+      "slug": "jpg-le-male-elixir-parfum-125",
+      "motif": "botanical",
+      "tone": "amber",
+      "headline": "Aromatische Frische. Warme Harze.",
+      "art_notes": [
+        "Lavendel",
+        "Benzoe"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentStudy.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-JPG-LE-MALE-ELIXIR-PARFUM-125",
+        "brand": "Jean Paul Gaultier",
+        "name": "Le Male Elixir",
+        "concentration": "Parfum",
+        "volume_ml": 125
+      },
+      "evidence_sha256": "f5a220c33de8642258230981c27319a7ec19cdcb088e7e8457dd0d172deea6f8",
+      "seo": {
+        "public_path": "/duft/jpg-le-male-elixir-parfum-125",
+        "title": "Jean Paul Gaultier Le Male Elixir – Parfum 125 ml",
+        "description": "Minze und Lavendel verbinden sich mit Tonkabohne und Benzoeharz."
+      }
+    },
+    {
+      "product_id": "SC-PRADA-LHOMME-INTENSE-EDP-100",
+      "slug": "prada-lhomme-intense-edp-100",
+      "motif": "architecture",
+      "tone": "amber",
+      "headline": "Iris zwischen Holz und Amber.",
+      "art_notes": [
+        "Iris",
+        "Sandelholz"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentStudy.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-PRADA-LHOMME-INTENSE-EDP-100",
+        "brand": "Prada",
+        "name": "L'Homme Intense",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "2e7342c46c56922ad8a720ffcc3733bd509c21e5997a8b964df5dca89f7990aa",
+      "seo": {
+        "public_path": "/duft/prada-lhomme-intense-edp-100",
+        "title": "Prada L'Homme Intense – Eau de Parfum 100 ml",
+        "description": "Iris und Amber verbinden sich mit Patschuli, Sandelholz und gerösteter Tonkabohne."
+      }
+    },
+    {
+      "product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
+      "slug": "lattafa-eclaire-edp-100",
+      "motif": "prism",
+      "tone": "amber",
+      "headline": "Karamell. Milch. Vanille.",
+      "art_notes": [
+        "Karamell",
+        "Vanille"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentStudy.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
+        "brand": "Lattafa",
+        "name": "Eclaire",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "2260d92bd4fa39f3180047b5805dc7551f16befa70ec3bdd1c184da280c9b301",
+      "seo": {
+        "public_path": "/duft/lattafa-eclaire-edp-100",
+        "title": "Lattafa Eclaire – Eau de Parfum 100 ml",
+        "description": "Karamell, Milch und Zucker führen zu weißen Blüten und Honig. Vanille, Praline und Moschus bilden die Basis."
+      }
+    },
+    {
+      "product_id": "SC-LATTAFA-KHAMRAH-EDP-100",
+      "slug": "lattafa-khamrah-edp-100",
+      "motif": "embers",
+      "tone": "amber",
+      "headline": "Gewürze, Datteln und warme Hölzer.",
+      "art_notes": [
+        "Zimt",
+        "Datteln"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentStudy.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-LATTAFA-KHAMRAH-EDP-100",
+        "brand": "Lattafa",
+        "name": "Khamrah",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "e241274ea36967d2dd5c657be9f41a335d55d17659339b13fb1e7b22c96b644f",
+      "seo": {
+        "public_path": "/duft/lattafa-khamrah-edp-100",
+        "title": "Lattafa Khamrah – Eau de Parfum 100 ml",
+        "description": "Gewürze und Bergamotte treffen auf Dattel- und Pralinenfacetten. Vanille, Tonkabohne und Holznoten ergänzen das Profil."
+      }
+    },
+    {
+      "product_id": "SC-HUGO-BOSS-BOTTLED-EDT-100",
+      "slug": "hugo-boss-bottled-edt-100",
+      "motif": "botanical",
+      "tone": "sage",
+      "headline": "Geranium trifft auf würzige Hölzer.",
+      "art_notes": [
+        "Geranium",
+        "Zedernholz"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentStudy.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-HUGO-BOSS-BOTTLED-EDT-100",
+        "brand": "Hugo Boss",
+        "name": "BOSS Bottled",
+        "concentration": "Eau de Toilette",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "76772d55038fb05aed57c5b2497c796484f3a67e0d1d55c6b66b981b0d6cab59",
+      "seo": {
+        "public_path": "/duft/hugo-boss-bottled-edt-100",
+        "title": "Hugo Boss BOSS Bottled – Eau de Toilette 100 ml",
+        "description": "Geranium und Gewürznelke treffen auf Sandelholz, Zeder und Vetiver."
+      }
+    },
+    {
+      "product_id": "SC-HUGO-BOSS-BOTTLED-ABSOLU-100",
+      "slug": "hugo-boss-bottled-absolu-100",
+      "motif": "architecture",
+      "tone": "amber",
+      "headline": "Leder, Myrrhe und Zeder.",
+      "art_notes": [
+        "Lederakkord",
+        "Myrrhe"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentStudy.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-HUGO-BOSS-BOTTLED-ABSOLU-100",
+        "brand": "Hugo Boss",
+        "name": "BOSS Bottled Absolu",
+        "concentration": "Parfum Intense",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "47301483597574ef759b4cb5bcee467fab64d5f24a9eb7b8290f0cd42f410985",
+      "seo": {
+        "public_path": "/duft/hugo-boss-bottled-absolu-100",
+        "title": "Hugo Boss BOSS Bottled Absolu – Parfum Intense 100 ml",
+        "description": "Lederakkord, Patschuli und Myrrhe treffen auf Zedernholz, Amber und Davana."
+      }
+    },
+    {
+      "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+      "slug": "dior-hypnotic-poison-edt-100",
+      "motif": "blossom",
+      "tone": "rose",
+      "headline": "Bittermandel. Jasmin. Vanille.",
+      "art_notes": [
+        "Bittermandel",
+        "Vanille"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentStudy.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+        "brand": "Dior",
+        "name": "Hypnotic Poison",
+        "concentration": "Eau de Toilette",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "59df6761bf5ee80466662ced76093140dc8ce49be9a9406d39c701ccf8ebe3e2",
+      "seo": {
+        "public_path": "/duft/dior-hypnotic-poison-edt-100",
+        "title": "Dior Hypnotic Poison – Eau de Toilette 100 ml",
+        "description": "Bittermandel, arabischer Jasmin und Vanille prägen das Duftprofil."
+      }
+    },
+    {
+      "product_id": "SC-PDM-HEROD-EDP-125",
+      "slug": "pdm-herod-edp-125",
+      "motif": "embers",
+      "tone": "amber",
+      "headline": "Tabak und Weihrauch, weich gerahmt.",
+      "art_notes": [
+        "Tabak",
+        "Vanille"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentStudy.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-PDM-HEROD-EDP-125",
+        "brand": "Parfums de Marly",
+        "name": "Herod",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 125
+      },
+      "evidence_sha256": "d6f3a528a62d13d07c2f3f3625b3029e0697a181d212e2aecb222ca4814d1611",
+      "seo": {
+        "public_path": "/duft/pdm-herod-edp-125",
+        "title": "Parfums de Marly Herod – Eau de Parfum 125 ml",
+        "description": "Zimt und Pfeffer eröffnen das Profil; Tabak, Weihrauch und Osmanthus treffen auf Vanille und Zedernholz."
+      }
+    },
+    {
+      "product_id": "SC-NISHANE-ANI-EXTRAIT-100",
+      "slug": "nishane-ani-extrait-100",
+      "motif": "citrus",
+      "tone": "sage",
+      "headline": "Ingwerfrische auf einer Vanillebasis.",
+      "art_notes": [
+        "Ingwer",
+        "Vanille"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentStudy.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-NISHANE-ANI-EXTRAIT-100",
+        "brand": "Nishane",
+        "name": "Ani",
+        "concentration": "Extrait de Parfum",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "048fe9660669d5ce36a08633a22a69cae99db688732b4a6aa62c7c98fb943368",
+      "seo": {
+        "public_path": "/duft/nishane-ani-extrait-100",
+        "title": "Nishane Ani – Extrait de Parfum 100 ml",
+        "description": "Ingwer und Bergamotte führen zu Kardamom und Rose; Vanille, Benzoe und Hölzer bilden die Basis."
+      }
+    },
+    {
+      "product_id": "SC-AMOUAGE-REFLECTION-MAN-EDP-100",
+      "slug": "amouage-reflection-man-edp-100",
+      "motif": "botanical",
+      "tone": "sage",
+      "headline": "Helle Blüten und aromatische Hölzer.",
+      "art_notes": [
+        "Neroli",
+        "Sandelholz"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentStudy.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-AMOUAGE-REFLECTION-MAN-EDP-100",
+        "brand": "Amouage",
+        "name": "Reflection Man",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "431f23df1a7ab51adf9b0e40c970a36ec9962740bac04ed2ddf3c364fb09a2ae",
+      "seo": {
+        "public_path": "/duft/amouage-reflection-man-edp-100",
+        "title": "Amouage Reflection Man – Eau de Parfum 100 ml",
+        "description": "Rosmarin und Bitterorangenblätter treffen auf Neroli, Iris und Jasmin; Sandelholz und Vetiver bilden die Basis."
+      }
+    },
+    {
+      "product_id": "SC-TOM-FORD-OMBRE-LEATHER-EDP-100",
+      "slug": "tom-ford-ombre-leather-edp-100",
+      "motif": "architecture",
+      "tone": "amber",
+      "headline": "Leder im Kontrast zu Jasmin.",
+      "art_notes": [
+        "Lederakkord",
+        "Jasmin"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentStudy.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-TOM-FORD-OMBRE-LEATHER-EDP-100",
+        "brand": "Tom Ford",
+        "name": "Ombré Leather",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "df706e0457fa730922224568ea3fef62d05a4cbc7943a143c43e411a85e493bb",
+      "seo": {
+        "public_path": "/duft/tom-ford-ombre-leather-edp-100",
+        "title": "Tom Ford Ombré Leather – Eau de Parfum 100 ml",
+        "description": "Ein Lederakkord verbindet sich mit Kardamom, Jasmin-Sambac, Patschuli, weißem Moos und Amber."
+      }
+    },
+    {
+      "product_id": "SC-TOM-FORD-OUD-WOOD-EDP-100",
+      "slug": "tom-ford-oud-wood-edp-100",
+      "motif": "architecture",
+      "tone": "sage",
+      "headline": "Oud, Gewürze und sanfte Wärme.",
+      "art_notes": [
+        "Oud",
+        "Kardamom"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentStudy.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-TOM-FORD-OUD-WOOD-EDP-100",
+        "brand": "Tom Ford",
+        "name": "Oud Wood",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "0c66adf8eeac28d63b6b7f2324f5c8de234b7e7abd8be151d58bcfa01dca8e5b",
+      "seo": {
+        "public_path": "/duft/tom-ford-oud-wood-edp-100",
+        "title": "Tom Ford Oud Wood – Eau de Parfum 100 ml",
+        "description": "Kardamom und rosa Pfeffer ergänzen Oud, Patschuli, Amber und Tonkabohne."
+      }
+    },
+    {
+      "product_id": "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100",
+      "slug": "narciso-rodriguez-pure-musc-edp-100",
+      "motif": "blossom",
+      "tone": "sage",
+      "headline": "Moschus, umgeben von weißen Blüten.",
+      "art_notes": [
+        "Moschus",
+        "Orangenblüte"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentStudy.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100",
+        "brand": "Narciso Rodriguez",
+        "name": "for her PURE MUSC",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "dc09c85763739fb577c1f52e954560d7b240dae1529bd0229b416e14aacb6ca8",
+      "seo": {
+        "public_path": "/duft/narciso-rodriguez-pure-musc-edp-100",
+        "title": "Narciso Rodriguez for her PURE MUSC – Eau de Parfum 100 ml",
+        "description": "Orangenblüte und Jasmin umgeben einen Moschusakkord mit Kaschmirholz."
+      }
     }
   ]
 }

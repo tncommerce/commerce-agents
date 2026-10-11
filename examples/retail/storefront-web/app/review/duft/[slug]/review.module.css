@@ -5,3 +5,4 @@
 @media(max-width:767px){.directory{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .identity h1[data-long-word=true]{font-size:clamp(32px,4vw,60px)}
 @media(max-width:767px){.identity h1[data-long-word=true]{font-size:clamp(32px,10vw,39px)}}
+.related{padding:32px 0 48px;border-top:1px solid #d4d8ce}.related h2{font:32px Georgia,serif;margin:12px 0}.related>p:not(.eyebrow){font-size:12px;color:#596653}.related>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-top:24px}.related a{border-bottom:1px solid #b6c1ae;padding:16px 0;font-size:13px;line-height:1.6}.related strong{font-weight:500}.related span{display:block;font-size:11px;color:#596653;margin-top:9px}@media(max-width:767px){.related>div{grid-template-columns:1fr;gap:0}.related h2{font-size:27px}}

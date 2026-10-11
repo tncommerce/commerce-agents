@@ -193,6 +193,9 @@ jobs:
           QA_BASE_URL=http://127.0.0.1:3013 \
           QA_OUTPUT=retail/storefront-web/.visual-qa/review-wave \
             node retail/storefront-web/scripts/catalog-release-qa.mjs
+          QA_BASE_URL=http://127.0.0.1:3013 \
+          QA_OUTPUT=retail/storefront-web/.visual-qa/review-wave \
+            node retail/storefront-web/scripts/brand-pages-qa.mjs
       - name: Run isolated Control Room evidence and content review replay
         working-directory: .
         run: |

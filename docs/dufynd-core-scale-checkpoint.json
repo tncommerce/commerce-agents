@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "baseline_remote_head": "667d8f541a262a4983352c0cbb66c62fd8fabc00",
+  "baseline_ci": {"run": 38126882371, "status": "SUCCESS"},
+  "branch": "dufynd-core-product-nightshift-20261010",
+  "pr": 774,
+  "draft_required": true,
+  "review_before": 13,
+  "review_after": 28,
+  "public_before": 37,
+  "public_added": 0,
+  "original_photos_added": 0,
+  "milestone": "28_pages_shared_renderer_release_gate_and_brand_routes_implemented",
+  "initial_review_browser_checks": 112,
+  "targeted_python_tests": 23,
+  "final_visual_and_brand_qa": "in_progress",
+  "owner_approvals": 0,
+  "product_hold": "SC-HUGO-BOSS-BOTTLED-ABSOLU-100 concentration conflict",
+  "no_sql_no_paid_actions_no_merge_no_deploy": true,
+  "resume": "Finish final browser checks, bind du f ynd_release_qa.json from successful output, generate release decision, test isolated promotion fixture, commit/push exact tree, confirm CI and replace existing review artifact. Never populate real approvals from a test fixture."
+}

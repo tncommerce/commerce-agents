@@ -1,0 +1,70 @@
+/** Original geometric editorial studies. No bottle, logo or third-party image. */
+export const SCENE_REVISION = 'core-scale-3';
+type Scene = {kind:string;ink:string;paper:string;accent:string;word:string;turn?:number};
+const scenes:Record<string,Scene> = {
+ "Supremacy Collector's Edition":{kind:'landscape',ink:'#637152',paper:'#e3dfcb',accent:'#a7b28a',word:'MOUSSE'},
+ 'Turathi Blue':{kind:'rind',ink:'#4f7580',paper:'#dbe3dd',accent:'#dfc58d',word:'AGRUMES',turn:-28},
+ 'Dubai Musk':{kind:'veil',ink:'#7c8279',paper:'#e9e6dc',accent:'#fff9e5',word:'MUSC',turn:-20},
+ 'Détour Noir':{kind:'stems',ink:'#786d79',paper:'#e0daca',accent:'#eee6d8',word:'LAVANDE',turn:22},
+ 'Kayaan Classic':{kind:'folds',ink:'#67716c',paper:'#d6ddd2',accent:'#f0e9ce',word:'IRIS',turn:12},
+ 'Marwa':{kind:'herbarium',ink:'#617052',paper:'#e6e2cf',accent:'#cab891',word:'THÉ',turn:-14},
+ 'Paradoxe':{kind:'petals',ink:'#9b554d',paper:'#eadbd1',accent:'#f8eee2',word:'NÉROLI'},
+ 'Paradigme':{kind:'portal',ink:'#2c564b',paper:'#b5c1a8',accent:'#dfe1bd',word:'STRUCTURE'},
+ 'REPLICA By the Fireplace':{kind:'charcoal',ink:'#302c29',paper:'#ded6c8',accent:'#c56a3b',word:'BRAISE'},
+ 'Good Girl':{kind:'eclipse',ink:'#3e364a',paper:'#e5dcce',accent:'#b49e79',word:'CONTRASTE'},
+ 'COCO MADEMOISELLE':{kind:'rind',ink:'#995741',paper:'#eaddcf',accent:'#d99754',word:'AGRUMES'},
+ 'Eros Pour Homme':{kind:'ripples',ink:'#225c60',paper:'#c7dcd5',accent:'#dcebbc',word:'FRAÎCHEUR'},
+ 'Nomade':{kind:'landscape',ink:'#716745',paper:'#e0d5b8',accent:'#b89b73',word:'HORIZON'},
+ 'Flora Gorgeous Gardenia':{kind:'garden',ink:'#6c7851',paper:'#ece1cb',accent:'#eecab5',word:'GARDÉNIA'},
+ 'Mon Guerlain':{kind:'stems',ink:'#6d617d',paper:'#dedadf',accent:'#f5e4c8',word:'LAVANDE'},
+ 'Baccarat Rouge 540':{kind:'refraction',ink:'#8b3439',paper:'#e5d2c6',accent:'#e9b997',word:'RÉFRACTION'},
+ 'Born In Roma Donna':{kind:'folds',ink:'#825257',paper:'#e5cdd0',accent:'#f1dcd1',word:'STRATES'},
+ 'Alien':{kind:'orbit',ink:'#645477',paper:'#d7d0df',accent:'#e6e4b9',word:'JASMIN'},
+ 'Goddess':{kind:'ribbon',ink:'#946846',paper:'#eadfc6',accent:'#f5efda',word:'VANILLE'},
+ 'Y':{kind:'herbarium',ink:'#365e5d',paper:'#d3dfd8',accent:'#f1e8cc',word:'SAUGE'},
+ 'Euphoria':{kind:'lotus',ink:'#744359',paper:'#e2cdd5',accent:'#f2e3d6',word:'ORCHIDÉE'},
+ 'Le Male Elixir':{kind:'stems',ink:'#8b6b45',paper:'#e1d3b5',accent:'#ede5d0',word:'AROMATIQUE',turn:28},
+ "L'Homme Intense":{kind:'folds',ink:'#52535e',paper:'#d4d1d6',accent:'#ede8db',word:'IRIS',turn:-30},
+ 'Eclaire':{kind:'cream',ink:'#a67b54',paper:'#eee4d2',accent:'#fff5df',word:'LACTÉ'},
+ 'Khamrah':{kind:'spice',ink:'#805443',paper:'#ddc7b0',accent:'#d79863',word:'ÉPICES'},
+ 'BOSS Bottled':{kind:'herbarium',ink:'#56684a',paper:'#e1dec9',accent:'#c4c5a5',word:'VÉTIVER',turn:-35},
+ 'BOSS Bottled Absolu':{kind:'pleat',ink:'#644638',paper:'#d7c5b3',accent:'#b08960',word:'MYRRHE'},
+ 'Hypnotic Poison':{kind:'almond',ink:'#9a4753',paper:'#ead5d3',accent:'#e0b986',word:'AMANDE'},
+ 'Herod':{kind:'leaf',ink:'#6e4c37',paper:'#dbccb1',accent:'#c19262',word:'TABAC'},
+ 'Ani':{kind:'rind',ink:'#637655',paper:'#dbe2c7',accent:'#d4b478',word:'GINGEMBRE',turn:45},
+ 'Reflection Man':{kind:'reflection',ink:'#4e736e',paper:'#d6e2db',accent:'#f1edda',word:'REFLETS'},
+ 'Ombré Leather':{kind:'pleat',ink:'#414749',paper:'#c9ceca',accent:'#979c85',word:'CUIR',turn:38},
+ 'Oud Wood':{kind:'grain',ink:'#615342',paper:'#d6d0c1',accent:'#a59d7b',word:'BOIS'},
+ 'for her PURE MUSC':{kind:'veil',ink:'#8b8a80',paper:'#e4e3da',accent:'#fffdf2',word:'MUSC'},
+};
+export function sceneFor(name:string) {return scenes[name];}
+export default function ScentScene({scene:s,id}:{scene:Scene;id:string}) {
+ const u=(key:string)=>`url(#${id}-scene-${key})`;
+ return <svg viewBox="0 0 640 720" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false" style={{position:'absolute',inset:0,width:'100%',height:'100%',background:s.paper}} data-scene={s.kind}>
+ <defs><linearGradient id={`${id}-scene-surface`} x1="0" y1="0" x2="1" y2="1"><stop stopColor={s.accent}/><stop offset=".42" stopColor={s.paper}/><stop offset=".75" stopColor={s.ink}/><stop offset="1" stopColor={s.accent}/></linearGradient><linearGradient id={`${id}-scene-fold`}><stop stopColor={s.ink}/><stop offset=".49" stopColor={s.accent}/><stop offset=".5" stopColor={s.paper}/><stop offset="1" stopColor={s.ink}/></linearGradient><radialGradient id={`${id}-scene-glow`}><stop stopColor={s.accent}/><stop offset="1" stopColor={s.paper}/></radialGradient><filter id={`${id}-scene-shadow`} x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="12" dy="25" stdDeviation="12" floodColor={s.ink} floodOpacity=".22"/></filter></defs>
+ <rect width="640" height="720" fill={s.paper}/><rect width="640" height="720" fill={u('glow')} opacity=".55"/>
+ <text x="44" y="144" fill={s.ink} opacity=".16" fontFamily="Georgia,serif" fontSize={s.word.length>9?64:82} letterSpacing="-4">{s.word}</text>
+ <path d="M45 176H595M45 601H595" stroke={s.ink} opacity=".2"/>
+ <g transform={`translate(32 36) scale(.9) rotate(${s.turn||0} 320 365)`}>
+ {s.kind==='petals'&&<g filter={u('shadow')} transform="translate(305 371) rotate(-28)">{[[-120,-135,24,1],[-35,-105,-38,1.2],[67,-14,52,.95],[-91,46,12,1.1],[4,132,-20,.75]].map(([x,y,a,z],i)=><g key={i} transform={`translate(${x} ${y}) rotate(${a}) scale(${z})`}><path d="M0 90C-146 1-91-153 13-164C117-125 140-17 0 90Z" fill={u('surface')}/><path d="M0 80Q-28-20 13-150" stroke={s.accent} fill="none" opacity=".55"/></g>)}</g>}
+ {s.kind==='portal'&&<g filter={u('shadow')} transform="translate(92 205)"><path d="M0 303L182 367L458 214L276 150Z" fill={s.ink} opacity=".25"/>{[0,1,2,3,4].map(i=><g key={i} transform={`translate(${i*45} ${-i*15})`}><path d="M0 292V95C0-22 185-22 185 95V292H139V98C139 40 46 40 46 98V292Z" fill={u('surface')}/><path d="M185 292L203 276V81C203-8 124-40 80-14C147-25 185 22 185 95Z" fill={s.ink}/></g>)}</g>}
+ {s.kind==='charcoal'&&<g transform="translate(315 378) rotate(-24)" filter={u('shadow')}>{[-1,0,1].map((k)=><g key={k} transform={`translate(${k*125} ${Math.abs(k)*31})`}><path d="M-47-159Q0-188 50-159L57 165Q0 198-54 164Z" fill={s.ink}/>{Array.from({length:10},(_,i)=><path key={i} d={`M${-37+i*8} -151Q${-68+i*13} 3 ${-42+i*9} 160`} stroke={i%3===0?s.accent:'#766758'} opacity={i%3===0?.8:.5} fill="none" strokeWidth={i%3===0?2:1}/>)}<ellipse cy="-158" rx="48" ry="18" fill={u('fold')}/></g>)}<path d="M-100-50C-210-170 100-181 20-270M45 21C155-155-38-190 100-245" stroke={s.accent} opacity=".32" strokeWidth="8" fill="none"/></g>}
+ {s.kind==='eclipse'&&<g filter={u('shadow')}><circle cx="353" cy="370" r="189" fill={s.ink}/><path d="M372 181C196 222 197 514 373 558C75 527 78 219 372 181Z" fill={u('surface')}/><path d="M170 404Q323 304 483 367Q331 415 170 404" fill={s.accent}/><circle cx="505" cy="222" r="27" fill={u('fold')}/></g>}
+ {s.kind==='rind'&&<g filter={u('shadow')} transform="translate(310 351) rotate(-32)"><path d="M-161 62C-270-110-87-223 48-112C188-8 103 177-48 138C-109 122-121 92-70 37" stroke={u('surface')} strokeWidth="59" fill="none"/><path d="M-161 62C-270-110-87-223 48-112C188-8 103 177-48 138" stroke={s.accent} strokeWidth="3" fill="none"/><ellipse cx="152" cy="175" rx="83" ry="40" fill={s.ink} transform="rotate(-35 152 175)"/>{Array.from({length:8},(_,i)=><path key={i} d={`M152 175l${Math.cos(i*.78)*73} ${Math.sin(i*.78)*33}`} stroke={s.paper} opacity=".7" transform="rotate(-35 152 175)"/>)}</g>}
+ {s.kind==='ripples'&&<g transform="translate(321 371) rotate(-25)">{Array.from({length:17},(_,i)=><ellipse key={i} rx={40+i*12} ry={24+i*8} fill="none" stroke={i%2?s.accent:s.ink} strokeWidth={i%2?8:2} opacity={1-i*.035}/>)}<path d="M-70 40Q-135-150 63-202Q124-11-70 40Z" fill={u('surface')} filter={u('shadow')}/><path d="M-61 23L58-181" stroke={s.ink} fill="none"/></g>}
+ {s.kind==='landscape'&&<g>{Array.from({length:7},(_,i)=><path key={i} d={`M0 ${280+i*42}Q${140+i*22} ${170+i*20} 330 ${340+i*26}T640 ${260+i*55}V630H0Z`} fill={i%2?u('surface'):s.ink} opacity={.2+i*.1}/>)}<circle cx="447" cy="224" r="48" fill={s.accent}/></g>}
+ {['garden','lotus'].includes(s.kind)&&<g filter={u('shadow')}>{[[-94,26,.82], [90,-70,.65],[46,152,.55]].map(([x,y,z],j)=><g key={j} transform={`translate(${320+x} ${320+y}) scale(${z}) rotate(${j*40})`}>{Array.from({length:s.kind==='lotus'?8:5},(_,i)=><path key={i} d="M0 20C-155-3-147-176-20-182C51-115 42-18 0 20Z" transform={`rotate(${i*(s.kind==='lotus'?45:72)})`} fill={u('surface')} stroke={s.accent} strokeWidth="1.5"/>)}<circle r="19" fill={s.ink}/></g>)}</g>}
+ {['stems','herbarium'].includes(s.kind)&&<g transform="rotate(-16 320 360)">{[-1,0,1].map((j)=><g key={j} transform={`translate(${300+j*103} ${520+Math.abs(j)*18}) rotate(${j*20})`}><path d="M0 55Q-29-119 0-335" stroke={s.ink} fill="none" strokeWidth="2"/>{Array.from({length:9},(_,i)=><g key={i} transform={`translate(${-i} ${-i*31})`}><ellipse cx={i%2?-18:18} rx={s.kind==='stems'?12:33} ry={s.kind==='stems'?24:13} fill={u('surface')} transform={`rotate(${i%2?35:-35})`}/></g>)}</g>)}</g>}
+ {s.kind==='refraction'&&<g transform="translate(318 384) rotate(-17)" filter={u('shadow')}>{Array.from({length:9},(_,i)=><g key={i} transform={`rotate(${(i-4)*14})`}><path d="M-15 141L-36-198L0-246L34-202L15 141Z" fill={u('fold')} opacity=".87"/><path d="M0-242V136" stroke={s.accent} strokeWidth="1.5"/></g>)}</g>}
+ {s.kind==='folds'&&<g transform="translate(108 248) rotate(-12 210 110)" filter={u('shadow')}>{Array.from({length:6},(_,i)=><path key={i} d={`M${i*62} ${i%2*45}l62-42v300l-62 42Z`} fill={u('fold')}/>)}<path d="M-23 172L358-80L400-5L25 251Z" fill={u('surface')} opacity=".8"/></g>}
+ {s.kind==='orbit'&&<g transform="translate(320 380)"><ellipse rx="242" ry="112" transform="rotate(-35)" fill="none" stroke={s.ink} strokeWidth="2"/><ellipse rx="212" ry="173" transform="rotate(25)" fill="none" stroke={s.ink} opacity=".35"/><circle r="118" fill={u('surface')} filter={u('shadow')}/><circle cx="163" cy="-122" r="39" fill={s.accent}/><path d="M-240 15Q0 192 226-72" stroke={s.accent} strokeWidth="4" fill="none"/></g>}
+ {['ribbon','cream','veil'].includes(s.kind)&&<g filter={u('shadow')} transform={s.kind==='veil'?'translate(100 -20) rotate(20 320 360)':s.kind==='cream'?'rotate(-25 320 360)':''}>{Array.from({length:s.kind==='cream'?5:8},(_,i)=><path key={i} d={`M${120+i*18} ${185+i*12}C${560-i*10} ${135+i*16} ${70+i*9} ${520-i*12} ${450+i*8} ${541-i*5}`} stroke={u('surface')} strokeWidth={s.kind==='veil'?24:38} fill="none"/>)}{s.kind==='cream'&&<ellipse cx="314" cy="556" rx="175" ry="24" fill={s.accent}/>}</g>}
+ {s.kind==='spice'&&<g transform="translate(320 370)" filter={u('shadow')}>{[0,1,2].map(i=><g key={i} transform={`rotate(${i*54-60}) translate(${i*31-40} 0)`}><rect x="-28" y="-182" width="58" height="355" rx="14" fill={u('fold')}/><ellipse cy="-174" rx="28" ry="16" fill={s.ink}/><path d="M-12-171Q23-183 14-164Q-11-157-12-171" stroke={s.accent} fill="none"/></g>)}</g>}
+ {s.kind==='pleat'&&<g transform="translate(79 205)" filter={u('shadow')}>{Array.from({length:8},(_,i)=><path key={i} d={`M${i*58} 35Q${i*58+48} 166 ${i*58} 353H${i*58+63}Q${i*58+19} 166 ${i*58+63} 35Z`} fill={u('fold')}/>)}<path d="M-16 320Q245 364 486 302" fill="none" stroke={s.accent} strokeDasharray="3 6"/></g>}
+ {s.kind==='almond'&&<g transform="translate(327 370) rotate(36)" filter={u('shadow')}><path d="M0-209C-235-40-111 162 0 210C123 161 233-42 0-209Z" fill={u('surface')}/>{Array.from({length:15},(_,i)=><path key={i} d={`M0-193Q${-170+i*24} 0 0 192`} stroke={s.ink} opacity=".32" fill="none"/>)}<path d="M-111-58Q-10-160 122-130" stroke={s.accent} strokeWidth="12" fill="none"/></g>}
+ {s.kind==='leaf'&&<g transform="translate(320 368) rotate(30)" filter={u('shadow')}><path d="M0-220C-210-150-208 87 0 225C210 87 210-150 0-220Z" fill={u('surface')}/><path d="M0-201V241" stroke={s.ink} strokeWidth="3"/>{Array.from({length:10},(_,i)=><path key={i} d={`M0 ${-140+i*32}l${110-Math.abs(4-i)*17}-65M0 ${-140+i*32}l-${110-Math.abs(4-i)*17}-65`} stroke={s.ink} opacity=".4" fill="none"/>)}</g>}
+ {s.kind==='reflection'&&<g><ellipse cx="324" cy="482" rx="245" ry="88" fill={s.ink} opacity=".15"/>{[0,1,2].map(i=><g key={i} transform={`translate(${163+i*115} ${252+i*43})`}><ellipse rx="73" ry="110" fill={u('surface')} filter={u('shadow')}/><ellipse cy={230-i*40} rx="73" ry="28" fill={s.accent} opacity=".6"/></g>)}<path d="M51 460H589M75 478H565M112 506H530" stroke={s.paper} strokeWidth="4"/></g>}
+ {s.kind==='grain'&&<g transform="translate(319 370) rotate(-20)" filter={u('shadow')}><path d="M-169-158L150-190L181 161L-139 195Z" fill={s.ink}/>{Array.from({length:32},(_,i)=><path key={i} d={`M${-160+i*10}-162Q${-230+i*14} -26 ${-131+i*10} 180`} stroke={i%3===0?s.accent:s.paper} opacity={i%3===0?.7:.2} fill="none" strokeWidth={i%3===0?2:1}/>)}<path d="M-178-168L141-200L150-190L-169-158Z" fill={s.accent}/></g>}
+ </g>
+ </svg>;
+}

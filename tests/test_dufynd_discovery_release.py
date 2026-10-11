@@ -49,9 +49,10 @@ def test_illustration_gate_fails_closed(field, value):
     assert "visual_rights_or_label" in evaluate(fact, pilot)["blockers"]
 
 
-def test_affiliate_absence_does_not_block_an_explicitly_approved_fact_page():
+def test_legacy_boolean_cannot_replace_bound_release_authorization():
     fact, pilot = inputs()
     pilot["owner_release_approved"] = True
     result = evaluate(fact, pilot)
-    assert result["public_release_eligible"]
+    assert not result["public_release_eligible"]
+    assert result["blockers"] == ["use_bound_release_authorization_pipeline"]
     assert not result["affiliate_offer_included"]

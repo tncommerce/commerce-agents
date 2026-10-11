@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {rendererDigest,renderDigest} from './release-gate.mjs';
 import {chromium} from 'playwright';
 import {readFileSync,mkdirSync,writeFileSync,existsSync} from 'node:fs';
 const base=process.env.QA_BASE_URL || 'http://127.0.0.1:3013';
@@ -75,4 +76,6 @@ for(const width of [320,390,768,1440]) {
  assert.deepEqual(errors,[]);report.push({width,status:'passed',review_pages:pilots.length,checks:['public_metrics','honest_catalog_visuals','brand_counts','mobile_search','swipe_controls','exact_review_pages','early_art','metadata','review_navigation','no_offers','noindex','no_overflow','no_page_errors']});await page.close();
 }
 }finally{await browser.close();}
-writeFileSync(`${out}/report.json`,JSON.stringify(report,null,2));console.log(JSON.stringify(report));
+writeFileSync(`${out}/report.json`,JSON.stringify(report,null,2));
+writeFileSync(`${out}/release-qa.json`,JSON.stringify({schema_version:1,profiles:pilots.map(p=>({product_id:p.product_id,passed:true,evidence_sha256:p.evidence_sha256,render_sha256:renderDigest(p,rendererDigest()),widths:report.map(r=>r.width)}))},null,2)+'\n');
+console.log(JSON.stringify(report));
