@@ -600,6 +600,22 @@ export default function FragranceCatalogBrowser({
             minimum,
       )
       .sort((a, b) => {
+        // The broad, unfiltered "Entdecken" entry showcases only asset-verified
+        // original bottle photographs first. Search relevance, brand and scent
+        // profile choices keep their own result order.
+        if (
+          sort === "popular" &&
+          !search.trim() &&
+          audience === "all" &&
+          brand === "all" &&
+          profile === "all" &&
+          minimumRating === "0"
+        ) {
+          const photoDifference =
+            Number(Boolean(originalPhotoFor(b))) -
+            Number(Boolean(originalPhotoFor(a)));
+          if (photoDifference) return photoDifference;
+        }
         if (search.trim() && sort === "popular") {
           const relevance =
             searchScore(b, search) -
@@ -717,6 +733,9 @@ export default function FragranceCatalogBrowser({
   const hasActiveFilters = activeFilterCount > 0;
   const hasChanges =
     hasActiveFilters || sort !== "popular";
+  const featuredOriginalCount = fragrances.filter((fragrance) =>
+    Boolean(originalPhotoFor(fragrance)),
+  ).length;
 
   const visibleFragrances = filtered.slice(
     0,
@@ -1185,6 +1204,29 @@ export default function FragranceCatalogBrowser({
 
       {filtered.length ? (
         <>
+          {!hasChanges && featuredOriginalCount > 0 ? (
+            <div
+              className="dufynd-catalog-originals-intro mt-5"
+              aria-label="Originalaufnahmen zuerst"
+            >
+              <div>
+                <p className="dufynd-catalog-originals-eyebrow">
+                  DUFYND / ORIGINALFOTOGRAFIE
+                </p>
+                <h2>Den Duft entdecken. Den echten Flakon sehen.</h2>
+                <p>
+                  {featuredOriginalCount} exakt zugeordnete Produktaufnahmen zuerst.
+                  Danach weitere Duftprofile mit klar gekennzeichneten Illustrationen.
+                </p>
+              </div>
+              <AcquisitionInternalLink
+                href="/bildnachweise"
+                className="dufynd-catalog-originals-evidence"
+              >
+                Bildnachweise ansehen <span aria-hidden>↗</span>
+              </AcquisitionInternalLink>
+            </div>
+          ) : null}
           <section
             className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
             aria-label="Passende Düfte"
