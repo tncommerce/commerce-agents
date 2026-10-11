@@ -1,5 +1,6 @@
-import catalog from "../../data/catalog.json";
-import scentaiProducts from "../../data/scentai_products.json";
+import approvedOriginals from "./generated/original-photos.json";
+import catalog from "./generated/public-catalog.json";
+import scentaiProducts from "./generated/public-fragrances.json";
 
 import { fragranceSlug } from "@/lib/fragranceSlug";
 
@@ -509,7 +510,7 @@ function catalogToFragrance(
       source:
         source?.community?.source ||
         attributes.rating_source ||
-        "Parfumo",
+        "",
       rating_10: rating10,
       rating_count: ratingCount,
       longevity_10:
@@ -863,4 +864,11 @@ export function getLiveFragranceByProductId(
   productId: string,
 ): StaticFragrance | null {
   return byProductId.get(productId) || null;
+}
+
+/** Asset-specific approval; fidelity alone does not establish image rights. */
+export function originalPhotoFor(fragrance: StaticFragrance): FragranceVisualAsset | null {
+  return fragrance.visuals.find(v => isVerifiedProductTruthVisual(v) && approvedOriginals.some(a =>
+    a.product_id === fragrance.product_id && a.url === v.url && a.volume_ml === fragrance.volume_ml
+  )) || null;
 }

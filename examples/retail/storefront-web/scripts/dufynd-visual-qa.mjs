@@ -1150,13 +1150,17 @@ try {
             );
           }
 
-          const naxosCardTruth = page.locator(
-            'a[href*="/duft/xerjoff-naxos"] img[src="/products/naxos-cutout-production.webp"]',
+          const heldCutout = page.locator(
+            '.dufynd-catalog-card img[src="/products/naxos-cutout-production.webp"]',
           );
-          if ((await naxosCardTruth.count()) < 1) {
-            throw new Error(
-              "catalog does not prioritize the Naxos verified cutout",
-            );
+          const illustrations = page.locator('.dufynd-catalog-card [data-scent-artwork]');
+          if ((await heldCutout.count()) !== 0 || (await illustrations.count()) < 1) {
+            throw new Error("catalog must replace unlicensed product imagery with a labelled scent illustration");
+          }
+          for (const illustration of await illustrations.all()) {
+            if (!(await illustration.innerText()).includes("Duftillustration · kein Produktfoto")) {
+              throw new Error("catalog illustration lacks its non-product-photo label");
+            }
           }
         }
 
@@ -1430,16 +1434,15 @@ try {
     await sharePage.getByRole("searchbox", { name: "Duft, Marke oder Profil" }).fill("Naxos");
     await sharePage.getByRole("button", { name: "Herren", exact: true }).click();
     await sharePage.getByRole("combobox", { name: "Marke" }).selectOption("Xerjoff");
-    await sharePage.getByRole("combobox", { name: "Bewertung" }).selectOption("8");
-    await sharePage.getByRole("combobox", { name: "Sortierung" }).selectOption("rating");
+    if (await sharePage.getByRole("combobox", { name: "Bewertung" }).count()) throw new Error("Unlicensed community rating filter is exposed");
+    await sharePage.getByRole("combobox", { name: "Sortierung" }).selectOption("brand");
     await sharePage.waitForFunction(() => {
       const url = new URL(window.location.href);
       return url.searchParams.get("q") === "Naxos" &&
         url.searchParams.get("profil") === "freshness" &&
         url.searchParams.get("zielgruppe") === "men" &&
         url.searchParams.get("marke") === "Xerjoff" &&
-        url.searchParams.get("bewertung") === "8" &&
-        url.searchParams.get("sort") === "rating" &&
+        url.searchParams.get("sort") === "brand" &&
         url.searchParams.get("utm_source") === "qa";
     });
     await sharePage.reload({ waitUntil: "networkidle" });
@@ -1447,8 +1450,7 @@ try {
         (await freshProfile.getAttribute("aria-pressed")) !== "true" ||
         (await sharePage.getByRole("button", { name: "Herren", exact: true }).getAttribute("aria-pressed")) !== "true" ||
         (await sharePage.getByRole("combobox", { name: "Marke" }).inputValue()) !== "Xerjoff" ||
-        (await sharePage.getByRole("combobox", { name: "Bewertung" }).inputValue()) !== "8" ||
-        (await sharePage.getByRole("combobox", { name: "Sortierung" }).inputValue()) !== "rating" ||
+        (await sharePage.getByRole("combobox", { name: "Sortierung" }).inputValue()) !== "brand" ||
         (await sharePage.getByRole("button", { name: "Filterlink kopieren" }).count()) !== 1) {
       throw new Error("catalog did not restore the shared filters and sort order");
     }

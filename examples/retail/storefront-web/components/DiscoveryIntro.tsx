@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { trackAnalyticsEvent } from "@/lib/analytics";
 import AcquisitionInternalLink from "./AcquisitionInternalLink";
 import FragranceVisual from "./FragranceVisual";
@@ -21,6 +22,7 @@ export default function DiscoveryIntro({
 }: {
   catalog?: boolean;
 }) {
+  const strip = useRef<HTMLDivElement>(null);
   const originals = ORIGINAL_IDS.flatMap((id) => {
     const fragrance = LIVE_FRAGRANCES.find((entry) => entry.product_id === id);
     const visual =
@@ -93,7 +95,7 @@ export default function DiscoveryIntro({
         <p className={styles.selectionLabel}>
           Drei Charaktere. Dein erster Eindruck.
         </p>
-        <div className={styles.products}>
+        <div className={styles.products} ref={strip} id="dufynd-original-strip">
           {originals.map(({ fragrance, visual }, index) => (
             <AcquisitionInternalLink
               key={fragrance.product_id}
@@ -128,6 +130,11 @@ export default function DiscoveryIntro({
               </span>
             </AcquisitionInternalLink>
           ))}
+        </div>
+        <div className={styles.stripNav}>
+          <span>Wischen, um alle Düfte zu entdecken</span>
+          <button type="button" aria-label="Vorherige Düfte" aria-controls="dufynd-original-strip" onClick={() => strip.current?.scrollBy({left:-160,behavior:"smooth"})}>←</button>
+          <button type="button" aria-label="Weitere Düfte" aria-controls="dufynd-original-strip" onClick={() => strip.current?.scrollBy({left:160,behavior:"smooth"})}>→</button>
         </div>
       </div> : null}
     </section>

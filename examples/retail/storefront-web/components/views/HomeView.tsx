@@ -4,7 +4,7 @@
 "use client";
 
 
-import staticCatalog from "../../../data/catalog.json";
+import staticCatalog from "../../lib/generated/public-catalog.json";
 
 import {
   HomeSection,
@@ -212,7 +212,10 @@ export default function HomeView({
     ? liveCatalog
     : STATIC_CATALOG;
   const catalog = Object.fromEntries(
-    Object.entries(loadedCatalog).filter(([id]) => getLiveFragranceByProductId(id)),
+    Object.entries(loadedCatalog).filter(([id]) => getLiveFragranceByProductId(id)).map(([id, product]) => [id, {
+      ...product, review_count: 0, rating: undefined,
+      attributes: Object.fromEntries(Object.entries(product.attributes || {}).filter(([key]) => !/community|rating|rank|longevity|projection/i.test(key))),
+    }]),
   );
   const picks = featured(catalog);
   const audiencePreviews = audiencePreviewProducts(catalog);
@@ -252,7 +255,6 @@ export default function HomeView({
   );
   return (
     <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-4 px-4 sm:gap-6 sm:px-6">
-      <DiscoveryIntro />
 
       <section
         aria-labelledby="dufynd-home-search-heading"
@@ -321,6 +323,8 @@ export default function HomeView({
           </div>
         </div>
       </section>
+
+      <DiscoveryIntro />
 
       <div className="[&_button]:py-2.5 sm:[&_button]:py-3">
         <Starters items={STARTERS} />
@@ -520,7 +524,7 @@ export default function HomeView({
             : "Duftkatalog ansehen"}
         </AcquisitionInternalLink>
         <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">
-          Preise & Community-Bewertungen
+          Duftprofile & Händlerangebote
         </span>
         <span className="rounded-full border border-(--line) bg-(--card) px-3 py-1.5">
           Empfehlungen nach Budget & Duftprofil

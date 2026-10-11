@@ -622,6 +622,7 @@ export default async function FragrancePage({
                 </AcquisitionInternalLink>
               </div>
 
+              {fragrance.community.rating_10 != null ? <>
               <div className="mt-5 grid grid-cols-3 overflow-hidden rounded-2xl border border-(--line) bg-(--surface)">
                 <div className="p-3 sm:p-4">
                   <div className="text-[10.5px] text-(--ink-soft)">
@@ -702,6 +703,8 @@ export default async function FragrancePage({
                 <span aria-hidden>·</span>
                 <span>Community-Werte, keine Laborwerte</span>
               </div>
+
+              </> : null}
 
               <p className="mt-4 text-[10.5px] leading-4 text-(--ink-soft)">
                 DUFYND verkauft nicht selbst. Kauf und Versand erfolgen beim jeweiligen Händler.

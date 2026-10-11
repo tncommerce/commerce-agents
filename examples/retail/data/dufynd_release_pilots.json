@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "purpose": "Local owner review only. Product facts do not authorize photos, merchant offers or public release.",
+  "reviewed_at": "2026-10-11",
+  "pilots": [
+    {
+      "product_id": "SC-PRADA-PARADOXE-EDP-90",
+      "slug": "prada-paradoxe-edp-90",
+      "tone": "rose",
+      "headline": "Weiße Blüten. Warmer Nachklang.",
+      "art_notes": [
+        "Neroli",
+        "Amber"
+      ],
+      "original_photo_status": "licensed_source_exact_volume_unproven",
+      "visual": {
+        "kind": "dufynd_original_css_illustration",
+        "source": "components/ScentArtwork.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-PRADA-PARADOXE-EDP-90",
+        "brand": "Prada",
+        "name": "Paradoxe",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 90
+      },
+      "evidence_sha256": "6d8c1ace427974ef975643cd63050e60d92a1e6e67cf35a9cfc739261db63e4b"
+    },
+    {
+      "product_id": "SC-PRADA-PARADIGME-EDP-100",
+      "slug": "prada-paradigme-edp-100",
+      "tone": "sage",
+      "headline": "Grüne Frische. Tiefe Hölzer.",
+      "art_notes": [
+        "Bergamotte",
+        "Geranie"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_css_illustration",
+        "source": "components/ScentArtwork.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-PRADA-PARADIGME-EDP-100",
+        "brand": "Prada",
+        "name": "Paradigme",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "670371ecdd97f2bfb26724ee6bc880315258ed4486226a09fea30c35853621e5"
+    },
+    {
+      "product_id": "SC-MAISON-MARGIELA-BY-THE-FIREPLACE-EDT-100",
+      "slug": "maison-margiela-by-the-fireplace-edt-100",
+      "tone": "amber",
+      "headline": "Rauchige Hölzer. Sanfte Vanille.",
+      "art_notes": [
+        "Kastanie",
+        "Guajakholz"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_css_illustration",
+        "source": "components/ScentArtwork.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-MAISON-MARGIELA-BY-THE-FIREPLACE-EDT-100",
+        "brand": "Maison Margiela",
+        "name": "REPLICA By the Fireplace",
+        "concentration": "Eau de Toilette",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "9bb113f85e93e969a2ff807ecddaf907c8f47ac44d67f73cce6efed4914dfac9"
+    }
+  ]
+}

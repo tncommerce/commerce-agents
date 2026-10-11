@@ -1,4 +1,5 @@
 "use client";
+import ScentArtwork from "@/components/ScentArtwork";
 
 import {
   fragranceSearchIdentity,
@@ -22,6 +23,7 @@ import {
   catalogAudienceFor,
   fragranceMatchesAudience,
   isVerifiedProductTruthVisual,
+  originalPhotoFor,
   visualWorldFor,
   type CatalogAudience,
   type StaticFragrance,
@@ -106,10 +108,8 @@ const SORT_OPTIONS: {
   value: SortMode;
   label: string;
 }[] = [
-  { value: "popular", label: "Community-Aktivität" },
+  { value: "popular", label: "Entdecken" },
   { value: "profile", label: "Passend zum Duftprofil" },
-  { value: "rating", label: "Bewertung" },
-  { value: "performance", label: "Haltbarkeit & Ausstrahlung" },
   { value: "brand", label: "Marke A–Z" },
 ];
 
@@ -470,7 +470,7 @@ export default function FragranceCatalogBrowser({
     if (initialBrand && fragrances.some((item) => item.brand === initialBrand)) {
       setBrand(initialBrand);
     }
-    if (initialRating && ["8", "8.3", "8.5"].includes(initialRating)) {
+    if (fragrances.some(item => item.community.rating_10 != null) && initialRating && ["8", "8.3", "8.5"].includes(initialRating)) {
       setMinimumRating(initialRating);
     }
     if (initialSort && (initialSort.value !== "profile" || matchedProfile)) {
@@ -959,7 +959,7 @@ export default function FragranceCatalogBrowser({
               </div>
             </div>
 
-            <label className="block min-w-[150px]">
+            {fragrances.some(item => item.community.rating_10 != null) ? <label className="block min-w-[150px]">
               <span className="mb-2 block text-[11px] font-semibold uppercase tracking-[0.07em] text-(--ink-soft)">
                 Bewertung
               </span>
@@ -975,7 +975,7 @@ export default function FragranceCatalogBrowser({
                 <option value="8.3">ab 8,3/10</option>
                 <option value="8.5">ab 8,5/10</option>
               </select>
-            </label>
+            </label> : null}
           </div>
         </div>
 
@@ -1190,8 +1190,7 @@ export default function FragranceCatalogBrowser({
           >
             {visibleFragrances.map((fragrance) => {
               const visual =
-                fragrance.presentation_visual ||
-                fragrance.preferred_visual;
+                originalPhotoFor(fragrance);
               const isProductTruth =
                 isVerifiedProductTruthVisual(visual);
               const dominantProfile =
@@ -1244,16 +1243,9 @@ export default function FragranceCatalogBrowser({
                         className="dufynd-catalog-card-visual h-full w-full"
                       />
                     ) : (
-                      <div className="relative z-[2] grid h-full place-items-center text-[11px] font-semibold tracking-[0.16em] text-white/65">
-                        DUFYND
-                      </div>
+                      <ScentArtwork name={fragrance.name} notes={[...fragrance.notes.top, ...fragrance.notes.key, ...fragrance.notes.heart].slice(0,2).map(noteLabel)} tone={visualWorldFor(fragrance) === "silk" ? "rose" : visualWorldFor(fragrance) === "mineral" ? "sage" : "amber"} compact />
                     )}
-                    {dominantProfile ? (
-                      <div className="dufynd-catalog-card-signature">
-                        <span>{dominantProfile.label}</span>
-                        <strong>{dominantProfile.value}/10</strong>
-                      </div>
-                    ) : null}
+
                   </div>
 
                   <div className="dufynd-catalog-card-body p-4 pb-3">
@@ -1293,49 +1285,6 @@ export default function FragranceCatalogBrowser({
                             {accordLabel(accord)}
                           </span>
                         ))}
-                    </div>
-
-                    <div
-                      className="dufynd-catalog-card-dna mt-4 rounded-xl border border-(--line) bg-(--surface)/70 px-3 py-2.5"
-                      aria-label="Duft-DNA"
-                    >
-                      <div className="mb-2 flex items-center justify-between gap-2">
-                        <span className="text-[9.5px] font-semibold uppercase tracking-[0.08em] text-(--ink-soft)">
-                          Duft-DNA
-                        </span>
-                        <span className="text-[9.5px] text-(--ink-soft)">
-                          Profil 0–10
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-4 gap-2">
-                        {SCENT_DNA_PROFILES.map(({ key, label }) => {
-                          const value = scentDnaScore(
-                            fragrance,
-                            key,
-                          );
-
-                          return (
-                            <div key={key} className="min-w-0">
-                              <div className="h-1.5 overflow-hidden rounded-full bg-(--well)">
-                                <div
-                                  className="h-full rounded-full bg-(--accent)"
-                                  style={{
-                                    width: `${value * 10}%`,
-                                  }}
-                                />
-                              </div>
-                              <div className="mt-1 flex items-center justify-between gap-1">
-                                <span className="truncate text-[10px] text-(--ink-soft)">
-                                  {label}
-                                </span>
-                                <span className="text-[10px] font-semibold text-(--ink)">
-                                  {value}
-                                </span>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
                     </div>
 
                     <div className="dufynd-catalog-card-cta mt-4 border-t border-(--line) pt-3 text-[11px] font-semibold text-(--accent-ink)">

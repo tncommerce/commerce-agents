@@ -76,3 +76,5 @@
  :global(.dufynd-catalog-discovery-hero) .actions {gap:20px}
  .intro:global(.dufynd-catalog-discovery-hero) {padding-bottom:10px}
 }
+
+.stripNav{display:none}@media(max-width:767px){.stripNav{display:flex;align-items:center;gap:8px;font-size:11px;color:#535b53;margin-top:8px}.stripNav span{flex:1}.stripNav button{width:44px;height:44px;border:1px solid #aab2a2;border-radius:50%;background:#f7f4ed;font-size:18px}.stripNav button:focus-visible{outline:2px solid #324b40}}

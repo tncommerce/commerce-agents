@@ -5,6 +5,11 @@
  * icon classification and provenance. Public UI uses noteLabel() instead.
  */
 export const NOTE_LABELS_DE: Record<string, string> = {
+  "pear accord": "Birnen-Akkord",
+  "peru balsam": "Perubalsam",
+  "amber woods": "Amberhölzer",
+  "white musk accord": "Weißer Moschus",
+  "amber accord": "Amber-Akkord",
   "absinthe wormwood": "Wermut (Absinth)",
   "akigalawood": "Akigalawood",
   "aldehydes": "Aldehyde",

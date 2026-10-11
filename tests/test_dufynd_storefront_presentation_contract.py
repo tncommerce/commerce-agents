@@ -22,7 +22,8 @@ def test_discovery_surfaces_use_presentation_visual() -> None:
     assert "presentation_visual: FragranceVisualAsset | null" in catalog_lib
     assert 'composition === "product_scene"' in catalog_lib
     assert "fragrance?.presentation_visual" in product_tile
-    assert "fragrance.presentation_visual" in catalog_browser
+    assert "originalPhotoFor(fragrance)" in catalog_browser
+    assert "<ScentArtwork" in catalog_browser
     assert "<DiscoveryIntro catalog />" in discovery_page
     intro = _read("components/DiscoveryIntro.tsx")
     assert "fragrance?.presentation_visual || fragrance?.preferred_visual" in intro

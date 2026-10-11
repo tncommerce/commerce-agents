@@ -1,4 +1,4 @@
-import catalog from "../../data/catalog.json";
+import catalog from "./generated/public-catalog.json";
 
 import type { Product } from "@/lib/types";
 
