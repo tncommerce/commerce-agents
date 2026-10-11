@@ -93,10 +93,7 @@ def prepare_photo_wave(
         raise ValueError("empty_photo_gap_queue")
     by_sku: dict[str, list[dict]] = {}
     for row in extracted.get("candidates", []):
-        if (
-            row.get("merchant") == MERCHANT
-            and row.get("merchant_id") == MERCHANT
-        ):
+        if row.get("merchant") == MERCHANT and row.get("merchant_id") == MERCHANT:
             by_sku.setdefault(str(row.get("merchant_product_id")), []).append(row)
 
     mapped: dict[str, list[dict]] = {}
@@ -130,7 +127,8 @@ def prepare_photo_wave(
         if len(matches) != 1:
             item["blockers"].append(
                 "current_exact_merchant_sku_mapping_missing"
-                if not matches else "ambiguous_merchant_sku_mapping"
+                if not matches
+                else "ambiguous_merchant_sku_mapping"
             )
         else:
             mapping = matches[0]
@@ -149,7 +147,8 @@ def prepare_photo_wave(
                 if len(candidates) != 1:
                     item["blockers"].append(
                         "current_official_feed_image_row_missing"
-                        if not candidates else "ambiguous_current_feed_image_rows"
+                        if not candidates
+                        else "ambiguous_current_feed_image_rows"
                     )
                 else:
                     candidate = candidates[0]
