@@ -5,7 +5,6 @@ from __future__ import annotations
 from copy import deepcopy
 
 import pytest
-
 from scripts.render_dufynd_public_photo_review_html import render_review_html
 
 PHOTO = "https://www.topparfuemerie.de/media/catalog/product/9/2/924719_3770010614630_051.png"
