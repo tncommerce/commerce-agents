@@ -247,6 +247,19 @@ class SevenWorkerRuntimeTests(unittest.TestCase):
                 self.assertEqual(state["role_packets"]["W7"]["state"], "BLOCKED")
                 self.assertFalse(state["ready_for_owner_creative_review"])
 
+    def test_calendar_placeholder_hooks_are_not_pretended_complete(self):
+        changed = copy.deepcopy(self.pilot)
+        changed["W7"]["calendar"][1]["hook"] = (
+            "Preserve frozen original text or draft a distinct hook at preproduction"
+        )
+        state = self.runner(pilot=changed).run()
+        self.assertEqual(state["role_packets"]["W7"]["state"], "BLOCKED")
+        self.assertFalse(state["ready_for_owner_creative_review"])
+        self.assertEqual(
+            state["role_packets"]["W7"]["output"]["incomplete_hook_dates"],
+            ["2026-10-13"],
+        )
+
     def test_insecure_or_undated_sources_do_not_become_verified(self):
         self.assertFalse(valid_source_url("http://example.org"))
         self.assertFalse(valid_source_url("https://user:password@example.org/secret"))
