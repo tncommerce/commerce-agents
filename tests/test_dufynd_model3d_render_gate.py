@@ -9,16 +9,17 @@ HOME = Path("examples/retail/storefront-web/components/views/HomeView.tsx")
 def test_detail_page_only_renders_model_viewer_for_real_model_asset() -> None:
     source = DETAIL.read_text(encoding="utf-8")
 
-    assert "{fragrance.model_3d_url ? (" in source
-    assert "{fragrance.model_3d_url || heroIsProductTruth ? (" not in source
-    assert "<FragranceModel3D" in source
+    assert "{fragrance.model_3d_url ? (" not in source
+    assert "<FragranceModel3D" not in source
+    assert "originalPhotoFor(fragrance)" in source
 
 
 def test_non_3d_hero_keeps_product_truth_visual_mode() -> None:
     source = DETAIL.read_text(encoding="utf-8")
 
-    assert "cutoutUrl={heroIsProductTruth ? heroVisual?.url : undefined}" in source
-    assert 'mode={heroIsProductTruth ? "cutout" : "editorial"}' in source
+    assert "cutoutUrl={heroVisual?.url}" in source
+    assert 'mode="cutout"' in source
+    assert "Originalfoto in Prüfung" in source
 
 
 def test_homepage_photo_entry_does_not_instantiate_a_bottle_model() -> None:
