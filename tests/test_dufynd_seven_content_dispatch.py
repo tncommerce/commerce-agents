@@ -12,8 +12,8 @@ from uuid import uuid4
 
 from scripts.dufynd_jarvis_runtime import _is_green_autonomy_task
 from scripts.dufynd_seven_content_dispatch import (
-    SOURCE_KIND,
     SOURCE_KEY,
+    SOURCE_KIND,
     SupabaseSevenWorkerDispatch,
     result_key,
     task_id,
