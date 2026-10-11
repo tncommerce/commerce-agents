@@ -192,6 +192,27 @@ class SupabaseContentDispatchTests(unittest.TestCase):
             bridge.tasks[task_id(dispatch.round_id, "W1")]["status"], "done"
         )
 
+    def test_chief_editor_receives_only_three_candidates_without_go(self):
+        bridge, dispatch = self.make_dispatch()
+        before = dispatch.build_editor_review_bundle()
+        self.assertEqual(before["state"], "WAITING_VERIFIED_WORKER_OUTPUTS")
+        self.assertEqual(set(before["pending_roles"]), set(ROLE_ORDER))
+        self.assertFalse(before["publish_go"])
+        dispatch.run_all()
+        after = dispatch.build_editor_review_bundle()
+        self.assertEqual(after["state"], "EDITOR_REVIEW_ONLY")
+        self.assertEqual(len(after["candidates"]), 3)
+        self.assertFalse(after["publish_go"])
+        self.assertFalse(after["creative_go"])
+        self.assertIsNone(after["visual_score"])
+        self.assertTrue(all("no_visual_or_mobile_9_5_qa" in item["holds"] for item in after["candidates"]))
+        self.assertEqual(len(after["worker_output_hashes"]), 7)
+        self.assertTrue(after["source_verification_holds"])
+        self.assertEqual(after["spend_eur"], 0)
+        # Chief-editor review is read-only; its result is not a fabricated
+        # eighth Jarvis worker or an owner decision.
+        self.assertEqual(len(bridge.claims), 7)
+
     def test_generic_model_queue_excludes_specialist_tasks(self):
         manifest = task_manifest(self.source["round_id"], self.source, self.existing)
         specialized = copy.deepcopy(manifest[0])
