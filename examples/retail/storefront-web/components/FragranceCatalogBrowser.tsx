@@ -1,5 +1,4 @@
 "use client";
-import ScentArtwork from "@/components/ScentArtwork";
 import { canonicalBrand } from '@/lib/brandIdentity';
 
 import {
@@ -1286,7 +1285,25 @@ export default function FragranceCatalogBrowser({
                         className="dufynd-catalog-card-visual h-full w-full"
                       />
                     ) : (
-                      <ScentArtwork name={fragrance.name} notes={[...fragrance.notes.top, ...fragrance.notes.key, ...fragrance.notes.heart].slice(0,2).map(noteLabel)} tone={visualWorldFor(fragrance) === "silk" ? "rose" : visualWorldFor(fragrance) === "mineral" ? "sage" : "amber"} compact />
+                      <div
+                        className="dufynd-catalog-photo-pending h-full w-full"
+                        data-dufynd-visual-state="missing"
+                        data-dufynd-image-kind="pending-source"
+                        role="img"
+                        aria-label={`${fragrance.brand} ${fragrance.name}: Noch kein freigegebenes Original-Produktfoto`}
+                      >
+                        <span className="dufynd-catalog-photo-pending-eyebrow">
+                          DUFYND / DUFTARCHIV
+                        </span>
+                        <div className="dufynd-catalog-photo-pending-identity">
+                          <span>{fragrance.brand}</span>
+                          <strong>{fragrance.name}</strong>
+                          <small>{fragrance.concentration} · {fragrance.volume_ml} ml</small>
+                        </div>
+                        <span className="dufynd-catalog-photo-pending-caption">
+                          Originalfoto in Prüfung
+                        </span>
+                      </div>
                     )}
                     {isProductTruth ? (
                       <span className="dufynd-catalog-original-photo-badge">
