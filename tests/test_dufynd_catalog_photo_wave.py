@@ -6,7 +6,6 @@ from copy import deepcopy
 from datetime import UTC, datetime, timedelta
 
 import pytest
-
 from scripts.prepare_dufynd_catalog_photo_wave import prepare_photo_wave
 
 
