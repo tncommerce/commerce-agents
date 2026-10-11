@@ -8,7 +8,6 @@ from datetime import UTC, datetime, timedelta
 import pytest
 from scripts.prepare_dufynd_catalog_photo_wave import prepare_photo_wave
 
-
 NOW = datetime(2026, 10, 11, 18, 0, tzinfo=UTC)
 PID = "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100"
 SKU = "924719"
