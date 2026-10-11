@@ -21,7 +21,8 @@ def test_image_error_fallback_preserves_identity_and_browser_recovery_coverage()
     image_qa = image_qa.split("const merchantOfferTimeoutContext", 1)[0]
     assert 'route.abort("failed")' in image_qa
     assert "failPrimaryImage = false" in image_qa
-    assert "failBackdropImage = true" in image_qa
+    assert "const licensedUrl" in image_qa
+    assert "media/catalog/product" in image_qa
     assert 'label: "product-image-error-fallback"' in image_qa
     assert 'label: "product-image-error-recovery"' in image_qa
-    assert 'label: "decorative-image-error-isolation"' in image_qa
+    assert 'label: "product-studio-background-source-isolation"' in image_qa
