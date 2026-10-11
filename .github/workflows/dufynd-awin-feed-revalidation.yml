@@ -5,10 +5,8 @@ on:
   # A reviewed recipient rotation runs this same workflow once on the development
   # branch. No default-branch bootstrap or credential changes are needed.
   push:
-    branches: [scentai-mvp, dufynd-core-product-nightshift-20261010]
-    paths:
-      - .github/dufynd-awin-evidence-recipient.pub
-      - .github/dufynd-photo-review-once-20261011.txt
+    branches: [scentai-mvp]
+    paths: [.github/dufynd-awin-evidence-recipient.pub]
 
 permissions:
   contents: read
