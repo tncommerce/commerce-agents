@@ -51,7 +51,27 @@ class Database:
             return cursor.fetchall() if cursor.description else []
 
     def bootstrap(self):
-        self.query((ROOT / "tests/dufynd_budget_schema_fixture.sql").read_text(), script=True)
+        schema = (ROOT / "tests/dufynd_budget_schema_fixture.sql").read_text()
+        if self.connection:
+            # CI modules share a dedicated disposable service, unlike PGlite's
+            # separate processes. Never reset a remote or generically named DB.
+            if (
+                self.connection.info.host not in {"localhost", "127.0.0.1", "::1"}
+                or self.connection.info.dbname != "content7_test"
+            ):
+                raise ValueError("fixture reset only allowed on local content7_test")
+            self.query("drop schema public cascade; create schema public;", script=True)
+            for role, options in (
+                ("anon", ""),
+                ("authenticated", ""),
+                ("service_role", " bypassrls"),
+            ):
+                statement = f"create role {role}{options};"
+                schema = schema.replace(
+                    statement,
+                    f"do $$ begin {statement} exception when duplicate_object then null; end $$;",
+                )
+        self.query(schema, script=True)
         self.query(
             "alter table public.dufynd_autonomy_tasks add column approval_action_type text default 'auto_allowed'",
             script=True,
