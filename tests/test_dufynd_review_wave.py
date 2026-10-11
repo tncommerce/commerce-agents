@@ -36,4 +36,7 @@ def test_noindex_review_metadata_and_dynamic_navigation():
     component = (WEB / "components/QualifiedProductPage.tsx").read_text()
     assert "fact.checked_at" in component
     assert "fact.identity.kind==='gtin'" in component
-    assert "Keine erfundene Duftpyramide" in component
+    assert "<FragranceNotesOverview" in component
+    notes = (WEB / "components/FragranceNotesOverview.tsx").read_text()
+    assert "ohne erfundene Reihenfolge oder Duftpyramide" in notes
+    assert 'data-dufynd-note-layout={hasPyramid ? "pyramid" : "key-notes"}' in notes
