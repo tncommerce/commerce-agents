@@ -293,7 +293,11 @@ def thirty_day_calendar(section: dict, _prior: dict, existing: dict) -> dict:
                 "owner_publication_go": False,
             }
         )
-    if any((date.fromisoformat(output[i + 1]["date"]) - date.fromisoformat(output[i]["date"])).days != 1 for i in range(29)):
+    if any(
+        (date.fromisoformat(output[i + 1]["date"]) - date.fromisoformat(output[i]["date"])).days
+        != 1
+        for i in range(29)
+    ):
         return packet("BLOCKED", {}, ["calendar_not_contiguous"])
     return packet(
         "DONE_WITH_HOLDS",
@@ -350,7 +354,9 @@ class EditorialRunner:
 
     def _write(self, state: dict) -> None:
         self.checkpoint.parent.mkdir(parents=True, exist_ok=True)
-        temporary = self.checkpoint.with_name(self.checkpoint.name + "." + str(os.getpid()) + ".tmp")
+        temporary = self.checkpoint.with_name(
+            self.checkpoint.name + "." + str(os.getpid()) + ".tmp"
+        )
         file_descriptor = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
         try:
             with os.fdopen(file_descriptor, "w", encoding="utf-8") as handle:
@@ -370,7 +376,7 @@ class EditorialRunner:
         with lock_path.open("a+b") as handle:
             fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
             state = self._read()
-            for current in (ROLE_ORDER if role is None else (role,)):
+            for current in ROLE_ORDER if role is None else (role,):
                 if current in state["role_packets"]:
                     continue  # Idempotence; never fabricate repeat work.
                 prerequisites = DEPENDENCIES[current]
@@ -398,7 +404,12 @@ class EditorialRunner:
                     "name": ROLE_NAMES[current],
                     "depends_on": list(prerequisites),
                     "input_sha256": digest(
-                        {"source": section, "upstream": [state["role_packets"][dep]["output"] for dep in prerequisites]}
+                        {
+                            "source": section,
+                            "upstream": [
+                                state["role_packets"][dep]["output"] for dep in prerequisites
+                            ],
+                        }
                     ),
                     "output_sha256": digest(result["output"]),
                     **result,
@@ -430,10 +441,19 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Run bounded zero-cost editorial role validation")
     source = parser.add_mutually_exclusive_group(required=True)
     source.add_argument("--input", type=Path, help="Private local editorial-pilot JSON")
-    source.add_argument("--private-source-key", help="Existing permitted Supabase record (read only)")
-    parser.add_argument("--output", type=Path, required=True, help="PRIVATE local checkpoint, never public Git")
-    parser.add_argument("--role", choices=ROLE_ORDER, help="Run exactly one worker after prerequisites")
+    source.add_argument(
+        "--private-source-key", help="Existing permitted Supabase record (read only)"
+    )
+    parser.add_argument(
+        "--output", type=Path, required=True, help="PRIVATE local checkpoint, never public Git"
+    )
+    parser.add_argument(
+        "--role", choices=ROLE_ORDER, help="Run exactly one worker after prerequisites"
+    )
     args = parser.parse_args()
+    # Private editorial results must never be written into this public repository.
+    if Path(__file__).resolve().parents[1] in args.output.resolve().parents:
+        raise WorkerInputError("private_checkpoint_cannot_write_into_public_repo")
     if args.input:
         data = json.loads(args.input.read_text(encoding="utf-8"))
     else:
