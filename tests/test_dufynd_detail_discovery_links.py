@@ -18,9 +18,10 @@ def test_detail_accords_and_notes_link_back_to_discovery() -> None:
     source = DETAIL_PAGE.read_text(encoding="utf-8")
 
     assert "/duft?q=" in source
-    assert "encodeURIComponent(noteLabel(note))" in source
+    notes = Path("examples/retail/storefront-web/components/FragranceNotesOverview.tsx").read_text(encoding="utf-8")
+    assert "encodeURIComponent(noteLabel(note))" in notes
     assert "encodeURIComponent(accordLabel(accord))" in source
-    assert "Weitere Düfte mit" in source
+    assert "Weitere Düfte mit" in notes
 
 
 def test_visual_qa_accepts_interactive_note_chips() -> None:
@@ -28,5 +29,5 @@ def test_visual_qa_accepts_interactive_note_chips() -> None:
         encoding="utf-8"
     )
 
-    assert 'document.querySelectorAll("span, a")' in source
-    assert 'replace("→", "").trim() === note' in source
+    assert 'page.locator("#duftnoten.dufynd-notes-overview")' in source
+    assert "naxosGermanNotes.filter" in source
