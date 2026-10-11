@@ -38,13 +38,15 @@ def test_customer_facing_image_cards_use_exact_original_registry() -> None:
         source = path.read_text(encoding="utf-8")
         assert "originalPhotoFor(fragrance)" in source, str(path)
         assert "fragrance.presentation_visual || productTruthVisual" not in source, str(path)
-    # Editorial studies remain allowed on explicitly labelled detail/gallery surfaces.
+    # Commerce hero and product-tile images must come from the exact original
+    # registry; homepage audience discovery remains distinct from product truth.
     for path in (
         Path("examples/retail/storefront-web/app/duft/[slug]/page.tsx"),
         Path("examples/retail/storefront-web/components/ProductTile.tsx"),
-        Path("examples/retail/storefront-web/components/views/HomeView.tsx"),
     ):
-        assert "preferred_visual" in path.read_text(encoding="utf-8"), str(path)
+        assert "originalPhotoFor(fragrance)" in path.read_text(encoding="utf-8"), str(path)
+    home = Path("examples/retail/storefront-web/components/views/HomeView.tsx")
+    assert "preferred_visual" in home.read_text(encoding="utf-8")
 
 
 def test_catalog_requires_original_photo_or_honest_studio_source_hold() -> None:
