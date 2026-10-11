@@ -231,6 +231,60 @@ class SupabaseSevenWorkerDispatch:
         self.bridge.update_worker(task["task_id"], "done", evidence=evidence)
         return {"role": role, "state": state, "spend_eur": 0}
 
+    def build_editor_review_bundle(self) -> dict:
+        """Read-only owner-review handoff. Never confers 9.5 or publish approval."""
+        packets = {}
+        pending = []
+        for role in ROLE_ORDER:
+            row = self.bridge.load_autonomy_task(task_id(self.round_id, role))
+            if not isinstance(row, dict) or row.get("status") != "done":
+                pending.append(role)
+                continue
+            saved = self._read_saved(role)
+            if not isinstance(saved, dict) or saved.get("state") not in SUCCESS_STATES:
+                pending.append(role)
+                continue
+            packets[role] = saved
+        if pending:
+            return {
+                "round_id": self.round_id,
+                "state": "WAITING_VERIFIED_WORKER_OUTPUTS",
+                "pending_roles": pending,
+                "spend_eur": 0,
+                "creative_go": False,
+                "publish_go": False,
+            }
+        candidates = packets["W2"]["output"].get("editorial_shortlist", [])
+        return {
+            "round_id": self.round_id,
+            "state": "EDITOR_REVIEW_ONLY",
+            "source_sha256": self.source_sha,
+            "worker_output_hashes": {
+                role: digest(packets[role]) for role in ROLE_ORDER
+            },
+            "candidates": [
+                {
+                    "id": item["id"],
+                    "title": item["title"],
+                    "hook": item["hook"],
+                    "question": item["community_question"],
+                    "format": item["format"],
+                    "holds": list(item["review_holds"]) + [
+                        "no_visual_or_mobile_9_5_qa",
+                        "owner_creative_decision_pending",
+                        "separate_publication_audio_ai_rights_go_pending",
+                    ],
+                }
+                for item in candidates[:3]
+            ],
+            "source_verification_holds": list(packets["W3"]["holds"])
+            + list(packets["W4"]["holds"]),
+            "visual_score": None,
+            "creative_go": False,
+            "publish_go": False,
+            "spend_eur": 0,
+        }
+
     def run_all(self) -> list[dict]:
         results = []
         for role in ROLE_ORDER:
@@ -246,9 +300,68 @@ def load_private_inputs(bridge: Any) -> tuple[dict, dict]:
     value = (row or {}).get("value")
     if not isinstance(value, dict):
         raise WorkerInputError("registered_private_pilot_missing")
-    # The editor's exact Monday reservation is part of the immutable round input.
-    # Never interpret a later replan as permission to mutate this round.
-    existing = {"reserved": {"2026-10-12": "Torwart"}, "published_titles": [], "frozen_titles": []}
+    # Bound the round to the actual live Owner freezes and published idea list.
+    # An unavailable internal source is a HOLD, never a silent empty snapshot.
+    final_keys = (
+        "content.my_type_of_alcohol_houseparty_v2_frozen_20261010",
+        "content.mirror_dog_she_said_smell_good_v2_frozen_20261010",
+        "content.just_two_sprays_elevator_v4_frozen_20261010",
+        "content.ghost_perfume_halloween_older_woman_v2_frozen_20261010",
+        "content.cafe_47_slides_v3_frozen_20261010",
+        "content.friday_cat_notarzt_20261016",
+        "content.thursday_goalkeeper_perfume_20261015",
+    )
+    frozen = []
+    for key in final_keys:
+        record = bridge.load_master_status_entry(key)
+        data = (record or {}).get("value")
+        if not isinstance(data, dict):
+            raise WorkerInputError("missing_current_owner_freeze_snapshot:" + key)
+        freeze = data.get("owner_freeze")
+        for candidate in (
+            data.get("title"),
+            data.get("creative_id"),
+            (freeze or {}).get("content_id") if isinstance(freeze, dict) else None,
+        ):
+            if isinstance(candidate, str) and candidate.strip():
+                frozen.append(candidate.strip())
+    approval = bridge.load_master_status_entry(
+        "content.owner_publish_go_goalkeeper_monday_20261011"
+    )
+    release = (approval or {}).get("value")
+    dates = (release or {}).get("owner_requested_dates")
+    if not isinstance(dates, dict) or dates.get("instagram", {}).get("date") != "2026-10-12":
+        raise WorkerInputError("monday_torwart_reservation_not_live_verified")
+    from scripts.dufynd_jarvis_bridge import _headers
+
+    with bridge._client() as client:
+        response = client.get(
+            f"{bridge.supabase_url}/rest/v1/dufynd_content_ideas",
+            headers=_headers(bridge.secret_key),
+            params={"select": "title,status", "order": "title.asc", "limit": "200"},
+        )
+        response.raise_for_status()
+        ideas = response.json()
+    if not isinstance(ideas, list):
+        raise WorkerInputError("content_ideas_snapshot_invalid")
+    published = []
+    for item in ideas:
+        if not isinstance(item, dict):
+            raise WorkerInputError("content_idea_snapshot_row_invalid")
+        title = item.get("title")
+        status = str(item.get("status") or "").lower()
+        if not isinstance(title, str) or not title.strip():
+            continue
+        if status == "published":
+            published.append(title.strip())
+        if "frozen" in status or status.startswith("owner_creative_"):
+            frozen.append(title.strip())
+    existing = {
+        "reserved": {"2026-10-12": "Torwart"},
+        "published_titles": sorted(set(published)),
+        "frozen_titles": sorted(set(frozen)),
+        "snapshot_verified": True,
+    }
     return value, existing
 
 
@@ -256,11 +369,12 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Seven roles on existing DUFYND worker leases")
     parser.add_argument("--output-manifest", action="store_true")
     parser.add_argument("--execute", action="store_true")
+    parser.add_argument("--review-bundle", action="store_true")
     parser.add_argument("--role", choices=ROLE_ORDER)
     args = parser.parse_args()
-    if not args.output_manifest and not args.execute:
+    if not (args.output_manifest or args.execute or args.review_bundle):
         parser.error("choose --output-manifest or --execute")
-    if args.output_manifest and args.execute:
+    if sum((args.output_manifest, args.execute, args.review_bundle)) > 1:
         parser.error("cannot generate manifest and claim task in one run")
     if args.execute and os.getenv("DUFYND_SEVEN_WORKER_ACTIVATION_GO") != "1":
         raise WorkerInputError("live_worker_activation_requires_separate_owner_gate")
@@ -273,7 +387,10 @@ def main() -> int:
         print(json.dumps(task_manifest(source["round_id"], source, existing), ensure_ascii=False))
         return 0
     dispatcher = SupabaseSevenWorkerDispatch(bridge, source=source, existing=existing)
-    result = dispatcher.run_role(args.role) if args.role else dispatcher.run_all()
+    if args.review_bundle:
+        result = dispatcher.build_editor_review_bundle()
+    else:
+        result = dispatcher.run_role(args.role) if args.role else dispatcher.run_all()
     print(json.dumps(result, ensure_ascii=False))
     return 0
 
