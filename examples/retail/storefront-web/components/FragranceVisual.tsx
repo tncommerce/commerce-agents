@@ -112,6 +112,10 @@ export default function FragranceVisual({
   const catalogClass = variant === "card" ? styles.catalog : "";
   const [failedImageUrl, setFailedImageUrl] = useState<string | null>(null);
   const [failedBackdropUrl, setFailedBackdropUrl] = useState<string | null>(null);
+  // Keep a meaningful neutral loading stage until the exact source bitmap is ready.
+  // A licensed URL is not proof that the image has loaded in the visitor's browser.
+  const [loadedImageUrl, setLoadedImageUrl] = useState<string | null>(null);
+  const imageReady = Boolean(resolvedImageUrl && loadedImageUrl === resolvedImageUrl);
   const imageUnavailable = Boolean(
     resolvedImageUrl && failedImageUrl === resolvedImageUrl,
   );
@@ -210,6 +214,7 @@ export default function FragranceVisual({
       data-dufynd-visual-world={world}
       data-dufynd-image-kind={cutoutUrl && !whiteMatte ? "cutout" : "photograph"}
       data-dufynd-image-matte={whiteMatte ? "white" : undefined}
+      data-dufynd-photo-state={variant === "card" ? (imageReady ? "loaded" : "loading") : undefined}
       className={`dufynd-product-stage ${catalogClass} ${className}`}
       style={{
         ...stageStyle(world, variant),
@@ -218,6 +223,13 @@ export default function FragranceVisual({
       onPointerMove={variant === "hero" ? updatePointer : undefined}
       onPointerLeave={variant === "hero" ? resetPointer : undefined}
     >
+      {variant === "card" && !imageReady ? (
+        <div className="dufynd-photo-loading-indicator" aria-hidden="true">
+          <span>DUFYND / PRODUKTFOTO</span>
+          <strong>Originalaufnahme wird geladen</strong>
+          <i />
+        </div>
+      ) : null}
       {variant === "hero" && backdropUrl && failedBackdropUrl !== backdropUrl ? (
         <>
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -249,10 +261,12 @@ export default function FragranceVisual({
             <img
               src={resolvedImageUrl}
               ref={(image) => {
-                if (image?.complete && image.naturalWidth === 0) {
-                  setFailedImageUrl(resolvedImageUrl);
+                if (image?.complete) {
+                  if (image.naturalWidth === 0) setFailedImageUrl(resolvedImageUrl);
+                  else setLoadedImageUrl(resolvedImageUrl || null);
                 }
               }}
+              onLoad={() => setLoadedImageUrl(resolvedImageUrl || null)}
               onError={() => setFailedImageUrl(resolvedImageUrl)}
               alt={displayAlt}
               loading={priority ? "eager" : "lazy"}
