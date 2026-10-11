@@ -101,6 +101,30 @@ jobs:
             --candidates "${RUNNER_TEMP}/release01-feed-image-review-candidates.json" \
             --output "${RUNNER_TEMP}/release01-feed-image-review.html"
 
+      # High-confidence path: only prior independently mapped exact merchant SKU.
+      - name: Review exact mapped public photo gaps (no approval)
+        run: |
+          python scripts/prepare_dufynd_catalog_photo_wave.py \
+            --extracted-candidates "${RUNNER_TEMP}/merchant-feed-image-candidates.json" \
+            --feed-metadata "${RUNNER_TEMP}/awin-feed-metadata.json" \
+            --output "${RUNNER_TEMP}/public-photo-exact-sku-review.json"
+      # Source-bounded lead discovery; never mutates approvals or offers.
+      - name: Prepare 33 public missing-photo review leads
+        run: |
+          python scripts/report_dufynd_public_photo_feed_leads.py \
+            --feed "${RUNNER_TEMP}/top-parfuemerie.csv" \
+            --feed-metadata "${RUNNER_TEMP}/awin-feed-metadata.json" \
+            --gap docs/dufynd-catalog-photo-gap-20261011.json \
+            --output "${RUNNER_TEMP}/public-photo-gap-review.json"
+      # Strict second gate: only historical exact SKU+GTIN mappings can become
+      # candidate image leads. Human identity, bytes and owner GO still required.
+      - name: Gate mapped public packshots against current feed
+        run: |
+          python scripts/prepare_dufynd_catalog_photo_wave.py \
+            --extracted-candidates "${RUNNER_TEMP}/merchant-feed-image-candidates.json" \
+            --feed-metadata "${RUNNER_TEMP}/awin-feed-metadata.json" \
+            --output "${RUNNER_TEMP}/public-photo-strict-variant-review.json"
+
       - name: Upload sanitized review packet
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -110,6 +134,9 @@ jobs:
             ${{ runner.temp }}/release-readiness.json
             ${{ runner.temp }}/release01-feed-image-review-candidates.json
             ${{ runner.temp }}/release01-feed-image-review.html
+            ${{ runner.temp }}/public-photo-exact-sku-review.json
+            ${{ runner.temp }}/public-photo-gap-review.json
+            ${{ runner.temp }}/public-photo-strict-variant-review.json
           if-no-files-found: error
           retention-days: 7
 
