@@ -139,6 +139,4 @@ def test_first_money_and_mapped_showcase_candidates_sort_before_other_leads() ->
     data["total_review_candidates"] = 2
     html = render_review_html(data)
     assert html.index('class="card"') < html.index("SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100")
-    assert html.index("SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100") < html.index(
-        "SC-XERJOFF-NAXOS-100"
-    )
+    assert html.index("SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100") < html.index("SC-XERJOFF-NAXOS-100")
