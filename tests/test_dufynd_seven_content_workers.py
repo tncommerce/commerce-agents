@@ -25,13 +25,17 @@ from scripts.dufynd_seven_content_workers import (
 
 def editorial_fixture() -> dict:
     hooks = [f"Ein anderer Duftmoment Nummer {i}: Das kann doch nicht sein!" for i in range(20)]
-    questions = [f"An welchem echten Duftmoment Nummer {i} erinnerst du dich persönlich?" for i in range(10)]
+    questions = [
+        f"An welchem echten Duftmoment Nummer {i} erinnerst du dich persönlich?" for i in range(10)
+    ]
     start = date(2026, 10, 12)
     days = [
         {
             "date": (start + timedelta(days=i)).isoformat(),
             "idea": "Torwart Original Meme" if i == 0 else f"Distinct editorial day {i}",
-            "hook": "Unverändertes Torwart Motiv" if i == 0 else f"Neue Idee {i} mit konkretem Anlass",
+            "hook": "Unverändertes Torwart Motiv"
+            if i == 0
+            else f"Neue Idee {i} mit konkretem Anlass",
             "format": "meme" if i % 3 == 0 else "carousel",
             "gate": "CREATIVE_FROZEN_CONDITIONAL_PUBLISH_GO" if i == 0 else "IDEA_ONLY",
             "published": True,  # Hostile/source metadata must never grant publication.
@@ -79,7 +83,9 @@ def editorial_fixture() -> dict:
             "ideas": [
                 {
                     "id": f"draft_concept_{i}",
-                    "title": "Already published scent" if i == 2 else f"Distinct theme and story {i}",
+                    "title": "Already published scent"
+                    if i == 2
+                    else f"Distinct theme and story {i}",
                     "hook": hooks[i],
                     "question": questions[i],
                     "format": "meme",
@@ -136,7 +142,9 @@ class SevenWorkerRuntimeTests(unittest.TestCase):
         self.assertFalse(state["media_created"])
         self.assertFalse(state["published"])
         self.assertFalse(state["scheduled"])
-        self.assertEqual(len(state["role_packets"]["W1"]["output"]["test_mix_not_a_posting_quota"]), 4)
+        self.assertEqual(
+            len(state["role_packets"]["W1"]["output"]["test_mix_not_a_posting_quota"]), 4
+        )
         self.assertEqual(len(state["role_packets"]["W2"]["output"]["ideas"]), 10)
         self.assertEqual(len(state["role_packets"]["W3"]["output"]["reference_mechanics"]), 2)
         self.assertEqual(len(state["role_packets"]["W4"]["output"]["fact_candidates"]), 5)
@@ -144,13 +152,22 @@ class SevenWorkerRuntimeTests(unittest.TestCase):
         self.assertEqual(len(state["role_packets"]["W6"]["output"]["hooks"]), 20)
         self.assertEqual(len(state["role_packets"]["W7"]["output"]["slots"]), 30)
         self.assertTrue(
-            all(not x["facts_cleared_for_publication"] for x in state["role_packets"]["W4"]["output"]["fact_candidates"])
+            all(
+                not x["facts_cleared_for_publication"]
+                for x in state["role_packets"]["W4"]["output"]["fact_candidates"]
+            )
         )
         self.assertTrue(
-            all(x["creative_approval"] is False and x["publication_approval"] is False for x in state["role_packets"]["W2"]["output"]["ideas"])
+            all(
+                x["creative_approval"] is False and x["publication_approval"] is False
+                for x in state["role_packets"]["W2"]["output"]["ideas"]
+            )
         )
         self.assertTrue(
-            all(x["slot_state"] == "EDITORIAL_PROPOSAL_ONLY" and not x["published"] for x in state["role_packets"]["W7"]["output"]["slots"])
+            all(
+                x["slot_state"] == "EDITORIAL_PROPOSAL_ONLY" and not x["published"]
+                for x in state["role_packets"]["W7"]["output"]["slots"]
+            )
         )
         self.assertEqual(
             state["role_packets"]["W2"]["output"]["ideas"][2]["review_holds"],
@@ -186,7 +203,9 @@ class SevenWorkerRuntimeTests(unittest.TestCase):
         self.assertEqual(state["role_packets"]["W3"]["state"], "DONE_WITH_HOLDS")
         self.assertEqual(state["role_packets"]["W4"]["state"], "DONE_WITH_HOLDS")
         self.assertEqual(
-            state["role_packets"]["W3"]["output"]["reference_mechanics"][0]["fresh_page_verification"],
+            state["role_packets"]["W3"]["output"]["reference_mechanics"][0][
+                "fresh_page_verification"
+            ],
             "NOT_PERFORMED_BY_OFFLINE_WORKER",
         )
 
