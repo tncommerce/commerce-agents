@@ -14,7 +14,7 @@ import { attributeChips, productGlyph, productTileClass } from "@/lib/format";
 import { STORE_POLICY } from "@/lib/storePolicy";
 import {
   getLiveFragranceByProductId,
-  isVerifiedProductTruthVisual,
+  originalPhotoFor,
   visualWorldFor,
 } from "@/lib/fragranceCatalog";
 
@@ -58,12 +58,10 @@ export function ProductImage({ product, className = "" }: { product: Product; cl
     const fragrance = getLiveFragranceByProductId(
       String(product.product_id),
     );
-    const visual =
-      fragrance?.presentation_visual ||
-      fragrance?.preferred_visual;
-    const isProductTruth =
-      isVerifiedProductTruthVisual(visual);
-    const imageUrl = visual?.url || product.image_url;
+    const visual = fragrance ? originalPhotoFor(fragrance) : null;
+    const isProductTruth = Boolean(visual);
+    // Never let legacy ecommerce image_url bypass the exact-asset registry.
+    const imageUrl = visual?.url;
     const backdropUrl = isProductTruth
       ? fragrance?.backdrop_visual?.url
       : undefined;
@@ -77,7 +75,7 @@ export function ProductImage({ product, className = "" }: { product: Product; cl
             backdropUrl={backdropUrl}
             alt={product.title}
             variant="card"
-            mode={isProductTruth ? "cutout" : "editorial"}
+            mode="cutout"
             world={fragrance ? visualWorldFor(fragrance) : undefined}
             className="h-full w-full"
           />
