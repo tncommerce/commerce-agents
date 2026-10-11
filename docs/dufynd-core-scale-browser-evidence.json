@@ -3,7 +3,7 @@
     {
       "width": 320,
       "status": "passed",
-      "review_pages": 28,
+      "review_pages": 41,
       "checks": [
         "public_metrics",
         "honest_catalog_visuals",
@@ -23,7 +23,7 @@
     {
       "width": 390,
       "status": "passed",
-      "review_pages": 28,
+      "review_pages": 41,
       "checks": [
         "public_metrics",
         "honest_catalog_visuals",
@@ -43,7 +43,7 @@
     {
       "width": 768,
       "status": "passed",
-      "review_pages": 28,
+      "review_pages": 41,
       "checks": [
         "public_metrics",
         "honest_catalog_visuals",
@@ -63,7 +63,7 @@
     {
       "width": 1440,
       "status": "passed",
-      "review_pages": 28,
+      "review_pages": 41,
       "checks": [
         "public_metrics",
         "honest_catalog_visuals",
@@ -109,8 +109,8 @@
   ],
   "isolated_promotion": {
     "mode": "isolated_fixture_not_owner_authorization",
-    "public_profiles": 64,
-    "promoted_pages_checked": 27,
+    "public_profiles": 77,
+    "promoted_pages_checked": 40,
     "product_ids": [
       "SC-PRADA-PARADOXE-EDP-90",
       "SC-PRADA-PARADIGME-EDP-100",
@@ -138,35 +138,44 @@
       "SC-AMOUAGE-REFLECTION-MAN-EDP-100",
       "SC-TOM-FORD-OMBRE-LEATHER-EDP-100",
       "SC-TOM-FORD-OUD-WOOD-EDP-100",
-      "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100"
+      "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100",
+      "SC-JPG-LE-MALE-LE-PARFUM-125",
+      "SC-VIKTOR-ROLF-SPICEBOMB-EXTREME-EDP-90",
+      "SC-AMOUAGE-GUIDANCE-46-EXTRAIT-100",
+      "SC-CHLOE-CHLOE-EDP-100",
+      "SC-PDM-VALAYA-EXCLUSIF-EDP-75",
+      "SC-YSL-MYSLF-LE-PARFUM-100",
+      "SC-DIOR-SAUVAGE-ELIXIR-100",
+      "SC-INITIO-SIDE-EFFECT-EDP-90",
+      "SC-YSL-LA-NUIT-DE-LHOMME-EDT-100",
+      "SC-ARMANI-ACQUA-DI-GIO-PROFONDO-PARFUM-100",
+      "SC-ARMANI-SI-EDP-100",
+      "SC-AFNAN-9-PM-POUR-FEMME-EDP-100",
+      "SC-DIOR-JADORE-EDP-100"
     ],
     "conflicting_variant_http": 404,
     "review_routes_exported": false,
     "new_sitemap_entries": 0,
     "actual_authorizations_changed": false
   },
-  "baseline": "667d8f541a262a4983352c0cbb66c62fd8fabc00",
-  "screenshot_evidence": "DUFYND-Katalog-Release-Review.html, same library identity libfile_b99aacdc7e8481918f3fbd923d3fbb71",
-  "design_iteration": "Removed remaining shared citrus, aromatic twig, fold and ribbon compositions; 28 explicitly distinct review scenes.",
-  "qa_guard": "Build fingerprint must equal renderer source before and after browser capture.",
   "navigation_and_performance": {
     "navigation": [
       {
         "width": 390,
-        "actual_next_link_clicks": 28,
+        "actual_next_link_clicks": 41,
         "cycle_returns_to_first": true
       },
       {
         "width": 1440,
-        "actual_next_link_clicks": 28,
+        "actual_next_link_clicks": 41,
         "cycle_returns_to_first": true
       }
     ],
     "performance": [
       {
         "product_id": "SC-PRADA-PARADOXE-EDP-90",
-        "dom_content_loaded_ms": 62,
-        "load_event_ms": 347,
+        "dom_content_loaded_ms": 61,
+        "load_event_ms": 372,
         "images": 0,
         "active_animations": 0,
         "overflow": false,
@@ -174,8 +183,8 @@
       },
       {
         "product_id": "SC-PRADA-PARADIGME-EDP-100",
-        "dom_content_loaded_ms": 59,
-        "load_event_ms": 351,
+        "dom_content_loaded_ms": 66,
+        "load_event_ms": 392,
         "images": 0,
         "active_animations": 0,
         "overflow": false,
@@ -183,8 +192,8 @@
       },
       {
         "product_id": "SC-MAISON-MARGIELA-BY-THE-FIREPLACE-EDT-100",
-        "dom_content_loaded_ms": 142,
-        "load_event_ms": 328,
+        "dom_content_loaded_ms": 55,
+        "load_event_ms": 371,
         "images": 0,
         "active_animations": 0,
         "overflow": false,
@@ -192,8 +201,8 @@
       },
       {
         "product_id": "SC-CHANEL-COCO-MADEMOISELLE-EDP-100",
-        "dom_content_loaded_ms": 64,
-        "load_event_ms": 338,
+        "dom_content_loaded_ms": 66,
+        "load_event_ms": 401,
         "images": 0,
         "active_animations": 0,
         "overflow": false,
@@ -201,8 +210,8 @@
       },
       {
         "product_id": "SC-MFK-BACCARAT-ROUGE-540-EDP-70",
-        "dom_content_loaded_ms": 52,
-        "load_event_ms": 327,
+        "dom_content_loaded_ms": 69,
+        "load_event_ms": 386,
         "images": 0,
         "active_animations": 0,
         "overflow": false,
@@ -210,5 +219,27 @@
       }
     ],
     "measurement": "Local static export, 4x CPU slowdown, no network throttling, not field Core Web Vitals or Lighthouse score"
-  }
+  },
+  "social_catalog_attribution": {
+    "cases": 12,
+    "widths": [
+      390,
+      1440
+    ],
+    "surfaces": [
+      "grid",
+      "brand_filter",
+      "brand_directory"
+    ],
+    "storage": [
+      "allowed",
+      "denied"
+    ],
+    "status": "passed",
+    "external_analytics": "mocked; no affiliate click"
+  },
+  "baseline": "cdaf2244a8f13fa84a464073b2c37667a1c09931",
+  "screenshot_evidence": "DUFYND-Katalog-Release-Review.html, same library identity libfile_b99aacdc7e8481918f3fbd923d3fbb71; V4 with 118 actual captures",
+  "qa_guard": "Source/build renderer fingerprint matched before and after 164 checks",
+  "design_iteration": "13 additional original vector compositions; 41 distinct. Aesthetic 9.5 acceptance not asserted."
 }

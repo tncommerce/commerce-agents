@@ -181,7 +181,9 @@ jobs:
             --base-url http://127.0.0.1:3000 \
             --out retail/storefront-web/.visual-qa
       - name: Build gated review product wave
-        run: DUFYND_CATALOG_REVIEW=1 npm run build --workspace acme-retail-storefront-web
+        run: |
+          node retail/storefront-web/scripts/test-catalog-growth.mjs
+          DUFYND_CATALOG_REVIEW=1 npm run build --workspace acme-retail-storefront-web
       - name: Check every review variant at four responsive widths
         shell: bash
         run: |
@@ -196,6 +198,9 @@ jobs:
           QA_BASE_URL=http://127.0.0.1:3013 \
           QA_OUTPUT=retail/storefront-web/.visual-qa/review-wave \
             node retail/storefront-web/scripts/brand-pages-qa.mjs
+          QA_BASE_URL=http://127.0.0.1:3013 \
+          QA_OUTPUT=retail/storefront-web/.visual-qa/review-wave \
+            node retail/storefront-web/scripts/catalog-rows-qa.mjs
       - name: Run isolated Control Room evidence and content review replay
         working-directory: .
         run: |

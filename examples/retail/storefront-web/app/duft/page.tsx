@@ -49,7 +49,7 @@ export default function FragranceIndexPage() {
             </span>
           </AcquisitionInternalLink>
           <div className="flex items-center gap-2">
-            <a href="/marken" className="px-3 py-2 text-[12px] font-semibold">Marken A–Z</a>
+            <AcquisitionInternalLink href="/marken" className="px-3 py-2 text-[12px] font-semibold">Marken A–Z</AcquisitionInternalLink>
             <AcquisitionInternalLink
               href="/sammlung"
               className="hidden rounded-xl border border-(--line) px-3 py-2 text-[12px] font-semibold text-(--ink) transition hover:border-(--ink) md:inline-flex"

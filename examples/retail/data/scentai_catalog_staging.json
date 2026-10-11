@@ -259,6 +259,39 @@
           "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
+      },
+      "discovery": {
+        "status": "facts_qualified_publication_hold",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "000000000065156533",
+          "source_url": "https://www.jeanpaulgaultier.com/uk/en/p/range-le-male/le-male-le-parfum-eau-de-parfum-intense-000000000065156533",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "cardamom"
+          ],
+          "heart": [
+            "lavender",
+            "iris"
+          ],
+          "base": [
+            "vanilla"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.jeanpaulgaultier.com/uk/en/p/range-le-male/le-male-le-parfum-eau-de-parfum-intense-000000000065156533",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Kardamom eröffnet den Duft. Lavendel und Iris bilden das Herz, Vanille die Basis.",
+        "checked_at": "2026-10-11",
+        "community_data_included": false,
+        "publication_authorized": false,
+        "remaining_gates": [
+          "approved_original_image",
+          "public_release_review"
+        ]
       }
     },
     {
@@ -777,6 +810,37 @@
           "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
+      },
+      "discovery": {
+        "status": "facts_qualified_publication_hold",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "spicebomb-extreme-eau-de-parfum-90ml",
+          "source_url": "https://www.viktor-rolf.com/products/spicebomb-extreme-eau-de-parfum-90ml",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "lavender",
+            "cinnamon",
+            "saffron",
+            "tobacco",
+            "vanilla",
+            "bourbon"
+          ]
+        },
+        "notes_source": {
+          "url": "https://us.viktor-rolf.com/fragrance/spicebomb-extreme-eau-de-parfum-3614270659706.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Lavendel und Gewürznoten treffen auf Tabak, Bourbon und Vanille.",
+        "checked_at": "2026-10-11",
+        "community_data_included": false,
+        "publication_authorized": false,
+        "remaining_gates": [
+          "approved_original_image",
+          "public_release_review"
+        ]
       }
     },
     {
@@ -921,6 +985,53 @@
           "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
+      },
+      "discovery": {
+        "status": "facts_qualified_publication_hold",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "new-guidance-46",
+          "source_url": "https://amouage.com/products/new-guidance-46",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "pear",
+            "frankincense",
+            "hazelnut",
+            "rose water",
+            "pink pepper",
+            "bitter almond"
+          ],
+          "heart": [
+            "saffron",
+            "rose",
+            "sambac jasmine",
+            "osmanthus"
+          ],
+          "base": [
+            "cistus",
+            "sandalwood",
+            "akigalawood",
+            "ambergris",
+            "vanilla",
+            "ambrette",
+            "georgywood",
+            "cypriol"
+          ]
+        },
+        "notes_source": {
+          "url": "https://amouage.com/products/new-guidance-46",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Birne, Haselnuss und Weihrauch führen zu einem floralen Herzen mit Safran. Sandelholz, Vanille und weitere Holznoten bilden die Basis.",
+        "checked_at": "2026-10-11",
+        "community_data_included": false,
+        "publication_authorized": false,
+        "remaining_gates": [
+          "approved_original_image",
+          "public_release_review"
+        ]
       }
     },
     {
@@ -991,6 +1102,40 @@
         "blockers": [
           "verified_purchase_destination_pending",
           "approved_product_image_pending"
+        ]
+      },
+      "discovery": {
+        "status": "facts_qualified_publication_hold",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "CHCA50133819",
+          "source_url": "https://www.chloe.com/en-gb/p/fragrances/eau-de-parfum/CHCA50133819.html",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "peony"
+          ],
+          "heart": [
+            "rose petals",
+            "magnolia"
+          ],
+          "base": [
+            "cedar",
+            "ambergris"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.chloe.com/en-gb/p/fragrances/eau-de-parfum/CHCA50133819.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Pfingstrose eröffnet das florale Profil. Rosenblätter und Magnolie treffen auf Zeder und Ambra.",
+        "checked_at": "2026-10-11",
+        "community_data_included": false,
+        "publication_authorized": false,
+        "remaining_gates": [
+          "approved_original_image",
+          "public_release_review"
         ]
       }
     },
@@ -1499,6 +1644,45 @@
           "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
+      },
+      "discovery": {
+        "status": "facts_qualified_publication_hold",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "valaya-exclusif",
+          "source_url": "https://parfums-de-marly.com/es/products/valaya-exclusif",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "almond",
+            "bergamot",
+            "mandarin"
+          ],
+          "heart": [
+            "orange blossom",
+            "white flowers",
+            "powdery facets"
+          ],
+          "base": [
+            "akigalawood",
+            "sandalwood",
+            "ambroxan",
+            "vanilla"
+          ]
+        },
+        "notes_source": {
+          "url": "https://parfums-de-marly.com/es/products/valaya-exclusif",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Mandel und Zitrusnoten eröffnen das Profil. Weiße Blüten und pudrige Facetten führen zu Sandelholz, Ambroxan und Vanille.",
+        "checked_at": "2026-10-11",
+        "community_data_included": false,
+        "publication_authorized": false,
+        "remaining_gates": [
+          "approved_original_image",
+          "public_release_review"
+        ]
       }
     },
     {
@@ -1637,6 +1821,39 @@
         "blockers": [
           "verified_purchase_destination_pending",
           "approved_product_image_pending"
+        ]
+      },
+      "discovery": {
+        "status": "facts_qualified_publication_hold",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "3614274114645",
+          "source_url": "https://www.yslbeauty.com/int/fragrance/masculine-fragrance/myslf/myslf-le-parfum/3614274114645.html",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "black pepper"
+          ],
+          "heart": [
+            "orange blossom absolute"
+          ],
+          "base": [
+            "woods",
+            "bourbon vanilla"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.yslbeauty.com/int/fragrance/masculine-fragrance/myslf/myslf-le-parfum/3614274114645.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Schwarzer Pfeffer trifft auf Orangenblüten-Absolue. Holznoten und Bourbon-Vanille bilden den Ausklang.",
+        "checked_at": "2026-10-11",
+        "community_data_included": false,
+        "publication_authorized": false,
+        "remaining_gates": [
+          "approved_original_image",
+          "public_release_review"
         ]
       }
     },
@@ -1917,6 +2134,40 @@
           "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
+      },
+      "discovery": {
+        "status": "facts_qualified_publication_hold",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "Y0996460",
+          "source_url": "https://www.dior.com/de_de/beauty/products/sauvage-elixir-Y0996460.html",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "grapefruit",
+            "cinnamon",
+            "nutmeg",
+            "cardamom",
+            "lavender",
+            "licorice",
+            "vetiver",
+            "patchouli",
+            "amber accord"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.dior.com/de_de/beauty/products/sauvage-elixir-Y0996460.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Grapefruit und Gewürze treffen auf Lavendel. Lakritz, Vetiver und Patschuli ergänzen den holzig-ambrierten Duftcharakter.",
+        "checked_at": "2026-10-11",
+        "community_data_included": false,
+        "publication_authorized": false,
+        "remaining_gates": [
+          "approved_original_image",
+          "public_release_review"
+        ]
       }
     },
     {
@@ -2153,6 +2404,37 @@
         "blockers": [
           "verified_purchase_destination_pending",
           "approved_product_image_pending"
+        ]
+      },
+      "discovery": {
+        "status": "facts_qualified_publication_hold",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "side-effect",
+          "source_url": "https://us.initioparfums.com/products/side-effect",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "cinnamon",
+            "rum",
+            "tobacco",
+            "saffron",
+            "sandalwood",
+            "hedione"
+          ]
+        },
+        "notes_source": {
+          "url": "https://us.initioparfums.com/products/side-effect",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Zimt, Rum und Tabak prägen das Profil. Safran, Sandelholz und Hedione ergänzen die dokumentierten Hauptnoten.",
+        "checked_at": "2026-10-11",
+        "community_data_included": false,
+        "publication_authorized": false,
+        "remaining_gates": [
+          "approved_original_image",
+          "public_release_review"
         ]
       }
     },
@@ -2551,6 +2833,39 @@
         "blockers": [
           "verified_purchase_destination_pending",
           "approved_product_image_pending"
+        ]
+      },
+      "discovery": {
+        "status": "facts_qualified_publication_hold",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "426YSL",
+          "source_url": "https://www.yslbeauty.de/dufte/dufte-fur-ihn/la-nuit-de-l-homme/la-nuit-de-l-homme-eau-de-toilette-spray/426YSL.html",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "bergamot"
+          ],
+          "heart": [
+            "cedar",
+            "lavender"
+          ],
+          "base": [
+            "vetiver"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.yslbeauty.de/dufte/dufte-fur-ihn/la-nuit-de-l-homme/la-nuit-de-l-homme-eau-de-toilette-spray/426YSL.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Bergamotte eröffnet den Duft, gefolgt von Zedernholz und Lavendel. Vetiver bildet die Basis.",
+        "checked_at": "2026-10-11",
+        "community_data_included": false,
+        "publication_authorized": false,
+        "remaining_gates": [
+          "approved_original_image",
+          "public_release_review"
         ]
       }
     },
@@ -3149,6 +3464,40 @@
           "https://www.armanibeauty.de/dufte/herrenduft/acqua-di-gio/acqua-di-gio-profondo-parfum/ww-00854-arm.html?dwvar_ww-00854-arm_size=100ml",
           "https://www.douglas.de/de/p/5011354001"
         ]
+      },
+      "discovery": {
+        "status": "facts_qualified_publication_hold",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "ww-00854-arm",
+          "source_url": "https://www.armanibeauty.it/fragranze/fragranze-da-uomo/acqua-di-gio/acqua-di-gio-profondo-parfum/ww-00854-arm.html",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "marine notes",
+            "bergamot"
+          ],
+          "heart": [
+            "immortelle"
+          ],
+          "base": [
+            "cistus absolute",
+            "patchouli"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.armanibeauty.it/fragranze/fragranze-da-uomo/acqua-di-gio/acqua-di-gio-profondo-parfum/ww-00854-arm.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Marine Noten und Bergamotte eröffnen das Profil. Immortelle führt zu Zistrosen-Absolue und Patschuli.",
+        "checked_at": "2026-10-11",
+        "community_data_included": false,
+        "publication_authorized": false,
+        "remaining_gates": [
+          "approved_original_image",
+          "public_release_review"
+        ]
       }
     },
     {
@@ -3676,6 +4025,38 @@
         "evidence_urls": [
           "https://www.armanibeauty.de/dufte/damenduft/si/si-eau-de-parfum/3605521816658.html",
           "https://www.douglas.de/de/p/3000067486?variant=753263"
+        ]
+      },
+      "discovery": {
+        "status": "facts_qualified_publication_hold",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "AP35200",
+          "source_url": "https://www.armanibeauty.de/dufte/damenduft/si/si-eau-de-parfum/AP35200.html",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "blackcurrant nectar"
+          ],
+          "heart": [
+            "modern chypre accord"
+          ],
+          "base": [
+            "musk-white wood accord"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.armanibeauty.de/dufte/damenduft/si/si-eau-de-parfum/AP35200.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Schwarzer Johannisbeernektar führt zu einem modernen Chypre-Akkord. Ein Moschus-Weißholz-Akkord bildet die Basis.",
+        "checked_at": "2026-10-11",
+        "community_data_included": false,
+        "publication_authorized": false,
+        "remaining_gates": [
+          "approved_original_image",
+          "public_release_review"
         ]
       }
     },
@@ -4217,6 +4598,47 @@
           "https://www.parfumo.com/Perfumes/Afnan_Perfumes/9pm-pour-femme",
           "https://www.de.afnan.com/products/9-pm-pour-femme"
         ]
+      },
+      "discovery": {
+        "status": "facts_qualified_publication_hold",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "9-pm-pour-femme",
+          "source_url": "https://afnan.com/products/9-pm-pour-femme",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "raspberry",
+            "apple",
+            "violet",
+            "orange"
+          ],
+          "heart": [
+            "rose",
+            "peony",
+            "iris",
+            "jasmine"
+          ],
+          "base": [
+            "cedar",
+            "cypress",
+            "pine",
+            "amber"
+          ]
+        },
+        "notes_source": {
+          "url": "https://afnan.com/products/9-pm-pour-femme",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Fruchtige Noten von Himbeere, Apfel und Orange treffen auf Veilchen und ein florales Herz. Zeder, Zypresse, Kiefer und Ambra bilden die Basis.",
+        "checked_at": "2026-10-11",
+        "community_data_included": false,
+        "publication_authorized": false,
+        "remaining_gates": [
+          "approved_original_image",
+          "public_release_review"
+        ]
       }
     },
     {
@@ -4293,6 +4715,35 @@
           "https://www.dior.com/de_de/beauty/products/j%E2%80%99adore-eau-de-parfum-Y0998031.html",
           "https://www.parfumo.com/Perfumes/Dior/J_Adore",
           "https://www.douglas.de/de/p/5011697097"
+        ]
+      },
+      "discovery": {
+        "status": "facts_qualified_publication_hold",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "Y0998031",
+          "source_url": "https://www.dior.com/de_de/beauty/products/j%E2%80%99adore-eau-de-parfum-Y0998031.html",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "ylang-ylang",
+            "damask rose",
+            "jasmine grandiflorum",
+            "sambac jasmine"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.dior.com/de_de/beauty/products/j%E2%80%99adore-eau-de-parfum-Y0998031.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Ylang-Ylang und Damaszener-Rose verbinden sich mit großblütigem und arabischem Jasmin zu einem floralen Profil.",
+        "checked_at": "2026-10-11",
+        "community_data_included": false,
+        "publication_authorized": false,
+        "remaining_gates": [
+          "approved_original_image",
+          "public_release_review"
         ]
       }
     },

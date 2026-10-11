@@ -63,7 +63,7 @@ for(const width of [320,390,768,1440]) {
   assert.equal(await page.locator('link[rel=canonical]').count(),0,'Private pages have no public canonical');
   assert.ok((await page.title()).includes(p.expected_variant.name));
   assert.equal(await page.locator('meta[name=description]').getAttribute('content'),p.seo.description);
-  if([390,1440].includes(width)) {
+  {
     await page.screenshot({path:`${out}/${p.slug}-${width}-viewport.png`});
     await page.screenshot({path:`${out}/${p.slug}-${width}.png`,fullPage:true});
   }

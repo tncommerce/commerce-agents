@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 export async function verifySocialCatalogNavigation(browser, baseUrl) {
   for (const width of [390, 1440]) {
     for (const denied of [false, true]) {
-      for (const surface of ["grid", "brand"]) {
+      for (const surface of ["grid", "brand", "directory"]) {
         const context = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: "reduce" });
         const page = await context.newPage();
         const events = [];
@@ -41,6 +41,13 @@ export async function verifySocialCatalogNavigation(browser, baseUrl) {
             const comparisonUrl = new URL(await compare.getAttribute("href"), baseUrl);
             assert.equal(comparisonUrl.searchParams.get("cmp"), "nav_qa", "comparison link must preserve attribution");
             await page.getByRole("searchbox").fill("Naxos");
+          } else if (surface === "directory") {
+            await page.getByRole('link', {name:'Marken A–Z',exact:true}).click();
+            await page.waitForURL(url=>url.pathname==='/marken');
+            await page.waitForFunction(()=>[...document.querySelectorAll('a[data-brand-slug]')].every(a=>new URL(a.href).searchParams.get('cmp')==='nav_qa'));
+            await page.locator('a[data-brand-slug="yves-saint-laurent"]').click();
+            await page.waitForURL(url=>url.pathname==='/marken/yves-saint-laurent');
+            assert.equal(new URL(page.url()).searchParams.get('cmp'),'nav_qa');
           } else {
             await page.locator(".dufynd-brand-directory summary").click();
             const brand = page.getByRole("navigation", { name: "Marken A–Z" }).getByRole("button", { name: /^Yves Saint Laurent/ });

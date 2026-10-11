@@ -954,6 +954,448 @@
         "title": "Narciso Rodriguez for her PURE MUSC – Eau de Parfum 100 ml",
         "description": "Orangenblüte und Jasmin umgeben einen Moschusakkord mit Kaschmirholz."
       }
+    },
+    {
+      "product_id": "SC-JPG-LE-MALE-LE-PARFUM-125",
+      "slug": "jean-paul-gaultier-le-male-le-parfum-edpi-125",
+      "tone": "sage",
+      "headline": "Würziger Auftakt. Weiche Iris.",
+      "art_notes": [
+        "Kardamom",
+        "Iris"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentScene.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-JPG-LE-MALE-LE-PARFUM-125",
+        "brand": "Jean Paul Gaultier",
+        "name": "Le Male Le Parfum",
+        "concentration": "Eau de Parfum Intense",
+        "volume_ml": 125
+      },
+      "evidence_sha256": "0fba6b5f14de6ebfa935bd525cd3f3bff5f526af7eda2c2c8a1b2981173f9ef8",
+      "motif": "botanical",
+      "seo": {
+        "public_path": "/duft/jean-paul-gaultier-le-male-le-parfum-edpi-125",
+        "title": "Jean Paul Gaultier Le Male Le Parfum – Eau de Parfum Intense 125 ml",
+        "description": "Kardamom eröffnet den Duft. Lavendel und Iris bilden das Herz, Vanille die Basis."
+      }
+    },
+    {
+      "product_id": "SC-VIKTOR-ROLF-SPICEBOMB-EXTREME-EDP-90",
+      "slug": "viktor-rolf-spicebomb-extreme-edp-90",
+      "tone": "amber",
+      "headline": "Gewürze. Tabak. Warme Vanille.",
+      "art_notes": [
+        "Tabak",
+        "Vanille"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentScene.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-VIKTOR-ROLF-SPICEBOMB-EXTREME-EDP-90",
+        "brand": "Viktor & Rolf",
+        "name": "Spicebomb Extreme",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 90
+      },
+      "evidence_sha256": "be6521fb3b5f173513c3f3ec4e86583417efb074ba8cfca3529df0b8227e43cd",
+      "motif": "embers",
+      "seo": {
+        "public_path": "/duft/viktor-rolf-spicebomb-extreme-edp-90",
+        "title": "Viktor & Rolf Spicebomb Extreme – Eau de Parfum 90 ml",
+        "description": "Lavendel und Gewürznoten treffen auf Tabak, Bourbon und Vanille."
+      }
+    },
+    {
+      "product_id": "SC-AMOUAGE-GUIDANCE-46-EXTRAIT-100",
+      "slug": "amouage-guidance-46-extrait-100",
+      "tone": "sage",
+      "headline": "Birne und Weihrauch. Florale Tiefe.",
+      "art_notes": [
+        "Birne",
+        "Weihrauch"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentScene.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-AMOUAGE-GUIDANCE-46-EXTRAIT-100",
+        "brand": "Amouage",
+        "name": "Guidance 46",
+        "concentration": "Extrait de Parfum",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "1abbe5f9007a32dd4efd2940676c471aba50be9e2d2af9f25ca01eaea1e66ab9",
+      "motif": "botanical",
+      "seo": {
+        "public_path": "/duft/amouage-guidance-46-extrait-100",
+        "title": "Amouage Guidance 46 – Extrait de Parfum 100 ml",
+        "description": "Birne, Haselnuss und Weihrauch führen zu einem floralen Herzen mit Safran. Sandelholz, Vanille und weitere Holznoten bilden die Basis."
+      }
+    },
+    {
+      "product_id": "SC-CHLOE-CHLOE-EDP-100",
+      "slug": "chloe-chloe-edp-100",
+      "tone": "rose",
+      "headline": "Rosenblätter. Leichte Holznoten.",
+      "art_notes": [
+        "Rose",
+        "Zeder"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentScene.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-CHLOE-CHLOE-EDP-100",
+        "brand": "Chloé",
+        "name": "Chloé",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "c1ad712ab8a2d6a6de436dfd094e5cf0109ae314d1e584b94c088b6b8c4b32ca",
+      "motif": "blossom",
+      "seo": {
+        "public_path": "/duft/chloe-chloe-edp-100",
+        "title": "Chloé Chloé – Eau de Parfum 100 ml",
+        "description": "Pfingstrose eröffnet das florale Profil. Rosenblätter und Magnolie treffen auf Zeder und Ambra."
+      }
+    },
+    {
+      "product_id": "SC-PDM-VALAYA-EXCLUSIF-EDP-75",
+      "slug": "parfums-de-marly-valaya-exclusif-edp-75",
+      "tone": "sage",
+      "headline": "Mandel. Weiße Blüten. Pudrige Facetten.",
+      "art_notes": [
+        "Mandel",
+        "Weiße Blüten"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentScene.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-PDM-VALAYA-EXCLUSIF-EDP-75",
+        "brand": "Parfums de Marly",
+        "name": "Valaya Exclusif",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 75
+      },
+      "evidence_sha256": "06baa899992b9bc136bd8c947fb2fd946212f117f8713ddf384e022039c14436",
+      "motif": "prism",
+      "seo": {
+        "public_path": "/duft/parfums-de-marly-valaya-exclusif-edp-75",
+        "title": "Parfums de Marly Valaya Exclusif – Eau de Parfum 75 ml",
+        "description": "Mandel und Zitrusnoten eröffnen das Profil. Weiße Blüten und pudrige Facetten führen zu Sandelholz, Ambroxan und Vanille."
+      }
+    },
+    {
+      "product_id": "SC-YSL-MYSLF-LE-PARFUM-100",
+      "slug": "yves-saint-laurent-myslf-le-parfum-100",
+      "tone": "sage",
+      "headline": "Orangenblüte. Holz und Bourbon-Vanille.",
+      "art_notes": [
+        "Orangenblüte",
+        "Bourbon-Vanille"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentScene.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-YSL-MYSLF-LE-PARFUM-100",
+        "brand": "Yves Saint Laurent",
+        "name": "MYSLF Le Parfum",
+        "concentration": "Parfum",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "d360067b4a0e50225b3d29a65cb20b9c8564f3e3ab69c508bbdad907121ca79f",
+      "motif": "architecture",
+      "seo": {
+        "public_path": "/duft/yves-saint-laurent-myslf-le-parfum-100",
+        "title": "Yves Saint Laurent MYSLF Le Parfum – Parfum 100 ml",
+        "description": "Schwarzer Pfeffer trifft auf Orangenblüten-Absolue. Holznoten und Bourbon-Vanille bilden den Ausklang."
+      }
+    },
+    {
+      "product_id": "SC-DIOR-SAUVAGE-ELIXIR-100",
+      "slug": "dior-sauvage-elixir-100",
+      "tone": "sage",
+      "headline": "Lavendel zwischen Gewürzen und Hölzern.",
+      "art_notes": [
+        "Lavendel",
+        "Gewürze"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentScene.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-DIOR-SAUVAGE-ELIXIR-100",
+        "brand": "Dior",
+        "name": "Sauvage Elixir",
+        "concentration": "Elixir",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "0473a047bf1ed3e6494a2ad6715c25713afb91efadd014aab6c83398adcc7363",
+      "motif": "botanical",
+      "seo": {
+        "public_path": "/duft/dior-sauvage-elixir-100",
+        "title": "Dior Sauvage Elixir – Elixir 100 ml",
+        "description": "Grapefruit und Gewürze treffen auf Lavendel. Lakritz, Vetiver und Patschuli ergänzen den holzig-ambrierten Duftcharakter."
+      }
+    },
+    {
+      "product_id": "SC-INITIO-SIDE-EFFECT-EDP-90",
+      "slug": "initio-side-effect-edp-90",
+      "tone": "amber",
+      "headline": "Rum und Zimt. Ein warmer Kontrast.",
+      "art_notes": [
+        "Rum",
+        "Zimt"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentScene.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-INITIO-SIDE-EFFECT-EDP-90",
+        "brand": "Initio Parfums Privés",
+        "name": "Side Effect",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 90
+      },
+      "evidence_sha256": "d97e3c8b21b2b488059860c0602dee13c8eae7203e46845f9b06d438486ad335",
+      "motif": "prism",
+      "seo": {
+        "public_path": "/duft/initio-side-effect-edp-90",
+        "title": "Initio Parfums Privés Side Effect – Eau de Parfum 90 ml",
+        "description": "Zimt, Rum und Tabak prägen das Profil. Safran, Sandelholz und Hedione ergänzen die dokumentierten Hauptnoten."
+      }
+    },
+    {
+      "product_id": "SC-YSL-LA-NUIT-DE-LHOMME-EDT-100",
+      "slug": "yves-saint-laurent-la-nuit-de-lhomme-edt-100",
+      "tone": "sage",
+      "headline": "Bergamotte. Lavendel. Zedernholz.",
+      "art_notes": [
+        "Lavendel",
+        "Zeder"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentScene.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-YSL-LA-NUIT-DE-LHOMME-EDT-100",
+        "brand": "Yves Saint Laurent",
+        "name": "La Nuit de L'Homme",
+        "concentration": "Eau de Toilette",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "086e3df35c2b044d7fef5d98502a09964e688758bfdc33f401f56f55c19a15e9",
+      "motif": "architecture",
+      "seo": {
+        "public_path": "/duft/yves-saint-laurent-la-nuit-de-lhomme-edt-100",
+        "title": "Yves Saint Laurent La Nuit de L'Homme – Eau de Toilette 100 ml",
+        "description": "Bergamotte eröffnet den Duft, gefolgt von Zedernholz und Lavendel. Vetiver bildet die Basis."
+      }
+    },
+    {
+      "product_id": "SC-ARMANI-ACQUA-DI-GIO-PROFONDO-PARFUM-100",
+      "slug": "giorgio-armani-acqua-di-gio-profondo-parfum-100",
+      "tone": "sage",
+      "headline": "Marine Frische. Harzige Tiefe.",
+      "art_notes": [
+        "Marine Noten",
+        "Immortelle"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentScene.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-ARMANI-ACQUA-DI-GIO-PROFONDO-PARFUM-100",
+        "brand": "Giorgio Armani",
+        "name": "Acqua di Giò Profondo",
+        "concentration": "Parfum",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "b38fd27bc831d07f4588fc358d301dc9d1ca3809f6950756ad6ad87261e07a01",
+      "motif": "architecture",
+      "seo": {
+        "public_path": "/duft/giorgio-armani-acqua-di-gio-profondo-parfum-100",
+        "title": "Giorgio Armani Acqua di Giò Profondo – Parfum 100 ml",
+        "description": "Marine Noten und Bergamotte eröffnen das Profil. Immortelle führt zu Zistrosen-Absolue und Patschuli."
+      }
+    },
+    {
+      "product_id": "SC-ARMANI-SI-EDP-100",
+      "slug": "giorgio-armani-si-edp-100",
+      "tone": "rose",
+      "headline": "Johannisbeere. Ein moderner Chypre.",
+      "art_notes": [
+        "Cassis",
+        "Moschus"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentScene.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-ARMANI-SI-EDP-100",
+        "brand": "Giorgio Armani",
+        "name": "Sì",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "35452deb9655d5b7208aab1f6593140e2337caad657a0656d3f5bea4e43dff10",
+      "motif": "botanical",
+      "seo": {
+        "public_path": "/duft/giorgio-armani-si-edp-100",
+        "title": "Giorgio Armani Sì – Eau de Parfum 100 ml",
+        "description": "Schwarzer Johannisbeernektar führt zu einem modernen Chypre-Akkord. Ein Moschus-Weißholz-Akkord bildet die Basis."
+      }
+    },
+    {
+      "product_id": "SC-AFNAN-9-PM-POUR-FEMME-EDP-100",
+      "slug": "afnan-9-pm-pour-femme-edp-100",
+      "tone": "rose",
+      "headline": "Fruchtiger Auftakt. Florales Herz.",
+      "art_notes": [
+        "Himbeere",
+        "Rose"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentScene.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-AFNAN-9-PM-POUR-FEMME-EDP-100",
+        "brand": "Afnan Perfumes",
+        "name": "9 PM Pour Femme",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "ae64527f7001a82eb969d50152878b17d4ecc4333885d664701d6d714114a947",
+      "motif": "botanical",
+      "seo": {
+        "public_path": "/duft/afnan-9-pm-pour-femme-edp-100",
+        "title": "Afnan Perfumes 9 PM Pour Femme – Eau de Parfum 100 ml",
+        "description": "Fruchtige Noten von Himbeere, Apfel und Orange treffen auf Veilchen und ein florales Herz. Zeder, Zypresse, Kiefer und Ambra bilden die Basis."
+      }
+    },
+    {
+      "product_id": "SC-DIOR-JADORE-EDP-100",
+      "slug": "dior-jadore-edp-100",
+      "tone": "amber",
+      "headline": "Ylang-Ylang. Rose. Zwei Jasminfacetten.",
+      "art_notes": [
+        "Ylang-Ylang",
+        "Jasmin"
+      ],
+      "original_photo_status": "no_asset_specific_reuse_grant",
+      "visual": {
+        "kind": "dufynd_original_vector_illustration",
+        "source": "components/ScentScene.tsx",
+        "contains_product_replica": false,
+        "third_party_asset_used": false,
+        "label": "Duftillustration · kein Produktfoto"
+      },
+      "owner_release_approved": false,
+      "affiliate_offer_status": "not_included_requires_separate_verified_mapping",
+      "expected_variant": {
+        "product_id": "SC-DIOR-JADORE-EDP-100",
+        "brand": "Dior",
+        "name": "J’adore",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100
+      },
+      "evidence_sha256": "f9b0954e173950eb98eac30a5e89b5d75cf5bc01ea85339d61d08758d31fee5e",
+      "motif": "blossom",
+      "seo": {
+        "public_path": "/duft/dior-jadore-edp-100",
+        "title": "Dior J’adore – Eau de Parfum 100 ml",
+        "description": "Ylang-Ylang und Damaszener-Rose verbinden sich mit großblütigem und arabischem Jasmin zu einem floralen Profil."
+      }
     }
   ]
 }

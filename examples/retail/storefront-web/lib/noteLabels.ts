@@ -5,6 +5,16 @@
  * icon classification and provenance. Public UI uses noteLabel() instead.
  */
 export const NOTE_LABELS_DE: Record<string, string> = {
+  "blackcurrant nectar": "Schwarzer Johannisbeernektar",
+  "modern chypre accord": "Moderner Chypre-Akkord",
+  "musk-whitewood accord": "Moschus-Weißholz-Akkord",
+  "powdery facets": "Pudrige Facetten",
+  "rose petals": "Rosenblätter",
+  "white flowers": "Weiße Blüten",
+  "immortelle": "Immortelle",
+  "cistus": "Zistrose",
+  "cypriol": "Cypriol",
+  "woods": "Hölzer",
   "pear accord": "Birnen-Akkord",
   "peru balsam": "Perubalsam",
   "amber woods": "Amberhölzer",

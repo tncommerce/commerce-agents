@@ -1,5 +1,17 @@
 # Core-scale release
 
+## Growth checkpoint: 41 reviews, 40 candidate variants
+
+The new source-bound batch adds 13 manufacturer-reference profiles, not GTINs: 37 manufacturer references + 4 verified GTINs overall. All 41 reviews passed four-width QA; the conflicting BOSS Absolu variant is excluded from the 40-product owner wave. An isolated build exercised 40 regular routes and 77 public profiles, without changing actual approvals, indexing or deployment.
+
+`dufynd_growth_evidence.json` holds the 13 original-source records and four precise source HOLDs (Angham concentration/notes, Fleur du Mâle 2026 identity, Kayali original source, The One 2025 edition). `catalog-growth.mjs --write` reproduces the identity/stage matrix: canonical 38 + staging 50 − overlap 5 = 83 exact IDs. The 17 unmatched legacy research names have no verified volume and are NOT 17 extra SKUs. One legacy The One name may overlap a differently named edition. Existing hidden Widian remains a separate pre-existing research/blocker case.
+
+Run `node scripts/test-catalog-growth.mjs`, then `node scripts/catalog-growth.mjs --write --limit=24`. A saved batch can resume with `--resume=/absolute/checkpoint.json`; stale input hashes and unknown completed IDs fail closed. `prepare-growth-review.mjs` is append-only and defaults to dry-run. Reapplying the curated source batch is idempotent and cannot grant publication. New batches require their own exact evidence and curated presentation, then fresh bound QA. From a 77-page owner-approved wave, 100 needs 23 further complete pages; 100+ needs at least 24.
+
+CI run 38133021321 failed a real attribution regression: the catalog's plain `/marken` link dropped campaign parameters. All brand navigation now uses the existing attribution-preserving component. Twelve browser cases cover grid/filter/directory routes at 390/1440 with normal and denied storage; analytics are mocked. Brand QA resolves both relative and absolute attributed URLs.
+
+Live checks: Supabase healthy, exact masterkeys inspected and active leases absent via SELECT only. Render service inspection is HOLD because no workspace is selected and the connector explicitly requires owner confirmation before selecting TNCommerce. No workspace/deploy change was made.
+
 The same `QualifiedProductPage` renders private review routes and authorized public routes. The independent profile projection contains no price, merchant, community metrics or product photo. `LIVE_FRAGRANCES` appends only the generated authorized projection; catalogue search, public brand counts and product URLs therefore grow together.
 
 ## State machine

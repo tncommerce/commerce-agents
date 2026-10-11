@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {digest,evaluateRelease,readData,rendererDigest,renderDigest,releaseState} from './release-gate.mjs';
-const rows=releaseState();assert.equal(rows.length,28);
+const rows=releaseState();assert.equal(rows.length,readData('dufynd_release_pilots.json').pilots.length);assert.ok(rows.length>=28);
 const renderer=rendererDigest();const {p,f}=rows[0];
 const qa={product_id:p.product_id,passed:true,evidence_sha256:p.evidence_sha256,render_sha256:renderDigest(p,renderer),widths:[320,390,768,1440]};
 const approval={product_id:p.product_id,evidence_sha256:p.evidence_sha256,render_sha256:qa.render_sha256,qa_sha256:digest(qa),variant_approved:true,illustration_approved:true,publication_approved:true,approved_by:'TEST ONLY',approval_reference:'fixture://not-an-owner-authorization',approved_at:'2026-10-11',indexing_approved:false};
