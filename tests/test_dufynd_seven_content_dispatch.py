@@ -23,7 +23,6 @@ from scripts.dufynd_seven_content_dispatch import (
 from scripts.dufynd_seven_content_workers import ROLE_ORDER, WorkerInputError
 
 
-
 def editorial_fixture() -> dict:
     """Self-contained synthetic input: no owner data or cross-test imports."""
     hooks = [f"Konkrete Parfum-Situation {i}: der unerwartete Moment" for i in range(20)]
