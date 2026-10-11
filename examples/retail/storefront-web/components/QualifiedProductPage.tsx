@@ -21,13 +21,13 @@ export default function QualifiedProductPage({pilot,profiles,publicMode=false}:{
   <nav className={styles.breadcrumb} aria-label="Brotkrumennavigation"><a href="/duft">Düfte</a><span>/</span>{PUBLIC_BRANDS.some(b=>b.slug===brandSlug(brand))?<a href={`/marken/${brandSlug(brand)}`}>{brand}</a>:<span>{brand}</span>}</nav>
   <section className={styles.hero}>
    <div className={styles.identity}><p className={styles.eyebrow}>{brand}</p><h1 data-long-word={displayName.split(/\s+/).some(word=>word.length>11)?'true':undefined}>{displayName.replace('REPLICA ','')}</h1><p className={styles.variant}>{fact.concentration}<span>·</span>{fact.volume_ml} ml</p></div>
-   <div className={styles.art} role="img" aria-label={`${brand} ${displayName}: Originalfoto noch nicht freigegeben`}>
+   <div className={styles.art} data-dufynd-studio-source-hold role="img" aria-label={`${brand} ${displayName}: Originalfoto noch nicht freigegeben`}>
       <span className={styles.photoEyebrow}>DUFYND / DUFTARCHIV</span>
       <div className={styles.photoIdentity}>
         <span>{brand}</span><strong>{displayName}</strong>
         <small>{fact.concentration} · {fact.volume_ml} ml</small>
       </div>
-      <span className={styles.photoHold}>Originalfoto in Prüfung</span>
+      <span data-dufynd-studio-source-label className={styles.photoHold}>Originalfoto in Prüfung</span>
     </div>
    <div className={styles.intro}><p className={styles.chapter}>DAS DUFTPORTRÄT <span>01 — 03</span></p><h2>{pilot.headline}</h2><p className={styles.summary}>{fact.summary_de}</p><a className={styles.cta} href="#duftverlauf">Die Komposition entdecken <span>↓</span></a><p className={styles.footnote}>Neutrale Studiokarte, kein Markenflakon. Produktinformationen unabhängig von Händlerangeboten.</p></div>
   </section>
