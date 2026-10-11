@@ -335,3 +335,15 @@
   align-items: center;
   min-height: 46px;
 }
+
+/* Tracking links may be emitted as absolute URLs: style every secondary hero link. */
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-fragrance-hero-copy a:not(#dufynd-hero-offer-cta) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  text-align: center;
+  color: #33232e !important;
+  background: #fff8fb !important;
+  border: 1px solid #c9b7c2 !important;
+}
