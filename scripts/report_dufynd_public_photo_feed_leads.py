@@ -12,6 +12,7 @@ import re
 import sys
 import unicodedata
 from collections import defaultdict
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from urllib.parse import urlsplit
 
@@ -49,15 +50,16 @@ def safe_feed_image(value: object) -> str | None:
     url = str(value or "").strip()
     try:
         p = urlsplit(url)
+        safe = (
+            p.scheme == "https"
+            and p.hostname in {"topparfuemerie.de", "www.topparfuemerie.de"}
+            and p.port is None and p.username is None and p.password is None
+            and not p.query and not p.fragment
+            and PHOTO_PATH.fullmatch(p.path) is not None
+        )
     except ValueError:
         return None
-    if (p.scheme != "https" or p.hostname not in
-        {"topparfuemerie.de", "www.topparfuemerie.de"}
-        or p.port is not None or p.username is not None or
-        p.password is not None or p.query or p.fragment or
-        not PHOTO_PATH.fullmatch(p.path)):
-        return None
-    return url
+    return url if safe else None
 
 
 def feed_name_matches(item: dict, row: dict) -> bool:
@@ -82,7 +84,9 @@ def feed_name_matches(item: dict, row: dict) -> bool:
     )
 
 
-def verify_context(metadata: dict, rights: dict) -> None:
+def verify_context(
+    metadata: dict, rights: dict, *, now: datetime | None = None,
+) -> None:
     if (
         metadata.get("source") != "awin_product_feed_list"
         or str(metadata.get("advertiser_id")) != ADVERTISER
@@ -92,6 +96,16 @@ def verify_context(metadata: dict, rights: dict) -> None:
         or not metadata.get("checked_at")
     ):
         raise ValueError("current_official_awin_feed_evidence_required")
+    checked = datetime.fromisoformat(
+        str(metadata["checked_at"]).replace("Z", "+00:00")
+    )
+    clock = now or datetime.now(UTC)
+    if (
+        checked.tzinfo is None or clock.tzinfo is None
+        or not timedelta(0) <= clock.astimezone(UTC) - checked.astimezone(UTC)
+        <= timedelta(days=7)
+    ):
+        raise ValueError("current_awin_feed_timestamp_required")
     eligible = [
         x for x in rights.get("entries", [])
         if x.get("merchant_id") == MERCHANT
@@ -107,9 +121,9 @@ def verify_context(metadata: dict, rights: dict) -> None:
 
 def create_review(
     gap: dict, mappings: dict, rows: list[dict],
-    metadata: dict, rights: dict,
+    metadata: dict, rights: dict, *, now: datetime | None = None,
 ) -> dict:
-    verify_context(metadata, rights)
+    verify_context(metadata, rights, now=now)
     if gap.get("status") != "RIGHTS_SOURCE_ACQUISITION_PENDING_NO_AUTO_APPROVAL":
         raise ValueError("photo_gap_must_be_unapproved")
     pending = gap.get("items")
