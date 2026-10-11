@@ -931,7 +931,7 @@
   background: #fffefa !important;
 }
 @media (max-width: 767px) {
-  .dufynd-detail-page .dufynd-fragrance-hero .dufynd-fragrance-stage-shell {min-height: 268px !important;max-height: 268px;}
+  .dufynd-detail-page .dufynd-fragrance-hero .dufynd-fragrance-stage-shell {min-height: clamp(220px, 62vw, 258px) !important;max-height: clamp(220px, 62vw, 258px) !important;}
   .dufynd-detail-page .dufynd-fragrance-hero .dufynd-product-object,
   .dufynd-detail-page .dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-product-object {inset: 4% 12% 7% !important;}
   .dufynd-notes-overview-header {padding: 21px 18px 19px;}
