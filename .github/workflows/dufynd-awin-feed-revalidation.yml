@@ -116,6 +116,11 @@ jobs:
             --feed-metadata "${RUNNER_TEMP}/awin-feed-metadata.json" \
             --gap docs/dufynd-catalog-photo-gap-20261011.json \
             --output "${RUNNER_TEMP}/public-photo-gap-review.json"
+      - name: Render prioritized public-photo contact sheet (review-only)
+        run: |
+          python scripts/render_dufynd_public_photo_review_html.py \
+            --candidates "${RUNNER_TEMP}/public-photo-gap-review.json" \
+            --output "${RUNNER_TEMP}/public-photo-gap-review.html"
       # Strict second gate: only historical exact SKU+GTIN mappings can become
       # candidate image leads. Human identity, bytes and owner GO still required.
       - name: Gate mapped public packshots against current feed
@@ -136,6 +141,7 @@ jobs:
             ${{ runner.temp }}/release01-feed-image-review.html
             ${{ runner.temp }}/public-photo-exact-sku-review.json
             ${{ runner.temp }}/public-photo-gap-review.json
+            ${{ runner.temp }}/public-photo-gap-review.html
             ${{ runner.temp }}/public-photo-strict-variant-review.json
           if-no-files-found: error
           retention-days: 7
