@@ -1547,14 +1547,17 @@ try {
   try {
     const imageFailurePage = await imageFailureContext.newPage();
     let failPrimaryImage = true;
-    let failBackdropImage = false;
-    await imageFailurePage.route("**/products/naxos-cutout-production.webp", (route) =>
-      failPrimaryImage ? route.abort("failed") : route.continue(),
+    const licensedUrl = "**/media/catalog/product/8/2/825869_3700578501998_051.png";
+    const tinyPng = Buffer.from(
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jv1sAAAAASUVORK5CYII=",
+      "base64",
     );
-    await imageFailurePage.route("**/products/naxos-bottle-free-backdrop.webp", (route) =>
-      failBackdropImage ? route.abort("failed") : route.continue(),
+    await imageFailurePage.route(licensedUrl, (route) =>
+      failPrimaryImage
+        ? route.abort("failed")
+        : route.fulfill({ contentType: "image/png", body: tinyPng }),
     );
-    const response = await imageFailurePage.goto(baseUrl + "/duft/xerjoff-naxos", {
+    const response = await imageFailurePage.goto(baseUrl + "/duft/parfums-de-marly-delina", {
       waitUntil: "domcontentloaded", timeout: 45_000,
     });
     if (!response?.ok()) throw new Error("image failure QA did not load");
@@ -1563,10 +1566,10 @@ try {
     await fallback.waitFor({ state: "visible", timeout: 10_000 });
     if (
       !(await fallback.innerText()).includes("Produktbild derzeit nicht verfügbar") ||
-      !(await fallback.innerText()).includes("Naxos") ||
-      (await hero.locator("img").count()) !== 0
+      !(await fallback.innerText()).includes("Delina") ||
+      (await hero.locator("img.dufynd-product-image").count()) !== 0
     ) {
-      throw new Error("failed product image did not preserve identity in a neutral fallback");
+      throw new Error("failed licensed original did not preserve identity in a neutral fallback");
     }
     if ((await imageFailurePage.locator("#angebote").count()) !== 1) {
       throw new Error("image failure removed the merchant offer section");
@@ -1582,21 +1585,12 @@ try {
     if ((await fallback.count()) !== 0) {
       throw new Error("successful image retry retained its error fallback");
     }
-    failBackdropImage = true;
-    await imageFailurePage.reload({ waitUntil: "domcontentloaded", timeout: 45_000 });
-    await recoveredImage.waitFor({ state: "visible", timeout: 10_000 });
-    await imageFailurePage.waitForFunction(() => {
-      const hero = document.querySelector(".dufynd-fragrance-hero");
-      const image = hero?.querySelector("img.dufynd-product-image");
-      return image?.complete && image.naturalWidth > 0 &&
-        !hero.querySelector("img.dufynd-product-backdrop");
-    }, undefined, { timeout: 10_000 });
-    if ((await fallback.count()) !== 0) {
-      throw new Error("decorative backdrop failure hid the valid product image");
+    if ((await hero.locator("img.dufynd-product-backdrop").count()) !== 0) {
+      throw new Error("premium studio hero reintroduced an unapproved decorative backdrop");
     }
     report.checks.push({ label: "product-image-error-fallback", status: "passed" });
     report.checks.push({ label: "product-image-error-recovery", status: "passed" });
-    report.checks.push({ label: "decorative-image-error-isolation", status: "passed" });
+    report.checks.push({ label: "product-studio-background-source-isolation", status: "passed" });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     report.failures.push({ label: "product-image-error-fallback", message });
