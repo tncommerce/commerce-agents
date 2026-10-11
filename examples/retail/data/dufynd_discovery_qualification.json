@@ -791,6 +791,225 @@
       "publication_authorized": false,
       "variant_evidence_note": "Manufacturer handle identifies the 100 ml single bottle. Official gift-set contents separately confirm 100 ml Reflection Man Eau de Parfum. Not Reflection 45; gift-set SKU, price and photos are not imported.",
       "concentration_source_url": "https://amouage.com/en-ch/products/reflection-man-gift-set"
+    },
+    {
+      "product_id": "SC-PRADA-PARADOXE-EDP-90",
+      "brand": "Prada",
+      "name": "Paradoxe",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "checked_at": "2026-10-11",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "1A1351_2HDZ_F0Z99_P_ML090",
+        "source_url": "https://www.prada.com/de/de/p/paradoxe-edp-90ml/1A1351_2HDZ_F0Z99_P_ML090",
+        "verified": true
+      },
+      "notes": {
+        "top": [
+          "Calabrian bergamot",
+          "mandarin",
+          "pear accord"
+        ],
+        "heart": [
+          "neroli",
+          "orange blossom",
+          "jasmine sambac"
+        ],
+        "base": [
+          "amber accord",
+          "benzoin",
+          "Bourbon vanilla",
+          "white musk accord"
+        ]
+      },
+      "notes_source": {
+        "url": "https://www.prada.com/de/de/p/paradoxe-edp-90ml/1A1351_2HDZ_F0Z99_P_ML090",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Bergamotte, Mandarine und Birne treffen auf Neroli und weiße Blüten. Amber, Benzoe, Vanille und Moschus bilden die Basis.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false,
+      "variant_evidence_note": "Manufacturer product code explicitly identifies EDP 90 ml; not the 100 ml refill or Intense variant."
+    },
+    {
+      "product_id": "SC-PRADA-PARADIGME-EDP-100",
+      "brand": "Prada",
+      "name": "Paradigme",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "checked_at": "2026-10-11",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "2A1451_2H0Q_F0Z99_P_ML100",
+        "source_url": "https://www.prada.com/de/de/p/paradigme-edp-100-ml/2A1451_2H0Q_F0Z99_P_ML100",
+        "verified": true
+      },
+      "notes": {
+        "top": [
+          "Calabrian bergamot"
+        ],
+        "heart": [
+          "Bourbon geranium"
+        ],
+        "base": [
+          "amber woods"
+        ]
+      },
+      "notes_source": {
+        "url": "https://www.prada.com/de/de/p/paradigme-edp-100-ml/2A1451_2H0Q_F0Z99_P_ML100",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Kalabrische Bergamotte eröffnet den Duft. Bourbon-Geranie verbindet sich mit Amberhölzern.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false,
+      "variant_evidence_note": "Manufacturer product code and title explicitly identify EDP 100 ml."
+    },
+    {
+      "product_id": "SC-MAISON-MARGIELA-BY-THE-FIREPLACE-EDT-100",
+      "brand": "Maison Margiela",
+      "name": "REPLICA By the Fireplace",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "checked_at": "2026-10-11",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "MM005",
+        "source_url": "https://www.maisonmargiela-fragrances.us/fragrances/replica-eau-de-toilette/replica-by-the-fireplace/MM005.html",
+        "verified": true
+      },
+      "notes": {
+        "top": [
+          "pink pepper",
+          "orange blossom",
+          "clove"
+        ],
+        "heart": [
+          "chestnut accord",
+          "guaiac wood",
+          "cade oil"
+        ],
+        "base": [
+          "vanilla accord",
+          "Peru balsam",
+          "cashmeran"
+        ]
+      },
+      "notes_source": {
+        "url": "https://www.maisonmargiela-fragrances.us/fragrances/replica-eau-de-toilette/replica-by-the-fireplace/MM005.html",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Pfeffer und Gewürznelke führen zu Kastanie und rauchigen Hölzern. Vanille, Perubalsam und Cashmeran ergänzen die Basis.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false,
+      "variant_evidence_note": "Manufacturer page lists EDT and the 3.4 oz / 100 ml bottle separately from Refill 100 ml. MM005 is a product-family reference, not a GTIN."
+    },
+    {
+      "product_id": "SC-TOM-FORD-OMBRE-LEATHER-EDP-100",
+      "brand": "Tom Ford",
+      "name": "Ombré Leather",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "checked_at": "2026-10-11",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "ombre-leather-eau-de-parfum",
+        "source_url": "https://www.tomfordbeauty.co.uk/product/ombre-leather-eau-de-parfum",
+        "verified": true
+      },
+      "notes": {
+        "key": [
+          "black leather accord",
+          "cardamom",
+          "jasmine sambac",
+          "patchouli",
+          "white moss",
+          "amber"
+        ]
+      },
+      "notes_source": {
+        "url": "https://www.tomfordbeauty.co.uk/product/ombre-leather-eau-de-parfum",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Ein Lederakkord verbindet sich mit Kardamom, Jasmin-Sambac, Patschuli, weißem Moos und Amber.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false,
+      "variant_evidence_note": "Official EDP page lists a 100 ml bottle. Product handle is not a GTIN; Parfum, Reserve and Eau de Toilette are separate variants."
+    },
+    {
+      "product_id": "SC-TOM-FORD-OUD-WOOD-EDP-100",
+      "brand": "Tom Ford",
+      "name": "Oud Wood",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "checked_at": "2026-10-11",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "oud-wood-eau-de-parfum",
+        "source_url": "https://www.tomfordbeauty.co.uk/product/oud-wood-eau-de-parfum?size=100_ml",
+        "verified": true
+      },
+      "notes": {
+        "key": [
+          "cardamom",
+          "pink pepper",
+          "patchouli",
+          "amber",
+          "oud",
+          "tonka bean"
+        ]
+      },
+      "notes_source": {
+        "url": "https://www.tomfordbeauty.co.uk/product/oud-wood-eau-de-parfum?size=100_ml",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Kardamom und rosa Pfeffer ergänzen Oud, Patschuli, Amber und Tonkabohne.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false,
+      "variant_evidence_note": "Official EDP page lists the 100 ml size; the manufacturer handle is not a GTIN. Oud Wood Parfum remains a separate variant."
+    },
+    {
+      "product_id": "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100",
+      "brand": "Narciso Rodriguez",
+      "name": "for her PURE MUSC",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "checked_at": "2026-10-11",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "for-her-PURE-MUSC",
+        "source_url": "https://www.narcisorodriguezparfums.com/es/narciso-rodriguez-for-her-pure-musc/for-her-PURE-MUSC.html",
+        "verified": true
+      },
+      "notes": {
+        "key": [
+          "orange blossom",
+          "jasmine",
+          "musk",
+          "cashmere wood"
+        ]
+      },
+      "notes_source": {
+        "url": "https://www.narcisorodriguezparfums.com/es/narciso-rodriguez-for-her-pure-musc/for-her-PURE-MUSC.html",
+        "kind": "manufacturer_product_facts"
+      },
+      "summary_de": "Orangenblüte und Jasmin umgeben einen Moschusakkord mit Kaschmirholz.",
+      "facts_only": true,
+      "community_data_included": false,
+      "image_rights_status": "HOLD",
+      "publication_authorized": false,
+      "volume_source_url": "https://www.thefragranceshop.co.uk/narciso-rodriguez/pure-musc/eau-de-parfum-spray/p/45475",
+      "variant_evidence_note": "Manufacturer confirms original PURE MUSC EDP and notes. The Fragrance Shop product 45475 separately corroborates the 100 ml bottle. Manufacturer handle is not a GTIN; not PURE MUSC BLANC Intense."
     }
   ]
 }

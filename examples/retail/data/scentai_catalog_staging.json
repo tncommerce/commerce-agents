@@ -404,6 +404,35 @@
           "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
+      },
+      "discovery": {
+        "status": "facts_qualified_publication_hold",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "for-her-PURE-MUSC",
+          "source_url": "https://www.narcisorodriguezparfums.com/es/narciso-rodriguez-for-her-pure-musc/for-her-PURE-MUSC.html",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "orange blossom",
+            "jasmine",
+            "musk",
+            "cashmere wood"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.narcisorodriguezparfums.com/es/narciso-rodriguez-for-her-pure-musc/for-her-PURE-MUSC.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Orangenblüte und Jasmin umgeben einen Moschusakkord mit Kaschmirholz.",
+        "checked_at": "2026-10-11",
+        "community_data_included": false,
+        "publication_authorized": false,
+        "remaining_gates": [
+          "approved_original_image",
+          "public_release_review"
+        ]
       }
     },
     {
@@ -639,6 +668,45 @@
         "catalog_ready": false,
         "blockers": [
           "approved_product_image_pending"
+        ]
+      },
+      "discovery": {
+        "status": "facts_qualified_publication_hold",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "1A1351_2HDZ_F0Z99_P_ML090",
+          "source_url": "https://www.prada.com/de/de/p/paradoxe-edp-90ml/1A1351_2HDZ_F0Z99_P_ML090",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "Calabrian bergamot",
+            "mandarin",
+            "pear accord"
+          ],
+          "heart": [
+            "neroli",
+            "orange blossom",
+            "jasmine sambac"
+          ],
+          "base": [
+            "amber accord",
+            "benzoin",
+            "Bourbon vanilla",
+            "white musk accord"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.prada.com/de/de/p/paradoxe-edp-90ml/1A1351_2HDZ_F0Z99_P_ML090",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Bergamotte, Mandarine und Birne treffen auf Neroli und weiße Blüten. Amber, Benzoe, Vanille und Moschus bilden die Basis.",
+        "checked_at": "2026-10-11",
+        "community_data_included": false,
+        "publication_authorized": false,
+        "remaining_gates": [
+          "approved_original_image",
+          "public_release_review"
         ]
       }
     },
@@ -2386,6 +2454,37 @@
           "verified_purchase_destination_pending",
           "approved_product_image_pending"
         ]
+      },
+      "discovery": {
+        "status": "facts_qualified_publication_hold",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "ombre-leather-eau-de-parfum",
+          "source_url": "https://www.tomfordbeauty.co.uk/product/ombre-leather-eau-de-parfum",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "black leather accord",
+            "cardamom",
+            "jasmine sambac",
+            "patchouli",
+            "white moss",
+            "amber"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.tomfordbeauty.co.uk/product/ombre-leather-eau-de-parfum",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Ein Lederakkord verbindet sich mit Kardamom, Jasmin-Sambac, Patschuli, weißem Moos und Amber.",
+        "checked_at": "2026-10-11",
+        "community_data_included": false,
+        "publication_authorized": false,
+        "remaining_gates": [
+          "approved_original_image",
+          "public_release_review"
+        ]
       }
     },
     {
@@ -3891,6 +3990,38 @@
           "https://www.prada-beauty.com/fragrance/paradigme/paradigme-eau-de-parfum/3614274172997.html?gclsrc=aw.ds&geo=false",
           "https://www.douglas.de/de/p/5011831044"
         ]
+      },
+      "discovery": {
+        "status": "facts_qualified_publication_hold",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "2A1451_2H0Q_F0Z99_P_ML100",
+          "source_url": "https://www.prada.com/de/de/p/paradigme-edp-100-ml/2A1451_2H0Q_F0Z99_P_ML100",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "Calabrian bergamot"
+          ],
+          "heart": [
+            "Bourbon geranium"
+          ],
+          "base": [
+            "amber woods"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.prada.com/de/de/p/paradigme-edp-100-ml/2A1451_2H0Q_F0Z99_P_ML100",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Kalabrische Bergamotte eröffnet den Duft. Bourbon-Geranie verbindet sich mit Amberhölzern.",
+        "checked_at": "2026-10-11",
+        "community_data_included": false,
+        "publication_authorized": false,
+        "remaining_gates": [
+          "approved_original_image",
+          "public_release_review"
+        ]
       }
     },
     {
@@ -3968,6 +4099,37 @@
         "evidence_urls": [
           "https://www.tomfordbeauty.co.uk/product/oud-wood-eau-de-parfum?size=100_ml",
           "https://www.douglas.de/de/p/3000073069?variant=902442"
+        ]
+      },
+      "discovery": {
+        "status": "facts_qualified_publication_hold",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "oud-wood-eau-de-parfum",
+          "source_url": "https://www.tomfordbeauty.co.uk/product/oud-wood-eau-de-parfum?size=100_ml",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "cardamom",
+            "pink pepper",
+            "patchouli",
+            "amber",
+            "oud",
+            "tonka bean"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.tomfordbeauty.co.uk/product/oud-wood-eau-de-parfum?size=100_ml",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Kardamom und rosa Pfeffer ergänzen Oud, Patschuli, Amber und Tonkabohne.",
+        "checked_at": "2026-10-11",
+        "community_data_included": false,
+        "publication_authorized": false,
+        "remaining_gates": [
+          "approved_original_image",
+          "public_release_review"
         ]
       }
     },
@@ -4210,6 +4372,44 @@
           "https://www.maisonmargiela-fragrances.us/fragrances/replica-eau-de-toilette/replica-by-the-fireplace/MM005.html",
           "https://www.parfumo.com/Perfumes/Maison_Margiela/by-the-fireplace",
           "https://www.douglas.de/de/p/5010308068?variant=882254"
+        ]
+      },
+      "discovery": {
+        "status": "facts_qualified_publication_hold",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "MM005",
+          "source_url": "https://www.maisonmargiela-fragrances.us/fragrances/replica-eau-de-toilette/replica-by-the-fireplace/MM005.html",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "pink pepper",
+            "orange blossom",
+            "clove"
+          ],
+          "heart": [
+            "chestnut accord",
+            "guaiac wood",
+            "cade oil"
+          ],
+          "base": [
+            "vanilla accord",
+            "Peru balsam",
+            "cashmeran"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.maisonmargiela-fragrances.us/fragrances/replica-eau-de-toilette/replica-by-the-fireplace/MM005.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Pfeffer und Gewürznelke führen zu Kastanie und rauchigen Hölzern. Vanille, Perubalsam und Cashmeran ergänzen die Basis.",
+        "checked_at": "2026-10-11",
+        "community_data_included": false,
+        "publication_authorized": false,
+        "remaining_gates": [
+          "approved_original_image",
+          "public_release_review"
         ]
       }
     },
