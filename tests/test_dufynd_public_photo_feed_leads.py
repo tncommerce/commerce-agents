@@ -4,7 +4,6 @@ from __future__ import annotations
 from copy import deepcopy
 
 import pytest
-
 from scripts.report_dufynd_public_photo_feed_leads import create_review, safe_feed_image
 
 META = {
