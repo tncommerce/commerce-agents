@@ -21,7 +21,7 @@ def test_discovery_surfaces_use_presentation_visual() -> None:
 
     assert "presentation_visual: FragranceVisualAsset | null" in catalog_lib
     assert 'composition === "product_scene"' in catalog_lib
-    assert "fragrance?.presentation_visual" in product_tile
+    assert "originalPhotoFor(fragrance)" in product_tile
     assert "originalPhotoFor(fragrance)" in catalog_browser
     assert "dufynd-catalog-photo-pending" in catalog_browser
     assert "<ScentArtwork" not in catalog_browser
@@ -30,7 +30,7 @@ def test_discovery_surfaces_use_presentation_visual() -> None:
     intro = _read("components/DiscoveryIntro.tsx")
     assert "fragrance?.presentation_visual || fragrance?.preferred_visual" in intro
     assert "isVerifiedProductTruthVisual(visual)" in intro
-    assert "item.fragrance.presentation_visual" in detail_page
+    assert "originalPhotoFor(item.fragrance)" in detail_page
     assert "fragrance.presentation_visual" in acquisition
     assert "originalPhotoFor(fragrance)" in library_hub
     assert "fragrance.presentation_visual" not in library_hub
@@ -40,15 +40,16 @@ def test_discovery_surfaces_use_presentation_visual() -> None:
 def test_detail_hero_uses_presentation_but_truth_features_stay_verified() -> None:
     detail_page = _read("app/duft/[slug]/page.tsx")
 
-    assert "fragrance.presentation_visual || productTruthVisual" in detail_page
-    assert "const productTruthVisual = fragrance.preferred_visual;" in detail_page
+    assert "fragrance.presentation_visual || productTruthVisual" not in detail_page
+    assert "const productTruthVisual = originalPhotoFor(fragrance);" in detail_page
     assert "productTruthIsVerified && productTruthVisual?.url" in detail_page
     assert "? productTruthVisual.url.startsWith" in detail_page
     assert "${SITE_URL}${productTruthVisual.url}" in detail_page
-    assert "cutoutUrl={heroIsProductTruth ? heroVisual?.url : undefined}" in detail_page
+    assert "cutoutUrl={heroVisual?.url}" in detail_page
     notes = _read("components/FragranceExplodedNotes.tsx")
     assert "FragranceVisual" not in notes
     assert "data-dufynd-exploded-note" in notes
+    assert "<FragranceNotesOverview notes={fragrance.notes} />" in detail_page
     assert "verifiedProductImage" in detail_page
 
 
