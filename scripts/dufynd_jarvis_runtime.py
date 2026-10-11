@@ -1010,6 +1010,12 @@ def _is_green_autonomy_task(
     """
     if not isinstance(task, dict):
         return False
+    # The seven specialist editors have their own deterministic ZERO-provider
+    # executor.  Never route these claims through the model-backed Jarvis
+    # worker, even if a future budget window becomes available.
+    payload = task.get("durable_payload")
+    if isinstance(payload, dict) and payload.get("kind") == "seven_content_role_v1":
+        return False
     if bool(task.get("requires_human_approval")):
         return False
     action_type = str(task.get("approval_action_type") or "auto_allowed")
