@@ -108,9 +108,9 @@ files are for private environments. Tests use **synthetic local inputs only**.
 | W5 | Ten real questions | Deduplicate and check specificity | No generic padded questions |
 | W6 | Twenty hooks | Deduplicate and qualify input completeness | No invented performance figures |
 | W2 | Ten existing candidate ideas | Check linkage to W5/W6 and known owner/published titles | No media, creative approval or publication |
-| W7 | Thirty contiguous daily proposals | Ensure unique dates, preserve reserved Owner slots | NO actual scheduling or publication |
+| W7 | Thirty contiguous daily proposals | Ensure unique dates, reject placeholder hooks and preserve reserved Owner slots | NO actual scheduling or publication |
 
-End-of-run `ready_for_owner_creative_review=true` means ONLY that
+**Live pilot preflight (11 Oct 2026):** all seven input sections exist, but\n21 of the 30 calendar entries still contain generic hook placeholders, and\n6 of 10 idea packages lack exact W5/W6 cross-links. W7 therefore correctly\nreturns BLOCKED on that private pilot until real Owner-original hooks/captions\nare resolved without modifying frozen media. Synthetic integration tests are\nnot a claim that the live private pilot has passed all seven stages.\n\nEnd-of-run `ready_for_owner_creative_review=true` means ONLY that
 all seven structured **text/source checks** were completed (some may contain
 HOLDs). It is **not** a 9.5/10 visual result, a publication authorization,
 or a promise that no license is pending. `ready_for_publication` stays
