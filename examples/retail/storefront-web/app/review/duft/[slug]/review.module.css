@@ -31,7 +31,7 @@
   height: 100%;
   padding: 27px;
   border-left: 1px solid #e8e6df;
-  background: radial-gradient(ellipse at 50% 41%, #fff 0, #fcfaf6 64%, #f0efe9 100%);
+  background: radial-gradient(ellipse at 50% 41%, #fff 0, #fcfaf6 64%, #f0efe9 100%);\n  background-color: #fffefa;
   box-shadow: none;
   color: #354a3b;
 }
