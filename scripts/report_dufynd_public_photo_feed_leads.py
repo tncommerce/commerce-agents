@@ -200,13 +200,10 @@ def create_review(
                 row, img = matches[0]
                 expected_gtin = mapped[product_id][sku]
                 feed_gtins = {
-                    str(row[field]).strip()
-                    for field in ("gtin", "ean")
-                    if row.get(field)
+                    str(row[field]).strip() for field in ("gtin", "ean") if row.get(field)
                 }
-                if (
-                    not feed_name_matches(item, row)
-                    or (expected_gtin and feed_gtins and feed_gtins != {expected_gtin})
+                if not feed_name_matches(item, row) or (
+                    expected_gtin and feed_gtins and feed_gtins != {expected_gtin}
                 ):
                     identity_conflict = True
                     continue
