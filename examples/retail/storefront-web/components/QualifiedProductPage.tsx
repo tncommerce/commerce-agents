@@ -1,4 +1,4 @@
-import ScentArtwork, {type ScentMotif} from './ScentArtwork';
+import FragranceNotesOverview from './FragranceNotesOverview';
 import type { RELEASE_PILOTS } from '@/lib/releasePilots';
 import { noteLabel } from '@/lib/noteLabels';
 import { canonicalBrand, brandSlug } from '@/lib/brandIdentity';
@@ -8,7 +8,7 @@ type Pilot=typeof RELEASE_PILOTS[number];
 export default function QualifiedProductPage({pilot,profiles,publicMode=false}:{pilot:Pilot;profiles:Pilot[];publicMode?:boolean}) {
  const {fact}=pilot;const brand=canonicalBrand(fact.brand);
  const displayName=fact.name===fact.name.toUpperCase()?fact.name.toLowerCase().replace(/(^|\s)\S/g,c=>c.toUpperCase()):fact.name;
- const stages=[['top','Auftakt'],['heart','Herz'],['base','Nachklang'],['key','Charakteristische Noten']] as const;
+
  const notes=fact.notes as Partial<Record<string,string[]>>;
  const sharedNotes=new Set(Object.values(notes).flat().map(n=>n?.toLowerCase()));
  const related=profiles.filter(p=>p.product_id!==pilot.product_id).map(p=>({p,shared:[...new Set(Object.values(p.fact.notes).flat().filter(n=>sharedNotes.has(n.toLowerCase())))]})).filter(r=>r.shared.length).sort((a,b)=>b.shared.length-a.shared.length||a.p.slug.localeCompare(b.p.slug)).slice(0,3);
@@ -21,11 +21,26 @@ export default function QualifiedProductPage({pilot,profiles,publicMode=false}:{
   <nav className={styles.breadcrumb} aria-label="Brotkrumennavigation"><a href="/duft">Düfte</a><span>/</span>{PUBLIC_BRANDS.some(b=>b.slug===brandSlug(brand))?<a href={`/marken/${brandSlug(brand)}`}>{brand}</a>:<span>{brand}</span>}</nav>
   <section className={styles.hero}>
    <div className={styles.identity}><p className={styles.eyebrow}>{brand}</p><h1 data-long-word={displayName.split(/\s+/).some(word=>word.length>11)?'true':undefined}>{displayName.replace('REPLICA ','')}</h1><p className={styles.variant}>{fact.concentration}<span>·</span>{fact.volume_ml} ml</p></div>
-   <div className={styles.art}><ScentArtwork name={fact.name} tone={pilot.tone as 'rose'|'sage'|'amber'} motif={pilot.motif as ScentMotif} notes={pilot.art_notes}/></div>
-   <div className={styles.intro}><p className={styles.chapter}>DAS DUFTPORTRÄT <span>01 — 03</span></p><h2>{pilot.headline}</h2><p className={styles.summary}>{fact.summary_de}</p><a className={styles.cta} href="#duftverlauf">Die Komposition entdecken <span>↓</span></a><p className={styles.footnote}>Eigenständige Duftillustration, kein Markenflakon.<br/>Produktinformationen unabhängig von Händlerangeboten.</p></div>
+   <div className={styles.art} role="img" aria-label={`${brand} ${displayName}: Originalfoto noch nicht freigegeben`}>
+      <span className={styles.photoEyebrow}>DUFYND / DUFTARCHIV</span>
+      <div className={styles.photoIdentity}>
+        <span>{brand}</span><strong>{displayName}</strong>
+        <small>{fact.concentration} · {fact.volume_ml} ml</small>
+      </div>
+      <span className={styles.photoHold}>Originalfoto in Prüfung</span>
+    </div>
+   <div className={styles.intro}><p className={styles.chapter}>DAS DUFTPORTRÄT <span>01 — 03</span></p><h2>{pilot.headline}</h2><p className={styles.summary}>{fact.summary_de}</p><a className={styles.cta} href="#duftverlauf">Die Komposition entdecken <span>↓</span></a><p className={styles.footnote}>Neutrale Studiokarte, kein Markenflakon. Produktinformationen unabhängig von Händlerangeboten.</p></div>
   </section>
   <nav className={styles.sectionNav} aria-label="Auf dieser Duftseite"><a href="#duftverlauf">01 · Duftnoten</a><a href="#einordnung">02 · Einordnung</a><a href="#quellen">03 · Quellen</a></nav>
-  <section id="duftverlauf" className={styles.notes}><div className={styles.sectionHead}><div><p className={styles.eyebrow}>DIE KOMPOSITION</p><h2>{notes.key?.length?'Facetten eines Duftes.':'Vom Auftakt zum Nachklang.'}</h2></div><p>{notes.key?.length?'Belegte Noten. Keine erfundene Duftpyramide.':'Duftverlauf nach den dokumentierten Originalquellen.'}</p></div><div className={styles.noteGrid} data-stages={notes.key?.length?'key':'pyramid'}>{stages.filter(([k])=>notes[k]?.length).map(([k,label],i)=><article key={k}><span className={styles.number}>0{i+1}</span><h3>{label}</h3><ul>{notes[k]!.map(n=><li key={n}>{noteLabel(n)}</li>)}</ul></article>)}</div></section>
+  <section id="duftverlauf" className={styles.notes}>
+       <FragranceNotesOverview notes={{
+         top: notes.top || [],
+         heart: notes.heart || [],
+         base: notes.base || [],
+         key: notes.key || [],
+         supporting: notes.supporting || [],
+       }} />
+     </section>
   <section id="einordnung" className={styles.bottom}><div><p className={styles.eyebrow}>DER DUFT STEHT FÜR SICH</p><h2>Entdecken. Ohne Kaufpflicht.</h2><p>Dieses Profil beschreibt die Komposition unabhängig von Händlerangeboten. Für diese exakte Variante zeigen wir aktuell kein verifiziertes Angebot.</p><a href="/duft">Weitere Düfte entdecken ↗</a></div>
    <details id="quellen"><summary>Produktangaben & Quellen <span>+</span></summary><dl><dt>Variante</dt><dd>{fact.concentration} · {fact.volume_ml} ml</dd><dt>Identität</dt><dd>{fact.identity.kind==='gtin'?'Geprüfte GTIN':'Herstellerreferenz (keine GTIN)'}<br/><code>{fact.identity.value}</code></dd><dt>Originalquelle</dt><dd><a href={fact.identity.source_url} target="_blank" rel="noreferrer">{fact.identity.kind==='gtin'?'Identitätsnachweis beim Händler':'Produktseite des Herstellers'} ↗</a></dd><dt>Duftnoten</dt><dd><a href={fact.notes_source.url} target="_blank" rel="noreferrer">{fact.notes_source.kind==='manufacturer_product_facts'?'Herstellerangaben':'Dokumentierte Händlerangaben'} ↗</a></dd>{fact.volume_source_url&&<><dt>Volumennachweis</dt><dd><a href={fact.volume_source_url} target="_blank" rel="noreferrer">Quelle zur {fact.volume_ml}-ml-Variante ↗</a></dd></>}{fact.concentration_source_url&&<><dt>Konzentration</dt><dd><a href={fact.concentration_source_url} target="_blank" rel="noreferrer">Ergänzender Herstellernachweis ↗</a></dd></>}{fact.variant_evidence_note&&<><dt>Variantenhinweis</dt><dd>{fact.variant_evidence_note}</dd></>}<dt>Fakten geprüft</dt><dd>{fact.checked_at}</dd><dt>Darstellung</dt><dd>Eigene DUFYND-Vektorillustration. Kein Produktfoto. Originalproduktbild weiterhin HOLD.</dd></dl></details>
   </section>
