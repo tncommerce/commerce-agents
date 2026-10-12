@@ -29,39 +29,27 @@ PHOTO_PATH = re.compile(
     r"/media/catalog/product/(?:[a-z0-9]/){0,3}[a-z0-9_-]+\.(?:png|jpe?g|webp)$",
     re.IGNORECASE,
 )
-VOLUME = re.compile(r"(?<!\d)(\d{2,3})\s*(?:ml|milliliter)(?!\w)", re.I)
+VOLUME = re.compile(r"(?<![\d.,])(\d+(?:[.,]\d+)?)\s*(?:ml|milliliter)(?!\w)", re.I)
+# Only presentation words are dispensable. Variant words and concentration
+# markers must participate in equality, never a one-way subset match.
 STOP = {
-    "de",
-    "der",
-    "das",
-    "die",
-    "und",
-    "the",
-    "by",
-    "for",
-    "pour",
-    "eau",
-    "parfum",
     "perfume",
+    "perfumes",
     "parfums",
-    "edp",
-    "edt",
-    "elixir",
-    "intense",
-    "extrait",
     "spray",
     "nat",
     "vapo",
     "flacon",
     "flasche",
-    "ml",
-    "100",
-    "90",
-    "75",
-    "125",
-    "50",
-    "edition",
 }
+CONCENTRATIONS = (
+    (r"\b(?:extrait de parfum|extrait)\b", "strength_extrait"),
+    (r"\b(?:eau de parfum|edp)\b", "strength_edp"),
+    (r"\b(?:eau de toilette|edt)\b", "strength_edt"),
+    (r"\b(?:eau de cologne|edc)\b", "strength_edc"),
+    (r"\bparfum\b", "strength_parfum"),
+)
+MULTIPACK = re.compile(r"[+×/]|\b\d+\s*[xX]\s*\d|\b\d+\s*(?:teilig|pcs|stuck)\b")
 MAX_CANDIDATES = 3
 
 
@@ -96,20 +84,35 @@ def safe_feed_image(value: object) -> str | None:
 
 
 def feed_name_matches(item: dict, row: dict) -> bool:
-    label = norm(row.get("product_name"))
-    tokens = set(label.split())
-    names = {x for x in norm(item.get("name")).split() if x not in STOP}
-    brands = {x for x in norm(item.get("brand")).split() if x not in STOP}
-    if not names or not brands or not names.issubset(tokens) or not (brands & tokens):
+    def identity(value: object) -> set[str]:
+        label = norm(VOLUME.sub(" ", str(value or "")))
+        # Bounded spellings observed in the official review artifact 11715220608.
+        # Do not globally discard "by", perfumer names or refill qualifiers.
+        if item.get("product_id") == "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100":
+            label = label.replace("bois imperial by quentin bisch", "bois imperial")
+            label = label.replace("nat spray nachfullbar", "nat spray")
+        if item.get("brand") == "Giorgio Armani":
+            label = label.replace("giorgio armani emporio armani", "giorgio armani")
+        for pattern, marker in CONCENTRATIONS:
+            label = re.sub(pattern, marker, label)
+        return set(label.split()) - STOP
+
+    title = str(row.get("product_name") or "")
+    if MULTIPACK.search(title):
         return False
-    quantities = [int(v) for v in VOLUME.findall(str(row.get("product_name") or ""))]
+    quantities = [float(v.replace(",", ".")) for v in VOLUME.findall(title)]
     expected = int(item.get("volume_ml") or 0)
-    if quantities and expected not in quantities:
+    if expected <= 0 or (quantities and quantities != [expected]):
         return False
-    concentration = norm(item.get("concentration"))
-    if concentration == "eau de parfum" and ("edt" in tokens or "toilette" in tokens):
+    names = identity(item.get("name"))
+    brands = identity(item.get("brand"))
+    concentration = identity(item.get("concentration"))
+    if not names or not brands or not concentration:
         return False
-    return not (concentration == "eau de toilette" and ("edp" in tokens or "extrait" in tokens))
+    # Equality rejects both missing and additional flanker/edition words,
+    # sets, refills and body products. Missing size remains an unverified lead
+    # for compatibility with feed titles that omit volume, never a size claim.
+    return identity(title) == names | brands | concentration
 
 
 def verify_context(
@@ -167,27 +170,34 @@ def create_review(
     targets = {str(x.get("product_id") or ""): x for x in pending}
     if not targets or len(targets) != len(pending) or "" in targets:
         raise ValueError("invalid_or_duplicate_photo_gap_ids")
-    by_sku: dict[str, list[dict]] = defaultdict(list)
+    by_sku: dict[str, list[tuple[dict, str | None]]] = defaultdict(list)
     clean_rows = []
     for row in rows:
         sku = str(row.get("merchant_product_id") or "").strip()
         image = safe_feed_image(row.get("merchant_image_url"))
-        if sku and sku.isdigit() and len(sku) <= 16 and image:
-            clean_rows.append((sku, row, image))
+        if sku and sku.isdigit() and len(sku) <= 16:
+            # An unusable image does not make a conflicting SKU row disappear.
+            # Count identity ambiguity before screening image eligibility.
             by_sku[sku].append((row, image))
-    mapped: dict[str, set[str]] = defaultdict(set)
+            if image:
+                clean_rows.append((sku, row, image))
+    # Existing mappings provide a search key, never an image or variant approval.
+    # A reused/stale merchant SKU must not surface a different current bottle.
+    mapped: dict[str, dict[str, str]] = defaultdict(dict)
     for m in mappings.get("mappings", []):
         pid = str(m.get("product_id") or "")
         if pid not in targets or m.get("merchant") != MERCHANT:
             continue
         sku = str(m.get("merchant_product_id") or "")
         if sku.isdigit() and len(sku) <= 16:
-            mapped[pid].add(sku)
+            mapped[pid][sku] = str(m.get("gtin") or m.get("ean") or "").strip()
     report = []
     for product_id, item in sorted(targets.items()):
-        approved_skus = mapped.get(product_id, set())
+        approved_skus = set(mapped.get(product_id, {}))
         leads = []
         ambiguous = False
+        ambiguous_name = False
+        identity_conflict = False
         for sku in sorted(approved_skus):
             matches = by_sku.get(sku, [])
             if len(matches) > 1:
@@ -195,6 +205,17 @@ def create_review(
                 continue
             if len(matches) == 1:
                 row, img = matches[0]
+                if img is None:
+                    continue
+                expected_gtin = mapped[product_id][sku]
+                feed_gtins = {
+                    str(row[field]).strip() for field in ("gtin", "ean") if row.get(field)
+                }
+                if not feed_name_matches(item, row) or (
+                    expected_gtin and feed_gtins and feed_gtins != {expected_gtin}
+                ):
+                    identity_conflict = True
+                    continue
                 leads.append((0, sku, row, img, "mapped_sku_needs_feed_variant_review"))
         # Research leads use a strict brand+product-name intersection,
         # never infer exact 100ml variant from a similar 50ml name.
@@ -203,6 +224,9 @@ def create_review(
             if sku in approved_skus:
                 continue
             if feed_name_matches(item, row):
+                if len(by_sku[sku]) > 1:
+                    ambiguous_name = True
+                    continue
                 leads.append((1, sku, row, img, "name_lead_manual_sku_mapping_required"))
         leads.sort(key=lambda x: (x[0], x[1], x[3]))
         distinct = {(sku, img): (rank, sku, row, img, typ) for rank, sku, row, img, typ in leads}
@@ -212,7 +236,7 @@ def create_review(
         for _rank, sku, row, img, match_type in hits[:MAX_CANDIDATES]:
             title = str(row.get("product_name") or "")
             title = re.sub(r"[\x00-\x1f\x7f]", " ", title)[:130].strip()
-            quantities = [int(v) for v in VOLUME.findall(title)]
+            quantities = [float(v.replace(",", ".")) for v in VOLUME.findall(title)]
             candidates.append(
                 {
                     "merchant_product_id": sku,
@@ -235,6 +259,8 @@ def create_review(
                 "pinned_merchant_skus": sorted(approved_skus),
                 "total_possible_feed_rows": len(hits),
                 "duplicate_pinned_feed_sku_hold": ambiguous,
+                "duplicate_feed_sku_hold": ambiguous or ambiguous_name,
+                "pinned_feed_identity_conflict_hold": identity_conflict,
                 "more_matches_truncated": len(hits) > MAX_CANDIDATES,
                 "candidates": candidates,
                 "status": (
