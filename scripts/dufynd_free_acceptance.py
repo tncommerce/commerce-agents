@@ -49,7 +49,7 @@ STAGES = {
     ),
     "session": (PREFIX + "lib/analytics.ts", ("ensureAnalyticsSession", 'searchParams.set("sid"')),
     "product_detail": (
-        PREFIX + "app/duft/[slug]/page.tsx",
+        PREFIX + "components/FragranceDetailPage.tsx",
         ("<AcquisitionAnalytics", "<FragranceOffers"),
     ),
     "comparison": (

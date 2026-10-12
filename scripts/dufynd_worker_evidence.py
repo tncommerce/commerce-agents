@@ -15,7 +15,7 @@ MAX_TEXT_BYTES = 500
 ATTRIBUTION = (
     "examples/retail/storefront-web/lib/analytics.ts",
     "examples/retail/storefront-web/components/AcquisitionLanding.tsx",
-    "examples/retail/storefront-web/app/duft/[slug]/page.tsx",
+    "examples/retail/storefront-web/components/FragranceDetailPage.tsx",
     "examples/retail/storefront-web/app/vergleich/[pair]/page.tsx",
     "examples/retail/api/merchant_partners.py",
     "examples/retail/storefront-web/components/AcquisitionAnalytics.tsx",
@@ -98,7 +98,7 @@ CODE_WINDOWS = {
     "examples/retail/storefront-web/components/AcquisitionLanding.tsx": [
         ("<AcquisitionAnalytics", 0, 12)
     ],
-    "examples/retail/storefront-web/app/duft/[slug]/page.tsx": [
+    "examples/retail/storefront-web/components/FragranceDetailPage.tsx": [
         ("<AcquisitionAnalytics", 0, 4),
         ("<FragranceOffers", 0, 9),
         ("<AcquisitionInternalLink", 0, 6),
