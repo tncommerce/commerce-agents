@@ -161,6 +161,13 @@ def test_rejects_changed_pending_gmail_redelivery(monkeypatch, tmp_path):
         "no cursor acknowledged"
     )
     assert not (tmp_path / "broker-observations.json").exists()
+    receipt = json.loads((tmp_path / "broker-failure.json").read_text())
+    assert receipt["stage"] == "gmail_1_repeat"
+    assert receipt["reason"] == "pending_redelivery_mismatch"
+    from scripts.dufynd_private_observer_failure import validate_failure
+
+    assert validate_failure(receipt, run_id="123456789", sha="a" * 40) == receipt
+    assert len(client.calls) == 7
 
 
 def test_rejects_wrong_workflow_provenance_before_oidc(monkeypatch):
@@ -214,3 +221,50 @@ def test_failure_ingestion_rejects_wrong_run_and_unbounded_reason(monkeypatch):
         )
     with pytest.raises(observer_read.ProvenanceError, match="source_run_mismatch"):
         validate_failure(payload, run_id="999", sha="a" * 40)
+
+
+@pytest.mark.parametrize("repeat_index", [1, 2, 3])
+@pytest.mark.parametrize("reason", ["revoked", "rate_limited", "sensitive-provider-canary"])
+def test_repeat_read_failure_is_durable_bounded_and_never_retried(
+    monkeypatch, tmp_path, repeat_index, reason
+):
+    observations = [
+        {"observation_id": str(i), "evidence": {"history_id": str(i)}} for i in range(1, 4)
+    ]
+    client = FakeClient(
+        [
+            FakeResponse(200, {"value": "oidc-canary"}),
+            FakeResponse(200, []),
+            *[FakeResponse(200, item) for item in observations],
+            FakeResponse(200, {"gmail": {"status": "healthy"}}),
+            *[FakeResponse(200, item) for item in observations[: repeat_index - 1]],
+            FakeResponse(403, {"error": reason, "token": "provider-canary"}),
+        ]
+    )
+    configure(monkeypatch, client)
+    monkeypatch.chdir(tmp_path)
+    expected_reason = reason if reason in {"revoked", "rate_limited"} else "http_403"
+    with pytest.raises(SystemExit, match=f"gmail_{repeat_index}_repeat:{expected_reason}"):
+        observer_read.main()
+    receipt = json.loads((tmp_path / "broker-failure.json").read_text())
+    assert receipt["stage"] == f"gmail_{repeat_index}_repeat"
+    assert receipt["reason"] == expected_reason
+    assert "canary" not in json.dumps(receipt)
+    assert not (tmp_path / "broker-observations.json").exists()
+    assert len(client.calls) == 6 + repeat_index
+    from scripts.dufynd_private_observer_failure import validate_failure
+
+    assert validate_failure(receipt, run_id="123456789", sha="a" * 40) == receipt
+
+
+def test_failure_ingestion_rejects_nonexistent_repeat_stage(monkeypatch):
+    from scripts.dufynd_private_observer_failure import validate_failure
+
+    configure(monkeypatch, FakeClient([]))
+    payload = {
+        "_meta": observer_read.source_from_env(),
+        "stage": "gmail_4_repeat",
+        "reason": "revoked",
+    }
+    with pytest.raises(ValueError, match="invalid failure stage"):
+        validate_failure(payload, run_id="123456789", sha="a" * 40)
