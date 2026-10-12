@@ -10,7 +10,7 @@ import { chromium } from "playwright";
 import { verifyOfferRecovery } from "./offer-recovery-qa.mjs";
 import { verifyCatalogRecovery } from "./catalog-recovery-qa.mjs";
 import { verifyFirstMoneyFunnel } from "./first-money-funnel-qa.mjs";
-import { verifySocialProductEntry } from "./social-product-entry-qa.mjs";
+import { verifySocialProductEntry, verifyFirstMoneyLandingStates } from "./social-product-entry-qa.mjs";
 import { verifyPublicShareLinks } from "./public-share-qa.mjs";
 import { verifyLibraryClearRecovery } from "./library-clear-qa.mjs";
 import { verifyLibrarySaveRecovery } from "./library-save-qa.mjs";
@@ -287,6 +287,10 @@ try {
     const measurements = await verifySocialProductEntry(browser, baseUrl, outputDir);
     report.checks.push({ label: "social-product-entry", status: "passed", cases: measurements.length, measurements });
   } catch (error) { report.failures.push({ label: "social-product-entry", message: String(error) }); }
+  try {
+    const result = await verifyFirstMoneyLandingStates(browser, baseUrl, outputDir);
+    report.checks.push({ label: "first-money-landing-states", status: "passed", ...result });
+  } catch (error) { report.failures.push({ label: "first-money-landing-states", message: String(error) }); }
   try {
     const cases = await verifyNoteSculpture(browser, baseUrl, outputDir);
     report.checks.push({ label: "note-sculpture", status: "passed", cases });

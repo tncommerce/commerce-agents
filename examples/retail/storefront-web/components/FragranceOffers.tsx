@@ -76,6 +76,7 @@ export default function FragranceOffers({
   compact = false,
   analyticsSurface = "fragrance_detail",
   alternativesHref,
+  focusedLanding = false,
 }: {
   productId: string;
   heading?: string;
@@ -83,6 +84,8 @@ export default function FragranceOffers({
   compact?: boolean;
   analyticsSurface?: string;
   alternativesHref?: string;
+  /** Compact commerce presentation for the existing first-money product page. */
+  focusedLanding?: boolean;
 }) {
   const [payload, setPayload] = useState<
     MerchantOffersPayload | null | undefined
@@ -191,6 +194,7 @@ export default function FragranceOffers({
       <section
         className={`dufynd-journey-offers rounded-2xl border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5"} shadow-(--shadow-sm)`}
         aria-busy="true"
+        data-offer-state="loading"
       >
         <div className="text-[13px] font-semibold text-(--ink)">
           Händlerangebote werden geprüft …
@@ -201,9 +205,9 @@ export default function FragranceOffers({
 
   if (loadError) {
     return (
-      <section className={`dufynd-journey-offers rounded-2xl border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5"} shadow-(--shadow-sm)`}>
+      <section data-offer-state="error" className={`dufynd-journey-offers rounded-2xl border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5"} shadow-(--shadow-sm)`}>
         <h2 className="text-[17px] font-semibold text-(--ink)">
-          {heading}
+          {focusedLanding ? "Angebote gerade nicht erreichbar" : heading}
         </h2>
         <p className="mt-2 text-[13px] leading-5 text-(--ink-soft)">
           Die Händlerangebote konnten gerade nicht geladen werden.
@@ -214,11 +218,11 @@ export default function FragranceOffers({
           onClick={() =>
             setReloadToken((value) => value + 1)
           }
-          className="mt-3 rounded-xl border border-(--line) bg-(--surface) px-3 py-2 text-[12px] font-semibold text-(--ink) transition hover:border-(--ink)"
+          className={`mt-3 rounded-xl border border-(--line) px-3 py-2 text-[12px] font-semibold transition hover:border-(--ink) ${focusedLanding ? "min-h-11 bg-(--accent-strong) text-white" : "bg-(--surface) text-(--ink)"}`}
         >
           Angebote erneut prüfen
         </button>
-        <OfficialProductLink productId={productId} />
+        {!focusedLanding && <OfficialProductLink productId={productId} />}
         <OfferRecoveryLinks alternativesHref={alternativesHref} />
       </section>
     );
@@ -226,9 +230,9 @@ export default function FragranceOffers({
 
   if (!payload || payload.offers.length === 0) {
     return (
-      <section className={`dufynd-journey-offers rounded-2xl border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5"} shadow-(--shadow-sm)`}>
+      <section data-offer-state="empty" className={`dufynd-journey-offers rounded-2xl border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5"} shadow-(--shadow-sm)`}>
         <h2 className="text-[17px] font-semibold text-(--ink)">
-          {heading}
+          {focusedLanding ? "Zurzeit kein aktuelles Angebot" : heading}
         </h2>
         <p className="mt-2 text-[13px] leading-5 text-(--ink-soft)">
           Für diesen Duft ist aktuell kein ausreichend aktuelles,
@@ -236,7 +240,7 @@ export default function FragranceOffers({
           erst ein Angebot an, wenn Preis und Verfügbarkeit die
           Aktualitätsprüfung bestehen.
         </p>
-        <OfficialProductLink productId={productId} />
+        {!focusedLanding && <OfficialProductLink productId={productId} />}
         <OfferRecoveryLinks alternativesHref={alternativesHref} />
       </section>
     );
@@ -253,6 +257,7 @@ export default function FragranceOffers({
       ref={offerSectionRef}
       className={`dufynd-journey-offers rounded-[24px] border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5 sm:p-6"} shadow-(--shadow)`}
       data-merchant-offers
+      data-offer-state="available"
     >
       <div className="flex flex-wrap items-end justify-between gap-2">
         <div>
@@ -265,7 +270,9 @@ export default function FragranceOffers({
             {partnerOfferCount ? ` ${partnerOfferCount} Partner${partnerOfferCount === 1 ? "angebot" : "angebote"}` : ""}
             {partnerOfferCount && externalOfferCount ? " · " : ""}
             {externalOfferCount ? ` ${externalOfferCount} weitere ${externalOfferCount === 1 ? "Option" : "Optionen"}` : ""}
-            {" · "}Sortiert nach bekanntem Gesamtpreis und Aktualität. Bei Preisgleichheit und vergleichbarer Aktualität können Partnerlink und Provision entscheiden.
+            {focusedLanding && payload.offers.length === 1
+              ? " · Kauf direkt beim Händler."
+              : " · Sortiert nach bekanntem Gesamtpreis und Aktualität. Bei Preisgleichheit und vergleichbarer Aktualität können Partnerlink und Provision entscheiden."}
           </p>
         </div>
       </div>
@@ -275,6 +282,7 @@ export default function FragranceOffers({
           const best = offer.offer_id === payload.best_offer_id;
           const displayedPrice =
             offer.total_price ?? offer.price;
+          const showPriceBreakdown = focusedLanding && offer.total_price != null && offer.shipping_cost != null;
 
           return (
             <div
@@ -323,7 +331,7 @@ export default function FragranceOffers({
                       Gesamtpreis inkl. Versand
                     </span>
                   ) : null}
-                  {offer.shipping_label ? (
+                  {!showPriceBreakdown && offer.shipping_label ? (
                     <span className="text-[11px] text-(--ink-soft)">
                       {offer.shipping_label}
                     </span>
@@ -338,6 +346,12 @@ export default function FragranceOffers({
                     </span>
                   ) : null}
                 </div>
+
+                {showPriceBreakdown ? (
+                  <p data-offer-breakdown className="mt-1 text-[11px] text-(--ink-soft)">
+                    Artikel {formatMoney(offer.price, offer.currency)} · {offer.shipping_label || `Versand ${formatMoney(offer.shipping_cost!, offer.currency)}`}
+                  </p>
+                ) : null}
 
                 {formatUpdatedAt(offer.last_updated_at) ? (
                   <div className="mt-1 text-[10.5px] text-(--ink-soft)">
@@ -360,7 +374,7 @@ export default function FragranceOffers({
                       ? "sponsored noopener noreferrer"
                       : "noopener noreferrer"
                   }
-                  className={`w-full rounded-xl px-4 py-2.5 text-center text-[13px] font-semibold text-white transition sm:w-auto ${
+                  className={`${focusedLanding ? "inline-flex min-h-11 items-center justify-center " : ""}w-full rounded-xl px-4 py-2.5 text-center text-[13px] font-semibold text-white transition sm:w-auto ${
                     best
                       ? "bg-(--accent-strong) shadow-sm hover:brightness-95"
                       : "bg-(--ink) hover:opacity-90"

@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
 import path from "node:path";
+import { writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 
 // Artificial local offer. This is neither a current merchant quote nor revenue.
 const productId = "SC-RABANNE-1-MILLION-EDT-100";
@@ -13,6 +15,7 @@ const offer = {
 };
 
 export async function verifySocialProductEntry(browser, baseUrl, outputDir) {
+  assert.ok(["localhost", "127.0.0.1"].includes(new URL(baseUrl).hostname), "QA requires a local storefront");
   const measurements = [];
   for (const width of [390, 1440]) {
     for (const source of ["instagram", "youtube"]) {
@@ -57,6 +60,9 @@ export async function verifySocialProductEntry(browser, baseUrl, outputDir) {
         assert.equal(await hero.locator("img").count(), 0, "no unapproved bottle photo");
         assert.match(await hero.innerText(), /Eau de Toilette[\s\S]*100 ml/);
         assert.match(await hero.innerText(), /Originalfoto in Prüfung/);
+        assert.doesNotMatch(await page.locator("body").innerText(), /Preisreferenz|67,95/);
+        assert.ok((await page.locator("#dufynd-hero-offer-cta").boundingBox()).height >= 44);
+        assert.ok((await merchant.boundingBox()).height >= 44);
         const metrics = await page.evaluate(() => ({
           stage_height: document.querySelector(".dufynd-fragrance-stage-shell").getBoundingClientRect().height,
           cta_bottom: document.querySelector("#dufynd-hero-offer-cta").getBoundingClientRect().bottom,
@@ -121,4 +127,119 @@ export async function verifySocialProductEntry(browser, baseUrl, outputDir) {
     }
   }
   return measurements;
+}
+
+// One read-only GET of the existing public API, never the merchant/redirect.
+// Network availability is evidence, not a dependency of the deterministic tests.
+export async function verifyFirstMoneyLandingStates(browser, baseUrl, outputDir) {
+  assert.ok(["localhost", "127.0.0.1"].includes(new URL(baseUrl).hostname), "QA requires a local storefront");
+  const sourceUrl = `https://scentai-api-kxhe.onrender.com/api/merchant-offers/${productId}`;
+  const evidence = { source_url: sourceUrl, read_at: null, status: "UNKNOWN", http_status: null, sha256: null };
+  let attempted = false;
+  let liveBody = null;
+  const cases = [];
+  for (const width of [390, 1440]) {
+    const context = await browser.newContext({ viewport: { width, height: 900 }, serviceWorkers: "block", reducedMotion: "reduce" });
+    try {
+      const page = await context.newPage();
+      let mode = "live";
+      const forbidden = [];
+      const events = [];
+      await context.route("**/*", async (route) => {
+        const url = new URL(route.request().url());
+        if (url.pathname === "/api/session") return route.fulfill({ json: { session_id: "qa-landing-final-session" } });
+        if (url.pathname === "/api/analytics/events") {
+          events.push(route.request().postDataJSON());
+          return route.fulfill({ json: { ok: true } });
+        }
+        if (url.pathname === `/api/merchant-offers/${productId}`) {
+          if (mode === "error") return route.fulfill({ status: 503, body: "isolated unavailable fixture" });
+          if (mode === "empty") return route.fulfill({ json: { product_id: productId, offers: [], best_offer_id: null } });
+          if (mode === "recovery") return route.fulfill({ json: { product_id: productId, offers: [offer], best_offer_id: offerId } });
+          if (!attempted) {
+            attempted = true;
+            evidence.read_at = new Date().toISOString();
+            try {
+              assert.equal(route.request().method(), "GET");
+              const response = await route.fetch({ url: sourceUrl, headers: { accept: "application/json" }, maxRedirects: 0, maxRetries: 0, timeout: 7_000 });
+              evidence.http_status = response.status();
+              const text = await response.text();
+              if (response.ok()) {
+                const data = JSON.parse(text);
+                assert.equal(data.product_id, productId);
+                assert.ok(Array.isArray(data.offers));
+                assert.ok(data.offers.every((o) => o.product_id === productId));
+                liveBody = text;
+                evidence.sha256 = createHash("sha256").update(text).digest("hex");
+                evidence.status = data.offers.length ? "AVAILABLE" : "NO_ELIGIBLE_OFFER";
+              } else evidence.status = "API_UNAVAILABLE";
+            } catch { evidence.status = "API_UNAVAILABLE_OR_INVALID"; }
+          }
+          return liveBody
+            ? route.fulfill({ contentType: "application/json", body: liveBody })
+            : route.fulfill({ status: 503, body: "read-only public offer capture unavailable" });
+        }
+        if (url.origin !== new URL(baseUrl).origin || url.pathname.startsWith("/api/")) {
+          forbidden.push(url.pathname);
+          return route.abort();
+        }
+        return route.continue();
+      });
+      await page.goto(`${baseUrl}/duft/rabanne-1-million?qa=1&src=instagram&cmp=qa_landing_final&content=qa_state_review`);
+      await page.locator('[data-offer-state]:not([data-offer-state="loading"])').waitFor();
+      await page.evaluate(() => document.fonts.ready);
+      assert.doesNotMatch(await page.locator("body").innerText(), /Preisreferenz|67,95/);
+      const live = liveBody ? JSON.parse(liveBody) : null;
+      if (live?.offers.length) {
+        const offerSection = page.locator("[data-merchant-offers]");
+        await offerSection.locator('a[href*="/api/clickout/"]').first().waitFor();
+        const perfumetrader = live.offers.find((o) => o.offer_id === "perfumetrader-rabanne-1-million-edt-100");
+        evidence.perfumetrader_present = Boolean(perfumetrader);
+        if (perfumetrader) {
+          assert.equal(perfumetrader.affiliate_link, true);
+          assert.match(perfumetrader.variant_label, /100 ml/);
+          assert.match(perfumetrader.variant_label, /Eau de Toilette/);
+          const text = await offerSection.innerText();
+          for (const amount of [perfumetrader.price, perfumetrader.shipping_cost, perfumetrader.total_price]) {
+            if (amount == null) continue;
+            assert.ok(text.includes(amount.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })));
+          }
+          assert.match(text, /Werbung · Partnerlink/i);
+          evidence.offer = perfumetrader;
+        }
+      }
+      await page.screenshot({ path: path.join(outputDir, `landing-live-offer-${width}.png`), fullPage: true });
+      await page.locator("[data-offer-state]").screenshot({ path: path.join(outputDir, `landing-live-offer-${width}-section.png`) });
+      for (const state of ["error", "empty"]) {
+        mode = state;
+        await page.reload();
+        const section = page.locator(`[data-offer-state="${state}"]`);
+        await section.waitFor();
+        assert.doesNotMatch(await page.locator("body").innerText(), /Preisreferenz|67,95|76,89|71,90|95,00/);
+        assert.equal(await section.locator('a[href*="/api/clickout/"],a[target="_blank"]').count(), 0);
+        assert.equal(await page.locator("[data-merchant-offers]").count(), 0);
+        assert.match(await section.innerText(), state === "error" ? /Angebote gerade nicht erreichbar/ : /Zurzeit kein aktuelles Angebot/);
+        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+        await page.evaluate(() => window.scrollTo(0, 0));
+        await page.waitForTimeout(100);
+        await page.screenshot({ path: path.join(outputDir, `landing-${state}-${width}.png`), fullPage: true });
+        if (state === "error") {
+          const retry = section.getByRole("button", { name: "Angebote erneut prüfen", exact: true });
+          assert.ok((await retry.boundingBox()).height >= 44);
+          mode = "recovery"; // Explicit synthetic recovery test; no further live GET.
+          await retry.click();
+          const recovered = page.getByRole("link", { name: "Bei Perfumetrader ansehen", exact: true });
+          await recovered.waitFor();
+          const href = new URL(await recovered.getAttribute("href"), baseUrl);
+          for (const [key, value] of [["src", "instagram"], ["cmp", "qa_landing_final"], ["content", "qa_state_review"]]) assert.equal(href.searchParams.get(key), value);
+          assert.equal(await page.locator('[data-offer-state="error"]').count(), 0);
+        }
+        cases.push({ width, state, status: "passed" });
+      }
+      for (const event of events) assert.equal(event.internal_qa, true);
+      assert.deepEqual(forbidden.filter((p) => p.startsWith("/api/")), []);
+    } finally { await context.close(); }
+  }
+  await writeFile(path.join(outputDir, "landing-live-offer-evidence.json"), JSON.stringify({ ...evidence, body: liveBody ? JSON.parse(liveBody) : null, second_width: "same captured API response", real_clickouts: 0, production_analytics: 0 }, null, 2));
+  return { cases, live_evidence: evidence };
 }

@@ -217,6 +217,8 @@ export default async function FragrancePage({
 
   if (!fragrance) notFound();
 
+  // First-money landing prices come only from freshness-gated merchant offers.
+  const offerOnlyPricing = fragrance.product_id === "SC-RABANNE-1-MILLION-EDT-100";
   const checkedAt = formatCheckedAt(
     fragrance.market.checked_at,
   );
@@ -439,7 +441,7 @@ export default async function FragrancePage({
                   Duftcharakter: {fragrance.accords.slice(0, 3).map(accordLabel).join(" · ")}
                 </p>
               ) : null}
-              {!review && fragrance.market.reference_price_eur != null ? (
+              {!review && !offerOnlyPricing && fragrance.market.reference_price_eur != null ? (
                 <p className="mt-2 text-[11px] leading-4 text-(--ink-soft)">
                   Preisreferenz {formatPrice(fragrance.market.reference_price_eur)}
                   {checkedAt ? ` · Stand ${checkedAt}` : ""} · aktuelle Angebote separat prüfen
@@ -484,7 +486,7 @@ export default async function FragrancePage({
                   id="dufynd-hero-offer-cta"
                   productId={fragrance.product_id}
                   source="hero_offer_cta"
-                  className="rounded-xl bg-(--accent-strong) px-3 py-2.5 text-center text-[12px] font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:brightness-95 sm:px-4 sm:text-[13px]"
+                  className={`${offerOnlyPricing ? "inline-flex min-h-11 items-center justify-center " : ""}rounded-xl bg-(--accent-strong) px-3 py-2.5 text-center text-[12px] font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:brightness-95 sm:px-4 sm:text-[13px]`}
                 >
                   Angebote prüfen
                 </OfferSectionLink>}
@@ -660,6 +662,7 @@ export default async function FragrancePage({
             </span>
             <FragranceOffers
               productId={fragrance.product_id}
+              focusedLanding={offerOnlyPricing}
               alternativesHref={related.length ? "#alternativen" : undefined}
             />
           </div>}
@@ -885,7 +888,7 @@ export default async function FragrancePage({
           </div>
         </section>
 
-        {!review && <section className="mt-5 rounded-2xl border border-(--line) bg-(--well)/45 p-4 text-[11px] leading-5 text-(--ink-soft)">
+        {!review && !offerOnlyPricing && <section className="mt-5 rounded-2xl border border-(--line) bg-(--well)/45 p-4 text-[11px] leading-5 text-(--ink-soft)">
           <strong className="text-(--ink)">
             Preisreferenz:
           </strong>{" "}
