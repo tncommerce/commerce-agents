@@ -37,8 +37,10 @@ past individual OWNER_HOLDs. No cron, service or workflow is installed by the CL
   changed checkout/runner and exhausted attempts prevent additional work.
 - Reusing a plan ID with changed contents fails. Resume the same plan and DB;
   reviewed new inputs require a new plan ID. Retain the DB across process/host
-  restarts. A missing DB loses deduplication history; do not silently recreate it
-  after a host/storage incident and call that a successful resume.
+  restarts. Normal startup requires existing versioned state and never creates
+  or repairs a missing/empty/invalid DB. A storage incident is a STOP; restore
+  the preserved state before resuming. Do not initialize a replacement and call
+  that successful resume. Initialization is explicit and refuses existing files.
 
 ## Disabled example and authorized local validation
 
@@ -54,10 +56,17 @@ window and due times, and set enabled=true in that private copy. Run:
 ```sh
 python -m scripts.dufynd_zero_cost_nightshift \
   --plan /existing-private-state/plan.json \
-  --state /existing-private-state/queue.sqlite \
+  --state /existing-private-state/queue.sqlite --initialize-state \
   --root /existing-dufynd-development-checkout --max-seconds 60 \
   --stop-file /existing-private-state/STOP
 ```
+
+Use `--initialize-state` only for this first new-state trial. Omit it for every
+resume and scheduled invocation; it fails if the file already exists. The
+service template intentionally has no initialization flag. Earlier development
+smoke databases without the state-version marker fail closed; they are not
+silently migrated or erased. Restore valid state after loss, or explicitly
+review a new isolated trial with no continuity claim.
 
 No account, model, merchant or analytics calls occur. `source_intake` checks
 structure and disallowed claims only. It explicitly does **not** certify source
@@ -89,7 +98,9 @@ Regression suite: `tests/test_dufynd_zero_cost_nightshift.py`. Covers actual
 wall-clock due time, real process death, competing SQLite connections, durable
 attempt limits, stale leases, deduplication, unchanged and changed input,
 checkout/runner gates, dependency holds/cycles, STOP and disabled/window/runtime
-limits. Network is denied in the offline handler regression.
+limits; missing, empty, corrupt or incomplete resume state is refused without
+repair, and initialization cannot overwrite history. Network is denied in the
+offline handler regression.
 
 The local smoke below uses only a short private plan and existing source facts;
 never mark a production timer active based on a test passing. CI and final smoke

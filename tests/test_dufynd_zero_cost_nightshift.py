@@ -16,6 +16,7 @@ from scripts.dufynd_zero_cost_nightshift import (
     Queue,
     checkout_identity,
     execute_offline,
+    main,
     read_input,
     run,
     validate_plan,
@@ -63,7 +64,7 @@ def setup(tmp_path):
         "max_tasks_per_tick": 3,
         "tasks": [task],
     }
-    q = Queue(tmp_path / "state/queue.sqlite")
+    q = Queue(tmp_path / "state/queue.sqlite", initialize=True)
     yield tmp_path, plan, q
     q.db.close()
 
@@ -444,3 +445,59 @@ def test_nonstandard_and_duplicate_json_cannot_claim_integrity(setup, raw):
     assert report["tasks"][0]["reason"] == "invalid_json"
     assert report["tasks"][0]["status"] == "hold"
     assert report["attempts"] == 0
+
+
+def test_missing_resume_state_is_not_recreated(tmp_path):
+    path = tmp_path / "lost/queue.sqlite"
+    with pytest.raises(Gate, match="resume_state_missing"):
+        Queue(path)
+    assert not path.exists()
+
+
+def test_initialization_cannot_replace_existing_history(setup):
+    root, plan, q = setup
+    drive(setup)
+    with pytest.raises(Gate, match="state_already_exists"):
+        Queue(root / "state/queue.sqlite", initialize=True)
+    assert q.snapshot(plan)["attempts"] == 1
+
+
+@pytest.mark.parametrize("raw", [b"", b"damaged state"])
+def test_invalid_resume_state_is_not_repaired(tmp_path, raw):
+    path = tmp_path / "queue.sqlite"
+    path.write_bytes(raw)
+    path.chmod(0o600)
+    with pytest.raises(Gate, match="resume_state_invalid"):
+        Queue(path)
+    assert path.read_bytes() == raw
+
+
+def test_lost_completed_history_stops_instead_of_repeating(setup):
+    root, plan, q = setup
+    drive(setup)
+    q.db.close()
+    path = root / "state/queue.sqlite"
+    path.unlink()
+    with pytest.raises(Gate, match="resume_state_missing"):
+        Queue(path)
+    assert not path.exists()
+
+
+def test_resume_missing_table_is_not_silently_repaired(setup):
+    root, _, q = setup
+    q.db.execute("DROP TABLE completed")
+    q.db.commit()
+    with pytest.raises(Gate, match="resume_state_invalid"):
+        Queue(root / "state/queue.sqlite")
+    assert not q.db.execute("SELECT name FROM sqlite_master WHERE name='completed'").fetchall()
+
+
+def test_cli_defaults_to_resume_and_reports_missing_state(setup, monkeypatch, capsys):
+    root, plan, _ = setup
+    plan_file = root / "plan.json"
+    plan_file.write_text(json.dumps(plan))
+    state = root / "missing.sqlite"
+    monkeypatch.setattr(sys, "argv", ["runner", "--plan", str(plan_file), "--state", str(state)])
+    assert main() == 2
+    assert json.loads(capsys.readouterr().out)["stop_reason"] == "resume_state_missing"
+    assert not state.exists()

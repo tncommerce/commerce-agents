@@ -3,7 +3,7 @@
   "repository": "tncommerce/commerce-agents",
   "plan_id": "nightshift-draft-20261012",
   "checkout_sha": "d3e948ebeb22c944ad143b20e644d0c0c5f4b186",
-  "runner_sha256": "db23c190ec86799b6998307b968074c361b0a96c35cfd2dd4a09b41e5a647164",
+  "runner_sha256": "cc1da301c95d420cdf94955c53ca8137a1f304568a99004bfb9ba10f57cc4d05",
   "enabled": false,
   "production_activation": false,
   "max_external_cost_eur": 0,

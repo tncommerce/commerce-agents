@@ -250,18 +250,43 @@ def execute_offline(action, inputs):
 
 
 class Queue:
-    def __init__(self, path):
+    def __init__(self, path, *, initialize=False):
         path = Path(path)
         if path.is_symlink() or path.parent.is_symlink():
             raise Gate("state_symlink_denied")
-        path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
-        fd = os.open(path, os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW, 0o600)
-        os.close(fd)
+        if initialize:
+            path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+            try:
+                fd = os.open(path, os.O_CREAT | os.O_EXCL | os.O_RDWR | os.O_NOFOLLOW, 0o600)
+                os.close(fd)
+            except FileExistsError:
+                raise Gate("state_already_exists") from None
+        elif not path.is_file():
+            raise Gate("resume_state_missing")
         if path.stat().st_mode & 0o077:
             raise Gate("private_state_required")
-        self.db = sqlite3.connect(path, timeout=5)
+        # mode=rw prevents SQLite recreating a file lost after the existence check.
+        self.db = sqlite3.connect(path.resolve().as_uri() + "?mode=rw", uri=True, timeout=5)
         self.db.row_factory = sqlite3.Row
+        if not initialize:
+            try:
+                if self.db.execute("PRAGMA application_id").fetchone()[0] != 1146441284:
+                    raise Gate("resume_state_invalid")
+                if self.db.execute("PRAGMA user_version").fetchone()[0] != 1:
+                    raise Gate("resume_state_invalid")
+                for table, fields in {
+                    "plans": "id,hash,attempts",
+                    "tasks": "plan,id,key,status,attempts,lease_until,token,reason",
+                    "completed": "key,result,finished",
+                    "checkpoints": "plan,report",
+                }.items():
+                    self.db.execute(f"SELECT {fields} FROM {table} LIMIT 0")
+            except (sqlite3.DatabaseError, Gate):
+                self.db.close()
+                raise Gate("resume_state_invalid") from None
+            return
         self.db.executescript("""
+            BEGIN IMMEDIATE;
             CREATE TABLE IF NOT EXISTS plans (
               id TEXT PRIMARY KEY, hash TEXT NOT NULL, attempts INTEGER NOT NULL DEFAULT 0);
             CREATE TABLE IF NOT EXISTS tasks (
@@ -273,6 +298,9 @@ class Queue:
               key TEXT PRIMARY KEY, result TEXT NOT NULL, finished REAL NOT NULL);
             CREATE TABLE IF NOT EXISTS checkpoints (
               plan TEXT PRIMARY KEY, report TEXT NOT NULL);
+            PRAGMA application_id = 1146441284;
+            PRAGMA user_version = 1;
+            COMMIT;
         """)
 
     def register(self, plan):
@@ -505,6 +533,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--plan", type=Path, required=True)
     parser.add_argument("--state", type=Path, required=True)
+    parser.add_argument(
+        "--initialize-state",
+        action="store_true",
+        help="Create a NEW private state once; never use in timers",
+    )
     parser.add_argument("--root", type=Path, default=Path.cwd())
     parser.add_argument("--max-seconds", type=int, default=60)
     parser.add_argument("--stop-file", type=Path)
@@ -516,7 +549,7 @@ def main():
         if not plan["enabled"]:
             print(canonical({"stop_reason": "DISABLED", "external_cost_eur": 0}))
             return 0
-        queue = Queue(args.state)
+        queue = Queue(args.state, initialize=args.initialize_state)
         try:
             report = run(
                 plan,
