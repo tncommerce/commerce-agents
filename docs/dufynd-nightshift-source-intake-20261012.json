@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "checked_at": "2026-10-12",
+  "status": "MANUFACTURER_SOURCE_INTAKE_NOT_STAGED",
+  "facts_only": true,
+  "community_data_included": false,
+  "publication_authorized": false,
+  "products": [
+    {
+      "candidate_id": "BDK-GRIS-CHARNEL-EDP",
+      "brand": "BDK Parfums",
+      "name": "Gris Charnel",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "manufacturer_reference": "gris-charnel / variant 45617631232284",
+      "source_url": "https://bdkparfums.com/en/products/gris-charnel?variant=45617631232284",
+      "variant_evidence": "Manufacturer heading Eau de Parfum; size selector and sticky product label 100ML; exact 100ML selector links to this variant.",
+      "notes": {
+        "top": [
+          "fig",
+          "black tea",
+          "cardamom essence"
+        ],
+        "heart": [
+          "iris absolute",
+          "bourbon vetiver"
+        ],
+        "base": [
+          "indian sandalwood",
+          "tonka bean absolute"
+        ]
+      },
+      "caveat": "Dedicated olfactory pyramid used. Perfumer narrative separately mentions Cistus and positions vetiver differently; do not merge that prose into the pyramid. Not Extrait, hair perfume or a set."
+    },
+    {
+      "candidate_id": "MONTALE-ARABIANS-TONKA-EDP",
+      "brand": "Montale",
+      "name": "Arabians Tonka",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "manufacturer_reference": "282-arabians-tonka / 100 ML",
+      "source_url": "https://www.montaleparfums.com/en/oriental/282-arabians-tonka.html",
+      "variant_evidence": "Official page title explicitly Eau de Parfum; main fragrance volume selector offers 100 ML and 50 ML. Select exact 100 ML, not 50 ML layering companion.",
+      "notes": {
+        "top": [
+          "bergamot",
+          "saffron"
+        ],
+        "heart": [
+          "rose",
+          "oud"
+        ],
+        "base": [
+          "amber",
+          "oakmoss",
+          "tonka bean",
+          "leather",
+          "brown sugar",
+          "white musk"
+        ]
+      },
+      "caveat": "Manufacturer lists leather and brown sugar in the base. No inferred longevity, score, stock or price; product availability markup is not verified offer evidence."
+    },
+    {
+      "candidate_id": "PDM-VALAYA-EDP",
+      "brand": "Parfums de Marly",
+      "name": "Valaya",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 75,
+      "manufacturer_reference": "valaya / 75ml",
+      "source_url": "https://parfums-de-marly.com/de/products/valaya",
+      "variant_evidence": "Official page title identifies Eau de Parfum (75 ml); main product selector 75ml distinct from30ml/75ml+10ml. Not Valaya Exclusif, hair perfume or set.",
+      "notes": {
+        "top": [
+          "bergamot",
+          "mandarin",
+          "white peach"
+        ],
+        "heart": [
+          "orange blossom",
+          "white flowers"
+        ],
+        "base": [
+          "white musk",
+          "akigalawood",
+          "vanilla",
+          "vetiver"
+        ]
+      },
+      "caveat": "Current German manufacturer pyramid used; no Mahonia/Petalya inference from third-party listings. Manufacturer facts do not authorize product imagery."
+    }
+  ],
+  "remaining_gates": [
+    "existing candidate -> exact staging identity mapping",
+    "bounded manufacturer-domain validator support where absent",
+    "curated review presentation",
+    "fresh renderer-bound QA",
+    "asset-specific image rights",
+    "owner release decision"
+  ],
+  "new_public_products": 0,
+  "new_verified_gtins": 0,
+  "new_images": 0,
+  "new_offers": 0
+}

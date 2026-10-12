@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "repository": "tncommerce/commerce-agents",
+  "plan_id": "nightshift-draft-20261012",
+  "checkout_sha": "d3e948ebeb22c944ad143b20e644d0c0c5f4b186",
+  "runner_sha256": "823c83b65b69a751a59b669679f6a095498094cc5c6556b0baf5916cd3d54a0f",
+  "enabled": false,
+  "production_activation": false,
+  "max_external_cost_eur": 0,
+  "starts_at": "2026-10-12T22:00:00+02:00",
+  "ends_at": "2026-10-13T06:00:00+02:00",
+  "max_attempts": 6,
+  "max_tasks_per_tick": 3,
+  "tasks": [
+    {
+      "task_id": "a_awin_report",
+      "action": "owner_gate",
+      "hold_reason": "source_report_missing",
+      "due_at": "2026-10-12T22:00:00+02:00",
+      "max_attempts": 1,
+      "inputs": [],
+      "depends_on": []
+    },
+    {
+      "task_id": "b_source_intake",
+      "action": "source_intake",
+      "due_at": "2026-10-12T22:01:00+02:00",
+      "max_attempts": 2,
+      "inputs": [
+        {
+          "path": "docs/dufynd-nightshift-source-intake-20261012.json",
+          "sha256": "0c39a281214b0ddf155ef269e669d2f7a773e64b3225fd3343108ad98590d668"
+        }
+      ],
+      "depends_on": []
+    },
+    {
+      "task_id": "c_source_json",
+      "action": "json_integrity",
+      "due_at": "2026-10-12T22:02:00+02:00",
+      "max_attempts": 2,
+      "inputs": [
+        {
+          "path": "docs/dufynd-nightshift-source-intake-20261012.json",
+          "sha256": "0c39a281214b0ddf155ef269e669d2f7a773e64b3225fd3343108ad98590d668"
+        }
+      ],
+      "depends_on": [
+        "b_source_intake"
+      ]
+    }
+  ]
+}

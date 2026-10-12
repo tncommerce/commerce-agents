@@ -1,0 +1,21 @@
+# REVIEW TEMPLATE ONLY. No installation or activation is authorized by this file.
+[Unit]
+Description=DUFYND bounded offline development checks
+ConditionPathExists=/var/lib/dufynd-nightshift/ACTIVATED
+ConditionPathExists=!/var/lib/dufynd-nightshift/STOP
+
+[Service]
+Type=oneshot
+User=dufynd
+WorkingDirectory=/srv/dufynd-development
+ExecStart=/usr/bin/python3 -m scripts.dufynd_zero_cost_nightshift --root /srv/dufynd-development --plan /var/lib/dufynd-nightshift/plan.json --state /var/lib/dufynd-nightshift/queue.sqlite --max-seconds 60 --stop-file /var/lib/dufynd-nightshift/STOP
+TimeoutStartSec=90
+UMask=0077
+NoNewPrivileges=true
+PrivateNetwork=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/dufynd-nightshift
+MemoryMax=256M
+CPUQuota=25%
