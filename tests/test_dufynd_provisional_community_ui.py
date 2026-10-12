@@ -6,7 +6,7 @@ CATALOG_MODEL = Path("examples/retail/storefront-web/lib/fragranceCatalog.ts")
 CATALOG_UI = Path("examples/retail/storefront-web/components/FragranceCatalogBrowser.tsx")
 FREE_COMPARE = Path("examples/retail/storefront-web/components/FragranceComparisonPicker.tsx")
 DOCUMENTED_COMPARE = Path("examples/retail/storefront-web/app/vergleich/[pair]/page.tsx")
-DETAIL = Path("examples/retail/storefront-web/app/duft/[slug]/page.tsx")
+DETAIL = Path("examples/retail/storefront-web/components/FragranceDetailPage.tsx")
 LIBRARY = Path("examples/retail/storefront-web/components/FragranceLibraryHub.tsx")
 
 

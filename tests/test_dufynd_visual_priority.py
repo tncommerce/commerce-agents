@@ -5,7 +5,7 @@ from pathlib import Path
 CATALOG_ADAPTER = Path("examples/retail/storefront-web/lib/fragranceCatalog.ts")
 
 SURFACES = [
-    Path("examples/retail/storefront-web/app/duft/[slug]/page.tsx"),
+    Path("examples/retail/storefront-web/components/FragranceDetailPage.tsx"),
     Path("examples/retail/storefront-web/components/FragranceComparisonPicker.tsx"),
     Path("examples/retail/storefront-web/components/FragranceLibraryHub.tsx"),
     Path("examples/retail/storefront-web/components/ProductTile.tsx"),
@@ -41,7 +41,7 @@ def test_customer_facing_image_cards_use_exact_original_registry() -> None:
     # Commerce hero and product-tile images must come from the exact original
     # registry; homepage audience discovery remains distinct from product truth.
     for path in (
-        Path("examples/retail/storefront-web/app/duft/[slug]/page.tsx"),
+        Path("examples/retail/storefront-web/components/FragranceDetailPage.tsx"),
         Path("examples/retail/storefront-web/components/ProductTile.tsx"),
     ):
         assert "originalPhotoFor(fragrance)" in path.read_text(encoding="utf-8"), str(path)

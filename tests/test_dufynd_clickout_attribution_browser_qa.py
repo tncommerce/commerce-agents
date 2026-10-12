@@ -237,9 +237,9 @@ def test_documented_comparison_links_preserve_acquisition_attribution() -> None:
 
 def test_product_detail_internal_links_preserve_acquisition_attribution() -> None:
     source = VISUAL_QA.read_text(encoding="utf-8")
-    detail_source = Path("examples/retail/storefront-web/app/duft/[slug]/page.tsx").read_text(
-        encoding="utf-8"
-    )
+    detail_source = Path(
+        "examples/retail/storefront-web/components/FragranceDetailPage.tsx"
+    ).read_text(encoding="utf-8")
 
     assert 'label: "product-detail-navigation-attribution"' in source
     assert "qa_product_detail_content" in source

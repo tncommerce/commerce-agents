@@ -3,7 +3,7 @@
 from pathlib import Path
 
 CSS = Path("examples/retail/storefront-web/app/globals.css")
-DETAIL = Path("examples/retail/storefront-web/app/duft/[slug]/page.tsx")
+DETAIL = Path("examples/retail/storefront-web/components/FragranceDetailPage.tsx")
 
 
 def test_verified_detail_fallback_uses_immersive_hero_stage() -> None:

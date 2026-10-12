@@ -51,3 +51,6 @@ examples/retail/data/scentai_launch_links.local.json
 examples/retail/data/.scentai_pilot_audio/
 examples/retail/data/.scentai_pilot_final_renders/
 examples/retail/data/scentai_pilot_batch_01_production_status.local.json
+
+# Ephemeral, hash-checked merchant photos for gated local review builds only.
+examples/retail/storefront-web/public/__review-photos/

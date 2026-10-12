@@ -13,4 +13,19 @@ if (process.env.DUFYND_CATALOG_REVIEW === '1') {
     copyFileSync(source,new URL(`duft/${p.slug}.html`,destination.href+'/'));
   }
   console.log(`${pilots.length} noindex review pages exported for local owner QA only.`);
+  const {items}=JSON.parse(readFileSync(new URL('../../data/dufynd_photo_integration_review.json',import.meta.url),'utf8'));
+  // Resolve the existing canonical slugs from the generated static params output,
+  // without introducing a second slug rule here.
+  const {readdirSync}=await import('node:fs');
+  const photoSource=new URL('../.next/server/app/review/photos/',import.meta.url);
+  const pages=readdirSync(photoSource).filter(name=>name.endsWith('.html')&&name!=='disabled.html');
+  if(pages.length!==items.length)throw Error('Private photo page count mismatch');
+  mkdirSync(new URL('photos/',destination.href+'/'),{recursive:true});
+  for(const name of pages){
+    const source=new URL(name,photoSource);
+    const html=readFileSync(source,'utf8');
+    if(!html.includes('data-photo-review-boundary')||!html.includes('noindex'))throw Error('Invalid merchant photo review page');
+    copyFileSync(source,new URL(`photos/${name}`,destination.href+'/'));
+  }
+  copyFileSync(new URL('../.next/server/app/review/photos.html',import.meta.url),new URL('photos.html',destination.href+'/'));
 }

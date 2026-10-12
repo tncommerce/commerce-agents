@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {photoIntegrationQa} from './photo-integration-qa.mjs';
 import {publicCount} from './public-catalog-summary.mjs';
 import {rendererDigest,renderDigest} from './release-gate.mjs';
 import {chromium} from 'playwright';
@@ -99,6 +100,7 @@ for(const width of [320,390,768,1440]) {
  }
  assert.deepEqual(errors,[]);report.push({width,status:'passed',review_pages:pilots.length,checks:['public_metrics','honest_catalog_visuals','brand_counts','mobile_search','swipe_controls','exact_review_pages','early_art','metadata','review_navigation','no_offers','noindex','no_overflow','no_page_errors']});await page.close();
 }
+await photoIntegrationQa(browser,{base,out});
 }finally{await browser.close();}
 assert.equal(rendererDigest(),builtRenderer,'Source changed during browser QA: do not certify mixed revisions');
 writeFileSync(`${out}/report.json`,JSON.stringify(report,null,2));

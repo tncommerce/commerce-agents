@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-DETAIL = Path("examples/retail/storefront-web/app/duft/[slug]/page.tsx")
+DETAIL = Path("examples/retail/storefront-web/components/FragranceDetailPage.tsx")
 HOME = Path("examples/retail/storefront-web/components/views/HomeView.tsx")
 
 

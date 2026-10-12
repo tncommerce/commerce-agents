@@ -4,7 +4,7 @@ FRONTEND_ANALYTICS = Path("examples/retail/storefront-web/lib/analytics.ts")
 BACKEND_ANALYTICS = Path("examples/retail/api/analytics.py")
 OFFER_LINK = Path("examples/retail/storefront-web/components/OfferSectionLink.tsx")
 MOBILE_BAR = Path("examples/retail/storefront-web/components/MobileOfferBar.tsx")
-DETAIL_PAGE = Path("examples/retail/storefront-web/app/duft/[slug]/page.tsx")
+DETAIL_PAGE = Path("examples/retail/storefront-web/components/FragranceDetailPage.tsx")
 
 
 def test_offer_section_event_is_supported_across_frontend_and_backend() -> None:

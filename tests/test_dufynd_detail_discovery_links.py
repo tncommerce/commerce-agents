@@ -3,7 +3,7 @@
 from pathlib import Path
 
 CATALOG_BROWSER = Path("examples/retail/storefront-web/components/FragranceCatalogBrowser.tsx")
-DETAIL_PAGE = Path("examples/retail/storefront-web/app/duft/[slug]/page.tsx")
+DETAIL_PAGE = Path("examples/retail/storefront-web/components/FragranceDetailPage.tsx")
 
 
 def test_catalog_accepts_a_q_deep_link_once() -> None:

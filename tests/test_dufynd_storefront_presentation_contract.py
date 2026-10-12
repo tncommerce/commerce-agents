@@ -14,7 +14,7 @@ def test_discovery_surfaces_use_presentation_visual() -> None:
     product_tile = _read("components/ProductTile.tsx")
     catalog_browser = _read("components/FragranceCatalogBrowser.tsx")
     discovery_page = _read("app/duft/page.tsx")
-    detail_page = _read("app/duft/[slug]/page.tsx")
+    detail_page = _read("components/FragranceDetailPage.tsx")
     acquisition = _read("components/AcquisitionLanding.tsx")
     library_hub = _read("components/FragranceLibraryHub.tsx")
     home_view = _read("components/views/HomeView.tsx")
@@ -38,7 +38,7 @@ def test_discovery_surfaces_use_presentation_visual() -> None:
 
 
 def test_detail_hero_uses_presentation_but_truth_features_stay_verified() -> None:
-    detail_page = _read("app/duft/[slug]/page.tsx")
+    detail_page = _read("components/FragranceDetailPage.tsx")
 
     assert "fragrance.presentation_visual || productTruthVisual" not in detail_page
     assert "const productTruthVisual = originalPhotoFor(fragrance);" in detail_page

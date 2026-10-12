@@ -96,6 +96,7 @@ export default function FragranceVisual({
   priority = false,
   mode = "auto",
   world = "amber",
+  sourceSize,
 }: {
   imageUrl?: string | null;
   cutoutUrl?: string | null;
@@ -106,6 +107,8 @@ export default function FragranceVisual({
   priority?: boolean;
   mode?: VisualMode;
   world?: FragranceVisualWorld;
+  /** Unaltered, hash-bound merchant review photographs; never a cutout effect. */
+  sourceSize?: { width: number; height: number };
 }) {
   const resolvedImageUrl = cutoutUrl || imageUrl;
   const whiteMatte = WHITE_MATTE_PHOTOGRAPHS.has(resolvedImageUrl || "");
@@ -206,6 +209,17 @@ export default function FragranceVisual({
         <div className="dufynd-editorial-depth-glint" aria-hidden />
       </div>
     );
+  }
+
+  if (sourceSize && resolvedImageUrl) {
+    return <div data-dufynd-original-review-photo data-variant={variant}
+      className={`${styles.sourcePhoto} ${className}`}>
+      {/* Preserve the entire original bitmap. At 2x, 260 CSS px fits every approved source. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={resolvedImageUrl} width={sourceSize.width} height={sourceSize.height}
+        alt={alt} loading={priority ? "eager" : "lazy"} decoding="async"
+        onError={() => setFailedImageUrl(resolvedImageUrl)} />
+    </div>;
   }
 
   return (
