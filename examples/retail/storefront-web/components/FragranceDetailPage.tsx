@@ -29,7 +29,7 @@ import {
   type FragranceVisualAsset,
 } from "@/lib/fragranceCatalog";
 import { photoReviewFor } from "@/lib/photoIntegrationReview";
-import { SITE_URL } from "@/lib/site";
+import { SITE_INDEXABLE, SITE_URL } from "@/lib/site";
 import { noteLabel } from "@/lib/noteLabels";
 import { targetGroupLabel } from "@/lib/targetLabels";
 
@@ -169,7 +169,25 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const released=RELEASED_PROFILES.find(p=>p.slug===slug);
-  if(released) return {title:released.seo.title,description:released.seo.description,alternates:{canonical:released.seo.public_path},robots:{index:released.indexing_approved,follow:true}};
+  if (released) {
+    const { title, description, public_path: canonical } = released.seo;
+    return {
+      title,
+      description,
+      alternates: { canonical },
+      robots: SITE_INDEXABLE
+        ? { index: released.indexing_approved, follow: true }
+        : { index: false, follow: false, nocache: true },
+      openGraph: {
+        type: "website",
+        url: `${SITE_URL}${canonical}`,
+        title,
+        description,
+        images: [],
+      },
+      twitter: { card: "summary", title, description, images: [] },
+    };
+  }
   const fragrance = getLiveFragranceBySlug(slug);
 
   if (!fragrance) {
