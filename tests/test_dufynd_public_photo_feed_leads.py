@@ -6,7 +6,11 @@ from copy import deepcopy
 from datetime import UTC, datetime
 
 import pytest
-from scripts.report_dufynd_public_photo_feed_leads import create_review, safe_feed_image
+from scripts.report_dufynd_public_photo_feed_leads import (
+    create_review,
+    feed_name_matches,
+    safe_feed_image,
+)
 
 META = {
     "source": "awin_product_feed_list",
@@ -234,3 +238,116 @@ def test_missing_volume_in_mapped_feed_title_cannot_claim_verified_size() -> Non
     record = next(x for x in output["items"] if x["product_id"].endswith("IMPERIAL-100"))
     assert record["candidates"][0]["feed_explicit_size_match"] is False
     assert record["candidates"][0]["status"] == "HUMAN_SOURCE_VARIANT_IMAGE_REVIEW_REQUIRED"
+
+
+@pytest.mark.parametrize("variant", ["Intense", "Elixir", "Extrait", "Edition", "Parfum"])
+def test_variant_words_are_required_in_both_directions(variant: str) -> None:
+    base = {"brand": "Example", "name": "Scent", "concentration": "EDP", "volume_ml": 100}
+    flanker = {**base, "name": f"Scent {variant}"}
+    plain = {"product_name": "Example Scent EDP 100 ml"}
+    named = {"product_name": f"Example Scent {variant} Eau de Parfum 100 ml"}
+    assert feed_name_matches(base, plain)
+    assert feed_name_matches(flanker, named)
+    assert not feed_name_matches(base, named)
+    assert not feed_name_matches(flanker, plain)
+
+
+@pytest.mark.parametrize(
+    "name,concentration,title",
+    [
+        ("Bois Impérial", "Eau de Parfum", "Essential Parfums Bois Imperial EdP Nat. Spray 100 ml"),
+        ("Bois Impérial", "Eau de Parfum", "Essential Parfums Bois Impérial EDP 100,0 ml"),
+        ("Marwa Extrait", "Extrait de Parfum", "Essential Parfums Marwa Extrait de Parfum 100 ml"),
+        ("Le Parfum", "Eau de Parfum", "Essential Parfums Le Parfum EdP 100 ml"),
+        ("Collector's Edition", "Parfum", "Essential Parfums Collector’s Edition Parfum 100 ml"),
+        ("Scent", "Eau de Toilette", "Essential Parfums Scent EDT 100 ml"),
+        ("Scent", "Extrait de Parfum", "Essential Parfums Scent Extrait 100 ml"),
+    ],
+)
+def test_exact_aliases_preserve_identity(name: str, concentration: str, title: str) -> None:
+    item = {**GAP["items"][0], "name": name, "concentration": concentration}
+    assert feed_name_matches(item, {"product_name": title})
+
+
+@pytest.mark.parametrize("expected", ["EDP", "EDT", "Parfum", "Extrait de Parfum"])
+@pytest.mark.parametrize("actual", ["EDP", "EDT", "Parfum", "Extrait de Parfum"])
+def test_concentrations_are_distinct(expected: str, actual: str) -> None:
+    item = {**GAP["items"][0], "concentration": expected}
+    row = {"product_name": f"Essential Parfums Bois Imperial {actual} 100 ml"}
+    assert feed_name_matches(item, row) is (expected == actual)
+
+
+@pytest.mark.parametrize(
+    "suffix",
+    [
+        "50 ml",
+        "1000 ml",
+        "100.5 ml",
+        "10 ml + 100 ml",
+        "100 ml + 5 ml",
+        "100 ml 100 ml",
+        "100/10 ml",
+        "100 + 10 ml",
+        "2x100 ml",
+        "2 × 100 ml",
+        "100 ml x 2",
+        "100 ml Geschenkset",
+        "100 ml Gift Set",
+        "100 ml Coffret",
+        "100 ml Duo",
+        "100 ml Refill",
+        "100 ml Nachfüllung",
+        "100 ml Body Lotion",
+        "100 ml Shower Gel",
+        "100 ml Hair Mist",
+        "100 ml EDT",
+        "100 ml Edition 2026",
+    ],
+)
+def test_sets_other_sizes_and_non_bottle_variants_never_become_mapped_leads(suffix: str) -> None:
+    result = run(
+        [
+            row(
+                "924719",
+                f"Essential Parfums Bois Imperial EDP {suffix}",
+                PHOTO_BOIS,
+                gtin="3770010614630",
+            ),
+            row("989009", f"Essential Parfums Bois Imperial EDP {suffix}", PHOTO_BOIS),
+        ]
+    )
+    record = next(x for x in result["items"] if x["product_id"].endswith("IMPERIAL-100"))
+    assert record["pinned_feed_identity_conflict_hold"] is True
+    assert record["candidates"] == []
+    assert result["approved_new_images"] == 0
+
+
+@pytest.mark.parametrize(
+    "title",
+    [
+        "Other Essential Bois Imperial EDP 100 ml",
+        "Essential Bois Imperial EDP 100 ml Intense",
+        "Essential Parfums Bois Imperial 100 ml",
+        "Essential Parfums Bois Imperial Elixir 100 ml",
+    ],
+)
+def test_incomplete_brand_or_concentration_is_not_an_exact_lead(title: str) -> None:
+    assert not feed_name_matches(GAP["items"][0], {"product_name": title})
+
+
+def test_full_brand_and_gender_and_numbered_editions_remain_distinct() -> None:
+    item = {
+        "brand": "Parfums de Marly",
+        "name": "Scent Pour Homme II",
+        "concentration": "EDP",
+        "volume_ml": 100,
+    }
+    assert feed_name_matches(
+        item, {"product_name": "Parfums de Marly Scent Pour Homme II EDP 100 ml"}
+    )
+    for title in [
+        "Marly Scent Pour Homme II EDP 100 ml",
+        "Parfums de Marly Scent Pour Femme II EDP 100 ml",
+        "Parfums de Marly Scent Pour Homme III EDP 100 ml",
+    ]:
+        assert not feed_name_matches(item, {"product_name": title})
