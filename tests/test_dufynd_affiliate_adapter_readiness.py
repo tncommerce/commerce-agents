@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 from scripts.check_dufynd_affiliate_adapter_readiness import (
     evaluate_adapter_readiness,
 )
@@ -103,3 +106,32 @@ def test_network_mismatch_blocks_adapter() -> None:
 
     assert report["state"] == "BLOCKED"
     assert any(issue.startswith("affiliate_network_mismatch:") for issue in report["issues"])
+
+
+def test_real_perfumetrader_config_does_not_retry_unavailable_awin_feed() -> None:
+    root = Path(__file__).resolve().parents[1] / "examples/retail/data"
+    report = evaluate_adapter_readiness(
+        json.loads((root / "dufynd_awin_perfumetrader_provider_config.json").read_text()),
+        json.loads((root / "scentai_affiliate_programs.json").read_text()),
+        json.loads((root / "merchant_partners.json").read_text()),
+    )
+    assert report["state"] == "WAITING_DIRECT_MERCHANT_EVIDENCE"
+    assert report["next_action"] == "verify_exact_merchant_page_and_existing_affiliate_evidence"
+    assert "awin_product_feed_unavailable" in report["issues"]
+
+
+def test_unavailable_feed_does_not_override_programme_or_contract_gates() -> None:
+    config = provider_config()
+    config["source_availability"] = {"awin_product_data_available": False}
+    assert evaluate_adapter_readiness(config, PROGRAMS, PARTNERS)["state"] == "WAITING_APPROVAL"
+    config["constants"]["network"] = "CJ Affiliate"
+    assert evaluate_adapter_readiness(config, PROGRAMS, PARTNERS)["state"] == "BLOCKED"
+
+
+def test_available_feed_preserves_preflight_route() -> None:
+    config = provider_config(merchant_id="notino", network="CJ Affiliate")
+    config["source_availability"] = {"awin_product_data_available": True}
+    assert (
+        evaluate_adapter_readiness(config, PROGRAMS, PARTNERS)["state"]
+        == "READY_FOR_FEED_PREFLIGHT"
+    )

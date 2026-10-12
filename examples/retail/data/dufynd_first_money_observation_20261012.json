@@ -1,0 +1,103 @@
+{
+  "version": 2,
+  "read_only": true,
+  "window": {
+    "start": "2026-10-05T05:20:00+00:00",
+    "end_exclusive": "2026-10-12T08:00:59.621272+00:00"
+  },
+  "coverage": {
+    "event_extract_complete": true,
+    "ingestion_completeness": "UNKNOWN",
+    "source_view": "dufynd_visitor_analytics",
+    "traffic_provenance": "explicit_visitor_only_excludes_qa_sessions_and_unclassified",
+    "offline_session_coverage": "limited_to_supplied_rows",
+    "bot_owner_and_unmarked_qa_exclusion": "NOT_ESTABLISHED",
+    "qualification": "tagged_social_landing_then_product_interest_same_session_and_cohort",
+    "minimum_sample": 30,
+    "sample_threshold_is_not_statistical_significance": true,
+    "affiliate_conversion_revenue": "UNAVAILABLE"
+  },
+  "summary": {
+    "observed_landing_sessions": 11,
+    "qualified_visits_observed": 1,
+    "content_cohorts": 1,
+    "events_by_type": {
+      "page_view": 18,
+      "fragrance_detail_view": 5,
+      "merchant_clickout": 1,
+      "product_open": 3
+    },
+    "unattributed_funnel_events": 20,
+    "test_events_excluded": 0,
+    "unclassified_events_excluded": 0,
+    "invalid_events_skipped": 0,
+    "duplicate_events_skipped": 0
+  },
+  "content": [
+    {
+      "platform": "tiktok",
+      "campaign_id": "tt_bio_launch_20261011",
+      "content_id": "profile_bio",
+      "product_ids": [
+        "SC-RABANNE-1-MILLION-EDT-100"
+      ],
+      "landing_sessions": 3,
+      "product_view_events": 1,
+      "qualified_visits_observed": 1,
+      "merchant_clickout_events": 1,
+      "qualified_clickout_sessions": 1,
+      "qualified_clickout_rate": 1.0,
+      "minimum_sample_met": false,
+      "sample_and_extract_gate_met": false,
+      "evidence_strength": "DIRECTIONAL_FIRST_PARTY_ONLY",
+      "views": null,
+      "impressions": null,
+      "reach": null,
+      "retention": null,
+      "completion": null,
+      "saves": null,
+      "shares": null,
+      "social_to_dufynd_ctr": null,
+      "affiliate_conversions": null,
+      "affiliate_revenue_eur": null,
+      "revenue_per_content_piece_eur": null,
+      "revenue_per_1000_qualified_visits_eur": null,
+      "owner_minutes": null,
+      "content_cost_eur": null,
+      "measurement_status": "FIRST_PARTY_ONLY_NO_VERIFIED_REVENUE"
+    }
+  ],
+  "audit_annotation": {
+    "extract_count_independently_matched": 32,
+    "raw_traffic_classes": [
+      {
+        "events": 104,
+        "latest": "2026-10-10T20:45:07.962406+00:00",
+        "sessions": 20,
+        "clickouts": 13,
+        "traffic_class": "internal_qa"
+      },
+      {
+        "events": 98,
+        "latest": "2026-10-09T22:14:02.072705+00:00",
+        "sessions": 42,
+        "clickouts": 4,
+        "traffic_class": "unclassified"
+      },
+      {
+        "events": 32,
+        "latest": "2026-10-11T19:28:15.985478+00:00",
+        "sessions": 11,
+        "clickouts": 1,
+        "traffic_class": "visitor"
+      }
+    ],
+    "new_events_since_20261012_064907_utc": 0,
+    "sole_visitor_clickout_may_be_owner_test": true,
+    "independent_customer_success_proven": false,
+    "network_reporting_access": "No Awin/CJ connected accounts in live Windsor discovery; no authorized current network report available",
+    "network_transactions": null,
+    "confirmed_commission_eur": null,
+    "historical_owner_report_window": "2026-10-01 through 2026-10-04 only; not evidence of zero in current window"
+  }
+}

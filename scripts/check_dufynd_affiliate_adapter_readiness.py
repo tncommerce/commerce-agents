@@ -98,8 +98,16 @@ def evaluate_adapter_readiness(
         state = "WAITING_APPROVAL"
         next_action = "await_affiliate_program_approval"
     elif application_status in APPROVED_STATUSES:
-        state = "READY_FOR_FEED_PREFLIGHT"
-        next_action = "run_real_feed_preflight"
+        source_availability = config.get("source_availability") or {}
+        if source_availability.get("awin_product_data_available") is False:
+            # An approved programme does not imply an available product feed.
+            # This is an evidence-routing decision, never an offer/release GO.
+            state = "WAITING_DIRECT_MERCHANT_EVIDENCE"
+            next_action = "verify_exact_merchant_page_and_existing_affiliate_evidence"
+            issues.append("awin_product_feed_unavailable")
+        else:
+            state = "READY_FOR_FEED_PREFLIGHT"
+            next_action = "run_real_feed_preflight"
     else:
         state = "REVIEW"
         next_action = "verify_affiliate_program_status"
