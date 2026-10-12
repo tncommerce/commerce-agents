@@ -290,11 +290,12 @@ export default function FragranceOffers({
                   <span className="font-semibold text-(--ink)">
                     {offer.merchant_name}
                   </span>
-                  {best ? (
+                  {best && payload.offers.length > 1 ? (
                     <span className="rounded-full bg-(--ink) px-2 py-0.5 text-[9.5px] font-semibold uppercase tracking-[0.08em] text-(--surface)">
                       {offer.total_price != null
                         ? "Bester Gesamtpreis"
                         : "Beste verfügbare Option"}
+                      {" · hier gelistet"}
                     </span>
                   ) : null}
                   <span
@@ -317,8 +318,13 @@ export default function FragranceOffers({
                       offer.currency,
                     )}
                   </span>
+                  {offer.total_price != null ? (
+                    <span data-offer-price-basis className="text-[11px] text-(--ink-soft)">
+                      Gesamtpreis inkl. Versand
+                    </span>
+                  ) : null}
                   {offer.shipping_label ? (
-                    <span className="text-[11px] text-(--ok)">
+                    <span className="text-[11px] text-(--ink-soft)">
                       {offer.shipping_label}
                     </span>
                   ) : offer.total_price == null ? (

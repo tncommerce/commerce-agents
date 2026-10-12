@@ -952,3 +952,63 @@
   .dufynd-fragrance-advanced > summary {padding: 17px 18px;}
   .dufynd-fragrance-advanced-body {padding: 0 12px 15px;}
 }
+
+/* A rights hold is a short notice, not a full-sized empty product photograph.
+   Registered public originals and private merchant reviews retain their stages. */
+.dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-fragrance-hero-grid {
+  min-height: 0;
+}
+.dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-fragrance-stage-shell {
+  display: flex;
+  align-items: center;
+  min-height: 48px !important;
+  max-height: none !important;
+  padding: 0 20px;
+  background: #fffefa !important;
+}
+.dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-neutral-visual-stage {
+  background: transparent !important;
+}
+.dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-neutral-visual-copy,
+.dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-fragrance-stage-shell::before,
+.dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-fragrance-stage-shell::after {
+  display: none;
+}
+.dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-detail-source-hold {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  font-size: 11px;
+  text-align: left;
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  .dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-fragrance-stage-shell {
+    padding-inline: 42px;
+  }
+}
+@media (min-width: 1024px) {
+  .dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-fragrance-hero-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-fragrance-identity {
+    grid-column: 1;
+    grid-row: 1;
+    margin: 0;
+    padding: 32px 32px 16px;
+    border-radius: 0;
+  }
+  .dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-fragrance-stage-shell {
+    grid-column: 1;
+    grid-row: 2;
+    padding: 0 32px 28px;
+  }
+  .dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-fragrance-hero-copy {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    margin: 0;
+    padding: 32px;
+    border-radius: 0;
+    border-left: 1px solid #e1e1d7;
+    box-shadow: none;
+  }
+}

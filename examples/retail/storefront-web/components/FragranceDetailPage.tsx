@@ -383,6 +383,7 @@ export default async function FragrancePage({
 
         <section
           data-product-id={fragrance.product_id}
+          data-dufynd-photo-hold={!heroIsProductTruth || undefined}
           data-merchant-photo-review={review ? "top-parfuemerie" : undefined}
           data-dufynd-studio-photo={heroIsProductTruth && ["merchant_feed", "licensed"].includes(heroVisual?.provenance || "") ? true : undefined}
           className={`dufynd-fragrance-hero dufynd-fragrance-hero--${visualTheme} relative overflow-hidden rounded-[30px] border border-(--line) bg-(--card) shadow-(--shadow)`}
