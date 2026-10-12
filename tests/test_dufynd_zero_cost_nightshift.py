@@ -425,3 +425,22 @@ def test_stop_checkpoint_survives_reopened_state(setup):
         assert saved["stop_reason"] == "QUEUE_TERMINAL"
     finally:
         reopened.db.close()
+
+
+@pytest.mark.parametrize(
+    "raw",
+    [
+        b'{"value":NaN}',
+        b'{"value":Infinity}',
+        b'{"value":-Infinity}',
+        b'{"publication_authorized":true,"publication_authorized":false}',
+    ],
+)
+def test_nonstandard_and_duplicate_json_cannot_claim_integrity(setup, raw):
+    root, plan, _ = setup
+    (root / "docs/input.json").write_bytes(raw)
+    plan["tasks"][0]["inputs"][0]["sha256"] = hashlib.sha256(raw).hexdigest()
+    report = drive(setup)
+    assert report["tasks"][0]["reason"] == "invalid_json"
+    assert report["tasks"][0]["status"] == "hold"
+    assert report["attempts"] == 0

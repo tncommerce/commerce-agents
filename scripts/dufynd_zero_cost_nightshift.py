@@ -38,6 +38,24 @@ def digest(value):
     return hashlib.sha256(canonical(value).encode()).hexdigest()
 
 
+def strict_json(raw):
+    def invalid_constant(_value):
+        raise Gate("invalid_json")
+
+    def unique_object(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise Gate("invalid_json")
+            result[key] = value
+        return result
+
+    try:
+        return json.loads(raw, parse_constant=invalid_constant, object_pairs_hook=unique_object)
+    except (ValueError, UnicodeError):
+        raise Gate("invalid_json") from None
+
+
 def timestamp(value):
     try:
         parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
@@ -97,10 +115,7 @@ def read_input(root, item):
         raise Gate("input_too_large")
     if hashlib.sha256(raw).hexdigest() != item["sha256"]:
         raise Gate("input_changed")
-    try:
-        return json.loads(raw)
-    except (ValueError, UnicodeError):
-        raise Gate("invalid_json") from None
+    return strict_json(raw)
 
 
 def validate_plan(plan):
@@ -497,7 +512,7 @@ def main():
     try:
         if args.plan.stat().st_size > MAX_FILE_BYTES:
             raise Gate("plan_too_large")
-        plan = validate_plan(json.loads(args.plan.read_text()))
+        plan = validate_plan(strict_json(args.plan.read_text()))
         if not plan["enabled"]:
             print(canonical({"stop_reason": "DISABLED", "external_cost_eur": 0}))
             return 0
