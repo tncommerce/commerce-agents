@@ -1,0 +1,49 @@
+name: DUFYND Rabanne RC1 isolated base gate
+
+on:
+  push:
+    branches:
+      - dufynd-core-product-nightshift-20261010
+    paths:
+      - "ops/dufynd_release/**"
+      - ".github/workflows/dufynd-rabanne-rc1-isolation.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rabanne-rc1-isolated-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  base-bound-candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout full history for pinned scentai-mvp commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Node 22
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: examples/package-lock.json
+
+      - name: Verify isolated overlay builder syntax
+        run: node --check ops/dufynd_release/build_rc1_candidate.mjs
+
+      - name: Construct and independently build two-file Rabanne RC1
+        run: node ops/dufynd_release/build_rc1_candidate.mjs --out "$RUNNER_TEMP/dufynd-rc1" --build
+
+      - name: Upload non-release source patch and build evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: dufynd-rabanne-rc1-base-bound-${{ github.run_id }}
+          path: ${{ runner.temp }}/dufynd-rc1/
+          if-no-files-found: warn
+          retention-days: 7
