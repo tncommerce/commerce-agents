@@ -98,10 +98,5 @@
   background: #fff;
 }
 @media (max-width: 767px) {
-  /* The public mobile hero caps its stage at 62vw. Keep the complete licensed
-     bitmap and breathing room in this isolated review instead of clipping it. */
-  :global(.dufynd-detail-page) :global(.dufynd-fragrance-hero[data-merchant-photo-review]) :global(.dufynd-fragrance-stage-shell) {
-    min-height: 320px !important;
-    max-height: none !important;
-  }
+  :global([data-merchant-photo-review]) :global(.dufynd-fragrance-stage-shell) { min-height: 320px; }
 }
