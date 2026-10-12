@@ -378,3 +378,29 @@ def test_observed_armani_brand_alias_does_not_erase_flankers() -> None:
     assert feed_name_matches(item, {"product_name": title})
     assert not feed_name_matches(item, {"product_name": title.replace("Intensely", "Absolutely")})
     assert not feed_name_matches(item, {"product_name": title + " Parfum"})
+
+
+@pytest.mark.parametrize("duplicate_image", ["", "https://other.invalid/conflict.png", PHOTO_NAXOS])
+@pytest.mark.parametrize("mapped", [True, False])
+def test_duplicate_sku_is_ambiguous_before_image_filtering(duplicate_image, mapped) -> None:
+    sku = "924719" if mapped else "989001"
+    name = "Essential Parfums Bois Imperial EDP 100 ml" if mapped else "Xerjoff Naxos EDP 100 ml"
+    suffix = "IMPERIAL-100" if mapped else "NAXOS-100"
+    rows = [
+        row(sku, name, PHOTO_BOIS if mapped else PHOTO_NAXOS),
+        row(sku, "Different product EDT 50 ml", duplicate_image),
+    ]
+    for feed_rows in (rows, list(reversed(rows))):
+        result = run(feed_rows)
+        entry = next(x for x in result["items"] if x["product_id"].endswith(suffix))
+        assert entry["candidates"] == []
+        assert entry["duplicate_feed_sku_hold"] is True
+        assert entry["duplicate_pinned_feed_sku_hold"] is mapped
+        assert result["approved_new_images"] == 0
+
+
+def test_single_unusable_image_cannot_become_a_pinned_candidate() -> None:
+    result = run([row("924719", "Essential Parfums Bois Imperial EDP 100 ml", "")])
+    entry = next(x for x in result["items"] if x["product_id"].endswith("IMPERIAL-100"))
+    assert entry["candidates"] == []
+    assert entry["duplicate_feed_sku_hold"] is False

@@ -170,14 +170,17 @@ def create_review(
     targets = {str(x.get("product_id") or ""): x for x in pending}
     if not targets or len(targets) != len(pending) or "" in targets:
         raise ValueError("invalid_or_duplicate_photo_gap_ids")
-    by_sku: dict[str, list[dict]] = defaultdict(list)
+    by_sku: dict[str, list[tuple[dict, str | None]]] = defaultdict(list)
     clean_rows = []
     for row in rows:
         sku = str(row.get("merchant_product_id") or "").strip()
         image = safe_feed_image(row.get("merchant_image_url"))
-        if sku and sku.isdigit() and len(sku) <= 16 and image:
-            clean_rows.append((sku, row, image))
+        if sku and sku.isdigit() and len(sku) <= 16:
+            # An unusable image does not make a conflicting SKU row disappear.
+            # Count identity ambiguity before screening image eligibility.
             by_sku[sku].append((row, image))
+            if image:
+                clean_rows.append((sku, row, image))
     # Existing mappings provide a search key, never an image or variant approval.
     # A reused/stale merchant SKU must not surface a different current bottle.
     mapped: dict[str, dict[str, str]] = defaultdict(dict)
@@ -193,6 +196,7 @@ def create_review(
         approved_skus = set(mapped.get(product_id, {}))
         leads = []
         ambiguous = False
+        ambiguous_name = False
         identity_conflict = False
         for sku in sorted(approved_skus):
             matches = by_sku.get(sku, [])
@@ -201,6 +205,8 @@ def create_review(
                 continue
             if len(matches) == 1:
                 row, img = matches[0]
+                if img is None:
+                    continue
                 expected_gtin = mapped[product_id][sku]
                 feed_gtins = {
                     str(row[field]).strip() for field in ("gtin", "ean") if row.get(field)
@@ -218,6 +224,9 @@ def create_review(
             if sku in approved_skus:
                 continue
             if feed_name_matches(item, row):
+                if len(by_sku[sku]) > 1:
+                    ambiguous_name = True
+                    continue
                 leads.append((1, sku, row, img, "name_lead_manual_sku_mapping_required"))
         leads.sort(key=lambda x: (x[0], x[1], x[3]))
         distinct = {(sku, img): (rank, sku, row, img, typ) for rank, sku, row, img, typ in leads}
@@ -250,6 +259,7 @@ def create_review(
                 "pinned_merchant_skus": sorted(approved_skus),
                 "total_possible_feed_rows": len(hits),
                 "duplicate_pinned_feed_sku_hold": ambiguous,
+                "duplicate_feed_sku_hold": ambiguous or ambiguous_name,
                 "pinned_feed_identity_conflict_hold": identity_conflict,
                 "more_matches_truncated": len(hits) > MAX_CANDIDATES,
                 "candidates": candidates,

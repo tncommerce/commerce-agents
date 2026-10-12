@@ -29,3 +29,9 @@ details, and its public branch has no product-detail analytics component. Those
 are renderer-bound changes requiring a separate candidate and refreshed QA and
 Owner review receipts before any release; existing approvals are not rewritten
 to bless them. They do not affect the currently live isolated Rabanne RC1 page.
+
+## Development-only RC1 ancestry integration
+
+Merged the released `d3e948ebeb22c944ad143b20e644d0c0c5f4b186` history into this Draft branch. The dynamic route continues delegating to the existing `FragranceDetailPage`, preserving the qualified catalog routing and reviewed-profile gates. The shared offers component keeps the broader development safeguards: comparison badge only for multiple offers, explicit listed-offer scope, total-price basis and neutral shipping text. These cover RC1 focused-landing behavior without reverting the rest of the catalog. The RC1 visual-QA stage selector correction and isolated stylesheet are retained. No reviewed renderer, receipt, production branch or release approval was modified.
+
+The existing exact-variant feed matcher was shared with the narrow photo Draft #776. Both branches now reject duplicate numeric merchant SKUs before filtering image URLs, including name-only discoveries. Synthetic tests cover missing, disallowed and valid duplicate image URLs in both row orders; no feed download, image registration, offer change or publication occurs.
