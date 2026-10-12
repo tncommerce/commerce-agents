@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "scope": "Development-only proposal, not a release approval",
+  "repository": "tncommerce/commerce-agents",
+  "development_branch": "dufynd-core-product-nightshift-20261010",
+  "integration_base_sha": "86d58bee958cade3ef372ddeaa6d9cf5baaa003e",
+  "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+  "purpose": "Minimal standalone first-money Rabanne page/offer improvements against frozen integration SHA. No release-pilot, image-rights, pricing-data, merchant-route or production changes.",
+  "allowed_changed_paths": [
+    "examples/retail/storefront-web/app/duft/[slug]/page.tsx",
+    "examples/retail/storefront-web/components/FragranceOffers.tsx"
+  ],
+  "overlay_files": [
+    {
+      "path": "examples/retail/storefront-web/app/duft/[slug]/page.tsx",
+      "expected_base_blob_sha": "c29ebb0298113e27e4f5f5654e486be25e7c58e6",
+      "edits": [
+        {
+          "find": "if (!fragrance) notFound();\n\n  const checkedAt =",
+          "replace": "if (!fragrance) notFound();\n\n  // RC1 only: historical market references must not compete with live offers.\n  const firstMoneyFocus = fragrance.product_id === \"SC-RABANNE-1-MILLION-EDT-100\";\n  const checkedAt ="
+        },
+        {
+          "find": "{fragrance.market.reference_price_eur != null ? (",
+          "replace": "{!firstMoneyFocus && fragrance.market.reference_price_eur != null ? ("
+        },
+        {
+          "find": "<FragranceOffers\n              productId={fragrance.product_id}\n",
+          "replace": "<FragranceOffers\n              productId={fragrance.product_id}\n              focusedLanding={firstMoneyFocus}\n"
+        },
+        {
+          "find": "        <section className=\"mt-5 rounded-2xl border border-(--line) bg-(--well)/45 p-4 text-[11px] leading-5 text-(--ink-soft)\">",
+          "replace": "        {!firstMoneyFocus && <section className=\"mt-5 rounded-2xl border border-(--line) bg-(--well)/45 p-4 text-[11px] leading-5 text-(--ink-soft)\">"
+        },
+        {
+          "find": "          von dieser Marktpreis-Referenz abweichen.\n        </section>\n\n        <footer",
+          "replace": "          von dieser Marktpreis-Referenz abweichen.\n        </section>}\n\n        <footer"
+        },
+        {
+          "find": "className=\"rounded-xl bg-(--accent-strong) px-3 py-2.5 text-center text-[12px] font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:brightness-95 sm:px-4 sm:text-[13px]\"",
+          "replace": "className={`${firstMoneyFocus ? \"inline-flex min-h-11 items-center justify-center \" : \"\"}rounded-xl bg-(--accent-strong) px-3 py-2.5 text-center text-[12px] font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:brightness-95 sm:px-4 sm:text-[13px]`}"
+        }
+      ]
+    },
+    {
+      "path": "examples/retail/storefront-web/components/FragranceOffers.tsx",
+      "expected_base_blob_sha": "e5c5d55756ee67f08d3528025b270b57ee6c4adc",
+      "edits": [
+        {
+          "find": "  alternativesHref,\n}: {",
+          "replace": "  alternativesHref,\n  focusedLanding = false,\n}: {"
+        },
+        {
+          "find": "  alternativesHref?: string;\n}) {",
+          "replace": "  alternativesHref?: string;\n  focusedLanding?: boolean;\n}) {"
+        },
+        {
+          "find": "        <OfficialProductLink productId={productId} />",
+          "replace": "        {!focusedLanding && <OfficialProductLink productId={productId} />}"
+        },
+        {
+          "find": "className=\"mt-3 rounded-xl border border-(--line) bg-(--surface) px-3 py-2 text-[12px] font-semibold text-(--ink) transition hover:border-(--ink)\"",
+          "replace": "className={`mt-3 rounded-xl border border-(--line) px-3 py-2 text-[12px] font-semibold transition hover:border-(--ink) ${focusedLanding ? \"min-h-11 bg-(--accent-strong) text-white\" : \"bg-(--surface) text-(--ink)\"}`}"
+        },
+        {
+          "find": "            {\" · \"}Sortiert nach bekanntem Gesamtpreis und Aktualität. Bei Preisgleichheit und vergleichbarer Aktualität können Partnerlink und Provision entscheiden.",
+          "replace": "            {focusedLanding && payload.offers.length === 1\n              ? \" · Kauf direkt beim Händler.\"\n              : \" · Sortiert nach bekanntem Gesamtpreis und Aktualität. Bei Preisgleichheit und vergleichbarer Aktualität können Partnerlink und Provision entscheiden.\"}"
+        },
+        {
+          "find": "          const displayedPrice =\n            offer.total_price ?? offer.price;",
+          "replace": "          const displayedPrice =\n            offer.total_price ?? offer.price;\n          const showPriceBreakdown = focusedLanding && offer.total_price != null && offer.shipping_cost != null;"
+        },
+        {
+          "find": "                  {offer.shipping_label ? (",
+          "replace": "                  {focusedLanding && offer.total_price != null ? (\n                    <span data-offer-price-basis className=\"text-[11px] text-(--ink-soft)\">Gesamtpreis inkl. Versand</span>\n                  ) : null}\n                  {!showPriceBreakdown && offer.shipping_label ? ("
+        },
+        {
+          "find": "                {formatUpdatedAt(offer.last_updated_at) ? (",
+          "replace": "                {showPriceBreakdown ? (\n                  <p data-offer-breakdown className=\"mt-1 text-[11px] text-(--ink-soft)\">\n                    Artikel {formatMoney(offer.price, offer.currency)} · {offer.shipping_label || `Versand ${formatMoney(offer.shipping_cost!, offer.currency)}`}\n                  </p>\n                ) : null}\n\n                {formatUpdatedAt(offer.last_updated_at) ? ("
+        },
+        {
+          "find": "                  {best ? (",
+          "replace": "                  {best && (!focusedLanding || payload.offers.length > 1) ? ("
+        },
+        {
+          "find": "className={`w-full rounded-xl px-4 py-2.5 text-center text-[13px] font-semibold text-white transition sm:w-auto ${",
+          "replace": "className={`${focusedLanding ? \"inline-flex min-h-11 items-center justify-center \" : \"\"}w-full rounded-xl px-4 py-2.5 text-center text-[13px] font-semibold text-white transition sm:w-auto ${"
+        }
+      ]
+    }
+  ]
+}
