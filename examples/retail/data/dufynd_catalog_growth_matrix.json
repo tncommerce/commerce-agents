@@ -4269,7 +4269,7 @@
       "candidate_id": "JPG-LE-BEAU-LE-PARFUM",
       "brand": "Jean Paul Gaultier",
       "name": "Le Beau Le Parfum",
-      "concentration": "Eau de Parfum",
+      "concentration": "Eau de Parfum Intense",
       "volume_ml": null,
       "state": "RESEARCH_ONLY",
       "possible_existing_ids": [],
@@ -4429,7 +4429,7 @@
     }
   ],
   "batch": {
-    "input_sha256": "c5be98cdf7914c1ee807a90e083a18fc822e189e0922f535ae29053018704602",
+    "input_sha256": "ad1dcfcde61cfc31d9127897c5776ad5f50b98a3fa212438696dc4169a2081b1",
     "selected": [
       "SC-WIDIAN-LONDON-EXTRAIT-50",
       "YSL-MYSLF-EDP",

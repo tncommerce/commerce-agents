@@ -1,0 +1,182 @@
+{
+  "schema_version": 1,
+  "checked_at": "2026-10-12",
+  "status": "MANUFACTURER_SOURCE_INTAKE_NOT_STAGED",
+  "facts_only": true,
+  "community_data_included": false,
+  "publication_authorized": false,
+  "products": [
+    {
+      "candidate_id": "BDK-GRIS-CHARNEL-EDP",
+      "brand": "BDK Parfums",
+      "name": "Gris Charnel",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "manufacturer_reference": "gris-charnel / variant 45617631232284",
+      "source_url": "https://bdkparfums.com/en/products/gris-charnel?variant=45617631232284",
+      "variant_evidence": "Manufacturer heading Eau de Parfum; size selector and sticky product label 100ML; exact 100ML selector links to this variant.",
+      "notes": {
+        "top": [
+          "fig",
+          "black tea",
+          "cardamom essence"
+        ],
+        "heart": [
+          "iris absolute",
+          "bourbon vetiver"
+        ],
+        "base": [
+          "indian sandalwood",
+          "tonka bean absolute"
+        ]
+      },
+      "caveat": "Dedicated olfactory pyramid used. Perfumer narrative separately mentions Cistus and positions vetiver differently; do not merge that prose into the pyramid. Not Extrait, hair perfume or a set."
+    },
+    {
+      "candidate_id": "MONTALE-ARABIANS-TONKA-EDP",
+      "brand": "Montale",
+      "name": "Arabians Tonka",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "manufacturer_reference": "282-arabians-tonka / 100 ML",
+      "source_url": "https://www.montaleparfums.com/en/oriental/282-arabians-tonka.html",
+      "variant_evidence": "Official page title explicitly Eau de Parfum; main fragrance volume selector offers 100 ML and 50 ML. Select exact 100 ML, not 50 ML layering companion.",
+      "notes": {
+        "top": [
+          "bergamot",
+          "saffron"
+        ],
+        "heart": [
+          "rose",
+          "oud"
+        ],
+        "base": [
+          "amber",
+          "oakmoss",
+          "tonka bean",
+          "leather",
+          "brown sugar",
+          "white musk"
+        ]
+      },
+      "caveat": "Manufacturer lists leather and brown sugar in the base. No inferred longevity, score, stock or price; product availability markup is not verified offer evidence."
+    },
+    {
+      "candidate_id": "PDM-VALAYA-EDP",
+      "brand": "Parfums de Marly",
+      "name": "Valaya",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 75,
+      "manufacturer_reference": "valaya / 75ml",
+      "source_url": "https://parfums-de-marly.com/de/products/valaya",
+      "variant_evidence": "Official page title identifies Eau de Parfum (75 ml); main product selector 75ml distinct from30ml/75ml+10ml. Not Valaya Exclusif, hair perfume or set.",
+      "notes": {
+        "top": [
+          "bergamot",
+          "mandarin",
+          "white peach"
+        ],
+        "heart": [
+          "orange blossom",
+          "white flowers"
+        ],
+        "base": [
+          "white musk",
+          "akigalawood",
+          "vanilla",
+          "vetiver"
+        ]
+      },
+      "caveat": "Current German manufacturer pyramid used; no Mahonia/Petalya inference from third-party listings. Manufacturer facts do not authorize product imagery."
+    },
+    {
+      "candidate_id": "HERMES-TERRE-DHERMES-EAU-GIVREE",
+      "brand": "Hermès",
+      "name": "Terre d'Hermès Eau Givrée",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "manufacturer_reference": "V107522V0",
+      "source_url": "https://www.hermes.com/fr/fr/product/terre-d-hermes-eau-givree-eau-de-parfum-V107522V0/",
+      "variant_evidence": "Official product heading specifies Eau de parfum; selected volume and capacity are 100 ml; explicit product reference V107522V0.",
+      "notes": {
+        "key": [
+          "citron",
+          "juniper berry",
+          "Timut pepper"
+        ]
+      },
+      "caveat": "Manufacturer lists principal materials without assigning top/heart/base positions. Preserve flat key notes; citron is not generic lemon. Mineral/woody description is not an additional pyramid. No GTIN, image rights, community values or merchant offer inferred."
+    },
+    {
+      "candidate_id": "JPG-LA-BELLE-EDP",
+      "brand": "Jean Paul Gaultier",
+      "name": "La Belle",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "manufacturer_reference": "000000000065132212",
+      "source_url": "https://www.jeanpaulgaultier.com/fr/fr/p/gamme-la-belle/la-belle-eau-de-parfum-000000000065132212",
+      "variant_evidence": "Official EDP heading, 100ml variant link and product-specific 100ML image labels; not the distinct Le Parfum Intense, Paradise Garden, Rosea or Flower Edition comparisons.",
+      "notes": {
+        "top": [
+          "bergamot"
+        ],
+        "heart": [
+          "green pear"
+        ],
+        "base": [
+          "vanilla pod"
+        ]
+      },
+      "caveat": "Dedicated top/heart/base heading used. No vetiver or comparison-product tonka inferred; reference is not a GTIN or image license."
+    },
+    {
+      "candidate_id": "JPG-LE-BEAU-LE-PARFUM",
+      "brand": "Jean Paul Gaultier",
+      "name": "Le Beau Le Parfum",
+      "concentration": "Eau de Parfum Intense",
+      "volume_ml": 125,
+      "manufacturer_reference": "000000000065180318",
+      "source_url": "https://www.jeanpaulgaultier.com/de/de/p/linie-le-beau/le-beau-le-parfum-eau-de-parfum-intense-000000000065180318",
+      "variant_evidence": "Manufacturer heading explicitly EDP Intense; 125ml option resolves to this product reference and 125ML product labels.",
+      "notes": {
+        "key": [
+          "coconut wood accord",
+          "tonka bean",
+          "sandalwood"
+        ]
+      },
+      "caveat": "Dedicated three-note list retained as key notes. Narrative adds ambergris, ginger and pineapple; not merged into a constructed pyramid. Existing candidate concentration EDP was corrected to the evidenced EDP Intense; not Le Beau EDT."
+    },
+    {
+      "candidate_id": "JPG-LE-BEAU-PARADISE-GARDEN",
+      "brand": "Jean Paul Gaultier",
+      "name": "Le Beau Paradise Garden",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 125,
+      "manufacturer_reference": "000000000065199801",
+      "source_url": "https://www.jeanpaulgaultier.com/de/de/p/linie-le-beau/le-beau-paradise-garden-eau-de-parfum-000000000065199801",
+      "variant_evidence": "Manufacturer EDP heading and 125ml selection with product-specific 125ML labels; distinct75ml reference.",
+      "notes": {
+        "key": [
+          "coconut water",
+          "green fig",
+          "sandalwood"
+        ]
+      },
+      "caveat": "Dedicated three-note list retained. Narrative also mentions tonka, ginger and mint; not merged into a constructed pyramid. Not Le Beau EDT, Le Parfum, Narcisse, Flower Edition or gift set."
+    }
+  ],
+  "remaining_gates": [
+    "existing candidate -> exact staging identity mapping",
+    "bounded manufacturer-domain validator support where absent",
+    "curated review presentation",
+    "fresh renderer-bound QA",
+    "asset-specific image rights",
+    "owner release decision"
+  ],
+  "new_public_products": 0,
+  "new_verified_gtins": 0,
+  "new_images": 0,
+  "new_offers": 0,
+  "provenance_note": "First three records reused unchanged from prior PR774 research; four additional existing candidates inspected directly on manufacturer pages during unattended continuation. Intake is not staging, qualification, review QA or publication."
+}
