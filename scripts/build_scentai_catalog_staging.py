@@ -267,7 +267,8 @@ def wave_staging_row(candidate: dict, *, wave_id: str, batch: int) -> dict:
             "recommendation_profile": profile,
         },
         "community": {
-            "source": community.get("source") or "Parfumo",
+            # Manufacturer facts do not establish community provenance.
+            "source": community.get("source") or None,
             "rating_10": community.get("rating_10"),
             "rating_count": community.get("rating_count"),
             "longevity_10": community.get("longevity_10"),
