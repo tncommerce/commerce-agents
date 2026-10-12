@@ -14,10 +14,15 @@ export async function photoIntegrationQa(browser,{base,out}) {
     const page=await browser.newPage({viewport:{width,height:900},deviceScaleFactor:2,reducedMotion:'reduce'});
     const errors=[];page.on('pageerror',e=>errors.push(e.message));
     // No analytics, merchant requests or synthetic clickouts during visual QA.
-    await page.route('**/*',r=>new URL(r.request().url()).origin===new URL(base).origin?r.continue():r.abort());
+    await page.route('**/*',r=>new URL(r.request().url()).origin===new URL(base).origin || originals.some(p=>p.url===r.request().url()) ? r.continue() : r.abort());
     await page.route('**/analytics/**',r=>r.fulfill({status:204}));
     await page.goto(`${base}/duft`);
     await page.locator('.dufynd-catalog-card').first().waitFor();
+    for(const img of await page.locator('.dufynd-catalog-card img').all()) {
+      await img.scrollIntoViewIfNeeded();
+      await img.evaluate(x=>x.decode());
+    }
+    await page.evaluate(()=>scrollTo(0,0));
     await page.screenshot({path:`${out}/photo-integration/catalog-public-before-${width}.png`,fullPage:true});
     await page.goto(`${base}/review/photos`);
     assert.equal(await page.locator('[data-photo-review-card]').count(),5);
