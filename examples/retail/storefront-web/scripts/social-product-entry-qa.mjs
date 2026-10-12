@@ -72,7 +72,7 @@ export async function verifySocialProductEntry(browser, baseUrl, outputDir) {
         measurements.push({ source, width, ...metrics });
         const section = page.locator("[data-merchant-offers]");
         assert.match(await section.innerText(), /Gesamtpreis inkl. Versand/);
-        assert.doesNotMatch(await section.innerText(), /Bester Gesamtpreis|Beste verfügbare Option/);
+        assert.doesNotMatch(await section.innerText(), /Bester Gesamtpreis|Beste verfügbare Option/i);
         assert.match(await section.innerText(), /Werbung · Partnerlink/);
         const clickout = new URL(await merchant.getAttribute("href"), baseUrl);
         assert.equal(clickout.pathname, `/api/clickout/${offerId}`);
@@ -113,7 +113,7 @@ export async function verifySocialProductEntry(browser, baseUrl, outputDir) {
           offers = [{ ...offer }, { ...offer, offer_id: "qa-second", merchant_name: "QA second", total_price: 100 }];
           await page.reload();
           await merchant.waitFor();
-          assert.match(await section.innerText(), /Bester Gesamtpreis · hier gelistet/);
+          assert.match(await section.innerText(), /Bester Gesamtpreis · hier gelistet/i);
         }
       } finally {
         await context.close();
