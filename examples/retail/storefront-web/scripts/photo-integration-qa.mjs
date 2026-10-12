@@ -51,12 +51,18 @@ export async function photoIntegrationQa(browser,{base,out}) {
       assert.equal(actual.width,item.width);assert.equal(actual.height,item.height);
       assert.equal(actual.filter,'none');assert.equal(actual.transform,'none');assert.equal(actual.fit,'contain');
       assert.ok(actual.displayHeight<=260.1&&actual.displayHeight*2<=item.height,'Source supports display at 2x without upscaling');
+      const frame=await img.evaluate(x=>{
+        const image=x.getBoundingClientRect();
+        const stage=x.closest('.dufynd-fragrance-stage-shell').getBoundingClientRect();
+        return {top:image.top-stage.top,bottom:stage.bottom-image.bottom,left:image.left-stage.left,right:stage.right-image.right};
+      });
+      assert.ok(Object.values(frame).every(gap=>gap>=8),'Entire original bottle must fit inside the stage with breathing room');
       const bytes=await (await page.request.get(actual.src)).body();
       assert.equal(createHash('sha256').update(bytes).digest('hex'),item.image_sha256,'Exact owner-reviewed image bytes');
       assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'No horizontal overflow');
       await page.screenshot({path:`${out}/photo-integration/${item.merchant_product_id}-after-${width}.png`});
       await page.screenshot({path:`${out}/photo-integration/${item.merchant_product_id}-after-full-${width}.png`,fullPage:true});
-      report.push({product_id:item.product_id,width,image_sha256:item.image_sha256,display_height:actual.displayHeight,status:'passed',public_registry_unchanged:true,merchant:'top-parfuemerie',public_release:false});
+      report.push({product_id:item.product_id,width,image_sha256:item.image_sha256,display_height:actual.displayHeight,stage_gaps:frame,status:'passed',public_registry_unchanged:true,merchant:'top-parfuemerie',public_release:false});
     }
     const blocked=await page.goto(`${base}/review/photos/parfums-de-marly-althair`);
     assert.equal(blocked.status(),404,'Rejected Althair image cannot enter preview');
