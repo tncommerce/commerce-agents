@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import tempfile
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
@@ -183,6 +184,21 @@ def run_free_content_tick(bridge, *, max_tasks=7, deadline_at=None) -> dict:
     }
 
 
+def write_private_output(path: Path, value: dict) -> None:
+    """Keep the previous review artifact intact until a complete private write."""
+    # Serialize before touching the destination or creating a temporary file.
+    payload = json.dumps(value, ensure_ascii=False, indent=2)
+    descriptor, temporary = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+            handle.write(payload)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, path)
+    finally:
+        Path(temporary).unlink(missing_ok=True)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Prepare a private, inert content7 activation plan"
@@ -199,18 +215,14 @@ def main() -> int:
     if args.commission:
         from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
 
-        args.output.write_text(
-            json.dumps(commission_free_inputs(DufyndJarvisBridge()), ensure_ascii=False, indent=2)
-        )
+        write_private_output(args.output, commission_free_inputs(DufyndJarvisBridge()))
         return 0
     if not args.source or not args.existing:
         parser.error("--source and --existing required for an activation plan")
     plan = build_activation_plan(
         json.loads(args.source.read_text()), json.loads(args.existing.read_text())
     )
-    args.output.write_text(
-        json.dumps({"plan": plan, "plan_sha256": digest(plan)}, ensure_ascii=False, indent=2)
-    )
+    write_private_output(args.output, {"plan": plan, "plan_sha256": digest(plan)})
     return 0
 
 

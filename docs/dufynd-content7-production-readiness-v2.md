@@ -160,6 +160,25 @@ not needed to stop the worker adapter.
 
 ## Remaining external gates
 
+### October 12 nightshift: interrupted private plan output
+
+The CLI previously truncated an existing review file before completing the new
+JSON write. A local `RLIMIT_FSIZE=10` fault reproduced an `OSError` and left only
+ten bytes of the previous file. Both commissioning and activation-plan output now
+serialize first, write a same-directory private temporary file (0600), flush and
+fsync it, then atomically replace the destination. Failure before replacement
+preserves the prior plan; handled failures remove the temporary file. An abrupt
+process kill can leave an unreferenced private temporary file, but it does not
+turn a partial write into the named review artifact. This is not a power-loss
+durability guarantee for the containing directory.
+
+The same file-size fault now preserves the previous artifact. Four regression
+cases cover serialization, fsync and replacement failures, complete Unicode JSON,
+private permissions and cleanup. Targeted local verification: 16 tests and five
+subtests passed (`test_dufynd_content7_output.py` and
+`test_dufynd_seven_content_workers.py`); Ruff passed. Existing database/runtime
+behavior is unchanged. Production migration and activation remain unapproved.
+
 Production migration GO, approved runtime integration/deploy, exact packet
 activation GO, and a certified zero-cost creative provider (if unattended novel
 copy is desired). Current free Work/manual ingestion is executable now. Media
