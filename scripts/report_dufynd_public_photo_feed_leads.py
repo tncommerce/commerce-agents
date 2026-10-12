@@ -29,39 +29,27 @@ PHOTO_PATH = re.compile(
     r"/media/catalog/product/(?:[a-z0-9]/){0,3}[a-z0-9_-]+\.(?:png|jpe?g|webp)$",
     re.IGNORECASE,
 )
-VOLUME = re.compile(r"(?<!\d)(\d{2,3})\s*(?:ml|milliliter)(?!\w)", re.I)
+VOLUME = re.compile(r"(?<![\d.,])(\d+(?:[.,]\d+)?)\s*(?:ml|milliliter)(?!\w)", re.I)
+# Only presentation words are dispensable. Variant words and concentration
+# markers must participate in equality, never a one-way subset match.
 STOP = {
-    "de",
-    "der",
-    "das",
-    "die",
-    "und",
-    "the",
-    "by",
-    "for",
-    "pour",
-    "eau",
-    "parfum",
     "perfume",
+    "perfumes",
     "parfums",
-    "edp",
-    "edt",
-    "elixir",
-    "intense",
-    "extrait",
     "spray",
     "nat",
     "vapo",
     "flacon",
     "flasche",
-    "ml",
-    "100",
-    "90",
-    "75",
-    "125",
-    "50",
-    "edition",
 }
+CONCENTRATIONS = (
+    (r"\b(?:extrait de parfum|extrait)\b", "strength_extrait"),
+    (r"\b(?:eau de parfum|edp)\b", "strength_edp"),
+    (r"\b(?:eau de toilette|edt)\b", "strength_edt"),
+    (r"\b(?:eau de cologne|edc)\b", "strength_edc"),
+    (r"\bparfum\b", "strength_parfum"),
+)
+MULTIPACK = re.compile(r"[+×/]|\b\d+\s*[xX]\s*\d|\b\d+\s*(?:teilig|pcs|stuck)\b")
 MAX_CANDIDATES = 3
 
 
@@ -96,20 +84,28 @@ def safe_feed_image(value: object) -> str | None:
 
 
 def feed_name_matches(item: dict, row: dict) -> bool:
-    label = norm(row.get("product_name"))
-    tokens = set(label.split())
-    names = {x for x in norm(item.get("name")).split() if x not in STOP}
-    brands = {x for x in norm(item.get("brand")).split() if x not in STOP}
-    if not names or not brands or not names.issubset(tokens) or not (brands & tokens):
+    def identity(value: object) -> set[str]:
+        label = norm(VOLUME.sub(" ", str(value or "")))
+        for pattern, marker in CONCENTRATIONS:
+            label = re.sub(pattern, marker, label)
+        return set(label.split()) - STOP
+
+    title = str(row.get("product_name") or "")
+    if MULTIPACK.search(title):
         return False
-    quantities = [int(v) for v in VOLUME.findall(str(row.get("product_name") or ""))]
+    quantities = [float(v.replace(",", ".")) for v in VOLUME.findall(title)]
     expected = int(item.get("volume_ml") or 0)
-    if quantities and expected not in quantities:
+    if expected <= 0 or (quantities and quantities != [expected]):
         return False
-    concentration = norm(item.get("concentration"))
-    if concentration == "eau de parfum" and ("edt" in tokens or "toilette" in tokens):
+    names = identity(item.get("name"))
+    brands = identity(item.get("brand"))
+    concentration = identity(item.get("concentration"))
+    if not names or not brands or not concentration:
         return False
-    return not (concentration == "eau de toilette" and ("edp" in tokens or "extrait" in tokens))
+    # Equality rejects both missing and additional flanker/edition words,
+    # sets, refills and body products. Missing size remains an unverified lead
+    # for compatibility with feed titles that omit volume, never a size claim.
+    return identity(title) == names | brands | concentration
 
 
 def verify_context(
@@ -224,7 +220,7 @@ def create_review(
         for _rank, sku, row, img, match_type in hits[:MAX_CANDIDATES]:
             title = str(row.get("product_name") or "")
             title = re.sub(r"[\x00-\x1f\x7f]", " ", title)[:130].strip()
-            quantities = [int(v) for v in VOLUME.findall(title)]
+            quantities = [float(v.replace(",", ".")) for v in VOLUME.findall(title)]
             candidates.append(
                 {
                     "merchant_product_id": sku,
