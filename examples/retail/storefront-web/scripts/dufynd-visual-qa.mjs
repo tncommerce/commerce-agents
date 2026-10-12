@@ -1,3 +1,4 @@
+import { verifyDuftduell } from "./duftduell-browser-qa.mjs";
 import { verifyConversionSearch } from "./conversion-search-qa.mjs";
 import { verifyAcquisitionEntry } from "./acquisition-entry-qa.mjs";
 import { verifyFontLayout } from "./font-layout-qa.mjs";
@@ -267,6 +268,12 @@ const report = {
 };
 
 try {
+  try {
+    const cases = await verifyDuftduell(browser, baseUrl, outputDir);
+    report.checks.push({ label: "duftduell-interactive-mobile-desktop", status: "passed", cases });
+  } catch (error) {
+    report.failures.push({ label: "duftduell-interactive-mobile-desktop", message: String(error) });
+  }
   try {
     const cases = await verifyFontLayout(browser, baseUrl);
     report.checks.push({ label: "font-layout", status: "passed", cases });
