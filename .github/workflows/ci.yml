@@ -264,3 +264,73 @@ jobs:
           if [[ "$recovered" == 1 ]]; then
             gh workflow run dufynd-private-observer.yml --repo "$GITHUB_REPOSITORY" --ref scentai-mvp
           fi
+
+  dufynd-rc1-candidate:
+    if: github.event_name == 'pull_request' && github.head_ref == 'dufynd-core-product-nightshift-20261010'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6.4.0
+        with:
+          node-version: 22
+      - name: Prepare exact base-bound RC1 without a branch
+        run: |
+          git fetch --no-tags --depth=1 origin 86d58bee958cade3ef372ddeaa6d9cf5baaa003e
+          node release/dufynd-rc1/verify.mjs prepare "$RUNNER_TEMP/dufynd-rc1" "$GITHUB_WORKSPACE/rc1-evidence"
+      - name: Install the candidate's own locked dependencies
+        working-directory: ${{ runner.temp }}/dufynd-rc1/examples
+        run: |
+          npm ci
+          npm install --no-save --package-lock=false playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Production build of isolated RC1
+        shell: bash
+        working-directory: ${{ runner.temp }}/dufynd-rc1/examples
+        run: |
+          set -euo pipefail
+          npm run build --workspace acme-retail-storefront-web 2>&1 | tee "$GITHUB_WORKSPACE/rc1-evidence/build.log"
+      - name: Run unchanged base source-contract tests
+        working-directory: ${{ runner.temp }}/dufynd-rc1
+        run: |
+          python3 - <<'PYTEST'
+          import inspect, json, os, pathlib, runpy
+          passed = []
+          for filename in ["test_dufynd_detail_quick_nav.py", "test_dufynd_merchant_offer_timeout_browser_qa.py", "test_dufynd_fragrance_detail_seo.py"]:
+              for name, test in runpy.run_path("tests/" + filename).items():
+                  if name.startswith("test_") and callable(test):
+                      assert not inspect.signature(test).parameters
+                      test()
+                      passed.append(filename + "::" + name)
+          assert len(passed) == 5
+          pathlib.Path(os.environ["GITHUB_WORKSPACE"], "rc1-evidence/source-tests.json").write_text(json.dumps({"passed": passed}))
+          PYTEST
+      - name: Verify export boundaries and exact rollback
+        run: |
+          node release/dufynd-rc1/verify.mjs export "$RUNNER_TEMP/dufynd-rc1" "$GITHUB_WORKSPACE/rc1-evidence"
+          node release/dufynd-rc1/verify.mjs rollback "$RUNNER_TEMP/dufynd-rc1" "$GITHUB_WORKSPACE/rc1-evidence"
+      - name: Isolated RC1 browser QA without external requests
+        shell: bash
+        run: |
+          set -euo pipefail
+          candidate="$RUNNER_TEMP/dufynd-rc1"
+          cp release/dufynd-rc1/browser-qa.mjs "$candidate/examples/.rc1-browser-qa.mjs"
+          node "$candidate/examples/retail/storefront-web/scripts/serve-static-export.mjs" --root "$candidate/examples/retail/storefront-web/out" --port 3015 > "$GITHUB_WORKSPACE/rc1-evidence/server.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:3015/duft/rabanne-1-million > /dev/null; then break; fi
+            if [ "$attempt" -eq 30 ]; then exit 1; fi
+            sleep 1
+          done
+          node "$candidate/examples/.rc1-browser-qa.mjs" http://127.0.0.1:3015 "$candidate" "$GITHUB_WORKSPACE/rc1-evidence" "$GITHUB_WORKSPACE/release/dufynd-rc1/observed-offer.json"
+          cp release/dufynd-rc1/manifest.json release/dufynd-rc1/candidate.patch "$GITHUB_WORKSPACE/rc1-evidence/"
+          tar -czf "$GITHUB_WORKSPACE/rc1-evidence/public-build.tar.gz" -C "$candidate/examples/retail/storefront-web/out" .
+          sha256sum "$GITHUB_WORKSPACE/rc1-evidence/public-build.tar.gz" > "$GITHUB_WORKSPACE/rc1-evidence/public-build.sha256"
+      - name: Upload isolated RC1 proof
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: dufynd-rc1-candidate-${{ github.event.number }}
+          path: rc1-evidence
+          retention-days: 7
+          if-no-files-found: error

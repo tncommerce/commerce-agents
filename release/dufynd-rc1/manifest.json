@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "base_commit": "86d58bee958cade3ef372ddeaa6d9cf5baaa003e",
+  "base_tree": "dd3c0a5e2e882a27d920b5377650f634e1dff008",
+  "candidate_tree": "2bb4cefab54c571a617231a4e2632d7266444aad",
+  "patch_sha256": "710897d23615a39e3c3dbf0b4cc5bd1575677e957aa4c0e1267561c2dc10bccf",
+  "files": [
+    "examples/retail/storefront-web/app/duft/[slug]/page.tsx",
+    "examples/retail/storefront-web/app/duft/[slug]/first-money.module.css",
+    "examples/retail/storefront-web/components/FragranceOffers.tsx"
+  ],
+  "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+  "runtime_dependencies": "Existing integration-base catalog, offer API, analytics, attribution, visual components. No new package or data dependencies.",
+  "publication_authorized": false
+}
