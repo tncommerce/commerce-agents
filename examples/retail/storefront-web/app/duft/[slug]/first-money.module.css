@@ -1,0 +1,60 @@
+/* RC1: applied only to the existing Rabanne EDT 100 ml route. */
+.landing { background: #f6f4ee; }
+.landing :global(.dufynd-fragrance-hero) {
+  border: 1px solid #dddcd4 !important;
+  background: #fffefa !important;
+  box-shadow: 0 22px 48px -40px #35483d70 !important;
+}
+.landing :global(.dufynd-fragrance-hero-grid) { min-height: 0; }
+.landing :global(.dufynd-fragrance-panel-section) {
+  --ink: #263e30 !important; --ink-soft: #54675b !important;
+  --surface: #fffefa !important; --well: #eeefe9 !important;
+  --line: #d9ded5 !important; --accent-ink: #365747 !important;
+  --accent-strong: #345943 !important;
+  background: #fffefa !important; color: #263e30 !important;
+  border-color: #e1e1d7 !important; backdrop-filter: none !important;
+}
+.landing :global(.dufynd-fragrance-identity),
+.landing :global(.dufynd-fragrance-hero-copy) { margin: 0; box-shadow: none; }
+.landing :global(.dufynd-fragrance-stage-shell) {
+  display: flex; align-items: center; min-height: 48px !important;
+  max-height: none !important; padding: 0 20px;
+  background: #fffefa !important; border: 0;
+}
+.photoHold {
+  position: relative; margin: 0; width: 100%; padding: 8px 10px;
+  border: 1px solid #e5e5dd; border-radius: 9px;
+  color: #435a48; font-size: 11px; line-height: 1.5;
+}
+.landing :global(.dufynd-fragrance-hero-atmosphere),
+.landing :global(.dufynd-fragrance-hero-orbit),
+.landing :global(.dufynd-fragrance-scene-beam),
+.landing :global(.dufynd-fragrance-scene-mist),
+.landing :global(.dufynd-fragrance-scene-particles),
+.landing :global(.dufynd-fragrance-stage-shell)::before,
+.landing :global(.dufynd-fragrance-stage-shell)::after,
+.landing :global(.dufynd-fragrance-journey)::before,
+.landing :global(.dufynd-fragrance-journey-axis),
+.landing :global(.dufynd-fragrance-chapter-index),
+.landing :global(.dufynd-fragrance-chapter--profile)::after { display: none !important; }
+.landing :global(.dufynd-fragrance-journey) { margin-top: 8px; isolation: auto; }
+.landing :global(.dufynd-fragrance-chapter) { padding-left: 0 !important; }
+.landing :global(.dufynd-fragrance-hero-copy) :is(a, button):focus-visible {
+  outline: 3px solid #aec5b6; outline-offset: 2px;
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  .landing :global(.dufynd-fragrance-stage-shell) { padding-inline: 28px; }
+}
+@media (min-width: 1024px) {
+  .landing :global(.dufynd-fragrance-hero-grid) { grid-template-columns: 1fr 1fr; }
+  .landing :global(.dufynd-fragrance-identity) {
+    grid-column: 1; grid-row: 1; padding: 32px 32px 16px; border-radius: 0;
+  }
+  .landing :global(.dufynd-fragrance-stage-shell) {
+    grid-column: 1; grid-row: 2; padding: 0 32px 28px;
+  }
+  .landing :global(.dufynd-fragrance-hero-copy) {
+    grid-column: 2; grid-row: 1 / span 2; padding: 32px;
+    border-radius: 0; border-left: 1px solid #e1e1d7;
+  }
+}
