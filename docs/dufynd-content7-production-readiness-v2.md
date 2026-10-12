@@ -184,3 +184,24 @@ activation GO, and a certified zero-cost creative provider (if unattended novel
 copy is desired). Current free Work/manual ingestion is executable now. Media
 production/rights/actual visual QA and separate publishing GO remain outside this
 technical activation. **New published posts: 0. New Owner-ready visual candidates: 0.**
+# 2026-10-12 unattended resume integrity correction
+
+The local `EditorialRunner` previously checked output and input hashes but did
+not bind saved role status, holds, name or cost. A synthetic checkpoint with W3
+changed from DONE_WITH_HOLDS to DONE, cleared holds and cost_eur=1 was accepted.
+Each local role packet now also binds its complete serialized fields with
+`packet_sha256`. Existing output/source/dependency checks remain, and executed
+roles require successful predecessor packets. Dependency-block packets are bound
+too. This is integrity detection, not a cryptographic owner signature.
+
+Legacy packets without this field are not silently blessed: the fixed pure local
+validator reconstructs the expected packet once and requires exact equality
+before adding the digest. A mismatch stops without changing the file. A valid
+legacy checkpoint upgrades once, then subsequent resumes are byte-identical.
+No provider call, task dispatch, regeneration, new approval or production state
+write is performed. The previously repaired atomic private file replacement is
+unchanged.
+
+Seven new regression cases failed before the correction. The targeted local
+resume/worker/output suite passes 23 tests plus five subtests; Ruff passes. All
+fixtures are synthetic. Production activation/migration/freeze gates remain.

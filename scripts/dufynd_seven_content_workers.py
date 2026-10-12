@@ -424,6 +424,18 @@ class EditorialRunner:
             raise WorkerInputError("private_checkpoint_cannot_write_into_public_repo")
         self.input_hash = digest({"round": round_id, "pilot": pilot, "existing": existing})
 
+    @staticmethod
+    def _verify_packet(saved: dict, expected_legacy: dict | None = None) -> None:
+        """Bind status, holds and cost too; missing legacy hashes are not trusted."""
+        payload = {key: value for key, value in saved.items() if key != "packet_sha256"}
+        if "packet_sha256" in saved:
+            if saved["packet_sha256"] != digest(payload):
+                raise WorkerInputError("checkpoint_packet_integrity_failed")
+        elif saved != expected_legacy:
+            raise WorkerInputError("checkpoint_packet_integrity_failed")
+        else:
+            saved["packet_sha256"] = digest(payload)
+
     def _read(self) -> dict:
         if self.checkpoint.exists():
             state = json.loads(self.checkpoint.read_text(encoding="utf-8"))
@@ -447,6 +459,16 @@ class EditorialRunner:
                 if "role" not in saved:
                     if saved.get("state") != "BLOCKED":
                         raise WorkerInputError("invalid_dependency_block_state")
+                    missing = [
+                        dep
+                        for dep in DEPENDENCIES[role]
+                        if state["role_packets"].get(dep, {}).get("state") not in SUCCESS_STATES
+                    ]
+                    if not missing:
+                        raise WorkerInputError("invalid_dependency_block_state")
+                    self._verify_packet(
+                        saved, packet("BLOCKED", {}, ["unmet_dependencies:" + ",".join(missing)])
+                    )
                     continue
                 dependencies = DEPENDENCIES[role]
                 if saved.get("role") != role or saved.get("depends_on") != list(dependencies):
@@ -455,6 +477,11 @@ class EditorialRunner:
                     raise WorkerInputError("checkpoint_output_integrity_failed")
                 if any(dependency not in state["role_packets"] for dependency in dependencies):
                     raise WorkerInputError("checkpoint_dependency_missing")
+                if any(
+                    state["role_packets"][dep].get("state") not in SUCCESS_STATES
+                    for dep in dependencies
+                ):
+                    raise WorkerInputError("checkpoint_dependency_not_successful")
                 source_hash = digest(
                     {
                         "source": self.pilot.get(role),
@@ -466,6 +493,25 @@ class EditorialRunner:
                 )
                 if saved.get("input_sha256") != source_hash:
                     raise WorkerInputError("checkpoint_input_integrity_failed")
+                expected = None
+                if "packet_sha256" not in saved:
+                    # Compatibility is a one-time deterministic local integrity
+                    # replay, never a model call, dispatch, approval or new task.
+                    section = self.pilot.get(role)
+                    result = (
+                        HANDLERS[role](section, state["role_packets"], self.existing)
+                        if isinstance(section, dict)
+                        else packet("BLOCKED", {}, ["missing_input_for_role:" + role])
+                    )
+                    expected = {
+                        "role": role,
+                        "name": ROLE_NAMES[role],
+                        "depends_on": list(dependencies),
+                        "input_sha256": source_hash,
+                        "output_sha256": digest(result["output"]),
+                        **result,
+                    }
+                self._verify_packet(saved, expected)
             return state
         return {
             "schema_version": SCHEMA_VERSION,
@@ -481,6 +527,9 @@ class EditorialRunner:
         }
 
     def _write(self, state: dict) -> None:
+        for saved in state["role_packets"].values():
+            if "packet_sha256" not in saved:
+                saved["packet_sha256"] = digest(saved)
         self.checkpoint.parent.mkdir(parents=True, exist_ok=True)
         temporary = self.checkpoint.with_name(
             self.checkpoint.name + "." + str(os.getpid()) + ".tmp"
