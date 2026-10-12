@@ -968,8 +968,10 @@
 }
 .dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-neutral-visual-stage {
   background: transparent !important;
+  animation: none !important;
 }
 .dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-neutral-visual-copy,
+.dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-neutral-visual-stage::after,
 .dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-fragrance-stage-shell::before,
 .dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-fragrance-stage-shell::after {
   display: none;

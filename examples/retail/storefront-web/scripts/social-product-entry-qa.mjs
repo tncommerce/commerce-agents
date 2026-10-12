@@ -55,18 +55,20 @@ export async function verifySocialProductEntry(browser, baseUrl, outputDir) {
         const hero = page.locator(".dufynd-fragrance-hero");
         assert.equal(await hero.getAttribute("data-dufynd-photo-hold"), "true");
         assert.equal(await hero.locator("img").count(), 0, "no unapproved bottle photo");
-        assert.match(await hero.innerText(), /EDT[\s\S]*100 ml/);
+        assert.match(await hero.innerText(), /Eau de Toilette[\s\S]*100 ml/);
         assert.match(await hero.innerText(), /Originalfoto in Prüfung/);
         const metrics = await page.evaluate(() => ({
           stage_height: document.querySelector(".dufynd-fragrance-stage-shell").getBoundingClientRect().height,
           cta_bottom: document.querySelector("#dufynd-hero-offer-cta").getBoundingClientRect().bottom,
           offers_top: document.querySelector("#angebote").getBoundingClientRect().top,
           overflow: document.documentElement.scrollWidth > innerWidth,
+          hold_overlay: getComputedStyle(document.querySelector(".dufynd-neutral-visual-stage"), "::after").display,
         }));
         assert.ok(metrics.stage_height <= (width === 390 ? 64 : 96), JSON.stringify(metrics));
         assert.ok(metrics.cta_bottom < (width === 390 ? 520 : 500), JSON.stringify(metrics));
         assert.ok(metrics.offers_top < (width === 390 ? 780 : 650), JSON.stringify(metrics));
         assert.equal(metrics.overflow, false);
+        assert.equal(metrics.hold_overlay, "none", "compact rights notice must not retain a bottle-stage shadow");
         measurements.push({ source, width, ...metrics });
         const section = page.locator("[data-merchant-offers]");
         assert.match(await section.innerText(), /Gesamtpreis inkl. Versand/);
