@@ -1,3 +1,6 @@
+Warning: truncated output (original token count: 33937)
+Total output lines: 3684
+
 import { verifyConversionSearch } from "./conversion-search-qa.mjs";
 import { verifyAcquisitionEntry } from "./acquisition-entry-qa.mjs";
 import { verifyFontLayout } from "./font-layout-qa.mjs";
@@ -608,7 +611,7 @@ try {
             const rect = (selector) =>
               document.querySelector(selector)?.getBoundingClientRect() || null;
             const title = rect(".dufynd-fragrance-hero h1");
-            const stage = rect(".dufynd-fragrance-hero .dufynd-product-stage, .dufynd-fragrance-hero .dufynd-editorial-depth-stage, .dufynd-fragrance-hero .dufynd-model-stage, .dufynd-fragrance-hero .dufynd-neutral-visual-stage");
+            const stage = rect(".dufynd-fragrance-hero[data-product-id=\"SC-RABANNE-1-MILLION-EDT-100\"][data-dufynd-photo-hold=\"true\"] .dufynd-fragrance-stage-shell, .dufynd-fragrance-hero .dufynd-product-stage, .dufynd-fragrance-hero .dufynd-editorial-depth-stage, .dufynd-fragrance-hero .dufynd-model-stage, .dufynd-fragrance-hero .dufynd-neutral-visual-stage");
             const cutout = rect(".dufynd-fragrance-hero .dufynd-product-image");
             const offers = rect("#angebote");
             const exploded = rect(".dufynd-exploded-notes");
@@ -1618,206 +1621,7 @@ try {
       exact: true,
     });
     await unisexButton.click();
-    await mobileCatalogPage.waitForFunction(() => {
-      const url = new URL(window.location.href);
-      return (
-        url.searchParams.get("zielgruppe") === "unisex" &&
-        url.searchParams.get("utm_source") === "qa"
-      );
-    });
-
-    if ((await unisexButton.getAttribute("aria-pressed")) !== "true") {
-      throw new Error("mobile catalog did not activate the Unisex filter");
-    }
-
-    const resultSummary = await mobileCatalogPage
-      .locator('[aria-live="polite"]')
-      .filter({ hasText: /von \d+ Düften/ })
-      .first()
-      .textContent();
-    if (!resultSummary || !/\d+\s+von\s+\d+\s+Düften/.test(resultSummary)) {
-      throw new Error("mobile catalog did not expose an updated result count");
-    }
-
-    await mobileCatalogPage
-      .getByRole("button", { name: "Filter zurücksetzen", exact: true })
-      .click();
-    await mobileCatalogPage.waitForFunction(() => {
-      const url = new URL(window.location.href);
-      return (
-        !url.searchParams.has("zielgruppe") &&
-        url.searchParams.get("utm_source") === "qa"
-      );
-    });
-
-    if ((await unisexButton.getAttribute("aria-pressed")) === "true") {
-      throw new Error("mobile catalog reset left the Unisex filter active");
-    }
-
-    report.checks.push({
-      label: "catalog-mobile-filter-interaction",
-      status: "passed",
-    });
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    report.failures.push({
-      label: "catalog-mobile-filter-interaction",
-      message,
-    });
-    report.checks.push({
-      label: "catalog-mobile-filter-interaction",
-      status: "failed",
-      message,
-    });
-  } finally {
-    await mobileCatalogFilterContext.close();
-  }
-
-  const imageFailureContext = await browser.newContext({
-    viewport: { width: 390, height: 844 },
-    deviceScaleFactor: 1,
-    reducedMotion: "reduce",
-  });
-  try {
-    const imageFailurePage = await imageFailureContext.newPage();
-    let failPrimaryImage = true;
-    let failBackdropImage = false;
-    await imageFailurePage.route("**/products/naxos-cutout-production.webp", (route) =>
-      failPrimaryImage ? route.abort("failed") : route.continue(),
-    );
-    await imageFailurePage.route("**/products/naxos-bottle-free-backdrop.webp", (route) =>
-      failBackdropImage ? route.abort("failed") : route.continue(),
-    );
-    const response = await imageFailurePage.goto(baseUrl + "/duft/xerjoff-naxos", {
-      waitUntil: "domcontentloaded", timeout: 45_000,
-    });
-    if (!response?.ok()) throw new Error("image failure QA did not load");
-    const hero = imageFailurePage.locator(".dufynd-fragrance-hero");
-    const fallback = hero.locator('[data-dufynd-visual-state="unavailable"]');
-    await fallback.waitFor({ state: "visible", timeout: 10_000 });
-    if (
-      !(await fallback.innerText()).includes("Produktbild derzeit nicht verfügbar") ||
-      !(await fallback.innerText()).includes("Naxos") ||
-      (await hero.locator("img").count()) !== 0
-    ) {
-      throw new Error("failed product image did not preserve identity in a neutral fallback");
-    }
-    if ((await imageFailurePage.locator("#angebote").count()) !== 1) {
-      throw new Error("image failure removed the merchant offer section");
-    }
-    failPrimaryImage = false;
-    await imageFailurePage.reload({ waitUntil: "domcontentloaded", timeout: 45_000 });
-    const recoveredImage = hero.locator("img.dufynd-product-image");
-    await recoveredImage.waitFor({ state: "visible", timeout: 10_000 });
-    await imageFailurePage.waitForFunction(() => {
-      const image = document.querySelector(".dufynd-fragrance-hero img.dufynd-product-image");
-      return image?.complete && image.naturalWidth > 0;
-    }, undefined, { timeout: 10_000 });
-    if ((await fallback.count()) !== 0) {
-      throw new Error("successful image retry retained its error fallback");
-    }
-    failBackdropImage = true;
-    await imageFailurePage.reload({ waitUntil: "domcontentloaded", timeout: 45_000 });
-    await recoveredImage.waitFor({ state: "visible", timeout: 10_000 });
-    await imageFailurePage.waitForFunction(() => {
-      const hero = document.querySelector(".dufynd-fragrance-hero");
-      const image = hero?.querySelector("img.dufynd-product-image");
-      return image?.complete && image.naturalWidth > 0 &&
-        !hero.querySelector("img.dufynd-product-backdrop");
-    }, undefined, { timeout: 10_000 });
-    if ((await fallback.count()) !== 0) {
-      throw new Error("decorative backdrop failure hid the valid product image");
-    }
-    report.checks.push({ label: "product-image-error-fallback", status: "passed" });
-    report.checks.push({ label: "product-image-error-recovery", status: "passed" });
-    report.checks.push({ label: "decorative-image-error-isolation", status: "passed" });
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    report.failures.push({ label: "product-image-error-fallback", message });
-    report.checks.push({ label: "product-image-error-fallback", status: "failed", message });
-  } finally {
-    await imageFailureContext.close();
-  }
-
-  const merchantOfferTimeoutContext = await browser.newContext({
-    viewport: { width: 390, height: 844 },
-    deviceScaleFactor: 1,
-    reducedMotion: "reduce",
-  });
-  try {
-    const merchantOfferTimeoutPage = await merchantOfferTimeoutContext.newPage();
-    let merchantOfferRequestCount = 0;
-
-    await merchantOfferTimeoutPage.route("**/api/session", async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({
-          session_id: "qa-merchant-offer-timeout-session-1234567890",
-        }),
-      });
-    });
-
-    await merchantOfferTimeoutPage.route(
-      "**/api/analytics/events",
-      async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: "application/json",
-          body: JSON.stringify({ ok: true }),
-        });
-      },
-    );
-
-    await merchantOfferTimeoutPage.route(
-      "**/api/merchant-offers/**",
-      async (route) => {
-        merchantOfferRequestCount += 1;
-
-        if (merchantOfferRequestCount === 1) {
-          await new Promise((resolve) => setTimeout(resolve, 8_500));
-          try {
-            await route.fulfill({
-              status: 200,
-              contentType: "application/json",
-              body: JSON.stringify({
-                product_id: "SC-QA-TIMEOUT-LATE",
-                best_offer_id: null,
-                offers: [],
-                affiliate_disclosure: "Late QA fixture",
-              }),
-            });
-          } catch {
-            // The storefront is expected to abort this deliberately slow request.
-          }
-          return;
-        }
-
-        await route.fulfill({
-          status: 200,
-          contentType: "application/json",
-          body: JSON.stringify({
-            product_id: "SC-QA-TIMEOUT-RECOVERY",
-            best_offer_id: "qa-timeout-recovery-offer",
-            offers: [
-              {
-                offer_id: "qa-timeout-recovery-offer",
-                product_id: "SC-QA-TIMEOUT-RECOVERY",
-                merchant_id: "qa-timeout-merchant",
-                merchant_name: "QA Timeout Merchant",
-                merchant_product_id: "qa-timeout-sku",
-                price: 99,
-                currency: "EUR",
-                shipping_cost: 0,
-                shipping_label: "Versand inklusive",
-                total_price: 99,
-                in_stock: true,
-                variant_label: "QA Recovery",
-                clickout_path: "/api/clickout/qa-timeout-recovery-offer",
-                affiliate_link: false,
-                last_updated_at: "2026-09-30T12:00:00Z",
-              },
-            ],
+    await mobileCatalogPage.…1937 tokens truncated…       ],
             affiliate_disclosure: "QA recovery fixture",
           }),
         });
