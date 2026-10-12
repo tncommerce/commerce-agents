@@ -608,7 +608,7 @@ try {
             const rect = (selector) =>
               document.querySelector(selector)?.getBoundingClientRect() || null;
             const title = rect(".dufynd-fragrance-hero h1");
-            const stage = rect(".dufynd-fragrance-hero .dufynd-product-stage, .dufynd-fragrance-hero .dufynd-editorial-depth-stage, .dufynd-fragrance-hero .dufynd-model-stage, .dufynd-fragrance-hero .dufynd-neutral-visual-stage");
+            const stage = rect(".dufynd-fragrance-hero[data-product-id=\"SC-RABANNE-1-MILLION-EDT-100\"][data-dufynd-photo-hold=\"true\"] .dufynd-fragrance-stage-shell, .dufynd-fragrance-hero .dufynd-product-stage, .dufynd-fragrance-hero .dufynd-editorial-depth-stage, .dufynd-fragrance-hero .dufynd-model-stage, .dufynd-fragrance-hero .dufynd-neutral-visual-stage");
             const cutout = rect(".dufynd-fragrance-hero .dufynd-product-image");
             const offers = rect("#angebote");
             const exploded = rect(".dufynd-exploded-notes");
