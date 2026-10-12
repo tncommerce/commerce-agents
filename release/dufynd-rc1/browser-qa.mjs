@@ -62,7 +62,7 @@ try {
   assert.ok((await merchant.boundingBox()).height>=44);
   const section=page.locator('[data-merchant-offers]');
   assert.match(await section.innerText(),/76,89[\s\S]*Gesamtpreis inkl. Versand/);
-  assert.match(await section.innerText(),/Artikel 71,90 € · 4,99 €/);
+  assert.match(await section.innerText(),/Artikel 71,90\s€ · 4,99\s€/);
   assert.match(await section.innerText(),/Werbung · Partnerlink/i);
   assert.doesNotMatch(await section.innerText(),/Bester Gesamtpreis|Beste verfügbare Option/i);
   const href=new URL(await merchant.getAttribute('href'),baseUrl);
