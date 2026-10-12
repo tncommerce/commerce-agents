@@ -148,7 +148,7 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: examples/retail/storefront-web/.next/cache
-          key: ${{ runner.os }}-next-dufynd-qa-${{ hashFiles('examples/package-lock.json') }}-${{ hashFiles('examples/retail/storefront-web/**/*.{js,jsx,ts,tsx,mjs,cjs,css}') }}
+          key: ${{ runner.os }}-next-dufynd-qa-${{ hashFiles('examples/package-lock.json') }}-${{ hashFiles('examples/retail/storefront-web/**/*.js', 'examples/retail/storefront-web/**/*.jsx', 'examples/retail/storefront-web/**/*.ts', 'examples/retail/storefront-web/**/*.tsx', 'examples/retail/storefront-web/**/*.mjs', 'examples/retail/storefront-web/**/*.cjs', 'examples/retail/storefront-web/**/*.css') }}
           restore-keys: |
             ${{ runner.os }}-next-dufynd-qa-${{ hashFiles('examples/package-lock.json') }}-
       - name: Install storefront dependencies
