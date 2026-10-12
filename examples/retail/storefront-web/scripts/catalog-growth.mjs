@@ -18,7 +18,10 @@ export const variantKey=row=>`${familyKey(row)}|${row.volume_ml??'UNVERIFIED_VOL
 export const digest=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 export const qualifiedFact=(row,date)=>({product_id:row.product_id,...Object.fromEntries(fields.map(f=>[f,row[f]])),checked_at:date,identity:{kind:'manufacturer_reference',value:row.manufacturer_reference,source_url:row.source_url,verified:true},notes:row.notes,notes_source:{url:row.notes_source_url??row.source_url,kind:'manufacturer_product_facts'},summary_de:row.summary_de,variant_evidence_note:[row.variant_evidence,row.caveat].filter(Boolean).join(' '),facts_only:true,community_data_included:false,image_rights_status:'HOLD',publication_authorized:false});
 const sourceDomains=['jeanpaulgaultier.com','viktor-rolf.com','amouage.com','chloe.com','parfums-de-marly.com','yslbeauty.com','yslbeauty.de','dior.com','initioparfums.com','armanibeauty.it','armanibeauty.de','afnan.com'];
-const official=url=>{try{const u=new URL(url);return u.protocol==='https:'&&sourceDomains.some(d=>u.hostname===d||u.hostname.endsWith(`.${d}`));}catch{return false;}};
+// Additional manufacturer sources are bound to their evidenced brand, not a
+// general-purpose allowlist. A source URL still does not verify its facts/rights.
+const intakeDomains={'bdk parfums':'bdkparfums.com','montale':'montaleparfums.com','hermes':'hermes.com','zadig voltaire':'zadig-et-voltaire.com'};
+const official=(url,brand)=>{try{const u=new URL(url),intake=intakeDomains[brandKey(brand)];return u.protocol==='https:'&&!u.username&&!u.password&&(sourceDomains.some(d=>u.hostname===d||u.hostname.endsWith(`.${d}`))||Boolean(intake&&(u.hostname===intake||u.hostname===`www.${intake}`)));}catch{return false;}};
 const indexUnique=(rows,key)=>{const result=new Map();for(const row of rows){if(!row[key]||result.has(row[key]))throw Error(`duplicate_or_missing_${key}`);result.set(row[key],row);}return result;};
 
 export function validateEvidence(evidence,staging,existingFacts){
@@ -29,7 +32,7 @@ export function validateEvidence(evidence,staging,existingFacts){
     if(!staged.has(id))throw Error('unknown_product');
     if(row.status==='HOLD'){if(!row.reason)throw Error('missing_hold_reason');continue;}
     if(row.status!=='facts_qualified'||fields.some(f=>row[f]!==staged.get(id)[f]))throw Error('evidence_variant_mismatch');
-    if(!Number.isInteger(row.volume_ml)||row.volume_ml<=0||!official(row.source_url)||!official(row.notes_source_url??row.source_url)||!row.manufacturer_reference||!row.variant_evidence||!row.summary_de)throw Error('missing_manufacturer_evidence');
+    if(!Number.isInteger(row.volume_ml)||row.volume_ml<=0||!official(row.source_url,row.brand)||!official(row.notes_source_url??row.source_url,row.brand)||!row.manufacturer_reference||!row.variant_evidence||!row.summary_de)throw Error('missing_manufacturer_evidence');
     if(!row.notes||!Object.values(row.notes).some(n=>Array.isArray(n)&&n.length)||Object.entries(row.notes).some(([k,v])=>!['top','heart','base','key'].includes(k)||!Array.isArray(v)||v.some(n=>typeof n!=='string'||!n.trim())))throw Error('invalid_documented_notes');
     if(['gtin','price','rating','review_count','community','affiliate_url','image_url','publication_authorized'].some(k=>k in row))throw Error('unsupported_claim_in_evidence');
     if(prior.has(id)&&digest(prior.get(id))!==digest(qualifiedFact(row,evidence.checked_at)))throw Error('already_qualified_evidence_conflict');

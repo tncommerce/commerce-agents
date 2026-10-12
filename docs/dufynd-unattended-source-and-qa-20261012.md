@@ -5,11 +5,11 @@ approval is granted by this record.
 
 ## Source intake
 
-`dufynd-source-intake-unattended-20261012.json` contains seven existing research
-candidates, not seven new staged or public products. The previous BDK, Montale
-and Valaya records are reused unchanged. Four additional manufacturer records
-cover Hermès Eau Givrée EDP100, La Belle EDP100, Le Beau Le Parfum EDPI125 and
-Le Beau Paradise Garden EDP125. Each records its exact original URL, reference,
+`dufynd-source-intake-unattended-20261012.json` contains eight existing research
+candidates, not eight new staged or public products. The previous BDK, Montale
+and Valaya records are reused unchanged. Five additional manufacturer records
+cover Hermès Eau Givrée EDP100, La Belle EDP100, Le Beau Le Parfum EDPI125,
+Le Beau Paradise Garden EDP125 and This is Her EDP100. Each records its original URL, reference,
 volume and scoped notes. Structural validation and unique existing candidate
 identity/concentration checks pass. No GTIN or image/offer right is inferred.
 
@@ -64,3 +64,23 @@ alter the renderer, qualified source facts, owner authorizations or public data.
 The22 focused Python regressions and isolated Jarvis source-graph check pass.
 The local complete consistency command lacks the optional demo `anthropic`
 dependency; complete CI consistency, rather than a simulated import, is the gate.
+
+## Bounded manufacturer-domain preparation
+
+The fact validator now supports BDK, Montale, Hermès and Zadig & Voltaire only
+under their respective evidenced domains (root/www). This prepares future
+intake; it does not bypass the existing exact staged-identity, field/evidence,
+source-conflict, owner or publication gates. Source and note URLs both pass the
+check. Wrong brands, cross-brand domain swaps, lookalike/unreviewed hosts, HTTP
+and embedded credentials fail closed. Existing qualified sources remain valid.
+
+48 synthetic source-domain cases are part of the existing CI catalog-growth
+entry point; no workflow trigger changed. Existing growth/release regressions
+pass and current source/renderer/approval/public data are unchanged. This is
+a source eligibility check, not an automated certification of source truth.
+
+This is Her supplement also records manufacturer-printed EAN3423474891856,
+with valid checksum, for the exact EDP100ml section. It is documented research
+only: zero new registered catalog GTINs, products, images or offers. The source
+packet keeps flat notes and uses the explicit EDP text rather than the EDT
+substring in its manufacturer reference.

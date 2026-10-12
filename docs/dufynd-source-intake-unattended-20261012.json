@@ -164,19 +164,50 @@
         ]
       },
       "caveat": "Dedicated three-note list retained. Narrative also mentions tonka, ginger and mint; not merged into a constructed pyramid. Not Le Beau EDT, Le Parfum, Narcisse, Flower Edition or gift set."
+    },
+    {
+      "candidate_id": "ZADIG-VOLTAIRE-THIS-IS-HER",
+      "brand": "Zadig & Voltaire",
+      "name": "This is Her!",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "manufacturer_reference": "HEREDT100F_BLAN",
+      "source_url": "https://zadig-et-voltaire.com/eu/de/p/HEREDT100F_BLAN/parfum-damen-this-is-her--100--ml-weiss-heredt100f",
+      "variant_evidence": "Official description explicitly says Eau de Parfum100ml and distinguishes the separate50ml link. Concentration comes from product text, not the misleading EDT substring in the reference.",
+      "notes": {
+        "key": [
+          "sambac jasmine",
+          "vanilla",
+          "chestnut",
+          "pink pepper",
+          "sandalwood"
+        ]
+      },
+      "caveat": "Manufacturer lists flat notes; no invented pyramid. Not Undressed, Vibes of Freedom, Zadig Dream, Burning Love, Really Her or Art4All."
     }
   ],
   "remaining_gates": [
     "existing candidate -> exact staging identity mapping",
-    "bounded manufacturer-domain validator support where absent",
     "curated review presentation",
     "fresh renderer-bound QA",
     "asset-specific image rights",
     "owner release decision"
   ],
   "new_public_products": 0,
-  "new_verified_gtins": 0,
   "new_images": 0,
   "new_offers": 0,
-  "provenance_note": "First three records reused unchanged from prior PR774 research; four additional existing candidates inspected directly on manufacturer pages during unattended continuation. Intake is not staging, qualification, review QA or publication."
+  "provenance_note": "First three records reused unchanged from prior PR774 research; five additional existing candidates inspected directly on manufacturer pages during unattended continuation. Intake and manufacturer EAN evidence do not register a catalog identifier, stage a product, create a review page or authorize publication.",
+  "identifier_evidence": {
+    "candidate_id": "ZADIG-VOLTAIRE-THIS-IS-HER",
+    "ean": "3423474891856",
+    "source_url": "https://zadig-et-voltaire.com/eu/fr/content/care-and-composition-perfume",
+    "exact_source_section": "THIS IS HER, EAU DE PARFUM /100ML",
+    "catalog_registration": false,
+    "checksum_valid": true
+  },
+  "new_registered_gtins": 0,
+  "documented_manufacturer_eans": 1,
+  "completed_preparation": [
+    "brand-bound manufacturer-domain support with 48 offline regression cases"
+  ]
 }

@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import './test-manufacturer-source-intake.mjs';
 import {buildGrowth,inputs,boundedBatch,variantKey,validateEvidence} from './catalog-growth.mjs';
 const data=inputs(),snapshot=JSON.stringify({...data,publicIds:[...data.publicIds]});
 const result=buildGrowth(data);
