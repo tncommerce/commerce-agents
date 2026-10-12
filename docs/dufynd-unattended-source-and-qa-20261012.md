@@ -72,9 +72,12 @@ under their respective evidenced domains (root/www). This prepares future
 intake; it does not bypass the existing exact staged-identity, field/evidence,
 source-conflict, owner or publication gates. Source and note URLs both pass the
 check. Wrong brands, cross-brand domain swaps, lookalike/unreviewed hosts, HTTP
-and embedded credentials fail closed. Existing qualified sources remain valid.
+and embedded credentials fail closed. These four brands cannot fall back to
+the older general manufacturer list for either identity or note evidence. The
+regression failed before the conditional lookup was corrected. Existing
+qualified sources remain valid.
 
-48 synthetic source-domain cases are part of the existing CI catalog-growth
+56 synthetic source-domain cases are part of the existing CI catalog-growth
 entry point; no workflow trigger changed. Existing growth/release regressions
 pass and current source/renderer/approval/public data are unchanged. This is
 a source eligibility check, not an automated certification of source truth.
@@ -84,3 +87,32 @@ with valid checksum, for the exact EDP100ml section. It is documented research
 only: zero new registered catalog GTINs, products, images or offers. The source
 packet keeps flat notes and uses the explicit EDP text rather than the EDT
 substring in its manufacturer reference.
+
+## Exact identity preparation
+
+The packet includes eight explicit internal SKU proposals, disabled and not
+registered. Each matches its existing candidate by normalized brand/name and
+exact concentration, retains the evidenced volume and has no existing canonical
+or staged ID/variant collision. Le Beau Le Parfum retains EDPI in the proposal.
+The source-backed variant data validates in memory through the same fact gate.
+
+The next development step is integration through the existing staging/review
+schema, including its merchant-evidence requirements; missing merchant or
+community facts must not be invented or requirements weakened. These proposals
+do not themselves add products to staging or create public/review pages.
+
+Two direct Sephora pages now independently document the intended100ml EDP
+variants for La Belle and This is Her. These are research records only; affiliate
+status remains UNKNOWN and no offer is added. The checked Douglas Valaya page
+selects30ml, so its evidence explicitly remains HOLD for the75ml proposal. Do not
+force UNKNOWN into an application-pending state to satisfy an importer enum.
+
+The bounded eight-candidate merchant pass is complete: nine inspected records,
+six exact-variant research records and three held records. Valaya75 is documented
+at Niche Beauty while the Douglas30 rejection remains. BDK100, Montale100 and
+Le Beau Le Parfum EDPI125 have exact page evidence. Hermès defaults50ml without
+a verified100ml article selection; Paradise Garden has an explicit EDT/EDP
+conflict within the Sephora page. Niche Beauty country availability, Sephora
+Le Beau unavailability and ambiguous Douglas seller text remain caveats.
+All affiliate states stay UNKNOWN. None of these pages proves a tracked,
+publisher-bound, currently purchasable DUFYND offer.

@@ -29,6 +29,10 @@ for(const [brand,host] of sources){
     const crossed=fixture(brand,otherHost);
     assert.throws(()=>validateEvidence(crossed.packet,crossed.staging,[]),/missing_manufacturer_evidence/,`${brand} must not inherit ${otherBrand}'s source`);cases++;
   }
+  for(const sourceField of ['source_url','notes_source_url']){
+    const legacyEscape=fixture(brand,host);legacyEscape.row[sourceField]='https://jeanpaulgaultier.com/synthetic';
+    assert.throws(()=>validateEvidence(legacyEscape.packet,legacyEscape.staging,[]),/missing_manufacturer_evidence/);cases++;
+  }
   const wrongNotes=fixture(brand,host);wrongNotes.row.notes_source_url='https://unrelated.invalid/notes';
   assert.throws(()=>validateEvidence(wrongNotes.packet,wrongNotes.staging,[]),/missing_manufacturer_evidence/);cases++;
   const wrongScheme=fixture(brand,host);wrongScheme.row.source_url=`http://${host}/synthetic`;

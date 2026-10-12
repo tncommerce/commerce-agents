@@ -21,7 +21,7 @@ const sourceDomains=['jeanpaulgaultier.com','viktor-rolf.com','amouage.com','chl
 // Additional manufacturer sources are bound to their evidenced brand, not a
 // general-purpose allowlist. A source URL still does not verify its facts/rights.
 const intakeDomains={'bdk parfums':'bdkparfums.com','montale':'montaleparfums.com','hermes':'hermes.com','zadig voltaire':'zadig-et-voltaire.com'};
-const official=(url,brand)=>{try{const u=new URL(url),intake=intakeDomains[brandKey(brand)];return u.protocol==='https:'&&!u.username&&!u.password&&(sourceDomains.some(d=>u.hostname===d||u.hostname.endsWith(`.${d}`))||Boolean(intake&&(u.hostname===intake||u.hostname===`www.${intake}`)));}catch{return false;}};
+const official=(url,brand)=>{try{const u=new URL(url),intake=intakeDomains[brandKey(brand)];return u.protocol==='https:'&&!u.username&&!u.password&&(intake?(u.hostname===intake||u.hostname===`www.${intake}`):sourceDomains.some(d=>u.hostname===d||u.hostname.endsWith(`.${d}`)));}catch{return false;}};
 const indexUnique=(rows,key)=>{const result=new Map();for(const row of rows){if(!row[key]||result.has(row[key]))throw Error(`duplicate_or_missing_${key}`);result.set(row[key],row);}return result;};
 
 export function validateEvidence(evidence,staging,existingFacts){

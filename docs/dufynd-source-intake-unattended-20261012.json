@@ -187,7 +187,7 @@
     }
   ],
   "remaining_gates": [
-    "existing candidate -> exact staging identity mapping",
+    "integrate source facts through existing staging/review schema without inventing merchant or community evidence",
     "curated review presentation",
     "fresh renderer-bound QA",
     "asset-specific image rights",
@@ -208,6 +208,174 @@
   "new_registered_gtins": 0,
   "documented_manufacturer_eans": 1,
   "completed_preparation": [
-    "brand-bound manufacturer-domain support with 48 offline regression cases"
-  ]
+    "brand-bound manufacturer-domain support with 56 offline regression cases",
+    "eight explicit candidate-to-SKU proposals checked against existing exact identities without registering them"
+  ],
+  "staging_proposal": {
+    "status": "OFFLINE_IDENTITY_PROPOSAL_NOT_REGISTERED",
+    "enabled": false,
+    "products": [
+      {
+        "candidate_id": "BDK-GRIS-CHARNEL-EDP",
+        "proposed_product_id": "SC-BDK-GRIS-CHARNEL-EDP-100",
+        "volume_ml": 100,
+        "concentration": "Eau de Parfum"
+      },
+      {
+        "candidate_id": "MONTALE-ARABIANS-TONKA-EDP",
+        "proposed_product_id": "SC-MONTALE-ARABIANS-TONKA-EDP-100",
+        "volume_ml": 100,
+        "concentration": "Eau de Parfum"
+      },
+      {
+        "candidate_id": "PDM-VALAYA-EDP",
+        "proposed_product_id": "SC-PDM-VALAYA-EDP-75",
+        "volume_ml": 75,
+        "concentration": "Eau de Parfum"
+      },
+      {
+        "candidate_id": "HERMES-TERRE-DHERMES-EAU-GIVREE",
+        "proposed_product_id": "SC-HERMES-TERRE-DHERMES-EAU-GIVREE-EDP-100",
+        "volume_ml": 100,
+        "concentration": "Eau de Parfum"
+      },
+      {
+        "candidate_id": "JPG-LA-BELLE-EDP",
+        "proposed_product_id": "SC-JPG-LA-BELLE-EDP-100",
+        "volume_ml": 100,
+        "concentration": "Eau de Parfum"
+      },
+      {
+        "candidate_id": "JPG-LE-BEAU-LE-PARFUM",
+        "proposed_product_id": "SC-JPG-LE-BEAU-LE-PARFUM-EDPI-125",
+        "volume_ml": 125,
+        "concentration": "Eau de Parfum Intense"
+      },
+      {
+        "candidate_id": "JPG-LE-BEAU-PARADISE-GARDEN",
+        "proposed_product_id": "SC-JPG-LE-BEAU-PARADISE-GARDEN-EDP-125",
+        "volume_ml": 125,
+        "concentration": "Eau de Parfum"
+      },
+      {
+        "candidate_id": "ZADIG-VOLTAIRE-THIS-IS-HER",
+        "proposed_product_id": "SC-ZADIG-VOLTAIRE-THIS-IS-HER-EDP-100",
+        "volume_ml": 100,
+        "concentration": "Eau de Parfum"
+      }
+    ],
+    "scope": "Explicit internal SKU proposal only; no registry, staging wave, renderer, review, offer or publication write. Names, editions, concentration and volume remain bound to each source record."
+  },
+  "merchant_research": {
+    "checked_at": "2026-10-12",
+    "scope": "Direct untracked product-page identity research only; no clickout, offer activation, current price promise, image reuse or affiliate authorization. Explicit availability/seller ambiguities retained as caveats.",
+    "products": [
+      {
+        "candidate_id": "JPG-LA-BELLE-EDP",
+        "merchant": "sephora",
+        "url": "https://www.sephora.de/p/la-belle-eau-de-parfum-485324.html",
+        "source_reference": "485324 (URL product reference, not a GTIN)",
+        "observed_concentration": "Eau de Parfum",
+        "observed_volume_ml": 100,
+        "status": "EXACT_VARIANT_RESEARCH_ONLY",
+        "affiliate_state": "UNKNOWN",
+        "evidence": "Direct current page title identifies original La Belle EDP; selected product content is100ml. No Le Parfum/Rosea/Paradise Garden substitution."
+      },
+      {
+        "candidate_id": "ZADIG-VOLTAIRE-THIS-IS-HER",
+        "merchant": "sephora",
+        "url": "https://www.sephora.de/p/this-is-her!-eau-de-parfum-364289.html",
+        "source_reference": "364289 (URL product reference, not a GTIN)",
+        "observed_concentration": "Eau de Parfum",
+        "observed_volume_ml": 100,
+        "status": "EXACT_VARIANT_RESEARCH_ONLY",
+        "affiliate_state": "UNKNOWN",
+        "evidence": "Direct current page title identifies This is Her EDP with selected100ml. Do not replace manufacturer evidence with reviews or infer refill/GTIN equivalence."
+      },
+      {
+        "candidate_id": "PDM-VALAYA-EDP",
+        "merchant": "douglas",
+        "url": "https://www.douglas.de/de/p/5010913027",
+        "source_reference": "1275246 (displayed retailer article number for30ml)",
+        "observed_concentration": "Eau de Parfum",
+        "observed_volume_ml": 30,
+        "required_volume_ml": 75,
+        "status": "HOLD_WRONG_SELECTED_VOLUME",
+        "affiliate_state": "UNKNOWN",
+        "evidence": "Direct page currently selects30ml. This is not evidence of the proposed75ml merchant variant."
+      },
+      {
+        "candidate_id": "JPG-LE-BEAU-LE-PARFUM",
+        "merchant": "sephora",
+        "url": "https://www.sephora.de/p/le-beau-le-parfum---eau-de-parfum-intense-584221.html",
+        "source_reference": "584221 (URL product reference)",
+        "observed_concentration": "Eau de Parfum Intense",
+        "observed_volume_ml": 125,
+        "status": "EXACT_VARIANT_RESEARCH_ONLY",
+        "affiliate_state": "UNKNOWN",
+        "evidence": "Current page heading explicitly EDP Intense and125ml. It reports unavailable; this identity research is not a purchasable offer."
+      },
+      {
+        "candidate_id": "BDK-GRIS-CHARNEL-EDP",
+        "merchant": "niche_beauty",
+        "url": "https://www.niche-beauty.com/de-de/produkte/bdk-parfums-gris-charnel/873-008",
+        "source_reference": "873-008",
+        "observed_concentration": "Eau de Parfum",
+        "observed_volume_ml": 100,
+        "status": "EXACT_VARIANT_RESEARCH_ONLY",
+        "affiliate_state": "UNKNOWN",
+        "evidence": "Product name/category and selected100ml identify original EDP, not Extrait. Page includes country-unavailable and In Stock text; purchase availability is not established."
+      },
+      {
+        "candidate_id": "MONTALE-ARABIANS-TONKA-EDP",
+        "merchant": "douglas",
+        "url": "https://www.douglas.de/de/p/5011487001",
+        "source_reference": "501346",
+        "observed_concentration": "Eau de Parfum",
+        "observed_volume_ml": 100,
+        "status": "EXACT_VARIANT_RESEARCH_ONLY",
+        "affiliate_state": "UNKNOWN",
+        "evidence": "Direct product heading, selected100ml and retailer article501346. Mixed Douglas/partner seller text is not a verified seller identity or merchant activation."
+      },
+      {
+        "candidate_id": "PDM-VALAYA-EDP",
+        "merchant": "niche_beauty",
+        "url": "https://www.niche-beauty.com/de-de/produkte/parfums-de-marly-valaya/651-035",
+        "source_reference": "651-035",
+        "observed_concentration": "Eau de Parfum",
+        "observed_volume_ml": 75,
+        "status": "EXACT_VARIANT_RESEARCH_ONLY",
+        "affiliate_state": "UNKNOWN",
+        "evidence": "Original Valaya title, EDP description and selected75ml. Not Exclusif/hair perfume; country-unavailable text means no purchase-readiness claim."
+      },
+      {
+        "candidate_id": "JPG-LE-BEAU-PARADISE-GARDEN",
+        "merchant": "sephora",
+        "url": "https://www.sephora.de/p/le-beau-paradise-garden---eau-de-toilette-721864.html",
+        "source_reference": "721864 (URL product reference)",
+        "observed_concentration": "CONFLICT_EDT_HEADING_EDP_DESCRIPTION",
+        "observed_volume_ml": 125,
+        "status": "HOLD_CONCENTRATION_CONFLICT",
+        "affiliate_state": "UNKNOWN",
+        "evidence": "125ml is displayed but title/image alt say EDT while product narrative says EDP. Do not silently correct or map the merchant variant to manufacturer EDP."
+      },
+      {
+        "candidate_id": "HERMES-TERRE-DHERMES-EAU-GIVREE",
+        "merchant": "douglas",
+        "url": "https://www.douglas.de/de/p/5010577000",
+        "source_reference": "1009654 (displayed article for default50ml)",
+        "observed_concentration": "Eau de Parfum",
+        "observed_volume_ml": 50,
+        "status": "HOLD_EXACT_100ML_ARTICLE_UNVERIFIED",
+        "affiliate_state": "UNKNOWN",
+        "evidence": "Page defaults50ml and lists separate100ml and200ml refill options;100ml article selection is not evidenced. Do not reuse default article1009654 for100ml."
+      }
+    ],
+    "counts": {
+      "records": 9,
+      "exact_variant_research_records": 6,
+      "held_records": 3,
+      "new_offers": 0
+    }
+  }
 }
