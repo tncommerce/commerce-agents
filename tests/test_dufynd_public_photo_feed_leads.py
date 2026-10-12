@@ -351,3 +351,30 @@ def test_full_brand_and_gender_and_numbered_editions_remain_distinct() -> None:
         "Parfums de Marly Scent Pour Homme III EDP 100 ml",
     ]:
         assert not feed_name_matches(item, {"product_name": title})
+
+
+def test_observed_bois_perfumer_credit_is_bounded_to_the_exact_product() -> None:
+    title = "ESSENTIAL PARFUMS BOIS IMPERIAL by Quentin Bisch EdP Nat. Spray (nachfüllbar)"
+    result = run([row("924719", title, PHOTO_BOIS, gtin="3770010614630")])
+    candidate = next(x for x in result["items"] if x["product_id"].endswith("IMPERIAL-100"))
+    assert len(candidate["candidates"]) == 1
+    assert candidate["candidates"][0]["feed_explicit_size_match"] is False
+    assert result["approved_new_images"] == 0
+    for suffix in [" Extrait", " Flüssigseife", " Reisegröße", " Refill", " 100 ml + 10 ml"]:
+        assert not feed_name_matches(GAP["items"][0], {"product_name": title + suffix})
+    assert not feed_name_matches(
+        {**GAP["items"][0], "product_id": "ANOTHER-PRODUCT"}, {"product_name": title}
+    )
+
+
+def test_observed_armani_brand_alias_does_not_erase_flankers() -> None:
+    item = {
+        "brand": "Giorgio Armani",
+        "name": "Stronger With You Intensely",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100,
+    }
+    title = "Giorgio Armani Emporio Armani Stronger with You Intensely EdP Nat. Spray"
+    assert feed_name_matches(item, {"product_name": title})
+    assert not feed_name_matches(item, {"product_name": title.replace("Intensely", "Absolutely")})
+    assert not feed_name_matches(item, {"product_name": title + " Parfum"})

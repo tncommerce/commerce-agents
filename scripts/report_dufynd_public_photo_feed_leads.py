@@ -86,6 +86,13 @@ def safe_feed_image(value: object) -> str | None:
 def feed_name_matches(item: dict, row: dict) -> bool:
     def identity(value: object) -> set[str]:
         label = norm(VOLUME.sub(" ", str(value or "")))
+        # Bounded spellings observed in the official review artifact 11715220608.
+        # Do not globally discard "by", perfumer names or refill qualifiers.
+        if item.get("product_id") == "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100":
+            label = label.replace("bois imperial by quentin bisch", "bois imperial")
+            label = label.replace("nat spray nachfullbar", "nat spray")
+        if item.get("brand") == "Giorgio Armani":
+            label = label.replace("giorgio armani emporio armani", "giorgio armani")
         for pattern, marker in CONCENTRATIONS:
             label = re.sub(pattern, marker, label)
         return set(label.split()) - STOP
