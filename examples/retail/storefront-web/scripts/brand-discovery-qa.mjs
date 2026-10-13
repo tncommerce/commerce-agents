@@ -40,7 +40,9 @@ export async function verifyBrandDiscovery(browser, baseUrl) {
         const response = await page.goto(brandUrl.href);
         assert.equal(response.status(), 200);
         assert.equal(await page.locator('[data-brand-product]').count(), brand.count);
-        assert.equal(new URL(await page.locator('link[rel=canonical]').getAttribute('href')).pathname, brand.href);
+        const canonical = new URL(await page.locator('link[rel=canonical]').getAttribute('href'), origin);
+        assert.equal(canonical.pathname, brandUrl.pathname, 'canonical brand pathname');
+        assert.equal(canonical.search, '', 'canonical must not contain acquisition attribution');
         assert.match(await page.locator('meta[name=robots]').getAttribute('content'), /noindex/);
         assert.equal(await page.locator('img, [data-offer-id]').count(), 0);
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
