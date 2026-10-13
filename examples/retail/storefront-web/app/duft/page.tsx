@@ -52,6 +52,7 @@ export default function FragranceIndexPage() {
             </span>
           </AcquisitionInternalLink>
           <div className="flex items-center gap-2">
+            <AcquisitionInternalLink href="/marken" className="hidden whitespace-nowrap px-3 py-2 text-[12px] font-semibold md:inline-flex">Marken A–Z</AcquisitionInternalLink>
             <AcquisitionInternalLink
               href="/sammlung"
               className="hidden rounded-xl border border-(--line) px-3 py-2 text-[12px] font-semibold text-(--ink) transition hover:border-(--ink) md:inline-flex"
@@ -80,9 +81,10 @@ export default function FragranceIndexPage() {
         </div>
         <nav
           aria-label="Weitere DUFYND Bereiche"
-          className="mx-auto flex max-w-[1080px] gap-2 px-4 pb-3 text-[11px] font-semibold sm:px-6 md:hidden"
+          className="mx-auto flex max-w-[1080px] flex-wrap gap-2 px-4 pb-3 text-[11px] font-semibold sm:px-6 md:hidden"
         >
           {[
+            ["/marken", "Marken A–Z"],
             ["/vergleich", "Vergleiche"],
             ["/merkliste", "Merkliste"],
             ["/sammlung", "Sammlung"],
