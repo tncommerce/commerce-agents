@@ -58,7 +58,31 @@ jobs:
           cache: pip
       - run: pip install -r requirements-dev.txt psycopg[binary]==3.3.6
       - name: Real PostgreSQL budget contention and recovery
-        run: pytest -q tests/test_dufynd_budget_postgres.py tests/test_jarvis_owner_session_postgres.py tests/test_dufynd_content_workflow_postgres.py tests/test_dufynd_first_money_replacement_postgres.py
+        run: pytest -q tests/test_dufynd_budget_postgres.py tests/test_jarvis_owner_session_postgres.py tests/test_dufynd_content_workflow_postgres.py tests/test_dufynd_first_money_replacement_postgres.py tests/test_dufynd_native_nightshift_postgres.py
+      - name: Build disposable pg_cron 1.6.4 clock test
+        timeout-minutes: 10
+        run: |
+          docker build -t dufynd-pg-cron-test tests/pg_cron
+          docker run -d --name dufynd-pg-cron-test -p 127.0.0.1:5433:5432 \
+            -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=dufynd_cron_test \
+            dufynd-pg-cron-test -c shared_preload_libraries=pg_cron \
+            -c cron.database_name=dufynd_cron_test -c cron.use_background_workers=off \
+            -c cron.host=/var/run/postgresql -c statement_timeout=5000
+          for attempt in $(seq 1 30); do
+            if docker exec dufynd-pg-cron-test pg_isready -U postgres -d dufynd_cron_test; then exit 0; fi
+            sleep 1
+          done
+          exit 1
+      - name: Real pg_cron expiry, abort, crash and restoration
+        timeout-minutes: 5
+        env:
+          DUFYND_CRON_TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5433/dufynd_cron_test
+        run: pytest -q -s tests/test_dufynd_native_nightshift_cron.py
+      - name: Remove disposable clock test container
+        if: always()
+        run: |
+          docker logs --tail 100 dufynd-pg-cron-test 2>&1 || true
+          docker rm -f dufynd-pg-cron-test 2>/dev/null || true
 
   no-pypi-fallback:
     runs-on: ubuntu-latest

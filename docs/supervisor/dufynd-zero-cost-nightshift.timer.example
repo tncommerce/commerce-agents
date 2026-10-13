@@ -1,0 +1,12 @@
+# REVIEW TEMPLATE ONLY. No installation or activation is authorized by this file.
+[Unit]
+Description=Proposed DUFYND development night window
+
+[Timer]
+OnCalendar=*-*-* 0..5,22..23:0/5:00 Europe/Berlin
+AccuracySec=30s
+Persistent=false
+Unit=dufynd-zero-cost-nightshift.service
+
+[Install]
+WantedBy=timers.target
