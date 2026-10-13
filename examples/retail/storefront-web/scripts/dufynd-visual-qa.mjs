@@ -269,7 +269,7 @@ const report = {
 
 try {
   try {
-    report.checks.push(...await verifyBrandDiscovery(browser, baseUrl));
+    report.checks.push(...await verifyBrandDiscovery(browser, baseUrl, outputDir));
   } catch (error) {
     report.failures.push({ label: "brand-discovery", message: String(error) });
   }
