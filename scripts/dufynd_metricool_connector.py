@@ -10,6 +10,7 @@ import hashlib
 import json
 import re
 from collections.abc import Callable
+from datetime import UTC, datetime
 from pathlib import Path
 from urllib.parse import urlsplit
 
@@ -21,6 +22,158 @@ from scripts.dufynd_publish_orchestrator import (
 )
 
 TOOL = "mcp__codex_apps__metricool_createscheduledpost"
+MANUAL_MANIFEST_KEY = "content.manual_delivery_bindings_v1"
+MANUAL_ADAPTER_VERSION = "manual-delivery/1"
+
+
+def _private_digest(value: dict) -> str:
+    return hashlib.sha256(
+        json.dumps(
+            value, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False
+        ).encode()
+    ).hexdigest()
+
+
+def sync_connected_manual_deliveries(bridge, *, call_tool, manifest_sha256, now=None):
+    """Bounded readback -> existing SQL exclusions. Never writes to Metricool.
+
+    The private manifest is a pinned handoff on existing master status, not a
+    queue or publication GO. Missing identities, incomplete inventory or an
+    uncertain DB response stop the caller. Repeating this observation is safe;
+    it never means repeating a provider publication.
+    """
+    try:
+        if not isinstance(manifest_sha256, str) or not re.fullmatch(
+            r"[a-f0-9]{64}", manifest_sha256
+        ):
+            raise ValueError("pin missing")
+        row = bridge.load_master_status_entry(MANUAL_MANIFEST_KEY)
+        manifest = row["value"]
+        if _private_digest(manifest) != manifest_sha256:
+            raise ValueError("pin changed")
+        if (
+            type(manifest["schema_version"]) is not int
+            or manifest["schema_version"] != 1
+            or manifest["brand_id"] != "7182186"
+            or set(manifest) != {"schema_version", "brand_id", "from_date", "to_date", "bindings"}
+        ):
+            raise ValueError("contract changed")
+        start, end = (datetime.fromisoformat(manifest[k]) for k in ("from_date", "to_date"))
+        current = now or datetime.now(UTC)
+        if (
+            start.utcoffset() is None
+            or end.utcoffset() is None
+            or not start <= current <= end
+            or not 0 < (end - start).total_seconds() <= 604800
+        ):
+            raise ValueError("window invalid")
+        entries = manifest["bindings"]
+        if not isinstance(entries, list) or not 1 <= len(entries) <= 8:
+            raise ValueError("bounded nonempty manifest required")
+        bindings, media, seen = [], [], set()
+        for entry in entries:
+            if set(entry) != {"source_key", "source_sha256", "binding"}:
+                raise ValueError("source contract")
+            if not re.fullmatch(r"content\.[A-Za-z0-9_.:-]{1,180}", entry["source_key"]):
+                raise ValueError("private source key")
+            source = bridge.load_master_status_entry(entry["source_key"])["value"]
+            if _private_digest(source) != entry["source_sha256"]:
+                raise ValueError("source changed")
+            binding = entry["binding"]
+            if set(binding) != {
+                "content_id",
+                "asset_sha256",
+                "platform",
+                "provider_post_id",
+                "provider_uuid",
+            }:
+                raise ValueError("binding contract")
+            # Never invent a content ID from caption, date, planner ID or hash.
+            if source.get("content_id") != binding["content_id"]:
+                raise ValueError("canonical content id unavailable")
+            source_hash = (
+                source.get("asset_sha256")
+                or source.get("frozen_asset", {}).get("source_expected_sha256")
+                or source.get("asset", {}).get("source_sha256")
+            )
+            if not source_hash or source_hash != binding["asset_sha256"]:
+                raise ValueError("frozen hash unavailable")
+            delivery = source.get("metricool_delivery", source.get("platform_schedule", {})).get(
+                binding["platform"], {}
+            )
+            if str(delivery.get("id", delivery.get("metricool_id"))) != str(
+                binding["provider_post_id"]
+            ) or str(delivery.get("uuid")) != str(binding["provider_uuid"]):
+                raise ValueError("provider source binding missing")
+            uri = source.get("media_integrity", {}).get("metricool_media_url") or source.get(
+                "asset", {}
+            ).get("metricool_media")
+            if not isinstance(uri, str) or not uri.startswith("https://"):
+                raise ValueError("source media missing")
+            for identity in ("content_id", "asset_sha256", "provider_post_id", "provider_uuid"):
+                token = (binding["platform"], identity, str(binding[identity]))
+                if token in seen:
+                    raise ValueError("duplicate binding")
+                seen.add(token)
+            bindings.append(binding)
+            media.append(uri)
+        if bridge._rpc("dufynd_manual_guard_ready_v1", {}) is not True:
+            raise ValueError("guard unavailable")
+        response = unwrap_tool_result(
+            call_tool(
+                "mcp__codex_apps__metricool_getscheduledposts",
+                {
+                    "brandId": "7182186",
+                    "fromDate": manifest["from_date"],
+                    "toDate": manifest["to_date"],
+                    "timezone": "Europe/Berlin",
+                    "extendedRange": False,
+                },
+            )
+        )
+        if set(response) != {"data"}:
+            raise ValueError("unrecognized pagination or response contract")
+        data = response["data"]
+        if not isinstance(data, list) or len(data) != len(bindings):
+            raise ValueError("inventory incomplete or unbound")
+        selected = []
+        for binding, uri in zip(bindings, media, strict=True):
+            matches = [
+                p
+                for p in data
+                if isinstance(p, dict)
+                and str(p.get("id")) == str(binding["provider_post_id"])
+                and str(p.get("uuid")) == str(binding["provider_uuid"])
+            ]
+            if len(matches) != 1 or matches[0].get("media") != [uri]:
+                raise ValueError("provider identity missing or ambiguous")
+            selected.append(matches[0])
+        runner = PublishOrchestrator(bridge, ffmpeg="unused")
+        receipts = []
+        for binding, post in zip(bindings, selected, strict=True):
+            receipt = runner.record_manual_delivery(
+                binding, post, evidence_ref="manifest:" + manifest_sha256
+            )
+            if (
+                not isinstance(receipt, dict)
+                or receipt.get("recorded") is not True
+                or receipt.get("auto_publish_allowed") is not False
+                or receipt.get("state")
+                not in {"MANUAL_PENDING", "MANUAL_PUBLISHED", "MANUAL_UNKNOWN"}
+                or receipt.get("existing_dispatch_requires_reconciliation") is not False
+            ):
+                raise ValueError("manual receipt uncertain or needs reconciliation")
+            receipts.append(receipt)
+        return {
+            "adapter_version": MANUAL_ADAPTER_VERSION,
+            "manifest_sha256": manifest_sha256,
+            "exclusions_recorded": len(receipts),
+            "provider_writes": 0,
+        }
+    except Exception:
+        # No upstream exception text (tokens, source packets, URLs) reaches logs.
+        # Previously committed exclusions intentionally survive a later failure.
+        raise PublishBlocked("manual_delivery_preflight_hold") from None
 
 
 def verify_hosted_bytes(
@@ -83,12 +236,17 @@ def dispatch_connected_metricool(
     path: Path,
     decision_id: str,
     verify_hosted_media: Callable[[str, str], bool],
+    manual_manifest_sha256: str | None = None,
 ) -> dict:
     """Bind the real named connector behind prepare/hash/reserve/GO/receipt.
 
     call_tool must complete synchronously once; the host must not retry it.
     Unknown outcomes are durably held by PublishOrchestrator.
     """
+
+    sync_connected_manual_deliveries(
+        bridge, call_tool=call_tool, manifest_sha256=manual_manifest_sha256
+    )
 
     def schedule(args):
         # mediaFiles is the desktop attachment uploader, not a URL list.
@@ -170,10 +328,22 @@ def verify_private_draft(result: dict) -> dict:
 
 
 def dispatch_connected_release(
-    bridge, *, call_tool, ffmpeg, release_id, paths, decisions, verify_hosted_media
+    bridge,
+    *,
+    call_tool,
+    ffmpeg,
+    release_id,
+    paths,
+    decisions,
+    verify_hosted_media,
+    manual_manifest_sha256=None,
 ):
     """Production three-platform entry point; requires concrete SQL Owner GO."""
     from scripts.dufynd_publish_orchestrator import ReleaseOrchestrator
+
+    sync_connected_manual_deliveries(
+        bridge, call_tool=call_tool, manifest_sha256=manual_manifest_sha256
+    )
 
     try:
         verify_release_connections(call_tool("mcp__codex_apps__metricool_getbrandsettings", {}))
