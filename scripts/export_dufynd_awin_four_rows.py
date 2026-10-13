@@ -60,7 +60,14 @@ def _contains_secret(value: str, secret: str) -> bool:
     return any(form in value for form in forms)
 
 
-def safe_url(value: str, field: str, secret: str = "", depth: int = 0) -> bool:
+def safe_url(
+    value: str,
+    field: str,
+    secret: str = "",
+    depth: int = 0,
+    *,
+    allowed_skus: tuple[str, ...] = TARGETS,
+) -> bool:
     """Reject whole unsafe values; never redact/re-encode a credential URL."""
     if not value or len(value) > 4096 or depth > 1:
         return False
@@ -101,7 +108,13 @@ def safe_url(value: str, field: str, secret: str = "", depth: int = 0) -> bool:
             elif url.path == "/cread.php":
                 expected = {"awinaffid": "3099222", "awinmid": "31081"}
                 allowed = {*expected, "ued"}
-                if not safe_url(params.get("ued", ""), "merchant_deep_link", secret, depth + 1):
+                if not safe_url(
+                    params.get("ued", ""),
+                    "merchant_deep_link",
+                    secret,
+                    depth + 1,
+                    allowed_skus=allowed_skus,
+                ):
                     return False
             else:
                 return False
@@ -119,11 +132,45 @@ def safe_url(value: str, field: str, secret: str = "", depth: int = 0) -> bool:
             return False
         # Only known store/variant selectors; no arbitrary IDs, tokens or redirects.
         return all(
-            (key == "___store" and val in {"default", "de"}) or (key == "sku" and val in TARGETS)
+            (key == "___store" and val in {"default", "de"})
+            or (key == "sku" and val in allowed_skus)
             for key, val in query
         )
     except ValueError:
         return False
+
+
+def extract_evidence_fields(
+    row: dict, secret: str = "", *, allowed_skus: tuple[str, ...] = TARGETS
+) -> dict:
+    """Shared bounded field filter; never export descriptions or arbitrary URLs."""
+    fields, withheld, missing, empty = {}, [], [], []
+    for name in FIELDS:
+        if name not in row:
+            missing.append(name)
+            continue
+        value = row[name]
+        if value == "":
+            fields[name] = value
+            empty.append(name)
+            continue
+        safe = isinstance(value, str) and not _contains_secret(value, secret)
+        if safe:
+            safe = (
+                safe_url(value, name, secret, allowed_skus=allowed_skus)
+                if name in URL_FIELDS
+                else bool(re.fullmatch(FIELD_PATTERNS[name], value))
+            )
+        if safe:
+            fields[name] = value
+        else:
+            withheld.append(name)
+    return {
+        "fields": fields,
+        "missing_fields": missing,
+        "empty_fields": empty,
+        "withheld_fields": withheld,
+    }
 
 
 def extract_rows(rows: list[dict], secret: str = "") -> dict:
@@ -138,36 +185,8 @@ def extract_rows(rows: list[dict], secret: str = "") -> dict:
     output = []
     for sku, matches in selected.items():
         row = matches[0]
-        fields, withheld, missing, empty = {}, [], [], []
-        for name in FIELDS:
-            if name not in row:
-                missing.append(name)
-                continue
-            value = row[name]
-            if value == "":
-                fields[name] = value
-                empty.append(name)
-                continue
-            safe = isinstance(value, str) and not _contains_secret(value, secret)
-            if safe:
-                safe = (
-                    safe_url(value, name, secret)
-                    if name in URL_FIELDS
-                    else bool(re.fullmatch(FIELD_PATTERNS[name], value))
-                )
-            if safe:
-                fields[name] = value
-            else:
-                withheld.append(name)
-        output.append(
-            {
-                "merchant_product_id": sku,
-                "fields": fields,
-                "missing_fields": missing,
-                "empty_fields": empty,
-                "withheld_fields": withheld,
-            }
-        )
+        output.append({"merchant_product_id": sku, **extract_evidence_fields(row, secret)})
+
     return {
         "version": 1,
         "advertiser_id": "31081",
