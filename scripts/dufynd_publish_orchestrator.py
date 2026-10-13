@@ -354,6 +354,55 @@ class PublishOrchestrator:
     ):
         self.bridge, self.ffmpeg, self.metricool_schedule = bridge, ffmpeg, metricool_schedule
 
+    def record_manual_delivery(self, binding: dict, provider: dict, *, evidence_ref: str) -> dict:
+        """Import an operator-bound provider readback, never schedule or approve.
+
+        Binding must come from the existing frozen creative/handoff, including
+        exact planner identity. Caption similarity is deliberately insufficient.
+        This records an exclusion from automation, not audio/rights verification.
+        """
+        required = {"content_id", "asset_sha256", "platform", "provider_post_id", "provider_uuid"}
+        if set(binding) != required or binding["platform"] not in {
+            "instagram",
+            "tiktok",
+            "youtube",
+        }:
+            raise PublishBlocked("manual_binding_invalid")
+        if (
+            not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.:-]{0,159}", str(binding["content_id"]))
+            or not re.fullmatch(r"[a-f0-9]{64}", str(binding["asset_sha256"]))
+            or str(provider.get("id")) != str(binding["provider_post_id"])
+            or str(provider.get("uuid")) != str(binding["provider_uuid"])
+            or provider.get("autoPublish") is not False
+        ):
+            raise PublishBlocked("manual_identity_or_delivery_conflict")
+        providers = provider.get("providers")
+        if not isinstance(providers, list) or len(providers) != 1:
+            raise PublishBlocked("manual_provider_ambiguous")
+        row = providers[0]
+        if not isinstance(row, dict) or row.get("network") != binding["platform"]:
+            raise PublishBlocked("manual_platform_conflict")
+        if (
+            binding["platform"] == "instagram"
+            and provider.get("instagramData", {}).get("autoPublish") is not False
+        ):
+            raise PublishBlocked("manual_instagram_delivery_conflict")
+        state = {"PENDING": "MANUAL_PENDING", "PUBLISHED": "MANUAL_PUBLISHED"}.get(
+            row.get("status"), "MANUAL_UNKNOWN"
+        )
+        return self.bridge._rpc(
+            "record_dufynd_manual_delivery_v1",
+            {
+                "p_content_id": binding["content_id"],
+                "p_platform": binding["platform"],
+                "p_asset_sha256": binding["asset_sha256"],
+                "p_state": state,
+                "p_provider_post_id": str(binding["provider_post_id"]),
+                "p_provider_uuid": str(binding["provider_uuid"]),
+                "p_evidence_ref": evidence_ref,
+            },
+        )
+
     def prepare(self, asset_id: str, path: Path) -> tuple[dict, dict]:
         packet = self.bridge._rpc("read_dufynd_publish_packet_v1", {"p_asset_id": asset_id})
         if packet.get("ready") is not True:
