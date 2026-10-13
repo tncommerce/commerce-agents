@@ -35,7 +35,9 @@ export async function verifyBrandDiscovery(browser, baseUrl) {
       await page.getByRole('searchbox').fill('');
       const products = new Set();
       for (const brand of brands) {
-        const response = await page.goto(`${origin}${brand.href}`);
+        const brandUrl = new URL(brand.href, origin);
+        assert.equal(brandUrl.origin, origin, 'brand link must stay on DUFYND');
+        const response = await page.goto(brandUrl.href);
         assert.equal(response.status(), 200);
         assert.equal(await page.locator('[data-brand-product]').count(), brand.count);
         assert.equal(new URL(await page.locator('link[rel=canonical]').getAttribute('href')).pathname, brand.href);
