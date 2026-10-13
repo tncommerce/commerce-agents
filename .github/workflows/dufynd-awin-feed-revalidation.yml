@@ -10,16 +10,17 @@ on:
         options: [legacy, merchant-review-v1]
   # A reviewed recipient rotation runs this same workflow once on the development
   # branch. No default-branch bootstrap or credential changes are needed.
+  # The development branch additionally accepts ONLY a separately authorized marker.
   push:
-    branches: [scentai-mvp]
-    paths: [.github/dufynd-awin-evidence-recipient.pub]
+    branches: [scentai-mvp, dufynd-feed-05-20261013]
+    paths: [.github/dufynd-awin-evidence-recipient.pub, .github/dufynd-feed-review-request.json]
 
 permissions:
   contents: read
 
 jobs:
   bounded-private-review:
-    if: github.event_name == 'workflow_dispatch' && inputs.review_profile == 'merchant-review-v1' && github.ref == 'refs/heads/dufynd-feed-05-20261013'
+    if: github.ref == 'refs/heads/dufynd-feed-05-20261013' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.review_profile == 'merchant-review-v1'))
     runs-on: ubuntu-latest
     timeout-minutes: 10
     concurrency:
@@ -29,6 +30,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
+          fetch-depth: 2
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
           python-version: "3.12"
@@ -44,7 +46,7 @@ jobs:
           review_dir="$(mktemp -d "${RUNNER_TEMP}/dufynd-review.XXXXXX")"
           trap 'rm -rf "$review_dir"' EXIT
           export TMPDIR="$review_dir"
-          python scripts/export_dufynd_awin_review.py \
+          python scripts/export_dufynd_awin_review.py --require-request \
             --recipient .github/dufynd-awin-evidence-recipient.pub \
             --output "${RUNNER_TEMP}/bounded-review.encrypted.json"
       - name: Upload bounded recipient-encrypted evidence only
@@ -56,7 +58,7 @@ jobs:
           retention-days: 1
 
   revalidate-top-parfuemerie:
-    if: github.event_name != 'workflow_dispatch' || inputs.review_profile == '' || inputs.review_profile == 'legacy'
+    if: github.ref == 'refs/heads/scentai-mvp' && (github.event_name != 'workflow_dispatch' || inputs.review_profile == '' || inputs.review_profile == 'legacy')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

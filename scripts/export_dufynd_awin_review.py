@@ -11,6 +11,7 @@ import hashlib
 import json
 import os
 import re
+import subprocess
 import sys
 import tempfile
 from collections import Counter
@@ -39,6 +40,33 @@ TARGETS = (
     ("valaya-75", "Parfums de Marly", "Valaya", "Eau de Parfum", 75, None),
 )
 MANIFEST_SHA256 = hashlib.sha256(json.dumps(TARGETS).encode()).hexdigest()
+REQUEST_PATH = ".github/dufynd-feed-review-request.json"
+
+
+def verify_start_request(root: Path) -> None:
+    """A separately approved, marker-only child of the reviewed code commit.
+
+    This checks scope/provenance, not owner identity. The actual Owner GO must
+    exist before an authorized operator creates the marker; no decision is invented.
+    """
+
+    def git(*args):
+        return subprocess.check_output(
+            ["git", *args], cwd=root, text=True, stderr=subprocess.DEVNULL
+        ).strip()
+
+    request = json.loads((root / REQUEST_PATH).read_text())
+    parents = git("rev-list", "--parents", "-n", "1", "HEAD").split()
+    if len(parents) != 2 or request != {
+        "profile": PROFILE,
+        "approved_commit": parents[1],
+        "manifest_sha256": MANIFEST_SHA256,
+    }:
+        raise ValueError("review_request_drift")
+    if git("diff", "--name-only", parents[1], "HEAD") != REQUEST_PATH:
+        raise ValueError("request_commit_must_only_add_marker")
+    if git("diff", "--diff-filter=A", "--name-only", parents[1], "HEAD") != REQUEST_PATH:
+        raise ValueError("request_must_be_new_not_replayed")
 
 
 def verify_source(metadata: dict, rights: dict, now: datetime) -> dict:
@@ -224,8 +252,11 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--recipient", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--require-request", action="store_true")
     args = parser.parse_args()
     try:
+        if args.require_request:
+            verify_start_request(ROOT)
         run_review(args.recipient, args.output)
     except (Exception, KeyboardInterrupt):
         print("bounded_feed_review_failed_closed", file=sys.stderr)

@@ -195,5 +195,10 @@ def test_public_repository_upload_is_encrypted_and_expires_in_one_day() -> None:
     assert "retention-days: 1" in block
     assert "path: ${{ runner.temp }}/four-row-evidence.encrypted.json" in block
     assert "*.json" not in block and "top-parfuemerie.csv" not in block
-    assert "branches: [scentai-mvp]" in workflow
-    assert "paths: [.github/dufynd-awin-evidence-recipient.pub]" in workflow
+    assert "branches: [scentai-mvp, dufynd-feed-05-20261013]" in workflow
+    assert (
+        "paths: [.github/dufynd-awin-evidence-recipient.pub, .github/dufynd-feed-review-request.json]"
+        in workflow
+    )
+    legacy = workflow.split("  revalidate-top-parfuemerie:", 1)[1]
+    assert "if: github.ref == 'refs/heads/scentai-mvp'" in legacy

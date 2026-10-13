@@ -315,6 +315,10 @@ def test_workflow_profile_is_manual_isolated_and_ciphertext_only():
         "  revalidate-top-parfuemerie:", 1
     )[0]
     assert "github.event_name == 'workflow_dispatch'" in bounded
+    assert "github.event_name == 'push'" in bounded
+    assert "--require-request" in bounded
+    assert "fetch-depth: 2" in bounded
+    assert not Path(review.REQUEST_PATH).exists()
     assert "github.ref == 'refs/heads/dufynd-feed-05-20261013'" in bounded
     assert "timeout-minutes: 10" in bounded and "cancel-in-progress: false" in bounded
     assert "retention-days: 1" in bounded and "persist-credentials: false" in bounded
@@ -322,3 +326,57 @@ def test_workflow_profile_is_manual_isolated_and_ciphertext_only():
     assert "top-parfuemerie.csv" not in bounded and "release01" not in bounded
     assert "path: ${{ runner.temp }}/bounded-review.encrypted.json" in bounded
     assert "python scripts/export_dufynd_awin_review.py" in bounded
+
+
+@pytest.mark.parametrize(
+    "mutation", [None, "wrong_parent", "wrong_manifest", "extra_code", "replay"]
+)
+def test_real_git_marker_scope_and_parent_binding(tmp_path, mutation):
+    def git(*args):
+        return subprocess.check_output(
+            ["git", *args], cwd=tmp_path, text=True, stderr=subprocess.DEVNULL
+        ).strip()
+
+    git("init")
+    git("config", "user.name", "Isolated Fixture")
+    git("config", "user.email", "fixture@example.invalid")
+    (tmp_path / "base").write_text("reviewed code")
+    git("add", ".")
+    git("commit", "-m", "base fixture")
+    parent = git("rev-parse", "HEAD")
+    marker = tmp_path / review.REQUEST_PATH
+    marker.parent.mkdir()
+    record = {
+        "profile": review.PROFILE,
+        "approved_commit": parent,
+        "manifest_sha256": review.MANIFEST_SHA256,
+    }
+    if mutation == "wrong_parent":
+        record["approved_commit"] = "0" * 40
+    if mutation == "wrong_manifest":
+        record["manifest_sha256"] = "0" * 64
+    if mutation == "extra_code":
+        (tmp_path / "base").write_text("unreviewed code")
+    marker.write_text(json.dumps(record))
+    git("add", ".")
+    git("commit", "-m", "marker fixture")
+    if mutation == "replay":
+        record["approved_commit"] = git("rev-parse", "HEAD")
+        marker.write_text(json.dumps(record))
+        git("add", ".")
+        git("commit", "-m", "replay fixture")
+    if mutation is None:
+        review.verify_start_request(tmp_path)
+    else:
+        with pytest.raises(ValueError):
+            review.verify_start_request(tmp_path)
+
+
+def test_missing_start_marker_fails_before_any_feed_access(tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(review, "ROOT", tmp_path)
+    monkeypatch.setattr(review, "run_review", lambda *args: pytest.fail("must not access feed"))
+    monkeypatch.setattr(
+        sys, "argv", ["review", "--require-request", "--recipient", "unused", "--output", "unused"]
+    )
+    assert review.main() == 2
+    assert capsys.readouterr().err.strip() == "bounded_feed_review_failed_closed"
