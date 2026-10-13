@@ -95,7 +95,7 @@ class Database:
             self.dsn, autocommit=True, options="-c statement_timeout=5000 -c lock_timeout=1500"
         )
 
-    def q(self, sql, args=()):
+    def q(self, sql, args=None):
         with self.connect() as c:
             cur = c.execute(sql, args)
             return cur.fetchone()[0] if cur.description else None
