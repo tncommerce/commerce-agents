@@ -426,7 +426,7 @@ def test_immutable_input_checkpoint_and_result(db, mutation):
     assert db.finish(db.claim())["state"] == "done"
     statements = {
         "packet": "update dufynd_autonomy_tasks set durable_payload='{}' where task_id=%s",
-        "manifest": "update dufynd_master_status set value=jsonb_set(value,'{definition,max_total_attempts}','99') where key='jarvis.mission.v1:native_pilot' and %s is not null",
+        "manifest": "update dufynd_master_status set value=jsonb_set(value,'{definition,max_total_attempts}','99') where key='jarvis.mission.v1:native_pilot' and %s::text is not null",
         "attempt_reset": "update dufynd_autonomy_tasks set nightshift_attempts=0 where task_id=%s",
         "task_delete": "delete from dufynd_autonomy_tasks where task_id=%s",
         "result_delete": "delete from dufynd_master_status where key='jarvis.mission_result.v1:native:'||%s",
@@ -493,10 +493,11 @@ def test_cost_and_contract_gates(db, condition):
     )
 
 
-def test_unrelated_delete_still_works(db):
-    db.q("insert into dufynd_master_status(key,value) values('test.delete','{}')")
-    db.q("delete from dufynd_master_status where key='test.delete'")
-    assert db.q("select count(*) from dufynd_master_status where key='test.delete'") == 0
+@pytest.mark.parametrize("key", ["test.delete", "jarvis.mission.v1:nativeXunrelated"])
+def test_unrelated_delete_still_works(db, key):
+    db.q("insert into dufynd_master_status(key,value) values(%s,'{}')", (key,))
+    db.q("delete from dufynd_master_status where key=%s", (key,))
+    assert db.q("select count(*) from dufynd_master_status where key=%s", (key,)) == 0
 
 
 def test_expired_window_stops_without_spending_an_attempt(db):

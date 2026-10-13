@@ -12,7 +12,7 @@ create function public.dufynd_ns_v1_code_hash() returns text
 language sql stable security invoker set search_path=public as $$
  select public.dufynd_ns_v1_hash(jsonb_agg(pg_get_functiondef(p.oid) order by p.proname))
  from pg_proc p join pg_namespace n on n.oid=p.pronamespace
- where n.nspname='public' and p.proname like 'dufynd_ns_v1_%';
+ where n.nspname='public' and starts_with(p.proname,'dufynd_ns_v1_');
 $$;
 
 -- Only database-resident, explicitly named evidence. No caller-supplied content,
@@ -88,7 +88,7 @@ begin
  or (m->>'starts_at')::timestamptz>clock_timestamp()+interval '24 hours' then
   raise exception 'nightshift_approval_stale_or_mismatched';
  end if;
- if exists(select from public.dufynd_master_status where key like 'jarvis.mission.v1:native_%'
+ if exists(select from public.dufynd_master_status where starts_with(key,'jarvis.mission.v1:native_')
   and value->>'state' in ('native_ready','native_running','native_stopped')
   and public.dufynd_parse_timestamp(value#>>'{definition,ends_at}')>clock_timestamp()) then
   raise exception 'nightshift_existing_mission_resume_required';
@@ -137,7 +137,7 @@ begin
  else
   if old.key like 'jarvis.mission_result.v1:native:%' then
    if tg_op='DELETE' or new is distinct from old then raise exception 'nightshift_result_immutable'; end if;
-  elsif old.key like 'jarvis.mission.v1:native_%' then
+  elsif starts_with(old.key,'jarvis.mission.v1:native_') then
    if tg_op='DELETE' then raise exception 'nightshift_checkpoint_immutable'; end if;
    if new.key<>old.key or (new.value->'definition',new.value->'definition_sha256',new.value->'decision_id')
     is distinct from (old.value->'definition',old.value->'definition_sha256',old.value->'decision_id') then
@@ -210,7 +210,7 @@ begin
   return jsonb_build_object('state','busy');
  end if;
  select key,value into k,m from public.dufynd_master_status
- where key like 'jarvis.mission.v1:native_%' and value->>'state' in ('native_ready','native_running','native_stopped')
+ where starts_with(key,'jarvis.mission.v1:native_') and value->>'state' in ('native_ready','native_running','native_stopped')
  order by last_verified_at,key limit 1 for update skip locked;
  if k is null then return jsonb_build_object('state','idle'); end if;
  gate:=public.dufynd_ns_v1_gate(m);
@@ -380,7 +380,7 @@ from unnest(array['nightshift_measurement_qa','nightshift_receipt_qa']) h;
 do $$ declare p record; begin
  for p in select f.oid::regprocedure as signature,f.prokind from pg_proc f
   join pg_namespace n on n.oid=f.pronamespace
-  where n.nspname='public' and f.proname like 'dufynd_ns_v1_%' loop
+  where n.nspname='public' and starts_with(f.proname,'dufynd_ns_v1_') loop
   execute format('revoke all on %s %s from public,anon,authenticated,service_role',
    case when p.prokind='p' then 'procedure' else 'function' end,p.signature);
   execute format('grant execute on %s %s to postgres',
