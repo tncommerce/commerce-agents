@@ -97,6 +97,15 @@ required for the scoped activation; generic service-role workers cannot self-sta
 it. Table ownership remains trusted. Existing owner-decision records must already
 contain a genuine exact approval, not a fabricated decision from this migration.
 
+Live permission readback06:52UTC found `postgres` has EXECUTE on
+`cron.alter_job(bigint,text,text,text,text,boolean)` but NO UPDATE on `cron.job`
+(owner `supabase_admin`). Consequently no direct table DML, write lock or
+SELECT FOR UPDATE on cron tables is used. Command changes use the existing
+extension API inside SERIALIZABLE transactions; concurrent foreign changes abort
+the transaction rather than being silently overwritten. No grant or ownership
+change is required. CI reproduces this boundary with a non-superuser job owner,
+SELECT-only cron-table access and the real C API, including automatic expiry.
+
 After code+CI review, the **separately approved** operator procedure is:
 
 1. Read current eleven registrations, existing mission state and cron-role timeout;
@@ -114,12 +123,14 @@ After code+CI review, the **separately approved** operator procedure is:
 5. `select public.dufynd_ns_v1_start(:pilot_id,:actual_approved_decision_id);`.
    This creates at most two tasks in the existing task table and one existing-
    namespace mission checkpoint. Missing or changed approval fails closed.
-6. `select public.dufynd_ns_v1_pilot_arm(:pilot_id);` atomically captures the
+6. In one dedicated admin transaction, run `BEGIN ISOLATION LEVEL SERIALIZABLE;`,
+   `select public.dufynd_ns_v1_pilot_arm(:pilot_id);`, then `COMMIT;`. Arming atomically captures the
    immutable rollback checkpoint, compares all eleven registrations to the
    approved manifest, enables exactly the two contracts/config, and replaces only
    job11's command via `cron.alter_job`. Failure rolls the whole arm transaction
    back. Do not edit config/cron separately or add another schedule. Repeating
    arm with the same ID returns its receipt; it never renews a completed pilot.
+   A serialization failure requires fresh baseline/approval review, not blind retry.
 7. Await existing clock execution. No extra dispatch or manual production test.
    Read cron history, source/result hashes, task lease/attempt fields and mission
    summary. Verify the other ten jobs continue and legacy CEO/mission work occurs.
@@ -174,6 +185,9 @@ native work disabled, and still calls the original CEO entry once per ordinary
 cycle. It never disables job11. A changed job identity/foreign command is not
 overwritten. Changes to another job are preserved, with `all_eleven_exact=false`;
 that is an investigation gate, never a claim of a clean full restoration.
+The top-level abort/cycle procedures start a SERIALIZABLE restoration transaction
+after the stop commit and return to ordinary transaction isolation after its
+commit. They do not change session defaults or the original CEO function.
 
 An administrator must resolve persistent permission/identity errors and perform
 the explicit command-only rollback above; no automatic privilege escalation or

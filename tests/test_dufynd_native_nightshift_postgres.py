@@ -121,6 +121,11 @@ class Database:
     def claim(self):
         return self.q("select dufynd_ns_v1_claim()")
 
+    def arm(self, mid="pilot"):
+        with self.connect() as c, c.transaction():
+            c.execute("set transaction isolation level serializable")
+            return c.execute("select dufynd_ns_v1_pilot_arm(%s)", (mid,)).fetchone()[0]
+
     def finish(self, claim):
         return self.q(
             "select dufynd_ns_v1_finish(%s,%s,%s)",
@@ -328,7 +333,7 @@ def test_stop_and_revocation_recheck_between_claim_and_finish(db, condition, exp
 def test_scheduled_top_level_call_preserves_legacy_missions_and_cron_rows(db):
     start = datetime.now(UTC) + timedelta(seconds=2)
     db.approve(start=start)
-    db.q("select dufynd_ns_v1_pilot_arm('pilot')")
+    db.arm()
     before = db.q("select jsonb_agg(to_jsonb(j) order by jobid) from cron.job j")
     db.q("call dufynd_ns_v1_cycle()")
     assert (
@@ -378,7 +383,7 @@ def test_backend_death_after_committed_claim_resumes_without_lost_attempt(db):
 
     db.approve()
     # Block result insertion without changing the pinned evaluator or runtime.
-    db.q("select dufynd_ns_v1_pilot_arm('pilot')")
+    db.arm()
     db.q("""create function test_block_receipt() returns trigger language plpgsql as $$ begin
       if new.key like 'jarvis.mission_result.v1:native:%' then perform pg_advisory_xact_lock(88223311); end if;
       return new; end $$;
@@ -524,7 +529,7 @@ def test_real_statement_timeout_keeps_committed_attempt(db):
       if new.key like 'jarvis.mission_result.v1:native:%' then perform pg_sleep(2); end if;
       return new; end $$;
       create trigger test_slow_receipt before insert on dufynd_master_status for each row execute function test_slow_receipt();""")
-    db.q("select dufynd_ns_v1_pilot_arm('pilot')")
+    db.arm()
     with db.connect() as c:
         c.execute("set statement_timeout='500ms'")
         with pytest.raises(psycopg.errors.QueryCanceled):

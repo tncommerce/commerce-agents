@@ -366,6 +366,9 @@ create function public.dufynd_ns_v1_pilot_arm(p_id text) returns jsonb
 language plpgsql security invoker set search_path=public as $$
 declare m jsonb; b jsonb; j jsonb; p jsonb; k text;
 begin
+ if current_setting('transaction_isolation')<>'serializable' then
+  raise exception 'pilot_serializable_transaction_required';
+ end if;
  perform pg_advisory_xact_lock(hashtext('dufynd-native-nightshift-v1'));
  k:='jarvis.native_nightshift_v1.pilot:'||p_id;
  select value into p from public.dufynd_master_status where key=k;
@@ -381,7 +384,6 @@ begin
  or not exists(select from public.dufynd_human_decisions where decision_id=m->>'decision_id'
   and status='approved' and decision->>'manifest_sha256'=m->>'definition_sha256'
   and decision->>'scope'='dufynd_native_nightshift_v1') then raise exception 'pilot_exact_approval_required'; end if;
- lock table cron.job in share row exclusive mode;
  select jsonb_agg(to_jsonb(c) order by jobid) into b from cron.job c;
  select to_jsonb(c) into j from cron.job c where jobid=11;
  if b is distinct from m#>'{definition,cron_baseline}' or jsonb_array_length(b)<>11
@@ -460,8 +462,10 @@ begin
   then coalesce(p->>'restore_attempts',outcome->>'restore_attempts')::integer else 0 end;
  if attempts>=3 then return jsonb_build_object('state','OWNER_HOLD','reason','restore_attempts_exhausted'); end if;
  begin
-  lock table cron.job in share row exclusive mode;
-  select to_jsonb(c) into j from cron.job c where jobid=11 for update;
+  if current_setting('transaction_isolation')<>'serializable' then
+   raise exception 'pilot_serializable_transaction_required';
+  end if;
+  select to_jsonb(c) into j from cron.job c where jobid=11;
   if j->>'jobname' is distinct from 'dufynd-ceo-v2-growth-loop'
   or j->>'database' is distinct from current_database() or j->>'username' is distinct from current_user
   or j->'active' is distinct from 'true'::jsonb
@@ -493,7 +497,12 @@ language plpgsql security invoker as $$
 begin
  perform public.dufynd_ns_v1_pilot_poll(true);
  commit;
- perform public.dufynd_ns_v1_pilot_restore();
+ set transaction isolation level serializable;
+ begin
+  perform public.dufynd_ns_v1_pilot_restore();
+ exception when serialization_failure then
+  raise log 'nightshift restore serialization conflict; retry on existing tick';
+ end;
  commit;
 end $$;
 
@@ -506,10 +515,16 @@ declare c jsonb; armed boolean;
 begin
  armed:=public.dufynd_ns_v1_pilot_poll();
  commit;
+ -- Must precede even PL/pgSQL IF expression evaluation in the new transaction.
+ set transaction isolation level serializable;
  if not armed then
-  perform public.dufynd_ns_v1_pilot_restore();
-  commit;
+  begin
+   perform public.dufynd_ns_v1_pilot_restore();
+  exception when serialization_failure then
+   raise log 'nightshift restore serialization conflict; retry on existing tick';
+  end;
  end if;
+ commit;
  perform public.run_dufynd_ceo_with_missions_v1();
  commit;
  if not armed then return; end if;

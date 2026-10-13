@@ -45,7 +45,7 @@ def arm(db, remaining=10):
     end = datetime.now(UTC) + timedelta(seconds=remaining)
     db.approve(start=end - timedelta(minutes=45), end=end)
     baseline = snapshot(db)
-    assert db.q("select dufynd_ns_v1_pilot_arm('pilot')")["state"] == "armed"
+    assert db.arm()["state"] == "armed"
     return baseline
 
 
@@ -135,7 +135,7 @@ def test_real_clock_expiry_exact_restore_and_unchanged_ceo_resume(clock):
         == 0
     )
     # Repeated arm returns the closed receipt; it cannot renew dates or command.
-    assert clock.q("select dufynd_ns_v1_pilot_arm('pilot')") == p
+    assert clock.arm() == p
     assert snapshot(clock) == baseline
 
 
@@ -280,6 +280,72 @@ def test_permanent_restore_error_is_bounded_owner_hold(clock):
         )
     )
     assert state(clock) == receipt
+    assert (
+        clock.q(
+            "select value->'enabled' from dufynd_master_status where key='jarvis.native_nightshift_v1.config'"
+        )
+        is False
+    )
+
+
+def test_real_clock_without_superuser_or_direct_cron_update_rights(clock):
+    import psycopg
+    from psycopg.conninfo import make_conninfo
+
+    # Reproduce the observed hosted role boundary in THIS disposable container.
+    # The extension stays owned by the CI administrator, as on Supabase.
+    clock.q("""create role cron_pilot_test login bypassrls password 'local_test_only';
+      grant usage on schema public,cron to cron_pilot_test;
+      grant select,insert,update,delete on all tables in schema public to cron_pilot_test;
+      grant usage,select on all sequences in schema public to cron_pilot_test;
+      grant execute on all routines in schema public to cron_pilot_test;
+      grant select on cron.job,cron.job_run_details to cron_pilot_test;
+      grant execute on function cron.alter_job(bigint,text,text,text,text,boolean) to cron_pilot_test;""")
+    clock.q("select cron.alter_job(jobid,username:='cron_pilot_test') from cron.job")
+    limited = Database(make_conninfo(DSN, user="cron_pilot_test", password="local_test_only"))
+    assert limited.q("select rolsuper from pg_roles where rolname=current_user") is False
+    assert limited.q("select has_table_privilege(current_user,'cron.job','UPDATE')") is False
+    with pytest.raises(psycopg.errors.InsufficientPrivilege):
+        limited.q("update cron.job set command=command where jobid=11")
+    baseline = arm(limited)
+    wait_for(lambda: state(clock)["state"] == "restored")
+    assert state(clock)["all_eleven_exact"] is True
+    assert snapshot(clock) == baseline
+    assert clock.q("select count(*) from dufynd_autonomy_tasks where status='done'") == 2
+    assert (
+        clock.q(
+            "select count(*) from cron.job_run_details where jobid=11 and username='cron_pilot_test' and command=%s and status='succeeded'",
+            (PILOT,),
+        )
+        >= 2
+    )
+
+
+def test_serializable_arm_preserves_concurrent_foreign_command(clock):
+    import psycopg
+
+    clock.approve()
+    clock.q(
+        "update dufynd_master_status set value='{\"enabled\":false,\"stop\":true}' where key='jarvis.native_nightshift_v1.config'"
+    )
+    clock.q("""create function test_arm_block() returns trigger language plpgsql as $$ begin
+      if starts_with(new.key,'jarvis.native_nightshift_v1.pilot:') then perform pg_advisory_xact_lock(88112300); end if;
+      return new; end $$;
+      create trigger test_arm_block before insert on dufynd_master_status for each row execute function test_arm_block();""")
+    with clock.connect() as blocker, ThreadPoolExecutor(1) as pool:
+        blocker.execute("select pg_advisory_lock(88112300)")
+        pending = pool.submit(clock.arm)
+        wait_for(
+            lambda: clock.q(
+                "select count(*) from pg_stat_activity where datname=current_database() and wait_event='advisory' and query like '%pilot_arm%'"
+            )
+        )
+        clock.q("select cron.alter_job(11,command:='select 99;')")
+        blocker.execute("select pg_advisory_unlock(88112300)")
+        with pytest.raises(psycopg.errors.SerializationFailure):
+            pending.result(timeout=5)
+    assert clock.q("select command from cron.job where jobid=11") == "select 99;"
+    assert clock.q("select count(*) from dufynd_master_status where key=%s", (PKEY,)) == 0
     assert (
         clock.q(
             "select value->'enabled' from dufynd_master_status where key='jarvis.native_nightshift_v1.config'"
