@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
+import path from 'node:path';
 
 // Adapted from PR #774 brand-pages-qa; only local static export may be exercised.
-export async function verifyBrandDiscovery(browser, baseUrl) {
+export async function verifyBrandDiscovery(browser, baseUrl, outputDir) {
   const origin = new URL(baseUrl).origin;
   assert.ok(['127.0.0.1', 'localhost', '[::1]'].includes(new URL(baseUrl).hostname), 'local QA only');
   const checks = [];
@@ -21,6 +22,7 @@ export async function verifyBrandDiscovery(browser, baseUrl) {
       await page.goto(`${origin}/duft`);
       await page.getByRole('link', { name: 'Marken A–Z', exact: true }).filter({ visible: true }).click();
       assert.equal(new URL(page.url()).pathname, '/marken');
+      await page.screenshot({ path: path.join(outputDir, `brand-directory-${width}.png`), fullPage: true, animations: 'disabled' });
       const brands = await page.locator('[data-brand-slug]').evaluateAll(nodes => nodes.map(node => ({
         href: node.getAttribute('href'), count: Number(node.querySelector('small').textContent.match(/\d+/)[0]),
       })));
@@ -46,6 +48,9 @@ export async function verifyBrandDiscovery(browser, baseUrl) {
         assert.match(await page.locator('meta[name=robots]').getAttribute('content'), /noindex/);
         assert.equal(await page.locator('img, [data-offer-id]').count(), 0);
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+        if (brandUrl.pathname === '/marken/rabanne') {
+          await page.screenshot({ path: path.join(outputDir, `brand-rabanne-${width}.png`), fullPage: true, animations: 'disabled' });
+        }
         for (const id of await page.locator('[data-brand-product]').evaluateAll(nodes => nodes.map(n => n.getAttribute('data-brand-product')))) {
           assert.ok(!products.has(id)); products.add(id);
         }
