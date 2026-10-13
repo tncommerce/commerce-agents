@@ -1,3 +1,4 @@
+import { verifyBrandDiscovery } from "./brand-discovery-qa.mjs";
 import { verifyConversionSearch } from "./conversion-search-qa.mjs";
 import { verifyAcquisitionEntry } from "./acquisition-entry-qa.mjs";
 import { verifyFontLayout } from "./font-layout-qa.mjs";
@@ -267,6 +268,11 @@ const report = {
 };
 
 try {
+  try {
+    report.checks.push(...await verifyBrandDiscovery(browser, baseUrl, outputDir));
+  } catch (error) {
+    report.failures.push({ label: "brand-discovery", message: String(error) });
+  }
   try {
     const cases = await verifyFontLayout(browser, baseUrl);
     report.checks.push({ label: "font-layout", status: "passed", cases });
