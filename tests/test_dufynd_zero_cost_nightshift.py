@@ -501,3 +501,69 @@ def test_cli_defaults_to_resume_and_reports_missing_state(setup, monkeypatch, ca
     assert main() == 2
     assert json.loads(capsys.readouterr().out)["stop_reason"] == "resume_state_missing"
     assert not state.exists()
+
+
+def test_deleted_completed_result_is_not_silently_accepted(setup):
+    root, _, q = setup
+    drive(setup)
+    q.db.execute("DELETE FROM completed")
+    q.db.commit()
+    with pytest.raises(Gate, match="resume_state_invalid"):
+        Queue(root / "state/queue.sqlite")
+    assert q.db.execute("SELECT count(*) FROM completed").fetchone()[0] == 0
+
+
+def test_deleted_pending_task_is_not_recreated(setup):
+    _, plan, q = setup
+    q.register(plan)
+    q.db.execute("DELETE FROM tasks")
+    q.db.commit()
+    with pytest.raises(Gate, match="resume_state_invalid"):
+        q.register(plan)
+    assert q.db.execute("SELECT count(*) FROM tasks").fetchone()[0] == 0
+
+
+def test_lost_attempt_counter_does_not_reset_budget(setup):
+    _, plan, q = setup
+    drive(setup)
+    q.db.execute("UPDATE plans SET attempts=0")
+    q.db.commit()
+    with pytest.raises(Gate, match="resume_state_invalid"):
+        q.register(plan)
+
+
+def test_signal_after_handler_commits_once_then_saves_checkpoint(setup):
+    _, plan, q = setup
+    stopped = False
+
+    def handler(action, inputs):
+        nonlocal stopped
+        stopped = True
+        return execute_offline(action, inputs)
+
+    report = drive(setup, handler=handler, should_stop=lambda: stopped)
+    assert report["stop_reason"] == "STOP_SIGNAL"
+    assert report["attempts"] == 1
+    assert report["tasks"][0]["status"] == "done"
+    assert json.loads(q.db.execute("SELECT report FROM checkpoints").fetchone()[0]) == report
+    resumed = drive(setup)
+    assert resumed["attempts"] == 1
+
+
+def test_fixed_catalog_validator_reports_findings_without_publication():
+    wave = {"candidates": []}
+    result = execute_offline("catalog_wave_audit", [wave, {}, {}])
+    assert result["finding_count"] == 1
+    assert result["intake_valid"] is False
+    assert result["publication_authorized"] is False
+    with pytest.raises(Gate, match="catalog_inputs_required"):
+        execute_offline("catalog_wave_audit", [wave])
+
+
+def test_reused_validator_change_stops_before_claim(setup, monkeypatch):
+    from scripts import dufynd_zero_cost_nightshift as scheduler
+
+    monkeypatch.setattr(scheduler, "runtime_digest", lambda: "b" * 64)
+    report = drive(setup)
+    assert report["stop_reason"] == "RUNNER_CHANGED"
+    assert report["attempts"] == 0

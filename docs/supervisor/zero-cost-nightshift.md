@@ -44,8 +44,8 @@ past individual OWNER_HOLDs. No cron, service or workflow is installed by the CL
 
 ## Disabled example and authorized local validation
 
-`config/dufynd_zero_cost_nightshift.example.json` is **disabled**, expired after
-its specific dated window, and initially pins the RC1 base. It is not a recurring
+`config/dufynd_zero_cost_nightshift.example.json` is **disabled**, invalid after
+its specific dated window, and pins an illustrative development parent. It is not a recurring
 approval or an installed scheduler. Its source packet was recovered unchanged
 from PR #774's prior manufacturer research, avoiding repeated source fetches.
 
@@ -105,3 +105,50 @@ offline handler regression.
 The local smoke below uses only a short private plan and existing source facts;
 never mark a production timer active based on a test passing. CI and final smoke
 results are recorded in this draft PR description without rerunning older PRs.
+
+## Operational-readiness delta — 2026-10-13
+
+No host is activated. See `docs/supervisor/nightshift-runtime-evidence-20261013.md`
+for the read-only GitHub/Render/Supabase evidence and exact remaining adapter gate.
+The confirmed existing Supabase SQL timer is not a Python/SQLite host.
+
+`python -m scripts.prepare_dufynd_nightshift_plan --root /development/checkout
+--plan-id reviewed-trial --starts-at <timezone-aware-start> --ends-at <end>
+--output /private-state/plan.json` prepares a **disabled** four-task queue from
+existing repository inputs, with exact checkout, runtime and input hashes. It
+refuses overwriting a plan. Regenerate after the final development commit;
+the checked-in example remains a non-executable review specimen. The dated
+window must exceed three seconds and cannot exceed eight hours.
+
+The queue holds the absent original Awin report, structurally checks the existing
+three manufacturer packets, calls the existing pure `validate_wave` catalog
+validator, and checks strict JSON integrity of an archived commerce-QA report.
+No URL is fetched. Archived QA is not current storefront/merchant evidence.
+The pre-intake wave already contains staged/live products: an audit task marked
+`done` means the inspection finished, while `intake_valid=false` and its finding
+count preserve the unresolved findings. It does not authorize reimport/release.
+
+The runtime hash now binds BOTH the runner and the reused catalog validator.
+Old pinned plans therefore stop with `runner_changed`; review a new dated plan
+instead of editing an existing registered plan. Hashes are checked each loop.
+Deduplication keys include the runtime hash; changed runtime code requires a new
+review and can legitimately recompute unchanged inputs once. It is not a promise
+of cross-version result equivalence.
+
+SIGTERM/SIGINT set a stop flag. The main loop commits any pure handler already
+in flight and saves `STOP_SIGNAL` before exit, without SQLite calls from signal
+handlers. No further task starts once the flag is observed. SIGKILL/process loss
+still uses the existing durable lease-expiry recovery; the host timeout remains
+necessary for a stalled filesystem/handler. No production signal was sent.
+
+Resume additionally runs SQLite quick-check, rejects orphan tasks, missing results
+for completed tasks, missing expected task rows and inconsistent attempt totals.
+It does not reconstruct missing history. This detects the tested corruption
+cases; it cannot certify an externally rolled-back but internally consistent
+backup. A future host must protect/retain the entire authoritative state.
+
+Local verification: 61 tests pass, including the existing 50 cases, actual child
+process SIGTERM/restart, real clock due times, offline prepared queue, corrupted
+history, runtime dependency changes and exclusive plan creation. Two history-loss
+cases reproduced against aa786f79 before the fixes. Final exact-commit CI is
+recorded in PR #779; earlier CI38303832113 belongs to the previous HEAD.

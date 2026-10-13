@@ -11,16 +11,29 @@ import hashlib
 import json
 import os
 import re
+import signal
 import sqlite3
 import subprocess
 import time
 from datetime import datetime
 from pathlib import Path
 
+from scripts import validate_dufynd_catalog_expansion_wave as catalog_validator
+
 REPOSITORY = "tncommerce/commerce-agents"
 VERSION = "offline-v1"
-RUNNER_SHA = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
-ACTIONS = {"json_integrity", "source_intake", "owner_gate"}
+CODE_FILES = (Path(__file__), Path(catalog_validator.__file__))
+
+
+def runtime_digest():
+    """Bind the fixed reused validator as well as the queue implementation."""
+    return hashlib.sha256(
+        b"".join(hashlib.sha256(p.read_bytes()).digest() for p in CODE_FILES)
+    ).hexdigest()
+
+
+RUNNER_SHA = runtime_digest()
+ACTIONS = {"json_integrity", "source_intake", "owner_gate", "catalog_wave_audit"}
 MAX_FILE_BYTES = 1_000_000
 SHA = re.compile(r"[a-f0-9]{64}\Z")
 NAME = re.compile(r"[a-zA-Z0-9_-]{1,80}\Z")
@@ -194,6 +207,19 @@ def execute_offline(action, inputs):
     """Pure, fixed handlers. No arbitrary command, plugin, URL or model selection."""
     if action == "json_integrity":
         return {"valid_json_documents": len(inputs)}
+    if action == "catalog_wave_audit":
+        if len(inputs) != 3 or any(not isinstance(x, dict) for x in inputs):
+            raise Gate("catalog_inputs_required")
+        # Reuse the existing pure pre-intake validator. An audit can complete
+        # with findings; that never makes a historical wave release-ready.
+        errors = catalog_validator.validate_wave(*inputs)
+        return {
+            "candidate_count": len(inputs[0].get("candidates", [])),
+            "finding_count": len(errors),
+            "intake_valid": not errors,
+            "publication_authorized": False,
+            "source_truth_verified_by_runner": False,
+        }
     if action != "source_intake":
         raise Gate("action_denied")
     count = 0
@@ -274,6 +300,8 @@ class Queue:
                     raise Gate("resume_state_invalid")
                 if self.db.execute("PRAGMA user_version").fetchone()[0] != 1:
                     raise Gate("resume_state_invalid")
+                if self.db.execute("PRAGMA quick_check").fetchone()[0] != "ok":
+                    raise Gate("resume_state_invalid")
                 for table, fields in {
                     "plans": "id,hash,attempts",
                     "tasks": "plan,id,key,status,attempts,lease_until,token,reason",
@@ -281,6 +309,14 @@ class Queue:
                     "checkpoints": "plan,report",
                 }.items():
                     self.db.execute(f"SELECT {fields} FROM {table} LIMIT 0")
+                if self.db.execute("""
+                    SELECT 1 FROM tasks t LEFT JOIN plans p ON p.id=t.plan
+                    LEFT JOIN completed c ON c.key=t.key
+                    WHERE p.id IS NULL OR (t.status='done' AND c.key IS NULL)
+                    OR t.status NOT IN ('pending','running','done','hold','failed')
+                    OR t.attempts<0 LIMIT 1
+                """).fetchone():
+                    raise Gate("resume_state_invalid")
             except (sqlite3.DatabaseError, Gate):
                 self.db.close()
                 raise Gate("resume_state_invalid") from None
@@ -312,6 +348,17 @@ class Queue:
             ).fetchone()
             if old and old[0] != digest(plan):
                 raise Gate("plan_changed_new_id_required")
+            if old:
+                existing = self.db.execute(
+                    "SELECT id,attempts FROM tasks WHERE plan=?", (plan["plan_id"],)
+                ).fetchall()
+                total = self.db.execute(
+                    "SELECT attempts FROM plans WHERE id=?", (plan["plan_id"],)
+                ).fetchone()[0]
+                if {r["id"] for r in existing} != {t["task_id"] for t in plan["tasks"]} or sum(
+                    r["attempts"] for r in existing
+                ) != total:
+                    raise Gate("resume_state_invalid")
             self.db.execute(
                 "INSERT OR IGNORE INTO plans(id,hash) VALUES (?,?)", (plan["plan_id"], digest(plan))
             )
@@ -459,6 +506,7 @@ def run(
     sleep=time.sleep,
     identity=checkout_identity,
     handler=execute_offline,
+    should_stop=lambda: False,
 ):
     validate_plan(plan)
     if not plan["enabled"]:
@@ -475,13 +523,16 @@ def run(
     executed = 0
     while monotonic() < deadline:
         now = clock()
+        if should_stop():
+            reason = "STOP_SIGNAL"
+            break
         if stop_file and Path(stop_file).exists():
             reason = "STOP_FILE"
             break
         if identity(root) != plan["checkout_sha"]:
             reason = "CHECKOUT_CHANGED"
             break
-        if hashlib.sha256(Path(__file__).read_bytes()).hexdigest() != RUNNER_SHA:
+        if runtime_digest() != RUNNER_SHA:
             reason = "RUNNER_CHANGED"
             break
         if now >= timestamp(plan["ends_at"]):
@@ -550,6 +601,15 @@ def main():
             print(canonical({"stop_reason": "DISABLED", "external_cost_eur": 0}))
             return 0
         queue = Queue(args.state, initialize=args.initialize_state)
+        stopping = False
+
+        def request_stop(_signum, _frame):
+            nonlocal stopping
+            stopping = True  # Never perform SQLite IO inside a signal handler.
+
+        previous = {
+            sig: signal.signal(sig, request_stop) for sig in (signal.SIGTERM, signal.SIGINT)
+        }
         try:
             report = run(
                 plan,
@@ -557,9 +617,12 @@ def main():
                 args.root.resolve(),
                 max_seconds=args.max_seconds,
                 stop_file=args.stop_file,
+                should_stop=lambda: stopping,
             )
             print(canonical(report))
         finally:
+            for sig, original in previous.items():
+                signal.signal(sig, original)
             queue.db.close()
         return 0
     except Gate as exc:

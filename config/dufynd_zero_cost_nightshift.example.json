@@ -1,30 +1,30 @@
 {
   "schema_version": 1,
   "repository": "tncommerce/commerce-agents",
-  "plan_id": "nightshift-draft-20261012",
-  "checkout_sha": "d3e948ebeb22c944ad143b20e644d0c0c5f4b186",
-  "runner_sha256": "cc1da301c95d420cdf94955c53ca8137a1f304568a99004bfb9ba10f57cc4d05",
+  "plan_id": "nightshift-disabled-review-20261013",
+  "checkout_sha": "aa786f79762173e8ad3ae4a19cfdd72f31b78bd5",
+  "runner_sha256": "56dd41f0256e9afca823ec98516a4685b129ca09a97a10d050f3b5bac6e419e6",
   "enabled": false,
   "production_activation": false,
   "max_external_cost_eur": 0,
-  "starts_at": "2026-10-12T22:00:00+02:00",
-  "ends_at": "2026-10-13T06:00:00+02:00",
+  "starts_at": "2026-10-13T22:00:00+02:00",
+  "ends_at": "2026-10-14T06:00:00+02:00",
   "max_attempts": 6,
   "max_tasks_per_tick": 3,
   "tasks": [
     {
-      "task_id": "a_awin_report",
+      "task_id": "a_awin_original_report",
       "action": "owner_gate",
-      "hold_reason": "source_report_missing",
-      "due_at": "2026-10-12T22:00:00+02:00",
+      "due_at": "2026-10-13T20:00:00+00:00",
       "max_attempts": 1,
       "inputs": [],
-      "depends_on": []
+      "depends_on": [],
+      "hold_reason": "source_report_missing"
     },
     {
-      "task_id": "b_source_intake",
+      "task_id": "b_manufacturer_packet_structure",
       "action": "source_intake",
-      "due_at": "2026-10-12T22:01:00+02:00",
+      "due_at": "2026-10-13T20:00:01+00:00",
       "max_attempts": 2,
       "inputs": [
         {
@@ -35,19 +35,38 @@
       "depends_on": []
     },
     {
-      "task_id": "c_source_json",
-      "action": "json_integrity",
-      "due_at": "2026-10-12T22:02:00+02:00",
+      "task_id": "c_catalog_preintake_audit",
+      "action": "catalog_wave_audit",
+      "due_at": "2026-10-13T20:00:02+00:00",
       "max_attempts": 2,
       "inputs": [
         {
-          "path": "docs/dufynd-nightshift-source-intake-20261012.json",
-          "sha256": "0c39a281214b0ddf155ef269e669d2f7a773e64b3225fd3343108ad98590d668"
+          "path": "examples/retail/data/dufynd_catalog_expansion_next10.json",
+          "sha256": "3a47cb5da187e9b796583f156344413c7a10e995d23d0b2a4a23bffd4378c7e0"
+        },
+        {
+          "path": "examples/retail/data/catalog.json",
+          "sha256": "63527afe5392e2668e18698540965bfb0c7fe692a3e33306fabc2da8f2b26545"
+        },
+        {
+          "path": "examples/retail/data/scentai_catalog_staging.json",
+          "sha256": "9187d4b8f4bfc144651ca79e6f31c5b8266f2d566748e471b4cda2fe922c94c6"
         }
       ],
-      "depends_on": [
-        "b_source_intake"
-      ]
+      "depends_on": []
+    },
+    {
+      "task_id": "d_archived_qa_json_integrity",
+      "action": "json_integrity",
+      "due_at": "2026-10-13T20:00:03+00:00",
+      "max_attempts": 2,
+      "inputs": [
+        {
+          "path": "examples/retail/data/scentai_catalog_batch3_commerce_qa.json",
+          "sha256": "6c9abefab07bc9c62389525aa0e26cf3ac063e4c945a0a2ef72dc82cdebc3420"
+        }
+      ],
+      "depends_on": []
     }
   ]
 }
