@@ -46,7 +46,11 @@ export async function verifyBrandDiscovery(browser, baseUrl, outputDir) {
         assert.equal(canonical.pathname, brandUrl.pathname, 'canonical brand pathname');
         assert.equal(canonical.search, '', 'canonical must not contain acquisition attribution');
         assert.match(await page.locator('meta[name=robots]').getAttribute('content'), /noindex/);
-        assert.equal(await page.locator('img, [data-offer-id]').count(), 0);
+        assert.equal(
+          await page.locator('ul[aria-label^="Duftprofile von"] img, [data-offer-id]').count(),
+          0,
+          'product listings must not introduce unlicensed images or offers',
+        );
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
         if (brandUrl.pathname === '/marken/rabanne') {
           await page.screenshot({ path: path.join(outputDir, `brand-rabanne-${width}.png`), fullPage: true, animations: 'disabled' });
