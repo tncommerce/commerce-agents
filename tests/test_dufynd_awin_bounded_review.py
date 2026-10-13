@@ -309,7 +309,7 @@ def test_recipient_drift_stops_before_fetch(tmp_path, monkeypatch):
         review.run_review(recipient, tmp_path / "result")
 
 
-def test_workflow_profile_is_manual_isolated_and_ciphertext_only():
+def test_workflow_profile_is_explicitly_gated_isolated_and_ciphertext_only():
     text = Path(".github/workflows/dufynd-awin-feed-revalidation.yml").read_text()
     bounded = text.split("  bounded-private-review:", 1)[1].split(
         "  revalidate-top-parfuemerie:", 1
@@ -318,7 +318,11 @@ def test_workflow_profile_is_manual_isolated_and_ciphertext_only():
     assert "github.event_name == 'push'" in bounded
     assert "--require-request" in bounded
     assert "fetch-depth: 2" in bounded
-    assert not Path(review.REQUEST_PATH).exists()
+    # A legitimate executed request remains in history. Its absence is not a CI
+    # invariant; real Git fixtures below verify authorization scope and replay.
+    assert (
+        "paths: [.github/dufynd-awin-evidence-recipient.pub, " + review.REQUEST_PATH + "]" in text
+    )
     assert "github.ref == 'refs/heads/dufynd-feed-05-20261013'" in bounded
     assert "timeout-minutes: 10" in bounded and "cancel-in-progress: false" in bounded
     assert "retention-days: 1" in bounded and "persist-credentials: false" in bounded
@@ -329,7 +333,8 @@ def test_workflow_profile_is_manual_isolated_and_ciphertext_only():
 
 
 @pytest.mark.parametrize(
-    "mutation", [None, "wrong_parent", "wrong_manifest", "extra_code", "replay"]
+    "mutation",
+    [None, "wrong_parent", "wrong_manifest", "extra_code", "replay", "unchanged_child"],
 )
 def test_real_git_marker_scope_and_parent_binding(tmp_path, mutation):
     def git(*args):
@@ -365,6 +370,11 @@ def test_real_git_marker_scope_and_parent_binding(tmp_path, mutation):
         marker.write_text(json.dumps(record))
         git("add", ".")
         git("commit", "-m", "replay fixture")
+    if mutation == "unchanged_child":
+        # Later development must not reuse the previously consumed request.
+        (tmp_path / "base").write_text("later development")
+        git("add", ".")
+        git("commit", "-m", "later fixture")
     if mutation is None:
         review.verify_start_request(tmp_path)
     else:
