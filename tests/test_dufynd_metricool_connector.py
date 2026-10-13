@@ -15,7 +15,13 @@ from scripts.dufynd_metricool_connector import (
 from scripts.dufynd_publish_orchestrator import PublishBlocked
 
 
-def test_connected_tool_cannot_be_called_without_sql_ready_packet():
+def test_connected_tool_cannot_be_called_without_sql_ready_packet(monkeypatch):
+    # This pre-existing unit targets the later GO gate; real manual integration
+    # (including absence of the manifest) is covered in test_dufynd_manual_connector.
+    monkeypatch.setattr(
+        "scripts.dufynd_metricool_connector.sync_connected_manual_deliveries", lambda *a, **k: None
+    )
+
     class Bridge:
         def _rpc(self, name, args):
             assert name == "read_dufynd_publish_packet_v1"
@@ -34,6 +40,9 @@ def test_connected_tool_cannot_be_called_without_sql_ready_packet():
 
 
 def test_real_tool_name_and_url_ingestion_are_bound_after_reservation(monkeypatch):
+    monkeypatch.setattr(
+        "scripts.dufynd_metricool_connector.sync_connected_manual_deliveries", lambda *a, **k: None
+    )
     from tests.test_dufynd_publish_orchestrator import Bridge, packet, response
 
     p = packet()
