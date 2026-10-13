@@ -19,7 +19,7 @@ export default function BrandDirectory({ brands }: { brands: Brand[] }) {
       <div className={styles.indexTopline}>
         <div>
           <span className={styles.sectionEyebrow}>DEIN INDEX / A — Z</span>
-          <h2 id="marken-finden-titel">Finde deine <span>Marke.</span></h2>
+          <h2 id="marken-finden-titel">Finde deine{" "}<span>Marke.</span></h2>
         </div>
         <p>Alle Einträge führen ausschließlich zu bereits veröffentlichten DUFYND-Duftprofilen.</p>
       </div>

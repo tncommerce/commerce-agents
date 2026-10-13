@@ -196,7 +196,7 @@
   transform: translateY(-3px); border-color: #c9ab75; background: #fff;
   box-shadow: 0 16px 30px -22px rgba(23,21,19,.35);
 }
-.brandCardTop { margin-bottom: 12px; font-size: 9px; font-weight: 800; letter-spacing: .15em; color: #b4a58d; }
+.brandCardTop { margin-bottom: 12px; font-size: 10px; font-weight: 800; letter-spacing: .14em; color: #73644f; }
 .brandName {
   display: block; font-size: clamp(16px, 1.35vw, 21px); font-weight: 690;
   line-height: 1.2; letter-spacing: -.032em; overflow-wrap: anywhere;

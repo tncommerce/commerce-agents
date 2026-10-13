@@ -74,7 +74,7 @@ export default async function BrandPage({ params }: Props) {
           <div className={styles.brandSectionHead}>
             <div>
               <span className={styles.sectionEyebrow}>AUS DEM DUFYND KATALOG</span>
-              <h2 id="brand-products-title">Die Düfte von <span>{brand.name}.</span></h2>
+              <h2 id="brand-products-title">Die Düfte von{" "}<span>{brand.name}.</span></h2>
             </div>
             <span className={styles.brandSectionCount}>
               {String(fragrances.length).padStart(2, "0")} / DUFTPROFILE
