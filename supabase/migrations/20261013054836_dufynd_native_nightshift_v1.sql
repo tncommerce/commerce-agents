@@ -58,6 +58,7 @@ begin
   'code_sha256',public.dufynd_ns_v1_code_hash(),'new_spend_usd',0,'paid_calls',0,
   'max_attempts_per_task',3,'max_total_attempts',6,'max_tasks',2,
   'max_statement_ms',120000,'lease_seconds',180,'items',items,
+  'cron_baseline',(select jsonb_agg(to_jsonb(j) order by jobid) from cron.job j),
   'holds',jsonb_build_array(jsonb_build_object('kind','awin_original_transactions',
     'state','OWNER_HOLD','reason','original_network_transaction_report_required')));
 end $$;
@@ -143,6 +144,12 @@ begin
     is distinct from (old.value->'definition',old.value->'definition_sha256',old.value->'decision_id') then
     raise exception 'nightshift_definition_immutable';
    end if;
+  elsif starts_with(old.key,'jarvis.native_nightshift_v1.pilot:') then
+   if tg_op='DELETE' then raise exception 'nightshift_pilot_immutable'; end if;
+   if new.key<>old.key or (new.value->'definition',new.value->'definition_sha256')
+    is distinct from (old.value->'definition',old.value->'definition_sha256') then
+    raise exception 'nightshift_pilot_immutable';
+   end if;
   end if;
  end if;
  if tg_op='DELETE' then return old; end if;
@@ -155,11 +162,18 @@ create trigger dufynd_ns_status_guard before update or delete on public.dufynd_m
 
 create function public.dufynd_ns_v1_gate(m jsonb) returns text
 language plpgsql stable security invoker set search_path=public as $$
-declare c jsonb; d jsonb; ms numeric;
+declare c jsonb; d jsonb; p jsonb; ms numeric;
 begin
  select value into c from public.dufynd_master_status where key='jarvis.native_nightshift_v1.config';
  if c->'enabled' is distinct from 'true'::jsonb then return 'disabled'; end if;
  if c->'stop' is distinct from 'false'::jsonb then return 'stop_requested'; end if;
+ if c ? 'pilot_key' then
+  select value into p from public.dufynd_master_status where key=c->>'pilot_key';
+  if p->>'state' is distinct from 'armed'
+  or p->>'definition_sha256' is distinct from public.dufynd_ns_v1_hash(p->'definition')
+  or p#>>'{definition,manifest_sha256}' is distinct from m->>'definition_sha256'
+  then return 'pilot_not_armed'; end if;
+ end if;
  d:=m->'definition';
  if m->>'definition_sha256' is distinct from public.dufynd_ns_v1_hash(d)
  or d->>'code_sha256' is distinct from public.dufynd_ns_v1_code_hash()
@@ -346,15 +360,159 @@ begin
  end;
 end $$;
 
+-- Arming and restoring use pg_cron's public API, never direct cron table writes.
+-- The Owner-approved manifest binds ALL eleven registrations before arming.
+create function public.dufynd_ns_v1_pilot_arm(p_id text) returns jsonb
+language plpgsql security invoker set search_path=public as $$
+declare m jsonb; b jsonb; j jsonb; p jsonb; k text;
+begin
+ perform pg_advisory_xact_lock(hashtext('dufynd-native-nightshift-v1'));
+ k:='jarvis.native_nightshift_v1.pilot:'||p_id;
+ select value into p from public.dufynd_master_status where key=k;
+ if p is not null then return p; end if; -- Never extend/rearm a used pilot.
+ if exists(select from public.dufynd_master_status
+  where starts_with(key,'jarvis.native_nightshift_v1.pilot:')
+  and value->>'state' is distinct from 'restored') then raise exception 'pilot_restore_required'; end if;
+ select value into m from public.dufynd_master_status where key='jarvis.mission.v1:native_'||p_id;
+ if m is null or m->>'definition_sha256' is distinct from public.dufynd_ns_v1_hash(m->'definition')
+ or m#>>'{definition,code_sha256}' is distinct from public.dufynd_ns_v1_code_hash()
+ or (m#>>'{definition,ends_at}')::timestamptz-(m#>>'{definition,starts_at}')::timestamptz<>interval '45 minutes'
+ or (m#>>'{definition,ends_at}')::timestamptz<=clock_timestamp()
+ or not exists(select from public.dufynd_human_decisions where decision_id=m->>'decision_id'
+  and status='approved' and decision->>'manifest_sha256'=m->>'definition_sha256'
+  and decision->>'scope'='dufynd_native_nightshift_v1') then raise exception 'pilot_exact_approval_required'; end if;
+ lock table cron.job in share row exclusive mode;
+ select jsonb_agg(to_jsonb(c) order by jobid) into b from cron.job c;
+ select to_jsonb(c) into j from cron.job c where jobid=11;
+ if b is distinct from m#>'{definition,cron_baseline}' or jsonb_array_length(b)<>11
+ or (select array_agg(jobid order by jobid) from cron.job) is distinct from array[1,2,3,4,5,6,7,8,9,10,11]::bigint[]
+ or exists(select from cron.job where not active)
+ or j->>'jobname' is distinct from 'dufynd-ceo-v2-growth-loop'
+ or j->>'command' is distinct from 'select public.run_dufynd_ceo_with_missions_v1();'
+ or j->>'database' is distinct from current_database() or j->>'username' is distinct from current_user
+ then raise exception 'pilot_cron_baseline_changed'; end if;
+ p:=jsonb_build_object('mission_key','jarvis.mission.v1:native_'||p_id,
+  'manifest_sha256',m->>'definition_sha256','starts_at',m#>'{definition,starts_at}',
+  'ends_at',m#>'{definition,ends_at}','cron_baseline',b);
+ p:=jsonb_build_object('definition',p,'definition_sha256',public.dufynd_ns_v1_hash(p),
+  'state','armed','restore_attempts',0,'armed_at',clock_timestamp());
+ insert into public.dufynd_master_status(key,category,value,priority,last_verified_at)
+ values(k,'jarvis',p,100,clock_timestamp());
+ update public.dufynd_handler_contracts set enabled=true
+ where handler_id in ('nightshift_measurement_qa','nightshift_receipt_qa') and handler_version='1';
+ update public.dufynd_master_status set value=jsonb_build_object('enabled',true,'stop',false,'pilot_key',k)
+ where key='jarvis.native_nightshift_v1.config';
+ perform cron.alter_job(11,command:='CALL public.dufynd_ns_v1_cycle();');
+ return p;
+end $$;
+
+-- This transaction commits the safety stop BEFORE any fallible restoration or
+-- legacy business action. A later failed transaction cannot re-enable work.
+create function public.dufynd_ns_v1_pilot_poll(p_abort boolean default false) returns boolean
+language plpgsql security invoker set search_path=public as $$
+declare p jsonb; m jsonb; k text; why text; b jsonb; expected jsonb;
+begin
+ perform pg_advisory_xact_lock(hashtext('dufynd-native-nightshift-v1'));
+ select key,value into k,p from public.dufynd_master_status
+ where starts_with(key,'jarvis.native_nightshift_v1.pilot:')
+ order by last_verified_at desc,key limit 1 for update;
+ if p is null then why:='pilot_checkpoint_missing';
+ elsif p->>'state' is distinct from 'armed' then why:=coalesce(p->>'stop_reason','pilot_not_armed');
+ elsif p_abort then why:='operator_abort';
+ elsif p->>'definition_sha256' is distinct from public.dufynd_ns_v1_hash(p->'definition') then why:='pilot_checkpoint_corrupt';
+ else
+  select value into m from public.dufynd_master_status where key=p#>>'{definition,mission_key}';
+  why:=public.dufynd_ns_v1_gate(m);
+  if why='not_due' then why:=null; end if;
+  if m->>'definition_sha256' is distinct from p#>>'{definition,manifest_sha256}' then why:='pilot_manifest_changed'; end if;
+  select jsonb_agg(to_jsonb(j) order by jobid) into b from cron.job j;
+  select jsonb_agg(case when x->>'jobid'='11' then jsonb_set(x,'{command}',to_jsonb('CALL public.dufynd_ns_v1_cycle();'::text)) else x end order by (x->>'jobid')::bigint)
+   into expected from jsonb_array_elements(p#>'{definition,cron_baseline}') x;
+  if b is distinct from expected then why:='pilot_cron_drift'; end if;
+ end if;
+ if why is null then return true; end if;
+ update public.dufynd_master_status set value=value||'{"enabled":false,"stop":true}'::jsonb,
+  last_verified_at=clock_timestamp() where key='jarvis.native_nightshift_v1.config';
+ update public.dufynd_handler_contracts set enabled=false
+ where handler_id in ('nightshift_measurement_qa','nightshift_receipt_qa') and handler_version='1';
+ if k is not null and p->>'state'='armed' then
+  update public.dufynd_master_status set value=value||jsonb_build_object('state','restoring','stop_reason',why,'stopped_at',clock_timestamp()),
+   last_verified_at=clock_timestamp() where key=k;
+ end if;
+ return false;
+end $$;
+
+create function public.dufynd_ns_v1_pilot_restore() returns jsonb
+language plpgsql security invoker set search_path=public as $$
+declare p jsonb; k text; j jsonb; b jsonb; outcome jsonb; attempts integer;
+begin
+ perform pg_advisory_xact_lock(hashtext('dufynd-native-nightshift-v1'));
+ select key,value into k,p from public.dufynd_master_status
+ where starts_with(key,'jarvis.native_nightshift_v1.pilot:')
+ order by last_verified_at desc,key limit 1 for update;
+ if p->>'state' in ('armed','restored') then return p; end if;
+ -- Missing checkpoint still restores the one hard-coded known CEO command;
+ -- never trusts a stored arbitrary SQL string. Identity drift needs an operator.
+ if p is null then
+  select value into outcome from public.dufynd_master_status where key='jarvis.native_nightshift_v1.recovery';
+ end if;
+ attempts:=case when coalesce(p->>'restore_attempts',outcome->>'restore_attempts') ~ '^[0-3]$'
+  then coalesce(p->>'restore_attempts',outcome->>'restore_attempts')::integer else 0 end;
+ if attempts>=3 then return jsonb_build_object('state','OWNER_HOLD','reason','restore_attempts_exhausted'); end if;
+ begin
+  lock table cron.job in share row exclusive mode;
+  select to_jsonb(c) into j from cron.job c where jobid=11 for update;
+  if j->>'jobname' is distinct from 'dufynd-ceo-v2-growth-loop'
+  or j->>'database' is distinct from current_database() or j->>'username' is distinct from current_user
+  or j->'active' is distinct from 'true'::jsonb
+  or j->>'command' not in ('CALL public.dufynd_ns_v1_cycle();','select public.run_dufynd_ceo_with_missions_v1();')
+  then raise exception 'pilot_restore_identity_drift'; end if;
+  if j->>'command'='CALL public.dufynd_ns_v1_cycle();' then
+   perform cron.alter_job(11,command:='select public.run_dufynd_ceo_with_missions_v1();');
+  end if;
+  select jsonb_agg(to_jsonb(c) order by jobid) into b from cron.job c;
+  outcome:=jsonb_build_object('state','restored','restored_at',clock_timestamp(),
+   'restore_attempts',attempts+1,'all_eleven_exact',b is not distinct from p#>'{definition,cron_baseline}');
+ exception when others then
+  outcome:=jsonb_build_object('state','restore_failed','restore_attempts',attempts+1,
+   'error_sqlstate',sqlstate,'owner_hold',true,'failed_at',clock_timestamp());
+ end;
+ if k is not null then
+  update public.dufynd_master_status set value=value||outcome,last_verified_at=clock_timestamp() where key=k;
+ else
+  insert into public.dufynd_master_status(key,category,value,priority,last_verified_at)
+  values('jarvis.native_nightshift_v1.recovery','jarvis',outcome,100,clock_timestamp())
+  on conflict(key) do update set value=excluded.value,last_verified_at=excluded.last_verified_at;
+ end if;
+ return outcome;
+end $$;
+
+-- Abort never calls the legacy business action or claims work. Safe to repeat.
+create procedure public.dufynd_ns_v1_pilot_abort()
+language plpgsql security invoker as $$
+begin
+ perform public.dufynd_ns_v1_pilot_poll(true);
+ commit;
+ perform public.dufynd_ns_v1_pilot_restore();
+ commit;
+end $$;
+
 -- Top-level CALL only, NOT SELECT -> CALL and NOT an explicit transaction.
 -- Existing CEO/mission work is committed first. Claim+attempt is then committed
 -- BEFORE evaluation. Backend death cannot erase the reserved attempt.
 create procedure public.dufynd_ns_v1_cycle()
 language plpgsql security invoker as $$
-declare c jsonb;
+declare c jsonb; armed boolean;
 begin
+ armed:=public.dufynd_ns_v1_pilot_poll();
+ commit;
+ if not armed then
+  perform public.dufynd_ns_v1_pilot_restore();
+  commit;
+ end if;
  perform public.run_dufynd_ceo_with_missions_v1();
  commit;
+ if not armed then return; end if;
  c:=public.dufynd_ns_v1_claim();
  commit;
  if c->>'state'='claimed' then

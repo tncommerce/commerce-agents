@@ -14,6 +14,12 @@ insert into cron.job values
  (9,'dufynd-first-money-measurement-worker-v1','*/2 * * * *','select public.run_dufynd_measurement_worker_v1();',true),
  (10,'dufynd-content-performance-learning-v1','*/10 * * * *','select public.run_dufynd_content_performance_cycle_v1();',true),
  (11,'dufynd-ceo-v2-growth-loop','*/10 * * * *','select public.run_dufynd_ceo_with_missions_v1();',true);
+alter table cron.job add column database text default current_database();
+alter table cron.job add column username text default current_user;
+-- Control-flow fixture ONLY. Dedicated clock tests load the real C extension.
+create function cron.alter_job(job_id bigint,command text) returns void language sql as $$
+ update cron.job set command=$2 where jobid=$1;
+$$;
 
 -- Only the old CEO business action is a sentinel stub; real mission routing and
 -- real supervisor/claim/update RPCs are loaded from repository migrations.

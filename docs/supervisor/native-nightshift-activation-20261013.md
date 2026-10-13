@@ -23,8 +23,10 @@ worker fencing, shared resource collision checks and handler contracts are reuse
 
 Calling a new function inside the existing single SELECT cannot durably reserve an
 attempt before a backend dies: PostgreSQL rolls back that entire transaction.
-`dufynd_ns_v1_cycle()` instead calls the unchanged legacy CEO/mission entry first,
-commits it, claims exactly one native task and commits the attempt, then evaluates
+`dufynd_ns_v1_cycle()` first checks the pilot deadline/stop gates and commits a
+durable stop when necessary, then restores job11 and commits that transaction.
+It next calls the unchanged legacy CEO/mission entry, commits it, claims exactly
+one native task (only while armed) and commits the attempt, then evaluates
 and commits result+task completion+mission checkpoint together. It requires a
 **top-level CALL**, not a function wrapper or an explicit transaction. This uses
 the SAME job, role, database and cadence. No daemon and no twelfth timer.
@@ -43,8 +45,8 @@ side effects: this contract permits only pure evaluation plus transactional SQL.
 ## Exact bounded pilot
 
 Two tasks, one per existing ten-minute cycle, no more than3 attempts per task and
-6 total, an explicitly dated window of at most1 hour. The first approval should
-use45 minutes, starting at the next agreed ten-minute boundary in Europe/Berlin
+6 total. The pilot arming function requires exactly45 minutes (the lower-level
+development manifest still accepts up to1 hour). Start at an agreed ten-minute boundary in Europe/Berlin
 (store timezone-aware UTC instants). No automatic renewal or following-night
 enqueue. After a process death the next existing cycle retries only after the
 180-second lease expires; an older token cannot publish a result.
@@ -83,7 +85,10 @@ Only `supabase/migrations/20261013054836_dufynd_native_nightshift_v1.sql` is new
 Its filename was generated with `supabase migration new`. It adds one constrained
 attempt column to the EXISTING task table, internal functions/procedure, narrowly
 scoped guards, two **disabled** contracts and a **disabled/stopped** config record.
-It creates no queue table and performs no `cron.schedule`/`cron.alter_job` call.
+It creates no queue table and executes no `cron.schedule`/`cron.alter_job` call
+when applied. Dormant arming/restore functions use only `cron.alter_job` at runtime.
+This still-unapplied migration is amended in PR779; do not apply the superseded
+64ebb0ef version and then try to replay the new version as an incremental upgrade.
 
 Functions/procedure are SECURITY INVOKER, executable only by the existing postgres
 role. PUBLIC/anon/authenticated/service_role are explicitly denied. No SECURITY
@@ -97,7 +102,7 @@ After code+CI review, the **separately approved** operator procedure is:
 1. Read current eleven registrations, existing mission state and cron-role timeout;
    abort on drift. Apply only the reviewed new migration through the normal
    migration path. Do not replay earlier migrations or merge unrelated PRs.
-2. Enable only the two named v1 contracts, still leaving global config disabled.
+2. Keep both contracts and global config disabled while reviewing the preview.
 3. Preview `select public.dufynd_ns_v1_manifest(:starts_at,:ends_at);` and
    `select public.dufynd_ns_v1_hash(public.dufynd_ns_v1_manifest(:starts_at,:ends_at));`.
    Inspect both sources and the exact manifest. Fresh code/source changes require
@@ -109,17 +114,21 @@ After code+CI review, the **separately approved** operator procedure is:
 5. `select public.dufynd_ns_v1_start(:pilot_id,:actual_approved_decision_id);`.
    This creates at most two tasks in the existing task table and one existing-
    namespace mission checkpoint. Missing or changed approval fails closed.
-6. Only now, enable `jarvis.native_nightshift_v1.config` to
-   `{"enabled":true,"stop":false}` and change **only job11's command**, using
-   `cron.alter_job`, to `CALL public.dufynd_ns_v1_cycle();`. Keep its existing
-   schedule, role, database, enabled state and the other ten registrations exact.
-   Send CALL alone; do not wrap it in BEGIN or concatenate SET statements.
+6. `select public.dufynd_ns_v1_pilot_arm(:pilot_id);` atomically captures the
+   immutable rollback checkpoint, compares all eleven registrations to the
+   approved manifest, enables exactly the two contracts/config, and replaces only
+   job11's command via `cron.alter_job`. Failure rolls the whole arm transaction
+   back. Do not edit config/cron separately or add another schedule. Repeating
+   arm with the same ID returns its receipt; it never renews a completed pilot.
 7. Await existing clock execution. No extra dispatch or manual production test.
    Read cron history, source/result hashes, task lease/attempt fields and mission
    summary. Verify the other ten jobs continue and legacy CEO/mission work occurs.
-   A returned SQL success alone is not proof of task success. After the bounded
-   pilot, stop configuration and restore the old command unless a new exact
-   continuation approval is recorded. The dated manifest cannot run indefinitely.
+   A returned SQL success alone is not proof of task success. Native claims and
+   finishes reject the deadline immediately. The first available existing tick
+   after the deadline durably stops native work, disables both contracts and
+   restores the original command automatically, before invoking the legacy CEO.
+   Inspect the pilot receipt `state=restored` AND `all_eleven_exact=true`, plus
+   the next successful cron history entry with the original SELECT command.
 
 Owner authorization must explicitly cover **that reviewed migration/code commit,
 two disabled-to-enabled contracts, one bounded manifest hash/decision/window,
@@ -128,13 +137,18 @@ production migration or scheduler activation is inferred from development consen
 
 ## Stop, rollback and reuse
 
-For a graceful stop set config `stop=true` (or `enabled=false`). New claims stop;
+For immediate orderly abort send `CALL public.dufynd_ns_v1_pilot_abort();` alone,
+outside an explicit transaction. It commits stop first, then restoration; it does
+not call the CEO or claim a task and is safe to repeat concurrently. Alternatively
+set config `stop=true` (or `enabled=false`) for teardown on the next existing tick.
+New claims stop;
 finish rechecks the gate between the committed claim and execution. If stop is
 committed while a pure evaluation transaction has already started, that bounded
 transaction may finish: stop is not an instant backend kill. No external side
-effects exist. Retain all task/result/mission rows. To resume within the SAME
-approved window, clear stop with the original approval still valid; do not recreate
-the mission or reset counters. Expired windows or withdrawn decisions do not resume.
+effects exist. Retain all task/result/mission rows. An automatically stopped or
+aborted pilot cannot be rearmed by clearing config or repeating its ID. A future
+separately approved pilot can reuse verified task receipts; counters never reset.
+Original CEO/Jarvis resumes through its unchanged original command and definitions.
 
 Operational rollback: disable config, then restore exactly
 `select public.run_dufynd_ceo_with_missions_v1();` through `cron.alter_job` for job11.
@@ -142,6 +156,36 @@ Do not disable the entire job, delete receipts, truncate tasks, drop the attempt
 column or destructively down-migrate shared tables. Allow the existing supervisor
 to release any expired native lease. Dormant definitions/receipts are retained for
 dedupe and audit. Production data never needs to be reconstructed from SQLite.
+
+### Restoration bounds and failure behavior
+
+No twelfth job, no second timer, no open Work session. The existing job11 polls
+every ten minutes. **The native work window is45 minutes; command restoration is
+on the first available tick afterward, normally within10 minutes plus up to the
+existing120-second statement bound. It is not an exact wall-clock45-minute alarm.**
+A paused/unavailable database, disabled/deleted job, or revoked postgres permission
+cannot repair itself while no permitted executor can run. After availability
+returns, the next tick stops/restores before any native claim or legacy action.
+
+Stop is committed separately, so backend death or an error in `cron.alter_job`
+cannot undo it. A transient restore error is recorded and retried on the existing
+clock, maximum3 committed attempts. Persistent failure gives OWNER_HOLD, keeps
+native work disabled, and still calls the original CEO entry once per ordinary
+cycle. It never disables job11. A changed job identity/foreign command is not
+overwritten. Changes to another job are preserved, with `all_eleven_exact=false`;
+that is an investigation gate, never a claim of a clean full restoration.
+
+An administrator must resolve persistent permission/identity errors and perform
+the explicit command-only rollback above; no automatic privilege escalation or
+attempt-counter reset exists. A missing/corrupted checkpoint stops native work;
+the recovery path uses only the fixed known original command and verifies job11's
+name, role, database and active state. It cannot certify a lost baseline.
+
+**STOP unattended activation if the Owner requires restoration exactly at minute45,
+if any baseline/permission/clock evidence is missing, or if any restoration test
+fails. In that case recommend only an expressly supervised pilot.** Even with
+passing tests, approval must explicitly accept the existing clock/availability
+bound; do not silently interpret45 minutes as an exact command-switch guarantee.
 
 ## Costs, evidence boundaries and remaining gates
 
@@ -159,8 +203,16 @@ and top-level procedure transaction control, but **does not prove simultaneous
 backends or backend termination**. Those tests use the existing CI job's isolated
 localhost PostgreSQL17, one disposable database per test, never Supabase. The test
 suite rejects non-loopback DSNs and non-test database names. The eleven cron rows
-there are registration fixtures; real pg_cron timing is not simulated as a claim
-of a live production acceptance. Live clock history remains read-only evidence.
+there are registration fixtures. A separate test module now builds the actual
+upstream pg_cron v1.6.4 C extension in an ephemeral localhost container inside
+the SAME existing CI job. It uses libpq mode, top-level CALLs scheduled by pg_cron,
+real `cron.alter_job`, run history and independent backends. Its1-second cadence
+accelerates an exactly45-minute manifest whose start lies in the past; it does
+not change production cadence or claim a45-minute soak test. Ten peer business
+actions are inert sentinel SQL. Extension timing and rollback are real; no live
+business handlers or Supabase database are exercised. CI must pass this module
+(no skip) before timing support is considered proven. The Python full suite skips
+it unless the dedicated localhost:5433 test DSN is explicitly present.
 
 Acceptance suite covers competing independent connections, fencing after lease
 expiry, backend death after the committed attempt, result-transaction rollback,
@@ -173,3 +225,14 @@ already-existing CI job; no new job or separately rerun successful PR CI.
 are recorded in PR779's `ops.work_ceo_nightshift_20261012` checkpoint. Activation is
 blocked until the specific migration/pilot/command-only Owner approval above and
 successful real PostgreSQL acceptance evidence are both present.
+
+## One approval evidence package
+
+The final PR779 checkpoint identifies the one exact code commit, CI run and
+private dated manifest evidence. The package must contain: this amended migration,
+only `nightshift_measurement_qa/1` and `nightshift_receipt_qa/1`, the full manifest
+and SHA256 (including the eleven-job baseline), UTC start/end exactly45 minutes,
+0€ additional spend/0paid calls/2tasks/3attempts each/6total, effective timeout
+1..120000ms, lease180s, automatic stop/restore receipt and real pg_cron test evidence.
+Any code/source/baseline/window drift invalidates that package. Do not substitute
+a generic approval or another manifest. No new approval is requested for development.
