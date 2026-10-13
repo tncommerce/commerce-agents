@@ -30,7 +30,10 @@ class FakeClient:
 
     def get(self, url, **kwargs):
         self.calls.append((url, kwargs))
-        return self.responses.pop(0)
+        response = self.responses.pop(0)
+        if isinstance(response, Exception):
+            raise response
+        return response
 
 
 def configure(monkeypatch, client):
@@ -268,3 +271,78 @@ def test_failure_ingestion_rejects_nonexistent_repeat_stage(monkeypatch):
     }
     with pytest.raises(ValueError, match="invalid failure stage"):
         validate_failure(payload, run_id="123456789", sha="a" * 40)
+
+
+@pytest.mark.parametrize(
+    "position,stage",
+    list(
+        enumerate(
+            [
+                "render",
+                "gmail_1",
+                "gmail_2",
+                "gmail_3",
+                "health",
+                "gmail_1_repeat",
+                "gmail_2_repeat",
+                "gmail_3_repeat",
+            ],
+            start=1,
+        )
+    ),
+)
+@pytest.mark.parametrize(
+    "failure", [observer_read.httpx.ReadTimeout, observer_read.httpx.ConnectError]
+)
+def test_transport_failure_records_stage_without_retry_or_secret(
+    monkeypatch, tmp_path, position, stage, failure
+):
+    observations = [
+        {"observation_id": str(i), "evidence": {"history_id": str(i)}} for i in range(3)
+    ]
+    responses = [
+        FakeResponse(200, {"value": "oidc-secret-canary"}),
+        FakeResponse(200, []),
+        *[FakeResponse(200, item) for item in observations],
+        FakeResponse(200, {}),
+        *[FakeResponse(200, item) for item in observations],
+    ]
+    responses[position] = failure("provider-secret-canary https://secret.invalid/?token=secret")
+    client = FakeClient(responses)
+    configure(monkeypatch, client)
+    monkeypatch.chdir(tmp_path)
+    with pytest.raises(SystemExit) as exc:
+        observer_read.main()
+    assert (
+        str(exc.value)
+        == f"private observer read failed at {stage}:transport_error; no cursor acknowledged"
+    )
+    receipt = json.loads((tmp_path / "broker-failure.json").read_text())
+    assert receipt["stage"] == stage
+    assert receipt["reason"] == "transport_error"
+    assert "secret" not in json.dumps(receipt)
+    assert not (tmp_path / "broker-observations.json").exists()
+    assert len(client.calls) == position + 1
+    from scripts.dufynd_private_observer_failure import validate_failure
+
+    assert validate_failure(receipt, run_id="123456789", sha="a" * 40) == receipt
+
+
+def test_oidc_transport_failure_stays_outside_broker_receipts(monkeypatch, tmp_path):
+    client = FakeClient([observer_read.httpx.ConnectError("oidc-secret-canary")])
+    configure(monkeypatch, client)
+    monkeypatch.chdir(tmp_path)
+    with pytest.raises(SystemExit, match="failed at internal"):
+        observer_read.main()
+    assert len(client.calls) == 1
+    assert not (tmp_path / "broker-failure.json").exists()
+
+
+def test_unexpected_error_is_not_misclassified_as_transport(monkeypatch, tmp_path):
+    client = FakeClient([FakeResponse(200, {"value": "oidc-secret"}), RuntimeError("secret")])
+    configure(monkeypatch, client)
+    monkeypatch.chdir(tmp_path)
+    with pytest.raises(SystemExit, match="failed at internal"):
+        observer_read.main()
+    assert len(client.calls) == 2
+    assert not (tmp_path / "broker-failure.json").exists()

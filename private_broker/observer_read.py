@@ -23,6 +23,7 @@ SAFE_REASONS = frozenset(
         "invalid_response",
         "broker_activation_required",
         "pending_redelivery_mismatch",
+        "transport_error",
     }
 )
 
@@ -74,6 +75,16 @@ def _json(response, stage: str, expected_type=dict):
     return result
 
 
+def _broker_read(client, url, headers, stage, expected_type=dict):
+    try:
+        response = client.get(url, headers=headers)
+    except httpx.TransportError:
+        # Error strings can contain URLs, headers or provider details. Retain
+        # only this fixed diagnostic; never retry or classify it as revoked.
+        raise ReadFailure(stage, "transport_error") from None
+    return _json(response, stage, expected_type)
+
+
 def main():
     origin = os.environ["BROKER_ORIGIN"]
     url = urlsplit(origin)
@@ -113,8 +124,9 @@ def main():
             results = {"_meta": source}
             gmail_reads = []
             for stage, path in reads:
-                response = client.get(origin + path, headers=headers)
-                result = _json(response, stage, list if stage == "render" else dict)
+                result = _broker_read(
+                    client, origin + path, headers, stage, list if stage == "render" else dict
+                )
                 results[path] = result
                 if stage.startswith("gmail_"):
                     gmail_reads.append((stage, path, result))
@@ -123,7 +135,7 @@ def main():
             # exact same pending observation. This certifies the at-least-once
             # boundary without advancing any private cursor.
             for stage, path, first in gmail_reads:
-                repeated = _json(client.get(origin + path, headers=headers), stage + "_repeat")
+                repeated = _broker_read(client, origin + path, headers, stage + "_repeat")
                 if (
                     not isinstance(first.get("observation_id"), str)
                     or not first["observation_id"]
