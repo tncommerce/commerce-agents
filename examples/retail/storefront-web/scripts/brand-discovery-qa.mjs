@@ -51,7 +51,13 @@ export async function verifyBrandDiscovery(browser, baseUrl) {
       const link = page.locator('[data-brand-product="SC-RABANNE-1-MILLION-EDT-100"]');
       const href = await link.getAttribute('href');
       await link.click();
-      assert.equal(new URL(page.url()).pathname, href);
+      const intended = new URL(href, origin);
+      const actual = new URL(page.url());
+      assert.equal(intended.origin, origin, 'product link must stay on DUFYND');
+      assert.equal(actual.pathname, intended.pathname, 'product link pathname');
+      for (const [key, value] of intended.searchParams) {
+        assert.equal(actual.searchParams.get(key), value, `preserve link parameter ${key}`);
+      }
       assert.match(await page.locator('h1').innerText(), /1 Million/);
       assert.deepEqual(errors, []);
       checks.push({ label: `brand-discovery-${width}`, status: 'passed', brands: brands.length, products: products.size });
