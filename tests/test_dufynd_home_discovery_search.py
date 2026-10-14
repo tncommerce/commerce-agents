@@ -3,10 +3,11 @@
 from pathlib import Path
 
 HOME = Path("examples/retail/storefront-web/components/views/HomeView.tsx")
+HERO = Path("examples/retail/storefront-web/components/AtelierHero.tsx")
 
 
 def test_homepage_exposes_direct_catalog_search() -> None:
-    source = Path("examples/retail/storefront-web/components/AtelierHero.tsx").read_text(encoding="utf-8")
+    source = HERO.read_text(encoding="utf-8")
     assert "<AtelierHero />" in HOME.read_text(encoding="utf-8")
 
     assert 'aria-labelledby="dufynd-home-discovery-heading"' in source
@@ -20,7 +21,7 @@ def test_homepage_exposes_direct_catalog_search() -> None:
 
 
 def test_homepage_search_preserves_existing_comparison_path() -> None:
-    source = Path("examples/retail/storefront-web/components/AtelierHero.tsx").read_text(encoding="utf-8")
+    source = HERO.read_text(encoding="utf-8")
     assert "<AtelierHero />" in HOME.read_text(encoding="utf-8")
 
     assert 'href="/vergleich"' in source

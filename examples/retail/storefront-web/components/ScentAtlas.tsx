@@ -27,7 +27,7 @@ export default function ScentAtlas() {
   const product = choices[productIndex];
   const groups = groupsFor(product);
   const current = groups[layer] || groups[0];
-  const matching = selectedNote ? LIVE_FRAGRANCES.filter(p => p.product_id !== product.product_id && Object.values(p.notes).flat().includes(selectedNote)).slice(0, 3) : [];
+  const matching = selectedNote ? LIVE_FRAGRANCES.filter(p => p.product_id !== product.product_id && Object.values(p.notes).flat().some(note => note.trim().toLocaleLowerCase("en-US") === selectedNote.trim().toLocaleLowerCase("en-US"))).slice(0, 3) : [];
   return (
     <section className="wow-atlas" data-scent-atlas aria-labelledby={`${uid}-title`}>
       <div className="wow-atlas-top"><span className="wow-kicker">01 / Der Duftnoten-Atlas</span><span className="wow-edition">DUFYND STUDIO</span></div>

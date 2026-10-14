@@ -107,3 +107,8 @@
 :global(.dufynd-catalog-discovery-hero) .copy h1 {font-size:34px}
 .socialProduct {padding:16px}.socialIdentity strong{font-size:30px}
 }
+@media(max-width:639px){
+ /* Keep the functional catalogue search within reach; the full editorial line remains on desktop. */
+ :global(.dufynd-catalog-discovery-hero) .copy h1 em {display:none}
+ :global(.dufynd-catalog-discovery-hero) .copy h1 {line-height:1.08;word-spacing:.02em}
+}

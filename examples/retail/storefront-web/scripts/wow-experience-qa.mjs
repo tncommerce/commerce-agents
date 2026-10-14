@@ -46,6 +46,8 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
           if(width<1024) await notes.last().tap();else await notes.last().click();
           assert.equal(await notes.last().getAttribute('aria-pressed'),'true');
           const matches=atlas.locator('[data-atlas-matches] a');
+          assert.ok(await matches.count() > 0, 'leather must match released profiles despite source capitalisation');
+          assert.ok(await matches.filter({hasText:'Explorer'}).count(), 'documented Explorer leather note must be discoverable');
           for(const link of await matches.all()) assert.equal(new URL(await link.getAttribute('href'),baseUrl).searchParams.get('cmp'),'wow22_fixture');
           const transition=await atlas.locator('svg').evaluate(el=>getComputedStyle(el).transitionDuration);
           assert.equal(transition,'0s','reduced motion removes atlas transitions');
@@ -61,13 +63,42 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
             }
           }
           const scroll=page.locator('.panel-scroll').filter({has:page.locator('.wow-home')});
-          if(await scroll.count()) await scroll.evaluate(el=>{el.scrollTop=0;});
+          if(await scroll.count()) {
+            await page.locator('.wow-home img').evaluateAll(images=>Promise.all(images.map(async image=>{image.loading='eager';await Promise.race([image.decode().catch(()=>{}),new Promise(r=>setTimeout(r,8000))]);})));
+            const extent=await scroll.evaluate(el=>({height:el.scrollHeight,viewport:el.clientHeight}));
+            let frame=0;
+            for(let y=0;y<extent.height;y+=Math.max(250,Math.floor(extent.viewport*.8))) {
+              await scroll.evaluate((el,y)=>{el.scrollTop=y;},y);
+              await page.waitForTimeout(80);
+              await page.screenshot({path:`${outputDir}/wow22-home-${width}-scroll-${String(frame++).padStart(2,'0')}.png`});
+            }
+            metrics.scrollFrames=frame;metrics.scrollHeight=extent.height;
+            await scroll.evaluate(el=>{el.scrollTop=0;});
+          }
           metrics.searchBottom=search.y+search.height;
           metrics.keyboard=true;metrics.touch=width<1024;metrics.reducedMotion=true;
         } else {
           await page.evaluate(async()=>{for(let y=0;y<document.documentElement.scrollHeight;y+=600){window.scrollTo(0,y);await new Promise(r=>setTimeout(r,25));}window.scrollTo(0,0);});
           await page.evaluate(()=>Promise.all([...document.images].map(i=>i.decode().catch(()=>{}))));
           await page.screenshot({path:`${outputDir}/wow22-${name}-${width}-full.png`,fullPage:true});
+        }
+        if(name==='rabanne') {
+          const offer={offer_id:'wow22-mock-offer',product_id:'SC-RABANNE-1-MILLION-EDT-100',merchant_id:'qa-only',merchant_name:'QA-Testhändler',price:90,currency:'EUR',shipping_cost:5,total_price:95,shipping_label:'5,00 € Versand (QA)',in_stock:true,variant_label:'100 ml · Eau de Toilette',affiliate_link:true,clickout_path:'/api/clickout/wow22-mock-offer',last_updated_at:'2026-10-14T00:00:00Z'};
+          let available=true;
+          await page.route('**/api/merchant-offers/SC-RABANNE-1-MILLION-EDT-100',r=>r.fulfill({json:{product_id:offer.product_id,best_offer_id:available?offer.offer_id:null,offers:available?[offer]:[],affiliate_disclosure:'Isolated QA fixture'}}));
+          await page.reload({waitUntil:'networkidle'});
+          const merchant=page.getByRole('link',{name:'Bei QA-Testhändler ansehen',exact:true});
+          await merchant.waitFor();
+          assert.match(await page.locator('[data-merchant-offers]').innerText(),/Gesamtpreis inkl. Versand/);
+          assert.equal(new URL(await merchant.getAttribute('href'),baseUrl).searchParams.get('cmp'),'wow22_fixture');
+          assert.ok((await merchant.boundingBox()).height>=44);
+          assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'available offer fits viewport');
+          await page.screenshot({path:`${outputDir}/wow22-rabanne-${width}-available-FIXTURE.png`,fullPage:true});
+          available=false;await page.reload({waitUntil:'networkidle'});
+          assert.equal(await page.locator('a[href*="/api/clickout/"]').count(),0,'empty state has no purchase clickout');
+          assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'empty offer fits viewport');
+          await page.screenshot({path:`${outputDir}/wow22-rabanne-${width}-empty-FIXTURE.png`,fullPage:true});
+          metrics.offerStates=['error','available','empty'];
         }
         results.push({name,width,...metrics});
       }
