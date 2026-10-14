@@ -1,1 +1,392 @@
-.page{background:#f6f4ee;color:#293a31;min-height:100vh;padding:28px max(24px,calc((100vw - 1120px)/2)) 70px}.header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #ced5c7;padding-bottom:25px;font-size:12px}.logo{font-weight:650;font-size:25px;letter-spacing:.1em}.intro{padding:62px 0 34px;max-width:720px}.intro>p:first-child{font-size:10px;letter-spacing:.16em}.intro h1{font:64px/1.08 Georgia,serif;letter-spacing:-.04em;margin:16px 0 22px}.intro>p:last-child{font-size:14px;line-height:1.8;color:#5f6a58;max-width:550px}.search{display:block;font-size:11px;max-width:560px}.search input{display:block;margin-top:10px;padding:15px 18px;width:100%;border:1px solid #b2bea8;background:#fffdf5;border-radius:0;font-size:14px}.count{font-size:11px;color:#67735d;margin:16px 0}.alphabet{display:flex;gap:6px;flex-wrap:wrap;padding:12px 0 27px;border-bottom:1px solid #ced5c7}.alphabet a{display:grid;place-items:center;width:40px;height:44px;border:1px solid #d4dbcd;font-size:12px}.group{display:grid;grid-template-columns:100px 1fr;padding:35px 0;border-bottom:1px solid #ced5c7;scroll-margin-top:20px}.group h2{font:italic 45px Georgia,serif}.group>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:25px}.group a{display:flex;flex-direction:column;gap:13px;padding:12px 0;font:22px Georgia,serif}.group small{font:11px sans-serif;color:#67735d}.group b{margin-left:20px;font-weight:400}.page a:focus-visible,.page input:focus-visible{outline:2px solid #375341;outline-offset:5px}.catalog{margin-top:35px}.back{display:inline-block;padding:14px 0;font-size:12px;text-decoration:underline;text-underline-offset:4px}@media(max-width:767px){.page{padding:20px 20px 50px}.intro{padding:36px 0 25px}.intro h1{font-size:44px}.group{grid-template-columns:50px 1fr;padding:25px 0}.group>div{grid-template-columns:1fr;gap:8px}.group a{font-size:23px}.header{font-size:11px}.logo{font-size:23px}}
+/* DUFYND Brand Index V2 — editorial extension of the public catalogue.
+ * Strictly typographic design: no synthetic bottles, third-party art or product claims.
+ */
+.page {
+  --brand-gold: #d9bd82;
+  --brand-ink: #171513;
+  --brand-muted: #716b61;
+  --brand-line: rgba(23, 21, 19, .115);
+  min-height: 100vh;
+  background: #f7f4ed;
+  color: var(--brand-ink);
+  font-family: var(--font-body), "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+}
+.frame { width: min(100%, 1256px); margin: 0 auto; padding: 0 25px; }
+.page a { text-decoration: none; }
+.page a:focus-visible, .page input:focus-visible, .page button:focus-visible {
+  outline: 3px solid #b88934;
+  outline-offset: 4px;
+}
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 20px; min-height: 76px; padding: 10px 4px 12px;
+}
+.logo { display: inline-flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 800; letter-spacing: -.025em; }
+.logoIcon { display: block; width: 30px; height: 30px; border-radius: 8px; }
+.headerLink {
+  display: inline-flex; align-items: center; gap: 16px;
+  padding: 10px 13px; border: 1px solid var(--brand-line); border-radius: 12px;
+  background: #fffdf9; color: #29251e; font-size: 12px; font-weight: 700;
+  transition: background 180ms ease, border-color 180ms ease;
+}
+.headerLink span { font-size: 16px; color: #956b2b; }
+.headerLink:hover { background: #f2e8d7; border-color: #c5ae87; }
+
+.hero, .brandHero {
+  position: relative; isolation: isolate; display: grid; overflow: hidden;
+  border-radius: 24px;
+  background:
+    radial-gradient(ellipse at 76% 38%, rgba(146, 110, 59, .25), transparent 48%),
+    radial-gradient(ellipse at 40% 110%, rgba(89, 65, 43, .24), transparent 52%),
+    linear-gradient(126deg, #111113 7%, #231e1a 60%, #111114 100%);
+  box-shadow: 0 24px 55px -42px rgba(20, 16, 12, .65);
+  color: #fffdf9;
+}
+.hero { min-height: 386px; grid-template-columns: minmax(0, 1.28fr) minmax(290px, .72fr); }
+.heroLight, .brandHeroLight {
+  pointer-events: none; position: absolute; z-index: -1; inset: 0;
+  background: linear-gradient(112deg, transparent 45%, rgba(255,255,255,.026) 50%, transparent 58%);
+}
+.heroContent { padding: 56px 0 54px 58px; z-index: 2; align-self: center; }
+.heroEyebrow {
+  display: flex; align-items: center; gap: 11px;
+  font-size: 10px; font-weight: 700; letter-spacing: .2em; line-height: 1.4;
+  color: #dfcda9;
+}
+.goldLine { display: inline-block; flex: 0 0 20px; width: 20px; height: 1px; background: #d9bd82; }
+.heroContent h1 {
+  max-width: 650px; margin: 21px 0 0;
+  font-size: clamp(40px, 4.75vw, 72px); font-weight: 670;
+  line-height: .98; letter-spacing: -.059em; color: #fffefa;
+}
+.heroContent h1 span {
+  display: block; color: #d9bd82; font-weight: 470;
+  letter-spacing: -.055em;
+}
+.heroDescription {
+  max-width: 520px; margin: 22px 0 0;
+  font-size: 14px; line-height: 1.75; color: rgba(255, 253, 248, .7);
+}
+.heroBottom { display: flex; align-items: center; gap: 30px; flex-wrap: wrap; margin-top: 26px; }
+.heroStats { display: flex; align-items: center; gap: 17px; font-size: 12px; color: rgba(255, 253, 248, .64); }
+.heroStats strong { margin-right: 4px; color: #fffefa; font-size: 18px; font-weight: 700; }
+.heroStatsLine { width: 1px; height: 25px; background: rgba(255,255,255,.25); }
+.heroButton, .brandHeroLink {
+  display: inline-flex; align-items: center; justify-content: center; gap: 16px;
+  border-radius: 11px; background: #dcc38e; color: #241b0e;
+  padding: 13px 17px; font-size: 12px; font-weight: 750;
+  box-shadow: 0 5px 18px rgba(0,0,0,.14);
+  transition: background 170ms ease, transform 170ms ease;
+}
+.heroButton:hover, .brandHeroLink:hover { transform: translateY(-2px); background: #edd6a5; }
+.heroButton span, .brandHeroLink span { font-size: 17px; font-weight: 450; }
+.heroVisual { position: relative; min-height: 330px; overflow: hidden; }
+.heroVisual::before {
+  content: ""; position: absolute; width: 360px; height: 360px;
+  left: 10%; top: 9%; border: 1px solid rgba(219,185,125,.27);
+  border-radius: 50%; box-shadow: 0 0 0 45px rgba(219,185,125,.035), 0 0 0 110px rgba(219,185,125,.021);
+}
+.heroVisualRing {
+  position: absolute; width: 260px; height: 260px; top: 23%; left: 23%;
+  border-radius: 50%; border: 1px solid rgba(255,255,255,.17);
+}
+.heroLetterA, .heroLetterZ {
+  position: absolute; font-family: Georgia, "Times New Roman", serif;
+  line-height: 1; font-weight: 400;
+}
+.heroLetterA {
+  top: 4%; left: 12%; font-size: clamp(180px, 19vw, 290px);
+  color: transparent; -webkit-text-stroke: 1px rgba(220,194,142,.63);
+  transform: rotate(-12deg);
+}
+.heroLetterZ {
+  top: 28%; left: 40%; font-size: clamp(175px, 18vw, 270px);
+  color: rgba(215,188,132,.95); text-shadow: 0 15px 45px rgba(0,0,0,.3);
+  transform: rotate(9deg);
+}
+.heroVisualDash { position: absolute; top: 47%; left: 40%; color: rgba(255,255,255,.74); font-size: 43px; }
+.heroVisualCaption {
+  position: absolute; right: 22px; bottom: 25px;
+  color: rgba(255,255,255,.43); font-size: 9px; letter-spacing: .18em; writing-mode: vertical-rl;
+}
+
+/* Directory: editorial top line, open search, alphabetical cards */
+.indexSection { scroll-margin-top: 18px; padding: 64px 2px 28px; }
+.indexTopline { display: flex; align-items: end; justify-content: space-between; gap: 36px; }
+.sectionEyebrow { display: block; font-size: 10px; font-weight: 750; letter-spacing: .19em; color: #926d37; }
+.indexTopline h2, .brandSectionHead h2 {
+  margin: 10px 0 0; font-size: clamp(30px, 3.3vw, 46px);
+  font-weight: 650; line-height: 1.08; letter-spacing: -.048em;
+}
+.indexTopline h2 span, .brandSectionHead h2 span { color: #9a7b4b; }
+.indexTopline > p { max-width: 325px; margin: 0 0 3px; font-size: 13px; line-height: 1.65; color: var(--brand-muted); }
+.searchPanel {
+  margin-top: 28px; padding: 25px 27px 17px;
+  border: 1px solid rgba(23, 21, 19, .12); border-radius: 17px; background: #fffdf8;
+  box-shadow: 0 16px 35px -30px rgba(23, 21, 19, .36), 0 2px 7px rgba(23, 21, 19, .025);
+}
+.searchLabel { display: block; margin-bottom: 10px; font-size: 10px; font-weight: 750; letter-spacing: .16em; color: #675e51; }
+.searchControl { position: relative; display: flex; align-items: center; min-height: 55px; }
+.searchControl input {
+  display: block; width: 100%; height: 56px; padding: 0 54px;
+  border: 1px solid #d6cec0; background: #faf8f2; border-radius: 10px;
+  color: #211d17; font: inherit; font-size: 15px; font-weight: 500; outline-offset: 2px;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+.searchControl input::placeholder { color: #888078; opacity: 1; }
+.searchControl input:focus { border-color: #9b793d; background: #fff; }
+.searchGlyph {
+  pointer-events: none; position: absolute; z-index: 1;
+  width: 16px; height: 16px; left: 20px; top: 18px;
+  border: 2px solid #8a764f; border-radius: 50%;
+}
+.searchGlyph::after {
+  content: ""; position: absolute; width: 8px; height: 2px;
+  left: 11px; top: 13px; background: #8a764f;
+  transform: rotate(45deg); transform-origin: left;
+}
+.clearButton {
+  position: absolute; right: 10px; top: 9px; width: 37px; height: 37px;
+  border: 0; border-radius: 9px; color: #594832; background: #eae0d0;
+  font-size: 25px; line-height: 1; cursor: pointer;
+}
+.clearButton:hover { background: #ddd0ba; }
+.searchPanelBottom {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  padding-top: 14px; font-size: 11px; color: #746c62;
+}
+.count { margin: 0; }
+.count strong { color: #201d17; font-size: 12px; font-weight: 750; }
+.indexIndicator { font-size: 9px; letter-spacing: .15em; color: #a2998b; font-weight: 700; }
+.alphabet {
+  display: flex; align-items: center; gap: 26px; padding: 29px 0 25px;
+  border-bottom: 1px solid var(--brand-line);
+}
+.alphabetLabel { flex: 0 0 auto; color: #877b69; font-size: 10px; font-weight: 700; letter-spacing: .15em; }
+.alphabetLetters { display: flex; flex-wrap: wrap; gap: 6px; }
+.alphabetLetters a {
+  display: grid; place-items: center; width: 39px; height: 39px;
+  border: 1px solid #dcd5c8; border-radius: 8px;
+  background: #fdfbf7; color: #4a4031; font-size: 12px; font-weight: 700;
+  transition: border-color 150ms ease, background 150ms ease, color 150ms ease;
+}
+.alphabetLetters a:hover { background: #211c17; color: #f2dbad; border-color: #211c17; }
+.brandGroups { margin-top: 4px; }
+.letterGroup {
+  scroll-margin-top: 20px; display: grid;
+  grid-template-columns: 126px minmax(0, 1fr); column-gap: 18px;
+  padding: 30px 0 32px; border-bottom: 1px solid var(--brand-line);
+}
+.letterHeading { display: flex; flex-direction: column; gap: 9px; padding-top: 8px; }
+.letterIndex { font-size: 9px; font-weight: 700; letter-spacing: .16em; color: #aaa08f; }
+.letterHeading h3 {
+  margin: 0; font-family: Georgia, "Times New Roman", serif; font-style: italic;
+  font-size: 62px; font-weight: 400; line-height: 1; letter-spacing: -.09em;
+  color: #b28d54;
+}
+.brandGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.brandCard {
+  position: relative; display: flex; flex-direction: column;
+  min-width: 0; min-height: 131px; padding: 21px 54px 19px 20px;
+  border: 1px solid rgba(23,21,19,.105); border-radius: 14px; background: #fffdf9;
+  color: #24211e;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+.brandCard:hover {
+  transform: translateY(-3px); border-color: #c9ab75; background: #fff;
+  box-shadow: 0 16px 30px -22px rgba(23,21,19,.35);
+}
+.brandCardTop { margin-bottom: 12px; font-size: 10px; font-weight: 800; letter-spacing: .14em; color: #73644f; }
+.brandName {
+  display: block; font-size: clamp(16px, 1.35vw, 21px); font-weight: 690;
+  line-height: 1.2; letter-spacing: -.032em; overflow-wrap: anywhere;
+}
+.brandCount { display: block; margin-top: auto; padding-top: 14px; color: #827569; font-size: 11px; font-weight: 550; }
+.brandArrow {
+  position: absolute; right: 16px; bottom: 17px;
+  display: grid; place-items: center; width: 32px; height: 32px;
+  border: 1px solid rgba(180,139,73,.28); border-radius: 50%;
+  background: #f7f0e4; color: #785719; font-size: 17px;
+  transition: transform 180ms ease, background 180ms ease;
+}
+.brandCard:hover .brandArrow { transform: translate(2px,-2px); background: #eedebe; }
+.emptyState {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 9px; min-height: 310px; margin-top: 24px; padding: 30px 22px;
+  border-radius: 15px; background: #fffdf8; border: 1px solid var(--brand-line); text-align: center;
+}
+.emptySymbol { display: grid; place-items: center; width: 56px; height: 56px; border: 1px solid #c8a879; border-radius: 50%; font: 31px Georgia,serif; color: #b28d54; }
+.emptyState strong { font-size: 19px; }
+.emptyState p { margin: 0; color: var(--brand-muted); font-size: 13px; }
+.emptyState button { margin-top: 12px; padding: 12px 16px; border-radius: 10px; border: 1px solid #cfbea3; background: #f4eadb; color: #573b15; font-weight: 700; cursor: pointer; }
+.indexNote { max-width: 640px; margin: 30px 0 0; color: #8d8377; font-size: 12px; line-height: 1.7; }
+.footer { display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap; padding:26px 4px 35px; margin-top:25px; border-top:1px solid var(--brand-line); color:#8b8072; font-size:11px; }
+.footer>div { display:flex; align-items:center; gap:23px; }
+.footer a { color:#55483a; font-weight:650; }
+.footer a:hover { text-decoration:underline; text-underline-offset:3px; }
+
+/* Brand detail: bold dark portrait and balanced data-first product cards. */
+.breadcrumb { display:flex; align-items:center; gap:12px; padding: 4px 4px 18px; color:#847b70; font-size:11px; font-weight:600; }
+.breadcrumb a { color:#6e5b3e; text-decoration:underline; text-underline-offset:4px; }
+.breadcrumb span[aria-current] { color:#312a20; }
+.brandHero { min-height: 314px; grid-template-columns: minmax(0, 1fr) 290px; }
+.brandHeroCopy { z-index:2; align-self:center; min-width:0; padding: 43px 0 49px 57px; }
+.brandHeroCopy h1 {
+  max-width: 900px; margin: 22px 0 25px;
+  font-size: clamp(46px, 5.9vw, 88px); font-weight:650; line-height: .97;
+  letter-spacing:-.065em; overflow-wrap:break-word;
+}
+.brandHeroBottom { display:flex; flex-wrap:wrap; align-items:center; gap:25px; }
+.brandHeroBottom p { max-width:420px; margin:0; font-size:13px; line-height:1.6; color:rgba(255,253,248,.65); }
+.brandHeroLink { padding:12px 15px; }
+.brandHeroArt { position:relative; min-height:280px; overflow:hidden; }
+.brandHeroRing {
+  position:absolute; width:300px; height:300px; top:5%; right:1%;
+  border:1px solid rgba(219,185,125,.28); border-radius:50%;
+  box-shadow:0 0 0 42px rgba(219,185,125,.045),0 0 0 92px rgba(219,185,125,.025);
+}
+.brandHeroInitial {
+  position:absolute; right:17%; top:-2%; font-family:Georgia,"Times New Roman",serif;
+  font-size:290px; line-height:1.2; font-weight:400; color:transparent;
+  -webkit-text-stroke:1.5px rgba(224,187,123,.62); transform:rotate(-9deg);
+}
+.brandHeroArtCaption { position:absolute; right:22px; bottom:25px; color:rgba(255,255,255,.47); font-size:9px; font-weight:700; letter-spacing:.16em; writing-mode:vertical-rl; }
+.brandSection { scroll-margin-top:22px; padding:55px 4px 12px; }
+.brandSectionHead { display:flex; align-items:end; justify-content:space-between; gap:25px; margin-bottom:26px; }
+.brandSectionHead h2 { max-width:760px; }
+.brandSectionCount { flex:0 0 auto; padding:9px 12px; border:1px solid #d7c5a9; border-radius:20px; color:#7a6342; font-size:10px; font-weight:750; letter-spacing:.1em; }
+.products {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));
+  gap:15px; margin:0; padding:0; list-style:none;
+}
+.products li { min-width:0; list-style:none; }
+.productCard {
+  display:grid; grid-template-columns:minmax(0,1.55fr) minmax(138px,.8fr);
+  min-height:268px; overflow:hidden; border:1px solid #d9d1c5; border-radius:17px;
+  background:#fffdf9; color:#211d18; box-shadow:0 10px 24px -24px rgba(23,21,19,.35);
+  transition:box-shadow 180ms ease, transform 180ms ease, border-color 180ms ease;
+}
+.productCard:hover { transform:translateY(-3px); border-color:#c8ad82; box-shadow:0 17px 37px -27px rgba(23,21,19,.43); }
+.productCardText { display:flex; flex-direction:column; min-width:0; padding:29px 28px; }
+.productOverline { font-size:9px; font-weight:750; letter-spacing:.15em; color:#9b8460; }
+.productBrand { display:block; margin-top:32px; font-size:11px; font-weight:730; letter-spacing:.095em; text-transform:uppercase; color:#7b7064; }
+.productCardText strong { display:block; margin-top:5px; font-size:clamp(21px,2vw,29px); font-weight:700; letter-spacing:-.045em; line-height:1.12; }
+.productVariant { display:block; margin-top:12px; color:#71675e; font-size:12px; font-weight:500; line-height:1.5; }
+.productVariant span { margin:0 5px; color:#af9f89; }
+.productCardAction {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-top:auto; padding-top:29px; color:#815a21; font-size:12px; font-weight:750;
+}
+.productCardAction span { display:grid; place-items:center; width:34px; height:34px; border-radius:50%; border:1px solid #d6c5aa; background:#f6ecdb; font-size:16px; }
+.productCardArt {
+  position:relative; display:grid; place-items:center; overflow:hidden;
+  border-left:1px solid rgba(23,21,19,.06);
+  background:radial-gradient(circle at 54% 35%,#fffdf9 0%,#f1e6d1 61%,#e9d6b4 100%);
+}
+.productCardCircle { position:absolute; width:180px; height:180px; border:1px solid rgba(161,125,70,.37); border-radius:50%; box-shadow:0 0 0 28px rgba(161,125,70,.06); }
+.productCardLetter { position:relative; font:italic 140px/.9 Georgia,"Times New Roman",serif; color:transparent; -webkit-text-stroke:1px #a1814a; transform:rotate(-9deg); opacity:.85; }
+.productCardArtLabel { position:absolute; bottom:23px; font-size:10px; font-weight:750; letter-spacing:.15em; color:#977846; }
+.brandFootnote { display:flex; align-items:center; justify-content:space-between; gap:35px; margin-top:26px; padding:25px 28px; background:#eee8dd; border-radius:14px; }
+.brandFootnote p { max-width:650px; margin:9px 0 0; font-size:12px; line-height:1.7; color:#655e55; }
+.returnLink { display:inline-flex; flex:0 0 auto; align-items:center; gap:18px; border-radius:11px; padding:12px 16px; background:#211e1a; color:#fffdf8; font-size:12px; font-weight:700; }
+.returnLink span { color:#e7c68b; font-size:17px; }
+.returnLink:hover { background:#423321; }
+
+@media (max-width: 980px) {
+  .hero { grid-template-columns:minmax(0,1fr) 260px; }
+  .heroContent { padding:44px 0 44px 38px; }
+  .heroContent h1 { font-size:52px; }
+  .heroVisual::before { left:-14%; }
+  .heroLetterA { left:0; font-size:205px; }
+  .heroLetterZ { left:25%; top:32%; font-size:202px; }
+  .brandGrid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .brandHero { grid-template-columns:minmax(0,1fr) 230px; }
+  .brandHeroCopy { padding-left:36px; }
+  .brandHeroArt { min-height:270px; }
+  .brandHeroInitial { font-size:245px; }
+}
+@media (max-width: 640px) {
+  .frame { padding:0 15px; }
+  .header { min-height:68px; padding:10px 1px; }
+  .logo { gap:8px; font-size:16px; }
+  .logoIcon { width:27px; height:27px; }
+  .headerLink { padding:9px 10px; gap:8px; border-radius:9px; font-size:10px; }
+  .headerLink span { font-size:14px; }
+  .hero, .brandHero { border-radius:17px; }
+  .hero { display:block; min-height:345px; }
+  .heroContent { position:relative; z-index:2; padding:30px 24px 30px; }
+  .heroEyebrow { font-size:9px; letter-spacing:.15em; }
+  .heroContent h1 { max-width:340px; margin-top:19px; font-size:clamp(39px,10.5vw,49px); line-height:1.02; }
+  .heroDescription { max-width:290px; margin-top:15px; font-size:12px; line-height:1.65; }
+  .heroBottom { align-items:flex-start; flex-direction:column; gap:16px; margin-top:21px; }
+  .heroStats { gap:13px; font-size:11px; }
+  .heroStats strong { font-size:15px; }
+  .heroButton { padding:10px 13px; font-size:11px; gap:12px; }
+  .heroVisual { position:absolute; top:8px; right:-55px; bottom:0; width:230px; min-height:0; opacity:.23; z-index:1; }
+  .heroVisual::before { width:230px; height:230px; left:0; top:15%; }
+  .heroVisualRing { display:none; }
+  .heroLetterA { font-size:180px; top:8%; left:6%; }
+  .heroLetterZ { font-size:165px; top:35%; left:18%; }
+  .heroVisualDash,.heroVisualCaption { display:none; }
+  .indexSection { padding:41px 2px 22px; }
+  .indexTopline { display:block; }
+  .sectionEyebrow { font-size:9px; }
+  .indexTopline h2, .brandSectionHead h2 { margin-top:9px; font-size:32px; }
+  .indexTopline > p { margin-top:12px; font-size:12px; max-width:355px; }
+  .searchPanel { margin-top:21px; padding:19px 15px 15px; border-radius:13px; }
+  .searchLabel { font-size:9px; }
+  .searchControl input { height:53px; padding:0 41px; font-size:12px; }
+  .searchGlyph { left:16px; top:17px; width:15px; height:15px; }
+  .clearButton { right:8px; top:8px; }
+  .searchPanelBottom { padding-top:13px; }
+  .indexIndicator { display:none; }
+  .alphabet { display:block; padding:22px 0 18px; }
+  .alphabetLabel { display:block; margin-bottom:11px; font-size:9px; }
+  .alphabetLetters { display:flex; flex-wrap:nowrap; overflow-x:auto; overscroll-behavior-x:contain; padding-bottom:5px; scrollbar-width:thin; scroll-snap-type:x proximity; }
+  .alphabetLetters a { flex:0 0 38px; width:38px; height:38px; scroll-snap-align:start; }
+  .letterGroup { grid-template-columns:44px minmax(0,1fr); column-gap:12px; padding:21px 0; }
+  .letterIndex { font-size:7px; letter-spacing:.045em; }
+  .letterHeading { gap:8px; padding-top:8px; }
+  .letterHeading h3 { font-size:49px; }
+  .brandGrid { grid-template-columns:1fr; gap:9px; }
+  .brandCard { min-height:105px; padding:16px 52px 15px 16px; border-radius:12px; }
+  .brandCardTop { margin-bottom:9px; font-size:8px; }
+  .brandName { font-size:17px; }
+  .brandCount { padding-top:9px; font-size:10px; }
+  .brandArrow { width:30px; height:30px; right:12px; bottom:13px; }
+  .indexNote { margin-top:23px; font-size:11px; }
+  .footer { padding:24px 2px 35px; gap:12px; font-size:10px; }
+  .footer > div { gap:13px; }
+  .breadcrumb { padding:4px 2px 13px; font-size:10px; }
+  .brandHero { display:block; min-height:290px; }
+  .brandHeroCopy { position:relative; z-index:2; padding:34px 26px 34px; }
+  .brandHeroCopy h1 { max-width:320px; margin:24px 0; font-size:clamp(43px,11.3vw,59px); overflow-wrap:anywhere; }
+  .brandHeroBottom { flex-direction:column; align-items:flex-start; gap:17px; }
+  .brandHeroBottom p { max-width:255px; font-size:12px; }
+  .brandHeroLink { padding:10px 13px; font-size:11px; }
+  .brandHeroArt { position:absolute; top:0; right:-25px; bottom:0; width:160px; min-height:0; z-index:1; opacity:.27; }
+  .brandHeroRing { width:220px; height:220px; top:9%; right:-30%; }
+  .brandHeroInitial { font-size:215px; right:8%; top:14%; }
+  .brandHeroArtCaption { display:none; }
+  .brandSection { padding:38px 2px 10px; }
+  .brandSectionHead { align-items:flex-start; flex-direction:column; gap:15px; margin-bottom:19px; }
+  .brandSectionCount { font-size:9px; }
+  .products { grid-template-columns:1fr; gap:12px; }
+  .productCard { min-height:223px; grid-template-columns:minmax(0,1fr) 108px; border-radius:13px; }
+  .productCardText { padding:22px 15px 20px; }
+  .productOverline { font-size:8px; letter-spacing:.09em; }
+  .productBrand { margin-top:22px; font-size:9px; }
+  .productCardText strong { font-size:23px; }
+  .productVariant { margin-top:8px; font-size:11px; }
+  .productCardAction { padding-top:20px; font-size:11px; }
+  .productCardAction span { width:27px; height:27px; font-size:14px; }
+  .productCardCircle { width:117px; height:117px; }
+  .productCardLetter { font-size:97px; }
+  .productCardArtLabel { bottom:18px; font-size:8px; }
+  .brandFootnote { flex-direction:column; align-items:flex-start; gap:16px; padding:20px 18px; }
+  .brandFootnote p { font-size:11px; }
+  .returnLink { padding:12px 14px; font-size:11px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .heroButton, .brandHeroLink, .brandCard, .brandArrow, .productCard, .headerLink { transition:none !important; transform:none !important; }
+}
