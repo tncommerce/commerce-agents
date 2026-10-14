@@ -42,7 +42,9 @@ def test_discovery_surfaces_pass_shared_world_context() -> None:
     assert "world=" not in intro
     assert "visualWorldFor(fragrance)" in CATALOG_BROWSER.read_text(encoding="utf-8")
     # Homepage audience entries no longer render product imagery.
-    selection = Path("examples/retail/storefront-web/components/AtelierSelection.tsx").read_text(encoding="utf-8")
+    selection = Path("examples/retail/storefront-web/components/AtelierSelection.tsx").read_text(
+        encoding="utf-8"
+    )
     assert 'variant="card"' in selection
     assert "world=" not in selection
 
