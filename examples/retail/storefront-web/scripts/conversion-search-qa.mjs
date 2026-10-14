@@ -41,11 +41,15 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
       assert.ok(events.some(e=>e.event==='product_open'&&e.product_id==='SC-YSL-LIBRE-EDP-90'), 'product_open survives delayed search receipt and navigation');
       assert.ok(events.every(e=>e.internal_qa===true));
       if(width===390) {
-        await page.goto(`${baseUrl}/start?qa=1`,{waitUntil:'networkidle'});
+        // A previous delayed receipt may still be outstanding. Full network
+        // quiet is not a readiness condition; the visible search control is.
+        await page.goto(`${baseUrl}/start?qa=1`,{waitUntil:'load'});
+        const stalledSearch=page.getByLabel('Duft oder Marke suchen',{exact:true});
+        await stalledSearch.waitFor({state:'visible'});
         await context.route('**/api/analytics/events',()=>{});
-        await page.getByLabel('Duft oder Marke suchen',{exact:true}).fill('PDM Delina 75ml');
+        await stalledSearch.fill('PDM Delina 75ml');
         const started=Date.now();
-        await page.getByLabel('Duft oder Marke suchen',{exact:true}).press('Enter');
+        await stalledSearch.press('Enter');
         await page.waitForURL('**/duft/parfums-de-marly-delina**',{waitUntil:'domcontentloaded',timeout:5000});
         assert.ok(Date.now()-started<4000,'stalled analytics must not block navigation');
       }
