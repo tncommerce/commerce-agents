@@ -374,6 +374,7 @@ export default function FragranceOffers({
                     ),
                   )}
                   target="_blank"
+                  title="Öffnet einen neuen Tab"
                   rel={
                     offer.affiliate_link
                       ? "sponsored noopener noreferrer"
@@ -386,7 +387,6 @@ export default function FragranceOffers({
                   }`}
                 >
                   Bei {offer.merchant_name} ansehen <span aria-hidden="true" className="ml-2">↗</span>
-                  <span className="sr-only"> (öffnet einen neuen Tab)</span>
                 </a>
               ) : (
                 <span
@@ -419,9 +419,10 @@ export default function FragranceOffers({
         <details className={styles.ranking}>
           <summary>Wie wir Angebote auswählen und sortieren</summary>
           <p>
-            Sortiert nach bekanntem Gesamtpreis und Aktualität. Bei gleichem Gesamtpreis
-            und vergleichbarer Aktualität können Partnerstatus und – zwischen gleichwertigen
-            Partnerangeboten – die Provision entscheiden. Die Duftempfehlung bleibt davon unberührt.
+            Sortiert nach bekanntem Gesamtpreis und Aktualität.
+            Bei gleichem Gesamtpreis und vergleichbarer Aktualität
+            können Partnerstatus und – zwischen gleichwertigen Partnerangeboten –
+            die Provision als Tie-Breaker dienen. Die Duftempfehlung bleibt davon unberührt.
           </p>
           {externalOfferCount ? (
             <p>Weitere Kaufoptionen dienen der Orientierung. DUFYND erhält dafür aktuell keine Provision.</p>

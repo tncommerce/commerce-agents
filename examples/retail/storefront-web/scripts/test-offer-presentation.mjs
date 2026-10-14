@@ -46,7 +46,11 @@ for(const focusedLanding of [false,true]) {
   assert.match(html,/12.10.2026, 21:58/);
   assert.match(html,/href="\/api\/clickout\/qa-offer\?src=qa&amp;cmp=isolated&amp;sid=qa-session"/);
   assert.match(html,/rel="sponsored noopener noreferrer"/);
-  assert.match(html,/öffnet einen neuen Tab/);
+  assert.match(html,/title="Öffnet einen neuen Tab"/);
+  const action=html.match(/<a[^>]+href="\/api\/clickout[^>]*>(.*?)<\/a>/s)?.[1];
+  assert.ok(action);
+  // The decorative arrow is excluded; the accessible link name remains stable.
+  assert.equal(action.replace(/<span aria-hidden="true"[^>]*>.*?<\/span>/s,'').trim(),'Bei QA Händler ansehen');
   assert.match(html,/<details/); assert.match(html,/Provision/); assert.match(html,/Retouren/);
   cases++;
 }
