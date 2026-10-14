@@ -3,6 +3,9 @@ import { writeFile } from 'node:fs/promises';
 
 // CI-only, localhost/static export. Every API response is a fixture: no live sessions,
 // no merchant navigation, no analytics delivery, no advisor/model calls.
+// Page load + explicit DOM, client interaction and offer-state assertions are our
+// readiness gates. Playwright networkidle is not: background requests can keep a
+// fully interactive page busy and cause a false 30-second navigation failure.
 export async function verifyWowExperience(browser, baseUrl, outputDir) {
   const results = [];
   const routes = [['home','/'],['catalog','/duft'],['brands','/marken'],['rabanne','/duft/rabanne-1-million'],['lancome','/duft/lancome-la-vie-est-belle']];
@@ -25,9 +28,13 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
     const errors=[];page.on('pageerror',e=>errors.push(e.message));
     try {
       for (const [name,route] of routes) {
-        const response=await page.goto(baseUrl+route+'?src=instagram&cmp=wow22_fixture&content=isolated',{waitUntil:'networkidle'});
+        const response=await page.goto(baseUrl+route+'?src=instagram&cmp=wow22_fixture&content=isolated',{waitUntil:'load'});
         assert.equal(response?.status(),200,`${name}/${width}: exact public route must return 200`);
-        await page.locator('h1').first().waitFor();
+        await page.locator('h1').first().waitFor({state:'visible'});
+        if (name === 'home') {
+          await page.locator('.wow-search input').waitFor({state:'visible'});
+          await page.locator('[data-scent-atlas] select').waitFor({state:'visible'});
+        }
         if(name==='lancome') {
           assert.match(await page.locator('h1').innerText(),/La Vie est Belle/);
           const original=page.locator('.dufynd-fragrance-stage-shell img');
@@ -117,7 +124,7 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
           // No production session, model request, clickout or analytics delivery is made.
           const messages=[];
           await page.route('**/api/chat',r=>{messages.push(r.request().postDataJSON().message);return r.fulfill({status:200,contentType:'text/event-stream',body:''});});
-          await page.goto(baseUrl+'/?src=instagram&cmp=wow22_fixture&content=isolated',{waitUntil:'networkidle'});
+          await page.goto(baseUrl+'/?src=instagram&cmp=wow22_fixture&content=isolated',{waitUntil:'load'});
           const inline=page.locator('.wow-advisor textarea');
           await inline.fill('QA: Ein Duft für den Alltag');await inline.press('Enter');
           await page.getByText('QA: Ein Duft für den Alltag',{exact:true}).waitFor();
@@ -141,7 +148,7 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
           const offer={offer_id:'wow22-mock-offer',product_id:'SC-RABANNE-1-MILLION-EDT-100',merchant_id:'qa-only',merchant_name:'QA-Testhändler',price:90,currency:'EUR',shipping_cost:5,total_price:95,shipping_label:'5,00 € Versand (QA)',in_stock:true,variant_label:'100 ml · Eau de Toilette',affiliate_link:true,clickout_path:'/api/clickout/wow22-mock-offer',last_updated_at:'2026-10-14T00:00:00Z'};
           let available=true;
           await page.route('**/api/merchant-offers/SC-RABANNE-1-MILLION-EDT-100',r=>r.fulfill({json:{product_id:offer.product_id,best_offer_id:available?offer.offer_id:null,offers:available?[offer]:[],affiliate_disclosure:'Isolated QA fixture'}}));
-          await page.reload({waitUntil:'networkidle'});
+          await page.reload({waitUntil:'load'});
           const merchant=page.getByRole('link',{name:'Bei QA-Testhändler ansehen',exact:true});
           await merchant.waitFor();
           assert.match(await page.locator('[data-merchant-offers]').innerText(),/Gesamtpreis inkl. Versand/);
@@ -149,7 +156,8 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
           assert.ok((await merchant.boundingBox()).height>=44);
           assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'available offer fits viewport');
           await page.screenshot({path:`${outputDir}/wow22-rabanne-${width}-available-FIXTURE.png`,fullPage:true});
-          available=false;await page.reload({waitUntil:'networkidle'});
+          available=false;await page.reload({waitUntil:'load'});
+          await page.locator('[data-offer-state="empty"]').waitFor({state:'visible'});
           assert.equal(await page.locator('a[href*="/api/clickout/"]').count(),0,'empty state has no purchase clickout');
           assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'empty offer fits viewport');
           await page.screenshot({path:`${outputDir}/wow22-rabanne-${width}-empty-FIXTURE.png`,fullPage:true});
@@ -163,7 +171,7 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
   const context=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'no-preference'});
   try {
     await context.route('**/api/**',r=>r.fulfill({json:{session_id:'wow22-motion-fixture',products:[],partners:[],ok:true}}));
-    const p=await context.newPage();await p.goto(baseUrl,{waitUntil:'networkidle'});
+    const p=await context.newPage();await p.goto(baseUrl,{waitUntil:'load'});
     const atlas=p.locator('[data-scent-atlas]');
     assert.notEqual(await atlas.locator('svg').evaluate(el=>getComputedStyle(el).transitionDuration),'0s');
     await atlas.locator('select').selectOption('1');
