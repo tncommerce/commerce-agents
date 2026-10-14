@@ -1014,7 +1014,10 @@ def _is_green_autonomy_task(
     # executor.  Never route these claims through the model-backed Jarvis
     # worker, even if a future budget window becomes available.
     payload = task.get("durable_payload")
-    if isinstance(payload, dict) and payload.get("kind") == "seven_content_role_v1":
+    if isinstance(payload, dict) and payload.get("kind") in {
+        "seven_content_role_v1",
+        "nightshift_value_v2",
+    }:
         return False
     if bool(task.get("requires_human_approval")):
         return False

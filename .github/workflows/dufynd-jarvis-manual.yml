@@ -23,6 +23,11 @@ on:
           - nightshift-pilot
           - nightshift-bounded
           - nightshift-bounded-preflight
+          - nightshift-value-v2
+      value_run_id:
+        description: Exact separately approved V2 run ID (no inline manifest)
+        required: false
+        type: string
       max_events:
         description: Maximum events for process-loop
         required: false
@@ -48,7 +53,7 @@ concurrency:
 
 jobs:
   jarvis:
-    if: github.event_name == 'workflow_dispatch' && inputs.mode != 'durable-execution'
+    if: github.event_name == 'workflow_dispatch' && inputs.mode != 'durable-execution' && inputs.mode != 'nightshift-value-v2'
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -446,6 +451,28 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
+
+  nightshift-value-v2:
+    if: github.event_name == 'workflow_dispatch' && inputs.mode == 'nightshift-value-v2'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+          # Intentionally no pip cache: bounded zero-additional-cost V2 pilot.
+      - run: pip install -r requirements-dev.txt
+      - name: Two approved zero-cost value handlers on existing Jarvis host
+        env:
+          SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          VALUE_RUN_ID: ${{ inputs.value_run_id }}
+        run: python -m scripts.dufynd_value_runtime_v2 --run-id "$VALUE_RUN_ID"
 
   durable-execution:
     if: github.ref_name == 'scentai-mvp' && (github.event_name == 'push' || inputs.mode == 'durable-execution')
