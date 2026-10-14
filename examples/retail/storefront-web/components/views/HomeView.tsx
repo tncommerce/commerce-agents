@@ -76,7 +76,7 @@ export default function HomeView({ shopperName: _shopperName, sessionSettled }: 
     </section>
     <section id="duftberatung" className="wow-advisor" aria-labelledby="wow-advisor-title">
       <div><p className="wow-kicker">Persönliche Duftberatung</p><h2 id="wow-advisor-title">Noch unentschlossen?</h2><p>Beschreibe, was du suchst. Wir helfen dir beim Vergleichen.</p></div>
-      <Composer send={ask} ready={chat?.ready ?? false} busy={chat?.busy ?? false} label="Nachricht an DUFYND Advisor" placeholder="Dein Anlass, Budget oder Lieblingsduft …" />
+      <Composer send={ask} ready={chat?.ready ?? false} busy={chat?.busy ?? false} label="Nachricht an DUFYND Advisor" placeholder="Was suchst du?" />
       <div className="wow-advisor-links"><AcquisitionInternalLink href="/parfum-alternativen">Alternative finden ↗</AcquisitionInternalLink><AcquisitionInternalLink href="/parfum-geschenkberater">Duft verschenken ↗</AcquisitionInternalLink></div>
     </section>
     <PersonalLibrarySummary />

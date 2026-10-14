@@ -41,7 +41,10 @@ def test_discovery_surfaces_pass_shared_world_context() -> None:
     assert 'variant="card"' in intro
     assert "world=" not in intro
     assert "visualWorldFor(fragrance)" in CATALOG_BROWSER.read_text(encoding="utf-8")
-    assert "return fragrance ? visualWorldFor(fragrance)" in HOME.read_text(encoding="utf-8")
+    # Homepage audience entries no longer render product imagery.
+    selection = Path("examples/retail/storefront-web/components/AtelierSelection.tsx").read_text(encoding="utf-8")
+    assert 'variant="card"' in selection
+    assert "world=" not in selection
 
 
 def test_visual_standard_keeps_worlds_atmospheric_only() -> None:

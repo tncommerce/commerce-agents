@@ -44,6 +44,15 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
           assert.ok(search && search.y+search.height<740,`home/${width}: search above fold`);
           await page.locator('.wow-hero-art').click();
           const atlas=page.locator('[data-scent-atlas]');
+          // Long source labels must remain readable after the note-label composition changed.
+          await atlas.locator('select').selectOption('1');
+          const labelChoices=atlas.locator('.wow-atlas-notes button');
+          const labels=await labelChoices.allTextContents();
+          const longest=labels.reduce((a,b)=>b.length>a.length?b:a,'');
+          await labelChoices.filter({hasText:longest}).first().click();
+          const noteBounds=await atlas.locator('.wow-atlas-core').boundingBox();
+          assert.ok(noteBounds.x>=0&&noteBounds.x+noteBounds.width<=width,'long selected note stays inside the viewport');
+          await atlas.screenshot({path:`${outputDir}/polish23-atlas-${width}-long-note.png`});
           await atlas.locator('select').selectOption('2');
           await atlas.getByText('Eau de Toilette · 100 ml',{exact:true}).waitFor();
           const notes=atlas.locator('.wow-atlas-notes button');
@@ -69,7 +78,7 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
           assert.equal(await page.locator('.wow-advisor textarea').count(),1,'existing advisor composer is inline on the homepage');
           assert.equal(await page.locator('textarea').count(),1,'no second fixed composer overlaps homepage content');
           const advisor=page.locator('.wow-advisor textarea');await advisor.fill('Isolierte Eingabe ohne Versand');
-          assert.equal(await advisor.inputValue(),'Isolierte Eingabe ohne Versand');await advisor.fill('');
+          assert.equal(await advisor.inputValue(),'Isolierte Eingabe ohne Versand');await advisor.fill('');await advisor.blur();
           for(const [part,selector] of [['selection','.wow-selection'],['audiences','.wow-audiences'],['footer','.wow-home footer']]) {
             const el=page.locator(selector).first();if(await el.count()){
               await el.scrollIntoViewIfNeeded();
@@ -84,10 +93,12 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
             await page.locator('.wow-home img').evaluateAll(images=>Promise.all(images.map(async image=>{image.loading='eager';await Promise.race([image.decode().catch(()=>{}),new Promise(r=>setTimeout(r,8000))]);})));
             const extent=await scroll.evaluate(el=>({height:el.scrollHeight,viewport:el.clientHeight}));
             let frame=0;
-            for(let y=0;y<extent.height;y+=Math.max(250,Math.floor(extent.viewport*.8))) {
+            const end=Math.max(0,extent.height-extent.viewport);
+            for(let y=0;;y=Math.min(end,y+Math.max(250,Math.floor(extent.viewport*.8)))) {
               await scroll.evaluate((el,y)=>{el.scrollTop=y;},y);
               await page.waitForTimeout(80);
               await page.screenshot({path:`${outputDir}/wow22-home-${width}-scroll-${String(frame++).padStart(2,'0')}.png`});
+              if(y===end) break;
             }
             metrics.scrollFrames=frame;metrics.scrollHeight=extent.height;
             if(width===390) {metrics.baselineScrollHeight=5841;metrics.scrollReduction=1-extent.height/5841;assert.ok(extent.height<=3800,'390px homepage must be substantially shorter than WOW22');}
@@ -102,6 +113,24 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
           assert.equal(new URL(page.url()).searchParams.get('cmp'),'wow22_fixture','actual atlas keyboard navigation preserves campaign');
           assert.equal(new URL(page.url()).searchParams.get('src'),'instagram');
           metrics.atlasDestination=destination;
+          // Exercise the relocated existing composer with an empty isolated SSE response.
+          // No production session, model request, clickout or analytics delivery is made.
+          const messages=[];
+          await page.route('**/api/chat',r=>{messages.push(r.request().postDataJSON().message);return r.fulfill({status:200,contentType:'text/event-stream',body:''});});
+          await page.goto(baseUrl+'/?src=instagram&cmp=wow22_fixture&content=isolated',{waitUntil:'networkidle'});
+          const inline=page.locator('.wow-advisor textarea');
+          await inline.fill('QA: Ein Duft für den Alltag');await inline.press('Enter');
+          await page.getByText('QA: Ein Duft für den Alltag',{exact:true}).waitFor();
+          await page.waitForFunction(()=>!document.querySelector('.wow-home')&&document.querySelectorAll('textarea').length===1);
+          assert.deepEqual(messages,['QA: Ein Duft für den Alltag'],'inline composer sends exactly one mocked request');
+          const dock=page.getByRole('textbox',{name:'Nachricht an DUFYND Advisor'});
+          await dock.fill('QA: zweite Nachricht');
+          await page.getByRole('button',{name:'Send',exact:true}).click();
+          await page.getByText('QA: zweite Nachricht',{exact:true}).waitFor();
+          assert.deepEqual(messages,['QA: Ein Duft für den Alltag','QA: zweite Nachricht'],'conversation keeps the existing dock usable');
+          assert.equal(new URL(page.url()).searchParams.get('cmp'),'wow22_fixture');
+          await page.screenshot({path:`${outputDir}/polish23-advisor-${width}-FIXTURE.png`});
+          metrics.advisor={inlineToConversation:true,requests:messages.length,mocked:true};
         } else {
           await page.evaluate(async()=>{for(let y=0;y<document.documentElement.scrollHeight;y+=600){window.scrollTo(0,y);await new Promise(r=>setTimeout(r,25));}window.scrollTo(0,0);});
           await page.evaluate(()=>Promise.all([...document.images].map(i=>i.decode().catch(()=>{}))));

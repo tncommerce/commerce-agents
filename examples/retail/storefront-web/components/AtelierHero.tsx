@@ -26,6 +26,6 @@ export default function AtelierHero() {
         <span className="wow-art-invite">Eine Note. Deine nächste Entdeckung. <span aria-hidden>↗</span></span>
       </a>
     </div>
-    <div className="wow-hero-foot"><span>Duftprofile verstehen.</span><a href="#duft-atlas">Den Duftnoten-Atlas öffnen ↓</a></div>
+    <div className="wow-hero-foot" aria-label="Dein Weg zum Duft"><span><b>01</b> Entdecken</span><span><b>02</b> Vergleichen</span><span><b>03</b> Händler wählen</span></div>
   </section>;
 }

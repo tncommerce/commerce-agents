@@ -34,7 +34,8 @@ def test_discovery_surfaces_use_presentation_visual() -> None:
     assert "fragrance.presentation_visual" in acquisition
     assert "originalPhotoFor(fragrance)" in library_hub
     assert "fragrance.presentation_visual" not in library_hub
-    assert "fragrance?.presentation_visual?.url" in home_view
+    assert "<AtelierSelection />" in home_view
+    assert "originalPhotoFor(p)" in _read("components/AtelierSelection.tsx")
 
 
 def test_detail_hero_uses_presentation_but_truth_features_stay_verified() -> None:

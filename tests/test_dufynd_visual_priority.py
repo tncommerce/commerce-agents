@@ -46,7 +46,11 @@ def test_customer_facing_image_cards_use_exact_original_registry() -> None:
     ):
         assert "originalPhotoFor(fragrance)" in path.read_text(encoding="utf-8"), str(path)
     home = Path("examples/retail/storefront-web/components/views/HomeView.tsx")
-    assert "preferred_visual" in home.read_text(encoding="utf-8")
+    assert "<AtelierSelection />" in home.read_text(encoding="utf-8")
+    selection = Path("examples/retail/storefront-web/components/AtelierSelection.tsx").read_text(encoding="utf-8")
+    assert "originalPhotoFor(p)" in selection
+    assert "preferred_visual" not in selection
+    assert "ImageAttribution visual={visual}" in selection
 
 
 def test_catalog_requires_original_photo_or_honest_studio_source_hold() -> None:

@@ -11,7 +11,7 @@ export default function AtelierSelection() {
     const p = LIVE_FRAGRANCES.find(p => p.product_id === id); const visual = p && originalPhotoFor(p); return p && visual ? [{p,visual}] : [];
   });
   return <section className="wow-selection" aria-labelledby="wow-selection-title">
-    <div className="wow-section-heading"><div><p className="wow-kicker">02 / Im Detail</p><h2 id="wow-selection-title">Charakter zeigen.</h2></div><AcquisitionInternalLink href="/duft">Alle Düfte ↗</AcquisitionInternalLink></div>
+    <div className="wow-section-heading"><div><p className="wow-kicker">02 / Im Detail</p><h2 id="wow-selection-title">Charakter zeigen.</h2></div></div>
     <div className="wow-selection-grid" data-dufynd-home-selected-stage>{items.map(({p,visual},i) => <article className="wow-selection-item" key={p.product_id}>
       <AcquisitionInternalLink data-dufynd-original-card href={`/duft/${p.slug}`} onClick={() => void trackAnalyticsEvent("product_open", { product_id:p.product_id,source:"homepage_spotlight" })} className="wow-selection-link">
         <div className="wow-selection-photo"><span className="wow-selection-number">0{i+1}</span><FragranceVisual imageUrl={visual.url} cutoutUrl={visual.url} alt={`${p.brand} ${p.name} · ${p.concentration} ${p.volume_ml} ml`} variant="card" mode="cutout" className="h-full w-full" /></div>
