@@ -1,0 +1,237 @@
+{
+  "schema_version": 1,
+  "run_id": "DUFYND-20261013-GROWTH-02",
+  "wave_id": "dufynd_growth_02_manufacturer_import_20261013",
+  "status": "VERIFIED_FACTS_IMPORT_HOLD",
+  "enabled": false,
+  "live_publication_authorized": false,
+  "facts_only": true,
+  "community_data_included": false,
+  "source_commit": "a21ebf53a812c32d1817a5ca9a8e5e88d8797f9e",
+  "source_path": "docs/dufynd-source-intake-unattended-20261012.json",
+  "source_file_sha256": "1a0a93c4d70839f1cc61562d4ee46d53e27f65f035ce495f779f3f749a827fc1",
+  "checked_at": "2026-10-13",
+  "identity_policy": "Existing candidate IDs retained; proposed exact product IDs remain unregistered. Valaya Exclusif is a distinct staged product and is never reused.",
+  "staging_ready": false,
+  "registered_products": 0,
+  "candidates": [
+    {
+      "candidate_id": "BDK-GRIS-CHARNEL-EDP",
+      "product_id": "SC-BDK-GRIS-CHARNEL-EDP-100",
+      "brand": "BDK Parfums",
+      "name": "Gris Charnel",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_status": "verified_retail_variant",
+      "research_state": "manufacturer_facts_verified_import_held",
+      "manufacturer_reference": "gris-charnel / variant 45617631232284",
+      "variant_evidence": "Manufacturer heading Eau de Parfum; size selector and sticky product label 100ML; exact 100ML selector links to this variant.",
+      "caveat": "Dedicated olfactory pyramid used. Perfumer narrative separately mentions Cistus and positions vetiver differently; do not merge that prose into the pyramid. Not Extrait, hair perfume or a set.",
+      "evidence": [
+        {
+          "kind": "manufacturer_product_page",
+          "url": "https://bdkparfums.com/en/products/gris-charnel?variant=45617631232284",
+          "checked_at": "2026-10-13"
+        }
+      ],
+      "product_data": {
+        "source_url": "https://bdkparfums.com/en/products/gris-charnel?variant=45617631232284",
+        "source_kind": "manufacturer_product_facts",
+        "notes": {
+          "top": [
+            "fig",
+            "black tea",
+            "cardamom essence"
+          ],
+          "heart": [
+            "iris absolute",
+            "bourbon vetiver"
+          ],
+          "base": [
+            "indian sandalwood",
+            "tonka bean absolute"
+          ]
+        }
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "niche_beauty",
+          "url": "https://www.niche-beauty.com/de-de/produkte/bdk-parfums-gris-charnel/873-008",
+          "affiliate_state": "UNKNOWN",
+          "evidence_note": "Product name/category and selected100ml identify original EDP, not Extrait. Page includes country-unavailable and In Stock text; purchase availability is not established.",
+          "checked_at": "2026-10-12"
+        }
+      ],
+      "identifiers": {
+        "status": "pending_primary_variant_verification",
+        "canonical_gtin": null,
+        "observations": []
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "market_status": "researched_not_integrated",
+        "live_offer_status": "pending_current_purchase_destination"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_state_unknown",
+          "approved_product_image_pending",
+          "verified_purchase_destination_pending",
+          "curated_review_and_renderer_qa_pending",
+          "owner_publication_approval_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "MONTALE-ARABIANS-TONKA-EDP",
+      "product_id": "SC-MONTALE-ARABIANS-TONKA-EDP-100",
+      "brand": "Montale",
+      "name": "Arabians Tonka",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_status": "verified_retail_variant",
+      "research_state": "manufacturer_facts_verified_import_held",
+      "manufacturer_reference": "282-arabians-tonka / 100 ML",
+      "variant_evidence": "Official page title explicitly Eau de Parfum; main fragrance volume selector offers 100 ML and 50 ML. Select exact 100 ML, not 50 ML layering companion.",
+      "caveat": "Manufacturer lists leather and brown sugar in the base. No inferred longevity, score, stock or price; product availability markup is not verified offer evidence.",
+      "evidence": [
+        {
+          "kind": "manufacturer_product_page",
+          "url": "https://www.montaleparfums.com/en/oriental/282-arabians-tonka.html",
+          "checked_at": "2026-10-13"
+        }
+      ],
+      "product_data": {
+        "source_url": "https://www.montaleparfums.com/en/oriental/282-arabians-tonka.html",
+        "source_kind": "manufacturer_product_facts",
+        "notes": {
+          "top": [
+            "bergamot",
+            "saffron"
+          ],
+          "heart": [
+            "rose",
+            "oud"
+          ],
+          "base": [
+            "amber",
+            "oakmoss",
+            "tonka bean",
+            "leather",
+            "brown sugar",
+            "white musk"
+          ]
+        }
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "douglas",
+          "url": "https://www.douglas.de/de/p/5011487001",
+          "affiliate_state": "UNKNOWN",
+          "evidence_note": "Direct product heading, selected100ml and retailer article501346. Mixed Douglas/partner seller text is not a verified seller identity or merchant activation.",
+          "checked_at": "2026-10-12"
+        }
+      ],
+      "identifiers": {
+        "status": "pending_primary_variant_verification",
+        "canonical_gtin": null,
+        "observations": []
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "market_status": "researched_not_integrated",
+        "live_offer_status": "pending_current_purchase_destination"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_state_unknown",
+          "approved_product_image_pending",
+          "verified_purchase_destination_pending",
+          "curated_review_and_renderer_qa_pending",
+          "owner_publication_approval_pending"
+        ]
+      }
+    },
+    {
+      "candidate_id": "PDM-VALAYA-EDP",
+      "product_id": "SC-PDM-VALAYA-EDP-75",
+      "brand": "Parfums de Marly",
+      "name": "Valaya",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 75,
+      "variant_status": "verified_retail_variant",
+      "research_state": "manufacturer_facts_verified_import_held",
+      "manufacturer_reference": "valaya / 75ml",
+      "variant_evidence": "Official page title identifies Eau de Parfum (75 ml); main product selector 75ml distinct from30ml/75ml+10ml. Not Valaya Exclusif, hair perfume or set.",
+      "caveat": "Current German manufacturer pyramid used; no Mahonia/Petalya inference from third-party listings. Manufacturer facts do not authorize product imagery.",
+      "evidence": [
+        {
+          "kind": "manufacturer_product_page",
+          "url": "https://parfums-de-marly.com/de/products/valaya",
+          "checked_at": "2026-10-13"
+        }
+      ],
+      "product_data": {
+        "source_url": "https://parfums-de-marly.com/de/products/valaya",
+        "source_kind": "manufacturer_product_facts",
+        "notes": {
+          "top": [
+            "bergamot",
+            "mandarin",
+            "white peach"
+          ],
+          "heart": [
+            "orange blossom",
+            "white flowers"
+          ],
+          "base": [
+            "white musk",
+            "akigalawood",
+            "vanilla",
+            "vetiver"
+          ]
+        }
+      },
+      "research_merchant_evidence": [
+        {
+          "merchant": "niche_beauty",
+          "url": "https://www.niche-beauty.com/de-de/produkte/parfums-de-marly-valaya/651-035",
+          "affiliate_state": "UNKNOWN",
+          "evidence_note": "Original Valaya title, EDP description and selected75ml. Not Exclusif/hair perfume; country-unavailable text means no purchase-readiness claim.",
+          "checked_at": "2026-10-12"
+        }
+      ],
+      "identifiers": {
+        "status": "pending_primary_variant_verification",
+        "canonical_gtin": null,
+        "observations": []
+      },
+      "media": {
+        "image_url": null,
+        "image_status": "pending_approved_feed_or_manufacturer_image"
+      },
+      "commerce": {
+        "market_status": "researched_not_integrated",
+        "live_offer_status": "pending_current_purchase_destination"
+      },
+      "validation": {
+        "catalog_ready": false,
+        "blockers": [
+          "affiliate_state_unknown",
+          "approved_product_image_pending",
+          "verified_purchase_destination_pending",
+          "curated_review_and_renderer_qa_pending",
+          "owner_publication_approval_pending"
+        ]
+      }
+    }
+  ]
+}

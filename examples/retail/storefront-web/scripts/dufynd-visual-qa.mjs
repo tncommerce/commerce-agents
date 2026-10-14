@@ -1,3 +1,4 @@
+import { verifyBrandDiscovery } from "./brand-discovery-qa.mjs";
 import { verifyNoteSculpture } from "./note-sculpture-qa.mjs";
 import { verifyConversionSearch } from "./conversion-search-qa.mjs";
 import { verifyAcquisitionEntry } from "./acquisition-entry-qa.mjs";
@@ -284,6 +285,9 @@ const report = {
 };
 
 try {
+  try {
+    report.checks.push(...await verifyBrandDiscovery(browser, baseUrl, outputDir));
+  } catch (error) { report.failures.push({ label: "brand-discovery", message: String(error) }); }
   try {
     const measurements = await verifySocialProductEntry(browser, baseUrl, outputDir);
     report.checks.push({ label: "social-product-entry", status: "passed", cases: measurements.length, measurements });

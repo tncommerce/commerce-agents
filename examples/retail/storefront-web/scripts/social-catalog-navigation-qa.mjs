@@ -58,11 +58,12 @@ export async function verifySocialCatalogNavigation(browser, baseUrl) {
             assert.ok(names.length > 0 && names.every((text) => text.includes("Yves Saint Laurent")), "A–Z must filter actual products");
             assert.equal(new URL(page.url()).searchParams.get("cmp"), "nav_qa", "brand selection must retain attribution");
           }
-          const product = page.locator("article.dufynd-catalog-card a").first();
+          const productSelector = surface === "directory" ? "a[data-brand-product]" : "article.dufynd-catalog-card a";
+          const product = page.locator(productSelector).first();
           await page.waitForFunction((selector) => {
             const link = document.querySelector(selector);
             return link && new URL(link.href).searchParams.get("cmp") === "nav_qa";
-          }, "article.dufynd-catalog-card a");
+          }, productSelector);
           const destination = new URL(await product.getAttribute("href"), baseUrl);
           await product.click();
           await page.waitForURL((url) => url.pathname === destination.pathname);

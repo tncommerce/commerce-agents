@@ -35,12 +35,17 @@ def build_campaign_url(
     campaign_id: str,
     content_id: str,
 ) -> str:
-    parsed_base = urlparse(base_url.strip())
+    base_url = base_url.strip()
+    parsed_base = urlparse(base_url)
     if (
         parsed_base.scheme != "https"
         or not parsed_base.netloc
         or parsed_base.username
         or parsed_base.password
+        or parsed_base.path not in ("", "/")
+        or parsed_base.params
+        or parsed_base.query
+        or parsed_base.fragment
     ):
         raise ValueError("base_url must be a public HTTPS origin without credentials")
 

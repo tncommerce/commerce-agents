@@ -178,6 +178,9 @@ export default function DatenschutzPage() {
                 wurde. Bei Affiliate-Weiterleitungen können Herkunfts-, Kampagnen-, Inhalts-, Produkt- und
                 Angebotsangaben sowie eine pseudonyme Clickout-Ereigniskennung an das jeweilige
                 Partnernetzwerk übergeben werden, um Weiterleitungen später zuordnen zu können.
+                Kann die Datenbank nicht erreicht werden oder ist sie nicht konfiguriert, können Analyse-
+                und Clickout-Ereignisse ersatzweise in lokalen Protokolldateien auf dem DUFYND-Server
+                gespeichert werden.
                 Der eigentliche Kauf findet beim Händler statt. Auf dessen Website gelten anschließend
                 die dortigen Datenschutz- und Trackingregeln. Partnerlinks werden bei DUFYND entsprechend
                 gekennzeichnet.

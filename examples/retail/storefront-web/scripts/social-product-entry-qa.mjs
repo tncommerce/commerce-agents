@@ -115,7 +115,7 @@ export async function verifySocialProductEntry(browser, baseUrl, outputDir) {
           await page.reload();
           await merchant.waitFor();
           assert.equal(await page.locator("[data-offer-price-basis]").count(), 0);
-          assert.match(await section.innerText(), /zzgl. ggf. Versand/);
+          assert.match(await section.innerText(), /Artikelpreis · Versand beim Händler prüfen/);
           offers = [{ ...offer }, { ...offer, offer_id: "qa-second", merchant_name: "QA second", total_price: 100 }];
           await page.reload();
           await merchant.waitFor();
