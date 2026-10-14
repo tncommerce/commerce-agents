@@ -93,10 +93,10 @@
   animation: none;
 }
 .sourcePhoto[data-variant="card"] img { height: 180px; }
-:global([data-merchant-photo-review]) :global(.dufynd-fragrance-stage-shell) {
+:global([data-merchant-photo-review]) :global(.dufynd-fragrance-stage-shell):has(.sourcePhoto) {
   min-height: 360px;
   background: #fff;
 }
 @media (max-width: 767px) {
-  :global([data-merchant-photo-review]) :global(.dufynd-fragrance-stage-shell) { min-height: 320px; }
+  :global([data-merchant-photo-review]) :global(.dufynd-fragrance-stage-shell):has(.sourcePhoto) { min-height: 320px; }
 }
