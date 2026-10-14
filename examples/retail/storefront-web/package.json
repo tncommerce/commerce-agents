@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "test:offer-presentation": "node scripts/test-offer-presentation.mjs",
     "dev": "node scripts/generate-public-fragrance-data.mjs && node scripts/generate-released-profiles.mjs && next dev -p 3000",
     "build": "next build",
     "start": "next start -p 3000",
@@ -15,7 +16,7 @@
     "test:analytics-session-ownership": "node scripts/test-analytics-session-ownership.mjs",
     "test:fragrance-search": "node scripts/test-fragrance-search-identity.mjs",
     "test:acquisition-entry": "node scripts/test-acquisition-entry.mjs",
-    "postbuild": "node scripts/export-review-pages.mjs && node scripts/verify-public-export.mjs"
+    "postbuild": "npm run test:offer-presentation && node scripts/export-review-pages.mjs && node scripts/verify-public-export.mjs"
   },
   "dependencies": {
     "next": "16.3.6",
