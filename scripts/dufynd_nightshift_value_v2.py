@@ -33,6 +33,7 @@ SOURCE_KEYS = {
 }
 V1_COMMIT = "df790a22712ed685593314d6d0feba6b999bc8a9"
 WORKER_COMMIT = "289fba7cf059cca3fa54b1417010b8e5888685ee"
+EDITORIAL_ARCHIVE_KEY = "private:DUFYND-7-Worker-Pruefnachweise.zip/revised-source.json@ad9b6c198c6c731568f5cfed85970dc256f11249fb47cdf1db6dd64c3e8f36e9"
 SAFETY = {
     "cost_eur": 0,
     "provider_calls": 0,
@@ -67,7 +68,10 @@ def instant(value: object) -> datetime:
 def checked_source(envelope: dict, *, name: str, pin: str, now: datetime) -> dict:
     if not isinstance(envelope, dict) or set(envelope) != {"key", "read_at", "value"}:
         raise ValueHold("source_envelope_invalid")
-    if envelope["key"] != SOURCE_KEYS[name] or not isinstance(envelope["value"], dict):
+    allowed = {SOURCE_KEYS[name]}
+    if name == "editorial":
+        allowed.add(EDITORIAL_ARCHIVE_KEY)
+    if envelope["key"] not in allowed or not isinstance(envelope["value"], dict):
         raise ValueHold("source_identity_invalid")
     if not isinstance(pin, str) or not re.fullmatch(r"[a-f0-9]{64}", pin) or sha(envelope) != pin:
         raise ValueHold("source_pin_mismatch")
@@ -304,7 +308,8 @@ def prepare(sources: dict, pins: dict, *, now: datetime) -> dict:
         # Acquisition pins bind the fresh read, stable value pins deduplicate work.
         try:
             records = {
-                n: {"key": SOURCE_KEYS[n], "value_sha256": sha(sources[n]["value"])} for n in names
+                n: {"key": sources[n]["key"], "value_sha256": sha(sources[n]["value"])}
+                for n in names
             }
         except (ValueError, TypeError, KeyError):
             records = {n: {"invalid_source_pin": pins[n]} for n in names}
