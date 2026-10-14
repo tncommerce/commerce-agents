@@ -5,7 +5,7 @@ import { writeFile } from 'node:fs/promises';
 // no merchant navigation, no analytics delivery, no advisor/model calls.
 export async function verifyWowExperience(browser, baseUrl, outputDir) {
   const results = [];
-  const routes = [['home','/'],['catalog','/duft'],['brands','/marken'],['rabanne','/duft/rabanne-1-million'],['lancome','/duft/la-vie-est-belle']];
+  const routes = [['home','/'],['catalog','/duft'],['brands','/marken'],['rabanne','/duft/rabanne-1-million'],['lancome','/duft/lancome-la-vie-est-belle']];
   for (const width of [320,390,768,1024,1440]) {
     const context = await browser.newContext({viewport:{width,height:width < 640 ? 844 : 1000},hasTouch:width<1024,reducedMotion:'reduce'});
     await context.route('**/api/**', r => {
@@ -25,8 +25,16 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
     const errors=[];page.on('pageerror',e=>errors.push(e.message));
     try {
       for (const [name,route] of routes) {
-        await page.goto(baseUrl+route+'?src=instagram&cmp=wow22_fixture&content=isolated',{waitUntil:'networkidle'});
+        const response=await page.goto(baseUrl+route+'?src=instagram&cmp=wow22_fixture&content=isolated',{waitUntil:'networkidle'});
+        assert.equal(response?.status(),200,`${name}/${width}: exact public route must return 200`);
         await page.locator('h1').first().waitFor();
+        if(name==='lancome') {
+          assert.match(await page.locator('h1').innerText(),/La Vie est Belle/);
+          const original=page.locator('.dufynd-fragrance-stage-shell img');
+          await original.first().waitFor();
+          await original.first().evaluate(image=>image.decode());
+          assert.ok(await original.first().evaluate(image=>image.naturalWidth>0),'exact Lancôme original must decode');
+        }
         await page.screenshot({path:`${outputDir}/wow22-${name}-${width}-first.png`});
         const metrics = await page.evaluate(() => ({...window.__wowPerf,overflow:Math.max(document.documentElement.scrollWidth-innerWidth,...[...document.querySelectorAll('.panel-scroll')].map(el=>el.scrollWidth-el.clientWidth)),dom:performance.getEntriesByType('navigation')[0].domContentLoadedEventEnd,resources:performance.getEntriesByType('resource').reduce((n,r)=>n+(r.transferSize||0),0)}));
         assert.ok(metrics.overflow <= 1,`${name}/${width}: horizontal overflow ${metrics.overflow}`);
