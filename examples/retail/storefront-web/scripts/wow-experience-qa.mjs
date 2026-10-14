@@ -124,6 +124,7 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
           await page.waitForFunction(()=>!document.querySelector('.wow-home')&&document.querySelectorAll('textarea').length===1);
           assert.deepEqual(messages,['QA: Ein Duft für den Alltag'],'inline composer sends exactly one mocked request');
           const dock=page.getByRole('textbox',{name:'Nachricht an DUFYND Advisor'});
+          assert.equal(await dock.evaluate(el=>document.activeElement===el),true,'typing focus follows the inline field into the conversation dock');
           await dock.fill('QA: zweite Nachricht');
           await page.getByRole('button',{name:'Send',exact:true}).click();
           await page.getByText('QA: zweite Nachricht',{exact:true}).waitFor();
